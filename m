@@ -2,180 +2,417 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732632A7CE5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 12:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 808A82A7D67
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 12:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730306AbgKELZN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 06:25:13 -0500
-Received: from mout.gmx.net ([212.227.17.21]:33493 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729992AbgKELZM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:25:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604575510;
-        bh=jBWC+sAF9V/HX4qajj6UWJBNBdWUM258TC/08ndMCYA=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=efsqJ4QLPvDinALhjituvXuuJxWaoeUqLyXBoQUnNfjC8ghCwuMxwbCha7jtBLI8y
-         ghg/KqNO4k267MMLhkS4LQ7zLJA7y8/6kJhoNzeqJ+UF963ua5Y4tYB3qkWXX/I92B
-         fx5X14aGQNe2SWBRE8a+LAaAihR2z5EckLubvRP0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIwz4-1ktpEd159G-00KQ4u; Thu, 05
- Nov 2020 12:25:09 +0100
-Subject: Re: [PATCH 02/32] btrfs: extent_io: integrate page status update into
- endio_readpage_release_extent()
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-3-wqu@suse.com>
- <17f71e81-6cb4-d37e-2915-1f5e0fb2ab59@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <9752fdc2-3654-6b40-815c-84199ff31249@gmx.com>
-Date:   Thu, 5 Nov 2020 19:25:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729916AbgKELnf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 06:43:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbgKELnd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 06:43:33 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C563C0613CF;
+        Thu,  5 Nov 2020 03:43:33 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id 63so506125qva.7;
+        Thu, 05 Nov 2020 03:43:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=4PwOWN3Ig1eHu/tpEeKtkfRvNsP+dQ6gFSlRreAygLw=;
+        b=FUi6hUJfC6/4LWrx2AxUD84JbUAYFhg2cn7oMd9IbaqiXO6Y7Xxz0JOYEI/1zlPJAL
+         cbKkod5VwAOVM6wsb17RdJSLEcicDo+YXLgKdKFiSAJVwqaQH8dE0BRrteD3WOz1LJGp
+         uHaTdTz2HM13aYoP5KXUpiYmLMxYtrS6ZT9Pqe/z0XJFQruH3loSRwFiHdseaiqeFaBC
+         JHcYmsVGpf4XdntZISE92h+TBWkmvYWAGaqs+Sl9yZDBza55ofZf7hT35G95zijIlV8B
+         hJyxSkd0EY5F3R2pF/fhGan5lG7iEgAMhmSnL7b4tl2k22i8KoPEEZ/rqwzX1u3szj43
+         oEJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=4PwOWN3Ig1eHu/tpEeKtkfRvNsP+dQ6gFSlRreAygLw=;
+        b=eL/v+odpmswh5nc0OwL5rgaV3yfm7YD3Tl2rICFEEyamAiOoStj6pjboYXVghw+uMg
+         3PdlzOwnFDQsFTSl7J0l5p42dwhbZLROsrhqlj8814NiaavuSkwftip/rgFaVB5zG74N
+         P5JRkYo6ygWqtgurWC6NVRQuScHCrgfM0eVPwUGWCJ7a+y20RUh2mAX8slnMGZcuqglp
+         XvfgZSTCqIS0TZhJjwG9c8FOW+i+D5n9/If8/4WUJgECTkv69tJOOcy71AZC7T+3vPdS
+         6YRJKIlkJkVw0I+7/D2VGUeX9GTHRiAI2sDnZKJcEWmcZ03/C9uc/vv1WnaTTSn4KUwv
+         BLOw==
+X-Gm-Message-State: AOAM531qZItTAyAmclY/2PtSvMkZq7M08WdsUkOixpYI3aeuY+60FEnQ
+        ajG1UnQPddDcqSNnl5xCY5dhsbaYxZ8JZMjvqQx5syzYuRc=
+X-Google-Smtp-Source: ABdhPJxUc+at3GwITVHyf3cxyiVqJR0ZKZvaxe4KFrndSTP116+xDFfenhFNZB4l+58TcVOvLSO9g3vy/MmCSVPGrSU=
+X-Received: by 2002:ad4:4e2b:: with SMTP id dm11mr1782097qvb.41.1604576612499;
+ Thu, 05 Nov 2020 03:43:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <17f71e81-6cb4-d37e-2915-1f5e0fb2ab59@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+References: <8ef2b30c248a05af25f563124f1b75cf30378035.1604522311.git.josef@toxicpanda.com>
+In-Reply-To: <8ef2b30c248a05af25f563124f1b75cf30378035.1604522311.git.josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 5 Nov 2020 11:43:21 +0000
+Message-ID: <CAL3q7H5wRep3SjY=QD85MzpP8ABNbpWXWvWdfj89pPmQyLuE+Q@mail.gmail.com>
+Subject: Re: [PATCH] btrfs/220: fix how we tests for mount options
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dMcARKJJJfRGtk6sRiq8W7qsQtq8YGdeFkhAE3EVrbgo4o5KZnR
- oKUQ0xVexN7q42lbRERE2Nanq6S8a7XKuHJAi7QPFulnXAr6IlJHPW1WnSf25AB7jqAokIi
- zfdYZJQEF4HmUBS24ctTAb+DCLrCGA9Awp/5q9bVU6We7M6tGqbpM+vi2w0Z61tgYZ1LZTd
- Kj41givZFbbfhar2lOgRg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZUYdeYslUCQ=:ZcbL7Jd6z1sqVNtg53lKUm
- uqsDKY4Gc+7KGVjHk5JzBUpHuWMTwffO+QGi5Dnx9r2NIHpHPQF+s6zKm2q1cHbTdGuSBfAVs
- if9ju9ALo2kpQBqeEtsRKhB4tg3lfiNOXDbi6bl99LLsvkYrr/GZzJ+V/djXOCWWJvzWXfRM3
- agBbLyLauKtWdxHYPLk3k+bluTEpe8SxEiD3b9vRZ8Mv4CvDmcJOPHz0v0K8atWh1g2HBk2AB
- hO9LMlUQ5ucgZyfdsk6yyKxtDof6DOweSXwDwY9XG0f+U4/qufShXNfGGEqTjAsTviG6G2j+5
- lciDFYa1NmuyGQjiWoCGlAlbeBZHUVtY9TXqAY5jA8OMqaOnWYZOJHAkh3qLfNPnigJSvUH1E
- zVYAERyFh4ckCpf0M8eUmvb89naUdn2wex9FPMYKYmBSB08JCZjJfD45uBmR3sBG5QI7b4Nm5
- YlKsyYp7fuypd02Cn5Ihn+jvx6ZIEs3/yDDuzRnuPX34af3GJtBNp+pHcC7F5I80Az5rx6IdN
- jiQh9/llN37Mnhz8OdjNBAFmMNxcc+C314y74MF1H4GT7nrj4o4PAYCA9R05IqCYCxV7t8ZXr
- V1gLQOraom1P0DKb8X42na3n+VBcRVTivaAFE7lYMj512u5s35UrOrxpotV8Cok6/szKtiRDv
- j2v1PbretG8qo194cK6h86b88krBexP0uyFNsLld79Dg1npkhGupAPrGpxPwgqXQjq/9YImt5
- zs/z8U9HzinyI/qPf1de3Smzm7ug8PdiDqU5ivOpnO82mD+NHUK899VeUfu2iDSRcldVHBmYe
- sVT4PUG6Seqo+5hMk6Lf8tTjU9ZoEYdfdXKguB+HdIznrIeZJnftmPyHMHBzj1UAO7cMpjRif
- JSfUqYHLeKawzcIrEWEw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Nov 4, 2020 at 9:13 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> Filipe noticed that btrfs/220 started failing with some mount option
+> changes I made recently, but upon closer inspection this test actually
+> fails in a lot of different ways normally, specifically if you specify
+> MOUNT_OPTIONS, or if you make an fs with the free space tree.
+>
+> Address all these issues by reworking how we test that the mount options
+> are what we expect.  First get what the default mount options are for a
+> plain mount of SCRATCH_DEV.  This is used as the baseline, so no matter
+> how the mount options change in the future it will always work properly.
+>
+> Secondly instead of specifying a rigid order of the mount options we're
+> testing, which breaks if we adjust the order in /proc/self/mounts,
+> simply specify the options we're actually interested in checking.  Then
+> in the test function combine the common options with the new options
+> we're testing, and then combine that with our actual options and use
+> some sort magic to see if there's any difference.  If there's no
+> difference then we know we have everything set as expected, if not we
+> fail.
+>
+> This patch addresses the initial issue that Filipe noticed, but also
+> fixes the failures when you specified MOUNT_OPTIONS, or if you made the
+> fs with the free space tree.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good, I like the solution and makes it robust.
+Thanks!
+
+> ---
+>  tests/btrfs/220 | 124 ++++++++++++++++++++++++++++++------------------
+>  1 file changed, 77 insertions(+), 47 deletions(-)
+>
+> diff --git a/tests/btrfs/220 b/tests/btrfs/220
+> index 8f4ba5c6..c84c7065 100755
+> --- a/tests/btrfs/220
+> +++ b/tests/btrfs/220
+> @@ -39,13 +39,35 @@ test_mount_flags()
+>  {
+>         local opt
+>         local opt_check
+> +       local stripped
+>         opt=3D"$1"
+>         opt_check=3D"$2"
+>
+>         active_opt=3D$(cat /proc/self/mounts | grep $SCRATCH_MNT | \
+>                                         $AWK_PROG '{ print $4 }')
+> -       if [[ "$active_opt" !=3D *$opt_check* ]]; then
+> -               echo "Could not find '$opt_check' in '$active_opt', using=
+ '$opt'"
+> +
+> +       if [ "$opt_check" !=3D "$DEFAULT_OPTS" ]; then
+> +               # We only care about the common things between defaults a=
+nd the
+> +               # active set, so strip out the uniq lines between the two=
+, and
+> +               # then we'll add this to our $opt_check which should equa=
+l
+> +               # $active_opt.  We also strip 'rw' as we may be checking =
+'ro',
+> +               # so we need to adjust that accordingly
+> +               stripped=3D$(echo "$DEFAULT_OPTS,$active_opt" | tr ',' '\=
+n' | \
+> +                               sort | grep -v 'rw' | uniq -d | tr '\n' '=
+,' | \
+> +                               sed 's/.$//')
+> +               opt_check=3D"$opt_check,$stripped"
+> +       fi
+> +
+> +       # We diff by putting our wanted opts together with the current op=
+ts,
+> +       # turning it into one option per line, sort'ing, and then printin=
+g out
+> +       # any uniq lines left.  This will catch anything that is set that=
+ we're
+> +       # not expecting, or anything that wasn't set that we wanted.
+> +       #
+> +       # We strip 'rw' because some tests flip ro, so just ignore rw.
+> +       diff=3D$(echo "$opt_check,$active_opt" | tr ',' '\n' | \
+> +               sort | grep -v 'rw' | uniq -u)
+> +       if [ -n "$diff" ]; then
+> +               echo "Unexepcted mount options, checking for '$opt_check'=
+ in '$active_opt' using '$opt'"
+>         fi
+>  }
+>
+> @@ -173,116 +195,124 @@ test_subvol()
+>         # subvol and subvolid should point to the same subvolume
+>         test_should_fail "-o subvol=3Dvol1,subvolid=3D1234132"
+>
+> -       test_mount_opt "subvol=3Dvol1,subvolid=3D256" "space_cache,subvol=
+id=3D256,subvol=3D/vol1"
+> -       test_roundtrip_mount "subvol=3Dvol1" "space_cache,subvolid=3D256,=
+subvol=3D/vol1" "subvolid=3D256" "space_cache,subvolid=3D256,subvol=3D/vol1=
+"
+> +       test_mount_opt "subvol=3Dvol1,subvolid=3D256" "subvolid=3D256,sub=
+vol=3D/vol1"
+> +       test_roundtrip_mount "subvol=3Dvol1" "subvolid=3D256,subvol=3D/vo=
+l1" "subvolid=3D256" "subvolid=3D256,subvol=3D/vol1"
+>  }
+>
+>  # These options are enable at kernel compile time, so no bother if they =
+fail
+>  test_optional_kernel_features()
+>  {
+>         # Test options that are enabled by kernel config, and so can fail=
+ safely
+> -       test_optional_mount_opts "check_int" "space_cache,check_int,subvo=
+lid"
+> -       test_optional_mount_opts "check_int_data" "space_cache,check_int_=
+data,subvolid"
+> -       test_optional_mount_opts "check_int_print_mask=3D123" "space_cach=
+e,check_int_print_mask=3D123,subvolid"
+> +       test_optional_mount_opts "check_int" "check_int"
+> +       test_optional_mount_opts "check_int_data" "check_int_data"
+> +       test_optional_mount_opts "check_int_print_mask=3D123" "check_int_=
+print_mask=3D123"
+>
+>         test_should_fail "fragment=3Dinvalid"
+> -       test_optional_mount_opts "fragment=3Dall" "space_cache,fragment=
+=3Ddata,fragment=3Dmetadata,subvolid"
+> -       test_optional_mount_opts "fragment=3Ddata" "space_cache,fragment=
+=3Ddata,subvolid"
+> -       test_optional_mount_opts "fragment=3Dmetadata" "space_cache,fragm=
+ent=3Dmetadata,subvolid"
+> +       test_optional_mount_opts "fragment=3Dall" "fragment=3Ddata,fragme=
+nt=3Dmetadata"
+> +       test_optional_mount_opts "fragment=3Ddata" "fragment=3Ddata"
+> +       test_optional_mount_opts "fragment=3Dmetadata" "fragment=3Dmetada=
+ta"
+>  }
+>
+>  test_non_revertible_options()
+>  {
+> -       test_mount_opt "clear_cache" "relatime,space_cache,clear_cache,su=
+bvolid"
+> -       test_mount_opt "degraded" "relatime,degraded,space_cache,subvolid=
+"
+> +       test_mount_opt "clear_cache" "clear_cache"
+> +       test_mount_opt "degraded" "degraded"
+>
+> -       test_mount_opt "inode_cache" "space_cache,inode_cache,subvolid"
+> +       test_mount_opt "inode_cache" "inode_cache"
+>
+>         # nologreplay should be used only with
+>         test_should_fail "nologreplay"
+> -       test_mount_opt "nologreplay,ro" "ro,relatime,rescue=3Dnologreplay=
+,space_cache"
+> +       test_mount_opt "nologreplay,ro" "ro,rescue=3Dnologreplay"
+>
+>         # norecovery should be used only with. This options is an alias t=
+o nologreplay
+>         test_should_fail "norecovery"
+> -       test_mount_opt "norecovery,ro" "ro,relatime,rescue=3Dnologreplay,=
+space_cache"
+> -       test_mount_opt "rescan_uuid_tree" "relatime,space_cache,rescan_uu=
+id_tree,subvolid"
+> -       test_mount_opt "skip_balance" "relatime,space_cache,skip_balance,=
+subvolid"
+> -       test_mount_opt "user_subvol_rm_allowed" "space_cache,user_subvol_=
+rm_allowed,subvolid"
+> +       test_mount_opt "norecovery,ro" "ro,rescue=3Dnologreplay"
+> +       test_mount_opt "rescan_uuid_tree" "rescan_uuid_tree"
+> +       test_mount_opt "skip_balance" "skip_balance"
+> +       test_mount_opt "user_subvol_rm_allowed" "user_subvol_rm_allowed"
+>
+>         test_should_fail "rescue=3Dinvalid"
+>
+>         # nologreplay requires readonly
+>         test_should_fail "rescue=3Dnologreplay"
+> -       test_mount_opt "rescue=3Dnologreplay,ro" "relatime,rescue=3Dnolog=
+replay,space_cache"
+> -
+> -       test_mount_opt "rescue=3Dusebackuproot,ro" "relatime,space_cache,=
+subvolid"
+> +       test_mount_opt "rescue=3Dnologreplay,ro" "ro,rescue=3Dnologreplay=
+"
+>  }
+>
+>  # All these options can be reverted (with their "no" counterpart), or ca=
+n have
+>  # their values set to default on remount
+>  test_revertible_options()
+>  {
+> -       test_roundtrip_mount "acl" "relatime,space_cache,subvolid" "noacl=
+" "relatime,noacl,space_cache,subvolid"
+> -       test_roundtrip_mount "autodefrag" "relatime,space_cache,autodefra=
+g" "noautodefrag" "relatime,space_cache,subvolid"
+> -       test_roundtrip_mount "barrier" "relatime,space_cache,subvolid" "n=
+obarrier" "relatime,nobarrier,space_cache,subvolid"
+> +       test_roundtrip_mount "acl" "$DEFAULT_OPTS" "noacl" "noacl"
+> +       test_roundtrip_mount "autodefrag" "autodefrag" "noautodefrag" "$D=
+EFAULT_OPTS"
+> +       test_roundtrip_mount "barrier" "$DEFAULT_OPTS" "nobarrier" "nobar=
+rier"
+>
+>         test_should_fail "commit=3D-10"
+>         # commit=3D0 sets the default, so btrfs hides this mount opt
+> -       test_roundtrip_mount "commit=3D35" "relatime,space_cache,commit=
+=3D35,subvolid" "commit=3D0" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "commit=3D35" "commit=3D35" "commit=3D0" "$D=
+EFAULT_OPTS"
+>
+>         test_should_fail "compress=3Dinvalid"
+>         test_should_fail "compress-force=3Dinvalid"
+> -       test_roundtrip_mount "compress" "relatime,compress=3Dzlib:3,space=
+_cache,subvolid" "compress=3Dlzo" "relatime,compress=3Dlzo,space_cache,subv=
+olid"
+> -       test_roundtrip_mount "compress=3Dzstd" "relatime,compress=3Dzstd:=
+3,space_cache,subvolid" "compress=3Dno" "relatime,space_cache,subvolid"
+> -       test_roundtrip_mount "compress-force=3Dno" "relatime,space_cache,=
+subvolid" "compress-force=3Dzstd" "relatime,compress-force=3Dzstd:3,space_c=
+ache,subvolid"
+> +       test_roundtrip_mount "compress" "compress=3Dzlib:3" "compress=3Dl=
+zo" "compress=3Dlzo"
+> +       test_roundtrip_mount "compress=3Dzstd" "compress=3Dzstd:3" "compr=
+ess=3Dno" "$DEFAULT_OPTS"
+> +       test_roundtrip_mount "compress-force=3Dno" "$DEFAULT_OPTS" "compr=
+ess-force=3Dzstd" "compress-force=3Dzstd:3"
+>         # zlib's max level is 9 and zstd's max level is 15
+> -       test_roundtrip_mount "compress=3Dzlib:20" "relatime,compress=3Dzl=
+ib:9,space_cache,subvolid" "compress=3Dzstd:16" "relatime,compress=3Dzstd:1=
+5,space_cache,subvolid"
+> -       test_roundtrip_mount "compress-force=3Dlzo" "relatime,compress-fo=
+rce=3Dlzo,space_cache,subvolid" "compress-force=3Dzlib:4" "relatime,compres=
+s-force=3Dzlib:4,space_cache,subvolid"
+> +       test_roundtrip_mount "compress=3Dzlib:20" "compress=3Dzlib:9" "co=
+mpress=3Dzstd:16" "compress=3Dzstd:15"
+> +       test_roundtrip_mount "compress-force=3Dlzo" "compress-force=3Dlzo=
+" "compress-force=3Dzlib:4" "compress-force=3Dzlib:4"
+>
+>         # on remount, if we only pass datacow after nodatacow was used it=
+ will remain with nodatasum
+> -       test_roundtrip_mount "nodatacow" "relatime,nodatasum,nodatacow,sp=
+ace_cache,subvolid" "datacow,datasum" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "nodatacow" "nodatasum,nodatacow" "datacow,d=
+atasum" "$DEFAULT_OPTS"
+>         # nodatacow disabled compression
+> -       test_roundtrip_mount "compress-force" "relatime,compress-force=3D=
+zlib:3,space_cache,subvolid" "nodatacow" "relatime,nodatasum,nodatacow,spac=
+e_cache,subvolid"
+> +       test_roundtrip_mount "compress-force" "compress-force=3Dzlib:3" "=
+nodatacow" "nodatasum,nodatacow"
+>
+>         # nodatacow disabled both datacow and datasum, and datasum enable=
+d datacow and datasum
+> -       test_roundtrip_mount "nodatacow" "relatime,nodatasum,nodatacow,sp=
+ace_cache,subvolid" "datasum" "relatime,space_cache,subvolid"
+> -       test_roundtrip_mount "nodatasum" "relatime,nodatasum,space_cache,=
+subvolid" "datasum" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "nodatacow" "nodatasum,nodatacow" "datasum" =
+"$DEFAULT_OPTS"
+> +       test_roundtrip_mount "nodatasum" "nodatasum" "datasum" "$DEFAULT_=
+OPTS"
+>
+>         test_should_fail "discard=3Dinvalid"
+> -       test_roundtrip_mount "discard" "relatime,discard,space_cache,subv=
+olid" "discard=3Dsync" "relatime,discard,space_cache,subvolid"
+> -       test_roundtrip_mount "discard=3Dasync" "relatime,discard=3Dasync,=
+space_cache,subvolid" "discard=3Dsync" "relatime,discard,space_cache,subvol=
+id"
+> -       test_roundtrip_mount "discard=3Dsync" "relatime,discard,space_cac=
+he,subvolid" "nodiscard" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "discard" "discard" "discard=3Dsync" "discar=
+d"
+> +       test_roundtrip_mount "discard=3Dasync" "discard=3Dasync" "discard=
+=3Dsync" "discard"
+> +       test_roundtrip_mount "discard=3Dsync" "discard" "nodiscard" "$DEF=
+AULT_OPTS"
+>
+> -       test_roundtrip_mount "enospc_debug" "relatime,space_cache,enospc_=
+debug,subvolid" "noenospc_debug" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "enospc_debug" "enospc_debug" "noenospc_debu=
+g" "$DEFAULT_OPTS"
+>
+>         test_should_fail "fatal_errors=3Dpani"
+>         # fatal_errors=3Dbug is the default
+> -       test_roundtrip_mount "fatal_errors=3Dpanic" "relatime,space_cache=
+,fatal_errors=3Dpanic,subvolid" "fatal_errors=3Dbug" "relatime,space_cache,=
+subvolid"
+> +       test_roundtrip_mount "fatal_errors=3Dpanic" "fatal_errors=3Dpanic=
+" "fatal_errors=3Dbug" "$DEFAULT_OPTS"
+>
+> -       test_roundtrip_mount "flushoncommit" "relatime,flushoncommit,spac=
+e_cache,subvolid" "noflushoncommit" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "flushoncommit" "flushoncommit" "noflushonco=
+mmit" "$DEFAULT_OPTS"
+>
+>         # 2048 is the max_inline default value
+> -       test_roundtrip_mount "max_inline=3D1024" "relatime,max_inline=3D1=
+024,space_cache" "max_inline=3D2048" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "max_inline=3D1024" "max_inline=3D1024" "max=
+_inline=3D2048" "$DEFAULT_OPTS"
+>
+> -       test_roundtrip_mount "metadata_ratio=3D0" "relatime,space_cache,s=
+ubvolid" "metadata_ratio=3D10" "space_cache,metadata_ratio=3D10,subvolid"
+> +       test_roundtrip_mount "metadata_ratio=3D0" "$DEFAULT_OPTS" "metada=
+ta_ratio=3D10" "metadata_ratio=3D10"
+>
+>         # ssd_spread implies ssd, while nossd_spread only disables ssd_sp=
+read
+> -       test_roundtrip_mount "ssd_spread" "relatime,ssd_spread,space_cach=
+e" "nossd" "relatime,nossd,space_cache,subvolid"
+> -       test_roundtrip_mount "ssd" "relatime,ssd,space_cache" "nossd" "re=
+latime,nossd,space_cache,subvolid"
+> -       test_mount_opt "ssd" "relatime,ssd,space_cache"
+> +       test_roundtrip_mount "ssd_spread" "ssd_spread" "nossd" "nossd"
+> +       test_roundtrip_mount "ssd" "ssd" "nossd" "nossd"
+> +       test_mount_opt "ssd" "ssd"
+>
+>         test_should_fail "thread_pool=3D-10"
+>         test_should_fail "thread_pool=3D0"
+> -       test_roundtrip_mount "thread_pool=3D10" "relatime,thread_pool=3D1=
+0,space_cache" "thread_pool=3D50" "relatime,thread_pool=3D50,space_cache"
+> +       test_roundtrip_mount "thread_pool=3D10" "thread_pool=3D10" "threa=
+d_pool=3D50" "thread_pool=3D50"
+>
+> -       test_roundtrip_mount "notreelog" "relatime,notreelog,space_cache"=
+ "treelog" "relatime,space_cache,subvolid"
+> +       test_roundtrip_mount "notreelog" "notreelog" "treelog" "$DEFAULT_=
+OPTS"
+>  }
+>
+>  # real QA test starts here
+>  _scratch_mkfs >/dev/null
+>
+> +# This test checks mount options, so having random MOUNT_OPTIONS set cou=
+ld
+> +# affect the results of a few of these tests.
+> +MOUNT_OPTIONS=3D
+> +
+>  # create a subvolume that will be used later
+>  _scratch_mount
+> +
+> +# We need to save the current default options so we can validate our cha=
+nges
+> +# from one mount option to the next one.
+> +DEFAULT_OPTS=3D$(cat /proc/self/mounts | grep $SCRATCH_MNT | \
+> +               $AWK_PROG '{ print $4 }')
+> +
+>  $BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/vol1" > /dev/null
+>  touch "$SCRATCH_MNT/vol1/file.txt"
+>  _scratch_unmount
+> --
+> 2.26.2
+>
 
 
-On 2020/11/5 =E4=B8=8B=E5=8D=886:35, Nikolay Borisov wrote:
->
->
-> On 3.11.20 =D0=B3. 15:30 =D1=87., Qu Wenruo wrote:
->> In end_bio_extent_readpage(), we set page uptodate or error according t=
-o
->> the bio status.  However that assumes all submitted reads are in page
->> size.
->>
->> To support case like subpage read, we should only set the whole page
->> uptodate if all data in the page have been read from disk.
->>
->> This patch will integrate the page status update into
->> endio_readpage_release_extent() for end_bio_extent_readpage().
->>
->> Now in endio_readpage_release_extent() we will set the page uptodate if=
-:
->>
->> - start/end range covers the full page
->>   This is the existing behavior already.
->>
->> - the whole page range is already uptodate
->>   This adds the support for subpage read.
->>
->> And for the error path, we always clear the page uptodate and set the
->> page error.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> ---
->>  fs/btrfs/extent_io.c | 38 ++++++++++++++++++++++++++++----------
->>  1 file changed, 28 insertions(+), 10 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 58dc55e1429d..228bf0c5f7a0 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -2779,13 +2779,35 @@ static void end_bio_extent_writepage(struct bio=
- *bio)
->>  	bio_put(bio);
->>  }
->>
->> -static void endio_readpage_release_extent(struct extent_io_tree *tree,=
- u64 start,
->> -					  u64 end, int uptodate)
->> +static void endio_readpage_release_extent(struct extent_io_tree *tree,
->> +		struct page *page, u64 start, u64 end, int uptodate)
->>  {
->>  	struct extent_state *cached =3D NULL;
->>
->> -	if (uptodate && tree->track_uptodate)
->> -		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
->> +	if (uptodate) {
->> +		u64 page_start =3D page_offset(page);
->> +		u64 page_end =3D page_offset(page) + PAGE_SIZE - 1;
->> +
->> +		if (tree->track_uptodate) {
->> +			/*
->> +			 * The tree has EXTENT_UPTODATE bit tracking, update
->> +			 * extent io tree, and use it to update the page if
->> +			 * needed.
->> +			 */
->> +			set_extent_uptodate(tree, start, end, &cached, GFP_NOFS);
->> +			check_page_uptodate(tree, page);
->> +		} else if (start <=3D page_start && end >=3D page_end) {
->> +			/* We have covered the full page, set it uptodate */
->> +			SetPageUptodate(page);
->> +		}
->> +	} else if (!uptodate){
->> +		if (tree->track_uptodate)
->> +			clear_extent_uptodate(tree, start, end, &cached);
->
-> Hm, that call to clear_extent_uptodate was absent before, so either:
->
-> a) The old code is buggy since it misses it
-> b) this will be a nullop because we have just read the extent and we
-> haven't really set it to uptodate so there won't be anything to clear?
+--=20
+Filipe David Manana,
 
-You're right, we didn't need this, since the page hasn't been read from
-disk, the range should not have EXTENT_UPTODATE bit at all, nor the
-PageUptodate bit.
-
-Thanks
-Qu
-
->
-> Which is it?
->
-> <snip>
->
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
