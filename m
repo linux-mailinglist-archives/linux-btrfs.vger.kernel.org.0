@@ -2,62 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F602A872D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 20:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6557D2A874B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 20:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731860AbgKET2u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 14:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        id S1731694AbgKETed (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 14:34:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727851AbgKET2u (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 14:28:50 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B90C0613CF
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 11:28:50 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id da2so1262122qvb.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 11:28:50 -0800 (PST)
+        with ESMTP id S1726996AbgKETed (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 14:34:33 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FDAC0613CF
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 11:34:33 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id k9so2307664qki.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 11:34:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=+aYHqsBNH7FvG1cjfVfGk5W5THbUgEDUI69L6b9VKWo=;
-        b=jCzj7ylToW8/ut/EuRGnmSKqR7mtAAhLf7cUIEZXZ5/JgGlUFrf+K/syB+sD9IKmAj
-         PK+o7L9dAL75zmH1HOzBiASbkPUeik1oEsv8OYD7Mcns80YPjnc8cybDCRh2X2WVJPWo
-         +jAM1yGMfpu+E7XkjFFMtfS7JZfDqoMayLopMLuPM3yOLAaL5WaVoOoUuHNpvLC8RBKe
-         haNwEE04dSD0OpyAEJv55Qi8RrPwyBT2S5jSbJbFmQyoCQ1RtB3pwlWa38BRcl79ozBO
-         HpC3F5jzkh9HIAgU3abf3qw5GtbmRvEf8uzQVDBNVAO1hqijskgtGPxbttCgk+7yfzwl
-         ldZw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hk3RmtGhjOh+j0Wok6Amuv9aBYx4sqQZnq0m/Zgaw1M=;
+        b=inhHxuKQs0mI/DeJOAqvuBFgy4qDkrHfGb/686te2B4p2LhY6pQFo6rD3+i4adByhA
+         eiASYgB9v8mBqfmiV7OpBuLszlDvEsUnqTXC5HVtwOs5gYAgSSnHBKEqndBYF884yTtX
+         SGsQS70QIoBWEL67x/zroQrX+1yXPSVw7H49bmAhU1/D71DDRJvPqh0wBT5AqfsoXI/R
+         YI3JbvJ8Yjdcvn1dRTsahh2vRXtG+3nxxt5xJ34yZV4cvdaTz7z9ttQU8bYqu1l6ZOC7
+         5TcILO8sfZ28xepaC4weML5vx570W8h/j1PmYm3cS905NXtO9iBXtLn6fGuhAXdgr5yp
+         Hqag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+aYHqsBNH7FvG1cjfVfGk5W5THbUgEDUI69L6b9VKWo=;
-        b=SmDPsvNRyO/6UPbvD85jcB+Lce6dwDCPRpkoAo18KWyw0SrkkF3PHEcarI855TXbqT
-         MXwVHrLhX4hXCu8yYzPt3U6hxMuyZuH9CUX0M18t4g5j1GDOE6SXFnceL3p7ES2eP7VZ
-         wRRxQiCCSqYHh5boHKH1p8imHHo2IChbyrf7ZpizyQbbKtsW1cHVnqEWBztkcmLIbURt
-         h6ZFKm5q6lQSdb/dRdz1gu5HB9KbkwTYGDWtHo9kAPgMSRunflNo7F8UCCkginqJVAVS
-         wE+2JHnqE9ixe1VCxOAiwziSKaNxwGFNa0edvBet4HYSAmhehMe8fGIx37RcGAjgjLCy
-         Bq6g==
-X-Gm-Message-State: AOAM532ZvHFWNsltWxnAV03IJoQzUJK1euXPYN0a5O7DxYA6qklMuhbn
-        yaevRJspf/sm4HZzBAVKI5vbbzBpCQbhq2dn
-X-Google-Smtp-Source: ABdhPJxekeYTmw4R/4VCsEeObQQ4OFLxaFXJJmCBLYlUGubtvYsMY6RzHOA/cFTQN44qr0EjVwsdLw==
-X-Received: by 2002:a05:6214:16d0:: with SMTP id d16mr4058195qvz.38.1604604528338;
-        Thu, 05 Nov 2020 11:28:48 -0800 (PST)
+        bh=hk3RmtGhjOh+j0Wok6Amuv9aBYx4sqQZnq0m/Zgaw1M=;
+        b=oJ3qlrfD8nbrkO4anTBKUyIc2bcR+9wgFX451vFh3dIOle95/lrSU3VeGsUDoPttAO
+         KV2TobIBUOCMMa6JivhMRSjTACFQKjkiDCM2FLlm8Vjkoyz+nixVntduqClnEya4KfV6
+         c5BaecL2d2upxzhh6gZJvH5Ws29a8rxtg1RkzDmgpkrMQ9u4w82V0kXjLul1eBjEyS8c
+         oj5efx2GpXk6/8LcmgMVKUpU7xO5wf46+fFUAMux5p05IOn0FKOPB5RNltrrsuTgynIb
+         16DWMcIalNk4k3E1dCb4eqWOhAB4EXmTKDCePolQ0g5VCpTe6vjjgqsKV8vqvwMhxn4c
+         oiAQ==
+X-Gm-Message-State: AOAM531fJmsZI06G6paoh0lL7D4vDaIW/kzRBEdFUwxBo6+FDZ3bxjjO
+        Fq5KbJydzGsk4pWvFEtAn8YeuQ==
+X-Google-Smtp-Source: ABdhPJyI8z9jKnZTnFsSXj5ykjnbTONCmzyHQhVDlhmsQ99fuf4Zkme0D68O0EWbXU9VHGwZUmRcpQ==
+X-Received: by 2002:ae9:e709:: with SMTP id m9mr3517384qka.397.1604604872531;
+        Thu, 05 Nov 2020 11:34:32 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id q1sm1531583qti.95.2020.11.05.11.28.47
+        by smtp.gmail.com with ESMTPSA id p8sm1619785qtc.37.2020.11.05.11.34.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 11:28:47 -0800 (PST)
-Subject: Re: [PATCH 00/32] btrfs: preparation patches for subpage support
+        Thu, 05 Nov 2020 11:34:31 -0800 (PST)
+Subject: Re: [PATCH 02/32] btrfs: extent_io: integrate page status update into
+ endio_readpage_release_extent()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
+ <20201103133108.148112-3-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <fd706714-c4ae-b1a7-44e8-68249b94bbde@toxicpanda.com>
-Date:   Thu, 5 Nov 2020 14:28:46 -0500
+Message-ID: <84f5a26d-467b-f05d-decb-441a46df62d0@toxicpanda.com>
+Date:   Thu, 5 Nov 2020 14:34:30 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-1-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-3-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -66,37 +69,85 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 11/3/20 8:30 AM, Qu Wenruo wrote:
-> This is the rebased preparation branch for all patches not yet merged into
-> misc-next.
-> It can be fetched from github:
-> https://github.com/adam900710/linux/tree/subpage_prep_rebased
+> In end_bio_extent_readpage(), we set page uptodate or error according to
+> the bio status.  However that assumes all submitted reads are in page
+> size.
 > 
-> This patchset includes all the unmerged preparation patches for subpage
-> support.
+> To support case like subpage read, we should only set the whole page
+> uptodate if all data in the page have been read from disk.
 > 
-> The patchset is sent without the main core for subpage support, as
-> myself has proven that, big patchset bombarding won't really make
-> reviewers happy, but only make the author happy (for a very short time).
+> This patch will integrate the page status update into
+> endio_readpage_release_extent() for end_bio_extent_readpage().
 > 
-> But we still got 32 patches for them, thus we still need a summary for
-> the patchset:
+> Now in endio_readpage_release_extent() we will set the page uptodate if:
 > 
-> Patch 01~21:	Generic preparation patches.
-> 		Mostly pave the way for metadata and data read.
+> - start/end range covers the full page
+>    This is the existing behavior already.
 > 
-> Patch 22~24:	Recent btrfs_lookup_bio_sums() cleanup
-> 		The most subpage unrelated patches, but still helps
-> 		refactor related functions for incoming subpage support.
+> - the whole page range is already uptodate
+>    This adds the support for subpage read.
 > 
-> Patch 25~32:	Scrub support for subpage.
-> 		Since scrub is completely unrelated to regular data/meta
->   		read write, the scrub support for subpage can be
-> 		implemented independently and easily.
+> And for the error path, we always clear the page uptodate and set the
+> page error.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>   fs/btrfs/extent_io.c | 38 ++++++++++++++++++++++++++++----------
+>   1 file changed, 28 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 58dc55e1429d..228bf0c5f7a0 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2779,13 +2779,35 @@ static void end_bio_extent_writepage(struct bio *bio)
+>   	bio_put(bio);
+>   }
+>   
+> -static void endio_readpage_release_extent(struct extent_io_tree *tree, u64 start,
+> -					  u64 end, int uptodate)
+> +static void endio_readpage_release_extent(struct extent_io_tree *tree,
+> +		struct page *page, u64 start, u64 end, int uptodate)
+>   {
+>   	struct extent_state *cached = NULL;
+>   
+> -	if (uptodate && tree->track_uptodate)
+> -		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
+> +	if (uptodate) {
+> +		u64 page_start = page_offset(page);
+> +		u64 page_end = page_offset(page) + PAGE_SIZE - 1;
+> +
+> +		if (tree->track_uptodate) {
+> +			/*
+> +			 * The tree has EXTENT_UPTODATE bit tracking, update
+> +			 * extent io tree, and use it to update the page if
+> +			 * needed.
+> +			 */
+> +			set_extent_uptodate(tree, start, end, &cached, GFP_NOFS);
 
-Please use btrfs-setup-git-hooks in the btrfs-workflow tree, I made it 2 patches 
-in before checkpatch blew up on something that really should be fixed. 
-Generally I'll just ignore silly failures, but for a series this large it really 
-should cleanly apply and adhere to normal coding standards so I don't have to 
-waste time addressing those sort of mistakes.  Thanks,
+Why is the switching from GFP_ATOMIC to GFP_NOFS safe here?  If it is it should 
+be in it's own patch with it's own explanation.
+
+> +			check_page_uptodate(tree, page);
+> +		} else if (start <= page_start && end >= page_end) {
+> +			/* We have covered the full page, set it uptodate */
+> +			SetPageUptodate(page);
+> +		}
+> +	} else if (!uptodate){
+
+} else if (!uptodate) {
+
+> +		if (tree->track_uptodate)
+> +			clear_extent_uptodate(tree, start, end, &cached);
+> +
+
+And this is new.  Please keep logical changes separate.  In this patch you are
+
+1) Changing the GFP pretty majorly.
+2) Cleaning up error handling to handle ranges properly.
+3) Changing the behavior of EXTENT_UPTODATE for ->track_uptodate trees.
+
+These each require their own explanation and commit so I can understand why 
+they're safe to do.  Thanks,
 
 Josef
