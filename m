@@ -2,63 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70532A8926
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 22:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3D72A89B1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 23:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732398AbgKEVeN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 16:34:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47796 "EHLO mx2.suse.de"
+        id S1732600AbgKEWYp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 17:24:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60256 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732046AbgKEVeN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 16:34:13 -0500
+        id S1732295AbgKEWYp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:24:45 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1B24EAC1D;
-        Thu,  5 Nov 2020 21:34:12 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 79E14AB8F;
+        Thu,  5 Nov 2020 22:24:44 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0A3DCDA6E3; Thu,  5 Nov 2020 22:32:32 +0100 (CET)
-Date:   Thu, 5 Nov 2020 22:32:32 +0100
+        id 5CEA7DA6E3; Thu,  5 Nov 2020 23:23:05 +0100 (CET)
+Date:   Thu, 5 Nov 2020 23:23:05 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: wait on v1 cache for log replay
-Message-ID: <20201105213232.GM6756@twin.jikos.cz>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] fixes for btrfs async discards
+Message-ID: <20201105222305.GN6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <01bacd1faab24648e9701e34318f7bfd6a1f098b.1604608527.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Pavel Begunkov <asml.silence@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1604444952.git.asml.silence@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <01bacd1faab24648e9701e34318f7bfd6a1f098b.1604608527.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1604444952.git.asml.silence@gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 03:36:26PM -0500, Josef Bacik wrote:
-> Filipe reported btrfs/159 and btrfs/201 failures with the latest
-> misc-next, and bisected it to my change to always async the loading of
-> the v1 cache.  This is because when replaying the log we expect that the
-> free space cache will be read entirely before we start excluding space
-> to replay.  However this obviously changed, and thus we ended up
-> overwriting things that were allocated during replay.  Fix this by
-> exporting the helper to wait on v1 space cache and use it for this
-> exclusion step.  I've audited everywhere else and we are OK with all
-> other callers.  Anywhere that also required reading the space cache in
-> its entirety used btrfs_cache_block_group() with load_cache_only set,
-> which waits for the cache to be loaded.  We do not use that here because
-> we want to start caching the block group even if we aren't using the
-> free space inode.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
-> Dave, this can be folded into 
-> 
-> 	btrfs: async load free space cache
-> 
-> and it'll be good to go.  I validated it fixed the report, just provided the
-> changelog to explain what happened.
+On Wed, Nov 04, 2020 at 09:45:50AM +0000, Pavel Begunkov wrote:
+> Several fixes for async discards. The first patch might increase discard
+> rate, drastically in some cases. That may be a suprise for those
+> assuming that hitting iops_limit is rare and rarther outliers. Though,
+> it still stays in allowed range, so should be fine.
 
-Folded to the patch, thanks. I've updated the change with the gist of
-the changelog regarding log replay.
+I think this highly depends on the workload, if you really need to issue
+the discards fast because of the rate of the change in the regular data.
+That was the point of the async discard and the knobs, the defaults
+should be ok for most users and allow adjusting for specific loads.
+
+My testing of the original discard patchset was tailored towards the
+default usecase and likely intense than yours. I did not observe the
+corner cases where the work queue scheduling was off, or changing the
+sysfs values did not poke the right kthreads.
+
+Patches look ok to me and I've added them to topic branch for testing,
+going to misc-next later. Thanks.
