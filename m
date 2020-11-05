@@ -2,229 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599D82A7A0D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 10:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE0A2A7AF2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 10:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgKEJIE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 04:08:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33160 "EHLO mx2.suse.de"
+        id S1726371AbgKEJqm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 04:46:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41136 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726756AbgKEJIE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 04:08:04 -0500
+        id S1726152AbgKEJqm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 04:46:42 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604567282;
+        t=1604569600;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7jfyejCXeQquy9KP6OySMDZ7WjmTsRMZoRXfZkX6Vhw=;
-        b=CN/Kepdw0YdH4xTKvIvK/v6QPFR1RLm7f3M58EkyLWUEn7w/FSCSRbo9IZdlyze1hj+t9L
-        rM4KRkT1Pcz42Gld0bEdHmGpzAFkoBl5iXQ95iFaqas634hscUqrY7HLhMbXJxpT9yRno7
-        oW4ZGo6ICZYpzimokgRVahrgFUMHhD0=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=yZwg98HF1lnWi518ArCyNs/5HaNyV2xG7u1BboqUT3A=;
+        b=XjxNc3HzbJRxFU5pOkuXE4SpwUOIFWAT69Y8LRyRRpxg5AunqPncB9TfH0qUmaU6nn2GWh
+        a+Dp35cwrGs7F8g04EraFrjusQQUqN3y3llORAiL0/cZUHjF70Gu+5H6Wp4BKWVQtOGJVA
+        KXhiz3RmJdrPCNyqXgp0tRWS99yfJ1E=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 72E15AAF1;
-        Thu,  5 Nov 2020 09:08:02 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 52598AAF1;
+        Thu,  5 Nov 2020 09:46:40 +0000 (UTC)
+Subject: Re: [PATCH 01/32] btrfs: extent_io: remove the
+ extent_start/extent_len for end_bio_extent_readpage()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+References: <20201103133108.148112-1-wqu@suse.com>
+ <20201103133108.148112-2-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Rename __set_extent_bit to set_extent_bit
-Date:   Thu,  5 Nov 2020 11:08:00 +0200
-Message-Id: <20201105090800.19098-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <831ff919-f4f4-7f1b-1e60-ce8df4697651@suse.com>
+Date:   Thu, 5 Nov 2020 11:46:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201103133108.148112-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are only 2 direct calls to set_extent_bit outside of extent-io - in
-btrfs_find_new_delalloc_bytes and btrfs_truncate_block, the rest are thin wrappers
-around __set_extent_bit. This adds unnecessary indirection and just makes it
-more annoying when looking at the various extent bit manipulation functions.
-This patch renames __set_extent_bit to set_extent_bit effectively removing
-a level of indirection. No functional changes.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/extent-io-tree.h | 21 +++++++++++++--------
- fs/btrfs/extent_io.c      | 32 ++++++++++++--------------------
- fs/btrfs/file.c           |  3 ++-
- fs/btrfs/inode.c          |  2 +-
- 4 files changed, 28 insertions(+), 30 deletions(-)
 
-diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index cab4273ff8d3..62a02b333eeb 100644
---- a/fs/btrfs/extent-io-tree.h
-+++ b/fs/btrfs/extent-io-tree.h
-@@ -154,14 +154,17 @@ static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
- int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 			   unsigned bits, struct extent_changeset *changeset);
- int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   unsigned bits, struct extent_state **cached_state, gfp_t mask);
-+		   unsigned bits, unsigned exclusive_bits, u64 *failed_start,
-+		   struct extent_state **cached_state, gfp_t mask,
-+		   struct extent_changeset *changeset);
- int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
- 			   unsigned bits);
+On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
+> In end_bio_extent_readpage() we had a strange dance around
+> extent_start/extent_len.
+> 
+> Hides behind the strange dance is, it's just calling
+> endio_readpage_release_extent() on each bvec range.
+> 
+> Here is an example to explain the original work flow:
+>   Bio is for inode 257, containing 2 pages, for range [1M, 1M+8K)
+> 
+>   end_bio_extent_extent_readpage() entered
+>   |- extent_start = 0;
+>   |- extent_end = 0;
+>   |- bio_for_each_segment_all() {
+>   |  |- /* Got the 1st bvec */
+>   |  |- start = SZ_1M;
+>   |  |- end = SZ_1M + SZ_4K - 1;
+>   |  |- update = 1;
+>   |  |- if (extent_len == 0) {
+>   |  |  |- extent_start = start; /* SZ_1M */
+>   |  |  |- extent_len = end + 1 - start; /* SZ_1M */
+>   |  |  }
+>   |  |
+>   |  |- /* Got the 2nd bvec */
+>   |  |- start = SZ_1M + 4K;
+>   |  |- end = SZ_1M + 4K - 1;
+>   |  |- update = 1;
+>   |  |- if (extent_start + extent_len == start) {
+>   |  |  |- extent_len += end + 1 - start; /* SZ_8K */
+>   |  |  }
+>   |  } /* All bio vec iterated */
+>   |
+>   |- if (extent_len) {
+>      |- endio_readpage_release_extent(tree, extent_start, extent_len,
+> 				      update);
+> 	/* extent_start == SZ_1M, extent_len == SZ_8K, uptodate = 1 */
+> 
+> As the above flow shows, the existing code in end_bio_extent_readpage()
+> is just accumulate extent_start/extent_len, and when the contiguous range
+> breaks, call endio_readpage_release_extent() for the range.
+> 
+> The contiguous range breaks at two locations:
+> - The total else {} branch
+>   This means we had a page in a bio where it's not contiguous.
+>   Currently this branch will never be triggered. As all our bio is
+>   submitted as contiguous pages.
+> 
 
- static inline int set_extent_bits(struct extent_io_tree *tree, u64 start,
- 		u64 end, unsigned bits)
- {
--	return set_extent_bit(tree, start, end, bits, NULL, GFP_NOFS);
-+	return set_extent_bit(tree, start, end, bits, 0, NULL, NULL, GFP_NOFS,
-+			      NULL);
- }
+The endio routine cares about logical file contiguity as evidenced by
+the fact it uses page_offset() to calculate 'start', however our recent
+discussion on irc with the contiguity in csums bios clearly showed that
+we can have bios which contains pages that are contiguous in their disk
+byte nr but not in their logical offset, in fact Josef even mentioned on
+slack that a single bio can contain pages for different inodes so long
+as their logical disk byte nr are contiguous. I think this is not an
+issue in this case because you are doing the unlock on a bvec
+granularity but just the above statement is somewhat misleading.
 
- static inline int clear_extent_uptodate(struct extent_io_tree *tree, u64 start,
-@@ -174,7 +177,8 @@ static inline int clear_extent_uptodate(struct extent_io_tree *tree, u64 start,
- static inline int set_extent_dirty(struct extent_io_tree *tree, u64 start,
- 		u64 end, gfp_t mask)
- {
--	return set_extent_bit(tree, start, end, EXTENT_DIRTY, NULL, mask);
-+	return set_extent_bit(tree, start, end, EXTENT_DIRTY, 0, NULL, NULL,
-+			      mask, NULL);
- }
+> - After the bio_for_each_segment_all() loop ends
+>   This is the normal call sites where we iterated all bvecs of a bio,
+>   and all pages should be contiguous, thus we can call
+>   endio_readpage_release_extent() on the full range.
+> 
+> The original code has also considered cases like (!uptodate), so it will
+> mark the uptodate range with EXTENT_UPTODATE.
+> 
+> So this patch will remove the extent_start/extent_len dancing, replace
+> it with regular endio_readpage_release_extent() call on each bvec.
+> 
+> This brings one behavior change:
+> - Temporary memory usage increase
+>   Unlike the old call which only modify the extent tree once, now we
+>   update the extent tree for each bvec.
 
- static inline int clear_extent_dirty(struct extent_io_tree *tree, u64 start,
-@@ -195,7 +199,7 @@ static inline int set_extent_delalloc(struct extent_io_tree *tree, u64 start,
- {
- 	return set_extent_bit(tree, start, end,
- 			      EXTENT_DELALLOC | EXTENT_UPTODATE | extra_bits,
--			      cached_state, GFP_NOFS);
-+			      0, NULL, cached_state, GFP_NOFS, NULL);
- }
+I suspect for large bios with a lot of bvecs this would likely increase
+latency because we will now invoke endio_readpage_release_extent
+proportionally to the number of bvecs.
 
- static inline int set_extent_defrag(struct extent_io_tree *tree, u64 start,
-@@ -203,20 +207,21 @@ static inline int set_extent_defrag(struct extent_io_tree *tree, u64 start,
- {
- 	return set_extent_bit(tree, start, end,
- 			      EXTENT_DELALLOC | EXTENT_UPTODATE | EXTENT_DEFRAG,
--			      cached_state, GFP_NOFS);
-+			      0, NULL, cached_state, GFP_NOFS, NULL);
- }
+> 
+>   Although the end result is the same, since we may need more extent
+>   state split/allocation, we need more temporary memory during that
+>   bvec iteration.
 
- static inline int set_extent_new(struct extent_io_tree *tree, u64 start,
- 		u64 end)
- {
--	return set_extent_bit(tree, start, end, EXTENT_NEW, NULL, GFP_NOFS);
-+	return set_extent_bit(tree, start, end, EXTENT_NEW, 0, NULL, NULL,
-+			GFP_NOFS, NULL);
- }
+Also bear in mind that this happens in a critical endio context, which
+uses GFP_ATOMIC allocations so if we get ENOSPC it would be rather bad.
 
- static inline int set_extent_uptodate(struct extent_io_tree *tree, u64 start,
- 		u64 end, struct extent_state **cached_state, gfp_t mask)
- {
--	return set_extent_bit(tree, start, end, EXTENT_UPTODATE,
--			      cached_state, mask);
-+	return set_extent_bit(tree, start, end, EXTENT_UPTODATE, 0, NULL,
-+			      cached_state, mask, NULL);
- }
+> 
+> But considering how streamline the new code is, the temporary memory
+> usage increase should be acceptable.
 
- int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index f3515d3c1321..ec76f76acd06 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -962,11 +962,11 @@ static void cache_state(struct extent_state *state,
-  * [start, end] is inclusive This takes the tree lock.
-  */
+I definitely like the new code however without quantifying what's the
+increase of number of calls of endio_readpage_release_extent I'd rather
+not merge it.
 
--static int __must_check
--__set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		 unsigned bits, unsigned exclusive_bits,
--		 u64 *failed_start, struct extent_state **cached_state,
--		 gfp_t mask, struct extent_changeset *changeset)
-+int __must_check
-+set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end, unsigned bits,
-+	       unsigned exclusive_bits, u64 *failed_start,
-+	       struct extent_state **cached_state, gfp_t mask,
-+	       struct extent_changeset *changeset)
- {
- 	struct extent_state *state;
- 	struct extent_state *prealloc = NULL;
-@@ -1183,14 +1183,6 @@ __set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+On a different note, one minor cleanup that could be done is replace all
+those "end + 1 - start" expressions with simply "len" as this is
+effectively the length of the current bvec.
 
- }
-
--int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
--		   unsigned bits, struct extent_state **cached_state, gfp_t mask)
--{
--	return __set_extent_bit(tree, start, end, bits, 0, NULL, cached_state,
--			        mask, NULL);
--}
--
--
- /**
-  * convert_extent_bit - convert all bits in a given range from one bit to
-  * 			another
-@@ -1421,14 +1413,14 @@ int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 	 */
- 	BUG_ON(bits & EXTENT_LOCKED);
-
--	return __set_extent_bit(tree, start, end, bits, 0, NULL, NULL, GFP_NOFS,
-+	return set_extent_bit(tree, start, end, bits, 0, NULL, NULL, GFP_NOFS,
- 				changeset);
- }
-
- int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
- 			   unsigned bits)
- {
--	return __set_extent_bit(tree, start, end, bits, 0, NULL, NULL,
-+	return set_extent_bit(tree, start, end, bits, 0, NULL, NULL,
- 				GFP_NOWAIT, NULL);
- }
-
-@@ -1464,9 +1456,9 @@ int lock_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
- 	u64 failed_start;
-
- 	while (1) {
--		err = __set_extent_bit(tree, start, end, EXTENT_LOCKED,
--				       EXTENT_LOCKED, &failed_start,
--				       cached_state, GFP_NOFS, NULL);
-+		err = set_extent_bit(tree, start, end, EXTENT_LOCKED,
-+				     EXTENT_LOCKED, &failed_start,
-+				     cached_state, GFP_NOFS, NULL);
- 		if (err == -EEXIST) {
- 			wait_extent_bit(tree, failed_start, end, EXTENT_LOCKED);
- 			start = failed_start;
-@@ -1482,8 +1474,8 @@ int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end)
- 	int err;
- 	u64 failed_start;
-
--	err = __set_extent_bit(tree, start, end, EXTENT_LOCKED, EXTENT_LOCKED,
--			       &failed_start, NULL, GFP_NOFS, NULL);
-+	err = set_extent_bit(tree, start, end, EXTENT_LOCKED, EXTENT_LOCKED,
-+			     &failed_start, NULL, GFP_NOFS, NULL);
- 	if (err == -EEXIST) {
- 		if (failed_start > start)
- 			clear_extent_bit(tree, start, failed_start - 1,
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 26d1cb8a8623..c153e3aba177 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -481,7 +481,8 @@ static int btrfs_find_new_delalloc_bytes(struct btrfs_inode *inode,
-
- 		ret = set_extent_bit(&inode->io_tree, search_start,
- 				     search_start + em_len - 1,
--				     EXTENT_DELALLOC_NEW, cached_state, GFP_NOFS);
-+				     EXTENT_DELALLOC_NEW, 0,
-+				     NULL, cached_state, GFP_NOFS, NULL);
- next:
- 		search_start = extent_map_end(em);
- 		free_extent_map(em);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 3b5e73e8dffb..1ff87d1888dc 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4655,7 +4655,7 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
-
- 	if (only_release_metadata)
- 		set_extent_bit(io_tree, block_start, block_end,
--			       EXTENT_NORESERVE, NULL, NULL, GFP_NOFS);
-+			       EXTENT_NORESERVE, 0, NULL, NULL, GFP_NOFS, NULL);
-
- out_unlock:
- 	if (ret) {
---
-2.25.1
-
+<snip>
