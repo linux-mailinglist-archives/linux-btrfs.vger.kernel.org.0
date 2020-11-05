@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D8A2A81BA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 16:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148842A81CA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 16:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbgKEPBd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 10:01:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39790 "EHLO mx2.suse.de"
+        id S1731125AbgKEPDw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 10:03:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41370 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730938AbgKEPBc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:01:32 -0500
+        id S1730465AbgKEPDv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 10:03:51 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604588491;
+        t=1604588630;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=3DGvU1EjLdbAo1XZAwjj7FH0lXGvs5nIEXabxeMB5YE=;
-        b=C2EASa61fA70dJYzIm2Df0hdzyeQoq3ffE4wMnc5H9xpPiCLmt0b/LXZRL3KIokkfVkcIg
-        iMD18I3Y0PfLhAxUgdF4ggmev9GyIUJjuhUHgcsnkuIFY9sE17ghSr1fL0/dPxjY4IAmDl
-        +almp/YPkd9mcxYV9g5fYLAZBoZy+js=
+        bh=IrthLEPJSo8wynTfkgfpXAj8luWi7qTkjOVx124cDOw=;
+        b=U03vYUzY8uIz4gTA3f2KQE3dNq2j++e0BeG4N8C0yku9mh5kI9b8uSXUTbHMR6mjZXV8kU
+        sAd7vzQmsnHH98888slY2PbQK+OzVkxBV60xxWOC82Ne47psRoh0s8N1rHxSdEAl2e9Hp4
+        1fr02TMRRXMq99YfnnzJHcQtn+VJU4k=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 49791ABD1;
-        Thu,  5 Nov 2020 15:01:31 +0000 (UTC)
-Subject: Re: [PATCH 15/32] btrfs: introduce a helper to determine if the
- sectorsize is smaller than PAGE_SIZE
+        by mx2.suse.de (Postfix) with ESMTP id 13387AAF1;
+        Thu,  5 Nov 2020 15:03:50 +0000 (UTC)
+Subject: Re: [PATCH 16/32] btrfs: extent_io: allow find_first_extent_bit() to
+ find a range with exact bits match
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-16-wqu@suse.com>
+ <20201103133108.148112-17-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <0eb2c642-f0df-a899-388d-2e1d9db6e5ae@suse.com>
-Date:   Thu, 5 Nov 2020 17:01:30 +0200
+Message-ID: <7ea00bd2-73c2-130d-3e8a-f721a0a7af2b@suse.com>
+Date:   Thu, 5 Nov 2020 17:03:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-16-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-17-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,34 +89,24 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> Just to save us several letters for the incoming patches.
+> Currently if we pass mutliple @bits to find_first_extent_bit(), it will
+> return the first range with one or more bits matching @bits.
+> 
+> This is fine for current code, since most of them are just doing their
+> own extra checks, and all existing callers only call it with 1 or 2
+> bits.
+> 
+> But for the incoming subpage support, we want the ability to return range
+> with exact match, so that caller can skip some extra checks.
+> 
+> So this patch will add a new bool parameter, @exact_match, to
+> find_first_extent_bit() and its callees.
+> Currently all callers just pass 'false' to the new parameter, thus no
+> functional change is introduced.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/ctree.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index b46eecf882a1..a08cf6545a82 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3607,6 +3607,11 @@ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
->  	return signal_pending(current);
->  }
->  
-> +static inline bool btrfs_is_subpage(struct btrfs_fs_info *fs_info)
-> +{
-> +	return (fs_info->sectorsize < PAGE_SIZE);
-> +}
 
-This is conceptually wrong. The filesystem shouldn't care whether we are
-diong subpage blocksize io or not. I.e it should be implemented in such
-a way so that everything " just works". All calculation should be
-performed based on the fs_info::sectorsize and we shouldn't care what
-the value of PAGE_SIZE is. The central piece becomes sectorsize.
-
-> +
->  #define in_range(b, first, len) ((b) >= (first) && (b) < (first) + (len))
->  
->  /* Sanity test specific functions */
-> 
+What's the problem of callers doing their own checks, given every one
+will have different requirements? The interface should be generic enough
+to satisfy every user and then any specific processing should be
+performed by the respective user.
