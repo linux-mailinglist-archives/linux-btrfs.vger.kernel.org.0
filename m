@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EE32A8023
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 14:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741F92A8084
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 15:14:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730845AbgKEN5Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 08:57:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41908 "EHLO mx2.suse.de"
+        id S1730687AbgKEON7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 09:13:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54640 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730687AbgKEN5Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:57:16 -0500
+        id S1729113AbgKEON6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:13:58 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604584635;
+        t=1604585637;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=GIxSyqFgdOjMpLNivFHvyCQylM9AnHkUrwB1O127WbU=;
-        b=YHmn4rNx9GKSKb6npPI6BtDbEjSSxcmYBmTM3eAX62Imr8nlmM2yiEoWQZAjNQc6K6L/l8
-        PE9ppPZFrqsc7Gjnin5OAG/BfpbXdBXBvuSc9EFCYVHlnm0C8xpFzSZJZyoO/x+rIrUUMr
-        uzJj1mMaN8gkBgS1hsqX1OH72vEoATY=
+        bh=qD6UZkUQJgTdpPLAExdSY5+JUiVYfnccsmF8SnAEJoE=;
+        b=Ig5+ReWFnmqKdtEKsjEqXTBShOF7dhNLM1r7mNA7GIyXtzp0wk58kO8l0lGSXzeS9Yfbk6
+        6seRpRry1BzHWUQPgm1YI0MF8oAp5Cfq7Vpy2GJEgzlO/CwF7rkYp9W7rui1lP1+Pmsh/A
+        zOgIFsmvkwcyQGtgjV4I49EjV0H42SE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 00D2BAAF1;
-        Thu,  5 Nov 2020 13:57:14 +0000 (UTC)
-Subject: Re: [PATCH 12/32] btrfs: disk-io: extract the extent buffer
- verification from btrfs_validate_metadata_buffer()
+        by mx2.suse.de (Postfix) with ESMTP id 32751AAF1;
+        Thu,  5 Nov 2020 14:13:57 +0000 (UTC)
+Subject: Re: [PATCH 13/32] btrfs: disk-io: accept bvec directly for
+ csum_dirty_buffer()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-13-wqu@suse.com>
+ <20201103133108.148112-14-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <15477e44-e15d-9b8b-634a-d300d3c82d84@suse.com>
-Date:   Thu, 5 Nov 2020 15:57:14 +0200
+Message-ID: <8aef23aa-32eb-2b2f-6268-e8908c43bd65@suse.com>
+Date:   Thu, 5 Nov 2020 16:13:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-13-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-14-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,56 +89,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> Currently btrfs_validate_metadata_buffer() only needs to handle one extent
-> buffer as currently one page only maps to one extent buffer.
+> Currently csum_dirty_buffer() uses page to grab extent buffer, but that
+> only works for regular sector size == PAGE_SIZE case.
 > 
-> But for incoming subpage support, one page can be mapped to multiple
-> extent buffers, thus we can no longer use current code.
+> For subpage we need page + page_offset to grab extent buffer.
 > 
-> This refactor would allow us to call validate_extent_buffer() on
-> all involved extent buffers at btrfs_validate_metadata_buffer() and other
-> locations.
+> This patch will change csum_dirty_buffer() to accept bvec directly so
+> that we can extract both page and page_offset for later subpage support.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Looks ok, however 2 minor nits below in any case:
-
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->  fs/btrfs/disk-io.c | 78 +++++++++++++++++++++++++---------------------
->  1 file changed, 43 insertions(+), 35 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 9a72cb5ef31e..de9132564f10 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -524,60 +524,35 @@ static int check_tree_block_fsid(struct extent_buffer *eb)
->  	return 1;
->  }
->  
-
-<snip>
-
-> +
-> +int btrfs_validate_metadata_buffer(struct btrfs_io_bio *io_bio, u64 phy_offset,
-> +				   struct page *page, u64 start, u64 end,
-> +				   int mirror)
-> +{
-> +	struct extent_buffer *eb;
-> +	int ret = 0;
-> +	int reads_done;
-> +
-> +	if (!page->private)
-> +		goto out;
-> +
-
-nit:I think this is redundant since metadata pages always have their eb
-attached at ->private.
-
-> +	eb = (struct extent_buffer *)page->private;
-
-If the above check is removed then this line can be moved right next to
-eb's definition.
-
-<snip>
