@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A589E2A861C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 19:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5279C2A8632
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 19:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbgKES3R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 13:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
+        id S1731799AbgKESjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 13:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKES3R (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 13:29:17 -0500
+        with ESMTP id S1731740AbgKESjd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 13:39:33 -0500
 Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A23C0613CF
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 10:29:15 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id 12so2094638qkl.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 10:29:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F31DC0613CF
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 10:39:33 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id h15so269536qkl.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 10:39:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=DU4DkwGWJf7f38OBQ6CNv+cBvGZEPRo+TkkHlUqdZ70=;
-        b=Rl7cCDctpPInymeI12gGFrUGySt5+22X8mV+/BoAIe6XhhOv+l2iq9zeuG0/DmWotg
-         ERNdUOV21OXJHkhpcLQqnlC8IoQwpJJOsS8VRpPTVQ0USPyjfoUnPpctbjIrvLzQo7KT
-         vziqHuR6W9Ji3Y/Ztxfu1qixXZ59ADwzuCz4HMQ9ry3Yy4mF1bTneWPLgQjL1wAH3SvF
-         K0DD9Be5svYY5j/AtyEHr6IDNN8YsSDYor4DHQJq+Cxc+eVlC8Uj7OmtEElz+D8DScQq
-         NQnwag67CHEa2ZjZCKhpwEF57S8cX0/kocNPgucKji0Ke8M7ag2L0K9vhgyKIVgYNeBb
-         9qQA==
+        bh=SDyzkoxjlFVIHJNh+9GbsKTM8185sF/pSKE9oDStsn0=;
+        b=GlNL13gj8ZRCGh0v0Ovz2jLeovtyEfQf499eRLmIAl/KF/XhdK+y/6zP241biDjjnM
+         xEUrjP7K0VjYZ+OR8CQFH9xjkCo98V9Q364g938P/lp46PnY7KlfpHkV5U/vkfJUW+9+
+         FLvSMt0UTtulZG+0HyLBBW35lYrHeYMQZIOTL/uzdUBGhi65zc8uC+TkBK2JMkaleyMO
+         dNCK3E8JgdffvYciiFoUIsd69JBcJgy6azwxoPS24mQcwvxbuqQPlJMEskWNvKVXn0QN
+         YUiPJNiMngPngtxScaq2zcB6P50MecvScYM4E1YympqNRxde8AkhRGJWDx6yvw1sWMXd
+         0uhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=DU4DkwGWJf7f38OBQ6CNv+cBvGZEPRo+TkkHlUqdZ70=;
-        b=XnH5D99FiwQDzRpbSkwmdvv5cO0zzFJfWnDbOILlbFmYFQvdQFw2v2jTnFcZb6wbrv
-         1Vv5zG/aHEMI+N6hiipfKiLyRTRyFNF6PfANEC69t7Geb3VpLam4wfVUWN+6w65G//8S
-         z63ALD8Lf6ZwJlkLqPXuW4vQujxd8LzGSXKS14OXcQINPTKglQB7o3RvkcZ7tGaEs0mo
-         cXBS0dDgCORokbCDHc3wdXuvaq9vMnrDwdCX1RzPrLA2wW6EprnzeFi+VTAuSr1fHkay
-         JJcWv91AqfR8RNWwxkIlqFY+Sbf64HNhkDZ6x3wDNg34IdVos9JRWDebGZPRbsjtubbb
-         Y9Yg==
-X-Gm-Message-State: AOAM532TJ6r8RGM8VUUuIv1RfyDTJjpQrF8A9E0uNRdLQYzrL2oJFiKt
-        3e+Cdhf01mHe/jOXx2O05fbcw25DM8lRbFGK
-X-Google-Smtp-Source: ABdhPJz5HAV8YkDdQ21kAnPs4ZiQ9E/5r9xMBHcb3rGEvgDPr1jt0XuNMc6h4a27T8cZJKO7jcqQEA==
-X-Received: by 2002:a37:a857:: with SMTP id r84mr3498184qke.11.1604600954360;
-        Thu, 05 Nov 2020 10:29:14 -0800 (PST)
+        bh=SDyzkoxjlFVIHJNh+9GbsKTM8185sF/pSKE9oDStsn0=;
+        b=E5MMUp0X+DwX6con80kpiJusZ8rjbx0DOJ05+cOxfqIGqxl6WRqFxKG0mLME7/ifqR
+         iKq6iruZ/gJlaXhOEUK+r+c8MOG62fWK7jCrt9JfJ2HvDsBDka3HLsUllMWRwZPYi/fk
+         UxpfnUdCqSCCcQ/cNjfrs4CVlEnKi7DW/RhGQytm1pMPTcKKDwTv5Y+ikX31+OMYH7E/
+         ebugcPl8PL6/cIA+Tul2VIMacemNrfU488fkETULhpT0Wj4t5L59BNq5LzovuqWcbHxz
+         BdTiqNf/ZUjiOlUHpF1h3tdwDHzVq0nFVkVuc5wZA1ev6vZSFPvBntzdim7cmYpJ6bbV
+         l7Pw==
+X-Gm-Message-State: AOAM531XyZM4KGmnwzaOSSoJON55a1nJx8MlTORtR59MVkcdRZBUcDGJ
+        uhfinerEh6/P9zgodvxC91CvCpnRfgF+qD57
+X-Google-Smtp-Source: ABdhPJxntmQFeoMRh0R3hZjLLC6AcoUAfRZgTncEQlI2L3pDFFRMXedcmYbvLFm2lw+PzUk4CMPK1g==
+X-Received: by 2002:a37:4ca:: with SMTP id 193mr3498104qke.346.1604601571999;
+        Thu, 05 Nov 2020 10:39:31 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p48sm1142649qtp.67.2020.11.05.10.29.13
+        by smtp.gmail.com with ESMTPSA id l14sm1455066qti.34.2020.11.05.10.39.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 10:29:13 -0800 (PST)
-Subject: Re: [PATCH 1/4] btrfs: fix missing delalloc new bit for new delalloc
- ranges
+        Thu, 05 Nov 2020 10:39:31 -0800 (PST)
+Subject: Re: [PATCH 2/4] btrfs: refactor btrfs_drop_extents() to make it
+ easier to extend
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1604486892.git.fdmanana@suse.com>
- <7f215e2509aa557504a5d352ff4371f2e2606f59.1604486892.git.fdmanana@suse.com>
+ <e18124431f5c0617dd0c2fcd16e2b439b32193cb.1604486892.git.fdmanana@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <196ad815-4fd4-6218-83a2-0c5f44ce3940@toxicpanda.com>
-Date:   Thu, 5 Nov 2020 13:29:12 -0500
+Message-ID: <178a832e-90ec-4a4e-1953-224b55f4de49@toxicpanda.com>
+Date:   Thu, 5 Nov 2020 13:39:30 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <7f215e2509aa557504a5d352ff4371f2e2606f59.1604486892.git.fdmanana@suse.com>
+In-Reply-To: <e18124431f5c0617dd0c2fcd16e2b439b32193cb.1604486892.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,77 +70,24 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 11/4/20 6:07 AM, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> When doing a buffered write, through one of the write family syscalls, we
-> look for ranges which currenly don't have allocated extents and set the
-> 'delalloc new' bit on them, so that we can report a correct number of used
-> blocks to the stat(2) syscall until delalloc is flushed and ordered extents
-> complete.
+> There are many arguments for __btrfs_drop_extents() and its wrapper
+> btrfs_drop_extents(), which makes it hard to add more arguments to it and
+> requires changing every caller. I have added a couple myself back in 2014
+> commit 1acae57b161e ("Btrfs: faster file extent item replace operations")
+> and therefore know firsthand that it is a bit cumbersome to add additional
+> arguments to these functions.
 > 
-> However there are a few other places where we can do a buffered write
-> against a range that is mapped to a hole (no extent allocated) and where
-> we do not set the 'new delalloc' bit. Those places are:
+> Since I will need to add more arguments in a subsequent bug fix, this
+> change is preparatory work and adds a data structure that holds all the
+> arguments, for both input and output, that are passed to this function,
+> with some comments in the structure's definition mentioning what each
+> field is and how it relates to other fields.
 > 
-> - Doing a memory mapped write against a hole;
-> 
-> - Cloning an inline extent into a hole starting at file offset 0;
-> 
-> - Calling btrfs_cont_expand() when the i_size of the file is not aligned
->    to the sector size and is located in a hole. For example when cloning
->    to a destination offset beyond eof.
-> 
-> So after such cases, until the corresponding delalloc range is flushed and
-> the respective ordered extents complete, we can report an incorrect number
-> of blocks used through the stat(2) syscall.
-> 
-> In some cases we can end up reporting 0 used blocks to stat(2), which is a
-> particular bad value to report as it may mislead tools to think a file is
-> completely sparse when its i_size is not zero, making them skip reading
-> any data, an undesired consequence for tools such as archivers and other
-> backup tools, as reported a long time ago in the following thread (and
-> other past threads):
-> 
->    https://lists.gnu.org/archive/html/bug-tar/2016-07/msg00001.html
-> 
-> Example reproducer:
-> 
->    $ cat reproducer.sh
->    #!/bin/bash
-> 
->    MNT=/mnt/sdi
->    DEV=/dev/sdi
-> 
->    mkfs.btrfs -f $DEV > /dev/null
->    # mkfs.xfs -f $DEV > /dev/null
->    # mkfs.ext4 -F $DEV > /dev/null
->    # mkfs.f2fs -f $DEV > /dev/null
->    mount $DEV $MNT
-> 
->    xfs_io -f -c "truncate 64K"   \
->        -c "mmap -w 0 64K"        \
->        -c "mwrite -S 0xab 0 64K" \
->        -c "munmap"               \
->        $MNT/foo
-> 
->    blocks_used=$(stat -c %b $MNT/foo)
->    echo "blocks used: $blocks_used"
-> 
->    if [ $blocks_used -eq 0 ]; then
->        echo "ERROR: blocks used is 0"
->    fi
-> 
->    umount $DEV
-> 
->    $ ./reproducer.sh
->    blocks used: 0
->    ERROR: blocks used is 0
-> 
-> So move the logic that decides to set the 'delalloc bit' bit into the
-> function btrfs_set_extent_delalloc(), since that is what we use for all
-> those missing cases as well as for the cases that currently work well.
-> 
-> This change is also preparatory work for an upcoming patch that fixes
-> other problems related to tracking and reporting the number of bytes used
-> by an inode.
+> Callers of this function need only to zero out the content of the
+> structure and setup only the fields they need. This also removes the
+> need to have both __btrfs_drop_extents() and btrfs_drop_extents(), so
+> now we have a single function named btrfs_drop_extents() that takes a
+> pointer to this new data structure (struct btrfs_drop_extents_args).
 > 
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
