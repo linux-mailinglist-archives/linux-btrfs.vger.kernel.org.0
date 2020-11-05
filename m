@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4162A7BF1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 11:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35E62A7C1D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 11:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgKEKfe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 05:35:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37586 "EHLO mx2.suse.de"
+        id S1726874AbgKEKrf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 05:47:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43612 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728416AbgKEKfd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:35:33 -0500
+        id S1725827AbgKEKrf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:47:35 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604572532;
+        t=1604573253;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=UARfBGOrW4JDVZfkldR3aqfoXCMRv1D/1k9Gu9QQ8MM=;
-        b=j1FmytbWPIN80rWoidmCjBKnUmILVpUgpQXHZNz2a8Bkh5gSBda6c9KJfVQ9i+k55DuF+x
-        mGa6jg/gBK6PnShz9DytwFrB1vG9YckFyvnVNyKuoLBed9fzqUVL3K/4n5P+IoE357KwIM
-        7Cp53t1BlWY7V1eRYzxs0YbNwBzCl0A=
+        bh=y4SoYt1MmICaXpx7n0fi/Uwt2JFQJTIvs71vM0DJTYQ=;
+        b=ZGGNBMjvzj+qv5C6yDmE+LF2Q+NoH8O/1pVH7voE2JNDvUnK7MLM/6Ox7zpoYlb0UQFJWx
+        vijsz8H1U+7N9ZheUP+EjpphKqs13hU9N4q5XE4f9gEaDdOALDaCJTL4ESHspB0UxmbVvR
+        v99waFsmks5L4iRcrIhIShFjj0QkwWE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17A9FAB95;
-        Thu,  5 Nov 2020 10:35:32 +0000 (UTC)
-Subject: Re: [PATCH 02/32] btrfs: extent_io: integrate page status update into
- endio_readpage_release_extent()
+        by mx2.suse.de (Postfix) with ESMTP id B32ABAB95;
+        Thu,  5 Nov 2020 10:47:33 +0000 (UTC)
+Subject: Re: [PATCH 04/32] btrfs: extent_io: extract the btree page submission
+ code into its own helper function
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-3-wqu@suse.com>
+ <20201103133108.148112-5-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -74,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <17f71e81-6cb4-d37e-2915-1f5e0fb2ab59@suse.com>
-Date:   Thu, 5 Nov 2020 12:35:31 +0200
+Message-ID: <ebd6ebca-f050-8cd2-baaf-303858b59d03@suse.com>
+Date:   Thu, 5 Nov 2020 12:47:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-3-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-5-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -90,76 +90,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> In end_bio_extent_readpage(), we set page uptodate or error according to
-> the bio status.  However that assumes all submitted reads are in page
-> size.
+> In btree_write_cache_pages() we have a btree page submission routine
+> buried deeply into a nested loop.
 > 
-> To support case like subpage read, we should only set the whole page
-> uptodate if all data in the page have been read from disk.
+> This patch will extract that part of code into a helper function,
+> submit_btree_page(), to do the same work.
 > 
-> This patch will integrate the page status update into
-> endio_readpage_release_extent() for end_bio_extent_readpage().
-> 
-> Now in endio_readpage_release_extent() we will set the page uptodate if:
-> 
-> - start/end range covers the full page
->   This is the existing behavior already.
-> 
-> - the whole page range is already uptodate
->   This adds the support for subpage read.
-> 
-> And for the error path, we always clear the page uptodate and set the
-> page error.
+> Also, since submit_btree_page() now can return >0 for successfull extent
+> buffer submission, remove the "ASSERT(ret <= 0);" line.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
->  fs/btrfs/extent_io.c | 38 ++++++++++++++++++++++++++++----------
->  1 file changed, 28 insertions(+), 10 deletions(-)
+>  fs/btrfs/extent_io.c | 116 +++++++++++++++++++++++++------------------
+>  1 file changed, 69 insertions(+), 47 deletions(-)
 > 
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 58dc55e1429d..228bf0c5f7a0 100644
+> index 9cbce0b74db7..ac396d8937b9 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -2779,13 +2779,35 @@ static void end_bio_extent_writepage(struct bio *bio)
->  	bio_put(bio);
+> @@ -3935,10 +3935,75 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
+>  	return ret;
 >  }
 >  
-> -static void endio_readpage_release_extent(struct extent_io_tree *tree, u64 start,
-> -					  u64 end, int uptodate)
-> +static void endio_readpage_release_extent(struct extent_io_tree *tree,
-> +		struct page *page, u64 start, u64 end, int uptodate)
->  {
->  	struct extent_state *cached = NULL;
->  
-> -	if (uptodate && tree->track_uptodate)
-> -		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
-> +	if (uptodate) {
-> +		u64 page_start = page_offset(page);
-> +		u64 page_end = page_offset(page) + PAGE_SIZE - 1;
-> +
-> +		if (tree->track_uptodate) {
-> +			/*
-> +			 * The tree has EXTENT_UPTODATE bit tracking, update
-> +			 * extent io tree, and use it to update the page if
-> +			 * needed.
-> +			 */
-> +			set_extent_uptodate(tree, start, end, &cached, GFP_NOFS);
-> +			check_page_uptodate(tree, page);
-> +		} else if (start <= page_start && end >= page_end) {
-> +			/* We have covered the full page, set it uptodate */
-> +			SetPageUptodate(page);
-> +		}
-> +	} else if (!uptodate){
-> +		if (tree->track_uptodate)
-> +			clear_extent_uptodate(tree, start, end, &cached);
+> +/*
+> + * A helper to submit a btree page.
+> + *
+> + * This function is not always submitting the page, as we only submit the full
+> + * extent buffer in a batch.
+> + *
+> + * @page:	The btree page
+> + * @prev_eb:	Previous extent buffer, to determine if we need to submit
+> + * 		this page.
+> + *
 
-Hm, that call to clear_extent_uptodate was absent before, so either:
+nit: Add all parameters.
 
-a) The old code is buggy since it misses it
-b) this will be a nullop because we have just read the extent and we
-haven't really set it to uptodate so there won't be anything to clear?
+> + * Return >0 if we have submitted the extent buffer successfully.
+> + * Return 0 if we don't need to do anything for the page.
+> + * Return <0 for fatal error.
+> + */
+> +static int submit_btree_page(struct page *page, struct writeback_control *wbc,
+> +			     struct extent_page_data *epd,
+> +			     struct extent_buffer **prev_eb)
 
-Which is it?
+Rename prev_eb to eb_context/eb_ctx or simply eb. That's not really
+"previous", we essentially want to skip all but first page of an eb
+since we anyway iterate all pages in write_one_eb. I guess this could be
+described as part of the argument's documentation.
 
 <snip>
+
