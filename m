@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6557D2A874B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 20:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A492A8779
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 20:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731694AbgKETed (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 14:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
+        id S1731149AbgKETkd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 14:40:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgKETed (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 14:34:33 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FDAC0613CF
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 11:34:33 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id k9so2307664qki.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 11:34:33 -0800 (PST)
+        with ESMTP id S1726729AbgKETkc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 14:40:32 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31506C0613CF
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Nov 2020 11:40:31 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id m14so1955069qtc.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Nov 2020 11:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hk3RmtGhjOh+j0Wok6Amuv9aBYx4sqQZnq0m/Zgaw1M=;
-        b=inhHxuKQs0mI/DeJOAqvuBFgy4qDkrHfGb/686te2B4p2LhY6pQFo6rD3+i4adByhA
-         eiASYgB9v8mBqfmiV7OpBuLszlDvEsUnqTXC5HVtwOs5gYAgSSnHBKEqndBYF884yTtX
-         SGsQS70QIoBWEL67x/zroQrX+1yXPSVw7H49bmAhU1/D71DDRJvPqh0wBT5AqfsoXI/R
-         YI3JbvJ8Yjdcvn1dRTsahh2vRXtG+3nxxt5xJ34yZV4cvdaTz7z9ttQU8bYqu1l6ZOC7
-         5TcILO8sfZ28xepaC4weML5vx570W8h/j1PmYm3cS905NXtO9iBXtLn6fGuhAXdgr5yp
-         Hqag==
+        bh=hNIV18bMUgD527Cm6blvDQgcfup0MgPuR/cmLBuQJds=;
+        b=ACKHNs0OyXrPPx9swcqKt6OiBv/eLs8fKPB8vlUc4eI4mtUYvCbQuKGcU2s+V3OFkw
+         Wnw6EFUBgefcwuemwwSBPXIXMD/qtU9JbGqUYKhVH/l/pGPCq80Dav3XSoilD2Jvd/dJ
+         lGUBSRbrtUxNKpIzChZaJr2nzP17ba7doPZaTQ9s3n2o0iTiRxe1kLZCuHdIBdIm2rmg
+         HT6njXDB2txDYWLCJSWnA88bcUrY0bgE8aK9MAZ8PdDtn5Z1UAqHGBoFukysEbmURl4e
+         38mYfzn4N1/my/WO5NGamlRPvYOqyylZp1oi9VBklAPXrL/cDvsxiQIHkyDNKK7Z5pDn
+         BF8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hk3RmtGhjOh+j0Wok6Amuv9aBYx4sqQZnq0m/Zgaw1M=;
-        b=oJ3qlrfD8nbrkO4anTBKUyIc2bcR+9wgFX451vFh3dIOle95/lrSU3VeGsUDoPttAO
-         KV2TobIBUOCMMa6JivhMRSjTACFQKjkiDCM2FLlm8Vjkoyz+nixVntduqClnEya4KfV6
-         c5BaecL2d2upxzhh6gZJvH5Ws29a8rxtg1RkzDmgpkrMQ9u4w82V0kXjLul1eBjEyS8c
-         oj5efx2GpXk6/8LcmgMVKUpU7xO5wf46+fFUAMux5p05IOn0FKOPB5RNltrrsuTgynIb
-         16DWMcIalNk4k3E1dCb4eqWOhAB4EXmTKDCePolQ0g5VCpTe6vjjgqsKV8vqvwMhxn4c
-         oiAQ==
-X-Gm-Message-State: AOAM531fJmsZI06G6paoh0lL7D4vDaIW/kzRBEdFUwxBo6+FDZ3bxjjO
-        Fq5KbJydzGsk4pWvFEtAn8YeuQ==
-X-Google-Smtp-Source: ABdhPJyI8z9jKnZTnFsSXj5ykjnbTONCmzyHQhVDlhmsQ99fuf4Zkme0D68O0EWbXU9VHGwZUmRcpQ==
-X-Received: by 2002:ae9:e709:: with SMTP id m9mr3517384qka.397.1604604872531;
-        Thu, 05 Nov 2020 11:34:32 -0800 (PST)
+        bh=hNIV18bMUgD527Cm6blvDQgcfup0MgPuR/cmLBuQJds=;
+        b=UxGmulgAkU0T4dhdOZfMSowI2Ut13vQy0pPJE8ErGnNdNpNbGISIdifwTpg/oWpBcm
+         VlJTil0v0mRS2kRDuEtinLtG2MVoUuJb9JLGG4fR3LodLmHOKyrv61kLG8WfYBMEsoBw
+         mqpOoGhrAQ53iviEjEYM1CEzLBU4mDcngQYEwZyW2jck0n4j+W7rhwVb9V+R8ti/9i+J
+         2ICZrAPgWi0MwG+XlK0BAVDFtREafwZZcCUF+3MSFXr7CgJdcPdzGp8RY8feijBdc0mq
+         7/eTVcxfuvXqakGNcctLje99zKtABMRP/tNwfwhKZdKdZ5aITj6Te0HCBG8zbse8PMQ7
+         GZKA==
+X-Gm-Message-State: AOAM532P375dTTTt1oeCbQC+OCSbw8Gv5W9oyREMuTC/niwlM5nryCAT
+        FATFai/2EGW7vcHmp5SXU6ka5Q==
+X-Google-Smtp-Source: ABdhPJwOy6modLeJ1cLRoeRRp0Pe4iLuWoZ63Bs9elyMFZxqO7h40wl/2DYJxINNkA6D5A8lyESvHw==
+X-Received: by 2002:aed:3b5d:: with SMTP id q29mr3397948qte.91.1604605230284;
+        Thu, 05 Nov 2020 11:40:30 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p8sm1619785qtc.37.2020.11.05.11.34.31
+        by smtp.gmail.com with ESMTPSA id x5sm1689854qkf.44.2020.11.05.11.40.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 11:34:31 -0800 (PST)
-Subject: Re: [PATCH 02/32] btrfs: extent_io: integrate page status update into
- endio_readpage_release_extent()
+        Thu, 05 Nov 2020 11:40:28 -0800 (PST)
+Subject: Re: [PATCH 01/32] btrfs: extent_io: remove the
+ extent_start/extent_len for end_bio_extent_readpage()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-3-wqu@suse.com>
+ <20201103133108.148112-2-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <84f5a26d-467b-f05d-decb-441a46df62d0@toxicpanda.com>
-Date:   Thu, 5 Nov 2020 14:34:30 -0500
+Message-ID: <08947273-050d-8f44-5cf3-9c980f0906a6@toxicpanda.com>
+Date:   Thu, 5 Nov 2020 14:40:27 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-3-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,85 +69,84 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 11/3/20 8:30 AM, Qu Wenruo wrote:
-> In end_bio_extent_readpage(), we set page uptodate or error according to
-> the bio status.  However that assumes all submitted reads are in page
-> size.
+> In end_bio_extent_readpage() we had a strange dance around
+> extent_start/extent_len.
 > 
-> To support case like subpage read, we should only set the whole page
-> uptodate if all data in the page have been read from disk.
+> Hides behind the strange dance is, it's just calling
+> endio_readpage_release_extent() on each bvec range.
 > 
-> This patch will integrate the page status update into
-> endio_readpage_release_extent() for end_bio_extent_readpage().
+> Here is an example to explain the original work flow:
+>    Bio is for inode 257, containing 2 pages, for range [1M, 1M+8K)
 > 
-> Now in endio_readpage_release_extent() we will set the page uptodate if:
+>    end_bio_extent_extent_readpage() entered
+>    |- extent_start = 0;
+>    |- extent_end = 0;
+>    |- bio_for_each_segment_all() {
+>    |  |- /* Got the 1st bvec */
+>    |  |- start = SZ_1M;
+>    |  |- end = SZ_1M + SZ_4K - 1;
+>    |  |- update = 1;
+>    |  |- if (extent_len == 0) {
+>    |  |  |- extent_start = start; /* SZ_1M */
+>    |  |  |- extent_len = end + 1 - start; /* SZ_1M */
+>    |  |  }
+>    |  |
+>    |  |- /* Got the 2nd bvec */
+>    |  |- start = SZ_1M + 4K;
+>    |  |- end = SZ_1M + 4K - 1;
+>    |  |- update = 1;
+>    |  |- if (extent_start + extent_len == start) {
+>    |  |  |- extent_len += end + 1 - start; /* SZ_8K */
+>    |  |  }
+>    |  } /* All bio vec iterated */
+>    |
+>    |- if (extent_len) {
+>       |- endio_readpage_release_extent(tree, extent_start, extent_len,
+> 				      update);
+> 	/* extent_start == SZ_1M, extent_len == SZ_8K, uptodate = 1 */
 > 
-> - start/end range covers the full page
->    This is the existing behavior already.
+> As the above flow shows, the existing code in end_bio_extent_readpage()
+> is just accumulate extent_start/extent_len, and when the contiguous range
+> breaks, call endio_readpage_release_extent() for the range.
 > 
-> - the whole page range is already uptodate
->    This adds the support for subpage read.
+> The contiguous range breaks at two locations:
+> - The total else {} branch
+>    This means we had a page in a bio where it's not contiguous.
+>    Currently this branch will never be triggered. As all our bio is
+>    submitted as contiguous pages.
 > 
-> And for the error path, we always clear the page uptodate and set the
-> page error.
+> - After the bio_for_each_segment_all() loop ends
+>    This is the normal call sites where we iterated all bvecs of a bio,
+>    and all pages should be contiguous, thus we can call
+>    endio_readpage_release_extent() on the full range.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/extent_io.c | 38 ++++++++++++++++++++++++++++----------
->   1 file changed, 28 insertions(+), 10 deletions(-)
+> The original code has also considered cases like (!uptodate), so it will
+> mark the uptodate range with EXTENT_UPTODATE.
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 58dc55e1429d..228bf0c5f7a0 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2779,13 +2779,35 @@ static void end_bio_extent_writepage(struct bio *bio)
->   	bio_put(bio);
->   }
->   
-> -static void endio_readpage_release_extent(struct extent_io_tree *tree, u64 start,
-> -					  u64 end, int uptodate)
-> +static void endio_readpage_release_extent(struct extent_io_tree *tree,
-> +		struct page *page, u64 start, u64 end, int uptodate)
->   {
->   	struct extent_state *cached = NULL;
->   
-> -	if (uptodate && tree->track_uptodate)
-> -		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
-> +	if (uptodate) {
-> +		u64 page_start = page_offset(page);
-> +		u64 page_end = page_offset(page) + PAGE_SIZE - 1;
-> +
-> +		if (tree->track_uptodate) {
-> +			/*
-> +			 * The tree has EXTENT_UPTODATE bit tracking, update
-> +			 * extent io tree, and use it to update the page if
-> +			 * needed.
-> +			 */
-> +			set_extent_uptodate(tree, start, end, &cached, GFP_NOFS);
+> So this patch will remove the extent_start/extent_len dancing, replace
+> it with regular endio_readpage_release_extent() call on each bvec.
+> 
+> This brings one behavior change:
+> - Temporary memory usage increase
+>    Unlike the old call which only modify the extent tree once, now we
+>    update the extent tree for each bvec.
+> 
+>    Although the end result is the same, since we may need more extent
+>    state split/allocation, we need more temporary memory during that
+>    bvec iteration.
+> 
+> But considering how streamline the new code is, the temporary memory
+> usage increase should be acceptable.
 
-Why is the switching from GFP_ATOMIC to GFP_NOFS safe here?  If it is it should 
-be in it's own patch with it's own explanation.
+It's not just temporary memory usage, it's a point of latency for every memory 
+operation.  We have a lot of memory usage on our servers, every trip into the 
+slab allocator is going to be a new chance to induce latency because we get 
+caught by some cgroup limit and force reclaim.  The fact that these could be 
+GFP_ATOMIC makes it even worse, because now we'll have this random knock-on 
+affect for heavy read workloads.
 
-> +			check_page_uptodate(tree, page);
-> +		} else if (start <= page_start && end >= page_end) {
-> +			/* We have covered the full page, set it uptodate */
-> +			SetPageUptodate(page);
-> +		}
-> +	} else if (!uptodate){
-
-} else if (!uptodate) {
-
-> +		if (tree->track_uptodate)
-> +			clear_extent_uptodate(tree, start, end, &cached);
-> +
-
-And this is new.  Please keep logical changes separate.  In this patch you are
-
-1) Changing the GFP pretty majorly.
-2) Cleaning up error handling to handle ranges properly.
-3) Changing the behavior of EXTENT_UPTODATE for ->track_uptodate trees.
-
-These each require their own explanation and commit so I can understand why 
-they're safe to do.  Thanks,
+Then to top it all off we could have several megs worth of IO per bio, which 
+means we're doing this allocation 100's of times per bio!  This is a hard no for 
+me.  Thanks,
 
 Josef
