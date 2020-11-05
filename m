@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0D22A8A2C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 23:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5432A8A31
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Nov 2020 23:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732086AbgKEWwt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 17:52:49 -0500
-Received: from mout.gmx.net ([212.227.15.19]:35473 "EHLO mout.gmx.net"
+        id S1732265AbgKEWzH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 17:55:07 -0500
+Received: from mout.gmx.net ([212.227.15.18]:43277 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgKEWwt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:52:49 -0500
+        id S1731694AbgKEWzG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:55:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604616766;
-        bh=fbWz1FBPylYU4eOMiUbmvphLkuBJ7CUS0IaC+NrI5yc=;
+        s=badeba3b8450; t=1604616904;
+        bh=itZYgA1hXu3LsikLerPDae+aebc/6lTt5TKUJlK3opQ=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=YCXN/RDpOy1fHDm9id6CPtuxe2uA5b1sS+Y1BFHmstTJEh1Ks0Xr00WKYzt9T14rz
-         wRvFmQcCF3WsLt6FeBSnPQOZbDaTnRDM9YUH6pd5TNH02UakKCCWfJPjxvfJ9HY6Fv
-         q3qmqZcfeYotzfPwYfXhNHWEbWUhFEPhY5FvvLPQ=
+        b=QXGqfUnhoIU5qi11+l1rvzHDqRvzRxidgJdGX74Hw0XtRXaM5ZIUoEI9aJnd/6uW5
+         rvn0KwhSbPi4xQMuD46IPjV6zOetmYXCOAi68R0lL59HvEyNOjrgBXEOrmsxA79MgI
+         5lboj0WWc9/fXj9Pz3ErkP8bdvcm5tsOr1C0F2FY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mg6e4-1k7YAd1FxW-00hfHl; Thu, 05
- Nov 2020 23:52:45 +0100
-Subject: Re: [PATCH 15/32] btrfs: introduce a helper to determine if the
- sectorsize is smaller than PAGE_SIZE
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MeCpR-1k1CUK2XKx-00bLup; Thu, 05
+ Nov 2020 23:55:04 +0100
+Subject: Re: [PATCH 16/32] btrfs: extent_io: allow find_first_extent_bit() to
+ find a range with exact bits match
 To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-16-wqu@suse.com>
- <0eb2c642-f0df-a899-388d-2e1d9db6e5ae@suse.com>
+ <20201103133108.148112-17-wqu@suse.com>
+ <7ea00bd2-73c2-130d-3e8a-f721a0a7af2b@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,84 +54,76 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <5079f2e4-10b5-4024-1dd7-d2a59cc4945f@gmx.com>
-Date:   Fri, 6 Nov 2020 06:52:42 +0800
+Message-ID: <157e5125-7279-50eb-40ce-87d0ae11e7ef@gmx.com>
+Date:   Fri, 6 Nov 2020 06:55:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <0eb2c642-f0df-a899-388d-2e1d9db6e5ae@suse.com>
+In-Reply-To: <7ea00bd2-73c2-130d-3e8a-f721a0a7af2b@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:deO3XvqcesdZjYv01fYPaPYSGjIcxMKrq1EOib+H5951RDQKs+m
- 89/AjOojdDEWIudO4x5GRwGuLD4VctyTez2TJnPeIEKusexGusFnmrL2BCIB1K9vfThXFIn
- 0YuhURtIiZV8gAPfMF6H1jMLdu27snjcRyNb0vTxjh2DlYiWXAH/9o9jNVs24Mkg7XFbWJ1
- Tgx9yZ/aPuY//aBWj+7Lw==
+X-Provags-ID: V03:K1:7mb9wxXva/DJM8coaNsO6keDZFIAFEIrZFltpxsZYT/qf3UuLSJ
+ uc5Wd80EaSThqn7wHKXnqZ2L3cpFsXD9gpYMq6yl7xKNlqVsHycCasOGJgtPfOzquhzeiXX
+ wPhBJCLg0EsrUR/BFxkmSy1YeblmhOyEgnoxK0HXECxX91k+u8q9PbyNdwv7Ywg1ueOLxvZ
+ DTjS87qlW4f2pZd/lRl8g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WII50MiAfhA=:4vfFMaCTZFL2+QPPsOK6rM
- RZvhCesGY+Pc2wueXJAUEo40DEcTekL3m0h8Fv87O6RXQB/xdDaOWt1gI7BXJK+8GLXaVRW6Q
- jVeuCppOtA+yrMkYA7elY3tKJRTDAkrG+IEk2DHQJzDvcRGCwtZ/j4EaWD47t6DQU7pgDEZbi
- 21aWx3Do/dwTEeMRpCYznNXwXaeCyoxPuFlaIR1BN3lpUz8Aoheyvph/LycXpOinnKzUYo+et
- aPuc7ZW3VHIi205svCgiJLkVSUpw+khnz6no+OHgzOGXzLLoYC8sI7zEaeb3WY+bJE0gv1W3J
- ghYijy5Sb7s8ZS+cq4GuicXoS/GQRyH6gX/+jd2L84Y+VgywInlhNBSFEX8wL6E7YM0BB5vGF
- 5A7jG6u/9lkp8zyEeJjoVdfIf+Ye1Hih2baJnNDY7JDs2uADHvhaYTpxq/hz9YZ10tl2zqu3a
- VHD56tfeFozrvRhLWX8BnXNX7su4KU2fl2wd5MCguTo/Hr29WnESVMsiZaLCVvGiX9dqXTVqe
- DLioF/FDW6PyCRrQ+5QcFGaU2QLsOo6oDsZ0+du+shZwBWMdyQbowz5dOJ7YkPgRnsb2W0OCQ
- 8skgIhK7MlMLeUGAHveHS4y0QIwR93QxrM1s+H2ELarVon2rp2k2crk2xL+vbTCHr5aiRTM/z
- AwB4aGu6j1EZGyPCiITFJYz5tpp1cTxj/MIWlWt4x4Hirnvsy8WNL93e3OImywmzfsqkhT7a9
- /wIA3BZUWfmGY4ww9Q94mnB5nl218AeB1NzVPJOIAmNmUYUmdHZE98if60mPQrm7CTP5iuGkh
- HbA7Hef29bPto+fKGvWGyNankdNJXs+83mambasQi9zxRM+hSriUeypDx0VIjlBroDnzDSdVd
- WZzKbWOB3jx3rmrE0D5Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F3GEOratu9Q=:pNFHz5W3SO7PV7Eq0FeVIo
+ LFvAxCzcE+AEFYv56PkJWp+i/5ns25acOGmRfoC794fge0aRM53QY6DsLFa9WaGPrYa1LIreP
+ 7OekNo7XE8uo6rifBH9hDDAqsxvrYtqIVu+REQIl4GqIt6GRkP5C1AclJH46xx0xxp13XP4n3
+ s/HD2OsDmufeuICT0ujJoDQuFubDUVh/xPFMu/m6obTRrMknNaYCQkScoFQlfqGyyhjPuF2mm
+ rNp9qgMwt+vFvL9DEdZin9OXeFVpWXCU2cREAJp9i6Zlhm2CU7yQoViFHJvxrJMQmGo86iEOP
+ GtZKDNRxIqAf3Kg2h4ay4Y8IywMZ8Ksrn805LyXhrDTCjkEzJKUEjGyl2GK9rFoZ9b7JOOA6b
+ AwJvAtMP1BJc4Pj5MHeVUbcn7UNejQl8p2Bf9GqW51ZopN6AohpdZwm0sDCL5877xj9HqIDmC
+ KZslGTLo0Z3IUonpKVbhMwMHtfMzf/jwdd7dbkHNGD7b0rwwC5wxmGulG81KL5zXhzlG7+daw
+ sorN/SwWuJq/+K+3ZOvuV6fN21AL9SjUSOk71+AtWuRq+0BeqrBwIFxgvJQ42VuJLRQ9jaqXW
+ HljefQRBxpQTbzdDqwLe0ALD1Et76CqxE/s8S1ODR3cauLDH6jU5vy/CX7NRaOI6yTWWEHkkx
+ o3v2yWT30rSDjVLEApXx/9XEHTYLg6Wm0v1ovJvkJEKlA890j71FfV2iUv29mpTj5EB/O9e8w
+ XM8OTwXD29vYQEMFRmPnR01sh8bY8NcsauOiImLakSUpufEQnF/IkuaRkDYFRHZmB1TXsWDyO
+ uJrSf2TKvu0DziRboj2iT7kPGi31mG7a1xj3w+859PepuAiiyU/nKpugbPqce3YgYqCTsCJMM
+ UQj8dG6TpYKTylN1yuWQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/11/5 =E4=B8=8B=E5=8D=8811:01, Nikolay Borisov wrote:
+On 2020/11/5 =E4=B8=8B=E5=8D=8811:03, Nikolay Borisov wrote:
 >
 >
 > On 3.11.20 =D0=B3. 15:30 =D1=87., Qu Wenruo wrote:
->> Just to save us several letters for the incoming patches.
+>> Currently if we pass mutliple @bits to find_first_extent_bit(), it will
+>> return the first range with one or more bits matching @bits.
+>>
+>> This is fine for current code, since most of them are just doing their
+>> own extra checks, and all existing callers only call it with 1 or 2
+>> bits.
+>>
+>> But for the incoming subpage support, we want the ability to return ran=
+ge
+>> with exact match, so that caller can skip some extra checks.
+>>
+>> So this patch will add a new bool parameter, @exact_match, to
+>> find_first_extent_bit() and its callees.
+>> Currently all callers just pass 'false' to the new parameter, thus no
+>> functional change is introduced.
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/ctree.h | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index b46eecf882a1..a08cf6545a82 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -3607,6 +3607,11 @@ static inline int btrfs_defrag_cancelled(struct =
-btrfs_fs_info *fs_info)
->>  	return signal_pending(current);
->>  }
->>
->> +static inline bool btrfs_is_subpage(struct btrfs_fs_info *fs_info)
->> +{
->> +	return (fs_info->sectorsize < PAGE_SIZE);
->> +}
 >
-> This is conceptually wrong. The filesystem shouldn't care whether we are
-> diong subpage blocksize io or not. I.e it should be implemented in such
-> a way so that everything " just works". All calculation should be
-> performed based on the fs_info::sectorsize and we shouldn't care what
-> the value of PAGE_SIZE is. The central piece becomes sectorsize.
-
-Nope, as long as we're using things like bio, we can't avoid the
-restrictions from page.
-
-I can't get your point at all, I see nothing wrong here, especially when
-we still need to handle page lock for a lot of things.
-
-Furthermore, this thing is only used inside btrfs, how could this be
-*conectpionally* wrong?
-
+> What's the problem of callers doing their own checks, given every one
+> will have different requirements? The interface should be generic enough
+> to satisfy every user and then any specific processing should be
+> performed by the respective user.
 >
->> +
->>  #define in_range(b, first, len) ((b) >=3D (first) && (b) < (first) + (=
-len))
->>
->>  /* Sanity test specific functions */
->>
+Definitely no.
+
+When the function returned, the spin lock is dropped, thus any caller
+checking the bits can no longer be reliable at all.
+
+The interface itself is not *generic* at all.
+
+That's why we have tons of extra interfaces and even don't have a no
+spin lock version (and that's also why I'm trying to add one).
+
+Thanks,
+Qu
