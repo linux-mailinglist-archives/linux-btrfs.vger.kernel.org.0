@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76962A9714
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 14:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5049E2A9744
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 14:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbgKFNiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 08:38:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38008 "EHLO mx2.suse.de"
+        id S1727352AbgKFNzo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 08:55:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48672 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726708AbgKFNiI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:38:08 -0500
+        id S1727093AbgKFNzn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:55:43 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604669886;
+        t=1604670942;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=31YsZhnzyY6i2v7SFuOMeAPOZpQAmFsibneF1/dXAec=;
-        b=tg80Sy159xJ5pVtGCQw0JcRVMkTVYQ3FNNHf8QCuB//4/XSJIsiCdY4jMHcTAGecFnSwpD
-        2hj/D4OZQhrh9dylvtIkpBFIeGPMV+17weGXo1tdeJIEeEXQkR4Alaff1vYEO+AlcuUF9x
-        3Nraw1tu+4ppDJh5hIFDW9IMzFw/0tw=
+        bh=jO+BTY8Q7nbhHec+mKYCMZ7NqYs+zJJ1Nm2V8jXwII4=;
+        b=NS51q8gSBp+6+23DGQPJHbH7sSDdjj6sfY83OoJGWDYqOjfli9Q8CkWyOw22fLm2VNfT3b
+        vX0tnYKKyEdB89Z+hThYlcaAot7dQTEFNh0iTfdGvBsBldwVRLAXSzRpwy8OizXCYXWfeQ
+        CsDUMtksIsR6krKTIRnyoWA9bYaUnPU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CA5B6AD79;
-        Fri,  6 Nov 2020 13:38:06 +0000 (UTC)
-Subject: Re: [PATCH 21/32] btrfs: extent-io: make type of extent_state::state
- to be at least 32 bits
+        by mx2.suse.de (Postfix) with ESMTP id 409EAABCC;
+        Fri,  6 Nov 2020 13:55:42 +0000 (UTC)
+Subject: Re: [PATCH 22/32] btrfs: file-item: use nodesize to determine whether
+ we need readahead for btrfs_lookup_bio_sums()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-22-wqu@suse.com>
+ <20201103133108.148112-23-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <4c01aef4-20a2-8476-acf4-67e521981673@suse.com>
-Date:   Fri, 6 Nov 2020 15:38:04 +0200
+Message-ID: <1429910b-dcea-2e66-23e2-e6ec37f30af4@suse.com>
+Date:   Fri, 6 Nov 2020 15:55:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-22-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-23-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,21 +89,29 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> Currently we use 'unsigned' for extent_state::state, which is only ensured
-> to be at least 16 bits.
+> In btrfs_lookup_bio_sums() if the bio is pretty large, we want to
+> readahead the csum tree.
 > 
-> But for incoming subpage support, we are going to introduce more bits to
-> at least match the following page bits:
-> - PageUptodate
-> - PagePrivate2
+> However the threshold is an immediate number, (PAGE_SIZE * 8), from the
+> initial btrfs merge.
 > 
-> Thus we will go beyond 16 bits.
+> The value itself is pretty hard to guess the meaning, especially when
+> the immediate number is from the age where 4K sectorsize is the default
+> and only CRC32 is supported.
 > 
-> To support this, make extent_state::state at least 32bit and to be more
-> explicit, we use "u32" to be clear about the max supported bits.
+> For the most common btrfs setup, CRC32 csum and 4K sectorsize,
+> it means just 32K read would kick readahead, while the csum itself is
+> only 32 bytes in size.
 > 
-> This doesn't increase the memory usage for x86_64, but may affect other
-> architectures.
+> Now let's be more reasonable by taking both csum size and node size into
+> consideration.
+> 
+> If the csum size for the bio is larger than one leaf, then we kick the
+> readahead.
+> This means for current default btrfs, the threshold will be 16M.
+> 
+> This change should not change performance observably, thus this is mostly
+> a readability enhancement.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
