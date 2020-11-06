@@ -2,34 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B6E2A8C51
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 02:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6167C2A8C63
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 03:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732625AbgKFBwj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 20:52:39 -0500
-Received: from mout.gmx.net ([212.227.17.21]:45451 "EHLO mout.gmx.net"
+        id S1732636AbgKFCBf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 21:01:35 -0500
+Received: from mout.gmx.net ([212.227.15.15]:35397 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730414AbgKFBwj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Nov 2020 20:52:39 -0500
+        id S1730414AbgKFCBf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 21:01:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604627555;
-        bh=sbRwIF1GUyV5btmUX96zKUP96QomT4Hg1ZTNm9w+Uic=;
+        s=badeba3b8450; t=1604628092;
+        bh=/XjwszurCOIOrJRqwWZBCsq8qZpmYYN9EA1ZzEoEpxk=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=JJwpxq5wHwFODr6wn7vD2ob4xNDibnaaqQIyHJIgbu1/ElSB+ydlD4FV2r8e3LyS6
-         0+jKOGvQxpquwIbGLYm6sLIt6II5mRMMkGtLfOL8xHtGiwKbsxYDXW8IXblLE2ZeyX
-         +1/YzKfDTLJ5+nyPHYT6SchVOuHMv9M+8tOjKU6I=
+        b=JwcMJlFo3AqavNIbFouavWji0uRzT/iAZpWpzBZ2x2wLmUcI78GXYDW2rujx/OZOw
+         g5U4TwdZoX0l33e+BTiHVpTaLp+TpsfGTqHh5LElYjK56j/iilrdXxGHsZMSu0X3/S
+         yWzkSpEjp0TTqtY6nTsNkvBrTFLTpJ9RP0zVSRrg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mplbx-1jySq43YDd-00qAUm; Fri, 06
- Nov 2020 02:52:35 +0100
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8QWA-1kfGuZ2bIm-004TBr; Fri, 06
+ Nov 2020 03:01:32 +0100
 Subject: Re: [PATCH 01/32] btrfs: extent_io: remove the
  extent_start/extent_len for end_bio_extent_readpage()
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
  <20201103133108.148112-2-wqu@suse.com>
- <08947273-050d-8f44-5cf3-9c980f0906a6@toxicpanda.com>
+ <831ff919-f4f4-7f1b-1e60-ce8df4697651@suse.com>
+ <1e7bf8d5-30d0-a944-c400-b5fe870f1cb5@suse.com>
+ <07ee7ff2-e2b1-5318-b72e-8bff87231036@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,216 +57,111 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <f6990dd0-31da-8850-f783-4d2ff195ccbd@gmx.com>
-Date:   Fri, 6 Nov 2020 09:52:29 +0800
+Message-ID: <4a4a20ed-93de-65c4-feab-0a4f5a8680ef@gmx.com>
+Date:   Fri, 6 Nov 2020 10:01:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <08947273-050d-8f44-5cf3-9c980f0906a6@toxicpanda.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG"
-X-Provags-ID: V03:K1:kSlhaFKnScBeblUHlWPKODeGTQGAGDz7EdIvtJnO+4qldv22zr/
- cG9H4S6wHThBNsYwegH98WqdHx0H81d3phm3QN4kjR9J4HRvE05QMAhshWIUHqipZwKzPs0
- f3FTm7oiEdth2Ci3kN4HfV0tBy9gqyDnn7uCcdRpL2pzGEfMGRoqAmHiVQ8lZC2tSl8Tea9
- 5t9J+iquhJdf0gbEUMY8A==
+In-Reply-To: <07ee7ff2-e2b1-5318-b72e-8bff87231036@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hBjvcbTkHtKGZ+L8BQxEpSUXm1H857LyPxx9i/6D4LVFyYsi15X
+ eEgejMWJzLK91tgj8foGzKnld8YDSBONkC+o8xkGLTaNksNbVA73zMzG9aT25PCJYOAj2A3
+ cpHnHuY+H4g9LoqXpZu3DqXR3dmZBY1nvlnAYyARV9yOXv8Qs2RTYbYC5kBXi1QazMp5MPw
+ AI5in+6J7dvALwUP3LdHQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:el2IVmp4LMw=:zmI8gRNNl2UVIjGAWl8KU5
- DzgEPwCZdksvJeTyAL+43OF8jpxhN+DBjz2PYukQf8I3XqpxY4tEjIVQ6GNa4r0hwQLAiORVQ
- zx0vDdfsZt0yVNiucAyWJcYsbwHJC2tSVE0uUFZ0lSaIAgH+vPq/UpoNs4ZM/vLKo/qlY3ReH
- /XzxQHCUD+Z69wiGn6e35afPC1Z0laKihNZ/T7wV9jrGzbgM6LgjvmDES0FOgzT4FRniKjv3B
- XGXGuj/QppGjp/AIy3qubEikNq4SgXacj59Nz48E1u/t8UQ+aTnP4b9V9v5r2BOZFboGp7XVI
- jUb5WwN49h4tR4yxxqiCFbdpJ+QDPqtJDUYydOsD/P5Jlci0qvqrckSsFeN0N1lklHlhQkq9b
- laY63d8LMnEE5VjNRg7WUVAUS4ZHuhGkCb0cvj2/0lmbGmBWj/tbyxdjPQnZNr16/Zze3nIUS
- trnuBlRuYGHFyUiVkHmT8zL9K47V10nTxIhpBnrBSYuGaz57S1vixH7/ZBnt1Z6gtrplYlobt
- g5SNSVjTpqD/gYZ1H1KLnsVUwGGaWvl7/YOaLoMsfrGSVZV/OTI5fNvuZm+KAYrutFyvYX3mH
- TqGJGCVFf9ybcerhgql15gBk7d0k5Rqv8bYDnKP0Hz0qVIbuP9cvcliyBekWx9MmbtiL6T8mA
- KnRLKsg2RNt9yjTYFk+X8qKGexEJ9iQoyePgidbHdxBakJJK/F/7xvfV/xFkusX+DLAtxu1fq
- SUuuUJm78Dv5RETtWBPSuvV3D7xfpGHYMw4ESNzENP/qjVTVvGeluCnB/WXFqY3J2ZPciKnAD
- kwk6PyvKnanPNPHST+F7Lv8SzbCWaFb5fxBO6FWesGpugnzjEAb23VO7xAalspYIMofs7sDld
- ATxptZ9EuljzcuFSmQrg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DHxrzlpKEec=:OqIcvVLu/8MmTt+pmg4ydr
+ ERwRzv5lZUWZ+xu8Gf5P5slmtOtVavygIMz0dEsbpC79zVqxG1tE6dYFbZvrN0Mb1mASVWvWN
+ xULngyZ4opNWc342MIa4iS+qT+xyk+B5JwOolM5C6pV0cZNmQqJwtyjzvfyPQNw6JtwfbVuDQ
+ 4kl7XTkUXLRaCk8zPO9w40CYYSsSSr2dlFrvMV6ao0NdedEggmtI1n8kW/7VzEv4QUdpbJG/6
+ EU8B/2gxKw669sIorz7qztt0zg6GEOOKpk5JMCeq0v5uzfz+KTX+f0Bwcmkz8y9M3gSCpJv8v
+ DNEIVwLNGsXhUEW6BdZiXC0a//E5kr6u4R+nQyHBEf/xjoF0IZKfgYEt3isI5aj1kRYZs9Vgr
+ HgPjBFVrBNfplMbwW9Z+aR3m63cqvmxy1JBOZrhYyVi9NMSJYIwps//RB9NIqYq/xiL5JYBWy
+ O46bCO7mw+ZDQLyMZzros71f9QdKODgdyZUcOo/P5bYn64H2wg+3+4pkei3kxaijTiik+as9+
+ Y95ohalTI8AhLZZix+8JAQxKanB/4RdfQ0p9EzBpF+nmuolVpT6Kbz5UOTIStxiFBnL/q+XB/
+ oWlzjepKlcLbH61fH2UM+ATESYw1tQ9zPe9Kx8i0a9UxyvJ7iHLfUgIc91eNDOsDqznHFRAQ8
+ 7F9koyJfLsCWxQEsGDK+3zQc03suzN8OccdUfg1X9vrxkfDjAiphvsng7+FWRWe/aosEwHol3
+ NGecmCjWWLPtkq7NmuKhpf7IeU0e7cEd7QSu9ugAmbXfWZ8QHRS6HjdVzO/6Mh94O/4RU/rKV
+ ndjuDb84SkMJt/djTdq0rYmqkEoPSctAthhVap+f1lpukToXGX6FgkBhbqxm/guNLk9CjLcj8
+ 502A5zsJlsq7h9yCZrtQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG
-Content-Type: multipart/mixed; boundary="f26F63eX75dXniP7DUVGvV2HCD9LY2aQb"
+...
+>
+> Can't answer that without quantifying what the performance impact is so
+> we can properly judge complexity/performance trade-off!
+> First I'd like to have numbers showing what the overhead otherwise it
+> will be impossible to tell if whatever approach you choose brings any
+> improvements.
 
---f26F63eX75dXniP7DUVGvV2HCD9LY2aQb
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+You and Josef are right. The too many extra extent io tree call is
+greatly hammering the performance of endio function.
 
+Just a very basic average execution time around that part shows obvious
+performance drop (read 1GiB file):
 
+BEFORE: (Execution time between the page_unlock() and the end of the loop)
+total_time=3D117795112ns nr_events=3D262144
+avg=3D449.35ns
 
-On 2020/11/6 =E4=B8=8A=E5=8D=883:40, Josef Bacik wrote:
-> On 11/3/20 8:30 AM, Qu Wenruo wrote:
->> In end_bio_extent_readpage() we had a strange dance around
->> extent_start/extent_len.
->>
->> Hides behind the strange dance is, it's just calling
->> endio_readpage_release_extent() on each bvec range.
->>
->> Here is an example to explain the original work flow:
->> =C2=A0=C2=A0 Bio is for inode 257, containing 2 pages, for range [1M, =
-1M+8K)
->>
->> =C2=A0=C2=A0 end_bio_extent_extent_readpage() entered
->> =C2=A0=C2=A0 |- extent_start =3D 0;
->> =C2=A0=C2=A0 |- extent_end =3D 0;
->> =C2=A0=C2=A0 |- bio_for_each_segment_all() {
->> =C2=A0=C2=A0 |=C2=A0 |- /* Got the 1st bvec */
->> =C2=A0=C2=A0 |=C2=A0 |- start =3D SZ_1M;
->> =C2=A0=C2=A0 |=C2=A0 |- end =3D SZ_1M + SZ_4K - 1;
->> =C2=A0=C2=A0 |=C2=A0 |- update =3D 1;
->> =C2=A0=C2=A0 |=C2=A0 |- if (extent_len =3D=3D 0) {
->> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 |- extent_start =3D start; /* SZ_1M */
->> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 |- extent_len =3D end + 1 - start; /* SZ_=
-1M */
->> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 }
->> =C2=A0=C2=A0 |=C2=A0 |
->> =C2=A0=C2=A0 |=C2=A0 |- /* Got the 2nd bvec */
->> =C2=A0=C2=A0 |=C2=A0 |- start =3D SZ_1M + 4K;
->> =C2=A0=C2=A0 |=C2=A0 |- end =3D SZ_1M + 4K - 1;
->> =C2=A0=C2=A0 |=C2=A0 |- update =3D 1;
->> =C2=A0=C2=A0 |=C2=A0 |- if (extent_start + extent_len =3D=3D start) {
->> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 |- extent_len +=3D end + 1 - start; /* SZ=
-_8K */
->> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 }
->> =C2=A0=C2=A0 |=C2=A0 } /* All bio vec iterated */
->> =C2=A0=C2=A0 |
->> =C2=A0=C2=A0 |- if (extent_len) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |- endio_readpage_release_extent(tree, =
-extent_start, extent_len,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 update);
->> =C2=A0=C2=A0=C2=A0=C2=A0/* extent_start =3D=3D SZ_1M, extent_len =3D=3D=
- SZ_8K, uptodate =3D 1 */
->>
->> As the above flow shows, the existing code in end_bio_extent_readpage(=
-)
->> is just accumulate extent_start/extent_len, and when the contiguous ra=
-nge
->> breaks, call endio_readpage_release_extent() for the range.
->>
->> The contiguous range breaks at two locations:
->> - The total else {} branch
->> =C2=A0=C2=A0 This means we had a page in a bio where it's not contiguo=
-us.
->> =C2=A0=C2=A0 Currently this branch will never be triggered. As all our=
- bio is
->> =C2=A0=C2=A0 submitted as contiguous pages.
->>
->> - After the bio_for_each_segment_all() loop ends
->> =C2=A0=C2=A0 This is the normal call sites where we iterated all bvecs=
- of a bio,
->> =C2=A0=C2=A0 and all pages should be contiguous, thus we can call
->> =C2=A0=C2=A0 endio_readpage_release_extent() on the full range.
->>
->> The original code has also considered cases like (!uptodate), so it wi=
-ll
->> mark the uptodate range with EXTENT_UPTODATE.
->>
->> So this patch will remove the extent_start/extent_len dancing, replace=
+AFTER: (execution time for the two functions at the end of the loop)
+total_time=3D3058216317ns nr_events=3D262144
+avg=3D11666.17ns
 
->> it with regular endio_readpage_release_extent() call on each bvec.
->>
->> This brings one behavior change:
->> - Temporary memory usage increase
->> =C2=A0=C2=A0 Unlike the old call which only modify the extent tree onc=
-e, now we
->> =C2=A0=C2=A0 update the extent tree for each bvec.
->>
->> =C2=A0=C2=A0 Although the end result is the same, since we may need mo=
-re extent
->> =C2=A0=C2=A0 state split/allocation, we need more temporary memory dur=
-ing that
->> =C2=A0=C2=A0 bvec iteration.
->>
->> But considering how streamline the new code is, the temporary memory
->> usage increase should be acceptable.
->=20
-> It's not just temporary memory usage, it's a point of latency for every=
+So, definitely NACK.
 
-> memory operation.
-
-The latency comes from 2 parts:
-- extent_state search
-  Even it's a log(n) operation, we're calling it for each bvec, thus
-  it's definitely cause more latency, I'll post the test result soon,
-  but initial result is already pretty poor.
-
-- extent_state preallocation
-  This is the tricky one.
-
-  In theory, since we're at read path, we can call it with GFP_KERNEL,
-  but the truth is, the extent io tree uses gfp_mask to determine if we
-  can do memory allocation, and if possible, they will always try to
-  prealloc some memory, which is not always ideal.
-
-  This means even we can call GFP_KERNEL here, we shouldn't.
-
-  So ironically, we should call with GFP_ATOMIC to reduce the memory
-  allocation trials. But that would cause possible false ENOMEM alert
-  thought.
-
-  As in the extent io tree operations, except the first bvec, we should
-  always just enlarge previously inserted extent_state, so the memory
-  usage isn't really a problem.
-
-This again, shows the hidden sins of extent io tree, and further prove
-that we need more interface rework for it.
-
-The best situation would be, we allocate one extent_state as cache, and
-allow extent io tree to use that cache, other than doing the hidden
-preallocate internally.
-
-And only re-allocate the precached extent_state after extent io tree
-really used that.
-For endio call sites, the possibility to need new allocation is low.
-As contig range should only need one extent_state allocated.
-
-For now, I want to just keep the old behavior, with slightly better
-comments.
-And leave the large extent io tree rework in the future.
+I'll switch back to the old behavior, but still try to enhance its
+readability.
 
 Thanks,
 Qu
 
->=C2=A0 We have a lot of memory usage on our servers, every
-> trip into the slab allocator is going to be a new chance to induce
-> latency because we get caught by some cgroup limit and force reclaim.=C2=
-=A0
-> The fact that these could be GFP_ATOMIC makes it even worse, because no=
-w
-> we'll have this random knock-on affect for heavy read workloads.
->=20
-> Then to top it all off we could have several megs worth of IO per bio,
-> which means we're doing this allocation 100's of times per bio!=C2=A0 T=
-his is
-> a hard no for me.=C2=A0 Thanks,
->=20
-> Josef
-
-
---f26F63eX75dXniP7DUVGvV2HCD9LY2aQb--
-
---SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+krF0ACgkQwj2R86El
-/qhdqQgAriBgAdNz074g0wrmq2e60gxoe6YFNlQ4HjBGj8J7E94jlaxBQTXcusUg
-0h7VmlgZr14wVqLrbnwUJnlh+aBGEiq8EX0cySowdn9munBvBbjefTBWf2HcJbhq
-mOCOJi3iaBvY09EqZ+gmWXAaLTcUHvp1zE8FL1OqSwAtXFr5NJAXP3E54lABaAPp
-bfSVB0QV/eH2X8UrYA5wKFCGJDQlY5FAUhhIar/Jt5ocPfb0jV1mcWPpUUiEUGv2
-y5kQsXCieL1ZqgJ1udeIobmzcMM7I6FviRmmjd7UP3/EXLxd4/lXUIKC8OnJmz4g
-jjeWZyJfaEPR53vLgAak9ppTEoY9fA==
-=ISDm
------END PGP SIGNATURE-----
-
---SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG--
+>
+> <snip>
+>
+>>> Also bear in mind that this happens in a critical endio context, which
+>>> uses GFP_ATOMIC allocations so if we get ENOSPC it would be rather bad=
+.
+>>
+>> I know you mean -ENOMEM.
+>
+> Yep, my bad.
+>
+>>
+>> But the true is, except the leading/tailing sector of the extent, we
+>> shouldn't really cause extra split/allocation.
+>
+> That's something you assume so the real behavior might be different,
+> again I think we need to experiment to better understand the behavior.
+>
+> <snip>
+>
+>>> I definitely like the new code however without quantifying what's the
+>>> increase of number of calls of endio_readpage_release_extent I'd rathe=
+r
+>>> not merge it.
+>>
+>> Your point stands.
+>>
+>> I could add a new wrapper to do the same thing, but with a small help
+>> from some new structure to really record the
+>> inode/extent_start/extent_len internally.
+>>
+>> The end result should be the same in the endio function, but much easie=
+r
+>> to read. (The complex part would definite have more comment)
+>>
+>> What about this solution?
+>
+> IMO the best course of action is to measure the length of extents being
+> unlocked in the old version of the code and the number of bvecs in a
+> bio. That way you would be able to extrapolate with the new version of
+> the code how many more calls to extent unlock would have been made. This
+> will tell you how effective this optimisation really is and if it's
+> worth keeping around.
+>
+> <snip>
+>
