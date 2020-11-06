@@ -2,60 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7D52A97E3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 15:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1C32A9802
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 16:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgKFOuz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 09:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S1727346AbgKFPBk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 10:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbgKFOuz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 09:50:55 -0500
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91DFC0613CF
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 06:50:53 -0800 (PST)
-Received: by mail-qk1-x744.google.com with SMTP id n132so136882qke.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 06:50:53 -0800 (PST)
+        with ESMTP id S1727055AbgKFPBk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 10:01:40 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0DA6C0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 07:01:38 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id n132so172301qke.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 07:01:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=5vKgukkKbWlyp00hNEJpVbr8pzSqW64uYogBmp7y5x8=;
-        b=Pin5ELJLRdURgegJRRcY08AzQu33RDo4EGC43x/qrOtT+THdpwZg5liEEaztcomeCI
-         O/897jBciVUiAjjMoLFZLi2avnpJfbkzCOv9DVW/7isWOip6qkuq63IwBal+T9E0Nv6Z
-         wbOoo6bKcPE6deELImBRxaUgEszTC4VSIlA9wvMtlielwGccqJRfoY2+yX+w3vlTWTUm
-         rVbNp5QUocjrNozhW0fizN4L29CufapShwUfhG7a4iRUnJHSyHT51lJk0I8EByeEOX11
-         CBp0T16fEVlBQAgDSe8VX08bb8u49XyRgHV/Wfv5TTagrQWbMRw4chv6jsl+bm4zgufL
-         Hz8Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gv3NhhJYilcQa5FbCjmuJ9ZNgOEq1qCdNDP7mOzTP3g=;
+        b=WU1eEvkrTkBTE+n8eEWxQ7t4CBoEp4URQy7JP1a1k9Czq+v54nRfN89kKywfWiARJf
+         onLSgfzeVVoeFx18ODMtiYvv9qJAKFbzjXwckCnepqv9aCy5Z9W7/UOjBJWiDjwgMiLp
+         CjDxzs6IKTpTX73qIgseUXYS31GE4j71VYyYOJMYEH89tRzrG7SsQhwBjp2ZTnHhhZL2
+         BVhHUVBMo7j8GzYj1NqOnCU2nZK8KKOcnGPujf7d5bAzvmf8dRFB4fTJXLFcgdzCo00a
+         L1w9fbil1t7ItJMz16+ax37ekokN2DRKbx4U/FGENTUbLb0CzP+0hIli945CO7+oKrnO
+         Bu9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=5vKgukkKbWlyp00hNEJpVbr8pzSqW64uYogBmp7y5x8=;
-        b=T1A7ZIa1aP+Pc++MAMwWxVd5y3gxyrBeE8/ZDrVmQAJAwV6nEl38NauOgObvWTcuK1
-         AiapgKH2hekChcZlUCexOTYyIaqMe5TQTaTiBckcZk4TTK1Hs+eSBD6hIr+ejrWsgJU1
-         WhUUOZK5DvWtuQTwBzfqZIBonDZjDuv0L2C+E30J8J881b5gYweMQ1hSeRiFnc1tAvIk
-         tLJrSK79MUCEbVaodELrG6lhTwb2Q76aRnxC4w7j9PAWFY3m0tC+GriEaO3DsQLUgZL4
-         06kA55EO0wjuZEh9KOUXr1L1H941eRvNkFnY53f067yy2dI18rx9Mzn6VgY07eCOMmBv
-         638Q==
-X-Gm-Message-State: AOAM5325gM0FXhHQG0CkWen7yj9yOC1iH0B9HTlPPR0Tr5S6ki+Ff+UK
-        Jkck8bilPGZrYb3pwYDQMn4EzLvklmrMsaDr
-X-Google-Smtp-Source: ABdhPJxkPcqrRi2lPIqHBQDlSapG84mjQGa6CBI1p/nZsvahhndhkOGjhfRPrnfZcyPm9VuXe0wfYQ==
-X-Received: by 2002:a37:9c4f:: with SMTP id f76mr1859419qke.403.1604674252772;
-        Fri, 06 Nov 2020 06:50:52 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gv3NhhJYilcQa5FbCjmuJ9ZNgOEq1qCdNDP7mOzTP3g=;
+        b=tb+/KoJwu9Xx74jFFZ0uoJ1Cum5vwdS+JkmUcPHr6boKvtVnaDlK0zGP/rL545Y1f1
+         p0M5HriGpUAG8k5vYXrZVNOgWF0yvrCIlqwoXKbakiwS2XWpn/9YdaSa8C//Gh1cQgSd
+         VbArtRBrMU/6NSLapPqZMiRn3KTMLtquF1VR3j2fBaSd4bREw6pMsg3CqblUzP6hYNr9
+         CxUPgpZA5OSB9BxizIVGz76CRe0EcPquOn+UcoN+PP2ByEW7J0FKTVIZXkUrZfuWbAi3
+         x4P+6mGKCkyIaKsUORjiFcqBsygesDhaA04IM0ySvFWHVs/uw4sObZH6raQmpwd5+sns
+         H3HA==
+X-Gm-Message-State: AOAM532YkPMiabXXxv0/akphYsr6ZizZphHntEQwFG/0XZLwdrVT1Udm
+        TxRil+nduVSmCySF5IPARZHjs4zET6pIsd/I
+X-Google-Smtp-Source: ABdhPJyeFHZKR/8/Q5FCvuY4JuRkTxXlu3v+50Wgld2madreMoowiskbrhsFw78NGNkjN6Z1+NssaQ==
+X-Received: by 2002:a05:620a:c9a:: with SMTP id q26mr1008263qki.272.1604674897939;
+        Fri, 06 Nov 2020 07:01:37 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j5sm614358qtv.91.2020.11.06.06.50.51
+        by smtp.gmail.com with ESMTPSA id p5sm687353qtu.13.2020.11.06.07.01.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2020 06:50:51 -0800 (PST)
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
+        Fri, 06 Nov 2020 07:01:36 -0800 (PST)
+Subject: Re: [PATCH v9 19/41] btrfs: redirty released extent buffers in ZONED
+ mode
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>
+Cc:     "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
+ <b2c1ee9a3c4067b9f8823604e4c4c5c96d3abc61.1604065695.git.naohiro.aota@wdc.com>
+ <6d61ed1d-1801-5710-beac-03d363871ec8@toxicpanda.com>
+ <SN4PR0401MB35981D8500BE7FAF931F1AEE9BED0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Subject: [WORKFLOW] Git commit hooks now in btrfs-workflow tree
-Message-ID: <1e24d616-ab45-4a11-9e9a-0d6187b7049a@toxicpanda.com>
-Date:   Fri, 6 Nov 2020 09:50:50 -0500
+Message-ID: <eb12c0db-28e0-13a6-ebaa-2f19bd1be6ee@toxicpanda.com>
+Date:   Fri, 6 Nov 2020 10:01:35 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <SN4PR0401MB35981D8500BE7FAF931F1AEE9BED0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -63,41 +74,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On 11/6/20 4:11 AM, Johannes Thumshirn wrote:
+> On 03/11/2020 15:43, Josef Bacik wrote:
+>> This is a lot of work when you could just add
+>>
+>> if (btrfs_is_zoned(fs_info))
+>> 	return;
+>>
+>> to btrfs_clean_tree_block().  The dirty secret is we don't actually unset the
+>> bits in the transaction io tree because it would require memory allocation
+>> sometimes, so you don't even need to mess with ->dirty_pages in the first place.
+>>    The only thing you need is to keep from clearing the EB dirty.  In fact you
+>> could just do
+>>
+>> if (btrfs_is_zoned(fs_info)) {
+>> 	memzero_extent_buffer(eb, 0, eb->len);
+>> 	set_bit(EXTENT_BUFFER_NO_CHECK, &eb->bflags);
+>> }
+>>
+>> to btrfs_clean_tree_block() and then in btrfs_free_tree_block() make sure we
+>> always pin the extent if we're zoned.  Thanks,
+> 
+> As much as I'd love the simple solution you described it unfortunately didn't work
+> in our testing [1]. So unless I did something completely stupid [2] (which always
+> is an option) I don't think we can go with the easy solution here, unfortunately.
+> 
 
-I've added two git hooks to our btrfs-workflow tree here
+Actually it's because we're calling btrfs_clean_tree_block() in 
+btrfs_init_new_buffer(), so any new block is now getting marked as 
+BUFFER_NO_CHECk, hence everything blowing up.
 
-https://github.com/btrfs/btrfs-workflow
-
-I've added a hook for running a local copy of checkpatch.pl against our patches 
-before they apply, and a commit message hook to run codespell against the commit 
-message.  This is to help cut down on the silly things that are wrong in patches 
-so reviewers can focus on the meat of the commits.
-
-To enable, simply clone the tree, and then run
-
-btrfs-workflow/scripts/btrfs-setup-git-hooks /path/to/your/tree
-
-this will install the symlinks to the git hooks, so you can simply git pull the 
-btrfs-workflow tree occasionally to get new updates.
-
-A few notes, none of these hooks will stop you from committing anything.  The 
-checkpatch one will show you the errors and prompt you if you want to go fix the 
-errors, but you can answer 'n' to bypass the hook and commit as normal.  For 
-silly things that checkpatch gets wrong please open an issue against 
-btrfs-workflow so we can fix the script, or if you have commit access feel free 
-to fix it yourself.
-
-The codespell check is also optional, but it doesn't prompt, as you can easily 
-just git commit --amend afterwards.  We can change this if people have a strong 
-preference, but for now it just tells you there are spelling mistakes.  If it 
-complains about something that we use all the time, you can simply add that word 
-to btrfs-workflow/scripts/ignore-list, one word per line.  If you don't have 
-commit access just ping one of the developers and we'll fix it up for you.
-
-Again the idea is to make this as painless as possible, we simply want to enable 
-us developers to handle as many mistakes and nits as possible at commit time, 
-before it goes to reviewers.  This will hopefully result in less time wasted for 
-everybody.  Thanks,
+I think first you push btrfs_clean_tree_block() into btrfs_free_tree_block() and 
+kill all other callers, because we're just marking it no longer dirty.  In fact 
+I'd rename it as btrfs_mark_extent_buffer_clean() or something like that.  Then 
+your patch should work just fine.  Thanks,
 
 Josef
+
