@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494342A9675
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 13:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759922A96DD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 14:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbgKFMv6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 07:51:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33706 "EHLO mx2.suse.de"
+        id S1727439AbgKFNRX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 08:17:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43370 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726757AbgKFMv6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:51:58 -0500
+        id S1726939AbgKFNRW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:17:22 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604667116;
+        t=1604668640;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ahvMiva3wO5sQyfgh8V5SiMQoNE7VEFY0/GlN29QTFI=;
-        b=ZqAg/Ctlcq61EcDYVpgDoiSuQ52EZP6OmoFmatQlfVM6FSzx0nrxvVtCpKIgAUPgYu130T
-        wRJiDhifp6hlAo/UPBFwPH7jNDADOibsoCQjs5t60V8cH7Qtf6SINlvExHYiHiZ4EOiG3D
-        nuVQ9eDr/h3TFJj22y83LDKHOikTFyk=
+        bh=1en0rX2iSDCqRX+MzeG89GlhOSwPXEz5kiyTepyIsXg=;
+        b=qFEpw9GcjQDyDFxS73oM1DXuiprUw04GXCTsaLomPGpgXqcTYtWi6E99E+BTNUe5dc+0E8
+        A3RuQwldMBJe3WuBZJbsRFE6cqck13FGZ2H+VSaDElGwowgIYDSXigM62AZzLOoZmTTwFb
+        tC6VvFMYVvo2GiHqXwPtsuX+yyBKplI=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 56B01AB8F;
-        Fri,  6 Nov 2020 12:51:56 +0000 (UTC)
-Subject: Re: [PATCH 19/32] btrfs: handle sectorsize < PAGE_SIZE case for
- extent buffer accessors
+        by mx2.suse.de (Postfix) with ESMTP id 8D848ABE3;
+        Fri,  6 Nov 2020 13:17:20 +0000 (UTC)
+Subject: Re: [PATCH 20/32] btrfs: disk-io: only clear EXTENT_LOCK bit for
+ extent_invalidatepage()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-20-wqu@suse.com>
+ <20201103133108.148112-21-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -74,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <d8eec47a-69c9-5173-1efb-0e7106068d70@suse.com>
-Date:   Fri, 6 Nov 2020 14:51:55 +0200
+Message-ID: <34ea87ea-1c04-8118-1c51-07a4702d28ca@suse.com>
+Date:   Fri, 6 Nov 2020 15:17:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-20-wqu@suse.com>
+In-Reply-To: <20201103133108.148112-21-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -90,138 +89,25 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> To support sectorsize < PAGE_SIZE case, we need to take extra care for
-> extent buffer accessors.
+> In extent_invalidatepage() it will try to clear all possible bits since
+> it's calling clear_extent_bit() with delete == 1.
+> That would try to clear all existing bits.
 > 
-> Since sectorsize is smaller than PAGE_SIZE, one page can contain
-> multiple tree blocks, we must use eb->start to determine the real offset
-> to read/write for extent buffer accessors.
+> This is currently fine, since for btree io tree, it only utilizes
+> EXTENT_LOCK bit.
+> But this could be a problem for later subpage support, which will
+> utilize extra io tree bit to represent extra info.
 > 
-> This patch introduces two helpers to do these:
-> - get_eb_page_index()
->   This is to calculate the index to access extent_buffer::pages.
->   It's just a simple wrapper around "start >> PAGE_SHIFT".
+> This patch will just convert that clear_extent_bit() to
+> unlock_extent_cached().
 > 
->   For sectorsize == PAGE_SIZE case, nothing is changed.
->   For sectorsize < PAGE_SIZE case, we always get index as 0, and
->   the existing page shift works also fine.
+> For current code since only EXTENT_LOCKED bit is utilized, this doesn't
+> change the behavior, but provides a much cleaner basis for incoming
+> subpage support.
 > 
-> - get_eb_page_offset()
->   This is to calculate the offset to access extent_buffer::pages.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-nit: This is the same sentence as for get_eb_page_index, I think you
-mean this calculates the offset in the page to start reading from.
+Yeah, calling clear_extent_bit with EXTENT_DELALLOC/EXTENT_DO_ACCOUNTING
+and with delete = 1 for metadata extents made absolutely no sense.
 
->   This needs to take extent_buffer::start into consideration.
-> 
->   For sectorsize == PAGE_SIZE case, extent_buffer::start is always
->   aligned to PAGE_SIZE, thus adding extent_buffer::start to
->   offset_in_page() won't change the result.
->   For sectorsize < PAGE_SIZE case, adding extent_buffer::start gives
->   us the correct offset to access.
-> 
-> This patch will touch the following parts to cover all extent buffer
-> accessors:
-> 
-> - BTRFS_SETGET_HEADER_FUNCS()
-> - read_extent_buffer()
-> - read_extent_buffer_to_user()
-> - memcmp_extent_buffer()
-> - write_extent_buffer_chunk_tree_uuid()
-> - write_extent_buffer_fsid()
-> - write_extent_buffer()
-> - memzero_extent_buffer()
-> - copy_extent_buffer_full()
-> - copy_extent_buffer()
-> - memcpy_extent_buffer()
-> - memmove_extent_buffer()
-> - btrfs_get_token_##bits()
-> - btrfs_get_##bits()
-> - btrfs_set_token_##bits()
-> - btrfs_set_##bits()
-> - generic_bin_search()
-> 
-
-<snip>
-
-> @@ -3314,6 +3315,39 @@ static inline void assertfail(const char *expr, const char* file, int line) { }
->  #define ASSERT(expr)	(void)(expr)
->  #endif
->  
-> +/*
-> + * Get the correct offset inside the page of extent buffer.
-> + *
-> + * Will handle both sectorsize == PAGE_SIZE and sectorsize < PAGE_SIZE cases.
-> + *
-> + * @eb:		The target extent buffer
-> + * @start:	The offset inside the extent buffer
-> + */
-> +static inline size_t get_eb_page_offset(const struct extent_buffer *eb,
-> +					unsigned long offset_in_eb)
-
-nit: Rename to offset, you already pass an extent buffer so it's natural
-that the offset pertain to this eb.
-
-> +{
-> +	/*
-> +	 * For sectorsize == PAGE_SIZE case, eb->start will always be aligned
-> +	 * to PAGE_SIZE, thus adding it won't cause any difference.
-> +	 *
-> +	 * For sectorsize < PAGE_SIZE, we must only read the data belongs to
-> +	 * the eb, thus we have to take the eb->start into consideration.
-> +	 */
-> +	return offset_in_page(offset_in_eb + eb->start);
-> +}
-> +
-> +static inline unsigned long get_eb_page_index(unsigned long offset_in_eb)
-
-nit: Rename to offset since "in_eb" doesn't bring any value just makes
-the variable's name somewhat awkward.
-> +{
-> +	/*
-> +	 * For sectorsize == PAGE_SIZE case, plain >> PAGE_SHIFT is enough.
-> +	 *
-> +	 * For sectorsize < PAGE_SIZE case, we only support 64K PAGE_SIZE,
-> +	 * and has ensured all tree blocks are contained in one page, thus
-> +	 * we always get index == 0.
-> +	 */
-> +	return offset_in_eb >> PAGE_SHIFT;
-> +}
-> +
->  /*
->   * Use that for functions that are conditionally exported for sanity tests but
->   * otherwise static
-
-<snip>
-
-> @@ -5873,10 +5873,22 @@ void copy_extent_buffer_full(const struct extent_buffer *dst,
->  
->  	ASSERT(dst->len == src->len);
->  
-> -	num_pages = num_extent_pages(dst);
-> -	for (i = 0; i < num_pages; i++)
-> -		copy_page(page_address(dst->pages[i]),
-> -				page_address(src->pages[i]));
-> +	if (dst->fs_info->sectorsize == PAGE_SIZE) {
-> +		num_pages = num_extent_pages(dst);
-> +		for (i = 0; i < num_pages; i++)
-> +			copy_page(page_address(dst->pages[i]),
-> +				  page_address(src->pages[i]));
-> +	} else {
-> +		unsigned long src_index = get_eb_page_index(0);
-> +		unsigned long dst_index = get_eb_page_index(0);
-
-nit: unsigned long src_index = 0, dst_index = 0; and remove the ASSERT()
-below
-
-> +		size_t src_offset = get_eb_page_offset(src, 0);
-> +		size_t dst_offset = get_eb_page_offset(dst, 0);
-> +
-> +		ASSERT(src_index == 0 && dst_index == 0);
-> +		memcpy(page_address(dst->pages[dst_index]) + dst_offset,
-> +		       page_address(src->pages[src_index]) + src_offset,
-> +		       src->len);
-> +	}
->  }
-
-<snip>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
