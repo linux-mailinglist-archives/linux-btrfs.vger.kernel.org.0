@@ -2,90 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24E12A9AC6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 18:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E232A9BA6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 19:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgKFR37 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 12:29:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46272 "EHLO mx2.suse.de"
+        id S1727155AbgKFSNN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 13:13:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38476 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726034AbgKFR37 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 12:29:59 -0500
+        id S1726034AbgKFSNN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:13:13 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9EA7DABCC;
-        Fri,  6 Nov 2020 17:29:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id F0A7AABA2;
+        Fri,  6 Nov 2020 18:13:11 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B0D92DA6E3; Fri,  6 Nov 2020 18:28:17 +0100 (CET)
-Date:   Fri, 6 Nov 2020 18:28:16 +0100
+        id 83983DA6E3; Fri,  6 Nov 2020 19:11:32 +0100 (CET)
+Date:   Fri, 6 Nov 2020 19:11:32 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 15/32] btrfs: introduce a helper to determine if the
- sectorsize is smaller than PAGE_SIZE
-Message-ID: <20201106172816.GQ6756@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 04/32] btrfs: extent_io: extract the btree page
+ submission code into its own helper function
+Message-ID: <20201106181132.GR6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-16-wqu@suse.com>
- <0eb2c642-f0df-a899-388d-2e1d9db6e5ae@suse.com>
- <5079f2e4-10b5-4024-1dd7-d2a59cc4945f@gmx.com>
+ <20201103133108.148112-5-wqu@suse.com>
+ <ebd6ebca-f050-8cd2-baaf-303858b59d03@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5079f2e4-10b5-4024-1dd7-d2a59cc4945f@gmx.com>
+In-Reply-To: <ebd6ebca-f050-8cd2-baaf-303858b59d03@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 06:52:42AM +0800, Qu Wenruo wrote:
+On Thu, Nov 05, 2020 at 12:47:32PM +0200, Nikolay Borisov wrote:
 > 
 > 
-> On 2020/11/5 下午11:01, Nikolay Borisov wrote:
-> >
-> >
-> > On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> >> Just to save us several letters for the incoming patches.
-> >>
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >> ---
-> >>  fs/btrfs/ctree.h | 5 +++++
-> >>  1 file changed, 5 insertions(+)
-> >>
-> >> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> >> index b46eecf882a1..a08cf6545a82 100644
-> >> --- a/fs/btrfs/ctree.h
-> >> +++ b/fs/btrfs/ctree.h
-> >> @@ -3607,6 +3607,11 @@ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
-> >>  	return signal_pending(current);
-> >>  }
-> >>
-> >> +static inline bool btrfs_is_subpage(struct btrfs_fs_info *fs_info)
-> >> +{
-> >> +	return (fs_info->sectorsize < PAGE_SIZE);
-> >> +}
-> >
-> > This is conceptually wrong. The filesystem shouldn't care whether we are
-> > diong subpage blocksize io or not. I.e it should be implemented in such
-> > a way so that everything " just works". All calculation should be
-> > performed based on the fs_info::sectorsize and we shouldn't care what
-> > the value of PAGE_SIZE is. The central piece becomes sectorsize.
-> 
-> Nope, as long as we're using things like bio, we can't avoid the
-> restrictions from page.
-> 
-> I can't get your point at all, I see nothing wrong here, especially when
-> we still need to handle page lock for a lot of things.
-> 
-> Furthermore, this thing is only used inside btrfs, how could this be
-> *conectpionally* wrong?
+> On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
+> > In btree_write_cache_pages() we have a btree page submission routine
+> > buried deeply into a nested loop.
+> > 
+> > This patch will extract that part of code into a helper function,
+> > submit_btree_page(), to do the same work.
+> > 
+> > Also, since submit_btree_page() now can return >0 for successfull extent
+> > buffer submission, remove the "ASSERT(ret <= 0);" line.
+> > 
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > Signed-off-by: David Sterba <dsterba@suse.com>
+> > ---
+> >  fs/btrfs/extent_io.c | 116 +++++++++++++++++++++++++------------------
+> >  1 file changed, 69 insertions(+), 47 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index 9cbce0b74db7..ac396d8937b9 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -3935,10 +3935,75 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
+> >  	return ret;
+> >  }
+> >  
+> > +/*
+> > + * A helper to submit a btree page.
+> > + *
+> > + * This function is not always submitting the page, as we only submit the full
+> > + * extent buffer in a batch.
 
-As Nik said, it should be built around sectorsize (even if some other
-layers work with pages or bios). Conceptually wrong is adding special
-cases instead of generalizing or abstracting the code so it also
-supports pagesize != sectorsize.
+This is confusing, it's submitting conditionally eb pages, so the main
+object is eb not the pages, so it should be probably submit_eb_page.
