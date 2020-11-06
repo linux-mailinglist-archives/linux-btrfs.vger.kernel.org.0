@@ -2,145 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A612A9026
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 08:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C411A2A90F9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 09:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgKFHTP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 02:19:15 -0500
-Received: from mout.gmx.net ([212.227.15.19]:57097 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726174AbgKFHTO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 02:19:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604647152;
-        bh=kfXyJuYNQyhqNCOJ2gnrAgIcoIKXwv/5RbnK+owpJDE=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=c1TTouno2Pjxbi3PCw7dMMgV3dDPbDua1iTAy4/BUIjmJH+l/Tok3q8/4TScwxITc
-         AXeX6KEhkDcZH9mehrxcFHAfKTKHSNGwBZYMuERXYViBv0u8Ng+Z4/JhfPgJ4TdBsh
-         jv3QaKm3zDLw46jV+RiPh6q9PW8u9irB9veQt1sM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mj8mV-1k5A7942JJ-00fBOG; Fri, 06
- Nov 2020 08:19:12 +0100
-Subject: Re: [PATCH 01/32] btrfs: extent_io: remove the
- extent_start/extent_len for end_bio_extent_readpage()
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-2-wqu@suse.com>
- <831ff919-f4f4-7f1b-1e60-ce8df4697651@suse.com>
- <1e7bf8d5-30d0-a944-c400-b5fe870f1cb5@suse.com>
- <07ee7ff2-e2b1-5318-b72e-8bff87231036@suse.com>
- <4a4a20ed-93de-65c4-feab-0a4f5a8680ef@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <ba70fe5b-1c6f-f0cc-d11e-fded6afa9fa4@gmx.com>
-Date:   Fri, 6 Nov 2020 15:19:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726027AbgKFIGy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 03:06:54 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:42862 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgKFIGy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 03:06:54 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A6851hk169083
+        for <linux-btrfs@vger.kernel.org>; Fri, 6 Nov 2020 08:06:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=vSamvILVPcZcPLOsXtCSGKUyRKdN455oi5335FqB/UU=;
+ b=GNO4Yw+M4IuVoqX38QVqbCqWaxc+ygekVpcJyEHiJpjq12cBSwVjMH8IReDhcwmkjLZ/
+ /dc/kb5FWmasUNhaWWm83pf5u7IELLd3JRKqHOAZrydujC02Aw3Rr+HmF2mrv1cnvfMm
+ yack6kTjsnpS/KZNgVQnhEdMeZWgB2Muo3pDCY7n5+4k0RbdZpEY72TupAZuu7T5nLyC
+ ogm7hCs67RaOp7wZRhWWdEuVxRKb7dI2a/qefXQK46rB2X4/t7qT//mW7T7XYCh7qtQj
+ wwzC/RnhjqVYxMsF11ilHBbML630yWoGCUkZ+YQfYcJAtCKer41PiO/beJgPkXr7vr0L 7w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 34hhw2yqsb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 08:06:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A684xTu163486
+        for <linux-btrfs@vger.kernel.org>; Fri, 6 Nov 2020 08:06:52 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 34jf4dkj9x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 08:06:52 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A686qDE008173
+        for <linux-btrfs@vger.kernel.org>; Fri, 6 Nov 2020 08:06:52 GMT
+Received: from localhost.localdomain (/39.109.231.106)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 06 Nov 2020 00:06:51 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH 0/1] cleanup btrfs_free_extra_devids() drop arg step
+Date:   Fri,  6 Nov 2020 16:06:32 +0800
+Message-Id: <cover.1604649817.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <4a4a20ed-93de-65c4-feab-0a4f5a8680ef@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LTAcYxqUKY7hiB7X1dFPD4PD58FrAvjvhgRdo8t0roh4kKiz9pZ
- e/khbjFH4f3fxJ00TNynC2prtoUg16fQ7at2cfJRphdJ9Ev9nNhziTbKLhBfHBhCPIVjrJ3
- LwnVipSG2nGeprSIR1onY1cVQtQ6z49RVax1I2YI4w4S1vJ1eQgORoTfWK4Qo43PajUmnvU
- Oc7uoTMOPWRakjmeEzJ+g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:I2m2/ZnJJeY=:N2ndyI/bhADYy48zD2tP41
- uO0krJL9yxeR2Ugy3wRVIGi3bHZsj8upIfNFKNnxvNpj9kN+jQvN+vf9q/lZ3AV9zQ/s4eUNX
- fBo4vMsuRLfdiWK2bpnRN0dCCmja1W6creVXXamvC8CBBE0x30eFsy1cKrQuB7+yJJ4LVuyON
- Y6bpjqqcdDHfwgZd08KLCIE+g6ghrwjiEg0NYo5UGlWlaFSRhkcfPPhiYx0oamPApadygzjnY
- BRaC5Zc5ITweOE0xA90y8vw1/RdLgTpdfdLHzSONN8joKPDJOYxs73Nm24JcoaIJtPsJ1WKS6
- GpwP2QU7buRqOJKeYXY8940TXoSo86ke3GSPiP19avnCVp1nL6JJdeaHwCVejehW8aaz+dRYg
- vSZI6KR11cy0rQvOfBnpYgLceV2NO7g8emuTHGZVzwo8IfmxaNbCc00IZSL04eeNy7UZESzBe
- oJoOGz+mfuPPtuFM5F1B0drUG+EQnCsIS3gL2j4gq2spV/AeP1cFDXrFJ4deei/wviFo6/G0b
- 0tGhXUmNPSdD+fq9u1921Ct+mb/wPpbTmDRMldRIcrgfWKMXVoqbA5BYkL7p74KXCFx+YjNI5
- uOnbZYL8W56CTjsyhU7aXuw/rm1gSkwBz373kEhmqHuQQyJhEHODHOG/XBTwa0l1xQ96HLpBH
- JUSSvvlxp1SxREnNf63UnBQknyJjxBKi4VuO0Qoe5PluPgdeI284jmqsMwqV33rSuq6PP4HPu
- fNf7l0/FqAmli/KQeYHZ//aUjFKp1m/bHcL630EVfY8PwBIYijitfUYsIp4baK8hZB68TgKAG
- x/ZZH6wTwvfGR8j/ycRkxmE2WnB4TskLXrApj28dxuS08kaPlyX3ClOx30vpOGv+ZW7xmTEPM
- 6Ig3lSz5QJpSew75yVfw==
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=3 mlxscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=897 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011060057
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ suspectscore=3 clxscore=1015 priorityscore=1501 impostorscore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=909 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011060057
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Requires on:
+ btrfs: dev-replace: fail mount if we don't have replace item with target device
+in the mailing list.
 
+Anand Jain (1):
+  btrfs: cleanup btrfs_free_extra_devids() drop arg step
 
-On 2020/11/6 =E4=B8=8A=E5=8D=8810:01, Qu Wenruo wrote:
-> ...
->>
->> Can't answer that without quantifying what the performance impact is so
->> we can properly judge complexity/performance trade-off!
->> First I'd like to have numbers showing what the overhead otherwise it
->> will be impossible to tell if whatever approach you choose brings any
->> improvements.
->
-> You and Josef are right. The too many extra extent io tree call is
-> greatly hammering the performance of endio function.
->
-> Just a very basic average execution time around that part shows obvious
-> performance drop (read 1GiB file):
->
-> BEFORE: (Execution time between the page_unlock() and the end of the loo=
-p)
-> total_time=3D117795112ns nr_events=3D262144
-> avg=3D449.35ns
->
-> AFTER: (execution time for the two functions at the end of the loop)
-> total_time=3D3058216317ns nr_events=3D262144
-> avg=3D11666.17ns
->
-> So, definitely NACK.
->
-> I'll switch back to the old behavior, but still try to enhance its
-> readability.
->
+ fs/btrfs/disk-io.c | 12 ++++++------
+ fs/btrfs/volumes.c |  8 ++++----
+ fs/btrfs/volumes.h |  2 +-
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-Base on this result, a lot of subpage work needs to be re-done.
+-- 
+2.25.1
 
-This shows that, although extent io tree operation can replace some page
-status in functionality, the performance is still way worse than page bits=
-.
-
-I guess that's also why iomap uses bitmap for each subpage, not some
-btree based global status tracking.
-Meaning later new EXTENT_* bits for data is going to cause the same
-performance impact.
-
-Now I have to change the policy to how to attack the data read write
-path. Since bit map is unavoidable, then it looks like waiting for iomap
-integration is no longer a feasible solution for subpage support.
-
-A similar bitmap needs to be implemented inside btrfs first, allowing
-full subpage read/write ability, then switch to iomap afterwards.
-
-The next update may be completely different then.
-
-Thanks,
-Qu
