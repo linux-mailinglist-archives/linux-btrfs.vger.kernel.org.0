@@ -2,350 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2822A95D1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0669E2A95D4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbgKFLya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 06:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgKFLy3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:54:29 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EF8C0613CF
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:54:29 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id h12so513096qtc.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=8uxLazjVWKra0iYp88EpthR1UDDz9oVzYEAnshSiNXU=;
-        b=PLmcVJeqiEJKLqxW25y7wpUr8+hR+EHz5pSVfqIhn+4/h+90UcyDBDP1C5SGKSlOSL
-         VttM74zcjE0wBoTxrcYUQDoak3K5Q5cof2h9VzvXnpsst7E90ta179U8JoQhR2SIYhAf
-         I0iRwTaivcvUyr6lQAoXSlAGnLnRLt+8DDlr4LT+L2g3J8Hq9nQwGeAFdP8NBaE2rijm
-         zKVoLB8wvJ/faqxPSV39zr20PzsTPGukexgS7RiH8IesPQVNEmigu8StS8kTRFwE4QcP
-         y3ggR9ioNdV+H0x5oGucIJ4KbvLisutR3GxpCpc6fzhBsm3Uh66qL5vRbDogyQUmgOMS
-         z4cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=8uxLazjVWKra0iYp88EpthR1UDDz9oVzYEAnshSiNXU=;
-        b=RtGSAyBxvBgG4mAXa1ZzC7S8/ZaX+eTtmPcU/918K1jezwkSAclV0ujBieMrc2YXiR
-         Dub85zaWn8dUtkxEVugZewJn+yYQaj1ES4+j/wQr19xRfEVMOz0kBxr/7iqQ5ZvO65KM
-         lAbFao8vKU+0WXA1vRmXsJyrMH+yUOkz3KvjGIrxzvFCmc9cbPrrnvW3as9fzJCoqoYb
-         FnmR5Ltevrwb1rzfnYWlwk0OzRxhwHoSKpB2rbdSf4kLctHfnCX6fWlxg2eqhhUd3cl4
-         cnh3hapoYaDwM4DGDL7mgiPpWL2B1NBb9vw1aO+knSeuVzPja+JNejMLQT47X2debfS3
-         6KYg==
-X-Gm-Message-State: AOAM5308YidvUSNRK/+9wKcMjllYxWQGEojBIvlZIsvAbjKScxJsB/4s
-        34/AcnfNMZ7y+7sYtQJiGXNaeOzmWkgWT7O7Qgo=
-X-Google-Smtp-Source: ABdhPJwOPzzHxKSQ48jRYOmzvwJqczj9lhkgIjTf5mTY/zunYB8tGi/tll5IOA0E219swf+xASu33rwrUC4RlZIcwGw=
-X-Received: by 2002:aed:30e2:: with SMTP id 89mr1086025qtf.259.1604663669018;
- Fri, 06 Nov 2020 03:54:29 -0800 (PST)
+        id S1727229AbgKFLyk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 06:54:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56036 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726920AbgKFLyk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 06:54:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604663678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=wQgc38W12Ry9jGiLzTIeoqijmTp1NH7FV20Qqojfm+c=;
+        b=qRFfarq/Vsw3ufNviikmPiCm/jMOZ46ZB57oU1QWGW1WH/+ogeZuzAnZKYFKUUoXbYTu+l
+        796gTP8CdzacD4pqYFuCLkV1+sKuPh6SciznFybUG9Eb3vGfn66+ulALqWtbw4ccIDIfFl
+        7bA2EGwOfyJLRLZnSAX01tVSERw/5v4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 982FCAD09;
+        Fri,  6 Nov 2020 11:54:38 +0000 (UTC)
+Subject: Re: [PATCH 17/32] btrfs: extent_io: don't allow tree block to cross
+ page boundary for subpage support
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201103133108.148112-1-wqu@suse.com>
+ <20201103133108.148112-18-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <bec6ae39-0a10-e4c4-8e4d-06577057e6f5@suse.com>
+Date:   Fri, 6 Nov 2020 13:54:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <cover.1604591048.git.josef@toxicpanda.com> <6eb34e2f39e9c17cee9e2be74c86607a1e69f39b.1604591048.git.josef@toxicpanda.com>
-In-Reply-To: <6eb34e2f39e9c17cee9e2be74c86607a1e69f39b.1604591048.git.josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 6 Nov 2020 11:54:18 +0000
-Message-ID: <CAL3q7H5Ek-p9z0reYiuo63=Gc8fdfVjxDZRmybRw0jZ2j12czQ@mail.gmail.com>
-Subject: Re: [PATCH 13/14] btrfs: pass the owner_root and level to alloc_extent_buffer
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201103133108.148112-18-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 3:47 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> Now that we've plumbed all of the callers to have the owner root and the
-> level, plumb it down into alloc_extent_buffer().
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-I couldn't get anymore the lockdep splat I reported before (after
-applying the whole patchset of course), it used to happen very often
-with btrfs/033.
+On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
+> As a preparation for subpage sector size support (allowing filesystem
+> with sector size smaller than page size to be mounted) if the sector
+> size is smaller than page size, we don't allow tree block to be read if
+> it crosses 64K(*) boundary.
+> 
+> The 64K is selected because:
+> - We are only going to support 64K page size for subpage for now
+> - 64K is also the max node size btrfs supports
+> 
+> This ensures that, tree blocks are always contained in one page for a
+> system with 64K page size, which can greatly simplify the handling.
+> 
+> Or we need to do complex multi-page handling for tree blocks.
+> 
+> Currently the only way to create such tree blocks crossing 64K boundary
+> is by btrfs-convert, which will get fixed soon and doesn't get
+> wide-spread usage.
 
-Looks good, thanks.
+So filesystems with subpage blocksize which have been created as a
+result of a convert operation would eventually fail to read some block
+am I correct in my understanding? If that is the case then can't we
+simply land subpage support in userspace tools _after_ the convert has
+been fixed and turn this check into an assert?
 
+
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/disk-io.c     |  7 ++++---
->  fs/btrfs/disk-io.h     |  3 ++-
->  fs/btrfs/extent-tree.c |  6 ++++--
->  fs/btrfs/extent_io.c   | 13 +++++++++----
->  fs/btrfs/extent_io.h   |  5 +++--
->  fs/btrfs/reada.c       |  8 +++++---
->  fs/btrfs/relocation.c  |  3 ++-
->  fs/btrfs/tree-log.c    |  4 +++-
->  fs/btrfs/volumes.c     |  3 ++-
->  9 files changed, 34 insertions(+), 18 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 934723785ab8..f14398b5d933 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -947,11 +947,12 @@ static const struct address_space_operations btree_=
-aops =3D {
->
->  struct extent_buffer *btrfs_find_create_tree_block(
->                                                 struct btrfs_fs_info *fs_=
-info,
-> -                                               u64 bytenr)
-> +                                               u64 bytenr, u64 owner_roo=
-t,
-> +                                               int level)
->  {
->         if (btrfs_is_testing(fs_info))
->                 return alloc_test_extent_buffer(fs_info, bytenr);
-> -       return alloc_extent_buffer(fs_info, bytenr);
-> +       return alloc_extent_buffer(fs_info, bytenr, owner_root, level);
->  }
->
->  /*
-> @@ -970,7 +971,7 @@ struct extent_buffer *read_tree_block(struct btrfs_fs=
-_info *fs_info, u64 bytenr,
->         struct extent_buffer *buf =3D NULL;
->         int ret;
->
-> -       buf =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> +       buf =3D btrfs_find_create_tree_block(fs_info, bytenr, owner_root,=
- level);
->         if (IS_ERR(buf))
->                 return buf;
->
-> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-> index 41588babf2ed..e75ea6092942 100644
-> --- a/fs/btrfs/disk-io.h
-> +++ b/fs/btrfs/disk-io.h
-> @@ -47,7 +47,8 @@ struct extent_buffer *read_tree_block(struct btrfs_fs_i=
-nfo *fs_info, u64 bytenr,
->                                       int level, struct btrfs_key *first_=
-key);
->  struct extent_buffer *btrfs_find_create_tree_block(
->                                                 struct btrfs_fs_info *fs_=
-info,
-> -                                               u64 bytenr);
-> +                                               u64 bytenr, u64 owner_roo=
-t,
-> +                                               int level);
->  void btrfs_clean_tree_block(struct extent_buffer *buf);
->  int __cold open_ctree(struct super_block *sb,
->                struct btrfs_fs_devices *fs_devices,
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index fe829bb528b5..14b6e19f6151 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -4612,7 +4612,7 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *tr=
-ans, struct btrfs_root *root,
->         struct btrfs_fs_info *fs_info =3D root->fs_info;
->         struct extent_buffer *buf;
->
-> -       buf =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> +       buf =3D btrfs_find_create_tree_block(fs_info, bytenr, owner, leve=
-l);
->         if (IS_ERR(buf))
->                 return buf;
->
-> @@ -5013,7 +5013,9 @@ static noinline int do_walk_down(struct btrfs_trans=
-_handle *trans,
->
->         next =3D find_extent_buffer(fs_info, bytenr);
->         if (!next) {
-> -               next =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> +               next =3D btrfs_find_create_tree_block(fs_info, bytenr,
-> +                                                   root->root_key.object=
-id,
-> +                                                   level - 1);
->                 if (IS_ERR(next))
->                         return PTR_ERR(next);
->
+>  fs/btrfs/extent_io.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index c9d652b0770a..a883350d5e7f 100644
+> index 30768e49cf47..30bbaeaa129a 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -5171,7 +5171,7 @@ struct extent_buffer *alloc_test_extent_buffer(stru=
-ct btrfs_fs_info *fs_info,
->  #endif
->
->  struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> -                                         u64 start)
-> +                                         u64 start, u64 owner_root, int =
-level)
->  {
->         unsigned long len =3D fs_info->nodesize;
->         int num_pages;
-> @@ -6119,19 +6119,22 @@ int try_release_extent_buffer(struct page *page)
->   * btrfs_readahead_tree_block - attempt to readahead a child block.
->   * @fs_info - the fs_info for the fs.
->   * @bytenr - the bytenr to read.
-> + * @owner_root - the objectid of the root that owns this eb.
->   * @gen - the generation for the uptodate check, can be 0.
-> + * @level - the level for the eb.
->   *
->   * Attempt to readahead a tree block at @bytenr.  If @gen is 0 then we d=
-o a
->   * normal uptodate check of the eb, without checking the generation.  If=
- we have
->   * to read the block we will not block on anything.
->   */
->  void btrfs_readahead_tree_block(struct btrfs_fs_info *fs_info,
-> -                               u64 bytenr, u64 gen)
-> +                               u64 bytenr, u64 owner_root, u64 gen,
-> +                               int level)
->  {
->         struct extent_buffer *eb;
->         int ret;
->
-> -       eb =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> +       eb =3D btrfs_find_create_tree_block(fs_info, bytenr, owner_root, =
-level);
->         if (IS_ERR(eb))
->                 return;
->
-> @@ -6159,5 +6162,7 @@ void btrfs_readahead_node_child(struct extent_buffe=
-r *node, int slot)
->  {
->         btrfs_readahead_tree_block(node->fs_info,
->                                    btrfs_node_blockptr(node, slot),
-> -                                  btrfs_node_ptr_generation(node, slot))=
-;
-> +                                  btrfs_header_owner(node),
-> +                                  btrfs_node_ptr_generation(node, slot),
-> +                                  btrfs_header_level(node) - 1);
->  }
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index a211e90292f8..578c2e56c5e4 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -182,7 +182,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct f=
-iemap_extent_info *fieinfo,
->  void set_page_extent_mapped(struct page *page);
->
->  struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-> -                                         u64 start);
-> +                                         u64 start, u64 owner_root, int =
-level);
->  struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *=
-fs_info,
->                                                   u64 start, unsigned lon=
-g len);
->  struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs=
-_info,
-> @@ -199,7 +199,8 @@ int read_extent_buffer_pages(struct extent_buffer *eb=
-, int wait,
->                              int mirror_num);
->  void wait_on_extent_buffer_writeback(struct extent_buffer *eb);
->  void btrfs_readahead_tree_block(struct btrfs_fs_info *fs_info,
-> -                               u64 bytenr, u64 gen);
-> +                               u64 bytenr, u64 owner_root, u64 gen,
-> +                               int level);
->  void btrfs_readahead_node_child(struct extent_buffer *node, int slot);
->
->  static inline int num_extent_pages(const struct extent_buffer *eb)
-> diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
-> index 83f4e6c53e46..8f26b3b22308 100644
-> --- a/fs/btrfs/reada.c
-> +++ b/fs/btrfs/reada.c
-> @@ -656,12 +656,13 @@ static int reada_pick_zone(struct btrfs_device *dev=
-)
->  }
->
->  static int reada_tree_block_flagged(struct btrfs_fs_info *fs_info, u64 b=
-ytenr,
-> -                                   int mirror_num, struct extent_buffer =
-**eb)
-> +                                   u64 owner_root, int level, int mirror=
-_num,
-> +                                   struct extent_buffer **eb)
->  {
->         struct extent_buffer *buf =3D NULL;
->         int ret;
->
-> -       buf =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> +       buf =3D btrfs_find_create_tree_block(fs_info, bytenr, owner_root,=
- level);
->         if (IS_ERR(buf))
->                 return 0;
->
-> @@ -749,7 +750,8 @@ static int reada_start_machine_dev(struct btrfs_devic=
-e *dev)
->         logical =3D re->logical;
->
->         atomic_inc(&dev->reada_in_flight);
-> -       ret =3D reada_tree_block_flagged(fs_info, logical, mirror_num, &e=
-b);
-> +       ret =3D reada_tree_block_flagged(fs_info, logical, re->owner_root=
-,
-> +                                      re->level, mirror_num, &eb);
->         if (ret)
->                 __readahead_hook(fs_info, re, NULL, ret);
->         else if (eb)
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 3e792bf31ecd..4551650a270d 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -2514,7 +2514,8 @@ int relocate_tree_blocks(struct btrfs_trans_handle =
-*trans,
->         rbtree_postorder_for_each_entry_safe(block, next, blocks, rb_node=
-) {
->                 if (!block->key_ready)
->                         btrfs_readahead_tree_block(fs_info,
-> -                                                  block->bytenr, 0);
-> +                                                  block->bytenr, 0, 0,
-> +                                                  block->level);
->         }
->
->         /* Get first keys */
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index eb86c632535a..b1f97be57bb3 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -2699,7 +2699,9 @@ static noinline int walk_down_log_tree(struct btrfs=
-_trans_handle *trans,
->                 btrfs_node_key_to_cpu(cur, &first_key, path->slots[*level=
-]);
->                 blocksize =3D fs_info->nodesize;
->
-> -               next =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> +               next =3D btrfs_find_create_tree_block(fs_info, bytenr,
-> +                                                   btrfs_header_owner(cu=
-r),
-> +                                                   *level - 1);
->                 if (IS_ERR(next))
->                         return PTR_ERR(next);
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 8beb91d3cd88..0ca2e96a9cda 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6897,7 +6897,8 @@ int btrfs_read_sys_array(struct btrfs_fs_info *fs_i=
-nfo)
->          * fixed to BTRFS_SUPER_INFO_SIZE. If nodesize > sb size, this wi=
-ll
->          * overallocate but we can keep it as-is, only the first page is =
-used.
->          */
-> -       sb =3D btrfs_find_create_tree_block(fs_info, BTRFS_SUPER_INFO_OFF=
-SET);
-> +       sb =3D btrfs_find_create_tree_block(fs_info, BTRFS_SUPER_INFO_OFF=
-SET,
-> +                                         root->root_key.objectid, 0);
->         if (IS_ERR(sb))
->                 return PTR_ERR(sb);
->         set_extent_buffer_uptodate(sb);
-> --
-> 2.26.2
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+> @@ -5261,6 +5261,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+>  		btrfs_err(fs_info, "bad tree block start %llu", start);
+>  		return ERR_PTR(-EINVAL);
+>  	}
+> +	if (btrfs_is_subpage(fs_info) && round_down(start, PAGE_SIZE) !=
+> +	    round_down(start + len - 1, PAGE_SIZE)) {
+> +		btrfs_err(fs_info,
+> +		"tree block crosses page boundary, start %llu nodesize %lu",
+> +			  start, len);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+>  
+>  	eb = find_extent_buffer(fs_info, start);
+>  	if (eb)
+> 
