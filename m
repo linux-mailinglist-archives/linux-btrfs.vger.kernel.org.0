@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4506A2A95CD
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8F62A95CE
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgKFLxa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 06:53:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
+        id S1727045AbgKFLxy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 06:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgKFLxa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:53:30 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AD7C0613CF
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:53:30 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id t5so527154qtp.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:53:30 -0800 (PST)
+        with ESMTP id S1726694AbgKFLxy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:53:54 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7E7C0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:53:54 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id b18so735434qkc.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:53:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=rcCnKJ8L68lRrHNSwc8ugkqtWHmr890Swawvbcqc0j8=;
-        b=f1tCSvsQVwRVBnbyQzTw+9xVHBcr/wKIc5Vn1wiq1rxpsff/fClDMh5Sbiuz4pASjS
-         1nBrMHHJ509olYuBfylDh4Yc2TqzCxA+8AUw8hJhI3ss5PHrMQ6OHwiAL4feVgB9hFpO
-         YVpwCBGO5YJj0IW0ZiK/QcUZA0rq01qAEpMO9J0gMbr9HAQhiyo6c7Wln/+0NwdQwfq6
-         Uqx+Gafu6U2O00kblnwcIJdbXabgABlQ/aKXSul1fMhVZfDvRghZS7TCyuuBNUIRSj+i
-         VMFqAPod36yXXXhjRrkrpduySYoYBIMi/JgU1/ZWo6f/3JAekwBRoWv+TvgdoFcFdyeh
-         5QQA==
+        bh=WDmf+qUUZN5aSZrrI2I2J/AcVOtZJadBbrjWgWgfhLU=;
+        b=IAUALUnTf/1ZlO/us29NeGFtIKGxphgEEGP8ZC7Cpo89hi8jW+3V/OfPKMivKNj6uy
+         WJUHDvMvPbtgG5Yv/6XCQeH6jQYZrizXZ/rMQWhEQH7+4h4u7EBFj0udcV/t8A7QVLm0
+         TDnXmYHj2EVGDzdjF9eWVMpieAzTknkmHmtz00KbkTUn2J7QEYvtojZWA4RQeIChR8Or
+         ZKRZ2WTIY4DL/FzyeVR9k8Ofvn9MANluLWeqMGM1d9wiLzbInB8IAFQwoN+zUkmeKL2M
+         SC0DaGr3pFiX4wO7JaVcFSYfOYH+H7/r6T49/ke0VXd/eWZYi4Koys9+wOxSsRTfPUv7
+         z/lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=rcCnKJ8L68lRrHNSwc8ugkqtWHmr890Swawvbcqc0j8=;
-        b=rjNLFoQZL9+BroN7PmXZ16KrPjihsPVjaDxZmJ7RUyGFj76kFs6OZSDCY5/JBwuQ00
-         y848xioSh7U+LycQ4+8QvgZ2hFno1F3zjAZFPsFFCaCS12H9VK6TcVBLT3e9iKpXdzce
-         5XzaCK+kJVGJetiWUBSZHgcnGsOBhW+ZYi+pPjxmEHDu4iIP4fANl8W5Cu36iTjHjBb4
-         jd7fzMBUFaTbdx+4tNaL59Zq6Ws4w+hB6XlZpYdPI9Wbdk5uow4Z0OkGSdP8mP+07SN5
-         C/Z3j91tYMIvMp5u7GndWMCj+28HUXKAyOeE1ZYT81trgy6bddbQSTBXhvGLzKHCeqoB
-         /I+w==
-X-Gm-Message-State: AOAM5315DADUpD//S1UIl8T9Dzx5kwfj8aw9lSpzHIE3IYyzdYd+3Eyk
-        p+2xLpk+7s6hhVk6wjooWrcG4N5rKNaytumYiAo=
-X-Google-Smtp-Source: ABdhPJxYGdW9m9DS/bJ/DlNrliabWPY6cg82JCUApHaCUQffpYlshTOKGcLKq+srfbQ0+lZ7ig2+lLV1TV3jmyZbbys=
-X-Received: by 2002:aed:2321:: with SMTP id h30mr997800qtc.213.1604663609526;
- Fri, 06 Nov 2020 03:53:29 -0800 (PST)
+        bh=WDmf+qUUZN5aSZrrI2I2J/AcVOtZJadBbrjWgWgfhLU=;
+        b=JX5EgNoFplhhNslBzqiyA3IiyXMcFVy7/4Lt5D3qTsOUfZZAZ5jbnLmjegcPVsqdt7
+         vyZvK+XFrXxbcfU2ZlrOSUm+OuLl01fqehw73AUIgmUzXQ4dun9mHvHQxo+U5ibuJnGv
+         h89Zp7l7e4jc1hKnU2UUvmYZN27wtSvm92x6ZaadJMC+EwvHp50QFUiwQX7eHtFwylkI
+         OZsKCF4FInAs18zqD1YW5MGKXayMaMDW25MoIdz8jVyEvdfMr++lxdUqtWfLiWr/jQ+w
+         3RbEI8rE/nJqVEarYm6YeMMGKyT0lZflwZZdnMed8EkdOwpq66JSCc8YUavHs9S1lfmP
+         l47A==
+X-Gm-Message-State: AOAM533e1dumUkJyXmuE4WpPvIDpPLI45tU/BfSyFVCQLN/aAXLvFxFM
+        LTgRNTvJ272raKvTlx2u2urcZt9eetvPD9iZRaw=
+X-Google-Smtp-Source: ABdhPJwwdBGZFZjWDfkyQBe0jjAXR/0imAxIX8+/DxT9mOqvq9tGVPznws7zhqTsfhr9k6XbDUUPIGavfbuJC03V/cc=
+X-Received: by 2002:a37:7c81:: with SMTP id x123mr971775qkc.383.1604663633519;
+ Fri, 06 Nov 2020 03:53:53 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1604591048.git.josef@toxicpanda.com> <026ed684d026b3d792f1bab60bd3d63be28acd65.1604591048.git.josef@toxicpanda.com>
-In-Reply-To: <026ed684d026b3d792f1bab60bd3d63be28acd65.1604591048.git.josef@toxicpanda.com>
+References: <cover.1604591048.git.josef@toxicpanda.com> <145f1008e1f813a6a23677e9fe5b64f780824c3d.1604591048.git.josef@toxicpanda.com>
+In-Reply-To: <145f1008e1f813a6a23677e9fe5b64f780824c3d.1604591048.git.josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 6 Nov 2020 11:53:18 +0000
-Message-ID: <CAL3q7H69Nx0gfWO_t2=aYQS8EMN5HKH+0VA=Jx=d2h8tPuLtxA@mail.gmail.com>
-Subject: Re: [PATCH 06/14] btrfs: use btrfs_read_node_slot in replace_path
+Date:   Fri, 6 Nov 2020 11:53:42 +0000
+Message-ID: <CAL3q7H4JOtr5++cwqQoG9kGnApsCP8X4+uuMCXA-ck1daDbAZw@mail.gmail.com>
+Subject: Re: [PATCH 07/14] btrfs: use btrfs_read_node_slot in walk_down_tree
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -74,51 +74,52 @@ with btrfs/033.
 Looks good, thanks.
 
 > ---
->  fs/btrfs/relocation.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
+>  fs/btrfs/ref-verify.c | 18 ++----------------
+>  1 file changed, 2 insertions(+), 16 deletions(-)
 >
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 4d5cb593b674..465f5b4d3233 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -1218,8 +1218,6 @@ int replace_path(struct btrfs_trans_handle *trans, =
-struct reloc_control *rc,
+> diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+> index 488bc3dd3c2b..4b9b6c52a83b 100644
+> --- a/fs/btrfs/ref-verify.c
+> +++ b/fs/btrfs/ref-verify.c
+> @@ -551,29 +551,15 @@ static int process_leaf(struct btrfs_root *root,
+>  static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *pa=
+th,
+>                           int level, u64 *bytenr, u64 *num_bytes)
+>  {
+> -       struct btrfs_fs_info *fs_info =3D root->fs_info;
+>         struct extent_buffer *eb;
+> -       u64 block_bytenr, gen;
+>         int ret =3D 0;
 >
->         parent =3D eb;
->         while (1) {
-> -               struct btrfs_key first_key;
+>         while (level >=3D 0) {
+>                 if (level) {
+> -                       struct btrfs_key first_key;
 > -
->                 level =3D btrfs_header_level(parent);
->                 BUG_ON(level < lowest_level);
->
-> @@ -1235,7 +1233,6 @@ int replace_path(struct btrfs_trans_handle *trans, =
-struct reloc_control *rc,
->                 old_bytenr =3D btrfs_node_blockptr(parent, slot);
->                 blocksize =3D fs_info->nodesize;
->                 old_ptr_gen =3D btrfs_node_ptr_generation(parent, slot);
-> -               btrfs_node_key_to_cpu(parent, &first_key, slot);
->
->                 if (level <=3D max_level) {
->                         eb =3D path->nodes[level];
-> @@ -1260,15 +1257,10 @@ int replace_path(struct btrfs_trans_handle *trans=
-, struct reloc_control *rc,
->                                 break;
->                         }
->
-> -                       eb =3D read_tree_block(fs_info, old_bytenr, old_p=
-tr_gen,
+> -                       block_bytenr =3D btrfs_node_blockptr(path->nodes[=
+level],
+> -                                                          path->slots[le=
+vel]);
+> -                       gen =3D btrfs_node_ptr_generation(path->nodes[lev=
+el],
+> -                                                       path->slots[level=
+]);
+> -                       btrfs_node_key_to_cpu(path->nodes[level], &first_=
+key,
+> -                                             path->slots[level]);
+> -                       eb =3D read_tree_block(fs_info, block_bytenr, gen=
+,
 > -                                            level - 1, &first_key);
-> +                       eb =3D btrfs_read_node_slot(parent, slot);
->                         if (IS_ERR(eb)) {
->                                 ret =3D PTR_ERR(eb);
->                                 break;
-> -                       } else if (!extent_buffer_uptodate(eb)) {
-> -                               ret =3D -EIO;
+> +                       eb =3D btrfs_read_node_slot(path->nodes[level],
+> +                                                 path->slots[level]);
+>                         if (IS_ERR(eb))
+>                                 return PTR_ERR(eb);
+> -                       if (!extent_buffer_uptodate(eb)) {
 > -                               free_extent_buffer(eb);
-> -                               break;
->                         }
->                         btrfs_tree_lock(eb);
->                         if (cow) {
+> -                               return -EIO;
+> -                       }
+>                         btrfs_tree_read_lock(eb);
+>                         path->nodes[level-1] =3D eb;
+>                         path->slots[level-1] =3D 0;
 > --
 > 2.26.2
 >
