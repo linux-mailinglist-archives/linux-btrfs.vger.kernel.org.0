@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7F42A95C5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37EE2A95C6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgKFLv1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 06:51:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
+        id S1727057AbgKFLvt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 06:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgKFLv1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:51:27 -0500
+        with ESMTP id S1726565AbgKFLvs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:51:48 -0500
 Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C83C0613CF
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:51:27 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id i17so286693qvp.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:51:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA387C0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:51:48 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id d1so292559qvl.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:51:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=P3/GC4q9SsBjdLKB0qJIULg+e81Ahfxqw4RPWlp4sJ0=;
-        b=b6yLgGiMVfoiaVmeSsddX8sFQrn3zmi1V0a3E7g3ESeMmQ9mfyceWguiWBiaQA9Jbf
-         MutmC3RLmznTLwc+QToejyYVn61Mylvxw0ngZZ7sbuA2p3OXH0xLmBIxLbUDQ3xNXFx1
-         QTYxkAAw6GzTcdkohXvc+ymChW3f6pIC84F5AXH2EN8xtesQrChl1SbGHH/y2EobpSU8
-         4CaHflSyjSd4hFZSj05MfpMlpUyr1Vuwm0zGJw95U01qRbzz/oCPlj8QouHWH22VqZGy
-         2uhPmGgSjr7zhSyrnuPivpWGDdbv7FNFrlUgFf+3rI+MfSQyRjf1R9vL7miDzmHCNrjp
-         crhw==
+        bh=WFh20jcAcx3LKpemVjYSPei9kHg4zul2Qzc1oK4jJOk=;
+        b=Jr21csp/Ss1HFNDGhkNkdkC8wEWzgpPox8gE3+GSr5gB+jsNJ4vNKC2EWGuSllTS+N
+         qTixCF31cimLojaYveF77lg7tG9CME0wnkbl/Mi7j9SioSD1plFzmp4G8OD4XZXUoPf7
+         cU6/VNKu5gpHUho4kzBL6D3Hf1UbqmEe11L/x0bWGDU1EBdnmIJPz/1fYu+0IoBmIU9+
+         bEdN6dIF4usRHqCqCU66VlEfuUnv3TYbROPGbyUEpBTYLRJOZNgYG+kzsoE3tLeecwsJ
+         kc9PvuaF1aoKikJUhVJF6409OlvVcTExeshujKAy5FqgQ84WPTqDhLMx5wZ1DcHYIbFF
+         WMSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=P3/GC4q9SsBjdLKB0qJIULg+e81Ahfxqw4RPWlp4sJ0=;
-        b=Ogg4g8/WOXQwdW9wk/VfWzIp3YxJJFgEgfIFiBTGJIirqvcykRx14sbhhfWDdAiYV7
-         w7XTuTtN+2zzCbCp/dCz8jKQFpwDEI3bpInwfx3x2uXi0RTl1wmLhza77KlDtW/swGpX
-         9Pm9jpZMK/PWyPhLN1mssRC6CDEe7g5BQE3yWiYcmaiN3aX1ZKLRilPVjqapI0bMT+H7
-         dTWZqJ4eAqx70JQNbPnm3g+I4XXs040gc6WbKM2xpjRnIaSPetfYogvXI9Ibn1JWCE/u
-         wBNXArOENvRrnebC8cJZFkbfhck+NfF6gzoNeuRqlb1w+xjg0IyPoeOIVTsVLJvFGHu4
-         vzyw==
-X-Gm-Message-State: AOAM530TO+hN1wzCQz36KfQI8tI8CiIwTHlf4o2H4XZjb4IUMvkvpdvx
-        dtYpKu4ptUG6lhjz8f7Klo5vAOlAswRb+ZSiyuE=
-X-Google-Smtp-Source: ABdhPJzB4gMLcrkPjaehpJJa3OJebV0uh0smo7o/F/mvb/Up6KjvgM2Gr7Jz+q4TxyKDBjPmjELQhW41iIpJOvJDp4g=
-X-Received: by 2002:ad4:4381:: with SMTP id s1mr1058608qvr.27.1604663486408;
- Fri, 06 Nov 2020 03:51:26 -0800 (PST)
+        bh=WFh20jcAcx3LKpemVjYSPei9kHg4zul2Qzc1oK4jJOk=;
+        b=P8YKrh85op1VP72ua73awjg466nu6mBl/mT8pcfqIk+ZdCzHBZp73AcKYKFDxBdIRH
+         Z10iFt/4VM4qZIoJsyhq813TzZNnfNWItlUKkPPJ1XLF1iJyrN3AcWDf7L35pxJnnr1A
+         0zxSy7dFcJuqei65zTEaLEZ7ClRw0Qxzbd4QDfvYJ70Yn93NGVBTB/+gnYpuoYWhuW0n
+         SekGGNhGduOxMzGZBQFvefHlZxaH1wUUn5TLCPcuj7UhKl8YoJJqb2DN6WnjIX2GYrYG
+         ZJDKKQ5fc1BBy2flxj9cJI+6T9g6LE+ubBmqXjiHGaZqd6iA5fzZRQi0NC0G7T1WU3Fd
+         Wtkw==
+X-Gm-Message-State: AOAM530YWs01OiPZ7qwEWyfcoh6bbQl8l2fF2RrS4D+pKIvDGBy2ufFf
+        jyuQtpjQqoTVRaaxJ8mUPcu3sznmglL5wR4awZw=
+X-Google-Smtp-Source: ABdhPJxhH1nUZKvO39EVyfKbf9hswgiactwwBKNbc2H01XfsZay/gicnnBmJnzNsuROS7UP8/RYjDw/Bihx5gIhzcy0=
+X-Received: by 2002:a0c:99e6:: with SMTP id y38mr1130042qve.28.1604663508117;
+ Fri, 06 Nov 2020 03:51:48 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1604591048.git.josef@toxicpanda.com> <c064bd10eca6d335160fa3ab838816fbc87de7c1.1604591048.git.josef@toxicpanda.com>
-In-Reply-To: <c064bd10eca6d335160fa3ab838816fbc87de7c1.1604591048.git.josef@toxicpanda.com>
+References: <cover.1604591048.git.josef@toxicpanda.com> <3a6461bd56f7f175fe4050b0c78747bf065242c4.1604591048.git.josef@toxicpanda.com>
+In-Reply-To: <3a6461bd56f7f175fe4050b0c78747bf065242c4.1604591048.git.josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 6 Nov 2020 11:51:15 +0000
-Message-ID: <CAL3q7H4zxBmBAeFsMKvnCuQbRydMvjyGSYmTEJ-ydppPOkqm=w@mail.gmail.com>
-Subject: Re: [PATCH 02/14] btrfs: cleanup extent buffer readahead
+Date:   Fri, 6 Nov 2020 11:51:37 +0000
+Message-ID: <CAL3q7H4v0MoEAY02SHGLjqMWHpdp5XOKAiKm9foLJ5i=sM75cg@mail.gmail.com>
+Subject: Re: [PATCH 03/14] btrfs: use btrfs_read_node_slot in btrfs_realloc_node
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -61,15 +61,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Thu, Nov 5, 2020 at 3:47 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> I'm going to need to start passing around a lot more information when we
-> allocate extent buffers, in order to make that cleaner we need to
-> cleanup how we do readahead.  Most of the callers have the parent node
-> that we're getting our blockptr from, with the sole exception of
-> relocation which simply has the bytenr it wants to read.  Add a helper
-> that takes the current arguments that we need (bytenr and gen), and add
-> another helper for simply reading the slot out of a node.  In followup
-> patches the helper that takes all the extra arguments will be expanded,
-> and the simpler helper won't need to have it's arguments adjusted.
+> We have this giant open-coded nightmare in btrfs_realloc_node that does
+> the same thing that the normal read path does, which is to see if we
+> have the eb in memory already, and if not read it, and verify the eb is
+> uptodate.  Delete this open coding and simply use btrfs_read_node_slot.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
@@ -82,278 +77,89 @@ with btrfs/033.
 Looks good, thanks.
 
 > ---
->  fs/btrfs/ctree.c       | 45 ++++++++--------------------------------
->  fs/btrfs/disk-io.c     | 16 --------------
->  fs/btrfs/disk-io.h     |  1 -
->  fs/btrfs/extent-tree.c |  2 +-
->  fs/btrfs/extent_io.c   | 47 ++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/extent_io.h   |  3 +++
->  fs/btrfs/relocation.c  |  3 ++-
->  fs/btrfs/volumes.c     |  8 ++-----
->  8 files changed, 64 insertions(+), 61 deletions(-)
+>  fs/btrfs/ctree.c | 33 +++------------------------------
+>  1 file changed, 3 insertions(+), 30 deletions(-)
 >
 > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index d2d5854d51a7..0ff866328a4f 100644
+> index 0ff866328a4f..5ec778e01222 100644
 > --- a/fs/btrfs/ctree.c
 > +++ b/fs/btrfs/ctree.c
-> @@ -2226,7 +2226,7 @@ static void reada_for_search(struct btrfs_fs_info *=
-fs_info,
->                 search =3D btrfs_node_blockptr(node, nr);
->                 if ((search <=3D target && target - search <=3D 65536) ||
->                     (search > target && search - target <=3D 65536)) {
-> -                       readahead_tree_block(fs_info, search);
-> +                       btrfs_readahead_node_child(node, nr);
->                         nread +=3D blocksize;
->                 }
->                 nscan++;
-> @@ -2235,16 +2235,11 @@ static void reada_for_search(struct btrfs_fs_info=
- *fs_info,
->         }
->  }
->
-> -static noinline void reada_for_balance(struct btrfs_fs_info *fs_info,
-> -                                      struct btrfs_path *path, int level=
-)
-> +static noinline void reada_for_balance(struct btrfs_path *path, int leve=
-l)
->  {
-> +       struct extent_buffer *parent;
->         int slot;
->         int nritems;
-> -       struct extent_buffer *parent;
-> -       struct extent_buffer *eb;
+> @@ -1570,7 +1570,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *t=
+rans,
+>         struct btrfs_fs_info *fs_info =3D root->fs_info;
+>         struct extent_buffer *cur;
+>         u64 blocknr;
 > -       u64 gen;
-> -       u64 block1 =3D 0;
-> -       u64 block2 =3D 0;
->
->         parent =3D path->nodes[level + 1];
->         if (!parent)
-> @@ -2253,32 +2248,10 @@ static noinline void reada_for_balance(struct btr=
-fs_fs_info *fs_info,
->         nritems =3D btrfs_header_nritems(parent);
->         slot =3D path->slots[level + 1];
->
-> -       if (slot > 0) {
-> -               block1 =3D btrfs_node_blockptr(parent, slot - 1);
-> -               gen =3D btrfs_node_ptr_generation(parent, slot - 1);
-> -               eb =3D find_extent_buffer(fs_info, block1);
-> -               /*
-> -                * if we get -eagain from btrfs_buffer_uptodate, we
-> -                * don't want to return eagain here.  That will loop
-> -                * forever
-> -                */
-> -               if (eb && btrfs_buffer_uptodate(eb, gen, 1) !=3D 0)
-> -                       block1 =3D 0;
-> -               free_extent_buffer(eb);
-> -       }
-> -       if (slot + 1 < nritems) {
-> -               block2 =3D btrfs_node_blockptr(parent, slot + 1);
-> -               gen =3D btrfs_node_ptr_generation(parent, slot + 1);
-> -               eb =3D find_extent_buffer(fs_info, block2);
-> -               if (eb && btrfs_buffer_uptodate(eb, gen, 1) !=3D 0)
-> -                       block2 =3D 0;
-> -               free_extent_buffer(eb);
-> -       }
-> -
-> -       if (block1)
-> -               readahead_tree_block(fs_info, block1);
-> -       if (block2)
-> -               readahead_tree_block(fs_info, block2);
-> +       if (slot > 0)
-> +               btrfs_readahead_node_child(parent, slot - 1);
-> +       if (slot + 1 < nritems)
-> +               btrfs_readahead_node_child(parent, slot + 1);
->  }
->
->
-> @@ -2454,7 +2427,7 @@ setup_nodes_for_search(struct btrfs_trans_handle *t=
+>         u64 search_start =3D *last_ret;
+>         u64 last_block =3D 0;
+>         u64 other;
+> @@ -1579,7 +1578,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *t=
 rans,
->                         goto again;
->                 }
->
-> -               reada_for_balance(fs_info, p, level);
-> +               reada_for_balance(p, level);
->                 sret =3D split_node(trans, root, p, level);
->
->                 BUG_ON(sret > 0);
-> @@ -2473,7 +2446,7 @@ setup_nodes_for_search(struct btrfs_trans_handle *t=
-rans,
->                         goto again;
->                 }
->
-> -               reada_for_balance(fs_info, p, level);
-> +               reada_for_balance(p, level);
->                 sret =3D balance_level(trans, root, p, level);
->
->                 if (sret) {
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 35b16fe3b05f..ec64e087520e 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -945,22 +945,6 @@ static const struct address_space_operations btree_a=
-ops =3D {
->         .set_page_dirty =3D btree_set_page_dirty,
->  };
->
-> -void readahead_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr)
-> -{
-> -       struct extent_buffer *buf =3D NULL;
-> -       int ret;
-> -
-> -       buf =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> -       if (IS_ERR(buf))
-> -               return;
-> -
-> -       ret =3D read_extent_buffer_pages(buf, WAIT_NONE, 0);
-> -       if (ret < 0)
-> -               free_extent_buffer_stale(buf);
-> -       else
-> -               free_extent_buffer(buf);
-> -}
-> -
->  struct extent_buffer *btrfs_find_create_tree_block(
->                                                 struct btrfs_fs_info *fs_=
-info,
->                                                 u64 bytenr)
-> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-> index 238b45223f2e..009f505d6c97 100644
-> --- a/fs/btrfs/disk-io.h
-> +++ b/fs/btrfs/disk-io.h
-> @@ -45,7 +45,6 @@ int btrfs_verify_level_key(struct extent_buffer *eb, in=
-t level,
->  struct extent_buffer *read_tree_block(struct btrfs_fs_info *fs_info, u64=
- bytenr,
->                                       u64 parent_transid, int level,
->                                       struct btrfs_key *first_key);
-> -void readahead_tree_block(struct btrfs_fs_info *fs_info, u64 bytenr);
->  struct extent_buffer *btrfs_find_create_tree_block(
->                                                 struct btrfs_fs_info *fs_=
-info,
->                                                 u64 bytenr);
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index d7a68203cda0..bf2f0af24e91 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -4854,7 +4854,7 @@ static noinline void reada_walk_down(struct btrfs_t=
-rans_handle *trans,
->                                 continue;
->                 }
->  reada:
-> -               readahead_tree_block(fs_info, bytenr);
-> +               btrfs_readahead_node_child(eb, slot);
->                 nread++;
->         }
->         wc->reada_slot =3D slot;
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 119ced4a501b..c9d652b0770a 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -6114,3 +6114,50 @@ int try_release_extent_buffer(struct page *page)
->
->         return release_extent_buffer(eb);
->  }
-> +
-> +/**
-> + * btrfs_readahead_tree_block - attempt to readahead a child block.
-> + * @fs_info - the fs_info for the fs.
-> + * @bytenr - the bytenr to read.
-> + * @gen - the generation for the uptodate check, can be 0.
-> + *
-> + * Attempt to readahead a tree block at @bytenr.  If @gen is 0 then we d=
-o a
-> + * normal uptodate check of the eb, without checking the generation.  If=
- we have
-> + * to read the block we will not block on anything.
-> + */
-> +void btrfs_readahead_tree_block(struct btrfs_fs_info *fs_info,
-> +                               u64 bytenr, u64 gen)
-> +{
-> +       struct extent_buffer *eb;
-> +       int ret;
-> +
-> +       eb =3D btrfs_find_create_tree_block(fs_info, bytenr);
-> +       if (IS_ERR(eb))
-> +               return;
-> +
-> +       if (btrfs_buffer_uptodate(eb, gen, 1)) {
-> +               free_extent_buffer(eb);
-> +               return;
-> +       }
-> +
-> +       ret =3D read_extent_buffer_pages(eb, WAIT_NONE, 0);
-> +       if (ret < 0)
-> +               free_extent_buffer_stale(eb);
-> +       else
-> +               free_extent_buffer(eb);
-> +}
-> +
-> +/**
-> + * btrfs_readahead_node_child - readahead a node's child block.
-> + * @node - the parent node we're reading from.
-> + * @slot - the slot in the parent node for the child we want to read.
-> + *
-> + * A helper for btrfs_readahead_tree_block, we simply read the bytenr po=
-inted at
-> + * the slot in the node provided.
-> + */
-> +void btrfs_readahead_node_child(struct extent_buffer *node, int slot)
-> +{
-> +       btrfs_readahead_tree_block(node->fs_info,
-> +                                  btrfs_node_blockptr(node, slot),
-> +                                  btrfs_node_ptr_generation(node, slot))=
-;
-> +}
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 3c2bf21c54eb..a211e90292f8 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -198,6 +198,9 @@ void free_extent_buffer_stale(struct extent_buffer *e=
-b);
->  int read_extent_buffer_pages(struct extent_buffer *eb, int wait,
->                              int mirror_num);
->  void wait_on_extent_buffer_writeback(struct extent_buffer *eb);
-> +void btrfs_readahead_tree_block(struct btrfs_fs_info *fs_info,
-> +                               u64 bytenr, u64 gen);
-> +void btrfs_readahead_node_child(struct extent_buffer *node, int slot);
->
->  static inline int num_extent_pages(const struct extent_buffer *eb)
->  {
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 0b3ccf464c3d..0e2dd7cf87f6 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -2542,7 +2542,8 @@ int relocate_tree_blocks(struct btrfs_trans_handle =
-*trans,
->         /* Kick in readahead for tree blocks with missing keys */
->         rbtree_postorder_for_each_entry_safe(block, next, blocks, rb_node=
-) {
->                 if (!block->key_ready)
-> -                       readahead_tree_block(fs_info, block->bytenr);
-> +                       btrfs_readahead_tree_block(fs_info,
-> +                                                  block->bytenr, 0);
->         }
->
->         /* Get first keys */
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index c927dc597550..8beb91d3cd88 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7065,12 +7065,8 @@ static void readahead_tree_node_children(struct ex=
-tent_buffer *node)
 >         int i;
->         const int nr_items =3D btrfs_header_nritems(node);
+>         int err =3D 0;
+>         int parent_level;
+> -       int uptodate;
+>         u32 blocksize;
+>         int progress_passed =3D 0;
+>         struct btrfs_disk_key disk_key;
+> @@ -1597,7 +1595,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *t=
+rans,
+>                 return 0;
 >
-> -       for (i =3D 0; i < nr_items; i++) {
-> -               u64 start;
-> -
-> -               start =3D btrfs_node_blockptr(node, i);
-> -               readahead_tree_block(node->fs_info, start);
-> -       }
-> +       for (i =3D 0; i < nr_items; i++)
-> +               btrfs_readahead_node_child(node, i);
->  }
+>         for (i =3D start_slot; i <=3D end_slot; i++) {
+> -               struct btrfs_key first_key;
+>                 int close =3D 1;
 >
->  int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info)
+>                 btrfs_node_key(parent, &disk_key, i);
+> @@ -1606,8 +1603,6 @@ int btrfs_realloc_node(struct btrfs_trans_handle *t=
+rans,
+>
+>                 progress_passed =3D 1;
+>                 blocknr =3D btrfs_node_blockptr(parent, i);
+> -               gen =3D btrfs_node_ptr_generation(parent, i);
+> -               btrfs_node_key_to_cpu(parent, &first_key, i);
+>                 if (last_block =3D=3D 0)
+>                         last_block =3D blocknr;
+>
+> @@ -1624,31 +1619,9 @@ int btrfs_realloc_node(struct btrfs_trans_handle *=
+trans,
+>                         continue;
+>                 }
+>
+> -               cur =3D find_extent_buffer(fs_info, blocknr);
+> -               if (cur)
+> -                       uptodate =3D btrfs_buffer_uptodate(cur, gen, 0);
+> -               else
+> -                       uptodate =3D 0;
+> -               if (!cur || !uptodate) {
+> -                       if (!cur) {
+> -                               cur =3D read_tree_block(fs_info, blocknr,=
+ gen,
+> -                                                     parent_level - 1,
+> -                                                     &first_key);
+> -                               if (IS_ERR(cur)) {
+> -                                       return PTR_ERR(cur);
+> -                               } else if (!extent_buffer_uptodate(cur)) =
+{
+> -                                       free_extent_buffer(cur);
+> -                                       return -EIO;
+> -                               }
+> -                       } else if (!uptodate) {
+> -                               err =3D btrfs_read_buffer(cur, gen,
+> -                                               parent_level - 1,&first_k=
+ey);
+> -                               if (err) {
+> -                                       free_extent_buffer(cur);
+> -                                       return err;
+> -                               }
+> -                       }
+> -               }
+> +               cur =3D btrfs_read_node_slot(parent, i);
+> +               if (IS_ERR(cur))
+> +                       return PTR_ERR(cur);
+>                 if (search_start =3D=3D 0)
+>                         search_start =3D last_block;
+>
 > --
 > 2.26.2
 >
