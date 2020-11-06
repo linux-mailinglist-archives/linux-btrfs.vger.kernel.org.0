@@ -2,165 +2,269 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628282A8B5C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 01:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B6E2A8C51
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 02:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732729AbgKFAUf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Nov 2020 19:20:35 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:52806 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731860AbgKFAUe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Nov 2020 19:20:34 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A603x7N170546;
-        Fri, 6 Nov 2020 00:20:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=h3SqMpTYSDJp7/cr3rtwRNiFgLeY6ktY1qPGo85o7qk=;
- b=JffCftnwGE2hgV9ls5I+IJF0nqD99clM0kve+b9wZh8p9A9YyrAfOYw6e1WteY76X1g5
- ZMAxKJRLl8woN0F/Ux/aVM34p2iO1LNnGPJzBxH+Cw1dy5H5LjCFdCa5D0u8R3n/gdM3
- rvIfFTQBJfAT2l1hTHbeyancT3elSrstxNBBbQ8kNCmInXcHcrMmSR3jQV2vwC4/TCvO
- /XkJA0jSUHnjFzO1OKIWEZgr2sRnnXOJsglylcda1Q9eYMIBkohGOsSBEaw2sbkNyT4x
- F/bVcs2PPqcg5XToCmiqPN1uruznnTdP2VRfg7rz5eknPIutFWgaydzhl6bB5/4u4lEI cA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 34hhb2eqy4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 06 Nov 2020 00:20:19 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A604wrB105566;
-        Fri, 6 Nov 2020 00:20:19 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 34jf4d1590-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Nov 2020 00:20:18 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0A60KHBX009974;
-        Fri, 6 Nov 2020 00:20:17 GMT
-Received: from [192.168.1.102] (/39.109.231.106)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 05 Nov 2020 16:20:17 -0800
-Subject: Re: [PATCH RESEND v2 1/3] btrfs: drop never met condition of
- disk_total_bytes == 0
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
-        Nikolay Borisov <nborisov@suse.com>, wqu@suse.com
-References: <cover.1604372688.git.anand.jain@oracle.com>
- <682907bcd58ffeece1a76c6ec3b866139a6381bd.1604372689.git.anand.jain@oracle.com>
- <20201105223654.GO6756@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <019a25c1-d4d2-02e3-3b82-2ae46384b8d3@oracle.com>
-Date:   Fri, 6 Nov 2020 08:20:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1732625AbgKFBwj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Nov 2020 20:52:39 -0500
+Received: from mout.gmx.net ([212.227.17.21]:45451 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730414AbgKFBwj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Nov 2020 20:52:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1604627555;
+        bh=sbRwIF1GUyV5btmUX96zKUP96QomT4Hg1ZTNm9w+Uic=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=JJwpxq5wHwFODr6wn7vD2ob4xNDibnaaqQIyHJIgbu1/ElSB+ydlD4FV2r8e3LyS6
+         0+jKOGvQxpquwIbGLYm6sLIt6II5mRMMkGtLfOL8xHtGiwKbsxYDXW8IXblLE2ZeyX
+         +1/YzKfDTLJ5+nyPHYT6SchVOuHMv9M+8tOjKU6I=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mplbx-1jySq43YDd-00qAUm; Fri, 06
+ Nov 2020 02:52:35 +0100
+Subject: Re: [PATCH 01/32] btrfs: extent_io: remove the
+ extent_start/extent_len for end_bio_extent_readpage()
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+References: <20201103133108.148112-1-wqu@suse.com>
+ <20201103133108.148112-2-wqu@suse.com>
+ <08947273-050d-8f44-5cf3-9c980f0906a6@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f6990dd0-31da-8850-f783-4d2ff195ccbd@gmx.com>
+Date:   Fri, 6 Nov 2020 09:52:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201105223654.GO6756@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050158
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9796 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011050158
+In-Reply-To: <08947273-050d-8f44-5cf3-9c980f0906a6@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG"
+X-Provags-ID: V03:K1:kSlhaFKnScBeblUHlWPKODeGTQGAGDz7EdIvtJnO+4qldv22zr/
+ cG9H4S6wHThBNsYwegH98WqdHx0H81d3phm3QN4kjR9J4HRvE05QMAhshWIUHqipZwKzPs0
+ f3FTm7oiEdth2Ci3kN4HfV0tBy9gqyDnn7uCcdRpL2pzGEfMGRoqAmHiVQ8lZC2tSl8Tea9
+ 5t9J+iquhJdf0gbEUMY8A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:el2IVmp4LMw=:zmI8gRNNl2UVIjGAWl8KU5
+ DzgEPwCZdksvJeTyAL+43OF8jpxhN+DBjz2PYukQf8I3XqpxY4tEjIVQ6GNa4r0hwQLAiORVQ
+ zx0vDdfsZt0yVNiucAyWJcYsbwHJC2tSVE0uUFZ0lSaIAgH+vPq/UpoNs4ZM/vLKo/qlY3ReH
+ /XzxQHCUD+Z69wiGn6e35afPC1Z0laKihNZ/T7wV9jrGzbgM6LgjvmDES0FOgzT4FRniKjv3B
+ XGXGuj/QppGjp/AIy3qubEikNq4SgXacj59Nz48E1u/t8UQ+aTnP4b9V9v5r2BOZFboGp7XVI
+ jUb5WwN49h4tR4yxxqiCFbdpJ+QDPqtJDUYydOsD/P5Jlci0qvqrckSsFeN0N1lklHlhQkq9b
+ laY63d8LMnEE5VjNRg7WUVAUS4ZHuhGkCb0cvj2/0lmbGmBWj/tbyxdjPQnZNr16/Zze3nIUS
+ trnuBlRuYGHFyUiVkHmT8zL9K47V10nTxIhpBnrBSYuGaz57S1vixH7/ZBnt1Z6gtrplYlobt
+ g5SNSVjTpqD/gYZ1H1KLnsVUwGGaWvl7/YOaLoMsfrGSVZV/OTI5fNvuZm+KAYrutFyvYX3mH
+ TqGJGCVFf9ybcerhgql15gBk7d0k5Rqv8bYDnKP0Hz0qVIbuP9cvcliyBekWx9MmbtiL6T8mA
+ KnRLKsg2RNt9yjTYFk+X8qKGexEJ9iQoyePgidbHdxBakJJK/F/7xvfV/xFkusX+DLAtxu1fq
+ SUuuUJm78Dv5RETtWBPSuvV3D7xfpGHYMw4ESNzENP/qjVTVvGeluCnB/WXFqY3J2ZPciKnAD
+ kwk6PyvKnanPNPHST+F7Lv8SzbCWaFb5fxBO6FWesGpugnzjEAb23VO7xAalspYIMofs7sDld
+ ATxptZ9EuljzcuFSmQrg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG
+Content-Type: multipart/mixed; boundary="f26F63eX75dXniP7DUVGvV2HCD9LY2aQb"
+
+--f26F63eX75dXniP7DUVGvV2HCD9LY2aQb
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 6/11/20 6:36 am, David Sterba wrote:
-> On Tue, Nov 03, 2020 at 01:49:42PM +0800, Anand Jain wrote:
->> btrfs_device::disk_total_bytes is set even for a seed device (the
->> comment is wrong).
-> 
-> That's where I'm a bit lost. It was added in 1b3922a8bc74 ("btrfs: Use
-> real device structure to verify dev extent").
-> 
 
-  The call chain where we update the btrfs_device::disk_total_bytes is as
-  below..
-
-
-    read_one_dev()
-::
-
- From the section below we get the cloned copy of the seed device.
------
-         if (memcmp(fs_uuid, fs_devices->metadata_uuid, BTRFS_FSID_SIZE)) {
-                 fs_devices = open_seed_devices(fs_info, fs_uuid);
-                 if (IS_ERR(fs_devices))
-                         return PTR_ERR(fs_devices);
-         }
-
-         device = btrfs_find_device(fs_info->fs_devices, devid, dev_uuid,
-                                    fs_uuid);
-------
-
-
-  Further down in read_one_dev() at and in the 
-fill_device_from_item(..., device) we update the 
-btrfs_device::disk_total_bytes.
-
-fill_device_from_item(..., device)
-::
-         device->disk_total_bytes = btrfs_device_total_bytes(leaf, 
-dev_item);
-
-Hope this clarifies.
-
-V1 email discussion has more information.
-
->> The function fill_device_from_item() does the job of reading it from the
->> item and updating btrfs_device::disk_total_bytes. So both the missing
->> device and the seed devices do have their disk_total_bytes updated.
+On 2020/11/6 =E4=B8=8A=E5=8D=883:40, Josef Bacik wrote:
+> On 11/3/20 8:30 AM, Qu Wenruo wrote:
+>> In end_bio_extent_readpage() we had a strange dance around
+>> extent_start/extent_len.
 >>
->> Furthermore, while removing the device if there is a power loss, we could
->> have a device with its total_bytes = 0, that's still valid.
+>> Hides behind the strange dance is, it's just calling
+>> endio_readpage_release_extent() on each bvec range.
+>>
+>> Here is an example to explain the original work flow:
+>> =C2=A0=C2=A0 Bio is for inode 257, containing 2 pages, for range [1M, =
+1M+8K)
+>>
+>> =C2=A0=C2=A0 end_bio_extent_extent_readpage() entered
+>> =C2=A0=C2=A0 |- extent_start =3D 0;
+>> =C2=A0=C2=A0 |- extent_end =3D 0;
+>> =C2=A0=C2=A0 |- bio_for_each_segment_all() {
+>> =C2=A0=C2=A0 |=C2=A0 |- /* Got the 1st bvec */
+>> =C2=A0=C2=A0 |=C2=A0 |- start =3D SZ_1M;
+>> =C2=A0=C2=A0 |=C2=A0 |- end =3D SZ_1M + SZ_4K - 1;
+>> =C2=A0=C2=A0 |=C2=A0 |- update =3D 1;
+>> =C2=A0=C2=A0 |=C2=A0 |- if (extent_len =3D=3D 0) {
+>> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 |- extent_start =3D start; /* SZ_1M */
+>> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 |- extent_len =3D end + 1 - start; /* SZ_=
+1M */
+>> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 }
+>> =C2=A0=C2=A0 |=C2=A0 |
+>> =C2=A0=C2=A0 |=C2=A0 |- /* Got the 2nd bvec */
+>> =C2=A0=C2=A0 |=C2=A0 |- start =3D SZ_1M + 4K;
+>> =C2=A0=C2=A0 |=C2=A0 |- end =3D SZ_1M + 4K - 1;
+>> =C2=A0=C2=A0 |=C2=A0 |- update =3D 1;
+>> =C2=A0=C2=A0 |=C2=A0 |- if (extent_start + extent_len =3D=3D start) {
+>> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 |- extent_len +=3D end + 1 - start; /* SZ=
+_8K */
+>> =C2=A0=C2=A0 |=C2=A0 |=C2=A0 }
+>> =C2=A0=C2=A0 |=C2=A0 } /* All bio vec iterated */
+>> =C2=A0=C2=A0 |
+>> =C2=A0=C2=A0 |- if (extent_len) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |- endio_readpage_release_extent(tree, =
+extent_start, extent_len,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 update);
+>> =C2=A0=C2=A0=C2=A0=C2=A0/* extent_start =3D=3D SZ_1M, extent_len =3D=3D=
+ SZ_8K, uptodate =3D 1 */
+>>
+>> As the above flow shows, the existing code in end_bio_extent_readpage(=
+)
+>> is just accumulate extent_start/extent_len, and when the contiguous ra=
+nge
+>> breaks, call endio_readpage_release_extent() for the range.
+>>
+>> The contiguous range breaks at two locations:
+>> - The total else {} branch
+>> =C2=A0=C2=A0 This means we had a page in a bio where it's not contiguo=
+us.
+>> =C2=A0=C2=A0 Currently this branch will never be triggered. As all our=
+ bio is
+>> =C2=A0=C2=A0 submitted as contiguous pages.
+>>
+>> - After the bio_for_each_segment_all() loop ends
+>> =C2=A0=C2=A0 This is the normal call sites where we iterated all bvecs=
+ of a bio,
+>> =C2=A0=C2=A0 and all pages should be contiguous, thus we can call
+>> =C2=A0=C2=A0 endio_readpage_release_extent() on the full range.
+>>
+>> The original code has also considered cases like (!uptodate), so it wi=
+ll
+>> mark the uptodate range with EXTENT_UPTODATE.
+>>
+>> So this patch will remove the extent_start/extent_len dancing, replace=
+
+>> it with regular endio_readpage_release_extent() call on each bvec.
+>>
+>> This brings one behavior change:
+>> - Temporary memory usage increase
+>> =C2=A0=C2=A0 Unlike the old call which only modify the extent tree onc=
+e, now we
+>> =C2=A0=C2=A0 update the extent tree for each bvec.
+>>
+>> =C2=A0=C2=A0 Although the end result is the same, since we may need mo=
+re extent
+>> =C2=A0=C2=A0 state split/allocation, we need more temporary memory dur=
+ing that
+>> =C2=A0=C2=A0 bvec iteration.
+>>
+>> But considering how streamline the new code is, the temporary memory
+>> usage increase should be acceptable.
+>=20
+> It's not just temporary memory usage, it's a point of latency for every=
+
+> memory operation.
+
+The latency comes from 2 parts:
+- extent_state search
+  Even it's a log(n) operation, we're calling it for each bvec, thus
+  it's definitely cause more latency, I'll post the test result soon,
+  but initial result is already pretty poor.
+
+- extent_state preallocation
+  This is the tricky one.
+
+  In theory, since we're at read path, we can call it with GFP_KERNEL,
+  but the truth is, the extent io tree uses gfp_mask to determine if we
+  can do memory allocation, and if possible, they will always try to
+  prealloc some memory, which is not always ideal.
+
+  This means even we can call GFP_KERNEL here, we shouldn't.
+
+  So ironically, we should call with GFP_ATOMIC to reduce the memory
+  allocation trials. But that would cause possible false ENOMEM alert
+  thought.
+
+  As in the extent io tree operations, except the first bvec, we should
+  always just enlarge previously inserted extent_state, so the memory
+  usage isn't really a problem.
+
+This again, shows the hidden sins of extent io tree, and further prove
+that we need more interface rework for it.
+
+The best situation would be, we allocate one extent_state as cache, and
+allow extent io tree to use that cache, other than doing the hidden
+preallocate internally.
+
+And only re-allocate the precached extent_state after extent io tree
+really used that.
+For endio call sites, the possibility to need new allocation is low.
+As contig range should only need one extent_state allocated.
+
+For now, I want to just keep the old behavior, with slightly better
+comments.
+And leave the large extent io tree rework in the future.
+
+Thanks,
+Qu
+
+>=C2=A0 We have a lot of memory usage on our servers, every
+> trip into the slab allocator is going to be a new chance to induce
+> latency because we get caught by some cgroup limit and force reclaim.=C2=
+=A0
+> The fact that these could be GFP_ATOMIC makes it even worse, because no=
+w
+> we'll have this random knock-on affect for heavy read workloads.
+>=20
+> Then to top it all off we could have several megs worth of IO per bio,
+> which means we're doing this allocation 100's of times per bio!=C2=A0 T=
+his is
+> a hard no for me.=C2=A0 Thanks,
+>=20
+> Josef
 
 
-> 
-> Ok, that's the condition that the commit mentioned above used to detect
-> the device and to avoid doing the tree-checker verification.
+--f26F63eX75dXniP7DUVGvV2HCD9LY2aQb--
 
-Ok. Please look at what did the commit 1b3922a8bc74 do? It re-ran the 
-btrfs_find_device(seed_devs,..., false), which anyway the 
-btrfs_find_device(sprout_devs,..., true) has run just before. In both of 
-these btrfs_find_device() runs, the dev returned will be the same. The 
-fix makes no sense to the problem as in the commit.
+--SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-> 
->> So this patch removes the check dev->disk_total_bytes == 0 in the
->> function verify_one_dev_extent(), which it does nothing in it.
-> 
-> Removing a check that supposedly does notghing, but the referenced
-> commit says otherwise.
-> 
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+krF0ACgkQwj2R86El
+/qhdqQgAriBgAdNz074g0wrmq2e60gxoe6YFNlQ4HjBGj8J7E94jlaxBQTXcusUg
+0h7VmlgZr14wVqLrbnwUJnlh+aBGEiq8EX0cySowdn9munBvBbjefTBWf2HcJbhq
+mOCOJi3iaBvY09EqZ+gmWXAaLTcUHvp1zE8FL1OqSwAtXFr5NJAXP3E54lABaAPp
+bfSVB0QV/eH2X8UrYA5wKFCGJDQlY5FAUhhIar/Jt5ocPfb0jV1mcWPpUUiEUGv2
+y5kQsXCieL1ZqgJ1udeIobmzcMM7I6FviRmmjd7UP3/EXLxd4/lXUIKC8OnJmz4g
+jjeWZyJfaEPR53vLgAak9ppTEoY9fA==
+=ISDm
+-----END PGP SIGNATURE-----
 
-IMO the reason for the problem found in that commit was wrong. Qu 
-commit's email thread has some discussion. But nothing more on the problem.
-
-Also Nikolay had the same question here was my reply.
-https://www.spinics.net/lists/linux-btrfs/msg105645.html
-
-
->> And take this opportunity to introduce a check if the device::total_bytes
->> is more than the max device size in read_one_dev().
-> 
-> If this is not related to the the check removal, then it should be an
-> independent patch explaing in full what is being fixed. As I read it
-> this should be independent as it's checking the upper bound.
-> 
-
-  That came from the Josef comments, please refer to the v1 email 
-discussion. Most of the above concerns are already discussed there. I am 
-ok to move it to a new patch if required.
-
-Thanks, Anand
-
+--SA8GikrO1XiTrZOPaa9mWbbZya9c1T8dG--
