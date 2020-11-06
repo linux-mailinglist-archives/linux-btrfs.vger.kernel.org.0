@@ -2,190 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D322A96FA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 14:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76962A9714
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 14:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727442AbgKFNZe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 08:25:34 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:43936 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727388AbgKFNZd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 08:25:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1604669130;
+        id S1727410AbgKFNiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 08:38:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38008 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726708AbgKFNiI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 08:38:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604669886;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1Y03qqxS0gZeuRLMTBZMoW9UavmT9TT90amjRrF10Fo=;
-        b=K3T+Wcv4GkoumNih2Ov2s9JIZLxEQks3iYyat4lVlklmEtZn1g3gScnIPEZ5H738X/cV06
-        fD22t7pf5GpLmTDQaw19yQAAcHHUvq2ACVvEGAtx2mX7JnXt4yaRvvYNAsmVFoYelrVdcn
-        pOa3OyNHDG5BymBfqnM4EAiASJgC5QU=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2104.outbound.protection.outlook.com [104.47.17.104])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-37-ACtvWt9TMj6nBK-URaXIaA-1; Fri, 06 Nov 2020 14:25:29 +0100
-X-MC-Unique: ACtvWt9TMj6nBK-URaXIaA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CIvpUMXKYwQKA50s8hGkjVkxKbJj+DMWP62wi9qb2klKU68EBteimXGJzyx1b3q546Fk+ldV6kyoyE9E1I/ouO27twtecEf/jBgMun9er8bBwEas1zXjl5LYYEeluG0BqZ4zmD7p/SGOPZqRp/ZC21rtVCotMwrkAHg+RiRoxI8WjGlQbqlf8BhHsi7xJhm2w4Ae1KgmSYE16J8mfUNDXCVuPCQX/otrw0UAJQgobqfSLtsj6k1urGJyulfV7GiTmaqU0qjNDvSnx6ez7XzpIy3BNtrMtde0T6NkcEhDtiig+iNTnI9IeveAievEEzgV2y1EhucHCQ1Slpln8KL6vA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZzI3epNGkwy2Fg31eLgkPTmuQaFjrbHSAD97N/ZrnTQ=;
- b=lSp99hoKr5edEIzTBxlKdqji/i+HewJSUMRwCwaWi8/1EAluSMBskwJh/OEO7SewZ4N/Asl5In9aTW9nKdqsdNX+QtIz5WZX/80adZFweuenvsF9+jQ9wHf1Es5z8booHb/Q1KjJpoKYkcp6pjtu/FS/Y27jN624791OSMYzAcJm6hKgGgonTZLvYf8Hs3CQTZXBEGbvp/RrPOs1agDYcW80LBAbHl5i4aFR6AOpFEVPM+DhOvlBD+i7GjqqPuDJ6uF1kHnUVEJ9ylCdj79u7yu245JL2j+8XcqLBd4IEohuNqFX0JiuZZfBSD0inp+g7rsTV6hYhhEU/ii1/FVKVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7533.eurprd04.prod.outlook.com (2603:10a6:102:f1::19)
- by PR3PR04MB7483.eurprd04.prod.outlook.com (2603:10a6:102:86::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Fri, 6 Nov
- 2020 13:25:28 +0000
-Received: from PA4PR04MB7533.eurprd04.prod.outlook.com
- ([fe80::545:8a04:2a5c:f4c7]) by PA4PR04MB7533.eurprd04.prod.outlook.com
- ([fe80::545:8a04:2a5c:f4c7%6]) with mapi id 15.20.3541.022; Fri, 6 Nov 2020
- 13:25:28 +0000
-Subject: Re: [PATCH 17/32] btrfs: extent_io: don't allow tree block to cross
- page boundary for subpage support
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+        bh=31YsZhnzyY6i2v7SFuOMeAPOZpQAmFsibneF1/dXAec=;
+        b=tg80Sy159xJ5pVtGCQw0JcRVMkTVYQ3FNNHf8QCuB//4/XSJIsiCdY4jMHcTAGecFnSwpD
+        2hj/D4OZQhrh9dylvtIkpBFIeGPMV+17weGXo1tdeJIEeEXQkR4Alaff1vYEO+AlcuUF9x
+        3Nraw1tu+4ppDJh5hIFDW9IMzFw/0tw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CA5B6AD79;
+        Fri,  6 Nov 2020 13:38:06 +0000 (UTC)
+Subject: Re: [PATCH 21/32] btrfs: extent-io: make type of extent_state::state
+ to be at least 32 bits
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-18-wqu@suse.com>
- <bec6ae39-0a10-e4c4-8e4d-06577057e6f5@suse.com>
-From:   Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0GFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPokBTQQTAQgAOAIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJdnDWhAAoJEMI9kfOhJf6oZgoH
- 90uqoGyUh5UWtiT9zjUcvlMTCpd/QSgwagDuY+tEdVPaKlcnTNAvZKWSit8VuocjrOFbTLwb
- vZ43n5f/l/1QtwMgQei/RMY2XhW+totimzlHVuxVaIDwkF+zc+pUI6lDPnULZHS3mWhbVr9N
- vZAAYVV7GesyyFpZiNm7GLvLmtEdYbc9OnIAOZb3eKfY3mWEs0eU0MxikcZSOYy3EWY3JES7
- J9pFgBrCn4hF83tPH2sphh1GUFii+AUGBMY/dC6VgMKbCugg+u/dTZEcBXxD17m+UcbucB/k
- F2oxqZBEQrb5SogdIq7Y9dZdlf1m3GRRJTX7eWefZw10HhFhs1mwx7kBDQRZ1YGvAQgAqlPr
- YeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4KXk/kHw5h
- ieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T7RZwB69u
- VSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9fNN8e9c0
- MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD/dt76Kp/
- o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgBCAAmAhsM
- FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2cNa4FCQlqTn8ACgkQwj2R86El/qhXBAf/eXLP
- HDNTkHRPxoDnwhscIHJDHlsszke25AFltJQ1adoaYCbsQVv4Mn5rQZ1Gon54IMdxBN3r/B08
- rGVPatIfkycMCShr+rFHPKnExhQ7Wr555fq+sQ1GOwOhr1xLEqAhBMp28u9m8hnkqL36v+AF
- hjTwRtS+tRMZfoG6n72xAj984l56G9NPfs/SOKl6HR0mCDXwJGZAOdtyRmqddi53SXi5N4H1
- jWX1xFshp7nIkRm6hEpISEWr/KKLbAiKKbP0ql5tP5PinJeIBlDv4g/0+aGoGg4dELTnfEVk
- jMC8cJ/LiIaR/OEOF9S2nSeTQoBmusTz+aqkbogvvYGam6uDYw==
-Message-ID: <981350a6-77f9-6419-7a2e-22110364a55b@suse.com>
-Date:   Fri, 6 Nov 2020 21:25:18 +0800
+ <20201103133108.148112-22-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4c01aef4-20a2-8476-acf4-67e521981673@suse.com>
+Date:   Fri, 6 Nov 2020 15:38:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <bec6ae39-0a10-e4c4-8e4d-06577057e6f5@suse.com>
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201103133108.148112-22-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: SJ0PR03CA0065.namprd03.prod.outlook.com
- (2603:10b6:a03:331::10) To PA4PR04MB7533.eurprd04.prod.outlook.com
- (2603:10a6:102:f1::19)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0065.namprd03.prod.outlook.com (2603:10b6:a03:331::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Fri, 6 Nov 2020 13:25:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 43d8120d-f124-485f-ee9c-08d882576d59
-X-MS-TrafficTypeDiagnostic: PR3PR04MB7483:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PR3PR04MB74831EDDFB99E512DF79CF72D6ED0@PR3PR04MB7483.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dav/ppW3l47BTrAWkauvjTcVbJ1ZDB1ixuRF5/MitixI6klm1bSDI/w2fnjwUcFx/wqGQfzaXNkXaALpurAgYp02I3hJ5sQsrn187pShcpsa++duadvtECA/wnNByNjQ81yeQpaA7avYxIhJjCy1BXgMqbMZPnu6ffJ+TbkX2V5CdwWtQLwR1odqzvQ2NHHNFhYU0nr1VbTCBc7OWWiQjFm9f+5gwGg5R44HqjeDcfcH6S+M+PAMSlP92Qpse+CDeUPWVDUlbegvDn7vviVHeoRxqK9wfGeqAVrHvMx+Xh24eyBcJEnqi1+VWC0ycwGeYefppsJwon9vPeSMsx1vytFtFDrwe0LrQy+8FPzPhNGs+2C2g+vB9gBX6n+z3mrtw2HzRTjB38/w8Agrr1tBMA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7533.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(346002)(376002)(136003)(16576012)(316002)(8676002)(86362001)(6666004)(2616005)(956004)(52116002)(478600001)(31696002)(26005)(83380400001)(8936002)(66946007)(66556008)(66476007)(6486002)(186003)(2906002)(36756003)(5660300002)(31686004)(16526019)(6706004)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 0gqQKp1ViSJgNOJnXn+F9BvR3pp7rfW97KmYVv6Nj7SjGFUFzUhblSp8VdVBFuxqqOPGt8R3pAnjLUBf2uNrimH/21+Aj4vaOJduOfPc9NrKpWj9wZ3FvCkrrTAVYB8J0jBDvs2CkOAG5uFKKNL6T3PaxRdMUAHCqJFa4N1j6xtG97mVO81Mcxqz41zWlOGTEDMGgX0C0boOvwEihYHFu5qOPUNv+AWDU14MEgjTCBcC5Nt+hOIjgFA4zwFbzfP5THZfvG8jrq1zaMBK3z5qCPY5tkVEWIwiOQtZUsRPoRcTYNhRzdhlI0XR1R4kQwfOju1c2nH3KdA51F51XLnxqolRGzMD9La/pK+5A2r0DNMTw/HrZqAZys+SYoix6HdABW7/BxO+GNbAD3z6ZsmoSLhXlBw3zgxEabUWoY68mblpefDni4jsgW0sZzSLDzFLhlKmZWlv21FuCarVHHMBlfYh2KL3HS8y4omVLW3Dd2srro0M0bDEwhhSNEk4dYaGXXYQ1mGDbjkfLXYtJVnQokHeCMpYZJjr92EwimFxNelctHL7fKwCQTaBjN/mK6Nas83Ow6659rXxGMrKZM/BYK5JrfOJ+9tOMvx0xnvhfeh6Y03FzOjSrSLvD383gfVXdm2YrQqrkrBYDnMY8HQgTQ==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43d8120d-f124-485f-ee9c-08d882576d59
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7533.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2020 13:25:28.2655
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1oiMmWq8BPBrGuf2O+W1Lf8OSdZCqtF7sEK8jBIZTOO1arsqTmkmzgbKV6sf9D6i
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7483
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/11/6 =E4=B8=8B=E5=8D=887:54, Nikolay Borisov wrote:
->=20
->=20
-> On 3.11.20 =D0=B3. 15:30 =D1=87., Qu Wenruo wrote:
->> As a preparation for subpage sector size support (allowing filesystem
->> with sector size smaller than page size to be mounted) if the sector
->> size is smaller than page size, we don't allow tree block to be read if
->> it crosses 64K(*) boundary.
->>
->> The 64K is selected because:
->> - We are only going to support 64K page size for subpage for now
->> - 64K is also the max node size btrfs supports
->>
->> This ensures that, tree blocks are always contained in one page for a
->> system with 64K page size, which can greatly simplify the handling.
->>
->> Or we need to do complex multi-page handling for tree blocks.
->>
->> Currently the only way to create such tree blocks crossing 64K boundary
->> is by btrfs-convert, which will get fixed soon and doesn't get
->> wide-spread usage.
->=20
-> So filesystems with subpage blocksize which have been created as a
-> result of a convert operation would eventually fail to read some block
-> am I correct in my understanding? If that is the case then can't we
-> simply land subpage support in userspace tools _after_ the convert has
-> been fixed and turn this check into an assert?
+On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
+> Currently we use 'unsigned' for extent_state::state, which is only ensured
+> to be at least 16 bits.
+> 
+> But for incoming subpage support, we are going to introduce more bits to
+> at least match the following page bits:
+> - PageUptodate
+> - PagePrivate2
+> 
+> Thus we will go beyond 16 bits.
+> 
+> To support this, make extent_state::state at least 32bit and to be more
+> explicit, we use "u32" to be clear about the max supported bits.
+> 
+> This doesn't increase the memory usage for x86_64, but may affect other
+> architectures.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-My bad, after I checked the convert code, at least from 2016 that all
-free space convert can utilized is already 64K aligned.
-
-So there isn't much thing to be done in convert already.
-
-Thanks,
-Qu
-
->=20
->=20
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/extent_io.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 30768e49cf47..30bbaeaa129a 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -5261,6 +5261,13 @@ struct extent_buffer *alloc_extent_buffer(struct =
-btrfs_fs_info *fs_info,
->>  		btrfs_err(fs_info, "bad tree block start %llu", start);
->>  		return ERR_PTR(-EINVAL);
->>  	}
->> +	if (btrfs_is_subpage(fs_info) && round_down(start, PAGE_SIZE) !=3D
->> +	    round_down(start + len - 1, PAGE_SIZE)) {
->> +		btrfs_err(fs_info,
->> +		"tree block crosses page boundary, start %llu nodesize %lu",
->> +			  start, len);
->> +		return ERR_PTR(-EINVAL);
->> +	}
->> =20
->>  	eb =3D find_extent_buffer(fs_info, start);
->>  	if (eb)
->>
->=20
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
