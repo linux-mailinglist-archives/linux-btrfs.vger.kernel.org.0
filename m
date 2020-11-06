@@ -2,36 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6062A95EB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 13:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6BE2A95F0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 13:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727170AbgKFMDa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 07:03:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32940 "EHLO mx2.suse.de"
+        id S1726708AbgKFMJb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 07:09:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36002 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726317AbgKFMD3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 07:03:29 -0500
+        id S1726317AbgKFMJb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 07:09:31 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604664208;
+        t=1604664570;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=MpM0TSpTQseBmEKVx0fWNvoGE2C0lFul2nBYRGXbrlY=;
-        b=g1az6RWyPOAeHbuv3yS/M242KoWO8c2Ot6I4Vo/X7QSHmcel82ZEg18lOEMRMO+MainIOE
-        iqaUvxkPvzjknRINsFQSWbKi0/AzEg91m+tMBQx096Tx6zYofwWQFK7wH9qAZbVbhtVIV4
-        +o35eUuRmwgeNwuiStgJ/gKbXTvxgZw=
+        bh=vvTXlbizOcCFj7f7YfftYdvEF7Hbfh+ZiiIIPrHFA6E=;
+        b=TGnDeI8Q0aZwjnlses7M1KiyxWv3q54d0VbUy7G7ZE9kG7EbHxLDYgXdYOaSBBVjhl8okE
+        lrDqMde+eLTteSRDW+5m7Sy+y6Hv8ySkgtu9Jxr7Im5XOccUhIcId+N4sgSOhhfAWGUo36
+        SP47bjHyBvBJK+yib4PLHPrqGw4T4x0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2F309AC65;
-        Fri,  6 Nov 2020 12:03:28 +0000 (UTC)
-Subject: Re: [PATCH 17/32] btrfs: extent_io: don't allow tree block to cross
- page boundary for subpage support
-From:   Nikolay Borisov <nborisov@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 0E8A8AF26;
+        Fri,  6 Nov 2020 12:09:30 +0000 (UTC)
+Subject: Re: [PATCH 18/32] btrfs: extent_io: update num_extent_pages() to
+ support subpage sized extent buffer
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-18-wqu@suse.com>
- <bec6ae39-0a10-e4c4-8e4d-06577057e6f5@suse.com>
+ <20201103133108.148112-19-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -74,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <207e3270-6525-71ab-baac-af662132dc70@suse.com>
-Date:   Fri, 6 Nov 2020 14:03:27 +0200
+Message-ID: <d25c2c98-0dc4-8f8b-f9ba-8beffbaf3347@suse.com>
+Date:   Fri, 6 Nov 2020 14:09:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <bec6ae39-0a10-e4c4-8e4d-06577057e6f5@suse.com>
+In-Reply-To: <20201103133108.148112-19-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,63 +88,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 6.11.20 г. 13:54 ч., Nikolay Borisov wrote:
+On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
+> For subpage sized extent buffer, we have ensured no extent buffer will
+> cross page boundary, thus we would only need one page for any extent
+> buffer.
 > 
+> This patch will update the function num_extent_pages() to handle such
+> case.
+> Now num_extent_pages() would return 1 instead of for subpage sized
+> extent buffer.
 > 
-> On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
->> As a preparation for subpage sector size support (allowing filesystem
->> with sector size smaller than page size to be mounted) if the sector
->> size is smaller than page size, we don't allow tree block to be read if
->> it crosses 64K(*) boundary.
->>
->> The 64K is selected because:
->> - We are only going to support 64K page size for subpage for now
->> - 64K is also the max node size btrfs supports
->>
->> This ensures that, tree blocks are always contained in one page for a
->> system with 64K page size, which can greatly simplify the handling.
->>
->> Or we need to do complex multi-page handling for tree blocks.
->>
->> Currently the only way to create such tree blocks crossing 64K boundary
->> is by btrfs-convert, which will get fixed soon and doesn't get
->> wide-spread usage.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_io.h | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
 > 
-> So filesystems with subpage blocksize which have been created as a
-> result of a convert operation would eventually fail to read some block
-> am I correct in my understanding? If that is the case then can't we
-> simply land subpage support in userspace tools _after_ the convert has
-> been fixed and turn this check into an assert?
-> 
-> 
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/extent_io.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 30768e49cf47..30bbaeaa129a 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -5261,6 +5261,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->>  		btrfs_err(fs_info, "bad tree block start %llu", start);
->>  		return ERR_PTR(-EINVAL);
->>  	}
->> +	if (btrfs_is_subpage(fs_info) && round_down(start, PAGE_SIZE) !=
->> +	    round_down(start + len - 1, PAGE_SIZE)) {
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 123c3947be49..24131478289d 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -203,8 +203,15 @@ void wait_on_extent_buffer_writeback(struct extent_buffer *eb);
+>  
+>  static inline int num_extent_pages(const struct extent_buffer *eb)
+>  {
+> -	return (round_up(eb->start + eb->len, PAGE_SIZE) >> PAGE_SHIFT) -
+> -	       (eb->start >> PAGE_SHIFT);
+> +	/*
+> +	 * For sectorsize == PAGE_SIZE case, since eb is always aligned to
+> +	 * sectorsize, it's just (eb->len / PAGE_SIZE) >> PAGE_SHIFT.
+> +	 *
+> +	 * For sectorsize < PAGE_SIZE case, we only want to support 64K
+> +	 * PAGE_SIZE, and ensured all tree blocks won't cross page boundary.
+> +	 * So in that case we always got 1 page.
+> +	 */
+> +	return (round_up(eb->len, PAGE_SIZE) >> PAGE_SHIFT);
 
-One more thing, instead of doing those 2 round_downs, why not:
+nit: Remove outer parentheses ,
 
-offset_in_page(start) + len > PAGE_SIZE
+with this cosmetic fixed:
 
->> +		btrfs_err(fs_info,
->> +		"tree block crosses page boundary, start %llu nodesize %lu",
->> +			  start, len);
->> +		return ERR_PTR(-EINVAL);
->> +	}
->>  
->>  	eb = find_extent_buffer(fs_info, start);
->>  	if (eb)
->>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+>  }
+>  
+>  static inline int extent_buffer_uptodate(const struct extent_buffer *eb)
 > 
