@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F4F2A95D7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703092A95D8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727232AbgKFLy6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 06:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        id S1726891AbgKFLzY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 06:55:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgKFLy6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:54:58 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C32C0613CF
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:54:58 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id p12so520037qtp.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:54:58 -0800 (PST)
+        with ESMTP id S1726692AbgKFLzX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:55:23 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1912C0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:55:23 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id i21so730404qka.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:55:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=SSPt9k4aY4j0TILU/AKOopJRGNx6dOG74A1CLihUt48=;
-        b=RJtIst6bdegkQGglxuQa0CvzWc+tIDmZS3xncLx5Pl95qead4ZQzexo7YM3uO7r724
-         rMj1VsKL6PWpzLaQXklNiSabdAioN2m+H7ihWTePxmprsyCP9PP3gwpLCLUlcENvwMMV
-         VKKjOwJyktDaMHR29ievvoRjTbOE+b3GCErq/zdPg7ew2fiVbfPi6Q1C/OhNKUF8FUSQ
-         Jgv83j89G9zgEi9DQ3nb2iLPvUPxylcVbgVYDIexhifgzTtBPOoWROtt+I4u3yYzb/TO
-         +PgGX3AZFDSHSFGV5ai2E4wNEQnAzHo3Q2bUgGMC9eA1P+JVdjiUzTuLiQHbqV1cfb95
-         OzVw==
+        bh=QAqo29/7yDXYPo6X4+XlWr/Lw4ZP0o4YPe1cIfFAmYk=;
+        b=qdophHzVg6Lxknb/NkKh82k/o0CEZ4Oj0gHEjWhi02nHEFtJV60drIKm8gVHfhPr9r
+         MstCX/PKAYUVgII17pCJGMPwLydb781AroMMnoryLQuRbdp3XPpShx0IvZhqhGLGi0lc
+         s8K8o2ut8TYQNbC/ogOwNT79+wdnue5QHs9x9cVwveCAJuiSL10HbOUs5nGDnviEHHr9
+         G/aioT+PN1jOg/IqCciRtdwl/jBUIyXscgXDqlBtdLrtKUZl10IMY7Smk8zGCYyk/IJi
+         vDVC+QorVBkZvaJR3DoZuEM8JeDIdEH7JTN8dBk+o2abVJdVNNmTu/Ogejwb74AtNLne
+         f3fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=SSPt9k4aY4j0TILU/AKOopJRGNx6dOG74A1CLihUt48=;
-        b=FIhTwB0uxgGJcyT1hHuAG6U9BB9f2+vG9SeJdcO8GfH6oSy+UfQ21e4nLTlfh1qaFX
-         5a2pC50Ur68rX/jTq8is7jtPNF3u5EjgroZnPEOAvkko+jJNgHXGvy9IBZLJHB8LQRe7
-         kl/O063FUeLtgJ2IFGEk7RvHhtJpFTY58zl31Ok/+Q06kml6k2yq58SQu4hNC53Q4Y3p
-         EcKZKN08dZ9A6fXEF+U7jZ7opHnAjuyBZy8wZPSt8i5Jdeiwsp9YmTGTUkLvBkGOwpVd
-         goKlLh75BK4v3DKlq+kLpsfd0qRuFa868Q8MNgGeImMjcjktn2j5HyKZ6XhtN7skgACK
-         PnWg==
-X-Gm-Message-State: AOAM533T+2Vg4Pq+EphrauzRfiVJziHMUiGpMHvSpjTESh2BjJ+tARDU
-        4qNRdlJsYgvYfkMzrmMT7DZm4UTK9/dRIi/rsoLhOKACQlw=
-X-Google-Smtp-Source: ABdhPJz5OTrH74CbXT368GIAsTeoi9zxYEE90cJUp3o43nnwQTg2OmtbIoOsACaE2s7EnHtyNUSGZhcLC8RXUwhqeyM=
-X-Received: by 2002:aed:2321:: with SMTP id h30mr1001637qtc.213.1604663697844;
- Fri, 06 Nov 2020 03:54:57 -0800 (PST)
+        bh=QAqo29/7yDXYPo6X4+XlWr/Lw4ZP0o4YPe1cIfFAmYk=;
+        b=sHSYajlgyCvN4ZTgjyTo0JTExf+DSjyMzbqX6cn4gi1hSGcMydxx1DjUjdTE7+p/BR
+         kT7BbBHPktnjUEClGpf2UInfOxHgMi46xD2Bh1fGNl73ShqcW82HBhoXEMI0AvoovPzT
+         wjQyOdFG1WauPpj+PyQd+gmU6D8W8pJElieHP7qSg0/+ShtQV9ZeNVg4qwa9hephAfbS
+         nChrQcUs8gGnjRiGVVc+SiBCcGFFBVRcH/KzTLu34UBQBCM64rGsPR9TPkCuBXXKO15Z
+         40mXFklgEgx5+PclQ7lSRAJ187eNiAysP4riGZEp14sFT61eJbSqjesuSZ4KrPuo3sNZ
+         eqEA==
+X-Gm-Message-State: AOAM5309PS2TqV4DN3Gv8aGv2L04isKrZXow83UMOwo/Of7wfaqv5F6i
+        BcXApqywfdVLCdz+TKIlSrCAhqPAePuFy8J8ee07jwdNOtA=
+X-Google-Smtp-Source: ABdhPJyWjyodI/mC9ReqmoEEpB4I2vkBjGfLkH5GpNS9rxcdWBdnY48ankAi7NJVMTpwWO9Vapqz8awfEXgJSXFt+is=
+X-Received: by 2002:a37:4117:: with SMTP id o23mr749972qka.479.1604663723038;
+ Fri, 06 Nov 2020 03:55:23 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1604591048.git.josef@toxicpanda.com> <5180b1583f4a9db07d8374026818d6a557f94768.1604591048.git.josef@toxicpanda.com>
-In-Reply-To: <5180b1583f4a9db07d8374026818d6a557f94768.1604591048.git.josef@toxicpanda.com>
+References: <cover.1604591048.git.josef@toxicpanda.com> <4e8c871927bd508d2226eefc65c977b252377aa0.1604591048.git.josef@toxicpanda.com>
+In-Reply-To: <4e8c871927bd508d2226eefc65c977b252377aa0.1604591048.git.josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 6 Nov 2020 11:54:46 +0000
-Message-ID: <CAL3q7H5ChGfGd27+vaqkBR6YBXN9jj1AWup4G+iBzMfs2Vu8OQ@mail.gmail.com>
-Subject: Re: [PATCH 09/14] btrfs: use btrfs_read_node_slot in qgroup_trace_new_subtree_blocks
+Date:   Fri, 6 Nov 2020 11:55:12 +0000
+Message-ID: <CAL3q7H6HyacuDFm2+vDxQtgBTv=YE6-20e1QqX6rDEwLoN0JFQ@mail.gmail.com>
+Subject: Re: [PATCH 10/14] btrfs: use btrfs_read_node_slot in btrfs_qgroup_trace_subtree
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -74,52 +74,54 @@ with btrfs/033.
 Looks good, thanks.
 
 > ---
->  fs/btrfs/qgroup.c | 13 ++-----------
->  1 file changed, 2 insertions(+), 11 deletions(-)
+>  fs/btrfs/qgroup.c | 15 +++------------
+>  1 file changed, 3 insertions(+), 12 deletions(-)
 >
 > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 21e42d8ec78e..8d112ff7b5ae 100644
+> index 8d112ff7b5ae..25e3b7105e8a 100644
 > --- a/fs/btrfs/qgroup.c
 > +++ b/fs/btrfs/qgroup.c
-> @@ -2002,10 +2002,8 @@ static int qgroup_trace_new_subtree_blocks(struct =
-btrfs_trans_handle* trans,
+> @@ -2182,30 +2182,21 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans=
+_handle *trans,
+>         level =3D root_level;
+>         while (level >=3D 0) {
+>                 if (path->nodes[level] =3D=3D NULL) {
+> -                       struct btrfs_key first_key;
+>                         int parent_slot;
+> -                       u64 child_gen;
+>                         u64 child_bytenr;
 >
->         /* Read the tree block if needed */
->         if (dst_path->nodes[cur_level] =3D=3D NULL) {
-> -               struct btrfs_key first_key;
-> -               int parent_slot;
->                 u64 child_gen;
-> -               u64 child_bytenr;
-> +               int parent_slot;
+>                         /*
+> -                        * We need to get child blockptr/gen from parent =
+before
+> -                        * we can read it.
+> +                        * We need to get child blockptr from parent befo=
+re we
+> +                        * can read it.
+>                           */
+>                         eb =3D path->nodes[level + 1];
+>                         parent_slot =3D path->slots[level + 1];
+>                         child_bytenr =3D btrfs_node_blockptr(eb, parent_s=
+lot);
+> -                       child_gen =3D btrfs_node_ptr_generation(eb, paren=
+t_slot);
+> -                       btrfs_node_key_to_cpu(eb, &first_key, parent_slot=
+);
 >
->                 /*
->                  * dst_path->nodes[root_level] must be initialized before
-> @@ -2024,23 +2022,16 @@ static int qgroup_trace_new_subtree_blocks(struct=
- btrfs_trans_handle* trans,
->                   */
->                 eb =3D dst_path->nodes[cur_level + 1];
->                 parent_slot =3D dst_path->slots[cur_level + 1];
-> -               child_bytenr =3D btrfs_node_blockptr(eb, parent_slot);
->                 child_gen =3D btrfs_node_ptr_generation(eb, parent_slot);
-> -               btrfs_node_key_to_cpu(eb, &first_key, parent_slot);
+> -                       eb =3D read_tree_block(fs_info, child_bytenr, chi=
+ld_gen,
+> -                                            level, &first_key);
+> +                       eb =3D btrfs_read_node_slot(eb, parent_slot);
+>                         if (IS_ERR(eb)) {
+>                                 ret =3D PTR_ERR(eb);
+>                                 goto out;
+> -                       } else if (!extent_buffer_uptodate(eb)) {
+> -                               free_extent_buffer(eb);
+> -                               ret =3D -EIO;
+> -                               goto out;
+>                         }
 >
->                 /* This node is old, no need to trace */
->                 if (child_gen < last_snapshot)
->                         goto out;
->
-> -               eb =3D read_tree_block(fs_info, child_bytenr, child_gen,
-> -                                    cur_level, &first_key);
-> +               eb =3D btrfs_read_node_slot(eb, parent_slot);
->                 if (IS_ERR(eb)) {
->                         ret =3D PTR_ERR(eb);
->                         goto out;
-> -               } else if (!extent_buffer_uptodate(eb)) {
-> -                       free_extent_buffer(eb);
-> -                       ret =3D -EIO;
-> -                       goto out;
->                 }
->
->                 dst_path->nodes[cur_level] =3D eb;
+>                         path->nodes[level] =3D eb;
 > --
 > 2.26.2
 >
