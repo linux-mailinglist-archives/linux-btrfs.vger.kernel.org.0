@@ -2,140 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0669E2A95D4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F4F2A95D7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Nov 2020 12:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbgKFLyk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 06:54:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56036 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726920AbgKFLyk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 06:54:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604663678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=wQgc38W12Ry9jGiLzTIeoqijmTp1NH7FV20Qqojfm+c=;
-        b=qRFfarq/Vsw3ufNviikmPiCm/jMOZ46ZB57oU1QWGW1WH/+ogeZuzAnZKYFKUUoXbYTu+l
-        796gTP8CdzacD4pqYFuCLkV1+sKuPh6SciznFybUG9Eb3vGfn66+ulALqWtbw4ccIDIfFl
-        7bA2EGwOfyJLRLZnSAX01tVSERw/5v4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 982FCAD09;
-        Fri,  6 Nov 2020 11:54:38 +0000 (UTC)
-Subject: Re: [PATCH 17/32] btrfs: extent_io: don't allow tree block to cross
- page boundary for subpage support
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-18-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <bec6ae39-0a10-e4c4-8e4d-06577057e6f5@suse.com>
-Date:   Fri, 6 Nov 2020 13:54:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727232AbgKFLy6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 06:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgKFLy6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Nov 2020 06:54:58 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C32C0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri,  6 Nov 2020 03:54:58 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id p12so520037qtp.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Nov 2020 03:54:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=SSPt9k4aY4j0TILU/AKOopJRGNx6dOG74A1CLihUt48=;
+        b=RJtIst6bdegkQGglxuQa0CvzWc+tIDmZS3xncLx5Pl95qead4ZQzexo7YM3uO7r724
+         rMj1VsKL6PWpzLaQXklNiSabdAioN2m+H7ihWTePxmprsyCP9PP3gwpLCLUlcENvwMMV
+         VKKjOwJyktDaMHR29ievvoRjTbOE+b3GCErq/zdPg7ew2fiVbfPi6Q1C/OhNKUF8FUSQ
+         Jgv83j89G9zgEi9DQ3nb2iLPvUPxylcVbgVYDIexhifgzTtBPOoWROtt+I4u3yYzb/TO
+         +PgGX3AZFDSHSFGV5ai2E4wNEQnAzHo3Q2bUgGMC9eA1P+JVdjiUzTuLiQHbqV1cfb95
+         OzVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=SSPt9k4aY4j0TILU/AKOopJRGNx6dOG74A1CLihUt48=;
+        b=FIhTwB0uxgGJcyT1hHuAG6U9BB9f2+vG9SeJdcO8GfH6oSy+UfQ21e4nLTlfh1qaFX
+         5a2pC50Ur68rX/jTq8is7jtPNF3u5EjgroZnPEOAvkko+jJNgHXGvy9IBZLJHB8LQRe7
+         kl/O063FUeLtgJ2IFGEk7RvHhtJpFTY58zl31Ok/+Q06kml6k2yq58SQu4hNC53Q4Y3p
+         EcKZKN08dZ9A6fXEF+U7jZ7opHnAjuyBZy8wZPSt8i5Jdeiwsp9YmTGTUkLvBkGOwpVd
+         goKlLh75BK4v3DKlq+kLpsfd0qRuFa868Q8MNgGeImMjcjktn2j5HyKZ6XhtN7skgACK
+         PnWg==
+X-Gm-Message-State: AOAM533T+2Vg4Pq+EphrauzRfiVJziHMUiGpMHvSpjTESh2BjJ+tARDU
+        4qNRdlJsYgvYfkMzrmMT7DZm4UTK9/dRIi/rsoLhOKACQlw=
+X-Google-Smtp-Source: ABdhPJz5OTrH74CbXT368GIAsTeoi9zxYEE90cJUp3o43nnwQTg2OmtbIoOsACaE2s7EnHtyNUSGZhcLC8RXUwhqeyM=
+X-Received: by 2002:aed:2321:: with SMTP id h30mr1001637qtc.213.1604663697844;
+ Fri, 06 Nov 2020 03:54:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201103133108.148112-18-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1604591048.git.josef@toxicpanda.com> <5180b1583f4a9db07d8374026818d6a557f94768.1604591048.git.josef@toxicpanda.com>
+In-Reply-To: <5180b1583f4a9db07d8374026818d6a557f94768.1604591048.git.josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 6 Nov 2020 11:54:46 +0000
+Message-ID: <CAL3q7H5ChGfGd27+vaqkBR6YBXN9jj1AWup4G+iBzMfs2Vu8OQ@mail.gmail.com>
+Subject: Re: [PATCH 09/14] btrfs: use btrfs_read_node_slot in qgroup_trace_new_subtree_blocks
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Nov 5, 2020 at 3:47 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> We're open-coding btrfs_read_node_slot() here, replace with the helper.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-On 3.11.20 г. 15:30 ч., Qu Wenruo wrote:
-> As a preparation for subpage sector size support (allowing filesystem
-> with sector size smaller than page size to be mounted) if the sector
-> size is smaller than page size, we don't allow tree block to be read if
-> it crosses 64K(*) boundary.
-> 
-> The 64K is selected because:
-> - We are only going to support 64K page size for subpage for now
-> - 64K is also the max node size btrfs supports
-> 
-> This ensures that, tree blocks are always contained in one page for a
-> system with 64K page size, which can greatly simplify the handling.
-> 
-> Or we need to do complex multi-page handling for tree blocks.
-> 
-> Currently the only way to create such tree blocks crossing 64K boundary
-> is by btrfs-convert, which will get fixed soon and doesn't get
-> wide-spread usage.
+I couldn't get anymore the lockdep splat I reported before (after
+applying the whole patchset of course), it used to happen very often
+with btrfs/033.
 
-So filesystems with subpage blocksize which have been created as a
-result of a convert operation would eventually fail to read some block
-am I correct in my understanding? If that is the case then can't we
-simply land subpage support in userspace tools _after_ the convert has
-been fixed and turn this check into an assert?
+Looks good, thanks.
 
-
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/extent_io.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 30768e49cf47..30bbaeaa129a 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -5261,6 +5261,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->  		btrfs_err(fs_info, "bad tree block start %llu", start);
->  		return ERR_PTR(-EINVAL);
->  	}
-> +	if (btrfs_is_subpage(fs_info) && round_down(start, PAGE_SIZE) !=
-> +	    round_down(start + len - 1, PAGE_SIZE)) {
-> +		btrfs_err(fs_info,
-> +		"tree block crosses page boundary, start %llu nodesize %lu",
-> +			  start, len);
-> +		return ERR_PTR(-EINVAL);
-> +	}
->  
->  	eb = find_extent_buffer(fs_info, start);
->  	if (eb)
-> 
+>  fs/btrfs/qgroup.c | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
+>
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 21e42d8ec78e..8d112ff7b5ae 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -2002,10 +2002,8 @@ static int qgroup_trace_new_subtree_blocks(struct =
+btrfs_trans_handle* trans,
+>
+>         /* Read the tree block if needed */
+>         if (dst_path->nodes[cur_level] =3D=3D NULL) {
+> -               struct btrfs_key first_key;
+> -               int parent_slot;
+>                 u64 child_gen;
+> -               u64 child_bytenr;
+> +               int parent_slot;
+>
+>                 /*
+>                  * dst_path->nodes[root_level] must be initialized before
+> @@ -2024,23 +2022,16 @@ static int qgroup_trace_new_subtree_blocks(struct=
+ btrfs_trans_handle* trans,
+>                   */
+>                 eb =3D dst_path->nodes[cur_level + 1];
+>                 parent_slot =3D dst_path->slots[cur_level + 1];
+> -               child_bytenr =3D btrfs_node_blockptr(eb, parent_slot);
+>                 child_gen =3D btrfs_node_ptr_generation(eb, parent_slot);
+> -               btrfs_node_key_to_cpu(eb, &first_key, parent_slot);
+>
+>                 /* This node is old, no need to trace */
+>                 if (child_gen < last_snapshot)
+>                         goto out;
+>
+> -               eb =3D read_tree_block(fs_info, child_bytenr, child_gen,
+> -                                    cur_level, &first_key);
+> +               eb =3D btrfs_read_node_slot(eb, parent_slot);
+>                 if (IS_ERR(eb)) {
+>                         ret =3D PTR_ERR(eb);
+>                         goto out;
+> -               } else if (!extent_buffer_uptodate(eb)) {
+> -                       free_extent_buffer(eb);
+> -                       ret =3D -EIO;
+> -                       goto out;
+>                 }
+>
+>                 dst_path->nodes[cur_level] =3D eb;
+> --
+> 2.26.2
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
