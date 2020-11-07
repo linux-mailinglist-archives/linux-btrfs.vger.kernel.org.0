@@ -2,35 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE06F2AA19D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Nov 2020 01:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C661B2AA1A3
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Nov 2020 01:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbgKGAAg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 19:00:36 -0500
-Received: from mout.gmx.net ([212.227.17.21]:41113 "EHLO mout.gmx.net"
+        id S1728055AbgKGAEx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 19:04:53 -0500
+Received: from mout.gmx.net ([212.227.15.15]:47105 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727257AbgKGAAg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 19:00:36 -0500
+        id S1727257AbgKGAEw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 19:04:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604707231;
-        bh=Cq/n2O6HhYbzbLHQjpneZ35kTEtDN3KDTbuOO0mxQPA=;
+        s=badeba3b8450; t=1604707489;
+        bh=V2B6mI5g8IjsFd8H7lZrvXibxbc1HIEZzWA49xF2oOc=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=eQWL2fknDFDq/TFqrMUYMO5iFeYJdv7dkDmwV0rWxPb4Esy/NEpM7z4THc9bKZTJe
-         dYUyOdZZ0DpfYu9C1+RkFpu7agPUPEULJZ98MOiyzWOKTTiMPeI23UWLdypmENPpCc
-         EIQye43q2aGVHbbzfIPxnlYxgB3c4IYO61xEmkpo=
+        b=fvNGE2HbBVd0nWfcuwkNCMpkop4u3S1zaDAIbaZNtAHT71TGGA2bsuT0qYTEsbpxc
+         rV9Yo9a1wAWz709wyeixl+NUKBSbC2l4Sow9M6qhGdnsUuIZ7A1Hrhd+v/zUA9n7OB
+         pdJtF9A2raIhLLK0ypvkTXGvov4er/N1wZt70OWI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MrQJ5-1jwbub1zBX-00oWVB; Sat, 07
- Nov 2020 01:00:31 +0100
-Subject: Re: [PATCH 15/32] btrfs: introduce a helper to determine if the
- sectorsize is smaller than PAGE_SIZE
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MkHMZ-1jux8z3TU9-00kk0k; Sat, 07
+ Nov 2020 01:04:49 +0100
+Subject: Re: [PATCH 11/32] btrfs: disk-io: make csum_tree_block() handle
+ sectorsize smaller than page size
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-16-wqu@suse.com>
- <0eb2c642-f0df-a899-388d-2e1d9db6e5ae@suse.com>
- <5079f2e4-10b5-4024-1dd7-d2a59cc4945f@gmx.com>
- <20201106172816.GQ6756@twin.jikos.cz>
+ <20201103133108.148112-12-wqu@suse.com> <20201106185836.GS6756@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -56,99 +54,112 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8633b9b2-42f3-4916-b252-c9f9a23382a0@gmx.com>
-Date:   Sat, 7 Nov 2020 08:00:26 +0800
+Message-ID: <746bb53e-8a71-67a0-6d93-7c6e126670ea@gmx.com>
+Date:   Sat, 7 Nov 2020 08:04:44 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201106172816.GQ6756@twin.jikos.cz>
+In-Reply-To: <20201106185836.GS6756@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UDc9Sovb2OTGqDYmfL9BBoSx/hWhw0VT5B/sZJ/w4RAZF8EZA1j
- fz+P8dHfxBJ7smh2P7zfJgXdNc4mnh/JO55D1sqGGLtu2wX0XUxRG8U/qOds7TtXy33Ifvl
- ZxkSSlVOsKcSC03ollrEEdps0CfVmuUqQ/tt/lKmDvDvrKyhyy/usgxyix7XvRnW+HwPKwI
- wTQDSWd3txZsQNdO122Cg==
+X-Provags-ID: V03:K1:NOLsE4s317wXT1utyHsdEP1WdQELfFtadG9waZp+gbbOcAC/xVn
+ jG4b10CcVHAmScrIiVtyDa4de2LZzd7P0WEvOsRQ2fMFGFyF6A9zWbamVufQJzX/a98qm3q
+ pjqHIMJl8QzLZYhjms8CWU0bKCZbVTAMNAuySg0Alg/HzMrxZ56WkDe+sTC34U2q+SGpkGt
+ LurdloehyksXGWSxYWIfQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AO0wlR3yp9s=:nrGJFRMMW9xB82oZf6cVFz
- fyOeqVuqvv8LoxlKmhudN/vaW4y6eGwOIjhFSb7ZlBFGJyE+V77n51eJAgcaGceQLNiO2tknL
- BCuCOpZ+kElfd52n4Pzt7ri5wD95mKJklH5v72ZpWkzWCGwL8z/0FZ/7zhq+BOI5f5om1Cx6O
- QrTOveQ3iZ0IgtT89nd4ggW7hjUvVWoehtI/7+jm4ezcYVCiT+DQuoQKr9pIi9Zs3P1jlJWJ9
- A8krTz6SM3cshGC0xgGZ6tWbRUEb4y0nMxYGJocwfPFWb+qHZAnN5/BaGu2kb1GpG55izWywM
- 5mHaTAYhQoJ9BurVqRtrcwLvsDs7wWE+8Jy/eeMXVlpgAvo8s4GgnzsC51RvQ0QOVnIWiagQU
- DFTS8oXxbA050/oIJdU0m5l/I4/fo75e1eF/wMWf+ImWHIRkPLojFdcPEKOy9HfruCvqEWzUE
- F5Oks0xC/ZU0Braq+WjR8Z80AhmB45rztGUN+ti6ETawo9awRs9eIkZS1NBPSrnYNq5uVQEWR
- ZVIKlEeRTliy6AWr6WzvfmiDAmOYKeJ46HeJcvkdC90qT/Pk/2yIhy/aHw/70YPV0FQEAJy8P
- 1yyYOOZ0Q9G8mDR8UrScGhQHOiuqDM6MZWoWmw7yM1AqffIB9JdPFSYdvhpSQzCzCIKWh2SeN
- p2dnWvL0Oig7sRujYdDWfTQ6mzOztdHPW0JzGLWAsWmgEvhJKhK9gwr9RPph/yJmhs91/1jiI
- Q3LPbkv0ecrmuqAq14APAkmFY6WoQ0/rfIP5hnJNnkxiryYBoHg3nR71+zovnPC+/HtfTf/14
- ohHg/Hnnc4m/+lxSHdAUTrH/Rd62/5W0rbUNT0bJrdXUho1I32gctevsiLilKpsIXEGg0Mh6z
- Cv5z1HnEghGmeG0SGHsQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cfduYm6tuxg=:IAwzGUx9tdxF07BRisLsGx
+ oCDBfuAo0zCQ8d82xfQWw2eCWcAOuzGHMLixamuwnur1owq39Y2kty7dSSXELsoyyyxrsncQC
+ B4RLxWTDWb758Q+TLyZ9Dr3S4JuJiMc6LICkA4ROeWXS6hPW5ad3pItmV5ketkuVTx3kedsDv
+ qyLdBJsQ69XaKslsRcudtmqmTa9ROFtotz0u7u66G7et9Fr87WPHJafNi4mDPQso5twmvxrpj
+ /ysnVPApJXAD9LY4jf9V/K2pdv8Ej7af15sjR94ZRAi0KtIoLTyPl0LV53Gt1rR53cSnY/xow
+ ROJFq4Cmo5gbfberch5G73smdeiplIu4sQ6UygL0ng7ksNjq99MiWKdb+ivCLzw+tKleU3512
+ JPKTcQ+Eer8tzCX2mr0EQKnVNaAIMkaLzTOsjVjaoMN4bIuYqxhvGuMBRs0YJw77DIFGD0pA5
+ hj7Q8es+28hPK91kpzGQA+zLXDSKx+YVQAteZzP+iVe4M+5PsUTMvZQy7A0T+ScBQ6tMxyqW4
+ yw6iObGfZ3/aobVpHZzgKzQkDmELaA8yCfdkCdeI0ce/Y8rr+ANsxN327RW3gICdOUzuSiAX+
+ B2cXWDhkBakhr59wRhxCaeMl6RpyhJvDLDaSbirtxttb+ABHZri5kU2oJptQ9/GU5gsNFeDnh
+ T0m/zLlvXalZIy6EQBXA+10UihGXF237AfLBL1pQdVKpJ9flHrxyuTw1aoHJCGAaC0+0MtFWl
+ qPEpl9ivttSFxxKHZ6c0GNVak8hGJHZOMTvW6IUEqr7ozdZI014g7XvU6arj+huwBc1A/8TCR
+ 7IMLOaMeyYGYbANxAMR8EImwqZLr+Ev5kGTPnzI+TkkkdRFqtywff+cZbOLwg5YyLqdU/whxt
+ eVSNt2K29ZdiaCgNhelg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/11/7 =E4=B8=8A=E5=8D=881:28, David Sterba wrote:
-> On Fri, Nov 06, 2020 at 06:52:42AM +0800, Qu Wenruo wrote:
+On 2020/11/7 =E4=B8=8A=E5=8D=882:58, David Sterba wrote:
+> On Tue, Nov 03, 2020 at 09:30:47PM +0800, Qu Wenruo wrote:
+>> For subpage size support, we only need to handle the first page.
 >>
+>> To make the code work for both cases, we modify the following behaviors=
+:
 >>
->> On 2020/11/5 =E4=B8=8B=E5=8D=8811:01, Nikolay Borisov wrote:
->>>
->>>
->>> On 3.11.20 =D0=B3. 15:30 =D1=87., Qu Wenruo wrote:
->>>> Just to save us several letters for the incoming patches.
->>>>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>>  fs/btrfs/ctree.h | 5 +++++
->>>>  1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->>>> index b46eecf882a1..a08cf6545a82 100644
->>>> --- a/fs/btrfs/ctree.h
->>>> +++ b/fs/btrfs/ctree.h
->>>> @@ -3607,6 +3607,11 @@ static inline int btrfs_defrag_cancelled(struc=
-t btrfs_fs_info *fs_info)
->>>>  	return signal_pending(current);
->>>>  }
->>>>
->>>> +static inline bool btrfs_is_subpage(struct btrfs_fs_info *fs_info)
->>>> +{
->>>> +	return (fs_info->sectorsize < PAGE_SIZE);
->>>> +}
->>>
->>> This is conceptually wrong. The filesystem shouldn't care whether we a=
-re
->>> diong subpage blocksize io or not. I.e it should be implemented in suc=
-h
->>> a way so that everything " just works". All calculation should be
->>> performed based on the fs_info::sectorsize and we shouldn't care what
->>> the value of PAGE_SIZE is. The central piece becomes sectorsize.
+>> - num_pages calcuation
+>>   Instead of "nodesize >> PAGE_SHIFT", we go
+>>   "DIV_ROUND_UP(nodesize, PAGE_SIZE)", this ensures we get at least one
+>>   page for subpage size support, while still get the same result for
+>>   regular page size.
 >>
->> Nope, as long as we're using things like bio, we can't avoid the
->> restrictions from page.
+>> - The length for the first run
+>>   Instead of PAGE_SIZE - BTRFS_CSUM_SIZE, we go min(PAGE_SIZE, nodesize=
+)
+>>   - BTRFS_CSUM_SIZE.
+>>   This allows us to handle both cases well.
 >>
->> I can't get your point at all, I see nothing wrong here, especially whe=
-n
->> we still need to handle page lock for a lot of things.
+>> - The start location of the first run
+>>   Instead of always use BTRFS_CSUM_SIZE as csum start position, add
+>>   offset_in_page(eb->start) to get proper offset for both cases.
 >>
->> Furthermore, this thing is only used inside btrfs, how could this be
->> *conectpionally* wrong?
+>> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>  fs/btrfs/disk-io.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 1b527b2d16d8..9a72cb5ef31e 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -211,16 +211,16 @@ void btrfs_set_buffer_lockdep_class(u64 objectid,=
+ struct extent_buffer *eb,
+>>  static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+>>  {
+>>  	struct btrfs_fs_info *fs_info =3D buf->fs_info;
+>> -	const int num_pages =3D fs_info->nodesize >> PAGE_SHIFT;
+>> +	const int num_pages =3D DIV_ROUND_UP(fs_info->nodesize, PAGE_SIZE);
 >
-> As Nik said, it should be built around sectorsize (even if some other
-> layers work with pages or bios). Conceptually wrong is adding special
-> cases instead of generalizing or abstracting the code so it also
-> supports pagesize !=3D sectorsize.
->
-Really? For later patches you will see some unavoidable difference anyway.
+> No, this is not necessary and the previous way of counting pages should
+> stay as it's clear what is calculated. The rounding side effects make it
+> too subtle.  If sectorsize < page size, then num_pages is 0 but checksum
+> of the first page or it's part is done unconditionally.
 
-One example is page->private for metadata.
-For regular case, page-private is a pointer to eb, which is never
-feasible for subpage case.
+You mean keep num_pages to be 0, since pages[0] will also be checksumed
+unconditionally?
 
-It's OK to be ideal, but not OK to be too ideal.
+This doesn't sound sane. It's too tricky and hammer the readability.
 
 Thanks,
 Qu
+>
+>>  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+>>  	char *kaddr;
+>>  	int i;
+>>
+>>  	shash->tfm =3D fs_info->csum_shash;
+>>  	crypto_shash_init(shash);
+>> -	kaddr =3D page_address(buf->pages[0]);
+>> +	kaddr =3D page_address(buf->pages[0]) + offset_in_page(buf->start);
+>>  	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+>> -			    PAGE_SIZE - BTRFS_CSUM_SIZE);
+>> +		min_t(u32, PAGE_SIZE, fs_info->nodesize) - BTRFS_CSUM_SIZE);
+>
+> For clarity this should be calculated in a temporary variable.
+>
+> As this checksumming loop is also in scrub, this needs to be done right
+> before the unreadable coding pattern spreads.
+>
+> Also note that the subject talks about sectorsize while it is about
+> metadata blocks that use nodesize.
+>
