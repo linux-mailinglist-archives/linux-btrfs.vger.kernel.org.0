@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37552AA199
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Nov 2020 00:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE06F2AA19D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Nov 2020 01:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbgKFX5I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Nov 2020 18:57:08 -0500
-Received: from mout.gmx.net ([212.227.17.20]:60609 "EHLO mout.gmx.net"
+        id S1727264AbgKGAAg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Nov 2020 19:00:36 -0500
+Received: from mout.gmx.net ([212.227.17.21]:41113 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726415AbgKFX5G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Nov 2020 18:57:06 -0500
+        id S1727257AbgKGAAg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Nov 2020 19:00:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604707022;
-        bh=rCfic00FO1U5P8E0WzD8ulxObG29NUWNIGsp+h0ZaIg=;
+        s=badeba3b8450; t=1604707231;
+        bh=Cq/n2O6HhYbzbLHQjpneZ35kTEtDN3KDTbuOO0mxQPA=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=S4jvWxjmU+j38EuPnq44IuZlN6BHcaPnl7X/00gg/fH6vXOoff88Er6BOzsVreQxi
-         Y23yJTgLSPc3gf6nV3Aiw4Kw+iFYg9KmWhaE13XM0Os0j9ZEru0F4NKugAU9l7EVeS
-         1dNF5wVRj3XUAJg0EPz1HxTR08XJ1oW8B1TYoDEE=
+        b=eQWL2fknDFDq/TFqrMUYMO5iFeYJdv7dkDmwV0rWxPb4Esy/NEpM7z4THc9bKZTJe
+         dYUyOdZZ0DpfYu9C1+RkFpu7agPUPEULJZ98MOiyzWOKTTiMPeI23UWLdypmENPpCc
+         EIQye43q2aGVHbbzfIPxnlYxgB3c4IYO61xEmkpo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mk0NU-1jvE173uiu-00kL0v; Sat, 07
- Nov 2020 00:57:02 +0100
-Subject: Re: [PATCH 17/32] btrfs: extent_io: don't allow tree block to cross
- page boundary for subpage support
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MrQJ5-1jwbub1zBX-00oWVB; Sat, 07
+ Nov 2020 01:00:31 +0100
+Subject: Re: [PATCH 15/32] btrfs: introduce a helper to determine if the
+ sectorsize is smaller than PAGE_SIZE
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-18-wqu@suse.com>
- <bec6ae39-0a10-e4c4-8e4d-06577057e6f5@suse.com>
- <981350a6-77f9-6419-7a2e-22110364a55b@suse.com>
- <d45d198c-d7bd-a066-0fb6-686b77c8694e@suse.com>
+ <20201103133108.148112-16-wqu@suse.com>
+ <0eb2c642-f0df-a899-388d-2e1d9db6e5ae@suse.com>
+ <5079f2e4-10b5-4024-1dd7-d2a59cc4945f@gmx.com>
+ <20201106172816.GQ6756@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -56,121 +56,99 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <1d0fbcb9-0a2e-24ef-1c3e-cca4620782f3@gmx.com>
-Date:   Sat, 7 Nov 2020 07:56:58 +0800
+Message-ID: <8633b9b2-42f3-4916-b252-c9f9a23382a0@gmx.com>
+Date:   Sat, 7 Nov 2020 08:00:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <d45d198c-d7bd-a066-0fb6-686b77c8694e@suse.com>
+In-Reply-To: <20201106172816.GQ6756@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SEZh3tHW03AMnbf79BxtOtHVYQ2T6Lh3tQ1F0HRBNqYovW6GaL5
- 40tkKLoRbJ0ZIcN2vc8Xqv89JdllbaCkyB12RHaE7xXNwBob73F29/ZxkBS3nHVy094Daq9
- dS0+SzSyQv6Iy2K0VKXsiS2gwQZjx4OZsJNNf3ZMr39kxEPo8Hkr1NQLMTX2G9O1VpgHP3Z
- pFIEaYz+2lUKdRBAoWOGw==
+X-Provags-ID: V03:K1:UDc9Sovb2OTGqDYmfL9BBoSx/hWhw0VT5B/sZJ/w4RAZF8EZA1j
+ fz+P8dHfxBJ7smh2P7zfJgXdNc4mnh/JO55D1sqGGLtu2wX0XUxRG8U/qOds7TtXy33Ifvl
+ ZxkSSlVOsKcSC03ollrEEdps0CfVmuUqQ/tt/lKmDvDvrKyhyy/usgxyix7XvRnW+HwPKwI
+ wTQDSWd3txZsQNdO122Cg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xxU994pMFWE=:1rGMaCyzPgBBVGsJK+ncCW
- emsQXuJ0b++yQcCxW57cleAFz0XrFWGbTv7Se4EyEnDxsYmdPEYkBGTaFbEX3sI70P9OA3QJt
- kn2rxBOTNepwGI2Y2jd9wdr9TjdlqCcqV+XDaFkNZ4IbuFJwtAi9bvDE+R6rnEjbgLup0CrM2
- ly4bcXBJPIhLlfLrKGo9Y73//pNHOxbJejuHz8i4HVmjL1q1+XI/Hbkr1nsZE/PKO7aX5tngY
- /njxmiBgAkAiWD2wr3CSPbGkiQdcosyhU0tg21XqOpgslNQ1tSSIbutvDF/tMsgLJtdae+ZKL
- K6YcWSImEB4bT9aGVfXfC+JmBNytZd1vncXQAMo4sU4lj7bQX5pdgUNNYGpDGvOeUzuBeC1ml
- G8aWgZoC87XiHF0cICe9I/pySSlcmoCcCvlHSA/jo+7dlrCwyzcWCtFOMn+69mZ0QIZNmKv/R
- YXZo+OF8O6ZvM5DGsy2xOqQV1iotq/Di6272261JU21Grp2XKvcgGhMx2Ga1ECLFlxiU54TKw
- RCETImjSBrK3auGB21bpJYSiGrNw4/wSTQCwOvG+MGTYC4SlXWhIU37Q5UJV/i2DhQH+taVMA
- sspxikHyoWDxQC5mHVe53QJ15V0aSU6RetjNY1JOWbJyxHc6nofIljbajMf8JjR899ambCpCg
- Pi6yd+wfs3NAo4HH3Ge6hU8rg/M+gUXoj2cPH+Mg9ONxyA3IhXugh+yFt4+Se6JPcHV/0skxL
- 1kzpWK1e7fAnGRdZNgxyhihJPdRO9ZVDq0lOIwQShNvzMNGNUhkl1Im2pwAl6MZXzFa5htMjb
- O3rUXb+Hz9T9nJlOBDe8cjUAt9zEli2ctwGvzo1Kppeb1tcAavVkO2csvxNuhzvSd9YCH2y0c
- uJ/DXRmrp4qeCgVQL86Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AO0wlR3yp9s=:nrGJFRMMW9xB82oZf6cVFz
+ fyOeqVuqvv8LoxlKmhudN/vaW4y6eGwOIjhFSb7ZlBFGJyE+V77n51eJAgcaGceQLNiO2tknL
+ BCuCOpZ+kElfd52n4Pzt7ri5wD95mKJklH5v72ZpWkzWCGwL8z/0FZ/7zhq+BOI5f5om1Cx6O
+ QrTOveQ3iZ0IgtT89nd4ggW7hjUvVWoehtI/7+jm4ezcYVCiT+DQuoQKr9pIi9Zs3P1jlJWJ9
+ A8krTz6SM3cshGC0xgGZ6tWbRUEb4y0nMxYGJocwfPFWb+qHZAnN5/BaGu2kb1GpG55izWywM
+ 5mHaTAYhQoJ9BurVqRtrcwLvsDs7wWE+8Jy/eeMXVlpgAvo8s4GgnzsC51RvQ0QOVnIWiagQU
+ DFTS8oXxbA050/oIJdU0m5l/I4/fo75e1eF/wMWf+ImWHIRkPLojFdcPEKOy9HfruCvqEWzUE
+ F5Oks0xC/ZU0Braq+WjR8Z80AhmB45rztGUN+ti6ETawo9awRs9eIkZS1NBPSrnYNq5uVQEWR
+ ZVIKlEeRTliy6AWr6WzvfmiDAmOYKeJ46HeJcvkdC90qT/Pk/2yIhy/aHw/70YPV0FQEAJy8P
+ 1yyYOOZ0Q9G8mDR8UrScGhQHOiuqDM6MZWoWmw7yM1AqffIB9JdPFSYdvhpSQzCzCIKWh2SeN
+ p2dnWvL0Oig7sRujYdDWfTQ6mzOztdHPW0JzGLWAsWmgEvhJKhK9gwr9RPph/yJmhs91/1jiI
+ Q3LPbkv0ecrmuqAq14APAkmFY6WoQ0/rfIP5hnJNnkxiryYBoHg3nR71+zovnPC+/HtfTf/14
+ ohHg/Hnnc4m/+lxSHdAUTrH/Rd62/5W0rbUNT0bJrdXUho1I32gctevsiLilKpsIXEGg0Mh6z
+ Cv5z1HnEghGmeG0SGHsQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/11/6 =E4=B8=8B=E5=8D=8810:04, Nikolay Borisov wrote:
->
->
-> On 6.11.20 =D0=B3. 15:25 =D1=87., Qu Wenruo wrote:
+On 2020/11/7 =E4=B8=8A=E5=8D=881:28, David Sterba wrote:
+> On Fri, Nov 06, 2020 at 06:52:42AM +0800, Qu Wenruo wrote:
 >>
 >>
->> On 2020/11/6 =E4=B8=8B=E5=8D=887:54, Nikolay Borisov wrote:
+>> On 2020/11/5 =E4=B8=8B=E5=8D=8811:01, Nikolay Borisov wrote:
 >>>
 >>>
 >>> On 3.11.20 =D0=B3. 15:30 =D1=87., Qu Wenruo wrote:
->>>> As a preparation for subpage sector size support (allowing filesystem
->>>> with sector size smaller than page size to be mounted) if the sector
->>>> size is smaller than page size, we don't allow tree block to be read =
-if
->>>> it crosses 64K(*) boundary.
->>>>
->>>> The 64K is selected because:
->>>> - We are only going to support 64K page size for subpage for now
->>>> - 64K is also the max node size btrfs supports
->>>>
->>>> This ensures that, tree blocks are always contained in one page for a
->>>> system with 64K page size, which can greatly simplify the handling.
->>>>
->>>> Or we need to do complex multi-page handling for tree blocks.
->>>>
->>>> Currently the only way to create such tree blocks crossing 64K bounda=
-ry
->>>> is by btrfs-convert, which will get fixed soon and doesn't get
->>>> wide-spread usage.
->>>
->>> So filesystems with subpage blocksize which have been created as a
->>> result of a convert operation would eventually fail to read some block
->>> am I correct in my understanding? If that is the case then can't we
->>> simply land subpage support in userspace tools _after_ the convert has
->>> been fixed and turn this check into an assert?
->>
->> My bad, after I checked the convert code, at least from 2016 that all
->> free space convert can utilized is already 64K aligned.
->>
->> So there isn't much thing to be done in convert already.
->
-> So remove the bit about convert and does that mean this code should
-> really be turned into an assert?
-
-I just want to be extra safe. ASSERT() can still crash the system or
-ignore the important check and cause crash in other locations.
-
-Thanks,
-Qu
->
->>
->> Thanks,
->> Qu
->>
->>>
->>>
+>>>> Just to save us several letters for the incoming patches.
 >>>>
 >>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >>>> ---
->>>>  fs/btrfs/extent_io.c | 7 +++++++
->>>>  1 file changed, 7 insertions(+)
+>>>>  fs/btrfs/ctree.h | 5 +++++
+>>>>  1 file changed, 5 insertions(+)
 >>>>
->>>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->>>> index 30768e49cf47..30bbaeaa129a 100644
->>>> --- a/fs/btrfs/extent_io.c
->>>> +++ b/fs/btrfs/extent_io.c
->>>> @@ -5261,6 +5261,13 @@ struct extent_buffer *alloc_extent_buffer(stru=
-ct btrfs_fs_info *fs_info,
->>>>  		btrfs_err(fs_info, "bad tree block start %llu", start);
->>>>  		return ERR_PTR(-EINVAL);
->>>>  	}
->>>> +	if (btrfs_is_subpage(fs_info) && round_down(start, PAGE_SIZE) !=3D
->>>> +	    round_down(start + len - 1, PAGE_SIZE)) {
->>>> +		btrfs_err(fs_info,
->>>> +		"tree block crosses page boundary, start %llu nodesize %lu",
->>>> +			  start, len);
->>>> +		return ERR_PTR(-EINVAL);
->>>> +	}
+>>>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>>>> index b46eecf882a1..a08cf6545a82 100644
+>>>> --- a/fs/btrfs/ctree.h
+>>>> +++ b/fs/btrfs/ctree.h
+>>>> @@ -3607,6 +3607,11 @@ static inline int btrfs_defrag_cancelled(struc=
+t btrfs_fs_info *fs_info)
+>>>>  	return signal_pending(current);
+>>>>  }
 >>>>
->>>>  	eb =3D find_extent_buffer(fs_info, start);
->>>>  	if (eb)
->>>>
+>>>> +static inline bool btrfs_is_subpage(struct btrfs_fs_info *fs_info)
+>>>> +{
+>>>> +	return (fs_info->sectorsize < PAGE_SIZE);
+>>>> +}
 >>>
+>>> This is conceptually wrong. The filesystem shouldn't care whether we a=
+re
+>>> diong subpage blocksize io or not. I.e it should be implemented in suc=
+h
+>>> a way so that everything " just works". All calculation should be
+>>> performed based on the fs_info::sectorsize and we shouldn't care what
+>>> the value of PAGE_SIZE is. The central piece becomes sectorsize.
 >>
+>> Nope, as long as we're using things like bio, we can't avoid the
+>> restrictions from page.
+>>
+>> I can't get your point at all, I see nothing wrong here, especially whe=
+n
+>> we still need to handle page lock for a lot of things.
+>>
+>> Furthermore, this thing is only used inside btrfs, how could this be
+>> *conectpionally* wrong?
+>
+> As Nik said, it should be built around sectorsize (even if some other
+> layers work with pages or bios). Conceptually wrong is adding special
+> cases instead of generalizing or abstracting the code so it also
+> supports pagesize !=3D sectorsize.
+>
+Really? For later patches you will see some unavoidable difference anyway.
+
+One example is page->private for metadata.
+For regular case, page-private is a pointer to eb, which is never
+feasible for subpage case.
+
+It's OK to be ideal, but not OK to be too ideal.
+
+Thanks,
+Qu
