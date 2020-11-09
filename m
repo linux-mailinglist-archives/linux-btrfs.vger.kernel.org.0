@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6782AB811
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Nov 2020 13:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897C62AB813
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Nov 2020 13:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729303AbgKIMTn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Nov 2020 07:19:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35088 "EHLO mx2.suse.de"
+        id S1729038AbgKIMVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Nov 2020 07:21:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35640 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729243AbgKIMTn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Nov 2020 07:19:43 -0500
+        id S1726956AbgKIMVH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Nov 2020 07:21:07 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604924381;
+        t=1604924465;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=g7mhrvihsdqck7HK7htK+4L58gqVyXVMvGchj410A+8=;
-        b=vQEjHwYEtoE8ftpDC+ETJ/aHQkYOft1NtR5LdtLUenmACR5Uw/DQVWA5FPHWqzsFdZ+/b4
-        rMtgxqHM/FSYfBRXGFz57/og/y8mpRVZo3w+By6tYpEesDfEE5UAVLXlLI6l19zkq+AGFg
-        oZS7i7ZKYdyeUEbPufPZyx0e5DLBTwc=
+        bh=h9cyOcfS8uvbsbslayBvPK5fJH4wBY4WtrXac34y46Q=;
+        b=LMF9cy6PNyyKXsUFeXt92fX0UKORBTQcFsAOevKLGN2/hc9jeVJBhyzhVzFY9qM8mPNaeg
+        wQXpsNEgqFnBuHIBpeC+T3gT9ODQw4lwP1IZSxIC7Q//355wVd/c+qbHmrz+UMLFCWqhVV
+        loIwESkMBKpenGapmm3SjAUzra8A19c=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 96451ABF4;
-        Mon,  9 Nov 2020 12:19:41 +0000 (UTC)
-Subject: Re: [PATCH 2/2] btrfs: use more straightforward disk_bytenr to
- replace icsum for check_data_csum()
+        by mx2.suse.de (Postfix) with ESMTP id 8BFD2AC1D;
+        Mon,  9 Nov 2020 12:21:05 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs: remove the phy_offset parameter for
+ btrfs_validate_metadata_buffer()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201109115410.605880-1-wqu@suse.com>
- <20201109115410.605880-3-wqu@suse.com>
+ <20201109115410.605880-2-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <bb177936-c2e7-2b1d-387c-13128527667b@suse.com>
-Date:   Mon, 9 Nov 2020 14:19:39 +0200
+Message-ID: <4e2932ce-d3c5-1c6b-0577-b8ebe32417ce@suse.com>
+Date:   Mon, 9 Nov 2020 14:21:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201109115410.605880-3-wqu@suse.com>
+In-Reply-To: <20201109115410.605880-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,101 +89,23 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 9.11.20 г. 13:54 ч., Qu Wenruo wrote:
-> Parameter @icsum for check_data_csum() is a little hard to understand.
-> It is the offset in sectors compared to io_bio->logical.
-
-This second sentence is confusing because io_bio->logical is used for repair/dio bios and not buffered whilst  icsum is calculated independently of io_bio->logical so I'd suggest you remove it. 
+> Parameter @phy_offset is the offset against the io_bio->logical (which
+> is the disk bytenr).
 > 
-> Instead of using the calculated value, let's go with disk_bytenr, as the
-> new name is not only straightforward,  but also utilized in a lot of
-> existing code for file items.
-
-Just say that instead of passing in the calculated offset couple of levels deep you modify the code to instead pass disk_bytenr of currently processed biovec and use that to calculate the offset closer to actual users of it. Kind of like what I did below. 
-
+> @phy_offset is mostly for data io to lookup the csum in btrfs_io_bio.
 > 
-> To get the old @icsum value, we simply use
-> (disk_bytenr - (io_bio->bio.bi_iter.bi_sector << 9)) >>
-> fs_info->sectorsize_bits;
+> But for metadata, it's completely useless as metadata stores their own
+> csum in its btrfs_header.
 > 
-> This patch would separate file offset with disk_bytenr completely, to
-> reduce the confusion.
-
-I find this description somewhat confusing, what you are doing is just moving the sector offset calculation closer to where it's being used, rather than calculating it in the top level endio handler and passing it several levels down to where it's actually used - in the csum verification function. So where is file offset involved?
-
-Otherwise the code LGTM apart from some minor nits below. 
-
+> Remove this useless parameter from btrfs_validate_metadata_buffer().
+> 
+> Just an extra note for parameters @start and @end, they are not utilized
+> at all for current sectorsize == PAGE_SIZE, as we can grab eb directly
+> from page.
+> 
+> But those two parameters are very important for later subpage support,
+> thus @start/@len are not touched here.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 14 ++++++++------
->  fs/btrfs/inode.c     | 35 ++++++++++++++++++++++++++---------
->  2 files changed, 34 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index bd5a22bfee68..f8b5d3d4e5b0 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2878,7 +2878,7 @@ static void end_bio_extent_readpage(struct bio *bio)
->  	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
->  	struct extent_io_tree *tree, *failure_tree;
->  	struct processed_extent processed = { 0 };
-> -	u64 offset = 0;
-> +	u64 disk_bytenr = (bio->bi_iter.bi_sector << 9);
 
-needless parentheses.
-
->  	u64 start;
->  	u64 end;
->  	u64 len;
-
-<snip>
-
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index c54e0ed0b938..eff987931f0d 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2843,19 +2843,27 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
->   * The length of such check is always one sector size.
->   */
-
-It's not evident from the hunk but you should also modify the parameter description of this function since we no longer have 'icsum'
-
->  static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
-> -			   int icsum, struct page *page, int pgoff)
-> +			   u64 disk_bytenr, struct page *page, int pgoff)
->  {
->  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->  	char *kaddr;
->  	u32 len = fs_info->sectorsize;
->  	const u32 csum_size = fs_info->csum_size;
-> +	u64 bio_disk_bytenr = (io_bio->bio.bi_iter.bi_sector << 9);
-
-Again, extra parentheses, they don't bring anything in this particular expression. 
-
-> +	int offset_sectors;
->  	u8 *csum_expected;
->  	u8 csum[BTRFS_CSUM_SIZE];
->  
->  	ASSERT(pgoff + len <= PAGE_SIZE);
->  
-> -	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
-> +	/* Our disk_bytenr should be inside the io_bio */
-> +	ASSERT(bio_disk_bytenr <= disk_bytenr &&
-> +	       disk_bytenr < bio_disk_bytenr + io_bio->bio.bi_iter.bi_size);
-
-nit: in_range(disk_bytenr, bio_disk_bytenr, io_bio->bio.bi_iter.bi_size); 
-
-IMO the assert is redundant since it's obvious disk_bytenr will always be within range, but perhahps it's needed for your future subpage work so I'm not going to insist on removing it. 
-
-> +
-> +	offset_sectors = (disk_bytenr - bio_disk_bytenr) >>
-> +			 fs_info->sectorsize_bits;
-> +	csum_expected = ((u8 *)io_bio->csum) + offset_sectors * csum_size;
->  
->  	kaddr = kmap_atomic(page);
->  	shash->tfm = fs_info->csum_shash;
-> @@ -2883,8 +2891,13 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
-
-<snip>
-
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
