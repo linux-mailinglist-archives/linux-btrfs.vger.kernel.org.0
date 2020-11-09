@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FFB2AB4AC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Nov 2020 11:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1962AB4B4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Nov 2020 11:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgKIKVL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Nov 2020 05:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52272 "EHLO
+        id S1729005AbgKIKWA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Nov 2020 05:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726176AbgKIKVL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Nov 2020 05:21:11 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334D2C0613CF
-        for <linux-btrfs@vger.kernel.org>; Mon,  9 Nov 2020 02:21:11 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id v143so2849558qkb.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Nov 2020 02:21:11 -0800 (PST)
+        with ESMTP id S1726176AbgKIKWA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Nov 2020 05:22:00 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAFEC0613CF
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Nov 2020 02:21:59 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id 13so3761335qvr.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Nov 2020 02:21:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=RM+pxGYctrKLXtJlUzHXK5cF6Vg8MqMPQwkQlMxggu4=;
-        b=DN+TWjHkVE+5uqopAtwyjoGUloXwvo9gi0Tgq0UuretYv8OFhZ314O7iXTRQWSBk7r
-         OCnhX5z9fGqOW8QI2/rScHAhzlagzSpoXxTNHjVNOndyS8pkDuqsjTCZeKVikkslDhg4
-         BUZv2/ptqubf8tfz99vWwoywYikQ0jWi50AP31QIScYUt7atR+Ts2U1XuxwIBKHImUIi
-         hjPcBn+ucEDZITvypyTpeA8oHnSLg4GOC3jam9/PywtEranh3p01KIBzH+AwX9fHho3C
-         VzXwg9cYSBr4HVlVUh9jSfchaKck6sxW2sOxLMzWOafRz1QpeUJUGqVqbeRSM7akLdJ5
-         J9Eg==
+        bh=N1/m7RxZJQoqT1E6QClwsjzDThGKD2Ute2sIBD5zRks=;
+        b=eAItuv1VUF5PMwhLiuCwuEtM+N0FdrvjSeLRWzg6DOs3JQwnvbe3lbxA52XmnRybU8
+         fFIJapJx/hkVH5W1gYVj5mR//1royToMFnGplt17Bh2wcVoGr8OWhj6UWTqQQu7uCp0F
+         P0Mt7uchAiH/x1f+oly1WpErzKCIGqPAIE7pp6Nx4u9yF3AeyXgOPYBIbekUVbYyD1kX
+         dFnrp/OKb4XQJukvO31xg3FsUxsmw432V9oPNRkIVtVdm4kLPaE+2qItQqSDQzy7UzCW
+         IFpmL60v/TCxpop4GLG2EaO3Va42b4Kcs8I9z3YiQoils4yrLf5IBRMRXWwVlw+A5B5/
+         5vhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=RM+pxGYctrKLXtJlUzHXK5cF6Vg8MqMPQwkQlMxggu4=;
-        b=Zzk0k8qwcK+/T/pluNWF5oXqmMniWPxGW02S1GfH9QuN+tRgc3uETk0oVaPFPJx8Y6
-         SgkPJGr2nfE+xH73VL4bm9VvDHkoia+BT2shiCN0J41N1KtGYaYrvt+cTQzPRinqS8Dk
-         4QrvVNF4x6ps57HQcv1tWje0+dOECfvulMvpJ+TL0UUTCxCkcUwahXBo2ClbcF6hHkbj
-         idABwcZE6WmUYr35aLnUsxm3zqV+sVMccR0V+bIca02NU9HUo4++ii1AtiHcgZHKdsUN
-         RY74nklorYnSs0Q9lHBCpl1utxzXwZzqf+3UyGhS0KelRMI8aJ80lrusYXSPBTR+Ro6z
-         2DEg==
-X-Gm-Message-State: AOAM533DrRG88LICt+5vAB/UK6C+G4kVbxW/KMIjZElFZThlhpXJ9yoo
-        zWQAxH6Ioc8J2Li7OthEjkPc4lJmiZ6r6qzAKyc=
-X-Google-Smtp-Source: ABdhPJy1GBjmo/JkAysPVAY7IwJBa4IE5eObd1Lv4J8iV0APpFqzYsIDo7Z5HF0C7DMCnBOszOqMHBZ8e7SozDuPayA=
-X-Received: by 2002:a37:7c81:: with SMTP id x123mr12331678qkc.383.1604917270475;
- Mon, 09 Nov 2020 02:21:10 -0800 (PST)
+        bh=N1/m7RxZJQoqT1E6QClwsjzDThGKD2Ute2sIBD5zRks=;
+        b=gG3tL3tj05cqu/Tzn/jsYiLo9x7p5SLwd3cJZSMNA/Z/4MfdAKC2olIgx5sjBIiPb/
+         RMO7qNaLp1CLHBp1QpQfdLTaNymSkos07d9+fNi8/DUgvMOgcYV54p5wDYSbqapXjBjM
+         G3Mur8PvHjPGstE678AluV9H487Nmd2OoaNl88astRSuX54bo7Wcn+QpPSYXZtWxsr7o
+         xXFuoWXQ5YnGCYkK9UOBk0CIxHNjafcvgabVAM2g2FktcedZK83gMrZHCYMXKQg4MW2E
+         bjqrgJyw36SeSQTDWLBW03Y6izp2U7BAljm4HFQiEY1egzu/VoU5Bj2i7DnWGCVFzqms
+         5ZVQ==
+X-Gm-Message-State: AOAM5316vo0koAucVj6yX/GoAsmyApA042n99vXkGwIldYUkFjU42UoE
+        E7NydJRyqkJOftSzLc2eHHEdt7HxWyZNVdBZ0J8=
+X-Google-Smtp-Source: ABdhPJxwwRhNBJl/cVf7S5zzSn8ucre0ioGb6rHoeYfvFG9v9uMafgURZSLpOP2nVxdDpGkgt7lxIAV5Zv94ZJJTZFw=
+X-Received: by 2002:ad4:57a6:: with SMTP id g6mr3377055qvx.27.1604917319241;
+ Mon, 09 Nov 2020 02:21:59 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1604697895.git.josef@toxicpanda.com> <295a64e139b18fdbedd872f2be8c4688d9f18364.1604697895.git.josef@toxicpanda.com>
-In-Reply-To: <295a64e139b18fdbedd872f2be8c4688d9f18364.1604697895.git.josef@toxicpanda.com>
+References: <cover.1604697895.git.josef@toxicpanda.com> <cce77fcffe84af208d0260120a874134b771ce65.1604697895.git.josef@toxicpanda.com>
+In-Reply-To: <cce77fcffe84af208d0260120a874134b771ce65.1604697895.git.josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 9 Nov 2020 10:20:59 +0000
-Message-ID: <CAL3q7H4PqK1Uf_duNZJNzxzqgsVatvTmu0V3qnKRGVkRnYzijg@mail.gmail.com>
-Subject: Re: [PATCH 5/8] btrfs: remove __btrfs_read_lock_root_node
+Date:   Mon, 9 Nov 2020 10:21:48 +0000
+Message-ID: <CAL3q7H71NAcLc9jq2vL26G2JuZ_C=FbjpRpue1bvTE7Q=5SAvw@mail.gmail.com>
+Subject: Re: [PATCH 6/8] btrfs: use btrfs_tree_read_lock in btrfs_search_slot
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -59,9 +59,11 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 9:30 PM Josef Bacik <josef@toxicpanda.com> wrote:
+On Fri, Nov 6, 2020 at 9:29 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> We no longer have recursive locking, so remove this variant.
+> We no longer use recursion, so
+> __btrfs_tree_read_lock(BTRFS_NESTING_NORMAL) =3D=3D btrfs_tree_read_lock.
+> Replace this call with the simple helper.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
@@ -70,72 +72,25 @@ Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Looks good, thanks.
 
 > ---
->  fs/btrfs/ctree.c   | 2 +-
->  fs/btrfs/locking.c | 5 ++---
->  fs/btrfs/locking.h | 8 +-------
->  3 files changed, 4 insertions(+), 11 deletions(-)
+>  fs/btrfs/ctree.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
 > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index cdd86ced917a..ef7389e6be3d 100644
+> index ef7389e6be3d..2cdfaf7298ab 100644
 > --- a/fs/btrfs/ctree.c
 > +++ b/fs/btrfs/ctree.c
-> @@ -2588,7 +2588,7 @@ static struct extent_buffer *btrfs_search_slot_get_=
-root(struct btrfs_root *root,
->                  * We don't know the level of the root node until we actu=
-ally
->                  * have it read locked
->                  */
-> -               b =3D __btrfs_read_lock_root_node(root, 0);
-> +               b =3D btrfs_read_lock_root_node(root);
->                 level =3D btrfs_header_level(b);
->                 if (level > write_lock_level)
->                         goto out;
-> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index 9b66154803a7..c8b239376fb4 100644
-> --- a/fs/btrfs/locking.c
-> +++ b/fs/btrfs/locking.c
-> @@ -185,14 +185,13 @@ struct extent_buffer *btrfs_lock_root_node(struct b=
-trfs_root *root)
->   *
->   * Return: root extent buffer with read lock held
->   */
-> -struct extent_buffer *__btrfs_read_lock_root_node(struct btrfs_root *roo=
-t,
-> -                                                 bool recurse)
-> +struct extent_buffer *btrfs_read_lock_root_node(struct btrfs_root *root)
->  {
->         struct extent_buffer *eb;
->
->         while (1) {
->                 eb =3D btrfs_root_node(root);
-> -               __btrfs_tree_read_lock(eb, BTRFS_NESTING_NORMAL, recurse)=
-;
-> +               btrfs_tree_read_lock(eb);
->                 if (eb =3D=3D root->node)
->                         break;
->                 btrfs_tree_read_unlock(eb);
-> diff --git a/fs/btrfs/locking.h b/fs/btrfs/locking.h
-> index f8f2fd835582..91441e31db18 100644
-> --- a/fs/btrfs/locking.h
-> +++ b/fs/btrfs/locking.h
-> @@ -94,13 +94,7 @@ void btrfs_tree_read_unlock(struct extent_buffer *eb);
->  int btrfs_try_tree_read_lock(struct extent_buffer *eb);
->  int btrfs_try_tree_write_lock(struct extent_buffer *eb);
->  struct extent_buffer *btrfs_lock_root_node(struct btrfs_root *root);
-> -struct extent_buffer *__btrfs_read_lock_root_node(struct btrfs_root *roo=
-t,
-> -                                                 bool recurse);
-> -
-> -static inline struct extent_buffer *btrfs_read_lock_root_node(struct btr=
-fs_root *root)
-> -{
-> -       return __btrfs_read_lock_root_node(root, false);
-> -}
-> +struct extent_buffer *btrfs_read_lock_root_node(struct btrfs_root *root)=
-;
->
->  #ifdef CONFIG_BTRFS_DEBUG
->  static inline void btrfs_assert_tree_locked(struct extent_buffer *eb) {
+> @@ -2857,8 +2857,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *tr=
+ans, struct btrfs_root *root,
+>                                 btrfs_tree_lock(b);
+>                                 p->locks[level] =3D BTRFS_WRITE_LOCK;
+>                         } else {
+> -                               __btrfs_tree_read_lock(b, BTRFS_NESTING_N=
+ORMAL,
+> -                                                      0);
+> +                               btrfs_tree_read_lock(b);
+>                                 p->locks[level] =3D BTRFS_READ_LOCK;
+>                         }
+>                         p->nodes[level] =3D b;
 > --
 > 2.26.2
 >
