@@ -2,128 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA122AB163
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Nov 2020 07:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591F62AB464
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Nov 2020 11:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgKIGpD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Nov 2020 01:45:03 -0500
-Received: from mout.gmx.net ([212.227.15.19]:45071 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727077AbgKIGpC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:45:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604904299;
-        bh=QvzB2AwDCRZfUKE0npk05fTpBRVWJii4VO9fy/ogk/8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=KqpGEtoy+dWGuO8GO172I3EPoNtyHH9GGJ6wT18FejO8/GELsouBI8k6vDMRaFaWI
-         /uOG5DXXR8kr0gEQbdM4a85Y4sBL714Ahj3bFtuUY6UC7x82gBo2eTKJob70nhzzY4
-         u8GCMIRfNLqqVTqTPYIQVRVpJmWGlltvX4ZD8Vxw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6DWs-1keEug1mci-006cGz; Mon, 09
- Nov 2020 07:44:59 +0100
-Subject: Re: [PATCH 12/32] btrfs: disk-io: extract the extent buffer
- verification from btrfs_validate_metadata_buffer()
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-13-wqu@suse.com>
- <15477e44-e15d-9b8b-634a-d300d3c82d84@suse.com>
- <20201106190346.GT6756@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <bcbd0b74-b433-03a9-5bfe-2f365625c6f3@gmx.com>
-Date:   Mon, 9 Nov 2020 14:44:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729202AbgKIKHF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Nov 2020 05:07:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728979AbgKIKHE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Nov 2020 05:07:04 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCB7C0613CF
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Nov 2020 02:07:04 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id i7so5574267qti.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Nov 2020 02:07:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=GQCG9MzlHorFPk8ZIEJfuRbc9m32BwdS4ydxRR3Npxg=;
+        b=RAiFoCUj9sOzjOypWB1vlovKfjMi6wmLFHeT8Jb8NCVNStWdmJM5JnDfR4CwpFgL93
+         cqZOlL8DGljRqS1umWesmzES/U+UAZKFJkC2xv4JWIaHzZtUNohcZTIG5vqs6XEP5nvU
+         71wJrG+2+TFZaQmcFtW7AFYfjrL07RruWFtIS76JFylUxu85GD3syVitTjwU8EfCluEL
+         2WbWvl/LxLTlTi6S/XGUzmw7/N3hROiuIZlC4HfFNaDS41TASpiek6xgD+q+eQSs+aYF
+         IEjjRTVXg6CrWm89JyorzZlOlzrlju7cUKzE5XkfQSiL0HzIKP8eT3uzAiku4SVpJddq
+         AN+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=GQCG9MzlHorFPk8ZIEJfuRbc9m32BwdS4ydxRR3Npxg=;
+        b=WzcbTfUw03+nDXjpZSPIVltV6vkajS9wG7U+DWUn5WZxyxh8bNxSTFt1kllKwC1u3p
+         jGQ/q7+OohrkEYSgv6sGCemlEXsq+rOA7jHjyhLYscIJ/GXyJ5nM4sHSalo8ge07XKdq
+         Vbcn+htswyscBpYA2MAVJ/bn4Oo4BcoewKcUVGS9S1K70pOtyASFaTHwDhVc1SRXPqLY
+         3hQgKeG2agIEaWY+E1mA0cg8iDRluNLpdKoA4CWxSzjnHKNi2f3TgHwAMEwyOF5PBCpL
+         RR0NemrDn8r++snTGTLTHx2Wr0WQCGlp99quAfsiHBRJBz070sxygqwxSJrzrWDgyojA
+         w6Fg==
+X-Gm-Message-State: AOAM530QmBLfCsz+UPFNp2BY45vmpXD7wY64qiLRuDsFm+rwmPK9VF8k
+        ydnKyRLSNIxIt903vY76KlwOylceRQGhWqhNb7o=
+X-Google-Smtp-Source: ABdhPJw0dpnE3QIwZxseJHz13UxMPWBFbVyCesw9FDCr8uyj8uUJUDNjzn8qr4c2fsQGN54KMa6YQdoVvZQYUAEQw7g=
+X-Received: by 2002:ac8:5942:: with SMTP id 2mr12452043qtz.183.1604916423933;
+ Mon, 09 Nov 2020 02:07:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201106190346.GT6756@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+References: <cover.1604697895.git.josef@toxicpanda.com> <74fe63263c2d9e7ffd6c0cef2a2f9ce893989638.1604697895.git.josef@toxicpanda.com>
+In-Reply-To: <74fe63263c2d9e7ffd6c0cef2a2f9ce893989638.1604697895.git.josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 9 Nov 2020 10:06:52 +0000
+Message-ID: <CAL3q7H6eWuPQ=t2BVJYQPGYmYm3ZJZgPiOFwznwU5KetLMaKyw@mail.gmail.com>
+Subject: Re: [PATCH 1/8] btrfs: cleanup the locking in btrfs_next_old_leaf
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y7gxGCWIUHL6pKfH7QVo9YI90TFxU+ZGVGM1Rt9BTH4UtVLHHg7
- L3D/mm5Biu9EU6zfN5QAkuP5uGld43w9iFvS3sv4sZGKV4PkLRIPIVhj0FMLB0ZqLfOx4ZY
- Hr43VRBrpr5pXjNm/AEfq74q9w9hap2oySv56GVzJkL66CTvAvuoYnaVEsfaAUaKeAX6zIw
- Hkk3VykIpEJB62oYWCUzw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:v617fqIxnlk=:YZpx0vNqqJLf0bVm0LtZjF
- KW6TkOYj8uwxypq66WugyCLd5CpNCxoKLGVGwGeLzT+UhYwEYyoREyTsLWQttz2kzL+51IrdS
- zmusPgNYHUfL8L462pewkrmP7CNS11Vwl47Kj83tw0UYV7W/d/yP/kJxQzWcVcTgwoy1xUEZw
- ZdBIs6pYeuN2mg5+zrNxdzqPjPIVBsT1Po/nNnLfOaO49THQUHGxh3HUooIdQuqtpSdGIft/1
- Iiwn8qBaIX5iCdrpnYhbSoyH2TAR6HRrCwmR42IHIwGg972ADg1PkZKZG9z1a0cn1DsucwGMc
- qUvniCo2suPs6dvlRFoTACxXMJeaMCfzV0qID0i23AKzvW0ebT+7/WzDw5JpLBtfUvrj2n4jU
- lbLBYt+aGF1eIs5SAHEi5nZMqCd75j9TqL4dVGilNyvWP5X6CZUv8OKpYnkmkREIJHUyeh/OZ
- Paw97PTcXnMLjMjJy2NQoqS2CKFgSL/8OA17r4ERNbdE7HlRl4TpzcGbwb0lMb1c7qV7RuqVs
- QtG5y79vWOMKDyNBkhEJlF4yu+rn1PbIuZbwF6TmdlYgIApZ3zJykpozcgdIwzn7w7kLGe0Ic
- HK0RmBFJtOgtcoUzonxS9upJnn8KJTyLU3KBCiu05efNSWVsrE5hiwj/7lDX9NMr8v1hX5Hv3
- eFz8bMMYznMt/Z3OiLBCNLw+UdN9jYl18z2OURqaVlCB+lxVrP9ltLmXKZYW9PDPPCkLqiTyP
- XfDuMYGn0B1X1knvOlyuCbAkVsEjenWJlTUpbO20ZEgP5HzxD4noUQ/JFuj2zfBBymdWvMqwZ
- dtAG1e80MVpJSW9F4UOxXRt8pM4JDQRMRkQQaeIo1s1lk46TJG0ujR6Z2Pcu24QDz3CycKFe0
- PXnHxwLwy8dcKs28bPcw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2020/11/7 =E4=B8=8A=E5=8D=883:03, David Sterba wrote:
-> On Thu, Nov 05, 2020 at 03:57:14PM +0200, Nikolay Borisov wrote:
->>> +int btrfs_validate_metadata_buffer(struct btrfs_io_bio *io_bio, u64 p=
-hy_offset,
->>> +				   struct page *page, u64 start, u64 end,
->>> +				   int mirror)
->>> +{
->>> +	struct extent_buffer *eb;
->>> +	int ret =3D 0;
->>> +	int reads_done;
->>> +
->>> +	if (!page->private)
->>> +		goto out;
->>> +
->>
->> nit:I think this is redundant since metadata pages always have their eb
->> attached at ->private.
+On Fri, Nov 6, 2020 at 9:29 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> We could have an assert here instead.
-
-Yes, we can do that for now.
-
-But later patches, like "implement subpage metadata read and its endio
-function" would make subpage page->private initialized to 0 as we no
-longer rely on page->private any more.
-
-This means we will add the assert() just for several commits, then
-remove it again.
-
-Thanks,
-Qu
+> We are carrying around this next_rw_lock from when we would do spinning
+> vs blocking read locks.  Now that we have the rwsem locking we can
+> simply use the read lock flag unconditionally and the read lock helpers.
 >
->>> +	eb =3D (struct extent_buffer *)page->private;
->>
->> If the above check is removed then this line can be moved right next to
->> eb's definition.
->>
->> <snip>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good, thanks.
+
+> ---
+>  fs/btrfs/ctree.c | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+>
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index d2d5854d51a7..3a01e6e048c0 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -5327,7 +5327,6 @@ int btrfs_next_old_leaf(struct btrfs_root *root, st=
+ruct btrfs_path *path,
+>         struct btrfs_key key;
+>         u32 nritems;
+>         int ret;
+> -       int next_rw_lock =3D 0;
+>
+>         nritems =3D btrfs_header_nritems(path->nodes[0]);
+>         if (nritems =3D=3D 0)
+> @@ -5337,7 +5336,6 @@ int btrfs_next_old_leaf(struct btrfs_root *root, st=
+ruct btrfs_path *path,
+>  again:
+>         level =3D 1;
+>         next =3D NULL;
+> -       next_rw_lock =3D 0;
+>         btrfs_release_path(path);
+>
+>         path->keep_locks =3D 1;
+> @@ -5401,12 +5399,11 @@ int btrfs_next_old_leaf(struct btrfs_root *root, =
+struct btrfs_path *path,
+>                 }
+>
+>                 if (next) {
+> -                       btrfs_tree_unlock_rw(next, next_rw_lock);
+> +                       btrfs_tree_read_unlock(next);
+>                         free_extent_buffer(next);
+>                 }
+>
+>                 next =3D c;
+> -               next_rw_lock =3D path->locks[level];
+>                 ret =3D read_block_for_search(root, path, &next, level,
+>                                             slot, &key);
+>                 if (ret =3D=3D -EAGAIN)
+> @@ -5437,7 +5434,6 @@ int btrfs_next_old_leaf(struct btrfs_root *root, st=
+ruct btrfs_path *path,
+>                                                        BTRFS_NESTING_RIGH=
+T,
+>                                                        path->recurse);
+>                         }
+> -                       next_rw_lock =3D BTRFS_READ_LOCK;
+>                 }
+>                 break;
+>         }
+> @@ -5446,13 +5442,13 @@ int btrfs_next_old_leaf(struct btrfs_root *root, =
+struct btrfs_path *path,
+>                 level--;
+>                 c =3D path->nodes[level];
+>                 if (path->locks[level])
+> -                       btrfs_tree_unlock_rw(c, path->locks[level]);
+> +                       btrfs_tree_read_unlock(c);
+>
+>                 free_extent_buffer(c);
+>                 path->nodes[level] =3D next;
+>                 path->slots[level] =3D 0;
+>                 if (!path->skip_locking)
+> -                       path->locks[level] =3D next_rw_lock;
+> +                       path->locks[level] =3D BTRFS_READ_LOCK;
+>                 if (!level)
+>                         break;
+>
+> @@ -5466,11 +5462,9 @@ int btrfs_next_old_leaf(struct btrfs_root *root, s=
+truct btrfs_path *path,
+>                         goto done;
+>                 }
+>
+> -               if (!path->skip_locking) {
+> +               if (!path->skip_locking)
+>                         __btrfs_tree_read_lock(next, BTRFS_NESTING_RIGHT,
+>                                                path->recurse);
+> -                       next_rw_lock =3D BTRFS_READ_LOCK;
+> -               }
+>         }
+>         ret =3D 0;
+>  done:
+> --
+> 2.26.2
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
