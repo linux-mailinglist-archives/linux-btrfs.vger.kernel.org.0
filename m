@@ -2,149 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453092ACA2E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 02:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4872ACAE4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 03:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731819AbgKJBOL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Nov 2020 20:14:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731267AbgKJBOA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Nov 2020 20:14:00 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE2DC0613CF;
-        Mon,  9 Nov 2020 17:13:59 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604970836;
+        id S1729874AbgKJCJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Nov 2020 21:09:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727311AbgKJCJQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Nov 2020 21:09:16 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604974155;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UkwosGD4CNwpr5O4mn7FToWEjHCGounmVIqa5vjwzhQ=;
-        b=DRjXCHfaWTV+37wSriT1BjBgrVPE6jdQ5QSgYOIapfxJkFIwaFOAyxB9axkmnF7jwFoYyj
-        IwVALzvZ0PuA7RxNph9leDCS6B9rTa4rL3nKcIBy/Am24PTMh01e/A2SQWp6LTkOQfBaj6
-        TPNYDFf29DCqNiv3sgD8nE6enYeIlsYkCGyKDzwB1FGN01/Y3vKoJQtpchwkYWrvNb9W70
-        4PCnBA8S0oYM/XwkwwZotKzR9vmT9oC6FdGvh5lMI1bLUaS0qdB+ZPTGprUeJSBjnvH0Xv
-        xyRk7zOTS6b0OUuDBNt+X1xYcMB1KSB7gGowiPoSA5hPR5omsqQ5g20Kt4+uKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604970836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UkwosGD4CNwpr5O4mn7FToWEjHCGounmVIqa5vjwzhQ=;
-        b=acv/dHWHYYmtT1/z0brDNSAmBtlvEk8c07ItXmS/RUDap25yEm8biO9jTMWItRsTlNRTeF
-        x/KI3sqvslL8SkDg==
-To:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
-In-Reply-To: <20201009195033.3208459-6-ira.weiny@intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-6-ira.weiny@intel.com>
-Date:   Tue, 10 Nov 2020 02:13:56 +0100
-Message-ID: <87h7pyhv3f.fsf@nanos.tec.linutronix.de>
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3O9/D8xFJSUfMAOoxjDsugdC30Pxu7e32VLvA99cac4=;
+        b=vXSUE0pedFzc5u8uS91ZNMlmfKAE3qjyiBr4P+bOH73N72c2k9z/pvxpFDICBmXCnWgAJd
+        KsJKWXI/B/mGaI1mLr2wTSP7uFUOEBtwMTxm5LXQYd3nnjKpMw2YPiBEsQC7++ABrQfCFg
+        c5xYcT5zyRI+G3whs/PCbzMJ5GXrT5c=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 034A5AC24
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Nov 2020 02:09:15 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs: paramater refactors for data and metadata endio call backs
+Date:   Tue, 10 Nov 2020 10:09:07 +0800
+Message-Id: <20201110020909.23438-1-wqu@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Ira,
+This is another cleanup exposed when I'm fixing my subpage patchset.
 
-On Fri, Oct 09 2020 at 12:49, ira weiny wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
->
-> To correctly support the semantics of kmap() with Kernel protection keys
-> (PKS), kmap() may be required to set the protections on multiple
-> processors (globally).  Enabling PKS globally can be very expensive
-> depending on the requested operation.  Furthermore, enabling a domain
-> globally reduces the protection afforded by PKS.
->
-> Most kmap() (Aprox 209 of 229) callers use the map within a single thread and
-> have no need for the protection domain to be enabled globally.  However, the
-> remaining callers do not follow this pattern and, as best I can tell, expect
-> the mapping to be 'global' and available to any thread who may access the
-> mapping.[1]
->
-> We don't anticipate global mappings to pmem, however in general there is a
-> danger in changing the semantics of kmap().  Effectively, this would cause an
-> unresolved page fault with little to no information about why the failure
-> occurred.
->
-> To resolve this a number of options were considered.
->
-> 1) Attempt to change all the thread local kmap() calls to kmap_atomic()[2]
-> 2) Introduce a flags parameter to kmap() to indicate if the mapping should be
->    global or not
-> 3) Change ~20 call sites to 'kmap_global()' to indicate that they require a
->    global enablement of the pages.
-> 4) Change ~209 call sites to 'kmap_thread()' to indicate that the mapping is to
->    be used within that thread of execution only
->
-> Option 1 is simply not feasible.  Option 2 would require all of the call sites
-> of kmap() to change.  Option 3 seems like a good minimal change but there is a
-> danger that new code may miss the semantic change of kmap() and not get the
-> behavior the developer intended.  Therefore, #4 was chosen.
+Dating back to the old time where we still have hooks for data/metadata
+endio, we have a parameter called @phy_offset for both hooks.
 
-There is Option #5:
+That @phy_offset is the number of sectors compared to the bio on-disk
+bytenr, and is used to grab the csum from btrfs_io_bio.
 
-Convert the thread local kmap() invocations to the proposed kmap_local()
-interface which is coming along [1].
+This is far from straightforward, and costs reader tons of time to grasp
+the basic.
 
-That solves a couple of issues:
+This patchset will change it by:
+- Remove phy_offset completely for metadata
+  Since metadata doesn't use btrfs_io_bio::csums[] at all, there is no
+  need for it.
 
- 1) It relieves the current kmap_atomic() usage sites from the implict
-    pagefault/preempt disable semantics which apply even when
-    CONFIG_HIGHMEM is disabled. kmap_local() still can be invoked from
-    atomic context.
+- Use @disk_bytenr to replace @phy_offset/@icsum
+  Let the callee, check_data_csum() to calculate the offset from
+  @disk_bytenr and bio to get the csum offset.
 
- 2) Due to #1 it allows to replace the conditional usage of kmap() and
-    kmap_atomic() for purely thread local mappings.
+Changelog:
+v2:
+- Update commit message to remove the wrong comment on
+  btrfs_io_bio->logical
+  That logical is mess, it has different meanings for different use
+  cases.
+  What we should refer to is bio->bi_iter.bi_sector.
 
- 3) It puts the burden on the HIGHMEM inflicted systems
+- Remove the false-alert prone ASSERT()
+  Even at endio time. bio->bi_iter.bi_size can change due to incoming
+  finished IOs.
+  This means we can't really rely on bio->bi_iter.bi_size to check if
+  our disk_bytenr is still valid.
 
- 4) It is actually more efficient for most of the pure thread local use
-    cases on HIGHMEM inflicted systems because it avoids the overhead of
-    the global lock and the potential kmap slot exhaustion. A potential
-    preemption will be more expensive, but that's not really the case we
-    want to optimize for.
+Qu Wenruo (2):
+  btrfs: remove the phy_offset parameter for
+    btrfs_validate_metadata_buffer()
+  btrfs: pass disk_bytenr directly for check_data_csum()
 
- 5) It solves the RT issue vs. kmap_atomic()
+ fs/btrfs/disk-io.c   |  2 +-
+ fs/btrfs/disk-io.h   |  2 +-
+ fs/btrfs/extent_io.c | 16 +++++++++-------
+ fs/btrfs/inode.c     | 26 +++++++++++++++++---------
+ 4 files changed, 28 insertions(+), 18 deletions(-)
 
-So instead of creating yet another variety of kmap() which is just
-scratching the particular PKRS itch, can we please consolidate all of
-that on the wider reaching kmap_local() approach?
-
-Thanks,
-
-        tglx
-     
-[1] https://lore.kernel.org/lkml/20201103092712.714480842@linutronix.de/
+-- 
+2.29.2
 
