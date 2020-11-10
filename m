@@ -2,191 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8568D2ACAE6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 03:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859972ACB6F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 04:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730305AbgKJCJX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Nov 2020 21:09:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59886 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730087AbgKJCJU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Nov 2020 21:09:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604974158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XpG2oOlwB56fXt/dSW7lLRxpB4kuskF6lzRuqr5+oA8=;
-        b=rppfe22kcnzDMsdQ7nCN7gaR+JCbuowLcWY+ZJjKTNzzsrlnZw/DOL301X9d9/DfPEvhsq
-        OlOJgFgI4p0zsgAk9oA1HkKKn69TSdDkLJ3PoVQQZJl27lXX8To3P0noHezcumH183oJP/
-        DNKgKY04xzux7xnDwSWS3ZAkS2f1NKE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 972FEAC24
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Nov 2020 02:09:18 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: pass disk_bytenr directly for check_data_csum()
-Date:   Tue, 10 Nov 2020 10:09:09 +0800
-Message-Id: <20201110020909.23438-3-wqu@suse.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201110020909.23438-1-wqu@suse.com>
-References: <20201110020909.23438-1-wqu@suse.com>
+        id S1730035AbgKJDAw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Nov 2020 22:00:52 -0500
+Received: from smtprelay0240.hostedemail.com ([216.40.44.240]:39336 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729243AbgKJDAv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Nov 2020 22:00:51 -0500
+X-Greylist: delayed 517 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Nov 2020 22:00:51 EST
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id E3D6C812416B;
+        Tue, 10 Nov 2020 02:52:18 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id F008012CB;
+        Tue, 10 Nov 2020 02:52:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:4321:4605:5007:6117:6119:6742:6743:7652:7875:7903:8660:10004:10400:10848:11232:11658:11783:11914:12043:12048:12297:12679:12740:12895:13019:13069:13148:13230:13311:13357:13439:13894:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: ink22_1714ef1272f1
+X-Filterd-Recvd-Size: 2439
+Received: from [192.168.0.160] (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 10 Nov 2020 02:52:09 +0000 (UTC)
+Message-ID: <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
+Subject: Re: Subject: [RFC] clang tooling cleanups
+From:   Joe Perches <joe@perches.com>
+To:     trix@redhat.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, cocci <cocci@systeme.lip6.fr>
+Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
+        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+Date:   Mon, 09 Nov 2020 18:52:08 -0800
+In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
+References: <20201027164255.1573301-1-trix@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Parameter @icsum for check_data_csum() is a little hard to understand.
-So is the @phy_offset for btrfs_verify_data_csum().
+On Tue, 2020-10-27 at 09:42 -0700, trix@redhat.com wrote:
+> This rfc will describe
+> An upcoming treewide cleanup.
+> How clang tooling was used to programatically do the clean up.
+> Solicit opinions on how to generally use clang tooling.
+> 
+> The clang warning -Wextra-semi-stmt produces about 10k warnings.
+> Reviewing these, a subset of semicolon after a switch looks safe to
+> fix all the time.  An example problem
+> 
+> void foo(int a) {
+>      switch(a) {
+>      	       case 1:
+> 	       ...
+>      }; <--- extra semicolon
+> }
+> 
+> Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
+> These fixes will be the upcoming cleanup.
 
-Both parameters are calculated values for csum lookup.
+coccinelle already does some of these.
 
-Instead of some calculated value, just pass @disk_bytenr and let the
-final and only user, check_data_csum(), to calculate whatever it needs.
+For instance: scripts/coccinelle/misc/semicolon.cocci
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 14 ++++++++------
- fs/btrfs/inode.c     | 26 +++++++++++++++++---------
- 2 files changed, 25 insertions(+), 15 deletions(-)
+Perhaps some tool coordination can be done here as
+coccinelle/checkpatch/clang/Lindent call all be used
+to do some facet or another of these cleanup issues.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index bd5a22bfee68..f8b5d3d4e5b0 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2878,7 +2878,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
- 	struct extent_io_tree *tree, *failure_tree;
- 	struct processed_extent processed = { 0 };
--	u64 offset = 0;
-+	u64 disk_bytenr = (bio->bi_iter.bi_sector << 9);
- 	u64 start;
- 	u64 end;
- 	u64 len;
-@@ -2924,8 +2924,9 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		mirror = io_bio->mirror_num;
- 		if (likely(uptodate)) {
- 			if (is_data_inode(inode))
--				ret = btrfs_verify_data_csum(io_bio, offset, page,
--							     start, end, mirror);
-+				ret = btrfs_verify_data_csum(io_bio,
-+						disk_bytenr, page, start, end,
-+						mirror);
- 			else
- 				ret = btrfs_validate_metadata_buffer(io_bio,
- 					page, start, end, mirror);
-@@ -2953,12 +2954,13 @@ static void end_bio_extent_readpage(struct bio *bio)
- 			 * If it can't handle the error it will return -EIO and
- 			 * we remain responsible for that page.
- 			 */
--			if (!btrfs_submit_read_repair(inode, bio, offset, page,
-+			if (!btrfs_submit_read_repair(inode, bio, disk_bytenr,
-+						page,
- 						start - page_offset(page),
- 						start, end, mirror,
- 						btrfs_submit_data_bio)) {
- 				uptodate = !bio->bi_status;
--				offset += len;
-+				disk_bytenr += len;
- 				continue;
- 			}
- 		} else {
-@@ -2983,7 +2985,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 			if (page->index == end_index && off)
- 				zero_user_segment(page, off, PAGE_SIZE);
- 		}
--		offset += len;
-+		disk_bytenr += len;
- 
- 		endio_readpage_update_page_status(page, uptodate);
- 		endio_readpage_release_extent(&processed, BTRFS_I(inode),
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c54e0ed0b938..e1d309bfc693 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2843,19 +2843,23 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
-  * The length of such check is always one sector size.
-  */
- static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
--			   int icsum, struct page *page, int pgoff)
-+			   u64 disk_bytenr, struct page *page, int pgoff)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	char *kaddr;
- 	u32 len = fs_info->sectorsize;
- 	const u32 csum_size = fs_info->csum_size;
-+	u64 bio_disk_bytenr = (io_bio->bio.bi_iter.bi_sector << 9);
-+	int offset_sectors;
- 	u8 *csum_expected;
- 	u8 csum[BTRFS_CSUM_SIZE];
- 
- 	ASSERT(pgoff + len <= PAGE_SIZE);
- 
--	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
-+	offset_sectors = (disk_bytenr - bio_disk_bytenr) >>
-+			 fs_info->sectorsize_bits;
-+	csum_expected = ((u8 *)io_bio->csum) + offset_sectors * csum_size;
- 
- 	kaddr = kmap_atomic(page);
- 	shash->tfm = fs_info->csum_shash;
-@@ -2883,8 +2887,13 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
-  * when reads are done, we need to check csums to verify the data is correct
-  * if there's a match, we allow the bio to finish.  If not, the code in
-  * extent_io.c will try to find good copies for us.
-+ *
-+ * @disk_bytenr: The on-disk bytenr of the range start
-+ * @start:	 The file offset of the range start
-+ * @end:	 The file offset of the range end (inclusive)
-+ * @mirror:	 The mirror number
-  */
--int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
-+int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 disk_bytenr,
- 			   struct page *page, u64 start, u64 end, int mirror)
- {
- 	size_t offset = start - page_offset(page);
-@@ -2909,8 +2918,7 @@ int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
- 		return 0;
- 	}
- 
--	phy_offset >>= root->fs_info->sectorsize_bits;
--	return check_data_csum(inode, io_bio, phy_offset, page, offset);
-+	return check_data_csum(inode, io_bio, disk_bytenr, page, offset);
- }
- 
- /*
-@@ -7616,7 +7624,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
- 	struct bio_vec bvec;
- 	struct bvec_iter iter;
- 	u64 start = io_bio->logical;
--	int icsum = 0;
-+	u64 disk_bytenr = (io_bio->bio.bi_iter.bi_sector << 9);
- 	blk_status_t err = BLK_STS_OK;
- 
- 	__bio_for_each_segment(bvec, &io_bio->bio, iter, io_bio->iter) {
-@@ -7627,8 +7635,8 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
- 		for (i = 0; i < nr_sectors; i++) {
- 			ASSERT(pgoff < PAGE_SIZE);
- 			if (uptodate &&
--			    (!csum || !check_data_csum(inode, io_bio, icsum,
--						       bvec.bv_page, pgoff))) {
-+			    (!csum || !check_data_csum(inode, io_bio,
-+					disk_bytenr, bvec.bv_page, pgoff))) {
- 				clean_io_failure(fs_info, failure_tree, io_tree,
- 						 start, bvec.bv_page,
- 						 btrfs_ino(BTRFS_I(inode)),
-@@ -7648,7 +7656,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
- 					err = status;
- 			}
- 			start += sectorsize;
--			icsum++;
-+			disk_bytenr += sectorsize;
- 			pgoff += sectorsize;
- 		}
- 	}
--- 
-2.29.2
+
 
