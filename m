@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287B22AC9E1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 01:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4092AC9E3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 01:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730040AbgKJAxY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Nov 2020 19:53:24 -0500
-Received: from mout.gmx.net ([212.227.17.21]:57233 "EHLO mout.gmx.net"
+        id S1729968AbgKJAyp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Nov 2020 19:54:45 -0500
+Received: from mout.gmx.net ([212.227.15.19]:43251 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727311AbgKJAxY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Nov 2020 19:53:24 -0500
+        id S1727311AbgKJAyp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Nov 2020 19:54:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1604969599;
-        bh=7XUOY40ZbtDB4AHmIN7qW3oWXT0NvQSShoNLrN9foRI=;
+        s=badeba3b8450; t=1604969681;
+        bh=faxa86CDFNT4tppCjFqg1oCxGrbbvNhxln7gShMmuM8=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=GioPM1UFhKQ7fKVQMBB5auYrAzLHE58SxVvk1qBFjAQL9G0uu7MoLELmisBv5fHDI
-         ni1tFIw/fdC5PlBwUB0hum4A459vzr6aub8ksb1/9eMzpty7nEXG9SzSinKlnTv9BY
-         oQCsSO6IbXObFq2MB34k1YNK19R1rDnkLAcRDYQM=
+        b=Bsdn2vGN/3uF0lPsGvFjsI/uf+l7OagGdV5Wda5AFhrXw+cKhE/oy2oQZjnX7wvO6
+         B6SCE9KABO0dJZ2c5XFSuf0V15+XFOvxASrWMyaLagww8FUA4kgowsP1fDOq6wLbWN
+         Hzo4MruRSG4atNlxcf6/WFrgEcYwOW15Vb4K21EY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRTRN-1kz3YB41tV-00NTNB; Tue, 10
- Nov 2020 01:53:19 +0100
-Subject: Re: [PATCH 27/32] btrfs: scrub: use flexible array for
- scrub_page::csums
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmDEg-1ju7QO28y8-00iAp2; Tue, 10
+ Nov 2020 01:54:41 +0100
+Subject: Re: [PATCH 29/32] btrfs: scrub: introduce scrub_page::page_len for
+ subpage support
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-28-wqu@suse.com> <20201109174449.GZ6756@twin.jikos.cz>
+ <20201103133108.148112-30-wqu@suse.com> <20201109181707.GA6756@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,119 +53,180 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <35ae2a3c-5c98-4f78-cc88-ad0dbea93d32@gmx.com>
-Date:   Tue, 10 Nov 2020 08:53:15 +0800
+Message-ID: <0d129b3e-ddaa-45c5-e200-35d181b91c31@gmx.com>
+Date:   Tue, 10 Nov 2020 08:54:37 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201109174449.GZ6756@twin.jikos.cz>
+In-Reply-To: <20201109181707.GA6756@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="YmwkB0Lt9nDzi7aqiAjaf9mzU15Spkz4f"
-X-Provags-ID: V03:K1:Eie+ylaYez9tpnuSvEsw7pZzwd0iInD+HxhDPOl2pJD6G6G9xrr
- 0ROTN7znBaXp1C5yAc1Q7HKXm8SrXee1xVZUkJufV21MCZNpBkHJ6akL/FEfYecnX9+8g4q
- kj16fg6OAJnCMBchFSy/KBBnAlm8R1d3toeGhkUGcuoTTRb4pVsu3Ym/S7nvVAkIOFScIfP
- 6esw3PuvYXkkvsjqiNHIg==
+ boundary="CWSTnxCK3PVrOVhol493HU0LOngOSOsm3"
+X-Provags-ID: V03:K1:qU7hY3/7mUNbkF9d+JT2fWmKT5Vwx47cwprUQONzOWc34pmhmgF
+ C5EHd6LHhYxccKW1V7FCbnONnMXpJne9EniWmvMFF/OEa/Wn1N6ef8mmE/b2xwqNhetRRQl
+ WF08rgQu0VflbEe+sTigE7+h5posizB89faAwN9RPDFlkYc4ovhZUTEQHydtxF90SnwqpU6
+ vbB1PWP8ZQzxZFFM84EfQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EFzyB/C6aMI=:iHfmalal6q7x2yqUisw4PN
- pOjZMMrB0zqsqXb5XJsIld1TdE/vzo93v/lqcI5lzbKrhY9RKlTNlgaa+MIgV0//Txxve411T
- OPA3LhypjbTE8A8vJ7re3b4mDjgqaEOuQY+5c/IaDpQXFp3lLCk9rR3xIAYzHTFWw/A5WTrGG
- rvlr8xWsq4iecHXivxzu/vqjGxTex00kARNsglE3h3ulx+CyV7kB3JFi4PyfNPZbBbrmF6KMs
- VRaJjyZYtxtWpCQ6O2G53wi4jY2ed8T+y6ykntskT7Z9iZ38sbLKFpauJ50K5UoYPmJvRTE0w
- A1cbGoFqGHISSVDC6e1T/0lJNj77oOrlUhF+HuJbd5HgWdi6TkJrHZmhMu/PldJf15x2P78Rj
- c+Rgi5NrrHbLQ3vUG0DaG3mG+nIm3T6Bn3jWzDXv9EPTDkgONK+aujuejvnLj8XBJrbMAIYg4
- 2NNBI6qZuS6dDfvB9X1BzV5I5a2tIyMWLjmOCYCGSnr3h5jPuJVzJABgOXEUgIuA36CH9CELY
- XpfFeKLyKVkcfQVJW9rViXORgRlNSfY+fYAL/ZrMW7T6jboK5NfLo2xFTz+WU7DKpsGh5tYdI
- sKIVXdqiCTWWWfgC9m1cZi8a9yddtq0+BtlN2JH7WiFnbjU4WNEBTsg1R3aS+1dBGekBSOOVy
- zejEmwcEJEBQb0si/oUFXXj+uPyLQcMvPkMgc3/OHc4EuIhY9YJeGHmKyXRNFoqS2+36X8SVh
- kn4YDdUipdW1BwgpLuCM8/w/t7HdHYoDR2v6l8rCLR1ZfdimyDzBRsUwj8oQlVxAcHKQWoO5J
- +3WtOJnYnw9S/hHRX4XEphQnUbDH9ysrOzlfgVrgytfEOKbg4orBWK+PjAD5exnuplk2w871G
- 4MF5+38pWmPUnwqkWJLA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mLubhvmtp1k=:JTldFk5913kUTynC0PjHkF
+ BkRE4jo6nY+pqpKI/H0Uollez9qwi7qqC7i+epIebnkuDxFUGbdsSqIDSULe8vFzLlQYNR0vv
+ FZSM/qESPhQrm00wKnyJ9b6MEmpk4bpyEIYxefMqTlsr37T+U0xz11xVmqCbKP9U1E6fR4l7a
+ ENLaGnQq2ZM/X8aFxrzOawdUBFs3AJOUyaBUOVKeRbZ5jTzk1cUV41Pd3ZlmT9PwtBG5XhgCO
+ 5BgIpJ/+hG07hNuyf91HlrXpkCABGK18LLOgnrf7sD7YKY6GZIdArIwvyspfVAyWPX7mOxoZ9
+ ypxcaEh85JR7s/0ZBdaY6h6EAx6OWKK7cYYfLcwONbm9tbrhtCfgwpQGSj6edQL3FQQmPJXc/
+ K9xoBFiOHDvBIoA4FmLdAZ6IH9iFxVNOkkYbwtdnM7MfyNvNOhbiC+jU+2DCGrWqovoZFtJHo
+ B79cu+++KHOMIlD05NhAKXLeIqxZsbTJh0lGI38uyXzhRhcveoWuRmxfOMqAg8VeBi4p2sRGs
+ 5zixk2QNcOWtj8i+cuPycbDMkXKCEvGAnP2BE6sIdG5xckmxs3izTpb1vCs0aEUu3YwFNrMf+
+ H18Qy6rBegdZxzqHZPFcchiG5+tGAlEJJNQt/QmAzLKgpUIPBc/AkD8coCNgmSE7jrQCXcw04
+ XLCJrOBL73LVZMdiYv0Xid82AOytM7/LSchmD76wlTN7k1pxPESmNnlJdW/Wuo38ZsV6lYF3F
+ gZ9zyfyxeTKYhpKPxWw1k/lT8YhKBS25ELjww2dfsQNTeB0+yr8/emgKcMHx8DL3Eopwf+1wz
+ KU8xXfHx5HRaSTO8+12usgA7Aahs7ccnIvhsr7v50p7vKSNMPj0CtfTcnZrQGydNN3qEsP3QQ
+ SB1v2ONmcWvBUxx9H3mQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---YmwkB0Lt9nDzi7aqiAjaf9mzU15Spkz4f
-Content-Type: multipart/mixed; boundary="dD689Xz5Kq0X6xngqXiodhiooPScxkCc8"
+--CWSTnxCK3PVrOVhol493HU0LOngOSOsm3
+Content-Type: multipart/mixed; boundary="68qbH5T2B5OPrZJXcM7aGbemd5qmCci1b"
 
---dD689Xz5Kq0X6xngqXiodhiooPScxkCc8
+--68qbH5T2B5OPrZJXcM7aGbemd5qmCci1b
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/11/10 =E4=B8=8A=E5=8D=881:44, David Sterba wrote:
-> On Tue, Nov 03, 2020 at 09:31:03PM +0800, Qu Wenruo wrote:
->> There are several factors affecting how many checksum bytes are needed=
-
->> for one scrub_page:
->>
->> - Sector size and page size
->>   For subpage case, one page can contain several sectors, thus the csu=
-m
->>   size will differ.
->>
->> - Checksum size
->>   Since btrfs supports different csum size now, which can vary from 4
->>   bytes for CRC32 to 32 bytes for SHA256.
->>
->> So instead of using fixed BTRFS_CSUM_SIZE, now use flexible array for
->> scrub_page::csums, and determine the size at scrub_page allocation tim=
-e.
->>
->> This does not only provide the basis for later subpage scrub support,
+On 2020/11/10 =E4=B8=8A=E5=8D=882:17, David Sterba wrote:
+> On Tue, Nov 03, 2020 at 09:31:05PM +0800, Qu Wenruo wrote:
+>> --- a/fs/btrfs/scrub.c
+>> +++ b/fs/btrfs/scrub.c
+>> @@ -72,9 +72,15 @@ struct scrub_page {
+>>  	u64			physical_for_dev_replace;
+>>  	atomic_t		refs;
+>>  	struct {
+>> -		unsigned int	mirror_num:8;
+>> -		unsigned int	have_csum:1;
+>> -		unsigned int	io_error:1;
+>> +		/*
+>> +		 * For subpage case, where only part of the page is utilized
+>> +		 * Note that 16 bits can only go 65535, not 65536, thus we have
+>> +		 * to use 17 bits here.
+>> +		 */
+>> +		u32	page_len:17;
+>> +		u32	mirror_num:8;
+>> +		u32	have_csum:1;
+>> +		u32	io_error:1;
+>>  	};
 >=20
-> I'd like to know more how this would help for the subpage support.
-
-For the future, if we utilize the full page for scrub (other than
-current only use sector size of the page content), we could benefit from
-the flexible array.
-
-E.g. 4K sector size, 64K page size, SHA256 csum.
-For one full 64K page, it can contain 16 sectors, and each sector need
-full 32 bytes for csum.
-Making it to 512 bytes, which is definitely not supported by current code=
-=2E
-
-But that's in the future, as current subpage scrub still uses at most
-BTRFS_CSUM_SIZE for each scrub_page.
+> The embedded struct is some relic so this can be cleaned up further.
+> Mirror_num can become u8. The page length size is a bit awkward, 17 is
+> the lowest number to contain the size up to 64k but there's still some
+> space left so it can go up to 22 without increasing the structure size.=
 
 >=20
->> but also reduce the memory usage for default btrfs on x86_64.
->> As the default CRC32 only uses 4 bytes, thus we can save 28 bytes for
->> each scrub page.
+> Source:
 >=20
-> Because even with the flexible array, the allocation is from the generi=
-c
-> slabs and scrub_page is now 128 bytes, so saving 28 bytes won't make an=
-y
-> difference.
+> struct scrub_page {
+>         struct scrub_block      *sblock;
+>         struct page             *page;
+>         struct btrfs_device     *dev;
+>         struct list_head        list;
+>         u64                     flags;  /* extent flags */
+>         u64                     generation;
+>         u64                     logical;
+>         u64                     physical;
+>         u64                     physical_for_dev_replace;
+>         atomic_t                refs;
+>         u8                      mirror_num;
+>         /*
+>          * For subpage case, where only part of the page is utilized No=
+te that
+>          * 16 bits can only go 65535, not 65536, thus we have to use 17=
+ bits
+>          * here.
+>          */
+>         u32     page_len:20;
+>         u32     have_csum:1;
+>         u32     io_error:1;
+>         u8                      csum[BTRFS_CSUM_SIZE];
 >=20
-OK, I could discard the patch for now.
+>         struct scrub_recover    *recover;
+> };
+>=20
+> pahole:
+>=20
+> struct scrub_page {
+>         struct scrub_block *       sblock;               /*     0     8=
+ */
+>         struct page *              page;                 /*     8     8=
+ */
+>         struct btrfs_device *      dev;                  /*    16     8=
+ */
+>         struct list_head           list;                 /*    24    16=
+ */
+>         u64                        flags;                /*    40     8=
+ */
+>         u64                        generation;           /*    48     8=
+ */
+>         u64                        logical;              /*    56     8=
+ */
+>         /* --- cacheline 1 boundary (64 bytes) --- */
+>         u64                        physical;             /*    64     8=
+ */
+>         u64                        physical_for_dev_replace; /*    72  =
+   8 */
+>         atomic_t                   refs;                 /*    80     4=
+ */
+>         u8                         mirror_num;           /*    84     1=
+ */
+>=20
+>         /* Bitfield combined with previous fields */
+>=20
+>         u32                        page_len:20;          /*    84: 8  4=
+ */
+>         u32                        have_csum:1;          /*    84:28  4=
+ */
+>         u32                        io_error:1;           /*    84:29  4=
+ */
+>=20
+>         /* XXX 2 bits hole, try to pack */
+>=20
+>         u8                         csum[32];             /*    88    32=
+ */
+>         struct scrub_recover *     recover;              /*   120     8=
+ */
+>=20
+>         /* size: 128, cachelines: 2, members: 16 */
+>         /* sum members: 125 */
+>         /* sum bitfield members: 22 bits, bit holes: 1, sum bit holes: =
+2 bits */
+> };
+>=20
+Thanks, looks indeed much better.
+
+Would go this direction.
 
 Thanks,
 Qu
 
 
---dD689Xz5Kq0X6xngqXiodhiooPScxkCc8--
+--68qbH5T2B5OPrZJXcM7aGbemd5qmCci1b--
 
---YmwkB0Lt9nDzi7aqiAjaf9mzU15Spkz4f
+--CWSTnxCK3PVrOVhol493HU0LOngOSOsm3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+p5HsACgkQwj2R86El
-/qhcpAf/W0pbCEPBjA658mC+Uht4uBbpIEBpZqjVCLu3qN//cFBycpDg/Gu5j0DC
-1cxM+2bvrrCyecOMxLFTKuSxkSixBSkF7MsuZIUhsRrCHQRQR4sbZSmOKrX/Ypp9
-Gys0dV6AYrw6+feR/6ta1xvNSnvbKVER2EwGuKw5zNEOhNue5Dl5n1Iprabaej/+
-STZ9CaEHu+pspCL/BF9xwtoqBa3rX6eNtsbD9apL1tfXq1pxTJUQkIG0TTjpLZtu
-XgMDnsjNDR2Y5PL8MNhoN71nL5astSrL/e1xMYVOTR4DN2zX0hyrw7Aj2SpBOavZ
-3/ABcLhQKKhjFJtEoxZr/RSeNPcWHw==
-=b253
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+p5M0ACgkQwj2R86El
+/qg3sAf/cZymNLwEtAXSNENGJo4Bla1d67tQIlY13EJjAmaSrONzLPUieLAhinwv
+8RbsI9euUIgdVDT/hRTpq+/yxFwKpO6jghx+mCkpsmZDz7Idp+3bzo2n/TkIpVMN
+F/FG/YbUpW/iUJLk2T84kpZpmM+9kfEQAHF6N+Ex0DJxjAkFoYSU7PvTLSh0jnaP
+sd4Tpp+0GFOxs60pOY+i3QJZ/xxZXFzkExe8+0Wg5xzTzJUOf5dDdVywdsTj8nNn
+KzJBqRwTb9ng4OPErKldYIukW8Hz+WEPwHwaQDuKXPWyUI3cjdn4jd0yY1ZEXCnS
+g0D9v08thSjqnlugZdMDwc7jMthe/w==
+=BY9+
 -----END PGP SIGNATURE-----
 
---YmwkB0Lt9nDzi7aqiAjaf9mzU15Spkz4f--
+--CWSTnxCK3PVrOVhol493HU0LOngOSOsm3--
