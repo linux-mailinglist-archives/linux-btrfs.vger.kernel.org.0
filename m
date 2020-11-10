@@ -2,97 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF5E2AD520
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 12:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CDD2AD72F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 14:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732262AbgKJL3t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Nov 2020 06:29:49 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:12030 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732166AbgKJL3p (ORCPT
+        id S1726721AbgKJNMd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Nov 2020 08:12:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29420 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730532AbgKJNMd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Nov 2020 06:29:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1605007785; x=1636543785;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HetSTPx+/iWbmDorkK+6Niy9oo3oHMHL4RCyAkTV0GM=;
-  b=J3HowSG7FlS0oH3TRXD9U0TqqwS44FEkkSODo2/63sbUS5Fkc7jdwCOF
-   zMoWDsVeJsZAmdDFhdym/r+kofQndqK5uqbLVLXngk/kFzpvr1gDB2VSN
-   wzwxYnHMEv+kKNiCm8GX8CWtGkcTMmrqVhTvJ67qgfPjckORdCKI3tgK1
-   cTpt1kGU0sws5ZzPpB+Cp8OeHn+AcXcUHfg9lyGK/auPnxtoUhc4aqi3J
-   9VTBXZqjOcOjyTWD4QUNtcRRkPM3wftVoC/ahlN2/JN7c3b8dp6b/iOxS
-   MqkYNvYI8BGJko/UaoDlTx/HHDE1jBWD7LgiPmwOzN2t+jkK9UjfUMVW5
-   w==;
-IronPort-SDR: yI9z9omTgOzNsXt9YfGOg+pBbjuMLk71clO/gjyQC+/ks+83RE7NZpebVe63SQO4Hr6+05eJtv
- /MMD5jxLRhJ6KepbHdcQskEMbV2LFxPmub2nfAs6Y3nVVEH0i0qliw2BpAai+bVfzf+VqukhU5
- hxQtT6TxZGgpy6mw2M/10ulTZNosmtKu0lgMqiemU08W0vi5nS/ASnGcMaJxZsK7pmTunlMkE7
- ahqL4jAmva+RnQHcCBaiv8wk7HrPIoHmTOP/bR4JurBs5Mhojh8zeCcWwutitakyCtgYhmEX0u
- ziA=
-X-IronPort-AV: E=Sophos;i="5.77,466,1596470400"; 
-   d="scan'208";a="152376751"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Nov 2020 19:29:12 +0800
-IronPort-SDR: jjGVshq6AY1TNMtxQobHumDbrbBIrcPy7El0dE0DkGPjaVZXuzETZqgx0lwIZDwvZ1CMLhegIi
- yU9XYGcAdtnplGwCShIVIa5XGqOOYOYSHwLS1Xi+IoREqCq0JI3IAC2tcZX5R/RRYdRYNur7F/
- 6h7ETQoMLjWr/N9sMC7+FTtsz0CPM1eWP8klbjPJFU+nTayAbEBkExxBGJA3PcdLbPGiOEjP9t
- 4QP/PSC6mK0TUH1TdiDbdQTNn/GFgpXp0WKT3o9dAtgYBofsQtVRlXHPukadfxBjN4hspg1eTo
- 0L4kDQGTP1pSfLkaAHWUsFMZ
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 03:15:13 -0800
-IronPort-SDR: dMJGR/j82JzHfEPDJ7iLDjyXhcY31sdScHrTfnd4a1qPvCylXcjwP2RMY1vXWiKVdaY2J6jVCq
- 2i0nquFZ2lYDNu7D86P3bd46l01Oijnl6+87zfrBKlwNZGyCML6t68i46UbyHGQsg9ag9r72wP
- Yuau1S1F4Z2fyBDzHKrjnDcC45rWcMzEvcnOTpekZhKjUbQVGBRv7LC7AJq4+GcDvaiNS4h3y6
- 5dDiSqvve7uvFMb+IYSvDzi+PYFfQola0yOEJytIVo9RHp07mS9FQXqhoPz9yr3rcBFWQihnta
- v/8=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip01.wdc.com with ESMTP; 10 Nov 2020 03:29:11 -0800
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v10 41/41] btrfs: enable to mount ZONED incompat flag
-Date:   Tue, 10 Nov 2020 20:26:44 +0900
-Message-Id: <9792b90dd95d44f86b5ddc3e25373286ec9fbf04.1605007037.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1605007036.git.naohiro.aota@wdc.com>
-References: <cover.1605007036.git.naohiro.aota@wdc.com>
+        Tue, 10 Nov 2020 08:12:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605013952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2V11rFQ3FKVTN+koXAVvig/bkOvKVZoOl9jWSSiZ8Ik=;
+        b=Di+p8tHpuaV5rtMlatp24D6j8+WKmCUBtqz8yv0zCEdrS6sGXtBKp/ajiNQKnRgk1iVbBf
+        EPgPhQ0oDcmNLweqKLA2uf1G287zKEdUoDcJ+SAJtNZ7ElvnOQlZ77m+OxtwtGg6hoPAvK
+        H8JUZjK8UjW7EnlIU91t9XZBpHRi/X8=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-jgKK85h1PAaUKSX4R59UeA-1; Tue, 10 Nov 2020 08:12:30 -0500
+X-MC-Unique: jgKK85h1PAaUKSX4R59UeA-1
+Received: by mail-qk1-f198.google.com with SMTP id t70so8610350qka.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Nov 2020 05:12:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2V11rFQ3FKVTN+koXAVvig/bkOvKVZoOl9jWSSiZ8Ik=;
+        b=Q8vY4/3C1LZBwDE9lbWOekwbb3Ux0CiBJKytxoOEEZyxHyQ+wWO3OI+zDOY1jNi6vi
+         82otiCihe3oaQZ6Zk+C1q8aJThUk5rUnVLDK4A9PANGJ8egDeUHoQDHag52KXOU8VR8n
+         waHbCx2IwwblbpLyPgsZIMTj64QYKunTeGq3U27UbwAD+N+EfpLTYtWlz6cUUWlO8eIv
+         NoMY3u5lq4qNI+KV9LpmLZrJrdd4zT8pXovvmpqhijaM5zhMwhT9hN6gMCZxJFniR5yq
+         oFNaF87cA9W/XMzn8vNXjH23pursHgNvbZOFQCmypj7hcGH1QFvzFKpW4KQ0OWVFlwJg
+         ckAw==
+X-Gm-Message-State: AOAM531oHtzkdIA+XJAL7VDr+v7M1QaFdoTb25c3uiWdrq6iKUcGZJqx
+        uMqtZNyliXKvby7i8ranxlKJ7DUu4zI2lCFsSBhhKM2V1PVVjj343eyCZsDURNuCNONa6X2FsFh
+        fruc6DCpFzNReBBqWzg8cJhY=
+X-Received: by 2002:ac8:3621:: with SMTP id m30mr8787088qtb.168.1605013950428;
+        Tue, 10 Nov 2020 05:12:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyRnI1rUF5eW2rST1vImtIogpOlMRBum2fO0dVCe+zUlRqVIaRBqmVo31rjlhOk2kmW2Hr8dQ==
+X-Received: by 2002:ac8:3621:: with SMTP id m30mr8787064qtb.168.1605013950178;
+        Tue, 10 Nov 2020 05:12:30 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id e8sm7658678qti.28.2020.11.10.05.12.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Nov 2020 05:12:29 -0800 (PST)
+Subject: Re: Subject: [RFC] clang tooling cleanups
+To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, cocci <cocci@systeme.lip6.fr>
+Cc:     linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-samsung-soc@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org,
+        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
+References: <20201027164255.1573301-1-trix@redhat.com>
+ <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <cc512954-2e1d-a165-f1f1-2c489fd6d3a9@redhat.com>
+Date:   Tue, 10 Nov 2020 05:12:26 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This final patch adds the ZONED incompat flag to
-BTRFS_FEATURE_INCOMPAT_SUPP and enables btrfs to mount ZONED flagged file
-system.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ctree.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On 11/9/20 6:52 PM, Joe Perches wrote:
+> On Tue, 2020-10-27 at 09:42 -0700, trix@redhat.com wrote:
+>> This rfc will describe
+>> An upcoming treewide cleanup.
+>> How clang tooling was used to programatically do the clean up.
+>> Solicit opinions on how to generally use clang tooling.
+>>
+>> The clang warning -Wextra-semi-stmt produces about 10k warnings.
+>> Reviewing these, a subset of semicolon after a switch looks safe to
+>> fix all the time.  An example problem
+>>
+>> void foo(int a) {
+>>      switch(a) {
+>>      	       case 1:
+>> 	       ...
+>>      }; <--- extra semicolon
+>> }
+>>
+>> Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
+>> These fixes will be the upcoming cleanup.
+> coccinelle already does some of these.
+>
+> For instance: scripts/coccinelle/misc/semicolon.cocci
+>
+> Perhaps some tool coordination can be done here as
+> coccinelle/checkpatch/clang/Lindent call all be used
+> to do some facet or another of these cleanup issues.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2fd7e58343ce..935b3470a069 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -302,7 +302,8 @@ struct btrfs_super_block {
- 	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
- 	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
- 	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
--	 BTRFS_FEATURE_INCOMPAT_RAID1C34)
-+	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
-+	 BTRFS_FEATURE_INCOMPAT_ZONED)
- 
- #define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
- 	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
--- 
-2.27.0
+Thanks for pointing this out.
+
+I will take a look at it.
+
+Tom
+
+>
+>
 
