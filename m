@@ -2,88 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224BC2AD959
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 15:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8C32ADA68
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 16:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730368AbgKJOze (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Nov 2020 09:55:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36212 "EHLO mx2.suse.de"
+        id S1730980AbgKJP1Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Nov 2020 10:27:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60552 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730981AbgKJOzd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Nov 2020 09:55:33 -0500
+        id S1730231AbgKJP1Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:27:24 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5FDBAABD1;
-        Tue, 10 Nov 2020 14:55:31 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id DBFC2ABD1;
+        Tue, 10 Nov 2020 15:27:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D6037DA7D7; Tue, 10 Nov 2020 15:53:49 +0100 (CET)
-Date:   Tue, 10 Nov 2020 15:53:48 +0100
+        id 7255CDA7D7; Tue, 10 Nov 2020 16:25:41 +0100 (CET)
+Date:   Tue, 10 Nov 2020 16:25:41 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 15/32] btrfs: introduce a helper to determine if the
- sectorsize is smaller than PAGE_SIZE
-Message-ID: <20201110145348.GJ6756@twin.jikos.cz>
+To:     Chris Mason <clm@fb.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v5 1/9] lib: zstd: Add zstd compatibility wrapper
+Message-ID: <20201110152541.GK6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20201103133108.148112-1-wqu@suse.com>
- <20201103133108.148112-16-wqu@suse.com>
- <0eb2c642-f0df-a899-388d-2e1d9db6e5ae@suse.com>
- <5079f2e4-10b5-4024-1dd7-d2a59cc4945f@gmx.com>
- <20201106172816.GQ6756@twin.jikos.cz>
- <8633b9b2-42f3-4916-b252-c9f9a23382a0@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Chris Mason <clm@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Petr Malat <oss@malat.biz>,
+        Johannes Weiner <jweiner@fb.com>, Niket Agarwal <niketa@fb.com>,
+        Yann Collet <cyan@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20201103060535.8460-1-nickrterrell@gmail.com>
+ <20201103060535.8460-2-nickrterrell@gmail.com>
+ <20201106183846.GA28005@infradead.org>
+ <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8633b9b2-42f3-4916-b252-c9f9a23382a0@gmx.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D9338FE4-1518-4C7B-8C23-DBDC542DAC35@fb.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Nov 07, 2020 at 08:00:26AM +0800, Qu Wenruo wrote:
-> >>>> +static inline bool btrfs_is_subpage(struct btrfs_fs_info *fs_info)
-> >>>> +{
-> >>>> +	return (fs_info->sectorsize < PAGE_SIZE);
-> >>>> +}
-> >>>
-> >>> This is conceptually wrong. The filesystem shouldn't care whether we are
-> >>> diong subpage blocksize io or not. I.e it should be implemented in such
-> >>> a way so that everything " just works". All calculation should be
-> >>> performed based on the fs_info::sectorsize and we shouldn't care what
-> >>> the value of PAGE_SIZE is. The central piece becomes sectorsize.
-> >>
-> >> Nope, as long as we're using things like bio, we can't avoid the
-> >> restrictions from page.
-> >>
-> >> I can't get your point at all, I see nothing wrong here, especially when
-> >> we still need to handle page lock for a lot of things.
-> >>
-> >> Furthermore, this thing is only used inside btrfs, how could this be
-> >> *conectpionally* wrong?
-> >
-> > As Nik said, it should be built around sectorsize (even if some other
-> > layers work with pages or bios). Conceptually wrong is adding special
-> > cases instead of generalizing or abstracting the code so it also
-> > supports pagesize != sectorsize.
-> >
-> Really? For later patches you will see some unavoidable difference anyway.
-
-Yeah some of the new sector/page combinations will need some thinking
-how to handle them without sacrificing code quality.
-
-> One example is page->private for metadata.
-> For regular case, page-private is a pointer to eb, which is never
-> feasible for subpage case.
+On Mon, Nov 09, 2020 at 02:01:41PM -0500, Chris Mason wrote:
+> On 6 Nov 2020, at 13:38, Christoph Hellwig wrote:
+> > You just keep resedning this crap, don't you?  Haven't you been told
+> > multiple times to provide a proper kernel API by now?
 > 
-> It's OK to be ideal, but not OK to be too ideal.
+> You do consistently ask for a shim layer, but you haven’t explained 
+> what we gain by diverging from the documented and tested API of the 
+> upstream zstd project.  It’s an important discussion given that we 
+> hope to regularly update the kernel side as they make improvements in 
+> zstd.
+> 
+> The only benefit described so far seems to be camelcase related, but if 
+> there are problems in the API beyond that, I haven’t seen you describe 
+> them.  I don’t think the camelcase alone justifies the added costs of 
+> the shim.
 
-I'm always trying to take the practical approach because with a long
-development period and with many people contributing and with doing too
-many compromises the code becomes way below the ideal. You may have
-heared yourself or others bitching about some old code, but we have
-enough group knowledge and experience not to let bad coding patterns
-continue coming back once painfully cleaned up.
+The API change in this patchset is adding churn that wouldn't be
+necessary if there were an upstream<->kernel API from the beginning.
+
+The patch 5/9 is almost entirely renaming just some internal identifiers
+
+-			      ZSTD_CStreamWorkspaceBound(params.cParams),
+-			      ZSTD_DStreamWorkspaceBound(ZSTD_BTRFS_MAX_INPUT));
++			      ZSTD_estimateCStreamSize_usingCParams(params.cParams),
++			      ZSTD_estimateDStreamSize(ZSTD_BTRFS_MAX_INPUT));
+
+plus updating the names in the error strings. The compression API that
+filesystems need is simple:
+
+- set up workspace and parameters
+- compress buffer
+- decompress buffer
+
+We really should not care if upstream has 3 functions for initializing
+stream (ZSTD_initCStream/ZSTD_initStaticCStream/ZSTD_initCStream_advanced),
+or if the name changes again in the future.
+
+This should not require explicit explanation, this should be a natural
+requirement especially for separate projects that don't share the same
+coding style but have to be integrated in some way.
