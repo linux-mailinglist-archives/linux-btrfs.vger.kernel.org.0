@@ -2,121 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B2F2ACFD6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 07:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CDE2AD1A2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Nov 2020 09:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgKJGho (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Nov 2020 01:37:44 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:8592 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgKJGhn (ORCPT
+        id S1729653AbgKJIsh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Nov 2020 03:48:37 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:56904 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJIsg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Nov 2020 01:37:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1604991419; x=1636527419;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fHEI12nauRKrqeL0CzD1Uo2SWafLY6cW1Z+aJTBLznY=;
-  b=dnA8ham9jPsAWIcxlNsjv2zV8V05g9yxpn49W00aft/3FV+AqaDpkW91
-   O+pstmv+aUZqrNl18RkmJ1AYYs7clFJNs1GQe+iJYcnU7thkT/YW+Of02
-   J8rallsWXl5cvIMgadOKz2vL5DHoYsQ2ls7z0gqhfks0mRXbU/NsGp356
-   5Ue8JvFPxAIRI+AIcZ7HpA1vbuixAA9pyWvtd/zvH5qqAU3Z6Tg0B9A7v
-   EftafupKbQGWxpNl46u9c8ueBnVOV/njuTUfpL/eM5GEYZjdicQWy/Fg+
-   aodu3aWvkn1ehAkCIKEJItZjzfIBHV+aOGo1S/WQZ88SMwG+N1hYvndFQ
-   A==;
-IronPort-SDR: Xud0SSXmQ3dS3ttf3tZJ9gz4MGhNuvuwIezHf/IJYtEO/TRlq8LaKXS5JZKIcaCIuGFQ+I/vat
- OZaqHJqgDryN/0O19Lx9Xd2lI9LaXLVUKnrfjAgGOxH8fvTLo/nQLGLdpoil5y7MVJlsbTU+/b
- 9FPyilLij5+crGNsV0ZnJSYq67G9PyqxSZ9y5RVUdYIqZSHgxT4v5kuY85kJq6594NvTPWsbKC
- qkTrTappFe8kI0rJSGbU/H3il6SoLpGuJQQwDrARagJ1r4QwJ7M4J+700EmSNwXRNqCeD9hwFz
- 3Gk=
-X-IronPort-AV: E=Sophos;i="5.77,465,1596470400"; 
-   d="scan'208";a="255811479"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Nov 2020 14:56:59 +0800
-IronPort-SDR: v9NspyWyS24Ko7oNCLcsaAN/qGOOgwVr8uI/7dgRbP484mO1btq+xBLBi0EqdsJtq34CKub88H
- ABvefZAkVyBuyc1nI22dNX8ILknwy7fIPNp+28u5g4VFMLJ9blMfFfvZ0tFEQ/1nAhZ4ByrjPI
- 9qtkT573nBJG9SvoQX5QYQBG7DXhXOd2XdoOmFPEOouV0wpGLDrKC55+oXjUyX88qeSlPFHRBO
- WGzBsmXNrvDxuslyBDQ/0v2GP3PQ5/1hO3L8HlYwnAwe3ygm0NDExwQX3+U/AxJuYTzLVX/Cz0
- NEo1YzcIDoAmse6I+PN5p4QM
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2020 22:22:30 -0800
-IronPort-SDR: YlThQWu/+X57Eijovqwx+efvDVCUqiA5WYLJTeTQX9H2njcb3Hwm14MS8v8wvAMJjIqeNR2ikV
- JdApWcyX9tdXB5tXFrdOAFcFWDmii0/KaoxCQOpJJ1drkzxzAu79S0T1QQlH5fVApZ+Y0iIMr6
- glY8Cpvw8ZI6ZKjU6iFEcK1qd5muQbcQpteoOIY81JOyBDGesy8k6a9GbGBBg8iZcmDESH5vmh
- pFC155O7O/LMH02TFBxeVQbYwALQyvpXP08jxWvG+O1FWrMyNCDiteqy5l9D4U7kuSUpjrgkb9
- wHg=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip01.wdc.com with SMTP; 09 Nov 2020 22:37:42 -0800
-Received: (nullmailer pid 1486946 invoked by uid 1000);
-        Tue, 10 Nov 2020 06:37:41 -0000
-Date:   Tue, 10 Nov 2020 15:37:41 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
-        linux-fsdevel@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v9 38/41] btrfs: extend zoned allocator to use dedicated
- tree-log block group
-Message-ID: <20201110063741.reca4c72vglfylvw@naota.dhcp.fujisawa.hgst.com>
-References: <d9a0a445560db3a9eb240c6535f8dd1bbd0abd96.1604065694.git.naohiro.aota@wdc.com>
- <6640d3c034c9c347958860743501aff59da7a5a0.1604065695.git.naohiro.aota@wdc.com>
- <eb8f83f2-fb59-2b65-66e2-18cd0ecd1e02@toxicpanda.com>
+        Tue, 10 Nov 2020 03:48:36 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604998111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+lFM+Dy1hrzRRrrrA3qnbGkxEtyVqIh0g4peYrriLeU=;
+        b=iuo8f+7vFglLggVRQElkiZ2WEkqCMbTG8xoMGtVyBk3DBfZOlzK9bn4iYE9n5TJlXEeyiw
+        mK2AsUoeE727uJ+eyVgbEeyt2qz1CsngbkfMTC30zg6BSGbxrFxVJV/nTlcmtj9NHSMsJn
+        sU38ljGJ30NJ8ooIZ53QTax6dO6NfnLLpRxklxBphTMVejdacYZZqkmCK8e4gkxhfN2Hq9
+        zuGNw+h8VUH3NFZO14JlYgbkNPH833xVYFQ2lmqEAC35a4/baTqfi6uG7ey36+HQyygrEi
+        Jy4I41umlX4stejJrRBLu7awPrfWhbLcelHNMzqQQSqRZrKTpO34TDntXU+02A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604998111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+lFM+Dy1hrzRRrrrA3qnbGkxEtyVqIh0g4peYrriLeU=;
+        b=y7osrUd/437dzM5/Hc5G9cQ/HuZ2jh7vgX8EDHSswmJuPLkHyLG6iEX8rrCl2sg3XohELe
+        1aQhUu8PTNjq+DAw==
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
+In-Reply-To: <20201110045954.GL3976735@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-6-ira.weiny@intel.com> <87h7pyhv3f.fsf@nanos.tec.linutronix.de> <20201110045954.GL3976735@iweiny-DESK2.sc.intel.com>
+Date:   Tue, 10 Nov 2020 09:48:31 +0100
+Message-ID: <87eel1iom8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <eb8f83f2-fb59-2b65-66e2-18cd0ecd1e02@toxicpanda.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 03:47:33PM -0500, Josef Bacik wrote:
->On 10/30/20 9:51 AM, Naohiro Aota wrote:
->>This is the 1/3 patch to enable tree log on ZONED mode.
->>
->>The tree-log feature does not work on ZONED mode as is. Blocks for a
->>tree-log tree are allocated mixed with other metadata blocks, and btrfs
->>writes and syncs the tree-log blocks to devices at the time of fsync(),
->>which is different timing from a global transaction commit. As a result,
->>both writing tree-log blocks and writing other metadata blocks become
->>non-sequential writes that ZONED mode must avoid.
->>
->>We can introduce a dedicated block group for tree-log blocks so that
->>tree-log blocks and other metadata blocks can be separated write streams.
->>As a result, each write stream can now be written to devices separately.
->>"fs_info->treelog_bg" tracks the dedicated block group and btrfs assign
->>"treelog_bg" on-demand on tree-log block allocation time.
->>
->>This commit extends the zoned block allocator to use the block group.
->>
->>Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+On Mon, Nov 09 2020 at 20:59, Ira Weiny wrote:
+> On Tue, Nov 10, 2020 at 02:13:56AM +0100, Thomas Gleixner wrote:
+> Also, we can convert the new memcpy_*_page() calls to kmap_local() as well.
+> [For now my patch just uses kmap_atomic().]
 >
->If you're going to remove an entire block group from being allowed to 
->be used for metadata you are going to need to account for it in the 
->space_info, otherwise we're going to end up with nasty ENOSPC corners 
->here.
+> I've not looked at all of the patches in your latest version.  Have you
+> included converting any of the kmap() call sites?  I thought you were more
+> focused on converting the kmap_atomic() to kmap_local()?
 
-Indeed. I'll add a dedicated space_info for treelog or, at least, separate
-the block group from other metadata space_info. But, I'll address this
-later in v11.
+I did not touch any of those yet, but it's a logical consequence to
+convert all kmap() instances which are _not_ creating a global mapping
+over to it.
 
->
->But this begs the question, do we want the tree log for zoned?  We 
->could just commit the transaction and call it good enough.  We lose 
->performance, but zoned isn't necessarily about performance.
+Thanks,
 
-We have a large performance drop without tree-log (-o notreelog). Here is a
-dbench (32 clients) result on SMR HDD.
+        tglx
 
-With treelog:    153.509  MB/s	
-Without treelog:  21.9651 MB/s
-
-So, there is 85% drop of the throughput. I think this degradation is too large.
-
->
->If we do then at a minimum we're going to need to remove this block 
->group from the space info counters for metadata.  Thanks,
->
->Josef
