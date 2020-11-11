@@ -2,94 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1108A2AF57D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Nov 2020 16:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD2A2AF5EF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Nov 2020 17:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbgKKPwr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Nov 2020 10:52:47 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:44678 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgKKPwq (ORCPT
+        id S1726039AbgKKQOU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Nov 2020 11:14:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgKKQOU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:52:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1605109967; x=1636645967;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=7IBycp80RR/YgWQpPiu1Pme5Vh965UMbBxoo6/WFJqA=;
-  b=rwlFfTiznwIaD3O6bQBwom+DYprdHQlj9TgyqZRNDdnb8lph+rfv4ti+
-   hVW9w/igJpRYoHK0Bwn0Tz1ZCPk7iXjeBwC9TJ+rU5yEMqpkt2EH40O/M
-   4xEQcC/yiWA1TQvB1m/Ztc+qcOormXap/mrA1h7GjWNwKXdmvZMoSFB8t
-   8M/RHustuzm00bLJgrN+IUkID82Ew5XCDm6UwWu65xj03Unhj1hjNB0nr
-   FvpZNe0r8vNqNBaNjtDNh6F96JN27pP5irmmwxabrB9wECUn4S5DRsGkd
-   CRTpfQV5KvsGdq8YtT8olihDRAWD1DQ6kG9Wr3WoHMIf0/uVx840A2y20
-   g==;
-IronPort-SDR: v95FMn/FB6qI5kev5mLJfWl6bqlNtVra1Hh1sX5D/67G1kU7V/UARSmLqaawA0IfsSuqt+7DXH
- BD9EZ8Qqd2I8l8YoM8vT5T96byy8KVX/Xss8Dku66DaGA3De6hfq+3pWaQnYpcyHfSq3i7Q8tW
- y+TD84FX/mFeGoewH2o2qnd22FaJQ2syO8iF69DU4MLBuafKe58RHtigqMVckWWlBFi4q5fbk8
- 4MQ7LDL4nWQc7dVJV5EiGbnOV+xkEJpu+POOlX0Im9uzLPU/HL8BlcXtia9JC4y1ugDaxXzphH
- VgI=
-X-IronPort-AV: E=Sophos;i="5.77,469,1596470400"; 
-   d="scan'208";a="153589966"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Nov 2020 23:52:46 +0800
-IronPort-SDR: M8xjqCyiAskZ8prTCDCG19V/w5oshvCI+Mq+5mXgnvf/CnTZUfVm+dZOuwStosnVdGju+Namqo
- XB4agY+peuBCXgv808W/2qNc8LYN4gOymoBWI/G/VHoCO2+MnngcFiN203D/XinUePt9971eQG
- xQyK/Dbm796XRK4/lj3Bgv0lSHdG4PJj3cHURfl/G0JsH2/RoY88d1VSkzO4Cnjq8+S+0rG3j1
- CglOg6YlxLrV9+iR42JBRRHivLCVJxgnGGm8CE+eaiDyZhLlcjlzaCgqa+FUGzQz9whaf5JHIq
- +wu92Dap4rZtoaRkle+9LXOO
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2020 07:38:45 -0800
-IronPort-SDR: SyrI+pr9K30gRDueWmGyibGUWpL+e7W3XBHg7Ss6cgStet3hwtPMcFv4OC+ZpArikXGYhDTZBy
- AB1PxTg6Z4AkIP6yg09kb2TrXzBH8STKrfKpBmkgd8Xbz9ikIOTT3j7vIcEAh/uzGdZJH/SPPP
- qG0Wt/EX3MTBX6JuRu8upM7bkhhW4Owk+W3yoQij/DrzK54sW57bbBcop+mzFyQRV+TvRR31Q6
- diT3rNdvXedU+ksDESYf2rM8sJZ7fJjv4lrSU+MvLtXtPWAjE3+T4vuyb7xkZ1Jdlg0sNiNbbv
- Qbg=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 11 Nov 2020 07:52:45 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: hold device_list_mutex while accessing a btrfs_device's members
-Date:   Thu, 12 Nov 2020 00:52:26 +0900
-Message-Id: <3a6553bc8e7b4ea56f1ed0f1a3160fc1f7209df6.1605109916.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 11 Nov 2020 11:14:20 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC03C0613D1
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Nov 2020 08:14:19 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id c66so1895985pfa.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Nov 2020 08:14:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AiW7yyfB8tn48PKZrTFVJ6RG8FdQwIZDONvE2FQmT1E=;
+        b=KJvGOrms+4RlrmWBCW0IXQw0JYOl++1Yo+SFREArmw2rkfS/2vlDXJcDp8TxwFkftR
+         ZwEVRKXTzWL2wcQR28z0g1EXnGT+z1eZbJH9Q3PP1K8oE4Nk5XjKE6QzRlARW0ZVD6ZS
+         ZLukiiOprnUG4pMzBtukAFnDC85/si2bDi2mJB0honfxJPWri1U72DvOg8QK8dbdJs7Y
+         JpSQrC+DgnT9nPdrwiH51D8CWq7Lf6pzChPDABrRRcGx3e/zBBC0K/Li4yGVSByYI7rD
+         pvbl264etWd9rhDuiCj4YQTLqteQEWqyTmNQtCzwBrOLlcbqWeueeKGX5QukN9ei3fTK
+         Mebg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AiW7yyfB8tn48PKZrTFVJ6RG8FdQwIZDONvE2FQmT1E=;
+        b=I05yiWmKUwKnaydN+QpFnZNNj5/zb9zXw07hNZOA2i6h3VIsiOzMmcuT/xEluf+u6S
+         fc933YKhqLt6NcN2l9E9IctJ/cLYfOu2vwVeRoORMKPFkmZl6aj1CHz004gVK+TnLTVO
+         IhJa7H4P9dXFhenGuyT6BeskBEYPX118m6PClAfO9nH3G1sU6FgA9wAHBez/eBf4JQwO
+         GZvUPRzIRLh30Lk7X9M1bUnmGAlY/Tw94csCL6mWbEmY6BFUk0mFLyDFVF7xKGpS8LEu
+         6EnCvJsHIbLujPM5xhJkBk0j8qkUU9dM3UP7ZnYjKshNhiWy5Ch46WUw9TqvJX+Kx2NC
+         vC0A==
+X-Gm-Message-State: AOAM533PZvVuQVkciW1+IH7SZu0DpdCn6VAXdGsPPLFVNv81xG9NN3Yy
+        a7BxRlTr+l+Eo3QLzlqzSY4=
+X-Google-Smtp-Source: ABdhPJzlL1JiEZD9/NVJd61BIBQ9O8ipbUTi0ga/q2ztq+rlcYB8IqFRTM1wMQJLC95R+8qmWCTUFw==
+X-Received: by 2002:a63:cb51:: with SMTP id m17mr22311179pgi.337.1605111259504;
+        Wed, 11 Nov 2020 08:14:19 -0800 (PST)
+Received: from localhost.localdomain ([175.195.128.78])
+        by smtp.googlemail.com with ESMTPSA id k5sm2926618pjs.14.2020.11.11.08.14.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 08:14:18 -0800 (PST)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH 1/2] btrfs-progs: common: introduce fmt_print_start_object
+Date:   Wed, 11 Nov 2020 16:14:05 +0000
+Message-Id: <20201111161406.3104-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A struct btrfs_device's lifetime in device_list_add() is protected by the
-device_list_mutex. So don't drop the device_list_mutex when printing a
-duplicate device warning in device_list_add.
+Introduce a new function that can be used when you need to print an json
+object in command like "device stats".
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
 ---
- fs/btrfs/volumes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ common/format-output.c | 20 ++++++++++++++++++++
+ common/format-output.h |  3 +++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index c927dc597550..a653b778b49f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -939,12 +939,12 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+diff --git a/common/format-output.c b/common/format-output.c
+index 8df93ecb..f31e7259 100644
+--- a/common/format-output.c
++++ b/common/format-output.c
+@@ -213,6 +213,26 @@ void fmt_print_end_group(struct format_ctx *fctx, const char *name)
+ 	}
+ }
  
- 			if (device->bdev != path_bdev) {
- 				bdput(path_bdev);
--				mutex_unlock(&fs_devices->device_list_mutex);
- 				btrfs_warn_in_rcu(device->fs_info,
- 	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
- 						  path, devid, found_transid,
- 						  current->comm,
- 						  task_pid_nr(current));
-+				mutex_unlock(&fs_devices->device_list_mutex);
- 				return ERR_PTR(-EEXIST);
- 			}
- 			bdput(path_bdev);
++void fmt_print_start_object(struct format_ctx *fctx)
++{
++	if (bconf.output_format == CMD_FORMAT_JSON) {
++		fmt_separator(fctx);
++		fmt_inc_depth(fctx);
++		fctx->memb[fctx->depth] = 0;
++		putchar('{');
++	}
++}
++
++void fmt_print_end_object(struct format_ctx *fctx)
++{
++	if (bconf.output_format == CMD_FORMAT_JSON) {
++		fmt_dec_depth(fctx);
++		putchar('\n');
++		fmt_indent2(fctx->depth);
++		putchar('}');
++	}
++}
++
+ /* Use rowspec to print according to currently set output format */
+ void fmt_print(struct format_ctx *fctx, const char* key, ...)
+ {
+diff --git a/common/format-output.h b/common/format-output.h
+index bcc2d74d..9d606482 100644
+--- a/common/format-output.h
++++ b/common/format-output.h
+@@ -87,4 +87,7 @@ void fmt_print_start_group(struct format_ctx *fctx, const char *name,
+ 		enum json_type jtype);
+ void fmt_print_end_group(struct format_ctx *fctx, const char *name);
+ 
++void fmt_print_start_object(struct format_ctx *fctx);
++void fmt_print_end_object(struct format_ctx *fctx);
++
+ #endif
 -- 
-2.26.2
+2.25.1
 
