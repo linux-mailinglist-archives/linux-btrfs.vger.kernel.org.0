@@ -2,123 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E09C2B0238
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 10:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1F72B024A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 10:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727130AbgKLJqc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 04:46:32 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:47454 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKLJqc (ORCPT
+        id S1726776AbgKLJyR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 04:54:17 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:64173 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgKLJyQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:46:32 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC9UBgu048173;
-        Thu, 12 Nov 2020 09:46:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=O+ykYzp0ZE9cVThHzRPU9L4M92wvga6cLzUpbqdXUfk=;
- b=r6D3EWPtZvSF5V4eKlaYsNjuaPzyQwfiXCWDPU76+/VcMNrPXcci4KHO15Jdjnrn9egW
- ug3Xw3HktkZD84/nGy3d3/+r69a10OyO73NTxUQrySP1G3LCW1sVUaeq2vrb7Idia4HZ
- F0+Hl9+QcHgVZ69i5+xrzNKD7nUcxlnOeEuJhzN1bB33caodmLqEjJjrqkmqm16EFemw
- /h7bqBvs6TNNeFmgApQpAo8UUmWTpwYjruH3h62BitjK7GJlrxSi2N7YcSAHOM77YAq0
- CFvLGXjX1dL4F0uDm5kHClQx5WbdbkE8nNF3T0PrGOUavE8ClKOONsHHvZFpC/K69ikq CA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 34nh3b4kyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 09:46:19 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC9VYTi004181;
-        Thu, 12 Nov 2020 09:44:19 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 34p55qytx7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 09:44:19 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AC9iIZ6029413;
-        Thu, 12 Nov 2020 09:44:18 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Nov 2020 01:44:18 -0800
-Subject: Re: [PATCH v10 04/41] btrfs: get zone information of zoned block
- devices
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-Cc:     "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <cover.1605007036.git.naohiro.aota@wdc.com>
- <cf46f0aef5a214cae8bacb2be231efed5febef5f.1605007036.git.naohiro.aota@wdc.com>
- <6df7390f-6656-4795-ac54-a99fdaf67ac6@oracle.com>
- <SN4PR0401MB35981D84D03C4D54A3EF627F9BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <BL0PR04MB6514AAB6133006372B04711DE7E70@BL0PR04MB6514.namprd04.prod.outlook.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <4a796bcd-ebac-eff2-6085-346a102b5952@oracle.com>
-Date:   Thu, 12 Nov 2020 17:44:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-MIME-Version: 1.0
-In-Reply-To: <BL0PR04MB6514AAB6133006372B04711DE7E70@BL0PR04MB6514.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 12 Nov 2020 04:54:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1605174855; x=1636710855;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=5a2D8Han60ayKkJSn4IcpINDzfJ+N7mnAIpE3mr8z/I=;
+  b=eaN5XtXi9/hCruqime9YgbcNy159RQlmZvqVcFSxfGpuvcuUdmkjpeb8
+   SLrtk5GcRrDEflKkW2yHAIhDYwrZHfWTHUTvmFv6qTDm/lxU/vGdrOMCO
+   tsKKm4TCpcVLnKNvPdMWkXyqdFrt1f9ouoH3CfRk0fexYNGsRx+GpSny9
+   HlitoD8LIl04EjIv+3Cqhk9nWrbIgOSfxUmda5+442gnfn0nFiL+c+Mhk
+   5/A1w4qHGl4aS3bo2Jf30Rnn9Oy9JT9pfj2aWJZGxcEdxAlB7qTUGgsWA
+   NiviRRC8+20suXnqyxrwEAFsBqotNMa+Y0RNVSr9vfEMyNYZLmMTNKXz/
+   Q==;
+IronPort-SDR: E5/ZwdnmI2ql1S7mDjjpVw7WD8FScnwG7qXuiOVxd+uTSd476HtvWM3BerQMA0Vbi6ZLkjbPwq
+ hs1xfIeOi+fB+/jlgwBYamWRQZ+zeeLpd57kRrWWzB6xR72xKacayFx+3LR9q3J2kpNdrHRmFK
+ ERrf3ptdi1MU/aW8a040kcd3/uMuFnjIECXHZUJ1tszQB0Q3g9UX4VXQWsReANMEuZtOh1Fj9s
+ QI3aktTnrsgRRS1MteOxmWbF2TaKAK4klGLiDkz9SjSHkdSHss7F+m+FayyHJfjFkHVkc6I4+9
+ EPs=
+X-IronPort-AV: E=Sophos;i="5.77,471,1596470400"; 
+   d="scan'208";a="156954640"
+Received: from mail-bn8nam12lp2176.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.176])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Nov 2020 17:54:12 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h2XRlx9H88FMUE2xpc8t4csKlPOd+7vCoRQSG84R+/vt4VSSymhK7ggxXtGO1PYibEmQ17UZdeUcRb0qdW42gqdRisb6+laSW6IYxG0qyWh4Lx8kvocGAhVB/X3uOlR5p4wI9X52dikdD9a2PUjo0nVD0VAkVwTRSf7E9zkBsnuxDiGlJ0RqJ+hPdrP1iE2jSnBPokphU5j0nWwRNlDuKRYdBfd16Herduj1umIScZoeKjZGUNWSkpmH4j/VQYSDx7vMu3/wG4EsNuZcPL63K0dqelkWeVxe51Bd4EtoTWo29K7p3Gpz/XOzKtt7v+FkxGG4wfqUu4LcQmeeCZDGKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ylN96lWwgGmakBwY3khid7DXLp6MD56tAGeSxoHTk2Y=;
+ b=PXFevMmr/Fsq8gOgKt13gK2JeSqdcjn0RRd8tbM6e8FxoVxZDtRcZxyDRDmFUeHTWifBXQNLaiKy8vAIXyto/vSOnOS2ByZerhlQK7BiuwxtCOGUxOQncndxOrFlBPlwShGwVE6PT2oInbCW3CeRdIfntsyWX2DYj1Cdt1Tglg6K0ZO6IM4xm2qsdCIGmKni0foxXJuIsXW14gHxd4H99n+okEA+kQJ1UpT86J5X3r80o9mJLItpzEJKa1/3JTb2Sq5QLY4RynZBw9maVKKauLrkhh4mkuj4pljHLxghUYU5o2ZZ560VccvlaXOBfTHbLj5Z4UyCpgDYrA7NDLnEWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ylN96lWwgGmakBwY3khid7DXLp6MD56tAGeSxoHTk2Y=;
+ b=hzJJegJ/yRdw8YZxoAlbmVsoTm2AHifDvBUHEqqeLHXxnU+XJw4KyGeWDq1atw7FZsJW0ruXl34u3zHfv70I379wCn9K1sadLQZgY4jqkGpI9Et6m6LCzVp0gnKh2agojTGZ2V05sg3a3upAHMlnK34uCYd5e8dPZ6DkPS/4eA4=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB3885.namprd04.prod.outlook.com
+ (2603:10b6:805:48::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Thu, 12 Nov
+ 2020 09:54:11 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::619a:567c:d053:ce25]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::619a:567c:d053:ce25%6]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
+ 09:54:11 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: hold device_list_mutex while accessing a
+ btrfs_device's members
+Thread-Topic: [PATCH] btrfs: hold device_list_mutex while accessing a
+ btrfs_device's members
+Thread-Index: AQHWuEK2+yAEqm4DMEeMh9rJtDxbRA==
+Date:   Thu, 12 Nov 2020 09:54:11 +0000
+Message-ID: <SN4PR0401MB35988CCA4F7CB9E929D22FD19BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <3a6553bc8e7b4ea56f1ed0f1a3160fc1f7209df6.1605109916.git.johannes.thumshirn@wdc.com>
+ <29aebf1e-4684-4003-44b4-c5e8846b69eb@oracle.com>
+ <SN4PR0401MB359852C46EE68127C7959CD29BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <d389866a-4d25-6d8a-aaa8-3403bc7b7c0c@oracle.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120058
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120058
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:145b:5101:3d02:4ac1:70fb:2ebb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 285db33f-dcd0-4cd1-1a94-08d886f0e7e5
+x-ms-traffictypediagnostic: SN6PR04MB3885:
+x-microsoft-antispam-prvs: <SN6PR04MB38857CE3BFC7A1077952E9D29BE70@SN6PR04MB3885.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wWBB2dt3OYdghCx503j+mlVYWyaLlH8xEThCbqgLnDwVOgXgr4KS/TOK8qbpcUxLCILrFSpvw9kFVhWid+IQ7gHUZ2lmyH5aFR7iJoQ9RufxzOGgToe9/pC8aQ14JYoAtiXVnFsdRQxIprswkhZGVCIVE9aTCfWiS0Splma7brbW5fZLLdBZv90ygNLt1/MA5OUJbKMX9F1A2mzJQeSLB1EOq8OV2vwoT0n1Q49pHbY7HZKum1+wlGnzCnDOdqGzIwXTcV80UvzAStMi3cHn2SpAZUyNy1b1M3960rUtX7OmHcIPfvNIzabvzMokxo61gL1uqhHn4l96QsxMANfeJANNcZYrNUlV0wYj125nwBQm7VhsXG7REorbpi+5XPIXpIG+cB1/qKs/sG9WIaCP6w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(8936002)(66946007)(55016002)(478600001)(71200400001)(2906002)(53546011)(6506007)(91956017)(33656002)(83380400001)(966005)(52536014)(76116006)(64756008)(186003)(9686003)(7696005)(5660300002)(316002)(110136005)(66556008)(8676002)(4326008)(86362001)(66476007)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +JPFtILixOPpwk6ZQDTWFky1Awi8AtNHU94BBVOFI+jrTwDTqo5H7/RigGTHwGAusHZyCeDnSjJnotjjnc3+g2xvwrzNv4Tu4QgcG+MoB9kNzJHqQipk0p9wHzI7+2MIWofMCo8oYU1CxhykqAfT+Jh7zDsQ3eUyMC/dOdDV1gSM6o5BJaUFC7HGgr6irFXGJXimPqO1G4fUO+pUpjW3Y9LuF3ipGLNnOBd03An8YJPfI5BLKQqVvpMbT8iauEUa8VMA7Vf50rQLv8Nn8JfoqJ+1bXv/BKRAmT93nucpUEML1qatlUGEDeCTQImLp2cpuTDmCDNw+Sq9kC3b3oeppWOi6aTMIX4BTsSsimQlddmIJNICGh3Ntx7enFkFjMmCJaOvSU1TZu16BWbvcoBfKAZaGGiYCsG9nWJi1JtVWRuKRY1zo8LqgI8sfBlYdZ5n2V+HaGHirua91gv02RULe/0jOCVmpUmqFHB/T7cZutateB8WY/uLSG/GYpzVT9VqFax7vKXXsoFy1kxcHZt8zG8Kdeg/vWxsU363o5QOpF3zNHbKNUq+T7+t1QCEDpAg4JYy829roY7vPQQzC16G4972tx8sde2SNw4oVOuXHg6nUWyqnuq2Wwvh1CORK/KpmdIBxLhtHlySPgk9wMdbCJ9WX7WhoCDnsAl2YDbLv/YbXf8eMp9LMc7bCo7lL7p0z3KfeC5uTj6URBD7dscb9g==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 285db33f-dcd0-4cd1-1a94-08d886f0e7e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2020 09:54:11.3180
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qVsnadkUVd1T+dOF/HJlgDiAyhp+fApvWUGLvOUSchwIwLcM+2RNsdnKbLtfwHH3HR3tH1OkGmAG9vdKCF2h1ZmzEiw9b0iqnnuLK6Qn4l0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3885
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 12/11/20 3:44 pm, Damien Le Moal wrote:
-> On 2020/11/12 16:35, Johannes Thumshirn wrote:
->> On 12/11/2020 08:00, Anand Jain wrote:
->>>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
->>>> index 8840a4fa81eb..ed55014fd1bd 100644
->>>> --- a/fs/btrfs/super.c
->>>> +++ b/fs/btrfs/super.c
->>>> @@ -2462,6 +2462,11 @@ static void __init btrfs_print_mod_info(void)
->>>>    #endif
->>>>    #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->>>>    			", ref-verify=on"
->>>> +#endif
->>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>> +			", zoned=yes"
->>>> +#else
->>>> +			", zoned=no"
->>>>    #endif
->>> IMO, we don't need this, as most of the generic kernel will be compiled
->>> with the CONFIG_BLK_DEV_ZONED defined.
->>> For review purpose we may want to know if the mounted device
->>> is a zoned device. So log of zone device and its type may be useful
->>> when we have verified the zoned devices in the open_ctree().
->>>
->>
->> David explicitly asked for this in [1] so we included it.
->>
->> [1] https://lore.kernel.org/linux-btrfs/20201013155301.GE6756@twin.jikos.cz
->>
-> 
-> And as of now, not all generic kernels are compiled with CONFIG_BLK_DEV_ZONED.
-> E.g. RHEL and CentOS. That may change in the future, but it should not be
-> assumed that CONFIG_BLK_DEV_ZONED is always enabled.
-> 
-
-Ok. My comment was from the long term perspective. I am fine if you want 
-to keep it.
+On 12/11/2020 10:40, Anand Jain wrote:=0A=
+> =0A=
+> =0A=
+> On 12/11/20 3:24 pm, Johannes Thumshirn wrote:=0A=
+>> On 12/11/2020 04:09, Anand Jain wrote:=0A=
+>>> On 11/11/20 11:52 pm, Johannes Thumshirn wrote:=0A=
+>>>> A struct btrfs_device's lifetime in device_list_add() is protected by =
+the=0A=
+>>>> device_list_mutex. So don't drop the device_list_mutex when printing a=
+=0A=
+>>>> duplicate device warning in device_list_add.=0A=
+>>>>=0A=
+>>>=0A=
+>>> The only other thread which can free the %device is the userland=0A=
+>>> initiated forget command. But both this (scan) and the forget threads=
+=0A=
+>>> are under %uuid_mutex. So %device is protected from freeing.=0A=
+>>>=0A=
+>>> Did we see any bug reproduced due to this?=0A=
+>>>=0A=
+>>> Thanks.=0A=
+>>>=0A=
+>>=0A=
+>> Yes and no, I've stumbled across this while trying to fix this syzbot=0A=
+> =0A=
+> =0A=
+>> report: https://github.com/btrfs/fstests/issues/29=0A=
+> =0A=
+> =0A=
+> Fix in the ML [1] can fix the above issue grossly.=0A=
+> =0A=
+> [1]=0A=
+>  =0A=
+> https://lore.kernel.org/linux-btrfs/20200114060920.4527-2-anand.jain@orac=
+le.com/T/=0A=
+> =0A=
+>   There is a scenario where the device->fs_info shall be NULL.=0A=
+> =0A=
+>   Consider Thread-A writes device->bdev at 1w and device->fs_info at 2w.=
+=0A=
+>   Thread-B reads device->bdev and device->fs_info at 3r, 4r, and 5r.=0A=
+> =0A=
+>   There is a possible rw order as below when the uuid mutex is released.=
+=0A=
+> =0A=
+>     1w, 3r, 4r, 5r, 2w=0A=
+> =0A=
+>   And this shall lead to the scenario device->bdev !=3D NULL and=0A=
+>   device->fs_info =3D=3D NULL for the thread-B leading to the Warning.=0A=
+=0A=
+device->fs_info is not necessarily NULL here unfortunately.=0A=
+=0A=
+Why aren't we simply doing this instead of the NO_FS_INFO dance:=0A=
+=0A=
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c=0A=
+index bb1aa96e1233..4327c089183a 100644=0A=
+--- a/fs/btrfs/volumes.c=0A=
++++ b/fs/btrfs/volumes.c=0A=
+@@ -940,16 +940,16 @@ static noinline struct btrfs_device *device_list_add(=
+const char *path,=0A=
+                        if (device->bdev !=3D path_bdev) {=0A=
+                                bdput(path_bdev);=0A=
+                                mutex_unlock(&fs_devices->device_list_mutex=
+);=0A=
+-                               btrfs_warn_in_rcu(device->fs_info,=0A=
+-       "duplicate device %s devid %llu generation %llu scanned by %s (%d)"=
+,=0A=
++                               pr_info(=0A=
++       "BTRFS: duplicate device %s devid %llu generation %llu scanned by %=
+s (%d)",=0A=
+                                                  path, devid, found_transi=
+d,=0A=
+                                                  current->comm,=0A=
+                                                  task_pid_nr(current));=0A=
+                                return ERR_PTR(-EEXIST);=0A=
+                        }=0A=
+                        bdput(path_bdev);=0A=
+-                       btrfs_info_in_rcu(device->fs_info,=0A=
+-       "devid %llu device path %s changed to %s scanned by %s (%d)",=0A=
++                       pr_info(=0A=
++       "BTRFS: devid %llu device path %s changed to %s scanned by %s (%d)"=
+,=0A=
+                                          devid, rcu_str_deref(device->name=
+),=0A=
+                                          path, current->comm,=0A=
+                                          task_pid_nr(current));=0A=
