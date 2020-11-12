@@ -2,85 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197942B0384
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 12:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F6F2B03AE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 12:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728090AbgKLLIK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 06:08:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgKLLHe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:07:34 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B564AC0613D1;
-        Thu, 12 Nov 2020 03:07:33 -0800 (PST)
-Date:   Thu, 12 Nov 2020 12:07:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1605179252;
+        id S1727227AbgKLLQ1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 06:16:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48390 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725902AbgKLLQ0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Nov 2020 06:16:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605179784;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GScfsa8nOXUlNCCC/0bnPZszGImDlkAqoVu5Twbqets=;
-        b=zZ3ortjpGyVdT6l5Epo+oXEihOo3YsbgeWmCO4SNBn297T52hhepV9lm5suD/944+Sz1gu
-        BkYylnk8pMKlYkb4csofMkEGSrhcQcyIn5AL1i1pw3/utYozF/zdo6+bRfmnph5PP7xve1
-        PpOVvXxebOQE5U3JtIzNhA0Fc1104xhNai+afx4A4y2O3Fs5x58WbqWTdn5gkAWgcM/duh
-        sMgxr+wPIZY9f8FrD3RrbmLqGk62lK9VfUOJuVBmyG+rJup0NYxJRRrKBRd/enHEx2zhIx
-        UfbLWY8NE5CqXAlPHU3T/T5B/66csi1W6K2Uz4Y5UeWB8lzg0bfoVIlYejlz5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1605179252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GScfsa8nOXUlNCCC/0bnPZszGImDlkAqoVu5Twbqets=;
-        b=IHlNPa7GPp5Ilh/x3NSZBuxoBCag1CyU3lSY94fXEHyvLJqz7JXMYGP0aqsiN8HGB3WFr5
-        ZFMQ/3qvo+nJiyAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, linux-aio@kvack.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        Huang Rui <ray.huang@amd.com>, sparclinux@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Paul McKenney <paulmck@kernel.org>, x86@kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-csky@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Mel Gorman <mgorman@suse.de>, nouveau@lists.freedesktop.org,
-        Dave Airlie <airlied@redhat.com>,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        spice-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-mips@vger.kernel.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-btrfs@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [patch V3 10/37] ARM: highmem: Switch to generic kmap atomic
-Message-ID: <20201112110729.vx4xebavy6gpzuef@linutronix.de>
-References: <20201103092712.714480842@linutronix.de>
- <20201103095857.582196476@linutronix.de>
- <CGME20201112081036eucas1p14e135a370d3bccab311727fd2e89f4df@eucas1p1.samsung.com>
- <c07bae0c-68dd-2693-948f-00e8a50f3053@samsung.com>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xEGwKs4Zqyd852Tm9QvnedCWw8IuU5KXRtXXuIUIWWA=;
+        b=lIXIzD6Plyq3dNdLUHOIilsV4eM8ClBguF6Vg7JtisNb2NBi5UR35t7aSeKmb3CRI9j32Y
+        R45CIBnN9YQb/y71LrSPo0m1DlcQ7wPt3rXZ5Tc2E8aHZxZpvqb9TyrjhSvSoW1mKWXmav
+        TrupUifjZMtmLkqn+NeuP5sJJrvfLXk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 62743AB95;
+        Thu, 12 Nov 2020 11:16:24 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: Simplify setup_nodes_for_search
+Date:   Thu, 12 Nov 2020 13:16:22 +0200
+Message-Id: <20201112111622.784178-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c07bae0c-68dd-2693-948f-00e8a50f3053@samsung.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020-11-12 09:10:34 [+0100], Marek Szyprowski wrote:
-> I can do more tests to help fixing this issue. Just let me know what to do.
+The function is needlessly convoluted. Fix that by:
 
--> https://lkml.kernel.org/r/87y2j6n8mj.fsf@nanos.tec.linutronix.de
+* Removing redundant sret variable definition in both if arms.
 
-Sebastian
+* Replace the again/done labels with direct return statements, the
+function is short enough and doesn't do anything special upon exit.
+
+* Remove BUG_ON on split_node returning a positive number - it can't
+  happen as split_node returns either 0 or a negative error code.
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/btrfs/ctree.c | 28 +++++++---------------------
+ 1 file changed, 7 insertions(+), 21 deletions(-)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 892b467347a3..6c309dfee3f5 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -2394,52 +2394,38 @@ setup_nodes_for_search(struct btrfs_trans_handle *trans,
+ 
+ 	if ((p->search_for_split || ins_len > 0) && btrfs_header_nritems(b) >=
+ 	    BTRFS_NODEPTRS_PER_BLOCK(fs_info) - 3) {
+-		int sret;
+ 
+ 		if (*write_lock_level < level + 1) {
+ 			*write_lock_level = level + 1;
+ 			btrfs_release_path(p);
+-			goto again;
++			return -EAGAIN;
+ 		}
+ 
+ 		reada_for_balance(p, level);
+-		sret = split_node(trans, root, p, level);
++		ret = split_node(trans, root, p, level);
+ 
+-		BUG_ON(sret > 0);
+-		if (sret) {
+-			ret = sret;
+-			goto done;
+-		}
+ 		b = p->nodes[level];
+ 	} else if (ins_len < 0 && btrfs_header_nritems(b) <
+ 		   BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 2) {
+-		int sret;
+ 
+ 		if (*write_lock_level < level + 1) {
+ 			*write_lock_level = level + 1;
+ 			btrfs_release_path(p);
+-			goto again;
++			return -EAGAIN;
+ 		}
+ 
+ 		reada_for_balance(p, level);
+-		sret = balance_level(trans, root, p, level);
++		ret = balance_level(trans, root, p, level);
++		if (ret)
++			return ret;
+ 
+-		if (sret) {
+-			ret = sret;
+-			goto done;
+-		}
+ 		b = p->nodes[level];
+ 		if (!b) {
+ 			btrfs_release_path(p);
+-			goto again;
++			return -EAGAIN;
+ 		}
+ 		BUG_ON(btrfs_header_nritems(b) == 1);
+ 	}
+-	return 0;
+-
+-again:
+-	ret = -EAGAIN;
+-done:
+ 	return ret;
+ }
+ 
+-- 
+2.25.1
+
