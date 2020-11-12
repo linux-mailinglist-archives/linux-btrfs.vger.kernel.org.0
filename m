@@ -2,183 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55102AFF62
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 06:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3B42AFFF7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 08:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbgKLFce (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 00:32:34 -0500
-Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:59898
-        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728438AbgKLDxZ (ORCPT
+        id S1726158AbgKLHAO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 02:00:14 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:57422 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgKLHAN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:53:25 -0500
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
-        id 1kd3fm-0000MU-CB
-        for linux-btrfs@vger.kernel.org; Thu, 12 Nov 2020 04:53:22 +0100
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-btrfs@vger.kernel.org
-From:   Jean-Denis Girard <jd.girard@sysnux.pf>
-Subject: ERROR: could not setup extent tree
-Date:   Wed, 11 Nov 2020 17:53:14 -1000
-Message-ID: <roibjb$u1$1@ciao.gmane.io>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 12 Nov 2020 02:00:13 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC6xv2f009607;
+        Thu, 12 Nov 2020 06:59:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=25kIuoOZqrrZ+0n/oN52xLR6OQst+UhOFRXLWGDY7a4=;
+ b=quICPlViqYC1FuHsGaDUgH+z4Q3nR0HK3OxZ+WdKnK6307D77FUjSJNCDESMGwXoJj+u
+ zowYH4He05a6M8FcPsjkAyG3H7FyR4TAbuMm9TWSEwjV5bEkSBwwH9Gc77uMXoT99pf+
+ mymVBKMdQIZ1200FQ7yBq4ozO8pJKt2TrkwaNBIRDIuhGWZB6MNDmqYYdi8Lmhw/RyAz
+ Lq3AX6mHBcwjyGoEsky5tZodHPLnzYPXaOjd7xoa3RBWeqCIATuL7BjESvCRoVy3yFcs
+ z+9TADfIsVkRbQ2dYv2q3NyjNAiY5UUwbHAsJ5UfiqiBPUJJUKBVcyTQxuOucJQr6rS0 6w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhm3r2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 06:59:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC6uDpk037709;
+        Thu, 12 Nov 2020 06:57:56 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 34rtkr9cgw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 06:57:56 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AC6vnk8018449;
+        Thu, 12 Nov 2020 06:57:52 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 11 Nov 2020 22:57:49 -0800
+Subject: Re: [PATCH v10 04/41] btrfs: get zone information of zoned block
+ devices
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <cf46f0aef5a214cae8bacb2be231efed5febef5f.1605007036.git.naohiro.aota@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <6df7390f-6656-4795-ac54-a99fdaf67ac6@oracle.com>
+Date:   Thu, 12 Nov 2020 14:57:42 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-X-Mozilla-News-Host: news://news.gmane.org:119
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <cf46f0aef5a214cae8bacb2be231efed5febef5f.1605007036.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
+ suspectscore=2 bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120040
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=2 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120040
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi list,
-
-I have a RAID1 Btrfs (on sdb and sdc) behind bcache (on nvme0n1p4):
-
-[jdg@tiare ~]$  lsblk -o NAME,UUID,SIZE,MOUNTPOINT
-NAME           UUID                                   SIZE MOUNTPOINT
-sdb            8ae3c26b-6932-4dad-89bc-569ae2c74366   3,7T
-└─bcache1      c5b8386b-b81d-4473-9340-7b8a74fc3a3c   3,7T
-sdc            7ccac426-dc8c-4cb3-9e64-13b1cf48d4bf   3,7T
-└─bcache0      c5b8386b-b81d-4473-9340-7b8a74fc3a3c   3,7T
-nvme0n1                                             119,2G
-├─nvme0n1p1    1725-D2D0                              512M /boot/efi
-├─nvme0n1p2    d3cc080c-0c3f-4191-a25d-7c419e00316a    40G /
-├─nvme0n1p3    572b43a3-7690-4daa-beeb-d1c030f194e8    16G [SWAP]
-└─nvme0n1p4    a3ed0098-36b4-46a6-8e38-efe9b9a94e52  62,8G <- bcache
-
-The Btrfs filesystem is used for /home (one subvolume per user).
-
-An error happened during the nightly backup on nvme0 (see below) and 
-Btrfs went readonly. After reboot, it refused to mount.
-
-I'm on Fedora-32 with kernel-5.9.7, and I compiled latest btrfs-progs:
-
-[root@tiare btrfs-progs-5.9]# ./btrfs -v check  /dev/bcache0
-Opening filesystem to check...
-parent transid verify failed on 3010317451264 wanted 29647859 found 29647852
-parent transid verify failed on 3010317451264 wanted 29647859 found 29647852
-parent transid verify failed on 3010317451264 wanted 29647859 found 29647852
-Ignoring transid failure
-ERROR: could not setup extent tree
-ERROR: cannot open file system
-
-I have restored from backups on a different disk, but still, I would be 
-interested in trying to restore the broken filesystem: what should I try?
-
-/var/log/messages :
-Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 0 QID 5 timeout, aborting
-Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 1 QID 5 timeout, aborting
-Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 2 QID 5 timeout, aborting
-Nov 11 00:24:28 tiare kernel: nvme nvme0: Abort status: 0x0
-Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 3 QID 5 timeout, aborting
-Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 4 QID 5 timeout, aborting
-  ...
-Nov 11 00:24:58 tiare kernel: nvme nvme0: I/O 0 QID 5 timeout, reset 
-controller
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 153333328 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
-IO error on reading from
-  cache, recovering.
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 153333344 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
-IO error on reading from cache, recovering.
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 153333384 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
-IO error on reading from cache, recovering.
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 153333424 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
-IO error on reading from cache, recovering.
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 153333464 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
-IO error on reading from cache, recovering.
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 153333520 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
-IO error on reading from cache, recovering.
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 142766872 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
-IO error on reading from cache, recovering.
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 142766888 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_cache_set_error() error on 
-db563a68-d350-4eaf-978b-eee7095543c5: nvme0n1p4: too many IO errors 
-reading from cache#012, disabling caching
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 142766912 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
-nvme0n1, sector 142766936 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
-class 0
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache1 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache1 errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 3, rd 0, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: bcache: conditional_stop_bcache_device() 
-stop_when_cache_set_failed of bcache1 is "auto" and cache is dirty, stop 
-it to avoid potential data corruption.
-Nov 11 00:24:58 tiare kernel: bcache: conditional_stop_bcache_device() 
-stop_when_cache_set_failed of bcache0 is "auto" and cache is dirty, stop 
-it to avoid potential data corruption.
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 3, rd 1, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 3, rd 2, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 3, rd 3, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 3, rd 4, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
-/dev/bcache0 errs: wr 3, rd 5, flush 0, corrupt 0, gen 0
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
-Read-ahead I/O failed on backing device, ignore
-Nov 11 00:24:58 tiare kernel: nvme nvme0: 8/0/0 default/read/poll queues
 
 
-Thanks,
--- 
-Jean-Denis Girard
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 8840a4fa81eb..ed55014fd1bd 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -2462,6 +2462,11 @@ static void __init btrfs_print_mod_info(void)
+>   #endif
+>   #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+>   			", ref-verify=on"
+> +#endif
+> +#ifdef CONFIG_BLK_DEV_ZONED
+> +			", zoned=yes"
+> +#else
+> +			", zoned=no"
+>   #endif
 
-SysNux                   Systèmes   Linux   en   Polynésie  française
-https://www.sysnux.pf/   Tél: +689 40.50.10.40 / GSM: +689 87.797.527
+IMO, we don't need this, as most of the generic kernel will be compiled
+with the CONFIG_BLK_DEV_ZONED defined.
+For review purpose we may want to know if the mounted device
+is a zoned device. So log of zone device and its type may be useful
+when we have verified the zoned devices in the open_ctree().
 
+> @@ -374,6 +375,7 @@ void btrfs_free_device(struct btrfs_device *device)
+>   	rcu_string_free(device->name);
+>   	extent_io_tree_release(&device->alloc_state);
+>   	bio_put(device->flush_bio);
+
+> +	btrfs_destroy_dev_zone_info(device);
+
+Free of btrfs_device::zone_info is already happening in the path..
+
+  btrfs_close_one_device()
+    btrfs_destroy_dev_zone_info()
+
+  We don't need this..
+
+  btrfs_free_device()
+   btrfs_destroy_dev_zone_info()
+
+
+> @@ -2543,6 +2551,14 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>   	}
+>   	rcu_assign_pointer(device->name, name);
+>   
+> +	device->fs_info = fs_info;
+> +	device->bdev = bdev;
+> +
+> +	/* Get zone type information of zoned block devices */
+> +	ret = btrfs_get_dev_zone_info(device);
+> +	if (ret)
+> +		goto error_free_device;
+> +
+>   	trans = btrfs_start_transaction(root, 0);
+>   	if (IS_ERR(trans)) {
+>   		ret = PTR_ERR(trans);
+
+It should be something like goto error_free_zone from here.
+
+
+> @@ -2707,6 +2721,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>   		sb->s_flags |= SB_RDONLY;
+>   	if (trans)
+>   		btrfs_end_transaction(trans);
+
+
+error_free_zone:
+> +	btrfs_destroy_dev_zone_info(device);
+>   error_free_device:
+>   	btrfs_free_device(device);
+>   error:
+
+  As mentioned we don't need btrfs_destroy_dev_zone_info()
+  again in  btrfs_free_device(). Otherwise we end up calling
+  btrfs_destroy_dev_zone_info twice here.
+
+
+Thanks, Anand
