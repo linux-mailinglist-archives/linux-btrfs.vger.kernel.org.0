@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0062B0FEE
+	by mail.lfdr.de (Postfix) with ESMTP id C38B72B0FEF
 	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 22:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727139AbgKLVTT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 16:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
+        id S1727175AbgKLVTV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 16:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgKLVTS (ORCPT
+        with ESMTP id S1726337AbgKLVTU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:19:18 -0500
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EFBC0617A6
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:18 -0800 (PST)
-Received: by mail-qv1-xf42.google.com with SMTP id r12so3548724qvq.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:18 -0800 (PST)
+        Thu, 12 Nov 2020 16:19:20 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9310BC0617A6
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:20 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id 7so5239069qtp.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=vNPpTKp6c6BXRh7PbiDw5UpyJhq+RfdEvBBUR78rbdQ=;
-        b=ihbHkZj2d7ttFfGD5SXuAzR6JwnEBfTznOhMmmj53vMKpeNfwnS+FmU4PgIUwhJTcE
-         sDkjLEC2mlpUAnW6KxKMc6mPDJGcyIJQ2tnBuagllquQdQ+eMFEUtxOHWCqJK1HQBBMz
-         AZq+3YJm4EcMSmCHDqOLoW1z5jHePlCKfaufXL+02vbYUkTCvkViUVk8ZOUQ8ivRa/bu
-         c334ymsWvsLjB5dhMmn30ytobuRNHfS7qydAhxWllPQXZolH06647y8WWwv1NkbqdcUE
-         7FDNxKlk3tp39Hj2LD6XB38BQsWvAeACHxJDAGnP/tsDzQE7vNbCW3l2sSmdbiG/QfEO
-         3DZg==
+        bh=wvlptdhOHNXdTmxMxsjHew+2CVsG7O6ODP9R3C3EDiY=;
+        b=CSXlgHwC2VH4qUq2Q6Jzud9i38ebLScVV76H00vVzfBe6nrecPEX+VwvIa0rTvugeX
+         +fEiFyTaL+1H45uxlP4K8lhjVtxjyrcC3zTdB+wSxib39yDVVhe0i0uOPc0ByjFMLLNi
+         8/h22tK1zPaPt+VfsppfdP5n/umvFI3tO4ufEIAndCylaDU78tOA9z02cnXviLdXSNWI
+         WfAjH/1mowDuV2ekoxAD0fRA6EJ/S4+3Ka4/nn8gY6vP/t4PoSBEnKtMsT/BmwMTXTcD
+         JezSf8qJaz44wgmcjLCOJmZ81qkgMgvxlm3d5u4TLQ6P8SkuRIP7bL0orZT01V5QkngF
+         jvkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vNPpTKp6c6BXRh7PbiDw5UpyJhq+RfdEvBBUR78rbdQ=;
-        b=czyn2M9y9WZLJs7jN/wGGxloUJrxZsP7FCyW9uK8e540WmqWp6zgaRVXL9HkeWtyvQ
-         L+jZszWIsWzXQCosVXw9lla+6ODScMyxb1jmmRdYQs2eZ9u/jE7vD2tTnynxK7noTlU1
-         6eJZ1AdLrnQcoL4k07g32ngLSgu3kztbEQkdac6f+PATQNfAIdLK6kfz4vLddZuMVfBb
-         2sweo9ceEifwOdhjMFwjryY/aJXUR9mB1PaLdD2KUWM85mLlhToNdSta60bf0PFz1L9L
-         KaIsIlmVFsb/z4gBbIwD4Jly7QOxh4Ypmfb8rFJqfEcgZGar7bPo2y18VamHRwjvYB/a
-         xsdw==
-X-Gm-Message-State: AOAM5336rlnerLRJ+vmHJKvRXK2J6iY/41gc7XO/xjxtLYMYr530vTet
-        3Oe8SYJABK6BGe2G5Ut9Aq9EFDLem1xbpg==
-X-Google-Smtp-Source: ABdhPJwNXqk5pgND7FZUSQd/yOdcXdzH8K5vLNyjgDJi/1bWnXW0G+PurA39s1JW0KrdiRLO2pimwg==
-X-Received: by 2002:a0c:e2cc:: with SMTP id t12mr1655569qvl.61.1605215957512;
-        Thu, 12 Nov 2020 13:19:17 -0800 (PST)
+        bh=wvlptdhOHNXdTmxMxsjHew+2CVsG7O6ODP9R3C3EDiY=;
+        b=cZl15xP0+0DP5QFfRlZM1lODUCUTG5TTszOS5eDpSNHFjz0eSrK98JYmDByr0K0jby
+         YDczzBDN/9/+RQaEotYcH7dJoBkcDTcWpOe8QIBPoD//dsJakIAi3e0aopzwPjHgqEW+
+         U8LuWtW31LoEqqeKKRimKmq1m6RbVqrRpoN82Ryv5Yu1KHxYb8IfaMcGrXiRH2ptim0B
+         jwQuJQDvEBkBc1hFTeL2a6gmA4iuNv6BpXX1jWAVdp0Wx2Vm4yzq0C5kTyKI0FU60F4W
+         yXfPOTQzhVsVrg2h6A1nfTDWSM6LcsmreRmwWGtGTTYbl/hmxLId7ds3ysY+QrTn012z
+         lMaw==
+X-Gm-Message-State: AOAM533tyw9Gl0eNmDlxkrA33dKEVKVZPCWapxCz7Bgujqh9E61WFpau
+        /4HCnL909TVfuRpq08AqaVW5Hc2PaiAAMQ==
+X-Google-Smtp-Source: ABdhPJyR2VspoZlkPISXBTQVCg5h8P0RtZ19vE0H3ckxlVDWG8eRqE9tNWYJ52pG7wFAIXTWv+7JTw==
+X-Received: by 2002:ac8:5901:: with SMTP id 1mr1267626qty.350.1605215959429;
+        Thu, 12 Nov 2020 13:19:19 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id b197sm5316510qkg.65.2020.11.12.13.19.16
+        by smtp.gmail.com with ESMTPSA id d184sm5663680qkf.136.2020.11.12.13.19.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 13:19:16 -0800 (PST)
+        Thu, 12 Nov 2020 13:19:18 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 03/42] btrfs: convert some BUG_ON()'s to ASSERT()'s in do_relocation
-Date:   Thu, 12 Nov 2020 16:18:30 -0500
-Message-Id: <52f1533d5f879aabc06d4680f528c98f460ce2e3.1605215645.git.josef@toxicpanda.com>
+Subject: [PATCH 04/42] btrfs: convert BUG_ON()'s in relocate_tree_block
+Date:   Thu, 12 Nov 2020 16:18:31 -0500
+Message-Id: <9724af1d84f1a58a769ec6d6dd1c79ed400774eb.1605215645.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1605215645.git.josef@toxicpanda.com>
 References: <cover.1605215645.git.josef@toxicpanda.com>
@@ -62,59 +62,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A few of these are checking for correctness, and won't be triggered by
-corrupted file systems, so convert them to ASSERT() instead of BUG_ON()
-and add a comment explaining their existence.
+We have a couple of BUG_ON()'s in relocate_tree_block() that can be
+tripped if we have file system corruption.  Convert these to ASSERT()'s
+so developers still get yelled at when they break the backref code, but
+error out nicely for users so the whole box doesn't go down.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ fs/btrfs/relocation.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 0b3ccf464c3d..6c9bba61bfde 100644
+index 6c9bba61bfde..bc598eb014fd 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -2215,7 +2215,11 @@ static int do_relocation(struct btrfs_trans_handle *trans,
- 	int ret;
- 	int err = 0;
+@@ -2504,8 +2504,28 @@ static int relocate_tree_block(struct btrfs_trans_handle *trans,
  
--	BUG_ON(lowest && node->eb);
-+	/*
-+	 * If we are lowest then this is the first time we're processing this
-+	 * block, and thus shouldn't have an eb associated with it yet.
-+	 */
-+	ASSERT(!lowest || !node->eb);
- 
- 	path->lowest_level = node->level + 1;
- 	rc->backref_cache.path[node->level] = node;
-@@ -2316,7 +2320,11 @@ static int do_relocation(struct btrfs_trans_handle *trans,
- 				err = ret;
- 				goto next;
- 			}
--			BUG_ON(node->eb != eb);
+ 	if (root) {
+ 		if (test_bit(BTRFS_ROOT_SHAREABLE, &root->state)) {
+-			BUG_ON(node->new_bytenr);
+-			BUG_ON(!list_empty(&node->list));
 +			/*
-+			 * We've just cow'ed this block, it should have updated
-+			 * the correct backref node entry.
++			 * This block was the root block of a root, and this is
++			 * the first time we're processing the block and thus it
++			 * should not have had the ->new_bytenr modified and
++			 * should have not been included on the changed list.
++			 *
++			 * However in the case of corruption we could have
++			 * multiple refs pointing to the same block improperly,
++			 * and thus we would trip over these checks.  ASSERT()
++			 * for the developer case, because it could indicate a
++			 * bug in the backref code, however error out for a
++			 * normal user in the case of corruption.
 +			 */
-+			ASSERT(node->eb == eb);
- 		} else {
- 			btrfs_set_node_blockptr(upper->eb, slot,
- 						node->eb->start);
-@@ -2352,7 +2360,12 @@ static int do_relocation(struct btrfs_trans_handle *trans,
- 	}
- 
- 	path->lowest_level = 0;
--	BUG_ON(err == -ENOSPC);
-+
-+	/*
-+	 * We should have allocated all of our space in the block rsv and thus
-+	 * shouldn't ENOSPC.
-+	 */
-+	ASSERT(err != -ENOSPC);
- 	return err;
- }
- 
++			ASSERT(node->new_bytenr == 0);
++			ASSERT(list_empty(&node->list));
++			if (node->new_bytenr || !list_empty(&node->list)) {
++				btrfs_err(root->fs_info,
++				  "bytenr %llu has improper references to it",
++					  node->bytenr);
++				ret = -EUCLEAN;
++				goto out;
++			}
+ 			btrfs_record_root_in_trans(trans, root);
+ 			root = root->reloc_root;
+ 			node->new_bytenr = root->node->start;
 -- 
 2.26.2
 
