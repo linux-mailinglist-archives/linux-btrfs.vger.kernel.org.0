@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F78C2B0FFB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 22:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4992B0FF9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 22:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgKLVTm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 16:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        id S1727251AbgKLVTi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 16:19:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727235AbgKLVTm (ORCPT
+        with ESMTP id S1727235AbgKLVTh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:19:42 -0500
+        Thu, 12 Nov 2020 16:19:37 -0500
 Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0906C0613D1
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:34 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id v11so5186447qtq.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F48BC0613D4
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:37 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id f93so5190357qtb.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=ZdzVbKXKTWCSSVuCIA5ezzqnUHUYDXMVoPocjX+P3kQ=;
-        b=0/SsQo6uojVoQLFYu/ExGZ8GIU3hgjjI2/HozOtW+k+ecp/fjK5yx5dOfHU79oVKK3
-         evaPuz411FLV/AEHjHTXkfmmWItF9Ge7xxgGHetowCMtHMXisF+DMuvfCs1cwU2VxZ+O
-         1rOJ7V5g+FoBKbs85FRSofg43CiVONIqMLCzShQTWrsrc+urdIn392bI+jMANfQIlnOR
-         2Kqrm3Mn9IVtvAFAX/aCk/I9UWdDc0d1cQ1V3ZTrodoXGtQv/ixaZ6R9fUhxUfleXKTr
-         gYKRnGQFPpE1UMPsWMG2FJjg/Aosb30Gw357KT9v88yYrqmS0KxYVZgWg200Pn1qn27m
-         Qpzg==
+        bh=qlI2N4BDNbWyeQ4+U7v8Rki38Jddw/xvqPISHuIJLeM=;
+        b=yeCNOjcaAyXqYKLUZ7daLoBzwsHCFgQ62knKWWHzIi9rDcweUm8vT2FeXr0Y3RFVYA
+         F4x1ftvfct9lFGhYbCyCls7nHKeHO5u/GUSeYTCOdVpBHsf7DZMWT2LLYEP8iyHt4grD
+         lO/QGmu3w8K3VffJtVjF6OEi4bkyOg36UzrKY9lK64gzhCjrSpKXbnHi6Y7uPAlzRD7e
+         sqq1pNK16lMpUIfTdb04PLKayaAV88eTq6lKFuisqe06mK2VS/lDgu9a69mHh6lf/3tQ
+         BUTjBILWCp4EfSPKBEbjSJwzDs/ue/39LVIvbAcNP+5ttaNHdZlIkw5+t4q4XqvuhVzD
+         ZqhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZdzVbKXKTWCSSVuCIA5ezzqnUHUYDXMVoPocjX+P3kQ=;
-        b=IUe3P3pEU524oRc3im1fjtpd7DbXPLjmFLKiHiGCMbkiVj8w6or4KjzrJoUReoMa2L
-         Q5lfQdn4Oxi04myxKRej5iqPVzzANoqHu1HRfIG5z96mY/XkVtBWfYQ1UNAQTZ758oU5
-         On6WCTeZ8kXqwpNO5yCAfJMbP9/kDGz7IBPOeQZ112g6iiYTLCBcpsBo8PaQdLN+UyS+
-         dLSt8v4A/yHXLdDHqrPRVwmRVXCiGlrcGNJgZdpHiGtAMXDh7EEhbkKVxsGDAH1a5RLT
-         w/cmnP5jm7x9dXoCO+9yPaFY0W9QtX/ed3g0o0T7XU8Iq3fZGn5Ghuq2JKmHDUl8ao1a
-         EQkQ==
-X-Gm-Message-State: AOAM531OwomQPVe4psgR1+KaOYi/vhCscAk9yC7Wo74I31k4CNMAqDWx
-        +PLeir0sPyoUxNyIesviX8U4SurtG0G4hQ==
-X-Google-Smtp-Source: ABdhPJyORB6znxwM3hh217tZrErCbR9IBVm7a+LTf3rdUKhHOIWVl2EnWzzCV7WFbPyk95J4ypIUsA==
-X-Received: by 2002:ac8:5411:: with SMTP id b17mr1205799qtq.281.1605215973331;
-        Thu, 12 Nov 2020 13:19:33 -0800 (PST)
+        bh=qlI2N4BDNbWyeQ4+U7v8Rki38Jddw/xvqPISHuIJLeM=;
+        b=HTXh6ruefnU5O6O6NUlJ9AiRHAuses8w+8Lr0RJ+wPHO80NS3+Vc9Ws9JvA1AQH5Q/
+         WAtOH4jG8+vgxPbWjYbrLbjMPouLtnM5p7U/r2xmYjC/BMl0k0gTwFyyRjQlqnVlSMgz
+         4QKAp53Z0oelQ9NEQ7Df8iWInZgvdzIqkq/zdPqyK45rTQIu63f/HlkOdCN8b4ih2azD
+         uXBstz8+cteZoN/4UygArzjFmtOUel1Pj/o0rlWH8/y8clgnBO0+2VN5bvvOB4rnD8CW
+         6E8PQ0WXkDX8YwfpG1N2rz/bOR27C4fximW+Dgs1a717cTtmX4vIS1GHxR7fTXj8nqII
+         xpXQ==
+X-Gm-Message-State: AOAM532muli9Ac1ewhbmrs/HyNAQuwePQ+itxdf3z/N2yyMFHgbAoLgU
+        MewPWgI8ARcgvBlvva3DJGU5KweW1aPiNA==
+X-Google-Smtp-Source: ABdhPJzJCJ/GrfoAmCbm21pGp9QY8yrzJjzqobIeUFGqsIipzfopAcdO3O8RO1dz0j14Eu7z5E2IpQ==
+X-Received: by 2002:aed:26a3:: with SMTP id q32mr1213484qtd.68.1605215975876;
+        Thu, 12 Nov 2020 13:19:35 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id s68sm5680249qkc.43.2020.11.12.13.19.32
+        by smtp.gmail.com with ESMTPSA id g27sm5028686qkk.135.2020.11.12.13.19.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 13:19:32 -0800 (PST)
+        Thu, 12 Nov 2020 13:19:35 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 11/42] btrfs: handle btrfs_record_root_in_trans failure in btrfs_rename
-Date:   Thu, 12 Nov 2020 16:18:38 -0500
-Message-Id: <130ed227ab9287f3ea5f3cf78e9c0f33ee524ea0.1605215645.git.josef@toxicpanda.com>
+Subject: [PATCH 12/42] btrfs: handle btrfs_record_root_in_trans failure in btrfs_delete_subvolume
+Date:   Thu, 12 Nov 2020 16:18:39 -0500
+Message-Id: <9480338a1528aeb7990b40c5c657936c3339c607.1605215645.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1605215645.git.josef@toxicpanda.com>
 References: <cover.1605215645.git.josef@toxicpanda.com>
@@ -63,31 +63,31 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 btrfs_record_root_in_trans will return errors in the future, so handle
-the error properly in btrfs_rename.
+the error properly in btrfs_delete_subvolume.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/btrfs/inode.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 4eea3b4d9b56..ab7743c8bbd4 100644
+index ab7743c8bbd4..0d9be9419a80 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -9066,8 +9066,11 @@ static int btrfs_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		goto out_notrans;
+@@ -4049,7 +4049,12 @@ int btrfs_delete_subvolume(struct inode *dir, struct dentry *dentry)
+ 		goto out_end_trans;
  	}
  
--	if (dest != root)
--		btrfs_record_root_in_trans(trans, dest);
-+	if (dest != root) {
-+		ret = btrfs_record_root_in_trans(trans, dest);
-+		if (ret)
-+			goto out_fail;
+-	btrfs_record_root_in_trans(trans, dest);
++	ret = btrfs_record_root_in_trans(trans, dest);
++	if (ret) {
++		err = ret;
++		btrfs_abort_transaction(trans, ret);
++		goto out_end_trans;
 +	}
  
- 	ret = btrfs_set_inode_index(BTRFS_I(new_dir), &index);
- 	if (ret)
+ 	memset(&dest->root_item.drop_progress, 0,
+ 		sizeof(dest->root_item.drop_progress));
 -- 
 2.26.2
 
