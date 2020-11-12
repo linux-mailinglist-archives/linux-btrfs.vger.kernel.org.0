@@ -2,175 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10102AFF5E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 06:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E044F2AFF60
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 06:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727647AbgKLFc3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 00:32:29 -0500
-Received: from gateway20.websitewelcome.com ([192.185.55.25]:43149 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728200AbgKLBhF (ORCPT
+        id S1727451AbgKLFcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 00:32:31 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:48072 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728047AbgKLDHV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Nov 2020 20:37:05 -0500
-X-Greylist: delayed 1330 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Nov 2020 20:37:04 EST
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 88C13400C638D
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Nov 2020 19:12:00 -0600 (CST)
-Received: from br540.hostgator.com.br ([108.179.252.180])
-        by cmsmtp with SMTP
-        id d1CNkREk2YLDnd1COkWb6t; Wed, 11 Nov 2020 19:14:52 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LQYfNp4tF4s4+oTN7dn1diEkbUugTCV38k9i9HVR1WM=; b=q50ttnduFuRtYFTjYcncCqOiGR
-        YfDJxGI1ChB19D7b0GoxxYCPGuZIXDo2doP8QExme3Tu/47kjuR31qjRV+vGegSXUoNQUVKYAakeF
-        c/4Zqvs2nYpFM4oRdU0i0ckLXLSU8XJgtOlqwSpozI7ZG5j4yGKEpiGjOiedKL90qRMJ4+edAH4k6
-        /XFFe8WSlYlVt/C0xzp2z5BS3DVCC2840UmCsw378Cc1MgRN1N0Gy1qcXoqZI4hjt9lcnVy3o5mRN
-        e4A/dkidXgI7tvHzvUvclJHCHcEcXs0Yf9Bxi2oeaOz+mvoO5TvmGkPFiR1KOap5Spf5r8+CQKm0B
-        Z3+ixf7Q==;
-Received: from 200.146.50.182.dynamic.dialup.gvt.net.br ([200.146.50.182]:45016 helo=localhost.de)
-        by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <marcos@mpdesouza.com>)
-        id 1kd1CM-000CUp-F4; Wed, 11 Nov 2020 22:14:51 -0300
-From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, wqu@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs-progs: inspect: Fix logical-resolve by starting the lookup from root_id
-Date:   Wed, 11 Nov 2020 22:14:00 -0300
-Message-Id: <20201112011400.6866-1-marcos@mpdesouza.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 11 Nov 2020 22:07:21 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC35Lsb005628;
+        Thu, 12 Nov 2020 03:07:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=KazDb6T+B9ZJDz55nRFBuKjvoi+xZlJHnUwu5It3D/Y=;
+ b=lJIvyKDda7BKrbyU8gWWf0b8UtzBz3q5nCu1qheBtznd7Bl9ZI8D/xWpmp/MmKXjH8Ry
+ p4tEwi0HU1vR/iDDA/WdL5E6AxJkB7mm9aa+QwbBMHga/9jaPJ7ruana748Mb2n0lTLa
+ lpROf0QHJLBTkZDDM1fzuj1mykl30vOiy3movTVHrVxvKivzNR/WrfZqz/wdiq/P3ojH
+ 297RNtcyFGu2SXzZhgZ2wE+RiK+jonR4pGICEen3PqD/3br+wAPrW1VlT0sx4H8DmMVc
+ Js4JefdyAG/icJAjEbLECn+c0aO0OTAV537zLtwknEcCu7K39i1BP8sta1QlRuwLQbq3 xQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 34p72esd8b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 12 Nov 2020 03:07:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC30Fur029921;
+        Thu, 12 Nov 2020 03:07:16 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 34rtkr2tw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Nov 2020 03:07:16 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AC37EmR031945;
+        Thu, 12 Nov 2020 03:07:14 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 11 Nov 2020 19:07:14 -0800
+Subject: Re: [PATCH] btrfs: hold device_list_mutex while accessing a
+ btrfs_device's members
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <3a6553bc8e7b4ea56f1ed0f1a3160fc1f7209df6.1605109916.git.johannes.thumshirn@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <29aebf1e-4684-4003-44b4-c5e8846b69eb@oracle.com>
+Date:   Thu, 12 Nov 2020 11:07:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br540.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - mpdesouza.com
-X-BWhitelist: no
-X-Source-IP: 200.146.50.182
-X-Source-L: No
-X-Exim-ID: 1kd1CM-000CUp-F4
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 200.146.50.182.dynamic.dialup.gvt.net.br (localhost.de) [200.146.50.182]:45016
-X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 4
-X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+In-Reply-To: <3a6553bc8e7b4ea56f1ed0f1a3160fc1f7209df6.1605109916.git.johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
+ suspectscore=2 bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120017
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=2 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011120017
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On 11/11/20 11:52 pm, Johannes Thumshirn wrote:
+> A struct btrfs_device's lifetime in device_list_add() is protected by the
+> device_list_mutex. So don't drop the device_list_mutex when printing a
+> duplicate device warning in device_list_add.
+> 
 
-logical-resolve is currently broken on systems that have a child
-subvolume being mounted without access to the parent subvolume.
-This is the default for SLE/openSUSE installations, since we have the
-subvolume '@' not being mounted, only it's child subovlumes (var, root, ...).
+The only other thread which can free the %device is the userland
+initiated forget command. But both this (scan) and the forget threads
+are under %uuid_mutex. So %device is protected from freeing.
 
-If we try to look for a file on /var, this happens:
+Did we see any bug reproduced due to this?
 
-btrfs inspect-internal logical-resolve -v 339570688 /
-ioctl ret=0, total_size=4096, bytes_left=4056, bytes_missing=0, cnt=3, missed=0
-ERROR: cannot access '//@/var': No such file or directory
-
-Since subvolume '@' isn't mounted, the normal file lookup fails. The fix
-in this case is the start the file lookup in the subvolume that contains
-the file, and not from the top subvolume of the system.
-
-To not break current subvol_uuid_search_init function calling
-btrfs_list_path_for_root, a new argument was added to switch between the
-old behavior and the new one. With the fix in place, logical-resolve
-works as expected:
-
-btrfs inspect-internal logical-resolve -v 339570688 /
-ioctl ret=0, total_size=65536, bytes_left=65496, bytes_missing=0, cnt=3, missed=0
-ioctl ret=0, bytes_left=4055, bytes_missing=0 cnt=1, missed=0
-//var/log/zypp/history
-
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- btrfs-list.c        | 11 ++++++++---
- btrfs-list.h        |  2 +-
- cmds/inspect.c      |  2 +-
- common/send-utils.c |  2 +-
- 4 files changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/btrfs-list.c b/btrfs-list.c
-index 4b95bcdf..abe36da8 100644
---- a/btrfs-list.c
-+++ b/btrfs-list.c
-@@ -1801,7 +1801,7 @@ int btrfs_list_find_updated_files(int fd, u64 root_id, u64 oldest_gen)
- 	return ret;
- }
- 
--char *btrfs_list_path_for_root(int fd, u64 root)
-+char *btrfs_list_path_for_root(int fd, u64 root, bool full_path)
- {
- 	struct root_lookup root_lookup;
- 	struct rb_node *n;
-@@ -1832,8 +1832,13 @@ char *btrfs_list_path_for_root(int fd, u64 root)
- 			break;
- 		}
- 		if (entry->root_id == root) {
--			ret_path = entry->full_path;
--			entry->full_path = NULL;
-+			if (full_path) {
-+				ret_path = entry->full_path;
-+				entry->full_path = NULL;
-+			} else {
-+				ret_path = entry->name;
-+				entry->name = NULL;
-+			}
- 		}
- 
- 		n = rb_prev(n);
-diff --git a/btrfs-list.h b/btrfs-list.h
-index ea06e663..3043d2ac 100644
---- a/btrfs-list.h
-+++ b/btrfs-list.h
-@@ -172,7 +172,7 @@ int btrfs_list_subvols_print(int fd, struct btrfs_list_filter_set *filter_set,
- 		       const char *raw_prefix);
- int btrfs_list_find_updated_files(int fd, u64 root_id, u64 oldest_gen);
- int btrfs_list_get_default_subvolume(int fd, u64 *default_id);
--char *btrfs_list_path_for_root(int fd, u64 root);
-+char *btrfs_list_path_for_root(int fd, u64 root, bool full_path);
- int btrfs_list_get_path_rootid(int fd, u64 *treeid);
- int btrfs_get_subvol(int fd, struct root_info *the_ri);
- int btrfs_get_toplevel_subvol(int fd, struct root_info *the_ri);
-diff --git a/cmds/inspect.c b/cmds/inspect.c
-index 2530b904..828e38e2 100644
---- a/cmds/inspect.c
-+++ b/cmds/inspect.c
-@@ -236,7 +236,7 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
- 		DIR *dirs = NULL;
- 
- 		if (getpath) {
--			name = btrfs_list_path_for_root(fd, root);
-+			name = btrfs_list_path_for_root(fd, root, false);
- 			if (IS_ERR(name)) {
- 				ret = PTR_ERR(name);
- 				goto out;
-diff --git a/common/send-utils.c b/common/send-utils.c
-index 58eca58f..ddb15261 100644
---- a/common/send-utils.c
-+++ b/common/send-utils.c
-@@ -657,7 +657,7 @@ int subvol_uuid_search_init(int mnt_fd, struct subvol_uuid_search *s)
- 					goto skip;
- 
- 				path = btrfs_list_path_for_root(mnt_fd,
--					btrfs_search_header_objectid(sh));
-+					btrfs_search_header_objectid(sh), true);
- 				if (!path)
- 					path = strdup("");
- 				if (IS_ERR(path)) {
--- 
-2.26.2
-
+Thanks.
