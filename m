@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902C82B0FF3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 22:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 097EE2B0FF4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 22:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbgKLVTZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 16:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S1727214AbgKLVT2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 16:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgKLVTZ (ORCPT
+        with ESMTP id S1726337AbgKLVT1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 16:19:25 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1801EC0613D4
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:25 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id ec16so3590406qvb.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:25 -0800 (PST)
+        Thu, 12 Nov 2020 16:19:27 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACEFC0613D4
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:26 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id t5so5234288qtp.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Nov 2020 13:19:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=xH3Ox0Mgc/zVfDLEJgesHypyregZQu4ghlZMZyUxMHA=;
-        b=1WT3gqRHELPV0fGy/1joZRvjiwrvncIdX9da1pWjbqvFuhCpFZdiMsFCdYRqI9RBEh
-         lwNp9zU0sEx+MzmQTDDJSiVMydwEezeAnbrjtrjLrTaWaG3DtPuDacsHp8EljgK0Enq7
-         FLF8Uge3GOi108zaioYQlTG/uz1Z+YnOZYlArHz0BFvMibWWxxOlhU8KGg7n6kPw9l/g
-         okiNEZYCN8xPKiC6eV400xSGIN3gx1LR8P7h46LAfHV6lnPwVtgKbAiDHSBmojuZOrl+
-         jPj4YkfyVg0tqmczG5SBqyga9tTLJYjGQtb01oAtJvACOzkTQ8ljJhnYwmHo03kRUE86
-         ijeQ==
+        bh=roaHm0OnNuHxy9PLKzTAYgOxixPSNIfAuLjhNqB44JU=;
+        b=cmysgenoFPPFrARTnpMGIb84EEqh63YPyvW2YQIRkNViETqVOgT49+DpdlOaOrFZHg
+         UdXZ3xaGy0kn7Z8iLjkdoBafmb8ZPxml/Bsu1Kaf6CZ8HQyxjtUWgZlNPlh3n8N9InY+
+         4irJ+kp9024JYrEpRK1rLRQ+CDtUJi4AweQWKwLH8P0Ub8f4j5Bvv60pKAtqEiy3WEe7
+         q9U4mbdpr6pAQvItPktn3jItCEhdtDtDFQJq0fMPKxdqEQP52SSqgXvUoE0n0bewZQAD
+         txlOp6OZ9nsDzfztS+fIheLCYaV6BNjy/Zw1/r11Ylzny5MFcJEveJp5XJOrRxN/PxOj
+         9v/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xH3Ox0Mgc/zVfDLEJgesHypyregZQu4ghlZMZyUxMHA=;
-        b=Bm1NZ8KYPTJdLRyxBcowvA/T0aHIuIx9zgrLgJm0G6MTYKM/YbgELOuilK8LA2NF04
-         y49YxrRaNG5MqhzIED3K7sv0Y2mqOXOmLoA2+CQmkcMeSrBIFrFeeeznr9GCy5Sbd+TW
-         TAd9JSgHUnKxPbowJD0zNd23IjTnNazpFOwT7FZMHEUKFn89I9q4gkMEqeb9DWUmrRiN
-         wUdVLJw0ZLtho15tYs7nMrIgE+Cmj3cPJhjO9KMUYWJJe2/yo8cZvvZ7LdtTMzk1YLn6
-         i2duR33jzYVWFzyx1uIW8AjnVJvz2nE4sKaHhew2zAObYJYwduFit6dKyaU0Il13eI5y
-         SKCg==
-X-Gm-Message-State: AOAM532uYEbVo/5UNnMnOvYPfX0KeolKZrboqlwynscCO0GwBvXrthba
-        pHd7Tv/uGUvnfrmV84dIa2EflSpp0UUJqQ==
-X-Google-Smtp-Source: ABdhPJx4Qvs1bS6ndlh70Zxll3aW3G4tNDuglTvKZBc7eBvcPYxSI21zi9lTcMUVO3G/pqVsjsQvhA==
-X-Received: by 2002:a0c:9c05:: with SMTP id v5mr1570925qve.7.1605215963533;
-        Thu, 12 Nov 2020 13:19:23 -0800 (PST)
+        bh=roaHm0OnNuHxy9PLKzTAYgOxixPSNIfAuLjhNqB44JU=;
+        b=bhctMWqYjorJfSVKtQZ3KZuuK0MNVjXWz9N2do8+uQzgheclEZIW4g1+GrEUDX80ck
+         eVRiK7jurfNml+IxLjy+fjg0LbjmRf2mlgPmXFxlw+smyg3X7VrBJEV0nkAU2BLMa/wk
+         JcMd3+hZZRs3CSvD4/4FW4YAuBf/CksGn98V2yuZooprfuuQgrHrrS+OmxJUXjbTp2qi
+         XgWxhbcAcWJ0I2vupa/YdJiPvLWgZYzCivg4lp2nhEClFh9i75WGkEEG3ie8b1mkyKfa
+         Wmh1q6nrs216iDTZBd4cfyZBH1niHfuP5+gYFwjvnGbIeHvgZ9/zdZUw94U50Sqk1pE2
+         qdQA==
+X-Gm-Message-State: AOAM533fahl7SNeKg72aWX6Jv16JvtTGNXVNq/nUiHhohQ+bJhWvet6r
+        yQQoJ8R3yHbYG0RZZxGDrBhzmupsxY3ATw==
+X-Google-Smtp-Source: ABdhPJzFCT506mjcXey6ITFgwwWQZEcbWScOtS9CT4NTR7bIe70sewOtPssCfhHmYiKfErLQYMgWFw==
+X-Received: by 2002:ac8:679a:: with SMTP id b26mr1203213qtp.79.1605215965261;
+        Thu, 12 Nov 2020 13:19:25 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z6sm5147301qti.88.2020.11.12.13.19.22
+        by smtp.gmail.com with ESMTPSA id 72sm5824025qkn.44.2020.11.12.13.19.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 13:19:22 -0800 (PST)
+        Thu, 12 Nov 2020 13:19:24 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 06/42] btrfs: handle errors from select_reloc_root()
-Date:   Thu, 12 Nov 2020 16:18:33 -0500
-Message-Id: <30bc49ac37e7af23f71260f69df81d8d6c364dbf.1605215645.git.josef@toxicpanda.com>
+Subject: [PATCH 07/42] btrfs: convert BUG_ON()'s in select_reloc_root() to proper errors
+Date:   Thu, 12 Nov 2020 16:18:34 -0500
+Message-Id: <14d4c25569edba083b604bc91b88a7df2852888a.1605215645.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1605215645.git.josef@toxicpanda.com>
 References: <cover.1605215645.git.josef@toxicpanda.com>
@@ -62,55 +62,90 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently select_reloc_root() doesn't return an error, but followup
-patches will make it possible for it to return an error.  We do have
-proper error recovery in do_relocation however, so handle the
-possibility of select_reloc_root() having an error properly instead of
-BUG_ON(!root).  I've also adjusted select_reloc_root() to return
-ERR_PTR(-ENOENT) if we don't find a root, instead of NULL, to make the
-error case easier to deal with.  I've replaced the BUG_ON(!root) with an
-ASSERT(ret != -ENOENT), as this indicates we messed up the backref
-walking code, but could indicate corruption so we do not want to have a
-BUG_ON() here.
+We have several BUG_ON()'s in select_reloc_root() that can be tripped if
+you have extent tree corruption.  Convert these to ASSERT()'s, because
+if we hit it during testing it really is bad, or could indicate a
+problem with the backref walking code.
+
+However if users hit these problems it generally indicates corruption,
+I've hit a few machines in the fleet that trip over these with clearly
+corrupted extent trees, so be nice and spit out an error message and
+return an error instead of bringing the whole box down.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ fs/btrfs/relocation.c | 51 +++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 47 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index bc598eb014fd..a94671199e8d 100644
+index a94671199e8d..f5c562955690 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -2056,7 +2056,7 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
- 			break;
- 	}
- 	if (!root)
--		return NULL;
-+		return ERR_PTR(-ENOENT);
- 
- 	next = node;
- 	/* setup backref node path for btrfs_reloc_cow_block */
-@@ -2231,7 +2231,18 @@ static int do_relocation(struct btrfs_trans_handle *trans,
- 
- 		upper = edge->node[UPPER];
- 		root = select_reloc_root(trans, rc, upper, edges);
+@@ -2025,8 +2025,35 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
+ 		cond_resched();
+ 		next = walk_up_backref(next, edges, &index);
+ 		root = next->root;
 -		BUG_ON(!root);
-+		if (IS_ERR(root)) {
-+			err = PTR_ERR(root);
+-		BUG_ON(!test_bit(BTRFS_ROOT_SHAREABLE, &root->state));
 +
-+			/*
-+			 * This can happen if there's fs corruption, but if we
-+			 * have ASSERT()'s on then we're developers and we
-+			 * likely made a logic mistake in the backref code, so
-+			 * check for this error condition.
-+			 */
-+			ASSERT(err != -ENOENT);
-+			goto next;
++		/*
++		 * If there is no root, then our references for this block are
++		 * incomplete, as we should be able to walk all the way up to a
++		 * block that is owned by a root.
++		 *
++		 * This path is only for SHAREABLE roots, so if we come upon a
++		 * non-SHAREABLE root then we have backrefs that resolve
++		 * improperly.
++		 *
++		 * Both of these cases indicate file system corruption, or a bug
++		 * in the backref walking code.  The ASSERT() is to make sure
++		 * developers get bitten as soon as possible, proper error
++		 * handling is for users who may have corrupt file systems.
++		 */
++		ASSERT(root);
++		ASSERT(test_bit(BTRFS_ROOT_SHAREABLE, &root->state));
++		if (!root) {
++			btrfs_err(trans->fs_info,
++		"bytenr %llu doesn't have a backref path ending in a root",
++				  node->bytenr);
++			return ERR_PTR(-EUCLEAN);
++		}
++		if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state)) {
++			btrfs_err(trans->fs_info,
++"bytenr %llu has multiple refs with one ending in a non shareable root",
++				  node->bytenr);
++			return ERR_PTR(-EUCLEAN);
 +		}
  
- 		if (upper->eb && !upper->locked) {
- 			if (!lowest) {
+ 		if (root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) {
+ 			record_reloc_root_in_trans(trans, root);
+@@ -2037,8 +2064,24 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
+ 		root = root->reloc_root;
+ 
+ 		if (next->new_bytenr != root->node->start) {
+-			BUG_ON(next->new_bytenr);
+-			BUG_ON(!list_empty(&next->list));
++			/*
++			 * We just created the reloc root, so we shouldn't have
++			 * ->new_bytenr set and this shouldn't be in the changed
++			 *  list.  If it is then we have multiple roots pointing
++			 *  at the same bytenr, or we've made a mistake in the
++			 *  backref walking code.  ASSERT() for developers,
++			 *  error out for users, as it indicates corruption or a
++			 *  bad bug.
++			 */
++			ASSERT(next->new_bytenr == 0);
++			ASSERT(list_empty(&next->list));
++			if (next->new_bytenr || !list_empty(&next->list)) {
++				btrfs_err(trans->fs_info,
++"bytenr %llu possibly has multiple roots pointing at the same bytenr %llu",
++					  node->bytenr, next->bytenr);
++				return ERR_PTR(-EUCLEAN);
++			}
++
+ 			next->new_bytenr = root->node->start;
+ 			btrfs_put_root(next->root);
+ 			next->root = btrfs_grab_root(root);
 -- 
 2.26.2
 
