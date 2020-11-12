@@ -2,86 +2,183 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E044F2AFF60
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 06:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55102AFF62
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 06:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgKLFcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 00:32:31 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:48072 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgKLDHV (ORCPT
+        id S1727702AbgKLFce (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 00:32:34 -0500
+Received: from static.214.254.202.116.clients.your-server.de ([116.202.254.214]:59898
+        "EHLO ciao.gmane.io" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728438AbgKLDxZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Nov 2020 22:07:21 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC35Lsb005628;
-        Thu, 12 Nov 2020 03:07:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=KazDb6T+B9ZJDz55nRFBuKjvoi+xZlJHnUwu5It3D/Y=;
- b=lJIvyKDda7BKrbyU8gWWf0b8UtzBz3q5nCu1qheBtznd7Bl9ZI8D/xWpmp/MmKXjH8Ry
- p4tEwi0HU1vR/iDDA/WdL5E6AxJkB7mm9aa+QwbBMHga/9jaPJ7ruana748Mb2n0lTLa
- lpROf0QHJLBTkZDDM1fzuj1mykl30vOiy3movTVHrVxvKivzNR/WrfZqz/wdiq/P3ojH
- 297RNtcyFGu2SXzZhgZ2wE+RiK+jonR4pGICEen3PqD/3br+wAPrW1VlT0sx4H8DmMVc
- Js4JefdyAG/icJAjEbLECn+c0aO0OTAV537zLtwknEcCu7K39i1BP8sta1QlRuwLQbq3 xQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 34p72esd8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 12 Nov 2020 03:07:16 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AC30Fur029921;
-        Thu, 12 Nov 2020 03:07:16 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 34rtkr2tw0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Nov 2020 03:07:16 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AC37EmR031945;
-        Thu, 12 Nov 2020 03:07:14 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 11 Nov 2020 19:07:14 -0800
-Subject: Re: [PATCH] btrfs: hold device_list_mutex while accessing a
- btrfs_device's members
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <3a6553bc8e7b4ea56f1ed0f1a3160fc1f7209df6.1605109916.git.johannes.thumshirn@wdc.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <29aebf1e-4684-4003-44b4-c5e8846b69eb@oracle.com>
-Date:   Thu, 12 Nov 2020 11:07:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <3a6553bc8e7b4ea56f1ed0f1a3160fc1f7209df6.1605109916.git.johannes.thumshirn@wdc.com>
+        Wed, 11 Nov 2020 22:53:25 -0500
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
+        id 1kd3fm-0000MU-CB
+        for linux-btrfs@vger.kernel.org; Thu, 12 Nov 2020 04:53:22 +0100
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-btrfs@vger.kernel.org
+From:   Jean-Denis Girard <jd.girard@sysnux.pf>
+Subject: ERROR: could not setup extent tree
+Date:   Wed, 11 Nov 2020 17:53:14 -1000
+Message-ID: <roibjb$u1$1@ciao.gmane.io>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+X-Mozilla-News-Host: news://news.gmane.org:119
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
- suspectscore=2 bulkscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120017
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9802 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=2 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011120017
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/11/20 11:52 pm, Johannes Thumshirn wrote:
-> A struct btrfs_device's lifetime in device_list_add() is protected by the
-> device_list_mutex. So don't drop the device_list_mutex when printing a
-> duplicate device warning in device_list_add.
-> 
+Hi list,
 
-The only other thread which can free the %device is the userland
-initiated forget command. But both this (scan) and the forget threads
-are under %uuid_mutex. So %device is protected from freeing.
+I have a RAID1 Btrfs (on sdb and sdc) behind bcache (on nvme0n1p4):
 
-Did we see any bug reproduced due to this?
+[jdg@tiare ~]$  lsblk -o NAME,UUID,SIZE,MOUNTPOINT
+NAME           UUID                                   SIZE MOUNTPOINT
+sdb            8ae3c26b-6932-4dad-89bc-569ae2c74366   3,7T
+└─bcache1      c5b8386b-b81d-4473-9340-7b8a74fc3a3c   3,7T
+sdc            7ccac426-dc8c-4cb3-9e64-13b1cf48d4bf   3,7T
+└─bcache0      c5b8386b-b81d-4473-9340-7b8a74fc3a3c   3,7T
+nvme0n1                                             119,2G
+├─nvme0n1p1    1725-D2D0                              512M /boot/efi
+├─nvme0n1p2    d3cc080c-0c3f-4191-a25d-7c419e00316a    40G /
+├─nvme0n1p3    572b43a3-7690-4daa-beeb-d1c030f194e8    16G [SWAP]
+└─nvme0n1p4    a3ed0098-36b4-46a6-8e38-efe9b9a94e52  62,8G <- bcache
 
-Thanks.
+The Btrfs filesystem is used for /home (one subvolume per user).
+
+An error happened during the nightly backup on nvme0 (see below) and 
+Btrfs went readonly. After reboot, it refused to mount.
+
+I'm on Fedora-32 with kernel-5.9.7, and I compiled latest btrfs-progs:
+
+[root@tiare btrfs-progs-5.9]# ./btrfs -v check  /dev/bcache0
+Opening filesystem to check...
+parent transid verify failed on 3010317451264 wanted 29647859 found 29647852
+parent transid verify failed on 3010317451264 wanted 29647859 found 29647852
+parent transid verify failed on 3010317451264 wanted 29647859 found 29647852
+Ignoring transid failure
+ERROR: could not setup extent tree
+ERROR: cannot open file system
+
+I have restored from backups on a different disk, but still, I would be 
+interested in trying to restore the broken filesystem: what should I try?
+
+/var/log/messages :
+Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 0 QID 5 timeout, aborting
+Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 1 QID 5 timeout, aborting
+Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 2 QID 5 timeout, aborting
+Nov 11 00:24:28 tiare kernel: nvme nvme0: Abort status: 0x0
+Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 3 QID 5 timeout, aborting
+Nov 11 00:24:28 tiare kernel: nvme nvme0: I/O 4 QID 5 timeout, aborting
+  ...
+Nov 11 00:24:58 tiare kernel: nvme nvme0: I/O 0 QID 5 timeout, reset 
+controller
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 153333328 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
+IO error on reading from
+  cache, recovering.
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 153333344 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
+IO error on reading from cache, recovering.
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 153333384 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
+IO error on reading from cache, recovering.
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 153333424 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
+IO error on reading from cache, recovering.
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 153333464 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
+IO error on reading from cache, recovering.
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 153333520 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
+IO error on reading from cache, recovering.
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 142766872 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_io_errors() nvme0n1p4: 
+IO error on reading from cache, recovering.
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 142766888 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_cache_set_error() error on 
+db563a68-d350-4eaf-978b-eee7095543c5: nvme0n1p4: too many IO errors 
+reading from cache#012, disabling caching
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 142766912 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: blk_update_request: I/O error, dev 
+nvme0n1, sector 142766936 op 0x0:(READ) flags 0x80700 phys_seg 1 prio 
+class 0
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache1 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache1 errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 3, rd 0, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: bcache: conditional_stop_bcache_device() 
+stop_when_cache_set_failed of bcache1 is "auto" and cache is dirty, stop 
+it to avoid potential data corruption.
+Nov 11 00:24:58 tiare kernel: bcache: conditional_stop_bcache_device() 
+stop_when_cache_set_failed of bcache0 is "auto" and cache is dirty, stop 
+it to avoid potential data corruption.
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 3, rd 1, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 3, rd 2, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 3, rd 3, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 3, rd 4, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: BTRFS error (device bcache0): bdev 
+/dev/bcache0 errs: wr 3, rd 5, flush 0, corrupt 0, gen 0
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: bcache: bch_count_backing_io_errors() sdc: 
+Read-ahead I/O failed on backing device, ignore
+Nov 11 00:24:58 tiare kernel: nvme nvme0: 8/0/0 default/read/poll queues
+
+
+Thanks,
+-- 
+Jean-Denis Girard
+
+SysNux                   Systèmes   Linux   en   Polynésie  française
+https://www.sysnux.pf/   Tél: +689 40.50.10.40 / GSM: +689 87.797.527
+
