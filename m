@@ -2,34 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6349C2B0252
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 10:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D9B2B0266
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 10:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgKLJzN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 04:55:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51044 "EHLO mx2.suse.de"
+        id S1726510AbgKLJ6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 04:58:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58630 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725979AbgKLJzL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 04:55:11 -0500
+        id S1726107AbgKLJ6U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Nov 2020 04:58:20 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605174909;
+        t=1605175099;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=5JFWPg83fI+Xa3GPRlAf2FRqQ0pub+zubD+2yirOr+A=;
-        b=WS3FBQ6NgEJOl5HgRuFTUCgeMztFDnYzt6tOnxEwYeC1bg8rcDrEPGXiPzfoUsfqE8ORqe
-        +4jQdxURe2WWmQcNm/D4qwv1yYJM9gByPYi56X/xBBKmC49m9KvupZTNRgWZuxM3pKW676
-        gryFIwrnI06m0pw724oSDK+1tRMX0tM=
+        bh=mV0MwncyysLXZqPVn+jf6/UWBOKSu1shrcA/GTkmvpo=;
+        b=N56zYM65P0oWCiriGjNf5ezHnwbwtkmDjQF3Fvh8lB2PhzNL+ESvHuQDqt0/Nkx1g4X7rU
+        X+4chx3H1hckAaJX0ENaIjbvS4UyNv98AzD1BhUwFubEae/pTzw3yMRmEYIHoyfIy2Ju42
+        3flibcwdG4MXEh8s/bmtXm2YiOcPBek=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9053DAE63;
-        Thu, 12 Nov 2020 09:55:09 +0000 (UTC)
-Subject: Re: [PATCH v3 2/2] btrfs: pass bio_offset to check_data_csum()
- directly
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201112084758.73617-1-wqu@suse.com>
- <20201112084758.73617-3-wqu@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 09008AC77;
+        Thu, 12 Nov 2020 09:58:19 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: hold device_list_mutex while accessing a
+ btrfs_device's members
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <3a6553bc8e7b4ea56f1ed0f1a3160fc1f7209df6.1605109916.git.johannes.thumshirn@wdc.com>
+ <29aebf1e-4684-4003-44b4-c5e8846b69eb@oracle.com>
+ <SN4PR0401MB359852C46EE68127C7959CD29BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <d389866a-4d25-6d8a-aaa8-3403bc7b7c0c@oracle.com>
+ <SN4PR0401MB35988CCA4F7CB9E929D22FD19BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +79,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <d8fd03fb-869d-0747-8b8c-1264d550e6c1@suse.com>
-Date:   Thu, 12 Nov 2020 11:55:08 +0200
+Message-ID: <82a9e569-31c7-6f80-3c1d-b02d52d406e1@suse.com>
+Date:   Thu, 12 Nov 2020 11:58:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201112084758.73617-3-wqu@suse.com>
+In-Reply-To: <SN4PR0401MB35988CCA4F7CB9E929D22FD19BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,19 +94,56 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 12.11.20 г. 10:47 ч., Qu Wenruo wrote:
-> Parameter @icsum for check_data_csum() is a little hard to understand.
-> So is the @phy_offset for btrfs_verify_data_csum().
+On 12.11.20 г. 11:54 ч., Johannes Thumshirn wrote:
+> On 12/11/2020 10:40, Anand Jain wrote:
+>>
+>>
+>> On 12/11/20 3:24 pm, Johannes Thumshirn wrote:
+>>> On 12/11/2020 04:09, Anand Jain wrote:
+>>>> On 11/11/20 11:52 pm, Johannes Thumshirn wrote:
+>>>>> A struct btrfs_device's lifetime in device_list_add() is protected by the
+>>>>> device_list_mutex. So don't drop the device_list_mutex when printing a
+>>>>> duplicate device warning in device_list_add.
+>>>>>
+>>>>
+>>>> The only other thread which can free the %device is the userland
+>>>> initiated forget command. But both this (scan) and the forget threads
+>>>> are under %uuid_mutex. So %device is protected from freeing.
+>>>>
+>>>> Did we see any bug reproduced due to this?
+>>>>
+>>>> Thanks.
+>>>>
+>>>
+>>> Yes and no, I've stumbled across this while trying to fix this syzbot
+>>
+>>
+>>> report: https://github.com/btrfs/fstests/issues/29
+>>
+>>
+>> Fix in the ML [1] can fix the above issue grossly.
+>>
+>> [1]
+>>  
+>> https://lore.kernel.org/linux-btrfs/20200114060920.4527-2-anand.jain@oracle.com/T/
+>>
+>>   There is a scenario where the device->fs_info shall be NULL.
+>>
+>>   Consider Thread-A writes device->bdev at 1w and device->fs_info at 2w.
+>>   Thread-B reads device->bdev and device->fs_info at 3r, 4r, and 5r.
+>>
+>>   There is a possible rw order as below when the uuid mutex is released.
+>>
+>>     1w, 3r, 4r, 5r, 2w
+>>
+>>   And this shall lead to the scenario device->bdev != NULL and
+>>   device->fs_info == NULL for the thread-B leading to the Warning.
 > 
-> Both parameters are calculated values for csum lookup.
+> device->fs_info is not necessarily NULL here unfortunately.
 > 
-> Instead of some calculated value, just pass @bio_offset and let the
-> final and only user, check_data_csum(), to calculate whatever it needs.
+> Why aren't we simply doing this instead of the NO_FS_INFO dance:
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-
-That seems to be a simple rename + moving the conversion between
-bytes->sectors into check_data_csum.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Because the btrfs_* helpers also provide the fsid of the system for
+which an event happened and this becomes relevant when you have a
+multi-btrfs system.
