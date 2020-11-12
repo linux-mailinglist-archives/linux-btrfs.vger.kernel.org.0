@@ -2,105 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100BE2B0494
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 12:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192742B04A6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 13:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbgKLL7q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 06:59:46 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:64731 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727147AbgKLL7p (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 06:59:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1605183114; x=1636719114;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=n6LZxRetONMPaSDBCXBFFYZ0GwHhiWTyXf2xbhaH3V8=;
-  b=ZxISqof9IZ1EGe0Ue9gUggdsHo8Qu0hzT9opOwY6t32MgNF5VQERoJI4
-   osxfUDYAOvRNorsGyhEkHEwy1Gjpjhip6k1Zd1VtcEn3qSeBMuSdyDc5w
-   tkLxgC+Eu2L3GR6E7DVb3SPlS9zf3G4WUqEn3J+JvRIHdTsIO37z9IEgh
-   BH2TMyTAbk2had23sIdXtreCzV9UYCFKevrdMH1eXrmmva9aX9XfbnzUS
-   CjzifunwaUAj8J3mIuzeVuydx54/q5r4URmbSGxSXLcElwuwIf3QlKLWJ
-   FVORseYPT+1w6Yg52JrrTTDyUAWekhFSCsVgd+IORMXivdn5PjZ4MVknM
-   w==;
-IronPort-SDR: kNFd7UDWFN+Ya1TSkgaeCbZiI4S+toAsc2N+NvlpiAUYGO/QFdjRpPrye7O9yNYaef7A9zQVwa
- 92eqh4CoA93vhBwBwWZeubbbmdGMldvD1YavpFEsAAy6O5Q+5e3EDaCEBvvNczJwwu+WbL5u6W
- KCQSNoY8iWIeJ6mrps2IhOksmDjj8x/Ium23t1owMm/jYmj7bdO3MFm/WDmDWWeKyMg1J+oT9Q
- OeeSoIj51dkETnlaTopGM3JHIX5Fxg0KiXxByuzeHTxyrZ0aPKOajfIp/+RJ7FXbboKQlyac7S
- Ifo=
-X-IronPort-AV: E=Sophos;i="5.77,471,1596470400"; 
-   d="scan'208";a="256045124"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Nov 2020 20:11:54 +0800
-IronPort-SDR: lG9sF8ugybSWGVrjrwsvKQJzIfOlcDHhrduIOzpZoN/ke7NOxpTVx0qn00SPPl62fHI6dKtoZP
- JPkHDGrJ7yvPBAlLc0KERYOOc5lPOU0l2/ediLf9psM//5CBZL9dVN1l18WHxFazsNTh/cijhP
- pTn/ll21t7qpnxQZGaTobByQMd/9f0vv2KDQ0lVg/X2KGv1Z34hBoDZyJPQg0T4jTfaehF/+wq
- i/WWGksRwXhd8Uj+gmQK6nJZL7GJGctPupYYM+BQWnOF4D9rQnh+DljUdpY3qRGxh4AFfRcD3A
- KGqJfH3J7H3FL2HDlnJStvir
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 03:45:43 -0800
-IronPort-SDR: CbIIpPSV9MrSu5c3Froo5Rfi2Ihr6SHptPDTL6IJrGWtXcUN+7b7r6MRT2HCzOAFzxJNnpkIla
- Tqb1Ztx/ih9TY5Re6U/7zGUFP2jvucCODlVc66hcCScGgA7UktbiUxz1lBgr7TDBcEPGGzjpEp
- 8mfOXeHqE7DUPTkRGHqcfvZi65oLW1BdDGAipQmBOLv9inL+FJabLhtW0Q2kh9nrFubSy8BOUJ
- hBDUV1LjVMSgAXpSyw/FAT0NjvWaEwal6ycdGgcfI9xfNcpNcvH1j4481vn9fMzWpGJmd2UrWl
- qog=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 12 Nov 2020 03:59:44 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
-        Nikolay Borisov <nborisov@suse.com>,
+        id S1728061AbgKLMDB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 07:03:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44784 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727861AbgKLMDA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:03:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605182579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Ib+fCt8/g/RKM9ZBkZl8AhYxXRkZLYmKrFJhiLwN/2o=;
+        b=m0OluUsPzC86t2TTbjQuZgn8/A4v6GXNr9atC1H1X9tT8Fo+danrankKfGsGV9xbW21Fjg
+        AMK52rlRx3ecJlRSjWuU3+5cT8tJet+RG4Tm5rO6Bjil+KZHj/TYU4fIQZeN6QBl9LE6gk
+        GYYRyG6fI5JOoPpJH2i7mRkKTMGn9gE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8A20AB95;
+        Thu, 12 Nov 2020 12:02:59 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: don't access possibly stale fs_info data for
+ printing duplicate device
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
         syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: don't access possibly stale fs_info data for printing duplicate device
-Date:   Thu, 12 Nov 2020 20:59:30 +0900
-Message-Id: <2bb63b693331e27b440768b163a84935fe01edda.1605182240.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.26.2
+References: <2bb63b693331e27b440768b163a84935fe01edda.1605182240.git.johannes.thumshirn@wdc.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <3454d885-21db-199a-76bf-0da6f9971671@suse.com>
+Date:   Thu, 12 Nov 2020 14:02:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <2bb63b693331e27b440768b163a84935fe01edda.1605182240.git.johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Syzbot reported a possible use-after-free when printing a duplicate device
-warning device_list_add().
-
-At this point it can happen that a btrfs_device::fs_info is not correctly
-setup yet, so we're accessing stale data, when printing the warning
-message using the btrfs_printk() wrappers.
-
-Instead of printing possibly uninitialized or already freed memory in
-btrfs_printk(), use a normal pr_warn().
-
-Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
-
-This is an alternative and IMHO simpler aproach to what Anand proposed in
-https://lore.kernel.org/linux-btrfs/20200114060920.4527-2-anand.jain@oracle.com/T/
 
 
- fs/btrfs/volumes.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 12.11.20 г. 13:59 ч., Johannes Thumshirn wrote:
+> Syzbot reported a possible use-after-free when printing a duplicate device
+> warning device_list_add().
+> 
+> At this point it can happen that a btrfs_device::fs_info is not correctly
+> setup yet, so we're accessing stale data, when printing the warning
+> message using the btrfs_printk() wrappers.
+> 
+> Instead of printing possibly uninitialized or already freed memory in
+> btrfs_printk(), use a normal pr_warn().
+> 
+> Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index bb1aa96e1233..eb1af5e3d596 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -940,8 +940,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 			if (device->bdev != path_bdev) {
- 				bdput(path_bdev);
- 				mutex_unlock(&fs_devices->device_list_mutex);
--				btrfs_warn_in_rcu(device->fs_info,
--	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
-+				pr_warn(
-+	"BTRFS: duplicate device %s devid %llu generation %llu scanned by %s (%d)",
- 						  path, devid, found_transid,
- 						  current->comm,
- 						  task_pid_nr(current));
--- 
-2.26.2
+Reviewed-by: Nikolay Borisov <nborisov@suse.com> , though see below for
+a suggestion.
 
+> ---
+> 
+> This is an alternative and IMHO simpler aproach to what Anand proposed in
+> https://lore.kernel.org/linux-btrfs/20200114060920.4527-2-anand.jain@oracle.com/T/
+> 
+> 
+>  fs/btrfs/volumes.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index bb1aa96e1233..eb1af5e3d596 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -940,8 +940,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+>  			if (device->bdev != path_bdev) {
+>  				bdput(path_bdev);
+>  				mutex_unlock(&fs_devices->device_list_mutex);
+> -				btrfs_warn_in_rcu(device->fs_info,
+> -	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
+> +				pr_warn(
+> +	"BTRFS: duplicate device %s devid %llu generation %llu scanned by %s (%d)",
+>  						  path, devid, found_transid,
+>  						  current->comm,
+>  						  task_pid_nr(current));
+> 
+
+
+Would a simple 'if()' here catch the case where fs_info is not
+initialized essentially open-coding what Anand has proposed? My idea is
+to be able to provide the filesystem id when we can (best effort) and
+simply use pr_warn otherwise, but without having to change the internals
+of btrfs_printk and instead handle the single problematic call site ?
