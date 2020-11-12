@@ -2,140 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192742B04A6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 13:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC4A2B04B5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Nov 2020 13:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgKLMDB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Nov 2020 07:03:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44784 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727861AbgKLMDA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Nov 2020 07:03:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605182579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Ib+fCt8/g/RKM9ZBkZl8AhYxXRkZLYmKrFJhiLwN/2o=;
-        b=m0OluUsPzC86t2TTbjQuZgn8/A4v6GXNr9atC1H1X9tT8Fo+danrankKfGsGV9xbW21Fjg
-        AMK52rlRx3ecJlRSjWuU3+5cT8tJet+RG4Tm5rO6Bjil+KZHj/TYU4fIQZeN6QBl9LE6gk
-        GYYRyG6fI5JOoPpJH2i7mRkKTMGn9gE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B8A20AB95;
-        Thu, 12 Nov 2020 12:02:59 +0000 (UTC)
+        id S1727223AbgKLMJ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Nov 2020 07:09:57 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:2242 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbgKLMJ5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Nov 2020 07:09:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1605182995; x=1636718995;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=2HTLVqe/mYOtrMmq2RT9AraCicEzAIXWTbO0e6TgK4Y=;
+  b=TVGy49rJ6XQCY/cursQD0oLDIXsav8MGldcg3axIQIiH/6aFVzgkFH/G
+   NgluqJO1JpK+BW8HzZneQbPRhK9HJ9Qx8ldlLlnNCyV2wnAi+CfXsHOOA
+   9XCJdfTmv711IQ6vE2K8AfRymvf/LqCPy2ms6fD3V3+6GG3Bq0VSGjTNe
+   B0oVQYe6lHc0435m3yn+QFrf0sp2zNZxtZhVNrS1MGnJL+zj4YML3Nl19
+   i2aF/WrtbvvB0IZEgMjtCNPP0pjjXMXC4rDQvJ+FD5x9uNVQfjeQErRWf
+   bkR+B+a1D2WcVhM+g9EhqsB3O5FY2djiF8toZaBNL8G8yReljBCX6lJm1
+   g==;
+IronPort-SDR: aWPrtqvFRse/zGsJVMaaNxbK90CySJvH9ns3QiSsp1dexdRUj5+5bQyy8PbxIQcrd8Op5UAoLI
+ 0q6Ue/MVAsfs55E1xzH6Ti8gv9d5isAGpjg4zmf9INXqCP/Z3j9Unpca6nZ90+sPKc44YS7pBM
+ 1PPGpbGljPvYmgpQJ7sckyaohyyyMnx31wm5VCLKh+Zp9LL62CxiAaG8vYppdwhB7Modk/5aYG
+ CgJM4JdZrVT7ymb687egG4lHbBecE6pqw5gVuLVCWAOFluPUx0konpI41VeUZG9qaGixmM7ikx
+ Saw=
+X-IronPort-AV: E=Sophos;i="5.77,472,1596470400"; 
+   d="scan'208";a="156961559"
+Received: from mail-bn3nam04lp2054.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.54])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Nov 2020 20:09:53 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WCqIBjpeBldVyy8JmQUxH6kAlhJuaOt/wAxaTFkjaw0x1Oc1VGx9rS0UV0FRF+BxiSPTQ1mzLVK5DioKXC5SGy97VgrX/7CHVTxiD0tGhduyjDAPffCurMdFYnySVKx7fkiorWL6H1H90XV3hfbLc2B95w4vMWLk9b01ymButTObzp1DEqmWWIw5j6waZgCvUiNuvytqtoWVQRKvSRx6v2guJ8105INEr6rJk9WFbtEZ/RVL+Qe53h6qbs0hGhbh3AZWE3ECVX8BVSG/v0iPHTU9SavdQJc1jnjoxDkuIvQsnf4l1Z5egVEpPtjh2+65w4i8dMD1EdZecZ6nhP5bKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2HTLVqe/mYOtrMmq2RT9AraCicEzAIXWTbO0e6TgK4Y=;
+ b=BsE4xLj6zyGsdfGnt3Icxbt9H/9kNyrhysZ4Tumcyccf/NzzKkxEOUIlfxo7nR2rt4t7EsW2kw3F374PxhVOtCI0RLv/izudwGDyvGSoeW2xQAmtsPwoIhLavcIEBYh0iPH9TvVA0R2oph0p4lG0g/oIlJlt5C2JwjDA6KM66+kX6QvaKGovF4UL0HntHHfZAvwIcbYGCn6EfxSWOUycZ7kyuls5UUtGyskyFebOArN7pifOP/jKvPIm+OzC5nGZWXSg54K/MpmXldCSvHxOKeVatV6+zkfV2gGtUR1xe28ak4FfOSvjCJLew6N7SUNKIf76FDnpcRDKJgc3esbaIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2HTLVqe/mYOtrMmq2RT9AraCicEzAIXWTbO0e6TgK4Y=;
+ b=OZF3KGBqOoVfWNmAI+gOAw4s3dH49nozhRtsu/A4DTbwvNrEh9BOfV2DPhvogli1U8UeDOgt+kDcDzPefxfoz7aNV81ZgmU+9cXrJ1dxnS03bLrXgqiKjDnNKzSD2sQpQ0gUx5si0Y15AawHjpv0JUGlN4UymCUxgJFgCl9VHaM=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4045.namprd04.prod.outlook.com
+ (2603:10b6:805:47::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Thu, 12 Nov
+ 2020 12:09:52 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::619a:567c:d053:ce25]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::619a:567c:d053:ce25%6]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
+ 12:09:52 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Anand Jain <anand.jain@oracle.com>,
+        "syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com" 
+        <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>
 Subject: Re: [PATCH] btrfs: don't access possibly stale fs_info data for
  printing duplicate device
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
-        syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
+Thread-Topic: [PATCH] btrfs: don't access possibly stale fs_info data for
+ printing duplicate device
+Thread-Index: AQHWuOtRAaZijNInYk+P8NzKw4BntQ==
+Date:   Thu, 12 Nov 2020 12:09:52 +0000
+Message-ID: <SN4PR0401MB35987501AB13F33A9498D85D9BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
 References: <2bb63b693331e27b440768b163a84935fe01edda.1605182240.git.johannes.thumshirn@wdc.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <3454d885-21db-199a-76bf-0da6f9971671@suse.com>
-Date:   Thu, 12 Nov 2020 14:02:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <2bb63b693331e27b440768b163a84935fe01edda.1605182240.git.johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=utf-8
+ <3454d885-21db-199a-76bf-0da6f9971671@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:145b:5101:3d02:4ac1:70fb:2ebb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f48a0cd8-ea92-4b96-e1f7-08d88703dc3b
+x-ms-traffictypediagnostic: SN6PR04MB4045:
+x-microsoft-antispam-prvs: <SN6PR04MB4045B014BC622011D66040FD9BE70@SN6PR04MB4045.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Quw0OoHbIx+ExMbq+DJrbWBBXADK8b17HsCWi7p7FAtHK/ogRm901OaHpeXB8oKBkG6BrlZkCe3QBftU96v41LgOZKBCg1sIPg1erTR9184jDC6TR8JZV3yiTLbKFElTIvidGJlzWigM14ZeQoRQPoZ9c1CmRUMI14w3OedMDtR6LSB4gn6x/INukh0SX4jlYbwSve0Tf9/rfAaemWHqNQmP/4ViDpldPoXxqmAZxnMLZfjuiozJrnqsyh8FObuaFuYhvmqO53Rs1OcDqmQwnRUsUPHb+wAUvlwPCEfBVNVxA/oycCSefljGAoMOUMP4L67Oo3/MD+tUvzUVAy63Qg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(346002)(39860400002)(396003)(5660300002)(86362001)(7696005)(83380400001)(76116006)(66946007)(66556008)(8676002)(54906003)(478600001)(4326008)(55016002)(2906002)(91956017)(9686003)(66476007)(316002)(110136005)(186003)(8936002)(52536014)(4744005)(71200400001)(66446008)(33656002)(53546011)(64756008)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: pkI4Ui9VDyGQOY7veOjFWDav7GfznB/BiqMk7u+vFm0CNOQMFop2iJqqieXOCUOKol489B5hsg0qFjMS9hpR3i9VYxG2AxzZ+tdFvrTsk6SAXxYF277uBphZnFJQXSQSszHveCED6hSXSiiwzosA4YZwLF8bprbtuZxSPKcA/b8aB9CyJqHvzZtYnVPh0XaNXZVV3+F+QhNT4brcjZK7BTzz8ALaiiEFtoJ9v8ofESYTczkC5RkLiOPc5WDKp/YYXw8tR9YQxUwYyikVlwP7dbDpAVvvNCkhRdf+Xl2ILGGyyzSdNeOpSfE7Dje0vYlupANHGOvio74onPAm0ubGCclYeVWbV2/53Kt7tvtc00bM9KM1cTFiDN6qGC2CxbeJEgDdbeELOyGvNqLxaE4hoO5ldV3Fl1/rfLKqncTkjiFTn7zLhMIG4po8kKSHcChvTXmmAND3rlrCLuJiU1CPGpYcFVIfne+a+uwqyF6mbnw9lpT0gA/pIbErkq84T6oKufGiyXakmjlO+t/t03DJ2hIH4u3kXRF5URQsijs1GGkrNERQLutGdjVIfEJME6XzL+XYwb6xhyfVp80M0/wTVmI7USZKm4M5xV4ZrkzejOnk9FU9uqGc+QCnVcCUGW4u/HOgwyDbhaYoL/PO+QcRlIiOfTF5n5jjXw5PZy5hwE1zfPYeJ5eKlNr0AwoDRRPDjn3kAH3mEyKLWuHfuoBiHQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f48a0cd8-ea92-4b96-e1f7-08d88703dc3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Nov 2020 12:09:52.1780
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0b2NqwFlBiVCUSmC3P4b8SSGfTDojtOSzMLekAFLxu7MifyIVIFAbku4sOVturCdZ8T/EZLY57LDmtGU6lkMpQgY/jonsiUuVx+fQsepNKM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4045
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 12.11.20 г. 13:59 ч., Johannes Thumshirn wrote:
-> Syzbot reported a possible use-after-free when printing a duplicate device
-> warning device_list_add().
-> 
-> At this point it can happen that a btrfs_device::fs_info is not correctly
-> setup yet, so we're accessing stale data, when printing the warning
-> message using the btrfs_printk() wrappers.
-> 
-> Instead of printing possibly uninitialized or already freed memory in
-> btrfs_printk(), use a normal pr_warn().
-> 
-> Reported-by: syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com> , though see below for
-a suggestion.
-
-> ---
-> 
-> This is an alternative and IMHO simpler aproach to what Anand proposed in
-> https://lore.kernel.org/linux-btrfs/20200114060920.4527-2-anand.jain@oracle.com/T/
-> 
-> 
->  fs/btrfs/volumes.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index bb1aa96e1233..eb1af5e3d596 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -940,8 +940,8 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->  			if (device->bdev != path_bdev) {
->  				bdput(path_bdev);
->  				mutex_unlock(&fs_devices->device_list_mutex);
-> -				btrfs_warn_in_rcu(device->fs_info,
-> -	"duplicate device %s devid %llu generation %llu scanned by %s (%d)",
-> +				pr_warn(
-> +	"BTRFS: duplicate device %s devid %llu generation %llu scanned by %s (%d)",
->  						  path, devid, found_transid,
->  						  current->comm,
->  						  task_pid_nr(current));
-> 
-
-
-Would a simple 'if()' here catch the case where fs_info is not
-initialized essentially open-coding what Anand has proposed? My idea is
-to be able to provide the filesystem id when we can (best effort) and
-simply use pr_warn otherwise, but without having to change the internals
-of btrfs_printk and instead handle the single problematic call site ?
+On 12/11/2020 13:03, Nikolay Borisov wrote:=0A=
+> Would a simple 'if()' here catch the case where fs_info is not=0A=
+> initialized essentially open-coding what Anand has proposed? My idea is=
+=0A=
+> to be able to provide the filesystem id when we can (best effort) and=0A=
+> simply use pr_warn otherwise, but without having to change the internals=
+=0A=
+> of btrfs_printk and instead handle the single problematic call site ?=0A=
+> =0A=
+=0A=
+Unfortunately not, I've been trying to do that but the device->fs_info poin=
+ter=0A=
+exists and accessing it triggers a KASAN splat.=0A=
+=0A=
+Actually btrfs_printk() is already checking if fs_info is NULL or not to de=
+cide=0A=
+whether to print <unknown> or fs_info->sb->s_id.=0A=
+=0A=
+Another option would be to do btrfs_warn_in_rcu(NULL but that doesn't buy u=
+s a lot=0A=
+more.=0A=
