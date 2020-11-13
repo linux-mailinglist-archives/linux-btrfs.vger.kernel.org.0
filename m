@@ -2,49 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6099F2B1EE7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 16:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3562F2B1F7E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 17:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgKMPgg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Nov 2020 10:36:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55990 "EHLO mx2.suse.de"
+        id S1726691AbgKMQED (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Nov 2020 11:04:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33638 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726439AbgKMPgg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Nov 2020 10:36:36 -0500
+        id S1726439AbgKMQED (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Nov 2020 11:04:03 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7D84AC91;
-        Fri, 13 Nov 2020 15:36:35 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 81DA8ABD9;
+        Fri, 13 Nov 2020 16:04:02 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E5DDBDA87A; Fri, 13 Nov 2020 16:34:52 +0100 (CET)
-Date:   Fri, 13 Nov 2020 16:34:52 +0100
+        id 98698DA87A; Fri, 13 Nov 2020 17:02:19 +0100 (CET)
+Date:   Fri, 13 Nov 2020 17:02:19 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v2] btrfs: qgroup: don't commit transaction when we have
- already hold a transaction handler
-Message-ID: <20201113153452.GA6756@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: correctly deal with error updating inode when
+ inserting inline extent
+Message-ID: <20201113160219.GB6756@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <20201111113818.137633-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <d3a62f4e2c8877427d5b80a454f89577b45726b4.1605208477.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201111113818.137633-1-wqu@suse.com>
+In-Reply-To: <d3a62f4e2c8877427d5b80a454f89577b45726b4.1605208477.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 07:38:18PM +0800, Qu Wenruo wrote:
+On Thu, Nov 12, 2020 at 07:21:04PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When adding an inline extent, if the we failed to update the inode we must
+> abort the transaction if the failure reason is not -ENOSPC, since we are
+> now in an inconsistent state if that is the case. If the failure reason is
+> -ENOSPC, we should not abort the transaction and we should set the return
+> value to 1, so that we fallback to the normal writeback path, where we try
+> to create a non-inline extent.
+> 
+> This used to be the case before my recent patch that has the subject:
+> 
+>   "btrfs: update the number of bytes used by an inode atomically"
+> 
+> But it clearly missed that error handling detail. So just fix that up so
+> that the previous, and correct, behaviour is preserved.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+> 
+> David, can you please fold this into the original patch?
+> Thanks.
 
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=1178634
-
-Please use Bugzilla: when it's not a generic link but our bugzilla.
-
-> Fixes: c53e9653605d ("btrfs: qgroup: try to flush qgroup space when we get -EDQUOT")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Added to misc-next, thanks.
+Folded, thanks.
