@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262902B1B5F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 13:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C65B2B1B61
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 13:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgKMMwU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Nov 2020 07:52:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46624 "EHLO mx2.suse.de"
+        id S1726536AbgKMMwW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Nov 2020 07:52:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46706 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726502AbgKMMwS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:52:18 -0500
+        id S1726503AbgKMMwW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:52:22 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605271937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1605271940; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=c138pZ1RI4buSY8fEz95m+ae5fikRvlUK5xAdSq2Lvk=;
-        b=sQ4PpS6dr6mCxHrrIAod4PpgelKeP9jUhzk8eatKBdDI0pVCc8O+L92VbrBMH17NR/nH7v
-        dtA0VJGo+v/tVYz0CEqobnLO9fZ2jmq7k3LGgtNVHF6/wS7k1RU9ikDJsA+M8k3V71re6Z
-        3v0X6OKyyUklMPJ/adPzCyEbpaSwx5s=
+        bh=x75kLDj09kPaiJ4b4pXpVWAhmKvmAWPsBk/dhhNad50=;
+        b=AP7xnJbKkh5o2w/QDQJH0APQ2DfNrprtxynxWeLsvjsPnqZodN1HFr8kOUIK4WLlmRtwO2
+        28NgRwNP5m9lflgBqhyF2JZcsOCyVxRrR89ye7ywItxe2GjYYN7wc5y5oe9qyK4c43SNRK
+        W6eERVxn+WY4cXjc0NRqiCJxa8fU+5w=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F74BABD9
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Nov 2020 12:52:17 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 8F9CDABD9;
+        Fri, 13 Nov 2020 12:52:20 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 07/24] btrfs: pass bio_offset to check_data_csum() directly
-Date:   Fri, 13 Nov 2020 20:51:32 +0800
-Message-Id: <20201113125149.140836-8-wqu@suse.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: [PATCH v2 08/24] btrfs: inode: make btrfs_verify_data_csum() follow sector size
+Date:   Fri, 13 Nov 2020 20:51:33 +0800
+Message-Id: <20201113125149.140836-9-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201113125149.140836-1-wqu@suse.com>
 References: <20201113125149.140836-1-wqu@suse.com>
@@ -38,174 +39,64 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Parameter @icsum for check_data_csum() is a little hard to understand.
-So is the @phy_offset for btrfs_verify_data_csum().
+Currently btrfs_verify_data_csum() just pass the whole page to
+check_data_csum(), which is fine since we only support sectorsize ==
+PAGE_SIZE.
 
-Both parameters are calculated values for csum lookup.
+To support subpage, we need to properly honor per-sector
+checksum verification, just like what we did in dio read path.
 
-Instead of some calculated value, just pass @bio_offset and let the
-final and only user, check_data_csum(), to calculate whatever it needs.
+This patch will do the csum verification in a for loop, starts with
+pg_off == start - page_offset(page), with sectorsize increasement for
+each loop.
 
+For sectorsize == PAGE_SIZE case, the pg_off will always be 0, and we
+will only finish with just one loop.
+
+For subpage case, we do the loop to iterate each sector and if we found
+any error, we return error.
+
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ctree.h     |  2 +-
- fs/btrfs/extent_io.c | 14 ++++++++------
- fs/btrfs/inode.c     | 26 ++++++++++++++++----------
- 3 files changed, 25 insertions(+), 17 deletions(-)
+ fs/btrfs/inode.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 679da4920c92..99955b6bfc62 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3046,7 +3046,7 @@ u64 btrfs_file_extent_end(const struct btrfs_path *path);
- /* inode.c */
- blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
- 				   int mirror_num, unsigned long bio_flags);
--int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
-+int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 bio_offset,
- 			   struct page *page, u64 start, u64 end, int mirror);
- struct extent_map *btrfs_get_extent_fiemap(struct btrfs_inode *inode,
- 					   u64 start, u64 len);
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 9d394485a60c..37dd103213f9 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2878,7 +2878,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
- 	struct extent_io_tree *tree, *failure_tree;
- 	struct processed_extent processed = { 0 };
--	u64 offset = 0;
-+	u64 bio_offset = 0;
- 	u64 start;
- 	u64 end;
- 	u64 len;
-@@ -2924,8 +2924,9 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		mirror = io_bio->mirror_num;
- 		if (likely(uptodate)) {
- 			if (is_data_inode(inode))
--				ret = btrfs_verify_data_csum(io_bio, offset, page,
--							     start, end, mirror);
-+				ret = btrfs_verify_data_csum(io_bio,
-+						bio_offset, page, start, end,
-+						mirror);
- 			else
- 				ret = btrfs_validate_metadata_buffer(io_bio,
- 					page, start, end, mirror);
-@@ -2953,12 +2954,13 @@ static void end_bio_extent_readpage(struct bio *bio)
- 			 * If it can't handle the error it will return -EIO and
- 			 * we remain responsible for that page.
- 			 */
--			if (!btrfs_submit_read_repair(inode, bio, offset, page,
-+			if (!btrfs_submit_read_repair(inode, bio, bio_offset,
-+						page,
- 						start - page_offset(page),
- 						start, end, mirror,
- 						btrfs_submit_data_bio)) {
- 				uptodate = !bio->bi_status;
--				offset += len;
-+				bio_offset += len;
- 				continue;
- 			}
- 		} else {
-@@ -2983,7 +2985,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 			if (page->index == end_index && off)
- 				zero_user_segment(page, off, PAGE_SIZE);
- 		}
--		offset += len;
-+		bio_offset += len;
- 
- 		endio_readpage_update_page_status(page, uptodate);
- 		endio_readpage_release_extent(&processed, BTRFS_I(inode),
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 435b270430e3..bcf3152d0efb 100644
+index bcf3152d0efb..3f19e0e19c96 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2931,26 +2931,28 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
-  * check_data_csum - verify checksum of one sector of uncompressed data
-  * @inode:	the inode
-  * @io_bio:	btrfs_io_bio which contains the csum
-- * @icsum:	checksum index in the io_bio->csum array, size of csum_size
-+ * @bio_offset:	the offset to the beginning of the bio (in bytes)
-  * @page:	page where is the data to be verified
-  * @pgoff:	offset inside the page
-  *
-  * The length of such check is always one sector size.
-  */
- static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
--			   int icsum, struct page *page, int pgoff)
-+			   u64 bio_offset, struct page *page, int pgoff)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
- 	char *kaddr;
- 	u32 len = fs_info->sectorsize;
- 	const u32 csum_size = fs_info->csum_size;
-+	int offset_sectors;
- 	u8 *csum_expected;
- 	u8 csum[BTRFS_CSUM_SIZE];
- 
- 	ASSERT(pgoff + len <= PAGE_SIZE);
- 
--	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
-+	offset_sectors = bio_offset >> fs_info->sectorsize_bits;
-+	csum_expected = ((u8 *)io_bio->csum) + offset_sectors * csum_size;
- 
- 	kaddr = kmap_atomic(page);
- 	shash->tfm = fs_info->csum_shash;
-@@ -2978,8 +2980,13 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
-  * when reads are done, we need to check csums to verify the data is correct
-  * if there's a match, we allow the bio to finish.  If not, the code in
-  * extent_io.c will try to find good copies for us.
-+ *
-+ * @bio_offset:	The offset to the begining of the bio (in bytes)
-+ * @start:	The file offset of the range start
-+ * @end:	The file offset of the range end (inclusive)
-+ * @mirror:	The mirror number
-  */
--int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
-+int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 bio_offset,
+@@ -2989,10 +2989,11 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+ int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 bio_offset,
  			   struct page *page, u64 start, u64 end, int mirror)
  {
- 	size_t offset = start - page_offset(page);
-@@ -3004,8 +3011,7 @@ int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
+-	size_t offset = start - page_offset(page);
++	u64 pg_off;
+ 	struct inode *inode = page->mapping->host;
+ 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
++	u32 sectorsize = root->fs_info->sectorsize;
+ 
+ 	if (PageChecked(page)) {
+ 		ClearPageChecked(page);
+@@ -3011,7 +3012,16 @@ int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 bio_offset,
  		return 0;
  	}
  
--	phy_offset >>= root->fs_info->sectorsize_bits;
--	return check_data_csum(inode, io_bio, phy_offset, page, offset);
-+	return check_data_csum(inode, io_bio, bio_offset, page, offset);
+-	return check_data_csum(inode, io_bio, bio_offset, page, offset);
++	for (pg_off = start - page_offset(page);
++	     pg_off < end - page_offset(page);
++	     pg_off += sectorsize, bio_offset += sectorsize) {
++		int ret;
++
++		ret = check_data_csum(inode, io_bio, bio_offset, page, pg_off);
++		if (ret < 0)
++			return -EIO;
++	}
++	return 0;
  }
  
  /*
-@@ -7716,7 +7722,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
- 	struct bio_vec bvec;
- 	struct bvec_iter iter;
- 	u64 start = io_bio->logical;
--	int icsum = 0;
-+	u64 bio_offset = 0;
- 	blk_status_t err = BLK_STS_OK;
- 
- 	__bio_for_each_segment(bvec, &io_bio->bio, iter, io_bio->iter) {
-@@ -7727,8 +7733,8 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
- 		for (i = 0; i < nr_sectors; i++) {
- 			ASSERT(pgoff < PAGE_SIZE);
- 			if (uptodate &&
--			    (!csum || !check_data_csum(inode, io_bio, icsum,
--						       bvec.bv_page, pgoff))) {
-+			    (!csum || !check_data_csum(inode, io_bio,
-+					bio_offset, bvec.bv_page, pgoff))) {
- 				clean_io_failure(fs_info, failure_tree, io_tree,
- 						 start, bvec.bv_page,
- 						 btrfs_ino(BTRFS_I(inode)),
-@@ -7748,7 +7754,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
- 					err = status;
- 			}
- 			start += sectorsize;
--			icsum++;
-+			bio_offset += sectorsize;
- 			pgoff += sectorsize;
- 		}
- 	}
 -- 
 2.29.2
 
