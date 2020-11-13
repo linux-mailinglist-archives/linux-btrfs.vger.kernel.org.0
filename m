@@ -2,89 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B972B1B73
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 13:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EC42B1D97
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 15:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgKMMxT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Nov 2020 07:53:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726374AbgKMMxT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Nov 2020 07:53:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605271998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AJ5FDgM+IJav9Rao+mHDPtw0VBKfmTYwhA7oZlDtzyQ=;
-        b=XEzOhPL3xs0+G9oN75LIBrNtaYGmbx4y5Z9GYu0x9Sn7NskVwQpBwxuoOpWOjLnNZ7LeTG
-        JXwZHJrqBPTvATQMRWVx1G1ALbfJyAAT73ATstnU26ZznBUXjMVo/nnaKYcv456hI2ikqi
-        rQ50wQaYYcF05ycHuizhaILfV/nonkA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 379EAABD1
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Nov 2020 12:53:18 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 24/24] btrfs: extent_io: Use detach_page_private() for alloc_extent_buffer()
-Date:   Fri, 13 Nov 2020 20:51:49 +0800
-Message-Id: <20201113125149.140836-25-wqu@suse.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201113125149.140836-1-wqu@suse.com>
-References: <20201113125149.140836-1-wqu@suse.com>
+        id S1726554AbgKMOja (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Nov 2020 09:39:30 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:46768 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726544AbgKMOja (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Nov 2020 09:39:30 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 148978A41B3; Fri, 13 Nov 2020 09:39:26 -0500 (EST)
+Date:   Fri, 13 Nov 2020 09:39:26 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 00/42] Cleanup error handling in relocation
+Message-ID: <20201113143925.GC31381@hungrycats.org>
+References: <cover.1605215645.git.josef@toxicpanda.com>
+ <20201113035342.GB31381@hungrycats.org>
+ <1658d318-3434-3e27-bcf5-00060233f10c@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1658d318-3434-3e27-bcf5-00060233f10c@toxicpanda.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In alloc_extent_buffer(), after we got a page from btree inode, we check
-if that page has private pointer attached.
+On Fri, Nov 13, 2020 at 06:03:39AM -0500, Josef Bacik wrote:
+> On 11/12/20 10:53 PM, Zygo Blaxell wrote:
+> > On Thu, Nov 12, 2020 at 04:18:27PM -0500, Josef Bacik wrote:
+> > > Hello,
+> > > 
+> > > Relocation is the last place that is not able to handle errors at all, which
+> > > results in all sorts of lovely panics if you encounter corruptions or IO errors.
+> > > I'm going to start cleaning up relocation, but before I move code around I want
+> > > the error handling to be somewhat sane, so I'm not changing behavior and error
+> > > handling at the same time.
+> > > 
+> > > These patches are purely about error handling, there is no behavior changing
+> > > other than returning errors up the chain properly.  There is a lot of room for
+> > > follow up cleanups, which will happen next.  However I wanted to get this series
+> > > done today and out so we could get it merged ASAP, and then the follow up
+> > > cleanups can happen later as they are less important and less critical.
+> > > 
+> > > The only exception to the above is the patch to add the error injection sites
+> > > for btrfs_cow_block and btrfs_search_slot, and a lockdep fix that I discovered
+> > > while running my tests, those are the first two patches in the series.
+> > > 
+> > > I tested this with my error injection stress test, where I keep track of all
+> > > stack traces that have been tested and only inject errors when we have a new
+> > > stack trace, which means I should have covered all of the various error
+> > > conditions.  With this patchset I'm no longer panicing while stressing the error
+> > > conditions.  Thanks,
+> > 
+> > I just threw this patch set on top of kdave/for-next
+> > (a12315094469d573e41fe3eee91c99a83cec02df) and I got something that
+> > looks like runaway balances:
+> > 
+> 
+> Yup I hit this with my xfstests run that I started after I sent these out, I
+> got a little happy with deleting things for one of the patches, this time
+> I'm running xfstests _before_ I send the next version.  Thanks,
 
-If attached, we check if the existing extent buffer has a proper refs.
-If not (the eb is being freed), we will detach that private eb pointer.
+Well, the good news is you killed the BUG_ON I was hitting every few hours
+while running a test that sends a SIGINT to balance:
 
-The point here is, we are detaching that eb pointer by calling:
-- ClearPagePrivate()
-- put_page()
+	https://lore.kernel.org/linux-btrfs/20200904155359.GC5890@hungrycats.org/
 
-The put_page() here is especially confusing, as it's decreaing the ref
-caused by attach_page_private().
-Without knowing that, it looks like the put_page() is for the
-find_or_create_page() call, confusing the read.
+so I'm looking forward to the next version.
 
-Since we're always modifing page private with attach_page_private() and
-detach_page_private(), the only open-coded detach_page_private() here is
-really confusing.
-
-Fix it by calling detach_page_private().
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index f305777ee1a3..55115f485d09 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5310,14 +5310,13 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 				goto free_eb;
- 			}
- 			exists = NULL;
-+			WARN_ON(PageDirty(p));
- 
- 			/*
- 			 * Do this so attach doesn't complain and we need to
- 			 * drop the ref the old guy had.
- 			 */
--			ClearPagePrivate(p);
--			WARN_ON(PageDirty(p));
--			put_page(p);
-+			detach_page_private(page);
- 		}
- 		attach_extent_buffer_page(eb, p);
- 		spin_unlock(&mapping->private_lock);
--- 
-2.29.2
-
+> Josef
