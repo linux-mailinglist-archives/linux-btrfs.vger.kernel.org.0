@@ -2,73 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5F52B1A00
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 12:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FE72B1B58
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 13:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKMLYm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Nov 2020 06:24:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53962 "EHLO mail.kernel.org"
+        id S1726443AbgKMMwA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Nov 2020 07:52:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46350 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbgKMLY1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:24:27 -0500
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8871E207DE
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Nov 2020 11:24:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605266660;
-        bh=y4iX4MsOaaVjhZONiFjW41JpsBWusJE0WhzFLDtOJpg=;
-        h=From:To:Subject:Date:From;
-        b=JSYigLpIlBPzv5xGHvLSPMTfn9ILmAN1sxoIrGb5BWTzugSRwBZS7R17Vce0Ui1OW
-         YrJEh8n73Ril7CKS0QcfG0mxCWibtqYZ+wOe5nQJfzXhKkRNFONKsEOoriCb9X5Byw
-         HazPxQ0QEmjIXo7Qrs5Ln70FVUXDOR7hWOnz9aWE=
-From:   fdmanana@kernel.org
+        id S1726160AbgKMMv7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Nov 2020 07:51:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605271918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=TGN5pQ5prfT9ZEigU+ObvaSEY5k5ZYdmHDbKAcN39xY=;
+        b=nhcG/c3j3XMtgZea+1ZTgZS5+ksq+u9Ayawr2BxK4QYAuaNYJkFEnsh5lVcKgN0Rihytup
+        RWXuCTL65Fv/R9JfDsfD7E6JAnjmo/EO3jSO72uHpo9GRMHve6B9YlTRQL/sFRJ9k0wrls
+        7s6poCDVPNXhPTZov9XvGaHFEZUudYw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 47F6CABD6
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Nov 2020 12:51:58 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove unnecessary attempt do drop extent maps after adding inline extent
-Date:   Fri, 13 Nov 2020 11:24:17 +0000
-Message-Id: <1b80a3ffc965dbf663ab746dc11ea5e9fa1e10bf.1605266387.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
+Subject: [PATCH v2 00/24] btrfs: preparation patches for subpage support
+Date:   Fri, 13 Nov 2020 20:51:25 +0800
+Message-Id: <20201113125149.140836-1-wqu@suse.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+This is the rebased preparation branch for all patches not yet merged into
+misc-next.
 
-At inode.c:cow_file_range_inline(), after we insert the inline extent
-in the fs/subvolume btree, we call btrfs_drop_extent_cache() to drop
-all extent maps in the file range, however that is not necessary because
-we have already done it in the call to btrfs_drop_extents(), which calls
-btrfs_drop_extent_cache() for us, and since at this point we have the file
-range locked in the inode's iotree (we are in the writeback path), we know
-no other task can come in and read stale file extent items or find none
-and therefore create either stale extent maps or an extent map that
-represens a hole.
+It can be fetched from github (with RO mount support using page->private)
+https://github.com/adam900710/linux/tree/subpage
 
-So just remove that unnecessary call to btrfs_drop_extent_cache(), as it's
-doing nothing and only wasting time. This call has been around since 2008,
-introduced in commit c8b978188c9a ("Btrfs: Add zlib compression support"),
-but even back then it seems it was not necessary, since we had the range
-locked in the inode's iotree and the call to btrfs_drop_extents() already
-used to always call btrfs_drop_extent_cache().
+This patchset includes all the unmerged preparation patches for subpage
+support.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 1 -
- 1 file changed, 1 deletion(-)
+The patchset is sent without the main core for subpage support, as
+myself has proven that, big patchset bombarding won't really make
+reviewers happy, but only make the author happy (for a very short time).
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 84a75cf86d88..0a2ee8983528 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -392,7 +392,6 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode, u64 start,
- 	}
- 
- 	set_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags);
--	btrfs_drop_extent_cache(inode, start, aligned_end - 1, 0);
- out:
- 	/*
- 	 * Don't forget to free the reserved space, as for inlined extent
+Thanks for the hard work from David, there are only 24 patches unmerged.
+
+Patch 01:	Special hotfix, for selftests. Should be folded into the
+		offending patch.
+Patch 02:	Fix to remove invalid test cases for 64K sector size.
+Patch 03~08:	Refactors around endio functions (both data and
+		metadata)
+Patch 09~14:	Update metadata related handling to support subpage.
+Patch 15:	Make extent io bits to be u32. (no longer utilized
+		by later subpage, but the cleanup should still make
+		sense)
+Patch 16~18:	Refactor btrfs_lookup_bio_sums()
+Patch 19~23:	Scrub support for subpage
+		Since scrub is completely unrelated to regular data/meta
+ 		read write, the scrub support for subpage can be
+		implemented independently and easily.
+Patch 24:	Page->private related refactor, will be utilized by
+		later subpage patches soon.
+
+Changelog:
+v1:
+- Separate prep patches from the huge subpage patchset
+
+- Rebased to misc-next
+
+- Add more commit message for patch "btrfs: extent_io: remove the
+  extent_start/extent_len for end_bio_extent_readpage()"
+  With one runtime example to explain why we are doing the same thing.
+
+- Fix the assert_spin_lock() usage
+  What we really want is lockdep_assert_held()
+
+- Re-iterate the reason why some extent io tests are invalid
+  This is especially important since later patches will reduce
+  extent_buffer::pages[] to bare minimal, killing the ability to
+  handle certain invalid extent buffers.
+
+- Use sectorsize_bits for division
+  During the convert, we should only use sectorsize_bits for division,
+  this solves the hassle on 32bit system to do division.
+  But we should not use sectorsize_bits no brain, as bit shift is not
+  straight forward as multiple/division.
+
+- Address the comments for btrfs_lookup_bio_sums() cleanup patchset
+  From naming to macro usages, all of those comments should further
+  improve the readability.
+
+v2:
+- Remove new extent_io tree features
+  Now we won't utilize extent io tree for subpage support, thus new
+  features along with some aggressive refactor is no longer needed.
+
+- Reduce extent_io tree operations to reduce endio time latency
+  Although extent_io tree can do a lot of things like page status, but
+  it has obvious overhead, namingly search btree.
+  So keep the original behavior by only calling extent_io operation in a
+  big extent, to reduce latency
+
+
+Qu Wenruo (24):
+  btrfs: tests: fix free space tree test failure on 64K page system
+  btrfs: extent-io-tests: remove invalid tests
+  btrfs: extent_io: replace extent_start/extent_len with better
+    structure for end_bio_extent_readpage()
+  btrfs: extent_io: introduce helper to handle page status update in
+    end_bio_extent_readpage()
+  btrfs: extent_io: extract the btree page submission code into its own
+    helper function
+  btrfs: remove the phy_offset parameter for
+    btrfs_validate_metadata_buffer()
+  btrfs: pass bio_offset to check_data_csum() directly
+  btrfs: inode: make btrfs_verify_data_csum() follow sector size
+  btrfs: extent_io: calculate inline extent buffer page size based on
+    page size
+  btrfs: introduce a helper to determine if the sectorsize is smaller
+    than PAGE_SIZE
+  btrfs: extent_io: don't allow tree block to cross page boundary for
+    subpage support
+  btrfs: extent_io: update num_extent_pages() to support subpage sized
+    extent buffer
+  btrfs: handle sectorsize < PAGE_SIZE case for extent buffer accessors
+  btrfs: disk-io: only clear EXTENT_LOCK bit for extent_invalidatepage()
+  btrfs: extent-io: make type of extent_state::state to be at least 32
+    bits
+  btrfs: file-item: use nodesize to determine whether we need readahead
+    for btrfs_lookup_bio_sums()
+  btrfs: file-item: remove the btrfs_find_ordered_sum() call in
+    btrfs_lookup_bio_sums()
+  btrfs: file-item: refactor btrfs_lookup_bio_sums() to handle
+    out-of-order bvecs
+  btrfs: scrub: remove the anonymous structure from scrub_page
+  btrfs: scrub: always allocate one full page for one sector for RAID56
+  btrfs: scrub: support subpage tree block scrub
+  btrfs: scrub: support subpage data scrub
+  btrfs: scrub: allow scrub to work with subpage sectorsize
+  btrfs: extent_io: Use detach_page_private() for alloc_extent_buffer()
+
+ fs/btrfs/compression.c           |   5 +-
+ fs/btrfs/ctree.c                 |   5 +-
+ fs/btrfs/ctree.h                 |  47 +++-
+ fs/btrfs/disk-io.c               |   2 +-
+ fs/btrfs/disk-io.h               |   2 +-
+ fs/btrfs/extent-io-tree.h        |  33 +--
+ fs/btrfs/extent_io.c             | 403 +++++++++++++++++++------------
+ fs/btrfs/extent_io.h             |  21 +-
+ fs/btrfs/file-item.c             | 259 +++++++++++++-------
+ fs/btrfs/inode.c                 |  43 ++--
+ fs/btrfs/ordered-data.c          |  44 ----
+ fs/btrfs/ordered-data.h          |   2 -
+ fs/btrfs/scrub.c                 |  57 +++--
+ fs/btrfs/struct-funcs.c          |  18 +-
+ fs/btrfs/tests/btrfs-tests.c     |   1 +
+ fs/btrfs/tests/extent-io-tests.c |  26 +-
+ 16 files changed, 584 insertions(+), 384 deletions(-)
+
 -- 
-2.28.0
+2.29.2
 
