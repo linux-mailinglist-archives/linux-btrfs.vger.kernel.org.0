@@ -2,104 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E321D2B271D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Nov 2020 22:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976892B2981
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Nov 2020 01:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgKMVgg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Nov 2020 16:36:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36586 "EHLO mx2.suse.de"
+        id S1726177AbgKNAJ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Nov 2020 19:09:59 -0500
+Received: from mout.gmx.net ([212.227.17.22]:34725 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726268AbgKMVgf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:36:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4F01BABD9;
-        Fri, 13 Nov 2020 21:36:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0344ADA87A; Fri, 13 Nov 2020 22:34:49 +0100 (CET)
-Date:   Fri, 13 Nov 2020 22:34:49 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v10 04/41] btrfs: get zone information of zoned block
- devices
-Message-ID: <20201113213449.GH6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <cover.1605007036.git.naohiro.aota@wdc.com>
- <cf46f0aef5a214cae8bacb2be231efed5febef5f.1605007036.git.naohiro.aota@wdc.com>
- <6df7390f-6656-4795-ac54-a99fdaf67ac6@oracle.com>
- <SN4PR0401MB35981D84D03C4D54A3EF627F9BE70@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <BL0PR04MB6514AAB6133006372B04711DE7E70@BL0PR04MB6514.namprd04.prod.outlook.com>
- <4a796bcd-ebac-eff2-6085-346a102b5952@oracle.com>
+        id S1726072AbgKNAJ6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Nov 2020 19:09:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605312593;
+        bh=fQQJhamnsVOiGu8oqE1jApgEJ0qTxW2ciMn7n1TTYsY=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=W0Szskmk9wuHE3naC08YWcpskSicsMJOJ4vsMs4RkH+ey95JMsmHM1U3pkiipXhgT
+         oaTe6kYMq2fyqgM5KneupbPJixNpqCgfyxcYa/YYhAV7SnootRtFSMwQteXoY5h2K/
+         ZyJ0hwkWBvIbeB/YUcESyMow+IhV+neSTQF8U/sM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6KYb-1kFS812Ka1-016jWm; Sat, 14
+ Nov 2020 01:09:53 +0100
+Subject: Re: [PATCH] fstests: btrfs: check qgroup doesn't crash when beyond
+ limit
+To:     dsterba@suse.cz, fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>
+References: <20201111113152.136729-1-wqu@suse.com>
+ <CAL3q7H5W6U4jYGBszQF59RLi-aehO9vBTNU_HMTi8hRfK7gjGg@mail.gmail.com>
+ <d5cabe8e-37cb-42b7-9bd4-ba7ddca68b20@gmx.com>
+ <20201113151946.GY6756@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <705e1226-2aaf-0d5f-45ed-03b25457e680@gmx.com>
+Date:   Sat, 14 Nov 2020 08:09:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a796bcd-ebac-eff2-6085-346a102b5952@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20201113151946.GY6756@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye"
+X-Provags-ID: V03:K1:Fa8T3ftXZGlpUJw6V9iH1oBfloZ0cgfVpi1FXNV0ouUXYWD0wWn
+ 7KWwjdIDXbmR5te4/pLSVmq9RQu1yzEvri/bUm4vYI8TPaDTI8Zfn1OLytxwMkOQXrFEKbr
+ x38QjocNbFA3tghmeBCzr8m7A8IoNr5FmhNTZn9L7auk6BLE6xauj4Jb4xJyJ39MVOgm0qx
+ lnUsg88Sn70PntNRt/Y7Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kUSolHjDAhI=:oT8hdw8ZFMnpkyUFVDqjSm
+ SdDL2swGywG10c3wzgTT8pz09+fSpTp1kf6C3soGLTqSM1JAqO/IW7SfQfFAotyGIsVcgeNy0
+ Y4QfT5saWk81jUkY0h/UfszbEuS6dlRYfKWStEH/phTE1jNbL4owQ6jHcdLWzm78kd7+elei2
+ NTDGun4XAzctkAYF+NqAWwsQSOAwF1xHwsOwTMjxhfREX5LcR7vT7h77MDug1r54CcU+40uFv
+ UKYPc/FU6zdVaQ2RwBHnGo1YynnImUq/8zMmIPsnvIbB4Z5+LuRebvoyQEJjrbE//XZ9bel/p
+ hFmMFZRnx6aZ5c2N+UJrHuOiLjjTa/CIkOOekjn7F1hYLUN4YIhmZu60d/0s5MokY6iOESAg9
+ AAEU6NXxjUqsmDwSE0mlrbmmAzNKZ14j8Urd7i8qT0VT0H+GKvEBYznaV0120cPGGDI5ZiOh9
+ LGSPrWK3goJ/mBobpOMiHsd4MYRirPbUY/LAMTcBkldw7TPcFRK5lBOUGHtAEi497HM1MArKZ
+ rZpT20wPaiFhM79spZZFG/hqZYJUwNvsx7XvUClaky/D4G+xXRpI637V5SzEDHCe+kiHjLLyT
+ D0b50NjaQ72eUOvfzmOv+W+EhYF4Af8yTW4FbE26vF4DLK6Xdi4Op2VRAdg/UYrh3sEafPNK8
+ i2VSsvfJZ4VBzF7hVIdMsIrOfHwQ+F2Zfj7xEx5L7Zs2InG9jblgNVDCRzPhkYErJkgjL/jWm
+ z4q4rVsfncHSrvUsjgzCdxp9bipOWTjwGdGuZ2OBsj2y/Z28nx9Mj6+2q7c6BuApg82TXi9sl
+ UgSqeUEikCn0AF33lNa8NDF3ulbmg96tT1T73zrAEREB2k93Uh9vLYZ0DL/u+vmzaFRniA9E4
+ NClDP5dCTzStvUmIqYBQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 05:44:11PM +0800, Anand Jain wrote:
-> On 12/11/20 3:44 pm, Damien Le Moal wrote:
-> > On 2020/11/12 16:35, Johannes Thumshirn wrote:
-> >> On 12/11/2020 08:00, Anand Jain wrote:
-> >>>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> >>>> index 8840a4fa81eb..ed55014fd1bd 100644
-> >>>> --- a/fs/btrfs/super.c
-> >>>> +++ b/fs/btrfs/super.c
-> >>>> @@ -2462,6 +2462,11 @@ static void __init btrfs_print_mod_info(void)
-> >>>>    #endif
-> >>>>    #ifdef CONFIG_BTRFS_FS_REF_VERIFY
-> >>>>    			", ref-verify=on"
-> >>>> +#endif
-> >>>> +#ifdef CONFIG_BLK_DEV_ZONED
-> >>>> +			", zoned=yes"
-> >>>> +#else
-> >>>> +			", zoned=no"
-> >>>>    #endif
-> >>> IMO, we don't need this, as most of the generic kernel will be compiled
-> >>> with the CONFIG_BLK_DEV_ZONED defined.
-> >>> For review purpose we may want to know if the mounted device
-> >>> is a zoned device. So log of zone device and its type may be useful
-> >>> when we have verified the zoned devices in the open_ctree().
-> >>>
-> >>
-> >> David explicitly asked for this in [1] so we included it.
-> >>
-> >> [1] https://lore.kernel.org/linux-btrfs/20201013155301.GE6756@twin.jikos.cz
-> >>
-> > 
-> > And as of now, not all generic kernels are compiled with CONFIG_BLK_DEV_ZONED.
-> > E.g. RHEL and CentOS. That may change in the future, but it should not be
-> > assumed that CONFIG_BLK_DEV_ZONED is always enabled.
-> 
-> Ok. My comment was from the long term perspective. I am fine if you want 
-> to keep it.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye
+Content-Type: multipart/mixed; boundary="rRk0Cupkunh4BCoNOibrqI8nJ9D7xAeaZ"
 
-The idea is to let the module announce which conditionally built
-features are there according to fs/btrfs/Makefile and Kconfig. Besides
-ACLs that should be always on and self-tests that run right after module
-load, all other are there and we should keep the list up to date.
+--rRk0Cupkunh4BCoNOibrqI8nJ9D7xAeaZ
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/11/13 =E4=B8=8B=E5=8D=8811:19, David Sterba wrote:
+> On Thu, Nov 12, 2020 at 07:50:22AM +0800, Qu Wenruo wrote:
+>>>> +$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
+>>>> +$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+>>>> +
+>>>> +# Set the limit to just 512MiB, which is way below the existing usa=
+ge
+>>>> +$BTRFS_UTIL_PROG qgroup limit  512M $SCRATCH_MNT $SCRATCH_MNT
+>>>
+>>> $SCRATCH_MNT twice by mistake, though the command still works and the=
+
+>>> test still reproduces the issue.
+>>
+>> Nope, that's the expected behavior.
+>>
+>> Btrfs qgroup limit <size> <path>|<qgroupid> <path>
+>>
+>> The first path is to determine qgroupid, while the last path is to
+>> determine the fs.
+>>
+>> In this particular case, since we're limit the 0/5 qgroup, it's also t=
+he
+>> as the mount point, thus we specific it twice.
+>=20
+> So why didn't you specify 0/5 so it's clear?
+>=20
+Oh no, my brain just shorted, and forgot that it's 0/5 fixed for fs tree.=
+
+
+0/5 is indeed much better.
+
+Thanks,
+Qu
+
+
+--rRk0Cupkunh4BCoNOibrqI8nJ9D7xAeaZ--
+
+--UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+vIE0ACgkQwj2R86El
+/qhdYgf8Dk5/Ni85Ct1bMlPrgckoqo62c7j6gdwtyfFlCIM/rnyhaabZd3JMXikP
+y8PvL8YznfSUcEiCngmHXzbkz77hpBmr03hPI93xVDBxdwdAEgERqXubMb1gNxCl
+RrH147bDCycgYhOPL0gyDBJLhF6loqUtWa7k7DWztE7aOblcpp5aWDmLD6lkeBQV
+RqmHh/2ztf5XcQuS/JEBqD5SQYn/6N0DxTCmyAW6exApTQqnDWJLw9y2P6AI+0U3
+cbGjpWh/1WKcaXYQghYgJli+MA3NFYvpILETrBfnGQRJdmFGrAfKbEK5A7lxi8cF
+1pMTIs21frEsYs/Pc6yx6Lh090ASlg==
+=s88X
+-----END PGP SIGNATURE-----
+
+--UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye--
