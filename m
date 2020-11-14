@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976892B2981
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Nov 2020 01:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8E32B298A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Nov 2020 01:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgKNAJ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Nov 2020 19:09:59 -0500
-Received: from mout.gmx.net ([212.227.17.22]:34725 "EHLO mout.gmx.net"
+        id S1726268AbgKNALi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Nov 2020 19:11:38 -0500
+Received: from mout.gmx.net ([212.227.15.15]:55509 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgKNAJ6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Nov 2020 19:09:58 -0500
+        id S1726163AbgKNALi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Nov 2020 19:11:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605312593;
-        bh=fQQJhamnsVOiGu8oqE1jApgEJ0qTxW2ciMn7n1TTYsY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=W0Szskmk9wuHE3naC08YWcpskSicsMJOJ4vsMs4RkH+ey95JMsmHM1U3pkiipXhgT
-         oaTe6kYMq2fyqgM5KneupbPJixNpqCgfyxcYa/YYhAV7SnootRtFSMwQteXoY5h2K/
-         ZyJ0hwkWBvIbeB/YUcESyMow+IhV+neSTQF8U/sM=
+        s=badeba3b8450; t=1605312694;
+        bh=XnKXzvLuPQi7SL237E3kv57Yk2LTFTsWEFfCBsVdZzw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=IX5Mqe+MVXpsklH9sI4g0lf+oJgZ0bAUalP+cJ/kTN54b4lPoIG3djGtXbDWepvlk
+         22O3jSpFsx0IfjsVo5dNgl0ECkaqUEsobwEqs3E5fe1W5zTqPXHgoslkDWJWB0qKGT
+         V5jl8N5Rg8aqOxqblUJuOu4wYriknKz03Ug3N6Dg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6KYb-1kFS812Ka1-016jWm; Sat, 14
- Nov 2020 01:09:53 +0100
-Subject: Re: [PATCH] fstests: btrfs: check qgroup doesn't crash when beyond
- limit
-To:     dsterba@suse.cz, fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        fstests <fstests@vger.kernel.org>
-References: <20201111113152.136729-1-wqu@suse.com>
- <CAL3q7H5W6U4jYGBszQF59RLi-aehO9vBTNU_HMTi8hRfK7gjGg@mail.gmail.com>
- <d5cabe8e-37cb-42b7-9bd4-ba7ddca68b20@gmx.com>
- <20201113151946.GY6756@twin.jikos.cz>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7K3i-1kerDm0Y6W-007mE4; Sat, 14
+ Nov 2020 01:11:34 +0100
+Subject: Re: [PATCH v2 09/24] btrfs: extent_io: calculate inline extent buffer
+ page size based on page size
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>
+References: <20201113125149.140836-1-wqu@suse.com>
+ <20201113125149.140836-10-wqu@suse.com>
+ <e9046ea1-abf0-3352-8e4f-f454410b7dc8@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -56,101 +56,119 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <705e1226-2aaf-0d5f-45ed-03b25457e680@gmx.com>
-Date:   Sat, 14 Nov 2020 08:09:49 +0800
+Message-ID: <9bf18831-b586-f798-f706-eaf0bf3245a7@gmx.com>
+Date:   Sat, 14 Nov 2020 08:11:30 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201113151946.GY6756@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye"
-X-Provags-ID: V03:K1:Fa8T3ftXZGlpUJw6V9iH1oBfloZ0cgfVpi1FXNV0ouUXYWD0wWn
- 7KWwjdIDXbmR5te4/pLSVmq9RQu1yzEvri/bUm4vYI8TPaDTI8Zfn1OLytxwMkOQXrFEKbr
- x38QjocNbFA3tghmeBCzr8m7A8IoNr5FmhNTZn9L7auk6BLE6xauj4Jb4xJyJ39MVOgm0qx
- lnUsg88Sn70PntNRt/Y7Q==
+In-Reply-To: <e9046ea1-abf0-3352-8e4f-f454410b7dc8@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nOf+W6DW8sk6LwExxOTXT6oVI6PlNW2pBxIWBFQ2/oibL4m16gW
+ 3Ql7RgESoXCT0DwGIIqNcUF1b98EHQ5WnQi/CPsEhyOmqP/Sj0i4imFy3H+sGNBLn/PH3pe
+ 4A4sTRJxVDMU0sYflVX+alzfe0EnEaVq+xTyIMDwm86V7hF7yZZWSEVz9BB/0NMm0VDdLSr
+ NaNYV2o47nRYPy6YiWA/w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kUSolHjDAhI=:oT8hdw8ZFMnpkyUFVDqjSm
- SdDL2swGywG10c3wzgTT8pz09+fSpTp1kf6C3soGLTqSM1JAqO/IW7SfQfFAotyGIsVcgeNy0
- Y4QfT5saWk81jUkY0h/UfszbEuS6dlRYfKWStEH/phTE1jNbL4owQ6jHcdLWzm78kd7+elei2
- NTDGun4XAzctkAYF+NqAWwsQSOAwF1xHwsOwTMjxhfREX5LcR7vT7h77MDug1r54CcU+40uFv
- UKYPc/FU6zdVaQ2RwBHnGo1YynnImUq/8zMmIPsnvIbB4Z5+LuRebvoyQEJjrbE//XZ9bel/p
- hFmMFZRnx6aZ5c2N+UJrHuOiLjjTa/CIkOOekjn7F1hYLUN4YIhmZu60d/0s5MokY6iOESAg9
- AAEU6NXxjUqsmDwSE0mlrbmmAzNKZ14j8Urd7i8qT0VT0H+GKvEBYznaV0120cPGGDI5ZiOh9
- LGSPrWK3goJ/mBobpOMiHsd4MYRirPbUY/LAMTcBkldw7TPcFRK5lBOUGHtAEi497HM1MArKZ
- rZpT20wPaiFhM79spZZFG/hqZYJUwNvsx7XvUClaky/D4G+xXRpI637V5SzEDHCe+kiHjLLyT
- D0b50NjaQ72eUOvfzmOv+W+EhYF4Af8yTW4FbE26vF4DLK6Xdi4Op2VRAdg/UYrh3sEafPNK8
- i2VSsvfJZ4VBzF7hVIdMsIrOfHwQ+F2Zfj7xEx5L7Zs2InG9jblgNVDCRzPhkYErJkgjL/jWm
- z4q4rVsfncHSrvUsjgzCdxp9bipOWTjwGdGuZ2OBsj2y/Z28nx9Mj6+2q7c6BuApg82TXi9sl
- UgSqeUEikCn0AF33lNa8NDF3ulbmg96tT1T73zrAEREB2k93Uh9vLYZ0DL/u+vmzaFRniA9E4
- NClDP5dCTzStvUmIqYBQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qA4RqGXYTFQ=:sv5/Ke4nXKVrXWgFMXcREq
+ P0zJkxOyINBlK1FyiQJuIlAXpI3hivdkViewdPcK4jiF1NKZ2QeP3CKnVP1/CMESPnNNudt10
+ 4nHw5YEAmHY4z6laOI1xXtToZardm5Nd7M7xqVjjIMlFZ7juCSaeLZAdkGwnIEy6olWgWn826
+ gGXWe56/DqRgcebmCpgNAfw01iG9QdbuqHMkeGDEgteg6SyxcN+32gpmTWsPIWDgHqXesdaZO
+ HhfzM8w+qK7k8Jv4T/1kjXlTgXp6QHcLkydKDmjmFJFcuvUx+mVYHqjycekyYBa17ul7SJx20
+ Y/zChkqFCuvFeHtTA9R5vNm5qwQjrpi64DpdoRwzlpDNpb7w+OXFHbiyo4hk3mxxkUM4ngqhn
+ 7eX+rH4ULMGbvmORcjXSr5gwYYeQOsBSZ4OrqFUDojr2lcDtGuRM7hpjVo3bvSjMGdpl2hBPv
+ DLPput0wMZfkKVx+yLwne4TvCWVnj0MyepCSehYJtHu1vV+CvA/BkistwAwPyRVAdoZoFOBxd
+ Mm4fASnf67AI6vnag2u0JV/uK4sx/2sqD9ZHP1z7zt79fLAnXnyPwuc1pf9FWWceweuNH8vIb
+ 3L3VFe6sHLm9EkGZKwo+eDHbZ0KRLLQlqRixQRgO8BzxERJUi0z9aQhhApkCfJlHd8Nh8NgHN
+ fY5e6Qtx1DdGfJhHSiSCZGMqiA5D9lqiDpr6+bfYwK9Rf2Bj17cKWug6ZU/4qhVL5KSixYbek
+ D6rqPPUXO42gPNT8eLyBSDPlHVqHJoZkqAxZWjoROoSQ3RaqZF5G6e2U+D1TbUdMtgW22QqP4
+ szU94G4vEkTQpsqFUBitbomPGSYe6wV+F3z1MhF0axkDSLESgwkrmK2ZFVvCEN77nTxjrAWFz
+ NPFmh/ad0VClZPz4r7Bg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye
-Content-Type: multipart/mixed; boundary="rRk0Cupkunh4BCoNOibrqI8nJ9D7xAeaZ"
-
---rRk0Cupkunh4BCoNOibrqI8nJ9D7xAeaZ
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2020/11/13 =E4=B8=8B=E5=8D=8811:19, David Sterba wrote:
-> On Thu, Nov 12, 2020 at 07:50:22AM +0800, Qu Wenruo wrote:
->>>> +$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
->>>> +$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
->>>> +
->>>> +# Set the limit to just 512MiB, which is way below the existing usa=
-ge
->>>> +$BTRFS_UTIL_PROG qgroup limit  512M $SCRATCH_MNT $SCRATCH_MNT
->>>
->>> $SCRATCH_MNT twice by mistake, though the command still works and the=
-
->>> test still reproduces the issue.
+On 2020/11/14 =E4=B8=8A=E5=8D=883:47, Josef Bacik wrote:
+> On 11/13/20 7:51 AM, Qu Wenruo wrote:
+>> Btrfs only support 64K as max node size, thus for 4K page system, we
+>> would have at most 16 pages for one extent buffer.
 >>
->> Nope, that's the expected behavior.
+>> For a system using 64K page size, we would really have just one
+>> single page.
 >>
->> Btrfs qgroup limit <size> <path>|<qgroupid> <path>
+>> While we always use 16 pages for extent_buffer::pages[], this means for
+>> systems using 64K pages, we are wasting memory for the 15 pages which
+>> will never be utilized.
 >>
->> The first path is to determine qgroupid, while the last path is to
->> determine the fs.
+>> So this patch will change how the extent_buffer::pages[] array size is
+>> calclulated, now it will be calculated using
+>> BTRFS_MAX_METADATA_BLOCKSIZE and PAGE_SIZE.
 >>
->> In this particular case, since we're limit the 0/5 qgroup, it's also t=
-he
->> as the mount point, thus we specific it twice.
->=20
-> So why didn't you specify 0/5 so it's clear?
->=20
-Oh no, my brain just shorted, and forgot that it's 0/5 fixed for fs tree.=
+>> For systems using 4K page size, it will stay 16 pages.
+>> For systems using 64K page size, it will be just 1 page.
+>>
+>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>> ---
+>> =C2=A0 fs/btrfs/extent_io.c | 7 +------
+>> =C2=A0 fs/btrfs/extent_io.h | 8 +++++---
+>> =C2=A0 2 files changed, 6 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 37dd103213f9..ca3eb095a298 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -5042,12 +5042,7 @@ __alloc_extent_buffer(struct btrfs_fs_info
+>> *fs_info, u64 start,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_set(&eb->refs, 1);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_set(&eb->io_pages, 0);
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0 /*
+>> -=C2=A0=C2=A0=C2=A0=C2=A0 * Sanity checks, currently the maximum is 64k=
+ covered by 16x 4k
+>> pages
+>> -=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> -=C2=A0=C2=A0=C2=A0 BUILD_BUG_ON(BTRFS_MAX_METADATA_BLOCKSIZE
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 > MAX_INLINE_EXTENT_BUFFER_=
+SIZE);
+>> -=C2=A0=C2=A0=C2=A0 BUG_ON(len > MAX_INLINE_EXTENT_BUFFER_SIZE);
+>> +=C2=A0=C2=A0=C2=A0 ASSERT(len <=3D BTRFS_MAX_METADATA_BLOCKSIZE);
+>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return eb;
+>> =C2=A0 }
+>> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+>> index c76697fc3120..dfdef9c5c379 100644
+>> --- a/fs/btrfs/extent_io.h
+>> +++ b/fs/btrfs/extent_io.h
+>> @@ -73,9 +73,11 @@ typedef blk_status_t (submit_bio_hook_t)(struct
+>> inode *inode, struct bio *bio,
+>> =C2=A0 =C2=A0 typedef blk_status_t (extent_submit_bio_start_t)(struct i=
+node *inode,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bio *bio,=
+ u64 bio_offset);
+>> -
+>> -#define INLINE_EXTENT_BUFFER_PAGES 16
+>> -#define MAX_INLINE_EXTENT_BUFFER_SIZE (INLINE_EXTENT_BUFFER_PAGES *
+>> PAGE_SIZE)
+>> +/*
+>> + * The SZ_64K is BTRFS_MAX_METADATA_BLOCKSIZE, here just to avoid circ=
+le
+>> + * including "ctree.h".
+>> + */
+>
+> Just a passing thought, maybe we should move that definition into
+> btrfs_tree.h.
 
+Indeed, this is much better and solves the ctree.h including loop.
 
-0/5 is indeed much better.
+Would be another patch though.
 
 Thanks,
 Qu
-
-
---rRk0Cupkunh4BCoNOibrqI8nJ9D7xAeaZ--
-
---UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+vIE0ACgkQwj2R86El
-/qhdYgf8Dk5/Ni85Ct1bMlPrgckoqo62c7j6gdwtyfFlCIM/rnyhaabZd3JMXikP
-y8PvL8YznfSUcEiCngmHXzbkz77hpBmr03hPI93xVDBxdwdAEgERqXubMb1gNxCl
-RrH147bDCycgYhOPL0gyDBJLhF6loqUtWa7k7DWztE7aOblcpp5aWDmLD6lkeBQV
-RqmHh/2ztf5XcQuS/JEBqD5SQYn/6N0DxTCmyAW6exApTQqnDWJLw9y2P6AI+0U3
-cbGjpWh/1WKcaXYQghYgJli+MA3NFYvpILETrBfnGQRJdmFGrAfKbEK5A7lxi8cF
-1pMTIs21frEsYs/Pc6yx6Lh090ASlg==
-=s88X
------END PGP SIGNATURE-----
-
---UTQodH9m26fZgqrfvHLSUejYJRWrs7Nye--
+>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>
+> Thanks,
+>
+> Josef
