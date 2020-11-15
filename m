@@ -2,90 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587802B32B9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Nov 2020 07:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA632B3349
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Nov 2020 11:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbgKOGjc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Nov 2020 01:39:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbgKOGjc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Nov 2020 01:39:32 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEC9C0613D1;
-        Sat, 14 Nov 2020 22:39:30 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id r9so2331610pjl.5;
-        Sat, 14 Nov 2020 22:39:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=tlFXBTFcYkPa84QBqoC1ru6zN2P/DQwrQTwyiFFdexA=;
-        b=F20TrEo/nLSlrT6wylg/JZzgqjkXxwbzyvXyQaBf9ELIlTVRPEjnCQrlTq0BMXI1Zn
-         vAOmH1lHKhYfhUQVYiFlb6lN5XwirBNUSED9xjuGdKOr0i/fUJyGn4zDAJKs+HAuP0FM
-         Ph9wlPusORVnoCJBXQFtl+TLW5yp3GTCrVQGQ9QAk7gr/dPMRG/XFYp4rydMKY9ZbA75
-         PHeSYrAqP8qjcog1qIchYiAOSE93ok6ojuNoygUsqG/zaoWLaz4jue55i9NUMmcR6Xtl
-         jF1WiTMcggOFHr+/Uu2CkZT/rDriPnRe2UdBGNaJw0k2qJGEOinIMQSkhvzDFGNyqvR5
-         FuxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tlFXBTFcYkPa84QBqoC1ru6zN2P/DQwrQTwyiFFdexA=;
-        b=VaTxhyaUpzc8XM4mA75xLV/cNlW/g88bMKIDYwDDdWRnr6gdnKTl/6lgeN+iF7uX5A
-         LgapDp7NBlNS8GyUGKFTjNSzespLPSRABnVGalfwJX3iEVRr+FvM7EYGVpHUkxWC5mA9
-         VMuozOa4vPakMHG1GZzFqFRzOP+nyEc8+fv5eBCb22NwLWIPFSThQZg/YWlmDxOMbq/P
-         hU45BMTQ/jlKMrNi/5GLxSWVpr29ns5s0PbnBV7EAWj2ckhlChsCg4FoFjTcMTS9iQ8I
-         UwltJ/E4cyAm4YgLn4h1TTlql384aDsJJaG24SZgdX1WeXNfJmQwkB7YnyQPhKJ4ddZW
-         sr4w==
-X-Gm-Message-State: AOAM531OwHw+pGK282PGEPcGIAvVFnqsala1rlP3rUu1p7sx9Yfw0IbV
-        eKtNDuL6tExEoboy9ARrfA==
-X-Google-Smtp-Source: ABdhPJwwhVoZ/OBIloqRKcYiB4dt8ojq6wF1xEGyXG5lbG6Fubn8EWRKzrmN0e0ZkABqUuCcWCrMUg==
-X-Received: by 2002:a17:902:b209:b029:d8:e821:d61a with SMTP id t9-20020a170902b209b02900d8e821d61amr1649464plr.58.1605422370115;
-        Sat, 14 Nov 2020 22:39:30 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id k8sm12830580pgi.39.2020.11.14.22.39.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 14 Nov 2020 22:39:29 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH] btrfs: remove the useless value assignment in block_rsv_release_bytes
-Date:   Sun, 15 Nov 2020 14:39:23 +0800
-Message-Id: <1605422363-14947-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726701AbgKOKBb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 15 Nov 2020 05:01:31 -0500
+Received: from rin.romanrm.net ([51.158.148.128]:47444 "EHLO rin.romanrm.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726230AbgKOKBa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 15 Nov 2020 05:01:30 -0500
+X-Greylist: delayed 481 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Nov 2020 05:01:30 EST
+Received: from natsu (unknown [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
+        by rin.romanrm.net (Postfix) with SMTP id E5AEC28B;
+        Sun, 15 Nov 2020 09:53:23 +0000 (UTC)
+Date:   Sun, 15 Nov 2020 14:53:23 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     Lawrence D'Anna <larry@elder-gods.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Meghan Gwyer <mgwyer@gmail.com>
+Subject: Re: bizare bug in "btrfs subvolume show"
+Message-ID: <20201115145323.1628d710@natsu>
+In-Reply-To: <8EFE06A3-9CC4-4A6A-850F-C7C57DC27942@elder-gods.org>
+References: <61E331A6-9DA8-4A7C-905E-4B5A17526020@elder-gods.org>
+        <8EFE06A3-9CC4-4A6A-850F-C7C57DC27942@elder-gods.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+On Sat, 14 Nov 2020 13:35:43 -0800
+Lawrence D'Anna <larry@elder-gods.org> wrote:
 
-The variable qgroup_to_release is overwritten by the following if/else
-statement before it is used, so this assignment is useless. Remove it.
+> > On Nov 13, 2020, at 9:47 PM, Lawrence D'Anna <larry@elder-gods.org> wrote:
+> > 
+> > 
+> > But I haven’t been able to track down how redirecting the standard out is possibly influencing this.
+> 
+> I have narrowed it down a little bit further.
+> 
+> cmd_subvol_show uses btrfs_util_subvolume_iterator_next_info to find all the snapshots of the 
+> subvol it’s showing.
+> 
+> while it’s performing this iteration, subvolume_iterator_next_tree_search returns a subvolume id 
+> of 7168, which does not appear in my filesystem according to "btrfs subvol list”
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
- fs/btrfs/block-rsv.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+This still sounds very puzzling, as to how output redirection could affect
+things. Perhaps you could run "btrfs sub show" with "strace"? Both with and
+without the redirect to see exactly what was the call sequence, parameters and
+return values, to compare and find where the difference starts.
 
-diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index bc920afe23bf..8638327069b7 100644
---- a/fs/btrfs/block-rsv.c
-+++ b/fs/btrfs/block-rsv.c
-@@ -109,10 +109,8 @@ static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
- 	u64 ret;
- 
- 	spin_lock(&block_rsv->lock);
--	if (num_bytes == (u64)-1) {
-+	if (num_bytes == (u64)-1)
- 		num_bytes = block_rsv->size;
--		qgroup_to_release = block_rsv->qgroup_rsv_size;
--	}
- 	block_rsv->size -= num_bytes;
- 	if (block_rsv->reserved >= block_rsv->size) {
- 		num_bytes = block_rsv->reserved - block_rsv->size;
 -- 
-2.20.0
-
+With respect,
+Roman
