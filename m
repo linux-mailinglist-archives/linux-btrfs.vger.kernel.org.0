@@ -2,30 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2982B5552
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Nov 2020 00:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A456A2B555F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Nov 2020 00:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbgKPXpf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Nov 2020 18:45:35 -0500
-Received: from mout.gmx.net ([212.227.15.18]:35713 "EHLO mout.gmx.net"
+        id S1730202AbgKPXu5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Nov 2020 18:50:57 -0500
+Received: from mout.gmx.net ([212.227.15.15]:58221 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgKPXpf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Nov 2020 18:45:35 -0500
+        id S1726287AbgKPXu5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 16 Nov 2020 18:50:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605570329;
-        bh=hURP4/NDjSGY/6TrDP9R8f55AyB96R0gpvdXfYCR4eo=;
+        s=badeba3b8450; t=1605570652;
+        bh=Yi8NoBGEOT9Uao1gEf3iHsTQgmcilBS342kVdNVMtyw=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=I4gRSOx0zd4hM//f1TROpy2ozcsHKGrQmuckzwZ3S1PUbA5+oYbPQdizyi85M5CQ5
-         95HzoUPoS/jC5zTLHMHJEm97lxhjfwZDPdou5eFDT3ZFSEinPeztCTV+SHCn6nq7wv
-         l/oPa8Sog6div//xRv+q7YW7aXQXab7eKSe2g+eQ=
+        b=ebNQKybnIoqy3kci+l0nUjy+27GVMdjkG1cFl3EFKVGrUIK1BUw/KnT1BsZ4Z49o+
+         RPNUS8SLSnUCtM3n9oflbSnC9DrtTAolHVhwN2XZ8Q5jFd4t2mvSfmQOPEPaaVGMiE
+         tH02Uiy0IMgUKN812WIXq/LGNdOcLq4ahtsaeFQg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M1HZo-1kgRoQ3op0-002kUb; Tue, 17
- Nov 2020 00:45:29 +0100
-Subject: Re: [PATCH RFC] btrfs: tree-checker: missing returns after data_ref
- alignment checks
-To:     dsterba@suse.cz, wqu@suse.com, linux-btrfs@vger.kernel.org
-References: <20201116190113.GT6756@twin.jikos.cz>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuDc7-1kQSLW1ZHh-00uaGQ; Tue, 17
+ Nov 2020 00:50:52 +0100
+Subject: Re: [PATCH v2 10/24] btrfs: introduce a helper to determine if the
+ sectorsize is smaller than PAGE_SIZE
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201113125149.140836-1-wqu@suse.com>
+ <20201113125149.140836-11-wqu@suse.com> <20201116225129.GU6756@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,130 +53,126 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3f687422-bacf-40cd-bfef-bafb771ac913@gmx.com>
-Date:   Tue, 17 Nov 2020 07:45:25 +0800
+Message-ID: <4094ac4c-1755-8ba1-81be-6bfa5e3b24fd@gmx.com>
+Date:   Tue, 17 Nov 2020 07:50:48 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201116190113.GT6756@twin.jikos.cz>
+In-Reply-To: <20201116225129.GU6756@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="4F2BxufmwTDl4XzmbbbOgUstn3AI0eQ3a"
-X-Provags-ID: V03:K1:P6EpXTrp+sK3jL/M3hy5bOESGeFMhoy3u1rKHLV3Mx7JAJvnI1N
- vWNFgpOGEU4CbttQx/Q6r/k1aqxtUrNveRdAq/cKJLFF0WXaLxe2XLwEXoFoIL7OYCbDic4
- i7fECpVqvhmenkwz6zmnj4qPAag6sGKhL64lrZciIxz3UpT8JkHh0fOzx1D900k7HIKdKG+
- hLSYEPLWEQc18XkrVyxyA==
+ boundary="MbXZYEyeTvtEAPMvLM6ycDEakjNO7cVsQ"
+X-Provags-ID: V03:K1:E1tzWjOb+kM4LdCEgo16GVLJRTYsbDP39BVYv03ZsKE3JIfiu3E
+ FqetDX/MY6PmhyRrMfE1xFTTBbx4IKVmtLngygdgDNP6nVSC7Ujs+Qsw4aWe4QENS/MfwVV
+ wce90FCFyW12cb/2t7LoJKT1lzAkNjjE2spCSoBliWzHDTCH+y05fri/a0K4/u4vTWr3C6I
+ 8vzwnM3MM6sjDTbeLbTBQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sx7qdHJjUeU=:22DK9JiF8wIjdZFnJuh3V8
- JxTamyfT24VK8FmZva/13aGF0ZtwrynbmM7+nR9ijXGtjUAld8BJtreyDEivhJ0tEZEzN4PIk
- WuXZBhNZZ0HO4CHcl88qOG1Uof8YDnj1maX/ebF4YGYa6U91w7fu6rsWpHbUBmWu00/K/tcWf
- OfYorn+0YfbmdvC3uTaQC0fxCIsyuqTvfMwfPqDXr+9W+334ybv0BFxLqX4W7KYIpS07s6zFn
- ooX8tmXOojx4a15f7KmqxDk2UibeTo3xgyEeq9aZApPF6O0FEqdeUcOk33z8pVzoMtAQYeQ3g
- B+iHWFaZoSfhGHdhKetrizqPBONq2Q6FWD4Rr+8fdWiqGLqADpGWM9bQfvPBWZqnrL2Ehvh/s
- wjffN8EXm0jqcwFZM2ruR+ob5nRD6VN4qviTODWNMalb3fDie6kgbXBVOpIpe/jreXGfmDYEh
- Vj1fign9KWvRcUrz/0MfI30zPWxR8NGw6l4qEfSkTogL7tX7zRU232PQoCbKxoieTluvUlnfA
- hdYXQCnu3Z4aQDqjM8CMAN5i+J/rfFuB+IiuDlXAiAJElTr0Sd9TKeGDMWlDtaBhB53elDCMa
- MWIbpbekEF28nQ6Vc1W4xkABMXsVJoTYF38Aq7hwnyeuiQ6EKoHDe1ytC3oQBLhVjetag5Rx8
- Zs8sQk5ssied6CsDy2UIREuRkmnkO/j2SVNuQhgpWOwlz4iUZolwbk6VFPHnQMlFyhIYq2Pvh
- 1tdntKvMN0E5nt+MJHakl0hzjVPLkCMg0BLsaCQMEovSsiyZf62VGFAqVPSBJ8C1lrj7I+NMx
- FmRg1b4+DEdoGlg6RLbmxdlnzLChDnxBhkyK7E8Ogf9bXUSOW0w+ezoaDUjLNlPPMsz9AFGT8
- YVM2AsZdLrpQKGOcN2Aw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3a2Y2FyYX1o=:QVaWt6jKNPMBnh2PwmYk70
+ RHLFSOneb7QKvRP+UiXN5jkoa6NbPC3+mZ5vWpRXyr1LPBVuAROL2r1EFAqGRh/+gVujzEWn3
+ KnKASKM5YxloReLLT9zbuN10bz3bZC/1Ekmt4bKU0z7Fep165PZM441Oobq0Qx2gGazm2q8p9
+ RSdDsGC9hVl/5QGwOCJOuFW/rAvJo2TYvRRb8XmUvBP8zH2iR8n3xTJwIv87al8ti/1cSPQ65
+ hrnDb2wnW2Yh9KOK4pPLiu6p/98kx57Mtl1+OQVG++OLOcX+5Y8MRhQ1M96HBKDdkWzjLFF29
+ Z/ZX6PSc31w9xp2Fm5M2YwBrDFTo8VyqPVRpFObs2hS0Dnu4pMvCVR16T8gKbAl8itk+nXidb
+ WoxFxOkg2AZLXZuRsgd58oBn/7eOpTZdwiw1f6BqqkavNpDjMm65e7fyxJBJfPMsuuXeM58fV
+ i12BC5XslzUNvyuXMa+aIDALh8KMx3vSz8P9b40V3+VFjgkqWUGqgb3NACYB6zIkzN4IaY/yX
+ 9j0yZjF6vRnsxD0JpABhUhtOaKJHIBOmr6daP38yRcxKQmdA/11yjVaTxvjqZf2rJv6iPkiLL
+ 9TckVCdwJKjUPa/GiqNvIN0vvr8I2rWDPmFpvYw3QZW8G3rn4sF8qqZuMUeu7RmISAQAI+Z3W
+ ZQ+UOryYoNaL6slLAWwesIzwFuL14qd0T0SmzU6PHeoWYUvcwGjP5TG/zjygJtv5mhA3Dv+rD
+ RTY8B4QvUoyKWrbnz1U5jYx5rLecW+VkisYNazsmQOb+MVyqOwTHWKLVfvNJ7+XNBI67g2zQ3
+ pgaul8BQTcZvCak63nEcNceO22lW5bLlur4ZPbwwvRi+FdsOtIzPVGLeJG9c594V03WHOQcIt
+ sws7doK3BIxZ6v5gnGsA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4F2BxufmwTDl4XzmbbbOgUstn3AI0eQ3a
-Content-Type: multipart/mixed; boundary="yGrkUdbFmDacsBHNsnnT5ioqRO7GI0gP7"
+--MbXZYEyeTvtEAPMvLM6ycDEakjNO7cVsQ
+Content-Type: multipart/mixed; boundary="bskM8L12xWlXFSDaNiTgXqIvR6U1Ol8jY"
 
---yGrkUdbFmDacsBHNsnnT5ioqRO7GI0gP7
+--bskM8L12xWlXFSDaNiTgXqIvR6U1Ol8jY
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/11/17 =E4=B8=8A=E5=8D=883:01, David Sterba wrote:
-> Hi Qu,
+On 2020/11/17 =E4=B8=8A=E5=8D=886:51, David Sterba wrote:
+> On Fri, Nov 13, 2020 at 08:51:35PM +0800, Qu Wenruo wrote:
+>> Just to save us several letters for the incoming patches.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/ctree.h | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>> index 99955b6bfc62..93de6134c65c 100644
+>> --- a/fs/btrfs/ctree.h
+>> +++ b/fs/btrfs/ctree.h
+>> @@ -3660,6 +3660,11 @@ static inline int btrfs_defrag_cancelled(struct=
+ btrfs_fs_info *fs_info)
+>>  	return signal_pending(current);
+>>  }
+>> =20
+>> +static inline bool btrfs_is_subpage(struct btrfs_fs_info *fs_info)
+>> +{
+>> +	return (fs_info->sectorsize < PAGE_SIZE);
 >=20
-> I've found more missing return satetments in tree-checker but I'm not
-> sure if leaving them out was intentional. Both are for extent data_ref
-> item alignment checks. It could be that alignment is not a hard problem=
-,
-> tough it could point to one, there's a check of the hash vs key->offset=
-
-> that would catch inconsistent data.
-
-All my bad.
-
-The case is, alignment is the first sign of corruption.
-So if alignment is incorrect, there is no need to continue.
-
-So yeah, I forgot more return lines.
+> I'm not convinced we want to obscure the simple check, saving a few
+> letters does not sound like a compelling argument. Nothing wrong to hav=
+e
+> 'sectorsize < PAGE_SIZE' in conditions.
 >=20
-> As there's only one statement after if, this looks like it was
-> forgotten, but otherwise needs a comment why the returns are not there
-> given that the rest of the file follows the same pattern
-> "if / extent_err/ return -EUCLEAN".
->=20
-> ---
->  fs/btrfs/tree-checker.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 1b27242a9c0b..f3f666b343ef 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1424,6 +1424,7 @@ static int check_extent_data_ref(struct extent_bu=
-ffer *leaf,
->  	"invalid item size, have %u expect aligned to %zu for key type %u",
->  			    btrfs_item_size_nr(leaf, slot),
->  			    sizeof(*dref), key->type);
-> +		return -EUCLEAN;
+OK, I can go without the helper.
 
-For EXTENT_DATA_REF_KEY, it should only contains one or more
-btrfs_extent_data_ref, thus the alignment is a hard requirement.
+But there are more things like:
 
-Thus the return is needed.
->  	}
->  	if (!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize)) {
->  		generic_err(leaf, slot,
-> @@ -1452,6 +1453,7 @@ static int check_extent_data_ref(struct extent_bu=
-ffer *leaf,
->  			extent_err(leaf, slot,
->  	"invalid extent data backref offset, have %llu expect aligned to %u",=
+struct btrfs_fs_info *fs_info =3D btrfs_sb(page->mapping->host->i_sb);
 
->  				   offset, leaf->fs_info->sectorsize);
-> +			return -EUCLEAN;
+Should we use a helper or just above line?
 
-Basic sector size alignment requirement.
-So yet another missing return.
+
+Since we're here, allow me to ask for some advice on how to refactor
+some code.
+
+Another question is in my current RW branch.
+We will have quite some calls like:
+
+spin_lock(&subpage->lock);
+bitmap_set(subpage->uptodate_bitmap, bit_start, nbits);
+if (bitmap_full(subpage->uptodate_bitmap, BTRFS_SUBPAGE_BITMAP_SIZE))
+	SetPageUptodate(page);
+spin_unlock(&subpage->lock);
+
+The call sites are not that many, <=3D5, but there are several different
+combinations, e.g. for endio we want to use irqsave version of spinlock.
+
+For data write, we want to convert bits in dirty_bitmap to
+writeback_bitmap, and re-check page status.
+
+Should I introduce some helpers for that too?
 
 Thanks,
 Qu
->  		}
->  	}
->  	return 0;
->=20
 
 
---yGrkUdbFmDacsBHNsnnT5ioqRO7GI0gP7--
+--bskM8L12xWlXFSDaNiTgXqIvR6U1Ol8jY--
 
---4F2BxufmwTDl4XzmbbbOgUstn3AI0eQ3a
+--MbXZYEyeTvtEAPMvLM6ycDEakjNO7cVsQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+zDxUACgkQwj2R86El
-/qhyRQf+PZedt3rWQhOSZ7zkwD+Ncm6TiFtqKwekBNjcyxTSgbbkPW88QGefW0ie
-7CabQGxEjXI6vXn1qGa+zv2/4BtEqmH/t90x4U6ZQq1DPpaKRx2StV0vijsJsy7I
-XwUUGyQDumnJCc+5YzS5WfAACikb+9SDzGME9TUGH2hsfBbWNo8Hq8GXNSKIRUW5
-S8iIHQSLrQ3fG3y4Mb87qx7gPjnsqwturR+iOGmk6WAWedARzhGHibi/tk7kUHZj
-WoIBB29sVMAFnp2+LDlmiyL0xuJl/jzHAk/Q7nFzgwqQwTMgK8/19XryM+PYX0O1
-sg7EIRjBk1B+3gwNVeyhVITgYPnB8Q==
-=kdrX
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+zEFgACgkQwj2R86El
+/qjH0wf8D9gry+JrnjKw824fRzMSnvsukKDDtrMJjM3qh5wLmnJsgXUfnnIsZWax
+LtqeqlJdgCFD+I2iL3TJ/cJYYZy6bbhKDcWBNYGahnqP1bmSEll8gnEROOISpsYF
+w7cNNsE8K3qPLhPH1ZUm/E7d/Pmopzjc23D0UxfFCaEwkfGAooEbskvxO9vfvLXm
+Rzb2/AFKhTr1KFospw/CpqH94YU2zGXEtqsQLa6ElHI5dQwxK2A3o4KHSqPpE2Io
+YG/pL7rLRbzcwUu/dp2fbCFZVfikkeZ3LAPcSQts75NDrOx8SVS4Y5LtxTkOGaao
+hjddyZP5G5PaPLthWJxv6abRfzG3vw==
+=VLWb
 -----END PGP SIGNATURE-----
 
---4F2BxufmwTDl4XzmbbbOgUstn3AI0eQ3a--
+--MbXZYEyeTvtEAPMvLM6ycDEakjNO7cVsQ--
