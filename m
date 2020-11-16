@@ -2,49 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BF92B4EB3
+	by mail.lfdr.de (Postfix) with ESMTP id E3B952B4EB4
 	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Nov 2020 18:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733200AbgKPR6t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Nov 2020 12:58:49 -0500
-Received: from gateway32.websitewelcome.com ([192.185.145.178]:15711 "EHLO
+        id S2387668AbgKPR6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Nov 2020 12:58:50 -0500
+Received: from gateway32.websitewelcome.com ([192.185.145.178]:37446 "EHLO
         gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731494AbgKPR6t (ORCPT
+        by vger.kernel.org with ESMTP id S1731742AbgKPR6u (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Nov 2020 12:58:49 -0500
-X-Greylist: delayed 1523 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Nov 2020 12:58:49 EST
+        Mon, 16 Nov 2020 12:58:50 -0500
 Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id 2032A1430F
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Nov 2020 11:33:20 -0600 (CST)
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id 2440D158BD
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Nov 2020 11:33:22 -0600 (CST)
 Received: from br540.hostgator.com.br ([108.179.252.180])
         by cmsmtp with SMTP
-        id eiNUkjNgCmi4BeiNUkjehQ; Mon, 16 Nov 2020 11:33:20 -0600
+        id eiNWkjNinmi4BeiNWkjejI; Mon, 16 Nov 2020 11:33:22 -0600
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=mpdesouza.com; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/t83n7vGmTwly7pgl8uXCjkyfA+O3xFxydwVD0muCT4=; b=PUzSyI9o8CXXKNC6XI3XVa0RKC
-        MsWMsPmjEDzlq0wpZMcyliUcYAYQhsWN+g0dZqwBXTNgV797ENp2eL8c5J0EMpBeiWtqwiK5efthl
-        FUb535ygJWNlf3iuPTdxCwgiKficJS/rgcEjfJNrbDn1JolXwbmCEflS/5ZFJb7BH8CcYOE2AtGZC
-        Z/WjT4tt89u7tdLFfHCRIaIBfOnibcZC3ULwqlN78AOd+bOH1t6LY5ZsjgWZ3jPd9T1iyqJPYMla+
-        lmgGbD8dBwCqxt0OmQm2ie5BKMbl/emAqtVS1MLw/pKhFjv3g6c059G96MLQLUN86KLv80EAkfPaq
-        8JvKp2PA==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=cxPF9r7TJ1ZNPalvmCjEm1iNV3uku0zoey/QWFeQ+Sg=; b=UYL3BA3OCyHzmzqy1fhrPr+/ra
+        Y5h7lfU6dHNL0PE5merOg0XqiDk/Ooj703fql4bYsq00wMfVgEx1AG/8FIwfmaGsG8H3pSNMUpPqU
+        2ZHUI7ymfh3Pc5ykw+Xk0FsFi4bj9ezirRs4UIZkRz+Gf6IcPrUIeM2LRsI3t/vscmkCX/B6Y3MW8
+        IVmLA23macdst83xhuLHlDtlMqlb17w7d07FRCwRPDp1p6ZET7/3rP2bMZVBcsE1XGEwL9blNxDxa
+        Q7w+24jE+PLiu2LZhqNJzo3ldMnbKxZqpXdOgyfbqojEGvpirIDQsITtipu7Rg1b/8X8QXgx4mYMc
+        gJW4O83Q==;
 Received: from [191.249.68.105] (port=38938 helo=localhost.suse.de)
         by br540.hostgator.com.br with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <marcos@mpdesouza.com>)
-        id 1keiNT-000wCw-UQ; Mon, 16 Nov 2020 14:33:20 -0300
+        id 1keiNV-000wCw-Gw; Mon, 16 Nov 2020 14:33:21 -0300
 From:   Marcos Paulo de Souza <marcos@mpdesouza.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>, wqu@suse.com,
         dsterba@suse.com
-Subject: [PATCH v2 0/3] btrfs-progs: Fix logical-resolve
-Date:   Mon, 16 Nov 2020 14:32:46 -0300
-Message-Id: <20201116173249.11847-1-marcos@mpdesouza.com>
+Subject: [PATCH v2 1/3] btrfs-progs: Adapt find_mount_root to verify other fields of mntent struct
+Date:   Mon, 16 Nov 2020 14:32:47 -0300
+Message-Id: <20201116173249.11847-2-marcos@mpdesouza.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201116173249.11847-1-marcos@mpdesouza.com>
+References: <20201116173249.11847-1-marcos@mpdesouza.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -55,13 +56,13 @@ X-AntiAbuse: Sender Address Domain - mpdesouza.com
 X-BWhitelist: no
 X-Source-IP: 191.249.68.105
 X-Source-L: No
-X-Exim-ID: 1keiNT-000wCw-UQ
+X-Exim-ID: 1keiNV-000wCw-Gw
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
 X-Source-Sender: (localhost.suse.de) [191.249.68.105]:38938
 X-Source-Auth: marcos@mpdesouza.com
-X-Email-Count: 4
+X-Email-Count: 8
 X-Source-Cap: bXBkZXNvNTM7bXBkZXNvNTM7YnI1NDAuaG9zdGdhdG9yLmNvbS5icg==
 X-Local-Domain: yes
 Precedence: bulk
@@ -70,38 +71,134 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-New issues were found while testing the v1, and new problems with the current
-implementation too. Now focusing on a generic way of detecting where to do the
-file lookup based in the logical offset of the file.
+Currently find_mount_root searches for all btrfs filesystems
+mounted and comparing <path> with mnt_dir of each mountpoint.
 
-Now there is a test to avoid this problem from appearing again in the future.
+But there are cases when we need to find the mountpoint for a determined
+subvolid or subvol path, and these informations are present in mnt_opts
+of mntent struct.
 
-Please let me know if this can be improved even further.
+This patch adds two arguments to find_mount_root (data and flag). The
+data argument hold the information that we want to compare, and the flag
+argument specifies which field of mntent struct that we want to compare.
+Currently there is only one flag, BTRFS_FIND_ROOT_PATH, implementing the
+current behavior. The next patch will add a new flag to expand the functionality.
 
-Changes from v1:
-* Patches 2 and 3 added
-* Test created (David)
-* Discard changed on btrfs_list_path_for_root and changing find_mount_root
-  instead
+Users of find_mount_root were changed, having the data argument the same
+as path, since they are only trying to find the mountpoint based on path alone.
 
-First version:
-https://lore.kernel.org/linux-btrfs/20201112011400.6866-1-marcos@mpdesouza.com/
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ cmds/receive.c |  3 ++-
+ cmds/send.c    |  6 ++++--
+ common/utils.c | 15 ++++++++++++---
+ common/utils.h |  8 +++++++-
+ 4 files changed, 25 insertions(+), 7 deletions(-)
 
-Marcos Paulo de Souza (3):
-  btrfs-progs: Adapt find_mount_root to verify other fields of mntent
-    struct
-  btrfs-progs: inspect: Fix logical-resolve file path lookup
-  btrfs-progs: tests: Add new logical-resolve test
-
- cmds/inspect.c                                | 30 +++++++---
- cmds/receive.c                                |  3 +-
- cmds/send.c                                   |  6 +-
- common/utils.c                                | 19 +++++-
- common/utils.h                                | 11 +++-
- .../test.sh                                   | 60 +++++++++++++++++++
- 6 files changed, 114 insertions(+), 15 deletions(-)
- create mode 100755 tests/misc-tests/042-inspect-internal-logical-resolve/test.sh
-
+diff --git a/cmds/receive.c b/cmds/receive.c
+index 2aaba3ff..dc64480e 100644
+--- a/cmds/receive.c
++++ b/cmds/receive.c
+@@ -1079,7 +1079,8 @@ static int do_receive(struct btrfs_receive *rctx, const char *tomnt,
+ 	if (realmnt[0]) {
+ 		rctx->root_path = realmnt;
+ 	} else {
+-		ret = find_mount_root(dest_dir_full_path, &rctx->root_path);
++		ret = find_mount_root(dest_dir_full_path, dest_dir_full_path,
++				BTRFS_FIND_ROOT_PATH, &rctx->root_path);
+ 		if (ret < 0) {
+ 			errno = -ret;
+ 			error("failed to determine mount point for %s: %m",
+diff --git a/cmds/send.c b/cmds/send.c
+index b8e3ba12..7757f0da 100644
+--- a/cmds/send.c
++++ b/cmds/send.c
+@@ -329,7 +329,8 @@ static int init_root_path(struct btrfs_send *sctx, const char *subvol)
+ 	if (sctx->root_path)
+ 		goto out;
+ 
+-	ret = find_mount_root(subvol, &sctx->root_path);
++	ret = find_mount_root(subvol, subvol, BTRFS_FIND_ROOT_PATH,
++				&sctx->root_path);
+ 	if (ret < 0) {
+ 		errno = -ret;
+ 		error("failed to determine mount point for %s: %m", subvol);
+@@ -659,7 +660,8 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
+ 			goto out;
+ 		}
+ 
+-		ret = find_mount_root(subvol, &mount_root);
++		ret = find_mount_root(subvol, subvol, BTRFS_FIND_ROOT_PATH,
++					&mount_root);
+ 		if (ret < 0) {
+ 			errno = -ret;
+ 			error("find_mount_root failed on %s: %m", subvol);
+diff --git a/common/utils.c b/common/utils.c
+index 1253e87d..1c264455 100644
+--- a/common/utils.c
++++ b/common/utils.c
+@@ -1248,7 +1248,7 @@ int ask_user(const char *question)
+  * return 1 if a mount point is found but not btrfs
+  * return <0 if something goes wrong
+  */
+-int find_mount_root(const char *path, char **mount_root)
++int find_mount_root(const char *path, const char *data, u8 flag, char **mount_root)
+ {
+ 	FILE *mnttab;
+ 	int fd;
+@@ -1258,6 +1258,10 @@ int find_mount_root(const char *path, char **mount_root)
+ 	int not_btrfs = 1;
+ 	int longest_matchlen = 0;
+ 	char *longest_match = NULL;
++	char *cmp_field = NULL;
++	bool found;
++
++	BUG_ON(flag != BTRFS_FIND_ROOT_PATH);
+ 
+ 	fd = open(path, O_RDONLY | O_NOATIME);
+ 	if (fd < 0)
+@@ -1269,8 +1273,13 @@ int find_mount_root(const char *path, char **mount_root)
+ 		return -errno;
+ 
+ 	while ((ent = getmntent(mnttab))) {
+-		len = strlen(ent->mnt_dir);
+-		if (strncmp(ent->mnt_dir, path, len) == 0) {
++		cmp_field = ent->mnt_dir;
++
++		len = strlen(cmp_field);
++
++		found = strncmp(cmp_field, data, len) == 0;
++
++		if (found) {
+ 			/* match found and use the latest match */
+ 			if (longest_matchlen <= len) {
+ 				free(longest_match);
+diff --git a/common/utils.h b/common/utils.h
+index 119c3881..449e1d3e 100644
+--- a/common/utils.h
++++ b/common/utils.h
+@@ -52,6 +52,11 @@
+ #define UNITS_HUMAN			(UNITS_HUMAN_BINARY)
+ #define UNITS_DEFAULT			(UNITS_HUMAN)
+ 
++enum btrfs_find_root_flags {
++	/* check mnt_dir of mntent */
++	BTRFS_FIND_ROOT_PATH = 0
++};
++
+ void units_set_mode(unsigned *units, unsigned mode);
+ void units_set_base(unsigned *units, unsigned base);
+ 
+@@ -93,7 +98,8 @@ int csum_tree_block(struct btrfs_fs_info *root, struct extent_buffer *buf,
+ int ask_user(const char *question);
+ int lookup_path_rootid(int fd, u64 *rootid);
+ int get_btrfs_mount(const char *dev, char *mp, size_t mp_size);
+-int find_mount_root(const char *path, char **mount_root);
++int find_mount_root(const char *path, const char *data, u8 flag,
++		char **mount_root);
+ int get_device_info(int fd, u64 devid,
+ 		struct btrfs_ioctl_dev_info_args *di_args);
+ int get_df(int fd, struct btrfs_ioctl_space_args **sargs_ret);
 -- 
 2.26.2
 
