@@ -2,128 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C142B5D3F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Nov 2020 11:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049152B5EB8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Nov 2020 12:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbgKQKux (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Nov 2020 05:50:53 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:53390 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKQKux (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Nov 2020 05:50:53 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AHAiWG5076610;
-        Tue, 17 Nov 2020 10:50:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Uhs+ZoH99UlmCcFrcWj6jE2Yu3Vc8GRgm34iE/PhAOg=;
- b=Wh8p06aZNm9gapD2jIHj9nsDIJiA+vlZjG/5CUajBhizzfSVUOdcZn1GgAelkLOJ7OTl
- gzu9vbzGcfafAnOt919c4kwcWMuAAe5fuDs9C4Z0MO4K28e+s6gfYMsU+IlwePJ97fIv
- s23HgE56IFd5Jbj3hXUk9lroSinclBjFW0tt8pgXpJVYC/WJ4tAteS8Nr+whPq88+VgQ
- W3g9VdpF9mXsQVq/b31mcw8jNUFcFDg9hB3LG5PECyfhPc5pgZysAu9fpDJS4q2TfSCQ
- fyphzJyv5Xsn2O/jaY2kPhflJ0dKbLNooQgXQE8rOAnamzKajMAfYBwAm3uAFLV4umLX Dw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34t76ksven-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 17 Nov 2020 10:50:46 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AHAjSeh151196;
-        Tue, 17 Nov 2020 10:50:45 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34ts0qqcpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Nov 2020 10:50:45 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AHAoiCR015589;
-        Tue, 17 Nov 2020 10:50:44 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 17 Nov 2020 02:50:44 -0800
-Subject: Re: [PATCH v2] btrfs: don't access possibly stale fs_info data for
- printing duplicate device
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com" 
-        <syzbot+582e66e5edf36a22c7b0@syzkaller.appspotmail.com>
-References: <0e9eb675e0a199bf034f13c58fbe5678f4e94a3c.1605513154.git.johannes.thumshirn@wdc.com>
- <58b88874-7ca0-cb0c-1752-315a3fb5bab2@oracle.com>
- <SN4PR0401MB359815F550099C9117016F359BE20@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <4ff4fd75-8867-9a32-580a-2d84768f8063@oracle.com>
-Date:   Tue, 17 Nov 2020 18:50:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        id S1727735AbgKQLxu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Nov 2020 06:53:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47114 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727669AbgKQLxt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Nov 2020 06:53:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1605614028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=lXVjnZT+iaxtwNH1itaCWG+BKC5CAR65C1aCIjqNj9g=;
+        b=vV6XPMZZD6+MrhgjYe5dQghnVNZhTbdcbxNsPeIRf/6TUX3yITg9Rgp0nGmQn/erdRyMBl
+        sCIAU6KlmyUZO7kuYL6himaZlaIAGMN/fUiSrJZfQXVe9s7jb6kzPw9jledkB9YuR1wUOr
+        NA/coVv9Pfl3xX03EqANh5Jd4J8H4ZU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 28C49AC2D;
+        Tue, 17 Nov 2020 11:53:48 +0000 (UTC)
+Subject: Re: [PATCH v2 01/24] btrfs: tests: fix free space tree test failure
+ on 64K page system
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201113125149.140836-1-wqu@suse.com>
+ <20201113125149.140836-2-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <18d88915-2a30-abed-8fb0-090c2d0488f0@suse.com>
+Date:   Tue, 17 Nov 2020 13:53:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB359815F550099C9117016F359BE20@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201113125149.140836-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=2 spamscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011170079
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9807 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 phishscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011170079
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17/11/20 4:19 pm, Johannes Thumshirn wrote:
-> On 17/11/2020 08:20, Anand Jain wrote:
->>    This patch fixes the issue in a very gross way, as I mentioned.
+On 13.11.20 г. 14:51 ч., Qu Wenruo wrote:
+> When trying to load btrfs with selftest compiled in, on 64K page system
+> the test will always fail:
 > 
-> I know but I've not found a better way.
+>   BTRFS: selftest: running free space tree tests
+>   BTRFS: selftest: fs/btrfs/tests/free-space-tree-tests.c:101 free space tree is invalid
+>   BTRFS: selftest: fs/btrfs/tests/free-space-tree-tests.c:529 test_empty_block_group [btrfs] failed with extents, sectorsize=65536, nodesize=65536, alignment=134217728
 > 
-
->>    Instead, do we know more about what/how threads were racing,
->>    leading to the access of the freed fs_info?
+> The cause is that, after commit 801dc0c9ff1f ("btrfs: replace div_u64 by
+> shift in free_space_bitmap_size"), we use fs_info->sectorsize_bits for
+> free space cache.
 > 
-
-
-
-
-> If I read the reproducer code correctly it's just mounting a crafted
-> image twice via different /dev/loop devices.
+> But in comit fc59cfa7d2ab ("btrfs: use precalculated sectorsize_bits
+> from fs_info"), we only initialized the fs_info for non-testing
+> environment, leaving the default bits to be ilog2(4K), screwing up the
+> selftest on 64K page system.
 > 
-> This image is rejected by the mount code, because it can't read the chunk
-> tree.
- >
-> As far as I've debugged it down scan_one_device() is racing with
-> deactivate_locked_super(), so fs_info->sb can already be freed, when
-> device_list_add() calls btrfs_warn_in_rcu(device->fs_info,...) leading
-> to a use-after-free in btrfs_printk() accessing fs_info->sb_s_id.
+> Fix it by also honor sectorsize_bits in selftest.
 > 
-
-  This explains the problem how it happened, IMO this should go into the
-  change log.
-
-> It feels like we're missing a mutex_lock(&uuid_mutex) in btrfs_kill_super()
-
-  Yes.
-  But uuid_mutex (or device_list_mutex) is too sever for a simple
-  problem, and there are other constraints with device_list_mutex.
-
-  Ok let us take out use of fs_info from the device_list_add().
-
-  I am ok with either NO_FS_INFO approach or just NULL.
-
-Thanks, Anand
-
-> but this hasn't led me to anything.
-
+> David, please fold this fix into the offending commit.
 > 
-> I'm all ears for a pointer to the correct fix.
-> 
+> Fixes: fc59cfa7d2ab ("btrfs: use precalculated sectorsize_bits from fs_info")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-
+This can be dropped as it's already merged and authored by David.
