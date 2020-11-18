@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7612B881D
+	by mail.lfdr.de (Postfix) with ESMTP id 96EF72B881E
 	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgKRXGn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 18:06:43 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56973 "EHLO
+        id S1727008AbgKRXGr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 18:06:47 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:47931 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726588AbgKRXGn (ORCPT
+        by vger.kernel.org with ESMTP id S1726588AbgKRXGr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:06:43 -0500
+        Wed, 18 Nov 2020 18:06:47 -0500
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 0DC60CB5;
-        Wed, 18 Nov 2020 18:06:59 -0500 (EST)
+        by mailout.west.internal (Postfix) with ESMTP id 88710C26;
+        Wed, 18 Nov 2020 18:07:03 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 18 Nov 2020 18:07:00 -0500
+  by compute2.internal (MEProxy); Wed, 18 Nov 2020 18:07:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
         :to:subject:date:message-id:in-reply-to:references:mime-version
-        :content-transfer-encoding; s=fm2; bh=22bWksDngmEiwuMGGZH21wlh00
-        t8TNXXR/BVrt/ldJc=; b=UzhqsQGx7JioGgFag2/rsaLPwKCZ1V/yas1pUOWb6H
-        u4bF1x+n/Wt4vaHTF1Z4ExhfuxSQoiE+1skRuedwLRbwPMvygUwCA0EdTpZ3p28X
-        k3wFlbHXy2M40WZJdpYEgI2wim/xx9Olp4X9mdttALW7Aw04V+R6Uw3R9XIJHwIm
-        Vxf48Zzw5b0UeLCjHoVGphjL1OTokx1S01KFQw8rfiGSICAWLvGl8mIw5vHCPeQg
-        k9VIsJBjqAeLQ05ulTvfW6mF+G7E9zquO4e/O9x0hb9JfUqiJe6O4l2KpkII/8/O
-        9J6n4+gnGEpH1Qf2C2y8dJV9pSWi7ca5xdlGqju0/Zpw==
+        :content-transfer-encoding; s=fm2; bh=NtYMKEr1oTPdgO9zfRrUA1bso9
+        gwh9bSN2J2t4mN214=; b=U4mmKK1MAtLuHjNn6vmNx8jQhaGfDCB4QW1tRk7pxH
+        +8Fj+HmjBfHGij3SHcTkx0NT17Yp/DwHjwk6WMh7sQVvwo64FMXttm7fXFhvgsrj
+        wqH/ln78vjPXWsWlfoe99mcHt9o3YmLyj9SbynsXlN7h8kbyRVj7xi/8rL8s3lwN
+        Fei3gDHm46YxtW0T2DELat6G2mN6uaB8eD5t1FKO5v4p8fgoXQfgOpb/Toy6Wy+O
+        E1j4EgYRmP5zSoOMcUM5k6xKIOD6eCWxCvWXqsx2FRTiVgPF/H45qCFISbItFgQw
+        VqXqyLUEhVZkwaAF8mgTXUPk91MEolCw94f6oxliI6Nw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=22bWksDngmEiwuMGGZH21wlh00t8TNXXR/BVrt/ldJc=; b=gLxCX4XE
-        1k518+azOHmqJdhdhhd7UC2bOomLtqZ8VIPlz7CU20uC4tLk8u+w5lGlHznhsXDc
-        ktSS5qmmYSXtMZ+lybxcyzlBkrFHLClZAmZQIzEYltkAx+UzfqBtzbO0EvHdOE11
-        Fy0l0hLstPWnwtso3ScOZFh+t84+enuqJ3tKE92rnFFm8YCMYWsWCLfMPUQ5yiDC
-        pUtp6IhsjVRBbcKDFVUUSc2SppjhNWLT1o4cGQ6QF9cgbIUIwphe1/SrdE4NnoIE
-        eToa5I0BZkQoRKiENKwy5cfYbWs8I4M72y2VHd39F4q7geecqTZ+VD+1KPGKwoDs
-        Tfn6cqHHyNrb0A==
-X-ME-Sender: <xms:E6m1XwcSwiYyBur6utP0gDRfZcwVHYn4NeDwTGT_P7bdlEXsoY2T2A>
-    <xme:E6m1XyMTPtUDOk816ffdyR3GUShPsDDxFThgLO-dfOO8Y8DD_HQzcjw_i9_9Pfap_
-    mPRf_7lulTck26IZMQ>
+        fm1; bh=NtYMKEr1oTPdgO9zfRrUA1bso9gwh9bSN2J2t4mN214=; b=p5gvfLQ3
+        hPREmumtAfUx34VHbj0yt8y0zOUyxNIJX7ubRa9dj1N60QXRHmuX3/kOcEitlz6V
+        hGCA4zMHzJAk5Um3zhW+t6xpu79B5WFja5RGy+RoLycFP932EyTzPlnswEwhuWbE
+        I+6pK5v55bnp0Oq1SaXDRAGDX9SXOdZB8qK+P/6q39PFt/mS8Ga7Rz5UY82cu1uL
+        +hAVexv//zPaXr+hyvHNCnREPriI+1dGOYWVmT6mhtH2/sTX/pVHpUHV//Vb6OBC
+        RgNAJhCzjZJ73JugwnnUMK5RJT7kQqJnxIjPH6ZQIktRngFIvc+gHLgHl8zzql9b
+        fG+BdMHSu0/wiQ==
+X-ME-Sender: <xms:F6m1X0PvgYP2mSukwlGuZ0nRJZvg3bej-hmkULTYANflbXE3Xphp5g>
+    <xme:F6m1X68tA6_IiwrDscF2EOSjSGlm8Aj1nS9fnesHdXv4-KgeL2ZO0jc8MTbTUQR8n
+    cypiAN04t1xUveNIhA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefiedgtdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
     dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
     ihhoqeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffve
     dvhedtudefiefhkeegueehleenucfkphepudeifedruddugedrudefvddrfeenucevlhhu
-    shhtvghrufhiiigvpeegnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    shhtvghrufhiiigvpeeinecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
     hrrdhioh
-X-ME-Proxy: <xmx:E6m1XxjwQ4b7_rWJLSAM_njZKZeb_K9wQGZn4Gif-LYXzlzy89jWMw>
-    <xmx:E6m1X182pp831pSs0XItu43stKgv9PwWUq7yzRdY2L8o6j5u862mxg>
-    <xmx:E6m1X8tEdgxAlhBshfIrIyeJCUEIjjZBo2D1xRrv1pNccNkDmDNv2g>
-    <xmx:E6m1X15ntvsaFGbAjnsqtbihUXdVQ1N_kHnvzyfQ5IFxmbv0LG-Owg>
+X-ME-Proxy: <xmx:F6m1X7QFGjYCsuqTrxfQVHXqKUwLCGrt6TMvRqb-AZnQT_5wHk5Ijw>
+    <xmx:F6m1X8uRBwlG_2ypBP3SbIsDS7atPanJwO8k4BmTlXrpAOBChOF-zw>
+    <xmx:F6m1X8c5nVLJpPuWenxOHILeaxgHrEJvr9fgq6sVC5CWPNXhb89lUQ>
+    <xmx:F6m1X2rH10MdpsZnukmdVSqVU73SchpLT6DwEV3LCGq-MqBaoznjQw>
 Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 370D03280060;
-        Wed, 18 Nov 2020 18:06:59 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7E576328005E;
+        Wed, 18 Nov 2020 18:07:02 -0500 (EST)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v7 06/12] btrfs: clear free space tree on ro->rw remount
-Date:   Wed, 18 Nov 2020 15:06:21 -0800
-Message-Id: <f91ff85f985eeaf8993022453ca21fa4772e28a8.1605736355.git.boris@bur.io>
+Subject: [PATCH v7 07/12] btrfs: keep sb cache_generation consistent with space_cache
+Date:   Wed, 18 Nov 2020 15:06:22 -0800
+Message-Id: <0f6e0287a267344f285cc458919e1c5595dfd26d.1605736355.git.boris@bur.io>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <cover.1605736355.git.boris@bur.io>
 References: <cover.1605736355.git.boris@bur.io>
@@ -69,97 +69,193 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A user might want to revert to v1 or nospace_cache on a root filesystem,
-and much like turning on the free space tree, that can only be done
-remounting from ro->rw. Support clearing the free space tree on such
-mounts by moving it into the shared remount logic.
+When mounting, btrfs uses the cache_generation in the super block to
+determine if space cache v1 is in use. However, by mounting with
+nospace_cache or space_cache=v2, it is possible to disable space cache
+v1, which does not result in un-setting cache_generation back to 0.
 
-Since the CLEAR_CACHE option sticks around across remounts, this change
-would result in clearing the tree for ever on every remount, which is
-not desirable. To fix that, add CLEAR_CACHE to the oneshot options we
-clear at mount end, which has the other bonus of not cluttering the
-/proc/mounts output with clear_cache.
+In order to base some logic, like mount option printing in /proc/mounts,
+on the current state of the space cache rather than just the values of
+the mount option, keep the value of cache_generation consistent with the
+status of space cache v1.
+
+We ensure that cache_generation > 0 iff the file system is using
+space_cache v1. This requires committing a transaction on any mount
+which changes whether we are using v1. (v1->nospace_cache, v1->v2,
+nospace_cache->v1, v2->v1).
+
+Since the mechanism for writing out the cache generation is transaction
+commit, but we want some finer grained control over when we un-set it,
+we can't just rely on the SPACE_CACHE mount option, and introduce an
+fs_info flag that mount can use when it wants to unset the generation.
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/disk-io.c | 43 ++++++++++++++++++++++---------------------
- 1 file changed, 22 insertions(+), 21 deletions(-)
+ fs/btrfs/ctree.h            |  3 +++
+ fs/btrfs/disk-io.c          |  8 ++++++++
+ fs/btrfs/free-space-cache.c | 28 ++++++++++++++++++++++++++++
+ fs/btrfs/free-space-cache.h |  3 +++
+ fs/btrfs/super.c            | 10 +++++++---
+ fs/btrfs/transaction.c      |  2 ++
+ 6 files changed, 51 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 0bc7d9766f8c..64e5707f008b 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2892,6 +2892,7 @@ static int btrfs_check_uuid_tree(struct btrfs_fs_info *fs_info)
- void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
- {
- 	btrfs_clear_opt(fs_info->mount_opt, USEBACKUPROOT);
-+	btrfs_clear_opt(fs_info->mount_opt, CLEAR_CACHE);
- }
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index cb90a870b235..318303f53529 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -559,6 +559,9 @@ enum {
+ 
+ 	/* Indicate that the discard workqueue can service discards. */
+ 	BTRFS_FS_DISCARD_RUNNING,
++
++	/* Indicate that we need to cleanup space cache v1 */
++	BTRFS_FS_CLEANUP_SPACE_CACHE_V1,
+ };
  
  /*
-@@ -2901,6 +2902,27 @@ void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 64e5707f008b..fea467c421e7 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2902,6 +2902,7 @@ void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
  int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
  {
  	int ret;
-+	bool clear_free_space_tree = false;
-+
-+	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
-+	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
-+		clear_free_space_tree = true;
-+	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
-+		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
-+		btrfs_warn(fs_info, "free space tree is invalid");
-+		clear_free_space_tree = true;
-+	}
-+
-+	if (clear_free_space_tree) {
-+		btrfs_info(fs_info, "clearing free space tree");
-+		ret = btrfs_clear_free_space_tree(fs_info);
-+		if (ret) {
-+			btrfs_warn(fs_info,
-+				   "failed to clear free space tree: %d", ret);
-+			close_ctree(fs_info);
-+			return ret;
-+		}
-+	}
++	bool cache_opt = btrfs_test_opt(fs_info, SPACE_CACHE);
+ 	bool clear_free_space_tree = false;
  
- 	ret = btrfs_cleanup_fs_roots(fs_info);
+ 	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
+@@ -2955,6 +2956,12 @@ int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
+ 		}
+ 	}
+ 
++	if (cache_opt != btrfs_free_space_cache_v1_active(fs_info)) {
++		ret = btrfs_set_free_space_cache_v1_active(fs_info, cache_opt);
++		if (ret)
++			goto out;
++	}
++
+ 	ret = btrfs_resume_balance_async(fs_info);
  	if (ret)
-@@ -2975,7 +2997,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	struct btrfs_root *chunk_root;
- 	int ret;
- 	int err = -EINVAL;
--	int clear_free_space_tree = 0;
- 	int level;
+ 		goto out;
+@@ -3418,6 +3425,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 			return ret;
+ 		}
+ 	}
++
+ 	set_bit(BTRFS_FS_OPEN, &fs_info->flags);
  
- 	ret = init_mount_fs_info(fs_info, sb);
-@@ -3377,26 +3398,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	if (sb_rdonly(sb))
- 		goto clear_oneshot;
+ clear_oneshot:
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 572c75d2169b..48f7bd050909 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -3971,6 +3971,34 @@ int btrfs_write_out_ino_cache(struct btrfs_root *root,
+ 	return ret;
+ }
  
--	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
--	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
--		clear_free_space_tree = 1;
--	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
--		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
--		btrfs_warn(fs_info, "free space tree is invalid");
--		clear_free_space_tree = 1;
--	}
--
--	if (clear_free_space_tree) {
--		btrfs_info(fs_info, "clearing free space tree");
--		ret = btrfs_clear_free_space_tree(fs_info);
--		if (ret) {
--			btrfs_warn(fs_info,
--				   "failed to clear free space tree: %d", ret);
--			close_ctree(fs_info);
--			return ret;
--		}
--	}
--
- 	ret = btrfs_mount_rw(fs_info);
- 	if (ret) {
- 		close_ctree(fs_info);
++bool btrfs_free_space_cache_v1_active(struct btrfs_fs_info *fs_info)
++{
++	return btrfs_super_cache_generation(fs_info->super_copy);
++}
++
++int btrfs_set_free_space_cache_v1_active(struct btrfs_fs_info *fs_info,
++					 bool active)
++{
++	struct btrfs_trans_handle *trans;
++	int ret;
++
++	/*
++	 * update_super_roots will appropriately set
++	 * fs_info->super_copy->cache_generation based on the SPACE_CACHE
++	 * option, so all we have to do is trigger a transaction commit.
++	 */
++	trans = btrfs_start_transaction(fs_info->tree_root, 0);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
++
++	if (!active)
++		set_bit(BTRFS_FS_CLEANUP_SPACE_CACHE_V1, &fs_info->flags);
++
++	ret = btrfs_commit_transaction(trans);
++	clear_bit(BTRFS_FS_CLEANUP_SPACE_CACHE_V1, &fs_info->flags);
++	return ret;
++}
++
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ /*
+  * Use this if you need to make a bitmap or extent entry specifically, it
+diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
+index bf8d127d2407..8f4bc5781cd3 100644
+--- a/fs/btrfs/free-space-cache.h
++++ b/fs/btrfs/free-space-cache.h
+@@ -149,6 +149,9 @@ int btrfs_trim_block_group_bitmaps(struct btrfs_block_group *block_group,
+ 				   u64 *trimmed, u64 start, u64 end, u64 minlen,
+ 				   u64 maxlen, bool async);
+ 
++bool btrfs_free_space_cache_v1_active(struct btrfs_fs_info *fs_info);
++int btrfs_set_free_space_cache_v1_active(struct btrfs_fs_info *fs_info,
++					 bool active);
+ /* Support functions for running our sanity tests */
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ int test_add_free_space_entry(struct btrfs_block_group *cache,
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index cca00cc0c98c..ff19f900cee1 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -547,7 +547,6 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ {
+ 	substring_t args[MAX_OPT_ARGS];
+ 	char *p, *num;
+-	u64 cache_gen;
+ 	int intarg;
+ 	int ret = 0;
+ 	char *compress_type;
+@@ -557,10 +556,9 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+ 	bool saved_compress_force;
+ 	int no_compress = 0;
+ 
+-	cache_gen = btrfs_super_cache_generation(info->super_copy);
+ 	if (btrfs_fs_compat_ro(info, FREE_SPACE_TREE))
+ 		btrfs_set_opt(info->mount_opt, FREE_SPACE_TREE);
+-	else if (cache_gen)
++	else if (btrfs_free_space_cache_v1_active(info))
+ 		btrfs_set_opt(info->mount_opt, SPACE_CACHE);
+ 
+ 	/*
+@@ -1857,6 +1855,8 @@ static inline void btrfs_remount_begin(struct btrfs_fs_info *fs_info,
+ static inline void btrfs_remount_cleanup(struct btrfs_fs_info *fs_info,
+ 					 unsigned long old_opts)
+ {
++	bool cache_opt = btrfs_test_opt(fs_info, SPACE_CACHE);
++
+ 	/*
+ 	 * We need to cleanup all defragable inodes if the autodefragment is
+ 	 * close or the filesystem is read only.
+@@ -1873,6 +1873,10 @@ static inline void btrfs_remount_cleanup(struct btrfs_fs_info *fs_info,
+ 	else if (btrfs_raw_test_opt(old_opts, DISCARD_ASYNC) &&
+ 		 !btrfs_test_opt(fs_info, DISCARD_ASYNC))
+ 		btrfs_discard_cleanup(fs_info);
++
++	/* If we toggled space cache */
++	if (cache_opt != btrfs_free_space_cache_v1_active(fs_info))
++		btrfs_set_free_space_cache_v1_active(fs_info, cache_opt);
+ }
+ 
+ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 0e4063651047..43253b9996c3 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1801,6 +1801,8 @@ static void update_super_roots(struct btrfs_fs_info *fs_info)
+ 	super->root_level = root_item->level;
+ 	if (btrfs_test_opt(fs_info, SPACE_CACHE))
+ 		super->cache_generation = root_item->generation;
++	else if (test_bit(BTRFS_FS_CLEANUP_SPACE_CACHE_V1, &fs_info->flags))
++		super->cache_generation = 0;
+ 	if (test_bit(BTRFS_FS_UPDATE_UUID_TREE_GEN, &fs_info->flags))
+ 		super->uuid_tree_generation = root_item->generation;
+ }
 -- 
 2.24.1
 
