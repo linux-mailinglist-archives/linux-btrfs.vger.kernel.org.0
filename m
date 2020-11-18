@@ -2,33 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D73D2B88AD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3C02B88C6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbgKRXsg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 18:48:36 -0500
-Received: from mout.gmx.net ([212.227.15.15]:35579 "EHLO mout.gmx.net"
+        id S1726527AbgKRXti (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 18:49:38 -0500
+Received: from mout.gmx.net ([212.227.17.20]:39497 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727685AbgKRXse (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:48:34 -0500
+        id S1726510AbgKRXth (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Nov 2020 18:49:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605743311;
-        bh=L35EQExmcgLV9q29Acutr4AiHGncTDzF72roUXLch7k=;
+        s=badeba3b8450; t=1605743373;
+        bh=Dhcqo4QTdlr2qSMSjVMyZa6GE5dNoL1ujVQKX3wdQDg=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ButN28MnKo9fxlMCD8o2oOLlg2+jVxnfoKS5wm47e2yZQYgFu4R0u3POHtF3ra1sz
-         xCeohCCzeVJqBsy+iZk2zfpEeKZXGIiRYkSJVHu//sdYzTHwLhRulMO2IQ2zPj0w+g
-         yX9P3jhKxW1MVRU8hH3IaDyPryzboIFSigXGs/sM=
+        b=jGyyzSoMFl3VUi6ih/AstVtDGTjTK2FvAFHsWxEwDmauvoWHElwAtfgR6/faWyG3w
+         Qaxcfjk/adjySEFR6GOTXPnDkl2fPmA/ueDiEI7U9fyP0yCthK0d0WKL8fPbkhH0bK
+         qE06yTlBaI8DnICwfYou0Vu8GL5lzSomk8W7reQU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N1wq3-1kGxzr2igT-012IoM; Thu, 19
- Nov 2020 00:48:31 +0100
-Subject: Re: [PATCH v2 15/24] btrfs: extent-io: make type of
- extent_state::state to be at least 32 bits
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        Nikolay Borisov <nborisov@suse.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvbG2-1kNJta1gLG-00sgIq; Thu, 19
+ Nov 2020 00:49:33 +0100
+Subject: Re: [PATCH v2 03/24] btrfs: extent_io: replace
+ extent_start/extent_len with better structure for end_bio_extent_readpage()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201113125149.140836-1-wqu@suse.com>
- <20201113125149.140836-16-wqu@suse.com>
- <20201118161157.bazycid5hnz4iapf@twin.jikos.cz>
+ <20201113125149.140836-4-wqu@suse.com>
+ <20201118160532.74rfxqovyjymzipc@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,69 +53,168 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <a2ac82fa-bcf8-a54c-181b-9492893aa6a3@gmx.com>
-Date:   Thu, 19 Nov 2020 07:48:27 +0800
+Message-ID: <f624c1a2-f0e6-7d3c-e963-f8aaf0ec3e6f@gmx.com>
+Date:   Thu, 19 Nov 2020 07:49:30 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201118161157.bazycid5hnz4iapf@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sxGocrZrdjYeL32mAS27Uv0R3qSDuYAeuN+7AA5aOWrqbBm5IbM
- aSJeA0IFsUB7X4Zk5OvwFsxBgrzIAY5Z8jkKp1ByjMZIzSCB/yvC64HMA3amX4rolpK9a/2
- LuyNrEDAfvmW81mU6cvxef6GOcphTtjfW9ZFepvQIriWTAGZ1JFoZhaeZWAmnpEVB//W8/8
- JEFvm9lM/iIoiwa1vs4kw==
+In-Reply-To: <20201118160532.74rfxqovyjymzipc@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="6PQMuRN3Z7KKNfSamafJsOwqv1YcqoS3F"
+X-Provags-ID: V03:K1:OUj/oJ5ewA0DKo4UxM5fu93XfEPzAJxArwGrxJqBMAMy7Tfc1Tl
+ gzS+vSJnAMqDQnBKCko8F3b8yeNdLBdLghQivgWeJUKYDimJyyQ0h4gl6sNNf1NT8rRJAZ/
+ hu4ZwiBlgcQhkqTD6dwaV869ptA/THkKHjZXDPR8LfhqB53zXymsnplFISM1plh7h+cmyNk
+ cel35i3XCkpwkh73KL5tw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5rLHEzapfvs=:Zbx6vuBw7LznuH6EDofZSf
- AtpcewXWkQC0l+baVw3di49CyQzZL6QJz5YthFODvwHP2Cg6Y8kl4hxwrABTfm94DD5OSUL0+
- OjSh25kO+MIdXSMtpa0wGtlPhvtgjRDYPQb9C+0D0pipICCbT9sRhOAr3F6eMJc/4ThsqtBZZ
- +ZHaiRaL6S2ZXxYeaHZq6Eg8IaGDauI6rTghrv62wKE++Of9u9V9tyO7XHe5q5BqY3p9OBuZw
- wrCc9fqSr+qMDjdtBeVk8zIGvrVdzBcEd4jlJZaquXGNd7G0zX2rA8pCdDLLD6fSkMbJYfsLU
- iqzC+IOu1pvY6fsh4TpgS26FqYg6wI5AyaBrrXaoo4bL0yFtVEABY8aFif6i+SnbxuVsgQ2qI
- MwYnnrinw7pPG915HHAU4j6CAJBmTX5UcFbucWcbZKJrZ4kRfanR+G3/WeFoCEGi4ta5ia0sO
- NCXgzvOvIEnLzETIt4taKOdgm8sI0hG1NSUmgShWOqiGeRwQMh8bNBEPa+Wk0sUEIMsrbNc6l
- Wri6HihPltQVYi6P0iW1mAYcp1lHyr8sN3IX8s5+TnT9hT86XGVCjB9NwWRBMeNZticsDubsp
- XO5wq2DBpaBkq13CqmmLpkh0qLQjlgrlDLoF9w3nq6QKMSLs4P/OpOCo+3PTj8bPZOAdj02zg
- 53JHln6AAJx6lvN6N1RuTxtiGIcUERIzr9vft7C3G9ARLs9XFET09S/jAP002yg3+TkoOqrdb
- u+1pVgEBSP4N+ZzalEfIWDHBj73p8H7V9Zx14CHqyyeJOA8xSwnfjsQCxvdEwil1m86IOja/v
- hl8gcPpxzJVEvn/1CftxrksIIYXINJhOeAOlTospxnXGbsHgFfVuoGCGPrOEEQOQBFJ+4U21S
- JmKIo/MI15KutNKqfOtw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gHRGs4jj8/c=:ZjURYPn9+7Rc9EMEGtNuBf
+ Yse+KBRU+QqsWfNIEwZB4vZeR99S1hjUgv+TGHjRKgYGzAVOWZXr1rtxAI70uo1uMPmMt9M3v
+ T9VriOe7eeMD1tnsskI62g1Err/W/Ca5XAHlbSA85ppBjitzn5NrOl4vLEp7nBaqiN6dUc9EJ
+ NGV1QEtGPlJwmamo0DpdGlTmAXVCXQXFV5shcHvmBPxyg81KHRaoqWHvuwyQhlb1TDsiSOAPr
+ MFWUg3vWdPWZUfZ3+Ti9fyWuq/eawD6F8EC1HVer6f3fZAalhGak8ilorA1E3GWm2Y2F41jAY
+ fShM8fBaiYUeWbHwlItWHW5rfy9vkmLJeeIDiWOBAZbHf1/GdxuUOy5rsmRrClUfYWOTGg4wn
+ FOsISFl0/sRDmfMlbSURXJZuXlHen//kKLojkZMhtPMmCXxuRDKJKimmDPwMJ3X3IH+FXSeG8
+ k4sRLnhTR7q7extGbvKmKe7e+rEEluN+k8ZJICfl74hhla00awgalthoQsX8urcibJU69z+CG
+ yZok9K7shLIiM6vjU6nkJ+Y64tELg5BPSdWGCeR5RYRFSHaHB0SEQ3dOTc4OsfhDejQcscPJs
+ fk3T+7o268CybAm5LfP80+lHughmOSgK7N2fFcHPWIoMZElXyAopRte+no8AiMzKK49VANYlg
+ /eeCkhdF0YeQ5LfhkxM44sVhUFKs5pn3IwI17zB+HUccX6Phz3jkHrEOoiMdyHM9dJGh1vLz1
+ N1bWp+9wa1v3SWZxrYyUZ4MROWR0E84PTGS4VlVeQ7TZxTpAN1f/6gp/h9MkoOG7Cqv07Qc34
+ l2MGbZVZ1qYxC1DABaAyaJApuwMOnbC/ucR25W3wmu8+8wxG0tTmQonbUeAxYIg17uNKOe71D
+ NgOHiLsaA7x+n1BjPppw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--6PQMuRN3Z7KKNfSamafJsOwqv1YcqoS3F
+Content-Type: multipart/mixed; boundary="1NXsaFcKV7zzZEqmVmTnPGwmbSyYsyznv"
+
+--1NXsaFcKV7zzZEqmVmTnPGwmbSyYsyznv
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/11/19 =E4=B8=8A=E5=8D=8812:11, David Sterba wrote:
-> On Fri, Nov 13, 2020 at 08:51:40PM +0800, Qu Wenruo wrote:
->> Currently we use 'unsigned' for extent_state::state, which is only ensu=
-red
->> to be at least 16 bits.
->
-> Ensured maybe by the C standard but we use u32 and 'unsigned int'
-> interchangably everywhere. There are some inferior architectures that
-> use different type witdths, but all we care is 32bit and 64bit.
 
-Personally speaking, that's not a good practice at all.
+On 2020/11/19 =E4=B8=8A=E5=8D=8812:05, David Sterba wrote:
+> On Fri, Nov 13, 2020 at 08:51:28PM +0800, Qu Wenruo wrote:
+>>  }
+>> =20
+>> +/*
+>> + * Records previously processed extent range.
+>> + *
+>> + * For endio_readpage_release_extent() to handle a full extent range,=
+ reducing
+>> + * the extent io operations.
+>> + */
+>> +struct processed_extent {
+>> +	struct btrfs_inode *inode;
+>> +	u64 start;	/* file offset in @inode */
+>> +	u64 end;	/* file offset in @inode */
+>=20
+> Please don't use the in-line comments for struct members.
 
-You'll never know when you'll hit a new arch.
+Even for such short description?
 
-One best example here is subpage testing. I believe you're also
-utilizing arch64 to do the test, and thankfully it has all the same
-widths here, but you can never be that sure.
-
->
->> But for incoming subpage support, we are going to introduce more bits,
->> thus we will go beyond 16 bits.
->>
->> To support this, make extent_state::state at least 32bit and to be more
->> explicit, we use "u32" to be clear about the max supported bits.
->
-> Yeah that's fine to make the expected width requirement explicit.
->
-
-As long as this can be merged, I'm completely fine though.
+That's a little overkilled to me now.
 
 Thanks,
 Qu
+>=20
+>> +	bool uptodate;
+>> +};
+>> +
+>> +/*
+>> + * Try to release processed extent range.
+>> + *
+>> + * May not release the extent range right now if the current range is=
+ contig
+>=20
+> 'contig' means what? If it's for 'contiguous' then please spell it out
+> in text and use the abbreviated form only for variables.
+>=20
+>> + * with processed extent.
+>> + *
+>> + * Will release processed extent when any of @inode, @uptodate, the r=
+ange is
+>> + * no longer contig with processed range.
+>> + * Pass @inode =3D=3D NULL will force processed extent to be released=
+=2E
+>> + */
+>>  static void
+>> -endio_readpage_release_extent(struct extent_io_tree *tree, u64 start,=
+ u64 len,
+>> -			      int uptodate)
+>> +endio_readpage_release_extent(struct processed_extent *processed,
+>> +			      struct btrfs_inode *inode, u64 start, u64 end,
+>> +			      bool uptodate)
+>>  {
+>>  	struct extent_state *cached =3D NULL;
+>> -	u64 end =3D start + len - 1;
+>> +	struct extent_io_tree *tree;
+>> =20
+>> -	if (uptodate && tree->track_uptodate)
+>> -		set_extent_uptodate(tree, start, end, &cached, GFP_ATOMIC);
+>> -	unlock_extent_cached_atomic(tree, start, end, &cached);
+>> +	/* We're the first extent, initialize @processed */
+>> +	if (!processed->inode)
+>> +		goto update;
+>> +
+>> +	/*
+>> +	 * Contig with processed extent. Just uptodate the end
+>> +	 *
+>> +	 * Several things to notice:
+>> +	 * - Bio can be merged as long as on-disk bytenr is contig
+>> +	 *   This means we can have page belonging to other inodes, thus nee=
+d to
+>> +	 *   check if the inode matches.
+>> +	 * - Bvec can contain range beyond current page for multi-page bvec
+>> +	 *   Thus we need to do processed->end + 1 >=3D start check
+>> +	 */
+>> +	if (processed->inode =3D=3D inode && processed->uptodate =3D=3D upto=
+date &&
+>> +	    processed->end + 1 >=3D start && end >=3D processed->end) {
+>> +		processed->end =3D end;
+>> +		return;
+>> +	}
+>> +
+>> +	tree =3D &processed->inode->io_tree;
+>> +	/*
+>> +	 * Now we have a range not contig with processed range, release the
+>> +	 * processed range now.
+>> +	 */
+>> +	if (processed->uptodate && tree->track_uptodate)
+>> +		set_extent_uptodate(tree, processed->start, processed->end,
+>> +				    &cached, GFP_ATOMIC);
+>> +	unlock_extent_cached_atomic(tree, processed->start, processed->end,
+>> +				    &cached);
+>> +
+>> +update:
+>> +	/* Update @processed to current range */
+>> +	processed->inode =3D inode;
+>> +	processed->start =3D start;
+>> +	processed->end =3D end;
+>> +	processed->uptodate =3D uptodate;
+>>  }
+
+
+--1NXsaFcKV7zzZEqmVmTnPGwmbSyYsyznv--
+
+--6PQMuRN3Z7KKNfSamafJsOwqv1YcqoS3F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+1swoACgkQwj2R86El
+/qjJ9gf/Yshxjw3ozLGqgwnOVRyTZcEuwcpdhsXNtNzqCFDbotBwYoQjRVhp8vN7
+Ncgww/c1YyIgrTaKK/3UrIx53/HoSmn2T+QUbQwbCYomHwLDa4h+cT6pUcRBsQGj
+fp2rF9XvM21bCjQoVrhwaa169tURY5ehpndbWgt7geghBDkN5ThA4SuqhD4tXitp
+WTUJV457t9TJCaq5w5qi9jOl2t/zFW0+mK1ZhNOmU5dcxP7N+xXIQmX6vnkr84TS
+np1asgUQFATIg8yAW3G/FbsVNe2DruSMSIWpQXreb9PnmsN0RJXHt+Wdn3+2UDOc
+udopa3pv+kIlGgLNr0VG0XQUt/NCjA==
+=gCkS
+-----END PGP SIGNATURE-----
+
+--6PQMuRN3Z7KKNfSamafJsOwqv1YcqoS3F--
