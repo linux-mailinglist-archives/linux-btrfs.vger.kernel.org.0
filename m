@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E79B2B889C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D73D2B88AD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727396AbgKRXoR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 18:44:17 -0500
-Received: from mout.gmx.net ([212.227.15.18]:50039 "EHLO mout.gmx.net"
+        id S1727715AbgKRXsg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 18:48:36 -0500
+Received: from mout.gmx.net ([212.227.15.15]:35579 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726374AbgKRXoQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:44:16 -0500
+        id S1727685AbgKRXse (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Nov 2020 18:48:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605743040;
-        bh=PFlUvdoRCuG4hLHqrDTZtxGUNaasXcloDMf/5+mxi9w=;
+        s=badeba3b8450; t=1605743311;
+        bh=L35EQExmcgLV9q29Acutr4AiHGncTDzF72roUXLch7k=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=S6Tuz/TU0tMNRFU40tLP+sOjew1nDYjiHL/Uf4ChETYR9DaaJ3r4tlSUcGuo/3siL
-         3+cZ6hV7HXZKfeOxjm5xnTodjSUcmf5vyLYHKFnfP7uyojW23/S29/+ZqHx0kmxDdQ
-         GiMJunucgsCvSuDQ5MtNO4jJkH+DONlQZugtuaPI=
+        b=ButN28MnKo9fxlMCD8o2oOLlg2+jVxnfoKS5wm47e2yZQYgFu4R0u3POHtF3ra1sz
+         xCeohCCzeVJqBsy+iZk2zfpEeKZXGIiRYkSJVHu//sdYzTHwLhRulMO2IQ2zPj0w+g
+         yX9P3jhKxW1MVRU8hH3IaDyPryzboIFSigXGs/sM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mel7v-1k4pFi2RXh-00aks8; Thu, 19
- Nov 2020 00:44:00 +0100
-Subject: Re: [PATCH v2 04/24] btrfs: extent_io: introduce helper to handle
- page status update in end_bio_extent_readpage()
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N1wq3-1kGxzr2igT-012IoM; Thu, 19
+ Nov 2020 00:48:31 +0100
+Subject: Re: [PATCH v2 15/24] btrfs: extent-io: make type of
+ extent_state::state to be at least 32 bits
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Nikolay Borisov <nborisov@suse.com>
 References: <20201113125149.140836-1-wqu@suse.com>
- <20201113125149.140836-5-wqu@suse.com> <20201118202745.GG20563@twin.jikos.cz>
+ <20201113125149.140836-16-wqu@suse.com>
+ <20201118161157.bazycid5hnz4iapf@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,114 +54,69 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <0d9e346a-6ea7-893c-ce64-8f8d9a5f2785@gmx.com>
-Date:   Thu, 19 Nov 2020 07:43:56 +0800
+Message-ID: <a2ac82fa-bcf8-a54c-181b-9492893aa6a3@gmx.com>
+Date:   Thu, 19 Nov 2020 07:48:27 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201118202745.GG20563@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM"
-X-Provags-ID: V03:K1:MX+DnsUIltfmBK7bvlmjZ9F6GkdgkkQi9xp5u/iYeLDGxhbjy0z
- u/1xxnM3Gn/6eCmE0bfFf9YmcBV+tb6/AIUe58vJZj0gM4JcTW62lJD4PWolFeATnzXqNYf
- RCyFTnMFTdTAe6eFV0+WDVXosAKLc5sdkcaaOeTC4ua0vGF0TGy4B3dmMXeIIQ1X/VtXWDZ
- qA6IG4Z9doFcg1BcceBEw==
+In-Reply-To: <20201118161157.bazycid5hnz4iapf@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sxGocrZrdjYeL32mAS27Uv0R3qSDuYAeuN+7AA5aOWrqbBm5IbM
+ aSJeA0IFsUB7X4Zk5OvwFsxBgrzIAY5Z8jkKp1ByjMZIzSCB/yvC64HMA3amX4rolpK9a/2
+ LuyNrEDAfvmW81mU6cvxef6GOcphTtjfW9ZFepvQIriWTAGZ1JFoZhaeZWAmnpEVB//W8/8
+ JEFvm9lM/iIoiwa1vs4kw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:L4YhaUMNSJE=:k/z+Sndzz/Kp5+ulFL8Mkq
- JwhqdmBzOU2I3ghd0hnt+WsqaDctkNuYZWT3b3kfcoQSbkaO2ViKnLkGuji9q3Mje1i97YBCB
- muy+hVliDGwb1YLZ43mcCFyryhOu5Mgr1o/VwWFepl9qOEu7cto2/snqgm2hMpFykTVLEW764
- gyICE9djSeNNN9TObysTRavI4ZT7br1X7GPPQhLVSxs4AqpeHONwUkB2M2l/BTRXL9/R8IYEZ
- SmfIqhuyiDWMR6XCB6JHAkko34oU8JllUsaRj8r3oWm7htuwT89/B9lu0EFReueq5VqiyQVDk
- mbEHGvdKTcnoPsD2ORLfr7GEQmqV6SEgdE+rPCDTGez9WfmUcRz4swqmpqF55EWWmlg66XOTa
- trDmJ3CSXY3Ku/EF8nv31IjwHW3zQ0eEZZps2AsQTMqlBtwihkKeekPFr6jGjjlK4Xv+bH93Q
- YD4UTUrVYl4ioze3YzRhpOHkLSA5xNA7qG73we6BtNAX/sjludwL314KLWUp5eBEPRD3nVFWa
- PFXno/Eh+4i0dYjnOsfEh0Dc40psS7h3utJQxvBlQEHHyyxyeJ50Cq3AzwIFKY4i+VgynCYfL
- bFHpRcPYvJj/yG0G1Lc/EjKzSJEWCISyPFYupFrCv/JJ0LGeOwfj+NjJ3PTOLrBExy42ZAsEU
- LdDVXrwfEoDsxqAJjQ8TFg4djVvFqvUuFCzGcS8njrVJ5Gp4RDkjJJo8lz5ssVeAPQvWer/It
- QuBQGa9GsEEcABz8RRnRfc7sxEpPbWlNgUJVLUoH8B0f0OAKI5o6v0ECEKDcwoHa7J4avdOvC
- f2yGUVEqJX34dhlCaLiHAXidgTipYkdnZ37SmK95u2KKxO04/SQplN07gd03+es782gFjKGt5
- 7fC1mPXsiR+InRNwuk8w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5rLHEzapfvs=:Zbx6vuBw7LznuH6EDofZSf
+ AtpcewXWkQC0l+baVw3di49CyQzZL6QJz5YthFODvwHP2Cg6Y8kl4hxwrABTfm94DD5OSUL0+
+ OjSh25kO+MIdXSMtpa0wGtlPhvtgjRDYPQb9C+0D0pipICCbT9sRhOAr3F6eMJc/4ThsqtBZZ
+ +ZHaiRaL6S2ZXxYeaHZq6Eg8IaGDauI6rTghrv62wKE++Of9u9V9tyO7XHe5q5BqY3p9OBuZw
+ wrCc9fqSr+qMDjdtBeVk8zIGvrVdzBcEd4jlJZaquXGNd7G0zX2rA8pCdDLLD6fSkMbJYfsLU
+ iqzC+IOu1pvY6fsh4TpgS26FqYg6wI5AyaBrrXaoo4bL0yFtVEABY8aFif6i+SnbxuVsgQ2qI
+ MwYnnrinw7pPG915HHAU4j6CAJBmTX5UcFbucWcbZKJrZ4kRfanR+G3/WeFoCEGi4ta5ia0sO
+ NCXgzvOvIEnLzETIt4taKOdgm8sI0hG1NSUmgShWOqiGeRwQMh8bNBEPa+Wk0sUEIMsrbNc6l
+ Wri6HihPltQVYi6P0iW1mAYcp1lHyr8sN3IX8s5+TnT9hT86XGVCjB9NwWRBMeNZticsDubsp
+ XO5wq2DBpaBkq13CqmmLpkh0qLQjlgrlDLoF9w3nq6QKMSLs4P/OpOCo+3PTj8bPZOAdj02zg
+ 53JHln6AAJx6lvN6N1RuTxtiGIcUERIzr9vft7C3G9ARLs9XFET09S/jAP002yg3+TkoOqrdb
+ u+1pVgEBSP4N+ZzalEfIWDHBj73p8H7V9Zx14CHqyyeJOA8xSwnfjsQCxvdEwil1m86IOja/v
+ hl8gcPpxzJVEvn/1CftxrksIIYXINJhOeAOlTospxnXGbsHgFfVuoGCGPrOEEQOQBFJ+4U21S
+ JmKIo/MI15KutNKqfOtw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM
-Content-Type: multipart/mixed; boundary="gjGX6K0md98yCJJ0iENtSfZD817SprbCg"
-
---gjGX6K0md98yCJJ0iENtSfZD817SprbCg
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 2020/11/19 =E4=B8=8A=E5=8D=8812:11, David Sterba wrote:
+> On Fri, Nov 13, 2020 at 08:51:40PM +0800, Qu Wenruo wrote:
+>> Currently we use 'unsigned' for extent_state::state, which is only ensu=
+red
+>> to be at least 16 bits.
+>
+> Ensured maybe by the C standard but we use u32 and 'unsigned int'
+> interchangably everywhere. There are some inferior architectures that
+> use different type witdths, but all we care is 32bit and 64bit.
 
-On 2020/11/19 =E4=B8=8A=E5=8D=884:27, David Sterba wrote:
-> On Fri, Nov 13, 2020 at 08:51:29PM +0800, Qu Wenruo wrote:
->> Introduce a new helper, endio_readpage_release_extent(), to handle
->> update status update in end_bio_extent_readpage().
+Personally speaking, that's not a good practice at all.
+
+You'll never know when you'll hit a new arch.
+
+One best example here is subpage testing. I believe you're also
+utilizing arch64 to do the test, and thankfully it has all the same
+widths here, but you can never be that sure.
+
+>
+>> But for incoming subpage support, we are going to introduce more bits,
+>> thus we will go beyond 16 bits.
 >>
->> The refactor itself is not really nothing interesting, the point here =
-is
->> to provide the basis for later subpage support, where the page status
->> update can be more complex than current code.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/extent_io.c | 17 ++++++++++++-----
->>  1 file changed, 12 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index b5b3700943e0..caafe44542e8 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -2849,6 +2849,17 @@ endio_readpage_release_extent(struct processed_=
-extent *processed,
->>  	processed->uptodate =3D uptodate;
->>  }
->> =20
->> +static void endio_readpage_update_page_status(struct page *page, bool=
- uptodate)
->> +{
->> +	if (uptodate) {
->> +		SetPageUptodate(page);
->> +	} else {
->> +		ClearPageUptodate(page);
->> +		SetPageError(page);
->> +	}
->> +	unlock_page(page);
->=20
-> That would be better left in the caller as it's quite important
-> information but the helper name does not say anything about it.
->=20
+>> To support this, make extent_state::state at least 32bit and to be more
+>> explicit, we use "u32" to be clear about the max supported bits.
+>
+> Yeah that's fine to make the expected width requirement explicit.
+>
 
-It may be the case for now, but for incoming subpage, check the patch
-"btrfs: integrate page status update for read path into
-begin/end_page_read()" to see why we want page unlocking to be done here.=
-
+As long as this can be merged, I'm completely fine though.
 
 Thanks,
 Qu
-
-
---gjGX6K0md98yCJJ0iENtSfZD817SprbCg--
-
---gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+1sbwACgkQwj2R86El
-/qi+gAf/eLl5LeV13AY4wQ5GGhHzCqGO4RG0l+2qdxgS2bKcba2VTfxfOAnPbmM4
-hdZseUgPJdXBrsV08dfq3JisTTUs3mmR8emhmb15iGx6xv73IrZisoTKcNAj4Ujv
-3oPPT2oPRHsqneOJTRgBFe/iU1Uko4ZyLxGgWCNs6iFQ4cYyah22V0L1y2CgDur+
-3ByGz3Mq/3QDlbimzb12wiruA4tXiELqwiIv3B8L4yGwg//FXGmw0I3YXXkYt46A
-iJnZOV1dOHc3ZWfyYgPlepw1a3nqYadYS5tD1fy1Y4bSCFAWEuhx+ip1qWALKE+b
-5RQ0uiDii+xajusoQjhgvZYAUA0lVA==
-=f9om
------END PGP SIGNATURE-----
-
---gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM--
