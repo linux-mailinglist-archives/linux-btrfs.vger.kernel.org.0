@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126692B7999
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFE82B799A
 	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 09:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727438AbgKRIxs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 03:53:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47868 "EHLO mx2.suse.de"
+        id S1726107AbgKRIxu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 03:53:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47878 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgKRIxs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 03:53:48 -0500
+        id S1725772AbgKRIxu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Nov 2020 03:53:50 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1605689626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1605689628; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kiPPDMMgipJI7Lx96z3mVMeHfhxE0jO+psrNZsOwyN4=;
-        b=slcgx4bUJiINXkrbfPvGz6AquFLHhBmOEF1ft9QaWl7qvUPR2whUWZmgYQtFW1z5nTNFqD
-        5tbKWDpYx3pD9H/1G0almKwvoJ4nPtkFBB2tXSwo1zQGu9nz0t0I52W+po0TP4I7PtHJhP
-        xXf9F6/fVVjANaTNidDjG8s6iaBKfXw=
+        bh=maDN01w4egfhxhZj5odDhJWzJ6lGmlXG3Fhyckd9i5A=;
+        b=gnWoQwIxlA9a2XGuoMXAt+MSkXLK044if3CzOijLMOjSyRRD2YVPLwGYE75rn9ZCmKHR8c
+        pfEVxH4g4vw/zinueIbImmceV4cBbHBJwIRhBOtalTGUeylhQiA3QUOTXCHV3gF4S4xTb4
+        w7aC9vW5kDfAZFyxpMmFGzHaqoYx3l4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D3E8EAD2F
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 08:53:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A8C30ABF4
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 08:53:48 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 10/14] btrfs: extent_io: make endio_readpage_update_page_status() to handle subpage case
-Date:   Wed, 18 Nov 2020 16:53:15 +0800
-Message-Id: <20201118085319.56668-11-wqu@suse.com>
+Subject: [PATCH 11/14] btrfs: disk-io: introduce subpage metadata validation check
+Date:   Wed, 18 Nov 2020 16:53:16 +0800
+Message-Id: <20201118085319.56668-12-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201118085319.56668-1-wqu@suse.com>
 References: <20201118085319.56668-1-wqu@suse.com>
@@ -38,116 +38,120 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To handle subpage status update, add the following new tricks:
-- Set btrfs_subpage::error_bitmap
-  Now if we hit an error, we set the corresponding bits in error bitmap,
-  then call ClearPageUptodate() and SetPageError().
+For subpage metadata validation check, there are some difference:
+- Read must finish in one bvec
+  Since we're just reading one subpage range in one page, it should
+  never be split into two bios nor two bvecs.
 
-- Uptodate page status according to uptodate_bitmap
-  Now we only SetPageUptodate() when the full page contains uptodate
-  sectors.
-  Also if we cleared all error bit during read, then we also
-  ClearPageError()
-
-- No page unlock for metadata
-  Since metadata doesn't utilize page locking at all, skip it for now.
+- How to grab the existing eb
+  Instead of grabbing eb using page->private, we have to go search radix
+  tree as we don't have any direct pointer at hand.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 56 +++++++++++++++++++++++++++++++++++++++-----
- fs/btrfs/extent_io.h |  1 +
- 2 files changed, 51 insertions(+), 6 deletions(-)
+ fs/btrfs/disk-io.c | 82 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 35aee688d6c1..236de0b6b20a 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2847,15 +2847,59 @@ endio_readpage_release_extent(struct processed_extent *processed,
- 	processed->uptodate = uptodate;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index b395daf62086..699b999c8ba3 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -593,6 +593,84 @@ static int validate_extent_buffer(struct extent_buffer *eb)
+ 	return ret;
  }
  
--static void endio_readpage_update_page_status(struct page *page, bool uptodate)
-+static void endio_readpage_update_page_status(struct page *page, bool uptodate,
-+					      u64 start, u64 end)
- {
--	if (uptodate) {
--		SetPageUptodate(page);
--	} else {
++static int validate_subpage_buffer(struct page *page, u64 start, u64 end,
++				   int mirror)
++{
 +	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
-+	struct btrfs_subpage *subpage;
-+	int bit_start;
-+	int nbits;
-+	bool all_uptodate = false;
-+	bool no_error = false;
++	struct extent_buffer *eb;
++	int reads_done;
++	int ret = 0;
 +
-+	ASSERT(page_offset(page) <= start &&
-+		end <= page_offset(page) + PAGE_SIZE - 1);
-+
-+	if (!btrfs_is_subpage(fs_info)) {
-+		if (uptodate) {
-+			SetPageUptodate(page);
-+		} else {
-+			ClearPageUptodate(page);
-+			SetPageError(page);
-+		}
-+		unlock_page(page);
-+		return;
++	if (!IS_ALIGNED(start, fs_info->sectorsize) ||
++	    !IS_ALIGNED(end - start + 1, fs_info->sectorsize) ||
++	    !IS_ALIGNED(end - start + 1, fs_info->nodesize)) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info, "invalid tree read bytenr");
++		return -EUCLEAN;
 +	}
 +
-+	ASSERT(PagePrivate(page) && page->private);
-+	subpage = (struct btrfs_subpage *)page->private;
-+	bit_start = (start - page_offset(page)) >> fs_info->sectorsize_bits;
-+	nbits = fs_info->nodesize >> fs_info->sectorsize_bits;
++	/*
++	 * We don't allow bio merge for subpage metadata read, so we should
++	 * only get one eb for each endio hook.
++	 */
++	ASSERT(end == start + fs_info->nodesize - 1);
++	ASSERT(PagePrivate(page));
 +
-+	if (!uptodate) {
-+		spin_lock_bh(&subpage->lock);
-+		bitmap_set(subpage->error_bitmap, bit_start, nbits);
-+		spin_unlock_bh(&subpage->lock);
++	rcu_read_lock();
++	eb = radix_tree_lookup(&fs_info->buffer_radix,
++			       start / fs_info->sectorsize);
++	rcu_read_unlock();
 +
- 		ClearPageUptodate(page);
- 		SetPageError(page);
-+		return;
- 	}
--	unlock_page(page);
++	/*
++	 * When we are reading one tree block, eb must have been
++	 * inserted into the radix tree. If not something is wrong.
++	 */
++	if (!eb) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info,
++			"can't find extent buffer for bytenr %llu",
++			start);
++		return -EUCLEAN;
++	}
++	/*
++	 * The pending IO might have been the only thing that kept
++	 * this buffer in memory.  Make sure we have a ref for all
++	 * this other checks
++	 */
++	atomic_inc(&eb->refs);
 +
-+	spin_lock_bh(&subpage->lock);
-+	bitmap_set(subpage->uptodate_bitmap, bit_start, nbits);
-+	bitmap_clear(subpage->error_bitmap, bit_start, nbits);
-+	if (bitmap_full(subpage->uptodate_bitmap, BTRFS_SUBPAGE_BITMAP_SIZE))
-+		all_uptodate = true;
-+	if (bitmap_empty(subpage->error_bitmap, BTRFS_SUBPAGE_BITMAP_SIZE))
-+		no_error = true;
-+	spin_unlock_bh(&subpage->lock);
++	reads_done = atomic_dec_and_test(&eb->io_pages);
++	/* Subpage read must finish in page read */
++	ASSERT(reads_done);
 +
-+	if (no_error)
-+		ClearPageError(page);
-+	if (all_uptodate)
-+		SetPageUptodate(page);
-+	return;
- }
++	eb->read_mirror = mirror;
++	if (test_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags)) {
++		ret = -EIO;
++		goto err;
++	}
++	ret = validate_extent_buffer(eb);
++	if (ret < 0)
++		goto err;
++
++	if (test_and_clear_bit(EXTENT_BUFFER_READAHEAD, &eb->bflags))
++		btree_readahead_hook(eb, ret);
++
++	set_extent_buffer_uptodate(eb);
++
++	free_extent_buffer(eb);
++	return ret;
++err:
++	/*
++	 * our io error hook is going to dec the io pages
++	 * again, we have to make sure it has something to
++	 * decrement
++	 */
++	atomic_inc(&eb->io_pages);
++	clear_extent_buffer_uptodate(eb);
++	free_extent_buffer(eb);
++	return ret;
++}
++
+ int btrfs_validate_metadata_buffer(struct btrfs_io_bio *io_bio,
+ 				   struct page *page, u64 start, u64 end,
+ 				   int mirror)
+@@ -602,6 +680,10 @@ int btrfs_validate_metadata_buffer(struct btrfs_io_bio *io_bio,
+ 	int reads_done;
  
- /*
-@@ -2985,7 +3029,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		}
- 		bio_offset += len;
+ 	ASSERT(page->private);
++
++	if (btrfs_is_subpage(btrfs_sb(page->mapping->host->i_sb)))
++		return validate_subpage_buffer(page, start, end, mirror);
++
+ 	eb = (struct extent_buffer *)page->private;
  
--		endio_readpage_update_page_status(page, uptodate);
-+		endio_readpage_update_page_status(page, uptodate, start, end);
- 		endio_readpage_release_extent(&processed, BTRFS_I(inode),
- 					      start, end, uptodate);
- 	}
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 11e1e013cb8c..b4d0e39ebceb 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -312,6 +312,7 @@ struct btrfs_subpage {
- 	spinlock_t lock;
- 	DECLARE_BITMAP(tree_block_bitmap, BTRFS_SUBPAGE_BITMAP_SIZE);
- 	DECLARE_BITMAP(uptodate_bitmap, BTRFS_SUBPAGE_BITMAP_SIZE);
-+	DECLARE_BITMAP(error_bitmap, BTRFS_SUBPAGE_BITMAP_SIZE);
- };
  
- int btrfs_attach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
 -- 
 2.29.2
 
