@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327D02B8876
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E79B2B889C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgKRXie (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 18:38:34 -0500
-Received: from mout.gmx.net ([212.227.15.15]:47317 "EHLO mout.gmx.net"
+        id S1727396AbgKRXoR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 18:44:17 -0500
+Received: from mout.gmx.net ([212.227.15.18]:50039 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726413AbgKRXie (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:38:34 -0500
+        id S1726374AbgKRXoQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Nov 2020 18:44:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605742710;
-        bh=nL7RTix2shZSOn/eyq7ZBrjr5iYE1RBwb5hy9a10BVE=;
+        s=badeba3b8450; t=1605743040;
+        bh=PFlUvdoRCuG4hLHqrDTZtxGUNaasXcloDMf/5+mxi9w=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=T7H5OSbm/ZWbs1h9ALDDsl7xpi9CVQzq70ZxXi+YZ0tFBk4ZiOOkhaEdCc0O7IbaX
-         1ay2vO/ZeJebo3MlNMqVv9sfhkEVrsrlUbTTXRbrKBxtH82Tp4vITPfTKfjN5EcPru
-         voKnwQQfM8T5JEeIcLXGgyhTOcT8fGCeFSPxW+yA=
+        b=S6Tuz/TU0tMNRFU40tLP+sOjew1nDYjiHL/Uf4ChETYR9DaaJ3r4tlSUcGuo/3siL
+         3+cZ6hV7HXZKfeOxjm5xnTodjSUcmf5vyLYHKFnfP7uyojW23/S29/+ZqHx0kmxDdQ
+         GiMJunucgsCvSuDQ5MtNO4jJkH+DONlQZugtuaPI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MacSe-1k8xR610dW-00c9wg; Thu, 19
- Nov 2020 00:38:30 +0100
-Subject: Re: [PATCH v2 22/24] btrfs: scrub: support subpage data scrub
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mel7v-1k4pFi2RXh-00aks8; Thu, 19
+ Nov 2020 00:44:00 +0100
+Subject: Re: [PATCH v2 04/24] btrfs: extent_io: introduce helper to handle
+ page status update in end_bio_extent_readpage()
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 References: <20201113125149.140836-1-wqu@suse.com>
- <20201113125149.140836-23-wqu@suse.com>
- <20201118162944.GC17322@twin.jikos.cz>
+ <20201113125149.140836-5-wqu@suse.com> <20201118202745.GG20563@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,106 +53,114 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <4483e15c-a983-0469-609a-0e38b1461a61@gmx.com>
-Date:   Thu, 19 Nov 2020 07:38:27 +0800
+Message-ID: <0d9e346a-6ea7-893c-ce64-8f8d9a5f2785@gmx.com>
+Date:   Thu, 19 Nov 2020 07:43:56 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201118162944.GC17322@twin.jikos.cz>
+In-Reply-To: <20201118202745.GG20563@twin.jikos.cz>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="XcP5CzfNm8DJGYfqDYYBOqvR0vlkBmH4x"
-X-Provags-ID: V03:K1:sxTLZBdTGXeWUA5O1gQEPC41gXM4SdZGLGUte284/RTQhgpmRlo
- UgTFeeyAnyZkcbM6N+QT1W+8m6ILyrzxRf6ymfvE52L5cW9/PsYrZ4MrzLCx77kn1RvLKVi
- w7nMQGIo5FZ3NW7eISt89N1RqWISD0XFAVoDO1EWBqck8EJqkFPHkBz8I8I6aazf3tZmkSg
- IBIXIAVoxcFyswmhenM9Q==
+ boundary="gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM"
+X-Provags-ID: V03:K1:MX+DnsUIltfmBK7bvlmjZ9F6GkdgkkQi9xp5u/iYeLDGxhbjy0z
+ u/1xxnM3Gn/6eCmE0bfFf9YmcBV+tb6/AIUe58vJZj0gM4JcTW62lJD4PWolFeATnzXqNYf
+ RCyFTnMFTdTAe6eFV0+WDVXosAKLc5sdkcaaOeTC4ua0vGF0TGy4B3dmMXeIIQ1X/VtXWDZ
+ qA6IG4Z9doFcg1BcceBEw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:E3y6o2jcLc4=:Cvg/7nw6atBeY8xBb9KXh0
- jkV4p2gvKEr/XNH+VY/7dVx8RVfKanI1C5Frgu7Tlvg1FuL0zKFfTqU9/YtelVqm10vxLK7TG
- PNahJVIk48yyMtxnGk8/wK+n0j1Hb0KCW8lZSMd+KGr25QbyzqMendWgQcUDFPbPyW63Vw8iK
- yYGcArRRPtfHWy4q74zIeYBXwYzy7kmXM0GddToDoFUpmRDBqhD5hjJUXqalqADi4czRhrpJO
- HAxKJsF81Y2tavG+xd27E1yf9LXpQcuv3R59qqgeUd4ebMleB3vVVZldCWFHnenVZ8iOSfWRB
- pCUk/cnYGadUWEMqqaJmuU0DuoeYF/7kd28YBi1kY5X5bUz1mByu8V0MNot7+T6EM/0sHeNml
- ee/7JjIA5GNR6RUFgdARw5aFrBDq1J1LUCSS/l/CIOJ9Vgrp91L7OSmzaWXO6oEHRu2VtAwxk
- 3sHHVPyhYOD8wtLH5i9k1gNu5HFeiC8TDMaGe3UszELxunEZNBGiq4c8JUzJHOld0mP3jAS2M
- U2+Ss/2YCCdlrDnCJIqD1HbV8YwIR0WQL/4vkqyCYTdK0NU8Ki/xbftWO7uA/fo3xuStkZNXV
- D9rrUlLJVZSi2//HO1CshuTq+rScpHVIJMLN5sT83nO5Qe0inyfwiIekGe/3Z44nR1KyNNYb/
- 7g+HiMaB9JOZAMiukZGa8T+5otqV1kNRFBd9jlrxEX9A3dAwWajrgePQ9Uizs0MKfpxji1f6I
- VsJ/S3uaOrrUxvvITUsQ4ON028o/+Wtd4wDYLbZ8cqqZ5aP1aWlwOFqzysBaUhJzp2efd9WID
- CJeysT1Dwm3VSrTG9NGLoXlgGwUhtpazvHLt0Kqt5KDaM3OQVl2hNvPhHvZ69KDMEcq7Vxwae
- /n/utuQrsu2qxpgVHhTg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L4YhaUMNSJE=:k/z+Sndzz/Kp5+ulFL8Mkq
+ JwhqdmBzOU2I3ghd0hnt+WsqaDctkNuYZWT3b3kfcoQSbkaO2ViKnLkGuji9q3Mje1i97YBCB
+ muy+hVliDGwb1YLZ43mcCFyryhOu5Mgr1o/VwWFepl9qOEu7cto2/snqgm2hMpFykTVLEW764
+ gyICE9djSeNNN9TObysTRavI4ZT7br1X7GPPQhLVSxs4AqpeHONwUkB2M2l/BTRXL9/R8IYEZ
+ SmfIqhuyiDWMR6XCB6JHAkko34oU8JllUsaRj8r3oWm7htuwT89/B9lu0EFReueq5VqiyQVDk
+ mbEHGvdKTcnoPsD2ORLfr7GEQmqV6SEgdE+rPCDTGez9WfmUcRz4swqmpqF55EWWmlg66XOTa
+ trDmJ3CSXY3Ku/EF8nv31IjwHW3zQ0eEZZps2AsQTMqlBtwihkKeekPFr6jGjjlK4Xv+bH93Q
+ YD4UTUrVYl4ioze3YzRhpOHkLSA5xNA7qG73we6BtNAX/sjludwL314KLWUp5eBEPRD3nVFWa
+ PFXno/Eh+4i0dYjnOsfEh0Dc40psS7h3utJQxvBlQEHHyyxyeJ50Cq3AzwIFKY4i+VgynCYfL
+ bFHpRcPYvJj/yG0G1Lc/EjKzSJEWCISyPFYupFrCv/JJ0LGeOwfj+NjJ3PTOLrBExy42ZAsEU
+ LdDVXrwfEoDsxqAJjQ8TFg4djVvFqvUuFCzGcS8njrVJ5Gp4RDkjJJo8lz5ssVeAPQvWer/It
+ QuBQGa9GsEEcABz8RRnRfc7sxEpPbWlNgUJVLUoH8B0f0OAKI5o6v0ECEKDcwoHa7J4avdOvC
+ f2yGUVEqJX34dhlCaLiHAXidgTipYkdnZ37SmK95u2KKxO04/SQplN07gd03+es782gFjKGt5
+ 7fC1mPXsiR+InRNwuk8w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XcP5CzfNm8DJGYfqDYYBOqvR0vlkBmH4x
-Content-Type: multipart/mixed; boundary="DwxkYAV03pe08ySqnzVdqmHzzjUS3Ry5u"
+--gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM
+Content-Type: multipart/mixed; boundary="gjGX6K0md98yCJJ0iENtSfZD817SprbCg"
 
---DwxkYAV03pe08ySqnzVdqmHzzjUS3Ry5u
+--gjGX6K0md98yCJJ0iENtSfZD817SprbCg
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2020/11/19 =E4=B8=8A=E5=8D=8812:29, David Sterba wrote:
-> On Fri, Nov 13, 2020 at 08:51:47PM +0800, Qu Wenruo wrote:
->> @@ -1781,8 +1781,9 @@ static int scrub_checksum_data(struct scrub_bloc=
-k *sblock)
->>  	struct scrub_ctx *sctx =3D sblock->sctx;
->>  	struct btrfs_fs_info *fs_info =3D sctx->fs_info;
->>  	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->> -	u8 csum[BTRFS_CSUM_SIZE];
->>  	struct scrub_page *spage;
->> +	u32 sectorsize =3D fs_info->sectorsize;
->> +	u8 csum[BTRFS_CSUM_SIZE];
->>  	char *kaddr;
+On 2020/11/19 =E4=B8=8A=E5=8D=884:27, David Sterba wrote:
+> On Fri, Nov 13, 2020 at 08:51:29PM +0800, Qu Wenruo wrote:
+>> Introduce a new helper, endio_readpage_release_extent(), to handle
+>> update status update in end_bio_extent_readpage().
+>>
+>> The refactor itself is not really nothing interesting, the point here =
+is
+>> to provide the basis for later subpage support, where the page status
+>> update can be more complex than current code.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  fs/btrfs/extent_io.c | 17 ++++++++++++-----
+>>  1 file changed, 12 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index b5b3700943e0..caafe44542e8 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -2849,6 +2849,17 @@ endio_readpage_release_extent(struct processed_=
+extent *processed,
+>>  	processed->uptodate =3D uptodate;
+>>  }
 >> =20
->>  	BUG_ON(sblock->page_count < 1);
->> @@ -1794,11 +1795,15 @@ static int scrub_checksum_data(struct scrub_bl=
-ock *sblock)
->> =20
->>  	shash->tfm =3D fs_info->csum_shash;
->>  	crypto_shash_init(shash);
->> -	crypto_shash_digest(shash, kaddr, PAGE_SIZE, csum);
->> +
->> +	/*
->> +	 * In scrub_pages() and scrub_pages_for_parity() we ensure
->> +	 * each spage only contains just one sector of data.
->> +	 */
->> +	crypto_shash_digest(shash, kaddr, sectorsize, csum);
+>> +static void endio_readpage_update_page_status(struct page *page, bool=
+ uptodate)
+>> +{
+>> +	if (uptodate) {
+>> +		SetPageUptodate(page);
+>> +	} else {
+>> +		ClearPageUptodate(page);
+>> +		SetPageError(page);
+>> +	}
+>> +	unlock_page(page);
 >=20
-> Temporary variable is not needed for single use (sectorsize).
+> That would be better left in the caller as it's quite important
+> information but the helper name does not say anything about it.
 >=20
 
-Personally speaking, whether such temporary variable is needed should be
-determined at compile time.
+It may be the case for now, but for incoming subpage, check the patch
+"btrfs: integrate page status update for read path into
+begin/end_page_read()" to see why we want page unlocking to be done here.=
 
-For reader, I didn't see anything wrong using such variable, especially
-it can save some "fs_info->" typing and saves some new line.
 
 Thanks,
 Qu
 
 
---DwxkYAV03pe08ySqnzVdqmHzzjUS3Ry5u--
+--gjGX6K0md98yCJJ0iENtSfZD817SprbCg--
 
---XcP5CzfNm8DJGYfqDYYBOqvR0vlkBmH4x
+--gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+1sHMACgkQwj2R86El
-/qiGswf/cmTLjoDI1SZKgvXEqlLWUwllhjhi3f433B5QFjvrGzDQvSi/9q03PMX8
-tdVrFSH6PdQPlWkJh6q7bnWUcP6mlMhUW00//gsDbXvsMpCb9zk4iA1HTu/780DE
-kcYlltZ9TOBnPcbrx53cJbu2ap/3h/SJrt57Man+AMBplIHJo7Z88VeWOGRzbv4T
-epHCwh7U28xyb5+q2Au0yVRkfXxUDRRt6koN5612ta3+rykU8yx59HGJ1qiYJgzL
-dXmRPJiKGAOv60TiPnwhsKxPRSzDA/CQYEjALu4ttsxaDArXOPcoCLMSNDUyzk9z
-R82DdjRf/PhRmzfWUDTEzrBTZTbkiQ==
-=ldLv
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+1sbwACgkQwj2R86El
+/qi+gAf/eLl5LeV13AY4wQ5GGhHzCqGO4RG0l+2qdxgS2bKcba2VTfxfOAnPbmM4
+hdZseUgPJdXBrsV08dfq3JisTTUs3mmR8emhmb15iGx6xv73IrZisoTKcNAj4Ujv
+3oPPT2oPRHsqneOJTRgBFe/iU1Uko4ZyLxGgWCNs6iFQ4cYyah22V0L1y2CgDur+
+3ByGz3Mq/3QDlbimzb12wiruA4tXiELqwiIv3B8L4yGwg//FXGmw0I3YXXkYt46A
+iJnZOV1dOHc3ZWfyYgPlepw1a3nqYadYS5tD1fy1Y4bSCFAWEuhx+ip1qWALKE+b
+5RQ0uiDii+xajusoQjhgvZYAUA0lVA==
+=f9om
 -----END PGP SIGNATURE-----
 
---XcP5CzfNm8DJGYfqDYYBOqvR0vlkBmH4x--
+--gFga59oG9Xg1dmAAF0pzRpXaNnCtfPkoM--
