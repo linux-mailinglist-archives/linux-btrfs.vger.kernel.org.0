@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C062B84C1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 20:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478B92B84C9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 20:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgKRTTa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 14:19:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
+        id S1727324AbgKRTTf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 14:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727292AbgKRTT3 (ORCPT
+        with ESMTP id S1727327AbgKRTTd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:19:29 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958ECC061A4F
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 11:19:29 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id i8so2030595pfk.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 11:19:29 -0800 (PST)
+        Wed, 18 Nov 2020 14:19:33 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667ECC0613D6
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 11:19:32 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id bj5so717809plb.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 11:19:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BlZlv11RxklRSJqWlFnwra0sdX85prYJ/jAmSAt0T7w=;
-        b=XS7pdPT+/PSzyYEKRQkL6sC1Ujnc2RsKA/Bc8a5wng1Ofh5bFe3vfMzquf9OsTYxh4
-         R2BsjUX698ORk+wXLNQwCdl5MSvz7YK2xGF4+jrfyy07kErVMaHyhhwZBXCmnzlCpTKg
-         U1J/jY0BL7S+6RRDe3XWgREr8brptvhZo0cVnFFRDx1nCejXVzzHdyWMbPQT33YHF4eI
-         yyA1Vu3K4ydiZxwNR2WaVSi1ECCuFV6F23LHH6hS+6ET9z8LUaDaUoqAmyoam6RhvCCg
-         rbvfQR5j7w+acWofcEz7E2Xvyje5mSV4dBpXr63WVtJNgvIKT0dvXEFEXb5e8HNh+kgz
-         ELTA==
+        bh=BdTEku7J/1wmWyPZ7NOZDpBLdc5B/RHj8uVOrA+In/8=;
+        b=roqYDntKPONpvGO4yrNgAnMiIvzffHjw1ItJjihDO0zAXyTqw7LaWVag9fQpotYUKd
+         YfVB6eFRNdZ5s6MEsHcrcqaJFcYKJyMEfNku/pCinewZLtzbI4FIGXBqhiZkvNOg3A3B
+         AAsgrrl7tDKgSZpiOIhXcoZ7ZDrPSrVaiXe02Q6CEiyYITVaT7I+IgwHFFaIsDnePx1e
+         WhG4EGML51kiebsnX5Z3iIDjhfpdcS/8oh1i0RFjCOfvE90xXoiHIWBp+6lBvrBiS0fQ
+         16Y7ZDhSWkcCR2EJ/g4EwNQ7a/o4RLSksiEaCh4pS2UuBOyhD8vOYbv7lmLaJGGSgA1B
+         RgFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BlZlv11RxklRSJqWlFnwra0sdX85prYJ/jAmSAt0T7w=;
-        b=DUOecL+iySY20qht03qEUi2JW1LBs6cjNzpHUL4n8UdMw6ghnBxgkC1Jy/opqqJYaJ
-         +1oneVZHIk9KGjecp6CHGsN5xpfmYJIbI/xPcuCV7GiDEIxA73O2AHDqQkTyzlRPm79I
-         +mZWi7BT3xK+oqq7oXsMW3YCOtPEbEfPpDUuDTiX3ke38WASEinGAjJ6VA8e5L+w4Y6O
-         /fNX7J7TJNeAVi6LyICgXRTLEOqRtc6T6Ww4O59YBLUhCeNENWidN7dcjVSjxihMPxcX
-         fAgMsPjQYHo9QHHvBvXKk+JpXwh/tLd5loYVn3ImOvfBMDdOHrx1xs8+ZWc43IgRBilv
-         ToFQ==
-X-Gm-Message-State: AOAM530EhqfzfLKuNjAI7lUnGQmndOF7EZumweGgha5ngGMsemt9782E
-        tJ+91zMPrUC/Db2cKn0lxmDrbnoY14i08w==
-X-Google-Smtp-Source: ABdhPJzvRG4XF5j1xk4Nqrsni3oqzZ3ncomfE9kYtmbBgT+DGsI/BSV1m/HtrVoALYlDRBR/XGbI0Q==
-X-Received: by 2002:a63:7a51:: with SMTP id j17mr9271233pgn.186.1605727168499;
-        Wed, 18 Nov 2020 11:19:28 -0800 (PST)
+        bh=BdTEku7J/1wmWyPZ7NOZDpBLdc5B/RHj8uVOrA+In/8=;
+        b=n4L+cbfCTLtNSkp0xzT415u7AZ9/h/m2TZLAlc+lIYeTOfA+fMwsCVhWBtOQnu2k/1
+         ZpczTN9TW0ZFw9QyGpv2Bk6FNOP6VQ2M9j3I8/gtdM4DTCKex8T0joMJVkenRBEaSEq7
+         641zsO+VQuKNfIv68WcJ5gPB0nqCx14mNbur2bKxx5f393GD37eGlZoRnwOGva29fggF
+         odR0sqME/i7Oi+niP/r1S3FWaRbW1xheehxfRM1ytBQVPCqLoqa9kui0WE3vyOBIql6d
+         9nQ5+b2UoQu+OENLKaltTKRWM6p6jX4W0dljTJf7PtliNITSBDFcCMdP4iaiEhwtCcBH
+         YDTA==
+X-Gm-Message-State: AOAM533IuJ0xrN/L0XcxCUbLO0VUI0jPM/ofgINbm/4IsgxnZZOJ1OMc
+        6Z2F2M2lFBvKMRnNbsLwMC6acIpCHNvtLw==
+X-Google-Smtp-Source: ABdhPJzLbh0+BDId9iRc2IZ73xfiwWhzpQU1qk3S1DKX/X95Jnkcr7rywmRMtBQwOSeUicRjgXvtWg==
+X-Received: by 2002:a17:902:6a83:b029:d5:e98f:2437 with SMTP id n3-20020a1709026a83b02900d5e98f2437mr5625373plk.38.1605727171319;
+        Wed, 18 Nov 2020 11:19:31 -0800 (PST)
 Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:8b43])
-        by smtp.gmail.com with ESMTPSA id l9sm3197221pjy.10.2020.11.18.11.19.26
+        by smtp.gmail.com with ESMTPSA id l9sm3197221pjy.10.2020.11.18.11.19.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 11:19:27 -0800 (PST)
+        Wed, 18 Nov 2020 11:19:29 -0800 (PST)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     linux-fsdevel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 5/5] btrfs: send: enable support for stream v2 and compressed writes
-Date:   Wed, 18 Nov 2020 11:18:52 -0800
-Message-Id: <836f1fbe6112ab89c6f592faaaea0dddb24fb8fe.1605723600.git.osandov@fb.com>
+Subject: [PATCH v2 06/13] btrfs-progs: receive: add stub implementation for pwritev2
+Date:   Wed, 18 Nov 2020 11:18:53 -0800
+Message-Id: <fbfec817eede33f202464cb240547993e4a0170a.1605723745.git.osandov@osandov.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1605723600.git.osandov@fb.com>
 References: <cover.1605723600.git.osandov@fb.com>
@@ -63,74 +63,103 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+From: Boris Burkov <borisb@fb.com>
 
-Now that the new support is implemented, allow the ioctl to accept the
-flags and update the version in sysfs.
+Encoded writes in receive will use pwritev2. It is possible that the
+system libc does not export this function, so we stub it out and detect
+whether to build the stub code with autoconf.
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
+This syscall has special semantics in x32 (no hi lo, just takes loff_t)
+so we have to detect that case and use the appropriate arguments.
+
+Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/send.c            | 10 +++++++++-
- fs/btrfs/send.h            |  2 +-
- include/uapi/linux/btrfs.h |  4 +++-
- 3 files changed, 13 insertions(+), 3 deletions(-)
+ Makefile     |  4 ++--
+ configure.ac |  1 +
+ stubs.c      | 24 ++++++++++++++++++++++++
+ stubs.h      | 11 +++++++++++
+ 4 files changed, 38 insertions(+), 2 deletions(-)
+ create mode 100644 stubs.c
+ create mode 100644 stubs.h
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 4d5cd90f4ef3..4b62bdbfbee0 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -670,7 +670,10 @@ static int send_header(struct send_ctx *sctx)
- 	struct btrfs_stream_header hdr;
+diff --git a/Makefile b/Makefile
+index 381b630d..505e39d7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -173,12 +173,12 @@ libbtrfs_objects = common/send-stream.o common/send-utils.o kernel-lib/rbtree.o
+ 		   kernel-lib/raid56.o kernel-lib/tables.o \
+ 		   common/device-scan.o common/path-utils.o \
+ 		   common/utils.o libbtrfsutil/subvolume.o libbtrfsutil/stubs.o \
+-		   crypto/hash.o crypto/xxhash.o $(CRYPTO_OBJECTS)
++		   crypto/hash.o crypto/xxhash.o $(CRYPTO_OBJECTS) stubs.o
+ libbtrfs_headers = common/send-stream.h common/send-utils.h send.h kernel-lib/rbtree.h btrfs-list.h \
+ 	       crypto/crc32c.h kernel-lib/list.h kerncompat.h \
+ 	       kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
+ 	       common/extent-cache.h kernel-shared/extent_io.h ioctl.h \
+-	       kernel-shared/ctree.h btrfsck.h version.h
++	       kernel-shared/ctree.h btrfsck.h version.h stubs.h
+ libbtrfsutil_major := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_MAJOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+ libbtrfsutil_minor := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_MINOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+ libbtrfsutil_patch := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_PATCH ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+diff --git a/configure.ac b/configure.ac
+index dd4adedf..eaf353cc 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -57,6 +57,7 @@ AC_CHECK_FUNCS([openat], [],
+ 	[AC_MSG_ERROR([cannot find openat() function])])
  
- 	strcpy(hdr.magic, BTRFS_SEND_STREAM_MAGIC);
--	hdr.version = cpu_to_le32(BTRFS_SEND_STREAM_VERSION);
-+	if (sctx->flags & BTRFS_SEND_FLAG_STREAM_V2)
-+		hdr.version = cpu_to_le32(2);
-+	else
-+		hdr.version = cpu_to_le32(1);
+ AC_CHECK_FUNCS([reallocarray])
++AC_CHECK_FUNCS([pwritev2])
  
- 	return write_buf(sctx->send_filp, &hdr, sizeof(hdr),
- 					&sctx->send_off);
-@@ -7434,6 +7437,11 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 		ret = -EINVAL;
- 		goto out;
- 	}
-+	if ((arg->flags & BTRFS_SEND_FLAG_COMPRESSED) &&
-+	    !(arg->flags & BTRFS_SEND_FLAG_STREAM_V2)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	sctx = kzalloc(sizeof(struct send_ctx), GFP_KERNEL);
- 	if (!sctx) {
-diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
-index 9f4f7b96b1eb..9c83e14a43b2 100644
---- a/fs/btrfs/send.h
-+++ b/fs/btrfs/send.h
-@@ -10,7 +10,7 @@
- #include "ctree.h"
- 
- #define BTRFS_SEND_STREAM_MAGIC "btrfs-stream"
--#define BTRFS_SEND_STREAM_VERSION 1
-+#define BTRFS_SEND_STREAM_VERSION 2
- 
- /*
-  * In send stream v1, no command is larger than 64k. In send stream v2, no limit
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index 51e69f28d22d..6f29c456e4d7 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -785,7 +785,9 @@ struct btrfs_ioctl_received_subvol_args {
- #define BTRFS_SEND_FLAG_MASK \
- 	(BTRFS_SEND_FLAG_NO_FILE_DATA | \
- 	 BTRFS_SEND_FLAG_OMIT_STREAM_HEADER | \
--	 BTRFS_SEND_FLAG_OMIT_END_CMD)
-+	 BTRFS_SEND_FLAG_OMIT_END_CMD | \
-+	 BTRFS_SEND_FLAG_STREAM_V2 | \
-+	 BTRFS_SEND_FLAG_COMPRESSED)
- 
- struct btrfs_ioctl_send_args {
- 	__s64 send_fd;			/* in */
+ m4_ifndef([PKG_PROG_PKG_CONFIG],
+   [m4_fatal([Could not locate the pkg-config autoconf
+diff --git a/stubs.c b/stubs.c
+new file mode 100644
+index 00000000..ab68a411
+--- /dev/null
++++ b/stubs.c
+@@ -0,0 +1,24 @@
++#if HAVE_PWRITEV2 != 1
++
++#include "stubs.h"
++
++#include "kerncompat.h"
++
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <sys/uio.h>
++
++ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
++		 int flags)
++{
++/* these conditions indicate an x32 system, which has a different pwritev2 */
++#if defined(__x86_64__) && defined(__ILP32__)
++	return syscall(SYS_pwritev2, fd, iov, iovcnt, offset, flags);
++#else
++	unsigned long hi = offset >> (BITS_PER_LONG / 2) >> (BITS_PER_LONG / 2);
++	unsigned long lo = offset;
++
++	return syscall(SYS_pwritev2, fd, iov, iovcnt, lo, hi, flags);
++#endif // X32
++}
++#endif /* HAVE_PWRIVEV2 */
+diff --git a/stubs.h b/stubs.h
+new file mode 100644
+index 00000000..b39f8a69
+--- /dev/null
++++ b/stubs.h
+@@ -0,0 +1,11 @@
++#ifndef _BTRFS_STUBS_H
++#define _BTRFS_STUBS_H
++
++#include <sys/types.h>
++
++struct iovec;
++
++ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
++		 int flags);
++
++#endif
 -- 
 2.29.2
 
