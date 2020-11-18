@@ -2,257 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8752B7C05
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 12:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A90E42B7C4B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 12:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgKRLAX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 06:00:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727750AbgKRLAW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 06:00:22 -0500
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BA39221FB
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 11:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605697220;
-        bh=FMWmQdl0hb1inN90C6HBQfUl8LAQB20EXhEYIL3B2po=;
-        h=From:To:Subject:Date:From;
-        b=kCsjFiKoBs0FqbtmosMlapN4oC9Mxr4ux035apjRlBP3MJ7+yoOCdIw5d3s3zA+Ws
-         juj4QycmLmxjc7x6876zpjMSnDqjCCT2qmC53q/PrZthZSofR2SY0fnIchZpl+7gK6
-         73knOzwPxP1H3E38zRRnPhytim8f/kA4X5jqj/d0=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: unlock path before checking if extent is shared during nocow writeback
-Date:   Wed, 18 Nov 2020 11:00:17 +0000
-Message-Id: <6fbdddf38bd353dba7eba2117573f3b74fb79e40.1605697030.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726780AbgKRLUH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 06:20:07 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:47262 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbgKRLUH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Nov 2020 06:20:07 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIBDoPB168790;
+        Wed, 18 Nov 2020 11:19:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=wNg6w4sEm7cVX/eob0utM9SLizao3fVQpAEsOaZmiVM=;
+ b=UR5zw+Ois3v37wZnKiuZDOn/fjsH9QPBG1B1gvYMpREzwcgBTtn3R+fQGcVoBFlH5z4j
+ q39K3xBRMLPCQbRGKDVSOgbJTuVixNI4cS1A0FmHQ+b3Kjju5mxCr+PUJLRnAHHcxlk8
+ Y4qTJ0MB0nz+x9IjZ3RslXR3OpYX7QZ5prFf2sHB1zsrVA801fSDQYh6njm3Fi1e0MdG
+ BWHdNLYketnZpoSgdSA38I5jJn3UrhGmKHRAudBkNoSgUSN4ohZfykot0ru4hOtUHf2n
+ mOonb2tXdObsA/1aLYFoVQeQZc+sXk7Y/VOaOQQLZKvGXNZIFlCSXAEJhox7fIq/u7R1 iQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 34t7vn7g97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 18 Nov 2020 11:19:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AIBEZha138948;
+        Wed, 18 Nov 2020 11:17:55 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 34ts5xcvyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 18 Nov 2020 11:17:55 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AIBHrM9022428;
+        Wed, 18 Nov 2020 11:17:54 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 18 Nov 2020 03:17:53 -0800
+Subject: Re: [PATCH v10 04/41] btrfs: get zone information of zoned block
+ devices
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <cf46f0aef5a214cae8bacb2be231efed5febef5f.1605007036.git.naohiro.aota@wdc.com>
+ <6df7390f-6656-4795-ac54-a99fdaf67ac6@oracle.com>
+ <20201112125734.dcxk5q7cuf5e7hje@naota.dhcp.fujisawa.hgst.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <f75372bf-9dad-1397-21f2-7bfb53c9a94f@oracle.com>
+Date:   Wed, 18 Nov 2020 19:17:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <20201112125734.dcxk5q7cuf5e7hje@naota.dhcp.fujisawa.hgst.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=2 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011180079
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9808 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=2
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011180079
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-When we are attempting to start writeback for an existing extent in NOCOW
-mode, at run_delalloc_nocow(), we must check if the extent is shared, and
-if it is, fallback to a COW write. However we do such check while still
-holding a read lock on the leaf that contains the file extent item, and
-that check, the call to btrfs_cross_ref_exist(), can take some time
-because:
 
-1) It needs to do a search on the extent tree, which obviously takes some
-   time, specially if delayed references are being run at the moment, as
-   we can block when trying to lock currently write locked btree nodes;
+Also, %device->fs_info is not protected. It is better to avoid using
+fs_info when we are still at open_fs_devices(). Yeah, the unknown part
+can be better. We need to fix it as a whole. For now, you can use
+something like...
 
-2) It needs to check the delayed references for any existing reference
-   for our data extent, this requires acquiring the delayed references'
-   spinlock and maybe block on the mutex of a delayed reference head in the
-   case where there is a delayed reference for our data extent, in the
-   worst case it makes us release the path on the extent tree and retry
-   the whole process again (going back to step 1).
+-------------------------
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 1223d5b0e411..e857bb304d28 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -130,19 +130,11 @@ int btrfs_get_dev_zone_info(struct btrfs_device 
+*device)
+          * (device <unknown>) ..."
+          */
 
-There are other operations we do while holding the leaf locked that can
-take some significant time as well (specially all together):
+-       rcu_read_lock();
+-       if (device->fs_info)
+-               btrfs_info(device->fs_info,
+-                       "host-%s zoned block device %s, %u zones of %llu 
+bytes",
+-                       bdev_zoned_model(bdev) == BLK_ZONED_HM ? 
+"managed" : "aware",
+-                       rcu_str_deref(device->name), zone_info->nr_zones,
+-                       zone_info->zone_size);
+-       else
+-               pr_info("BTRFS info: host-%s zoned block device %s, %u 
+zones of %llu bytes",
+-                       bdev_zoned_model(bdev) == BLK_ZONED_HM ? 
+"managed" : "aware",
+-                       rcu_str_deref(device->name), zone_info->nr_zones,
+-                       zone_info->zone_size);
+-       rcu_read_unlock();
++       btrfs_info_in_rcu(NULL,
++               "host-%s zoned block device %s, %u zones of %llu bytes",
++               bdev_zoned_model(bdev) == BLK_ZONED_HM ? "managed" : 
+"aware",
++               rcu_str_deref(device->name), zone_info->nr_zones,
++               zone_info->zone_size);
 
-* btrfs_extent_readonly() - to check if the block group containing the
-  extent is currently in RO mode. This requires taking a spinlock and
-  searching for the block group in a rbtree that can be big on large
-  filesystems;
+         return 0;
+  ---------------------------
 
-* csum_exist_in_range() - to search if there are any checksums in the
-  csum tree for the extent. Like before, this can take some time if we are
-  in a filesystem that has both COW and NOCOW files, in which case the
-  csum tree is not empty;
+Thanks, Anand
 
-* btrfs_inc_nocow_writers() - increment the number of nocow writers in the
-  block group that contains the data extent. Needs to acquire a spinlock
-  and search for the block group in a rbtree that can be big on large
-  filesystems.
 
-So just unlock the leaf (release the path) before doing all those checks,
-since we do not need it anymore. In case we can not do a NOCOW write for
-the extent, due to any of those checks failing, and the writeback range
-goes beyond that extents' length, we will do another btree search for the
-next file extent item.
-
-The following script that calls dbench was used to measure the impact of
-this change on a VM with 8 CPUs, 16Gb of ram, using a raw NVMe device
-directly (no intermediary filesystem on the host) and using a non-debug
-kernel (default configuration on Debian):
-
-  $ cat test-dbench.sh
-  #!/bin/bash
-
-  DEV=/dev/sdk
-  MNT=/mnt/sdk
-  MOUNT_OPTIONS="-o ssd -o nodatacow"
-  MKFS_OPTIONS="-m single -d single"
-
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  dbench -D $MNT -t 300 64
-
-  umount $MNT
-
-Before this change:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    9326331     0.317   399.957
- Close        6851198     0.002     6.402
- Rename        394894     2.621   402.819
- Unlink       1883131     0.931   398.082
- Deltree          256    19.160   303.580
- Mkdir            128     0.003     0.016
- Qpathinfo    8452314     0.068   116.133
- Qfileinfo    1481921     0.001     5.081
- Qfsinfo      1549963     0.002     4.444
- Sfileinfo     759679     0.084    17.079
- Find         3268168     0.396   118.196
- WriteX       4653310     0.056   110.993
- ReadX        14618818     0.005    23.314
- LockX          30364     0.003     0.497
- UnlockX        30364     0.002     1.720
- Flush         653619    16.954   569.299
-
-Throughput 966.651 MB/sec  64 clients  64 procs  max_latency=569.377 ms
-
-After this change:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    9710433     0.302   232.449
- Close        7132948     0.002    11.496
- Rename        411144     2.452   131.805
- Unlink       1960961     0.893   230.383
- Deltree          256    14.858   198.646
- Mkdir            128     0.002     0.005
- Qpathinfo    8800890     0.066   111.588
- Qfileinfo    1542556     0.001     3.852
- Qfsinfo      1613835     0.002     5.483
- Sfileinfo     790871     0.081    19.492
- Find         3402743     0.386   120.185
- WriteX       4842918     0.054   179.312
- ReadX        15220407     0.005    32.435
- LockX          31612     0.003     1.533
- UnlockX        31612     0.002     1.047
- Flush         680567    16.320   463.323
-
-Throughput 1016.59 MB/sec  64 clients  64 procs  max_latency=463.327 ms
-
-+5.0% throughput, -20.5% max latency
-
-Also, the following test using fio was run:
-
-  $ cat test-fio.sh
-  #!/bin/bash
-
-  DEV=/dev/sdk
-  MNT=/mnt/sdk
-  MOUNT_OPTIONS="-o ssd -o nodatacow"
-  MKFS_OPTIONS="-d single -m single"
-
-  if [ $# -ne 4 ]; then
-      echo "Use $0 NUM_JOBS FILE_SIZE FSYNC_FREQ BLOCK_SIZE"
-      exit 1
-  fi
-
-  NUM_JOBS=$1
-  FILE_SIZE=$2
-  FSYNC_FREQ=$3
-  BLOCK_SIZE=$4
-
-  cat <<EOF > /tmp/fio-job.ini
-  [writers]
-  rw=randwrite
-  fsync=$FSYNC_FREQ
-  fallocate=none
-  group_reporting=1
-  direct=0
-  bs=$BLOCK_SIZE
-  ioengine=sync
-  size=$FILE_SIZE
-  directory=$MNT
-  numjobs=$NUM_JOBS
-  EOF
-
-  echo
-  echo "Using fio config:"
-  echo
-  cat /tmp/fio-job.ini
-  echo
-  echo "mount options: $MOUNT_OPTIONS"
-  echo
-
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV > /dev/null
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  echo "Creating nodatacow files before fio runs..."
-  for ((i = 0; i < $NUM_JOBS; i++)); do
-      xfs_io -f -c "pwrite -b 128M 0 $FILE_SIZE" "$MNT/writers.$i.0"
-  done
-  sync
-
-  fio /tmp/fio-job.ini
-  umount $MNT
-
-Before this change:
-
-$ ./test-fio.sh 16 512M 2 4K
-(...)
-WRITE: bw=28.3MiB/s (29.6MB/s), 28.3MiB/s-28.3MiB/s (29.6MB/s-29.6MB/s), io=8192MiB (8590MB), run=289800-289800msec
-
-After this change:
-
-$ ./test-fio.sh 16 512M 2 4K
-(...)
-WRITE: bw=31.2MiB/s (32.7MB/s), 31.2MiB/s-31.2MiB/s (32.7MB/s-32.7MB/s), io=8192MiB (8590MB), run=262845-262845msec
-
-+9.7% throughput, -9.8% runtime
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0a2ee8983528..24c8ad7e0603 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1649,6 +1649,15 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 				goto out_check;
- 			if (extent_type == BTRFS_FILE_EXTENT_REG && !force)
- 				goto out_check;
-+
-+			/*
-+			 * The following checks can be expensive, as they need to
-+			 * take other locks and do btree or rbtree searches, so
-+			 * release the path to avoid blocking other tasks for too
-+			 * long.
-+			 */
-+			btrfs_release_path(path);
-+
- 			/* If extent is RO, we must COW it */
- 			if (btrfs_extent_readonly(fs_info, disk_bytenr))
- 				goto out_check;
-@@ -1724,12 +1733,12 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 			cur_offset = extent_end;
- 			if (cur_offset > end)
- 				break;
-+			if (!path->nodes[0])
-+				continue;
- 			path->slots[0]++;
- 			goto next_slot;
- 		}
- 
--		btrfs_release_path(path);
--
- 		/*
- 		 * COW range from cow_start to found_key.offset - 1. As the key
- 		 * will contain the beginning of the first extent that can be
--- 
-2.28.0
+On 12/11/20 8:57 pm, Naohiro Aota wrote:
+> On Thu, Nov 12, 2020 at 02:57:42PM +0800, Anand Jain wrote:
+>>
+>>
+>>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>>> index 8840a4fa81eb..ed55014fd1bd 100644
+>>> --- a/fs/btrfs/super.c
+>>> +++ b/fs/btrfs/super.c
+>>> @@ -2462,6 +2462,11 @@ static void __init btrfs_print_mod_info(void)
+>>>  #endif
+>>>  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+>>>              ", ref-verify=on"
+>>> +#endif
+>>> +#ifdef CONFIG_BLK_DEV_ZONED
+>>> +            ", zoned=yes"
+>>> +#else
+>>> +            ", zoned=no"
+>>>  #endif
+>>
+>> IMO, we don't need this, as most of the generic kernel will be compiled
+>> with the CONFIG_BLK_DEV_ZONED defined.
+>> For review purpose we may want to know if the mounted device
+>> is a zoned device. So log of zone device and its type may be useful
+>> when we have verified the zoned devices in the open_ctree().
+>>
+>>> @@ -374,6 +375,7 @@ void btrfs_free_device(struct btrfs_device *device)
+>>>      rcu_string_free(device->name);
+>>>      extent_io_tree_release(&device->alloc_state);
+>>>      bio_put(device->flush_bio);
+>>
+>>> +    btrfs_destroy_dev_zone_info(device);
+>>
+>> Free of btrfs_device::zone_info is already happening in the path..
+>>
+>> btrfs_close_one_device()
+>>   btrfs_destroy_dev_zone_info()
+>>
+>> We don't need this..
+>>
+>> btrfs_free_device()
+>>  btrfs_destroy_dev_zone_info()
+> 
+> Ah, yes, I once had it only in btrfs_free_device() and noticed that it does
+> not free the device zone info on umount. So, I added one in
+> btrfs_close_one_device() and forgot to remove the other one. I'll drop it
+> from btrfs_free_device().
+> 
+>>
+>>
+>>> @@ -2543,6 +2551,14 @@ int btrfs_init_new_device(struct btrfs_fs_info 
+>>> *fs_info, const char *device_path
+>>>      }
+>>>      rcu_assign_pointer(device->name, name);
+>>> +    device->fs_info = fs_info;
+>>> +    device->bdev = bdev;
+>>> +
+>>> +    /* Get zone type information of zoned block devices */
+>>> +    ret = btrfs_get_dev_zone_info(device);
+>>> +    if (ret)
+>>> +        goto error_free_device;
+>>> +
+>>>      trans = btrfs_start_transaction(root, 0);
+>>>      if (IS_ERR(trans)) {
+>>>          ret = PTR_ERR(trans);
+>>
+>> It should be something like goto error_free_zone from here.
+>>
+>>
+>>> @@ -2707,6 +2721,7 @@ int btrfs_init_new_device(struct btrfs_fs_info 
+>>> *fs_info, const char *device_path
+>>>          sb->s_flags |= SB_RDONLY;
+>>>      if (trans)
+>>>          btrfs_end_transaction(trans);
+>>
+>>
+>> error_free_zone:
+> 
+> And, I'll do something like this.
+> 
+>>> +    btrfs_destroy_dev_zone_info(device);
+>>>  error_free_device:
+>>>      btrfs_free_device(device);
+>>>  error:
+>>
+>> As mentioned we don't need btrfs_destroy_dev_zone_info()
+>> again in  btrfs_free_device(). Otherwise we end up calling
+>> btrfs_destroy_dev_zone_info twice here.
+>>
+>>
+>> Thanks, Anand
 
