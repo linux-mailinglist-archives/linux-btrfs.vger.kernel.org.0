@@ -2,132 +2,257 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002DE2B7BDA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 11:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8752B7C05
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 12:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgKRKxf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 05:53:35 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:59975 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbgKRKxf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:53:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1605696814; x=1637232814;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=rgwGT8KiAFHk1jNTvXftaQTbDPgJJyFHBSp2JvJOr0k=;
-  b=PTbaj9mDJxHKbTKsJV1hBgeOUX2Z2pXOGXJvhJ3D5ebCoOFpwyheulrL
-   sudF3eWhBkyvtAOwCQpQp9Xfq2meWn0TlmdaMy1TNGmGBdN7Zrt0IqvPU
-   MXrBoHmc4VZqV+KaXGg4JtrmKqOQaKPW+9MDYdztyU5IITycnoOTms5L5
-   BNBPL7xvtRmgVAsntjktSfFz8AREFp64H/xy8aNYC/GSW5NBPphb5exhX
-   3uxRxF5vB4rSCSvEqLnHtJDipN+TPEqtxcb/hQ/Y+d41AK8zmfkTHrjO4
-   yg2/uCdX4Z1t7aZ+idDdp8obAiSTLeDXZLSpM1VD6d3qrr7ZU0UgVjotN
-   w==;
-IronPort-SDR: UmKvHx8DmCmvIQD1UeVUx/IbDd4sCq1aJpQ2ZhrDeBjwoSf5xXanZ+wc8F0JPkH1QynJssABri
- VoEQbQQDXgelz/VSWLge9S58DFEMyEEGD9P6ZxOGioVaeZQ+BtAwuPZQlnnTJi9dT89ZyJSWsE
- T/eODMrJFi+sG996i14+Os2Oz/gP40o1iKjRBbwQMSmTG7Drn6qcps2/5JU5oi3Uw+4qsN8LiP
- 5G4qNNqeyRSNgxQOssVx2gpvcgncWI477xIKdADDL3/SqfrIaiK8bga8oTariKMd2BSOMVwxPP
- lg8=
-X-IronPort-AV: E=Sophos;i="5.77,486,1596470400"; 
-   d="scan'208";a="152783930"
-Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Nov 2020 18:53:34 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B6oOe9vyo79wx7RM0w572FcMRrTJ9GfG1jVBk+3OgMNlZOtnOVcZhpSqSdqeTN/guqeCf9EmUsW/X3dkJMagp5uUhCI5WpcHz6eGxZx36BeJyDgNdesClEzmTtW8fe3QyvqYxgAhY4WIqaNTrCimZeplm48qkyJ2Lb7JrxM9zKJ+zCnRWvKl/XQUR9Y0E6beq1hqIshZ6Ta4EVoKbqHwrMnOy32DcLd+oFSScfEMcWPsxp0hz0rIJ7R+fdw73jpuS7WNDP9NrZVDWr9VBQhFm6I2TEPBP9kvLIHZC3Q8J/8Y4andN1hy1MVwstrOMuP77VtioCc7nkrMvUGEyrisuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=txF1sql9Xh8NvisotRlkXp+IKBQKnabhvZ37UlzOzAI=;
- b=E6bXp+ch5R0+pkVxlVFS4wZpnFhnE8x0EdjfsCakNaMw8CmajAs4EnA4yye3jvMs+nuCzoqidNGbXq55n7pX3LIL9xzIzI/7ed2QI3EMwx5WjNFgLd/o+e6WBJbaqjBSbbqN+724aNTUxae7ctVoUDsgoImxtPFBlkU+66bggDspHTv+Rj9XfwOzhLGP6XZ1THQlxraah6FPqaytKdMrzYgPVqNtqxUDz20GfAWNik4xMIsuQHZJkkQt5rhqo2sxWXJO9bL4/NJVsnc5ciMGzIiA6ZpB+oyiSB2Jdyv0fvD2H6njAaGxMxrdXzk6nENMxj3wb41I8krvwvVtCGTSrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=txF1sql9Xh8NvisotRlkXp+IKBQKnabhvZ37UlzOzAI=;
- b=NNeaCVCVKJImNEPctayQPzKCIAuvQsuV1Q4hibDWCsHbb37K6p+lrakmaJ3vD17xaVhXIvnDmRJqMUMW9QDNapGjsYmk4QaVdhHZRgGIW74xV2uLlGSpvGxnL7IVWHxrxd+t9/ov6Cld+AxpifHpDo/eaHhgXVpDJ+E3D342k3U=
-Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
- by DM6PR04MB6171.namprd04.prod.outlook.com (2603:10b6:5:122::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Wed, 18 Nov
- 2020 10:53:33 +0000
-Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
- ([fe80::7036:fd5b:a165:9089]) by DM5PR0401MB3591.namprd04.prod.outlook.com
- ([fe80::7036:fd5b:a165:9089%7]) with mapi id 15.20.3564.026; Wed, 18 Nov 2020
- 10:53:33 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 03/14] btrfs: extent_io: introduce the skeleton of
- btrfs_subpage structure
-Thread-Topic: [PATCH 03/14] btrfs: extent_io: introduce the skeleton of
- btrfs_subpage structure
-Thread-Index: AQHWvYiiieuiPuOtHUKZSYdtSSBoFQ==
-Date:   Wed, 18 Nov 2020 10:53:33 +0000
-Message-ID: <DM5PR0401MB35912BB9DB2CC11CFFA7CBA39BE10@DM5PR0401MB3591.namprd04.prod.outlook.com>
-References: <20201118085319.56668-1-wqu@suse.com>
- <20201118085319.56668-4-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1528:b801:c926:e87b:b5da:7b60]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d83ce32b-4498-45fe-ed4c-08d88bb03159
-x-ms-traffictypediagnostic: DM6PR04MB6171:
-x-microsoft-antispam-prvs: <DM6PR04MB61719FBD57FDFF54DAB0EF409BE10@DM6PR04MB6171.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cvXPoOVzHd2KgRa4+OoENXqNPFigP7NcEl2jyanYDVLZtbpDj0RHcwq/RDkwePCJvxQpvDjuW/E3yh3ZKzuH51zvKQBSD8wtavkQ+qXMF6KaJls2tE9nQRFEOolHV+tWKam36u9UqccGxtkw+M/fEZoYzV1JI42YjSI79dq4+G5o2P9UJvYS9EAzSgu9DXAY6EVX5g+SACrXho+zbm65hDBSyjLJZX0xZImeqXlJ0ul8tCdBZwXkd6AtZ872c0kbWrq5W5Bka5vJJHB2BqsOokNiK0FMcnwpfXEgrjpYnHkv2tsST8SoRPk264ehaaS9ctu5pDjjHWUxn4SGsivwDw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(346002)(376002)(39860400002)(66946007)(478600001)(64756008)(66446008)(86362001)(66556008)(316002)(71200400001)(55016002)(9686003)(91956017)(53546011)(66476007)(186003)(33656002)(83380400001)(7696005)(110136005)(558084003)(8936002)(6506007)(76116006)(2906002)(8676002)(52536014)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?wFR/Y8EdS9TNanmxPSc9+z+ay08MaIr5KegYw5j3/kK+8rP3P5w63Ev8I4AC?=
- =?us-ascii?Q?GM7uDPh1sM7p/Xw9MvfM9JxaNq223GCQNzXaQf9EUIq1CqoZSZEbTrjMXnNv?=
- =?us-ascii?Q?IyGU0V8Pa79tRWE+mMAXt6NXJYOFvR2DyuwSYzb4OWpNiEw64Fj8npd1snmR?=
- =?us-ascii?Q?rJmTM49tIMZ5dbtUEM1V0pDooKKTwU+/FjJVoq3BPhFHK9f3VJduWWSKq62r?=
- =?us-ascii?Q?STf7MMCYHMLyY9qbe0V8HvlK68xjv1lJsoi+egKatB0YZGEHKFaRHL4HcvE0?=
- =?us-ascii?Q?ua35z2pdLjJZOVUWMnl3tnnAtdV0RUgJMlhapAbhJbqToumNeI7wQybGrN07?=
- =?us-ascii?Q?5bxaYNb6jSiXaTsleHfgBcDIWX2aGLwUVUUK79+uO9ObCMFivqcuMLQ0ls/6?=
- =?us-ascii?Q?C26vjmq2a/hJEE4Im/PO8Kxpj3y+eks9jW4IV3l5InInQRrUY0zQ6k8Ghid+?=
- =?us-ascii?Q?g24cypxCnGnz8kFwATD4nWRAEgdOz6xFaycLRMJQepD9r4P56BLIsSzHcEto?=
- =?us-ascii?Q?BU9vqK5DBjKMe8Fi5/LLoq3Quq5rIX7qmhK38Rg7s/5mL2AaovkHKXOGPOiv?=
- =?us-ascii?Q?00Dlg7MjgtXLfgyYEN4e8uptqnbbUh18AExCcyw1LHjaIA7I8p/kcIHubdma?=
- =?us-ascii?Q?f6EHbSoc/zhFhw0oUuWRuI1k6kagiiWQEFuFd9klZUzNJ3Uoj2xbRSAXIWQM?=
- =?us-ascii?Q?VEVPP3aUmyMGDm/ZTGca3TsiK1dcE/AxY2n6IRlL/Bywxpvc7TXVRWVwF3lO?=
- =?us-ascii?Q?qQzBxpTki/TA2vcfaCSAJwQOqjWGkxVHpGNBmpFSqrE8i2j3q/bsC3Y4QEhR?=
- =?us-ascii?Q?a21KWrDGptUTLT1TpFKBuTZcyTYqbmH0xQKPVYkhqD7ubiiaJmciDToXBzcH?=
- =?us-ascii?Q?OQPW55nluYb9DGC6hbOz1GAuzgJPp+AxF7wHvf/daFjue2Sx1uof3hYLsBhr?=
- =?us-ascii?Q?+kMx5226VoPLj6Bv3oZDWw=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d83ce32b-4498-45fe-ed4c-08d88bb03159
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2020 10:53:33.0217
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 21foaOk+sXQd18j72OIh1aO5hkinpSXvjXtjxEKqrYEC3mP4HAVIsv5x2UqDAnMacTZzZV0+7VVVxzuH3YUTnt4kr37hRk8zM3SrqPs8aBg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6171
+        id S1727795AbgKRLAX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 06:00:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727750AbgKRLAW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Nov 2020 06:00:22 -0500
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BA39221FB
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 11:00:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605697220;
+        bh=FMWmQdl0hb1inN90C6HBQfUl8LAQB20EXhEYIL3B2po=;
+        h=From:To:Subject:Date:From;
+        b=kCsjFiKoBs0FqbtmosMlapN4oC9Mxr4ux035apjRlBP3MJ7+yoOCdIw5d3s3zA+Ws
+         juj4QycmLmxjc7x6876zpjMSnDqjCCT2qmC53q/PrZthZSofR2SY0fnIchZpl+7gK6
+         73knOzwPxP1H3E38zRRnPhytim8f/kA4X5jqj/d0=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: unlock path before checking if extent is shared during nocow writeback
+Date:   Wed, 18 Nov 2020 11:00:17 +0000
+Message-Id: <6fbdddf38bd353dba7eba2117573f3b74fb79e40.1605697030.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 18/11/2020 09:55, Qu Wenruo wrote:=0A=
-> +	ASSERT(subpage && bitmap_empty(subpage->tree_block_bitmap,=0A=
-> +				       BTRFS_SUBPAGE_BITMAP_SIZE));=0A=
-=0A=
-Hmm from this patch it's not clear to me, what the bitmap is=0A=
-supposed to do. Maybe add this ASSERT() to the patch manipulating the bitma=
-p.=0A=
+From: Filipe Manana <fdmanana@suse.com>
+
+When we are attempting to start writeback for an existing extent in NOCOW
+mode, at run_delalloc_nocow(), we must check if the extent is shared, and
+if it is, fallback to a COW write. However we do such check while still
+holding a read lock on the leaf that contains the file extent item, and
+that check, the call to btrfs_cross_ref_exist(), can take some time
+because:
+
+1) It needs to do a search on the extent tree, which obviously takes some
+   time, specially if delayed references are being run at the moment, as
+   we can block when trying to lock currently write locked btree nodes;
+
+2) It needs to check the delayed references for any existing reference
+   for our data extent, this requires acquiring the delayed references'
+   spinlock and maybe block on the mutex of a delayed reference head in the
+   case where there is a delayed reference for our data extent, in the
+   worst case it makes us release the path on the extent tree and retry
+   the whole process again (going back to step 1).
+
+There are other operations we do while holding the leaf locked that can
+take some significant time as well (specially all together):
+
+* btrfs_extent_readonly() - to check if the block group containing the
+  extent is currently in RO mode. This requires taking a spinlock and
+  searching for the block group in a rbtree that can be big on large
+  filesystems;
+
+* csum_exist_in_range() - to search if there are any checksums in the
+  csum tree for the extent. Like before, this can take some time if we are
+  in a filesystem that has both COW and NOCOW files, in which case the
+  csum tree is not empty;
+
+* btrfs_inc_nocow_writers() - increment the number of nocow writers in the
+  block group that contains the data extent. Needs to acquire a spinlock
+  and search for the block group in a rbtree that can be big on large
+  filesystems.
+
+So just unlock the leaf (release the path) before doing all those checks,
+since we do not need it anymore. In case we can not do a NOCOW write for
+the extent, due to any of those checks failing, and the writeback range
+goes beyond that extents' length, we will do another btree search for the
+next file extent item.
+
+The following script that calls dbench was used to measure the impact of
+this change on a VM with 8 CPUs, 16Gb of ram, using a raw NVMe device
+directly (no intermediary filesystem on the host) and using a non-debug
+kernel (default configuration on Debian):
+
+  $ cat test-dbench.sh
+  #!/bin/bash
+
+  DEV=/dev/sdk
+  MNT=/mnt/sdk
+  MOUNT_OPTIONS="-o ssd -o nodatacow"
+  MKFS_OPTIONS="-m single -d single"
+
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV
+  mount $MOUNT_OPTIONS $DEV $MNT
+
+  dbench -D $MNT -t 300 64
+
+  umount $MNT
+
+Before this change:
+
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    9326331     0.317   399.957
+ Close        6851198     0.002     6.402
+ Rename        394894     2.621   402.819
+ Unlink       1883131     0.931   398.082
+ Deltree          256    19.160   303.580
+ Mkdir            128     0.003     0.016
+ Qpathinfo    8452314     0.068   116.133
+ Qfileinfo    1481921     0.001     5.081
+ Qfsinfo      1549963     0.002     4.444
+ Sfileinfo     759679     0.084    17.079
+ Find         3268168     0.396   118.196
+ WriteX       4653310     0.056   110.993
+ ReadX        14618818     0.005    23.314
+ LockX          30364     0.003     0.497
+ UnlockX        30364     0.002     1.720
+ Flush         653619    16.954   569.299
+
+Throughput 966.651 MB/sec  64 clients  64 procs  max_latency=569.377 ms
+
+After this change:
+
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    9710433     0.302   232.449
+ Close        7132948     0.002    11.496
+ Rename        411144     2.452   131.805
+ Unlink       1960961     0.893   230.383
+ Deltree          256    14.858   198.646
+ Mkdir            128     0.002     0.005
+ Qpathinfo    8800890     0.066   111.588
+ Qfileinfo    1542556     0.001     3.852
+ Qfsinfo      1613835     0.002     5.483
+ Sfileinfo     790871     0.081    19.492
+ Find         3402743     0.386   120.185
+ WriteX       4842918     0.054   179.312
+ ReadX        15220407     0.005    32.435
+ LockX          31612     0.003     1.533
+ UnlockX        31612     0.002     1.047
+ Flush         680567    16.320   463.323
+
+Throughput 1016.59 MB/sec  64 clients  64 procs  max_latency=463.327 ms
+
++5.0% throughput, -20.5% max latency
+
+Also, the following test using fio was run:
+
+  $ cat test-fio.sh
+  #!/bin/bash
+
+  DEV=/dev/sdk
+  MNT=/mnt/sdk
+  MOUNT_OPTIONS="-o ssd -o nodatacow"
+  MKFS_OPTIONS="-d single -m single"
+
+  if [ $# -ne 4 ]; then
+      echo "Use $0 NUM_JOBS FILE_SIZE FSYNC_FREQ BLOCK_SIZE"
+      exit 1
+  fi
+
+  NUM_JOBS=$1
+  FILE_SIZE=$2
+  FSYNC_FREQ=$3
+  BLOCK_SIZE=$4
+
+  cat <<EOF > /tmp/fio-job.ini
+  [writers]
+  rw=randwrite
+  fsync=$FSYNC_FREQ
+  fallocate=none
+  group_reporting=1
+  direct=0
+  bs=$BLOCK_SIZE
+  ioengine=sync
+  size=$FILE_SIZE
+  directory=$MNT
+  numjobs=$NUM_JOBS
+  EOF
+
+  echo
+  echo "Using fio config:"
+  echo
+  cat /tmp/fio-job.ini
+  echo
+  echo "mount options: $MOUNT_OPTIONS"
+  echo
+
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV > /dev/null
+  mount $MOUNT_OPTIONS $DEV $MNT
+
+  echo "Creating nodatacow files before fio runs..."
+  for ((i = 0; i < $NUM_JOBS; i++)); do
+      xfs_io -f -c "pwrite -b 128M 0 $FILE_SIZE" "$MNT/writers.$i.0"
+  done
+  sync
+
+  fio /tmp/fio-job.ini
+  umount $MNT
+
+Before this change:
+
+$ ./test-fio.sh 16 512M 2 4K
+(...)
+WRITE: bw=28.3MiB/s (29.6MB/s), 28.3MiB/s-28.3MiB/s (29.6MB/s-29.6MB/s), io=8192MiB (8590MB), run=289800-289800msec
+
+After this change:
+
+$ ./test-fio.sh 16 512M 2 4K
+(...)
+WRITE: bw=31.2MiB/s (32.7MB/s), 31.2MiB/s-31.2MiB/s (32.7MB/s-32.7MB/s), io=8192MiB (8590MB), run=262845-262845msec
+
++9.7% throughput, -9.8% runtime
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/inode.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0a2ee8983528..24c8ad7e0603 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1649,6 +1649,15 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 				goto out_check;
+ 			if (extent_type == BTRFS_FILE_EXTENT_REG && !force)
+ 				goto out_check;
++
++			/*
++			 * The following checks can be expensive, as they need to
++			 * take other locks and do btree or rbtree searches, so
++			 * release the path to avoid blocking other tasks for too
++			 * long.
++			 */
++			btrfs_release_path(path);
++
+ 			/* If extent is RO, we must COW it */
+ 			if (btrfs_extent_readonly(fs_info, disk_bytenr))
+ 				goto out_check;
+@@ -1724,12 +1733,12 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 			cur_offset = extent_end;
+ 			if (cur_offset > end)
+ 				break;
++			if (!path->nodes[0])
++				continue;
+ 			path->slots[0]++;
+ 			goto next_slot;
+ 		}
+ 
+-		btrfs_release_path(path);
+-
+ 		/*
+ 		 * COW range from cow_start to found_key.offset - 1. As the key
+ 		 * will contain the beginning of the first extent that can be
+-- 
+2.28.0
+
