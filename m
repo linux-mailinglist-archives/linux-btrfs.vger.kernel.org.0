@@ -2,161 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245092B7B33
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 11:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A612B7B46
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 11:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgKRKXw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 05:23:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20806 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727453AbgKRKXv (ORCPT
+        id S1727648AbgKRK0d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 05:26:33 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:4400 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726389AbgKRK0b (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 05:23:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605695030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=KN+5HUvP+A8cHl8FssYWxNr+Y8vHNPdppniK1yZaF7I=;
-        b=Ln8uejFTvMlXWtMySdntLnubHgHFzZECU26CxpaWerM4DSgWYXI8AnpVvBjkL5Yy8OzU46
-        fX7FGmjGjInpq2V9CwA3I4co1L4Xo+QeZAU7yWOvuO0CwFOV4ABaz4yQBHFFbxdzTvdyy7
-        5429u1TtZ85fQi5TSG3zG1t2657+ZBA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-YWOGrX_EP_GQTbMqWA_1aA-1; Wed, 18 Nov 2020 05:23:46 -0500
-X-MC-Unique: YWOGrX_EP_GQTbMqWA_1aA-1
-Received: by mail-wm1-f70.google.com with SMTP id o203so673906wmo.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Nov 2020 02:23:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KN+5HUvP+A8cHl8FssYWxNr+Y8vHNPdppniK1yZaF7I=;
-        b=uRbn/1IDBxBYyUhPWAkeq7E94QNX95K4s2nmrZ485kRpcbqOVlR2tOvvLl5X1AWb2C
-         yPdG7MBL6M/bjuL0j4OetpIcd1Vg2iWeMYkJdusu2B+SDFq569U+Hta3FBqCPW04M+na
-         yS0bn8bmKgTrB2CHEhFepcjQH+V83WIAcYPDUhtSWpZsBNnmji62cxMJ0/oivjX7LYrG
-         rqo6RL/+rVa2WF05is9pFhs3KzVaN1UNhIc1ih8Te9Ofm5gmKkNUIbfr6jJd2pIt1aes
-         ZhFgAHyh8e/zfnD7HzTEqw2xvLBPb86Kc+SgVo6bQJWpuQjwxKXTclwfskjIB3NZTPOY
-         vqzw==
-X-Gm-Message-State: AOAM53091VWEQ1xNqHE7+7DAaasOd6IpbSjjAeAv81NuSuZ0yFxyLpoA
-        PyulVhf30NU8LluP42QqZAXhxsurAQ6zA5ykb1Z2X4zhEjGyTlmpjKc6yZvXvXkf9/G2HPBF6ZS
-        fQzPtS6kgtQLTJpEn0Lv0rww=
-X-Received: by 2002:adf:bb06:: with SMTP id r6mr3981294wrg.286.1605695025094;
-        Wed, 18 Nov 2020 02:23:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyqSfm3c6hSSQi8nwMO35nbH3ss8MJuxoX0cI6MOjeBwOLrdBzI63FCbVBsLIR2tDA/rY4fVA==
-X-Received: by 2002:adf:bb06:: with SMTP id r6mr3981283wrg.286.1605695024863;
-        Wed, 18 Nov 2020 02:23:44 -0800 (PST)
-Received: from omos.redhat.com ([2a02:8308:b103:4000:e83d:a4fb:e589:6902])
-        by smtp.gmail.com with ESMTPSA id l13sm33879751wrm.24.2020.11.18.02.23.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Nov 2020 02:23:44 -0800 (PST)
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Richard Haines <richard_c_haines@btinternet.com>
-Subject: [PATCH] vfs: fix fsconfig(2) LSM mount option handling for btrfs
-Date:   Wed, 18 Nov 2020 11:23:42 +0100
-Message-Id: <20201118102342.154277-1-omosnace@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 18 Nov 2020 05:26:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1605696244; x=1637232244;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=icYTXb8frBPUuph2I6Cn1JGGorAmF+UoXM3uO/qEO3s=;
+  b=GwdNdaULIBIdd82fF1Ccj4HgrJm5sQ8C/H6Bcd+aHxFhcGVgghMoqSNv
+   Ms3FFLrjwofh1mT5H6HFw3X5liDY+ag1Of8NDqkiY+ZeuULd4BOGnhTp5
+   UDR2CMG68vbxX/dUU7td/JzbI5PUv3CxF1NMjkVfZ+1pTx7DFYTNabeMR
+   /D9iiLJ9Xx8VQj6KXkputAlFgXPXgqVVuphqvDe3o3IsQ7NoEIT4BKLvE
+   vE2lPBBw+1me/KZtPqnscPnHVveVPET+jV4UF/O48LkIkB3SOU5nasV7R
+   Cbb3eRKFXEzNYDfoxS8aB4hLNpZnj8oaaIluSKK7xdDJ9T694CZl8xPAv
+   A==;
+IronPort-SDR: yUsJZOl8Y0iHMDyrZ68OT7hS9d8u0d5GPgLGxIITGXKwDQl+m1mrilgUWHaX26FcjvVJcHL/Ty
+ R2vYSr10KFyP0XTvAjMHbdLZs1F5XAIGCbuzRn2ybzQWv/DTCsUVN6Wb4qrx++J9BE6bUZ5u3k
+ uTR1jA+x+/f4kn6Y2rybUZS5Iu5w+1RCQEhJDwz9bsygMOCazprkBBjpIjIghRLEZ74cCmwZYf
+ YcbvGCzsnMQeSIUn8Um/A3BQaNtI00mUSfvQYOtg1BZjz1JyOGFjPqp+k4b1ToRxM6176UnCK2
+ x98=
+X-IronPort-AV: E=Sophos;i="5.77,486,1596470400"; 
+   d="scan'208";a="256464983"
+Received: from mail-bn8nam11lp2172.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.172])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Nov 2020 18:44:03 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aBzF6V2LS32eo7DweThoPL/2ES5IVoZZ1IM7HgK23nhdj6Yy+nwcVMgp1VJdPjQPoo1+iSFFGiY6msnT7NQQdmmQXwSv8g20+QJTEnokCBG/OuATCGw85sq+lk4rMTwb5lOLldwjQfanQuOjk1AUj2EvATBtXXYT+5qY4THn85VweQJniO+jGnh50lLuW9NmVbTTAVm/ijRJ+7Wax/lkn7R59TjhJtTUXtAhSsBm+Z7ulVyq6pGjaKZ4gH8f9165CfunmBnGbMU3R+j/Zsl1w0DwRDMy+WDwhouu+Jy3gxgeptCKEQ+eQeq9iOx0wb/kADMFgT8H4udNMJXS2ycnVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=icYTXb8frBPUuph2I6Cn1JGGorAmF+UoXM3uO/qEO3s=;
+ b=A71byo71tRN058b1jrzRNB6895GWXWyclr0l3zb/5uM34wwzQpkx7yUAJg2AqmWCY2ScMkpxsq5r4xUjTN9hO7dHtkEuH1Z+jy7OVL1RNoeBIURE2TF1Lz4sqsNfh2Jh/YEuMJWUMuAniZLwqLlDXZlhquDmeEjxr1qpdf8taBYDIVCnnNDXjhuxgYeZ2OtGql0li1TkLcNA/GjWW5EC5E7HrmXO6OEdUW5CMmRTvZdBrSgJlNjlDhX0PeSy3bQNkdXR0XvBR50cykm7Iw0JXIx4rymLrwD4gFy+35Jc8pArSNilPwd9H9YOV7qD9G+Uf26yJi4xqHX5YGdTg+9Tbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=icYTXb8frBPUuph2I6Cn1JGGorAmF+UoXM3uO/qEO3s=;
+ b=ah2uR3t+OEuAV4fqDJyEuairzoSIJ55sCrgNf5LuOXaP13kmQQXgQs1RSmM01D5Qh79JYbH26lKTcLiXm888Su3LDLzHNG0th50R9SHXvKe8kXRTBbKBvIgB7gMlCjxAbovDP6/maMNlsJyYCw8Ikz7VCWz9HJxGHff7MFzY5m8=
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
+ by DM5PR04MB0602.namprd04.prod.outlook.com (2603:10b6:3:a3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.28; Wed, 18 Nov
+ 2020 10:26:29 +0000
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::7036:fd5b:a165:9089]) by DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::7036:fd5b:a165:9089%7]) with mapi id 15.20.3564.026; Wed, 18 Nov 2020
+ 10:26:29 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 02/14] btrfs: extent_io: introduce a helper to grab an
+ existing extent buffer from a page
+Thread-Topic: [PATCH 02/14] btrfs: extent_io: introduce a helper to grab an
+ existing extent buffer from a page
+Thread-Index: AQHWvYiitEHiToTl7k6sZw3Ut3UqXg==
+Date:   Wed, 18 Nov 2020 10:26:29 +0000
+Message-ID: <DM5PR0401MB359190449622AD194CA77B9C9BE10@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <20201118085319.56668-1-wqu@suse.com>
+ <20201118085319.56668-3-wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1528:b801:c926:e87b:b5da:7b60]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e69267db-eff0-47ad-2bf5-08d88bac69ba
+x-ms-traffictypediagnostic: DM5PR04MB0602:
+x-microsoft-antispam-prvs: <DM5PR04MB06020330C11CB8B6801383219BE10@DM5PR04MB0602.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2/9neNrqcyGaH39MxrEJ0Us50A7sFZwxAg8PHdvW+/PEDvT45S8dSxwRThC/Qq8uwH2F/VP/3E3P0R4BSxrHIkDjdiE+c931uUMiiaexYwA2xpDo3VENIgT4QN7tHwtZa9rFve+nzd+1oD6WwMvIAqAP9xGzwayYjrOYLobzNwzx/0Cd8RSNT5pkT0PMOuD7YAxFB0NceuTSLsfUT92/qv0pcna8BNv986pW9OUZwVkuoZxaChOaN9bF28s+bRtjT1iQoPofi2O4mGIByUlorBbxV7Ur1xYzE8jeI7gnkHho9V/i5UIT4yE71beAvKetcGb7J7PI1gHkzAzUx2m6zA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(8676002)(558084003)(91956017)(33656002)(55016002)(66446008)(9686003)(19618925003)(478600001)(66476007)(110136005)(52536014)(316002)(66946007)(186003)(64756008)(66556008)(76116006)(8936002)(7696005)(86362001)(2906002)(6506007)(71200400001)(5660300002)(4270600006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?3eyeIb7kziY5yQMN6k3AQRrrdfDHridNpMlKi0GqTEdxIoNFmOY9lwZEb9k8?=
+ =?us-ascii?Q?9zssS2O/MyPnUBH18rlgkdYJL4Sx/82SzuZ+9Fw6Rxh436x+ouuuPICwfwiJ?=
+ =?us-ascii?Q?OyndjZwTkCtF5q2e/3r0nRrORcmE/a1GvqYa+SvbD86/yoafZzmZVFrUwkYu?=
+ =?us-ascii?Q?uDZcHdLclefqQglr/gOYqtpT/+S/3IOTr+wYuf7k/QFyTLBuomAquxwxquTr?=
+ =?us-ascii?Q?MH5Srjm1MCc2sXDvd8HIks4WC8zueyRBiSl4yxoGQOlnGpePQ94mH73zhIrR?=
+ =?us-ascii?Q?GAWsuecP2mOskt8VWC0ejaoneri3FKk6Jk21NKYEHWuTWqNmBHR3mW2Fb6zj?=
+ =?us-ascii?Q?WvJJnWrkaPEpbagw/tHjA8GCo003AaUTkF0q/PMAb79thgQvf4Jf/nihVSmk?=
+ =?us-ascii?Q?ET208Vf+WbmqByyNbWB3hhihwdXxwtcsmsF5Uvo4Cay30cEhOQvCH8Iko0Gv?=
+ =?us-ascii?Q?34f5UuwZuQIZPhjhpMwpcDly/pp2rU85KhzZSXix/PZcFPQ9356LtC5IWD4i?=
+ =?us-ascii?Q?73dKCoRoehjpQKt9sRdlVKxwjL2iD4aCA9WZ8rfikvJEM90nbSJBnNBrBfF3?=
+ =?us-ascii?Q?RkuViPPI2Lvh+RnRpdjZZw+w4nGVJgyZwkH4JpoD4uQZFgWbTW6HY9ZOtEVr?=
+ =?us-ascii?Q?yF4EELdbkHbv+N/iae3n18AQDbssOeHrCQ7gvxDt3+nSU5Eb2VmoIcBhnNZX?=
+ =?us-ascii?Q?PviFsss23x6yO1Wrt/PpJCzaLmAJjkhvCkCMbkWQdELbv5v+Ewydh0GrP8v0?=
+ =?us-ascii?Q?jJ8jgENN39Ja+qLHFBELxqIZb+F//2c8TCBJcLgfM+aOGTnz2Nx1VAzvI2wz?=
+ =?us-ascii?Q?+hWxXyjkjjgl8hsWwBcvPzE87NWp5flT2tVTcrOczWod7HCo5GelPb7AIGZN?=
+ =?us-ascii?Q?x8HRghBzPbyCKXSUNTtUiCxBY0+Z/EoauFWcz5jKHjZGsNbYgQ0cUjOZDOrV?=
+ =?us-ascii?Q?XumI4Vwoi9q90O2hQ4zeNw=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e69267db-eff0-47ad-2bf5-08d88bac69ba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2020 10:26:29.6080
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rnN64QjD+JMHdMESF0dBmPDVWC5vpw9G30S3uznU24FZII/H/gr84+V6G9GZEIJ4iqtftYgIcTXHcE5cOvj6LHOpU6cRLBlqqoIbyGjLz4w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB0602
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When SELinux security options are passed to btrfs via fsconfig(2) rather
-than via mount(2), the operation aborts with an error. What happens is
-roughly this sequence:
-
-1. vfs_parse_fs_param() eats away the LSM options and parses them into
-   fc->security.
-2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
-   nothing to btrfs.
-[here btrfs calls another layer of vfs_kern_mount(), but let's ignore
- that for simplicity]
-3. btrfs calls security_sb_set_mnt_opts() with empty options.
-4. vfs_get_tree() then calls its own security_sb_set_mnt_opts() with the
-   options stashed in fc->security.
-5. SELinux doesn't like that different options were used for the same
-   superblock and returns -EINVAL.
-
-In the case of mount(2), the options are parsed by
-legacy_parse_monolithic(), which skips the eating away of security
-opts because of the FS_BINARY_MOUNTDATA flag, so they are passed to the
-FS via ctx->legacy_data. The second call to security_sb_set_mnt_opts()
-(from vfs_get_tree()) now passes empty opts, but the non-empty -> empty
-sequence is allowed by SELinux for the FS_BINARY_MOUNTDATA case.
-
-It is a total mess, but the only sane fix for now seems to be to skip
-processing the security opts in vfs_parse_fs_param() if the fc has
-legacy opts set AND the fs specfies the FS_BINARY_MOUNTDATA flag. This
-combination currently matches only btrfs and coda. For btrfs this fixes
-the fsconfig(2) behavior, and for coda it makes setting security opts
-via fsconfig(2) fail the same way as it would with mount(2) (because
-FS_BINARY_MOUNTDATA filesystems are expected to call the mount opts LSM
-hooks themselves, but coda never cared enough to do that). I believe
-that is an acceptable state until both filesystems (or at least btrfs)
-are converted to the new mount API (at which point btrfs won't need to
-pretend it takes binary mount data any more and also won't need to call
-the LSM hooks itself, assuming it will pass the fc->security information
-properly).
-
-Note that we can't skip LSM opts handling in vfs_parse_fs_param() solely
-based on FS_BINARY_MOUNTDATA because that would break NFS.
-
-See here for the original report and reproducer:
-https://lore.kernel.org/selinux/c02674c970fa292610402aa866c4068772d9ad4e.camel@btinternet.com/
-
-Reported-by: Richard Haines <richard_c_haines@btinternet.com>
-Fixes: 3e1aeb00e6d1 ("vfs: Implement a filesystem superblock creation/configuration context")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
----
- fs/fs_context.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
-
-diff --git a/fs/fs_context.c b/fs/fs_context.c
-index 2834d1afa6e80..cfc5ee2e381ef 100644
---- a/fs/fs_context.c
-+++ b/fs/fs_context.c
-@@ -106,12 +106,28 @@ int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
- 	if (ret != -ENOPARAM)
- 		return ret;
- 
--	ret = security_fs_context_parse_param(fc, param);
--	if (ret != -ENOPARAM)
--		/* Param belongs to the LSM or is disallowed by the LSM; so
--		 * don't pass to the FS.
--		 */
--		return ret;
-+	/*
-+	 * In the legacy+binary mode, skip the security_fs_context_parse_param()
-+	 * call and let the legacy handler process also the security options.
-+	 * It will format them into the monolithic string, where the FS can
-+	 * process them (with FS_BINARY_MOUNTDATA it is expected to do it).
-+	 *
-+	 * Currently, this matches only btrfs and coda. Coda is broken with
-+	 * fsconfig(2) anyway, because it does actually take binary data. Btrfs
-+	 * only *pretends* to take binary data to work around the SELinux's
-+	 * no-remount-with-different-options check, so this allows it to work
-+	 * with fsconfig(2) properly.
-+	 *
-+	 * Once btrfs is ported to the new mount API, this hack can be reverted.
-+	 */
-+	if (fc->ops != &legacy_fs_context_ops || !(fc->fs_type->fs_flags & FS_BINARY_MOUNTDATA)) {
-+		ret = security_fs_context_parse_param(fc, param);
-+		if (ret != -ENOPARAM)
-+			/* Param belongs to the LSM or is disallowed by the LSM;
-+			 * so don't pass to the FS.
-+			 */
-+			return ret;
-+	}
- 
- 	if (fc->ops->parse_param) {
- 		ret = fc->ops->parse_param(fc, param);
--- 
-2.26.2
-
+Looks ok,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
