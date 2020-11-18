@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D842B7F9A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 15:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C6B2B8189
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Nov 2020 17:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgKROmI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 18 Nov 2020 09:42:08 -0500
-Received: from tigeramira.ro ([88.158.78.30]:59498 "EHLO mail.tigeramira.ro"
-        rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgKROmI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:42:08 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.tigeramira.ro (Postfix) with ESMTP id 550CBA54658
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Nov 2020 18:07:32 +0200 (EET)
-Received: from mail.tigeramira.ro ([127.0.0.1])
-        by localhost (mail.tigeramira.ro [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id GgrPH4KdnyBs for <linux-btrfs@vger.kernel.org>;
-        Tue, 17 Nov 2020 18:07:29 +0200 (EET)
-Received: from mail.tigeramira.ro (localhost [127.0.0.1])
-        by mail.tigeramira.ro (Postfix) with ESMTP id 94706C981E0
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Nov 2020 15:17:24 +0200 (EET)
-Received: from [156.96.44.214] (unknown [192.168.12.254])
-        by mail.tigeramira.ro (Postfix) with ESMTP id 8BDDC914257
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Nov 2020 13:31:13 +0200 (EET)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726689AbgKRQMG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Nov 2020 11:12:06 -0500
+Received: from twin.jikos.cz ([91.219.245.39]:34059 "EHLO twin.jikos.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726092AbgKRQMG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:12:06 -0500
+X-Greylist: delayed 387 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Nov 2020 11:12:05 EST
+Received: from twin.jikos.cz (dave@localhost [127.0.0.1])
+        by twin.jikos.cz (8.13.6/8.13.6) with ESMTP id 0AIGBvPM016012
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 18 Nov 2020 17:11:58 +0100
+Received: (from dave@localhost)
+        by twin.jikos.cz (8.13.6/8.13.6/Submit) id 0AIGBvMP016011;
+        Wed, 18 Nov 2020 17:11:57 +0100
+Date:   Wed, 18 Nov 2020 17:11:57 +0100
+From:   David Sterba <dave@jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH v2 15/24] btrfs: extent-io: make type of
+ extent_state::state to be at least 32 bits
+Message-ID: <20201118161157.bazycid5hnz4iapf@twin.jikos.cz>
+Reply-To: dave@jikos.cz
+Mail-Followup-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Nikolay Borisov <nborisov@suse.com>
+References: <20201113125149.140836-1-wqu@suse.com>
+ <20201113125149.140836-16-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Corporate and Personal Loan::,
-To:     linux-btrfs@vger.kernel.org
-From:   "Investment  Corporate" <financialcapability6@gmail.com>
-Date:   Fri, 13 Nov 2020 02:31:27 -0800
-Reply-To: hmurrah39@gmail.com
-Message-Id: <20201113113113.8BDDC914257@mail.tigeramira.ro>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201113125149.140836-16-wqu@suse.com>
+User-Agent: NeoMutt/20161028 (1.7.1)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello linux-btrfs@vger.kernel.org
+On Fri, Nov 13, 2020 at 08:51:40PM +0800, Qu Wenruo wrote:
+> Currently we use 'unsigned' for extent_state::state, which is only ensured
+> to be at least 16 bits.
 
+Ensured maybe by the C standard but we use u32 and 'unsigned int'
+interchangably everywhere. There are some inferior architectures that
+use different type witdths, but all we care is 32bit and 64bit.
 
-We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+> But for incoming subpage support, we are going to introduce more bits,
+> thus we will go beyond 16 bits.
+> 
+> To support this, make extent_state::state at least 32bit and to be more
+> explicit, we use "u32" to be clear about the max supported bits.
 
-
-We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
-
-
-Please get back to me if you are interested for more
-
-details.
-
-
-Yours faithfully,
-
-Hashim Murrah
+Yeah that's fine to make the expected width requirement explicit.
