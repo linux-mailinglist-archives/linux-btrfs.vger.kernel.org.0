@@ -2,485 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEB92B8C79
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 08:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EC72B8EAB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 10:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKSHi3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Nov 2020 02:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgKSHi3 (ORCPT
+        id S1726562AbgKSJXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Nov 2020 04:23:44 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:41430 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbgKSJXo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:38:29 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311C7C0613CF;
-        Wed, 18 Nov 2020 23:38:29 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id q1so4443498ilt.6;
-        Wed, 18 Nov 2020 23:38:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VngKa5aOwDypj1f5oaz7Q+Op9jrf4OiDaUUed2CLEuI=;
-        b=L4jc4e5akO277WhsvOol1rDc4M9mkepXYzUmbiAYVZRdoW/dEBfAJEWfOOa1i3looP
-         O1MWaibedqb+Zs4yU0FmwC+gs5tGjp5z0yYHiaBFED8uT/Xf6f7bXKNZ1kIJK2cvAfT9
-         7Foas5s96yybHTqBG+zyAszfBv0CYG0vCJuuA6VRUruDOoYcD15CwDdatuDQz26A98I2
-         u4Xs56Tpq5E33LcIMeEO+Rofn6HDCHFSpfA1o/z7hQmPpzyS/tYleOL22tZbzhKGxbuc
-         tBbOtOz5E8fJucNv97XJxe4qwQCaR+M/XKV/SoDl7sLGOeAGhCNC0ZyQksqAROHgKmPo
-         sJ3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VngKa5aOwDypj1f5oaz7Q+Op9jrf4OiDaUUed2CLEuI=;
-        b=dNSdHtv3r3j4+nSWJQuQBI7coyYmnz44CdEo7TSyCKdeFFv9TQMIg+h6tZS2jrzo77
-         lIzA/GFmDNyhNO4MXQjCGHB9hSvEKZSJ9UOMawIPSYmpbF9fb+ucj8ndCvmfWh5jSfNs
-         PEbHZdUsvtUSYFkkR/u34Pt6xCRUFMCOCLq9KqOpk6kzDwj6EzlAD0AK7I8NfZZkMd9V
-         OEwFBps1rsm6vdNNp1fHSdfsEc++8L2pEQxV5220bLpzeuBO7hP0P0AxnVNl/BlqgQ9L
-         qZT9dcqedo8jMCY+Dj6absTP8lEl+F74dSOnEtWi59PTEaiDIQugDQMJjWhfRaQulpxk
-         iIjg==
-X-Gm-Message-State: AOAM533MO5xHfS6hUlsRr/GBoc+D7KDr2+lwJ3dmbsQQXXG/X8hjfQLs
-        2ysnRSUlYT/jyR6RN4WlsVbIarfqjEJXMUrTiGM=
-X-Google-Smtp-Source: ABdhPJwhPgeod31EwstXmAX0PW4O3EZcB2pk0VaishFSBaNhqyWG11m/ucUXeKUq95W8Ck0rjRvZp9eOVhs00B49Su8=
-X-Received: by 2002:a05:6e02:14c9:: with SMTP id o9mr21556515ilk.137.1605771508320;
- Wed, 18 Nov 2020 23:38:28 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605723568.git.osandov@fb.com> <a14f36933f38a80ed1962bd82986fe0e9d92d586.1605723568.git.osandov@fb.com>
-In-Reply-To: <a14f36933f38a80ed1962bd82986fe0e9d92d586.1605723568.git.osandov@fb.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 19 Nov 2020 09:38:17 +0200
-Message-ID: <CAOQ4uxgDYBboKPBH4nnB+Lz+VxAeOXzjgBtdJqVUavNy9rYMug@mail.gmail.com>
-Subject: Re: [PATCH v6 03/11] fs: add RWF_ENCODED for reading/writing
- compressed data
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Thu, 19 Nov 2020 04:23:44 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ9Ax9M014267;
+        Thu, 19 Nov 2020 09:23:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=nvlAUIuiVJQZ8lvFjwG7Oeg2QqJ/OhI2eruXzkgyQ3w=;
+ b=l6PCytaVUmQ5nS7iIo69TYAlbTYcGhYJwE0ZcsS6+E8Q5sjxfFbQBhzyz7uIqqK8xhWs
+ /wY08XqujA7Bk85lonIgb0/8qavSQCoHC2zSjrFXoD97LldOX4/gdOhK0js8ERD66NRv
+ GdpZmZTWFn9NPgTwyfDZYDLVqrI9hpTIyii0mckWwMcbEAo0v3Hxb0NXg9N/iMg2hqmR
+ xZJsX6cGJZVKikOnlnP0aqymDvRkQp/1n6KT4oykkcrOEw9siU0MsXCEJKGtMk7aGWdV
+ EFQrHWocgxCITBtfmZir67W9VXCUgx82Kh/+dcPFJgAgTNfXkWmAf9Pwdh1uBS5mn4l5 9w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34t76m4avk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Nov 2020 09:23:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ99M26081674;
+        Thu, 19 Nov 2020 09:23:29 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 34umd1qcdk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Nov 2020 09:23:28 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AJ9NPod007547;
+        Thu, 19 Nov 2020 09:23:26 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Nov 2020 01:23:24 -0800
+Subject: Re: [PATCH v10 06/41] btrfs: introduce max_zone_append_size
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
-        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <173cd5def63acdf094a3b83ce129696c26fd3a3c.1605007036.git.naohiro.aota@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <a6c5cdf0-a880-9c92-cc3d-db0736185489@oracle.com>
+Date:   Thu, 19 Nov 2020 17:23:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
+MIME-Version: 1.0
+In-Reply-To: <173cd5def63acdf094a3b83ce129696c26fd3a3c.1605007036.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011190068
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011190068
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 9:18 PM Omar Sandoval <osandov@osandov.com> wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> Btrfs supports transparent compression: data written by the user can be
-> compressed when written to disk and decompressed when read back.
-> However, we'd like to add an interface to write pre-compressed data
-> directly to the filesystem, and the matching interface to read
-> compressed data without decompressing it. This adds support for
-> so-called "encoded I/O" via preadv2() and pwritev2().
->
-> A new RWF_ENCODED flags indicates that a read or write is "encoded". If
-> this flag is set, iov[0].iov_base points to a struct encoded_iov which
-> is used for metadata: namely, the compression algorithm, unencoded
-> (i.e., decompressed) length, and what subrange of the unencoded data
-> should be used (needed for truncated or hole-punched extents and when
-> reading in the middle of an extent). For reads, the filesystem returns
-> this information; for writes, the caller provides it to the filesystem.
-> iov[0].iov_len must be set to sizeof(struct encoded_iov), which can be
-> used to extend the interface in the future a la copy_struct_from_user().
-> The remaining iovecs contain the encoded extent.
->
-> This adds the VFS helpers for supporting encoded I/O and documentation
-> for filesystem support.
->
+On 10/11/20 7:26 pm, Naohiro Aota wrote:
+> The zone append write command has a maximum IO size restriction it
+> accepts. This is because a zone append write command cannot be split, as
+> we ask the device to place the data into a specific target zone and the
+> device responds with the actual written location of the data.
+> 
+> Introduce max_zone_append_size to zone_info and fs_info to track the
+> value, so we can limit all I/O to a zoned block device that we want to
+> write using the zone append command to the device's limits.
+> 
 > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > ---
->  Documentation/filesystems/encoded_io.rst |  74 ++++++++++
->  Documentation/filesystems/index.rst      |   1 +
->  fs/read_write.c                          | 167 +++++++++++++++++++++--
->  include/linux/fs.h                       |  11 ++
->  include/uapi/linux/fs.h                  |  41 +++++-
->  5 files changed, 280 insertions(+), 14 deletions(-)
->  create mode 100644 Documentation/filesystems/encoded_io.rst
->
-> diff --git a/Documentation/filesystems/encoded_io.rst b/Documentation/filesystems/encoded_io.rst
-> new file mode 100644
-> index 000000000000..50405276d866
-> --- /dev/null
-> +++ b/Documentation/filesystems/encoded_io.rst
-> @@ -0,0 +1,74 @@
-> +===========
-> +Encoded I/O
-> +===========
-> +
-> +Encoded I/O is a mechanism for reading and writing encoded (e.g., compressed
-> +and/or encrypted) data directly from/to the filesystem. The userspace interface
-> +is thoroughly described in the :manpage:`encoded_io(7)` man page; this document
-> +describes the requirements for filesystem support.
-> +
-> +First of all, a filesystem supporting encoded I/O must indicate this by setting
-> +the ``FMODE_ENCODED_IO`` flag in its ``file_open`` file operation::
-> +
 
-Should this be FMODE_ALLOW_ENCODED_IO?
-How come I see no checks for this flag in vfs code?
-You seem to only be checking the O_ flag.
-Do we really want to allow setting the O_ flag after open or should we
-deny that?
+Looks good except for - what happens when we replace or add a new zone
+device with a different queue_max_zone_append_sectors(queue) value. ?
 
-> +    static int foo_file_open(struct inode *inode, struct file *filp)
-> +    {
-> +            ...
-> +            filep->f_mode |= FMODE_ENCODED_IO;
-> +            ...
-> +    }
-> +
-> +Encoded I/O goes through ``read_iter`` and ``write_iter``, designated by the
-> +``IOCB_ENCODED`` flag in ``kiocb->ki_flags``.
-> +
-> +Reads
-> +=====
-> +
-> +Encoded ``read_iter`` should:
-> +
-> +1. Call ``generic_encoded_read_checks()`` to validate the file and buffers
-> +   provided by userspace.
-> +2. Initialize the ``encoded_iov`` appropriately.
-> +3. Copy it to the user with ``copy_encoded_iov_to_iter()``.
-> +4. Copy the encoded data to the user.
-> +5. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
-> +6. Return the size of the encoded data read, not including the ``encoded_iov``.
-> +
-> +There are a few details to be aware of:
-> +
-> +* Encoded ``read_iter`` should support reading unencoded data if the extent is
-> +  not encoded.
-> +* If the buffers provided by the user are not large enough to contain an entire
-> +  encoded extent, then ``read_iter`` should return ``-ENOBUFS``. This is to
-> +  avoid confusing userspace with truncated data that cannot be properly
-> +  decoded.
-> +* Reads in the middle of an encoded extent can be returned by setting
-> +  ``encoded_iov->unencoded_offset`` to non-zero.
-> +* Truncated unencoded data (e.g., because the file does not end on a block
-> +  boundary) may be returned by setting ``encoded_iov->len`` to a value smaller
-> +  value than ``encoded_iov->unencoded_len - encoded_iov->unencoded_offset``.
-> +
-> +Writes
-> +======
-> +
-> +Encoded ``write_iter`` should (in addition to the usual accounting/checks done
-> +by ``write_iter``):
-> +
-> +1. Call ``copy_encoded_iov_from_iter()`` to get and validate the
-> +   ``encoded_iov``.
-> +2. Call ``generic_encoded_write_checks()`` instead of
-> +   ``generic_write_checks()``.
-> +3. Check that the provided encoding in ``encoded_iov`` is supported.
-> +4. Advance ``kiocb->ki_pos`` by ``encoded_iov->len``.
-> +5. Return the size of the encoded data written.
-> +
-> +Again, there are a few details:
-> +
-> +* Encoded ``write_iter`` doesn't need to support writing unencoded data.
-> +* ``write_iter`` should either write all of the encoded data or none of it; it
-> +  must not do partial writes.
-> +* ``write_iter`` doesn't need to validate the encoded data; a subsequent read
-> +  may return, e.g., ``-EIO`` if the data is not valid.
-> +* The user may lie about the unencoded size of the data; a subsequent read
-> +  should truncate or zero-extend the unencoded data rather than returning an
-> +  error.
-> +* Be careful of page cache coherency.
-> diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-> index 98f59a864242..6d9e3ff0a455 100644
-> --- a/Documentation/filesystems/index.rst
-> +++ b/Documentation/filesystems/index.rst
-> @@ -53,6 +53,7 @@ filesystem implementations.
->     journalling
->     fscrypt
->     fsverity
-> +   encoded_io
->
->  Filesystems
->  ===========
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 75f764b43418..e2ad418d2987 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -1625,24 +1625,15 @@ int generic_write_check_limits(struct file *file, loff_t pos, loff_t *count)
->         return 0;
->  }
->
-> -/*
-> - * Performs necessary checks before doing a write
-> - *
-> - * Can adjust writing position or amount of bytes to write.
-> - * Returns appropriate error code that caller should return or
-> - * zero in case that write should be allowed.
-> - */
-> -ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
-> +static int generic_write_checks_common(struct kiocb *iocb, loff_t *count)
->  {
->         struct file *file = iocb->ki_filp;
->         struct inode *inode = file->f_mapping->host;
-> -       loff_t count;
-> -       int ret;
->
->         if (IS_SWAPFILE(inode))
->                 return -ETXTBSY;
->
-> -       if (!iov_iter_count(from))
-> +       if (!*count)
->                 return 0;
->
->         /* FIXME: this is for backwards compatibility with 2.4 */
-> @@ -1652,8 +1643,22 @@ ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
->         if ((iocb->ki_flags & IOCB_NOWAIT) && !(iocb->ki_flags & IOCB_DIRECT))
->                 return -EINVAL;
->
-> -       count = iov_iter_count(from);
-> -       ret = generic_write_check_limits(file, iocb->ki_pos, &count);
-> +       return generic_write_check_limits(iocb->ki_filp, iocb->ki_pos, count);
-> +}
-> +
-> +/*
-> + * Performs necessary checks before doing a write
-> + *
-> + * Can adjust writing position or amount of bytes to write.
-> + * Returns appropriate error code that caller should return or
-> + * zero in case that write should be allowed.
-> + */
-> +ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
-> +{
-> +       loff_t count = iov_iter_count(from);
-> +       int ret;
-> +
-> +       ret = generic_write_checks_common(iocb, &count);
->         if (ret)
->                 return ret;
->
-> @@ -1684,3 +1689,139 @@ int generic_file_rw_checks(struct file *file_in, struct file *file_out)
->
->         return 0;
->  }
-> +
-> +/**
-> + * generic_encoded_write_checks() - check an encoded write
-> + * @iocb: I/O context.
-> + * @encoded: Encoding metadata.
-> + *
-> + * This should be called by RWF_ENCODED write implementations rather than
-> + * generic_write_checks(). Unlike generic_write_checks(), it returns -EFBIG
-> + * instead of adjusting the size of the write.
-> + *
-> + * Return: 0 on success, -errno on error.
-> + */
-> +int generic_encoded_write_checks(struct kiocb *iocb,
-> +                                const struct encoded_iov *encoded)
-> +{
-> +       loff_t count = encoded->len;
-> +       int ret;
-> +
-> +       if (!(iocb->ki_filp->f_flags & O_ALLOW_ENCODED))
-> +               return -EPERM;
-> +
-> +       ret = generic_write_checks_common(iocb, &count);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (count != encoded->len) {
-> +               /*
-> +                * The write got truncated by generic_write_checks_common(). We
-> +                * can't do a partial encoded write.
-> +                */
-> +               return -EFBIG;
-> +       }
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(generic_encoded_write_checks);
-> +
-> +/**
-> + * copy_encoded_iov_from_iter() - copy a &struct encoded_iov from userspace
-> + * @encoded: Returned encoding metadata.
-> + * @from: Source iterator.
-> + *
-> + * This copies in the &struct encoded_iov and does some basic sanity checks.
-> + * This should always be used rather than a plain copy_from_iter(), as it does
-> + * the proper handling for backward- and forward-compatibility.
-> + *
-> + * Return: 0 on success, -EFAULT if access to userspace failed, -E2BIG if the
-> + *         copied structure contained non-zero fields that this kernel doesn't
-> + *         support, -EINVAL if the copied structure was invalid.
-> + */
-> +int copy_encoded_iov_from_iter(struct encoded_iov *encoded,
-> +                              struct iov_iter *from)
-> +{
-> +       size_t usize;
-> +       int ret;
-> +
-> +       usize = iov_iter_single_seg_count(from);
-> +       if (usize > PAGE_SIZE)
-> +               return -E2BIG;
-> +       if (usize < ENCODED_IOV_SIZE_VER0)
-> +               return -EINVAL;
-> +       ret = copy_struct_from_iter(encoded, sizeof(*encoded), from, usize);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (encoded->compression == ENCODED_IOV_COMPRESSION_NONE &&
-> +           encoded->encryption == ENCODED_IOV_ENCRYPTION_NONE)
-> +               return -EINVAL;
-> +       if (encoded->compression > ENCODED_IOV_COMPRESSION_TYPES ||
-> +           encoded->encryption > ENCODED_IOV_ENCRYPTION_TYPES)
-> +               return -EINVAL;
-> +       if (encoded->unencoded_offset > encoded->unencoded_len)
-> +               return -EINVAL;
-> +       if (encoded->len > encoded->unencoded_len - encoded->unencoded_offset)
-> +               return -EINVAL;
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(copy_encoded_iov_from_iter);
-> +
-> +/**
-> + * generic_encoded_read_checks() - sanity check an RWF_ENCODED read
-> + * @iocb: I/O context.
-> + * @iter: Destination iterator for read.
-> + *
-> + * This should always be called by RWF_ENCODED read implementations before
-> + * returning any data.
-> + *
-> + * Return: Number of bytes available to return encoded data in @iter on success,
-> + *         -EPERM if the file was not opened with O_ALLOW_ENCODED, -EINVAL if
-> + *         the size of the &struct encoded_iov iovec is invalid.
-> + */
-> +ssize_t generic_encoded_read_checks(struct kiocb *iocb, struct iov_iter *iter)
-> +{
-> +       size_t usize;
-> +
-> +       if (!(iocb->ki_filp->f_flags & O_ALLOW_ENCODED))
-> +               return -EPERM;
-> +       usize = iov_iter_single_seg_count(iter);
-> +       if (usize > PAGE_SIZE || usize < ENCODED_IOV_SIZE_VER0)
-> +               return -EINVAL;
-> +       return iov_iter_count(iter) - usize;
-> +}
-> +EXPORT_SYMBOL(generic_encoded_read_checks);
-> +
-> +/**
-> + * copy_encoded_iov_to_iter() - copy a &struct encoded_iov to userspace
-> + * @encoded: Encoding metadata to return.
-> + * @to: Destination iterator.
-> + *
-> + * This should always be used by RWF_ENCODED read implementations rather than a
-> + * plain copy_to_iter(), as it does the proper handling for backward- and
-> + * forward-compatibility. The iterator must be sanity-checked with
-> + * generic_encoded_read_checks() before this is called.
-> + *
-> + * Return: 0 on success, -EFAULT if access to userspace failed, -E2BIG if there
-> + *         were non-zero fields in @encoded that the user buffer could not
-> + *         accommodate.
-> + */
-> +int copy_encoded_iov_to_iter(const struct encoded_iov *encoded,
-> +                            struct iov_iter *to)
-> +{
-> +       size_t ksize = sizeof(*encoded);
-> +       size_t usize = iov_iter_single_seg_count(to);
-> +       size_t size = min(ksize, usize);
-> +
-> +       /* We already sanity-checked usize in generic_encoded_read_checks(). */
-> +
-> +       if (usize < ksize &&
-> +           memchr_inv((char *)encoded + usize, 0, ksize - usize))
-> +               return -E2BIG;
-> +       if (copy_to_iter(encoded, size, to) != size ||
-> +           (usize > ksize &&
-> +            iov_iter_zero(usize - ksize, to) != usize - ksize))
-> +               return -EFAULT;
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(copy_encoded_iov_to_iter);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 8667d0cdc71e..67810bf6fb1c 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -178,6 +178,9 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
->  /* File supports async buffered reads */
->  #define FMODE_BUF_RASYNC       ((__force fmode_t)0x40000000)
->
-> +/* File supports encoded IO */
-> +#define FMODE_ENCODED_IO       ((__force fmode_t)0x80000000)
-> +
->  /*
->   * Attribute flags.  These should be or-ed together to figure out what
->   * has been changed!
-> @@ -308,6 +311,7 @@ enum rw_hint {
->  #define IOCB_SYNC              (__force int) RWF_SYNC
->  #define IOCB_NOWAIT            (__force int) RWF_NOWAIT
->  #define IOCB_APPEND            (__force int) RWF_APPEND
-> +#define IOCB_ENCODED           (__force int) RWF_ENCODED
->
->  /* non-RWF related bits - start at 16 */
->  #define IOCB_EVENTFD           (1 << 16)
-> @@ -2964,6 +2968,13 @@ extern int generic_file_readonly_mmap(struct file *, struct vm_area_struct *);
->  extern ssize_t generic_write_checks(struct kiocb *, struct iov_iter *);
->  extern int generic_write_check_limits(struct file *file, loff_t pos,
->                 loff_t *count);
-> +struct encoded_iov;
-> +extern int generic_encoded_write_checks(struct kiocb *,
-> +                                       const struct encoded_iov *);
-> +extern int copy_encoded_iov_from_iter(struct encoded_iov *, struct iov_iter *);
-> +extern ssize_t generic_encoded_read_checks(struct kiocb *, struct iov_iter *);
-> +extern int copy_encoded_iov_to_iter(const struct encoded_iov *,
-> +                                   struct iov_iter *);
->  extern int generic_file_rw_checks(struct file *file_in, struct file *file_out);
->  extern ssize_t generic_file_buffered_read(struct kiocb *iocb,
->                 struct iov_iter *to, ssize_t already_read);
-> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> index f44eb0a04afd..95493420117a 100644
-> --- a/include/uapi/linux/fs.h
-> +++ b/include/uapi/linux/fs.h
-> @@ -279,6 +279,42 @@ struct fsxattr {
->                                          SYNC_FILE_RANGE_WAIT_BEFORE | \
->                                          SYNC_FILE_RANGE_WAIT_AFTER)
->
-> +enum {
-> +       ENCODED_IOV_COMPRESSION_NONE,
-> +#define ENCODED_IOV_COMPRESSION_NONE ENCODED_IOV_COMPRESSION_NONE
-> +       ENCODED_IOV_COMPRESSION_BTRFS_ZLIB,
-> +#define ENCODED_IOV_COMPRESSION_BTRFS_ZLIB ENCODED_IOV_COMPRESSION_BTRFS_ZLIB
-> +       ENCODED_IOV_COMPRESSION_BTRFS_ZSTD,
-> +#define ENCODED_IOV_COMPRESSION_BTRFS_ZSTD ENCODED_IOV_COMPRESSION_BTRFS_ZSTD
-> +       ENCODED_IOV_COMPRESSION_BTRFS_LZO_4K,
-> +#define ENCODED_IOV_COMPRESSION_BTRFS_LZO_4K ENCODED_IOV_COMPRESSION_BTRFS_LZO_4K
-> +       ENCODED_IOV_COMPRESSION_BTRFS_LZO_8K,
-> +#define ENCODED_IOV_COMPRESSION_BTRFS_LZO_8K ENCODED_IOV_COMPRESSION_BTRFS_LZO_8K
-> +       ENCODED_IOV_COMPRESSION_BTRFS_LZO_16K,
-> +#define ENCODED_IOV_COMPRESSION_BTRFS_LZO_16K ENCODED_IOV_COMPRESSION_BTRFS_LZO_16K
-> +       ENCODED_IOV_COMPRESSION_BTRFS_LZO_32K,
-> +#define ENCODED_IOV_COMPRESSION_BTRFS_LZO_32K ENCODED_IOV_COMPRESSION_BTRFS_LZO_32K
-> +       ENCODED_IOV_COMPRESSION_BTRFS_LZO_64K,
-> +#define ENCODED_IOV_COMPRESSION_BTRFS_LZO_64K ENCODED_IOV_COMPRESSION_BTRFS_LZO_64K
-> +       ENCODED_IOV_COMPRESSION_TYPES = ENCODED_IOV_COMPRESSION_BTRFS_LZO_64K,
-> +};
-> +
+Nit: IMHO some parts of patch-4, 5 and 6 could have been in one
+patch. Now it's fine as they are already at v10 and have rb.
 
-I am not a fan of this trick.
-There is no shortage of enums in uapi headers, but I think that if we want
-to set values in stone, the values should be set explicitly and not
-auto assigned
-by compiler.
+Thanks, Anand
 
-If anybody ever adds a line, say ENCODED_IOV_COMPRESSION_BTRFS_ZLIB_V2
-in the middle of the enum list, it won't be obvious that it's a uapi breakage.
 
-In principle, we could have partitioned the encoding types by domains
-(e.g. btrfs),
-and the btrfs specific encodings would have been a part of a btrfs
-header, but it's
-not that important.
+>   fs/btrfs/ctree.h |  3 +++
+>   fs/btrfs/zoned.c | 17 +++++++++++++++--
+>   fs/btrfs/zoned.h |  1 +
+>   3 files changed, 19 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 453f41ca024e..c70d3fcc62c2 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -954,6 +954,9 @@ struct btrfs_fs_info {
+>   		u64 zoned;
+>   	};
+>   
+> +	/* Max size to emit ZONE_APPEND write command */
+> +	u64 max_zone_append_size;
+> +
+>   #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+>   	spinlock_t ref_verify_lock;
+>   	struct rb_root block_tree;
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 1223d5b0e411..2897432eb43c 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -48,6 +48,7 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
+>   {
+>   	struct btrfs_zoned_device_info *zone_info = NULL;
+>   	struct block_device *bdev = device->bdev;
+> +	struct request_queue *queue = bdev_get_queue(bdev);
+>   	sector_t nr_sectors = bdev->bd_part->nr_sects;
+>   	sector_t sector = 0;
+>   	struct blk_zone *zones = NULL;
+> @@ -69,6 +70,8 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
+>   	ASSERT(is_power_of_2(zone_sectors));
+>   	zone_info->zone_size = (u64)zone_sectors << SECTOR_SHIFT;
+>   	zone_info->zone_size_shift = ilog2(zone_info->zone_size);
+> +	zone_info->max_zone_append_size =
+> +		(u64)queue_max_zone_append_sectors(queue) << SECTOR_SHIFT;
+>   	zone_info->nr_zones = nr_sectors >> ilog2(bdev_zone_sectors(bdev));
+>   	if (!IS_ALIGNED(nr_sectors, zone_sectors))
+>   		zone_info->nr_zones++;
+> @@ -188,6 +191,7 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>   	u64 zoned_devices = 0;
+>   	u64 nr_devices = 0;
+>   	u64 zone_size = 0;
+> +	u64 max_zone_append_size = 0;
+>   	const bool incompat_zoned = btrfs_is_zoned(fs_info);
+>   	int ret = 0;
+>   
+> @@ -201,10 +205,13 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>   		model = bdev_zoned_model(device->bdev);
+>   		if (model == BLK_ZONED_HM ||
+>   		    (model == BLK_ZONED_HA && incompat_zoned)) {
+> +			struct btrfs_zoned_device_info *zone_info =
+> +				device->zone_info;
+> +
+>   			zoned_devices++;
+>   			if (!zone_size) {
+> -				zone_size = device->zone_info->zone_size;
+> -			} else if (device->zone_info->zone_size != zone_size) {
+> +				zone_size = zone_info->zone_size;
+> +			} else if (zone_info->zone_size != zone_size) {
+>   				btrfs_err(fs_info,
+>   					  "zoned: unequal block device zone sizes: have %llu found %llu",
+>   					  device->zone_info->zone_size,
+> @@ -212,6 +219,11 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>   				ret = -EINVAL;
+>   				goto out;
+>   			}
+> +			if (!max_zone_append_size ||
+> +			    (zone_info->max_zone_append_size &&
+> +			     zone_info->max_zone_append_size < max_zone_append_size))
+> +				max_zone_append_size =
+> +					zone_info->max_zone_append_size;
+>   		}
+>   		nr_devices++;
+>   	}
+> @@ -255,6 +267,7 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>   	}
+>   
+>   	fs_info->zone_size = zone_size;
+> +	fs_info->max_zone_append_size = max_zone_append_size;
+>   
+>   	btrfs_info(fs_info, "zoned mode enabled with zone size %llu",
+>   		   fs_info->zone_size);
+> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+> index bcb1cb99a4f3..52aa6af5d8dc 100644
+> --- a/fs/btrfs/zoned.h
+> +++ b/fs/btrfs/zoned.h
+> @@ -13,6 +13,7 @@ struct btrfs_zoned_device_info {
+>   	 */
+>   	u64 zone_size;
+>   	u8  zone_size_shift;
+> +	u64 max_zone_append_size;
+>   	u32 nr_zones;
+>   	unsigned long *seq_zones;
+>   	unsigned long *empty_zones;
+> 
 
-However, please move all encoded_io stuff to a new uapi header and do
-not include it
-from fs.h to avoid having to compile most filesystems every time a new
-btrfs private encoding
-type is added.
-
-Thanks,
-Amir.
