@@ -2,161 +2,213 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D152B88D7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 00:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F572B8BE4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 08:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgKRX56 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Nov 2020 18:57:58 -0500
-Received: from mout.gmx.net ([212.227.15.15]:39287 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726340AbgKRX56 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Nov 2020 18:57:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605743875;
-        bh=T5VtW/TQf4c6+KR2rQEUZLtXtemkmYlHa718sAMrACQ=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=co1vWc2kdCtTQ/RZUwkBBFacsmiNzxxwtn1mfZkVqAt1NgXeGkM8G8xZKdXS3z+h+
-         IMuMA8pXdiVTzStaGfvybCBxj+kqAQf97E1Au/Eu4+WBjs1aKGU2d8uDMwbCRycO4b
-         QmCIlolsyveanNe7+HEGlad+xFanPGQjY5tPmF90=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MuDc7-1kOhLD1RYj-00uc0g; Thu, 19
- Nov 2020 00:57:54 +0100
-Subject: Re: [PATCH v2 18/24] btrfs: file-item: refactor
- btrfs_lookup_bio_sums() to handle out-of-order bvecs
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201113125149.140836-1-wqu@suse.com>
- <20201113125149.140836-19-wqu@suse.com>
- <20201118162754.GB17322@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <5810e611-9f77-6762-d9ad-94b4341e16ae@gmx.com>
-Date:   Thu, 19 Nov 2020 07:57:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725930AbgKSHDG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Nov 2020 02:03:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbgKSHDF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Nov 2020 02:03:05 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B93C0613CF;
+        Wed, 18 Nov 2020 23:03:05 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id i9so4865794ioo.2;
+        Wed, 18 Nov 2020 23:03:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eZf0XT6FOpH4UgmSqNaoQWJcJUEUxG030KkkVYX8Ays=;
+        b=Lm5YT6xLwtIktkI6IW71JqU1PBnDOR78a2eROaT+qT1Zlwx4wOkc0IeHckxEYzavXB
+         53zy1iYnizAExLbHuhpOaQh8QcXZT5gYepJdpYd5peRVJmq1DGFc2uXEfzVQbfuvk7so
+         VqizpHDq4DvG6PrSXeeiCE+qtQYt/QFpFbarvjgJ7c+dHjVjRsxp+FGCogCDbJIcv7lU
+         l5X/dxVovVuM+vs30kURinsspudy4GjNCMojDN/KqcHpwhanwywXxDSJkw3d7jWN49AI
+         gCxBVFU6Kw4mTxvCdQvDbdWdpsFCOsE8GDa/jEgbg/6JsYqho9G7i9jEq3psqQsALV4M
+         xhtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eZf0XT6FOpH4UgmSqNaoQWJcJUEUxG030KkkVYX8Ays=;
+        b=mYi+DinJSpa6qJ9K5IIncaXC8aRF40Ubeg9cAGFNyPigyt/n/7DzaldIVSh/rNSvZ8
+         JJcxxKPeEmii6g9rnYI9klqf95DDn438FTDg+OIy7fhmddKWzMTQ6J9IkbAlaHUECr6G
+         kOtelz6+ncMuFNfzM2EwyI7GXge+WjDKojzwTdiZtdBDYjrT46XnZtAYixghJVwzM3il
+         KS1M/lmgOLGEq9HWfQ5AGHwUMR30gUx40qgr47CW8y1po3VFR3y8EKMFJ9n/mvVwUMle
+         7nUxSW86Sdr/oxrASHOSHwUcWKfXj4GxhJwLE7Uv34XuIOfB07b+KelbsKSPmkEAYfWC
+         mI9w==
+X-Gm-Message-State: AOAM533IYFitpvv93qcD1QzcVeo6rF5bVPbv/1jTnM58iSTKQq0K7vDX
+        MVTkpLvjGRFgSiGPGYW6qAU56KXdeI58ztdVvEE=
+X-Google-Smtp-Source: ABdhPJw3iXSESWTX903d/nKwuPvu0+X+wTsglA0N1q1VryZJj9NwZpzQdAG7uiq4L6m+cOg5VSJ55vm1FKHDqS6dR0Y=
+X-Received: by 2002:a6b:7841:: with SMTP id h1mr19706750iop.72.1605769384703;
+ Wed, 18 Nov 2020 23:03:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201118162754.GB17322@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="4PVgLI3wxGiHUYCnmUGuvE2N6g9DUJGrw"
-X-Provags-ID: V03:K1:Qi4I/G3LVxkIIlgLA1SFK/Gom2Ws8NvBjOfIL+htpwtxHj7sVvu
- KSUwJqatuR4G/dsEBLyCVYm74pDm4AifmXTPPaUXYWl6We04Zd0vGAKQMJ+Uz9jHqEI3sOP
- LEOHR/Wrx9qHb1NRnLwagyN6VuODqPNRFSXDaOaPrDN+lhOD+sjxWhnsdFYEzyrSu0dp4IQ
- xKaJkMAzMMfuREg27VpJg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5novPpPdysY=:QEhdn7o+0POplOPnjj6PwX
- DzSUEQFpFhTIvEwMw2mKVmtJXrK6T9qO17lsuEY3HPoih5JR3utt01diSyregq0E0C39ABwlc
- RJlVfh47Xdn5It/GuRHRna7NGo8+FczAszMfw5eQSrdvxjFU19JEWQqNxtJ0FZgDp3Dct+AOG
- jmNNucQgqGnU0Zsfea7JWkuWEqwR2CRZIcySFnBNBVjG1jmXL/PNtQPnHwU45RKlXYwMKtJF5
- 52bTTCGY52H4QIPRVZEaNU+VDCRa/DPhzt2NqajI+j/DSK3aG3xyuDjvbkHj24kdkfAEj/Apw
- tA1MedTed1XMQVMXwXk8Mfv2TYOS+BoH1jav3//aeH1TQj8xNvOiKqTwGhDOHXhOFBqEknGcZ
- 6K2zcsrCfMcFzQnVnbArrFWiq1YEWuQe/GqUvv5CsWnfPK2vZPCyWVJq9AQTSq9LCMK14h+ar
- qE2cqoPW/y2hi7A1TS4co+Xld3wOUbDbzGGk6bznEbfsVdicUGYnWhCH2jqbdWw/NqhmgjK7b
- XVUB0OvdSVsH1gy7VVgrqlbQrFMm4kg0oVeViHcmYLEklC2UsG490sacZso+tiFBd/vGbxGdR
- yu5p/P9yV+Xc4Gr1uIGn3Ic+3BLDSeqt5aFej4uaH99ftTOVi0Bqnx3ysMq/3g3NOrIanIdHJ
- tiLsGI0b28npJXgWL6mn20g1XgAuwuyzeAWPwvKoqVhJmcGbAHcSQgPDspPUrIAzotfvgdzSk
- daVdx/4r2yOUE1dmB+ZW1qr9UnY24H+qbWKMRAZk6ktheK05tBahtN1bu0BW7mv+y7hLi3t/+
- jQ+F4gesqaZPczC3vvkRvU+jTS6zSPbHbTaEKpQhoBnD8XMhgRSUUAwWvN+FBHdXfPs7t7Uui
- INJdR1haaP95atVsMDfQ==
+References: <cover.1605723568.git.osandov@fb.com> <977fd16687d8b0474fd9c442f79c23f53783e403.1605723568.git.osandov@fb.com>
+In-Reply-To: <977fd16687d8b0474fd9c442f79c23f53783e403.1605723568.git.osandov@fb.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 19 Nov 2020 09:02:53 +0200
+Message-ID: <CAOQ4uxiaWAT6kOkxgMgeYEcOBMsc=HtmSwssMXg0Nn=rbkZRGA@mail.gmail.com>
+Subject: Re: [PATCH v6 02/11] fs: add O_ALLOW_ENCODED open flag
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4PVgLI3wxGiHUYCnmUGuvE2N6g9DUJGrw
-Content-Type: multipart/mixed; boundary="2KZLx11gBugK6SXAod6QFGjqppQbYYsLc"
+On Wed, Nov 18, 2020 at 9:18 PM Omar Sandoval <osandov@osandov.com> wrote:
+>
+> From: Omar Sandoval <osandov@fb.com>
+>
+> The upcoming RWF_ENCODED operation introduces some security concerns:
+>
+> 1. Compressed writes will pass arbitrary data to decompression
+>    algorithms in the kernel.
+> 2. Compressed reads can leak truncated/hole punched data.
+>
+> Therefore, we need to require privilege for RWF_ENCODED. It's not
+> possible to do the permissions checks at the time of the read or write
+> because, e.g., io_uring submits IO from a worker thread. So, add an open
+> flag which requires CAP_SYS_ADMIN. It can also be set and cleared with
+> fcntl(). The flag is not cleared in any way on fork or exec. It must be
+> combined with O_CLOEXEC when opening to avoid accidental leaks (if
+> needed, it may be set without O_CLOEXEC by using fnctl()).
+>
+> Note that the usual issue that unknown open flags are ignored doesn't
+> really matter for O_ALLOW_ENCODED; if the kernel doesn't support
+> O_ALLOW_ENCODED, then it doesn't support RWF_ENCODED, either.
+>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  arch/alpha/include/uapi/asm/fcntl.h  |  1 +
+>  arch/parisc/include/uapi/asm/fcntl.h |  1 +
+>  arch/sparc/include/uapi/asm/fcntl.h  |  1 +
+>  fs/fcntl.c                           | 10 ++++++++--
+>  fs/namei.c                           |  4 ++++
+>  fs/open.c                            |  7 +++++++
+>  include/linux/fcntl.h                |  2 +-
+>  include/uapi/asm-generic/fcntl.h     |  4 ++++
+>  8 files changed, 27 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/alpha/include/uapi/asm/fcntl.h b/arch/alpha/include/uapi/asm/fcntl.h
+> index 50bdc8e8a271..391e0d112e41 100644
+> --- a/arch/alpha/include/uapi/asm/fcntl.h
+> +++ b/arch/alpha/include/uapi/asm/fcntl.h
+> @@ -34,6 +34,7 @@
+>
+>  #define O_PATH         040000000
+>  #define __O_TMPFILE    0100000000
+> +#define O_ALLOW_ENCODED        0200000000
+>
+>  #define F_GETLK                7
+>  #define F_SETLK                8
+> diff --git a/arch/parisc/include/uapi/asm/fcntl.h b/arch/parisc/include/uapi/asm/fcntl.h
+> index 03dee816cb13..72ea9bdf5f04 100644
+> --- a/arch/parisc/include/uapi/asm/fcntl.h
+> +++ b/arch/parisc/include/uapi/asm/fcntl.h
+> @@ -19,6 +19,7 @@
+>
+>  #define O_PATH         020000000
+>  #define __O_TMPFILE    040000000
+> +#define O_ALLOW_ENCODED        100000000
+>
+>  #define F_GETLK64      8
+>  #define F_SETLK64      9
+> diff --git a/arch/sparc/include/uapi/asm/fcntl.h b/arch/sparc/include/uapi/asm/fcntl.h
+> index 67dae75e5274..ac3e8c9cb32c 100644
+> --- a/arch/sparc/include/uapi/asm/fcntl.h
+> +++ b/arch/sparc/include/uapi/asm/fcntl.h
+> @@ -37,6 +37,7 @@
+>
+>  #define O_PATH         0x1000000
+>  #define __O_TMPFILE    0x2000000
+> +#define O_ALLOW_ENCODED        0x8000000
+>
+>  #define F_GETOWN       5       /*  for sockets. */
+>  #define F_SETOWN       6       /*  for sockets. */
+> diff --git a/fs/fcntl.c b/fs/fcntl.c
+> index 19ac5baad50f..9302f68fe698 100644
+> --- a/fs/fcntl.c
+> +++ b/fs/fcntl.c
+> @@ -30,7 +30,8 @@
+>  #include <asm/siginfo.h>
+>  #include <linux/uaccess.h>
+>
+> -#define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NOATIME)
+> +#define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NOATIME | \
+> +                   O_ALLOW_ENCODED)
+>
+>  static int setfl(int fd, struct file * filp, unsigned long arg)
+>  {
+> @@ -49,6 +50,11 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
+>                 if (!inode_owner_or_capable(inode))
+>                         return -EPERM;
+>
+> +       /* O_ALLOW_ENCODED can only be set by superuser */
+> +       if ((arg & O_ALLOW_ENCODED) && !(filp->f_flags & O_ALLOW_ENCODED) &&
+> +           !capable(CAP_SYS_ADMIN))
+> +               return -EPERM;
+> +
+>         /* required for strict SunOS emulation */
+>         if (O_NONBLOCK != O_NDELAY)
+>                if (arg & O_NDELAY)
+> @@ -1033,7 +1039,7 @@ static int __init fcntl_init(void)
+>          * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
+>          * is defined as O_NONBLOCK on some platforms and not on others.
+>          */
+> -       BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=
+> +       BUILD_BUG_ON(22 - 1 /* for O_RDONLY being 0 */ !=
+>                 HWEIGHT32(
+>                         (VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
+>                         __FMODE_EXEC | __FMODE_NONOTIFY));
+> diff --git a/fs/namei.c b/fs/namei.c
+> index d4a6dd772303..fbf64ce61088 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -2890,6 +2890,10 @@ static int may_open(const struct path *path, int acc_mode, int flag)
+>         if (flag & O_NOATIME && !inode_owner_or_capable(inode))
+>                 return -EPERM;
+>
+> +       /* O_ALLOW_ENCODED can only be set by superuser */
+> +       if ((flag & O_ALLOW_ENCODED) && !capable(CAP_SYS_ADMIN))
+> +               return -EPERM;
+> +
+>         return 0;
+>  }
+>
+> diff --git a/fs/open.c b/fs/open.c
+> index 9af548fb841b..f2863aaf78e7 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -1040,6 +1040,13 @@ inline int build_open_flags(const struct open_how *how, struct open_flags *op)
+>                 acc_mode = 0;
+>         }
+>
+> +       /*
+> +        * O_ALLOW_ENCODED must be combined with O_CLOEXEC to avoid accidentally
+> +        * leaking encoded I/O privileges.
+> +        */
+> +       if ((how->flags & (O_ALLOW_ENCODED | O_CLOEXEC)) == O_ALLOW_ENCODED)
+> +               return -EINVAL;
+> +
 
---2KZLx11gBugK6SXAod6QFGjqppQbYYsLc
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
+dup() can also result in accidental leak.
+We could fail dup() of fd without O_CLOEXEC. Should we?
 
-
-On 2020/11/19 =E4=B8=8A=E5=8D=8812:27, David Sterba wrote:
-> On Fri, Nov 13, 2020 at 08:51:43PM +0800, Qu Wenruo wrote:
->> @@ -325,81 +428,53 @@ blk_status_t btrfs_lookup_bio_sums(struct inode =
-*inode, struct bio *bio,
->>  		path->skip_locking =3D 1;
->>  	}
->> =20
->> -	disk_bytenr =3D (u64)bio->bi_iter.bi_sector << 9;
->> +	for (cur_disk_bytenr =3D orig_disk_bytenr;
->> +	     cur_disk_bytenr < orig_disk_bytenr + orig_len;
->> +	     cur_disk_bytenr +=3D (count * sectorsize)) {
->> +		u64 search_len =3D orig_disk_bytenr + orig_len - cur_disk_bytenr;
->> +		int sector_offset;
->> +		u8 *csum_dst;
->> =20
->> -	bio_for_each_segment(bvec, bio, iter) {
->> -		page_bytes_left =3D bvec.bv_len;
->> -		if (count)
->> -			goto next;
->> +		sector_offset =3D (cur_disk_bytenr - orig_disk_bytenr) >>
->> +				 fs_info->sectorsize_bits;
->=20
-> I replied to the mismatching types already but because you've been
-> sending out the patchsets too often this got lost, I really don't want
-> keep seeing the same things again. You left some int type mess in the
-> new subpage patchset as well.
->=20
-
-OK, let me to be clear here, what's the problem using int here?
-
-If your concern is the width, no, 32bit is definitely enough.
-At the right of the assignment, calculation is still done in u64, and we
-should never have a bio which is larger than 4GiB.
-As bio has its size limit to UINX_MAX already.
-
-If your concern is sign, I'm fine to change it to unsigned int or u32 to
-be more specific.
-
-I believe using u64 everywhere is definitely overkilled.
+If we should than what error code should it be? We could return EPERM,
+but since we do allow to clear O_CLOEXEC or set O_ALLOW_ENCODED
+after open, EPERM seems a tad harsh.
+EINVAL seems inappropriate because the error has nothing to do with
+input args of dup() and EBADF would also be confusing.
 
 Thanks,
-Qu
-
-
---2KZLx11gBugK6SXAod6QFGjqppQbYYsLc--
-
---4PVgLI3wxGiHUYCnmUGuvE2N6g9DUJGrw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+1tP8ACgkQwj2R86El
-/qiwawf/UfRI5vJ/EJ0QOaCayGgeObCz/QE6aL2vFXBUJ8Ly58sXDCO71wRwsL2C
-j43KOsUmyBZnboxEsKcWIfEAwHJiXhNfzy8Y+S9Lpctg49llbDJLKaShKQXLd0Wn
-g/4tYJjrxAhWIZIPF+ktnKYx7BEzSR5mA3mUppL2TltqN4hfWItCawjsqWOVgr1T
-e2qodQcnH69iQ61H6+gX71gxF+C19E1uyaBMM392/u/5gP6tyQePCTwtCmHeYdOl
-cBPGhVUYaJs91ZExcCjN9Pg8ki3nqxm8HofsKgX7drv5BvcUYV4qZYSwjL3McmKp
-tOH6CsTWRoBgWHzj5wpDwTnZky8KRg==
-=C7U3
------END PGP SIGNATURE-----
-
---4PVgLI3wxGiHUYCnmUGuvE2N6g9DUJGrw--
+Amir.
