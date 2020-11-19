@@ -2,163 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E4B2B9055
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 11:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1112B9670
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Nov 2020 16:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgKSKnI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Nov 2020 05:43:08 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:49962 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbgKSKnI (ORCPT
+        id S1728599AbgKSPmR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Nov 2020 10:42:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbgKSPmR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Nov 2020 05:43:08 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJAfU5F022945;
-        Thu, 19 Nov 2020 10:42:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=DTOE+XSushUDSfqfyx9hff7Q2wdQPamXkFT+tBHMqBY=;
- b=EfJsme9lRXmaDogMd8C7qS8NGL82inkjmWUJkVvbcyJb96DBogU99I0Q+b8LHF1Meofv
- XWJGnisbiNCkwtDmMNrf4W5Dni/AYK39Bdmu8M5e950H1oDZYLk9yrQcm2v+cW+IHarE
- P+Oo5exoYjqLuZ2tvuVNB4i00VvdJGvorMyh3Fg/QSmgWl9KavqwmZYtx0/4Evz5HYTt
- /rEwOfBrj0vIzh3je9fiUS2CVmnfWKRLMZyq2t7i4rM5u2zVDMBInBocsxP8i0alJ8Mu
- qOfhCMPLpqYBW7X6KO1TMfVcvt6UDWXrLNeXL5edu+CbTOcTXhUU9P4LZe2Oxba8rn+N 6w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34t4rb4v1w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 19 Nov 2020 10:42:58 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AJAdZGY142124;
-        Thu, 19 Nov 2020 10:42:57 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34ts0tjhe3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Nov 2020 10:42:57 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AJAgsrA001792;
-        Thu, 19 Nov 2020 10:42:54 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Nov 2020 02:42:54 -0800
-Subject: Re: [PATCH v10 07/41] btrfs: disallow space_cache in ZONED mode
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <cover.1605007036.git.naohiro.aota@wdc.com>
- <2276011f71705fff9e6a20966e7f6c601867ecbc.1605007036.git.naohiro.aota@wdc.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <f922fa0e-1c9f-dd2a-2595-fcd88d29420e@oracle.com>
-Date:   Thu, 19 Nov 2020 18:42:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Thu, 19 Nov 2020 10:42:17 -0500
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD989C0613CF
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Nov 2020 07:42:16 -0800 (PST)
+Received: by mail-qt1-x841.google.com with SMTP id f93so4602337qtb.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Nov 2020 07:42:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g4Zm7v/3ra4qwkPrwD7tBM0n+FHNWbVbVV+eivjmDaw=;
+        b=ZVPCoCGBn4LjHOV9Tic4LgWEUfthlp1Bcsc/jB6eR/LP8q5vRR18NBAer1gOC435U/
+         +9in3WD48HJrVNBZ0Ug4Y5dLwzUToMZPsx/CkC2/c3ccv9htCfcyiTCekjpzaAn1VW7M
+         3SyWiuc9DNDxzNnHtQWEk79tlOw1AXxUwsvIYEJ0slZXDrW/hYHReZQ56euOs2KkwPvf
+         8GxmbO4BjcuHjZeVHjOccgyPqn+1JyCEQaoHg+Y3TGR0sOAA1zK+hRrxATZLMVCJ1WG7
+         mThc37VvOGfqx6Yjgj7vWNY/slWBHSeuB1mV9eFeCzMwy7XZBqQUeM4oFxn4A436QY6G
+         YZ5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g4Zm7v/3ra4qwkPrwD7tBM0n+FHNWbVbVV+eivjmDaw=;
+        b=NhIAuBD19qZfSijqUZOUDkzvXI53MYkOinkTCyAu1JSVEeiHPan4+seVfZwp7ocD2O
+         S6++DrWvP3l0aLKhX/KwVX3QGkT1Ou9+6Ffrozl+J2DMLTz+vl1k8VAoXj6ohjkcmdAQ
+         B3d3ToRBQh2ighuNsv7JiL48+SOvtqnuIUSlrKwDMQZOW4SAphWVitP+yAIpppCWRJen
+         5nGMC4QwMpw4bY3FQ7rgqHno0v5jx2BosbRaHon3WPWh1doxsz/2wCnQgFAaxe61s70H
+         5Pj8QA/a/rFdsqvQep7quwWUx4hMIXrPMWVeXARlw6w384+Gpt5xeFkSNYyMEXXO2LlL
+         PnkQ==
+X-Gm-Message-State: AOAM533av7rW4s+t4e69gtfAXDi3iYe6BWoLDRwMwTy1jj2IySDUuypK
+        yUzuzQY4Ad0/fXplup7W6n0mpXNZ18XsiA==
+X-Google-Smtp-Source: ABdhPJybgsAl/a3kdGB2sI76TFVTg38GXol+81IVv9MaJb8EpEXIAlSZUV2LgpSLOf+HcGAUm9zheA==
+X-Received: by 2002:ac8:6b06:: with SMTP id w6mr11177320qts.6.1605800535133;
+        Thu, 19 Nov 2020 07:42:15 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id u15sm52248qkj.122.2020.11.19.07.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Nov 2020 07:42:14 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs-progs: only spit out the parent or ref root for ref mismatches
+Date:   Thu, 19 Nov 2020 10:42:12 -0500
+Message-Id: <26927d5268dc42db5ba131dd80b190d474bd596f.1605800521.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <2276011f71705fff9e6a20966e7f6c601867ecbc.1605007036.git.naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 suspectscore=2 spamscore=0 malwarescore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190079
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9809 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=2 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011190079
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+While debugging some corruption, I got confused because it appeared as
+if we had an invalid parent set on a extent reference, because of this
+message
 
+tree backref 67014213632 parent 5 root 5 not found in extent tree
 
-> @@ -985,6 +992,8 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->   		ret = -EINVAL;
->   
->   	}
-> +	if (!ret)
-> +		ret = btrfs_check_mountopts_zoned(info);
->   	if (!ret && btrfs_test_opt(info, SPACE_CACHE))
->   		btrfs_info(info, "disk space caching is enabled");
->   	if (!ret && btrfs_test_opt(info, FREE_SPACE_TREE))
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 2897432eb43c..d6b8165e2c91 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -274,3 +274,21 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
->   out:
->   	return ret;
->   }
-> +
-> +int btrfs_check_mountopts_zoned(struct btrfs_fs_info *info)
-> +{
-> +	if (!btrfs_is_zoned(info))
-> +		return 0;
-> +
-> +	/*
-> +	 * Space cache writing is not COWed. Disable that to avoid write
-> +	 * errors in sequential zones.
-> +	 */
-> +	if (btrfs_test_opt(info, SPACE_CACHE)) {
-> +		btrfs_err(info,
-> +			  "zoned: space cache v1 is not supported");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-> index 52aa6af5d8dc..81c00a3ed202 100644
-> --- a/fs/btrfs/zoned.h
-> +++ b/fs/btrfs/zoned.h
-> @@ -25,6 +25,7 @@ int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
->   int btrfs_get_dev_zone_info(struct btrfs_device *device);
->   void btrfs_destroy_dev_zone_info(struct btrfs_device *device);
->   int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info);
-> +int btrfs_check_mountopts_zoned(struct btrfs_fs_info *info);
->   #else /* CONFIG_BLK_DEV_ZONED */
->   static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
->   				     struct blk_zone *zone)
-> @@ -48,6 +49,11 @@ static inline int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
->   	return -EOPNOTSUPP;
->   }
->   
-> +static inline int btrfs_check_mountopts_zoned(struct btrfs_fs_info *info)
-> +{
-> +	return 0;
-> +}
-> +
->   #endif
->   
->   static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
-> 
+But it turns out that parent and the root are a union, and we were just
+printing it out regardless of the type of backref it was.  Fix the error
+message to be consistent with the other mismatch messages, simply print
+parent or root, depending on the ref type.
 
-The whole of the above code can be replaced by..
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ check/main.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
--------------------
-@@ -810,8 +810,15 @@ int btrfs_parse_options(struct btrfs_fs_info *info, 
-char *options,
-                         break;
-                 case Opt_space_cache:
-                 case Opt_space_cache_version:
-                         if (token == Opt_space_cache ||
-                             strcmp(args[0].from, "v1") == 0) {
-+                               if (btrfs_is_zoned(info)) {
-+                                       btrfs_err(info,
-+                                       "zoned: space cache v1 is not 
-supported");
-+                                       ret = -EINVAL;
-+                                       goto out;
-+                               }
-                                 btrfs_clear_opt(info->mount_opt,
-                                                 FREE_SPACE_TREE);
-                                 btrfs_set_and_info(info, SPACE_CACHE,
--------------------
+diff --git a/check/main.c b/check/main.c
+index 69a47b31..345f86b1 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -3936,9 +3936,12 @@ static int all_backpointers_checked(struct extent_record *rec, int print_errs)
+ 			} else {
+ 				tback = to_tree_backref(back);
+ 				fprintf(stderr,
+-"tree backref %llu parent %llu root %llu not found in extent tree\n",
++"tree backref %llu %s %llu not found in extent tree\n",
+ 					(unsigned long long)rec->start,
+-					(unsigned long long)tback->parent,
++					back->full_backref ?
++					"parent" : "root",
++					back->full_backref ?
++					(unsigned long long)tback->parent :
+ 					(unsigned long long)tback->root);
+ 			}
+ 		}
+-- 
+2.26.2
 
-Thanks.
