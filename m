@@ -2,81 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B529D2BB864
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Nov 2020 22:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEA52BB96F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Nov 2020 23:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728155AbgKTVeL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Nov 2020 16:34:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58636 "EHLO mx2.suse.de"
+        id S1729040AbgKTWvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Nov 2020 17:51:17 -0500
+Received: from mout.gmx.net ([212.227.17.21]:35727 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728136AbgKTVeL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Nov 2020 16:34:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE7D8AED8;
-        Fri, 20 Nov 2020 21:34:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BE482DA6E1; Fri, 20 Nov 2020 22:32:22 +0100 (CET)
-Date:   Fri, 20 Nov 2020 22:32:22 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v7 00/10] btrfs: free space tree mounting fixes
-Message-ID: <20201120213222.GA8669@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1605736355.git.boris@bur.io>
+        id S1728174AbgKTWvR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Nov 2020 17:51:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1605912673;
+        bh=eH/vd85SNsgQW1o87tHH3hAggLjXnB+QPH/fkkZBhGI=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=VSjVcTqNnHl3xpXYz0FtEjT/EnOYvts6lyGMtBJMSVvPl9wKcSmQKWr1zrZWckUvF
+         hbNMTOeL/QRgN1xlK76UNndvSQBaKcMyedlz2GVNZWVPn4NlsVhFUmJmpi5P+jJd2V
+         7uY82on2DLCJsgdSVZs64+saGxKq4DeitJ5E+4eI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmULx-1jyhDV30a1-00iW8Z; Fri, 20
+ Nov 2020 23:51:13 +0100
+Subject: Re: [PATCH] btrfs: tree-checker: add missing returns after data_ref
+ alignment checks
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     stable@vger.kernel.org
+References: <20201120155558.29684-1-dsterba@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <2575a8c4-7898-1d72-191a-832c59629fbb@gmx.com>
+Date:   Sat, 21 Nov 2020 06:51:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1605736355.git.boris@bur.io>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20201120155558.29684-1-dsterba@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="XsxSs3whPKWw2smBDWeoSOCv04s0eU2Az"
+X-Provags-ID: V03:K1:v9r5RX8LCaJwDVYThpLXb83/MaVKOV6NL04AxVCuKM3nJhEHG+3
+ kTUvr4uPgDuYNkpCm8ZdMKA/h8PJsOmCKd2i2ouC+FCAUKH+6oJziOXKk9p9DDXGTvtM6AW
+ cBsBKl6+0d7mlNiCJxOIh1nIP+pVypFbCzs/w71RkJBPfUC0xpMzrsZ2/N+Oum00snjc+pK
+ SO0KrMTItV4x0dFn6bDwQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cGpxLTZjJ2k=:isOL0vlxhBiwe0htER7BOd
+ ZIpvFdSITMc2C2KtNhKslm80uVV6sr2/snzI76jKQEonBhQcsbVoDyziy6+txVKaGrbumCje/
+ fPqm7IpMT6TtLvcDhThgetikYS8VB1an2hTYE07Hhab4MZVsaKE72StmX6tXpg3HhFcDNokoP
+ MyUMxww9IU1/MJejk0OYqXy9iBHJ+g0iVMnFST/Yf2eYTYyskB+6k+4Dt6noCj78Q0+z9cJcS
+ do3fWOIwjqubeucNFB9RpB4RMUUvQI/cfDLfFJ5ilotdAUUxbCOoMVbR+DMkLxpcpvSPZfwhl
+ RhKOfYiTLpJRJs1KT8cZjAntpCi9fqEyVkv3rE8NKl5rIADVMcgtPfb+oSU4dMx+eQzSR51kS
+ d8XrNawI6xbJ/ltstPISOU0A0H0OwRuBhnYQ2PEhW+W1bip4a0hL54g2RDgU1GG08RK9OS4bK
+ mwrk6pOQPm/JEYakgrK/7HaLhoyn6vSjje4xtTWTwas7gnk2h5qHdGZOQiWQY30s1MBIFBgi9
+ CYJTyV6YKttlJmmF6hlZjE44TD8HSFcdrQLoCnpNaiW8be2zlNEJbNYFaBbcz9KjHwX70R4ft
+ U1KjLIbXMGKtQUG+kMi/UnzaaWviC+LzZAu2iYtHDzXkfr+xPfQSzMiXJqoeCga0WkRD+z2Xl
+ rKVgEyO4t7hy/KsRpH3wL8jIeobdhLelNipn0RgkmfUZj0IKMiEaEGhXluvfbVSqeddiGB8MC
+ JX/pnVg7PoDTXEZsC/p7L831GOssbLo0qAHaoNeYq0FT17q1MkuH4M+5jP4PmLJXziSRmIH/L
+ cjyT9XKXMv3qGDjr7Jk2jjRRXZP3Zywowz66H67Vyb4g0McrP5yRk9UXZbb7bUQbmpec7Ebwx
+ Hszf9vyuhYcCQqorRGwA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 03:06:15PM -0800, Boris Burkov wrote:
-> This patch set cleans up issues surrounding enabling and disabling various
-> free space cache features and their reporting in /proc/mounts.  Because the
-> improvements became somewhat complex, the series starts by lifting rw mount
-> logic into a single place.
-> 
-> The first patch is a setup patch that unifies very similar logic between a
-> normal rw mount and a ro->rw remount. This is a useful setup step for adding
-> more functionality to ro->rw remounts.
-> 
-> The second patch fixes the omission of orphan inode cleanup on a few trees
-> during ro->rw remount.
-> 
-> The third patch stops marking block groups with need_free_space when the
-> free space tree is not yet enabled.
-> 
-> The fourth patch adds enabling the free space tree to ro->rw remount.
-> 
-> The fifth patch adds a method for clearing oneshot mount options after mount.
-> 
-> The sixth patch adds support for clearing the free space tree on ro->rw remount.
-> 
-> The seventh patch sets up for more accurate /proc/mounts by ensuring that
-> cache_generation > 0 iff space_cache is enabled.
-> 
-> The eigth patch is the more accurate /proc/mounts logic.
-> 
-> The ninth patch is a convenience kernel message that complains when we skip
-> changing the free space tree on remount.
-> 
-> The tenth patch removes the space cache v1 free space item and free space
-> inodes when space cache v1 is disabled (nospace_cache or space_cache=v2).
-> 
-> The eleventh patch stops re-creating the free space objects when we are not
-> using space_cache=v1
-> 
-> The twelfth patch fixes a lockdep failure in creating the free space tree.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XsxSs3whPKWw2smBDWeoSOCv04s0eU2Az
+Content-Type: multipart/mixed; boundary="UmpehlsP4fL6JK1lPMj8apBMLvs77lqZ8"
 
-Is this fixing a problem caused by some patches in this series? Because
-if yes, the fix should be folded there. A standalone patch makese sense
-in case we can't fold it there (eg. after merging to Linus' tree),
-otherwise the merged patchsets should be made of complete patches,
-without fixes-to-fixes. Even if the patchset is in misc-next, fixups are
-still doable.
+--UmpehlsP4fL6JK1lPMj8apBMLvs77lqZ8
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2020/11/20 =E4=B8=8B=E5=8D=8811:55, David Sterba wrote:
+> There are sectorsize alignment checks that are reported but then
+> check_extent_data_ref continues. This was not intended, wrong alignment=
+
+> is not a minor problem and we should return with error.
+>=20
+> CC: stable@vger.kernel.org # 5.4+
+> Fixes: 0785a9aacf9d ("btrfs: tree-checker: Add EXTENT_DATA_REF check")
+> Signed-off-by: David Sterba <dsterba@suse.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> ---
+>  fs/btrfs/tree-checker.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 1b27242a9c0b..f3f666b343ef 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -1424,6 +1424,7 @@ static int check_extent_data_ref(struct extent_bu=
+ffer *leaf,
+>  	"invalid item size, have %u expect aligned to %zu for key type %u",
+>  			    btrfs_item_size_nr(leaf, slot),
+>  			    sizeof(*dref), key->type);
+> +		return -EUCLEAN;
+>  	}
+>  	if (!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize)) {
+>  		generic_err(leaf, slot,
+> @@ -1452,6 +1453,7 @@ static int check_extent_data_ref(struct extent_bu=
+ffer *leaf,
+>  			extent_err(leaf, slot,
+>  	"invalid extent data backref offset, have %llu expect aligned to %u",=
+
+>  				   offset, leaf->fs_info->sectorsize);
+> +			return -EUCLEAN;
+>  		}
+>  	}
+>  	return 0;
+>=20
+
+
+--UmpehlsP4fL6JK1lPMj8apBMLvs77lqZ8--
+
+--XsxSs3whPKWw2smBDWeoSOCv04s0eU2Az
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+4SF0ACgkQwj2R86El
+/qiUyAf9G5Uf8BfodoYBxSMyF58y6EzaVebpIcc2xjpbkmG4ys2TQ8Xy3fHD0tMx
+/zkx4WWeALpc+24g/qYQdeaPquhj5gxobUjRdzPIMWoCPY120mfhszO+WEZlAPr6
+ESGuwiy3/2zNQHrq4ed48edF21NdECPAF8ikjlK89pdLGITfFOJ8fhyvQ+WESSBN
+QEAtuevCER46ml8O7KEOG0ultaAFBUm7MJLh54IxuUNltdRPNyeeG1o7KbjXQwai
+bLDQ69rAk0rX7X1ZSyTRDkeeGysqy+XCB9FHO7ss/E622RpHanZ73PwvlYY5uQzF
+HJDwd9G1oBsrw4N1PRIXh0PeYv2EwQ==
+=Uu+I
+-----END PGP SIGNATURE-----
+
+--XsxSs3whPKWw2smBDWeoSOCv04s0eU2Az--
