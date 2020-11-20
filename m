@@ -2,869 +2,880 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BC62BAB81
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Nov 2020 14:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C422BABA4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Nov 2020 15:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgKTNrh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Nov 2020 08:47:37 -0500
-Received: from mout.gmx.net ([212.227.17.22]:34285 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726560AbgKTNrg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:47:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605880048;
-        bh=Js/Hyq0eYOQV1aaBB3SmnXWoLg+kYtoRiW8hxtRBAhM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=aXYTk3nuGUwZBzlxjJ5OucEE1eHYvnKyR92yTjCJIsU0xsj3jmSnBrEpwDjCsA5FL
-         w+DpU03D9npsumM05VpY5UU0+wsAWm1yVIzeO9gh5kj8ML521hmzkV/c62uFBlRwkA
-         YxnHFdYdq4fzjulHHbehvhokPsCS49fCdZXLQdOw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mg6Zq-1k2wBn2lKQ-00hgZT; Fri, 20
- Nov 2020 14:47:28 +0100
-Subject: Re: corrupt leaf; invalid root item size
-To:     Thorsten Rehm <thorsten.rehm@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CABT3_pzBdRqe7SRBptM1E5MPJfwEGF6=YBovmZdj1Vxjs21iNQ@mail.gmail.com>
- <5fdc798c-c8eb-b4cf-b247-e70f5fd49fc4@gmx.com>
- <CABT3_pwG1CrxYBDXTzQZLVGYkLoxKpexEdyJWnm_7TCaskbOeA@mail.gmail.com>
- <1cf994f7-3efb-67ac-d5b1-22929e8ef3fd@gmx.com>
- <CABT3_pxFv0KAjO2DfmikeeT+yN-3BiDj=Mu_a=dC-K9DyL-T3w@mail.gmail.com>
- <b477b613-2190-2c2f-7fab-f9b712ece187@gmx.com>
- <CABT3_pycYRemohAVAbczjre0ruHL_k+pSMBP+ax0Rzcfq2B=BA@mail.gmail.com>
- <CABT3_pxz3hvCx3aKh5vibro1GX3t42kCV5pd=CsL5n+uJSW13w@mail.gmail.com>
- <d88f134b-2728-efb3-5be6-9ed114c27cd8@gmx.com>
- <CABT3_pyOs0G8D5uqJAQXxvQHFanEbniH0fAhntLvf8_hUEY5aw@mail.gmail.com>
- <3235a46e-a3ec-88ba-8343-ef9731194231@gmx.com>
- <CABT3_pzPwxmEeOBDD5OSaCu_qTEN+rTObJmUcsEaPcw3nGUH2Q@mail.gmail.com>
- <CABT3_pwACpykHdL1x9OHN1Zcyc-DiFffN71LJYDWpWUWfGDHRg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <676d0bf2-f7a7-6838-2131-7cc5a3d1517a@gmx.com>
-Date:   Fri, 20 Nov 2020 21:47:20 +0800
+        id S1726335AbgKTOGQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Nov 2020 09:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgKTOGQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Nov 2020 09:06:16 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B03BFC0613CF;
+        Fri, 20 Nov 2020 06:06:15 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id s8so10117745wrw.10;
+        Fri, 20 Nov 2020 06:06:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OgnVu/Ra7itVPrUa7jDHDw1p5InmqAllPRDiJlpQSiI=;
+        b=eRdOFDh+WozCOJ0lfV0F4fCiqt+eHJi06PO4OSa0RHsgfZNasRMs5X5EyohAOo4DRc
+         DTdIfhXG8bq2RHKic/C+wt4sDfxuEEg8xl2j4uQzKeFtqjXfszrz5kHbWcinemMbyT/f
+         jvlvRMkVr6GQk3jvOw5zWRGsJLd+PppMqDAh1z0QZxCs1zJ5yCBOCBLCvAYRZxe2sL+k
+         fQlOXcMGJt2xWrwgEpGM/HI8mcyqHBWtxodaUi7Av/kGNW2LVcMwrGguFdutMhCSIF/y
+         zoyPO4wP/fTmZ6QuqO/SlhCDISdcdM50sgAh2R2ca79gmDl+JeIu/rvib0CEoyaWY086
+         GNrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OgnVu/Ra7itVPrUa7jDHDw1p5InmqAllPRDiJlpQSiI=;
+        b=fCHwYlCq69RPWfakWXtwgrJ3Y8qji71vM1Vq3BcXVxn4BD52dMDlv+6LnyQ5ye8P1q
+         aM5NM8htOaiabWoAmM2dVzkKqvG5ZAPz5ybcsPZNXDwIy2yZhT1YmPTSA4AjPCzJ9Ngw
+         rToDF3Dslhe2yq3XV4BfbDCRGYfwtDuxhNt1880xS5SKrty/9cE/DnE9XDaDzqT5BsSz
+         XIczF94OFUiVY+iI6TYWB6l0AauSyXO5TRj9vAGFQtj43lKopl7uY6PQwsDxltI3DCM9
+         QxbdhdTp8Z4zS9D7wY+ipbWnBnP+HXicgJ/vqOXaoDKtY74q0i1tN5PC125nUXeOtkPl
+         +jwA==
+X-Gm-Message-State: AOAM533hMSPOszPdnlxGhg3/mmAldXneD+MTgFb0bTwxq+bpIPAkXQum
+        GcYaui99iKEe8Znc4f4u+lh6LqiV4nS7ZA==
+X-Google-Smtp-Source: ABdhPJxq9V5Us+H9K4wkiey86PUVRMoj27Izn57gOfIAAVF42gZxKXnA+2+aJEqfb21dviGQbL7fUA==
+X-Received: by 2002:adf:cf0b:: with SMTP id o11mr15789373wrj.162.1605881172869;
+        Fri, 20 Nov 2020 06:06:12 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id u5sm5104343wro.56.2020.11.20.06.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 06:06:12 -0800 (PST)
+Subject: Re: [PATCH man-pages v6] Document encoded I/O
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+To:     Omar Sandoval <osandov@osandov.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com, linux-man <linux-man@vger.kernel.org>
+References: <cover.1605723568.git.osandov@fb.com>
+ <ec1588a618bd313e5a7c05a7f4954cc2b76ddac3.1605724767.git.osandov@osandov.com>
+ <4d1430aa-a374-7565-4009-7ec5139bf311@gmail.com>
+Message-ID: <fb4a4270-eb7a-06d5-e703-9ee470b61f8b@gmail.com>
+Date:   Fri, 20 Nov 2020 15:06:10 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CABT3_pwACpykHdL1x9OHN1Zcyc-DiFffN71LJYDWpWUWfGDHRg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="6iN8QMizvkgKasuyK7tK5HlsDHyM0fDEg"
-X-Provags-ID: V03:K1:LiRnAsP00evLYq+hGiLROrjiooC/Ve8Y85IIPxbclPAhWE9Pc29
- ibDFFPyHhSXTHtrcDV1Yc9EGbDpOFj7Ex5nlZvtP73q8e536tltKgLH6NghZMSOFn6itZVM
- FUA8FkWJcTOecxSiPdq5LWW6otKhQ8cu/H73bmZQLhD4Gx2q/q5Vixnl9r6v1bHUfn7AXiq
- 4IwbtGQuq/3eNOluULWYA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jVQbFkeX94k=:tYxayCXwMi3xWdcTgdKT21
- kTDLq25E65IhxOXniZzjx5ZYbk+RmXqhLDWq/GmMMly4ICkz8ViPVp+n8PmUJCsXbO8tNLMTg
- wU2zqLeE+PrkM+vVzYEHb8ECeQI1Cb5picdGwFF52S5qvkUusnocfXxd6LlVf32TLHedJLAfd
- c4V9O0FyEvhtNib1O0Xz9EP02jXfmi9r1+kqEBM42DNLNZkzat1/GILVI8sBfqQmbPXa/+bPB
- p6Ltw68MTccMSZdOuhh/7Ywy702pNkDykSbGWnu7phh1LpUSQ6zuFWyvgGQX/ubPTgbnT3KSW
- jvSm6oLH34wJdgeSQExDLLTMcGW0nukjAl6xMQU1EEtJkFyCkQotOTMEOIk4OPG1JAoaJAIgs
- 0pVzzXsV6jPrLgUBEpSTFs/nCpEKPtSn7eLsTS/81CWgDXek87f0/x+kzrtzRaHq+FuW+UE9T
- FFV4sJyTCl4VM+A01dl9fEj/wx1/5Q7YmTlObC26mZbLTjj8Sqn+/EEL/EMKniLtJdxNZ3Ccu
- rP2d+46Rcd8dXmh/VwnXy7o9N1J6gmCFT0gERN03XXTi6Os/MkgsC1javworvSg7vX3Ge/qD/
- ymIFG22CuGxhrPBf0dA1pJLXz13CO4bDkP+CUvN4uBXeKAYsnyOq6angKSzweendHFN39aajW
- YXFGGSvwuvf+IyYIabNsy4NXoKdCC7eOSb4YE+zx2HNSm8W7zTNcY1GIV9xM3tgOuG5HfUkN7
- kL7aXjh8YXenS64b2jAzPNF1tUsbCjwoU8IxRrLb+n4pc4D4v5fAMGjUaXqfpDgfVxFlEfxti
- rf6Q8O9ghnEsYEOn+3Lyw7aIDCjxkSeP2FcUYrsYqgTabJINucrf9xz0CWjdp1x0DLNQw42iN
- KHn2JBoHa6w4533pRVdA==
+In-Reply-To: <4d1430aa-a374-7565-4009-7ec5139bf311@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6iN8QMizvkgKasuyK7tK5HlsDHyM0fDEg
-Content-Type: multipart/mixed; boundary="2ztkq31Oh7usq600SqCCYAUMpBqohZET5"
+Hi Omar and Michael,
 
---2ztkq31Oh7usq600SqCCYAUMpBqohZET5
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/11/20 =E4=B8=8B=E5=8D=889:17, Thorsten Rehm wrote:
-> Hi,
->=20
-> I'm very sorry, but I didn't have the time to do the btrfs-image dump.
-> I was just about to go back to work on the problem, but first I've
-> updated my system and now the problem is gone.
-> My system (Debian testing) is running with the latest available kernel
-> 5.9.0-2 and btrfs-progs 5.9.
-> The last time I updated my system was 60 days ago and at this point
-> the problem still existed.
-> So, for now, no more corrupt leaf; invalid root item size erros.
-
-Oh, that's because we have located the cause and fixed the false alert.
-
-The fix is this one:
-1465af12e254 ("btrfs: tree-checker: fix false alert caused by legacy
-btrfs root item")
-
-Some legacy root item can have smaller size than what we have now.
-Thanks for another reporter's dump, we fixed it and existing kernels
-should receive the backport already.
+please, see below.
 
 Thanks,
-Qu
->=20
-> I just wanted you and others to know.
-> Thanks again!
->=20
->=20
-> On Tue, 16 Jun 2020 at 07:41, Thorsten Rehm <thorsten.rehm@gmail.com> w=
-rote:
+
+Alex
+
+On 11/20/20 12:29 AM, Alejandro Colomar (mailing lists; readonly) wrote:
+> Hi Omar,
+> 
+> Please, see some fixes below:
+> 
+> Michael, I've also some questions for you below
+> (you can grep for mtk to find those).
+> 
+> Thanks,
+> 
+> Alex
+> 
+> On 11/18/20 8:18 PM, Omar Sandoval wrote:
+>> From: Omar Sandoval <osandov@fb.com>
 >>
->> Yepp, sure.
->> I will do that in the next few days.
+>> This adds a new page, encoded_io(7), providing an overview of encoded
+>> I/O and updates fcntl(2), open(2), and preadv2(2)/pwritev2(2) to
+>> reference it.
 >>
+>> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+>> Cc: linux-man <linux-man@vger.kernel.org>
+>> Signed-off-by: Omar Sandoval <osandov@fb.com>
+>> ---
+>> This feature is not yet upstream.
 >>
->> On Fri, Jun 12, 2020 at 8:50 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wro=
-te:
->>>
->>> Would you mind to create a btrfs-image dump?
->>>
->>> It would greatly help us to pin down the cause.
->>>
->>> # btrfs-image -c9 <device> <file>
->>>
->>> Although it may leak sensitive data like file and dir names, you can =
-try
->>> -s options to fuzz them since it's not important in this particular
->>> case, but it would cause more time and may cause some extra problems.=
+>>  man2/fcntl.2      |  10 +-
+>>  man2/open.2       |  23 +++
+>>  man2/readv.2      |  70 +++++++++
+>>  man7/encoded_io.7 | 369 ++++++++++++++++++++++++++++++++++++++++++++++
+>>  4 files changed, 471 insertions(+), 1 deletion(-)
+>>  create mode 100644 man7/encoded_io.7
+>>
+>> diff --git a/man2/fcntl.2 b/man2/fcntl.2
+>> index 546016617..b0d7fa2c3 100644
+>> --- a/man2/fcntl.2
+>> +++ b/man2/fcntl.2
+>> @@ -221,8 +221,9 @@ On Linux, this command can change only the
+>>  .BR O_ASYNC ,
+>>  .BR O_DIRECT ,
+>>  .BR O_NOATIME ,
+>> +.BR O_NONBLOCK ,
+>>  and
+>> -.B O_NONBLOCK
+>> +.B O_ALLOW_ENCODED
+>>  flags.
+>>  It is not possible to change the
+>>  .BR O_DSYNC
+>> @@ -1820,6 +1821,13 @@ Attempted to clear the
+>>  flag on a file that has the append-only attribute set.
+>>  .TP
+>>  .B EPERM
+>> +Attempted to set the
+>> +.B O_ALLOW_ENCODED
+>> +flag and the calling process did not have the
+>> +.B CAP_SYS_ADMIN
+>> +capability.
+>> +.TP
+>> +.B EPERM
+>>  .I cmd
+>>  was
+>>  .BR F_ADD_SEALS ,
+>> diff --git a/man2/open.2 b/man2/open.2
+>> index f587b0d95..84697dfa8 100644
+>> --- a/man2/open.2
+>> +++ b/man2/open.2
+>> @@ -437,6 +437,16 @@ was followed by a call to
+>>  .BR fdatasync (2)).
+>>  .IR "See NOTES below" .
+>>  .TP
+>> +.B O_ALLOW_ENCODED
+> 
+> The list is alphabetically sorted;
+> please, follow that
+> (O_ALLOW_ENCODED should be the first one).
+> 
+>> +Open the file with encoded I/O permissions;
+>> +see
+>> +.BR encoded_io (7).
+>> +.B O_CLOEXEC
+>> +must be specified in conjuction with this flag.
+>> +The caller must have the
+>> +.B CAP_SYS_ADMIN
+>> +capability.
+>> +.TP
+>>  .B O_EXCL
+>>  Ensure that this call creates the file:
+>>  if this flag is specified in conjunction with
+>> @@ -1082,6 +1092,14 @@ is invalid
+>>  (e.g., it contains characters not permitted by the underlying filesystem).
+>>  .TP
+>>  .B EINVAL
+>> +.B O_ALLOW_ENCODED
+>> +was specified in
+>> +.IR flags ,
+>> +but
+>> +.B O_CLOEXEC
+>> +was not specified.
+>> +.TP
+>> +.B EINVAL
+>>  The final component ("basename") of
+>>  .I pathname
+>>  is invalid
+>> @@ -1238,6 +1256,11 @@ did not match the owner of the file and the caller was not privileged.
+>>  The operation was prevented by a file seal; see
+>>  .BR fcntl (2).
+>>  .TP
+>> +.B EPERM
+>> +The
+>> +.B O_ALLOW_ENCODED
+>> +flag was specified, but the caller was not privileged.
+>> +.TP
+>>  .B EROFS
+>>  .I pathname
+>>  refers to a file on a read-only filesystem and write access was
+>> diff --git a/man2/readv.2 b/man2/readv.2
+>> index 5a8b74168..c9933acf0 100644
+>> --- a/man2/readv.2
+>> +++ b/man2/readv.2
+>> @@ -264,6 +264,11 @@ the data is always appended to the end of the file.
+>>  However, if the
+>>  .I offset
+>>  argument is \-1, the current file offset is updated.
+>> +.TP
+>> +.BR RWF_ENCODED " (since Linux 5.12)"
+>> +Read or write encoded (e.g., compressed) data.
+>> +See
+>> +.BR encoded_io (7).
+>>  .SH RETURN VALUE
+>>  On success,
+>>  .BR readv (),
+>> @@ -283,6 +288,13 @@ than requested (see
+>>  and
+>>  .BR write (2)).
+>>  .PP
+>> +If
+>> +.B
+>> +RWF_ENCODED
+> 
+> RWF_ENCODED should go in the same line as .B:
+> 
+> [
+> .B RWF_ENCODED
+> ]
+> 
+>> +was specified in
+>> +.IR flags ,
+>> +then the return value is the number of encoded bytes.
+>> +.PP
+>>  On error, \-1 is returned, and \fIerrno\fP is set appropriately.
+>>  .SH ERRORS
+>>  The errors are as given for
+>> @@ -313,6 +325,64 @@ is less than zero or greater than the permitted maximum.
+>>  .TP
+>>  .B EOPNOTSUPP
+>>  An unknown flag is specified in \fIflags\fP.
+>> +.TP
+>> +.B EOPNOTSUPP
+>> +.B RWF_ENCODED
+>> +is specified in
+>> +.I flags
+>> +and the filesystem does not implement encoded I/O.
+>> +.TP
+>> +.B EPERM
+>> +.B RWF_ENCODED
+>> +is specified in
+>> +.I flags
+>> +and the file was not opened with the
+>> +.B O_ALLOW_ENCODED
+>> +flag.
+>> +.PP
+>> +.BR preadv2 ()
+>> +can fail for the following reasons:
+> 
+> The wording is a bit unclear:
+> 
+> Above your additions (old text, not yours),
+> it says that some errors apply to preadv2
+> (as well as to other functions):
+> 
+> [
+> ERRORS
+>        The errors are as given for read(2) and write(2).  Furthermore,
+>        preadv(),  preadv2(),  pwritev(),  and pwritev2() can also fail
+>        for the same reasons as lseek(2).  Additionally, the  following
+>        errors are defined:
+> 
+>        EINVAL The  sum  of  the  iov_len  values  overflows an ssize_t
+>               value.
+> 
+>        EINVAL The vector count, iovcnt, is less than zero  or  greater
+>               than the permitted maximum.
+> 
+>        EOPNOTSUPP
+>               An unknown flag is specified in flags.
+> 
+>        EOPNOTSUPP
+>               RWF_ENCODED  is  specified  in  flags and the filesystem
+>               does not implement encoded I/O.
+> 
+>        EPERM  RWF_ENCODED is specified in flags and the file  was  not
+>               opened with the O_ALLOW_ENCODED flag.
+> ]
+> 
+> And then you added a line that says:
+> 
+> [
+>        preadv2() can fail for the following reasons:
+> ]
+> 
+> Which if read strictly, it says that [only] the following errors apply.
+> 
+> Did you mean that
+> "preadv3() can _additionally_ fail for the following reasons"?
+> 
+> Could you please be a bit more specific?
+> 
+> The same applies for pwritev2() below.
+> 
+>> +.TP
+>> +.B E2BIG
+>> +.B RWF_ENCODED
+>> +is specified in
+>> +.I flags
+>> +and
+>> +.I iov[0]
+>> +is not large enough to return the encoding metadata.
+>> +.TP
+>> +.B ENOBUFS
+>> +.B RWF_ENCODED
+>> +is specified in
+>> +.I flags
+>> +and the buffers in
+>> +.I iov
+>> +are not big enough to return the encoded data.
+>> +.PP
+>> +.BR pwritev2 ()
+>> +can fail for the following reasons:
+>> +.TP
+>> +.B E2BIG
+>> +.B RWF_ENCODED
+>> +is specified in
+>> +.I flags
+>> +and
+>> +.I iov[0]
+>> +contains non-zero fields
+>> +after the kernel's
+>> +.IR "sizeof(struct\ encoded_iov)" .
+> 
+> Don't escape the space, if the string is already in "".
+> 
+>> +.TP
+>> +.B EINVAL
+>> +.B RWF_ENCODED
+>> +is specified in
+>> +.I flags
+>> +and the encoding is unknown or not supported by the filesystem.
+>> +.TP
+>> +.B EINVAL
+>> +.B RWF_ENCODED
+>> +is specified in
+>> +.I flags
+>> +and the alignment and/or size requirements are not met.
+>>  .SH VERSIONS
+>>  .BR preadv ()
+>>  and
+>> diff --git a/man7/encoded_io.7 b/man7/encoded_io.7
+>> new file mode 100644
+>> index 000000000..106fa587b
+>> --- /dev/null
+>> +++ b/man7/encoded_io.7
+>> @@ -0,0 +1,369 @@
+>> +.\" Copyright (c) 2020 by Omar Sandoval <osandov@fb.com>
+>> +.\"
+>> +.\" %%%LICENSE_START(VERBATIM)
+>> +.\" Permission is granted to make and distribute verbatim copies of this
+>> +.\" manual provided the copyright notice and this permission notice are
+>> +.\" preserved on all copies.
+>> +.\"
+>> +.\" Permission is granted to copy and distribute modified versions of this
+>> +.\" manual under the conditions for verbatim copying, provided that the
+>> +.\" entire resulting derived work is distributed under the terms of a
+>> +.\" permission notice identical to this one.
+>> +.\"
+>> +.\" Since the Linux kernel and libraries are constantly changing, this
+>> +.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+>> +.\" responsibility for errors or omissions, or for damages resulting from
+>> +.\" the use of the information contained herein.  The author(s) may not
+>> +.\" have taken the same level of care in the production of this manual,
+>> +.\" which is licensed free of charge, as they might when working
+>> +.\" professionally.
+>> +.\"
+>> +.\" Formatted or processed versions of this manual, if unaccompanied by
+>> +.\" the source, must acknowledge the copyright and authors of this work.
+>> +.\" %%%LICENSE_END
+>> +.\"
+>> +.\"
+>> +.TH ENCODED_IO  7 2020-11-11 "Linux" "Linux Programmer's Manual"
+>> +.SH NAME
+>> +encoded_io \- overview of encoded I/O
+>> +.SH DESCRIPTION
+>> +Several filesystems (e.g., Btrfs) support transparent encoding
+>> +(e.g., compression, encryption) of data on disk:
+>> +written data is encoded by the kernel before it is written to disk,
+>> +and read data is decoded before being returned to the user.
+>> +In some cases, it is useful to skip this encoding step.
+> 
+> Here I would use ';' instead of '.'
+> (and next letter would be lowercase, then).
+> 
+>> +For example, the user may want to read the compressed contents of a file
+>> +or write pre-compressed data directly to a file.
+>> +This is referred to as "encoded I/O".
+>> +.SS Encoded I/O API
+>> +Encoded I/O is specified with the
+>> +.B RWF_ENCODED
+>> +flag to
+>> +.BR preadv2 (2)
+>> +and
+>> +.BR pwritev2 (2).
+>> +If
+>> +.B RWF_ENCODED
+>> +is specified, then
+>> +.I iov[0].iov_base
+>> +points to an
+>> +.I
+>> +encoded_iov
+> 
+> On the same line, please.
+> 
+>> +structure, defined in
+>> +.I <linux/fs.h>
+>> +as:
+>> +.PP
+>> +.in +4n
+>> +.EX
+>> +struct encoded_iov {
+>> +    __aligned_u64 len;
+>> +    __aligned_u64 unencoded_len;
+>> +    __aligned_u64 unencoded_offset;
+>> +    __u32 compression;
+>> +    __u32 encryption;
+>> +};
+>> +.EE
+>> +.in
+>> +.PP
+>> +This may be extended in the future, so
+>> +.I iov[0].iov_len
+>> +must be set to
+>> +.I "sizeof(struct\ encoded_iov)"
+>> +for forward/backward compatibility.
+>> +The remaining buffers contain the encoded data.
+>> +.PP
+>> +.I compression
+>> +and
+>> +.I encryption
+>> +are the encoding fields.
+>> +.I compression
+>> +is
+>> +.B ENCODED_IOV_COMPRESSION_NONE
+>> +(zero)
+>> +or a filesystem-specific
+>> +.B ENCODED_IOV_COMPRESSION
+> 
+> Maybe s/ENCODED_IOV_COMPRESSION/ENCODED_IOV_COMPRESSION_*/
 
->>>
->>> After looking into related code, and your SINGLE metadata profile, I
->>> can't find any clues yet.
->>>
->>> Thanks,
->>> Qu
->>>
->>>
->>> On 2020/6/8 =E4=B8=8B=E5=8D=8810:41, Thorsten Rehm wrote:
->>>> I just have to start my system with kernel 5.6. After that, the
->>>> slot=3D32 error lines will be written. And only these lines:
->>>>
->>>> $ grep 'BTRFS critical' kern.log.1 | wc -l
->>>> 1191
->>>>
->>>> $ grep 'slot=3D32' kern.log.1 | wc -l
->>>> 1191
->>>>
->>>> $ grep 'corruption' kern.log.1 | wc -l
->>>> 0
->>>>
->>>> Period: 10 Minutes (~1200 lines in 10 minutes).
->>>>
->>>> On Mon, Jun 8, 2020 at 3:29 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wr=
-ote:
->>>>>
->>>>>
->>>>>
->>>>> On 2020/6/8 =E4=B8=8B=E5=8D=889:25, Thorsten Rehm wrote:
->>>>>> Hi,
->>>>>>
->>>>>> any more ideas to investigate this?
->>>>>
->>>>> If you can still hit the same bug, and the fs is still completely f=
-ine,
->>>>> I could craft some test patches for you tomorrow.
->>>>>
->>>>> The idea behind it is to zero out all the memory for any bad eb.
->>>>> Thus bad eb cache won't affect other read.
->>>>> If that hugely reduced the frequency, I guess that would be the cas=
-e.
->>>>>
->>>>>
->>>>> But I'm still very interested in, have you hit "read time tree bloc=
-k
->>>>> corruption detected" lines? Or just such slot=3D32 error lines?
->>>>>
->>>>> Thanks,
->>>>> Qu
->>>>>
->>>>>>
->>>>>> On Thu, Jun 4, 2020 at 7:57 PM Thorsten Rehm <thorsten.rehm@gmail.=
-com> wrote:
->>>>>>>
->>>>>>> Hmm, ok wait a minute:
->>>>>>>
->>>>>>> "But still, if you're using metadata without copy (aka, SINGLE, R=
-AID0)
->>>>>>> then it would be a completely different story."
->>>>>>>
->>>>>>> It's a single disk (SSD):
->>>>>>>
->>>>>>> root@grml ~ # btrfs filesystem usage /mnt
->>>>>>> Overall:
->>>>>>>     Device size:         115.23GiB
->>>>>>>     Device allocated:          26.08GiB
->>>>>>>     Device unallocated:          89.15GiB
->>>>>>>     Device missing:             0.00B
->>>>>>>     Used:               7.44GiB
->>>>>>>     Free (estimated):         104.04GiB    (min: 59.47GiB)
->>>>>>>     Data ratio:                  1.00
->>>>>>>     Metadata ratio:              2.00
->>>>>>>     Global reserve:          25.25MiB    (used: 0.00B)
->>>>>>>
->>>>>>> Data,single: Size:22.01GiB, Used:7.11GiB (32.33%)
->>>>>>>    /dev/mapper/foo      22.01GiB
->>>>>>>
->>>>>>> Metadata,single: Size:8.00MiB, Used:0.00B (0.00%)
->>>>>>>    /dev/mapper/foo       8.00MiB
->>>>>>>
->>>>>>> Metadata,DUP: Size:2.00GiB, Used:167.81MiB (8.19%)
->>>>>>>    /dev/mapper/foo       4.00GiB
->>>>>>>
->>>>>>> System,single: Size:4.00MiB, Used:0.00B (0.00%)
->>>>>>>    /dev/mapper/foo       4.00MiB
->>>>>>>
->>>>>>> System,DUP: Size:32.00MiB, Used:4.00KiB (0.01%)
->>>>>>>    /dev/mapper/foo      64.00MiB
->>>>>>>
->>>>>>> Unallocated:
->>>>>>>    /dev/mapper/foo      89.15GiB
->>>>>>>
->>>>>>>
->>>>>>> root@grml ~ # btrfs filesystem df /mnt
->>>>>>> Data, single: total=3D22.01GiB, used=3D7.11GiB
->>>>>>> System, DUP: total=3D32.00MiB, used=3D4.00KiB
->>>>>>> System, single: total=3D4.00MiB, used=3D0.00B
->>>>>>> Metadata, DUP: total=3D2.00GiB, used=3D167.81MiB
->>>>>>> Metadata, single: total=3D8.00MiB, used=3D0.00B
->>>>>>> GlobalReserve, single: total=3D25.25MiB, used=3D0.00B
->>>>>>>
->>>>>>> I did also a fstrim:
->>>>>>>
->>>>>>> root@grml ~ # cryptsetup --allow-discards open /dev/sda5 foo
->>>>>>> Enter passphrase for /dev/sda5:
->>>>>>> root@grml ~ # mount -o discard /dev/mapper/foo /mnt
->>>>>>> root@grml ~ # fstrim -v /mnt/
->>>>>>> /mnt/: 105.8 GiB (113600049152 bytes) trimmed
->>>>>>> fstrim -v /mnt/  0.00s user 5.34s system 0% cpu 10:28.70 total
->>>>>>>
->>>>>>> The kern.log in the runtime of fstrim:
->>>>>>> --- snip ---
->>>>>>> Jun 04 12:32:02 grml kernel: BTRFS critical (device dm-0): corrup=
-t
->>>>>>> leaf: root=3D1 block=3D32505856 slot=3D32, invalid root item size=
-, have 239
->>>>>>> expect 439
->>>>>>> Jun 04 12:32:02 grml kernel: BTRFS critical (device dm-0): corrup=
-t
->>>>>>> leaf: root=3D1 block=3D32813056 slot=3D32, invalid root item size=
-, have 239
->>>>>>> expect 439
->>>>>>> Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): turning on=
- sync discard
->>>>>>> Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): disk space=
+Or s/ENCODED_IOV_COMPRESSION/ENCODED_IOV_COMPRESSION_/
 
->>>>>>> caching is enabled
->>>>>>> Jun 04 12:32:37 grml kernel: BTRFS critical (device dm-0): corrup=
-t
->>>>>>> leaf: root=3D1 block=3D32813056 slot=3D32, invalid root item size=
-, have 239
->>>>>>> expect 439
->>>>>>> Jun 04 12:32:37 grml kernel: BTRFS info (device dm-0): enabling s=
-sd
->>>>>>> optimizations
->>>>>>> Jun 04 12:34:35 grml kernel: BTRFS critical (device dm-0): corrup=
-t
->>>>>>> leaf: root=3D1 block=3D32382976 slot=3D32, invalid root item size=
-, have 239
->>>>>>> expect 439
->>>>>>> Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): turning on=
- sync discard
->>>>>>> Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): disk space=
+I'm not sure about existing practice.
 
->>>>>>> caching is enabled
->>>>>>> Jun 04 12:36:50 grml kernel: BTRFS critical (device dm-0): corrup=
-t
->>>>>>> leaf: root=3D1 block=3D32382976 slot=3D32, invalid root item size=
-, have 239
->>>>>>> expect 439
->>>>>>> Jun 04 12:36:50 grml kernel: BTRFS info (device dm-0): enabling s=
-sd
->>>>>>> optimizations
->>>>>>> --- snap ---
->>>>>>>
->>>>>>> Furthermore the system runs for years now. I can't remember exact=
-ly,
->>>>>>> but think for 4-5 years. I've started with Debian Testing and jus=
-t
->>>>>>> upgraded my system on a regular basis. And and I started with btr=
-fs of
->>>>>>> course, but I can't remember with which version...
->>>>>>>
->>>>>>> The problem is still there after the fstrim. Any further suggesti=
-ons?
->>>>>>>
->>>>>>> And isn't it a little bit strange, that someone had a very simili=
-ar problem?
->>>>>>> https://lore.kernel.org/linux-btrfs/19acbd39-475f-bd72-e280-5f6c6=
-496035c@web.de/
->>>>>>>
->>>>>>> root=3D1, slot=3D32, and "invalid root item size, have 239 expect=
- 439" are
->>>>>>> identical to my errors.
->>>>>>>
->>>>>>> Thx so far!
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> On Thu, Jun 4, 2020 at 2:06 PM Qu Wenruo <quwenruo.btrfs@gmx.com>=
- wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2020/6/4 =E4=B8=8B=E5=8D=886:52, Thorsten Rehm wrote:
->>>>>>>>> The disk in question is my root (/) partition. If the filesyste=
-m is
->>>>>>>>> that highly damaged, I have to reinstall my system. We will see=
-, if
->>>>>>>>> it's come to that. Maybe we find something interesting on the w=
-ay...
->>>>>>>>> I've downloaded the latest grml daily image and started my syst=
-em from
->>>>>>>>> a usb stick. Here we go:
->>>>>>>>>
->>>>>>>>> root@grml ~ # uname -r
->>>>>>>>> 5.6.0-2-amd64
->>>>>>>>>
->>>>>>>>> root@grml ~ # cryptsetup open /dev/sda5 foo
->>>>>>>>>
->>>>>>>>>                                                                =
-   :(
->>>>>>>>> Enter passphrase for /dev/sda5:
->>>>>>>>>
->>>>>>>>> root@grml ~ # file -L -s /dev/mapper/foo
->>>>>>>>> /dev/mapper/foo: BTRFS Filesystem label "slash", sectorsize 409=
-6,
->>>>>>>>> nodesize 4096, leafsize 4096,
->>>>>>>>> UUID=3D65005d0f-f8ea-4f77-8372-eb8b53198685, 7815716864/1237319=
-68000
->>>>>>>>> bytes used, 1 devices
->>>>>>>>>
->>>>>>>>> root@grml ~ # btrfs check /dev/mapper/foo
->>>>>>>>> Opening filesystem to check...
->>>>>>>>> Checking filesystem on /dev/mapper/foo
->>>>>>>>> UUID: 65005d0f-f8ea-4f77-8372-eb8b53198685
->>>>>>>>> [1/7] checking root items
->>>>>>>>> [2/7] checking extents
->>>>>>>>> [3/7] checking free space cache
->>>>>>>>> [4/7] checking fs roots
->>>>>>>>> [5/7] checking only csums items (without verifying data)
->>>>>>>>> [6/7] checking root refs
->>>>>>>>> [7/7] checking quota groups skipped (not enabled on this FS)
->>>>>>>>> found 7815716864 bytes used, no error found
->>>>>>>>> total csum bytes: 6428260
->>>>>>>>> total tree bytes: 175968256
->>>>>>>>> total fs tree bytes: 149475328
->>>>>>>>> total extent tree bytes: 16052224
->>>>>>>>> btree space waste bytes: 43268911
->>>>>>>>> file data blocks allocated: 10453221376
->>>>>>>>>  referenced 8746053632
->>>>>>>>
->>>>>>>> Errr, this is a super good news, all your fs metadata is complet=
-ely fine
->>>>>>>> (at least for the first copy).
->>>>>>>> Which is completely different from the kernel dmesg.
->>>>>>>>
->>>>>>>>>
->>>>>>>>> root@grml ~ # lsblk /dev/sda5 --fs
->>>>>>>>> NAME  FSTYPE      FSVER LABEL UUID
->>>>>>>>> FSAVAIL FSUSE% MOUNTPOINT
->>>>>>>>> sda5  crypto_LUKS 1           d2b4fa40-8afd-4e16-b207-4d106096f=
-d22
->>>>>>>>> =E2=94=94=E2=94=80foo btrfs             slash 65005d0f-f8ea-4f7=
-7-8372-eb8b53198685
->>>>>>>>>
->>>>>>>>> root@grml ~ # mount /dev/mapper/foo /mnt
->>>>>>>>> root@grml ~ # btrfs scrub start /mnt
->>>>>>>>>
->>>>>>>>> root@grml ~ # journalctl -k --no-pager | grep BTRFS
->>>>>>>>> Jun 04 10:33:04 grml kernel: BTRFS: device label slash devid 1 =
-transid
->>>>>>>>> 24750795 /dev/dm-0 scanned by systemd-udevd (3233)
->>>>>>>>> Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): disk spa=
-ce
->>>>>>>>> caching is enabled
->>>>>>>>> Jun 04 10:45:17 grml kernel: BTRFS critical (device dm-0): corr=
-upt
->>>>>>>>> leaf: root=3D1 block=3D54222848 slot=3D32, invalid root item si=
-ze, have 239
->>>>>>>>> expect 439
->>>>>>>>
->>>>>>>> One error line without "read time corruption" line means btrfs k=
-ernel
->>>>>>>> indeed skipped to next copy.
->>>>>>>> In this case, there is one copy (aka the first copy) corrupted.
->>>>>>>> Strangely, if it's the first copy in kernel, it should also be t=
-he first
->>>>>>>> copy in btrfs check.
->>>>>>>>
->>>>>>>> And no problem reported from btrfs check, that's already super s=
-trange.
->>>>>>>>
->>>>>>>>> Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): enabling=
- ssd
->>>>>>>>> optimizations
->>>>>>>>> Jun 04 10:45:17 grml kernel: BTRFS info (device dm-0): checking=
- UUID tree
->>>>>>>>> Jun 04 10:45:38 grml kernel: BTRFS info (device dm-0): scrub: s=
-tarted on devid 1
->>>>>>>>> Jun 04 10:45:49 grml kernel: BTRFS critical (device dm-0): corr=
-upt
->>>>>>>>> leaf: root=3D1 block=3D29552640 slot=3D32, invalid root item si=
-ze, have 239
->>>>>>>>> expect 439
->>>>>>>>> Jun 04 10:46:25 grml kernel: BTRFS critical (device dm-0): corr=
-upt
->>>>>>>>> leaf: root=3D1 block=3D29741056 slot=3D32, invalid root item si=
-ze, have 239
->>>>>>>>> expect 439
->>>>>>>>> Jun 04 10:46:31 grml kernel: BTRFS info (device dm-0): scrub: f=
-inished
->>>>>>>>> on devid 1 with status: 0
->>>>>>>>> Jun 04 10:46:56 grml kernel: BTRFS critical (device dm-0): corr=
-upt
->>>>>>>>> leaf: root=3D1 block=3D29974528 slot=3D32, invalid root item si=
-ze, have 239
->>>>>>>>> expect 439
->>>>>>>>
->>>>>>>> This means the corrupted copy are also there for several (and I =
-guess
->>>>>>>> unrelated) tree blocks.
->>>>>>>> For scrub I guess it just try to read the good copy without both=
-ering
->>>>>>>> the bad one it found, so no error reported in scrub.
->>>>>>>>
->>>>>>>> But still, if you're using metadata without copy (aka, SINGLE, R=
-AID0)
->>>>>>>> then it would be a completely different story.
->>>>>>>>
->>>>>>>>
->>>>>>>>>
->>>>>>>>> root@grml ~ # btrfs scrub status /mnt
->>>>>>>>> UUID:             65005d0f-f8ea-4f77-8372-eb8b53198685
->>>>>>>>> Scrub started:    Thu Jun  4 10:45:38 2020
->>>>>>>>> Status:           finished
->>>>>>>>> Duration:         0:00:53
->>>>>>>>> Total to scrub:   7.44GiB
->>>>>>>>> Rate:             143.80MiB/s
->>>>>>>>> Error summary:    no errors found
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> root@grml ~ # for block in 54222848 29552640 29741056 29974528;=
- do
->>>>>>>>> btrfs ins dump-tree -b $block /dev/dm-0; done
->>>>>>>>> btrfs-progs v5.6
->>>>>>>>> leaf 54222848 items 33 free space 1095 generation 24750795 owne=
-r ROOT_TREE
->>>>>>>>> leaf 54222848 flags 0x1(WRITTEN) backref revision 1
->>>>>>>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
->>>>>>>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
->>>>>>>>>     item 0 key (289 INODE_ITEM 0) itemoff 3835 itemsize 160
->>>>>>>>>         generation 24703953 transid 24703953 size 262144 nbytes=
- 8595701760
->>>>>>>> ...
->>>>>>>>>         cache generation 24750791 entries 139 bitmaps 8
->>>>>>>>>     item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 item=
-size 239
->>>>>>>>
->>>>>>>> So it's still there. The first copy is corrupted. Just btrfs-pro=
-gs can't
->>>>>>>> detect it.
->>>>>>>>
->>>>>>>>>         generation 4 root_dirid 256 bytenr 29380608 level 0 ref=
-s 1
->>>>>>>>>         lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(none)=
+Michael (mtk), what would you do here?
 
->>>>>>>>>         drop key (0 UNKNOWN.0 0) level 0
->>>>>>>>> btrfs-progs v5.6
->>>>>>>>> leaf 29552640 items 33 free space 1095 generation 24750796 owne=
-r ROOT_TREE
->>>>>>>>> leaf 29552640 flags 0x1(WRITTEN) backref revision 1
->>>>>>>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
->>>>>>>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
->>>>>>>> ...
->>>>>>>>>     item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 1920 item=
-size 239
->>>>>>>>>         generation 4 root_dirid 256 bytenr 29380608 level 0 ref=
-s 1
->>>>>>>>>         lastsnap 0 byte_limit 0 bytes_used 4096 flags 0x0(none)=
-
->>>>>>>>>         drop key (0 UNKNOWN.0 0) level 0
->>>>>>>>
->>>>>>>> This is different from previous copy, which means it should be a=
-n CoWed
->>>>>>>> tree blocks.
->>>>>>>>
->>>>>>>>> btrfs-progs v5.6
->>>>>>>>> leaf 29741056 items 33 free space 1095 generation 24750797 owne=
-r ROOT_TREE
->>>>>>>>
->>>>>>>> Even newer one.
->>>>>>>>
->>>>>>>> ...
->>>>>>>>> btrfs-progs v5.6
->>>>>>>>> leaf 29974528 items 33 free space 1095 generation 24750798 owne=
-r ROOT_TREE
->>>>>>>>
->>>>>>>> Newer.
->>>>>>>>
->>>>>>>> So It looks the bad copy exists for a while, but at the same tim=
-e we
->>>>>>>> still have one good copy to let everything float.
->>>>>>>>
->>>>>>>> To kill all the old corrupted copies, if it supports TRIM/DISCAR=
-D, I
->>>>>>>> recommend to run scrub first, then fstrim on the fs.
->>>>>>>>
->>>>>>>> If it's HDD, I recommend to run a btrfs balance -m to relocate a=
-ll
->>>>>>>> metadata blocks, to get rid the bad copies.
->>>>>>>>
->>>>>>>> Of course, all using v5.3+ kernels.
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>> Qu
->>>>>>>>>
->>>>>>>>> On Thu, Jun 4, 2020 at 12:00 PM Qu Wenruo <quwenruo.btrfs@gmx.c=
-om> wrote:
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> On 2020/6/4 =E4=B8=8B=E5=8D=885:45, Thorsten Rehm wrote:
->>>>>>>>>>> Thank you for you answer.
->>>>>>>>>>> I've just updated my system, did a reboot and it's running wi=
-th a
->>>>>>>>>>> 5.6.0-2-amd64 now.
->>>>>>>>>>> So, this is how my kern.log looks like, just right after the =
-start:
->>>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> There are too many blocks. I just picked three randomly:
->>>>>>>>>>
->>>>>>>>>> Looks like we need more result, especially some result doesn't=
- match at all.
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> =3D=3D=3D Block 33017856 =3D=3D=3D
->>>>>>>>>>> $ btrfs ins dump-tree -b 33017856 /dev/dm-0
->>>>>>>>>>> btrfs-progs v5.6
->>>>>>>>>>> leaf 33017856 items 51 free space 17 generation 24749502 owne=
-r FS_TREE
->>>>>>>>>>> leaf 33017856 flags 0x1(WRITTEN) backref revision 1
->>>>>>>>>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
->>>>>>>>>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
->>>>>>>>>> ...
->>>>>>>>>>>         item 31 key (4000670 EXTENT_DATA 1933312) itemoff 229=
-9 itemsize 53
->>>>>>>>>>>                 generation 24749502 type 1 (regular)
->>>>>>>>>>>                 extent data disk byte 1126502400 nr 4096
->>>>>>>>>>>                 extent data offset 0 nr 8192 ram 8192
->>>>>>>>>>>                 extent compression 2 (lzo)
->>>>>>>>>>>         item 32 key (4000670 EXTENT_DATA 1941504) itemoff 224=
-6 itemsize 53
->>>>>>>>>>>                 generation 24749502 type 1 (regular)
->>>>>>>>>>>                 extent data disk byte 0 nr 0
->>>>>>>>>>>                 extent data offset 1937408 nr 4096 ram 419430=
-4
->>>>>>>>>>>                 extent compression 0 (none)
->>>>>>>>>> Not root item at all.
->>>>>>>>>> At least for this copy, it looks like kernel got one completel=
-y bad
->>>>>>>>>> copy, then discarded it and found a good copy.
->>>>>>>>>>
->>>>>>>>>> That's very strange, especially when all the other involved on=
-es seems
->>>>>>>>>> random and all at slot 32 is not a coincident.
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>> =3D=3D=3D Block 44900352  =3D=3D=3D
->>>>>>>>>>> btrfs ins dump-tree -b 44900352 /dev/dm-0
->>>>>>>>>>> btrfs-progs v5.6
->>>>>>>>>>> leaf 44900352 items 19 free space 591 generation 24749527 own=
-er FS_TREE
->>>>>>>>>>> leaf 44900352 flags 0x1(WRITTEN) backref revision 1
->>>>>>>>>>
->>>>>>>>>> This block doesn't even have slot 32... It only have 19 items,=
- thus slot
->>>>>>>>>> 0 ~ slot 18.
->>>>>>>>>> And its owner, FS_TREE shouldn't have ROOT_ITEM.
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> =3D=3D=3D Block 55352561664 =3D=3D=3D
->>>>>>>>>>> $ btrfs ins dump-tree -b 55352561664 /dev/dm-0
->>>>>>>>>>> btrfs-progs v5.6
->>>>>>>>>>> leaf 55352561664 items 33 free space 1095 generation 24749497=
- owner ROOT_TREE
->>>>>>>>>>> leaf 55352561664 flags 0x1(WRITTEN) backref revision 1
->>>>>>>>>>> fs uuid 65005d0f-f8ea-4f77-8372-eb8b53198685
->>>>>>>>>>> chunk uuid 137764f6-c8e6-45b3-b275-82d8558c1ff9
->>>>>>>>>> ...
->>>>>>>>>>>         item 32 key (DATA_RELOC_TREE ROOT_ITEM 0) itemoff 192=
-0 itemsize 239
->>>>>>>>>>>                 generation 4 root_dirid 256 bytenr 29380608 l=
-evel 0 refs 1
->>>>>>>>>>>                 lastsnap 0 byte_limit 0 bytes_used 4096 flags=
- 0x0(none)
->>>>>>>>>>>                 drop key (0 UNKNOWN.0 0) level 0
->>>>>>>>>>
->>>>>>>>>> This looks like the offending tree block.
->>>>>>>>>> Slot 32, item size 239, which is ROOT_ITEM, but in valid size.=
-
->>>>>>>>>>
->>>>>>>>>> Since you're here, I guess a btrfs check without --repair on t=
-he
->>>>>>>>>> unmounted fs would help to identify the real damage.
->>>>>>>>>>
->>>>>>>>>> And again, the fs looks very damaged, it's highly recommended =
-to backup
->>>>>>>>>> your data asap.
->>>>>>>>>>
->>>>>>>>>> Thanks,
->>>>>>>>>> Qu
->>>>>>>>>>
->>>>>>>>>>> --- snap ---
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> On Thu, Jun 4, 2020 at 3:31 AM Qu Wenruo <quwenruo.btrfs@gmx.=
-com> wrote:
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> On 2020/6/3 =E4=B8=8B=E5=8D=889:37, Thorsten Rehm wrote:
->>>>>>>>>>>>> Hi,
->>>>>>>>>>>>>
->>>>>>>>>>>>> I've updated my system (Debian testing) [1] several months =
-ago (~
->>>>>>>>>>>>> December) and I noticed a lot of corrupt leaf messages floo=
-ding my
->>>>>>>>>>>>> kern.log [2]. Furthermore my system had some trouble, e.g.
->>>>>>>>>>>>> applications were terminated after some uptime, due to the =
-btrfs
->>>>>>>>>>>>> filesystem errors. This was with kernel 5.3.
->>>>>>>>>>>>> The last time I tried was with Kernel 5.6.0-1-amd64 and the=
- problem persists.
->>>>>>>>>>>>>
->>>>>>>>>>>>> I've downgraded my kernel to 4.19.0-8-amd64 from the Debian=
- Stable
->>>>>>>>>>>>> release and with this kernel there aren't any corrupt leaf =
-messages
->>>>>>>>>>>>> and the problem is gone. IMHO, it must be something coming =
-with kernel
->>>>>>>>>>>>> 5.3 (or 5.x).
->>>>>>>>>>>>
->>>>>>>>>>>> V5.3 introduced a lot of enhanced metadata sanity checks, an=
-d they catch
->>>>>>>>>>>> such *obviously* wrong metadata.
->>>>>>>>>>>>>
->>>>>>>>>>>>> My harddisk is a SSD which is responsible for the root part=
-ition. I've
->>>>>>>>>>>>> encrypted my filesystem with LUKS and just right after I en=
-tered my
->>>>>>>>>>>>> password at the boot, the first corrupt leaf errors appear.=
-
->>>>>>>>>>>>>
->>>>>>>>>>>>> An error message looks like this:
->>>>>>>>>>>>> May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35799040 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>
->>>>>>>>>>>> Btrfs root items have fixed size. This is already something =
-very bad.
->>>>>>>>>>>>
->>>>>>>>>>>> Furthermore, the item size is smaller than expected, which m=
-eans we can
->>>>>>>>>>>> easily get garbage. I'm a little surprised that older kernel=
- can even
->>>>>>>>>>>> work without crashing the whole kernel.
->>>>>>>>>>>>
->>>>>>>>>>>> Some extra info could help us to find out how badly the fs i=
-s corrupted.
->>>>>>>>>>>> # btrfs ins dump-tree -b 35799040 /dev/dm-0
->>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> "root=3D1", "slot=3D32", "have 239 expect 439" is always th=
-e same at every
->>>>>>>>>>>>> error line. Only the block number changes.
->>>>>>>>>>>>
->>>>>>>>>>>> And dumps for the other block numbers too.
->>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> Interestingly it's the very same as reported to the ML here=
- [3]. I've
->>>>>>>>>>>>> contacted the reporter, but he didn't have a solution for m=
-e, because
->>>>>>>>>>>>> he changed to a different filesystem.
->>>>>>>>>>>>>
->>>>>>>>>>>>> I've already tried "btrfs scrub" and "btrfs check --readonl=
-y /" in
->>>>>>>>>>>>> rescue mode, but w/o any errors. I've also checked the S.M.=
-A.R.T.
->>>>>>>>>>>>> values of the SSD, which are fine. Furthermore I've tested =
-my RAM, but
->>>>>>>>>>>>> again, w/o any errors.
->>>>>>>>>>>>
->>>>>>>>>>>> This doesn't look like a bit flip, so not RAM problems.
->>>>>>>>>>>>
->>>>>>>>>>>> Don't have any better advice until we got the dumps, but I'd=
- recommend
->>>>>>>>>>>> to backup your data since it's still possible.
->>>>>>>>>>>>
->>>>>>>>>>>> Thanks,
->>>>>>>>>>>> Qu
->>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> So, I have no more ideas what I can do. Could you please he=
-lp me to
->>>>>>>>>>>>> investigate this further? Could it be a bug?
->>>>>>>>>>>>>
->>>>>>>>>>>>> Thank you very much.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Best regards,
->>>>>>>>>>>>> Thorsten
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> 1:
->>>>>>>>>>>>> $ cat /etc/debian_version
->>>>>>>>>>>>> bullseye/sid
->>>>>>>>>>>>>
->>>>>>>>>>>>> $ uname -a
->>>>>>>>>>>>> [no problem with this kernel]
->>>>>>>>>>>>> Linux foo 4.19.0-8-amd64 #1 SMP Debian 4.19.98-1 (2020-01-2=
-6) x86_64 GNU/Linux
->>>>>>>>>>>>>
->>>>>>>>>>>>> $ btrfs --version
->>>>>>>>>>>>> btrfs-progs v5.6
->>>>>>>>>>>>>
->>>>>>>>>>>>> $ sudo btrfs fi show
->>>>>>>>>>>>> Label: 'slash'  uuid: 65005d0f-f8ea-4f77-8372-eb8b53198685
->>>>>>>>>>>>>         Total devices 1 FS bytes used 7.33GiB
->>>>>>>>>>>>>         devid    1 size 115.23GiB used 26.08GiB path /dev/m=
-apper/sda5_crypt
->>>>>>>>>>>>>
->>>>>>>>>>>>> $ btrfs fi df /
->>>>>>>>>>>>> Data, single: total=3D22.01GiB, used=3D7.16GiB
->>>>>>>>>>>>> System, DUP: total=3D32.00MiB, used=3D4.00KiB
->>>>>>>>>>>>> System, single: total=3D4.00MiB, used=3D0.00B
->>>>>>>>>>>>> Metadata, DUP: total=3D2.00GiB, used=3D168.19MiB
->>>>>>>>>>>>> Metadata, single: total=3D8.00MiB, used=3D0.00B
->>>>>>>>>>>>> GlobalReserve, single: total=3D25.42MiB, used=3D0.00B
->>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> 2:
->>>>>>>>>>>>> [several messages per second]
->>>>>>>>>>>>> May  7 14:39:34 foo kernel: [  100.162145] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35799040 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:35 foo kernel: [  100.998530] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35885056 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:35 foo kernel: [  101.348650] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35926016 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:36 foo kernel: [  101.619437] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D35995648 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:36 foo kernel: [  101.874069] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36184064 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:36 foo kernel: [  102.339087] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36319232 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:37 foo kernel: [  102.629429] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36380672 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:37 foo kernel: [  102.839669] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36487168 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:37 foo kernel: [  103.109183] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36597760 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>> May  7 14:39:37 foo kernel: [  103.299101] BTRFS critical (=
-device
->>>>>>>>>>>>> dm-0): corrupt leaf: root=3D1 block=3D36626432 slot=3D32, i=
-nvalid root item
->>>>>>>>>>>>> size, have 239 expect 439
->>>>>>>>>>>>>
->>>>>>>>>>>>> 3:
->>>>>>>>>>>>> https://lore.kernel.org/linux-btrfs/19acbd39-475f-bd72-e280=
--5f6c6496035c@web.de/
->>>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>
->>>>>>>>
->>>>>
->>>
-
-
---2ztkq31Oh7usq600SqCCYAUMpBqohZET5--
-
---6iN8QMizvkgKasuyK7tK5HlsDHyM0fDEg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+3yOgACgkQwj2R86El
-/qhqXAf+Lwx87ILIcR0Vh5XHlWN5s3GpRdxoEOM1LlraKSZ123WEIay/+s5MoUmf
-QZp9z+R3qRhF6piqCLBQZGUlTpDRyHdcvPWblB1FYqdZp0p93xgcT6JWx7mTJFbT
-Wf5dgADg29jZitCnZFQxwPvbcf3nv8rGME8F1QLJ23ySYt6ceDrjgMWvQ8maZLto
-f94EuUWC5rN1ebXFvktFC8ix4qvFMyKGnZ0Yb7xNVze4m/EsdM9MuF7YhmJHZdGG
-vhDfeR8RjxLJtyvpflVnk1hqQS1u381GvUGTHh230DUM5JLD4JUoGuxrjekhR7TY
-GqvlJiiOomXNp0x0iDeI8RdZg0tNKA==
-=6Y+Q
------END PGP SIGNATURE-----
-
---6iN8QMizvkgKasuyK7tK5HlsDHyM0fDEg--
+> 
+>> +constant;
+>> +see
+>> +.BR Filesystem\ support .
+> 
+> Please, write it as [.BR "Filesystem support" .]
+> 
+> and maybe I would change it, to be more specific, to the following:
+> 
+> [
+> see
+> .B Filesystem support
+> below.
+> ]
+> 
+> So that the reader clearly understands it's on the same page.
+> 
+>> +.I encryption
+>> +is currently always
+>> +.B ENCODED_IOV_ENCRYPTION_NONE
+>> +(zero).
+>> +.PP
+>> +.I unencoded_len
+>> +is the length of the unencoded (i.e., decrypted and decompressed) data.
+>> +.I unencoded_offset
+>> +is the offset into the unencoded data where the data in the file begins
+> 
+> The above wording is a bit unclear to me.
+> 
+> I suggest the following:
+> 
+> [
+> .I unencoded_offset
+> is the offset from the begining of the file
+> to the first byte of the unencoded data
+> ]
+> 
+>> +(less than or equal to
+>> +.IR unencoded_len ).
+>> +.I len
+>> +is the length of the data in the file
+>> +(less than or equal to
+>> +.I unencoded_len
+>> +-
+> 
+> Here's a question for Michael (mtk):
+> 
+> I've seen (many) cases where these math operations
+> are written without spaces,
+> and in the same line (e.g., [.IR a + b]).
+> 
+> I'd like to know your preferences on this,
+> or what is actually more extended in the manual pages,
+> to stick with only one of them.
+> 
+>> +.IR unencoded_offset ).
+>> +See
+>> +.B Extent layout
+>> +below for some examples.
+>> +.I
+> 
+> Were you maybe going to add something there?
+> 
+> If not, please remove that [.I].
+> 
+>> +.PP
+>> +If the unencoded data is actually longer than
+>> +.IR unencoded_len ,
+>> +then it is truncated;
+>> +if it is shorter, then it is extended with zeroes.
+>> +.PP
+>> +
+> 
+> Please, remove that blank line.
+> 
+>> +.BR pwritev2 ()
+> 
+> Should be [.BR pwritev2 (2)]
+> 
+> Michael (mtk),
+> 
+> Am I right in that?  Please, confirm.
+> 
+>> +uses the metadata specified in
+>> +.IR iov[0] ,
+>> +writes the encoded data from the remaining buffers,
+>> +and returns the number of encoded bytes written
+>> +(that is, the sum of
+>> +.I iov[n].iov_len
+>> +for 1 <=
+>> +.I n
+>> +<
+>> +.IR iovcnt ;
+>> +partial writes will not occur).
+>> +At least one encoding field must be non-zero.
+>> +Note that the encoded data is not validated when it is written;
+>> +if it is not valid (e.g., it cannot be decompressed),
+>> +then a subsequent read may return an error.
+>> +If the
+>> +.I offset
+>> +argument to
+>> +.BR pwritev2 ()
+> 
+> Same as above: specify (2).
+> 
+>> +is -1, then the file offset is incremented by
+>> +.IR len .
+>> +If
+>> +.I iov[0].iov_len
+>> +is less than
+>> +.I "sizeof(struct\ encoded_iov)"
+> 
+> [.I] allows spaces, so it should be:
+> 
+> [
+> .I sizeof(struct encoded_iov)
+> ]
+> 
+>> +in the kernel,
+>> +then any fields unknown to userspace are treated as if they were zero;
+> 
+> s/userspace/user space/
+> 
+> See man-pages(7)::STYLE GUIDE::Preferred terms
+> 
+>> +if it is greater and any fields unknown to the kernel are non-zero,
+>> +then this returns -1 and sets
+>> +.I errno
+>> +to
+>> +.BR E2BIG .
+>> +.PP
+>> +.BR preadv2 ()
+> 
+> Same as above: specify (2).
+> 
+>> +populates the metadata in
+>> +.IR iov[0] ,
+>> +the encoded data in the remaining buffers,
+>> +and returns the number of encoded bytes read.
+>> +This will only return one extent per call.
+>> +This can also read data which is not encoded;
+>> +all encoding fields will be zero in that case.
+>> +If the
+>> +.I offset
+>> +argument to
+>> +.BR preadv2 ()
+> 
+> Smae as above: specify (2).
+> 
+>> +is -1, then the file offset is incremented by
+>> +.IR len .
+>> +If
+>> +.I iov[0].iov_len
+>> +is less than
+>> +.I "sizeof(struct\ encoded_iov)"
+> 
+> Don't need '"' nor '\', as above.
+> 
+>> +in the kernel and any fields unknown to userspace are non-zero,
+> 
+> s/userspace/user space/
+> 
+>> +then
+>> +.BR preadv2 ()
+> 
+> (2)
+> 
+>> +returns -1 and sets
+>> +.I errno
+>> +to
+>> +.BR E2BIG ;
+>> +if it is greater,
+>> +then any fields unknown to the kernel are returned as zero.
+>> +If the provided buffers are not large enough to return an entire encoded
+>> +extent,
+> 
+> Please use semantic newlines.
+> I haven't checked that in the text above,
+> so if you happen to find that there's any other line
+> that should also be fixed in that sense, please do so.
+> 
+> To understand 'semantic newlines',
+> please have a look at
+> man-pages(7)::STYLE GUIDE::Use semantic newlines
+> 
+> Basically, split lines at the most natural separation point,
+> instead of just when the line gets over the margin.
+> 
+>> +then
+>> +.BR preadv2 ()
+> 
+> (2)
+> 
+>> +returns -1 and sets
+>> +.I errno
+>> +to
+>> +.BR ENOBUFS .
+>> +.PP
+>> +As the filesystem page cache typically contains decoded data,
+>> +encoded I/O bypasses the page cache.
+>> +.SS Extent layout
+>> +By using
+>> +.IR len ,
+>> +.IR unencoded_len ,
+>> +and
+>> +.IR unencoded_offset ,
+>> +it is possible to refer to a subset of an unencoded extent.
+>> +.PP
+>> +In the simplest case,
+>> +.I len
+>> +is equal to
+>> +.I unencoded_len
+>> +and
+>> +.I unencoded_offset
+>> +is zero.
+>> +This means that the entire unencoded extent is used.
+>> +.PP
+>> +However, suppose we read 50 bytes into a file
+>> +which contains a single compressed extent.
+>> +The filesystem must still return the entire compressed extent
+>> +for us to be able to decompress it,
+>> +so
+>> +.I unencoded_len
+>> +would be the length of the entire decompressed extent.
+>> +However, because the read was at offset 50,
+>> +the first 50 bytes should be ignored.
+>> +Therefore,
+>> +.I unencoded_offset
+>> +would be 50,
+>> +and
+>> +.I len
+>> +would accordingly be
+>> +.IR unencoded_len\ -\ 50 .
+> 
+> This formats everything as I, except for the last dot.
+> Replace by:
+> 
+> [
+> .I unencoded
+> - 50.
+> ]
+> 
+> Michael (mtk), same as above:
+> to space, or not to space?  That is the question :p
+> 
+> Personally, I find spaces more clear.
+> 
+>> +.PP
+>> +Additionally, suppose we want to create an encrypted file with length 500,
+>> +but the file is encrypted with a block cipher using a block size of 4096.
+>> +The unencoded data would therefore include the appropriate padding,
+>> +and
+>> +.I unencoded_len
+>> +would be 4096.
+>> +However, to represent the logical size of the file,
+>> +.I len
+>> +would be 500
+>> +(and
+>> +.I unencoded_offset
+>> +would be 0).
+>> +.PP
+>> +Similar situations can arise in other cases:
+>> +.IP * 3
+>> +If the filesystem pads data to the filesystem block size before compressing,
+>> +then compressed files with a size unaligned to the filesystem block size will
+>> +end with an extent with
+>> +.I len
+>> +<
+>> +.IR unencoded_len .
+>> +.IP *
+>> +Extents cloned from the middle of a larger encoded extent with
+>> +.B FICLONERANGE
+>> +may have a non-zero
+>> +.I unencoded_offset
+>> +and/or
+>> +.I len
+>> +<
+>> +.IR unencoded_len .
+>> +.IP *
+>> +If the middle of an encoded extent is overwritten,
+>> +the filesystem may create extents with a non-zero
+>> +.I unencoded_offset
+>> +and/or
+>> +.I len
+>> +<
+>> +.I unencoded_len
+>> +for the parts that were not overwritten.
+>> +.SS Security
+>> +Encoded I/O creates the potential for some security issues:
+>> +.IP * 3
+>> +Encoded writes allow writing arbitrary data which the kernel will decode on
+>> +a subsequent read. Decompression algorithms are complex and may have bugs
+>> +which can be exploited by maliciously crafted data.
+>> +.IP *
+>> +Encoded reads may return data which is not logically present in the file
+>> +(see the discussion of
+>> +.I len
+>> +vs.
+> 
+> Please, s/vs./vs/
+> See the reasons below:
+> 
+> Michael (mtk),
+> 
+> Here the renderer outputs a double space
+> (as for separating two sentences).
+> 
+> Are you okay with that?
+> 
+> I haven't found any other "\<vs\>\.".
+> However, I've found a few "\<vs\>[^\.]".
+> 
+>> +.I unencoded_len
+>> +above).
+>> +It may not be intended for this data to be readable.
+>> +.PP
+>> +Therefore, encoded I/O requires privilege.
+>> +Namely, the
+>> +.B RWF_ENCODED
+>> +flag may only be used when the file was opened with the
+>> +.B O_ALLOW_ENCODED
+>> +flag to
+>> +.BR open (2),
+>> +which requires the
+>> +.B CAP_SYS_ADMIN
+>> +capability.
+>> +The
+>> +.B O_CLOEXEC
+>> +flag must be specified in conjunction with
+>> +.BR O_ALLOW_ENCODED .
+>> +This avoids accidentally leaking the encoded I/O privilege
+>> +(it is not cleared on
+>> +.BR fork (2)
+>> +or
+>> +.BR execve (2)
+>> +otherwise).
+>> +If
+>> +.B O_ALLOW_ENCODED
+>> +without
+>> +.B O_CLOEXEC
+>> +is desired,
+>> +.B O_CLOEXEC
+>> +can be cleared afterwards with
+>> +.BR fnctl (2).
+>> +.BR fcntl (2)
+>> +can also clear or set
+>> +.B O_ALLOW_ENCODED
+>> +(including without
+>> +.BR O_CLOEXEC ).
+>> +.SS Filesystem support
+>> +Encoded I/O is supported on the following filesystems:
+>> +.TP
+>> +Btrfs (since Linux 5.12)
+>> +.IP
+>> +Btrfs supports encoded reads and writes of compressed data.
+>> +The data is encoded as follows:
+>> +.RS
+>> +.IP * 3
+>> +If
+>> +.I compression
+>> +is
+>> +.BR ENCODED_IOV_COMPRESSION_BTRFS_ZLIB ,
+>> +then the encoded data is a single zlib stream.
+>> +.IP *
+>> +If
+>> +.I compression
+>> +is
+>> +.BR ENCODED_IOV_COMPRESSION_BTRFS_ZSTD ,
+>> +then the encoded data is a single zstd frame compressed with the
+>> +.I windowLog
+>> +compression parameter set to no more than 17.
+>> +.IP *
+>> +If
+>> +.I compression
+>> +is one of
+>> +.BR ENCODED_IOV_COMPRESSION_BTRFS_LZO_4K ,
+>> +.BR ENCODED_IOV_COMPRESSION_BTRFS_LZO_8K ,
+>> +.BR ENCODED_IOV_COMPRESSION_BTRFS_LZO_16K ,
+>> +.BR ENCODED_IOV_COMPRESSION_BTRFS_LZO_32K ,
+>> +or
+>> +.BR ENCODED_IOV_COMPRESSION_BTRFS_LZO_64K ,
+>> +then the encoded data is compressed page by page
+>> +(using the page size indicated by the name of the constant)
+>> +with LZO1X
+>> +and wrapped in the format documented in the Linux kernel source file
+>> +.IR fs/btrfs/lzo.c .
+>> +.RE
+>> +.IP
+>> +Additionally, there are some restrictions on
+>> +.BR pwritev2 ():
+> 
+> (2)
+> 
+>> +.RS
+>> +.IP * 3
+>> +.I offset
+>> +(or the current file offset if
+>> +.I offset
+>> +is -1) must be aligned to the sector size of the filesystem.
+>> +.IP *
+>> +.I len
+>> +must be aligned to the sector size of the filesystem
+>> +unless the data ends at or beyond the current end of the file.
+>> +.IP *
+>> +.I unencoded_len
+>> +and the length of the encoded data must each be no more than 128 KiB.
+>> +This limit may increase in the future.
+>> +.IP *
+>> +The length of the encoded data must be less than or equal to
+>> +.IR unencoded_len .
+>> +.IP *
+>> +If using LZO, the filesystem's page size must match the compression page size.
+>> +.RE
+>>
+> 
+> Please, add a SEE ALSO section, which should at least point to
+> preadv2(2) (or pwritev2(2), if you prefer):
+> 
+> [
+> .SH SEE ALSO
+> .BR preadv2 (2)
+> ]
+> 
