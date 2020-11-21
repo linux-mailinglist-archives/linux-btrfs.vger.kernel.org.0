@@ -2,197 +2,290 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1012BBB33
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Nov 2020 01:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60AA2BBD7E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Nov 2020 07:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgKUAo1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Nov 2020 19:44:27 -0500
-Received: from mout.gmx.net ([212.227.17.22]:48621 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727367AbgKUAo0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:44:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605919461;
-        bh=A2depZBTeXHDfbTuWD+QoW5X07tXclUzRUTaMPa17hk=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=jFwvqvkpM1oLu0iCqWwPPbIl5tm8/tGIMn6H6PSKpqRQ2T2pXrzaY3SQzZg1OBuvo
-         pUty7JXdsgu5dp7pbMTxQscr+JvTsUmfA+CBARgpESyqivSkKHqMZiFSOlep8FZIJw
-         kODeXy1D/w6Yosn/2MLsuI1hgFMEv7LEWt7io6Xk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MfHEJ-1k1Sko0FI3-00gr8Z; Sat, 21
- Nov 2020 01:44:21 +0100
-Subject: Re: [PATCH] btrfs: tree-checker: annotate all error branches as
- unlikely
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com
-References: <20201120161023.5033-1-dsterba@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <76e69b7d-ce38-47ff-82f0-4b18d8305f56@gmx.com>
-Date:   Sat, 21 Nov 2020 08:44:17 +0800
+        id S1725944AbgKUGDB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Nov 2020 01:03:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgKUGDA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 21 Nov 2020 01:03:00 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B86C0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Nov 2020 22:03:00 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id 142so12330417ljj.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Nov 2020 22:03:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=/zXO3FjAmLSSTnyPFZbQ5AI9J1mrysuFwNFs1I+aHXA=;
+        b=IPuMXsBScqz245pQw8hVjLeyJ8yLuNO8c3iP5eZsJISe+tTJL75ATDjW+CXK7V92dJ
+         iKGtFewEuHcUYF9g/XqtUfQcWYWROFOv8POsRcRemPChXK87Tq9qoY5wnANeWGRn/LJg
+         f0WacHjUnY5/Ft+z+CZUIs2ao+XzyVj9JWm5ku9NqnXWwNLVF3Qe1/rilZ3r5cpZnV+P
+         jaSZqSjO6K34FkRZIlpS1qmm6SbfsTdhQ4OrlZ0tQqWO9FnFrWZCjm2+jygDyURX5Zl2
+         t94Rv6/EpxsMFrWTZrPP9jRTadHdFNoKZYmErQWVnIaA/CvbPzbSEhwnFbP81HDptZ9r
+         RPZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to;
+        bh=/zXO3FjAmLSSTnyPFZbQ5AI9J1mrysuFwNFs1I+aHXA=;
+        b=QYMq4H9ToRyuLY1UUAMjUupD6Sxko2pqusDAoiLRq9l05Jh9eeHirfcWUQR7Y0+ZIe
+         WjbjmqzNckR2RNe4fUC6UDL2SLEiGDN6aunjJselapShPfU/b0t9S1qWtx3OZjymcdbe
+         ynt/Bfd7ftUd6BIuH31mFIuLalEXgZIaD34eXpcGulhLCerCjpUCja6lSkW6Jb51wnsr
+         pV2c0z6IhMzFtYqID9+6LaTxeqvnb+t/g6z3dymAAdTPv8IndfNC4jhcA/US/anycCQI
+         7WTHl6HwdNsCd0GMa+bgkDfa43pP0q0K3NVTNmPYinCo0nDoUhMVizS2i3hWjo6C3xOs
+         c6sQ==
+X-Gm-Message-State: AOAM533OdgUFDapTSyIovWsiVH7F2PQDpvcqtSXHVuKWu6IMQWDNcxHX
+        qgAzRXSBycCDt1FUL75KFT88wMFwA1o=
+X-Google-Smtp-Source: ABdhPJyiqbSaSR7qbSN9vbKO+AqrMTTBCRl1WcE9xC0y4coeFVVNZ4mmlhm4k4kxHAhJuYq8PMzqlw==
+X-Received: by 2002:a2e:904e:: with SMTP id n14mr9587428ljg.299.1605938578347;
+        Fri, 20 Nov 2020 22:02:58 -0800 (PST)
+Received: from ?IPv6:2a00:1370:812d:a5f0:a226:8dec:c68b:2e4? ([2a00:1370:812d:a5f0:a226:8dec:c68b:2e4])
+        by smtp.gmail.com with ESMTPSA id i7sm586951lfi.269.2020.11.20.22.02.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Nov 2020 22:02:57 -0800 (PST)
+Subject: Re: Not enough space during conversion to raid5, filesystem fails to
+ mount as RW
+To:     Kristupas Savickas <kristupas.savickas@pm.me>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <bzvIMgcJHYGZvBm4xa7bCl_20ql_b3sZtJ6zxcAVyw7eZ8jQYpRFCukGBshxLFF4cRJ-vwdkZgj7GkbqF8o9tKt25RU3xiz_ikIaejDuH90=@pm.me>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ mQGiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kbQmQW5kcmV5IEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT6IYAQTEQIAIAUCSXs6NQIbAwYLCQgHAwIE
+ FQIIAwQWAgMBAh4BAheAAAoJEEeizLraXfeMLOYAnj4ovpka+mXNzImeYCd5LqW5to8FAJ4v
+ P4IW+Ic7eYXxCLM7/zm9YMUVbrQmQW5kcmVpIEJvcnplbmtvdiA8YXJ2aWRqYWFyQGdtYWls
+ LmNvbT6IZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AFAliWAiQCGQEACgkQ
+ R6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE21cAnRCQTXd1hTgcRHfpArEd/Rcb5+Sc
+ uQENBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw15A5asua10jm5It+hxzI9jDR9/bNEKDTK
+ SciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/RKKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmm
+ SN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaNnwADBwQAjNvMr/KBcGsV/UvxZSm/mdpv
+ UPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPRgsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YI
+ FpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhYvLYfkJnc62h8hiNeM6kqYa/x0BEddu92
+ ZG6IRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhdAJ48P7WDvKLQQ5MKnn2D/TI337uA/gCg
+ n5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <2a8c046c-78c3-9f62-e5b4-7a5c9909da5d@gmail.com>
+Date:   Sat, 21 Nov 2020 09:02:51 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201120161023.5033-1-dsterba@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
+In-Reply-To: <bzvIMgcJHYGZvBm4xa7bCl_20ql_b3sZtJ6zxcAVyw7eZ8jQYpRFCukGBshxLFF4cRJ-vwdkZgj7GkbqF8o9tKt25RU3xiz_ikIaejDuH90=@pm.me>
+Content-Type: multipart/signed; micalg=pgp-sha1;
  protocol="application/pgp-signature";
- boundary="9kXdOinbXUmHPtzT711hr45fg2EPN7vkV"
-X-Provags-ID: V03:K1:/sG/pWg7dwCA3kq7WXPLEeSXZmfepB5gT3qR52I+NtIO41jDnxa
- o4jPZPqkgyeREPAeUXxkkV8j7rjjrROScEwvzi4Vm2MySU6i+lipGhwQuUg+mNoD/V8v/9E
- frPUFwZVjc+f/chxtqnQTVocOdT45zSQwtXOs4wn1afgYjSZjOg7P1JPc4i49/nakHOqW9T
- atD3rAh42fkGp3yaqh31g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:APna3T/+pB8=:NAbHfOnFgd92hykswBeFQD
- XgSJBYuT32d2HzXPFsiYyKzhD7sR92wuQav1t9YQYqk/jpQ2gCNgdfFYYtT2+cJYrLUj2GKa6
- S62H10eMjLQ9I0VrAj8eNu0IH3CY/LEwBK4trYNsTSZNMIVRU/ybjRvKC8ILjGqUF+NdBcqri
- Qm29DgjhIPxGWJJZ90ExtB73SjbTfRref7THEgU9zvj4er4AYKwk86pDZ7dtrX+ir/3nqF1zR
- NlcRgj/9pJBKO71xup1UC8sd20kyuOKPjS4kZDpGL/OB5h3IWClCHYBpsITJ45rzLCbED3rdM
- RV8MrXxSk0kjUZ7dLaZJns+7sOAv6ktJOa0sGQcJ6mCNsmYM+jSvdbYfewqJqOLTj8wBtEBlh
- m+zOYb2R44+1xqqQHkyDpXlKYy/KbB1kHmRPYiwza+484zOVRWVJLUvlHZJQ7BzUM52DXkV6g
- JMzYqLWQ8fvLTbb/cashY86nWnbMvJ0QWcEj5BbVPTbh5PEvNzy8esK9SoSqOWIAD09ng2ZBG
- HGhFZPYR2SIqSLsgU5jZDvvMWXGqnOj7zHQSURCJ/MSpHn0xGBIBrUkilJSvDsyyjJRHFgVhw
- Bikdyf8gbPVNDdw/UVH53WdWqvqpRx4SDQmslUu/o/s+hIhqsVWVqmZZyuv9Y536alLeqRolu
- bTJ2pIheCQX07KTFQ7cTIhU+6DCozRpCUJVJiD9s4Dn3S1e8+f8XjkyQAhcC7JrqfjFE6T47U
- rma/7MTRArKucYXCDyexWby6A/LdBuyHYEuBr/8ZjyRZel8vsO+M0XW1AN8IoBGhBIoGuddWj
- PTSNvigP+vF9G2n7Y94ySOwyxN9s13S9htCPz8vV1/wYL+ZIzu9b2/6OOcj/wrXVfoxxZKORP
- nVAPPZ+qETLffeMExaug==
+ boundary="RQWY6BbC8qYBlOHAnadkmivT8F01bz6uG"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9kXdOinbXUmHPtzT711hr45fg2EPN7vkV
-Content-Type: multipart/mixed; boundary="eawUESDUlaom4Nh1nQS3bm1QnvBZ9VhzU"
+--RQWY6BbC8qYBlOHAnadkmivT8F01bz6uG
+Content-Type: multipart/mixed; boundary="LlDm4kJZRdsxzlyUO5DHoFUojELSeovqd"
 
---eawUESDUlaom4Nh1nQS3bm1QnvBZ9VhzU
+--LlDm4kJZRdsxzlyUO5DHoFUojELSeovqd
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2020/11/21 =E4=B8=8A=E5=8D=8812:10, David Sterba wrote:
-> The tree checker is called many times as it verifies metadata at
-> read/write time. The checks follow a simple pattern:
+20.11.2020 12:24, Kristupas Savickas =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> Hello,
 >=20
->   if (error_condition) {
-> 	  report_error();
-> 	  return -EUCLEAN;
->   }
+> I tried to convert my (nearly full) file system to raid5. The fs origin=
+ally contained 3 8TB disks.
+> After adding the forth disk I ran:
+>     # btrfs balance start -dconvert=3Draid5,soft -mconvert=3Draid5,soft=
+ -sconvert=3Draid5,soft -b /mnt/
 >=20
-> All the error reporting functions are annotated as __cold that is
-> supposed to hint the compiler to move the statement block out of the ho=
-t
-> path. This does not seem to happen that often.
+
+Using raid5 for metadata is not recommended with current state of raid5
+support in btrfs. See also
+
+https://lore.kernel.org/linux-btrfs/20200627032414.GX10769@hungrycats.org=
+/
+
+> However, it looks like the conversion failed and the fs was left in RO =
+state, with only part of the data being converted to raid5:
 >=20
-> As the error condition is expected to be false almost always, we can
-> annotate it with 'unlikely' as this satisfies one of the few use cases
-> for the annotation. The expected outcome is a stronger hint to compiler=
-
-> to reorder the checks
+>     # btrfs fi show /dev/sdc
+>     Label: 'array'  uuid: 6e95de0a-4b51-4aab-b935-469626c83036
+>             Total devices 4 FS bytes used 21.52TiB
+>             devid    1 size 7.28TiB used 7.28TiB path /dev/sdc
+>             devid    2 size 7.28TiB used 7.28TiB path /dev/sdd
+>             devid    3 size 7.28TiB used 7.28TiB path /dev/sda
+>             devid    4 size 7.28TiB used 7.28TiB path /dev/sdb
 >=20
->   test
->   jump to exit
->   test
->   jump to exit
->   ...
+>     # mount /dev/sdc /mnt/
+>     # mount | grep /mnt
+>     /dev/sdc on /mnt type btrfs (ro,relatime,space_cache,subvolid=3D5,s=
+ubvol=3D/)
 >=20
-> which can be observed in asm of eg. check_dir_item,
-> btrfs_check_chunk_valid, check_root_item or check_leaf.
+>     # btrfs fi df /mnt
+>     Data, single: total=3D14.22TiB, used=3D14.06TiB
+>     Data, RAID5: total=3D7.44TiB, used=3D7.43TiB
+>     System, RAID1: total=3D32.00MiB, used=3D2.47MiB
+>     System, RAID5: total=3D32.00MiB, used=3D128.00KiB
+>     Metadata, RAID1: total=3D13.00GiB, used=3D11.67GiB
+>     Metadata, RAID5: total=3D12.00GiB, used=3D11.90GiB
+>     GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+>     WARNING: Multiple block group profiles detected, see 'man btrfs(5)'=
+=2E
+>     WARNING:   Data: single, raid5
+>     WARNING:   Metadata: raid1, raid5
+>     WARNING:   System: raid1, raid5
 >=20
-> There's a measurable run time improvement reported by Josef, the testin=
-g
-> workload went from 655 MiB/s to 677 MiB/s, which is about +3%.
+
+"btrfs filesystem usage -T" fives better overview, but it appears there
+are is not enough space to allocate new raid5 chunks.
+
+>     # dmesg
+>     [65134.312783] BTRFS info (device sdc): disk space caching is enabl=
+ed
+>     [65134.312784] BTRFS info (device sdc): has skinny extents
+>     [65136.207839] BTRFS info (device sdc): bdev /dev/sdd errs: wr 0, r=
+d 4, flush 0, corrupt 0, gen 0
+>     [65172.993492] BTRFS alert (device sdc): btrfs RAID5/6 is EXPERIMEN=
+TAL and has known data-loss bugs
+>     [65204.813036] BTRFS info (device sdc): checking UUID tree
+>     [65211.733565] ------------[ cut here ]------------
+>     [65211.733567] BTRFS: Transaction aborted (error -28)
+>     [65211.733583] BTRFS: error (device sdc) in __btrfs_free_extent:306=
+9: errno=3D-28 No space left
+>     [65211.733629] WARNING: CPU: 2 PID: 19980 at fs/btrfs/extent-tree.c=
+:3069 __btrfs_free_extent.isra.0+0x57e/0x8f0 [btrfs]
+>     [65211.735427] BTRFS info (device sdc): forced readonly
+>     [65211.735427] Modules linked in: xt_recent fuse ufs
+>     [65211.735430] BTRFS: error (device sdc) in btrfs_run_delayed_refs:=
+2173: errno=3D-28 No space left
+>     [65211.735431]  qnx4 hfsplus hfs cdrom minix msdos jfs xfs dm_mod u=
+as usb_storage xt_nat veth xt_MASQUERADE nf_conntrack_netlink xfrm_user x=
+frm_algo nft_chain_nat nf_nat br_netfilter bridge stp llc overlay hid_log=
+itech_hidpp joydev hid_logitech_dj hid_generic usbhid hid amdgpu edac_mce=
+_amd kvm_amd kvm irqbypass ip6t_REJECT nf_reject_ipv6 xt_hl ip6_tables gh=
+ash_clmulni_intel nls_ascii nls_cp437 ppdev snd_hda_codec_realtek snd_hda=
+_codec_generic ledtrig_audio snd_hda_codec_hdmi snd_hda_intel snd_intel_d=
+spcfg ip6t_rt snd_hda_codec vfat fat gpu_sched snd_hda_core ttm snd_hwdep=
+ ipt_REJECT nf_reject_ipv4 efi_pstore aesni_intel xt_comment wmi_bmof lib=
+aes crypto_simd cryptd snd_pcm xt_multiport glue_helper rapl drm_kms_help=
+er ccp snd_timer sp5100_tco efivars pcspkr k10temp watchdog nft_limit snd=
+ cec rng_core soundcore i2c_algo_bit sg parport_pc parport evdev xt_limit=
+ xt_addrtype xt_tcpudp acpi_cpufreq button xt_conntrack nf_conntrack nf_d=
+efrag_ipv6 nf_defrag_ipv4 nft_compat nft_counter nf_tables
+>     [65211.735467]  nfnetlink drm efivarfs ip_tables x_tables autofs4 e=
+xt4 crc16 mbcache jbd2 btrfs blake2b_generic xor zstd_compress raid6_pq l=
+ibcrc32c crc32c_generic sd_mod nvme nvme_core crc32_pclmul t10_pi ahci li=
+bahci r8169 realtek mdio_devres crc_t10dif libphy i2c_piix4 crct10dif_gen=
+eric libata crc32c_intel xhci_pci xhci_hcd usbcore scsi_mod crct10dif_pcl=
+mul crct10dif_common usb_common wmi video gpio_amdpt gpio_generic
+>     [65211.737278] CPU: 2 PID: 19980 Comm: btrfs-transacti Tainted: G  =
+      W      X  5.9.0-1-amd64 #1 Debian 5.9.1-1
+>     [65211.737280] BTRFS info (device sdc): balance: resume -dconvert=3D=
+raid5,soft -mconvert=3Draid5,soft -sconvert=3Draid5,soft
+>     [65211.737281] Hardware name: Gigabyte Technology Co., Ltd. AB350M-=
+D3H/AB350M-D3H-CF, BIOS F51c 07/02/2020
+>     [65211.737300] RIP: 0010:__btrfs_free_extent.isra.0+0x57e/0x8f0 [bt=
+rfs]
+>     [65211.737302] Code: 24 0c ba 5b 0c 00 00 48 c7 c6 40 01 5d c0 4c 8=
+9 f7 e8 12 c2 0a 00 e9 b1 fe ff ff 44 89 e6 48 c7 c7 80 a5 5d c0 e8 98 c5=
+ 16 d1 <0f> 0b 44 89 e1 ba fd 0b 00 00 48 c7 c6 40 01 5d c0 4c 89 f7 e8 e=
+5
+>     [65211.737303] RSP: 0018:ffffa398c192bc50 EFLAGS: 00010282
+>     [65211.737305] RAX: 0000000000000000 RBX: 000026d0f54f8000 RCX: fff=
+f969590898ac8
+>     [65211.737305] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: fff=
+f969590898ac0
+>     [65211.737306] RBP: 0000259405cbd000 R08: 0000000000000995 R09: 000=
+0000000000004
+>     [65211.737307] R10: 0000000000000000 R11: 0000000000000001 R12: 000=
+00000ffffffe4
+>     [65211.737308] R13: ffff96955d4f0310 R14: ffff9692ab751d00 R15: 000=
+0000000000005
+>     [65211.737309] FS:  0000000000000000(0000) GS:ffff969590880000(0000=
+) knlGS:0000000000000000
+>     [65211.737310] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     [65211.737311] CR2: 000055ff8d180cb0 CR3: 00000003b621a000 CR4: 000=
+00000003506e0
+>     [65211.737312] Call Trace:
+>     [65211.737333]  ? __btrfs_run_delayed_refs+0xfd3/0x1060 [btrfs]
+>     [65211.737351]  __btrfs_run_delayed_refs+0x27a/0x1060 [btrfs]
+>     [65211.737371]  btrfs_run_delayed_refs+0x73/0x200 [btrfs]
+>     [65211.737391]  btrfs_commit_transaction+0x57/0xa30 [btrfs]
+>     [65211.737411]  ? start_transaction+0xd2/0x540 [btrfs]
+>     [65211.737415]  ? try_to_wake_up+0x130/0x5e0
+>     [65211.737434]  transaction_kthread+0x14c/0x170 [btrfs]
+>     [65211.737453]  ? btrfs_cleanup_transaction.isra.0+0x5a0/0x5a0 [btr=
+fs]
+>     [65211.737455]  kthread+0x11b/0x140
+>     [65211.737457]  ? __kthread_bind_mask+0x60/0x60
+>     [65211.737460]  ret_from_fork+0x22/0x30
+>     [65211.737462] ---[ end trace 2f4a1b25242944de ]---
+>     [65211.737463] BTRFS: error (device sdc) in __btrfs_free_extent:306=
+9: errno=3D-28 No space left
+>     [65211.738722] BTRFS: error (device sdc) in btrfs_run_delayed_refs:=
+2173: errno=3D-28 No space left
+>     [65211.748466] BTRFS info (device sdc): balance: ended with status:=
+ -30
 >=20
-> There should be no functional changes but some of the conditions have
-> been rewritten to produce more readable result, some lines are longer
-> than 80, for the sake of readability.
+> Looking at the dmesg output, I see:
+>     [65211.737280] BTRFS info (device sdc): balance: resume -dconvert=3D=
+raid5,soft -mconvert=3Draid5,soft -sconvert=3Draid5,soft
 >=20
-> Signed-off-by: David Sterba <dsterba@suse.com>
-
-The patch itself is pretty awesome, but still some questionable
-likely/unlikely branches, comment inlined below.
-> ---
+> This indicates that the balance is ran again after remounting. Looking =
+at the last line it says that:
+>     [65211.748466] BTRFS info (device sdc): balance: ended with status:=
+ -30
 >=20
-> Josef, would be good if you can add some details about the workload and=
-
-> hw, I'll update the changelog. Thanks.
+> I suppose this is what causes the fs to be mounted read only.
 >=20
-=2E..
-> @@ -181,10 +182,10 @@ static bool check_prev_ino(struct extent_buffer *=
-leaf,
->  	 * Only subvolume trees along with their reloc trees need this check.=
+> Trying to remount the system as RW results in:
+>     [68268.865313] BTRFS info (device sdc): disk space caching is enabl=
+ed
+>     [68268.865316] BTRFS error (device sdc): Remounting read-write afte=
+r error is not allowed
+>=20
+> My question is how can I recover from a situation like this?
+> I could definitely reduce the file system usage if I could mount it as =
+RW, but
+> the balance is ran immediately after mounting and fails, which results =
+in a RO mount.
+> Would it be possible to cancel the balance, so it doesn't run on mounti=
+ng?
+>=20
 
->  	 * Things like log tree doesn't follow this ino requirement.
->  	 */
-> -	if (!is_fstree(btrfs_header_owner(leaf)))
-> +	if (likely(!is_fstree(btrfs_header_owner(leaf))))
->  		return true;
+Mount with skip_balance mount option.
 
-This likely() is questionable.
-
-Although the biggest metadata user of btrfs is mostly csum tree, one can
-still argue that for  fs with mostly inlined extents, fs trees can be
-more common.
-
-> =20
-> -	if (key->objectid =3D=3D prev_key->objectid)
-> +	if (likely(key->objectid =3D=3D prev_key->objectid))
->  		return true;
-
-This is also questionable, this is completely dependent on fs content.
-
-Thus we should only use likely/unlikely on the return value of
-check_prev_ino(), but not inside it.
-
-The rest looks fine.
-
-Thanks for the effort to enhance tree-checker,
-Qu
+> Additional information:
+>     # uname -a
+>     Linux s 5.9.0-1-amd64 #1 SMP Debian 5.9.1-1 (2020-10-17) x86_64 GNU=
+/Linux
+>=20
+>     # btrfs --version
+>     btrfs-progs v5.9
+>=20
 
 
 
---eawUESDUlaom4Nh1nQS3bm1QnvBZ9VhzU--
+--LlDm4kJZRdsxzlyUO5DHoFUojELSeovqd--
 
---9kXdOinbXUmHPtzT711hr45fg2EPN7vkV
+--RQWY6BbC8qYBlOHAnadkmivT8F01bz6uG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+4YuEACgkQwj2R86El
-/qilUAf/YbDbjMdMJGEwVQzgCoigXzZNURMSyW2yrsF0GsgMB4oPsbgterudjINH
-UR7lG6mLRCI9n7aZxW1oQrnnK1BkKT4QqdDq+xcouStVZ4ZJEp/VrRh0IaZtMKvt
-gZH337ZMNZC3AqjZO1k7M8enlMnWmzrzbdqY4JiUCsfQ/sqASInHghFvNJOfjlup
-Xfd00IhpQpGt+VrnH/MnFMeXjsKYMLjFAdJ+ESTDSiK7imn+WESK5TUesyLjzpwS
-0/atoIwM4jvYZJv+ZFkY1x3Z+cuw60fPoS35FQCU9x7uM3SXiIa0p9+eO1EpmHFB
-0GI5wBm0+O0b8bk7Ci5lm3WX+mMByA==
-=gnz3
+iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCX7itkQAKCRBHosy62l33
+jFDZAJ4xS7MlD8cX745oMmgYRoNjlXd2agCgnONc2UslzBcPeibTz9hYfMylaC4=
+=XhLq
 -----END PGP SIGNATURE-----
 
---9kXdOinbXUmHPtzT711hr45fg2EPN7vkV--
+--RQWY6BbC8qYBlOHAnadkmivT8F01bz6uG--
