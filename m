@@ -2,77 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACCA2BC028
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Nov 2020 16:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF412BC9A3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Nov 2020 22:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgKUPHj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Nov 2020 10:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
+        id S1726407AbgKVVsR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Nov 2020 16:48:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727942AbgKUPHi (ORCPT
+        with ESMTP id S1726339AbgKVVsP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Nov 2020 10:07:38 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ACAC0613CF
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Nov 2020 07:07:38 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id i18so13107706ioa.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Nov 2020 07:07:38 -0800 (PST)
+        Sun, 22 Nov 2020 16:48:15 -0500
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68C4C0613CF
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Nov 2020 13:48:13 -0800 (PST)
+Received: by mail-ej1-x642.google.com with SMTP id gj5so20609671ejb.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Nov 2020 13:48:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=fsB7lv+/h+1fgfExMz2bzDSqudbc480q4ftyl5At32g=;
-        b=q8HFmfxMcIjKofa19Cit64iPv49VPTE/O0PkwzF8NgBE9D+EMCQzTyWZHZlZFi4omu
-         cH5ax2LCq/nhYPxs3ytFXkXMKCJJiEnvtJSu7mInuXJZFYKTaY6WDe0V2TCItZEJHnC9
-         E/DxcQ/2zwEciqLKUtol2Y/ZuaiUEO5DN3+28yFWzTzVpFPDnA+cgOSMaXRZwOwx7Q3F
-         HClgGUbUMhEfM7dBArNAnVCixhjPSLBMfBU3CP2Aexy0++t3lR+AzZAGOrJ3Dy3E95Dx
-         3R4/58RlpJggMkM6P7UniIu7I405y0g62+10RMokIk8fuAuUJXB3BsoZSXXVlScoI2Tr
-         QHcQ==
+        h=message-id:sender:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=holMzMixu6L4mPkY4KLX0AXrH3B7KLU6Q1+gVZ1hbDo=;
+        b=fMqC6ZwWf0wO+ZfAqCHUjizbjVooGH9h3sdREj5fn9Dx28kLFRRujUdBwtgEF5Mr2b
+         Q+7upQNwzVddsRdx3IhvE7zc0FOLvUatiVpfS2n0fiZ+IeD2GFqAJwS2oc9E/3ZC+f10
+         CjIpRlbPv+MKcsd+j8w2bHjnWcOt6v2XBRvkhYOu7Cws0XpBrMwQiBINbFC4QRii6QeC
+         1jja8qkRn2iWwYH4zL07eZVRjXR78XW2AcfpHISlXpvolvHJ5cdBpyWzqNQ3BB3KYo9w
+         XbZv9iwEdRepDNdtoVc9tgcen+652G0TCWSvaPQlf6ISpoSO+j6bNgd2G2n+K1upiHqL
+         FX9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=fsB7lv+/h+1fgfExMz2bzDSqudbc480q4ftyl5At32g=;
-        b=cKe+CH8AvzHU4mtKN3UNJ8CmZdGnwlRaYfVrVpS41HVm+lBaL00g0E1IysMKfcU2cc
-         3SXLx3LrqV4/Ge1NlXDMp7CDTwpI9rKFaVgzQhR95cV85wUAnMhUEkqdqlpY42NVIsH9
-         2Fzguk5a4VA1PZJ6TqRMtWBHqBdVo6fqHXpmQY0GuESOhaIrhdNNHfxK4Y/tk/IqoqWP
-         /JNYXYu4z60sjaPR5Vfss4uYsx7KUc5Dv228iCZASyP+wde0jeDKpC0qw+JVG6FiVVWQ
-         mYihGu9qQ/FAPop0lXme+zWUXSkykMAdkAas8XbdOxlh680AggN7N1ZwuDd4N/t21df/
-         D/+g==
-X-Gm-Message-State: AOAM533w3qpVo7uz3MAtlopNnHOebpj3RRXlra5UEzQW/Osrrd7f5RAa
-        MTAydNHWvPS+7WQshxUnLuTaZO1CVQaUsw1Hgi4=
-X-Google-Smtp-Source: ABdhPJxtemD2YvHHL40krPvryWpDxageUB5frncWQsjxrKHVk4vybojjc2Xkg43o32E7VEMwkwomwcPH3DqDGL6OWZA=
-X-Received: by 2002:a6b:760e:: with SMTP id g14mr219378iom.136.1605971258132;
- Sat, 21 Nov 2020 07:07:38 -0800 (PST)
+        h=x-gm-message-state:message-id:sender:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=holMzMixu6L4mPkY4KLX0AXrH3B7KLU6Q1+gVZ1hbDo=;
+        b=rw4bZDZXcoiTBJb1n33CobTrV0eOO51itKggYtYK0lFGGUXgtQW8/ojo6oWs/Qtljr
+         5LGgDAiY/fkkqPdg9/f6X5Jd0yay9JG3z20xsweYKzP2Zs7wwNmteUv8UxUEv/KCF0XH
+         6m/YM4nfyXKNDcCf3YwN4hLxMpzGRUL+ETfCn9G/Mpyf9vJ4QqFczLSihRyrNbbX2r8R
+         O5X/y83ERLaTQ+wy3k6pOlvnpyNB7UmfncvHJtGuEtyft9S/HOzR9oYv1C3jxVfKNAcl
+         rMYPgaNdw6QnDZdaVkcm+M2AhVksturX18EMG5xeLc81EhJ31OZ98RQFQtsbN1cVRzAW
+         877A==
+X-Gm-Message-State: AOAM531IlVILL6dbDwQslE3rIH7fUygIZRUDsdpZlDwI/nfDH58lYodY
+        eFtjFZ0UkaYMN+8HQnJQRY4=
+X-Google-Smtp-Source: ABdhPJz1E8ynlMbh88pIvsOg/LZ4O/5x5dcwOCrdymHA35GKsql4rtQFV9ComdM5RNL9OLL+p5asBQ==
+X-Received: by 2002:a17:906:80ca:: with SMTP id a10mr42843766ejx.351.1606081692505;
+        Sun, 22 Nov 2020 13:48:12 -0800 (PST)
+Received: from [192.168.43.48] ([197.210.35.67])
+        by smtp.gmail.com with ESMTPSA id e17sm4016232edc.45.2020.11.22.13.48.07
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sun, 22 Nov 2020 13:48:11 -0800 (PST)
+Message-ID: <5fbadc9b.1c69fb81.8dfc7.11a2@mx.google.com>
+Sender: Baniko Diallo <banidiallo23@gmail.com>
+From:   Adelina Zeuki <adelinazeuki@gmail.com>
+X-Google-Original-From: "Adelina Zeuki" <  adelinazeuki@gmail.comm >
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Received: by 2002:a02:ceae:0:0:0:0:0 with HTTP; Sat, 21 Nov 2020 07:07:37
- -0800 (PST)
-Reply-To: georgemike7030@gmail.com
-From:   george mike <bbruce539@gmail.com>
-Date:   Sat, 21 Nov 2020 16:07:37 +0100
-Message-ID: <CADiB6YnPXdZbPAvihuunBztRruMEjwfexTscR3ySnrBdDfo1cQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Hello !!
+To:     Recipients <adelinazeuki@gmail.comm>
+Date:   Sun, 22 Nov 2020 21:48:01 +0000
+Reply-To: adelinazeuki@gmail.com
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallo
+Hi dear,
 
-Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
-Ihnen anbieten
-der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
-Millionen US-Dollar)
-Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
-
-Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
-einem Autounfall ums Leben gekommen ist
-und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
-sein f=C3=BCr dich.
-Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
-Informationen: georgemike7030@gmail.com
-
-Vielen Dank im Voraus,
-Mr. George Mike,
+Can i talk with you ?
