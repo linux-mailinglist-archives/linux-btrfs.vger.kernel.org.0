@@ -2,359 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96E12C03C1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Nov 2020 12:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FE42C0DAA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Nov 2020 15:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgKWK65 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Nov 2020 05:58:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgKWK65 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Nov 2020 05:58:57 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC46C0613CF
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Nov 2020 02:58:57 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id l11so8680429plt.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Nov 2020 02:58:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1BP877PWB5Il1SFAjpxaeZ28lPYZJMPEFFDP6HWqH3c=;
-        b=Oy2SWK52l81VgZZKxKTe4aBoY3vt1C4E/zVy2iIcxGUOyQngf+zOtbANPCPNjPF/Rg
-         GHmin8QUgBlcA2vQZpJfGjf6fVb0RwbWJjaZ3WzHIHxGfXmdUlAWCcCTZ67phFzneF5o
-         7MI90cEriU+iTathjn1CmuaJnz4YM8iE11k6lINIKjrFobKgIB5LoCnZMRWafHdOsjXV
-         3Q4uAFXDluxkR6hbeOX4E8ooVt76vbB6T/GEjZwsKs1O3sCOrNHoqjuWznZ5DWTjHVJ8
-         ywdQLdsLjtDGNLx5eIuSUBqoHyYkRBZaOWR1BpMO2f00ymAHHsA2kWI6ENOmFk1p78sR
-         Xu9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1BP877PWB5Il1SFAjpxaeZ28lPYZJMPEFFDP6HWqH3c=;
-        b=hqaj9GEj0pRKqPLJcr+/QBYZ2y62Wtw1Eb0V8CSJR+3yeaDpbVNqk5ZMHK/7kS1kyK
-         gKAUdoh0AuMR0Wdps9T1dqcXz1GIitBVW6u92gL7awjRIuz1zYeg+LDuDpF+D1J6ILCN
-         4hbM2vbBFyq6AeQxdl4Zz0iWxhVwrJG4JusRJ7YosvLkuvA7S45bR8pof0VQb5i1Rbh/
-         1+T8+M6SQ7mWn37QcMb1Fz+y9E4FHfj5zxWZtjSt5FjIx9VhlBlLeOvi3niPZ+M6cfld
-         IQ2iH/47g8mrmdPFM5wTZ3H5n9qfULZFt/NgCJXFldv5JT7S+CuUnGbT0LT71PF3zp9s
-         6iqQ==
-X-Gm-Message-State: AOAM531rZIG3gcM0kr+CfLtQN9mQiNjZRPFHHhINJkxQJP5JUK1zN8lo
-        XJUAenMDOU9PtRNIEKaqrBr6FkvxUxJLJ4jm0+MTVk8YGYw=
-X-Google-Smtp-Source: ABdhPJy7iH76qVTQcVj7vFRj2uUrnEhtBEY5tCNF2mFfIZ5hgYKEjNDO/b6wYhdU+Zh0kJT0oGwExu49fOZ2z3UVbTI=
-X-Received: by 2002:a17:902:6546:b029:d8:f81c:ef8c with SMTP id
- d6-20020a1709026546b02900d8f81cef8cmr23446196pln.31.1606129136114; Mon, 23
- Nov 2020 02:58:56 -0800 (PST)
-MIME-Version: 1.0
-References: <d949e51d-0122-12ff-6aa2-083a7e5628b1@mendix.com>
- <1534322561-2058-1-git-send-email-ethanwu@synology.com> <54f38af8-ecd2-4410-f18a-0cfbe68bed4b@suse.com>
-In-Reply-To: <54f38af8-ecd2-4410-f18a-0cfbe68bed4b@suse.com>
-From:   =?UTF-8?B?5ZCz5a2Q5p2w?= <ethan198912@gmail.com>
-Date:   Mon, 23 Nov 2020 18:58:44 +0800
-Message-ID: <CACKp3fmhO2xDA-OUywRciwOF3SY9_ArBWTqd51mGjw_n42_Lzg@mail.gmail.com>
-Subject: Re: [PATCH v2] Btrfs: correctly calculate item size used when item
- key collision happends
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     ethanwu <ethanwu@synology.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1731258AbgKWO2x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Nov 2020 09:28:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46468 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730609AbgKWO2x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:28:53 -0500
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 79FE220758
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Nov 2020 14:28:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606141727;
+        bh=RpTbeG5op6mKf6gefBiYBcVR5nv1L6ewTxjDnUNxe6U=;
+        h=From:To:Subject:Date:From;
+        b=BcQtl1JJOsNFmkUlhwF4Q5dD+9mjPIcHR9T1jt8t5NMWXF5zTRTofTKsFh04C0Dyq
+         i8AGppqXBf+Nxa30m4iVPBinFdnaYpnkin4O5C/yxVx7CM+IQi9e2mF0/bbA7S71in
+         OuNmuF/iMWIXe4rTd7RdRj/QHQWkt6eauGH4qmKg=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix lockdep splat when reading qgroup config on mount
+Date:   Mon, 23 Nov 2020 14:28:44 +0000
+Message-Id: <0343c1f0b12747805d837106ada99e10468363b6.1606141632.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Nikolay Borisov <nborisov@suse.com> =E6=96=BC 2018=E5=B9=B48=E6=9C=8815=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=887:09=E5=AF=AB=E9=81=93=EF=BC=9A
->
->
->
-> On 15.08.2018 11:42, ethanwu wrote:
-> > Item key collision is allowed for some item types, like dir item and
-> > inode refs, but the overall item size is limited by the leafsize.
-> >
-> > item size(ins_len) passed from btrfs_insert_empty_items to
-> > btrfs_search_slot already contains size of btrfs_item.
-> >
-> > When btrfs_search_slot reaches leaf, we'll see if we need to split leaf=
-.
-> > The check incorrectly reports that split leaf is required, because
-> > it treats the space required by the newly inserted item as
-> > btrfs_item + item data. But in item key collision case, only item data
-> > is actually needed, the newly inserted item could merge into the existi=
-ng
-> > one. No new btrfs_item will be inserted.
-> >
-> > And split_leaf return -EOVERFLOW from following code:
-> > if (extend && data_size + btrfs_item_size_nr(l, slot) +
-> >     sizeof(struct btrfs_item) > BTRFS_LEAF_DATA_SIZE(fs_info))
-> >     return -EOVERFLOW;
-> >
-> > In most cases, when callers receive -EOVERFLOW, they either return
-> > this error or handle in different ways. For example, in normal dir item
-> > creation the userspace will get errno EOVERFLOW; in inode ref case
-> > INODE_EXTREF is used instead.
-> >
-> > However, this is not the case for rename. To avoid the unrecoverable
-> > situation in rename, btrfs_check_dir_item_collision is called in
-> > early phase of rename. In this function, when item key collision is
-> > detected leaf space is checked:
-> >
-> > data_size =3D sizeof(*di) + name_len;
-> > if (data_size + btrfs_item_size_nr(leaf, slot) +
-> >     sizeof(struct btrfs_item) > BTRFS_LEAF_DATA_SIZE(root->fs_info))
-> >
-> > the sizeof(struct btrfs_item) + btrfs_item_size_nr(leaf, slot) here
-> > refers to existing item size, the condition here correctly calculate
-> > the needed size for collision case rather than the wrong case at
-> > above.
-> >
-> > The consequence of inconsistent condition check between
-> > btrfs_check_dir_item_collision and btrfs_search_slot when item key
-> > collision happens is that we might pass check here but fail
-> > later at btrfs_search_slot. Rename fails and volume is forced readonly
-> >
-> > [436149.586170] ------------[ cut here ]------------
-> > [436149.586173] BTRFS: Transaction aborted (error -75)
-> > [436149.586196] WARNING: CPU: 0 PID: 16733 at fs/btrfs/inode.c:9870 btr=
-fs_rename2+0x1938/0x1b70 [btrfs]
-> > [436149.586197] Modules linked in: btrfs zstd_compress xor raid6_pq ufs=
- qnx4 hfsplus hfs minix ntfs msdos jfs xfs libcrc32c rpcsec_gss_krb5 corete=
-mp crct10dif_pclmul crc32_pclmul ghash_clmulni_intel pcbc aesni_intel aes_x=
-86_64 vmw_balloon crypto_simd cryptd glue_helper joydev input_leds intel_ra=
-pl_perf serio_raw vmw_vmci mac_hid sch_fq_codel nfsd auth_rpcgss nfs_acl lo=
-ckd grace sunrpc parport_pc ppdev lp parport ip_tables x_tables autofs4 vmw=
-gfx ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops drm ps=
-mouse mptspi mptscsih mptbase scsi_transport_spi ahci vmxnet3 libahci i2c_p=
-iix4 floppy pata_acpi
-> > [436149.586227] CPU: 0 PID: 16733 Comm: python Tainted: G      D       =
-    4.18.0-rc5+ #1
-> > [436149.586228] Hardware name: VMware, Inc. VMware Virtual Platform/440=
-BX Desktop Reference Platform, BIOS 6.00 04/05/2016
-> > [436149.586238] RIP: 0010:btrfs_rename2+0x1938/0x1b70 [btrfs]
-> > [436149.586238] Code: 50 f0 48 0f ba a8 10 ce 00 00 02 72 27 41 83 f8 f=
-b 74 6f 44 89 c6 48 c7 c7 48 09 85 c0 44 89 55 80 44 89 45 98 e8 f8 5e 4c c=
-5 <0f> 0b 44 8b 45 98 44 8b 55 80 44 89 55 80 44 89 c1 44 89 45 98 ba
-> > [436149.586254] RSP: 0018:ffffa327043a7ce0 EFLAGS: 00010286
-> > [436149.586255] RAX: 0000000000000000 RBX: ffff8d8a17d13340 RCX: 000000=
-0000000006
-> > [436149.586256] RDX: 0000000000000007 RSI: 0000000000000096 RDI: ffff8d=
-8a7fc164b0
-> > [436149.586257] RBP: ffffa327043a7da0 R08: 0000000000000560 R09: 726528=
-2064657472
-> > [436149.586258] R10: 0000000000000000 R11: 6361736e61725420 R12: ffff8d=
-8a0d4c8b08
-> > [436149.586258] R13: ffff8d8a17d13340 R14: ffff8d8a33e0a540 R15: 000000=
-00000001fe
-> > [436149.586260] FS:  00007fa313933740(0000) GS:ffff8d8a7fc00000(0000) k=
-nlGS:0000000000000000
-> > [436149.586261] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [436149.586262] CR2: 000055d8d9c9a720 CR3: 000000007aae0003 CR4: 000000=
-00003606f0
-> > [436149.586295] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000=
-0000000000
-> > [436149.586296] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000000=
-0000000400
-> > [436149.586296] Call Trace:
-> > [436149.586311]  vfs_rename+0x383/0x920
-> > [436149.586313]  ? vfs_rename+0x383/0x920
-> > [436149.586315]  do_renameat2+0x4ca/0x590
-> > [436149.586317]  __x64_sys_rename+0x20/0x30
-> > [436149.586324]  do_syscall_64+0x5a/0x120
-> > [436149.586330]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > [436149.586332] RIP: 0033:0x7fa3133b1d37
-> > [436149.586332] Code: 75 12 48 89 df e8 89 60 09 00 85 c0 0f 95 c0 0f b=
-6 c0 f7 d8 5b c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 b8 52 00 00 00 0f 0=
-5 <48> 3d 00 f0 ff ff 77 09 f3 c3 0f 1f 80 00 00 00 00 48 8b 15 19 f1
-> > [436149.586348] RSP: 002b:00007fffd3e43908 EFLAGS: 00000246 ORIG_RAX: 0=
-000000000000052
-> > [436149.586349] RAX: ffffffffffffffda RBX: 00007fa3133b1d30 RCX: 00007f=
-a3133b1d37
-> > [436149.586350] RDX: 000055d8da06b5e0 RSI: 000055d8da225d60 RDI: 000055=
-d8da2c4da0
-> > [436149.586351] RBP: 000055d8da2252f0 R08: 00007fa313782000 R09: 000000=
-00000177e0
-> > [436149.586351] R10: 000055d8da010680 R11: 0000000000000246 R12: 00007f=
-a313840b00
-> >
-> > Thanks to Hans van Kranenburg for information about crc32 hash collisio=
-n tools,
-> > I was able to reproduce the dir item collision with following python sc=
-ript.
-> > https://github.com/wutzuchieh/misc_tools/blob/master/crc32_forge.py
-> > Run it under a btrfs volume will trigger the abort transaction.
-> > It simply creates files and rename them to forged names that leads to
-> > hash collision.
-> >
-> > There are two ways to fix this. One is to simply revert the patch
-> > "878f2d2cb355 Btrfs: fix max dir item size calculation"
-> > to make the condition consistent although that patch is correct
-> > about the size.
-> >
-> > The other way is to handle the leaf space check correctly when
-> > collision happens. I prefer the second one since it correct leaf
-> > space check in collision case. This fix needs unify the usage of ins_le=
-n
-> > in btrfs_search_slot to contain btrfs_item anyway and adjust all caller=
-s
-> > of btrfs_search_slot that intentionally pass ins_len without btrfs_item
-> > size to add size of btrfs_item from now.
-> >
-> > Fixes: 878f2d2cb355 Btrfs: fix max dir item size calculation
-> > Signed-off-by: ethanwu <ethanwu@synology.com>
-> > ---
-> >
-> > v2: modify change log, add call trace and way to reproduce it
-> >
-> >  fs/btrfs/ctree.c       | 15 +++++++++++++--
-> >  fs/btrfs/extent-tree.c |  5 +++--
-> >  fs/btrfs/file-item.c   |  2 +-
-> >  3 files changed, 17 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> > index 4bc326d..3614dd9 100644
-> > --- a/fs/btrfs/ctree.c
-> > +++ b/fs/btrfs/ctree.c
-> > @@ -2678,8 +2678,8 @@ static struct extent_buffer *btrfs_search_slot_ge=
-t_root(struct btrfs_root *root,
-> >   * @p:               Holds all btree nodes along the search path
-> >   * @root:    The root node of the tree
-> >   * @key:     The key we are looking for
-> > - * @ins_len: Indicates purpose of search, for inserts it is 1, for
-> > - *           deletions it's -1. 0 for plain searches
-> > + * @ins_len: Indicates purpose of search, for inserts it is item size
-> > + *           including btrfs_item, for deletions it's -1. 0 for plain =
-searches
->
-> This must be reworded - even my initial commit adding the documentation
-> was wrong:
->
-> * @ins_len:     Indicates purpose of search, for inserts it is a positive
-> number (size of item inserted), for deletions it's a negative number and
-> 0 for plain searches, not modifying the tree.
->
+From: Filipe Manana <fdmanana@suse.com>
 
-OK I'll modify the comment as well, and thanks for providing the sample.
+Lockdep reported the following splat when running test btrfs/190 from
+fstests:
 
-> >   * @cow:     boolean should CoW operations be performed. Must always b=
-e 1
-> >   *           when modifying the tree.
-> >   *
-> > @@ -2893,6 +2893,17 @@ int btrfs_search_slot(struct btrfs_trans_handle =
-*trans, struct btrfs_root *root,
-> >                       }
-> >               } else {
-> >                       p->slots[level] =3D slot;
-> > +                     /*
-> > +                      * item key collision happens. In this case, if w=
-e are allow
-> > +                      * to insert the item(for example, in dir_item ca=
-se, item key
-> > +                      * collision is allowed), it will be merged with =
-the original
-> > +                      * item. Only the item size grows, no new btrfs i=
-tem will be
-> > +                      * added. Since the ins_len already accounts the =
-size btrfs_item,
-> > +                      * this value is counted twice. Duduct this value=
- here so the
-> > +                      * leaf space check will be correct.
-> > +                      */
-> > +                     if (ret =3D=3D 0 && ins_len > 0)
-> > +                             ins_len -=3D sizeof(struct btrfs_item);
-> >                       if (ins_len > 0 &&
-> >                           btrfs_leaf_free_space(fs_info, b) < ins_len) =
-{
-> >                               if (write_lock_level < 1) {
-> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> > index 3d9fe58..4e3aa09 100644
-> > --- a/fs/btrfs/extent-tree.c
-> > +++ b/fs/btrfs/extent-tree.c
-> > @@ -1094,7 +1094,7 @@ static int convert_extent_item_v0(struct btrfs_tr=
-ans_handle *trans,
-> >
-> >       new_size -=3D sizeof(*ei0);
-> >       ret =3D btrfs_search_slot(trans, root, &key, path,
-> > -                             new_size + extra_size, 1);
-> > +                             new_size + extra_size + sizeof(struct btr=
-fs_item), 1);
->
-> You are using an old kernel tree since convert_extent_item_v0 (and all
-> v0) code for that matter has been removed from upstream. Rebase the
-> patch on current misc-next
->
-Sorry, I'll rebase. I didn't find misc-next, I think it's for-next right no=
-w?
+[ 9482.126098] ======================================================
+[ 9482.126184] WARNING: possible circular locking dependency detected
+[ 9482.126281] 5.10.0-rc4-btrfs-next-73 #1 Not tainted
+[ 9482.126365] ------------------------------------------------------
+[ 9482.126456] mount/24187 is trying to acquire lock:
+[ 9482.126534] ffffa0c869a7dac0 (&fs_info->qgroup_rescan_lock){+.+.}-{3:3}, at: qgroup_rescan_init+0x43/0xf0 [btrfs]
+[ 9482.126647]
+               but task is already holding lock:
+[ 9482.126777] ffffa0c892ebd3a0 (btrfs-quota-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+[ 9482.126886]
+               which lock already depends on the new lock.
 
-> >       if (ret < 0)
-> >               return ret;
-> >       BUG_ON(ret); /* Corruption */
-> > @@ -1644,7 +1644,8 @@ int lookup_inline_extent_backref(struct btrfs_tra=
-ns_handle *trans,
-> >       }
-> >
-> >  again:
-> > -     ret =3D btrfs_search_slot(trans, root, &key, path, extra_size, 1)=
-;
-> > +     ret =3D btrfs_search_slot(trans, root, &key, path,
-> > +                         extra_size + sizeof(struct btrfs_item), 1);
->
-> So you add the size of the struct btrfs_item but in case collision
-> happens then the newly added code in btrfs_search_slot will negate this
-> and the code will act as before the patch. Is my understanding correct?
->
-Yes, checking all the places where ins_len > 0, only these two places
-needs to be fix.
-But I handled these two places incorrectly in this patch.
+[ 9482.127078]
+               the existing dependency chain (in reverse order) is:
+[ 9482.127213]
+               -> #1 (btrfs-quota-00){++++}-{3:3}:
+[ 9482.127366]        lock_acquire+0xd8/0x490
+[ 9482.127436]        down_read_nested+0x45/0x220
+[ 9482.127528]        __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+[ 9482.127613]        btrfs_read_lock_root_node+0x41/0x130 [btrfs]
+[ 9482.127702]        btrfs_search_slot+0x514/0xc30 [btrfs]
+[ 9482.127788]        update_qgroup_status_item+0x72/0x140 [btrfs]
+[ 9482.127877]        btrfs_qgroup_rescan_worker+0xde/0x680 [btrfs]
+[ 9482.127964]        btrfs_work_helper+0xf1/0x600 [btrfs]
+[ 9482.128039]        process_one_work+0x24e/0x5e0
+[ 9482.128110]        worker_thread+0x50/0x3b0
+[ 9482.128181]        kthread+0x153/0x170
+[ 9482.128256]        ret_from_fork+0x22/0x30
+[ 9482.128327]
+               -> #0 (&fs_info->qgroup_rescan_lock){+.+.}-{3:3}:
+[ 9482.128464]        check_prev_add+0x91/0xc60
+[ 9482.128551]        __lock_acquire+0x1740/0x3110
+[ 9482.128623]        lock_acquire+0xd8/0x490
+[ 9482.130029]        __mutex_lock+0xa3/0xb30
+[ 9482.130590]        qgroup_rescan_init+0x43/0xf0 [btrfs]
+[ 9482.131577]        btrfs_read_qgroup_config+0x43a/0x550 [btrfs]
+[ 9482.132175]        open_ctree+0x1228/0x18a0 [btrfs]
+[ 9482.132756]        btrfs_mount_root.cold+0x13/0xed [btrfs]
+[ 9482.133325]        legacy_get_tree+0x30/0x60
+[ 9482.133866]        vfs_get_tree+0x28/0xe0
+[ 9482.134392]        fc_mount+0xe/0x40
+[ 9482.134908]        vfs_kern_mount.part.0+0x71/0x90
+[ 9482.135428]        btrfs_mount+0x13b/0x3e0 [btrfs]
+[ 9482.135942]        legacy_get_tree+0x30/0x60
+[ 9482.136444]        vfs_get_tree+0x28/0xe0
+[ 9482.136949]        path_mount+0x2d7/0xa70
+[ 9482.137438]        do_mount+0x75/0x90
+[ 9482.137923]        __x64_sys_mount+0x8e/0xd0
+[ 9482.138400]        do_syscall_64+0x33/0x80
+[ 9482.138873]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 9482.139346]
+               other info that might help us debug this:
 
-extra_size might be -1, and in this case I should not add
-sizeof(struct btrfs_item);
+[ 9482.140735]  Possible unsafe locking scenario:
 
-I'll change to this
+[ 9482.141594]        CPU0                    CPU1
+[ 9482.142011]        ----                    ----
+[ 9482.142411]   lock(btrfs-quota-00);
+[ 9482.142806]                                lock(&fs_info->qgroup_rescan_lock);
+[ 9482.143216]                                lock(btrfs-quota-00);
+[ 9482.143629]   lock(&fs_info->qgroup_rescan_lock);
+[ 9482.144056]
+                *** DEADLOCK ***
 
-...
-int ins_len
-...
+[ 9482.145242] 2 locks held by mount/24187:
+[ 9482.145637]  #0: ffffa0c8411c40e8 (&type->s_umount_key#44/1){+.+.}-{3:3}, at: alloc_super+0xb9/0x400
+[ 9482.146061]  #1: ffffa0c892ebd3a0 (btrfs-quota-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+[ 9482.146509]
+               stack backtrace:
+[ 9482.147350] CPU: 1 PID: 24187 Comm: mount Not tainted 5.10.0-rc4-btrfs-next-73 #1
+[ 9482.147788] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+[ 9482.148709] Call Trace:
+[ 9482.149169]  dump_stack+0x8d/0xb5
+[ 9482.149628]  check_noncircular+0xff/0x110
+[ 9482.150090]  check_prev_add+0x91/0xc60
+[ 9482.150561]  ? kvm_clock_read+0x14/0x30
+[ 9482.151017]  ? kvm_sched_clock_read+0x5/0x10
+[ 9482.151470]  __lock_acquire+0x1740/0x3110
+[ 9482.151941]  ? __btrfs_tree_read_lock+0x27/0x120 [btrfs]
+[ 9482.152402]  lock_acquire+0xd8/0x490
+[ 9482.152887]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+[ 9482.153354]  __mutex_lock+0xa3/0xb30
+[ 9482.153826]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+[ 9482.154301]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+[ 9482.154768]  ? qgroup_rescan_init+0x43/0xf0 [btrfs]
+[ 9482.155226]  qgroup_rescan_init+0x43/0xf0 [btrfs]
+[ 9482.155690]  btrfs_read_qgroup_config+0x43a/0x550 [btrfs]
+[ 9482.156160]  open_ctree+0x1228/0x18a0 [btrfs]
+[ 9482.156643]  btrfs_mount_root.cold+0x13/0xed [btrfs]
+[ 9482.157108]  ? rcu_read_lock_sched_held+0x5d/0x90
+[ 9482.157567]  ? kfree+0x31f/0x3e0
+[ 9482.158030]  legacy_get_tree+0x30/0x60
+[ 9482.158489]  vfs_get_tree+0x28/0xe0
+[ 9482.158947]  fc_mount+0xe/0x40
+[ 9482.159403]  vfs_kern_mount.part.0+0x71/0x90
+[ 9482.159875]  btrfs_mount+0x13b/0x3e0 [btrfs]
+[ 9482.160335]  ? rcu_read_lock_sched_held+0x5d/0x90
+[ 9482.160805]  ? kfree+0x31f/0x3e0
+[ 9482.161260]  ? legacy_get_tree+0x30/0x60
+[ 9482.161714]  legacy_get_tree+0x30/0x60
+[ 9482.162166]  vfs_get_tree+0x28/0xe0
+[ 9482.162616]  path_mount+0x2d7/0xa70
+[ 9482.163070]  do_mount+0x75/0x90
+[ 9482.163525]  __x64_sys_mount+0x8e/0xd0
+[ 9482.163986]  do_syscall_64+0x33/0x80
+[ 9482.164437]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 9482.164902] RIP: 0033:0x7f51e907caaa
 
-if (insert) {
-    extra_size =3D btrfs_extent_inline_ref_size(want);
-    ins_len =3D extra_size + sizeof(struct btrfs_item);
-    ...
-} else {
-    extra_size =3D -1;
-    ins_len =3D -1;
-}
+This happens because at btrfs_read_qgroup_config() we can call
+qgroup_rescan_init() while holding a read lock on a quota btree leaf,
+acquired by the previous call to btrfs_search_slot_for_read(), and
+qgroup_rescan_init() acquires the mutex qgroup_rescan_lock.
 
-,,,
-ret =3D btrfs_search_slot(trans, root, &key, path, ins_len, 1);
+A qgroup rescan worker does the opposite: it acquires the mutex
+qgroup_rescan_lock, at btrfs_qgroup_rescan_worker(), and then tries to
+update the qgroup status item in the quota btree through the call to
+update_qgroup_status_item(). This inversion of locking order
+between the qgroup_rescan_lock mutex and quota btree locks causes the
+splat.
 
-> >       if (ret < 0) {
-> >               err =3D ret;
-> >               goto out;
-> > diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> > index f9dd6d1..0b6c581 100644
-> > --- a/fs/btrfs/file-item.c
-> > +++ b/fs/btrfs/file-item.c
-> > @@ -804,7 +804,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handl=
-e *trans,
-> >        */
-> >       btrfs_release_path(path);
-> >       ret =3D btrfs_search_slot(trans, root, &file_key, path,
-> > -                             csum_size, 1);
-> > +                             csum_size + sizeof(struct btrfs_item), 1)=
-;
-> >       if (ret < 0)
-> >               goto fail_unlock;
-> >
-> >
+Fix this simply by releasing and freeing the path before calling
+qgroup_rescan_init() at btrfs_read_qgroup_config().
 
-This code is wrong as well.
-Reaching here means we got -EFBIG from btrfs_lookup_csum earlier in
-btrfs_csum_file_blocks.
-This indicates that we found a checksum item that ends at an offset
-matching the start of the checksum range we want to insert. Therefore,
-btrfs_search_slot won't find the item with file_key we want, so
-sizeof(struct btrfs_item) is not needed here.
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/qgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'll resend v3 patch set.
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index da9b313819d5..25c07ea5c8b5 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -497,13 +497,13 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 			break;
+ 	}
+ out:
++	btrfs_free_path(path);
+ 	fs_info->qgroup_flags |= flags;
+ 	if (!(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_ON))
+ 		clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
+ 	else if (fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN &&
+ 		 ret >= 0)
+ 		ret = qgroup_rescan_init(fs_info, rescan_progress, 0);
+-	btrfs_free_path(path);
+ 
+ 	if (ret < 0) {
+ 		ulist_free(fs_info->qgroup_ulist);
+-- 
+2.28.0
 
-thanks,
-ethanwu
