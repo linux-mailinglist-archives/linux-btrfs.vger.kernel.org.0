@@ -2,62 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2B42C12C6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Nov 2020 19:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0B12C1320
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Nov 2020 19:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390646AbgKWSAU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Nov 2020 13:00:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56708 "EHLO mx2.suse.de"
+        id S1728987AbgKWSbA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Nov 2020 13:31:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726852AbgKWSAS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Nov 2020 13:00:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 58D69AE1C;
-        Mon, 23 Nov 2020 18:00:16 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A8E7ADA818; Mon, 23 Nov 2020 18:58:26 +0100 (CET)
-Date:   Mon, 23 Nov 2020 18:58:26 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     kaixuxia <xiakaixu1987@gmail.com>
-Cc:     dsterba@suse.cz, dsterba@suse.com, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Subject: Re: [PATCH] btrfs: remove the useless value assignment in
- block_rsv_release_bytes
-Message-ID: <20201123175826.GL8669@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, kaixuxia <xiakaixu1987@gmail.com>,
-        dsterba@suse.com, clm@fb.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-References: <1605422363-14947-1-git-send-email-kaixuxia@tencent.com>
- <20201116151512.GJ6756@twin.jikos.cz>
- <104c5965-fbbe-b306-e835-5f2bbf60aa7f@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <104c5965-fbbe-b306-e835-5f2bbf60aa7f@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1729889AbgKWSa6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Nov 2020 13:30:58 -0500
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CAAF2078E
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Nov 2020 18:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606156257;
+        bh=AXEZcmOvsAiarka9PIuWkZYfnrP1xJiubgHRHPwgAYk=;
+        h=From:To:Subject:Date:From;
+        b=reJ47n2TftEhnblFrQ5uD0LUwhJVclCE3/kdNrdphm2tBG1wqLikpwEJJIO7uifkq
+         ySCuL6RaxHEtkHVm4gQjZ/16LUX0hLOk2GuzGwWgmrdZc8GIuXvL3YeaJYj3JX/BDH
+         pupFVEBIr8er3U4PkuHaADcFohqnN074UHuWRYr0=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: do nofs allocations when adding and removing qgroup relations
+Date:   Mon, 23 Nov 2020 18:30:54 +0000
+Message-Id: <b3e4b5a1b95835d5309421349629cf36ffff9a7f.1606152412.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:17:17AM +0800, kaixuxia wrote:
-> 
-> 
-> On 2020/11/16 23:15, David Sterba wrote:
-> > On Sun, Nov 15, 2020 at 02:39:23PM +0800, xiakaixu1987@gmail.com wrote:
-> >> From: Kaixu Xia <kaixuxia@tencent.com>
-> >>
-> >> The variable qgroup_to_release is overwritten by the following if/else
-> >> statement before it is used, so this assignment is useless. Remove it.
-> > 
-> > Again this lacks explanation why removing it is correct.
-> > 
-> Actually this assignment is redundant because the variable qgroup_to_release
-> has been overwritten before it is used. The logic like this,
+From: Filipe Manana <fdmanana@suse.com>
 
-That's obvious and I did not mean that. Have you checked in which commit
-the variable became unused and why? It's possible that it was indeed
-just an oversight, but if not it could point to a bug.
+When adding or removing a qgroup relation we are doing a GFP_KERNEL
+allocation which is not safe because we are holding a transaction
+handle open and that can make us deadlock if the allocator needs to
+recurse into the filesystem. So just surround those calls with a
+nofs context.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/qgroup.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index cbc0266af001..af00003d9756 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -11,6 +11,7 @@
+ #include <linux/slab.h>
+ #include <linux/workqueue.h>
+ #include <linux/btrfs.h>
++#include <linux/sched/mm.h>
+ 
+ #include "ctree.h"
+ #include "transaction.h"
+@@ -1363,13 +1364,17 @@ int btrfs_add_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 	struct btrfs_qgroup *member;
+ 	struct btrfs_qgroup_list *list;
+ 	struct ulist *tmp;
++	unsigned int nofs_flag;
+ 	int ret = 0;
+ 
+ 	/* Check the level of src and dst first */
+ 	if (btrfs_qgroup_level(src) >= btrfs_qgroup_level(dst))
+ 		return -EINVAL;
+ 
++	/* We hold a transaction handle open, must do a NOFS allocation. */
++	nofs_flag = memalloc_nofs_save();
+ 	tmp = ulist_alloc(GFP_KERNEL);
++	memalloc_nofs_restore(nofs_flag);
+ 	if (!tmp)
+ 		return -ENOMEM;
+ 
+@@ -1426,10 +1431,14 @@ static int __del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 	struct btrfs_qgroup_list *list;
+ 	struct ulist *tmp;
+ 	bool found = false;
++	unsigned int nofs_flag;
+ 	int ret = 0;
+ 	int ret2;
+ 
++	/* We hold a transaction handle open, must do a NOFS allocation. */
++	nofs_flag = memalloc_nofs_save();
+ 	tmp = ulist_alloc(GFP_KERNEL);
++	memalloc_nofs_restore(nofs_flag);
+ 	if (!tmp)
+ 		return -ENOMEM;
+ 
+-- 
+2.28.0
+
