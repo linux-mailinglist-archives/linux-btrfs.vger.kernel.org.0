@@ -2,128 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8366D2C24B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 12:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653B42C25D0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 13:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732805AbgKXLit (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Nov 2020 06:38:49 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:42462 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730158AbgKXLit (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 06:38:49 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AOBZId4116841;
-        Tue, 24 Nov 2020 11:38:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=+9cpHctWC39/LeAtaf1RPUoSnpc3cgQxN/BNyqZRqJ4=;
- b=mYy/1Z/shF5nms/gW3FkKFFuf+Oevcx9lOjWdIL5gVsuVo2RpHFJPec50zqQpNPhObn7
- V/N7xDx1/3VQHWTwFpzSoCxMAZIglPU86BBJIW5Sn1DnDRELXUfwFzjBs7HA8XNFy90c
- XpYd16nU/qtH3LsV4tO11mEz87goUArnBuhlX7LjMSRNhkIgKh5fQdZkcfO5v4JCrMFU
- JbCY6NwLiPGnTX8ZRywYcd5hl36ZuqFAklb84pnq77Gzy2XYpv0SzOqyLEpw48z2iory
- ZNfrHy4j4BJAms8CaURi+R75QDOY1+W0zrsb5b/IdQq584oNBxWU0DA0/YkqH88ZjIUx qA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 34xtaqnp6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Nov 2020 11:38:26 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AOBZei6174730;
-        Tue, 24 Nov 2020 11:36:25 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 34yx8jrfvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Nov 2020 11:36:25 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AOBaNmC029687;
-        Tue, 24 Nov 2020 11:36:24 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 24 Nov 2020 03:36:23 -0800
-Subject: Re: [PATCH v10 12/41] btrfs: implement zoned chunk allocator
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-References: <cover.1605007036.git.naohiro.aota@wdc.com>
- <e7896fe18651e3ad12a96ff3ec3255e3127c8239.1605007036.git.naohiro.aota@wdc.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <9cec3af1-4f2c-c94c-1506-07db2c66cc90@oracle.com>
-Date:   Tue, 24 Nov 2020 19:36:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2387522AbgKXMhh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Nov 2020 07:37:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36684 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733032AbgKXMhh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:37:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606221455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=/Zav+r1NKZ99RNEL0wC/xF77xsAAwoVoj7StEe8kbOs=;
+        b=FA6XPn6oEWVffRo6w+BpYgci1U59ltPVWp/pb4OHi+3VwsRrrprWundMXC5PFLffGb+4HT
+        Kh0HJTYjpvngCseHWNs7BHioGXSw5GxRdaTmivFVQe3I5ZNappYUs8op3KC3vUD1PEh0Gu
+        cyrA/6ueMDKOyPk4J4Wb7HLLfHp2LGg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B31F8AC66;
+        Tue, 24 Nov 2020 12:37:35 +0000 (UTC)
+Subject: Re: [PATCH v2 13/42] btrfs: handle btrfs_record_root_in_trans failure
+ in btrfs_recover_log_trees
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1605284383.git.josef@toxicpanda.com>
+ <8055a43c75716d186b29441c5c78f6bdf04d47ed.1605284383.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <6512c611-097e-d49c-14c1-822c627f6882@suse.com>
+Date:   Tue, 24 Nov 2020 14:37:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <e7896fe18651e3ad12a96ff3ec3255e3127c8239.1605007036.git.naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <8055a43c75716d186b29441c5c78f6bdf04d47ed.1605284383.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240072
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 clxscore=1015 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011240072
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/11/20 7:26 pm, Naohiro Aota wrote:
-> This commit implements a zoned chunk/dev_extent allocator. The zoned
-> allocator aligns the device extents to zone boundaries, so that a zone
-> reset affects only the device extent and does not change the state of
-> blocks in the neighbor device extents.
+
+
+On 13.11.20 г. 18:23 ч., Josef Bacik wrote:
+> btrfs_record_root_in_trans will return errors in the future, so handle
+> the error properly in btrfs_recover_log_trees.
 > 
-> Also, it checks that a region allocation is not overlapping any of the
-> super block zones, and ensures the region is empty.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/tree-log.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 955c9a36cfeb..1ad77e2399f7 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -6276,8 +6276,12 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+>  		}
+>  
+>  		wc.replay_dest->log_root = log;
+> -		btrfs_record_root_in_trans(trans, wc.replay_dest);
+> -		ret = walk_log_tree(trans, log, &wc);
+> +		ret = btrfs_record_root_in_trans(trans, wc.replay_dest);
+> +		if (ret)
+> +			btrfs_handle_fs_error(fs_info, ret,
+> +				"Couldn't record the root in the transaction.");
+> +		else
+> +			ret = walk_log_tree(trans, log, &wc);
 
-Looks good.
-
-Chunks and stripes are aligned to the zone_size. I guess zone_size won't
-change after the block device has been formatted with it? For testing,
-what if the device image is dumped onto another zoned device with a
-different zone_size?
-
-A small nit is below.
-
-> +static void init_alloc_chunk_ctl_policy_zoned(
-> +				      struct btrfs_fs_devices *fs_devices,
-> +				      struct alloc_chunk_ctl *ctl)
-> +{
-> +	u64 zone_size = fs_devices->fs_info->zone_size;
-> +	u64 limit;
-> +	int min_num_stripes = ctl->devs_min * ctl->dev_stripes;
-> +	int min_data_stripes = (min_num_stripes - ctl->nparity) / ctl->ncopies;
-> +	u64 min_chunk_size = min_data_stripes * zone_size;
-> +	u64 type = ctl->type;
-> +
-> +	ctl->max_stripe_size = zone_size;
-> +	if (type & BTRFS_BLOCK_GROUP_DATA) {
-> +		ctl->max_chunk_size = round_down(BTRFS_MAX_DATA_CHUNK_SIZE,
-> +						 zone_size);
-> +	} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
-> +		ctl->max_chunk_size = ctl->max_stripe_size;
-> +	} else if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
-> +		ctl->max_chunk_size = 2 * ctl->max_stripe_size;
-> +		ctl->devs_max = min_t(int, ctl->devs_max,
-> +				      BTRFS_MAX_DEVS_SYS_CHUNK);
-> +	}
-> +
+After handle_fs_error the filesystem is in RO state so in case of error
+simply call the function and goto error?
 
 
-> +	/* We don't want a chunk larger than 10% of writable space */
-> +	limit = max(round_down(div_factor(fs_devices->total_rw_bytes, 1),
-
-  What's the purpose of dev_factor here?
-
-Thanks.
-
+>  
+>  		if (!ret && wc.stage == LOG_WALK_REPLAY_ALL) {
+>  			ret = fixup_inode_link_counts(trans, wc.replay_dest,
+> 
