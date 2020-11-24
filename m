@@ -2,34 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683C32C2692
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 13:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E842C2695
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 13:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387744AbgKXMv7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Nov 2020 07:51:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56104 "EHLO mx2.suse.de"
+        id S2387452AbgKXMxf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Nov 2020 07:53:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57992 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387589AbgKXMv7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:51:59 -0500
+        id S1733265AbgKXMxe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:53:34 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606222317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1606222413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Pj2yVqlNyYpc0WYfOe65VHNTF7sf9nMHGegLMzUTzYo=;
-        b=pHTqY3CyOHvOQhUTX4K6+W1Dq8N+WntxE7St8KgkIYcsGMvxd05O4+mN+NPP0P9skvJgFe
-        YzvyJZAW8kwilSPZXbo/4K8LdnIygdV6b55+Gw9Xk334TuuiG/k6rQN7bPJB2vpaQC7BXp
-        nzVvDYLCzaoDtO9eEP+Bo1EaBXbyuT0=
+        bh=JQRSw4ht5cLFPtxA2Cw8EzvtKasBI0befnmb+pwU344=;
+        b=gEX9XSnx8FM1PuwU39jrQUs2gLBTALtPLD62DbBRbLvVwmOtc/FHd68dnk3dtaGkjcpmDe
+        sK2Xgt9GlJebFvtgeTQ6lJXbs/Gn3KNJVVpXchml6EI4uVw5Ntueh3RmEWBcbGGlZ/ZN3a
+        /gHzpgEnq34a9HbSPhGXydthPdP5VWA=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 90B05AF16;
-        Tue, 24 Nov 2020 12:51:57 +0000 (UTC)
-Subject: Re: [PATCH v2 20/42] btrfs: do not panic in __add_reloc_root
+        by mx2.suse.de (Postfix) with ESMTP id E903BAC2D;
+        Tue, 24 Nov 2020 12:53:32 +0000 (UTC)
+Subject: Re: [PATCH v2 05/42] btrfs: return an error from
+ btrfs_record_root_in_trans
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1605284383.git.josef@toxicpanda.com>
- <8b14e9986f6c889008debd7e0c60821168aaef46.1605284383.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+ <5ef2aa527f3a9e0525ab5a97ef0d585b999bb47c.1605284383.git.josef@toxicpanda.com>
+ <af0a6a7f-e845-a5b7-9d80-7137caaeb87f@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -72,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <ca15ef5c-5337-b7cb-a6e2-f8d66f24583b@suse.com>
-Date:   Tue, 24 Nov 2020 14:51:56 +0200
+Message-ID: <9391c007-9090-4244-4e38-f9bad345f50f@suse.com>
+Date:   Tue, 24 Nov 2020 14:53:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8b14e9986f6c889008debd7e0c60821168aaef46.1605284383.git.josef@toxicpanda.com>
+In-Reply-To: <af0a6a7f-e845-a5b7-9d80-7137caaeb87f@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -87,10 +89,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 13.11.20 г. 18:23 ч., Josef Bacik wrote:
-> If we have a duplicate entry for a reloc root then we could have fs
-> corruption that resulted in a double allocation.  This shouldn't happen
-> generally so leave an ASSERT() for this case, but return an error
-> instead of panicing in the normal user case
+On 24.11.20 г. 13:02 ч., Nikolay Borisov wrote:
+> effect btrfs_init_reloc_root ought
+> to also be changed because it either always returns 0 or BUG_ON() on
+> -ENOMEM from __ad_reloc_root.
 
-nit: panicing => panicking - codespell caught it :)
+Ok, you do the necessary changes in patch 21, so disregard this.
