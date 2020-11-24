@@ -2,208 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B32C216B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 10:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839252C232E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 11:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731164AbgKXJab (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Nov 2020 04:30:31 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:60380 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgKXJaa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:30:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1606210229; x=1637746229;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=sQVxAVdmAzdpK+TJO4f+yT6W0pm4Cob25UNQ1mDjBpk=;
-  b=p+1FIrYQvebhNSdEhxB8Tu+pxlP6d8aTZC5JC7pMMn5l+hs2N2ISbUk+
-   V9MOh0zPLcsc2fnn6S6Zf7D7Wuqyeq4YH2OEF0mw9+BiAvHsNTtuvDXGs
-   yhJj9K0yCJiPpiVq6dZ19fZM0J1Nh5VD54p1xSCBBPeq2lRJ2CXlKN6GJ
-   EZLhXFuqxu3MD5WfLrORkP5+I6yA8Hw/3Sj0dFXCP6NHSv4qzARPPuwIE
-   B+YHbwShK1tY2tM3KZ3XZlbw601/jpJN5ewDGKnEx6/Gp6fWItsRupnxm
-   q5PPefbYfL3EL/l+Ac8efgq/Nqvzc6Ux4zMxo8K3JmwwaOPlu4s7jiAG6
-   A==;
-IronPort-SDR: Yw6UTd4JSR5uY7H94W6yn2mHOnGdn3I0DW1jyaSNvHYAT2x7oXIjPzqebMB5FaKgQK258XZPce
- M2X58y7ETD2ySkrrLlmIroyZYRlC+pM37RAIesmquU5zF6raqmNbIZclPROBSXif7pzsqY2OpM
- TuCfdBS1rK3eFQ/19PcK55/TI1FVloVtNg8geU4peqItAfHNjH+zrFIE8GPoF7Sqc60ehxPttd
- kkPi1ByQCZ8P/BqAtaf8sbSH8OZABPN49NZBhl7whLJjLwIetDmrZ2kTSzQGWBCehJaTgNTQ+K
- pKQ=
-X-IronPort-AV: E=Sophos;i="5.78,365,1599494400"; 
-   d="scan'208";a="263387445"
-Received: from mail-co1nam11lp2175.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.175])
-  by ob1.hgst.iphmx.com with ESMTP; 24 Nov 2020 17:30:28 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CXchohnCaZabj7aXfGuJv4whhqjaEp3BoaS9wbptfeIQHUhXMYb0CSr5AOC3vUgUJ5oeYIHs/Uzti3eTrJTUogoJmxoFfFXX7sleWCyokn1j+2FC36MdAwV563xcLfYUi3BfCIXgpRZ7Q54Bt3Mc1kYCWMug5xQHXt8ge6rhSldKsOrEmgcBlRStxBYsvUdAKe3C3KResMhAxoychQOEC/K4ybiKaeTGE8g1fuRIkVk7WF1H9fc79KsHU5a0ejpclRK25qWRDA9KrI/uA4gczlkTO/ZEg/VZ9+/RtQtQ+rNiT/rNTc5GdE8wJXK1bQD5B2080uDvzNoIKQYJU+ISEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KSFNMcOkLQy4Kb+0RQLvQXIczNFUpCaNUdm4iY+/ciA=;
- b=ZHJrSWzRdFTHl2y5BuZrjCI8iQYeKzvRueKNHYbFkg9XryhoHFQh0uvFZLzzQqKm4nKi7bdLPuNN7oDA33Wji4ciZ3R0p3pj3iNfWg3LeQc2KCtt6vO9CtXNFKxQrrpXODZVJqxP7iL04VG6aNAO0C+u8k0xTaNTmBogKz8Gjit5hJP0vyL4yemi9FfiL1vU/bQFlxHdbFNHImAsKjRTtK9pYD0FNhjVb7Hff/+Vk098nu8RGJjpxggm/EY2hfQ2OTUiEYv5wNkSNpw7M0Yv6CsWnvXgGNTOTg4OZHUK1qcUNYJDArRGoSiMPhj1xkpamndVKjPUSXiZSjBlbRMwjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KSFNMcOkLQy4Kb+0RQLvQXIczNFUpCaNUdm4iY+/ciA=;
- b=banagy1A7yff91Wt/rW10keERHmrYC3dmXiv4znZg70C4KdOO1QUfyw9jLvEs+k0FJzpEBecvO/JZ6r9K8eK/LE3EplxWmSVbMuuFK9vHLKi9rtztF/zKgzjOaDiiu5qdhLT2yIegO2+3UxDD7JZA1AsyerNOLQHja7QRbOaOuo=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SA0PR04MB7323.namprd04.prod.outlook.com
- (2603:10b6:806:e5::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 24 Nov
- 2020 09:30:28 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98%7]) with mapi id 15.20.3589.030; Tue, 24 Nov 2020
- 09:30:28 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH v10 11/41] btrfs: implement log-structured superblock for
- ZONED mode
-Thread-Topic: [PATCH v10 11/41] btrfs: implement log-structured superblock for
- ZONED mode
-Thread-Index: AQHWt1SnTg7pu9wW+k2Bz9gbpZ4TNw==
-Date:   Tue, 24 Nov 2020 09:30:28 +0000
-Message-ID: <SN4PR0401MB3598A7DA2BF25A32811002079BFB0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1605007036.git.naohiro.aota@wdc.com>
- <5aa30b45e2e29018e19e47181586f3f436759b69.1605007036.git.naohiro.aota@wdc.com>
- <20201123174630.GK8669@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [62.216.205.39]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: b10c7ac5-229f-4dfe-8d16-08d8905b94b5
-x-ms-traffictypediagnostic: SA0PR04MB7323:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA0PR04MB7323974EBCD9F7A7309BB4019BFB0@SA0PR04MB7323.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ozj1MvJ0SjNS0uCZa5X9UrQEOQ8OwMl+RQyqPlcEYmP+elBM0wBq7BHH98WWMyG4NK+Wj4YcOIUX1SF+oNDIOss3edHuV8Da8Ea8Frz8H4YMCNpkNGWxzELUY8Zc1x3+QOa88POrdj7aC3ZH3074hxZu4Tdy31ZqfJ2TG9cB75MBj20FzM9iM8eyac/bliuxY8WoYWzuiswd9rRLi0GAHlaGFacOesTtW7zNm8NDK+Zb94BlQKQNSqMEkZ0yStScofs5IpzrM7EnrCM+MFYCEedr6VP+HCJ0NteKNYgMbZgpmjxX/9IWPdKLikO/kygyCd1dEfWmAhI/PVhg3np3JA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(396003)(376002)(346002)(55016002)(9686003)(86362001)(6636002)(5660300002)(7696005)(26005)(83380400001)(54906003)(71200400001)(110136005)(316002)(186003)(66446008)(66476007)(66946007)(33656002)(6506007)(66556008)(8676002)(76116006)(53546011)(478600001)(4326008)(91956017)(8936002)(2906002)(52536014)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ADZWur/WmmQ16k8cSbzddJTzZbEuyChYOgYA7OFYn7QlrnPjOM9H+VUBxQy8Z71WnXo5+dwiTr3dlpONub8nlh768/MktHq2EGjGpCf5v0PkZwLcDTouKxxkRO/DyeaCXBf9bnrZEnAA68Yb1kNHq5MYIVKUJsb+fykLT3NApiqOSHxBCE4/pwf/DmCHi5U38TgDRB05JVSiIa7uVXr9D8Ovpv3nnAczud1vW9w2ARM6dCp4odMUWQtzCx5Hw0i/yT0ncwaO0txD1XV3eASEST2Oyge1rVXBNfpCE9cya6WcToLJJEl+xUh/KWQiI7hVA9qpq2US1vrybZP/oHZgASxYZKoKFQDkaPaksYbmMPSeOgV5xfVppysOxlLcu70tmH9vDrYeVIbNlZM8443TpO5jXzX1WJAyVd3rbb74/XHoQa0qG1mt/aFOjmehV4pjDwI82ZOwHCH3ng+hLdeN+S3BnVsqpTaQ/PBMII5RoZGrf4xSdy8u/9QzcYNZMiSUV1qx01ya3CR6cyqz2wJOXM/ZZ1xPrClk92XhqQHjfPNi4wIUYkdwS3MaE32XogL5xIxpSKhy5uom6LVRamSglg5h29qC2Tgdg+IWxUmME+R3QPL4NBW1hOgjfrCDXc0GOYVX6fQzjAzgqN1ol8B+FLlDMuENK1wBn3XhNTp5GFTI1RUjWa6W23g+SVyebuU/nR3JhqCSJLbfRzHcHNdQshXi+BDsQcFdpaJq6Hdkg2W8t9dzKQmzCgiGLohjopqgKk1x+jD4RYi70wShsfr9hwxHcJBcEYSefbK8MT1LZktNQDtZeQrc1iszcRmUaIy+xiqEPEbw7GVFkcJvUJ+OGs0s51GmBdkMSgNqWLhlf3l9FQKSMpWO06K5dwmopEuVuMOogwFvkv1/7ZTRdFp+uw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1732201AbgKXKoL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Nov 2020 05:44:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33764 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726775AbgKXKoJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Nov 2020 05:44:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606214647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=AsSlktW9wRz220abwa0WtKCgaVKd6WK8aP5IkxPF0Lw=;
+        b=AUngGFwloISQh1OxftdKGfC3+dYScP2P/77eV8K3XMfEKkpRAHdxhchAhinhBLZabHleoK
+        Bj/Xr0+yHEAo1DlxdprejJu90WK8BnrC725vcj3dat+vUykr5I7jJkAUYoOJ6OLDwU+d0m
+        rYcP5w1eAr00ZKK/vBRqz50k95HSiGw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A0632AC2E;
+        Tue, 24 Nov 2020 10:44:07 +0000 (UTC)
+Subject: Re: [PATCH v2 02/42] btrfs: fix lockdep splat in
+ btrfs_recover_relocation
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1605284383.git.josef@toxicpanda.com>
+ <44c756daa28122f0f51f52d154c1232a09e66872.1605284383.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <46a41950-6bf0-3b89-ca7c-121c14f95825@suse.com>
+Date:   Tue, 24 Nov 2020 12:44:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b10c7ac5-229f-4dfe-8d16-08d8905b94b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2020 09:30:28.3035
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: EnFtExxXs2Fm27jwNr9qqnhz08DNxmobC0fgpVgQkWFHIXhtOWq8qc9g1vzmMB4Hose6g/yLx6i3hl3Xv8abb3HqHND0zZkeoccYybxDs0k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7323
+In-Reply-To: <44c756daa28122f0f51f52d154c1232a09e66872.1605284383.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 23/11/2020 18:49, David Sterba wrote:=0A=
-> On Tue, Nov 10, 2020 at 08:26:14PM +0900, Naohiro Aota wrote:=0A=
->> Superblock (and its copies) is the only data structure in btrfs which ha=
-s a=0A=
->> fixed location on a device. Since we cannot overwrite in a sequential wr=
-ite=0A=
->> required zone, we cannot place superblock in the zone. One easy solution=
- is=0A=
->> limiting superblock and copies to be placed only in conventional zones.=
-=0A=
->> However, this method has two downsides: one is reduced number of superbl=
-ock=0A=
->> copies. The location of the second copy of superblock is 256GB, which is=
- in=0A=
->> a sequential write required zone on typical devices in the market today.=
-=0A=
->> So, the number of superblock and copies is limited to be two.  Second=0A=
->> downside is that we cannot support devices which have no conventional zo=
-nes=0A=
->> at all.=0A=
->>=0A=
->> To solve these two problems, we employ superblock log writing. It uses t=
-wo=0A=
->> zones as a circular buffer to write updated superblocks. Once the first=
-=0A=
->> zone is filled up, start writing into the second buffer. Then, when the=
-=0A=
->> both zones are filled up and before start writing to the first zone agai=
-n,=0A=
->> it reset the first zone.=0A=
->>=0A=
->> We can determine the position of the latest superblock by reading write=
-=0A=
->> pointer information from a device. One corner case is when the both zone=
-s=0A=
->> are full. For this situation, we read out the last superblock of each=0A=
->> zone, and compare them to determine which zone is older.=0A=
->>=0A=
->> The following zones are reserved as the circular buffer on ZONED btrfs.=
-=0A=
->>=0A=
->> - The primary superblock: zones 0 and 1=0A=
->> - The first copy: zones 16 and 17=0A=
->> - The second copy: zones 1024 or zone at 256GB which is minimum, and nex=
-t=0A=
->>   to it=0A=
-> =0A=
-> I was thinking about that, again. We need a specification. The above is=
-=0A=
-> too vague.=0A=
-> =0A=
-> - supported zone sizes=0A=
->   eg. if device has 256M, how does it work? I think we can support=0A=
->   zones from some range (256M-1G), where filling the zone will start=0A=
->   filing the other zone, leaving the remaining space empty if needed,=0A=
->   effectively reserving the logical range [0..2G] for superblock=0A=
-> =0A=
-> - related to the above, is it necessary to fill the whole zone?=0A=
->   if both zones are filled, assuming 1G zone size, do we really expect=0A=
->   the user to wait until 2G of data are read?=0A=
->   with average reading speed 150MB/s, reading 2G will take about 13=0A=
->   seconds, just to find the latest copy of the superblock(!)=0A=
-> =0A=
-> - what are exact offsets of the superblocks=0A=
->   primary (64K), ie. not from the beginning=0A=
->   as partitioning is not supported, nor bootloaders, we don't need to=0A=
->   worry about overwriting them=0A=
-> =0A=
-> - what is an application supposed to do when there's a garbage after a=0A=
->   sequence of valid superblocks (all zeros can be considered a valid=0A=
->   termination block)=0A=
-> =0A=
-> The idea is to provide enough information for a 3rd party tool to read=0A=
-> the superblock (blkid, progs) and decouple the format from current=0A=
-> hardware capabilities. If the zones are going to be large in the future=
-=0A=
-> we might consider allowing further flexibility, or fix the current zone=
-=0A=
-> maximum to 1G and in the future add a separate incompat bit that would=0A=
-> extend the maximum to say 10G.=0A=
-> =0A=
-=0A=
-We don't need to do that. All we need to do for finding the valid superbloc=
-k=0A=
-is a report zones call, get the write pointer and then read from =0A=
-write-pointer - sizeof(struct brtfs_super_block). There is no need for scan=
-ning=0A=
-a whole zone. The last thing that was written will be right before the writ=
-e=0A=
-pointer.=0A=
+
+
+On 13.11.20 г. 18:22 ч., Josef Bacik wrote:
+> While testing the error paths of relocation I hit the following lockdep
+> splat
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.10.0-rc2-btrfs-next-71 #1 Not tainted
+> ------------------------------------------------------
+> find/324157 is trying to acquire lock:
+> ffff8ebc48d293a0 (btrfs-tree-01#2/3){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+> 
+> but task is already holding lock:
+> ffff8eb9932c5088 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+> 
+> which lock already depends on the new lock.
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #1 (btrfs-tree-00){++++}-{3:3}:
+>        lock_acquire+0xd8/0x490
+>        down_write_nested+0x44/0x120
+>        __btrfs_tree_lock+0x27/0x120 [btrfs]
+>        btrfs_search_slot+0x2a3/0xc50 [btrfs]
+>        btrfs_insert_empty_items+0x58/0xa0 [btrfs]
+>        insert_with_overflow+0x44/0x110 [btrfs]
+>        btrfs_insert_xattr_item+0xb8/0x1d0 [btrfs]
+>        btrfs_setxattr+0xd6/0x4c0 [btrfs]
+>        btrfs_setxattr_trans+0x68/0x100 [btrfs]
+>        __vfs_setxattr+0x66/0x80
+>        __vfs_setxattr_noperm+0x70/0x200
+>        vfs_setxattr+0x6b/0x120
+>        setxattr+0x125/0x240
+>        path_setxattr+0xba/0xd0
+>        __x64_sys_setxattr+0x27/0x30
+>        do_syscall_64+0x33/0x80
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> -> #0 (btrfs-tree-01#2/3){++++}-{3:3}:
+>        check_prev_add+0x91/0xc60
+>        __lock_acquire+0x1689/0x3130
+>        lock_acquire+0xd8/0x490
+>        down_read_nested+0x45/0x220
+>        __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+>        btrfs_next_old_leaf+0x27d/0x580 [btrfs]
+>        btrfs_real_readdir+0x1e3/0x4b0 [btrfs]
+>        iterate_dir+0x170/0x1c0
+>        __x64_sys_getdents64+0x83/0x140
+>        do_syscall_64+0x33/0x80
+>        entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> other info that might help us debug this:
+> 
+>  Possible unsafe locking scenario:
+> 
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(btrfs-tree-00);
+>                                lock(btrfs-tree-01#2/3);
+>                                lock(btrfs-tree-00);
+>   lock(btrfs-tree-01#2/3);
+> 
+>  *** DEADLOCK ***
+> 
+> 5 locks held by find/324157:
+>  #0: ffff8ebc502c6e00 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x4d/0x60
+>  #1: ffff8eb97f689980 (&type->i_mutex_dir_key#10){++++}-{3:3}, at: iterate_dir+0x52/0x1c0
+>  #2: ffff8ebaec00ca58 (btrfs-tree-02#2){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+>  #3: ffff8eb98f986f78 (btrfs-tree-01#2){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+>  #4: ffff8eb9932c5088 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+> 
+> stack backtrace:
+> CPU: 2 PID: 324157 Comm: find Not tainted 5.10.0-rc2-btrfs-next-71 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>  dump_stack+0x8d/0xb5
+>  check_noncircular+0xff/0x110
+>  ? mark_lock.part.0+0x468/0xe90
+>  check_prev_add+0x91/0xc60
+>  __lock_acquire+0x1689/0x3130
+>  ? kvm_clock_read+0x14/0x30
+>  ? kvm_sched_clock_read+0x5/0x10
+>  lock_acquire+0xd8/0x490
+>  ? __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+>  down_read_nested+0x45/0x220
+>  ? __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+>  __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
+>  btrfs_next_old_leaf+0x27d/0x580 [btrfs]
+>  btrfs_real_readdir+0x1e3/0x4b0 [btrfs]
+>  iterate_dir+0x170/0x1c0
+>  __x64_sys_getdents64+0x83/0x140
+>  ? filldir+0x1d0/0x1d0
+>  do_syscall_64+0x33/0x80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> This is thankfully straightforward to fix, simply release the path
+> before we setup the reloc_ctl.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+So you are changing btrfs_recover_balance yet nowhere in the stack
+traces provided does this functino persist, instead the problem seems to
+be due to the way btrfs_real_readdir does its locking. I'm confused.
+
+> ---
+>  fs/btrfs/volumes.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index bb1aa96e1233..ece8bb62fcc1 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -4283,6 +4283,8 @@ int btrfs_recover_balance(struct btrfs_fs_info *fs_info)
+>  		btrfs_warn(fs_info,
+>  	"balance: cannot set exclusive op status, resume manually");
+>  
+> +	btrfs_release_path(path);
+> +
+>  	mutex_lock(&fs_info->balance_mutex);
+>  	BUG_ON(fs_info->balance_ctl);
+>  	spin_lock(&fs_info->balance_lock);
+> 
