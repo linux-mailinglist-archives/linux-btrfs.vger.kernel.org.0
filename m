@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839252C232E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 11:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E762C238B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 12:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732201AbgKXKoL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Nov 2020 05:44:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33764 "EHLO mx2.suse.de"
+        id S1732490AbgKXLCr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Nov 2020 06:02:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58202 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726775AbgKXKoJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:44:09 -0500
+        id S1732478AbgKXLCq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:02:46 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606214647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1606215765; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=AsSlktW9wRz220abwa0WtKCgaVKd6WK8aP5IkxPF0Lw=;
-        b=AUngGFwloISQh1OxftdKGfC3+dYScP2P/77eV8K3XMfEKkpRAHdxhchAhinhBLZabHleoK
-        Bj/Xr0+yHEAo1DlxdprejJu90WK8BnrC725vcj3dat+vUykr5I7jJkAUYoOJ6OLDwU+d0m
-        rYcP5w1eAr00ZKK/vBRqz50k95HSiGw=
+        bh=0/gFYj4MTbJTv8twBLNWD4lzVaecMwrGy/w7J7NU0Rg=;
+        b=XsTaoCf4vsV1EaaIA0S9bDBQq2ouLCyNirMT/fMS90vDBL1kEGQvkcxliM/Hfj+mF9iUIV
+        /TQePqTQWzFY/ZhG3Ff6eR/Phn995BEZHU4OmiXEraiKBp68NafKeOeQYtKtxo/Tsk30Ng
+        nJO5twQLoWz4cJlf7oJv1yI8J1KveVc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0632AC2E;
-        Tue, 24 Nov 2020 10:44:07 +0000 (UTC)
-Subject: Re: [PATCH v2 02/42] btrfs: fix lockdep splat in
- btrfs_recover_relocation
+        by mx2.suse.de (Postfix) with ESMTP id 0E688AC2D;
+        Tue, 24 Nov 2020 11:02:45 +0000 (UTC)
+Subject: Re: [PATCH v2 05/42] btrfs: return an error from
+ btrfs_record_root_in_trans
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1605284383.git.josef@toxicpanda.com>
- <44c756daa28122f0f51f52d154c1232a09e66872.1605284383.git.josef@toxicpanda.com>
+ <5ef2aa527f3a9e0525ab5a97ef0d585b999bb47c.1605284383.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <46a41950-6bf0-3b89-ca7c-121c14f95825@suse.com>
-Date:   Tue, 24 Nov 2020 12:44:06 +0200
+Message-ID: <af0a6a7f-e845-a5b7-9d80-7137caaeb87f@suse.com>
+Date:   Tue, 24 Nov 2020 13:02:44 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <44c756daa28122f0f51f52d154c1232a09e66872.1605284383.git.josef@toxicpanda.com>
+In-Reply-To: <5ef2aa527f3a9e0525ab5a97ef0d585b999bb47c.1605284383.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,123 +89,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.11.20 г. 18:22 ч., Josef Bacik wrote:
-> While testing the error paths of relocation I hit the following lockdep
-> splat
-> 
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.10.0-rc2-btrfs-next-71 #1 Not tainted
-> ------------------------------------------------------
-> find/324157 is trying to acquire lock:
-> ffff8ebc48d293a0 (btrfs-tree-01#2/3){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
-> 
-> but task is already holding lock:
-> ffff8eb9932c5088 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
-> 
-> which lock already depends on the new lock.
-> 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #1 (btrfs-tree-00){++++}-{3:3}:
->        lock_acquire+0xd8/0x490
->        down_write_nested+0x44/0x120
->        __btrfs_tree_lock+0x27/0x120 [btrfs]
->        btrfs_search_slot+0x2a3/0xc50 [btrfs]
->        btrfs_insert_empty_items+0x58/0xa0 [btrfs]
->        insert_with_overflow+0x44/0x110 [btrfs]
->        btrfs_insert_xattr_item+0xb8/0x1d0 [btrfs]
->        btrfs_setxattr+0xd6/0x4c0 [btrfs]
->        btrfs_setxattr_trans+0x68/0x100 [btrfs]
->        __vfs_setxattr+0x66/0x80
->        __vfs_setxattr_noperm+0x70/0x200
->        vfs_setxattr+0x6b/0x120
->        setxattr+0x125/0x240
->        path_setxattr+0xba/0xd0
->        __x64_sys_setxattr+0x27/0x30
->        do_syscall_64+0x33/0x80
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> -> #0 (btrfs-tree-01#2/3){++++}-{3:3}:
->        check_prev_add+0x91/0xc60
->        __lock_acquire+0x1689/0x3130
->        lock_acquire+0xd8/0x490
->        down_read_nested+0x45/0x220
->        __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
->        btrfs_next_old_leaf+0x27d/0x580 [btrfs]
->        btrfs_real_readdir+0x1e3/0x4b0 [btrfs]
->        iterate_dir+0x170/0x1c0
->        __x64_sys_getdents64+0x83/0x140
->        do_syscall_64+0x33/0x80
->        entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> other info that might help us debug this:
-> 
->  Possible unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(btrfs-tree-00);
->                                lock(btrfs-tree-01#2/3);
->                                lock(btrfs-tree-00);
->   lock(btrfs-tree-01#2/3);
-> 
->  *** DEADLOCK ***
-> 
-> 5 locks held by find/324157:
->  #0: ffff8ebc502c6e00 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x4d/0x60
->  #1: ffff8eb97f689980 (&type->i_mutex_dir_key#10){++++}-{3:3}, at: iterate_dir+0x52/0x1c0
->  #2: ffff8ebaec00ca58 (btrfs-tree-02#2){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
->  #3: ffff8eb98f986f78 (btrfs-tree-01#2){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
->  #4: ffff8eb9932c5088 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
-> 
-> stack backtrace:
-> CPU: 2 PID: 324157 Comm: find Not tainted 5.10.0-rc2-btrfs-next-71 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-> Call Trace:
->  dump_stack+0x8d/0xb5
->  check_noncircular+0xff/0x110
->  ? mark_lock.part.0+0x468/0xe90
->  check_prev_add+0x91/0xc60
->  __lock_acquire+0x1689/0x3130
->  ? kvm_clock_read+0x14/0x30
->  ? kvm_sched_clock_read+0x5/0x10
->  lock_acquire+0xd8/0x490
->  ? __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
->  down_read_nested+0x45/0x220
->  ? __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
->  __btrfs_tree_read_lock+0x32/0x1a0 [btrfs]
->  btrfs_next_old_leaf+0x27d/0x580 [btrfs]
->  btrfs_real_readdir+0x1e3/0x4b0 [btrfs]
->  iterate_dir+0x170/0x1c0
->  __x64_sys_getdents64+0x83/0x140
->  ? filldir+0x1d0/0x1d0
->  do_syscall_64+0x33/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> This is thankfully straightforward to fix, simply release the path
-> before we setup the reloc_ctl.
+> We can create a reloc root when we record the root in the trans, which
+> can fail for all sorts of different reasons.  Propagate this error up
+
+It seems it can only fail due to a single reason and that being -ENOMEM
+in __add_reloc_root (see below), because create_reloc_root BUGS on error.
+
+> the chain of callers.  Future patches will fix the callers of
+> btrfs_record_root_in_trans() to handle the error.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-So you are changing btrfs_recover_balance yet nowhere in the stack
-traces provided does this functino persist, instead the problem seems to
-be due to the way btrfs_real_readdir does its locking. I'm confused.
-
 > ---
->  fs/btrfs/volumes.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  fs/btrfs/transaction.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index bb1aa96e1233..ece8bb62fcc1 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -4283,6 +4283,8 @@ int btrfs_recover_balance(struct btrfs_fs_info *fs_info)
->  		btrfs_warn(fs_info,
->  	"balance: cannot set exclusive op status, resume manually");
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 0e4063651047..fab26241fb2e 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -403,6 +403,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
+>  			       int force)
+>  {
+>  	struct btrfs_fs_info *fs_info = root->fs_info;
+> +	int ret = 0;
 >  
-> +	btrfs_release_path(path);
-> +
->  	mutex_lock(&fs_info->balance_mutex);
->  	BUG_ON(fs_info->balance_ctl);
->  	spin_lock(&fs_info->balance_lock);
-> 
+>  	if ((test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
+>  	    root->last_trans < trans->transid) || force) {
+> @@ -451,11 +452,11 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
+>  		 * lock.  smp_wmb() makes sure that all the writes above are
+>  		 * done before we pop in the zero below
+>  		 */
+> -		btrfs_init_reloc_root(trans, root);
+> +		ret = btrfs_init_reloc_root(trans, root);
+
+In order for this value to have any effect btrfs_init_reloc_root ought
+to also be changed because it either always returns 0 or BUG_ON() on
+-ENOMEM from __ad_reloc_root.
+
+<snip>
+
