@@ -2,156 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B672C1E13
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 07:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A49C2C1E7B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 07:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgKXGUv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Nov 2020 01:20:51 -0500
-Received: from mout.gmx.net ([212.227.17.20]:47769 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726757AbgKXGUu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:20:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606198840;
-        bh=+L90j/k8KrvEhIgAFBuRJNN8KqS8YEZ6Xdoqlm498xw=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Pngb3Ae5ajE2dwSOiq0109wfpIevE9jf/l8xf+WZj1eDdTDsDCXJRur5qPlNYU4/M
-         SFKDY5zvtVR+uCNwBl44ToaciDlMJkgz0q5cY1ajoH+uXmKfX54NrTZivad5UM7EBn
-         /TVC9vg5rM4/xrFCSe2FyY7PKU8kIxY8YoNXlHok=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1OXT-1kFZrf0lHH-012pti; Tue, 24
- Nov 2020 07:20:40 +0100
-Subject: Re: [PATCH v2 13/24] btrfs: handle sectorsize < PAGE_SIZE case for
- extent buffer accessors
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20201113125149.140836-1-wqu@suse.com>
- <20201113125149.140836-14-wqu@suse.com>
- <20201118194818.GD20563@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3c797106-c1ef-36f4-9dde-b11f588947f4@gmx.com>
-Date:   Tue, 24 Nov 2020 14:20:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729256AbgKXGs7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Nov 2020 01:48:59 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:54734 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725786AbgKXGs7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:48:59 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO6YUdL072498;
+        Tue, 24 Nov 2020 06:48:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=NgLwLhDoHtKt48FPe5ehFzKg373bxotg3X+/Q5tBLnY=;
+ b=AA/XK03JNFsgTtsMiRQvOaKtrJsxXO6sXXKdyJT2yoR/GOSFRvPQTq28cftJLLd0qi+N
+ pdKIcJZLHBWGJyc9EGAEa9qhSjnAx9ANqRBnVSqDJ0YkEWENJiPnkhmt8L4dq9eily4q
+ KR+XsvaMlkqG6UABSLx0Bk3rzElkLIY1+m2w/WasmpMVb7UHW67AHteoOj9hE1FphUgY
+ jZeojMHlNFL6MICF+AKAZEgnIG9JBpcN1IbRsdaq+JUC1CidwHAtYVgykkmbYbjoG7WA
+ drqZdb1mKVMldj9SDxqutHHQYRm3zxuwNGFH2nC3xq4dtDu1m6igiegb63STm9HK4kNt gQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34xtum0udw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 24 Nov 2020 06:48:43 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AO6Zp91109720;
+        Tue, 24 Nov 2020 06:46:43 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 34ycns2ae8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Nov 2020 06:46:42 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AO6kbur003203;
+        Tue, 24 Nov 2020 06:46:38 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 23 Nov 2020 22:46:37 -0800
+Subject: Re: [PATCH v10 11/41] btrfs: implement log-structured superblock for
+ ZONED mode
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <5aa30b45e2e29018e19e47181586f3f436759b69.1605007036.git.naohiro.aota@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <69855ff1-4737-3d4c-f191-f31f8307fe88@oracle.com>
+Date:   Tue, 24 Nov 2020 14:46:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201118194818.GD20563@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="VoQk814gcpT8SeOf3ySOtjevUF2kC7fNC"
-X-Provags-ID: V03:K1:fLK3MYtR8MVWSI/N/jCOIGdvQJUZEMUstAqDnZNSsDttyCrt72F
- dAz/UNEtq3Rqw90/NhvTUqyPgGTJZmeNAwfbLQSyOOAWxkcXcxRwIPgKM5EBTMgl9DApZ2b
- V5BNob4ZFxrwUjbOXuSoFg50ftdHDkQCy2uczFaARU/gZ/nWjrgYM9R2tKksWv2/i/TAfOm
- xWbUlDz4x4rHrFLk7jICQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9IX5yOQDmDM=:5uwLDRhRyRpuy9uUs/O8ve
- Md5UoJVBYl1MgGlS2LDMlk4Kt/thIJNVUB9F7Vkl8Wqs0iNQuXa1r4QwtuhTgP2/qpV+rKYPg
- hyzm856+PhwKrSLuHoxys9PvuhyxjjC9OSScYT0XovT59U0zwtEKNcu/nc+86F83omkzOKXUT
- 7jlPiATnESDTARZozUbzQsl1qcgsaW9h0tEa7dTIvxRfqd8jdxAmMMqxfGuGKNzPWZS+mUzSn
- 5jH8NJuZmiDuMr7exSf2ftm1GPkAa+XzmGdwsid2D60jh45PoJavOSAiG17uv+vFD10M5VU7s
- vsAoxScAf2g6oQdJTaYvatlS/UV7vkRtY7EbPmMSqZgHhuqf+m8nWDaDEyjDxNKlcjIyYtYxd
- ZZr0tR0/Wiguj+c+FcuiI7opObaGAvjMlh05UoAoArTByavCRsWrK91BF1zIZeYm9JJyyMYPr
- A7LY+nL3Jh9+OzGGUjJSBzuBTfsT19l9747bs+a7+OOCSTO4bZ2BEcm8nVswJQoqoPHPtgSce
- 4LM9s7xYifbpTkA0cvRXIRiVlB2op/yv2eopimFn5BW9cDnBZLkrLlWcDIrWIMbeIpCu/6u47
- PmY7E0b48zj21hz4BZU9TX/TKPTQVrCNAnx0mFpSIvJ3oFRXIzITmnxk4WbsD0fMGIi1EGecH
- zghbBkdWioRL9ZhISIGjcUmlaKU0Eyg7YqFEDjmazl2Pz9EXsvIrslLvLyzNPQdpQ3M6xcWCH
- GDdQdJL6dS5ga4GDq8x4ccBWLwYXlVSdnf6pnuWwMxTJS3q4EaUGPNRmiAwTlhOGvvn7ROEwv
- wC4QZ2CwaabcBhP23MlNXXRHoYbNQ/X1T99rqyM0/Q6MbZxwXX80Q78DRzBF7ZvBmR4R/eo5L
- 3N/B/oHjZ9x/7vWEaA4A==
+In-Reply-To: <5aa30b45e2e29018e19e47181586f3f436759b69.1605007036.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240038
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9814 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=999 impostorscore=0 spamscore=0 mlxscore=0
+ phishscore=0 clxscore=1015 suspectscore=0 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011240038
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---VoQk814gcpT8SeOf3ySOtjevUF2kC7fNC
-Content-Type: multipart/mixed; boundary="huZvlpUkxK1D3CFFEeOl9N5icKKgbE0HZ"
-
---huZvlpUkxK1D3CFFEeOl9N5icKKgbE0HZ
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2020/11/19 =E4=B8=8A=E5=8D=883:48, David Sterba wrote:
-> On Fri, Nov 13, 2020 at 08:51:38PM +0800, Qu Wenruo wrote:
->> --- a/fs/btrfs/ctree.c
->> +++ b/fs/btrfs/ctree.c
->> @@ -1686,10 +1686,11 @@ static noinline int generic_bin_search(struct =
-extent_buffer *eb,
->>  		oip =3D offset_in_page(offset);
->> =20
->>  		if (oip + key_size <=3D PAGE_SIZE) {
->> -			const unsigned long idx =3D offset >> PAGE_SHIFT;
->> +			const unsigned long idx =3D get_eb_page_index(offset);
->>  			char *kaddr =3D page_address(eb->pages[idx]);
->> =20
->> -			tmp =3D (struct btrfs_disk_key *)(kaddr + oip);
->> +			tmp =3D (struct btrfs_disk_key *)(kaddr +
->> +					get_eb_page_offset(eb, offset));
->=20
-> Here offset_in_page(offset) =3D=3D get_eb_page_offset(eb, offset) and d=
-oes
-> not need to be calculated again for both sector/page combinations. As
-> this is a hot path in search it sould be kept optimizied.
->=20
-Now you fall in to the pitfall.
-
-offset_in_page(offset) !=3D get_eb_page_offset(eb, offset) at all.
-
-get_eb_page_offset(eb, offset) will add eb->start into the
-offset_in_page() call.
-This is especially important for subpage.
-
-So here we still need to call get_eb_page_offset().
-
-Although I need to find a better name for it.
-
-THanks,
-Qu
+On 10/11/20 7:26 pm, Naohiro Aota wrote:
+> Superblock (and its copies) is the only data structure in btrfs which has a
+> fixed location on a device. Since we cannot overwrite in a sequential write
+> required zone, we cannot place superblock in the zone. One easy solution is
+> limiting superblock and copies to be placed only in conventional zones.
+> However, this method has two downsides: one is reduced number of superblock
+> copies. The location of the second copy of superblock is 256GB, which is in
+> a sequential write required zone on typical devices in the market today.
+> So, the number of superblock and copies is limited to be two.  Second
+> downside is that we cannot support devices which have no conventional zones
+> at all.
+> 
 
 
---huZvlpUkxK1D3CFFEeOl9N5icKKgbE0HZ--
+> To solve these two problems, we employ superblock log writing. It uses two
+> zones as a circular buffer to write updated superblocks. Once the first
+> zone is filled up, start writing into the second buffer. Then, when the
+> both zones are filled up and before start writing to the first zone again,
+> it reset the first zone.
+> 
+> We can determine the position of the latest superblock by reading write
+> pointer information from a device. One corner case is when the both zones
+> are full. For this situation, we read out the last superblock of each
+> zone, and compare them to determine which zone is older.
+> 
+> The following zones are reserved as the circular buffer on ZONED btrfs.
+> 
+> - The primary superblock: zones 0 and 1
+> - The first copy: zones 16 and 17
+> - The second copy: zones 1024 or zone at 256GB which is minimum, and next
+>    to it
 
---VoQk814gcpT8SeOf3ySOtjevUF2kC7fNC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Superblock log approach needs a non-deterministic and inconsistent
+number of blocks to be read to find copy #0. And, to use 4K bytes
+we are reserving a lot more space. But I don't know any better way.
+I am just checking with you...
 
------BEGIN PGP SIGNATURE-----
+At the time of mkfs, is it possible to format the block device to
+add conventional zones as needed to support our sb LBAs?
+  OR
+For superblock zones why not reset the write pointer before the
+transaction commit?
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl+8pjMACgkQwj2R86El
-/qjLMggAjm3SUwM1nTRR2erVMzQUP+7DZDrKXeb53ZT1P6Pt+GG81R5N0CQpLSwV
-OWRyuPaIHaIIOBszl0aSh4hSg2HBqaV12M3EJ43ijaZsfLaJGRU3wkMNRYPQeSGT
-rM6mJn0Q26DW8conpRaPz1leWNKXcE1xmlRF81LgGX3+16Gu006SVjdj5sSkrwER
-T6rjDvl608UBMp4J8SlML0mD99eOU42ld3lip/YagqUbZ2qWw7gcozWDNFvB2eS5
-lOIBX5v5+F05b+lqSn8/u1zzvUUEsJuf0BEH1WecN9YEm/Tb1hL6reUmsMvXRhBK
-jhLFEr2fiPEmpy6O9K3+T0XayVZngQ==
-=6kGC
------END PGP SIGNATURE-----
+Thanks.
 
---VoQk814gcpT8SeOf3ySOtjevUF2kC7fNC--
+
+> If these reserved zones are conventional, superblock is written fixed at
+> the start of the zone without logging.
+
+
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+
+
+
