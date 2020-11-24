@@ -2,34 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF0A2C25DF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 13:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 683C32C2692
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 13:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387546AbgKXMmx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Nov 2020 07:42:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47026 "EHLO mx2.suse.de"
+        id S2387744AbgKXMv7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Nov 2020 07:51:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56104 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733265AbgKXMmx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 07:42:53 -0500
+        id S2387589AbgKXMv7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Nov 2020 07:51:59 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606221771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1606222317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=kUQ2athApbtM4yhG1QJefO09pGIEqyJpdiNvw/ZJ5bQ=;
-        b=IPJAJK3YArA4jOvyFOqUDk2RV0hFsec16eM/1pn5YFOeK5C6oQM5mvAs6BRlPixiW+whh0
-        7aOJILBE7D5IbPEPyDcMAJlbYuNIEItM4a85LBITPSv8vC63BEk/GT87vqlAdoYmC0Bib9
-        6aivdUUHHk5kWPfdiHe46whoT9iI73E=
+        bh=Pj2yVqlNyYpc0WYfOe65VHNTF7sf9nMHGegLMzUTzYo=;
+        b=pHTqY3CyOHvOQhUTX4K6+W1Dq8N+WntxE7St8KgkIYcsGMvxd05O4+mN+NPP0P9skvJgFe
+        YzvyJZAW8kwilSPZXbo/4K8LdnIygdV6b55+Gw9Xk334TuuiG/k6rQN7bPJB2vpaQC7BXp
+        nzVvDYLCzaoDtO9eEP+Bo1EaBXbyuT0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6DF13AD1E;
-        Tue, 24 Nov 2020 12:42:51 +0000 (UTC)
-Subject: Re: [PATCH v2 14/42] btrfs: handle btrfs_record_root_in_trans failure
- in create_subvol
+        by mx2.suse.de (Postfix) with ESMTP id 90B05AF16;
+        Tue, 24 Nov 2020 12:51:57 +0000 (UTC)
+Subject: Re: [PATCH v2 20/42] btrfs: do not panic in __add_reloc_root
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1605284383.git.josef@toxicpanda.com>
- <dc7a7364fc721d327df03636cfe2dfc724f50e7b.1605284383.git.josef@toxicpanda.com>
+ <8b14e9986f6c889008debd7e0c60821168aaef46.1605284383.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +72,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <6771e745-82c4-5bb7-5f2b-5296f2a752e5@suse.com>
-Date:   Tue, 24 Nov 2020 14:42:45 +0200
+Message-ID: <ca15ef5c-5337-b7cb-a6e2-f8d66f24583b@suse.com>
+Date:   Tue, 24 Nov 2020 14:51:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <dc7a7364fc721d327df03636cfe2dfc724f50e7b.1605284383.git.josef@toxicpanda.com>
+In-Reply-To: <8b14e9986f6c889008debd7e0c60821168aaef46.1605284383.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,33 +88,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.11.20 г. 18:23 ч., Josef Bacik wrote:
-> btrfs_record_root_in_trans will return errors in the future, so handle
-> the error properly in create_subvol.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/ioctl.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index a5dc7cc5d705..da9026a487d2 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -702,7 +702,11 @@ static noinline int create_subvol(struct inode *dir,
->  	/* Freeing will be done in btrfs_put_root() of new_root */
->  	anon_dev = 0;
->  
-> -	btrfs_record_root_in_trans(trans, new_root);
-> +	ret = btrfs_record_root_in_trans(trans, new_root);
-> +	if (ret) {
-> +		btrfs_abort_transaction(trans, ret);
-> +		goto fail;
-> +	}
+> If we have a duplicate entry for a reloc root then we could have fs
+> corruption that resulted in a double allocation.  This shouldn't happen
+> generally so leave an ASSERT() for this case, but return an error
+> instead of panicing in the normal user case
 
-I think create_subvol is broken w.r.t handling of anon_bdev when an
-error occurs since it's not being freed in the "goto fail" case.
-
->  
->  	ret = btrfs_create_subvol_root(trans, new_root, root, new_dirid);
->  	btrfs_put_root(new_root);
-> 
+nit: panicing => panicking - codespell caught it :)
