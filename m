@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E030B2C26F1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 14:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C43542C2714
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Nov 2020 14:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387680AbgKXNPa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Nov 2020 08:15:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39618 "EHLO mx2.suse.de"
+        id S2388076AbgKXN0k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Nov 2020 08:26:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60196 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733262AbgKXNP2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:15:28 -0500
+        id S2388074AbgKXN0k (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Nov 2020 08:26:40 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606223727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1606224398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=hcVKRV6p24q5r7pbpbnO7P4WY/X2jTxkQfT4zgsress=;
-        b=Se0Sy0ivdimNS2UgfleftmVb3v+tEYeQhIuOPsLLxDAzuiR7gSrby0GpPGopIRhdtNE8vv
-        evkwLYF02cLDDmYLoeLH3GzHWlEwcyPFSi+luFrT2BvaIntJ8lX2IsfGWOFmB2UAOgJ6qU
-        j/w0vJPZvbqxyBcCGeWhaWUmNyPjSrs=
+        bh=Vr3CMM8SLJg1RhurkT1s/uOZUkiG0znvhSEG0tQMn7k=;
+        b=kYsV9lOL19Lnd3jGpmrjCnvFE52IO33A60jMiroM3v32VqObzDbzkLqEA2BXBWbHxEyYE/
+        EjsKhoZHjLOwkuk8qbpuVg1WF4EUPVqGixW0jF1YmbTSbCo1yfgRLlIG18N24VPKaPUUOZ
+        5fh9OlHlwVnY/C55usS9PXJHjadyoao=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 38B0AAC66;
-        Tue, 24 Nov 2020 13:15:27 +0000 (UTC)
-Subject: Re: [PATCH v2 33/42] btrfs: handle extent reference errors in
- do_relocation
+        by mx2.suse.de (Postfix) with ESMTP id B8035ADE1;
+        Tue, 24 Nov 2020 13:26:38 +0000 (UTC)
+Subject: Re: [PATCH v2 37/42] btrfs: handle __add_reloc_root failure in
+ btrfs_recover_relocation
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1605284383.git.josef@toxicpanda.com>
- <9c5ebe55c78553d1a07559f63d26a446d5642bc3.1605284383.git.josef@toxicpanda.com>
+ <330382a46504f48eda1aace141dbf5c53d81c28a.1605284383.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <39ce1550-9bb3-3ddb-cc27-00d9f193cc7b@suse.com>
-Date:   Tue, 24 Nov 2020 15:15:26 +0200
+Message-ID: <718465a6-8149-092f-71c3-334cbb805877@suse.com>
+Date:   Tue, 24 Nov 2020 15:26:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9c5ebe55c78553d1a07559f63d26a446d5642bc3.1605284383.git.josef@toxicpanda.com>
+In-Reply-To: <330382a46504f48eda1aace141dbf5c53d81c28a.1605284383.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,57 +89,35 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.11.20 г. 18:23 ч., Josef Bacik wrote:
-> We can already deal with errors appropriately from do_relocation, simply
-> handle any errors that come from changing the refs at this point
-> cleanly.  We have to abort the transaction if we fail here as we've
-> modified metadata at this point.
+> We can already handle errors appropriately from this function, deal with
+> an error coming from __add_reloc_root appropriately.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/relocation.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+>  fs/btrfs/relocation.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
 > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 74d52fc457c7..bc63c4bb4057 100644
+> index c4b6eef70072..e2994fb15f2d 100644
 > --- a/fs/btrfs/relocation.c
 > +++ b/fs/btrfs/relocation.c
-> @@ -2447,10 +2447,12 @@ static int do_relocation(struct btrfs_trans_handle *trans,
->  			btrfs_init_tree_ref(&ref, node->level,
->  					    btrfs_header_owner(upper->eb));
->  			ret = btrfs_inc_extent_ref(trans, &ref);
-> -			BUG_ON(ret);
-> -
-> -			ret = btrfs_drop_subtree(trans, root, eb, upper->eb);
-> -			BUG_ON(ret);
-> +			if (!ret)
-> +				btrfs_drop_subtree(trans, root, eb, upper->eb);
-> +			if (ret) {
-> +				btrfs_abort_transaction(trans, ret);
-> +				err = ret;
-> +			}
-
-nit: I'd prefer this: 
-
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index bc63c4bb4057..ce063c83d337 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2447,12 +2447,12 @@ static int do_relocation(struct btrfs_trans_handle *trans,
-                        btrfs_init_tree_ref(&ref, node->level,
-                                            btrfs_header_owner(upper->eb));
-                        ret = btrfs_inc_extent_ref(trans, &ref);
--                       if (!ret)
--                               btrfs_drop_subtree(trans, root, eb, upper->eb);
-                        if (ret) {
-                                btrfs_abort_transaction(trans, ret);
-                                err = ret;
-+                               goto next;
-                        }
-+                       btrfs_drop_subtree(trans, root, eb, upper->eb);
-
-One less conditional statement to worry about
-
+> @@ -3951,7 +3951,12 @@ int btrfs_recover_relocation(struct btrfs_root *root)
 >  		}
->  next:
->  		if (!upper->pending)
+>  
+>  		err = __add_reloc_root(reloc_root);
+> -		BUG_ON(err < 0); /* -ENOMEM or logic error */
+> +		if (err) {
+> +			list_add_tail(&reloc_root->root_list, &reloc_roots);
+> +			btrfs_put_root(fs_root);
+
+Do you need to do the the put_root, since
+free_reloc_roots->__del_reloc_root->if (!list_empty(&root->root_list))
+will set put_ref to true and put another reference?
+
+> +			btrfs_end_transaction(trans);
+> +			goto out_unset;
+> +		}
+>  		fs_root->reloc_root = btrfs_grab_root(reloc_root);
+>  		btrfs_put_root(fs_root);
+>  	}
 > 
