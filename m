@@ -2,47 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0512C3A03
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 08:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498812C3D3E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 11:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbgKYHUK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Nov 2020 02:20:10 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:58180 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbgKYHUK (ORCPT
+        id S1728889AbgKYKH5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Nov 2020 05:07:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728885AbgKYKHz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Nov 2020 02:20:10 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AP78dtC035974;
-        Wed, 25 Nov 2020 07:19:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=P11wfyw6N9I5O2TUURcfkhBRfDzRLjlWVpteChZnBqc=;
- b=lJ5FVu75iAH8IaqJy/9aoubXb/XpzMh8MaskZWTzO+Ou84u4bKDkyDLD1AjufjXJFh1C
- FYIOz5mDlu6QPAlxW75qDoQfRlmOXXsaQUngkXQQvuF9Gv/QM9MfzpggMkVobHallEha
- frSfUAXkLZPaG05gFtytUmIlYhdP4JuAB/VYTSeKDwuJQDjYRjv+ZTWl4cQHv9yhja5r
- YsIKRXKZLxa0AvrMc0HtJFT+g17pYZjvzCYT4J79pqi0iXYhHLuxZ0Bb28yIAe4M/XyT
- ipHjJf88cP55aWBh6XoZt7SzMbakU60xw0+JXybAu3V+dU6XQksRsHM+OyIpChhkVIbM Xw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3514q8k4rf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 25 Nov 2020 07:19:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AP7Fhk5004041;
-        Wed, 25 Nov 2020 07:17:56 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34yx8ktt43-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Nov 2020 07:17:56 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AP7HqeN024591;
-        Wed, 25 Nov 2020 07:17:53 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 24 Nov 2020 23:17:52 -0800
+        Wed, 25 Nov 2020 05:07:55 -0500
+X-Greylist: delayed 482 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Nov 2020 02:07:55 PST
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F7EC0613D4
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Nov 2020 02:07:55 -0800 (PST)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id E51F19C382; Wed, 25 Nov 2020 09:59:49 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1606298389;
+        bh=aAoXnxVR6HKYbDzJbx7GfbomSn0afY3yfgCKsARRCgI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=HKVd11q0/NO7DfMCJrXnFZP9i6l0SSe5Owac/1RsFIUdaZoLp4n9wa9JmevzsLjZl
+         PtC0muRT/cN/lb6cwAUex0TfjAsHytkXmTcxh4n99hXwI5+QIsQ9CVsVoeAyvqnJif
+         spSap9eBoSgy/4i4uOyvy5Bab+gzJanAZJjnqdd95CEnlKIR2ZX9ntmoqvsNbGOV2x
+         he5M0FUhuIrrJP9r8WoDueuo8SbjNAl3TgDK3frzc5CeK8rK8MGJ3OPBUtjnTRHSm0
+         xb+/udRcduE9w/sREqKFXBdakAQ/R+QDQI6H+NjEGOTk4G/9pXpzrbZXoSmoH/jttc
+         mhwPRm8V0VTFA==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-3.0 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 5FB899B9FE;
+        Wed, 25 Nov 2020 09:59:41 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1606298381;
+        bh=aAoXnxVR6HKYbDzJbx7GfbomSn0afY3yfgCKsARRCgI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hfYceWdYKjX2R0k0mk1lMT6uy8dfmuaUdm/4SuQu/h57nW+q5WCXh0er9PjlTYkzc
+         poeowSmTlznt4JiyP/7SvzcRcD6gGzo/62XL4x69oaVB39k9dUOXFSMJTzGl+pq/64
+         LqzCitKwkErJ7OefpWLpSv0Oi2BJ/fNg0blcq8UEMLnwb3GC5K+dw4ogF4dgdvF5SV
+         BhpSJXTnmeDjJnj0OpjKZq5Yn8XRqUAYkGrM1vXM5gVLrbNjld147RqkEzzjAdcPjF
+         hj4Da9/p2jcd9U5xSK4xAn2FCpcs/Q35+t+efcQM92JvlBFzEA0lGHmN/KUatfYa2b
+         g/YjCx8jy4JHw==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 09FC21A1E24;
+        Wed, 25 Nov 2020 09:59:41 +0000 (GMT)
 Subject: Re: [PATCH v10 12/41] btrfs: implement zoned chunk allocator
-To:     Naohiro Aota <naohiro.aota@wdc.com>
+To:     Naohiro Aota <naohiro.aota@wdc.com>,
+        Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
         linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
@@ -51,34 +61,60 @@ References: <cover.1605007036.git.naohiro.aota@wdc.com>
  <e7896fe18651e3ad12a96ff3ec3255e3127c8239.1605007036.git.naohiro.aota@wdc.com>
  <9cec3af1-4f2c-c94c-1506-07db2c66cc90@oracle.com>
  <20201125015740.conrettvmrgwebus@naota.dhcp.fujisawa.hgst.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <c4e78093-0518-49b2-5728-79d68dc87dc5@oracle.com>
-Date:   Wed, 25 Nov 2020 15:17:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <a97ef4b3-4973-1078-8537-5e814a24ef32@cobb.uk.net>
+Date:   Wed, 25 Nov 2020 09:59:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
 In-Reply-To: <20201125015740.conrettvmrgwebus@naota.dhcp.fujisawa.hgst.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9815 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011250041
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9815 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011250041
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 25/11/20 9:57 am, Naohiro Aota wrote:
+On 25/11/2020 01:57, Naohiro Aota wrote:
 > On Tue, Nov 24, 2020 at 07:36:18PM +0800, Anand Jain wrote:
 >> On 10/11/20 7:26 pm, Naohiro Aota wrote:
 >>> This commit implements a zoned chunk/dev_extent allocator. The zoned
@@ -103,6 +139,5 @@ On 25/11/20 9:57 am, Naohiro Aota wrote:
 > Dump/restore on another device with a different zone_size should be banned,
 > because we cannot ensure device extents are aligned to zone boundaries.
 
-Fair enough. Do we have any checks to fail such mount? Sorry if I have 
-missed it somewhere in the patch?
-Thanks.
+Does this mean 'btrfs replace' is banned as well? Or is it allowed to a
+similar-enough device? What about 'add' followed by 'remove'?
