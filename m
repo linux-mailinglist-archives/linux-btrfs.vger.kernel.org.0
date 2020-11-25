@@ -2,42 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7EE2C42DA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 16:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E514C2C47A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 19:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbgKYP2z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Nov 2020 10:28:55 -0500
-Received: from so254-5.mailgun.net ([198.61.254.5]:36166 "EHLO
-        so254-5.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgKYP2z (ORCPT
+        id S1733087AbgKYS3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Nov 2020 13:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733067AbgKYS3h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:28:55 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=monoid.al; q=dns/txt; s=mx;
- t=1606318134; h=Content-Type: To: Subject: Message-ID: Date: From:
- MIME-Version: Sender; bh=bidKTcwxxVUdpCm+ipVZBPrky+CkVsJnZS0n6fvT2aU=;
- b=ICbWJ1yKybLZQxK/otqmsp/LxaseZ8psU/2BB2x0/GgUImTdYBlc0nfABlub5ZCAT+EKDP3U
- Jr5RAxM6IkLJ3Dqep5g/WQqlxNTVTUHNzUyhDMR9ppa/fRlUnfxR7PVxqZ+uA9guJNbjv7el
- 0vksMwZ9vg/74y5uTDUUpmlYWw8=
-X-Mailgun-Sending-Ip: 198.61.254.5
-X-Mailgun-Sid: WyJiMGVhZCIsICJsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmciLCAiNmViNjQ4Il0=
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com
- [209.85.210.181]) by smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fbe78290c9500dc7bf183b3 (version=TLS1.3, cipher=TLS_AES_128_GCM_SHA256);
- Wed, 25 Nov 2020 15:28:41 GMT
-Sender: joe@monoid.al
-Received: by mail-pf1-f181.google.com with SMTP id w202so2628626pff.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Nov 2020 07:28:41 -0800 (PST)
-X-Gm-Message-State: AOAM532VPurIAV4Iu7nQAK1Btt1Yl29fvRSmieGAnIOCECE5dF0qbUuB
-        gqjXvxCVABu02gzGbjZ27vWO4AEh/BFDfCAaZLs=
-X-Google-Smtp-Source: ABdhPJyDUYpik3L3APKYMyRBkDyNcfKFsq0EQp7UhNcLCDQNRjeffkPXGwO4mSZsJ2VohN+IycHoROrdy9NJSttf6vw=
-X-Received: by 2002:a17:90a:d184:: with SMTP id fu4mr4901279pjb.173.1606318120604;
- Wed, 25 Nov 2020 07:28:40 -0800 (PST)
+        Wed, 25 Nov 2020 13:29:37 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD0C0613D4
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Nov 2020 10:29:37 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id d9so5583086qke.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Nov 2020 10:29:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=XQbMpz10IvJvxX8q48xLMAPVXGEULg1pg+5Va54HQVA=;
+        b=bevp69Md/Wxj7c/vccLwVAy2mv+iZa6EwDTWLWHHBcSt6MQBFl/tuYGURJHt4y1mBZ
+         AxKrH6TYFwOJgbkbWCRKMptLcNGjnviSW1TNM3pylOTbfkw2GvqXHsuYHlFkQDbiwmJc
+         slbC16i2T3wj9UcsF8EwGjBsSUqntQerOCad1FvAqTG0qygmqDYRbD1ZiK5w0lMHkFrh
+         NTNjMREPoipjY/TOWY+02Vv1MUMN53PAAzKdntrUIPYJUNJ2aV8bAGTAZxiwfIX81Pxc
+         T2TDoZPARGPiaKe8Tr8f8yQ5J9Hka8vh4FAJz/z0QRUxPOF5BAhMEPSDIVUmSyPXxbX/
+         oZ8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=XQbMpz10IvJvxX8q48xLMAPVXGEULg1pg+5Va54HQVA=;
+        b=YTP3PHGELfeydcNmLZIogeBIjyfNzEkQaSbX5BwXySiPfTh1I0MZyoOJ4T5reCe5ef
+         P80A766+lH1vP5VUrWyZ0hxBgnX2jSdbavDfYwKGW9RvPo4+OzJTSgzjiyHREFAA71x7
+         Y3NOLbFsPbQCu1x+8cr9NeVWTsPUajPzVu9AwcLQHSJQ/DQQa+uEA7ztu8nsNAJm1aQ3
+         Ql831OunbVqVIu2YJr64y76yJBQLr9RxkSWVGnd/mSQtuNxNcmwaJWKtVIBAKzM6ND2J
+         iFlLrc/gcSX+WCKLyxAnMJsXXa07kBQjTWvdc647Q9Y0AxTPiLo+G/Y50bzyXkujq0P8
+         Qf9g==
+X-Gm-Message-State: AOAM5319IEQCGMvpyIMNdzG+NcKKd/PsroiGhJ7AwVoSjTDOkeLbxyAc
+        m15snDGf1uFRGgDbn1g11EcmqlEAuBH9uIh9vBHaekqopw0=
+X-Google-Smtp-Source: ABdhPJx5CcjvtaeLY+tNM49bWnxx025aZRmaUGSRi/Z5oF88M7TBhOX76tS/tivEWK1oz0eoOv1MNDreHlaaUU8zUkI=
+X-Received: by 2002:a37:4f57:: with SMTP id d84mr140213qkb.353.1606328976005;
+ Wed, 25 Nov 2020 10:29:36 -0800 (PST)
 MIME-Version: 1.0
-From:   Joe Hermaszewski <joe@monoid.al>
-Date:   Wed, 25 Nov 2020 23:28:29 +0800
-X-Gmail-Original-Message-ID: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
-Message-ID: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
-Subject: btrfs crash on armv7
+References: <CAMXR++LUTud23_kgWn7WUqHAUSf+f=PjEy=ufGvoTeDJGnd4Kg@mail.gmail.com>
+In-Reply-To: <CAMXR++LUTud23_kgWn7WUqHAUSf+f=PjEy=ufGvoTeDJGnd4Kg@mail.gmail.com>
+From:   Leorize <alaviss0@gmail.com>
+Date:   Wed, 25 Nov 2020 18:28:52 +0000
+Message-ID: <CAMXR++KUj2L7qpR7QZeiM2Txav_EqerKKNM3ti1mK0q2-0n_-g@mail.gmail.com>
+Subject: Re: Requesting help recovering broken Btrfs file system
 To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -46,179 +58,119 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi,
 
-I have a arm32 machine with four drives with a btrfs fs spanning then in RAID1.
-The filesystem has started behaving badly recently and I'm writing to:
+So I ended up trying btrfs check --repair --init-extent-tree. It
+didn't cause any further troubles, but it also didn't enable further
+progress in retrieving data from my home folder.
 
-- Solicit advice on how best to get the system back to a stable state
-- Report a potential bug
+I have decided to wipe the file system and start fresh. Thanks to
+everyone who tried to help, your efforts were appreciated.
 
-## What happened:
+Regards,
+Leorize
 
-A couple of days ago I could no longer ssh into it, and on the serial
-connection there were heaps of messages (and new ones appearing with great
-frequency) along the lines of: `parent transid verify failed on blah... wanted
-x got y`.
-
-Although I don't have a record of the precise messages I do remember that there
-was a difference of `15` between x and y.
-
-I power-cycled system and started a scrub after it rebooted, this was
-interrupted quite promptly by several more errors in btrfs, and the disk
-remounted RO.
-
-Every now and then in the kernel log I get messages like:
-
-`parent transid verify failed on blah... wanted x got y`
-
-## Important info
-
-The dev stats are all zero.
-
-Here are the outputs of some btrfs commands, dmesg and the kernel log from the
-previous two boots: https://gist.github.com/b1beab134403c5047e2efbceb98985f9
-
-The "cut here" portion of the kernel log is as follows
-
-```
-[  409.158097] ------------[ cut here ]------------
-[  409.158205] WARNING: CPU: 1 PID: 217 at fs/btrfs/disk-io.c:531
-btree_csum_one_bio+0x208/0x248 [btrfs]
-[  409.158208] Modules linked in: cfg80211 rfkill 8021q ip6table_nat
-iptable_nat nf_nat xt_conntrack nf_conntrack nf_defrag_ipv6
-nf_defrag_ipv4 ip6t_rpfilter ipt_rpfilter ip6table_raw iptable_raw
-xt_pkttype nf_log_ipv6 nf_log_ipv4 nf_log_common xt_LOG xt_tcpudp
-ftdi_sio usbserial phy_generic uio_pdrv_genirq uio ip6table_filter
-ip6_tables iptable_filter sch_fq_codel loop tun tap macvlan bridge stp
-llc lm75 ip_tables x_tables autofs4 dm_mod dax btrfs libcrc32c xor
-raid6_pq
-[  409.158258] CPU: 1 PID: 217 Comm: btrfs-transacti Not tainted 5.4.77 #1-NixOS
-[  409.158260] Hardware name: Marvell Armada 380/385 (Device Tree)
-[  409.158261] Backtrace:
-[  409.158272] [<c010f698>] (dump_backtrace) from [<c010f938>]
-(show_stack+0x20/0x24)
-[  409.158277]  r7:00000213 r6:600f0013 r5:00000000 r4:c0f8c044
-[  409.158283] [<c010f918>] (show_stack) from [<c0a1b388>]
-(dump_stack+0x98/0xac)
-[  409.158288] [<c0a1b2f0>] (dump_stack) from [<c012a998>] (__warn+0xe0/0x108)
-[  409.158292]  r7:00000213 r6:bf058ec8 r5:00000009 r4:bf120990
-[  409.158296] [<c012a8b8>] (__warn) from [<c012ad24>]
-(warn_slowpath_fmt+0x74/0xc4)
-[  409.158300]  r7:00000213 r6:bf120990 r5:00000000 r4:e2392000
-[  409.158358] [<c012acb4>] (warn_slowpath_fmt) from [<bf058ec8>]
-(btree_csum_one_bio+0x208/0x248 [btrfs])
-[  409.158363]  r9:e277abe0 r8:00000001 r7:e2392000 r6:ea3d17f0
-r5:00000000 r4:eefd2d3c
-[  409.158465] [<bf058cc0>] (btree_csum_one_bio [btrfs]) from
-[<bf059ef4>] (btree_submit_bio_hook+0xe8/0x100 [btrfs])
-[  409.158470]  r10:e32ce170 r9:ecc45fc0 r8:ecc45f70 r7:ec82b000
-r6:00000000 r5:ea3d17f0
-[  409.158472]  r4:bf059e0c
-[  409.158575] [<bf059e0c>] (btree_submit_bio_hook [btrfs]) from
-[<bf08b11c>] (submit_one_bio+0x44/0x5c [btrfs])
-[  409.158578]  r7:ef36c048 r6:e2393cac r5:00000000 r4:bf059e0c
-[  409.158683] [<bf08b0d8>] (submit_one_bio [btrfs]) from [<bf0965d4>]
-(btree_write_cache_pages+0x380/0x408 [btrfs])
-[  409.158686]  r5:00000000 r4:00000000
-[  409.158788] [<bf096254>] (btree_write_cache_pages [btrfs]) from
-[<bf059028>] (btree_writepages+0x7c/0x84 [btrfs])
-[  409.158793]  r10:00000001 r9:4fd00000 r8:c0280c94 r7:e2392000
-r6:e2393d80 r5:ecc45f70
-[  409.158794]  r4:e2393d80
-[  409.158850] [<bf058fac>] (btree_writepages [btrfs]) from
-[<c0284748>] (do_writepages+0x58/0xf4)
-[  409.158852]  r5:ecc45f70 r4:ecc45e68
-[  409.158860] [<c02846f0>] (do_writepages) from [<c0278c30>]
-(__filemap_fdatawrite_range+0xf8/0x130)
-[  409.158864]  r8:ecc45f70 r7:00001000 r6:4fd0bfff r5:e2392000 r4:ecc45e68
-[  409.158869] [<c0278b38>] (__filemap_fdatawrite_range) from
-[<c0278db8>] (filemap_fdatawrite_range+0x2c/0x34)
-[  409.158874]  r10:ecc45f70 r9:00001000 r8:4fd0bfff r7:e2393e4c
-r6:c73bc628 r5:00001000
-[  409.158875]  r4:4fd0bfff
-[  409.158929] [<c0278d8c>] (filemap_fdatawrite_range) from
-[<bf0604b4>] (btrfs_write_marked_extents+0x9c/0x1b0 [btrfs])
-[  409.158931]  r5:00000001 r4:00000000
-[  409.159033] [<bf060418>] (btrfs_write_marked_extents [btrfs]) from
-[<bf060660>] (btrfs_write_and_wait_transaction+0x54/0xa4 [btrfs])
-[  409.159038]  r10:e2392000 r9:ec82b010 r8:ec82b000 r7:c73bc628
-r6:ec82b000 r5:e2392000
-[  409.159040]  r4:c8b81ca8
-[  409.159141] [<bf06060c>] (btrfs_write_and_wait_transaction [btrfs])
-from [<bf062398>] (btrfs_commit_transaction+0x75c/0xc94 [btrfs])
-[  409.159145]  r8:ec82b418 r7:c73bc600 r6:ec82b000 r5:c8b81ca8 r4:00000000
-[  409.159248] [<bf061c3c>] (btrfs_commit_transaction [btrfs]) from
-[<bf05cd08>] (transaction_kthread+0x19c/0x1e0 [btrfs])
-[  409.159253]  r10:ec82b28c r9:00000000 r8:001aaafa r7:00000064
-r6:ec82b414 r5:00000bb8
-[  409.159254]  r4:ec82b000
-[  409.159309] [<bf05cb6c>] (transaction_kthread [btrfs]) from
-[<c014fabc>] (kthread+0x170/0x174)
-[  409.159313]  r10:eca87bfc r9:bf05cb6c r8:ed619000 r7:e2392000
-r6:00000000 r5:ed5ee700
-[  409.159315]  r4:ed5ee1c0
-[  409.159320] [<c014f94c>] (kthread) from [<c01010e8>]
-(ret_from_fork+0x14/0x2c)
-[  409.159322] Exception stack(0xe2393fb0 to 0xe2393ff8)
-[  409.159326] 3fa0:                                     00000000
-00000000 00000000 00000000
-[  409.159331] 3fc0: 00000000 00000000 00000000 00000000 00000000
-00000000 00000000 00000000
-[  409.159334] 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[  409.159338]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
-r6:00000000 r5:c014f94c
-[  409.159340]  r4:ed5ee700
-[  409.159342] ---[ end trace eea59ced12fa7859 ]---
-[  409.165084] BTRFS: error (device sda1) in
-btrfs_commit_transaction:2279: errno=-5 IO failure (Error while
-writing out transaction)
-[  409.176920] BTRFS info (device sda1): forced readonly
-[  409.176947] BTRFS warning (device sda1): Skipping commit of aborted
-transaction.
-[  409.176952] BTRFS: error (device sda1) in cleanup_transaction:1832:
-errno=-5 IO failure
-[  409.185049] BTRFS info (device sda1): delayed_refs has NO entry
-[  409.310199] BTRFS info (device sda1): scrub: not finished on devid
-3 with status: -125
-[  409.664880] BTRFS info (device sda1): scrub: not finished on devid
-4 with status: -125
-[  410.106791] BTRFS info (device sda1): scrub: not finished on devid
-1 with status: -125
-[  411.268585] BTRFS warning (device sda1): failed setting block group ro: -30
-[  411.268594] BTRFS info (device sda1): scrub: not finished on devid
-2 with status: -30
-[  411.268605] BTRFS info (device sda1): delayed_refs has NO entry
-```
-
-Information requested here
-(https://btrfs.wiki.kernel.org/index.php/Btrfs_mailing_list):
-
-```
- $ uname -a
-Linux thanos 5.4.77 #1-NixOS SMP Tue Nov 10 20:13:20 UTC 2020 armv7l GNU/Linux
-
- $ btrfs --version
-btrfs-progs v5.7
-
- $ sudo btrfs fi show
-Label: none  uuid: b8f4ad49-29c8-4d19-a886-cef9c487f124
-        Total devices 4 FS bytes used 10.26TiB
-        devid    1 size 3.64TiB used 2.40TiB path /dev/sda1
-        devid    2 size 3.64TiB used 2.40TiB path /dev/sdc1
-        devid    3 size 9.09TiB used 7.86TiB path /dev/sdd1
-        devid    4 size 9.09TiB used 7.86TiB path /dev/sdb1
-
-Label: none  uuid: d02a3067-0a23-4c1f-96ac-80dbc26622f2
-        Total devices 1 FS bytes used 116.35MiB
-        devid    1 size 399.82MiB used 224.00MiB path /dev/sda2
-
- $ sudo btrfs fi df /
-Data, RAID1: total=10.25TiB, used=10.24TiB
-System, RAID1: total=64.00MiB, used=1.45MiB
-Metadata, RAID1: total=18.00GiB, used=17.19GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-```
-
-Thanks to demfloro and multicore on #btrfs for prompting this email.
-
-Best wishes,
-Joe
+On Tue, Nov 24, 2020 at 3:55 PM Hieu Le <alaviss0@gmail.com> wrote:
+>
+> Hi,
+>
+> I recently broke my file system by writing to it while the system was
+> hibernated then resuming the
+> system afterwards.
+>
+> Here's what I get from running Btrfs scrub:
+>
+> scrub status for f12ae4d3-a69d-46d8-ae4c-da5a731ff10c
+> scrub started at Tue Nov 24 22:18:21 2020 and finished after 00:02:40
+> total bytes scrubbed: 410.73GiB with 1 errors
+> error details: verify=1
+> corrected errors: 0, uncorrectable errors: 1, unverified errors: 0
+>
+> I've tried btrfs restore but it could not access `home/leorize`. The
+> very important data are all backed up,
+> however I still have things that wasn't sync-ed in there and I would
+> like to retrieve them if possible.
+>
+> Here are some of the system info:
+>
+> # uname -a
+> Linux leorize-maintenance 5.4.8-lqx2 #4 ZEN SMP PREEMPT Thu Jan 9
+> 12:19:45 +07 2020 x86_64 AMD Ryzen 5 3600 6-Core Processor
+> AuthenticAMD GNU/Linux
+>
+> # btrfs --version
+> btrfs-progs v4.19
+>
+> # btrfs fi show
+> Label: none  uuid: f12ae4d3-a69d-46d8-ae4c-da5a731ff10c
+> Total devices 1 FS bytes used 410.73GiB
+> devid    1 size 825.75GiB used 414.05GiB path /dev/mapper/desktop
+>
+> # btrfs fi df /mnt
+> Data, single: total=406.01GiB, used=403.98GiB
+> System, single: total=36.00MiB, used=64.00KiB
+> Metadata, single: total=8.01GiB, used=6.75GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
+>
+> # dmesg (Only the Btrfs part is inlined, check dmesg.log for the full log)
+> [ 1221.809775] Btrfs loaded, crc32c=crc32c-intel
+> [ 1221.813973] BTRFS: device fsid f12ae4d3-a69d-46d8-ae4c-da5a731ff10c
+> devid 1 transid 524556 /dev/mapper/desktop
+> [ 1221.814287] BTRFS info (device dm-0): use zstd compression, level 2
+> [ 1221.814289] BTRFS info (device dm-0): disk space caching is enabled
+> [ 1221.814290] BTRFS info (device dm-0): has skinny extents
+> [ 1221.818056] BTRFS info (device dm-0): bdev /dev/mapper/desktop
+> errs: wr 0, rd 0, flush 0, corrupt 0, gen 3
+> [ 1221.917905] BTRFS info (device dm-0): enabling ssd optimizations
+> [ 1223.913639] BTRFS error (device dm-0): parent transid verify failed
+> on 20463681536 wanted 524480 found 524513
+> [ 3923.727904] BTRFS info (device dm-0): use zstd compression, level 2
+> [ 3923.727906] BTRFS info (device dm-0): disk space caching is enabled
+> [ 3923.727906] BTRFS info (device dm-0): has skinny extents
+> [ 3923.731209] BTRFS info (device dm-0): bdev /dev/mapper/desktop
+> errs: wr 0, rd 0, flush 0, corrupt 0, gen 3
+> [ 3923.819514] BTRFS info (device dm-0): enabling ssd optimizations
+> [ 3923.819868] BTRFS info (device dm-0): checking UUID tree
+> [ 3929.550008] BTRFS info (device dm-0): scrub: started on devid 1
+> [ 3936.604625] BTRFS warning (device dm-0): checksum/header error at
+> logical 20463681536 on dev /dev/mapper/desktop, physical 20463681536:
+> metadata node (level 1) in tree 293
+> [ 3936.604627] BTRFS warning (device dm-0): checksum/header error at
+> logical 20463681536 on dev /dev/mapper/desktop, physical 20463681536:
+> metadata node (level 1) in tree 293
+> [ 3936.604628] BTRFS error (device dm-0): bdev /dev/mapper/desktop
+> errs: wr 0, rd 0, flush 0, corrupt 0, gen 4
+> [ 3936.604629] BTRFS error (device dm-0): unable to fixup (regular)
+> error at logical 20463681536 on dev /dev/mapper/desktop
+> [ 4090.100349] BTRFS info (device dm-0): scrub: finished on devid 1
+> with status: 0
+>
+> # btrfs inspect-internal logical-resolve 20463681536 /mnt
+> ERROR: logical ino ioctl: No such file or directory
+>
+> # btrfs inspect-internal dump-tree -b 20463681536 /dev/mapper/desktop
+> btrfs-progs v4.19
+> node 20463681536 level 1 items 10 free 483 generation 524513 owner ROOT_TREE
+> fs uuid f12ae4d3-a69d-46d8-ae4c-da5a731ff10c
+> chunk uuid b1f85ce2-55a9-4c0e-868c-ee0d45b2b7d6
+> key (EXTENT_TREE ROOT_ITEM 0) block 20468891648 gen 524513
+> key (299 EXTENT_DATA 0) block 20473692160 gen 524513
+> key (368 EXTENT_DATA 0) block 20444069888 gen 524512
+> key (448 INODE_ITEM 0) block 20471840768 gen 524513
+> key (563 EXTENT_DATA 0) block 20446396416 gen 524512
+> key (670 INODE_ITEM 0) block 20446904320 gen 524512
+> key (743 INODE_ITEM 0) block 20447428608 gen 524512
+> key (879 EXTENT_DATA 0) block 20476018688 gen 524513
+> key (FREE_SPACE UNTYPED 71962722304) block 20478164992 gen 524513
+> key (FREE_SPACE UNTYPED 383381405696) block 20462698496 gen 524512
+>
+> I asked on IRC and was told that `btrfs check --repair
+> --init-extent-tree` might fix it, but was also
+> told to backup my drive and consult you folks before trying (I don't
+> have the storage to do a full block
+> backup so I'm kinda screwed there, but I'm willing to YOLO it at this
+> point since most of the important
+> stuff are off the drive already).
+>
+> Please CC me when posting replies since I'm not subscribed to the list.
+>
+> Thanks,
+> Leorize
