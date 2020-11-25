@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1812C3FCD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 13:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4522C3FCF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 13:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729114AbgKYMTh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Nov 2020 07:19:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44972 "EHLO mail.kernel.org"
+        id S1729135AbgKYMTk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Nov 2020 07:19:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgKYMTh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:19:37 -0500
+        id S1725616AbgKYMTi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Nov 2020 07:19:38 -0500
 Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4329C206F9
+        by mail.kernel.org (Postfix) with ESMTPSA id 24C5E206F7
         for <linux-btrfs@vger.kernel.org>; Wed, 25 Nov 2020 12:19:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606306776;
-        bh=9x+n3sq6dnlPWFSJOyBEQEIlVkJZTeP3Afd1Ru3ddu0=;
+        s=default; t=1606306777;
+        bh=kpxwKEe9KHT5yFVY1GSvXGky3bO4pZ3AMMlMfRq6wko=;
         h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=iu1l6RkvCcZkyfrnE2BDYfic8Hi6p37Ch918zcyoKcRnikm8VexK7dNNpLEzisys9
-         dQOYYZ+APZrewoD8Y4bmhmOqifmh9QPZG7kaIh0gnjpG/Gjbo8fT0hmeb6tMArkBIN
-         licidtMxGIE9KtF/kwVa0DRfVnooElq6VBUygsEI=
+        b=qJyb7ZHb+5HNsTzGnotmSbHiZhdaBIP6ki7YL3gJBwsEruP23zWiKCLmInF/f4G63
+         AH3w0gNBGUrPdu/488FiodLNg++2ESLUYfqSG18VNSjphdb4MmIaZIq0+QF3cQjmve
+         ieYrshZfBzv14kc8YQWSta5xK56616HqYHrW3zp4=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/6] btrfs: fix race leading to unnecessary transaction commit when logging inode
-Date:   Wed, 25 Nov 2020 12:19:27 +0000
-Message-Id: <854ce34eb81dff111952dd5937bc4afdaa41e25e.1606305501.git.fdmanana@suse.com>
+Subject: [PATCH 6/6] btrfs: do not block inode logging for so long during transaction commit
+Date:   Wed, 25 Nov 2020 12:19:28 +0000
+Message-Id: <d9df3c01bd2fbfeddfe205fa229ecea2d7478711.1606305501.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1606305501.git.fdmanana@suse.com>
 References: <cover.1606305501.git.fdmanana@suse.com>
@@ -40,81 +40,38 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When logging an inode we may often have to fallback to a full transaction
-commit, either because a new block group was allocated, there is some case
-we can not deal with wihout a transaction commit or some error like an
--ENOMEM happened. However after we fallback to a transaction commit, we
-have a time window where we can make the next attempt to log any inode
-commit the next transaction unnecessarily, adding additional overhead and
-increasing latency.
+Early on during a transaction commit we acquire the tree_log_mutex and
+hold it until after we write the super blocks. But before writing the
+extent buffers dirtied by the transaction and the super blocks we unblock
+the transaction by setting its state to TRANS_STATE_UNBLOCKED and setting
+fs_info->running_transaction to NULL.
 
-A sequence of steps that leads to this issue is the following:
+This means that after that and before writing the super blocks, new
+transactions can start. However if any transaction wants to log an inode,
+it will block waiting for the transaction commit to write its dirty
+extent buffers and the super blocks because the tree_log_mutex is only
+released after those operations are complete, and starting a new log
+transaction blocks on that mutex (at start_log_trans()).
 
-1) The current open transaction has a generation of 1000;
+Writing the dirty extent buffers and the super blocks can take a very
+significant amount of time to complete, but we could allow the tasks
+wanting to log an inode to proceed with most of their steps:
 
-2) A new block group is allocated, and as a consequence we must make sure
-   any attempts to commit a log fallback to a transaction commit, so
-   btrfs_set_log_full_commit() is called from btrfs_make_block_group().
-   This sets fs_info->last_trans_log_full_commit to 1000;
+1) create the log trees
+2) log metadata in the trees
+3) write their dirty extent buffers
 
-3) Task A is holding a handle on transaction 1000 and tries to log inode X.
-   Once it gets to start_log_trans(), it calls btrfs_need_log_full_commit()
-   which returns true, since fs_info->last_trans_log_full_commit has a
-   value of 1000. So we end up returning -EAGAIN and propagating it up to
-   btrfs_sync_file(), where we commit transaction 1000;
+They only need to wait for the previous transaction commit to complete
+(write its super blocks) before they attempt to write their super blocks,
+otherwise we could end up with a corrupt filesystem after a crash
 
-4) The transaction commit task (task A) sets the tansaction state to
-   unblocked (TRANS_STATE_UNBLOCKED);
-
-5) Some other task, task B, starts a new transaction with a generation of
-   1001;
-
-6) Some stuff is done with transaction 1001, some btree blocks COWed, etc;
-
-7) Transaction 1000 has not fully committed yet, we are still writing all
-   the extent buffers it created;
-
-8) Some new task, task C, starts an fsync of inode Y, gets a handle for
-   transaction 1001, and it gets to btrfs_log_inode_parent() which does
-   the following check:
-
-     if (fs_info->last_trans_log_full_commit > last_committed) {
-         ret = 1;
-         goto end_no_trans;
-     }
-
-   At that point last_trans_log_full_commit has a value of 1000 and
-   last_committed (value of fs_info->last_trans_committed) has a value of
-   999, since transaction 1000 has not yet committed - it is either still
-   writing out dirty extent buffers, its super blocks or unpinning
-   extents.
-
-   As a consequence we return 1, which gets propagated up to
-   btrfs_sync_file(), which will then call btrfs_commit_transaction()
-   for transaction 1001.
-
-   As a consequence we have an unnecessary second transaction commit, we
-   previously committed transaction 1000 and now commit transaction 1001
-   as well, resulting in more overhead and increased latency.
-
-So fix this double transaction commit issue simply by removing that check,
-because all we need to do is wait for the previous transaction to finish
-its commit, which we already do later when starting the log transaction at
-start_log_trans(), because there we acquire the tree_log_mutex lock, which
-is held by a transaction commit and only released after the transaction
-commits its super blocks.
-
-Another issue that check has is that it reads last_trans_log_full_commit
-without using READ_ONCE(), which is incorrect since that member of
-struct btrfs_fs_info is always updated with WRITE_ONCE() through the
-helper btrfs_set_log_full_commit().
-
-This double transaction commit issue can actually be triggered quite often
-in long runs of dbench, since besides the creation of new block groups
-that force inode logging to fallback to a transaction commit, there are
-cases where dbench asks to fsync a directory which had files in it that
-were previously renamed or subdirectories that were removed, resulting in
-the inode logging to fallback to a full transaction commit.
+So change start_log_trans() to use the root tree's log_mutex to serialize
+for the creation of the log root tree instead of using the tree_log_mutex,
+and make btrfs_sync_log() acquire the tree_log_mutex before writing the
+super blocks. This allows for inode logging to wait much less time when
+there is a previous transaction that is still committing, often not having
+to wait at all, as by the time when we try to sync the log the previous
+transaction already wrote its super blocks.
 
 This patch belongs to a patch set that is comprised of the following
 patches:
@@ -126,34 +83,199 @@ patches:
   btrfs: fix race leading to unnecessary transaction commit when logging inode
   btrfs: do not block inode logging for so long during transaction commit
 
-Performance results are mentioned in the change log of the last patch.
+The following script that uses dbench was used to measure the impact of
+the whole patchset:
+
+  $ cat test-dbench.sh
+  #!/bin/bash
+
+  DEV=/dev/nvme0n1
+  MNT=/mnt/btrfs
+  MOUNT_OPTIONS="-o ssd"
+
+  echo "performance" | \
+      tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+  mkfs.btrfs -f -m single -d single $DEV
+  mount $MOUNT_OPTIONS $DEV $MNT
+
+  dbench -D $MNT -t 300 64
+
+  umount $MNT
+
+The test was run on a machine with 12 cores, 64G of ram, using a NVMe
+device and a non-debug kernel configuration (Debian's default).
+
+Before patch set:
+
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    11277211    0.250    85.340
+ Close        8283172     0.002     6.479
+ Rename        477515     1.935    86.026
+ Unlink       2277936     0.770    87.071
+ Deltree          256    15.732    81.379
+ Mkdir            128     0.003     0.009
+ Qpathinfo    10221180    0.056    44.404
+ Qfileinfo    1789967     0.002     4.066
+ Qfsinfo      1874399     0.003     9.176
+ Sfileinfo     918589     0.061    10.247
+ Find         3951758     0.341    54.040
+ WriteX       5616547     0.047    85.079
+ ReadX        17676028    0.005     9.704
+ LockX          36704     0.003     1.800
+ UnlockX        36704     0.002     0.687
+ Flush         790541    14.115   676.236
+
+Throughput 1179.19 MB/sec  64 clients  64 procs  max_latency=676.240 ms
+
+After patch set:
+
+Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    12687926    0.171    86.526
+ Close        9320780     0.002     8.063
+ Rename        537253     1.444    78.576
+ Unlink       2561827     0.559    87.228
+ Deltree          374    11.499    73.549
+ Mkdir            187     0.003     0.005
+ Qpathinfo    11500300    0.061    36.801
+ Qfileinfo    2017118     0.002     7.189
+ Qfsinfo      2108641     0.003     4.825
+ Sfileinfo    1033574     0.008     8.065
+ Find         4446553     0.408    47.835
+ WriteX       6335667     0.045    84.388
+ ReadX        19887312    0.003     9.215
+ LockX          41312     0.003     1.394
+ UnlockX        41312     0.002     1.425
+ Flush         889233    13.014   623.259
+
+Throughput 1339.32 MB/sec  64 clients  64 procs  max_latency=623.265 ms
+
++12.7% throughput, -8.2% max latency
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ fs/btrfs/ctree.h    |  2 +-
+ fs/btrfs/tree-log.c | 56 +++++++++++++++++++++++++++++++--------------
+ 2 files changed, 40 insertions(+), 18 deletions(-)
 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index c0c6e79c43f9..7185384f475a 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1026,7 +1026,7 @@ enum {
+ 	BTRFS_ROOT_DEAD_RELOC_TREE,
+ 	/* Mark dead root stored on device whose cleanup needs to be resumed */
+ 	BTRFS_ROOT_DEAD_TREE,
+-	/* The root has a log tree. Used only for subvolume roots. */
++	/* The root has a log tree. Used for subvolume roots and the tree root. */
+ 	BTRFS_ROOT_HAS_LOG_TREE,
+ 	/* Qgroup flushing is in progress */
+ 	BTRFS_ROOT_QGROUP_FLUSHING,
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 592a50d9697f..bc5b652f4f64 100644
+index bc5b652f4f64..e8b84543d565 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -6031,16 +6031,6 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
- 		goto end_no_trans;
+@@ -139,8 +139,25 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+ 			   struct btrfs_log_ctx *ctx)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_root *tree_root = fs_info->tree_root;
+ 	int ret = 0;
+ 
++	/*
++	 * First check if the log root tree was already created. If not, create
++	 * it before locking the root's log_mutex, just to keep lockdep happy.
++	 */
++	if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state)) {
++		mutex_lock(&tree_root->log_mutex);
++		if (!fs_info->log_root_tree) {
++			ret = btrfs_init_log_root_tree(trans, fs_info);
++			if (!ret)
++				set_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state);
++		}
++		mutex_unlock(&tree_root->log_mutex);
++		if (ret)
++			return ret;
++	}
++
+ 	mutex_lock(&root->log_mutex);
+ 
+ 	if (root->log_root) {
+@@ -156,13 +173,6 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+ 			set_bit(BTRFS_ROOT_MULTI_LOG_TASKS, &root->state);
+ 		}
+ 	} else {
+-		mutex_lock(&fs_info->tree_log_mutex);
+-		if (!fs_info->log_root_tree)
+-			ret = btrfs_init_log_root_tree(trans, fs_info);
+-		mutex_unlock(&fs_info->tree_log_mutex);
+-		if (ret)
+-			goto out;
+-
+ 		ret = btrfs_add_log_tree(trans, root);
+ 		if (ret)
+ 			goto out;
+@@ -3022,6 +3032,8 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	int log_transid = 0;
+ 	struct btrfs_log_ctx root_log_ctx;
+ 	struct blk_plug plug;
++	u64 log_root_start;
++	u64 log_root_level;
+ 
+ 	mutex_lock(&root->log_mutex);
+ 	log_transid = ctx->log_transid;
+@@ -3199,22 +3211,31 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 		goto out_wake_log_root;
  	}
  
--	/*
--	 * The prev transaction commit doesn't complete, we need do
--	 * full commit by ourselves.
--	 */
--	if (fs_info->last_trans_log_full_commit >
--	    fs_info->last_trans_committed) {
--		ret = 1;
--		goto end_no_trans;
--	}
+-	btrfs_set_super_log_root(fs_info->super_for_commit,
+-				 log_root_tree->node->start);
+-	btrfs_set_super_log_root_level(fs_info->super_for_commit,
+-				       btrfs_header_level(log_root_tree->node));
 -
- 	if (btrfs_root_refs(&root->root_item) == 0) {
- 		ret = 1;
- 		goto end_no_trans;
++	log_root_start = log_root_tree->node->start;
++	log_root_level = btrfs_header_level(log_root_tree->node);
+ 	log_root_tree->log_transid++;
+ 	mutex_unlock(&log_root_tree->log_mutex);
+ 
+ 	/*
+-	 * Nobody else is going to jump in and write the ctree
+-	 * super here because the log_commit atomic below is protecting
+-	 * us.  We must be called with a transaction handle pinning
+-	 * the running transaction open, so a full commit can't hop
+-	 * in and cause problems either.
++	 * Here we are guaranteed that nobody is going to write the superblock
++	 * for the current transaction before us and that neither we do write
++	 * our superblock before the previous transaction finishes its commit
++	 * and writes its superblock, because:
++	 *
++	 * 1) We are holding a handle on the current transaction, so no body
++	 *    can commit it until we release the handle;
++	 *
++	 * 2) Before writing our superblock we acquire the tree_log_mutex, so
++	 *    if the previous transaction is still committing, and hasn't yet
++	 *    written its superblock, we wait for it to do it, because a
++	 *    transaction commit acquires the tree_log_mutex when the commit
++	 *    begins and releases it only after writing its superblock.
+ 	 */
++	mutex_lock(&fs_info->tree_log_mutex);
++	btrfs_set_super_log_root(fs_info->super_for_commit, log_root_start);
++	btrfs_set_super_log_root_level(fs_info->super_for_commit, log_root_level);
+ 	ret = write_all_supers(fs_info, 1);
++	mutex_unlock(&fs_info->tree_log_mutex);
+ 	if (ret) {
+ 		btrfs_set_log_full_commit(trans);
+ 		btrfs_abort_transaction(trans, ret);
+@@ -3299,6 +3320,7 @@ int btrfs_free_log_root_tree(struct btrfs_trans_handle *trans,
+ 	if (fs_info->log_root_tree) {
+ 		free_log_tree(trans, fs_info->log_root_tree);
+ 		fs_info->log_root_tree = NULL;
++		clear_bit(BTRFS_ROOT_HAS_LOG_TREE, &fs_info->tree_root->state);
+ 	}
+ 	return 0;
+ }
 -- 
 2.28.0
 
