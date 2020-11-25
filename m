@@ -2,125 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AB42C380E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 05:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0512C3A03
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 08:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbgKYEYv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 24 Nov 2020 23:24:51 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:35792 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbgKYEYv (ORCPT
+        id S1727180AbgKYHUK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Nov 2020 02:20:10 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:58180 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgKYHUK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Nov 2020 23:24:51 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 4A73C8C4829; Tue, 24 Nov 2020 23:24:50 -0500 (EST)
-Date:   Tue, 24 Nov 2020 23:24:49 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     "Ellis H. Wilson III" <ellisw@panasas.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Snapshots, Dirty Data, and Power Failure
-Message-ID: <20201125042449.GE31381@hungrycats.org>
-References: <b58c6024-1692-7e43-c0a5-182b1fae1cca@panasas.com>
+        Wed, 25 Nov 2020 02:20:10 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AP78dtC035974;
+        Wed, 25 Nov 2020 07:19:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=P11wfyw6N9I5O2TUURcfkhBRfDzRLjlWVpteChZnBqc=;
+ b=lJ5FVu75iAH8IaqJy/9aoubXb/XpzMh8MaskZWTzO+Ou84u4bKDkyDLD1AjufjXJFh1C
+ FYIOz5mDlu6QPAlxW75qDoQfRlmOXXsaQUngkXQQvuF9Gv/QM9MfzpggMkVobHallEha
+ frSfUAXkLZPaG05gFtytUmIlYhdP4JuAB/VYTSeKDwuJQDjYRjv+ZTWl4cQHv9yhja5r
+ YsIKRXKZLxa0AvrMc0HtJFT+g17pYZjvzCYT4J79pqi0iXYhHLuxZ0Bb28yIAe4M/XyT
+ ipHjJf88cP55aWBh6XoZt7SzMbakU60xw0+JXybAu3V+dU6XQksRsHM+OyIpChhkVIbM Xw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 3514q8k4rf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 25 Nov 2020 07:19:57 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AP7Fhk5004041;
+        Wed, 25 Nov 2020 07:17:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 34yx8ktt43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Nov 2020 07:17:56 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AP7HqeN024591;
+        Wed, 25 Nov 2020 07:17:53 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 24 Nov 2020 23:17:52 -0800
+Subject: Re: [PATCH v10 12/41] btrfs: implement zoned chunk allocator
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <e7896fe18651e3ad12a96ff3ec3255e3127c8239.1605007036.git.naohiro.aota@wdc.com>
+ <9cec3af1-4f2c-c94c-1506-07db2c66cc90@oracle.com>
+ <20201125015740.conrettvmrgwebus@naota.dhcp.fujisawa.hgst.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <c4e78093-0518-49b2-5728-79d68dc87dc5@oracle.com>
+Date:   Wed, 25 Nov 2020 15:17:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <b58c6024-1692-7e43-c0a5-182b1fae1cca@panasas.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201125015740.conrettvmrgwebus@naota.dhcp.fujisawa.hgst.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9815 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011250041
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9815 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011250041
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 11:03:15AM -0500, Ellis H. Wilson III wrote:
-> Hi all,
+
+
+On 25/11/20 9:57 am, Naohiro Aota wrote:
+> On Tue, Nov 24, 2020 at 07:36:18PM +0800, Anand Jain wrote:
+>> On 10/11/20 7:26 pm, Naohiro Aota wrote:
+>>> This commit implements a zoned chunk/dev_extent allocator. The zoned
+>>> allocator aligns the device extents to zone boundaries, so that a zone
+>>> reset affects only the device extent and does not change the state of
+>>> blocks in the neighbor device extents.
+>>>
+>>> Also, it checks that a region allocation is not overlapping any of the
+>>> super block zones, and ensures the region is empty.
+>>>
+>>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>
+>> Looks good.
+>>
+>> Chunks and stripes are aligned to the zone_size. I guess zone_size won't
+>> change after the block device has been formatted with it? For testing,
+>> what if the device image is dumped onto another zoned device with a
+>> different zone_size?
 > 
-> Back with more esoteric questions.  We find that snapshots on an idle BTRFS
-> subvolume are extremely fast, but if there is plenty of data in-flight
-> (i.e., in the buffer cache and not yet sync'd down) it can take dozens of
-> seconds to a minute or so for the snapshot to return successfully.
+> Zone size is a drive characteristic, so it never change on the same device.
 > 
-> I presume this delay is for the data that was accepted but not yet sync'd to
-> disk to get flushed out prior to taking the snapshot. However, I don't have
-> details to answer the following questions aside from spending a long time in
-> the code:
-> 
-> 1. Is my presumption just incorrect and there is some other time-consuming
-> mechanics taking place during a snapshot that would cause these longer times
-> for it to return successfully?
+> Dump/restore on another device with a different zone_size should be banned,
+> because we cannot ensure device extents are aligned to zone boundaries.
 
-As far as I can tell, the upper limit of snapshot creation time is bounded
-only the size of the filesystem divided by the average write speed, i.e.
-it's possible to keep 'btrfs sub snapshot' running for as long as it takes
-to fill the disk.
-
-I recently observed a process unpacking a compressed image file that
-made a 'btrfs sub snap' command run for 3.8 hours, stopping only when
-the decompress program ran out of image file to write.
-
-While this is happening, only writes to existing files can proceed.
-All other write operations (e.g.  unlink or mkdir) will block.
-
-AIUI there have been attempts to create mechanisms in btrfs that either
-throttle writes or defer them to a later transaction to prevent snapshot
-creation (and other btrfs write operations) from running indefinitely.
-These latency control mechanisms are apparently incomplete or broken on
-current kernels.
-
-e.g. commit 3cd24c698004d2f7668e0eb9fc1f096f533c791b "btrfs: use tagged
-writepage to mitigate livelock of snapshot" marks writes to inodes
-within a subvol so that they are not flushed during the current commit
-if that subvol is the origin of a snapshot create and the write occurs
-after the snapshot create started; however, this only prevents writes
-in the snapshotted subvol from delaying the snapshot--it does nothing
-about writes to other subvols on the filesystem, which is what happened
-in my 3.8 hour case.
-
-> 2. iF i SNAPShot subvol A and it has dirty data outstanding, what power
-> failure guarantees do I have after the snapshot completes?  Is everything
-> that was written to subvol A prior to the snapshot guaranteed to be safely
-> on-disk following the successful snapshot?
-
-Snapshot create implies transaction commit with delalloc flush, so it will
-all be complete on disk as of some point during the snapshot create call
-(closer the function return than function entry).
-
-> 3. If I snapshot subvol A, and unrelated subvol B has dirty data outstanding
-> in the buffer cache, does the snapshot of A first flush out the dirty data
-> to subvol B prior to taking the snapshot?  In other words, does a snapshot
-> of a BTRFS subvolume require all dirty data for all other subvolumes in the
-> filesystem to be sync'd, and if so, is all previously written data (even to
-> subvol B) power-fail protected following the successful snapshot completion
-> of A?
-
-Snapshot create implies a transaction commit with delalloc flush,
-which puts all previously (or simultaneously) written data on disk.
-
-Since kernel 5.0 is no mechanism to prevent delalloc flush from running
-until the disk fills up.
-
-There's an exception to this rule that excludes the origin subvol from
-delalloc flush if the extents are added after the snapshot create has
-begun; however, this isn't done for the rest of the filesystem.
-
-> 4. Is there any way to efficiently take a snapshot of a bunch of subvolumes
-> at once?  If the answer to #2 is that all dirty data is sync'd for all
-> subvolumes for a snapshot of any subvolume, we're liable to have
-> significantly less to do on the consecutive subvolumes that are getting
-> snapshotted right afterwards, but I believe these still imply a BTRFS root
-> commit, and as such can be expensive in terms of disk I/O (at least linear
-> with the number of 'simultaneous' snapshots).
-
-If the snapshots are being created in the same directory, then each one
-will try to hold a VFS-level directory lock to create the new directory
-entry, so they can only execute sequentially.
-
-If the snapshots are being created in different directories, then it
-should be possible to run the snapshot creates in parallel.  They will
-likely all end at close to the same time, though, as they're all trying
-to complete a filesystem-wide flush, and none of them can proceed until
-that is done.  An aggressive writer process could still add arbitrary
-delays.
-
-> Thanks as always,
-> 
-> ellis
+Fair enough. Do we have any checks to fail such mount? Sorry if I have 
+missed it somewhere in the patch?
+Thanks.
