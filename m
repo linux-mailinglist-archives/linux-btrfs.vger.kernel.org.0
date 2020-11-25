@@ -2,142 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B5C2C42BC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 16:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7EE2C42DA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 16:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbgKYPRA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Nov 2020 10:17:00 -0500
-Received: from mail-dm6nam10on2070.outbound.protection.outlook.com ([40.107.93.70]:53273
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726295AbgKYPQ7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Nov 2020 10:16:59 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n/UeYbWlsUujXVEtp+e+hvnWbhtjmxi9WO7mFxUjMJ2JJ+Gvxr21M1zGEoPb+LPHI0AfJFdEFedWwntRdXqSh24JRTuVGOtlz2O4w1ZyrXZB3QSyaVSzz6zBQC3Mod9rUZ3gcqaCxEEUvjcdK2lq8jdkoms6bvR0tSGJoC064HaM4CGy/KcVD+5TjBBfBBdpgF+gVIgJZRd3UKeesVFvpdJH9SaqciKPwOue4WWWD1TI5hZqNYzB4LsWjyqH+BULZdZHyrrE/PZJLNdL+69LYTV8EyX414BDkxGkz58uy8oZeZKsd+R/HCiB3+stbuqpmUDajlBMW+MTEjOYnZdXbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QjjvTgjcFB4YDyPypmXulCl5HnzYc+zDN8MpLVjfLj0=;
- b=RLnBT+HzQcftiK2hhfciWncGe4ttvFvlTeuUcNL+T1R3Yzd0OAhLPNs6QrjvbBrk+qUw0xqD1CpnKxGkRjWOoGn4WId+YzWKrMvk09YllYVdm3MNgEVE9PvdR5wyV2l/cJ0iXSBuQb95uqaVa1r66mNPhLF2Woh+QGRhdKdwEA5rOE1/ZKKEn3l5wNRZWRUPacuyxIuze5B0Tgi4S4THmXSl5SROEsu0rsmArsleKOXYt3Ed+S9jQBNfDKOW7W9EuFO4E4NwIIyssaVmkDBP+z1kD2od2QIMMgKpj3/hTyhV44LOdIkgZ6G+hUT1MUYAF6C0ZEExOV35uu/YkUe7mw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=panasas.com; dmarc=pass action=none header.from=panasas.com;
- dkim=pass header.d=panasas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=panasas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QjjvTgjcFB4YDyPypmXulCl5HnzYc+zDN8MpLVjfLj0=;
- b=kr9F3q/ID7iL4gBEkADok0UHECjKzCi6Mljz3mDQIpGSFUICnuRQp6mmodvGECqQYYBOu3SYumUs6ynFFM08BXaPYjVvI+gqgd9Zwpjwqw+hxtasKOgJbZIkkqD9tT+1e3kLHlHS+GTdeilHoADOOoPvKq36when8LXMyyrztwc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=panasas.com;
-Received: from BYAPR08MB5109.namprd08.prod.outlook.com (2603:10b6:a03:67::33)
- by SJ0PR08MB6717.namprd08.prod.outlook.com (2603:10b6:a03:2ac::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.21; Wed, 25 Nov
- 2020 15:16:54 +0000
-Received: from BYAPR08MB5109.namprd08.prod.outlook.com
- ([fe80::f8b4:660c:838c:7040]) by BYAPR08MB5109.namprd08.prod.outlook.com
- ([fe80::f8b4:660c:838c:7040%7]) with mapi id 15.20.3611.022; Wed, 25 Nov 2020
- 15:16:54 +0000
-Subject: Re: Snapshots, Dirty Data, and Power Failure
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <b58c6024-1692-7e43-c0a5-182b1fae1cca@panasas.com>
- <20201125042449.GE31381@hungrycats.org>
-From:   "Ellis H. Wilson III" <ellisw@panasas.com>
-Message-ID: <60820e39-5277-7d16-f3c2-bca7c3b44990@panasas.com>
-Date:   Wed, 25 Nov 2020 10:16:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-In-Reply-To: <20201125042449.GE31381@hungrycats.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [96.236.219.216]
-X-ClientProxiedBy: MN2PR15CA0016.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::29) To BYAPR08MB5109.namprd08.prod.outlook.com
- (2603:10b6:a03:67::33)
+        id S1729505AbgKYP2z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Nov 2020 10:28:55 -0500
+Received: from so254-5.mailgun.net ([198.61.254.5]:36166 "EHLO
+        so254-5.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726060AbgKYP2z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:28:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=monoid.al; q=dns/txt; s=mx;
+ t=1606318134; h=Content-Type: To: Subject: Message-ID: Date: From:
+ MIME-Version: Sender; bh=bidKTcwxxVUdpCm+ipVZBPrky+CkVsJnZS0n6fvT2aU=;
+ b=ICbWJ1yKybLZQxK/otqmsp/LxaseZ8psU/2BB2x0/GgUImTdYBlc0nfABlub5ZCAT+EKDP3U
+ Jr5RAxM6IkLJ3Dqep5g/WQqlxNTVTUHNzUyhDMR9ppa/fRlUnfxR7PVxqZ+uA9guJNbjv7el
+ 0vksMwZ9vg/74y5uTDUUpmlYWw8=
+X-Mailgun-Sending-Ip: 198.61.254.5
+X-Mailgun-Sid: WyJiMGVhZCIsICJsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmciLCAiNmViNjQ4Il0=
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com
+ [209.85.210.181]) by smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fbe78290c9500dc7bf183b3 (version=TLS1.3, cipher=TLS_AES_128_GCM_SHA256);
+ Wed, 25 Nov 2020 15:28:41 GMT
+Sender: joe@monoid.al
+Received: by mail-pf1-f181.google.com with SMTP id w202so2628626pff.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Nov 2020 07:28:41 -0800 (PST)
+X-Gm-Message-State: AOAM532VPurIAV4Iu7nQAK1Btt1Yl29fvRSmieGAnIOCECE5dF0qbUuB
+        gqjXvxCVABu02gzGbjZ27vWO4AEh/BFDfCAaZLs=
+X-Google-Smtp-Source: ABdhPJyDUYpik3L3APKYMyRBkDyNcfKFsq0EQp7UhNcLCDQNRjeffkPXGwO4mSZsJ2VohN+IycHoROrdy9NJSttf6vw=
+X-Received: by 2002:a17:90a:d184:: with SMTP id fu4mr4901279pjb.173.1606318120604;
+ Wed, 25 Nov 2020 07:28:40 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.2] (96.236.219.216) by MN2PR15CA0016.namprd15.prod.outlook.com (2603:10b6:208:1b4::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Wed, 25 Nov 2020 15:16:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 885cfe89-da96-43ae-61eb-08d89155249e
-X-MS-TrafficTypeDiagnostic: SJ0PR08MB6717:
-X-Microsoft-Antispam-PRVS: <SJ0PR08MB67179069E2BF9B11D608808BC2FA0@SJ0PR08MB6717.namprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DYErXzy3xDgR36Kz0E7Mow0TL4L9+/wlln5y1q2iyR0GTcZaZZFI2CJ1J+IIedR0Zl6etBqaz4ovYeZ115XqP7iUpiz7qxAtgKrckKWTbE/s3AqvD1IcV/NYOvdTGS8PWoQE5FuyrurfIRheGiKAl2Tb/YyHOCFbiz7eHNbL462WfM9iXB6SKLQI1Ck5R89AmCLP/Jn1ljuuiChNLsQ3wYD9Lqlsty3RZ6XMiH6vuOvbvWekVFI8Y6977vY8AsGk8naFvy8uPRI7ckeJrMsUZk95MAQaR2/RAGwzP6ruPQQWOKmnP+BmmH3AtWXjq9nH9tn09G0dYeS4fF5Kv973pqBmc6E5FGCSZDXdeCRi5HDQLaCOvl40rItXIUwzQUUxxjbIcVm7gl1K87USmdCxkQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR08MB5109.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(136003)(346002)(366004)(376002)(8676002)(2906002)(478600001)(16576012)(8936002)(5660300002)(66556008)(86362001)(66946007)(316002)(36756003)(66476007)(31696002)(2616005)(956004)(31686004)(6486002)(4326008)(26005)(186003)(53546011)(83380400001)(16526019)(6916009)(6666004)(52116002)(14143004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: /+UsBngtzUiaiCfvKqUEIzJuLF0oT1Mfyjrfq4tCv1mLsq1pR9xYp2TYcv8yYE+WIHwOtg1c/Q41lRV1vbDRk2ehxu1yuCfNtvajJo7gU8hPDDl0ukKV7wWJo9j42/4AUUWQQkY0FmbQGTkCJwlpYO76a7fAN0skkdONDAlBksobWG+k86WUcWYOe6QaRjb93rXJ8KToPVFyND81VkH0ODZYMp9FzehRAcX8u+57SDZlWr+5h6p3t8zMQi3DScuH4Nxhh6h3v33ugU01JFcgQc4Bnk6WD6YGUtRKhVFBDuhJEXU8Hk9sMONviJGrpjJPpAnR2WpvrcRFGX1vv3c16Va75b1x9L/pdxSS6hQHa1lYYmVjdovT1gynZsI4LrEAYgb+Z8ZaRZku7Mi7y+JmmfR4zHTMvge4KLVETuti8qNAal+yqu4mVUux1zMHnoYAzZs4ONWyUcPWimuDT+PxZq81Dtd+ZV+RkN8Tp1ll6bklPdc9vR0+Mipb8S5hHzgSTnm+po+pzb1dbIRE0PkiU+kR9OOxMV5/tGeg7OjMt41A2cZF0O/ZuRR+3Ho+nTB1rgS0W+EL4fPt6ISy8a2mLEw7rRwnuWaN7NJyNkcL/OhVn2n10nLf6Pf9ZaxBEay15AGM9I0uxPWrls9kKL8WDMZNfT5x7IhCiV986SIxdO+uYw9SDO7L40Sfovf1jYxzXYxxnnlEBSndd4LGI0Spd+TORm9yJG7tHRyHp2iCt6nVIQrimUv0WDseL+4X9cDNZuK/IwJVbLyaUOanAdwuzJm8EpGQ2lX8I18XC3o8WYke7sbxTmM5xkqC/rKsv2RClspC33wRsZrwygZMkV5DOasBH3YyImGGMtv1AvKRAHx/CEYfYtmYxAiHg6fK2vn9nK9kiKNVCsoN03XDLO6zWA==
-X-OriginatorOrg: panasas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 885cfe89-da96-43ae-61eb-08d89155249e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR08MB5109.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 15:16:54.6761
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: acf01c9d-c699-42af-bdbb-44bf582e60b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Pnp9NFCyQQ8dNyYqMTQMkFtJppqs2ERhX7i80YoTu+tabZGLvn1RGjE+AEu74XA+AL0T908JateLk6cFzKNyFg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR08MB6717
+From:   Joe Hermaszewski <joe@monoid.al>
+Date:   Wed, 25 Nov 2020 23:28:29 +0800
+X-Gmail-Original-Message-ID: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
+Message-ID: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
+Subject: btrfs crash on armv7
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/24/20 11:24 PM, Zygo Blaxell wrote:
-> On Tue, Nov 24, 2020 at 11:03:15AM -0500, Ellis H. Wilson III wrote:
->> Hi all,
->>
->> Back with more esoteric questions.  We find that snapshots on an idle BTRFS
->> subvolume are extremely fast, but if there is plenty of data in-flight
->> (i.e., in the buffer cache and not yet sync'd down) it can take dozens of
->> seconds to a minute or so for the snapshot to return successfully.
->>
->> I presume this delay is for the data that was accepted but not yet sync'd to
->> disk to get flushed out prior to taking the snapshot. However, I don't have
->> details to answer the following questions aside from spending a long time in
->> the code:
->>
->> 1. Is my presumption just incorrect and there is some other time-consuming
->> mechanics taking place during a snapshot that would cause these longer times
->> for it to return successfully?
-> 
-> As far as I can tell, the upper limit of snapshot creation time is bounded
-> only the size of the filesystem divided by the average write speed, i.e.
-> it's possible to keep 'btrfs sub snapshot' running for as long as it takes
-> to fill the disk.
+Hi,
 
-Ahhh.  That is extremely enlightening, and exactly what we're seeing.  I 
-presumed there was some form of quiescence when a snapshot was taken 
-such that writes that were inbound would block until it was complete, 
-but I couldn't reason about why it was taking SO long to get everything 
-flushed out.  This exactly explains it as we only block out incoming 
-writes to the subvolume being snapshotted -- not other volumes.
+I have a arm32 machine with four drives with a btrfs fs spanning then in RAID1.
+The filesystem has started behaving badly recently and I'm writing to:
 
->> 4. Is there any way to efficiently take a snapshot of a bunch of subvolumes
->> at once?  If the answer to #2 is that all dirty data is sync'd for all
->> subvolumes for a snapshot of any subvolume, we're liable to have
->> significantly less to do on the consecutive subvolumes that are getting
->> snapshotted right afterwards, but I believe these still imply a BTRFS root
->> commit, and as such can be expensive in terms of disk I/O (at least linear
->> with the number of 'simultaneous' snapshots).
-> 
-> If the snapshots are being created in the same directory, then each one
-> will try to hold a VFS-level directory lock to create the new directory
-> entry, so they can only execute sequentially.
-> 
-> If the snapshots are being created in different directories, then it
-> should be possible to run the snapshot creates in parallel.  They will
-> likely all end at close to the same time, though, as they're all trying
-> to complete a filesystem-wide flush, and none of them can proceed until
-> that is done.  An aggressive writer process could still add arbitrary
-> delays.
+- Solicit advice on how best to get the system back to a stable state
+- Report a potential bug
 
-Very helpful and yes the snapshots in this case are being done to 
-different subvolumes.  I think if we can solve the writer problem (I 
-have some ideas) on our side then we should be good to go.
+## What happened:
 
-Thank you very much for your time Zygo!
+A couple of days ago I could no longer ssh into it, and on the serial
+connection there were heaps of messages (and new ones appearing with great
+frequency) along the lines of: `parent transid verify failed on blah... wanted
+x got y`.
 
-ellis
+Although I don't have a record of the precise messages I do remember that there
+was a difference of `15` between x and y.
+
+I power-cycled system and started a scrub after it rebooted, this was
+interrupted quite promptly by several more errors in btrfs, and the disk
+remounted RO.
+
+Every now and then in the kernel log I get messages like:
+
+`parent transid verify failed on blah... wanted x got y`
+
+## Important info
+
+The dev stats are all zero.
+
+Here are the outputs of some btrfs commands, dmesg and the kernel log from the
+previous two boots: https://gist.github.com/b1beab134403c5047e2efbceb98985f9
+
+The "cut here" portion of the kernel log is as follows
+
+```
+[  409.158097] ------------[ cut here ]------------
+[  409.158205] WARNING: CPU: 1 PID: 217 at fs/btrfs/disk-io.c:531
+btree_csum_one_bio+0x208/0x248 [btrfs]
+[  409.158208] Modules linked in: cfg80211 rfkill 8021q ip6table_nat
+iptable_nat nf_nat xt_conntrack nf_conntrack nf_defrag_ipv6
+nf_defrag_ipv4 ip6t_rpfilter ipt_rpfilter ip6table_raw iptable_raw
+xt_pkttype nf_log_ipv6 nf_log_ipv4 nf_log_common xt_LOG xt_tcpudp
+ftdi_sio usbserial phy_generic uio_pdrv_genirq uio ip6table_filter
+ip6_tables iptable_filter sch_fq_codel loop tun tap macvlan bridge stp
+llc lm75 ip_tables x_tables autofs4 dm_mod dax btrfs libcrc32c xor
+raid6_pq
+[  409.158258] CPU: 1 PID: 217 Comm: btrfs-transacti Not tainted 5.4.77 #1-NixOS
+[  409.158260] Hardware name: Marvell Armada 380/385 (Device Tree)
+[  409.158261] Backtrace:
+[  409.158272] [<c010f698>] (dump_backtrace) from [<c010f938>]
+(show_stack+0x20/0x24)
+[  409.158277]  r7:00000213 r6:600f0013 r5:00000000 r4:c0f8c044
+[  409.158283] [<c010f918>] (show_stack) from [<c0a1b388>]
+(dump_stack+0x98/0xac)
+[  409.158288] [<c0a1b2f0>] (dump_stack) from [<c012a998>] (__warn+0xe0/0x108)
+[  409.158292]  r7:00000213 r6:bf058ec8 r5:00000009 r4:bf120990
+[  409.158296] [<c012a8b8>] (__warn) from [<c012ad24>]
+(warn_slowpath_fmt+0x74/0xc4)
+[  409.158300]  r7:00000213 r6:bf120990 r5:00000000 r4:e2392000
+[  409.158358] [<c012acb4>] (warn_slowpath_fmt) from [<bf058ec8>]
+(btree_csum_one_bio+0x208/0x248 [btrfs])
+[  409.158363]  r9:e277abe0 r8:00000001 r7:e2392000 r6:ea3d17f0
+r5:00000000 r4:eefd2d3c
+[  409.158465] [<bf058cc0>] (btree_csum_one_bio [btrfs]) from
+[<bf059ef4>] (btree_submit_bio_hook+0xe8/0x100 [btrfs])
+[  409.158470]  r10:e32ce170 r9:ecc45fc0 r8:ecc45f70 r7:ec82b000
+r6:00000000 r5:ea3d17f0
+[  409.158472]  r4:bf059e0c
+[  409.158575] [<bf059e0c>] (btree_submit_bio_hook [btrfs]) from
+[<bf08b11c>] (submit_one_bio+0x44/0x5c [btrfs])
+[  409.158578]  r7:ef36c048 r6:e2393cac r5:00000000 r4:bf059e0c
+[  409.158683] [<bf08b0d8>] (submit_one_bio [btrfs]) from [<bf0965d4>]
+(btree_write_cache_pages+0x380/0x408 [btrfs])
+[  409.158686]  r5:00000000 r4:00000000
+[  409.158788] [<bf096254>] (btree_write_cache_pages [btrfs]) from
+[<bf059028>] (btree_writepages+0x7c/0x84 [btrfs])
+[  409.158793]  r10:00000001 r9:4fd00000 r8:c0280c94 r7:e2392000
+r6:e2393d80 r5:ecc45f70
+[  409.158794]  r4:e2393d80
+[  409.158850] [<bf058fac>] (btree_writepages [btrfs]) from
+[<c0284748>] (do_writepages+0x58/0xf4)
+[  409.158852]  r5:ecc45f70 r4:ecc45e68
+[  409.158860] [<c02846f0>] (do_writepages) from [<c0278c30>]
+(__filemap_fdatawrite_range+0xf8/0x130)
+[  409.158864]  r8:ecc45f70 r7:00001000 r6:4fd0bfff r5:e2392000 r4:ecc45e68
+[  409.158869] [<c0278b38>] (__filemap_fdatawrite_range) from
+[<c0278db8>] (filemap_fdatawrite_range+0x2c/0x34)
+[  409.158874]  r10:ecc45f70 r9:00001000 r8:4fd0bfff r7:e2393e4c
+r6:c73bc628 r5:00001000
+[  409.158875]  r4:4fd0bfff
+[  409.158929] [<c0278d8c>] (filemap_fdatawrite_range) from
+[<bf0604b4>] (btrfs_write_marked_extents+0x9c/0x1b0 [btrfs])
+[  409.158931]  r5:00000001 r4:00000000
+[  409.159033] [<bf060418>] (btrfs_write_marked_extents [btrfs]) from
+[<bf060660>] (btrfs_write_and_wait_transaction+0x54/0xa4 [btrfs])
+[  409.159038]  r10:e2392000 r9:ec82b010 r8:ec82b000 r7:c73bc628
+r6:ec82b000 r5:e2392000
+[  409.159040]  r4:c8b81ca8
+[  409.159141] [<bf06060c>] (btrfs_write_and_wait_transaction [btrfs])
+from [<bf062398>] (btrfs_commit_transaction+0x75c/0xc94 [btrfs])
+[  409.159145]  r8:ec82b418 r7:c73bc600 r6:ec82b000 r5:c8b81ca8 r4:00000000
+[  409.159248] [<bf061c3c>] (btrfs_commit_transaction [btrfs]) from
+[<bf05cd08>] (transaction_kthread+0x19c/0x1e0 [btrfs])
+[  409.159253]  r10:ec82b28c r9:00000000 r8:001aaafa r7:00000064
+r6:ec82b414 r5:00000bb8
+[  409.159254]  r4:ec82b000
+[  409.159309] [<bf05cb6c>] (transaction_kthread [btrfs]) from
+[<c014fabc>] (kthread+0x170/0x174)
+[  409.159313]  r10:eca87bfc r9:bf05cb6c r8:ed619000 r7:e2392000
+r6:00000000 r5:ed5ee700
+[  409.159315]  r4:ed5ee1c0
+[  409.159320] [<c014f94c>] (kthread) from [<c01010e8>]
+(ret_from_fork+0x14/0x2c)
+[  409.159322] Exception stack(0xe2393fb0 to 0xe2393ff8)
+[  409.159326] 3fa0:                                     00000000
+00000000 00000000 00000000
+[  409.159331] 3fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[  409.159334] 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  409.159338]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+r6:00000000 r5:c014f94c
+[  409.159340]  r4:ed5ee700
+[  409.159342] ---[ end trace eea59ced12fa7859 ]---
+[  409.165084] BTRFS: error (device sda1) in
+btrfs_commit_transaction:2279: errno=-5 IO failure (Error while
+writing out transaction)
+[  409.176920] BTRFS info (device sda1): forced readonly
+[  409.176947] BTRFS warning (device sda1): Skipping commit of aborted
+transaction.
+[  409.176952] BTRFS: error (device sda1) in cleanup_transaction:1832:
+errno=-5 IO failure
+[  409.185049] BTRFS info (device sda1): delayed_refs has NO entry
+[  409.310199] BTRFS info (device sda1): scrub: not finished on devid
+3 with status: -125
+[  409.664880] BTRFS info (device sda1): scrub: not finished on devid
+4 with status: -125
+[  410.106791] BTRFS info (device sda1): scrub: not finished on devid
+1 with status: -125
+[  411.268585] BTRFS warning (device sda1): failed setting block group ro: -30
+[  411.268594] BTRFS info (device sda1): scrub: not finished on devid
+2 with status: -30
+[  411.268605] BTRFS info (device sda1): delayed_refs has NO entry
+```
+
+Information requested here
+(https://btrfs.wiki.kernel.org/index.php/Btrfs_mailing_list):
+
+```
+ $ uname -a
+Linux thanos 5.4.77 #1-NixOS SMP Tue Nov 10 20:13:20 UTC 2020 armv7l GNU/Linux
+
+ $ btrfs --version
+btrfs-progs v5.7
+
+ $ sudo btrfs fi show
+Label: none  uuid: b8f4ad49-29c8-4d19-a886-cef9c487f124
+        Total devices 4 FS bytes used 10.26TiB
+        devid    1 size 3.64TiB used 2.40TiB path /dev/sda1
+        devid    2 size 3.64TiB used 2.40TiB path /dev/sdc1
+        devid    3 size 9.09TiB used 7.86TiB path /dev/sdd1
+        devid    4 size 9.09TiB used 7.86TiB path /dev/sdb1
+
+Label: none  uuid: d02a3067-0a23-4c1f-96ac-80dbc26622f2
+        Total devices 1 FS bytes used 116.35MiB
+        devid    1 size 399.82MiB used 224.00MiB path /dev/sda2
+
+ $ sudo btrfs fi df /
+Data, RAID1: total=10.25TiB, used=10.24TiB
+System, RAID1: total=64.00MiB, used=1.45MiB
+Metadata, RAID1: total=18.00GiB, used=17.19GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+```
+
+Thanks to demfloro and multicore on #btrfs for prompting this email.
+
+Best wishes,
+Joe
