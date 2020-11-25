@@ -2,280 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4522C3FCF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 13:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B5C2C42BC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Nov 2020 16:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgKYMTk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Nov 2020 07:19:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgKYMTi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:19:38 -0500
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24C5E206F7
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Nov 2020 12:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606306777;
-        bh=kpxwKEe9KHT5yFVY1GSvXGky3bO4pZ3AMMlMfRq6wko=;
-        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=qJyb7ZHb+5HNsTzGnotmSbHiZhdaBIP6ki7YL3gJBwsEruP23zWiKCLmInF/f4G63
-         AH3w0gNBGUrPdu/488FiodLNg++2ESLUYfqSG18VNSjphdb4MmIaZIq0+QF3cQjmve
-         ieYrshZfBzv14kc8YQWSta5xK56616HqYHrW3zp4=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 6/6] btrfs: do not block inode logging for so long during transaction commit
-Date:   Wed, 25 Nov 2020 12:19:28 +0000
-Message-Id: <d9df3c01bd2fbfeddfe205fa229ecea2d7478711.1606305501.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1606305501.git.fdmanana@suse.com>
-References: <cover.1606305501.git.fdmanana@suse.com>
-In-Reply-To: <cover.1606305501.git.fdmanana@suse.com>
-References: <cover.1606305501.git.fdmanana@suse.com>
+        id S1729961AbgKYPRA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Nov 2020 10:17:00 -0500
+Received: from mail-dm6nam10on2070.outbound.protection.outlook.com ([40.107.93.70]:53273
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726295AbgKYPQ7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Nov 2020 10:16:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n/UeYbWlsUujXVEtp+e+hvnWbhtjmxi9WO7mFxUjMJ2JJ+Gvxr21M1zGEoPb+LPHI0AfJFdEFedWwntRdXqSh24JRTuVGOtlz2O4w1ZyrXZB3QSyaVSzz6zBQC3Mod9rUZ3gcqaCxEEUvjcdK2lq8jdkoms6bvR0tSGJoC064HaM4CGy/KcVD+5TjBBfBBdpgF+gVIgJZRd3UKeesVFvpdJH9SaqciKPwOue4WWWD1TI5hZqNYzB4LsWjyqH+BULZdZHyrrE/PZJLNdL+69LYTV8EyX414BDkxGkz58uy8oZeZKsd+R/HCiB3+stbuqpmUDajlBMW+MTEjOYnZdXbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QjjvTgjcFB4YDyPypmXulCl5HnzYc+zDN8MpLVjfLj0=;
+ b=RLnBT+HzQcftiK2hhfciWncGe4ttvFvlTeuUcNL+T1R3Yzd0OAhLPNs6QrjvbBrk+qUw0xqD1CpnKxGkRjWOoGn4WId+YzWKrMvk09YllYVdm3MNgEVE9PvdR5wyV2l/cJ0iXSBuQb95uqaVa1r66mNPhLF2Woh+QGRhdKdwEA5rOE1/ZKKEn3l5wNRZWRUPacuyxIuze5B0Tgi4S4THmXSl5SROEsu0rsmArsleKOXYt3Ed+S9jQBNfDKOW7W9EuFO4E4NwIIyssaVmkDBP+z1kD2od2QIMMgKpj3/hTyhV44LOdIkgZ6G+hUT1MUYAF6C0ZEExOV35uu/YkUe7mw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=panasas.com; dmarc=pass action=none header.from=panasas.com;
+ dkim=pass header.d=panasas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=panasas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QjjvTgjcFB4YDyPypmXulCl5HnzYc+zDN8MpLVjfLj0=;
+ b=kr9F3q/ID7iL4gBEkADok0UHECjKzCi6Mljz3mDQIpGSFUICnuRQp6mmodvGECqQYYBOu3SYumUs6ynFFM08BXaPYjVvI+gqgd9Zwpjwqw+hxtasKOgJbZIkkqD9tT+1e3kLHlHS+GTdeilHoADOOoPvKq36when8LXMyyrztwc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=panasas.com;
+Received: from BYAPR08MB5109.namprd08.prod.outlook.com (2603:10b6:a03:67::33)
+ by SJ0PR08MB6717.namprd08.prod.outlook.com (2603:10b6:a03:2ac::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.21; Wed, 25 Nov
+ 2020 15:16:54 +0000
+Received: from BYAPR08MB5109.namprd08.prod.outlook.com
+ ([fe80::f8b4:660c:838c:7040]) by BYAPR08MB5109.namprd08.prod.outlook.com
+ ([fe80::f8b4:660c:838c:7040%7]) with mapi id 15.20.3611.022; Wed, 25 Nov 2020
+ 15:16:54 +0000
+Subject: Re: Snapshots, Dirty Data, and Power Failure
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <b58c6024-1692-7e43-c0a5-182b1fae1cca@panasas.com>
+ <20201125042449.GE31381@hungrycats.org>
+From:   "Ellis H. Wilson III" <ellisw@panasas.com>
+Message-ID: <60820e39-5277-7d16-f3c2-bca7c3b44990@panasas.com>
+Date:   Wed, 25 Nov 2020 10:16:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <20201125042449.GE31381@hungrycats.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [96.236.219.216]
+X-ClientProxiedBy: MN2PR15CA0016.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::29) To BYAPR08MB5109.namprd08.prod.outlook.com
+ (2603:10b6:a03:67::33)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.2] (96.236.219.216) by MN2PR15CA0016.namprd15.prod.outlook.com (2603:10b6:208:1b4::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Wed, 25 Nov 2020 15:16:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 885cfe89-da96-43ae-61eb-08d89155249e
+X-MS-TrafficTypeDiagnostic: SJ0PR08MB6717:
+X-Microsoft-Antispam-PRVS: <SJ0PR08MB67179069E2BF9B11D608808BC2FA0@SJ0PR08MB6717.namprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DYErXzy3xDgR36Kz0E7Mow0TL4L9+/wlln5y1q2iyR0GTcZaZZFI2CJ1J+IIedR0Zl6etBqaz4ovYeZ115XqP7iUpiz7qxAtgKrckKWTbE/s3AqvD1IcV/NYOvdTGS8PWoQE5FuyrurfIRheGiKAl2Tb/YyHOCFbiz7eHNbL462WfM9iXB6SKLQI1Ck5R89AmCLP/Jn1ljuuiChNLsQ3wYD9Lqlsty3RZ6XMiH6vuOvbvWekVFI8Y6977vY8AsGk8naFvy8uPRI7ckeJrMsUZk95MAQaR2/RAGwzP6ruPQQWOKmnP+BmmH3AtWXjq9nH9tn09G0dYeS4fF5Kv973pqBmc6E5FGCSZDXdeCRi5HDQLaCOvl40rItXIUwzQUUxxjbIcVm7gl1K87USmdCxkQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR08MB5109.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(136003)(346002)(366004)(376002)(8676002)(2906002)(478600001)(16576012)(8936002)(5660300002)(66556008)(86362001)(66946007)(316002)(36756003)(66476007)(31696002)(2616005)(956004)(31686004)(6486002)(4326008)(26005)(186003)(53546011)(83380400001)(16526019)(6916009)(6666004)(52116002)(14143004)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: /+UsBngtzUiaiCfvKqUEIzJuLF0oT1Mfyjrfq4tCv1mLsq1pR9xYp2TYcv8yYE+WIHwOtg1c/Q41lRV1vbDRk2ehxu1yuCfNtvajJo7gU8hPDDl0ukKV7wWJo9j42/4AUUWQQkY0FmbQGTkCJwlpYO76a7fAN0skkdONDAlBksobWG+k86WUcWYOe6QaRjb93rXJ8KToPVFyND81VkH0ODZYMp9FzehRAcX8u+57SDZlWr+5h6p3t8zMQi3DScuH4Nxhh6h3v33ugU01JFcgQc4Bnk6WD6YGUtRKhVFBDuhJEXU8Hk9sMONviJGrpjJPpAnR2WpvrcRFGX1vv3c16Va75b1x9L/pdxSS6hQHa1lYYmVjdovT1gynZsI4LrEAYgb+Z8ZaRZku7Mi7y+JmmfR4zHTMvge4KLVETuti8qNAal+yqu4mVUux1zMHnoYAzZs4ONWyUcPWimuDT+PxZq81Dtd+ZV+RkN8Tp1ll6bklPdc9vR0+Mipb8S5hHzgSTnm+po+pzb1dbIRE0PkiU+kR9OOxMV5/tGeg7OjMt41A2cZF0O/ZuRR+3Ho+nTB1rgS0W+EL4fPt6ISy8a2mLEw7rRwnuWaN7NJyNkcL/OhVn2n10nLf6Pf9ZaxBEay15AGM9I0uxPWrls9kKL8WDMZNfT5x7IhCiV986SIxdO+uYw9SDO7L40Sfovf1jYxzXYxxnnlEBSndd4LGI0Spd+TORm9yJG7tHRyHp2iCt6nVIQrimUv0WDseL+4X9cDNZuK/IwJVbLyaUOanAdwuzJm8EpGQ2lX8I18XC3o8WYke7sbxTmM5xkqC/rKsv2RClspC33wRsZrwygZMkV5DOasBH3YyImGGMtv1AvKRAHx/CEYfYtmYxAiHg6fK2vn9nK9kiKNVCsoN03XDLO6zWA==
+X-OriginatorOrg: panasas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 885cfe89-da96-43ae-61eb-08d89155249e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR08MB5109.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2020 15:16:54.6761
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: acf01c9d-c699-42af-bdbb-44bf582e60b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Pnp9NFCyQQ8dNyYqMTQMkFtJppqs2ERhX7i80YoTu+tabZGLvn1RGjE+AEu74XA+AL0T908JateLk6cFzKNyFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR08MB6717
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On 11/24/20 11:24 PM, Zygo Blaxell wrote:
+> On Tue, Nov 24, 2020 at 11:03:15AM -0500, Ellis H. Wilson III wrote:
+>> Hi all,
+>>
+>> Back with more esoteric questions.  We find that snapshots on an idle BTRFS
+>> subvolume are extremely fast, but if there is plenty of data in-flight
+>> (i.e., in the buffer cache and not yet sync'd down) it can take dozens of
+>> seconds to a minute or so for the snapshot to return successfully.
+>>
+>> I presume this delay is for the data that was accepted but not yet sync'd to
+>> disk to get flushed out prior to taking the snapshot. However, I don't have
+>> details to answer the following questions aside from spending a long time in
+>> the code:
+>>
+>> 1. Is my presumption just incorrect and there is some other time-consuming
+>> mechanics taking place during a snapshot that would cause these longer times
+>> for it to return successfully?
+> 
+> As far as I can tell, the upper limit of snapshot creation time is bounded
+> only the size of the filesystem divided by the average write speed, i.e.
+> it's possible to keep 'btrfs sub snapshot' running for as long as it takes
+> to fill the disk.
 
-Early on during a transaction commit we acquire the tree_log_mutex and
-hold it until after we write the super blocks. But before writing the
-extent buffers dirtied by the transaction and the super blocks we unblock
-the transaction by setting its state to TRANS_STATE_UNBLOCKED and setting
-fs_info->running_transaction to NULL.
+Ahhh.  That is extremely enlightening, and exactly what we're seeing.  I 
+presumed there was some form of quiescence when a snapshot was taken 
+such that writes that were inbound would block until it was complete, 
+but I couldn't reason about why it was taking SO long to get everything 
+flushed out.  This exactly explains it as we only block out incoming 
+writes to the subvolume being snapshotted -- not other volumes.
 
-This means that after that and before writing the super blocks, new
-transactions can start. However if any transaction wants to log an inode,
-it will block waiting for the transaction commit to write its dirty
-extent buffers and the super blocks because the tree_log_mutex is only
-released after those operations are complete, and starting a new log
-transaction blocks on that mutex (at start_log_trans()).
+>> 4. Is there any way to efficiently take a snapshot of a bunch of subvolumes
+>> at once?  If the answer to #2 is that all dirty data is sync'd for all
+>> subvolumes for a snapshot of any subvolume, we're liable to have
+>> significantly less to do on the consecutive subvolumes that are getting
+>> snapshotted right afterwards, but I believe these still imply a BTRFS root
+>> commit, and as such can be expensive in terms of disk I/O (at least linear
+>> with the number of 'simultaneous' snapshots).
+> 
+> If the snapshots are being created in the same directory, then each one
+> will try to hold a VFS-level directory lock to create the new directory
+> entry, so they can only execute sequentially.
+> 
+> If the snapshots are being created in different directories, then it
+> should be possible to run the snapshot creates in parallel.  They will
+> likely all end at close to the same time, though, as they're all trying
+> to complete a filesystem-wide flush, and none of them can proceed until
+> that is done.  An aggressive writer process could still add arbitrary
+> delays.
 
-Writing the dirty extent buffers and the super blocks can take a very
-significant amount of time to complete, but we could allow the tasks
-wanting to log an inode to proceed with most of their steps:
+Very helpful and yes the snapshots in this case are being done to 
+different subvolumes.  I think if we can solve the writer problem (I 
+have some ideas) on our side then we should be good to go.
 
-1) create the log trees
-2) log metadata in the trees
-3) write their dirty extent buffers
+Thank you very much for your time Zygo!
 
-They only need to wait for the previous transaction commit to complete
-(write its super blocks) before they attempt to write their super blocks,
-otherwise we could end up with a corrupt filesystem after a crash
-
-So change start_log_trans() to use the root tree's log_mutex to serialize
-for the creation of the log root tree instead of using the tree_log_mutex,
-and make btrfs_sync_log() acquire the tree_log_mutex before writing the
-super blocks. This allows for inode logging to wait much less time when
-there is a previous transaction that is still committing, often not having
-to wait at all, as by the time when we try to sync the log the previous
-transaction already wrote its super blocks.
-
-This patch belongs to a patch set that is comprised of the following
-patches:
-
-  btrfs: fix race causing unnecessary inode logging during link and rename
-  btrfs: fix race that results in logging old extents during a fast fsync
-  btrfs: fix race that causes unnecessary logging of ancestor inodes
-  btrfs: fix race that makes inode logging fallback to transaction commit
-  btrfs: fix race leading to unnecessary transaction commit when logging inode
-  btrfs: do not block inode logging for so long during transaction commit
-
-The following script that uses dbench was used to measure the impact of
-the whole patchset:
-
-  $ cat test-dbench.sh
-  #!/bin/bash
-
-  DEV=/dev/nvme0n1
-  MNT=/mnt/btrfs
-  MOUNT_OPTIONS="-o ssd"
-
-  echo "performance" | \
-      tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-
-  mkfs.btrfs -f -m single -d single $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  dbench -D $MNT -t 300 64
-
-  umount $MNT
-
-The test was run on a machine with 12 cores, 64G of ram, using a NVMe
-device and a non-debug kernel configuration (Debian's default).
-
-Before patch set:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    11277211    0.250    85.340
- Close        8283172     0.002     6.479
- Rename        477515     1.935    86.026
- Unlink       2277936     0.770    87.071
- Deltree          256    15.732    81.379
- Mkdir            128     0.003     0.009
- Qpathinfo    10221180    0.056    44.404
- Qfileinfo    1789967     0.002     4.066
- Qfsinfo      1874399     0.003     9.176
- Sfileinfo     918589     0.061    10.247
- Find         3951758     0.341    54.040
- WriteX       5616547     0.047    85.079
- ReadX        17676028    0.005     9.704
- LockX          36704     0.003     1.800
- UnlockX        36704     0.002     0.687
- Flush         790541    14.115   676.236
-
-Throughput 1179.19 MB/sec  64 clients  64 procs  max_latency=676.240 ms
-
-After patch set:
-
-Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    12687926    0.171    86.526
- Close        9320780     0.002     8.063
- Rename        537253     1.444    78.576
- Unlink       2561827     0.559    87.228
- Deltree          374    11.499    73.549
- Mkdir            187     0.003     0.005
- Qpathinfo    11500300    0.061    36.801
- Qfileinfo    2017118     0.002     7.189
- Qfsinfo      2108641     0.003     4.825
- Sfileinfo    1033574     0.008     8.065
- Find         4446553     0.408    47.835
- WriteX       6335667     0.045    84.388
- ReadX        19887312    0.003     9.215
- LockX          41312     0.003     1.394
- UnlockX        41312     0.002     1.425
- Flush         889233    13.014   623.259
-
-Throughput 1339.32 MB/sec  64 clients  64 procs  max_latency=623.265 ms
-
-+12.7% throughput, -8.2% max latency
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.h    |  2 +-
- fs/btrfs/tree-log.c | 56 +++++++++++++++++++++++++++++++--------------
- 2 files changed, 40 insertions(+), 18 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index c0c6e79c43f9..7185384f475a 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1026,7 +1026,7 @@ enum {
- 	BTRFS_ROOT_DEAD_RELOC_TREE,
- 	/* Mark dead root stored on device whose cleanup needs to be resumed */
- 	BTRFS_ROOT_DEAD_TREE,
--	/* The root has a log tree. Used only for subvolume roots. */
-+	/* The root has a log tree. Used for subvolume roots and the tree root. */
- 	BTRFS_ROOT_HAS_LOG_TREE,
- 	/* Qgroup flushing is in progress */
- 	BTRFS_ROOT_QGROUP_FLUSHING,
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index bc5b652f4f64..e8b84543d565 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -139,8 +139,25 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
- 			   struct btrfs_log_ctx *ctx)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct btrfs_root *tree_root = fs_info->tree_root;
- 	int ret = 0;
- 
-+	/*
-+	 * First check if the log root tree was already created. If not, create
-+	 * it before locking the root's log_mutex, just to keep lockdep happy.
-+	 */
-+	if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state)) {
-+		mutex_lock(&tree_root->log_mutex);
-+		if (!fs_info->log_root_tree) {
-+			ret = btrfs_init_log_root_tree(trans, fs_info);
-+			if (!ret)
-+				set_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state);
-+		}
-+		mutex_unlock(&tree_root->log_mutex);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	mutex_lock(&root->log_mutex);
- 
- 	if (root->log_root) {
-@@ -156,13 +173,6 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
- 			set_bit(BTRFS_ROOT_MULTI_LOG_TASKS, &root->state);
- 		}
- 	} else {
--		mutex_lock(&fs_info->tree_log_mutex);
--		if (!fs_info->log_root_tree)
--			ret = btrfs_init_log_root_tree(trans, fs_info);
--		mutex_unlock(&fs_info->tree_log_mutex);
--		if (ret)
--			goto out;
--
- 		ret = btrfs_add_log_tree(trans, root);
- 		if (ret)
- 			goto out;
-@@ -3022,6 +3032,8 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
- 	int log_transid = 0;
- 	struct btrfs_log_ctx root_log_ctx;
- 	struct blk_plug plug;
-+	u64 log_root_start;
-+	u64 log_root_level;
- 
- 	mutex_lock(&root->log_mutex);
- 	log_transid = ctx->log_transid;
-@@ -3199,22 +3211,31 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
- 		goto out_wake_log_root;
- 	}
- 
--	btrfs_set_super_log_root(fs_info->super_for_commit,
--				 log_root_tree->node->start);
--	btrfs_set_super_log_root_level(fs_info->super_for_commit,
--				       btrfs_header_level(log_root_tree->node));
--
-+	log_root_start = log_root_tree->node->start;
-+	log_root_level = btrfs_header_level(log_root_tree->node);
- 	log_root_tree->log_transid++;
- 	mutex_unlock(&log_root_tree->log_mutex);
- 
- 	/*
--	 * Nobody else is going to jump in and write the ctree
--	 * super here because the log_commit atomic below is protecting
--	 * us.  We must be called with a transaction handle pinning
--	 * the running transaction open, so a full commit can't hop
--	 * in and cause problems either.
-+	 * Here we are guaranteed that nobody is going to write the superblock
-+	 * for the current transaction before us and that neither we do write
-+	 * our superblock before the previous transaction finishes its commit
-+	 * and writes its superblock, because:
-+	 *
-+	 * 1) We are holding a handle on the current transaction, so no body
-+	 *    can commit it until we release the handle;
-+	 *
-+	 * 2) Before writing our superblock we acquire the tree_log_mutex, so
-+	 *    if the previous transaction is still committing, and hasn't yet
-+	 *    written its superblock, we wait for it to do it, because a
-+	 *    transaction commit acquires the tree_log_mutex when the commit
-+	 *    begins and releases it only after writing its superblock.
- 	 */
-+	mutex_lock(&fs_info->tree_log_mutex);
-+	btrfs_set_super_log_root(fs_info->super_for_commit, log_root_start);
-+	btrfs_set_super_log_root_level(fs_info->super_for_commit, log_root_level);
- 	ret = write_all_supers(fs_info, 1);
-+	mutex_unlock(&fs_info->tree_log_mutex);
- 	if (ret) {
- 		btrfs_set_log_full_commit(trans);
- 		btrfs_abort_transaction(trans, ret);
-@@ -3299,6 +3320,7 @@ int btrfs_free_log_root_tree(struct btrfs_trans_handle *trans,
- 	if (fs_info->log_root_tree) {
- 		free_log_tree(trans, fs_info->log_root_tree);
- 		fs_info->log_root_tree = NULL;
-+		clear_bit(BTRFS_ROOT_HAS_LOG_TREE, &fs_info->tree_root->state);
- 	}
- 	return 0;
- }
--- 
-2.28.0
-
+ellis
