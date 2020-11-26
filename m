@@ -2,231 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B63C2C5744
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Nov 2020 15:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B0C2C57E3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Nov 2020 16:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391122AbgKZOm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Nov 2020 09:42:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40630 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389991AbgKZOm7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Nov 2020 09:42:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606401777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=i2SPB7s8xs+tMdH/dKhhp7JbXpzq7BYxlAtAXiyQmC4=;
-        b=j3dFyyGRK0I1YYnA0ngK+A+JHEl0fBReXd9BmAKgf/gLbP/hoJLd5fC+J3AQWcziqVJPiu
-        2Ihfb/DLH3SO20te4P4nhX504ZDWZ36BvTWhoerqg0ifAV7GuDOg+wEZK72p1Yctwso8HH
-        BuJ6zf879bzvT/djfqBJ8jclcnmELgo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 492BAAD41;
-        Thu, 26 Nov 2020 14:42:57 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BF92FDA87E; Thu, 26 Nov 2020 15:41:27 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: drop casts of bio bi_sector
-Date:   Thu, 26 Nov 2020 15:41:27 +0100
-Message-Id: <20201126144127.19493-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S2389884AbgKZPKK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Nov 2020 10:10:10 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:53455 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389316AbgKZPKK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Nov 2020 10:10:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1606403606; x=1637939606;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=mJup9/9QrbJtblifYaI4UT6GBn+Kk9Q1a+MTGHgkgXJoWi/0/4T0yvX1
+   NifPuOo2VKrbYGC5vAwVkTtvoSwc8PMOYFsscAfQMaCVW1GjJNwVjZmLn
+   H5AqSDdkEMWeIl+kcUKBzQJpGgrvuK2z0sfTNZyVgt485PMC2GxPIuZHH
+   oWPRrKLfO0gTvUn9iZbjMRPYkrybSxVUH5/1zxT+Gu6B8YsPRhL5MwQqs
+   JAxfbx+XovILE+ieQ383kpXFzcmpRt3V785LXAzawzpyu0JdLR4JUhGLX
+   FQtUY8RqoKOLp+9oWkD78DsHTOWzMdW/Znm64Mqynt4opiSscSXGSttqg
+   w==;
+IronPort-SDR: iCIxrkH5bYOzz8SWn6qJ9GOjGfXNRN39YKgawFW10OunAs23eOhJnBcGRhdH9uld+s/PArTUB2
+ Z7efPfUFKsFK4aiODSy3pi1vbIe85hh6iAPSbmHarRvX108BntJih+CKSAXHqVCj2238Pym9rw
+ QSbePVpv4QCegEoJnq4unch1HFDQAhr1PZ7wvdhVcG5pmNrxxZab5tqa9GOoMKT6keXsmz1CjV
+ Is4u+EqDQzEA1eH7Bmgb7eXokynbvn+/Ry6+CwJ2xxOSLsh8ZRVkHLGw7914P/oak3niZUiBfO
+ WUM=
+X-IronPort-AV: E=Sophos;i="5.78,372,1599494400"; 
+   d="scan'208";a="257205146"
+Received: from mail-dm6nam11lp2169.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.169])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Nov 2020 23:13:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LeqyMHrbrZQefCJlsKMjExZ/xqTyFlgZchzmX5AsMHaRktDlA5CR4ymnaBKfTrrf2HzuyglSmOI1+PkLeeZu50FM2dqRqxzQstLzBnDTauHlkjZFD09/DZZYP+8Dz3ow2aa/P1qgRooFMog/vw/KnWBinqeq7V0IUl+y3APnUxWUGzYdYdTM1jq2JjrWDtDr3ueuolFz7aS9PWlxLaY110heyKNNeKhmwQo+ojILweF1Z6mkRdSVlLC8idjD89UpFPfzanxlxw+z5F1b+Wz0D/imyhM3vuT1jalqI24bRUHPjzlsHOnZqwgnM5p2dumJ/riwiEWd4aciGAqgSAY5Vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=JsDKvKTsRK6g4A0j/wityvwgom4EloTAf7HTDNDWJ4jlIOWz00rdpUtXQtpr6hdWmwwsBh9eYB3Vv39wZo68vxmDZEBgkHOwavhRCpJVB5xf0CQz4bgrS8MewN1TZF0P6j3dty3T2uZRGm5rYYKVF1/EsjwGPgYhJibgRiwe7CYqgg2mci4T/XbKrtj9miBvxWtHBXgsJVrNiauavi/IaE2S0/ana/18JtuXcNNX+kQFwO1jxW+2YmU/O/jOpcbI+RZCKL7A9IJwceOeatnMjZFamfYihYDaeFc5p/jPDt2a0NoSkttsSAKkrni3KMA6qmOxUsL2rQ4R4GNTYvg+BQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=p+7TuFe43XygdDL5SHWzQjYRrH4+oWKZkmYGxx+54htce+I3xgCKXmV1eLxYWZxmIWzMhzpcKA2xG1cn0mI4+Pfp0/RQ7N8s/1vlInv+9MqJ+DMvmAwbkV5JnCTyWgmweSlQiTfk7Vr3Jvavbebsyqi6YjwsulpxAK3X1BIifQM=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4464.namprd04.prod.outlook.com
+ (2603:10b6:805:b2::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.25; Thu, 26 Nov
+ 2020 15:10:06 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::65d7:592a:32d4:9f98%7]) with mapi id 15.20.3589.030; Thu, 26 Nov 2020
+ 15:10:06 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: drop casts of bio bi_sector
+Thread-Topic: [PATCH] btrfs: drop casts of bio bi_sector
+Thread-Index: AQHWxAJ5B8NVOvzl/UyQCb4SWyUKLw==
+Date:   Thu, 26 Nov 2020 15:10:06 +0000
+Message-ID: <SN4PR0401MB35983A84C48DA1EA209220BB9BF90@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20201126144127.19493-1-dsterba@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 166892be-20d5-4553-43e3-08d8921d5b91
+x-ms-traffictypediagnostic: SN6PR04MB4464:
+x-microsoft-antispam-prvs: <SN6PR04MB446421D475F9B856A2C8DC8A9BF90@SN6PR04MB4464.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hd5mVFArzMyj4/4rIH2uO15fgT7feQG++y0oD2rhuo6k7UkxqOxRimCiyMgYnfmqwTLhK7SsC1zy7N7l0Wkf6/Adm7IEzzzkML5IcVxaEGIi1oVUK59hFQ2nevVbDKEA7EbQPk3oXK+KCCQOtCwiyqpxBz6beb3l9BAil87LWC08Ly6RFUt68FgZY6hiLhv4c0YxiDoABz+FeYKxNNJ8ZA4UlDbBHLiVSdwmOP1NT/T+r83zY5VpjhuAW6pCv155dh8kvoO6hUUacGM6gyhH89woUhzG0qujrugB18YLIDDv725WsqDMm1vlS4UKD6ug7JkluJdWXqnZy43pFXnc9A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(346002)(366004)(76116006)(66556008)(66946007)(66446008)(55016002)(66476007)(7696005)(52536014)(91956017)(478600001)(64756008)(4270600006)(5660300002)(2906002)(9686003)(8936002)(71200400001)(33656002)(19618925003)(110136005)(558084003)(6506007)(316002)(86362001)(186003)(8676002)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?r2ieKH5nFBeIT5e7ZQyLlQ26p7SCgUSVtjELQw0xuQB9+JTjss6gbwiYJzCW?=
+ =?us-ascii?Q?D8E1/h56kF74fEUUGCay0uPZqAd9Am+otm+laEmfrlJ9MUGj418BgyuqhYg9?=
+ =?us-ascii?Q?3b2h2qTsTCaJb8GC+n8xVc5UpXLi4xX0f0FM018O0HwvFkgYsZ234syuNo29?=
+ =?us-ascii?Q?F7OBFV9xZMeKqghTbTTD8z9/SRXRmGwJZjTeU9V5pssx82EH6wxzCQSSmurZ?=
+ =?us-ascii?Q?ioAyLA51rvUzM44R46ROCimD1s4qFxdeiz7uabzPxD/pxePPdvC8JNzoBVRW?=
+ =?us-ascii?Q?QKd0vvmfJT49/GfGQOvnb7b63fRkA/+UDOfiRXbNu1pvuxAqYBlLaq7MYDQO?=
+ =?us-ascii?Q?mNNJ3LY6ZTcYyEPDbG1ifIoS4sLkFocebHwJG40YuYSggNT0aO3zQseNpClZ?=
+ =?us-ascii?Q?4MMEMV+YmiS7qmrwkiUq/GwNyxiDxOZiImzYSO+ATASprfJPdIwRGv78zhJO?=
+ =?us-ascii?Q?jNcf0Nsxe8XywWtsxWCh6OkxdHqIkM50nyVIw3kTM+IB3vl74cn7P1D3IBRF?=
+ =?us-ascii?Q?JXBQPOIAfcpNiolVhhH6AYGDNux3dJhflmSrRQaZ9wLb2MssQscS2wQk0VOp?=
+ =?us-ascii?Q?GclCJEJVWjPcJBWXFUZiyrNoNHKkM918QRiIZ0SBZXWRXszyfECJMkbgr8z8?=
+ =?us-ascii?Q?zZIDdaK7RJQ3AKkS3/OaeM2CkTukrrWh+ui7LEkP3bJV5afZ66l+MfUn2ON/?=
+ =?us-ascii?Q?wA/cweZ+7pGYElTxbuX6LKoV5max/F2AwYPWNpPQn+UccWvmASD5XFGyE4Eb?=
+ =?us-ascii?Q?0RDXGVBNkCh3w7aUCfWvcYObeaF5SQqP2vyaKCGPUXH4j8PeIyehWMcjfrWd?=
+ =?us-ascii?Q?zbFgzrtEV7BpoRTwnp8FbhXGXY8YB9wGPBw/7JlGgj0WdBsvn6DoRcRqiRy6?=
+ =?us-ascii?Q?YfbwmWrrl1Tuhjc4IkEluM9foi89mfFp0Bf9xt/0fUckrE511Ne5PtPituaG?=
+ =?us-ascii?Q?bRn8IACxxQgvVTPS2laKpR0ObcZ9kabLSNMtrxirgRF+j4ACA5mXdXqfwFp8?=
+ =?us-ascii?Q?/8vV?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 166892be-20d5-4553-43e3-08d8921d5b91
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2020 15:10:06.0359
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ch3xR5JbOq7WqdFz4UrV3GdLXUhTtlT5QxJiXLzxOnkZEce/z77VkacjRzEosXgoOnSH5d4CreVckpHd1mw5DZ3ebC3MQIemYQLDWmEkvfo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4464
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since commit 72deb455b5ec ("block: remove CONFIG_LBDAF") (5.2) the
-sector_t type is u64 on all arches and configs so we don't need to
-typecast it.  It used to be unsigned long and the result of sector size
-shifts were not guaranteed to fit in the type.
-
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/check-integrity.c | 3 +--
- fs/btrfs/compression.c     | 4 ++--
- fs/btrfs/extent_io.c       | 2 +-
- fs/btrfs/file-item.c       | 6 +++---
- fs/btrfs/inode.c           | 7 +++----
- fs/btrfs/raid56.c          | 8 ++++----
- fs/btrfs/volumes.c         | 4 ++--
- 7 files changed, 16 insertions(+), 18 deletions(-)
-
-diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-index e90e92e4d0b8..6ff44e53814c 100644
---- a/fs/btrfs/check-integrity.c
-+++ b/fs/btrfs/check-integrity.c
-@@ -2692,8 +2692,7 @@ static void __btrfsic_submit_bio(struct bio *bio)
- 		    BTRFSIC_PRINT_MASK_SUBMIT_BIO_BH)
- 			pr_info("submit_bio(rw=%d,0x%x, bi_vcnt=%u, bi_sector=%llu (bytenr %llu), bi_disk=%p)\n",
- 			       bio_op(bio), bio->bi_opf, segs,
--			       (unsigned long long)bio->bi_iter.bi_sector,
--			       dev_bytenr, bio->bi_disk);
-+			       bio->bi_iter.bi_sector, dev_bytenr, bio->bi_disk);
- 
- 		mapped_datav = kmalloc_array(segs,
- 					     sizeof(*mapped_datav), GFP_NOFS);
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 4e022ed72d2f..12d50f1cdc58 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -218,7 +218,7 @@ static void end_compressed_bio_read(struct bio *bio)
- 
- 	inode = cb->inode;
- 	ret = check_compressed_csum(BTRFS_I(inode), bio,
--				    (u64)bio->bi_iter.bi_sector << 9);
-+				    bio->bi_iter.bi_sector << 9);
- 	if (ret)
- 		goto csum_failed;
- 
-@@ -620,7 +620,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 	unsigned long pg_index;
- 	struct page *page;
- 	struct bio *comp_bio;
--	u64 cur_disk_byte = (u64)bio->bi_iter.bi_sector << 9;
-+	u64 cur_disk_byte = bio->bi_iter.bi_sector << 9;
- 	u64 em_len;
- 	u64 em_start;
- 	struct extent_map *em;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index f514304b23bf..569d50ccf78a 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2886,7 +2886,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 
- 		btrfs_debug(fs_info,
- 			"end_bio_extent_readpage: bi_sector=%llu, err=%d, mirror=%u",
--			(u64)bio->bi_iter.bi_sector, bio->bi_status,
-+			bio->bi_iter.bi_sector, bio->bi_status,
- 			io_bio->mirror_num);
- 		tree = &BTRFS_I(inode)->io_tree;
- 		failure_tree = &BTRFS_I(inode)->io_failure_tree;
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 6086e4cff203..8fa98d55fcfd 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -315,7 +315,7 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
- 		path->skip_locking = 1;
- 	}
- 
--	disk_bytenr = (u64)bio->bi_iter.bi_sector << 9;
-+	disk_bytenr = bio->bi_iter.bi_sector << 9;
- 
- 	bio_for_each_segment(bvec, bio, iter) {
- 		page_bytes_left = bvec.bv_len;
-@@ -560,7 +560,7 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
- 	else
- 		offset = 0; /* shut up gcc */
- 
--	sums->bytenr = (u64)bio->bi_iter.bi_sector << 9;
-+	sums->bytenr = bio->bi_iter.bi_sector << 9;
- 	index = 0;
- 
- 	shash->tfm = fs_info->csum_shash;
-@@ -599,7 +599,7 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
- 				ordered = btrfs_lookup_ordered_extent(inode,
- 								offset);
- 				ASSERT(ordered); /* Logic error */
--				sums->bytenr = ((u64)bio->bi_iter.bi_sector << 9)
-+				sums->bytenr = (bio->bi_iter.bi_sector << 9)
- 					+ total_bytes;
- 				index = 0;
- 			}
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 347076f1da6e..d003f806f02a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2183,7 +2183,7 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- {
- 	struct inode *inode = page->mapping->host;
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	u64 logical = (u64)bio->bi_iter.bi_sector << 9;
-+	u64 logical = bio->bi_iter.bi_sector << 9;
- 	u64 length = 0;
- 	u64 map_length;
- 	int ret;
-@@ -7820,8 +7820,7 @@ static void btrfs_end_dio_bio(struct bio *bio)
- 		btrfs_warn(BTRFS_I(dip->inode)->root->fs_info,
- 			   "direct IO failed ino %llu rw %d,%u sector %#Lx len %u err no %d",
- 			   btrfs_ino(BTRFS_I(dip->inode)), bio_op(bio),
--			   bio->bi_opf,
--			   (unsigned long long)bio->bi_iter.bi_sector,
-+			   bio->bi_opf, bio->bi_iter.bi_sector,
- 			   bio->bi_iter.bi_size, err);
- 
- 	if (bio_op(bio) == REQ_OP_READ) {
-@@ -7913,7 +7912,7 @@ static struct btrfs_dio_private *btrfs_create_dio_private(struct bio *dio_bio,
- 	dip->inode = inode;
- 	dip->logical_offset = file_offset;
- 	dip->bytes = dio_bio->bi_iter.bi_size;
--	dip->disk_bytenr = (u64)dio_bio->bi_iter.bi_sector << 9;
-+	dip->disk_bytenr = dio_bio->bi_iter.bi_sector << 9;
- 	dip->dio_bio = dio_bio;
- 	refcount_set(&dip->refs, 1);
- 	return dip;
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index 255490f42b5d..93fbf87bdc8d 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -1097,7 +1097,7 @@ static int rbio_add_io_page(struct btrfs_raid_bio *rbio,
- 
- 	/* see if we can add this page onto our existing bio */
- 	if (last) {
--		u64 last_end = (u64)last->bi_iter.bi_sector << 9;
-+		u64 last_end = last->bi_iter.bi_sector << 9;
- 		last_end += last->bi_iter.bi_size;
- 
- 		/*
-@@ -1163,7 +1163,7 @@ static void index_rbio_pages(struct btrfs_raid_bio *rbio)
- 		struct bvec_iter iter;
- 		int i = 0;
- 
--		start = (u64)bio->bi_iter.bi_sector << 9;
-+		start = bio->bi_iter.bi_sector << 9;
- 		stripe_offset = start - rbio->bbio->raid_map[0];
- 		page_index = stripe_offset >> PAGE_SHIFT;
- 
-@@ -1374,7 +1374,7 @@ static int find_bio_stripe(struct btrfs_raid_bio *rbio,
- static int find_logical_bio_stripe(struct btrfs_raid_bio *rbio,
- 				   struct bio *bio)
- {
--	u64 logical = (u64)bio->bi_iter.bi_sector << 9;
-+	u64 logical = bio->bi_iter.bi_sector << 9;
- 	int i;
- 
- 	for (i = 0; i < rbio->nr_data; i++) {
-@@ -2150,7 +2150,7 @@ int raid56_parity_recover(struct btrfs_fs_info *fs_info, struct bio *bio,
- 	if (rbio->faila == -1) {
- 		btrfs_warn(fs_info,
- 	"%s could not find the bad stripe in raid56 so that we cannot recover any more (bio has logical %llu len %llu, bbio has map_type %llu)",
--			   __func__, (u64)bio->bi_iter.bi_sector << 9,
-+			   __func__, bio->bi_iter.bi_sector << 9,
- 			   (u64)bio->bi_iter.bi_size, bbio->map_type);
- 		if (generic_io)
- 			btrfs_put_bbio(bbio);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 7132af058a95..fe03a2a1b376 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6347,7 +6347,7 @@ static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
- 	bio->bi_iter.bi_sector = physical >> 9;
- 	btrfs_debug_in_rcu(fs_info,
- 	"btrfs_map_bio: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
--		bio_op(bio), bio->bi_opf, (u64)bio->bi_iter.bi_sector,
-+		bio_op(bio), bio->bi_opf, bio->bi_iter.bi_sector,
- 		(unsigned long)dev->bdev->bd_dev, rcu_str_deref(dev->name),
- 		dev->devid, bio->bi_iter.bi_size);
- 	bio_set_dev(bio, dev->bdev);
-@@ -6379,7 +6379,7 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- {
- 	struct btrfs_device *dev;
- 	struct bio *first_bio = bio;
--	u64 logical = (u64)bio->bi_iter.bi_sector << 9;
-+	u64 logical = bio->bi_iter.bi_sector << 9;
- 	u64 length = 0;
- 	u64 map_length;
- 	int ret;
--- 
-2.25.0
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
