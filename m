@@ -2,68 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F01E2C55DB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Nov 2020 14:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEE62C56C3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Nov 2020 15:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390062AbgKZNiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Nov 2020 08:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390145AbgKZNiG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:38:06 -0500
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35612C0613D4
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Nov 2020 05:38:06 -0800 (PST)
-Received: by mail-vs1-xe42.google.com with SMTP id m62so953567vsd.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Nov 2020 05:38:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=cXkhotZlBKAu4tjiXHtn+3I5CdE2GNk0lQg226Je6WI=;
-        b=DBYKlDr4rHuyoLfTd5Gt4t/hIpewKdqoO4as5rbndcPqTQuN6mbwQcnxZyAFqibBlp
-         4ApQbd4OBrGYxyIECBesjUF8hp9hrwA4Fotzue+RgduXCqpP56mzO/I19SVP98+N0sZC
-         fXOuOnsVL1D/V8iYv5dJS1hJLWtPwG4wAjKQ1R908X3Y17pzzlH22U/uMuAcnmbtT1EU
-         rXXv9YbR2h+cY8uAT81lgx2QVQJxxEJHDIWV+UBFghHo76d5zUCtETZg3J6CpypADuHv
-         9KTLZNrYVYshRl6vjlTAG6a43DpYTSeIbjxzcVzHF6ZTB/+qnsrqUoklUXlrsao42+vW
-         27Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=cXkhotZlBKAu4tjiXHtn+3I5CdE2GNk0lQg226Je6WI=;
-        b=PkE02FyyrPH3jn+a1sQiBDzvxK2PtRCGC8E97lvLgRxorgwN4x0Z+bFNHpJP3hwuSj
-         uvKwk+ha/okubbGYEYDZc87zuXY0lXw+vUV2HSTQELFpVrDuU60Ybc5fhvw5jLsqUlT9
-         O3CZQoAl/ckTCuBbpvpbERFMPDo2KkI+0J2ZjCzl8hZf0a2AUHst+wbdzIIggVebavgs
-         gW0wj0/9fzeCtJgRoQjsKzVdCKzZWRAptsurakUL4j5e0b/bW28OyT7bjc9QZFqV27f/
-         qd4u75krt4z2UUTr/nDF1di2deorv8tmPF3PrOPtS7zvOPp14ar5QbDQAWjkQuYW58Yg
-         EWaQ==
-X-Gm-Message-State: AOAM5316RnCcOikZxa6Bx/UHXgQ5SeUfPZlFTJzrESz9I4a/uNP4DswO
-        ozVK0ZX2kVC4SbcwGsztVp/p+tkFjS0o7TOI+GI=
-X-Google-Smtp-Source: ABdhPJz7U+2J5TGNs/RlcB8FkRK7k/cQBbAu3fST9wIFQc5xXpLZjjMOE3azIscU8Kov70QsNXt8Jym9X2ax8AcHPAk=
-X-Received: by 2002:a67:7243:: with SMTP id n64mr1687930vsc.50.1606397885285;
- Thu, 26 Nov 2020 05:38:05 -0800 (PST)
+        id S2390463AbgKZOND (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Nov 2020 09:13:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37792 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390133AbgKZONB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Nov 2020 09:13:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CB3CFADB3;
+        Thu, 26 Nov 2020 14:12:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2AFB5DA87E; Thu, 26 Nov 2020 15:11:30 +0100 (CET)
+Date:   Thu, 26 Nov 2020 15:11:30 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>
+Subject: Re: [PATCH v10 04/41] btrfs: get zone information of zoned block
+ devices
+Message-ID: <20201126141129.GU6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <cf46f0aef5a214cae8bacb2be231efed5febef5f.1605007036.git.naohiro.aota@wdc.com>
+ <20201125214753.GP6430@twin.jikos.cz>
+ <b96d23ea0f08ec74a7535b4feb17a000ab935abf.camel@wdc.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:73d7:0:0:0:0:0 with HTTP; Thu, 26 Nov 2020 05:38:04
- -0800 (PST)
-Reply-To: hs8qfc11@gmail.com
-From:   Mr Bill T Winters <mes64543@gmail.com>
-Date:   Thu, 26 Nov 2020 14:38:04 +0100
-Message-ID: <CAF4hjb9W4XPefpx-m03p9VQLwtj_V=CRbU2jtSihG6DwvSZ4cw@mail.gmail.com>
-Subject: Good Morning,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b96d23ea0f08ec74a7535b4feb17a000ab935abf.camel@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Greetings,
-I Mr Bill T, did you Receive the (FUND), that was paid to you? please,
-do not hesitate to Let me know with your full name:.. for immediate
-verification notice,
+On Wed, Nov 25, 2020 at 11:50:39PM +0000, Damien Le Moal wrote:
+> Hi David,
+> 
+> On Wed, 2020-11-25 at 22:47 +0100, David Sterba wrote:
+> > On Tue, Nov 10, 2020 at 08:26:07PM +0900, Naohiro Aota wrote:
+> > > +int btrfs_get_dev_zone_info(struct btrfs_device *device)
+> > > +{
+> > > +	struct btrfs_zoned_device_info *zone_info = NULL;
+> > > +	struct block_device *bdev = device->bdev;
+> > > +	sector_t nr_sectors = bdev->bd_part->nr_sects;
+> > > +	sector_t sector = 0;
+> > 
+> > I'd rather replace the sector_t types with u64. The type is unsigned
+> > long and does not have the same width on 32/64 bit. The typecasts must
+> > be used and if not, bugs happen (and happened).
+> 
+> Since kernel 5.2, sector_t is unconditionally defined as u64 in linux/type.h:
+> 
+> typedef u64 sector_t;
+> 
+> CONFIG_LBDAF does not exist anymore.
 
-Sincerely Yours, Respectfully,
+That's great, I was not aware of that.
 
-Mr Bill T Winters,
-Group Chief Executive Officer & Executive Director,
+> I am not against using u64 at all, but using sector_t makes it clear what the
+> unit is for the values at hand.
+
+Yeah agreed, I'll switch it back.
