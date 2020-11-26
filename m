@@ -2,77 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401E32C5460
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Nov 2020 14:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C502C550A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Nov 2020 14:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389792AbgKZNBd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Nov 2020 08:01:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389545AbgKZNBd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Nov 2020 08:01:33 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAABC0613D4
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Nov 2020 05:01:33 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id c80so2223136oib.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Nov 2020 05:01:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=t380c0+7qyJaq7qdFK8r1gJJIh3sJ+pROg73dhQg2nNA7kB+g0NYUjKKWOs0e8CDZ9
-         jvqzMaw0GBwYFC6nT0vs2+zQBZasxzp7oFjojso9i3FsRUwwts2ItB7n84x7Vi59rhkh
-         yGyHyKwFR9o7jiQ0qO0+tygROLWS4RmRlu3XYWSMyLtlCnuWrr9W0cN6DS+qkZoNBEIa
-         B3RpceQNAhdbrMI4Uymmf6CTBFMP2cAJGAG/En/EgTxTgZCfHp/Lv1GsRvlchrcymg4H
-         5T9DXHd4dzxgSX/DvLvY6kvsaC0npUEwUYTvJOF8MuO7B7c2GgAq6CO/QgxOyV/RzXWs
-         zzhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
-        b=cJ2BzqfuiXuSK1yc9mgU9snhZteRTzRZSrJpFXcQyvTPOniIanWFr6VadFLulwC+i1
-         Uugu23dWryjfk+gb+lDb0LDrF76b6eYCuyDrAyWhc/a6oFfw6T9Uh9kpGz0tdK67wUTT
-         k+0nRetHkoEWeXa1ERItvnY4EeJS9MxjA4wWkSAzOcgj8PvRUQwHWwXn2FkYkPhKd9jw
-         5i41bQwkNEpxs/unKaRFaErognGtwAz26Ljslex2Npktm1vAHsmk3e61Z9dsofvhM7ub
-         MwaRsuodx42CGCkcJaSgeLeWD4v/S2ugp4HSFkC/gOftV1CwLqqOhWWwtpPIQXTYQPuN
-         j1jw==
-X-Gm-Message-State: AOAM531u8GmDPY/sesuri8LihVRdOnuxiTuJ5ocFNG+T1DMUD2JrI1/S
-        85Nhd41yM/s8w8F7X0TJolsVIied64Ag4Sp5YVA=
-X-Google-Smtp-Source: ABdhPJxIMsiS4vhce03q1S8qNEXt7/KkbtcZ9MBwfody/eBlGTeBMOKGd/xlI40dHNEXcaClEautBHO3gUh9tZWpNEM=
-X-Received: by 2002:aca:f08b:: with SMTP id o133mr1882713oih.89.1606395692451;
- Thu, 26 Nov 2020 05:01:32 -0800 (PST)
+        id S2389790AbgKZNKn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Nov 2020 08:10:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58856 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389842AbgKZNKm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Nov 2020 08:10:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606396241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=jKTP0B655iewq7kJFqwf9PwZncNtf2KH6kSSwfupk6Q=;
+        b=UsganEp0pPNw+yqraV4XfIuP68aQqc8Nk/RoUf1wyBFK9KEnJfknbviaPsWm78fZW4ODi4
+        o2wi/bGfFevf3TcxYxKJg1tFGaFrh6OltfEZICQ8dxf5v2OMEl55C9D5MAu1Xk6la/iAf2
+        0QIpA4+nKgUXCNfIHMaVAoul3zFuXAE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1D194AD21;
+        Thu, 26 Nov 2020 13:10:41 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH 0/3] Remove deprecated inode cache feature
+Date:   Thu, 26 Nov 2020 15:10:36 +0200
+Message-Id: <20201126131039.3441290-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a4a:a1a3:0:0:0:0:0 with HTTP; Thu, 26 Nov 2020 05:01:32
- -0800 (PST)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <fiacregnansa@gmail.com>
-Date:   Thu, 26 Nov 2020 14:01:32 +0100
-Message-ID: <CANUG119c++1uEWL21LRijVABUwYsuP=K2Cnr0EWPNEkmtmyxyw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallo
+This patchset removes inode cache feature which has been deprecated since kernel
+v5.9 release. First 2 patches move code around and replace calls of functions
+which are to be removed. Patch 3 finally removes inode cache for good.
 
-Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
-Ihnen anbieten
-der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
-Millionen US-Dollar)
-Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
+I tested this under xfstest and didn't observe any new regressions.
 
-Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
-einem Autounfall ums Leben gekommen ist
-und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
-sein f=C3=BCr dich.
-Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
-Informationen: georgemike7031@gmail.com
+Nikolay Borisov (3):
+  btrfs: Move btrfs_find_highest_objectid/btrfs_find_free_objectid to
+    disk-io.c
+  btrfs: Replace calls to btrfs_find_free_ino with
+    btrfs_find_free_objectid
+  btrfs: Remove inode cache feature
 
-Vielen Dank im Voraus,
-Mr. George Mike,
+ fs/btrfs/Makefile           |   2 +-
+ fs/btrfs/ctree.h            |  15 +-
+ fs/btrfs/disk-io.c          |  78 +++--
+ fs/btrfs/disk-io.h          |   2 +
+ fs/btrfs/free-space-cache.c | 177 -----------
+ fs/btrfs/free-space-cache.h |   6 -
+ fs/btrfs/inode-map.c        | 582 ------------------------------------
+ fs/btrfs/inode-map.h        |  16 -
+ fs/btrfs/inode.c            |  23 +-
+ fs/btrfs/ioctl.c            |   1 -
+ fs/btrfs/relocation.c       |   1 -
+ fs/btrfs/super.c            |   8 -
+ fs/btrfs/transaction.c      |  19 --
+ fs/btrfs/tree-log.c         |   1 -
+ 14 files changed, 66 insertions(+), 865 deletions(-)
+ delete mode 100644 fs/btrfs/inode-map.c
+ delete mode 100644 fs/btrfs/inode-map.h
+
+--
+2.25.1
+
