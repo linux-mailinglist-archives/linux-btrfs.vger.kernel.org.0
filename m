@@ -2,100 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FA62C68D3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Nov 2020 16:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F8E2C6922
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Nov 2020 17:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730758AbgK0Pht (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Nov 2020 10:37:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56398 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729872AbgK0Pht (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Nov 2020 10:37:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606491467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=bxvw8MtB2t8qh4fGfO0043SaXu/WwWkrv15MzKmm9p0=;
-        b=KvXxwYihMsUXTlBN0byPiqXp+JrwAP2qiDi/mz45v9TLcSBY3uEn+QIq84GMM4GaLkUm04
-        FY0PS9dQt0jJwpJARO+FAz2iHpHf4JnGz1DII5um+V9b+DaCU/b+10HIdi1KEy2VUMx+Av
-        A8G9Ed71Z59CCVzC01YvX/4+1Sfjjzo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35EC6ABD7;
-        Fri, 27 Nov 2020 15:37:47 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 36481DA7D9; Fri, 27 Nov 2020 16:36:17 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.10-rc6
-Date:   Fri, 27 Nov 2020 16:36:15 +0100
-Message-Id: <cover.1606490199.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1731154AbgK0QJW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Nov 2020 11:09:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730985AbgK0QJV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Nov 2020 11:09:21 -0500
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC753C0613D1
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Nov 2020 08:09:21 -0800 (PST)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1kigJV-00051B-Er; Fri, 27 Nov 2020 16:09:37 +0000
+Date:   Fri, 27 Nov 2020 16:09:37 +0000
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     Zener <zener78@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs metadata mirroring
+Message-ID: <20201127160937.GF1908@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        Zener <zener78@gmail.com>, linux-btrfs@vger.kernel.org
+References: <96b1b2e0-40d6-dfa4-25bf-dda02732f30a@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96b1b2e0-40d6-dfa4-25bf-dda02732f30a@gmail.com>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Nov 27, 2020 at 04:11:19PM +0100, Zener wrote:
+> Hi, I have a disk with btrfs but now I'd like enable just metadata mirroring
+> to understand if some error occurs.
+> Do I need another disk / partition / volume dedicated?
+> How to do?
+> Is it safe now or do I risk to loss my formely data?
 
-a few fixes for various warnings that accumulated over past two weeks.
+   It's quite possible that you already have it.
 
-- tree-checker: add missing return values for some errors
+   If you look at the output of "btrfs fi usage -T /mountpoint",
+you'll see the RAID level for your metadata listed. If it's "DUP",
+then you have two copies of each metadata block duplicated --
+effectively running "RAID-1" for your metadata, but on a single
+device.
 
-- lockdep fixes
-  - when reading qgroup config and starting quota rescan
-  - reverse order of quota ioctl lock and VFS freeze lock
+   If it says "single", then you've only got one copy of your
+metadata. You can convert it to DUP with a balance conversion:
 
-- avoid accessing potentially stale fs info during device scan,
-  reported by syzbot
+# btrfs balance start -mconvert=dup,soft /mountpoint
 
-- add scope NOFS protection around qgroup relation changes
+   You may need to run this more than once. Sometimes the conversion
+process manages to allocate (and then skip over) a new metadata chunk
+as single. Check with "btrfs fi usage -T /mountpoint" after running
+the first time, and see if there's any single metadata allocation
+left. If there is, run the command again.
 
-- check for running transaction before flushing qgroups
+   Hugo.
 
-- fix tracking of new delalloc ranges for some cases
-
-Please pull, thanks.
-
-----------------------------------------------------------------
-The following changes since commit 468600c6ec28613b756193c5f780aac062f1acdf:
-
-  btrfs: ref-verify: fix memory leak in btrfs_ref_tree_mod (2020-11-05 13:03:39 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.10-rc5-tag
-
-for you to fetch changes up to a855fbe69229078cd8aecd8974fb996a5ca651e6:
-
-  btrfs: fix lockdep splat when enabling and disabling qgroups (2020-11-23 21:16:43 +0100)
-
-----------------------------------------------------------------
-Daniel Xu (1):
-      btrfs: tree-checker: add missing return after error in root_item
-
-David Sterba (1):
-      btrfs: tree-checker: add missing returns after data_ref alignment checks
-
-Filipe Manana (4):
-      btrfs: fix missing delalloc new bit for new delalloc ranges
-      btrfs: fix lockdep splat when reading qgroup config on mount
-      btrfs: do nofs allocations when adding and removing qgroup relations
-      btrfs: fix lockdep splat when enabling and disabling qgroups
-
-Johannes Thumshirn (1):
-      btrfs: don't access possibly stale fs_info data for printing duplicate device
-
-Qu Wenruo (1):
-      btrfs: qgroup: don't commit transaction when we already hold the handle
-
- fs/btrfs/ctree.h             |  5 ++-
- fs/btrfs/file.c              | 57 ----------------------------
- fs/btrfs/inode.c             | 58 +++++++++++++++++++++++++++++
- fs/btrfs/qgroup.c            | 88 +++++++++++++++++++++++++++++++++++++++-----
- fs/btrfs/tests/inode-tests.c | 12 ++++--
- fs/btrfs/tree-checker.c      |  3 ++
- fs/btrfs/volumes.c           |  8 +++-
- 7 files changed, 158 insertions(+), 73 deletions(-)
+-- 
+Hugo Mills             | Anyone who says their system is completely secure
+hugo@... carfax.org.uk | understands neither systems nor security.
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |                                        Bruce Schneier
