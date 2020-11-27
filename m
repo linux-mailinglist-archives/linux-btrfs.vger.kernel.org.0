@@ -2,82 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FB12C696F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Nov 2020 17:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26BE42C6BB9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Nov 2020 19:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731337AbgK0Qbd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Nov 2020 11:31:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32990 "EHLO mx2.suse.de"
+        id S1729320AbgK0SsG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Nov 2020 13:48:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56176 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731233AbgK0Qbc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Nov 2020 11:31:32 -0500
+        id S1729225AbgK0SrZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Nov 2020 13:47:25 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C9F62AC55;
-        Fri, 27 Nov 2020 16:31:31 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 056F6AC0C;
+        Fri, 27 Nov 2020 18:46:10 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CCDB8DA7D9; Fri, 27 Nov 2020 17:30:01 +0100 (CET)
-Date:   Fri, 27 Nov 2020 17:30:01 +0100
+        id A1CF7DA7D9; Fri, 27 Nov 2020 19:44:39 +0100 (CET)
+Date:   Fri, 27 Nov 2020 19:44:39 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs: Remove inode cache feature
-Message-ID: <20201127163001.GA6430@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com, hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v10 05/41] btrfs: check and enable ZONED mode
+Message-ID: <20201127184439.GB6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20201126131039.3441290-1-nborisov@suse.com>
- <20201126131039.3441290-4-nborisov@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com, hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <104218b8d66fec2e4121203b90e7673ddac19d6a.1605007036.git.naohiro.aota@wdc.com>
+ <51c91510-6014-0dee-a456-b50648f48156@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201126131039.3441290-4-nborisov@suse.com>
+In-Reply-To: <51c91510-6014-0dee-a456-b50648f48156@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 03:10:39PM +0200, Nikolay Borisov wrote:
-> It's been deprecated and never really used so simply remove it.
+On Wed, Nov 18, 2020 at 07:29:20PM +0800, Anand Jain wrote:
+> On 10/11/20 7:26 pm, Naohiro Aota wrote:
+> > This commit introduces the function btrfs_check_zoned_mode() to check if
+> > ZONED flag is enabled on the file system and if the file system consists of
+> > zoned devices with equal zone size.
+> > 
+> > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> > Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >   fs/btrfs/ctree.h       | 11 ++++++
+> >   fs/btrfs/dev-replace.c |  7 ++++
+> >   fs/btrfs/disk-io.c     | 11 ++++++
+> >   fs/btrfs/super.c       |  1 +
+> >   fs/btrfs/volumes.c     |  5 +++
+> >   fs/btrfs/zoned.c       | 81 ++++++++++++++++++++++++++++++++++++++++++
+> >   fs/btrfs/zoned.h       | 26 ++++++++++++++
+> >   7 files changed, 142 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index aac3d6f4e35b..453f41ca024e 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -948,6 +948,12 @@ struct btrfs_fs_info {
+> >   	/* Type of exclusive operation running */
+> >   	unsigned long exclusive_operation;
+> >   
+> > +	/* Zone size when in ZONED mode */
+> > +	union {
+> > +		u64 zone_size;
+> > +		u64 zoned;
+> > +	};
+> > +
+> >   #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+> >   	spinlock_t ref_verify_lock;
+> >   	struct rb_root block_tree;
+> > @@ -3595,4 +3601,9 @@ static inline int btrfs_is_testing(struct btrfs_fs_info *fs_info)
+> >   }
+> >   #endif
+> >   
+> > +static inline bool btrfs_is_zoned(struct btrfs_fs_info *fs_info)
+> > +{
+> > +	return fs_info->zoned != 0;
+> > +}
+> > +
+> >   #endif
+> > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> > index 6f6d77224c2b..db87f1aa604b 100644
+> > --- a/fs/btrfs/dev-replace.c
+> > +++ b/fs/btrfs/dev-replace.c
+> > @@ -238,6 +238,13 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
+> >   		return PTR_ERR(bdev);
+> >   	}
+> >   
+> > +	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
+> > +		btrfs_err(fs_info,
+> > +			  "dev-replace: zoned type of target device mismatch with filesystem");
+> > +		ret = -EINVAL;
+> > +		goto error;
+> > +	}
+> > +
+> >   	sync_blockdev(bdev);
+> >   
+> >   	list_for_each_entry(device, &fs_info->fs_devices->devices, dev_list) {
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  fs/btrfs/Makefile           |   2 +-
->  fs/btrfs/ctree.h            |  15 +-
->  fs/btrfs/disk-io.c          |  23 --
->  fs/btrfs/free-space-cache.c | 177 ------------
->  fs/btrfs/free-space-cache.h |   6 -
->  fs/btrfs/inode-map.c        | 527 ------------------------------------
->  fs/btrfs/inode-map.h        |  14 -
->  fs/btrfs/inode.c            |  11 -
->  fs/btrfs/ioctl.c            |   1 -
->  fs/btrfs/relocation.c       |   1 -
->  fs/btrfs/super.c            |   8 -
->  fs/btrfs/transaction.c      |  19 --
->  fs/btrfs/tree-log.c         |   1 -
->  13 files changed, 3 insertions(+), 802 deletions(-)
->  delete mode 100644 fs/btrfs/inode-map.c
->  delete mode 100644 fs/btrfs/inode-map.h
+>   I am not sure if it is done in some other patch. But we still have to
+>   check for
+> 
+>   (model == BLK_ZONED_HA && incompat_zoned))
 
-This still left some bits, eg. prototypes of load_free_ino_cache and
-btrfs_write_out_ino_cache (grep for ino_cache).
+Do you really mean BLK_ZONED_HA, ie. host-aware (HA)?
+btrfs_check_device_zone_type checks for _HM.
 
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -874,12 +874,6 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->  		case Opt_inode_cache:
->  			btrfs_warn(info,
->  	"the 'inode_cache' option is deprecated and will have no effect from 5.11");
-> -			btrfs_set_pending_and_info(info, INODE_MAP_CACHE,
-> -					   "enabling inode map caching");
-> -			break;
-> -		case Opt_noinode_cache:
+> right? What if in a non-zoned FS, a zoned device is added through the
+> replace. No?
 
-This needs to stay as well, but can be merged with the above.
+The types of devices cannot mix, yeah. So I'd like to know the answer as
+well.
 
-Also definition of Opt_inode_cache should be moved to the deprecated
-section in super.c.
-
-There are some uses of BTRFS_FREE_INO_OBJECTID, some of them can be
-removed but I'd rather do that as separate patches as it's affecting
-code flow. The main removal part is done with the above fixups.
+> > --- a/fs/btrfs/volumes.c
+> > +++ b/fs/btrfs/volumes.c
+> > @@ -2518,6 +2518,11 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+> >   	if (IS_ERR(bdev))
+> >   		return PTR_ERR(bdev);
+> >   
+> > +	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
+> > +		ret = -EINVAL;
+> > +		goto error;
+> > +	}
+> > +
+> >   	if (fs_devices->seeding) {
+> >   		seeding_dev = 1;
+> >   		down_write(&sb->s_umount);
+> 
+> Same here too. It can also happen that a zone device is added to a non 
+> zoned fs.
