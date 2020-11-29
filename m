@@ -2,111 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E032C7857
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Nov 2020 08:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB76B2C7898
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Nov 2020 11:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgK2HTz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Nov 2020 02:19:55 -0500
-Received: from out20-87.mail.aliyun.com ([115.124.20.87]:47253 "EHLO
-        out20-87.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgK2HTz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Nov 2020 02:19:55 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07535394|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.399659-0.00197455-0.598366;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.J0Yt7M8_1606634344;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.J0Yt7M8_1606634344)
-          by smtp.aliyun-inc.com(10.147.41.138);
-          Sun, 29 Nov 2020 15:19:04 +0800
-Date:   Sun, 29 Nov 2020 15:19:04 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     ethanwu <ethanwu@synology.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        fdmanana@gmail.com
-Subject: Re: [PATCH] btrfs: test if rename handles dir item collision
- correctly
-Message-ID: <20201129071904.GO3853@desktop>
-References: <20201126105013.246270-1-ethanwu@synology.com>
+        id S1726604AbgK2KR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Nov 2020 05:17:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44606 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725839AbgK2KR0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 29 Nov 2020 05:17:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606644999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=T9pqWBhPSjtSqLonBUzm0WnQ9nlqpK0N5l+f4FRoLmA=;
+        b=EiVr0pUIVYxcazC6/QD9xnAhI+wBdKvZTHHhh7LentirPP+GlUAmo1raYRFYyeEPf0uJue
+        1lofmDb0aMQvNNSc8x2gU9ESytwG4F4A0dYEgI0Asqq2OH+1yIqReJK50teTXkFgKKESZE
+        4PYb+SZ7Zqs00RbHbHTGUv5L0Se6eTw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2CEC1AB63
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Nov 2020 10:16:39 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: disk-io: output error message for tree block bytenr mismatch case
+Date:   Sun, 29 Nov 2020 18:16:32 +0800
+Message-Id: <20201129101632.110692-1-wqu@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201126105013.246270-1-ethanwu@synology.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 26, 2020 at 06:50:13PM +0800, ethanwu wrote:
-> This is a regression test for the issue fixed by the kernel commit titled
-> "Btrfs: correctly calculate item size used when item key collision happends"
-> 
-> In this case, we'll simply rename many forged filename that cause collision
-> under a directory to see if rename failed and filesystem is forced readonly.
-> 
-> Signed-off-by: ethanwu <ethanwu@synology.com>
-> ---
->  tests/btrfs/227     | 311 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/227.out |   2 +
->  tests/btrfs/group   |   1 +
->  3 files changed, 314 insertions(+)
->  create mode 100755 tests/btrfs/227
->  create mode 100644 tests/btrfs/227.out
-> 
-> diff --git a/tests/btrfs/227 b/tests/btrfs/227
-> new file mode 100755
-> index 00000000..ba1cd359
-> --- /dev/null
-> +++ b/tests/btrfs/227
-> @@ -0,0 +1,311 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2020 Synology.  All Rights Reserved.
-> +#
-> +# FS QA Test 227
-> +#
-> +# Test if btrfs rename handle dir item collision correctly
-> +# Without patch fix, rename will fail with EOVERFLOW, and filesystem
-> +# is forced readonly.
-> +#
-> +# This bug is going to be fxied by a patch for kernel titled
-> +# "Btrfs: correctly calculate item size used when item key collision happends"
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +    cd /
-> +    rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +
-> +_supported_fs btrfs
-> +_require_scratch
-> +
-> +rm -f $seqres.full
-> +
-> +# Currently in btrfs the node/leaf size can not be smaller than the page
-> +# size (but it can be greater than the page size). So use the largest
-> +# supported node/leaf size (64Kb) so that the test can run on any platform
-> +# that Linux supports.
-> +_scratch_mkfs "--nodesize 65536" >>$seqres.full 2>&1
-> +_scratch_mount
-> +
-> +file_name_list=(d6d0dIka505ebc681949a25a3f1a4e7464f18bfcdb04a103b8ece40cddf61ccc9e690232878008edceecda8633591197bce8c0105891d2717425cb4bd04223bb08426de820da732c0e16b8a9fa236bb5b5260e526639780dacd378ca79428f640a0300a11a98f4f92719c62d6f7d756fa80f0aa654ae06
+[BUG]
+There is a report from the community that, btrfs aborted transaction due
+to page_offset() of a tree block doesn't match with its eb header.
 
-The file names are too long for the test, I'm wondering how are the
-names that could cause collisions generated in the first place? Is it
-possible to re-generate them at runtime? Instead of hard-coding them in
-the array.
+The code looks like this:
 
-Thanks,
-Eryu
+	if (WARN_ON(found_start != start))
+		return -EUCLEAN;
+
+[CAUSE]
+With extra debug patch and great help from the reporter, it turns out
+that, there is a memory bitflip:
+
+  [  471.998855] BTRFS warning (device sda1): page_start and eb_start
+  mismatch, eb_start=17593525075968 page_start=1339031552
+
+Note that:
+eb_start   = 0x10004fd00000 (Extracted from in-memory tree block header)
+page_start = 0x00004fd00000 (Page offset)
+
+This is an obvious memory bitflip.
+
+[ENHANCEMENT]
+The check on extent buffer header can be considered as part of tree
+checker, but more fundamental.
+
+So it's reasonable to follow the tree-checker scheme to outputting human
+readable error message, and output the "write time tree block corruption
+detected" message.
+
+Also with the human readable error message, there is no need to always
+trigger a kernel warning, just trigger the warning for debug build.
+
+Link: https://www.spinics.net/lists/linux-btrfs/msg107895.html
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 37b2e0aad162..b6040f8ffb08 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -465,8 +465,16 @@ static int csum_dirty_buffer(struct btrfs_fs_info *fs_info, struct bio_vec *bvec
+ 	 * Please do not consolidate these warnings into a single if.
+ 	 * It is useful to know what went wrong.
+ 	 */
+-	if (WARN_ON(found_start != start))
++	if (unlikely(found_start != start)) {
++		btrfs_err(fs_info,
++		"tree block bytenr mismatch, page_offset=%llu header_bytenr=%llu",
++			  start, found_start);
++		btrfs_err(fs_info,
++		"block=%llu write time tree block corruption detected",
++			  eb->start);
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+ 		return -EUCLEAN;
++	}
+ 	if (WARN_ON(!PageUptodate(page)))
+ 		return -EUCLEAN;
+ 
+-- 
+2.29.2
+
