@@ -2,110 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310672C72DD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Nov 2020 23:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E032C7857
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Nov 2020 08:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389781AbgK1VuG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:06 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:45464 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387669AbgK1USB (ORCPT
+        id S1725961AbgK2HTz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Nov 2020 02:19:55 -0500
+Received: from out20-87.mail.aliyun.com ([115.124.20.87]:47253 "EHLO
+        out20-87.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgK2HTz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 Nov 2020 15:18:01 -0500
-Received: by mail-io1-f69.google.com with SMTP id x7so280812ion.12
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Nov 2020 12:17:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Ehas9/uWgezbAqUFc//OPdBHdsrnNi7OIOegc/dRGek=;
-        b=hwuwtysKb2UltjAkoHen3vN9rSVuKOqG/FtULXT5YZUtDJDTwq7o0v27wgiwZyP+39
-         kk55aJaIyzcHxomOIIz1xFYTu7A+L1Lna63WUJALe23xoiE2SNvlwBaoUFPHzhoEntW5
-         9RgxpqPvvjm1mJ1vMJwaABwOZN60nNcudGMOFReC2gLAJU2hurq5GpBX2gzKx9OLwmCk
-         GfwqpgxG+bEzlLzYErUfRuYw2xKrPtdjSHy+28sXDFT8RcGffBI/1iv+/hSu2suFq9sG
-         EM9HYRyiudny2dA+xIHbeJ0CbuTo+Hw/Nn2XTMR/z0fzUuGyt86pUSPGEKc9cTOQx7fr
-         FSRg==
-X-Gm-Message-State: AOAM530vtOs/aDqUODyJALzNBC88XQNTZtZi9mVwgLiT9AAo8yo5Ef3A
-        pz1+MyNbF4yW0nw8EWUUASaxwdhxxUAiHbfCbaSuxeeaMbBM
-X-Google-Smtp-Source: ABdhPJyD0/wX+ANrFMtDd3Yf5pSf6uf/lZR6CePpgor4Mu1tR5OUziyQ0h8k8j2aRLEF2VvAVAxg1Y2WLY/Q3/CIEW0lfSezo6x4
+        Sun, 29 Nov 2020 02:19:55 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07535394|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.399659-0.00197455-0.598366;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.J0Yt7M8_1606634344;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.J0Yt7M8_1606634344)
+          by smtp.aliyun-inc.com(10.147.41.138);
+          Sun, 29 Nov 2020 15:19:04 +0800
+Date:   Sun, 29 Nov 2020 15:19:04 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     ethanwu <ethanwu@synology.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        fdmanana@gmail.com
+Subject: Re: [PATCH] btrfs: test if rename handles dir item collision
+ correctly
+Message-ID: <20201129071904.GO3853@desktop>
+References: <20201126105013.246270-1-ethanwu@synology.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:50b:: with SMTP id q11mr12684622ile.49.1606594634583;
- Sat, 28 Nov 2020 12:17:14 -0800 (PST)
-Date:   Sat, 28 Nov 2020 12:17:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007e15b505b530766d@google.com>
-Subject: WARNING in close_fs_devices (3)
-From:   syzbot <syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126105013.246270-1-ethanwu@synology.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Thu, Nov 26, 2020 at 06:50:13PM +0800, ethanwu wrote:
+> This is a regression test for the issue fixed by the kernel commit titled
+> "Btrfs: correctly calculate item size used when item key collision happends"
+> 
+> In this case, we'll simply rename many forged filename that cause collision
+> under a directory to see if rename failed and filesystem is forced readonly.
+> 
+> Signed-off-by: ethanwu <ethanwu@synology.com>
+> ---
+>  tests/btrfs/227     | 311 ++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/227.out |   2 +
+>  tests/btrfs/group   |   1 +
+>  3 files changed, 314 insertions(+)
+>  create mode 100755 tests/btrfs/227
+>  create mode 100644 tests/btrfs/227.out
+> 
+> diff --git a/tests/btrfs/227 b/tests/btrfs/227
+> new file mode 100755
+> index 00000000..ba1cd359
+> --- /dev/null
+> +++ b/tests/btrfs/227
+> @@ -0,0 +1,311 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2020 Synology.  All Rights Reserved.
+> +#
+> +# FS QA Test 227
+> +#
+> +# Test if btrfs rename handle dir item collision correctly
+> +# Without patch fix, rename will fail with EOVERFLOW, and filesystem
+> +# is forced readonly.
+> +#
+> +# This bug is going to be fxied by a patch for kernel titled
+> +# "Btrfs: correctly calculate item size used when item key collision happends"
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +    cd /
+> +    rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +_supported_fs btrfs
+> +_require_scratch
+> +
+> +rm -f $seqres.full
+> +
+> +# Currently in btrfs the node/leaf size can not be smaller than the page
+> +# size (but it can be greater than the page size). So use the largest
+> +# supported node/leaf size (64Kb) so that the test can run on any platform
+> +# that Linux supports.
+> +_scratch_mkfs "--nodesize 65536" >>$seqres.full 2>&1
+> +_scratch_mount
+> +
+> +file_name_list=(d6d0dIka505ebc681949a25a3f1a4e7464f18bfcdb04a103b8ece40cddf61ccc9e690232878008edceecda8633591197bce8c0105891d2717425cb4bd04223bb08426de820da732c0e16b8a9fa236bb5b5260e526639780dacd378ca79428f640a0300a11a98f4f92719c62d6f7d756fa80f0aa654ae06
 
-syzbot found the following issue on:
+The file names are too long for the test, I'm wondering how are the
+names that could cause collisions generated in the first place? Is it
+possible to re-generate them at runtime? Instead of hard-coding them in
+the array.
 
-HEAD commit:    d5beb314 Merge tag 'hyperv-fixes-signed' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1232777d500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7994ac0f2a9b95d9
-dashboard link: https://syzkaller.appspot.com/bug?extid=a70e2ad0879f160b9217
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8484 at fs/btrfs/volumes.c:1160 close_fs_devices+0x71d/0x7b0 fs/btrfs/volumes.c:1160
-Modules linked in:
-CPU: 0 PID: 8484 Comm: syz-executor.3 Not tainted 5.10.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:close_fs_devices+0x71d/0x7b0 fs/btrfs/volumes.c:1160
-Code: c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 bb 5b 3f fe 0f 0b e9 6f f9 ff ff e8 af 5b 3f fe 0f 0b e9 3c ff ff ff e8 a3 5b 3f fe <0f> 0b e9 69 ff ff ff 48 c7 c1 24 64 0e 8d 80 e1 07 80 c1 03 38 c1
-RSP: 0018:ffffc900016dfc80 EFLAGS: 00010293
-RAX: ffffffff8335c3bd RBX: 0000000000000001 RCX: ffff888015323480
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff888024b82108 R08: ffffffff8335c31f R09: ffffed10038cdd27
-R10: ffffed10038cdd27 R11: 0000000000000000 R12: dffffc0000000000
-R13: ffff88801c66e860 R14: 1ffff110038cdd0c R15: 1ffff110038cdd0a
-FS:  0000000003329940(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055ad0a12280f CR3: 000000006814e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- btrfs_close_devices+0x8c/0x400 fs/btrfs/volumes.c:1172
- close_ctree+0x5bf/0x6ae fs/btrfs/disk-io.c:4152
- generic_shutdown_super+0x120/0x2a0 fs/super.c:464
- kill_anon_super+0x36/0x60 fs/super.c:1108
- btrfs_kill_super+0x3d/0x50 fs/btrfs/super.c:2263
- deactivate_locked_super+0xa7/0xf0 fs/super.c:335
- cleanup_mnt+0x462/0x510 fs/namespace.c:1118
- task_work_run+0x137/0x1c0 kernel/task_work.c:151
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
- exit_to_user_mode_prepare+0xe4/0x170 kernel/entry/common.c:191
- syscall_exit_to_user_mode+0x4a/0x170 kernel/entry/common.c:266
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4608e7
-Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe70ea1cb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000004608e7
-RDX: 00000000004031f8 RSI: 0000000000000002 RDI: 00007ffe70ea1d60
-RBP: 0000000000000538 R08: 0000000000000000 R09: 000000000000000b
-R10: 0000000000000005 R11: 0000000000000246 R12: 00007ffe70ea2df0
-R13: 000000000332aa60 R14: 0000000000000000 R15: 00007ffe70ea2df0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Eryu
