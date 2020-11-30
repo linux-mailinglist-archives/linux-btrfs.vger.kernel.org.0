@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CBF2C8DDB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 20:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B662C8DF0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 20:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgK3TT1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Nov 2020 14:19:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S1729926AbgK3TVL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Nov 2020 14:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729847AbgK3TTT (ORCPT
+        with ESMTP id S1729923AbgK3TVF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:19:19 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DB9C0613D3
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:18:33 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id r2so7042006pls.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:18:33 -0800 (PST)
+        Mon, 30 Nov 2020 14:21:05 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1A3C0613D3
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:20:20 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id b23so7023043pls.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:20:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=J0uaPww9Zo/kwiIz62BRZcQJ75KrUIs2Bl30icME+Dc=;
-        b=TXpn7lbrUrUILSPcmkpNm9ho9lyxtnMhvLUZTDTKTkfhqgufluqLhBWTfWZi9ML+Ul
-         6MLS5fKcBK/W/JorbbRmkIHIrz+5iM7uRTQ1D+FBUX8mSAnu9bXf98kkV7m/+upab/3s
-         NYrJKb9Pv2tRvzoYgskwZ4aDTv2GjtsRz8nBiA7nDZiPK03YMTiOr5QJM4gjdfSEtf/J
-         ZWkAJLvVcd2Afx8D9O9ZFdi4mX76DLvXW6ozrmLdQira//F3CF4O0H+FoyKVe4TbyRab
-         ES0SBeNjt3Gij6gblWH3wFKIPd21mg3ymfFHZ7c6WVSh7AG1vLCVNGvb58ljmDgBTK5J
-         fLTw==
+        bh=YPx6KAaJQYZ9LMgvuman8b1Zu51OwsYSMrhXlN/pSyo=;
+        b=1ZYQ1Sj10JfNbvLVfhXcfbMu8dNtj3dcCtQWpB63cbeklmhlKJ0tjF3j5QDQjsflkW
+         TqnuMAr7QJUnwRAqWOeLl3VGdiPNWH1Oux6wywgBh/f5yrPElz5PzS2FnxNprTJgtruH
+         fCPthmg/AQzAvWJ4exQyMwwLU1nlM+NGy1VA9lpN4oM7AFqZ8EKVi3jC7gP4GyvhPKGH
+         qUzCmTmJKtbBPlxrR8OV7m3HI+WkyFmIqC8I3t+Jqy5uIbGP1OJaASCQ+rRrjocGbTbr
+         z5a4a7aP/jfXritiE6FQG42lzThw07ozaMJY2e6DdCumMSoLSlE+OGCCIa3be4CxZKCq
+         6LVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=J0uaPww9Zo/kwiIz62BRZcQJ75KrUIs2Bl30icME+Dc=;
-        b=PiMv4q65Y2ZyhSO9gIfmvMYHHzKHiIofQErGOMoExbQf5Tw1uxFdH6/9CabPLef7dN
-         ZqsHN4K87ah1mYwY5lt5qlEjuSoCO6sTFaqJGdvBbgsiCPcVoa19ihvQ8fYAuf3zadMu
-         nOgI+r+rJjBmfGEsThCBM/KIUxFGHSE8ACshsqLIOU5WORr220t9Sh5ZjTFHeyqtAIRj
-         XjcOCCV+Mm9QJvJ/RTUoHwI3GeYZGBbPJsjdRcw6mPqsfe4R/GaV0UnFdv+TXH15hSKE
-         V1xJENYZerjmL9LMQLGc/wE0arIcEjfD+1Jq+fbIwefXit+6L71fxhep3D5EOzlS/yVL
-         Ownw==
-X-Gm-Message-State: AOAM532O4DTMPMBMWS2n6hgv26ljKZeva9xsGlhvXZxMB4iwQwJncJl1
-        72SBJnWWF7HMTx3PC8CfFzPmAw==
-X-Google-Smtp-Source: ABdhPJxV8so8Tk7xlVbSlSNLCUfIRq2duNU3cGTYClzBLepW/PJI1vbrV4KpO4SQjmioJT/24Su3cg==
-X-Received: by 2002:a17:902:b209:b029:d8:e821:efc6 with SMTP id t9-20020a170902b209b02900d8e821efc6mr19864273plr.5.1606763913184;
-        Mon, 30 Nov 2020 11:18:33 -0800 (PST)
+        bh=YPx6KAaJQYZ9LMgvuman8b1Zu51OwsYSMrhXlN/pSyo=;
+        b=OXcAI2BCDXwiFLdZG46tY2LqYtmVTp4qj/+lS1a4EvGvQhPZIu31LwDgiFAIebvA/Q
+         AwPVdKKqt02f0sgjhltSyTk6lm8RLE4A8e09WN1SeXH72Z8IwPFRO8V2UNqb3nmzMCrt
+         ibJRIr4zmDn0DsDxngjAhL5CHJ8XHkgdVcq5p/L1zz8NprbSivY5Ojdo1vmhKnCk0fBF
+         32NPlkfUyNNCLfitDQD9SVI5o3UKubMd45KYe5B2wJ2ONN5hpZpqp3Oh4nXNzme3Tdac
+         ULzwKFUF+ORgF6gvu9Sf4obR1ORBUR3FxQhoBE4koDVLEHxcs2s1w9kU8U+KLbswyv18
+         cy0A==
+X-Gm-Message-State: AOAM533PgOgvC7kBqmVdWAxqwungnQlUKZJ8EkmO/jSQ3BAF6vfE7xld
+        7BnVxGUvOuENbKf/lqM3SUoipg==
+X-Google-Smtp-Source: ABdhPJwxmco5rDsraLzW/o1UM1b39rwGCsqNTj9Ovi3eTPRfSZLWiAeOXhOQs592Lg3/Fk+ksE9sGg==
+X-Received: by 2002:a17:902:9a4c:b029:d6:a250:ab9f with SMTP id x12-20020a1709029a4cb02900d6a250ab9fmr20349781plv.20.1606764019470;
+        Mon, 30 Nov 2020 11:20:19 -0800 (PST)
 Received: from relinquished.localdomain ([2601:602:8b80:8e0::b2be])
-        by smtp.gmail.com with ESMTPSA id v23sm17759258pfn.141.2020.11.30.11.18.30
+        by smtp.gmail.com with ESMTPSA id u1sm17363448pfn.181.2020.11.30.11.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 11:18:31 -0800 (PST)
-Date:   Mon, 30 Nov 2020 11:18:30 -0800
+        Mon, 30 Nov 2020 11:20:18 -0800 (PST)
+Date:   Mon, 30 Nov 2020 11:20:17 -0800
 From:   Omar Sandoval <osandov@osandov.com>
 To:     dsterba@suse.cz, linux-fsdevel@vger.kernel.org,
         linux-btrfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
@@ -58,39 +58,35 @@ To:     dsterba@suse.cz, linux-fsdevel@vger.kernel.org,
         Amir Goldstein <amir73il@gmail.com>,
         Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
         kernel-team@fb.com
-Subject: Re: [PATCH v6 04/11] btrfs: fix btrfs_write_check()
-Message-ID: <X8VFhiqOVZKh+i6e@relinquished.localdomain>
+Subject: Re: [PATCH v6 05/11] btrfs: fix check_data_csum() error message for
+ direct I/O
+Message-ID: <X8VF8SzQOc7gPMxb@relinquished.localdomain>
 References: <cover.1605723568.git.osandov@fb.com>
- <b096cecce8277b30e1c7e26efd0450c0bc12ff31.1605723568.git.osandov@fb.com>
- <20201123170831.GH8669@twin.jikos.cz>
+ <e33db7a6a4f56d0caedfe6a1aad131edca56b340.1605723568.git.osandov@fb.com>
+ <20201123170956.GI8669@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123170831.GH8669@twin.jikos.cz>
+In-Reply-To: <20201123170956.GI8669@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 06:08:31PM +0100, David Sterba wrote:
-> On Wed, Nov 18, 2020 at 11:18:11AM -0800, Omar Sandoval wrote:
+On Mon, Nov 23, 2020 at 06:09:56PM +0100, David Sterba wrote:
+> On Wed, Nov 18, 2020 at 11:18:12AM -0800, Omar Sandoval wrote:
 > > From: Omar Sandoval <osandov@fb.com>
 > > 
-> > btrfs_write_check() has two related bugs:
+> > Commit 1dae796aabf6 ("btrfs: inode: sink parameter start and len to
+> > check_data_csum()") replaced the start parameter to check_data_csum()
+> > with page_offset(), but page_offset() is not meaningful for direct I/O
+> > pages. Bring back the start parameter.
 > > 
-> > 1. It gets the iov_iter count before calling generic_write_checks(), but
-> >    generic_write_checks() may truncate the iov_iter.
-> > 2. It returns the count or negative errno as a size_t, which the callers
-> >    cast to an int. If the count is greater than INT_MAX, this overflows.
-> > 
-> > To fix both of these, pull the call to generic_write_checks() out of
-> > btrfs_write_check(), use the new iov_iter count returned from
-> > generic_write_checks(), and have btrfs_write_check() return 0 or a
-> > negative errno as an int instead of the count. This rearrangement also
-> > paves the way for RWF_ENCODED write support.
-> > 
-> > Fixes: f945968ff64c ("btrfs: introduce btrfs_write_check()")
+> > Fixes: 1dae796aabf6 ("btrfs: inode: sink parameter start and len to check_data_csum()")
 > 
-> This patch is still in misc-next and the commit id is unstable, so this
-> would rather be folded to the patch.
+> This is part of the subpage preparatory patches still in misc-next , I
+> can drop the part that removes the start parameter if you're going to
+> use it.
 
-Looks like you folded this in on misc-next, thanks!
+To be clear, the original patch is buggy. It causes check_data_csum() to
+print nonsense for checksum errors encountered during direct I/O. So,
+this should be probably be folded in to the original patch.
