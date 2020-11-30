@@ -2,129 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C052C8CBA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 19:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E65C2C8DA0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 20:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbgK3SZe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Nov 2020 13:25:34 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41109 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726860AbgK3SZd (ORCPT
+        id S2387693AbgK3TCb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Nov 2020 14:02:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728696AbgK3TCa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Nov 2020 13:25:33 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 513E35C017D;
-        Mon, 30 Nov 2020 13:24:25 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 30 Nov 2020 13:24:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=fm2; bh=owrCQkj6tert0ju5pjk8erqwhiATuyvFVReQWfyi
-        Mcs=; b=PvVsE2C8sN/o+/cVNtY+1qXO3IkYp1x+NrHHjTGBZhwfgwTvCOPuTt2A
-        cnMNOHy4+Q2nnCvQ74MgLrdiCfMLX+4XEMnCpQOKZq3tgG5lH8f8SGbKwICdd8D1
-        3DHD9byrAh9Mx880WA8NlETDCPe1vloxCtEVmqoxQ39gctGOpiqiUClvM3Abed8W
-        24ptoQBDp9sMDbP5j7IjC1GMZuyPmtGWM6kte/L9kpKFATqH+z/fPi4YKb3tZIVQ
-        Wv3RKcyhwuN2nAQ/FBGqq0zPzotk22zleYk2LBqI0+fe4NVBZEoEvA657R0LiKIs
-        Z3X+9Kx/bJT8Xo1W5HgRnb9/jovpMQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=owrCQk
-        j6tert0ju5pjk8erqwhiATuyvFVReQWfyiMcs=; b=p2Ito0/3/5d4XCODrzCMnQ
-        F8wGAaCcswsJ4ThUmKlDbnTTaDXtApBb5dX0E0OrSgLSpjaYEBR/RqySGdQKmgN9
-        O//27XAt8JBrJcKGx9Oli5i5C8id8e4j6PjtQiIlrdY3suQcJOXgBbftg9Zu3Os6
-        4YetCswLXKSZAxi3EcufsVsmZgNsPqaZraSEtnmgq4MOCXzzJRke3SrZ9RPyebOj
-        HUkh6mlYgYz+HaC0qHZxSzqyK503T86tErF0uYuq/GAiT3Vtpi50DsahDpydpe1k
-        3y8+AJizEsZY8IUooA5kt97BksHO4+avG7AjgOx4CrrhYfSEPmJOCDAcnY2ThQSw
-        ==
-X-ME-Sender: <xms:2DjFX5jbErWiiKhEjyO4bZX4Sj1CqTz_b0NuVvO9jAwTxrNUQNjFhw>
-    <xme:2DjFX-AraJIbKFbTWStldZchvvhFYoeOumdS2ri3Lx8C4_Z_uftjUyI190ebnz4jb
-    kyK5qObY86kYZkVSS8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeitddgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjfgesth
-    dtredttdervdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghu
-    rhdrihhoqeenucggtffrrghtthgvrhhnpedvhffghfetueeggfdtgeduvedugeekgeeuvd
-    dvhfdugeduhfetkeevtdeitdegueenucfkphepudeifedruddugedrudefvddrfeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:2DjFX5FGppcIomYOCUT22kd22xyYeeYYI_HVOjACp5x3FpiA0C9xjw>
-    <xmx:2DjFX-S9wQU8ox8MfouxjUz4xSN9DYKbQKXA35yd-A1j_ZcBWd-qww>
-    <xmx:2DjFX2x2jIYN7EGDQEGUU_dS2xEOYwYXO9tIVnpaX9Nfs0CNLxzm0w>
-    <xmx:2TjFX8ZEhTwJLnrblaIB9sSpoiPDPWaF2pW3jU-fwp0lR6Z00yYlrA>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 789EB3064AA6;
-        Mon, 30 Nov 2020 13:24:24 -0500 (EST)
-Date:   Mon, 30 Nov 2020 10:24:16 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v7 00/10] btrfs: free space tree mounting fixes
-Message-ID: <20201130182416.GA2017125@devbig008.ftw2.facebook.com>
-References: <cover.1605736355.git.boris@bur.io>
- <20201120213222.GA8669@twin.jikos.cz>
+        Mon, 30 Nov 2020 14:02:30 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3AAC0617A6
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:01:50 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id s30so23719556lfc.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:01:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=MvwMSVoEMY8nHvrl2QWnGZKweBabzxowBYVzv5vhs28=;
+        b=C6Gr5l4GoQURXHQS9ISK+uGC2IDTi7G7oNnPDpaqekx8t48+qx/N8huolPyQZN2OHJ
+         bxVYZ1ACTMBhc5FWvPjEIjP25tb8zqaPsXeJhAwrFUv6GdsrBU48a/YAO6y9EJxC0A7W
+         IelotAqubMo4dv8G/Ug/a9ZpJG0QH2QBWqay2elrePipann6r93k6V4/wv0hF1fuz6a9
+         hCjYWo+OVGchW0WMwn9GhrAJYazTqDRcKtvqxjKmYhonB4uMb25VSwZpJF+K3MH+HJ8Q
+         tX0YFkkKWk4Urmp3lBB5Swt9iV5v7e0WpL69TXla4mrVuQ6i28XYsNwg1fuKBduDmkjZ
+         svsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=MvwMSVoEMY8nHvrl2QWnGZKweBabzxowBYVzv5vhs28=;
+        b=tOmFHNJFHxFgL2p50BALRyOPqGAS9MS0zLzkgAU6aGW8JS4DAk6beUkUNemUMHGJuP
+         8qgPZw1hee3zTYtgQgGIfZJP+mdMx9h0pidExB6DaYFuWjMce9d2uFWvK4xSEyvlqnC1
+         nCgc0juIWkOXm3Bn4HBJ++4WG8mGZdr0FxosTjXh3n3rR9dVtPiBDZTX5+GNhlKGdZPS
+         12AXc2agn3sr0t/mXhg6BA4Zglf21K1t88aoX9ydeU9Kk+exDJ4ru2wFwiqHVUsHHVSR
+         PVP71LdiT52XUXnZ3sS68sy1ZVPkP8w9lM5gFw0Brhagi5pRLSiTosOu6TPuUGwmN/wx
+         ddKw==
+X-Gm-Message-State: AOAM533yBCvmGoDQqqQ63PHZWhy3BkBiDDFdq5ueqZernN61hh5Ih2rp
+        GOXCLRgsZPpyLdso+N4uiAkzNKp5n7EX41VcnB8=
+X-Google-Smtp-Source: ABdhPJzmbLCmEy+10wDMtdHAfvafE+EF62Dzj+yPk+GUFY4zqo0TnS6A2j3IsBLnOY3ghQPMj1o8lSAoDa9jx5GjzwI=
+X-Received: by 2002:a19:4a55:: with SMTP id x82mr10628725lfa.241.1606762908173;
+ Mon, 30 Nov 2020 11:01:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120213222.GA8669@twin.jikos.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a2e:a362:0:0:0:0:0 with HTTP; Mon, 30 Nov 2020 11:01:47
+ -0800 (PST)
+Reply-To: mrmohamedmusa5@gmail.com
+From:   Mr Mohamed Musa <mrmarkaddison11@gmail.com>
+Date:   Mon, 30 Nov 2020 20:01:47 +0100
+Message-ID: <CAOT5n3J-infe4jzbmAgRiOyU_DqxFyU6nWUoujik0tcu7JcFTg@mail.gmail.com>
+Subject: REPLY ME IMMEDIATELY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 10:32:22PM +0100, David Sterba wrote:
-> On Wed, Nov 18, 2020 at 03:06:15PM -0800, Boris Burkov wrote:
-> > This patch set cleans up issues surrounding enabling and disabling various
-> > free space cache features and their reporting in /proc/mounts.  Because the
-> > improvements became somewhat complex, the series starts by lifting rw mount
-> > logic into a single place.
-> > 
-> > The first patch is a setup patch that unifies very similar logic between a
-> > normal rw mount and a ro->rw remount. This is a useful setup step for adding
-> > more functionality to ro->rw remounts.
-> > 
-> > The second patch fixes the omission of orphan inode cleanup on a few trees
-> > during ro->rw remount.
-> > 
-> > The third patch stops marking block groups with need_free_space when the
-> > free space tree is not yet enabled.
-> > 
-> > The fourth patch adds enabling the free space tree to ro->rw remount.
-> > 
-> > The fifth patch adds a method for clearing oneshot mount options after mount.
-> > 
-> > The sixth patch adds support for clearing the free space tree on ro->rw remount.
-> > 
-> > The seventh patch sets up for more accurate /proc/mounts by ensuring that
-> > cache_generation > 0 iff space_cache is enabled.
-> > 
-> > The eigth patch is the more accurate /proc/mounts logic.
-> > 
-> > The ninth patch is a convenience kernel message that complains when we skip
-> > changing the free space tree on remount.
-> > 
-> > The tenth patch removes the space cache v1 free space item and free space
-> > inodes when space cache v1 is disabled (nospace_cache or space_cache=v2).
-> > 
-> > The eleventh patch stops re-creating the free space objects when we are not
-> > using space_cache=v1
-> > 
-> > The twelfth patch fixes a lockdep failure in creating the free space tree.
-> 
-> Is this fixing a problem caused by some patches in this series? Because
-> if yes, the fix should be folded there. A standalone patch makese sense
-> in case we can't fold it there (eg. after merging to Linus' tree),
-> otherwise the merged patchsets should be made of complete patches,
-> without fixes-to-fixes. Even if the patchset is in misc-next, fixups are
-> still doable.
+Assalamu alaikum
 
-The new 'needs_free_space' patch (#3) fixes the bug in this series that
-you caught, so if I understand correctly, I should appropriately fold
-that one into one of the existing patches.
+My name is Mr. Mohamed Musa, I am a staff working with the Bank Of
+Africa here in Ouagadougou,Burkina Faso.
 
-The lockdep issue exists in misc-next as far as I can tell, so I think a
-standalone patch makes sense.
+I want you to help me in receiving the sum of Twenty Seven Million Two
+Hundred thousand Dollars ($27,200,000) into your Bank Account. This
+fund was deposited in the bank here by a foreign customer who died
+accidentally alongside with his entire family members many years ago.
+Nobody had asked for this fund till now Please Contact me with my
+Email: mrmohamedmusa5@gmail.com for more details.
 
-Let me know if I misunderstood you on either of those.
-
-Thanks,
-Boris
+Mr. Mohamed Musa
