@@ -2,211 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A602C83EE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 13:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D712C84E1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 14:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgK3MNn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Nov 2020 07:13:43 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:33788 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728039AbgK3MNn (ORCPT
+        id S1726477AbgK3NPh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Nov 2020 08:15:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgK3NPb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Nov 2020 07:13:43 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUC5HB7160135;
-        Mon, 30 Nov 2020 12:12:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=CqYY2VNgbobPvXOmB4ECShuOxMwJfiKIVd8u7Ta7z0Y=;
- b=dtDzQo9LmgJX1J12c66eYtoTVdqxdW4+QwlE7wHJcgxQqRlgfVkLHgsSi3LiVrwITDs0
- T6BXEx2cOlDh5asoM7xN+Tl4Wdxhr4gKw+lzESUssttuoaO5cAUoQsH3bLoHIoX/rRcJ
- 0xelN/NoND6+/eol1nAw89tBz0ZGT4vfcaR3wEkdJ+u8gL+eEUgPLSvRwjEYMT3Ff6P2
- epVZJ5IykDIt+Buce/mKYi7BiUOzc21nSnHJGL2Pf7q/lWQh4HCY0w7qSJvjYEARRMIi
- 1HW81JBIhmeyLJxG3yANadAQTaW5IJH0a0CTEGzUc0xYrnX1JDekATsvCC3Mc9p9T3zH aw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 353c2amtyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 30 Nov 2020 12:12:50 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUCADq2152369;
-        Mon, 30 Nov 2020 12:12:49 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 3540aqh4pe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Nov 2020 12:12:49 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AUCCjNA032013;
-        Mon, 30 Nov 2020 12:12:46 GMT
-Received: from [192.168.1.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 30 Nov 2020 04:12:43 -0800
-Subject: Re: [PATCH v10 05/41] btrfs: check and enable ZONED mode
-To:     dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <cover.1605007036.git.naohiro.aota@wdc.com>
- <104218b8d66fec2e4121203b90e7673ddac19d6a.1605007036.git.naohiro.aota@wdc.com>
- <51c91510-6014-0dee-a456-b50648f48156@oracle.com>
- <20201127184439.GB6430@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <e3d212c1-057e-a761-6dc2-767f1e82c748@oracle.com>
-Date:   Mon, 30 Nov 2020 20:12:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 30 Nov 2020 08:15:31 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778B2C0613CF
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 05:14:46 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id l17so10080452pgk.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 05:14:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brunner-ninja.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yyVFFy3AgdehzqRTT3u03/R4ieBO2On8bww/pYPrd3s=;
+        b=BNOjmLpOOR+gPteqYa3BE/tkbMILcgBuOSIy5YjKUnBoUEc9mKhz42aaCnleRUBD3F
+         4iDhf5thAq5sofKkaDmLVj5UZS1yHMPZl1Omme77SzeFHyMy+wdXX3QSKVzlMznmrXvw
+         5WZw9YyBgrL97ewFNQ+sc3sl7nkNkWx1PyYLjIFfYI8gclm+mkLW9pxnZI6N3+VQc6Xw
+         QHOz7+l5XL02wuur4EDdPkBdo6o/OjjcKUgjBsN0Dc6Pxv6azbsq/cyKHeH5UysXf8O1
+         yt3rv2Gy0Zot/BHHS49ro1idTkMzcPXJe7A2N9cVdlM1lMh744RzAbBpEGfQCAui77Z8
+         jRcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yyVFFy3AgdehzqRTT3u03/R4ieBO2On8bww/pYPrd3s=;
+        b=h+3GLMaXhGBbkKDV27ueTxsSa+J7FDKbLjkFgS5G5wWXa3mBoBPKPw061kBJJHdcqG
+         qqVGTkbKNN9bFNsRU36JQ9FVhoYxW9IjClNo6zsA5POR2UFpJPM8xPGgyuU+zF/jGfhv
+         l4mCTah7lu8t6X9CrKlSVlTM/z+FzcTD8PV6D1vy8uJgWQ7NLg+k7QKtvfOPwwH4aekm
+         ko6g+W6g7NQD7mGq1WNBhWUMeL6BbfEKX7HABMvGfQhu04ecenNk7V9GXYcTjuu8SEUb
+         KA+/ERwI5/J3tiHmPSMvUMZv368vwfrhdN5DhQfD5lSgL8AzqnWpiytNZss36FkI9VhC
+         JAbw==
+X-Gm-Message-State: AOAM533xZ9SqGjHhY6H59uK3RUpWyHROkYgIBVxB+5LT4NlIIXfR+Ait
+        CN7XoPgNgj9FN9qK7nSVEeR4OCiJrNvrVXmopKkjIi2NDXs54w==
+X-Google-Smtp-Source: ABdhPJy21kaevhafGpcLLmhvvayocfZDJNgy4l/7vMAwj6NwWxF8M32u2QyL1n5rnSLCqReNFCTDCq0mQXerMcRoUQM=
+X-Received: by 2002:a05:6a00:13a3:b029:18b:d5d2:196 with SMTP id
+ t35-20020a056a0013a3b029018bd5d20196mr18954903pfg.62.1606742085772; Mon, 30
+ Nov 2020 05:14:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201127184439.GB6430@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300080
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011300079
+References: <CAD7Y51gpvZ79nVnkg+i3AuvT-1OiXj0eaq2-aig38pGmBtm-Xw@mail.gmail.com>
+ <CAJCQCtS0HVBQZ1-=oAhvYnywUVuhjS__8qf553YMoRWriabADg@mail.gmail.com>
+In-Reply-To: <CAJCQCtS0HVBQZ1-=oAhvYnywUVuhjS__8qf553YMoRWriabADg@mail.gmail.com>
+From:   Daniel Brunner <daniel@brunner.ninja>
+Date:   Mon, 30 Nov 2020 14:14:34 +0100
+Message-ID: <CAD7Y51imT3BhQzMHqVUB=ZMcAQiSPoG8E8HZMVmpggzjDgN9fA@mail.gmail.com>
+Subject: Re: corrupted root, doesnt check, repair or mount
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 28/11/20 2:44 am, David Sterba wrote:
-> On Wed, Nov 18, 2020 at 07:29:20PM +0800, Anand Jain wrote:
->> On 10/11/20 7:26 pm, Naohiro Aota wrote:
->>> This commit introduces the function btrfs_check_zoned_mode() to check if
->>> ZONED flag is enabled on the file system and if the file system consists of
->>> zoned devices with equal zone size.
->>>
->>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->>> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
->>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->>> ---
->>>    fs/btrfs/ctree.h       | 11 ++++++
->>>    fs/btrfs/dev-replace.c |  7 ++++
->>>    fs/btrfs/disk-io.c     | 11 ++++++
->>>    fs/btrfs/super.c       |  1 +
->>>    fs/btrfs/volumes.c     |  5 +++
->>>    fs/btrfs/zoned.c       | 81 ++++++++++++++++++++++++++++++++++++++++++
->>>    fs/btrfs/zoned.h       | 26 ++++++++++++++
->>>    7 files changed, 142 insertions(+)
->>>
->>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->>> index aac3d6f4e35b..453f41ca024e 100644
->>> --- a/fs/btrfs/ctree.h
->>> +++ b/fs/btrfs/ctree.h
->>> @@ -948,6 +948,12 @@ struct btrfs_fs_info {
->>>    	/* Type of exclusive operation running */
->>>    	unsigned long exclusive_operation;
->>>    
->>> +	/* Zone size when in ZONED mode */
->>> +	union {
->>> +		u64 zone_size;
->>> +		u64 zoned;
->>> +	};
->>> +
->>>    #ifdef CONFIG_BTRFS_FS_REF_VERIFY
->>>    	spinlock_t ref_verify_lock;
->>>    	struct rb_root block_tree;
->>> @@ -3595,4 +3601,9 @@ static inline int btrfs_is_testing(struct btrfs_fs_info *fs_info)
->>>    }
->>>    #endif
->>>    
->>> +static inline bool btrfs_is_zoned(struct btrfs_fs_info *fs_info)
->>> +{
->>> +	return fs_info->zoned != 0;
->>> +}
->>> +
->>>    #endif
->>> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
->>> index 6f6d77224c2b..db87f1aa604b 100644
->>> --- a/fs/btrfs/dev-replace.c
->>> +++ b/fs/btrfs/dev-replace.c
->>> @@ -238,6 +238,13 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
->>>    		return PTR_ERR(bdev);
->>>    	}
->>>    
->>> +	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
->>> +		btrfs_err(fs_info,
->>> +			  "dev-replace: zoned type of target device mismatch with filesystem");
->>> +		ret = -EINVAL;
->>> +		goto error;
->>> +	}
->>> +
->>>    	sync_blockdev(bdev);
->>>    
->>>    	list_for_each_entry(device, &fs_info->fs_devices->devices, dev_list) {
->>
->>    I am not sure if it is done in some other patch. But we still have to
->>    check for
->>
->>    (model == BLK_ZONED_HA && incompat_zoned))
-> 
-> Do you really mean BLK_ZONED_HA, ie. host-aware (HA)?
-> btrfs_check_device_zone_type checks for _HM.
+Hi,
+
+thx for the reply, here the outputs:
+
+# btrfs insp dump-s /dev/mapper/bcache0-open
+superblock: bytenr=65536, device=/dev/mapper/bcache0-open
+---------------------------------------------------------
+csum_type 0 (crc32c)
+csum_size 4
+csum 0xe29c4dff [match]
+bytenr 65536
+flags 0x1
+( WRITTEN )
+magic _BHRfS_M [match]
+fsid 4e970755-09c3-4df2-992d-d2f1e0b7d5e4
+metadata_uuid 4e970755-09c3-4df2-992d-d2f1e0b7d5e4
+label
+generation 23991070
+root 51642824081408
+sys_array_size 97
+chunk_root_generation 23971935
+root_level 2
+chunk_root 1064960
+chunk_root_level 1
+log_root 0
+log_root_transid 0
+log_root_level 0
+total_bytes 29202801745920
+bytes_used 17674898116608
+sectorsize 4096
+nodesize 16384
+leafsize (deprecated) 16384
+stripesize 4096
+root_dir 6
+num_devices 1
+compat_flags 0x0
+compat_ro_flags 0x0
+incompat_flags 0x161
+( MIXED_BACKREF |
+  BIG_METADATA |
+  EXTENDED_IREF |
+  SKINNY_METADATA )
+cache_generation 23991070
+uuid_tree_generation 23991070
+dev_item.uuid 0b210cdb-1581-41af-b4a4-a71707f53bec
+dev_item.fsid 4e970755-09c3-4df2-992d-d2f1e0b7d5e4 [match]
+dev_item.type 0
+dev_item.total_bytes 29202801745920
+dev_item.bytes_used 19385355862016
+dev_item.io_align 4096
+dev_item.io_width 4096
+dev_item.sector_size 4096
+dev_item.devid 1
+dev_item.dev_group 0
+dev_item.seek_speed 0
+dev_item.bandwidth 0
+dev_item.generation 0
 
 
-Still confusing to me. The below function, which is part of this
-patch, says we don't support BLK_ZONED_HM. So does it mean we
-allow BLK_ZONED_HA only?
 
-+static inline bool btrfs_check_device_zone_type(struct btrfs_fs_info 
-*fs_info,
-+						struct block_device *bdev)
-+{
-+	u64 zone_size;
-+
-+	if (btrfs_is_zoned(fs_info)) {
-+		zone_size = (u64)bdev_zone_sectors(bdev) << SECTOR_SHIFT;
-+		/* Do not allow non-zoned device */
-+		return bdev_is_zoned(bdev) && fs_info->zone_size == zone_size;
-+	}
-+
-+	/* Do not allow Host Manged zoned device */
-+	return bdev_zoned_model(bdev) != BLK_ZONED_HM;
-+}
+# btrfs rescue super -v /dev/mapper/bcache0-open
+All Devices:
+Device: id = 1, name = /dev/mapper/bcache0-open
 
+Before Recovering:
+[All good supers]:
+device name = /dev/mapper/bcache0-open
+superblock bytenr = 65536
 
-Also, if there is a new type of zoned device in the future, the older 
-kernel should be able to reject the newer zone device types.
+device name = /dev/mapper/bcache0-open
+superblock bytenr = 67108864
 
-And, if possible could you rename above function to 
-btrfs_zone_type_is_valid(). Or better.
+device name = /dev/mapper/bcache0-open
+superblock bytenr = 274877906944
+
+[All bad supers]:
+
+All supers are valid, no need to recover
 
 
->> right? What if in a non-zoned FS, a zoned device is added through the
->> replace. No?
-> 
-> The types of devices cannot mix, yeah. So I'd like to know the answer as
-> well.
-
-
->>> --- a/fs/btrfs/volumes.c
->>> +++ b/fs/btrfs/volumes.c
->>> @@ -2518,6 +2518,11 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
->>>    	if (IS_ERR(bdev))
->>>    		return PTR_ERR(bdev);
->>>    
->>> +	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
->>> +		ret = -EINVAL;
->>> +		goto error;
->>> +	}
->>> +
->>>    	if (fs_devices->seeding) {
->>>    		seeding_dev = 1;
->>>    		down_write(&sb->s_umount);
->>
->> Same here too. It can also happen that a zone device is added to a non
->> zoned fs.
-
-
-Thanks.
+Am Fr., 27. Nov. 2020 um 00:55 Uhr schrieb Chris Murphy
+<lists@colorremedies.com>:
+>
+> On Wed, Nov 25, 2020 at 2:16 PM Daniel Brunner <daniel@brunner.ninja> wrote:
+> >
+> > Hi all,
+> >
+> > I used btrfs resize to shrink the filesystem and then used mdadm to
+> > shrink the backing device.
+> >
+> > Sadly I did not use btrfs for the software raid itself.
+> >
+> > After shrinking the mdadm device, my btrfs filesystem doesnt want to
+> > mount or repair anymore.
+>
+> First, make no writes to any of the drives until you understand
+> exactly what went wrong. Any attempt to repair it without
+> understanding the problem comes with risk of making the problem worse
+> and not reversible.
+>
+> What were the exact commands, in order? Best to use the history
+> command so we know for sure what every relevant command is.
+>
+> > # btrfs check --repair --force /dev/mapper/bcache0-open
+>
+> Yeah first mistake is to try and repair. Fortunately it looks like it
+> couldn't get far enough along to even attempt writes.
+>
+> I don't know anything about bcache so I looked at this:
+> https://wiki.archlinux.org/index.php/bcache#Resize_backing_device
+>
+> So the question is, what was the bcache device cache mode? Writeback
+> or writethrough? And did you confirm that bcache reports a clean state
+> before doing the mdadm resize?
+>
+> > # blockdev --getsize64 /dev/mapper/bcache0-open
+> > 40002767544320
+>
+> What do you get for
+>
+> # btrfs insp dump-s /dev/mapper/bcache0-open
+> # btrfs rescue super -v /dev/mapper/bcache0-open
+>
+> Importantly these are read only commands and make no changes.
+>
+>
+> --
+> Chris Murphy
