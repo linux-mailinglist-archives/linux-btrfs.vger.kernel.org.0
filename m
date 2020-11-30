@@ -2,71 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BE52C7A1E
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Nov 2020 17:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8853F2C830E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 12:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbgK2Qwt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Nov 2020 11:52:49 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:34407 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgK2Qws (ORCPT
+        id S1728538AbgK3LRb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Nov 2020 06:17:31 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:37146 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgK3LRb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Nov 2020 11:52:48 -0500
-Received: by mail-io1-f72.google.com with SMTP id q6so5659786iog.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 29 Nov 2020 08:52:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=qMz6FQvC1fcPUihVEUOwnOdKwTMvJtCoQhjXTojuMcw=;
-        b=KfUpL0d4h+fSogp/t9OaBI0BoWDYiEFN454bSfs3j9of24BdA8Yk86Wb0yxWQ0vlGn
-         /zsXxI9L8JzF0PG91Yk6UbmMCXCYziTSNZe5HqSIgV+wmcvor/ErdIPvNbK4LcU9pVp3
-         s3UaaaIk62TRtmTNgsGDQVWKBapD4eDA2ujF3ZdyFLASnaxV4VuC9A9ktkibV3CkNgzW
-         bIMgVLI5+qrOZ+SGqiLNWt0kQ8UbrJUazrIoCYpmbOpHsDrrfx0x7MwWymOlCaKGc22B
-         tO5/suKCVdidiy4+EOeo/7UTj1VJa/cJXwUj8TfJUUr9EDviLy3VIdt05AFRWApPaw4o
-         1dPg==
-X-Gm-Message-State: AOAM533R8H/2BWQBen5E5cQhRTIDWhi1kaekB2nqu57qCUG8o//WsCIb
-        kzgvAsj2oCTfZCObfzzTLP6++WZIfdlbZLVOID8lcV0Pa8Jx
-X-Google-Smtp-Source: ABdhPJzOzXWgVWYLzenNvr6XVYL/h1lDT6QXlmavbabLKcZKARtOR+kw7Q5p9pzxK7Fav9WuHQJW+8DYmCMwYWJtQ3Qkwd2uXdFO
+        Mon, 30 Nov 2020 06:17:31 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUB9DU4072296;
+        Mon, 30 Nov 2020 11:16:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Y7YK6VDzAXQWGnlu/xgy/wLUsDe4DrpptCVjETeUpmU=;
+ b=R1p32X3doea+dSWMHAVO2PzZKePZSRWuNCOHYB4wytQ+7gME9hlwCMK8VbGkQ6Ad2O8m
+ 94EfrIhAgbDFf2mSITEWHgQ2BNEQbIYu16B2vWBS0yJ2FmV4u5JLI2Zmz+bfNTDpUCxh
+ mgU/B+hkEGIjpmAXpWksWde9p3KJtwGu2h9xqm7pwp+sr/K3OGPEaAQ+1szmYReyd4xf
+ DyJlaO5KBWjpsU2hygv6RDRYCpqLunziqpihdpYPqB0PFf7yL2MNr5cv3nLy2tLlBA2a
+ v57j6SVWRo4y0YxGbHKpWmZGWF+HLSdpdJyF1HDFV6NZw8gMdzgeCoXjDSWz8761LON4 BQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 353egkcgg4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 30 Nov 2020 11:16:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AUBABOw193501;
+        Mon, 30 Nov 2020 11:16:36 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 3540aqegf5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 30 Nov 2020 11:16:36 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0AUBGSnr007005;
+        Mon, 30 Nov 2020 11:16:29 GMT
+Received: from [192.168.1.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 03:16:28 -0800
+Subject: Re: [PATCH v10 04/41] btrfs: get zone information of zoned block
+ devices
+From:   Anand Jain <anand.jain@oracle.com>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <cf46f0aef5a214cae8bacb2be231efed5febef5f.1605007036.git.naohiro.aota@wdc.com>
+ <6df7390f-6656-4795-ac54-a99fdaf67ac6@oracle.com>
+ <20201112125734.dcxk5q7cuf5e7hje@naota.dhcp.fujisawa.hgst.com>
+ <f75372bf-9dad-1397-21f2-7bfb53c9a94f@oracle.com>
+Message-ID: <f824f52c-65ad-b0fe-a830-bb1a94c5d4be@oracle.com>
+Date:   Mon, 30 Nov 2020 19:16:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:e8e:: with SMTP id t14mr15320646ilj.207.1606668728344;
- Sun, 29 Nov 2020 08:52:08 -0800 (PST)
-Date:   Sun, 29 Nov 2020 08:52:08 -0800
-In-Reply-To: <0000000000007e15b505b530766d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d324e605b541b602@google.com>
-Subject: Re: WARNING in close_fs_devices (3)
-From:   syzbot <syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f75372bf-9dad-1397-21f2-7bfb53c9a94f@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ phishscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=2
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300072
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9820 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=2
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011300072
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
+Below two comments are fixed in the misc-next.
 
-    lockdep: Fix lockdep recursion
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=178c99fd500000
-start commit:   6174f052 Add linux-next specific files for 20201127
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=144c99fd500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=104c99fd500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=79c69cf2521bef9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=a70e2ad0879f160b9217
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11727795500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1793dcc9500000
+Thanks.
 
-Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 18/11/20 7:17 pm, Anand Jain wrote:
+> 
+> 
+> Also, %device->fs_info is not protected. It is better to avoid using
+> fs_info when we are still at open_fs_devices(). Yeah, the unknown part
+> can be better. We need to fix it as a whole. For now, you can use
+> something like...
+> 
+> -------------------------
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 1223d5b0e411..e857bb304d28 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -130,19 +130,11 @@ int btrfs_get_dev_zone_info(struct btrfs_device 
+> *device)
+>           * (device <unknown>) ..."
+>           */
+> 
+> -       rcu_read_lock();
+> -       if (device->fs_info)
+> -               btrfs_info(device->fs_info,
+> -                       "host-%s zoned block device %s, %u zones of %llu 
+> bytes",
+> -                       bdev_zoned_model(bdev) == BLK_ZONED_HM ? 
+> "managed" : "aware",
+> -                       rcu_str_deref(device->name), zone_info->nr_zones,
+> -                       zone_info->zone_size);
+> -       else
+> -               pr_info("BTRFS info: host-%s zoned block device %s, %u 
+> zones of %llu bytes",
+> -                       bdev_zoned_model(bdev) == BLK_ZONED_HM ? 
+> "managed" : "aware",
+> -                       rcu_str_deref(device->name), zone_info->nr_zones,
+> -                       zone_info->zone_size);
+> -       rcu_read_unlock();
+> +       btrfs_info_in_rcu(NULL,
+> +               "host-%s zoned block device %s, %u zones of %llu bytes",
+> +               bdev_zoned_model(bdev) == BLK_ZONED_HM ? "managed" : 
+> "aware",
+> +               rcu_str_deref(device->name), zone_info->nr_zones,
+> +               zone_info->zone_size);
+> 
+>          return 0;
+>   ---------------------------
+> 
+> Thanks, Anand
+> 
+> 
+
+
+
+>>>> @@ -374,6 +375,7 @@ void btrfs_free_device(struct btrfs_device *device)
+>>>>      rcu_string_free(device->name);
+>>>>      extent_io_tree_release(&device->alloc_state);
+>>>>      bio_put(device->flush_bio);
+>>>
+>>>> +    btrfs_destroy_dev_zone_info(device);
+>>>
+>>> Free of btrfs_device::zone_info is already happening in the path..
+>>>
+>>> btrfs_close_one_device()
+>>>   btrfs_destroy_dev_zone_info()
+>>>
+>>> We don't need this..
+>>>
+>>> btrfs_free_device()
+>>>  btrfs_destroy_dev_zone_info()
+>>
+>> Ah, yes, I once had it only in btrfs_free_device() and noticed that it 
+>> does
+>> not free the device zone info on umount. So, I added one in
+>> btrfs_close_one_device() and forgot to remove the other one. I'll drop it
+>> from btrfs_free_device().
+
+
