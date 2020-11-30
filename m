@@ -2,109 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DBB2C8E2A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 20:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AE42C8E74
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Nov 2020 20:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgK3TgA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Nov 2020 14:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbgK3TgA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Nov 2020 14:36:00 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF1DC061A47
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:35:14 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id b10so9676034pfo.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 11:35:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zoIMtVE4+1+o9p0pbm0cQZHtnOHf9cojfw2g8Pzl99w=;
-        b=nFwXZN+9x1uRKlRpb2fisB/ELkMzUI7nBOTDK+3QkUAWIm3IfPiJqiGjivf6F3sSwv
-         RoZyHi7CgxvW3SSOZQ2cU1/KY0Iy+CUvtAsqwt6VbmFNVW6B+eL6V31xyW900NDwZht5
-         N2oHTj6Gh8XEDl0zpxkojlT54hjr847iaIKNqFW9i3ucnsLmDSouyItCamuTeqB2jgEm
-         0AXOJ61q3ZHbh7mqIh6vCm6/n53SmiKHvl5J6WQtgx6lhqPLoAlk4NAHMXWCsP8Sta+x
-         RZJhxhos8lefJMBl3CLwk3ul9mLSpsmV5sZfheVZtdZuZ8VK8F4zN5m0ix/m3QpJBjKp
-         OnMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zoIMtVE4+1+o9p0pbm0cQZHtnOHf9cojfw2g8Pzl99w=;
-        b=AbBdaUX3omrjLGLmWS+DS6Uyj5Y0iofsBqYssGjx24zxBZcjq8dYlM5CPXWPbnwifd
-         AKUTijqVNo/3vZI7YrwBvWQ1iwtBKyCYYUC6pdCbSnRkBj//GcS3fNbFo8lfW0fPRJGL
-         rP2T9NAjZj4G/gwtR2wgO8NF/MKFbBdgQzMDAl/v0E2YmahwYxMhhE+S2C8h9cgArGLa
-         prahr5pn2NtDxvt1TAmgPRLhPYibHmmcgSyjyqWOcqvguMZD5gJvRVqVGXAs+zGEkxwq
-         0qBAALMZuIiKXVj6vkzM0h8zf2wUgykseogoy7v99PXxVrSLlVHwyt5IfN72YFXBHw2N
-         spPA==
-X-Gm-Message-State: AOAM5314ctyPfMyY9Gt/r0cC07O1xyMO3qQOSNWzXg2bpwVcao4HnEod
-        6Av0RHWJCv9N06AZEf8jBSHG2g==
-X-Google-Smtp-Source: ABdhPJyg/H6c/EHEcuAnEkbxBKhJCsZbEssRrqxYEujREgZsvL9Edhwh0+EkZiCX44t3hNqjg9XPLg==
-X-Received: by 2002:a63:f857:: with SMTP id v23mr19059138pgj.174.1606764913878;
-        Mon, 30 Nov 2020 11:35:13 -0800 (PST)
-Received: from relinquished.localdomain ([2601:602:8b80:8e0::b2be])
-        by smtp.gmail.com with ESMTPSA id s10sm10916857pgg.76.2020.11.30.11.35.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 11:35:12 -0800 (PST)
-Date:   Mon, 30 Nov 2020 11:35:10 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com, linux-man <linux-man@vger.kernel.org>
-Subject: Re: [PATCH man-pages v6] Document encoded I/O
-Message-ID: <X8VJbqz+XtA5Vmth@relinquished.localdomain>
-References: <cover.1605723568.git.osandov@fb.com>
- <ec1588a618bd313e5a7c05a7f4954cc2b76ddac3.1605724767.git.osandov@osandov.com>
- <4d1430aa-a374-7565-4009-7ec5139bf311@gmail.com>
- <fb4a4270-eb7a-06d5-e703-9ee470b61f8b@gmail.com>
- <05e1f13c-5776-961b-edc4-0d09d02b7829@gmail.com>
+        id S1729145AbgK3Tvz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Nov 2020 14:51:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44174 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726364AbgK3Tvy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Nov 2020 14:51:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DFDA7AC2E;
+        Mon, 30 Nov 2020 19:51:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4BA24DA6E1; Mon, 30 Nov 2020 20:49:41 +0100 (CET)
+Date:   Mon, 30 Nov 2020 20:49:41 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v7 06/12] btrfs: clear free space tree on ro->rw remount
+Message-ID: <20201130194941.GI6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1605736355.git.boris@bur.io>
+ <f91ff85f985eeaf8993022453ca21fa4772e28a8.1605736355.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <05e1f13c-5776-961b-edc4-0d09d02b7829@gmail.com>
+In-Reply-To: <f91ff85f985eeaf8993022453ca21fa4772e28a8.1605736355.git.boris@bur.io>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 04:03:44PM +0100, Alejandro Colomar (man-pages) wrote:
-> Hi Omar,
+On Wed, Nov 18, 2020 at 03:06:21PM -0800, Boris Burkov wrote:
+> A user might want to revert to v1 or nospace_cache on a root filesystem,
+> and much like turning on the free space tree, that can only be done
+> remounting from ro->rw. Support clearing the free space tree on such
+> mounts by moving it into the shared remount logic.
 > 
-> I found a wording of mine to be a bit confusing.
-> Please see below.
+> Since the CLEAR_CACHE option sticks around across remounts, this change
+> would result in clearing the tree for ever on every remount, which is
+> not desirable. To fix that, add CLEAR_CACHE to the oneshot options we
+> clear at mount end, which has the other bonus of not cluttering the
+> /proc/mounts output with clear_cache.
 > 
-> Thanks,
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  fs/btrfs/disk-io.c | 43 ++++++++++++++++++++++---------------------
+>  1 file changed, 22 insertions(+), 21 deletions(-)
 > 
-> Alex
-> 
-> On 11/20/20 3:06 PM, Alejandro Colomar (man-pages) wrote:
-> > Hi Omar and Michael,
-> > 
-> > please, see below.
-> > 
-> > Thanks,
-> > 
-> > Alex
-> > 
-> > On 11/20/20 12:29 AM, Alejandro Colomar (mailing lists; readonly) wrote:
-> >> Hi Omar,
-> >>
-> >> Please, see some fixes below:
-> >>
-> >> Michael, I've also some questions for you below
-> >> (you can grep for mtk to find those).
-> >>
-> >> Thanks,
-> >>
-> >> Alex
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 0bc7d9766f8c..64e5707f008b 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2892,6 +2892,7 @@ static int btrfs_check_uuid_tree(struct btrfs_fs_info *fs_info)
+>  void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
+>  {
+>  	btrfs_clear_opt(fs_info->mount_opt, USEBACKUPROOT);
+> +	btrfs_clear_opt(fs_info->mount_opt, CLEAR_CACHE);
+>  }
+>  
+>  /*
+> @@ -2901,6 +2902,27 @@ void btrfs_clear_oneshot_options(struct btrfs_fs_info *fs_info)
+>  int btrfs_mount_rw(struct btrfs_fs_info *fs_info)
+>  {
+>  	int ret;
+> +	bool clear_free_space_tree = false;
+> +
+> +	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
+> +	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
+> +		clear_free_space_tree = true;
+> +	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
+> +		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
+> +		btrfs_warn(fs_info, "free space tree is invalid");
+> +		clear_free_space_tree = true;
+> +	}
+> +
+> +	if (clear_free_space_tree) {
+> +		btrfs_info(fs_info, "clearing free space tree");
+> +		ret = btrfs_clear_free_space_tree(fs_info);
+> +		if (ret) {
+> +			btrfs_warn(fs_info,
+> +				   "failed to clear free space tree: %d", ret);
+> +			close_ctree(fs_info);
 
-Thanks for the suggestions, I'll incorporate those into the next
-submission.
+This is probably a copy&paste error, this was originally in open_ctree
+that calls close_ctree after errors, but here it's not supposed to be
+called.
+
+> +			return ret;
+> +		}
+> +	}
+>  
+>  	ret = btrfs_cleanup_fs_roots(fs_info);
+>  	if (ret)
+> @@ -2975,7 +2997,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  	struct btrfs_root *chunk_root;
+>  	int ret;
+>  	int err = -EINVAL;
+> -	int clear_free_space_tree = 0;
+>  	int level;
+>  
+>  	ret = init_mount_fs_info(fs_info, sb);
+> @@ -3377,26 +3398,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  	if (sb_rdonly(sb))
+>  		goto clear_oneshot;
+>  
+> -	if (btrfs_test_opt(fs_info, CLEAR_CACHE) &&
+> -	    btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE)) {
+> -		clear_free_space_tree = 1;
+> -	} else if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
+> -		   !btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID)) {
+> -		btrfs_warn(fs_info, "free space tree is invalid");
+> -		clear_free_space_tree = 1;
+> -	}
+> -
+> -	if (clear_free_space_tree) {
+> -		btrfs_info(fs_info, "clearing free space tree");
+> -		ret = btrfs_clear_free_space_tree(fs_info);
+> -		if (ret) {
+> -			btrfs_warn(fs_info,
+> -				   "failed to clear free space tree: %d", ret);
+> -			close_ctree(fs_info);
+> -			return ret;
+> -		}
+> -	}
+> -
+>  	ret = btrfs_mount_rw(fs_info);
+>  	if (ret) {
+>  		close_ctree(fs_info);
+> -- 
+> 2.24.1
