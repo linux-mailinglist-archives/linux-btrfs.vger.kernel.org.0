@@ -2,45 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7CF2CA958
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Dec 2020 18:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C115D2CA967
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Dec 2020 18:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgLARP3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Dec 2020 12:15:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51052 "EHLO mx2.suse.de"
+        id S1729716AbgLARSm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Dec 2020 12:18:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53736 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726716AbgLARP3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:15:29 -0500
+        id S1726303AbgLARSl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Dec 2020 12:18:41 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35FC7AC2F;
-        Tue,  1 Dec 2020 17:14:48 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id AE518AF06;
+        Tue,  1 Dec 2020 17:18:00 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A7747DA6E1; Tue,  1 Dec 2020 18:13:15 +0100 (CET)
-Date:   Tue, 1 Dec 2020 18:13:15 +0100
+        id A511ADA6E1; Tue,  1 Dec 2020 18:16:28 +0100 (CET)
+Date:   Tue, 1 Dec 2020 18:16:28 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs-progs: Sort main help menu
-Message-ID: <20201201171315.GM6430@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: mkfs: refactor how we handle sectorsize
+ override
+Message-ID: <20201201171628.GN6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Daniel Xu <dxu@dxuuu.xyz>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <e54b68968ee84f69fac0aa58db8495b99c845a82.1604103293.git.dxu@dxuuu.xyz>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201013010602.11605-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e54b68968ee84f69fac0aa58db8495b99c845a82.1604103293.git.dxu@dxuuu.xyz>
+In-Reply-To: <20201013010602.11605-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 05:15:20PM -0700, Daniel Xu wrote:
-> `btrfs help` is quite long and requires scrolling. For someone
-> who has a vague idea of what a subcommand is called but not quite sure,
-> alphabetical listing can help them find what they're looking for faster.
+On Tue, Oct 13, 2020 at 09:06:02AM +0800, Qu Wenruo wrote:
+> There are several problems for current sectorsize check:
+> - No check at all for sectorsize
+>   This means you can even specify "-s 62k".
 > 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> - No way to specify sectorsize smaller than page size
+> 
+> Fix all these problems by:
+> - Introduce btrfs_check_sectorsize()
+>   To do:
+>   * power of 2 check for sectorsize
+>   * lower and upper boundary check for sectorsize
+>   * warn about sectorsize mismatch with page size
+> 
+> - Remove the max() between page size and sectorsize
+>   This allows us to override the sectorsize for 64K page systems.
+> 
+> - Make nodesize calculation based on sectorsize
+>   No need to use page size any more.
+>   Users who specify sectorsize manually really know what they are doing,
+>   and we have warned them already.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
 Added to devel, thanks.
+
+> +int btrfs_check_sectorsize(u32 sectorsize)
+> +{
+> +	u32 page_size = (u32)sysconf(_SC_PAGESIZE);
+> +
+> +	if (!is_power_of_2(sectorsize)) {
+> +		error("illegal sectorsize %u, expect value power of 2",
+> +		      sectorsize);
+> +		return -EUCLEAN;
+
+This should be EINVAL, updated
+
+> +	}
+> +	if (sectorsize < SZ_4K || sectorsize > SZ_64K) {
+> +		error("illegal sectorsize %u, expect range [4K, 64K]",
+> +		      sectorsize);
+> +		return -EUCLEAN;
+> +	}
+> +	if (page_size != sectorsize)
+> +		warning(
+> +"the fs may not be mountable, sectorsize %u doesn't match page size %u",
+> +			sectorsize, page_size);
+> +	return 0;
+> +}
