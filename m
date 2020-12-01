@@ -2,159 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20B52C9EF9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Dec 2020 11:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF022CA037
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Dec 2020 11:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387729AbgLAKRi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Dec 2020 05:17:38 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:11734 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729600AbgLAKRi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Dec 2020 05:17:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1606817857; x=1638353857;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=7tL4MQERU3/PKG4Dxf62HOnSYhmXT1lSsf4bIW2IMPs=;
-  b=nhTEP6XRhQIbiXmiwge0Zww/ZrXlqPPUmYsiN+s14gJBZLDPttMubBF5
-   XThsiCLSUx6E+gYTGiA2zBxA1TBxlrJeFxq1p4vJdrzcf/KyZtwgMkObG
-   Y3X7K9CjrZYM6h99BMO7nCxPlvvPAuO67dsnin2rPASGEaMb0NsuY9WhR
-   JLweqXlO5qfnNXhlpfdrnhd7yE61BaOP3E0ECHaFnPpuNjnsINQTb+nlq
-   cE87pVqPfKKW+D7FmPSuQqDXiWfk5jC0f8Y/DYH6bg67xqSIRsiw3iBPI
-   neVa8wFZ28c0vKM0lA6PLaNWQ3CPhmJYCvFjkgly+MOamqVUynU2s41h5
-   w==;
-IronPort-SDR: e/ZSzR/oh8TsbiZau6pZAJsTI8iLm6ai9I1YzCdftWhKyCeFSdMDSF5RU+n6KIbIi9p3ijOuIu
- CvseJRelQOjKEZiskC/2diSjxruvVfsUCLKMYFELU3MTZJaEhY9LpxBJI+lKTi0r/ZeWTkfZd+
- YnGyo7tzhWgMTdnqi5xQMkZMQ6WnJETUqcmSs0WNoGSBet29J4vw3Dog9Sod7Aj2oFTYvQ2AZX
- k7BgjQiHgH6GX23MENI8BFcJUkR81fbjsxy4muTTsFJ3+lyOSXNu2ypYLVD7jOjIva016/ORgZ
- hc4=
-X-IronPort-AV: E=Sophos;i="5.78,384,1599494400"; 
-   d="scan'208";a="264034769"
-Received: from mail-co1nam11lp2171.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.171])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Dec 2020 18:16:31 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bfSvJ/LBNJo10CAtX0Fz2O4ojwWzWTcNA1NljsJe/JdmSPmKUABOell4kBSBq73ZUl4FzW2B2+IlQwiFbd+gsS8NdHIfmTUuXuGS7eq8xsr2/xbauIsfhgnDyeXtNV7eVP+M8SuLAV1+8/7kDIS4bgivFU3QOWxNbzi/Ova4VGgR2Ai/WSIdU3hXPBjvibGk1ICezFHcq9KmkWECgd0tvlnqV3aVO001lKokA2DQGixTdzOZrddZM4Vv2mizCXyhZEzz4rDrrLAA0+QvRuZyKQezh0U19PrcAL7XQE5TsIu649plOhjcr7WvgBUPvOli9i471hTsuFL5A1MRnuAyqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7tL4MQERU3/PKG4Dxf62HOnSYhmXT1lSsf4bIW2IMPs=;
- b=aMBhuiBbnJ08hYQG6q1vWXxn3SjcGrt+paM7sBPy8SZTQffCwcdFLW9QBWZ8ZB+0L6erEeChgx17SMWTk3XLpcHUGwU3Iy2DYIIGG4IjQCG06DE6K5MMBq0olrEN6wh1NMHJBDFWbiFt3luHoMVsjlARdgqW0GCWaO5XB1gBs1ToA608ryg1tkCpdfIxCWHVT/KbF+LtKfl0eHxTR0N3lq1lmDSjK4sv4hM52mtZFVOft8/8EH9ET7odc4mtFECud+K5hXYVWHG8gfqsspn2HYPHAn5nbPzahEa+H01irnEzTmGfqMLShjvSjZbfVNaPEpTuRZcGrAZ6RRWPy+cPfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7tL4MQERU3/PKG4Dxf62HOnSYhmXT1lSsf4bIW2IMPs=;
- b=pw8XzTyJvTArkfqlzwt5grYZUTE5euoktfDhGmQsvslIFJhKu2YchG4dMXncfr3hyvJHEnR7IV74ZO5vR6UXi3jV4wAUEhi7oIV9LKMl5W9MFkUHqHxnfTncOchkL/Fw3UDYkESSY2qUiQSvWTpTCtLL6CX+1uh+gQpH92ah2EA=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN4PR0401MB3597.namprd04.prod.outlook.com
- (2603:10b6:803:45::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Tue, 1 Dec
- 2020 10:16:30 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98%7]) with mapi id 15.20.3589.030; Tue, 1 Dec 2020
- 10:16:30 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        id S1726961AbgLAKqH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Dec 2020 05:46:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgLAKqG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Dec 2020 05:46:06 -0500
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EF6C0613D2
+        for <linux-btrfs@vger.kernel.org>; Tue,  1 Dec 2020 02:45:26 -0800 (PST)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 071F39C3AB; Tue,  1 Dec 2020 10:45:23 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1606819523;
+        bh=kaDwRYHjc0SA0LDJtUz7w3xj6SIdXPXJxz9iUbvl8Xo=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=soVHeF8FViZ0td47AVddJ7smrMA+mFCH7PMRw+QyVHbkaEZmC5rnOe3VUkfLZZci5
+         Sq1o/wYgL+kfVIGMjPZtHccDiRpnXrKYS0SEpvIXY9MmBKPYSMIt2UB4EfdQJ4+7X1
+         9twobng9x2YqtDKwtBJzWuzfEsTrt7loDFwjqpeT4aMMLE5jlai5XPshNTF/tclhNA
+         nn/YE7d1oXXoSkfMSSIHQ0hMetVg+7o/Zok4BMLrXWPXNhC1bSGyr6tVVDcaxHFdzI
+         rfrUJXkMGYZq0lWnpciAeXlOVQS/cG4MYWK52B9u8D4N+vb2lipcMHVpSyrheh7Ywf
+         HO4dXWtRuAtAw==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-3.0 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 36FEB9B84E;
+        Tue,  1 Dec 2020 10:45:13 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1606819513;
+        bh=kaDwRYHjc0SA0LDJtUz7w3xj6SIdXPXJxz9iUbvl8Xo=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=AeS8rc+h/X5CGqkIT5FuQarzzLuwphEavajKnne3h2QnQFDG+Y0u9Ws21o3GY14UX
+         GdozS45eLioaBkDf4fHS2Sk5tdCddHOiAwaODFCAeweUEx0cqz8HgA8YWlZ1tl8YB6
+         TIHN+8OH+uUq/Pl4wS1dE/AtLsaXajn2NfnmMJYPu3fqJu2whb7W7HeumtSt4EhgcP
+         dVaUgzB91C/w+NJ5qS3kmFUb81trFb+JnEqVfTKXnWIMITZvlSPFsK2vxshq5zIbgc
+         dBUoVPoPZOyekOHZp0oePdLiL5aGjVEXzzfssyrB0ixAPpcJ9kbdlu7+XFidvDQMNZ
+         iR+7mKazbVJOQ==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 558BC1AA6BC;
+        Tue,  1 Dec 2020 10:45:11 +0000 (GMT)
+Subject: Re: [PATCH v10 05/41] btrfs: check and enable ZONED mode
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         "dsterba@suse.com" <dsterba@suse.com>,
         "hare@suse.com" <hare@suse.com>,
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
         Jens Axboe <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>
-Subject: Re: [PATCH v10 02/41] iomap: support REQ_OP_ZONE_APPEND
-Thread-Topic: [PATCH v10 02/41] iomap: support REQ_OP_ZONE_APPEND
-Thread-Index: AQHWt1Sb3HZRbzGDlk6Pnuh0g860vw==
-Date:   Tue, 1 Dec 2020 10:16:30 +0000
-Message-ID: <SN4PR0401MB3598CA7F550944DDF322AC599BF40@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        "hch@infradead.org" <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>
 References: <cover.1605007036.git.naohiro.aota@wdc.com>
- <72734501cc1d9e08117c215ed60f7b38e3665f14.1605007036.git.naohiro.aota@wdc.com>
- <20201130181104.GA143005@magnolia>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:155d:1001:b8ae:bd87:d6c6:21f6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 71c832b6-4fa5-409c-3fc8-08d895e22c27
-x-ms-traffictypediagnostic: SN4PR0401MB3597:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN4PR0401MB3597A76FBA3464A1A30413F09BF40@SN4PR0401MB3597.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:608;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DIedwrJaI/ghVsTs/spIzSJJABNusT4KtCsRFCinOOtEFJFlf0SzkvP8KVDhyFa77nocrLyFwVqGlHczUnqRVKHNnO02RY2LtMwHXnavAE2P6iltaNcXdro8BtYA6BAImlid12FWmckOd1xJCISJ3rwo/lE0EGmnqrZl56/t6r84Kw08/I7epGePmXZ9t7CXePrRGvkEXveWzqkE2RB2oyTREEmU3ZAxKMKJb9STAMi7IaaPnXxztDwacMVaIm4pKO41035XjmiwhWP41GHNgIGgWnUBeTY/xF3qDBLfsUYQlMgDd9cbmF99ifmp8H9E0ihcvI+Dvymu34hFx6RmDw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(136003)(396003)(66556008)(6636002)(316002)(110136005)(54906003)(4744005)(2906002)(8676002)(64756008)(8936002)(66446008)(52536014)(91956017)(76116006)(86362001)(66946007)(7696005)(66476007)(71200400001)(33656002)(83380400001)(5660300002)(9686003)(186003)(53546011)(478600001)(6506007)(4326008)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?AuTSuW/8OzOzgH3xL0WZx+B7C4GL61jxe4zoYCoZQqdAWmJ9FJ1pMD00+K2l?=
- =?us-ascii?Q?zVqiqtsuJ+iQoTVIhHRosSUOwYESl3jXCIfo9ce0WdhKt1UrJsSMnBQX4ZOY?=
- =?us-ascii?Q?b04fQUFFxQgbHNgrvTjNpLrOmG7GWRC4jCiy1y4rJAocMpbEGG9EXfBwrhPC?=
- =?us-ascii?Q?l28oYzOUrg9/QmJW0LgBw+aHh20LO+zT5jpbZXo1UFpTWFKoAUVfqMA3k9Sj?=
- =?us-ascii?Q?/5WzwyGtGdNSuF7WOqiFNadjakf+dCRUdoEcYxizHWyedG5ps7j9VdFtb+6i?=
- =?us-ascii?Q?+Gs0sI8MzoPCDoBVqSf+MFVn2k6fOPOR0MdgWJTupQTy6LoOtZbEKmfHo+N5?=
- =?us-ascii?Q?T6tPpltBVvAwijETCXOCo3yk+UsPnjNi6LDboVW4hdIj0fWJUSEWu+qOGrd2?=
- =?us-ascii?Q?+fSoy9ju+2DNvV2ywJEomYtjaeDQKXyPhc+9g2xcL3ubd8U+W19tdb9icDep?=
- =?us-ascii?Q?mUJTjtLqHUHzkjVEjEibYOQg6kqLfSfciq9xxbIXNZWQc6viAaQygZmrbGd0?=
- =?us-ascii?Q?k8Pu7QCb2/IvjFW9k3h+2HeGxQC2fvDHYfLl8ntZ0kAYCxFComyi0kRJGf5n?=
- =?us-ascii?Q?+q069NKhc6sRKLuFD6I5lulbGW7DwAsMxwwOWplRi7782pYI3j8QF/XdyDZz?=
- =?us-ascii?Q?SMLeWrAt6ooBBkzyjko9eZmwxYCA3+a9h0SQP4v2YR0iaYwbhQQ7gOnsjuLr?=
- =?us-ascii?Q?8JyGzcANS6nyRCp2J52GkijmCHyTebHMrNnC6x1qcmVSeqtAOz/Ayk6XFBfA?=
- =?us-ascii?Q?mYQIXd+LDOqZvuBk98D+NAbNUTNm/CghXR7JrtjiKIZ2N+IHpr/J1iA4oXnw?=
- =?us-ascii?Q?YzGQC99C0BG6+9iBh3da+YYns0Dr6o+udMLRGma4jzSolHPEoE1JlOTdbB03?=
- =?us-ascii?Q?eEr44Z/3hDXe5WJha7KmPJl/WWihbPvGXd46Ux4TTkblp4Sfkp7dm1BcFpVO?=
- =?us-ascii?Q?vLJSS6CxQLlq7mpRsoKY2EoUcW6KcPCGoH90HKLObiU2ZTNrvg1qbvKUryh2?=
- =?us-ascii?Q?3raBTtVs0j3B24Y9lr/y0EHZVEatvHsAkR7mEVEB7Qdfy4FuscPoZgFoFGIe?=
- =?us-ascii?Q?2gaSZrPM?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <104218b8d66fec2e4121203b90e7673ddac19d6a.1605007036.git.naohiro.aota@wdc.com>
+ <51c91510-6014-0dee-a456-b50648f48156@oracle.com>
+ <20201127184439.GB6430@twin.jikos.cz>
+ <e3d212c1-057e-a761-6dc2-767f1e82c748@oracle.com>
+ <CH2PR04MB6522A370F9D092A42E22527BE7F50@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <4a784d16-b325-bf32-5ce5-0718c6bce252@oracle.com>
+ <CH2PR04MB65221794BF271B9A0E76388EE7F40@CH2PR04MB6522.namprd04.prod.outlook.com>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <1dc43899-82de-564f-6e52-bd5b990f3887@cobb.uk.net>
+Date:   Tue, 1 Dec 2020 10:45:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71c832b6-4fa5-409c-3fc8-08d895e22c27
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Dec 2020 10:16:30.7503
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WVSrlc2Mes2JhMlH+jffAL6PrMywr/JK4PnphcFBVZRTcVyxbGR1Ti9c7XaQfgVWn0+s8uKgIjMrLnfFHfXuXjJzdEXAu+5SQAv5mhmqh1o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3597
+In-Reply-To: <CH2PR04MB65221794BF271B9A0E76388EE7F40@CH2PR04MB6522.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 30/11/2020 19:16, Darrick J. Wong wrote:=0A=
-> On Tue, Nov 10, 2020 at 08:26:05PM +0900, Naohiro Aota wrote:=0A=
->> A ZONE_APPEND bio must follow hardware restrictions (e.g. not exceeding=
-=0A=
->> max_zone_append_sectors) not to be split. bio_iov_iter_get_pages builds=
-=0A=
->> such restricted bio using __bio_iov_append_get_pages if bio_op(bio) =3D=
-=3D=0A=
->> REQ_OP_ZONE_APPEND.=0A=
->>=0A=
->> To utilize it, we need to set the bio_op before calling=0A=
->> bio_iov_iter_get_pages(). This commit introduces IOMAP_F_ZONE_APPEND, so=
-=0A=
->> that iomap user can set the flag to indicate they want REQ_OP_ZONE_APPEN=
-D=0A=
->> and restricted bio.=0A=
->>=0A=
->> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>=0A=
-> =0A=
-> Christoph's answers seem reasonable to me, so=0A=
-> =0A=
-> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>=0A=
-> =0A=
-> Er... do you want me to take this one via the iomap tree?=0A=
-=0A=
-Ahm probably yes, but we have an update addressing Christoph's coming=0A=
-with the next version series.=0A=
+On 01/12/2020 02:29, Damien Le Moal wrote:
+> Yes. These drives are fully backward compatible and accept random writes
+> anywhere. Performance however is potentially a different story as the drive will
+> eventually need to do internal garbage collection of some sort, exactly like an
+> SSD, but definitely not at SSD speeds :)
+> 
+>>   Are we ok to replace an HM device with a HA device? Or add a HA device 
+>> to a btrfs on an HM device.
+> 
+> We have a choice here: we can treat HA drives as regular devices or treat them
+> as HM devices. Anything in between does not make sense. I am fine either way,
+> the main reason being that there are no HA drive on the market today that I know
+> of (this model did not have a lot of success due to the potentially very
+> unpredictable performance depending on the use case).
+
+So there will be no testing against HA drives? And no btrfs developers
+will have one? And they have very different timing and possibly failure
+modes from "normal" disks when they do GC?
+
+I think there is no option but to disallow them. If HA drives start to
+appear in significant numbers then that would be easy enough to change,
+after suitable testing.
+
+> Of note is that a host-aware drive will be reported by the block layer as
+> BLK_ZONED_HA only as long as the drive does not have any partition. If it does,
+> then the block layer will treat the drive as a regular disk.
+
+That is a bit of a shame. With that unfortunate decision in the block
+layer, system managers need to realise that partitioning an HA disk
+means they may be entering territory untested by their filesystem.
