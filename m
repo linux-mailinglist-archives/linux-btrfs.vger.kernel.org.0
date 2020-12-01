@@ -2,517 +2,246 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A714E2C9509
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Dec 2020 03:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C8D2C951F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Dec 2020 03:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgLACLR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Nov 2020 21:11:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726754AbgLACLR (ORCPT
+        id S1726705AbgLACUg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Nov 2020 21:20:36 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:47308 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726691AbgLACUg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Nov 2020 21:11:17 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA31BC0613D2
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 18:10:36 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id o19so265960pgn.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Nov 2020 18:10:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XiV+D0NpswqLyJevYsHx/+CYWNpauq3+pNBlkkSmI0E=;
-        b=gkyd0fhEthR5o0jZcBHQ7I3PAhGRcmlF3g6ih7aLGJrOtf8kpbyT41+DOoHZ2aGWPL
-         GO73Xn8ZiykRnvvOiOVlGFw4Ek0K6wFR8+G2PThYsOJMlZBBf1Ek9t5hIKckUOfG4lGC
-         VJX4UqGf/90A8dqrzUaThro8cGP7OryipHgJ6x4odRPI7A25KDuqvyn3iTc9wdFFh7TH
-         4MHjsjaI3BppFcct2pWBEzVF5qzbfGe7wFlv0BfMoVgx/vhokjj+4LNbMoHb5yUoUodH
-         gvILvcqovF/8asQrWYo0DiL70rBUnpwiGrW//k7Wfj4bltu0ErfH/55mwq12CPA15/xW
-         gSXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XiV+D0NpswqLyJevYsHx/+CYWNpauq3+pNBlkkSmI0E=;
-        b=lo/mSFeuR6HtAGn35GQ1NbuJaZDT3oX/ex6l9yy+1I3zh3eY6K5OiBnAekYaC9161V
-         XgaDxRWRh9hr1DPZqJNr3xQkLe9nVknLk+mC6Q577Ubz8pjYIF81xa1WwbO+cnBklE8j
-         yVzvRB6zbtFqTHzGbZGOzJNRP6vb2ziurE/vBWt9KiciMKlu3IzLd8uQFAvxBRhf0DUi
-         A3sNLsgF+kwN6Jg2CgOZ5eGKI6OWf+j3soGVweBlj9BVnMDa/MIeJJEj8DZqh2IQmeha
-         OuvqyVgyw/WEmhZr5pj7wlSADF1riamI3FFLxCtgKnrmgXuZVHMv41rjGZEW0WLJndvo
-         OkzA==
-X-Gm-Message-State: AOAM532E7SiHIF/jO8X9CezblqYllr/2uoyxAKd+bipUeZotrkP/9yBf
-        XW1TZonrkPWOMgL9bOqR4qtl83KUDX1/ynVh0Ek=
-X-Google-Smtp-Source: ABdhPJwml2yZ0enJZRIBnHCVgXSsM5fRduDgRTy2mAkMjqibpKvJhivVFgVb30+zURVYWDMh9gMCpKwEmCtwl9KMkO8=
-X-Received: by 2002:a62:7f95:0:b029:197:dab1:6f70 with SMTP id
- a143-20020a627f950000b0290197dab16f70mr531544pfd.69.1606788635914; Mon, 30
- Nov 2020 18:10:35 -0800 (PST)
+        Mon, 30 Nov 2020 21:20:36 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B12FE28019540;
+        Tue, 1 Dec 2020 02:19:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=I3nkSUvl1i0TcdCwXqvnPrea3SXPXRFgrt/xK5ULj24=;
+ b=xOvCQKgCqxkRqL7YA2UrexO1prU7rPlRQ2M62pnMzjlI1U+Af8ErO+9c3BBLRZdSljf0
+ T8Qo5M1v+leIB5iv7B5An1f2OJs5kemd/WUBPB/gdoiAYNUQZSd71u2hJHp42vHmTU01
+ b+7NOX/tSozvr1cE2l1+xsFBHCQ2L8iYVk6aBK6JfIZIHb1HxHVUwrcpCHjlGGgqyKFn
+ +3wq0k24/qJhaqDrsT5NIezyIC3pibJtLw2RAVHvbSQ2hLZwGv1nkfJgzkOtMz1wtLxl
+ XTyaQhF5ex2Sk7Ks9ryfuYNGi6K83PA3LRtnTU9eMi+vWQd7MW73RcWprlhcATMr1MBp Jw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 353egkg7gh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Dec 2020 02:19:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B125Ik3071923;
+        Tue, 1 Dec 2020 02:19:43 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3540fw4m6u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Dec 2020 02:19:43 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B12JZri016490;
+        Tue, 1 Dec 2020 02:19:35 GMT
+Received: from [192.168.10.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 30 Nov 2020 18:19:34 -0800
+Subject: Re: [PATCH v10 05/41] btrfs: check and enable ZONED mode
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <104218b8d66fec2e4121203b90e7673ddac19d6a.1605007036.git.naohiro.aota@wdc.com>
+ <51c91510-6014-0dee-a456-b50648f48156@oracle.com>
+ <20201127184439.GB6430@twin.jikos.cz>
+ <e3d212c1-057e-a761-6dc2-767f1e82c748@oracle.com>
+ <CH2PR04MB6522A370F9D092A42E22527BE7F50@CH2PR04MB6522.namprd04.prod.outlook.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <4a784d16-b325-bf32-5ce5-0718c6bce252@oracle.com>
+Date:   Tue, 1 Dec 2020 10:19:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20201124022036.2840981-1-ethanwu@synology.com>
- <CAL3q7H7oOwQs8OR31DdZm16YbU0KKjux_ZGuvQVjbDdePqk0AQ@mail.gmail.com>
- <CACKp3fmXQ1aB+evXcu04eYi9eXuEPvfq+oGgMgUb809neJHSRw@mail.gmail.com> <CAL3q7H6rKZLw3VL4dgV-RTg3Zrh6_MrSO+VEwFCjzkzq4v4Lsw@mail.gmail.com>
-In-Reply-To: <CAL3q7H6rKZLw3VL4dgV-RTg3Zrh6_MrSO+VEwFCjzkzq4v4Lsw@mail.gmail.com>
-From:   tzuchieh wu <ethan198912@gmail.com>
-Date:   Tue, 1 Dec 2020 10:10:24 +0800
-Message-ID: <CACKp3fkbkhkFwv6Ji4mmOr-eMO0p+-n2n78d116if65yPciJMw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] Btrfs: correctly calculate item size used when item
- key collision happends
-To:     fdmanana@gmail.com
-Cc:     ethanwu <ethanwu@synology.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CH2PR04MB6522A370F9D092A42E22527BE7F50@CH2PR04MB6522.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010012
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9821 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012010013
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Filipe Manana <fdmanana@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=8825=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=887:48=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Wed, Nov 25, 2020 at 2:29 AM =E5=90=B3=E5=AD=90=E6=9D=B0 <ethan198912@=
-gmail.com> wrote:
-> >
-> > Filipe Manana <fdmanana@gmail.com> =E6=96=BC 2020=E5=B9=B411=E6=9C=8824=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=887:31=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > >
-> > > On Tue, Nov 24, 2020 at 4:39 AM ethanwu <ethanwu@synology.com> wrote:
-> > > >
-> > > > Item key collision is allowed for some item types, like dir item an=
-d
-> > > > inode refs, but the overall item size is limited by the leafsize.
-> > > >
-> > > > item size(ins_len) passed from btrfs_insert_empty_items to
-> > > > btrfs_search_slot already contains size of btrfs_item.
-> > > >
-> > > > When btrfs_search_slot reaches leaf, we'll see if we need to split =
-leaf.
-> > > > The check incorrectly reports that split leaf is required, because
-> > > > it treats the space required by the newly inserted item as
-> > > > btrfs_item + item data. But in item key collision case, only item d=
-ata
-> > > > is actually needed, the newly inserted item could merge into the ex=
-isting
-> > > > one. No new btrfs_item will be inserted.
-> > > >
-> > > > And split_leaf return -EOVERFLOW from following code:
-> > > > if (extend && data_size + btrfs_item_size_nr(l, slot) +
-> > > >     sizeof(struct btrfs_item) > BTRFS_LEAF_DATA_SIZE(fs_info))
-> > > >     return -EOVERFLOW;
-> > > >
-> > > > In most cases, when callers receive -EOVERFLOW, they either return
-> > > > this error or handle in different ways. For example, in normal dir =
-item
-> > > > creation the userspace will get errno EOVERFLOW; in inode ref case
-> > > > INODE_EXTREF is used instead.
-> > > >
-> > > > However, this is not the case for rename. To avoid the unrecoverabl=
-e
-> > > > situation in rename, btrfs_check_dir_item_collision is called in
-> > > > early phase of rename. In this function, when item key collision is
-> > > > detected leaf space is checked:
-> > > >
-> > > > data_size =3D sizeof(*di) + name_len;
-> > > > if (data_size + btrfs_item_size_nr(leaf, slot) +
-> > > >     sizeof(struct btrfs_item) > BTRFS_LEAF_DATA_SIZE(root->fs_info)=
-)
-> > > >
-> > > > the sizeof(struct btrfs_item) + btrfs_item_size_nr(leaf, slot) here
-> > > > refers to existing item size, the condition here correctly calculat=
-e
-> > > > the needed size for collision case rather than the wrong case at
-> > > > above.
-> > > >
-> > > > The consequence of inconsistent condition check between
-> > > > btrfs_check_dir_item_collision and btrfs_search_slot when item key
-> > > > collision happens is that we might pass check here but fail
-> > > > later at btrfs_search_slot. Rename fails and volume is forced reado=
-nly
-> > > >
-> > > > [436149.586170] ------------[ cut here ]------------
-> > > > [436149.586173] BTRFS: Transaction aborted (error -75)
-> > > > [436149.586196] WARNING: CPU: 0 PID: 16733 at fs/btrfs/inode.c:9870=
- btrfs_rename2+0x1938/0x1b70 [btrfs]
-> > > > [436149.586197] Modules linked in: btrfs zstd_compress xor raid6_pq=
- ufs qnx4 hfsplus hfs minix ntfs msdos jfs xfs libcrc32c rpcsec_gss_krb5 co=
-retemp crct10dif_pclmul crc32_pclmul ghash_clmulni_intel pcbc aesni_intel a=
-es_x86_64 vmw_balloon crypto_simd cryptd glue_helper joydev input_leds inte=
-l_rapl_perf serio_raw vmw_vmci mac_hid sch_fq_codel nfsd auth_rpcgss nfs_ac=
-l lockd grace sunrpc parport_pc ppdev lp parport ip_tables x_tables autofs4=
- vmwgfx ttm drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops dr=
-m psmouse mptspi mptscsih mptbase scsi_transport_spi ahci vmxnet3 libahci i=
-2c_piix4 floppy pata_acpi
-> > > > [436149.586227] CPU: 0 PID: 16733 Comm: python Tainted: G      D   =
-        4.18.0-rc5+ #1
-> > > > [436149.586228] Hardware name: VMware, Inc. VMware Virtual Platform=
-/440BX Desktop Reference Platform, BIOS 6.00 04/05/2016
-> > > > [436149.586238] RIP: 0010:btrfs_rename2+0x1938/0x1b70 [btrfs]
-> > > > [436149.586238] Code: 50 f0 48 0f ba a8 10 ce 00 00 02 72 27 41 83 =
-f8 fb 74 6f 44 89 c6 48 c7 c7 48 09 85 c0 44 89 55 80 44 89 45 98 e8 f8 5e =
-4c c5 <0f> 0b 44 8b 45 98 44 8b 55 80 44 89 55 80 44 89 c1 44 89 45 98 ba
-> > > > [436149.586254] RSP: 0018:ffffa327043a7ce0 EFLAGS: 00010286
-> > > > [436149.586255] RAX: 0000000000000000 RBX: ffff8d8a17d13340 RCX: 00=
-00000000000006
-> > > > [436149.586256] RDX: 0000000000000007 RSI: 0000000000000096 RDI: ff=
-ff8d8a7fc164b0
-> > > > [436149.586257] RBP: ffffa327043a7da0 R08: 0000000000000560 R09: 72=
-65282064657472
-> > > > [436149.586258] R10: 0000000000000000 R11: 6361736e61725420 R12: ff=
-ff8d8a0d4c8b08
-> > > > [436149.586258] R13: ffff8d8a17d13340 R14: ffff8d8a33e0a540 R15: 00=
-000000000001fe
-> > > > [436149.586260] FS:  00007fa313933740(0000) GS:ffff8d8a7fc00000(000=
-0) knlGS:0000000000000000
-> > > > [436149.586261] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > [436149.586262] CR2: 000055d8d9c9a720 CR3: 000000007aae0003 CR4: 00=
-000000003606f0
-> > > > [436149.586295] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00=
-00000000000000
-> > > > [436149.586296] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00=
-00000000000400
-> > > > [436149.586296] Call Trace:
-> > > > [436149.586311]  vfs_rename+0x383/0x920
-> > > > [436149.586313]  ? vfs_rename+0x383/0x920
-> > > > [436149.586315]  do_renameat2+0x4ca/0x590
-> > > > [436149.586317]  __x64_sys_rename+0x20/0x30
-> > > > [436149.586324]  do_syscall_64+0x5a/0x120
-> > > > [436149.586330]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > [436149.586332] RIP: 0033:0x7fa3133b1d37
-> > > > [436149.586332] Code: 75 12 48 89 df e8 89 60 09 00 85 c0 0f 95 c0 =
-0f b6 c0 f7 d8 5b c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 b8 52 00 00 00 =
-0f 05 <48> 3d 00 f0 ff ff 77 09 f3 c3 0f 1f 80 00 00 00 00 48 8b 15 19 f1
-> > > > [436149.586348] RSP: 002b:00007fffd3e43908 EFLAGS: 00000246 ORIG_RA=
-X: 0000000000000052
-> > > > [436149.586349] RAX: ffffffffffffffda RBX: 00007fa3133b1d30 RCX: 00=
-007fa3133b1d37
-> > > > [436149.586350] RDX: 000055d8da06b5e0 RSI: 000055d8da225d60 RDI: 00=
-0055d8da2c4da0
-> > > > [436149.586351] RBP: 000055d8da2252f0 R08: 00007fa313782000 R09: 00=
-000000000177e0
-> > > > [436149.586351] R10: 000055d8da010680 R11: 0000000000000246 R12: 00=
-007fa313840b00
-> > > >
-> > > > Thanks to Hans van Kranenburg for information about crc32 hash coll=
-ision tools,
-> > > > I was able to reproduce the dir item collision with following pytho=
-n script.
-> > > > https://github.com/wutzuchieh/misc_tools/blob/master/crc32_forge.py
-> > >
-> > > Great that you made a reproducer, thanks for that!
-> > >
-> > > So we should have a test case in fstests for this.
-> > > We want to catch future regressions.
-> > >
-> > > Do you think you can convert the test to fstests?
-> > >
-> > > That would mean converting it to bash and instead of generating the
-> > > names with a colliding crc32c hash at run time, use a list of
-> > > hardcoded names - which would have to be all printable characters
-> > > (a-z, A-Z, 0-9, _, -)
-> > > The filesystem in the test should be created with a node size of 64K,
-> > > so that the test runs on all architectures.
-> > > Running your script, for a node size of 64K, it took 1211 iterations
-> > > (file names) to hit the transaction abort.
-> > > To make the file name list shorter, try getting much longer file name=
-s
-> > > (200+ characters for e.g.).
-> > >
-> > > The alternative would be to add there a small C program to generate
-> > > names with colliding hashes.
-> > > In btrfs-progs you have btrfs-crc.c that does that, although slow, so
-> > > perhaps it could be a starting point:
-> > >
-> > > fdmanana 10:49:20 ~/git/hub/btrfs-progs ((v5.6.1))> make btrfs-crc
-> > >     [CC]     btrfs-crc.o
-> > > (...)
-> > > fdmanana 10:49:23 ~/git/hub/btrfs-progs ((v5.6.1))> ./btrfs-crc -c 11=
-69177969
-> > >   1169177969 - =EF=BF=BDI=EF=BF=BDJ&+| =EF=BF=BD{=EF=BF=BD=EF=BF=BD=
-=EF=BF=BD=EF=BF=BDgW<nTc
-> > > (...)
-> > >
-> > > Either way, it will give some work, so I understand if you are
-> > > reluctant to do it.
-> > >
-> >
-> > ok, I'll add a xfstests test for this case.
->
-> Thanks, very appreciated!
->
-> >
-> > > > Run it under a btrfs volume will trigger the abort transaction.
-> > > > It simply creates files and rename them to forged names that leads =
-to
-> > > > hash collision.
-> > > >
-> > > > There are two ways to fix this. One is to simply revert the patch
-> > > > "878f2d2cb355 Btrfs: fix max dir item size calculation"
-> > > > to make the condition consistent although that patch is correct
-> > > > about the size.
-> > > >
-> > > > The other way is to handle the leaf space check correctly when
-> > > > collision happens. I prefer the second one since it correct leaf
-> > > > space check in collision case. This fix needs unify the usage of in=
-s_len
-> > > > in btrfs_search_slot to contain btrfs_item anyway and adjust all ca=
-llers
-> > > > of btrfs_search_slot that intentionally pass ins_len without btrfs_=
-item
-> > > > size to add size of btrfs_item from now.
-> > > >
-> > > > Signed-off-by: ethanwu <ethanwu@synology.com>
-> > > > ---
-> > > >
-> > > > v3: modify comment for btrfs_search_lot parameter ins_len,
-> > > >     fix incorrect ins_len in lookup_inline_extent_backref and btrfs=
-_csum_file_blocks
-> > > >
-> > > >  fs/btrfs/ctree.c       | 16 ++++++++++++++--
-> > > >  fs/btrfs/extent-tree.c |  8 ++++++--
-> > > >  2 files changed, 20 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> > > > index 32a57a70b98d..084b55d4c397 100644
-> > > > --- a/fs/btrfs/ctree.c
-> > > > +++ b/fs/btrfs/ctree.c
-> > > > @@ -2557,8 +2557,9 @@ static struct extent_buffer *btrfs_search_slo=
-t_get_root(struct btrfs_root *root,
-> > > >   * @p:         Holds all btree nodes along the search path
-> > > >   * @root:      The root node of the tree
-> > > >   * @key:       The key we are looking for
-> > > > - * @ins_len:   Indicates purpose of search, for inserts it is 1, f=
-or
-> > > > - *             deletions it's -1. 0 for plain searches
-> > > > + * @ins_len:   Indicates purpose of search, for inserts it is a po=
-sitive
-> > > > + *             number (size of item inserted), for deletions it's =
-a negative number and
-> > > > + *             0 for plain searches, not modifying the tree.
-> > >
-> > > Please mention that in case ins_len > 0, then the value must account
-> > > for sizeof(struct btrfs_item).
-> > >
-> >
-> > I'll added it to the comment, but there's one exception.
-> > In file-item.c: btrfs_csum_file_blocks
-> >
-> > ...
-> >     /*
-> >      * At this point, we know the tree has a checksum item that ends
-> > at an
-> >      * offset matching the start of the checksum range we want to
-> > insert.
-> >      * We try to extend that item as much as possible and then add as
-> > many
-> >      * checksums to it as they fit.
-> >      *
-> >      * First check if the leaf has enough free space for at least one
-> >      * checksum. If it has go directly to the item extension code,
-> > otherwise
-> >      * release the path and do a search for insertion before the
-> > extension.
-> >      */
-> >     if (btrfs_leaf_free_space(leaf) >=3D csum_size) {
-> >         btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
-> >         csum_offset =3D (bytenr - found_key.offset) >>
-> >             fs_info->sectorsize_bits;
-> >         goto extend_csum;
-> >     }
-> >
-> >     btrfs_release_path(path);
-> >     ret =3D btrfs_search_slot(trans, root, &file_key, path,
-> >                 csum_size, 1);
-> >     if (ret < 0)
-> >         goto out;
-> > ...
-> >
-> > We avoid adding the btrfs_item by merging it to the existing one if
-> > end offset of
-> > previous item matching the start of the checksum range we want to inser=
-t.
-> > i.e. the -EFBIG case
-> > In this case we don't need add sizeof btrfs_item into ins_len. Should
-> > I add a comment
-> > here or the above exiting comment already makes the purpose of
-> > btrfs_search_slot clear?
->
-> Ah I see, I wrote that comment some time ago.
->
-> So this change will break the expected behavior of btrfs_search_slot().
->
-> Before we were guaranteed that after btrfs_search_slot() returns 0 we
-> have at least the requested space in the leaf at path->nodes[0].
-> But now, by subtracting sizeof(btrfs item) from ins_len, that is not
-> the case anymore - we can return 0 and still not have enough space -
-> because we assume ins_len always accounts for btrfs_item (25 bytes).
-> For example we pass 4 as ins_len, the key already exists and the leaf
-> has only 3 bytes free:  4 - sizeof(btrfs_item) (25) < 3 - so we don't
-> call split_leaf() and return 0 with a leaf having only 3 bytes free.
-> The same happens in case ins_len happens to be >=3D sizeof(btrfs_item).
->
-> I see two options:
->
-> 1) Revert that other commit and add a comment there about the extra
-> sizeof(btrfs_item). It's gonna be confusing;
->
-> 2) Allow btrfs_search_slot() to known if ins_len accounts for
-> btrfs_item or not. Like adding a boolean (int:1 actually) to
-> btrfs_path named like 'search_for_extension', which is set to 1 when
-> ins_len does not account for btrfs_item and 0 when it does - so it
-> would only be set to 1 at btrfs_csum_file_blocks() - and at
-> btrfs_search_slot() decrement sizeof(btrfs_item) only if
-> path->search_for_extension is 0. Would need to check if there aren't
-> any other places like btrfs_csum_file_blocks() where they want to
-> extend an item but don't account for btrfs_item in ins_len. Then we
-> would do the ASSERT(ins_len >=3D sizeof(btrfs_item) when
-> path->search_for_extension is 0. May be simple after all.
->
-
-Thanks, I think option 2 is much better. I didn't notice that path
-could be used to pass hint for btrfs_search_slot.
-
-I've check all callers of the btrfs_search_slot, only
-1. extent-tree.c: lookup_inline_extent_backref
-2. file-item.c: btrfs_csum_file_blocks
-use btrfs_search_slot with ins_len > 0 but don't contain sizeof(struct
-btrfs_item)
-The rest of the item insertions use btrfs_insert_emtpy_item(s) which
-already takes btrfs_item into account.
-
-In lookup_inline_extent_backref, it's the case where item exists, so
-search_for_extension should also be set
-rather than adding btrfs_item for later deduction. Also adding
-btrfs_item is confusing here because
-the actual size needed for inline backref when key doesn't exist is
-sizeof(struct btrfs_item) + sizeof(struct btrfs_extent_item) +
-btrfs_extent_inline_ref_size(type)
-not sizeof(struct btrfs_item) + extra_size(btrfs_extent_inline_ref_size(typ=
-e))
-
-btrfs_csum_file_blocks uses a special trick, the item we want to
-search doesn't exist, but we'll
-merge csum into the previous item when -EFBIG happens, so
-btrfs_search_slot won't return 0
-but using search_for_extension will make it clear that we intend to
-exclude sizeof(struct btrfs_item).
-
-I'll modify and resend patch, thanks.
+On 30/11/20 9:15 pm, Damien Le Moal wrote:
+> On 2020/11/30 21:13, Anand Jain wrote:
+>> On 28/11/20 2:44 am, David Sterba wrote:
+>>> On Wed, Nov 18, 2020 at 07:29:20PM +0800, Anand Jain wrote:
+>>>> On 10/11/20 7:26 pm, Naohiro Aota wrote:
+>>>>> This commit introduces the function btrfs_check_zoned_mode() to check if
+>>>>> ZONED flag is enabled on the file system and if the file system consists of
+>>>>> zoned devices with equal zone size.
+>>>>>
+>>>>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>>>>> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+>>>>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>>>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>>>>> ---
+>>>>>     fs/btrfs/ctree.h       | 11 ++++++
+>>>>>     fs/btrfs/dev-replace.c |  7 ++++
+>>>>>     fs/btrfs/disk-io.c     | 11 ++++++
+>>>>>     fs/btrfs/super.c       |  1 +
+>>>>>     fs/btrfs/volumes.c     |  5 +++
+>>>>>     fs/btrfs/zoned.c       | 81 ++++++++++++++++++++++++++++++++++++++++++
+>>>>>     fs/btrfs/zoned.h       | 26 ++++++++++++++
+>>>>>     7 files changed, 142 insertions(+)
+>>>>>
+>>>>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>>>>> index aac3d6f4e35b..453f41ca024e 100644
+>>>>> --- a/fs/btrfs/ctree.h
+>>>>> +++ b/fs/btrfs/ctree.h
+>>>>> @@ -948,6 +948,12 @@ struct btrfs_fs_info {
+>>>>>     	/* Type of exclusive operation running */
+>>>>>     	unsigned long exclusive_operation;
+>>>>>     
+>>>>> +	/* Zone size when in ZONED mode */
+>>>>> +	union {
+>>>>> +		u64 zone_size;
+>>>>> +		u64 zoned;
+>>>>> +	};
+>>>>> +
+>>>>>     #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+>>>>>     	spinlock_t ref_verify_lock;
+>>>>>     	struct rb_root block_tree;
+>>>>> @@ -3595,4 +3601,9 @@ static inline int btrfs_is_testing(struct btrfs_fs_info *fs_info)
+>>>>>     }
+>>>>>     #endif
+>>>>>     
+>>>>> +static inline bool btrfs_is_zoned(struct btrfs_fs_info *fs_info)
+>>>>> +{
+>>>>> +	return fs_info->zoned != 0;
+>>>>> +}
+>>>>> +
+>>>>>     #endif
+>>>>> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+>>>>> index 6f6d77224c2b..db87f1aa604b 100644
+>>>>> --- a/fs/btrfs/dev-replace.c
+>>>>> +++ b/fs/btrfs/dev-replace.c
+>>>>> @@ -238,6 +238,13 @@ static int btrfs_init_dev_replace_tgtdev(struct btrfs_fs_info *fs_info,
+>>>>>     		return PTR_ERR(bdev);
+>>>>>     	}
+>>>>>     
+>>>>> +	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
+>>>>> +		btrfs_err(fs_info,
+>>>>> +			  "dev-replace: zoned type of target device mismatch with filesystem");
+>>>>> +		ret = -EINVAL;
+>>>>> +		goto error;
+>>>>> +	}
+>>>>> +
+>>>>>     	sync_blockdev(bdev);
+>>>>>     
+>>>>>     	list_for_each_entry(device, &fs_info->fs_devices->devices, dev_list) {
+>>>>
+>>>>     I am not sure if it is done in some other patch. But we still have to
+>>>>     check for
+>>>>
+>>>>     (model == BLK_ZONED_HA && incompat_zoned))
+>>>
+>>> Do you really mean BLK_ZONED_HA, ie. host-aware (HA)?
+>>> btrfs_check_device_zone_type checks for _HM.
+>>
+>>
+>> Still confusing to me. The below function, which is part of this
+>> patch, says we don't support BLK_ZONED_HM. So does it mean we
+>> allow BLK_ZONED_HA only?
+>>
+>> +static inline bool btrfs_check_device_zone_type(struct btrfs_fs_info
+>> *fs_info,
+>> +						struct block_device *bdev)
+>> +{
+>> +	u64 zone_size;
+>> +
+>> +	if (btrfs_is_zoned(fs_info)) {
+>> +		zone_size = (u64)bdev_zone_sectors(bdev) << SECTOR_SHIFT;
+>> +		/* Do not allow non-zoned device */
+> 
+> This comment does not make sense. It should be:
+> 
+> 		/* Only allow zoned devices with the same zone size */
+> 
+>> +		return bdev_is_zoned(bdev) && fs_info->zone_size == zone_size;
+>> +	}
+>> +
+>> +	/* Do not allow Host Manged zoned device */
+>> +	return bdev_zoned_model(bdev) != BLK_ZONED_HM;
+> 
+> The comment is also wrong. It should read:
+> 
+> 	/* Allow only host managed zoned devices */
+> 
+> This is because we decided to treat host aware devices in the same way as
+> regular block devices, since HA drives are backward compatible with regular
+> block devices.
 
 
+Yeah, I read about them, but I have questions like do an FS work on top 
+of a BLK_ZONED_HA without modification?
+  Are we ok to replace an HM device with a HA device? Or add a HA device 
+to a btrfs on an HM device.
 
+Thanks.
 
-> Thanks!
->
-> >
-> > > >   * @cow:       boolean should CoW operations be performed. Must al=
-ways be 1
-> > > >   *             when modifying the tree.
-> > > >   *
-> > > > @@ -2719,6 +2720,17 @@ int btrfs_search_slot(struct btrfs_trans_han=
-dle *trans, struct btrfs_root *root,
-> > > >
-> > > >                 if (level =3D=3D 0) {
-> > > >                         p->slots[level] =3D slot;
-> > > > +                       /*
-> > > > +                        * item key collision happens. In this case=
-, if we are allow
-> > >
-> > > item -> Item (start of sentence),  allow -> allowed
-> > >
-> > > > +                        * to insert the item(for example, in dir_i=
-tem case, item key
-> > >
-> > > Please add a space before opening the parenthesis -> "item (for
-> > > example..." instead
-> > >
-> > > > +                        * collision is allowed), it will be merged=
- with the original
-> > > > +                        * item. Only the item size grows, no new b=
-trfs item will be
-> > > > +                        * added. Since the ins_len already account=
-s the size btrfs_item,
-> > > > +                        * this value is counted twice. Duduct this=
- value here so the
-> > >
-> > > Duduct -> deduct
-> > >
-> > > > +                        * leaf space check will be correct.
-> > > > +                        */
-> > > > +                       if (ret =3D=3D 0 && ins_len > 0)
-> > > > +                               ins_len -=3D sizeof(struct btrfs_it=
-em);
-> > >
-> > > So lets add an assert to make sure ins_len is never less than
-> > > sizeof(struct btrfs_item).
-> > >
-> > > At the start of the function something like:
-> > >
-> > > if (ins_len > 0) ASSERT(ins_len >=3D sizeof(struct btrfs_item));
-> > >
-> > > Other than that, it looks good.
-> > > Thanks.
-> > >
-> >
-> > I'll modify the patch and resend V4 version, and thanks for correcting
-> > some grammar errors.
-> >
-> > > >                         if (ins_len > 0 &&
-> > > >                             btrfs_leaf_free_space(b) < ins_len) {
-> > > >                                 if (write_lock_level < 1) {
-> > > > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> > > > index fc942759a04c..ead62b7ba954 100644
-> > > > --- a/fs/btrfs/extent-tree.c
-> > > > +++ b/fs/btrfs/extent-tree.c
-> > > > @@ -830,6 +830,7 @@ int lookup_inline_extent_backref(struct btrfs_t=
-rans_handle *trans,
-> > > >         unsigned long ptr;
-> > > >         unsigned long end;
-> > > >         int extra_size;
-> > > > +       int ins_len;
-> > > >         int type;
-> > > >         int want;
-> > > >         int ret;
-> > > > @@ -844,9 +845,12 @@ int lookup_inline_extent_backref(struct btrfs_=
-trans_handle *trans,
-> > > >         want =3D extent_ref_type(parent, owner);
-> > > >         if (insert) {
-> > > >                 extra_size =3D btrfs_extent_inline_ref_size(want);
-> > > > +               ins_len =3D extra_size + sizeof(struct btrfs_item);
-> > > >                 path->keep_locks =3D 1;
-> > > > -       } else
-> > > > +       } else {
-> > > >                 extra_size =3D -1;
-> > > > +               ins_len =3D -1;
-> > > > +       }
-> > > >
-> > > >         /*
-> > > >          * Owner is our level, so we can just add one to get the le=
-vel for the
-> > > > @@ -858,7 +862,7 @@ int lookup_inline_extent_backref(struct btrfs_t=
-rans_handle *trans,
-> > > >         }
-> > > >
-> > > >  again:
-> > > > -       ret =3D btrfs_search_slot(trans, root, &key, path, extra_si=
-ze, 1);
-> > > > +       ret =3D btrfs_search_slot(trans, root, &key, path, ins_len,=
- 1);
-> > > >         if (ret < 0) {
-> > > >                 err =3D ret;
-> > > >                 goto out;
-> > > > --
-> > > > 2.25.1
-> > > >
-> > >
-> > >
-> > > --
-> > > Filipe David Manana,
-> > >
-> > > =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 =
-you're right.=E2=80=9D
->
->
->
-> --
-> Filipe David Manana,
->
-> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
-re right.=E2=80=9D
+> 
+>> +}
+>>
+>>
+>> Also, if there is a new type of zoned device in the future, the older
+>> kernel should be able to reject the newer zone device types.
+>>
+>> And, if possible could you rename above function to
+>> btrfs_zone_type_is_valid(). Or better.
+>>
+>>
+>>>> right? What if in a non-zoned FS, a zoned device is added through the
+>>>> replace. No?
+>>>
+>>> The types of devices cannot mix, yeah. So I'd like to know the answer as
+>>> well.
+>>
+>>
+>>>>> --- a/fs/btrfs/volumes.c
+>>>>> +++ b/fs/btrfs/volumes.c
+>>>>> @@ -2518,6 +2518,11 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>>>>>     	if (IS_ERR(bdev))
+>>>>>     		return PTR_ERR(bdev);
+>>>>>     
+>>>>> +	if (!btrfs_check_device_zone_type(fs_info, bdev)) {
+>>>>> +		ret = -EINVAL;
+>>>>> +		goto error;
+>>>>> +	}
+>>>>> +
+>>>>>     	if (fs_devices->seeding) {
+>>>>>     		seeding_dev = 1;
+>>>>>     		down_write(&sb->s_umount);
+>>>>
+>>>> Same here too. It can also happen that a zone device is added to a non
+>>>> zoned fs.
+>>
+>>
+>> Thanks.
+>>
+> 
+> 
+
