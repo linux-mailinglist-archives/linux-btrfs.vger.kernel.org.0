@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCACD2CB54A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 07:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E352CB54D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 07:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387536AbgLBGuA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 01:50:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53504 "EHLO mx2.suse.de"
+        id S2387556AbgLBGuD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 01:50:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53518 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387531AbgLBGuA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:50:00 -0500
+        id S2387543AbgLBGuC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Dec 2020 01:50:02 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606891731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1606891732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YuOLdrngHaLfQKXDkj1I+F8EWFLJuhFrXifk6fLlGkA=;
-        b=r493HqEItRhwPmBelp2gKkQcEccTSpZ2m1FFEqgqhf2CKas2GjRmGPTS7TBvpo1r4EUxoP
-        GtGsTAY6Ra4jE/URMhfhOWhp058g9nvRIw2PuC/zX3Hf6OMTF7MtxgXspbp+sIwT00kpPg
-        lyKVZxWF5N2VifbEieZZpfSgZB++NRU=
+        bh=lug76vsqWj1n0hgdm8j3DLsRI4TJKGwQW1u/FGV0POw=;
+        b=h9N3p7gk0c9V50dYZntHla/5mjgkKEmyASS5bL6m4NqKh3su8MYXYGRjbFfu1UwfcqjpWb
+        XjnESZVdrT5ctFq1rpfhl+EKzKFCuDffvo2cqbwimpAzNx8DRgZA5VzD9IntwTtRSYJOhj
+        5FDM6F8i/BT/UhYMoiWaNw1jPCbq0Lw=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1D789AEEE
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 06:48:51 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B8E81AEEF
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 06:48:52 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 12/15] btrfs: scrub: always allocate one full page for one sector for RAID56
-Date:   Wed,  2 Dec 2020 14:48:08 +0800
-Message-Id: <20201202064811.100688-13-wqu@suse.com>
+Subject: [PATCH v3 13/15] btrfs: scrub: support subpage tree block scrub
+Date:   Wed,  2 Dec 2020 14:48:09 +0800
+Message-Id: <20201202064811.100688-14-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201202064811.100688-1-wqu@suse.com>
 References: <20201202064811.100688-1-wqu@suse.com>
@@ -38,101 +38,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For scrub_pages() and scrub_pages_for_parity(), we currently allocate
-one scrub_page structure for one page.
+To support subpage tree block scrub, scrub_checksum_tree_block() only
+needs to learn 2 new tricks:
 
-This is fine if we only read/write one sector one time.
-But for cases like scrubing RAID56, we need to read/write the full
-stripe, which is in 64K size.
+- Follow sector size
+  Now scrub_page only represents one sector, we need to follow it
+  properly.
 
-For subpage size, we will submit the read in just one page, which is
-normally a good thing, but for RAID56 case, it only expects to see one
-sector, not the full stripe in its endio function.
-This could lead to wrong parity checksum for RAID56 on subpage.
-
-To make the existing code work well for subpage case, here we take a
-shortcut, by always allocating a full page for one sector.
-
-This should provide the basis to make RAID56 work for subpage case.
-
-The cost is pretty obvious now, for one RAID56 stripe now we always need 16
-pages. For support subpage situation (64K page size, 4K sector size),
-this means we need full one megabyte to scrub just one RAID56 stripe.
-
-And for data scrub, each 4K sector will also need one 64K page.
-
-This is mostly just a workaround, the proper fix for this is a much
-larger project, using scrub_block to replace scrub_page, and allow
-scrub_block to handle multi pages, csums, and csum_bitmap to avoid
-allocating one page for each sector.
+- Run checksum on all sectors
+  Since scrub_page only represents one sector, we need to run hash on
+  all sectors, no longer just (nodesize >> PAGE_SIZE).
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ fs/btrfs/scrub.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 8026606f7510..efc6f5f2b8a4 100644
+index efc6f5f2b8a4..a4d30106bacb 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -2153,6 +2153,7 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
- 		       u64 physical_for_dev_replace)
- {
- 	struct scrub_block *sblock;
+@@ -1808,15 +1808,20 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	struct scrub_ctx *sctx = sblock->sctx;
+ 	struct btrfs_header *h;
+ 	struct btrfs_fs_info *fs_info = sctx->fs_info;
 +	const u32 sectorsize = sctx->fs_info->sectorsize;
- 	int index;
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	u8 calculated_csum[BTRFS_CSUM_SIZE];
+ 	u8 on_disk_csum[BTRFS_CSUM_SIZE];
+-	const int num_pages = sctx->fs_info->nodesize >> PAGE_SHIFT;
++	const int num_sectors = fs_info->nodesize >> fs_info->sectorsize_bits;
+ 	int i;
+ 	struct scrub_page *spage;
+ 	char *kaddr;
  
- 	sblock = kzalloc(sizeof(*sblock), GFP_KERNEL);
-@@ -2171,7 +2172,12 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
- 
- 	for (index = 0; len > 0; index++) {
- 		struct scrub_page *spage;
--		u32 l = min_t(u32, len, PAGE_SIZE);
-+		/*
-+		 * Here we will allocate one page for one sector to scrub.
-+		 * This is fine if PAGE_SIZE == sectorsize, but will cost
-+		 * more memory for PAGE_SIZE > sectorsize case.
-+		 */
-+		u32 l = min(sectorsize, len);
- 
- 		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
- 		if (!spage) {
-@@ -2483,8 +2489,11 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
- {
- 	struct scrub_ctx *sctx = sparity->sctx;
- 	struct scrub_block *sblock;
-+	u32 sectorsize = sctx->fs_info->sectorsize;
- 	int index;
- 
-+	ASSERT(IS_ALIGNED(len, sectorsize));
+ 	BUG_ON(sblock->page_count < 1);
 +
- 	sblock = kzalloc(sizeof(*sblock), GFP_KERNEL);
- 	if (!sblock) {
- 		spin_lock(&sctx->stat_lock);
-@@ -2503,7 +2512,6 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
- 
- 	for (index = 0; len > 0; index++) {
- 		struct scrub_page *spage;
--		u32 l = min_t(u32, len, PAGE_SIZE);
- 
- 		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
- 		if (!spage) {
-@@ -2538,9 +2546,12 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
- 		spage->page = alloc_page(GFP_KERNEL);
- 		if (!spage->page)
- 			goto leave_nomem;
--		len -= l;
--		logical += l;
--		physical += l;
++	/* Each pagev[] is in fact just one sector, not a full page */
++	ASSERT(sblock->page_count == num_sectors);
 +
-+
-+		/* Iterate over the stripe range in sectorsize steps */
-+		len -= sectorsize;
-+		logical += sectorsize;
-+		physical += sectorsize;
+ 	spage = sblock->pagev[0];
+ 	kaddr = page_address(spage->page);
+ 	h = (struct btrfs_header *)kaddr;
+@@ -1845,11 +1850,11 @@ static int scrub_checksum_tree_block(struct scrub_block *sblock)
+ 	shash->tfm = fs_info->csum_shash;
+ 	crypto_shash_init(shash);
+ 	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+-			    PAGE_SIZE - BTRFS_CSUM_SIZE);
++			    sectorsize - BTRFS_CSUM_SIZE);
+ 
+-	for (i = 1; i < num_pages; i++) {
++	for (i = 1; i < num_sectors; i++) {
+ 		kaddr = page_address(sblock->pagev[i]->page);
+-		crypto_shash_update(shash, kaddr, PAGE_SIZE);
++		crypto_shash_update(shash, kaddr, sectorsize);
  	}
  
- 	WARN_ON(sblock->page_count == 0);
+ 	crypto_shash_final(shash, calculated_csum);
 -- 
 2.29.2
 
