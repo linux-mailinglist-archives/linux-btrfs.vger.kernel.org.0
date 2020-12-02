@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB252CC737
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 20:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901E42CC73C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 20:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389851AbgLBTxi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 14:53:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
+        id S2389868AbgLBTxm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 14:53:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389842AbgLBTxe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Dec 2020 14:53:34 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B96C061A4C
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 11:52:49 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id q5so2451695qkc.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Dec 2020 11:52:49 -0800 (PST)
+        with ESMTP id S2389866AbgLBTxm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Dec 2020 14:53:42 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DB6C061A4D
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 11:52:51 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id y197so2473515qkb.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Dec 2020 11:52:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=LPT7aEYnMVET6RU2QhdABJEzg5OVvT3nShfG4ZVnk/g=;
-        b=ycXwQm9TMvGKme5FhtoGwX7eyaxVL30DFN68RO9esM3eE28uYYt0cLOwacfw6IfmBk
-         SbNomiu0droGPbQvyt650kUUc/cVEy/OhaV1D0e4DXLE/kdCgHLetLTIbdniAj4ihNqK
-         52Y2cNlEqJAN2u4hs9ki+RyUyrPmm6ZGIlz/edTgN+WAPDI8YhuFqu00GWpVzjaQ5xuk
-         sIcJBUe+ExoKF2gSuTdRaBakaQlV++BB6TNT02iZUHYSohOaBSBbpWgBoH1kgitORQdu
-         Wsv9Mq0ET7UvZutNsvM+vQ75SnJHxnoyYqpAxC58Ak+pytxR8M09ewULnr17t9/sYq5t
-         ck/w==
+        bh=AsRjczG2u/IZBO3TnGiSTj7YRPKVYiweycoLH2spsog=;
+        b=wEF2DAgs/jbbuJKt/RT1vBRxHvOZlxsvnTLOCphN4fWdFkCln58kDfNQ2yCq8aJUsX
+         d+ctjU7OTl/oiTKap3AdSXRerLoFzlURyqpnzMHFcgvAjZpSW9mD2jzUOyGEPVLv1pDp
+         hydGMWDzEcWD6FXVIv3W7CMlylYAKLea68weSPjACYzusJ337NPtwVFMXHRl6D8RfB9x
+         JuiTlX9/ldyHRAPaFs2EyBVgRxJyJbgkzTWKiSAxMW/qNUGQKn43H5MCwcBbgc0mHukn
+         BtYknKfBiYawWhQ3mo+ug4t5fp7EwdAIh8LqaiQtvrUrWzrjRbVGjydNvedTM4bJnI+Z
+         RHLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LPT7aEYnMVET6RU2QhdABJEzg5OVvT3nShfG4ZVnk/g=;
-        b=peimameqSXzWtD3CWDvwhjakk13jge9Ubun3Mo6F6xXte0naBwAJHD+qcT1LP9jfmF
-         WpSevzzwiT8RRxpfNg19/IpDP8V7M/ryE30IpNFfY9Do23ercG9cQ47cmE3qr5jMQ/So
-         6R/w9IGV+Q/Ga9VUpMlYtSBxA3uDDTlML3o69SeLmEuWTpzKGLTJH/c5OomlAH/vDpLa
-         hrzANwxj3qb6EkHuXIR8zyi4hC7jp663sxsNBBV2VloAH6skyBJhUply5YxHamaLuDXQ
-         zGOeMlWs+s4HlfAUA5boPcQhiSsH5owIQFQLSUftQsu2QBKSAquVZQv0ENjw1f2ueGQZ
-         eIlw==
-X-Gm-Message-State: AOAM533NphPS9K+lKYTh1wnHN+2QMZR7RdbWs+galsuV8o30TVpD5RDS
-        qbvePbfH4xcEZng52M0XBIA0QEVU/HFIMQ==
-X-Google-Smtp-Source: ABdhPJweSXAOCHyCxPq4H4IOCQ7Nr4Ic4gpZaO7xotn8C4WSziiPEo7N8B7i+Gs++3fYGUlefZrA5g==
-X-Received: by 2002:a37:afc6:: with SMTP id y189mr4317134qke.361.1606938768501;
-        Wed, 02 Dec 2020 11:52:48 -0800 (PST)
+        bh=AsRjczG2u/IZBO3TnGiSTj7YRPKVYiweycoLH2spsog=;
+        b=lGz+uY0RY5Ds5wpYRx2T+UQgsEcM8W3d0zv+wm3VCKzme0qe+KnJUp5vobpqlhhaqs
+         JkhqeKiONQrZst5YHOPYYOmNvXM3Iw7RtXkstZhxncRqiXDyPHEmtEw4gkU5kGo06q4j
+         7UE3lHF95YwRqaRYSGHzCcxUCOEuZzv1w6lIxqzW8Oh8rbvh9AGrPx/Ny/EGfxPdaMQD
+         kwjbrhcQGzgfmgdqojU4FQcRmDQw7pO9pepxNOcAXWuQ8r8y4P5q93mp4NisQD90lRHm
+         yKR8Z4XZCq7is0jOLW7q/9fj5fiG4ckA0eWnTtqs3UYOXRTl1NS0U3JruPfUsw4M4iY3
+         01zA==
+X-Gm-Message-State: AOAM530bVf1Q8FQ1859gbv+iTY3A5VjTNkSn57Ue8QxD+utkxGrUGkGb
+        Xj0bgzHXLimhlwmaHtyTGOXnsMFkRjPeEA==
+X-Google-Smtp-Source: ABdhPJxgeG0nbKi+En3wyN5IQsT6pJGT6yqtXCbIaeo4PllMWg1HAWS0j0eZUI3sJLZJHI0f0qhFVA==
+X-Received: by 2002:ae9:f506:: with SMTP id o6mr4129671qkg.414.1606938770151;
+        Wed, 02 Dec 2020 11:52:50 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id b73sm2934309qkc.87.2020.12.02.11.52.47
+        by smtp.gmail.com with ESMTPSA id l46sm3025278qta.44.2020.12.02.11.52.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 11:52:47 -0800 (PST)
+        Wed, 02 Dec 2020 11:52:49 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 52/54] btrfs: print the actual offset in btrfs_root_name
-Date:   Wed,  2 Dec 2020 14:51:10 -0500
-Message-Id: <3575cc74f0d9f63647e92082979fa8cfd3901e90.1606938211.git.josef@toxicpanda.com>
+Subject: [PATCH v3 53/54] btrfs: fix reloc root leak with 0 ref reloc roots on recovery
+Date:   Wed,  2 Dec 2020 14:51:11 -0500
+Message-Id: <8938404bfb921d70018de363dd006f24f1beefd6.1606938211.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1606938211.git.josef@toxicpanda.com>
 References: <cover.1606938211.git.josef@toxicpanda.com>
@@ -61,74 +61,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We're supposed to print the root_key.offset in btrfs_root_name in the
-case of a reloc root, not the objectid.  Fix this helper to take the key
-so we have access to the offset when we need it.
+When recovering a relocation, if we run into a reloc root that has 0
+refs we simply add it to the reloc_control->reloc_roots list, and then
+clean it up later.  The problem with this is __del_reloc_root() doesn't
+do anything if the root isn't in the radix tree, which in this case it
+won't be because we never call __add_reloc_root() on the reloc_root.
+
+This exit condition simply isn't correct really.  During normal
+operation we can remove ourselves from the rb tree and then we're meant
+to clean up later at merge_reloc_roots() time, and this happens
+correctly.  During recovery we're depending on free_reloc_roots() to
+drop our references, but we're short-circuiting.
+
+Fix this by continuing to check if we're on the list and dropping
+ourselves from the reloc_control root list and dropping our reference
+appropriately.  Change the corresponding BUG_ON() to an ASSERT() that
+does the correct thing if we aren't in the rb tree.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c    |  2 +-
- fs/btrfs/print-tree.c | 10 +++++-----
- fs/btrfs/print-tree.h |  2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ fs/btrfs/relocation.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 46dd9e0b077e..c73d172aa1f7 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1458,7 +1458,7 @@ void btrfs_check_leaked_roots(struct btrfs_fs_info *fs_info)
- 		root = list_first_entry(&fs_info->allocated_roots,
- 					struct btrfs_root, leak_list);
- 		btrfs_err(fs_info, "leaked root %s refcount %d",
--			  btrfs_root_name(root->root_key.objectid, buf),
-+			  btrfs_root_name(&root->root_key, buf),
- 			  refcount_read(&root->refs));
- 		while (refcount_read(&root->refs) > 1)
- 			btrfs_put_root(root);
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index fe5e0026129d..b8137dbf6a3a 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -26,22 +26,22 @@ static const struct root_name_map root_map[] = {
- 	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
- };
- 
--const char *btrfs_root_name(u64 objectid, char *buf)
-+const char *btrfs_root_name(struct btrfs_key *key, char *buf)
- {
- 	int i;
- 
--	if (objectid == BTRFS_TREE_RELOC_OBJECTID) {
-+	if (key->objectid == BTRFS_TREE_RELOC_OBJECTID) {
- 		snprintf(buf, BTRFS_ROOT_NAME_BUF_LEN,
--			 "TREE_RELOC offset=%llu", objectid);
-+			 "TREE_RELOC offset=%llu", key->offset);
- 		return buf;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 15b6e54394b7..a49a422f2f9b 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -671,9 +671,7 @@ static void __del_reloc_root(struct btrfs_root *root)
+ 			RB_CLEAR_NODE(&node->rb_node);
+ 		}
+ 		spin_unlock(&rc->reloc_root_tree.lock);
+-		if (!node)
+-			return;
+-		BUG_ON((struct btrfs_root *)node->data != root);
++		ASSERT(!node || (struct btrfs_root *)node->data == root);
  	}
  
- 	for (i = 0; i < ARRAY_SIZE(root_map); i++) {
--		if (root_map[i].id == objectid)
-+		if (root_map[i].id == key->objectid)
- 			return root_map[i].name;
- 	}
- 
--	snprintf(buf, BTRFS_ROOT_NAME_BUF_LEN, "%llu", objectid);
-+	snprintf(buf, BTRFS_ROOT_NAME_BUF_LEN, "%llu", key->objectid);
- 	return buf;
- }
- 
-diff --git a/fs/btrfs/print-tree.h b/fs/btrfs/print-tree.h
-index 78b99385a503..802628dd1a6e 100644
---- a/fs/btrfs/print-tree.h
-+++ b/fs/btrfs/print-tree.h
-@@ -11,6 +11,6 @@
- 
- void btrfs_print_leaf(struct extent_buffer *l);
- void btrfs_print_tree(struct extent_buffer *c, bool follow);
--const char *btrfs_root_name(u64 objectid, char *buf);
-+const char *btrfs_root_name(struct btrfs_key *key, char *buf);
- 
- #endif
+ 	/*
 -- 
 2.26.2
 
