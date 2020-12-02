@@ -2,254 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E82C2CC950
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 23:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 823FF2CCABA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 00:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbgLBWD6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 17:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        id S1726188AbgLBXxM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 18:53:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727254AbgLBWD5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Dec 2020 17:03:57 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2D2C0617A6
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 14:03:17 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id v11so2267605qtq.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Dec 2020 14:03:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QW1YqGh0jstSBT1vrOTPp/c6teinpDzsuVv5/rUdzXY=;
-        b=UqocdO8SFbsk05+YEa5voIyzzZbck5Idt+Ojf0XT+CmVaDZl6rGC1mxhm7l2jV6Qd4
-         UchbVvg8xjjafePAxLtdzvvhHrZUD8sWGJZFulmFnSr3d3pJGi+ttXp2/dDHoqC+DaOQ
-         /Z5lXUsozX3WcpLGI1NwPVD9O+wyn8BIKvylg0/GytoHAq3v6TrH8BGQUAPLFTt2cuth
-         MEhrGK8qK/WBQ/QG3cRvt6Jni20usgHfYHxizxq8zpvVV3m0QqdSVOpcImwxANPhG8df
-         lLDS48TLZCZVAZeEEDy3DOBE+P3iz/CpWlK7cK6mOi72P8e5jS71MSDXl5p2VPpW9GuV
-         Krww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QW1YqGh0jstSBT1vrOTPp/c6teinpDzsuVv5/rUdzXY=;
-        b=G3sDuZyfvN9q1BHCRW/QWfa9aGCv0iCFtKSjQuldhiXB/qZy2ivX2zSqdAgD3GhIn4
-         JVx7JBpw0heFu9V+d37D82pNqb+aWdtuit0kHEiamZzcVc6elkyOD46o8nyl+E/fqJSZ
-         sCMZpjjMFHOdrktEqFctG/4+xZx+Ze6XTJuqgLBooQrOcEqdk9o4wj+MJqyXj2RESWLS
-         Y8K0q9FynFuLWJzhxELRUqL3FxTUnxEZr4F0fdv0IobQwdIu0InbQNjO8req4rZk9t2J
-         7lbuOluR2yTg/srQN9aEtgjZqa6BYuQwBbJxK+k+2HD45rpbEuf6oYr3FQjOe0WTzWor
-         sDug==
-X-Gm-Message-State: AOAM532a5Gws/CERCbz1JaNoTRXUVzxIunHiPGtOEYVv0YXCpaYO6PGe
-        8NalDc8EV178OZT2bWtP2pzk1g==
-X-Google-Smtp-Source: ABdhPJxVzuP+Lertp0OGczTWMYLNFBBWlZsLmuEZXuhGPYkrF9qWrtb/QwCSqavAGXdRvJLyzGDYuQ==
-X-Received: by 2002:ac8:444e:: with SMTP id m14mr291514qtn.120.1606946596672;
-        Wed, 02 Dec 2020 14:03:16 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h13sm277758qtc.4.2020.12.02.14.03.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 14:03:16 -0800 (PST)
-Subject: Re: [PATCH v6 11/11] btrfs: implement RWF_ENCODED writes
-To:     Omar Sandoval <osandov@osandov.com>, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1605723568.git.osandov@fb.com>
- <fe58a0fe2c1455567fe1e9e62232e8b711797a93.1605723568.git.osandov@fb.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <1336bfb3-b1e7-62ea-a9c4-21fdf344d1f8@toxicpanda.com>
-Date:   Wed, 2 Dec 2020 17:03:14 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
+        with ESMTP id S1726099AbgLBXxM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Dec 2020 18:53:12 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB47C0613D6
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 15:52:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds201912; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Reply-To:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=WoXhBYpJt/Ix+Fg7wUqGDDkcY5/Nuh81iBDDfZC29N8=; b=QWJwCzQTfYy8LhRMc8UzyklnKU
+        ducgaeioj2FuBd7ErqozmCWxdBnjgeg5FMIPD6C/o/JKLewm/QDcqUh35EoLteFj7W1PbFVq7Xzue
+        AjDNj3wrfgCSG1Tilo8r+KYoAJle6ZC3KyOykvi8lcu4DyvmClfQjJMO79ps2KvdW9rxqLeciXfp7
+        2uOQAC0j3CUWnhEfO9eK8phEdPCrq2SZlBMhvTjtJ3QVswQj55mqWftlKgBm4TMryGJ7uN9G6H+WD
+        gH8DojgdApimPCKid/pMg1AAnot9BFgQt5D2AF+GTrM9sFHQgTczETiH3ltNxsgT6eiaG9l5ctahk
+        jWHocD/w==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:53770 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1kkbup-0005YL-3q
+        for linux-btrfs@vger.kernel.org; Thu, 03 Dec 2020 00:52:07 +0100
+Reply-To: waxhead@dirtcellar.net
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+From:   waxhead <waxhead@dirtcellar.net>
+Subject: Per. subvolume RAID levels removed from planned features?
+Message-ID: <e1b4808c-c057-e879-ef6e-33cdedcd3df1@dirtcellar.net>
+Date:   Thu, 3 Dec 2020 00:52:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.4
 MIME-Version: 1.0
-In-Reply-To: <fe58a0fe2c1455567fe1e9e62232e8b711797a93.1605723568.git.osandov@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/18/20 2:18 PM, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> The implementation resembles direct I/O: we have to flush any ordered
-> extents, invalidate the page cache, and do the io tree/delalloc/extent
-> map/ordered extent dance. From there, we can reuse the compression code
-> with a minor modification to distinguish the write from writeback. This
-> also creates inline extents when possible.
-> 
-> Now that read and write are implemented, this also sets the
-> FMODE_ENCODED_IO flag in btrfs_file_open().
-> 
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
->   fs/btrfs/compression.c  |   7 +-
->   fs/btrfs/compression.h  |   6 +-
->   fs/btrfs/ctree.h        |   2 +
->   fs/btrfs/file.c         |  37 +++++-
->   fs/btrfs/inode.c        | 259 +++++++++++++++++++++++++++++++++++++++-
->   fs/btrfs/ordered-data.c |  12 +-
->   fs/btrfs/ordered-data.h |   2 +
->   7 files changed, 313 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index eaa6fe21c08e..015c9e5d75b9 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -336,7 +336,8 @@ static void end_compressed_bio_write(struct bio *bio)
->   			bio->bi_status == BLK_STS_OK);
->   	cb->compressed_pages[0]->mapping = NULL;
->   
-> -	end_compressed_writeback(inode, cb);
-> +	if (cb->writeback)
-> +		end_compressed_writeback(inode, cb);
->   	/* note, our inode could be gone now */
->   
->   	/*
-> @@ -372,7 +373,8 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->   				 struct page **compressed_pages,
->   				 unsigned long nr_pages,
->   				 unsigned int write_flags,
-> -				 struct cgroup_subsys_state *blkcg_css)
-> +				 struct cgroup_subsys_state *blkcg_css,
-> +				 bool writeback)
->   {
->   	struct btrfs_fs_info *fs_info = inode->root->fs_info;
->   	struct bio *bio = NULL;
-> @@ -396,6 +398,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->   	cb->mirror_num = 0;
->   	cb->compressed_pages = compressed_pages;
->   	cb->compressed_len = compressed_len;
-> +	cb->writeback = writeback;
->   	cb->orig_bio = NULL;
->   	cb->nr_pages = nr_pages;
->   
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index 8001b700ea3a..f95cdc16f503 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -49,6 +49,9 @@ struct compressed_bio {
->   	/* the compression algorithm for this bio */
->   	int compress_type;
->   
-> +	/* Whether this is a write for writeback. */
-> +	bool writeback;
-> +
->   	/* number of compressed pages in the array */
->   	unsigned long nr_pages;
->   
-> @@ -96,7 +99,8 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->   				  struct page **compressed_pages,
->   				  unsigned long nr_pages,
->   				  unsigned int write_flags,
-> -				  struct cgroup_subsys_state *blkcg_css);
-> +				  struct cgroup_subsys_state *blkcg_css,
-> +				  bool writeback);
->   blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->   				 int mirror_num, unsigned long bio_flags);
->   
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index ce78424f1d98..9b585ac9c7a9 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3134,6 +3134,8 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
->   void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
->   					  u64 end, int uptodate);
->   ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter);
-> +ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-> +			       struct encoded_iov *encoded);
->   
->   extern const struct dentry_operations btrfs_dentry_operations;
->   extern const struct iomap_ops btrfs_dio_iomap_ops;
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 193477565200..f815ffb93d43 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -1994,6 +1994,32 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
->   	return written ? written : err;
->   }
->   
-> +static ssize_t btrfs_encoded_write(struct kiocb *iocb, struct iov_iter *from)
-> +{
-> +	struct file *file = iocb->ki_filp;
-> +	struct inode *inode = file_inode(file);
-> +	struct encoded_iov encoded;
-> +	ssize_t ret;
-> +
-> +	ret = copy_encoded_iov_from_iter(&encoded, from);
-> +	if (ret)
-> +		return ret;
-> +
-> +	btrfs_inode_lock(inode, 0);
-> +	ret = generic_encoded_write_checks(iocb, &encoded);
-> +	if (ret || encoded.len == 0)
-> +		goto out;
-> +
-> +	ret = btrfs_write_check(iocb, from, encoded.len);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	ret = btrfs_do_encoded_write(iocb, from, &encoded);
-> +out:
-> +	btrfs_inode_unlock(inode, 0);
-> +	return ret;
-> +}
-> +
->   static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
->   				    struct iov_iter *from)
->   {
-> @@ -2012,14 +2038,17 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
->   	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
->   		return -EROFS;
->   
-> -	if (!(iocb->ki_flags & IOCB_DIRECT) &&
-> -	    (iocb->ki_flags & IOCB_NOWAIT))
-> +	if ((iocb->ki_flags & IOCB_NOWAIT) &&
-> +	    (!(iocb->ki_flags & IOCB_DIRECT) ||
-> +	     (iocb->ki_flags & IOCB_ENCODED)))
->   		return -EOPNOTSUPP;
->   
->   	if (sync)
->   		atomic_inc(&BTRFS_I(inode)->sync_writers);
->   
-> -	if (iocb->ki_flags & IOCB_DIRECT)
-> +	if (iocb->ki_flags & IOCB_ENCODED)
-> +		num_written = btrfs_encoded_write(iocb, from);
-> +	else if (iocb->ki_flags & IOCB_DIRECT)
->   		num_written = btrfs_direct_write(iocb, from);
->   	else
->   		num_written = btrfs_buffered_write(iocb, from);
-> @@ -3586,7 +3615,7 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
->   
->   static int btrfs_file_open(struct inode *inode, struct file *filp)
->   {
-> -	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
-> +	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC | FMODE_ENCODED_IO;
->   	return generic_file_open(inode, filp);
->   }
->   
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index b0e800897b3b..2bf7b487939f 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -935,7 +935,7 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
->   				    ins.offset, async_extent->pages,
->   				    async_extent->nr_pages,
->   				    async_chunk->write_flags,
-> -				    async_chunk->blkcg_css)) {
-> +				    async_chunk->blkcg_css, true)) {
->   			struct page *p = async_extent->pages[0];
->   			const u64 start = async_extent->start;
->   			const u64 end = start + async_extent->ram_size - 1;
-> @@ -2703,6 +2703,7 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
->   	 * except if the ordered extent was truncated.
->   	 */
->   	update_inode_bytes = test_bit(BTRFS_ORDERED_DIRECT, &oe->flags) ||
-> +	                     test_bit(BTRFS_ORDERED_ENCODED, &oe->flags) ||
+I noticed that object level mirroring and striping was removed from the 
+wikis list of 'features currently in development or planned for future 
+releases.'
 
-Gotta use our git hooks, checkpatch caught the spaces here.  Thanks,
+Does this mean that per. subvolume RAID levels are a lost cause?
 
-Josef
+I earlier suggest that I think that it should be possible to assign 
+storage device ID's to groups. For example group1=fast_hdd, 
+group2=fast_ssd, group3=slow_hdd, etc.... etc....
+
+While admittedly per. subvolume RAID levels would be mostly useful if 
+you could assign weight to a subvolume to make it prefer to be stored on 
+a certain group or groups I still think that for some setups per. 
+subvolume RAID levels still serves a purpose and I would hate to see 
+that feature go.
