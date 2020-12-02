@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D292CC731
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 20:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD1B2CC71F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 20:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389825AbgLBTxa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 14:53:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S2389676AbgLBTxG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 14:53:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388104AbgLBTx3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Dec 2020 14:53:29 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03A5C08E9AA
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 11:52:16 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id z188so2458843qke.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Dec 2020 11:52:16 -0800 (PST)
+        with ESMTP id S1726463AbgLBTxG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Dec 2020 14:53:06 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA99C08ED7E
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 11:52:18 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id f27so1980780qtv.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Dec 2020 11:52:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=Ux6kb1oPImsvcNd1bSX4gOEAsxeEfeZNSXoy0UM5v5A=;
-        b=Obpzvc54ulx8GTRq2PuKO6EzySLWy06U/yRgmfcf9WYmNKUswB8t95NwCdXdswv8At
-         59naaC00eAgYGfBy0Mfbf0kNP6Nlrjex9eNxXGa3itFruRowU0eiNMfh00RhIzciEPkh
-         T4AHxxdPR9w2Ts0jnx9pHEESeC1lwEYMc9fI9DhmRCo6GCqtgUibHf/5IpkkjeE3e9mp
-         sdJqIzfTVa6q3CmHUQCCTdvPsifk5hCQuA9utnjYFzGqKWHyKGjiRskQDEQ+VocblWOd
-         CNCWhYn63xmgA01kAryyQEq4eeOIfyzyabbY5dsm/lg+7L+nfqfHIBFcm9b27x9uq4Gk
-         scvA==
+        bh=jVT9E1U8ZeeJL6ProMQL7eX7XKP2lcNPsO1kcV6xP1E=;
+        b=RTN1YfQjFGt6lMLDLsE1XsjeARPos0Up2rzo4wvx5SLb+CdbeEK+DyInX6NrdzrKJB
+         E5kOinKDtgAxNRZss9/ke/1Nr9HSvHApsCEoWfwfjL1eY/V6qbA9bNsLyu/lgCXY/xCr
+         lTPR8x16C8KtVUZhzjaDax1ItJzf2szVnR/jYaBJxU6Qy5L1Xd5NCGAEcbMpe0zDDA3Q
+         gebq2GRuNyNteVsZ615D5EKO1gBG7KQVlsbF4c+5DWcSB9tPnOoZO6W5HcxWX42JMDuv
+         Cux88jdv44jbl1gY2MIP4zpV9GaoBnqEDeRwYmyVmhlfUnATamHZnXkBCHQYY2AHT8Ak
+         anUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ux6kb1oPImsvcNd1bSX4gOEAsxeEfeZNSXoy0UM5v5A=;
-        b=rHYlrbSnrMmTp++BzV96lxc8l2MAh9+F2JOJTkDGgm1jnPO8j8wmSvpZ2K+WWotnJe
-         YcxDpiMch3wjnXJLrBuW/ubx97aKrUiDUMVYivkTzbyeIPErtI6KIaDTItUPoxC1c4Rf
-         AQiGM/f8P+L+qFYkf3rForq0bP8M1EiqYDtBl2sAXvGocoSBu83nvPaZ2qVr6s1zWYq5
-         fePp33ZR1AIu5OrfD4eeWv+rYXL5HCfvgUAnAwXXswbUpIS+PAXJXspLfyw/BCGZnSJK
-         1JYIv/KGqlPTE+2j0KYBP08o2Uc15ExMNO24auxXRMGA786+mysQD8HoXwhOWYNDvP6a
-         FULA==
-X-Gm-Message-State: AOAM531ToOAZujkQhEczo7umOmKJc6sSTQcBKXWn7aQoyLsw9wkbfLJf
-        z5n117Dm05Z+P0RjDNFKA0nc+j+E/CRG8Q==
-X-Google-Smtp-Source: ABdhPJzP5+Unlt8siDQl7/nLYPmNYm33eAJDPdF8vIx1hZU3WFDddVtz8XQKRz1ambblf7YnVZLlvQ==
-X-Received: by 2002:a05:620a:80d:: with SMTP id s13mr4147971qks.133.1606938735675;
-        Wed, 02 Dec 2020 11:52:15 -0800 (PST)
+        bh=jVT9E1U8ZeeJL6ProMQL7eX7XKP2lcNPsO1kcV6xP1E=;
+        b=XdfDoYxktzlWOIYoiDzgmCrc1X394dsctk5sTOlooHl7deu/gLY5cYbo6s3dO8QIqy
+         btKigptQ2cJs8eGhTDPbQtI7i7TsFtyzcz7VJ6G7o1d+HEMx0wL8cKCWUH1hp3Hm+cF1
+         pxaXHb2/ZN0JfS1eN/+EjiZ9qEWgpEqWOzfHfXXsDbGhBXGbq19GfSyL77htRMt94mld
+         CtRH4hQfjq53bRjEKkk3aWFjwjDy7QLwZozN0PceG3ZZzZG1lukU9edKpu2XtxwKA3SL
+         ik9mLy8izDpWpeyte6W0b2NIF540K/UiSXIE3LG0HGbXXByoMjFZjC3eYrvjWzzCUEw4
+         PFvA==
+X-Gm-Message-State: AOAM532liM+CMcjBmyKSkvekrytyCi6dlQD6GWmz3pdG/muqNJ0ko6yz
+        2kmpF6ZJlL5H0QrOvoSK7CAP6gFJ9lF9Jw==
+X-Google-Smtp-Source: ABdhPJyoqwxJAD4D5BDBN2r2tIZY7V1dkGgZvnMaXKOFtNpNdMPwSyOj0HpOs24Qxwrn+KZK/ex3AA==
+X-Received: by 2002:ac8:7589:: with SMTP id s9mr4288324qtq.238.1606938737349;
+        Wed, 02 Dec 2020 11:52:17 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u22sm2627138qkk.51.2020.12.02.11.52.14
+        by smtp.gmail.com with ESMTPSA id b4sm2789819qtt.52.2020.12.02.11.52.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 11:52:15 -0800 (PST)
+        Wed, 02 Dec 2020 11:52:16 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 34/54] btrfs: handle btrfs_update_reloc_root failure in prepare_to_merge
-Date:   Wed,  2 Dec 2020 14:50:52 -0500
-Message-Id: <92a4360d1451dacd1da485abfcc95dce801b0293.1606938211.git.josef@toxicpanda.com>
+Subject: [PATCH v3 35/54] btrfs: do proper error handling in btrfs_update_reloc_root
+Date:   Wed,  2 Dec 2020 14:50:53 -0500
+Message-Id: <dc884af858abedd5596d31fbf365a830ec6b26d2.1606938211.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1606938211.git.josef@toxicpanda.com>
 References: <cover.1606938211.git.josef@toxicpanda.com>
@@ -61,41 +61,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_update_reloc_root will will return errors in the future, so handle
-an error properly in prepare_to_merge.
+We call btrfs_update_root in btrfs_update_reloc_root, which can fail for
+all sorts of reasons, including IO errors.  Instead of panicing the box
+lets return the error, now that all callers properly handle those
+errors.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 96cc9376b3a6..e41d14958b8b 100644
+index e41d14958b8b..2fcb07bc8450 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -1860,10 +1860,21 @@ int prepare_to_merge(struct reloc_control *rc, int err)
- 		 */
- 		if (!err)
- 			btrfs_set_root_refs(&reloc_root->root_item, 1);
--		btrfs_update_reloc_root(trans, root);
-+		ret = btrfs_update_reloc_root(trans, root);
+@@ -894,7 +894,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
+ 	int ret;
  
-+		/*
-+		 * Even if we have an error we need this reloc root back on our
-+		 * list so we can clean up properly.
-+		 */
- 		list_add(&reloc_root->root_list, &reloc_roots);
- 		btrfs_put_root(root);
-+
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			if (!err)
-+				err = ret;
-+			break;
-+		}
- 	}
+ 	if (!have_reloc_root(root))
+-		goto out;
++		return 0;
  
- 	list_splice(&reloc_roots, &rc->reloc_roots);
+ 	reloc_root = root->reloc_root;
+ 	root_item = &reloc_root->root_item;
+@@ -927,10 +927,8 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
+ 
+ 	ret = btrfs_update_root(trans, fs_info->tree_root,
+ 				&reloc_root->root_key, root_item);
+-	BUG_ON(ret);
+ 	btrfs_put_root(reloc_root);
+-out:
+-	return 0;
++	return ret;
+ }
+ 
+ /*
 -- 
 2.26.2
 
