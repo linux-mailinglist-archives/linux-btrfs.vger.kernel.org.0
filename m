@@ -2,33 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCF52CB540
+	by mail.lfdr.de (Postfix) with ESMTP id 854212CB541
 	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 07:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728725AbgLBGtH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 01:49:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53226 "EHLO mx2.suse.de"
+        id S1728733AbgLBGtM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 01:49:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53238 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728673AbgLBGtH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:49:07 -0500
+        id S1728727AbgLBGtL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Dec 2020 01:49:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606891700; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1606891704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kpytfpaTj990YZ36+owCZgBDAjsA8jP4wtNUccMQHxw=;
-        b=tWvUcATD0YcB88Gh4yOkc7laWS96QmGHGsNT92ZEt15BK7aNODEYH9Y45sZkme/50wkJhu
-        G3pZKx/cPlxWAHR+xAWkziPThpKCwUnG5jWo9/d/SiQMtCBUZW0h6FRx8Z2Jt46z+knyOS
-        or/eStaZm4AhS9lgAgi/F0HOSscJpWw=
+        bh=pAQVnz17eaV/KGT6Q3AI3r5uDcsh2LFrnaOWTkHV63g=;
+        b=jTz/8+V+3tsdOLZ3xtyNjxKgjWfTl+1PHJV1aDt9w2d8WT6OrGIW9HgNuhibMNmawA+GMd
+        yVI03Mtvtgbfu0pKqAgJ+ec2UzIBVtDF1G4DWfYgdvurneb1+lj4lY4wVg9KJdOzCXwPFy
+        FsJAWdX9cKa7NaHifAgNUvnS7PWizTg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 906BFAD5A
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 06:48:20 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1D62EAD5C;
+        Wed,  2 Dec 2020 06:48:24 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 01/15] btrfs: rename bio_offset of extent_submit_bio_start_t to opt_file_offset
-Date:   Wed,  2 Dec 2020 14:47:57 +0800
-Message-Id: <20201202064811.100688-2-wqu@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v3 02/15] btrfs: pass bio_offset to check_data_csum() directly
+Date:   Wed,  2 Dec 2020 14:47:58 +0800
+Message-Id: <20201202064811.100688-3-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201202064811.100688-1-wqu@suse.com>
 References: <20201202064811.100688-1-wqu@suse.com>
@@ -38,142 +41,256 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The parameter bio_offset of extent_submit_bio_start_t is very confusing.
+Parameter @icsum for check_data_csum() is a little hard to understand.
+So is the @phy_offset for btrfs_verify_data_csum().
 
-If it's really bio_offset (offset to bio), then it should be u32.
+Both parameters are calculated values for csum lookup.
 
-But in fact, it's only utilized by dio read, and that member is used as
-file offset, which must be u64.
+Instead of some calculated value, just pass @bio_offset and let the
+final and only user, check_data_csum(), to calculate whatever it needs.
 
-Rename it to opt_file_offset since the only user uses it as file offset,
-and add comment for who is using it.
+Since we are here, also make the bio_offset parameter and some related
+variables to be u32 (unsigned int).
+As bio size is limited by its bi_size, which is unsigned int, and has
+extra size limit check during various bio operations.
+Thus we are ensured that bio_offset won't over flow u32.
 
+Thus for all involved functions, not only rename the parameter from
+@phy_offset to @bio_offset, but also reduce its width to u32, so we
+won't have suspicious "u32 = u64 >> sector_bits;" lines anymore.
+
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/disk-io.c   | 17 ++++++++---------
- fs/btrfs/disk-io.h   |  2 +-
+ fs/btrfs/ctree.h     |  2 +-
+ fs/btrfs/extent_io.c | 32 ++++++++++++++++++++------------
  fs/btrfs/extent_io.h |  2 +-
- fs/btrfs/inode.c     | 10 +++++-----
- 4 files changed, 15 insertions(+), 16 deletions(-)
+ fs/btrfs/inode.c     | 32 ++++++++++++++++++++------------
+ 4 files changed, 42 insertions(+), 26 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 46dd9e0b077e..504636803bc4 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -113,11 +113,9 @@ struct async_submit_bio {
- 	struct bio *bio;
- 	extent_submit_bio_start_t *submit_bio_start;
- 	int mirror_num;
--	/*
--	 * bio_offset is optional, can be used if the pages in the bio
--	 * can't tell us where in the file the bio should go
--	 */
--	u64 bio_offset;
-+
-+	/* Optional parameter for submit_bio_start, used by direct io */
-+	u64 opt_file_offset;
- 	struct btrfs_work work;
- 	blk_status_t status;
- };
-@@ -697,7 +695,8 @@ static void run_one_async_start(struct btrfs_work *work)
- 	blk_status_t ret;
- 
- 	async = container_of(work, struct  async_submit_bio, work);
--	ret = async->submit_bio_start(async->inode, async->bio, async->bio_offset);
-+	ret = async->submit_bio_start(async->inode, async->bio,
-+				      async->opt_file_offset);
- 	if (ret)
- 		async->status = ret;
- }
-@@ -749,7 +748,7 @@ static void run_one_async_free(struct btrfs_work *work)
- 
- blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
- 				 int mirror_num, unsigned long bio_flags,
--				 u64 bio_offset,
-+				 u64 opt_file_offset,
- 				 extent_submit_bio_start_t *submit_bio_start)
- {
- 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
-@@ -767,7 +766,7 @@ blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
- 	btrfs_init_work(&async->work, run_one_async_start, run_one_async_done,
- 			run_one_async_free);
- 
--	async->bio_offset = bio_offset;
-+	async->opt_file_offset = opt_file_offset;
- 
- 	async->status = 0;
- 
-@@ -797,7 +796,7 @@ static blk_status_t btree_csum_one_bio(struct bio *bio)
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 2744e13e8eb9..112c9a2ae47b 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3052,7 +3052,7 @@ u64 btrfs_file_extent_end(const struct btrfs_path *path);
+ /* inode.c */
+ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+ 				   int mirror_num, unsigned long bio_flags);
+-int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
++int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
+ 			   struct page *page, u64 start, u64 end, int mirror);
+ struct extent_map *btrfs_get_extent_fiemap(struct btrfs_inode *inode,
+ 					   u64 start, u64 len);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 569d50ccf78a..a28b61510265 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2634,7 +2634,7 @@ static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
  }
  
- static blk_status_t btree_submit_bio_start(struct inode *inode, struct bio *bio,
--					   u64 bio_offset)
-+					   u64 opt_file_offset)
- {
- 	/*
- 	 * when we're called for a write, we're already in the async
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index 7b3ecad88d7e..9c2d6469bf25 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -116,7 +116,7 @@ blk_status_t btrfs_bio_wq_end_io(struct btrfs_fs_info *info, struct bio *bio,
- 			enum btrfs_wq_endio_type metadata);
- blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
- 				 int mirror_num, unsigned long bio_flags,
--				 u64 bio_offset,
-+				 u64 opt_file_offset,
- 				 extent_submit_bio_start_t *submit_bio_start);
- blk_status_t btrfs_submit_bio_done(void *private_data, struct bio *bio,
- 			  int mirror_num);
+ blk_status_t btrfs_submit_read_repair(struct inode *inode,
+-				      struct bio *failed_bio, u64 phy_offset,
++				      struct bio *failed_bio, u32 bio_offset,
+ 				      struct page *page, unsigned int pgoff,
+ 				      u64 start, u64 end, int failed_mirror,
+ 				      submit_bio_hook_t *submit_bio_hook)
+@@ -2644,7 +2644,7 @@ blk_status_t btrfs_submit_read_repair(struct inode *inode,
+ 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+ 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+ 	struct btrfs_io_bio *failed_io_bio = btrfs_io_bio(failed_bio);
+-	const int icsum = phy_offset >> fs_info->sectorsize_bits;
++	const int icsum = bio_offset >> fs_info->sectorsize_bits;
+ 	bool need_validation;
+ 	struct bio *repair_bio;
+ 	struct btrfs_io_bio *repair_io_bio;
+@@ -2869,10 +2869,11 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
+ 	struct extent_io_tree *tree, *failure_tree;
+ 	struct processed_extent processed = { 0 };
+-	u64 offset = 0;
+-	u64 start;
+-	u64 end;
+-	u64 len;
++	/*
++	 * The offset to the beginning of a bio, since one bio can never be
++	 * larger than UINT_MAX, u32 here is enough.
++	 */
++	u32 bio_offset = 0;
+ 	int mirror;
+ 	int ret;
+ 	struct bvec_iter_all iter_all;
+@@ -2882,7 +2883,10 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		struct page *page = bvec->bv_page;
+ 		struct inode *inode = page->mapping->host;
+ 		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-		u32 sectorsize = fs_info->sectorsize;
++		const u32 sectorsize = fs_info->sectorsize;
++		u64 start;
++		u64 end;
++		u32 len;
+ 
+ 		btrfs_debug(fs_info,
+ 			"end_bio_extent_readpage: bi_sector=%llu, err=%d, mirror=%u",
+@@ -2915,8 +2919,9 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		mirror = io_bio->mirror_num;
+ 		if (likely(uptodate)) {
+ 			if (is_data_inode(inode))
+-				ret = btrfs_verify_data_csum(io_bio, offset, page,
+-							     start, end, mirror);
++				ret = btrfs_verify_data_csum(io_bio,
++						bio_offset, page, start, end,
++						mirror);
+ 			else
+ 				ret = btrfs_validate_metadata_buffer(io_bio,
+ 					page, start, end, mirror);
+@@ -2944,12 +2949,14 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			 * If it can't handle the error it will return -EIO and
+ 			 * we remain responsible for that page.
+ 			 */
+-			if (!btrfs_submit_read_repair(inode, bio, offset, page,
++			if (!btrfs_submit_read_repair(inode, bio, bio_offset,
++						page,
+ 						start - page_offset(page),
+ 						start, end, mirror,
+ 						btrfs_submit_data_bio)) {
+ 				uptodate = !bio->bi_status;
+-				offset += len;
++				ASSERT(bio_offset + len > bio_offset);
++				bio_offset += len;
+ 				continue;
+ 			}
+ 		} else {
+@@ -2974,7 +2981,8 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 			if (page->index == end_index && off)
+ 				zero_user_segment(page, off, PAGE_SIZE);
+ 		}
+-		offset += len;
++		ASSERT(bio_offset + len > bio_offset);
++		bio_offset += len;
+ 
+ 		/* Update page status and unlock */
+ 		endio_readpage_update_page_status(page, uptodate);
 diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 66762c3cdf81..d3c7ad02db24 100644
+index d3c7ad02db24..db95468801c7 100644
 --- a/fs/btrfs/extent_io.h
 +++ b/fs/btrfs/extent_io.h
-@@ -72,7 +72,7 @@ typedef blk_status_t (submit_bio_hook_t)(struct inode *inode, struct bio *bio,
- 					 unsigned long bio_flags);
+@@ -291,7 +291,7 @@ struct io_failure_record {
  
- typedef blk_status_t (extent_submit_bio_start_t)(struct inode *inode,
--		struct bio *bio, u64 bio_offset);
-+		struct bio *bio, u64 opt_file_offset);
  
- #define INLINE_EXTENT_BUFFER_PAGES 16
- #define MAX_INLINE_EXTENT_BUFFER_SIZE (INLINE_EXTENT_BUFFER_PAGES * PAGE_SIZE)
+ blk_status_t btrfs_submit_read_repair(struct inode *inode,
+-				      struct bio *failed_bio, u64 phy_offset,
++				      struct bio *failed_bio, u32 bio_offset,
+ 				      struct page *page, unsigned int pgoff,
+ 				      u64 start, u64 end, int failed_mirror,
+ 				      submit_bio_hook_t *submit_bio_hook);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0ce42d52d53e..cf27729e41c8 100644
+index cf27729e41c8..5c051b0e58a5 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -2212,7 +2212,7 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
-  * are inserted into the btree
+@@ -2942,28 +2942,30 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
+ 
+ /*
+  * check_data_csum - verify checksum of one sector of uncompressed data
+- * @inode:	the inode
++ * @inode:	inode
+  * @io_bio:	btrfs_io_bio which contains the csum
+- * @icsum:	checksum index in the io_bio->csum array, size of csum_size
++ * @bio_offset:	offset to the beginning of the bio (in bytes)
+  * @page:	page where is the data to be verified
+  * @pgoff:	offset inside the page
+  *
+  * The length of such check is always one sector size.
   */
- static blk_status_t btrfs_submit_bio_start(struct inode *inode, struct bio *bio,
--					   u64 bio_offset)
-+					   u64 opt_file_offset)
+ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+-			   int icsum, struct page *page, int pgoff)
++			   u32 bio_offset, struct page *page, int pgoff)
  {
- 	return btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
- }
-@@ -7795,9 +7795,10 @@ static void __endio_write_update_ordered(struct btrfs_inode *inode,
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	char *kaddr;
+ 	u32 len = fs_info->sectorsize;
+ 	const u32 csum_size = fs_info->csum_size;
++	unsigned int offset_sectors;
+ 	u8 *csum_expected;
+ 	u8 csum[BTRFS_CSUM_SIZE];
+ 
+ 	ASSERT(pgoff + len <= PAGE_SIZE);
+ 
+-	csum_expected = ((u8 *)io_bio->csum) + icsum * csum_size;
++	offset_sectors = bio_offset >> fs_info->sectorsize_bits;
++	csum_expected = ((u8 *)io_bio->csum) + offset_sectors * csum_size;
+ 
+ 	kaddr = kmap_atomic(page);
+ 	shash->tfm = fs_info->csum_shash;
+@@ -2988,11 +2990,16 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
  }
  
- static blk_status_t btrfs_submit_bio_start_direct_io(struct inode *inode,
--						     struct bio *bio, u64 offset)
-+						     struct bio *bio,
-+						     u64 opt_file_offset)
+ /*
+- * when reads are done, we need to check csums to verify the data is correct
++ * When reads are done, we need to check csums to verify the data is correct.
+  * if there's a match, we allow the bio to finish.  If not, the code in
+  * extent_io.c will try to find good copies for us.
++ *
++ * @bio_offset:	offset to the beginning of the bio (in bytes)
++ * @start:	file offset of the range start
++ * @end:	file offset of the range end (inclusive)
++ * @mirror:	mirror number
+  */
+-int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
++int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
+ 			   struct page *page, u64 start, u64 end, int mirror)
  {
--	return btrfs_csum_one_bio(BTRFS_I(inode), bio, offset, 1);
-+	return btrfs_csum_one_bio(BTRFS_I(inode), bio, opt_file_offset, 1);
+ 	size_t offset = start - page_offset(page);
+@@ -3017,8 +3024,7 @@ int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
+ 		return 0;
+ 	}
+ 
+-	phy_offset >>= root->fs_info->sectorsize_bits;
+-	return check_data_csum(inode, io_bio, phy_offset, page, offset);
++	return check_data_csum(inode, io_bio, bio_offset, page, offset);
  }
  
- static void btrfs_end_dio_bio(struct bio *bio)
-@@ -7846,8 +7847,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 		goto map;
+ /*
+@@ -7712,7 +7718,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 	struct bio_vec bvec;
+ 	struct bvec_iter iter;
+ 	u64 start = io_bio->logical;
+-	int icsum = 0;
++	u32 bio_offset = 0;
+ 	blk_status_t err = BLK_STS_OK;
  
- 	if (write && async_submit) {
--		ret = btrfs_wq_submit_bio(inode, bio, 0, 0,
--					  file_offset,
-+		ret = btrfs_wq_submit_bio(inode, bio, 0, 0, file_offset,
- 					  btrfs_submit_bio_start_direct_io);
- 		goto err;
- 	} else if (write) {
+ 	__bio_for_each_segment(bvec, &io_bio->bio, iter, io_bio->iter) {
+@@ -7723,8 +7729,8 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 		for (i = 0; i < nr_sectors; i++) {
+ 			ASSERT(pgoff < PAGE_SIZE);
+ 			if (uptodate &&
+-			    (!csum || !check_data_csum(inode, io_bio, icsum,
+-						       bvec.bv_page, pgoff))) {
++			    (!csum || !check_data_csum(inode, io_bio,
++					bio_offset, bvec.bv_page, pgoff))) {
+ 				clean_io_failure(fs_info, failure_tree, io_tree,
+ 						 start, bvec.bv_page,
+ 						 btrfs_ino(BTRFS_I(inode)),
+@@ -7732,6 +7738,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 			} else {
+ 				blk_status_t status;
+ 
++				ASSERT((start - io_bio->logical) < UINT_MAX);
+ 				status = btrfs_submit_read_repair(inode,
+ 							&io_bio->bio,
+ 							start - io_bio->logical,
+@@ -7744,7 +7751,8 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 					err = status;
+ 			}
+ 			start += sectorsize;
+-			icsum++;
++			ASSERT(bio_offset + sectorsize > bio_offset);
++			bio_offset += sectorsize;
+ 			pgoff += sectorsize;
+ 		}
+ 	}
 -- 
 2.29.2
 
