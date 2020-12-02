@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CADF2CB549
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 07:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC4A2CB54B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 07:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387534AbgLBGt7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 01:49:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53500 "EHLO mx2.suse.de"
+        id S2387552AbgLBGuB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 01:50:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53506 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387522AbgLBGt6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Dec 2020 01:49:58 -0500
+        id S2387533AbgLBGuB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Dec 2020 01:50:01 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1606891727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1606891729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6vCfvm61XaFRzapBowFvMKVakAj2I+6hoxnBcZX/rt8=;
-        b=cLH0+COCrKb1aCfJnkbjr3MH7ikJEbp3yIprtYD1or6eUTkUl6YMyHyRkdeSkJ/CNncwKS
-        /6WpvLovp2jjr+oHVa9mwmZ8MCOoF2+1D7uMHo8lTSEe+AiCeTAyN1362cyJj/a5/4aHTc
-        n6w56joJS8Wb+0o2fu35HlaTKh0MGbY=
+        bh=Dh0r33LSE6GDKqd+TH+OYgTaTqiyx2bcc67CEN3TAy0=;
+        b=W86+vH1RG4CqaeftE6sVX4hhdH9bUMJycMT98i/LfnI0+HK3Kh4iZpKiUeYypA96d06DnF
+        zeA0N9P8nTmH5VFYVohXnJsDVPHbJM8S58MHoQQoRdJjNHZfn0l6RVAZm4SD4GAbNmBk3n
+        cn/RDJQ5ChSRaQXAMowTw6clFke7XnE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 39629AED8
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 06:48:47 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 38BFAAEE6
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 06:48:49 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 10/15] btrfs: file-item: refactor btrfs_lookup_bio_sums() to handle out-of-order bvecs
-Date:   Wed,  2 Dec 2020 14:48:06 +0800
-Message-Id: <20201202064811.100688-11-wqu@suse.com>
+Subject: [PATCH v3 11/15] btrfs: scrub: reduce the width for extent_len/stripe_len from 64 bits to 32 bits
+Date:   Wed,  2 Dec 2020 14:48:07 +0800
+Message-Id: <20201202064811.100688-12-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201202064811.100688-1-wqu@suse.com>
 References: <20201202064811.100688-1-wqu@suse.com>
@@ -38,433 +38,267 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Refactor btrfs_lookup_bio_sums() by:
-- Remove the @file_offset parameter
-  There are two factors making the @file_offset parameter useless:
+Btrfs on-disk format choose to use u64 for almost everything, but there
+are a lot of restriction that, we can't use more than u32 for things like
+extent length (the maximum length is 128MiB for non-hole extents), or
+stripe length (we have device number limit).
 
-  * For csum lookup in csum tree, file offset makes no sense
-    We only need disk_bytenr, which is unrelated to file_offset
+This means if we don't have extra handling to convert u64 to u32, we
+will always have some questionable operations like
+"u32 = u64 >> sectorsize_bits" in the code.
 
-  * page_offset (file offset) of each bvec is not contiguous.
-    Pages can be added to the same bio as long as their on-disk bytenr
-    is contiguous, meaning we could have pages at different file offsets
-    in the same bio.
+This patch will try to address the problem by reducing the width for the
+following members/parameters:
 
-  Thus passing file_offset makes no sense any more.
-  The only user of file_offset is for data reloc inode, we will use
-  a new function, search_file_offset_in_bio(), to handle it.
+- scrub_parity::stripe_len
+- @len of scrub_pages()
+- @extent_len of scrub_remap_extent()
+- @len of scrub_parity_mark_sectors_error()
+- @len of scrub_parity_mark_sectors_data()
+- @len of scrub_extent()
+- @len of scrub_pages_for_parity()
+- @len of scrub_extent_for_parity()
 
-- Extract the csum tree lookup into search_csum_tree()
-  The new function will handle the csum search in csum tree.
-  The return value is the same as btrfs_find_ordered_sum(), returning
-  the found number of sectors which has checksum.
+For members extracted from on-disk structure, like map->stripe_len, they
+will be kept as is. Since that modification would require on-disk format
+change.
 
-- Change how we do the main loop
-  The only needed info from bio is:
-  * the on-disk bytenr
-  * the length
-
-  After extracting above info, we can do the search without bio
-  at all, which makes the main loop much simpler:
-
-	for (cur_disk_bytenr = orig_disk_bytenr;
-	     cur_disk_bytenr < orig_disk_bytenr + orig_len;
-	     cur_disk_bytenr += count * sectorsize) {
-
-		/* Lookup csum tree */
-		count = search_csum_tree(fs_info, path, cur_disk_bytenr,
-					 search_len, csum_dst);
-		if (!count) {
-			/* Csum hole handling */
-		}
-	}
-
-- Use single variable as core to calculate all other offsets
-  Instead of all different type of variables, we use only one core
-  variable, cur_disk_bytenr, which represents the current disk bytenr.
-
-  All involved values can be calculated from that core variable, and
-  all those variable will only be visible in the inner loop.
-
-All above refactor makes btrfs_lookup_bio_sums() way more robust than it
-used to, especially related to the file offset lookup.
-Now file_offset lookup is only related to data reloc inode, other wise
-we don't need to bother file_offset at all.
+There will be cases like "u32 = u64 - u64" or "u32 = u64", for such call
+sites, extra ASSERT() is added to be extra safe for debug build.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c |   5 +-
- fs/btrfs/ctree.h       |   2 +-
- fs/btrfs/file-item.c   | 252 +++++++++++++++++++++++++++--------------
- fs/btrfs/inode.c       |   5 +-
- 4 files changed, 173 insertions(+), 91 deletions(-)
+ fs/btrfs/scrub.c | 54 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 31 insertions(+), 23 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 12d50f1cdc58..5ae3fa0386b7 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -719,8 +719,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 			 */
- 			refcount_inc(&cb->pending_bios);
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 78759bc9c980..8026606f7510 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -130,7 +130,7 @@ struct scrub_parity {
  
--			ret = btrfs_lookup_bio_sums(inode, comp_bio, (u64)-1,
--						    sums);
-+			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
- 			BUG_ON(ret); /* -ENOMEM */
+ 	int			nsectors;
  
- 			nr_sectors = DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
-@@ -746,7 +745,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 	ret = btrfs_bio_wq_end_io(fs_info, comp_bio, BTRFS_WQ_ENDIO_DATA);
- 	BUG_ON(ret); /* -ENOMEM */
+-	u64			stripe_len;
++	u32			stripe_len;
  
--	ret = btrfs_lookup_bio_sums(inode, comp_bio, (u64)-1, sums);
-+	ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
- 	BUG_ON(ret); /* -ENOMEM */
+ 	refcount_t		refs;
  
- 	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index c9eb6d881064..d31627449acd 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3014,7 +3014,7 @@ struct btrfs_dio_private;
- int btrfs_del_csums(struct btrfs_trans_handle *trans,
- 		    struct btrfs_root *root, u64 bytenr, u64 len);
- blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
--				   u64 offset, u8 *dst);
-+				   u8 *dst);
- int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root,
- 			     u64 objectid, u64 pos,
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 3df13d0446b9..0eaa78800861 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -238,13 +238,118 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
- 	return ret;
+@@ -233,7 +233,7 @@ static void scrub_parity_get(struct scrub_parity *sparity);
+ static void scrub_parity_put(struct scrub_parity *sparity);
+ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+ 				    struct scrub_page *spage);
+-static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u64 len,
++static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		       u64 physical, struct btrfs_device *dev, u64 flags,
+ 		       u64 gen, int mirror_num, u8 *csum,
+ 		       u64 physical_for_dev_replace);
+@@ -241,7 +241,7 @@ static void scrub_bio_end_io(struct bio *bio);
+ static void scrub_bio_end_io_worker(struct btrfs_work *work);
+ static void scrub_block_complete(struct scrub_block *sblock);
+ static void scrub_remap_extent(struct btrfs_fs_info *fs_info,
+-			       u64 extent_logical, u64 extent_len,
++			       u64 extent_logical, u32 extent_len,
+ 			       u64 *extent_physical,
+ 			       struct btrfs_device **extent_dev,
+ 			       int *extent_mirror_num);
+@@ -2147,7 +2147,7 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
+ 	spin_unlock(&sctx->stat_lock);
  }
  
-+/*
-+ * Find csums for logical bytenr range
-+ * [disk_bytenr, disk_bytenr + len) and restore the result to @dst.
-+ *
-+ * Return >0 for the number of sectors we found.
-+ * Return 0 for the range [disk_bytenr, disk_bytenr + sectorsize) has no csum
-+ * for it. Caller may want to try next sector until one range is hit.
-+ * Return <0 for fatal error.
-+ */
-+static int search_csum_tree(struct btrfs_fs_info *fs_info,
-+			    struct btrfs_path *path, u64 disk_bytenr,
-+			    u64 len, u8 *dst)
-+{
-+	struct btrfs_csum_item *item = NULL;
-+	struct btrfs_key key;
-+	const u32 sectorsize = fs_info->sectorsize;
-+	const u32 csum_size = fs_info->csum_size;
-+	u32 itemsize;
-+	int ret;
-+	u64 csum_start;
-+	u64 csum_len;
-+
-+	ASSERT(IS_ALIGNED(disk_bytenr, sectorsize) &&
-+	       IS_ALIGNED(len, sectorsize));
-+
-+	/* Check if the current csum item covers disk_bytenr */
-+	if (path->nodes[0]) {
-+		item = btrfs_item_ptr(path->nodes[0], path->slots[0],
-+				      struct btrfs_csum_item);
-+		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+		itemsize = btrfs_item_size_nr(path->nodes[0], path->slots[0]);
-+
-+		csum_start = key.offset;
-+		csum_len = (itemsize / csum_size) * sectorsize;
-+
-+		if (in_range(disk_bytenr, csum_start, csum_len))
-+			goto found;
-+	}
-+
-+	/* Current item doesn't contain the desired range, re-search */
-+	btrfs_release_path(path);
-+	item = btrfs_lookup_csum(NULL, fs_info->csum_root, path,
-+				 disk_bytenr, 0);
-+	if (IS_ERR(item)) {
-+		ret = PTR_ERR(item);
-+		goto out;
-+	}
-+	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-+	itemsize = btrfs_item_size_nr(path->nodes[0], path->slots[0]);
-+
-+	csum_start = key.offset;
-+	csum_len = (itemsize / csum_size) * sectorsize;
-+	ASSERT(in_range(disk_bytenr, csum_start, csum_len));
-+
-+found:
-+	ret = (min(csum_start + csum_len, disk_bytenr + len) -
-+		   disk_bytenr) >> fs_info->sectorsize_bits;
-+	read_extent_buffer(path->nodes[0], dst, (unsigned long)item,
-+			ret * csum_size);
-+out:
-+	if (ret == -ENOENT)
-+		ret = 0;
-+	return ret;
-+}
-+
-+/*
-+ * A helper to locate the file_offset of @cur_disk_bytenr of a @bio.
-+ *
-+ * Bio of btrfs represents read range of
-+ * [bi_sector << 9, bi_sector << 9 + bi_size).
-+ * Knowing this, we can iterate through each bvec to locate the page belong to
-+ * @cur_disk_bytenr and get the file offset.
-+ *
-+ * @inode is used to determine the bvec page really belongs to @inode.
-+ *
-+ * Return 0 if we can't find the file offset;
-+ * Return >0 if we find the file offset and restore it to @file_offset_ret
-+ */
-+static int search_file_offset_in_bio(struct bio *bio, struct inode *inode,
-+				     u64 disk_bytenr, u64 *file_offset_ret)
-+{
-+	struct bvec_iter iter;
-+	struct bio_vec bvec;
-+	u64 cur = bio->bi_iter.bi_sector << 9;
-+	int ret = 0;
-+
-+	bio_for_each_segment(bvec, bio, iter) {
-+		struct page *page = bvec.bv_page;
-+
-+		if (cur > disk_bytenr)
-+			break;
-+		if (cur + bvec.bv_len <= disk_bytenr) {
-+			cur += bvec.bv_len;
-+			continue;
-+		}
-+		ASSERT(in_range(disk_bytenr, cur, bvec.bv_len));
-+		if (page->mapping && page->mapping->host &&
-+		    page->mapping->host == inode) {
-+			ret = 1;
-+			*file_offset_ret = page_offset(page) + bvec.bv_offset
-+				+ disk_bytenr - cur;
-+			break;
-+		}
-+	}
-+	return ret;
-+}
-+
- /**
-- * btrfs_lookup_bio_sums - Look up checksums for a read bio.
-+ * Lookup the csum for the read bio in csum tree.
-  *
-  * @inode: inode that the bio is for.
-  * @bio: bio to look up.
-- * @offset: Unless (u64)-1, look up checksums for this offset in the file.
-- *          If (u64)-1, use the page offsets from the bio instead.
-  * @dst: Buffer of size nblocks * btrfs_super_csum_size() used to return
-  *       checksum (nblocks = bio->bi_iter.bi_size / fs_info->sectorsize). If
-  *       NULL, the checksum buffer is allocated and returned in
-@@ -253,24 +358,19 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
-  * Return: BLK_STS_RESOURCE if allocating memory fails, BLK_STS_OK otherwise.
-  */
- blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
--				   u64 offset, u8 *dst)
-+				   u8 *dst)
+-static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u64 len,
++static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u32 len,
+ 		       u64 physical, struct btrfs_device *dev, u64 flags,
+ 		       u64 gen, int mirror_num, u8 *csum,
+ 		       u64 physical_for_dev_replace)
+@@ -2171,7 +2171,7 @@ static int scrub_pages(struct scrub_ctx *sctx, u64 logical, u64 len,
+ 
+ 	for (index = 0; len > 0; index++) {
+ 		struct scrub_page *spage;
+-		u64 l = min_t(u64, len, PAGE_SIZE);
++		u32 l = min_t(u32, len, PAGE_SIZE);
+ 
+ 		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
+ 		if (!spage) {
+@@ -2292,10 +2292,9 @@ static void scrub_bio_end_io_worker(struct btrfs_work *work)
+ 
+ static inline void __scrub_mark_bitmap(struct scrub_parity *sparity,
+ 				       unsigned long *bitmap,
+-				       u64 start, u64 len)
++				       u64 start, u32 len)
  {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	struct bio_vec bvec;
--	struct bvec_iter iter;
--	struct btrfs_csum_item *item = NULL;
- 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
- 	struct btrfs_path *path;
--	const bool page_offsets = (offset == (u64)-1);
-+	const u32 sectorsize = fs_info->sectorsize;
-+	const u32 csum_size = fs_info->csum_size;
-+	u32 orig_len = bio->bi_iter.bi_size;
-+	u64 orig_disk_bytenr = bio->bi_iter.bi_sector << 9;
-+	u64 cur_disk_bytenr;
- 	u8 *csum;
--	u64 item_start_offset = 0;
--	u64 item_last_offset = 0;
--	u64 disk_bytenr;
--	u64 page_bytes_left;
--	u32 diff;
--	int nblocks;
-+	unsigned int nblocks = orig_len >> fs_info->sectorsize_bits;
- 	int count = 0;
--	const u32 csum_size = fs_info->csum_size;
+ 	u64 offset;
+-	u64 nsectors64;
+ 	u32 nsectors;
+ 	u32 sectorsize_bits = sparity->sctx->fs_info->sectorsize_bits;
  
- 	if (!fs_info->csum_root || (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM))
- 		return BLK_STS_OK;
-@@ -282,13 +382,16 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
- 	 * - All of our csums should only be in csum tree
- 	 *   No ordered extents csums. As ordered extents are only for write
- 	 *   path.
-+	 * - No need to bother any other info from bvec
-+	 *   Since we're looking up csums, the only important info is the
-+	 *   disk_bytenr and the length, which can all be extracted from
-+	 *   bi_iter directly.
- 	 */
- 	ASSERT(bio_op(bio) == REQ_OP_READ);
- 	path = btrfs_alloc_path();
- 	if (!path)
- 		return BLK_STS_RESOURCE;
- 
--	nblocks = bio->bi_iter.bi_size >> fs_info->sectorsize_bits;
- 	if (!dst) {
- 		struct btrfs_io_bio *btrfs_bio = btrfs_io_bio(bio);
- 
-@@ -325,81 +428,62 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
- 		path->skip_locking = 1;
- 	}
- 
--	disk_bytenr = bio->bi_iter.bi_sector << 9;
-+	for (cur_disk_bytenr = orig_disk_bytenr;
-+	     cur_disk_bytenr < orig_disk_bytenr + orig_len;
-+	     cur_disk_bytenr += (count * sectorsize)) {
-+		u64 search_len = orig_disk_bytenr + orig_len - cur_disk_bytenr;
-+		unsigned int sector_offset;
-+		u8 *csum_dst;
- 
--	bio_for_each_segment(bvec, bio, iter) {
--		page_bytes_left = bvec.bv_len;
--		if (count)
--			goto next;
+@@ -2307,10 +2306,7 @@ static inline void __scrub_mark_bitmap(struct scrub_parity *sparity,
+ 	start -= sparity->logic_start;
+ 	start = div64_u64_rem(start, sparity->stripe_len, &offset);
+ 	offset = offset >> sectorsize_bits;
+-	nsectors64 = len >> sectorsize_bits;
 -
--		if (page_offsets)
--			offset = page_offset(bvec.bv_page) + bvec.bv_offset;
-+		/*
-+		 * Although both cur_disk_bytenr and orig_disk_bytenr is u64,
-+		 * we're calculating the offset to the bio start.
-+		 *
-+		 * Bio size is limited to UINT_MAX, thus unsigned int is
-+		 * large enough to contain the raw result, not to mention
-+		 * the right shifted result.
-+		 */
-+		ASSERT(cur_disk_bytenr - orig_disk_bytenr < UINT_MAX);
-+		sector_offset = (cur_disk_bytenr - orig_disk_bytenr) >>
-+				 fs_info->sectorsize_bits;
-+		csum_dst = csum + sector_offset * csum_size;
-+
-+		count = search_csum_tree(fs_info, path, cur_disk_bytenr,
-+					 search_len, csum_dst);
-+		if (count <= 0) {
-+			/*
-+			 * Either we hit a critical error or we didn't find
-+			 * the csum.
-+			 * Either way, we put zero into the csums dst, and just
-+			 * skip to next sector for a better luck.
-+			 */
-+			memset(csum_dst, 0, csum_size);
-+			count = 1;
+-	ASSERT(nsectors64 < UINT_MAX);
+-	nsectors = (u32)nsectors64;
++	nsectors = len >> sectorsize_bits;
  
--		if (!item || disk_bytenr < item_start_offset ||
--		    disk_bytenr >= item_last_offset) {
--			struct btrfs_key found_key;
--			u32 item_size;
--
--			if (item)
--				btrfs_release_path(path);
--			item = btrfs_lookup_csum(NULL, fs_info->csum_root,
--						 path, disk_bytenr, 0);
--			if (IS_ERR(item)) {
--				count = 1;
--				memset(csum, 0, csum_size);
--				if (BTRFS_I(inode)->root->root_key.objectid ==
--				    BTRFS_DATA_RELOC_TREE_OBJECTID) {
--					set_extent_bits(io_tree, offset,
--						offset + fs_info->sectorsize - 1,
-+			/*
-+			 * For data reloc inode, we need to mark the
-+			 * range NODATASUM so that balance won't report
-+			 * false csum error.
-+			 */
-+			if (BTRFS_I(inode)->root->root_key.objectid ==
-+			    BTRFS_DATA_RELOC_TREE_OBJECTID) {
-+				u64 file_offset;
-+				int ret;
-+
-+				ret = search_file_offset_in_bio(bio, inode,
-+						cur_disk_bytenr, &file_offset);
-+				if (ret)
-+					set_extent_bits(io_tree, file_offset,
-+						file_offset + sectorsize - 1,
- 						EXTENT_NODATASUM);
--				} else {
--					btrfs_info_rl(fs_info,
--						   "no csum found for inode %llu start %llu",
--					       btrfs_ino(BTRFS_I(inode)), offset);
--				}
--				item = NULL;
--				btrfs_release_path(path);
--				goto found;
-+			} else {
-+				btrfs_warn_rl(fs_info,
-+			"csum hole found for disk bytenr range [%llu, %llu)",
-+				cur_disk_bytenr, cur_disk_bytenr + sectorsize);
- 			}
--			btrfs_item_key_to_cpu(path->nodes[0], &found_key,
--					      path->slots[0]);
--
--			item_start_offset = found_key.offset;
--			item_size = btrfs_item_size_nr(path->nodes[0],
--						       path->slots[0]);
--			item_last_offset = item_start_offset +
--				(item_size / csum_size) *
--				fs_info->sectorsize;
--			item = btrfs_item_ptr(path->nodes[0], path->slots[0],
--					      struct btrfs_csum_item);
--		}
--		/*
--		 * this byte range must be able to fit inside
--		 * a single leaf so it will also fit inside a u32
--		 */
--		diff = disk_bytenr - item_start_offset;
--		diff = diff >> fs_info->sectorsize_bits;
--		diff = diff * csum_size;
--		count = min_t(int, nblocks, (item_last_offset - disk_bytenr) >>
--					    fs_info->sectorsize_bits);
--		read_extent_buffer(path->nodes[0], csum,
--				   ((unsigned long)item) + diff,
--				   csum_size * count);
--found:
--		csum += count * csum_size;
--		nblocks -= count;
--next:
--		while (count > 0) {
--			count--;
--			disk_bytenr += fs_info->sectorsize;
--			offset += fs_info->sectorsize;
--			page_bytes_left -= fs_info->sectorsize;
--			if (!page_bytes_left)
--				break; /* move to next bio */
- 		}
- 	}
- 
--	WARN_ON_ONCE(count);
- 	btrfs_free_path(path);
- 	return BLK_STS_OK;
+ 	if (offset + nsectors <= sparity->nsectors) {
+ 		bitmap_set(bitmap, offset, nsectors);
+@@ -2322,13 +2318,13 @@ static inline void __scrub_mark_bitmap(struct scrub_parity *sparity,
  }
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 255ea28982ff..8fb4b60a0091 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2268,7 +2268,7 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
- 			 * need to csum or not, which is why we ignore skip_sum
- 			 * here.
- 			 */
--			ret = btrfs_lookup_bio_sums(inode, bio, (u64)-1, NULL);
-+			ret = btrfs_lookup_bio_sums(inode, bio, NULL);
- 			if (ret)
- 				goto out;
- 		}
-@@ -7964,8 +7964,7 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 		 *
- 		 * If we have csums disabled this will do nothing.
- 		 */
--		status = btrfs_lookup_bio_sums(inode, dio_bio, file_offset,
--					       dip->csums);
-+		status = btrfs_lookup_bio_sums(inode, dio_bio, dip->csums);
- 		if (status != BLK_STS_OK)
- 			goto out_err;
+ 
+ static inline void scrub_parity_mark_sectors_error(struct scrub_parity *sparity,
+-						   u64 start, u64 len)
++						   u64 start, u32 len)
+ {
+ 	__scrub_mark_bitmap(sparity, sparity->ebitmap, start, len);
+ }
+ 
+ static inline void scrub_parity_mark_sectors_data(struct scrub_parity *sparity,
+-						  u64 start, u64 len)
++						  u64 start, u32 len)
+ {
+ 	__scrub_mark_bitmap(sparity, sparity->dbitmap, start, len);
+ }
+@@ -2356,6 +2352,7 @@ static void scrub_block_complete(struct scrub_block *sblock)
+ 		u64 end = sblock->pagev[sblock->page_count - 1]->logical +
+ 			  PAGE_SIZE;
+ 
++		ASSERT(end - start <= U32_MAX);
+ 		scrub_parity_mark_sectors_error(sblock->sparity,
+ 						start, end - start);
  	}
+@@ -2425,7 +2422,7 @@ static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
+ 
+ /* scrub extent tries to collect up to 64 kB for each bio */
+ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+-			u64 logical, u64 len,
++			u64 logical, u32 len,
+ 			u64 physical, struct btrfs_device *dev, u64 flags,
+ 			u64 gen, int mirror_num, u64 physical_for_dev_replace)
+ {
+@@ -2457,7 +2454,7 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ 	}
+ 
+ 	while (len) {
+-		u64 l = min_t(u64, len, blocksize);
++		u32 l = min(len, blocksize);
+ 		int have_csum = 0;
+ 
+ 		if (flags & BTRFS_EXTENT_FLAG_DATA) {
+@@ -2480,7 +2477,7 @@ static int scrub_extent(struct scrub_ctx *sctx, struct map_lookup *map,
+ }
+ 
+ static int scrub_pages_for_parity(struct scrub_parity *sparity,
+-				  u64 logical, u64 len,
++				  u64 logical, u32 len,
+ 				  u64 physical, struct btrfs_device *dev,
+ 				  u64 flags, u64 gen, int mirror_num, u8 *csum)
+ {
+@@ -2506,7 +2503,7 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
+ 
+ 	for (index = 0; len > 0; index++) {
+ 		struct scrub_page *spage;
+-		u64 l = min_t(u64, len, PAGE_SIZE);
++		u32 l = min_t(u32, len, PAGE_SIZE);
+ 
+ 		spage = kzalloc(sizeof(*spage), GFP_KERNEL);
+ 		if (!spage) {
+@@ -2564,7 +2561,7 @@ static int scrub_pages_for_parity(struct scrub_parity *sparity,
+ }
+ 
+ static int scrub_extent_for_parity(struct scrub_parity *sparity,
+-				   u64 logical, u64 len,
++				   u64 logical, u32 len,
+ 				   u64 physical, struct btrfs_device *dev,
+ 				   u64 flags, u64 gen, int mirror_num)
+ {
+@@ -2588,7 +2585,7 @@ static int scrub_extent_for_parity(struct scrub_parity *sparity,
+ 	}
+ 
+ 	while (len) {
+-		u64 l = min_t(u64, len, blocksize);
++		u32 l = min(len, blocksize);
+ 		int have_csum = 0;
+ 
+ 		if (flags & BTRFS_EXTENT_FLAG_DATA) {
+@@ -2792,7 +2789,8 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
+ 	u64 generation;
+ 	u64 extent_logical;
+ 	u64 extent_physical;
+-	u64 extent_len;
++	/* Check the comment in scrub_stripe() for why u32 is enough here */
++	u32 extent_len;
+ 	u64 mapped_length;
+ 	struct btrfs_device *extent_dev;
+ 	struct scrub_parity *sparity;
+@@ -2801,6 +2799,7 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
+ 	int extent_mirror_num;
+ 	int stop_loop = 0;
+ 
++	ASSERT(map->stripe_len <= U32_MAX);
+ 	nsectors = map->stripe_len >> fs_info->sectorsize_bits;
+ 	bitmap_len = scrub_calc_parity_bitmap_len(nsectors);
+ 	sparity = kzalloc(sizeof(struct scrub_parity) + 2 * bitmap_len,
+@@ -2812,6 +2811,7 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
+ 		return -ENOMEM;
+ 	}
+ 
++	ASSERT(map->stripe_len <= U32_MAX);
+ 	sparity->stripe_len = map->stripe_len;
+ 	sparity->nsectors = nsectors;
+ 	sparity->sctx = sctx;
+@@ -2906,6 +2906,7 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
+ 			}
+ again:
+ 			extent_logical = key.objectid;
++			ASSERT(bytes <= U32_MAX);
+ 			extent_len = bytes;
+ 
+ 			if (extent_logical < logic_start) {
+@@ -2984,9 +2985,11 @@ static noinline_for_stack int scrub_raid56_parity(struct scrub_ctx *sctx,
+ 		logic_start += map->stripe_len;
+ 	}
+ out:
+-	if (ret < 0)
++	if (ret < 0) {
++		ASSERT(logic_end - logic_start <= U32_MAX);
+ 		scrub_parity_mark_sectors_error(sparity, logic_start,
+ 						logic_end - logic_start);
++	}
+ 	scrub_parity_put(sparity);
+ 	scrub_submit(sctx);
+ 	mutex_lock(&sctx->wr_lock);
+@@ -3028,7 +3031,11 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 	u64 offset;
+ 	u64 extent_logical;
+ 	u64 extent_physical;
+-	u64 extent_len;
++	/*
++	 * Unlike chunk length, extent length should never go beyond
++	 * BTRFS_MAX_EXTENT_SIZE, thus u32 is enough here.
++	 */
++	u32 extent_len;
+ 	u64 stripe_logical;
+ 	u64 stripe_end;
+ 	struct btrfs_device *extent_dev;
+@@ -3277,6 +3284,7 @@ static noinline_for_stack int scrub_stripe(struct scrub_ctx *sctx,
+ 
+ again:
+ 			extent_logical = key.objectid;
++			ASSERT(bytes <= U32_MAX);
+ 			extent_len = bytes;
+ 
+ 			/*
+@@ -4074,7 +4082,7 @@ int btrfs_scrub_progress(struct btrfs_fs_info *fs_info, u64 devid,
+ }
+ 
+ static void scrub_remap_extent(struct btrfs_fs_info *fs_info,
+-			       u64 extent_logical, u64 extent_len,
++			       u64 extent_logical, u32 extent_len,
+ 			       u64 *extent_physical,
+ 			       struct btrfs_device **extent_dev,
+ 			       int *extent_mirror_num)
 -- 
 2.29.2
 
