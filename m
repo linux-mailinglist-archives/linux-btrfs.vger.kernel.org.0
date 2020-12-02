@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02B72CC72D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 20:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393682CC72E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Dec 2020 20:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387809AbgLBTxZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 14:53:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
+        id S2387769AbgLBTx0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 14:53:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388104AbgLBTxZ (ORCPT
+        with ESMTP id S2388114AbgLBTxZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Dec 2020 14:53:25 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB4DC09424D
-        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 11:52:34 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id l7so1974722qtp.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Dec 2020 11:52:34 -0800 (PST)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CC7C09424E
+        for <linux-btrfs@vger.kernel.org>; Wed,  2 Dec 2020 11:52:35 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id y18so2454152qki.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Dec 2020 11:52:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=VJjId8hZEVzyIER86VZ8xDHAVM9xeJsKzfY/gc8fAqo=;
-        b=Blzy/UQPQ7RjU17BmwjFc3GqvspbG1drX2MqvVwe0iERjPJ+I8MoxLSFWQktEgl23r
-         gyRLnrm7Qomm1p5O4M54cPJGO0wejU/T5jMK2eVU4Oj2qJgJWCioP/mKiG2Ssjt0Jx38
-         4MVKyeeoW59aC1Jvs+wRBhz5dA0dh3HsmGcnTJ1ThEydq/zvsu8Si1wK7ug6/eHwKzVs
-         rWq8R8rophqwFPP2u07zuC+9MKbFLoY4e2ID5BpIpteFtcQtt4dZB8Lkubm1Bp+IQoeX
-         bK1NkmURmq/9h3vmZWQagdfL9SThht1PzI/bbYRPp579+kjzlW8OFt82mR9VncknqHH1
-         WKAQ==
+        bh=iRc6MA10E50WbWBouELNpGSiDE5XtkCejSC8vLj01Do=;
+        b=tyocMGvzI44RD/B8GERpctEcfNqNBX7aAAUIEVAGPWUvVfhCPVrAn7N+EYlFYRSMol
+         IiBF90en5WKJ2dUVxpqu+J7rasDsOg+2ED61xjsOer2vyxGnfcCnTfs2wAEuVZNoniDe
+         pRXEe0eROkuaQns0GcTuA/AWf+wubegkqtQFIn70Bf/xWPC1oTbzDIqAsANgUNVyV+85
+         O1Uv6VuK2QoItHPNonIfwAqQPGFlWSifLVpgJS5xOYrqF2iGQgEU8FYKy1HACo62vH71
+         HJLmQSzNWcP+JZ6iNmToOAAc0vaN2lCWMh6EwTyk1HsKPmk+qOkLAjA3g0YVtoMUFjIO
+         xMVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VJjId8hZEVzyIER86VZ8xDHAVM9xeJsKzfY/gc8fAqo=;
-        b=OCGD8O+4uq25FoPvdi7h4KVijjflclX9f44aK6Ck1wlbwrza/0ma51NKEZv7aEw86W
-         h0ksP90Azq1+VxplwzWfLzBwnV5GzBspPDNaI/kPBPeHNeg1sBlfXsmiQOqd84fN00Lp
-         1zr1gh09pyZA0F6yuWIQwUg/WhHRashcf38jxOpHi9Ztaw73mZ5BKxSmkXmYDYayQjnn
-         b6mWOZGLMTuXsV03BAcqJBha+ZeSupDvTPhF9/8s5K3oQh0fwD/x840gP/gadrs0vUoH
-         U2CGwzqvZqIeQRrygAY1/AEIIwPZBJ24DBF3xHol+9V+R4VPwHablXQtBqWUh1QcrsbT
-         bKuQ==
-X-Gm-Message-State: AOAM532YBaq/XQ6bxgSbcyyO4cCoRcGEgBDIvQIBz2MBpB/6U+V1V0wF
-        Ul9hlrT2KFInKxRY+6jC5jEmq1z+itwfUQ==
-X-Google-Smtp-Source: ABdhPJxqXyqzJ0RjyMXu/Mw4/LEg9tKHxk2KqAxWSL26EM1EQmD1TYuY/xcmyrQL+UFMiMb7BUejog==
-X-Received: by 2002:a05:622a:30e:: with SMTP id q14mr4519352qtw.77.1606938753074;
-        Wed, 02 Dec 2020 11:52:33 -0800 (PST)
+        bh=iRc6MA10E50WbWBouELNpGSiDE5XtkCejSC8vLj01Do=;
+        b=baUpgLJQybn3yNJmNJ7iO/1yrSf4Sw5aOWHWbL32fQnXdqFy8Ac1clGZhV0z6RTLvI
+         f6zG/M5y7qGLIdw7gy5LLGpjeyhdxL0w15ol8F/MGvhe1FbuMnLjoI1UdSChTZ54WFHz
+         WolKfnU9AAg0eu0mV3EMvRfAHbc4iNjv0guepgjedzHPWdNC9g/ljQx+wneQmbpvnsg4
+         GXN0dpOM5Q1Vdv4lEfvpIPT7SAOiryzAc1V4uVsJrnhZIq+7bGxG7fhOoAtOQvz8PQ5r
+         GJHNKt36vM3UN0yqZLiN9ULXbiLIhj38F0QU9anmTMalJ2VXjicnYbnyJ0IkcAGRw6n6
+         bUfg==
+X-Gm-Message-State: AOAM530kBjKkb6jACC8gwzqhempkMZAkmPUgIT/dqunBoKc+T2w4PV0s
+        IwKduMCbtHLKwbrGs9IwEOynbv5+wlxVGQ==
+X-Google-Smtp-Source: ABdhPJybf17/2n9vYQWZkAcGfMUT6efQ3xvnD03paq07WpFD1NOMzK9NIQ8AfvmHGLU+oRxwSHu5+A==
+X-Received: by 2002:ae9:f402:: with SMTP id y2mr4251760qkl.9.1606938754747;
+        Wed, 02 Dec 2020 11:52:34 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d140sm2836702qke.59.2020.12.02.11.52.32
+        by smtp.gmail.com with ESMTPSA id q15sm2754754qki.13.2020.12.02.11.52.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 11:52:32 -0800 (PST)
+        Wed, 02 Dec 2020 11:52:34 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 43/54] btrfs: remove the extent item sanity checks in relocate_block_group
-Date:   Wed,  2 Dec 2020 14:51:01 -0500
-Message-Id: <09013ee34800bd1bd6354254a1b6a29ddf68f09f.1606938211.git.josef@toxicpanda.com>
+Subject: [PATCH v3 44/54] btrfs: do proper error handling in create_reloc_inode
+Date:   Wed,  2 Dec 2020 14:51:02 -0500
+Message-Id: <497be2d1fd745d88d6cbeda5d77168781b5522df.1606938211.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1606938211.git.josef@toxicpanda.com>
 References: <cover.1606938211.git.josef@toxicpanda.com>
@@ -61,67 +61,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These checks are all taken care of for us by the tree checker code.
+We already handle some errors in this function, and the callers do the
+correct error handling, so clean up the rest of the function to do the
+appropriate error handling.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 29 +----------------------------
- 1 file changed, 1 insertion(+), 28 deletions(-)
+ fs/btrfs/relocation.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 3159f6517588..8f4f1e21c770 100644
+index 8f4f1e21c770..bcced4e436af 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -3370,20 +3370,6 @@ static void unset_reloc_control(struct reloc_control *rc)
- 	mutex_unlock(&fs_info->reloc_mutex);
- }
+@@ -3634,10 +3634,15 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
+ 		goto out;
  
--static int check_extent_flags(u64 flags)
--{
--	if ((flags & BTRFS_EXTENT_FLAG_DATA) &&
--	    (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK))
--		return 1;
--	if (!(flags & BTRFS_EXTENT_FLAG_DATA) &&
--	    !(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK))
--		return 1;
--	if ((flags & BTRFS_EXTENT_FLAG_DATA) &&
--	    (flags & BTRFS_BLOCK_FLAG_FULL_BACKREF))
--		return 1;
--	return 0;
--}
--
- static noinline_for_stack
- int prepare_to_relocate(struct reloc_control *rc)
- {
-@@ -3435,7 +3421,6 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
- 	struct btrfs_path *path;
- 	struct btrfs_extent_item *ei;
- 	u64 flags;
--	u32 item_size;
- 	int ret;
- 	int err = 0;
- 	int progress = 0;
-@@ -3484,19 +3469,7 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
+ 	err = __insert_orphan_inode(trans, root, objectid);
+-	BUG_ON(err);
++	if (err)
++		goto out;
  
- 		ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
- 				    struct btrfs_extent_item);
--		item_size = btrfs_item_size_nr(path->nodes[0], path->slots[0]);
--		if (item_size >= sizeof(*ei)) {
--			flags = btrfs_extent_flags(path->nodes[0], ei);
--			ret = check_extent_flags(flags);
--			BUG_ON(ret);
--		} else if (unlikely(item_size == sizeof(struct btrfs_extent_item_v0))) {
--			err = -EINVAL;
--			btrfs_print_v0_err(trans->fs_info);
--			btrfs_abort_transaction(trans, err);
--			break;
--		} else {
--			BUG();
--		}
-+		flags = btrfs_extent_flags(path->nodes[0], ei);
+ 	inode = btrfs_iget(fs_info->sb, objectid, root);
+-	BUG_ON(IS_ERR(inode));
++	if (IS_ERR(inode)) {
++		err = PTR_ERR(inode);
++		inode = NULL;
++		goto out;
++	}
+ 	BTRFS_I(inode)->index_cnt = group->start;
  
- 		if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
- 			ret = add_tree_block(rc, &key, path, &blocks);
+ 	err = btrfs_orphan_add(trans, BTRFS_I(inode));
 -- 
 2.26.2
 
