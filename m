@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127142CCE6E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 06:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AAB2CCEA5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 06:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgLCFVy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Dec 2020 00:21:54 -0500
-Received: from mout.gmx.net ([212.227.15.18]:41415 "EHLO mout.gmx.net"
+        id S1726140AbgLCF1Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Dec 2020 00:27:25 -0500
+Received: from mout.gmx.net ([212.227.15.18]:45461 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726004AbgLCFVy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:21:54 -0500
+        id S1725793AbgLCF1Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:27:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606972818;
-        bh=saJTMNgFieV0iIWhAvVF1am6tTzMMK2m9EEFR6QE9Sw=;
+        s=badeba3b8450; t=1606973124;
+        bh=ghMSo9qjYzWGt0J+oXm6qSAsHX1L3/YH/NOPQvgdnPY=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=SI7u44XIqQVyxHxxtkl7bbEhv7ME0ltmcZTbNe3AhMM0Y4XnsMPdvq02izf3BoVy0
-         ptXQan/TxeTn5758p5nPrhmJqQeeVzirjf1fFKnK/k9RzuCNsSeAKh1dpWznLZ60Mr
-         w3SCNzg3eKkYEF1Wpr646xNqEyJ/B3x/fuS3tFes=
+        b=DINhyeKB4fmr+X9nGNw3RSLieaKcbZzp+nZgXqde8gbmZF7RlXkA2sqVQOeMWWU7y
+         HxU0YHncBXXALvkIu3AApbbBMbdi9iZvxMqaKhfNj5EYgwZfoSQdRD5CZ3xvuNyU4N
+         LzbuG742Jxy4KF0+Bb4Lfq5nRpSF5wPgNPZFb7xI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpUUw-1kNgUw0onM-00prgF; Thu, 03
- Dec 2020 06:20:18 +0100
-Subject: Re: [PATCH v3 43/54] btrfs: remove the extent item sanity checks in
- relocate_block_group
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N17Ye-1k15UP3xP8-012ZAG; Thu, 03
+ Dec 2020 06:25:24 +0100
+Subject: Re: [PATCH v3 44/54] btrfs: do proper error handling in
+ create_reloc_inode
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1606938211.git.josef@toxicpanda.com>
- <09013ee34800bd1bd6354254a1b6a29ddf68f09f.1606938211.git.josef@toxicpanda.com>
+ <497be2d1fd745d88d6cbeda5d77168781b5522df.1606938211.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,43 +53,43 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <6081dbb7-f962-ea30-752a-fcde1db9aabd@gmx.com>
-Date:   Thu, 3 Dec 2020 13:20:15 +0800
+Message-ID: <9ec262a0-3dac-869d-5ed7-c0f69e9218e7@gmx.com>
+Date:   Thu, 3 Dec 2020 13:25:20 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <09013ee34800bd1bd6354254a1b6a29ddf68f09f.1606938211.git.josef@toxicpanda.com>
+In-Reply-To: <497be2d1fd745d88d6cbeda5d77168781b5522df.1606938211.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo"
-X-Provags-ID: V03:K1:+JPb8EkV8lnVLzK4RjBZaBPDPuRQgT3/wz/eC9brlbeP74LeSCg
- wGRSVmHqY/Bi1pwvg6fo07q2iXBxrCq67pfdGvytJe2M/SF4UjDG93FOjzTNx4CIqquzjva
- XkmnPr+zBIwif+YViwyC/piE+Yu3GuYZ5YRKtusMW8teAnBqX2QMsPdhb/d3GsOJ4GiKT9n
- FScKyBI0WL4WUQolEXfLg==
+ boundary="Tr27T8kdSRR4zERwKykoDOXRe1InTct6b"
+X-Provags-ID: V03:K1:iVpCcw0lnxYdLdHuEzjGO+9Tr8A2hYbgVgoBdtyCXMGkh1piI14
+ InLH1dbg5P6HehbOkpeN5N+31dSLVJ+7hUyazccvlppR6SCRlw7jTPBJorKvXPyQ2Xm63Pl
+ 3XI8K5Jq+VxVJm9MsxOXELzv1lHxhX9uZ3mIumlLKXmMp/l/VaOcbLKtlto1WA4W9YGyhg9
+ jJVhg++SwPkp0v+sQUvNA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:99RDJPO88Pg=:5Wri90W4Bu/IjMMIDoxzG1
- S10tm9veq76xIgdT1Z61e0e+UO0nChUtfUo9dAopd7zVsMePhxcNffvisEwZLSOghaYKDetbB
- Fqt8ik8sT9ioxUwX6R2RfTQYUz8I/bHVLR4kYGegL+mpT1XWFpFfM/msDIT81i6o4c+iBDMYg
- JDNjLjsUMdXEhETtBhrLsoDAzggATEzMzeErji735bW8qqrBFBbTA3WytoGOPPkt6FjRJih+D
- 46Rqfwr6OmAHM3Oou/qAmbN3yj9WOTtNFfE2jZdCzUuCGRWbUHFh/CNOzZxACE4p+onc2QpXl
- UXJTz4EZyZEEaRs3nBNWlwstW0535sPuf02QxcCZz5T0rdFbuLCQJunrSMNkSd231g187rQ8D
- vHqvmPxTivIUuK0Js6dAeRhjzH2/CnkNbGqz/HStX5upCT7DMupBGMTMZdR8t305gkrXOu+PZ
- C3t5I1SJ785dvNIhi4g9Ec/m+3b+jOg+NyJrAq/Pl+JQpnvJEmC64m2fAOGcWZ/zX4E1THzpR
- nNRX7GCueDOmxMV9Gih/fEbS6VtHH9bYUSsD1uL/MLk0YlvXSpdpAY8gphrTlKy6OuqRj3JAN
- sULa3LC7SpxHU5O0DuEVJnk+JQA3kwtWvAftpKes4CcFFuY7YHUwClmqCWkBsVtfbvtgBGxus
- laXwKSfhXCoGXWqsRM8WnY1RVlQscowPKaZpG3O7xRgt4t4JLWLdQ7AwucWxDigVRF6bSs4EA
- 8zfo/xFzzoMXbHBMkNEtiBFiyogQqDnqKUWWR2oeU2Kx65gPZw6KOfK/Ar5YVDfgpZUPjsF8/
- 7w8bdh95XAcB3kABVjSiwj0Hz20lFjuAjG0mkeGk9M9WXxGc7mzqRhJyI4rKs7xPBoB8XoyRa
- AplgElntO6+fs/C7/lG5Hlc57NVzVb+F0cnZjVEHw=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ew+GlpWE0Fg=:AuBuP0EyuDL7nQNpixjn4b
+ npi3kuk2Sl/OlkfkNxcjknaCtfjtVZu1LfwoeXQvwtdFimXI2MFshgAiAJKkUbsmyWYTNgger
+ 8WNZBVggV+Q+6mNcswaWOMt42JbL8LdPG3vmy3VBW8nb1MQsQI/ByzotLDR3mytZToZpYtDnm
+ /VnXnaCkoIkhA7JBR/o1A/1azU1MKvNUNZI0HOQASgaUczOVVLN2Jbtc1cwEn0LhuvASXqvX8
+ d621nAPvDVZpIJ7vm5VGInTeMcDzV+vGgDyL2Jjm7jXKv4Jl1lwDaTKa8+o6dSwvrpacLPk2e
+ tin6sTY7Uzr0nn/VdKa/YVHUubrUo1onrLRKNQEEiZHLxzjjwL8UGMmAySD/BcDyf0CDMyKvc
+ ubt5qAx2lHsRHw8NOaVewPR63LY7728ujKpwpT30hMkYD4dXVJVXZu/ntNCx9psi3DQ8J4lTC
+ FnKB8vBC6GYcEq3NjsQLjYCBTHpsoAmbg2uAoefvtU6O8g1MooS7vNpWP19Cv26risaqdaGxE
+ QmZCb4U1z3dFozItDBPqNglmp84nESqFZoCvlenWUHMH53BpBgOLWAcfuzM4U8hCWD7M7ADN+
+ R/g/j7HOLY7A8pXJMmyNYnT71EaSey4TinBCKA5RnJ8XxRClrLcgc240cnSl2kWMRkQGvhRB1
+ lz4QiySyzbkWEFONsWKsnhFJ/NOr36ZPmEkW4MwxrgHhp5KG5JECHdqOYc4mwMDwf0HKr+Qz3
+ gH3ceLTwt5dtZUbRNElIOu2gtmbIMRvrPe8Asyi8QlILQv56zPhnjWe4d128a/lVlR377PN2R
+ 9uK/kkXB8N1xqOT5pDvtw/lc0wO+A/7lqvy/ag/RBqLalX/FkfahQUfv65rgP3OMLqBu9rtHd
+ pOXy0xyPAXbP9rk8VBODnhLX5PHa5uoPDaMI1l0KY=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo
-Content-Type: multipart/mixed; boundary="oA3lzUXdEhckj4cR0jymXLVPoUry5BHeO"
+--Tr27T8kdSRR4zERwKykoDOXRe1InTct6b
+Content-Type: multipart/mixed; boundary="hPhZ0dlMvZu4wIRtxzIR1f8VTnJZlLwvw"
 
---oA3lzUXdEhckj4cR0jymXLVPoUry5BHeO
+--hPhZ0dlMvZu4wIRtxzIR1f8VTnJZlLwvw
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -97,100 +97,71 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/12/3 =E4=B8=8A=E5=8D=883:51, Josef Bacik wrote:
-> These checks are all taken care of for us by the tree checker code.
+> We already handle some errors in this function, and the callers do the
+> correct error handling, so clean up the rest of the function to do the
+> appropriate error handling.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/relocation.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 8f4f1e21c770..bcced4e436af 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -3634,10 +3634,15 @@ struct inode *create_reloc_inode(struct btrfs_f=
+s_info *fs_info,
+>  		goto out;
+> =20
+>  	err =3D __insert_orphan_inode(trans, root, objectid);
+> -	BUG_ON(err);
+> +	if (err)
+> +		goto out;
+> =20
+>  	inode =3D btrfs_iget(fs_info->sb, objectid, root);
+> -	BUG_ON(IS_ERR(inode));
+> +	if (IS_ERR(inode)) {
 
-Yeah! Finally see a day where tree-checker is involved in removing
-duplicated checks.
+When error happens here, we have already inserted an inode item into the
+data reloc root, without the orphan item to clean it up.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+It won't cause any problem, since we have u64 to store almost endless
+inodes in a mostly empty tree.
+
+But I guess we'd still better try to delete the inserted inode item, or
+data reloc tree may one day become a landfill with all those inode items.=
+
 
 Thanks,
 Qu
-
-> ---
->  fs/btrfs/relocation.c | 29 +----------------------------
->  1 file changed, 1 insertion(+), 28 deletions(-)
->=20
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 3159f6517588..8f4f1e21c770 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -3370,20 +3370,6 @@ static void unset_reloc_control(struct reloc_con=
-trol *rc)
->  	mutex_unlock(&fs_info->reloc_mutex);
->  }
+> +		err =3D PTR_ERR(inode);
+> +		inode =3D NULL;
+> +		goto out;
+> +	}
+>  	BTRFS_I(inode)->index_cnt =3D group->start;
 > =20
-> -static int check_extent_flags(u64 flags)
-> -{
-> -	if ((flags & BTRFS_EXTENT_FLAG_DATA) &&
-> -	    (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK))
-> -		return 1;
-> -	if (!(flags & BTRFS_EXTENT_FLAG_DATA) &&
-> -	    !(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK))
-> -		return 1;
-> -	if ((flags & BTRFS_EXTENT_FLAG_DATA) &&
-> -	    (flags & BTRFS_BLOCK_FLAG_FULL_BACKREF))
-> -		return 1;
-> -	return 0;
-> -}
-> -
->  static noinline_for_stack
->  int prepare_to_relocate(struct reloc_control *rc)
->  {
-> @@ -3435,7 +3421,6 @@ static noinline_for_stack int relocate_block_grou=
-p(struct reloc_control *rc)
->  	struct btrfs_path *path;
->  	struct btrfs_extent_item *ei;
->  	u64 flags;
-> -	u32 item_size;
->  	int ret;
->  	int err =3D 0;
->  	int progress =3D 0;
-> @@ -3484,19 +3469,7 @@ static noinline_for_stack int relocate_block_gro=
-up(struct reloc_control *rc)
-> =20
->  		ei =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
->  				    struct btrfs_extent_item);
-> -		item_size =3D btrfs_item_size_nr(path->nodes[0], path->slots[0]);
-> -		if (item_size >=3D sizeof(*ei)) {
-> -			flags =3D btrfs_extent_flags(path->nodes[0], ei);
-> -			ret =3D check_extent_flags(flags);
-> -			BUG_ON(ret);
-> -		} else if (unlikely(item_size =3D=3D sizeof(struct btrfs_extent_item=
-_v0))) {
-> -			err =3D -EINVAL;
-> -			btrfs_print_v0_err(trans->fs_info);
-> -			btrfs_abort_transaction(trans, err);
-> -			break;
-> -		} else {
-> -			BUG();
-> -		}
-> +		flags =3D btrfs_extent_flags(path->nodes[0], ei);
-> =20
->  		if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
->  			ret =3D add_tree_block(rc, &key, path, &blocks);
+>  	err =3D btrfs_orphan_add(trans, BTRFS_I(inode));
 >=20
 
 
---oA3lzUXdEhckj4cR0jymXLVPoUry5BHeO--
+--hPhZ0dlMvZu4wIRtxzIR1f8VTnJZlLwvw--
 
---9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo
+--Tr27T8kdSRR4zERwKykoDOXRe1InTct6b
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IdY8ACgkQwj2R86El
-/qhj+Qf/eSI+6qs16Ygg3Vzq/IGpLSI79qwU64M2/reCEQvT3CJvzJUcXds6XTQN
-/cvJQ5sdNuXosBAdkxhZ2u56OjdVyG2TrjKdiE3qoOVUu2ew+thjJxltUS/VgU0U
-+6MD9N5lsGLg2xN7EpbEV361t745EKGSqWShxr2HcBFmp6wgbpPEo/oesVgVqdYM
-np7Iu2cykEYbOld34sRc0aLDmuStLGVsM90L8qtD+CEBhYpZiRD993gdXRfOszeP
-e/w598ZI5XjDqPaoMOx+DoUChGBjOVnC5/szF7m5bRC4Q1cUWPIZXcA4JaDxG4Dg
-D+86mk9Y7b1HVPUYytuKrbstDzITSQ==
-=i0JI
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IdsEACgkQwj2R86El
+/qiEAwgAiBxc1Q6KL2i3oibJ7WLiXAAqd10sm/Z4IL4QGJRrFYgJbcsxxJS4nLDX
+WDLULG9l0iyXIZFDXVSQCC+hYf76IuMoTYyKPGCmOvmAsUFm+wMq138e0dhcJt1+
+VaFZXzB6JWfqqa47lz9XeFo6BOa01AsW8JrWp5bxet5TtYj7vREivSpPXB3ms+JS
+ipyVTbY/0BUO7SI2eQcubhVqI/lTAGezQfqorkzmh4dW1wvk5x+H67sVQXy/y4JI
+uib/CvtdJfmFicRK+SUYQSRp0658n5dg4ZF0CEy3TKKnwIjE2q6m+EYQTc5T1Sbz
+8HM+2qcgFxJKEIpRH9HPAT1glT7lQw==
+=q4Zd
 -----END PGP SIGNATURE-----
 
---9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo--
+--Tr27T8kdSRR4zERwKykoDOXRe1InTct6b--
