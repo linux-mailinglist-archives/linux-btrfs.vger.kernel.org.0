@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0105D2CCCA6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 03:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788932CCCB7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 03:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgLCCbU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 21:31:20 -0500
-Received: from mout.gmx.net ([212.227.17.21]:57701 "EHLO mout.gmx.net"
+        id S1729574AbgLCCfb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 21:35:31 -0500
+Received: from mout.gmx.net ([212.227.15.19]:60109 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbgLCCbU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:31:20 -0500
+        id S1729551AbgLCCfa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Dec 2020 21:35:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606962584;
-        bh=YVQWQkq1r5PaAsaUllyzGQJiIM4E79RZ+d8xloDkMS8=;
+        s=badeba3b8450; t=1606962835;
+        bh=MtAA2MlJtY/fUh376gtsaIBJzwbrQeGPk5cGOlKkFzo=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=X0Q5zi/qY3bhRG+D2oYZB4vwqtmFDPNoXwo6U9tFoFhLdBIYlhUjQrWAGO+2n463T
-         Rb9J5hjZuff9U93Y6nOJuz4A1RLJXWORtuUDYrSmNIwAn7kZZ1RWCO/yOUMg0lIA3q
-         1vsQfAZhePsE+EVPZD/T6Fnlz5v+SAscGWNyUcAI=
+        b=SrQR3daDfQoAGh/vObLNOWzltRgdyhtrG1mX+OVWetW1yYC65FTr+BS+6CyXirjlw
+         8kp5DBLmJ2l/gCmb6wth1EKUY6teTLjmh0KnA27yO0HbiWIH1ox5J9cbrBKozmWwxo
+         98m+ptYwtcLbaNpmlJC9iVP0rxtVgzL2ogyqCoB4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6UZl-1kn8HO1ZyD-006wz9; Thu, 03
- Dec 2020 03:29:44 +0100
-Subject: Re: [PATCH v3 14/54] btrfs: convert BUG_ON()'s in select_reloc_root()
- to proper errors
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3se2-1k2l062aUS-00znlt; Thu, 03
+ Dec 2020 03:33:55 +0100
+Subject: Re: [PATCH v3 15/54] btrfs: check record_root_in_trans related
+ failures in select_reloc_root
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1606938211.git.josef@toxicpanda.com>
- <a9346ccd6f5de1a6cac12918ccace014b7f3bd6c.1606938211.git.josef@toxicpanda.com>
+ <b17d60d0e20d5898344b299d7018418d4c082fcb.1606938211.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,43 +53,43 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d06dad66-d597-b650-62b9-0e04d531f2e3@gmx.com>
-Date:   Thu, 3 Dec 2020 10:29:40 +0800
+Message-ID: <a898fe02-ea62-8979-2e8f-a861dd5601b3@gmx.com>
+Date:   Thu, 3 Dec 2020 10:33:51 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <a9346ccd6f5de1a6cac12918ccace014b7f3bd6c.1606938211.git.josef@toxicpanda.com>
+In-Reply-To: <b17d60d0e20d5898344b299d7018418d4c082fcb.1606938211.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="HyB7afA7dWSYd4spo0jz8IEkCYb6BqSBS"
-X-Provags-ID: V03:K1:g82KsCbI86cBcJ1AI3/+xq59Kff1bkOTEQyMTzbhBNpC48gnGDU
- AFBqq2PdElOFGPxWCynDx/d9+1T6w8xsSe2Dl3y/xwuCaV/foAW8Vo43SV666x7lDtWhi/7
- fWFqAJQNvaP1/e0fg6+tDiCgIdqcN/wp7kEr5JY8hZA9UV5Q8ehHZ1GX8/3eFpe30A0IRDU
- nxJuioELma0aN+vEg/lNA==
+ boundary="kdN7f6qZ2QQOXB53kkEyHG3uKC6RylQmg"
+X-Provags-ID: V03:K1:Dm8nJVGuHbONckqgbnHHzior9DS7LFY/O7+J8vQMAz4zCqOGl1Y
+ 9McQoSIcai1loPtAFOrmaQ5t7K3EsJKYD10jQLThxyLVkjNY7IeISy/+qmFpCdGRvtFbqC0
+ E/AbHHsyF0YzEhZShmOaXzr0Z9ET99ORIIdzKvfRzWlKnrbwd0moqbZVlk6qVSG5+K4Hgsf
+ YFmES4XZgfboDkGZVSGhg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9h/wkVDFA+8=:KZxn3JXju4o5UgwUkaYRZ1
- qdTdxPGuhT1ainMG7b80CUEcGCDGnsAGyXo7dgf8Zwa2V3GAk8KSv4GaUHUqqlScHYFEgJJeh
- 7smWQTX4LL7vdut/WoFSAGiecqjGH4q7VUbC5POBxvZd/WI/bb9wc5wJTSxCKJpowJ7/HETjf
- COTlSW8OApz/d7CXha7yIv9MBDUrWj0+ul6I+67aeY0Qs6T+6imM0DlN1vcwFhHMQ9EpwRa1A
- 7C8IluuDlll+W+m7GoIQTS4NjbTUddv46vhNUaaE9tlE9Gm0I0Bk3ecrRS5xo4YnGFc+PN3Kw
- 39lpiPLGLZNshmjFRl5Ujnly1jjfAtCBEK9lukh5b6a771AyztY/yxcGRmefo8ePqLybKpnNn
- ShuI37nD6t/oR6rNfqCeiJ3ryyhP0lvyIOUul5fn2dlauvrMgAiyopOuKkhHme//B1Wyuo8JM
- i7xhXKz32+pSshSlRA7s23w0LrfBsljOtzbLEiURVNGcZJgczjUZ9dMoKn4NLFVeut8yGRqd8
- D2v9n9caWPuCPfOnAooO6wzLXhe4kk3v4KCsCatq2dEmMOOEafzdEOQBwakzt0a96qAWB6Wgk
- /K8Z7yLnUWR+39PYxqH/GgVt3M3FkYu0lutiIkgSLnYCnFLPkEpr6o0HXceOtSQm1XPRd9lvl
- tlSQFl5yIyPVIWZkMROKsHuqgybCU77/cIv6J1BpgDBWbwQPkB/XOHDTTDwUvnf8wRSCzafDU
- lRIVwhe1G9eYqMI427RIyqyU78BBWeeVaLCNtT0ByaL73KgFi35ztJziVm5fsUOA9kguS3D5s
- XyWGXsONlMTEPH25Yh1zVSJOWwqOjbUsA1Bl5UPfp4oXslqYs7skekfDgTiVALDZVjD4biDjz
- 2J2GMuW2nR883rZ0Gfqg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cQTSTv+f92w=:wj6zhtBJPEmA+j+coMBIXu
+ Xv73i+/99mur8J0DQyRfHoGx2MoiMJdnj7BMsbXKefuI4xnCK+RTuneeZlLwdhXp06FXcepau
+ X6n+iePiW5r/TpIVpamnDm/cl+h++oMcAQTU0mZHNZYpEE03ThQXLpc14Rgy4mQz405xI/tm7
+ lu1jQIOL/de2vl2ZiQly6lKUC4XbBpqgB/DvZfO0A5AUVbPYqCCJkycDygo/DZumucTB3FYJr
+ Q7JKakljyMO+DKsBk5eKFevG+xP+or5h61K0JSj7NOpJwvBg6ocF6vfDvayl4IS4ai36PW12Y
+ spNTQygvN9TYDaUnNXBMT6Dun9CbwcO1XQIRzYiy/TmNDojMqynixysqC/znOjdpkeZ8n4r5o
+ OpS5kUCH0oT7PyrjFYlMcpqmziH9B2SbyO2vI+4bidOR97mfi5BA0YrXAFmHtYJBK3XrVm4hJ
+ /g/1MQeZimTFh8jOv5V9ZxaV5sRQIBz8/iG5XAsATlPYW9mA3JbiJUpcu24kuIgFVHyuEukh2
+ geHl1iPmw7Wo9TgikTAxYW68AsyZwtGV8sO+Xhdwtk0JzSnNs83/9zrDYQFcAZ4nTOP7NVrah
+ 1vI9spcAT6ZMsJ5yAyg+/6ZJacgzkz36v9dG27RSxrVXi5UKFZDN09H4qZmnRQ6gwtilzDqYR
+ CfHJ2oBGf6J6W1xDNlLiSzxhZnteEVicqjg1K5Ay1Dd4c3i9nCAXFZYWDceWRcwhwCTDdsy4i
+ psJ84CO5xazmKt44LfREtJkYF7n6Zrw3ffpFHsvOy3bqkXhetqfzNBSpkzTZwg1eT2rHavBBa
+ T+xH2HWI6ODNOvSXV8rhZoDQF4Nfg7m6iJ354uku0h3VNHxaC18PMciuxYlMkeXmQ1qiO4buE
+ UI0xPtrZypXnW3hIv4fA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HyB7afA7dWSYd4spo0jz8IEkCYb6BqSBS
-Content-Type: multipart/mixed; boundary="DBEQNrX62FgUnoGI2qegwyrmqtngXbWpD"
+--kdN7f6qZ2QQOXB53kkEyHG3uKC6RylQmg
+Content-Type: multipart/mixed; boundary="3BwfYCBtDo94rhFyWYXaQP7Qz4PGczS5K"
 
---DBEQNrX62FgUnoGI2qegwyrmqtngXbWpD
+--3BwfYCBtDo94rhFyWYXaQP7Qz4PGczS5K
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -97,133 +97,72 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/12/3 =E4=B8=8A=E5=8D=883:50, Josef Bacik wrote:
-> We have several BUG_ON()'s in select_reloc_root() that can be tripped i=
-f
-> you have extent tree corruption.  Convert these to ASSERT()'s, because
-> if we hit it during testing it really is bad, or could indicate a
-> problem with the backref walking code.
->=20
-> However if users hit these problems it generally indicates corruption,
-> I've hit a few machines in the fleet that trip over these with clearly
-> corrupted extent trees, so be nice and spit out an error message and
-> return an error instead of bringing the whole box down.
+> We will record the fs root or the reloc root in the trans in
+> select_reloc_root.  These will actually return errors in the following
+> patches, so check their return value here and return it up the stack.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/relocation.c | 51 +++++++++++++++++++++++++++++++++++++++----=
 
->  1 file changed, 47 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 66515ccc04fe..bf4e1018356a 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -1996,8 +1996,35 @@ struct btrfs_root *select_reloc_root(struct btrf=
-s_trans_handle *trans,
->  		cond_resched();
->  		next =3D walk_up_backref(next, edges, &index);
->  		root =3D next->root;
-> -		BUG_ON(!root);
-> -		BUG_ON(!test_bit(BTRFS_ROOT_SHAREABLE, &root->state));
-> +
-> +		/*
-> +		 * If there is no root, then our references for this block are
-> +		 * incomplete, as we should be able to walk all the way up to a
-> +		 * block that is owned by a root.
-> +		 *
-> +		 * This path is only for SHAREABLE roots, so if we come upon a
-> +		 * non-SHAREABLE root then we have backrefs that resolve
-> +		 * improperly.
-> +		 *
-> +		 * Both of these cases indicate file system corruption, or a bug
-> +		 * in the backref walking code.  The ASSERT() is to make sure
-> +		 * developers get bitten as soon as possible, proper error
-> +		 * handling is for users who may have corrupt file systems.
-> +		 */
-> +		if (!root) {
-> +			ASSERT(root);
-
-ASSERT(0); maybe a little less confusing.
-
-> +			btrfs_err(trans->fs_info,
-> +		"bytenr %llu doesn't have a backref path ending in a root",
-> +				  node->bytenr);
-> +			return ERR_PTR(-EUCLEAN);
-> +		}
-> +		if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state)) {
-> +			ASSERT(test_bit(BTRFS_ROOT_SHAREABLE, &root->state));
-Same here.
-
-> +			btrfs_err(trans->fs_info,
-> +"bytenr %llu has multiple refs with one ending in a non shareable root=
-",
-> +				  node->bytenr);
-> +			return ERR_PTR(-EUCLEAN);
-> +		}
-> =20
->  		if (root->root_key.objectid =3D=3D BTRFS_TREE_RELOC_OBJECTID) {
->  			record_reloc_root_in_trans(trans, root);
-> @@ -2008,8 +2035,24 @@ struct btrfs_root *select_reloc_root(struct btrf=
-s_trans_handle *trans,
->  		root =3D root->reloc_root;
-> =20
->  		if (next->new_bytenr !=3D root->node->start) {
-> -			BUG_ON(next->new_bytenr);
-> -			BUG_ON(!list_empty(&next->list));
-> +			/*
-> +			 * We just created the reloc root, so we shouldn't have
-> +			 * ->new_bytenr set and this shouldn't be in the changed
-> +			 *  list.  If it is then we have multiple roots pointing
-> +			 *  at the same bytenr, or we've made a mistake in the
-> +			 *  backref walking code.  ASSERT() for developers,
-> +			 *  error out for users, as it indicates corruption or a
-> +			 *  bad bug.
-
-The ASSERT() comment mentioned everywhere seems a little overkilled.
-
-> +			 */
-> +			ASSERT(next->new_bytenr =3D=3D 0);
-> +			ASSERT(list_empty(&next->list));
-> +			if (next->new_bytenr || !list_empty(&next->list)) {
-
-Just ASSERT(0); here would be good enough.
-
-Despite that, the new ASSERT() for developer and do error handling
-properly is really awesome behavior.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
-> +				btrfs_err(trans->fs_info,
-> +"bytenr %llu possibly has multiple roots pointing at the same bytenr %=
-llu",
-> +					  node->bytenr, next->bytenr);
-> +				return ERR_PTR(-EUCLEAN);
-> +			}
-> +
->  			next->new_bytenr =3D root->node->start;
->  			btrfs_put_root(next->root);
->  			next->root =3D btrfs_grab_root(root);
+> ---
+>  fs/btrfs/relocation.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index bf4e1018356a..d663d8fc085d 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -1990,6 +1990,7 @@ struct btrfs_root *select_reloc_root(struct btrfs=
+_trans_handle *trans,
+>  	struct btrfs_backref_node *next;
+>  	struct btrfs_root *root;
+>  	int index =3D 0;
+> +	int ret;
+> =20
+>  	next =3D node;
+>  	while (1) {
+> @@ -2027,11 +2028,15 @@ struct btrfs_root *select_reloc_root(struct btr=
+fs_trans_handle *trans,
+>  		}
+> =20
+>  		if (root->root_key.objectid =3D=3D BTRFS_TREE_RELOC_OBJECTID) {
+> -			record_reloc_root_in_trans(trans, root);
+> +			ret =3D record_reloc_root_in_trans(trans, root);
+> +			if (ret)
+> +				return ERR_PTR(ret);
+>  			break;
+>  		}
+> =20
+> -		btrfs_record_root_in_trans(trans, root);
+> +		ret =3D btrfs_record_root_in_trans(trans, root);
+> +		if (ret)
+> +			return ERR_PTR(ret);
+>  		root =3D root->reloc_root;
+> =20
+>  		if (next->new_bytenr !=3D root->node->start) {
 >=20
 
 
---DBEQNrX62FgUnoGI2qegwyrmqtngXbWpD--
+--3BwfYCBtDo94rhFyWYXaQP7Qz4PGczS5K--
 
---HyB7afA7dWSYd4spo0jz8IEkCYb6BqSBS
+--kdN7f6qZ2QQOXB53kkEyHG3uKC6RylQmg
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/ITZQACgkQwj2R86El
-/qivPgf/edC3xiRb/qao9RouQT8CwjJopRAHUSD1biMl4NWEleDH9vvQrpFXLo1h
-M9gKhsxtVHQ+IFD8Jqj7Oz0y8WkE/xbjnZBH9wqu2JRFoGnARnRS0wFhT7XeI1vL
-BFnjEZUuLmrlbodE1yjP29HVATZY4zcPXl02ZS4qR+sE6JDojH/m59B9sYGs4k2R
-VFSUJUyzVLIMzjHnkASL4ct30Q4grASwn3q5P956RWoeyImZU3AZmUwT4Dh6Kcst
-J7je8uMUnI4ZEImxuwqzQO2kNYslKbZTBqVnKg5MhWnJ0nH0YxKdp3dvh9jFMlaJ
-YTH1OBmHmTTGRGoaenSQ2tdroI8y5Q==
-=bGmU
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/ITo8ACgkQwj2R86El
+/qjBdQf/XBw7kU4CqA4JTyg9Ykju8IafSs/4yxgq6h+8u1oPYPi2vh9Dqwu66HSJ
+372T73jEF6Y9Pnbl8A/vboalckoN/CKYV4qTW2udTuz2THklqM8AapiU2UIGFH+q
+RkAjCJ+hBO7alAAtk1siMRf/CghmNynob+ifz9xJokgUkgcca6KF3SNF3YAOk38v
+0aMBk6rq+G9tVJYubX21GJ6wYNoztIUTUsKZOomev+yoTvF31k0qRPvXQYhYfNyz
+1SIOpV3mI3lTedLtEE5tsBrPkDee/c4+OtYL5M8reiwmGQJipHiLgSC6J2Tc7UGv
+CAF+CrdxdSfJyEPhJWYlXU72Hb2Znw==
+=56p3
 -----END PGP SIGNATURE-----
 
---HyB7afA7dWSYd4spo0jz8IEkCYb6BqSBS--
+--kdN7f6qZ2QQOXB53kkEyHG3uKC6RylQmg--
