@@ -2,138 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342ED2CD83A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 14:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC46B2CD8AF
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 15:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730670AbgLCNvy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Dec 2020 08:51:54 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:56260 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728877AbgLCNvy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Dec 2020 08:51:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1607003513; x=1638539513;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=/QkJsxBH8aaFxbGn/flPFnuabxnjdKxm0Myng/D/9fU=;
-  b=Jk8ilXWumjXfReLpphng66JxT41xL+duwDsEdzbW/zdC4CgdG+fwQ2wm
-   Ljs1eW0Jwr+T7jX10acGY4x0nrNuIOglqVxO7uAHkgOReynt3W8u8UAo7
-   ebPqzHkyX29pzz2r7uMPRSQLD2uqUFfn5lxgTmsK/Ir9v+z0m0mnv1TM8
-   mXCUOtVwq5lIGLamtMDx5YfRa/puaJzRqJobPrDd9tc6yi+8AP/GKSZ7P
-   mU6hgp/zZVdE0YDOEjCSJzkLzZ5QjqijudLaHzv7lK5lrgtk6WbiZfM22
-   pvc7Iaj+GZaYQeyaB1945PtUJSi38lE1X72/0cmkyg+k/VfK6yMbUSyJ4
-   g==;
-IronPort-SDR: 3M/fgGCoPUoLJOAvQmFzH/iwfxBrnxsBM2MHP+nGUeY9QLmSdFqsyM9lCsBywcJ7RrkbciMWYN
- 25wSFqh41Q8nGrZIyciJ8Xg3cv7V8kp2I3eeor0/5jMBQtUxzfDkTJ6Lthoh+/klT5SEPQxPSQ
- Py6lOKYnblaEaJlhAA6/eOuh+hPCr2e4wR5JYgn/7DZp6GwwDlFy4prnndWSnZo99b1GYlqsS1
- 0xJOz2xt8b/vMLhgo1U+lRvL13p0UmHdUYsFP6T/qtRFSGrdA2Ar4EXriLHQPUp+Vq9Xcy+GgH
- +U0=
-X-IronPort-AV: E=Sophos;i="5.78,389,1599494400"; 
-   d="scan'208";a="264408138"
-Received: from mail-bn7nam10lp2104.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.104])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Dec 2020 21:50:47 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G1IHjDeIxcb76LQS6fXsMqyXPkOHmAoM41WcU8MeBv0rW+a2jCSAshSZ5YBMecJXN/I8BVwLwmQTSktrih7QmZA/HvGSC/0KuDQ2c1Ju05rRc1tlHIu7AvQLqfpHbfg/1uhu13FLAquEBmMXaHQeORp+EC+W+saSuZ/w9jM8RZ5IQBqbmxwCkV2LvQuYVV6h5Ue24CyWxhi6vug+p8Nr0z3hDrEzNUrUfzPbbUUrGarqiNg9cwcmQMp2pYXYxPuBJ40jgJIhGiI73Z2f9YaINBB63hED2wcJ6M5dQl4+6Hk+AFv84+7aDWOUlwloa9qua7iIRpGUB164/G0/JZFpYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rzmiDPC+9Pcp47k61OkVneee3rPX5d1vzbWupxyqSg0=;
- b=f+A8r/49blHA+Wux2Pn1JjaE1IxcE7zY7p7pKa77lqffBGr1WNxGaiLY4GWPm6szljto/ogTd985shO8IEJEV9dZH11aJHKUv+iy0wGC9k5W/1dSn0I5dMkVXGtwqpNMvHwyVL5BGBdpq3VfIRbH/R/Z6e3zWyvnP50rosTS3xrSRnieI5CY7Pv8PC95Utf7VV47SQDtcRbx4o6n4ETTUU/IIHet/saC1SKXrlCB+YzvctJLviq6oMlUCorOYRJO8Gv16Ag1Rb2O6/QsRl7wCrg+Pe9klwAS36CwpiDlS5i+fc2Gvxd58o4ndIYo27Fx/8KnjFtXhFtrNlmtv1QSRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1730763AbgLCONK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Dec 2020 09:13:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727984AbgLCONK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Dec 2020 09:13:10 -0500
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E4DC061A4E;
+        Thu,  3 Dec 2020 06:12:30 -0800 (PST)
+Received: by mail-qv1-xf42.google.com with SMTP id ek7so961056qvb.6;
+        Thu, 03 Dec 2020 06:12:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rzmiDPC+9Pcp47k61OkVneee3rPX5d1vzbWupxyqSg0=;
- b=jGGCa63J5iycqWxiS4eFZVDOnBoaUHKllO19+znmPzs1Z2Vvvfwr3Xxl+5Op2zxPyolFTpHezs7jsus/6R4TqKAj6+1sJBY9ELXD4W8RoOX3xB/GrntteCTJoFumOTf0oEsh6XT0sg7rh13j7eopyKE3zYMEIt6yeQnHdsJgtCA=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB5119.namprd04.prod.outlook.com
- (2603:10b6:805:9f::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Thu, 3 Dec
- 2020 13:50:46 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98%7]) with mapi id 15.20.3589.030; Thu, 3 Dec 2020
- 13:50:46 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH v3 12/54] btrfs: return an error from
- btrfs_record_root_in_trans
-Thread-Topic: [PATCH v3 12/54] btrfs: return an error from
- btrfs_record_root_in_trans
-Thread-Index: AQHWyOT37bHhKZ1LfUeLdznOhChbiA==
-Date:   Thu, 3 Dec 2020 13:50:46 +0000
-Message-ID: <SN4PR0401MB3598215B90ABAF54B91B0D2A9BF20@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1606938211.git.josef@toxicpanda.com>
- <a11d1c323a74b1c452da3e4544019754b95bfaf4.1606938211.git.josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:155d:1001:ddc9:a3a2:6218:d6d7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 34fdf92b-44c3-49ff-1745-08d897926f7a
-x-ms-traffictypediagnostic: SN6PR04MB5119:
-x-microsoft-antispam-prvs: <SN6PR04MB5119A03CCAACBD24987A19509BF20@SN6PR04MB5119.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eJfdwVhsqhoR9eCb+LFFBomqcl/teF+t/hsPuRRL11AQx4P9bwU3vqb7+BIWnW62P2uu8R1VkYy1CclkmmYllkFZni7SqGIxbdmPJ5ZcFxchA280m5RhzldBpIuf2dVqflP7WB+VlGmNpGpUzNLPjDMRYXc2Wx+3KOB0pg2GP6rOS1hBHvRTkoSOTt19fluIzCD0mjpTDmy+mGLJA/4P5TF9l0pMUzV/RQJMUup2oqu8lD1b7gLPkUG2hUVuXZmGPwXTPQ7IzFvFY8MsfpKOJdr3br7R4AohjyOIvhxt2DKunylAXwM3YKEYzOr4PPbDLtMet9tvx3sxglKeuwIa9w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(39860400002)(396003)(366004)(55016002)(76116006)(110136005)(9686003)(53546011)(71200400001)(86362001)(52536014)(66446008)(91956017)(66556008)(33656002)(5660300002)(66476007)(478600001)(66946007)(64756008)(316002)(558084003)(6506007)(186003)(8936002)(2906002)(7696005)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?eVPC0c8vBAqTIV8NF87fA/MS9eE31qxXNtwFDB5YyMfBg6iIujhqR6ScpSan?=
- =?us-ascii?Q?61Ao5ovNTVAS69nIBRWKi+jSGnjQwbkzHLohgZSyNoQ7/HgQVbEnIxFqdIOb?=
- =?us-ascii?Q?KzOc6N22UOgy5SHW/wYazviK+MbWfMwDZPVz1lD7kOE44Aj85JuTmLtGyH02?=
- =?us-ascii?Q?X9A0OI3ZpXHjY99L8r/K8dYXvSbiwr8yoX5JOmkcN64qo8TllFrL4r7tI3tB?=
- =?us-ascii?Q?EHlAlkaEzWgIb0Rq0p3II6Jsc70VmZt5XDQDy1izMUX0eghUGtqwenaZmBfc?=
- =?us-ascii?Q?X5F3hSGvkGIj3gMikmfHtcOTBo9kxD0RjmyIkgA/O+cfWLozShYxKac0KKJP?=
- =?us-ascii?Q?tD8bJDe30w1EZ8GOgpB8XXzjIB+WfW//p3y2FNct3/ax9jGml8v3H84JlvAr?=
- =?us-ascii?Q?CugD4+X40afX2GO+gedoH7b78lmaxfix2558wYhBOMbiDpNjhJaUc3+iWtkn?=
- =?us-ascii?Q?BGEv0V0IAU37XOArFdkermXICS9fo/H7Gcj8HN7krUhxv6BPT+aH09Y1ZeF0?=
- =?us-ascii?Q?gBXPB50A82z9FmX4kkJAc+Z0Yw5WwZdLJc0uwhZS3cdyBxAJ2XskGXj8RonG?=
- =?us-ascii?Q?Hb0JQgn8/6WuD2xisqTPnZ9K9uFmgGE9OhrXq5zjRhxa4W9stSRV14Yfy+1v?=
- =?us-ascii?Q?9LMFjccZCwAu05+QpT9SPhfHpGLQ/shxCsR4un0kls6IeXYwrlU9UciphboK?=
- =?us-ascii?Q?VRtdImQda6AqIXdFratP8RQc4VL4vkUXwlR3XUGzsVZYUUngXdhfJ+iagS2L?=
- =?us-ascii?Q?lV/fzHkaO53nBbOL6D3zUVIVEp63i9syN3o07JAPjzNq2/h2IkTsnM1EncR7?=
- =?us-ascii?Q?aGutX/Wju48HaX7UEiJJXUT7Werw8fHTLRM+peYN7hDB+5EzBgOuESpf8/7j?=
- =?us-ascii?Q?pXed+qtxsNEBCYxpTHYVQOg2Cx/5xzUeoGsJkqAV6zv7aNE8B8utOEpsUx79?=
- =?us-ascii?Q?xTsF4+tldSFDbqcj8GTuQWPxIVsaTuRQkfOpuyzlmjCXez90DwcUFURm2s2e?=
- =?us-ascii?Q?1rpPqvqlBrFmAiOfE4I9MHHQQOBmrB1JUQChmH2eTBJNtFpBGZ97HsiDV5kZ?=
- =?us-ascii?Q?VSXV+tim?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=C2TT9Rg5U0V79FAF17Svrr2UwZCasmhZhTsumkMI0FI=;
+        b=jIouUNhZKEJ3Al7g0qQhT3YXwCIA0tXDw9glcJqBpplFtM2+aombh0O4Sh2n628qff
+         qDzxomsg7z72Vj2LT0p0L9ZYqdFP9NNppdpurcc+6rhothOES14oqdOL2zXNKnAUnrhm
+         xPqL0l/KNUx8bcBh/YQ+eWOaBuB8MBcfzB6U78LHT3hJBuLYV26QksyG145ppOVx+y31
+         pyQ8Yd2mZ6Cpb2KNJZ6ocytm714gktLUFi0cSmcDfp/sJon6RBAxkbOuN8MTk6Eq8erO
+         ahc2O0FT8aSFP80yqQFP8BNa92OFaQgtOt3axLgDatGPwjsnHJyw/pHpizzvxwQSJi/B
+         HLgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=C2TT9Rg5U0V79FAF17Svrr2UwZCasmhZhTsumkMI0FI=;
+        b=gYzEL9TCKcP4Ee+ezVuXOTjbEmkENM3+dfjcBJrmrI6zVgW6ezY7WRRRtM9KcS0Xjq
+         KHmQhPs0hmD2p6IRndUPfTW4cz+WrPH20cH4RTip2LgBZXLMCLqaMKMFYoo94RNgNrAn
+         39cWrv4NUVShZ1L6aHzZpHpZ8PTO20OOFjAmEc7jaFDRmN9pGQIB3d5JcSnTWHzcg4YD
+         NRAc6gClsHp4uQc3qL2w3aougzelywraLUB+0Jwyct24veg6YRnfozIRbJ8vxIxlq6sD
+         0dOYZKaHVieZN4Kchcl1V4spE9CGeortd+/5W9tNGsJbcyi+TB9Q9ZA2kF/bwt+7DO/F
+         iMxA==
+X-Gm-Message-State: AOAM531RmcAGFWefJ7jsyF8+ZRE/aXolBZpqbqSQMAlvH8ZjGzR9gpv4
+        ytvF+9nl/ks/9fCjv9ScrUaYyJVZPnbJBdgGqcxSZUK4ZWA=
+X-Google-Smtp-Source: ABdhPJxsX7XPkBP+YlgfdKAKC+0mXECwNQjqVv9Up2V3ZruQoFL5iiVGxVcIa3QH43s1q6K9y8HTiUhluLTmab+NLOw=
+X-Received: by 2002:a0c:9003:: with SMTP id o3mr3363707qvo.62.1607004749272;
+ Thu, 03 Dec 2020 06:12:29 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34fdf92b-44c3-49ff-1745-08d897926f7a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 13:50:46.3027
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZwS1z3A8VpBxU6pbBa76pNZ/haQIL+fpSStBB5GcvLLmVp+pPtf2XxIZQm57nFOKswdc5Hf2Ha8OoObhUNkXaieQyBgY7HCf79raCt3+2wg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5119
+References: <20201126105013.246270-1-ethanwu@synology.com> <20201129071904.GO3853@desktop>
+ <CACKp3fnZRFsXAZL=WYnBj2L2KcBp1JmnfMZWHNp=XVgRwb56Zw@mail.gmail.com>
+ <CAL3q7H5vRorBsz9wEKzfOdHzvdG1Q8KPzZjEzEBT2Gu1-NHxQQ@mail.gmail.com> <20201202162108.GQ80581@e18g06458.et15sqa>
+In-Reply-To: <20201202162108.GQ80581@e18g06458.et15sqa>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 3 Dec 2020 14:12:18 +0000
+Message-ID: <CAL3q7H4AS6xdcHLgYKe_XXEm92b8hp6Uod77fm-zA82VG2Wpgw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: test if rename handles dir item collision correctly
+To:     Eryu Guan <eguan@linux.alibaba.com>
+Cc:     tzuchieh wu <ethan198912@gmail.com>, Eryu Guan <guan@eryu.me>,
+        ethanwu <ethanwu@synology.com>,
+        fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 02/12/2020 20:54, Josef Bacik wrote:=0A=
-=0A=
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-=0A=
-In a separate future patch we might also want to reverse this if =0A=
-statement, so we save a level of indent.=0A=
-=0A=
->  	if ((test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&=0A=
->  	    root->last_trans < trans->transid) || force) {=0A=
-=0A=
+On Wed, Dec 2, 2020 at 4:21 PM Eryu Guan <eguan@linux.alibaba.com> wrote:
+>
+> On Wed, Dec 02, 2020 at 10:47:46AM +0000, Filipe Manana wrote:
+> > On Tue, Dec 1, 2020 at 7:00 AM tzuchieh wu <ethan198912@gmail.com> wrot=
+e:
+> > >
+> > > Eryu Guan <guan@eryu.me> =E6=96=BC 2020=E5=B9=B411=E6=9C=8829=E6=97=
+=A5 =E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=883:22=E5=AF=AB=E9=81=93=EF=BC=9A
+> > >
+> > > >
+> > > > On Thu, Nov 26, 2020 at 06:50:13PM +0800, ethanwu wrote:
+> > > > > This is a regression test for the issue fixed by the kernel commi=
+t titled
+> > > > > "Btrfs: correctly calculate item size used when item key collisio=
+n happends"
+> > > > >
+> > > > > In this case, we'll simply rename many forged filename that cause=
+ collision
+> > > > > under a directory to see if rename failed and filesystem is force=
+d readonly.
+> > > > >
+> > > > > Signed-off-by: ethanwu <ethanwu@synology.com>
+> > > > > ---
+> > > > >  tests/btrfs/227     | 311 ++++++++++++++++++++++++++++++++++++++=
+++++++
+> > > > >  tests/btrfs/227.out |   2 +
+> > > > >  tests/btrfs/group   |   1 +
+> > > > >  3 files changed, 314 insertions(+)
+> > > > >  create mode 100755 tests/btrfs/227
+> > > > >  create mode 100644 tests/btrfs/227.out
+> > > > >
+> > > > > diff --git a/tests/btrfs/227 b/tests/btrfs/227
+> > > > > new file mode 100755
+> > > > > index 00000000..ba1cd359
+> > > > > --- /dev/null
+> > > > > +++ b/tests/btrfs/227
+> > > > > @@ -0,0 +1,311 @@
+> > > > > +#! /bin/bash
+> > > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > > +# Copyright (c) 2020 Synology.  All Rights Reserved.
+> > > > > +#
+> > > > > +# FS QA Test 227
+> > > > > +#
+> > > > > +# Test if btrfs rename handle dir item collision correctly
+> > > > > +# Without patch fix, rename will fail with EOVERFLOW, and filesy=
+stem
+> > > > > +# is forced readonly.
+> > > > > +#
+> > > > > +# This bug is going to be fxied by a patch for kernel titled
+> > > > > +# "Btrfs: correctly calculate item size used when item key colli=
+sion happends"
+> > > > > +#
+> > > > > +seq=3D`basename $0`
+> > > > > +seqres=3D$RESULT_DIR/$seq
+> > > > > +echo "QA output created by $seq"
+> > > > > +
+> > > > > +here=3D`pwd`
+> > > > > +tmp=3D/tmp/$$
+> > > > > +status=3D1     # failure is the default!
+> > > > > +trap "_cleanup; exit \$status" 0 1 2 3 15
+> > > > > +
+> > > > > +_cleanup()
+> > > > > +{
+> > > > > +    cd /
+> > > > > +    rm -f $tmp.*
+> > > > > +}
+> > > > > +
+> > > > > +# get standard environment, filters and checks
+> > > > > +. ./common/rc
+> > > > > +. ./common/filter
+> > > > > +
+> > > > > +# real QA test starts here
+> > > > > +
+> > > > > +_supported_fs btrfs
+> > > > > +_require_scratch
+> > > > > +
+> > > > > +rm -f $seqres.full
+> > > > > +
+> > > > > +# Currently in btrfs the node/leaf size can not be smaller than =
+the page
+> > > > > +# size (but it can be greater than the page size). So use the la=
+rgest
+> > > > > +# supported node/leaf size (64Kb) so that the test can run on an=
+y platform
+> > > > > +# that Linux supports.
+> > > > > +_scratch_mkfs "--nodesize 65536" >>$seqres.full 2>&1
+> > > > > +_scratch_mount
+> > > > > +
+> > > > > +file_name_list=3D(d6d0dIka505ebc681949a25a3f1a4e7464f18bfcdb04a1=
+03b8ece40cddf61ccc9e690232878008edceecda8633591197bce8c0105891d2717425cb4bd=
+04223bb08426de820da732c0e16b8a9fa236bb5b5260e526639780dacd378ca79428f640a03=
+00a11a98f4f92719c62d6f7d756fa80f0aa654ae06
+> > > >
+> > > > The file names are too long for the test, I'm wondering how are the
+> > > > names that could cause collisions generated in the first place? Is =
+it
+> > > > possible to re-generate them at runtime? Instead of hard-coding the=
+m in
+> > > > the array.
+> > > >
+> > > > Thanks,
+> > > > Eryu
+> > >
+> > > I use the following script to generate the names
+> > > https://raw.githubusercontent.com/wutzuchieh/misc_tools/master/crc32_=
+forge.py
+> > > but skip names with unprintable characters.
+> > >
+> > > The total available spaces could not be divided evenly to have the
+> > > same file length,
+> > > and this script could only be used to generate filename of the same l=
+ength.
+> > > Different length would result in different crc32, but I haven't figur=
+ed out why.
+> > > Therefore, I use btrfs-crc -c <desired crc> -l <length> to generate
+> > > the last 2 names which don't
+> > > have equal length with the previous ones. The last procedure indeed
+> > > took a while to run.
+>
+> How much time does it take for btrfs-crc to generate the last 2 names? I
+> think we could live with it if it requires tens of seconds.
+>
+> > > Hard-coded names would make time spent on the test more predictable.
+> >
+> > While I don't mind having the hardcoded names in the test, adding a
+> > program to generate them would be perfect.
+> > The python script triggers the issue very fast (it takes only a few
+> > seconds on the box I tested with), but adding a dependency on python
+> > may not please everyone (plus it would be better to convert it to
+> > python 3).
+>
+> We've already have dependency on python in perf tests (please see
+> src/perf, common/perf and tests/perf), so adding another python script
+> is fine. But we depend on python2 for now (PYTHON2_PROG in
+> common/config), I guess leave it as python2 script should be fine too.
+
+Ah, never noticed that before.
+So adding Ethan's python 2 reproducer (with slight changes like taking
+a path as an argument) and calling it from a btrfs specific test case
+is the easiest way.
+
+>
+> > The only alternative is to convert it to a C program and add it to src/=
+.
+>
+> Yeah, that works too.
+
+In that case I have no strong preference for C vs python script.
+Thanks.
+
+>
+> Thanks,
+> Eryu
+>
+> >
+> > Eryu?
+> >
+> > >
+> > > thanks,
+> > > ethanwu
+> >
+> >
+> >
+> > --
+> > Filipe David Manana,
+> >
+> > =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 yo=
+u're right.=E2=80=9D
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
