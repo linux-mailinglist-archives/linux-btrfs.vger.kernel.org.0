@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088C52CCE6B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 06:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127142CCE6E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 06:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgLCFVA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Dec 2020 00:21:00 -0500
-Received: from mout.gmx.net ([212.227.15.18]:40437 "EHLO mout.gmx.net"
+        id S1726143AbgLCFVy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Dec 2020 00:21:54 -0500
+Received: from mout.gmx.net ([212.227.15.18]:41415 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbgLCFVA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:21:00 -0500
+        id S1726004AbgLCFVy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:21:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606972765;
-        bh=S7z4fAudXeOEmdYz5HdeB99Aw9hfB8hHuy+eXnnFuLg=;
+        s=badeba3b8450; t=1606972818;
+        bh=saJTMNgFieV0iIWhAvVF1am6tTzMMK2m9EEFR6QE9Sw=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=RG0R4ePBYdee//tExREcEowlGlBIN+4+FGLMQl3rkYtvOhw98RCe90x6R404rym3A
-         NtNhpA1KcgLU6xJCZ5M3o/qDuDRKZJBcix/d4AMkYhQ5Z5B6ohwW4vX37tTBrtBMl7
-         mCGUPh8SmV6crSlDDcjY7eOhSQXHndVDefJsitJo=
+        b=SI7u44XIqQVyxHxxtkl7bbEhv7ME0ltmcZTbNe3AhMM0Y4XnsMPdvq02izf3BoVy0
+         ptXQan/TxeTn5758p5nPrhmJqQeeVzirjf1fFKnK/k9RzuCNsSeAKh1dpWznLZ60Mr
+         w3SCNzg3eKkYEF1Wpr646xNqEyJ/B3x/fuS3tFes=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MtfNl-1jthC71ARb-00vAol; Thu, 03
- Dec 2020 06:19:24 +0100
-Subject: Re: [PATCH v3 42/54] btrfs: check for BTRFS_BLOCK_FLAG_FULL_BACKREF
- being set improperly
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpUUw-1kNgUw0onM-00prgF; Thu, 03
+ Dec 2020 06:20:18 +0100
+Subject: Re: [PATCH v3 43/54] btrfs: remove the extent item sanity checks in
+ relocate_block_group
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1606938211.git.josef@toxicpanda.com>
- <cf522824a3a16e2186b43c5336b4d99cd0cd4d19.1606938211.git.josef@toxicpanda.com>
+ <09013ee34800bd1bd6354254a1b6a29ddf68f09f.1606938211.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,43 +53,43 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <cc10a7dc-ee6a-0e6f-0ff8-bde0c6d10a73@gmx.com>
-Date:   Thu, 3 Dec 2020 13:19:21 +0800
+Message-ID: <6081dbb7-f962-ea30-752a-fcde1db9aabd@gmx.com>
+Date:   Thu, 3 Dec 2020 13:20:15 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <cf522824a3a16e2186b43c5336b4d99cd0cd4d19.1606938211.git.josef@toxicpanda.com>
+In-Reply-To: <09013ee34800bd1bd6354254a1b6a29ddf68f09f.1606938211.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="47VbkUOu8VYnt1N1AADNXLOgLCROX8ZCf"
-X-Provags-ID: V03:K1:5GQDOfT5xR443gggIE7rXPicoifDFxQ6Nl/StUhGlaQOyufmFwL
- 1Pgv175vuInQ3p7X5yaDgFZMVRCDlnVp1In6OCYcwhD0HU4u5DC0x1aj6JRnmgRhLrUMnVb
- 8BoGB2mfT+kC3QXSvRjmFlwX4Cqsuu8Zy25nINO6QIixeeygDkH5jMc0ImrGmLsvMHoo+RC
- +FIN9EJqNbo9SqlsIUhAQ==
+ boundary="9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo"
+X-Provags-ID: V03:K1:+JPb8EkV8lnVLzK4RjBZaBPDPuRQgT3/wz/eC9brlbeP74LeSCg
+ wGRSVmHqY/Bi1pwvg6fo07q2iXBxrCq67pfdGvytJe2M/SF4UjDG93FOjzTNx4CIqquzjva
+ XkmnPr+zBIwif+YViwyC/piE+Yu3GuYZ5YRKtusMW8teAnBqX2QMsPdhb/d3GsOJ4GiKT9n
+ FScKyBI0WL4WUQolEXfLg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ccw3gJmbs1Q=:P91RTBo2wUqdE5M7zMGBWw
- RfzxDqeTK8mIcxTlSY+Ech78yfBRsKvpULEOvcwNE1uJWpNXS7eL3KacVMn4ImU48mxksPKWp
- fw5ajRXxGIUlIdfSE90eL6pI0owx54Qp3MHfob75XbhPRmpJHd+o8cAlXgE30DbTCVuuOgLKn
- 0YjyhEUfWIhrDYHQxxcP75AoL5p9ds5oFL6ya6kAaFHTrrZmf3OheWqXer7gHxIJ7fLB3hsa9
- vEUvqSoHMPmG/O3/QfjlHxmQ820/ffJMQ/BYOeXaCGfaHHxaL8FCFy/TAwBFThGKQKHVf12Xn
- QXGsNWFPZFrUgeMt/Xlu7VLDlgfrR1dFi9uGUAxH1bGxBD03uSCQlSrScW03xPimuCfUVpApr
- WU4axksvPeTjoNlzG1rC8w3kSC5F91GZeO1Zw8kHUnUUmgVwNqDPYNr7UZvGqlB6HWmxt/Iiq
- zVHsbZ6B9LAYarGIvlWATpfgWAYM0MfFRNT3LqHVQrRh8NUYxVYnJGW5n5AnYKaEe4tv6BcDo
- fCXliWZhODZNCWbXVX7gbLl/OpNCi/JmwbqDVgvPvCw5SUTr1EEQjMkPwRAg4KDb8JDZMQnQM
- iJyQGhaNDXk27GYX8ManFV5zrylmW3HXoGU1U8MIsiES3SJddiHVt0HQMI8nQa41ojRtON+GF
- O97G5PENg041astLqDhBa4gz/Mq6/rkYoUIXjDg01QNUPuCruATdE+HYafynoNivjpjljCfIs
- vnOWZv5/OW+xldoXRo5ovCEJ/KzSck+2xuZ+PI7jfxnf3ZHeDGy2lPa8zJGWG1d4zQ+WY8inj
- kymrNJFlEo1kpwrQIZkBnhxlShgoye1ItJdtvXgBPCKGa9DzYsTkaGz5rqrqxXZ2/AwztzgC8
- fXXegT8oeAnjcrdTuudlDhuZoI1kYMlL3x6DsbxEs=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:99RDJPO88Pg=:5Wri90W4Bu/IjMMIDoxzG1
+ S10tm9veq76xIgdT1Z61e0e+UO0nChUtfUo9dAopd7zVsMePhxcNffvisEwZLSOghaYKDetbB
+ Fqt8ik8sT9ioxUwX6R2RfTQYUz8I/bHVLR4kYGegL+mpT1XWFpFfM/msDIT81i6o4c+iBDMYg
+ JDNjLjsUMdXEhETtBhrLsoDAzggATEzMzeErji735bW8qqrBFBbTA3WytoGOPPkt6FjRJih+D
+ 46Rqfwr6OmAHM3Oou/qAmbN3yj9WOTtNFfE2jZdCzUuCGRWbUHFh/CNOzZxACE4p+onc2QpXl
+ UXJTz4EZyZEEaRs3nBNWlwstW0535sPuf02QxcCZz5T0rdFbuLCQJunrSMNkSd231g187rQ8D
+ vHqvmPxTivIUuK0Js6dAeRhjzH2/CnkNbGqz/HStX5upCT7DMupBGMTMZdR8t305gkrXOu+PZ
+ C3t5I1SJ785dvNIhi4g9Ec/m+3b+jOg+NyJrAq/Pl+JQpnvJEmC64m2fAOGcWZ/zX4E1THzpR
+ nNRX7GCueDOmxMV9Gih/fEbS6VtHH9bYUSsD1uL/MLk0YlvXSpdpAY8gphrTlKy6OuqRj3JAN
+ sULa3LC7SpxHU5O0DuEVJnk+JQA3kwtWvAftpKes4CcFFuY7YHUwClmqCWkBsVtfbvtgBGxus
+ laXwKSfhXCoGXWqsRM8WnY1RVlQscowPKaZpG3O7xRgt4t4JLWLdQ7AwucWxDigVRF6bSs4EA
+ 8zfo/xFzzoMXbHBMkNEtiBFiyogQqDnqKUWWR2oeU2Kx65gPZw6KOfK/Ar5YVDfgpZUPjsF8/
+ 7w8bdh95XAcB3kABVjSiwj0Hz20lFjuAjG0mkeGk9M9WXxGc7mzqRhJyI4rKs7xPBoB8XoyRa
+ AplgElntO6+fs/C7/lG5Hlc57NVzVb+F0cnZjVEHw=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---47VbkUOu8VYnt1N1AADNXLOgLCROX8ZCf
-Content-Type: multipart/mixed; boundary="lmtceuvnviyO4Pn16Q8sTLkxsINQfKlrr"
+--9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo
+Content-Type: multipart/mixed; boundary="oA3lzUXdEhckj4cR0jymXLVPoUry5BHeO"
 
---lmtceuvnviyO4Pn16Q8sTLkxsINQfKlrr
+--oA3lzUXdEhckj4cR0jymXLVPoUry5BHeO
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -97,61 +97,100 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/12/3 =E4=B8=8A=E5=8D=883:51, Josef Bacik wrote:
-> We need to validate that a data extent item does not have the
-> FULL_BACKREF flag set on it's flags.
+> These checks are all taken care of for us by the tree checker code.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+Yeah! Finally see a day where tree-checker is involved in removing
+duplicated checks.
+
 Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-But an idea for new patch inlined below.
-> ---
->  fs/btrfs/tree-checker.c | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 028e733e42f3..39714aeb9b36 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1283,6 +1283,11 @@ static int check_extent_item(struct extent_buffe=
-r *leaf,
->  				   key->offset, fs_info->sectorsize);
->  			return -EUCLEAN;
->  		}
-> +		if (flags & BTRFS_BLOCK_FLAG_FULL_BACKREF) {
-> +			extent_err(leaf, slot,
-> +			"invalid extent flag, data has full backref set");
-> +			return -EUCLEAN;
-> +		}
-
-Since we're already in tree-checker, another possible check is, to
-ensure COW tree only have one inline ref, and no keyed ref.
 
 Thanks,
 Qu
->  	}
->  	ptr =3D (unsigned long)(struct btrfs_extent_item *)(ei + 1);
+
+> ---
+>  fs/btrfs/relocation.c | 29 +----------------------------
+>  1 file changed, 1 insertion(+), 28 deletions(-)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 3159f6517588..8f4f1e21c770 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -3370,20 +3370,6 @@ static void unset_reloc_control(struct reloc_con=
+trol *rc)
+>  	mutex_unlock(&fs_info->reloc_mutex);
+>  }
 > =20
+> -static int check_extent_flags(u64 flags)
+> -{
+> -	if ((flags & BTRFS_EXTENT_FLAG_DATA) &&
+> -	    (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK))
+> -		return 1;
+> -	if (!(flags & BTRFS_EXTENT_FLAG_DATA) &&
+> -	    !(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK))
+> -		return 1;
+> -	if ((flags & BTRFS_EXTENT_FLAG_DATA) &&
+> -	    (flags & BTRFS_BLOCK_FLAG_FULL_BACKREF))
+> -		return 1;
+> -	return 0;
+> -}
+> -
+>  static noinline_for_stack
+>  int prepare_to_relocate(struct reloc_control *rc)
+>  {
+> @@ -3435,7 +3421,6 @@ static noinline_for_stack int relocate_block_grou=
+p(struct reloc_control *rc)
+>  	struct btrfs_path *path;
+>  	struct btrfs_extent_item *ei;
+>  	u64 flags;
+> -	u32 item_size;
+>  	int ret;
+>  	int err =3D 0;
+>  	int progress =3D 0;
+> @@ -3484,19 +3469,7 @@ static noinline_for_stack int relocate_block_gro=
+up(struct reloc_control *rc)
+> =20
+>  		ei =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
+>  				    struct btrfs_extent_item);
+> -		item_size =3D btrfs_item_size_nr(path->nodes[0], path->slots[0]);
+> -		if (item_size >=3D sizeof(*ei)) {
+> -			flags =3D btrfs_extent_flags(path->nodes[0], ei);
+> -			ret =3D check_extent_flags(flags);
+> -			BUG_ON(ret);
+> -		} else if (unlikely(item_size =3D=3D sizeof(struct btrfs_extent_item=
+_v0))) {
+> -			err =3D -EINVAL;
+> -			btrfs_print_v0_err(trans->fs_info);
+> -			btrfs_abort_transaction(trans, err);
+> -			break;
+> -		} else {
+> -			BUG();
+> -		}
+> +		flags =3D btrfs_extent_flags(path->nodes[0], ei);
+> =20
+>  		if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK) {
+>  			ret =3D add_tree_block(rc, &key, path, &blocks);
 >=20
 
 
---lmtceuvnviyO4Pn16Q8sTLkxsINQfKlrr--
+--oA3lzUXdEhckj4cR0jymXLVPoUry5BHeO--
 
---47VbkUOu8VYnt1N1AADNXLOgLCROX8ZCf
+--9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IdVkACgkQwj2R86El
-/qhknAf/fvDXQHJm4MVav8jcRITem4jM0bWgGHhrjIF+hH/99XJ/6ZBNT72WhFGy
-yBwpsUVfUSgqwnuqlaoCmSKrrflnHKyYJw4m0tDLfP2GpeiPJEQb+Q8taTDkfoNX
-mW561v6kroVqytjCZqJEZQerjlGqNL2d6oH/BwT7id9pin2Te8w/vWJNKRgJ+Myw
-UWNtrB2o/0tgQ9mSXw7g/BPls1HzocnuIE9xLnXP5tDyYEeM/FWNn7I4VyXEwRoz
-LoKjhm3asnE7YjSYjp1nZoUFA21Lz5P5U/ieR5hKH/6lJJ9GKf71BO4w5wtQkgCt
-N76+0xrBqd+mJCQ7mkZQbas7lG6y4Q==
-=n9Cb
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IdY8ACgkQwj2R86El
+/qhj+Qf/eSI+6qs16Ygg3Vzq/IGpLSI79qwU64M2/reCEQvT3CJvzJUcXds6XTQN
+/cvJQ5sdNuXosBAdkxhZ2u56OjdVyG2TrjKdiE3qoOVUu2ew+thjJxltUS/VgU0U
++6MD9N5lsGLg2xN7EpbEV361t745EKGSqWShxr2HcBFmp6wgbpPEo/oesVgVqdYM
+np7Iu2cykEYbOld34sRc0aLDmuStLGVsM90L8qtD+CEBhYpZiRD993gdXRfOszeP
+e/w598ZI5XjDqPaoMOx+DoUChGBjOVnC5/szF7m5bRC4Q1cUWPIZXcA4JaDxG4Dg
+D+86mk9Y7b1HVPUYytuKrbstDzITSQ==
+=i0JI
 -----END PGP SIGNATURE-----
 
---47VbkUOu8VYnt1N1AADNXLOgLCROX8ZCf--
+--9SWRa3kvSH9QyyTuCFG9GPP1neXcOSyKo--
