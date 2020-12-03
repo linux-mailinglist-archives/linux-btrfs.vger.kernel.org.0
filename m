@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562D22CCBCD
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 02:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0461A2CCBD2
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 02:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbgLCBra (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 20:47:30 -0500
-Received: from mout.gmx.net ([212.227.17.20]:52503 "EHLO mout.gmx.net"
+        id S1726736AbgLCBtk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 20:49:40 -0500
+Received: from mout.gmx.net ([212.227.15.19]:42093 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727026AbgLCBr3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:47:29 -0500
+        id S1726597AbgLCBtk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:49:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606959954;
-        bh=RRGY+IOylYOg1ZEU0Fxt+i4m1UnlNMfDp+juxCZhAR0=;
+        s=badeba3b8450; t=1606960084;
+        bh=b8t2O1gIHQGu76IfoBxLB3P95KG6nOpYatlKfE22eKo=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Xvlw9gQRS6iuov+cCqTqtst9lgt9r++dKO8m86Os1vP6iaZBGcWuDLormgumUSm1d
-         va6Fvwz/38/czV9VlNxZyr0cpnk5tAZ7fmMkWjiyRWiNvqLmwC4M84Xzxm23UluWyo
-         VZas8QRCtMxl4cAPIJ2MKd925fMU4Jg7pdtInQ9c=
+        b=Tj0EX+poHBbKPnF9bZAbV2UU9upS00/4/qu3EKuy2qygiOYeaVobjyIqQizSs1Kvp
+         9S2M5Zi/h0b5AkLiEmLyGSTZiOvxki9qbLHUQ7WI9Yw7XoTMJTWxZpTcJ2Rr03Uyht
+         PFc9TPIYDRLVrYhQUmscg6ok+MuxMvi9FYz2aR5Q=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mdvqg-1kDEPv2fnK-00b5zZ; Thu, 03
- Dec 2020 02:45:54 +0100
-Subject: Re: [PATCH v3 01/54] btrfs: fix error handling in commit_fs_roots
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MBUmD-1ktCyy2EjX-00Cw4p; Thu, 03
+ Dec 2020 02:48:04 +0100
+Subject: Re: [PATCH v3 02/54] btrfs: allow error injection for
+ btrfs_search_slot and btrfs_cow_block
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1606938211.git.josef@toxicpanda.com>
- <502d2273052e95e19366d785ee85e542e86fe61e.1606938211.git.josef@toxicpanda.com>
+ <c0a4d7f83ba50576a4203f0169f2232dbe009d3a.1606938211.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,43 +53,43 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <7567aa9c-1217-f24d-396c-88d6a0da9101@gmx.com>
-Date:   Thu, 3 Dec 2020 09:45:49 +0800
+Message-ID: <9c81cc8d-6bdc-7e28-3a2a-5669a994eb5c@gmx.com>
+Date:   Thu, 3 Dec 2020 09:48:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <502d2273052e95e19366d785ee85e542e86fe61e.1606938211.git.josef@toxicpanda.com>
+In-Reply-To: <c0a4d7f83ba50576a4203f0169f2232dbe009d3a.1606938211.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="XmTzzoIrR61LsTA7xIMwcIxZ3wrKISFlf"
-X-Provags-ID: V03:K1:fbFXxT032zDlMn1J3ReOVxTWT9pk0Wc3js42vuxT6vqn5R1H3zT
- sEeaa3Rv+nnLOgvj1xlE6mlEk4AI9gkPBl8Zn6MhUaxmG8r299+FcBYUCbEPUh8O0vbTKeE
- 7k3Y5PEwVylzWYMyEXrHRBPbkc7ksWXjvkLtyUj3HItgEA1Lm29yjrSvhzPK8YOnJJyZJ9A
- P1gcpF4RTQcs7/yF5O+oA==
+ boundary="Ygp0PJ5A40h0AvfbHNPszCFo0So6EMP6P"
+X-Provags-ID: V03:K1:qC8QzVpIgfNDhLh1i/gu0rbVGCPcwbTJRAuHrPTWv2VPxB7eGZo
+ 7WrOATxMbLn1WO/yr1nTzBnxKRjNWywAMCjAS7LBfPPbg7CUpg3Xu+AKlo75XRIWXGgJsyS
+ X4aarJll1slmfSb1ythzeWfnKZgfSsYQISkYj7QYozFW0seUOvO4VPab/y+UafOI9b8/9dV
+ n7Ke00ntwmGBl5sUg+BZQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FqzgxRL10JQ=:rn8s64NagERFIn12hXiXKR
- U75KxsY4Fc/Dpk98LPRvKoBQJ4fLZPArnG4xkkzOBueHN8k1TSrI5aFyIF87xB2EnDYMwAcOx
- gRVZ543YgtvaiAs++A49P7FaJsGlKE4VeujqgcMxQCuEXZ+ZdZb03Y3QILFpW+dyyLhOALJE3
- 0UqRB5Mq2fwbNNjvM4kBZWnR68Til9qNVcBdYJjT01Boo/ZoR/zrom1Ai02EpZK8lxSRmfAq0
- g8T2WkhNrannC7Wm8kMwCGo++LAvlR9IwLEJzzS4k0CTNd76ej2n8Ua25dK+L5PApNaCKtBvC
- C9a3LnztcsknLQlSMPG53UGEKwJ7xiBPu8LJmjTb0+cX2SkoIDuJV8OdazeZV0yAs8zfqmclx
- pVbYM0Mdlv3WLy1aAL1M9uGQTTy9NXNGVzN/hql0157QJFG4QySOyGnsLK3h8JtY8iBuDegoq
- iMCHRYNxJ/CyR1ERdVSVfFuYiMtka33Is0wMQZoLE5WHKc4CyN0Clw1qWmdP5bCV9+SkiqUmP
- jUJA7ICUrk6bIdvG25n5hUytpV+3wvKAvjAIo1IbDehY29Ht3+EAiqyfdsLEfIIqi9PYcx6Tt
- OP1xQpi+hZch1lxii5HRqnGdD67pKWKRna60newxk1SAStHy+X33W08TNMVaf58Q2+48kCmI7
- Hs4BY01cTeisBAJ9aaKZzuDkcQuldSX3KPtuJfzm3EnCFIWQ+ayjG1IR/i8XJMRPzn/0MSegD
- amGnD4appOaTLjs6K4kwYAoVwibAUZZvG0f+y901dtvgiHcfCVYP25Fu+MliYPm8nOkzp6BCJ
- xTOhOyXNddqLTogX82+wfcDSP8GSPTwtJjfjmywfSj6HB+mVgiUWAqI1O6yDgtC38kfCKDWKc
- F3ffCBzJc5k+Db1yc3Cg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KeHrmkNIgfI=:QNdxo+3BCNwq67n8XKRAFq
+ T8NeY/iDhscs4xBu1AcA78L/Rh6cJtNjcBbW5LrmkJnzAS2n8ur1QvF7gQAkKwawZZ5IQzcaa
+ bEXrWyx1ItP+w7SFg/aDou61D9zywC5oV/CeEJai0h6tOxM2du6cn0b7aBbIp44+6Xb5VhnXm
+ D2oQurfQgvsTN6jReoYMyIwA3ciXi9MPoXIeJHUUGJO2+5VWHXCewHZp3zntPMRyZb5NCmRTy
+ XOD6q+qFFQF1u5gK2GEJxGkfQm3yEojc/hfOlbBApPjsAfrv3LQgIOTohDBzgQs4YiraI2TXq
+ OgXef2PWzH8IS4bJ+nj0n23kNScEH490u4H9dzdu0SsOqf5pI60ujOgU7vXfTT1uHOE6tW2JW
+ gqGk1QPZWdEWf2s6iqhjMG2o03emYUN6VXL7SeJCAvEMcuQNxJ40SPrBIeVtWnYSZFYQ4W9zI
+ KE2Vzm2u8lEfQyiALq3/kUqn4q6nBAS0rzPirRw6jBRGwT+/3BWss81Et+wGas7q2djOwMFPM
+ 4U9n7nsgnUPIvrtnJtEN4JFmnpNJibnD9qRkEb5s2aoZdhyGxR2VqD9NJ6L8SseaS4V9/+5V7
+ KnYrGghzCdMKh5nw/9f+mC0NH+fC5TS9MnJ1ATWrZG+2DApJCO3yhibPfYvGKzavoh3jUMdpP
+ 3xm7OW/BR6L7PQsp8ddzjCPWxfoteRzmUKKi0yJD1KV7efx6etEmuHLM+kLSzVk+hbEX58QkY
+ ZsilM4AE5+dKTHEJk+UqdTem379aHGCCNdBqyXgS17IJdjRMulEXc8BGF1ZJHJfq2+/CSA2Fi
+ MT6fwVvvgIVmsZ+CZWsYAufSRUPEqQMnHMYpqtlcNK3fyl2k9ojKbchSUy2niXi1nQwt2NwzD
+ Wmb7eWV+H/SR8wnwjz3Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XmTzzoIrR61LsTA7xIMwcIxZ3wrKISFlf
-Content-Type: multipart/mixed; boundary="ulp1NH0pyhtHmSRLKWehIlKVExrn7jcxe"
+--Ygp0PJ5A40h0AvfbHNPszCFo0So6EMP6P
+Content-Type: multipart/mixed; boundary="wZnuXb6TGYYFdg7VRoPNRROYI2zR4nW4M"
 
---ulp1NH0pyhtHmSRLKWehIlKVExrn7jcxe
+--wZnuXb6TGYYFdg7VRoPNRROYI2zR4nW4M
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -96,100 +97,65 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/12/3 =E4=B8=8A=E5=8D=883:50, Josef Bacik wrote:
-> While doing error injection I would sometimes get a corrupt file system=
-=2E
-> This is because I was injecting errors at btrfs_search_slot, but would
-> only do it one time per stack.  This uncovered a problem in
-> commit_fs_roots, where if we get an error we would just break.  However=
-
-> we're in a nested loop, the main loop being a loop to find all the dirt=
-y
-> fs roots, and then subsequent root updates would succeed clearing the
-> error value.
->=20
-> This isn't likely to happen in real scenarios, however we could
-> potentially get a random ENOMEM once and then not again, and we'd end u=
-p
-> with a corrupted file system.  Fix this by moving the error checking
-> around a bit to the nested loop, as this is the only place where
-> something will fail, and return the error as soon as it occurs.
->=20
-> With this patch my reproducer no longer corrupts the file system.
+> The following patches are going to address error handling in relocation=
+,
+> in order to test those patches I need to be able to inject errors in
+> btrfs_search_slot and btrfs_cow_block, as we call both of these pretty
+> often in different cases during relocation.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Yep, that err can be overwritten by next loop, so definitely a problem.
-
 Thanks,
 Qu
 > ---
->  fs/btrfs/transaction.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  fs/btrfs/ctree.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >=20
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 8e0f7a1029c6..a614f7699ce4 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -1319,7 +1319,6 @@ static noinline int commit_fs_roots(struct btrfs_=
-trans_handle *trans)
->  	struct btrfs_root *gang[8];
->  	int i;
->  	int ret;
-> -	int err =3D 0;
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index e5a0941c4bde..f40d3a2590a5 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -1494,6 +1494,7 @@ noinline int btrfs_cow_block(struct btrfs_trans_h=
+andle *trans,
 > =20
->  	spin_lock(&fs_info->fs_roots_radix_lock);
->  	while (1) {
-> @@ -1331,6 +1330,8 @@ static noinline int commit_fs_roots(struct btrfs_=
-trans_handle *trans)
->  			break;
->  		for (i =3D 0; i < ret; i++) {
->  			struct btrfs_root *root =3D gang[i];
-> +			int err;
-> +
->  			radix_tree_tag_clear(&fs_info->fs_roots_radix,
->  					(unsigned long)root->root_key.objectid,
->  					BTRFS_ROOT_TRANS_TAG);
-> @@ -1353,14 +1354,14 @@ static noinline int commit_fs_roots(struct btrf=
-s_trans_handle *trans)
->  			err =3D btrfs_update_root(trans, fs_info->tree_root,
->  						&root->root_key,
->  						&root->root_item);
-> -			spin_lock(&fs_info->fs_roots_radix_lock);
->  			if (err)
-> -				break;
-> +				return err;
-> +			spin_lock(&fs_info->fs_roots_radix_lock);
->  			btrfs_qgroup_free_meta_all_pertrans(root);
->  		}
->  	}
->  	spin_unlock(&fs_info->fs_roots_radix_lock);
-> -	return err;
-> +	return 0;
+>  	return ret;
 >  }
+> +ALLOW_ERROR_INJECTION(btrfs_cow_block, ERRNO);
 > =20
 >  /*
+>   * helper function for defrag to decide if two blocks pointed to by a
+> @@ -2800,6 +2801,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *=
+trans, struct btrfs_root *root,
+>  		btrfs_release_path(p);
+>  	return ret;
+>  }
+> +ALLOW_ERROR_INJECTION(btrfs_search_slot, ERRNO);
+> =20
+>  /*
+>   * Like btrfs_search_slot, this looks for a key in the given tree. It =
+uses the
 >=20
 
 
---ulp1NH0pyhtHmSRLKWehIlKVExrn7jcxe--
+--wZnuXb6TGYYFdg7VRoPNRROYI2zR4nW4M--
 
---XmTzzoIrR61LsTA7xIMwcIxZ3wrKISFlf
+--Ygp0PJ5A40h0AvfbHNPszCFo0So6EMP6P
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IQ00ACgkQwj2R86El
-/qg70gf/VMFNQ1PfjQ6+mIEIM0liNbGCTGTi7xmJvh2RgQA2n6NYAC0NatMUMQJH
-hVxpgw1tomprewN+2ZQ43342I0EFoTpqidSyAKKvRcr6I8EsQSzsIUShth8hU5hb
-IIJ/Y25ncxq+vH72PffpHjVg1DqltpbVzfB+U4p5xUIGlAS94nzZzIoHGPazBzNm
-NiKelYgAmseA/WkkX+uB6iynrw1PzCHULQDMNRchLb9jylBkP4xobCWZKRRy0XXC
-1RfQ7QVisRh6tIa3Se73x+vfxExgV4EQ+bl2FN1X8FeR17POepkUWtEAlOQzlaTd
-+/ZCx4MQ6YT5SBLwMAq2OoA+iyDZ2Q==
-=OetW
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IQ9AACgkQwj2R86El
+/qgF+Af9GymRPdoaMzIypvk9i+hoveFI0Wvs+OSH1BeiPLOXA+X8yAQStlDriMph
+bQSPfRZxI8EZZFNSZkcos9hAJ5wtQqyOmwxXQLE4OmkUx9+nLfIFjVRLuyREyeAA
+Gc9ZPg7k6XAHCWd3quI3diZMA7zFWot3uFkxqVMPgYkCs6RtpB/+bMpandxNv5w8
+3D5lOXSh4WcTEqhXiMuamGot87RrvC0oN8fZcF6oBiKS8K5qqSvIju19wYyjM1pl
+tmSuimQm19jK7HuSfN9gyaMiCAUhRamsRZFhRVlilw/crp33pn5XX2+sx+bII2p+
+8HsrPySda6lUJ8RtGfToQjOsmMJdSg==
+=Oq5U
 -----END PGP SIGNATURE-----
 
---XmTzzoIrR61LsTA7xIMwcIxZ3wrKISFlf--
+--Ygp0PJ5A40h0AvfbHNPszCFo0So6EMP6P--
