@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3D02CCCD4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 03:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E0D2CCCD7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 03:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgLCCtM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 21:49:12 -0500
-Received: from mout.gmx.net ([212.227.17.21]:44729 "EHLO mout.gmx.net"
+        id S1727938AbgLCCuE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 21:50:04 -0500
+Received: from mout.gmx.net ([212.227.15.19]:34205 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgLCCtM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Dec 2020 21:49:12 -0500
+        id S1726477AbgLCCuD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Dec 2020 21:50:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606963657;
-        bh=gwtwpH/z+8lptk4VtBjGWf9ZpXjctna80vWIvVV3uvg=;
+        s=badeba3b8450; t=1606963707;
+        bh=M6CLccxbOVU6FwWgk/iW2cpqUnusvTTd57qgIxaTaPM=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=JflDVWgs8ph9v+9oPFRl9D6Onw9GdSHD6TiAErO+G5+n5DBdwLGVoYj6xEQk0I6PT
-         gaymmK+fqtr4uI8VSboHQ0lv+jmw+2mI4cNClazL6p3XRUgRFyC1mGRFK2nOafsDRf
-         KeThHtzl6aJHNKleuxGkSreyEr1AncdNJW9wR4ls=
+        b=H/nFNON/Le/OCPINNtw2SySfgsXNrkwuClATMygO3lYsxVWdkEzzVnAlio2TNQaKc
+         nUwCjs1Kvtwpou8YsV9Oychdyhjf+yguVOq2VlOuFKa3WwKNOji7uiUYuCtczDv9+j
+         DOWmVdQQ4TgoGZbQewTDv4wtoTJpMkO62wwT6l9M=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mel3t-1kCyKb1jzJ-00anzj; Thu, 03
- Dec 2020 03:47:37 +0100
-Subject: Re: [PATCH v3 23/54] btrfs: handle btrfs_record_root_in_trans failure
- in start_transaction
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmDIo-1kKQaQ3C6K-00i8Xe; Thu, 03
+ Dec 2020 03:48:27 +0100
+Subject: Re: [PATCH v3 24/54] btrfs: handle record_root_in_trans failure in
+ qgroup_account_snapshot
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1606938211.git.josef@toxicpanda.com>
- <9d94f28749b1f526dd79f562be6c61f51bfbb8c3.1606938211.git.josef@toxicpanda.com>
+ <b42b4e2d067681b11ba85503802e8f3128485be9.1606938211.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -53,43 +53,43 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3dd29c6c-183e-292f-1a1f-440b8a033c82@gmx.com>
-Date:   Thu, 3 Dec 2020 10:47:32 +0800
+Message-ID: <a8901013-a7ca-cbd4-f1dc-61105baad93c@gmx.com>
+Date:   Thu, 3 Dec 2020 10:48:23 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <9d94f28749b1f526dd79f562be6c61f51bfbb8c3.1606938211.git.josef@toxicpanda.com>
+In-Reply-To: <b42b4e2d067681b11ba85503802e8f3128485be9.1606938211.git.josef@toxicpanda.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="orLxInOUCf3kdjD0vwWoy6mVrs1PN6khe"
-X-Provags-ID: V03:K1:JmZOdo8iwxAJCPp6V0ekx147fpYK48dppmXWrCVZuw/nBUqnzA4
- PjEMrl0FY6xn6jZtT0Y0uOWPuye0fxhKmH3DUfMdwpt+QaAg1wJQXKQJX/0ZJ+JLwjRT+K3
- ujhB2auBtTO46kMynA0KnPxXaQxAmgTetmHI6T2V7bEjBsY8QglDDCp9SlhuESe5vTIywgt
- /pX+Z+//0y95J2v7nvNng==
+ boundary="creN76nuQiOUNcjpYnGkqFGOFhYpgcy2L"
+X-Provags-ID: V03:K1:YTh/qQHaOruxSt++odK5PAJ4kPY6L0V8/aD75MIOGhB6aQEDjIV
+ dlEto8lgYxc0g9IOL2E2ONbuYmqkklYjMK2CbOYFYJFAfQnawfi2zjjVhVc44ytFoHdAWsG
+ El1EmzyVSOIyQ2oEaXhD/xmFIDl5WCi8s1ZU0JsY9VwFuJ7Ny8psQo4YHU3WT6/mz2eh86/
+ ZTBO3gLMmIp/0rBTV7kYw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AamnPcfujZc=:9BPZz9UrJTxoQDyIsJzS3/
- 6sHJrRSaepavCWZviBBM34isONY5K3DBoI2cRyPVl/kkvlYHEc+Mobkv4iwrZ7450jK3VngM1
- R/573q3DP3CBTDSe5hf3MAAKxLWQ5cfmG6tDmzbNl7vxL0Xt+tJ4xpYPoRo+NH3ElR1pczBGd
- hPLPO5ZN8/kp0e1i0MKuYx2dqXf08f2cSlIsf+39lNJbdJfDyLlZua2DPxgIpocp+pH3edLgN
- Pg1X6KNlLV7r5511K2w1EiJ9gpDuSpoa/XPM1Msrs/V2LCPAtdzCMlb1i8lv7xi/oeaPzfPv/
- enez3vD5JDH/AAVlB1Q/drGvxtlGujw1oGSvQLQ0UHB3rlNDMrD5w/e9/rW3eFGb5ir71EAHi
- r6NpNiS7RsFhciJ3Iq1k7vmZXvgSo8CD6/2WLEMwzyZ1tIAzC2n0JvKqbBLUTLNysM1CyDOUi
- bwCtQzV4DgXG9N8WTTkOGOGsjV/Ss7EkaNwLN7GhJZ61A53sLn6tnJrJm/fV5rYw7T6EG0YS4
- 1Gyky5vjZPbOKW7cT3sAHJPAvbLqbuUu5EO4lRYYmHkNB+Hl2X4VsRw0k4iJK1+L6Yh1+RNbq
- 6m1EsNfrMsWHftgXWUrm54JkuW7UYqCyBeL4Am8QIJ/mpjXdxDc9sdKR5D/0QR4FypSM1NtuE
- I5bQ8RHtEDpJ/iZQPPNud5zge7IeEwZCu3nt4xeJcWk6QQkdc/BccW3XJmGRuR4QLzWUjnzx4
- +d4sNKk5UqqLXb916CHiRVrLPbqE2ISVl6p8u4Duw8WDp4kxo2eTL07RG6gSjGmsNCer+52GT
- nWxm2t74mPROudps85o6V/4vO2r+wKhQ0TolYdpMuQRm0UIGYlkUFmgD9oKiWwCojxqN5QNAI
- LFCx+9fj3PIjdKkFnELw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MzZTAInYFOI=:ESXLks4HDnqlSl4WKXwYjP
+ Oo4VD2abLK+YrRLTT1ihvag/VsJ2QMkA69kuuDfVloZXar9RpId94w7hWs3QjbO7e/4s65+ld
+ fl3NcJ86r1WxvF5Pw2FvDU2JjP4ldxCq5NAyTnFOB3RnEjBE6tnoLvsHl7WSGF8BZvEj1w/qT
+ lbuunnLyMAjGDVIeKbX77ZbTwYOn70B0MIyT2kTkdJTglcgDLjBMWeIwHVNXBnOs1Bpm/Dv+r
+ qw8i5oFO67X95FqZ67gKqeYWQJ3QqEa0oNFXZ2V+d5U8jrAypOJKA55+JjMYfIbeFT9aqLLO2
+ uyKFPUHSj18hIKt5nYVJ1MukiR180+1SwMHt5mPeffXUk12XeugM2Tzfl/S++9X1iJdJY60IE
+ Hls95CFHyBfMkRlgRtag9seO0w0OKuPohBPt1TQ6cZbARjLLCO/YF/zxCMvL8V3WcNI5KH2mF
+ 74rFgUD/Zw3k/Bk//CvmpqcEycZLaWJNFMNtKtgxn/0/cjtQdbmv8qb0I+uu6AcsEnYh1glFu
+ sq5NmtcICZA0OnigDKtl5WuVmnNzAGncxwZZ+EbPXQk+BGjNXaH53OC2Kzhay5FwjVRkpnRxT
+ YSogMSLOlh9jljX1lLbXa4wreX6DmWFZUVZhlG0Qmj5XZ7A6VJ0MN/7ZWjLyuXjzFGyiHFbax
+ P/vwVV7F6j7EZEMuY+NPU3XQJVHpmFwTR3b6gpTRQLyIu84cAL4zo01CcHOTkux9KLLqqU+HQ
+ g3L3CO6g543zW5A/Qj4bxapBBRujrgz+zte4W/PW9VmxOie8wCsO/epwa0DuSK8N9yknuDAAA
+ CdDXAhLjZag87lrGfv8GbZLmkUDUhoI6aZDdxXR5iACRPEFY0v9nP4laVEu7AsRnFzNESKWve
+ UHhYI+Ipz7QveUiElQfQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---orLxInOUCf3kdjD0vwWoy6mVrs1PN6khe
-Content-Type: multipart/mixed; boundary="VcS8toQfaIQIcI9RCamuyjHIVTD6UtGFl"
+--creN76nuQiOUNcjpYnGkqFGOFhYpgcy2L
+Content-Type: multipart/mixed; boundary="FczHdAuAX8I8ZhK572WvJXVdIIpN4GsWP"
 
---VcS8toQfaIQIcI9RCamuyjHIVTD6UtGFl
+--FczHdAuAX8I8ZhK572WvJXVdIIpN4GsWP
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -97,58 +97,67 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2020/12/3 =E4=B8=8A=E5=8D=883:50, Josef Bacik wrote:
-> btrfs_record_root_in_trans will return errors in the future, so handle
-> the error properly in start_transaction.
+> record_root_in_trans can fail currently, so handle this failure
+> properly.
 >=20
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-THanks,
+Thanks,
 Qu
 > ---
->  fs/btrfs/transaction.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>  fs/btrfs/transaction.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 >=20
 > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 28e7a7464b60..c17ab5194f5a 100644
+> index c17ab5194f5a..db676d99b098 100644
 > --- a/fs/btrfs/transaction.c
 > +++ b/fs/btrfs/transaction.c
-> @@ -734,7 +734,11 @@ start_transaction(struct btrfs_root *root, unsigne=
-d int num_items,
->  	 * Thus it need to be called after current->journal_info initialized,=
-
->  	 * or we can deadlock.
+> @@ -1436,7 +1436,9 @@ static int qgroup_account_snapshot(struct btrfs_t=
+rans_handle *trans,
+>  	 * recorded root will never be updated again, causing an outdated roo=
+t
+>  	 * item.
 >  	 */
-> -	btrfs_record_root_in_trans(h, root);
-> +	ret =3D btrfs_record_root_in_trans(h, root);
-> +	if (ret) {
-> +		btrfs_end_transaction(h);
-> +		return ERR_PTR(ret);
-> +	}
+> -	record_root_in_trans(trans, src, 1);
+> +	ret =3D record_root_in_trans(trans, src, 1);
+> +	if (ret)
+> +		return ret;
 > =20
->  	return h;
+>  	/*
+>  	 * We are going to commit transaction, see btrfs_commit_transaction()=
+
+> @@ -1488,7 +1490,7 @@ static int qgroup_account_snapshot(struct btrfs_t=
+rans_handle *trans,
+>  	 * insert_dir_item()
+>  	 */
+>  	if (!ret)
+> -		record_root_in_trans(trans, parent, 1);
+> +		ret =3D record_root_in_trans(trans, parent, 1);
+>  	return ret;
+>  }
 > =20
 >=20
 
 
---VcS8toQfaIQIcI9RCamuyjHIVTD6UtGFl--
+--FczHdAuAX8I8ZhK572WvJXVdIIpN4GsWP--
 
---orLxInOUCf3kdjD0vwWoy6mVrs1PN6khe
+--creN76nuQiOUNcjpYnGkqFGOFhYpgcy2L
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IUcQACgkQwj2R86El
-/qjg8ggAn6NS6P3DnK7rKsHGtJrK+abhjoXfagqh4DDFIk493vEvJHlXhmttFi8w
-LBbPeiGyr8zAEAwgb8bAhprwzTUZP5udvkAGvpXUGv2HqAT0nv+89uNl65eX0hVL
-z7NcZVJ312ki2PEnE90sXVeyO2mpaF0BVKfIeujk2EWs2kndFqdVq6jy6ir0CHaZ
-U3PfeqZMmW2ZwF9+T3m1KT7qF1M+aFLtFcbrVP/hS44du2BUuRZyRTtpnDbz+YZ/
-uZ2CPCYJ1DU/oFztJ+TWGf805HhYbjO/O+OTyF4AQrYn+8lV9N2MrqqEiiISoAB/
-WJW2cAgJ2SVLaYmd8MYN/f2l6dcBkw==
-=Cua8
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IUfcACgkQwj2R86El
+/qjftQf/aI5of7bab06TfPepjItgAKU2gEkLBu/RTzbxPOfVY6PR+YL+x2wVS+cI
+ABt+WF/5JJbY4pINuLRPyfid8P2xk0531cpQQGF4xUmQ1giT8F3LZQanKfn3QrKN
+OOQphEEH5/Mw1ZvmgrdmpkE0ro1ob/icOSjZO+i3jeB+nT0qZipJaN1+hKnt973/
+pvmC967kx2mmdR7OI/9N8TB+NHq/2DtnZ2GAQOKXvt/J/+KTJYiL3v0BD1ed46Ke
+pn29xfkj3519h/dIUZwo7TyriadCf6fontQbufuF3kRjeolZRogN0zrw0YXIY0H7
+Ve4unO+aC3qQkIAACWYGLKY5l0NLGA==
+=XaS6
 -----END PGP SIGNATURE-----
 
---orLxInOUCf3kdjD0vwWoy6mVrs1PN6khe--
+--creN76nuQiOUNcjpYnGkqFGOFhYpgcy2L--
