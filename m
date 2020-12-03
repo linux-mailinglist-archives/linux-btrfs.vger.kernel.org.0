@@ -2,129 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF712CD1F2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 10:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD442CD1FB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 10:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388330AbgLCI7S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Dec 2020 03:59:18 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:6896 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728037AbgLCI7P (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Dec 2020 03:59:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1606985954; x=1638521954;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=D085+TUhJoRj7VBsQ6O3CkWFI5O+5N+YEaIh1odxewCYb1lEsKJUh+tl
-   iIec6zOTYCgHIgUAN3dlwM+dSWT63xvxr88rOmmqO2LiJFvLyjOSkgRYZ
-   QllrRUEXS/kwkkNu7+hfkXoyib+xGT8PDWp32Cyf8xtAUCmiDKRx7KrVa
-   gdLc1PWjuH3lHBD25Nb/OdKSMugw4Blz45BIW7JV6x03MhBOllUfG3Dit
-   bq7z8pvJN1VaGpn64yyZ+bpgfpaTgsnZiRJLiJrBjr55JvzIXQ7H60TlZ
-   aWpPNiNeVPc/CW8ntGoATq1tbUFpoAaBDhKAxywiWlxsS0pQ11XTkLxC7
-   Q==;
-IronPort-SDR: KlTLVQIIoP5OuKiocUgsLd5hZ2iG0qdGga+foO6uIT01uag6B+g66wW4wLEDlienKwdq9DPy+s
- Jl+yqU69jYXdUkTRfbEqdX5+hcc4VPgI11bbPCV+BscFfTDt5BL8974ejfRDt5d3fDOM0eyaig
- kjFz9GPPr0NXQtJfVvn7DO1Rc9xixSTF8kWzCnAQGCpAIMTNoGVbmwZZ5Aong3PzLFVI3JnFe+
- dux7hMfENoiLmBOAoX0emF+EuDkYzl50ddVVzg37RsrYvJnzwlUOGYar7/h6n8DbVoi6ZiSOkY
- ea4=
-X-IronPort-AV: E=Sophos;i="5.78,389,1599494400"; 
-   d="scan'208";a="158712164"
-Received: from mail-co1nam11lp2174.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.174])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Dec 2020 16:58:09 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fPYvSRWCJODKanVAAZjNHtR+IeJ9b4Ohm5b9bZNJFqE3paRBt+KSAgZ/vdQ7jj98pv4pz08ftgmjO6aUaOz3RiZfflW/oPNwkcY1+E8Z8NTE2h0UkAyhCahX6Fa1Kio7FoWXeCocTkt7u3vCDVk/PF4jQ0SAiGtvYmzehVjthFrmmi9P/pTCSYBH9ghmtbXrvRbHzxrucZZwzxWVRrZ235Ekmn8RVOK2WSaxeFxAfLQs2zgpTSOxgBfnQNNj06ZRM7RmBp/sPli22zfMoYKDshju+9jYRJ7a19fdLAXl6hYG/2E42D6bfCjDazT4ebGyTxl8+8XJ0DA5dgUDkqxylA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=T5VwORi/0X4UdZ7oLrZqFo0EyNnFGTI+ydhqvVG7rOA0l4vsxPx87ApZYgMP2qYfcf++gJLTTRBpF0ym5i17cpRCds/5iOxEJynq8pvETbjYovnbpmGk/Nk7h/LnwVZCL3wvtcBohlLmx2F5vn+Fx0ShF/5b0VrL8mEK6SpmLJHXc/x+ae+H7bnKl5PRhp652YUe/BQ72cUSIGA+t9KLSozlTJQI0ahOzSnZOBGAz/5QXL2C72lSwGkuVM8r8DYgKSrXrz9m0+bD79xd7uFnn8lDNjAsQ9WOoYhw4qMlWjFh2ytpqwa9t4V0KBPI237FslhG+7Wll0yYjPJv5fGH3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=MM+px/DIsoMRHGclsougfZRxUFMHvFEHv2n1YsiB3rJLRrGbzABofbroyAEqjPOA8wA9Sf3+RxgdSappPrQgpgWqYdz7dykBZHzVWrmHTeafZ/QMQkYB76P6reHHHMDfHJQKDHRI4diN2VX+369RfVP1vUWb3BUQh9zEO5mGib4=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4925.namprd04.prod.outlook.com
- (2603:10b6:805:91::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Thu, 3 Dec
- 2020 08:58:08 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::65d7:592a:32d4:9f98%7]) with mapi id 15.20.3589.030; Thu, 3 Dec 2020
- 08:58:08 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: Re: [PATCH v3 09/54] btrfs: don't clear ret in
- btrfs_start_dirty_block_groups
-Thread-Topic: [PATCH v3 09/54] btrfs: don't clear ret in
- btrfs_start_dirty_block_groups
-Thread-Index: AQHWyOT2LKHRQQlT/UybDZi+pA8AAg==
-Date:   Thu, 3 Dec 2020 08:58:07 +0000
-Message-ID: <SN4PR0401MB359834B4A60B23D9A366061F9BF20@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        id S1728215AbgLCJBi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Dec 2020 04:01:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35130 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726627AbgLCJBh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Dec 2020 04:01:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1606986050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=JJ/MjK0jEVne1SM83uW4tE1B+mpYKSPXOCWgFde1SEw=;
+        b=Khv06WBBHMTahgxe6SZeyoFIVz1kcKIwZdwCBk1BZ4E3aJQORR3J38aKE5GPwPQuIAWVik
+        ON39rBCvyedb8fo4GwOu0FQLrO5z0GDA2roBQ6aIZLF4nZUqgR9nd/m5pLoYvtdqOE5XQ/
+        xPzlkvt5Bqrr6sDGIorviZo1GTEjjkA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B7FABAC55;
+        Thu,  3 Dec 2020 09:00:50 +0000 (UTC)
+Subject: Re: [PATCH v3 05/54] btrfs: noinline btrfs_should_cancel_balance
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
 References: <cover.1606938211.git.josef@toxicpanda.com>
- <89d8fc9f58723113f0f6685d67480541044839d3.1606938211.git.josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:155d:1001:ddc9:a3a2:6218:d6d7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 20d864a8-5d18-4f7f-327a-08d897698de4
-x-ms-traffictypediagnostic: SN6PR04MB4925:
-x-microsoft-antispam-prvs: <SN6PR04MB49253AF65F60FA35EA0A713E9BF20@SN6PR04MB4925.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pOdPvoeszp/+QHKhTJ5C8ENkVOAKV7Tmi4QAraSVwo9i0SmbJn12kGciGsDmnvu9w72Abxp+I92ZfBn8IqkW2S9gGhUoRiFZUI7XI6XyM3FJ9/wNUhpx6WndoAWfIl4IX6V5L47iklNKFeBbFtPePh1nzxgWD4ajwO4ojo+MhpgMOekbE21+a6Ck0OjGNVkKYjA/ekjEUkKwUldnRAc+e61Z4z7aPkuWF9pTMwYETSrAoSKs4dnl9wU4Bii6OO5ENcsawZvjn8TPmrGZJV/qjD6el00+uXrxrz40NU/KJgEqCoLvkI2TW10KCI/juR1Wwq3ExOo0rOZW7HERdpT422sr4SG3d0UgNhFLkC62ec0OIbbEwvaCuxHVv6xAxjyX
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(136003)(39860400002)(66476007)(7696005)(86362001)(66446008)(19618925003)(52536014)(558084003)(6506007)(71200400001)(33656002)(5660300002)(66556008)(4270600006)(91956017)(186003)(66946007)(55016002)(110136005)(9686003)(76116006)(2906002)(8676002)(64756008)(316002)(478600001)(8936002)(14143004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?IVjXqD+scOZ8X61bRZ9odXYtVOUj+GevRGUAIV8/E5pFsPvmvr0mthZrSS4S?=
- =?us-ascii?Q?WaCHf+TbgweoD6V2E8xJ1JhusGzW+pzz86MJWG0ODHcbNzteg53faw+EEl6j?=
- =?us-ascii?Q?FgHinZLmOc027GXw1PIYe7+KCeKOGPm1/qpBQlGYcZUd7DbP9sji1hSWoURk?=
- =?us-ascii?Q?4MHb8wzj+d8BGVeAcA/O2Dr1iHkwT4ooYKEJI6EbtX4QhL7UwxHNmPTCoDil?=
- =?us-ascii?Q?yNfJ35Dm4LQAhcSChSmWggoz3eDmUT0twNN0GvlT8jXMBQ4QS4NWbJIIky9v?=
- =?us-ascii?Q?pxIJVG4BLELPoIMMMLN5gFgAG383FPOKbrwq747Li0E0rz1D79lIY5VfRseS?=
- =?us-ascii?Q?fQto55VH2m1c9PDuueuysrTaa5W4c8b+qTZI8xAYJvOhKv+346sRP+CkRlPL?=
- =?us-ascii?Q?yPgG66oSx+osRGOX7KpGZ3s/lRYThKwG36XVypRqAeypQK1atZ5IcsK5Ce9g?=
- =?us-ascii?Q?ojDLGRNmMuypvIvQ4+1SDc8vndPvuCrxSeWNL3vVljhFDvuY2QmijPXfmVaC?=
- =?us-ascii?Q?eqWdju7jcmX8NtdFGuiEhOLLLPaIjK3m8580dpXvkFUT0n5r9rGy44M+t8Rv?=
- =?us-ascii?Q?iSLvlOh7z3sN1pJSSsZey5Xck/Whe5dWgCY1xLi0/qaVeUbE/M0dP7Ov9lip?=
- =?us-ascii?Q?G4y6TvjipWkYhrS14KIKh0GlclFVHN8t3cpJYVOTV0Z0oeh66MjVg3tFh8zS?=
- =?us-ascii?Q?8XSKW8vmnVL2wk2ztPQUD8E8hCNHdSyaNtEHW4rFuyaDU7ykKgoD9R4hn5be?=
- =?us-ascii?Q?eeIBdK+y3pq0gIi0TnSCI3P/Q6fmzjjoX+bwJjdLCzyb9Aug0TWkBge6QdRa?=
- =?us-ascii?Q?pJ9uHtEiE0MI1m0AmwIoVLRLZyQww7oKz0Pbgv+4C26i3wFb99nTpUdOnmb+?=
- =?us-ascii?Q?jdC5UILovaUE9CmvAY/2yPXkjt4V68ZFs52i+d73QFkZP6aWB/zd4WXsLiTY?=
- =?us-ascii?Q?tsF4E+AN77EmT+Zi3h/kuy1T5h+wvKqPnaUHB5vNVWqtbVmheMIhjFjbanuv?=
- =?us-ascii?Q?HZcWdsWvGI29FrtcebHvCZILqWohZI0H4YSF1ZQwIGJZcIY0OnK29ghq7atc?=
- =?us-ascii?Q?kfi1oo+n?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <4657a485af5665a07682c4d7a5eb14ef241995a5.1606938211.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <98f78cfc-f623-5ee1-fb09-c8ab8c44f587@suse.com>
+Date:   Thu, 3 Dec 2020 11:00:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20d864a8-5d18-4f7f-327a-08d897698de4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 08:58:07.9498
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GJXNx9IhxIpgSAYgXqygjNa5jYTRHM56jmmkcHw/WsC1NR3XtG6dm3NnFDRn9xu2g0G3Jg1GT151GnHeoJXEevf5czOd4V5TDMFEK8Vfpk8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4925
+In-Reply-To: <4657a485af5665a07682c4d7a5eb14ef241995a5.1606938211.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+
+
+On 2.12.20 г. 21:50 ч., Josef Bacik wrote:
+> I was attempting to reproduce a problem that Zygo hit, but my error
+> injection wasn't firing for a few of the common calls to
+> btrfs_should_cancel_balance.  This is because the compiler decided to
+> inline it at these spots.  Keep this from happening by explicitly
+> noinline'ing the function so that error injection will always work.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/relocation.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 2b30e39e922a..ce935139d87b 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -2617,7 +2617,7 @@ int setup_extent_mapping(struct inode *inode, u64 start, u64 end,
+>  /*
+>   * Allow error injection to test balance cancellation
+>   */
+> -int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info)
+> +noinline int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info)
+>  {
+>  	return atomic_read(&fs_info->balance_cancel_req) ||
+>  		fatal_signal_pending(current);
+> 
+
+I'd really like to not pay the cost of non-inlining in case error injection is disabled. How about you introduce a new noinline_for_err  define that would add noinline in case error injection is enabled or be optimized away when injection is off. Alternatively, though that would be slightly more work, the ALLOW_ERRO_INJECTION macro can be modified so that all functions that want error injection could be declared as : 
+
+ALLOW_ERROR_INJECTION(ftdec, fname, _etype) 
+// same body as before
+//
+//
+//
+
+noinline ftdec 
+
+
+so functions could be defined as :
+
+
+ALLOW_ERROR_INJECTION(int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info), btrfs_should_cancel_balance,  ERRNO)
+
+Though that seems a bit unwieldy TBH. 
+
+I'm making the case that we shouldn't introduce extra overhead when it's not required. 
