@@ -2,57 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BA42CDD7B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 19:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B35AF2CDD82
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 19:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502023AbgLCSZM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Dec 2020 13:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        id S2502038AbgLCSZQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Dec 2020 13:25:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731614AbgLCSZK (ORCPT
+        with ESMTP id S1729222AbgLCSZK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Dec 2020 13:25:10 -0500
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA3BC094258
-        for <linux-btrfs@vger.kernel.org>; Thu,  3 Dec 2020 10:24:12 -0800 (PST)
-Received: by mail-qk1-x743.google.com with SMTP id d9so3003268qke.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Dec 2020 10:24:12 -0800 (PST)
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FD7C094259
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Dec 2020 10:24:13 -0800 (PST)
+Received: by mail-qv1-xf44.google.com with SMTP id es6so1429804qvb.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Dec 2020 10:24:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RBEbE2A955QTpSYe7t3gEC9f7kk4UL/5SdXRttPLrCs=;
-        b=DWQeIK6U0kmgeIJxpQcQaBFWQqannyHKqRfVksxLyTLUfJRlZbbSZgk4g4VC2Nup5+
-         sla4TYtDpwgt7Z66Kml5uJ+IFun+P5nGU2ra+5tuNIa/qDfqdI29NGJu5ml/oTNVSpV+
-         hQ7/GX2K9cYPWxceC3BII3CiudX7NOymPwVkwmUcmP+yZrDfaS6/CGAe8sflwg5MfCkg
-         RydizqCW4ZRho/OfTP/y3v+jCCt07q9vRZTDVAp9tQ94deQDYXjomMrEqPtk0QrKX2Pi
-         7m8YEoqJjUNNuAlFpIz80YTtFwgQX8+FRfs5qbGD9M24W+ipSOgMstH3IfuPKQcN+iQI
-         KkPw==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=BQnifcFL/WPLj7otSCT+NzpZ09jzZaVeOVpCVlLc5Lw=;
+        b=U1a30Vu6H5XWzOKuYyqBSTvqSVvKuifMsn6qjQd7fP3LaXzTWNL3sjLgjGsd8YXf3C
+         wGE5C5m5EjULIN0ObFrFRE1N53Kcl8c94i+hXCUFBSw6Y20JImC+K7eV4uxuKoRNfVEA
+         k9ohTcOiz1W6V7qRrmunob6BgIo3VAlfVaCc+nIsV2+lEwUBE6BmuOav7Hhao5TMCEBI
+         Z9QKnBnsjD+4TKqZ4lfwfeOGZuH99PRtqpqQdWXa73U0PP7SU9EdTWaFVS9NGk/j+go8
+         WcTQZV5WSalEUT0pUCk4IIb3Co6GdzpURYMda/08bhnPPSLae0tSLdldEsmhLMm9lD6w
+         LlZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RBEbE2A955QTpSYe7t3gEC9f7kk4UL/5SdXRttPLrCs=;
-        b=AbZf/ngvhSLGLQHg0ni8I4cedheUgh1WkfXrlMv4MuTpOJWnDn5ABj7uSRyo6agAtB
-         AzF6cAJp1z6bkxIcLiR+QNLtf6KPYn9mFgBJo0lzaDWECqP7jQPvZkhaBMNM16cxjt7i
-         AWjiYuqhjd1nfE/Z//yDE9bFN+cLtgXobRYKXRV0hl/62nCIVXUX7z5pAO8P5HKipSWx
-         thoI8JEAsNsIqremMHU7mTFcNp8aP6SFeJBUuwo6KU6QDffW3IXSbQE6ThhrRahYRDUO
-         Wvb2PKig87ABvV5Saa2QG+w8MGoGzyFXbgMebh/j0M5poTgHgX/tw3cT1yob3RqItMrW
-         XObQ==
-X-Gm-Message-State: AOAM533MA3rKzJZmzKAKYva3TGIvEI3BDUnKK/+0qL//dWo/BrydWkvH
-        SjoUmxJvtX+3rS0gPKCINZMEFeALEuEdRsjT
-X-Google-Smtp-Source: ABdhPJwnIE/aXD2wPnzZkr87z+vspvOPj1XDhDOwmlh28pjb9vgxZfbBAqd3k/dk0w/Ys6fDexaoXA==
-X-Received: by 2002:a37:30c:: with SMTP id 12mr4243071qkd.110.1607019851168;
-        Thu, 03 Dec 2020 10:24:11 -0800 (PST)
+        bh=BQnifcFL/WPLj7otSCT+NzpZ09jzZaVeOVpCVlLc5Lw=;
+        b=eXraMwpweyeiFkpEJitVa5WQ6si/duE0ucxvbDTN/57ZjB501dKRtYdSurM0S8lMGC
+         mE7Y7e+7moCmTkTAzH2hFG5egOzZKQfPoActIPJJUu6Gm5RS7SGyOftILazZL430b4fK
+         pszQxhjuZSdwnUEgg1/LS54tSiPGtaOOFInu4VAVdiJG5CmGCzBn+0s/dQUk93hexcMl
+         rYBhEXlyG51kmZKZW7c6ycA4Ozpd90zhwfEVmG30zpJYW48x30PmjBOaLEjGW46YuknZ
+         I32TmfN8eFfsE4LFeOPfs4PwaGBUWixMVS0cl20pCYNAaVmh3aWJwU3hwEbuYy42X/Do
+         b7eA==
+X-Gm-Message-State: AOAM533ibuQb6DwKI6g2Xv+eqr6dg5NmWv12fRw9aUg4O3vGWoTLXgle
+        b2TOauLkfPmlWahPFOJF62WD7pDTue0K8ohw
+X-Google-Smtp-Source: ABdhPJzwre8AMWgVjzksZXht7OYsDiquia8teMhN8wVrjA+wPmyBL/9+ZGbjHXwTu7HJRLRGwHX7dA==
+X-Received: by 2002:ad4:42c8:: with SMTP id f8mr154450qvr.29.1607019852883;
+        Thu, 03 Dec 2020 10:24:12 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h26sm1557275qtq.18.2020.12.03.10.24.10
+        by smtp.gmail.com with ESMTPSA id g11sm2207667qkk.72.2020.12.03.10.24.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 10:24:10 -0800 (PST)
+        Thu, 03 Dec 2020 10:24:12 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v4 40/53] btrfs: handle errors in reference count manipulation in replace_path
-Date:   Thu,  3 Dec 2020 13:22:46 -0500
-Message-Id: <8ea6059d619b11a0d4bd6bda7f8efeeb14fc2292.1607019557.git.josef@toxicpanda.com>
+Subject: [PATCH v4 41/53] btrfs: handle extent reference errors in do_relocation
+Date:   Thu,  3 Dec 2020 13:22:47 -0500
+Message-Id: <8fb9245c24a498f97b161ad1113cd1f830f205a6.1607019557.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1607019557.git.josef@toxicpanda.com>
 References: <cover.1607019557.git.josef@toxicpanda.com>
@@ -62,64 +61,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If any of the reference count manipulation stuff fails in replace_path
-we need to abort the transaction, as we've modified the blocks already.
-We can simply break at this point and everything will be cleaned up.
+We can already deal with errors appropriately from do_relocation, simply
+handle any errors that come from changing the refs at this point
+cleanly.  We have to abort the transaction if we fail here as we've
+modified metadata at this point.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ fs/btrfs/relocation.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 6ce46977ec05..e025cb052d77 100644
+index e025cb052d77..bff7e99f3654 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -1355,27 +1355,39 @@ int replace_path(struct btrfs_trans_handle *trans, struct reloc_control *rc,
- 		ref.skip_qgroup = true;
- 		btrfs_init_tree_ref(&ref, level - 1, src->root_key.objectid);
- 		ret = btrfs_inc_extent_ref(trans, &ref);
--		BUG_ON(ret);
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			break;
-+		}
- 		btrfs_init_generic_ref(&ref, BTRFS_ADD_DELAYED_REF, new_bytenr,
- 				       blocksize, 0);
- 		ref.skip_qgroup = true;
- 		btrfs_init_tree_ref(&ref, level - 1, dest->root_key.objectid);
- 		ret = btrfs_inc_extent_ref(trans, &ref);
--		BUG_ON(ret);
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			break;
-+		}
- 
- 		btrfs_init_generic_ref(&ref, BTRFS_DROP_DELAYED_REF, new_bytenr,
- 				       blocksize, path->nodes[level]->start);
- 		btrfs_init_tree_ref(&ref, level - 1, src->root_key.objectid);
- 		ref.skip_qgroup = true;
- 		ret = btrfs_free_extent(trans, &ref);
--		BUG_ON(ret);
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			break;
-+		}
- 
- 		btrfs_init_generic_ref(&ref, BTRFS_DROP_DELAYED_REF, old_bytenr,
- 				       blocksize, 0);
- 		btrfs_init_tree_ref(&ref, level - 1, dest->root_key.objectid);
- 		ref.skip_qgroup = true;
- 		ret = btrfs_free_extent(trans, &ref);
--		BUG_ON(ret);
-+		if (ret) {
-+			btrfs_abort_transaction(trans, ret);
-+			break;
-+		}
- 
- 		btrfs_unlock_up_safe(path, 0);
- 
+@@ -2426,10 +2426,11 @@ static int do_relocation(struct btrfs_trans_handle *trans,
+ 			btrfs_init_tree_ref(&ref, node->level,
+ 					    btrfs_header_owner(upper->eb));
+ 			ret = btrfs_inc_extent_ref(trans, &ref);
+-			BUG_ON(ret);
+-
+-			ret = btrfs_drop_subtree(trans, root, eb, upper->eb);
+-			BUG_ON(ret);
++			if (!ret)
++				ret = btrfs_drop_subtree(trans, root, eb,
++							 upper->eb);
++			if (ret)
++				btrfs_abort_transaction(trans, ret);
+ 		}
+ next:
+ 		if (!upper->pending)
 -- 
 2.26.2
 
