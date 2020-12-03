@@ -2,84 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8912CCCED
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 04:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C596A2CCCEE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Dec 2020 04:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgLCDAf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Dec 2020 22:00:35 -0500
-Received: from multitrading.dk ([92.246.25.51]:59763 "EHLO multitrading.dk"
+        id S1726160AbgLCDBx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Dec 2020 22:01:53 -0500
+Received: from mout.gmx.net ([212.227.17.20]:46977 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbgLCDAf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Dec 2020 22:00:35 -0500
-X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Dec 2020 22:00:34 EST
-Received: (qmail 67050 invoked from network); 3 Dec 2020 02:53:12 -0000
-Received: from multitrading.dk (HELO ?10.0.3.10?) (jb@multitrading.dk@92.246.25.51)
-  by audiovideo.dk with ESMTPA; 3 Dec 2020 02:53:12 -0000
-Date:   Thu, 3 Dec 2020 03:53:11 +0100
-From:   Jens Bauer <jens-lists@gpio.dk>
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <20201203035311997396.38ae743f@gpio.dk>
-Subject: How robust is BTRFS?
+        id S1725965AbgLCDBw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Dec 2020 22:01:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1606964418;
+        bh=NXAb7/hoBU3OtCC+Z00h7jM0a7gohFTMetZ5ZoSOu5k=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=XSeCxbPqKgVSY5BSIAsQAWR24od7qfFJx1cDDDe/TqaaUdm9Z83D7hBhEAD54bvgC
+         0X2QCUAfnBgwV/ucV0pZadRqeE8AT3o1oSm0JKDuBth2EfJKTjZCbOpwGst56FMNWD
+         yxhk5m8ITZBfmHaBmmgGcV+St+MaJJjxYyI/pWv0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6bjy-1k6bPD1TyA-0181Ax; Thu, 03
+ Dec 2020 04:00:17 +0100
+Subject: Re: [PATCH v3 27/54] btrfs: do not panic in __add_reloc_root
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1606938211.git.josef@toxicpanda.com>
+ <2bef28c4b030b238ebfd8a143f4ba08524b9312d.1606938211.git.josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <eb9b6354-3f3c-fba4-5692-83053a898f7e@gmx.com>
+Date:   Thu, 3 Dec 2020 11:00:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Mailer: GyazMail version 1.5.21
+In-Reply-To: <2bef28c4b030b238ebfd8a143f4ba08524b9312d.1606938211.git.josef@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="wexW0zkuepx4IeP13DT4i2w4M7pSrJr5h"
+X-Provags-ID: V03:K1:EMG0byiB4uT3QUmXw9daRVXqEQ1Ah3358sjrQ1aGysT631xnLWl
+ EEtsTw+HuQP52rzglwl4vXkRJRL03+tWOJd7pNT9/Z5Xen5uAdP841cn4xt8nf6nZZBqQmU
+ tto3QmyRqje9HJZBtnBWP09k0NamcrdpwUwLYDNDgUCz1BIY+uTDUtHFJVVytOELuCVkGqI
+ Gx3Z5qMhbJJST9T60cLqg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F9QyMGmRWj4=:IQ7tUIw/h9r+0aAaEYkbks
+ cPKeVU02JGWSFz2giwXgBLFj9qy5rBrAgKwXjOnj70r1kb7WzBtFeJC2NboOPUYlPDFxf3Ff7
+ kWGhtxlb/78h06pEkE9tnm2D87VeegHFAvCQ2wP0qOfsSZXzQkBaSFdBmgKSDJguIUM7Kbez/
+ OKEcmklS5QoYDeljJsEItY3Me4V/4ggOsYYy3SnvkUo1J2N5jP+OZ/K3eD2wm1feoex5v/lh0
+ BfB8pMM5lHgFjAr6dvNtvAfng6t5y0JEtyIs2kG6mZ7tVCFW3NZxpoFLqnWTeWpgBqmplhI1h
+ iwQlctyqSitCZ9pyAnHt6FdF3UijbtlXzANF3zxyle8pDkEK/lz3VI47XSgGaKvqZL2XafnSx
+ 2NvgD98nmrrqF/svJU5actY3cnpusiHGexGTO4wsyi4QzEIbM+LDphSWV3iDIGSVmq3kmabXM
+ 3lDb8XhxXrfnEAW5V0Uf7O+xVCzV7XoKBDupgWv9/vLcAM35la/ErXBQyUFhD7nidPJutRv7R
+ ofFZ0MZkJZev0ayZniletXy4djyv/pdTve3e+RVUWwNYUS+7PCw5HKzw+lxWDglOU9F0Pcrm7
+ VPk2Mb8DgMv4MClJji4FxkB0F/PI9X6n7xwgg5itlXl5UdrR4zaCMXfTQDlRoC43HHkqeYnaQ
+ AGa4hdwletpB4lBLnawIvJ6ez513lHSlxnNsxZQf1KnmuLoaFVwgtYbZiDFvzZHjyFwlIulIy
+ +HjPhlwpNNeauwT4Wjj7lrJo16PQg6zvXjVo8TKzNHzlAGK3gEt7WT+JMu1CQSKWuLBAAYR8G
+ 7r2jzqDxhQ18na7KToFbjYgdDkjXXNpgjsiI6HvUc6CXLBA5m5d2mYL5owbIj3/szUEtT9DZc
+ 6iUy9b4E/rVUgWiF1L+Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--wexW0zkuepx4IeP13DT4i2w4M7pSrJr5h
+Content-Type: multipart/mixed; boundary="PKo8gU0qa9efOWi7vj0OVvmhfIKJh5vSy"
 
-The BTRFS developers deserves some credit!
-
-This is a testimony from a BTRFS-user.
-For a little more than 6 months, I had my server running on BTRFS.
-My setup was several RAID-10 partitions.
-As my server was located on a remote island and I was about to leave, I just added two more harddisks, to make sure that the risk of failure would be minimal. Now I had four WD10JFCX on the EspressoBIN server running Ubuntu Bionic Beaver.
-
-Before I left, I *had* noticed some beep-like sounds coming from one of the drives, but it seemed OK, so I didn't bother with it.
-
-So I left, and 6 months later, I noticed that one of my 'partitions' were failing, so I thought I might go back and replace the failing drive. The journey takes 6 hours.
-
-When I arrived, I noticed more beep-like sounds than when I left half a year earlier.
-But I was impressed that my server was still running.
-
-I decided to make a backup and re-format all drives, etc.
-
-The drives were added in one-by-one, and I noticed that when I added the third drive, again I started hearing that sound I disliked so much.
-
-After replacing the port-multiplier, I didn't notice any difference.
-
-"The power supply!" I thought.. Though it's a 3A PSU and should easily handle four 2.5" WS10JFCX drives, it could be that the specs were possibly a little decorated, so I found myself a MeanWell IRM-60-5ST supply and used that instead.
-
-Still the same noise.
-
-I then investigated all the cables; lo and behold, silly me had used a china-pigtail for a barrel-connector, where the wires on the pigtail were so incredibly thin that they could not carry the current, resulting in the voltage being lowered the more drives I added.
-
-I re-did my power cables and then everything worked well.
-
-...
-
-After correcting the problem, I got curious and listed the statistics for each partition.
-I had more than 100000 read/write errors PER DAY for 6 months.
-That's around 18 million read/write-errors, caused by drives turning on/off "randomly".
-
-AND ALL MY FILES WERE INTACT.
-
-This is on the border to being impossible.
-
-I believe that no other file system would be able to survive such conditions.
--And the developers of this file system really should know what torture it's been through without failing.
-Yes, all files were intact. I tested all those files that I had backed up 6 months earlier against against those that were on the drives; there were no differences - they were binary identical.
-
-Today, my EspressoBIN + JMB575 port multiplier + four WD20JFCX drives are doing well. No read/write errors have occurred since I replaced my power cable. I upgraded to Focal Fossa and the server has become very stable and usable. I will not recommend the EspressoBIN (I bought two of them and one is failing periodically); instead I'll recommend Solid-Run's products, which are top-quality and well-tested before shipping.
-
-So this testimony will hopefully encourage others to use BTRFS.
-Besides a robust file system, you get a file system that's absolutely rapid (I'm used to HFS+ on a Mac with a much faster CPU - but BTRFS is still a lot faster).
-You also get real good tools for manipulating the file system and you can add / remove drives on-the-fly.
-
-Thank you to everyone who worked tirelessly on BTRFS - and also thank you to those who only contributed a correction of a spelling-mistake. Everything counts!
+--PKo8gU0qa9efOWi7vj0OVvmhfIKJh5vSy
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-Love
-Jens
+
+On 2020/12/3 =E4=B8=8A=E5=8D=883:50, Josef Bacik wrote:
+> If we have a duplicate entry for a reloc root then we could have fs
+> corruption that resulted in a double allocation.  This shouldn't happen=
+
+> generally so leave an ASSERT() for this case, but return an error
+> instead of panicing in the normal user case.
+>=20
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Despite the same comment on using ASSERT(0) inside the error branch, it
+looks fine.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> ---
+>  fs/btrfs/relocation.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index e9d445899818..7993a34a46ca 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -637,10 +637,12 @@ static int __must_check __add_reloc_root(struct b=
+trfs_root *root)
+>  	rb_node =3D rb_simple_insert(&rc->reloc_root_tree.rb_root,
+>  				   node->bytenr, &node->rb_node);
+>  	spin_unlock(&rc->reloc_root_tree.lock);
+> +	ASSERT(rb_node =3D=3D NULL);
+>  	if (rb_node) {
+> -		btrfs_panic(fs_info, -EEXIST,
+> +		btrfs_err(fs_info,
+>  			    "Duplicate root found for start=3D%llu while inserting into rel=
+ocation tree",
+>  			    node->bytenr);
+> +		return -EEXIST;
+>  	}
+> =20
+>  	list_add_tail(&root->root_list, &rc->reloc_roots);
+>=20
+
+
+--PKo8gU0qa9efOWi7vj0OVvmhfIKJh5vSy--
+
+--wexW0zkuepx4IeP13DT4i2w4M7pSrJr5h
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/IVL4ACgkQwj2R86El
+/qgvwAgAsJH2Ktbo8PX0BNrZmcbAunsnHOka4gmtghaly8BKEICwYU2c2JlbfhUm
+BNseeI3/Vek+bLqj8Q/QFUoIbUU94OVhH4dL/3fFDx1oI0OwcWEGcxsUBMdeniIz
+ViGMmPLJagqvN/B87p1zwtj2rGGpMXeG60XKDffqluHXA0nl+H4UWyEGSXFJ5vRx
+Si7IyfQIfK7BJFpw/Bf4M55SMxt5hpqVjneL2d7rbXFqs1DaMD61Jm8QRc6NvPCn
++k0og1XTtYVX3TvlXezFngEjIDKkBNfJRhSi6d6+qCcCCADQe+24y7TgbmtbuLqR
+0ztmAickka3ZEIMHVrbDSTkUI2rGSg==
+=KBO3
+-----END PGP SIGNATURE-----
+
+--wexW0zkuepx4IeP13DT4i2w4M7pSrJr5h--
