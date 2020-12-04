@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A26D2CEC1C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 11:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BC12CED78
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 12:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729846AbgLDKXL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Dec 2020 05:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S1730115AbgLDLtd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Dec 2020 06:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgLDKXK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Dec 2020 05:23:10 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A4EC0613D1
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Dec 2020 02:22:30 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id q7so2482919qvt.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 04 Dec 2020 02:22:30 -0800 (PST)
+        with ESMTP id S1730112AbgLDLtc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Dec 2020 06:49:32 -0500
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92A6C061A4F
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Dec 2020 03:48:52 -0800 (PST)
+Received: by mail-qt1-x842.google.com with SMTP id o1so3663781qtp.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Dec 2020 03:48:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=HgvMHA5UhJegoR6WtYAOYdTcRI5gZwoEbr3StNAssJI=;
-        b=JZj4Qmc94QrKvQI3VsQ3M2vByx8WcPUneJiHe/ewFxxgr5NPDWnOJx5anRSBj0/U2p
-         Uhjp89kDBNuEG6VABkgzwh++BRj5H34ZOCrN4IJ5jofW+DjFSBQYAoR35Hi66deBVDgh
-         h9N+qGWReMHKgmQ4eqCUI7H19X+G9kdLEiqyb22LJLo72wHj/XTD6t8Z/Rz55faazL4x
-         pVZ7+2rR1fK//3tqKmq/2xBsD1u8F2t5EtJZph8Ct6EeqMJMmly0AlR+j3TIW8/kEDHC
-         qZaMrWbIYhTDXnPSGxvy1hhGx7I/2yZeRg+02ZkOXbwrXkCgHJnsFYZTiySsRjhYSyq9
-         4jBQ==
+        bh=LR+uojTi2/TPvzkQ61GsiqLl44IIdNwlyvmxPKomSxE=;
+        b=lsFdY5IWFoYUD10ySmQTdgTAyx5ngIaznKkKzwTgX3AMBmD0OoBQxixAj2tuquIouA
+         026p7iO6+2slsXbPB8OiDlH5pwHT2oCImR4VUVUoL3L/0y+6sRzRW5zTtnHDcRSJmzK3
+         3YFgHFkFu9Qu9ru4SwrIyJ7XXUyyLq6Bt/vC4UKSA7C2QoPYZy4BhRQsvodSmexB71z7
+         y7wS0da0yHf7xdjejKr50kAWYn44+Y+qEz5nddvK1EnYIlZvLxmF6tL6WieA+4svNUyu
+         WwMLmIqGTvvj0lskmBm89X4hOYZJ7tuh6Bi8NmMvu7TDB3ED68x2yfm4nSdfTdGQTqLU
+         qIrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=HgvMHA5UhJegoR6WtYAOYdTcRI5gZwoEbr3StNAssJI=;
-        b=rXH+/6XSA7PG9OQ2pNZtVl1+njp0iI8WGKy3V8ZhrzDvK5vba0BpkFI0zjV4USdSvj
-         EjKrFEEsW4n2FGCBqVBMgvFFX3ivV7dINdmuee7RDKy57obzHeURER6CpCk5uCssZiLZ
-         7nFZAmldqIOcb5DjFyQoZGilMoDKXFG5Nh2NWgQolKxjewoh+YtjDOr58BeEi+2QL+bH
-         MjteiQ3FfGFkRIb+Grusk7lUUnXnRp4Ar+3R4H+FMYXHGbxVNz4HfxH879v3xe4z9yXf
-         JLrxq5N2Twt9lFtgiPRf8vLZJpzO8pYmOSRyH7OcLNm8WIRIcLBkazr1vhoItqZj8SzF
-         t6/A==
-X-Gm-Message-State: AOAM5337eFKXX/EkcUhUfENwt4wW1KYS8DT6THg61XX3YOl2O+4jybXQ
-        LY1DlzXg72R4YQdFvu8tjQsWBcLCMJYUcvraH1ta/vB0MkoO0g==
-X-Google-Smtp-Source: ABdhPJykEj0zIIh5mbGIy1dUl3RM/sV+cN+GXu367HX/IsU4sFJsCTYQhoS2K8HU7qgX1LmkKUqH09s+9fBBC6AhbhE=
-X-Received: by 2002:a0c:f3d3:: with SMTP id f19mr4352346qvm.27.1607077349321;
- Fri, 04 Dec 2020 02:22:29 -0800 (PST)
+        bh=LR+uojTi2/TPvzkQ61GsiqLl44IIdNwlyvmxPKomSxE=;
+        b=mhw1C7e//z+Z1AHq0q0Q91RDqlsucSJnNzFSM7VCpsGaJvby+nx2A84kN2E5j/jgv0
+         hyAe9zfWDGKTZTnqrxHRwn1+sxgECNMEnYKlQX0BZBBvKjJiTPuMSI1JxgSz1OGhtkwh
+         0sGhMrw2cMzwiJ8+sOIvpS3cGEofN2HrO79g7gYrG0p0Hsm0uJ8AztWTZMp8RVRI5O9r
+         Ut+mxWFw/A3UxCLlDunPFupSSBZWNfRO0rNhSRwhDoF/++ewdet5p/HMnKFmh1+GpGgY
+         uwccKtGWtbptX4odvxk03ytL6wXRrNNLqkZf7ajYDjamkcqB1YBq5iO/+TawPpqxv+fm
+         kgYw==
+X-Gm-Message-State: AOAM532mPlUWNHANsGIcGFHZbk7b+xzwoivuIWAfoHbYlyRlVBFSwVoZ
+        pt1ICmBlfMFAnqZ/j+pu2MOhYQc74YRi4DtfkxdRjg/K3fp8mQ==
+X-Google-Smtp-Source: ABdhPJypS3ecgxaN4ZvMlyARCmlLadAgSKvW431evssE2GTeRNlV5Ig8AcY2q6YV9jAwDciDJmQaRzQYawxsCjf30wI=
+X-Received: by 2002:a05:622a:109:: with SMTP id u9mr8490072qtw.213.1607082531967;
+ Fri, 04 Dec 2020 03:48:51 -0800 (PST)
 MIME-Version: 1.0
-References: <6ae34776e85912960a253a8327068a892998e685.camel@gmx.net>
- <CAL3q7H72N5q6ROhfvuaNNfUvQTe-mtHJVvZaS25oTycJ=3Um3w@mail.gmail.com> <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net>
-In-Reply-To: <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net>
+References: <20201204012448.26546-1-wqu@suse.com>
+In-Reply-To: <20201204012448.26546-1-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 4 Dec 2020 10:22:18 +0000
-Message-ID: <CAL3q7H5AOeFit_kz4X9Q2hXqeHXxamQ+pm04yA5BqkYr3-5e+g@mail.gmail.com>
-Subject: Re: btrfs send -p failing: chown o257-1571-0 failed: No such file or directory
-To:     "Massimo B." <massimo.b@gmx.net>
+Date:   Fri, 4 Dec 2020 11:48:40 +0000
+Message-ID: <CAL3q7H4qD0Y=6oPPRSTOmWo5f5hj6a0o+=tvDYkmgvVzVvhfrg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: qgroup: don't try to wait flushing if we're
+ already holding a transaction
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -60,64 +60,127 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 7:22 AM Massimo B. <massimo.b@gmx.net> wrote:
+On Fri, Dec 4, 2020 at 1:29 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> On Wed, 2020-12-02 at 11:04 +0000, Filipe Manana wrote:
+> There is a chance of racing for qgroup flushing which may lead to
+> deadlock:
 >
-> > Yes, it's a btrfs issue.
->
-> Thanks.
-> The bug report on btrbk side is:
-> https://github.com/digint/btrbk/issues/295
->
-> > There were two such bug fixes in 5.9 that are not included in a
-> > vanilla 5.8.15 (dunno if gentoo picked them into their 5.8.15 kernel):
->
-> I just switched to the most 5.9.12-gentoo and it's still the same issue.
->
-> > If those don't solve your problem. then the output of 'btrfs receive
-> > -vvv ...' could be used to help debug the issue.
->
-> # btrfs send -p /mnt/usb/mobiledata/snapshots/mobalindesk/root/root.20200=
-803T060030+0200 /mnt/usb/mobiledata/snapshots/mobalindesk/root/root.2018011=
-4T131123+0100 | mbuffer -v 1 -q -m 2% | btrfs receive -vvv /mnt/local/data/=
-snapshots/root/
-> At subvol /mnt/usb/mobiledata/snapshots/mobalindesk/root/root.20180114T13=
-1123+0100
-> At snapshot root.20180114T131123+0100
-> receiving snapshot root.20180114T131123+0100 uuid=3Ddfd895bb-8f3e-ae46-82=
-a5-21e22453a258, ctransid=3D542345 parent_uuid=3D95819f51-40a4-9745-9661-78=
-71dce44e19, parent_ctransid=3D542414
-> utimes
-> rename home -> o257-359797-0
-> mkdir o257-1571-0
-> rename o257-1571-0 -> .hg
-> utimes
-> chown o257-1571-0 - uid=3D0, gid=3D0
-> ERROR: chown o257-1571-0 failed: No such file or directory
+>         Thread A                |       Thread B
+>    (no trans handler hold)      |  (already hold a trans handler)
 
-Ah, that's interesting.
+handler -> handle
 
-There are two different inodes with the same number (257) and
-different generations (359797 and 1571). Are you using, or ever used,
-in that filesystem the mount option "-o inode_cache" (it's deprecated
-for a while)?
+"not holding a trans handle" and "holding a trans handle" respectively.
 
-Even if not, it's still possible to get two different inodes with the
-same number, just not very common (specially with such a large
-difference in the generation numbers), and send is generally prepared
-to deal with such cases, just not this case, and I think I know why it
-happens. I'll have to see if I can reproduce it.
+> --------------------------------+--------------------------------
+> __btrfs_qgroup_reserve_meta()   | __btrfs_qgroup_reserve_meta()
+> |- try_flush_qgroup()           | |- try_flushing_qgroup()
 
-If I send you a patch, are you able to patch the kernel, build it and test =
-it?
+try_flushing_qgroup() -> try_flush_qgroup()
 
-Thanks.
+>    |- QGROUP_FLUSHING bit set   |    |
+>    |                            |    |- test_and_set_bit()
+>    |                            |    |- wait_event()
+>    |- btrfs_join_transaction()  |
+>    |- btrfs_commit_transaction()|
+>
+>                         !!! DEAD LOCK !!!
+>
+> Since thread A want to commit transaction, but thread B is hold a
+> transaction handler, blocking the commit.
+
+"thread B is hold a transaction handler" -> "thread B is holding a
+transaction handle"
+
+> At the same time, thread B is waiting thread A to finish it commit.
+
+waiting for, it -> its
 
 >
+> This is just a hot fix, and would lead to more EDQUOT when we're near
+> the qgroup limit.
 >
-> Best regards,
-> Massimo
+> The root fix would to make all metadata/data reservation to happen
+
+would -> would be
+
+> without a transaction handler hold.
+
+without a transaction handler hold -> without holding a transaction handle
+
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Other than the grammar, it looks fine, thanks.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+> ---
+>  fs/btrfs/qgroup.c | 31 +++++++++++++++++++++----------
+>  1 file changed, 21 insertions(+), 10 deletions(-)
+>
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index fe3046007f52..7785dfa348d2 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -3530,16 +3530,6 @@ static int try_flush_qgroup(struct btrfs_root *roo=
+t)
+>         int ret;
+>         bool can_commit =3D true;
+>
+> -       /*
+> -        * We don't want to run flush again and again, so if there is a r=
+unning
+> -        * one, we won't try to start a new flush, but exit directly.
+> -        */
+> -       if (test_and_set_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state)) {
+> -               wait_event(root->qgroup_flush_wait,
+> -                       !test_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->stat=
+e));
+> -               return 0;
+> -       }
+> -
+>         /*
+>          * If current process holds a transaction, we shouldn't flush, as=
+ we
+>          * assume all space reservation happens before a transaction hand=
+le is
+> @@ -3554,6 +3544,27 @@ static int try_flush_qgroup(struct btrfs_root *roo=
+t)
+>             current->journal_info !=3D BTRFS_SEND_TRANS_STUB)
+>                 can_commit =3D false;
+>
+> +       /*
+> +        * We don't want to run flush again and again, so if there is a r=
+unning
+> +        * one, we won't try to start a new flush, but exit directly.
+> +        */
+> +       if (test_and_set_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->state)) {
+> +               /*
+> +                * We are already holding a trans, thus we can block othe=
+r
+> +                * threads from flushing.
+> +                * So exit right now. This increases the chance of EDQUOT=
+ for
+> +                * heavy load and near limit cases.
+> +                * But we can argue that if we're already near limit, EDQ=
+UOT
+> +                * is unavoidable anyway.
+> +                */
+> +               if (!can_commit)
+> +                       return 0;
+> +
+> +               wait_event(root->qgroup_flush_wait,
+> +                       !test_bit(BTRFS_ROOT_QGROUP_FLUSHING, &root->stat=
+e));
+> +               return 0;
+> +       }
+> +
+>         ret =3D btrfs_start_delalloc_snapshot(root);
+>         if (ret < 0)
+>                 goto out;
+> --
+> 2.29.2
 >
 
 
