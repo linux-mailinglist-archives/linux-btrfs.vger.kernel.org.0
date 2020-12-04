@@ -2,160 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C4C2CF091
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 16:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C75E2CF131
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 16:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726276AbgLDPUk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Dec 2020 10:20:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51426 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725923AbgLDPUk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Dec 2020 10:20:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B9E42ACC1;
-        Fri,  4 Dec 2020 15:19:58 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4449BDA7E3; Fri,  4 Dec 2020 16:18:25 +0100 (CET)
-Date:   Fri, 4 Dec 2020 16:18:25 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 00/15] btrfs: preparation patches for subpage support
-Message-ID: <20201204151825.GT6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20201202064811.100688-1-wqu@suse.com>
+        id S1730906AbgLDPtn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Dec 2020 10:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730880AbgLDPtm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Dec 2020 10:49:42 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025BBC061A52
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Dec 2020 07:48:56 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id g19so2958171qvy.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Dec 2020 07:48:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=PA56DtQ3U6OS3ADt3JtiQH9iJ5okRT03tMtGP16RXIA=;
+        b=p4AZo33WMTXTpz74XuTaQCvr8JjiLn7ypdk62+VPzm5BdMKt9igpjZmiV4Ts4qi6+J
+         SKGTsVwNJHxvNy9D43S5RpkEjJtwvyjUcFbtGl6g7qLXlUFpBTsSCxXpBePSHE5OPbfm
+         mksQaolb9sXzm7+22TDrXsouNjPDrgzfQk55cGZ8dcksUDtecVBuIrV/rL0rDS4FIXGa
+         CvPH8RXGjKym1lMM679nc6sYC/ea1CzYYsrPdIStasXpT1d5deVX/6/ey0wtHLMxDXaU
+         REoOC8e2HrqtsbjM8fzvA/EMqQSINaRo0nL6ofS1dQc6bP4Jew/L1eiqWwgkD+J/NGRS
+         Uo0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=PA56DtQ3U6OS3ADt3JtiQH9iJ5okRT03tMtGP16RXIA=;
+        b=FhGDh9tSq+pJuw2SJy41E4Omm9kD7wWvc7gdmHqWmucCk+GP65OOmMHHtmsVhGS/sO
+         BcaTDdmIue8+v6okNmJgByr4gpn46V6mjTukrAKV40vf7Tf0a8diPyxsQiK9dlx5qgP6
+         wxLGkee8V1uHUgQUpNp3rK8D4TRoJzpqophmnqeFuCkMLlS8C3YX0jXa7tgAA20Aid+3
+         Ww5sMzqj9pbHq26fnwIs/WPQekaVikA8++f2LS+NoV0B9/MFerEe+ZAWxSVyoX9L0Lwy
+         q+4F+IWRMlVldnI9WM2WCb2e64fY+4jqFsOwYdykFOQ2+lqszCTIb6h9zIwcb0/IlzOV
+         /5Pg==
+X-Gm-Message-State: AOAM5325ePvmbYtDSDII1HHtzDKLOuX3nA9fcY0eip9MDMvRjEil7LO+
+        /FbqNjgXhn4hVtShOb+uMLxN/A==
+X-Google-Smtp-Source: ABdhPJxnvGuh1h4AicIp2Z2Ob074CL8yAHW4/pb+/Ip6VIx5jqWNzkUvWI0x5L/Pf3ERPP+MY/J4+Q==
+X-Received: by 2002:a0c:e18f:: with SMTP id p15mr6149469qvl.12.1607096935114;
+        Fri, 04 Dec 2020 07:48:55 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id y1sm5586436qky.63.2020.12.04.07.48.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Dec 2020 07:48:54 -0800 (PST)
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Subject: [LSFMMBPF 2021] A status update
+Message-ID: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
+Date:   Fri, 4 Dec 2020 10:48:53 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201202064811.100688-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 02:47:56PM +0800, Qu Wenruo wrote:
-> This is the rebased preparation branch for all patches not yet merged into
-> misc-next.
-> 
-> It can be fetched from github (with experimental sector aligned data write
-> support)
-> https://github.com/adam900710/linux/tree/subpage
-> 
-> This patchset includes all the unmerged preparation patches for subpage
-> support.
-> 
-> The patchset is sent without the main core for subpage support, as
-> myself has proven that, big patchset bombarding won't really make
-> reviewers happy, but only make the author happy (for a very short time).
-> 
-> Thanks for the hard work from David, there are only 15 patches unmerged.
-> (With 2 new small patches to address u32 u64 problem)
-> 
-> Patch 01~02:	bio_offset related fixes. Make bio_offset to be u32.
-> Patch 03:	Refactor metadata submission for later metadata write
-> 		support.
-> Patch 04~08:	Metadata related refactor.
-> Patch 09~10:	Data related refactor
-> Patch 11~15:	Scrub related refactor and cleanup
-> 
-> For the scrub patch, there was a discussion with David, about whether we
-> should use sector size as the unit for metadata scrub.
-> 
-> His idea is, sector size should be the minimal unit for DATA, not
-> metadata. This indicates there is a undefined "minimal unit" of access.
-> 
-> But my argument is, sector size is the minimal unit for all btrfs
-> access, current btrfs has an undefined "data size", and that "data size"
-> must equal to sectorsize for current btrfs implementation.
-> 
-> Thus for "data size" < nodesize case, we should first add support for
-> "data size" > sectorsize first.
-> 
-> Thus I kept the scrub patch untouched, since IMHO sector size is still
-> the minimal unit to access, thus iterating using sectorsize is
-> completely sane.
-> 
-> Changelog:
-> v1:
-> - Separate prep patches from the huge subpage patchset
-> 
-> - Rebased to misc-next
-> 
-> - Add more commit message for patch "btrfs: extent_io: remove the
->   extent_start/extent_len for end_bio_extent_readpage()"
->   With one runtime example to explain why we are doing the same thing.
-> 
-> - Fix the assert_spin_lock() usage
->   What we really want is lockdep_assert_held()
-> 
-> - Re-iterate the reason why some extent io tests are invalid
->   This is especially important since later patches will reduce
->   extent_buffer::pages[] to bare minimal, killing the ability to
->   handle certain invalid extent buffers.
-> 
-> - Use sectorsize_bits for division
->   During the convert, we should only use sectorsize_bits for division,
->   this solves the hassle on 32bit system to do division.
->   But we should not use sectorsize_bits no brain, as bit shift is not
->   straight forward as multiple/division.
-> 
-> - Address the comments for btrfs_lookup_bio_sums() cleanup patchset
->   From naming to macro usages, all of those comments should further
->   improve the readability.
-> 
-> v2:
-> - Remove new extent_io tree features
->   Now we won't utilize extent io tree for subpage support, thus new
->   features along with some aggressive refactor is no longer needed.
-> 
-> - Reduce extent_io tree operations to reduce endio time latency
->   Although extent_io tree can do a lot of things like page status, but
->   it has obvious overhead, namingly search btree.
->   So keep the original behavior by only calling extent_io operation in a
->   big extent, to reduce latency
-> 
-> v3:
-> - Rebased to latest misc-next
->   Now only 15 patches to submit.
-> 
-> - Add two new patches to address u32 and u64 problems
->   The root problem is the on-disk format is abusing u64 for its length.
->   We have to draw a line between where we should convert to u32.
->   Currently for bio_offset and extent_len, we can safely use u32.
->   Just to be extra safe, added more ASSERT() for this.
-> 
-> - Put BTRFS_MAX_METADATA_BLOCKSIZE into uapi
->   To avoid circle including "ctree.h"
-> 
-> - Add more changelog for the patch enabling subpage scrub
-> 
-> 
-> Qu Wenruo (15):
->   btrfs: rename bio_offset of extent_submit_bio_start_t to
->     opt_file_offset
->   btrfs: pass bio_offset to check_data_csum() directly
->   btrfs: inode: make btrfs_verify_data_csum() follow sector size
->   btrfs: extent_io: extract the btree page submission code into its own
->     helper function
->   btrfs: extent_io: calculate inline extent buffer page size based on
->     page size
->   btrfs: extent_io: don't allow tree block to cross page boundary for
->     subpage support
->   btrfs: extent_io: update num_extent_pages() to support subpage sized
->     extent buffer
->   btrfs: handle sectorsize < PAGE_SIZE case for extent buffer accessors
->   btrfs: file-item: remove the btrfs_find_ordered_sum() call in
->     btrfs_lookup_bio_sums()
->   btrfs: file-item: refactor btrfs_lookup_bio_sums() to handle
->     out-of-order bvecs
->   btrfs: scrub: reduce the width for extent_len/stripe_len from 64 bits
->     to 32 bits
->   btrfs: scrub: always allocate one full page for one sector for RAID56
->   btrfs: scrub: support subpage tree block scrub
->   btrfs: scrub: support subpage data scrub
->   btrfs: scrub: allow scrub to work with subpage sectorsize
+Hello,
 
-With a few minor fixups it's in misc-next, thanks.
+We on the program committee hope everybody has been able to stay safe and 
+healthy during this challenging time, and look forward to being able to see all 
+of you in person again when it is safe.
+
+The current plans for LSFMMBPF 2021 are to schedule an in person conference in 
+H2 (after June) of 2021.  The tentative plan is to use the same hotel that we 
+had planned to use for 2020, as we still have contracts with them.  However 
+clearly that is not set in stone.  The Linux Foundation has done a wonderful job 
+of working with us to formulate a plan and figure out the logistics that will 
+work the best for everybody, I really can't thank them enough for their help.
+
+Once we have a finalized date we will redo the CFP emails, probably coming out 
+March time frame.  If you have any questions or concerns please feel free to 
+respond to this email, or email me or any of the other PC members privately and 
+we will do our best to answer your questions.  Rest assured the general timing 
+of the conference is going to take into account the wide variety of schedules 
+that we are dealing with, and we will do our best to come up with something that 
+works for as many as people as possible.
+
+We hope that you and your families continue to stay safe and health.  Thank you 
+on behalf of the program committee:
+
+	Josef Bacik (Filesystems)
+	Amir Goldstein (Filesystems)
+	Martin K. Petersen (Storage)
+	Omar Sandoval (Storage)
+	Michal Hocko (MM)
+	Dan Williams (MM)
+	Alexei Starovoitov (BPF)
+	Daniel Borkmann (BPF)
