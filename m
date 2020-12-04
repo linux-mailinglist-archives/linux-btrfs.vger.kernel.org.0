@@ -2,33 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481EB2CE8C9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 08:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FC72CE928
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 09:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgLDHsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Dec 2020 02:48:15 -0500
-Received: from mout.gmx.net ([212.227.15.15]:37797 "EHLO mout.gmx.net"
+        id S1728569AbgLDIDj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Dec 2020 03:03:39 -0500
+Received: from mout.gmx.net ([212.227.17.22]:45329 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726669AbgLDHsP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:48:15 -0500
+        id S1728475AbgLDIDi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Dec 2020 03:03:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607068002;
-        bh=4ouVk1YV4k5qoj34RwePLmzOCN7jUyTnaN5fk9R2CTQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=CE24v2o7gGrWMIiYNRa3GMHmrMVal3V5CoIpDfoEjFJrq+vfCpAoXWV2YT5uqMnCe
-         jVpXYbwuUVh7Nwtm8lT0FY/Fur4KqMbKKY0MN/qwyhToJCglQjB643kbZITjO1CUrk
-         TQ7AxVLH2jPgI+GPJ0X1uf71D2wf4Bx2EzeoGdSQ=
+        s=badeba3b8450; t=1607068923;
+        bh=5b8aCZH67zsj3GjPJt202B26um0LyohvWI1JM9UT+gE=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=AhPZs8IIvqU2/V/gp5jTQbgW23wT4uEbJvekLUR/iPYBVMNYe0Fquphp021EidzaG
+         B7OdmI+YWpJSaLqhiA2KpAu3qZE+eqCUdmGHNx7zogEjJ+eQIof8vmeb0Gf6qUltUx
+         x5gbqaRm0K/vRGUGRDrnyaydnO3WmXrvdt5Vi5JQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MDhhN-1kvEnu0lYl-00AjHM; Fri, 04
- Dec 2020 08:46:41 +0100
-Subject: Re: [PATCH] btrfs: qgroup: don't commit transaction when we already
- hold the handle
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>
-References: <20201204012448.26546-2-wqu@suse.com>
- <4fce0773-a0ba-4c74-0134-8bc22a95d23e@suse.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MZCfJ-1kgKux2PPF-00V8CG; Fri, 04
+ Dec 2020 09:02:03 +0100
+Subject: Re: [PATCH v4 03/53] btrfs: modify the new_root highest_objectid
+ under a ref count
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1607019557.git.josef@toxicpanda.com>
+ <ed37cf06762e40be2fcebc9359b1c063b32afef4.1607019557.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,126 +53,134 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <bd2a0740-956c-5b4c-d54c-a08963ff6793@gmx.com>
-Date:   Fri, 4 Dec 2020 15:46:37 +0800
+Message-ID: <448e6b22-1a44-a3ac-bf91-632bd8dc9206@gmx.com>
+Date:   Fri, 4 Dec 2020 16:01:57 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <4fce0773-a0ba-4c74-0134-8bc22a95d23e@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:klMP435mwLqYJ0s6pS/uzAtaNO0upkfNX4v5dHUii774MV5aBRD
- p6gwVDEgD/uu7oH5Reb/C34VZ5sL4oYmR6Ezh0w/F+qu3J5oORmjDnUZXwyTY7ig2WDvkDY
- wA7BzquMkn1BHmZCzANs7tEm92rqgBABdM4gmu+zmUgSlmFxDcVd1bWJM2qLc2luRfBxvfl
- xplCFvzrfov44HdFXh8LA==
+In-Reply-To: <ed37cf06762e40be2fcebc9359b1c063b32afef4.1607019557.git.josef@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="VIWaoETrIJ4VmI8vNyGgFQCSeH1PtbXe8"
+X-Provags-ID: V03:K1:N7Lb5eMhDjYpMyLu6YmfvfDGP6X+J3zq7aNRfzeN9EfBlL7P6u6
+ dWZnHpgcKu4om37T9RMLK5icyIEuhsTPTXLf1p1SS053FNugRotrT1lXZEgreVNR0ReOEuw
+ JixZAWLuKY717+yt9pXUM7W5FlWqjZXafDWLvur+CRJ61NESxwBUCj7sZ+wNjvhiflb84so
+ 5pTWMv4CQb8UdbpNCvkDg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:s+LcHYpgVQU=:1cIjW10pUbLyIMMcN+xfat
- xsn2M1hXwjjcb6EgwstO8vUyqz768QIWuyvw+m1GxtTn1hDHO6LO2F+tiBGxENdXXw2pH+sLN
- NYcyKc1zQFJA6ta3hEuj029jlSCMIKFGScycXUTvxElazBalfKJHO9jGq2nvJ200mUmwsdbVk
- vVbgKnwqeD0KlvWeizjQOj235JzticALg/ONT2R/s9qEKoFbYC685c76lUwP4luYXX89XUFOV
- U7cGNYA6ZRgHKVi5L3G2TnUWHXS55pH21gYZU6pYP/tov11O425EMGjRnv6Eka4c65kZ8J6jQ
- +jTfG1WDMG77/ugFTl/sO6ifgOID41OvbwfWbWxbZCDHWwtMjALH1LUr7VNZ7CDKokC+nTRb6
- T6Nvu5MVXmMTL072QVjH8WM2+PFak/UYSx2rRFJ6SowU+GP5Dh/QPcUqPC6MVMZIC62nD3AST
- 3sN1qmWJOsMBULabPANO+vbhsVRjWk4EnCGTaJhOrXRFBIee4CNR/wL0v1d6Hkn5crv6Q3GJZ
- 7Bb4NcuKsMoGnVKFnV2AZRwX/O/r2WTXE/58EpvL4oQc1Q336lgOZB3y99aVPCHfkq+dPLx8w
- adW7/zhIfiQeFcLwa6z//rFEqhRZlv/K/46+ijvgEouKhGJU0MK9bAU3oUPaUEaEMDxFj0aet
- Gh8a9Td/LkDUPoTBxAiAzBxevGaDqAIgtknr+mj0rTitcOWpaK1QGhmllV2K2H/14lMtI0JMw
- T43jlBjZa6JF2XS2tGlVPeUDr8+6/08o9QKmI8USNc56eWnLZ/NMFXLbkdaBW3iOF3cExIgur
- i28xzEowT1Cafa1IbUyFBK3rToBdHMFKZEsuMJyOrBt5n+1pAtXGC7QGjIoWSrUZXvangXxig
- OmeWQg0JERvqkTj/YVIw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eoP94QkSPB8=:tg0IpNRmHNgy+6LHisgQX7
+ h17tH3E66947YbG36Hq//Bdm3ySClQqqBchPvpgfc6N+FLT3rUssDg7rA9RNpPvmM7r1254Qk
+ CgbYPfzxHYLlIm9wMJKfbmOAr6Lt7mszY/wunxw0aQpsxXCtcemvNZPdm1YNN/ZcLiNJYpE9V
+ r9v0UGVPXksQimmkruWMqlV96yxxKf86IHja2ViewXbKAUc/mXprQV4658G7jxd/r1vvL/3Y2
+ 1FlYm7IZtQE5QqipKkqsDv1ePV7dzX6WHjBZ9xj/wiE8faT764I8zaviC5hLbQzFyKHmGu7k0
+ OaQyK24dFQw8c89J/m6LVgrgbESy/l4u4oqDymxEL09c8ZBPQh7ThO5dxJHEKyVLMIk2wdGl2
+ +ir44joDzQU0lNqMccgTKXWgfyI50L8N8uCEVg27cOjXWGEdRS+B/Us+QhmHfcIomIYIT0gOo
+ RHGYmYrpyU5R8r5gS840IIHCmJAeYywjscgEdcVbQyEXEmA0aYKUZz23MRaBvZU7M1rVOZtx5
+ vfxwNJibK9Pn9oYQEpnh5+fiZT+zFeXNJIMJ2fkGu1Oo/vHX6PACJJa/OlUAOa0+p7JpRVuOu
+ cHtM0Pk877V5HQDAzuZ9B0RtFE/19emujamrMA++a5sJvNtVVtasGyoPYeLvILjJdpy+HUHcQ
+ Py2uYIctxWavLHbSiRN+9c0obHJtu+gtFH61/tIbEfQUvyyST63oHHTopoS6ut9wKi2ia3wtf
+ 2E6uqBWD7r+6BfPbnfZ3pPDJ/vr5tAaZ4qXU/pAf0JI86RMuOlYzgRvHc1ZpecpJIzc/3dMMy
+ qcC+QCVxaXvOdyy6q73s2Az+RUakRyplcnI1tb9fPjXIh7b2b7DLHQnJvxNjCItk7rIMtnkNR
+ +ZMIC/PGIhQ0S/Rcxufg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VIWaoETrIJ4VmI8vNyGgFQCSeH1PtbXe8
+Content-Type: multipart/mixed; boundary="EPFQjxa4fOLb12s1khC9xdtkbZKEKkdcz"
+
+--EPFQjxa4fOLb12s1khC9xdtkbZKEKkdcz
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2020/12/4 =E4=B8=8B=E5=8D=883:37, Nikolay Borisov wrote:
->
->
-> On 4.12.20 =D0=B3. 3:24 =D1=87., Qu Wenruo wrote:
->> [BUG]
->> When running the following script, btrfs will trigger an ASSERT():
->>
->>   #/bin/bash
->>   mkfs.btrfs -f $dev
->>   mount $dev $mnt
->>   xfs_io -f -c "pwrite 0 1G" $mnt/file
->>   sync
->>   btrfs quota enable $mnt
->>   btrfs quota rescan -w $mnt
->>
->>   # Manually set the limit below current usage
->>   btrfs qgroup limit 512M $mnt $mnt
->>
->>   # Crash happens
->>   touch $mnt/file
->>
->> The dmesg looks like this:
->>
->>   assertion failed: refcount_read(&trans->use_count) =3D=3D 1, in fs/bt=
-rfs/transaction.c:2022
->>   ------------[ cut here ]------------
->>   kernel BUG at fs/btrfs/ctree.h:3230!
->>   invalid opcode: 0000 [#1] SMP PTI
->>   RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
->>    btrfs_commit_transaction.cold+0x11/0x5d [btrfs]
->>    try_flush_qgroup+0x67/0x100 [btrfs]
->>    __btrfs_qgroup_reserve_meta+0x3a/0x60 [btrfs]
->>    btrfs_delayed_update_inode+0xaa/0x350 [btrfs]
->>    btrfs_update_inode+0x9d/0x110 [btrfs]
->>    btrfs_dirty_inode+0x5d/0xd0 [btrfs]
->>    touch_atime+0xb5/0x100
->>    iterate_dir+0xf1/0x1b0
->>    __x64_sys_getdents64+0x78/0x110
->>    do_syscall_64+0x33/0x80
->>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>   RIP: 0033:0x7fb5afe588db
->>
->> [CAUSE]
->> In try_flush_qgroup(), we assume we don't hold a transaction handle at
->> all.  This is true for data reservation and mostly true for metadata.
->> Since data space reservation always happens before we start a
->> transaction, and for most metadata operation we reserve space in
->> start_transaction().
->>
->> But there is an exception, btrfs_delayed_inode_reserve_metadata().
->> It holds a transaction handle, while still trying to reserve extra
->> metadata space.
->>
->> When we hit EDQUOT inside btrfs_delayed_inode_reserve_metadata(), we
->> will join current transaction and commit, while we still have
->> transaction handle from qgroup code.
->>
->> [FIX]
->> Let's check current->journal before we join the transaction.
->>
->> If current->journal is unset or BTRFS_SEND_TRANS_STUB, it means
->> we are not holding a transaction, thus are able to join and then commit
->> transaction.
->>
->> If current->journal is a valid transaction handle, we avoid committing
->> transaction and just end it
->>
->> This is less effective than committing current transaction, as it won't
->> free metadata reserved space, but we may still free some data space
->> before new data writes.
->>
->> Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=3D1178634
->> Fixes: c53e9653605d ("btrfs: qgroup: try to flush qgroup space when we =
-get -EDQUOT")
->> Reviewed-by: Filipe Manana <fdmanana@suse.com>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->
-> Wasn't this submitted already? Also are you going to turn the example
-> script into a fstest?
->
-Sorry, I forgot to cleanup my patches directory. (Facepalm
 
-The fstests is already submitted:
-https://patchwork.kernel.org/project/linux-btrfs/patch/20201111113152.1367=
-29-1-wqu@suse.com/
+On 2020/12/4 =E4=B8=8A=E5=8D=882:22, Josef Bacik wrote:
+> Qu pointed out a bug in one of my error handling patches, which made me=
+
+> notice that we modify the new_root->highest_objectid _after_ we've
+> dropped the ref to the new_root.  This could lead to a possible UAF, fi=
+x
+> this by modifying the ->highest_objectid before we drop our reference t=
+o
+> the new_root.
+>=20
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+But found something to cleanup in the future, inlined below.
+> ---
+>  fs/btrfs/ioctl.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 703212ff50a5..f240beed4739 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -717,6 +717,12 @@ static noinline int create_subvol(struct inode *di=
+r,
+>  	btrfs_record_root_in_trans(trans, new_root);
+> =20
+>  	ret =3D btrfs_create_subvol_root(trans, new_root, root, new_dirid);
+
+Firstly, btrfs_create_subvol_root() is only called here once, and
+new_dirid is always a fixed value, BTRFS_FIRST_FREE_OBJECTID.
+
+This means, we don't need the parameter at all.
+
+> +	if (!ret) {
+> +		mutex_lock(&new_root->objectid_mutex);
+> +		new_root->highest_objectid =3D new_dirid;
+> +		mutex_unlock(&nBut still find something suspicious for the existing =
+naming, inlined below.ew_root->objectid_mutex);
+> +	}
+> +
+
+Secondly, new_root is a new subvolume root which just get allocated.
+It looks more sane to initialize the highest_objectid inside
+btrfs_get_root_ref() for new root.
+
+This should reduce the chance to hit such use-after-free bug completely.
 
 Thanks,
 Qu
+>  	btrfs_put_root(new_root);
+>  	if (ret) {
+>  		/* We potentially lose an unused inode item here */
+> @@ -724,10 +730,6 @@ static noinline int create_subvol(struct inode *di=
+r,
+>  		goto fail;
+>  	}
+> =20
+> -	mutex_lock(&new_root->objectid_mutex);
+> -	new_root->highest_objectid =3D new_dirid;
+> -	mutex_unlock(&new_root->objectid_mutex);
+> -
+>  	/*
+>  	 * insert the directory item
+>  	 */
+>=20
+
+
+--EPFQjxa4fOLb12s1khC9xdtkbZKEKkdcz--
+
+--VIWaoETrIJ4VmI8vNyGgFQCSeH1PtbXe8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/J7PUACgkQwj2R86El
+/qh+UAgAgNyLCRC6RTxqyvMT1pRHSUuUdS2WNGTIk8V2e8ykF/L/bFsVyvEfmLHt
+iKhJARHWqeTvfRUXRWmDgx281ZvqZlxnxSslhlA0MK5Mv7EbD9B7PQOQaED/yCDE
+kmYYa+hTIvl311JpT9h/+LtyTlXqKMaA3WQsUgVGUnTAWLb3T4OjXr8cXYZp8gDk
+EymNhI5GcrknQ/c29b1IN/SG9QHLNhG5nSeoqK1O/SqAugujDLu7GY5VaAuh2r+1
+5uiEIbaZZzbdSz6gIX/Fe79wr3bHg0Wjp6hX6TOjD8KRkfszBzA9E7/5yqg/7VZ5
+ZYqiH8Iede5DTHR1kb8CTLr8T4KH0g==
+=yAH3
+-----END PGP SIGNATURE-----
+
+--VIWaoETrIJ4VmI8vNyGgFQCSeH1PtbXe8--
