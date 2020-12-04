@@ -2,163 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF392CE8B1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 08:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481EB2CE8C9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Dec 2020 08:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgLDHiG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Dec 2020 02:38:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54748 "EHLO mx2.suse.de"
+        id S1727007AbgLDHsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Dec 2020 02:48:15 -0500
+Received: from mout.gmx.net ([212.227.15.15]:37797 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726826AbgLDHiF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Dec 2020 02:38:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607067439; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=w1nQpmy8XSie1PfOJlfD/7DbLuzLx6ty091XzBLoBYQ=;
-        b=SI7jgw9PxGkvkmU7MX3ASFjiUVI+9KYo0Mj60mw7O8rt14siX9c0epGYCX9wjuZv3u19dL
-        pAmKGwWe0ZIrlp9f7/Qh8ADitKDZmJvlkEr13UcwQTXJ0NNeTBCVRx3gkoMT91KvmMFUPi
-        fUtZloSFwiRDcZ/NeIhShKIVCdKuI8A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F2D89ABE9;
-        Fri,  4 Dec 2020 07:37:18 +0000 (UTC)
+        id S1726669AbgLDHsP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Dec 2020 02:48:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1607068002;
+        bh=4ouVk1YV4k5qoj34RwePLmzOCN7jUyTnaN5fk9R2CTQ=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=CE24v2o7gGrWMIiYNRa3GMHmrMVal3V5CoIpDfoEjFJrq+vfCpAoXWV2YT5uqMnCe
+         jVpXYbwuUVh7Nwtm8lT0FY/Fur4KqMbKKY0MN/qwyhToJCglQjB643kbZITjO1CUrk
+         TQ7AxVLH2jPgI+GPJ0X1uf71D2wf4Bx2EzeoGdSQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MDhhN-1kvEnu0lYl-00AjHM; Fri, 04
+ Dec 2020 08:46:41 +0100
 Subject: Re: [PATCH] btrfs: qgroup: don't commit transaction when we already
  hold the handle
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>
 References: <20201204012448.26546-2-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <4fce0773-a0ba-4c74-0134-8bc22a95d23e@suse.com>
-Date:   Fri, 4 Dec 2020 09:37:17 +0200
+ <4fce0773-a0ba-4c74-0134-8bc22a95d23e@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <bd2a0740-956c-5b4c-d54c-a08963ff6793@gmx.com>
+Date:   Fri, 4 Dec 2020 15:46:37 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201204012448.26546-2-wqu@suse.com>
+In-Reply-To: <4fce0773-a0ba-4c74-0134-8bc22a95d23e@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:klMP435mwLqYJ0s6pS/uzAtaNO0upkfNX4v5dHUii774MV5aBRD
+ p6gwVDEgD/uu7oH5Reb/C34VZ5sL4oYmR6Ezh0w/F+qu3J5oORmjDnUZXwyTY7ig2WDvkDY
+ wA7BzquMkn1BHmZCzANs7tEm92rqgBABdM4gmu+zmUgSlmFxDcVd1bWJM2qLc2luRfBxvfl
+ xplCFvzrfov44HdFXh8LA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:s+LcHYpgVQU=:1cIjW10pUbLyIMMcN+xfat
+ xsn2M1hXwjjcb6EgwstO8vUyqz768QIWuyvw+m1GxtTn1hDHO6LO2F+tiBGxENdXXw2pH+sLN
+ NYcyKc1zQFJA6ta3hEuj029jlSCMIKFGScycXUTvxElazBalfKJHO9jGq2nvJ200mUmwsdbVk
+ vVbgKnwqeD0KlvWeizjQOj235JzticALg/ONT2R/s9qEKoFbYC685c76lUwP4luYXX89XUFOV
+ U7cGNYA6ZRgHKVi5L3G2TnUWHXS55pH21gYZU6pYP/tov11O425EMGjRnv6Eka4c65kZ8J6jQ
+ +jTfG1WDMG77/ugFTl/sO6ifgOID41OvbwfWbWxbZCDHWwtMjALH1LUr7VNZ7CDKokC+nTRb6
+ T6Nvu5MVXmMTL072QVjH8WM2+PFak/UYSx2rRFJ6SowU+GP5Dh/QPcUqPC6MVMZIC62nD3AST
+ 3sN1qmWJOsMBULabPANO+vbhsVRjWk4EnCGTaJhOrXRFBIee4CNR/wL0v1d6Hkn5crv6Q3GJZ
+ 7Bb4NcuKsMoGnVKFnV2AZRwX/O/r2WTXE/58EpvL4oQc1Q336lgOZB3y99aVPCHfkq+dPLx8w
+ adW7/zhIfiQeFcLwa6z//rFEqhRZlv/K/46+ijvgEouKhGJU0MK9bAU3oUPaUEaEMDxFj0aet
+ Gh8a9Td/LkDUPoTBxAiAzBxevGaDqAIgtknr+mj0rTitcOWpaK1QGhmllV2K2H/14lMtI0JMw
+ T43jlBjZa6JF2XS2tGlVPeUDr8+6/08o9QKmI8USNc56eWnLZ/NMFXLbkdaBW3iOF3cExIgur
+ i28xzEowT1Cafa1IbUyFBK3rToBdHMFKZEsuMJyOrBt5n+1pAtXGC7QGjIoWSrUZXvangXxig
+ OmeWQg0JERvqkTj/YVIw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 4.12.20 г. 3:24 ч., Qu Wenruo wrote:
-> [BUG]
-> When running the following script, btrfs will trigger an ASSERT():
-> 
->   #/bin/bash
->   mkfs.btrfs -f $dev
->   mount $dev $mnt
->   xfs_io -f -c "pwrite 0 1G" $mnt/file
->   sync
->   btrfs quota enable $mnt
->   btrfs quota rescan -w $mnt
-> 
->   # Manually set the limit below current usage
->   btrfs qgroup limit 512M $mnt $mnt
-> 
->   # Crash happens
->   touch $mnt/file
-> 
-> The dmesg looks like this:
-> 
->   assertion failed: refcount_read(&trans->use_count) == 1, in fs/btrfs/transaction.c:2022
->   ------------[ cut here ]------------
->   kernel BUG at fs/btrfs/ctree.h:3230!
->   invalid opcode: 0000 [#1] SMP PTI
->   RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
->    btrfs_commit_transaction.cold+0x11/0x5d [btrfs]
->    try_flush_qgroup+0x67/0x100 [btrfs]
->    __btrfs_qgroup_reserve_meta+0x3a/0x60 [btrfs]
->    btrfs_delayed_update_inode+0xaa/0x350 [btrfs]
->    btrfs_update_inode+0x9d/0x110 [btrfs]
->    btrfs_dirty_inode+0x5d/0xd0 [btrfs]
->    touch_atime+0xb5/0x100
->    iterate_dir+0xf1/0x1b0
->    __x64_sys_getdents64+0x78/0x110
->    do_syscall_64+0x33/0x80
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7fb5afe588db
-> 
-> [CAUSE]
-> In try_flush_qgroup(), we assume we don't hold a transaction handle at
-> all.  This is true for data reservation and mostly true for metadata.
-> Since data space reservation always happens before we start a
-> transaction, and for most metadata operation we reserve space in
-> start_transaction().
-> 
-> But there is an exception, btrfs_delayed_inode_reserve_metadata().
-> It holds a transaction handle, while still trying to reserve extra
-> metadata space.
-> 
-> When we hit EDQUOT inside btrfs_delayed_inode_reserve_metadata(), we
-> will join current transaction and commit, while we still have
-> transaction handle from qgroup code.
-> 
-> [FIX]
-> Let's check current->journal before we join the transaction.
-> 
-> If current->journal is unset or BTRFS_SEND_TRANS_STUB, it means
-> we are not holding a transaction, thus are able to join and then commit
-> transaction.
-> 
-> If current->journal is a valid transaction handle, we avoid committing
-> transaction and just end it
-> 
-> This is less effective than committing current transaction, as it won't
-> free metadata reserved space, but we may still free some data space
-> before new data writes.
-> 
-> Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1178634
-> Fixes: c53e9653605d ("btrfs: qgroup: try to flush qgroup space when we get -EDQUOT")
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
+On 2020/12/4 =E4=B8=8B=E5=8D=883:37, Nikolay Borisov wrote:
+>
+>
+> On 4.12.20 =D0=B3. 3:24 =D1=87., Qu Wenruo wrote:
+>> [BUG]
+>> When running the following script, btrfs will trigger an ASSERT():
+>>
+>>   #/bin/bash
+>>   mkfs.btrfs -f $dev
+>>   mount $dev $mnt
+>>   xfs_io -f -c "pwrite 0 1G" $mnt/file
+>>   sync
+>>   btrfs quota enable $mnt
+>>   btrfs quota rescan -w $mnt
+>>
+>>   # Manually set the limit below current usage
+>>   btrfs qgroup limit 512M $mnt $mnt
+>>
+>>   # Crash happens
+>>   touch $mnt/file
+>>
+>> The dmesg looks like this:
+>>
+>>   assertion failed: refcount_read(&trans->use_count) =3D=3D 1, in fs/bt=
+rfs/transaction.c:2022
+>>   ------------[ cut here ]------------
+>>   kernel BUG at fs/btrfs/ctree.h:3230!
+>>   invalid opcode: 0000 [#1] SMP PTI
+>>   RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
+>>    btrfs_commit_transaction.cold+0x11/0x5d [btrfs]
+>>    try_flush_qgroup+0x67/0x100 [btrfs]
+>>    __btrfs_qgroup_reserve_meta+0x3a/0x60 [btrfs]
+>>    btrfs_delayed_update_inode+0xaa/0x350 [btrfs]
+>>    btrfs_update_inode+0x9d/0x110 [btrfs]
+>>    btrfs_dirty_inode+0x5d/0xd0 [btrfs]
+>>    touch_atime+0xb5/0x100
+>>    iterate_dir+0xf1/0x1b0
+>>    __x64_sys_getdents64+0x78/0x110
+>>    do_syscall_64+0x33/0x80
+>>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>   RIP: 0033:0x7fb5afe588db
+>>
+>> [CAUSE]
+>> In try_flush_qgroup(), we assume we don't hold a transaction handle at
+>> all.  This is true for data reservation and mostly true for metadata.
+>> Since data space reservation always happens before we start a
+>> transaction, and for most metadata operation we reserve space in
+>> start_transaction().
+>>
+>> But there is an exception, btrfs_delayed_inode_reserve_metadata().
+>> It holds a transaction handle, while still trying to reserve extra
+>> metadata space.
+>>
+>> When we hit EDQUOT inside btrfs_delayed_inode_reserve_metadata(), we
+>> will join current transaction and commit, while we still have
+>> transaction handle from qgroup code.
+>>
+>> [FIX]
+>> Let's check current->journal before we join the transaction.
+>>
+>> If current->journal is unset or BTRFS_SEND_TRANS_STUB, it means
+>> we are not holding a transaction, thus are able to join and then commit
+>> transaction.
+>>
+>> If current->journal is a valid transaction handle, we avoid committing
+>> transaction and just end it
+>>
+>> This is less effective than committing current transaction, as it won't
+>> free metadata reserved space, but we may still free some data space
+>> before new data writes.
+>>
+>> Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=3D1178634
+>> Fixes: c53e9653605d ("btrfs: qgroup: try to flush qgroup space when we =
+get -EDQUOT")
+>> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>
+> Wasn't this submitted already? Also are you going to turn the example
+> script into a fstest?
+>
+Sorry, I forgot to cleanup my patches directory. (Facepalm
 
-Wasn't this submitted already? Also are you going to turn the example
-script into a fstest?
+The fstests is already submitted:
+https://patchwork.kernel.org/project/linux-btrfs/patch/20201111113152.1367=
+29-1-wqu@suse.com/
+
+Thanks,
+Qu
