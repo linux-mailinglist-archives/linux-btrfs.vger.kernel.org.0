@@ -2,32 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F213D2D0B69
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 09:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782052D0BD6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 09:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgLGIBi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Dec 2020 03:01:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55200 "EHLO mx2.suse.de"
+        id S1726160AbgLGIf7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Dec 2020 03:35:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56574 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgLGIBi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 7 Dec 2020 03:01:38 -0500
+        id S1726141AbgLGIf7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Dec 2020 03:35:59 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607328051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1607330112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=L+7VO4ZXDCsKvDQS3MY1UzCkrUCCaw8Gx2KZP1XkjOU=;
-        b=hi8ywd5Vb54E/5SGV+X+vGnA+79fPe3bMf8Xfz89nWHUsk0kvLqDwKXhsiQ47ycICCwgDe
-        xBAFFkeH5/jQoM2tgXSJJ+YaxVJN4k7pmS5ht18mHOWhdbNUlVs8SM9XoiOIlhJqXSMKTV
-        mBs8U8o4f8wurErBZqWWRdAoU/doT9A=
+        bh=vJgXvWoe5/CoEus2t13iaKKsQ+qQ7dxYiU8MSxUdYFw=;
+        b=h8VrwNPwMbDUl1jyxj3iShgcxu7ak6SxMRGbF6ZbollNtRqVEbr9Kf23im6BmNRJS+vtO7
+        0vNNqsAYirzYRiNReAER8lsPBmnOKDfWkS2A4OPmS9KU3EVtArqtQPYv1s/P2NRRRxfJLO
+        MZyW497OxekRWnPNGDUEqf3X1Qq5yfE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B212CAC90;
-        Mon,  7 Dec 2020 08:00:51 +0000 (UTC)
-Subject: Re: [PATCH] btrfs-progs: scrub: warn if scrub started on a device has
- mq-deadline
-To:     Sidong Yang <realwakka@gmail.com>, linux-btrfs@vger.kernel.org
-References: <20201205184929.22412-1-realwakka@gmail.com>
+        by mx2.suse.de (Postfix) with ESMTP id 566AEAC90;
+        Mon,  7 Dec 2020 08:35:12 +0000 (UTC)
+Subject: Re: [PATCH v4 03/53] btrfs: modify the new_root highest_objectid
+ under a ref count
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1607019557.git.josef@toxicpanda.com>
+ <ed37cf06762e40be2fcebc9359b1c063b32afef4.1607019557.git.josef@toxicpanda.com>
+ <448e6b22-1a44-a3ac-bf91-632bd8dc9206@gmx.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -71,12 +75,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <e9fbdfc9-f522-0fde-ac82-91101454365d@suse.com>
-Date:   Mon, 7 Dec 2020 10:00:50 +0200
+Message-ID: <aaefeff4-12d5-ad09-c60f-a1c4b94a0d25@suse.com>
+Date:   Mon, 7 Dec 2020 10:35:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201205184929.22412-1-realwakka@gmail.com>
+In-Reply-To: <448e6b22-1a44-a3ac-bf91-632bd8dc9206@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -86,14 +90,61 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 5.12.20 г. 20:49 ч., Sidong Yang wrote:
-> Warn if scurb stared on a device that has mq-deadline as io-scheduler
-> and point documentation. mq-deadline doesn't work with ionice value and
-> it results performance loss. This warning helps users figure out the
-> situation. This patch implements the function that gets io-scheduler
-> from sysfs and check when scrub stars with the function.
+On 4.12.20 г. 10:01 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2020/12/4 上午2:22, Josef Bacik wrote:
+>> Qu pointed out a bug in one of my error handling patches, which made me
+>> notice that we modify the new_root->highest_objectid _after_ we've
+>> dropped the ref to the new_root.  This could lead to a possible UAF, fix
+>> this by modifying the ->highest_objectid before we drop our reference to
+>> the new_root.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> 
+> But found something to cleanup in the future, inlined below.
+>> ---
+>>  fs/btrfs/ioctl.c | 10 ++++++----
+>>  1 file changed, 6 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>> index 703212ff50a5..f240beed4739 100644
+>> --- a/fs/btrfs/ioctl.c
+>> +++ b/fs/btrfs/ioctl.c
+>> @@ -717,6 +717,12 @@ static noinline int create_subvol(struct inode *dir,
+>>  	btrfs_record_root_in_trans(trans, new_root);
+>>  
+>>  	ret = btrfs_create_subvol_root(trans, new_root, root, new_dirid);
+> 
+> Firstly, btrfs_create_subvol_root() is only called here once, and
+> new_dirid is always a fixed value, BTRFS_FIRST_FREE_OBJECTID.
+> 
+> This means, we don't need the parameter at all.
+> 
+>> +	if (!ret) {
+>> +		mutex_lock(&new_root->objectid_mutex);
+>> +		new_root->highest_objectid = new_dirid;
+>> +		mutex_unlock(&nBut still find something suspicious for the existing naming, inlined below.ew_root->objectid_mutex);
+>> +	}
+>> +
+> 
+> Secondly, new_root is a new subvolume root which just get allocated.
+> It looks more sane to initialize the highest_objectid inside
+> btrfs_get_root_ref() for new root.
+> 
+> This should reduce the chance to hit such use-after-free bug completely.
 
-NAK, use applications should be oblivious to what scheduler the admin
-has set up. It's the responsibility of the admin to configure their
-system properly, at most there could be a note that scrub is an
-io-intensive process and leave the rest to the admin.
+Actually btrfs_init_fs_root already does :
+
+    42         ret = btrfs_find_highest_objectid(root,
+
+    43                                         &root->highest_objectid);
+
+Where root would be the newly initialized tree so highest_objectid
+should already be correctly initialized. However, looking at the source
+of btrfs_find_highest_objectid why do we do BTRFS_FIRST_FREE_OBJECTID -
+1 there?
+
+<snip>
