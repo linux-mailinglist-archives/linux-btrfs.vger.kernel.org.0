@@ -2,110 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDA02D1235
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 14:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0A52D129C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 14:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgLGNfU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Dec 2020 08:35:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgLGNfU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Dec 2020 08:35:20 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2104DC0613D1
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Dec 2020 05:34:40 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id v1so7353277pjr.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Dec 2020 05:34:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=vs7JaEB0sksBSesomQeDabbOigPdkKLpSOm31BqPLfo=;
-        b=P6LcbDrtBe05Wt6FDOwOOpjI3nL8W5NXkmRpsQbyOu6urSNt4BAD/yzDU9NGD3+MdY
-         mggVDIZl5cDJenIFkz+5Bvs6c/q9owM1uUCc5f04SYXfvH2t0Eel7ucPymhWz1K8oGHa
-         nNdgCunXu+8Mv1TKWqQ8BVgJUzkzJw8keiSc9/mfR9BtZlqs+9zmwGqeyyGeQR1DGblZ
-         AjslSSGoiEuoGxaH3IRwAygN+zNxQ2nGYFdpLKV+kJ7GJuKTj5rvS+uU/riCTBcez0EZ
-         dRzmq94CQC1rUPSsRMYH5pQIBAHUNgeZvdKHvcm7zn0mE59Y60bKvMBIlY7tnCgdXwue
-         ijQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=vs7JaEB0sksBSesomQeDabbOigPdkKLpSOm31BqPLfo=;
-        b=dK9gitiIcyGQsvae7ktB0uxnrDi+o1QDP3iBjjxclcPoYrl7Qm7MqlRYzd8+CDcNiT
-         SLIoRwf2yhEVCxMXGid5NIkrVTKPDubNrT7RZoEIDgPqp1azWdBMDDTEZ7hDOfVzMziV
-         gKDri5p6CgP8Gt6Ry0PtbaZBYABLLSW91bu9dql9Nr4SQ//fWhqCA48yncbqsU03CQEE
-         4pdQrdgxKlxgl1FUSEGvJzZ2bm+BALlSDVU336vL6+DRzoKBurQytpAuEHh3dO/PXVF0
-         st7j8H7zqx2qeCNiG7yqXsIvJ07F1KoaVbsda60FDx422ptglp1QwPwx5YEr4l0Wtvti
-         /01Q==
-X-Gm-Message-State: AOAM530rRTO1Jqu0uCR5bhUkaTxvF4inljnGT2QhZMI8XPzTG5w5S0zb
-        phM68bLMBsRODYQIPiqVTpKpDb0QEzR5HBDAbxWBwfXsRpM60Q==
-X-Google-Smtp-Source: ABdhPJwRjBtVVQv0A0riDrhZ5Nm/qZLSQECb8TxQX39ACTdKchavGATMs8pWxEmOt/nfRINKuuvS0Us6in2T9z41z60=
-X-Received: by 2002:a17:90b:4c41:: with SMTP id np1mr16219120pjb.186.1607348079295;
- Mon, 07 Dec 2020 05:34:39 -0800 (PST)
+        id S1726483AbgLGNyE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Dec 2020 08:54:04 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9029 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgLGNyE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Dec 2020 08:54:04 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CqPry4HVtzhkhd;
+        Mon,  7 Dec 2020 21:52:50 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 7 Dec 2020
+ 21:53:13 +0800
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
+CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>
+Subject: [PATCH v2] btrfs: free-space-cache: Fix error return code in __load_free_space_cache
+Date:   Mon, 7 Dec 2020 21:56:12 +0800
+Message-ID: <20201207135612.4132398-1-chengzhihao1@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-From:   Marcus Bannerman <m.bannerman@gmail.com>
-Date:   Mon, 7 Dec 2020 13:34:28 +0000
-Message-ID: <CAAdkh9xzT=wYY3jui3d4xF4kp20tB5EiL-KBJdMK69h1oWO3ig@mail.gmail.com>
-Subject: data Raid6 with metadata Raid1c3 appears unrecoverable
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Help!
-I have an array of 4x6Tb and 4x3Tb disks on BTRFS. I noticed I was
-getting csum errors in dmesg, and found that one of the 3Tb drives was
-failing. Smartctl reported a lot of read errors on one device. Short
-tests were failing at 90%, but SMART status was still OK(!). I tried
-removing the drive with a plan to then rebalance as I don't currently
-have a spare drive.
+Fix to return the error code(instead always 0) when memory allocating
+failed in __load_free_space_cache().
 
-$ btrfs devices remove /dev/sdX /raid
-ERROR: error removing device 'missing': Input/output error
+This lacks the analysis of consequences, so there's only one caller and
+that will treat values <=0 as 'cache not loaded'. There's no functional
+change but otherwise the error values should be there for clarity.
 
-A lot of searching doesn't seem to give any advice on how to address
-this. Most are comments that you should wipe, but I'm hoping the raid
-will allow a partial recovery to save me time.
+Fixes: a67509c30079f4c50 ("Btrfs: add a io_ctl struct and helpers for dealing with the space cache")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ fs/btrfs/free-space-cache.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-So I tried running a scrub, to see if it can fix the system to allow
-me to remove the drive, maybe the errors are localised as Smartctl
-reports the drive is still "OK" despite increasing read errors, then I
-can remove the drive. The scrub starts reporting a lot of
-uncorrectable errors, dmesg is full of errors from the device that is
-failing. The scrub slows considerably and is telling me the scrub will
-take at least a week to complete (5.7Tb of data on the array) and the
-ETA is moving further away.
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index af0013d3df63..ae4059ce2f84 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -744,8 +744,10 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 	while (num_entries) {
+ 		e = kmem_cache_zalloc(btrfs_free_space_cachep,
+ 				      GFP_NOFS);
+-		if (!e)
++		if (!e) {
++			ret = -ENOMEM;
+ 			goto free_cache;
++		}
+ 
+ 		ret = io_ctl_read_entry(&io_ctl, e, &type);
+ 		if (ret) {
+@@ -764,6 +766,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 			e->trim_state = BTRFS_TRIM_STATE_TRIMMED;
+ 
+ 		if (!e->bytes) {
++			ret = -1;
+ 			kmem_cache_free(btrfs_free_space_cachep, e);
+ 			goto free_cache;
+ 		}
+@@ -784,6 +787,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 			e->bitmap = kmem_cache_zalloc(
+ 					btrfs_free_space_bitmap_cachep, GFP_NOFS);
+ 			if (!e->bitmap) {
++				ret = -ENOMEM;
+ 				kmem_cache_free(
+ 					btrfs_free_space_cachep, e);
+ 				goto free_cache;
+-- 
+2.25.4
 
-So cancel the scrub, I shut the computer down, pull the drive, and try
-removing the device using the following command:
-
-$ btrfs devices remove missing /raid
-ERROR: error removing device 'missing': Input/output error
-
-Still no luck. Why can't I remove a failing drive from the array?
-
-Performing a scrub at this point gives 100% uncorrectable errors.
-
-I can still mount the drive, and access the data. I get errors like
-this on mount:
-
-[13044.573841] BTRFS warning (device sdd): devid 7 uuid
-27b4ab26-ac60-4bc7-a8a7-ab1d87394512 is missing
-[13044.604734] BTRFS info (device sdd): bdev (efault) errs: wr
-15816919, rd 1298069, flush 1, corrupt 4912020, gen 0
-[13044.604736] BTRFS info (device sdd): bdev /dev/sde errs: wr 0, rd
-14, flush 0, corrupt 0, gen 0
-[13053.524470] BTRFS error (device sdd): csum mismatch on free space cache
-
-running "btrfs check /dev/sdd" gives a lot of entries like t
-
-failed to load free space cache for block group 5045543239680
-But otherwise it is OK.
-I want to try to recover the data, as a lot of this is flacs/rips of
-my old media that took a long time to carry out.
-I also want to understand the issue, as if I'm to try using BTRFS
-again I need to be able to recover from single drive failures, this
-seems way more complex than it should be.
-
-My O/S is Fedora 33, kernel is 5.9.11-200.fc33.x86_64, btrfs-progs
-v5.9, and any advice/help would be greatly appreciated.
