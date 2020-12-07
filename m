@@ -2,80 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0DBC2D0CC3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 10:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096F62D0CF4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 10:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbgLGJPA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Dec 2020 04:15:00 -0500
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:36586 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgLGJO7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Dec 2020 04:14:59 -0500
-X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Dec 2020 04:14:58 EST
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id 6F84144AA4F;
-        Mon,  7 Dec 2020 11:08:06 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1607332086; bh=pHC88avoOUcOGdj9kedtyOsO+yRmAMwTo6L2lPXx5CY=;
-        h=From:To:Cc:Subject:Date;
-        b=P1Y/zvosqpCUVmnqQT/4PqrVES1EjvhAro2CHppRhwUSKsE0IBdOQGlC1bXziq+1a
-         KJP03CPymQVTMA+9RuyeuIE4ePpAvE8W+CD/2r2Rkdr8NBFTxzaQ2XEurKypjc0uFG
-         4KlUM43iM/ZqQCMJA3yTPF4Kd23+qUjZIa90x6lM=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 5B65E44AA4D;
-        Mon,  7 Dec 2020 11:08:06 +0200 (EET)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id nad1YV0PTpXK; Mon,  7 Dec 2020 11:08:06 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id EBC53441EFD;
-        Mon,  7 Dec 2020 11:08:05 +0200 (EET)
-Received: from localhost.localdomain (unknown [45.87.95.238])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 968A41BE00F2;
-        Mon,  7 Dec 2020 11:08:04 +0200 (EET)
-From:   Su Yue <l@damenly.su>
-To:     linux-btrfs@vger.kernel.org
-Cc:     l@damenly.su
-Subject: [PATCH] btrfs-progs: cmd-subvolume: set subvol_path to NULL after free
-Date:   Mon,  7 Dec 2020 17:07:55 +0800
-Message-Id: <20201207090755.16161-1-l@damenly.su>
-X-Mailer: git-send-email 2.29.2
+        id S1725822AbgLGJYH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Dec 2020 04:24:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59334 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgLGJYG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Dec 2020 04:24:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607332999; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=EnGQN8Iyp0xc43NKGY1+51ALiduJ+Muvt0s6vL1u/u8=;
+        b=C2yq3lfOy40KSNoTXHEA/yqAXMzk00KErDtjMUHVKbJiOzoIoUdkqQmMybFioipFJK4Mhw
+        pIpXMnx/1gfG1cWWxpkVLTSwtS6PmCxKKRF3uMJsLfyfq9xuddvkTKNhOuoQJXlNMn0EuG
+        WmST/PtTsdU+wApOK5sAVkQfypVcLjc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B9985AD79;
+        Mon,  7 Dec 2020 09:23:19 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2] btrfs: Update btrfs/215
+Date:   Mon,  7 Dec 2020 11:23:18 +0200
+Message-Id: <20201207092318.950548-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: OK
-X-ESPOL: 6N1mlpY9aTPe6kLDN3bfAwY2rSJKXenj55TE3V0G3GeDUSOAe1YFVw6+mHJ0TnSk
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-User reported that `btrfs subvolume show -u -- /mnt` causes double free.
+This patch updates btrfs/215 to work with latest upstream kernel. That's
+required since commit 324bcf54c449 ("mm: use limited read-ahead to satisfy read")
+changed readahead logic to always issue a read even if the RA pages are
+set to 0. This results in 1 extra io being issued so the counts in the
+test should be incremented by 1. Also use the opportunity to update the
+commit reference since it's been merged in the upstream kernel.
 
-
-Pointer subovl_path was freed in iterations but still keeps old value.
-In the last iteration, error BTRFS_UTIL_ERROR_STOP_ITERATION returned,
-then the double free of subvol_path happens in the out goto label.
-
-Set subvol_path to NULL after each free() in the loop to fix the issue.
-
-Links: https://github.com/kdave/btrfs-progs/issues/317
-Signed-off-by: Su Yue <l@damenly.su>
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- cmds/subvolume.c | 1 +
- 1 file changed, 1 insertion(+)
+V2:
+ * Updated comment above buffered read issue command to better describe why 2
+ failures are expected.
 
-diff --git a/cmds/subvolume.c b/cmds/subvolume.c
-index f153cfa9..a6771d10 100644
---- a/cmds/subvolume.c
-+++ b/cmds/subvolume.c
-@@ -1117,6 +1117,7 @@ static int cmd_subvol_show(const struct cmd_struct *cmd, int argc, char **argv)
- 				break;
- 
- 			free(subvol_path);
-+			subvol_path = NULL;
- 		}
- 		btrfs_util_destroy_subvolume_iterator(iter);
- 	} else {
--- 
-2.29.2
+ tests/btrfs/215 | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/tests/btrfs/215 b/tests/btrfs/215
+index 4acc288a9f60..748287e74cdf 100755
+--- a/tests/btrfs/215
++++ b/tests/btrfs/215
+@@ -6,7 +6,7 @@
+ #
+ # Test that reading corrupted files would correctly increment device status
+ # counters. This is fixed by the following linux kernel commit:
+-# btrfs: Increment device corruption error in case of checksum error
++# 814723e0a55a ("btrfs: increment device corruption error in case of checksum error")
+ #
+ seq=`basename $0`
+ seqres=$RESULT_DIR/$seq
+@@ -70,19 +70,19 @@ _scratch_mount
+ # disable readahead to avoid skewing the counter
+ echo 0 > /sys/fs/btrfs/$uuid/bdi/read_ahead_kb
+
+-# buffered reads whould result in a single error since the read is done
+-# page by page
++# buffered reads whould result in 2 errors since readahead code always submits
++# at least 1 page worth of IO and it will be counted as an error as well
+ $XFS_IO_PROG -c "pread -b $filesize 0 $filesize" "$SCRATCH_MNT/foobar" > /dev/null 2>&1
+ errs=$($BTRFS_UTIL_PROG device stats $SCRATCH_DEV | awk '/corruption_errs/ { print $2 }')
+-if [ $errs -ne 1 ]; then
+-	_fail "Errors: $errs expected: 1"
++if [ $errs -ne 2 ]; then
++	_fail "Errors: $errs expected: 2"
+ fi
+
+ # DIO does check every sector
+ $XFS_IO_PROG -d -c "pread -b $filesize 0 $filesize" "$SCRATCH_MNT/foobar" > /dev/null 2>&1
+ errs=$($BTRFS_UTIL_PROG device stats $SCRATCH_DEV | awk '/corruption_errs/ { print $2 }')
+-if [ $errs -ne 5 ]; then
+-	_fail "Errors: $errs expected: 1"
++if [ $errs -ne 6 ]; then
++	_fail "Errors: $errs expected: 6"
+ fi
+
+ # success, all done
+--
+2.17.1
 
