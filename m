@@ -2,312 +2,513 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCBB2D08BD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 02:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EF52D0B02
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 08:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727370AbgLGBNK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Dec 2020 20:13:10 -0500
-Received: from mout.gmx.net ([212.227.17.21]:37201 "EHLO mout.gmx.net"
+        id S1726102AbgLGHOp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Dec 2020 02:14:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57988 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726484AbgLGBNJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 6 Dec 2020 20:13:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607303487;
-        bh=vuvpQI1j3wnFet/zTeOtjfsUGHV12qFkaWPpzXtyZj0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=PDsCY1PTAgdK1uKWQ6/XGVgnkKDVYoreU3ALGaHKQBzzsg+nzuVH6j6+/xmpcZHXQ
-         ygEtZcaNWjOr5yvwDz41QxePA7Fhq0YKRo8jMdIZBvckxU8QY9eunHuOAf6WYkGqz0
-         Yao0f55n81YeVlj/BUgTTu9p+6bPqaJobxpvzyk8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbkp-1kX3J72OXD-00P1ZH; Mon, 07
- Dec 2020 02:11:27 +0100
-Subject: Re: [PATCH v4 48/53] btrfs: do proper error handling in
- merge_reloc_roots
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Qu Wenruo <wqu@suse.com>
-References: <cover.1607019557.git.josef@toxicpanda.com>
- <9ad2a3b417b1f54d75231b1c1a3b6531b9746f79.1607019557.git.josef@toxicpanda.com>
- <20201206221013.GF31381@hungrycats.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d124ea1b-750a-142b-e2c5-5e4a53f5ed2e@gmx.com>
-Date:   Mon, 7 Dec 2020 09:11:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726000AbgLGHOp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Dec 2020 02:14:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607325237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=E0HKrc4R9p/q58WV0Xezh33wcRd1QTdG1A8+DCCdLPQ=;
+        b=Rrgw9RLuB9j8vxSSoHPqwUFnZwmpdhb4qvLuEk1zmiuW4Bx9JWqitynkzMoJcwyEseFxS2
+        vkl6xAuUMZFO45aXZuYBNy70wZ83gNp5p/p9X+Ho7cM3JndVPs8K7/Jc0HI3SmPCz+5mn5
+        io2Fwz9TK43U2tZo5P1GVE/83VJpTvk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9A2C5AC2E;
+        Mon,  7 Dec 2020 07:13:57 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH RFC] btrfs: remove cow fixup related code
+Date:   Mon,  7 Dec 2020 15:13:52 +0800
+Message-Id: <20201207071352.106160-1-wqu@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201206221013.GF31381@hungrycats.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="zNEd55bpHG1oyfTMKmJBihCnaOAPynYC4"
-X-Provags-ID: V03:K1:nYuVgYVDUwxkK2Y7AyaOUpSIgoKrkfwR52eRp9e3grqYrFTZ21z
- uicAdhtvVsb+bzhrJEK/xpMs8rVXZXnZFhDxOFFZx4O3L1+WgXuaG55fFs6zZ1uhGvk8jbq
- qKv3SO2T1b8A7pdFegc1Hzp+aYp8lZEysjlgc7ZJ6sb9qEYOysD0QwUoHUUsem4wqxvStD3
- Ew99gWk8P3YoVZT76xSJQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T3F7kwJ5D+c=:8NrVvbf0UlpoFAWKJnoxSm
- hSM26lfCUVh3L5jdZMBFmd1wV2Wd5NuVuFcExbKc1QuDCHwOqdUUVSUj5oI3E2sCzSxU0xhGX
- ij9kAGUiUtPJt45Exky2hljC8YI6GmXPWsMfnws4BSxe0jb5/Fv1T+wGnJahsdSktlYIpSbJg
- eNg+/yDio6kksxFAmRLU5JuWHUt8vq+RGr8DHQTq4DctgGaFhTg+oYwh68AOGistpNr8uddA2
- 0VOMqpmiM7AvH9GIi2FO1m369CLjL9DQOvpEw4Gr5qjXjGA3wb0OeZphR9/QZI5wEYinyUJaM
- QDpXNXYjwwHfzpmNayMJuQad/ZqPjrXp8eBvTE+7jk3mw7XZz0yvS4SxXi0/Sz7hLdNMTFRNj
- DZqBPnU+PHT/6Tgc/4AFdAgJqyI6r5oJbFyCtEWYpQfGUDPQpHmx7aEPWg61UduWyv8iHfLJv
- r3ksY3iFsXbt0rnuNH61e9jhzqpJ6jeUCQYA+CBikgMuAihZ8ZOBoj2kX+8TApnO9XDvwiy4t
- 8TUvn6ZaI5NeWQAeEkauo9nsLW12EazdbG47gJxjpL8FeqVeJAlVPoqdXb8tMXzENxRRV13sx
- xIzboEq7JyOohX41S4nGCSuluOHy2An++3Z4XpzS/Pz8Iq4YXMjqJdp6iBWP60PDnlVBFCgzR
- xSyj+VNtVAFB1weUU3vo1NJoC7EdIYuAAd25LT0P0DOP+xWhLfXXhq6Ee6N7YzFB4GOxt7uu2
- ltGgT2KmAfY0BalH3xsJqMBW0GyatiUWE5oPCRKhsEMMXzdJpFy2ooWRs5Ifvnv9cEzuOj7SO
- uXTfwuLkba07JFpbsvCvcQsJwQCny1Ucc3/EnOTO8TE3DJdsz2o+LdsNSfQkuoSYCI8Y1Nlos
- /yChQjZmwKkYz2ioLuuQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zNEd55bpHG1oyfTMKmJBihCnaOAPynYC4
-Content-Type: multipart/mixed; boundary="u55v7schoVggwZlz3AZ8OnXgemVERmBRI"
+From the initial merge of btrfs, there is always the mystery cow fixup.
 
---u55v7schoVggwZlz3AZ8OnXgemVERmBRI
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+According to its comment and code, the functionality is to detect MM
+code which dirtied the page when it has been unlocked and under
+writeback.
 
+But there are several problems:
+- The fixup timing can be in next transaction
+  That means, even if such case really happens, the "corrupted" data
+  will be written to disk, and fixup can be queued for next transaction.
 
+  Thus it doesn't really solve anything, but masking the "problem"
 
-On 2020/12/7 =E4=B8=8A=E5=8D=886:10, Zygo Blaxell wrote:
-> On Thu, Dec 03, 2020 at 01:22:54PM -0500, Josef Bacik wrote:
->> We have a BUG_ON() if we get an error back from btrfs_get_fs_root().
->> This honestly should never fail, as at this point we have a solid
->> coordination of fs root to reloc root, and these roots will all be in
->> memory.  But in the name of killing BUG_ON()'s remove this one and
->> handle the error properly.  Change the remaining BUG_ON() to an
->> ASSERT().
->>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>  fs/btrfs/relocation.c | 14 ++++++++++++--
->>  1 file changed, 12 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->> index 511cb7c31328..737fc5902901 100644
->> --- a/fs/btrfs/relocation.c
->> +++ b/fs/btrfs/relocation.c
->> @@ -1949,9 +1949,19 @@ void merge_reloc_roots(struct reloc_control *rc=
-)
->> =20
->>  		root =3D btrfs_get_fs_root(fs_info, reloc_root->root_key.offset,
->>  					 false);
->> +		if (IS_ERR(root)) {
->> +			/*
->> +			 * This likely won't happen, since we would have failed
->> +			 * at a higher level.  However for correctness sake
->> +			 * handle the error anyway.
->> +			 */
->> +			ASSERT(0);
->=20
-> After a few days of running for-next + these patches on a test VM,
-> I am hitting this assert at mount:
+- No cow fixup really get executed
+  At least I didn't find it in my test environment.
+  I know this doesn't mean anything, but see my next comment.
 
-Do you still have that fs causing the mounting problem?
+- All page dirty path have already waited writeback
+  For existing btrfs page dirty path, we always wait page writeback
+  before populating the page.
+  I don't see why MM/VFS layer can't do it.
 
-If so, would you please provide the btrfs-image -c9 dump?
+- munmap is not dirtying related page
+  A quick glance into mmap code doesn't show anywhere we dirty the
+  pages.
 
-THanks,
-Qu
->=20
->  	[   37.413799][ T3628] BTRFS info (device dm-0): enabling ssd optimiz=
-ations
->  	[   37.415985][ T3628] BTRFS info (device dm-0): turning on flush-on-=
-commit
->  	[   37.417712][ T3628] BTRFS info (device dm-0): turning on async dis=
-card
->  	[   37.419402][ T3628] BTRFS info (device dm-0): use zstd compression=
-, level 3
->  	[   37.421153][ T3628] BTRFS info (device dm-0): using free space tre=
-e
->  	[   37.422807][ T3628] BTRFS info (device dm-0): has skinny extents
->  	[   75.372451][ T3628] assertion failed: 0, in fs/btrfs/relocation.c:=
-1956
->  	[   75.374184][ T3628] ------------[ cut here ]------------
->  	[   75.375558][ T3628] kernel BUG at fs/btrfs/ctree.h:3367!
->  	[   75.377551][ T3628] invalid opcode: 0000 [#1] SMP KASAN PTI
->  	[   75.379303][ T3628] CPU: 2 PID: 3628 Comm: mount Not tainted 5.10.=
-0-0ef9ce393ff3-misc-next+ #83
->  	[   75.382778][ T3628] Hardware name: QEMU Standard PC (i440FX + PIIX=
-, 1996), BIOS 1.12.0-1 04/01/2014
->  	[   75.385315][ T3628] RIP: 0010:assertfail+0x18/0x1a
->  	[   75.386627][ T3628] Code: 0f 35 aa fe 48 8b 3d 18 ac fd 02 e8 03 3=
-5 aa fe 5d c3 55 89 d1 48 89 f2 48 89 fe 48 c7 c7 60 1d 24 9d 48 89 e5 e8=
- e3 34 fe ff <0f> 0b 48 89 df e8 6f 19 b4 fe 48 8b 85 a8 fe ff ff 44 89 e=
-a 48 c7
->  	[   75.393562][ T3628] RSP: 0018:ffffc900008274c0 EFLAGS: 00010282
->  	[   75.395637][ T3628] RAX: 0000000000000032 RBX: ffff8881213b6590 RC=
-X: ffffffff9b265ba2
->  	[   75.398385][ T3628] RDX: 0000000000000000 RSI: 0000000000000008 RD=
-I: ffff8881f5bff28c
->  	[   75.401189][ T3628] RBP: ffffc900008274c0 R08: ffffed103eb815b5 R0=
-9: ffffed103eb815b5
->  	[   75.404282][ T3628] R10: ffff8881f5c0ada7 R11: ffffed103eb815b4 R1=
-2: ffff88810ab20000
->  	[   75.407136][ T3628] R13: ffff8881213b6000 R14: fffffffffffffffe R1=
-5: ffff88810ab20648
->  	[   75.409792][ T3628] FS:  00007faff8004100(0000) GS:ffff8881f5a0000=
-0(0000) knlGS:0000000000000000
->  	[   75.412870][ T3628] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050=
-033
->  	[   75.415193][ T3628] CR2: 000055d217ae2f48 CR3: 0000000107c84005 CR=
-4: 0000000000170ee0
->  	[   75.418040][ T3628] Call Trace:
->  	[   75.419284][ T3628]  merge_reloc_roots.cold.60+0x3a/0xd8
->  	[   75.420663][ T3628]  ? merge_reloc_root+0xc10/0xc10
->  	[   75.421856][ T3628]  btrfs_recover_relocation+0x5c6/0x940
->  	[   75.423181][ T3628]  ? btrfs_relocate_block_group+0x4c0/0x4c0
->  	[   75.424444][ T3628]  ? __kasan_check_write+0x14/0x20
->  	[   75.425534][ T3628]  ? up_read+0x176/0x4f0
->  	[   75.426379][ T3628]  ? down_write_nested+0x2d0/0x2d0
->  	[   75.427542][ T3628]  btrfs_start_pre_rw_mount+0x12e/0x200
->  	[   75.429467][ T3628]  open_ctree+0x2191/0x254f
->  	[   75.431474][ T3628]  ? btrfs_get_root_ref.cold.76+0x2c/0x2c
->  	[   75.434053][ T3628]  ? snprintf+0x91/0xc0
->  	[   75.435904][ T3628]  btrfs_mount_root.cold.74+0xe/0xea
->  	[   75.438177][ T3628]  ? parse_rescue_options+0x240/0x240
->  	[   75.440582][ T3628]  ? rcu_read_lock_sched_held+0xa1/0xd0
->  	[   75.443018][ T3628]  ? rcu_read_lock_bh_held+0xb0/0xb0
->  	[   75.445324][ T3628]  ? legacy_parse_param+0x73/0x450
->  	[   75.447483][ T3628]  ? vfs_parse_fs_string+0xa7/0x120
->  	[   75.449773][ T3628]  ? kfree+0x1c1/0x200
->  	[   75.451504][ T3628]  ? parse_rescue_options+0x240/0x240
->  	[   75.453938][ T3628]  legacy_get_tree+0x89/0xd0
->  	[   75.455915][ T3628]  vfs_get_tree+0x52/0x150
->  	[   75.457829][ T3628]  fc_mount+0x14/0x60
->  	[   75.459703][ T3628]  vfs_kern_mount.part.38+0x61/0xa0
->  	[   75.461989][ T3628]  vfs_kern_mount+0x13/0x20
->  	[   75.463979][ T3628]  btrfs_mount+0x1f0/0x5d0
->  	[   75.465844][ T3628]  ? btrfs_show_options+0x8c0/0x8c0
->  	[   75.468146][ T3628]  ? rcu_read_lock_sched_held+0xa1/0xd0
->  	[   75.470603][ T3628]  ? check_flags+0x26/0x30
->  	[   75.472539][ T3628]  ? lock_is_held_type+0xc3/0xf0
->  	[   75.474632][ T3628]  ? rcu_read_lock_sched_held+0xa1/0xd0
->  	[   75.476960][ T3628]  ? rcu_read_lock_bh_held+0xb0/0xb0
->  	[   75.479202][ T3628]  ? legacy_parse_param+0x73/0x450
->  	[   75.481013][ T3628]  ? vfs_parse_fs_string+0xa7/0x120
->  	[   75.482712][ T3628]  ? cap_capable+0xd2/0x110
->  	[   75.484118][ T3628]  ? btrfs_show_options+0x8c0/0x8c0
->  	[   75.485749][ T3628]  legacy_get_tree+0x89/0xd0
->  	[   75.487689][ T3628]  ? btrfs_show_options+0x8c0/0x8c0
->  	[   75.489907][ T3628]  ? legacy_get_tree+0x89/0xd0
->  	[   75.491911][ T3628]  vfs_get_tree+0x52/0x150
->  	[   75.493788][ T3628]  path_mount+0xa53/0xf00
->  	[   75.495500][ T3628]  ? __check_object_size+0x17e/0x220
->  	[   75.497042][ T3628]  ? finish_automount+0x430/0x430
->  	[   75.498312][ T3628]  ? getname_flags+0xfd/0x2b0
->  	[   75.499443][ T3628]  do_mount+0xd2/0xf0
->  	[   75.500409][ T3628]  ? path_mount+0xf00/0xf00
->  	[   75.501524][ T3628]  ? __kasan_check_write+0x14/0x20
->  	[   75.502736][ T3628]  __x64_sys_mount+0x100/0x120
->  	[   75.505056][ T3628]  do_syscall_64+0x37/0x80
->  	[   75.506986][ T3628]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->  	[   75.508426][ T3628] RIP: 0033:0x7faff8202fea
->  	[   75.509476][ T3628] Code: 48 8b 0d a9 0e 0c 00 f7 d8 64 89 01 48 8=
-3 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00=
- 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 76 0e 0c 00 f7 d8 64 8=
-9 01 48
->  	[   75.514323][ T3628] RSP: 002b:00007ffe9b44e6c8 EFLAGS: 00000246 OR=
-IG_RAX: 00000000000000a5
->  	[   75.517413][ T3628] RAX: ffffffffffffffda RBX: 000055a3e65d6b40 RC=
-X: 00007faff8202fea
->  	[   75.520839][ T3628] RDX: 000055a3e65de650 RSI: 000055a3e65d6d90 RD=
-I: 000055a3e65d6ef0
->  	[   75.524350][ T3628] RBP: 00007faff85501c4 R08: 000055a3e65d6e30 R0=
-9: 000055a3e65dea90
->  	[   75.527798][ T3628] R10: 0000000000000400 R11: 0000000000000246 R1=
-2: 0000000000000000
->  	[   75.531273][ T3628] R13: 0000000000000400 R14: 000055a3e65d6ef0 R1=
-5: 000055a3e65de650
->  	[   75.534685][ T3628] Modules linked in:
->  	[   75.536431][ T3628] ---[ end trace d5a13ffc3f4ddc24 ]---
->  	[   75.538742][ T3628] RIP: 0010:assertfail+0x18/0x1a
->  	[   75.540855][ T3628] Code: 0f 35 aa fe 48 8b 3d 18 ac fd 02 e8 03 3=
-5 aa fe 5d c3 55 89 d1 48 89 f2 48 89 fe 48 c7 c7 60 1d 24 9d 48 89 e5 e8=
- e3 34 fe ff <0f> 0b 48 89 df e8 6f 19 b4 fe 48 8b 85 a8 fe ff ff 44 89 e=
-a 48 c7
->  	[   75.548258][ T3628] RSP: 0018:ffffc900008274c0 EFLAGS: 00010282
->  	[   75.551045][ T3628] RAX: 0000000000000032 RBX: ffff8881213b6590 RC=
-X: ffffffff9b265ba2
->  	[   75.554619][ T3628] RDX: 0000000000000000 RSI: 0000000000000008 RD=
-I: ffff8881f5bff28c
->  	[   75.557391][ T3628] RBP: ffffc900008274c0 R08: ffffed103eb815b5 R0=
-9: ffffed103eb815b5
->  	[   75.559640][ T3628] R10: ffff8881f5c0ada7 R11: ffffed103eb815b4 R1=
-2: ffff88810ab20000
->  	[   75.562663][ T3628] R13: ffff8881213b6000 R14: fffffffffffffffe R1=
-5: ffff88810ab20648
->  	[   75.565276][ T3628] FS:  00007faff8004100(0000) GS:ffff8881f5a0000=
-0(0000) knlGS:0000000000000000
->  	[   75.568147][ T3628] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050=
-033
->  	[   75.570715][ T3628] CR2: 000055d217ae2f48 CR3: 0000000107c84005 CR=
-4: 0000000000170ee0
->=20
->> +			ret =3D PTR_ERR(root);
->> +			goto out;
->> +		}
->> +
->>  		if (btrfs_root_refs(&reloc_root->root_item) > 0) {
->> -			BUG_ON(IS_ERR(root));
->> -			BUG_ON(root->reloc_root !=3D reloc_root);
->> +			ASSERT(root->reloc_root =3D=3D reloc_root);
->>  			ret =3D merge_reloc_root(rc, root);
->>  			btrfs_put_root(root);
->>  			if (ret) {
->> --=20
->> 2.26.2
->>
+Since I'm not familiar with ancient btrfs code, nor the MM layer, this
+patch is mostly RFC and hopes the community can either give a sold
+answer on why cow fixup is still needed, or can use this patch as the
+first step to remove cow fixup.
 
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/compression.c      |   7 --
+ fs/btrfs/ctree.h            |   8 --
+ fs/btrfs/disk-io.c          |   7 +-
+ fs/btrfs/extent_io.c        |  12 ---
+ fs/btrfs/extent_io.h        |   5 +-
+ fs/btrfs/file.c             |   8 --
+ fs/btrfs/free-space-cache.c |   1 -
+ fs/btrfs/inode.c            | 192 +-----------------------------------
+ fs/btrfs/ioctl.c            |   1 -
+ fs/btrfs/reflink.c          |   1 -
+ 10 files changed, 4 insertions(+), 238 deletions(-)
 
---u55v7schoVggwZlz3AZ8OnXgemVERmBRI--
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 12d50f1cdc58..bdb2351d7cba 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -246,14 +246,7 @@ static void end_compressed_bio_read(struct bio *bio)
+ 		struct bio_vec *bvec;
+ 		struct bvec_iter_all iter_all;
+ 
+-		/*
+-		 * we have verified the checksum already, set page
+-		 * checked so the end_io handlers know about it
+-		 */
+ 		ASSERT(!bio_flagged(bio, BIO_CLONED));
+-		bio_for_each_segment_all(bvec, cb->orig_bio, iter_all)
+-			SetPageChecked(bvec->bv_page);
+-
+ 		bio_endio(cb->orig_bio);
+ 	}
+ 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 2744e13e8eb9..93434e964520 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -772,13 +772,6 @@ struct btrfs_fs_info {
+ 	struct btrfs_workqueue *endio_freespace_worker;
+ 	struct btrfs_workqueue *caching_workers;
+ 	struct btrfs_workqueue *readahead_workers;
+-
+-	/*
+-	 * fixup workers take dirty pages that didn't properly go through
+-	 * the cow mechanism and make them safe to write.  It happens
+-	 * for the sys_munmap function call path
+-	 */
+-	struct btrfs_workqueue *fixup_workers;
+ 	struct btrfs_workqueue *delayed_workers;
+ 
+ 	struct task_struct *transaction_kthread;
+@@ -3136,7 +3129,6 @@ int btrfs_prealloc_file_range_trans(struct inode *inode,
+ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page,
+ 		u64 start, u64 end, int *page_started, unsigned long *nr_written,
+ 		struct writeback_control *wbc);
+-int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
+ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
+ 					  u64 end, int uptodate);
+ extern const struct dentry_operations btrfs_dentry_operations;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 46dd9e0b077e..74ffad7b6c11 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1958,7 +1958,6 @@ static int read_backup_root(struct btrfs_fs_info *fs_info, u8 priority)
+ /* helper to cleanup workers */
+ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+ {
+-	btrfs_destroy_workqueue(fs_info->fixup_workers);
+ 	btrfs_destroy_workqueue(fs_info->delalloc_workers);
+ 	btrfs_destroy_workqueue(fs_info->workers);
+ 	btrfs_destroy_workqueue(fs_info->endio_workers);
+@@ -2144,9 +2143,6 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+ 	fs_info->caching_workers =
+ 		btrfs_alloc_workqueue(fs_info, "cache", flags, max_active, 0);
+ 
+-	fs_info->fixup_workers =
+-		btrfs_alloc_workqueue(fs_info, "fixup", flags, 1, 0);
+-
+ 	/*
+ 	 * endios are largely parallel and should have a very
+ 	 * low idle thresh
+@@ -2188,8 +2184,7 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+ 	      fs_info->endio_write_workers && fs_info->endio_raid56_workers &&
+ 	      fs_info->endio_freespace_worker && fs_info->rmw_workers &&
+ 	      fs_info->caching_workers && fs_info->readahead_workers &&
+-	      fs_info->fixup_workers && fs_info->delayed_workers &&
+-	      fs_info->qgroup_rescan_workers &&
++	      fs_info->delayed_workers && fs_info->qgroup_rescan_workers &&
+ 	      fs_info->discard_ctl.discard_workers)) {
+ 		return -ENOMEM;
+ 	}
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 569d50ccf78a..e899335ec2f9 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1969,9 +1969,6 @@ static int __process_pages_contig(struct address_space *mapping,
+ 		}
+ 
+ 		for (i = 0; i < ret; i++) {
+-			if (page_ops & PAGE_SET_PRIVATE2)
+-				SetPagePrivate2(pages[i]);
+-
+ 			if (locked_page && pages[i] == locked_page) {
+ 				put_page(pages[i]);
+ 				pages_processed++;
+@@ -3523,15 +3520,6 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 	const unsigned int write_flags = wbc_to_write_flags(wbc);
+ 	bool compressed;
+ 
+-	ret = btrfs_writepage_cow_fixup(page, start, page_end);
+-	if (ret) {
+-		/* Fixup worker will requeue */
+-		redirty_page_for_writepage(wbc, page);
+-		update_nr_written(wbc, nr_written);
+-		unlock_page(page);
+-		return 1;
+-	}
+-
+ 	/*
+ 	 * we don't want to touch the inode after unlocking the page,
+ 	 * so we update the mapping writeback index now
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 66762c3cdf81..79e13380e6fd 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -37,9 +37,8 @@ enum {
+ #define PAGE_CLEAR_DIRTY	(1 << 1)
+ #define PAGE_SET_WRITEBACK	(1 << 2)
+ #define PAGE_END_WRITEBACK	(1 << 3)
+-#define PAGE_SET_PRIVATE2	(1 << 4)
+-#define PAGE_SET_ERROR		(1 << 5)
+-#define PAGE_LOCK		(1 << 6)
++#define PAGE_SET_ERROR		(1 << 4)
++#define PAGE_LOCK		(1 << 5)
+ 
+ /*
+  * page->private values.  Every page that is controlled by the extent
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 0e41459b8de6..9816bf1b7f5b 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -440,13 +440,6 @@ static void btrfs_drop_pages(struct page **pages, size_t num_pages)
+ {
+ 	size_t i;
+ 	for (i = 0; i < num_pages; i++) {
+-		/* page checked is some magic around finding pages that
+-		 * have been modified without going through btrfs_set_page_dirty
+-		 * clear it here. There should be no need to mark the pages
+-		 * accessed as prepare_pages should have marked them accessed
+-		 * in prepare_pages via find_or_create_page()
+-		 */
+-		ClearPageChecked(pages[i]);
+ 		unlock_page(pages[i]);
+ 		put_page(pages[i]);
+ 	}
+@@ -502,7 +495,6 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
+ 	for (i = 0; i < num_pages; i++) {
+ 		struct page *p = pages[i];
+ 		SetPageUptodate(p);
+-		ClearPageChecked(p);
+ 		set_page_dirty(p);
+ 	}
+ 
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index cd5996350cf0..9ec089791360 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -424,7 +424,6 @@ static void io_ctl_drop_pages(struct btrfs_io_ctl *io_ctl)
+ 
+ 	for (i = 0; i < io_ctl->num_pages; i++) {
+ 		if (io_ctl->pages[i]) {
+-			ClearPageChecked(io_ctl->pages[i]);
+ 			unlock_page(io_ctl->pages[i]);
+ 			put_page(io_ctl->pages[i]);
+ 		}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0ce42d52d53e..aae9d4bcc25a 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1161,7 +1161,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		 * setup for writepage
+ 		 */
+ 		page_ops = unlock ? PAGE_UNLOCK : 0;
+-		page_ops |= PAGE_SET_PRIVATE2;
+ 
+ 		extent_clear_unlock_delalloc(inode, start, start + ram_size - 1,
+ 					     locked_page,
+@@ -1806,7 +1805,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 					     locked_page, EXTENT_LOCKED |
+ 					     EXTENT_DELALLOC |
+ 					     EXTENT_CLEAR_DATA_RESV,
+-					     PAGE_UNLOCK | PAGE_SET_PRIVATE2);
++					     PAGE_UNLOCK);
+ 
+ 		cur_offset = extent_end;
+ 
+@@ -2392,187 +2391,6 @@ struct btrfs_writepage_fixup {
+ 	struct btrfs_work work;
+ };
+ 
+-static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+-{
+-	struct btrfs_writepage_fixup *fixup;
+-	struct btrfs_ordered_extent *ordered;
+-	struct extent_state *cached_state = NULL;
+-	struct extent_changeset *data_reserved = NULL;
+-	struct page *page;
+-	struct btrfs_inode *inode;
+-	u64 page_start;
+-	u64 page_end;
+-	int ret = 0;
+-	bool free_delalloc_space = true;
+-
+-	fixup = container_of(work, struct btrfs_writepage_fixup, work);
+-	page = fixup->page;
+-	inode = BTRFS_I(fixup->inode);
+-	page_start = page_offset(page);
+-	page_end = page_offset(page) + PAGE_SIZE - 1;
+-
+-	/*
+-	 * This is similar to page_mkwrite, we need to reserve the space before
+-	 * we take the page lock.
+-	 */
+-	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
+-					   PAGE_SIZE);
+-again:
+-	lock_page(page);
+-
+-	/*
+-	 * Before we queued this fixup, we took a reference on the page.
+-	 * page->mapping may go NULL, but it shouldn't be moved to a different
+-	 * address space.
+-	 */
+-	if (!page->mapping || !PageDirty(page) || !PageChecked(page)) {
+-		/*
+-		 * Unfortunately this is a little tricky, either
+-		 *
+-		 * 1) We got here and our page had already been dealt with and
+-		 *    we reserved our space, thus ret == 0, so we need to just
+-		 *    drop our space reservation and bail.  This can happen the
+-		 *    first time we come into the fixup worker, or could happen
+-		 *    while waiting for the ordered extent.
+-		 * 2) Our page was already dealt with, but we happened to get an
+-		 *    ENOSPC above from the btrfs_delalloc_reserve_space.  In
+-		 *    this case we obviously don't have anything to release, but
+-		 *    because the page was already dealt with we don't want to
+-		 *    mark the page with an error, so make sure we're resetting
+-		 *    ret to 0.  This is why we have this check _before_ the ret
+-		 *    check, because we do not want to have a surprise ENOSPC
+-		 *    when the page was already properly dealt with.
+-		 */
+-		if (!ret) {
+-			btrfs_delalloc_release_extents(inode, PAGE_SIZE);
+-			btrfs_delalloc_release_space(inode, data_reserved,
+-						     page_start, PAGE_SIZE,
+-						     true);
+-		}
+-		ret = 0;
+-		goto out_page;
+-	}
+-
+-	/*
+-	 * We can't mess with the page state unless it is locked, so now that
+-	 * it is locked bail if we failed to make our space reservation.
+-	 */
+-	if (ret)
+-		goto out_page;
+-
+-	lock_extent_bits(&inode->io_tree, page_start, page_end, &cached_state);
+-
+-	/* already ordered? We're done */
+-	if (PagePrivate2(page))
+-		goto out_reserved;
+-
+-	ordered = btrfs_lookup_ordered_range(inode, page_start, PAGE_SIZE);
+-	if (ordered) {
+-		unlock_extent_cached(&inode->io_tree, page_start, page_end,
+-				     &cached_state);
+-		unlock_page(page);
+-		btrfs_start_ordered_extent(ordered, 1);
+-		btrfs_put_ordered_extent(ordered);
+-		goto again;
+-	}
+-
+-	ret = btrfs_set_extent_delalloc(inode, page_start, page_end, 0,
+-					&cached_state);
+-	if (ret)
+-		goto out_reserved;
+-
+-	/*
+-	 * Everything went as planned, we're now the owner of a dirty page with
+-	 * delayed allocation bits set and space reserved for our COW
+-	 * destination.
+-	 *
+-	 * The page was dirty when we started, nothing should have cleaned it.
+-	 */
+-	BUG_ON(!PageDirty(page));
+-	free_delalloc_space = false;
+-out_reserved:
+-	btrfs_delalloc_release_extents(inode, PAGE_SIZE);
+-	if (free_delalloc_space)
+-		btrfs_delalloc_release_space(inode, data_reserved, page_start,
+-					     PAGE_SIZE, true);
+-	unlock_extent_cached(&inode->io_tree, page_start, page_end,
+-			     &cached_state);
+-out_page:
+-	if (ret) {
+-		/*
+-		 * We hit ENOSPC or other errors.  Update the mapping and page
+-		 * to reflect the errors and clean the page.
+-		 */
+-		mapping_set_error(page->mapping, ret);
+-		end_extent_writepage(page, ret, page_start, page_end);
+-		clear_page_dirty_for_io(page);
+-		SetPageError(page);
+-	}
+-	ClearPageChecked(page);
+-	unlock_page(page);
+-	put_page(page);
+-	kfree(fixup);
+-	extent_changeset_free(data_reserved);
+-	/*
+-	 * As a precaution, do a delayed iput in case it would be the last iput
+-	 * that could need flushing space. Recursing back to fixup worker would
+-	 * deadlock.
+-	 */
+-	btrfs_add_delayed_iput(&inode->vfs_inode);
+-}
+-
+-/*
+- * There are a few paths in the higher layers of the kernel that directly
+- * set the page dirty bit without asking the filesystem if it is a
+- * good idea.  This causes problems because we want to make sure COW
+- * properly happens and the data=ordered rules are followed.
+- *
+- * In our case any range that doesn't have the ORDERED bit set
+- * hasn't been properly setup for IO.  We kick off an async process
+- * to fix it up.  The async helper will wait for ordered extents, set
+- * the delalloc bit and make it safe to write the page.
+- */
+-int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
+-{
+-	struct inode *inode = page->mapping->host;
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	struct btrfs_writepage_fixup *fixup;
+-
+-	/* this page is properly in the ordered list */
+-	if (TestClearPagePrivate2(page))
+-		return 0;
+-
+-	/*
+-	 * PageChecked is set below when we create a fixup worker for this page,
+-	 * don't try to create another one if we're already PageChecked()
+-	 *
+-	 * The extent_io writepage code will redirty the page if we send back
+-	 * EAGAIN.
+-	 */
+-	if (PageChecked(page))
+-		return -EAGAIN;
+-
+-	fixup = kzalloc(sizeof(*fixup), GFP_NOFS);
+-	if (!fixup)
+-		return -EAGAIN;
+-
+-	/*
+-	 * We are already holding a reference to this inode from
+-	 * write_cache_pages.  We need to hold it because the space reservation
+-	 * takes place outside of the page lock, and we can't trust
+-	 * page->mapping outside of the page lock.
+-	 */
+-	ihold(inode);
+-	SetPageChecked(page);
+-	get_page(page);
+-	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL, NULL);
+-	fixup->page = page;
+-	fixup->inode = inode;
+-	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
+-
+-	return -EAGAIN;
+-}
+-
+ static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+ 				       struct btrfs_inode *inode, u64 file_pos,
+ 				       struct btrfs_file_extent_item *stack_fi,
+@@ -3000,11 +2818,6 @@ int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u64 phy_offset,
+ 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 
+-	if (PageChecked(page)) {
+-		ClearPageChecked(page);
+-		return 0;
+-	}
+-
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ 		return 0;
+ 
+@@ -4757,7 +4570,6 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
+ 		flush_dcache_page(page);
+ 		kunmap(page);
+ 	}
+-	ClearPageChecked(page);
+ 	set_page_dirty(page);
+ 	unlock_extent_cached(io_tree, block_start, block_end, &cached_state);
+ 
+@@ -8256,7 +8068,6 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 		__btrfs_releasepage(page, GFP_NOFS);
+ 	}
+ 
+-	ClearPageChecked(page);
+ 	detach_page_private(page);
+ }
+ 
+@@ -8396,7 +8207,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 		flush_dcache_page(page);
+ 		kunmap(page);
+ 	}
+-	ClearPageChecked(page);
+ 	set_page_dirty(page);
+ 	SetPageUptodate(page);
+ 
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 703212ff50a5..d2636e5756ad 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1439,7 +1439,6 @@ static int cluster_pages_for_defrag(struct inode *inode,
+ 
+ 	for (i = 0; i < i_done; i++) {
+ 		clear_page_dirty_for_io(pages[i]);
+-		ClearPageChecked(pages[i]);
+ 		set_page_extent_mapped(pages[i]);
+ 		set_page_dirty(pages[i]);
+ 		unlock_page(pages[i]);
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index ab80896315be..57e1f8cd0d4d 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -126,7 +126,6 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
+ 	}
+ 
+ 	SetPageUptodate(page);
+-	ClearPageChecked(page);
+ 	set_page_dirty(page);
+ out_unlock:
+ 	if (page) {
+-- 
+2.29.2
 
---zNEd55bpHG1oyfTMKmJBihCnaOAPynYC4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl/NgToACgkQwj2R86El
-/qh+WAgAlrTwQGfcft+6JbV9nOZOxFR9DwHrKJcnddGxxzfZ4VR/v9Uq3/+S4LIk
-0fF5sAgngw6nlGwtFh93P4SU0YuybTeQchkjL+fiijfY/zte/eqwHaCRxxSLvC9L
-bNAKT+WQMcA3cN2iQcqjM9E5MMsQHXnnoTLTqNCtlGWXquR52kNPfW08M3oxy9VP
-UNbsGwYEZNI/CLoJPcXebSeL43MnlZlb0WP1cN3B6uEJaQx+cX7OYSgfKNBnmJvk
-79tqy7TNxMrmg2nm4STMrdXWQO3GE12qUacSxuj408nCc2hKHGj1o4OrPxeLodee
-QBOVlNNdwG0npxw6GSp3DFpxqPI2rA==
-=5oS0
------END PGP SIGNATURE-----
-
---zNEd55bpHG1oyfTMKmJBihCnaOAPynYC4--
