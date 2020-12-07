@@ -2,62 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020CD2D15EF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 17:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC6D2D1676
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Dec 2020 17:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgLGQ2I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Dec 2020 11:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
+        id S1727113AbgLGQhG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Dec 2020 11:37:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgLGQ2H (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Dec 2020 11:28:07 -0500
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34B0C061749
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Dec 2020 08:27:26 -0800 (PST)
-Received: by mail-qt1-x844.google.com with SMTP id y15so2214188qtv.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Dec 2020 08:27:26 -0800 (PST)
+        with ESMTP id S1726007AbgLGQhG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Dec 2020 11:37:06 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BF8C061749
+        for <linux-btrfs@vger.kernel.org>; Mon,  7 Dec 2020 08:36:25 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id 7so9817247qtp.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Dec 2020 08:36:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=vfshf2V9Mcqggiqw+SHJtoavU5SrU0QiwCmxfg/dJw8=;
-        b=MgUEkMWGiFaIMGKWP3Mk3VNaBIo1tCHDYpYvcl0Euy8nBSqAgbzbFRrAsI24BJrp00
-         R2yuBzFfyyGYWn2KTrF7CCXNHU8ynDv+Lhr1C1eHfbiOjuDsy8nIuF5OZBKy9X+PaiqS
-         tHMQqd19JM24fqumAOy+HAV0qdeWi367kADXkv+x056keG3EtxJLuW2oEiA/Ocx0kRzo
-         mxRAS+QDULjMuLlxMavMYaRFpopOTciTZ3fRmDlErob2G7IHCcKNs3hDgrZVkD32c0gb
-         cHahKDLr3vYpbxMSwh8ztesx6cbIPujZvQiJ6YRYuatR8WBdkhN0KlW3AAmTGmqDy2Ky
-         IEuw==
+        bh=CTjZ8dE2k5crFaQt3/sG5vMR1Jb4//r+r9eAPESAD8c=;
+        b=n1bvWZUJAZjbc5dxs6ktfVBCpgQyL+pT9pThn769U2ebHl8VwPYrrllruW04iky1xp
+         scz4fItn5z/j94x6YQIlDDVSioRlFttgl4jjeC37zNzDlNXo1jVgdasmzeHAxG+X/7Jz
+         1hvXSNkX1r/OobvAZ+e3p2DVy36750MKhItj3gw/zEhmlaRtTcUqsVAyuf2l5DYDQgdz
+         ZGMkEXtJxBZXWGjoD4tDtuLs0NHJmwz2HhOj7YXGq4j8BT9mjbHpXpI/osU2+MBg1I3I
+         NTgK0l2NN4IVU80m2d9TMBeKeOKv5aFfc0E1+eYSPeorwmwkGfcqJmeBLpDbrC0KC7AJ
+         ujpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=vfshf2V9Mcqggiqw+SHJtoavU5SrU0QiwCmxfg/dJw8=;
-        b=lUMdyRMui7BaK4SnH8/YCOobb3X/BykIqFL2eZyTaqpxhGUwiNQX50YO358G6cV2pv
-         SFx1KloceV8Sd5YzDHesE/+M8xr1HUqmwxnghKO9LIQReBrXmkw93nKFo/nhwb90Fvez
-         v25S7/wVBlHQ5gcjCMP9Er/KBMXWihhqk71CkLD9CA0bO7E5eMNJduo/J5JBssam27ZA
-         Fn3R3CuxUhv4T2QByOboErF5LybxT7pzYnLp37eqUuaknJ2kFI4b7P7X6ai+WLbv2BRj
-         dSwJok24ci/H7ydEFf2GGDgRk5698A29nYepnDpOx4PvgGIhz4wOzeya2B4noEy/nK4f
-         F1Fw==
-X-Gm-Message-State: AOAM531XJLvQ12TMCtNZdxMd+9y9FLWgywqmWFqByhbCjwIq1OuumRwa
-        +SNAlxAwRTbs8mYIGWlXAfnYGUQSHMROST44
-X-Google-Smtp-Source: ABdhPJyxegeg/Rk4eda6Q42fpxRNbC3GLReZsY7VF8uxpa0Sah9PU+26hDgcvhSBS0MGqzETd1gXuw==
-X-Received: by 2002:aed:2ae2:: with SMTP id t89mr24562389qtd.82.1607358444981;
-        Mon, 07 Dec 2020 08:27:24 -0800 (PST)
+        bh=CTjZ8dE2k5crFaQt3/sG5vMR1Jb4//r+r9eAPESAD8c=;
+        b=GIbTcuNztWmnJTYJxXYDbYwCMr0L2JQlkPB87ee98jicmJykeA3Nh+ZoZVae/waHOK
+         ckzq5BVh8006QCaYY4cgwFyb+2IqOSHWkGdCCmGw45A5tdmF344UIl3BPLkWBUuNC4YL
+         SFqRMJxdoftY0kHTPCPPlddBWESnSK5TjcjhDiFSbQIdhxbMG+2Ylm9pmBzgTXlh5oFY
+         HO1hIflyg3JXYGYMJQIybPW6HOww3ZvD130ruEggnlPYYPWA/CyaRQY+tkjydQmZEugH
+         IzenDmcqxNmP5qZwfzXWBoGD/kDPH73jjwHa4bM9xje8+U+eztBWvqzWAlLrz2AqOCZ/
+         YSig==
+X-Gm-Message-State: AOAM531G1eUFr4wWcaJUPrUayPxkoddN/v76TLyOb9y7CD4P77JZiXGE
+        cVFyRJXKYyXwdblz7z2xpVLp16TWLAckONB8
+X-Google-Smtp-Source: ABdhPJwYr4CkuXcA+b3JBL9lvrPalA5tRN/s/SQLc8GuNjbGggE9Lbo413HzCHxG1NwxsjH2fXNTpg==
+X-Received: by 2002:a05:622a:109:: with SMTP id u9mr24593514qtw.213.1607358985003;
+        Mon, 07 Dec 2020 08:36:25 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h26sm7498798qkj.96.2020.12.07.08.27.23
+        by smtp.gmail.com with ESMTPSA id b19sm2209575qtr.39.2020.12.07.08.36.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Dec 2020 08:27:24 -0800 (PST)
-Subject: Re: [PATCH 0/6] Overhaul free objectid code
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201207153237.1073887-1-nborisov@suse.com>
+        Mon, 07 Dec 2020 08:36:24 -0800 (PST)
+Subject: Re: [PATCH v2] btrfs: Update btrfs/215
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+References: <20201207092318.950548-1-nborisov@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <18fcc27d-7c9d-7dd3-2c64-6dd86d76aa64@toxicpanda.com>
-Date:   Mon, 7 Dec 2020 11:27:23 -0500
+Message-ID: <1c23bd14-3c30-603f-0014-a1aeeb8ef8ab@toxicpanda.com>
+Date:   Mon, 7 Dec 2020 11:36:23 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <20201207153237.1073887-1-nborisov@suse.com>
+In-Reply-To: <20201207092318.950548-1-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,37 +66,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/7/20 10:32 AM, Nikolay Borisov wrote:
-> This series aims to make the free objectid code more straighforward. Currently
-> the highest used objectid is used which implies that when btrfs_get_free_objectid
-> is called the pre-increment operator is used. At the same time when looking
-> at how highest_objectid is initialised in find_free_objectid it's using the,
-> at first looko unusual, 'BTRFS_FREE_OBJECTID - 1'. Furthermore btrfs_find_free_objectid
-> is badly named as it's used only in initializaion context.
+On 12/7/20 4:23 AM, Nikolay Borisov wrote:
+> This patch updates btrfs/215 to work with latest upstream kernel. That's
+> required since commit 324bcf54c449 ("mm: use limited read-ahead to satisfy read")
+> changed readahead logic to always issue a read even if the RA pages are
+> set to 0. This results in 1 extra io being issued so the counts in the
+> test should be incremented by 1. Also use the opportunity to update the
+> commit reference since it's been merged in the upstream kernel.
 > 
-> With the series applied the following is achieved:
->   * The 2 functions related to free objectid have better naming which describes
->   their semantic meaning.
-> 
->   * highest_objectid is renamed to free_objectid which clearly states what it's
->   supposed to hold, also btrfs_get_free_objectid now returns the value and
->   does a post-increment which seems more logical than the previous cod.
-> 
->   * Now it's not necessary to re-initialize free_objectid in create_subvol
->   since that member is now consistently initialized when a given root is read
->   for the first time in btrfs_init_fs_root->btrfs_init_root_free_objectid.
->   Additionally in btrfs_init_root_free_objectid free_objectid is now initialized
->   to BTRFS_FIRST_FREE_OBJECTID so it's self-explanatory.
-> 
-> This series survived xfstest as well as a new xfstest which verifies precisely
-> this functionality.
-> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+> V2:
+>   * Updated comment above buffered read issue command to better describe why 2
+>   failures are expected.
 
-You can add
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-to the series, thanks,
+Do we want to just test for non-zero, since the original problem was that we 
+weren't getting any error stats at all?  Then we don't have to worry about new 
+edge cases in the future.  Thanks,
 
 Josef
-
