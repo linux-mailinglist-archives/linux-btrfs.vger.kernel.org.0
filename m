@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07262D2F91
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 17:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C1E2D2F80
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 17:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730456AbgLHQ0K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Dec 2020 11:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
+        id S1730384AbgLHQZq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Dec 2020 11:25:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730454AbgLHQ0K (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 11:26:10 -0500
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157BDC0619D4
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Dec 2020 08:25:01 -0800 (PST)
-Received: by mail-qv1-xf44.google.com with SMTP id n9so8480343qvp.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Dec 2020 08:25:01 -0800 (PST)
+        with ESMTP id S1730371AbgLHQZq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 11:25:46 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD399C0619D5
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Dec 2020 08:25:02 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id u21so12273494qtw.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Dec 2020 08:25:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CFQS5oJ0NcfqH76o4PTWikteEs7+zX/hm+AegtBD5x0=;
-        b=IzN2euUfLfrW+IWsMBY+nKe1fCaVFXAO1AbhEu9kqpvALQpyhbOW3jObJi4tQhrIRU
-         70Vs/rvvSyJpu5XxSSPq/WcLwjng5iM2N8XKvLAmjtNlaGkHBW5OLLGfdcYL+VNeYORQ
-         Qh+IIGpATZu4ASDR4sopp1X+mQQ0eXgZwvYfBTOhxbUpAmNc1QOlUvTf89MjkcJ+UefE
-         QZbwcqozHdyY2QHnv9SB4WGrLrgfZBX6NOOM9oYs6SjRyHwZdLnuFEmJMoCeuQytEKxW
-         Mv0avrL92Am2w4pQG9r4xsYXPGuZ0T1OOUVLTVIn4SUxS4+lY/l8QHLhbSqObaYvV/k7
-         egZQ==
+        bh=yH1zhl8oIh4YApB9HRlV1LmZwfiJDb6Ea6cl0tkUsaU=;
+        b=YSo/93yGGQNYDYE2Dm0L+KLu+85My0sEOBsIqKcdG/DQXkBbrUjyy6nQIWjBd31Sri
+         5A6X5mt6RBqjjrhEqKfTYx3l7Y4lPHWINDFXYNvfRtPS5i2srz6OJ/yuqIvqbr4nb1Vu
+         nBRCE+o9rQkONzJEChMiCOmPFpyHxTu/SMeOs5j7iKGmI6+sg4JQAXEdEJmaJ3jtPIXh
+         LA7oN7QF4T8lhU+Ni+YuT3BJBKk7awQTIb5UGkniFK93hjCQS2EEyKvjaESq924eCMn+
+         WpZRe30ok2xN0jI4ljRpKnI9Fn9ujVTHV1+OEiAIqaj10Ons0D5vwQKagD1npfbR7t9G
+         aaTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CFQS5oJ0NcfqH76o4PTWikteEs7+zX/hm+AegtBD5x0=;
-        b=Cm16LOFH6+v8277ygKMxABC61YuQDWLFduvWv2MWDQYwvI4PXK+9XT/vXB9/fizWGd
-         f4DYlYvmDi1MOXkGhBqd0eNZg2DCtCmKwMrZdFEYT59lJQTYgYzdLRPdiIQ0vUutMR6Y
-         tvMHitCa/dTyo6RdMjxviS34iDmk15co8yyXfIGKupk9VxjTi7uAv3tNYP5pcI9DBa86
-         s4qboMhf4o+rDrvlK8w5ce838qqbglDjGANYqtAeXYV6VMEbGF4e5KexvL46DnNhIkb6
-         XCcGts/HuiCaffu7kAaIL4fbhfKgkVS1CT5X0e8AeGHvsLdPCExDY9puUo3shf5SiO1K
-         SzIA==
-X-Gm-Message-State: AOAM532jrJUcVfbFWnVQeolou/FwbPQxLADUhHYTsJVyLmJyW3QvojBi
-        iY1l9RcInawvPMCBTtWRXCw2jD3WixQZMDIM
-X-Google-Smtp-Source: ABdhPJxE5o2UWtIzce9Sj91R/F0qr3iU8ZnZHCcbJU4d+/dyKIhHFTW8ZbJoUXPUSXx13dPCOHyIYQ==
-X-Received: by 2002:a0c:a181:: with SMTP id e1mr27949454qva.53.1607444699774;
-        Tue, 08 Dec 2020 08:24:59 -0800 (PST)
+        bh=yH1zhl8oIh4YApB9HRlV1LmZwfiJDb6Ea6cl0tkUsaU=;
+        b=GYsHz/i5Ic6wCmSU91ATHI2oyTZ6AK5ZkyJpBa9mYNYCFmoyrk34F42kaUp+ALWYrG
+         9ZfKxNU+uYgKawgLCnTt8ZEIJiunvw/2bwC7ebT+p1EKW0v4i3g1Eia1b4vqsPNcr8Lp
+         fvbSg6/Ir+hmjnNjPYMfakBKXRSEVjMYR2AVVupU/nT6FG1BKMKkxoYhuQl8juK6ubSL
+         XiEx+Q+J3eHF4n7Ak45spEc38s7DOcGprqvi9Y/XpW/Iky55OnTHF5TJUT3aWY7PeOUs
+         j8dNGX4HbmnlkweFW7lpSTlQ9N1XMH0LrIq7HSBA7kjaelHZpsNbDsko5jTp1IFuy0FS
+         TUXA==
+X-Gm-Message-State: AOAM532QkuS7KXMD4+jo3k3NuWJo6Kb9VFs0Bm72ToJeBDgi4creicwr
+        gnAMRDd7dgGWsFGMy7+IwZcb4MVa9vLq9kpM
+X-Google-Smtp-Source: ABdhPJzUR+RS7eoqYir103kQ5Gqw+fYVpivoNY4s3GJo4RSU0L2br0nJqz2XtkndLtd1KT0bI1mUGg==
+X-Received: by 2002:ac8:7754:: with SMTP id g20mr11854231qtu.27.1607444701648;
+        Tue, 08 Dec 2020 08:25:01 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c2sm9218096qke.109.2020.12.08.08.24.58
+        by smtp.gmail.com with ESMTPSA id v204sm14946999qka.4.2020.12.08.08.25.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 08:24:59 -0800 (PST)
+        Tue, 08 Dec 2020 08:25:01 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v6 26/52] btrfs: handle record_root_in_trans failure in create_pending_snapshot
-Date:   Tue,  8 Dec 2020 11:23:33 -0500
-Message-Id: <fe192a76a5ab6e430ffc6e6a3157577119b10203.1607444471.git.josef@toxicpanda.com>
+Subject: [PATCH v6 27/52] btrfs: do not panic in __add_reloc_root
+Date:   Tue,  8 Dec 2020 11:23:34 -0500
+Message-Id: <b71ee33aae12524bd3a29e863b22523fdbce31b6.1607444471.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1607444471.git.josef@toxicpanda.com>
 References: <cover.1607444471.git.josef@toxicpanda.com>
@@ -62,44 +62,34 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-record_root_in_trans can currently fail, so handle this failure
-properly.
+If we have a duplicate entry for a reloc root then we could have fs
+corruption that resulted in a double allocation.  This shouldn't happen
+generally so leave an ASSERT() for this case, but return an error
+instead of panicing in the normal user case.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/transaction.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ fs/btrfs/relocation.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 7404d88e6201..375aa2bed36d 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1567,8 +1567,9 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 	dentry = pending->dentry;
- 	parent_inode = pending->dir;
- 	parent_root = BTRFS_I(parent_inode)->root;
--	record_root_in_trans(trans, parent_root, 0);
--
-+	ret = record_root_in_trans(trans, parent_root, 0);
-+	if (ret)
-+		goto fail;
- 	cur_time = current_time(parent_inode);
- 
- 	/*
-@@ -1604,7 +1605,11 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 		goto fail;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index a0453d67749a..36323cd08bc8 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -638,9 +638,11 @@ static int __must_check __add_reloc_root(struct btrfs_root *root)
+ 				   node->bytenr, &node->rb_node);
+ 	spin_unlock(&rc->reloc_root_tree.lock);
+ 	if (rb_node) {
+-		btrfs_panic(fs_info, -EEXIST,
++		ASSERT(0);
++		btrfs_err(fs_info,
+ 			    "Duplicate root found for start=%llu while inserting into relocation tree",
+ 			    node->bytenr);
++		return -EEXIST;
  	}
  
--	record_root_in_trans(trans, root, 0);
-+	ret = record_root_in_trans(trans, root, 0);
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
-+		goto fail;
-+	}
- 	btrfs_set_root_last_snapshot(&root->root_item, trans->transid);
- 	memcpy(new_root_item, &root->root_item, sizeof(*new_root_item));
- 	btrfs_check_and_init_root_item(new_root_item);
+ 	list_add_tail(&root->root_list, &rc->reloc_roots);
 -- 
 2.26.2
 
