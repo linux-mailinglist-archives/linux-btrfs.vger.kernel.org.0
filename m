@@ -2,117 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB202D258C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 09:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492722D25EC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 09:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgLHIQc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Dec 2020 03:16:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38242 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725927AbgLHIQc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:16:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607415345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=EF4RzSGP3m5k1xh+u5qNbFFALPVHv7TpZm8SJnGkXwk=;
-        b=szMcNzjzKgxl1js1kjjfLqPymXJneGgYyicGhck0jGaEzk0Vr3atjcL+QEAj15Ga2fQMAK
-        pWg34eEaOlX6OuOPC8MdaseCguxaKEbFiqneVrVujpmgeV+P8EmCN7cGb4O/Wcnq2S8zAD
-        9udNsJ0ylk4fryiifJe7Uv3fE/vqRIc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DF7EBAB63;
-        Tue,  8 Dec 2020 08:15:44 +0000 (UTC)
-Subject: Re: [PATCH v2] btrfs: Update btrfs/215
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-References: <20201207092318.950548-1-nborisov@suse.com>
- <1c23bd14-3c30-603f-0014-a1aeeb8ef8ab@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <935d9d3b-4cd1-d1a7-d911-424ee0ccbecc@suse.com>
-Date:   Tue, 8 Dec 2020 10:15:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727550AbgLHI3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Dec 2020 03:29:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgLHI3v (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 03:29:51 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84596C0613D6
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Dec 2020 00:29:05 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id l14so15449555ybq.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Dec 2020 00:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=kykEw2BEk9tqE8eIyPPw0YNBTolu5cfPIst6UC7/yyU=;
+        b=YGQRbm6wkt8JnLXonsxQnRM6OLSyjHXF1o+VOmB177vjieoojYMRCXaG+HcoASYx+u
+         NUjz1IYcwtJAM/v4ElVHPWkYevIxSrzz7CNhicGaHLrnjlgrJY//ucEcFW6W/Vt0PwAW
+         jUjwk8NOGrqNhFr8no0W2yIS1rZppXQ2pk2NL0k9baQ590kPIbVT8fWu93fywgZpV09E
+         6V0BzUYdjhk4vU1umv+CUSvSyMKCkn91ij7ArWVQ1+krtVySC1wzEQZjsYtJSZ7ukp1x
+         DabcA3ZyyFYyu7N6YLHZBWkP474zohYzSoZkphmgQxMinZl6RRTxs5bYQJui5K9XjfSs
+         gePQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=kykEw2BEk9tqE8eIyPPw0YNBTolu5cfPIst6UC7/yyU=;
+        b=GwSPv9e8Ur2kLpPkZkJFvSF2xqNs/ZTsU/HrWuVJUtSlcGWqLFAS0lJt4CnJavOHzU
+         tla+YUZUDKGiQNaqN9js4koL0SlBur12ipdgX2jGuNxNjJoE6wi1ekOxnZOOCW/+Pjgm
+         bIVkY2YEe3v3g2j8+v/xAFZ700gGDYsfvCMJMJ8IXmqn557gqR5gOE1YKLP7guCbvvRG
+         6UlhggChte5KmiRAlnXSw27GnhkGpIJ9/YLek85ERaqcNWNrCwhf8mLYtyd/rcTGl2kc
+         SsW/sRJQIQlFdn6qWhKdNi8oTGP1HygEQOo+H10QxB2DVUob30Cz024DUKGkiEUuuFct
+         26+g==
+X-Gm-Message-State: AOAM5317YNmO8Z9oc5R7NNDiGEiQwD+PRb051hHna4GhlAUbQFR/pOmD
+        OgZN6PGIoG5PRFLoKd/zKlvRwv8htOm7NbO+GqI=
+X-Google-Smtp-Source: ABdhPJwvae1wfEZL+dqIvyJJj+9gEmKWzT4wFHQQvuhxoAK/lovPCb7XfYRpE8V8UBskKl62GyrHrxsFjPfvEivFnNg=
+X-Received: by 2002:a25:8708:: with SMTP id a8mr6855929ybl.92.1607416144873;
+ Tue, 08 Dec 2020 00:29:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1c23bd14-3c30-603f-0014-a1aeeb8ef8ab@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7000:4b4e:0:0:0:0 with HTTP; Tue, 8 Dec 2020 00:29:04
+ -0800 (PST)
+Reply-To: cristinacampeell@outlook.com
+From:   "Mrs. Cristina Campbell" <john69345@gmail.com>
+Date:   Tue, 8 Dec 2020 00:29:04 -0800
+Message-ID: <CAFEch-B2ju7bsh+j2pGyUDB5J2LJx2=sdXaHbW7WdgPU6M6gvw@mail.gmail.com>
+Subject: Kannst du mir helfen?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Lieber geliebter,
 
+Bitte lesen Sie dies langsam und sorgf=C3=A4ltig durch, da dies
+m=C3=B6glicherweise eine der wichtigsten E-Mails ist, die Sie jemals
+erhalten. Ich bin Frau Cristina Campbell, ich war mit dem verstorbenen
+Edward Campbell verheiratet. Er arbeitete fr=C3=BCher bei der Shell
+Petroleum Development Company in London und war auch eine Er starb am
+Montag, 31. Juli 2003 in Paris. Wir waren sieben Jahre ohne Kind
+verheiratet.
 
-On 7.12.20 г. 18:36 ч., Josef Bacik wrote:
-> On 12/7/20 4:23 AM, Nikolay Borisov wrote:
->> This patch updates btrfs/215 to work with latest upstream kernel. That's
->> required since commit 324bcf54c449 ("mm: use limited read-ahead to
->> satisfy read")
->> changed readahead logic to always issue a read even if the RA pages are
->> set to 0. This results in 1 extra io being issued so the counts in the
->> test should be incremented by 1. Also use the opportunity to update the
->> commit reference since it's been merged in the upstream kernel.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->> V2:
->>   * Updated comment above buffered read issue command to better
->> describe why 2
->>   failures are expected.
-> 
-> Do we want to just test for non-zero, since the original problem was
-> that we weren't getting any error stats at all?  Then we don't have to
-> worry about new edge cases in the future.  Thanks,
+W=C3=A4hrend Sie dies lesen, m=C3=B6chte ich nicht, dass Sie Mitleid mit mi=
+r
+haben, denn ich glaube, dass jeder eines Tages sterben wird. Bei mir
+wurde Speiser=C3=B6hrenkrebs diagnostiziert und mein Arzt sagte mir, dass
+ich aufgrund meiner komplizierten Gesundheitsprobleme nicht lange
+durchhalten w=C3=BCrde.
 
+Ich m=C3=B6chte, dass Gott mir gn=C3=A4dig ist und meine Seele akzeptiert.
+Deshalb habe ich beschlossen, Wohlt=C3=A4tigkeitsorganisationen / Kirchen /
+Moscheen / mutterlosen Babys / Tempeln / weniger privilegierten Witwen
+Almosen zu geben, da ich m=C3=B6chte, dass dies eine der letzten guten
+Taten ist, die ich tue Mach es auf Erden, bevor ich sterbe. Bisher
+habe ich Geld an einige Wohlt=C3=A4tigkeitsorganisationen in Wales, Polen,
+D=C3=A4nemark und Luxemburg verteilt. Jetzt, wo sich mein
+Gesundheitszustand so stark verschlechtert hat, kann ich das nicht
+mehr selbst tun.
 
-I'da rather have precise numbers so that when something changes and the
-test blips red I can go and do a targeted investigation. Esp. with the
-subapge rework pending.
+Ich habe einmal Mitglieder meiner Familie gebeten, eines meiner Konten
+zu schlie=C3=9Fen und das Geld, das ich dort habe, an
+Wohlt=C3=A4tigkeitsorganisationen in =C3=96sterreich, der Schweiz, Deutschl=
+and,
+den Niederlanden und Italien zu verteilen. Sie haben es abgelehnt und
+das Geld f=C3=BCr sich behalten. Daher vertraue ich nicht sie nicht mehr,
+da sie nicht mit dem zu k=C3=A4mpfen scheinen, was ich ihnen hinterlassen
+habe. Das letzte Geld, von dem niemand etwas wei=C3=9F, ist die riesige
+Bareinzahlung von 6 Millionen US-Dollar in H=C3=B6he von 6.000.000
+US-Dollar, die ich bei einer Bank in Thailand habe, bei der ich den
+Fonds eingezahlt habe. Ich m=C3=B6chte, dass Sie diesen Fonds f=C3=BCr
+Wohlt=C3=A4tigkeitsprogramme verwenden und die Menschheit in Ihrem Land
+unterst=C3=BCtzen, wenn Sie nur aufrichtig sind.
 
-> 
-> Josef
-> 
+Ich habe diese Entscheidung getroffen, weil ich kein Kind habe, das
+dieses Geld erben wird. Ich habe keine Angst vor dem Tod, daher wei=C3=9F
+ich, wohin ich gehe. Ich wei=C3=9F, dass ich im Busen des Herrn sein werde.
+Sobald ich Ihre Antwort erhalten habe, werde ich Ihnen den Kontakt der
+Bank geben und Ihnen ein Genehmigungsschreiben ausstellen, das Sie als
+urspr=C3=BCnglichen Beg=C3=BCnstigten dieses Fonds erm=C3=A4chtigt, dieses
+Wohlt=C3=A4tigkeitsprogramm sofort in Ihrem Land zu starten.
+
+Ich m=C3=B6chte, dass Sie immer f=C3=BCr mich beten. Jede Verz=C3=B6gerung =
+Ihrer
+Antwort gibt mir Raum f=C3=BCr die Beschaffung einer anderen Person f=C3=BC=
+r
+denselben Zweck. Wenn Sie nicht interessiert sind, entschuldigen Sie
+bitte, dass ich Sie kontaktiert habe. Sie k=C3=B6nnen mich erreichen oder
+mir =C3=BCber meine private E-Mail-Adresse antworten:
+(cristinacampeell@outlook.com).
+
+Vielen Dank,
+Dein,
+Frau Cristina Campbell
+Email; cristinacampeell@outlook.com
