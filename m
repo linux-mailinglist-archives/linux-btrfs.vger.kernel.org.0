@@ -2,131 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45112D2BD4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 14:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726712D2C37
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 14:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729067AbgLHN0P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Dec 2020 08:26:15 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:33913 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729025AbgLHN0P (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 08:26:15 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Cr1Bp4SPsz1qt3c;
-        Tue,  8 Dec 2020 14:25:22 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Cr1Bp3w85z1tYW1;
-        Tue,  8 Dec 2020 14:25:22 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id uVIR6yKWW-xH; Tue,  8 Dec 2020 14:25:20 +0100 (CET)
-Received: from babic.homelinux.org (host-88-217-136-221.customer.m-online.net [88.217.136.221])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPS;
-        Tue,  8 Dec 2020 14:25:20 +0100 (CET)
-Received: from localhost (mail.babic.homelinux.org [127.0.0.1])
-        by babic.homelinux.org (Postfix) with ESMTP id 37FD1454088D;
-        Tue,  8 Dec 2020 14:25:20 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at babic.homelinux.org
-Received: from babic.homelinux.org ([IPv6:::1])
-        by localhost (mail.babic.homelinux.org [IPv6:::1]) (amavisd-new, port 10024)
-        with ESMTP id oTjOX12qyRzq; Tue,  8 Dec 2020 14:25:17 +0100 (CET)
-Received: from [192.168.178.64] (paperino.fritz.box [192.168.178.64])
-        by babic.homelinux.org (Postfix) with ESMTP id AA6D345403B3;
-        Tue,  8 Dec 2020 14:25:16 +0100 (CET)
-Subject: Re: btrfs-progs license
-To:     Neal Gompa <ngompa13@gmail.com>, Stefano Babic <sbabic@denx.de>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>,
-        David Sterba <dsterba@suse.com>
-References: <b927ca28-e280-4d79-184f-b72867dbdaa8@denx.de>
- <CAEg-Je9iUAn+9H7p+qm8D+bSY382VkTKZ0H4ExNLePAEZT9nEA@mail.gmail.com>
-From:   Stefano Babic <sbabic@denx.de>
-Autocrypt: addr=sbabic@denx.de; prefer-encrypt=mutual; keydata=
- mQGiBEfdB5IRBADkpYcnh2BoAkGD5p186ysEkWlcp5DU07m7BKzvkEMRhFjeFUOU0klKNmh0
- ZM6rKpYpAYPYBm9YahMyqvj9DmLrZ4yfJ5MssvW9SRETmHpva+h1rN+DzmEcwrqZmLG1JWGy
- LA5ruJaFSzxJHBoROoog1NDMbNDB8A9F7VKrePfkVwCgmODpW/uh2IuMYLVidzDeuvo7alED
- /iV8rwU7C+eBcKy2htuDsEmsqlkBxIDM7IO6h5XxdyqbZOYizuBP3Ksb6xK54weEaB5aQs7S
- 8N9Soi0p1Xh0LMWj6PBCzTC4LF+OCGEMBPc6bBHNzivChgztJlUMioCDSVpOXB/QpBaK302G
- yP5WdmcB1Jn6neq/YRlxHN38MV2yA/46jnzeUotL9LliVZKA/ql4GmyWg2Ae1BUiCqEJQNwl
- knGJOmIS4uABLArB5HjsfDU5hA9FORaNGCIiZlezBkZ3JXA2uQMQhfgqBXrZt4j1fcw9I7E+
- 7IZ2kSCeTPZFLd5FiGQPDOm3Z9eHrpK6pmBGMeBG0pDgUEbN9awyLNBLj7QeU3RlZmFubyBC
- YWJpYyA8c2JhYmljQGRlbnguZGU+iGMEExECACMCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIX
- gAUCT9deSgIZAQAKCRD09WXkmmjvppF1AKCRl8d49K4yxWzdBVRTTWG55cyo/gCfRD1RAttl
- R1ofs2wGLHNtXousyL25Ag0ER90HmBAIAIFfX4bKnOmCyB3nPh+jbXZuBSMZTuyDEnguRxl5
- N8Q0ayofQwucCBjXYv65sQ9Rq6FNhEnWqUZBu8A5CwvSakOFOGNC5ta/8VxVRLh0Z0ZTgEep
- SKiPonJyacCbmgWDECdVrKowV7QB9be3Wu67uAZ74rPw2Kd7f0FKnL3djvVRMaBWFIpyQ6SE
- bGOCJjhRQ5L1pIM1Soko+reU7eO+1g6IBw6YkFJisdQE6fzTwaSqUKPPsQLz/W03invQltOb
- Eg7ZwtFs0DFonr1DMm57ksiEhW6SN1wylRO/JzRYG1Qe7u1EVln6iV3ilBvbbfkyRssk4/0e
- kicpSnQknA72YOMAAwYH+QGpAiQ4hAMHrp1bUrtyGXYdeQpYufIZAM4etOnBy/G+e1nfu6y+
- jH4SN9sVK7bwBBAbhEJqkqR5LVsFIRapThJQOWB11rQxLpwkBU9wao/pRM+o95ujGo32WUzf
- wWrzWrkTDy7vMCZuUOLVi4n1GZlUAwpG4rzb6UxPC6GWymkVWGgXp1NC58og5i3Y+rKT7+Xi
- XT2BtvC6PDepoH4JhD+9OkHQO6UfTxPSmtgNbTgtl6L6tj+bm5dOHgkPJFMkEiG8qhUZYQzb
- bYz37orRbA72M2bxK76e9QKn0mVu+d/YCd8wRcvvJbGsozpzcxPvD5Wy5RNJCES8McPtAseU
- tMeISQQYEQIACQUCR90HmAIbDAAKCRD09WXkmmjvpv+3AJ9RakBsH1j0X/Kxp6t2lf0VUfS2
- qACfZ+J6ktk8PKNuyHf0J/I0mbCrhV4=
-Message-ID: <4e94f309-2fed-7ad6-a322-1dcfeaeb5c6d@denx.de>
-Date:   Tue, 8 Dec 2020 14:25:16 +0100
+        id S1729265AbgLHNwG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Dec 2020 08:52:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47450 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728758AbgLHNwG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:52:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607435479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=EH1fhKzEWkXuUbMxPgK0nCdk1i5+54sTTEfdjDHFrTk=;
+        b=muZNjkJnQtiK7WvXGQGv17KDYGDpRP6QFLuV2myMNQNuVKSJIlgC5UNUKnb70pEypj+Gpz
+        SOzWf2tRc7QY+UVs8UhDE//1jdbAp2q4TMXXZjI+tP7eEBu6R03r2dBHagMCcTtc4stsuW
+        5+8l1sLt0w/JwQAsTsa9wK/mD5k5JGk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 23A2DACC3;
+        Tue,  8 Dec 2020 13:51:19 +0000 (UTC)
+Subject: Re: [PATCH v5 02/52] btrfs: modify the new_root highest_objectid
+ under a ref count
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1607349281.git.josef@toxicpanda.com>
+ <790aae14daf733fb8bd0d7cf5b139b18a837004f.1607349282.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <a973477e-d369-e5d1-92b9-38984c588567@suse.com>
+Date:   Tue, 8 Dec 2020 15:51:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAEg-Je9iUAn+9H7p+qm8D+bSY382VkTKZ0H4ExNLePAEZT9nEA@mail.gmail.com>
+In-Reply-To: <790aae14daf733fb8bd0d7cf5b139b18a837004f.1607349282.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Neal,
 
-On 08.12.20 13:37, Neal Gompa wrote:
-> On Tue, Dec 8, 2020 at 4:52 AM Stefano Babic <sbabic@denx.de> wrote:
->>
->> Hi,
->>
->> I hope I am not OT. I ask about license for btrfs-progs and related
->> libraries. I would like to use libbtrfsutils in a FOSS project, but this
->> is licensed under GPLv3 (even not LGPL) and it forbids to use it in
->> projects where secure boot is used.
->>
+
+On 7.12.20 г. 15:56 ч., Josef Bacik wrote:
+> Qu pointed out a bug in one of my error handling patches, which made me
+> notice that we modify the new_root->highest_objectid _after_ we've
+> dropped the ref to the new_root.  This could lead to a possible UAF, fix
+> this by modifying the ->highest_objectid before we drop our reference to
+> the new_root.
 > 
-> Please don't use this phrasing, because it's not true. There is no
-> circumstance where the GNU version 3 licenses (GPL, LGPL, AGPL) are
-> incompatible with secure boot environments. What you're talking about
-> is an additional restriction *you* are imposing in which you don't
-> want to make it possible for the software to be user-serviceable for
-> any purpose. That's not the same thing as "secure boot".
-> 
-
-Sorry for misunderstanding, you're right - but you have perfectly
-understood what I meant ;-)
-
->> Checking code in btrfs-progs, btrfs is licensed under GPv2 (fine !) and
->> also libbtrfs. But I read also that libbtrfs is thought to be dropped
->> from the project. And checking btrfs, this is linked against
->> libbtrfsutils, making the whole project GPLv3 (and again, not suitable
->> for many industrial applications in embedded systems).
->>
->> Does anybody explain me the conflict in license and if there is a path
->> for a GPLv2 compliant library ?
->>
-> 
-> I'm not sure there is a conflict, but there are relatively few authors
-> of the libbtrfsutil code, so we could get the license downgraded to
-> LGPLv2+ instead of being LGPLv3+.
-
-This would be really nice !
-
-Regards,
-Stefano
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 
--- 
-=====================================================================
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+Just a heads up that this patch becomes redundant if my free_objectid
+series gets merged first (which given the size of this patchset is
+likely to happen).
