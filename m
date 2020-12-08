@@ -2,84 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E57E2D34C1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 22:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D792D368A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 23:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729624AbgLHVAp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Dec 2020 16:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
+        id S1731541AbgLHWzA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Dec 2020 17:55:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729343AbgLHVAp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 16:00:45 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3A8C0613D6
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Dec 2020 13:00:05 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id v29so209896pgk.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Dec 2020 13:00:05 -0800 (PST)
+        with ESMTP id S1730812AbgLHWy7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 17:54:59 -0500
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AA2C061794;
+        Tue,  8 Dec 2020 14:54:19 -0800 (PST)
+Received: by mail-wm1-x344.google.com with SMTP id c198so14823wmd.0;
+        Tue, 08 Dec 2020 14:54:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cwW3YgsvDtVRzNj3KuppUzkTSnOFREFUC/UYEEjQ7fI=;
-        b=valfG4XwYrdBXW6tNPMQaxldyYPUbQ9bNDfRbtZhIqH3Kas+n/c6LlL6ErZjrJ6xh9
-         pvXI4YGvEGoeP4epNyMdIO8fAVMPicqa+E214OYbejhtpQgjweTetUysopEN8pQl0CXo
-         LRHxAj+gBpRYvbkIVR7rPHYJn0MjYN42wAWHM5JHSTlEhpDSp7K2kzfe1GbCBBzAWW2z
-         NsbPy0PdMW6VG1ZscLePbqkvZj1Oel3XxBjyLhtGboCSJkU+4zeYhiA4kleuir8yvSEt
-         1V2JtVPmPQp4xE5u6IJI+3jSX9UgMwclTRpi2CznIafKACddK4VgsU9KANPztYfsjwNS
-         chuQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
+        b=LhH39ZJllmZgRfTf/stoFJUkdm/dcAq3xnEuGAp8Va6ittVOc4iIH8MTdfV7F3DXgY
+         j3v5mJq/mSgfFDthJdNwlTUTwaCdcDGtJ9nyTJRCiBh7Bcz28jPFFincwK7yvmYqww+u
+         DAKUE12Za6tSxJ7Rbe0zSQt5qrwj+HIt2wgsec2kNK5HLwOFFyLjlQsWs7zXeSE4c+qB
+         CnxDu+nEbuB6rOAyoyuc9jUtZDFbOJxyqkE3eylvSJUrWtUSSw6hC2tAP4Uz/ne32UcK
+         bbFq2NUfAMF+5bmOEe43HzoPU6V9+bYd7SP94MCjgLKDEkRjS+HLojKmjx+3QNpVvf7V
+         GcdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cwW3YgsvDtVRzNj3KuppUzkTSnOFREFUC/UYEEjQ7fI=;
-        b=uMXcrLHZUyqYx8gu6f9a3JtsYhR1+lfxvG+yXR89qIHGUgC3X/NWm7yNvEIE52tDE/
-         1rIScjPSiQJzUoOShwf/ZhorqoBdH9MOh1dqbMXg2BE2A2D+V7YwHx3HnpjYHDoXhrUL
-         0KUYOorJkBQRxEMs+poxhoxAxApjIprOTUwBCYWbQ36LjTjN9Q6CvqIeD7IOD5bCjio2
-         pEyU7UWSOcXD+B8KPSQsC0tr/Oo6b/zWrIOfs7xJ4lSUcBfvoQS7vO0Gv3Jx9jj/tMAX
-         F2rxW2ZUDDKGBJslGVXi/7GoOeoZHpKZvO3w8FuKMBuAGHwQxOL+eBD6dqnLBv1yaA0f
-         Aj8g==
-X-Gm-Message-State: AOAM531qZ4GkFy1bFZbmRwqf/5I7D0YVxifddOqBVClFoVvPMubSrPR2
-        r2kgfMYLQ4VtXXM6/un/zsYtzQ==
-X-Google-Smtp-Source: ABdhPJw4aE/wJJSwKSOgwdk9Gu82pnReFbn3gcKUyxkDtqLnYCvIJ7zfG4dNVB0GqPbEIZAqPPf35g==
-X-Received: by 2002:a17:90a:bf90:: with SMTP id d16mr6019154pjs.200.1607461204677;
-        Tue, 08 Dec 2020 13:00:04 -0800 (PST)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:c035])
-        by smtp.gmail.com with ESMTPSA id z23sm39903pfn.202.2020.12.08.13.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 13:00:03 -0800 (PST)
-Date:   Tue, 8 Dec 2020 13:00:01 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Stefano Babic <sbabic@denx.de>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: Re: btrfs-progs license
-Message-ID: <X8/pUT3B1+uluATv@relinquished.localdomain>
-References: <b927ca28-e280-4d79-184f-b72867dbdaa8@denx.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
+        b=MY63rgHCCnisO9qVA1gf5tmemcitzdYr41OGqSFl6tN4reyZx7Zwwtbg8BJbqduaFf
+         CP8rb8CYruDB2RUgfFKvnV+FVVnsnGgRSOxXkffhWQqzlIZfqKd49gfRBuP9AtW+K69B
+         EoX5lHTl0NSMTZxO11RnPjgHVai45g+y3RPll8lr9edVJF8yE9puia4DdnGxWautqLQu
+         22pnJECqT9wOMzmHaOpk0/6E9fOTZMoW9FOoNtt6t5dIj4zIyvksTwlEG6EFX7M6tXAY
+         d1lFQNLVITAgJRKtkDVxkz7TWPKghugTTYy67Eoua5rBRxqTFds/q+ZQiDP4+1Bvwxqx
+         t0Lw==
+X-Gm-Message-State: AOAM530UdjG8ydEoaDtsBcYSrGAfo00kpvKML0Vz6kEq3TX+/klBe+zq
+        3rvHBl8CIoHZiij7v0XYXEyP8ULgahwTqYCjoc0=
+X-Google-Smtp-Source: ABdhPJw400Ws44xNLBD4ZTOJFxkw8sVbXemco2YVdG5lmPlUv7qXS9ndgp56DxsGieEi2wCieOAMSG4duQr34HnEoD0=
+X-Received: by 2002:a1c:b742:: with SMTP id h63mr64902wmf.122.1607468057844;
+ Tue, 08 Dec 2020 14:54:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b927ca28-e280-4d79-184f-b72867dbdaa8@denx.de>
+References: <20201206064624.GA5871@ubuntu> <X8yWxe/9gzosFOam@kroah.com>
+ <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
+ <CAM7-yPQgkh=JnW_mtX9fXRin87sHQjh+58aY3asgBvHK+g3V_A@mail.gmail.com> <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
+In-Reply-To: <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
+From:   Yun Levi <ppbuk5246@gmail.com>
+Date:   Wed, 9 Dec 2020 07:54:06 +0900
+Message-ID: <CAM7-yPQ_Ak+uzPadeuAUCjv-MP=aK1HuKXC=czzM_+=wWCvnLQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] lib/find_bit.c: Add find_last_zero_bit
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        richard.weiyang@linux.alibaba.com, christian.brauner@ubuntu.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, rdunlap@infradead.org,
+        masahiroy@kernel.org, peterz@infradead.org,
+        peter.enderborg@sony.com, krzk@kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Kees Cook <keescook@chromium.org>, broonie@kernel.org,
+        matti.vaittinen@fi.rohmeurope.com, mhiramat@kernel.org,
+        jpa@git.mail.kapsi.fi, nivedita@alum.mit.edu,
+        Alexander Potapenko <glider@google.com>, orson.zhai@unisoc.com,
+        Takahiro Akashi <takahiro.akashi@linaro.org>, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        dushistov@mail.ru,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch@vger.kernel.org, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:49:10AM +0100, Stefano Babic wrote:
-> Hi,
-> 
-> I hope I am not OT. I ask about license for btrfs-progs and related
-> libraries. I would like to use libbtrfsutils in a FOSS project, but this
-> is licensed under GPLv3 (even not LGPL) and it forbids to use it in
-> projects where secure boot is used.
+> btrfs' free space cache v1 is going to be removed some time in the
+> future so introducing kernel-wide change just for its own sake is a bit
+> premature
 
-libbtrfsutil is LGPLv3, where did you get the idea that it is GPLv3?
+But, I think it's not quite a kernel-wide change just add the
+correspondent function to find_last_bit.
+So, if we add this feature, maybe some users will use it in near future.
+As my fault, I sent this patch without cover in patch [0/8] to explain why
+So, I will send this patch again to take some review...
 
-> Checking code in btrfs-progs, btrfs is licensed under GPv2 (fine !) and
-> also libbtrfs. But I read also that libbtrfs is thought to be dropped
-> from the project. And checking btrfs, this is linked against
-> libbtrfsutils, making the whole project GPLv3 (and again, not suitable
-> for many industrial applications in embedded systems).
-> 
-> Does anybody explain me the conflict in license and if there is a path
-> for a GPLv2 compliant library ?
+Sorry to make a noise again and Thanks to advice.
 
-No objections from me to make it LGPLv2 instead, I suppose. Dave,
-thoughts?
+On Sun, Dec 6, 2020 at 6:01 PM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 6.12.20 =D0=B3. 10:56 =D1=87., Yun Levi wrote:
+> >> This, and the change above this, are not related to this patch so you
+> >> might not want to include them.
+> >
+> >> Also, why is this patch series even needed?  I don't see a justificati=
+on
+> >> for it anywhere, only "what" this patch is, not "why".
+> >
+> > I think the find_last_zero_bit will help to improve in
+> > 7th patch's change and It can be used in the future.
+> > But if my thinking is bad.. Please let me know..
+> >
+> > Thanks.
+> > Levi.
+> >
+>
+> btrfs' free space cache v1 is going to be removed some time in the
+> future so introducing kernel-wide change just for its own sake is a bit
+> premature. Also do you have measurements showing it indeed improves
+> performances?
