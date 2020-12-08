@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726712D2C37
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 14:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84082D2C4A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 14:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbgLHNwG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Dec 2020 08:52:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47450 "EHLO mx2.suse.de"
+        id S1728758AbgLHNyo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Dec 2020 08:54:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49020 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728758AbgLHNwG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Dec 2020 08:52:06 -0500
+        id S1726338AbgLHNyo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Dec 2020 08:54:44 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607435479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1607435637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=EH1fhKzEWkXuUbMxPgK0nCdk1i5+54sTTEfdjDHFrTk=;
-        b=muZNjkJnQtiK7WvXGQGv17KDYGDpRP6QFLuV2myMNQNuVKSJIlgC5UNUKnb70pEypj+Gpz
-        SOzWf2tRc7QY+UVs8UhDE//1jdbAp2q4TMXXZjI+tP7eEBu6R03r2dBHagMCcTtc4stsuW
-        5+8l1sLt0w/JwQAsTsa9wK/mD5k5JGk=
+        bh=P7VshYJq3Kj5URBgrIB6EnANw02V0j/oYT0791lKhGA=;
+        b=jbfySZAJyRb0FCpDnHOPWUJzG671CokvGJOcrVBcQCmXv9vSbTZWfRVjW8z6iil60FCy1Z
+        1lexPv4PcQ+818eobXSlglxT9f4wnaNhf4raU3lznuxpNQk947Z1Q17smVp1JYcJ/Nu0P2
+        XLu5uRYt2rvECwVP2qH5rKYx9RlZBj0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 23A2DACC3;
-        Tue,  8 Dec 2020 13:51:19 +0000 (UTC)
-Subject: Re: [PATCH v5 02/52] btrfs: modify the new_root highest_objectid
- under a ref count
+        by mx2.suse.de (Postfix) with ESMTP id 98283AC94;
+        Tue,  8 Dec 2020 13:53:57 +0000 (UTC)
+Subject: Re: [PATCH v5 27/52] btrfs: do not panic in __add_reloc_root
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
+Cc:     Qu Wenruo <wqu@suse.com>
 References: <cover.1607349281.git.josef@toxicpanda.com>
- <790aae14daf733fb8bd0d7cf5b139b18a837004f.1607349282.git.josef@toxicpanda.com>
+ <5da4874bbf15dd264254c691d7784220f697ae71.1607349282.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <a973477e-d369-e5d1-92b9-38984c588567@suse.com>
-Date:   Tue, 8 Dec 2020 15:51:18 +0200
+Message-ID: <2b0c2c84-4377-27e4-d57a-3f6c13e8ff9a@suse.com>
+Date:   Tue, 8 Dec 2020 15:53:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <790aae14daf733fb8bd0d7cf5b139b18a837004f.1607349282.git.josef@toxicpanda.com>
+In-Reply-To: <5da4874bbf15dd264254c691d7784220f697ae71.1607349282.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,16 +88,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 7.12.20 г. 15:56 ч., Josef Bacik wrote:
-> Qu pointed out a bug in one of my error handling patches, which made me
-> notice that we modify the new_root->highest_objectid _after_ we've
-> dropped the ref to the new_root.  This could lead to a possible UAF, fix
-> this by modifying the ->highest_objectid before we drop our reference to
-> the new_root.
+On 7.12.20 г. 15:57 ч., Josef Bacik wrote:
+> If we have a duplicate entry for a reloc root then we could have fs
+> corruption that resulted in a double allocation.  This shouldn't happen
+> generally so leave an ASSERT() for this case, but return an error
+> instead of panicing in the normal user case.
+
+nit: codespell detects panicing as a typo (which it is indeed)
+
 > 
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-
-Just a heads up that this patch becomes redundant if my free_objectid
-series gets merged first (which given the size of this patchset is
-likely to happen).
