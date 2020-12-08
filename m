@@ -2,123 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6332D23F2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 07:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB202D258C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 09:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725927AbgLHGzG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Dec 2020 01:55:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgLHGzG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 01:55:06 -0500
-Received: from ravenhurst.kallisti.us (ravenhurst-smtp-tx.kallisti.us [IPv6:2600:3c03:e000:2e0::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075E9C0613D6
-        for <linux-btrfs@vger.kernel.org>; Mon,  7 Dec 2020 22:54:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kallisti.us
-        ; s=20180707; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=NXUV9Ummod0l+85XoTV0E6XrtFw9NzFeA3LQyyYgcQM=; b=K/61T3t8ujB2cNNz7qZSDc1Zid
-        uE2JpkhXwq2/AiikP/dJg1eL/1SN2KxJG74EVKQQ6tsTWjSQdwq3Q0OUwNVyvXDIUvSoSrvGIa1R5
-        Zi72XTTd/o/NNpIfHIRiA5W1XZu4CEwRNGIcbeyPT8BnQTjgOM2wW193y2j6ypIwGfdAwd4LrXvRw
-        cnM1rfOEcBFXJb8NuA08hby8cYu3oQJDwAMPmCErfCFJUWl8oj4hxc7pQiouLJ151P+9rA/DY4n2L
-        h/hmnxdBHJ1OsfmhtIl1Wv8vnzDB86NBDFfluCsn2dSHIGSUMNXIzkuQCcL3I0Fo1GS8RNJTBlUL0
-        5Q1O3PUw==;
-Received: from [2606:6000:4500:1400:254a:4d71:ec95:4de7] (helo=stgulik)
-        by ravenhurst.kallisti.us with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ross@kallisti.us>)
-        id 1kmWtE-0004Gk-Ug; Tue, 08 Dec 2020 01:54:25 -0500
-Date:   Mon, 7 Dec 2020 22:54:20 -0800
-From:   Ross Vandegrift <ross@kallisti.us>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: tree-checker corrupt leaf error
-Message-ID: <20201208065420.sftpdmth34lsnsnx@stgulik>
-References: <20201208010653.7r5smyo6vloqk7qv@vanvanmojo.kallisti.us>
- <CAJCQCtQe=1m-43Fg_QQ8eOjWyTjHibs_0yiBFg=+wVQBUc_NMw@mail.gmail.com>
+        id S1727527AbgLHIQc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Dec 2020 03:16:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38242 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725927AbgLHIQc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Dec 2020 03:16:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607415345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=EF4RzSGP3m5k1xh+u5qNbFFALPVHv7TpZm8SJnGkXwk=;
+        b=szMcNzjzKgxl1js1kjjfLqPymXJneGgYyicGhck0jGaEzk0Vr3atjcL+QEAj15Ga2fQMAK
+        pWg34eEaOlX6OuOPC8MdaseCguxaKEbFiqneVrVujpmgeV+P8EmCN7cGb4O/Wcnq2S8zAD
+        9udNsJ0ylk4fryiifJe7Uv3fE/vqRIc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DF7EBAB63;
+        Tue,  8 Dec 2020 08:15:44 +0000 (UTC)
+Subject: Re: [PATCH v2] btrfs: Update btrfs/215
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+References: <20201207092318.950548-1-nborisov@suse.com>
+ <1c23bd14-3c30-603f-0014-a1aeeb8ef8ab@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <935d9d3b-4cd1-d1a7-d911-424ee0ccbecc@suse.com>
+Date:   Tue, 8 Dec 2020 10:15:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtQe=1m-43Fg_QQ8eOjWyTjHibs_0yiBFg=+wVQBUc_NMw@mail.gmail.com>
+In-Reply-To: <1c23bd14-3c30-603f-0014-a1aeeb8ef8ab@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 08:17:22PM -0700, Chris Murphy wrote:
-> On Mon, Dec 7, 2020 at 6:47 PM Ross Vandegrift <ross@kallisti.us> wrote:
-> > I've got a single-device btrfs filesystem that fails to mount and I'm
-> > not sure how to proceed:
-> >
-> > [  118.556075] BTRFS: device label backup devid 1 transid 55709 /dev/dm-21
-> > [  118.581857] BTRFS info (device dm-21): use zlib compression, level 3
-> > [  118.581858] BTRFS info (device dm-21): disk space caching is enabled
-> > [  120.035857] BTRFS info (device dm-21): enabling ssd optimizations
-> > [  120.037493] BTRFS critical (device dm-21): corrupt leaf: root=5 block=3420303224832 slot=18 ino=265, invalid inode transid: has 140301292396544 expect [0, 55710]
-> > [  120.065595] BTRFS critical (device dm-21): corrupt leaf: root=5 block=3420303224832 slot=18 ino=265, invalid inode transid: has 140301292396544 expect [0, 55710]
+
+
+On 7.12.20 г. 18:36 ч., Josef Bacik wrote:
+> On 12/7/20 4:23 AM, Nikolay Borisov wrote:
+>> This patch updates btrfs/215 to work with latest upstream kernel. That's
+>> required since commit 324bcf54c449 ("mm: use limited read-ahead to
+>> satisfy read")
+>> changed readahead logic to always issue a read even if the RA pages are
+>> set to 0. This results in 1 extra io being issued so the counts in the
+>> test should be incremented by 1. Also use the opportunity to update the
+>> commit reference since it's been merged in the upstream kernel.
+>>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>> V2:
+>>   * Updated comment above buffered read issue command to better
+>> describe why 2
+>>   failures are expected.
 > 
-> $ printf '%x %x\n' 140301292396544 55710
-> 7f9a70b1e000 d99e
+> Do we want to just test for non-zero, since the original problem was
+> that we weren't getting any error stats at all?  Then we don't have to
+> worry about new edge cases in the future.  Thanks,
+
+
+I'da rather have precise numbers so that when something changes and the
+test blips red I can go and do a targeted investigation. Esp. with the
+subapge rework pending.
+
 > 
-> Looks like it's just garbage, not a bit flip. It'd be useful to know
-> if there are other issues:
+> Josef
 > 
-> $ sudo btrfs check --check-data-csum /dev/sdXY
-> 
-> This is read-only.
-
-The output is exactly the same as the first run, without --check-data-csum.
-Many other errors, some examples:
-
-root 5 inode 12718874 errors 100000, invalid inode generation or transid
-root 958 inode 1293 errors 400, nbytes wrong
-root 958 inode 172954 errors 100, file extent discount
-Found file extent holes:
-        start: 57344, len: 4096
-
-(My first message has full log attached.)
-
-> > The wiki suggests reverting to the working kernel, so I rebooted into
-> > 4.19.160 (stable was updated) - but now I get the same error on 4.19.
-> 
-> I'm going to guess it was due to a bug in an older kernel and it just
-> got exposed by a newer kernel, and bad luck that it's now also visible
-> with the old kernel. It could also be some kind of device (firmware)
-> bug that got hit at one time, but is just now seen by the kernel.
-> 
-> >
-> > The list archives point to using `btrfs inspect-internal inode-resolve`
-> > to find problematic files and copying-then-deleting them.  But since I
-> > cannot mount, this doesn't work.
-> 
-> It might be possible to use a backuproot, but with rw it's possible it
-> makes things worse if it actually uses a stale tree.
-> 
-> mount -o ro,usebackuproot
-> 
-> Does that mount?
-
-Nope- same/similar failure in dmesg:
-
-[23818.342270] BTRFS critical (device dm-21): corrupt leaf: root=5 block=3420303224832 slot=18 ino=265, invalid inode transid: has 140301292396544 expect [0, 55711]
-[23818.575658] BTRFS critical (device dm-21): corrupt leaf: root=5 block=3420303224832 slot=18 ino=265, invalid inode transid: has 140301292396544 expect [0, 55711]
-
-> If so, at least you can update your backups. Only then is it OK to try
-> btrfs check --repair because while it should be safe, it can make
-> things worse.
-
-This fs is my backups.  So while it's a bummer, losing the data isn't the end
-of the world.
-
-> https://btrfs.wiki.kernel.org/index.php/Restore
-> 
-> That's quite tedious to figure out. It might help to ask on #btrfs and
-> wait for a reply, because sometimes there's a lot of back and forth to
-> iterate.
-
-Thanks for the reference, I'll take a look.  I will probably decide to try a
-repair and write off the data if necessary, since it's just backups.
-
-Ross
