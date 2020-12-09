@@ -2,128 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111002D472E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Dec 2020 17:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D782D4B7E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Dec 2020 21:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731285AbgLIQwL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Dec 2020 11:52:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        id S1730297AbgLIUSR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Dec 2020 15:18:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730644AbgLIQwG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Dec 2020 11:52:06 -0500
-Received: from ravenhurst.kallisti.us (ravenhurst-smtp-tx.kallisti.us [IPv6:2600:3c03:e000:2e0::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA72EC0613D6
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Dec 2020 08:51:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kallisti.us
-        ; s=20180707; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=hV1N6fryXNTmZBb8U2L1e1J+RzkGVwYc5JZC5KHO+uc=; b=Q+99pDSSZZ9gjiFeDUWEIPs0VU
-        XKz6g+lE35L258yYjMC7mCfVtNp7h3F6IQcsNGz7WJ1kSQKfMb3Bv9wS4m7tIzeq6f8IjO29W2ZIm
-        NVz+TjAFGEw00DVkXPTtoeq2gFH0wR01ggZDxP/Qvi7VeUUOl56A5unffS1uDt17D0sFG2nrOKdIA
-        5TtBI8695h6Q4V0Cv2ht2UjgsrjiZCZT+bnrK0KRqu2C4moReKtZndJCmwQDeJE2oy65iJ3DlIut6
-        XAW1xflq39tRhFRNZ8yS66CsGm70fcn6NHGeeXB+L8+VFF2rTsM2/lbbx5gPwB23ykqbZn68GyQy5
-        ISt6A3pg==;
-Received: from [2606:6000:4500:1400:31af:5cdf:e695:97eb] (helo=vanvanmojo.kallisti.us)
-        by ravenhurst.kallisti.us with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ross@kallisti.us>)
-        id 1kn2gW-0003rQ-JB; Wed, 09 Dec 2020 11:51:24 -0500
-Date:   Wed, 9 Dec 2020 08:51:20 -0800
-From:   Ross Vandegrift <ross@kallisti.us>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: tree-checker corrupt leaf error
-Message-ID: <20201209164308.noqw2rtukxcgrf4w@vanvanmojo.kallisti.us>
-References: <20201208010653.7r5smyo6vloqk7qv@vanvanmojo.kallisti.us>
- <b3c3ef0d-13c7-f3e4-74b8-38c441fb9577@gmx.com>
+        with ESMTP id S2388193AbgLIUSM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Dec 2020 15:18:12 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9752FC061793
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Dec 2020 12:17:32 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id m185so1482580qkf.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Dec 2020 12:17:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qu3JMv0vupZJs2S1Ty+ZOmfqDK5t5WOYD76k4nOTMzw=;
+        b=SorrNaWZhBePFgRTpRj8CJ/KjtL/Lj988+BuIeCcAH1PRgjH9VbBYCFhLim7tC/OHz
+         4uiGeTh7JCrn7Jf4ZNgxfISsHtZSnPg8iIaXjEcOho+rVVy3xvPBgAv7Qp56bLGjpKRa
+         m8qgOJ7zQ+N/EPb/QwqoSyON7pGn+oA4dQ7rfA4ShXJ4C2J1ULbOdzQZAhTCi+mnfMtu
+         bfFv7bCioWdP5d7f8oorCmqf9k8LgOfngdTfry6wOvIIcE4AcpOsTNf22dBD7W42T87I
+         xVkU2HvEzDI4kSS9AHEJny9nKXod/B0yYP18+VFxbj9o/iWhqtQPWz5Q87CxBHtECP1+
+         lWCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qu3JMv0vupZJs2S1Ty+ZOmfqDK5t5WOYD76k4nOTMzw=;
+        b=sdVRBT+gYUVwG7FDZ37qsomifJOxtzsyxrCG/6XCvy2Q5t0yVa4AmWnyJAb1AHRl1v
+         8UMQCqyyaWK4S6BCCrs0gryIKfI1ojTr+dY6xnkITwUmp0TMCGgLQ5QPsbXqpSRgJr90
+         HegYyOJrJg36C3FxYkiKdveZ9ylvNYIdeLTh9duuZt1XILFiFUMi5tL548zt91JD1OyZ
+         R08bKEjPzjc7yZuUECk1LaM7Q/8NCPQsSigkjtsS8T/HSXOCa0U6TiA81Q/UxIPufQcP
+         jMfZsyVCOXyRMvznYCadsCvmBEMM5G0AVwy9fcr5py0K07u7bxJdV5uEPU7187fmj5yl
+         l5EA==
+X-Gm-Message-State: AOAM530kSWZXkOATWOarodsZAU+2y8ULJtnJajCc6Uu7VwuqvF6Qqbgi
+        0Q1SyWsdXVCOQxdCMZXRlRDCnzb0l/Bl4Ytx
+X-Google-Smtp-Source: ABdhPJznVGDmZ9w+LUIdiJB6L3cB7i49loygudiEe3UQ3vyZiV+m33J/1eT10Rq4SlwG6hIqRikeiQ==
+X-Received: by 2002:a37:b342:: with SMTP id c63mr4999354qkf.146.1607545051316;
+        Wed, 09 Dec 2020 12:17:31 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id n9sm1716565qti.75.2020.12.09.12.17.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 12:17:30 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     stable@vger.kernel.org
+Subject: [PATCH] btrfs: fix possible free space tree corruption with online conversion
+Date:   Wed,  9 Dec 2020 15:17:29 -0500
+Message-Id: <0d49d6227962f3f3d34b6c7ccfd0c330f98517af.1607545035.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="o43un73gtv32priu"
-Content-Disposition: inline
-In-Reply-To: <b3c3ef0d-13c7-f3e4-74b8-38c441fb9577@gmx.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+While running btrfs/011 in a loop I would often ASSERT() while trying to
+add a new free space entry that already existed, or get an -EEXIST while
+adding a new block to the extent tree, which is another indication of
+double allocation.
 
---o43un73gtv32priu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This occurs because when we do the free space tree population, we create
+the new root and then populate the tree and commit the transaction.
+The problem is when you create a new root, the root node and commit root
+node are the same.  This means that caching a block group before the
+transaction is committed can race with other operations modifying the
+free space tree, and thus you can get double adds and other sort of
+shenanigans.  This is only a problem for the first transaction, once
+we've committed the transaction we created the free space tree in we're
+OK to use the free space tree to cache block groups.
 
-On Tue, Dec 08, 2020 at 08:25:33PM +0800, Qu Wenruo wrote:
-> On 2020/12/8 =E4=B8=8A=E5=8D=889:06, Ross Vandegrift wrote:
-> > Hello,
-> >=20
-> > I've got a single-device btrfs filesystem that fails to mount and I'm
-> > not sure how to proceed:
-> >=20
-> > [  118.556075] BTRFS: device label backup devid 1 transid 55709 /dev/dm=
--21
-> > [  118.581857] BTRFS info (device dm-21): use zlib compression, level 3
-> > [  118.581858] BTRFS info (device dm-21): disk space caching is enabled
-> > [  120.035857] BTRFS info (device dm-21): enabling ssd optimizations
-> > [  120.037493] BTRFS critical (device dm-21): corrupt leaf: root=3D5 bl=
-ock=3D3420303224832 slot=3D18 ino=3D265, invalid inode transid: has 1403012=
-92396544 expect [0, 55710]
-> > [  120.065595] BTRFS critical (device dm-21): corrupt leaf: root=3D5 bl=
-ock=3D3420303224832 slot=3D18 ino=3D265, invalid inode transid: has 1403012=
-92396544 expect [0, 55710]
-> >=20
-> >=20
-> > The fs has been in use for a while with no obvious issue until now.  I
-> > got this message after upgrading from 4.19.118 -> 5.9.6 (from debian
-> > stable -> debian stable backports).  Nothing was done to this fs under
-> > 5.9 aside from trying to mount.  A different fs was converted from ext4
-> > and mounted.
-> >=20
-> > The wiki suggests reverting to the working kernel, so I rebooted into
-> > 4.19.160 (stable was updated) - but now I get the same error on 4.19.
-> >=20
-> > The list archives point to using `btrfs inspect-internal inode-resolve`
-> > to find problematic files and copying-then-deleting them.  But since I
-> > cannot mount, this doesn't work.
-> >=20
-> > Output of btrfs check is attached.  Thanks for any suggestions!
->=20
-> This is caused by an older kernel which puts garbage into the inode trans=
-id.
-> And newer kernel introduces a check to find such garbage and exit more
-> or less gracefully before the garbage reach kernel memory.
->=20
-> The check is backported to v4.19, so starting from v4.19.156 the 4.19
-> kernel will also report such error.
+Fix this by marking the fs_info as unsafe to load the free space tree,
+and fall back on the old slow method.  We could be smarter than this,
+for example caching the block group while we're populating the free
+space tree, but since this is a serious problem I've opted for the
+simplest solution.
 
-Thank you, this is the hint I needed.  I booted back into 4.19.118, and
-was able to mount the fs.  From there, I could identify the affected
-files and remove them.  Now btrfs check passes cleanly, and the fs
-mounts on 4.19.160.
+cc: stable@vger.kernel.org
+Fixes: a5ed91828518 ("Btrfs: implement the free space B-tree")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/block-group.c     | 11 ++++++++++-
+ fs/btrfs/ctree.h           |  3 +++
+ fs/btrfs/free-space-tree.c |  9 ++++++++-
+ 3 files changed, 21 insertions(+), 2 deletions(-)
 
-Thanks to you and Chris for the help!
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 52f2198d44c9..b8bbdd95743e 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -673,7 +673,16 @@ static noinline void caching_thread(struct btrfs_work *work)
+ 		wake_up(&caching_ctl->wait);
+ 	}
+ 
+-	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
++	/*
++	 * If we are in the transaction that populated the free space tree we
++	 * can't actually cache from the free space tree as our commit root and
++	 * real root are the same, so we could change the contents of the blocks
++	 * while caching.  Instead do the slow caching in this case, and after
++	 * the transaction has committed we will be safe.
++	 */
++	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
++	    !(test_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
++		       &fs_info->flags)))
+ 		ret = load_free_space_tree(caching_ctl);
+ 	else
+ 		ret = load_extent_tree_free(caching_ctl);
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 3935d297d198..4a60d81da5cb 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -562,6 +562,9 @@ enum {
+ 
+ 	/* Indicate that we need to cleanup space cache v1 */
+ 	BTRFS_FS_CLEANUP_SPACE_CACHE_V1,
++
++	/* Indicate that we can't trust the free space tree for caching yet. */
++	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
+ };
+ 
+ /*
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index e33a65bd9a0c..8fbda221f4b5 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -1150,6 +1150,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+ 		return PTR_ERR(trans);
+ 
+ 	set_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
++	set_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+ 	free_space_root = btrfs_create_tree(trans,
+ 					    BTRFS_FREE_SPACE_TREE_OBJECTID);
+ 	if (IS_ERR(free_space_root)) {
+@@ -1171,8 +1172,14 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+ 	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
+ 	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
+ 	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
++	ret = btrfs_commit_transaction(trans);
+ 
+-	return btrfs_commit_transaction(trans);
++	/*
++	 * Now that we've committed the transaction any reading of our commit
++	 * root will be safe, so we can caching from the free space tree now.
++	 */
++	clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
++	return ret;
+ 
+ abort:
+ 	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+-- 
+2.26.2
 
-Ross
-
---o43un73gtv32priu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEsAjXULa3g2HtU1bw2rOJMppM+hYFAl/RAIQACgkQ2rOJMppM
-+hbYKQ//UzN8fAxkGYT2cBVlp/ddMKpRPUwASJWOPFw6d8U/jdyd/3xROq8Bk342
-2+cwu2PSkJHELjJ8BoTHQOvUMCG84LOOZLZjG6aZxw+Cch2iE79AI33vtFIZo9rr
-A8ychoDiQkYMhDdPozt7KXpywrNHFpsM80vPkgUf1fxG1/CX1ZDDeRiudbjk1s1S
-Xd+Yw6AgLzZ+rx5xk27Ol1J0Joh0t1Cdb1Znm7KS8AxRLLw+g7tljdpcSdaiu8fn
-KKhX7CD6sdzUW3rr13Mj3gUO3axwhoEnyVADaqoeuUIpWkMUtgnVRBiWp1pW3mQ9
-UJenEeQRiMy0lWIg1mtAGmXkIZRQo7LDPqdxBu7luSRp4kjOrXss5SExzxxzD6WE
-LiW0fd+oxc/qLOq7aCC6E4+me8/w8/KO4NlU6MnBM1CBn/2rGMl6cBnLB+tvf1q8
-IZbku7kncSOPzXGfhiuYVy4Dr15zP3NN+b8MWFf3OjrtzcXPm06xdSNvV32Dt5mu
-v520zqwbpaolZ+vI4SAsC5VLK93cF4PgySKqWn1xO8hy64BfgniovFtUAbsqpHwS
-mJel5N8q2WTpEicsMHmdAh8LS2YjqxqDzS9gVypmZCobTUWSJOuqVmqaUgfs8soO
-s01zDmSKM7Ba743FlEwUBKOh2Z0O+jDoZnlMhb11r9TkTlVXIwI=
-=9TKr
------END PGP SIGNATURE-----
-
---o43un73gtv32priu--
