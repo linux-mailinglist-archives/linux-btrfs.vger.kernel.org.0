@@ -2,115 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D792D368A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Dec 2020 23:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204B82D37D7
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Dec 2020 01:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731541AbgLHWzA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Dec 2020 17:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S1731957AbgLIAba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Dec 2020 19:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730812AbgLHWy7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 17:54:59 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AA2C061794;
-        Tue,  8 Dec 2020 14:54:19 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id c198so14823wmd.0;
-        Tue, 08 Dec 2020 14:54:19 -0800 (PST)
+        with ESMTP id S1731894AbgLIAbZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Dec 2020 19:31:25 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE06C0613CF
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Dec 2020 16:30:39 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id w4so55234pgg.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Dec 2020 16:30:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=brunner-ninja.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
-        b=LhH39ZJllmZgRfTf/stoFJUkdm/dcAq3xnEuGAp8Va6ittVOc4iIH8MTdfV7F3DXgY
-         j3v5mJq/mSgfFDthJdNwlTUTwaCdcDGtJ9nyTJRCiBh7Bcz28jPFFincwK7yvmYqww+u
-         DAKUE12Za6tSxJ7Rbe0zSQt5qrwj+HIt2wgsec2kNK5HLwOFFyLjlQsWs7zXeSE4c+qB
-         CnxDu+nEbuB6rOAyoyuc9jUtZDFbOJxyqkE3eylvSJUrWtUSSw6hC2tAP4Uz/ne32UcK
-         bbFq2NUfAMF+5bmOEe43HzoPU6V9+bYd7SP94MCjgLKDEkRjS+HLojKmjx+3QNpVvf7V
-         GcdQ==
+         :cc;
+        bh=4Ne2Sp2d5nWfP1SJn1SF1LdiwmWsFEGixyOoVqCNruQ=;
+        b=lebfslONNZWbzqWxzjXpwQxh+DVw+2hoB+ctacsuTVeFmviXCPR5Bp9kIX9G9Sp222
+         UwFcDrX/iFe1+hekgMl0fNWwvgchkQCCN60iJdLiju3iv7S8d5u0V976YEx+j8jL9B/V
+         ZG0Jce/wqMGQIGl3a4PAfTXaZQdnViogpia65xZMYgF29KY/nWgHFz7MD3kMW2ZVYMly
+         y2BQnYceLLwFD8Rs8OtJt1of3VBeBYsh5T1o+L8bkBcWs8JRd81IvqKOW78Gqg9vspvG
+         SrT5lULOP8tRIPQlSLTB6yWRiDh/kiF6pL/LZbXwzPOL+4oMwyhBC43H6vCro6R8yC3K
+         2u/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=l6v5eGqOum7wUjmDQNJGAFz828yznKEqu47GFykos8E=;
-        b=MY63rgHCCnisO9qVA1gf5tmemcitzdYr41OGqSFl6tN4reyZx7Zwwtbg8BJbqduaFf
-         CP8rb8CYruDB2RUgfFKvnV+FVVnsnGgRSOxXkffhWQqzlIZfqKd49gfRBuP9AtW+K69B
-         EoX5lHTl0NSMTZxO11RnPjgHVai45g+y3RPll8lr9edVJF8yE9puia4DdnGxWautqLQu
-         22pnJECqT9wOMzmHaOpk0/6E9fOTZMoW9FOoNtt6t5dIj4zIyvksTwlEG6EFX7M6tXAY
-         d1lFQNLVITAgJRKtkDVxkz7TWPKghugTTYy67Eoua5rBRxqTFds/q+ZQiDP4+1Bvwxqx
-         t0Lw==
-X-Gm-Message-State: AOAM530UdjG8ydEoaDtsBcYSrGAfo00kpvKML0Vz6kEq3TX+/klBe+zq
-        3rvHBl8CIoHZiij7v0XYXEyP8ULgahwTqYCjoc0=
-X-Google-Smtp-Source: ABdhPJw400Ws44xNLBD4ZTOJFxkw8sVbXemco2YVdG5lmPlUv7qXS9ndgp56DxsGieEi2wCieOAMSG4duQr34HnEoD0=
-X-Received: by 2002:a1c:b742:: with SMTP id h63mr64902wmf.122.1607468057844;
- Tue, 08 Dec 2020 14:54:17 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=4Ne2Sp2d5nWfP1SJn1SF1LdiwmWsFEGixyOoVqCNruQ=;
+        b=bKv/ctukhtiu70KSXZn9Uwng40YA3j/ndkiavVaIodij8z6HEDPEWCghzyOiiwbT9m
+         mTjGVmfLGZgxu7ExTgfmLqLaU59m60tf+zd5XsTro7tuN41ibp5BW6d7GSV8ryA4fmm/
+         mq/b+uC+rgBF+P/OzVgMBtbwpmjAap3mgkvWUuwT9Rl0QKuQ7TvMRsMYI+f8iQBMoumj
+         5aETRZ8AbsfnJW7n7bl86n+gqgGLR5B5dpN50E6EUlcjV8q2+icW8LoDaGvz2vHD8M37
+         xiYfW2iUInduszX5aZNyvdwaxwJ7Y1DpJV66QB9LB7bHpx90rSmVduQC2qwI+1C/neN3
+         kujw==
+X-Gm-Message-State: AOAM531RiHiNf18EPpBdYjeWcWN9+LlCy4w+3lLi6osDk1+/k6WhFu+f
+        BbspohiEziwwi5QZk8RQS34Y6jxipuPstWa5srpegtUrx6Y=
+X-Google-Smtp-Source: ABdhPJx5yekxPGpxD3sVJsvQfQlgWOx95LHBXErxkgXLa0AdNLwFuDHHeIL36kmh8Y+HueXgHDEnutO54IgVUxMi9D8=
+X-Received: by 2002:a17:90a:f3c3:: with SMTP id ha3mr94313pjb.202.1607473839220;
+ Tue, 08 Dec 2020 16:30:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201206064624.GA5871@ubuntu> <X8yWxe/9gzosFOam@kroah.com>
- <CAM7-yPSpqCUEJqJW+hzz9ccJbU5OnOZj1Vpyi8d5LG5=QbCTjA@mail.gmail.com>
- <CAM7-yPQgkh=JnW_mtX9fXRin87sHQjh+58aY3asgBvHK+g3V_A@mail.gmail.com> <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
-In-Reply-To: <4e339fb4-adae-4c28-a40b-986b5e73fd0d@suse.com>
-From:   Yun Levi <ppbuk5246@gmail.com>
-Date:   Wed, 9 Dec 2020 07:54:06 +0900
-Message-ID: <CAM7-yPQ_Ak+uzPadeuAUCjv-MP=aK1HuKXC=czzM_+=wWCvnLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] lib/find_bit.c: Add find_last_zero_bit
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        richard.weiyang@linux.alibaba.com, christian.brauner@ubuntu.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, rdunlap@infradead.org,
-        masahiroy@kernel.org, peterz@infradead.org,
-        peter.enderborg@sony.com, krzk@kernel.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Kees Cook <keescook@chromium.org>, broonie@kernel.org,
-        matti.vaittinen@fi.rohmeurope.com, mhiramat@kernel.org,
-        jpa@git.mail.kapsi.fi, nivedita@alum.mit.edu,
-        Alexander Potapenko <glider@google.com>, orson.zhai@unisoc.com,
-        Takahiro Akashi <takahiro.akashi@linaro.org>, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        dushistov@mail.ru,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <CAD7Y51gpvZ79nVnkg+i3AuvT-1OiXj0eaq2-aig38pGmBtm-Xw@mail.gmail.com>
+ <CAJCQCtS0HVBQZ1-=oAhvYnywUVuhjS__8qf553YMoRWriabADg@mail.gmail.com>
+ <CAD7Y51imT3BhQzMHqVUB=ZMcAQiSPoG8E8HZMVmpggzjDgN9fA@mail.gmail.com> <CAD7Y51i=mTDnEWEJtSnUsq=xqbEtGC2NP0Yo4vAcPkSu+Wq+Rg@mail.gmail.com>
+In-Reply-To: <CAD7Y51i=mTDnEWEJtSnUsq=xqbEtGC2NP0Yo4vAcPkSu+Wq+Rg@mail.gmail.com>
+From:   Daniel Brunner <daniel@brunner.ninja>
+Date:   Wed, 9 Dec 2020 01:30:28 +0100
+Message-ID: <CAD7Y51hdeJVNBAYQXxvf=kUOKh_KYX286Hzoy-qJ8izn+crVtQ@mail.gmail.com>
+Subject: Re: corrupted root, doesnt check, repair or mount
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> btrfs' free space cache v1 is going to be removed some time in the
-> future so introducing kernel-wide change just for its own sake is a bit
-> premature
+Hi again,
 
-But, I think it's not quite a kernel-wide change just add the
-correspondent function to find_last_bit.
-So, if we add this feature, maybe some users will use it in near future.
-As my fault, I sent this patch without cover in patch [0/8] to explain why
-So, I will send this patch again to take some review...
+do the outputs of said commands help in finding the issue?
 
-Sorry to make a noise again and Thanks to advice.
+This corrupted fs blocks my homeserver usage and if the data is not
+recoverable, i would start all over again.
+I do not have enough disks to backup the current corrupted state.
 
-On Sun, Dec 6, 2020 at 6:01 PM Nikolay Borisov <nborisov@suse.com> wrote:
+Losing the data would mean about 10 years of hamstering/collecting
+stuff would be lost (only some parts are backed up externally),
+so if there is any chance of recovering I would keep the machine
+offline until any new ideas pop up.
+
+Best regards,
+Daniel
+
+
+Am Mo., 30. Nov. 2020 um 14:15 Uhr schrieb Daniel Brunner
+<daniel@brunner.ninja>:
 >
+> Additional comment: I cannot recover the list of commands I executed
+> on the mdadm and bcache back then because I used a user which's home
+> is on the btrfs :)
 >
+> BR,
+> Daniel
 >
-> On 6.12.20 =D0=B3. 10:56 =D1=87., Yun Levi wrote:
-> >> This, and the change above this, are not related to this patch so you
-> >> might not want to include them.
+> Am Mo., 30. Nov. 2020 um 14:14 Uhr schrieb Daniel Brunner
+> <daniel@brunner.ninja>:
 > >
-> >> Also, why is this patch series even needed?  I don't see a justificati=
-on
-> >> for it anywhere, only "what" this patch is, not "why".
+> > Hi,
 > >
-> > I think the find_last_zero_bit will help to improve in
-> > 7th patch's change and It can be used in the future.
-> > But if my thinking is bad.. Please let me know..
+> > thx for the reply, here the outputs:
 > >
-> > Thanks.
-> > Levi.
+> > # btrfs insp dump-s /dev/mapper/bcache0-open
+> > superblock: bytenr=65536, device=/dev/mapper/bcache0-open
+> > ---------------------------------------------------------
+> > csum_type 0 (crc32c)
+> > csum_size 4
+> > csum 0xe29c4dff [match]
+> > bytenr 65536
+> > flags 0x1
+> > ( WRITTEN )
+> > magic _BHRfS_M [match]
+> > fsid 4e970755-09c3-4df2-992d-d2f1e0b7d5e4
+> > metadata_uuid 4e970755-09c3-4df2-992d-d2f1e0b7d5e4
+> > label
+> > generation 23991070
+> > root 51642824081408
+> > sys_array_size 97
+> > chunk_root_generation 23971935
+> > root_level 2
+> > chunk_root 1064960
+> > chunk_root_level 1
+> > log_root 0
+> > log_root_transid 0
+> > log_root_level 0
+> > total_bytes 29202801745920
+> > bytes_used 17674898116608
+> > sectorsize 4096
+> > nodesize 16384
+> > leafsize (deprecated) 16384
+> > stripesize 4096
+> > root_dir 6
+> > num_devices 1
+> > compat_flags 0x0
+> > compat_ro_flags 0x0
+> > incompat_flags 0x161
+> > ( MIXED_BACKREF |
+> >   BIG_METADATA |
+> >   EXTENDED_IREF |
+> >   SKINNY_METADATA )
+> > cache_generation 23991070
+> > uuid_tree_generation 23991070
+> > dev_item.uuid 0b210cdb-1581-41af-b4a4-a71707f53bec
+> > dev_item.fsid 4e970755-09c3-4df2-992d-d2f1e0b7d5e4 [match]
+> > dev_item.type 0
+> > dev_item.total_bytes 29202801745920
+> > dev_item.bytes_used 19385355862016
+> > dev_item.io_align 4096
+> > dev_item.io_width 4096
+> > dev_item.sector_size 4096
+> > dev_item.devid 1
+> > dev_item.dev_group 0
+> > dev_item.seek_speed 0
+> > dev_item.bandwidth 0
+> > dev_item.generation 0
 > >
->
-> btrfs' free space cache v1 is going to be removed some time in the
-> future so introducing kernel-wide change just for its own sake is a bit
-> premature. Also do you have measurements showing it indeed improves
-> performances?
+> >
+> >
+> > # btrfs rescue super -v /dev/mapper/bcache0-open
+> > All Devices:
+> > Device: id = 1, name = /dev/mapper/bcache0-open
+> >
+> > Before Recovering:
+> > [All good supers]:
+> > device name = /dev/mapper/bcache0-open
+> > superblock bytenr = 65536
+> >
+> > device name = /dev/mapper/bcache0-open
+> > superblock bytenr = 67108864
+> >
+> > device name = /dev/mapper/bcache0-open
+> > superblock bytenr = 274877906944
+> >
+> > [All bad supers]:
+> >
+> > All supers are valid, no need to recover
+> >
+> >
+> > Am Fr., 27. Nov. 2020 um 00:55 Uhr schrieb Chris Murphy
+> > <lists@colorremedies.com>:
+> > >
+> > > On Wed, Nov 25, 2020 at 2:16 PM Daniel Brunner <daniel@brunner.ninja> wrote:
+> > > >
+> > > > Hi all,
+> > > >
+> > > > I used btrfs resize to shrink the filesystem and then used mdadm to
+> > > > shrink the backing device.
+> > > >
+> > > > Sadly I did not use btrfs for the software raid itself.
+> > > >
+> > > > After shrinking the mdadm device, my btrfs filesystem doesnt want to
+> > > > mount or repair anymore.
+> > >
+> > > First, make no writes to any of the drives until you understand
+> > > exactly what went wrong. Any attempt to repair it without
+> > > understanding the problem comes with risk of making the problem worse
+> > > and not reversible.
+> > >
+> > > What were the exact commands, in order? Best to use the history
+> > > command so we know for sure what every relevant command is.
+> > >
+> > > > # btrfs check --repair --force /dev/mapper/bcache0-open
+> > >
+> > > Yeah first mistake is to try and repair. Fortunately it looks like it
+> > > couldn't get far enough along to even attempt writes.
+> > >
+> > > I don't know anything about bcache so I looked at this:
+> > > https://wiki.archlinux.org/index.php/bcache#Resize_backing_device
+> > >
+> > > So the question is, what was the bcache device cache mode? Writeback
+> > > or writethrough? And did you confirm that bcache reports a clean state
+> > > before doing the mdadm resize?
+> > >
+> > > > # blockdev --getsize64 /dev/mapper/bcache0-open
+> > > > 40002767544320
+> > >
+> > > What do you get for
+> > >
+> > > # btrfs insp dump-s /dev/mapper/bcache0-open
+> > > # btrfs rescue super -v /dev/mapper/bcache0-open
+> > >
+> > > Importantly these are read only commands and make no changes.
+> > >
+> > >
+> > > --
+> > > Chris Murphy
