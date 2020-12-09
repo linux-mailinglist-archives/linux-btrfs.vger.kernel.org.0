@@ -2,210 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00682D40B8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Dec 2020 12:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2119D2D4374
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Dec 2020 14:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgLILJd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Dec 2020 06:09:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727221AbgLILJ0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Dec 2020 06:09:26 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B05C0613CF
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Dec 2020 03:08:45 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id d14so125931qkc.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Dec 2020 03:08:45 -0800 (PST)
+        id S1732589AbgLINjn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Dec 2020 08:39:43 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:42641 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732577AbgLINjh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Dec 2020 08:39:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1607521630; x=1639057630;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=cLg8v8xzcwI3GFvfsMpCuZU2BOr6bHwwWly3xZ1uuZI=;
+  b=NChQjD89aqyh/91DkY5z7NuzvivCnUXe92i9aVray8CeUGMpWtN68UlP
+   2OrUsMWmILlzmtQbWc1vn+rl6Ax0Lkg2/mSZAi2tuKmZUzWt1/GsmAMJE
+   NGAJkagXWq1jfB3ikhuWmyrrUeN/vHegIhU28wxBMGq8kVQnnI2qI37CX
+   hwDahGrHEu7X1pUi8vRyW7s8kcwdgIJ0na3PQj8kReiy15XihqppyOApn
+   FdH2rhdqAOx7PkJMNz2EyhAGppiPMNTDrgLlq4SRY2lzxCYIAeoiH9GSX
+   l+X0BLoeq8kTjW35M3F4eQbYG/hY/dZV6wxMp2IIE9zwltU2e3yAmK4Wu
+   g==;
+IronPort-SDR: zzDmEVJdQLy6i62soikyoipfPXF6bW03aGtzULvOT+E0i30luDfHCpws/8VGfbwIyt5CfWzSGb
+ g9r2cEzLbWtwvOBh9YevjxG3kU8gsa1fsryJQ4Q0xR/T/7tqWwEsg8g/RKqGxe2jzdLH5yeWTN
+ R4HkPkRX4ndQ76OQ9yKcyEtW6TyYCobb2Yuo0LVM7BkY7waOOYArERowjtIjwlm6rTivc/90M3
+ KSL+/aGjZKHldV1D1QI9n8UseF7XgbxRt3zTz4iOU6ewgXE1gWNEnKtgBq5C0ljn8tnFyoWKae
+ nCU=
+X-IronPort-AV: E=Sophos;i="5.78,405,1599494400"; 
+   d="scan'208";a="258493663"
+Received: from mail-co1nam11lp2173.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.173])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Dec 2020 21:45:22 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pfivnlpgose5ixthj/q2xaR2fRUuzyzvnaMYDXppmctsxaKRJ/bBUsTiOAuhc3hJEt6N+ObsjpLsSdBDOQdd7LLF9+Csp7e02XpBfYUQrMiRsVaBwZ4A8BIUB3ncIad8lGbEB3dEXPGd56b+oFO4oUSP5y3jPV0DqRxqxjyY245JYs+CdVOQS+OReHs7LS90iZgj/X/JELpMW/0FMC/pzRGUs2bAAx2EIR0hdHFI7X162PbDy/FxsNPAn7ln0oplZaQujG6lGhZIXVfnaukL4+CGjLjVlQCvpDfTFL2EVeuMayrJOWO/5bZy8SBzBX5D9nboUbtQvyhz3spR9xp28w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c+g4ISUr6a6kG5vX7CmzZ5cFeERqM8REqyosxJtLflU=;
+ b=lM+sDVXOtoo0ZsJjX+Xvw6wHfhuCfJqzDO+HIDoZYqaBDSgx3+L0hX7c3+NyBQ7CEd0Kk09gnS6JEVMzZFUoEJmLocdhLKI6R/5gss1/+PMJpZCNBRIDTOg3+vzLlHElUfbof2virXbyoCnPOk/31OZ2eFQVjEukKcaSaXrwfJD1OOUT3qYu6jQ9PPALEzlAyrji2olPoirzWB3BaTpmkvF1rBQ4E+z9vx1s4JOwWF1bbny8dwszAKiUMhnAUHlMkP1MLQSZO4lHyAH+TpW7qBgLDOJSjKYDGhEjlZVYs5WhzR9RkmOmColKk5K+xWGbWyKt6Ub/yFh4DeZt2RAPlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=VeyntEt/ohYdh8C7LWnioNR+YRgUwKzalwVcd5TCbbc=;
-        b=CcTkBVGSLGcZS5NsSBu+xquCS9qYWwyIl1mgi5YOHQhtwS+CqukJz6aP7h3YUbeGaq
-         g0DEUXJlhjtYE6LklPQpq0CLeOCFThYCdataJDzrhv8ixsoLtFHyaLNEP6qzjN5+t60x
-         hb4EYxu3PwE4REIhZcvDXK4e4vAOIPL3wFDPJu6vDfoL9WAPu8OtgTtLsiKUx8+svtVK
-         Lp5y2mCbugRbldyEmRv0nhvCCk+DGx+GlPv+dnx7naKAC0q9y10UD33LGnbEb5Lo15V/
-         U3JoU4bZpArxSWEm4c339PPph80zzcpEWltUqUXPu8GE+ysP6HhIQQ5uwbul/9pgbxhl
-         Dl4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=VeyntEt/ohYdh8C7LWnioNR+YRgUwKzalwVcd5TCbbc=;
-        b=PSKWxIZ/0gTLSvdmSmndH/0GmdQQskEAXrfHR/41yG4kKj3Wz+WveldYvuhjvf/vnn
-         bdPCkNaLlXouqjxaJSxhKQUiQHe4eiPS0XS1q6vKCYRmThYwa9oyGCGFQiFsRyZ01Vvf
-         3pmgKb8hswyAJolsrHp8DFx8KURY88Y88VdD2fa0kykbyzEcVaBf9w0pRx0EJZAfrYTc
-         JgU0R59csSozCHm7LohdnyFlONLqf2nrDpNzxWOC8Bgc/315oGvY5BLTRgv++MNjzFT0
-         wsRSmS+C8bCSWpqwWPPIXEpa218VWrWSfCGybJPhiYrcaf/b6jghc85ygmrS/e1Y0MWq
-         amFA==
-X-Gm-Message-State: AOAM530I+qS1sFgG5wLCTA2nBSBQtlEEnVhruf9n29O0zqya2lIaQ+wd
-        X2QSiSRWfrT55AiwOkVMS90ydWtV9QyHB7s+QYo=
-X-Google-Smtp-Source: ABdhPJzv4BDcxAI5+1mYlE6FOBuFlMTjmZ1Cjr501DM1j+zpGVHnX36kXDAKM9c5U2pJ5/X+zFbbV/A7u3Fy/vI5TbQ=
-X-Received: by 2002:a37:6692:: with SMTP id a140mr2365781qkc.0.1607512124898;
- Wed, 09 Dec 2020 03:08:44 -0800 (PST)
-MIME-Version: 1.0
-References: <7ffdf22e-352c-70e3-eb7c-86c591febe7c@panasas.com>
-In-Reply-To: <7ffdf22e-352c-70e3-eb7c-86c591febe7c@panasas.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 9 Dec 2020 11:08:33 +0000
-Message-ID: <CAL3q7H7O=bgoR0Le_pi8vChWBhKzcUw_pRZmeXrgjO0mnr1DMA@mail.gmail.com>
-Subject: Re: Assertion in tree-log.c
-To:     "Ellis H. Wilson III" <ellisw@panasas.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c+g4ISUr6a6kG5vX7CmzZ5cFeERqM8REqyosxJtLflU=;
+ b=noWFCiBbGr2AxNELRjd7PsvfUq2qqFszbn6XhWrVeJ5MqS8Jj74GgFezEUIvnU0LrqChdk1wtJM2ZWva5LuUNxc35O0+rF6nZRexPUxwjTAlQ4ry5QBiZwFyPZ8inFKXgksrtMh6BiM9n/9QR2sWVM4J6aoGjxhPdhv3T5iBmiU=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4048.namprd04.prod.outlook.com
+ (2603:10b6:805:40::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 9 Dec
+ 2020 13:38:22 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::65d7:592a:32d4:9f98%6]) with mapi id 15.20.3589.038; Wed, 9 Dec 2020
+ 13:38:22 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "hch@infradead.org" <hch@infradead.org>
+CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: [PATCH v10 02/41] iomap: support REQ_OP_ZONE_APPEND
+Thread-Topic: [PATCH v10 02/41] iomap: support REQ_OP_ZONE_APPEND
+Thread-Index: AQHWt1Sb3HZRbzGDlk6Pnuh0g860vw==
+Date:   Wed, 9 Dec 2020 13:38:22 +0000
+Message-ID: <SN4PR0401MB35987F45DC6237FC6680CCB49BCC0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <72734501cc1d9e08117c215ed60f7b38e3665f14.1605007036.git.naohiro.aota@wdc.com>
+ <20201209093138.GA3970@infradead.org>
+ <SN4PR0401MB3598A4DA5A6E8F67DFB070859BCC0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20201209101030.GA14302@infradead.org>
+ <SN4PR0401MB35980273F346A1B2685D1D0F9BCC0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8cb63b73-7a94-4082-1d88-08d89c47b2bc
+x-ms-traffictypediagnostic: SN6PR04MB4048:
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR04MB404879CCD1FEDF79FE0816659BCC0@SN6PR04MB4048.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qsH0dJGoApUme8ChL8x2nAUjIJwjfn6dq6y9G4rw1V6R2iXnGynYyP4k4VmzpQOWjBpoO7vVMHt1IxLx7KdnU0kUGbJZO+3SO2r252s+NZvbiQBCmdEgNkZEL0m/Ko53iO01IUbnWuJkA7kihJNKk2IqWON2RWgcNhbE6coFdVuaqtba0/Y+qMy5eIIpW2nVBQV2hOPYYP1iKu4aVz9XBAl3B+iDObZLVZAofyXHmfF8RX04fm7EfUgme3g2J/PjXjDJC7NY/jWRKdZWM0Y2HEjRX/cc0MXg8BYq0oXOlRFiQWg/GJmfnbHWh7NEG+KwsuCFkZE3d4NGaWgFMeQMkg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(66446008)(52536014)(66556008)(66946007)(66476007)(26005)(186003)(4744005)(64756008)(508600001)(4326008)(71200400001)(33656002)(5660300002)(83380400001)(2906002)(76116006)(86362001)(6506007)(54906003)(8676002)(7696005)(53546011)(6916009)(9686003)(8936002)(55016002)(91956017);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?K/LPIrnzWFheusFsB4nkJF6FXubr4mGXk8QDd2xOULxFbBUVDj+x4eqIOjg3?=
+ =?us-ascii?Q?8dUSHB/ib+H1BbV8PI/WORCwNgZSXHkXDbwH67rso+ovqtayOZ1ItfEapKfp?=
+ =?us-ascii?Q?ooNgjvK2kPFxAgT9QdiqgxOXWT4+oknI94bOuxmC4OB4Hkke6nE5eNMiqQm7?=
+ =?us-ascii?Q?M9YksnJp33GpMxqLIOTrFemcycTtkdA3I5m4M2JKAznMqj/AT4GS7DFQu5Yu?=
+ =?us-ascii?Q?gS7NjGL1C3Hiwc9Hh54xIVeGtHrmGaEU2pjGA+u8i7JVz3klNFfvK+55hW8R?=
+ =?us-ascii?Q?kdTkq7/Pwky5byog92gOWjO4V1BmcgYEU3/N2Wvz/uoF+3Pi9EWpHkc8lZIJ?=
+ =?us-ascii?Q?LWjCbWTouOcLqM4YmO+sxTc3p8oZ3i++ZDYyLeWz+kuM71Azd4lR75pHsSDp?=
+ =?us-ascii?Q?M+zqhU82YdGPfLlln7VGarhBGsrnsZkYKvbOnKhk3SNonhQmn8RA9ew8pO1w?=
+ =?us-ascii?Q?NpoXSDhIFcLzrWfkFKuRBKpC9H/CoJpxoxRrdPhrGy4JhsUmr35l4nvL7iii?=
+ =?us-ascii?Q?JwRLW0/U9a20NTpVNs8nY/OkDB1vcoPIIe1fjJJfKTKOul14dA7vwIxJZRDx?=
+ =?us-ascii?Q?XJZzvIMNHT6lH/qUmUw+o4pF4oct8E1UNa8ePhArW9D4AO17qLR9uLIcPdUo?=
+ =?us-ascii?Q?GRuZqg97fr+LPdH6KVcmJP5oChPECgO6b7YQrLdhaOFxvFx7dKQqwbPBJ3pp?=
+ =?us-ascii?Q?tpwrYCQkpTxNGKVZjJzxYtjT4Z22c70c9uYYEiGoIWBgKHD+mUJse1auGmoL?=
+ =?us-ascii?Q?w2jdOWxVQ1UkhupZrdU3bAzPfbYXx73uX9fdEc59f5SISLLt2bFCCDKEJlPq?=
+ =?us-ascii?Q?oVRSIK8f8loZmKLflAH1jZA80tT32Q+I+TnZkJi4rcJePVd4R5c8zzZsVrkX?=
+ =?us-ascii?Q?QVkC+3yqSNc3NWdyxUQscs/hrxueGvAQG7WhG7ppufqUnDaQwEvL0MxDSY5O?=
+ =?us-ascii?Q?hasKO2b260uB40lHowowQAW4qOuO+aWZtlJa2mNyVu87a14Tho3BW9z9uVob?=
+ =?us-ascii?Q?QHtl?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8cb63b73-7a94-4082-1d88-08d89c47b2bc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2020 13:38:22.7319
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zYaitSnOouwRaHi1FoV07rWKuKgyHBE36Sdo0BvGFA/stmlUbM+XheYyTFskXZ1nNV6MqHQ231yDgSAr9VIKDkQ4S0s+DNd4xhlPMUL34d0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4048
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 5:57 PM Ellis H. Wilson III <ellisw@panasas.com> wro=
-te:
->
-> Hi all,
->
-> We've hit this assertion a few times, and I wanted to know if it was a
-> known issue:
->
-> Dec 05 08:53:51 6afa1e4331fa46 kernel: assertion failed: ret =3D=3D 0, fi=
-le:
-> fs/btrfs/tree-log.c, line: 4286
-> Dec 05 08:53:51 6afa1e4331fa46 kernel: ------------[ cut here ]----------=
---
-> Dec 05 08:53:51 6afa1e4331fa46 kernel: kernel BUG at fs/btrfs/ctree.h:329=
-5!
-> Dec 05 08:53:51 6afa1e4331fa46 kernel: invalid opcode: 0000 [#1] SMP PTI
-> Dec 05 08:53:51 6afa1e4331fa46 kernel: Modules linked in: af_packet_diag
-> netlink_diag sctp_diag sctp libcrc32c tcp_diag udp_diag raw_diag
-> inet_diag unix_diag af_packet binfmt_misc bonding iscsi_ibft
-> iscsi_boot_sysfs msr nls_iso8859_1 nls_cp437 vfat fat dax_pmem btrfs(O)
-> ipmi_ssif xor iTCO_wdt nd_pmem device_dax nd_btt raid6_pq
-> iTCO_vendor_support intel_rapl ib_core skx_edac x86_pkg_temp_thermal
-> intel_powerclamp coretemp raid0 kvm_intel kvm irqbypass crct10dif_pclmul
-> crc32_pclmul crc32c_intel ghash_clmulni_intel pcbc aesni_intel
-> aes_x86_64 crypto_simd glue_helper cryptd ioatdma md_mod ipmi_si nfit
-> i2c_i801 lpc_ich mei_me shpchp ipmi_devintf mei dca pcspkr wmi joydev
-> ipmi_msghandler libnvdimm acpi_pad button hid_generic usbhid ast
-> i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt xhci_pci
-> i40e(O) fb_sys_fops xhci_hcd
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ttm ptp pps_core nvme drm ahci
-> drm_panel_orientation_quirks nvme_core usbcore libahci sg dm_multipath
-> dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua efivarfs
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: CPU: 2 PID: 6897 Comm: iopathv4
-> Tainted: G           O     4.12.14-lp150.11-default #1 openSUSE Leap
-> 15.0 (unreleased)
-
-As mentioned before by Chris, that's an old openSUSE Leap release.
-You should move to Leap 15.2 (or 15.1, but its support ends by the end
-of January).
-
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: task: ffff8808351146c0
-> task.stack: ffffc90008704000
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RIP:
-> 0010:assfail.constprop.28+0x18/0x1a [btrfs]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RSP: 0018:ffffc90008707b08
-> EFLAGS: 00010296
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RAX: 0000000000000041 RBX:
-> ffff880117eb0990 RCX: 0000000000000000
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RDX: ffff88085c09fd40 RSI:
-> ffff88085c097a68 RDI: ffff88085c097a68
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RBP: 0000000000000ef2 R08:
-> 0000000000002dde R09: 0000000000000003
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: R10: 0000000000000189 R11:
-> 0000000000000001 R12: 0000160000000000
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: R13: 0000000000000096 R14:
-> ffff880000000000 R15: ffff880141d39690
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: FS:  00007f7ca3d96700(0000)
-> GS:ffff88085c080000(0000) knlGS:0000000000000000
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-> 0000000080050033
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: CR2: 00007f296c031c20 CR3:
-> 000000083120a003 CR4: 00000000007606e0
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: DR0: 0000000000000000 DR1:
-> 0000000000000000 DR2: 0000000000000000
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: DR3: 0000000000000000 DR6:
-> 00000000fffe0ff0 DR7: 0000000000000400
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: PKRU: 55555554
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: Call Trace:
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  copy_items+0x9b4/0xbe0 [btrfs]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  btrfs_log_inode+0x775/0xe00 [btrf=
-s]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:
-> btrfs_log_inode_parent+0x249/0xd30 [btrfs]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ? kmem_cache_alloc+0x1a8/0x510
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ?
-> __filemap_fdatawrite_range+0xa3/0xe0
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ?
-> __filemap_fdatawrite_range+0xb1/0xe0
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ? wait_current_trans+0x1f/0xd0
-> [btrfs]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ? join_transaction+0x22/0x3f0
-> [btrfs]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  btrfs_log_dentry_safe+0x58/0x80
-> [btrfs]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  btrfs_sync_file+0x2dc/0x420 [btrf=
-s]
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  do_fsync+0x38/0x60
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  SyS_fsync+0xc/0x10
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:  do_syscall_64+0x7b/0x140
-> Dec 05 08:53:52 6afa1e4331fa46 kernel:
-> entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RIP: 0033:0x7f7caaf8f5fc
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RSP: 002b:00007f7ca3d93990
-> EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RAX: ffffffffffffffda RBX:
-> 0000000000000000 RCX: 00007f7caaf8f5fc
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RDX: 0000000000000000 RSI:
-> 0000000000080002 RDI: 0000000000000111
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RBP: 0000000000000000 R08:
-> 0000000000001777 R09: 00000000eddb1d58
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: R10: fffffffffffffa88 R11:
-> 0000000000000293 R12: 00007f7ca3d93a50
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: R13: 0000000001bea4e0 R14:
-> 00000000eddb1d58 R15: f5402026a5ae13a5
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: Code: 80 a0 48 89 fe 48 c7 c7 30
-> 27 81 a0 e8 61 70 9a e0 0f 0b 89 f1 48 c7 c2 3e bf 80 a0 48 89 fe 48 c7
-> c7 00 29 81 a0 e8 47 70 9a e0 <0f> 0b 0f 1f 44 00 00 41 57 41 56 41 be
-> f4 ff ff ff 41 55 41 54
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: RIP:
-> assfail.constprop.28+0x18/0x1a [btrfs] RSP: ffffc90008707b08
-> Dec 05 08:53:52 6afa1e4331fa46 kernel: ---[ end trace 13cc0fa206f6ac86 ]-=
---
->
->
-> The closest thing I can find to it is this patch, which appears to be
-> archived and open:
->
-> https://lore.kernel.org/linux-btrfs/20190916151307.GB1645163@kroah.com/T/
->
-> Sorry if my search-engine-skills are failing me and there is a better
-> matching bug that's been fixed already for this.
-
-No, that's a fix for a very different and unrelated problem.
-
-What fixes the problem are the two following patches:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
-id=3D0c713cbab6200b0ab6473b50435e450a6e1de85d
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
-id=3D5e548b32018d96c377fda4bdac2bf511a448ca67
-
-The second one does not mention any functional problem in its
-changelog, but that's because I only realized it caused a functional
-problem, a similar race like the first one, after it was merged into
-Linus' tree.
-Both are in openSUSE Leap 15.2 (and 15.1).
-
->
-> Best,
->
-> ellis
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+On 09/12/2020 11:18, Johannes Thumshirn wrote:=0A=
+> On 09/12/2020 11:10, hch@infradead.org wrote:=0A=
+>> On Wed, Dec 09, 2020 at 10:08:53AM +0000, Johannes Thumshirn wrote:=0A=
+>>> On 09/12/2020 10:34, Christoph Hellwig wrote:=0A=
+>>>> Btw, another thing I noticed:=0A=
+>>>>=0A=
+>>>> when using io_uring to submit a write to btrfs that ends up using Zone=
+=0A=
+>>>> Append we'll hit the=0A=
+>>>>=0A=
+>>>> 	if (WARN_ON_ONCE(is_bvec))=0A=
+>>>> 		return -EINVAL;=0A=
+>>>>=0A=
+>>>> case in bio_iov_iter_get_pages with the changes in this series.=0A=
+>>>=0A=
+>>> Yes this warning is totally bogus. It was in there from the beginning o=
+f the=0A=
+>>> zone-append series and I have no idea why I didn't kill it.=0A=
+>>>=0A=
+>>> IIRC Chaitanya had a patch in his nvmet zoned series removing it.=0A=
+>>=0A=
+>> Yes, but it is wrong.  What we need is a version of=0A=
+>> __bio_iov_bvec_add_pages that takes the hardware limits into account.=0A=
+>>=0A=
+> =0A=
+> Ah now I understand the situation, I'm on it.=0A=
+> =0A=
+=0A=
+OK got something, just need to test it.=0A=
