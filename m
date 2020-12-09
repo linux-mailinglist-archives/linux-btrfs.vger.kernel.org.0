@@ -2,151 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBCD2D3FE3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Dec 2020 11:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00682D40B8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Dec 2020 12:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgLIKaR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Dec 2020 05:30:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
+        id S1730333AbgLILJd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Dec 2020 06:09:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727836AbgLIKaR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Dec 2020 05:30:17 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2BAC0613CF
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Dec 2020 02:29:36 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id n9so318696qvp.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Dec 2020 02:29:36 -0800 (PST)
+        with ESMTP id S1727221AbgLILJ0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Dec 2020 06:09:26 -0500
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B05C0613CF
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Dec 2020 03:08:45 -0800 (PST)
+Received: by mail-qk1-x742.google.com with SMTP id d14so125931qkc.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Dec 2020 03:08:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=FXoHlHAVS5QaXQQ3hswe0UyvJg/XdYoumT/fLlox9YQ=;
-        b=cKuPDL7uBcZDGReDzHlsqaQ5JOzj7Q5qV4pTVgvSg2SuWGcl2ud6NeTnuYFZioE4hj
-         kNO09l1RSn69Vo0+jKo3M+yMOAnj/Dh7QDIKyUdwBUGTMYZziQRPLawcWQltS/2VmAdR
-         uaSLz3QvFrDopee3K9QsgGiU8j8tPk/akCkC60h9Go8PorPV1QxEWuisr3FWNRZoBaMK
-         HVoa/9hV4GhkBjX5WwUOSAFECeZlhVrhmhVjnnGkilmhXtEAuCjxBQvZLQ5tUsn7nmhj
-         JLel8IG5892jbwA3SSN8y8A0XlepSCIThyM3Fvr5cVbNUWyKpwqBkZxa9F9UKvVl58AS
-         5ilQ==
+        bh=VeyntEt/ohYdh8C7LWnioNR+YRgUwKzalwVcd5TCbbc=;
+        b=CcTkBVGSLGcZS5NsSBu+xquCS9qYWwyIl1mgi5YOHQhtwS+CqukJz6aP7h3YUbeGaq
+         g0DEUXJlhjtYE6LklPQpq0CLeOCFThYCdataJDzrhv8ixsoLtFHyaLNEP6qzjN5+t60x
+         hb4EYxu3PwE4REIhZcvDXK4e4vAOIPL3wFDPJu6vDfoL9WAPu8OtgTtLsiKUx8+svtVK
+         Lp5y2mCbugRbldyEmRv0nhvCCk+DGx+GlPv+dnx7naKAC0q9y10UD33LGnbEb5Lo15V/
+         U3JoU4bZpArxSWEm4c339PPph80zzcpEWltUqUXPu8GE+ysP6HhIQQ5uwbul/9pgbxhl
+         Dl4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=FXoHlHAVS5QaXQQ3hswe0UyvJg/XdYoumT/fLlox9YQ=;
-        b=Ka2fIgPd9kBSUuUTIo2KBWyIWn/cztJBoBqpaB0P+LhyjTZQ+T/srJmWhpBdiN2oUo
-         kiiVF4C8L78Kig5dDiNv0V4esx+d2jbAsxJ5eWAoRbIzmWro8/dkI4g4k8F0GJmL3AcY
-         xD07p/Sei5L6+ouMPvfhEa4p9HSm5t80MsuyrcowHmD70o+6vlPrf3gR5DgxIOcWLmcU
-         JRErKowieZZaYmFbj1TqJSZ38rzmWDq70HuPmIG0VxTwp3oiAZxUuHU3haja/04+M/l9
-         INyRHD8GlX6LIPVEzzGVWM77Vyv1/RRPTdorzQxCbEf45613QxtJ83n5tAkDqHzPE3Ql
-         joOw==
-X-Gm-Message-State: AOAM532rHpw+4fZl7RsT4aGPuJG/crctycud8VdReKozw7IeJC6gTYS7
-        Rl9JjmOQ3U4au7fpAeejIS2Xj3WiW15qOKLGjCFJQLgwqdIRNQ==
-X-Google-Smtp-Source: ABdhPJx2DU7AdaJs0WcUySKv0+ACVD+K55xtejF+c6PSwj+T4RwffN+KjoeASMGok2P5SoLHbkh2py16dPPRYfpWhiE=
-X-Received: by 2002:a0c:ac44:: with SMTP id m4mr2072473qvb.45.1607509775889;
- Wed, 09 Dec 2020 02:29:35 -0800 (PST)
+        bh=VeyntEt/ohYdh8C7LWnioNR+YRgUwKzalwVcd5TCbbc=;
+        b=PSKWxIZ/0gTLSvdmSmndH/0GmdQQskEAXrfHR/41yG4kKj3Wz+WveldYvuhjvf/vnn
+         bdPCkNaLlXouqjxaJSxhKQUiQHe4eiPS0XS1q6vKCYRmThYwa9oyGCGFQiFsRyZ01Vvf
+         3pmgKb8hswyAJolsrHp8DFx8KURY88Y88VdD2fa0kykbyzEcVaBf9w0pRx0EJZAfrYTc
+         JgU0R59csSozCHm7LohdnyFlONLqf2nrDpNzxWOC8Bgc/315oGvY5BLTRgv++MNjzFT0
+         wsRSmS+C8bCSWpqwWPPIXEpa218VWrWSfCGybJPhiYrcaf/b6jghc85ygmrS/e1Y0MWq
+         amFA==
+X-Gm-Message-State: AOAM530I+qS1sFgG5wLCTA2nBSBQtlEEnVhruf9n29O0zqya2lIaQ+wd
+        X2QSiSRWfrT55AiwOkVMS90ydWtV9QyHB7s+QYo=
+X-Google-Smtp-Source: ABdhPJzv4BDcxAI5+1mYlE6FOBuFlMTjmZ1Cjr501DM1j+zpGVHnX36kXDAKM9c5U2pJ5/X+zFbbV/A7u3Fy/vI5TbQ=
+X-Received: by 2002:a37:6692:: with SMTP id a140mr2365781qkc.0.1607512124898;
+ Wed, 09 Dec 2020 03:08:44 -0800 (PST)
 MIME-Version: 1.0
-References: <6ae34776e85912960a253a8327068a892998e685.camel@gmx.net>
- <CAL3q7H72N5q6ROhfvuaNNfUvQTe-mtHJVvZaS25oTycJ=3Um3w@mail.gmail.com>
- <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net> <CAL3q7H5AOeFit_kz4X9Q2hXqeHXxamQ+pm04yA5BqkYr3-5e+g@mail.gmail.com>
- <40b352dfa84e0f22d76e9b4f47111117549fa3bb.camel@gmx.net> <CAL3q7H7oLWGWJcg0Gfa+RKRGNf+d4mv0R9FQi2j=xLL1RNPTGA@mail.gmail.com>
- <1f78cd5d635b360e03468740608f3b02aea76b5d.camel@gmx.net>
-In-Reply-To: <1f78cd5d635b360e03468740608f3b02aea76b5d.camel@gmx.net>
+References: <7ffdf22e-352c-70e3-eb7c-86c591febe7c@panasas.com>
+In-Reply-To: <7ffdf22e-352c-70e3-eb7c-86c591febe7c@panasas.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 9 Dec 2020 10:29:24 +0000
-Message-ID: <CAL3q7H4r-EtnMc=VD2EP01HsLCqg-z8LfMnFseHrNEv=rjPT_g@mail.gmail.com>
-Subject: Re: btrfs send -p failing: chown o257-1571-0 failed: No such file or directory
-To:     "Massimo B." <massimo.b@gmx.net>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Date:   Wed, 9 Dec 2020 11:08:33 +0000
+Message-ID: <CAL3q7H7O=bgoR0Le_pi8vChWBhKzcUw_pRZmeXrgjO0mnr1DMA@mail.gmail.com>
+Subject: Re: Assertion in tree-log.c
+To:     "Ellis H. Wilson III" <ellisw@panasas.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 10:10 AM Massimo B. <massimo.b@gmx.net> wrote:
+On Mon, Dec 7, 2020 at 5:57 PM Ellis H. Wilson III <ellisw@panasas.com> wro=
+te:
 >
-> On Fri, 2020-12-04 at 15:00 +0000, Filipe Manana wrote:
-> > Great, try this patch then:  https://pastebin.com/raw/8NcPVUb0
-> >
-> >
-> >
-> > I haven't had the time yet to craft a reproducer and confirm that is
-> >
-> > the case you are running into, but from the receive -vvv output you
-> >
-> > provided before, it seems clear what the problem is.
+> Hi all,
 >
-> No, that is not working.
-> It does not fail anymore and looks like transferring as expected. But the
-> receiving subvolume is exploding and creating lots of sub directories. I =
-killed
-> the send|receive processes.
+> We've hit this assertion a few times, and I wanted to know if it was a
+> known issue:
+>
+> Dec 05 08:53:51 6afa1e4331fa46 kernel: assertion failed: ret =3D=3D 0, fi=
+le:
+> fs/btrfs/tree-log.c, line: 4286
+> Dec 05 08:53:51 6afa1e4331fa46 kernel: ------------[ cut here ]----------=
+--
+> Dec 05 08:53:51 6afa1e4331fa46 kernel: kernel BUG at fs/btrfs/ctree.h:329=
+5!
+> Dec 05 08:53:51 6afa1e4331fa46 kernel: invalid opcode: 0000 [#1] SMP PTI
+> Dec 05 08:53:51 6afa1e4331fa46 kernel: Modules linked in: af_packet_diag
+> netlink_diag sctp_diag sctp libcrc32c tcp_diag udp_diag raw_diag
+> inet_diag unix_diag af_packet binfmt_misc bonding iscsi_ibft
+> iscsi_boot_sysfs msr nls_iso8859_1 nls_cp437 vfat fat dax_pmem btrfs(O)
+> ipmi_ssif xor iTCO_wdt nd_pmem device_dax nd_btt raid6_pq
+> iTCO_vendor_support intel_rapl ib_core skx_edac x86_pkg_temp_thermal
+> intel_powerclamp coretemp raid0 kvm_intel kvm irqbypass crct10dif_pclmul
+> crc32_pclmul crc32c_intel ghash_clmulni_intel pcbc aesni_intel
+> aes_x86_64 crypto_simd glue_helper cryptd ioatdma md_mod ipmi_si nfit
+> i2c_i801 lpc_ich mei_me shpchp ipmi_devintf mei dca pcspkr wmi joydev
+> ipmi_msghandler libnvdimm acpi_pad button hid_generic usbhid ast
+> i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt xhci_pci
+> i40e(O) fb_sys_fops xhci_hcd
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ttm ptp pps_core nvme drm ahci
+> drm_panel_orientation_quirks nvme_core usbcore libahci sg dm_multipath
+> dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua efivarfs
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: CPU: 2 PID: 6897 Comm: iopathv4
+> Tainted: G           O     4.12.14-lp150.11-default #1 openSUSE Leap
+> 15.0 (unreleased)
 
-Just to be clear, you mention that it does not fail anymore but then
-you said you killed the processes.
-If you kill it and don't let it end, it's not unexpected to have
-temporary files/directories.
+As mentioned before by Chris, that's an old openSUSE Leap release.
+You should move to Leap 15.2 (or 15.1, but its support ends by the end
+of January).
+
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: task: ffff8808351146c0
+> task.stack: ffffc90008704000
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RIP:
+> 0010:assfail.constprop.28+0x18/0x1a [btrfs]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RSP: 0018:ffffc90008707b08
+> EFLAGS: 00010296
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RAX: 0000000000000041 RBX:
+> ffff880117eb0990 RCX: 0000000000000000
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RDX: ffff88085c09fd40 RSI:
+> ffff88085c097a68 RDI: ffff88085c097a68
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RBP: 0000000000000ef2 R08:
+> 0000000000002dde R09: 0000000000000003
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: R10: 0000000000000189 R11:
+> 0000000000000001 R12: 0000160000000000
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: R13: 0000000000000096 R14:
+> ffff880000000000 R15: ffff880141d39690
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: FS:  00007f7ca3d96700(0000)
+> GS:ffff88085c080000(0000) knlGS:0000000000000000
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
+> 0000000080050033
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: CR2: 00007f296c031c20 CR3:
+> 000000083120a003 CR4: 00000000007606e0
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: DR0: 0000000000000000 DR1:
+> 0000000000000000 DR2: 0000000000000000
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: DR3: 0000000000000000 DR6:
+> 00000000fffe0ff0 DR7: 0000000000000400
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: PKRU: 55555554
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: Call Trace:
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  copy_items+0x9b4/0xbe0 [btrfs]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  btrfs_log_inode+0x775/0xe00 [btrf=
+s]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:
+> btrfs_log_inode_parent+0x249/0xd30 [btrfs]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ? kmem_cache_alloc+0x1a8/0x510
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ?
+> __filemap_fdatawrite_range+0xa3/0xe0
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ?
+> __filemap_fdatawrite_range+0xb1/0xe0
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ? wait_current_trans+0x1f/0xd0
+> [btrfs]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  ? join_transaction+0x22/0x3f0
+> [btrfs]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  btrfs_log_dentry_safe+0x58/0x80
+> [btrfs]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  btrfs_sync_file+0x2dc/0x420 [btrf=
+s]
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  do_fsync+0x38/0x60
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  SyS_fsync+0xc/0x10
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:  do_syscall_64+0x7b/0x140
+> Dec 05 08:53:52 6afa1e4331fa46 kernel:
+> entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RIP: 0033:0x7f7caaf8f5fc
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RSP: 002b:00007f7ca3d93990
+> EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RAX: ffffffffffffffda RBX:
+> 0000000000000000 RCX: 00007f7caaf8f5fc
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RDX: 0000000000000000 RSI:
+> 0000000000080002 RDI: 0000000000000111
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RBP: 0000000000000000 R08:
+> 0000000000001777 R09: 00000000eddb1d58
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: R10: fffffffffffffa88 R11:
+> 0000000000000293 R12: 00007f7ca3d93a50
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: R13: 0000000001bea4e0 R14:
+> 00000000eddb1d58 R15: f5402026a5ae13a5
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: Code: 80 a0 48 89 fe 48 c7 c7 30
+> 27 81 a0 e8 61 70 9a e0 0f 0b 89 f1 48 c7 c2 3e bf 80 a0 48 89 fe 48 c7
+> c7 00 29 81 a0 e8 47 70 9a e0 <0f> 0b 0f 1f 44 00 00 41 57 41 56 41 be
+> f4 ff ff ff 41 55 41 54
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: RIP:
+> assfail.constprop.28+0x18/0x1a [btrfs] RSP: ffffc90008707b08
+> Dec 05 08:53:52 6afa1e4331fa46 kernel: ---[ end trace 13cc0fa206f6ac86 ]-=
+--
+>
+>
+> The closest thing I can find to it is this patch, which appears to be
+> archived and open:
+>
+> https://lore.kernel.org/linux-btrfs/20190916151307.GB1645163@kroah.com/T/
+>
+> Sorry if my search-engine-skills are failing me and there is a better
+> matching bug that's been fixed already for this.
+
+No, that's a fix for a very different and unrelated problem.
+
+What fixes the problem are the two following patches:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3D0c713cbab6200b0ab6473b50435e450a6e1de85d
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3D5e548b32018d96c377fda4bdac2bf511a448ca67
+
+The second one does not mention any functional problem in its
+changelog, but that's because I only realized it caused a functional
+problem, a similar race like the first one, after it was merged into
+Linus' tree.
+Both are in openSUSE Leap 15.2 (and 15.1).
 
 >
-> du is far bigger than the origin subvolume and reveals some of those subd=
-irs:
-
-Ok, that is not unexpected and it can happen often, see below.
-
+> Best,
 >
-> ~ du -sh /mnt/local/data/snapshots/root/root.20180114T131123+0100/
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o1568-359797-0': No such file or directory
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o6060-359797-0': No such file or directory
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o9279-359797-0': No such file or directory
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o19075-359797-0': No such file or directory
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o19076-359797-0': No such file or directory
-> ...
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o65078-359798-0': No such file or directory
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o65084-359798-0': No such file or directory
-> du: cannot access '/mnt/local/data/snapshots/root/root.20180114T131123+01=
-00/o65095-359798-0': No such file or directory
-> 22G     /mnt/local/data/snapshots/root/root.20180114T131123+0100/
->
-> compsize also reports about 20G referenced data.
->
-> The origin subvol has only 12G referenced.
+> ellis
 
-Ok, the size differences are not something unexpected - send does not
-guarantee the sizes are preserved, neither does guarantee the same
-extent layout as the source.
-There are mainly two reasons for that:
-
-1) Send currently doesn't have a command for hole punching, so holes
-are considered a write full of zeros - if there's a 1G hole for
-example, it's sent as a write operation with 1G zeros;
-
-2) Sometimes shared extents are sent as regular writes and not clone
-commands, one of the reasons for that is that when there are many
-references for an extent, it's too slow to iterate its backreferences.
-Also in a few corner cases we skip extent cloning.
-
-I haven't got yet the chance to work on that, but at least that patch
-fixes one type of problem, maybe you are hitting other different
-problems too.
-
-So to confirm if there are other problems, you really need to let send
-and receive processes finish (don't kill them). If they finish without
-failure, then check if temporary directories (or files with the same
-name pattern) still exist or not.
-
-Thanks.
-
->
-> Best regards,
-> Massimo
->
 
 
 --=20
