@@ -2,154 +2,303 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174E82D59F5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 13:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028EF2D5A0A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 13:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgLJMFX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 07:05:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729120AbgLJMFR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:05:17 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF672C0613CF
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 04:04:21 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4CsCH1295Mz1rvy2;
-        Thu, 10 Dec 2020 13:03:09 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4CsCH11W6Nz1tv25;
-        Thu, 10 Dec 2020 13:03:09 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id v0uM1cm9uhos; Thu, 10 Dec 2020 13:03:07 +0100 (CET)
-Received: from babic.homelinux.org (host-88-217-136-221.customer.m-online.net [88.217.136.221])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPS;
-        Thu, 10 Dec 2020 13:03:07 +0100 (CET)
-Received: from localhost (mail.babic.homelinux.org [127.0.0.1])
-        by babic.homelinux.org (Postfix) with ESMTP id 295BC4540586;
-        Thu, 10 Dec 2020 13:03:07 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at babic.homelinux.org
-Received: from babic.homelinux.org ([IPv6:::1])
-        by localhost (mail.babic.homelinux.org [IPv6:::1]) (amavisd-new, port 10024)
-        with ESMTP id hsdvj19QnyXN; Thu, 10 Dec 2020 13:03:04 +0100 (CET)
-Received: from [192.168.178.64] (paperino.fritz.box [192.168.178.64])
-        by babic.homelinux.org (Postfix) with ESMTP id 2A2254540483;
-        Thu, 10 Dec 2020 13:03:04 +0100 (CET)
-Subject: Re: btrfs-progs license
-To:     dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        Stefano Babic <sbabic@denx.de>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-References: <b927ca28-e280-4d79-184f-b72867dbdaa8@denx.de>
- <X8/pUT3B1+uluATv@relinquished.localdomain>
- <20201210112742.GC6430@twin.jikos.cz>
-From:   Stefano Babic <sbabic@denx.de>
-Autocrypt: addr=sbabic@denx.de; prefer-encrypt=mutual; keydata=
- mQGiBEfdB5IRBADkpYcnh2BoAkGD5p186ysEkWlcp5DU07m7BKzvkEMRhFjeFUOU0klKNmh0
- ZM6rKpYpAYPYBm9YahMyqvj9DmLrZ4yfJ5MssvW9SRETmHpva+h1rN+DzmEcwrqZmLG1JWGy
- LA5ruJaFSzxJHBoROoog1NDMbNDB8A9F7VKrePfkVwCgmODpW/uh2IuMYLVidzDeuvo7alED
- /iV8rwU7C+eBcKy2htuDsEmsqlkBxIDM7IO6h5XxdyqbZOYizuBP3Ksb6xK54weEaB5aQs7S
- 8N9Soi0p1Xh0LMWj6PBCzTC4LF+OCGEMBPc6bBHNzivChgztJlUMioCDSVpOXB/QpBaK302G
- yP5WdmcB1Jn6neq/YRlxHN38MV2yA/46jnzeUotL9LliVZKA/ql4GmyWg2Ae1BUiCqEJQNwl
- knGJOmIS4uABLArB5HjsfDU5hA9FORaNGCIiZlezBkZ3JXA2uQMQhfgqBXrZt4j1fcw9I7E+
- 7IZ2kSCeTPZFLd5FiGQPDOm3Z9eHrpK6pmBGMeBG0pDgUEbN9awyLNBLj7QeU3RlZmFubyBC
- YWJpYyA8c2JhYmljQGRlbnguZGU+iGMEExECACMCGwMGCwkIBwMCBBUCCAMEFgIDAQIeAQIX
- gAUCT9deSgIZAQAKCRD09WXkmmjvppF1AKCRl8d49K4yxWzdBVRTTWG55cyo/gCfRD1RAttl
- R1ofs2wGLHNtXousyL25Ag0ER90HmBAIAIFfX4bKnOmCyB3nPh+jbXZuBSMZTuyDEnguRxl5
- N8Q0ayofQwucCBjXYv65sQ9Rq6FNhEnWqUZBu8A5CwvSakOFOGNC5ta/8VxVRLh0Z0ZTgEep
- SKiPonJyacCbmgWDECdVrKowV7QB9be3Wu67uAZ74rPw2Kd7f0FKnL3djvVRMaBWFIpyQ6SE
- bGOCJjhRQ5L1pIM1Soko+reU7eO+1g6IBw6YkFJisdQE6fzTwaSqUKPPsQLz/W03invQltOb
- Eg7ZwtFs0DFonr1DMm57ksiEhW6SN1wylRO/JzRYG1Qe7u1EVln6iV3ilBvbbfkyRssk4/0e
- kicpSnQknA72YOMAAwYH+QGpAiQ4hAMHrp1bUrtyGXYdeQpYufIZAM4etOnBy/G+e1nfu6y+
- jH4SN9sVK7bwBBAbhEJqkqR5LVsFIRapThJQOWB11rQxLpwkBU9wao/pRM+o95ujGo32WUzf
- wWrzWrkTDy7vMCZuUOLVi4n1GZlUAwpG4rzb6UxPC6GWymkVWGgXp1NC58og5i3Y+rKT7+Xi
- XT2BtvC6PDepoH4JhD+9OkHQO6UfTxPSmtgNbTgtl6L6tj+bm5dOHgkPJFMkEiG8qhUZYQzb
- bYz37orRbA72M2bxK76e9QKn0mVu+d/YCd8wRcvvJbGsozpzcxPvD5Wy5RNJCES8McPtAseU
- tMeISQQYEQIACQUCR90HmAIbDAAKCRD09WXkmmjvpv+3AJ9RakBsH1j0X/Kxp6t2lf0VUfS2
- qACfZ+J6ktk8PKNuyHf0J/I0mbCrhV4=
-Message-ID: <7f16d12b-c420-86f1-2cb5-ece52bec6a2f@denx.de>
-Date:   Thu, 10 Dec 2020 13:03:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201210112742.GC6430@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1732831AbgLJMJr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 07:09:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55382 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732663AbgLJMJr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:09:47 -0500
+From:   fdmanana@kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: send, fix wrong file path when there is an inode with a pending rmdir
+Date:   Thu, 10 Dec 2020 12:09:02 +0000
+Message-Id: <e3057ad7ddc549dc204593c01adad90545994617.1607601701.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David,
+From: Filipe Manana <fdmanana@suse.com>
 
-On 10.12.20 12:27, David Sterba wrote:
-> On Tue, Dec 08, 2020 at 01:00:01PM -0800, Omar Sandoval wrote:
->> On Tue, Dec 08, 2020 at 10:49:10AM +0100, Stefano Babic wrote:
->>> Hi,
->>>
->>> I hope I am not OT. I ask about license for btrfs-progs and related
->>> libraries. I would like to use libbtrfsutils in a FOSS project, but this
->>> is licensed under GPLv3 (even not LGPL) and it forbids to use it in
->>> projects where secure boot is used.
->>
->> libbtrfsutil is LGPLv3, where did you get the idea that it is GPLv3?
->>
->>> Checking code in btrfs-progs, btrfs is licensed under GPv2 (fine !) and
->>> also libbtrfs. But I read also that libbtrfs is thought to be dropped
->>> from the project. And checking btrfs, this is linked against
->>> libbtrfsutils, making the whole project GPLv3 (and again, not suitable
->>> for many industrial applications in embedded systems).
->>>
->>> Does anybody explain me the conflict in license and if there is a path
->>> for a GPLv2 compliant library ?
->>
->> No objections from me to make it LGPLv2 instead, I suppose. Dave,
->> thoughts?
-> 
-> I've replied in https://github.com/kdave/btrfs-progs/issues/323, the
-> initial question regarding GPL v3 does not seem to be relevatnt as
-> there's no such code.
-> 
+When doing an incremental send, if we have a new inode that happens to
+have the same number that an old directory inode had in the base snapshot
+and that old directory has a pending rmdir operation, we end up computing
+a wrong path for the new inode, causing the receiver to fail.
 
-I read this, thanks.
+Example reproducer:
 
-I was quite confused about the license for libbtrfsutil due to both
-"COPYING" and "COPYING.LESSER" in the library path. COPYING reports
-GPLv3. But headers in file set LGPLv3, sure, and btrfs.h is GPLv2.
+  $ cat test-send-rmdir.sh
+  #!/bin/bash
 
+  DEV=/dev/sdi
+  MNT=/mnt/sdi
 
-> I'd like to understand what's the problem with LGPLv3 before we'd
-> consider switching to LGPLv2, which I'd rather not do.
-> 
+  mkfs.btrfs -f $DEV >/dev/null
+  mount $DEV $MNT
 
-Please forgive me ig I am not correct because I am just a developer and
-not a lawyer.
+  mkdir $MNT/dir
+  touch $MNT/dir/file1
+  touch $MNT/dir/file2
+  touch $MNT/dir/file3
 
-The question rised already when QT switched from LGPv2 to LGPLv3, and
-after the switch what companies should do to be license compliant. Based
-on information given by qt.io and from lawyers (I find again at least
-this link https://www.youtube.com/watch?v=lSYDWnsfWUk), it is possible
-to link even close source SW to libraries, but to avoid the known
-"tivoization", the manufacturer or user of a library must provide
-instruction to replace the running code. This is an issue for embedded
-devices, specially in case the device is closed with keys by the
-manufacturer to avoid attacks or replacement with malware - for example,
-medical devices. This means that such a keys to be licence compliant
-(anyone please correct me if I am wrong) must be provided, making the
-keys itself without sense. The issue does not happen with LGPv2.1, and
-this is the reason why many manufacturers are strictly checking to not
-have (L)GPLv3 code on their device.
+  # Filesystem looks like:
+  #
+  # .                                     (ino 256)
+  # |----- dir/                           (ino 257)
+  #         |----- file1                  (ino 258)
+  #         |----- file2                  (ino 259)
+  #         |----- file3                  (ino 260)
+  #
 
-Best regards,
-Stefano
+  btrfs subvolume snapshot -r $MNT $MNT/snap1
+  btrfs send -f /tmp/snap1.send $MNT/snap1
 
+  # Now remove our directory and all its files.
+  rm -fr $MNT/dir
+
+  # Unmount the filesystem and mount it again. This is to ensure that
+  # the next inode that is created ends up with the same inode number
+  # that our directory "dir" had, 257, which is the first free "objectid"
+  # available after mounting again the filesystem.
+  umount $MNT
+  mount $DEV $MNT
+
+  # Now create a new file (it could be a directory as well).
+  touch $MNT/newfile
+
+  # Filesystem now looks like:
+  #
+  # .                                     (ino 256)
+  # |----- newfile                        (ino 257)
+  #
+
+  btrfs subvolume snapshot -r $MNT $MNT/snap2
+  btrfs send -f /tmp/snap2.send -p $MNT/snap1 $MNT/snap2
+
+  # Now unmount the filesystem, create a new one, mount it and try to apply
+  # both send streams to recreate both snapshots.
+  umount $DEV
+
+  mkfs.btrfs -f $DEV >/dev/null
+
+  mount $DEV $MNT
+
+  btrfs receive -f /tmp/snap1.send $MNT
+  btrfs receive -f /tmp/snap2.send $MNT
+
+  umount $MNT
+
+When running the test, the receive operation for the incremental stream
+fails:
+
+  $ ./test-send-rmdir.sh
+  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap1'
+  At subvol /mnt/sdi/snap1
+  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap2'
+  At subvol /mnt/sdi/snap2
+  At subvol snap1
+  At snapshot snap2
+  ERROR: chown o257-9-0 failed: No such file or directory
+
+So fix this by tracking directories that have a pending rmdir by inode
+number and generation number, instead of only inode number.
+
+A test case for fstests follows soon.
+
+Reported-by: Massimo B. <massimo.b@gmx.net>
+Tested-by: Massimo B. <massimo.b@gmx.net>
+Link: https://lore.kernel.org/linux-btrfs/6ae34776e85912960a253a8327068a892998e685.camel@gmx.net/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/send.c | 45 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 16 deletions(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index d719a2755a40..1eaa004d97cd 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -236,6 +236,7 @@ struct waiting_dir_move {
+ 	 * after this directory is moved, we can try to rmdir the ino rmdir_ino.
+ 	 */
+ 	u64 rmdir_ino;
++	u64 rmdir_gen;
+ 	bool orphanized;
+ };
+ 
+@@ -316,7 +317,7 @@ static int is_waiting_for_move(struct send_ctx *sctx, u64 ino);
+ static struct waiting_dir_move *
+ get_waiting_dir_move(struct send_ctx *sctx, u64 ino);
+ 
+-static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino);
++static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino, u64 gen);
+ 
+ static int need_send_hole(struct send_ctx *sctx)
+ {
+@@ -2299,7 +2300,7 @@ static int get_cur_path(struct send_ctx *sctx, u64 ino, u64 gen,
+ 
+ 		fs_path_reset(name);
+ 
+-		if (is_waiting_for_rm(sctx, ino)) {
++		if (is_waiting_for_rm(sctx, ino, gen)) {
+ 			ret = gen_unique_name(sctx, ino, gen, name);
+ 			if (ret < 0)
+ 				goto out;
+@@ -2859,7 +2860,7 @@ static int orphanize_inode(struct send_ctx *sctx, u64 ino, u64 gen,
+ }
+ 
+ static struct orphan_dir_info *
+-add_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino)
++add_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino, u64 dir_gen)
+ {
+ 	struct rb_node **p = &sctx->orphan_dirs.rb_node;
+ 	struct rb_node *parent = NULL;
+@@ -2868,20 +2869,23 @@ add_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino)
+ 	while (*p) {
+ 		parent = *p;
+ 		entry = rb_entry(parent, struct orphan_dir_info, node);
+-		if (dir_ino < entry->ino) {
++		if (dir_ino < entry->ino)
+ 			p = &(*p)->rb_left;
+-		} else if (dir_ino > entry->ino) {
++		else if (dir_ino > entry->ino)
+ 			p = &(*p)->rb_right;
+-		} else {
++		else if (dir_gen < entry->gen)
++			p = &(*p)->rb_left;
++		else if (dir_gen > entry->gen)
++			p = &(*p)->rb_right;
++		else
+ 			return entry;
+-		}
+ 	}
+ 
+ 	odi = kmalloc(sizeof(*odi), GFP_KERNEL);
+ 	if (!odi)
+ 		return ERR_PTR(-ENOMEM);
+ 	odi->ino = dir_ino;
+-	odi->gen = 0;
++	odi->gen = dir_gen;
+ 	odi->last_dir_index_offset = 0;
+ 
+ 	rb_link_node(&odi->node, parent, p);
+@@ -2890,7 +2894,7 @@ add_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino)
+ }
+ 
+ static struct orphan_dir_info *
+-get_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino)
++get_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino, u64 gen)
+ {
+ 	struct rb_node *n = sctx->orphan_dirs.rb_node;
+ 	struct orphan_dir_info *entry;
+@@ -2901,15 +2905,19 @@ get_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino)
+ 			n = n->rb_left;
+ 		else if (dir_ino > entry->ino)
+ 			n = n->rb_right;
++		else if (gen < entry->gen)
++			n = n->rb_left;
++		else if (gen > entry->gen)
++			n = n->rb_right;
+ 		else
+ 			return entry;
+ 	}
+ 	return NULL;
+ }
+ 
+-static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino)
++static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino, u64 gen)
+ {
+-	struct orphan_dir_info *odi = get_orphan_dir_info(sctx, dir_ino);
++	struct orphan_dir_info *odi = get_orphan_dir_info(sctx, dir_ino, gen);
+ 
+ 	return odi != NULL;
+ }
+@@ -2954,7 +2962,7 @@ static int can_rmdir(struct send_ctx *sctx, u64 dir, u64 dir_gen,
+ 	key.type = BTRFS_DIR_INDEX_KEY;
+ 	key.offset = 0;
+ 
+-	odi = get_orphan_dir_info(sctx, dir);
++	odi = get_orphan_dir_info(sctx, dir, dir_gen);
+ 	if (odi)
+ 		key.offset = odi->last_dir_index_offset;
+ 
+@@ -2985,7 +2993,7 @@ static int can_rmdir(struct send_ctx *sctx, u64 dir, u64 dir_gen,
+ 
+ 		dm = get_waiting_dir_move(sctx, loc.objectid);
+ 		if (dm) {
+-			odi = add_orphan_dir_info(sctx, dir);
++			odi = add_orphan_dir_info(sctx, dir, dir_gen);
+ 			if (IS_ERR(odi)) {
+ 				ret = PTR_ERR(odi);
+ 				goto out;
+@@ -2993,12 +3001,13 @@ static int can_rmdir(struct send_ctx *sctx, u64 dir, u64 dir_gen,
+ 			odi->gen = dir_gen;
+ 			odi->last_dir_index_offset = found_key.offset;
+ 			dm->rmdir_ino = dir;
++			dm->rmdir_gen = dir_gen;
+ 			ret = 0;
+ 			goto out;
+ 		}
+ 
+ 		if (loc.objectid > send_progress) {
+-			odi = add_orphan_dir_info(sctx, dir);
++			odi = add_orphan_dir_info(sctx, dir, dir_gen);
+ 			if (IS_ERR(odi)) {
+ 				ret = PTR_ERR(odi);
+ 				goto out;
+@@ -3038,6 +3047,7 @@ static int add_waiting_dir_move(struct send_ctx *sctx, u64 ino, bool orphanized)
+ 		return -ENOMEM;
+ 	dm->ino = ino;
+ 	dm->rmdir_ino = 0;
++	dm->rmdir_gen = 0;
+ 	dm->orphanized = orphanized;
+ 
+ 	while (*p) {
+@@ -3183,7 +3193,7 @@ static int path_loop(struct send_ctx *sctx, struct fs_path *name,
+ 	while (ino != BTRFS_FIRST_FREE_OBJECTID) {
+ 		fs_path_reset(name);
+ 
+-		if (is_waiting_for_rm(sctx, ino))
++		if (is_waiting_for_rm(sctx, ino, gen))
+ 			break;
+ 		if (is_waiting_for_move(sctx, ino)) {
+ 			if (*ancestor_ino == 0)
+@@ -3223,6 +3233,7 @@ static int apply_dir_move(struct send_ctx *sctx, struct pending_dir_move *pm)
+ 	u64 parent_ino, parent_gen;
+ 	struct waiting_dir_move *dm = NULL;
+ 	u64 rmdir_ino = 0;
++	u64 rmdir_gen;
+ 	u64 ancestor;
+ 	bool is_orphan;
+ 	int ret;
+@@ -3237,6 +3248,7 @@ static int apply_dir_move(struct send_ctx *sctx, struct pending_dir_move *pm)
+ 	dm = get_waiting_dir_move(sctx, pm->ino);
+ 	ASSERT(dm);
+ 	rmdir_ino = dm->rmdir_ino;
++	rmdir_gen = dm->rmdir_gen;
+ 	is_orphan = dm->orphanized;
+ 	free_waiting_dir_move(sctx, dm);
+ 
+@@ -3273,6 +3285,7 @@ static int apply_dir_move(struct send_ctx *sctx, struct pending_dir_move *pm)
+ 			dm = get_waiting_dir_move(sctx, pm->ino);
+ 			ASSERT(dm);
+ 			dm->rmdir_ino = rmdir_ino;
++			dm->rmdir_gen = rmdir_gen;
+ 		}
+ 		goto out;
+ 	}
+@@ -3291,7 +3304,7 @@ static int apply_dir_move(struct send_ctx *sctx, struct pending_dir_move *pm)
+ 		struct orphan_dir_info *odi;
+ 		u64 gen;
+ 
+-		odi = get_orphan_dir_info(sctx, rmdir_ino);
++		odi = get_orphan_dir_info(sctx, rmdir_ino, rmdir_gen);
+ 		if (!odi) {
+ 			/* already deleted */
+ 			goto finish;
 -- 
-=====================================================================
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-53 Fax: +49-8142-66989-80 Email: sbabic@denx.de
-=====================================================================
+2.28.0
+
