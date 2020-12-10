@@ -2,98 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F072D5807
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 11:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6192D599C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 12:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgLJKKp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 05:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgLJKKh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 05:10:37 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FC4C0613CF
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 02:09:48 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id y18so4182944qki.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 02:09:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=9zc1+U5xEyjYPIKXVMQtzZ+5Wd/UuFwG02rd+rgq8cs=;
-        b=HVeU0wN16phLW+3KhpxIKwDgApVofTrQzEz8VXHi0Dxs+LS6zlc8uoOxGiYXc5uDZv
-         wNLbIJLHiLCMmgbwWcsdkiClLHEa9+26s0FLMBKLBrp4j/K9Py6YKjjSCDldzPPnynlq
-         CC1YGHZWb1lsc7nOkBKmRXYNfZCijl7c3a6XiDIRAoseBF8Ry98AnbKbsXXkzukeem6K
-         fu0NqrCKLp52auPaS5HY1PmyS4M9nQ5yXOuZzhGSmPZ1h3ZFlgfnsvDg7vQWrfS3fFMU
-         lBKjGNkupGza1pV8+3arLml1quJAhMFeIadMLpCgEEohj6FterUZIcB9i25xSFYaT0pn
-         LCTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=9zc1+U5xEyjYPIKXVMQtzZ+5Wd/UuFwG02rd+rgq8cs=;
-        b=AJNfX935VR527kLcIlJhYuGLv8cxIKkIiLyohwLx3TkbfPjBbgS9Gqa9710GNbJjGu
-         V1SAZcd2qp/NIk9StPxB0aFp1jsAWNpV4U2h+kBh+0jjUlVkIJd5beKS1yFPQWilmy9x
-         IZrileU/kkvE/l1Mo3Z9AVj214oKWjvN0tk9bkkzAgpwlGDmKgvBqjaDrdc1+Y14rkG0
-         ONDX6Sa6JLmwaJN4aOFEOplrw/bktjY6hWGjLNVkkRuVr66M+mwzcbQyz7QJ8Sl2wGLb
-         g/3SVUcFX+cdE2LAi6Y89Lqi0u7VsDedV+PbrjKSTaFXeGbxQhzsh3wOhzfjq4k5g1ff
-         qUsw==
-X-Gm-Message-State: AOAM5333G53S3aliN04sjBXm0Li3L6bvCf5wssL54roPJerj/qujiRIi
-        whsVUxkKtcj3QuasKvRmji1ZO8btVbWLOWNOekc=
-X-Google-Smtp-Source: ABdhPJynQEzyJVYbOnQJ0cldSk6lvssd0MarKmHvmUgHumIBq6o/DYZMDvyQctPF7WGtguBwxovYvqMx8g6HNKPLP84=
-X-Received: by 2002:ae9:df47:: with SMTP id t68mr7937486qkf.438.1607594987497;
- Thu, 10 Dec 2020 02:09:47 -0800 (PST)
+        id S1733170AbgLJLqf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 06:46:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44760 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728117AbgLJLoB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:44:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607600594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=bWVMTXYxeip1vOov0gHf7ci7k79Zm/fGwfIiJOu2PoQ=;
+        b=ZdVclMJ44dmBY9SaSm1fe9g/iveWbqM/jjg0k5/hB30W/GkjD768c3ZON62lCsclBY9vmJ
+        KxAnWHs/MlfQ31uolrZ96SyM1+UPtiQz6V2QDSiGhgtMdGm9vINa3ZX+4CmHfCJtke6Phm
+        kIHXF/iXe8T88Zk1KDi89jhqNiL0Lqc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 70E72AD87;
+        Thu, 10 Dec 2020 11:43:13 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: Cleanup btrfs_file_write_iter
+Date:   Thu, 10 Dec 2020 10:38:32 +0200
+Message-Id: <20201210083832.1283574-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <6ae34776e85912960a253a8327068a892998e685.camel@gmx.net>
- <CAL3q7H72N5q6ROhfvuaNNfUvQTe-mtHJVvZaS25oTycJ=3Um3w@mail.gmail.com>
- <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net> <CAL3q7H5AOeFit_kz4X9Q2hXqeHXxamQ+pm04yA5BqkYr3-5e+g@mail.gmail.com>
- <40b352dfa84e0f22d76e9b4f47111117549fa3bb.camel@gmx.net> <CAL3q7H7oLWGWJcg0Gfa+RKRGNf+d4mv0R9FQi2j=xLL1RNPTGA@mail.gmail.com>
- <1f78cd5d635b360e03468740608f3b02aea76b5d.camel@gmx.net> <CAL3q7H4r-EtnMc=VD2EP01HsLCqg-z8LfMnFseHrNEv=rjPT_g@mail.gmail.com>
- <1d40f2a14487b6f052c2be84a38b5fff18d088a3.camel@gmx.net>
-In-Reply-To: <1d40f2a14487b6f052c2be84a38b5fff18d088a3.camel@gmx.net>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 10 Dec 2020 10:09:36 +0000
-Message-ID: <CAL3q7H5b5d1X6WhQeX0=-Pieo66K=2n7c=KCuFpU74du3fkmVw@mail.gmail.com>
-Subject: Re: btrfs send -p failing: chown o257-1571-0 failed: No such file or directory
-To:     "Massimo B." <massimo.b@gmx.net>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 6:23 AM Massimo B. <massimo.b@gmx.net> wrote:
->
-> On Wed, 2020-12-09 at 10:29 +0000, Filipe Manana wrote:
-> > So to confirm if there are other problems, you really need to let send =
-and
-> > receive processes finish (don't kill them). If they finish without fail=
-ure,
-> > then check if temporary directories (or files with the same name patter=
-n)
-> > still exist or not.
->
-> Ok, it seems to be working.
-> Thank you very much.
->
-> Can you put a note on the list here, when this is going to be released an=
-d to
-> which version?
+First replace all inode instances with a pointer to btrfs_inode. This
+removes multiple invocations of the BTRFS_I macro, subsequently remove
+2 local variables as they are called only once and simply refer to
+them directly.
 
-Sure.
-Thanks for testing it!
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/btrfs/file.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
->
-> Best regards,
-> Massimo
->
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 0e41459b8de6..e65223e3510d 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1997,9 +1997,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 				    struct iov_iter *from)
+ {
+ 	struct file *file = iocb->ki_filp;
+-	struct inode *inode = file_inode(file);
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	struct btrfs_root *root = BTRFS_I(inode)->root;
++	struct btrfs_inode *inode = BTRFS_I(file_inode(file));
+ 	ssize_t num_written = 0;
+ 	const bool sync = iocb->ki_flags & IOCB_DSYNC;
+ 
+@@ -2008,7 +2006,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 	 * have opened a file as writable, we have to stop this write operation
+ 	 * to ensure consistency.
+ 	 */
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
++	if (test_bit(BTRFS_FS_STATE_ERROR, &inode->root->fs_info->fs_state))
+ 		return -EROFS;
+ 
+ 	if (!(iocb->ki_flags & IOCB_DIRECT) &&
+@@ -2016,7 +2014,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 		return -EOPNOTSUPP;
+ 
+ 	if (sync)
+-		atomic_inc(&BTRFS_I(inode)->sync_writers);
++		atomic_inc(&inode->sync_writers);
+ 
+ 	if (iocb->ki_flags & IOCB_DIRECT)
+ 		num_written = btrfs_direct_write(iocb, from);
+@@ -2028,14 +2026,14 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 	 * otherwise subsequent syncs to a file that's been synced in this
+ 	 * transaction will appear to have already occurred.
+ 	 */
+-	spin_lock(&BTRFS_I(inode)->lock);
+-	BTRFS_I(inode)->last_sub_trans = root->log_transid;
+-	spin_unlock(&BTRFS_I(inode)->lock);
++	spin_lock(&inode->lock);
++	inode->last_sub_trans = inode->root->log_transid;
++	spin_unlock(&inode->lock);
+ 	if (num_written > 0)
+ 		num_written = generic_write_sync(iocb, num_written);
+ 
+ 	if (sync)
+-		atomic_dec(&BTRFS_I(inode)->sync_writers);
++		atomic_dec(&inode->sync_writers);
+ 
+ 	current->backing_dev_info = NULL;
+ 	return num_written;
+-- 
+2.25.1
 
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
