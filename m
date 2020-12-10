@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919DF2D5415
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 07:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8232D5416
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 07:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387566AbgLJGla (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 01:41:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44726 "EHLO mx2.suse.de"
+        id S2387569AbgLJGlb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 01:41:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44728 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726874AbgLJGl3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 01:41:29 -0500
+        id S1728974AbgLJGla (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 01:41:30 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607582380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1607582382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oiFao7hSluPEqR1buVMmU5UrRddfvcZkBVp7YMVfy+Q=;
-        b=EhpFBo/7DuiSxAtoLMiUPLUTjqMXl+bZTkugd1I9waFfQSSf1t0NRmLhnYUMx5JB0elHkb
-        VXoUNVHpsCZa1qExH6VvYMmW1VcA4LslpiTlNKVR9a6sfKan18evqf5/da+FUIOcmls6+4
-        gGQdd55gczwLSvbb47daKqnaz8N96yM=
+        bh=GALDEq99Z8S+mHFMraFZOk/xU7D2UbhDTLXmSzVvz44=;
+        b=V7A67/TW3ko7xe5EmHNplIAakkXmnE3ZLxODAMZXR8kS9tWWVHcDCnpyO8m+Ef5ZCuYbuI
+        iDOHauEK/sD9VlwiDHTEH2QnSp+LoKcJwKL5TcxqTQwqpSRKub5Ee5WbYhE5mIiDH24V6K
+        bSlXlOeuN4sQzyZ8c9+v8QKgaWEZVDU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 289FBAD80
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 06:39:40 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0AA4BAD9F
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 06:39:42 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 16/18] btrfs: introduce btrfs_subpage for data inodes
-Date:   Thu, 10 Dec 2020 14:39:03 +0800
-Message-Id: <20201210063905.75727-17-wqu@suse.com>
+Subject: [PATCH v2 17/18] btrfs: integrate page status update for read path into begin/end_page_read()
+Date:   Thu, 10 Dec 2020 14:39:04 +0800
+Message-Id: <20201210063905.75727-18-wqu@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201210063905.75727-1-wqu@suse.com>
 References: <20201210063905.75727-1-wqu@suse.com>
@@ -38,350 +38,272 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To support subpage sector size, data also need extra info to make sure
-which sectors in a page are uptodate/dirty/...
+In btrfs data page read path, the page status update are handled in two
+different locations:
 
-This patch will make pages for data inodes to get btrfs_subpage
-structure attached, and detached when the page is freed.
+  btrfs_do_read_page()
+  {
+	while (cur <= end) {
+		/* No need to read from disk */
+		if (HOLE/PREALLOC/INLINE){
+			memset();
+			set_extent_uptodate();
+			continue;
+		}
+		/* Read from disk */
+		ret = submit_extent_page(end_bio_extent_readpage);
+  }
 
-This patch also slightly changes the timing when
-set_page_extent_mapped() to make sure:
-- We have page->mapping set
-  page->mapping->host is used to grab btrfs_fs_info, thus we can only
-  call this function after page is mapped to an inode.
+  end_bio_extent_readpage()
+  {
+	endio_readpage_uptodate_page_status();
+  }
 
-  One call site attaches pages to inode manually, thus we have to modify
-  the timing of set_page_extent_mapped() a little.
+This is fine for sectorsize == PAGE_SIZE case, as for above loop we
+should only hit one branch and then exit.
 
-- As soon as possible, before other operations
-  Since memory allocation can fail, we have to do extra error handling.
-  Calling set_page_extent_mapped() as soon as possible can simply the
-  error handling for several call sites.
+But for subpage, there are more works to be done in page status update:
+- Page Unlock condition
+  Unlike regular page size == sectorsize case, we can no longer just
+  unlock a page.
+  Only the last reader of the page can unlock the page.
+  This means, we can unlock the page either in the while() loop, or in
+  the endio function.
 
-The idea is pretty much the same as iomap_page, but with more bitmaps
-for btrfs specific cases.
+- Page uptodate condition
+  Since we have multiple sectors to read for a page, we can only mark
+  the full page uptodate if all sectors are uptodate.
 
-Currently the plan is to switch iomap if iomap can provide sector
-aligned write back (only write back dirty sectors, but not the full
-page, data balance require this feature).
+To handle both subpage and regular cases, introduce a pair of functions
+to help handling page status update:
 
-So we will stick to btrfs specific bitmap for now.
+- being_page_read()
+  For regular case, it does nothing.
+  For subpage case, it update the reader counters so that later
+  end_page_read() can know who is the last one to unlock the page.
+
+- end_page_read()
+  This is just endio_readpage_uptodate_page_status() renamed.
+  The original name is a little too long and too specific for endio.
+
+  The only new trick added is the condition for page unlock.
+  Now for subage data, we unlock the page if we're the last reader.
+
+This does not only provide the basis for subpage data read, but also
+hide the special handling of page read from the main read loop.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c      | 10 ++++++--
- fs/btrfs/extent_io.c        | 47 +++++++++++++++++++++++++++++++++----
- fs/btrfs/extent_io.h        |  3 ++-
- fs/btrfs/file.c             | 10 +++++---
- fs/btrfs/free-space-cache.c | 15 +++++++++---
- fs/btrfs/inode.c            | 12 ++++++----
- fs/btrfs/ioctl.c            |  5 +++-
- fs/btrfs/reflink.c          |  5 +++-
- fs/btrfs/relocation.c       | 12 ++++++++--
- 9 files changed, 98 insertions(+), 21 deletions(-)
+ fs/btrfs/extent_io.c | 39 +++++++++++++++++++++++++-----------
+ fs/btrfs/subpage.h   | 47 ++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 68 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 5ae3fa0386b7..6d203acfdeb3 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -542,13 +542,19 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 			goto next;
- 		}
- 
--		end = last_offset + PAGE_SIZE - 1;
- 		/*
- 		 * at this point, we have a locked page in the page cache
- 		 * for these bytes in the file.  But, we have to make
- 		 * sure they map to this compressed extent on disk.
- 		 */
--		set_page_extent_mapped(page);
-+		ret = set_page_extent_mapped(page);
-+		if (ret < 0) {
-+			unlock_page(page);
-+			put_page(page);
-+			break;
-+		}
-+
-+		end = last_offset + PAGE_SIZE - 1;
- 		lock_extent(tree, last_offset, end);
- 		read_lock(&em_tree->lock);
- 		em = lookup_extent_mapping(em_tree, last_offset,
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 64a19c1884fc..4e4ed9c453ae 100644
+index 4e4ed9c453ae..56174e7f0ae8 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3191,10 +3191,40 @@ static int attach_extent_buffer_page(struct extent_buffer *eb,
- 	return 0;
+@@ -2841,8 +2841,18 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
+ 	processed->uptodate = uptodate;
  }
  
--void set_page_extent_mapped(struct page *page)
-+int __must_check set_page_extent_mapped(struct page *page)
- {
--	if (!PagePrivate(page))
-+	struct btrfs_fs_info *fs_info;
+-static void endio_readpage_update_page_status(struct page *page, bool uptodate,
+-					      u64 start, u64 end)
++static void begin_data_page_read(struct btrfs_fs_info *fs_info, struct page *page)
++{
++	ASSERT(PageLocked(page));
++	if (fs_info->sectorsize == PAGE_SIZE)
++		return;
 +
-+	ASSERT(page->mapping);
-+
-+	if (PagePrivate(page))
-+		return 0;
-+
-+	fs_info = btrfs_sb(page->mapping->host->i_sb);
-+	if (fs_info->sectorsize == PAGE_SIZE) {
- 		attach_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
-+		return 0;
-+	}
-+
-+	return btrfs_attach_subpage(fs_info, page);
++	ASSERT(PagePrivate(page) && page->private);
++	ASSERT(page->mapping->host != fs_info->btree_inode);
++	btrfs_subpage_start_reader(fs_info, page, page_offset(page), PAGE_SIZE);
 +}
 +
-+void clear_page_extent_mapped(struct page *page)
-+{
-+	struct btrfs_fs_info *fs_info;
-+
-+	ASSERT(page->mapping);
-+
-+	if (!PagePrivate(page))
-+		return;
-+
-+	fs_info = btrfs_sb(page->mapping->host->i_sb);
-+	if (fs_info->sectorsize == PAGE_SIZE) {
-+		detach_page_private(page);
-+		return;
-+	}
-+
-+	btrfs_detach_subpage(fs_info, page);
- }
- 
- static struct extent_map *
-@@ -3251,7 +3281,12 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 	unsigned long this_bio_flag = 0;
- 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
- 
--	set_page_extent_mapped(page);
-+	ret = set_page_extent_mapped(page);
-+	if (ret < 0) {
-+		unlock_extent(tree, start, end);
-+		SetPageError(page);
-+		goto out;
-+	}
- 
- 	if (!PageUptodate(page)) {
- 		if (cleancache_get_page(page) == 0) {
-@@ -3693,7 +3728,11 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 		flush_dcache_page(page);
- 	}
- 
--	set_page_extent_mapped(page);
-+	ret = set_page_extent_mapped(page);
-+	if (ret < 0) {
-+		SetPageError(page);
-+		goto done;
-+	}
- 
- 	if (!epd->extent_locked) {
- 		ret = writepage_delalloc(BTRFS_I(inode), page, wbc, start,
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 19221095c635..349d044c1254 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -178,7 +178,8 @@ int btree_write_cache_pages(struct address_space *mapping,
- void extent_readahead(struct readahead_control *rac);
- int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		  u64 start, u64 len);
--void set_page_extent_mapped(struct page *page);
-+int __must_check set_page_extent_mapped(struct page *page);
-+void clear_page_extent_mapped(struct page *page);
- 
- struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 					  u64 start, u64 owner_root, int level);
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index a29b50208eee..9b878616b489 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1373,6 +1373,12 @@ static noinline int prepare_pages(struct inode *inode, struct page **pages,
- 			goto fail;
- 		}
- 
-+		err = set_page_extent_mapped(pages[i]);
-+		if (err < 0) {
-+			faili = i;
-+			goto fail;
-+		}
-+
- 		if (i == 0)
- 			err = prepare_uptodate_page(inode, pages[i], pos,
- 						    force_uptodate);
-@@ -1470,10 +1476,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
- 	 * We'll call btrfs_dirty_pages() later on, and that will flip around
- 	 * delalloc bits and dirty the pages as required.
- 	 */
--	for (i = 0; i < num_pages; i++) {
--		set_page_extent_mapped(pages[i]);
-+	for (i = 0; i < num_pages; i++)
- 		WARN_ON(!PageLocked(pages[i]));
--	}
- 
- 	return ret;
- }
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 71d0d14bc18b..c347b415060a 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -431,11 +431,22 @@ static int io_ctl_prepare_pages(struct btrfs_io_ctl *io_ctl, bool uptodate)
- 	int i;
- 
- 	for (i = 0; i < io_ctl->num_pages; i++) {
-+		int ret;
-+
- 		page = find_or_create_page(inode->i_mapping, i, mask);
- 		if (!page) {
- 			io_ctl_drop_pages(io_ctl);
- 			return -ENOMEM;
- 		}
-+
-+		ret = set_page_extent_mapped(page);
-+		if (ret < 0) {
-+			unlock_page(page);
-+			put_page(page);
-+			io_ctl_drop_pages(io_ctl);
-+			return -ENOMEM;
-+		}
-+
- 		io_ctl->pages[i] = page;
- 		if (uptodate && !PageUptodate(page)) {
- 			btrfs_readpage(NULL, page);
-@@ -455,10 +466,8 @@ static int io_ctl_prepare_pages(struct btrfs_io_ctl *io_ctl, bool uptodate)
- 		}
- 	}
- 
--	for (i = 0; i < io_ctl->num_pages; i++) {
-+	for (i = 0; i < io_ctl->num_pages; i++)
- 		clear_page_dirty_for_io(io_ctl->pages[i]);
--		set_page_extent_mapped(io_ctl->pages[i]);
--	}
- 
- 	return 0;
- }
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 070716650df8..5b64715df92e 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4720,6 +4720,9 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- 		ret = -ENOMEM;
- 		goto out;
- 	}
-+	ret = set_page_extent_mapped(page);
-+	if (ret < 0)
-+		goto out_unlock;
- 
- 	if (!PageUptodate(page)) {
- 		ret = btrfs_readpage(NULL, page);
-@@ -4737,7 +4740,6 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- 	wait_on_page_writeback(page);
- 
- 	lock_extent_bits(io_tree, block_start, block_end, &cached_state);
--	set_page_extent_mapped(page);
- 
- 	ordered = btrfs_lookup_ordered_extent(inode, block_start);
- 	if (ordered) {
-@@ -8117,7 +8119,7 @@ static int __btrfs_releasepage(struct page *page, gfp_t gfp_flags)
++static void end_page_read(struct page *page, bool uptodate, u64 start, u64 end)
  {
- 	int ret = try_release_extent_mapping(page, gfp_flags);
- 	if (ret == 1)
--		detach_page_private(page);
-+		clear_page_extent_mapped(page);
- 	return ret;
- }
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
+ 	u32 len;
+@@ -2860,7 +2870,12 @@ static void endio_readpage_update_page_status(struct page *page, bool uptodate,
  
-@@ -8276,7 +8278,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 	}
- 
- 	ClearPageChecked(page);
--	detach_page_private(page);
-+	clear_page_extent_mapped(page);
+ 	if (fs_info->sectorsize == PAGE_SIZE)
+ 		unlock_page(page);
+-	/* Subpage locking will be handled in later patches */
++	else if (page->mapping->host != fs_info->btree_inode)
++		/*
++		 * For subpage data, unlock the page if we're the last reader.
++		 * For subpage metadata, page lock is not utilized for read.
++		 */
++		btrfs_subpage_end_reader(fs_info, page, start, len);
  }
  
  /*
-@@ -8355,7 +8357,9 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	wait_on_page_writeback(page);
+@@ -2997,7 +3012,7 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		bio_offset += len;
  
- 	lock_extent_bits(io_tree, page_start, page_end, &cached_state);
--	set_page_extent_mapped(page);
-+	ret = set_page_extent_mapped(page);
-+	if (ret < 0)
-+		goto out_unlock;
- 
- 	/*
- 	 * we can't set the delalloc bits if there are pending ordered
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index dde49a791f3e..1d58ffb9212f 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1319,6 +1319,10 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 		if (!page)
- 			break;
- 
-+		ret = set_page_extent_mapped(page);
-+		if (ret < 0)
-+			break;
-+
- 		page_start = page_offset(page);
- 		page_end = page_start + PAGE_SIZE - 1;
- 		while (1) {
-@@ -1440,7 +1444,6 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 	for (i = 0; i < i_done; i++) {
- 		clear_page_dirty_for_io(pages[i]);
- 		ClearPageChecked(pages[i]);
--		set_page_extent_mapped(pages[i]);
- 		set_page_dirty(pages[i]);
- 		unlock_page(pages[i]);
- 		put_page(pages[i]);
-diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index b03e7891394e..b24396cf2f99 100644
---- a/fs/btrfs/reflink.c
-+++ b/fs/btrfs/reflink.c
-@@ -81,7 +81,10 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
- 		goto out_unlock;
+ 		/* Update page status and unlock */
+-		endio_readpage_update_page_status(page, uptodate, start, end);
++		end_page_read(page, uptodate, start, end);
+ 		endio_readpage_release_extent(&processed, BTRFS_I(inode),
+ 					      start, end, uptodate);
  	}
- 
--	set_page_extent_mapped(page);
-+	ret = set_page_extent_mapped(page);
-+	if (ret < 0)
-+		goto out_unlock;
-+
- 	clear_extent_bit(&inode->io_tree, file_offset, range_end,
- 			 EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING | EXTENT_DEFRAG,
- 			 0, 0, NULL);
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 19b7db8b2117..41ee0f376af3 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2679,6 +2679,16 @@ static int relocate_file_extent_cluster(struct inode *inode,
- 				goto out;
- 			}
+@@ -3265,6 +3280,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 		      unsigned int read_flags, u64 *prev_em_start)
+ {
+ 	struct inode *inode = page->mapping->host;
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	u64 start = page_offset(page);
+ 	const u64 end = start + PAGE_SIZE - 1;
+ 	u64 cur = start;
+@@ -3308,6 +3324,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 			kunmap_atomic(userpage);
  		}
-+		ret = set_page_extent_mapped(page);
-+		if (ret < 0) {
-+			btrfs_delalloc_release_metadata(BTRFS_I(inode),
-+						PAGE_SIZE, true);
-+			btrfs_delalloc_release_extents(BTRFS_I(inode),
-+						PAGE_SIZE);
-+			unlock_page(page);
-+			put_page(page);
-+			goto out;
-+		}
+ 	}
++	begin_data_page_read(fs_info, page);
+ 	while (cur <= end) {
+ 		bool force_bio_submit = false;
+ 		u64 disk_bytenr;
+@@ -3325,13 +3342,14 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 					    &cached, GFP_NOFS);
+ 			unlock_extent_cached(tree, cur,
+ 					     cur + iosize - 1, &cached);
++			end_page_read(page, true, cur, cur + iosize - 1);
+ 			break;
+ 		}
+ 		em = __get_extent_map(inode, page, pg_offset, cur,
+ 				      end - cur + 1, em_cached);
+ 		if (IS_ERR_OR_NULL(em)) {
+-			SetPageError(page);
+ 			unlock_extent(tree, cur, end);
++			end_page_read(page, false, cur, end);
+ 			break;
+ 		}
+ 		extent_offset = cur - em->start;
+@@ -3414,6 +3432,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 					    &cached, GFP_NOFS);
+ 			unlock_extent_cached(tree, cur,
+ 					     cur + iosize - 1, &cached);
++			end_page_read(page, true, cur, cur + iosize - 1);
+ 			cur = cur + iosize;
+ 			pg_offset += iosize;
+ 			continue;
+@@ -3423,6 +3442,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 				   EXTENT_UPTODATE, 1, NULL)) {
+ 			check_page_uptodate(tree, page);
+ 			unlock_extent(tree, cur, cur + iosize - 1);
++			end_page_read(page, true, cur, cur + iosize - 1);
+ 			cur = cur + iosize;
+ 			pg_offset += iosize;
+ 			continue;
+@@ -3431,8 +3451,8 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 		 * to date.  Error out
+ 		 */
+ 		if (block_start == EXTENT_MAP_INLINE) {
+-			SetPageError(page);
+ 			unlock_extent(tree, cur, cur + iosize - 1);
++			end_page_read(page, false, cur, cur + iosize - 1);
+ 			cur = cur + iosize;
+ 			pg_offset += iosize;
+ 			continue;
+@@ -3449,19 +3469,14 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 			nr++;
+ 			*bio_flags = this_bio_flag;
+ 		} else {
+-			SetPageError(page);
+ 			unlock_extent(tree, cur, cur + iosize - 1);
++			end_page_read(page, false, cur, cur + iosize - 1);
+ 			goto out;
+ 		}
+ 		cur = cur + iosize;
+ 		pg_offset += iosize;
+ 	}
+ out:
+-	if (!nr) {
+-		if (!PageError(page))
+-			SetPageUptodate(page);
+-		unlock_page(page);
+-	}
+ 	return ret;
+ }
  
- 		if (PageReadahead(page)) {
- 			page_cache_async_readahead(inode->i_mapping,
-@@ -2706,8 +2716,6 @@ static int relocate_file_extent_cluster(struct inode *inode,
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index 8592234d773e..6c801ef00d2d 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -31,6 +31,9 @@ struct btrfs_subpage {
+ 			u16 tree_block_bitmap;
+ 		};
+ 		/* structures only used by data */
++		struct {
++			atomic_t readers;
++		};
+ 	};
+ };
  
- 		lock_extent(&BTRFS_I(inode)->io_tree, page_start, page_end);
+@@ -48,6 +51,17 @@ static inline void btrfs_subpage_clamp_range(struct page *page,
+ 		     orig_start + orig_len) - *start;
+ }
  
--		set_page_extent_mapped(page);
--
- 		if (nr < cluster->nr &&
- 		    page_start + offset == cluster->boundary[nr]) {
- 			set_extent_bits(&BTRFS_I(inode)->io_tree,
++static inline void btrfs_subpage_assert(struct btrfs_fs_info *fs_info,
++					struct page *page, u64 start, u32 len)
++{
++	/* Basic checks */
++	ASSERT(PagePrivate(page) && page->private);
++	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
++	       IS_ALIGNED(len, fs_info->sectorsize));
++	ASSERT(page_offset(page) <= start &&
++	       start + len <= page_offset(page) + PAGE_SIZE);
++}
++
+ /*
+  * Convert the [start, start + len) range into a u16 bitmap
+  *
+@@ -59,12 +73,8 @@ static inline u16 btrfs_subpage_calc_bitmap(struct btrfs_fs_info *fs_info,
+ 	int bit_start = (start - page_offset(page)) >> fs_info->sectorsize_bits;
+ 	int nbits = len >> fs_info->sectorsize_bits;
+ 
+-	/* Basic checks */
+-	ASSERT(PagePrivate(page) && page->private);
+-	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+-	       IS_ALIGNED(len, fs_info->sectorsize));
+-	ASSERT(page_offset(page) <= start &&
+-	       start + len <= page_offset(page) + PAGE_SIZE);
++	btrfs_subpage_assert(fs_info, page, start, len);
++
+ 	/*
+ 	 * Here nbits can be 16, thus can go beyond u16 range. Here we make the
+ 	 * first left shift to be calculated in unsigned long (u32), then
+@@ -73,6 +83,31 @@ static inline u16 btrfs_subpage_calc_bitmap(struct btrfs_fs_info *fs_info,
+ 	return (u16)(((1UL << nbits) - 1) << bit_start);
+ }
+ 
++static inline void btrfs_subpage_start_reader(struct btrfs_fs_info *fs_info,
++					      struct page *page, u64 start,
++					      u32 len)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	int nbits = len >> fs_info->sectorsize_bits;
++
++	btrfs_subpage_assert(fs_info, page, start, len);
++
++	ASSERT(atomic_read(&subpage->readers) == 0);
++	atomic_set(&subpage->readers, nbits);
++}
++
++static inline void btrfs_subpage_end_reader(struct btrfs_fs_info *fs_info,
++			struct page *page, u64 start, u32 len)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	int nbits = len >> fs_info->sectorsize_bits;
++
++	btrfs_subpage_assert(fs_info, page, start, len);
++	ASSERT(atomic_read(&subpage->readers) >= nbits);
++	if (atomic_sub_and_test(nbits, &subpage->readers))
++		unlock_page(page);
++}
++
+ static inline void btrfs_subpage_set_tree_block(struct btrfs_fs_info *fs_info,
+ 			struct page *page, u64 start, u32 len)
+ {
 -- 
 2.29.2
 
