@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE92F2D5978
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 12:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 041A92D5998
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 12:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgLJLks (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 06:40:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60272 "EHLO mx2.suse.de"
+        id S2388290AbgLJLpO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 06:45:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57754 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733285AbgLJLki (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:40:38 -0500
+        id S1729602AbgLJLpI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:45:08 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607600391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1607600662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=NQ+nqkFXH8BP/3aXaBb6Z7ks2ATNEidcfVkkLxd93N8=;
-        b=p1q1+qpkv3p5NVWi7a3TaysF5XSOAc0pEf5qoCfb0Oa/AwSj9sZhYtYdKu/3kny6ETW5y6
-        PAhD2PibLOHrIanDtOiHXIHbYG0pdhvUluIqrDgJr34tWtIyzQYde03y7EESWbbuYNsSk8
-        v0gkdIA97ncl+/AtU1XvP8OGhCVcBoM=
+        bh=CdIVBR7e92erFOytYuICANyu0Aa+/7PsnBJaIDJhpJE=;
+        b=IC5ErBNilDmiRGkI5aF0ga5uXBkxYEV/wP2kh9Ao9i3ImldMZWzHr58KJiVflbOJLYxF6H
+        3btNxa8O/kEZQhZ6C+K1xrzFBc9HHRPDG4POdkelgtU+eqxXU7YLu1ttejBj4MvEKiG4P2
+        R2QQsbllbr+h7aHOZHomRmRPwdh4INc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 58C76AE52;
-        Thu, 10 Dec 2020 11:39:50 +0000 (UTC)
-Subject: Re: [PATCH 1/2] btrfs: Fold generic_write_checks() in
- btrfs_write_check()
+        by mx2.suse.de (Postfix) with ESMTP id 0A215AD0E;
+        Thu, 10 Dec 2020 11:44:21 +0000 (UTC)
+Subject: Re: [PATCH 2/2] btrfs: Make btrfs_direct_write atomic with respect to
+ inode_lock
 To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
 References: <cover.1607449636.git.rgoldwyn@suse.com>
- <8dabce11b6bc9dc4ba534a2d5cf169ca3d0a812d.1607449636.git.rgoldwyn@suse.com>
+ <f779c217a8599d71adec3b31e4afbac43df2a74c.1607449636.git.rgoldwyn@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <a93f2997-3fb8-6f9b-a24d-d9f1ba6e2f07@suse.com>
-Date:   Thu, 10 Dec 2020 10:43:49 +0200
+Message-ID: <6906a752-b145-37d2-f9a5-7eb76d39f162@suse.com>
+Date:   Thu, 10 Dec 2020 10:52:39 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8dabce11b6bc9dc4ba534a2d5cf169ca3d0a812d.1607449636.git.rgoldwyn@suse.com>
+In-Reply-To: <f779c217a8599d71adec3b31e4afbac43df2a74c.1607449636.git.rgoldwyn@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,43 +91,59 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 8.12.20 г. 20:42 ч., Goldwyn Rodrigues wrote:
 > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> Code Cleanup.
+> btrfs_direct_write() fallsback to buffered write in case btrfs is not
+> able to perform or complete a direct I/O. During the fallback
+> inode lock is unlocked and relocked. This does not guarantee the
+> atomicity of the entire write since the lock can be acquired by another
+> write between unlock and relock.
 > 
-> Fold generic_write_checks() in btrfs_write_check(), because
-> generic_write_checks() is called before btrfs_write_check() in both
-> cases. The prototype of btrfs_write_check() has been changed to return
-> ssize_t and it can return zero as a valid error code. btrfs_write_check
-> now returns the count of I/O to be performed.
+> __btrfs_buffered_write() is used to perform the write without locks or
+> checks and called from btrfs_direct_write().
 > 
+> fa54fc76db94 ("btrfs: push inode locking and unlocking into buffered/direct write")
 > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-
-Codewise LGTM, just one minor nit below, I guess David can fix it up
-during merge.
-
-with it addressed you can add my:
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  fs/btrfs/file.c | 33 +++++++++++++++++----------------
->  1 file changed, 17 insertions(+), 16 deletions(-)
+>  fs/btrfs/file.c | 55 +++++++++++++++++++++++++++----------------------
+>  1 file changed, 30 insertions(+), 25 deletions(-)
 > 
 > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 0e41459b8de6..272660a8279f 100644
+> index 272660a8279f..03569fe20237 100644
 > --- a/fs/btrfs/file.c
 > +++ b/fs/btrfs/file.c
-> @@ -1583,17 +1583,28 @@ static void update_time_for_write(struct inode *inode)
->  		inode_inc_iversion(inode);
+> @@ -1649,11 +1649,11 @@ static ssize_t btrfs_write_check(struct kiocb *iocb, struct iov_iter *from)
+>  	return count;
 >  }
 >  
-> -static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
-> -			     size_t count)
-> +/* btrfs_write_check - checks if a write can be performed
-> + *
-> + * Returns:
-> + * count - in case the write can be successfully performed
+> -static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+> +static noinline ssize_t __btrfs_buffered_write(struct kiocb *iocb,
+>  					       struct iov_iter *i)
+>  {
+>  	struct file *file = iocb->ki_filp;
+> -	loff_t pos;
+> +	loff_t pos = iocb->ki_pos;
+>  	struct inode *inode = file_inode(file);
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>  	struct page **pages = NULL;
+> @@ -1667,20 +1667,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+>  	bool only_release_metadata = false;
+>  	bool force_page_uptodate = false;
+>  	loff_t old_isize = i_size_read(inode);
+> -	unsigned int ilock_flags = 0;
+> -
+> -	if (iocb->ki_flags & IOCB_NOWAIT)
+> -		ilock_flags |= BTRFS_ILOCK_TRY;
+> -
+> -	ret = btrfs_inode_lock(inode, ilock_flags);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	ret = btrfs_write_check(iocb, i);
+> -	if (ret <= 0)
+> -		goto out;
+>  
+> -	pos = iocb->ki_pos;
 
-nit:  count - in case the write can be successfully performed number of
-bytes to write
+Add lockdep_assert_held(&inode->i_rwsem); since __btrfs_buffered_write
+does require the lock to be held.
 
 <snip>
