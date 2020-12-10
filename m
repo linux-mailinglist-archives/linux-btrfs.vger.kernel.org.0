@@ -2,147 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187D72D5B03
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 13:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC252D5B16
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 14:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgLJMzf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 07:55:35 -0500
-Received: from mout.gmx.net ([212.227.17.21]:32893 "EHLO mout.gmx.net"
+        id S2388480AbgLJM7Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 07:59:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33408 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387752AbgLJMzW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:55:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607604823;
-        bh=UwcNqCMAvPQOYt8vb47at5tPZ57mHrOfPNHyHZS5/4A=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=MIgM82b8c326cNMB1FHbOypJnuw1n5YdG1Q4kMtYNFo88p3Od1npADwu2KrKA6SEf
-         n2KX6K2axHb+wgyohUSYlRk1FYw1n9zbXSIpVEmUSyuDL+uJmlyRxqSQ/ygRf7r39b
-         3AvjnrtyUWoZHGMMbzpMk9uVankQLZibMh9VdMaE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2Dx8-1k8Kev0WA2-013hI4; Thu, 10
- Dec 2020 13:53:43 +0100
+        id S1728462AbgLJM7J (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:59:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607605103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=HpGGBodb6lc51yXx+1taVPcvO4Q8INwVevVpefxPog4=;
+        b=fORlT3lzD+LRbTOQzeCYRuKDg+nW1V9TPAQNdXEy9L/deRoWlgH911H1+I3NAU/AE8WOFC
+        ACrOe2SPBhC+w9KOXszvlJLgNNKXtoku12W5f7dQ81FAK10HhBJgrST6/tyHfptKUmajXK
+        J8Yg8spQ3vVSogvv1fMj7P5tyjWvQzY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1C58AAC6A;
+        Thu, 10 Dec 2020 12:58:23 +0000 (UTC)
 Subject: Re: [PATCH v2 02/18] btrfs: extent_io: refactor
  __extent_writepage_io() to improve readability
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20201210063905.75727-1-wqu@suse.com>
  <20201210063905.75727-3-wqu@suse.com>
  <bfc95ea9-ea16-6530-5025-babfcf67fe9f@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <aaa02751-9648-4d10-7bbe-11fcea0f608a@gmx.com>
-Date:   Thu, 10 Dec 2020 20:53:40 +0800
+ <aaa02751-9648-4d10-7bbe-11fcea0f608a@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <fe33800a-0443-fbe0-2eb8-61a32814a125@suse.com>
+Date:   Thu, 10 Dec 2020 14:58:22 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <bfc95ea9-ea16-6530-5025-babfcf67fe9f@suse.com>
+In-Reply-To: <aaa02751-9648-4d10-7bbe-11fcea0f608a@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VjaQ5nhzInVuiJd8IV5UpNK5cffBEAg3hXRUXbqDKyoQfM1GXAK
- ndncpMCqDQRWb/xF7x4xB44TUgjtIt5dBUUsHYf4Mc5PhAmsfxKhFupoZN0maE+GBga4EqA
- uYBp8ZY8+XlgX/R4OVmkBR0bWnEU6ftkKPlf1y08ITuTg2e/8MryMUuTdsC9VJoM04ySeXG
- SBZEux78fQU/T7UaoEZoQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:F60qz2lFacE=:21EHF7AGOh4uJPzvFuZrBy
- 8a4VZYi6Pui9mz4zoHd3TurhjJG73E73JBvU/SWzeGD/idOVQbuqgQf0AXp9i0kLsGHKRfD3/
- KpyNWagmnjCMRJ2FlLG9YgmH3UAC4sW6BJrJ1Ff56bqOxb1dUL4xw7oHjiDnNkKSVaxh7Eh0s
- jX3/RuDFq1v+Px050d01B60qHIg7EyFWe4wq3olySzaMvT/TskePpP5OrDxkKs9XCrTE2V6ew
- H/x7ZYCm7DVNgmU+c/eRptYkWugS67EhQE19ufRlKEB7YG+/1fPuE/NfVxxY67pgXUiHBRfz4
- 0tJG8RIAFcIwJ+L1+VB10DWPw+DV2QXyNygOeaRKob9U0ud0+d6W1ZQJxjj0ibXF3qupjlHH+
- kqsjehQPSllD75Eq6ZtcrTX+5ZEQqihMuKeoCr0PCtVbKAx53t3T6hJRWCZelZ7WVsvg0cYPm
- r9HF5fxwzszQr0wFtq8q8MjMaYYml7wxMTQ0+e+D5dJ21RXKIlwK06ygY91Z7qAsNVkhfJOo8
- j59Hg6IKWn1Yg9gzng7Q6a302ksgsa4mmGhvS2u2H/OXPkcWypIkdQ8qI9aD7OV0QP/8SDg+f
- cdj0GtzTgYJppz/7BEQByHXIFOYlD0MC0tzAnkZJyfh7GXWglZU3Khy6a62AHVU5eEPlirCFh
- TUn1uaFNBqy3ewRw+nMS/tO4Opx0vv9Ptek/eXZxg7uABCkgUL/3ib20Bjn5AapihUfkTQWSh
- rFZb6xR9edKi3CwCwHF165BN58rrFnLBrT8djmeoPXyqIpGw332Rla9Te7qCE1YBY5LRZAQRO
- AMryFegoaM3hPvhaTPZiYxt0k5pdm0vcOeetP6Qny95hQoU8N+L0+P0omR76xBKPYvy2pF49i
- RPdGXF6GPwPwic3ActcQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2020/12/10 =E4=B8=8B=E5=8D=888:12, Nikolay Borisov wrote:
->
->
-> On 10.12.20 =D0=B3. 8:38 =D1=87., Qu Wenruo wrote:
->> The refactor involves the following modifications:
->> - iosize alignment
->>   In fact we don't really need to manually do alignment at all.
->>   All extent maps should already be aligned, thus basic ASSERT() check
->>   would be enough.
+On 10.12.20 г. 14:53 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2020/12/10 下午8:12, Nikolay Borisov wrote:
 >>
->> - redundant variables
->>   We have extra variable like blocksize/pg_offset/end.
->>   They are all unnecessary.
 >>
->>   @blocksize can be replaced by sectorsize size directly, and it's only
->>   used to verify the em start/size is aligned.
+>> On 10.12.20 г. 8:38 ч., Qu Wenruo wrote:
+>>> The refactor involves the following modifications:
+>>> - iosize alignment
+>>>   In fact we don't really need to manually do alignment at all.
+>>>   All extent maps should already be aligned, thus basic ASSERT() check
+>>>   would be enough.
+>>>
+>>> - redundant variables
+>>>   We have extra variable like blocksize/pg_offset/end.
+>>>   They are all unnecessary.
+>>>
+>>>   @blocksize can be replaced by sectorsize size directly, and it's only
+>>>   used to verify the em start/size is aligned.
+>>>
+>>>   @pg_offset can be easily calculated using @cur and page_offset(page).
+>>>
+>>>   @end is just assigned to @page_end and never modified, use @page_end
+>>>   to replace it.
+>>>
+>>> - remove some BUG_ON()s
+>>>   The BUG_ON()s are for extent map, which we have tree-checker to check
+>>>   on-disk extent data item and runtime check.
+>>>   ASSERT() should be enough.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>  fs/btrfs/extent_io.c | 37 +++++++++++++++++--------------------
+>>>  1 file changed, 17 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>>> index 2650e8720394..612fe60b367e 100644
+>>> --- a/fs/btrfs/extent_io.c
+>>> +++ b/fs/btrfs/extent_io.c
+>>> @@ -3515,17 +3515,14 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+>>>  				 unsigned long nr_written,
+>>>  				 int *nr_ret)
+>>>  {
+>>> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+>>>  	struct extent_io_tree *tree = &inode->io_tree;
+>>>  	u64 start = page_offset(page);
+>>>  	u64 page_end = start + PAGE_SIZE - 1;
 >>
->>   @pg_offset can be easily calculated using @cur and page_offset(page).
->>
->>   @end is just assigned to @page_end and never modified, use @page_end
->>   to replace it.
->>
->> - remove some BUG_ON()s
->>   The BUG_ON()s are for extent map, which we have tree-checker to check
->>   on-disk extent data item and runtime check.
->>   ASSERT() should be enough.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/extent_io.c | 37 +++++++++++++++++--------------------
->>  1 file changed, 17 insertions(+), 20 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 2650e8720394..612fe60b367e 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -3515,17 +3515,14 @@ static noinline_for_stack int __extent_writepag=
-e_io(struct btrfs_inode *inode,
->>  				 unsigned long nr_written,
->>  				 int *nr_ret)
->>  {
->> +	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
->>  	struct extent_io_tree *tree =3D &inode->io_tree;
->>  	u64 start =3D page_offset(page);
->>  	u64 page_end =3D start + PAGE_SIZE - 1;
->
-> nit: page_end should be renamed to end because start now points to the
-> logical logical byte offset, i.e having "page" in the name is misleading=
-.
+>> nit: page_end should be renamed to end because start now points to the
+>> logical logical byte offset, i.e having "page" in the name is misleading.
+> 
+> But page_offset() along page_end is still logical bytenr, thus I didn't
+> see much confusion here...
 
-But page_offset() along page_end is still logical bytenr, thus I didn't
-see much confusion here...
-
-Thanks,
-Qu
->
-> <snip>
->
+Exactly page_offset converts the page index to a logical bytenr and that
+point we no longer care about the physical page but the logical range
+which is PAGE_SIZE. 'page_end' is really some logical affset which spans
+a PAGE_SIZE region
+> 
+> Thanks,
+> Qu
+>>
+>> <snip>
+>>
+> 
