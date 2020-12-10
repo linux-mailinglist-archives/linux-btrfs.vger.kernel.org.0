@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA7E2D600D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 16:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C482D6150
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 17:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391926AbgLJPkj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 10:40:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52676 "EHLO mx2.suse.de"
+        id S2390129AbgLJQKf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 11:10:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58000 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391446AbgLJPke (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 10:40:34 -0500
+        id S2391998AbgLJQKZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 11:10:25 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607614787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1607616574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=qQZ3DlVmG0sRJ6vdIELRf37LeuaiKoKeBIoSKqyn0ag=;
-        b=bqwJZxZ6+LGhUzHctRdEAP2EFqEOr28KpgXN6zkauIlMpuMsWwK/SglvfR6kmhEpbEkgmb
-        hcxGm906qkwj+GvoPUcjfG+o6CVob88fcyj1OEMIny/QBErTmsAhsaEfSdwZhO5dxhh1dF
-        d3H1/6eKqvx/HyvZdtcJDOjM9m3zMl4=
+        bh=dC/GvInyeNxf2IIzLgc32lMJhkWrkFPqdh04W557rtw=;
+        b=H5tY758R4s9ByJCGHjSX2XCuFDPccY+uivHsRYTRo8Gy6JajE/Z3M1EdhryK16tCcfZyuS
+        QsMkxPW8moRJtykeOoaDzGgc9xjXOpngGbTKpaJImC4urjt8rVHSHI6UXQNCDZLcH1Xg/8
+        fROm2s/8C3IQ/UatmFQq64dF7s1asmY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6590CAF0F;
-        Thu, 10 Dec 2020 15:39:47 +0000 (UTC)
-Subject: Re: [PATCH v2 07/18] btrfs: extent_io: make
- grab_extent_buffer_from_page() to handle subpage case
+        by mx2.suse.de (Postfix) with ESMTP id 9B176AF45;
+        Thu, 10 Dec 2020 16:09:34 +0000 (UTC)
+Subject: Re: [PATCH v2 06/18] btrfs: extent_io: make
+ attach_extent_buffer_page() to handle subpage case
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201210063905.75727-1-wqu@suse.com>
- <20201210063905.75727-8-wqu@suse.com>
+ <20201210063905.75727-7-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -72,12 +72,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <a6697d1f-5352-142d-40a2-872fe43a8ee5@suse.com>
-Date:   Thu, 10 Dec 2020 17:39:46 +0200
+Message-ID: <177ff72b-d937-1f53-febd-9c26eaf8ac16@suse.com>
+Date:   Thu, 10 Dec 2020 18:09:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201210063905.75727-8-wqu@suse.com>
+In-Reply-To: <20201210063905.75727-7-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,81 +88,68 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 10.12.20 г. 8:38 ч., Qu Wenruo wrote:
-> For subpage case, grab_extent_buffer_from_page() can't really get an
-> extent buffer just from btrfs_subpage.
+> For subpage case, we need to allocate new memory for each metadata page.
 > 
-> Although we have btrfs_subpage::tree_block_bitmap, which can be used to
-> grab the bytenr of an existing extent buffer, and can then go radix tree
-> search to grab that existing eb.
+> So we need to:
+> - Allow attach_extent_buffer_page() to return int
+>   To indicate allocation failure
 > 
-> However we are still doing radix tree insert check in
-> alloc_extent_buffer(), thus we don't really need to do the extra hassle,
-> just let alloc_extent_buffer() to handle existing eb in radix tree.
+> - Prealloc page->private for alloc_extent_buffer()
+>   We don't want to call memory allocation with spinlock hold, so
+>   do preallocation before we acquire the spin lock.
 > 
-> So for grab_extent_buffer_from_page(), just always return NULL for
-> subpage case.
+> - Handle subpage and regular case differently in
+>   attach_extent_buffer_page()
+>   For regular case, just do the usual thing.
+>   For subpage case, allocate new memory and update the tree_block
+>   bitmap.
+> 
+>   The bitmap update will be handled by new subpage specific helper,
+>   btrfs_subpage_set_tree_block().
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/extent_io.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
+>  fs/btrfs/extent_io.c | 69 +++++++++++++++++++++++++++++++++++---------
+>  fs/btrfs/subpage.h   | 44 ++++++++++++++++++++++++++++
+>  2 files changed, 99 insertions(+), 14 deletions(-)
 > 
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 51dd7ec3c2b3..b99bd0402130 100644
+> index 6350c2687c7e..51dd7ec3c2b3 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -5278,10 +5278,19 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
->  }
->  #endif
+> @@ -24,6 +24,7 @@
+>  #include "rcu-string.h"
+>  #include "backref.h"
+>  #include "disk-io.h"
+> +#include "subpage.h"
 >  
-> -static struct extent_buffer *grab_extent_buffer_from_page(struct page *page)
-> +static struct extent_buffer *grab_extent_buffer_from_page(
-> +		struct btrfs_fs_info *fs_info, struct page *page)
->  {
->  	struct extent_buffer *exists;
->  
-> +	/*
-> +	 * For subpage case, we completely rely on radix tree to ensure we
-> +	 * don't try to insert two eb for the same bytenr.
-> +	 * So here we alwasy return NULL and just continue.
-> +	 */
-> +	if (fs_info->sectorsize < PAGE_SIZE)
-> +		return NULL;
-> +
 
-Instead of hiding this in the function, just open-code it in the only caller. It would look like: 
+<snip>
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index b99bd0402130..440dab207944 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5370,8 +5370,9 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-                }
- 
-                spin_lock(&mapping->private_lock);
--               exists = grab_extent_buffer_from_page(fs_info, p);
--               if (exists) {
-+               if (fs_info->sectorsize == PAGE_SIZE &&
-+                   (exists = grab_extent_buffer_from_page(fs_info, p)));
-+               {
-                        spin_unlock(&mapping->private_lock);
-                        unlock_page(p);
-                        put_page(p);
-
-
-Admittedly that exist = ... in the if condition is a bit of an anti-pattern but given it's used in only 1 place
-and makes the flow of code more linear I'd say it's a win. But would like to hear David's opinion. 
-
->  	/* Page not yet attached to an extent buffer */
->  	if (!PagePrivate(page))
+>  void set_page_extent_mapped(struct page *page)
+> @@ -5067,12 +5087,19 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
 >  		return NULL;
-> @@ -5361,7 +5370,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->  		}
 >  
->  		spin_lock(&mapping->private_lock);
-> -		exists = grab_extent_buffer_from_page(p);
-> +		exists = grab_extent_buffer_from_page(fs_info, p);
->  		if (exists) {
->  			spin_unlock(&mapping->private_lock);
->  			unlock_page(p);
-> 
+>  	for (i = 0; i < num_pages; i++) {
+> +		int ret;
+> +
+>  		p = alloc_page(GFP_NOFS);
+>  		if (!p) {
+>  			btrfs_release_extent_buffer(new);
+>  			return NULL;
+>  		}
+> -		attach_extent_buffer_page(new, p);
+> +		ret = attach_extent_buffer_page(new, p);
+> +		if (ret < 0) {
+> +			put_page(p);
+> +			btrfs_release_extent_buffer(new);
+> +			return NULL;
+> +		}
+
+In this function you need to move
+'set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);' line before entering
+the loop otherwise when btrfs_release_extent_buffer is called it will
+try to erroneously acquire the mapping lock since BUFFER_UNMAPPED
+wouldn't have been set.
+
+<snip>
