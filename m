@@ -2,186 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12482D5C5E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 14:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C70F2D5D90
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 15:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389663AbgLJNwh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 08:52:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37028 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389655AbgLJNwg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 08:52:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607608307; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=O9lmRLGk49KfCMS4EJ7gn+QIIJbqtTOIvDwG+TPm2Dk=;
-        b=nljQ/Sy+j9HDs64ebr3GKcy2eojudQmBf5pe0oHSogf8lJ4mrjGzRnZg/xwgc7pMnjogkh
-        DbSvzRNem8IxHtAt3TWUFocGRGBt4PDY7g8ZIXfVx2wkaxEoC9memGuRq4djXLl1rCLFpZ
-        g3p/hqF69NQCCY0+5oQYPvQl6KI+bao=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA324AC6A;
-        Thu, 10 Dec 2020 13:51:47 +0000 (UTC)
-Subject: Re: [PATCH v2 04/18] btrfs: extent_io: introduce a helper to grab an
- existing extent buffer from a page
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20201210063905.75727-1-wqu@suse.com>
- <20201210063905.75727-5-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <b81569ac-be2b-ca0d-2e7f-cf2baeb8077e@suse.com>
-Date:   Thu, 10 Dec 2020 15:51:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390049AbgLJO1H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 09:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728524AbgLJO1H (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 09:27:07 -0500
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260B0C0613CF
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 06:26:27 -0800 (PST)
+Received: by mail-qk1-x741.google.com with SMTP id y18so4849554qki.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 06:26:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=urtRc14sNOSzmyfF5oYf2pKUsABrcVbMlU2XlhRaq2A=;
+        b=qjMXaD39ZxBAafb69RXKhkgyav/AllBsQl0Ybtj6Tn1MlC8H0K5U+6NjPhFalAggTP
+         YWNAPyMCfYkzS6FGNRfwL3+0665angygdn98U90ucu6wym9fEa8V9Rc59RMDo5aGsrOs
+         jE2katn9VXsJDXrlkIaWml/5ZABT/uvUvheVvsYljYNvFiTKaEL6KAp+P8XN5dEWbHcj
+         WmXxumsP7A4GoEL7XJRYIPZZIQw179csr/vXQUHFgqFzCg53gArOGDZk53oaqEHoZTw0
+         we/YRmtVeRjE4dsppsACVeKDpwV/FPOxWcdySFdCRDTQJ9AtTLiG+XMP/2DhiZRkTwJx
+         04yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=urtRc14sNOSzmyfF5oYf2pKUsABrcVbMlU2XlhRaq2A=;
+        b=bpN4w2qiLx9iQk/7nmSrAgbKtmZvUXL9uNSOYOVmKjQMkSanaMRWITR39lD0DZbytT
+         EX7LWHVOEDf6K84cUPrOTg7nZGcwf3sCVhb5Gx4aKECib0B9yr+Sr+ZS0NRftrJev1F1
+         /GTxbQMQljEWoUS9Se7s0Zl5hj6yohBrSxgHTBgFDGM42y0nMoXP5yPKD2AkD+3TL7XX
+         +ojPZM2nNvKCumxZ1ozAU9StRK4v8CDip60UZFY8ic1a6C8Ds8CVSb29bVqIBNT+9a8w
+         OipQA0wnPFm15jW/MNKv7jPtijuj1nFoHdPtfo+G51PYt+kj8LALlL1GDaAonLmM7SfI
+         eKNg==
+X-Gm-Message-State: AOAM5339BXk6LjRYn68IgBaBHWlfH+ca/SsUnHe8IMltrG88vIWF2Q3M
+        SaFh4SI5hxS6esqJjS/ta5eA4A==
+X-Google-Smtp-Source: ABdhPJzmccNjUu2/XSWwrFUz4n0gTBr3Oxg37qUu9ABLPs6t7yPgYFmYL1Gw1o1uitiJ71uv0Y77ew==
+X-Received: by 2002:ae9:e007:: with SMTP id m7mr8945568qkk.416.1607610386120;
+        Thu, 10 Dec 2020 06:26:26 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id m8sm3531606qkn.41.2020.12.10.06.26.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Dec 2020 06:26:25 -0800 (PST)
+Subject: Re: [PATCH] btrfs: fix possible free space tree corruption with
+ online conversion
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Cc:     stable@vger.kernel.org
+References: <0d49d6227962f3f3d34b6c7ccfd0c330f98517af.1607545035.git.josef@toxicpanda.com>
+ <8e34ff2a-e63a-8259-a1d3-0736932cab22@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <6642bcbe-01ca-05ed-8050-eb5f3ce82ba4@toxicpanda.com>
+Date:   Thu, 10 Dec 2020 09:26:24 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <20201210063905.75727-5-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <8e34ff2a-e63a-8259-a1d3-0736932cab22@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 10.12.20 г. 8:38 ч., Qu Wenruo wrote:
-> This patch will extract the code to grab an extent buffer from a page
-> into a helper, grab_extent_buffer_from_page().
+On 12/10/20 4:22 AM, Nikolay Borisov wrote:
 > 
-> This reduces one indent level, and provides the work place for later
-> expansion for subapge support.
 > 
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 52 +++++++++++++++++++++++++++-----------------
->  1 file changed, 32 insertions(+), 20 deletions(-)
+> On 9.12.20 г. 22:17 ч., Josef Bacik wrote:
+>> While running btrfs/011 in a loop I would often ASSERT() while trying to
+>> add a new free space entry that already existed, or get an -EEXIST while
+>> adding a new block to the extent tree, which is another indication of
+>> double allocation.
+>>
+>> This occurs because when we do the free space tree population, we create
+>> the new root and then populate the tree and commit the transaction.
+>> The problem is when you create a new root, the root node and commit root
+>> node are the same.  This means that caching a block group before the
+>> transaction is committed can race with other operations modifying the
+>> free space tree, and thus you can get double adds and other sort of
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 612fe60b367e..6350c2687c7e 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -5251,6 +5251,32 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
->  }
->  #endif
->  
-> +static struct extent_buffer *grab_extent_buffer_from_page(struct page *page)
-
-nit: Make the name just grab_extent_buffer/get_extent_buffer, given you
-pass in a page as an input parameter "from_page" is obvious.
-
-> +{
-> +	struct extent_buffer *exists;
-> +
-> +	/* Page not yet attached to an extent buffer */
-> +	if (!PagePrivate(page))
-> +		return NULL;
-> +
-> +	/*
-> +	 * We could have already allocated an eb for this page
-> +	 * and attached one so lets see if we can get a ref on
-> +	 * the existing eb, and if we can we know it's good and
-> +	 * we can just return that one, else we know we can just
-> +	 * overwrite page->private.
-> +	 */
-> +	exists = (struct extent_buffer *)page->private;
-> +	if (atomic_inc_not_zero(&exists->refs)) {
-> +		mark_extent_buffer_accessed(exists, page);
-> +		return exists;
-> +	}
-
-nit: This patch slightly changes the timing of
-mark_extent_buffer_accessed, as it's now called under
-mapping->private_lock and respective page locked. Looking at
-map_extent_buffer_accessed it does iterate pages and call
-mark_page_accessed on them as well as calling check_buffer_tre_ref which
-does some atomic ops. While it might not be a big hit I'd expect there
-will be some minimal performance regression.
-
-> +
-> +	WARN_ON(PageDirty(page));
-> +	detach_page_private(page);
-> +	return NULL;
-> +}
-> +
->  struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->  					  u64 start, u64 owner_root, int level)
->  {
-> @@ -5296,26 +5322,12 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->  		}
->  
->  		spin_lock(&mapping->private_lock);
-> -		if (PagePrivate(p)) {
-> -			/*
-> -			 * We could have already allocated an eb for this page
-> -			 * and attached one so lets see if we can get a ref on
-> -			 * the existing eb, and if we can we know it's good and
-> -			 * we can just return that one, else we know we can just
-> -			 * overwrite page->private.
-> -			 */
-> -			exists = (struct extent_buffer *)p->private;
-> -			if (atomic_inc_not_zero(&exists->refs)) {
-> -				spin_unlock(&mapping->private_lock);
-> -				unlock_page(p);
-> -				put_page(p);
-> -				mark_extent_buffer_accessed(exists, p);
-> -				goto free_eb;
-> -			}
-> -			exists = NULL;
-> -
-> -			WARN_ON(PageDirty(p));
-> -			detach_page_private(p);
-> +		exists = grab_extent_buffer_from_page(p);
-> +		if (exists) {
-> +			spin_unlock(&mapping->private_lock);
-> +			unlock_page(p);
-> +			put_page(p);
-> +			goto free_eb;
->  		}
->  		attach_extent_buffer_page(eb, p);
->  		spin_unlock(&mapping->private_lock);
+> FST creation happens during mount so what would initiate block group
+> caching at that time, the race scenario should be better described in
+> the change log. E.g. what those other operations might be, considering
+> we are in mount ?
 > 
+
+It's happening during the transaction commit.  Creating the free space tree 
+allocates blocks, which updates the FST via delayed refs.  These run during 
+transaction commit, which allocates more blocks because we're now COW'ing the 
+extent tree.  At this point if we have to cache a block group we start doing 
+that, which happens in another thread.  Now we have the caching thread trying to 
+cache while the tree is changing because of delayed refs running.
+
+>> shenanigans.  This is only a problem for the first transaction, once
+>> we've committed the transaction we created the free space tree in we're
+>> OK to use the free space tree to cache block groups.
+>>
+>> Fix this by marking the fs_info as unsafe to load the free space tree,
+>> and fall back on the old slow method.  We could be smarter than this,
+>> for example caching the block group while we're populating the free
+>> space tree, but since this is a serious problem I've opted for the
+>> simplest solution.
+>>
+>> cc: stable@vger.kernel.org
+>> Fixes: a5ed91828518 ("Btrfs: implement the free space B-tree")
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/block-group.c     | 11 ++++++++++-
+>>   fs/btrfs/ctree.h           |  3 +++
+>>   fs/btrfs/free-space-tree.c |  9 ++++++++-
+>>   3 files changed, 21 insertions(+), 2 deletions(-)
+>>
+> 
+> ?<snip>
+> 
+> 
+>>   /*
+>> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+>> index e33a65bd9a0c..8fbda221f4b5 100644
+>> --- a/fs/btrfs/free-space-tree.c
+>> +++ b/fs/btrfs/free-space-tree.c
+>> @@ -1150,6 +1150,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+>>   		return PTR_ERR(trans);
+>>   
+>>   	set_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+>> +	set_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+>>   	free_space_root = btrfs_create_tree(trans,
+>>   					    BTRFS_FREE_SPACE_TREE_OBJECTID);
+>>   	if (IS_ERR(free_space_root)) {
+>> @@ -1171,8 +1172,14 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+>>   	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
+>>   	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
+>>   	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+>> +	ret = btrfs_commit_transaction(trans);
+>>   
+>> -	return btrfs_commit_transaction(trans);
+>> +	/*
+>> +	 * Now that we've committed the transaction any reading of our commit
+>> +	 * root will be safe, so we can caching from the free space tree now.
+>> +	 */
+>> +	clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+>> +	return ret;
+> 
+> I guess you can't simply move the clearing of the
+> BTRFS_FS_CREATING_FREE_SPACE_TREE after the commit since it blocks
+> delayed refs running.
+> 
+>>   
+>>   abort:
+>>   	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+> 
+> Shouldn't the new flag be cleared on abort ?
+> 
+
+Yup I'll fix that, thanks,
+
+Josef
