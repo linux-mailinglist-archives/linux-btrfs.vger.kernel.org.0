@@ -2,101 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6192D599C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 12:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE92F2D5978
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 12:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733170AbgLJLqf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 06:46:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44760 "EHLO mx2.suse.de"
+        id S1728714AbgLJLks (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 06:40:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60272 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728117AbgLJLoB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:44:01 -0500
+        id S1733285AbgLJLki (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:40:38 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607600594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=bWVMTXYxeip1vOov0gHf7ci7k79Zm/fGwfIiJOu2PoQ=;
-        b=ZdVclMJ44dmBY9SaSm1fe9g/iveWbqM/jjg0k5/hB30W/GkjD768c3ZON62lCsclBY9vmJ
-        KxAnWHs/MlfQ31uolrZ96SyM1+UPtiQz6V2QDSiGhgtMdGm9vINa3ZX+4CmHfCJtke6Phm
-        kIHXF/iXe8T88Zk1KDi89jhqNiL0Lqc=
+        t=1607600391; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=NQ+nqkFXH8BP/3aXaBb6Z7ks2ATNEidcfVkkLxd93N8=;
+        b=p1q1+qpkv3p5NVWi7a3TaysF5XSOAc0pEf5qoCfb0Oa/AwSj9sZhYtYdKu/3kny6ETW5y6
+        PAhD2PibLOHrIanDtOiHXIHbYG0pdhvUluIqrDgJr34tWtIyzQYde03y7EESWbbuYNsSk8
+        v0gkdIA97ncl+/AtU1XvP8OGhCVcBoM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 70E72AD87;
-        Thu, 10 Dec 2020 11:43:13 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 58C76AE52;
+        Thu, 10 Dec 2020 11:39:50 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs: Fold generic_write_checks() in
+ btrfs_write_check()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <cover.1607449636.git.rgoldwyn@suse.com>
+ <8dabce11b6bc9dc4ba534a2d5cf169ca3d0a812d.1607449636.git.rgoldwyn@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Cleanup btrfs_file_write_iter
-Date:   Thu, 10 Dec 2020 10:38:32 +0200
-Message-Id: <20201210083832.1283574-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <a93f2997-3fb8-6f9b-a24d-d9f1ba6e2f07@suse.com>
+Date:   Thu, 10 Dec 2020 10:43:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <8dabce11b6bc9dc4ba534a2d5cf169ca3d0a812d.1607449636.git.rgoldwyn@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-First replace all inode instances with a pointer to btrfs_inode. This
-removes multiple invocations of the BTRFS_I macro, subsequently remove
-2 local variables as they are called only once and simply refer to
-them directly.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/file.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 0e41459b8de6..e65223e3510d 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1997,9 +1997,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 				    struct iov_iter *from)
- {
- 	struct file *file = iocb->ki_filp;
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	struct btrfs_root *root = BTRFS_I(inode)->root;
-+	struct btrfs_inode *inode = BTRFS_I(file_inode(file));
- 	ssize_t num_written = 0;
- 	const bool sync = iocb->ki_flags & IOCB_DSYNC;
- 
-@@ -2008,7 +2006,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	 * have opened a file as writable, we have to stop this write operation
- 	 * to ensure consistency.
- 	 */
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
-+	if (test_bit(BTRFS_FS_STATE_ERROR, &inode->root->fs_info->fs_state))
- 		return -EROFS;
- 
- 	if (!(iocb->ki_flags & IOCB_DIRECT) &&
-@@ -2016,7 +2014,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 		return -EOPNOTSUPP;
- 
- 	if (sync)
--		atomic_inc(&BTRFS_I(inode)->sync_writers);
-+		atomic_inc(&inode->sync_writers);
- 
- 	if (iocb->ki_flags & IOCB_DIRECT)
- 		num_written = btrfs_direct_write(iocb, from);
-@@ -2028,14 +2026,14 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	 * otherwise subsequent syncs to a file that's been synced in this
- 	 * transaction will appear to have already occurred.
- 	 */
--	spin_lock(&BTRFS_I(inode)->lock);
--	BTRFS_I(inode)->last_sub_trans = root->log_transid;
--	spin_unlock(&BTRFS_I(inode)->lock);
-+	spin_lock(&inode->lock);
-+	inode->last_sub_trans = inode->root->log_transid;
-+	spin_unlock(&inode->lock);
- 	if (num_written > 0)
- 		num_written = generic_write_sync(iocb, num_written);
- 
- 	if (sync)
--		atomic_dec(&BTRFS_I(inode)->sync_writers);
-+		atomic_dec(&inode->sync_writers);
- 
- 	current->backing_dev_info = NULL;
- 	return num_written;
--- 
-2.25.1
+On 8.12.20 г. 20:42 ч., Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> Code Cleanup.
+> 
+> Fold generic_write_checks() in btrfs_write_check(), because
+> generic_write_checks() is called before btrfs_write_check() in both
+> cases. The prototype of btrfs_write_check() has been changed to return
+> ssize_t and it can return zero as a valid error code. btrfs_write_check
+> now returns the count of I/O to be performed.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
+Codewise LGTM, just one minor nit below, I guess David can fix it up
+during merge.
+
+with it addressed you can add my:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/file.c | 33 +++++++++++++++++----------------
+>  1 file changed, 17 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 0e41459b8de6..272660a8279f 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1583,17 +1583,28 @@ static void update_time_for_write(struct inode *inode)
+>  		inode_inc_iversion(inode);
+>  }
+>  
+> -static int btrfs_write_check(struct kiocb *iocb, struct iov_iter *from,
+> -			     size_t count)
+> +/* btrfs_write_check - checks if a write can be performed
+> + *
+> + * Returns:
+> + * count - in case the write can be successfully performed
+
+nit:  count - in case the write can be successfully performed number of
+bytes to write
+
+<snip>
