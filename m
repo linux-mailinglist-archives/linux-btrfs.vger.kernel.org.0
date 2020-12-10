@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BEB2D598C
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB8C2D598D
 	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 12:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733267AbgLJLok (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 06:44:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48162 "EHLO mx2.suse.de"
+        id S1729683AbgLJLos (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 06:44:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49852 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730328AbgLJLoX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 06:44:23 -0500
+        id S1732885AbgLJLo3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 06:44:29 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607600613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1607600622; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=afVF4JO0T+4SFv+znS7IKsK2ok3z33cEiR47uTLajsA=;
-        b=eUlpAV0zHaVyUVDDZg1+W0I1uJJXc2+FNHut0amhvENjIJdSP4jTibbsgZ7HCrUHonppoV
-        7V+TJ4ub1B6/U6IVoed2WgJWCi4hFTklca/yhH5zbfrm5N2bYEy/c1VUUBpuyV4m6BKnHC
-        05VYUErdWYQ9h1mNSGS4k7vE24uoHB0=
+        bh=yGdFSC6vhNlj7Cjz81kiyrgYpC2NwYDj5UvNibRURBs=;
+        b=kmmLh1/sfZItMSCD4nLELFytGw64VZ1fbtqV4JpZ+HRaW+Ruua7C7krsDKebJ3U0j4Usr4
+        +FIZObZbSYmvg30ke9sf/iKTyKRlx5e50Thgd6ADCjKFCaOfamuZHaB3+jGIxkvXLOvuHm
+        5hLSyrhw6XfXvofwmY1O8dSQxo9EoAc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A297DAD26
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Dec 2020 11:43:32 +0000 (UTC)
-Subject: Re: [PATCH] btrfs-progs: Fix buffer pointer while reading
- exclusive_operation
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.cz
-References: <20201209210955.hcgai4ougmjeiwys@fiona>
+        by mx2.suse.de (Postfix) with ESMTP id EF2F5AD29;
+        Thu, 10 Dec 2020 11:43:41 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: fix possible free space tree corruption with
+ online conversion
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Cc:     stable@vger.kernel.org
+References: <0d49d6227962f3f3d34b6c7ccfd0c330f98517af.1607545035.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -72,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <55551eaa-02a6-f26a-92c5-042dcccc172d@suse.com>
-Date:   Thu, 10 Dec 2020 10:57:40 +0200
+Message-ID: <8e34ff2a-e63a-8259-a1d3-0736932cab22@suse.com>
+Date:   Thu, 10 Dec 2020 11:22:27 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201209210955.hcgai4ougmjeiwys@fiona>
+In-Reply-To: <0d49d6227962f3f3d34b6c7ccfd0c330f98517af.1607545035.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -87,28 +88,82 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 9.12.20 г. 23:09 ч., Goldwyn Rodrigues wrote:
-> While performing the sysfs read for the exclusive_operation, the buffer
-> pointer is incorrectly subtracted. This reads the file incorrectly and hence
-> BTRFS_EXCLOP_UNKNOWN is passed everytime the function is called.
+On 9.12.20 г. 22:17 ч., Josef Bacik wrote:
+> While running btrfs/011 in a loop I would often ASSERT() while trying to
+> add a new free space entry that already existed, or get an -EEXIST while
+> adding a new block to the extent tree, which is another indication of
+> double allocation.
 > 
-> Fixes: 1abf37eb btrfs-progs: add helpers for parsing filesystem exclusive operation
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> This occurs because when we do the free space tree population, we create
+> the new root and then populate the tree and commit the transaction.
+> The problem is when you create a new root, the root node and commit root
+> node are the same.  This means that caching a block group before the
+> transaction is committed can race with other operations modifying the
+> free space tree, and thus you can get double adds and other sort of
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+FST creation happens during mount so what would initiate block group
+caching at that time, the race scenario should be better described in
+the change log. E.g. what those other operations might be, considering
+we are in mount ?
 
+> shenanigans.  This is only a problem for the first transaction, once
+> we've committed the transaction we created the free space tree in we're
+> OK to use the free space tree to cache block groups.
 > 
-> diff --git a/common/utils.c b/common/utils.c
-> index 3dc1fdc1..ff29cb81 100644
-> --- a/common/utils.c
-> +++ b/common/utils.c
-> @@ -1952,7 +1952,7 @@ int get_fs_exclop(int fd)
->  		return BTRFS_EXCLOP_UNKNOWN;
+> Fix this by marking the fs_info as unsafe to load the free space tree,
+> and fall back on the old slow method.  We could be smarter than this,
+> for example caching the block group while we're populating the free
+> space tree, but since this is a serious problem I've opted for the
+> simplest solution.
+> 
+> cc: stable@vger.kernel.org
+> Fixes: a5ed91828518 ("Btrfs: implement the free space B-tree")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/block-group.c     | 11 ++++++++++-
+>  fs/btrfs/ctree.h           |  3 +++
+>  fs/btrfs/free-space-tree.c |  9 ++++++++-
+>  3 files changed, 21 insertions(+), 2 deletions(-)
+> 
+
+?<snip>
+
+
+>  /*
+> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+> index e33a65bd9a0c..8fbda221f4b5 100644
+> --- a/fs/btrfs/free-space-tree.c
+> +++ b/fs/btrfs/free-space-tree.c
+> @@ -1150,6 +1150,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+>  		return PTR_ERR(trans);
 >  
->  	memset(buf, 0, sizeof(buf));
-> -	ret = sysfs_read_file(sysfs_fd, buf - 1, sizeof(buf));
-> +	ret = sysfs_read_file(sysfs_fd, buf, sizeof(buf));
->  	close(sysfs_fd);
->  	if (ret <= 0)
->  		return BTRFS_EXCLOP_UNKNOWN;
+>  	set_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+> +	set_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+>  	free_space_root = btrfs_create_tree(trans,
+>  					    BTRFS_FREE_SPACE_TREE_OBJECTID);
+>  	if (IS_ERR(free_space_root)) {
+> @@ -1171,8 +1172,14 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+>  	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
+>  	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
+>  	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+> +	ret = btrfs_commit_transaction(trans);
+>  
+> -	return btrfs_commit_transaction(trans);
+> +	/*
+> +	 * Now that we've committed the transaction any reading of our commit
+> +	 * root will be safe, so we can caching from the free space tree now.
+> +	 */
+> +	clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+> +	return ret;
+
+I guess you can't simply move the clearing of the
+BTRFS_FS_CREATING_FREE_SPACE_TREE after the commit since it blocks
+delayed refs running.
+
+>  
+>  abort:
+>  	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+
+Shouldn't the new flag be cleared on abort ?
+
 > 
