@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE08E2D5A19
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 13:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42C92D5A3E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Dec 2020 13:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732989AbgLJMNB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Dec 2020 07:13:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58002 "EHLO mx2.suse.de"
+        id S2388336AbgLJMRV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Dec 2020 07:17:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33264 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726078AbgLJMMr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:12:47 -0500
+        id S2388264AbgLJMRM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Dec 2020 07:17:12 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607602321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1607602585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=XqtAE2ksA47poR3MgDGHvBtbh6Fj4JmQSRergN1eNVA=;
-        b=dlI8uCQYrt93aBwv7lI7aqlkyaeT7sMU/P7t0qk+gQzxnRUzpGZWtWtNxbxZkZNdtdZkd9
-        1tGURzSwU7Jy0X0cp4dNGLNV0GhHH42yr3sPWmINzJ/vUmzxOQv7qX0FoK1FikclrTBgA2
-        1iXA/lTU0y2yjRPtxesV6HCTsM78fJs=
+        bh=zgXiZ1qn7uQd1snFmAhsMRwyjPwjp+SaCWXtmJQwdVE=;
+        b=aOgJm04RB33hvWOMuDAd8MWs9Ec5ffzypzNLCZEvChX7++QzrX6dQkSEqX8MOnRdsR2VpW
+        uuo2uSEtRUsJJxYZ3zSElNMyzzIa8uGaaCAYqgel8g5GUFCkdUyBSYRWJfFO6oho1YXu5A
+        Rspy6K14n5nstEhBjlO/hxTDIOrl84E=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 22E76AB91;
-        Thu, 10 Dec 2020 12:12:01 +0000 (UTC)
-Subject: Re: [PATCH v2 02/18] btrfs: extent_io: refactor
- __extent_writepage_io() to improve readability
+        by mx2.suse.de (Postfix) with ESMTP id 82FF5AD3F;
+        Thu, 10 Dec 2020 12:16:25 +0000 (UTC)
+Subject: Re: [PATCH v2 03/18] btrfs: file: update comment for
+ btrfs_dirty_pages()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201210063905.75727-1-wqu@suse.com>
- <20201210063905.75727-3-wqu@suse.com>
+ <20201210063905.75727-4-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -72,12 +72,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <bfc95ea9-ea16-6530-5025-babfcf67fe9f@suse.com>
-Date:   Thu, 10 Dec 2020 14:12:00 +0200
+Message-ID: <8a6f4715-bf9f-c010-4ad0-5602440cf72b@suse.com>
+Date:   Thu, 10 Dec 2020 14:16:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201210063905.75727-3-wqu@suse.com>
+In-Reply-To: <20201210063905.75727-4-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,48 +88,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 10.12.20 г. 8:38 ч., Qu Wenruo wrote:
-> The refactor involves the following modifications:
-> - iosize alignment
->   In fact we don't really need to manually do alignment at all.
->   All extent maps should already be aligned, thus basic ASSERT() check
->   would be enough.
+> The original comment is from the initial merge, which has several
+> problems:
+> - No holes check any more
+> - No inline decision is made
 > 
-> - redundant variables
->   We have extra variable like blocksize/pg_offset/end.
->   They are all unnecessary.
-> 
->   @blocksize can be replaced by sectorsize size directly, and it's only
->   used to verify the em start/size is aligned.
-> 
->   @pg_offset can be easily calculated using @cur and page_offset(page).
-> 
->   @end is just assigned to @page_end and never modified, use @page_end
->   to replace it.
-> 
-> - remove some BUG_ON()s
->   The BUG_ON()s are for extent map, which we have tree-checker to check
->   on-disk extent data item and runtime check.
->   ASSERT() should be enough.
+> Update the out-of-date comment with more correct one.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/extent_io.c | 37 +++++++++++++++++--------------------
->  1 file changed, 17 insertions(+), 20 deletions(-)
+>  fs/btrfs/file.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 2650e8720394..612fe60b367e 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3515,17 +3515,14 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
->  				 unsigned long nr_written,
->  				 int *nr_ret)
->  {
-> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
->  	struct extent_io_tree *tree = &inode->io_tree;
->  	u64 start = page_offset(page);
->  	u64 page_end = start + PAGE_SIZE - 1;
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 0e41459b8de6..a29b50208eee 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -453,12 +453,15 @@ static void btrfs_drop_pages(struct page **pages, size_t num_pages)
+>  }
+>  
+>  /*
+> - * after copy_from_user, pages need to be dirtied and we need to make
+> - * sure holes are created between the current EOF and the start of
+> - * any next extents (if required).
+> - *
+> - * this also makes the decision about creating an inline extent vs
+> - * doing real data extents, marking pages dirty and delalloc as required.
+> + * After btrfs_copy_from_user(), update the following things for delalloc:
+> + * - DELALLOC extent io tree bits
+> + *   Later btrfs_run_delalloc_range() relies on this bit to determine the
+> + *   writeback range.
 
-nit: page_end should be renamed to end because start now points to the
-logical logical byte offset, i.e having "page" in the name is misleading.
+IMO the following seems more coherent and concise:
 
-<snip>
+- Mark newly dirtied pages as DELALLOC in the io tree. Used to advise
+which range is to be written back.
+
+> + * - Page status
+> + *   Including basic status like Dirty and Uptodate, and btrfs specific bit
+> + *   like Checked (for cow fixup)
+
+- Marks modified pages as Uptodate/Dirty and not needing cowfixup
+
+> + * - Inode size update
+> + *   If needed
+
+- Update inode size for past EOF write.
+
+>   */
+>  int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
+>  		      size_t num_pages, loff_t pos, size_t write_bytes,
+> 
