@@ -2,171 +2,185 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0972D705E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 07:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F052D70F5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 08:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436525AbgLKGwF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Dec 2020 01:52:05 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:10618 "EHLO
+        id S2394076AbgLKH1r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Dec 2020 02:27:47 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:21868 "EHLO
         esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395564AbgLKGvb (ORCPT
+        with ESMTP id S2391088AbgLKH1c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Dec 2020 01:51:31 -0500
+        Fri, 11 Dec 2020 02:27:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1607669490; x=1639205490;
+  t=1607671651; x=1639207651;
   h=from:to:cc:subject:date:message-id:references:
    content-transfer-encoding:mime-version;
-  bh=G1wShjZVH2MluraN7pxOborcEVP2rXXcagVbHPa9IKM=;
-  b=pfnZRElyzGRY0iHtSDhle0CU62gvDHKM3WR64hGxxU0xx//lQ+J15mNy
-   0nB2bPUDs9wNRX0RJmO1kiJFAk9kIDYINjpgX8RGpq3LxQMDJkFgHxD3E
-   bBFK2vjYCcoJnazfCwIBWKslkOtJrSdKX6aSWrSykX5bnxWYAEYZscjka
-   wFW+K1tFVWyX3THqo4BMpcuRJ+8770O+xFBtycmrW7rdHgisGQ7q5jwZx
-   ji141xFT5v3dfAUz71Lp8ah6Yoaz0Qc61enI6kAxg+x0QeHI6ynPiz4yA
-   sue56GP79Vf8sz2II/RSSKwV3E9NO4eMSdHT/a7j/9i0dTPEaL2gDwRfI
-   w==;
-IronPort-SDR: 0W3UCloJz9WzJ66Ci2cD7CW+MLdLJxs7QQreMpZZeWPoNKGNzmhmyGv7xORF/ZRKWnuaRiG6G/
- PgbW+mAH6COLhhI+nSy+x3RGxcQbD57QB2qkNvPVrc09L6LJ0uIxM8juSBTtEVdsLxh2AvbzrX
- zZ9speJ15MjCA+eO8zlo2rUq3nc9O8mM/VdehNmXnyvhNb+/KUKEHiI5qmITOGeH01ND7YttPU
- yjETbUKA9FVKt7r001z0DDpVJ/jzjrRCck0dWxI+fa18ELaJgm48TBgL8C3ytke1RKxGJvERsG
- anA=
+  bh=hlNScCgUl4dAr6uki2h8hK6DrCHhuxwmd+owEJwdU7g=;
+  b=VG98E+gtYTIwHka5IWjQu7AfdrL29BvQEzsDGmmsda8kOgcAGewE3Rvr
+   8wmA0a1cAOt83SBw3CfDKGiaXh1docsISQU0VF8V0m4SHcob+Am48p7lh
+   lQzykjhKEV29zR9CrnR562j0oA5kXFLzorM0qgPAusINBNY3kiJbE8v+m
+   /C/Z2nNastyCxwmBjPDCBMXUShwzayvdS5p/LZxoUg6MnbSgLPeJB/FAq
+   brse9dIyc4Qm2PAaQn5rTl66RAMpoXr85jaCH3ugAKk4UYCk7kvnz7VfD
+   sBKid25RkJoePOCqfZFEw5ay7bW4Py6IkQMQ5makWBTTMtDmDjPQlH1DS
+   g==;
+IronPort-SDR: 4PzSFzNdxw4/EPb6jjYtK9qSN0q5fBz9NYhw8h+0ieIrAzDkA946ZyUvS9rQ1InE4fb4PyIDSj
+ cArKfQdy2MZ8vZquvWhf4N4Xb/yQzkAiKETmAL+8tQkYfPHsjUMZe9DxI82wptqwQtzuowty/b
+ eIuT+tRJBUdC2IplhDO4dJS4M028/Iig2dA+t9Dq+KNk2gDytbLouxrQaNhZfXI1d0sHeWF0/g
+ XdxFo8E16W9w5IfWeR7SmyvOax9JBMoFaHz1+tqrwBIJyI/1BgzGzhBzjtnjhmNhxCAEfGPMsC
+ dWo=
 X-IronPort-AV: E=Sophos;i="5.78,410,1599494400"; 
-   d="scan'208";a="265086997"
-Received: from mail-co1nam11lp2171.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.171])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Dec 2020 14:50:25 +0800
+   d="scan'208";a="265089850"
+Received: from mail-bn8nam12lp2173.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.173])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Dec 2020 15:26:19 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aMEhkK6AU0BNTSXW779gf1eK7tUe4ezXT5hs8FyPOJ5C9dsTo4iRH1v2tPh7n4gMbkkUcnqu1gsbinupp5zLGEAyjFung4Xk8KyQ8TzdkLGE4xFKMs9XecKFblI1p7DXnH7snmnJSaYJXa4Cakj88m4Zy8xxIJuz001b96VAq/y6y0SeaVcb19G8rkw2Ak9uwEkhWpp1otLYk3VlBqlApbsl+RcFlksUXRq38A4nTapS0o+BNjRmwaihdEI9YnG0aMh9JmIaKDKEsDYwwVwZc79SZs1056LcCJMTuFm+/kNv2Bf34hYddSf4JWMr4b5zXP138FrMJasUyOhOIeozhw==
+ b=n/ZK2e7/iJY5E8/k/GmHdRaYMweGDnY8cUngXhP/EL7NdDE3Gvv8mUXJHJZvmzSqIZ+W+9PHLNLAh623daqH11OkcgqlZ0btxXx2hvgEqu4+nCcrJtNr2fWKd7qBSJllnD0zGvtX5N32g3XhNoHs4RHP9IMyEkeItLDMkrub48BKUAylVzx4WW6XdyWJIMcrx/RTe+oOH9Cw1odCPvMv0Kf2DiHDeuZq4Q3+VLnHDLeqkgI1gs6LyJXrGRvtvpgdynGMHEKGLw4WM2W6payprlur0jXQMsKCMrpvIDqh/98AqCa2YoM8iDl7x0Guclxl/AMmcDjaxP8QM3C71kwitQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G1wShjZVH2MluraN7pxOborcEVP2rXXcagVbHPa9IKM=;
- b=fPDsfTMfEHw+YkUSTWeCgH3ZJcsGxGJGmjSGxEgt4H+iT+UEtaL7QrhhE9sNOiHqEL7uz6C984eKtTx8WykcCnkSngq/LjVTT+E+S9vqbs6GaGOGOF+69Pf1GIhkNtHgBmfmtGZt/zBkI/7CSahNu02w7mZqAnHA6H4+9Dyqu2djAH/6RoJjCE6uUnKVk2PE5EO+iURXfIsP/AiFh14rZyVxN3z3l2lgnTxe9R29ajHBru2rjvT/afvDdQtrDHqbto4/Bq3YdJI0y59pBWThIlBO/p6L6strX7jDZofvbiCjN0hOz/Ip2ueZp2O9JBQj0ramkVZben8buprprxMrKA==
+ bh=ZsEhrp/FtfPsjApokUheEXGU2ZDVVuZkT7FsSB5V85g=;
+ b=c7QHj6AZuL7l4mlmmiZCYjd5vAkIpVq8BpdHYOCDUFm9p4Blqap01JvA82avwYrzrIj/ZOlwhd140eJo+zmcrFysdUjNFI1M4s71kq3ipEWASEv1Ih+P3lvzW3RxPZ0jgaXpnEEwQiawLq3ThoTYC1kjebyANij5HaXGmlq70+n58mjfVnPgGbyVkX6U7QwJqpijMpniOv2jpvpUvmQB1ut5bF6wDOMlNcIRq7eevtPiF6Az1lGZYjd0IzGO5Vj+S3dKcjjN4ODnbsi76M19/cNyKIR0rDwfnlEhGLRmEUFrPYfcNiZRzrSAIOBWAT2tmMYk7z/aS959jQof62crig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G1wShjZVH2MluraN7pxOborcEVP2rXXcagVbHPa9IKM=;
- b=dg99SceVuudOs1s/Jo/vQXneUfzsga8CVgoqOC31Vh3P1oyfqAC6+q2IXoqQyAXIPsO1B3NzzQrpNSwxR5Ph39biJdX88TtRL6OmFq4z1a7iTgF41l9s3HQ2XqGjmhJyPB9Xnfd1spqX590MmMZFI85VqxErnFU6MvpcL0+I3ow=
+ bh=ZsEhrp/FtfPsjApokUheEXGU2ZDVVuZkT7FsSB5V85g=;
+ b=JNhr5V5+SRJBEMA2DYjBxenHpooQR42JiiyQmAe8frEXM3y4oK2Ol4nRN/zGulD41PjmnHCApQaO4QYg7SeyCorf+3qRD+YdVVqf7xkV1zOkMPTmOwQmh5dG0x464BFRu+Lf0Xa9QYJLxNiE3iRjftDQl0ETI0FsKx0XSHc47uI=
 Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SA0PR04MB7290.namprd04.prod.outlook.com
- (2603:10b6:806:e2::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Fri, 11 Dec
- 2020 06:50:23 +0000
+ (2603:10b6:803:47::21) by SN6PR04MB4237.namprd04.prod.outlook.com
+ (2603:10b6:805:30::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Fri, 11 Dec
+ 2020 07:26:18 +0000
 Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
  ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
  ([fe80::65d7:592a:32d4:9f98%6]) with mapi id 15.20.3589.038; Fri, 11 Dec 2020
- 06:50:23 +0000
+ 07:26:18 +0000
 From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     Sidong Yang <realwakka@gmail.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs-progs: scrub: warn if scrub started on a device has
- mq-deadline
-Thread-Topic: [PATCH] btrfs-progs: scrub: warn if scrub started on a device
- has mq-deadline
-Thread-Index: AQHWyzejHW6Ri+MjBUuw45QEtiWblg==
-Date:   Fri, 11 Dec 2020 06:50:23 +0000
-Message-ID: <SN4PR0401MB359892AE5C0771A8209A4A559BCA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20201205184929.22412-1-realwakka@gmail.com>
- <SN4PR0401MB35981F791C9508429506EDA09BCE0@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20201210202020.GH6430@twin.jikos.cz>
+To:     "hch@infradead.org" <hch@infradead.org>
+CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: [PATCH v10 02/41] iomap: support REQ_OP_ZONE_APPEND
+Thread-Topic: [PATCH v10 02/41] iomap: support REQ_OP_ZONE_APPEND
+Thread-Index: AQHWt1Sb3HZRbzGDlk6Pnuh0g860vw==
+Date:   Fri, 11 Dec 2020 07:26:18 +0000
+Message-ID: <SN4PR0401MB35982E109738ABE8A093315C9BCA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <cover.1605007036.git.naohiro.aota@wdc.com>
+ <72734501cc1d9e08117c215ed60f7b38e3665f14.1605007036.git.naohiro.aota@wdc.com>
+ <20201209093138.GA3970@infradead.org>
+ <SN4PR0401MB3598A4DA5A6E8F67DFB070859BCC0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20201209101030.GA14302@infradead.org>
+ <SN4PR0401MB35980273F346A1B2685D1D0F9BCC0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <SN4PR0401MB35987F45DC6237FC6680CCB49BCC0@SN4PR0401MB3598.namprd04.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=wdc.com;
 x-originating-ip: [129.253.240.72]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a94b350e-f0a2-4746-b9be-08d89da108a5
-x-ms-traffictypediagnostic: SA0PR04MB7290:
-x-microsoft-antispam-prvs: <SA0PR04MB7290707CD22FAC2D0E5497059BCA0@SA0PR04MB7290.namprd04.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 6c73e3e4-f6ec-4206-6c40-08d89da60d25
+x-ms-traffictypediagnostic: SN6PR04MB4237:
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR04MB42370D1782F53830A38A47C69BCA0@SN6PR04MB4237.namprd04.prod.outlook.com>
 wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: X9hV4Rh66ivgvtrmJLGTnRYOM0TjBA947EHEaqsfxessVzVcvZVfkNmrdD+5/ZEpOQfjVXUuGAWBk/yXhV8FKyN0vrM7PF1lrjbiW8ByNLBMATaIJjptg5gx1IE2EgieEdWJr3DPxvrstBIW5rCHvcPJtf2E9esiD2ZD7y2qDDaLudFd6vCUEF1m+47uFY2w/3VioiBzl+p3P+h5B5ZushunMnMVbUHUb4HavEwWlFEZCDeKXnzIwQ6nKH+XAt7ML25eXlIG/8r+8h8zr+oOekg9pfaRe1/5Txt1KE7wEV+Qfb27l8A04nofG4pjXrlO
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(376002)(2906002)(55016002)(9686003)(4326008)(66556008)(86362001)(53546011)(71200400001)(5660300002)(83380400001)(52536014)(26005)(64756008)(91956017)(54906003)(6916009)(76116006)(6506007)(186003)(66946007)(7696005)(8936002)(66446008)(33656002)(508600001)(66476007)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?GQIjYvb6wKbncyIInQgkIjCItxxDoQ9qsJHym3Bo+dOx3zKU1l1QkVgbz5Jn?=
- =?us-ascii?Q?xrE/qg43AK8Oyl/UhLIFv21j4Bd3wGQcQQJF8JfRFcDhjWbPpOTXozFwZzo4?=
- =?us-ascii?Q?sm1/arlGETbLpzDLXcCxQdOhN+CSBoBoCLNrDP4sR1urY8fRMesmN7fZfxMU?=
- =?us-ascii?Q?FTfpWNRtHhLu+3avg+CqVtNrRcOZBEYhDU236DTNKqBL4UDCxXVHXy3fmOZv?=
- =?us-ascii?Q?eUzsuGHNIahbQQwHcj6xh0G9xdH8GnEAEyecCxH10RRIVBhLADrcMwKSUDJL?=
- =?us-ascii?Q?56/LaYMDbo2s3I9mozINxPMp6nOzA/kPYGV4IBpSvkmtt91FGKV6yE7zb0vH?=
- =?us-ascii?Q?FR/ZIovyqxVz2C+2xVU8OVXeUUPZKvVYEujEx8L+VG3VWsHWGjSU+UHk/oLA?=
- =?us-ascii?Q?OxajtTLvr2nzFhY7Ta04BHXdsLldUAibA5syYmTHxj/ingadDNmAH+i7Mtc+?=
- =?us-ascii?Q?eFhMbbfTtWutRGHVkEWMjoaEu91Jb1yOwz1B0nxeXfwJ2qGpSfTKq/NkIQmk?=
- =?us-ascii?Q?dnMgGh2js20Xp/9p9q3JUElTc2TyJh7pfWYTfJdgIpc/M85VZeS9uGSTHhYZ?=
- =?us-ascii?Q?4MEyDSQXTnXwlW48Z0E6DVzGWHCm7YMjEx0JVkSsJHalUXXFoynl9DOX3AFj?=
- =?us-ascii?Q?e+gW2jJB2CgJjKzjmulyRbyLE9ExEzyomQzjFJEHFhxm9KDiGEdIlTfRviY0?=
- =?us-ascii?Q?7SFKSl7AWqv4R/7c8QM07rdJ2iujluVucNlVUDrM0eMCoj0iz7IkJZ59IF/v?=
- =?us-ascii?Q?SXrMkrWw2FwVi7zh94O6YiVNhrmQtiGh5QG2cCiXLbnn/2G1gOHl28wnS82D?=
- =?us-ascii?Q?4j0l+8zoPXrz90NblUNELthgTu0zWczU4+AKoxizP2bJso2be4CImAbuhlTy?=
- =?us-ascii?Q?I3tqwHLUguzoe1f4d4rAaxB3V5opUA132iTKzkhWTUvKs7r0qgUyL3Wigpo/?=
- =?us-ascii?Q?GeqB/JpFnSYaH0Afv/2Nw2DXgZwAHsRUhMExVJ4LeljtkC/DFpnHsnDPb/Yu?=
- =?us-ascii?Q?T83L?=
-x-ms-exchange-transport-forked: True
+x-microsoft-antispam-message-info: E3M8hnFMhGtye7TYf2TQjHxZIaCZF21DoJFuRREtS+tL4o1pIeqmCE48TOVjtcnaPkOMicrXK/u7SawCosSZgQK9dP9nzVmK9ZIZyCinSGmjQs8kTLjcWWicpIbaTvPSg6DJ2HEeiJpK0p4lmuUE1vpsqfBEsaJExK3pIvXwHnYuoHy4aPq7o4k5NpykFPILYAnWj98gICn1eFvlEmimglISUVMoGEeScdi4Hu7tj0JfUYA/C/gXNL/7uCoe/06QCwdt/c1y1jp8snIWxLdXV1WjOYULsIaQ9Pms0O/t0K+MCEqEaPYl4Q/5Ska1kra78Np28cjSwzircUaOK9wocg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(71200400001)(91956017)(66476007)(76116006)(33656002)(52536014)(508600001)(86362001)(83380400001)(4326008)(186003)(6506007)(6916009)(53546011)(9686003)(55016002)(26005)(66946007)(66556008)(7696005)(66446008)(8936002)(54906003)(5660300002)(2906002)(64756008)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?YIUCjRrIm7kqsgzfvsNWDReTpmU8kXLLRsEiPTEbnZiNCuWfBlkREoecG9Cg?=
+ =?us-ascii?Q?ETjDfZBNMbMoizLfPlC8hHCRvZR2m3zqJruxsdnO8zjHhgIEstypbEmtL7UW?=
+ =?us-ascii?Q?fycWx3jHgrbJvIA4FIRUa8Xg/HuqT9El1/Jk3VLZ5MLo8QJAeJ8/rN99s2+L?=
+ =?us-ascii?Q?Ces9O3Ty0zEuc049ByLAxSW1WIPcIkZqONmAkkftF3ghy++8joC6bYFUaHlt?=
+ =?us-ascii?Q?9Qgiz6J1sn67/oEK7gBUNTXcLZtlkEB+on+gWIPO/UvruXKH5mdfVTFJoKvj?=
+ =?us-ascii?Q?9bvSyVBvREvcXgTiR/5lcR7rOnwCj+i8jmib/OPHdEar0527n+h9fIJHWl0D?=
+ =?us-ascii?Q?36y65C6idK8lXIJy7CQ2/jHAdUlwxIcXMp2XGvRGDX63jg/XpCF2XkM6qPnk?=
+ =?us-ascii?Q?RtFD9tBF50yzWyEo67STCYTKZiHpBcGgf8zbdnL1TMAjVxWf37miCxbgX8XQ?=
+ =?us-ascii?Q?7Ov5i47+Vryz90o0zKxaWfwRm7s/e3L/R/RgSk9L7wq1iSmsXbPzkprpMM1c?=
+ =?us-ascii?Q?2U3iz2Rls+1HuodsoRgDcYKIQSuk1+CwVuvog5D3MWvnggdGLIt2sqlJhe/3?=
+ =?us-ascii?Q?yPQrxBNQpbJ/MsWAqbXMwbiHeNpnOWJMonvMWJ8SR1dlFWwDFG6jKcfRPbk8?=
+ =?us-ascii?Q?2ZCE08YkTxWNzlAImahWVQ0YpnmE8K/gmb+WXOL5M/FcpR+ZsHQwfcDgwnZO?=
+ =?us-ascii?Q?alJ674JSy9uGsWnwRfCB167ySIdVuRa4tq7DnNFrd+FB1um80EvPOMsfQLfP?=
+ =?us-ascii?Q?7LYtdQaaeUnvrzgnhrioTWskOjguIeOqeSRZ8AgfL6TpVPLiv0Z87qMRGOGw?=
+ =?us-ascii?Q?Qu9fz4BKLO0KLk/2P+EeGuMPuLxc/XEpW6nkL1sJE8VEU778id5ZXStqEvPc?=
+ =?us-ascii?Q?vrxFn0DJseal59wNNLIwKbsLW2kKxogYYzFN8+MnnNzXJAGrK3Gk+/p6Q4hK?=
+ =?us-ascii?Q?t9Owem+6eIaS4vETRG9UO3KK9b1gPLYC67S5e4XauJllpciDiw8MSPKJiNv+?=
+ =?us-ascii?Q?5JcZ?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a94b350e-f0a2-4746-b9be-08d89da108a5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 06:50:23.2379
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c73e3e4-f6ec-4206-6c40-08d89da60d25
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 07:26:18.2144
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yGDEg5Iccye9qnD1GOg5rnmgPOBUcYbSuEa13TN1aIHKH1ZIcZF0e6LtUsxzOFOqHntytU1DjA9O53yt8n4kbIELuO5oR59cn4rEqrTmTYw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7290
+X-MS-Exchange-CrossTenant-userprincipalname: MNpcP3jorfOoXZXEMzFq6RraHafOu58+8Brms5+vVSlYILaqIMNGEdvaoIUG8emX+VvpJLHxef3O9oVe5Jon4Wu/ThHOjuJstDzxjKSLSZ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4237
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/12/2020 21:22, David Sterba wrote:=0A=
-> On Mon, Dec 07, 2020 at 07:23:03AM +0000, Johannes Thumshirn wrote:=0A=
->> On 05/12/2020 19:51, Sidong Yang wrote:=0A=
->>> Warn if scurb stared on a device that has mq-deadline as io-scheduler=
+On 09/12/2020 14:41, Johannes Thumshirn wrote:=0A=
+> On 09/12/2020 11:18, Johannes Thumshirn wrote:=0A=
+>> On 09/12/2020 11:10, hch@infradead.org wrote:=0A=
+>>> On Wed, Dec 09, 2020 at 10:08:53AM +0000, Johannes Thumshirn wrote:=0A=
+>>>> On 09/12/2020 10:34, Christoph Hellwig wrote:=0A=
+>>>>> Btw, another thing I noticed:=0A=
+>>>>>=0A=
+>>>>> when using io_uring to submit a write to btrfs that ends up using Zon=
+e=0A=
+>>>>> Append we'll hit the=0A=
+>>>>>=0A=
+>>>>> 	if (WARN_ON_ONCE(is_bvec))=0A=
+>>>>> 		return -EINVAL;=0A=
+>>>>>=0A=
+>>>>> case in bio_iov_iter_get_pages with the changes in this series.=0A=
+>>>>=0A=
+>>>> Yes this warning is totally bogus. It was in there from the beginning =
+of the=0A=
+>>>> zone-append series and I have no idea why I didn't kill it.=0A=
+>>>>=0A=
+>>>> IIRC Chaitanya had a patch in his nvmet zoned series removing it.=0A=
+>>>=0A=
+>>> Yes, but it is wrong.  What we need is a version of=0A=
+>>> __bio_iov_bvec_add_pages that takes the hardware limits into account.=
 =0A=
->>> and point documentation. mq-deadline doesn't work with ionice value and=
-=0A=
->>> it results performance loss. This warning helps users figure out the=0A=
->>> situation. This patch implements the function that gets io-scheduler=0A=
->>> from sysfs and check when scrub stars with the function.=0A=
+>>>=0A=
 >>=0A=
->> From a quick grep it seems to me that only bfq is supporting ioprio sett=
-ings.=0A=
-> =0A=
-> Yeah it's only BFQ.=0A=
-> =0A=
->> Also there's some features like write ordering guarantees that currently=
- =0A=
->> only mq-deadline provides.=0A=
+>> Ah now I understand the situation, I'm on it.=0A=
 >>=0A=
->> This warning will trigger a lot once the zoned patchset for btrfs is mer=
-ged,=0A=
->> as for example SMR drives need this ordering guarantees and therefore se=
-lect=0A=
->> mq-deadline (via the ELEVATOR_F_ZBD_SEQ_WRITE elevator feature).=0A=
 > =0A=
-> This won't affect the default case and for zoned fs we can't simply use=
-=0A=
-> BFQ and thus the ionice interface. Which should be IMHO acceptable.=0A=
+> OK got something, just need to test it.=0A=
 > =0A=
 =0A=
-But then the patch must check if bfq is set and otherwise warn. My only fea=
-r=0A=
-is though, people will blindly select bfq then and get all kinds of =0A=
-penalties/problems. And it's not only mq-deadline and bfq here, there are a=
-lso=0A=
-kyber and none. On a decent nvme I'd like to have none instead of bfq, othe=
-rwise=0A=
-performance goes down the drain. If my workload is sensitive to buffer bloa=
-t, I'd=0A=
-use kyber not bfq.=0A=
+I just ran tests with my solution and to verify it worked as expected I ran=
+ the=0A=
+test without it. Interestingly the WARN_ON() didn't trigger for me. Here's =
+the=0A=
+fio command line I've used:=0A=
 =0A=
-So IMHO this patch just makes things worse. But who am I to judge.=0A=
+fio --ioengine io_uring --rw readwrite --bs 1M --size 1G --time_based   \=
+=0A=
+    --runtime 1m --filename /mnt/test/io_uring --name io_uring-test     \=
+=0A=
+    --direct 1 --numjobs $NPROC=0A=
+=0A=
+=0A=
+I did verify it's using zone append though.=0A=
+=0A=
+What did you use to trigger the warning?=0A=
