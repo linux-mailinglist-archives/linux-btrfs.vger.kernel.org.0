@@ -2,226 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62C02D6EEE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 04:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0972D705E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 07:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395250AbgLKDuB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 10 Dec 2020 22:50:01 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:37970 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728163AbgLKDtq (ORCPT
+        id S2436525AbgLKGwF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Dec 2020 01:52:05 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:10618 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395564AbgLKGvb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:49:46 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id ED6B88EE69F; Thu, 10 Dec 2020 22:49:00 -0500 (EST)
-Date:   Thu, 10 Dec 2020 22:49:00 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Eric Wheeler <btrfs@lists.ewheeler.net>
-Cc:     linux-btrfs@vger.kernel.org, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Global reserve ran out of space at 512MB, fails to rebalance
-Message-ID: <20201211034859.GK31381@hungrycats.org>
-References: <alpine.LRH.2.21.2012100149160.15698@pop.dreamhost.com>
- <20201210031251.GJ31381@hungrycats.org>
- <alpine.LRH.2.21.2012101935440.15698@pop.dreamhost.com>
+        Fri, 11 Dec 2020 01:51:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1607669490; x=1639205490;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G1wShjZVH2MluraN7pxOborcEVP2rXXcagVbHPa9IKM=;
+  b=pfnZRElyzGRY0iHtSDhle0CU62gvDHKM3WR64hGxxU0xx//lQ+J15mNy
+   0nB2bPUDs9wNRX0RJmO1kiJFAk9kIDYINjpgX8RGpq3LxQMDJkFgHxD3E
+   bBFK2vjYCcoJnazfCwIBWKslkOtJrSdKX6aSWrSykX5bnxWYAEYZscjka
+   wFW+K1tFVWyX3THqo4BMpcuRJ+8770O+xFBtycmrW7rdHgisGQ7q5jwZx
+   ji141xFT5v3dfAUz71Lp8ah6Yoaz0Qc61enI6kAxg+x0QeHI6ynPiz4yA
+   sue56GP79Vf8sz2II/RSSKwV3E9NO4eMSdHT/a7j/9i0dTPEaL2gDwRfI
+   w==;
+IronPort-SDR: 0W3UCloJz9WzJ66Ci2cD7CW+MLdLJxs7QQreMpZZeWPoNKGNzmhmyGv7xORF/ZRKWnuaRiG6G/
+ PgbW+mAH6COLhhI+nSy+x3RGxcQbD57QB2qkNvPVrc09L6LJ0uIxM8juSBTtEVdsLxh2AvbzrX
+ zZ9speJ15MjCA+eO8zlo2rUq3nc9O8mM/VdehNmXnyvhNb+/KUKEHiI5qmITOGeH01ND7YttPU
+ yjETbUKA9FVKt7r001z0DDpVJ/jzjrRCck0dWxI+fa18ELaJgm48TBgL8C3ytke1RKxGJvERsG
+ anA=
+X-IronPort-AV: E=Sophos;i="5.78,410,1599494400"; 
+   d="scan'208";a="265086997"
+Received: from mail-co1nam11lp2171.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.171])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Dec 2020 14:50:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aMEhkK6AU0BNTSXW779gf1eK7tUe4ezXT5hs8FyPOJ5C9dsTo4iRH1v2tPh7n4gMbkkUcnqu1gsbinupp5zLGEAyjFung4Xk8KyQ8TzdkLGE4xFKMs9XecKFblI1p7DXnH7snmnJSaYJXa4Cakj88m4Zy8xxIJuz001b96VAq/y6y0SeaVcb19G8rkw2Ak9uwEkhWpp1otLYk3VlBqlApbsl+RcFlksUXRq38A4nTapS0o+BNjRmwaihdEI9YnG0aMh9JmIaKDKEsDYwwVwZc79SZs1056LcCJMTuFm+/kNv2Bf34hYddSf4JWMr4b5zXP138FrMJasUyOhOIeozhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G1wShjZVH2MluraN7pxOborcEVP2rXXcagVbHPa9IKM=;
+ b=fPDsfTMfEHw+YkUSTWeCgH3ZJcsGxGJGmjSGxEgt4H+iT+UEtaL7QrhhE9sNOiHqEL7uz6C984eKtTx8WykcCnkSngq/LjVTT+E+S9vqbs6GaGOGOF+69Pf1GIhkNtHgBmfmtGZt/zBkI/7CSahNu02w7mZqAnHA6H4+9Dyqu2djAH/6RoJjCE6uUnKVk2PE5EO+iURXfIsP/AiFh14rZyVxN3z3l2lgnTxe9R29ajHBru2rjvT/afvDdQtrDHqbto4/Bq3YdJI0y59pBWThIlBO/p6L6strX7jDZofvbiCjN0hOz/Ip2ueZp2O9JBQj0ramkVZben8buprprxMrKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G1wShjZVH2MluraN7pxOborcEVP2rXXcagVbHPa9IKM=;
+ b=dg99SceVuudOs1s/Jo/vQXneUfzsga8CVgoqOC31Vh3P1oyfqAC6+q2IXoqQyAXIPsO1B3NzzQrpNSwxR5Ph39biJdX88TtRL6OmFq4z1a7iTgF41l9s3HQ2XqGjmhJyPB9Xnfd1spqX590MmMZFI85VqxErnFU6MvpcL0+I3ow=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SA0PR04MB7290.namprd04.prod.outlook.com
+ (2603:10b6:806:e2::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18; Fri, 11 Dec
+ 2020 06:50:23 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::65d7:592a:32d4:9f98]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::65d7:592a:32d4:9f98%6]) with mapi id 15.20.3589.038; Fri, 11 Dec 2020
+ 06:50:23 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Sidong Yang <realwakka@gmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs-progs: scrub: warn if scrub started on a device has
+ mq-deadline
+Thread-Topic: [PATCH] btrfs-progs: scrub: warn if scrub started on a device
+ has mq-deadline
+Thread-Index: AQHWyzejHW6Ri+MjBUuw45QEtiWblg==
+Date:   Fri, 11 Dec 2020 06:50:23 +0000
+Message-ID: <SN4PR0401MB359892AE5C0771A8209A4A559BCA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20201205184929.22412-1-realwakka@gmail.com>
+ <SN4PR0401MB35981F791C9508429506EDA09BCE0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20201210202020.GH6430@twin.jikos.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a94b350e-f0a2-4746-b9be-08d89da108a5
+x-ms-traffictypediagnostic: SA0PR04MB7290:
+x-microsoft-antispam-prvs: <SA0PR04MB7290707CD22FAC2D0E5497059BCA0@SA0PR04MB7290.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: X9hV4Rh66ivgvtrmJLGTnRYOM0TjBA947EHEaqsfxessVzVcvZVfkNmrdD+5/ZEpOQfjVXUuGAWBk/yXhV8FKyN0vrM7PF1lrjbiW8ByNLBMATaIJjptg5gx1IE2EgieEdWJr3DPxvrstBIW5rCHvcPJtf2E9esiD2ZD7y2qDDaLudFd6vCUEF1m+47uFY2w/3VioiBzl+p3P+h5B5ZushunMnMVbUHUb4HavEwWlFEZCDeKXnzIwQ6nKH+XAt7ML25eXlIG/8r+8h8zr+oOekg9pfaRe1/5Txt1KE7wEV+Qfb27l8A04nofG4pjXrlO
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(376002)(2906002)(55016002)(9686003)(4326008)(66556008)(86362001)(53546011)(71200400001)(5660300002)(83380400001)(52536014)(26005)(64756008)(91956017)(54906003)(6916009)(76116006)(6506007)(186003)(66946007)(7696005)(8936002)(66446008)(33656002)(508600001)(66476007)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?GQIjYvb6wKbncyIInQgkIjCItxxDoQ9qsJHym3Bo+dOx3zKU1l1QkVgbz5Jn?=
+ =?us-ascii?Q?xrE/qg43AK8Oyl/UhLIFv21j4Bd3wGQcQQJF8JfRFcDhjWbPpOTXozFwZzo4?=
+ =?us-ascii?Q?sm1/arlGETbLpzDLXcCxQdOhN+CSBoBoCLNrDP4sR1urY8fRMesmN7fZfxMU?=
+ =?us-ascii?Q?FTfpWNRtHhLu+3avg+CqVtNrRcOZBEYhDU236DTNKqBL4UDCxXVHXy3fmOZv?=
+ =?us-ascii?Q?eUzsuGHNIahbQQwHcj6xh0G9xdH8GnEAEyecCxH10RRIVBhLADrcMwKSUDJL?=
+ =?us-ascii?Q?56/LaYMDbo2s3I9mozINxPMp6nOzA/kPYGV4IBpSvkmtt91FGKV6yE7zb0vH?=
+ =?us-ascii?Q?FR/ZIovyqxVz2C+2xVU8OVXeUUPZKvVYEujEx8L+VG3VWsHWGjSU+UHk/oLA?=
+ =?us-ascii?Q?OxajtTLvr2nzFhY7Ta04BHXdsLldUAibA5syYmTHxj/ingadDNmAH+i7Mtc+?=
+ =?us-ascii?Q?eFhMbbfTtWutRGHVkEWMjoaEu91Jb1yOwz1B0nxeXfwJ2qGpSfTKq/NkIQmk?=
+ =?us-ascii?Q?dnMgGh2js20Xp/9p9q3JUElTc2TyJh7pfWYTfJdgIpc/M85VZeS9uGSTHhYZ?=
+ =?us-ascii?Q?4MEyDSQXTnXwlW48Z0E6DVzGWHCm7YMjEx0JVkSsJHalUXXFoynl9DOX3AFj?=
+ =?us-ascii?Q?e+gW2jJB2CgJjKzjmulyRbyLE9ExEzyomQzjFJEHFhxm9KDiGEdIlTfRviY0?=
+ =?us-ascii?Q?7SFKSl7AWqv4R/7c8QM07rdJ2iujluVucNlVUDrM0eMCoj0iz7IkJZ59IF/v?=
+ =?us-ascii?Q?SXrMkrWw2FwVi7zh94O6YiVNhrmQtiGh5QG2cCiXLbnn/2G1gOHl28wnS82D?=
+ =?us-ascii?Q?4j0l+8zoPXrz90NblUNELthgTu0zWczU4+AKoxizP2bJso2be4CImAbuhlTy?=
+ =?us-ascii?Q?I3tqwHLUguzoe1f4d4rAaxB3V5opUA132iTKzkhWTUvKs7r0qgUyL3Wigpo/?=
+ =?us-ascii?Q?GeqB/JpFnSYaH0Afv/2Nw2DXgZwAHsRUhMExVJ4LeljtkC/DFpnHsnDPb/Yu?=
+ =?us-ascii?Q?T83L?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <alpine.LRH.2.21.2012101935440.15698@pop.dreamhost.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a94b350e-f0a2-4746-b9be-08d89da108a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2020 06:50:23.2379
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yGDEg5Iccye9qnD1GOg5rnmgPOBUcYbSuEa13TN1aIHKH1ZIcZF0e6LtUsxzOFOqHntytU1DjA9O53yt8n4kbIELuO5oR59cn4rEqrTmTYw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7290
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 07:50:06PM +0000, Eric Wheeler wrote:
-> On Wed, 9 Dec 2020, Zygo Blaxell wrote:
-> > On Thu, Dec 10, 2020 at 01:52:19AM +0000, Eric Wheeler wrote:
-> > > Hello all,
-> > > 
-> > > We have a 30TB volume with lots of snapshots that is low on space and we 
-> > > are trying to rebalance.  Even if we don't rebalance, the space cleaner 
-> > > still fills up the Global reserve:
-> > > 
-> > > >>> Global reserve:              512.00MiB	(used: 512.00MiB) <<<<<<<
-> > 
-> > It would be nice to have the rest of the btrfs fi usage output.  We are
-> > having to guess how your drives are populated with data and metadata
-> > and what profiles are in use.
-> 
-> Here is the whole output:
-> 
-> ]# df -h /mnt/btrbackup ; echo; btrfs fi df /mnt/btrbackup|column -t; echo; btrfs fi usage /mnt/btrbackup
-> 
-> Filesystem                  Size  Used Avail Use% Mounted on
-> /dev/mapper/btrbackup-luks   30T   30T  541G  99% /mnt/btrbackup
-> 
-> Data,           single:  total=29.80TiB,  used=29.28TiB
-> System,         DUP:     total=8.00MiB,   used=3.42MiB
-> Metadata,	DUP:     total=99.00GiB,  used=87.03GiB
-> GlobalReserve,  single:  total=4.00GiB,   used=1.73MiB
-> 
-> Overall:
->     Device size:                  30.00TiB
->     Device allocated:             30.00TiB
->     Device unallocated:            1.00GiB
->     Device missing:                  0.00B
->     Used:                         29.45TiB
->     Free (estimated):            540.74GiB	(min: 540.24GiB)
->     Data ratio:                       1.00
->     Metadata ratio:                   2.00
->     Global reserve:                4.00GiB	(used: 1.73MiB) <<<< with 4GB hack
-> 
-> Data,single: Size:29.80TiB, Used:29.28TiB (98.23%)
->    /dev/mapper/btrbackup-luks     29.80TiB
-> 
-> Metadata,DUP: Size:99.00GiB, Used:87.03GiB (87.91%)
->    /dev/mapper/btrbackup-luks    198.00GiB
-> 
-> System,DUP: Size:8.00MiB, Used:3.42MiB (42.77%)
->    /dev/mapper/btrbackup-luks     16.00MiB
-> 
-> Unallocated:
->    /dev/mapper/btrbackup-luks	   1.00GiB
->  
-> > You probably need to be running some data balances (btrfs balance start
-> > -dlimit=9 about once a day) to ensure there is always at least 1GB of
-> > unallocated space on every drive.
-> 
-> Thanks for the daily rebalance tip.  Is there a reason you chose 
-> -dlimit=9?  I know it means 9 chunks, but why 9?  Also, how big is a 
-> "chunk" ? 
-
-"9" is fewer digits than "10"... ;)
-
-It's a good starting point for an average filesystem.  You may want
-to tune it for your workload.
-
-Most chunks are multiples of 1GB except on very small filesystems;
-however, sometimes the last data chunk is an odd size (i.e. not 1GB).
-If the filesystem has been resized in the past, there could be multiple
-odd-sized chunks.  A balance of one or two tiny chunks might not release a
-useful amount of space.  Balancing 9 chunks at a time reduces the chance
-of getting stuck with such a small chunk, and also gives you some extra
-unallocated space in case some of it gets allocated during the day.
-
-On a mostly idle system, you may not need to run the balance every day.
-On a system with hundreds of GB of unallocated space on every drive,
-you don't need to run balance at all.  Monitor your system's unallocated
-space over time and adjust the limit and scheduling as required so you
-don't run out of unallocated space.
-
-Ideally we'd have a packaged tool ready to install that makes those
-decisions automatically, but we're still trying to figure out what the
-threshold values should be.  Clearly, "2TB of unallocated space on every
-drive" needs no intervention, while "0 unallocated space on any drive"
-is too late for intervention to be useful any more.  In between these
-extremes, it is harder to evaluate from code.  When there's 20GB
-unallocated on every drive, and 10GB are consumed per day, does that
-require a balance today, or can it wait until tomorrow?  How would we get
-the trend data?  Will the user do something unpredictable that requires
-balance earlier than expected?  Will we set the thresholds too low,
-and waste a lot of iops on balancing that isn't useful?  Will we set
-the thresholds too high, and fail to intervene on a system that is
-headed for metadata ENOSPC?
-
-> In this case we have 1GB unallocated.
-
-And also almost 12 GB allocated but not used metadata.  So I'm not sure
-why you're hitting ENOSPC unless you are hitting a straight-up bug
-(or using ssd_spread...don't use ssd_spread).  But 5.6 kernels did
-have exactly such a bug (as did all kernels before 5.8).
-
-> > Never balance metadata, especially not from a scheduled job.  Metadata
-> > balances lead directly to this situation.
-> 
-> So when /would/ you balance metadata?
-
-There are three cases where metadata balance does something useful:
-
-	1.  When converting to a different raid profile (e.g. add
-	a second disk, convert with balance -mconvert=raid1,soft).
-
-	2.  When shrinking a disk or removing a drive from an array.
-	This will run relocation on metadata in the removed sections
-	of the filesystem.  This is not avoidable with the current
-	btrfs code.
-
-	3.  When you are a kernel developer testing for regressions in
-	the metadata balance code.
-
-Otherwise, never balance metadata.
-
-btrfs is pretty good at reusing the allocated metadata space, plus
-or minus a gigabyte.  Free space fragmentation is not an issue for
-metadata space, since every metadata page is the same size, so there is
-no equivalent benefit for defragmeting free space in metadata chunks as
-there is for data chunks.  If your filesystem needed metadata space in
-the past, chances are good it will be needed in the future, so the peak
-metadata allocation size is almost always the correct size.
-
-Metadata balance will deallocate metadata chunks based on current
-instantaneous metadata space requirements, which can leave you with
-insufficient space for metadata when you need it at other times.
-Metadata should be allowed to grow, and never forced to shrink, until
-it reaches approximately the right size for your workload.
-
-> > > This was on a Linux 5.6 kernel.  I'm trying a Linux 5.9.13 kernel with a 
-> > > hacked in SZ_4G in place of the SZ_512MB and will report back when I learn 
-> > > more.
-> >
-> > I've had similar problems with snapshot deletes hitting ENOSPC with
-> > small amounts of free metadata space.  In this case, the upgrade from
-> > 5.6 to 5.9 will include a fix for that (it's in 5.8, also 5.4 and earlier
-> > LTS kernels).
-> 
-> Ok, now on 5.9.13
->  
-> > Increasing the global reserve may seem to help, but so will just rebooting
-> > over and over, so a positive result from an experimental kernel does not
-> > necessarily mean anything.
-> 
-> At least this reduces the number of times I need to reboot ;)
-
-Does it?
-
-You switched from SZ_512M on 5.6 to SZ_4G on 5.9.  5.9 has a proper fix
-for the bug you most likely enountered, in which case SZ_4G would not
-have any effect other than to use more memory and increase commit latency.
-
-Transactions should be throttled at the reserved size, regardless of what
-the reserved size is.  i.e. if you make the reserved size bigger, then
-big deletes will just run longer and use more memory between commits.
-Deletions are pretty huge metadata consumers--deleting as little as
-0.3% of the filesystem can force a rewrite of all metadata in the worst
-case--so you have probably been hitting the 512M limit over and over
-without issue before now.  Transactions are supposed to grow to reach
-the reserved limit and then pause to commit, so a big delete operation
-will span many transactions.  The limit is there to keep kernel RAM
-usage and transaction latency down.
-
-If you ran two boots at SZ_512M followed by one boot at SZ_4G, and it
-works, then that test only tells you that you needed to do 3 boots in
-total to recover the filesystem from the initial bad state.  It doesn't
-indicate SZ_4G is solving any problem.  To confirm that hypothesis,
-you'd need to rewind the filesystem back to the initial state, run
-a series of reboots on kernel A and a series of reboots on kernel B,
-correct for timing artifacts (at some point there will be a scheduled
-transaction commit that will appear at a random point in the IO sequence,
-so different test runs under identical initial conditions will not produce
-identical results), and show both 1) a consistent improvement in reboot
-count between kernel A and kernel B, and 2) the only difference between
-kernel A and kernel B is reserved size SZ_512M vs SZ_4G.
-
-> Question: 
-> 
-> What do people think of making this a module option or ioctl for those who 
-> need to hack it into place to minimize reboots?
-
-I think it would be better to find the code that is failing to handle
-running out of free transaction metadata, and fix that.  Assuming it
-isn't fixed already.
-
-> -Eric
-> 
-> --
-> Eric Wheeler
+On 10/12/2020 21:22, David Sterba wrote:=0A=
+> On Mon, Dec 07, 2020 at 07:23:03AM +0000, Johannes Thumshirn wrote:=0A=
+>> On 05/12/2020 19:51, Sidong Yang wrote:=0A=
+>>> Warn if scurb stared on a device that has mq-deadline as io-scheduler=
+=0A=
+>>> and point documentation. mq-deadline doesn't work with ionice value and=
+=0A=
+>>> it results performance loss. This warning helps users figure out the=0A=
+>>> situation. This patch implements the function that gets io-scheduler=0A=
+>>> from sysfs and check when scrub stars with the function.=0A=
+>>=0A=
+>> From a quick grep it seems to me that only bfq is supporting ioprio sett=
+ings.=0A=
+> =0A=
+> Yeah it's only BFQ.=0A=
+> =0A=
+>> Also there's some features like write ordering guarantees that currently=
+ =0A=
+>> only mq-deadline provides.=0A=
+>>=0A=
+>> This warning will trigger a lot once the zoned patchset for btrfs is mer=
+ged,=0A=
+>> as for example SMR drives need this ordering guarantees and therefore se=
+lect=0A=
+>> mq-deadline (via the ELEVATOR_F_ZBD_SEQ_WRITE elevator feature).=0A=
+> =0A=
+> This won't affect the default case and for zoned fs we can't simply use=
+=0A=
+> BFQ and thus the ionice interface. Which should be IMHO acceptable.=0A=
+> =0A=
+=0A=
+But then the patch must check if bfq is set and otherwise warn. My only fea=
+r=0A=
+is though, people will blindly select bfq then and get all kinds of =0A=
+penalties/problems. And it's not only mq-deadline and bfq here, there are a=
+lso=0A=
+kyber and none. On a decent nvme I'd like to have none instead of bfq, othe=
+rwise=0A=
+performance goes down the drain. If my workload is sensitive to buffer bloa=
+t, I'd=0A=
+use kyber not bfq.=0A=
+=0A=
+So IMHO this patch just makes things worse. But who am I to judge.=0A=
