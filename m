@@ -2,198 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A442D739B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 11:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 989612D73DD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 11:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388456AbgLKKLo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Dec 2020 05:11:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33548 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393698AbgLKKLd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Dec 2020 05:11:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607681446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=cjd7HE0AVxWz0+/DmcACKeZcXWvkcxya7NTHuVe5YZM=;
-        b=rICY/nR4ZnYqMV+RTjcZXPoR4z0TDdw6p3MN6ZhFzqS2QJDQ4YPyRosLDGu4srSGbv2D1M
-        oKcyxd4umMJ3SJMbJbIHa45QJoqYnWDAqQJEYWvRgnSGF0WZuRStz5yIRS204Pkq19KNsO
-        51pmpxDkLKWO/abH2Ln8Ug3aWh7Q0iw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6D8B0AC10;
-        Fri, 11 Dec 2020 10:10:46 +0000 (UTC)
-Subject: Re: [PATCH v2 09/18] btrfs: subpage: introduce helper for subpage
- uptodate status
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201210063905.75727-1-wqu@suse.com>
- <20201210063905.75727-10-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <40aaa304-cf64-806f-e2d0-8bb02b32abdf@suse.com>
-Date:   Fri, 11 Dec 2020 12:10:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727292AbgLKKX1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Dec 2020 05:23:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgLKKXU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Dec 2020 05:23:20 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4D4C0613CF;
+        Fri, 11 Dec 2020 02:22:40 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id 1so7913016qka.0;
+        Fri, 11 Dec 2020 02:22:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=YuPZHdVgAGWAofDwCNuBJINnSSjfEBVFS3IZCVIkx6U=;
+        b=d1ZCiEEgLdptNLqFv8mDobfBYlk/v8X+Io8lsFuiJCMowxvNM50C0ZM1FqQ5Ko2QUy
+         K1pAJiAXf2Mmp0EIpYkL3WogGrnillatMvHWOgcT+3O1rM99jgCIRNZ2bzQqWRL+dQ4t
+         KQJlfBR6Ophn6d32ND2Fa9REXt9kAnH+LIzMfaKk/vlz3QnF5T0KnAz20NjHbjJZXpF4
+         Zq7AGtoLO+R5iau0fcvfQ4yYeS1cj9EkjUyiD/gfWfq/q9iNUpv7EXtI59yjICLS/VEu
+         Kp6D67Hbs5/aqnD+7mWMG3eN9QoyTa8G0ikzUC0jOcWlfcvbqzoxe2TY2NZL5EI9mgUF
+         i2jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=YuPZHdVgAGWAofDwCNuBJINnSSjfEBVFS3IZCVIkx6U=;
+        b=ozjggBIM6u+H+0ru4Qs7QMVbC9zkgKm3o6rW5SGxwc+tClRFUbKXXSihlhZJ1DpoId
+         hS8cEaonWA5//RblAl2IQ7uiNx/PLt1BoUfCtuSvuT+V5cyubjT/+2XoHuzstK7idKVR
+         R8Pm+Xh6YMDCqpioyWdh5M6s3PsTvb5elDpKD8fLk237eqT7mkvxRuADM7KBkvzKpyKz
+         LfFTkF9lApa4AlDLnGsWenaz4qM5+25Ax/dvx4wr9DwL03dfCUU0lnXy5W36XCMZetn9
+         ryn4FKvSBBWCqW68drsGMrNFS0S6OCtON/inCHi2/l0B3Dn41f+GyK09Br3pbVJoS2P3
+         fvbA==
+X-Gm-Message-State: AOAM5304KamrZzF+vN52JfaoFlTGWcFUVqjBHwcjGYV0MX87B9rRx5S6
+        mu5fizcpl/tLuuaB/DyJ0nEeI32YRzv8di88bkHBeDhj1q0=
+X-Google-Smtp-Source: ABdhPJzs4KX/niW7nAMdLSKD7XWJujp8iQkTOHNRORsm+Nj4X9Y+Ewklmo117YMhOKdLkLnYE+6pJLP27AJ6rV4PvUc=
+X-Received: by 2002:ae9:df47:: with SMTP id t68mr14541475qkf.438.1607682159614;
+ Fri, 11 Dec 2020 02:22:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201210063905.75727-10-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <e5f7fe3ad3a612efeda53f016904aff332db6f8a.1607610739.git.josef@toxicpanda.com>
+In-Reply-To: <e5f7fe3ad3a612efeda53f016904aff332db6f8a.1607610739.git.josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 11 Dec 2020 10:22:28 +0000
+Message-ID: <CAL3q7H56AvqWuA8gJsUdnz=QLg-yUTS6RbdZJVU4+EbnPFK_bQ@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: fix possible free space tree corruption with
+ online conversion
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Dec 11, 2020 at 8:56 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> While running btrfs/011 in a loop I would often ASSERT() while trying to
+> add a new free space entry that already existed, or get an -EEXIST while
+> adding a new block to the extent tree, which is another indication of
+> double allocation.
+>
+> This occurs because when we do the free space tree population, we create
+> the new root and then populate the tree and commit the transaction.
+> The problem is when you create a new root, the root node and commit root
+> node are the same.  This means that caching a block group before the
+> transaction is committed can race with other operations modifying the
+> free space tree, and thus you can get double adds and other sort of
+> shenanigans.  This is only a problem for the first transaction, once
+> we've committed the transaction we created the free space tree in we're
+> OK to use the free space tree to cache block groups.
+>
+> Fix this by marking the fs_info as unsafe to load the free space tree,
+> and fall back on the old slow method.  We could be smarter than this,
+> for example caching the block group while we're populating the free
+> space tree, but since this is a serious problem I've opted for the
+> simplest solution.
+>
+> cc: stable@vger.kernel.org
+> Fixes: a5ed91828518 ("Btrfs: implement the free space B-tree")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
+Looks good, but the explanation you gave in the reply to Nikolay's
+comment makes it easier to realize how the problem happens.
+I think it should be mentioned, in the changelog, that the operations
+that can concurrently modify the free space tree are the insertions
+from running delayed references.
 
-On 10.12.20 г. 8:38 ч., Qu Wenruo wrote:
-> This patch introduce the following functions to handle btrfs subpage
-> uptodate status:
-> - btrfs_subpage_set_uptodate()
-> - btrfs_subpage_clear_uptodate()
-> - btrfs_subpage_test_uptodate()
->   Those helpers can only be called when the range is ensured to be
->   inside the page.
-> 
-> - btrfs_page_set_uptodate()
-> - btrfs_page_clear_uptodate()
-> - btrfs_page_test_uptodate()
->   Those helpers can handle both regular sector size and subpage without
->   problem.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Anyway,
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
 > ---
->  fs/btrfs/subpage.h | 98 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 98 insertions(+)
-> 
-> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-> index 87b4e028ae18..b3cf9171ec98 100644
-> --- a/fs/btrfs/subpage.h
-> +++ b/fs/btrfs/subpage.h
-> @@ -23,6 +23,7 @@
->  struct btrfs_subpage {
->  	/* Common members for both data and metadata pages */
->  	spinlock_t lock;
-> +	u16 uptodate_bitmap;
->  	union {
->  		/* Structures only used by metadata */
->  		struct {
-> @@ -35,6 +36,17 @@ struct btrfs_subpage {
->  int btrfs_attach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
->  void btrfs_detach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
->  
-> +static inline void btrfs_subpage_clamp_range(struct page *page,
-> +					     u64 *start, u32 *len)
-> +{
-> +	u64 orig_start = *start;
-> +	u32 orig_len = *len;
+>  fs/btrfs/block-group.c     | 11 ++++++++++-
+>  fs/btrfs/ctree.h           |  3 +++
+>  fs/btrfs/free-space-tree.c | 10 +++++++++-
+>  3 files changed, 22 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 52f2198d44c9..b8bbdd95743e 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -673,7 +673,16 @@ static noinline void caching_thread(struct btrfs_wor=
+k *work)
+>                 wake_up(&caching_ctl->wait);
+>         }
+>
+> -       if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
+> +       /*
+> +        * If we are in the transaction that populated the free space tre=
+e we
+> +        * can't actually cache from the free space tree as our commit ro=
+ot and
+> +        * real root are the same, so we could change the contents of the=
+ blocks
+> +        * while caching.  Instead do the slow caching in this case, and =
+after
+> +        * the transaction has committed we will be safe.
+> +        */
+> +       if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
+> +           !(test_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
+> +                      &fs_info->flags)))
+>                 ret =3D load_free_space_tree(caching_ctl);
+>         else
+>                 ret =3D load_extent_tree_free(caching_ctl);
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 3935d297d198..4a60d81da5cb 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -562,6 +562,9 @@ enum {
+>
+>         /* Indicate that we need to cleanup space cache v1 */
+>         BTRFS_FS_CLEANUP_SPACE_CACHE_V1,
 > +
-> +	*start = max_t(u64, page_offset(page), orig_start);
-> +	*len = min_t(u64, page_offset(page) + PAGE_SIZE,
-> +		     orig_start + orig_len) - *start;
-> +}
-
-This handles EB's which span pages, right? If so - a comment is in order
-since there is no design document specifying whether eb can or cannot
-span multiple pages.
-
-> +
+> +       /* Indicate that we can't trust the free space tree for caching y=
+et. */
+> +       BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
+>  };
+>
 >  /*
->   * Convert the [start, start + len) range into a u16 bitmap
->   *
-> @@ -96,4 +108,90 @@ static inline bool btrfs_subpage_clear_and_test_tree_block(
->  	return last;
->  }
->  
-> +static inline void btrfs_subpage_set_uptodate(struct btrfs_fs_info *fs_info,
-> +			struct page *page, u64 start, u32 len)
-> +{
-> +	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-> +	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&subpage->lock, flags);
-> +	subpage->uptodate_bitmap |= tmp;
-> +	if (subpage->uptodate_bitmap == (u16)-1)
+> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+> index e33a65bd9a0c..a33bca94d133 100644
+> --- a/fs/btrfs/free-space-tree.c
+> +++ b/fs/btrfs/free-space-tree.c
+> @@ -1150,6 +1150,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_in=
+fo *fs_info)
+>                 return PTR_ERR(trans);
+>
+>         set_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+> +       set_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+>         free_space_root =3D btrfs_create_tree(trans,
+>                                             BTRFS_FREE_SPACE_TREE_OBJECTI=
+D);
+>         if (IS_ERR(free_space_root)) {
+> @@ -1171,11 +1172,18 @@ int btrfs_create_free_space_tree(struct btrfs_fs_=
+info *fs_info)
+>         btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
+>         btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
+>         clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+> +       ret =3D btrfs_commit_transaction(trans);
+>
+> -       return btrfs_commit_transaction(trans);
+> +       /*
+> +        * Now that we've committed the transaction any reading of our co=
+mmit
+> +        * root will be safe, so we can cache from the free space tree no=
+w.
+> +        */
+> +       clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+> +       return ret;
+>
+>  abort:
+>         clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
+> +       clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+>         btrfs_abort_transaction(trans, ret);
+>         btrfs_end_transaction(trans);
+>         return ret;
+> --
+> 2.26.2
+>
 
-just use U16_MAX instead of (u16)-1.
 
-> +		SetPageUptodate(page);
-> +	spin_unlock_irqrestore(&subpage->lock, flags);
-> +}
-> +
-> +static inline void btrfs_subpage_clear_uptodate(struct btrfs_fs_info *fs_info,
-> +			struct page *page, u64 start, u32 len)
-> +{
-> +	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-> +	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&subpage->lock, flags);
-> +	subpage->tree_block_bitmap &= ~tmp;
+--=20
+Filipe David Manana,
 
-I  guess you meant to clear uptodate_bitmap and not tree_block_bitmap ?
-
-> +	ClearPageUptodate(page);
-> +	spin_unlock_irqrestore(&subpage->lock, flags);
-> +}
-> +
-
-<snip>
-
-> +DECLARE_BTRFS_SUBPAGE_TEST_OP(uptodate);
-> +
-> +/*
-> + * Note that, in selftest, especially extent-io-tests, we can have empty
-> + * fs_info passed in.
-> + * Thanfully in selftest, we only test sectorsize == PAGE_SIZE cases so far
-
-nit:s/Thankfully/Thankfully
-
-> + * thus we can fall back to regular sectorsize branch.
-> + */
-
-<snip>
-
-> 
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
