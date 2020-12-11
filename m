@@ -2,162 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4927E2D74D9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 12:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C492D7519
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Dec 2020 12:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394933AbgLKLm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Dec 2020 06:42:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52174 "EHLO mx2.suse.de"
+        id S2405276AbgLKL54 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Dec 2020 06:57:56 -0500
+Received: from mout.gmx.net ([212.227.15.15]:49879 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394940AbgLKLmq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Dec 2020 06:42:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607686919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=DWyHHg8CviqVMwDPbG2mDvbx3r5z956rPCTXzz9hQTk=;
-        b=jOLZevivdhVYL66iRVo+NuTnbqVotQgMYNrRmlQlUybcU3svJ/v2RsOoOf6MqY4AXKMlVt
-        q9crKdKPs6De4YLJRPdAGZJg6hpyrGTFKfEuVCuqT4TlUeGV3SHauA5HngBjQwlHFouCkZ
-        tCq/TPBBSDoQDzNHgG/QNwdbWhPGJj0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B0EE6AC94;
-        Fri, 11 Dec 2020 11:41:59 +0000 (UTC)
+        id S1727448AbgLKL5q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Dec 2020 06:57:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1607687769;
+        bh=hRJsWivX3lu/09GO8DcnXJ44eyMwFMf6Xi4tAHWiuq0=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=hdGbCBJwwNSI8m7uW5eV+Y+2ZifNmAvcmDc2j5xOmC483rqhIhDwwmVdziphJ/jyS
+         1yOaot1AIvwfZgWVuXT6/ucpRFKy8JY/T9V7U9PAyZj3xOHvOWhvALBwYmqYoNKrxn
+         OouTNdh+gKWUuzdcHFaCXTn6xw6xApxEM73KI1hQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZTqW-1kazAW39E6-00WWm7; Fri, 11
+ Dec 2020 12:56:09 +0100
 Subject: Re: [PATCH v2 09/18] btrfs: subpage: introduce helper for subpage
  uptodate status
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20201210063905.75727-1-wqu@suse.com>
  <20201210063905.75727-10-wqu@suse.com>
  <40aaa304-cf64-806f-e2d0-8bb02b32abdf@suse.com>
  <4ae159e0-25fd-285d-7ec5-5554862c85f1@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <7e2aee0c-09f9-7555-c77b-707625ea5cf5@suse.com>
-Date:   Fri, 11 Dec 2020 13:41:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <7e2aee0c-09f9-7555-c77b-707625ea5cf5@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <c57f328b-770e-900e-5db5-78f61b91c289@gmx.com>
+Date:   Fri, 11 Dec 2020 19:56:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <4ae159e0-25fd-285d-7ec5-5554862c85f1@gmx.com>
+In-Reply-To: <7e2aee0c-09f9-7555-c77b-707625ea5cf5@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uH75c7jOtxQ7lm8Pt0H7Vme5QjmLzrKJMi6ocRZ0AvmOII1mENk
+ LH7zEhBF3sFdvXvvx22AKCWk3Y5n8ZHLEDGeZ9J6Eyq2YC2jJKLEjfiYLQQI8butKA4ROqf
+ 6iVMYFeirp8AetSpTKSjyjmEpnrYg5zhgDvf/zvzVz74Ge+JxTWFs5gak3fslVeQ8y1mIKn
+ 3PN7IK1aEcnTKg0fVRGPQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/Xm7NrtGIq4=:8wrcjwosh30pFOHaVghFyA
+ 9ry+/z8Mu934IEAKKVCFlyvS7kgifBmp+ARNI4Hwj+azn6UwKmeQ/OR12wPqVoi0Qeyp58J9K
+ fd1OZkYmA07BBOdAf1AvfTqx+kIYH6Fp7/SyE43Gh1SAOBL+X09lK5ygYlz750QrXffOLQfvb
+ cS2TKslTVCeU5W9cjDLsA6ClvmEU9f3s0PtL4MLjo+n9I6vLz6Ahnn4EG67YzPRjyZJKsPztr
+ quMIOcV/eq4BEPOhkfzWgEZZi/4WHN5ztX6iFfQCLaUDhQRtiIoAFqESEIsDBPj+iIhkJhq7q
+ YGte5Q8PZbsWsSFVKwwBhDxfY7TLJOqR5Djuk9Dvd23GAIf9mTiy0CDSzQ18a+2vfgZCSUct9
+ w2lcO6iLaTg7fJlaO1ANiJNybayJ/P/X850X3Jqw46cQbz7wvUimMU1Ni48kDNzKiyvpjntXH
+ Yqo71hDMHKkWzmSAo5rB3gVr5nFZ75oPrig4nfU5ND8yf4YrsyuqfbPnN56AN8Wb+n3sV88cQ
+ jQfH6qv1xOwPGx5KQgskQv+0fzazmrEvJ2OI2LnqkIN6vdW98TNrVwVZKqo4WiEtOrG2bDgAh
+ xlOlAXbN2KUZ4zxfQBwhwTA3EFu8BbES/Q99d6vaFALoba0l2mGJTzqXSZPaBh02uVImqrwEF
+ OdWmpCyg1zDCv64+98zaDf92FTKlHzXl7wxiz2lOwa4x9MaTpowDgwDiPaJXzx+QXnwZocaP1
+ 24587A9DAc9ZHTjjJVpul0IsYK2d5jxnJdvpX9Eu0Gj8v1UUM6uaDqiznjokvqUWNNiLDzzFY
+ 0rGo0zm0JcTsQ6hHP1Y7WkOE1qKrM8yQcdwUtZ625V0N0DdtcgS7spzsUwe0m1xNoiacXZp7S
+ nMWuIvuYMqOMz6Y4445g==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 11.12.20 г. 12:48 ч., Qu Wenruo wrote:
-> 
-> 
-> On 2020/12/11 下午6:10, Nikolay Borisov wrote:
+On 2020/12/11 =E4=B8=8B=E5=8D=887:41, Nikolay Borisov wrote:
+>
+>
+> On 11.12.20 =D0=B3. 12:48 =D1=87., Qu Wenruo wrote:
 >>
 >>
->> On 10.12.20 г. 8:38 ч., Qu Wenruo wrote:
->>> This patch introduce the following functions to handle btrfs subpage
->>> uptodate status:
->>> - btrfs_subpage_set_uptodate()
->>> - btrfs_subpage_clear_uptodate()
->>> - btrfs_subpage_test_uptodate()
->>>   Those helpers can only be called when the range is ensured to be
->>>   inside the page.
+>> On 2020/12/11 =E4=B8=8B=E5=8D=886:10, Nikolay Borisov wrote:
 >>>
->>> - btrfs_page_set_uptodate()
->>> - btrfs_page_clear_uptodate()
->>> - btrfs_page_test_uptodate()
->>>   Those helpers can handle both regular sector size and subpage without
->>>   problem.
 >>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>> ---
->>>  fs/btrfs/subpage.h | 98 ++++++++++++++++++++++++++++++++++++++++++++++
->>>  1 file changed, 98 insertions(+)
+>>> On 10.12.20 =D0=B3. 8:38 =D1=87., Qu Wenruo wrote:
+>>>> This patch introduce the following functions to handle btrfs subpage
+>>>> uptodate status:
+>>>> - btrfs_subpage_set_uptodate()
+>>>> - btrfs_subpage_clear_uptodate()
+>>>> - btrfs_subpage_test_uptodate()
+>>>>   Those helpers can only be called when the range is ensured to be
+>>>>   inside the page.
+>>>>
+>>>> - btrfs_page_set_uptodate()
+>>>> - btrfs_page_clear_uptodate()
+>>>> - btrfs_page_test_uptodate()
+>>>>   Those helpers can handle both regular sector size and subpage witho=
+ut
+>>>>   problem.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>>  fs/btrfs/subpage.h | 98 ++++++++++++++++++++++++++++++++++++++++++++=
+++
+>>>>  1 file changed, 98 insertions(+)
+>>>>
+>>>> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+>>>> index 87b4e028ae18..b3cf9171ec98 100644
+>>>> --- a/fs/btrfs/subpage.h
+>>>> +++ b/fs/btrfs/subpage.h
+>>>> @@ -23,6 +23,7 @@
+>>>>  struct btrfs_subpage {
+>>>>  	/* Common members for both data and metadata pages */
+>>>>  	spinlock_t lock;
+>>>> +	u16 uptodate_bitmap;
+>>>>  	union {
+>>>>  		/* Structures only used by metadata */
+>>>>  		struct {
+>>>> @@ -35,6 +36,17 @@ struct btrfs_subpage {
+>>>>  int btrfs_attach_subpage(struct btrfs_fs_info *fs_info, struct page =
+*page);
+>>>>  void btrfs_detach_subpage(struct btrfs_fs_info *fs_info, struct page=
+ *page);
+>>>>
+>>>> +static inline void btrfs_subpage_clamp_range(struct page *page,
+>>>> +					     u64 *start, u32 *len)
+>>>> +{
+>>>> +	u64 orig_start =3D *start;
+>>>> +	u32 orig_len =3D *len;
+>>>> +
+>>>> +	*start =3D max_t(u64, page_offset(page), orig_start);
+>>>> +	*len =3D min_t(u64, page_offset(page) + PAGE_SIZE,
+>>>> +		     orig_start + orig_len) - *start;
+>>>> +}
 >>>
->>> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
->>> index 87b4e028ae18..b3cf9171ec98 100644
->>> --- a/fs/btrfs/subpage.h
->>> +++ b/fs/btrfs/subpage.h
->>> @@ -23,6 +23,7 @@
->>>  struct btrfs_subpage {
->>>  	/* Common members for both data and metadata pages */
->>>  	spinlock_t lock;
->>> +	u16 uptodate_bitmap;
->>>  	union {
->>>  		/* Structures only used by metadata */
->>>  		struct {
->>> @@ -35,6 +36,17 @@ struct btrfs_subpage {
->>>  int btrfs_attach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
->>>  void btrfs_detach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
->>>
->>> +static inline void btrfs_subpage_clamp_range(struct page *page,
->>> +					     u64 *start, u32 *len)
->>> +{
->>> +	u64 orig_start = *start;
->>> +	u32 orig_len = *len;
->>> +
->>> +	*start = max_t(u64, page_offset(page), orig_start);
->>> +	*len = min_t(u64, page_offset(page) + PAGE_SIZE,
->>> +		     orig_start + orig_len) - *start;
->>> +}
+>>> This handles EB's which span pages, right? If so - a comment is in ord=
+er
+>>> since there is no design document specifying whether eb can or cannot
+>>> span multiple pages.
 >>
->> This handles EB's which span pages, right? If so - a comment is in order
->> since there is no design document specifying whether eb can or cannot
->> span multiple pages.
-> 
-> Didn't I have already stated that in the subpage eb accessors patch?
-> 
-> No subpage eb can across page bounday.
-> 
+>> Didn't I have already stated that in the subpage eb accessors patch?
+>>
+>> No subpage eb can across page bounday.
+>>
+>
+> As just discussed during the whiteboard session this function is really
+> dead code for eb's because they are guaranteed to not span pages. Even
+> for RW support it seems there is only btrfs_dirty_pages which changes
+> page flags without having clamped the data i.e. there's only 1
+> exception. In light of this I think it would be better to replace this
+> function with ASSERTS and handle the only exception at the call site.
 
-As just discussed during the whiteboard session this function is really
-dead code for eb's because they are guaranteed to not span pages. Even
-for RW support it seems there is only btrfs_dirty_pages which changes
-page flags without having clamped the data i.e. there's only 1
-exception. In light of this I think it would be better to replace this
-function with ASSERTS and handle the only exception at the call site.
+You're completely right.
 
+I'll definite change these in next update.
 
-<snip>
+Thanks,
+Qu
+>
+>
+> <snip>
+>
