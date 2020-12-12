@@ -2,103 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EFE2D88A2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Dec 2020 18:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A092D8A3A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Dec 2020 22:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407640AbgLLRau (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Dec 2020 12:30:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S2407976AbgLLVxu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Dec 2020 16:53:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726230AbgLLRak (ORCPT
+        with ESMTP id S1725822AbgLLVxu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Dec 2020 12:30:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F30C0613CF;
-        Sat, 12 Dec 2020 09:29:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OS3WrB4ugpp1U/aXEmCX3ul3flmQslrlc4KkVZvbGZg=; b=EXmO+rQ0GyMYewmeVqsVxUEeQP
-        gpCAq5CzMPaK7QNb2aHIaQGMqVK4u0GvMCFCKXISPdeKE0T2oJRgsn47/LIByR4IdqRiGI47snIwR
-        FVagUbAnrOvRIrzTdSjI+8MJkYRBnoS1LDvOc5GTbVhSuByBd5st374mkzApcbKteaXOiMusRw+H6
-        U/XnQ4s6ELZ7SLGPtTwomKyBtinZlQX2wsnO3aetNEfWfCtoIdhPnpzrMZnOwlK+O760mW5Lvnve3
-        V1Khqe0pu2p4juqZnRrA1lIu/sUam7A1o4/Fwm3Mpvj7I31/CFuQa7ppyK8Nnc5bMYkRjIlksrvwI
-        gHmsVcQw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ko8iT-0003a2-Qm; Sat, 12 Dec 2020 17:29:57 +0000
-Date:   Sat, 12 Dec 2020 17:29:57 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
-Subject: Re: [LSFMMBPF 2021] A status update
-Message-ID: <20201212172957.GE2443@casper.infradead.org>
-References: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
+        Sat, 12 Dec 2020 16:53:50 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F307BC0613CF
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Dec 2020 13:53:09 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id v14so10506780wml.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Dec 2020 13:53:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tQKxROwdZ4hWiVl9QIpyjsbDekc/drOnqB8ZDshaIn0=;
+        b=NSQhE7vIWbY2j8shsc4I5UlWqoySTveuzQo14OGHDMhvL2LKJApOBGWPqZ+yiuMovL
+         BnhaT629qEsWXoq9uRvbwKuJ8OoHySkedZdMu1Z0sPjLWQrVGnuB8XPKFlYwZaKd74No
+         d1SPK6+pCbf0yQILv3d9SjgBiaJnO3YbMbQDU+RK+Z4WtS4bFjYFGBotIJTkaoDKuSn/
+         F/gBAVlvHb/2j5bNuNtPMv+Nw/zUZBTp7aN7LokqaBJJIqUcTofXZVX2VuSn8WQNYbsj
+         g0VniZpnn44VJCUb904CIgaKEvoh4pbePN9nuGMT8ta5Be7ya8vqCPXqnMNYkYvrJSgW
+         zciQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tQKxROwdZ4hWiVl9QIpyjsbDekc/drOnqB8ZDshaIn0=;
+        b=Z3HORyyorWTsF1p+soE2poicCV4jszOhsx7CSCK5SNtw0fmQVW+KSupVhr9MquoVll
+         VbaUmggZCgOlL89Z0JSsQUf9xLS64QAzXWluVPXv+Psi1uKr/V9fv2pJQaThBdHrT79N
+         kUt6QEJdyBXUthOAkEFH9VtBtXs5kp6xK479IqNpwXS3LimyGqnKDGN6RCAkrAAdywjt
+         0qqM3iiwoCdfoTWz1ZVwJ9QX3RgBrqyx5VKpUa6wpPbhk+VfyDf7hSIW8CzJ1LubIoxJ
+         OwsLQblVpRah1KwnXur+SRDNFdpbsgpnNb9fsiR+6uWNsVQ5rquFrENPtrnXf+EZ5vIW
+         mKmQ==
+X-Gm-Message-State: AOAM531zhoLNoiZSj1KNF5+WT+t3H1ImOP86AK4I04Xc10Rd1i8SKWRR
+        RKFxJ12CsaokmVMdeGE2BZ/0V4F6iGyoJ2CumnUwlSzF23LV1g==
+X-Google-Smtp-Source: ABdhPJyRLBqa0+3G4qOSPHEka0nPJSB8GYQApO0WEdvTgFl1ky6Cs8Tlm4Q1BA8MrPO5hWqNVQov0Ext8cBCcdMzCFQ=
+X-Received: by 2002:a05:600c:2188:: with SMTP id e8mr20554475wme.182.1607809987367;
+ Sat, 12 Dec 2020 13:53:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
+References: <CAMaziXsqG-z029cCTd1BBn6HTm2EDLxsSocSOVs1s5RoK_Q0aQ@mail.gmail.com>
+ <CAJCQCtT+sfHjhKn4a+GdT5ktxzuRooxffuoK5M5T8mMbM6o4Bw@mail.gmail.com> <CAMaziXtPXvKS=FETe1pU7YecY8Tsxdf5k1Auretd0bFn6mLOag@mail.gmail.com>
+In-Reply-To: <CAMaziXtPXvKS=FETe1pU7YecY8Tsxdf5k1Auretd0bFn6mLOag@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 12 Dec 2020 14:52:51 -0700
+Message-ID: <CAJCQCtTHiN7dFMeHQh7hhFze9BDcY=042XQ-0ENh3DzMxsQ1pQ@mail.gmail.com>
+Subject: Re: btrfs swapfile - Not enough swap space for hibernation.
+To:     Community support for Fedora users <users@lists.fedoraproject.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 10:48:53AM -0500, Josef Bacik wrote:
-> We on the program committee hope everybody has been able to stay safe and
-> healthy during this challenging time, and look forward to being able to see
-> all of you in person again when it is safe.
-> 
-> The current plans for LSFMMBPF 2021 are to schedule an in person conference
-> in H2 (after June) of 2021.  The tentative plan is to use the same hotel
-> that we had planned to use for 2020, as we still have contracts with them.
-> However clearly that is not set in stone.  The Linux Foundation has done a
-> wonderful job of working with us to formulate a plan and figure out the
-> logistics that will work the best for everybody, I really can't thank them
-> enough for their help.
+On Fri, Dec 11, 2020 at 7:02 AM Sreyan Chakravarty <sreyan32@gmail.com> wrote:
+>
+> The only reason I can fathom is that systemd-logind is unable to
+> access the directory /var/swap. IIRC, you were the one who suggested I
+> mount in that directory.
+>
+> Not blaming you, but the question is what do I do now ?
 
-Thank you all for doing your best in the face of this disruption.  I
-really appreciate all the work you're putting in, and I can't wait to
-see you all again in person.
+Well, what I recommended is a swap partition to avoid all of these
+limitations and questions. If you're going to use swap on Btrfs then
+you're kinda in the same boat as the rest of us who are trying to
+address each limit. This is why it's not the default and why I haven't
+written up anything yet.
 
-I hosted a Zoom call yesterday on the topic of Page Folios, and uploaded
-the video.  There was interest expressed in the call on doing a follow-up
-call on the topic of GUP (get_user_pages and friends).  It would probably
-also be good to have meetings on other topics.
+My expectation is that swapfiles on btrfs need a helper service of
+some sort, in order for it to be generally usable.
 
-I don't want this to be seen in any way as taking away from LSFMMBPF.
-I see Zoom calls as an interim solution to not having face-to-face
-meetings.
+> The bug that you have linked to is about /home not /var.
 
-I'd like to solicit feedback from this group on:
+It's a reference for a similar problem, not an identical problem, with
+a how to enable debug for logind.
 
- - Time of day.  There is no good time that suits everyone around
-   the world.  With developers in basically every inhabited time zone, the
-   call will definitely take place in the middle of somebody's night, and
-   during somebody else's normal family time.  Publishing the recordings
-   helps ameliorate some of this, but I feel we should shift the time
-   around.  Having it at the same time of day helps people fit it into
-   their schedule of other meetings (and meals), but I think the benefits
-   of allowing more people to participate live outweighs the costs.
- - Schedule.  Friday's probably a bad day to have it, as it ends up
-   being Saturday for some people.  It can move around the week too.
-   Also, probably wise to not have it over Christmas as most developers
-   have that period as family time.
- - Topics.  I'm sure there's no shortage of things to discuss!  I'm
-   happy to organise meetings for people even on topics I have no direct
-   interest in.
+> So where should I keep the swap for logind to access it without any problems ?
 
-And most urgently, when should we have the GUP meeting?  On the call,
-I suggested Friday the 8th of January, but I'm happy to set something
-up for next week if we'd like to talk more urgently.  Please propose a
-date & time.  I know we have people in Portugal and Nova Scotia who need
-to be involved live, so a time friendly to UTC+0 and UTC-4 would be good.
+You are in adventure land. So you're going on an adventure. If you
+want it to just work, use a swap partition.
 
-Thanks!
+
+> I don't think that is possible since the file was created with dd, not
+> fallocate.
+
+Why? I've mentioned fallocate several times, and also man 5 btrfs
+several times, and there it recommends fallocate. Nowhere is dd
+suggested. It may not work with dd depending on the dd exact dd
+command used.
+
+
+-- 
+Chris Murphy
