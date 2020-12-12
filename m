@@ -2,28 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712152D83DC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Dec 2020 02:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126772D84EC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Dec 2020 06:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406860AbgLLBat (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Dec 2020 20:30:49 -0500
-Received: from mout.gmx.net ([212.227.15.15]:34223 "EHLO mout.gmx.net"
+        id S1732468AbgLLFqZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Dec 2020 00:46:25 -0500
+Received: from mout.gmx.net ([212.227.17.22]:38461 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406542AbgLLBaO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Dec 2020 20:30:14 -0500
+        id S1731406AbgLLFqW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 12 Dec 2020 00:46:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1607736516;
-        bh=lKqX6Ow6ek7h1JAZs5R7ZQ+mAatI5ieRXosLzPrRBuk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Q8McJfD3545d7mCdNhCh2yKGirwvFQI3AZWYFmtPgubDLIkZyb5gjKvMiyGH//I3S
-         gpE8C7IH+ZZlHu7y8DyUHXPVI6DpQmLdXh6+GeFUvsxDLCzr0lLcnqGifv03cEgEAa
-         Qj5v50KmnV+1peiihvbFvIaTsfTonCAz5Fn6VcVY=
+        s=badeba3b8450; t=1607751889;
+        bh=FZM/d0ciLpG4c+L7bL/RwgdRFiJbIdqCEqj0n5tSIb0=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=WH+iDo46GmlZ3KDQRcxBSl8rR0ZtNsvj3hQ9QQl3c40o9A51b00LxMcED4Zt/OhtA
+         drG7uTTXO1f9AV+0VTDt+LdUc/LP4ubjp5vAWDphNlaZ3v9T5Z74UW9OaeLL5+RGSG
+         CdCJpQCoeNed9CMlqDsLGnb5XbAuPnQifM5wz2ZA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MacOW-1kHa251DMA-00c5ZW; Sat, 12
- Dec 2020 02:28:35 +0100
-Subject: Re: [PATCH v2 12/18] btrfs: extent_io: implement
- try_release_extent_buffer() for subpage metadata support
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpUUm-1kKPj20v3U-00ptGA; Sat, 12
+ Dec 2020 06:44:49 +0100
 To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20201210063905.75727-1-wqu@suse.com>
@@ -32,8 +30,10 @@ References: <20201210063905.75727-1-wqu@suse.com>
  <a2732cae-4dea-744e-2eda-8b8e5f2b6710@suse.com>
  <047a66b1-5804-ac05-26ac-4eaf71f5c4df@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <00601760-4e7d-935a-e2bb-056593ff5a39@gmx.com>
-Date:   Sat, 12 Dec 2020 09:28:31 +0800
+Subject: Re: [PATCH v2 12/18] btrfs: extent_io: implement
+ try_release_extent_buffer() for subpage metadata support
+Message-ID: <dabe26b4-1ab9-04b7-26ed-ac7f186e5d3b@gmx.com>
+Date:   Sat, 12 Dec 2020 13:44:44 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
@@ -41,25 +41,25 @@ In-Reply-To: <047a66b1-5804-ac05-26ac-4eaf71f5c4df@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Y8xm/Rx8Pn0laUJSa/N1jOP3iWZjziY2zXxOeGNQI0/hOeT++cx
- vVf+vlogLM+dQiv2kKK6eVDEXTCeXdkHuECu9xrqsiPwJWTUOygjb4HDXiuzHJTP2JxRGk7
- 0R/9QaYdMGW5ujzBhsdsalUpAy1F4gL54IrQDlCxKOcW5R8tsqXUAzx7uiOuaEh8koOi1gm
- jo1E7DeHpJeivU705Ktvg==
+X-Provags-ID: V03:K1:VIsAfFa2qSh4MHrl1Zereli2jzby7BskwsBjvPdG8s1mwT30OWg
+ RPFDUcxswLZv0eQLnH+AOKNc1BSI0iL13tr28tPMjdPR9lcZtv3D71xbc+8F2Vzoo2QzKxt
+ R0QJv+TLNyw+r1Sy4xh1SMyYzZAc9LBLk27pHRtbbqKEJ7fq3oIBDh1vQYxqBv5JdcWGFyg
+ 4N6fjZZsVG81gg8nFXbRA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5CqD1vl7/pg=:0xCzOCRcXLNMjO8DeF0gdY
- xQFLy0PXOZe8UMkRm5f4ZEHeLv3ndM4A42ZTeM6PpvoE+pQevH7K6CePHBKwBw9rYRk3TjFKw
- lAGFkjpHMVYc46FWf9SFKYIOqEmTl+KikYloBKjnAYh8DaAgetIrtsy+cUf7UFYf7Idssfcp9
- 8qztSGpwv4x7nd0A+k1xMiIoB0uXysq2cjuAr67pRx8SKngpskW3Q9BM1h0q7t9Z3pxnnyvf9
- gs/P8vM74nu4sLP1NaHINso1BaJ/Y5aNQX4Yhz1iQzEA4xpVhmVawrhPq7nuxk0qqeXJ3pSu9
- llB/LSGNny+GmlgO6xreEbF8zVV3pf8PV6htcG3vO+VdIeUHPlF2iz112q3l+3q4CDIp5y5VU
- Zh8jUFFMMBo020X4J05K0atKnZqcIBFiCqg4yjWc2GLx7AyJN/SM3I86Vl70tWG2YPLKkfddd
- 2MeAcrAt2wFyZji2ukqrdc8LzUsL1NDuzWd96ARHl3v8SF67DsOfvlEBc4AO6oWE1/fjtHkBj
- B/kSQ9QnDEQdQqSpl5WCDL2F+pqVEp6m/195kyVtLai7Ma92WWmvRksiKueAOlyfifQPfZF7i
- EcM1qHWVzRkaeKRv10QpCAL1I3JA9J3VCiKbnw+Jm4IsIk0vi2X0y8fiXoDnk+FSQQhVZTw4b
- uqtySF71cyDS3yDSqveKbL3PMqDokUkNzBrRY4TaIVlxHgzGNIxysE5Xmb5D6uRtld7nUNacb
- z1/BaZxPR4n2XMHhKIFrOiilijGPepj5m7bgrfgz12w/C9dvJYaSr+BpP9ccyncEmUfkQsl5i
- k51IPiJTwRUpD/8oHYs97PR595djJ7exRdHaRejg+kSTf1LfjPXw7K4yHh1nlZ33AnS6gXDcz
- bg+AVE3A4fcVRx1oy8tQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cLcilElhn1E=:j+U/6Xenp8P5whu21kNmsZ
+ viOuzqADv5Z/Xv14Y4bRh0j1oU+jvEWr88eHKyEuRj1CygMqwI7wdc4s/4Q3RN4fg76Ps+8gg
+ 4ZiLIk8DS4hnEMKHz8KFayAY0H2lxrlXwPTwhMyHbzXuiuG+60aZbRDiKyJr0HZ4feHiP4cJy
+ mxJZ8f9qr4LAqsV//CFK1TQOTMYFE24AzCvcMs6fIZsmsKMYENJOH6QPUCtIfmNKQOZGJZGOy
+ WkdKGCT9A4zhIUtx3vJXSUleyHpg6tAZbEYGwGOXVaIwvIMcsLGGAjUtYF9kOrp+Y5vgj17wD
+ Ddw2bKSkIv7nHT58CaSizswnF+4+e+8fJWWPco0BgEe64Fzev93KQXnu2BfwwA7WEBYS0xrL9
+ KzgVfgXOYcmgQqlVn4xIuRsIS7C9EMcEy99272DhXD8qjaw0MBY55LC7gi29hSkNaUkwEta0W
+ 9ktsB1K6piEwGslwDIqqeBmFuDAO0Wzf2yNDdB3GvwvjBYTy50r8bjHj9Xw12qJAB1sFGLON2
+ KG9lCsAQTp49fgr5OmVh0tuzKhdfflO6OjxVvRI2MFmbQsTJQkeYvCwRFWHIbl3PbgeNATggf
+ LPcsyKRrwqFcnv0PnW4urY/EIzQXykxyqpJntzu5K1+bGPRD7lYqggOhe53+C0An/t0HKw/UO
+ C2okBqYASIp0fgLvQ7yudc8CIYAFw7vbCrhvAierVF/FHe07gqVVhbTmpbToEd9VDFleL1Iu5
+ 0KvaYmmnACVvRIe80/7AxaUUs2s5bfoJ3RpEGJub503U3eafJa81nU0mz2/UIsP/JbTAnsW//
+ YXdUEXRRKM55lHufkdtffANB+6WjsCy+mz5zNjlOOeh4ME/7Z/f6IbiyAMPDRRfRp5Toegrrb
+ pdYd6edTomYqdufsA8RA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -166,18 +166,6 @@ s.
 > x|x|x|x|x|0|0|0|x|x| x|x |0 | 0|0 |0
 >
 > Am I missing something?
-
-It's not for partly freed eb, but nodesize unaligned eb.
-
-E.g. if we have a eb starts at sector 1 of a page, your nodesize based
-iteration would go crazy.
-Although we have ensured no subpage eb can cross page boundary, but it's
-not the same requirement for nodesize alignment.
-
-Thus I uses the extra safe way for the empty bit.
-
-Thanks,
-Qu
 >
 >
 >
@@ -231,19 +219,58 @@ Qu
 > you get a reference to the EB and you do not increment the ref count
 > WHILE holding the RCU critical section, consult find_extent_buffer
 > what's the correct usage pattern.
+
+Nope, you just fall into the trap what I fell before.
+
+Here if the eb has no other referencer, its refs is just 1 (because it's
+still in the tree).
+
+If you go increase the refs, the eb becomes referenced again and
+release_extent_buffer() won't free it at all.
+
+Causing no eb to be freed whatever.
+
 >
 > Frankly the locking in this function is insane, first mapping->private
 > lock is acquired to check if Page_private is set and then page->private
-> is referenced but that is not signalled at all. Then subpage->lock is
+> is referenced but that is not signalled at all.
+
+Because we just want the page::private pointer.
+
+We won't touch page::private until we're really going to detach/attach.
+But detach/attach will also modify subpage::tree_block_bitmap which is
+protected by subpage::lock.
+
+So here just to grab subpage pointer is completely fine.
+
+> Then subpage->lock is
 > taken to check the tree_block_bitmap, then the lock is dropped. At that
 > point no locks are held so this page could possibly be referenced by
-> someone else? Then the buggy locking is used to get the eb, then you
+> someone else?
+
+Does it matter? We have the info we need (the eb bytenr) that's all.
+
+Other metadata operation may touch the page, but that won't cause
+anything wrong.
+
+> Then the buggy locking is used to get the eb, then you
 > lock refs_lock and call release_extent_buffer...
+
+Nope, eb access is not buggy.
+If you increase the refs, that would be buggy.
+
 >
 >>>> +		ASSERT(eb);
 >
 > Doing this outside of the rcu read side critical section _without_
 > incrementing the ref count is buggy!
+
+Try increasing refs when we're going to cleanup one eb, that's really bugg=
+y.
+
+Thanks,
+Qu
+
 >
 >>>> +		spin_lock(&eb->refs_lock);
 >>>> +		if (atomic_read(&eb->refs) !=3D 1 || extent_buffer_under_io(eb) ||
