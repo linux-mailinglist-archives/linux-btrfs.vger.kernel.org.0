@@ -2,99 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A092D8A3A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Dec 2020 22:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8B72D8C92
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Dec 2020 10:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407976AbgLLVxu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Dec 2020 16:53:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbgLLVxu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Dec 2020 16:53:50 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F307BC0613CF
-        for <linux-btrfs@vger.kernel.org>; Sat, 12 Dec 2020 13:53:09 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id v14so10506780wml.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 12 Dec 2020 13:53:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tQKxROwdZ4hWiVl9QIpyjsbDekc/drOnqB8ZDshaIn0=;
-        b=NSQhE7vIWbY2j8shsc4I5UlWqoySTveuzQo14OGHDMhvL2LKJApOBGWPqZ+yiuMovL
-         BnhaT629qEsWXoq9uRvbwKuJ8OoHySkedZdMu1Z0sPjLWQrVGnuB8XPKFlYwZaKd74No
-         d1SPK6+pCbf0yQILv3d9SjgBiaJnO3YbMbQDU+RK+Z4WtS4bFjYFGBotIJTkaoDKuSn/
-         F/gBAVlvHb/2j5bNuNtPMv+Nw/zUZBTp7aN7LokqaBJJIqUcTofXZVX2VuSn8WQNYbsj
-         g0VniZpnn44VJCUb904CIgaKEvoh4pbePN9nuGMT8ta5Be7ya8vqCPXqnMNYkYvrJSgW
-         zciQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tQKxROwdZ4hWiVl9QIpyjsbDekc/drOnqB8ZDshaIn0=;
-        b=Z3HORyyorWTsF1p+soE2poicCV4jszOhsx7CSCK5SNtw0fmQVW+KSupVhr9MquoVll
-         VbaUmggZCgOlL89Z0JSsQUf9xLS64QAzXWluVPXv+Psi1uKr/V9fv2pJQaThBdHrT79N
-         kUt6QEJdyBXUthOAkEFH9VtBtXs5kp6xK479IqNpwXS3LimyGqnKDGN6RCAkrAAdywjt
-         0qqM3iiwoCdfoTWz1ZVwJ9QX3RgBrqyx5VKpUa6wpPbhk+VfyDf7hSIW8CzJ1LubIoxJ
-         OwsLQblVpRah1KwnXur+SRDNFdpbsgpnNb9fsiR+6uWNsVQ5rquFrENPtrnXf+EZ5vIW
-         mKmQ==
-X-Gm-Message-State: AOAM531zhoLNoiZSj1KNF5+WT+t3H1ImOP86AK4I04Xc10Rd1i8SKWRR
-        RKFxJ12CsaokmVMdeGE2BZ/0V4F6iGyoJ2CumnUwlSzF23LV1g==
-X-Google-Smtp-Source: ABdhPJyRLBqa0+3G4qOSPHEka0nPJSB8GYQApO0WEdvTgFl1ky6Cs8Tlm4Q1BA8MrPO5hWqNVQov0Ext8cBCcdMzCFQ=
-X-Received: by 2002:a05:600c:2188:: with SMTP id e8mr20554475wme.182.1607809987367;
- Sat, 12 Dec 2020 13:53:07 -0800 (PST)
-MIME-Version: 1.0
-References: <CAMaziXsqG-z029cCTd1BBn6HTm2EDLxsSocSOVs1s5RoK_Q0aQ@mail.gmail.com>
- <CAJCQCtT+sfHjhKn4a+GdT5ktxzuRooxffuoK5M5T8mMbM6o4Bw@mail.gmail.com> <CAMaziXtPXvKS=FETe1pU7YecY8Tsxdf5k1Auretd0bFn6mLOag@mail.gmail.com>
-In-Reply-To: <CAMaziXtPXvKS=FETe1pU7YecY8Tsxdf5k1Auretd0bFn6mLOag@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 12 Dec 2020 14:52:51 -0700
-Message-ID: <CAJCQCtTHiN7dFMeHQh7hhFze9BDcY=042XQ-0ENh3DzMxsQ1pQ@mail.gmail.com>
-Subject: Re: btrfs swapfile - Not enough swap space for hibernation.
-To:     Community support for Fedora users <users@lists.fedoraproject.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+        id S2405819AbgLMJ5M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Dec 2020 04:57:12 -0500
+Received: from mout.gmx.net ([212.227.15.15]:44707 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405649AbgLMJ5D (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 13 Dec 2020 04:57:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1607853329;
+        bh=sRy+aVQnX8ef6LzcnBg8dPH4XbTCCq4184TpUk+QnX0=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:In-Reply-To:References:Date;
+        b=hgl+0B4627BusDh00YDcJasGfYi2zdbTBWMK5t/RlK/kn8irdZw+OGCThC31gT74t
+         x6jqZAA9llzaJSQuNqBcDkGqo0L1RPkZTJM7PwKE6fZFGXykW8/a0Aq4p5PrDCcVJk
+         rbgY9G2+i9WK1f6sebFlpvY0XvvEyKffAZIQyoY4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from mobalindesk.lan.lan ([77.10.201.13]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N17UW-1k8uZX04SI-012aWW; Sun, 13
+ Dec 2020 10:55:29 +0100
+Message-ID: <c0aa48c7db8c00efe8dd9a2c72c425ffe57df49c.camel@gmx.net>
+Subject: Re: btrfs send -p failing: chown o257-1571-0 failed: No such file
+ or directory
+From:   "Massimo B." <massimo.b@gmx.net>
+To:     fdmanana@gmail.com
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <CAL3q7H4r-EtnMc=VD2EP01HsLCqg-z8LfMnFseHrNEv=rjPT_g@mail.gmail.com>
+References: <6ae34776e85912960a253a8327068a892998e685.camel@gmx.net>
+         <CAL3q7H72N5q6ROhfvuaNNfUvQTe-mtHJVvZaS25oTycJ=3Um3w@mail.gmail.com>
+         <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net>
+         <CAL3q7H5AOeFit_kz4X9Q2hXqeHXxamQ+pm04yA5BqkYr3-5e+g@mail.gmail.com>
+         <40b352dfa84e0f22d76e9b4f47111117549fa3bb.camel@gmx.net>
+         <CAL3q7H7oLWGWJcg0Gfa+RKRGNf+d4mv0R9FQi2j=xLL1RNPTGA@mail.gmail.com>
+         <1f78cd5d635b360e03468740608f3b02aea76b5d.camel@gmx.net>
+         <CAL3q7H4r-EtnMc=VD2EP01HsLCqg-z8LfMnFseHrNEv=rjPT_g@mail.gmail.com>
+Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
 Content-Type: text/plain; charset="UTF-8"
+Date:   Sun, 13 Dec 2020 10:50:28 +0100
+MIME-Version: 1.0
+User-Agent: Evolution 3.36.5 
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:V7RKo5YVmLbOzgi5OtNo9OMu5OEU4jr7pF2eTxNXwFtbKysXcfO
+ Px+cKdlBQPJvJZW7pqEcdDk1mi12apOKC8BBpiDBEYy2bEH8tQNXhkbmEWBVKa9yvK8Y3pJ
+ U7TCUfuft0HNl1x6UyPojqd7+HnHSjl3K7fZWEMbsejmYsvPtd3OKcZyfbn4RMyR6/cfTct
+ WXbiw4b/80XydRWsz3tjA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VpbK7T5Kv60=:Xfgys0nKXGByLWkVtd4opl
+ Pfz8kD6YlandNFmxwYxUzFrNvLPmLhObPmz0cSYGFgnVKuPiFb8X6E4RBqgMojBeWjFg6vmwK
+ BT0pXMFsR0GVY1WNa7wzd4rwAIjy1IKfMmmcvkWxx3zQ0vbyryB5B1z+63vb5PuSJRh5O4P1a
+ kvgGzWYYXhg2mXHQ05twoSJGKkkXXDxExR74s3FjfnDduv7BwzculFUgc/d8yR054okWPmp3t
+ jzY+n24BwGMBFC7VYRX1dl0Me0NNBAGtZpVTSK+GUaUL3tYzWUONyn+Pz2YmSjpuaWdsIoXFL
+ 6sdEnzhhGQECtsP4rzek1A+vlsHmAFAkotG8cES0MVBvCsLICRGVyEeoeJNBZWvcWYTOP+krT
+ 7j2oWFv53ac93KERPRjAq6y+HvDqJ3pj6UnyU0DXMywUFicALAhHKssa87ZK/IF7Eoj/cxiiD
+ 4OJm3I+qCMAKz/mDCkMbIH8yomp8cUj96W1IlYyurkpKjSuimSzeRLSj1/Jqvigf0E8CjW4sa
+ nu1tXHOHeafVrYIJJUCIIkgPkC01nu1evqH1lSFH/cm1/BLrfZ2GuYhHVw08XxCPj0w43hN40
+ X0e6JMS3yFBnHIF5L8R0hAaZmSRMUo+E6lR9nyzoqHAQ4S1mqK9Xoht/JK/vPDe2OW1IiAlM+
+ MfjvBaSDAKqWEEBj2Oq+UMfO5XAO2Hk/EfBkiQFa+6p+hHjLtTG8b8I6sSflnkjxSTn2JQGT3
+ wyHojTwMd4i1tX8H4WMP5erjwWEl9zmlPWaCh816wkfEdwAF0A37lIjbee2kQ69b8Tx1TiizP
+ M4eo0tjpjRUa1jAjIpcZ+UVguzQ/j1DPDGOCUBZ0PlOiQO42wgPXo0VozXYxdWQu/LDwDhPXB
+ xa1ofDSvLG6ZUmpXV+fA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 7:02 AM Sreyan Chakravarty <sreyan32@gmail.com> wrote:
+On Wed, 2020-12-09 at 10:29 +0000, Filipe Manana wrote:
+> So to confirm if there are other problems, you really need to let send
 >
-> The only reason I can fathom is that systemd-logind is unable to
-> access the directory /var/swap. IIRC, you were the one who suggested I
-> mount in that directory.
+> and receive processes finish (don't kill them). If they finish without
 >
-> Not blaming you, but the question is what do I do now ?
+> failure, then check if temporary directories (or files with the same
+>
+> name pattern) still exist or not.
 
-Well, what I recommended is a swap partition to avoid all of these
-limitations and questions. If you're going to use swap on Btrfs then
-you're kinda in the same boat as the rest of us who are trying to
-address each limit. This is why it's not the default and why I haven't
-written up anything yet.
+I continued with send|receive successfully with a lot of snapshots, then I=
+ found
+some new error. Is this also related?
 
-My expectation is that swapfiles on btrfs need a helper service of
-some sort, in order for it to be generally usable.
+clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYNC/...=
+.pdf source offset=3D20705280 offset=3D20709376 length=3D4096
+clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYNC/...=
+.pdf source offset=3D20713472 offset=3D20713472 length=3D4096
+ERROR: failed to clone extents to mb/Documents.AZ/0.SYNC/....pdf: Invalid =
+argument
 
-> The bug that you have linked to is about /home not /var.
+Best regards,
+Massimo
 
-It's a reference for a similar problem, not an identical problem, with
-a how to enable debug for logind.
-
-> So where should I keep the swap for logind to access it without any problems ?
-
-You are in adventure land. So you're going on an adventure. If you
-want it to just work, use a swap partition.
-
-
-> I don't think that is possible since the file was created with dd, not
-> fallocate.
-
-Why? I've mentioned fallocate several times, and also man 5 btrfs
-several times, and there it recommends fallocate. Nowhere is dd
-suggested. It may not work with dd depending on the dd exact dd
-command used.
-
-
--- 
-Chris Murphy
