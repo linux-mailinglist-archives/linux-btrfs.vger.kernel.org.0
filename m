@@ -2,39 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CFC2D982C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Dec 2020 13:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32422D9840
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Dec 2020 13:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407545AbgLNMmB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Dec 2020 07:42:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45298 "EHLO mx2.suse.de"
+        id S2439432AbgLNMrN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Dec 2020 07:47:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49036 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439067AbgLNMlo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:41:44 -0500
+        id S2439416AbgLNMrC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Dec 2020 07:47:02 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1607949658; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1607949976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=DeDvUzQbUsDiNhyHQB7xa+ZfGwDx7NfgdObs/KHwaPc=;
-        b=vFbv5rus6b2geUlrIbiyTyrKVY48Vwp0W920FnuY6+Nt0TyKny4agzHfR3yVYzPtv/K96E
-        jl3Nkz0c/xL5mrsMhQhKJf0E3rZTeoZo3CfBt/rOT7AeFe5F6fM2MXOzEU9GBq/0IBxneY
-        NxWd10DDnyRXubnMBIoQfyACJo3yA4s=
+        bh=+yyU/g9Wjzocu5iv8QqEh8wrLCF68Jrw/Ug5BylQDoU=;
+        b=rQs9relMMba1S3SDKP0uOxQrt2Q+mthTBsFogKUaDPHE/8brjUDc5ZnFLZG3xQtZaliU6g
+        /U0eUZBwGbbyhRWpLXvVqwSFMOoajDtxbkbw6Wd/xC/h8u/j/64nBKSgihT0KFpHMKfySr
+        XnB2N022yQs6I/uAH5brtcm7C6mHMUE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 347A6AD07;
-        Mon, 14 Dec 2020 12:40:58 +0000 (UTC)
-Subject: Re: [PATCH v2 15/18] btrfs: disk-io: introduce subpage metadata
- validation check
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+        by mx2.suse.de (Postfix) with ESMTP id 215BEAC90;
+        Mon, 14 Dec 2020 12:46:16 +0000 (UTC)
+Subject: Re: [PATCH v2 16/18] btrfs: introduce btrfs_subpage for data inodes
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201210063905.75727-1-wqu@suse.com>
- <20201210063905.75727-16-wqu@suse.com>
- <a0ff059f-b1d1-29fa-6d0d-2d37a5c5a5e3@suse.com>
- <0741b6ef-106e-8a12-b6c4-267a3ee57b67@gmx.com>
- <f57e6204-2a8f-611f-346b-6814916b95b4@suse.com>
- <f63aeb1c-30ca-2ef4-0795-d2eb15d6e085@gmx.com>
-Cc:     David Sterba <dsterba@suse.com>
+ <20201210063905.75727-17-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -78,12 +71,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <b69f0ef5-0b1c-b943-bc6b-45e029644a8c@suse.com>
-Date:   Mon, 14 Dec 2020 14:40:57 +0200
+Message-ID: <d46012a6-00b8-ebbd-10aa-56773c7e0bbf@suse.com>
+Date:   Mon, 14 Dec 2020 14:46:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <f63aeb1c-30ca-2ef4-0795-d2eb15d6e085@gmx.com>
+In-Reply-To: <20201210063905.75727-17-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -93,60 +86,183 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 14.12.20 г. 13:32 ч., Qu Wenruo wrote:
+On 10.12.20 г. 8:39 ч., Qu Wenruo wrote:
+> To support subpage sector size, data also need extra info to make sure
+> which sectors in a page are uptodate/dirty/...
 > 
+> This patch will make pages for data inodes to get btrfs_subpage
+> structure attached, and detached when the page is freed.
 > 
-> On 2020/12/14 下午7:17, Nikolay Borisov wrote:
->>
->>
->> On 14.12.20 г. 12:50 ч., Qu Wenruo wrote:
->>>
->>> IIRC ASSERT() won't execute whatever in it for non debug build.
->>> Thus ASSERT(atomic_*) would cause non-debug kernel not to decrease the
->>> io_pages and hangs the system.
->>
->> Nope:
->>
->>    3362 #ifdef CONFIG_BTRFS_ASSERT
->>       1 __cold __noreturn
->>       2 static inline void assertfail(const char *expr, const char
->> *file, int line)
->>       3 {
->>       4         pr_err("assertion failed: %s, in %s:%d\n", expr, file,
->> line);
->>       5         BUG();
->>       6 }
->>       7
->>       8 #define ASSERT(expr)                                            \
->>       9         (likely(expr) ? (void)0 : assertfail(#expr, __FILE__,
->> __LINE__))
->>      10
->>      11 #else
->>      12 static inline void assertfail(const char *expr, const char*
->> file, int line) { }
->>      13 #define ASSERT(expr)    (void)(expr)               <--
->> expression is evaluated.
->>      14 #endif
->>
-> Wow, that's too tricky and maybe that's the reason why Josef is
-> complaining about the ASSERT()s slows down the system.
+> This patch also slightly changes the timing when
+> set_page_extent_mapped() to make sure:
+> - We have page->mapping set
+>   page->mapping->host is used to grab btrfs_fs_info, thus we can only
+>   call this function after page is mapped to an inode.
 > 
-> In fact, from the assert(3) man page, we're doing things differently
-> than user space at least:
+>   One call site attaches pages to inode manually, thus we have to modify
+>   the timing of set_page_extent_mapped() a little.
 > 
->   If the macro NDEBUG is defined at the moment <assert.h> was last
->   included, the macro assert() generates no code, and hence does nothing
->   at all.
+> - As soon as possible, before other operations
+>   Since memory allocation can fail, we have to do extra error handling.
+>   Calling set_page_extent_mapped() as soon as possible can simply the
+>   error handling for several call sites.
 > 
-> So I'm confused, what's the proper way to do ASSERT()?
+> The idea is pretty much the same as iomap_page, but with more bitmaps
+> for btrfs specific cases.
+> 
+> Currently the plan is to switch iomap if iomap can provide sector
+> aligned write back (only write back dirty sectors, but not the full
+> page, data balance require this feature).
+> 
+> So we will stick to btrfs specific bitmap for now.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/compression.c      | 10 ++++++--
+>  fs/btrfs/extent_io.c        | 47 +++++++++++++++++++++++++++++++++----
+>  fs/btrfs/extent_io.h        |  3 ++-
+>  fs/btrfs/file.c             | 10 +++++---
+>  fs/btrfs/free-space-cache.c | 15 +++++++++---
+>  fs/btrfs/inode.c            | 12 ++++++----
+>  fs/btrfs/ioctl.c            |  5 +++-
+>  fs/btrfs/reflink.c          |  5 +++-
+>  fs/btrfs/relocation.c       | 12 ++++++++--
+>  9 files changed, 98 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 5ae3fa0386b7..6d203acfdeb3 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -542,13 +542,19 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>  			goto next;
+>  		}
+>  
+> -		end = last_offset + PAGE_SIZE - 1;
+>  		/*
+>  		 * at this point, we have a locked page in the page cache
+>  		 * for these bytes in the file.  But, we have to make
+>  		 * sure they map to this compressed extent on disk.
+>  		 */
+> -		set_page_extent_mapped(page);
+> +		ret = set_page_extent_mapped(page);
+> +		if (ret < 0) {
+> +			unlock_page(page);
+> +			put_page(page);
+> +			break;
+> +		}
+> +
+> +		end = last_offset + PAGE_SIZE - 1;
+>  		lock_extent(tree, last_offset, end);
+>  		read_lock(&em_tree->lock);
+>  		em = lookup_extent_mapping(em_tree, last_offset,
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 64a19c1884fc..4e4ed9c453ae 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3191,10 +3191,40 @@ static int attach_extent_buffer_page(struct extent_buffer *eb,
+>  	return 0;
+>  }
+>  
+> -void set_page_extent_mapped(struct page *page)
+> +int __must_check set_page_extent_mapped(struct page *page)
+>  {
+> -	if (!PagePrivate(page))
+> +	struct btrfs_fs_info *fs_info;
+> +
+> +	ASSERT(page->mapping);
+> +
+> +	if (PagePrivate(page))
+> +		return 0;
+> +
+> +	fs_info = btrfs_sb(page->mapping->host->i_sb);
+> +	if (fs_info->sectorsize == PAGE_SIZE) {
+>  		attach_page_private(page, (void *)EXTENT_PAGE_PRIVATE);
+> +		return 0;
+> +	}
+> +
+> +	return btrfs_attach_subpage(fs_info, page);
 
-Well as it stands now, what I suggested would work. OTOH this really
-puts forward the question why do we leave code around (well, the
-compiler should really eliminate those redundant checks). Hm, David?
+In all previous patches < PAGE_SIZE is the special case, in this
+function it's reversed. For the sake of consistency change that so
+btrfs_attch_subpage is executed inside the conditional.
 
+> +}
+> +
+> +void clear_page_extent_mapped(struct page *page)
+> +{
+> +	struct btrfs_fs_info *fs_info;
+> +
+> +	ASSERT(page->mapping);
+> +
+> +	if (!PagePrivate(page))
+> +		return;
+> +
+> +	fs_info = btrfs_sb(page->mapping->host->i_sb);
+> +	if (fs_info->sectorsize == PAGE_SIZE) {
+> +		detach_page_private(page);
+> +		return;
+> +	}
+> +
+> +	btrfs_detach_subpage(fs_info, page);
 
+DITTO
 
-> 
-> Thanks,
-> Qu
-> 
+>  }
+>  
+>  static struct extent_map *
+
+<snip>
+
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index a29b50208eee..9b878616b489 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1373,6 +1373,12 @@ static noinline int prepare_pages(struct inode *inode, struct page **pages,
+>  			goto fail;
+>  		}
+>  
+> +		err = set_page_extent_mapped(pages[i]);
+> +		if (err < 0) {
+> +			faili = i;
+> +			goto fail;
+> +		}
+> +
+>  		if (i == 0)
+>  			err = prepare_uptodate_page(inode, pages[i], pos,
+>  						    force_uptodate);
+> @@ -1470,10 +1476,8 @@ lock_and_cleanup_extent_if_need(struct btrfs_inode *inode, struct page **pages,
+>  	 * We'll call btrfs_dirty_pages() later on, and that will flip around
+>  	 * delalloc bits and dirty the pages as required.
+>  	 */
+> -	for (i = 0; i < num_pages; i++) {
+> -		set_page_extent_mapped(pages[i]);
+> +	for (i = 0; i < num_pages; i++)
+>  		WARN_ON(!PageLocked(pages[i]));
+> -	}
+The comment above this needs to be removed/rewritten I guess?
+Essentially that set_page_extent_mapped is moved to prepare_pages.
+
+>  
+>  	return ret;
+>  }
+
+<snip>
+
+> @@ -8355,7 +8357,9 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>  	wait_on_page_writeback(page);
+>  
+>  	lock_extent_bits(io_tree, page_start, page_end, &cached_state);
+> -	set_page_extent_mapped(page);
+> +	ret = set_page_extent_mapped(page);
+> +	if (ret < 0)
+> +		goto out_unlock;
+
+You should use ret2, ret in this function is used for the retval of
+vmf_error().
+
+>  
+>  	/*
+>  	 * we can't set the delalloc bits if there are pending ordered
+
+<snip>
+
