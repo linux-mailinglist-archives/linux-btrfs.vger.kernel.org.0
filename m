@@ -2,229 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF7F2D9596
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA6A2D9597
 	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Dec 2020 10:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732156AbgLNJ5i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Dec 2020 04:57:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
+        id S2388095AbgLNJ5v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Dec 2020 04:57:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39822 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729399AbgLNJ5i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Dec 2020 04:57:38 -0500
-From:   fdmanana@kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 2/2] btrfs: fix race between fallocate and memory mapped writes leading to deadlock
-Date:   Mon, 14 Dec 2020 09:56:42 +0000
-Message-Id: <d67c9f972913bca4e2cc9958a03b85a1accd5587.1607939569.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1607939569.git.fdmanana@suse.com>
-References: <cover.1607939569.git.fdmanana@suse.com>
-In-Reply-To: <cover.1607939569.git.fdmanana@suse.com>
-References: <cover.1607939569.git.fdmanana@suse.com>
+        id S1727309AbgLNJ5v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Dec 2020 04:57:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1607939825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=D4teTxRS+oV8JgpdVGINnlOveQi+6OupaUMXZMtbadY=;
+        b=qnWpD+fI6K1W8Am8A6NQSGx9sWf93OvlVdGNYW9gef+vwF2VB3vAxTYGJmABAnefx39ghi
+        GSj7OyiZRLB9+ayXvI5j6qc0H3wjqJHf40ycw0sWV4WdCszmWn7R/yDf2JRRT9uLQ0TF+C
+        tO8kE/ECq3ltfNV0erEnesotYoCcAdg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1B8A3AC10;
+        Mon, 14 Dec 2020 09:57:05 +0000 (UTC)
+Subject: Re: [PATCH v2 14/18] btrfs: extent_io: make
+ endio_readpage_update_page_status() to handle subpage case
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201210063905.75727-1-wqu@suse.com>
+ <20201210063905.75727-15-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <615e54a4-0339-830c-a2b7-a0fa1a8fe488@suse.com>
+Date:   Mon, 14 Dec 2020 11:57:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201210063905.75727-15-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-When doing a fallocate operation we lock the inode, flush delalloc within
-the target range, wait for any ordered extents to complete and then lock
-the file range. Before we lock the range and after we flush delalloc,
-there is a time window where another task can come in and do a memory
-mapped write for a page within the fallocate range.
 
-This means that after fallocate locks the range, there can be a dirty page
-in the range. More often than not, this does not cause any problem.
-The exception is when we are low on available metadata space, because an
-fallocate operation needs to start a transaction while holding the file
-range locked, either through btrfs_prealloc_file_range() or through the
-call to btrfs_fallocate_update_isize(). If that's the case, we can end up
-in a deadlock. The following list of steps explains how that happens:
+On 10.12.20 г. 8:39 ч., Qu Wenruo wrote:
+> To handle subpage status update, add the following new tricks:
+> - Use btrfs_page_*() helpers to update page status
+>   Now we can handle both cases well.
+> 
+> - No page unlock for subpage metadata
+>   Since subpage metadata doesn't utilize page locking at all, skip it.
+>   For subpage data locking, it's handled in later commits.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 1ec9de2aa910..64a19c1884fc 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2841,15 +2841,26 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
+>  	processed->uptodate = uptodate;
+>  }
+>  
+> -static void endio_readpage_update_page_status(struct page *page, bool uptodate)
+> +static void endio_readpage_update_page_status(struct page *page, bool uptodate,
+> +					      u64 start, u64 end)
+>  {
+> +	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
+> +	u32 len;
+> +
+> +	ASSERT(page_offset(page) <= start &&
+> +		end <= page_offset(page) + PAGE_SIZE - 1);
 
-1) A fallocate operation starts, locks the inode, flushes delalloc in the
-   range and waits for ordered extents in the range to complete;
+'start' in this case is
+'start = page_offset(page) + bvec->bv_offset;' from
+end_bio_extent_readpage, so it can't possibly be less than page_offset,
+instead it will at least be equal to page_offset if bvec->bv_offset is 0
+. However, can we really guarantee this ?
 
-2) Before the fallocate task locks the file range, another task does a
-   memory mapped write for a page in the fallocate target range. This is
-   possible since memory mapped writes do not (and can not) lock the
-   inode;
 
-3) The fallocate task locks the file range. At this point there is one
-   dirty page in the range (due to the memory mapped write);
+You are using the end only for the assert, and given you already have
+the 'len' parameter calculated in the caller I'd rather have this
+function take start/len, that would save you from recalculating the len
+and also for someone looking at the code it would be apparent it's the
+length of the currently processed bvec. I looked through the end of the
+series and you never use 'end' just 'len'
 
-4) When the fallocate task attempts to start a transaction, it blocks when
-   attempting to reserve metadata space, since we are low on available
-   metadata space. Before blocking (wait on its reservation ticket), it
-   starts the async reclaim task (if not running already);
-
-5) The async reclaim task is not able to release space through any other
-   means, so it decides to flush delalloc for inodes with dirty pages.
-   It finds that the inode used in the fallocate operation has a dirty
-   page and therefore queues a job (fs_info->flushs_workers workqueue) to
-   flush delalloc for that inode and waits on that job to complete;
-
-6) The flush job blocks when attempting to lock the file range because
-   it is currently locked by the fallocate task;
-
-7) The fallocate task keeps waiting for its metadata reservation, waiting
-   for a wakeup on its reservation ticket. The async reclaim task is
-   waiting on the flush job, which in turn is waiting for locking the file
-   range that is currently locked by the fallocate task. So unless some
-   other task is able to release enough metadata space, for example an
-   ordered extent for some other inode completes, we end up in a deadlock
-   between all these tasks.
-
-When this happens stack traces like the following showup in dmesg/syslog:
-
- INFO: task kworker/u16:11:1810830 blocked for more than 120 seconds.
-       Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
- "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
- task:kworker/u16:11  state:D stack:    0 pid:1810830 ppid:     2 flags:0x00004000
- Workqueue: btrfs-flush_delalloc btrfs_work_helper [btrfs]
- Call Trace:
-  __schedule+0x5d1/0xcf0
-  schedule+0x45/0xe0
-  lock_extent_bits+0x1e6/0x2d0 [btrfs]
-  ? finish_wait+0x90/0x90
-  btrfs_invalidatepage+0x32c/0x390 [btrfs]
-  ? __mod_memcg_state+0x8e/0x160
-  __extent_writepage+0x2d4/0x400 [btrfs]
-  extent_write_cache_pages+0x2b2/0x500 [btrfs]
-  ? lock_release+0x20e/0x4c0
-  ? trace_hardirqs_on+0x1b/0xf0
-  extent_writepages+0x43/0x90 [btrfs]
-  ? lock_acquire+0x1a3/0x490
-  do_writepages+0x43/0xe0
-  ? __filemap_fdatawrite_range+0xa4/0x100
-  __filemap_fdatawrite_range+0xc5/0x100
-  btrfs_run_delalloc_work+0x17/0x40 [btrfs]
-  btrfs_work_helper+0xf1/0x600 [btrfs]
-  process_one_work+0x24e/0x5e0
-  worker_thread+0x50/0x3b0
-  ? process_one_work+0x5e0/0x5e0
-  kthread+0x153/0x170
-  ? kthread_mod_delayed_work+0xc0/0xc0
-  ret_from_fork+0x22/0x30
- INFO: task kworker/u16:1:2426217 blocked for more than 120 seconds.
-       Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
- "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
- task:kworker/u16:1   state:D stack:    0 pid:2426217 ppid:     2 flags:0x00004000
- Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
- Call Trace:
-  __schedule+0x5d1/0xcf0
-  ? kvm_clock_read+0x14/0x30
-  ? wait_for_completion+0x81/0x110
-  schedule+0x45/0xe0
-  schedule_timeout+0x30c/0x580
-  ? _raw_spin_unlock_irqrestore+0x3c/0x60
-  ? lock_acquire+0x1a3/0x490
-  ? try_to_wake_up+0x7a/0xa20
-  ? lock_release+0x20e/0x4c0
-  ? lock_acquired+0x199/0x490
-  ? wait_for_completion+0x81/0x110
-  wait_for_completion+0xab/0x110
-  start_delalloc_inodes+0x2af/0x390 [btrfs]
-  btrfs_start_delalloc_roots+0x12d/0x250 [btrfs]
-  flush_space+0x24f/0x660 [btrfs]
-  btrfs_async_reclaim_metadata_space+0x1bb/0x480 [btrfs]
-  process_one_work+0x24e/0x5e0
-  worker_thread+0x20f/0x3b0
-  ? process_one_work+0x5e0/0x5e0
-  kthread+0x153/0x170
-  ? kthread_mod_delayed_work+0xc0/0xc0
-  ret_from_fork+0x22/0x30
-(...)
-several tasks waiting for the inode lock held by the fallocate task below
-(...)
- RIP: 0033:0x7f61efe73fff
- Code: Unable to access opcode bytes at RIP 0x7f61efe73fd5.
- RSP: 002b:00007ffc3371bbe8 EFLAGS: 00000202 ORIG_RAX: 000000000000013c
- RAX: ffffffffffffffda RBX: 00007ffc3371bea0 RCX: 00007f61efe73fff
- RDX: 00000000ffffff9c RSI: 0000560fbd5d90a0 RDI: 00000000ffffff9c
- RBP: 00007ffc3371beb0 R08: 0000000000000001 R09: 0000000000000003
- R10: 0000560fbd5d7ad0 R11: 0000000000000202 R12: 0000000000000001
- R13: 000000000000005e R14: 00007ffc3371bea0 R15: 00007ffc3371beb0
- task:fdm-stress        state:D stack:    0 pid:2508243 ppid:2508153 flags:0x00000000
- Call Trace:
-  __schedule+0x5d1/0xcf0
-  ? _raw_spin_unlock_irqrestore+0x3c/0x60
-  schedule+0x45/0xe0
-  __reserve_bytes+0x4a4/0xb10 [btrfs]
-  ? finish_wait+0x90/0x90
-  btrfs_reserve_metadata_bytes+0x29/0x190 [btrfs]
-  btrfs_block_rsv_add+0x1f/0x50 [btrfs]
-  start_transaction+0x2d1/0x760 [btrfs]
-  btrfs_replace_file_extents+0x120/0x930 [btrfs]
-  ? btrfs_fallocate+0xdcf/0x1260 [btrfs]
-  btrfs_fallocate+0xdfb/0x1260 [btrfs]
-  ? filename_lookup+0xf1/0x180
-  vfs_fallocate+0x14f/0x440
-  ioctl_preallocate+0x92/0xc0
-  do_vfs_ioctl+0x66b/0x750
-  ? __do_sys_newfstat+0x53/0x60
-  __x64_sys_ioctl+0x62/0xb0
-  do_syscall_64+0x33/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-So fix this by making fallocate use btrfs_lock_and_flush_ordered_range(),
-passing it a value of true for the flush delalloc parameter. This way we
-are guaranteed that we end up without any dirty pages in the range after
-we have locked it.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c | 36 ++++--------------------------------
- 1 file changed, 4 insertions(+), 32 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index dd2d5d73804d..6528725d1a29 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3383,38 +3383,10 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	}
- 
- 	locked_end = alloc_end - 1;
--	while (1) {
--		struct btrfs_ordered_extent *ordered;
--
--		/* the extent lock is ordered inside the running
--		 * transaction
--		 */
--		lock_extent_bits(&BTRFS_I(inode)->io_tree, alloc_start,
--				 locked_end, &cached_state);
--		ordered = btrfs_lookup_first_ordered_extent(BTRFS_I(inode),
--							    locked_end);
--
--		if (ordered &&
--		    ordered->file_offset + ordered->num_bytes > alloc_start &&
--		    ordered->file_offset < alloc_end) {
--			btrfs_put_ordered_extent(ordered);
--			unlock_extent_cached(&BTRFS_I(inode)->io_tree,
--					     alloc_start, locked_end,
--					     &cached_state);
--			/*
--			 * we can't wait on the range with the transaction
--			 * running or with the extent lock held
--			 */
--			ret = btrfs_wait_ordered_range(inode, alloc_start,
--						       alloc_end - alloc_start);
--			if (ret)
--				goto out;
--		} else {
--			if (ordered)
--				btrfs_put_ordered_extent(ordered);
--			break;
--		}
--	}
-+	ret = btrfs_lock_and_flush_ordered_range(BTRFS_I(inode), alloc_start,
-+						 locked_end, true, &cached_state);
-+	if (ret)
-+		goto out;
- 
- 	/* First, check if we exceed the qgroup limit */
- 	INIT_LIST_HEAD(&reserve_list);
--- 
-2.28.0
+<snip>
 
