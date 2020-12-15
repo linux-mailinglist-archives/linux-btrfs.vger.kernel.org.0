@@ -2,602 +2,1305 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E012DB5D4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Dec 2020 22:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6772DB5E4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Dec 2020 22:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbgLOVZg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Dec 2020 16:25:36 -0500
-Received: from mga18.intel.com ([134.134.136.126]:53097 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728346AbgLOVZf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Dec 2020 16:25:35 -0500
-IronPort-SDR: LpsZdcxB0bbe1LKbkbWtwqoijhoDRHq0X+9c3dv4pzbJMcQpObbg4fzZTLCpPHEoJUW1eN7Z3n
- wrBd2VPaM6RQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="162703415"
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
-   d="gz'50?scan'50,208,50";a="162703415"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 13:24:46 -0800
-IronPort-SDR: dv9FDlZXXUGvNGzlof32IsTvPxCjWRcdepImnergLBwg0rnRzEXEV0SJBf/fYavTGkf25b8sDk
- tu0N1JSZcSmg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
-   d="gz'50?scan'50,208,50";a="332825876"
-Received: from lkp-server02.sh.intel.com (HELO a947d92d0467) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Dec 2020 13:24:43 -0800
-Received: from kbuild by a947d92d0467 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kpHoJ-0000xA-8i; Tue, 15 Dec 2020 21:24:43 +0000
-Date:   Wed, 16 Dec 2020 05:24:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, darrick.wong@oracle.com,
-        hch@infradead.org, nborisov@suse.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 1/2] iomap: Separate out generic_write_sync() from
- iomap_dio_complete()
-Message-ID: <202012160522.lHoxtwhU-lkp@intel.com>
-References: <f52d649dd35c616786b54ff7d76c6bcf95f9197e.1608053602.git.rgoldwyn@suse.com>
+        id S1730170AbgLOV3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Dec 2020 16:29:48 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:35080 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729917AbgLOV1W (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Dec 2020 16:27:22 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 956D58F8A2B; Tue, 15 Dec 2020 16:26:36 -0500 (EST)
+Date:   Tue, 15 Dec 2020 16:26:36 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Nathan Dehnel <ncdehnel@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Transient disk loss on bcache btrfs backing volume,
+ 5.4.80-gentoo-r1-x86-64
+Message-ID: <20201215212636.GO31381@hungrycats.org>
+References: <CAEEhgEt-_dk2Ff_3LN-hSd_-G+ogpXFD6RKO8KuGgr4T-AOsKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="FCuugMFkClbJLl1L"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f52d649dd35c616786b54ff7d76c6bcf95f9197e.1608053602.git.rgoldwyn@suse.com>
+In-Reply-To: <CAEEhgEt-_dk2Ff_3LN-hSd_-G+ogpXFD6RKO8KuGgr4T-AOsKA@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Dec 15, 2020 at 09:50:01AM -0600, Nathan Dehnel wrote:
+> Last night 2 drives of my 10-disk btrfs raid10 volume dropped out,
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The btrfs raid10 profile's failure tolerance is at most one disk failure,
+so the filesystem can fail when this happens.  Normally, btrfs will force
+itself read-only when this event is detected, and will recover at the next
+mount, but this can be complicated if the lower layers (bcache and drive
+firmware) don't respect write ordering or report write failures too late.
+Unfortunately, that's a common complication when disks fail.
 
-Hi Goldwyn,
+If you use raid1c3 for metadata, then the filesystem would be able to
+survive 2 temporary disk failures.  Only data blocks written on the 2
+disks that went temporarily missing would be lost, everything else would
+recover automatically (by normal read-time repair or with scrub).
 
-Thank you for the patch! Perhaps something to improve:
+> causing it to go read-only. I tried to shut it down with "systemctl
+> reboot -f", but "BTRFS error (device bcache4):" errors prevented it
+> from shutting down, so I left it, and this continued all night. This
+> morning I forced a power cycle, and it booted with / as read-only. All
+> drives are present after reboot.
 
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on v5.10 next-20201215]
-[cannot apply to xfs-linux/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Once the filesystem is read-only, it is no longer necessary to try
+to umount it cleanly.  btrfs can survive crashes, but it can't survive
+continued writes after an unrecoverable failure, so btrfs will force a
+crash by itself when it detects trouble.  From the disk's point of view,
+btrfs was unmounted the instant it went read-only.  The kernel may or
+may not be in a good state, and umounting may cause additional problems
+if it is possible at all (mostly lockups and hangs, sometimes panic,
+though it quite often does successfully umount too).
 
-url:    https://github.com/0day-ci/linux/commits/Goldwyn-Rodrigues/Fix-locking-for-btrfs-direct-writes/20201216-021312
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: sparc-randconfig-s031-20201215 (attached as .config)
-compiler: sparc-linux-gcc (GCC) 9.3.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.3-184-g1b896707-dirty
-        # https://github.com/0day-ci/linux/commit/4706fd8a8832b4948c25abc5fec38a017704d828
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Goldwyn-Rodrigues/Fix-locking-for-btrfs-direct-writes/20201216-021312
-        git checkout 4706fd8a8832b4948c25abc5fec38a017704d828
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sparc 
+> This article https://ownyourbits.com/2019/03/03/how-to-recover-a-btrfs-partition/
+> suggests "btrfs rescue zero-log", 
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+I've seen that article before.  It's not particularly good advice,
+and some of the rationales are wrong.
 
-All warnings (new ones prefixed by >>):
+btrfs rescue zero-log is useful in exactly one particular situation
+(when the kernel aborts during a mount and the stack trace or kernel
+messages mention the log tree--using the word "log" followed by "tree"
+in that order).  This is not that situation.
 
->> fs/iomap/direct-io.c:127:9: warning: no previous prototype for 'iomap_dio_complete' [-Wmissing-prototypes]
-     127 | ssize_t iomap_dio_complete(struct iomap_dio *dio)
-         |         ^~~~~~~~~~~~~~~~~~
+btrfs rescue zero-log is harmless in cases where the filesystem metadata
+is intact.  It will erase the data from the last few fsync operations
+from the filesystem, avoiding any possible kernel bugs that occur
+while replaying the fsync log tree during mount.  It will not recover
+from any other kind of btrfs failure and could potentially make some
+failures worse.
 
-"sparse warnings: (new ones prefixed by >>)"
+> but I would just like confirmation
+> on how to proceed.
 
+The best approach when disks disconnect (*) is to scrub the 2 disks
+that disconnected, which will replace missing data from lost writes by
+reconstructing it from disks that didn't disconnect.
 
-vim +/iomap_dio_complete +127 fs/iomap/direct-io.c
+Run scrub twice:  the first will find and correct many errors, the second
+should find only uncorrectable errors (0 generation or verify errors and
+0 correctable errors).  Normally with a 1-disk disconnection failure
+we'd expect all error counts to reach 0, but in this case there are 2
+disks failing so it is very likely some data will be unrecoverable.
 
-   126	
- > 127	ssize_t iomap_dio_complete(struct iomap_dio *dio)
-   128	{
-   129		ssize_t ret;
-   130	
-   131		ret = __iomap_dio_complete(dio);
-   132		/*
-   133		 * If this is a DSYNC write, make sure we push it to stable storage now
-   134		 * that we've written data.
-   135		 */
-   136		if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
-   137			ret = generic_write_sync(dio->iocb, ret);
-   138	
-   139		kfree(dio);
-   140	
-   141		return ret;
-   142	}
-   143	
+Data files with uncorrectable errors can be simply deleted.  Any metadata
+errors (the generation and verify errors) that are not fixed by scrub
+will require some kind of offline recovery, from 'btrfs check --repair'
+up to 'mkfs and restore from backups'.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+You may need to disable quotas during recovery.  From the logs below it
+looks like you're hitting some consistency checks in the qgroups code, or
+the code isn't initiating self-repair when it detects a metadata error.
+They may be harmless to the on-disk metadata, but they can force the
+filesystem read-only in the kernel while you're trying to recover.
+Minimize other access to the filesystem while the scrub runs to avoid
+exercising the qgroup code too much.
 
---FCuugMFkClbJLl1L
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+(*) the real best approach is to run btrfs replace using the disconnected
+drive as both source and target; however, btrfs replace currently
+disallows this.  Scrub relies on csums to detect all data corruption
+and provides no way for the user to indicate known corrupted disks,
+so it will not reconstruct nodatacow files correctly.
 
-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
-SmcZ/ST4ng2//wH4hTw4ZooBAA==
+> uname -a:
+> Linux gentooserver 5.4.80-gentoo-r1-x86_64 #1 SMP PREEMPT Tue Dec 1
+> 20:03:37 CST 2020 x86_64 Intel(R) Xeon(R) CPU E5-1620 v3 @ 3.50GHz
+> GenuineIntel GNU/Linux
+> 
+> btrfs --version:
+> btrfs-progs v5.4.1
+> 
+> btrfs fi show:
+> Label: none  uuid: 76189222-b60d-4402-a7ff-141f057e8574
+> Total devices 10 FS bytes used 1.43TiB
+> devid    1 size 931.51GiB used 293.63GiB path /dev/bcache8
+> devid    2 size 931.51GiB used 293.63GiB path /dev/bcache1
+> devid    3 size 931.51GiB used 293.63GiB path /dev/bcache3
+> devid    4 size 931.51GiB used 293.63GiB path /dev/bcache6
+> devid    5 size 931.51GiB used 293.63GiB path /dev/bcache4
+> devid    6 size 931.51GiB used 293.63GiB path /dev/bcache0
+> devid    7 size 931.51GiB used 293.63GiB path /dev/bcache2
+> devid    8 size 931.51GiB used 293.63GiB path /dev/bcache9
+> devid    9 size 931.51GiB used 293.63GiB path /dev/bcache5
+> devid   10 size 931.51GiB used 293.63GiB path /dev/bcache7
+> 
+> btrfs fi df /:
+> Data, RAID10: total=1.43TiB, used=1.42TiB
+> System, RAID10: total=80.00MiB, used=160.00KiB
+> Metadata, RAID10: total=8.09GiB, used=7.46GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
 
---FCuugMFkClbJLl1L--
+If you post 'btrfs fi usage' we can figure out the probability of having
+a non-failed mirror for all of the damaged metadata.  You only have 8GB
+of metadata on 10 disks of equal size.  Assuming normal btrfs allocator
+behavior and an equal distribution of metadata across disks, there will
+be 8 metadata chunks allocated across pairs of disks.  That gives you a
+72% chance of keeping the filesystem after 2 disk corruption failures
+in metadata chunks (up to 96% if only one of the metadata chunks were
+active at the time of failure).  So it's possible, even likely, that
+btrfs can recover this array despite exceeding the maximum number of
+failures.
+
+For data there are thousands of chunks.  The probability of successfully
+recovering all the data with 2 failed disks is more or less zero;
+however, there was a short window when writes were possible with the
+2 disconnected disks, so there shouldn't be much lost data in terms of
+number of bytes lost.
+
+> dmesg:
+> [   17.532015] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   17.532020] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   17.542260] BTRFS error (device bcache8): parent transid verify
+> failed on 443344175104 wanted 1256788 found 1248582
+
+You have single parent transid verify failures.  The filesystem is
+able to correct those if it can read good data from a surviving mirror.
+
+Unfortunately it doesn't write a message to that effect in the kernel
+log when the recovery happens, so we have to guess that it happened
+from the lack of any further reports referencing the same block.
+
+> [   17.556509] repair_io_failure: 14 callbacks suppressed
+> [   17.556514] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 443344175104 (dev /dev/bcache7 sector 173174688)
+> [   17.556596] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 443344179200 (dev /dev/bcache7 sector 173174696)
+> [   17.556678] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 443344183296 (dev /dev/bcache7 sector 173174704)
+> [   17.556756] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 443344187392 (dev /dev/bcache7 sector 173174712)
+> [   17.592141] BTRFS error (device bcache8): parent transid verify
+> failed on 2848647774208 wanted 1256716 found 1239391
+
+Another single parent transid verify failure, and some evidence of
+data correction from surviving mirrors.  Good so far.
+
+> [   17.605902] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 2848647774208 (dev /dev/bcache7 sector 628304320)
+> [   17.605988] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 2848647778304 (dev /dev/bcache7 sector 628304328)
+> [   17.606072] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 2848647782400 (dev /dev/bcache7 sector 628304336)
+> [   17.606152] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 2848647786496 (dev /dev/bcache7 sector 628304344)
+> [   17.649375] BTRFS error (device bcache8): parent transid verify
+> failed on 1504325484544 wanted 1256562 found 1248715
+> [   17.658190] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 1504325484544 (dev /dev/bcache7 sector 543580320)
+> [   17.658273] BTRFS info (device bcache8): read error corrected: ino
+> 0 off 1504325488640 (dev /dev/bcache7 sector 543580328)
+> [   17.805656] bond1: (slave eno2): link status up, enabling it in 2000 ms
+> [   17.805662] bond1: (slave eno2): invalid new link 3 on slave
+> [   17.882033] BTRFS error (device bcache8): parent transid verify
+> failed on 2848498352128 wanted 1256715 found 1245300
+> [   18.170360] BTRFS error (device bcache8): parent transid verify
+> failed on 2848665780224 wanted 1256716 found 1248523
+> [   18.354428] BTRFS error (device bcache8): parent transid verify
+> failed on 443313029120 wanted 1256785 found 1248561
+> [   18.492300] BTRFS error (device bcache8): parent transid verify
+> failed on 443310080000 wanted 1256785 found 1248582
+> [   18.556253] BTRFS error (device bcache8): parent transid verify
+> failed on 2848762806272 wanted 1256730 found 1248524
+> [   18.815434] BTRFS error (device bcache8): parent transid verify
+> failed on 2848508198912 wanted 1256715 found 1248514
+> [   18.848590] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.848596] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.848599] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+
+That's bad:  the same error 3 times.  Read-time repair isn't happening
+for this block, and that could be affecting whatever subsystem is doing
+the reads (most likely qgroups, given the qgroups messages).
+
+If scrub can repair the underlying metadata damage then we don't need
+to worry about it.
+
+> [   18.848625] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+
+This consistency check is probably failing due to the earlier failures.
+
+> [   18.851343] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851350] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851353] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851362] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.851453] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851456] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851459] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851465] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.851545] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851548] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851551] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851556] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.851656] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851660] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851663] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851670] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.851751] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851754] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851756] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851762] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.851844] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851847] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851852] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851858] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.851934] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851937] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851940] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.851947] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852023] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852025] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852028] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852034] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852115] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852118] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852120] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852126] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852202] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852205] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852208] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852213] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852289] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852292] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852295] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852300] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852375] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852378] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852381] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852386] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852463] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852466] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852468] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852473] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852548] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852550] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852553] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852558] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852648] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852651] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852654] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852661] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852736] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852739] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852742] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852747] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852823] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852825] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852828] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852833] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852908] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852911] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852914] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852919] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.852994] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852997] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.852999] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.853005] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.853080] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.853082] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.853085] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.853090] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.853164] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.853167] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.853170] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.853175] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.930514] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.930521] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.930524] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.930532] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.944375] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.944381] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.944384] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.944393] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.947125] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.947130] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.947133] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.947141] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.947435] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.947439] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.947441] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.947449] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.950216] BTRFS error (device bcache8): parent transid verify
+> failed on 2848435421184 wanted 1256715 found 1248513
+> [   18.950871] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.950875] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.950878] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.950885] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.957872] BTRFS error (device bcache8): parent transid verify
+> failed on 2848424591360 wanted 1256715 found 1248513
+> [   18.958428] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.958432] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.958434] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.958441] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.958513] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.958516] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.958518] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.958524] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.959549] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.959554] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.959556] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637368885248 level expected=1 has=0
+> [   18.959564] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.960021] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.989903] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.990444] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.990928] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   18.990993] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.017898] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.033832] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.062675] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.062777] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.230470] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.242323] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.245795] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.278981] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.280602] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.289444] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.304208] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.314047] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.335671] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.336118] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.357451] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.357729] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.370113] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.383421] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.397479] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.403332] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.418243] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.418310] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.432875] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.446724] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.449438] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.459896] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.460289] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.475718] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.498486] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.524145] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.527282] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.540165] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.563131] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.568326] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.597757] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.605749] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.614299] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.632476] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.647125] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.665956] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.671693] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.671920] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.678505] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.678934] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.679158] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.705596] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.706056] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.706351] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.706568] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.721441] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.735565] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.748064] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.764371] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.764826] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.769704] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.779222] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.798216] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.798685] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   19.853879] bond1: (slave eno2): link status definitely up, 1000
+> Mbps full duplex
+> [   22.161067] btrfs_print_data_csum_error: 23 callbacks suppressed
+> [   22.218047] 8021q: 802.1Q VLAN Support v1.8
+> [   22.218058] 8021q: adding VLAN 0 to HW filter on device eno1
+> [   22.218097] 8021q: adding VLAN 0 to HW filter on device eno2
+> [   22.218135] 8021q: adding VLAN 0 to HW filter on device bond1
+> [   22.671274] repair_io_failure: 166 callbacks suppressed
+> [   22.671278] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 0 (dev /dev/bcache9 sector 94931256)
+> [   22.672609] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 4096 (dev /dev/bcache9 sector 94931256)
+> [   22.672674] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 12288 (dev /dev/bcache9 sector 94931256)
+> [   22.672716] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 8192 (dev /dev/bcache9 sector 94931256)
+> [   22.673008] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 24576 (dev /dev/bcache9 sector 94931256)
+> [   22.673480] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 32768 (dev /dev/bcache9 sector 94931256)
+> [   22.673483] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 28672 (dev /dev/bcache9 sector 94931256)
+> [   22.673499] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 16384 (dev /dev/bcache9 sector 94931256)
+> [   22.673530] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 20480 (dev /dev/bcache9 sector 94931256)
+> [   22.673561] BTRFS info (device bcache8): read error corrected: ino
+> 34688072 off 40960 (dev /dev/bcache9 sector 94931256)
+> [   22.708041] verify_parent_transid: 25 callbacks suppressed
+> [   22.708044] btrfs_printk: 1156 callbacks suppressed
+> [   22.708047] BTRFS error (device bcache8): parent transid verify
+> failed on 443270463488 wanted 1256786 found 1248570
+> [   24.221682] BTRFS error (device bcache8): parent transid verify
+> failed on 443387412480 wanted 1256803 found 1248596
+> [   24.282529] BTRFS error (device bcache8): parent transid verify
+> failed on 564363264 wanted 1256759 found 1248541
+> [   24.285926] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.285930] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.285932] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.285940] btrfs_printk: 333 callbacks suppressed
+> [   24.285942] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.290051] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.290055] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.290057] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.290062] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+
+The quota failures might be due to something going wrong with in-memory
+kernel data structures rather than something on disk.  Hard to tell with
+so many metadata issues happening on at the same time.  Check for these
+again after completing a scrub.
+
+> [   24.309786] BTRFS error (device bcache8): parent transid verify
+> failed on 2637398704128 wanted 1249148 found 1248723
+> [   24.312928] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.312935] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.312940] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.312954] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.313090] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313094] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313096] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313103] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.313198] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313201] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313204] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313209] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.313290] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313293] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313296] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313301] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.313383] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313386] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313389] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.313395] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.345781] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345788] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345791] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345802] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.345899] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345902] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345904] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345909] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.345978] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345981] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345983] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.345989] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.346055] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.346057] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.346059] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.346064] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.353831] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.353835] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.353837] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.353843] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.353909] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.353911] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.353913] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.353917] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.394062] BTRFS error (device bcache8): parent transid verify
+> failed on 2848462962688 wanted 1256715 found 1248513
+> [   24.399126] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.399132] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.399135] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.399144] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.399501] BTRFS error (device bcache8): parent transid verify
+> failed on 2637836812288 wanted 1255722 found 1248726
+> [   24.417035] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.417040] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.417042] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.417049] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.427731] BTRFS error (device bcache8): parent transid verify
+> failed on 2637452460032 wanted 1249148 found 1248723
+> [   24.469849] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.469856] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.469859] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.469869] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.495991] BTRFS error (device bcache8): parent transid verify
+> failed on 2637453754368 wanted 1249148 found 1248723
+> [   24.507297] BTRFS error (device bcache8): parent transid verify
+> failed on 2637821394944 wanted 1255722 found 1246708
+> [   24.546793] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.546799] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.546802] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.546811] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.554624] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.554629] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.554646] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.554654] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.571833] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.571836] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.571838] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.571843] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.583483] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.583487] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.583489] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.583493] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.585839] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.585844] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.585846] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.585854] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.586247] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.586249] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.586250] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.586253] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.586288] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.586289] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.586290] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.586293] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.607439] BTRFS error (device bcache8): parent transid verify
+> failed on 2637533347840 wanted 1249148 found 1248724
+> [   24.617006] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.617011] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.617013] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.617022] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.617104] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.617107] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.617109] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.617115] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.630255] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.630259] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.630261] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.630266] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.664003] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.664011] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.664014] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.664025] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.664089] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.664092] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.664094] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.664098] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.688191] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.688198] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.688202] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.688212] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.701711] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.701718] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.701721] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637984235520 level expected=1 has=0
+> [   24.701728] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.729574] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.831319] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.852198] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.862406] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.883424] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.883486] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   24.883531] BTRFS warning (device bcache8): error accounting new
+> delayed refs extent (err code: -117), quota inconsistent
+> [   27.234111] btrfs_print_data_csum_error: 3689 callbacks suppressed
+> [   27.234116] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171056640 csum 0xb6ec20bf expected csum 0xf4338fec
+> mirror 1
+> [   27.234126] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171138560 csum 0x23f23a76 expected csum 0xff42b9d2
+> mirror 1
+> [   27.234135] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171027968 csum 0xce9b9ee8 expected csum 0x3e33470d
+> mirror 1
+> [   27.234140] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171093504 csum 0x3c507df7 expected csum 0x1d0f16f7
+> mirror 1
+> [   27.234932] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171027968 csum 0xce9b9ee8 expected csum 0x3e33470d
+> mirror 1
+> [   27.235395] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171093504 csum 0x3c507df7 expected csum 0x1d0f16f7
+> mirror 1
+> [   27.235750] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171027968 csum 0xce9b9ee8 expected csum 0x3e33470d
+> mirror 1
+> [   27.236056] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171093504 csum 0x3c507df7 expected csum 0x1d0f16f7
+> mirror 1
+> [   27.236516] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171027968 csum 0xce9b9ee8 expected csum 0x3e33470d
+> mirror 1
+> [   27.236847] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 69171093504 csum 0xb6ec20bf expected csum 0xf4338fec
+> mirror 1
+
+These are some corrupted data blocks.  Each appears only once, so these
+could be corrected.  There is throttling on the kernel messages, so the
+correction messages may not all be visible.
+
+> [   27.672409] repair_io_failure: 4320 callbacks suppressed
+> [   27.672413] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52367360 (dev /dev/bcache9 sector 388766288)
+> [   27.672778] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52498432 (dev /dev/bcache7 sector 388766256)
+> [   27.672787] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52363264 (dev /dev/bcache9 sector 388766288)
+> [   27.672881] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52473856 (dev /dev/bcache7 sector 388766256)
+> [   27.672895] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52371456 (dev /dev/bcache9 sector 388766288)
+> [   27.672981] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52494336 (dev /dev/bcache7 sector 388766256)
+> [   27.673075] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52490240 (dev /dev/bcache7 sector 388766256)
+> [   27.673331] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52486144 (dev /dev/bcache7 sector 388766256)
+> [   27.673367] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52375552 (dev /dev/bcache9 sector 388766288)
+> [   27.673476] BTRFS info (device bcache8): read error corrected: ino
+> 35130208 off 52379648 (dev /dev/bcache9 sector 388766288)
+
+These are data blocks being corrected from the other mirror copy.
+
+> [   27.829254] verify_parent_transid: 16 callbacks suppressed
+> [   27.829256] btrfs_printk: 21 callbacks suppressed
+> [   27.829258] BTRFS error (device bcache8): parent transid verify
+> failed on 2637845299200 wanted 1255722 found 1248738
+> [   27.867864] BTRFS error (device bcache8): parent transid verify
+> failed on 2637843021824 wanted 1255722 found 1248726
+> [   28.084720] BTRFS error (device bcache8): parent transid verify
+> failed on 1503492227072 wanted 1256493 found 1248625
+> [   28.130912] BTRFS error (device bcache8): parent transid verify
+> failed on 2638079967232 wanted 1254477 found 1248814
+> [   28.248286] BTRFS error (device bcache8): parent transid verify
+> failed on 2637845954560 wanted 1255722 found 1248728
+> [   28.275762] BTRFS error (device bcache8): parent transid verify
+> failed on 2637863682048 wanted 1255722 found 1248749
+> [   28.329918] BTRFS error (device bcache8): parent transid verify
+> failed on 2638083899392 wanted 1254477 found 1248814
+> [   28.343927] BTRFS error (device bcache8): parent transid verify
+> failed on 2637853851648 wanted 1255722 found 1248749
+> [   28.402251] BTRFS error (device bcache8): parent transid verify
+> failed on 2637853835264 wanted 1255722 found 1248727
+> [   28.412029] BTRFS error (device bcache8): parent transid verify
+> failed on 443368751104 wanted 1256790 found 1248589
+> [   28.536016] ------------[ cut here ]------------
+> [   28.536030] WARNING: CPU: 1 PID: 1949 at fs/btrfs/qgroup.c:2532
+> btrfs_qgroup_account_extents+0x10f/0x23b
+
+This WARNING might be a side-effect of earlier quota failures.
+
+> [   28.536031] Modules linked in: 8021q amdgpu gpu_sched ipmi_ssif
+> x86_pkg_temp_thermal kvm_intel kvm radeon irqbypass rapl intel_cstate
+> intel_uncore pcspkr i2c_i801 input_leds drm_kms_helper led_class
+> syscopyarea sysfillrect sysimgblt joydev fb_sys_fops ttm backlight
+> ioatdma hed ipmi_si ipmi_devintf ipmi_msghandler acpi_pad button
+> coretemp nfsd bonding drm auth_rpcgss oid_registry nfs_acl lockd grace
+> sunrpc efivarfs usbhid bcache ahci libahci igb xhci_pci i2c_algo_bit
+> ehci_pci i2c_core xhci_hcd ehci_hcd dca usbcore libata nvme usb_common
+> nvme_core
+> [   28.536070] CPU: 1 PID: 1949 Comm: systemd-journal Not tainted
+> 5.4.80-gentoo-r1-x86_64 #1
+> [   28.536071] Hardware name: Supermicro Super Server/X10SRL-F, BIOS
+> 2.0 12/17/2015
+> [   28.536076] RIP: 0010:btrfs_qgroup_account_extents+0x10f/0x23b
+> [   28.536079] Code: 30 e8 ac fd ff ff 49 8b 55 18 45 31 c9 48 83 c9
+> ff 4c 8d 44 24 10 48 89 ee 48 89 df e8 79 ab ff ff 85 c0 41 89 c4 79
+> 24 eb 71 <0f> 0b 49 8b 55 18 45 31 c9 31 c9 31 ff 4d 8d 45 38 48 89 ee
+> e8 57
+> [   28.536081] RSP: 0018:ffffafc200347ba8 EFLAGS: 00010246
+> [   28.536084] RAX: ffff8fe3e8561ac0 RBX: ffff8fe3ed805888 RCX: 000000000002be80
+> [   28.536085] RDX: ffff8fe3e8561ac0 RSI: 0000000000000013 RDI: ffff8fe3e61b3558
+> [   28.536087] RBP: ffff8fe3e38ed000 R08: 0000000000000001 R09: ffffffffae2f99d1
+> [   28.536089] R10: ffff8fe3cdadaf40 R11: ffff8fe3cdadaf40 R12: 0000000000000000
+> [   28.536090] R13: ffff8fe3e8561ac0 R14: 0000000000000020 R15: 0000000000000000
+> [   28.536093] FS:  00007f3875101800(0000) GS:ffff8fe3efa40000(0000)
+> knlGS:0000000000000000
+> [   28.536095] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   28.536097] CR2: 00007f40f063c024 CR3: 000000046a3c2004 CR4: 00000000001606e0
+> [   28.536098] Call Trace:
+> [   28.536109]  ? _raw_spin_unlock+0x12/0x23
+> [   28.536115]  btrfs_commit_transaction+0x412/0x822
+> [   28.536121]  ? remove_wait_queue+0x46/0x46
+> [   28.536126]  btrfs_rename2+0x10aa/0x12e2
+> [   28.536129]  ? _raw_read_unlock+0x14/0x25
+> [   28.536133]  ? btrfs_set_path_blocking+0x27/0x48
+> [   28.536136]  ? btrfs_search_slot+0x5e6/0x6b0
+> [   28.536144]  ? vfs_rename+0x255/0x3c6
+> [   28.536146]  ? btrfs_create+0x1b3/0x1b3
+> [   28.536149]  vfs_rename+0x255/0x3c6
+> [   28.536154]  ? _raw_spin_unlock+0x12/0x23
+> [   28.536159]  do_renameat2+0x306/0x3e9
+> [   28.536165]  __x64_sys_rename+0x1f/0x22
+> [   28.536170]  do_syscall_64+0x57/0x65
+> [   28.536175]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   28.536180] RIP: 0033:0x7f38759445e7
+> [   28.536185] Code: e8 be 69 09 00 85 c0 0f 95 c0 0f b6 c0 f7 d8 5d
+> c3 66 90 b8 ff ff ff ff 5d c3 66 0f 1f 84 00 00 00 00 00 b8 52 00 00
+> 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 51 f8 15 00 f7 d8 64 89
+> 02 b8
+> [   28.536187] RSP: 002b:00007ffda3fbf988 EFLAGS: 00000202 ORIG_RAX:
+> 0000000000000052
+> [   28.536191] RAX: ffffffffffffffda RBX: 0000560226dd36a0 RCX: 00007f38759445e7
+> [   28.536193] RDX: 0000560226dcc0a0 RSI: 0000560226df8e20 RDI: 0000560226dd5340
+> [   28.536194] RBP: 0000560226dd5340 R08: 0000560226dcc034 R09: 0000000000000003
+> [   28.536196] R10: 0000000000000090 R11: 0000000000000202 R12: 00000000fffffff4
+> [   28.536198] R13: 0000560226dcd498 R14: 0000000000000001 R15: 0000000000000056
+> [   28.536202] ---[ end trace d97290982030e441 ]---
+> [   28.536304] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637222723584 level expected=1 has=0
+> [   28.536308] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637222723584 level expected=1 has=0
+> [   28.536311] BTRFS error (device bcache8): tree level mismatch
+> detected, bytenr=2637222723584 level expected=1 has=0
+> [   28.538767] BTRFS warning (device bcache8): Skipping commit of
+> aborted transaction.
+> [   28.538769] ------------[ cut here ]------------
+> [   28.538771] BTRFS: Transaction aborted (error -117)
+> [   28.538785] WARNING: CPU: 1 PID: 1949 at
+> fs/btrfs/transaction.c:1832 cleanup_transaction+0x6a/0x1cc
+> [   28.538786] Modules linked in: 8021q amdgpu gpu_sched ipmi_ssif
+> x86_pkg_temp_thermal kvm_intel kvm radeon irqbypass rapl intel_cstate
+> intel_uncore pcspkr i2c_i801 input_leds drm_kms_helper led_class
+> syscopyarea sysfillrect sysimgblt joydev fb_sys_fops ttm backlight
+> ioatdma hed ipmi_si ipmi_devintf ipmi_msghandler acpi_pad button
+> coretemp nfsd bonding drm auth_rpcgss oid_registry nfs_acl lockd grace
+> sunrpc efivarfs usbhid bcache ahci libahci igb xhci_pci i2c_algo_bit
+> ehci_pci i2c_core xhci_hcd ehci_hcd dca usbcore libata nvme usb_common
+> nvme_core
+> [   28.538815] CPU: 1 PID: 1949 Comm: systemd-journal Tainted: G
+>  W         5.4.80-gentoo-r1-x86_64 #1
+> [   28.538817] Hardware name: Supermicro Super Server/X10SRL-F, BIOS
+> 2.0 12/17/2015
+> [   28.538821] RIP: 0010:cleanup_transaction+0x6a/0x1cc
+> [   28.538824] Code: 00 bf 02 00 00 00 e8 9f f1 ff ff 84 c0 75 1d 41
+> 83 fe fb 74 17 41 83 fe e2 74 11 44 89 f6 48 c7 c7 0b 7b d8 ae e8 7d
+> 9f db ff <0f> 0b 44 89 f1 ba 28 07 00 00 48 c7 c6 40 15 c4 ae 4d 8d b5
+> 38 07
+> [   28.538826] RSP: 0018:ffffafc200347ba0 EFLAGS: 00010286
+> [   28.538828] RAX: 0000000000000000 RBX: ffff8fe3e38ed000 RCX: 0000000000000007
+> [   28.538830] RDX: 0000000000000001 RSI: ffffffffaed746a9 RDI: 00000000ffffffff
+> [   28.538832] RBP: ffff8fe3ed805888 R08: 00000006a50b1701 R09: 0000000000000027
+> [   28.538834] R10: 0000000000000000 R11: ffffffffaf48b728 R12: ffff8fe3e61b3400
+> [   28.538835] R13: ffff8fe3e38ed000 R14: 00000000ffffff8b R15: ffff8fe3ed8057c0
+> [   28.538838] FS:  00007f3875101800(0000) GS:ffff8fe3efa40000(0000)
+> knlGS:0000000000000000
+> [   28.538840] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   28.538842] CR2: 00007f40f063c024 CR3: 000000046a3c2004 CR4: 00000000001606e0
+> [   28.538843] Call Trace:
+> [   28.538850]  btrfs_commit_transaction+0x7fb/0x822
+> [   28.538855]  ? remove_wait_queue+0x46/0x46
+> [   28.538858]  btrfs_rename2+0x10aa/0x12e2
+> [   28.538862]  ? _raw_read_unlock+0x14/0x25
+> [   28.538866]  ? btrfs_set_path_blocking+0x27/0x48
+> [   28.538869]  ? btrfs_search_slot+0x5e6/0x6b0
+> [   28.538875]  ? vfs_rename+0x255/0x3c6
+> [   28.538878]  ? btrfs_create+0x1b3/0x1b3
+> [   28.538881]  vfs_rename+0x255/0x3c6
+> [   28.538885]  ? _raw_spin_unlock+0x12/0x23
+> [   28.538890]  do_renameat2+0x306/0x3e9
+> [   28.538896]  __x64_sys_rename+0x1f/0x22
+> [   28.538899]  do_syscall_64+0x57/0x65
+> [   28.538902]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   28.538906] RIP: 0033:0x7f38759445e7
+> [   28.538909] Code: e8 be 69 09 00 85 c0 0f 95 c0 0f b6 c0 f7 d8 5d
+> c3 66 90 b8 ff ff ff ff 5d c3 66 0f 1f 84 00 00 00 00 00 b8 52 00 00
+> 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 51 f8 15 00 f7 d8 64 89
+> 02 b8
+> [   28.538910] RSP: 002b:00007ffda3fbf988 EFLAGS: 00000202 ORIG_RAX:
+> 0000000000000052
+> [   28.538913] RAX: ffffffffffffffda RBX: 0000560226dd36a0 RCX: 00007f38759445e7
+> [   28.538915] RDX: 0000560226dcc0a0 RSI: 0000560226df8e20 RDI: 0000560226dd5340
+> [   28.538917] RBP: 0000560226dd5340 R08: 0000560226dcc034 R09: 0000000000000003
+> [   28.538919] R10: 0000000000000090 R11: 0000000000000202 R12: 00000000fffffff4
+> [   28.538920] R13: 0000560226dcd498 R14: 0000000000000001 R15: 0000000000000056
+> [   28.538925] ---[ end trace d97290982030e442 ]---
+> [   28.538940] BTRFS: error (device bcache8) in
+> cleanup_transaction:1832: errno=-117 unknown
+> [   28.540146] NFSD: Using old nfsdcld client tracking operations.
+> [   28.543602] NFSD: starting 90-second grace period (net f0000098)
+> [   28.543607] BTRFS info (device bcache8): forced readonly
+
+All errors after this line are meaningless.  The in-memory metadata is
+intentionally no longer kept in sync with the on-disk metadata because
+a problem was found in the in-memory metadata, so every data verification
+error message after this point could be a false positive.
+
+> [   28.545503] BTRFS info (device bcache8): delayed_refs has NO entry
+> [   32.235159] btrfs_print_data_csum_error: 11222 callbacks suppressed
+> [   32.235164] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42245029888 csum 0x22264492 expected csum 0xda26ce81
+> mirror 1
+> [   32.235259] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001661952 csum 0xb42cb23a expected csum 0xdbd41db8
+> mirror 1
+> [   32.235262] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001661952 csum 0xb42cb23a expected csum 0xdbd41db8
+> mirror 1
+> [   32.235277] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001661952 csum 0xb42cb23a expected csum 0xdbd41db8
+> mirror 1
+> [   32.235386] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001661952 csum 0xb42cb23a expected csum 0xdbd41db8
+> mirror 1
+> [   32.235484] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001661952 csum 0xb42cb23a expected csum 0xdbd41db8
+> mirror 1
+> [   32.235606] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001616896 csum 0xb83d1fa9 expected csum 0x7de51e69
+> mirror 1
+> [   32.235626] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001616896 csum 0xb83d1fa9 expected csum 0x7de51e69
+> mirror 1
+> [   32.235882] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001616896 csum 0xb83d1fa9 expected csum 0x7de51e69
+> mirror 1
+> [   32.235908] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 42001616896 csum 0xb83d1fa9 expected csum 0x7de51e69
+> mirror 1
+> [   33.032976] verify_parent_transid: 33 callbacks suppressed
+> [   33.032979] BTRFS error (device bcache8): parent transid verify
+> failed on 2637866614784 wanted 1255722 found 1248750
+> [   33.534080] BTRFS error (device bcache8): parent transid verify
+> failed on 443429355520 wanted 1256820 found 1248614
+> [   33.649976] BTRFS error (device bcache8): parent transid verify
+> failed on 2637868580864 wanted 1255722 found 1248737
+> [   33.735128] BTRFS error (device bcache8): parent transid verify
+> failed on 1504161005568 wanted 1256545 found 1248715
+> [   33.848209] BTRFS error (device bcache8): parent transid verify
+> failed on 2637869268992 wanted 1255722 found 1248737
+> [   34.578484] BTRFS error (device bcache8): parent transid verify
+> failed on 2637870219264 wanted 1255722 found 1248737
+> [   34.678192] BTRFS error (device bcache8): parent transid verify
+> failed on 2637871874048 wanted 1255722 found 1248750
+> [   34.907962] NFSD: Unable to create client record on stable storage: -121
+> [   34.923720] BTRFS error (device bcache8): parent transid verify
+> failed on 2637836156928 wanted 1255722 found 1248726
+> [   35.187473] BTRFS error (device bcache8): parent transid verify
+> failed on 2637873823744 wanted 1255722 found 1248737
+> [   35.520732] BTRFS error (device bcache8): parent transid verify
+> failed on 2637865287680 wanted 1255722 found 1246710
+> [   37.239394] btrfs_print_data_csum_error: 11456 callbacks suppressed
+> [   37.239403] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 46802059264 csum 0x66aad3c5 expected csum 0xd7c3ab69
+> mirror 1
+> [   37.240179] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.240278] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.240328] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.240413] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.240506] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.240621] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.241163] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.241230] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 23836516352 csum 0xd141894f expected csum 0xcbb9b123
+> mirror 1
+> [   37.241253] BTRFS warning (device bcache8): csum failed root 5 ino
+> 35130208 off 46802059264 csum 0x66aad3c5 expected csum 0xd7c3ab69
+> mirror 1
+> [   38.332837] verify_parent_transid: 13 callbacks suppressed
+> [   38.332842] BTRFS error (device bcache8): parent transid verify
+> failed on 2637872201728 wanted 1255722 found 1248750
+> [   38.359910] BTRFS error (device bcache8): parent transid verify
+> failed on 2637873184768 wanted 1255722 found 1248737
+> [   38.840321] BTRFS error (device bcache8): parent transid verify
+> failed on 2637874495488 wanted 1255722 found 1244383
+> [   38.843757] BTRFS error (device bcache8): parent transid verify
+> failed on 2637873496064 wanted 1255722 found 1248737
+> [   38.947438] BTRFS error (device bcache8): parent transid verify
+> failed on 2637870202880 wanted 1255722 found 1248737
+> [   38.961613] BTRFS error (device bcache8): parent transid verify
+> failed on 2637874839552 wanted 1255722 found 1248750
+> [   38.962417] BTRFS error (device bcache8): parent transid verify
+> failed on 2637872545792 wanted 1255722 found 1248737
+> [   39.281811] BTRFS error (device bcache8): parent transid verify
+> failed on 2637825966080 wanted 1255722 found 1246708
+> [   39.365626] BTRFS error (device bcache8): parent transid verify
+> failed on 2637827964928 wanted 1255722 found 1248726
+> [   39.404831] BTRFS error (device bcache8): parent transid verify
+> failed on 2637828915200 wanted 1255722 found 1248726
+> [   51.580007] btrfs_print_data_csum_error: 2504 callbacks suppressed
+> [   51.580014] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.580445] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.580598] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.581524] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.581558] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.581600] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.581654] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.581659] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.581679] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   51.582702] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29754242 off 4508229632 csum 0x8ad066c0 expected csum 0xa30916e7
+> mirror 1
+> [   66.489059] btrfs_print_data_csum_error: 23 callbacks suppressed
+> [   66.489066] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.489266] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.489335] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.489430] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.489516] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.489602] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.489702] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.489798] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.490085] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   66.490098] BTRFS warning (device bcache8): csum failed root 5 ino
+> 29415574 off 1135157248 csum 0xe189e80c expected csum 0x20dba345
+> mirror 1
+> [   73.211134] verify_parent_transid: 1 callbacks suppressed
+> [   73.211141] BTRFS error (device bcache8): parent transid verify
+> failed on 2637944602624 wanted 1255737 found 1248780
+> [   73.252898] BTRFS error (device bcache8): parent transid verify
+> failed on 2638151680000 wanted 1256657 found 1248824
+> [  119.957344] NFSD: Unable to end grace period: -121
