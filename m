@@ -2,83 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BA02DB1E9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Dec 2020 17:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006302DB215
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Dec 2020 18:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731145AbgLOQwM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Dec 2020 11:52:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58476 "EHLO mx2.suse.de"
+        id S1729852AbgLORBb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Dec 2020 12:01:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36418 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgLOQwB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Dec 2020 11:52:01 -0500
+        id S1729611AbgLORBR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Dec 2020 12:01:17 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 947FAAC7F;
-        Tue, 15 Dec 2020 16:51:19 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A1AF5AC7F;
+        Tue, 15 Dec 2020 17:00:36 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6FB70DA7C3; Tue, 15 Dec 2020 17:49:40 +0100 (CET)
-Date:   Tue, 15 Dec 2020 17:49:40 +0100
+        id 97C10DA7C3; Tue, 15 Dec 2020 17:58:57 +0100 (CET)
+Date:   Tue, 15 Dec 2020 17:58:57 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: fix possible free space tree corruption with
- online conversion
-Message-ID: <20201215164940.GW6430@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/6] btrfs: Remove useless ASSERTS
+Message-ID: <20201215165857.GX6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        stable@vger.kernel.org
-References: <e5f7fe3ad3a612efeda53f016904aff332db6f8a.1607610739.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20201207153237.1073887-1-nborisov@suse.com>
+ <20201207153237.1073887-4-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e5f7fe3ad3a612efeda53f016904aff332db6f8a.1607610739.git.josef@toxicpanda.com>
+In-Reply-To: <20201207153237.1073887-4-nborisov@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 09:32:31AM -0500, Josef Bacik wrote:
-> While running btrfs/011 in a loop I would often ASSERT() while trying to
-> add a new free space entry that already existed, or get an -EEXIST while
-> adding a new block to the extent tree, which is another indication of
-> double allocation.
+On Mon, Dec 07, 2020 at 05:32:34PM +0200, Nikolay Borisov wrote:
+> The invariants the asserts are checking are already verified by the
+> tree checker, just remove them.
 
-Do you have the stack traces? I'll update the changelog if you send it.
-
-> This occurs because when we do the free space tree population, we create
-> the new root and then populate the tree and commit the transaction.
-> The problem is when you create a new root, the root node and commit root
-> node are the same.  This means that caching a block group before the
-> transaction is committed can race with other operations modifying the
-> free space tree, and thus you can get double adds and other sort of
-> shenanigans.  This is only a problem for the first transaction, once
-> we've committed the transaction we created the free space tree in we're
-> OK to use the free space tree to cache block groups.
-> 
-> Fix this by marking the fs_info as unsafe to load the free space tree,
-> and fall back on the old slow method.  We could be smarter than this,
-> for example caching the block group while we're populating the free
-> space tree, but since this is a serious problem I've opted for the
-> simplest solution.
-
-Makes sense, this is a one-time thing during setup.
-
-> cc: stable@vger.kernel.org
-
-CC: stable@vger.kernel.org
-
-If you send patch with the tag it's good to also note the minimal
-version where it's relevant as you can easily reuse the knowledge from
-developing the fix. The patch may not apply due to other changes, but
-trivial context fixups are done by people interested in the backports.
-
-> Fixes: a5ed91828518 ("Btrfs: implement the free space B-tree")
-
-So if you know the offending commit, run
-
-  $ git describe --contains a5ed91828518
-  v4.5-rc1~21^2~22^2^2~3
-
-which is 4.9.
+I haven't found where exactly does tree-checker verify the invariant and
+also think that we can safely leave the asserts there. Even if it's for
+a normally impossible case, assertions usually catch bugs after changing
+some other code.
