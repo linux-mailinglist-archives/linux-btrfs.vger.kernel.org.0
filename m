@@ -2,144 +2,252 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E3A2DA35F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Dec 2020 23:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F912DA6FE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Dec 2020 05:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407337AbgLNW25 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Dec 2020 17:28:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733021AbgLNW2o (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Dec 2020 17:28:44 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947CFC0613D3
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Dec 2020 14:28:04 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id b9so13155976qtr.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Dec 2020 14:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZmLCxgA9V60iX/JLVIC9gK9UFmRq79R7D1pZCc8eUwA=;
-        b=Cze6M9ZaflPABEctRVpKSXGw6xQxP2Bvk++SpBqXofToixGi9Bdjzrcl+AjuLbrKxb
-         VNPLX4ZIJfHmQ124DkGtYdG2m4WF9jy+Q4ITRQ+H1dTl1Zsf9+Yb4KoywMU3mLPICE7Y
-         VTV8PPrMLqr9Yg2O6mpJFaSOkpjrphLypLvMQT4436jtBOwXgcRffJVCBAocze4N33en
-         8o3IrQtFruhuiWKCmzz3gj6T4iE9gEObfs8NKjvgpyu7WmPbMF8EfW6U/WQQOD21m39s
-         FsqxzuEcnzraSzmdcaxSWlvQ+ImIe4J0IPuoA0KIAug5TZtRvlLU2WIniuVN2LJ4Hwpy
-         z1LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZmLCxgA9V60iX/JLVIC9gK9UFmRq79R7D1pZCc8eUwA=;
-        b=kicaKdBp7GGCDCdVqARN5sCppe+ikBXqd/3SmNdacyoQt5/bse2xNSByxdTTczh4Wg
-         +RA6Jws3ELV8laA19N2jJSf02QiOOMpy+IlK6RVVqWxcIO2SxT6HFzekwRr9+hCJVizw
-         L1TA5IG7vrvpQ9Fqct0fmm4+Yr/b5huaiFB6Hbhd5KB1t99vCrFI9yekn6LdE5T6JdkD
-         qHw4PlUQiQOHXfLvt93Y4ldgdo4/VFc+4i9bSEqH7hantQKk7kmA4nlelWIiRdZgrNTC
-         Lxtiu3mvh9kXuv68BX7Jc2M5Y2QhiFGkKlTCRoGyObPcyQVtNaHd7lO+H+mJTmfWFEFh
-         mGEQ==
-X-Gm-Message-State: AOAM531lWwZjlbvASsbRsyqIpBoKMKy++kuSgDkNbIZDQlUQLaQWmT8X
-        8Cy87EWxCv3kkYuWKNapih5e72gpJDaGqjuSLLZYBdSSD+En/A==
-X-Google-Smtp-Source: ABdhPJxRkUnuFifBh7frCGEtYJ0gI14mI2DBs5qGHRtflMoWvDqAi7J2s2AFzT+815Rtylbv9poSmSZYq546CL8a7fE=
-X-Received: by 2002:ac8:4e47:: with SMTP id e7mr33938270qtw.262.1607984882953;
- Mon, 14 Dec 2020 14:28:02 -0800 (PST)
+        id S1725997AbgLOEAG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Dec 2020 23:00:06 -0500
+Received: from mail.synology.com ([211.23.38.101]:34740 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725945AbgLOEAG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Dec 2020 23:00:06 -0500
+From:   ethanwu <ethanwu@synology.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1608004764; bh=eONTHYlh7hFNP11s5x3eVU8vMw7z9yd3I51VV3uawqM=;
+        h=From:To:Cc:Subject:Date;
+        b=cooldKHJQAjaGdZtzD4kVRVwXF4w3OtphUXjhSDAQmML/Ckhds6btxp1OtIF8siRy
+         bQGW0eC0nkjT4o61KF5qjQ/YJCS0FnzQbQMc5eG9v8ifuQRSoODRPxsEKcaqFtupyQ
+         tfrHcn7BK2XY3+kjWbxjSS6m+WOxBTAwoMPx30S0=
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, ethanwu <ethanwu@synology.com>
+Subject: [PATCH v2] btrfs: test if rename handles dir item collision correctly
+Date:   Tue, 15 Dec 2020 11:59:06 +0800
+Message-Id: <20201215035906.233272-1-ethanwu@synology.com>
 MIME-Version: 1.0
-References: <CAA85sZtU1dAYMSUR4fXbcuS4i=gU=ukC-9Y7io3pUMUt3S+Bjw@mail.gmail.com>
- <ccb8c05e-fa56-c88b-c211-f250fe85d815@applied-asynchrony.com>
- <CAA85sZvFBMad6N8hHR5YM56X9DxKE_3CyOT3xEnp9KsWX=fuHQ@mail.gmail.com>
- <CAA85sZt_deCX-jwtwfT_izf_6nsQXbroe=ksKfNErCwjFXWu_g@mail.gmail.com> <CAA85sZseX5FLT-RBFRHjZ0_F0V3X9fFEG4faU02KLaXwgaV=PA@mail.gmail.com>
-In-Reply-To: <CAA85sZseX5FLT-RBFRHjZ0_F0V3X9fFEG4faU02KLaXwgaV=PA@mail.gmail.com>
-From:   Ian Kumlien <ian.kumlien@gmail.com>
-Date:   Mon, 14 Dec 2020 23:27:51 +0100
-Message-ID: <CAA85sZs6_tj-vE8Yve5ixTez7-9sompG4P24FKmbpZ3ZOY_HnQ@mail.gmail.com>
-Subject: Re: Odd filesystem issue, reading beyond device
-To:     =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Aaaand sorry, turns out that my raid device was 1 fifth of its
-original size and it had to be manually remedied...
+This is a regression test for the issue fixed by the kernel commit titled
+"btrfs: correctly calculate item size used when item key collision happens"
 
-Now lets see if data survives this...
+In this case, we'll simply rename many forged filename that cause collision
+under a directory to see if rename failed and filesystem is forced readonly.
 
-On Mon, Dec 14, 2020 at 10:18 PM Ian Kumlien <ian.kumlien@gmail.com> wrote:
->
-> On Mon, Dec 14, 2020 at 9:33 PM Ian Kumlien <ian.kumlien@gmail.com> wrote=
-:
-> >
-> > On Mon, Dec 14, 2020 at 8:57 PM Ian Kumlien <ian.kumlien@gmail.com> wro=
-te:
-> > >
-> > > On Mon, Dec 14, 2020 at 5:50 PM Holger Hoffst=C3=A4tte
-> > > <holger@applied-asynchrony.com> wrote:
-> > > >
-> > > > On 2020-12-14 17:28, Ian Kumlien wrote:
-> > > > > Hi,
-> > > > >
-> > > > > Upgraded from 5.9.6 to 5.10 and now I get this:
-> > > > > [  581.665506] BTRFS: device fsid 3c16de2d-33b6-436a-ba17-38b917a=
-e3e33
-> > > > > devid 1 transid 258057 /dev/dm-0 scanned by systemd-udevd (1043)
-> > > > > [  589.602444] BTRFS info (device dm-0): use lzo compression, lev=
-el 0
-> > > > > [  589.602459] BTRFS info (device dm-0): enabling auto defrag
-> > > > > [  589.602465] BTRFS info (device dm-0): using free space tree
-> > > > > [  589.602470] BTRFS info (device dm-0): has skinny extents
-> > > > > [  589.603082] attempt to access beyond end of device
-> > > > >                 dm-0: rw=3D4096, want=3D36461289632, limit=3D1097=
-1543296
-> > > > > [  589.603108] attempt to access beyond end of device
-> > > > >                 dm-0: rw=3D4096, want=3D36461355168, limit=3D1097=
-1543296
-> > > > > [  589.603125] BTRFS error (device dm-0): failed to read chunk ro=
-ot
-> > > > > [  589.603412] BTRFS error (device dm-0): open_ctree failed
-> > > > > [  834.619193] BTRFS info (device dm-0): use lzo compression, lev=
-el 0
-> > > > > [  834.619209] BTRFS info (device dm-0): enabling auto defrag
-> > > > > [  834.619214] BTRFS info (device dm-0): using free space tree
-> > > > > [  834.619219] BTRFS info (device dm-0): has skinny extents
-> > > > > [  834.619825] attempt to access beyond end of device
-> > > > >                 dm-0: rw=3D4096, want=3D36461289632, limit=3D1097=
-1543296
-> > > > > [  834.619844] attempt to access beyond end of device
-> > > > >                 dm-0: rw=3D4096, want=3D36461355168, limit=3D1097=
-1543296
-> > > > > [  834.619858] BTRFS error (device dm-0): failed to read chunk ro=
-ot
-> > > > > [  834.620205] BTRFS error (device dm-0): open_ctree failed
-> > > > >
-> > > > > Any ideas?
-> > > > >
-> > > >
-> > > > See https://lore.kernel.org/lkml/20201214053147.GA24093@codemonkey.=
-org.uk/
-> > > > + followups. Nothing to do with btrfs.
-> > >
-> > > Thank you! and 5.0.1 has been released with the patches reverted, FYI=
- =3D)
-> >
-> > No, I'm sad to report that that's not it... or there are other deeper
-> > raid issues...
-> >
-> > [  108.688424] BTRFS info (device dm-0): use lzo compression, level 0
-> > [  108.688439] BTRFS info (device dm-0): enabling auto defrag
-> > [  108.688444] BTRFS info (device dm-0): using free space tree
-> > [  108.688449] BTRFS info (device dm-0): has skinny extents
-> > [  108.688955] attempt to access beyond end of device
-> >                dm-0: rw=3D4096, want=3D36461289632, limit=3D10971543296
-> > [  108.688978] attempt to access beyond end of device
-> >                dm-0: rw=3D4096, want=3D36461355168, limit=3D10971543296
-> > [  108.688994] BTRFS error (device dm-0): failed to read chunk root
-> > [  108.689310] BTRFS error (device dm-0): open_ctree failed
-> >
-> > This is with 5.0.1
->
-> As an update, 5.9.6 can't mount it either
->
-> > > > -h
+Signed-off-by: ethanwu <ethanwu@synology.com>
+---
+v2:
+- Add a python script to generate the forged name at run-time rather than
+from hardcoded names
+- Fix , Btrfs->btrfs, and typo mentioned in v1
+
+ src/btrfs_crc32c_forged_name.py | 92 +++++++++++++++++++++++++++++++++
+ tests/btrfs/228                 | 72 ++++++++++++++++++++++++++
+ tests/btrfs/228.out             |  2 +
+ tests/btrfs/group               |  1 +
+ 4 files changed, 167 insertions(+)
+ create mode 100755 src/btrfs_crc32c_forged_name.py
+ create mode 100755 tests/btrfs/228
+ create mode 100644 tests/btrfs/228.out
+
+diff --git a/src/btrfs_crc32c_forged_name.py b/src/btrfs_crc32c_forged_name.py
+new file mode 100755
+index 00000000..d8abedde
+--- /dev/null
++++ b/src/btrfs_crc32c_forged_name.py
+@@ -0,0 +1,92 @@
++# SPDX-License-Identifier: GPL-2.0
++
++import struct
++import sys
++import os
++import argparse
++
++class CRC32(object):
++  """A class to calculate and manipulate CRC32."""
++  def __init__(self):
++    self.polynom = 0x82F63B78
++    self.table, self.reverse = [0]*256, [0]*256
++    self._build_tables()
++
++  def _build_tables(self):
++    for i in range(256):
++      fwd = i
++      rev = i << 24
++      for j in range(8, 0, -1):
++        # build normal table
++        if (fwd & 1) == 1:
++          fwd = (fwd >> 1) ^ self.polynom
++        else:
++          fwd >>= 1
++        self.table[i] = fwd & 0xffffffff
++        # build reverse table =)
++        if rev & 0x80000000 == 0x80000000:
++          rev = ((rev ^ self.polynom) << 1) | 1
++        else:
++          rev <<= 1
++        rev &= 0xffffffff
++        self.reverse[i] = rev
++
++  def calc(self, s):
++    """Calculate crc32 of a string.
++       Same crc32 as in (binascii.crc32)&0xffffffff.
++    """
++    crc = 0xffffffff
++    for c in s:
++      crc = (crc >> 8) ^ self.table[(crc ^ ord(c)) & 0xff]
++    return crc^0xffffffff
++
++  def forge(self, wanted_crc, s, pos=None):
++    """Forge crc32 of a string by adding 4 bytes at position pos."""
++    if pos is None:
++      pos = len(s)
++
++    # forward calculation of CRC up to pos, sets current forward CRC state
++    fwd_crc = 0xffffffff
++    for c in s[:pos]:
++      fwd_crc = (fwd_crc >> 8) ^ self.table[(fwd_crc ^ ord(c)) & 0xff]
++
++    # backward calculation of CRC up to pos, sets wanted backward CRC state
++    bkd_crc = wanted_crc^0xffffffff
++    for c in s[pos:][::-1]:
++      bkd_crc = ((bkd_crc << 8) & 0xffffffff) ^ self.reverse[bkd_crc >> 24]
++      bkd_crc ^= ord(c)
++
++    # deduce the 4 bytes we need to insert
++    for c in struct.pack('<L',fwd_crc)[::-1]:
++      bkd_crc = ((bkd_crc << 8) & 0xffffffff) ^ self.reverse[bkd_crc >> 24]
++      bkd_crc ^= ord(c)
++
++    res = s[:pos] + struct.pack('<L', bkd_crc) + s[pos:]
++    return res
++
++  def parse_args(self):
++    parser = argparse.ArgumentParser()
++    parser.add_argument("-d", default=os.getcwd(), dest='dir',
++                        help="directory to generate forged names")
++    parser.add_argument("-c", default=1, type=int, dest='count',
++                        help="number of forged names to create")
++    return parser.parse_args()
++
++if __name__=='__main__':
++
++  crc = CRC32()
++  wanted_crc = 0x00000000
++  count = 0
++  args = crc.parse_args()
++  dirpath=args.dir
++  while count < args.count :
++    origname = os.urandom (89).encode ("hex")[:-1].strip ("\x00")
++    forgename = crc.forge(wanted_crc, origname, 4)
++    if ("/" not in forgename) and ("\x00" not in forgename):
++      srcpath=dirpath + '/' + str(count)
++      dstpath=dirpath + '/' + forgename
++      file (srcpath, 'a').close()
++      os.rename(srcpath, dstpath)
++      os.system('btrfs fi sync %s' % (dirpath))
++      count+=1;
++
+diff --git a/tests/btrfs/228 b/tests/btrfs/228
+new file mode 100755
+index 00000000..e38da19b
+--- /dev/null
++++ b/tests/btrfs/228
+@@ -0,0 +1,72 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 Synology.  All Rights Reserved.
++#
++# FS QA Test 228
++#
++# Test if btrfs rename handle dir item collision correctly
++# Without patch fix, rename will fail with EOVERFLOW, and filesystem
++# is forced readonly.
++#
++# This bug is going to be fixed by a patch for kernel titled
++# "btrfs: correctly calculate item size used when item key collision happens"
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# real QA test starts here
++
++_supported_fs btrfs
++_require_scratch
++_require_command $PYTHON2_PROG python2
++
++rm -f $seqres.full
++
++# Currently in btrfs the node/leaf size can not be smaller than the page
++# size (but it can be greater than the page size). So use the largest
++# supported node/leaf size (64Kb) so that the test can run on any platform
++# that Linux supports.
++_scratch_mkfs "--nodesize 65536" >>$seqres.full 2>&1
++_scratch_mount
++
++#
++# In the following for loop, we'll create a leaf fully occupied by
++# only one dir item with many forged collision names in it.
++#
++# leaf 22544384 items 1 free space 0 generation 6 owner FS_TREE
++# leaf 22544384 flags 0x1(WRITTEN) backref revision 1
++# fs uuid 9064ba52-3d2c-4840-8e26-35db08fa17d7
++# chunk uuid 9ba39317-3159-46c9-a75a-965ab1e94267
++#    item 0 key (256 DIR_ITEM 3737737011) itemoff 25 itemsize 65410
++#    ...
++#
++
++$PYTHON2_PROG $here/src/btrfs_crc32c_forged_name.py -d $SCRATCH_MNT -c 310
++
++ISRW=$(_fs_options $SCRATCH_DEV | grep -w "rw")
++if [ -n "$ISRW" ]; then
++	echo "FS is Read-Write Test OK"
++else
++	echo "FS is Read-Only. Test Failed"
++	status=1
++	exit
++fi
++
++# success, all done
++status=0; exit
+diff --git a/tests/btrfs/228.out b/tests/btrfs/228.out
+new file mode 100644
+index 00000000..eae514f0
+--- /dev/null
++++ b/tests/btrfs/228.out
+@@ -0,0 +1,2 @@
++QA output created by 228
++FS is Read-Write Test OK
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index d18450c7..f8021668 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -228,3 +228,4 @@
+ 224 auto quick qgroup
+ 225 auto quick volume seed
+ 226 auto quick rw snapshot clone prealloc punch
++228 auto quick
+-- 
+2.25.1
+
