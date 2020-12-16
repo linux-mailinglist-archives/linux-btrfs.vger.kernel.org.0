@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A5D2DC43C
+	by mail.lfdr.de (Postfix) with ESMTP id F3C1D2DC43D
 	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgLPQ2s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Dec 2020 11:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
+        id S1726773AbgLPQ2t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Dec 2020 11:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbgLPQ2s (ORCPT
+        with ESMTP id S1726770AbgLPQ2s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 16 Dec 2020 11:28:48 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85B4C0619DE
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:56 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id y15so17587181qtv.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:56 -0800 (PST)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64775C0619DF
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:58 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id y15so17587332qtv.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TGT1uQEPkXlGSsuy+GeVOlQWvLE7GDlWh9fH5azgYjI=;
-        b=ERkp9UYBxT0EmqE+N8zUrmlqwStrJC0ru8WcONwyYuVC5Xvah9u8wBeeYCME9vuMcj
-         630o31BDHT4vyoj1gjDj+hl68DujTA+3Ye2YCd3iYZMa9qy0p3YkrpHSx8+Tk5D33L12
-         7zF1FOd5NRvb3RgFvucSGo0Q2O5UedhBF94jtjOjA9MgSBdagPIDEUFsSBE48dQeYFZk
-         VVJGuX5268CSVhsAj7HomkuMRdAc6i/I+uonaHNrspJrriaeINgIjFs700tPsAcF1hJQ
-         Hr6KE39CfsIEH4e1FXPvU+nHq2oR9wnOaW/AhPsR8AwV0+NhFsulSCWuMQ40hDq5IGX8
-         zA2w==
+        bh=ur6ox4iL1o9MVeHXdYEjmLMvBsofMGEAupRdEsR8x8M=;
+        b=wmv9q1p4FwH6Qb24vIzzak4sPILbj1fd8rHojC4lpYM3LjueuK7QVtjBzoxawnvbIH
+         Ialnzvam2EgCpWqcgomRGKeADy1iYjMSrdR8h/HZlAxM10Q9PQ3VfD+d6BSE4bFBV1NK
+         rgOZ34zSckbwl/bTWyvtyRAdiTZzKWmqgBxtWtSDGU+VQXHVzAOEocfhzo6Me1c5uE2T
+         ctGwa41J4ZdeNuFN+v8WwkapXD/peeiWpJ8y2G4q7WeHxrrEu7G4cx3ZUYRPRwPMlJjL
+         QwEx3z7mJwNyjc5eL9ZnKk2RavxmGi+bUNnqrjbz8LStAL6N4ZRMlw6tjFVM5luXbcqW
+         8ukQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TGT1uQEPkXlGSsuy+GeVOlQWvLE7GDlWh9fH5azgYjI=;
-        b=AFhNhnFBcscv3XaFEx/X6RUl8MAB6Dj9xrmRGbE2oJUGQv00gTrSciZ223tmp7JYiS
-         8nuLgwjhKdfBTOXASXk72jxLv9aI/xP7mmpvN1Vq3EoGAsgiQu4Qnni81uaQmdG16Cbf
-         eeZlMXUibVKkra3LBZOfMMQFL+YBtFPLsc0EUMuvcIFCxxj8eA1XII1/dOUCBQbNGYNC
-         DYJJRMWCTfG9zsbexOiGpVK0rRVo5adgUQA5vxn2qFOq8H641j7Qqq5v3a2u8Cktptvf
-         igvnEdgl+W5hMH3pZmDuWCXP+EfCzUSL1iPlWDs1iql9RF9e7BI9KDfEoaaB8KiQx8Mp
-         QVPg==
-X-Gm-Message-State: AOAM5335ZIeZ8cj1YxVYKjaFHEtAUXuJ9qPTi9GUZXPKJvdKm0I4Z3l6
-        tmjMcOoq9TXooqxSqHUCHTqrUUxuHyYeavfj
-X-Google-Smtp-Source: ABdhPJwKlD+EjT/7vjWbvo/Me09NMJ72DbNWfDFujGgIQrNef8B4VBrD5P2HxsJeZgkeShqyVDI0Qg==
-X-Received: by 2002:aed:3b13:: with SMTP id p19mr116198qte.302.1608136075749;
-        Wed, 16 Dec 2020 08:27:55 -0800 (PST)
+        bh=ur6ox4iL1o9MVeHXdYEjmLMvBsofMGEAupRdEsR8x8M=;
+        b=gwiLIgtIdOe/mp/QvdeokcdRVFpjgahYMU5Qee/g3aj4RqvI70+nhwpdlAR32QKTej
+         Qh70GwP8zGpfs4NZo3128gyowxcuA1m+2uKOw6eZ3XR8CPo81XbDXJDTN+lSsObn+dbt
+         cXJBxuc7OQv03MrWxTzG/6jgQUWjXXD1n5efPYT5HWfu5PxU8uLGbQ+3ngLyPGVfbYel
+         +Gx0A2NW6sdEjx/rB7XB2yPc3OXwCZLVXk5+u+GX8L8K/Hs5EJzqwjLy4+J99S7uaed4
+         +OK/Rj5w27xcHwTCWFdn70IMH4AhKO5Gib7twbRa/K4VDmVetKCfNhdcXYLSWQO7FPfB
+         +sxw==
+X-Gm-Message-State: AOAM531hcEI6H3fKl4kzRgM8CTSQWssVtPFWHntqQGN0hoFohLQKrhgY
+        JGfBQBhFlGzCcN+I43w1ply6xn0UoMpze1rC
+X-Google-Smtp-Source: ABdhPJw4SUbjLwrmU3Vgg6Rftmr4wgmv7AyV730pFoJV0VQaADYsWF65pbfcNPkC42Pfxe6oAHLaGg==
+X-Received: by 2002:aed:29c2:: with SMTP id o60mr43227293qtd.253.1608136077339;
+        Wed, 16 Dec 2020 08:27:57 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x17sm109237qts.59.2020.12.16.08.27.54
+        by smtp.gmail.com with ESMTPSA id u26sm1332231qkm.69.2020.12.16.08.27.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 08:27:55 -0800 (PST)
+        Wed, 16 Dec 2020 08:27:56 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v7 34/38] btrfs: handle __add_reloc_root failures in btrfs_recover_relocation
-Date:   Wed, 16 Dec 2020 11:26:50 -0500
-Message-Id: <2cbb558f593e693a176d489d6e3c4d704718a347.1608135849.git.josef@toxicpanda.com>
+Subject: [PATCH v7 35/38] btrfs: cleanup error handling in prepare_to_merge
+Date:   Wed, 16 Dec 2020 11:26:51 -0500
+Message-Id: <1d9d1340374c0f463015ff251884aefc16dfb752.1608135849.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1608135849.git.josef@toxicpanda.com>
 References: <cover.1608135849.git.josef@toxicpanda.com>
@@ -63,45 +63,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We can already handle errors appropriately from this function, deal with
-an error coming from __add_reloc_root appropriately.
+This probably can't happen even with a corrupt file system, because we
+would have failed much earlier on than here.  However there's no reason
+we can't just check and bail out as appropriate, so do that and convert
+the correctness BUG_ON() to an ASSERT().
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ fs/btrfs/relocation.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 26b85ab4b295..39d5cb9360a2 100644
+index 39d5cb9360a2..56f1fce7c746 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -4015,7 +4015,12 @@ int btrfs_recover_relocation(struct btrfs_root *root)
- 		}
+@@ -1880,8 +1880,14 @@ int prepare_to_merge(struct reloc_control *rc, int err)
  
- 		err = __add_reloc_root(reloc_root);
--		BUG_ON(err < 0); /* -ENOMEM or logic error */
-+		if (err) {
-+			list_add_tail(&reloc_root->root_list, &reloc_roots);
-+			btrfs_put_root(fs_root);
-+			btrfs_end_transaction(trans);
-+			goto out_unset;
+ 		root = btrfs_get_fs_root(fs_info, reloc_root->root_key.offset,
+ 				false);
+-		BUG_ON(IS_ERR(root));
+-		BUG_ON(root->reloc_root != reloc_root);
++		if (IS_ERR(root)) {
++			list_add(&reloc_root->root_list, &reloc_roots);
++			btrfs_abort_transaction(trans, (int)PTR_ERR(root));
++			if (!err)
++				err = PTR_ERR(root);
++			break;
 +		}
- 		fs_root->reloc_root = btrfs_grab_root(reloc_root);
- 		btrfs_put_root(fs_root);
- 	}
-@@ -4230,7 +4235,10 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
- 		return PTR_ERR(reloc_root);
++		ASSERT(root->reloc_root == reloc_root);
  
- 	ret = __add_reloc_root(reloc_root);
--	BUG_ON(ret < 0);
-+	if (ret) {
-+		btrfs_put_root(reloc_root);
-+		return ret;
-+	}
- 	new_root->reloc_root = btrfs_grab_root(reloc_root);
- 
- 	if (rc->create_reloc_tree)
+ 		/*
+ 		 * set reference count to 1, so btrfs_recover_relocation
 -- 
 2.26.2
 
