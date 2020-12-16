@@ -2,83 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530582DC6C7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 19:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3D02DC717
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 20:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732364AbgLPSxO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Dec 2020 13:53:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45844 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732361AbgLPSxO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Dec 2020 13:53:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C406AAF0B;
-        Wed, 16 Dec 2020 18:52:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CB5A8DA7B4; Wed, 16 Dec 2020 19:50:52 +0100 (CET)
-Date:   Wed, 16 Dec 2020 19:50:52 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Nick Terrell <terrelln@fb.com>, Eric Biggers <ebiggers@kernel.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yann Collet <cyan@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Petr Malat <oss@malat.biz>, Chris Mason <clm@fb.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Niket Agarwal <niketa@fb.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Johannes Weiner <jweiner@fb.com>
-Subject: Re: [f2fs-dev] [PATCH v7 0/3] Update to zstd-1.4.6
-Message-ID: <20201216185052.GL6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Herbert Xu <herbert@gondor.apana.org.au>,
-        Nick Terrell <terrelln@fb.com>, Eric Biggers <ebiggers@kernel.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        "squashfs-devel@lists.sourceforge.net" <squashfs-devel@lists.sourceforge.net>,
-        Christoph Hellwig <hch@infradead.org>, Yann Collet <cyan@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
-        Petr Malat <oss@malat.biz>, Chris Mason <clm@fb.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Niket Agarwal <niketa@fb.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Johannes Weiner <jweiner@fb.com>
-References: <20201203205114.1395668-1-nickrterrell@gmail.com>
- <DF6B2E26-2D6E-44FF-89DB-93A37E2EA268@fb.com>
- <X9lOHkAE67EP/sXo@sol.localdomain>
- <B3F00261-E977-4B85-84CD-66B07DA79D9D@fb.com>
- <20201216005806.GA26841@gondor.apana.org.au>
+        id S2388513AbgLPT2y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Dec 2020 14:28:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388512AbgLPT2y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Dec 2020 14:28:54 -0500
+Received: from ravenhurst.kallisti.us (ravenhurst-smtp-tx.kallisti.us [IPv6:2600:3c03:e000:2e0::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7633C0617A6
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 11:28:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kallisti.us
+        ; s=20180707; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:
+        Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=xwMhIf473iA4IqjHJBaY7YRdm4q30MuaavaneRIC5CA=; b=aCPuNgLZd6X9SETzxODd6Li1yS
+        XfPl//kQXLHA0Ou86W5EcfBZs+DFTKxr3eRPRVys/l41HnileqVO6WI1THQW4JF9dVclk0WIGItnF
+        USNnESAh3cW5e6xQ1PGM09xOnAvfaBUA8wd6DyH3IuNSMIW8/9b5oXqx4ykWflyFgSGxwOfA4a0t1
+        zjNF6PfW+7gYb4/stZHgsS2ME009ZwDAb8OJ3ZBKOonWSfehZju8L6Kl3wuTBiMGD0lDOeH4EzX83
+        AkdZqcxeEnWIr7hiQvhb7s3ynaZ8LzJ28bCH+c3ABwslVMaqLFDgR4AMizhMuYH436stOXYZOlpWP
+        4HbbPoDw==;
+Received: from [2606:6000:4500:1400:98d2:dc3e:a6eb:31df] (helo=vanvanmojo.kallisti.us)
+        by ravenhurst.kallisti.us with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ross@kallisti.us>)
+        id 1kpcT6-0008Lv-Ht
+        for linux-btrfs@vger.kernel.org; Wed, 16 Dec 2020 14:28:12 -0500
+Date:   Wed, 16 Dec 2020 11:28:08 -0800
+From:   Ross Vandegrift <ross@kallisti.us>
+To:     linux-btrfs@vger.kernel.org
+Subject: csum errors on negative root id?
+Message-ID: <20201216192808.lodnlgbdxefayn2c@vanvanmojo.kallisti.us>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201216005806.GA26841@gondor.apana.org.au>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:58:07AM +1100, Herbert Xu wrote:
-> On Wed, Dec 16, 2020 at 12:48:51AM +0000, Nick Terrell wrote:
-> >
-> > Thanks for the advice! The first zstd patches went through Herbert’s tree, which is
-> > why I’ve sent them this way.
-> 
-> Sorry, but I'm not touch these patches as Christoph's objections
-> don't seem to have been addressed.
+Hello,
 
-I have objections to the current patchset as well, the build bot has
-found that some of the function frames are overly large (up to 3800
-bytes) [1], besides the original complaint that the patch 3/3 is 1.5MiB.
+I recently saw these in my dmesg, on 4.19.160:
+  BTRFS warning (device dm-20): csum failed root -9 ino 1303 off 0 csum 0x47abffd5 expected csum 0xd5f0d335 mirror 1
+  BTRFS warning (device dm-20): csum failed root -9 ino 1303 off 0 csum 0x47abffd5 expected csum 0xd5f0d335 mirror 1
 
-[1] https://lore.kernel.org/lkml/20201204140314.GS6430@twin.jikos.cz/
+I'm confused by a few things here:
+- does the negative root id mean something, or is this a bug?
+- inode 1303 doesn't seem to exist.
+- This is a standalone drive, is this about a dup metadata block?
+
+Details on the fs:
+$ sudo btrfs fi show /mnt/storage
+Label: none  uuid: 6a2038fb-a9b4-4720-a441-c084610e4295
+        Total devices 1 FS bytes used 4.66TiB
+        devid    1 size 7.28TiB used 5.72TiB path /dev/mapper/storage
+
+$ sudo btrfs fi df /mnt/storage
+Data, single: total=4.68TiB, used=4.66TiB
+System, DUP: total=32.00MiB, used=768.00KiB
+Metadata, DUP: total=536.45GiB, used=4.95GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+$ sudo btrfs inspect-internal subvolid-resolve -- -9 /mnt/storage
+ERROR: -9: negative value is invalid.
+$ sudo btrfs inspect-internal inode-resolve 1303 /mnt/storage
+ERROR: ino paths ioctl: No such file or directory
+
+Please keep me CCed, thanks!
+
+Ross
