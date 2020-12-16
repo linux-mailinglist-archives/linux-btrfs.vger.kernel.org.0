@@ -2,57 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7232DC449
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A5D2DC43C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgLPQ3F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Dec 2020 11:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        id S1726772AbgLPQ2s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Dec 2020 11:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726793AbgLPQ3F (ORCPT
+        with ESMTP id S1726763AbgLPQ2s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:29:05 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A70CC0619DD
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:55 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id h4so18167948qkk.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:55 -0800 (PST)
+        Wed, 16 Dec 2020 11:28:48 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85B4C0619DE
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:56 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id y15so17587181qtv.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=q3ZFkc4fZopbKKht4JgMg7mSZw6aGECg8+ejGJXrEGM=;
-        b=vzLf3OO/MJA+uooK0qmLotMVo+n9OgvbbCWsvQosTYja+SZkq4NUCbbuoQhBXLWerv
-         j7fDDQHpDwm/3NH4hmESnwEPVEXqs0fKy1/PX7k5dLaX78SJXen41Xu3fc4XjxBRvCCT
-         PPYqPLWSe4XktEJeOns6fA/MC65hTYKJsTdJz8CdrQMEH338TMYclpuk//wlj/QMfpu1
-         a7o5vgnHxYNYw6dNb9VXYfS8Yjvi9qs2674R2p3QZXlUfjd9yl9yXUjjkqqD4rPmvlzo
-         QTiEnU7dC19nIglBTVDySg8cpYcie6ImUEEOfShFyZopKO4u5XRvaV7Io7vlmpOwiGYz
-         PgVA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TGT1uQEPkXlGSsuy+GeVOlQWvLE7GDlWh9fH5azgYjI=;
+        b=ERkp9UYBxT0EmqE+N8zUrmlqwStrJC0ru8WcONwyYuVC5Xvah9u8wBeeYCME9vuMcj
+         630o31BDHT4vyoj1gjDj+hl68DujTA+3Ye2YCd3iYZMa9qy0p3YkrpHSx8+Tk5D33L12
+         7zF1FOd5NRvb3RgFvucSGo0Q2O5UedhBF94jtjOjA9MgSBdagPIDEUFsSBE48dQeYFZk
+         VVJGuX5268CSVhsAj7HomkuMRdAc6i/I+uonaHNrspJrriaeINgIjFs700tPsAcF1hJQ
+         Hr6KE39CfsIEH4e1FXPvU+nHq2oR9wnOaW/AhPsR8AwV0+NhFsulSCWuMQ40hDq5IGX8
+         zA2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=q3ZFkc4fZopbKKht4JgMg7mSZw6aGECg8+ejGJXrEGM=;
-        b=s+aQ3qso+br7f6xvw8/Po8OyzjVjvUlCvkgjDiFJ1tUDIDewo6RsGzOLgMx5eeav27
-         G0exFO8843bVYIqLX+2+4M5ju0KHGia+hj4UfQSXM+e9YyrrTGrietz/fWx2hftBzp0O
-         RXG3cVtk/0RRP2r9NabD8nYi12lbQJcbpkPNZEZnXff3kpw+iL0o0Qzm6KzF0oTwxSk8
-         Lo5LeEmjqqxUP0AkCcfDj1LIF1ZgbrOpmB5q9a4AM4vBm/tiAp2gN3TSqs1G1/daFIzr
-         /WWbvAyuF1QULKSvWOqwMc3Cy/W2VIbIDSeAZd9fvnHL/zJLFp8DVn6s5+eAoPy5ILMK
-         +xhw==
-X-Gm-Message-State: AOAM530jpNLoaFic6f4FxC5eFfwFXpSmnVIXu+LHrk5gAKEfhWop467W
-        6PIspEZ/n0I1sqD62T3l6+vtfP5TeDMifoey
-X-Google-Smtp-Source: ABdhPJzYoCGLGUsW5Z/ewTG/wOk2fPamvB5VVHUoGpLBaX4QF2Nm2ZfVLgqOg06MDXpKt/+Cf+JTZg==
-X-Received: by 2002:a05:620a:38b:: with SMTP id q11mr18232108qkm.239.1608136073967;
-        Wed, 16 Dec 2020 08:27:53 -0800 (PST)
+        bh=TGT1uQEPkXlGSsuy+GeVOlQWvLE7GDlWh9fH5azgYjI=;
+        b=AFhNhnFBcscv3XaFEx/X6RUl8MAB6Dj9xrmRGbE2oJUGQv00gTrSciZ223tmp7JYiS
+         8nuLgwjhKdfBTOXASXk72jxLv9aI/xP7mmpvN1Vq3EoGAsgiQu4Qnni81uaQmdG16Cbf
+         eeZlMXUibVKkra3LBZOfMMQFL+YBtFPLsc0EUMuvcIFCxxj8eA1XII1/dOUCBQbNGYNC
+         DYJJRMWCTfG9zsbexOiGpVK0rRVo5adgUQA5vxn2qFOq8H641j7Qqq5v3a2u8Cktptvf
+         igvnEdgl+W5hMH3pZmDuWCXP+EfCzUSL1iPlWDs1iql9RF9e7BI9KDfEoaaB8KiQx8Mp
+         QVPg==
+X-Gm-Message-State: AOAM5335ZIeZ8cj1YxVYKjaFHEtAUXuJ9qPTi9GUZXPKJvdKm0I4Z3l6
+        tmjMcOoq9TXooqxSqHUCHTqrUUxuHyYeavfj
+X-Google-Smtp-Source: ABdhPJwKlD+EjT/7vjWbvo/Me09NMJ72DbNWfDFujGgIQrNef8B4VBrD5P2HxsJeZgkeShqyVDI0Qg==
+X-Received: by 2002:aed:3b13:: with SMTP id p19mr116198qte.302.1608136075749;
+        Wed, 16 Dec 2020 08:27:55 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c7sm1195499qtw.70.2020.12.16.08.27.53
+        by smtp.gmail.com with ESMTPSA id x17sm109237qts.59.2020.12.16.08.27.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 08:27:53 -0800 (PST)
+        Wed, 16 Dec 2020 08:27:55 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v7 33/38] btrfs: do proper error handling in create_reloc_inode
-Date:   Wed, 16 Dec 2020 11:26:49 -0500
-Message-Id: <0635eb64208e5b6ddcebf6fea00d4928376c14c2.1608135849.git.josef@toxicpanda.com>
+Cc:     Qu Wenruo <wqu@suse.com>
+Subject: [PATCH v7 34/38] btrfs: handle __add_reloc_root failures in btrfs_recover_relocation
+Date:   Wed, 16 Dec 2020 11:26:50 -0500
+Message-Id: <2cbb558f593e693a176d489d6e3c4d704718a347.1608135849.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1608135849.git.josef@toxicpanda.com>
 References: <cover.1608135849.git.josef@toxicpanda.com>
@@ -62,82 +63,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We already handle some errors in this function, and the callers do the
-correct error handling, so clean up the rest of the function to do the
-appropriate error handling.
+We can already handle errors appropriately from this function, deal with
+an error coming from __add_reloc_root appropriately.
 
-There's a little extra work that needs to be done here, as we create the
-inode item before we create the orphan item.  We could potentially add
-the orphan item, but if we failed to create the inode item we would have
-to abort the transaction.  Instead add a helper to delete the inode item
-we created in the case that we're unable to look up the inode (this
-would likely be caused by an ENOMEM), which if it succeeds means we can
-avoid a transaction abort in this particular error case.
-
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
+ fs/btrfs/relocation.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 93446ec5bcd9..26b85ab4b295 100644
+index 26b85ab4b295..39d5cb9360a2 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -3609,6 +3609,35 @@ static int __insert_orphan_inode(struct btrfs_trans_handle *trans,
- 	return ret;
- }
+@@ -4015,7 +4015,12 @@ int btrfs_recover_relocation(struct btrfs_root *root)
+ 		}
  
-+static void delete_orphan_inode(struct btrfs_trans_handle *trans,
-+				struct btrfs_root *root, u64 objectid)
-+{
-+	struct btrfs_path *path;
-+	struct btrfs_key key;
-+	int ret = 0;
-+
-+	path = btrfs_alloc_path();
-+	if (!path) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	key.objectid = objectid;
-+	key.type = BTRFS_INODE_ITEM_KEY;
-+	key.offset = 0;
-+	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+ 		err = __add_reloc_root(reloc_root);
+-		BUG_ON(err < 0); /* -ENOMEM or logic error */
++		if (err) {
++			list_add_tail(&reloc_root->root_list, &reloc_roots);
++			btrfs_put_root(fs_root);
++			btrfs_end_transaction(trans);
++			goto out_unset;
++		}
+ 		fs_root->reloc_root = btrfs_grab_root(reloc_root);
+ 		btrfs_put_root(fs_root);
+ 	}
+@@ -4230,7 +4235,10 @@ int btrfs_reloc_post_snapshot(struct btrfs_trans_handle *trans,
+ 		return PTR_ERR(reloc_root);
+ 
+ 	ret = __add_reloc_root(reloc_root);
+-	BUG_ON(ret < 0);
 +	if (ret) {
-+		if (ret > 0)
-+			ret = -ENOENT;
-+		goto out;
++		btrfs_put_root(reloc_root);
++		return ret;
 +	}
-+	ret = btrfs_del_item(trans, root, path);
-+out:
-+	if (ret)
-+		btrfs_abort_transaction(trans, ret);
-+	btrfs_free_path(path);
-+}
-+
- /*
-  * helper to create inode for data relocation.
-  * the inode is in data relocation tree and its link count is 0
-@@ -3635,10 +3664,16 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
- 		goto out;
+ 	new_root->reloc_root = btrfs_grab_root(reloc_root);
  
- 	err = __insert_orphan_inode(trans, root, objectid);
--	BUG_ON(err);
-+	if (err)
-+		goto out;
- 
- 	inode = btrfs_iget(fs_info->sb, objectid, root);
--	BUG_ON(IS_ERR(inode));
-+	if (IS_ERR(inode)) {
-+		delete_orphan_inode(trans, root, objectid);
-+		err = PTR_ERR(inode);
-+		inode = NULL;
-+		goto out;
-+	}
- 	BTRFS_I(inode)->index_cnt = group->start;
- 
- 	err = btrfs_orphan_add(trans, BTRFS_I(inode));
+ 	if (rc->create_reloc_tree)
 -- 
 2.26.2
 
