@@ -2,54 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5922DB9BE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 04:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6820C2DBB3B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 07:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725804AbgLPDou (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Dec 2020 22:44:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725771AbgLPDou (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Dec 2020 22:44:50 -0500
-Subject: Re: [GIT PULL] Btrfs updates for 5.11
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608090249;
-        bh=GbQJTx0fsDEkflKqlsH/IsqhacatyuIsuy+1Mf1lJco=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=qTr0N0nO9CEz2pwsdMyKJvx2lnuYtf4RQTGPmeGlTqxSGnL80H/6LX1o6nA5L4yFf
-         /MPeaLkianpQkYdJSHYsVGUa/hUo2RAtVC5Zuep+pnnqt20hdlaTVkyzjpRzDO9JwO
-         AOXpJkDrXV7WycsMrYP5Mm/iBuTVRTwNdqiHkqxX4O1oqN/rUz5T5c1z3CYTRuj6AD
-         Qbz8eCoYaDFLCDDhxP9w/pY63xhK50odhNCSn7/rdgFDKM60u9+2zBJ/qsUkkeWmHw
-         0JSgyPy4VnP6+r5qnY43sknnQLcyjZ9rGtq7TsvVPTDDbDrYadSvqB2znnAveWaJQJ
-         J4dTql2UYYZBg==
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1607955523.git.dsterba@suse.com>
-References: <cover.1607955523.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1607955523.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-tag
-X-PR-Tracked-Commit-Id: b42fe98c92698d2a10094997e5f4d2dd968fd44f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f1ee3b8829006b3fda999f00f0059aa327e3f3d0
-Message-Id: <160809024984.9893.8535729534204843936.pr-tracker-bot@kernel.org>
-Date:   Wed, 16 Dec 2020 03:44:09 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1725926AbgLPG3Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Dec 2020 01:29:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725879AbgLPG3Z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Dec 2020 01:29:25 -0500
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F9AC061793
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Dec 2020 22:28:44 -0800 (PST)
+Received: by mail-vs1-xe31.google.com with SMTP id s2so5691916vsk.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Dec 2020 22:28:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=4Ki7eCs9rWEtmNuJfcFOTMn1mgbXNHQD0QZTfSINUDo=;
+        b=AbjcK5z7+BiROjhdFbTvV5Gy0DGhNf+CQiTOMvESH+gmBc9d+MJoKaJfwg/aGkSJRd
+         xRB+nu2lIhaoOWcv+7SZ8Ty/JdToUhnczDTvy0pVG2CdpqZpSjvwHN5B6S5NCABc10O7
+         TiJbrBQraa7q98AFHcZDm2kjfzTZe9s9tH95humlMnvgs4VvNPK1SrTZPo4m2gdUQrff
+         EYiGX3hqxfJWxpVZQdfEhGJ2HCCS9Z4pNi1LgDEQhB7LNcLC18ow+Z61kqxzZgUCJAnD
+         OZEfWv1RcSwpuG6Vw2dTEL7tFpi3QgXMiv67ZGwy9yhq6kpK4TwWAUp9hUCtDBTL91KA
+         xJuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=4Ki7eCs9rWEtmNuJfcFOTMn1mgbXNHQD0QZTfSINUDo=;
+        b=Q+k6lTUFbpeR4WV+2MR3TxGtgzrwgVYIFVkM1loq2WgmzPZjpZx/SVhl6yrwiANweK
+         G1l+gltW3ZqD15dsflw4YM+YHkALR5UhXF/VYCnsfFhC3VrWQ0sR9QkpG/YQw743tJho
+         eIH6WsY8y0oC8IlEBndm3EYof9vlxoX6rQ+u7wwFoJ2i0hs5tSP1TykLdTYLrbi4IC0Z
+         9d5aY4IfNt7Z0ecVzIZsd9Z/v00Pm+dmG/jvcvsgHH7tLIh8EN7xl0jhc+RjFRLOzC01
+         9VxyPqCGFM8TfsOD8nPQtKnhLDUvPVw/CwqMtKOFS31xsCBW3dPsVTBhAfsJFfuf8b8d
+         uFpg==
+X-Gm-Message-State: AOAM531+STxMX+Lv9hEzOgWl7yqMhiSw6GnlYqxYGXuW5VHBpDtiKo9y
+        UpKVN9K14DksBtBNp4rIG14NroMAugavU3Cczm8=
+X-Google-Smtp-Source: ABdhPJxplg2YNjds9IESepW9ViCylbwcR5UJD91WOKgFKTugUZaxUuVkHN7O9To5KBXJK05g1MQ0nafzBzAek/SWNPk=
+X-Received: by 2002:a67:fd59:: with SMTP id g25mr30686469vsr.29.1608100123264;
+ Tue, 15 Dec 2020 22:28:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20201211164812.459012-1-realwakka@gmail.com> <20201211164812.459012-2-realwakka@gmail.com>
+ <20201211173025.GO6430@twin.jikos.cz> <20201211174629.GQ6430@twin.jikos.cz>
+In-Reply-To: <20201211174629.GQ6430@twin.jikos.cz>
+From:   Su Yue <damenly.su@gmail.com>
+Date:   Wed, 16 Dec 2020 14:30:04 +0800
+Message-ID: <CABnRu57w3aw=jPBbpSNYfyRKxs1z7onwWzqjg+=r6jQjwNYUXw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] btrfs-progs: device stats: add json output format
+To:     dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Mon, 14 Dec 2020 16:15:53 +0100:
+On Sat, Dec 12, 2020 at 3:04 AM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Fri, Dec 11, 2020 at 06:30:25PM +0100, David Sterba wrote:
+> > On Fri, Dec 11, 2020 at 04:48:12PM +0000, Sidong Yang wrote:
+> > > Example json format:
+> > >
+> > > {
+> > >   "__header": {
+> > >     "version": "1"
+> > >   },
+> > >   "device-stats": [
+> > >     {
+> > >       "device": "/dev/vdb",
+> > >       "devid": "1",
+> > >       "write_io_errs": "0",
+> > >       "read_io_errs": "0",
+> > >       "flush_io_errs": "0",
+> > >       "corruption_errs": "0",
+> > >       "generation_errs": "0"
+> > >     }
+> > >   ],
+> >      ^
+> >
+> > I've verified that the comma is really there, it's not a valid json so
+> > there's a bug in the formatter. To verify that the output is valid you
+> > can use eg. 'jq', simply pipe the output of the commadn there.
+> >
+> >   $ ./btrfs --format json dev stats /mnt | jq
+> >   parse error: Expected another key-value pair at line 16, column 1
+>
+> I've pushed the updated plain text formatting to devel, so the only
+> remaining bug is the above extra comma.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-tag
+Another format bug(one extra newline):
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=E2=9E=9C  btrfs-progs git:(314d96c8)  btrfs device stats /mnt
+[/dev/mapper/test-1].write_io_errs    0
+[/dev/mapper/test-1].read_io_errs     0
+[/dev/mapper/test-1].flush_io_errs    0
+[/dev/mapper/test-1].corruption_errs  0
+[/dev/mapper/test-1].generation_errs  0
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f1ee3b8829006b3fda999f00f0059aa327e3f3d0
+=E2=9E=9C  btrfs-progs git:(314d96c8)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+The new line is printed by the change:
+'+       fmt_end(&fctx);'
 
-Thank you!
+and fstests/btrfs/006 fails:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+btrfs/006 1s ... - output mismatch (see
+/root/xfstests-dev/results//btrfs/006.out.bad)
+    --- tests/btrfs/006.out     2020-12-16 03:40:19.632039261 +0000
+    +++ /root/xfstests-dev/results//btrfs/006.out.bad   2020-12-16
+06:25:56.424424113 +0000
+    @@ -15,12 +15,14 @@
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+     =3D=3D Sync filesystem
+     =3D=3D Show device stats by mountpoint
+    + 1
+     <NUMDEVS> [SCRATCH_DEV].corruption_errs <NUM>
+     <NUMDEVS> [SCRATCH_DEV].flush_io_errs <NUM>
+     <NUMDEVS> [SCRATCH_DEV].generation_errs <NUM>
+    ...
+    (Run 'diff -u /root/xfstests-dev/tests/btrfs/006.out
+/root/xfstests-dev/results//btrfs/006.out.bad'  to see the entire
+diff)
+Ran: btrfs/006
+Failures: btrfs/006
+Failed 1 of 1 tests
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+
+The new line made filter produce the '+1'.
