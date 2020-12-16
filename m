@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4FD2DC431
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078FD2DC432
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbgLPQ2g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726758AbgLPQ2g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 16 Dec 2020 11:28:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726748AbgLPQ2g (ORCPT
+        with ESMTP id S1726753AbgLPQ2g (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 16 Dec 2020 11:28:36 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986CBC0619D8
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:37 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id i67so15509799qkf.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:37 -0800 (PST)
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A96BC061794
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:39 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id l7so11607008qvt.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:27:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=RB3ZVAwErcd97s2dhyLnYsI1ypCe4zlqd+anJuxPtEY=;
-        b=uyyiI/z0ZVJh5IsbTrA7UlEUmYFlTOLjC9JqCU4A5YqYMR/JjCZsp1fg5DVht06yru
-         HRM24YtfCiyDj96Ba2F/EihAOWpFsx+vnf+/raLKgBIhcXq8kuSqISbglzxAtlCSqXdS
-         nVo2iZ9sPcIaj5Ftbsk0+FljhP0KrSBiPsxkxgL+BRa1rTW54w7eLyVJGqEYKjrU905j
-         RbMH/4hvwrhemVzPCfaO2tRfruZcqZk6JG81F6H2VVUHoB3gCMjERDbbcJwsPXX6yBLH
-         /+BHzdRuUi9A0Q6OOAd36vFMc9AbaP55xXpcKDWPtDCJvnYDR42P4E017BfqBtTPi6jA
-         0zcA==
+        bh=b01JWLS+ZGwWe1HCXpnCOoP6ehEw+zjYvdkDqEwbXts=;
+        b=piLbORJk2hYbHdHGRAbKmKxbDcDJVKToAPo7nGpInp5xLD0CCOJZ/2tqyeTK4ejJpb
+         lzWD+nlxz3qJZNh7fZDRWROwPnprSrKM+FSzY8KxmHaepmc23ghdy2GNSO5WTeTySsVA
+         0o9/ZQSQzLsDeJd/jfmG4tr8gKpepedRlUP+8f6mMPGP6jxzkEwXaDILadYt5lclLamx
+         V2A7RTBMlPJZBohB6DdBLnE0XX7q30Xq3dpSdCbMwy6FnaH0yTDi5TFi3PIpoJo3lHZd
+         q47Nt+bkGlYAUvTmbLujPT5nVdcV1jnRQPjRYRRcBt9AX3/SzXAJscP6HsAMebG+96L1
+         2V9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RB3ZVAwErcd97s2dhyLnYsI1ypCe4zlqd+anJuxPtEY=;
-        b=R8y6CqRcBHjPworbvBdg4dg7PsizjQ55kWXmXI/8DNKqfmFss/9zF8J5wZnioXhQXz
-         d1La5imOdFjwm/wmltkHKyEnJGuVTFZe382h5Rjs+97cah4BS6g6foDA3+vJxQ7KLXYd
-         yqRzB6fDJgBlQxDRJaw62lzm8obvcrdh7tD40MOnOFbx4oF9mwSeVU7iQrReRs480T29
-         Joy02l3/Koof8ZaIQvsotDo/9H1Qm7GhMpFazZP3WFgYymoQ6jdPEsBunmfrsAFuuBAu
-         0pWnBcuQsDvRFAAhyCiTgIKbM1LJjyQX/kNI4nhPcd7D/anx37IDZxDniyvY2t4z/nXS
-         WHZg==
-X-Gm-Message-State: AOAM533ub4RFcUb2oVIT8g+wpDDwi4C3wwHcDA8d4N5Zp4h0oMFoA8g3
-        QPhrDOc/e9GDRnNE/9OZt+CrYbbYRGfEo0H3
-X-Google-Smtp-Source: ABdhPJw76tvN6UPWxAbm+2PEDzaeoxyAZtHdPRnWd5TLPnn618KhmvS7G9CCebR6fDP5TmgL99ncaA==
-X-Received: by 2002:a37:994:: with SMTP id 142mr26149474qkj.257.1608136056277;
-        Wed, 16 Dec 2020 08:27:36 -0800 (PST)
+        bh=b01JWLS+ZGwWe1HCXpnCOoP6ehEw+zjYvdkDqEwbXts=;
+        b=noeKqTEuetCCBDmP2jsp0P5n688ewow7YS8ggiy3/BAT2V276ssI8QSz0rCVQ/kZkl
+         D7j5PI/uqXZYj43YJ3Cv2H6oFQ8KaeNqO1C45DepAvDhb/KrENOEaFSKO1jK7jscCWQY
+         VnA2yvRpTU9rwIG7WGtNPiO/Af435xiCvol1f6GWlz0PsqA5t4+m2ruZwIPY0dNZrbVq
+         V6qaAFl+GSpJqfvpyqFdhVL8ulk1ZZhtsSAVNgWOvicF6bD3dnDx0l2Qw4qlvGfEtg/Z
+         F10UFG/Nv9nUrKt1MlIyE3K2cO0BArXTLqRTKiJjcnaHmm3+bQRPRys+Zs0J7l3U01Fl
+         nXWA==
+X-Gm-Message-State: AOAM532Peaw4ZO1hvcULYTnUmb7FKx5zS8i7gPCmCGvbOX3F8KStuInL
+        1oKT2uUlDcC9xsYgNVKZcalVQ6oTWSX1RJM5
+X-Google-Smtp-Source: ABdhPJxp/3+xQ/sNnS0TsH0FP0cVgSu0b7No6xBzczjb29JCJWyfSuWuhvSfQW+Oc8mzpAdr2/EqUQ==
+X-Received: by 2002:a05:6214:140d:: with SMTP id n13mr40723105qvx.45.1608136058244;
+        Wed, 16 Dec 2020 08:27:38 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n2sm1440275qkf.37.2020.12.16.08.27.35
+        by smtp.gmail.com with ESMTPSA id b67sm1319245qkc.44.2020.12.16.08.27.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 08:27:35 -0800 (PST)
+        Wed, 16 Dec 2020 08:27:37 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v7 23/38] btrfs: handle btrfs_update_reloc_root failure in insert_dirty_subvol
-Date:   Wed, 16 Dec 2020 11:26:39 -0500
-Message-Id: <3358ffdae439bd9dbaa7fa6af47b00c11090572d.1608135849.git.josef@toxicpanda.com>
+Subject: [PATCH v7 24/38] btrfs: handle btrfs_update_reloc_root failure in prepare_to_merge
+Date:   Wed, 16 Dec 2020 11:26:40 -0500
+Message-Id: <41fae34742970a8373ed4e817c1833a57212a163.1608135849.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1608135849.git.josef@toxicpanda.com>
 References: <cover.1608135849.git.josef@toxicpanda.com>
@@ -63,36 +63,40 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 btrfs_update_reloc_root will will return errors in the future, so handle
-the error properly in insert_dirty_subvol.
+an error properly in prepare_to_merge.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/relocation.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 13d5fd74e745..dde383477f5f 100644
+index dde383477f5f..3a207548edde 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -1572,6 +1572,7 @@ static int insert_dirty_subvol(struct btrfs_trans_handle *trans,
- {
- 	struct btrfs_root *reloc_root = root->reloc_root;
- 	struct btrfs_root_item *reloc_root_item;
-+	int ret;
+@@ -1870,10 +1870,21 @@ int prepare_to_merge(struct reloc_control *rc, int err)
+ 		 */
+ 		if (!err)
+ 			btrfs_set_root_refs(&reloc_root->root_item, 1);
+-		btrfs_update_reloc_root(trans, root);
++		ret = btrfs_update_reloc_root(trans, root);
  
- 	/* @root must be a subvolume tree root with a valid reloc tree */
- 	ASSERT(root->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID);
-@@ -1582,7 +1583,9 @@ static int insert_dirty_subvol(struct btrfs_trans_handle *trans,
- 		sizeof(reloc_root_item->drop_progress));
- 	btrfs_set_root_drop_level(reloc_root_item, 0);
- 	btrfs_set_root_refs(reloc_root_item, 0);
--	btrfs_update_reloc_root(trans, root);
-+	ret = btrfs_update_reloc_root(trans, root);
-+	if (ret)
-+		return ret;
++		/*
++		 * Even if we have an error we need this reloc root back on our
++		 * list so we can clean up properly.
++		 */
+ 		list_add(&reloc_root->root_list, &reloc_roots);
+ 		btrfs_put_root(root);
++
++		if (ret) {
++			btrfs_abort_transaction(trans, ret);
++			if (!err)
++				err = ret;
++			break;
++		}
+ 	}
  
- 	if (list_empty(&root->reloc_dirty_list)) {
- 		btrfs_grab_root(root);
+ 	list_splice(&reloc_roots, &rc->reloc_roots);
 -- 
 2.26.2
 
