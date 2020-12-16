@@ -2,69 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F0B2DC540
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 18:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5234F2DC545
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 18:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgLPRXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Dec 2020 12:23:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52770 "EHLO mx2.suse.de"
+        id S1726955AbgLPR0K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Dec 2020 12:26:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55272 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726837AbgLPRXo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Dec 2020 12:23:44 -0500
+        id S1726837AbgLPR0K (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Dec 2020 12:26:10 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 11CC2AC7B;
-        Wed, 16 Dec 2020 17:23:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 9B1BDAE05;
+        Wed, 16 Dec 2020 17:25:29 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 87278DA6E1; Wed, 16 Dec 2020 18:21:23 +0100 (CET)
-Date:   Wed, 16 Dec 2020 18:21:23 +0100
+        id 1B4C4DA6E1; Wed, 16 Dec 2020 18:23:50 +0100 (CET)
+Date:   Wed, 16 Dec 2020 18:23:50 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Su Yue <damenly.su@gmail.com>
-Cc:     Sidong Yang <realwakka@gmail.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH v3 2/2] btrfs-progs: device stats: add json output format
-Message-ID: <20201216172123.GI6430@twin.jikos.cz>
+Message-ID: <20201216172349.GJ6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Su Yue <damenly.su@gmail.com>,
-        Sidong Yang <realwakka@gmail.com>, linux-btrfs@vger.kernel.org
+Mail-Followup-To: dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
+        linux-btrfs@vger.kernel.org
 References: <20201211164812.459012-1-realwakka@gmail.com>
  <20201211164812.459012-2-realwakka@gmail.com>
  <20201211173025.GO6430@twin.jikos.cz>
  <20201211174629.GQ6430@twin.jikos.cz>
- <CABnRu57w3aw=jPBbpSNYfyRKxs1z7onwWzqjg+=r6jQjwNYUXw@mail.gmail.com>
- <20201216105203.GA14127@realwakka>
- <CABnRu55J04cu2sbc_f4gR_bOw3_sSMvu1Bs-sGyFhJ=cCRdMuA@mail.gmail.com>
+ <20201211180911.GB456927@realwakka>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABnRu55J04cu2sbc_f4gR_bOw3_sSMvu1Bs-sGyFhJ=cCRdMuA@mail.gmail.com>
+In-Reply-To: <20201211180911.GB456927@realwakka>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 08:52:08PM +0800, Su Yue wrote:
-> > > The new line made filter produce the '+1'.
-> >
-> > Thanks for testing this patch.
-> > I checked the fmt_end() and there is an additional newline.
-> > I think that fmt_end() should be used for formatting. so it seems that
+On Fri, Dec 11, 2020 at 06:09:11PM +0000, Sidong Yang wrote:
+> On Fri, Dec 11, 2020 at 06:46:29PM +0100, David Sterba wrote:
+> > On Fri, Dec 11, 2020 at 06:30:25PM +0100, David Sterba wrote:
+> > > On Fri, Dec 11, 2020 at 04:48:12PM +0000, Sidong Yang wrote:
+> > > > Example json format:
+> > > > 
+> > > > {
+> > > >   "__header": {
+> > > >     "version": "1"
+> > > >   },
+> > > >   "device-stats": [
+> > > >     {
+> > > >       "device": "/dev/vdb",
+> > > >       "devid": "1",
+> > > >       "write_io_errs": "0",
+> > > >       "read_io_errs": "0",
+> > > >       "flush_io_errs": "0",
+> > > >       "corruption_errs": "0",
+> > > >       "generation_errs": "0"
+> > > >     }
+> > > >   ],
+> > >      ^
+> > > 
+> > > I've verified that the comma is really there, it's not a valid json so
+> > > there's a bug in the formatter. To verify that the output is valid you
+> > > can use eg. 'jq', simply pipe the output of the commadn there.
+> > > 
+> > >   $ ./btrfs --format json dev stats /mnt | jq
+> > >   parse error: Expected another key-value pair at line 16, column 1
+> > 
+> > I've pushed the updated plain text formatting to devel, so the only
+> > remaining bug is the above extra comma.
 > 
-> Yes, it's for the purpose of formatting.
-> 
-> > the only way to fix this problem is to remove the code that inserts a
-> > newline in fmt_end(). I searched the code that use the function and
-> > there is no code that used this function but this patch. Do you have any
-> > ideas?
-> >
-> I'm OK about removing the "putchar('\n');". It's just a tiny format issue so no
-> bother to do extra works.
+> I've tested devel branch. but there is no extra comma and I also tested
+> with jq you said. jq results no error. I think that It's just mistype in
+> message.
 
-The way the json formatting works the newline must be printed from
-there. The problematic requirement is delayed insertion of the "," when
-there are more objects on the same level. But we don't know that until
-the next object is processed.
+That's strange because the formatter is buggy, eg. the simplest
+fmt_start()/fmt_end() leads to
 
-Mixing the textual and json output for the stats makes it a bit more
-complicated as it prints the newline for each row unconditionally,
-breaking the assumption of the formatter.
+$ ./json-formatter-test
+{
+  "__header": {
+    "version": "1"
+  },
+}
+---
+
+Which is of course invalid and jq confirms that.
