@@ -2,135 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77C22DC46D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:39:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2912A2DC48F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgLPQjr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Dec 2020 11:39:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47338 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726725AbgLPQjr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:39:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A76CAC7F;
-        Wed, 16 Dec 2020 16:39:05 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8FA5FDA6E1; Wed, 16 Dec 2020 17:37:25 +0100 (CET)
-Date:   Wed, 16 Dec 2020 17:37:25 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Richard Haines <richard_c_haines@btinternet.com>
-Subject: Re: [PATCH] vfs: fix fsconfig(2) LSM mount option handling for btrfs
-Message-ID: <20201216163725.GG6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-fsdevel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Richard Haines <richard_c_haines@btinternet.com>
-References: <20201118102342.154277-1-omosnace@redhat.com>
+        id S1726798AbgLPQri (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Dec 2020 11:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgLPQri (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Dec 2020 11:47:38 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C34C06179C
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:46:58 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id 4so11633496qvh.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:46:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jov9CPuCWs4UHbh4kIXNiorA1YLwLileDa+I2Yb5ZiE=;
+        b=T2ADMgAzDowu9ySYddCQWksgfXh/dWyP3YAFNSqLlNKNJ0cxnAtjVubiZ3LOC4Cx5m
+         Bi8tNOGnB+01l5oq3kpbhGwRkzCr5wVp9YBql7abN0mXLCL4cyJC9jMcq8rXFh2W+4ss
+         iVJhl02pbbuxuUElmiaIXL2fS7yUoYGBYXJZT2jAzdpMgpfHLsTFK7U7cPZETO7n7UWl
+         HcpUDaqJJYIRKx3eWBzsZyYCCILL+0W01SjQSNNwGz8MzRY+RbgdkEimbjBZCpH7lDLC
+         mZwluxXYI2iQE1cxGa3OIGd6X1XiLnoF1+QoC7chKVUU+BM9FYCHuulmuVsFwQSw+gwa
+         eAvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jov9CPuCWs4UHbh4kIXNiorA1YLwLileDa+I2Yb5ZiE=;
+        b=ABN4dzTv09l3XBmiqEoQ+cewf9wgNc5qVr1BojppfV4NGtQFEy5w4GtufSePSL9UG+
+         GKGrcWBv6YowuslM48Gmbr12Y7ab1WmVY26xPGkisj1vam2Sn/fFgSz9qR5cYYH/TwsC
+         hhlmytVGjkob/hD7OpTDCZcVGhlltAwCYumTSxcMGsCDjKLZYp3dicMGLYDprhr8h0h+
+         zS28I2aFh7Pyi0F3l5m/yb2VFMMu579rVV4RvJ5YKN5fHyPHhzILMxrpRNf4XHsUrwGU
+         gvS8hCz0aE7c1cR6tPxbtZ3kK8yKlU8eXlL4B6H/xz7/sy2gZPkPCYGkbbRehDntdixM
+         TITg==
+X-Gm-Message-State: AOAM53122t5yhqC2g/4zgBZp3ZlZXn5vJ7cEtWkYgELOoVgEZI9IKVkY
+        WRCwh1YSayji9EwrsWuLAA+w0tndezO/4Xyt
+X-Google-Smtp-Source: ABdhPJxP3VPchil9QBPBhgJfvAOYOdkqPvJkgWa9z9kV25hbolTlWr+0FhW2UrenC2U7QMlPr6eFzQ==
+X-Received: by 2002:a0c:e6e7:: with SMTP id m7mr44949390qvn.11.1608137216857;
+        Wed, 16 Dec 2020 08:46:56 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id h1sm1268056qtr.1.2020.12.16.08.46.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 08:46:55 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 0/2] ->total_bytes_pinned fixes for early ENOSPC issues
+Date:   Wed, 16 Dec 2020 11:46:52 -0500
+Message-Id: <cover.1608137123.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118102342.154277-1-omosnace@redhat.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 11:23:42AM +0100, Ondrej Mosnacek wrote:
-> When SELinux security options are passed to btrfs via fsconfig(2) rather
-> than via mount(2), the operation aborts with an error. What happens is
-> roughly this sequence:
-> 
-> 1. vfs_parse_fs_param() eats away the LSM options and parses them into
->    fc->security.
-> 2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
->    nothing to btrfs.
-> [here btrfs calls another layer of vfs_kern_mount(), but let's ignore
->  that for simplicity]
-> 3. btrfs calls security_sb_set_mnt_opts() with empty options.
-> 4. vfs_get_tree() then calls its own security_sb_set_mnt_opts() with the
->    options stashed in fc->security.
-> 5. SELinux doesn't like that different options were used for the same
->    superblock and returns -EINVAL.
-> 
-> In the case of mount(2), the options are parsed by
-> legacy_parse_monolithic(), which skips the eating away of security
-> opts because of the FS_BINARY_MOUNTDATA flag, so they are passed to the
-> FS via ctx->legacy_data. The second call to security_sb_set_mnt_opts()
-> (from vfs_get_tree()) now passes empty opts, but the non-empty -> empty
-> sequence is allowed by SELinux for the FS_BINARY_MOUNTDATA case.
-> 
-> It is a total mess, but the only sane fix for now seems to be to skip
-> processing the security opts in vfs_parse_fs_param() if the fc has
-> legacy opts set AND the fs specfies the FS_BINARY_MOUNTDATA flag. This
-> combination currently matches only btrfs and coda. For btrfs this fixes
-> the fsconfig(2) behavior, and for coda it makes setting security opts
-> via fsconfig(2) fail the same way as it would with mount(2) (because
-> FS_BINARY_MOUNTDATA filesystems are expected to call the mount opts LSM
-> hooks themselves, but coda never cared enough to do that). I believe
-> that is an acceptable state until both filesystems (or at least btrfs)
-> are converted to the new mount API (at which point btrfs won't need to
-> pretend it takes binary mount data any more and also won't need to call
-> the LSM hooks itself, assuming it will pass the fc->security information
-> properly).
-> 
-> Note that we can't skip LSM opts handling in vfs_parse_fs_param() solely
-> based on FS_BINARY_MOUNTDATA because that would break NFS.
-> 
-> See here for the original report and reproducer:
-> https://lore.kernel.org/selinux/c02674c970fa292610402aa866c4068772d9ad4e.camel@btinternet.com/
-> 
-> Reported-by: Richard Haines <richard_c_haines@btinternet.com>
-> Fixes: 3e1aeb00e6d1 ("vfs: Implement a filesystem superblock creation/configuration context")
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+v1->v2:
+- Rebase onto latest misc-next.
+- Added Nikolay's reviewed-by for the first patch.
 
-Can we get this merged via the vfs tree, please? Possibly with
+--- Original email ---
+Hello,
 
-CC: stable@vger.kernel.org # 5.4+
+Nikolay discovered a regression with generic/371 with my delayed refs patches
+applied.  This isn't actually a regression caused by those patches, but rather
+those patches uncovered a problem that has existed forever, we just have papered
+over it with our aggressive delayed ref flushing.  Enter these two patches.
 
-> +	/*
-> +	 * In the legacy+binary mode, skip the security_fs_context_parse_param()
-> +	 * call and let the legacy handler process also the security options.
-> +	 * It will format them into the monolithic string, where the FS can
-> +	 * process them (with FS_BINARY_MOUNTDATA it is expected to do it).
-> +	 *
-> +	 * Currently, this matches only btrfs and coda. Coda is broken with
-> +	 * fsconfig(2) anyway, because it does actually take binary data. Btrfs
-> +	 * only *pretends* to take binary data to work around the SELinux's
-> +	 * no-remount-with-different-options check, so this allows it to work
-> +	 * with fsconfig(2) properly.
-> +	 *
-> +	 * Once btrfs is ported to the new mount API, this hack can be reverted.
-> +	 */
-> +	if (fc->ops != &legacy_fs_context_ops || !(fc->fs_type->fs_flags & FS_BINARY_MOUNTDATA)) {
+The first patch is more of a refactoring and a simplification.  We've been
+passing in a &old_refs and a &new_refs into the delayed ref code, and
+duplicating the
 
-Line is way over 80, it could be split like
+if (old_refs >= 0 && new_refs < 0)
+	->total_bytes_pinned += bytes;
+else if (old_refs < 0 && new_refs >= 0)
+	->total_bytes_pinned -= bytes;
 
-	if (fc->ops != &legacy_fs_context_ops ||
-	    !(fc->fs_type->fs_flags & FS_BINARY_MOUNTDATA)) {
+logic for data and metadata.  This was made even more confusing by the fact that
+we clean up this accounting when we drop the delayed ref, but also include it
+when we actually pin the extents down properly.  It took me quite a while to
+realize that we weren't mis-counting ->total_bytes_pinned because of how weirdly
+complicated the accounting was.
 
-> +		ret = security_fs_context_parse_param(fc, param);
-> +		if (ret != -ENOPARAM)
-> +			/* Param belongs to the LSM or is disallowed by the LSM;
-> +			 * so don't pass to the FS.
-> +			 */
+I've refactored this code to make the handling distinct.  We modify it in the
+delayed refs code itself, which allows us to clean up a bunch of function
+arguments and duplicated code.  It also unifies how we handle the delayed ref
+side of the ->total_bytes_pinned modification.  Now it's a little easier to see
+who is responsible for the modification and where.
 
-The multi line comment should have the /* on a separate line (yes it's
-in the original code too but such things could be fixed when the code is
-moved).
+The second patch is the actual fix for the problem.  Previously we had simply
+been assuming that ->total_ref_mod < 0 meant that we were freeing stuff.
+However if we allocate and free in the same transaction, ->total_ref_mod == 0
+also means we're freeing.  Adding that case is what fixes the problem Nikolay
+was seeing.  Thanks,
 
-> +			return ret;
-> +	}
->  
->  	if (fc->ops->parse_param) {
->  		ret = fc->ops->parse_param(fc, param);
+Josef
+
+Josef Bacik (2):
+  btrfs: handle ->total_bytes_pinned inside the delayed ref itself
+  btrfs: account for new extents being deleted in total_bytes_pinned
+
+ fs/btrfs/block-group.c |  11 ++--
+ fs/btrfs/delayed-ref.c |  60 ++++++++++++-------
+ fs/btrfs/delayed-ref.h |  16 +++--
+ fs/btrfs/extent-tree.c | 129 ++++++++++-------------------------------
+ fs/btrfs/space-info.h  |  17 ++++++
+ 5 files changed, 103 insertions(+), 130 deletions(-)
+
+-- 
+2.26.2
+
