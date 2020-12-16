@@ -2,167 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821322DC087
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 13:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450E32DC3E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgLPMxC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Dec 2020 07:53:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S1726299AbgLPQTb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Dec 2020 11:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPMxC (ORCPT
+        with ESMTP id S1725970AbgLPQTa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:53:02 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFF4C06179C
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 04:52:21 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id n18so7882944ual.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 04:52:21 -0800 (PST)
+        Wed, 16 Dec 2020 11:19:30 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D34AC061794
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:18:50 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id g24so5167688qtq.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:18:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=27R2vdM9sHlOdLxICyRJWLXAp5WbFLxQ+nscC47E4/I=;
-        b=Gj2MuQJ+mzvn+qQpCpX9xitpmt1inzT5y9mItkYI7nYEx3sANqgmackQDfvL/Z/KzE
-         zjJVDQj6fCFTWCxxv8S2TOdQPZXmCEwCn2d5i1Mhqji/nSijvUDTZL1PsDG/OjLKAcl1
-         gymR0Vsv38CYN7Q+e7/jMzRdqxNzUcuGc3ltnwdEk9h87bn3m59pR0NQ5SDYL5B09zqs
-         2RN/uV5lgFs66Vh0ywVZMEm0F95gpn9KAGayilGLJkoXhF30W7B8OTDq8yF4PUq823LM
-         Vrk1iQPurRfQhCLtz3CmIR0/Q23uEpQxk7VLtfWL+V6qTrI6sgauyca3rcrBPttdtlt5
-         VhsA==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b1YCv29jaX0KFbUE5V4IevCXr7qO6nyHvD1R0kPKnF8=;
+        b=YpubfP9iN3eHRSTPSLYfspU+O8ghXhawbda9DluQ+HbmZnX9/Gm8CHQwgTJPE+XXyU
+         E/GYLC8zo3pReqXADsPs8FqCftiCBO5TTFhic99HP8LB5fMWvSBr0L5Am9P6jqAaQQmq
+         16BFME321YjuiLKWtbuYsfvAhQ4N/Ws5kbA2pfmhmnF+PC/Tednv8DNX2rbIs7xOaHKt
+         v2+TOCsk2+nlIFH24BffpVX3jVSUoDcxe5G0S9AY0zoe4OzniQMaajoADCmVzyNRmatY
+         LKuQHxflunhAxn83QN4N+j6369X4WSqwLkSjm8D9aW5jcm6s4aPqLGL5N5g8B5B9gVH4
+         EUeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=27R2vdM9sHlOdLxICyRJWLXAp5WbFLxQ+nscC47E4/I=;
-        b=CPLZd1HJPUsMViMmR1k/2NHYmuSozZvsTwBHRXXi+1FmUQcE7L3ToWiOsapwpjV7FN
-         P6s2j3y8Q/iE/BhwW2IPBMlsyOqEzKDTyxTkNQqdYUavrkXe69Mxo30/mGGzAuaQ1uq3
-         OEHaUZ+zTuKZTCiGHR9UbSe9WtqUDG47GfjV0QQ1pkQyZNXAqjk5QbW9WtOL47VIqiPV
-         FERBT0xLKaVJm4LXxAfjsyci1FgFIr3v89iGKsme/YrQCfAIoG4SXiWAiWPFPsS7pLAM
-         6LmbT12//AFqCg/vaOMtIh3fo4tpptOJlywIR24+OWOoLhXfbfGGwFt5mfvY7Ceg1PVx
-         Itxw==
-X-Gm-Message-State: AOAM532p2uvglzVHyDIRmS0H+Sg8AGv7maTaNdVVZ8f+iWg8O2hJWQ3L
-        66Z8Y2gGGbOWPmOXQO8504QjRJZAgCx0rb9s5N5txoOreEVp3g==
-X-Google-Smtp-Source: ABdhPJzUXUDaz7cvCH1t6VtoAqAX4h91TGMa3Xp4d2L2od3GNP7q+hCZ4RDZm9mCnna4eth2e8wbIi50tqfk2jK4/5c=
-X-Received: by 2002:a9f:204e:: with SMTP id 72mr4685192uam.19.1608123140112;
- Wed, 16 Dec 2020 04:52:20 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b1YCv29jaX0KFbUE5V4IevCXr7qO6nyHvD1R0kPKnF8=;
+        b=Nvahgn+YT8NmAr3psMt5qLjQvNMEEoZefv4AGHVlNeXvwKlbdRdoAqL1Cs/5gmvmq/
+         C2M9U6p3fKSUuZyWPAH5FrEh9/UvfL90KwnV4UMpz+mhSS0sRI6Nm6B1QwPoVf6hl5Lf
+         x4p8vuf5NioSDVoTAEpPKAsUHO0aP3UMcEqLKWH1eiwnwDldXz6eF+/j1QFJdL6NLyzW
+         fjduo1Cj5mCZ6RJKsehnL4v9uzdIEyjnqc/8kJXSbd94kaYgZpNs6+DHiKfXZ8MNZlAg
+         QvUA6gw2lo42xvACz8dHw0Pqy2joYx5vtcV6uKRwMl8KAeHeiS+y/lkGVUYaS+qadsmK
+         Unag==
+X-Gm-Message-State: AOAM530AwWYzzWz73Ecdj7ke4vEw3NzF22NuA5oHySLUC6VPGfxKHfHs
+        Fma7a8nqlPcMzYoEMDFD7dG+uXkOrhfRGFZw
+X-Google-Smtp-Source: ABdhPJy13bC+gJxwC9Qt+RiScfb/jM8k+PzwIk0Q5OlxLa7QthgmFkIFiJOQxV1yWAbaOZD+EBwlxg==
+X-Received: by 2002:ac8:46c8:: with SMTP id h8mr19766111qto.17.1608135529455;
+        Wed, 16 Dec 2020 08:18:49 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id d25sm1343753qkl.97.2020.12.16.08.18.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 08:18:48 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/5] Fixes and tweaks around error handling
+Date:   Wed, 16 Dec 2020 11:18:42 -0500
+Message-Id: <cover.1608135381.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20201211164812.459012-1-realwakka@gmail.com> <20201211164812.459012-2-realwakka@gmail.com>
- <20201211173025.GO6430@twin.jikos.cz> <20201211174629.GQ6430@twin.jikos.cz>
- <CABnRu57w3aw=jPBbpSNYfyRKxs1z7onwWzqjg+=r6jQjwNYUXw@mail.gmail.com> <20201216105203.GA14127@realwakka>
-In-Reply-To: <20201216105203.GA14127@realwakka>
-From:   Su Yue <damenly.su@gmail.com>
-Date:   Wed, 16 Dec 2020 20:52:08 +0800
-Message-ID: <CABnRu55J04cu2sbc_f4gR_bOw3_sSMvu1Bs-sGyFhJ=cCRdMuA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] btrfs-progs: device stats: add json output format
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 6:52 PM Sidong Yang <realwakka@gmail.com> wrote:
->
-> On Wed, Dec 16, 2020 at 02:30:04PM +0800, Su Yue wrote:
-> > On Sat, Dec 12, 2020 at 3:04 AM David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Fri, Dec 11, 2020 at 06:30:25PM +0100, David Sterba wrote:
-> > > > On Fri, Dec 11, 2020 at 04:48:12PM +0000, Sidong Yang wrote:
-> > > > > Example json format:
-> > > > >
-> > > > > {
-> > > > >   "__header": {
-> > > > >     "version": "1"
-> > > > >   },
-> > > > >   "device-stats": [
-> > > > >     {
-> > > > >       "device": "/dev/vdb",
-> > > > >       "devid": "1",
-> > > > >       "write_io_errs": "0",
-> > > > >       "read_io_errs": "0",
-> > > > >       "flush_io_errs": "0",
-> > > > >       "corruption_errs": "0",
-> > > > >       "generation_errs": "0"
-> > > > >     }
-> > > > >   ],
-> > > >      ^
-> > > >
-> > > > I've verified that the comma is really there, it's not a valid json=
- so
-> > > > there's a bug in the formatter. To verify that the output is valid =
-you
-> > > > can use eg. 'jq', simply pipe the output of the commadn there.
-> > > >
-> > > >   $ ./btrfs --format json dev stats /mnt | jq
-> > > >   parse error: Expected another key-value pair at line 16, column 1
-> > >
-> > > I've pushed the updated plain text formatting to devel, so the only
-> > > remaining bug is the above extra comma.
-> >
-> > Another format bug(one extra newline):
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > =E2=9E=9C  btrfs-progs git:(314d96c8)  btrfs device stats /mnt
-> > [/dev/mapper/test-1].write_io_errs    0
-> > [/dev/mapper/test-1].read_io_errs     0
-> > [/dev/mapper/test-1].flush_io_errs    0
-> > [/dev/mapper/test-1].corruption_errs  0
-> > [/dev/mapper/test-1].generation_errs  0
-> >
-> > =E2=9E=9C  btrfs-progs git:(314d96c8)
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > The new line is printed by the change:
-> > '+       fmt_end(&fctx);'
-> >
-> > and fstests/btrfs/006 fails:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > btrfs/006 1s ... - output mismatch (see
-> > /root/xfstests-dev/results//btrfs/006.out.bad)
-> >     --- tests/btrfs/006.out     2020-12-16 03:40:19.632039261 +0000
-> >     +++ /root/xfstests-dev/results//btrfs/006.out.bad   2020-12-16
-> > 06:25:56.424424113 +0000
-> >     @@ -15,12 +15,14 @@
-> >
-> >      =3D=3D Sync filesystem
-> >      =3D=3D Show device stats by mountpoint
-> >     + 1
-> >      <NUMDEVS> [SCRATCH_DEV].corruption_errs <NUM>
-> >      <NUMDEVS> [SCRATCH_DEV].flush_io_errs <NUM>
-> >      <NUMDEVS> [SCRATCH_DEV].generation_errs <NUM>
-> >     ...
-> >     (Run 'diff -u /root/xfstests-dev/tests/btrfs/006.out
-> > /root/xfstests-dev/results//btrfs/006.out.bad'  to see the entire
-> > diff)
-> > Ran: btrfs/006
-> > Failures: btrfs/006
-> > Failed 1 of 1 tests
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> >
-> > The new line made filter produce the '+1'.
->
-> Thanks for testing this patch.
-> I checked the fmt_end() and there is an additional newline.
-> I think that fmt_end() should be used for formatting. so it seems that
+Hello,
 
-Yes, it's for the purpose of formatting.
+These patches were originally in my reloc error handling patches that have been
+broken out on their own.  They stand on their own and are simple and don't
+affect the code in a real way.  Simply fixing some cosmetic stuff, or allowing
+error injection in certain places.  They were patches I needed while running
+error injection.  Thanks,
 
-> the only way to fix this problem is to remove the code that inserts a
-> newline in fmt_end(). I searched the code that use the function and
-> there is no code that used this function but this patch. Do you have any
-> ideas?
->
-I'm OK about removing the "putchar('\n');". It's just a tiny format issue s=
-o no
-bother to do extra works.
+Josef
 
-David?
+Josef Bacik (5):
+  btrfs: allow error injection for btrfs_search_slot and btrfs_cow_block
+  btrfs: print the actual offset in btrfs_root_name
+  btrfs: noinline btrfs_should_cancel_balance
+  btrfs: pass down the tree block level through ref-verify
+  btrfs: make sure owner is set in ref-verify
 
-> Thanks,
-> Sidong
+ fs/btrfs/ctree.c      |  2 ++
+ fs/btrfs/disk-io.c    |  2 +-
+ fs/btrfs/print-tree.c | 10 +++++-----
+ fs/btrfs/print-tree.h |  2 +-
+ fs/btrfs/ref-verify.c | 43 ++++++++++++++++++++++---------------------
+ fs/btrfs/relocation.c |  2 +-
+ 6 files changed, 32 insertions(+), 29 deletions(-)
+
+-- 
+2.26.2
+
