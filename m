@@ -2,169 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07842DB84E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 02:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F842DB9B8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 04:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgLPBNf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Dec 2020 20:13:35 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:65048 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726353AbgLPBNf (ORCPT
+        id S1725385AbgLPDnf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Dec 2020 22:43:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbgLPDnf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Dec 2020 20:13:35 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BG12vPp019892;
-        Tue, 15 Dec 2020 17:12:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=ujVqvmc2vptgRNihKSPeI4+ePcN+4jwtMqdmlEl2EzM=;
- b=qElPfrK601H+tEyokljYTx6/o9/9dU/GRNaY5gHjuFJyUddqZSwOC+gt1fZyU2XFy6+d
- xs+zTzglktciK7Hpb/LaNyaxFcNgqLRhmyDcDeTJ5SQdCMful/3g1ptEOduG9t/VvsmP
- dWTXk55P3/V8Yx8BAFPUj4oQQLhW8F47UoE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35f54n934v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 15 Dec 2020 17:12:15 -0800
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Dec 2020 17:12:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DCFDjFFs25bwf14jeJWUoAbtlZvN2BiDmuChSXoxTv3f2a4lIBJJL2k2Zif2nSzuI2r9S0JsN60QpJqsju1kZIpifi7qeKD+ouT7lFo+FuJbEjoHFmTBYudMZ6+SKlfvIpHj/W/cV0FgjzAPVQHteH1OUTAXO5Pa1YjISEtbjvSLoWLqqrs77TlrX4a+PwEoAZCaVKYeySkeItd28FKIX/m6aI9yY2GLW7B1tnsyxTaUqrAc1quczK4fwWY7nUb3sNPyyU6jkCRyVpl0wR2uo8iVZg4BnroxTdHbDKSAlCn8UAq3+N9FencIyrd7naqGJeLdyFHyJxV90XogjRr/5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ujVqvmc2vptgRNihKSPeI4+ePcN+4jwtMqdmlEl2EzM=;
- b=mTgV/QqzvVCxaDIm4c0S8mAfRk0t093BQZ2ECuu5q74k1bZgiDOuzKxMp6Mg90dW59QTjsNW4qfMmw8ZF3baaZspH/ROUMJXMURnUCpIpq3V8ZAXNRDPOgyG5qNTlsO2mXh9XwwO2EygydEoqHr+1irG+Sur1oIXdKHk05+IhJtmYyDZZyDNe2YFBjUB/oLiha4esbTc2W/wLJrkSszq/59y/m9lvLbIz78TWMg70HFrtI69ouU0ckNKF/Pgt18GDbtQV4BcAVMIsQ20Y0tWj/m7VtK9h+deGHefByeGV6DVAsWQpQB8NgE4lFLaTI6UZpEXBk98Qupux/xD4OZe8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ujVqvmc2vptgRNihKSPeI4+ePcN+4jwtMqdmlEl2EzM=;
- b=ckK2DBpuFvfeiU2QUjMq79uGzZ3jdyoCNvj0ANx0WfyCRI64njPINeXB93ld6KXhvQZ4NkBN9ExHflqroBxoTY09sAX0nwN12YeKyd+uc1dwUnxVy7x8oxevwTvj1K3UeEuE/tu+IL7gadxe5SUYV8NDeloHeFMUgBbke81b8+Q=
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
- by BYAPR15MB2488.namprd15.prod.outlook.com (2603:10b6:a02:90::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.21; Wed, 16 Dec
- 2020 01:12:09 +0000
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::17e:aa61:eb50:290c]) by BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::17e:aa61:eb50:290c%7]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
- 01:12:09 +0000
-From:   Nick Terrell <terrelln@fb.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     Eric Biggers <ebiggers@kernel.org>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yann Collet <cyan@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Petr Malat <oss@malat.biz>, "Chris Mason" <clm@fb.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Niket Agarwal <niketa@fb.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Johannes Weiner <jweiner@fb.com>
-Subject: Re: [f2fs-dev] [PATCH v7 0/3] Update to zstd-1.4.6
-Thread-Topic: [f2fs-dev] [PATCH v7 0/3] Update to zstd-1.4.6
-Thread-Index: AQHWybXbXo5DSFQdaEqlAnoQrw8JMqn4tsKAgAAywQCAAA2CgIAAApeAgAAD6gA=
-Date:   Wed, 16 Dec 2020 01:12:09 +0000
-Message-ID: <11B2A42A-8B23-4F6D-9736-A2823D4DFE2B@fb.com>
-References: <20201203205114.1395668-1-nickrterrell@gmail.com>
- <DF6B2E26-2D6E-44FF-89DB-93A37E2EA268@fb.com>
- <X9lOHkAE67EP/sXo@sol.localdomain>
- <B3F00261-E977-4B85-84CD-66B07DA79D9D@fb.com>
- <20201216005806.GA26841@gondor.apana.org.au>
-In-Reply-To: <20201216005806.GA26841@gondor.apana.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gondor.apana.org.au; dkim=none (message not signed)
- header.d=none;gondor.apana.org.au; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [98.33.101.203]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 74b95f06-7ce6-458c-17c9-08d8a15f9cb7
-x-ms-traffictypediagnostic: BYAPR15MB2488:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2488062622541E90709096F9ABC50@BYAPR15MB2488.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZajH40OoHviKZbIHKAeFFQx8A5tEa5xqo7tSQ2QHldhnF8ZZDCG5HvvW1DMXTvwVzA5kmwd/6U+LqVlMFRRcSoffbVCfdk6Pks1Zi2UTN5ZS+lUyYFfcon1p+1WMUGCVsWXALlXAE1vw9e024UM9zcE/wu3ivCCjMYzKdr431CsEDjCzRvm2f7ynZEa6Yo02p+jG3AlaodrkFNPFdDv4mhVhlV1XorwPGqrvBYVK0QcL2MZm1VlYo6fdsa1AmzFKL33Qdv6MPN/lRavSMDn0/uxcjObtfzPoLvx0BHP5ZbGDrpIKg0LPXB/Tm4Of6yhhlDo8YV0nDcK1YYe61UNi+e/SqOA3epzEoELKCPqQIeIWkmP+T0ZQN5/p5ykqQVbT
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(39860400002)(366004)(396003)(83380400001)(33656002)(64756008)(7416002)(186003)(26005)(71200400001)(4744005)(316002)(4326008)(54906003)(8936002)(66556008)(6506007)(478600001)(53546011)(15650500001)(2906002)(8676002)(5660300002)(6512007)(6486002)(2616005)(86362001)(76116006)(6916009)(66446008)(66946007)(36756003)(66476007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?T2tpNTErU2V3YUowbVRVb2JFNXFHcVZ4QzdibG1IRUs2bTFwYnFMYVJXYzNw?=
- =?utf-8?B?TXVlMUtMV2hqd1RZZWtSdlllT0NKZlU4Y0JoNEQzWkxWdCtRZEtPcVgrY2xn?=
- =?utf-8?B?ZTA1VkEwRmYvSGZJcGZEOU9lQjcwQVNoRnE1MmZKYUNjOFNLc0FtVVJiL2ZL?=
- =?utf-8?B?K1lyckg0b0ROTTFGMXZNVS9VZ3NYUmlXYlMxdGdSMlJ1RUVDaXRCZSs3UWpE?=
- =?utf-8?B?ZTR3MVBEN2RnVm5lamphL2FORmJ2cVlUY05pZUZFMEw3SFBmSURONFJxWnla?=
- =?utf-8?B?RStxc0JVc0NOWnNiV2tyZThFWTJLcUxzZWxLTXJuTzh3SkJXT21hMWQrYllL?=
- =?utf-8?B?MXpjYnlNV3g4T2xSMGVYTnhkemRldC9oUHZHSGl5Vi9qOXhTVVBpNG16eHhz?=
- =?utf-8?B?amhzWE9VSnltcDErWkJjUWIrcHJxV1FaZ3NLWEZ0ekRXWm9jZk9EVWxBZGNK?=
- =?utf-8?B?dkRsNkJ4ZEFoNnUrc0pJUno2Y3dEWDlQbXZVZXVEOExPejI4NG5EdzdPbVV0?=
- =?utf-8?B?Nm1Ja1poNUF6dllpdFNoeUJVUjBpaWMwcTU0d3c4dDJpUkZEWHdmTlhvenlD?=
- =?utf-8?B?VzhjVXhidTZaZldmbkdYVFk3NHRkcXl4NzU3NURSUGNscElrWmI3by9YT3Qv?=
- =?utf-8?B?VzRVeWcreDh5d3ZueExvelBoVXNjQjVDU0xmU3lQbm5aQ0xqSEU4bXhidStx?=
- =?utf-8?B?SHUxOUxYMGNjOUpWTXMvQVhwWm14T25oWWhhZ3VndVlQOWNZNGhFWHFRMnc1?=
- =?utf-8?B?RnNsRWdKVVlYV3JZM0szb3VlRjJOVGZEU1R1Qzl1Z1BsUXh6ZFNiOGdnL1BY?=
- =?utf-8?B?aEF4N0lNcHpiZ1JYeXFKaUFZTUl3cVdFbnpBWmRjOHJQRkVWeENaRmJVY285?=
- =?utf-8?B?eDlhN1NzaTRDeWp2cHoyaDN4Uk8xalJscEkxS0ZDNUhMbVdUZkJyc2NSbUx5?=
- =?utf-8?B?UWtMZWd3RXJiMXJyeGRKcXZRWms4MXM3aWU1UDhkaXZlYjFWM3M3c3U2VUo0?=
- =?utf-8?B?ODBYM3pxT0d0YXhiYUpMVHZOa2xESkdtYkFZYm5ocDB2cE1mak9uVEFwQlFO?=
- =?utf-8?B?ckhLeEd1M3JYM28waFgzYXA4Y0tRRTB2dHNqaVpmYmwyR0VEUVU2MXp5QnlQ?=
- =?utf-8?B?MGpkbWlSNXFPcU9ycGExbXdFc0ptZENZYUhRdko0ZGZ0a2JDbDVwQUxKcHVx?=
- =?utf-8?B?aEZud3hLVzFYTlIwTDM3RFplNFlEUm1EV25uSUtCRTZiMlhnRHFodndpTWk2?=
- =?utf-8?B?UWdBWC9vZTVJUUlzUWJBRnlYY28vM2tqWEUzT3VOLytmcWI3a0d6TlRHMk5G?=
- =?utf-8?Q?0Nxllsbc+P+YjU97bLwY6VtsZhAZGxR5zJ?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8169A93417E9C04C89E2154B1B0A0006@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 15 Dec 2020 22:43:35 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5564C0613D6
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Dec 2020 19:42:54 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id m6so6020918pfm.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Dec 2020 19:42:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oP3zh7QwcCzehAB5EkMfo7FC+j39J1/uKdrKzR8sD2Y=;
+        b=r58zIwAE+AkZzRjUEicHnVbbvRb81aLD/L5XjdeqS4FA9rO4vK+SikxlRZphc6iqQa
+         LQ8zf/cn6lblo1ebIIa3F2YW1xjMyXDJnDGQS0dGUiTgSuaNLBOCDFFWeesGFJF4owh6
+         9m1PwurFBfpiF/Fd0QkX44R1AlTbcZHmc1uM4aYwJ0/s7eX/Sky++5sDCJZy9/09+4Dv
+         qYrcHUa4EE4yv1oKWG3XzD4ILAPpjxJyi7pjQgQ8OmnEqE3pXi/6synks0q1ke7issNF
+         JONNE/qw/2CEIBJ869dbB2aHzvcwfT2VQtOKV+WrkpfHhgjA511oGhkxWrksgpHv4Tsr
+         btIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oP3zh7QwcCzehAB5EkMfo7FC+j39J1/uKdrKzR8sD2Y=;
+        b=rKg1y1S5rjv8SyYs2ZD/fGRJWeE+DYR262JBjNfWhVJK/Eyy/GWePppLAr/nKMJHL5
+         vL2hGwpiwbktkTQzh/w78lp7qobZ76grKFTx+6s639LfeW9FUAMIeQSkWsOtcYJ8dAhS
+         IL6JlaCm0QvegFGW1Mzo3oEzdFjea6Yy1stOpcnB9wUs1oi2GWSDLsUaL2fjnVWmN8lr
+         DQcwy8MixcLYWWKmArHwY08ICXTPaaC5qfh4xVB5Ci2SjLifVIWudMRr0bUMuaf5zb1H
+         qkVkBlCU8cRad4BDz1/5Ue85jNURPZJmGX+tn9q5pB4VdWdJWJDvMgeK+dHFapY/G9YN
+         DCIw==
+X-Gm-Message-State: AOAM533ZNr88j+l71NUV/eHH5gHcwx7x/3SUa1IfceNvkyG4GBJMQYww
+        Dbv1ZZ5mIf1cKZvPTTKoLPrZ2uoEIBLXcg==
+X-Google-Smtp-Source: ABdhPJyS8jqt2zjcjxd91K5+HjKLukk6UlooLTKiFxhen94LwhIrwHg0rjXFdMuJ1qJffa2ZaVT1nQ==
+X-Received: by 2002:a62:8386:0:b029:19e:c636:3c7d with SMTP id h128-20020a6283860000b029019ec6363c7dmr21313182pfe.24.1608090174134;
+        Tue, 15 Dec 2020 19:42:54 -0800 (PST)
+Received: from localhost.localdomain ([175.195.128.78])
+        by smtp.googlemail.com with ESMTPSA id z6sm485090pfj.22.2020.12.15.19.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Dec 2020 19:42:53 -0800 (PST)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH] btrfs-progs: filesystem-resize: make output more readable
+Date:   Wed, 16 Dec 2020 03:42:40 +0000
+Message-Id: <20201216034240.2029-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74b95f06-7ce6-458c-17c9-08d8a15f9cb7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 01:12:09.3946
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YB0Tsq8wTCIgHfsDRhIDOWVof8TDUtdva8eC8gxzUbNSt/kbk6Pg7hY3Or3bA+XW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2488
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_13:2020-12-15,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0
- mlxlogscore=883 lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160003
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCj4gT24gRGVjIDE1LCAyMDIwLCBhdCA0OjU4IFBNLCBIZXJiZXJ0IFh1IDxoZXJiZXJ0QGdv
-bmRvci5hcGFuYS5vcmcuYXU+IHdyb3RlOg0KPiANCj4gT24gV2VkLCBEZWMgMTYsIDIwMjAgYXQg
-MTI6NDg6NTFBTSArMDAwMCwgTmljayBUZXJyZWxsIHdyb3RlOg0KPj4gDQo+PiBUaGFua3MgZm9y
-IHRoZSBhZHZpY2UhIFRoZSBmaXJzdCB6c3RkIHBhdGNoZXMgd2VudCB0aHJvdWdoIEhlcmJlcnTi
-gJlzIHRyZWUsIHdoaWNoIGlzDQo+PiB3aHkgSeKAmXZlIHNlbnQgdGhlbSB0aGlzIHdheS4NCj4g
-DQo+IFNvcnJ5LCBidXQgSSdtIG5vdCB0b3VjaCB0aGVzZSBwYXRjaGVzIGFzIENocmlzdG9waCdz
-IG9iamVjdGlvbnMNCj4gZG9uJ3Qgc2VlbSB0byBoYXZlIGJlZW4gYWRkcmVzc2VkLg0KDQpJIGJl
-bGlldmUgSeKAmXZlIGFkZHJlc3NlZCBDaHJpc3RvcGgncyBvYmplY3Rpb25zLiBIZSBzdWdnZXN0
-ZWQgY3JlYXRpbmcNCmEgd3JhcHBlciBBUEkgdG8gYXZvaWQgY2hhbmdpbmcgY2FsbGVycyB1cG9u
-IHRoZSB6c3RkIHVwZGF0ZS4gSeKAmXZlIGRvbmUNCnRoYXQsIHRoZSBvbmx5IGRpZmZlcmVuY2Ug
-YmV0d2VlbiB0aGUgY3VycmVudCBBUEksIGFuZCB0aGUgY2hhbmdlcyBJ4oCZdmUNCnByb3Bvc2Vk
-IHBhdGNoIDEsIGlzIHRoYXQgSeKAmXZlIGNoYW5nZWQgdGhlIHByZWZpeCBmcm9tIFpTVERfIHRv
-IHpzdGRfIHRvDQphdm9pZCBjb25mbGljdHMgJiBjb25mdXNpb24gd2l0aCB0aGUgdXBzdHJlYW0g
-enN0ZCBBUEkuDQoNCkNyaXN0b3BoLCBpZiB5b3UgZ2V0IGEgY2hhbmNlIHRvIHRha2UgYSBsb29r
-IGF0IHRoZXNlIHBhdGNoZXMsIHBsZWFzZSBsZXQNCm1lIGtub3cgd2hhdCB5b3UgdGhpbmsgYWJv
-dXQgdGhlIGN1cnJlbnQgaXRlcmF0aW9uIG9mIHBhdGNoZXMsIGFuZCBpZiBJ4oCZdmUNCmFkZHJl
-c3NlZCBhbGwgb2YgeW91ciBjb25jZXJucy4NCg0KQmVzdCwNCk5pY2s=
+This patch make output of filesystem-resize command more readable and
+give detail information for users. This patch provides more information
+about filesystem like below.
+
+Before:
+Resize '/mnt' of '1:-1G'
+
+After:
+Resize device id 1 (/dev/vdb) from 4.00GiB to 3.00GiB
+
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+ cmds/filesystem.c | 61 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 60 insertions(+), 1 deletion(-)
+
+diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+index fac612b2..53e775b7 100644
+--- a/cmds/filesystem.c
++++ b/cmds/filesystem.c
+@@ -1084,6 +1084,14 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
+ 	int ret;
+ 	struct stat st;
+ 	bool enqueue = false;
++	struct btrfs_ioctl_fs_info_args fi_args;
++	struct btrfs_ioctl_dev_info_args *di_args = NULL;
++	char newsize[256];
++	char sign;
++	u64 inc_bytes;
++	u64 res_bytes;
++	int i, devid, dev_idx;
++	const char *res_str;
+ 
+ 	optind = 0;
+ 	while (1) {
+@@ -1142,7 +1150,58 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
+ 		return 1;
+ 	}
+ 
+-	printf("Resize '%s' of '%s'\n", path, amount);
++	ret = get_fs_info(path, &fi_args, &di_args);
++	if (ret)
++		error("unable to retrieve fs info");
++
++	if (!fi_args.num_devices)
++		error("num_devices = 0");
++
++	ret = sscanf(amount, "%d:%255s", &devid, newsize);
++
++	if (ret != 2)
++		error("invalid format");
++
++	dev_idx = -1;
++	for(i = 0; i < fi_args.num_devices; i++) {
++		if (di_args[i].devid == devid) {
++			dev_idx = i;
++			break;
++		}
++	}
++
++	if (dev_idx < 0)
++		error("cannot find devid : %d", devid);
++
++	if (!strcmp(newsize, "max")) {
++		res_str = "max";
++	} else {
++		if (strlen(newsize) < 3)
++			error("invalid format");
++
++		sign = newsize[0];
++		if (sign != '-' && sign != '+')
++			error("invalid format");
++
++		inc_bytes = parse_size(&newsize[1]);
++
++		res_bytes = 0;
++		if (sign == '+')
++			res_bytes = di_args[0].total_bytes + inc_bytes;
++		else if (sign == '-')
++			res_bytes = di_args[0].total_bytes - inc_bytes;
++		else
++			error("invalid format");
++
++		res_str = pretty_size_mode(res_bytes, UNITS_DEFAULT);
++	}
++
++	printf("Resize device id %d (%s) from %s to %s\n", devid, di_args[dev_idx].path,
++		   pretty_size_mode(di_args[dev_idx].total_bytes, UNITS_DEFAULT),
++		   res_str);
++
++	free(di_args);
++
+ 	memset(&args, 0, sizeof(args));
+ 	strncpy_null(args.name, amount);
+ 	res = ioctl(fd, BTRFS_IOC_RESIZE, &args);
+-- 
+2.25.1
+
