@@ -2,58 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120E82DC40B
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBF92DC40C
 	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Dec 2020 17:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgLPQXs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726689AbgLPQXs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 16 Dec 2020 11:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgLPQXr (ORCPT
+        with ESMTP id S1726685AbgLPQXr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 16 Dec 2020 11:23:47 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58675C0611CC
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:22:43 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id 2so7735352qtt.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:22:43 -0800 (PST)
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F40FC0611CD
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:22:45 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id 22so12805701qkf.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Dec 2020 08:22:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KvCnIGOY5N+iKQx47fBU+44kordMUWG+xxsld8ZScx8=;
-        b=HsK4cI7Hn4tXaCQnG0snEdGgxL04r3tLwZF4gyQxTAGCAqIvKkoBb3uRGtaWe2tbXP
-         y1mo/IVk6GIyCj6mwx6IGrjnzeBzHLQPJacTy1MsAld1eq+76h6M6Wvy0YYUp9g/bTwu
-         Eqsp5WMYvI02tI4AfnVnTTvZlAkQbQciuCmjk/77o7KykLalhTdIJxwl5rtCs/XcgK9E
-         ZTa6YxrsHq6jRz3aQn4HS/BsEihTlUYaYmQj8x/bmL7vdIjScH3vK86/HuavW4hMiOwu
-         G+3dgvrgSiVDh0bpoduaprYCRrdz0RLJ5ST9uxV97INiMTgXnnQrCUoLCQNGPvilsN0P
-         cFHw==
+        bh=r5wsUbZ3Az+ViTcPjzf17bxGV8a/MRj0OYQL0Iy2j8k=;
+        b=T7dPHdlh1nqhZN3o+cUzvPAGyCt8W83rkUsUhspglzvJCV8yXZegsnMaEaDZnigukR
+         qspXr+d3nNpYmuEQGTTZK7sGtSfmXGDwTiWFgRG3bcfiv7hqaa7Tw/JW9C9DvFbMIWXO
+         704Il4XWFaoOonlPfLRTteRtKPPfzSWg5yOb/sMmNevldPByscFjHA2bQ2ecsA72r3Ic
+         orXg3FqY6mKdxr3eu9n6H8R3t3XjsVN0c/rbDFxu/kBgTbXxEnXL7F08KiM8MdqPZLKz
+         Z1cfDueFaXfGZs9UVNwMZIq/9oErZJn2gpPv8Vl4R5DgfNznZxeCI6MjxaNmcT5NNnfH
+         zx4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KvCnIGOY5N+iKQx47fBU+44kordMUWG+xxsld8ZScx8=;
-        b=RDMtz8ufjOnoBuBWaRMYhbWPV+eckb2RpUrJ2OXukq7mYHyaBlyOle268jbAdACR9+
-         qelzeMMsBKlWbs03wlFmAdN3qm7K0+Oc2JzZKYoepzN2C8w12NljlIaLMCCE84ot86od
-         LElFEVEWKpZ1AhGgoQcy6j4XYQYlIupPxDiciLRupVTqV8+hjz1QpFwRz38HEM/F2GnC
-         tSZNQf6u2MU7lRsRZGPCzUWkKk1yxrPfAyMiucjcQrMyJI1GvEykX9pyQpBKoDHjDYhA
-         RLfeQQ4Qo/jWWoJwPUjwFa99CMk6JJt4AgSW21KEFnAE7wtdsUegrU1D2Tj9lI33v2/X
-         I/kA==
-X-Gm-Message-State: AOAM532W32RfEgn8NzVy5udiozvZCwwFnsSWH9uBbiAmR7kzTIP0+/7r
-        mm9o+x5cEdnJ81XGEzajDBeWY1/bCeG7sPD4
-X-Google-Smtp-Source: ABdhPJxnEDPlF4+TFQiEld7H9H+QjGQlRYld/XUGD4easLkfd3+yG1dS/cr/pxCnwJ/QZCUFE0e0ag==
-X-Received: by 2002:ac8:4986:: with SMTP id f6mr43123589qtq.43.1608135762055;
-        Wed, 16 Dec 2020 08:22:42 -0800 (PST)
+        bh=r5wsUbZ3Az+ViTcPjzf17bxGV8a/MRj0OYQL0Iy2j8k=;
+        b=Bu5h7tANZmsJpF2GDs0y/1esmuo1/GE30St8xMXhWEaNk3PLmo800eyA7BVJf48YoA
+         ppj+rBsbvtHdx10su9/jrAXU5oz7rSmEqitVDCY2b5fc9taH9cBZJW/d539htY6lqBjF
+         DmhAGF5R5OHYOlLLmsd6y+tR4+P/elfhkB8wsjqgxDnMKMxJAkSKet7QDSBYXvt47URl
+         ir88Lfyn3dgyJSqSP0u9CQO7J4vR7M5kXuuvrSDYu6x26ASGg5dWKZlkPeJcBv6m8mzT
+         rDxHI00jy3LHReh7k13+Xkfm3xFSpQVkJPef+tRF4+T84cIJA9EkyWDgBTiGtr9zT54i
+         5PsA==
+X-Gm-Message-State: AOAM533m1qqR0bTJsnBgVGe09VqLmEcmRJWZkJOOqylzH2MA0VueYNRE
+        9++9ZKjnXMkf+k8g9alYM+5bNKRBUOIbRtsw
+X-Google-Smtp-Source: ABdhPJy97Pv3Yeuab3reZOfyMlH9fPfu5CCM5EC71g6MSL1Zu7LP/BIiDJUUCkO3zkI9EnHXuCFgWg==
+X-Received: by 2002:a37:66ce:: with SMTP id a197mr5423559qkc.312.1608135764065;
+        Wed, 16 Dec 2020 08:22:44 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p10sm1408097qke.32.2020.12.16.08.22.41
+        by smtp.gmail.com with ESMTPSA id 9sm1319622qke.123.2020.12.16.08.22.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 08:22:41 -0800 (PST)
+        Wed, 16 Dec 2020 08:22:43 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH 12/13] btrfs: do not cleanup upper nodes in btrfs_backref_cleanup_node
-Date:   Wed, 16 Dec 2020 11:22:16 -0500
-Message-Id: <59ebfb4821922076f1ab4a1fb007f154a21945e3.1608135557.git.josef@toxicpanda.com>
+Cc:     Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 13/13] btrfs: don't clear ret in btrfs_start_dirty_block_groups
+Date:   Wed, 16 Dec 2020 11:22:17 -0500
+Message-Id: <08fff1cc055306c3fdf16ee20071851b6c59e043.1608135557.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1608135557.git.josef@toxicpanda.com>
 References: <cover.1608135557.git.josef@toxicpanda.com>
@@ -63,120 +64,32 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Zygo reported the following panic when testing my error handling patches
-for relocation
-
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/backref.c:2545!
-invalid opcode: 0000 [#1] SMP KASAN PTI CPU: 3 PID: 8472 Comm: btrfs Tainted: G        W 14
-Hardware name: QEMU Standard PC (i440FX + PIIX,
-
-Call Trace:
- btrfs_backref_error_cleanup+0x4df/0x530
- build_backref_tree+0x1a5/0x700
- ? _raw_spin_unlock+0x22/0x30
- ? release_extent_buffer+0x225/0x280
- ? free_extent_buffer.part.52+0xd7/0x140
- relocate_tree_blocks+0x2a6/0xb60
- ? kasan_unpoison_shadow+0x35/0x50
- ? do_relocation+0xc10/0xc10
- ? kasan_kmalloc+0x9/0x10
- ? kmem_cache_alloc_trace+0x6a3/0xcb0
- ? free_extent_buffer.part.52+0xd7/0x140
- ? rb_insert_color+0x342/0x360
- ? add_tree_block.isra.36+0x236/0x2b0
- relocate_block_group+0x2eb/0x780
- ? merge_reloc_roots+0x470/0x470
- btrfs_relocate_block_group+0x26e/0x4c0
- btrfs_relocate_chunk+0x52/0x120
- btrfs_balance+0xe2e/0x18f0
- ? pvclock_clocksource_read+0xeb/0x190
- ? btrfs_relocate_chunk+0x120/0x120
- ? lock_contended+0x620/0x6e0
- ? do_raw_spin_lock+0x1e0/0x1e0
- ? do_raw_spin_unlock+0xa8/0x140
- btrfs_ioctl_balance+0x1f9/0x460
- btrfs_ioctl+0x24c8/0x4380
- ? __kasan_check_read+0x11/0x20
- ? check_chain_key+0x1f4/0x2f0
- ? __asan_loadN+0xf/0x20
- ? btrfs_ioctl_get_supported_features+0x30/0x30
- ? kvm_sched_clock_read+0x18/0x30
- ? check_chain_key+0x1f4/0x2f0
- ? lock_downgrade+0x3f0/0x3f0
- ? handle_mm_fault+0xad6/0x2150
- ? do_vfs_ioctl+0xfc/0x9d0
- ? ioctl_file_clone+0xe0/0xe0
- ? check_flags.part.50+0x6c/0x1e0
- ? check_flags.part.50+0x6c/0x1e0
- ? check_flags+0x26/0x30
- ? lock_is_held_type+0xc3/0xf0
- ? syscall_enter_from_user_mode+0x1b/0x60
- ? do_syscall_64+0x13/0x80
- ? rcu_read_lock_sched_held+0xa1/0xd0
- ? __kasan_check_read+0x11/0x20
- ? __fget_light+0xae/0x110
- __x64_sys_ioctl+0xc3/0x100
- do_syscall_64+0x37/0x80
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-This occurs because of this check
-
-if (RB_EMPTY_NODE(&upper->rb_node))
-	BUG_ON(!list_empty(&node->upper));
-
-As we are dropping the backref node, if we discover that our upper node
-in the edge we just cleaned up isn't linked into the cache that we are
-now done with this node, thus the BUG_ON().
-
-However this is an erroneous assumption, as we will look up all the
-references for a node first, and then process the pending edges.  All of
-the 'upper' nodes in our pending edges won't be in the cache's rb_tree
-yet, because they haven't been processed.  We could very well have many
-edges still left to cleanup on this node.
-
-The fact is we simply do not need this check, we can just process all of
-the edges only for this node, because below this check we do the
-following
-
-if (list_empty(&upper->lower)) {
-	list_add_tail(&upper->lower, &cache->leaves);
-	upper->lowest = 1;
-}
-
-If the upper node truly isn't used yet, then we add it to the
-cache->leaves list to be cleaned up later.  If it is still used then the
-last child node that has it linked into its node will add it to the
-leaves list and then it will be cleaned up.
-
-Fix this problem by dropping this logic altogether.  With this fix I no
-longer see the panic when testing with error injection in the backref
-code.
+If we fail to update a block group item in the loop we'll break, however
+we'll do btrfs_run_delayed_refs and lose our error value in ret, and
+thus not clean up properly.  Fix this by only running the delayed refs
+if there was no failure.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/backref.c | 7 -------
- 1 file changed, 7 deletions(-)
+ fs/btrfs/block-group.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 3af38b09be43..7ac59a568595 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -2541,13 +2541,6 @@ void btrfs_backref_cleanup_node(struct btrfs_backref_cache *cache,
- 		list_del(&edge->list[UPPER]);
- 		btrfs_backref_free_edge(cache, edge);
- 
--		if (RB_EMPTY_NODE(&upper->rb_node)) {
--			BUG_ON(!list_empty(&node->upper));
--			btrfs_backref_drop_node(cache, node);
--			node = upper;
--			node->lowest = 1;
--			continue;
--		}
- 		/*
- 		 * Add the node to leaf node list if no other child block
- 		 * cached.
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 69f8a306d70d..5cfa52b1a3b8 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2669,7 +2669,8 @@ int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 	 * Go through delayed refs for all the stuff we've just kicked off
+ 	 * and then loop back (just once)
+ 	 */
+-	ret = btrfs_run_delayed_refs(trans, 0);
++	if (!ret)
++		ret = btrfs_run_delayed_refs(trans, 0);
+ 	if (!ret && loops == 0) {
+ 		loops++;
+ 		spin_lock(&cur_trans->dirty_bgs_lock);
 -- 
 2.26.2
 
