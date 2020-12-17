@@ -2,80 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E142DD1A2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 13:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 524112DD1BA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 13:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbgLQMnZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 07:43:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58626 "EHLO mx2.suse.de"
+        id S1726291AbgLQMzC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 07:55:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36834 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726595AbgLQMnY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:43:24 -0500
+        id S1725871AbgLQMzB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Dec 2020 07:55:01 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608209654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=32ruNfwarHqR3vsd4V6oonkaQd9dnv5u3/MqUm6mZas=;
+        b=hOzOohEA9CXTs997qVNRbgBt/1yCZKTaI0cYa6sKWnzGsbXUOwA/Vr3roFOSp3NbQM6PWa
+        4CpucZ8mMyrLtzwsAlbXf2EnIjuAIxE53rqYo4Extd6ycfE8IIJ8km53COW6zzIOIu1yR0
+        0b2QUtlG/2Tq3NIxjuamaOJvXiTSUZs=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C112CAC7B;
-        Thu, 17 Dec 2020 12:42:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D4BF6DA83A; Thu, 17 Dec 2020 13:41:03 +0100 (CET)
-Date:   Thu, 17 Dec 2020 13:41:03 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: initialize test inodes location
-Message-ID: <20201217124103.GN6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <7d1759263b14140254494b1ae49fe69aff099dc1.1608051618.git.josef@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id 9381EAC7F;
+        Thu, 17 Dec 2020 12:54:14 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] btrfs: account for new extents being deleted in
+ total_bytes_pinned
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1608137123.git.josef@toxicpanda.com>
+ <0826b647d5dd12f8134614e05519156d9351f2c1.1608137123.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <25e6e00d-5dab-8363-41fd-5ddbffed27ae@suse.com>
+Date:   Thu, 17 Dec 2020 14:54:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7d1759263b14140254494b1ae49fe69aff099dc1.1608051618.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <0826b647d5dd12f8134614e05519156d9351f2c1.1608137123.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 12:00:26PM -0500, Josef Bacik wrote:
-> While testing other things I was noticing that sometimes my VM would
-> fail to load the btrfs module because the self test failed like this
+
+
+On 16.12.20 г. 18:46 ч., Josef Bacik wrote:
+> My recent set of patches to reduce lock contention on the extent root by
+> running delayed refs resulted in a regression in generic/371.  This test
+> fallocate()'s the fs until it's full, deletes all the files, and then
+> tries to fallocate() until full again.
 > 
-> BTRFS: selftest: fs/btrfs/tests/inode-tests.c:963 miscount, wanted 1, got 0
+> Before my delayed refs patches we would run all of the delayed refs
+> during flushing, and then would commit the transaction because we had
+> plenty of pinned space to recover in order to allocate.  However my
+> patches made it so we weren't running the delayed refs as aggressively,
+> which meant that we appeared to have less pinned space when we were
+> deciding to commit the transaction.
 > 
-> This turned out to be because sometimes the btrfs ino would be the btree
-> inode number, and thus we'd skip calling the set extent delalloc bit
-> helper, and thus not adjust ->outstanding_extents.  Fix this by making
-> sure we init test inodes with a valid inode number so that we don't get
-> random failures during self tests.
+> We use the space_info->total_bytes_pinned to approximate how much space
+> we have pinned.  It's approximate because if we remove a reference to an
+> extent we may free it, but there may be more references to it than we
+> know of at that point, but we account it as pinned at the creation time,
+> and then it's properly accounted when the delayed ref runs.
+> 
+> The way we account for pinned space is if the
+> delayed_ref_head->total_ref_mod is < 0, because that is clearly a
+> free'ing option.  However there is another case, and that is where
+> ->total_ref_mod == 0 && ->must_insert_reserved == 1.
+> 
+> When we allocate a new extent, we have ->total_ref_mod == 1 and we have
+> ->must_insert_reserved == 1.  This is used to indicate that it is a
+> brand new extent and will need to have its extent entry added before we
+> modify any references on the delayed ref head.  But if we subsequently
+> remove that extent reference, our ->total_ref_mod will be 0, and that
+> space will be pinned and freed.  Accounting for this case properly
+> allows for generic/371 to pass with my delayed refs patches applied.
+> 
+> It's important to note that this problem exists without my delayed refs
+> patches, it just was uncovered by them.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/tests/btrfs-tests.c | 7 ++++++-
->  fs/btrfs/tests/inode-tests.c | 9 ---------
->  2 files changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-> index 8ca334d554af..0fede1514a3e 100644
-> --- a/fs/btrfs/tests/btrfs-tests.c
-> +++ b/fs/btrfs/tests/btrfs-tests.c
-> @@ -55,8 +55,13 @@ struct inode *btrfs_new_test_inode(void)
->  	struct inode *inode;
->  
->  	inode = new_inode(test_mnt->mnt_sb);
-> -	if (inode)
-> +	if (inode) {
-> +		inode->i_mode = S_IFREG;
-> +		BTRFS_I(inode)->location.type = BTRFS_INODE_ITEM_KEY;
-> +		BTRFS_I(inode)->location.objectid = BTRFS_FIRST_FREE_OBJECTID;
-> +		BTRFS_I(inode)->location.offset = 0;
->  		inode_init_owner(inode, NULL, S_IFREG);
-> +	}
 
-As this is adding more statements to the if-block, I'd rather rewrite it
-as
-
-	inode = new();
-	if (!inode)
-		return NULL;
-
-	inode-> ...
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
