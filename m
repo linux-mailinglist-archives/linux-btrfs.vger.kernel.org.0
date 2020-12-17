@@ -2,34 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892652DCC41
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 06:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5B92DCC47
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 07:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgLQF40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 00:56:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44198 "EHLO mx2.suse.de"
+        id S1726711AbgLQGAn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 01:00:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44820 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbgLQF4Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 00:56:25 -0500
+        id S1726396AbgLQGAm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Dec 2020 01:00:42 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608184538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1608184796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=VAeoOUxXmflXVQlaGaAwTCkLIu0Zqb2b9mKClP7diks=;
-        b=R3dfzjdCnAi5lJ1f7ycBaLjJTTPu8i5rfRxhJ9ZNYLVrafgJMnRkeAAHOYqrMk/YftrWIN
-        l13OumVZ1WHeyAf6782DEizeBEuLm3Gi/9q6Hks7OULSAG2Vul4jL6Joz6h5qHwvCzLY5d
-        Or2vSmOukJa5e+d4NJyzQRVRAC3SSJE=
+        bh=KMJP6+FLCSzCEzGP+4jnPXaBb0vqezdno4kPLDGq2q8=;
+        b=h9QzMtjf7kz20eI4qt3f9fhgtabj0oHeU91bUmVrZNzyruzw3WYJKZtwgEofkr07KJknn4
+        QmE9Cb5Clrud65q6MLkZ4dyqrMmHFAIDfVJFB468/dNfuQVkK5ATkP77o/TMQyQE0hl9rX
+        eyJ9V1KF/ERd+Gr31DF2XvZetMwE6yk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B286AC93;
-        Thu, 17 Dec 2020 05:55:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id E6724AC7B;
+        Thu, 17 Dec 2020 05:59:55 +0000 (UTC)
 Subject: Re: [PATCH 2/4] btrfs: inode: remove variable shadowing in
  btrfs_invalidatepage()
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20201217045737.48100-1-wqu@suse.com>
  <20201217045737.48100-3-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+ <cdc92e68-90be-d88e-85d7-5e7191d35cd0@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
  T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
@@ -72,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <cdc92e68-90be-d88e-85d7-5e7191d35cd0@suse.com>
-Date:   Thu, 17 Dec 2020 07:55:37 +0200
+Message-ID: <b7c83de9-24e5-3702-96b3-467363ada642@suse.com>
+Date:   Thu, 17 Dec 2020 07:59:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201217045737.48100-3-wqu@suse.com>
+In-Reply-To: <cdc92e68-90be-d88e-85d7-5e7191d35cd0@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -87,11 +88,18 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.12.20 г. 6:57 ч., Qu Wenruo wrote:
-> In btrfs_invalidatepage() we re-declare @tree variable as
-> btrfs_ordered_inode_tree.
+On 17.12.20 г. 7:55 ч., Nikolay Borisov wrote:
 > 
-> Remove such variable shadowing which can be very confusing.
+> 
+> On 17.12.20 г. 6:57 ч., Qu Wenruo wrote:
+>> In btrfs_invalidatepage() we re-declare @tree variable as
+>> btrfs_ordered_inode_tree.
+>>
+>> Remove such variable shadowing which can be very confusing.
+> 
+> You can't do that, because lock_extent_bits expects extent_io_tree !
+> 
 
-You can't do that, because lock_extent_bits expects extent_io_tree !
-
+Ok, nvm, you just factored the var at the beginning of the functions.
+OTOH since the ordered tree is used just for lock/unlock why not do
+spin_(un)lock(&inode->ordered_tree->lock);
