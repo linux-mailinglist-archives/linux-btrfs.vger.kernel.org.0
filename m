@@ -2,34 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524112DD1BA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 13:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393182DD1BE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 13:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgLQMzC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 07:55:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36834 "EHLO mx2.suse.de"
+        id S1726595AbgLQM5f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 07:57:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38072 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725871AbgLQMzB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:55:01 -0500
+        id S1726533AbgLQM5d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Dec 2020 07:57:33 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608209654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1608209806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=32ruNfwarHqR3vsd4V6oonkaQd9dnv5u3/MqUm6mZas=;
-        b=hOzOohEA9CXTs997qVNRbgBt/1yCZKTaI0cYa6sKWnzGsbXUOwA/Vr3roFOSp3NbQM6PWa
-        4CpucZ8mMyrLtzwsAlbXf2EnIjuAIxE53rqYo4Extd6ycfE8IIJ8km53COW6zzIOIu1yR0
-        0b2QUtlG/2Tq3NIxjuamaOJvXiTSUZs=
+        bh=JP3j7LdJj+Se6HOLP+kxRbm9dn1WqjV9MXK1LRtG6bI=;
+        b=TZrP0X+c77fFZhTUGsuqUrX/GNBYdT/DV3uD0HgUSwSLro5WB8SLuXoLCVKScesUAWi6rX
+        6wcqoOgaTWMdvYGicqLg4vRhgzf+ZUCyEmz98vQdkN5MNzWN5aU9r7Poar5LWaHuXnUObK
+        O+wZTqsPuXOAP4v7E0aeosesCqdnxW4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9381EAC7F;
-        Thu, 17 Dec 2020 12:54:14 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] btrfs: account for new extents being deleted in
- total_bytes_pinned
+        by mx2.suse.de (Postfix) with ESMTP id ABA4BACF9;
+        Thu, 17 Dec 2020 12:56:46 +0000 (UTC)
+Subject: Re: [PATCH 0/5] Fixes and tweaks around error handling
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <cover.1608137123.git.josef@toxicpanda.com>
- <0826b647d5dd12f8134614e05519156d9351f2c1.1608137123.git.josef@toxicpanda.com>
+References: <cover.1608135381.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +71,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <25e6e00d-5dab-8363-41fd-5ddbffed27ae@suse.com>
-Date:   Thu, 17 Dec 2020 14:54:13 +0200
+Message-ID: <64769b9e-c68d-c103-7c0d-4bfc901cdaa8@suse.com>
+Date:   Thu, 17 Dec 2020 14:56:45 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <0826b647d5dd12f8134614e05519156d9351f2c1.1608137123.git.josef@toxicpanda.com>
+In-Reply-To: <cover.1608135381.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,41 +86,35 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 16.12.20 г. 18:46 ч., Josef Bacik wrote:
-> My recent set of patches to reduce lock contention on the extent root by
-> running delayed refs resulted in a regression in generic/371.  This test
-> fallocate()'s the fs until it's full, deletes all the files, and then
-> tries to fallocate() until full again.
+On 16.12.20 г. 18:18 ч., Josef Bacik wrote:
+> Hello,
 > 
-> Before my delayed refs patches we would run all of the delayed refs
-> during flushing, and then would commit the transaction because we had
-> plenty of pinned space to recover in order to allocate.  However my
-> patches made it so we weren't running the delayed refs as aggressively,
-> which meant that we appeared to have less pinned space when we were
-> deciding to commit the transaction.
+> These patches were originally in my reloc error handling patches that have been
+> broken out on their own.  They stand on their own and are simple and don't
+> affect the code in a real way.  Simply fixing some cosmetic stuff, or allowing
+> error injection in certain places.  They were patches I needed while running
+> error injection.  Thanks,
 > 
-> We use the space_info->total_bytes_pinned to approximate how much space
-> we have pinned.  It's approximate because if we remove a reference to an
-> extent we may free it, but there may be more references to it than we
-> know of at that point, but we account it as pinned at the creation time,
-> and then it's properly accounted when the delayed ref runs.
+> Josef
 > 
-> The way we account for pinned space is if the
-> delayed_ref_head->total_ref_mod is < 0, because that is clearly a
-> free'ing option.  However there is another case, and that is where
-> ->total_ref_mod == 0 && ->must_insert_reserved == 1.
+> Josef Bacik (5):
+>   btrfs: allow error injection for btrfs_search_slot and btrfs_cow_block
+>   btrfs: print the actual offset in btrfs_root_name
+>   btrfs: noinline btrfs_should_cancel_balance
+>   btrfs: pass down the tree block level through ref-verify
+>   btrfs: make sure owner is set in ref-verify
 > 
-> When we allocate a new extent, we have ->total_ref_mod == 1 and we have
-> ->must_insert_reserved == 1.  This is used to indicate that it is a
-> brand new extent and will need to have its extent entry added before we
-> modify any references on the delayed ref head.  But if we subsequently
-> remove that extent reference, our ->total_ref_mod will be 0, and that
-> space will be pinned and freed.  Accounting for this case properly
-> allows for generic/371 to pass with my delayed refs patches applied.
+>  fs/btrfs/ctree.c      |  2 ++
+>  fs/btrfs/disk-io.c    |  2 +-
+>  fs/btrfs/print-tree.c | 10 +++++-----
+>  fs/btrfs/print-tree.h |  2 +-
+>  fs/btrfs/ref-verify.c | 43 ++++++++++++++++++++++---------------------
+>  fs/btrfs/relocation.c |  2 +-
+>  6 files changed, 32 insertions(+), 29 deletions(-)
 > 
-> It's important to note that this problem exists without my delayed refs
-> patches, it just was uncovered by them.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Patches 1-3 can have my :
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+I'm not too familiar with ref-verify for the other 2.
