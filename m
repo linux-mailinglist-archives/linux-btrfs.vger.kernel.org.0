@@ -2,73 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5952DD184
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 13:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D897C2DD192
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 13:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgLQMbz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 07:31:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49716 "EHLO mx2.suse.de"
+        id S1726626AbgLQMkf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 07:40:35 -0500
+Received: from smtp01.belwue.de ([129.143.71.86]:45968 "EHLO smtp01.belwue.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726999AbgLQMbz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 07:31:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6C4AACF9;
-        Thu, 17 Dec 2020 12:31:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EB900DA83A; Thu, 17 Dec 2020 13:29:33 +0100 (CET)
-Date:   Thu, 17 Dec 2020 13:29:33 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/4] btrfs: inode: remove variable shadowing in
- btrfs_invalidatepage()
-Message-ID: <20201217122933.GM6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201217045737.48100-1-wqu@suse.com>
- <20201217045737.48100-3-wqu@suse.com>
- <cdc92e68-90be-d88e-85d7-5e7191d35cd0@suse.com>
- <b7c83de9-24e5-3702-96b3-467363ada642@suse.com>
- <b89449d9-9918-8f0f-2739-eae2fad7fe58@suse.com>
+        id S1726569AbgLQMkf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Dec 2020 07:40:35 -0500
+X-Greylist: delayed 583 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Dec 2020 07:40:33 EST
+Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
+        by smtp01.belwue.de (Postfix) with SMTP id A80119CD0
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Dec 2020 13:30:08 +0100 (MET)
+Date:   Thu, 17 Dec 2020 13:30:08 +0100
+From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: how to extend a btrfs disk image?
+Message-ID: <20201217123008.GA22831@tik.uni-stuttgart.de>
+Mail-Followup-To: linux-btrfs@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b89449d9-9918-8f0f-2739-eae2fad7fe58@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 02:13:37PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2020/12/17 下午1:59, Nikolay Borisov wrote:
-> > 
-> > 
-> > On 17.12.20 г. 7:55 ч., Nikolay Borisov wrote:
-> >>
-> >>
-> >> On 17.12.20 г. 6:57 ч., Qu Wenruo wrote:
-> >>> In btrfs_invalidatepage() we re-declare @tree variable as
-> >>> btrfs_ordered_inode_tree.
-> >>>
-> >>> Remove such variable shadowing which can be very confusing.
-> >>
-> >> You can't do that, because lock_extent_bits expects extent_io_tree !
-> >>
-> > 
-> > Ok, nvm, you just factored the var at the beginning of the functions.
-> > OTOH since the ordered tree is used just for lock/unlock why not do
-> > spin_(un)lock(&inode->ordered_tree->lock);
-> > 
-> Oh, that indeed looks better and since Su is also complaining about the 
-> declaration at the beginning of the function, I guess that's the better 
-> way to go.
 
-The preferred style is to declare variables in the closest scope, so
-there's not a huge blob of declarations that are randomly used inside
-nested blocks. It's more like a recommendation, eg. when the function is
-short and there are a few variables  used inside a for/while.
+How can I add a second disk-image to an existing btrfs filesystem?
+
+I have to use btrfs via a disk image on a nfs Netapp storage system with a
+16 TB file size limit. One cannot use bigger files.
+
+I have set up sucessfully:
+
+root@fextest:/nfs/rusnas/fex# touch disk1.btrfs
+root@fextest:/nfs/rusnas/fex# truncate -s 16TB disk1.btrfs
+root@fextest:/nfs/rusnas/fex# ll disk1.btrfs
+-rw-r--r-- root root 16,000,000,000,000 2020-12-17 13:18:59 disk1.btrfs
+root@fextest:/nfs/rusnas/fex# mkfs.btrfs disk1.btrfs
+btrfs-progs v5.4.1
+See http://btrfs.wiki.kernel.org for more information.
+
+Label:              (null)
+UUID:               4f7befb1-c892-497f-a40c-c6ac1a18368d
+Node size:          16384
+Sector size:        4096
+Filesystem size:    14.55TiB
+Block group profiles:
+  Data:             single            8.00MiB
+  Metadata:         DUP               1.00GiB
+  System:           DUP               8.00MiB
+SSD detected:       no
+Incompat features:  extref, skinny-metadata
+Checksum:           crc32c
+Number of devices:  1
+Devices:
+   ID        SIZE  PATH
+    1    14.55TiB  disk1.btrfs
+
+root@fextest:/nfs/rusnas/fex# mount disk1.btrfs /mnt/tmp
+root@fextest:/nfs/rusnas/fex# df -TH /mnt/tmp
+Filesystem     Type   Size  Used Avail Use% Mounted on
+/dev/loop2     btrfs   16T  3.7M   16T   1% /mnt/tmp
+
+
+No problem so far, everything is easy ;-)
+
+Now I want to extend this filesystem, but this approach fails:
+
+root@fextest:/nfs/rusnas/fex# touch disk2.btrfs
+root@fextest:/nfs/rusnas/fex# truncate -s 16TB disk2.btrfs
+root@fextest:/nfs/rusnas/fex# btrfs device add /nfs/rusnas/fex/disk2.btrfs /mnt/tmp
+ERROR: /nfs/rusnas/fex/disk2.btrfs is not a block device
+
+
+root@fextest:/nfs/rusnas/fex# sysinfo 
+System:        Linux fextest 5.4.0-58-generic x86_64
+Distribution:  Ubuntu 20.04.1 LTS
+Hardware:      VMware, Inc. VMware Virtual Platform None (VMware)
+CPU:           Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz, 4 x 2394 MHz
+RAM:           4095 MB
+
+-- 
+Ullrich Horlacher              Server und Virtualisierung
+Rechenzentrum TIK         
+Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
+Allmandring 30a                Tel:    ++49-711-68565868
+70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
+REF:<20201217123008.GA22831@tik.uni-stuttgart.de>
