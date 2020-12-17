@@ -2,133 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE9C2DD314
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 15:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AC02DD31F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 15:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgLQOh0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 09:37:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
+        id S1728159AbgLQOkB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 09:40:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727385AbgLQOh0 (ORCPT
+        with ESMTP id S1727246AbgLQOkB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 09:37:26 -0500
+        Thu, 17 Dec 2020 09:40:01 -0500
 Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9183C061248
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Dec 2020 06:36:15 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id z11so26490752qkj.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Dec 2020 06:36:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4FBC061794
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Dec 2020 06:39:20 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id w79so26494940qkb.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Dec 2020 06:39:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=FaI7ZWwKpkMniwFNP6xNh9GRJwhsEqcacAMZKmWdnRU=;
-        b=sIkupcHCI0oIhT3qNKL7WPMJjDcho4q4B6+LGvz+4gzU8481WGL2v0ADTYXTOlxq2+
-         LyP5ysFff/kACU14ZpkTXpBSnVr0wf5s0QGJuuOHu/f7x1viEPF1iKsF/UUiWyQ85orN
-         JP4SdL8bpV6lRFDqoapk/8vKQBKxBcf/i0fVaxJVhqC7AvQ0My1J+fYhSMHSFIjwU5SJ
-         WSVAkKmYzfkuzjGG3fYFogLsXdky4PIBv7dk4iMdpEc0MUgapRXSvNe2W44FNeAyEKC8
-         lDfBHiSJqM9NGTSGKvI121XZ8E4byzy0a09slZNZSnoyB4Z7Sdjg0/OpuqoNCsS0chqa
-         BSQQ==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=A6AstZi0SA/84WXNtLxzSnyBOgEI+S3seDXtSYJBtQ8=;
+        b=Nr8AEU7wlfkdpQeXXqwX2byYsravS6fXpxFKfdRcMHuqmfil4lasibFFXnGzgCaEhf
+         s9AV/o5LylCl+JS/QI8rIL4+pQGsPv2q5NGIHnjQ/Nx1lQWKNQ1KS7B459EmLngWobPr
+         6tEFKa65rLTcN9wEqaZu7qqD9lfiz9PiGmnGKTxAkE3wqZ0UOfVLglotreSBZZpboNvO
+         jB75QsFFvFICAPlEnd5tPzfMDa61l+GGdk3peCHgL4XaeqqTnlHwP7qoXb143sp7e6+n
+         eWj07mKUZKy9MomZ6E9qaZg87Q4mIlJverudlgktBEmvz5ulVoCEsK4kN0YJHnECc7eF
+         ljpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FaI7ZWwKpkMniwFNP6xNh9GRJwhsEqcacAMZKmWdnRU=;
-        b=j15FQWlmzGpA8WwoCZSFEz3qEvZ5MtJqz/jbn49NPfx7/ZA3u8KGnG/Y/EQjXxZ1Ew
-         ruMxO0IKirc6x0gPKCtv2Mlh2HB4WCoUvysSNEkAVyO/SSSggJRue3KG1Q0x2Fkg/8nw
-         F6bdSoNkXz6EHdeRCnVNcfdhT3qZ5ctfBR2lj4fa4v8su7zPZVR5FTYWXxBDUOzEtw0Y
-         gEZqvN10G38lp0eOy0EbFJGRJMByc4FUhsK7i7dnSSNAPovljTD3ApmBDtHZa7VWFFwe
-         f5sZQhhB+wA93JmVUjqym9u3lakFSA2/nNL+DXzl8E/ueOSDSP4FheFl+rqxq9YJs6UQ
-         Q0PA==
-X-Gm-Message-State: AOAM531yFhNQOezc3SLselXdk63z9h2qPINc+gAG8jqxg6+itcCM1slP
-        dmj76sQNyekeMOzPDMybV6d+eLjJwLZNnKIF
-X-Google-Smtp-Source: ABdhPJxjfJ/F9rh702/DIfJGXutxJRozida3ChtJl4cBvmGTEODTTow1/Baft14cyfaT8vltib6UKg==
-X-Received: by 2002:a37:9cd6:: with SMTP id f205mr49698787qke.51.1608215774824;
-        Thu, 17 Dec 2020 06:36:14 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v1sm3642361qki.96.2020.12.17.06.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Dec 2020 06:36:14 -0800 (PST)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A6AstZi0SA/84WXNtLxzSnyBOgEI+S3seDXtSYJBtQ8=;
+        b=QJrztqhm6qDA9mqbi1O/hesN6yW2ksqXEJpePFVYAGCC+k1k6cX/9ZvQPUMcLka6l9
+         rkBcGM+a5mhn8SUEI6kmvCJ1/6DIb8O2KMVzAShuOJHhiQCEhX2Pr5KvGV5FFMrHSotB
+         WX3m8L1zd6wPj0J9JOQuseEME/GhGfo8egBbyT9rKsX9m2QoKKG11AHSLYIpDl9s3vMv
+         VNmqxFEw9sugSfPrJ0FLe2jrGQesbSEYc4pvSPgZpe7lneiqbrreW0OWysmbwcEJrcyo
+         9qRnUX7XNPufkQBDhzwPBf6c+qLWXMNf7KVyGIZthn0GeFH6WQ9E0lHvT5h9yYl4A+Oa
+         RtvA==
+X-Gm-Message-State: AOAM531Z3MN8FO5z9fUpxEllYJof9cKF3SJTQvjEY4/n7FT5gcU42uXP
+        zE1zVHWFCRTjDVOOUF8dCE0J+g==
+X-Google-Smtp-Source: ABdhPJxu5GfhGuDLZEin86+eDP0R6gyGm992MKqCi2gHIgDi6y76+s+eEse5zAMMzXOvBFzl6c3rzQ==
+X-Received: by 2002:a37:a796:: with SMTP id q144mr21175766qke.38.1608215959801;
+        Thu, 17 Dec 2020 06:39:19 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id h26sm3180651qtq.18.2020.12.17.06.39.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 06:39:18 -0800 (PST)
+Subject: Re: [PATCH] btrfs: initialize test inodes location
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <7d1759263b14140254494b1ae49fe69aff099dc1.1608051618.git.josef@toxicpanda.com>
+ <20201217124103.GN6430@twin.jikos.cz>
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 6/6] btrfs: run delayed refs less often in commit_cowonly_roots
-Date:   Thu, 17 Dec 2020 09:36:02 -0500
-Message-Id: <52a20cfa753203a17ecb01b20e02f6976cc097a8.1608215738.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1608215738.git.josef@toxicpanda.com>
-References: <cover.1608215738.git.josef@toxicpanda.com>
+Message-ID: <c779da25-61f3-85fb-b593-fdd614ab8931@toxicpanda.com>
+Date:   Thu, 17 Dec 2020 09:39:18 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217124103.GN6430@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We love running delayed refs in commit_cowonly_roots, but it is a bit
-excessive.  I was seeing cases of running 3 or 4 refs a few times in a
-row during this time.  Instead simply update all of the roots first,
-then run delayed refs, then handle the empty block groups case, and then
-if we have any more dirty roots do the whole thing again.  This allows
-us to be much more efficient with our delayed ref running, as we can
-batch a few more operations at once.
+On 12/17/20 7:41 AM, David Sterba wrote:
+> On Tue, Dec 15, 2020 at 12:00:26PM -0500, Josef Bacik wrote:
+>> While testing other things I was noticing that sometimes my VM would
+>> fail to load the btrfs module because the self test failed like this
+>>
+>> BTRFS: selftest: fs/btrfs/tests/inode-tests.c:963 miscount, wanted 1, got 0
+>>
+>> This turned out to be because sometimes the btrfs ino would be the btree
+>> inode number, and thus we'd skip calling the set extent delalloc bit
+>> helper, and thus not adjust ->outstanding_extents.  Fix this by making
+>> sure we init test inodes with a valid inode number so that we don't get
+>> random failures during self tests.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/tests/btrfs-tests.c | 7 ++++++-
+>>   fs/btrfs/tests/inode-tests.c | 9 ---------
+>>   2 files changed, 6 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
+>> index 8ca334d554af..0fede1514a3e 100644
+>> --- a/fs/btrfs/tests/btrfs-tests.c
+>> +++ b/fs/btrfs/tests/btrfs-tests.c
+>> @@ -55,8 +55,13 @@ struct inode *btrfs_new_test_inode(void)
+>>   	struct inode *inode;
+>>   
+>>   	inode = new_inode(test_mnt->mnt_sb);
+>> -	if (inode)
+>> +	if (inode) {
+>> +		inode->i_mode = S_IFREG;
+>> +		BTRFS_I(inode)->location.type = BTRFS_INODE_ITEM_KEY;
+>> +		BTRFS_I(inode)->location.objectid = BTRFS_FIRST_FREE_OBJECTID;
+>> +		BTRFS_I(inode)->location.offset = 0;
+>>   		inode_init_owner(inode, NULL, S_IFREG);
+>> +	}
+> 
+> As this is adding more statements to the if-block, I'd rather rewrite it
+> as
+> 
+> 	inode = new();
+> 	if (!inode)
+> 		return NULL;
+> 
+> 	inode-> ...
+> 
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/transaction.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+Agreed, I've updated it locally, I'll wait for comments for the rest of the 
+series and then resend.  Thanks,
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 6e3abe9b74c0..bc9b3306eb36 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1227,10 +1227,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
- 	btrfs_tree_unlock(eb);
- 	free_extent_buffer(eb);
- 
--	if (ret)
--		return ret;
--
--	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
- 	if (ret)
- 		return ret;
- 
-@@ -1248,10 +1244,6 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
- 	if (ret)
- 		return ret;
- 
--	/* run_qgroups might have added some more refs */
--	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
--	if (ret)
--		return ret;
- again:
- 	while (!list_empty(&fs_info->dirty_cowonly_roots)) {
- 		struct btrfs_root *root;
-@@ -1266,15 +1258,24 @@ static noinline int commit_cowonly_roots(struct btrfs_trans_handle *trans)
- 		ret = update_cowonly_root(trans, root);
- 		if (ret)
- 			return ret;
--		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
--		if (ret)
--			return ret;
- 	}
- 
-+	/* Now flush any delayed refs generated by updating all of the roots. */
-+	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-+	if (ret)
-+		return ret;
-+
- 	while (!list_empty(dirty_bgs) || !list_empty(io_bgs)) {
- 		ret = btrfs_write_dirty_block_groups(trans);
- 		if (ret)
- 			return ret;
-+
-+		/*
-+		 * We're writing the dirty block groups, which could generate
-+		 * delayed refs, which could generate more dirty block groups,
-+		 * so we want to keep this flushing in this loop to make sure
-+		 * everything gets run.
-+		 */
- 		ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
- 		if (ret)
- 			return ret;
--- 
-2.26.2
-
+Josef
