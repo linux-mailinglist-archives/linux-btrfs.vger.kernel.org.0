@@ -2,104 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5B92DCC47
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 07:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2632DCC5C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Dec 2020 07:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgLQGAn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 01:00:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44820 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbgLQGAm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 01:00:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608184796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=KMJP6+FLCSzCEzGP+4jnPXaBb0vqezdno4kPLDGq2q8=;
-        b=h9QzMtjf7kz20eI4qt3f9fhgtabj0oHeU91bUmVrZNzyruzw3WYJKZtwgEofkr07KJknn4
-        QmE9Cb5Clrud65q6MLkZ4dyqrMmHFAIDfVJFB468/dNfuQVkK5ATkP77o/TMQyQE0hl9rX
-        eyJ9V1KF/ERd+Gr31DF2XvZetMwE6yk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6724AC7B;
-        Thu, 17 Dec 2020 05:59:55 +0000 (UTC)
+        id S1726512AbgLQGJN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 01:09:13 -0500
+Received: from eu-shark2.inbox.eu ([195.216.236.82]:37572 "EHLO
+        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgLQGJM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Dec 2020 01:09:12 -0500
+Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
+        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id 3AD7444A23D;
+        Thu, 17 Dec 2020 08:08:25 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1608185305; bh=z78PXojKnqO5QfZiGMqkofezLUDpkMRZUHm4BtQO21c=;
+        h=References:From:To:Cc:Subject:In-reply-to:Date;
+        b=BW4fl5fMAv0A0bhut8Hotq3ZwQmwPw/dDZ2lVXEmDL5wV7c0F2g6HwsbQ5EHQZ1iR
+         Rzh35mq+5PVAvDY8JuRBAeTh98ru2CfoBkZPF+bMqHfL6hnc0XpCv8k8OYMz9mdBCg
+         ScD9x9kYTOlJMsRecgRugeRVEHWxNksb/FcmZJTA=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 2A0D844A23C;
+        Thu, 17 Dec 2020 08:08:25 +0200 (EET)
+Received: from eu-shark2.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id o-nqwVMZA-Qx; Thu, 17 Dec 2020 08:08:24 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id C851844A23A;
+        Thu, 17 Dec 2020 08:08:24 +0200 (EET)
+Received: from nas (unknown [117.89.173.90])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 0B10C1BE0090;
+        Thu, 17 Dec 2020 08:08:19 +0200 (EET)
+References: <20201217045737.48100-1-wqu@suse.com>
+ <20201217045737.48100-3-wqu@suse.com> <k0thhu00.fsf@damenly.su>
+ <ee628954-63db-2328-9d47-b1f0ed3bd8a7@gmx.com>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Su Yue <l@damenly.su>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH 2/4] btrfs: inode: remove variable shadowing in
  btrfs_invalidatepage()
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20201217045737.48100-1-wqu@suse.com>
- <20201217045737.48100-3-wqu@suse.com>
- <cdc92e68-90be-d88e-85d7-5e7191d35cd0@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <b7c83de9-24e5-3702-96b3-467363ada642@suse.com>
-Date:   Thu, 17 Dec 2020 07:59:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+In-reply-to: <ee628954-63db-2328-9d47-b1f0ed3bd8a7@gmx.com>
+Message-ID: <h7olhsmr.fsf@damenly.su>
+Date:   Thu, 17 Dec 2020 14:08:12 +0800
 MIME-Version: 1.0
-In-Reply-To: <cdc92e68-90be-d88e-85d7-5e7191d35cd0@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: OK
+X-ESPOL: 885mlYtJBDatlF+mQGXXBRpE0ScJA635mZS30wEq73aJTzLmCkUMVhC2n2R1THi+og==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On Thu 17 Dec 2020 at 13:42, Qu Wenruo <quwenruo.btrfs@gmx.com>=20
+wrote:
 
-On 17.12.20 г. 7:55 ч., Nikolay Borisov wrote:
-> 
-> 
-> On 17.12.20 г. 6:57 ч., Qu Wenruo wrote:
->> In btrfs_invalidatepage() we re-declare @tree variable as
->> btrfs_ordered_inode_tree.
+> On 2020/12/17 =E4=B8=8B=E5=8D=881:38, Su Yue wrote:
 >>
->> Remove such variable shadowing which can be very confusing.
-> 
-> You can't do that, because lock_extent_bits expects extent_io_tree !
-> 
+>> On Thu 17 Dec 2020 at 12:57, Qu Wenruo <wqu@suse.com> wrote:
+>>
+>>> In btrfs_invalidatepage() we re-declare @tree variable as
+>>> btrfs_ordered_inode_tree.
+>>>
+>>> Remove such variable shadowing which can be very confusing.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>  fs/btrfs/inode.c | 9 +++------
+>>>  1 file changed, 3 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>>> index dced71bccaac..b4d36d138008 100644
+>>> --- a/fs/btrfs/inode.c
+>>> +++ b/fs/btrfs/inode.c
+>>> @@ -8169,6 +8169,7 @@ static void btrfs_invalidatepage(struct=20
+>>> page
+>>> *page, unsigned int offset,
+>>>                   unsigned int length)
+>>>  {
+>>>      struct btrfs_inode *inode =3D BTRFS_I(page->mapping->host);
+>>> +    struct btrfs_ordered_inode_tree *ordered_tree =3D
+>>> &inode->ordered_tree;
+>>>
+>> Any reason for the declaration here? I didn't find that=20
+>> patch[3/4] use it.
+>
+> Didn't that ordered_tree get used lines below?
+>
+>>
+>>>      struct extent_io_tree *tree =3D &inode->io_tree;
+>>>      struct btrfs_ordered_extent *ordered;
+>>>      struct extent_state *cached_state =3D NULL;
+>>> @@ -8218,15 +8219,11 @@ static void=20
+>>> btrfs_invalidatepage(struct page
+>>> *page, unsigned int offset,
+>>>           * for the finish_ordered_io
+>>>           */
+>>>          if (TestClearPagePrivate2(page)) {
+>>> -            struct btrfs_ordered_inode_tree *tree;
+>>> -
+>> Better to just rename the @tree to @ordered_tree.
+>
+> Isn't that exactly what I did?
 
-Ok, nvm, you just factored the var at the beginning of the functions.
-OTOH since the ordered tree is used just for lock/unlock why not do
-spin_(un)lock(&inode->ordered_tree->lock);
+What I mean is that keep the declaration in the block since no=20
+further use of it.
+
+>
+> Thanks,
+> Qu
+>>
+>>> -            tree =3D &inode->ordered_tree;
+>>> -
+>>> -            spin_lock_irq(&tree->lock);
+>>> +            spin_lock_irq(&ordered_tree->lock);
+>>>              set_bit(BTRFS_ORDERED_TRUNCATED,=20
+>>>              &ordered->flags);
+>>>              ordered->truncated_len =3D=20
+>>>              min(ordered->truncated_len,
+>>>                      start - ordered->file_offset);
+>>> -            spin_unlock_irq(&tree->lock);
+>>> +            spin_unlock_irq(&ordered_tree->lock);
+>>>
+>>>              ASSERT(end - start + 1 < U32_MAX);
+>>>              if (btrfs_dec_test_ordered_pending(inode,=20
+>>>              &ordered,
+>>
+
