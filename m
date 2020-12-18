@@ -2,107 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437EF2DE106
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 11:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5912DE112
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 11:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733197AbgLRKbB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 05:31:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55980 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732995AbgLRKbA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 05:31:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608287414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Be84YoCNCjrVumIOGyje46VGKPlMauCjdMsWyu0Cw5E=;
-        b=p8XkOXWm9ynv0T+QNRvcyPjk6K3MN7S4rFke51XE4WyGD43At3l3oifzs0zFZa0/JC37MT
-        +QJ38atQTbuEgRKLTdUeKWs0SgBp53oKOR7XHNP0k16bWJr+fpmQB7OEPUb5w+A0e6V5ys
-        teVRv2kUHjtC8NjJUYoByStvfbZ8EjE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 24A59AC7B;
-        Fri, 18 Dec 2020 10:30:14 +0000 (UTC)
-Subject: Re: [PATCH 02/13] btrfs: initialize test inodes location
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1608135557.git.josef@toxicpanda.com>
- <33244ea952212da691e6723057488f8143efd949.1608135557.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <7199c541-ea79-f92c-921b-f4ec7c4cfe81@suse.com>
-Date:   Fri, 18 Dec 2020 12:30:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389090AbgLRKdC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 05:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732959AbgLRKdB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:33:01 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A209C0617A7;
+        Fri, 18 Dec 2020 02:32:21 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id a6so1841054wmc.2;
+        Fri, 18 Dec 2020 02:32:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eRyQ3rtg2wCEW40PuTawW3Ghf9YcbftBcSCQW+iKYu0=;
+        b=fJtkchlhOrvwywsetLugbNGmYiBZ0eVjwNyih9mCJiigPxQ5zaACsry4MBnG9mm13h
+         Ko7IeAIUgzWYYTJirA4c61c+xUJocK5T2OH6dyZSAInKCwq4wlXHSGLM23mjuctTBZ2D
+         jvt624tnZ4pio0FmuAx4JcFhwb/6kEJWYuik3O6p4dzOnz6KWqtJwkHbNcOJi/kCxywK
+         DyGnAAqydJxoKpAUw8/Mn8cbBvy3/02fMTV6U9m28MsTU9UFMqs+A5dLXLGxeAPJJPtn
+         cWYyjcfLoaEKX5VzrBZz7nfL6MBhsxRFxCBdh1U9qD+bMZoa9gKSHqrWqOW/gtyjIdqH
+         hLyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eRyQ3rtg2wCEW40PuTawW3Ghf9YcbftBcSCQW+iKYu0=;
+        b=doJVbDPS+WAsTUvudSvj4/10aUQietCoG/b/o7HYA70JZG3a6CE4KK8e16Vt/ZGXiO
+         GoyZL8+Rz1NRbxjVRch84vS3+sh74pYVxlGbcFXzSJRU2AU1GsDnYA9m49zgrcYlP6hs
+         uPJhw3wJsxzZDrbgtAz+XnIKI6DiRM5wzV5JYCLTGya63783bRdflPOz3qjwVLGrYp8A
+         ItNosq/ZC6j0r6SgR1DbnFS9V9YlILWiueXwDmLfms5+2F7UjPT09tKDWaYmAKELzvI0
+         jEvMDfaLf9VhA34sy1jPdrxE8F4WkO4CklUtzhqVzb3wJzVz71IqiFTUPLWIxrGx3qA7
+         7IdA==
+X-Gm-Message-State: AOAM533D8C57OqUwonm2TFEV0gINKmbHBBooOyumNyjv8VwAf7TPgY1x
+        pgfKp87S94C/7nxZB1LFaszRG4A5yn0=
+X-Google-Smtp-Source: ABdhPJzF74er/ywlXf7hXg9lTU5chkJy2tginvHaUBccJeaYfHipUDNMXcSA6KfqXe0placlHIGLkA==
+X-Received: by 2002:a1c:5402:: with SMTP id i2mr3674294wmb.12.1608287539678;
+        Fri, 18 Dec 2020 02:32:19 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id v20sm13400786wra.19.2020.12.18.02.32.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Dec 2020 02:32:19 -0800 (PST)
+Subject: Ping: [PATCH man-pages v6] Document encoded I/O
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com, linux-man <linux-man@vger.kernel.org>
+References: <cover.1605723568.git.osandov@fb.com>
+ <ec1588a618bd313e5a7c05a7f4954cc2b76ddac3.1605724767.git.osandov@osandov.com>
+ <4d1430aa-a374-7565-4009-7ec5139bf311@gmail.com>
+ <fb4a4270-eb7a-06d5-e703-9ee470b61f8b@gmail.com>
+ <05e1f13c-5776-961b-edc4-0d09d02b7829@gmail.com>
+ <dcb0679d-3ac5-dd95-5473-3c66ae4132b6@gmail.com>
+ <559edb86-4223-71e9-9ebf-c917ae71a13d@gmail.com>
+ <2aca4914-d247-28d1-22e0-102ea5ff826e@gmail.com>
+ <7e2e061d-fd4b-1243-6b91-cc3168146bba@gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <48cc36d0-5e18-2429-9503-729ce01ac1c8@gmail.com>
+Date:   Fri, 18 Dec 2020 11:32:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-In-Reply-To: <33244ea952212da691e6723057488f8143efd949.1608135557.git.josef@toxicpanda.com>
+In-Reply-To: <7e2e061d-fd4b-1243-6b91-cc3168146bba@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Omar,
 
+Linux 5.10 has been recently released.
+Do you have any updates for this patch?
 
-On 16.12.20 г. 18:22 ч., Josef Bacik wrote:
-> While testing other things I was noticing that sometimes my VM would
-> fail to load the btrfs module because the self test failed like this
+Thanks,
+
+Alex
+
+On 12/1/20 10:56 PM, Michael Kerrisk (man-pages) wrote:
+> Hi Alex,
 > 
-> BTRFS: selftest: fs/btrfs/tests/inode-tests.c:963 miscount, wanted 1, got 0
+> On 12/1/20 10:35 PM, Alejandro Colomar (man-pages) wrote:
+>> Hi Michael,
+>>
+>> On 12/1/20 9:20 PM, Michael Kerrisk (man-pages) wrote:
+>>>>>>>> +.SS Security
+>>>>>>>> +Encoded I/O creates the potential for some security issues:
+>>>>>>>> +.IP * 3
+>>>>>>>> +Encoded writes allow writing arbitrary data which the kernel will decode on
+>>>>>>>> +a subsequent read. Decompression algorithms are complex and may have bugs
+>>>>>>>> +which can be exploited by maliciously crafted data.
+>>>>>>>> +.IP *
+>>>>>>>> +Encoded reads may return data which is not logically present in the file
+>>>>>>>> +(see the discussion of
+>>>>>>>> +.I len
+>>>>>>>> +vs.
+>>>>>>>
+>>>>>>> Please, s/vs./vs/
+>>>>>>> See the reasons below:
+>>>>>>>
+>>>>>>> Michael (mtk),
+>>>>>>>
+>>>>>>> Here the renderer outputs a double space
+>>>>>>> (as for separating two sentences).
+>>>>>>>
+>>>>>>> Are you okay with that?
+>>>>
+>>>> Yes, that should probably be avoided. I'm not sure what the
+>>>> correct way is to prevent that in groff though. I mean, one
+>>>> could write
+>>>>
+>>>> .RI "vs.\ " unencoded_len
+>>>>
+>>>> but I think that simply creates a nonbreaking space,
+>>>> which is not exactly what is desired.
+>>>
+>>> Ahh -- found it. From https://groff.ffii.org/groff/groff-1.21.pdf,
+>>> we can write:
+>>>
+>>> vs.\&
+>>>
+>>> to prevent the double space.
+>>
+>> Nice to see it's possible.
+>> However, I would argue for simplicity,
+>> and use a simple 'vs',
+>> which is already in use.
 > 
-> This turned out to be because sometimes the btrfs ino would be the btree
-> inode number, and thus we'd skip calling the set extent delalloc bit
-> helper, and thus not adjust ->outstanding_extents.  Fix this by making
-> sure we init test inodes with a valid inode number so that we don't get
-> random failures during self tests.
+> Indeed better. Thanks for noticing that.
+> 
+> Thanks,
+> 
+> Michael
+> 
+> 
 
-This warrants slightly more explanation why this initialization is
-required, namely that newly allocated indoes are initialized by passing
-a set callback, since we are acquiring inodes for tests we need to
-simulate this behavior by, effectively, open coding
-btrfs_init_locked_inode.
-
-<snip>
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
