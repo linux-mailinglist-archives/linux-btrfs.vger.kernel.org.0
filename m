@@ -2,167 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150E82DDC71
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 01:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F412DDC73
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 01:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgLRAnw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 19:43:52 -0500
-Received: from mout.gmx.net ([212.227.17.20]:33909 "EHLO mout.gmx.net"
+        id S1730878AbgLRAqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 19:46:18 -0500
+Received: from mout.gmx.net ([212.227.15.18]:36783 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727136AbgLRAnw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 19:43:52 -0500
+        id S1727136AbgLRAqR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Dec 2020 19:46:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608252139;
-        bh=Gx8n3m4tp1HpJngoZ9vdKRkzHaBTtzTtQI0tssnff3c=;
+        s=badeba3b8450; t=1608252283;
+        bh=fCFTauWf/HWQyFCvzOuJCpeyyJtBzXV7RK484vauHoc=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=W029lIYZuqo5oPVixMM6AsWXrwwkP9LPbUfwEELACLSImhpKT5m64TgjUp5r7dydO
-         WE39pL5YQueMg8mt/Cn9NR/P4GRW6Ni9RqwYZ2omxxDgWtWavnOX/oIowFo/MqgxdD
-         nN+eWWsJLwk9PlrJZx2tyM8Bgluq+sbRoZwkEi2Q=
+        b=bfChHc6Vtcpr3E93PStc+60InkPcp3uH3PXJmJ9sNRCdcBVwPZ6XeJ9ccNJ36FpVe
+         n3pQvltgRr/uK2uNCORgHTpvWVmUK0Vk6fBMrmn0wHsRRe9e//0kAs0JCPv48sm4CZ
+         YUjW7XBkzcZ7S7UB1v/k3bQkYjhguZxnj7RQeiyU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAwbp-1kwLMh1uor-00BJze; Fri, 18
- Dec 2020 01:42:19 +0100
-Subject: Re: [PATCH RFC 4/4] btrfs: inode: make btrfs_invalidatepage() to be
- subpage compatible
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdvmO-1kHHMi1X0A-00aziF; Fri, 18
+ Dec 2020 01:44:43 +0100
+Subject: Re: [PATCH v2 06/18] btrfs: extent_io: make
+ attach_extent_buffer_page() to handle subpage case
 To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20201217045737.48100-1-wqu@suse.com>
- <20201217045737.48100-5-wqu@suse.com>
- <778948b8-ec8c-fcbe-310f-eccb37d424f8@toxicpanda.com>
+References: <20201210063905.75727-1-wqu@suse.com>
+ <20201210063905.75727-7-wqu@suse.com>
+ <4ad93bff-45b3-04b5-731e-9294c08630cb@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <573bdfd2-54f3-d4f8-1030-4a8c158e54fb@gmx.com>
-Date:   Fri, 18 Dec 2020 08:42:15 +0800
+Message-ID: <5baecd2e-1749-d3fa-c228-942ff0c2f31e@gmx.com>
+Date:   Fri, 18 Dec 2020 08:44:39 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <778948b8-ec8c-fcbe-310f-eccb37d424f8@toxicpanda.com>
+In-Reply-To: <4ad93bff-45b3-04b5-731e-9294c08630cb@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pAUK7glR9GKeBYfr0LiQf3TUi5fXFnJARJKhbswJm/kN6j4jcKG
- 9nGdNv27v+Tr6br8nNXIbldMt5A2qayGH/7qIXaGjp5nzojc3uL9QuTzl7cD6s56vjqZCDu
- 4lC0l7udZrMa0EbgpZsdMXPVuDfS36N/EBUAB2kAfIp5Yv6iCb58gXi17yA7/NZcFS1FTVQ
- kYrAMJ3ALAwG1q6i/FEXw==
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:mJuNsvqJVbmSuJ+1wvVwhnzlSdw/P+SfjNJ6vYd8J1p9gyBV6wT
+ 4f04TwEQBjQFOcvRVinCxxi/MFytLwBgF5z2CzQ7oxdDOOj9R7Pd0H/xkWjc++BriyqEhwg
+ s+xR2UPfMi8NGPFJqK657TyPy9Es6RYmtXpmqh6Q3vfAjZGY+V6NLF/5mv8GKW6j3yz4Rol
+ w1tXxv8kys9XWL8fu9Gtg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IX42vflnRYU=:DTEay7SZ0/KAgZV7Q8pK87
- 6npqBFfljldPyrw9CDwZtqIhL+e+3NW1Y/gBEg8CGlb6nSrW3UPnesyNGfOGW1kUaLg0427Jn
- NpacYyf8QBJHgdPBWXK9MneMH5l2zFrW2RCFD+hLKrcaPhZiTRprmOaCKDYlj02ed4PJ36PKx
- hsgPu8rp1Slz2i/VpqSCArp646joAHnZQQr61RusxDVBJKB+udI3moNCjycqlh/CCZGWw6V/I
- 9wUVy4DfqZXMgNMLVZGY8Vq1m03w7H9ZzGm0i2M6pDHNafuRZD2yHL7efLC9/oSKJdWJy719t
- iy45vdSZH6rcOwIXfCm6aKcDWjo+5GysQSqmxRcCrOZSDlA3c8jHhDTJqs3F3I1HUEJzknzZv
- rNQ6X2ffTEMwCaCCj/8FCZ1CajSR77XbFr/WlQy3yfhFkTZVh8JYS1nJbSbKBTDgbljpFLFS7
- CVNCEA+NrAPjZwjWSKqOO5bfeVFqXmKY8mKy0C/FW/gXvF3+ThFX5ye6dv5gjO3QewYW8/Cv7
- y8ZiFhAwAo+whHqT3qrXnRViRVlpPGkniflMjeFXfGV7gJzT1dfKhJvrB/LrWOytQHsp59Asw
- lnuZQcehITICdkDtK0ATCxDU+HVWK5+gBYvd1T+VSLlrcA0cOYaZLLL/3HlcYPQ9aaJKOnUXi
- QdWFFUv0P/CF5ACJ+Rq/a/uZTe8b1/EBBah6jyuzEGx6ZAb2X6kL7jjhvQDj7XSO4/mimzf6z
- +win2VO9/1s8beJ/7EsBrVonFeiFnTHuJ04dhJG4DfuANECYOG/7Wdk8LvmxjexA5a++4BQb4
- elq0Wwsps27A3MD+qUYf5jMLZb2TEeSuszUdxV5Mb3vlnQl68hW6Th4dZ8svc4z77nK7O/W6e
- d3io7tL2VpuBfhDTO9JQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+8Tc3CqRyV4=:tEJXSaWeh1H89M9vtHZA7T
+ keXfD6w4ReA9+7zJZPAC6qlqZU4ov2P8V8qUT7kR2WOjBp0jCYRZ8zNOqikygNjO6wQW3saED
+ w0qoLLPkphQB1/EZUeuGYnb/rJ3NJHkV9uosgXhu8xk0AToqw8q/+kqABg5vBZPYmkTjzUqFm
+ FSkcEngcsQpfMKgpYJujtZAQRIj8YM82AAFr3TTAdcOnpXWpOgJERwdGs7b/UfZS/A808FB5d
+ wohjPGU5C9D6V1lLLSWNem2mM8AblkrH2/GIPO+OA2d8rOc1WVkR7H/c/BV7keObL5XAS/9QR
+ jERPmlrPYPxjunfCqOL569gdEWYNLqAqz2pNswbV0qIbxbHoqVeuOokNfiZkKAAg4vtUy0cM4
+ PXa0IXwH+PKZSwEV2BzreCuxl+2rWMKEWrWOi2OdjZ2YyAzbvBJnlLTM6Cj99LfZaSR5fCA53
+ 8lUmjPkX/hSWRSTIYLF7fo8P7FIITxnCxgP6jDkx4/LhQ0QcyrKhHszevKgQbhEtgGlCic+NT
+ ZDAQ8N5d7HG52wP0KoVa8irzoIoxXa28xEGWrJDoGmtlGeCPkpTGp5yWS5BdjolpW1g8Uw4JQ
+ LtIiV06w0Nz9Mx7LTw84sC5piLhziXLIgIm38Wey2VgIrLge0MBsiDbqIEa+MF1zqQ3anOk8Z
+ gIio3buo05PTRUmNwIcNaAj5UjSUGymehhjmJObEddTgKIcB0T27BqtwK1Gc5mCSGnGWfFZyk
+ YArvjftRDmqfN2Wp6JjVVjl0eYqt+mMmu+uPS7Ntm1Flkm/Yfpr8YFdsVgm6JK8TC9JsTZLPU
+ aPORTuuCIu+UsEm4Uv3ukbZWGnEEscFHfna+ZZaA8e7qIMveLGcPfdhCkpyGYYnf6b4SubOOF
+ lXeJw71ntgUwtwfJ/ppQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2020/12/17 =E4=B8=8B=E5=8D=8810:51, Josef Bacik wrote:
-> On 12/16/20 11:57 PM, Qu Wenruo wrote:
->> [BUG]
->> With current subpage RW patchset, the following script can lead to
->> filesystem hang:
->> =C2=A0=C2=A0 # mkfs.btrfs -f -s 4k $dev
->> =C2=A0=C2=A0 # mount $dev -o nospace_cache $mnt
->> =C2=A0=C2=A0 # fsstress -w -n 100 -p 1 -s 1608140256 -v -d $mnt
->>
->> The file system will hang at wait_event() of
->> btrfs_start_ordered_extent().
->>
->> [CAUSE]
->> The root cause is, btrfs_invalidatepage() is freeing page::private whic=
-h
->> still has subpage dirty bit set.
->>
->> The offending situation happens like this:
->> btrfs_fllocate()
->> |- btrfs_zero_range()
->> =C2=A0=C2=A0=C2=A0 |- btrfs_punch_hole_lock_range()
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |- truncate_pagecache_range()
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |- btrfs_invalid=
-atepage()
->>
->> The involved range looks like:
->>
->> 0=C2=A0=C2=A0=C2=A0 32K=C2=A0=C2=A0=C2=A0 64K=C2=A0=C2=A0=C2=A0 96K=C2=
-=A0=C2=A0=C2=A0 128K
->> =C2=A0=C2=A0=C2=A0=C2=A0|///////||//////|
->> =C2=A0=C2=A0=C2=A0=C2=A0| Range to drop |
->>
->> For the [32K, 64K) range, since the offset is 32K, the page won't be
->> invalidated.
->>
->> But for the [64K, 96K) range, the offset is 0, current
->> btrfs_invalidatepage() will call clear_page_extent_mapped() which will
->> detach page::private, making the subpage dirty bitmap being cleared.
->>
->> This prevents later __extent_writepage_io() to locate any range to
->> write, thus no way to wake up the ordered extents.
->>
->> [FIX]
->> To fix the problem this patch will:
->> - Only clear page status and detach page private when the full page
->> =C2=A0=C2=A0 is invalidated
->>
->> - Change how we handle unfinished ordered extent
->> =C2=A0=C2=A0 If there is any ordered extent unfinished in the page rang=
-e, we can't
->> =C2=A0=C2=A0 call clear_extent_bit() with delete =3D=3D true.
->>
->> [REASON FOR RFC]
->> There is still uncertainty around the btrfs_releasepage() call.
->>
->> 1. Why we need btrfs_releasepage() call for non-full-page condition?
->> =C2=A0=C2=A0=C2=A0 Other fs (aka. xfs) just exit without doing special =
-handling if
->> =C2=A0=C2=A0=C2=A0 invalidatepage() is called with part of the page.
->>
->> =C2=A0=C2=A0=C2=A0 Thus I didn't completely understand why btrfs_releas=
-epage() here is
->> =C2=A0=C2=A0=C2=A0 needed for non-full page call.
->>
->> 2. Why "if (offset)" is not causing problem for current code?
->> =C2=A0=C2=A0=C2=A0 This existing if (offset) call can be skipped for ca=
-ses like
->> =C2=A0=C2=A0=C2=A0 offset =3D=3D 0 length =3D=3D 2K.
->> =C2=A0=C2=A0=C2=A0 As MM layer can call invalidatepage() with unaligned=
- offset/length,
->> =C2=A0=C2=A0=C2=A0 for cases like truncate_inode_pages_range().
->> =C2=A0=C2=A0=C2=A0 This will make btrfs_invalidatepage() to truncate th=
-e whole page when
->> =C2=A0=C2=A0=C2=A0 we only need to zero part of the page.
->>
->
-> Are we ever calling with a different length when pagesize =3D=3D
-> sectorsize?=C2=A0 That's probably why it works fine now.
-
-The range passed in can be unaligned at all.
-
-MM layer functions like truncate_inode_pages_range() relies on that.
-
-That's why I'm wondering why the current code is working.
-
-As for start =3D=3D 0 and length !=3D PAGE_SIZE case it may clear the
-Private2/Checked bit unintentionally.
-
-Or is that CoW fixup saving the problem?
->
-> But I think we should follow what all the other file systems do, if len
-> !=3D PAGE_SIZE || offset !=3D 0 then just skip it, that would probably b=
-e
-> easier and work for you as well?=C2=A0 Thanks,
-
-Definitely it would work for me.
-
-Thanks,
-Qu
-
->
-> Josef
+DQoNCk9uIDIwMjAvMTIvMTgg5LiK5Y2IMTI6MDAsIEpvc2VmIEJhY2lrIHdyb3RlOg0KPiBPbiAx
+Mi8xMC8yMCAxOjM4IEFNLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBGb3Igc3VicGFnZSBjYXNlLCB3
+ZSBuZWVkIHRvIGFsbG9jYXRlIG5ldyBtZW1vcnkgZm9yIGVhY2ggbWV0YWRhdGEgcGFnZS4NCj4+
+DQo+PiBTbyB3ZSBuZWVkIHRvOg0KPj4gLSBBbGxvdyBhdHRhY2hfZXh0ZW50X2J1ZmZlcl9wYWdl
+KCkgdG8gcmV0dXJuIGludA0KPj4gwqDCoCBUbyBpbmRpY2F0ZSBhbGxvY2F0aW9uIGZhaWx1cmUN
+Cj4+DQo+PiAtIFByZWFsbG9jIHBhZ2UtPnByaXZhdGUgZm9yIGFsbG9jX2V4dGVudF9idWZmZXIo
+KQ0KPj4gwqDCoCBXZSBkb24ndCB3YW50IHRvIGNhbGwgbWVtb3J5IGFsbG9jYXRpb24gd2l0aCBz
+cGlubG9jayBob2xkLCBzbw0KPj4gwqDCoCBkbyBwcmVhbGxvY2F0aW9uIGJlZm9yZSB3ZSBhY3F1
+aXJlIHRoZSBzcGluIGxvY2suDQo+Pg0KPj4gLSBIYW5kbGUgc3VicGFnZSBhbmQgcmVndWxhciBj
+YXNlIGRpZmZlcmVudGx5IGluDQo+PiDCoMKgIGF0dGFjaF9leHRlbnRfYnVmZmVyX3BhZ2UoKQ0K
+Pj4gwqDCoCBGb3IgcmVndWxhciBjYXNlLCBqdXN0IGRvIHRoZSB1c3VhbCB0aGluZy4NCj4+IMKg
+wqAgRm9yIHN1YnBhZ2UgY2FzZSwgYWxsb2NhdGUgbmV3IG1lbW9yeSBhbmQgdXBkYXRlIHRoZSB0
+cmVlX2Jsb2NrDQo+PiDCoMKgIGJpdG1hcC4NCj4+DQo+PiDCoMKgIFRoZSBiaXRtYXAgdXBkYXRl
+IHdpbGwgYmUgaGFuZGxlZCBieSBuZXcgc3VicGFnZSBzcGVjaWZpYyBoZWxwZXIsDQo+PiDCoMKg
+IGJ0cmZzX3N1YnBhZ2Vfc2V0X3RyZWVfYmxvY2soKS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBR
+dSBXZW5ydW8gPHdxdUBzdXNlLmNvbT4NCj4+IC0tLQ0KPj4gwqAgZnMvYnRyZnMvZXh0ZW50X2lv
+LmMgfCA2OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQ0KPj4g
+wqAgZnMvYnRyZnMvc3VicGFnZS5owqDCoCB8IDQ0ICsrKysrKysrKysrKysrKysrKysrKysrKysr
+KysNCj4+IMKgIDIgZmlsZXMgY2hhbmdlZCwgOTkgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25z
+KC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2V4dGVudF9pby5jIGIvZnMvYnRyZnMv
+ZXh0ZW50X2lvLmMNCj4+IGluZGV4IDYzNTBjMjY4N2M3ZS4uNTFkZDdlYzNjMmIzIDEwMDY0NA0K
+Pj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2V4dGVudF9p
+by5jDQo+PiBAQCAtMjQsNiArMjQsNyBAQA0KPj4gwqAgI2luY2x1ZGUgInJjdS1zdHJpbmcuaCIN
+Cj4+IMKgICNpbmNsdWRlICJiYWNrcmVmLmgiDQo+PiDCoCAjaW5jbHVkZSAiZGlzay1pby5oIg0K
+Pj4gKyNpbmNsdWRlICJzdWJwYWdlLmgiDQo+PiDCoCBzdGF0aWMgc3RydWN0IGttZW1fY2FjaGUg
+KmV4dGVudF9zdGF0ZV9jYWNoZTsNCj4+IMKgIHN0YXRpYyBzdHJ1Y3Qga21lbV9jYWNoZSAqZXh0
+ZW50X2J1ZmZlcl9jYWNoZTsNCj4+IEBAIC0zMTQyLDIyICszMTQzLDQxIEBAIHN0YXRpYyBpbnQg
+c3VibWl0X2V4dGVudF9wYWdlKHVuc2lnbmVkIGludCBvcGYsDQo+PiDCoMKgwqDCoMKgIHJldHVy
+biByZXQ7DQo+PiDCoCB9DQo+PiAtc3RhdGljIHZvaWQgYXR0YWNoX2V4dGVudF9idWZmZXJfcGFn
+ZShzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWIsDQo+PiArc3RhdGljIGludCBhdHRhY2hfZXh0ZW50
+X2J1ZmZlcl9wYWdlKHN0cnVjdCBleHRlbnRfYnVmZmVyICplYiwNCj4+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IHBhZ2UgKnBhZ2UpDQo+PiDC
+oCB7DQo+PiAtwqDCoMKgIC8qDQo+PiAtwqDCoMKgwqAgKiBJZiB0aGUgcGFnZSBpcyBtYXBwZWQg
+dG8gYnRyZWUgaW5vZGUsIHdlIHNob3VsZCBob2xkIHRoZSBwcml2YXRlDQo+PiAtwqDCoMKgwqAg
+KiBsb2NrIHRvIHByZXZlbnQgcmFjZS4NCj4+IC3CoMKgwqDCoCAqIEZvciBjbG9uZWQgb3IgZHVt
+bXkgZXh0ZW50IGJ1ZmZlcnMsIHRoZWlyIHBhZ2VzIGFyZSBub3QgbWFwcGVkIA0KPj4gYW5kDQo+
+PiAtwqDCoMKgwqAgKiB3aWxsIG5vdCByYWNlIHdpdGggYW55IG90aGVyIGVicy4NCj4+IC3CoMKg
+wqDCoCAqLw0KPj4gLcKgwqDCoCBpZiAocGFnZS0+bWFwcGluZykNCj4+IC3CoMKgwqDCoMKgwqDC
+oCBsb2NrZGVwX2Fzc2VydF9oZWxkKCZwYWdlLT5tYXBwaW5nLT5wcml2YXRlX2xvY2spOw0KPj4g
+K8KgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbyA9IGViLT5mc19pbmZvOw0KPj4g
+K8KgwqDCoCBpbnQgcmV0Ow0KPj4gLcKgwqDCoCBpZiAoIVBhZ2VQcml2YXRlKHBhZ2UpKQ0KPj4g
+LcKgwqDCoMKgwqDCoMKgIGF0dGFjaF9wYWdlX3ByaXZhdGUocGFnZSwgZWIpOw0KPj4gLcKgwqDC
+oCBlbHNlDQo+PiAtwqDCoMKgwqDCoMKgwqAgV0FSTl9PTihwYWdlLT5wcml2YXRlICE9ICh1bnNp
+Z25lZCBsb25nKWViKTsNCj4+ICvCoMKgwqAgaWYgKGZzX2luZm8tPnNlY3RvcnNpemUgPT0gUEFH
+RV9TSVpFKSB7DQo+PiArwqDCoMKgwqDCoMKgwqAgLyoNCj4+ICvCoMKgwqDCoMKgwqDCoMKgICog
+SWYgdGhlIHBhZ2UgaXMgbWFwcGVkIHRvIGJ0cmVlIGlub2RlLCB3ZSBzaG91bGQgaG9sZCB0aGUN
+Cj4+ICvCoMKgwqDCoMKgwqDCoMKgICogcHJpdmF0ZSBsb2NrIHRvIHByZXZlbnQgcmFjZS4NCj4+
+ICvCoMKgwqDCoMKgwqDCoMKgICogRm9yIGNsb25lZCBvciBkdW1teSBleHRlbnQgYnVmZmVycywg
+dGhlaXIgcGFnZXMgYXJlIG5vdA0KPj4gK8KgwqDCoMKgwqDCoMKgwqAgKiBtYXBwZWQgYW5kIHdp
+bGwgbm90IHJhY2Ugd2l0aCBhbnkgb3RoZXIgZWJzLg0KPj4gK8KgwqDCoMKgwqDCoMKgwqAgKi8N
+Cj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAocGFnZS0+bWFwcGluZykNCj4+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJnBhZ2UtPm1hcHBpbmctPnByaXZhdGVfbG9j
+ayk7DQo+PiArDQo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKCFQYWdlUHJpdmF0ZShwYWdlKSkNCj4+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGF0dGFjaF9wYWdlX3ByaXZhdGUocGFnZSwgZWIpOw0K
+Pj4gK8KgwqDCoMKgwqDCoMKgIGVsc2UNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFdBUk5f
+T04ocGFnZS0+cHJpdmF0ZSAhPSAodW5zaWduZWQgbG9uZyllYik7DQo+PiArwqDCoMKgwqDCoMKg
+wqAgcmV0dXJuIDA7DQo+PiArwqDCoMKgIH0NCj4+ICsNCj4+ICvCoMKgwqAgLyogQWxyZWFkeSBt
+YXBwZWQsIGp1c3QgdXBkYXRlIHRoZSBleGlzdGluZyByYW5nZSAqLw0KPj4gK8KgwqDCoCBpZiAo
+UGFnZVByaXZhdGUocGFnZSkpDQo+PiArwqDCoMKgwqDCoMKgwqAgZ290byB1cGRhdGVfYml0bWFw
+Ow0KPj4gKw0KPj4gK8KgwqDCoCAvKiBEbyBuZXcgYWxsb2NhdGlvbiB0byBhdHRhY2ggc3VicGFn
+ZSAqLw0KPj4gK8KgwqDCoCByZXQgPSBidHJmc19hdHRhY2hfc3VicGFnZShmc19pbmZvLCBwYWdl
+KTsNCj4+ICvCoMKgwqAgaWYgKHJldCA8IDApDQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJl
+dDsNCj4+ICsNCj4+ICt1cGRhdGVfYml0bWFwOg0KPj4gK8KgwqDCoCBidHJmc19zdWJwYWdlX3Nl
+dF90cmVlX2Jsb2NrKGZzX2luZm8sIHBhZ2UsIGViLT5zdGFydCwgZWItPmxlbik7DQo+PiArwqDC
+oMKgIHJldHVybiAwOw0KPj4gwqAgfQ0KPj4gwqAgdm9pZCBzZXRfcGFnZV9leHRlbnRfbWFwcGVk
+KHN0cnVjdCBwYWdlICpwYWdlKQ0KPj4gQEAgLTUwNjcsMTIgKzUwODcsMTkgQEAgc3RydWN0IGV4
+dGVudF9idWZmZXIgDQo+PiAqYnRyZnNfY2xvbmVfZXh0ZW50X2J1ZmZlcihjb25zdCBzdHJ1Y3Qg
+ZXh0ZW50X2J1ZmZlciAqc3JjKQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBOVUxMOw0K
+Pj4gwqDCoMKgwqDCoCBmb3IgKGkgPSAwOyBpIDwgbnVtX3BhZ2VzOyBpKyspIHsNCj4+ICvCoMKg
+wqDCoMKgwqDCoCBpbnQgcmV0Ow0KPj4gKw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHAgPSBhbGxv
+Y19wYWdlKEdGUF9OT0ZTKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoIXApIHsNCj4+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3JlbGVhc2VfZXh0ZW50X2J1ZmZlcihuZXcp
+Ow0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIE5VTEw7DQo+PiDCoMKgwqDC
+oMKgwqDCoMKgwqAgfQ0KPj4gLcKgwqDCoMKgwqDCoMKgIGF0dGFjaF9leHRlbnRfYnVmZmVyX3Bh
+Z2UobmV3LCBwKTsNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBhdHRhY2hfZXh0ZW50X2J1ZmZl
+cl9wYWdlKG5ldywgcCk7DQo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKHJldCA8IDApIHsNCj4+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHB1dF9wYWdlKHApOw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgYnRyZnNfcmVsZWFzZV9leHRlbnRfYnVmZmVyKG5ldyk7DQo+PiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCByZXR1cm4gTlVMTDsNCj4+ICvCoMKgwqDCoMKgwqDCoCB9DQo+PiDCoMKgwqDC
+oMKgwqDCoMKgwqAgV0FSTl9PTihQYWdlRGlydHkocCkpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
+IFNldFBhZ2VVcHRvZGF0ZShwKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBuZXctPnBhZ2VzW2ld
+ID0gcDsNCj4+IEBAIC01MzIxLDYgKzUzNDgsMTggQEAgc3RydWN0IGV4dGVudF9idWZmZXIgDQo+
+PiAqYWxsb2NfZXh0ZW50X2J1ZmZlcihzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbywNCj4+
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gZnJlZV9lYjsNCj4+IMKgwqDCoMKgwqDC
+oMKgwqDCoCB9DQo+PiArwqDCoMKgwqDCoMKgwqAgLyoNCj4+ICvCoMKgwqDCoMKgwqDCoMKgICog
+UHJlYWxsb2NhdGUgcGFnZS0+cHJpdmF0ZSBmb3Igc3VicGFnZSBjYXNlLCBzbyB0aGF0DQo+PiAr
+wqDCoMKgwqDCoMKgwqDCoCAqIHdlIHdvbid0IGFsbG9jYXRlIG1lbW9yeSB3aXRoIHByaXZhdGVf
+bG9jayBob2xkLg0KPj4gK8KgwqDCoMKgwqDCoMKgwqAgKi8NCj4+ICvCoMKgwqDCoMKgwqDCoCBy
+ZXQgPSBidHJmc19hdHRhY2hfc3VicGFnZShmc19pbmZvLCBwKTsNCj4+ICvCoMKgwqDCoMKgwqDC
+oCBpZiAocmV0IDwgMCkgew0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdW5sb2NrX3BhZ2Uo
+cCk7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwdXRfcGFnZShwKTsNCj4+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGV4aXN0cyA9IEVSUl9QVFIoLUVOT01FTSk7DQo+PiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBnb3RvIGZyZWVfZWI7DQo+PiArwqDCoMKgwqDCoMKgwqAgfQ0KPj4gKw0K
+PiANCj4gVGhpcyBpcyBicm9rZW4sIGlmIHdlIHJhY2Ugd2l0aCBhbm90aGVyIHRocmVhZCBhZGRp
+bmcgYW4gZXh0ZW50IGJ1ZmZlciANCj4gZm9yIHRoaXMgc2FtZSByYW5nZSB3ZSdsbCBvdmVyd3Jp
+dGUgdGhlIHBhZ2UgcHJpdmF0ZSB3aXRoIHRoZSBuZXcgdGhpbmcsIA0KPiBsb3NpbmcgYW55IG9m
+IHRoZSB3b3JrIHRoYXQgd2FzIGRvbmUgcHJldmlvdXNseS7CoCBUaGFua3MsDQoNCkZpcnN0bHkg
+dGhlIHBhZ2UgaXMgbG9ja2VkLCBzbyB0aGVyZSBzaG91bGQgYmUgb25seSBvbmUgdG8gZ3JhYiB0
+aGUgcGFnZS4NCg0KU2Vjb25kbHksIGJ0cmZzX2F0dGFjaF9zdWJwYWdlKCkgd291bGQganVzdCBl
+eGl0IGlmIGl0IGRldGVjdHMgdGhlIHBhZ2UgDQppcyBhbHJlYWR5IHByaXZhdGUuDQoNClNvIHRo
+ZXJlIHNob3VsZG4ndCBiZSBhIHJhY2UuDQoNClRoYW5rcywNClF1DQo+IA0KPiBKb3NlZg0K
