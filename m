@@ -2,34 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB1A2DE062
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 10:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 437EF2DE106
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 11:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733131AbgLRJ1W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 04:27:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46154 "EHLO mx2.suse.de"
+        id S1733197AbgLRKbB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 05:31:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55980 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726798AbgLRJ1V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:27:21 -0500
+        id S1732995AbgLRKbA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 05:31:00 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608283594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1608287414; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=G6zEeEsQx3WkUjcLdSvgP1Hi7nDZ47WluToHWdlDQu4=;
-        b=CDY8/YKDRyvXq2ju+OFdb4ZZDlWZP+e9i4GyfBZU02CztRn4oZhPa1aDXzQldNHWzfhI/4
-        jHTJVZegl9OYymLdwHWf5/uXfOOq9m4aSxyygaQ5WMI0JidLXYhE0YEXdgb7ZmxMigXirr
-        YGPmK+HynOaMYRWINu9vtA7zNfVb8pk=
+        bh=Be84YoCNCjrVumIOGyje46VGKPlMauCjdMsWyu0Cw5E=;
+        b=p8XkOXWm9ynv0T+QNRvcyPjk6K3MN7S4rFke51XE4WyGD43At3l3oifzs0zFZa0/JC37MT
+        +QJ38atQTbuEgRKLTdUeKWs0SgBp53oKOR7XHNP0k16bWJr+fpmQB7OEPUb5w+A0e6V5ys
+        teVRv2kUHjtC8NjJUYoByStvfbZ8EjE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AEF4FACC4;
-        Fri, 18 Dec 2020 09:26:34 +0000 (UTC)
-Subject: Re: [PATCH v4 6/6] btrfs: run delayed refs less often in
- commit_cowonly_roots
+        by mx2.suse.de (Postfix) with ESMTP id 24A59AC7B;
+        Fri, 18 Dec 2020 10:30:14 +0000 (UTC)
+Subject: Re: [PATCH 02/13] btrfs: initialize test inodes location
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <cover.1608215738.git.josef@toxicpanda.com>
- <52a20cfa753203a17ecb01b20e02f6976cc097a8.1608215738.git.josef@toxicpanda.com>
+References: <cover.1608135557.git.josef@toxicpanda.com>
+ <33244ea952212da691e6723057488f8143efd949.1608135557.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +72,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <eeb17ea5-1c75-832f-d894-c51a3d1264d0@suse.com>
-Date:   Fri, 18 Dec 2020 11:26:33 +0200
+Message-ID: <7199c541-ea79-f92c-921b-f4ec7c4cfe81@suse.com>
+Date:   Fri, 18 Dec 2020 12:30:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <52a20cfa753203a17ecb01b20e02f6976cc097a8.1608215738.git.josef@toxicpanda.com>
+In-Reply-To: <33244ea952212da691e6723057488f8143efd949.1608135557.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,15 +87,22 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.12.20 г. 16:36 ч., Josef Bacik wrote:
-> We love running delayed refs in commit_cowonly_roots, but it is a bit
-> excessive.  I was seeing cases of running 3 or 4 refs a few times in a
-> row during this time.  Instead simply update all of the roots first,
-> then run delayed refs, then handle the empty block groups case, and then
-> if we have any more dirty roots do the whole thing again.  This allows
-> us to be much more efficient with our delayed ref running, as we can
-> batch a few more operations at once.
+On 16.12.20 г. 18:22 ч., Josef Bacik wrote:
+> While testing other things I was noticing that sometimes my VM would
+> fail to load the btrfs module because the self test failed like this
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> BTRFS: selftest: fs/btrfs/tests/inode-tests.c:963 miscount, wanted 1, got 0
+> 
+> This turned out to be because sometimes the btrfs ino would be the btree
+> inode number, and thus we'd skip calling the set extent delalloc bit
+> helper, and thus not adjust ->outstanding_extents.  Fix this by making
+> sure we init test inodes with a valid inode number so that we don't get
+> random failures during self tests.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+This warrants slightly more explanation why this initialization is
+required, namely that newly allocated indoes are initialized by passing
+a set callback, since we are acquiring inodes for tests we need to
+simulate this behavior by, effectively, open coding
+btrfs_init_locked_inode.
+
+<snip>
