@@ -2,323 +2,366 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C53F2DDDCA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 06:18:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3292DDECB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 08:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731527AbgLRFSF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 00:18:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50168 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726103AbgLRFR6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 00:17:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608268631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jog37eS/bHZvEdo2I9/HiP16V62jZRmfDvx7UsztW+Y=;
-        b=HIDXkgQlht+tN/zP8ygJXBkZ8hACfM+PhzZhkYoM78ikYC+Ifa0T9qD+kd8D7J2yGTT2SH
-        tQWFZ5LJWtKLSOvP4JEOzDYINrUQJh4K3oXkcQOz9L4oTE61OVKwB0LPnj2CMbJxXxSRkR
-        nm1bXqhceXdKdE2LsSIdWvOml5kKfzA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5EC37B735
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 05:17:11 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: refactor btrfs_dec_test_* functions for ordered extents
-Date:   Fri, 18 Dec 2020 13:17:01 +0800
-Message-Id: <20201218051701.62262-3-wqu@suse.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201218051701.62262-1-wqu@suse.com>
-References: <20201218051701.62262-1-wqu@suse.com>
-MIME-Version: 1.0
+        id S1730414AbgLRHA5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 02:00:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726520AbgLRHA5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 02:00:57 -0500
+X-Greylist: delayed 155633 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Dec 2020 23:00:16 PST
+Received: from mx4.uni-regensburg.de (mx4.uni-regensburg.de [IPv6:2001:638:a05:137:165:0:4:4e7a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969FDC0617A7
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Dec 2020 23:00:16 -0800 (PST)
+Received: from mx4.uni-regensburg.de (localhost [127.0.0.1])
+        by localhost (Postfix) with SMTP id 546576000052
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 08:00:12 +0100 (CET)
+Received: from gwsmtp.uni-regensburg.de (gwsmtp1.uni-regensburg.de [132.199.5.51])
+        by mx4.uni-regensburg.de (Postfix) with ESMTP id D73386000050
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 08:00:11 +0100 (CET)
+Received: from uni-regensburg-smtp1-MTA by gwsmtp.uni-regensburg.de
+        with Novell_GroupWise; Fri, 18 Dec 2020 08:00:10 +0100
+Message-Id: <5FDC5379020000A10003DA7F@gwsmtp.uni-regensburg.de>
+X-Mailer: Novell GroupWise Internet Agent 18.3.0 
+Date:   Fri, 18 Dec 2020 08:00:09 +0100
+From:   "Ulrich Windl" <Ulrich.Windl@rz.uni-regensburg.de>
+To:     <ce3g8jdj@umail.furryterror.org>
+Cc:     <linux-btrfs@vger.kernel.org>
+Subject: Re: Antw: [EXT] Re: Unrecoverable filesystem (ERROR: child eb
+ corrupted: parent bytenr=1106952192 item=75 parent level=1 child
+ level=1)
+References: <5FD3816B020000A10003D798@gwsmtp.uni-regensburg.de>
+ <20201215181828.GN31381@hungrycats.org>
+ <5FDB6190020000A10003DA53@gwsmtp.uni-regensburg.de>
+ <20201218015114.GE28049@hungrycats.org>
+In-Reply-To: <20201218015114.GE28049@hungrycats.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The refactors involves the following modifications:
-- Return bool instead of int
+>>> Zygo Blaxell <ce3g8jdj@umail.furryterror.org> schrieb am 18.12.2020 um
+02:51 in
+Nachricht <20201218015114.GE28049@hungrycats.org>:
+> On Thu, Dec 17, 2020 at 02:48:00PM +0100, Ulrich Windl wrote:
+>> >>> Zygo Blaxell <ce3g8jdj@umail.furryterror.org> schrieb am 15.12.2020 um
+>> 19:18 in
+>> Nachricht <20201215181828.GN31381@hungrycats.org>:
+>> > On Fri, Dec 11, 2020 at 03:25:47PM +0100, Ulrich Windl wrote:
+>> >> Hi!
+>> >> 
+>> >> While configuring a VM environment in a cluster I had setup an SLES15
+SP2 
+>> > test VM using BtrFS. Due to some problem with libvirt (or the
+VirtualDomain
+>> 
+>> > RA) the VM was active on more than one cluster node at a time,
+corrupting
+>> the 
+>> > filesystem beyond repair it seems:
+>> >> hvc0:rescue:~ # btrfs check /dev/xvda2
+>> >> Opening filesystem to check...
+>> >> Checking filesystem on /dev/xvda2
+>> >> UUID: 1b651baa‑327b‑45fe‑9512‑e7147b24eb49
+>> >> [1/7] checking root items
+>> >> ERROR: child eb corrupted: parent bytenr=1107230720 item=75 parent
+level=1
+>> 
+>> > child level=1
+>> >> ERROR: failed to repair root items: Input/output error
+>> >> hvc0:rescue:~ # btrfsck ‑b /dev/xvda2
+>> >> Opening filesystem to check...
+>> >> Checking filesystem on /dev/xvda2
+>> >> UUID: 1b651baa‑327b‑45fe‑9512‑e7147b24eb49
+>> >> [1/7] checking root items
+>> >> ERROR: child eb corrupted: parent bytenr=1106952192 item=75 parent
+level=1
+>> 
+>> > child level=1
+>> >> ERROR: failed to repair root items: Input/output error
+>> >> hvc0:rescue:~ # btrfsck ‑‑repair /dev/xvda2
+>> >> enabling repair mode
+>> >> Opening filesystem to check...
+>> >> Checking filesystem on /dev/xvda2
+>> >> UUID: 1b651baa‑327b‑45fe‑9512‑e7147b24eb49
+>> >> [1/7] checking root items
+>> >> ERROR: child eb corrupted: parent bytenr=1107230720 item=75 parent
+level=1
+>> 
+>> > child level=1
+>> >> ERROR: failed to repair root items: Input/output error
+>> >> 
+>> >> Two questions arising:
+>> >> 1) Can't the kernel set some "open flag" early when opening the
+>> >> filesystem, and refuse to open it again (the other VM) when the flag
+>> >> is set? That could avoid such situations I guess
+>> > 
+>> > If btrfs wrote "the filesystem is open" to the disk, the filesystem
+>> > would not be mountable after a crash.
+>> > 
+>> > The kernel does set an "open flag" (it detects that it is about to mount
+>> > the same btrfs by uuid, and does something like a bind mount instead)
+>> > but that applies only to multiple btrfs mounts on the _same_ kernel.
+>> > In your case there are multiple kernels present (one in each node)
+>> > and there's no way for them to communicate with each other.
+>> > 
+>> > There are at least 3 different ways libvirt or other hosting
+>> > infrastructure software on the VM host could have avoided passing the
+>> > same physical device to multiple VM guests.  I would suggest
+implementing
+>> > some or all of them.
+>> > 
+>> >> 2) Can't btrfs check try somewhat harder to rescue anything, or is
+>> >> the fs structure in a way that everything is lost?
+>> > 
+>> >> What really puzzles me is this:
+>> >> There are several snapshots and subvolumes on the BtFS device. It's
+>> >> hard to believe that absolutely nothing seems to be recoverable.
+>> > 
+>> > The most likely outcome is that the root tree nodes and most of the
+>> > interior nodes of all the filesystem trees are broken.  The kernel
+>> > relies on the trees to work‑‑everything in btrfs except the superblocks
+>> > can be at any location on disk‑‑so the filesystem will be unreadable by
+>> > the kernel.  Only recovery tools would be able to read the filesystem
+now.
+>> > 
+>> > Recovery requires a brute force search of the disk to find as many
+>> > surviving leaf nodes as possible and rebuild the filesystem trees.
+>> > This is more or less what 'btrfs check ‑‑repair ‑‑init‑extent‑tree'
+does.
+>> 
+>> Hi!
+>> 
+>> As I didn't have a backup (it was just a test VM to test HA cluster
+>> configuration), I tried your command:
+>> It finished rather quickly even with little RAM, but found *many*
+problems:
+>> ...
+>> Deleting bad dir index [715,96,8] root 257
+>> Deleting bad dir index [257,96,14] root 257
+>> Deleting bad dir index [257,96,15] root 257
+>> Deleting bad dir index [259,96,21] root 257
+>> Deleting bad dir index [291,96,6] root 257
+>> Deleting bad dir index [1804,96,2] root 257
+>> Deleting bad dir index [1804,96,3] root 257
+>> Deleting bad dir index [1804,96,4] root 257
+>> Deleting bad dir index [1804,96,5] root 257
+>> Deleting bad dir index [320,96,5] root 257
+>> Deleting bad dir index [1805,96,2] root 257
+>> Deleting bad dir index [257,96,16] root 257
+>> Deleting bad dir index [326,96,6] root 257
+>> ERROR: errors found in fs roots
+>> found 30851072 bytes used, error(s) found
+>> total csum bytes: 1370452
+>> total tree bytes: 3211264
+>> total fs tree bytes: 1458176
+>> total extent tree bytes: 16384
+>> btree space waste bytes: 597304
+>> file data blocks allocated: 27607040
+>>  referenced 27607040
+>> 
+>> A subsequent " btrfs check /dev/xvda2" found many problems again:
+>> ...
+>> root 257 inode 7589 errors 2001, no inode item, link count wrong
+>>         unresolved ref dir 1804 index 0 namelen 7 name main.cf filetype 1
+>> errors 6, no dir index, no inode ref
+>> root 257 inode 7590 errors 2001, no inode item, link count wrong
+>>         unresolved ref dir 320 index 0 namelen 18 name postfix.configured
+>> filetype 1 errors 6, no dir index, no inode ref
+>> root 257 inode 7591 errors 2001, no inode item, link count wrong
+>>         unresolved ref dir 1806 index 0 namelen 3 name pid filetype 2
+errors
+>> 6, no dir index, no inode ref
+>> root 257 inode 7593 errors 2001, no inode item, link count wrong
+>>         unresolved ref dir 1805 index 0 namelen 11 name master.lock
+filetype 
+> 1
+>> errors 6, no dir index, no inode ref
+>> root 257 inode 7641 errors 2001, no inode item, link count wrong
+>>         unresolved ref dir 257 index 0 namelen 11 name snapper.log filetype
 
-- Reduce the width of @io_size for btrfs_dec_test_ordered_pending()
-  Function btrfs_dec_test_ordered_pending() is only supposed to handle
-  at most one page, thus u32 for @io_size is enough.
-  Also added ASSERT()s for such width reduce.
+> 1
+>> errors 6, no dir index, no inode ref
+>> root 257 inode 7644 errors 2001, no inode item, link count wrong
+>>         unresolved ref dir 326 index 0 namelen 16 name logrotate.status
+>> filetype 1 errors 6, no dir index, no inode ref
+>> ERROR: errors found in fs roots
+>> found 30965760 bytes used, error(s) found
+>> total csum bytes: 1370452
+>> total tree bytes: 3342336
+>> total fs tree bytes: 1523712
+>> total extent tree bytes: 81920
+>> btree space waste bytes: 669123
+>> file data blocks allocated: 27607040
+>>  referenced 27607040
+>> 
+>> Even after iterating a "normal" check a few times, I could not mount the
+>> "repaired" filesystem:
+>> hvc0:rescue:~ # mount -r /dev/xvda2 /mnt
+>> mount.bin: /mnt: wrong fs type, bad option, bad superblock on /dev/xvda2,
+>> missing codepage or helper program, or other error.
+>> hvc0:rescue:~ # journalctl -f
+>> -- Logs begin at Thu 2020-12-17 13:36:57 UTC. --
+>> Dec 17 13:44:33 rescue kernel: BTRFS info (device xvda2): disk space
+caching
+>> is enabled
+>> Dec 17 13:44:33 rescue kernel: BTRFS info (device xvda2): has skinny
+extents
+>> Dec 17 13:44:33 rescue kernel: BTRFS error (device xvda2): chunk 1048576
+has
+>> missing dev extent, have 0 expect 1
+>> Dec 17 13:44:33 rescue kernel: BTRFS error (device xvda2): failed to
+verify
+>> dev extents against chunks: -117
+>> Dec 17 13:44:33 rescue kernel: BTRFS error (device xvda2): open_ctree
+failed
+>> ^C
+>> 
+>> I'm not hoping to recover the system to a usable state, but out of
+curiosity
+>> I'd like to get an impression what had survived and what had not.
+> 
+> If you're missing dev extents you'll need to run chunk-recover to
+> brute-force scan for the chunk headers.  But this is really stretching
+> the abilities of the current tools.
 
-  For btrfs_dev_test_first_ordered_pending(), btrfs_dio_iomap_end() is
-  the only blockage, since its @length is loff_t and I'm not that
-  confident that @length can be contained in U32, thus
-  btrfs_dev_test_first_ordered_pending() still uses u64 for its @iosize.
+Hi!
 
-- Parameter rename for @cached of btrfs_dec_test_first_ordered_pending()
-  For btrfs_dec_test_first_ordered_pending(), @cached is only used to
-  return the finished ordered extent.
-  Rename it to @finished_ret.
+(Back at the time when I had developed a copy program for floppy disks, I had
+a set of defective floppies for testing, so you chan see this disaster as a
+challenge for the tools)
+I tried:
+hvc0:rescue:~ # btrfs rescue chunk-recover /dev/xvda2
+Scanning: DONE in dev0
+Check chunks successfully with no orphans
+Chunk tree recovered successfully
 
-- Comments update
-  * Change one stale comment
-    Which still refers to btrfs_dec_test_ordered_pending(), but the
-    context is calling  btrfs_dec_test_first_ordered_pending().
-  * Follow the common comment style for both functions
-    Add more detailed descriptions for parameters and the return value
-  * Move the reason why test_and_set_bit() is used into the call sites
+I don't really understand what I'm doing, but as there were still too many
+errors (and mount was refused), I re-tried "btrfs check --repair
+--init-extent-tree", resulting in a core dump:
 
-- Change how the return value is calculated
-  The most anti-human part of the return value is:
+...
+Repaired extent references for 1754910720
+ref mismatch on [1766580224 4096] extent item 0, found 1
+data backref 1766580224 root 257 owner 294 offset 90112 num_refs 0 not found
+in extent tree
+incorrect local backref count on 1766580224 root 257 owner 294 offset 90112
+found 1 wanted 0 back 0x56103db41180
+backpointer mismatch on [1766580224 4096]
+adding new data backref on 1766580224 root 257 owner 294 offset 90112 found 1
+Repaired extent references for 1766580224
+btrfs unable to find ref byte nr 5586944 parent 0 root 2  owner 0 offset 0
+transaction.c:195: btrfs_commit_transaction: BUG_ON `ret` triggered, value -5
+btrfs(+0x51829)[0x56103c70f829]
+btrfs(btrfs_commit_transaction+0x1ae)[0x56103c70fe1e]
+btrfs(+0x1e73c)[0x56103c6dc73c]
+btrfs(cmd_check+0x1124)[0x56103c7253d4]
+btrfs(main+0x8e)[0x56103c6dcd2e]
+/lib64/libc.so.6(__libc_start_main+0xea)[0x7f0caf2b934a]
+btrfs(_start+0x2a)[0x56103c6dcf2a]
+Aborted (core dumped)
 
-    if (...)
-	ret = 1;
-    ...
-    return ret == 0;
+hvc0:rescue:~ # btrfs version
+btrfs-progs v4.19.1
 
-  This means, when we set ret to 1, the function returns 0.
-  Change the local variable name to @finished, and directly return the
-  value of it.
+Regards,
+Ulrich
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c        |  7 ++-
- fs/btrfs/ordered-data.c | 98 ++++++++++++++++++++++-------------------
- fs/btrfs/ordered-data.h | 10 ++---
- 3 files changed, 61 insertions(+), 54 deletions(-)
+> 
+>> Regards,
+>> Ulrich
+>> 
+>> > 
+>> > If you run ‑‑init‑extent‑tree, assuming it works (you should not assume
+>> > that it will work), you would then have to audit the filesystem contents
+>> > to see what data was not recovered.  At a minimum, you would lose a few
+>> > hundred filesystem items, since each metadata leaf node contains around
+>> > 200 items and you definitely will not recover them all.  The data csum
+>> > trees might not be in sync with the rest of the filesytem, so you can't
+>> > rely on scrub to check data integrity.  If this is successful, you will
+>> > have a similar result to mounting ext4 on multiple VMs simultaneously‑‑
+>> > fsck runs, the filesystem is read‑write again, but you don't get all
+>> > the data back, nor even a list of data that was lost or corrupted.
+>> > 
+>> > ‑‑init‑extent‑tree can be quite slow, especially if you don't have
+enough
+>> > RAM to hold all the filesystem's metadata.  It's still under
+development,
+>> > so one possible outcome is that it crashes with an assertion failure
+>> > and leaves you with a even more broken filesystem.
+>> > 
+>> > It's usually faster and easier to mkfs and restore from backups instead.
+>> > 
+>> >> I have this:
+>> >> hvc0:rescue:~ # btrfs inspect‑internal dump‑super /dev/xvda2
+>> >> superblock: bytenr=65536, device=/dev/xvda2
+>> >> ‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑
+>> >> csum_type               0 (crc32c)
+>> >> csum_size               4
+>> >> csum                    0x659898f3 [match]
+>> >> bytenr                  65536
+>> >> flags                   0x1
+>> >>                         ( WRITTEN )
+>> >> magic                   _BHRfS_M [match]
+>> >> fsid                    1b651baa‑327b‑45fe‑9512‑e7147b24eb49
+>> >> metadata_uuid           1b651baa‑327b‑45fe‑9512‑e7147b24eb49
+>> >> label
+>> >> generation              280
+>> >> root                    1107214336
+>> >> sys_array_size          97
+>> >> chunk_root_generation   35
+>> >> root_level              0
+>> >> chunk_root              1048576
+>> >> chunk_root_level        0
+>> >> log_root                0
+>> >> log_root_transid        0
+>> >> log_root_level          0
+>> >> total_bytes             10727960576
+>> >> bytes_used              1461825536
+>> >> sectorsize              4096
+>> >> nodesize                16384
+>> >> leafsize (deprecated)           16384
+>> >> stripesize              4096
+>> >> root_dir                6
+>> >> num_devices             1
+>> >> compat_flags            0x0
+>> >> compat_ro_flags         0x0
+>> >> incompat_flags          0x163
+>> >>                         ( MIXED_BACKREF |
+>> >>                           DEFAULT_SUBVOL |
+>> >>                           BIG_METADATA |
+>> >>                           EXTENDED_IREF |
+>> >>                           SKINNY_METADATA )
+>> >> cache_generation        280
+>> >> uuid_tree_generation    40
+>> >> dev_item.uuid           2abdf93e‑2f2d‑4eef‑a1d8‑9325f809ebce
+>> >> dev_item.fsid           1b651baa‑327b‑45fe‑9512‑e7147b24eb49 [match]
+>> >> dev_item.type           0
+>> >> dev_item.total_bytes    10727960576
+>> >> dev_item.bytes_used     2436890624
+>> >> dev_item.io_align       4096
+>> >> dev_item.io_width       4096
+>> >> dev_item.sector_size    4096
+>> >> dev_item.devid          1
+>> >> dev_item.dev_group      0
+>> >> dev_item.seek_speed     0
+>> >> dev_item.bandwidth      0
+>> >> dev_item.generation     0
+>> >> 
+>> >> Regards,
+>> >> Ulrich Windl
+>> >> 
+>> >> 
+>> 
+>> 
+>> 
+>> 
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index fa9fbed36ec9..ab110552daef 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2920,6 +2920,7 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
- 	trace_btrfs_writepage_end_io_hook(page, start, end, uptodate);
- 
- 	ClearPagePrivate2(page);
-+	ASSERT(end - start + 1 < U32_MAX);
- 	if (!btrfs_dec_test_ordered_pending(inode, &ordered_extent, start,
- 					    end - start + 1, uptodate))
- 		return;
-@@ -7793,10 +7794,7 @@ static void __endio_write_update_ordered(struct btrfs_inode *inode,
- 					NULL);
- 			btrfs_queue_work(wq, &ordered->work);
- 		}
--		/*
--		 * If btrfs_dec_test_ordered_pending does not find any ordered
--		 * extent in the range, we can exit.
--		 */
-+		/* No ordered extent found in the range, exit. */
- 		if (ordered_offset == last_offset)
- 			return;
- 		/*
-@@ -8216,6 +8214,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 				ordered->truncated_len = new_len;
- 			spin_unlock_irq(&tree->lock);
- 
-+			ASSERT(end - start + 1 < U32_MAX);
- 			if (btrfs_dec_test_ordered_pending(inode, &ordered,
- 							   start,
- 							   end - start + 1, 1)) {
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 79d366a36223..f9dff5c90a27 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -297,26 +297,33 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
- }
- 
- /*
-- * this is used to account for finished IO across a given range
-- * of the file.  The IO may span ordered extents.  If
-- * a given ordered_extent is completely done, 1 is returned, otherwise
-- * 0.
-+ * Finish io for one ordered extent across a given range.
-+ * The range can contain several ordered extents.
-  *
-- * test_and_set_bit on a flag in the struct btrfs_ordered_extent is used
-- * to make sure this function only returns 1 once for a given ordered extent.
-+ * @found_ret:	 Return the finished ordered extent
-+ * @file_offset: File offset for the finished io
-+ * 		 Will also be updated to one byte past the range that is
-+ * 		 recordered as finished. This allows caller to walk forward.
-+ * @io_size:	 Length of the finish io range
-+ * @uptodate:	 If the IO finishes without problem.
-  *
-- * file_offset is updated to one byte past the range that is recorded as
-- * complete.  This allows you to walk forward in the file.
-+ * Return true if any ordered extent is finished in the range, and update
-+ * @found_ret and @file_offset.
-+ * Return false otherwise.
-+ *
-+ * NOTE: Although The range can cross multiple ordered extents, only one
-+ * ordered extent will be updated during one call. The caller is responsible
-+ * to iterate all ordered extents in the range.
-  */
--int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
-+bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
-+				   struct btrfs_ordered_extent **finished_ret,
- 				   u64 *file_offset, u64 io_size, int uptodate)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
- 	struct rb_node *node;
- 	struct btrfs_ordered_extent *entry = NULL;
--	int ret;
-+	bool finished = false;
- 	unsigned long flags;
- 	u64 dec_end;
- 	u64 dec_start;
-@@ -324,16 +331,12 @@ int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 
- 	spin_lock_irqsave(&tree->lock, flags);
- 	node = tree_search(tree, *file_offset);
--	if (!node) {
--		ret = 1;
-+	if (!node)
- 		goto out;
--	}
- 
- 	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
--	if (!offset_in_entry(entry, *file_offset)) {
--		ret = 1;
-+	if (!offset_in_entry(entry, *file_offset))
- 		goto out;
--	}
- 
- 	dec_start = max(*file_offset, entry->file_offset);
- 	dec_end = min(*file_offset + io_size,
-@@ -354,39 +357,48 @@ int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 		set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
- 
- 	if (entry->bytes_left == 0) {
--		ret = test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
-+		/* Ensure only one caller can get true returned. */
-+		finished = !test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
- 		/* test_and_set_bit implies a barrier */
- 		cond_wake_up_nomb(&entry->wait);
--	} else {
--		ret = 1;
- 	}
- out:
--	if (!ret && cached && entry) {
--		*cached = entry;
-+	if (finished && finished_ret && entry) {
-+		*finished_ret = entry;
- 		refcount_inc(&entry->refs);
- 	}
- 	spin_unlock_irqrestore(&tree->lock, flags);
--	return ret == 0;
-+	return finished;
- }
- 
- /*
-- * this is used to account for finished IO across a given range
-- * of the file.  The IO should not span ordered extents.  If
-- * a given ordered_extent is completely done, 1 is returned, otherwise
-- * 0.
-+ * Finish io for one ordered extent across a given range.
-+ * The range can only contain one ordered extent.
-+ *
-+ * @cached:	 The cached ordered extent.
-+ * 		 If not NULL, we can skip the tree search and use the ordered
-+ * 		 extent directly.
-+ * 		 Will also be used to store the finished ordered extent.
-+ * @file_offset: File offset for the finished io
-+ * @io_size:	 Length of the finish io range
-+ * @uptodate:	 If the IO finishes without problem.
-  *
-- * test_and_set_bit on a flag in the struct btrfs_ordered_extent is used
-- * to make sure this function only returns 1 once for a given ordered extent.
-+ * Return true if the ordered extent is finished in the range, and update
-+ * @cached.
-+ * Return false otherwise.
-+ *
-+ * NOTE: The range can NOT cross multiple ordered extents.
-+ * Thus caller should ensure the range is no larger than one sector.
-  */
--int btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
--				   u64 file_offset, u64 io_size, int uptodate)
-+bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
-+				    struct btrfs_ordered_extent **cached,
-+				    u64 file_offset, u32 io_size, int uptodate)
- {
- 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
- 	struct rb_node *node;
- 	struct btrfs_ordered_extent *entry = NULL;
- 	unsigned long flags;
--	int ret;
-+	bool finished = false;
- 
- 	spin_lock_irqsave(&tree->lock, flags);
- 	if (cached && *cached) {
-@@ -395,21 +407,18 @@ int btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 	}
- 
- 	node = tree_search(tree, file_offset);
--	if (!node) {
--		ret = 1;
-+	if (!node)
- 		goto out;
--	}
- 
- 	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
- have_entry:
--	if (!offset_in_entry(entry, file_offset)) {
--		ret = 1;
-+	if (!offset_in_entry(entry, file_offset))
- 		goto out;
--	}
- 
- 	if (io_size > entry->bytes_left) {
-+		ASSERT(0);
- 		btrfs_crit(inode->root->fs_info,
--			   "bad ordered accounting left %llu size %llu",
-+			   "bad ordered accounting left %llu size %u",
- 		       entry->bytes_left, io_size);
- 	}
- 	entry->bytes_left -= io_size;
-@@ -417,19 +426,18 @@ int btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 		set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
- 
- 	if (entry->bytes_left == 0) {
--		ret = test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
-+		/* Ensure only one caller can get true returned. */
-+		finished = !test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
- 		/* test_and_set_bit implies a barrier */
- 		cond_wake_up_nomb(&entry->wait);
--	} else {
--		ret = 1;
- 	}
- out:
--	if (!ret && cached && entry) {
-+	if (finished && cached && entry) {
- 		*cached = entry;
- 		refcount_inc(&entry->refs);
- 	}
- 	spin_unlock_irqrestore(&tree->lock, flags);
--	return ret == 0;
-+	return finished;
- }
- 
- /*
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 0bfa82b58e23..3ee987cd402d 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -152,11 +152,11 @@ btrfs_ordered_inode_tree_init(struct btrfs_ordered_inode_tree *t)
- void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry);
- void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 				struct btrfs_ordered_extent *entry);
--int btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
--				   u64 file_offset, u64 io_size, int uptodate);
--int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
-+bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
-+				    struct btrfs_ordered_extent **cached,
-+				    u64 file_offset, u32 io_size, int uptodate);
-+bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
-+				   struct btrfs_ordered_extent **finished_ret,
- 				   u64 *file_offset, u64 io_size,
- 				   int uptodate);
- int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
--- 
-2.29.2
+
 
