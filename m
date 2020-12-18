@@ -2,164 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F412DDC73
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 01:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945D82DDC76
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 01:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730878AbgLRAqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Dec 2020 19:46:18 -0500
-Received: from mout.gmx.net ([212.227.15.18]:36783 "EHLO mout.gmx.net"
+        id S1731515AbgLRAup (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Dec 2020 19:50:45 -0500
+Received: from mout.gmx.net ([212.227.17.20]:34605 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727136AbgLRAqR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Dec 2020 19:46:17 -0500
+        id S1727177AbgLRAuo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Dec 2020 19:50:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608252283;
-        bh=fCFTauWf/HWQyFCvzOuJCpeyyJtBzXV7RK484vauHoc=;
+        s=badeba3b8450; t=1608252551;
+        bh=sjFP26ZKgLmeyFmnJivz6XkQsdqnMZ0uv4dCVk86Y/A=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=bfChHc6Vtcpr3E93PStc+60InkPcp3uH3PXJmJ9sNRCdcBVwPZ6XeJ9ccNJ36FpVe
-         n3pQvltgRr/uK2uNCORgHTpvWVmUK0Vk6fBMrmn0wHsRRe9e//0kAs0JCPv48sm4CZ
-         YUjW7XBkzcZ7S7UB1v/k3bQkYjhguZxnj7RQeiyU=
+        b=fnEvtoh7HB36P660n2r5Tu4+aE/MGPE725Xl5xhb88YUM24VEjwhrsBOk/46TYhxI
+         3nj2STLoqkYLtMEL0CkkOF07sHYLcYn4iq8gXxPhIEQHPViL4/KKG0JIiXZmGrjugw
+         Ff9enZSP4HaJn/HvjCwTwUFH01w/kmq/3+eWG4Ns=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdvmO-1kHHMi1X0A-00aziF; Fri, 18
- Dec 2020 01:44:43 +0100
-Subject: Re: [PATCH v2 06/18] btrfs: extent_io: make
- attach_extent_buffer_page() to handle subpage case
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mel3t-1kHY5C0AtB-00alrw; Fri, 18
+ Dec 2020 01:49:11 +0100
+Subject: Re: [PATCH v2 07/18] btrfs: extent_io: make
+ grab_extent_buffer_from_page() to handle subpage case
 To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20201210063905.75727-1-wqu@suse.com>
- <20201210063905.75727-7-wqu@suse.com>
- <4ad93bff-45b3-04b5-731e-9294c08630cb@toxicpanda.com>
+ <20201210063905.75727-8-wqu@suse.com>
+ <1c8ed0da-be1f-740c-ee91-232a6640dc2e@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <5baecd2e-1749-d3fa-c228-942ff0c2f31e@gmx.com>
-Date:   Fri, 18 Dec 2020 08:44:39 +0800
+Message-ID: <1076be3c-398c-8e26-4415-88de422d9ac1@gmx.com>
+Date:   Fri, 18 Dec 2020 08:49:08 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <4ad93bff-45b3-04b5-731e-9294c08630cb@toxicpanda.com>
+In-Reply-To: <1c8ed0da-be1f-740c-ee91-232a6640dc2e@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:mJuNsvqJVbmSuJ+1wvVwhnzlSdw/P+SfjNJ6vYd8J1p9gyBV6wT
- 4f04TwEQBjQFOcvRVinCxxi/MFytLwBgF5z2CzQ7oxdDOOj9R7Pd0H/xkWjc++BriyqEhwg
- s+xR2UPfMi8NGPFJqK657TyPy9Es6RYmtXpmqh6Q3vfAjZGY+V6NLF/5mv8GKW6j3yz4Rol
- w1tXxv8kys9XWL8fu9Gtg==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WcE54v2JSsRV2RiaaSXnPzluI94NCJle7xd3SeCcmivQ0nams0i
+ hBAJXrynJtZhXmECmMAE2ieAURc7tskdeoX1sxHn63cAx8skcauzSBCSFbWKpyuoV3xbE3Q
+ lpBKBktXSuEofzBPSZ0Zs2b7PQncSmWfYtDXvPZ/RcuQGgGUFLs84zQZDdz37R8OwJx/quw
+ ZVPhW6DV7SScyeWBjjHKQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+8Tc3CqRyV4=:tEJXSaWeh1H89M9vtHZA7T
- keXfD6w4ReA9+7zJZPAC6qlqZU4ov2P8V8qUT7kR2WOjBp0jCYRZ8zNOqikygNjO6wQW3saED
- w0qoLLPkphQB1/EZUeuGYnb/rJ3NJHkV9uosgXhu8xk0AToqw8q/+kqABg5vBZPYmkTjzUqFm
- FSkcEngcsQpfMKgpYJujtZAQRIj8YM82AAFr3TTAdcOnpXWpOgJERwdGs7b/UfZS/A808FB5d
- wohjPGU5C9D6V1lLLSWNem2mM8AblkrH2/GIPO+OA2d8rOc1WVkR7H/c/BV7keObL5XAS/9QR
- jERPmlrPYPxjunfCqOL569gdEWYNLqAqz2pNswbV0qIbxbHoqVeuOokNfiZkKAAg4vtUy0cM4
- PXa0IXwH+PKZSwEV2BzreCuxl+2rWMKEWrWOi2OdjZ2YyAzbvBJnlLTM6Cj99LfZaSR5fCA53
- 8lUmjPkX/hSWRSTIYLF7fo8P7FIITxnCxgP6jDkx4/LhQ0QcyrKhHszevKgQbhEtgGlCic+NT
- ZDAQ8N5d7HG52wP0KoVa8irzoIoxXa28xEGWrJDoGmtlGeCPkpTGp5yWS5BdjolpW1g8Uw4JQ
- LtIiV06w0Nz9Mx7LTw84sC5piLhziXLIgIm38Wey2VgIrLge0MBsiDbqIEa+MF1zqQ3anOk8Z
- gIio3buo05PTRUmNwIcNaAj5UjSUGymehhjmJObEddTgKIcB0T27BqtwK1Gc5mCSGnGWfFZyk
- YArvjftRDmqfN2Wp6JjVVjl0eYqt+mMmu+uPS7Ntm1Flkm/Yfpr8YFdsVgm6JK8TC9JsTZLPU
- aPORTuuCIu+UsEm4Uv3ukbZWGnEEscFHfna+ZZaA8e7qIMveLGcPfdhCkpyGYYnf6b4SubOOF
- lXeJw71ntgUwtwfJ/ppQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Sc9rXK7IxB0=:yIIk/uuMmgpodNIp3LC+df
+ NuX03Lx6jXWLPF2aHtPabv+xUOQ1/JnWJG/cvtdZh2AM72uxluIHM9Y5j4EEi4iTjmbUtkHkm
+ kkTxgd1qXSUfiaafMZo3E6Pu63ShCIZUqtEF+OX3IUPsDbO0x5HT1De3KpkW18O8KLuP8EcCA
+ nGlH48OcNkGmowSc7F/g73oWm5P2LFflT96B5s/uMdfA6SEUnfqIxgK+LI4mbJ8ARx2WoN1oz
+ TnzitmhbWx+E7neILBZjC4kto3shPjky/n8Gq5/3aTiasF290NjIvJCXmJoDX1V0hL9BdSftb
+ vbbLg+f3PQqJ79WyzfqYwb54PAMRL0XgTB3rkeRxbcTVjL4XL357RSHCtWfj4TwBSVTKzpGT9
+ TL+mSoccsaKWXDKvJlblBc3ZxgFlJv5wI9zCaa/jgzdTpcxqmXunCZEyHJY1gaaNwq25b9SdC
+ uyj0gfErQ6sAEscwWcQjM+dk+LykbfRS8GQQn/LkQHAsy6SPdvJBKILLgrug4U63xKYnW4bja
+ 08rtc2x1SbN2fW0kFRdMDqZVhWJYr5UWP1fKmZfG60pKNNyf1pm06kPbefT5Qm4iNnt3EjyQt
+ BFfqVrHlvnZ05dk1avt41tbhCARtpkM5ySlAj7k6bpivR5R23qfjeloigG6paZzPqjF7lOODc
+ ymwAbYqXUE6xl5/7lGEYGokIs84yiurFXhwDxzgDP9Oz/j44ngNImU1Qfs0O/KeP7H/c0Q4XV
+ ku8HRohClpPfuevhNkCczqL8KMsgx7ZEbe5Fwzz2a9pZPbp1POxNe9OSxKk/v7dnqdE6xSp2J
+ ywp/YkX41KsG54T9dwJ2uWUT5iTCZGbNG9ZMCvtRvyOxYmK6cdqr/YuRQ974rX9LCEHUkbo8C
+ PBGtJCIB8kaK20kQ95NA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjAvMTIvMTgg5LiK5Y2IMTI6MDAsIEpvc2VmIEJhY2lrIHdyb3RlOg0KPiBPbiAx
-Mi8xMC8yMCAxOjM4IEFNLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBGb3Igc3VicGFnZSBjYXNlLCB3
-ZSBuZWVkIHRvIGFsbG9jYXRlIG5ldyBtZW1vcnkgZm9yIGVhY2ggbWV0YWRhdGEgcGFnZS4NCj4+
-DQo+PiBTbyB3ZSBuZWVkIHRvOg0KPj4gLSBBbGxvdyBhdHRhY2hfZXh0ZW50X2J1ZmZlcl9wYWdl
-KCkgdG8gcmV0dXJuIGludA0KPj4gwqDCoCBUbyBpbmRpY2F0ZSBhbGxvY2F0aW9uIGZhaWx1cmUN
-Cj4+DQo+PiAtIFByZWFsbG9jIHBhZ2UtPnByaXZhdGUgZm9yIGFsbG9jX2V4dGVudF9idWZmZXIo
-KQ0KPj4gwqDCoCBXZSBkb24ndCB3YW50IHRvIGNhbGwgbWVtb3J5IGFsbG9jYXRpb24gd2l0aCBz
-cGlubG9jayBob2xkLCBzbw0KPj4gwqDCoCBkbyBwcmVhbGxvY2F0aW9uIGJlZm9yZSB3ZSBhY3F1
-aXJlIHRoZSBzcGluIGxvY2suDQo+Pg0KPj4gLSBIYW5kbGUgc3VicGFnZSBhbmQgcmVndWxhciBj
-YXNlIGRpZmZlcmVudGx5IGluDQo+PiDCoMKgIGF0dGFjaF9leHRlbnRfYnVmZmVyX3BhZ2UoKQ0K
-Pj4gwqDCoCBGb3IgcmVndWxhciBjYXNlLCBqdXN0IGRvIHRoZSB1c3VhbCB0aGluZy4NCj4+IMKg
-wqAgRm9yIHN1YnBhZ2UgY2FzZSwgYWxsb2NhdGUgbmV3IG1lbW9yeSBhbmQgdXBkYXRlIHRoZSB0
-cmVlX2Jsb2NrDQo+PiDCoMKgIGJpdG1hcC4NCj4+DQo+PiDCoMKgIFRoZSBiaXRtYXAgdXBkYXRl
-IHdpbGwgYmUgaGFuZGxlZCBieSBuZXcgc3VicGFnZSBzcGVjaWZpYyBoZWxwZXIsDQo+PiDCoMKg
-IGJ0cmZzX3N1YnBhZ2Vfc2V0X3RyZWVfYmxvY2soKS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBR
-dSBXZW5ydW8gPHdxdUBzdXNlLmNvbT4NCj4+IC0tLQ0KPj4gwqAgZnMvYnRyZnMvZXh0ZW50X2lv
-LmMgfCA2OSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQ0KPj4g
-wqAgZnMvYnRyZnMvc3VicGFnZS5owqDCoCB8IDQ0ICsrKysrKysrKysrKysrKysrKysrKysrKysr
-KysNCj4+IMKgIDIgZmlsZXMgY2hhbmdlZCwgOTkgaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25z
-KC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2V4dGVudF9pby5jIGIvZnMvYnRyZnMv
-ZXh0ZW50X2lvLmMNCj4+IGluZGV4IDYzNTBjMjY4N2M3ZS4uNTFkZDdlYzNjMmIzIDEwMDY0NA0K
-Pj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2V4dGVudF9p
-by5jDQo+PiBAQCAtMjQsNiArMjQsNyBAQA0KPj4gwqAgI2luY2x1ZGUgInJjdS1zdHJpbmcuaCIN
-Cj4+IMKgICNpbmNsdWRlICJiYWNrcmVmLmgiDQo+PiDCoCAjaW5jbHVkZSAiZGlzay1pby5oIg0K
-Pj4gKyNpbmNsdWRlICJzdWJwYWdlLmgiDQo+PiDCoCBzdGF0aWMgc3RydWN0IGttZW1fY2FjaGUg
-KmV4dGVudF9zdGF0ZV9jYWNoZTsNCj4+IMKgIHN0YXRpYyBzdHJ1Y3Qga21lbV9jYWNoZSAqZXh0
-ZW50X2J1ZmZlcl9jYWNoZTsNCj4+IEBAIC0zMTQyLDIyICszMTQzLDQxIEBAIHN0YXRpYyBpbnQg
-c3VibWl0X2V4dGVudF9wYWdlKHVuc2lnbmVkIGludCBvcGYsDQo+PiDCoMKgwqDCoMKgIHJldHVy
-biByZXQ7DQo+PiDCoCB9DQo+PiAtc3RhdGljIHZvaWQgYXR0YWNoX2V4dGVudF9idWZmZXJfcGFn
-ZShzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWIsDQo+PiArc3RhdGljIGludCBhdHRhY2hfZXh0ZW50
-X2J1ZmZlcl9wYWdlKHN0cnVjdCBleHRlbnRfYnVmZmVyICplYiwNCj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IHBhZ2UgKnBhZ2UpDQo+PiDC
-oCB7DQo+PiAtwqDCoMKgIC8qDQo+PiAtwqDCoMKgwqAgKiBJZiB0aGUgcGFnZSBpcyBtYXBwZWQg
-dG8gYnRyZWUgaW5vZGUsIHdlIHNob3VsZCBob2xkIHRoZSBwcml2YXRlDQo+PiAtwqDCoMKgwqAg
-KiBsb2NrIHRvIHByZXZlbnQgcmFjZS4NCj4+IC3CoMKgwqDCoCAqIEZvciBjbG9uZWQgb3IgZHVt
-bXkgZXh0ZW50IGJ1ZmZlcnMsIHRoZWlyIHBhZ2VzIGFyZSBub3QgbWFwcGVkIA0KPj4gYW5kDQo+
-PiAtwqDCoMKgwqAgKiB3aWxsIG5vdCByYWNlIHdpdGggYW55IG90aGVyIGVicy4NCj4+IC3CoMKg
-wqDCoCAqLw0KPj4gLcKgwqDCoCBpZiAocGFnZS0+bWFwcGluZykNCj4+IC3CoMKgwqDCoMKgwqDC
-oCBsb2NrZGVwX2Fzc2VydF9oZWxkKCZwYWdlLT5tYXBwaW5nLT5wcml2YXRlX2xvY2spOw0KPj4g
-K8KgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbyA9IGViLT5mc19pbmZvOw0KPj4g
-K8KgwqDCoCBpbnQgcmV0Ow0KPj4gLcKgwqDCoCBpZiAoIVBhZ2VQcml2YXRlKHBhZ2UpKQ0KPj4g
-LcKgwqDCoMKgwqDCoMKgIGF0dGFjaF9wYWdlX3ByaXZhdGUocGFnZSwgZWIpOw0KPj4gLcKgwqDC
-oCBlbHNlDQo+PiAtwqDCoMKgwqDCoMKgwqAgV0FSTl9PTihwYWdlLT5wcml2YXRlICE9ICh1bnNp
-Z25lZCBsb25nKWViKTsNCj4+ICvCoMKgwqAgaWYgKGZzX2luZm8tPnNlY3RvcnNpemUgPT0gUEFH
-RV9TSVpFKSB7DQo+PiArwqDCoMKgwqDCoMKgwqAgLyoNCj4+ICvCoMKgwqDCoMKgwqDCoMKgICog
-SWYgdGhlIHBhZ2UgaXMgbWFwcGVkIHRvIGJ0cmVlIGlub2RlLCB3ZSBzaG91bGQgaG9sZCB0aGUN
-Cj4+ICvCoMKgwqDCoMKgwqDCoMKgICogcHJpdmF0ZSBsb2NrIHRvIHByZXZlbnQgcmFjZS4NCj4+
-ICvCoMKgwqDCoMKgwqDCoMKgICogRm9yIGNsb25lZCBvciBkdW1teSBleHRlbnQgYnVmZmVycywg
-dGhlaXIgcGFnZXMgYXJlIG5vdA0KPj4gK8KgwqDCoMKgwqDCoMKgwqAgKiBtYXBwZWQgYW5kIHdp
-bGwgbm90IHJhY2Ugd2l0aCBhbnkgb3RoZXIgZWJzLg0KPj4gK8KgwqDCoMKgwqDCoMKgwqAgKi8N
-Cj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAocGFnZS0+bWFwcGluZykNCj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJnBhZ2UtPm1hcHBpbmctPnByaXZhdGVfbG9j
-ayk7DQo+PiArDQo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKCFQYWdlUHJpdmF0ZShwYWdlKSkNCj4+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGF0dGFjaF9wYWdlX3ByaXZhdGUocGFnZSwgZWIpOw0K
-Pj4gK8KgwqDCoMKgwqDCoMKgIGVsc2UNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFdBUk5f
-T04ocGFnZS0+cHJpdmF0ZSAhPSAodW5zaWduZWQgbG9uZyllYik7DQo+PiArwqDCoMKgwqDCoMKg
-wqAgcmV0dXJuIDA7DQo+PiArwqDCoMKgIH0NCj4+ICsNCj4+ICvCoMKgwqAgLyogQWxyZWFkeSBt
-YXBwZWQsIGp1c3QgdXBkYXRlIHRoZSBleGlzdGluZyByYW5nZSAqLw0KPj4gK8KgwqDCoCBpZiAo
-UGFnZVByaXZhdGUocGFnZSkpDQo+PiArwqDCoMKgwqDCoMKgwqAgZ290byB1cGRhdGVfYml0bWFw
-Ow0KPj4gKw0KPj4gK8KgwqDCoCAvKiBEbyBuZXcgYWxsb2NhdGlvbiB0byBhdHRhY2ggc3VicGFn
-ZSAqLw0KPj4gK8KgwqDCoCByZXQgPSBidHJmc19hdHRhY2hfc3VicGFnZShmc19pbmZvLCBwYWdl
-KTsNCj4+ICvCoMKgwqAgaWYgKHJldCA8IDApDQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJl
-dDsNCj4+ICsNCj4+ICt1cGRhdGVfYml0bWFwOg0KPj4gK8KgwqDCoCBidHJmc19zdWJwYWdlX3Nl
-dF90cmVlX2Jsb2NrKGZzX2luZm8sIHBhZ2UsIGViLT5zdGFydCwgZWItPmxlbik7DQo+PiArwqDC
-oMKgIHJldHVybiAwOw0KPj4gwqAgfQ0KPj4gwqAgdm9pZCBzZXRfcGFnZV9leHRlbnRfbWFwcGVk
-KHN0cnVjdCBwYWdlICpwYWdlKQ0KPj4gQEAgLTUwNjcsMTIgKzUwODcsMTkgQEAgc3RydWN0IGV4
-dGVudF9idWZmZXIgDQo+PiAqYnRyZnNfY2xvbmVfZXh0ZW50X2J1ZmZlcihjb25zdCBzdHJ1Y3Qg
-ZXh0ZW50X2J1ZmZlciAqc3JjKQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBOVUxMOw0K
-Pj4gwqDCoMKgwqDCoCBmb3IgKGkgPSAwOyBpIDwgbnVtX3BhZ2VzOyBpKyspIHsNCj4+ICvCoMKg
-wqDCoMKgwqDCoCBpbnQgcmV0Ow0KPj4gKw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHAgPSBhbGxv
-Y19wYWdlKEdGUF9OT0ZTKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoIXApIHsNCj4+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3JlbGVhc2VfZXh0ZW50X2J1ZmZlcihuZXcp
-Ow0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIE5VTEw7DQo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqAgfQ0KPj4gLcKgwqDCoMKgwqDCoMKgIGF0dGFjaF9leHRlbnRfYnVmZmVyX3Bh
-Z2UobmV3LCBwKTsNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBhdHRhY2hfZXh0ZW50X2J1ZmZl
-cl9wYWdlKG5ldywgcCk7DQo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKHJldCA8IDApIHsNCj4+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHB1dF9wYWdlKHApOw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgYnRyZnNfcmVsZWFzZV9leHRlbnRfYnVmZmVyKG5ldyk7DQo+PiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCByZXR1cm4gTlVMTDsNCj4+ICvCoMKgwqDCoMKgwqDCoCB9DQo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqAgV0FSTl9PTihQYWdlRGlydHkocCkpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-IFNldFBhZ2VVcHRvZGF0ZShwKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBuZXctPnBhZ2VzW2ld
-ID0gcDsNCj4+IEBAIC01MzIxLDYgKzUzNDgsMTggQEAgc3RydWN0IGV4dGVudF9idWZmZXIgDQo+
-PiAqYWxsb2NfZXh0ZW50X2J1ZmZlcihzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbywNCj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gZnJlZV9lYjsNCj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCB9DQo+PiArwqDCoMKgwqDCoMKgwqAgLyoNCj4+ICvCoMKgwqDCoMKgwqDCoMKgICog
-UHJlYWxsb2NhdGUgcGFnZS0+cHJpdmF0ZSBmb3Igc3VicGFnZSBjYXNlLCBzbyB0aGF0DQo+PiAr
-wqDCoMKgwqDCoMKgwqDCoCAqIHdlIHdvbid0IGFsbG9jYXRlIG1lbW9yeSB3aXRoIHByaXZhdGVf
-bG9jayBob2xkLg0KPj4gK8KgwqDCoMKgwqDCoMKgwqAgKi8NCj4+ICvCoMKgwqDCoMKgwqDCoCBy
-ZXQgPSBidHJmc19hdHRhY2hfc3VicGFnZShmc19pbmZvLCBwKTsNCj4+ICvCoMKgwqDCoMKgwqDC
-oCBpZiAocmV0IDwgMCkgew0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdW5sb2NrX3BhZ2Uo
-cCk7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwdXRfcGFnZShwKTsNCj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIGV4aXN0cyA9IEVSUl9QVFIoLUVOT01FTSk7DQo+PiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBnb3RvIGZyZWVfZWI7DQo+PiArwqDCoMKgwqDCoMKgwqAgfQ0KPj4gKw0K
-PiANCj4gVGhpcyBpcyBicm9rZW4sIGlmIHdlIHJhY2Ugd2l0aCBhbm90aGVyIHRocmVhZCBhZGRp
-bmcgYW4gZXh0ZW50IGJ1ZmZlciANCj4gZm9yIHRoaXMgc2FtZSByYW5nZSB3ZSdsbCBvdmVyd3Jp
-dGUgdGhlIHBhZ2UgcHJpdmF0ZSB3aXRoIHRoZSBuZXcgdGhpbmcsIA0KPiBsb3NpbmcgYW55IG9m
-IHRoZSB3b3JrIHRoYXQgd2FzIGRvbmUgcHJldmlvdXNseS7CoCBUaGFua3MsDQoNCkZpcnN0bHkg
-dGhlIHBhZ2UgaXMgbG9ja2VkLCBzbyB0aGVyZSBzaG91bGQgYmUgb25seSBvbmUgdG8gZ3JhYiB0
-aGUgcGFnZS4NCg0KU2Vjb25kbHksIGJ0cmZzX2F0dGFjaF9zdWJwYWdlKCkgd291bGQganVzdCBl
-eGl0IGlmIGl0IGRldGVjdHMgdGhlIHBhZ2UgDQppcyBhbHJlYWR5IHByaXZhdGUuDQoNClNvIHRo
-ZXJlIHNob3VsZG4ndCBiZSBhIHJhY2UuDQoNClRoYW5rcywNClF1DQo+IA0KPiBKb3NlZg0K
+
+
+On 2020/12/18 =E4=B8=8A=E5=8D=8812:02, Josef Bacik wrote:
+> On 12/10/20 1:38 AM, Qu Wenruo wrote:
+>> For subpage case, grab_extent_buffer_from_page() can't really get an
+>> extent buffer just from btrfs_subpage.
+>>
+>> Although we have btrfs_subpage::tree_block_bitmap, which can be used to
+>> grab the bytenr of an existing extent buffer, and can then go radix tre=
+e
+>> search to grab that existing eb.
+>>
+>> However we are still doing radix tree insert check in
+>> alloc_extent_buffer(), thus we don't really need to do the extra hassle=
+,
+>> just let alloc_extent_buffer() to handle existing eb in radix tree.
+>>
+>> So for grab_extent_buffer_from_page(), just always return NULL for
+>> subpage case.
+>
+> This is fundamentally flawed.=C2=A0 The extent buffer radix tree look up=
+ is
+> done _after_ the pages are init'ed.=C2=A0 This is why there's that
+> complicated dance of checking for existing extent buffers attached to to
+> a page, because we can race at the initialization stage and attach an EB
+> to a page before it's in the radix tree.=C2=A0 What you'll end up doing =
+here
+> is overwriting your existing subpage stuff anytime there's a race, and
+> it'll end very badly.=C2=A0 Thanks,
+
+We have page lock preventing two eb getting the same page.
+
+And btrfs_attach_subpage() won't overwrite the existing page::private,
+thus it's safe.
+
+Thanks,
+Qu
+>
+> Josef
