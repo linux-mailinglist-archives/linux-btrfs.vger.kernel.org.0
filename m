@@ -2,149 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C2C2DDF0E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 08:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B93A2DE029
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 10:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732963AbgLRH1L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 02:27:11 -0500
-Received: from mout.gmx.net ([212.227.15.15]:50541 "EHLO mout.gmx.net"
+        id S1732884AbgLRI7l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 03:59:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55174 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732954AbgLRH1K (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 02:27:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608276337;
-        bh=bsSscjtn/RSQzrg1V+Fe63oonTYbU8QRnTaYIKhXOdc=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:In-Reply-To:References:Date;
-        b=eUv97m0ol3r/UMgg4gKcVXYlPMoa4+O4UQp21SmGgJfP78cWxb1XavQTTTWfp2pip
-         KSh0nARQd2YoUS6zHWfpZ58XYoCD91BoqiQpsIvv6AEJOzQTgbxf/pEx94gnGAaFmM
-         HUNcPjwlw3lJwbJBzXR9SBg93mLgdQ+68tcy3chQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from mobalindesk.lan.lan ([77.3.51.210]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MJmGZ-1kWYnI1fRZ-00KCp8; Fri, 18
- Dec 2020 08:25:37 +0100
-Message-ID: <cd8e521bcf1e8d999d39ddae61b61fc45492e2c8.camel@gmx.net>
-Subject: Re: btrfs send -p failing: chown o257-1571-0 failed: No such file
- or directory
-From:   "Massimo B." <massimo.b@gmx.net>
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-In-Reply-To: <CAL3q7H7LCaRE_28RRY0zfHiJo5G1EkDHKCuue3-052AeuXmG4w@mail.gmail.com>
-References: <6ae34776e85912960a253a8327068a892998e685.camel@gmx.net>
-         <CAL3q7H72N5q6ROhfvuaNNfUvQTe-mtHJVvZaS25oTycJ=3Um3w@mail.gmail.com>
-         <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net>
-         <CAL3q7H5AOeFit_kz4X9Q2hXqeHXxamQ+pm04yA5BqkYr3-5e+g@mail.gmail.com>
-         <40b352dfa84e0f22d76e9b4f47111117549fa3bb.camel@gmx.net>
-         <CAL3q7H7oLWGWJcg0Gfa+RKRGNf+d4mv0R9FQi2j=xLL1RNPTGA@mail.gmail.com>
-         <1f78cd5d635b360e03468740608f3b02aea76b5d.camel@gmx.net>
-         <CAL3q7H4r-EtnMc=VD2EP01HsLCqg-z8LfMnFseHrNEv=rjPT_g@mail.gmail.com>
-         <c0aa48c7db8c00efe8dd9a2c72c425ffe57df49c.camel@gmx.net>
-         <CAL3q7H7LCaRE_28RRY0zfHiJo5G1EkDHKCuue3-052AeuXmG4w@mail.gmail.com>
-Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
-Content-Type: text/plain; charset="UTF-8"
-Date:   Fri, 18 Dec 2020 08:20:36 +0100
+        id S1732857AbgLRI7l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 03:59:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1608281934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=GpNn5/ASDiXXjCi2VqKlDYE/HDpu2pfj8MjILCS03G8=;
+        b=VhDoSbS47YryH/G82y+vMZbozj1xtaIW7k6mCjukwrqHh2GU3K/DWYrNGI8GthS2a93eKK
+        E5nrpOcv8xK9ETof5DB8vQmcTzsQ+VI4jP4mQZlkNrS85/qmz8z+XpoQxcVBjpOwu04dVT
+        NpViS4dpLHLdO+RZhqHjRKMuLMed60w=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A9F48AC7B
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 08:58:54 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Use transid for DIR_ITEM/DIR_INDEX's location
+To:     linux-btrfs@vger.kernel.org
+References: <20200828132010.27886-1-nborisov@suse.com>
+Cc:     David Sterba <dsterba@suse.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9ffca2f0-c095-2f40-cf8d-db721a4c66ba@suse.com>
+Date:   Fri, 18 Dec 2020 10:58:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Evolution 3.36.5 
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IqJBbzMt37doJPxmfskEXvw86ZPOzqH9bt/eR/iVs8zFFlXNg2W
- LvPR9PTYkVRKPhlnnqXtS/Uis7/3zLnp6vi6Osv+h46EMl0yrSycbIs6/mh9ewHlGV8e9C2
- 5ILeGvZ0VMs/3EDtTRIIHi/zTuiuPCM6sQP9Pu+RbsaUCLN4PvtDzt2TUbiaJf7Muw1cfm8
- 3TPpYVdICbUSPSBa95zdA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Sr5Jw/n46G4=:GAmlgSKkKKEvKLV+Nv6DZ8
- 95BiLmo8PvLHATV63LGeDOX24tWvcR3ZQIkTAxRk9cfEZWSAUlCZQF6Q4RYUW9e/w7YB4al0g
- bAWdVS8691bhhx2cb+kHrM9kJC2tOED9WHCw/yfiVD2J6Vkh4tB+ccqdTPaB7N8PBdpcoblsF
- UQ2KxXU4lYz1W2TP2zDR6RR22G7kTChTDEfJrt1GA1+UBoTn7rYu5ozdWEOuAZnWfe7VqirIB
- +1VQUONv/nBEjt+JseTBNsOeXLuBpRPW/udkfDEtQmUreTT+TXcB95K/VgWbQqJi2ToIGCwYp
- vlM5RyYzk+IgS6sg0DNzCmYZgIkmn71WVHwwr3vujPJ7FgYRqtq6q8sisw8Sfcx/CLSz1mU2L
- DtZ5c7DXBs4z2n+ef91cWMipVj+Qhhg8uG/UZzBKJtYDI1tK+JWfuDfsgG6R4qyRlwMeyOL2k
- LtHAeJLEWDLQC/lRadQCXAQHZdWY80ee1nx/8WClZFQTGV3WK9TGsKb5lQUYy2TF5Psswqz83
- xG1p7iOyHERCkvMvJYhJ9GjHxdWERyvnB1GZ6dDuMhgT36msTRfiP+01sEbB+Y2F41G866oEp
- 2q76mEs64L+QDHo2Lq5iciMlvLzozWuLGRhCJIEYpbDkMgM+XWnMUUYo+LTxA97uhFjybiER/
- SRrV/8XaidVgPIyD3rfhE4vnqfHmLP8OH3wZvOYfDfS5+t1MwsmBCFxlKcUx/JjLdLpl4+HIY
- uAeSsjBUNM7VXEpmIlr6SU4t/s0sbfKzBXW7OH9c52gHYRx3DEmtue6A9VnpjSVgHLq9bh/rA
- 5dsvKgSt2xuTdW0E6UBCMUBRTPN0cZ2HjUjJBmQQQ16ullzANu8BoFPNS9Ysd2Ycehoav2AwA
- e6Nobc6SL69XHsinRwvQ==
+In-Reply-To: <20200828132010.27886-1-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 2020-12-14 at 09:46 +0000, Filipe Manana wrote:
-
-> clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYNC/.=
-...pdf
-> > source offset=3D20705280 offset=3D20709376 length=3D4096
-> > clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYNC=
-/....pdf
-> > source offset=3D20713472 offset=3D20713472 length=3D4096
-> > ERROR: failed to clone extents to mb/Documents.AZ/0.SYNC/....pdf: Inva=
-lid
-> > argument
->
-> It's a different problem. This one because the kernel is sending an
-> invalid clone operation - the source and destination offsets are the
-> same, which makes the receiver fail.
-> Can you tell what's the size (in bytes) of "mb/Documents.AZ/0.SYNC"
-> after the receive fails? Both in the destination and source.
-
-Hi Filipe,
-
-I already deleted the failing subvolume, now I got the issue again. Here a=
-re the
-detailed information about the file:
 
 
-# btrfs send /mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.=
-20190621T140904+0200 | mbuffer -v 1 -m 2% | btrfs receive /mnt/local/data/=
-snapshots/vm/
-...
-write IE8 - Win7/IE8 - Win7-disk1.vmdk - offset=3D4742344704 length=3D4096
-clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
-sk1.vmdk source offset=3D4742184960 offset=3D4742348800 length=3D16384
-clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
-sk1.vmdk source offset=3D4742184960 offset=3D4742365184 length=3D28672
-clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
-sk1.vmdk source offset=3D4742246400 offset=3D4742393856 length=3D8192
-write IE8 - Win7/IE8 - Win7-disk1.vmdk - offset=3D4742402048 length=3D1228=
-8
-clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
-sk1.vmdk source offset=3D4742410240 offset=3D4742414336 length=3D4096
-clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
-sk1.vmdk source offset=3D4742418432 offset=3D4742418432 length=3D4096
-ERROR: failed to clone extents to IE8 - Win7/IE8 - Win7-disk1.vmdk: Invali=
-d argument
+On 28.08.20 г. 16:20 ч., Nikolay Borisov wrote:
+> When a snapshot is created its root item is inserted in the root tree
+> with the 'offset' field set to the transaction id when the snapshot
+> was created. Immediately afterwards the offset is set to -1 so when
+> the same key is used to create DIR_ITEM/DIR_INDEX in the destination
+> file tree its offset is really set to -1. Root tree item:
+> 
+>     item 13 key (258 ROOT_ITEM 7) itemoff 12744 itemsize 439
+>         generation 7 root_dirid 256 bytenr 30703616 level 0 refs 1
+>         lastsnap 7 byte_limit 0 bytes_used 16384 flags 0x0(none)
+>         uuid f13abf0d-b1f5-f34b-a179-fd1c2f89e762
+>         parent_uuid 51a74677-a077-4c21-bd87-2141a147ff85
+>         ctransid 7 otransid 7 stransid 0 rtransid 0
+>         ctime 1598441149.466822752 (2020-08-26 11:25:49)
+>         otime 1598441149.467474846 (2020-08-26 11:25:49)
+>         drop key (0 UNKNOWN.0 0) level 0
+> 
+> DIR_INDEX item for the same rooti in the destination fs tree:
+> 
+> item 5 key (256 DIR_INDEX 9) itemoff 15967 itemsize 39
+>         location key (258 ROOT_ITEM 18446744073709551615) type DIR
+>         transid 7 data_len 0 name_len 9
+>         name: snapshot1
+> 
+> The location key is generally used to read the root. This is not a
+> problem per-se since the function dealing with root searching
+> (btrfs_find_root) is well equipped to deal with offset being -1, namely:
+> 
+>     If ->offset of 'search_key' is -1ULL, it means we are not sure the
+>     offset of the search key, just lookup the root with the highest
+>     offset for a given objectid.
+> 
+> However this is a needless inconcistency in the way internal data
+> structures are being created. This patch modifies the behavior so that
+> DIR_INDEX/DIR_ITEM will have the offset field of the location key set
+> to the transid. While this results in a change of the on-disk metadata,
+> it doesn't constitute a functional change since older kernels can cope
+> with both '-1' and transid as values of the offset field so no INCOMPAT
+> flags are needed.
+> 
+> Finally while at it also move the initialization of the key in
+> create_pending_snapshot closer to where it's being used for the first
+> time.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-summary: 4226 MiByte in 21min 11.4sec - average of 3404 kiB/s
-
-
-# ls -al "/mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.201=
-90621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
--rw------- 1 massimo massimo 17932222464 18. Dez 2018  '/mnt/usb/mobiledat=
-a/snapshots/mobalindesk/vm/VirtualMachines.20190621T140904+0200/IE8 - Win7=
-/IE8 - Win7-disk1.vmdk'
-
-# ls -al "/mnt/local/data/snapshots/vm/VirtualMachines.20190621T140904+020=
-0/IE8 - Win7/IE8 - Win7-disk1.vmdk"
--rw------- 1 root root 4742418432 18. Dez 07:37 '/mnt/local/data/snapshots=
-/vm/VirtualMachines.20190621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk'
-
-# compsize "/mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.2=
-0190621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL       45%      7.3G          16G          16G
-none       100%      1.9G         1.9G         2.3G
-zlib        38%      4.8G          12G          13G
-zstd        34%      536M         1.5G         727M
-
-# compsize "/mnt/local/data/snapshots/vm/VirtualMachines.20190621T140904+0=
-200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL       92%      4.1G         4.4G         4.3G
-none       100%      3.8G         3.8G         3.8G
-zlib        32%      7.3M          22M          22M
-zstd        45%      264M         583M         560M
-
-Does that help you?
-
-Best regards,
-Massimo
+Yet another ping
 
