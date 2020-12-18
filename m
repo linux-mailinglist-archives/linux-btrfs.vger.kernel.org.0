@@ -2,100 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001F52DE1E0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 12:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805332DE234
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 12:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732344AbgLRLTk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 06:19:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55144 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728258AbgLRLTk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 06:19:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608290333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ihHbyEfqfqTlt9AE9fQh699fhYjG99SYNM9j12jglTI=;
-        b=CC852dU5UJVC2ye6VUejq1Y3J3p/EYvFkKVnE2GgCo9mi1Wu0tFWoHMIAnFGNJ0ClUSvk1
-        jVAerrsAjkuxv3M378Qn7XkEEwd5YNQAi8fwzX+zI8+7gI4RflnXOfpnCYdydx/6v2BhU1
-        DBYMkLp5ySL5B64qV6W1R5O6CGe4A4w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 903F9AC7B;
-        Fri, 18 Dec 2020 11:18:53 +0000 (UTC)
-Subject: Re: [PATCH 09/13] btrfs: modify the new_root highest_objectid under a
- ref count
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1608135557.git.josef@toxicpanda.com>
- <db3b68c826ae28684100195170a913b13a23b567.1608135557.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <d584d297-9a15-426e-e5be-39d7e58f3cb7@suse.com>
-Date:   Fri, 18 Dec 2020 13:18:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726459AbgLRLpV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 06:45:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgLRLpU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 06:45:20 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD79CC0617B0
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 03:44:40 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id h4so1667414qkk.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 03:44:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=d50JyjYh368M+p9gg0W5ucVOCUocVp8FfiT3MSiu7hE=;
+        b=MP79qloVOl5VkZ5hO/HuA8EjAYXCim59fCNghJ5SVPlZxcEHHacJTsqp7Ukt3O23tm
+         81CwqJ9n62BLrq9pN2S+ZJ+bwNQqUVBEE+qP22aV7D9fZwr3IuCe6u7zLuN8EnQ3wPdi
+         Lm8jDI/OxHrvWLe+dpmHAduN91Bk8gUr73BeP9sGN5XDQJH77zfjYYIRWfcuNXpT0SYw
+         Mr9hE0WG6Kx7ae2LrRs+PhppRVGqZnDV311JbCa+zJi37JviZgfsY6U4xWsmN49/kmJ0
+         w7xuCNpBNxoIGCdi38KTsJAla8cpuSYOU2B9zcs7EooBO7Sg8CVch0DGVMecAJSSGu3w
+         Ai1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=d50JyjYh368M+p9gg0W5ucVOCUocVp8FfiT3MSiu7hE=;
+        b=i2D+iI/WTAIhAtpFtWOvmZh/hDzztBUAs4JKx8aT01kNeM33XCy3YQL1nRkrwqfPWT
+         +X2jEOx0zvzJi31X0UKDwob0go0oiLTRhTTsEZx3fb+rxZTxrLXl0AQbommzEhP1k95M
+         CqVCTm5aXNGnvLd5NmtBV4F1nOvffuHFl4CejcLy6a0qlUBraHdr97X2jjFtq+RfPBmd
+         +QlZDJj9ZGmMv6/ee4tmsD8RLOWo+m5N7gZmLnS4ie3T5x8hO7MZKETG68FDp7GfDUx6
+         7yzlI04SQzWK1i0Vx3O6he+AUe9YUaiGlu5td1PCdqEZaNfz5KHDVAxpPqqyl8wRH8B9
+         lXcw==
+X-Gm-Message-State: AOAM531rWFXv/XWzs+aRZQitOSmG4kLZa65aOif1xZ7UKeRRnV5fk7q2
+        9saIOeQm8ScZhAFjNlsmcssZNfKKGnXVV4xipnM=
+X-Google-Smtp-Source: ABdhPJzDBm7hh5+2KCtXhIC2ktq795qQC2f638oOBD9Rn/GF1sHSVequKrQmeRw4m9SvHRf9EJM2TRUWvFak7WwLLlU=
+X-Received: by 2002:ae9:e8c5:: with SMTP id a188mr4146086qkg.479.1608291879950;
+ Fri, 18 Dec 2020 03:44:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <db3b68c826ae28684100195170a913b13a23b567.1608135557.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <6ae34776e85912960a253a8327068a892998e685.camel@gmx.net>
+ <CAL3q7H72N5q6ROhfvuaNNfUvQTe-mtHJVvZaS25oTycJ=3Um3w@mail.gmail.com>
+ <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net> <CAL3q7H5AOeFit_kz4X9Q2hXqeHXxamQ+pm04yA5BqkYr3-5e+g@mail.gmail.com>
+ <40b352dfa84e0f22d76e9b4f47111117549fa3bb.camel@gmx.net> <CAL3q7H7oLWGWJcg0Gfa+RKRGNf+d4mv0R9FQi2j=xLL1RNPTGA@mail.gmail.com>
+ <1f78cd5d635b360e03468740608f3b02aea76b5d.camel@gmx.net> <CAL3q7H4r-EtnMc=VD2EP01HsLCqg-z8LfMnFseHrNEv=rjPT_g@mail.gmail.com>
+ <c0aa48c7db8c00efe8dd9a2c72c425ffe57df49c.camel@gmx.net> <CAL3q7H7LCaRE_28RRY0zfHiJo5G1EkDHKCuue3-052AeuXmG4w@mail.gmail.com>
+ <cd8e521bcf1e8d999d39ddae61b61fc45492e2c8.camel@gmx.net>
+In-Reply-To: <cd8e521bcf1e8d999d39ddae61b61fc45492e2c8.camel@gmx.net>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 18 Dec 2020 11:44:28 +0000
+Message-ID: <CAL3q7H7EoyQ+_kf0R04TwDZHSWnDH6fojYviryYTjgPuRc4HfA@mail.gmail.com>
+Subject: Re: btrfs send -p failing: chown o257-1571-0 failed: No such file or directory
+To:     "Massimo B." <massimo.b@gmx.net>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Dec 18, 2020 at 7:25 AM Massimo B. <massimo.b@gmx.net> wrote:
+>
+> On Mon, 2020-12-14 at 09:46 +0000, Filipe Manana wrote:
+>
+> > clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYNC/=
+....pdf
+> > > source offset=3D20705280 offset=3D20709376 length=3D4096
+> > > clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYN=
+C/....pdf
+> > > source offset=3D20713472 offset=3D20713472 length=3D4096
+> > > ERROR: failed to clone extents to mb/Documents.AZ/0.SYNC/....pdf: Inv=
+alid
+> > > argument
+> >
+> > It's a different problem. This one because the kernel is sending an
+> > invalid clone operation - the source and destination offsets are the
+> > same, which makes the receiver fail.
+> > Can you tell what's the size (in bytes) of "mb/Documents.AZ/0.SYNC"
+> > after the receive fails? Both in the destination and source.
+>
+> Hi Filipe,
+>
+> I already deleted the failing subvolume, now I got the issue again. Here =
+are the
+> detailed information about the file:
+>
+>
+> # btrfs send /mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines=
+.20190621T140904+0200 | mbuffer -v 1 -m 2% | btrfs receive /mnt/local/data/=
+snapshots/vm/
+> ...
+> write IE8 - Win7/IE8 - Win7-disk1.vmdk - offset=3D4742344704 length=3D409=
+6
+> clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-d=
+isk1.vmdk source offset=3D4742184960 offset=3D4742348800 length=3D16384
+> clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-d=
+isk1.vmdk source offset=3D4742184960 offset=3D4742365184 length=3D28672
+> clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-d=
+isk1.vmdk source offset=3D4742246400 offset=3D4742393856 length=3D8192
+> write IE8 - Win7/IE8 - Win7-disk1.vmdk - offset=3D4742402048 length=3D122=
+88
+> clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-d=
+isk1.vmdk source offset=3D4742410240 offset=3D4742414336 length=3D4096
+> clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-d=
+isk1.vmdk source offset=3D4742418432 offset=3D4742418432 length=3D4096
+> ERROR: failed to clone extents to IE8 - Win7/IE8 - Win7-disk1.vmdk: Inval=
+id argument
+>
+> summary: 4226 MiByte in 21min 11.4sec - average of 3404 kiB/s
+>
+>
+> # ls -al "/mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.20=
+190621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+> -rw------- 1 massimo massimo 17932222464 18. Dez 2018  '/mnt/usb/mobileda=
+ta/snapshots/mobalindesk/vm/VirtualMachines.20190621T140904+0200/IE8 - Win7=
+/IE8 - Win7-disk1.vmdk'
+>
+> # ls -al "/mnt/local/data/snapshots/vm/VirtualMachines.20190621T140904+02=
+00/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+> -rw------- 1 root root 4742418432 18. Dez 07:37 '/mnt/local/data/snapshot=
+s/vm/VirtualMachines.20190621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk'
+>
+> # compsize "/mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.=
+20190621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL       45%      7.3G          16G          16G
+> none       100%      1.9G         1.9G         2.3G
+> zlib        38%      4.8G          12G          13G
+> zstd        34%      536M         1.5G         727M
+>
+> # compsize "/mnt/local/data/snapshots/vm/VirtualMachines.20190621T140904+=
+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+> Type       Perc     Disk Usage   Uncompressed Referenced
+> TOTAL       92%      4.1G         4.4G         4.3G
+> none       100%      3.8G         3.8G         3.8G
+> zlib        32%      7.3M          22M          22M
+> zstd        45%      264M         583M         560M
+>
+> Does that help you?
+
+It confirms what I suspected and narrows down a bit the possible causes.
+Are you able to run the send operation again with the following debug path?
+
+https://pastebin.com/raw/cEEy9A6W
+
+When the issue happens it should dump to dmesg/syslog a debug message
+that starts with the marker "HERE" and right before it,
+something that takes several lines to dump a metadata leaf, and with
+first line being something like this:
+
+"leaf <number> gen <number> total ptrs <number> free space <number>
+owner <number>"
+
+That way I can see the specific extent metadata layout that causes
+send to issue an invalid clone operation (attempting to clone 4096
+bytes from eof).
+
+Thanks a lot Massimo!
+
+>
+> Best regards,
+> Massimo
+>
 
 
-On 16.12.20 г. 18:22 ч., Josef Bacik wrote:
-> Qu pointed out a bug in one of my error handling patches, which made me
-> notice that we modify the new_root->highest_objectid _after_ we've
-> dropped the ref to the new_root.  This could lead to a possible UAF, fix
-> this by modifying the ->highest_objectid before we drop our reference to
-> the new_root.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+--=20
+Filipe David Manana,
 
-This patch must be dropped as per
-https://github.com/kdave/btrfs-devel/commit/6044ce89a75a07a80f28f4bfeddeefc1b772366a
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
