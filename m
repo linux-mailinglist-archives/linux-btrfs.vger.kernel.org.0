@@ -2,32 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B93A2DE029
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 10:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50CD2DE061
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 10:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732884AbgLRI7l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 03:59:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55174 "EHLO mx2.suse.de"
+        id S1728231AbgLRJ0v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 04:26:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46076 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732857AbgLRI7l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 03:59:41 -0500
+        id S1726798AbgLRJ0u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 04:26:50 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608281934; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1608283563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=GpNn5/ASDiXXjCi2VqKlDYE/HDpu2pfj8MjILCS03G8=;
-        b=VhDoSbS47YryH/G82y+vMZbozj1xtaIW7k6mCjukwrqHh2GU3K/DWYrNGI8GthS2a93eKK
-        E5nrpOcv8xK9ETof5DB8vQmcTzsQ+VI4jP4mQZlkNrS85/qmz8z+XpoQxcVBjpOwu04dVT
-        NpViS4dpLHLdO+RZhqHjRKMuLMed60w=
+        bh=1DKrp71bzGCxwwPdIOd88hrrE32SnV97huUSQ8F7lfs=;
+        b=fyBbmEF7fDi3mR+dezBKKUMl104icjjMsa+juUiCiXvxc33bgduo39f6ipXCUfgjwFUkhv
+        sr/KLNAvJpJPBjl5ozDywghdc42lderEh7Pp87YqRiPpu5YEfmp1ARDXWSh5m28raaMVu9
+        Vc/g6ls/O61E0m5Dhz55+aiUNVN1YVw=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A9F48AC7B
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 08:58:54 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: Use transid for DIR_ITEM/DIR_INDEX's location
-To:     linux-btrfs@vger.kernel.org
-References: <20200828132010.27886-1-nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.cz>
+        by mx2.suse.de (Postfix) with ESMTP id B6EDEABC6;
+        Fri, 18 Dec 2020 09:26:03 +0000 (UTC)
+Subject: Re: [PATCH v4 5/6] btrfs: stop running all delayed refs during
+ snapshot
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1608215738.git.josef@toxicpanda.com>
+ <8f91eea944203695995bd69512d7e0e37a39bd64.1608215738.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -71,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <9ffca2f0-c095-2f40-cf8d-db721a4c66ba@suse.com>
-Date:   Fri, 18 Dec 2020 10:58:54 +0200
+Message-ID: <346befc5-e425-846f-27c7-ada577dc5a63@suse.com>
+Date:   Fri, 18 Dec 2020 11:26:02 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200828132010.27886-1-nborisov@suse.com>
+In-Reply-To: <8f91eea944203695995bd69512d7e0e37a39bd64.1608215738.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -86,51 +88,59 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 28.08.20 г. 16:20 ч., Nikolay Borisov wrote:
-> When a snapshot is created its root item is inserted in the root tree
-> with the 'offset' field set to the transaction id when the snapshot
-> was created. Immediately afterwards the offset is set to -1 so when
-> the same key is used to create DIR_ITEM/DIR_INDEX in the destination
-> file tree its offset is really set to -1. Root tree item:
+On 17.12.20 г. 16:36 ч., Josef Bacik wrote:
+> This was added a very long time ago to work around issues with delayed
+> refs and with qgroups.  Both of these issues have since been properly
+> fixed, so all this does is cause a lot of lock contention with anybody
+> else who is running delayed refs.
 > 
->     item 13 key (258 ROOT_ITEM 7) itemoff 12744 itemsize 439
->         generation 7 root_dirid 256 bytenr 30703616 level 0 refs 1
->         lastsnap 7 byte_limit 0 bytes_used 16384 flags 0x0(none)
->         uuid f13abf0d-b1f5-f34b-a179-fd1c2f89e762
->         parent_uuid 51a74677-a077-4c21-bd87-2141a147ff85
->         ctransid 7 otransid 7 stransid 0 rtransid 0
->         ctime 1598441149.466822752 (2020-08-26 11:25:49)
->         otime 1598441149.467474846 (2020-08-26 11:25:49)
->         drop key (0 UNKNOWN.0 0) level 0
-> 
-> DIR_INDEX item for the same rooti in the destination fs tree:
-> 
-> item 5 key (256 DIR_INDEX 9) itemoff 15967 itemsize 39
->         location key (258 ROOT_ITEM 18446744073709551615) type DIR
->         transid 7 data_len 0 name_len 9
->         name: snapshot1
-> 
-> The location key is generally used to read the root. This is not a
-> problem per-se since the function dealing with root searching
-> (btrfs_find_root) is well equipped to deal with offset being -1, namely:
-> 
->     If ->offset of 'search_key' is -1ULL, it means we are not sure the
->     offset of the search key, just lookup the root with the highest
->     offset for a given objectid.
-> 
-> However this is a needless inconcistency in the way internal data
-> structures are being created. This patch modifies the behavior so that
-> DIR_INDEX/DIR_ITEM will have the offset field of the location key set
-> to the transid. While this results in a change of the on-disk metadata,
-> it doesn't constitute a functional change since older kernels can cope
-> with both '-1' and transid as values of the offset field so no INCOMPAT
-> flags are needed.
-> 
-> Finally while at it also move the initialization of the key in
-> create_pending_snapshot closer to where it's being used for the first
-> time.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Yet another ping
+Codewise it's ok, however I would have liked a better reference to the 2
+problems being fixed, I'd assume same applies to David. SO it seems the
+first delayed refs run was added due to :
 
+361048f586f5 ("Btrfs: fix full backref problem when inserting shared
+block reference") and the 2nd one by d67263354541 ("btrfs: qgroup: Make
+snapshot accounting work with new extent-oriented qgroup.")
+
+
+However there is no indication what code superseded the need for those 2
+commits.
+
+
+> ---
+>  fs/btrfs/transaction.c | 12 ------------
+>  1 file changed, 12 deletions(-)
+> 
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 4776e055f7f9..6e3abe9b74c0 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -1686,12 +1686,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+>  		goto fail;
+>  	}
+>  
+> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+> -	if (ret) {
+> -		btrfs_abort_transaction(trans, ret);
+> -		goto fail;
+> -	}
+> -
+>  	/*
+>  	 * Do special qgroup accounting for snapshot, as we do some qgroup
+>  	 * snapshot hack to do fast snapshot.
+> @@ -1739,12 +1733,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+>  		}
+>  	}
+>  
+> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
+> -	if (ret) {
+> -		btrfs_abort_transaction(trans, ret);
+> -		goto fail;
+> -	}
+> -
+>  fail:
+>  	pending->error = ret;
+>  dir_item_existed:
+> 
