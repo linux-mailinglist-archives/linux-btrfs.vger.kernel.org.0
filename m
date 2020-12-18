@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50CD2DE061
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 10:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB1A2DE062
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 10:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbgLRJ0v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 04:26:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46076 "EHLO mx2.suse.de"
+        id S1733131AbgLRJ1W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 04:27:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46154 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726798AbgLRJ0u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 04:26:50 -0500
+        id S1726798AbgLRJ1V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 04:27:21 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608283563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1608283594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1DKrp71bzGCxwwPdIOd88hrrE32SnV97huUSQ8F7lfs=;
-        b=fyBbmEF7fDi3mR+dezBKKUMl104icjjMsa+juUiCiXvxc33bgduo39f6ipXCUfgjwFUkhv
-        sr/KLNAvJpJPBjl5ozDywghdc42lderEh7Pp87YqRiPpu5YEfmp1ARDXWSh5m28raaMVu9
-        Vc/g6ls/O61E0m5Dhz55+aiUNVN1YVw=
+        bh=G6zEeEsQx3WkUjcLdSvgP1Hi7nDZ47WluToHWdlDQu4=;
+        b=CDY8/YKDRyvXq2ju+OFdb4ZZDlWZP+e9i4GyfBZU02CztRn4oZhPa1aDXzQldNHWzfhI/4
+        jHTJVZegl9OYymLdwHWf5/uXfOOq9m4aSxyygaQ5WMI0JidLXYhE0YEXdgb7ZmxMigXirr
+        YGPmK+HynOaMYRWINu9vtA7zNfVb8pk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6EDEABC6;
-        Fri, 18 Dec 2020 09:26:03 +0000 (UTC)
-Subject: Re: [PATCH v4 5/6] btrfs: stop running all delayed refs during
- snapshot
+        by mx2.suse.de (Postfix) with ESMTP id AEF4FACC4;
+        Fri, 18 Dec 2020 09:26:34 +0000 (UTC)
+Subject: Re: [PATCH v4 6/6] btrfs: run delayed refs less often in
+ commit_cowonly_roots
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1608215738.git.josef@toxicpanda.com>
- <8f91eea944203695995bd69512d7e0e37a39bd64.1608215738.git.josef@toxicpanda.com>
+ <52a20cfa753203a17ecb01b20e02f6976cc097a8.1608215738.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +73,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <346befc5-e425-846f-27c7-ada577dc5a63@suse.com>
-Date:   Fri, 18 Dec 2020 11:26:02 +0200
+Message-ID: <eeb17ea5-1c75-832f-d894-c51a3d1264d0@suse.com>
+Date:   Fri, 18 Dec 2020 11:26:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8f91eea944203695995bd69512d7e0e37a39bd64.1608215738.git.josef@toxicpanda.com>
+In-Reply-To: <52a20cfa753203a17ecb01b20e02f6976cc097a8.1608215738.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,58 +89,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 17.12.20 г. 16:36 ч., Josef Bacik wrote:
-> This was added a very long time ago to work around issues with delayed
-> refs and with qgroups.  Both of these issues have since been properly
-> fixed, so all this does is cause a lot of lock contention with anybody
-> else who is running delayed refs.
+> We love running delayed refs in commit_cowonly_roots, but it is a bit
+> excessive.  I was seeing cases of running 3 or 4 refs a few times in a
+> row during this time.  Instead simply update all of the roots first,
+> then run delayed refs, then handle the empty block groups case, and then
+> if we have any more dirty roots do the whole thing again.  This allows
+> us to be much more efficient with our delayed ref running, as we can
+> batch a few more operations at once.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Codewise it's ok, however I would have liked a better reference to the 2
-problems being fixed, I'd assume same applies to David. SO it seems the
-first delayed refs run was added due to :
-
-361048f586f5 ("Btrfs: fix full backref problem when inserting shared
-block reference") and the 2nd one by d67263354541 ("btrfs: qgroup: Make
-snapshot accounting work with new extent-oriented qgroup.")
-
-
-However there is no indication what code superseded the need for those 2
-commits.
-
-
-> ---
->  fs/btrfs/transaction.c | 12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 4776e055f7f9..6e3abe9b74c0 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -1686,12 +1686,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
->  		goto fail;
->  	}
->  
-> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -	if (ret) {
-> -		btrfs_abort_transaction(trans, ret);
-> -		goto fail;
-> -	}
-> -
->  	/*
->  	 * Do special qgroup accounting for snapshot, as we do some qgroup
->  	 * snapshot hack to do fast snapshot.
-> @@ -1739,12 +1733,6 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
->  		}
->  	}
->  
-> -	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
-> -	if (ret) {
-> -		btrfs_abort_transaction(trans, ret);
-> -		goto fail;
-> -	}
-> -
->  fail:
->  	pending->error = ret;
->  dir_item_existed:
-> 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
