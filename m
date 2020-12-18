@@ -2,366 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3292DDECB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 08:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C2C2DDF0E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Dec 2020 08:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730414AbgLRHA5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 02:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726520AbgLRHA5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 02:00:57 -0500
-X-Greylist: delayed 155633 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Dec 2020 23:00:16 PST
-Received: from mx4.uni-regensburg.de (mx4.uni-regensburg.de [IPv6:2001:638:a05:137:165:0:4:4e7a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969FDC0617A7
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Dec 2020 23:00:16 -0800 (PST)
-Received: from mx4.uni-regensburg.de (localhost [127.0.0.1])
-        by localhost (Postfix) with SMTP id 546576000052
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 08:00:12 +0100 (CET)
-Received: from gwsmtp.uni-regensburg.de (gwsmtp1.uni-regensburg.de [132.199.5.51])
-        by mx4.uni-regensburg.de (Postfix) with ESMTP id D73386000050
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Dec 2020 08:00:11 +0100 (CET)
-Received: from uni-regensburg-smtp1-MTA by gwsmtp.uni-regensburg.de
-        with Novell_GroupWise; Fri, 18 Dec 2020 08:00:10 +0100
-Message-Id: <5FDC5379020000A10003DA7F@gwsmtp.uni-regensburg.de>
-X-Mailer: Novell GroupWise Internet Agent 18.3.0 
-Date:   Fri, 18 Dec 2020 08:00:09 +0100
-From:   "Ulrich Windl" <Ulrich.Windl@rz.uni-regensburg.de>
-To:     <ce3g8jdj@umail.furryterror.org>
-Cc:     <linux-btrfs@vger.kernel.org>
-Subject: Re: Antw: [EXT] Re: Unrecoverable filesystem (ERROR: child eb
- corrupted: parent bytenr=1106952192 item=75 parent level=1 child
- level=1)
-References: <5FD3816B020000A10003D798@gwsmtp.uni-regensburg.de>
- <20201215181828.GN31381@hungrycats.org>
- <5FDB6190020000A10003DA53@gwsmtp.uni-regensburg.de>
- <20201218015114.GE28049@hungrycats.org>
-In-Reply-To: <20201218015114.GE28049@hungrycats.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
+        id S1732963AbgLRH1L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 02:27:11 -0500
+Received: from mout.gmx.net ([212.227.15.15]:50541 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732954AbgLRH1K (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 02:27:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608276337;
+        bh=bsSscjtn/RSQzrg1V+Fe63oonTYbU8QRnTaYIKhXOdc=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:In-Reply-To:References:Date;
+        b=eUv97m0ol3r/UMgg4gKcVXYlPMoa4+O4UQp21SmGgJfP78cWxb1XavQTTTWfp2pip
+         KSh0nARQd2YoUS6zHWfpZ58XYoCD91BoqiQpsIvv6AEJOzQTgbxf/pEx94gnGAaFmM
+         HUNcPjwlw3lJwbJBzXR9SBg93mLgdQ+68tcy3chQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from mobalindesk.lan.lan ([77.3.51.210]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MJmGZ-1kWYnI1fRZ-00KCp8; Fri, 18
+ Dec 2020 08:25:37 +0100
+Message-ID: <cd8e521bcf1e8d999d39ddae61b61fc45492e2c8.camel@gmx.net>
+Subject: Re: btrfs send -p failing: chown o257-1571-0 failed: No such file
+ or directory
+From:   "Massimo B." <massimo.b@gmx.net>
+To:     fdmanana@gmail.com
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <CAL3q7H7LCaRE_28RRY0zfHiJo5G1EkDHKCuue3-052AeuXmG4w@mail.gmail.com>
+References: <6ae34776e85912960a253a8327068a892998e685.camel@gmx.net>
+         <CAL3q7H72N5q6ROhfvuaNNfUvQTe-mtHJVvZaS25oTycJ=3Um3w@mail.gmail.com>
+         <d4891e0c7aa79895d8f85601954c7eb379b733fc.camel@gmx.net>
+         <CAL3q7H5AOeFit_kz4X9Q2hXqeHXxamQ+pm04yA5BqkYr3-5e+g@mail.gmail.com>
+         <40b352dfa84e0f22d76e9b4f47111117549fa3bb.camel@gmx.net>
+         <CAL3q7H7oLWGWJcg0Gfa+RKRGNf+d4mv0R9FQi2j=xLL1RNPTGA@mail.gmail.com>
+         <1f78cd5d635b360e03468740608f3b02aea76b5d.camel@gmx.net>
+         <CAL3q7H4r-EtnMc=VD2EP01HsLCqg-z8LfMnFseHrNEv=rjPT_g@mail.gmail.com>
+         <c0aa48c7db8c00efe8dd9a2c72c425ffe57df49c.camel@gmx.net>
+         <CAL3q7H7LCaRE_28RRY0zfHiJo5G1EkDHKCuue3-052AeuXmG4w@mail.gmail.com>
+Face:   iVBORw0KGgoAAAANSUhEUgAAADAAAAAwAQMAAABtzGvEAAAAA3NCSVQICAjb4U/gAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABGUlEQVQYlUWQsUoDQRCGv71LjB7KSSBwwZCTgFhY2EYIHmJnZRMLo5AXUMRCBMHcE6iPoGBlINpoZXGVeQTFKqSxMgYtTBFcZw7EKfZn2Z2Z7//hr2ysZ+5tqFLmWKVaKKs0vWd9TJx2AibmoQcupj6CCZirqTgzA5hmsdtQWe5/xAREX7uJ3MLP9x4lyieNO5mcOxyM8HH79y/4Cdn9R3JDsts/uGO82yOMJf/ah1Y8tfQEIQt7Z7rCawtNiUpHFgYUdgTxgI1NAW6SvxoqWabbw0Bd5jpQibTNBC1F4nIMk2TWhTqIs+fSVpzfCsVR9eaiJf5W6mtWXK7O+vKR4nWkSYSuFbP4No3Ht6dpSN9pSMYmaXI1/usXT0FM3SoTKAAAAAAASUVORK5CYII=
+Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 18 Dec 2020 08:20:36 +0100
+MIME-Version: 1.0
+User-Agent: Evolution 3.36.5 
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:IqJBbzMt37doJPxmfskEXvw86ZPOzqH9bt/eR/iVs8zFFlXNg2W
+ LvPR9PTYkVRKPhlnnqXtS/Uis7/3zLnp6vi6Osv+h46EMl0yrSycbIs6/mh9ewHlGV8e9C2
+ 5ILeGvZ0VMs/3EDtTRIIHi/zTuiuPCM6sQP9Pu+RbsaUCLN4PvtDzt2TUbiaJf7Muw1cfm8
+ 3TPpYVdICbUSPSBa95zdA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Sr5Jw/n46G4=:GAmlgSKkKKEvKLV+Nv6DZ8
+ 95BiLmo8PvLHATV63LGeDOX24tWvcR3ZQIkTAxRk9cfEZWSAUlCZQF6Q4RYUW9e/w7YB4al0g
+ bAWdVS8691bhhx2cb+kHrM9kJC2tOED9WHCw/yfiVD2J6Vkh4tB+ccqdTPaB7N8PBdpcoblsF
+ UQ2KxXU4lYz1W2TP2zDR6RR22G7kTChTDEfJrt1GA1+UBoTn7rYu5ozdWEOuAZnWfe7VqirIB
+ +1VQUONv/nBEjt+JseTBNsOeXLuBpRPW/udkfDEtQmUreTT+TXcB95K/VgWbQqJi2ToIGCwYp
+ vlM5RyYzk+IgS6sg0DNzCmYZgIkmn71WVHwwr3vujPJ7FgYRqtq6q8sisw8Sfcx/CLSz1mU2L
+ DtZ5c7DXBs4z2n+ef91cWMipVj+Qhhg8uG/UZzBKJtYDI1tK+JWfuDfsgG6R4qyRlwMeyOL2k
+ LtHAeJLEWDLQC/lRadQCXAQHZdWY80ee1nx/8WClZFQTGV3WK9TGsKb5lQUYy2TF5Psswqz83
+ xG1p7iOyHERCkvMvJYhJ9GjHxdWERyvnB1GZ6dDuMhgT36msTRfiP+01sEbB+Y2F41G866oEp
+ 2q76mEs64L+QDHo2Lq5iciMlvLzozWuLGRhCJIEYpbDkMgM+XWnMUUYo+LTxA97uhFjybiER/
+ SRrV/8XaidVgPIyD3rfhE4vnqfHmLP8OH3wZvOYfDfS5+t1MwsmBCFxlKcUx/JjLdLpl4+HIY
+ uAeSsjBUNM7VXEpmIlr6SU4t/s0sbfKzBXW7OH9c52gHYRx3DEmtue6A9VnpjSVgHLq9bh/rA
+ 5dsvKgSt2xuTdW0E6UBCMUBRTPN0cZ2HjUjJBmQQQ16ullzANu8BoFPNS9Ysd2Ycehoav2AwA
+ e6Nobc6SL69XHsinRwvQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
->>> Zygo Blaxell <ce3g8jdj@umail.furryterror.org> schrieb am 18.12.2020 um
-02:51 in
-Nachricht <20201218015114.GE28049@hungrycats.org>:
-> On Thu, Dec 17, 2020 at 02:48:00PM +0100, Ulrich Windl wrote:
->> >>> Zygo Blaxell <ce3g8jdj@umail.furryterror.org> schrieb am 15.12.2020 um
->> 19:18 in
->> Nachricht <20201215181828.GN31381@hungrycats.org>:
->> > On Fri, Dec 11, 2020 at 03:25:47PM +0100, Ulrich Windl wrote:
->> >> Hi!
->> >> 
->> >> While configuring a VM environment in a cluster I had setup an SLES15
-SP2 
->> > test VM using BtrFS. Due to some problem with libvirt (or the
-VirtualDomain
->> 
->> > RA) the VM was active on more than one cluster node at a time,
-corrupting
->> the 
->> > filesystem beyond repair it seems:
->> >> hvc0:rescue:~ # btrfs check /dev/xvda2
->> >> Opening filesystem to check...
->> >> Checking filesystem on /dev/xvda2
->> >> UUID: 1b651baa‑327b‑45fe‑9512‑e7147b24eb49
->> >> [1/7] checking root items
->> >> ERROR: child eb corrupted: parent bytenr=1107230720 item=75 parent
-level=1
->> 
->> > child level=1
->> >> ERROR: failed to repair root items: Input/output error
->> >> hvc0:rescue:~ # btrfsck ‑b /dev/xvda2
->> >> Opening filesystem to check...
->> >> Checking filesystem on /dev/xvda2
->> >> UUID: 1b651baa‑327b‑45fe‑9512‑e7147b24eb49
->> >> [1/7] checking root items
->> >> ERROR: child eb corrupted: parent bytenr=1106952192 item=75 parent
-level=1
->> 
->> > child level=1
->> >> ERROR: failed to repair root items: Input/output error
->> >> hvc0:rescue:~ # btrfsck ‑‑repair /dev/xvda2
->> >> enabling repair mode
->> >> Opening filesystem to check...
->> >> Checking filesystem on /dev/xvda2
->> >> UUID: 1b651baa‑327b‑45fe‑9512‑e7147b24eb49
->> >> [1/7] checking root items
->> >> ERROR: child eb corrupted: parent bytenr=1107230720 item=75 parent
-level=1
->> 
->> > child level=1
->> >> ERROR: failed to repair root items: Input/output error
->> >> 
->> >> Two questions arising:
->> >> 1) Can't the kernel set some "open flag" early when opening the
->> >> filesystem, and refuse to open it again (the other VM) when the flag
->> >> is set? That could avoid such situations I guess
->> > 
->> > If btrfs wrote "the filesystem is open" to the disk, the filesystem
->> > would not be mountable after a crash.
->> > 
->> > The kernel does set an "open flag" (it detects that it is about to mount
->> > the same btrfs by uuid, and does something like a bind mount instead)
->> > but that applies only to multiple btrfs mounts on the _same_ kernel.
->> > In your case there are multiple kernels present (one in each node)
->> > and there's no way for them to communicate with each other.
->> > 
->> > There are at least 3 different ways libvirt or other hosting
->> > infrastructure software on the VM host could have avoided passing the
->> > same physical device to multiple VM guests.  I would suggest
-implementing
->> > some or all of them.
->> > 
->> >> 2) Can't btrfs check try somewhat harder to rescue anything, or is
->> >> the fs structure in a way that everything is lost?
->> > 
->> >> What really puzzles me is this:
->> >> There are several snapshots and subvolumes on the BtFS device. It's
->> >> hard to believe that absolutely nothing seems to be recoverable.
->> > 
->> > The most likely outcome is that the root tree nodes and most of the
->> > interior nodes of all the filesystem trees are broken.  The kernel
->> > relies on the trees to work‑‑everything in btrfs except the superblocks
->> > can be at any location on disk‑‑so the filesystem will be unreadable by
->> > the kernel.  Only recovery tools would be able to read the filesystem
-now.
->> > 
->> > Recovery requires a brute force search of the disk to find as many
->> > surviving leaf nodes as possible and rebuild the filesystem trees.
->> > This is more or less what 'btrfs check ‑‑repair ‑‑init‑extent‑tree'
-does.
->> 
->> Hi!
->> 
->> As I didn't have a backup (it was just a test VM to test HA cluster
->> configuration), I tried your command:
->> It finished rather quickly even with little RAM, but found *many*
-problems:
->> ...
->> Deleting bad dir index [715,96,8] root 257
->> Deleting bad dir index [257,96,14] root 257
->> Deleting bad dir index [257,96,15] root 257
->> Deleting bad dir index [259,96,21] root 257
->> Deleting bad dir index [291,96,6] root 257
->> Deleting bad dir index [1804,96,2] root 257
->> Deleting bad dir index [1804,96,3] root 257
->> Deleting bad dir index [1804,96,4] root 257
->> Deleting bad dir index [1804,96,5] root 257
->> Deleting bad dir index [320,96,5] root 257
->> Deleting bad dir index [1805,96,2] root 257
->> Deleting bad dir index [257,96,16] root 257
->> Deleting bad dir index [326,96,6] root 257
->> ERROR: errors found in fs roots
->> found 30851072 bytes used, error(s) found
->> total csum bytes: 1370452
->> total tree bytes: 3211264
->> total fs tree bytes: 1458176
->> total extent tree bytes: 16384
->> btree space waste bytes: 597304
->> file data blocks allocated: 27607040
->>  referenced 27607040
->> 
->> A subsequent " btrfs check /dev/xvda2" found many problems again:
->> ...
->> root 257 inode 7589 errors 2001, no inode item, link count wrong
->>         unresolved ref dir 1804 index 0 namelen 7 name main.cf filetype 1
->> errors 6, no dir index, no inode ref
->> root 257 inode 7590 errors 2001, no inode item, link count wrong
->>         unresolved ref dir 320 index 0 namelen 18 name postfix.configured
->> filetype 1 errors 6, no dir index, no inode ref
->> root 257 inode 7591 errors 2001, no inode item, link count wrong
->>         unresolved ref dir 1806 index 0 namelen 3 name pid filetype 2
-errors
->> 6, no dir index, no inode ref
->> root 257 inode 7593 errors 2001, no inode item, link count wrong
->>         unresolved ref dir 1805 index 0 namelen 11 name master.lock
-filetype 
-> 1
->> errors 6, no dir index, no inode ref
->> root 257 inode 7641 errors 2001, no inode item, link count wrong
->>         unresolved ref dir 257 index 0 namelen 11 name snapper.log filetype
+On Mon, 2020-12-14 at 09:46 +0000, Filipe Manana wrote:
 
-> 1
->> errors 6, no dir index, no inode ref
->> root 257 inode 7644 errors 2001, no inode item, link count wrong
->>         unresolved ref dir 326 index 0 namelen 16 name logrotate.status
->> filetype 1 errors 6, no dir index, no inode ref
->> ERROR: errors found in fs roots
->> found 30965760 bytes used, error(s) found
->> total csum bytes: 1370452
->> total tree bytes: 3342336
->> total fs tree bytes: 1523712
->> total extent tree bytes: 81920
->> btree space waste bytes: 669123
->> file data blocks allocated: 27607040
->>  referenced 27607040
->> 
->> Even after iterating a "normal" check a few times, I could not mount the
->> "repaired" filesystem:
->> hvc0:rescue:~ # mount -r /dev/xvda2 /mnt
->> mount.bin: /mnt: wrong fs type, bad option, bad superblock on /dev/xvda2,
->> missing codepage or helper program, or other error.
->> hvc0:rescue:~ # journalctl -f
->> -- Logs begin at Thu 2020-12-17 13:36:57 UTC. --
->> Dec 17 13:44:33 rescue kernel: BTRFS info (device xvda2): disk space
-caching
->> is enabled
->> Dec 17 13:44:33 rescue kernel: BTRFS info (device xvda2): has skinny
-extents
->> Dec 17 13:44:33 rescue kernel: BTRFS error (device xvda2): chunk 1048576
-has
->> missing dev extent, have 0 expect 1
->> Dec 17 13:44:33 rescue kernel: BTRFS error (device xvda2): failed to
-verify
->> dev extents against chunks: -117
->> Dec 17 13:44:33 rescue kernel: BTRFS error (device xvda2): open_ctree
-failed
->> ^C
->> 
->> I'm not hoping to recover the system to a usable state, but out of
-curiosity
->> I'd like to get an impression what had survived and what had not.
-> 
-> If you're missing dev extents you'll need to run chunk-recover to
-> brute-force scan for the chunk headers.  But this is really stretching
-> the abilities of the current tools.
+> clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYNC/.=
+...pdf
+> > source offset=3D20705280 offset=3D20709376 length=3D4096
+> > clone mb/Documents.AZ/0.SYNC/....pdf - source=3Dmb/Documents.AZ/0.SYNC=
+/....pdf
+> > source offset=3D20713472 offset=3D20713472 length=3D4096
+> > ERROR: failed to clone extents to mb/Documents.AZ/0.SYNC/....pdf: Inva=
+lid
+> > argument
+>
+> It's a different problem. This one because the kernel is sending an
+> invalid clone operation - the source and destination offsets are the
+> same, which makes the receiver fail.
+> Can you tell what's the size (in bytes) of "mb/Documents.AZ/0.SYNC"
+> after the receive fails? Both in the destination and source.
 
-Hi!
+Hi Filipe,
 
-(Back at the time when I had developed a copy program for floppy disks, I had
-a set of defective floppies for testing, so you chan see this disaster as a
-challenge for the tools)
-I tried:
-hvc0:rescue:~ # btrfs rescue chunk-recover /dev/xvda2
-Scanning: DONE in dev0
-Check chunks successfully with no orphans
-Chunk tree recovered successfully
+I already deleted the failing subvolume, now I got the issue again. Here a=
+re the
+detailed information about the file:
 
-I don't really understand what I'm doing, but as there were still too many
-errors (and mount was refused), I re-tried "btrfs check --repair
---init-extent-tree", resulting in a core dump:
 
+# btrfs send /mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.=
+20190621T140904+0200 | mbuffer -v 1 -m 2% | btrfs receive /mnt/local/data/=
+snapshots/vm/
 ...
-Repaired extent references for 1754910720
-ref mismatch on [1766580224 4096] extent item 0, found 1
-data backref 1766580224 root 257 owner 294 offset 90112 num_refs 0 not found
-in extent tree
-incorrect local backref count on 1766580224 root 257 owner 294 offset 90112
-found 1 wanted 0 back 0x56103db41180
-backpointer mismatch on [1766580224 4096]
-adding new data backref on 1766580224 root 257 owner 294 offset 90112 found 1
-Repaired extent references for 1766580224
-btrfs unable to find ref byte nr 5586944 parent 0 root 2  owner 0 offset 0
-transaction.c:195: btrfs_commit_transaction: BUG_ON `ret` triggered, value -5
-btrfs(+0x51829)[0x56103c70f829]
-btrfs(btrfs_commit_transaction+0x1ae)[0x56103c70fe1e]
-btrfs(+0x1e73c)[0x56103c6dc73c]
-btrfs(cmd_check+0x1124)[0x56103c7253d4]
-btrfs(main+0x8e)[0x56103c6dcd2e]
-/lib64/libc.so.6(__libc_start_main+0xea)[0x7f0caf2b934a]
-btrfs(_start+0x2a)[0x56103c6dcf2a]
-Aborted (core dumped)
+write IE8 - Win7/IE8 - Win7-disk1.vmdk - offset=3D4742344704 length=3D4096
+clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
+sk1.vmdk source offset=3D4742184960 offset=3D4742348800 length=3D16384
+clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
+sk1.vmdk source offset=3D4742184960 offset=3D4742365184 length=3D28672
+clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
+sk1.vmdk source offset=3D4742246400 offset=3D4742393856 length=3D8192
+write IE8 - Win7/IE8 - Win7-disk1.vmdk - offset=3D4742402048 length=3D1228=
+8
+clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
+sk1.vmdk source offset=3D4742410240 offset=3D4742414336 length=3D4096
+clone IE8 - Win7/IE8 - Win7-disk1.vmdk - source=3DIE8 - Win7/IE8 - Win7-di=
+sk1.vmdk source offset=3D4742418432 offset=3D4742418432 length=3D4096
+ERROR: failed to clone extents to IE8 - Win7/IE8 - Win7-disk1.vmdk: Invali=
+d argument
 
-hvc0:rescue:~ # btrfs version
-btrfs-progs v4.19.1
-
-Regards,
-Ulrich
-
-> 
->> Regards,
->> Ulrich
->> 
->> > 
->> > If you run ‑‑init‑extent‑tree, assuming it works (you should not assume
->> > that it will work), you would then have to audit the filesystem contents
->> > to see what data was not recovered.  At a minimum, you would lose a few
->> > hundred filesystem items, since each metadata leaf node contains around
->> > 200 items and you definitely will not recover them all.  The data csum
->> > trees might not be in sync with the rest of the filesytem, so you can't
->> > rely on scrub to check data integrity.  If this is successful, you will
->> > have a similar result to mounting ext4 on multiple VMs simultaneously‑‑
->> > fsck runs, the filesystem is read‑write again, but you don't get all
->> > the data back, nor even a list of data that was lost or corrupted.
->> > 
->> > ‑‑init‑extent‑tree can be quite slow, especially if you don't have
-enough
->> > RAM to hold all the filesystem's metadata.  It's still under
-development,
->> > so one possible outcome is that it crashes with an assertion failure
->> > and leaves you with a even more broken filesystem.
->> > 
->> > It's usually faster and easier to mkfs and restore from backups instead.
->> > 
->> >> I have this:
->> >> hvc0:rescue:~ # btrfs inspect‑internal dump‑super /dev/xvda2
->> >> superblock: bytenr=65536, device=/dev/xvda2
->> >> ‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑‑
->> >> csum_type               0 (crc32c)
->> >> csum_size               4
->> >> csum                    0x659898f3 [match]
->> >> bytenr                  65536
->> >> flags                   0x1
->> >>                         ( WRITTEN )
->> >> magic                   _BHRfS_M [match]
->> >> fsid                    1b651baa‑327b‑45fe‑9512‑e7147b24eb49
->> >> metadata_uuid           1b651baa‑327b‑45fe‑9512‑e7147b24eb49
->> >> label
->> >> generation              280
->> >> root                    1107214336
->> >> sys_array_size          97
->> >> chunk_root_generation   35
->> >> root_level              0
->> >> chunk_root              1048576
->> >> chunk_root_level        0
->> >> log_root                0
->> >> log_root_transid        0
->> >> log_root_level          0
->> >> total_bytes             10727960576
->> >> bytes_used              1461825536
->> >> sectorsize              4096
->> >> nodesize                16384
->> >> leafsize (deprecated)           16384
->> >> stripesize              4096
->> >> root_dir                6
->> >> num_devices             1
->> >> compat_flags            0x0
->> >> compat_ro_flags         0x0
->> >> incompat_flags          0x163
->> >>                         ( MIXED_BACKREF |
->> >>                           DEFAULT_SUBVOL |
->> >>                           BIG_METADATA |
->> >>                           EXTENDED_IREF |
->> >>                           SKINNY_METADATA )
->> >> cache_generation        280
->> >> uuid_tree_generation    40
->> >> dev_item.uuid           2abdf93e‑2f2d‑4eef‑a1d8‑9325f809ebce
->> >> dev_item.fsid           1b651baa‑327b‑45fe‑9512‑e7147b24eb49 [match]
->> >> dev_item.type           0
->> >> dev_item.total_bytes    10727960576
->> >> dev_item.bytes_used     2436890624
->> >> dev_item.io_align       4096
->> >> dev_item.io_width       4096
->> >> dev_item.sector_size    4096
->> >> dev_item.devid          1
->> >> dev_item.dev_group      0
->> >> dev_item.seek_speed     0
->> >> dev_item.bandwidth      0
->> >> dev_item.generation     0
->> >> 
->> >> Regards,
->> >> Ulrich Windl
->> >> 
->> >> 
->> 
->> 
->> 
->> 
+summary: 4226 MiByte in 21min 11.4sec - average of 3404 kiB/s
 
 
+# ls -al "/mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.201=
+90621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+-rw------- 1 massimo massimo 17932222464 18. Dez 2018  '/mnt/usb/mobiledat=
+a/snapshots/mobalindesk/vm/VirtualMachines.20190621T140904+0200/IE8 - Win7=
+/IE8 - Win7-disk1.vmdk'
+
+# ls -al "/mnt/local/data/snapshots/vm/VirtualMachines.20190621T140904+020=
+0/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+-rw------- 1 root root 4742418432 18. Dez 07:37 '/mnt/local/data/snapshots=
+/vm/VirtualMachines.20190621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk'
+
+# compsize "/mnt/usb/mobiledata/snapshots/mobalindesk/vm/VirtualMachines.2=
+0190621T140904+0200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       45%      7.3G          16G          16G
+none       100%      1.9G         1.9G         2.3G
+zlib        38%      4.8G          12G          13G
+zstd        34%      536M         1.5G         727M
+
+# compsize "/mnt/local/data/snapshots/vm/VirtualMachines.20190621T140904+0=
+200/IE8 - Win7/IE8 - Win7-disk1.vmdk"
+Type       Perc     Disk Usage   Uncompressed Referenced
+TOTAL       92%      4.1G         4.4G         4.3G
+none       100%      3.8G         3.8G         3.8G
+zlib        32%      7.3M          22M          22M
+zstd        45%      264M         583M         560M
+
+Does that help you?
+
+Best regards,
+Massimo
 
