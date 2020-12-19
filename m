@@ -2,189 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5F32DEC5F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Dec 2020 01:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37472DEC62
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Dec 2020 01:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgLSA0O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Dec 2020 19:26:14 -0500
-Received: from mout.gmx.net ([212.227.15.18]:54413 "EHLO mout.gmx.net"
+        id S1726149AbgLSA1w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Dec 2020 19:27:52 -0500
+Received: from mout.gmx.net ([212.227.15.15]:35017 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726092AbgLSA0O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Dec 2020 19:26:14 -0500
+        id S1726004AbgLSA1w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Dec 2020 19:27:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608337479;
-        bh=K96qZibgkWoHKpG8VxldNR/c1/uwndLQvJ6OwQWFY5M=;
+        s=badeba3b8450; t=1608337578;
+        bh=gI6XXu1PNS5KdYob5o+WFT3meaLH3RDUL+r4Hm/i9TI=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=JaUjIyVQg9ECHdyFLTxDEtLvjYIv+nACi8RzdkKo9V20y6xnRplJAQSGpx54Lmltg
-         zs4xBk6Jldr4QBL7aQDd7v3LTLlFdJWfTBlRPCz6Mf26dZ+tH49wIlxwkKa8qVHdMJ
-         ML+/OLV74zAKH6nBA+Cl5R8y0TokgiSLTdUuMm9M=
+        b=P63TykYhVdsfv4YYJfszGsaPd3/G5aEu66AuPYthXYQBsvTcmga0ORj1qCVJvAgcb
+         RRKHN9gFVXLwfHa/0fWcihRYa/Kkc0pJiqr/85cStqTp05LGSmy7z00kEE9w5c/dV3
+         KXOV4VaRwd3HA7EJ7LlfRjVBemdU7LEQeQTKaghU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Ma24s-1kc6hW2vuG-00VyyD; Sat, 19
- Dec 2020 01:24:39 +0100
-Subject: Re: [PATCH v2 06/18] btrfs: extent_io: make
- attach_extent_buffer_page() to handle subpage case
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mkpav-1kNAO62Etr-00mHIN; Sat, 19
+ Dec 2020 01:26:18 +0100
+Subject: Re: [PATCH 0/2] btrfs: btrfs_dec_test_*_ordered_extent() refactor
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20201210063905.75727-1-wqu@suse.com>
- <20201210063905.75727-7-wqu@suse.com>
- <4ad93bff-45b3-04b5-731e-9294c08630cb@toxicpanda.com>
- <5baecd2e-1749-d3fa-c228-942ff0c2f31e@gmx.com>
- <90da14a1-f5ce-c3e7-6119-d97152ef25d4@toxicpanda.com>
+References: <20201218051701.62262-1-wqu@suse.com>
+ <20201218155755.GB6430@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <77af1d2b-18d6-bd7a-64cb-fce6b247e61a@gmx.com>
-Date:   Sat, 19 Dec 2020 08:24:35 +0800
+Message-ID: <a612e52b-9c1d-880d-0056-762bbdac60ce@gmx.com>
+Date:   Sat, 19 Dec 2020 08:26:14 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.3
 MIME-Version: 1.0
-In-Reply-To: <90da14a1-f5ce-c3e7-6119-d97152ef25d4@toxicpanda.com>
+In-Reply-To: <20201218155755.GB6430@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:rNDiPJdgQX/KXsgk5BWRN9c9n3d/WmfEzGBzPO1gdGt+vfYpjcZ
- hom7XVVFPpfw4sJWPGHUQ1Nij1d8wXu0Lh/vS4/bmcXTL9nkbyoz8K2h9jzk0vi2oJp5ZZm
- lzMs1ZC9kHOdyVCiiqEmtMzZWGhJQysG+SCJEWe/3WsYnuxr3Pd4dUedNL/ztGXSKr3gmSF
- ovwf6IjbTEngiGUK4WmKA==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+WZ6aLvmKZeGoDkR9ZTY+/RCXFe1m8D+aw5kkq55YOdvpzZCU0V
+ u0ZX0g+E+kI9RBQtZL02/lQ3F26mCWsOSA6ZukVPRF00zjrZDItI4i1qmOY7y+ttdUfC8S2
+ VYSxt/fwxooYiulrTSjj0JOHMVaWcUMMnTVls09Uy23lpu98bpKJBolj9tc+03fHMB7j2dg
+ H19UwGMVSDvWOwKYwkcyg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y0A9LuHzvMM=:2koHHnrgyJwqXuTdTGg7X6
- zrfrbBJk8HekolqFQMEMxztAAzxK592IMOF2RLIq0S2c8K2syJip6WCgnheOp4eaEm9CXD8xq
- 4hEkUVZf/cyRSQnx+88C6dg0fGvjgrjfMMy4FFir43N1fInKVIDNR1PHFxlqhi4NvRFd0nRgl
- J6CJFpmHnO1nTRmrdxMqw5AdL5U+vILaoXjV7a0ioZY1/Jmi8GUUKXz2jK/tr+4y2iE4mywLI
- hd2lcALpPZjLpsvMatMWbLoYf91IHTGUgj4fKn8sTLwg3R/MmrRBixm9Ee9CS6JgkYg6PHmZ+
- hnyE/LYXXKnjKSCRHz2vlqirFYuawTa285qjk8Z8EpAfHbDvMck7r6ZXfRkI9C7Ln/7R5OFIX
- qRJqXwP7ZrdW3Qda4MNDq8ilf+ybHEFNkCXt0Ix5E9ZISE/p9hNGqv1pYp7A6QoF3ponRplcG
- sOeuDmqZ+QjgBecE2a6clMmioP8Sf/InG1X8o58+bTzWIkSDblvrgSgzjx9uw86jUrDKsHmM3
- vt7Mt1CeyQnaBTfkpET3VD0kKiyOKo8/9LUBWTPvqxtM8/TyUYNJkG9o6HFN0ozPJwHWsK6yK
- H0HyCgq3JzPERyUbBqHf1ytF0UODvvFhYsFtdsL0X88Lxuyw4Pe9yBaYSPHw3hx/5coVvc7FM
- UbOkPDutwP/6Is+5N4B6L9AEmTWy4wrbyzGTfSmb0f04xCmRzE8RF/zomOypNBqzjS3ZK+LmR
- B/qReua7qnOECt0p2MlxdorRi/wXesxM1EPGXPg8nTWmC4tGuAn4vBVSqg8u8rIEbGj5eR5qI
- /Y7hLQ1smBDQUBUdnfpDYBTj4x+MMVXRe4Uu5ogOOrKJQFa+K5Kvri/zfDmAqZcWR6y6GEKp1
- FXw/LRk0KHAt2ZuBJMaQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Tb4rMhBJ8UA=:sCQHdJZcH7HyMNyTJXHi1t
+ RE6V/chbkZfPg4M+TQt8gQg+kWXMJQW8I7bP3qKPhVzvO85m6kMLoX6rET0/1qx2YEF029hgn
+ 5CyUQS3IhxaDbTZk8ff5YdDj+u6Q5X79ki84ydlGFtAfNIepP/EYRLB1XvH+DqDlcJnS+jyNq
+ EZJaJWToV2wG/e8sdiWUSlcqoGD4lxk8X5+gHXE5280i739EnwJP51R3s5NslMnhh10Icb1Qh
+ Iyugsg1cvSF07Os3ia4UZnn8As83jn0Rhn0t/5N/i4EqQAl+7nw7KixTamN0TjoHaHzLHYkZO
+ +L4TxPYE5tU/TCQj0HvXX4s/yW5N6FzQPkhp9zwly6rhyVyn7qDN6L2H/2zN+QL4oqkhbJThg
+ Kd6AE1Tp41JWUb3TbiANU01TYuB1u9ivyxy01S2UchBO77M093nygPNjFOlx6gwNwqR/CCAh5
+ TRoGhnO+HbfB6/ORqcVkttA+ZpBH+m2FtQafoBLrDbnf/xv3fzwRQAx/koCEKk30ZbjBgRYl5
+ OElE01w9ulr7k6YQImCWiudmXWf8jsfBRm9L9QROup1nPT0D13Hg0kcWRgTL6nyIyt8Z2AXIq
+ GvQNTjaQNRfHP5S2SCjpvT1qOJfiUrDPc1sCCL0DAzCHkGOohIFYuheEP0DtsbswRfbwIfYKC
+ gFqTd6PpoDhejZebVtYipXLt1kn0IYRwKqYh9w8akc2+ggAU1zNXVK38Xd1b/ZfRz7ttWnqf4
+ A9vnUtqbHASdH/cnkcYkC3Qf+HWtFVVP/qXPAMU26SxmsZTv48Vzf5bv5b1VVkGnUuZPidITl
+ /mXbd+umw7+t3Nio6o2fNuAcwY1oCYF/GxyiDc5n2oE8DqsGBHekiz1qds1h81Jtan/XD7LCm
+ PZLYGIS6TXWOh4XxyZxA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjAvMTIvMTgg5LiL5Y2IMTE6NDEsIEpvc2VmIEJhY2lrIHdyb3RlOg0KPiBPbiAx
-Mi8xNy8yMCA3OjQ0IFBNLCBRdSBXZW5ydW8gd3JvdGU6DQo+Pg0KPj4NCj4+IE9uIDIwMjAvMTIv
-MTgg5LiK5Y2IMTI6MDAsIEpvc2VmIEJhY2lrIHdyb3RlOg0KPj4+IE9uIDEyLzEwLzIwIDE6Mzgg
-QU0sIFF1IFdlbnJ1byB3cm90ZToNCj4+Pj4gRm9yIHN1YnBhZ2UgY2FzZSwgd2UgbmVlZCB0byBh
-bGxvY2F0ZSBuZXcgbWVtb3J5IGZvciBlYWNoIG1ldGFkYXRhIA0KPj4+PiBwYWdlLg0KPj4+Pg0K
-Pj4+PiBTbyB3ZSBuZWVkIHRvOg0KPj4+PiAtIEFsbG93IGF0dGFjaF9leHRlbnRfYnVmZmVyX3Bh
-Z2UoKSB0byByZXR1cm4gaW50DQo+Pj4+IMKgwqAgVG8gaW5kaWNhdGUgYWxsb2NhdGlvbiBmYWls
-dXJlDQo+Pj4+DQo+Pj4+IC0gUHJlYWxsb2MgcGFnZS0+cHJpdmF0ZSBmb3IgYWxsb2NfZXh0ZW50
-X2J1ZmZlcigpDQo+Pj4+IMKgwqAgV2UgZG9uJ3Qgd2FudCB0byBjYWxsIG1lbW9yeSBhbGxvY2F0
-aW9uIHdpdGggc3BpbmxvY2sgaG9sZCwgc28NCj4+Pj4gwqDCoCBkbyBwcmVhbGxvY2F0aW9uIGJl
-Zm9yZSB3ZSBhY3F1aXJlIHRoZSBzcGluIGxvY2suDQo+Pj4+DQo+Pj4+IC0gSGFuZGxlIHN1YnBh
-Z2UgYW5kIHJlZ3VsYXIgY2FzZSBkaWZmZXJlbnRseSBpbg0KPj4+PiDCoMKgIGF0dGFjaF9leHRl
-bnRfYnVmZmVyX3BhZ2UoKQ0KPj4+PiDCoMKgIEZvciByZWd1bGFyIGNhc2UsIGp1c3QgZG8gdGhl
-IHVzdWFsIHRoaW5nLg0KPj4+PiDCoMKgIEZvciBzdWJwYWdlIGNhc2UsIGFsbG9jYXRlIG5ldyBt
-ZW1vcnkgYW5kIHVwZGF0ZSB0aGUgdHJlZV9ibG9jaw0KPj4+PiDCoMKgIGJpdG1hcC4NCj4+Pj4N
-Cj4+Pj4gwqDCoCBUaGUgYml0bWFwIHVwZGF0ZSB3aWxsIGJlIGhhbmRsZWQgYnkgbmV3IHN1YnBh
-Z2Ugc3BlY2lmaWMgaGVscGVyLA0KPj4+PiDCoMKgIGJ0cmZzX3N1YnBhZ2Vfc2V0X3RyZWVfYmxv
-Y2soKS4NCj4+Pj4NCj4+Pj4gU2lnbmVkLW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+
-DQo+Pj4+IC0tLQ0KPj4+PiDCoCBmcy9idHJmcy9leHRlbnRfaW8uYyB8IDY5IA0KPj4+PiArKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQ0KPj4+PiDCoCBmcy9idHJm
-cy9zdWJwYWdlLmjCoMKgIHwgNDQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPj4+PiDC
-oCAyIGZpbGVzIGNoYW5nZWQsIDk5IGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQ0KPj4+
-Pg0KPj4+PiBkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMgYi9mcy9idHJmcy9leHRl
-bnRfaW8uYw0KPj4+PiBpbmRleCA2MzUwYzI2ODdjN2UuLjUxZGQ3ZWMzYzJiMyAxMDA2NDQNCj4+
-Pj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+Pj4gKysrIGIvZnMvYnRyZnMvZXh0ZW50
-X2lvLmMNCj4+Pj4gQEAgLTI0LDYgKzI0LDcgQEANCj4+Pj4gwqAgI2luY2x1ZGUgInJjdS1zdHJp
-bmcuaCINCj4+Pj4gwqAgI2luY2x1ZGUgImJhY2tyZWYuaCINCj4+Pj4gwqAgI2luY2x1ZGUgImRp
-c2staW8uaCINCj4+Pj4gKyNpbmNsdWRlICJzdWJwYWdlLmgiDQo+Pj4+IMKgIHN0YXRpYyBzdHJ1
-Y3Qga21lbV9jYWNoZSAqZXh0ZW50X3N0YXRlX2NhY2hlOw0KPj4+PiDCoCBzdGF0aWMgc3RydWN0
-IGttZW1fY2FjaGUgKmV4dGVudF9idWZmZXJfY2FjaGU7DQo+Pj4+IEBAIC0zMTQyLDIyICszMTQz
-LDQxIEBAIHN0YXRpYyBpbnQgc3VibWl0X2V4dGVudF9wYWdlKHVuc2lnbmVkIGludCBvcGYsDQo+
-Pj4+IMKgwqDCoMKgwqAgcmV0dXJuIHJldDsNCj4+Pj4gwqAgfQ0KPj4+PiAtc3RhdGljIHZvaWQg
-YXR0YWNoX2V4dGVudF9idWZmZXJfcGFnZShzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWIsDQo+Pj4+
-ICtzdGF0aWMgaW50IGF0dGFjaF9leHRlbnRfYnVmZmVyX3BhZ2Uoc3RydWN0IGV4dGVudF9idWZm
-ZXIgKmViLA0KPj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHN0cnVjdCBwYWdlICpwYWdlKQ0KPj4+PiDCoCB7DQo+Pj4+IC3CoMKgwqAgLyoNCj4+Pj4g
-LcKgwqDCoMKgICogSWYgdGhlIHBhZ2UgaXMgbWFwcGVkIHRvIGJ0cmVlIGlub2RlLCB3ZSBzaG91
-bGQgaG9sZCB0aGUgDQo+Pj4+IHByaXZhdGUNCj4+Pj4gLcKgwqDCoMKgICogbG9jayB0byBwcmV2
-ZW50IHJhY2UuDQo+Pj4+IC3CoMKgwqDCoCAqIEZvciBjbG9uZWQgb3IgZHVtbXkgZXh0ZW50IGJ1
-ZmZlcnMsIHRoZWlyIHBhZ2VzIGFyZSBub3QgDQo+Pj4+IG1hcHBlZCBhbmQNCj4+Pj4gLcKgwqDC
-oMKgICogd2lsbCBub3QgcmFjZSB3aXRoIGFueSBvdGhlciBlYnMuDQo+Pj4+IC3CoMKgwqDCoCAq
-Lw0KPj4+PiAtwqDCoMKgIGlmIChwYWdlLT5tYXBwaW5nKQ0KPj4+PiAtwqDCoMKgwqDCoMKgwqAg
-bG9ja2RlcF9hc3NlcnRfaGVsZCgmcGFnZS0+bWFwcGluZy0+cHJpdmF0ZV9sb2NrKTsNCj4+Pj4g
-K8KgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbyA9IGViLT5mc19pbmZvOw0KPj4+
-PiArwqDCoMKgIGludCByZXQ7DQo+Pj4+IC3CoMKgwqAgaWYgKCFQYWdlUHJpdmF0ZShwYWdlKSkN
-Cj4+Pj4gLcKgwqDCoMKgwqDCoMKgIGF0dGFjaF9wYWdlX3ByaXZhdGUocGFnZSwgZWIpOw0KPj4+
-PiAtwqDCoMKgIGVsc2UNCj4+Pj4gLcKgwqDCoMKgwqDCoMKgIFdBUk5fT04ocGFnZS0+cHJpdmF0
-ZSAhPSAodW5zaWduZWQgbG9uZyllYik7DQo+Pj4+ICvCoMKgwqAgaWYgKGZzX2luZm8tPnNlY3Rv
-cnNpemUgPT0gUEFHRV9TSVpFKSB7DQo+Pj4+ICvCoMKgwqDCoMKgwqDCoCAvKg0KPj4+PiArwqDC
-oMKgwqDCoMKgwqDCoCAqIElmIHRoZSBwYWdlIGlzIG1hcHBlZCB0byBidHJlZSBpbm9kZSwgd2Ug
-c2hvdWxkIGhvbGQgdGhlDQo+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgICogcHJpdmF0ZSBsb2NrIHRv
-IHByZXZlbnQgcmFjZS4NCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqAgKiBGb3IgY2xvbmVkIG9yIGR1
-bW15IGV4dGVudCBidWZmZXJzLCB0aGVpciBwYWdlcyBhcmUgbm90DQo+Pj4+ICvCoMKgwqDCoMKg
-wqDCoMKgICogbWFwcGVkIGFuZCB3aWxsIG5vdCByYWNlIHdpdGggYW55IG90aGVyIGVicy4NCj4+
-Pj4gK8KgwqDCoMKgwqDCoMKgwqAgKi8NCj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGlmIChwYWdlLT5t
-YXBwaW5nKQ0KPj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBsb2NrZGVwX2Fzc2VydF9oZWxk
-KCZwYWdlLT5tYXBwaW5nLT5wcml2YXRlX2xvY2spOw0KPj4+PiArDQo+Pj4+ICvCoMKgwqDCoMKg
-wqDCoCBpZiAoIVBhZ2VQcml2YXRlKHBhZ2UpKQ0KPj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBhdHRhY2hfcGFnZV9wcml2YXRlKHBhZ2UsIGViKTsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGVs
-c2UNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgV0FSTl9PTihwYWdlLT5wcml2YXRlICE9
-ICh1bnNpZ25lZCBsb25nKWViKTsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiAwOw0KPj4+
-PiArwqDCoMKgIH0NCj4+Pj4gKw0KPj4+PiArwqDCoMKgIC8qIEFscmVhZHkgbWFwcGVkLCBqdXN0
-IHVwZGF0ZSB0aGUgZXhpc3RpbmcgcmFuZ2UgKi8NCj4+Pj4gK8KgwqDCoCBpZiAoUGFnZVByaXZh
-dGUocGFnZSkpDQo+Pj4+ICvCoMKgwqDCoMKgwqDCoCBnb3RvIHVwZGF0ZV9iaXRtYXA7DQo+Pj4+
-ICsNCj4+Pj4gK8KgwqDCoCAvKiBEbyBuZXcgYWxsb2NhdGlvbiB0byBhdHRhY2ggc3VicGFnZSAq
-Lw0KPj4+PiArwqDCoMKgIHJldCA9IGJ0cmZzX2F0dGFjaF9zdWJwYWdlKGZzX2luZm8sIHBhZ2Up
-Ow0KPj4+PiArwqDCoMKgIGlmIChyZXQgPCAwKQ0KPj4+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJu
-IHJldDsNCj4+Pj4gKw0KPj4+PiArdXBkYXRlX2JpdG1hcDoNCj4+Pj4gK8KgwqDCoCBidHJmc19z
-dWJwYWdlX3NldF90cmVlX2Jsb2NrKGZzX2luZm8sIHBhZ2UsIGViLT5zdGFydCwgZWItPmxlbik7
-DQo+Pj4+ICvCoMKgwqAgcmV0dXJuIDA7DQo+Pj4+IMKgIH0NCj4+Pj4gwqAgdm9pZCBzZXRfcGFn
-ZV9leHRlbnRfbWFwcGVkKHN0cnVjdCBwYWdlICpwYWdlKQ0KPj4+PiBAQCAtNTA2NywxMiArNTA4
-NywxOSBAQCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciANCj4+Pj4gKmJ0cmZzX2Nsb25lX2V4dGVudF9i
-dWZmZXIoY29uc3Qgc3RydWN0IGV4dGVudF9idWZmZXIgKnNyYykNCj4+Pj4gwqDCoMKgwqDCoMKg
-wqDCoMKgIHJldHVybiBOVUxMOw0KPj4+PiDCoMKgwqDCoMKgIGZvciAoaSA9IDA7IGkgPCBudW1f
-cGFnZXM7IGkrKykgew0KPj4+PiArwqDCoMKgwqDCoMKgwqAgaW50IHJldDsNCj4+Pj4gKw0KPj4+
-PiDCoMKgwqDCoMKgwqDCoMKgwqAgcCA9IGFsbG9jX3BhZ2UoR0ZQX05PRlMpOw0KPj4+PiDCoMKg
-wqDCoMKgwqDCoMKgwqAgaWYgKCFwKSB7DQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IGJ0cmZzX3JlbGVhc2VfZXh0ZW50X2J1ZmZlcihuZXcpOw0KPj4+PiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCByZXR1cm4gTlVMTDsNCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+Pj4g
-LcKgwqDCoMKgwqDCoMKgIGF0dGFjaF9leHRlbnRfYnVmZmVyX3BhZ2UobmV3LCBwKTsNCj4+Pj4g
-K8KgwqDCoMKgwqDCoMKgIHJldCA9IGF0dGFjaF9leHRlbnRfYnVmZmVyX3BhZ2UobmV3LCBwKTsN
-Cj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGlmIChyZXQgPCAwKSB7DQo+Pj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHB1dF9wYWdlKHApOw0KPj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBidHJm
-c19yZWxlYXNlX2V4dGVudF9idWZmZXIobmV3KTsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgcmV0dXJuIE5VTEw7DQo+Pj4+ICvCoMKgwqDCoMKgwqDCoCB9DQo+Pj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCBXQVJOX09OKFBhZ2VEaXJ0eShwKSk7DQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBT
-ZXRQYWdlVXB0b2RhdGUocCk7DQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBuZXctPnBhZ2VzW2ld
-ID0gcDsNCj4+Pj4gQEAgLTUzMjEsNiArNTM0OCwxOCBAQCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAN
-Cj4+Pj4gKmFsbG9jX2V4dGVudF9idWZmZXIoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8s
-DQo+Pj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gZnJlZV9lYjsNCj4+Pj4gwqDC
-oMKgwqDCoMKgwqDCoMKgIH0NCj4+Pj4gK8KgwqDCoMKgwqDCoMKgIC8qDQo+Pj4+ICvCoMKgwqDC
-oMKgwqDCoMKgICogUHJlYWxsb2NhdGUgcGFnZS0+cHJpdmF0ZSBmb3Igc3VicGFnZSBjYXNlLCBz
-byB0aGF0DQo+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgICogd2Ugd29uJ3QgYWxsb2NhdGUgbWVtb3J5
-IHdpdGggcHJpdmF0ZV9sb2NrIGhvbGQuDQo+Pj4+ICvCoMKgwqDCoMKgwqDCoMKgICovDQo+Pj4+
-ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBidHJmc19hdHRhY2hfc3VicGFnZShmc19pbmZvLCBwKTsN
-Cj4+Pj4gK8KgwqDCoMKgwqDCoMKgIGlmIChyZXQgPCAwKSB7DQo+Pj4+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHVubG9ja19wYWdlKHApOw0KPj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBw
-dXRfcGFnZShwKTsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZXhpc3RzID0gRVJSX1BU
-UigtRU5PTUVNKTsNCj4+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBmcmVlX2ViOw0K
-Pj4+PiArwqDCoMKgwqDCoMKgwqAgfQ0KPj4+PiArDQo+Pj4NCj4+PiBUaGlzIGlzIGJyb2tlbiwg
-aWYgd2UgcmFjZSB3aXRoIGFub3RoZXIgdGhyZWFkIGFkZGluZyBhbiBleHRlbnQgDQo+Pj4gYnVm
-ZmVyIGZvciB0aGlzIHNhbWUgcmFuZ2Ugd2UnbGwgb3ZlcndyaXRlIHRoZSBwYWdlIHByaXZhdGUg
-d2l0aCB0aGUgDQo+Pj4gbmV3IHRoaW5nLCBsb3NpbmcgYW55IG9mIHRoZSB3b3JrIHRoYXQgd2Fz
-IGRvbmUgcHJldmlvdXNseS7CoCBUaGFua3MsDQo+Pg0KPj4gRmlyc3RseSB0aGUgcGFnZSBpcyBs
-b2NrZWQsIHNvIHRoZXJlIHNob3VsZCBiZSBvbmx5IG9uZSB0byBncmFiIHRoZSBwYWdlLg0KPj4N
-Cj4+IFNlY29uZGx5LCBidHJmc19hdHRhY2hfc3VicGFnZSgpIHdvdWxkIGp1c3QgZXhpdCBpZiBp
-dCBkZXRlY3RzIHRoZSANCj4+IHBhZ2UgaXMgYWxyZWFkeSBwcml2YXRlLg0KPj4NCj4+IFNvIHRo
-ZXJlIHNob3VsZG4ndCBiZSBhIHJhY2UuDQo+Pg0KPiBUYXNrMcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgVGFzazINCj4gYWxsb2NfZXh0ZW50X2J1ZmZlcig0
-MDk2KcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYWxsb2NfZXh0ZW50X2J1ZmZlcig0MDk2KQ0KPiAg
-wqAgZmluZF9leHRlbnRfYnVmZmVyLCBub3RoaW5nwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-ZmluZF9leHRlbnRfYnVmZmVyLCBub3RoaW5nDQo+ICDCoMKgwqAgZmluZF9vcl9jcmVhdGVfcGFn
-ZSgxKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGZpbmRfb3JfY3JlYXRlX3BhZ2UoMSkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgd2FpdHMgb24gcGFnZSBsb2NrDQo+
-ICDCoMKgwqDCoMKgIGJ0cmZzX2F0dGFjaF9zdWJwYWdlKCkNCj4gIMKgIHJhZGl4X3RyZWVfaW5z
-ZXJ0KCkNCj4gIMKgIHVubG9jayBwYWdlcw0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBleGl0IGZpbmRfb3JfY3JlYXRlX3BhZ2Uo
-KQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGJ0cmZzX2F0dGFjaF9zdWJwYWdlKCksIEJBRA0KPiANCj4gdGhlcmUncyBkZWZpbml0ZWx5
-IGEgcmFjZSwgYWdhaW4gdGhpcyBpcyB3aHkgdGhlIGNvZGUgZG9lcyB0aGUgY2hlY2sgdG8gDQo+
-IHNlZSBpZiB0aGVyZSdzIGEgcHJpdmF0ZSBhdHRhY2hlZCB0byB0aGUgRUIgYWxyZWFkeS7CoCBU
-aGFua3MsDQoNCmJ0cmZzX2F0dGFjaF9zdWJwYWdlKCkgaXMgYWxyZWFkeSBkb2luZyB0aGUgcHJp
-dmF0ZSBjaGVjay4NCg0KVGhhbmtzLA0KUXUNCg0KPiANCj4gSm9zZWYNCg==
+
+
+On 2020/12/18 =E4=B8=8B=E5=8D=8811:57, David Sterba wrote:
+> On Fri, Dec 18, 2020 at 01:16:59PM +0800, Qu Wenruo wrote:
+>> This small patchset is btrfs_dec_test_*_ordered_extent() refactor durin=
+g
+>> subpage RW support development.
+>>
+>> This is mostly to make btrfs_dev_test_* functions more human readable
+>> and prepare it for calling btrfs_dec_test_first_ordered_extent() in
+>> btrfs_writepage_endio_finish_ordered() where we can have one or more
+>> ordered extents for one bvec.
+>>
+>> Qu Wenruo (2):
+>>    btrfs: make btrfs_dio_private::bytes to be u32
+>>    btrfs: refactor btrfs_dec_test_* functions for ordered extents
+>
+> The idea makes sense but the patches are IMO in wrong order and still
+> leave some u64/u32, eg. in btrfs_dec_test_first_ordered_pending the
+> io_size is still u64 while for btrfs_dec_test_ordered_pending it
+> switches type to u32 (as expected).
+
+That u64 is left there and the reason is explained in the 2nd patch.
+
+Mostly due to iomap requirement.
+
+But I totally get your point.
+
+Thanks,
+Qu
+
+>
+> The type cleanup should be done bottom-up, from the leaf functions
+> upwards. After that, the structure type can be safely switched.
+>
+> I'm not sure what to do with __endio_write_update_ordered, it can take
+> u32 for bytes but internally uses u64 for ordered_bytes, that should be
+> u32 as well. But
+>
+>   7711                 if (ordered_offset < offset + bytes) {
+>   7712                         ordered_bytes =3D offset + bytes - ordere=
+d_offset;
+>   7713                         ordered =3D NULL;
+>   7714                 }
+>
+> expression on line 7712 would need a temporary variable for the u64
+> calculation and then reassign. Maybe such conversions are inevitable so
+> we have clean function API and not pass u64 just because.
+>
+> I like that the hole btrfs_dio_private gets removed so the cleanups are
+> worthwhile, but maybe not trivial.
+>
