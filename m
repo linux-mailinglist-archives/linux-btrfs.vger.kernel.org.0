@@ -2,179 +2,295 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C32C2DF5AE
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Dec 2020 15:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424C62DF5DF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Dec 2020 16:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727449AbgLTOde (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Dec 2020 09:33:34 -0500
-Received: from out20-86.mail.aliyun.com ([115.124.20.86]:58695 "EHLO
-        out20-86.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727251AbgLTOdd (ORCPT
+        id S1727678AbgLTPcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Dec 2020 10:32:09 -0500
+Received: from out20-62.mail.aliyun.com ([115.124.20.62]:43272 "EHLO
+        out20-62.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727495AbgLTPcI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Dec 2020 09:33:33 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436582|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0562625-0.00115523-0.942582;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.J9NOF22_1608474762;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.J9NOF22_1608474762)
-          by smtp.aliyun-inc.com(10.147.42.22);
-          Sun, 20 Dec 2020 22:32:42 +0800
-Date:   Sun, 20 Dec 2020 22:32:41 +0800
+        Sun, 20 Dec 2020 10:32:08 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00331728-0.000233255-0.996449;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.J9Obqog_1608478270;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.J9Obqog_1608478270)
+          by smtp.aliyun-inc.com(10.147.40.44);
+          Sun, 20 Dec 2020 23:31:11 +0800
+Date:   Sun, 20 Dec 2020 23:31:10 +0800
 From:   Eryu Guan <guan@eryu.me>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [RESEND PATCH] btrfs: Add test 154
-Message-ID: <20201220143241.GY3853@desktop>
-References: <20201207153237.1073887-1-nborisov@suse.com>
- <20201207161900.1079190-1-nborisov@suse.com>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     ethanwu <ethanwu@synology.com>, fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2] btrfs: test if rename handles dir item collision
+ correctly
+Message-ID: <20201220153110.GB3853@desktop>
+References: <20201215035906.233272-1-ethanwu@synology.com>
+ <CAL3q7H412cHxC4p7Nx+qLFYJCUzdt5CP4JGw0JtM3jDqycnrog@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201207161900.1079190-1-nborisov@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H412cHxC4p7Nx+qLFYJCUzdt5CP4JGw0JtM3jDqycnrog@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 06:19:00PM +0200, Nikolay Borisov wrote:
-> This test verifies btrfs' free objectid management. I.e it ensures that
-> the first objectid is always 256 in an fs tree.
+On Thu, Dec 17, 2020 at 11:47:49AM +0000, Filipe Manana wrote:
+> On Tue, Dec 15, 2020 at 4:16 AM ethanwu <ethanwu@synology.com> wrote:
+> >
+> > This is a regression test for the issue fixed by the kernel commit titled
+> > "btrfs: correctly calculate item size used when item key collision happens"
+> >
+> > In this case, we'll simply rename many forged filename that cause collision
+> > under a directory to see if rename failed and filesystem is forced readonly.
+> >
+> > Signed-off-by: ethanwu <ethanwu@synology.com>
+> > ---
+> > v2:
+> > - Add a python script to generate the forged name at run-time rather than
+> > from hardcoded names
+> > - Fix , Btrfs->btrfs, and typo mentioned in v1
+> >
+> >  src/btrfs_crc32c_forged_name.py | 92 +++++++++++++++++++++++++++++++++
+> >  tests/btrfs/228                 | 72 ++++++++++++++++++++++++++
+> >  tests/btrfs/228.out             |  2 +
+> >  tests/btrfs/group               |  1 +
+> >  4 files changed, 167 insertions(+)
+> >  create mode 100755 src/btrfs_crc32c_forged_name.py
+> >  create mode 100755 tests/btrfs/228
+> >  create mode 100644 tests/btrfs/228.out
+> >
+> > diff --git a/src/btrfs_crc32c_forged_name.py b/src/btrfs_crc32c_forged_name.py
+> > new file mode 100755
+> > index 00000000..d8abedde
+> > --- /dev/null
+> > +++ b/src/btrfs_crc32c_forged_name.py
+> > @@ -0,0 +1,92 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +import struct
+> > +import sys
+> > +import os
+> > +import argparse
+> > +
+> > +class CRC32(object):
+> > +  """A class to calculate and manipulate CRC32."""
+> > +  def __init__(self):
+> > +    self.polynom = 0x82F63B78
+> > +    self.table, self.reverse = [0]*256, [0]*256
+> > +    self._build_tables()
+> > +
+> > +  def _build_tables(self):
+> > +    for i in range(256):
+> > +      fwd = i
+> > +      rev = i << 24
+> > +      for j in range(8, 0, -1):
+> > +        # build normal table
+> > +        if (fwd & 1) == 1:
+> > +          fwd = (fwd >> 1) ^ self.polynom
+> > +        else:
+> > +          fwd >>= 1
+> > +        self.table[i] = fwd & 0xffffffff
+> > +        # build reverse table =)
+> > +        if rev & 0x80000000 == 0x80000000:
+> > +          rev = ((rev ^ self.polynom) << 1) | 1
+> > +        else:
+> > +          rev <<= 1
+> > +        rev &= 0xffffffff
+> > +        self.reverse[i] = rev
+> > +
+> > +  def calc(self, s):
+> > +    """Calculate crc32 of a string.
+> > +       Same crc32 as in (binascii.crc32)&0xffffffff.
+> > +    """
+> > +    crc = 0xffffffff
+> > +    for c in s:
+> > +      crc = (crc >> 8) ^ self.table[(crc ^ ord(c)) & 0xff]
+> > +    return crc^0xffffffff
+> > +
+> > +  def forge(self, wanted_crc, s, pos=None):
+> > +    """Forge crc32 of a string by adding 4 bytes at position pos."""
+> > +    if pos is None:
+> > +      pos = len(s)
+> > +
+> > +    # forward calculation of CRC up to pos, sets current forward CRC state
+> > +    fwd_crc = 0xffffffff
+> > +    for c in s[:pos]:
+> > +      fwd_crc = (fwd_crc >> 8) ^ self.table[(fwd_crc ^ ord(c)) & 0xff]
+> > +
+> > +    # backward calculation of CRC up to pos, sets wanted backward CRC state
+> > +    bkd_crc = wanted_crc^0xffffffff
+> > +    for c in s[pos:][::-1]:
+> > +      bkd_crc = ((bkd_crc << 8) & 0xffffffff) ^ self.reverse[bkd_crc >> 24]
+> > +      bkd_crc ^= ord(c)
+> > +
+> > +    # deduce the 4 bytes we need to insert
+> > +    for c in struct.pack('<L',fwd_crc)[::-1]:
+> > +      bkd_crc = ((bkd_crc << 8) & 0xffffffff) ^ self.reverse[bkd_crc >> 24]
+> > +      bkd_crc ^= ord(c)
+> > +
+> > +    res = s[:pos] + struct.pack('<L', bkd_crc) + s[pos:]
+> > +    return res
+> > +
+> > +  def parse_args(self):
+> > +    parser = argparse.ArgumentParser()
+> > +    parser.add_argument("-d", default=os.getcwd(), dest='dir',
+> > +                        help="directory to generate forged names")
+> > +    parser.add_argument("-c", default=1, type=int, dest='count',
+> > +                        help="number of forged names to create")
+> > +    return parser.parse_args()
+> > +
+> > +if __name__=='__main__':
+> > +
+> > +  crc = CRC32()
+> > +  wanted_crc = 0x00000000
+> > +  count = 0
+> > +  args = crc.parse_args()
+> > +  dirpath=args.dir
+> > +  while count < args.count :
+> > +    origname = os.urandom (89).encode ("hex")[:-1].strip ("\x00")
+> > +    forgename = crc.forge(wanted_crc, origname, 4)
+> > +    if ("/" not in forgename) and ("\x00" not in forgename):
+> > +      srcpath=dirpath + '/' + str(count)
+> > +      dstpath=dirpath + '/' + forgename
+> > +      file (srcpath, 'a').close()
+> > +      os.rename(srcpath, dstpath)
+> > +      os.system('btrfs fi sync %s' % (dirpath))
+> > +      count+=1;
+> > +
+> > diff --git a/tests/btrfs/228 b/tests/btrfs/228
+> > new file mode 100755
+> > index 00000000..e38da19b
+> > --- /dev/null
+> > +++ b/tests/btrfs/228
+> > @@ -0,0 +1,72 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2020 Synology.  All Rights Reserved.
+> > +#
+> > +# FS QA Test 228
+> > +#
+> > +# Test if btrfs rename handle dir item collision correctly
+> > +# Without patch fix, rename will fail with EOVERFLOW, and filesystem
+> > +# is forced readonly.
+> > +#
+> > +# This bug is going to be fixed by a patch for kernel titled
+> > +# "btrfs: correctly calculate item size used when item key collision happens"
+> > +#
+> > +seq=`basename $0`
+> > +seqres=$RESULT_DIR/$seq
+> > +echo "QA output created by $seq"
+> > +
+> > +here=`pwd`
+> > +tmp=/tmp/$$
+> > +status=1       # failure is the default!
+> > +trap "_cleanup; exit \$status" 0 1 2 3 15
+> > +
+> > +_cleanup()
+> > +{
+> > +       cd /
+> > +       rm -f $tmp.*
+> > +}
+> > +
+> > +# get standard environment, filters and checks
+> > +. ./common/rc
+> > +. ./common/filter
+> > +
+> > +# real QA test starts here
+> > +
+> > +_supported_fs btrfs
+> > +_require_scratch
+> > +_require_command $PYTHON2_PROG python2
+> > +
+> > +rm -f $seqres.full
+> > +
+> > +# Currently in btrfs the node/leaf size can not be smaller than the page
+> > +# size (but it can be greater than the page size). So use the largest
+> > +# supported node/leaf size (64Kb) so that the test can run on any platform
+> > +# that Linux supports.
+> > +_scratch_mkfs "--nodesize 65536" >>$seqres.full 2>&1
+> > +_scratch_mount
+> > +
+> > +#
+> > +# In the following for loop, we'll create a leaf fully occupied by
+> > +# only one dir item with many forged collision names in it.
+> > +#
+> > +# leaf 22544384 items 1 free space 0 generation 6 owner FS_TREE
+> > +# leaf 22544384 flags 0x1(WRITTEN) backref revision 1
+> > +# fs uuid 9064ba52-3d2c-4840-8e26-35db08fa17d7
+> > +# chunk uuid 9ba39317-3159-46c9-a75a-965ab1e94267
+> > +#    item 0 key (256 DIR_ITEM 3737737011) itemoff 25 itemsize 65410
+> > +#    ...
+> > +#
+> > +
+> > +$PYTHON2_PROG $here/src/btrfs_crc32c_forged_name.py -d $SCRATCH_MNT -c 310
+> > +
+> > +ISRW=$(_fs_options $SCRATCH_DEV | grep -w "rw")
+> > +if [ -n "$ISRW" ]; then
+> > +       echo "FS is Read-Write Test OK"
+> > +else
+> > +       echo "FS is Read-Only. Test Failed"
+> > +       status=1
+> > +       exit
+> > +fi
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-
-Some minor issues below, but I'd like btrfs folks to help review to see
-if the free objectid management test is reasonable.
-
-> ---
+> You don't need to print these messages. In case the test fails:
 > 
-> Resend it as I fudged btrfs' mailing list address so the patch didn't get to it.
->  tests/btrfs/154     | 80 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/154.out |  2 ++
->  tests/btrfs/group   |  1 +
->  3 files changed, 83 insertions(+)
->  create mode 100755 tests/btrfs/154
->  create mode 100644 tests/btrfs/154.out
+> 1) There's a warning stack trace in dmesg, that alone makes the test
+> fail since fstests checks for warnings in dmesg and reports the test
+> as failed is any exist;
+> 2) The test script results in python dumping a stack trace, which
+> causes a mismatch with the golden output, therefore making the test
+> fail:
 > 
-> diff --git a/tests/btrfs/154 b/tests/btrfs/154
-> new file mode 100755
-> index 000000000000..6aee204e05cb
-> --- /dev/null
-> +++ b/tests/btrfs/154
-> @@ -0,0 +1,80 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 154
-> +#
-> +# Test correct operation of free objectid related functionality
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_scratch
-> +
-> +
-> +_scratch_mkfs > /dev/null
-> +_scratch_mount
-> +
-> +# create a new subvolume to validate its objectid is initialized accordingly
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/newvol >> $seqres.full 2>&1 \
-> +	|| _fail "couldn't create subvol"
-> +
-> +$BTRFS_UTIL_PROG inspect-internal dump-tree -t1 $SCRATCH_DEV \
-> +	| grep -q "256 ROOT_ITEM"  ||	_fail "First subvol with id 256 doesn't exist"
+> Traceback (most recent call last):
+>   File "/home/fdmanana/git/hub/xfstests/src/btrfs_crc32c_forged_name.py",
+> line 89, in <module>
+>     os.rename(srcpath, dstpath)
+> OSError: [Errno 75] Value too large for defined data type
+> 
+> Anyway, it's a minor thing, if Eryu doesn't like it, I suppose we can
+> remove that if-then-else and just replace it with "echo Silence is
+> golden".
 
-This also requires
+Updated the patch as you suggested.
 
-_require_btrfs_command inspect-internal dump-tree
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> Thank you very much for writing the test case Ethan!
 
-And it's better to explain why '256' is the expected value, where does
-it come from.
+Thanks for the test and review!
 
-> +
-> +# create new file in the new subvolume to validate its objectid is set as
-> +# expected
-> +touch $SCRATCH_MNT/newvol/file1
-> +
-> +# ensure we have consistent view on-disk
-> +sync
-> +
-> +# get output related to the new root's dir entry
-> +output=$($BTRFS_UTIL_PROG inspect-internal dump-tree -t5 $SCRATCH_DEV | grep -A2 "256 DIR_ITEM 1903355334")
-> +
-> +# get the objectid of the new root
-> +new_root_id=$(echo "$output" | awk '/location key/{printf $3}' | tr -d  '(')
-
-I'd dump the output to a tmp file (and the following outputs in the
-test), as saving the output in a variable may cause unexpected results,
-something like ignoring "\n", and make it harder to debug.
-
-> +[ $new_root_id -eq 256 ] || _fail "New root id not equal to 256"
-> +
-> +# the given root should always be item number 2, since it's the only item
-> +item_seq=$(echo "$output" | awk '/item/ {printf $2}')
-
-$AWK_PROG
-
-Thanks,
 Eryu
 
-> +[ $item_seq -eq 2 ] || _fail "New root not at item idx 2"
-> +
-> +# now parse the structure of the new subvol's tree
-> +output=$($BTRFS_UTIL_PROG inspect-internal dump-tree -t256 $SCRATCH_DEV)
-> +
-> +# this is the subvol's own ino
-> +first_ino=$(echo "$output" | awk '/item 0/{printf $4}' | tr -d '(')
-> +[ $first_ino -eq 256 ] || _fail "First ino objectid in subvol not 256"
-> +
-> +# this is ino of first file in subvol
-> +second_ino=$(echo "$output" | awk '/item 4/{printf $4}' | tr -d '(')
-> +[ $second_ino -eq 257 ] || _fail "Second ino objectid in subvol not 257"
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/154.out b/tests/btrfs/154.out
-> new file mode 100644
-> index 000000000000..a18c304305c4
-> --- /dev/null
-> +++ b/tests/btrfs/154.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 154
-> +Silence is golden
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index d18450c7552e..44d33222def0 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -156,6 +156,7 @@
->  151 auto quick volume
->  152 auto quick metadata qgroup send
->  153 auto quick qgroup limit
-> +154 auto quick
->  155 auto quick send
->  156 auto quick trim balance
->  157 auto quick raid
-> --
-> 2.17.1
+> 
+> > +
+> > +# success, all done
+> > +status=0; exit
+> > diff --git a/tests/btrfs/228.out b/tests/btrfs/228.out
+> > new file mode 100644
+> > index 00000000..eae514f0
+> > --- /dev/null
+> > +++ b/tests/btrfs/228.out
+> > @@ -0,0 +1,2 @@
+> > +QA output created by 228
+> > +FS is Read-Write Test OK
+> > diff --git a/tests/btrfs/group b/tests/btrfs/group
+> > index d18450c7..f8021668 100644
+> > --- a/tests/btrfs/group
+> > +++ b/tests/btrfs/group
+> > @@ -228,3 +228,4 @@
+> >  224 auto quick qgroup
+> >  225 auto quick volume seed
+> >  226 auto quick rw snapshot clone prealloc punch
+> > +228 auto quick
+> > --
+> > 2.25.1
+> >
+> 
+> 
+> -- 
+> Filipe David Manana,
+> 
+> “Whether you think you can, or you think you can't — you're right.”
