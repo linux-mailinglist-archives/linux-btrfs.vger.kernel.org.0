@@ -2,100 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0BB2E0009
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 19:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 247172E0013
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 19:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgLUSkM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Dec 2020 13:40:12 -0500
-Received: from mail-db8eur06olkn2044.outbound.protection.outlook.com ([40.92.51.44]:13184
-        "EHLO EUR06-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726000AbgLUSkM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:40:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lQlelWgk7WapNdT4S1yT/hNyzAx6G6rCxlKy5bihZogVuKDuVchoTUj+7PrUjINlxRCjRDfQT+ai/p514v+uiXIVtRACZjIa16PVhulRNdIJIKxhFXRXZZGdXkFR5cpErCIpAy9cVIm1FJy7kQz6/DK8RGi3+JeWTg/ResAmIHVGXWc5CaxJ1GXSitiofWb1P1KIm3rc9ysQ8QgBbrlxmFwl+blwzFQfajWy5xXkjXV3YHfR1snVJ98CDbVOvx/7KRmnFRqy5t/oe+BG4YIDtvFfpjhinaXHISZjlJYvbr+lygnd4CPqHEQynfWxs85daXI2WNZNME+MTF7qWqOpGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XHiUxgBj5HDgt2rtJ11E9VVYxirtQD8W0Dw7gUWGgqM=;
- b=DexWAZTeP6mMIv1ibdcFGrixG7W9nYNUlDrIE+N+EoEULRG40aQgnnr7x6wAmP3wUt+4G2zEUKgmV8Et4Y9R2M+fOaAKT8Lel3OAq5GrGPcBgNDUrsestF/5jeOKFS7ypKcyjtr7wFl7vUB9yMyyFK/fqIg6aLlSP63QwYBP/2KGo/En/3ZLNuSUIi/mGNyDYEQktalA1hCZJVfRnEeZnZUVOyww+vLSy7v8hEl6w0vtfUUv97HXAwz+SisaGKqqhCk0+Jc8X5RuZlbNmLY66tybGgtOkzxL4SPk6izto/l2oP5jroZhtbR/qE4MoBaz6p6VfpuTCUCSMDA/PzIVvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DB8EUR06FT062.eop-eur06.prod.protection.outlook.com
- (2a01:111:e400:fc35::41) by
- DB8EUR06HT062.eop-eur06.prod.protection.outlook.com (2a01:111:e400:fc35::466)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.22; Mon, 21 Dec
- 2020 18:39:24 +0000
-Received: from AM9P191MB1650.EURP191.PROD.OUTLOOK.COM (2a01:111:e400:fc35::49)
- by DB8EUR06FT062.mail.protection.outlook.com (2a01:111:e400:fc35::393) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.22 via Frontend
- Transport; Mon, 21 Dec 2020 18:39:24 +0000
-Received: from AM9P191MB1650.EURP191.PROD.OUTLOOK.COM
- ([fe80::b49f:86f8:1023:df3d]) by AM9P191MB1650.EURP191.PROD.OUTLOOK.COM
- ([fe80::b49f:86f8:1023:df3d%2]) with mapi id 15.20.3676.030; Mon, 21 Dec 2020
- 18:39:24 +0000
-From:   Claudius Ellsel <claudius.ellsel@live.de>
-To:     Remi Gauvin <remi@georgianit.com>
-CC:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: AW: AW: WG: How to properly setup for snapshots
-Thread-Topic: AW: WG: How to properly setup for snapshots
-Thread-Index: AQHWzwEUMIqawVdWg0mLNgWO6o19JqoBySKLgAAP3ICAAAzDuYAAC52AgAABMIM=
-Date:   Mon, 21 Dec 2020 18:39:24 +0000
-Message-ID: <AM9P191MB1650B4887CF3732391C1E32CE2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
+        id S1727276AbgLUSk6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Dec 2020 13:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727206AbgLUSky (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:40:54 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E913C0611CA
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Dec 2020 10:40:27 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id s26so26010083lfc.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Dec 2020 10:40:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dvP38E8BTxqvNMuVc5kok0zae9+jnLWLCVF97skXr0I=;
+        b=mL14ydlKU1Y+FxcSmVTV0Hf6gljuwT0bQLaAmN0jKro/wb979LlewGTVRLsctl8M+1
+         eVCjYGxh/VxFh1LjOS9udd6OQ3UaxbRGpvBJ6sx/vYk37U8fdhvU0Bp7GiV2WkmhYyFy
+         /Q20BJyeWXFoNKs5JRKxu2bXEv2WJJmDWOGJUmuiJOpeKDWNp0iFlQ3uXWrvhougiMOO
+         fiBMZup3SOGfDHzKV6JiDDyx08YKvQ283lIPay84cTfQOPTVdJS9Gfyn0fuxZTUJA/pa
+         t8/JxksW30K+QFcMKabXw77TEk9PIprcMQNPVwv9RvEaFpSTYQKREXmC0MeVstPNm3vZ
+         ux/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=dvP38E8BTxqvNMuVc5kok0zae9+jnLWLCVF97skXr0I=;
+        b=l/H9tj8/QKDsHuyW7MHIPeqFqjFsRfB3k3W8JHUs6Ic83oCb/oUUaeBJnkumtmvgr4
+         J7xiBVmO0QkMkZU7qT3/1qRW5c2rIN2vpoAtC5vfcYkar4vUe8sW1GG6IzRw7yr4TtCE
+         SlODq+MhtQgP79wu5aeW12uJrX+kN3bxZTmKZhTY4JsFadi9FNhdkUaguodC3QOc+PxG
+         mnajLxNj8+RaxigW9HDpnAW29mbPIhxoOydhkQuSHTOV7P9BVOzZ6RCCrJfiGmTZllLp
+         yf+OL7xFw3GfgW8/0JxWmowwtJEF0icpppo0wwhddDQ58NzyvuSZeM6s3fRgwTSmsn6b
+         rDCg==
+X-Gm-Message-State: AOAM533xkYPNDquuP9V0G+YE0i5LbENblE32UaXPzzmT/UzWgAMapZND
+        7hrzio+LwH5mmmh9DkeyFU8u2QZzrO7+HA==
+X-Google-Smtp-Source: ABdhPJwRaSiZf1Z7uyhsqMs+E5DMeSRcaZ/LMs62Y3CDDYnAI9vKt15PzVeDZ7FhDll9UH6oLjaDzA==
+X-Received: by 2002:a2e:6f17:: with SMTP id k23mr8193204ljc.411.1608576025568;
+        Mon, 21 Dec 2020 10:40:25 -0800 (PST)
+Received: from ?IPv6:2a00:1370:812d:ecb3:590f:aaab:50ba:573b? ([2a00:1370:812d:ecb3:590f:aaab:50ba:573b])
+        by smtp.gmail.com with ESMTPSA id 10sm2170541lfh.208.2020.12.21.10.40.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Dec 2020 10:40:25 -0800 (PST)
+Subject: Re: AW: WG: How to properly setup for snapshots
+To:     Claudius Ellsel <claudius.ellsel@live.de>,
+        Roman Mamedov <rm@romanrm.net>,
+        Remi Gauvin <remi@georgianit.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <AM9P191MB165033908B55F8312178D90AE2CB0@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
  <AM9P191MB1650A1159D554207CB5D738AE2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
  <a68cd516-d6a2-b7ee-744b-d1b0ee83c2df@georgianit.com>
- <AM9P191MB1650AE92A25D9618163309E5E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>,<d93610c2-e8b8-0b79-90fe-ae8104130d96@georgianit.com>
-In-Reply-To: <d93610c2-e8b8-0b79-90fe-ae8104130d96@georgianit.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-incomingtopheadermarker: OriginalChecksum:18EA7EC2B9567AB353D699BEDE1BDEB78EB5172CF7EB197E3A3BC70664C1DBEC;UpperCasedChecksum:8D42D91EB8F5B29F3E7C779F5A248887B47A1BEE69D2E00F03B962143B12D52B;SizeAsReceived:7353;Count:45
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [7b3enfs54d1GpwVxJIqKRMmfraw7kZn5Deljo8+XiM8M4vSSHyD2lOGSmsCbBvJ5]
-x-ms-publictraffictype: Email
-x-incomingheadercount: 45
-x-eopattributedmessage: 0
-x-ms-office365-filtering-correlation-id: 0cd4b68c-6158-4d13-8955-08d8a5dfbd55
-x-ms-traffictypediagnostic: DB8EUR06HT062:
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6MV8nJbUUM+jFGVE0VRKadcQ1Jy+2vZYpO6AvMDilF1NPlEr1BgLxhsbLAdZ+tSYsasnnI9KrQSBI18kepGFt/RJn6mlwvL10YZUz2KXuTHOfNA1tqnpU7LU0jvCNoLrukTaQnMvrq6kBZuEcHosvmAEpptkHU+MniG7M6VWDTRYlzzKwP5J/PyIpgbtyziUmaLjTrMuFgU0ZXAfph9uW/ppYLdS2qHsoeuXJcErvrYSm5oaroX+KfKdOr8x4UP6
-x-ms-exchange-antispam-messagedata: Gq7sY/AutP/hbPVeeVzB6QvL+t5e7QENw402KF8Ij0pgp9UdqN+4uYarXcJ0zBXsJxWrhuwdAQBFzunGEiemtQPlipu6o7TML2+fydgf12VGet4i1LDdOt+Br4MJUSjDzQdFoyJVZEHVNujxcCb7DfaK7rNYcFvAWN9hu7kULI2byi5gjsMbBbV6IllvbX9n+p1WWi+5nRnRc8Z6J6dYNA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <20201221223701.0845e9ad@natsu>
+ <3d45b062-a004-277e-db8b-6826c6b342bb@gmail.com>
+ <AM9P191MB1650526777331A5E93DAADD3E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ mQGiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kbQmQW5kcmV5IEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT6IYAQTEQIAIAUCSXs6NQIbAwYLCQgHAwIE
+ FQIIAwQWAgMBAh4BAheAAAoJEEeizLraXfeMLOYAnj4ovpka+mXNzImeYCd5LqW5to8FAJ4v
+ P4IW+Ic7eYXxCLM7/zm9YMUVbrQmQW5kcmVpIEJvcnplbmtvdiA8YXJ2aWRqYWFyQGdtYWls
+ LmNvbT6IZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AFAliWAiQCGQEACgkQ
+ R6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE21cAnRCQTXd1hTgcRHfpArEd/Rcb5+Sc
+ uQENBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw15A5asua10jm5It+hxzI9jDR9/bNEKDTK
+ SciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/RKKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmm
+ SN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaNnwADBwQAjNvMr/KBcGsV/UvxZSm/mdpv
+ UPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPRgsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YI
+ FpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhYvLYfkJnc62h8hiNeM6kqYa/x0BEddu92
+ ZG6IRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhdAJ48P7WDvKLQQ5MKnn2D/TI337uA/gCg
+ n5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <8b6c458b-5fab-2209-9d5a-d40f55de5c00@gmail.com>
+Date:   Mon, 21 Dec 2020 21:40:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-AuthSource: DB8EUR06FT062.eop-eur06.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cd4b68c-6158-4d13-8955-08d8a5dfbd55
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2020 18:39:24.4539
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Internet
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8EUR06HT062
+In-Reply-To: <AM9P191MB1650526777331A5E93DAADD3E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-TmljZSwgdGhhbmtzIGZvciBjbGFyaWZ5aW5nIGl0LCB0aGF0IGlzIGEgZmlyc3Qgc3RlcCB0b3dh
-cmRzIGNsZWFyaW5nIHVwIG15IGNvbmZ1c2lvbiDwn5mCCgpWb246IFJlbWkgR2F1dmluIDxyZW1p
-QGdlb3JnaWFuaXQuY29tPgpHZXNlbmRldDogTW9udGFnLCAyMS4gRGV6ZW1iZXIgMjAyMCAxOToz
-MgpBbjogQ2xhdWRpdXMgRWxsc2VsIDxjbGF1ZGl1cy5lbGxzZWxAbGl2ZS5kZT4KQ2M6IGxpbnV4
-LWJ0cmZzIDxsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmc+CkJldHJlZmY6IFJlOiBBVzogV0c6
-IEhvdyB0byBwcm9wZXJseSBzZXR1cCBmb3Igc25hcHNob3RzIArCoApPbiAyMDIwLTEyLTIxIDE6
-MDQgcC5tLiwgQ2xhdWRpdXMgRWxsc2VsIHdyb3RlOgoKPiAKPiBJIHN0aWxsIGRvdWJ0IHRoYXQg
-YSBiaXQsIGBzdWRvIGJ0cmZzIHN1YnZvbHVtZSBsaXN0IC9tZWRpYS9jbGVsL05BU2AgKHdoaWNo
-IGlzIHdoZXJlIEkgbW91bnQgdGhlIHZvbHVtZSB3aXRoIGFuIGZzdGFiIGVudHJ5IGJhc2VkIG9u
-IHRoZSBVVUlEKSBkb2VzIG5vdCBvdXRwdXQgYW55dGhpbmcuIEFkZGl0aW9uYWxseSBJIHJlYWQg
-KEkgZ3Vlc3Mgb24gYSByZWRkaXQgcG9zdCkgdGhhdCBpbiB0aGlzIGNhc2Ugb25lIGhhcyB0byBj
-cmVhdGUgYSBzdWJ2b2x1bWUgZmlyc3QuIFRoYXQgbWlnaHQgaGF2ZSBiZWVuIHByb2JsZW1hdGlj
-IGluZm9ybWF0aW9uLCB0aG91Z2guCj4gCj4KCk9rLCB5b3UgZ290IG1lIHRoZXJlLsKgIFRlY2hu
-aWNhbGx5LCB0aGUgZmlsZSBzeXN0ZW0gcm9vdCBpcyBub3QgYQoqU3ViKnZvbHVtZSwgYmVjYXVz
-ZSBpdCdzIG5vdCAqc3ViKiB0byBhbnl0aGluZy4uLiBidXQgeW91IGNhbiBzdGlsbAptYWtlIHNu
-YXBzaG90cyBvZiBpdCwganVzdCBhcyBJIGRlc2NyaWJlZC4=
+21.12.2020 21:35, Claudius Ellsel пишет:
+> I was aware that snapshots are basically subvolumes. Currently I am looking for an easy way to achieve what I want. I currently just want to be able to create manual snapshots
+
+btrfs subvolume snapshot / /snapshot
+
+> and an easy way to restore stuff on file level.
+
+cp /snapshot/sub/dir/file /sub/dir/file
+
+> For that (including the management of snapshots), snapper seems to be the best way, as btrfs does not offer such features (in an easy way) out of the box afaict.
+
+Yes, btrfs does not reimplement cron in kernel space.
+
+> 
+> Unfortunately the documentation for snapper is also not nice, I just had a closer look again. The best I could find was the Arch wiki but that also starts right away with how to create a config (without telling whether that is even needed for basic usage).
+> 
+> Ultimately I'd like to have a btrfs Wiki entry for snapshots and am willing to help with it.
+> 
+> Von: Andrei Borzenkov <arvidjaar@gmail.com>
+> Gesendet: Montag, 21. Dezember 2020 19:26
+> An: Roman Mamedov <rm@romanrm.net>; Remi Gauvin <remi@georgianit.com>
+> Cc: Claudius Ellsel <claudius.ellsel@live.de>; linux-btrfs <linux-btrfs@vger.kernel.org>
+> Betreff: Re: WG: How to properly setup for snapshots 
+>  
+> 21.12.2020 20:37, Roman Mamedov пишет:
+>> On Mon, 21 Dec 2020 12:05:37 -0500
+>> Remi Gauvin <remi@georgianit.com> wrote:
+>>
+>>> I suggest making a new Read/Write subvolume to put your snapshots into
+>>>
+>>> btrfs subvolume create .my_snapshots
+>>> btrfs subvolume snapshot -r /mnt_point /mnt_point/.my_snapshots/snapshot1
+>>
+>> It sounds like this could plant a misconception right from the get go.
+>>
+>> You don't really put snapshot* "into" a subvolume. Subvolumes do not actually
+>> contain other subvolumes, since making a snapshot of the "parent" won't
+>> include any content of the subvolumes with pathnames below it.
+>>
+>> As such there's no benefit in storing snapshots "inside" a subvolume. There's
+> 
+> Having dedicated subvolume containing snapshots makes it easy to switch
+> your root between subvolumes (either for roll back or transactional
+> updates or whatever) and retain access to snapshots by simply mounting
+> containing subvolume. Having them in subdirectory of your (root)
+> subvolume means you can no more remove this subvolume without also
+> destroying snapshots before, so you are stuck with it.
+> 
+> So it makes all sort of sense to think in advance and prepare dedicated
+> subvolume for this purpose.
+> 
+>> not much of the "inside". Might as well just create a regular directory for
+>> that -- and with less potential for confusion.
+>>
+>> * - keep in mind that "snapshot" and "subvolume" mean the same thing in Btrfs,
+>>      the only difference being that "snapshot"-subvolume started its life as
+>>      being a full copy(-on-write) of some other subvolume.
+>>
+
