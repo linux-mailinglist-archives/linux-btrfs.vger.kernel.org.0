@@ -2,113 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29992DFFD9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 19:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC4F2DFFEE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 19:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbgLUSd7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Dec 2020 13:33:59 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:39829 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgLUSd6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:33:58 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id E74EF893;
-        Mon, 21 Dec 2020 13:32:52 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 21 Dec 2020 13:32:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=subject:to:references:cc:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=d
-        m2YQ/+xM3pzUm8SVGDrEjnGpynJ8hqGn/z78OAFZZk=; b=4mSgxduFdKIDUP4/u
-        uFp/DDLaVqzSGYciJilHy9/x9FDX1Dsxpq+PyAW/qMEDZAnA1S2XFZFmJb/hRNQg
-        042O42+0AxAWbVgmHX6niB3BdN4x0LQg9f/+tYPquWzNG89dUrKqqDFmZ2SjbJ2f
-        qfn5AxwJHZzoI6KsX2XLm5Ma4o6xCvqfARL/ZkDDJOfea7ImifGatKYnxHNVh/qE
-        l9LP1F+7MK+LFJji0/ysQlRYinwYQZ7ATQUPfKBU+m/vtLjjaSXh1rL4h7gXDXou
-        uiRJOVQ/gF1R4UBq1InJhiMB+41nbF/zODDQsaeIPEc+ggESGFpLv94UQDpNt1eE
-        YwiIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=dm2YQ/+xM3pzUm8SVGDrEjnGpynJ8hqGn/z78OAFZ
-        Zk=; b=MpY1tRFC3jAjTNLdSZQTix7xnZtT6GooMCx4lWJQJZd/RP6Kl2a2gO+10
-        T9xsZYMOPf2y+FIAV0wxLWpBDAR8tjKe7yISmdUZIY/DkYUHdTraf0ZDY9RtZnYL
-        fq0FDLrtMvC47/xIoHh9OCq1XJ8pktAzsj6YyGAILR5AmMSpyGEapiL9SxxUiQk1
-        lYuTSlJCyvX+J1fK5zO5+tPpKyJBf4Tnc5bs3kURxol6C1Cg8yAbSJDGOuvsS7eg
-        E10Oo1sUCA/v//F7S41WICtbzFQWJkZ5WrVeEdXO/ujou7oNBoY8dc6JPj1nExbh
-        6LWZHNBgvAFI0qk2imgZgJ0uqCzlw==
-X-ME-Sender: <xms:VOrgXxhztwrdnesfQO5xUJZWU-2o8GeMfilErvuENZVN0orMBS-MFw>
-    <xme:VOrgX2CtmZNrBSouzh_cRne159Kih_Y0GfUuQk4nN6J9g7SkDK7pDSNTrnwZNX5Zf
-    iFE_lsySs6GovdyRw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtvddguddujecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeftvghm
-    ihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecuggftrf
-    grthhtvghrnhephffgfeeutddtudfhudejkeejudevledtudeufffhhfeukeejkeekiedt
-    fffhffeinecukfhppeduledvrddtrddvfeelrddufedtnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdr
-    tghomh
-X-ME-Proxy: <xmx:VOrgXxFqE_YJdzfDUHM7vOjdesJeUMdgmJa8MDznRp9nH3M32l3gUg>
-    <xmx:VOrgX2TbHgLSIFJYGyTiVP5OvDXaXb8tn_nhdxa0ZjFbMX2iVB7yOA>
-    <xmx:VOrgX-wFs9Tnes3gJQyK_uyLXL_R49sq2BAKTX-8KeLY7gZ79WrbUw>
-    <xmx:VOrgXzssIphEiLDyAAUhC1MtHPmKetAwIMB-uvhNjsQQ2qJlSUOC0Q>
-Received: from [10.0.0.6] (192-0-239-130.cpe.teksavvy.com [192.0.239.130])
-        by mail.messagingengine.com (Postfix) with ESMTPA id F128E108005B;
-        Mon, 21 Dec 2020 13:32:51 -0500 (EST)
-Subject: Re: AW: WG: How to properly setup for snapshots
-To:     Claudius Ellsel <claudius.ellsel@live.de>
+        id S1727084AbgLUSgq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 21 Dec 2020 13:36:46 -0500
+Received: from mail-db8eur06olkn2021.outbound.protection.outlook.com ([40.92.51.21]:9995
+        "EHLO EUR06-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727058AbgLUSgp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Dec 2020 13:36:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gzwh3ydpYk3bqMVM3RRhHGZ6sj1MEcWM/oqk9v+fjckyRCYSmOVG/GUPeBK5SAvocGOr8tjuIXPpx/MMjRevGZo/hpKDpRE2QcXYtS2OAAIBnQ7wU7eUhMgrAcmaD3F8L0aPiet+Ifmpdv23Sh4gSQDmvaLrmriteOK6H/oCec5Ty/rjUUz78rYiQrfyoupwveH7PjL6v0j+VA7IKLNGh81TOehOtCT/LRnwlo98J6AfifvObaqrCIpy8dex1wfHLH7m0qXIfi71bQVoCPIuetTY9xMDOkExpBJ/Ul8hSDXlLC2foo3TS0LhwfiCW0520oL/LYnAImr+St/wJ5KyoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WLjGFhDx2rLOOkRxbYh2V37Krg2aH/zWcUw/1MmmLSc=;
+ b=nrnfrCyEzBZGE5NLGK2SWTWO87DeVsvTjf0fDFi75JXYo3mi8g8uiY8qN5YeZsjsSRZMoc45ECjpmfFJqPAI0StvuMUMY4PWy6VO70eDk0WG6/apAUjSoMuWTmwnL+OCYOVBF/rI721T4tutgOskmgs/1EQ5mFd2HHWSGVTvU9AFQHiQ4BUCoh06s6txe+HbEJb5leZKbDkpS6TTW7XeP6QLAiexgIzqMoQOOAeOSXI3D0o9fLh1bn9pS/L4D5EyrY0FETiT95sLcjKxujSpGDLbbTopH+l6V80/zfIzQCnDndBQAzMjvWIYwx6Kp5cz93DcOprWIYXESoLygMFJ7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DB8EUR06FT062.eop-eur06.prod.protection.outlook.com
+ (2a01:111:e400:fc35::4e) by
+ DB8EUR06HT116.eop-eur06.prod.protection.outlook.com (2a01:111:e400:fc35::384)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.22; Mon, 21 Dec
+ 2020 18:35:57 +0000
+Received: from AM9P191MB1650.EURP191.PROD.OUTLOOK.COM (2a01:111:e400:fc35::49)
+ by DB8EUR06FT062.mail.protection.outlook.com (2a01:111:e400:fc35::393) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.22 via Frontend
+ Transport; Mon, 21 Dec 2020 18:35:57 +0000
+Received: from AM9P191MB1650.EURP191.PROD.OUTLOOK.COM
+ ([fe80::b49f:86f8:1023:df3d]) by AM9P191MB1650.EURP191.PROD.OUTLOOK.COM
+ ([fe80::b49f:86f8:1023:df3d%2]) with mapi id 15.20.3676.030; Mon, 21 Dec 2020
+ 18:35:57 +0000
+From:   Claudius Ellsel <claudius.ellsel@live.de>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Roman Mamedov <rm@romanrm.net>,
+        Remi Gauvin <remi@georgianit.com>
+CC:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: AW: WG: How to properly setup for snapshots
+Thread-Topic: WG: How to properly setup for snapshots
+Thread-Index: AQHWzwEUMIqawVdWg0mLNgWO6o19JqoBySKLgAAP3ICAABZ5d4AAAT84
+Date:   Mon, 21 Dec 2020 18:35:57 +0000
+Message-ID: <AM9P191MB1650526777331A5E93DAADD3E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
 References: <AM9P191MB165033908B55F8312178D90AE2CB0@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
  <AM9P191MB1650A1159D554207CB5D738AE2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
  <a68cd516-d6a2-b7ee-744b-d1b0ee83c2df@georgianit.com>
- <AM9P191MB1650AE92A25D9618163309E5E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-From:   Remi Gauvin <remi@georgianit.com>
-Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
- keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
- CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
- sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
- t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
- 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
- AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBTwQTAQgAOQIbIwYLCQgH
- AwIGFQgCCQoLBBYCAwECHgECF4AWIQSSAGs/9alRnpiyqu3vU5/yR0VqbQUCX0/x5AAKCRDv
- U5/yR0VqbQ7KB/4+uGx/8cGdUrEhF3z6uBzvGrEfRoPLC6rLzjYntv9WC/s5IvaN1JY21D0e
- eJ69jh6tWOUCsD9X3J2tqGGs7LoRsK7UASFp7yYBVAvnjk103rZur7whHiT57/Oc5DEghXHK
- xs6w6YW4kPlJpe4SiPKK99f3PoZKthCdmLApUGHz7ROCbOXumpxZR3Em2LaGU8MI/R1eMCwK
- agzPl3dQGxcVlerDyCAtF1MzMw7LS/pAT/jxuEoq6hbkZ9/ZnCQomQe4CgWkmoD5Ec7p1FCI
- jqU5RO467uF0vkeTU6F+n2/qA38M0FAhYwZU+/hlqP8OYey2X0PuHDzw03P95hcpEi52uQEN
- BFogjcYBCACjRjoVfzhCwOlHyQUSoyGmSN5VClvBiGoGAgUlPlwExClmweac6ClhTQmjw/ej
- AdQW7nr2DqPj7BK5tuHb5u1YvRCgVlyeDRrb+Peof3yD2UCfxmCiHFq+bBgg23tv4sR4OgG+
- rSz/Rl5fHjsw6ZuNE6rwv+BA5hshagks7Z6bLGZWjUWDTQUqRu4ISAk9bxT/tVfgQVhoiE9C
- /8reamfJZcirmW+KIwIfPESPMGH/fkNMvDKYN2a3NaBy7WvNnqPaz7htPETyZhd3iXZeiefu
- /jjyDC9CZknwQ+mU7+lZ70WghLKI3FmdA0JUQ72Uxqco8WmF9UeonVYS1gyIvFORABEBAAGJ
- ATYEGAEIACACGwwWIQSSAGs/9alRnpiyqu3vU5/yR0VqbQUCX0/x5AAKCRDvU5/yR0VqbdSW
- CADCAV68zw465qHEouJbrMLlm6jWFM7qNt0/us5KyDmxHm64x0dzHWNtlfklZ2OO3llgem9V
- 8JqVU335usScXKfp9PERa8MfK06XCYC9+TgBwsH6N6XM3HuWlvRQctqg/tPj8JGvo+PnOnB7
- OpLaIsONJXJApKNKcQxu5ZazZB4Wa5MTgqta6A7Ue1zVkoIPI/fQXlIUuWLaL+x5SMisHeLr
- MYwpA4h8UI3Wj8m1uO8+GKcwe8O/77o2H6PufoLHc4/MmODExRgxNZ48F2DZFopBT8RQO8Hv
- 2zadWA60y8/LX84GsNS7IPYrYZ10NCXOt8a1+wcSaCVYRm24Yc1/Fktj
-Message-ID: <d93610c2-e8b8-0b79-90fe-ae8104130d96@georgianit.com>
-Date:   Mon, 21 Dec 2020 13:32:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ <20201221223701.0845e9ad@natsu>,<3d45b062-a004-277e-db8b-6826c6b342bb@gmail.com>
+In-Reply-To: <3d45b062-a004-277e-db8b-6826c6b342bb@gmail.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-incomingtopheadermarker: OriginalChecksum:3535DD0AC0A7A8EDB3E5077E2B73719C50763CE549FEF3A614CD5201687E8BF5;UpperCasedChecksum:7651F12593AB3710DE90D4C7A804568E51D425E92C35FBDA0E28062904003F47;SizeAsReceived:7356;Count:45
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [IzR8k1CM+4LzDS58om80qBPoD0uWpZ18AqrDlqUsBjZE3IKbLy8ZkiRwXe2dAQgJ]
+x-ms-publictraffictype: Email
+x-incomingheadercount: 45
+x-eopattributedmessage: 0
+x-ms-office365-filtering-correlation-id: cf7654ed-64f9-4bf1-0e67-08d8a5df41f4
+x-ms-traffictypediagnostic: DB8EUR06HT116:
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UEHjParJWv9jlKvpqxwfMUROVQZDP2peZ1zhg77i7Wpd8dpIjr+ecrWgSQygKKMxR+6PSFxBnZBVWkJupdDIICSJpr6v8i9JOKj5JH7qMkHoV7p6H4lcxzhAT1qeLc8i6ewIpODlhGujxQ4biKYUBXV352GqvOTCZl4SdHxTfjATWBi0tZ22tqJPHsCiDCl2QYswkELbk32AlxKYR5RDkFbRLuWeF6/r5b7YSXa+Lyp654nJW9ARKcJn5swCXYnw
+x-ms-exchange-antispam-messagedata: weXN1BGbAdJeDTQLcFa3iKtUgyRIKSSKjyBIhyF46q0zsi5v9exIbi7ZPt24O8SMEkTaph4cje4FSPsogUkPcqIjb0YTbsIDZzT7HsHcTExGDwqq544IBvi2L+D22Haml8S4aVcijj2toC4C7in6NufC4EWt6kI5Z0VlWQcJUblBEnfp0dw6sqJssfIWzvQFZVPc/oyltrwZA4apzcI4wQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <AM9P191MB1650AE92A25D9618163309E5E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-AuthSource: DB8EUR06FT062.eop-eur06.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf7654ed-64f9-4bf1-0e67-08d8a5df41f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2020 18:35:57.4882
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Internet
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8EUR06HT116
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2020-12-21 1:04 p.m., Claudius Ellsel wrote:
+I was aware that snapshots are basically subvolumes. Currently I am looking for an easy way to achieve what I want. I currently just want to be able to create manual snapshots and an easy way to restore stuff on file level. For that (including the management of snapshots), snapper seems to be the best way, as btrfs does not offer such features (in an easy way) out of the box afaict.
 
-> 
-> I still doubt that a bit, `sudo btrfs subvolume list /media/clel/NAS` (which is where I mount the volume with an fstab entry based on the UUID) does not output anything. Additionally I read (I guess on a reddit post) that in this case one has to create a subvolume first. That might have been problematic information, though.
-> 
->
+Unfortunately the documentation for snapper is also not nice, I just had a closer look again. The best I could find was the Arch wiki but that also starts right away with how to create a config (without telling whether that is even needed for basic usage).
 
-Ok, you got me there.  Technically, the file system root is not a
-*Sub*volume, because it's not *sub* to anything... but you can still
-make snapshots of it, just as I described.
+Ultimately I'd like to have a btrfs Wiki entry for snapshots and am willing to help with it.
+
+Von: Andrei Borzenkov <arvidjaar@gmail.com>
+Gesendet: Montag, 21. Dezember 2020 19:26
+An: Roman Mamedov <rm@romanrm.net>; Remi Gauvin <remi@georgianit.com>
+Cc: Claudius Ellsel <claudius.ellsel@live.de>; linux-btrfs <linux-btrfs@vger.kernel.org>
+Betreff: Re: WG: How to properly setup for snapshots 
+š
+21.12.2020 20:37, Roman Mamedov ÐÉÛÅÔ:
+> On Mon, 21 Dec 2020 12:05:37 -0500
+> Remi Gauvin <remi@georgianit.com> wrote:
+> 
+>> I suggest making a new Read/Write subvolume to put your snapshots into
+>>
+>> btrfs subvolume create .my_snapshots
+>> btrfs subvolume snapshot -r /mnt_point /mnt_point/.my_snapshots/snapshot1
+> 
+> It sounds like this could plant a misconception right from the get go.
+> 
+> You don't really put snapshot* "into" a subvolume. Subvolumes do not actually
+> contain other subvolumes, since making a snapshot of the "parent" won't
+> include any content of the subvolumes with pathnames below it.
+> 
+> As such there's no benefit in storing snapshots "inside" a subvolume. There's
+
+Having dedicated subvolume containing snapshots makes it easy to switch
+your root between subvolumes (either for roll back or transactional
+updates or whatever) and retain access to snapshots by simply mounting
+containing subvolume. Having them in subdirectory of your (root)
+subvolume means you can no more remove this subvolume without also
+destroying snapshots before, so you are stuck with it.
+
+So it makes all sort of sense to think in advance and prepare dedicated
+subvolume for this purpose.
+
+> not much of the "inside". Might as well just create a regular directory for
+> that -- and with less potential for confusion.
+> 
+> * - keep in mind that "snapshot" and "subvolume" mean the same thing in Btrfs,
+>šššš the only difference being that "snapshot"-subvolume started its life as
+>šššš being a full copy(-on-write) of some other subvolume.
+> 
