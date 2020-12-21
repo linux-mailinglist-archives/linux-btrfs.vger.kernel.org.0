@@ -2,155 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247172E0013
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 19:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F056D2E015F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 21:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727276AbgLUSk6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Dec 2020 13:40:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727206AbgLUSky (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Dec 2020 13:40:54 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E913C0611CA
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Dec 2020 10:40:27 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id s26so26010083lfc.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Dec 2020 10:40:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dvP38E8BTxqvNMuVc5kok0zae9+jnLWLCVF97skXr0I=;
-        b=mL14ydlKU1Y+FxcSmVTV0Hf6gljuwT0bQLaAmN0jKro/wb979LlewGTVRLsctl8M+1
-         eVCjYGxh/VxFh1LjOS9udd6OQ3UaxbRGpvBJ6sx/vYk37U8fdhvU0Bp7GiV2WkmhYyFy
-         /Q20BJyeWXFoNKs5JRKxu2bXEv2WJJmDWOGJUmuiJOpeKDWNp0iFlQ3uXWrvhougiMOO
-         fiBMZup3SOGfDHzKV6JiDDyx08YKvQ283lIPay84cTfQOPTVdJS9Gfyn0fuxZTUJA/pa
-         t8/JxksW30K+QFcMKabXw77TEk9PIprcMQNPVwv9RvEaFpSTYQKREXmC0MeVstPNm3vZ
-         ux/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=dvP38E8BTxqvNMuVc5kok0zae9+jnLWLCVF97skXr0I=;
-        b=l/H9tj8/QKDsHuyW7MHIPeqFqjFsRfB3k3W8JHUs6Ic83oCb/oUUaeBJnkumtmvgr4
-         J7xiBVmO0QkMkZU7qT3/1qRW5c2rIN2vpoAtC5vfcYkar4vUe8sW1GG6IzRw7yr4TtCE
-         SlODq+MhtQgP79wu5aeW12uJrX+kN3bxZTmKZhTY4JsFadi9FNhdkUaguodC3QOc+PxG
-         mnajLxNj8+RaxigW9HDpnAW29mbPIhxoOydhkQuSHTOV7P9BVOzZ6RCCrJfiGmTZllLp
-         yf+OL7xFw3GfgW8/0JxWmowwtJEF0icpppo0wwhddDQ58NzyvuSZeM6s3fRgwTSmsn6b
-         rDCg==
-X-Gm-Message-State: AOAM533xkYPNDquuP9V0G+YE0i5LbENblE32UaXPzzmT/UzWgAMapZND
-        7hrzio+LwH5mmmh9DkeyFU8u2QZzrO7+HA==
-X-Google-Smtp-Source: ABdhPJwRaSiZf1Z7uyhsqMs+E5DMeSRcaZ/LMs62Y3CDDYnAI9vKt15PzVeDZ7FhDll9UH6oLjaDzA==
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr8193204ljc.411.1608576025568;
-        Mon, 21 Dec 2020 10:40:25 -0800 (PST)
-Received: from ?IPv6:2a00:1370:812d:ecb3:590f:aaab:50ba:573b? ([2a00:1370:812d:ecb3:590f:aaab:50ba:573b])
-        by smtp.gmail.com with ESMTPSA id 10sm2170541lfh.208.2020.12.21.10.40.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 10:40:25 -0800 (PST)
-Subject: Re: AW: WG: How to properly setup for snapshots
-To:     Claudius Ellsel <claudius.ellsel@live.de>,
-        Roman Mamedov <rm@romanrm.net>,
-        Remi Gauvin <remi@georgianit.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <AM9P191MB165033908B55F8312178D90AE2CB0@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
- <AM9P191MB1650A1159D554207CB5D738AE2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
- <a68cd516-d6a2-b7ee-744b-d1b0ee83c2df@georgianit.com>
- <20201221223701.0845e9ad@natsu>
- <3d45b062-a004-277e-db8b-6826c6b342bb@gmail.com>
- <AM9P191MB1650526777331A5E93DAADD3E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- mQGiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kbQmQW5kcmV5IEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT6IYAQTEQIAIAUCSXs6NQIbAwYLCQgHAwIE
- FQIIAwQWAgMBAh4BAheAAAoJEEeizLraXfeMLOYAnj4ovpka+mXNzImeYCd5LqW5to8FAJ4v
- P4IW+Ic7eYXxCLM7/zm9YMUVbrQmQW5kcmVpIEJvcnplbmtvdiA8YXJ2aWRqYWFyQGdtYWls
- LmNvbT6IZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AFAliWAiQCGQEACgkQ
- R6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE21cAnRCQTXd1hTgcRHfpArEd/Rcb5+Sc
- uQENBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw15A5asua10jm5It+hxzI9jDR9/bNEKDTK
- SciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/RKKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmm
- SN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaNnwADBwQAjNvMr/KBcGsV/UvxZSm/mdpv
- UPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPRgsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YI
- FpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhYvLYfkJnc62h8hiNeM6kqYa/x0BEddu92
- ZG6IRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhdAJ48P7WDvKLQQ5MKnn2D/TI337uA/gCg
- n5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <8b6c458b-5fab-2209-9d5a-d40f55de5c00@gmail.com>
-Date:   Mon, 21 Dec 2020 21:40:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <AM9P191MB1650526777331A5E93DAADD3E2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1725883AbgLUUC1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Dec 2020 15:02:27 -0500
+Received: from mx.exactcode.de ([144.76.154.42]:53250 "EHLO mx.exactcode.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725820AbgLUUC0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Dec 2020 15:02:26 -0500
+X-Greylist: delayed 944 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Dec 2020 15:02:25 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=exactco.de; s=x;
+        h=To:Date:Message-Id:Subject:Mime-Version:Content-Transfer-Encoding:Content-Type:From; bh=zXZ0qK8Sw0kWK1CpnF7kTAQNMHqfcAXTprD1qHpWo2I=;
+        b=DeHfXkj6lwh/7nxaa5BN1KMynPqUFRToS6X4kkhBmXeX1Gbvj+pscmcflXp9mlypZoXAWkkSffB+NdarE1x7I7Eokk28oevak8Py0sdgkqILgFEVODc7lqXCcWDXwzBW89QJl99DuMjaFuXOQ+7TVG1uWZodKGiQMP1b9uWJEDc=;
+Received: from exactco.de ([90.187.5.221])
+        by mx.exactcode.de with esmtp (Exim 4.82)
+        (envelope-from <rene@exactcode.de>)
+        id 1krR8g-00078p-Lv
+        for linux-btrfs@vger.kernel.org; Mon, 21 Dec 2020 19:46:38 +0000
+Received: from ip5f5af287.dynamic.kabel-deutschland.de ([95.90.242.135] helo=[192.168.0.15])
+        by exactco.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.86_2)
+        (envelope-from <rene@exactcode.de>)
+        id 1krQxi-0001Gr-KH
+        for linux-btrfs@vger.kernel.org; Mon, 21 Dec 2020 19:35:19 +0000
+From:   =?utf-8?Q?Ren=C3=A9_Rebe?= <rene@exactcode.de>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: [BUG] 500-2000% performance regression w/ 5.10
+Message-Id: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
+Date:   Mon, 21 Dec 2020 20:45:50 +0100
+To:     linux-btrfs@vger.kernel.org
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Spam-Score: -0.8 (/)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-21.12.2020 21:35, Claudius Ellsel пишет:
-> I was aware that snapshots are basically subvolumes. Currently I am looking for an easy way to achieve what I want. I currently just want to be able to create manual snapshots
+Hey there,
 
-btrfs subvolume snapshot / /snapshot
+as a long time btrfs user I noticed some some things became very slow
+w/ Linux kernel 5.10. I found a very simple test case, namely extracting
+a huge tarball like:
 
-> and an easy way to restore stuff on file level.
+  tar xf /usr/src/t2-clean/download/mirror/f/firefox-84.0.source.tar.zst
 
-cp /snapshot/sub/dir/file /sub/dir/file
+Why my external, USB3 road-warrior SSD on a Ryzen 5950x this
+went from ~15 seconds w/ 5.9 to nearly 5 minutes in 5.10, or 2000%
 
-> For that (including the management of snapshots), snapper seems to be the best way, as btrfs does not offer such features (in an easy way) out of the box afaict.
+To rule out USB, I also tested a brand new PCIe 4.0 SSD, with
+a similar, albeit not as shocking regression from 5.2 seconds
+to ~34 seconds or=E2=88=AB~650%.
 
-Yes, btrfs does not reimplement cron in kernel space.
+Somehow testing that in a VM did over virtio did not produce
+as different results, although it was already 35 seconds slow
+with 5.9.
 
-> 
-> Unfortunately the documentation for snapper is also not nice, I just had a closer look again. The best I could find was the Arch wiki but that also starts right away with how to create a config (without telling whether that is even needed for basic usage).
-> 
-> Ultimately I'd like to have a btrfs Wiki entry for snapshots and am willing to help with it.
-> 
-> Von: Andrei Borzenkov <arvidjaar@gmail.com>
-> Gesendet: Montag, 21. Dezember 2020 19:26
-> An: Roman Mamedov <rm@romanrm.net>; Remi Gauvin <remi@georgianit.com>
-> Cc: Claudius Ellsel <claudius.ellsel@live.de>; linux-btrfs <linux-btrfs@vger.kernel.org>
-> Betreff: Re: WG: How to properly setup for snapshots 
->  
-> 21.12.2020 20:37, Roman Mamedov пишет:
->> On Mon, 21 Dec 2020 12:05:37 -0500
->> Remi Gauvin <remi@georgianit.com> wrote:
->>
->>> I suggest making a new Read/Write subvolume to put your snapshots into
->>>
->>> btrfs subvolume create .my_snapshots
->>> btrfs subvolume snapshot -r /mnt_point /mnt_point/.my_snapshots/snapshot1
->>
->> It sounds like this could plant a misconception right from the get go.
->>
->> You don't really put snapshot* "into" a subvolume. Subvolumes do not actually
->> contain other subvolumes, since making a snapshot of the "parent" won't
->> include any content of the subvolumes with pathnames below it.
->>
->> As such there's no benefit in storing snapshots "inside" a subvolume. There's
-> 
-> Having dedicated subvolume containing snapshots makes it easy to switch
-> your root between subvolumes (either for roll back or transactional
-> updates or whatever) and retain access to snapshots by simply mounting
-> containing subvolume. Having them in subdirectory of your (root)
-> subvolume means you can no more remove this subvolume without also
-> destroying snapshots before, so you are stuck with it.
-> 
-> So it makes all sort of sense to think in advance and prepare dedicated
-> subvolume for this purpose.
-> 
->> not much of the "inside". Might as well just create a regular directory for
->> that -- and with less potential for confusion.
->>
->> * - keep in mind that "snapshot" and "subvolume" mean the same thing in Btrfs,
->>      the only difference being that "snapshot"-subvolume started its life as
->>      being a full copy(-on-write) of some other subvolume.
->>
+# first bad commit: [38d715f494f2f1dddbf3d0c6e50aefff49519232]
+  btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
+
+Now just this single commit does obviously not revert cleanly,
+and I did not have the time today to look into the rather more
+complex code today.
+
+I hope this helps improve this for the next release, maybe you
+want to test on bare metal, too.
+
+Greetings,
+	Ren=C3=A9	https://youtu.be/NhUMdvLyKJc
+
+--=20
+ ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin, =
+https://exactcode.com
+ https://exactscan.com | https://ocrkit.com | https://t2sde.org | =
+https://rene.rebe.de
 
