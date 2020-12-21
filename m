@@ -2,80 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F056D2E015F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 21:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DA22E0173
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Dec 2020 21:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbgLUUC1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Dec 2020 15:02:27 -0500
-Received: from mx.exactcode.de ([144.76.154.42]:53250 "EHLO mx.exactcode.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgLUUC0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Dec 2020 15:02:26 -0500
-X-Greylist: delayed 944 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Dec 2020 15:02:25 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=exactco.de; s=x;
-        h=To:Date:Message-Id:Subject:Mime-Version:Content-Transfer-Encoding:Content-Type:From; bh=zXZ0qK8Sw0kWK1CpnF7kTAQNMHqfcAXTprD1qHpWo2I=;
-        b=DeHfXkj6lwh/7nxaa5BN1KMynPqUFRToS6X4kkhBmXeX1Gbvj+pscmcflXp9mlypZoXAWkkSffB+NdarE1x7I7Eokk28oevak8Py0sdgkqILgFEVODc7lqXCcWDXwzBW89QJl99DuMjaFuXOQ+7TVG1uWZodKGiQMP1b9uWJEDc=;
-Received: from exactco.de ([90.187.5.221])
-        by mx.exactcode.de with esmtp (Exim 4.82)
-        (envelope-from <rene@exactcode.de>)
-        id 1krR8g-00078p-Lv
-        for linux-btrfs@vger.kernel.org; Mon, 21 Dec 2020 19:46:38 +0000
-Received: from ip5f5af287.dynamic.kabel-deutschland.de ([95.90.242.135] helo=[192.168.0.15])
-        by exactco.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.86_2)
-        (envelope-from <rene@exactcode.de>)
-        id 1krQxi-0001Gr-KH
-        for linux-btrfs@vger.kernel.org; Mon, 21 Dec 2020 19:35:19 +0000
-From:   =?utf-8?Q?Ren=C3=A9_Rebe?= <rene@exactcode.de>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: [BUG] 500-2000% performance regression w/ 5.10
-Message-Id: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
-Date:   Mon, 21 Dec 2020 20:45:50 +0100
-To:     linux-btrfs@vger.kernel.org
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Spam-Score: -0.8 (/)
+        id S1725811AbgLUUPA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Dec 2020 15:15:00 -0500
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:50761 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725780AbgLUUO7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Dec 2020 15:14:59 -0500
+Received: from venice.bhome ([94.37.172.193])
+        by smtp-33.iol.local with ESMTPA
+        id rRZQkW6f0jQzorRZRkJpVZ; Mon, 21 Dec 2020 21:14:17 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1608581657; bh=sinK7+nqS+0EapypsS1MBUW+U6aMecHsaruYEZSOjzw=;
+        h=From;
+        b=hc757YB70B3IaLZawGXdhp+uuKhzuwLgbC82ImXHZ+5IYvoH5rSZqt+bLViO4BZcL
+         +VkJXufywZg8q65eMO4hc0CirkbnxpKYZOfDyqQfG1+MztuBNe6mN3L4Z8BhJy9SRo
+         6nDudL5S6F4FVzmN3JK9unBqhEFCys6qr69ubDK+jwVZ20cJTjvf7VrQ5SdcQyq1r6
+         UzaGP3Ar9JMB0lFR3eprh4imVFwcQt0T06k5NeSMeCyZ++9PtuPGzmsQKt0z3uxI4N
+         Du5VtjCyv53vgHeoCK+9XSmq3kW7QVZs5HdSDdclA2yqrNdOfYTj4xgYlfRiA1apZg
+         YuzKf/AYxgPgQ==
+X-CNFS-Analysis: v=2.4 cv=e6rD9Yl/ c=1 sm=1 tr=0 ts=5fe10219 cx=a_exe
+ a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
+ a=IkcTkHD0fZMA:10 a=y1Y41J7T-ZRrHnSpRBcA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: WG: How to properly setup for snapshots
+To:     Remi Gauvin <remi@georgianit.com>, Roman Mamedov <rm@romanrm.net>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <AM9P191MB165033908B55F8312178D90AE2CB0@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
+ <AM9P191MB1650A1159D554207CB5D738AE2C00@AM9P191MB1650.EURP191.PROD.OUTLOOK.COM>
+ <a68cd516-d6a2-b7ee-744b-d1b0ee83c2df@georgianit.com>
+ <20201221223701.0845e9ad@natsu>
+ <108a3254-f120-b5fe-2b7f-f363cbe34158@georgianit.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <de2abd3d-1306-59b3-2ed6-23f03fc443df@libero.it>
+Date:   Mon, 21 Dec 2020 21:14:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <108a3254-f120-b5fe-2b7f-f363cbe34158@georgianit.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMaYkFiUldUf3cJj1CrNaLBtMa/khFsTRL0hxjZGJa8vhEROhEO/Y3C6BfR1/PQuEm0n9DQZtUhucRQXe2bWfSJc4JINAhGlQ7W5nvZvf3bMHfihqdh4
+ b8yMITKm9PseKG9i7NnvNER47ebAuMd6Od+M0pb1SWPYhue34EHotbRrCW/rvn1WfxD164E/mzOu4ImXfFHiYXGluu7P7xNPNhjmZGHig6q5iTxyLjVl+Drt
+ 6nMOpaqoE7Y/6hV2HnOjWA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey there,
+On 12/21/20 7:14 PM, Remi Gauvin wrote:
+> On 2020-12-21 12:37 p.m., Roman Mamedov wrote:
+> 
+>>
+>> As such there's no benefit in storing snapshots "inside" a subvolume. There's
+>> not much of the "inside". Might as well just create a regular directory for
+>> that -- and with less potential for confusion.
+> 
+> Maybe I was complicating things for a baby step primer,, but there *are*
+> very good benefits to putting snapshots in a subvolume.  That subvolume
+> can be moved into other subvolumes,  A directory that contains ro
+> snapshots can not.
 
-as a long time btrfs user I noticed some some things became very slow
-w/ Linux kernel 5.10. I found a very simple test case, namely extracting
-a huge tarball like:
+A subvolume can be moved everywhere with a simple 'mv' command.
 
-  tar xf /usr/src/t2-clean/download/mirror/f/firefox-84.0.source.tar.zst
+$ btrfs sub crea sub1
+Create subvolume './sub1'
+$ btrfs sub crea sub2
+Create subvolume './sub2'
+$ btrfs sub crea sub1/sub11
+Create subvolume 'sub1/sub11'
+$ btrfs sub crea sub1/sub12
+Create subvolume 'sub1/sub12'
+$ mv sub1 sub2/
+$ find sub2/
+sub2/
+sub2/sub1
+sub2/sub1/sub12
+sub2/sub1/sub11
 
-Why my external, USB3 road-warrior SSD on a Ryzen 5950x this
-went from ~15 seconds w/ 5.9 to nearly 5 minutes in 5.10, or 2000%
+> 
+> This will not matter if your only subvolume is the filesystem root, but
+> if things were later be subdivided into other subvolumes, it will make
+> things much quicker and easier to be able to move the .my_snapshots
+> subvolume.
+> 
+> 
 
-To rule out USB, I also tested a brand new PCIe 4.0 SSD, with
-a similar, albeit not as shocking regression from 5.2 seconds
-to ~34 seconds or=E2=88=AB~650%.
 
-Somehow testing that in a VM did over virtio did not produce
-as different results, although it was already 35 seconds slow
-with 5.9.
-
-# first bad commit: [38d715f494f2f1dddbf3d0c6e50aefff49519232]
-  btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
-
-Now just this single commit does obviously not revert cleanly,
-and I did not have the time today to look into the rather more
-complex code today.
-
-I hope this helps improve this for the next release, maybe you
-want to test on bare metal, too.
-
-Greetings,
-	Ren=C3=A9	https://youtu.be/NhUMdvLyKJc
-
---=20
- ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin, =
-https://exactcode.com
- https://exactscan.com | https://ocrkit.com | https://t2sde.org | =
-https://rene.rebe.de
-
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
