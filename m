@@ -2,297 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607242E05E1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Dec 2020 07:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE352E0737
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Dec 2020 09:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgLVGAT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Dec 2020 01:00:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35490 "EHLO mx2.suse.de"
+        id S1725909AbgLVIa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Dec 2020 03:30:27 -0500
+Received: from mout.gmx.net ([212.227.17.20]:35879 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgLVGAS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Dec 2020 01:00:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608616771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZhGeU0f+l9dVvMW24iTq+amFO3jLJ6BxpK+3zQb/0N4=;
-        b=fzw6COLSjocxkNnKQUeie3J/Lmo2hDknERgAmtPWJdfPEpQkppQaL6HELV2/e5LD1i/SHy
-        fqoTbfJUhxZQ0g3CHRz3HYeqPI3z8Em++WjnN2TShmqp7kT9M8BqMBzjP3+5pCL2jFkuAJ
-        q84mTIgOtrMenB59lRvHRBzgxLPF40M=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BCFBCAE66
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Dec 2020 05:59:31 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: refactor btrfs_dec_test_* functions for ordered extents
-Date:   Tue, 22 Dec 2020 13:59:24 +0800
-Message-Id: <20201222055924.64724-3-wqu@suse.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201222055924.64724-1-wqu@suse.com>
-References: <20201222055924.64724-1-wqu@suse.com>
+        id S1725854AbgLVIa1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Dec 2020 03:30:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608625725;
+        bh=9DQ2iwpmghqHd1zp6UfUM9DIbrXnqj5FhI3t/ETmVZk=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=NlvXTFMdjpiXPchym9fDgqTdGHTufybsG2PX0WqylVMUC5PI6r+9drRkVpmkNP9gA
+         cJBiCaTKsRQEkbcC9gtYJrCv4hKAKLnlxNSNS65nRHVmcCsv/fYCF8vPaoau6nZJt+
+         PGMsW2KOHwK2r0fIJDtXw1fqwxK2vJxOrVdQwGKc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbzyJ-1kLr3D1xRX-00dT7U; Tue, 22
+ Dec 2020 09:28:45 +0100
+To:     =?UTF-8?Q?Ren=c3=a9_Rebe?= <rene@exactcode.de>,
+        linux-btrfs@vger.kernel.org
+References: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [BUG] 500-2000% performance regression w/ 5.10
+Message-ID: <55e24dfb-8985-b972-2cd5-7b810661672d@gmx.com>
+Date:   Tue, 22 Dec 2020 16:28:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WOupkePiS1K7p5N0T6fAd/q5Air/+9JEWRXGnNeinZKSCsc6f89
+ 6l6tCy6S9TZLxw0xTer+9t3g3g1Ysmr3mQNTAheF+b1BhXWLAOdAJNI8RwrMQPiL8x3A1Hf
+ at2WDNCcpdq98CxdBmRa6tio3w/WITnO5AwLNEt0PS8ICQmMyrltZAzHrN7d12WTbY1cnzZ
+ gUR4PyVkudxkwBjJAFKaA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:W5sfgKz6ejE=:eWBuJll6G3RnGwUj6Yw+EP
+ Dge5reZxRlqLgVbZ6ru6nunK0SthpgMAcy96cG0E56C/YcSnP+NIOvxXfTgv70JC3FxKskER1
+ gVRjxlL095uovUAmkRzH5GT57fB8842Jz5gG2ZmWugUgEtkNgsPcRIpKc6BxbWGwEyMo3cIt+
+ Xt0POxAylKPBJnLkFwog87k0frzzQZNZPTnzmVOHerT1IA1kr4CO4JXzjmKlfXgC8r+FbB5OV
+ 4TQ2B/e/jkjmBLvh8y28K4pPCU0aS3AtDF59lnnLRzPTLK+2UX1cs9IfOUqeN05ms/DFcbXzJ
+ kOqHPe48mE20FRrtinHvqmJk01swqWG8Tz/chXn3bH7z6aLzS8kq4HoZJ6RAL68cPNQaQXXC9
+ ThL+3YLr9/89oFyEsWA3jsSS0xvwVC8VdwWcD+GAC7uE4sdJHvm4u/2UTe/zrmHUTZkrKxRFZ
+ Rrry6548n8sT6ogSFz6tWDjP4LfwV1MnPOd1RVfZ1zgReQ2lSHKh+y4bRp5IDWOXuTD2HafwG
+ 77hWpVpVR9MOjcFaSTbDhWa/G7RaSWm1SKg+AUufzRDjlZ/HXDxH46Frp6fB5DDvtZD1pN+km
+ ZfwZIoWqTzfgshOdEdpysyPyZxt1pErx6mqWofmvmGUqS40ZpQOslrzY8g48Mp4nPXkzpSeRy
+ hnSGWNL1UBOdEkaxkuXNY/O6UIkx1xOfoe+cw5JANiQuhNa4yQbsOw5bK2W9p8TlHYpbVEBTj
+ bTWsqgtTVkVvkjBgKRT4DFWA19fO/Ev1b0Ldn5EgBjdQ6HuyfKr2BhmU3dyD+Vu2PwGmW57v2
+ LcQIT2GfKUL9W3sULAMw2LNzp/Bu6okfTRbIOsobqRTNzjaG5dHHYzZltn9iYyptTlt2viQBM
+ WlZed6e75IEnGSa5HvQQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The refactors involves the following modifications:
-- Return bool instead of int
 
-- Parameter update for @cached of btrfs_dec_test_first_ordered_pending()
-  For btrfs_dec_test_first_ordered_pending(), @cached is only used to
-  return the finished ordered extent.
-  Rename it to @finished_ret.
 
-- Comments update
-  * Change one stale comment
-    Which still refers to btrfs_dec_test_ordered_pending(), but the
-    context is calling  btrfs_dec_test_first_ordered_pending().
-  * Follow the common comment style for both functions
-    Add more detailed descriptions for parameters and the return value
-  * Move the reason why test_and_set_bit() is used into the call sites
+On 2020/12/22 =E4=B8=8A=E5=8D=883:45, Ren=C3=A9 Rebe wrote:
+> Hey there,
+>
+> as a long time btrfs user I noticed some some things became very slow
+> w/ Linux kernel 5.10. I found a very simple test case, namely extracting
+> a huge tarball like:
+>
+>    tar xf /usr/src/t2-clean/download/mirror/f/firefox-84.0.source.tar.zs=
+t
+>
+> Why my external, USB3 road-warrior SSD on a Ryzen 5950x this
+> went from ~15 seconds w/ 5.9 to nearly 5 minutes in 5.10, or 2000%
+>
+> To rule out USB, I also tested a brand new PCIe 4.0 SSD, with
+> a similar, albeit not as shocking regression from 5.2 seconds
+> to ~34 seconds or=E2=88=AB~650%.
+>
+> Somehow testing that in a VM did over virtio did not produce
+> as different results, although it was already 35 seconds slow
+> with 5.9.
+>
+> # first bad commit: [38d715f494f2f1dddbf3d0c6e50aefff49519232]
+>    btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
 
-- Change how the return value is calculated
-  The most anti-human part of the return value is:
+This means metadata space is not enough and we go shrink_delalloc() to
+free some metadata space.
 
-    if (...)
-	ret = 1;
-    ...
-    return ret == 0;
+My concern is, why we need to go shrink_delalloc() in the first place.
 
-  This means, when we set ret to 1, the function returns 0.
-  Change the local variable name to @finished, and directly return the
-  value of it.
+Normally either the fs has enough unallocated space (thus we can
+over-commit) or has enough unused metadata space.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c        |  5 +--
- fs/btrfs/ordered-data.c | 99 ++++++++++++++++++++++-------------------
- fs/btrfs/ordered-data.h | 10 ++---
- 3 files changed, 59 insertions(+), 55 deletions(-)
+We only need to shrink delalloc if we have no unallocated space, and not
+enough space for the over-estimated metadata reserve.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index fa9fbed36ec9..93979bdddbd6 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7793,10 +7793,7 @@ static void __endio_write_update_ordered(struct btrfs_inode *inode,
- 					NULL);
- 			btrfs_queue_work(wq, &ordered->work);
- 		}
--		/*
--		 * If btrfs_dec_test_ordered_pending does not find any ordered
--		 * extent in the range, we can exit.
--		 */
-+		/* No ordered extent found in the range, exit. */
- 		if (ordered_offset == last_offset)
- 			return;
- 		/*
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 79d366a36223..e10ab81e85d8 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -297,26 +297,33 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
- }
- 
- /*
-- * this is used to account for finished IO across a given range
-- * of the file.  The IO may span ordered extents.  If
-- * a given ordered_extent is completely done, 1 is returned, otherwise
-- * 0.
-+ * Finish io for one ordered extent across a given range.
-+ * The range can contain several ordered extents.
-  *
-- * test_and_set_bit on a flag in the struct btrfs_ordered_extent is used
-- * to make sure this function only returns 1 once for a given ordered extent.
-+ * @found_ret:	 Return the finished ordered extent
-+ * @file_offset: File offset for the finished io
-+ * 		 Will also be updated to one byte past the range that is
-+ * 		 recordered as finished. This allows caller to walk forward.
-+ * @io_size:	 Length of the finish io range
-+ * @uptodate:	 If the IO finishes without problem.
-  *
-- * file_offset is updated to one byte past the range that is recorded as
-- * complete.  This allows you to walk forward in the file.
-+ * Return true if any ordered extent is finished in the range, and update
-+ * @found_ret and @file_offset.
-+ * Return false otherwise.
-+ *
-+ * NOTE: Although The range can cross multiple ordered extents, only one
-+ * ordered extent will be updated during one call. The caller is responsible
-+ * to iterate all ordered extents in the range.
-  */
--int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
-+bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
-+				   struct btrfs_ordered_extent **finished_ret,
- 				   u64 *file_offset, u64 io_size, int uptodate)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
- 	struct rb_node *node;
- 	struct btrfs_ordered_extent *entry = NULL;
--	int ret;
-+	bool finished = false;
- 	unsigned long flags;
- 	u64 dec_end;
- 	u64 dec_start;
-@@ -324,16 +331,12 @@ int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 
- 	spin_lock_irqsave(&tree->lock, flags);
- 	node = tree_search(tree, *file_offset);
--	if (!node) {
--		ret = 1;
-+	if (!node)
- 		goto out;
--	}
- 
- 	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
--	if (!offset_in_entry(entry, *file_offset)) {
--		ret = 1;
-+	if (!offset_in_entry(entry, *file_offset))
- 		goto out;
--	}
- 
- 	dec_start = max(*file_offset, entry->file_offset);
- 	dec_end = min(*file_offset + io_size,
-@@ -354,39 +357,48 @@ int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 		set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
- 
- 	if (entry->bytes_left == 0) {
--		ret = test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
-+		/* Ensure only one caller can get true returned. */
-+		finished = !test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
- 		/* test_and_set_bit implies a barrier */
- 		cond_wake_up_nomb(&entry->wait);
--	} else {
--		ret = 1;
- 	}
- out:
--	if (!ret && cached && entry) {
--		*cached = entry;
-+	if (finished && finished_ret && entry) {
-+		*finished_ret = entry;
- 		refcount_inc(&entry->refs);
- 	}
- 	spin_unlock_irqrestore(&tree->lock, flags);
--	return ret == 0;
-+	return finished;
- }
- 
- /*
-- * this is used to account for finished IO across a given range
-- * of the file.  The IO should not span ordered extents.  If
-- * a given ordered_extent is completely done, 1 is returned, otherwise
-- * 0.
-+ * Finish io for one ordered extent across a given range.
-+ * The range can only contain one ordered extent.
-+ *
-+ * @cached:	 The cached ordered extent.
-+ * 		 If not NULL, we can skip the tree search and use the ordered
-+ * 		 extent directly.
-+ * 		 Will also be used to store the finished ordered extent.
-+ * @file_offset: File offset for the finished io
-+ * @io_size:	 Length of the finish io range
-+ * @uptodate:	 If the IO finishes without problem.
-+ *
-+ * Return true if the ordered extent is finished in the range, and update
-+ * @cached.
-+ * Return false otherwise.
-  *
-- * test_and_set_bit on a flag in the struct btrfs_ordered_extent is used
-- * to make sure this function only returns 1 once for a given ordered extent.
-+ * NOTE: The range can NOT cross multiple ordered extents.
-+ * Thus caller should ensure the range doesn't cross ordered extents.
-  */
--int btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
--				   u64 file_offset, u64 io_size, int uptodate)
-+bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
-+				    struct btrfs_ordered_extent **cached,
-+				    u64 file_offset, u64 io_size, int uptodate)
- {
- 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
- 	struct rb_node *node;
- 	struct btrfs_ordered_extent *entry = NULL;
- 	unsigned long flags;
--	int ret;
-+	bool finished = false;
- 
- 	spin_lock_irqsave(&tree->lock, flags);
- 	if (cached && *cached) {
-@@ -395,41 +407,36 @@ int btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 	}
- 
- 	node = tree_search(tree, file_offset);
--	if (!node) {
--		ret = 1;
-+	if (!node)
- 		goto out;
--	}
- 
- 	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
- have_entry:
--	if (!offset_in_entry(entry, file_offset)) {
--		ret = 1;
-+	if (!offset_in_entry(entry, file_offset))
- 		goto out;
--	}
- 
--	if (io_size > entry->bytes_left) {
-+	if (io_size > entry->bytes_left)
- 		btrfs_crit(inode->root->fs_info,
- 			   "bad ordered accounting left %llu size %llu",
- 		       entry->bytes_left, io_size);
--	}
-+
- 	entry->bytes_left -= io_size;
- 	if (!uptodate)
- 		set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
- 
- 	if (entry->bytes_left == 0) {
--		ret = test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
-+		/* Ensure only one caller can get true returned. */
-+		finished = !test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
- 		/* test_and_set_bit implies a barrier */
- 		cond_wake_up_nomb(&entry->wait);
--	} else {
--		ret = 1;
- 	}
- out:
--	if (!ret && cached && entry) {
-+	if (finished && cached && entry) {
- 		*cached = entry;
- 		refcount_inc(&entry->refs);
- 	}
- 	spin_unlock_irqrestore(&tree->lock, flags);
--	return ret == 0;
-+	return finished;
- }
- 
- /*
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 0bfa82b58e23..46194c2c05d4 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -152,11 +152,11 @@ btrfs_ordered_inode_tree_init(struct btrfs_ordered_inode_tree *t)
- void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry);
- void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 				struct btrfs_ordered_extent *entry);
--int btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
--				   u64 file_offset, u64 io_size, int uptodate);
--int btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
--				   struct btrfs_ordered_extent **cached,
-+bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
-+				    struct btrfs_ordered_extent **cached,
-+				    u64 file_offset, u64 io_size, int uptodate);
-+bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
-+				   struct btrfs_ordered_extent **finished_ret,
- 				   u64 *file_offset, u64 io_size,
- 				   int uptodate);
- int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
--- 
-2.29.2
 
+Would you please try to provide the `btrfs fi usage` output of your test
+drive?
+My initial guess is, this is related to fs usage/layout.
+
+Thanks,
+Qu
+>
+> Now just this single commit does obviously not revert cleanly,
+> and I did not have the time today to look into the rather more
+> complex code today.
+>
+> I hope this helps improve this for the next release, maybe you
+> want to test on bare metal, too.
+>
+> Greetings,
+> 	Ren=C3=A9	https://youtu.be/NhUMdvLyKJc
+>
