@@ -2,95 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571962E17B5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 04:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C862E17D9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 04:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbgLWDPU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Dec 2020 22:15:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S1726969AbgLWDtZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Dec 2020 22:49:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgLWDPT (ORCPT
+        with ESMTP id S1725938AbgLWDtY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Dec 2020 22:15:19 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088D6C0613D3
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Dec 2020 19:14:39 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id a13so7036830qvv.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Dec 2020 19:14:38 -0800 (PST)
+        Tue, 22 Dec 2020 22:49:24 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BD8C0613D3
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Dec 2020 19:48:44 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id n16so628126wmc.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Dec 2020 19:48:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=2T3/fBWcVoDG+egeRWd0x9kLfSeONfPKghxreFcgGW4=;
-        b=EYXIlmydthsWaZgSj8lTaoG44bL16ldRleyHvZEBe5TShq6bBok0lJu7DbTFvEvm0k
-         QBzhbaQz8UbeenuKRni/xiI7tiyqJmdO9Yc7jttX+evkYWPevL21/yQqmKpOypNBvobV
-         zleEYGoZQ0l0mlI2qF3EzUFJD/i3JR0MKKhyeN3gAxDN2EDjWMXrDqiAKRiHczGp+Jb4
-         O5o0N/Pbid6iUpPZZrDlGubA1HN1SJOwnlteFaD+PwltrzIbjDFrTSKHiFY0kSWEhrCk
-         PGx3/otmYI1ntbrXFGqJq5ZiSRatyGBwpJ+5etl3qkyieEQlNyR66G3dgkNgCvrWQRJZ
-         /jew==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=rOEgaMNj41djjqtwYp1jRZaUM3VAdlrmlIfLlSxLFp8=;
+        b=n2sOskuOs5CwOd7YYkNPGo+m/AEXSjiErzZIpZa6QiA5OU9lS5J/6lz3aVlzcesCKB
+         zZQdMWYtJux4TMGgBOFazpFKn9oNd0aogoXRLAVuxlp+0QuuvjrHN18Rg2fUhRfaytAp
+         8UYpFqL/jTYXa0nRJJu3YogNWvfi+RPbWCC0vMtZIhrjx0iEQ5CLPEP0rbIqLTluIKsZ
+         adWjfxkNwuIHWe5qY9vGd0/1Qk6/0eHKrKEdNuKvkSf5JEfryx9jKudrsiP8TnxPAwVX
+         nt6d+X16u6xKn4NSDhKf88WINBcACx/prgRgkH7Jc9SvoIt9HywUHtPP+RfY5rc9fdVH
+         GmwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2T3/fBWcVoDG+egeRWd0x9kLfSeONfPKghxreFcgGW4=;
-        b=Gviq3c2OLqT6OJyWP5ECmTUgSgZZcQmbGKFjA2E7WVkQw7woE9XEPCzG4BGTQaVB1o
-         cRprXfEmrcYt/MbJihkQJDJNQkSMSFsaJ4MgIhh6aR3XJ1q/+OvlpPN4UEQk6C1MYchG
-         CYml3eOIIZCDj66JglFZktAsh+XEzo145kBOhbkmP4CAQDnvttD07J8UXnvSHyfZB12V
-         ClsfMEPTqOPwKAPU1bV2YJQQo1XOJygCzJLHf5OgLMBWZ2G/3XKTjy/2fPjBRmCYDTsd
-         a1hmfO6DXq+volMYreAiw9GQmosM/kwnN34J5ZZ6vnZmjflntTUv66bkp+AUXZiyDiWO
-         Wylw==
-X-Gm-Message-State: AOAM533ZhiNSJ15QnFnkQk+H7AT5CpRnpqY1nz3Vm9qoxrbmDrOGMl4m
-        dWrqx0Olpeat9jUVGf2E6+W4Dmb8t87BJOfc
-X-Google-Smtp-Source: ABdhPJw16UZTBdd9fr3Czy949AtiDOt8oG7lVGjJfnqC7H6ipHLXhe0k3urBNGYEYRTjuhsQyIx90Q==
-X-Received: by 2002:a05:6214:d05:: with SMTP id 5mr24872939qvh.54.1608693277999;
-        Tue, 22 Dec 2020 19:14:37 -0800 (PST)
-Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 74sm13997257qko.59.2020.12.22.19.14.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 19:14:37 -0800 (PST)
-Subject: Re: [BUG] 500-2000% performance regression w/ 5.10
-To:     =?UTF-8?Q?Ren=c3=a9_Rebe?= <rene@exactcode.de>,
-        linux-btrfs@vger.kernel.org
-References: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <862a1a08-2567-e923-4df2-b2e4fe82f99b@toxicpanda.com>
-Date:   Tue, 22 Dec 2020 22:14:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=rOEgaMNj41djjqtwYp1jRZaUM3VAdlrmlIfLlSxLFp8=;
+        b=VXAY2YDPQokJaVV6ekhRVpPqthHFobNImJLstnGMfBavvnjyaYx446MTbyG+nxZ2+G
+         yBe4YPBPJIwX7OcSAieconiyCzAeb8ZY2jbZKPYxGwfxwsBUzFyWfGm1AmLcEVgeOItq
+         +Q06t3mbvE3EJKHAXXU6ZdGr0+U4e1KyVKUFUNe114sjH9NxX9bhoGbnklncy5ilBQ3L
+         2DfTRqeU3jLezhkC8V3Xx5ySwgIO7kZ+Mo1o0XJ/uOMtO13SSQSgtTLoI+IDF0OAldhT
+         cBEw4Ec80h3qyNPhb/aHxoZKXvm6McnHHQK6egPPKzKtq+PQs3q9yig+UudLPHzl2y7b
+         cPgw==
+X-Gm-Message-State: AOAM533C4EOSvPmUF53couAO3m+mGhGu6rinPnARBcquoJW4fhrdJLsN
+        Qd5/jrhR47prLDyx5coi4Y9ePPkPz9qcLZM1JriX2hH92/mcjc5g
+X-Google-Smtp-Source: ABdhPJwE/ch4wnqjY/yOTSE8Bfiy6sXlOL49kxkjJqVChWOuV6XxAkA0oyIpkjyY5KZuD3MzGbLG0hkBARGd0ffypZI=
+X-Received: by 2002:a1c:9692:: with SMTP id y140mr18450555wmd.128.1608695322764;
+ Tue, 22 Dec 2020 19:48:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 22 Dec 2020 20:48:26 -0700
+Message-ID: <CAJCQCtQZJ8Jo8rX0BL51k5DmC1GEs21CyvmEOhoYDoY=g6XwCw@mail.gmail.com>
+Subject: cp --reflink of inline extent results in two DATA_EXTENT entries
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/21/20 2:45 PM, René Rebe wrote:
-> Hey there,
-> 
-> as a long time btrfs user I noticed some some things became very slow
-> w/ Linux kernel 5.10. I found a very simple test case, namely extracting
-> a huge tarball like:
-> 
->    tar xf /usr/src/t2-clean/download/mirror/f/firefox-84.0.source.tar.zst
-> 
-> Why my external, USB3 road-warrior SSD on a Ryzen 5950x this
-> went from ~15 seconds w/ 5.9 to nearly 5 minutes in 5.10, or 2000%
-> 
-> To rule out USB, I also tested a brand new PCIe 4.0 SSD, with
-> a similar, albeit not as shocking regression from 5.2 seconds
-> to ~34 seconds or∫~650%.
-> 
-> Somehow testing that in a VM did over virtio did not produce
-> as different results, although it was already 35 seconds slow
-> with 5.9.
-> 
-> # first bad commit: [38d715f494f2f1dddbf3d0c6e50aefff49519232]
->    btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
-> 
+Hi,
 
-Eesh that's not great, I'll work it out in the morning, thanks,
+kernel is 5.10.2
 
-Josef
+cp --reflink hi hi2
+
+This results in two EXTENT_DATA items with different offsets,
+therefore I think the data is duplicated in the leaf? Correct? Is it
+expected?
+
+        item 9 key (257 EXTENT_DATA 0) itemoff 15673 itemsize 53
+                generation 435179 type 0 (inline)
+                inline extent data size 32 ram_bytes 174 compression 3 (zstd)
+
+...
+        item 13 key (258 EXTENT_DATA 0) itemoff 15364 itemsize 53
+                generation 435179 type 0 (inline)
+                inline extent data size 32 ram_bytes 174 compression 3 (zstd)
+
+
+The entire file tree containing only these two files follows:
+
+
+file tree key (394 ROOT_ITEM 0)
+leaf 26442252288 items 14 free space 15014 generation 435212 owner 394
+leaf 26442252288 flags 0x1(WRITTEN) backref revision 1
+        item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
+                generation 435123 transid 435212 size 10 nbytes 0
+                block group 0 mode 40755 links 1 uid 1000 gid 1000
+rdev 0
+                sequence 5267 flags 0x0(none)
+                atime 1608689569.708325037 (2020-12-22 19:12:49)
+                ctime 1608694856.721370147 (2020-12-22 20:40:56)
+                mtime 1608694856.721370147 (2020-12-22 20:40:56)
+                otime 1608689569.708325037 (2020-12-22 19:12:49)
+        item 1 key (256 INODE_REF 256) itemoff 16111 itemsize 12
+                index 0 namelen 2 name: ..
+        item 2 key (256 DIR_ITEM 432062026) itemoff 16079 itemsize 32
+                location key (257 INODE_ITEM 0) type FILE
+                transid 435124 data_len 0 name_len 2
+                name: hi
+        item 3 key (256 DIR_ITEM 4216900732) itemoff 16046 itemsize 33
+                location key (258 INODE_ITEM 0) type FILE
+                transid 435196 data_len 0 name_len 3
+                name: hi2
+        item 4 key (256 DIR_INDEX 2) itemoff 16014 itemsize 32
+                location key (257 INODE_ITEM 0) type FILE
+                transid 435124 data_len 0 name_len 2
+                name: hi
+        item 5 key (256 DIR_INDEX 4) itemoff 15981 itemsize 33
+                location key (258 INODE_ITEM 0) type FILE
+                transid 435196 data_len 0 name_len 3
+                name: hi2
+        item 6 key (257 INODE_ITEM 0) itemoff 15821 itemsize 160
+                generation 435124 transid 435212 size 174 nbytes 174
+                block group 0 mode 100644 links 1 uid 1000 gid 1000
+rdev 0
+                sequence 19 flags 0x0(none)
+                atime 1608689574.394444809 (2020-12-22 19:12:54)
+                ctime 1608694856.721370147 (2020-12-22 20:40:56)
+                mtime 1608692923.231038818 (2020-12-22 20:08:43)
+                otime 1608689574.394444809 (2020-12-22 19:12:54)
+        item 7 key (257 INODE_REF 256) itemoff 15809 itemsize 12
+                index 2 namelen 2 name: hi
+        item 8 key (257 XATTR_ITEM 3817753667) itemoff 15726 itemsize 83
+                location key (0 UNKNOWN.0 0) type XATTR
+                transid 435124 data_len 37 name_len 16
+                name: security.selinux
+                data unconfined_u:object_r:unlabeled_t:s0
+        item 9 key (257 EXTENT_DATA 0) itemoff 15673 itemsize 53
+                generation 435179 type 0 (inline)
+                inline extent data size 32 ram_bytes 174 compression 3 (zstd)
+        item 10 key (258 INODE_ITEM 0) itemoff 15513 itemsize 160
+                generation 435196 transid 435196 size 174 nbytes 174
+                block group 0 mode 100644 links 1 uid 1000 gid 1000 rdev 0
+                sequence 34 flags 0x0(none)
+                atime 1608693921.97510335 (2020-12-22 20:25:21)
+                ctime 1608693921.97510335 (2020-12-22 20:25:21)
+                mtime 1608693921.97510335 (2020-12-22 20:25:21)
+                otime 1608693921.97510335 (2020-12-22 20:25:21)
+        item 11 key (258 INODE_REF 256) itemoff 15500 itemsize 13
+                index 4 namelen 3 name: hi2
+        item 12 key (258 XATTR_ITEM 3817753667) itemoff 15417 itemsize 83
+                location key (0 UNKNOWN.0 0) type XATTR
+                transid 435196 data_len 37 name_len 16
+                name: security.selinux
+                data unconfined_u:object_r:unlabeled_t:s0
+        item 13 key (258 EXTENT_DATA 0) itemoff 15364 itemsize 53
+                generation 435179 type 0 (inline)
+                inline extent data size 32 ram_bytes 174 compression 3 (zstd)
+total bytes 31005392896
+bytes used 20153282560
+
+
+
+-- 
+Chris Murphy
