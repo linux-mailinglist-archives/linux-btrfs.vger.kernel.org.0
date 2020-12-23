@@ -2,128 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0EA2E20FD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 20:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E2D2E215B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 21:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgLWTlo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Dec 2020 14:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S1726350AbgLWUc7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Dec 2020 15:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728147AbgLWTlo (ORCPT
+        with ESMTP id S1726159AbgLWUc6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Dec 2020 14:41:44 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E355C06179C
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Dec 2020 11:41:04 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id 22so327202qkf.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Dec 2020 11:41:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=F3x9DORJXAffrCC9iVVE/Ywf1t3nSqNFcq2Lp9kRz7c=;
-        b=otQ+XxFMwKto9TpmT8h6d+ALLtHQY+nU6JjEL0qiC//3acZk6IzwmhdYMg8NdOdzea
-         dSgv7TjAJQEf+z2ViUeoEW+7B0GC2FTY47BPd5l0WO8PlpjFwNc38Z5FlkBPOAzeQcNJ
-         5SYfqS0LAObqddvx3U+hAgwmD0y1eBOI72SqsgskEZbp9m+g+dGULCBsXvywn1e5+PUD
-         1ZnfegYY7GztkuM6FldAcI5+kfUcOYQtAt9dyC+aHXm5s+EnMKNr7THvoFH4tODWbWHB
-         qUaJJ7px7WXrpzHOQQwo0TIB35B+x6PNak+IQ7USozWmjmLTTuYE8Ly37uKpNubE0JQA
-         TH4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=F3x9DORJXAffrCC9iVVE/Ywf1t3nSqNFcq2Lp9kRz7c=;
-        b=FNz/ChjsdTGR2c7RSU0CqHu/oD1sx7Uc4l2pIjWYXto//Qq1n0O+seFAiS7LQjqCsv
-         UGh5Z9a8iZ+aYgMHhcU7C/d5i9aF0nFFGhfz8tk7GdFO1/LyswshE90/xuydXQvspxh/
-         i/3AePkjP7oblHnGC1zkHT7XgyN8pFEg50tXxIx2HotvUmLo4KtXFW5d0Hs1u2xXDp+Y
-         8aUUAEfwdkri3GBFNp557pQNfblPGkE4y2PrEGoApRjBTIuSgU5vTC6Pys/06+fDRcBB
-         o3m4rTc1dbBg++CnYPFihdnbLMNkDEhT9wfXN/QEQqWtF0sGSO+FWqKaBi404Y2msPUB
-         Zsvg==
-X-Gm-Message-State: AOAM531PIk0yxxwCfQlTeJ5z2ZVYvJium5nS4nlF7RCEthfR7bSUze4v
-        iPplzNl01lff0x60c1I2kcnOKs+XBuPc0teW
-X-Google-Smtp-Source: ABdhPJySpUt9gQwtRs3EJiS59zZPoHL1MgMexgQmOhJk7No6VX/peqB6dCI4IMnip8dqbXHs8FVPNA==
-X-Received: by 2002:a37:658d:: with SMTP id z135mr28196065qkb.288.1608752462743;
-        Wed, 23 Dec 2020 11:41:02 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l11sm15225986qtn.83.2020.12.23.11.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 11:41:01 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     rene@exactcode.de, linux-btrfs@vger.kernel.org
+        Wed, 23 Dec 2020 15:32:58 -0500
+Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E35FC061794
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Dec 2020 12:32:18 -0800 (PST)
+Received: from tux.applied-asynchrony.com (p5b07ef82.dip0.t-ipconnect.de [91.7.239.130])
+        by mail.itouring.de (Postfix) with ESMTPSA id 0D85CD31D8E;
+        Wed, 23 Dec 2020 21:31:33 +0100 (CET)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id B8791EEB5C0;
+        Wed, 23 Dec 2020 21:31:32 +0100 (CET)
 Subject: Re: [BUG] 500-2000% performance regression w/ 5.10
-Date:   Wed, 23 Dec 2020 14:41:00 -0500
-Message-Id: <0382080a1836a12c2d625f8a5bf899828eba204b.1608752315.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
+To:     Josef Bacik <josef@toxicpanda.com>, rene@exactcode.de,
+        linux-btrfs@vger.kernel.org
 References: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
+ <0382080a1836a12c2d625f8a5bf899828eba204b.1608752315.git.josef@toxicpanda.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <276b374f-57fe-f354-9571-9f76d743785d@applied-asynchrony.com>
+Date:   Wed, 23 Dec 2020 21:31:32 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0382080a1836a12c2d625f8a5bf899828eba204b.1608752315.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On 2020-12-23 20:41, Josef Bacik wrote:
+> Could you give this a try?  I'm not able to reproduce the problem, but I'm
 
-Could you give this a try?  I'm not able to reproduce the problem, but I'm
-testing inside of a VM.  I'm in the middle of Christmas stuff, but I'll get
-ahold of a giant machine at work tomorrow and see if I can reproduce there.
-Meanwhile can you give this a shot?  I have a sneaking suspicion why it happens
-on your baremetal and not in VM's, and this will be a partial enough of a revert
-of the patch you bisected to validate what I'm thinking.  THanks,
+Since I wanted to rule out NVME/block layer/scheduler etc. I tried and
+could reproduce it immediately, see below. Didn't notice it earlier since
+most of btrfs is read-mostly.. :(
 
-Josef
+> testing inside of a VM.  I'm in the middle of Christmas stuff, but I'll get
+> ahold of a giant machine at work tomorrow and see if I can reproduce there.
+> Meanwhile can you give this a shot?  I have a sneaking suspicion why it happens
+> on your baremetal and not in VM's, and this will be a partial enough of a revert
+> of the patch you bisected to validate what I'm thinking.  THanks,
 
+The patch doesn't apply to 5.10.x since btrfs_start_delalloc_roots() does not
+have the trailing true/false argument yet. I removed it, which seemed to have
+worked. :}
 
-Test this to see if it fixes the problem.
+Results using -dsingle/-msingle/space tree, all on tmpfs:
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/space-info.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+Unpatched:
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 67e55c5479b8..7b2867e915c6 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -480,6 +480,28 @@ static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
- 
- #define EXTENT_SIZE_PER_ITEM	SZ_256K
- 
-+static void btrfs_writeback_inodes_sb_nr(struct btrfs_fs_info *fs_info,
-+					 unsigned long nr_pages, u64 nr_items)
-+{
-+	struct super_block *sb = fs_info->sb;
-+
-+	if (down_read_trylock(&sb->s_umount)) {
-+		writeback_inodes_sb_nr(sb, nr_pages, WB_REASON_FS_FREE_SPACE);
-+		up_read(&sb->s_umount);
-+	} else {
-+		/*
-+		 * We needn't worry the filesystem going from r/w to r/o though
-+		 * we don't acquire ->s_umount mutex, because the filesystem
-+		 * should guarantee the delalloc inodes list be empty after
-+		 * the filesystem is readonly(all dirty pages are written to
-+		 * the disk).
-+		 */
-+		btrfs_start_delalloc_roots(fs_info, nr_items, true);
-+		if (!current->journal_info)
-+			btrfs_wait_ordered_roots(fs_info, nr_items, 0, (u64)-1);
-+       }
-+}
-+
- /*
-  * shrink metadata reservation for delalloc
-  */
-@@ -532,7 +554,8 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
- 
- 	loops = 0;
- 	while ((delalloc_bytes || dio_bytes) && loops < 3) {
--		btrfs_start_delalloc_roots(fs_info, items, true);
-+		unsigned long nr_pages = min(delalloc_bytes, to_reclaim) >> PAGE_SHIFT;
-+		btrfs_writeback_inodes_sb_nr(fs_info, nr_pages, items);
- 
- 		loops++;
- 		if (wait_ordered && !trans) {
--- 
-2.26.2
+kernel tree, ~1.1G:
+$time (cp -a /tmp/linux-5.10.3 /tmp/butter && sync -f /tmp/butter)
+( cp -a /tmp/linux-5.10.3 /tmp/butter && sync -f /tmp/butter; )  0.37s user 3.26s system 6% cpu 52.144 total
 
+-> slow as hell since it's thousands of small files. Writeback runs at ~5-10 MB/s.
+
+large file:
+$fallocate -l 2G /tmp/largefile
+$time (cp -a /tmp/largefile /tmp/butter && sync -f /tmp/butter)
+( cp -a /tmp/largefile /tmp/butter && sync -f /tmp/butter; )  0.00s user 0.91s system 75% cpu 1.215 total
+
+-> OK-ish since it's just one big file.
+
+With your patch & the 'true' arg to btrfs_start_delalloc_roots() removed:
+
+kernel tree:
+$time (cp -a /tmp/linux-5.10.3 /tmp/butter && sync -f /tmp/butter)
+( cp -a /tmp/linux-5.10.3 /tmp/butter && sync -f /tmp/butter; )  0.28s user 2.44s system 60% cpu 4.475 total
+
+rewrite:
+$time (cp -a /tmp/linux-5.10.3 /tmp/butter && sync -f /tmp/butter)
+( cp -a /tmp/linux-5.10.3 /tmp/butter && sync -f /tmp/butter; )  0.28s user 2.87s system 93% cpu 3.357 total
+
+Clearly better.
+
+Hope this helps :)
+
+Holger
