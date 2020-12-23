@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90C32E1548
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 03:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6442E14DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 03:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729069AbgLWCUo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45508 "EHLO mail.kernel.org"
+        id S1729921AbgLWCo7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Dec 2020 21:44:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729059AbgLWCUm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E41752256F;
-        Wed, 23 Dec 2020 02:20:25 +0000 (UTC)
+        id S1728267AbgLWCWo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38E1E22AAF;
+        Wed, 23 Dec 2020 02:22:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690026;
-        bh=7HC+ObMbUp1xd/+6H5gDUxI+7+qfuTziLd2e8cpkwQs=;
+        s=k20201202; t=1608690148;
+        bh=rcEd9V3PmUOto2lFO7lVARuSSzqF2uoUe7iAxMdSA/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jyAdkcbGcaRz0soS79QckBf091q5/aa3StFN6zG8G9ocC+f4124NN4pOLTLOtFj/J
-         qTsQRYvpWmWM/yjOwCdiQ7h23YHCUgN0ObCdApvDAkTM7FD2bEZlidggTLCFNzEuzS
-         6wSwmlztyeshk1uqu7fByW1rKxre4L4zmmmCPc1EyibT6p5Ji2qJnVtR7iNdyMc/jx
-         CWKMcgVn1GX0M2E+eft03ssS+Pfn6UvIddinr/3IoLf2DU4iyjsiN/hzlreHvjdlAp
-         DLC0z0ujD5U1YanCcqd2JjGB8HIV499u93hTRCUxwvd5OCA6MPMKtatLResQyGskMa
-         JKIyeILClcbug==
+        b=mfqOsb7hvvMtjSzHfGDQVWXchtlXJRsYJk31lUKdltazhQmh7Ss+lx66/uoN/6QO5
+         bTnq4pAv0t8GM28jNng/fyMvgU0j4wBSArxufKnxvhlLLYNSkwrONESVTS/FaOU2SY
+         yKwZ7uO14WWBmdwO3F+vWTk0flszCVQ3y3LjwjG2CXpJs3DIVuewCrq1Jqnj677Np7
+         6HItfhwJemazSD7O3s8wq9+OPYx519RZm9vfeKuWgBA0rYCkD/6qxkzpIi5JM5M99b
+         zhbhPNEayHe95JiyC3k9aOMfxJRAEoL1RLLH0o1hkYUnbA24zjMSbEcuPw1x8z9E5v
+         I+rkTY6/ibGpg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 103/130] btrfs: fix race leading to unnecessary transaction commit when logging inode
-Date:   Tue, 22 Dec 2020 21:17:46 -0500
-Message-Id: <20201223021813.2791612-103-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 69/87] btrfs: fix race leading to unnecessary transaction commit when logging inode
+Date:   Tue, 22 Dec 2020 21:20:45 -0500
+Message-Id: <20201223022103.2792705-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
-References: <20201223021813.2791612-1-sashal@kernel.org>
+In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
+References: <20201223022103.2792705-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -141,10 +141,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 54095753f84f0..d0f4629bdfaf8 100644
+index 7b940264c7b9d..865e1e6bf3d9a 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -6000,16 +6000,6 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+@@ -5616,16 +5616,6 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
  		goto end_no_trans;
  	}
  
