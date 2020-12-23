@@ -2,51 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E675C2E19E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 09:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E532E1E50
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Dec 2020 16:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgLWIUa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Dec 2020 03:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgLWIUa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:20:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B855DC0613D3
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Dec 2020 00:19:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QCwaO+8Rvm7bPyJCTudSy8vTcD5s35ExvVV9XlschDI=; b=Wj6zfp2JYdOWi1Mssexel6beCe
-        51SSQUNFJce6pdb0eFdITJQKl+wUM9LszRqijURGN7TGFsWrhDsDnQPQI10DATV80HcPXMPyCSIHN
-        k5MKn4bnstAYU/C3Thlo3HY3Fne9YyGEjpWiH/gX3fRWzz9Iq0Feyq2hrkEtTU4UPZ2NxPlABq/Vr
-        P3OSnPwKgTcVCpzbLJggEJvZRinfXgNoebPYKfE11MB4EFOXS3NIMoUH1UliXgXO4P9Q56xj5OaLp
-        kZj/QBtWHHEdftnO8eFR9cyDdh3KWJceDj6ILxRO1zT3R9xvRHdbmIedrcmeg0k+uRx3u5isgoaNd
-        YNVHnBag==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krzN5-0006Gz-LF; Wed, 23 Dec 2020 08:19:47 +0000
-Date:   Wed, 23 Dec 2020 08:19:47 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/4] Introduce a mmap sem to deal with some mmap issues
-Message-ID: <20201223081947.GA23449@infradead.org>
-References: <cover.1607969636.git.josef@toxicpanda.com>
+        id S1727196AbgLWPia (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Dec 2020 10:38:30 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:34618 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726477AbgLWPi3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Dec 2020 10:38:29 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1ks6Cp-0004Hq-UK; Wed, 23 Dec 2020 16:37:39 +0100
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     Ignat Korchagin <ignat@cloudflare.com>
+Cc:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
+        dm-crypt@saout.de, linux-kernel@vger.kernel.org,
+        ebiggers@kernel.org, Damien.LeMoal@wdc.com, mpatocka@redhat.com,
+        herbert@gondor.apana.org.au, kernel-team@cloudflare.com,
+        nobuto.murata@canonical.com, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-crypto <linux-crypto@vger.kernel.org>
+References: <16ffadab-42ba-f9c7-8203-87fda3dc9b44@maciej.szmigiero.name>
+Subject: Re: dm-crypt with no_read_workqueue and no_write_workqueue + btrfs
+ scrub = BUG()
+Message-ID: <74c7129b-a437-ebc4-1466-7fb9f034e006@maciej.szmigiero.name>
+Date:   Wed, 23 Dec 2020 16:37:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1607969636.git.josef@toxicpanda.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <16ffadab-42ba-f9c7-8203-87fda3dc9b44@maciej.szmigiero.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 01:19:37PM -0500, Josef Bacik wrote:
-> These issues exist for remap and fallocate, so add an i_mmap_sem to allow us to
-> disallow mmap in these cases.  I'm still waiting on xfstests to finish with
-> this, but 2 hours in and no lockdep or deadlocks.  Thanks,
+On 14.12.2020 19:11, Maciej S. Szmigiero wrote:
+> Hi,
+> 
+> I hit a reproducible BUG() when scrubbing a btrfs fs on top of
+> a dm-crypt device with no_read_workqueue and no_write_workqueue
+> flags enabled.
 
-Any chance you could look into lifting it to the VFS and also convert
-ext4 and XFS to the common scheme?
+Still happens on the current torvalds/master.
+
+Due to this bug it is not possible to use btrfs on top of
+a dm-crypt device with no_read_workqueue and no_write_workqueue
+flags enabled.
+
+@Ignat:
+Can you have a look at this as the person who added these flags?
+
+It looks like to me that the skcipher API might not be safe to
+call from a softirq context, after all.
+
+Maciej
