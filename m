@@ -2,96 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3602E2E36
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Dec 2020 13:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCAC2E2E85
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Dec 2020 16:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgLZMqv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Dec 2020 07:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbgLZMqu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Dec 2020 07:46:50 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8793CC0613C1
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Dec 2020 04:46:10 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id f14so3599177pju.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Dec 2020 04:46:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=AxYQEgxOPn2N7I22CFx0QgjTx48s3ArtdHBxYkLM6iA=;
-        b=GBGHLw6Gk5hjAM+SlhD+mS6tmEM7j154q1+WA65J6t4hNonLDQofMFmH9yA7QICWKg
-         5twpzGd6LcYlPC+W2HU5H9G0Y/Ve1tsmL+t92iirPdO2ZVW6uHgulHqk6gA4f0kn2unD
-         jMhqrcynFMeXH5h71x050LUo9PRIbtCUV7tbQpnxghjJx5nwNJbRAJpORlTUASKNhb6C
-         BlXpmjiUweO+yUPXGckEq4ECPklAP7kLso77USE6qhIQw7WHQ+PVPWbY59iMcoTCJl32
-         cBhMgAsvGhVjJ7j0d84GqXszGYkypbPV8lxJKuRWdrATB9bdrSbhw7/Ww7kWrNJ1aP1Z
-         zI+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=AxYQEgxOPn2N7I22CFx0QgjTx48s3ArtdHBxYkLM6iA=;
-        b=oVHqkAeOz7DiBmMYqiF8L30GaSR9MxkG55smkSVumQyQIJwENHOrNxTJ2zTDPV8m9w
-         Ka//QHXPt3p91qY3B7subbo0y2Z/oX2BnOob+M4qAhf9O3QaCkbzgNbSCWAH9EsnJRdI
-         ZOgV8Ocd7v2epDlU+POBaWiU2y5vFC28wBP19VBY5bMSfzzk4Jh5vsXErYkX722benvN
-         B+nphhdn9EUZNWUYlum44eKofb9m17Fq2okkuJTCYys0jGdOGuZHst/OMcpvTIPhtjpY
-         ae8I3eVGcq4irCPnrhyJjN5adnLEquWAfwfJqRipyUDXAJLCFvYhEY7yMpAM4eZblseL
-         nL8A==
-X-Gm-Message-State: AOAM532nyklP/cdHgrUgd0sEtbFL+2nJJ9Qql2fOnr6JI7SK/nKCkjG0
-        e6/pZz2yNyS5TW7hgZFnOp6ikB8+VNb+2kbmOgI=
-X-Google-Smtp-Source: ABdhPJwyHsBPsJghbefCi9ZSyRHFTdXpV6kl4qnkXP3H6JfKHbamFVnLQ3b7JZ28bXG8dolD+TESlJO/6eHJvMXzn/E=
-X-Received: by 2002:a17:90a:9e5:: with SMTP id 92mr12705211pjo.176.1608986769940;
- Sat, 26 Dec 2020 04:46:09 -0800 (PST)
+        id S1726015AbgLZPa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Dec 2020 10:30:27 -0500
+Received: from mx.exactcode.de ([144.76.154.42]:45260 "EHLO mx.exactcode.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgLZPa1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 26 Dec 2020 10:30:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=exactco.de; s=x;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=9WTMlJxSuEUOJC+743U498aK5dGknBPyzrlPq/rxUvw=;
+        b=U6y8oNJSFYpHwiKWErFjDKyoauFuPDYbhBhKf89vIcpP6q2hTfiL/aWWJWaTYvMkj5tfmD32FKafMrLmNE3tizK14ccY7Teiw/1Dg8riuY9DO9T7skzz56AgdIaHoimZuoMknuRunQDVn+Xz09nDaPhPnnKnk5oWAEL/qaBwvw4=;
+Received: from exactco.de ([90.187.5.221])
+        by mx.exactcode.de with esmtp (Exim 4.82)
+        (envelope-from <rene@exactcode.com>)
+        id 1ktBWS-00042q-Bt; Sat, 26 Dec 2020 15:30:24 +0000
+Received: from [192.168.2.130]
+        by exactco.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <rene@exactcode.com>)
+        id 1ktBLm-0006m5-BS; Sat, 26 Dec 2020 15:19:22 +0000
+Subject: Re: [BUG] 500-2000% performance regression w/ 5.10
+To:     Nikolay Borisov <nborisov@suse.com>,
+        =?UTF-8?Q?Ren=c3=a9_Rebe?= <rene@exactcode.de>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
+ <6df7ff08-b9bf-a06e-13a9-bf1c431920e4@toxicpanda.com>
+ <A2426D8D-893D-4B37-96CF-C9589730F437@exactcode.de>
+ <b82b913a-11f7-4f79-a41b-c4d16135de80@suse.com>
+From:   Rene Rebe <rene@exactcode.com>
+Message-ID: <75c703bc-1f47-0f07-1421-55f6c889e996@exactcode.com>
+Date:   Sat, 26 Dec 2020 16:30:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Reply-To: mrselizabethedward2@gmail.com
-Sender: entiuomarmachar@gmail.com
-Received: by 2002:a17:90a:e504:0:0:0:0 with HTTP; Sat, 26 Dec 2020 04:46:09
- -0800 (PST)
-From:   "Mrs. Elizabeth Edward" <mrselizabethedward3@gmail.com>
-Date:   Sat, 26 Dec 2020 12:46:09 +0000
-X-Google-Sender-Auth: 0Npjh9ll5cZUESAZjbEgNQ0ZC-s
-Message-ID: <CACoQbmdCnDWG5R+Pb-VFHyrf9aW-ka6+Zsge8ry+PDi_k4sDqQ@mail.gmail.com>
-Subject: Dear friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b82b913a-11f7-4f79-a41b-c4d16135de80@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Score: -0.1 (/)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear friend,
+Hey there,
 
-Please forgive me for stressing you with my predicaments as I know
-that this letter may come to you as a big surprise. Actually, I came
-across your E-mail from my personal search afterward I decided to
-email you directly believing that you will be honest to fulfill my
-final wish before or after my death.
+On 12/26/20 1:24 PM, Nikolay Borisov wrote:
+>
+> On 24.12.20 г. 23:11 ч., René Rebe wrote:
+>> Hi Josef,
+>>
+>>> On 24. Dec 2020, at 19:09, Josef Bacik <josef@toxicpanda.com> wrote:
+>>>
+>>> On 12/21/20 2:45 PM, René Rebe wrote:
+>>>> Hey there,
+>>>> as a long time btrfs user I noticed some some things became very slow
+>>>> w/ Linux kernel 5.10. I found a very simple test case, namely extracting
+>>>> a huge tarball like:
+>>>>    tar xf /usr/src/t2-clean/download/mirror/f/firefox-84.0.source.tar.zst
+>>>> Why my external, USB3 road-warrior SSD on a Ryzen 5950x this
+>>>> went from ~15 seconds w/ 5.9 to nearly 5 minutes in 5.10, or 2000%
+>>>> To rule out USB, I also tested a brand new PCIe 4.0 SSD, with
+>>>> a similar, albeit not as shocking regression from 5.2 seconds
+>>>> to ~34 seconds or∫~650%.
+>>>> Somehow testing that in a VM did over virtio did not produce
+>>>> as different results, although it was already 35 seconds slow
+>>>> with 5.9.
+>>>> # first bad commit: [38d715f494f2f1dddbf3d0c6e50aefff49519232]
+>>>>    btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
+>>>> Now just this single commit does obviously not revert cleanly,
+>>>> and I did not have the time today to look into the rather more
+>>>> complex code today.
+>>>> I hope this helps improve this for the next release, maybe you
+>>>> want to test on bare metal, too.
+>>> Alright to close the loop with this, this slipped through the cracks because I was doing a lot of performance related work, and specifically had been testing with these patches on top of everything
+>>>
+>>> https://lore.kernel.org/linux-btrfs/cover.1602249928.git.josef@toxicpanda.com/
+>>>
+>>> These patches bring the performance up to around 40% higher than baseline
+>> I indeed tested the linux-btrfs for-5.11 and found the performance some 50% better. I would hope that can be brought back to 5.9 levels sometime soon ;-)
+> Do you mean 50% better as compared to 5.9?
 
-Meanwhile, I am Madam Elizabeth Edwards, 63 years, from USA, childless
-and I am suffering from Adenocarcinoma Cancer of the lung for the past
-8 years and from all indication my condition is really deteriorating
-as my doctors have confirmed and courageously advised me that I may
-not live beyond two months from now for the reason that my tumor has
-reached a critical stage which has defiled all forms of medical
-treatment.
+
+Sorry for any confusion, I meant 50% better than the bisected regression 
+as found with 5.10, not yet as good as 5.9 has been before.
 
 
-Since my days are numbered, I've decided willingly to fulfill my
-long-time vow to donate you the sum ($8.5 000.000.00) million dollars
-I inherited from my late husband Mr. Edward Herbart, foreign bank
-account over years.
+     René
 
-If you will be honest, kind and willing to assist in transfer of this
-money to his or her account and use the funds for charity work of God
-while you use 50% for yourself. I want you to know there are no risks
-involved, it is 100% hitch free & safe. If you would be interested to
-assist in getting this fund into your account for a charity project to
-fulfill my promise before I die please let me know immediately. I will
-appreciate your utmost confidentiality as I wait for your reply.
-
-Kindly get back to me at my discreet Email (
-mrselizabethedward2@gmail.com ) for further discussion.
-
-Best Regards
-Mrs. Elizabeth Edward
-mrselizabethedward2@gmail.com
+>>> .  In the meantime we'll probably push this partial revert into 5.10 stable so performance isn't sucking in the meantime.  Thanks,
+>> That certainly makes sense for the LTS kernel series.
+>>
+>> Thanks for looking into this,
+>> Merry Christmas,
+>> 	René Rebe
+>>
