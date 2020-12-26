@@ -2,34 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A6A2E2E35
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Dec 2020 13:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ACE2E2E34
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Dec 2020 13:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgLZMoX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1726111AbgLZMoX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Sat, 26 Dec 2020 07:44:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55206 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:55204 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgLZMoW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1725997AbgLZMoW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Sat, 26 Dec 2020 07:44:22 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1608985440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1608985484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=W/Ip2762mL8mpClKB7ak1j4iQ2e+F37wzD/2My63wTw=;
-        b=QSAf9vVZKepg7FbYcvOUWWx1XnpKxlIyj7OZJAmuXBwW3Aq4OPjObTkZK+80baB9VFAs0J
-        d8cTsld0CGq+0wWAHIqxX7Bs2zrarpQ5rY1Hi3g3ohmJiMtsOUN9N0lZSeorGS79PSKBrm
-        /3lCE+Zm/zM1oCUu53hjz2TnKDO6qWI=
+        bh=zNVK5fB5J8W6y6liYhCrvnUdHYaA3smCV06D0kj2emo=;
+        b=KlrqWkSKpKtgZ89laZ7G6t51ffY98t/QrHP+0e+WI4OX0hhm13d/uWiuImkQ8F/+tTqJL6
+        VNrEcHROdgVp98DNL79kV4Dygv9oIZQcRKC17Vlp/rAW6Y76O1gs7QGbMHS+xhQkZQh4NM
+        iz7sMpHQYzuuQW/WWPAcF4YO3U/6ZqY=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 56373AD11;
-        Sat, 26 Dec 2020 12:24:00 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5F4FFACB1;
+        Sat, 26 Dec 2020 12:24:44 +0000 (UTC)
 Subject: Re: [BUG] 500-2000% performance regression w/ 5.10
-To:     Josef Bacik <josef@toxicpanda.com>,
-        =?UTF-8?Q?Ren=c3=a9_Rebe?= <rene@exactcode.de>,
-        linux-btrfs@vger.kernel.org
+To:     =?UTF-8?Q?Ren=c3=a9_Rebe?= <rene@exactcode.de>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org
 References: <B4BB2DCB-C438-4871-9DDD-D6FB0E6E4F1B@exactcode.de>
  <6df7ff08-b9bf-a06e-13a9-bf1c431920e4@toxicpanda.com>
+ <A2426D8D-893D-4B37-96CF-C9589730F437@exactcode.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  xsFNBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -73,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  KIuxEcV8wcVjr+Wr9zRl06waOCkgrQbTPp631hToxo+4rA1jiQF2M80HAet65ytBVR2pFGZF
  zGYYLqiG+mpUZ+FPjxk9kpkRYz61mTLSY7tuFljExfJWMGfgSg1OxfLV631jV1TcdUnx+h3l
  Sqs2vMhAVt14zT8mpIuu2VNxcontxgVr1kzYA/tQg32fVRbGr449j1gw57BV9i0vww==
-Message-ID: <79455913-ce1e-23d4-326c-9f229e1df8b7@suse.com>
-Date:   Sat, 26 Dec 2020 14:23:59 +0200
+Message-ID: <b82b913a-11f7-4f79-a41b-c4d16135de80@suse.com>
+Date:   Sat, 26 Dec 2020 14:24:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <6df7ff08-b9bf-a06e-13a9-bf1c431920e4@toxicpanda.com>
+In-Reply-To: <A2426D8D-893D-4B37-96CF-C9589730F437@exactcode.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,54 +89,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 24.12.20 г. 20:09 ч., Josef Bacik wrote:
-> On 12/21/20 2:45 PM, René Rebe wrote:
->> Hey there,
->>
->> as a long time btrfs user I noticed some some things became very slow
->> w/ Linux kernel 5.10. I found a very simple test case, namely extracting
->> a huge tarball like:
->>
->>    tar xf /usr/src/t2-clean/download/mirror/f/firefox-84.0.source.tar.zst
->>
->> Why my external, USB3 road-warrior SSD on a Ryzen 5950x this
->> went from ~15 seconds w/ 5.9 to nearly 5 minutes in 5.10, or 2000%
->>
->> To rule out USB, I also tested a brand new PCIe 4.0 SSD, with
->> a similar, albeit not as shocking regression from 5.2 seconds
->> to ~34 seconds or∫~650%.
->>
->> Somehow testing that in a VM did over virtio did not produce
->> as different results, although it was already 35 seconds slow
->> with 5.9.
->>
->> # first bad commit: [38d715f494f2f1dddbf3d0c6e50aefff49519232]
->>    btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
->>
->> Now just this single commit does obviously not revert cleanly,
->> and I did not have the time today to look into the rather more
->> complex code today.
->>
->> I hope this helps improve this for the next release, maybe you
->> want to test on bare metal, too.
->>
+On 24.12.20 г. 23:11 ч., René Rebe wrote:
+> Hi Josef,
 > 
-> Alright to close the loop with this, this slipped through the cracks
-> because I was doing a lot of performance related work, and specifically
-> had been testing with these patches on top of everything
+>> On 24. Dec 2020, at 19:09, Josef Bacik <josef@toxicpanda.com> wrote:
+>>
+>> On 12/21/20 2:45 PM, René Rebe wrote:
+>>> Hey there,
+>>> as a long time btrfs user I noticed some some things became very slow
+>>> w/ Linux kernel 5.10. I found a very simple test case, namely extracting
+>>> a huge tarball like:
+>>>   tar xf /usr/src/t2-clean/download/mirror/f/firefox-84.0.source.tar.zst
+>>> Why my external, USB3 road-warrior SSD on a Ryzen 5950x this
+>>> went from ~15 seconds w/ 5.9 to nearly 5 minutes in 5.10, or 2000%
+>>> To rule out USB, I also tested a brand new PCIe 4.0 SSD, with
+>>> a similar, albeit not as shocking regression from 5.2 seconds
+>>> to ~34 seconds or∫~650%.
+>>> Somehow testing that in a VM did over virtio did not produce
+>>> as different results, although it was already 35 seconds slow
+>>> with 5.9.
+>>> # first bad commit: [38d715f494f2f1dddbf3d0c6e50aefff49519232]
+>>>   btrfs: use btrfs_start_delalloc_roots in shrink_delalloc
+>>> Now just this single commit does obviously not revert cleanly,
+>>> and I did not have the time today to look into the rather more
+>>> complex code today.
+>>> I hope this helps improve this for the next release, maybe you
+>>> want to test on bare metal, too.
+>>
+>> Alright to close the loop with this, this slipped through the cracks because I was doing a lot of performance related work, and specifically had been testing with these patches on top of everything
+>>
+>> https://lore.kernel.org/linux-btrfs/cover.1602249928.git.josef@toxicpanda.com/
+>>
+>> These patches bring the performance up to around 40% higher than baseline
 > 
-> https://lore.kernel.org/linux-btrfs/cover.1602249928.git.josef@toxicpanda.com/
-> 
-> 
-> These patches bring the performance up to around 40% higher than
-> baseline.  In the meantime we'll probably push this partial revert into
-> 5.10 stable so performance isn't sucking in the meantime.  Thanks,
+> I indeed tested the linux-btrfs for-5.11 and found the performance some 50% better. I would hope that can be brought back to 5.9 levels sometime soon ;-)
 
-For the sake of clarity it's important to note that baseline in this
-case is kernel 4.19 (since the original regressions was spotted in 5.0).
-There has already been a couple of open interpretations of what this
-means e.g 40% better than 5.10, suggesting performance is worse.
-
+Do you mean 50% better as compared to 5.9?
 > 
-> Josef
+>> .  In the meantime we'll probably push this partial revert into 5.10 stable so performance isn't sucking in the meantime.  Thanks,
+> 
+> That certainly makes sense for the LTS kernel series.
+> 
+> Thanks for looking into this,
+> Merry Christmas,
+> 	René Rebe
 > 
