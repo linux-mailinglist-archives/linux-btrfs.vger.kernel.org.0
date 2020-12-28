@@ -2,111 +2,352 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C922E31C3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Dec 2020 17:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B802E3342
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Dec 2020 01:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgL0QI2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Dec 2020 11:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgL0QI2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Dec 2020 11:08:28 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8041CC061794
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Dec 2020 08:07:47 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id y17so8383586wrr.10
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Dec 2020 08:07:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=L9mRioyP8ZeCnk8sh8FbA1gprsldyWwOmtlmteWtTgs=;
-        b=UwJyb5KHaiIKw4KfC8l3mqN2iloROFppo+JLu9MS3KCMse1P93sVKpCAAlO+jqaqfQ
-         femNtCPfpF6tSl2OHX1tUzk8inp/ju1+OSSVKiXaJOtGEoHu+T6DGdx6UjYFkkTLISxd
-         DDGtNDpyABx4vX4sK/D17qxFcfpGvDP9n88Jwiy4E9GlVJz5PNepTGqpJ9MaEEZvOGky
-         E3bqjERIicLHcX80t6IOQCqiilTtnC4OtS3UVvsA2K1mpvb9w9BWyfdpDHRcTPKfMdow
-         thacGBIgeqFHCk63ObV2KOYGImbzw0nkjDhqgauAa9nGLXUioM4kdc86GCXy/aXogZb9
-         kvww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:from:subject:message-id:date
-         :user-agent:mime-version:content-transfer-encoding:content-language;
-        bh=L9mRioyP8ZeCnk8sh8FbA1gprsldyWwOmtlmteWtTgs=;
-        b=VM4slODADn4XtmutNDZN3Tzfu2dg/d4Ow5JLkABbWVArwK4OCDV4mE1F29QFmP/NGy
-         OvFDbKPKVuRKfmKWy/uScjmlMNp0BE8Cv9vC3BigxAEz+RfSSgsFRVHWVW6dW0EUWICj
-         t5On4AaO1+SXJz9Z55rAJkGMFN1Do0HtMZO4Au3VoNzWmoIgT5bsfqoRnuLMUcJDjHrW
-         rZseztAIvPT51HDjqcMZ5MfO2d7+IJwGqz8oHGDvFA+sgQGERK0GMe2w+yNpXmNwqoYP
-         GTLGIKEFBv/uBfY2vtDQhz2gv+B7WE3niYRozUQA0ghQorusvbsnyZn6BB4ACeHoJgaH
-         N1LQ==
-X-Gm-Message-State: AOAM530YkPJdTfE24AjjbdOti15112SrFsZKX5BDcOtgmmVzIdVegGTz
-        +dh9vICfWuVauTubqgzazscKU35KAWYlZQ==
-X-Google-Smtp-Source: ABdhPJybrfDvsR1Z4xAA9sU6HHTwcyDlsoakNm1vaXlNFP+xQ+U4rQQd0Rud7h2a8tLd4O/Tb0M08g==
-X-Received: by 2002:adf:d085:: with SMTP id y5mr48463057wrh.41.1609085265878;
-        Sun, 27 Dec 2020 08:07:45 -0800 (PST)
-Received: from ?IPv6:2a02:8010:64ea:0:fad1:11ff:fead:57db? ([2a02:8010:64ea:0:fad1:11ff:fead:57db])
-        by smtp.googlemail.com with ESMTPSA id a14sm50811765wrn.3.2020.12.27.08.07.45
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Dec 2020 08:07:45 -0800 (PST)
-Sender: Mark Harmstone <mark.harmstone@gmail.com>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-From:   Mark Harmstone <mark@harmstone.com>
-Subject: Per-subvol compat flags?
-Message-ID: <805c2fd3-d62b-2d0f-0f3d-c275609bd1b5@harmstone.com>
-Date:   Sun, 27 Dec 2020 16:07:44 +0000
+        id S1726356AbgL1AH6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 27 Dec 2020 19:07:58 -0500
+Received: from mout.gmx.net ([212.227.15.18]:51369 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726226AbgL1AH6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 27 Dec 2020 19:07:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609113983;
+        bh=nxS66M3ltMp5NNSVi2ZwrF2IPwNroS/457BkFaivjg0=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=YrTx/xJPpwM+mO1NQ6N8Q0emGntdpFX7ty5f9/welSb21qMl5V0tkgpms026939I0
+         FcszjyhrYpmhXxIoRdkYlRggeyWQhBIBw3QoSxU+zHJslSo8x+p++efeI1wLvUkuVB
+         GI1BfV4e182b6RBOBddYipdHSQDTCFDA6iE4dtqc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPGW7-1kfCUs0WFx-00Pf03; Mon, 28
+ Dec 2020 01:06:23 +0100
+Subject: Re: 5.6-5.10 balance regression?
+To:     David Arendt <admin@prnet.org>,
+        =?UTF-8?Q?St=c3=a9phane_Lesimple?= <stephane_btrfs2@lesimple.fr>,
+        linux-btrfs@vger.kernel.org
+References: <505cabfa88575ed6dbe7cb922d8914fb@lesimple.fr>
+ <292de7b8-42eb-0c39-d8c7-9a366f688731@prnet.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <2846fc85-6bd3-ae7e-6770-c75096e5d547@gmx.com>
+Date:   Mon, 28 Dec 2020 08:06:19 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <292de7b8-42eb-0c39-d8c7-9a366f688731@prnet.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:S9emZmhLNi3TDHabEapXl3UUpiDIQiYotxURYI7/flhHqO+GQZk
+ B59YMby0LOTMwT7J3sUMa383iu55ICM2XOvOswhvNvG73PxZHh+06OGh8r5uZhee5uO1iXx
+ hHdNIFkw+8C4DE0aO6xKRK4ZdoaI3S61GkF2ow7T6luOxgcA3SBDiSMs9kaO9ZngqYbrym8
+ /CTlKnUF55gNm67PJh2Uw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Rw909R8mN4Q=:lvaNQZBdmqRUb8NQ+K8QGs
+ cprGXDYY0Od1IuBhAL8vYurc1IXBD7e39GCSYxXa1gaOBJvgcVQkqaRpeJp2+O++uzg06SCwa
+ ep9NB9Rgm1Rufcp5nq+L6ECfocjktjRWmnkvs9iatQhU8TmLZ8x3nL3bl79VIEt6KPSzcevHW
+ ozfz0bu12yTKvXd63RQSCheJ7eKGQCwqexcpRcp20pspCAzRxgjzQlWsyFxunSM8B0+pQ+SEu
+ jnsphVwD7NUniEk6nYRsSvlmRbiP4FYWI7B1HNMJG30VuNqWRlxA053x/krKapUUpceHRQ98S
+ S0nVyptgK3ytWaTY/7lOju6B3xVcJZ3q6381RCpwYKlH6GJwoBBSn6UwhytDBZtJ0Kvq+K0E4
+ KTaSqUQLnpYHNkGlDgRdQufn+UsKazQUfawJKdS6WM27xnCe35689S8EsN44MbS5BbcU4ySle
+ IChcsuuXPR57KZutm1hiJsAQASX2CQ/tmfCs65YwlVLA5PJtPjDmfMEUbMmjVgN09X+n7WQhF
+ 1YKf/a1gA1rvh7jq6YJyWqhJ3qK2nC1HAxIdjVEifA+7mchi10/IKdyFxJICRgy2vwqy50HcE
+ 1yzzfs6AGba7cm26VGyvy45PvPAGyhGsR77EUoPGOsvkasamAAw2HenW5xz1Ue7YE3GiMpb5u
+ XlO6r2Ckrhq469UJIeUzdAGqw2390jLHxB20yQDjEHac72VlCJ+xcV9m5Ffc3FHoWnWKHSZmG
+ hW1LgnjwiVgVaZzgWEa5ubC1t1gaolIZLx3Ak52IjhlJlFkgSj5yidEE+KAus/QLwEQYy4bT5
+ PCjD5g8opHmkl4H61FvPFFgH8IM31ivnDZQCY3RL04uw5r9as0duOASbxPPGtSIGqbQ9pfBPC
+ 7Af03hR/oihtfwwYCDRw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
 
-I'm the creator of the Windows Btrfs driver. During the course of development,
-it's become apparent that for 100% compatibility with NTFS there'd need to be
-some minor changes to the disk format. Examples: Windows' LZNT1 compression
-scheme, Windows' encryption scheme, case-sensitivity, arbitrary-length xattrs.
 
-I'm loathe to nab a compat flag bit for these, as they're all relatively minor,
-and most wouldn't be that useful for Linux. And sod's law says that if I
-unilaterally grab the next bit, the Linux driver will sooner or later use the
-same bit for something else.
+On 2020/12/27 =E4=B8=8B=E5=8D=889:11, David Arendt wrote:
+> Hi,
+>
+> last week I had the same problem on a btrfs filesystem after updating to
+> kernel 5.10.1. I have never had this problem before kernel 5.10.x.
+> 5.9.x did now show any problem.
+>
+> Dec 14 22:30:59 xxx kernel: BTRFS info (device sda2): scrub: started on
+> devid 1
+> Dec 14 22:31:09 xxx kernel: BTRFS info (device sda2): scrub: finished on
+> devid 1 with status: 0
+> Dec 14 22:33:16 xxx kernel: BTRFS info (device sda2): balance: start
+> -dusage=3D10
+> Dec 14 22:33:16 xxx kernel: BTRFS info (device sda2): relocating block
+> group 71694286848 flags data
+> Dec 14 22:33:16 xxx kernel: BTRFS info (device sda2): found 1058
+> extents, stage: move data extents
+> Dec 14 22:33:16 xxx kernel: BTRFS info (device sda2): balance: ended
+> with status: -2
+>
+> This is not a multidevice volume but a volume consisting of a single
+> partition.
+>
+> xxx ~ # btrfs fi df /u00
+> Data, single: total=3D10.01GiB, used=3D9.24GiB
+> System, single: total=3D4.00MiB, used=3D16.00KiB
+> Metadata, single: total=3D2.76GiB, used=3D1.10GiB
+> GlobalReserve, single: total=3D47.17MiB, used=3D0.00B
+>
+> xxx ~ # btrfs device usage /u00
+> /dev/sda2, ID: 1
+>  =C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 19.81GiB
+>  =C2=A0=C2=A0 Device slack:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
+>  =C2=A0=C2=A0 Data,single:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 10.01GiB
+>  =C2=A0=C2=A0 Metadata,single:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 2.76GiB
+>  =C2=A0=C2=A0 System,single:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 4.00MiB
+>  =C2=A0=C2=A0 Unallocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 7.04GiB
 
-Has anyone ever brought up the idea of per-subvol compat flags? The idea is that
-if a new feature affects the FS root and nothing else, rather than adding a new
-compat flag bit, there'd be an entry in the root tree after the ROOT_ITEM, e.g.
+This seems small enough, thus a btrfs-image dump would help.
 
-    (0x100, 0x85, 0x2ed1c081232d)   for a compat entry, or
-    (0x100, 0x86, 0x85f7583bc4b0)   for a readonly compat entry
+Although there is a limit for btrfs-image dump, since it only contains
+metadata, when we try to balance data to reproduce the bug, it would
+easily cause data csum error and exit convert.
 
-With the third number being an arbitrary identifier for the feature (i.e. like
-a UUID). If the driver doesn't understand a certain feature, it'd make the
-subvol readonly or inaccessible, as appropriate. It'd also have to disable
-certain features, such as balancing, but the rest of the FS would be usable.
+If possible, would you please try to take a dump with this branch?
+https://github.com/adam900710/btrfs-progs/tree/image_data_dump
 
-As I see it, there's several advantages to this approach:
+It provides a new option for btrfs-image, -d, which will also take the dat=
+a.
 
-* Because the feature identifier is a 64-bit integer rather than a bit, it
-  increases the effective compat flag namespace from 64 bits to 2^64.
+Also, please keep in mind that, -d dump will contain data of your fs,
+thus if it contains confidential info, please use regular btrfs-image.
 
-* It makes out-of-tree development a lot easier, as the increased namespace
-  makes it feasible to distribute patches without worrying about what's
-  going to happen upstream.
-
-* It lowers the cost of implementing new features (i.e., you don't have to
-  let users know that new filesystems will only work on Linux 5.x). This would
-  be especially important for encryption, as security means that you'd have to
-  make it easy to add new algorithms when necessary.
-
-* It allows for features to be controlled by Linux CONFIG flags, meaning that
-  e.g. embedded devices wouldn't be burdened with a new feature for all time.
-
-Does anybody have any thoughts?
-
-Mark
-
+Thanks,
+Qu
+>
+>
+> On 12/27/20 1:11 PM, St=C3=A9phane Lesimple wrote:
+>> Hello,
+>>
+>> As part of the maintenance routine of one of my raid1 FS, a few days
+>> ago I was in the process
+>> of replacing a 10T drive with a 16T one.
+>> So I first added the new 16T drive to the FS (btrfs dev add), then
+>> started a btrfs dev del.
+>>
+>> After a few days of balancing the block groups out of the old 10T drive=
+,
+>> the balance aborted when around 500 GiB of data was still to be moved
+>> out of the drive:
+>>
+>> Dec 21 14:18:40 nas kernel: BTRFS info (device dm-10): relocating
+>> block group 11115169841152 flags data|raid1
+>> Dec 21 14:18:54 nas kernel: BTRFS info (device dm-10): found 6264
+>> extents, stage: move data extents
+>> Dec 21 14:19:16 nas kernel: BTRFS info (device dm-10): balance: ended
+>> with status: -2
+>>
+>> Of course this also cancelled the device deletion, so after that the
+>> device was still part of the FS. I then tried to do a balance manually,
+>> in an attempt to reproduce the issue:
+>>
+>> Dec 21 14:28:16 nas kernel: BTRFS info (device dm-10): balance: start
+>> -ddevid=3D5,limit=3D1
+>> Dec 21 14:28:16 nas kernel: BTRFS info (device dm-10): relocating
+>> block group 11115169841152 flags data|raid1
+>> Dec 21 14:28:29 nas kernel: BTRFS info (device dm-10): found 6264
+>> extents, stage: move data extents
+>> Dec 21 14:28:46 nas kernel: BTRFS info (device dm-10): balance: ended
+>> with status: -2
+>>
+>> There were of course still plenty of room on the FS, as I added a new
+>> 16T drive
+>> (a btrfs fi usage is further down this email), so it struck me as odd.
+>> So, I tried to lower the reduncancy temporarily, expecting the balance
+>> of this block group to
+>> complete immediately given that there were already a copy of this data
+>> present on another drive:
+>>
+>> Dec 21 14:38:50 nas kernel: BTRFS info (device dm-10): balance: start
+>> -dconvert=3Dsingle,soft,devid=3D5,limit=3D1
+>> Dec 21 14:38:50 nas kernel: BTRFS info (device dm-10): relocating
+>> block group 11115169841152 flags data|raid1
+>> Dec 21 14:39:00 nas kernel: BTRFS info (device dm-10): found 6264
+>> extents, stage: move data extents
+>> Dec 21 14:39:17 nas kernel: BTRFS info (device dm-10): balance: ended
+>> with status: -2
+>>
+>> That didn't work.
+>> I also tried to mount the FS in degraded mode, with the drive I wanted
+>> to remove missing,
+>> using btrfs dev del missing, but the balance still failed with the
+>> same error on the same block group.
+>>
+>> So, as I was running 5.10.1 just for a few days, I tried an older
+>> kernel: 5.6.17,
+>> and retried the balance once again (with still the drive voluntarily
+>> missing):
+>>
+>> [ 413.188812] BTRFS info (device dm-10): allowing degraded mounts
+>> [ 413.188814] BTRFS info (device dm-10): using free space tree
+>> [ 413.188815] BTRFS info (device dm-10): has skinny extents
+>> [ 413.189674] BTRFS warning (device dm-10): devid 5 uuid
+>> 068c6db3-3c30-4c97-b96b-5fe2d6c5d677 is missing
+>> [ 424.159486] BTRFS info (device dm-10): balance: start
+>> -dconvert=3Dsingle,soft,devid=3D5,limit=3D1
+>> [ 424.772640] BTRFS info (device dm-10): relocating block group
+>> 11115169841152 flags data|raid1
+>> [ 434.749100] BTRFS info (device dm-10): found 6264 extents, stage:
+>> move data extents
+>> [ 477.703111] BTRFS info (device dm-10): found 6264 extents, stage:
+>> update data pointers
+>> [ 497.941482] BTRFS info (device dm-10): balance: ended with status: 0
+>>
+>> The problematic block group was balanced successfully this time.
+>>
+>> I balanced a few more successfully (without the -dconvert=3Dsingle opti=
+on),
+>> then decided to reboot under 5.10 just to see if I would hit this
+>> issue again.
+>> I didn't: the btrfs dev del worked correctly after the last 500G or so
+>> data
+>> was moved out of the drive.
+>>
+>> This is the output of btrfs fi usage after I successfully balanced the
+>> problematic block group under the 5.6.17 kernel. Notice the multiple
+>> data profile, which is expected as I used the -dconvert balance option,
+>> and also the fact that apparently 3 chunks were allocated on new16T for
+>> this, even if only 1 seem to be used. We can tell because this is the
+>> first and only time the balance succeeded with the -dconvert option,
+>> hence these chunks are all under "data,single":
+>>
+>> Overall:
+>> Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 41.89TiB
+>> Device allocated:=C2=A0=C2=A0 21.74TiB
+>> Device unallocated: 20.14TiB
+>> Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 9.09TiB
+>> Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 21.71TiB
+>> Free (estimated):=C2=A0=C2=A0 10.08TiB (min: 10.07TiB)
+>> Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 2.00
+>> Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
+>> Global reserve:=C2=A0=C2=A0=C2=A0 512.00MiB (used: 0.00B)
+>> Multiple profiles:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 yes (data)
+>>
+>> Data,single: Size:3.00GiB, Used:1.00GiB (33.34%)
+>> /dev/mapper/luks-new16T=C2=A0=C2=A0=C2=A0=C2=A0 3.00GiB
+>>
+>> Data,RAID1: Size:10.83TiB, Used:10.83TiB (99.99%)
+>> /dev/mapper/luks-10Ta=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7.14TiB
+>> /dev/mapper/luks-10Tb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 7.10TiB
+>> missing=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 482.00GiB
+>> /dev/mapper/luks-new16T=C2=A0=C2=A0=C2=A0=C2=A0 6.95TiB
+>>
+>> Metadata,RAID1: Size:36.00GiB, Used:23.87GiB (66.31%)
+>> /dev/mapper/luks-10Tb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 36.00GiB
+>> /dev/mapper/luks-ssd-mdata 36.00GiB
+>>
+>> System,RAID1: Size:32.00MiB, Used:1.77MiB (5.52%)
+>> /dev/mapper/luks-10Ta=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
+>> /dev/mapper/luks-10Tb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
+>>
+>> Unallocated:
+>> /dev/mapper/luks-10Ta=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.95TiB
+>> /dev/mapper/luks-10Tb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.96TiB
+>> missing=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.62TiB
+>> /dev/mapper/luks-ssd-mdata 11.29GiB
+>> /dev/mapper/luks-new16T=C2=A0=C2=A0=C2=A0=C2=A0 7.60TiB
+>>
+>> I wasn't going to send an email to this ML because I knew I had nothing
+>> to reproduce the issue noww that it was "fixed", but now I think I'm
+>> bumping
+>> into the same issue on another FS, while rebalancing data after adding
+>> a drive,
+>> which happens to be the old 10T drive of the FS above.
+>>
+>> The btrfs fi usage of this second FS is as follows:
+>>
+>> Overall:
+>> Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 25.50TiB
+>> Device allocated:=C2=A0=C2=A0 22.95TiB
+>> Device unallocated:=C2=A0 2.55TiB
+>> Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
+>> Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 22.36TiB
+>> Free (estimated):=C2=A0=C2=A0=C2=A0 3.14TiB (min: 1.87TiB)
+>> Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 1.00
+>> Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
+>> Global reserve:=C2=A0=C2=A0=C2=A0 512.00MiB (used: 0.00B)
+>> Multiple profiles:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
+>>
+>> Data,single: Size:22.89TiB, Used:22.29TiB (97.40%)
+>> /dev/mapper/luks-12T=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 10.91TiB
+>> /dev/mapper/luks-3Ta=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.=
+73TiB
+>> /dev/mapper/luks-3Tb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.=
+73TiB
+>> /dev/mapper/luks-10T=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 6.=
+52TiB
+>>
+>> Metadata,RAID1: Size:32.00GiB, Used:30.83GiB (96.34%)
+>> /dev/mapper/luks-ssd-mdata2 32.00GiB
+>> /dev/mapper/luks-10T=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00GiB
+>>
+>> System,RAID1: Size:32.00MiB, Used:2.44MiB (7.62%)
+>> /dev/mapper/luks-3Tb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
+>> /dev/mapper/luks-10T=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
+>>
+>> Unallocated:
+>> /dev/mapper/luks-12T=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 45.00MiB
+>> /dev/mapper/luks-ssd-mdata2=C2=A0 4.00GiB
+>> /dev/mapper/luks-3Ta=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.=
+02MiB
+>> /dev/mapper/luks-3Tb=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.=
+97GiB
+>> /dev/mapper/luks-10T=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.=
+54TiB
+>>
+>> I can reproduce the problem reliably:
+>>
+>> # btrfs bal start -dvrange=3D34625344765952..34625344765953 /tank
+>> ERROR: error during balancing '/tank': No such file or directory
+>> There may be more info in syslog - try dmesg | tail
+>>
+>> [145979.563045] BTRFS info (device dm-10): balance: start
+>> -dvrange=3D34625344765952..34625344765953
+>> [145979.585572] BTRFS info (device dm-10): relocating block group
+>> 34625344765952 flags data|raid1
+>> [145990.396585] BTRFS info (device dm-10): found 167 extents, stage:
+>> move data extents
+>> [146002.236115] BTRFS info (device dm-10): balance: ended with status: =
+-2
+>>
+>> If anybody is interested in looking into this, this time I can leave
+>> the FS in this state.
+>> The issue is reproducible, and I can live without completing the
+>> balance for the next weeks
+>> or even months, as I don't think I'll need the currently unallocatable
+>> space soon.
+>>
+>> I also made a btrfs-image of the FS, using btrfs-image -c 9 -t 4 -s -w.
+>> If it's of any use, I can drop it somewhere (51G).
+>>
+>> I could try to bisect manually to find which version between 5.6.x and
+>> 5.10.1 started to behave
+>> like this, but on the first success, I won't know how to reproduce the
+>> issue a second time, as
+>> I'm not 100% sure it can be done solely with the btrfs-image.
+>>
+>> Note that another user seem to have encoutered a similar issue in July
+>> with 5.8:
+>> https://www.spinics.net/lists/linux-btrfs/msg103188.html
+>>
+>> Regards,
+>>
+>> St=C3=A9phane Lesimple.
+>
+>
