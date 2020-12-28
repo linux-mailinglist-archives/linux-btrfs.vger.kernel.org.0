@@ -2,106 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D352E3356
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Dec 2020 01:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE4D2E34B0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Dec 2020 08:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgL1Ac6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Dec 2020 19:32:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53922 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbgL1Ac5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Dec 2020 19:32:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609115531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T8RhIHzpTvsgk7MPWeeWe+s0X3fhVB5HewRPi65ypX8=;
-        b=Y2iUKaJAI8zl1D3LDL73hkB3ZfFTjmu8YWw9EWG1fsusTBpx+IiBoLWjz0TRqFNnFa7XhX
-        c6CVtbiGalkRLGT9E506utiEQ3q9sgwjR1w03NSFF671BW5y281uLxWqN6J8v0NnOX5mS5
-        Bb35nzGygT/rp+mZv//XLCdi6Ic+SYE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E523CB73F
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Dec 2020 00:32:10 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v5 4/4] btrfs-progs: image: fix restored image size misalignment
-Date:   Mon, 28 Dec 2020 08:31:59 +0800
-Message-Id: <20201228003159.115343-5-wqu@suse.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228003159.115343-1-wqu@suse.com>
-References: <20201228003159.115343-1-wqu@suse.com>
+        id S1726340AbgL1HZA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Dec 2020 02:25:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726242AbgL1HZA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 28 Dec 2020 02:25:00 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD45AC06179A
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Dec 2020 23:24:07 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id q137so8597530iod.9
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Dec 2020 23:24:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=kq2jyHJDfxqOxuShgwYNcAto0qAucvJCi8yLZBnTurg=;
+        b=fOMCIgJQHNx20kYFTdQKQu7/5C0dr9uLNbBYAB32XkU5BLjFNANYkxJV1n2Ebt1rP3
+         4vlg3aA75qJVNEWySieOl12N/QM5QZAdoGW86/sAguX0cdPFZjrHWzOkO84Q+2eY0Cv/
+         SahXDS2J+RytZ5BUzscAVUJqvzmO48U8QbgI5mi62kN49+QKcgq07R87wBs78VLH8ijf
+         9a7+p62jYL+gc/eYVUwMNbh5DN3hfJzmyfnw/LirJyhve1FURqD7RGDY3ApLTS/MLBQA
+         mdiQCkPF9Wgfz38qy1MxQ2/Oc/+UaXbdZ2XuQvrqxbp7MDFxRWjsWVBgs2lO+mMzi/Wc
+         AeqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=kq2jyHJDfxqOxuShgwYNcAto0qAucvJCi8yLZBnTurg=;
+        b=QtYCni0vyzj+y6Lwxn0Ex4c+/WSBz6Uil6hQp1PT9H13AuQDIPjd+Ojwh1YjMbSeuy
+         csCa6yQZ184yIy62eiA0VyvgwUrFed/qUoiclXtabjf0IRsoxtenVA0UXC6ljxMbQpfC
+         Z/BKv7M6ADQ/+IiJ0ti16Z5qvuFkgwyfTHYxe0CCHptpP4W52Y/uvmEjnxV9braJg+P6
+         9cAUAHiAxSsv3tWhEkVYQ8thcQgEiYLrC1XNvQAvayV93oazhrnyuwV0dXMJoHufzXIz
+         xVzYzh374MiRJklbQjwkjdF/KeWrj2tTH0Uldd6xfejWrjBfoIIRK6zPIRYUCAzB5lxM
+         ZGYg==
+X-Gm-Message-State: AOAM533ekjK8rdKnh2N8iyS5gGYfCbqIAjQmKAIw3dVaUqt6ul2oaf9k
+        uYi68dXNBIItVsXBL2hyY0tBnve5FQxorFJO62g=
+X-Google-Smtp-Source: ABdhPJzMBCTQSNEtLib8fKYQFbXGFNQE8o8pBn3X0WJf7LUximTHdLrgFQWueWejQHR/F7NHBIJhyiVzVAKJHyGhouA=
+X-Received: by 2002:a05:6602:2e81:: with SMTP id m1mr35115598iow.131.1609140246551;
+ Sun, 27 Dec 2020 23:24:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a6b:490a:0:0:0:0:0 with HTTP; Sun, 27 Dec 2020 23:24:05
+ -0800 (PST)
+Reply-To: hs8qfc11@gmail.com
+From:   "Dr. Dagbo Igho" <dagboigho@gmail.com>
+Date:   Mon, 28 Dec 2020 08:24:05 +0100
+Message-ID: <CANqtXm49kMMhvXKCdkF0MHCG1fnwV5iAGA51AWbDrOh-rCkZkA@mail.gmail.com>
+Subject: Good Morning,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a small device size misalignment between the super block device
-size and the device extent size:
-total_bytes             10737418240 	<<<
-bytes_used              15097856
-dev_item.total_bytes    10737418240
-dev_item.bytes_used     1094713344
-
-        item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-                devid 1 total_bytes 1095761920 bytes_used 1094713344
-				    ^^^^^^^^^^
-
-[CAUSE]
-In fixup_device_size(), we only reset superblock device item size, which
-will be overwritten in write_dev_supers() using
-btrfs_device::total_bytes.
-
-And it doesn't touch btrfs_superblock::total_bytes either.
-
-[FIX]
-So fix the small mismatch by also resetting btrfs_device::total_bytes,
-btrfs_device::bytes_used and btrfs_superblock::total_bytes.
-
-Thankfully since commit 73dd4e3c87c9 ("btrfs-progs: image: Don't modify
-the chunk and device tree if the source dump is single device") single
-device dump won't have such problem, but it's still worthy for
-multi-device dump.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- image/main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/image/main.c b/image/main.c
-index 5fa6fa5aba17..42564b1d2f44 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -2374,6 +2374,7 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_dev_item *dev_item;
- 	struct btrfs_dev_extent *dev_ext;
-+	struct btrfs_device *dev;
- 	struct btrfs_path path;
- 	struct extent_buffer *leaf;
- 	struct btrfs_root *root = fs_info->chunk_root;
-@@ -2392,6 +2393,8 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
- 	key.type = BTRFS_DEV_EXTENT_KEY;
- 	key.offset = (u64)-1;
- 
-+	dev = list_first_entry(&fs_info->fs_devices->devices,
-+				struct btrfs_device, dev_list);
- 	ret = btrfs_search_slot(NULL, fs_info->dev_root, &key, &path, 0, 0);
- 	if (ret < 0) {
- 		errno = -ret;
-@@ -2425,6 +2428,9 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
- 
- 	btrfs_set_stack_device_total_bytes(dev_item, dev_size);
- 	btrfs_set_stack_device_bytes_used(dev_item, mdres->alloced_chunks);
-+	dev->total_bytes = dev_size;
-+	dev->bytes_used = mdres->alloced_chunks;
-+	btrfs_set_super_total_bytes(fs_info->super_copy, dev_size);
- 	ret = fstat(out_fd, &buf);
- 	if (ret < 0) {
- 		error("failed to stat result image: %m");
 -- 
-2.29.2
+I'm Dr. Dagbo Igho, did you Receive the (FUND), that was paid to you?
+please, do not hesitate to Let me know with your full name:.. for
+immediate verification notice,
 
+Thanks,
+Dr. Dagbo Igho
+Foreign Remittance Director
+
+Sincerely Yours, Respectfully,
+
+Mr Bill T Winters,
+Group Chief Executive Officer & Executive Director,
