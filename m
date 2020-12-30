@@ -2,214 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51CB2E7663
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Dec 2020 07:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B6D2E76E9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Dec 2020 08:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgL3Fuy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Dec 2020 00:50:54 -0500
-Received: from mout.gmx.net ([212.227.17.21]:44031 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgL3Fuy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Dec 2020 00:50:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1609307359;
-        bh=fTVru6JgrP2J/uyih68I2kqTrR92r9EU7IovEABsreo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Mlz7jDXmIO6hrCXW1e+M4J7xWdtXI+I4MwdDkodudY2Y2HGdUAZEZ9qDnIovblAOV
-         S34NFDprQ71ofeM0IVbCNtz/G3PBHFzWSkgcLbX0ySOuOquLRxp14q20D5BDYLJpoE
-         eujk55eXxtoukVlBc1WL/W1KID9PxSlBzJQ+BWww=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QWG-1kys4U1Xu4-004PLd; Wed, 30
- Dec 2020 06:49:19 +0100
-Subject: Re: [PATCH] btrfs: relocation: output warning message for leftover v1
- space cache before aborting current data balance
-To:     =?UTF-8?Q?St=c3=a9phane_Lesimple?= <stephane_btrfs2@lesimple.fr>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <02f6b3d7-c502-fe29-ec74-cce99922296c@gmx.com>
- <43269375-cefd-8059-5335-ed891fdd26fe@suse.com>
- <82e6288d-7b37-5797-13d9-f786afb33f5d@gmx.com>
- <90cf0737-6d33-94d8-9607-0f9c371c82aa@gmx.com>
- <20201229003837.16074-1-wqu@suse.com>
- <6b4afae37ba5979f25bddabd876a7dc5@lesimple.fr>
- <4f838a67672053e268ffce77ea800a8a@lesimple.fr>
- <e811efd8b2936a559d665e7303ce0873@lesimple.fr>
- <9c981dde8dafe773e2a99417e4935f6b@lesimple.fr>
- <e8107ffa29ffe7285b1da76805bd5fc4@lesimple.fr>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <8d9becab-de4c-da3f-967e-1104648ae56d@gmx.com>
-Date:   Wed, 30 Dec 2020 13:49:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726365AbgL3H6a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Dec 2020 02:58:30 -0500
+Received: from eu-shark2.inbox.eu ([195.216.236.82]:55140 "EHLO
+        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726337AbgL3H6a (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Dec 2020 02:58:30 -0500
+Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
+        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id BFE3B450AC2;
+        Wed, 30 Dec 2020 09:57:37 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1609315057; bh=1nUJUOY+e+yzh/hlkOef64rJlWOx7f1bK2r5wXothsI=;
+        h=References:From:To:Cc:Subject:In-reply-to:Date;
+        b=njqcP8mhzVAOmsXofzP81HFPx6EKYG6Stqk1REDbkrDiwwLv/RmgvqSXrMrEPeDch
+         ApKO6vHDc4PNJOyRFj5pgVrUuZ24wND0JuC6E7Yrwh9xD6QG9tdEd2aY6iP2OcDVbd
+         ywHp7M9bXIOU6wCO0x1OqIlKRMR7Z8Uvtn3M/rAM=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id B12A6450AAA;
+        Wed, 30 Dec 2020 09:57:37 +0200 (EET)
+Received: from eu-shark2.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id skIWZ0vPEXYp; Wed, 30 Dec 2020 09:57:37 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 3EC3D450AA9;
+        Wed, 30 Dec 2020 09:57:37 +0200 (EET)
+Received: from nas (unknown [59.149.253.145])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 121BA1BE04B3;
+        Wed, 30 Dec 2020 09:57:34 +0200 (EET)
+References: <20201229132934.117325-1-wqu@suse.com>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Su Yue <l@damenly.su>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        =?utf-8?Q?St=C3=A9phane?= Lesimple <stephane_btrfs2@lesimple.fr>
+Subject: Re: [PATCH] btrfs: relocation: fix wrong file extent type check to
+ avoid false -ENOENT error
+In-reply-to: <20201229132934.117325-1-wqu@suse.com>
+Message-ID: <a6tvsp3w.fsf@damenly.su>
+Date:   Wed, 30 Dec 2020 15:57:24 +0800
 MIME-Version: 1.0
-In-Reply-To: <e8107ffa29ffe7285b1da76805bd5fc4@lesimple.fr>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:o5jDtGdSI/tftNlBbEaJShRrFJ36I/wcwLLbEuwU0KoynHDkQPM
- XyDo6S51bPk/a92IV9/34SKlXmX1m5kognGcyU8/By730RGf0/eB8b/CFlwq1Z8XgoPrv34
- 7P/Ej+sIgbUWWA7++sOKAzgqt9Ij5IL6kthRI9K5zN2kBMNV01Xex/QiQEhPFSMqpJMzEB+
- yxr66JelJyNOw/T1gDilg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t9b4Hhl5vvY=:xkBWY0k5xvyYWAzQjqkQF5
- 893xE4zFg6tS7kYttafElbQAJWql3iNQ36jZUJqejKqvsHPjZyQNhOw0GrZLmhPitUEI43du7
- 2L6mpJZS0l8VAP7CnDUURslh4AscmR1JL9h7mhWICrjbYcRtnn8HXKi/jbZTmJsMB/cJ2dZ7h
- Zxl3fy2ESUkLWcBxlHq4SCbEOf9MBu4IkN6cnwVVNhi9uE8WIoVYKsfid+YtwvHlie0sxDhb9
- TrU+4r+ju7udukWQ0fex8KjVr9RsDifaDVYJm6g27JjY4Ecx6GYbDsZFeE2kANGplIyRHputv
- qYi+9biV2Zp7znKSRa5qsgwKC+moVAUkZBrS1pJLeciYF5LujdhQ6x/JLN8C7GbEmKTUbBnXp
- Qjpl4GfExZaQebJrrhOjrQVcoMlLOaw05P69rw/WO6FKHC8KAK395wYsBrthXRD8ydc8weNk0
- rbPWx/gq/WBPJv5vwo0P0qeDEna4RASg+pOP07DT/TceFueO8bxkPPB7MjBXlrc6ocLzhHSHB
- We8dLEI0VVlGBG1dM32ON3O7yaiNTtHKWbCOcqf6Iw3Q4x7/nKPV1b0hoigjGkkeljOE/a12L
- 2fRfS5GD8pY36isRoyBFHQOtb919bMFqZeaXkpAErP12d9UcvVLUhZCywWu5ZyP3I73dLYbtj
- frfc14x/0o+j1k2bcl/AtvraN6zXKnqv05KWJT4LzYdQOqgLBLicMjJ/qFrUbAzvH90AIcCPh
- lQJk0FIMiIbsv/q0oemtMJcRaG9uTvuoXupophE81CyyvqnblW8FjsKJfFIR7/eOSBhDLE+VW
- XzDutsnIzTJQT88Cwqg5O7BDR7WawNup1PWdTpRHb3I+SALQweo3JSseLNaisrCO4rhNZ4wCz
- G/aWwPSOFjMfwXoMsbVQ==
+X-Virus-Scanned: OK
+X-ESPOL: +dBm1NUOBkfEh1uoXXraDBg1qilXXeng55TJ3WUigBmOPC+CfkkPWBO2mWpqLw+1vSM=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On Tue 29 Dec 2020 at 21:29, Qu Wenruo <wqu@suse.com> wrote:
 
-On 2020/12/29 =E4=B8=8B=E5=8D=889:17, St=C3=A9phane Lesimple wrote:
-> December 29, 2020 2:08 PM, "Qu Wenruo" <quwenruo.btrfs@gmx.com> wrote:
+> [BUG]
+> There are several bug reports about recent kernel unable to=20
+> relocate
+> certain data block groups.
 >
->> On 2020/12/29 =E4=B8=8B=E5=8D=888:51, St=C3=A9phane Lesimple wrote:
->>
->>> December 29, 2020 1:43 PM, "Qu Wenruo" <wqu@suse.com> wrote:
->>>
->>>> On 2020/12/29 =E4=B8=8B=E5=8D=888:30, St=C3=A9phane Lesimple wrote:
->>>
->>> December 29, 2020 12:32 PM, "Qu Wenruo" <quwenruo.btrfs@gmx.com> wrote=
-:
->>>
->>> On 2020/12/29 =E4=B8=8B=E5=8D=887:08, St=C3=A9phane Lesimple wrote:
->>>
->>> December 29, 2020 11:31 AM, "Qu Wenruo" <quwenruo.btrfs@gmx.com> wrote=
-:
->>>
->>> # btrfs ins dump-tree -t root /dev/mapper/luks-tank-mdata | grep EXTEN=
-T_DA
->>> item 27 key (51933 EXTENT_DATA 0) itemoff 9854 itemsize 53
->>> item 12 key (72271 EXTENT_DATA 0) itemoff 14310 itemsize 53
->>> item 25 key (74907 EXTENT_DATA 0) itemoff 12230 itemsize 53
->>> Mind to dump all those related inodes?
->>>
->>> E.g:
->>>
->>> $ btrfs ins dump-tree -t root <dev> | gerp 51933 -C 10
->>>
->>> Sure. I added -w to avoid grepping big numbers just containing the dig=
-its 51933:
->>>
->>> # btrfs ins dump-tree -t root /dev/mapper/luks-tank-mdata | grep 51933=
- -C 10 -w
->>> generation 2614632 root_dirid 256 bytenr 42705449811968 level 2 refs 1
->>> lastsnap 2614456 byte_limit 0 bytes_used 101154816 flags 0x1(RDONLY)
->>> uuid 1100ff6c-45fa-824d-ad93-869c94a87c7b
->>> parent_uuid 8bb8a884-ea4f-d743-8b0c-b6fdecbc397c
->>> ctransid 1337630 otransid 1249372 stransid 0 rtransid 0
->>> ctime 1554266422.693480985 (2019-04-03 06:40:22)
->>> otime 1547877605.465117667 (2019-01-19 07:00:05)
->>> drop key (0 UNKNOWN.0 0) level 0
->>> item 25 key (51098 ROOT_BACKREF 5) itemoff 10067 itemsize 42
->>> root backref key dirid 534 sequence 22219 name 20190119_070006_hourly.=
-7
->>> item 26 key (51933 INODE_ITEM 0) itemoff 9907 itemsize 160
->>> generation 0 transid 1517381 size 262144 nbytes 30553407488
->>> block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
->>> sequence 116552 flags 0x1b(NODATASUM|NODATACOW|NOCOMPRESS|PREALLOC)
->>> atime 0.0 (1970-01-01 01:00:00)
->>> ctime 1567904822.739884119 (2019-09-08 03:07:02)
->>> mtime 0.0 (1970-01-01 01:00:00)
->>> otime 0.0 (1970-01-01 01:00:00)
->>> item 27 key (51933 EXTENT_DATA 0) itemoff 9854 itemsize 53
->>> generation 1517381 type 2 (prealloc)
->>> prealloc data disk byte 34626327621632 nr 262144
->>>> Got the point now.
->>>>
->>>> The type is preallocated, which means we haven't yet written space ca=
-che
->>>> into it.
->>>>
->>>> But the code only checks the regular file extent (written, not
->>>> preallocated).
->>>>
->>>> So the proper fix would looks like this:
->>>>
->>>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
->>>> index 19b7db8b2117..1d73d7c2fbd7 100644
->>>> --- a/fs/btrfs/relocation.c
->>>> +++ b/fs/btrfs/relocation.c
->>>> @@ -2975,11 +2975,14 @@ static int delete_v1_space_cache(struct
->>>> extent_buffer *leaf,
->>>> return 0;
->>>>
->>>> for (i =3D 0; i < btrfs_header_nritems(leaf); i++) {
->>>> + u8 type;
->>>> btrfs_item_key_to_cpu(leaf, &key, i);
->>>> if (key.type !=3D BTRFS_EXTENT_DATA_KEY)
->>>> continue;
->>>> ei =3D btrfs_item_ptr(leaf, i, struct
->>>> btrfs_file_extent_item);
->>>> - if (btrfs_file_extent_type(leaf, ei) =3D=3D
->>>> BTRFS_FILE_EXTENT_REG &&
->>>> + type =3D btrfs_file_extent_type(leaf, ei);
->>>> + if ((type =3D=3D BTRFS_FILE_EXTENT_REG ||
->>>> + type =3D=3D BTRFS_FILE_EXTENT_PREALLOC) &&
->>>> btrfs_file_extent_disk_bytenr(leaf, ei) =3D=3D
->>>> data_bytenr) {
->>>> found =3D true;
->>>> space_cache_ino =3D key.objectid;
->>>>
->>>> With this, the relocation should finish without problem.
->>>
->>> Aaah, it makes sense indeed.
->>>
->>> Do you want me to try this fix right now, or do you want to have a loo=
-k
->>> at the btrfs-progs crash first? I don't know if it's related, but if i=
-t is,
->>> then maybe I won't be able to reproduce it again after finishing the b=
-alance.
->>
->> The problem is, I'm not that confident with v2 space cache debugging,
->> thus can't help much.
->>
->> But at least, the problem you're reporting doesn't really need a
->> btrfs-check repair.
->> Just a kernel fix would be enough.
+> Sometimes the error just go away, but there is one reporter who=20
+> can
+> reproduce it reliably.
 >
-> Yes indeed.
+> The dmesg would look like:
+> [  438.260483] BTRFS info (device dm-10): balance: start=20
+> -dvrange=3D34625344765952..34625344765953
+> [  438.269018] BTRFS info (device dm-10): relocating block group=20
+> 34625344765952 flags data|raid1
+> [  450.439609] BTRFS info (device dm-10): found 167 extents,=20
+> stage: move data extents
+> [  463.501781] BTRFS info (device dm-10): balance: ended with=20
+> status: -2
 >
->>> I don't mind leaving the FS in this state for a few more days/weeks if=
- needed.
->>
->> That's fine if you want some one to look into the btrfs-progs bug.
+> [CAUSE]
+> The -ENOENT error is returned from the following chall chain:
 >
-> I'll leave it like this up to, let's say, mid-January.
+> add_data_references()
+> |- delete_v1_space_cache();
+>    |- if (!found)
+>          return -ENOENT;
+>
+> The variable @found is set to true if we find a data extent=20
+> whose
+> disk bytenr matches parameter @data_bytes.
+>
+> With extra debug, the offending tree block looks like this:
+>   leaf bytenr =3D 42676709441536, data_bytenr =3D 34626327621632
+>
+>                 ctime 1567904822.739884119 (2019-09-08 03:07:02)
+>                 mtime 0.0 (1970-01-01 01:00:00)
+>                 otime 0.0 (1970-01-01 01:00:00)
+>         item 27 key (51933 EXTENT_DATA 0) itemoff 9854 itemsize=20
+>         53
+>                 generation 1517381 type 2 (prealloc)
+>                 prealloc data disk byte 34626327621632 nr 262144=20
+>                 <<<
+>                 prealloc data offset 0 nr 262144
+>         item 28 key (52262 ROOT_ITEM 0) itemoff 9415 itemsize=20
+>         439
+>                 generation 2618893 root_dirid 256 bytenr=20
+>                 42677048360960 level 3 refs 1
+>                 lastsnap 2618893 byte_limit 0 bytes_used=20
+>                 5557338112 flags 0x0(none)
+>                 uuid d0d4361f-d231-6d40-8901-fe506e4b2b53
+>
+> Although item 27 has disk bytenr 34626327621632, which matches=20
+> the
+> data_bytenr, its type is prealloc, not reg.
+> This makes the existing code skip that item, and return -ENOENT.
+>
+> [FIX]
+> The code is modified in commit  19b546d7a1b2 ("btrfs:=20
+> relocation: Use
+> btrfs_find_all_leafs to locate data extent parent tree leaves"),=20
+> before
+> that commit, we use something like
+> "if (type =3D=3D BTRFS_FILE_EXTENT_INLINE) continue;".
+>
+> But in that offending commit, we use (type =3D=3D=20
+> BTRFS_FILE_EXTENT_REG),
+> ignoring BTRFS_FILE_EXTENT_PREALLOC.
+>
+> Fix it by also checking BTRFS_FILE_EXTENT_PREALLOC.
+>
+> Reported-by: St=C3=A9phane Lesimple <stephane_btrfs2@lesimple.fr>
+> Fixes: 19b546d7a1b2 ("btrfs: relocation: Use=20
+> btrfs_find_all_leafs to locate data extent parent tree leaves")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
 
-BTW, would you mind to dump the root tree?
+Reviewed-by: Su Yue <l@damenly.su>
 
-# btrfs ins dump-tree -t root <device>
-
-I'm more interested in the half dropped v1 space cache. Currently
-although they are sane (with proper inode items), I'm a little concerned
-if current v1 space cache cleanup can remove them.
-
-Feel free to remove any subvolume names.
-
-Thanks,
-Qu
-
-> If nobody has expressed interest
-> in looking into this other problem, I'll apply your final patch and comp=
-lete the balance,
-> so that you can add a Tested-By.
+> ---
+>  fs/btrfs/relocation.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
->> I'll submit a proper bug fix soon.
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 19b7db8b2117..df63ef64c5c0 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -2975,11 +2975,16 @@ static int delete_v1_space_cache(struct=20
+> extent_buffer *leaf,
+>  		return 0;
 >
-> Thanks,
->
-> Good evening!
->
+>  	for (i =3D 0; i < btrfs_header_nritems(leaf); i++) {
+> +		u8 type;
+> +
+>  		btrfs_item_key_to_cpu(leaf, &key, i);
+>  		if (key.type !=3D BTRFS_EXTENT_DATA_KEY)
+>  			continue;
+>  		ei =3D btrfs_item_ptr(leaf, i, struct=20
+>  btrfs_file_extent_item);
+> -		if (btrfs_file_extent_type(leaf, ei) =3D=3D=20
+> BTRFS_FILE_EXTENT_REG &&
+> +		type =3D btrfs_file_extent_type(leaf, ei);
+> +
+> +		if ((type =3D=3D BTRFS_FILE_EXTENT_REG ||
+> +		     type =3D=3D BTRFS_FILE_EXTENT_PREALLOC) &&
+>  		    btrfs_file_extent_disk_bytenr(leaf, ei) =3D=3D=20
+>  data_bytenr) {
+>  			found =3D true;
+>  			space_cache_ino =3D key.objectid;
+
