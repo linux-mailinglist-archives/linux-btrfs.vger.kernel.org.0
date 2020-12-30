@@ -2,292 +2,185 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020922E7510
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Dec 2020 00:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EA62E756D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Dec 2020 02:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgL2W6y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Dec 2020 17:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726279AbgL2W6w (ORCPT
+        id S1726337AbgL3A6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Dec 2020 19:58:05 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:42613 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726335AbgL3A6E (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Dec 2020 17:58:52 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCF4C061796
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Dec 2020 14:57:57 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id r3so16023109wrt.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Dec 2020 14:57:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6LOVRIN+dHLlkldBNCaLmuLD7ORcE6+GLQF/833fwkU=;
-        b=zEqf4KE0zng7uJSq9TLccKBz6yioDvPjkB4ufL+6FTK0P2BwBm2fjTTCmbWNo3UwZ8
-         7pZD+oSCiYmvU6DsBTcmSar6ErEC0zY6qp6Ma/04rJoHZT6wsHZLYuEh8iyus+m1fAxw
-         7HZYPpOJMHPNQqIvGEcvWAetjreQes3kRmEcM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6LOVRIN+dHLlkldBNCaLmuLD7ORcE6+GLQF/833fwkU=;
-        b=JpHqJqDYvYhLxkdM+DKRKGwO45GtSIHdzcDOipvucHuvF1v/Er9Xo62rj46is0LDm6
-         lRVj03dO49cy3t21jJb73cefD/VK2usG8wl7A3zFWirWqzQUjse9RJkOgt7YHnihGFPu
-         OWC3XZfOaUZCGw1y/G1i5I+1KVOp0o1j/wIliX3Sh1GOGgIzbhbtRfyPf8JXUbXFokK7
-         a3LcWZOstZAbw9RJP+jWvpYVS+TwYm7YUx2Xl+TajNxp4h9EZV/dX8g5H6FQnHAblVR0
-         YD9nFKzsdFB1mgu3Q84C+mxqE3q74LFNN9K2RwyndmOFg11lzfHQoywowEFfP+CU6WR4
-         LOgA==
-X-Gm-Message-State: AOAM5332HaHGGO5mIg6v/gFccVw4eLmuDcK4XqWxr1Hm2uqbPXEV7OKH
-        KtSrBZ+EDGhPTSkmus31Obav7Q==
-X-Google-Smtp-Source: ABdhPJx6mbQ7eliHuiWL9TcrMD6Lvzqs8brXQIJLd4Fk6RPORgP9+Q/9lIupEaZX7+yhDOqKyN7Y4w==
-X-Received: by 2002:adf:f605:: with SMTP id t5mr56673240wrp.39.1609282676001;
-        Tue, 29 Dec 2020 14:57:56 -0800 (PST)
-Received: from dev.cfops.net (165.176.200.146.dyn.plus.net. [146.200.176.165])
-        by smtp.gmail.com with ESMTPSA id u205sm5182840wme.42.2020.12.29.14.57.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Dec 2020 14:57:55 -0800 (PST)
-From:   Ignat Korchagin <ignat@cloudflare.com>
-To:     agk@redhat.com, snitzer@redhat.com, dm-devel@redhat.com,
-        dm-crypt@saout.de, linux-kernel@vger.kernel.org
-Cc:     Ignat Korchagin <ignat@cloudflare.com>, ebiggers@kernel.org,
-        Damien.LeMoal@wdc.com, mpatocka@redhat.com,
-        herbert@gondor.apana.org.au, kernel-team@cloudflare.com,
-        nobuto.murata@canonical.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        mail@maciej.szmigiero.name, stable@vger.kernel.org
-Subject: [PATCH 2/2] dm crypt: do not wait for backlogged crypto request completion in softirq
-Date:   Tue, 29 Dec 2020 22:57:14 +0000
-Message-Id: <20201229225714.1580-2-ignat@cloudflare.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201229225714.1580-1-ignat@cloudflare.com>
-References: <20201229225714.1580-1-ignat@cloudflare.com>
+        Tue, 29 Dec 2020 19:58:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1609289815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AxWwMpo1chUF3QolNJ2wMKQg++dUPu5x7ZuxKie9ee0=;
+        b=hb3pODXGfFctmfbUbhxp/c8E4PGBpIfw9Psl2k6bnjNe8WqLxVeBCRQfkwAHEM+oyDcQ/H
+        AIP0ktGZf9tpZkkd5M/xaP/xE/89Z9Gi9GRi/+4kiVTjKUDAr/iFgXIKwq1LfEN9a9bc9w
+        KgDkW6a7gGIAhq8CUzteUOv9HSkXUDo=
+Received: from EUR03-AM5-obe.outbound.protection.outlook.com
+ (mail-am5eur03lp2058.outbound.protection.outlook.com [104.47.8.58]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-40-iMmy_RXpOUSHzNux1cNouQ-1; Wed, 30 Dec 2020 01:56:53 +0100
+X-MC-Unique: iMmy_RXpOUSHzNux1cNouQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ku11Rfz5Yh2MNUdIf3GYB5u2b8R//ZfGUd+GRMHDbzuhrKi0+SUGU23PdV2Rajno6u/At9c6TGfmCR5eW8Wr+eccxpGZRlnPY4fwo9WFPA/qUfO5jO4bBC9AVkCgwgO0tbGaxM404SxBiUDPueHO7V3go6L9C9Ruwgnlg3IGwxNPQGsPunbj680LAHCZEaccKiR9WTc0KkBV02CxpvARehsdGVPTvbKKcd9DLT4ZQeHNoKjK5qSmqaZYWLs5W8tQGvKJXe6pBDm7/rM5o/tPeFecyroq7vPSLccCXpF2W4FUWb9/VWIZwtCN1EA2GE7b5JaiFaVuqBXUlOvr64zfoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HRLRwG3YUzYftWj6J1LjlEApogvEPV4grBWDlZ6/CSI=;
+ b=L3LqY4MMSH5/Aw5Bl2fkZ/SY7sFXwZtfvx6p/i2fhVRCEFdk32RuYltaClfLvPQnqd4RaE3ORoIvaUTA/44n9lK++rmmI6xiTmK0qtzFtQlXVgHo5okof8VFkq16Uz4MHPzLInG3+tPVopSXpH5tOaaoGB65u22rluaIQz6F7U2WbQ1DZ58/9PnM9pCxqU/gwOlx9VnmPr5LNbvyjaWbB/SreXNz0G2QJu5ARaACh0U+/XB+J3QoztV/c4uqOSfWrZ1srm2JhsDtdZZUhS65OYDrTyBwv9JnQFAPEbXZ8HjKKlSKBD/elcp0muQQYLEbmWY0hMm1GaD3GbVNFgdGwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lesimple.fr; dkim=none (message not signed)
+ header.d=none;lesimple.fr; dmarc=none action=none header.from=suse.com;
+Received: from PA4PR04MB7533.eurprd04.prod.outlook.com (2603:10a6:102:f1::19)
+ by PA4PR04MB7758.eurprd04.prod.outlook.com (2603:10a6:102:c4::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Wed, 30 Dec
+ 2020 00:56:52 +0000
+Received: from PA4PR04MB7533.eurprd04.prod.outlook.com
+ ([fe80::397a:950:d8c8:d709]) by PA4PR04MB7533.eurprd04.prod.outlook.com
+ ([fe80::397a:950:d8c8:d709%6]) with mapi id 15.20.3700.031; Wed, 30 Dec 2020
+ 00:56:52 +0000
+Subject: Re: [PATCH] btrfs: relocation: output warning message for leftover v1
+ space cache before aborting current data balance
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+CC:     =?UTF-8?Q?St=c3=a9phane_Lesimple?= <stephane_btrfs2@lesimple.fr>
+References: <20201229003837.16074-1-wqu@suse.com>
+Message-ID: <8ccfddee-3de4-f3ae-bb18-eadecf9621b4@suse.com>
+Date:   Wed, 30 Dec 2020 08:56:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+In-Reply-To: <20201229003837.16074-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: SJ0PR03CA0014.namprd03.prod.outlook.com
+ (2603:10b6:a03:33a::19) To PA4PR04MB7533.eurprd04.prod.outlook.com
+ (2603:10a6:102:f1::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0014.namprd03.prod.outlook.com (2603:10b6:a03:33a::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend Transport; Wed, 30 Dec 2020 00:56:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 564a25c8-d207-41a2-346f-08d8ac5dcbba
+X-MS-TrafficTypeDiagnostic: PA4PR04MB7758:
+X-Microsoft-Antispam-PRVS: <PA4PR04MB7758FA85A4B4724CC85D8715D6D70@PA4PR04MB7758.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xzUKf650hGNtIRR3s9UtMF+hC5O1MbGkNT9g8iaGUxy1FnuoptQPHfhHOq/MeTpus4wPaTEPWTtmJqAtjbcsMFkCL9FLMCzVkaEDq4VljhyADfQxabF0yj7EA9v6verAgHBuALsD9dXkkgesS3Q/JFVe7osJH+15wBPg4TqWtFNDHq3WTedc/ZIXjtr1bqDZFjp55WZiwO+uEOSOuOD8Kr6Ya1xNkAAk1Pp81qemZwplmROsuSS5YpEX52CR4GN1DebYkjc1pDuM7iivnzsnZtZwqvq+NOQ4Gs7JEz6wd14gVX7y7pSZIhKbFQ2W2/Dea/dxTdhc5RjhU20bKosg+hDl6RsKyn+Pe257zP6b1q1HAu1zWONJZEoxhx44o8A/6AGyksxWvnBPupo8Fs6KzjKDlvDSNKJfW87P6yJyjqppHGH6dfRkDn6lRyPIJSH29klXxMjp806ola5bTy9noIhphK5NZegl1F+bt/D14ZDDQHuxo/KiAveG0sYR9cZ/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7533.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(346002)(39850400004)(31696002)(6666004)(5660300002)(2616005)(6486002)(4326008)(478600001)(66946007)(6706004)(86362001)(16526019)(83380400001)(15650500001)(66476007)(66556008)(316002)(26005)(2906002)(186003)(36756003)(16576012)(66574015)(8676002)(956004)(31686004)(8936002)(52116002)(6916009)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zwVkDrI++xsr17MWjeY40QpynwqkuHbF72q0vrJGddlzf5Tq1o/HaliE9Eqy?=
+ =?us-ascii?Q?qTYGb+RaOJqkhV2NzCh5icosdKAkUeeWTwqdYbhemogYNeUN38ZdPnaBRxZs?=
+ =?us-ascii?Q?l4HJWN4ron/6xyBNn+6UjXhgCxru1nkbMp0S2Cvbz9KNh+dp+NPXZIdzpygS?=
+ =?us-ascii?Q?NFtu59BNMzCFmsF5asT5XzLdFVsb38fqfdDSoo5MtlvLe5P9yHO325oopoqi?=
+ =?us-ascii?Q?Gpi64TxuY1YiPrOQ9leiOEvbN4VqwHXL6VRslC7qgTVcZiMHZrM6ZzLt6gIs?=
+ =?us-ascii?Q?Z3HfxiA5M2imuRpZ/id/uc1ORLhwa/I4clPfFwQvemPHviIz0RllGpDVeBTB?=
+ =?us-ascii?Q?7q5gJbkSAplQjcNSMOJAvYG+KQFs2VmDHK7LnDzi2gXSKX8SX2nvg5+6vKdZ?=
+ =?us-ascii?Q?+k/a5ASEbMweGTQqaIgAQHF1byF+oXSHhJStZkrWkJZiDHSsS2mZrgvX5qij?=
+ =?us-ascii?Q?waaZgvL/iWfMXNdH3B7oqwP6gUZkP6gFZS+2Ns6cvUBaYMVP10pDJ/WI/a11?=
+ =?us-ascii?Q?qVsXup110ejr0AL/GgZQvqZENZSIpQxXoB0K718mr4FrBtMBzdYl2sWZ3jDT?=
+ =?us-ascii?Q?asm1F5H1oJ3K3Qc8niScQ0bJ5r3MKG2ziwt8HggeTjL6P16nRfBg8pRv4ofw?=
+ =?us-ascii?Q?rmvdKLaB7cGtfQa/fzqaQTX8BSQAMjtGIR+mjFop4iZn4K5mi60yay4saR2G?=
+ =?us-ascii?Q?XDRbU9umt7NWQ5jvl/a9dD3FQRTrTlwvQ5LSxLTewiYkBW+R0+zEuD5HIKT9?=
+ =?us-ascii?Q?eM/SVj50ewFZ6pD57KunC1FQnEuY0CrVPShmXsaVKyg+iovgFlZiJAD2rmdB?=
+ =?us-ascii?Q?4Ru6sJz5NnbJYTC1i8mAhsvxd0Zx7DVUJQmxakt3T1Mp16xHfmifkfUiNIm3?=
+ =?us-ascii?Q?3iCZcfFMuxvUYPsCa15YyERvOdCrPMS6j5CH0YvqFXnLTFBSm0QVZI+m384v?=
+ =?us-ascii?Q?yq7rXCMvB/E4BMPdmVX+ZpL1QK58NRC5mkKDRywmLN848+EqMOLj2DNQwlo5?=
+ =?us-ascii?Q?WtE2?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7533.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2020 00:56:52.1505
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Network-Message-Id: 564a25c8-d207-41a2-346f-08d8ac5dcbba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LFW+cd008lC+n5ebz8rW0Tv74nts59YvboQM0UYxpO99YOvzo6fwQoSc+zb+sY4/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7758
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 39d42fa96ba1b7d2544db3f8ed5da8fb0d5cb877 made it possible for some code
-paths in dm-crypt to be executed in softirq context, when the underlying driver
-processes IO requests in interrupt/softirq context.
 
-When Crypto API backlogs a crypto request, dm-crypt uses wait_for_completion to
-avoid sending further requests to an already overloaded crypto driver. However,
-if the code is executing in softirq context, we might get the following
-stacktrace:
 
-[  210.235213][    C0] BUG: scheduling while atomic: fio/2602/0x00000102
-[  210.236701][    C0] Modules linked in:
-[  210.237566][    C0] CPU: 0 PID: 2602 Comm: fio Tainted: G        W         5.10.0+ #50
-[  210.239292][    C0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-[  210.241233][    C0] Call Trace:
-[  210.241946][    C0]  <IRQ>
-[  210.242561][    C0]  dump_stack+0x7d/0xa3
-[  210.243466][    C0]  __schedule_bug.cold+0xb3/0xc2
-[  210.244539][    C0]  __schedule+0x156f/0x20d0
-[  210.245518][    C0]  ? io_schedule_timeout+0x140/0x140
-[  210.246660][    C0]  schedule+0xd0/0x270
-[  210.247541][    C0]  schedule_timeout+0x1fb/0x280
-[  210.248586][    C0]  ? usleep_range+0x150/0x150
-[  210.249624][    C0]  ? unpoison_range+0x3a/0x60
-[  210.250632][    C0]  ? ____kasan_kmalloc.constprop.0+0x82/0xa0
-[  210.251949][    C0]  ? unpoison_range+0x3a/0x60
-[  210.252958][    C0]  ? __prepare_to_swait+0xa7/0x190
-[  210.254067][    C0]  do_wait_for_common+0x2ab/0x370
-[  210.255158][    C0]  ? usleep_range+0x150/0x150
-[  210.256192][    C0]  ? bit_wait_io_timeout+0x160/0x160
-[  210.257358][    C0]  ? blk_update_request+0x757/0x1150
-[  210.258582][    C0]  ? _raw_spin_lock_irq+0x82/0xd0
-[  210.259674][    C0]  ? _raw_read_unlock_irqrestore+0x30/0x30
-[  210.260917][    C0]  wait_for_completion+0x4c/0x90
-[  210.261971][    C0]  crypt_convert+0x19a6/0x4c00
-[  210.263033][    C0]  ? _raw_spin_lock_irqsave+0x87/0xe0
-[  210.264193][    C0]  ? kasan_set_track+0x1c/0x30
-[  210.265191][    C0]  ? crypt_iv_tcw_ctr+0x4a0/0x4a0
-[  210.266283][    C0]  ? kmem_cache_free+0x104/0x470
-[  210.267363][    C0]  ? crypt_endio+0x91/0x180
-[  210.268327][    C0]  kcryptd_crypt_read_convert+0x30e/0x420
-[  210.269565][    C0]  blk_update_request+0x757/0x1150
-[  210.270563][    C0]  blk_mq_end_request+0x4b/0x480
-[  210.271680][    C0]  blk_done_softirq+0x21d/0x340
-[  210.272775][    C0]  ? _raw_spin_lock+0x81/0xd0
-[  210.273847][    C0]  ? blk_mq_stop_hw_queue+0x30/0x30
-[  210.275031][    C0]  ? _raw_read_lock_irq+0x40/0x40
-[  210.276182][    C0]  __do_softirq+0x190/0x611
-[  210.277203][    C0]  ? handle_edge_irq+0x221/0xb60
-[  210.278340][    C0]  asm_call_irq_on_stack+0x12/0x20
-[  210.279514][    C0]  </IRQ>
-[  210.280164][    C0]  do_softirq_own_stack+0x37/0x40
-[  210.281281][    C0]  irq_exit_rcu+0x110/0x1b0
-[  210.282286][    C0]  common_interrupt+0x74/0x120
-[  210.283376][    C0]  asm_common_interrupt+0x1e/0x40
-[  210.284496][    C0] RIP: 0010:_aesni_enc1+0x65/0xb0
+On 2020/12/29 =E4=B8=8A=E5=8D=888:38, Qu Wenruo wrote:
+> In delete_v1_space_cache(), if we find a leaf whose owner is tree root,
+> and we can't grab the free space cache inode, then we return -ENOENT.
+>=20
+> However this would make the caller, add_data_references(), to consider
+> this as a critical error, and abort current data balance.
+>=20
+> This happens for fs using free space cache v2, while still has v1 data
+> left.
+>=20
+> For v2 free space cache, we no longer load v1 data, making btrfs_igrab()
+> no longer work for root tree to grab v1 free space cache inodes.
+>=20
+> The proper fix for the problem is to delete v1 space cache completely
+> during v2 convert.
+>=20
+> We can't just ignore the -ENOENT error, as for root tree we don't use
+> reloc tree to replace its data references, but rely on COW.
+> This means, we have no way to relocate the leftover v1 data, and block
+> the relocation.
+>=20
+> This patch will just workaround it by outputting a warning message,
+> showing the user how to manually solve it.
+>=20
+> Reported-by: St=C3=A9phane Lesimple <stephane_btrfs2@lesimple.fr>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Fix this by making crypt_convert function reentrant from the point of a single
-bio and make dm-crypt defer further bio processing to a workqueue, if Crypto API
-backlogs a request in interrupt context.
+Please discard this patch.
 
-Fixes: 39d42fa96ba1 ("dm crypt: add flags to optionally bypass kcryptd workq
-ueues")
-Cc: <stable@vger.kernel.org> # v5.9+
+This didn't really solve the problem and may give the end user some=20
+false impression.
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
----
- drivers/md/dm-crypt.c | 102 +++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 97 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 777b5c71a2f7..6df907bd6c7c 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -1529,13 +1529,19 @@ static void crypt_free_req(struct crypt_config *cc, void *req, struct bio *base_
-  * Encrypt / decrypt data from one bio to another one (can be the same one)
-  */
- static blk_status_t crypt_convert(struct crypt_config *cc,
--			 struct convert_context *ctx, bool atomic)
-+			 struct convert_context *ctx, bool atomic, bool reset_pending)
- {
- 	unsigned int tag_offset = 0;
- 	unsigned int sector_step = cc->sector_size >> SECTOR_SHIFT;
- 	int r;
- 
--	atomic_set(&ctx->cc_pending, 1);
-+	/*
-+	 * if reset_pending is set we are dealing with the bio for the first time,
-+	 * else we're continuing to work on the previous bio, so don't mess with
-+	 * the cc_pending counter
-+	 */
-+	if (reset_pending)
-+		atomic_set(&ctx->cc_pending, 1);
- 
- 	while (ctx->iter_in.bi_size && ctx->iter_out.bi_size) {
- 
-@@ -1553,7 +1559,24 @@ static blk_status_t crypt_convert(struct crypt_config *cc,
- 		 * but the driver request queue is full, let's wait.
- 		 */
- 		case -EBUSY:
--			wait_for_completion(&ctx->restart);
-+			if (in_interrupt()) {
-+				if (try_wait_for_completion(&ctx->restart)) {
-+					/*
-+					 * we don't have to block to wait for completion,
-+					 * so proceed
-+					 */
-+				} else {
-+					/*
-+					 * we can't wait for completion without blocking
-+					 * exit and continue processing in a workqueue
-+					 */
-+					ctx->r.req = NULL;
-+					ctx->cc_sector += sector_step;
-+					tag_offset++;
-+					return BLK_STS_DEV_RESOURCE;
-+				}
-+			} else
-+				wait_for_completion(&ctx->restart);
- 			reinit_completion(&ctx->restart);
- 			fallthrough;
- 		/*
-@@ -1945,6 +1968,37 @@ static bool kcryptd_crypt_write_inline(struct crypt_config *cc,
- 	}
- }
- 
-+static void kcryptd_crypt_write_continue(struct work_struct *work)
-+{
-+	struct dm_crypt_io *io = container_of(work, struct dm_crypt_io, work);
-+	struct crypt_config *cc = io->cc;
-+	struct convert_context *ctx = &io->ctx;
-+	int crypt_finished;
-+	sector_t sector = io->sector;
-+	blk_status_t r;
-+
-+	wait_for_completion(&ctx->restart);
-+	reinit_completion(&ctx->restart);
-+
-+	r = crypt_convert(cc, &io->ctx, true, false);
-+	if (r)
-+		io->error = r;
-+	crypt_finished = atomic_dec_and_test(&ctx->cc_pending);
-+	if (!crypt_finished && kcryptd_crypt_write_inline(cc, ctx)) {
-+		/* Wait for completion signaled by kcryptd_async_done() */
-+		wait_for_completion(&ctx->restart);
-+		crypt_finished = 1;
-+	}
-+
-+	/* Encryption was already finished, submit io now */
-+	if (crypt_finished) {
-+		kcryptd_crypt_write_io_submit(io, 0);
-+		io->sector = sector;
-+	}
-+
-+	crypt_dec_pending(io);
-+}
-+
- static void kcryptd_crypt_write_convert(struct dm_crypt_io *io)
- {
- 	struct crypt_config *cc = io->cc;
-@@ -1973,7 +2027,17 @@ static void kcryptd_crypt_write_convert(struct dm_crypt_io *io)
- 
- 	crypt_inc_pending(io);
- 	r = crypt_convert(cc, ctx,
--			  test_bit(DM_CRYPT_NO_WRITE_WORKQUEUE, &cc->flags));
-+			  test_bit(DM_CRYPT_NO_WRITE_WORKQUEUE, &cc->flags), true);
-+	/*
-+	 * Crypto API backlogged the request, because its queue was full
-+	 * and we're in softirq context, so continue from a workqueue
-+	 * (TODO: is it actually possible to be in softirq in the write path?)
-+	 */
-+	if (r == BLK_STS_DEV_RESOURCE) {
-+		INIT_WORK(&io->work, kcryptd_crypt_write_continue);
-+		queue_work(cc->crypt_queue, &io->work);
-+		return;
-+	}
- 	if (r)
- 		io->error = r;
- 	crypt_finished = atomic_dec_and_test(&ctx->cc_pending);
-@@ -1998,6 +2062,25 @@ static void kcryptd_crypt_read_done(struct dm_crypt_io *io)
- 	crypt_dec_pending(io);
- }
- 
-+static void kcryptd_crypt_read_continue(struct work_struct *work)
-+{
-+	struct dm_crypt_io *io = container_of(work, struct dm_crypt_io, work);
-+	struct crypt_config *cc = io->cc;
-+	blk_status_t r;
-+
-+	wait_for_completion(&io->ctx.restart);
-+	reinit_completion(&io->ctx.restart);
-+
-+	r = crypt_convert(cc, &io->ctx, true, false);
-+	if (r)
-+		io->error = r;
-+
-+	if (atomic_dec_and_test(&io->ctx.cc_pending))
-+		kcryptd_crypt_read_done(io);
-+
-+	crypt_dec_pending(io);
-+}
-+
- static void kcryptd_crypt_read_convert(struct dm_crypt_io *io)
- {
- 	struct crypt_config *cc = io->cc;
-@@ -2009,7 +2092,16 @@ static void kcryptd_crypt_read_convert(struct dm_crypt_io *io)
- 			   io->sector);
- 
- 	r = crypt_convert(cc, &io->ctx,
--			  test_bit(DM_CRYPT_NO_READ_WORKQUEUE, &cc->flags));
-+			  test_bit(DM_CRYPT_NO_READ_WORKQUEUE, &cc->flags), true);
-+	/*
-+	 * Crypto API backlogged the request, because its queue was full
-+	 * and we're in softirq context, so continue from a workqueue
-+	 */
-+	if (r == BLK_STS_DEV_RESOURCE) {
-+		INIT_WORK(&io->work, kcryptd_crypt_read_continue);
-+		queue_work(cc->crypt_queue, &io->work);
-+		return;
-+	}
- 	if (r)
- 		io->error = r;
- 
--- 
-2.20.1
+Thanks,
+Qu
+> ---
+>   fs/btrfs/relocation.c | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
+>=20
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 19b7db8b2117..42746b59268d 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -3027,6 +3027,25 @@ int add_data_references(struct reloc_control *rc,
+>   		ret =3D delete_v1_space_cache(eb, rc->block_group,
+>   					    extent_key->objectid);
+>   		free_extent_buffer(eb);
+> +		/*
+> +		 * This happens when the fs is converted to use v2 space cache,
+> +		 * but some v1 data is still left.
+> +		 * In that case, we can't delete the v1 space cache data as we
+> +		 * can't grab the free space cache inode anymore.
+> +		 *
+> +		 * And we can't ignore the error, as for root tree (where v1
+> +		 * space cache is) we don't do reloc tree to replace the data
+> +		 * to the new location, thus the old data will still be there,
+> +		 * blocking the data chunk to be relocated.
+> +		 *
+> +		 * Here we just warn user about the problem, and provide a
+> +		 * workaround.
+> +		 * The proper fix is in the v2 convert mount, which should
+> +		 * completely remove v1 data.
+> +		 */
+> +		if (ret =3D=3D -ENOENT)
+> +			btrfs_warn(fs_info,
+> +"leftover v1 space cache found, please use btrfs-check --clear-space-cac=
+he v1 to clean it up");
+>   		if (ret < 0)
+>   			break;
+>   		ret =3D __add_tree_block(rc, ref_node->val, blocksize, blocks);
+>=20
 
