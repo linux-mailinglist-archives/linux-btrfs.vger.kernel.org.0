@@ -2,95 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E942E8196
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Dec 2020 19:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3DA2E81A0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Dec 2020 19:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgLaSUK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Dec 2020 13:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S1726503AbgLaSeS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Dec 2020 13:34:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgLaSUK (ORCPT
+        with ESMTP id S1726210AbgLaSeR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Dec 2020 13:20:10 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC271C061573
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Dec 2020 10:19:29 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id d189so22499439oig.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Dec 2020 10:19:29 -0800 (PST)
+        Thu, 31 Dec 2020 13:34:17 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BA4C061573
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Dec 2020 10:33:37 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id n7so13466776pgg.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Dec 2020 10:33:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=naH1+LXp7UqWG8a6oU2wWvyp2gFUCZKEJOQtmpJO7Pk=;
-        b=U1FmvAO4F3oejPlJFTPWlseht8pVII3SFf1mP9hPhVcPRKd8XEZn101/9ZYRljqZ/Y
-         ZubUDW8rlzdAE4zVqneONC1GH51jVteglTxjXZyqpDyd8zplvaFRltex3lqB7Z4Jad76
-         cm4xp7LAHfE3p0BHWOjLJpxeHjC4jIjwyAZDau2HcdR4iud6IHYMVWaMS3DoO0dNDC0l
-         bweTlp3C01HXGEKh5d7r6got3jccamBfaX9EZSrup8rxM3OSX9s5awluqhEbTmksU5h5
-         S3LBG7W5UAaCgPutLolYBEaFmwyUBu5n0cdIo4BxTasT818H95l4kLvsOiWj4tb6z/zw
-         63QA==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=NvsBXSxoLGdSC8tU7DAxQ5HxGh3Z4VvarebEyY/ESIY=;
+        b=OwCMVLUZ+XxXYj4jmlb5qgg5vMiKlYVwGEC/vnCeWYhDGZ9xfk5YuZv6Jejz/iQn2j
+         9ra1lBVsUOpt6k98DHKcnyxSp50mCF4ACqR0XPT3UaYPkHSmZPjEWd+FoARfBli4NFf5
+         wb0JmyD0MRm6HiF72L0iTWdMEvvcbzL/odKjVWU7iy6Z3K03opchZZHnqzp6yLRo6eES
+         qFPVxZiaSpqAlflFhn8OrcJISEJTTtRiwsSggSnkzduj0gmLIe8GYN4abAlmRckV0rxp
+         7/hLDkgjzo/HXktae8O1w8UetU6+EI+yr3E7ive5WKINAoIA4KGHmHyGNrq70lemhv+v
+         +qLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=naH1+LXp7UqWG8a6oU2wWvyp2gFUCZKEJOQtmpJO7Pk=;
-        b=IXGpgyyN7+ItTlAW0X3Ib8KPH3q0fY3G9TjsUYONVVRCOOUhsJ0PfmCjS9H+x17XgH
-         gO5r3y0DBO4Y2kx83bBIW8kDGib6FjBX96xU8gcEYo5AkiSAJHAhz0YHkx+T4ucoSwml
-         h8PnNGoS3E0GrSwXbeXfydH7dibT9G75kK0sRsWKY7RoU04rgpdFrjbZzM1Hfx/ghyQc
-         /dr+pZS+k48ddXdUH5OkERmAXjrLoI773ML2esWoHBfRxLg6NbNnQs5hFRzbXOyyU0ts
-         +HjfY/V0eqP+Fxsr2H1z/pnNCK6PT3tPCwWyABFEvBNZfg93SGRyh9sUTJaC2XLaFENY
-         yVog==
-X-Gm-Message-State: AOAM533QOCqIluGF+K7A9xte5ynB43UsZqSk7luidZDEIzs0GItTeNxY
-        NUoYpQ1mvyYZrZBW9SUGJO0DrZbFPOrtdN1xEOo=
-X-Google-Smtp-Source: ABdhPJxRNl4i1F3oV7H1nPtphXlT/11PmxlhfCTOsYBtwgvv0BgC8He9QUpBEfDMrgE5k1HW3DGEZHqJ4uLsILwW3js=
-X-Received: by 2002:a05:6808:3bc:: with SMTP id n28mr8813462oie.118.1609438769060;
- Thu, 31 Dec 2020 10:19:29 -0800 (PST)
-MIME-Version: 1.0
-References: <CANg_oxw16zS21c-XqpxdwY06E2bqgBgiFSJAHXkC9pS2d4ewQQ@mail.gmail.com>
- <c81089eb-2e1b-8cb4-d08e-5a858b56c9ec@lechevalier.se> <CANg_oxwKbzmMcz3590KhRz5eSgK+_s8thGio8q90KyDHm44Dow@mail.gmail.com>
- <f472181d-d6a4-f5f4-df7f-03bc7788b45a@gmail.com> <CANg_oxzP_Dzn89=4W_EZjGQWgB0CYsqyWMHN_3WzwebPVQChfg@mail.gmail.com>
- <20201231172812.GS31381@hungrycats.org>
-In-Reply-To: <20201231172812.GS31381@hungrycats.org>
-From:   john terragon <jterragon@gmail.com>
-Date:   Thu, 31 Dec 2020 19:19:18 +0100
-Message-ID: <CANg_oxw1Arpmkm+si_fUVzgEmVfF_UYy0Fc-d+AuMyK543W_Dw@mail.gmail.com>
-Subject: Re: hierarchical, tree-like structure of snapshots
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        sys <system@lechevalier.se>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=NvsBXSxoLGdSC8tU7DAxQ5HxGh3Z4VvarebEyY/ESIY=;
+        b=bAvb6dw6oABXYsNTq4XP26w4PmTCPQBmq0fbHkFgjloaWWxAZDGVEx8Pw8tPtbqahn
+         0FrLnzIDSTEAmf53xFL9GyYRHabua2vihlwgoeRtGSy0AK5UefMM46AmBF06T7kgI4Ek
+         WYHry6ose5oxzRr86mwwLNXExviT5ncS7A6tS+pXQfpkwDPKJbY2W3+JAYk0VOYr6boR
+         37mMxYG5s6Skny209TEk5l92dSi2NtX7LvxZ+dpMRDgREei9LMqkrFpl06TcRcRrjWdn
+         T1iA7fcBhMojfbvrqfTfQQ0/iD7zRaH3E41cm0XtbjrlJS9yoY18UUWAbqBWS6lem/1U
+         jUQw==
+X-Gm-Message-State: AOAM533BwB0ybqIfjaREPOhO/pkLPWRQoSSkvT9lFn5DxiwAx627PRy0
+        lYEK7SJt5YcM5hzPwkfaYHM1wdp8OEI=
+X-Google-Smtp-Source: ABdhPJxuC7DGQLUDnYX3cf57Vi90mSRGlku4Utl21iS/ySgezDyx2NOkvogJISro04sJnqJfN73bMw==
+X-Received: by 2002:a63:8f4c:: with SMTP id r12mr57276764pgn.311.1609439617037;
+        Thu, 31 Dec 2020 10:33:37 -0800 (PST)
+Received: from [192.168.0.17] (S010664777d4a88b3.cg.shawcable.net. [70.77.224.58])
+        by smtp.gmail.com with ESMTPSA id jz20sm11167709pjb.4.2020.12.31.10.33.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 31 Dec 2020 10:33:36 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH 3/3] btrfs-progs: add TLS arguments to send/receive
+From:   Sheng Mao <shngmao@gmail.com>
+In-Reply-To: <20201231191656.8816.409509F4@e16-tech.com>
+Date:   Thu, 31 Dec 2020 11:33:35 -0700
+Cc:     linux-btrfs@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CA733030-4654-4D1D-9A29-5199178B0C79@gmail.com>
+References: <20201225045037.185537-1-shngmao@gmail.com>
+ <20201225045037.185537-3-shngmao@gmail.com>
+ <20201231191656.8816.409509F4@e16-tech.com>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 6:28 PM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
+Hi Yugui,
 
->
-> I think your confusion is that you are thinking of these as a tree.
-> There is no tree, each subvol is an equal peer in the filesystem.
->
-> "send -p A B" just walks over subvol A and B and sends a diff of the
-> parts of B not in A.  You can pick any subvol with -p as long as it's
-> read-only and present on the receiving side.  Obviously it's much more
-> efficient if the two subvols have a lot of shared extents (e.g. because
-> B and A were both snapshots made at different times of some other subvol
-> C), but this is not required.
+Thank you for the feedback!
 
-Can you really use ANY subvol to use with -p. Because if I
+1. Yes, we can do that. The reason why I use =E2=80=94tls-addr on both =
+sides is to introduce least vocabulary for users.
+2. I don=E2=80=99t have a 10Gpbs NIC to have a thorough benchmark on TLS =
+vs raw sockets. The flame graph shows=20
+decrypt_skb_update (related to TLS decoding) takes about 3.5% of CPU =
+time for my 1Gbps setup. The transfer=20
+saturates the bandwidth. Do you have any 10Gbps devices? Would you mind =
+to help me benchmarking after=20
+introducing =E2=80=94tls-mode none?
 
-1) create a subvol X
-2) create a subvol W with the exact same content of X (but created
-independently)
-3) do a RO snap X_RO of X
-4) do a RO snap W_RO of W
-5) send W_RO to the other FS
-6) send -p W_RO X_RO to the other FS
+Thank you! Happy new year!
 
-I get this:
+Regards,
+Sheng
 
-At subvol X_RO
-At snapshot X_RO
-ERROR: chown o257-1648413-0 failed: No such file or directory
+> On Dec 31, 2020, at 04:16, Wang Yugui <wangyugui@e16-tech.com> wrote:
+>=20
+> Hi, Sheng Mao
+>=20
+> some feedback.
+>=20
+> 1, can we use 'listen-addr' for sever side, and 'conn-addr' for client
+> side?
+>=20
+> 2, can we support '--tls-mode none' for tcp without TLS,=20
+> and then change 'tls-port' to 'tcp-port'?=20
+>=20
+> Is there some boost performance for tcp without TLS too?
+>=20
+>=20
+>> +--tls-addr <url>::
+>> +Address to listen on. It can be an IP address or a domain name.
+>> +
+>> +--tls-port <port>::
+>> +The local port of the TLS connection.
+>> +
+>> +--tls-key <file>::
+>> +Use the key from file; otherwise read key from stdin. Key file is =
+first parsed
+>> +as PEM format; if parsing fails, file content is treated as binary =
+key.
+>> +
+>> +--tls-mode <mode>::
+>> +Use tls_12_128_gcm, tls_13_128_gcm, tls_12_256_gcm.
+>=20
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2020/12/31
+>=20
+>=20
 
-any idea?
