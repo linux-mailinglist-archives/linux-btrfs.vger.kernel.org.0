@@ -2,64 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17682E7F9D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Dec 2020 12:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2E92E812B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Dec 2020 17:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbgLaLRg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Dec 2020 06:17:36 -0500
-Received: from out20-109.mail.aliyun.com ([115.124.20.109]:38231 "EHLO
-        out20-109.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLaLRg (ORCPT
+        id S1726356AbgLaQJt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Dec 2020 11:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726071AbgLaQJt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Dec 2020 06:17:36 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1393194|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.0155216-0.00462158-0.979857;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.JDpFSky_1609413413;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JDpFSky_1609413413)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Thu, 31 Dec 2020 19:16:53 +0800
-Date:   Thu, 31 Dec 2020 19:16:57 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     shngmao@gmail.com
-Subject: Re: [PATCH 3/3] btrfs-progs: add TLS arguments to send/receive
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <20201225045037.185537-3-shngmao@gmail.com>
-References: <20201225045037.185537-1-shngmao@gmail.com> <20201225045037.185537-3-shngmao@gmail.com>
-Message-Id: <20201231191656.8816.409509F4@e16-tech.com>
+        Thu, 31 Dec 2020 11:09:49 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063F5C061573
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Dec 2020 08:09:08 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id d189so22185247oig.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 31 Dec 2020 08:09:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QmCgK8p/GcP+wqoRxCvgmV0r3hyXcGJg2ckeNc5ptfE=;
+        b=qyMQsjLX5Gj1yQAJ1skhTJvTPz3IhiBvLS7F2Cr5qVCjoc8r7pOFnArW1qv6xYixkl
+         XgATeQn6SaIZs1yzITS5oVH++FtSz06ZOmG8f/N900YExgSjz6ZwAKa9ESPqTdC8L7R+
+         tDHO+lLSXwg81HYLxhoWvIYkg9JkWjq0GUDwDaCXMYV3c0WNQZI3mc7TVBbTfLiHm2fH
+         ZwkcNGTs9FfHduhKvOsfiwZP3regr7guHZ3eVTPffnmGbImZQRhLA5NT9jfiOhX9GJsl
+         0dEF7RBQ1ouKXcKqiYBw29ZH0s2R7rYO99MkCiX9C+6cwBQ24qG3L4Nyf+Bow8iGQvB0
+         /eLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QmCgK8p/GcP+wqoRxCvgmV0r3hyXcGJg2ckeNc5ptfE=;
+        b=cOhaAN//ZtH8SYP6SsUCAN1WWs2T3knuJ4XOCq/Pi+BkUsheCKhguIDD2TOlDO/OwR
+         i3f6+npjz5tbtbb7G3tZH6cTrGpB6ZB4K0haCghJPbD0ddHbNcmVMliDITuMrjNUdyD2
+         NclXjQk1SSW9CbP3hMLscdEaiLDoMH+dX/ZGfg1TL/Usk0dXJZ1rjDHWGQX47FkW0Kj6
+         QR8I5pFMsSW/PVcSVjq+vpCB44zajtf6xaVpnqFFn9xooVUfx3MvjutvzcQTLwMgjaPD
+         RKkFMh54EG0jz4Y/UBEvp0L+j+dtIsSTYPYhFefAnU7pvGu5OVeq2VXwHdO9mX1CR4J1
+         cxrA==
+X-Gm-Message-State: AOAM532fM6r/DYAaUhF3s6duKRXxlcFNQex/yY+Weu5uWKTKYez8rxlH
+        vUjys14cxFdOC5ZOw767eQqKPI+rGEiYIK+tRpKq21pNWoGOzg==
+X-Google-Smtp-Source: ABdhPJyk1kWZe4bzxAiaUWSbV3tSRFTc9N1VseV1vXaeHBzfJXGj+eth9IXI4Ib+qiT4JikdX+8XEmcyzsXiaH+XwsM=
+X-Received: by 2002:aca:af8b:: with SMTP id y133mr8380283oie.87.1609430948327;
+ Thu, 31 Dec 2020 08:09:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.03 [en]
+References: <CANg_oxw16zS21c-XqpxdwY06E2bqgBgiFSJAHXkC9pS2d4ewQQ@mail.gmail.com>
+ <c81089eb-2e1b-8cb4-d08e-5a858b56c9ec@lechevalier.se> <CANg_oxwKbzmMcz3590KhRz5eSgK+_s8thGio8q90KyDHm44Dow@mail.gmail.com>
+ <f472181d-d6a4-f5f4-df7f-03bc7788b45a@gmail.com>
+In-Reply-To: <f472181d-d6a4-f5f4-df7f-03bc7788b45a@gmail.com>
+From:   john terragon <jterragon@gmail.com>
+Date:   Thu, 31 Dec 2020 17:08:57 +0100
+Message-ID: <CANg_oxzP_Dzn89=4W_EZjGQWgB0CYsqyWMHN_3WzwebPVQChfg@mail.gmail.com>
+Subject: Re: hierarchical, tree-like structure of snapshots
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     sys <system@lechevalier.se>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, Sheng Mao
+On Thu, Dec 31, 2020 at 8:05 AM Andrei Borzenkov <arvidjaar@gmail.com> wrote:
+>
 
-some feedback.
+> >
+> > OK, but then could I use Y as parent of the rw snapshot, let's call it
+> > W, in a send?
+>
+> No
+>
 
-1, can we use 'listen-addr' for sever side, and 'conn-addr' for client
-side?
+Of course I didn't mean to use Y as a parent of W itself but to a
+readonly snapshot of W whenever I want to send it to the second FS.
 
-2, can we support '--tls-mode none' for tcp without TLS, 
-and then change 'tls-port' to 'tcp-port'? 
+And I just tried the following steps and they worked:
 
-Is there some boost performance for tcp without TLS too?
+1) created subvol X
+2) created readonly snap Y of X
+3) sent Y to second FS
+4) modified X
+5) created readonly snap X1 of X
+6) sent -p Y X1 to second FS
+7) created readwrite snap Y1 of Y
+8) modified Y1
+9) created readonly snap Y1_RO of Y1
+10) sent -p Y Y1_RO to second FS
 
+So, as you can see,
 
-> +--tls-addr <url>::
-> +Address to listen on. It can be an IP address or a domain name.
-> +
-> +--tls-port <port>::
-> +The local port of the TLS connection.
-> +
-> +--tls-key <file>::
-> +Use the key from file; otherwise read key from stdin. Key file is first parsed
-> +as PEM format; if parsing fails, file content is treated as binary key.
-> +
-> +--tls-mode <mode>::
-> +Use tls_12_128_gcm, tls_13_128_gcm, tls_12_256_gcm.
+-in 6) I've used the RO snap Y of X as the parent of X1 (and X) to
+send X1 to the second FS
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2020/12/31
+-in 10) I did the opposite, Y is still used as the parent but this
+time I've sent the RO snap of a subvol that is a snap of Y.
 
-
+So it seems to work both ways
