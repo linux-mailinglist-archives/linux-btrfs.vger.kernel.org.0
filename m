@@ -2,131 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030192E7F2A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Dec 2020 11:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A17682E7F9D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Dec 2020 12:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgLaKBL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Dec 2020 05:01:11 -0500
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:41192 "EHLO
-        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgLaKBL (ORCPT
+        id S1726290AbgLaLRg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Dec 2020 06:17:36 -0500
+Received: from out20-109.mail.aliyun.com ([115.124.20.109]:38231 "EHLO
+        out20-109.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgLaLRg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Dec 2020 05:01:11 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 4541F3F713;
-        Thu, 31 Dec 2020 11:00:14 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.728
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.728 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.829, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 7kYnyMGNWRHV; Thu, 31 Dec 2020 11:00:13 +0100 (CET)
-Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 453913F5D8;
-        Thu, 31 Dec 2020 11:00:13 +0100 (CET)
-Received: from [192.168.0.10] (port=55566)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.93.0.4)
-        (envelope-from <forza@tnonline.net>)
-        id 1kuuke-0005JF-2e; Thu, 31 Dec 2020 11:00:12 +0100
-Subject: Re: hierarchical, tree-like structure of snapshots
-To:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        john terragon <jterragon@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CANg_oxw16zS21c-XqpxdwY06E2bqgBgiFSJAHXkC9pS2d4ewQQ@mail.gmail.com>
- <c81089eb-2e1b-8cb4-d08e-5a858b56c9ec@lechevalier.se>
- <CANg_oxwKbzmMcz3590KhRz5eSgK+_s8thGio8q90KyDHm44Dow@mail.gmail.com>
- <f472181d-d6a4-f5f4-df7f-03bc7788b45a@gmail.com>
-From:   Forza <forza@tnonline.net>
-Message-ID: <4febd23e-94d2-6aa3-8d3f-77731eb83ad0@tnonline.net>
-Date:   Thu, 31 Dec 2020 11:00:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 31 Dec 2020 06:17:36 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1393194|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.0155216-0.00462158-0.979857;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.JDpFSky_1609413413;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JDpFSky_1609413413)
+          by smtp.aliyun-inc.com(10.147.41.137);
+          Thu, 31 Dec 2020 19:16:53 +0800
+Date:   Thu, 31 Dec 2020 19:16:57 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     shngmao@gmail.com
+Subject: Re: [PATCH 3/3] btrfs-progs: add TLS arguments to send/receive
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <20201225045037.185537-3-shngmao@gmail.com>
+References: <20201225045037.185537-1-shngmao@gmail.com> <20201225045037.185537-3-shngmao@gmail.com>
+Message-Id: <20201231191656.8816.409509F4@e16-tech.com>
 MIME-Version: 1.0
-In-Reply-To: <f472181d-d6a4-f5f4-df7f-03bc7788b45a@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi, Sheng Mao
+
+some feedback.
+
+1, can we use 'listen-addr' for sever side, and 'conn-addr' for client
+side?
+
+2, can we support '--tls-mode none' for tcp without TLS, 
+and then change 'tls-port' to 'tcp-port'? 
+
+Is there some boost performance for tcp without TLS too?
 
 
-On 2020-12-31 08:05, Andrei Borzenkov wrote:
-> 30.12.2020 20:39, john terragon пишет:
->> On Wed, Dec 30, 2020 at 6:24 PM sys <system@lechevalier.se> wrote:
->>>
->>>
->>>
->> [...]
->>> You should simply make a 'read-write' snapshot (Y-rw) of the 'read-only'
->>> snapshot (Y) that is part of your backup/send scheme. Do not modify
->>> read-only snapshots to be rw.
->>>
->>
->> OK, but then could I use Y as parent of the rw snapshot, let's call it
->> W, in a send?
-> 
-> No
-> 
->> So I would have this tree where Y is still the root.
->>
->> Y-W
->>   \
->>    Z-X
->>
->> Can I do a send -p Y W ?
-> 
-> No. All subvolumes used in send/receive must be read-only. And they must
-> remain read-only from the moment they are created - we have seen quite a
-> lot of reports when users removed read-only property from subvolume used
-> in the past as send source, modified it, set as read-only again and
-> tried to continue replication. This resulted in complete mess on receive
-> side. Also if you try to modify destination snapshots it will break at
-> some point.
-> 
-> The general rule - everything used for replication must remain
-> read-only. If you want to use any snapshot that is part of replication
-> you clone it and use its clone.
-> 
->> Because I thought it was other way around, that is I do a readonly
->> snapshot W of Y and that will be the base for incrementally sending
->> the future modified Y to another  FS (provided of course W is already
->> there).
->>
-> 
-> If you want to capture changes in W since it was cloned from Y you
-> create another read-only snapshot of W and use it.
-> 
-> btrfs subvolume snapshot -r W V
-> btrfs send -p Y V
-> 
-> It is possible that btrfs implementation is optimized for sequential
-> snapshots from the same subvolume so the send stream size will be
-> larger. I am not familiar with these low level details. From the naïve
-> end-user point of view there should be no difference between
-> 
-> btrfs subvolume snapshot -r W R1
-> btrfs send R1
-> modify W
-> btrfs subvolume snapshot -r W R2
-> btrfs send -p R1 R2
-> 
-> and
-> 
-> btrfs send R1
-> btrfs subvolume snapshot R1 W
-> modify W
-> btrfs subvolume snapshot -r W R2
-> btrfs send -p R1 R2
-> 
+> +--tls-addr <url>::
+> +Address to listen on. It can be an IP address or a domain name.
+> +
+> +--tls-port <port>::
+> +The local port of the TLS connection.
+> +
+> +--tls-key <file>::
+> +Use the key from file; otherwise read key from stdin. Key file is first parsed
+> +as PEM format; if parsing fails, file content is treated as binary key.
+> +
+> +--tls-mode <mode>::
+> +Use tls_12_128_gcm, tls_13_128_gcm, tls_12_256_gcm.
 
-I think you are correct. The man page specifies that all snapshots must 
-be read-only, but it is rather unclear if you modify some snaps in between.
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2020/12/31
 
-https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-send
 
