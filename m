@@ -2,121 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B198F2E8378
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Jan 2021 11:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFBC2E8395
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Jan 2021 12:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbhAAK1y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Jan 2021 05:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S1727134AbhAALmw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Jan 2021 06:42:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbhAAK1x (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Jan 2021 05:27:53 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFAEC061757
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Jan 2021 02:26:58 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id q1so19148553ilt.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 01 Jan 2021 02:26:58 -0800 (PST)
+        with ESMTP id S1727123AbhAALmv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Jan 2021 06:42:51 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFF9C061573
+        for <linux-btrfs@vger.kernel.org>; Fri,  1 Jan 2021 03:42:11 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id m25so48617970lfc.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 01 Jan 2021 03:42:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k2vQ6iqC4CndNBeiIFLrfo2PMRh+mcqERP0ZLSMI0UU=;
-        b=S2e0UyON57vBfV4TYhF3yPrS2nbggdWhKASDKkJyyZhZZrjDkAVKHQZ26oCiBGwSFX
-         UDzTX28rWXZcodt0np0keMnUqzYQ17/DQTLTwwfR+nqTnbOIeJKrun6JulieBxrFKNb6
-         sijYwADkpBgOOo7LwIp5zStNDZK3l0kIytvlw=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=8OxKmz3TTsoBjaqebizBLvxjRLC+ok+QbXaMPEm1lSs=;
+        b=No47UPgzuwQJf3FDeGS3i9xOfNNcILJuo2x75ScwMbFzgurPg1WLSHAp+0zKAi1Gly
+         r9oEwerIZo5U4f1hkOym5gszjViFnQ7gZoM3iE8LuUXzwyg1qdPpwQ10usV5UxOb5iOR
+         g+SEwicjtosG5Rxg2rosaTUYLJxBKjz4CKvVfX4G0X2tvX61Z1wero/7g6Ff09FUGf9A
+         8AAZ7+xlTGLgBMgnP40DxXZko1yAwZMO6XFGvHwoAYnUWrdC6tpONk483K8hkWaFj1Dx
+         aveG5cI2DkplJfeQ3zhMdCjctTJW7rOybbF8dBg/1FVM1hurQMAXVXCEhEacjSSh3fcR
+         s7VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k2vQ6iqC4CndNBeiIFLrfo2PMRh+mcqERP0ZLSMI0UU=;
-        b=Xtvq3cmi+mRqyWjjwKJnJ0BfumOBgUUOYuIl7dz9rpMJVLY3Xv0TRKFUXbFA1w+hfQ
-         0BapEbEBhaIEX16gjsa6DALcF4ogJUc+lCXkULStYQjL5f4a7hvu8oDZoT+LxE5gRRgC
-         bwIAdeWccSBwk+HKnjJCwITjzn7LdK4DJIFsmW/KZr24Wu0L+tvPYFaZ2TW085uHCoH/
-         0tvv38960V0pAW0JVyTbIfdRYYESByndeBr2bPCOkyHxmFLcIQ9oIVdWi4F505F4UeHQ
-         akDuEiVlbos4YFvd/P+649b+VbOwb0funhRbD6mMQr1V4uieG71v7JNigTnmLO+UcuDv
-         hW8A==
-X-Gm-Message-State: AOAM531dyPiyPtALgofxBKBQg40ChcQQ3bTxei+K1n+ffdrWnRGPydSE
-        ImxvZ2Ax0hAqU9IeyT6UwBxZaworLVRkU7t9eNG+oA==
-X-Google-Smtp-Source: ABdhPJz1USMv6E2KC8ZVmIWBjUJhlS5f9B0ew9hFe2xL6yHufIj3i5Q+DJrMQoaeY+K+o+6kwBrDtzQTcfz8CCZkwqA=
-X-Received: by 2002:a92:c990:: with SMTP id y16mr60036119iln.35.1609496817666;
- Fri, 01 Jan 2021 02:26:57 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to;
+        bh=8OxKmz3TTsoBjaqebizBLvxjRLC+ok+QbXaMPEm1lSs=;
+        b=f0pmkeA7iUiC5r1voUyO78+sk+Ug21lcM86+5IUNcfgj4Txp2LKTW+cSWwetFDqvqP
+         lKX11SEs40y0ytQe8sd9CEp1jSOJhCQymS73DOW92ZFatuGJrSPmrJWEPXlVDycBA4zg
+         ZK1dQlwrJc5r3KHjgeoVxzfFdNV+1CfUFG2Gb//tSDhW0JWAdqQiY2R7xXsH1kyfugmB
+         et4IueDnqqj2SxftRu1RFrxRHhteePX+W1UyPu9Bs9YK1BtygX+Jfc8KaVH4AUbKJAae
+         HpMqiLuLu+tUy7xJ3mHH1Yj9T0cUJdrYKbXSoCUIL8K4xIShIVEgKerysBTMw5whZa/k
+         Im+w==
+X-Gm-Message-State: AOAM530e4xbWJp+DiWHrfQjYVytz+NhYYH8hj/ESmbh3wUeLTKHmMEcK
+        7LvJ+88R0KA1eRsyNz8ZdKtL/HKH7WA=
+X-Google-Smtp-Source: ABdhPJxiz9Gi9DVs9xBq2FWo6cw33k4AJwIoMcsrSeas89wSHRyoZe7cl2OdCAZXDzbfryC/+/iQ2Q==
+X-Received: by 2002:a19:f617:: with SMTP id x23mr24797209lfe.428.1609501329503;
+        Fri, 01 Jan 2021 03:42:09 -0800 (PST)
+Received: from ?IPv6:2a00:1370:812d:ecb3:590f:aaab:50ba:573b? ([2a00:1370:812d:ecb3:590f:aaab:50ba:573b])
+        by smtp.gmail.com with ESMTPSA id n133sm6468159lfd.152.2021.01.01.03.42.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Jan 2021 03:42:08 -0800 (PST)
+Subject: Re: hierarchical, tree-like structure of snapshots
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        john terragon <jterragon@gmail.com>
+Cc:     sys <system@lechevalier.se>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CANg_oxw16zS21c-XqpxdwY06E2bqgBgiFSJAHXkC9pS2d4ewQQ@mail.gmail.com>
+ <c81089eb-2e1b-8cb4-d08e-5a858b56c9ec@lechevalier.se>
+ <CANg_oxwKbzmMcz3590KhRz5eSgK+_s8thGio8q90KyDHm44Dow@mail.gmail.com>
+ <f472181d-d6a4-f5f4-df7f-03bc7788b45a@gmail.com>
+ <CANg_oxzP_Dzn89=4W_EZjGQWgB0CYsqyWMHN_3WzwebPVQChfg@mail.gmail.com>
+ <20201231172812.GS31381@hungrycats.org>
+ <CANg_oxw1Arpmkm+si_fUVzgEmVfF_UYy0Fc-d+AuMyK543W_Dw@mail.gmail.com>
+ <d151361d-5865-f537-ba59-41e1cd3eb8ab@gmail.com>
+ <CANg_oxztFRbw+NqHbnvvK6HS3g67hDkSgk6TpMbd-zgYSv9URw@mail.gmail.com>
+ <20201231213650.GT31381@hungrycats.org>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ mQGiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kbQmQW5kcmV5IEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT6IYAQTEQIAIAUCSXs6NQIbAwYLCQgHAwIE
+ FQIIAwQWAgMBAh4BAheAAAoJEEeizLraXfeMLOYAnj4ovpka+mXNzImeYCd5LqW5to8FAJ4v
+ P4IW+Ic7eYXxCLM7/zm9YMUVbrQmQW5kcmVpIEJvcnplbmtvdiA8YXJ2aWRqYWFyQGdtYWls
+ LmNvbT6IZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AFAliWAiQCGQEACgkQ
+ R6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE21cAnRCQTXd1hTgcRHfpArEd/Rcb5+Sc
+ uQENBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw15A5asua10jm5It+hxzI9jDR9/bNEKDTK
+ SciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/RKKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmm
+ SN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaNnwADBwQAjNvMr/KBcGsV/UvxZSm/mdpv
+ UPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPRgsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YI
+ FpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhYvLYfkJnc62h8hiNeM6kqYa/x0BEddu92
+ ZG6IRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhdAJ48P7WDvKLQQ5MKnn2D/TI337uA/gCg
+ n5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <49e405a1-ca48-7654-6b1e-408bcf6553b8@gmail.com>
+Date:   Fri, 1 Jan 2021 14:42:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201230214520.154793-1-ignat@cloudflare.com> <20201230214520.154793-2-ignat@cloudflare.com>
- <alpine.LRH.2.02.2101010450460.31009@file01.intranet.prod.int.rdu2.redhat.com>
-In-Reply-To: <alpine.LRH.2.02.2101010450460.31009@file01.intranet.prod.int.rdu2.redhat.com>
-From:   Ignat Korchagin <ignat@cloudflare.com>
-Date:   Fri, 1 Jan 2021 10:26:46 +0000
-Message-ID: <CALrw=nFFt4aUaJMc0OkKJfFfyv+A3oPuJxKMceOVGzrzwtP3Cw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dm crypt: use GFP_ATOMIC when allocating crypto
- requests from softirq
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        dm-crypt@saout.de, linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Nobuto Murata <nobuto.murata@canonical.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201231213650.GT31381@hungrycats.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="CYWvFPWJlusun06kiHbz57uATiuLwSfTd"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 1, 2021 at 10:00 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
->
->
->
-> On Wed, 30 Dec 2020, Ignat Korchagin wrote:
->
-> > diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-> > index 53791138d78b..e4fd690c70e1 100644
-> > --- a/drivers/md/dm-crypt.c
-> > +++ b/drivers/md/dm-crypt.c
-> > @@ -1539,7 +1549,10 @@ static blk_status_t crypt_convert(struct crypt_config *cc,
-> >
-> >       while (ctx->iter_in.bi_size && ctx->iter_out.bi_size) {
-> >
-> > -             crypt_alloc_req(cc, ctx);
-> > +             r = crypt_alloc_req(cc, ctx);
-> > +             if (r)
-> > +                     return BLK_STS_RESOURCE;
-> > +
-> >               atomic_inc(&ctx->cc_pending);
-> >
-> >               if (crypt_integrity_aead(cc))
-> > --
-> > 2.20.1
->
-> I'm not quite convinced that returning BLK_STS_RESOURCE will help. The
-> block layer will convert this value back to -ENOMEM and return it to the
-> caller, resulting in an I/O error.
->
-> Note that GFP_ATOMIC allocations may fail anytime and you must handle
-> allocation failure gracefully - i.e. process the request without any
-> error.
->
-> An acceptable solution would be to punt the request to a workqueue and do
-> GFP_NOIO allocation from the workqueue. Or add the request to some list
-> and process the list when some other request completes.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--CYWvFPWJlusun06kiHbz57uATiuLwSfTd
+Content-Type: multipart/mixed; boundary="3v6FSrF5QxpjIMzqQvUl5RtwUZRcjCbGL"
 
-We can do the workqueue, if that's the desired behaviour. The second patch
-from this patchset already adds the code for the request to be retried from the
-workqueue if crypt_convert returns BLK_STS_DEV_RESOURCE, so all is needed
-is to change returning BLK_STS_RESOURCE to BLK_STS_DEV_RESOURCE
-here. Does that sound reasonable?
+--3v6FSrF5QxpjIMzqQvUl5RtwUZRcjCbGL
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> You should write a test that simulates allocation failure and verify that
-> the kernel handles it gracefully without any I/O error.
+01.01.2021 00:36, Zygo Blaxell =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+=2E..
+>=20
+> Yeah, I only checked that send completed without error and produced a
+> smaller stream.
+>=20
+> I just dumped the send metadata stream from the incremental snapshot no=
+w,
+> and it's more or less garbage at the start:
+>=20
+> 	# btrfs sub create A
+> 	# btrfs sub create B
+> 	# date > A/date
+> 	# date > B/date
+> 	# mkdir A/t B/u
+> 	# btrfs sub snap -r A A_RO
+> 	# btrfs sub snap -r B B_RO
+=2E..
+> 	# btrfs send A_RO | btrfs receive -v /tmp/test
+> 	At subvol A_RO
+> 	At subvol A_RO
+> 	receiving subvol A_RO uuid=3D995adde4-00ac-5e49-8c6f-f01743def072, str=
+ansid=3D7329268
+> 	write date - offset=3D0 length=3D29
+> 	BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=3D995adde4-00ac-5e49-8c6f-f01743def=
+072, stransid=3D7329268
+> 	# btrfs send B_RO -p A_RO | btrfs receive -v /tmp/test
+> 	At subvol B_RO
+> 	At snapshot B_RO
+> 	receiving snapshot B_RO uuid=3D4aa7db26-b219-694e-9b3c-f8f737a46bdb, c=
+transid=3D7329268 parent_uuid=3D995adde4-00ac-5e49-8c6f-f01743def072, par=
+ent_ctransid=3D7329268
+> 	ERROR: link date -> date failed: File exists
+>=20
+> The btrfs_compare_trees function can handle arbitrary tree differences,=
 
-I already have the test for the second patch in the set, but will
-adapt it to make sure the
-allocation failure codepath is covered as well.
 
-> Mikulas
->
+I am not sure. It apparently relies on the fact that inodes are ever
+monotonically increasing. This is probably true for clones of the same
+subvolume (I assume clone inherits highest_objectid) but two subvolumes
+created independently have the same range of inode numbers.
+
+Also I am not sure if using later clone as base for difference to
+earlier clone will work for the same reason.
+
+> but something happens in one of the support functions and we get a
+> bogus link command.  The rest of the stream is OK though:  we fill
+> in the contents of B_RO/date, rename A_RO/t to B_RO/u, and update all
+> the timestamps.
+>=20
+> Oh well, I didn't say send didn't have any bugs.  ;)
+>=20
+
+
+--3v6FSrF5QxpjIMzqQvUl5RtwUZRcjCbGL--
+
+--CYWvFPWJlusun06kiHbz57uATiuLwSfTd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCX+8KjAAKCRBHosy62l33
+jNTuAJ93vD9JYL8pXkSZU50LkljW4EvcmQCcDE5hsa0X+LGIqVmtqQA+acToMx0=
+=QuFq
+-----END PGP SIGNATURE-----
+
+--CYWvFPWJlusun06kiHbz57uATiuLwSfTd--
