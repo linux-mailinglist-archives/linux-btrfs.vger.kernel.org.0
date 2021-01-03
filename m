@@ -2,87 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B17B2E8A0E
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Jan 2021 03:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEAB2E8A27
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Jan 2021 04:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbhACCxp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 Jan 2021 21:53:45 -0500
-Received: from out20-98.mail.aliyun.com ([115.124.20.98]:56837 "EHLO
-        out20-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726306AbhACCxp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 2 Jan 2021 21:53:45 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04727131|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00659476-0.000735838-0.992669;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.JEjAmCU_1609642381;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JEjAmCU_1609642381)
-          by smtp.aliyun-inc.com(10.147.42.198);
-          Sun, 03 Jan 2021 10:53:02 +0800
-Date:   Sun, 03 Jan 2021 10:53:02 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     shngmao@gmail.com
-Subject: Re: [PATCH] btrfs-progs: align btrfs receive buffer to enable fast CRC
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <20201226214606.49241-1-shngmao@gmail.com>
-References: <20201226214606.49241-1-shngmao@gmail.com>
-Message-Id: <20210103105301.523C.409509F4@e16-tech.com>
+        id S1726210AbhACDvb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 Jan 2021 22:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725827AbhACDva (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 2 Jan 2021 22:51:30 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687C4C0613CF
+        for <linux-btrfs@vger.kernel.org>; Sat,  2 Jan 2021 19:50:50 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id x12so12650256plr.10
+        for <linux-btrfs@vger.kernel.org>; Sat, 02 Jan 2021 19:50:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=1uOJiTEG7geUhbvAb1WO/zQoPIJ3uAClUIdvJBbyHHQ=;
+        b=cgg91xuumpRhq4HiyY7ztZD5lkTXUzKj8ev+kF86nht69Eo1z9CO+1FYA9F+BMW2Lp
+         EhdezrYXQHTc9aUlwHtLhU8jfo+aOTrLyHN5oUdWttfoiSUb4AvHZ2NUunRQBxoq3i5b
+         GQVicXUd8yHVptX1nzUwHf/bBPm4v++yWOmgwumx8yQ5NtJg5X+83cqfaUB/SVQAqJ24
+         p/E7IWNL1/vDYDQpZarfJRAahRxi2XL8khh+0NeTLeMc4ASV0AXMXV+D9E1gb9PogPP1
+         etXv4Y3VjirdwOalOpTFhwgOKI5ygKpXkiRxzVb2JwvlSbFZciAY24GRl+2JQCdt7+oF
+         mc4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=1uOJiTEG7geUhbvAb1WO/zQoPIJ3uAClUIdvJBbyHHQ=;
+        b=QEXoeibEFEfVMajWSTW/Df4FLmcwmo/z/tppUjBhaMvsyKIfQWrGqGIaPn6DnkPESr
+         M2/Ael6nuSB8ViX7PQWE7YUZWTWO2o0JUaXm5fWyIzjQ3zcn+xRiFqCoMcyCsMwQsQ1Z
+         tC+wOpEmJq98Dwx5SqgDH+S/I3vfcCKOL1m0LvdT/8y9kaszgrwumg3VIQRV0XCbK099
+         sBvYQ5cvjE49PLWuOUmof41TP9M/nnK9GoH1xMKGjR8XeUOhy+7zRd5OUGLJDVkiiOgD
+         ERKpXq82kOlcWTQC8I0zk8rskMT5DfgVFv3YTRVYPe0jJ6Joz+BwwGwDTYcghD2Pvb0/
+         9XxQ==
+X-Gm-Message-State: AOAM531pYFTC7Zb6VnI6s44l5qkEMFSN0zL58z5OCXT7RAzKgdZjhVa2
+        jqupHieUBU+gJrtkabTBnB8i8FBJeSaGO/47FtXdYa9o8aM=
+X-Google-Smtp-Source: ABdhPJzqpV3/BYtdF1FrivSYUeivYaH9Oz/RDlj+ZXKCmediZVLGxCsvU9nc9hYr3i9YEGA+QD9kTeXVoYD8gwyuUSs=
+X-Received: by 2002:a17:902:a504:b029:da:fbca:d49 with SMTP id
+ s4-20020a170902a504b02900dafbca0d49mr51530556plq.72.1609645849659; Sat, 02
+ Jan 2021 19:50:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.03 [en]
+From:   Rosen Penev <rosenp@gmail.com>
+Date:   Sat, 2 Jan 2021 19:50:38 -0800
+Message-ID: <CAKxU2N_=1uKoVMh20h=_8SyOnHM=WvfZjfQP3t81yN2QTZS4Xg@mail.gmail.com>
+Subject: Question about btrfs and XOR offloading
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, Sheng
-
-> From: Sheng Mao <shngmao@gmail.com>
-> 
-> To use optimized CRC implemention, the input buffer must be
-> unsigned long aligned. btrfs receive calculates checksum based on
-> read_buf, including btrfs_cmd_header (with zero-ed CRC field)
-> and command content. GCC attribute is added to both struct
-> btrfs_send_stream and read_buf to make sure read_buf is allocated
-> with proper alignment.
-> 
-> Issue: #324
-> Signed-off-by: Sheng Mao <shngmao@gmail.com>
-> ---
->  common/send-stream.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/common/send-stream.c b/common/send-stream.c
-> index 69d75168..b13aa16e 100644
-> --- a/common/send-stream.c
-> +++ b/common/send-stream.c
-> @@ -26,7 +26,8 @@
->  
->  struct btrfs_send_stream {
->  	int fd;
-> -	char read_buf[BTRFS_SEND_BUF_SIZE];
-> +	char read_buf[BTRFS_SEND_BUF_SIZE]
-> +		__attribute__((aligned(sizeof(unsigned long))));
->  
->  	int cmd;
-
-Can we move 'int cmd' to before 'char read_buf' too?
-
-There is a hole between 'int fd' and 'char read_buf' after the
-addiatioin of '__attribute__((aligned(sizeof(unsigned long))))'
-in x86_64.
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/01/03
-
->  	struct btrfs_cmd_header *cmd_hdr;
-> @@ -41,7 +42,7 @@ struct btrfs_send_stream {
->  
->  	struct btrfs_send_ops *ops;
->  	void *user;
-> -};
-> +} __attribute__((aligned(sizeof(unsigned long))));
->  
->  /*
->   * Read len bytes to buf.
-> -- 
-> 2.29.2
-
-
+I've noticed that internally, btrfs' XOR code is CPU only. Does anyone
+know if there is a performance advantage to using a hardware
+accelerated path? I ask as I use BTRFS on a Marvelll ARM platform with
+XOR offload capability.
