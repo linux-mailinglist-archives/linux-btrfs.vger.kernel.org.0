@@ -2,78 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAA22E8B42
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Jan 2021 08:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383662E8B7A
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Jan 2021 10:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725874AbhACHNr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 3 Jan 2021 02:13:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbhACHNr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 3 Jan 2021 02:13:47 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10833C061573
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 Jan 2021 23:13:07 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id t6so12787280plq.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 02 Jan 2021 23:13:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sHJhpzTPF37q1kyZxgMzb7fIapvE3V9wvxky7cZNxFg=;
-        b=YjKiGbcV9+MUXeY4vemkyJjYtLHdmK3q2Om56clPnp2Ets9IjHUYOothkorcmCznfr
-         31MKVk7XqEs7s/E2jHtp5JYYP1ELQzoXcYYwKRMSjypLBZY7LLGJUrp1M9Ex2/4DhngC
-         WNroiAhQHbp2+Oto+FW2N1Ts0ZUqczdL65tti7chThZBGDhoXkdY3NPfT4wtjdQ0Kl+i
-         s5Pb5s+HiwmpX76xy3XIA8Z01+h9oEHruKdqHzPAA6nY7vGTHMiTyP8/eLa2JTCD71Co
-         /i3Mv+X+w0z3OSCBsLw1Pm7KhyQ1AB5NTF1uflbfDWnEkeh/byixsSWAny0sRpEqEC22
-         +y/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sHJhpzTPF37q1kyZxgMzb7fIapvE3V9wvxky7cZNxFg=;
-        b=CbGt08x+MgC8R6yuyVrPdCgfI7KT7xTCeRQyX0mTmzoGh50i5Q5ZeAzitZRxXXW+PX
-         edX1UYGwguaXBKNdMtL63Zz7NpWQlCY6SqrKY6UVYehB6Gd3Pxyn5vBKIBZ29OJMumTq
-         YjSKJkFGZI+rZvw57Pt/Tzn0mZ5RL55naB+3WDEAJClPbf7D4KAfmF9Z0w81Ye3DheYl
-         r/nq2IC8c4b3KXBbqWlxhpFmtr6dIcKLQXEy7OCarhnYdTvTvRwtaciZgKLnh9mYcYvs
-         ahENtRLhS61f03FEep3M9Gracp/1RnTgqjvq66VqWrORSFGb5pOpAam7RUkchngwOBIl
-         ETGA==
-X-Gm-Message-State: AOAM532+rZDXyM0JhRRQT78yPQfxSoc9gp43BVur8ZbqyCgGI1wk+jYN
-        bp0xemh87jRXOyxos/wCDaJSuwf4UD1jmZzd0Rw=
-X-Google-Smtp-Source: ABdhPJzQH93HqAYj+MBCXbunSfNUByOB1mUc6I4tcTJxDIWZUxxjZNv4K/mlhHGqtNnhQKC7QBsUjLKrwZb+eoL7bkM=
-X-Received: by 2002:a17:90b:a17:: with SMTP id gg23mr25028505pjb.129.1609657986498;
- Sat, 02 Jan 2021 23:13:06 -0800 (PST)
+        id S1726072AbhACJ3M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 3 Jan 2021 04:29:12 -0500
+Received: from eu-shark2.inbox.eu ([195.216.236.82]:42830 "EHLO
+        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725829AbhACJ3M (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 3 Jan 2021 04:29:12 -0500
+Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
+        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id BE7D3450746;
+        Sun,  3 Jan 2021 11:28:19 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1609666099; bh=2E+rYFLVJbDWGBazDm+/n6Ljuhktlk2oEp0fETUUeV4=;
+        h=From:To:Cc:Subject:Date;
+        b=E9F2v5lYoxlpgP3Rw9Dw0R0mJBHBFHt4WQHAeKRi548ReSa4+EGC2o9GWYIYw6JR2
+         OOIqJEAXx908jnG5XeW2UcgEaLQHc/onlwuYrfa7fgxzvwYQgHcfBwEVTlIiHI9bbG
+         wkL1C8OI0XqiQPoxmyKq30DJRB3JXMZilvbg5jzw=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id ACA6D45073F;
+        Sun,  3 Jan 2021 11:28:19 +0200 (EET)
+Received: from eu-shark2.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id FhVIaU3pa4Vv; Sun,  3 Jan 2021 11:28:19 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 5965245073C;
+        Sun,  3 Jan 2021 11:28:19 +0200 (EET)
+Received: from localhost.localdomain (unknown [211.106.132.202])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id EF9521BE00CF;
+        Sun,  3 Jan 2021 11:28:17 +0200 (EET)
+From:   Su Yue <l@damenly.su>
+To:     linux-btrfs@vger.kernel.org
+Cc:     l@damenly.su
+Subject: [PATCH v2 0/2] btrfs: fix issues when mouting the poc image
+Date:   Sun,  3 Jan 2021 17:28:02 +0800
+Message-Id: <20210103092804.756-1-l@damenly.su>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <CAKxU2N_=1uKoVMh20h=_8SyOnHM=WvfZjfQP3t81yN2QTZS4Xg@mail.gmail.com>
- <be4e5508-b8dd-148c-33d1-366b73f22d98@gmx.com>
-In-Reply-To: <be4e5508-b8dd-148c-33d1-366b73f22d98@gmx.com>
-From:   Rosen Penev <rosenp@gmail.com>
-Date:   Sat, 2 Jan 2021 23:12:55 -0800
-Message-ID: <CAKxU2N8tHnnnOO9AeTTSJdPNmZonQ+Gx90xLGRpAB7GWGQRKUg@mail.gmail.com>
-Subject: Re: Question about btrfs and XOR offloading
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: OK
+X-ESPOL: 6N1mlpY3ejOmi1+/QnvYGwc0rTRLXO/5mZO30RtZnXnyMi+AeFR+Lh33wixqPg+1xV0X
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 2, 2021 at 10:53 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/1/3 =E4=B8=8A=E5=8D=8811:50, Rosen Penev wrote:
-> > I've noticed that internally, btrfs' XOR code is CPU only. Does anyone
-> > know if there is a performance advantage to using a hardware
-> > accelerated path? I ask as I use BTRFS on a Marvelll ARM platform with
-> > XOR offload capability.
-> >
-> AFAIK XOR is only utilized by RAID56, while RAID56 is not considered
-> safe due to write-hole, thus I don't believe whether btrfs supports
-> hardware XOR would make any difference for now.
-Right the question is about performance. I don't know if XOR being
-async would make any difference.
->
-> Thanks,
-> Qu
+The two patches fix issues found by the image which is provided by
+Insu Yun at SSLab@Gatech.
+
+patch 1 fixes a NULL pointer dereference in error handling path.
+patch 2 enhances tree checker to detect chunk item end overflow.
+
+Su Yue (2):
+  btrfs: prevent NULL pointer dereference in extent_io_tree_panic()
+  btrfs: tree-checker: check if chunk item end oveflows
+
+ fs/btrfs/extent_io.c    | 4 +---
+ fs/btrfs/tree-checker.c | 7 +++++++
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+-- 
+2.29.2
+
