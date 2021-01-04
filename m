@@ -2,224 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC532E9BF3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Jan 2021 18:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A932E9CD2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Jan 2021 19:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727475AbhADRYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Jan 2021 12:24:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        id S1727780AbhADSKd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Jan 2021 13:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbhADRYb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jan 2021 12:24:31 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37AAC061574;
-        Mon,  4 Jan 2021 09:23:50 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id w79so24062181qkb.5;
-        Mon, 04 Jan 2021 09:23:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=mXc0FwdMxtcGLe+O48tzC3uXRwT0ffZD99+ISuL0ssA=;
-        b=jcByy9C6xJ27R1C35nNa85oIu0J/iD60Gjj0p/PGBxfXbn6SVLqUGR3v9ZWZmd+c5f
-         9arXr4o6BPd85PoY71l+0N53dcgLtAaJ0TRDb1KSyf17S4SRKKx2Rs2nnzWE4wNaDJGU
-         oWpFu/N4DrBWTvukt/xd8b3s5fLJiiiLs096SoEn7jfibPpEBxjHxlLqlrOhzMmPDFU1
-         d8EhBCEIwGgb/4WvP+Qi9CXPKcybvOFsVrZeIji0KgBbnpD3NfPEch4ZiuvAYNrqaj75
-         gk/rYFS1qQZkRnVS4DdL9GaDguDgf+VAlZVXw4Z3vxjyGtJ295VaqzUo+U5lYEF39CiJ
-         wOfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=mXc0FwdMxtcGLe+O48tzC3uXRwT0ffZD99+ISuL0ssA=;
-        b=gtSuL+7o0YrDPWET81vV/M9cW9A9KJBLoexwmjH11iXAr0DGeiOpbPJ6uXLR12kMtn
-         fz4VmfwmFm7qd4e3qYqeIZvzETerkn0RzvZWtx0UvClbThyZD+qr0crvZwQ4vlq0Jok1
-         PAbAhd/2S+8YyhTOmrhAKC1MPeHMH43cGvG9SUYqpbRj8ljwRtzMYZl8IX8LdaeDHPMI
-         4b2gRFSLGuwoYD1IkF4MIozz/K17UORAFjUDEiQ9PfhL3b16P6PnaElmvMaxVwuh7yTW
-         0iguN0N02Lc/EJNzgNCmPxiR1BBd+rxIAh+5UvzfUruVzO6WSL0e7v32p4lzE8KDP5tF
-         n/qg==
-X-Gm-Message-State: AOAM533VsVHxylGB6nn1+pspbOHHjMqplsBORVm+fa3TAKMT6zil5IAM
-        WH6NZVfgEBuFQyVkrT09wmlG80u1/7xnWhg+5IU66AFlP34=
-X-Google-Smtp-Source: ABdhPJwn5a5M7KCkaISG6Cd/tsFtYyO7MzVUGIvlRQuDGAviI9/qYfwVE60igvNSfnMpk32JDdGaXgMRzL5UAfqsSOk=
-X-Received: by 2002:a37:bc07:: with SMTP id m7mr68477604qkf.438.1609781029516;
- Mon, 04 Jan 2021 09:23:49 -0800 (PST)
+        with ESMTP id S1727764AbhADSKd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jan 2021 13:10:33 -0500
+Received: from smtp1.tecnico.ulisboa.pt (smtp1.tecnico.ulisboa.pt [IPv6:2001:690:2100:1::15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915A9C061793
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 Jan 2021 10:09:52 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by smtp1.tecnico.ulisboa.pt (Postfix) with ESMTP id 248C3603AC87;
+        Mon,  4 Jan 2021 18:09:49 +0000 (WET)
+X-Virus-Scanned: by amavisd-new-2.11.0 (20160426) (Debian) at
+        tecnico.ulisboa.pt
+Received: from smtp1.tecnico.ulisboa.pt ([127.0.0.1])
+        by localhost (smtp1.tecnico.ulisboa.pt [127.0.0.1]) (amavisd-new, port 10025)
+        with LMTP id z4e0-PVMeQRv; Mon,  4 Jan 2021 18:09:46 +0000 (WET)
+Received: from mail1.tecnico.ulisboa.pt (mail1.ist.utl.pt [193.136.128.10])
+        by smtp1.tecnico.ulisboa.pt (Postfix) with ESMTPS id 72C27603AC97;
+        Mon,  4 Jan 2021 18:09:46 +0000 (WET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tecnico.ulisboa.pt;
+        s=mail; t=1609783786;
+        bh=EfJb3aRQyLG8AO3VwMbyBtRyl3cZIDBAssr59lMdUmI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=K+t5LbO9rflSvPBnOvxhJLQS7iMXY0jX8q+LU3fi6JsJOYmEk1OLVuehvSrBnFiF0
+         vdVl63Fps2hdeHEB+OP+jD0NxcrPAPqz24T8IARLKFFi/MLPfnKI6X7fNoYHHA86zZ
+         BiCKWKVxzP7IrNLBgiG32t3nSsmsbKkh+IISEkMk=
+Received: from webmail.tecnico.ulisboa.pt (webmail3.tecnico.ulisboa.pt [IPv6:2001:690:2100:1::912f:b135])
+        (Authenticated sender: ist186945)
+        by mail1.tecnico.ulisboa.pt (Postfix) with ESMTPSA id 4894D360070;
+        Mon,  4 Jan 2021 18:09:46 +0000 (WET)
+Received: from vs1.ist.utl.pt ([2001:690:2100:1::33])
+ by webmail.tecnico.ulisboa.pt
+ with HTTP (HTTP/1.1 POST); Mon, 04 Jan 2021 18:09:46 +0000
 MIME-Version: 1.0
-References: <7a1048dfbc8d2f5f3869f072146ec3e499bc0ac2.1609779712.git.josef@toxicpanda.com>
-In-Reply-To: <7a1048dfbc8d2f5f3869f072146ec3e499bc0ac2.1609779712.git.josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 4 Jan 2021 17:23:38 +0000
-Message-ID: <CAL3q7H5-L7Qs1ecZXPNiQ58rOCMXbpRaPPVFaEEnL0Gcmmfyvw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Use the normal writeback path for flushing delalloc
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com,
-        stable@vger.kernel.org,
-        =?UTF-8?Q?Ren=C3=A9_Rebe?= <rene@exactcode.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 04 Jan 2021 18:09:46 +0000
+From:   =?UTF-8?Q?Andr=C3=A9_Isidro_da_Silva?= 
+        <andreisilva@tecnico.ulisboa.pt>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: tldr; no BTRFS on dev, after a forced shutdown, help
+In-Reply-To: <CAJCQCtTm_zdyn7mXOgT6adaRgCU2-42hdSeADkh2T+dXo4nbag@mail.gmail.com>
+References: <1bdca54c9a0c575288f2c509246e5a96@tecnico.ulisboa.pt>
+ <CAJCQCtTMmU5oWbvY0vOpWgiS6UvH2ZrrLhnaDivC4o2FnbBvag@mail.gmail.com>
+ <b694928becd337a5f57e6f459e5774d8@tecnico.ulisboa.pt>
+ <CAJCQCtTm_zdyn7mXOgT6adaRgCU2-42hdSeADkh2T+dXo4nbag@mail.gmail.com>
+Message-ID: <9c5093af29f2a1918829cfbdebec1103@tecnico.ulisboa.pt>
+X-Sender: andreisilva@tecnico.ulisboa.pt
+User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 5:06 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> This is a revert for 38d715f494f2 ("btrfs: use
-> btrfs_start_delalloc_roots in shrink_delalloc").  A user reported a
-> problem where performance was significantly worse with this patch
-> applied.  The problem needs to be fixed with proper pre-flushing, and
-> changes to how we deal with the work queues for the inodes.  However
-> that work is much more complicated than is acceptable for stable, and
-> simply reverting this patch fixes the problem.  The original patch was
-> a cleanup of the code, so it's fine to revert it.  My numbers for the
-> original reported test, which was untarring a copy of the firefox
-> sources, are as follows
->
-> 5.9     0m54.258s
-> 5.10    1m26.212s
-> Fix     0m35.038s
->
-> cc: stable@vger.kernel.org # 5.10
-> Reported-by: Ren=C3=A9 Rebe <rene@exactcode.de>
-> Fixes: 38d715f494f2 ("btrfs: use btrfs_start_delalloc_roots in shrink_del=
-alloc")
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
-> Dave, this is ontop of linus's branch, because we've changed the argument=
-s for
-> btrfs_start_delalloc_roots in misc-next, and this needs to go back to 5.1=
-0 ASAP.
-> I can send a misc-next version if you want to have it there as well while=
- we're
-> waiting for it to go into linus's tree, just let me know.
+I'm sure it used to be one, but indeed it seems that a TYPE is missing 
+in /dev/sda10; gparted says it's unknown.
+It seems there is no trace of the fs. I'm trying to recall any other 
+operations I might have done, but if it was something else I can't 
+remember what could have been. I used cfdisk, to resize another 
+partition, also tried to do a 'btrfs device add' with this missing one 
+(to solve the no space left in another one), otherwise it was mount /, 
+mount /home (/dev/sda10), umount, repeat. Oh well.
 
-Adding this to stable releases will also make the following fix not
-work on stable releases:
+[sudo blkid]
 
-https://lore.kernel.org/linux-btrfs/39c2a60aa682f69f9823f51aa119d37ef4b9f83=
-4.1606909923.git.fdmanana@suse.com/
+/dev/sda1: UUID="03ff3132-dfc5-4dce-8add-cf5a6c854313" BLOCK_SIZE="4096" 
+TYPE="ext4" PARTLABEL="LINUX" 
+PARTUUID="a6042b9f-a3fe-49e2-8dc5-98a818454b6d"
 
-Since now the async reclaim task can trigger writeback through
-writeback_inodes_sb_nr() and not only through
-btrfs_start_delalloc_roots().
-Other than changing that patch to make extent_write_cache_pages() do
-nothing when the inode has the bit BTRFS_INODE_NO_DELALLOC_FLUSH set,
-I'm not seeing other simple ways to do it.
+/dev/sdb4: UUID="5c7201df-ff3e-4cb7-8691-8ef0c6c806ed" 
+UUID_SUB="bb677c3a-6270-420f-94ce-f5b89f2c40d2" BLOCK_SIZE="4096" 
+TYPE="btrfs" PARTUUID="be4190e4-8e09-4dfc-a901-463f3e162727"
 
-Thanks.
+/dev/sda10: PARTLABEL="HOME" 
+PARTUUID="6045f3f0-47a7-4b38-a392-7bebb7f654bd"
 
->
->  fs/btrfs/space-info.c | 54 ++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 53 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 64099565ab8f..a2b322275b8d 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -465,6 +465,28 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_=
-info,
->         up_read(&info->groups_sem);
->  }
->
-> +static void btrfs_writeback_inodes_sb_nr(struct btrfs_fs_info *fs_info,
-> +                                        unsigned long nr_pages, u64 nr_i=
-tems)
-> +{
-> +       struct super_block *sb =3D fs_info->sb;
-> +
-> +       if (down_read_trylock(&sb->s_umount)) {
-> +               writeback_inodes_sb_nr(sb, nr_pages, WB_REASON_FS_FREE_SP=
-ACE);
-> +               up_read(&sb->s_umount);
-> +       } else {
-> +               /*
-> +                * We needn't worry the filesystem going from r/w to r/o =
-though
-> +                * we don't acquire ->s_umount mutex, because the filesys=
-tem
-> +                * should guarantee the delalloc inodes list be empty aft=
-er
-> +                * the filesystem is readonly(all dirty pages are written=
- to
-> +                * the disk).
-> +                */
-> +               btrfs_start_delalloc_roots(fs_info, nr_items);
-> +               if (!current->journal_info)
-> +                       btrfs_wait_ordered_roots(fs_info, nr_items, 0, (u=
-64)-1);
-> +       }
-> +}
-> +
->  static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
->                                         u64 to_reclaim)
->  {
-> @@ -490,8 +512,10 @@ static void shrink_delalloc(struct btrfs_fs_info *fs=
-_info,
->         struct btrfs_trans_handle *trans;
->         u64 delalloc_bytes;
->         u64 dio_bytes;
-> +       u64 async_pages;
->         u64 items;
->         long time_left;
-> +       unsigned long nr_pages;
->         int loops;
->
->         /* Calc the number of the pages we need flush for space reservati=
-on */
-> @@ -532,8 +556,36 @@ static void shrink_delalloc(struct btrfs_fs_info *fs=
-_info,
->
->         loops =3D 0;
->         while ((delalloc_bytes || dio_bytes) && loops < 3) {
-> -               btrfs_start_delalloc_roots(fs_info, items);
-> +               nr_pages =3D min(delalloc_bytes, to_reclaim) >> PAGE_SHIF=
-T;
-> +
-> +               /*
-> +                * Triggers inode writeback for up to nr_pages. This will=
- invoke
-> +                * ->writepages callback and trigger delalloc filling
-> +                *  (btrfs_run_delalloc_range()).
-> +                */
-> +               btrfs_writeback_inodes_sb_nr(fs_info, nr_pages, items);
-> +               /*
-> +                * We need to wait for the compressed pages to start befo=
-re
-> +                * we continue.
-> +                */
-> +               async_pages =3D atomic_read(&fs_info->async_delalloc_page=
-s);
-> +               if (!async_pages)
-> +                       goto skip_async;
-> +
-> +               /*
-> +                * Calculate how many compressed pages we want to be writ=
-ten
-> +                * before we continue. I.e if there are more async pages =
-than we
-> +                * require wait_event will wait until nr_pages are writte=
-n.
-> +                */
-> +               if (async_pages <=3D nr_pages)
-> +                       async_pages =3D 0;
-> +               else
-> +                       async_pages -=3D nr_pages;
->
-> +               wait_event(fs_info->async_submit_wait,
-> +                          atomic_read(&fs_info->async_delalloc_pages) <=
-=3D
-> +                          (int)async_pages);
-> +skip_async:
->                 loops++;
->                 if (wait_ordered && !trans) {
->                         btrfs_wait_ordered_roots(fs_info, items, 0, (u64)=
--1);
-> --
-> 2.26.2
->
+[sudo btrfs insp dump-s -F /dev/sda10]
 
+superblock: bytenr=65536, device=/dev/sda10
+---------------------------------------------------------
+csum_type               0 (crc32c)
+csum_size               4
+csum                    0x00000000 [DON'T MATCH]
+bytenr                  0
+flags                   0x0
+magic                   ........ [DON'T MATCH]
+fsid                    00000000-0000-0000-0000-000000000000
+metadata_uuid           00000000-0000-0000-0000-000000000000
+label
+generation              0
+root                    0
+sys_array_size          0
+chunk_root_generation   0
+root_level              0
+chunk_root              0
+chunk_root_level        0
+log_root                0
+log_root_transid        0
+log_root_level          0
+total_bytes             0
+bytes_used              0
+sectorsize              0
+nodesize                0
+leafsize (deprecated)   0
+stripesize              0
+root_dir                0
+num_devices             0
+compat_flags            0x0
+compat_ro_flags         0x0
+incompat_flags          0x0
+cache_generation        0
+uuid_tree_generation    0
+dev_item.uuid           00000000-0000-0000-0000-000000000000
+dev_item.fsid           00000000-0000-0000-0000-000000000000 [match]
+dev_item.type           0
+dev_item.total_bytes    0
+dev_item.bytes_used     0
+dev_item.io_align       0
+dev_item.io_width       0
+dev_item.sector_size    0
+dev_item.devid          0
+dev_item.dev_group      0
+dev_item.seek_speed     0
+dev_item.bandwidth      0
+dev_item.generation     0
 
---=20
-Filipe David Manana,
+This as nothing to do with btrfs anymore, but: do you think a tool like 
+foremost can recover the files, it'll be a mess, but better then nothing 
+and I've used it before in a ntfs.
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Thanks
+
+A 2021-01-04 17:36, Chris Murphy escreveu:
+> On Mon, Jan 4, 2021 at 5:14 AM André Isidro da Silva
+> <andreisilva@tecnico.ulisboa.pt> wrote:
+>> 
+>> Thankyou for helping,
+>> 
+>> I have already tried to run check, and.. check --repair. I bet that's
+>> bad, yesterday snowballed downhill really quick haha.
+>> 
+>> ERROR: no btrfs on /dev/sda10
+> 
+> Are you sure there's a btrfs file system on /dev/sda10? What do you get 
+> for:
+> 
+> sudo blkid
+> sudo btrfs insp dump-s -F /dev/sda10
+> 
+> 
+> 
+>> 
+>> dmesg reported nothing for a simple mount,
+>> and for a 'mount -o subvolid':
+>>       [  +3.754839] fuseblk: Unknown parameter 'subvolid'
+> 
+> subvol and subvolid need a parameter to work; but that you're getting
+> back a message from fuseblk suggests this is not a btrfs file system
+> (anymore) so without knowing the full history, it's just guessing.
+> LIke, is it possible you accidentally reformatted with this partition?
+> There's not much to go on.
