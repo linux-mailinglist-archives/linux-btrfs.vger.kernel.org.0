@@ -2,101 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D862E9123
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Jan 2021 08:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B12A2E9138
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Jan 2021 08:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbhADHcx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Jan 2021 02:32:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727251AbhADHcw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jan 2021 02:32:52 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D1AC061574
-        for <linux-btrfs@vger.kernel.org>; Sun,  3 Jan 2021 23:32:12 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id t16so31146990wra.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 03 Jan 2021 23:32:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HVwVt/6vonNun5e8yMXMVb89JMxDpALDsV9n4VaNvuc=;
-        b=QHKKlFKOEBUG3mg8sgmNz54LrE7gSa9phaftVQgeGbI+7WZwoIdZMZJOBmucaFe3S/
-         RG9B5gtzq6z96egG8SoyATDONgn8swMWbayvwIoxWXWII9xLmUQ0VOykwwsxW5QdUNiv
-         pJ+85TQ7caspZjxZ/2DYFb8LUKEU5otQ3qv202RAJlgbmMQX10kB9kUquvTtdnxLRXJy
-         watV+4qNBRV8mCuGOFxgNlJrsoHMEBWZU37pE9D1GF+kb8481IR6NskR+/gduxiFZD96
-         BBeSSNulgIxUYUtkX7V6bIXusU3stFN/+SqR0A+VEPnX5EKbpkf7987JLpFi++NJQKBy
-         GHgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HVwVt/6vonNun5e8yMXMVb89JMxDpALDsV9n4VaNvuc=;
-        b=pI+42qnv9TxhptiFBPa54ZmePCTpM9wpuYxrKPZOrRmlbVQgobaWzV5TZT8j9FcqBM
-         2wZyYErnqH7y/ftG2XSHeJO9ITxy1F402PmFYtmeUHcicfZEWcajvle/4eong82wRHX+
-         GBE4sFfFGnaHtPfo/DGSyauC5BjHgYO5sHgbk9wIyRsnOwhYxBt4uu1E0RRMLxg5RMso
-         O0MyTf8SSWwnA1qtXk8Hkt/6BXqTUhOw7Y1ImFGu1L3gb3bsw/IVGbEsGt+s3TTsBoV0
-         V3aRiif1b7FVionD2OQ/Pem8Xdpj/VyBvTZOI39KoPW6THe4fjyGbW6l0fUtJqmR2aaB
-         emCQ==
-X-Gm-Message-State: AOAM532vX15lRNQBuUeLQXDsmFqDLGUIVZJSyJ88Qv1I6lZ8lYgVI4SQ
-        JJswfP9mKDKBtvSNk0R28sA24pAc3bx7ZhtEi920BS2puFiRqA==
-X-Google-Smtp-Source: ABdhPJwoTEPvKqrAZhebTF+YWBm4d93CSvssLErAbKJbQ6XZDThkTzTF/vK4cY/0EYqZYITwQr57prU+vbWYFnfmeEs=
-X-Received: by 2002:adf:b1ca:: with SMTP id r10mr79228816wra.252.1609745531170;
- Sun, 03 Jan 2021 23:32:11 -0800 (PST)
+        id S1727556AbhADHft (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Jan 2021 02:35:49 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:34632 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727531AbhADHft (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jan 2021 02:35:49 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1047Z27G098813;
+        Mon, 4 Jan 2021 07:35:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=BvcLAFI2UQ1+WPODkbZ1PQe2/FcAx+BMYxv1aqLYGrQ=;
+ b=epOiq9rTAw0I+U5lslTTQAlunkpGmzsalt5yUsV5cOCU0Y0ryCl+cGo2XoVy7kwRygua
+ OWBnXqvu4b/izHycC7DewIilRn5S8QURbswHJtnZrFAQwBNCiT8zUF17KNUyoGkppX+Z
+ mW6bHvTH/yuSgy1FNy1+LqjRlom7Q0RJVlqP4TGWJG6SjDTNq8WJO6FuUKvL3fd0UKIp
+ wAAXxCVa8KzR5zmk1vnXQr7tjWeRhXBn6a8HdgB9BKMp5hM3ruB+T1Gdc8naLxeqbsOB
+ y2oV/UgcQcjsuQ5h3mfJMa1g5dTGPhyLusOB+8z6fnRb2OEfl0zgldFzouSQ/7Hi/Et2 Lw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35tgskk1ts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 04 Jan 2021 07:35:02 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1047Yrts052270;
+        Mon, 4 Jan 2021 07:35:01 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 35uwsysgre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Jan 2021 07:34:58 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1047XAPt018762;
+        Mon, 4 Jan 2021 07:33:10 GMT
+Received: from [192.168.10.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 Jan 2021 07:33:09 +0000
+Subject: Re: [PATCH v2 1/2] btrfs: prevent NULL pointer dereference in
+ extent_io_tree_panic()
+To:     Su Yue <l@damenly.su>, linux-btrfs@vger.kernel.org
+References: <20210103092804.756-1-l@damenly.su>
+ <20210103092804.756-2-l@damenly.su>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <21bc38aa-87be-7ec2-3ef6-06df790ed4b8@oracle.com>
+Date:   Mon, 4 Jan 2021 15:33:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <1bdca54c9a0c575288f2c509246e5a96@tecnico.ulisboa.pt>
-In-Reply-To: <1bdca54c9a0c575288f2c509246e5a96@tecnico.ulisboa.pt>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 4 Jan 2021 00:31:55 -0700
-Message-ID: <CAJCQCtTMmU5oWbvY0vOpWgiS6UvH2ZrrLhnaDivC4o2FnbBvag@mail.gmail.com>
-Subject: Re: tldr; no BTRFS on dev, after a forced shutdown, help
-To:     =?UTF-8?Q?Andr=C3=A9_Isidro_da_Silva?= 
-        <andreisilva@tecnico.ulisboa.pt>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210103092804.756-2-l@damenly.su>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101040051
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9853 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 clxscore=1011 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101040051
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 9:30 PM Andr=C3=A9 Isidro da Silva
-<andreisilva@tecnico.ulisboa.pt> wrote:
->
-> I might be in some panic, I'm sorry for the info I'm not experienced
-> enough to give.
->
-> I was in a live iso trying really hard to repair my root btrfs from
-> which I had used all the space avaiable.. I was trying to move a /usr
-> partition into the btrfs system, but I didn't check the space available
-> with the tool, instead used normal tools, because I didn't understand or
-> actually thought about how the subvolumes would change... sorry this
-> isn't even the issue anymore; to move /usr I had a temporary /usr copy
-> in another btrfs system (my /home data partition) and so mounted both
-> partitions. However this was done in a linux "boot fail console" from
-> which I didn't know how to proper shutdown.. so I eventually forced the
-> shutdown withou umounting stuff (...), I think that forced shutdown
-> might have broken the second partition that now isn't recognized with
-> btrfs check or mountable. It might also have happen when using the live
-> iso, but the forced shutdown seemed more likely, since I did almost no
-> operations but mount/cp. This partition was my data partition, I thought
-> it was safe to use for this process, since I was just copying files from
-> it. I do have a backup, but it's old so I'll still lose a lot.. help.
+On 3/1/21 5:28 pm, Su Yue wrote:
+> Some extent io trees are initialized with NULL private member(e.g., btrfs_devi
+> ce::alloc_state and btrfs_fs_info::excluded_extents). Dereference of a NULL
+> @tree->private as struct inode * will cause kernel panic.
+> 
+> Just pass @tree->fs_info as parameter to extent_io_tree_panic() directly.
+> Let it panic as expected at least.
+> 
 
-First, make no changes, attempt no repairs. Next save history of what you d=
-id.
+  Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-A forced shutdown does not make Btrfs unreadable, although if writes
-are happening at the time of the shutdown and the drive firmware
-doesn't properly honor write order, then it might be 'btrfs restore'
-territory.
+Thanks.
 
-What do you get for:
-
-btrfs filesystem show
-kernel messages (dmesg) that appear when you try to mount the volume
-but it fails.
-
-
-
---=20
-Chris Murphy
+> Fixes: 05912a3c04eb ("btrfs: drop extent_io_ops::tree_fs_info callback")
+> Signed-off-by: Su Yue <l@damenly.su>
