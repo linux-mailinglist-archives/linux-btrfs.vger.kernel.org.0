@@ -2,101 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E922EA39F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 04:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463362EA3F4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 04:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbhAEDBb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Jan 2021 22:01:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbhAEDBb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jan 2021 22:01:31 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E83C061574
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 Jan 2021 19:00:45 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d26so34098514wrb.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 04 Jan 2021 19:00:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9HGZSbDE1S8dLwDUubmWWNOWFcP77/2fDqNh7XXF388=;
-        b=LAP5bZJRQZqq7sDkIjok+i7EWA94y0V8wNbnuQ3DiLGVTCHKiQUWzR2BjcYf9h3PAN
-         nBkuCUtjPJ/1MqIATJG1PLRC5KnzInyxJeqhu+g+EXdwlIvVJ8aH4ria49HXzcItk/Vv
-         3gduz8Qu37+gzw6eg3wcCnlGpYdTEX6dp+OaFxYSyiwBU5UW9oBivFNzKfvQFGPy9KC4
-         kHnNyhT4fjLuLbic7Eee86R3bj0XTL2p478BRffgvO/8LpfeHWB/WLdH4v0Tyr7wygTw
-         z3BR13mw+ASNgCaXLmxATGLT2mmqe/OdPVNNJVY7ZVdGY4Wrvk5pJJxFhVG4qEacx2bH
-         8lvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9HGZSbDE1S8dLwDUubmWWNOWFcP77/2fDqNh7XXF388=;
-        b=L0iX9Jim2KEx8RAShDZSZAwjqOAh2EDkSWyQa9af0jcwdZ/lCdT+x59sjp6d9MXsI0
-         WbNR3igl8U2phnvP1kOFbmutr9+E70iLjYx0/Nqbk6JJdPpo1J3VldLV42bE7u2ENmqV
-         1VLr5uesnPzeaNCD2YcTy2GmZkPbnzINlOTm1LTEg8j9c89SJjuyfXI9+9PbDBKWAWv4
-         jSN/1UNFgtp3nuIVZAuo6c8dH1WCN3RyQgSoXM5RtwvAGJVyRjaAhVZ2/yk+bE7xrjL4
-         kUiZaAa+OJlNgDWqCuzdS41V9YHerhpaFZNfjXS8DXgdZ/d8NJzv6btPPViJF5OOW431
-         UyNw==
-X-Gm-Message-State: AOAM531Sls7GOEg+PLBbOGT4dLDXPYZCmDI1UrbJKENg6e3w+Vw9B2n7
-        vYpZ1Xqlmj57OeSxvzHfRjg9WflEZhkk/2b+rUvEAr9bWcMffA==
-X-Google-Smtp-Source: ABdhPJwwb3gHHYamR77h33qVpwOeyz88p4PjccZPXIaiSmCJ1TnwqcNjwqA/u5nSrzP7kUpEPjP8rPhQgRT8vmmMxvo=
-X-Received: by 2002:a5d:65ca:: with SMTP id e10mr82601202wrw.42.1609815643573;
- Mon, 04 Jan 2021 19:00:43 -0800 (PST)
+        id S1728214AbhAEDeE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Jan 2021 22:34:04 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:33816 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728197AbhAEDeD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jan 2021 22:34:03 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1053FUq2174381;
+        Tue, 5 Jan 2021 03:33:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ONyO0Pkpl7MMT+c26ipzPO0gCEMw8/vBrbjFFBW91K8=;
+ b=AxZsJpVE0KJ/vkGa6gFHrpXgcEQz89U5ZKotmVQWh3urUGIB5oeZo9WEDJK4TYVaYBfo
+ ftRg2bzl2gxXPpRGud7rQktuZ1WFAa1IwzoOlFpiUgsLl8+7L9CY9wYvG9RHYJYiCYBt
+ Lt78bwNHFlQJ+FKkdOLlS1qQlPeMi8WFmDmcTDtetYZR7f1WKJ4KV9omqiiQUOs2NWes
+ +5AHx0zbQ7rwdu2hrMvcBWJqfDDX8CJZCzDeno3fcAQWXVrGUJ3Rg386riaP5tUyRa/v
+ zsQDW65TZ+Z2OeC9FnlKrGhXEr3rPq/n/YdZ71nCLAR/jAWC9Nr96+2nU5vGtGSufA4V fg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 35tebaq471-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 05 Jan 2021 03:33:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1053VIkk175464;
+        Tue, 5 Jan 2021 03:31:18 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 35vct572x0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Jan 2021 03:31:18 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1053VA8d009791;
+        Tue, 5 Jan 2021 03:31:10 GMT
+Received: from [192.168.10.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 Jan 2021 19:31:10 -0800
+Subject: Re: [PATCH v2 2/2] btrfs: tree-checker: check if chunk item end
+ oveflows
+To:     Su Yue <l@damenly.su>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20210103092804.756-1-l@damenly.su>
+ <20210103092804.756-3-l@damenly.su>
+ <1a8dbe6a-f2db-4e0d-3b5f-dcd2073d6e1d@oracle.com> <y2h9kqqx.fsf@damenly.su>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <9be541dd-153a-dbb8-99ef-e890437c37fe@oracle.com>
+Date:   Tue, 5 Jan 2021 11:31:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <CAN4oSBehVoPJxcdwD6wiohR9pSfAdSvzXabz6ohyFQibQ_VrxQ@mail.gmail.com>
-In-Reply-To: <CAN4oSBehVoPJxcdwD6wiohR9pSfAdSvzXabz6ohyFQibQ_VrxQ@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 4 Jan 2021 20:00:27 -0700
-Message-ID: <CAJCQCtRx1kRDdDF7vK=9Y8vLS1azX5-Bh+_OosyqU=GuHhEv1w@mail.gmail.com>
-Subject: Re: btrfs receive eats CoW attributes
-To:     Cerem Cem ASLAN <ceremcem@ceremcem.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <y2h9kqqx.fsf@damenly.su>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050020
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1015 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050019
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 7:42 PM Cerem Cem ASLAN <ceremcem@ceremcem.net> wrote:
->
-> I need my backups exactly same data, including the file attributes.
-> Apparently "btrfs receive" ignores the CoW attribute. Here is the
-> reproduction:
->
-> btrfs sub create ./a
-> mkdir a/b
-> chattr +C a/b
-> echo "hello" > a/b/file
-> btrfs sub snap -r ./a ./a.ro
-> mkdir x
-> btrfs send a.ro | btrfs receive x
-> lsattr a.ro
-> lsattr x/a.ro
->
-> Result is:
->
-> # lsattr a.ro
-> ---------------C--- a.ro/b
-> # lsattr x/a.ro
-> ------------------- x/a.ro/b
->
-> Expected: x/a.ro/b folder should have CoW disabled (same as a.ro/b folder)
->
-> How can I workaround this issue in order to have correct attributes in
-> my backups?
 
-It's the exact opposite issue with chattr +c (or btrfs property set
-compression), you can't shake it off :)
+>>> The image has a chunk item which has a logical start 37748736 and length
+>>> 18446744073701163008. The calculated end 29360127 is overflowed 
+>>> obviously.
+>>> -EEXIST was caught by insert_state() because of the duplicate end and
+>>> extent_io_tree_panic() was called.
+>>> Add overflow check of chunk item end in tree checker then the image will
+>>> be rejected to be mounted.
+>>> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208929
+>>> Signed-off-by: Su Yue <l@damenly.su>
+>>> ---
+>>>   fs/btrfs/tree-checker.c | 7 +++++++
+>>>   1 file changed, 7 insertions(+)
+>>> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+>>> index 028e733e42f3..39c65c1cbe96 100644
+>>> --- a/fs/btrfs/tree-checker.c
+>>> +++ b/fs/btrfs/tree-checker.c
+>>> @@ -760,6 +760,7 @@ int btrfs_check_chunk_valid(struct extent_buffer 
+>>> *leaf,
+>>>   {
+>>>       struct btrfs_fs_info *fs_info = leaf->fs_info;
+>>>       u64 length;
+>>> +    u64 chunk_end;
+>>>       u64 stripe_len;
+>>>       u16 num_stripes;
+>>>       u16 sub_stripes;
+>>> @@ -814,6 +815,12 @@ int btrfs_check_chunk_valid(struct extent_buffer 
+>>> *leaf,
+>>>                 "invalid chunk length, have %llu", length);
+>>>           return -EUCLEAN;
+>>>       }
+>>> +    if (unlikely(check_add_overflow(logical, length, &chunk_end))) {
+>>> +        chunk_err(leaf, chunk, logical,
+>>> +              "invalid chunk logical/length, have logical %llu 
+>>> length %llu",
+>>> +              logical, length);
+>>> +        return -EUCLEAN;
+>>> +    }
+>>>       if (unlikely(!is_power_of_2(stripe_len) || stripe_len !=   
+>>> BTRFS_STRIPE_LEN)) {
+>>>           chunk_err(leaf, chunk, logical,
+>>>                 "invalid chunk stripe length: %llu",
+>>>
+>>
+>> So this is a system chunk? It is not so evident from the trace above.
+>>
+> It's a chunk item located in chunk tree leaf, not in system chunk array.
+> Tree checker checks chunk items in both locations.
 
-I think we might need 'btrfs receive' to gain a new flag that filters
-some or all of these? And the filter would be something like
---exclude=$1,$2,$3 and --exclude=all
 
-I have no strong opinion on what should be the default. But I think
-probably the default should be "do not preserve any" because these
-features aren't mkfs or mount time defaults, so I'd make preservation
-explicitly opt in like they were on the original file system.
+Ok. Thanks.
 
-
--- 
-Chris Murphy
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
