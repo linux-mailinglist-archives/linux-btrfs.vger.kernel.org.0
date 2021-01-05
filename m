@@ -2,130 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B491A2EB25B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 19:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36212EB279
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 19:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbhAEST4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 5 Jan 2021 13:19:56 -0500
-Received: from mail.eclipso.de ([217.69.254.104]:59140 "EHLO mail.eclipso.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbhAEST4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:19:56 -0500
-Received: from mail.eclipso.de (www1.eclipso.de [217.69.254.102])
-        by mail.eclipso.de with ESMTP id 560C4729
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Jan 2021 19:19:14 +0100 (CET)
-Date:   Tue, 05 Jan 2021 19:19:14 +0100
+        id S1729333AbhAESZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Jan 2021 13:25:09 -0500
+Received: from box5.speed47.net ([188.165.215.42]:47128 "EHLO mx.speed47.net"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728815AbhAESZI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 Jan 2021 13:25:08 -0500
+Received: from rain.speed47.net (nginx [192.168.80.2])
+        by box.speed47.net (Postfix) with ESMTPSA id A0E66123;
+        Tue,  5 Jan 2021 19:24:24 +0100 (CET)
+Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
+        s=mail01; t=1609871064;
+        bh=VYb3xbdcI8bdtdOvrEj54YjWhHaYO+sRUasLVRBOB7Q=;
+        h=Date:From:Subject:To:Cc:In-Reply-To:References;
+        b=A1w7QxioEepD9gUv0NPKWCYrsiy7ooYfZQmxYI9oT41Nr0Q8GzlIcqKlEtgDmasTz
+         Y0e6qNn9ivJmah2jaCVaLl9BiOW7VXqPxhK4EQiZDY0ktjJexhPU/CwAdZ9QwCxZDQ
+         ADgTo6VXIsXaxp9Rhdv/8N4NV86GkHuECINbV4ck=
 MIME-Version: 1.0
-Message-ID: <8af92960a09701579b6bcbb9b51489cc@mail.eclipso.de>
-X-Mailer: eclipso / 7.4.0
-From:   " " <Cedric.dewijs@eclipso.eu>
-Subject: Re: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize the
-        SSD?
-Reply-To: " " <Cedric.dewijs@eclipso.eu>
-To:     "Qu Wenruo" <quwenruo.btrfs@gmx.com>
-Cc:     <linux-btrfs@vger.kernel.org>
-In-Reply-To: <3c670816-35b9-4bb7-b555-1778d61685c7@gmx.com>
-References: <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
-        <3c670816-35b9-4bb7-b555-1778d61685c7@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-Content-Disposition: inline
+Date:   Tue, 05 Jan 2021 18:24:24 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: RainLoop/1.12.1
+From:   "=?utf-8?B?U3TDqXBoYW5lIExlc2ltcGxl?=" <stephane_btrfs2@lesimple.fr>
+Message-ID: <7f932027eebe43b2e63908f1d4889e24@lesimple.fr>
+Subject: Re: [PATCH] btrfs: relocation: fix wrong file extent type check
+ to avoid false -ENOENT error
+To:     dsterba@suse.cz, "Qu Wenruo" <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <20210104161655.GJ6430@twin.jikos.cz>
+References: <20210104161655.GJ6430@twin.jikos.cz>
+ <20201229132934.117325-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
->> I was expecting btrfs to do almost all reads from the fast SSD, as both
-the data and the metadata is on that drive, so the slow hdd is only really
-needed when there's a bitflip on the SSD, and the data has to be reconstructed.
-
-> IIRC there will be some read policy feature to do that, but not yet
-> merged, and even merged, you still need to manually specify the
-> priority, as there is no way for btrfs to know which driver is faster
-> (except the non-rotational bit, which is not reliable at all).
-
-Manually specifying the priority drive would be a big step in the right direction. Maybe btrfs could get a routine that benchmarks the sequential and random read and write speed of the drives at (for instance) mount time, or triggered by an administrator? This could lead to misleading results if btrfs doesn't get the whole drive to itself.
-
-
->> Writing has to be done to both drives of course, but I don't expect
-slowdowns from that, as the system RAM should cache that.
-
->Write can still slow down the system even you have tons of memory.
->Operations like fsync() or sync() will still wait for the writeback,
->thus in your case, it will also be slowed by the HDD no matter what.
-
->In fact, in real world desktop, most of the writes are from sometimes
->unnecessary fsync().
-
->To get rid of such slow down, you have to go dangerous by disabling
->barrier, which is never a safe idea.
-
-I suggest a middle ground, where btrfs returns from fsync when one of the copies (instead of all the copies) of the data has been written completely to disk. This poses a small data risk, as this creates  moments that there's only one copy of the data on disk, while the software above btrfs thinks all data is written on two disks. one problem I see if the server is told to shut down while there's a big backlog of data to be written to the slow drive, while the big drive is already done. Then the server could cut the power while the slow drive is still being written.
-
-i think this setting should be given to the system administrator, it's not a good idea to just blindly enable this behavior.
-
->>
->> Is there a way to tell btrfs to leave the slow hdd alone, and to prioritize
-the SSD?
-
-> Not in upstream kernel for now.
-
-> Thus I guess you need something like bcache to do this.
-
-Agreed. However, one of the problems of bcache, it that it can't use 2 SSD's in mirrored mode to form a writeback cache in front of many spindles, so this structure is impossible:
-+-----------------------------------------------------------+--------------+--------------+
-|                               btrfs raid 1 (2 copies) /mnt                              |
-+--------------+--------------+--------------+--------------+--------------+--------------+
-| /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 | /dev/bcache4 | /dev/bcache5 |
-+--------------+--------------+--------------+--------------+--------------+--------------+
-|                          Write Cache (2xSSD in raid 1, mirrored)                        |
-|                                 /dev/sda2 and /dev/sda3                                 |
-+--------------+--------------+--------------+--------------+--------------+--------------+
-| Data         | Data         | Data         | Data         | Data         | Data         |
-| /dev/sda9    | /dev/sda10   | /dev/sda11   | /dev/sda12   | /dev/sda13   | /dev/sda14   |
-+--------------+--------------+--------------+--------------+--------------+--------------+
-
-In order to get a system that has no data loss if a drive fails,  the user either has to live with only a read cache, or the user has to put a separate writeback cache in front of each spindle like this:
-+-----------------------------------------------------------+
-|                btrfs raid 1 (2 copies) /mnt               |
-+--------------+--------------+--------------+--------------+
-| /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 |
-+--------------+--------------+--------------+--------------+
-| Write Cache  | Write Cache  | Write Cache  | Write Cache  |
-|(Flash Drive) |(Flash Drive) |(Flash Drive) |(Flash Drive) |
-| /dev/sda5    | /dev/sda6    | /dev/sda7    | /dev/sda8    |
-+--------------+--------------+--------------+--------------+
-| Data         | Data         | Data         | Data         |
-| /dev/sda9    | /dev/sda10   | /dev/sda11   | /dev/sda12   |
-+--------------+--------------+--------------+--------------+
-
-In the mainline kernel is's impossible to put a bcache on top of a bcache, so a user does not have the option to have 4 small write caches below one fast, big read cache like this:
-+-----------------------------------------------------------+
-|                btrfs raid 1 (2 copies) /mnt               |
-+--------------+--------------+--------------+--------------+
-| /dev/bcache4 | /dev/bcache5 | /dev/bcache6 | /dev/bcache7 |
-+--------------+--------------+--------------++-------------+
-|                      Read Cache (SSD)                     |
-|                        /dev/sda4                          |
-+--------------+--------------+--------------+--------------+
-| /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 |
-+--------------+--------------+--------------+--------------+
-| Write Cache  | Write Cache  | Write Cache  | Write Cache  |
-|(Flash Drive) |(Flash Drive) |(Flash Drive) |(Flash Drive) |
-| /dev/sda5    | /dev/sda6    | /dev/sda7    | /dev/sda8    |
-+--------------+--------------+--------------+--------------+
-| Data         | Data         | Data         | Data         |
-| /dev/sda9    | /dev/sda10   | /dev/sda11   | /dev/sda12   |
-+--------------+--------------+--------------+--------------+
-
->Thanks,
->Qu
-
-Thank you,
-Cedric
-
-
----
-
-Take your mailboxes with you. Free, fast and secure Mail &amp; Cloud: https://www.eclipso.eu - Time to change!
-
-
+FWIW, just recompiled with the patch to be 100% sure, as I still had=0Ath=
+e problematic FS around untouched:=0A=0A[  199.722122] BTRFS info (device=
+ dm-10): balance: start -dvrange=3D34625344765952..34625344765953=0A[  19=
+9.730267] BTRFS info (device dm-10): relocating block group 3462534476595=
+2 flags data|raid1=0A[  212.232222] BTRFS info (device dm-10): found 167 =
+extents, stage: move data extents=0A[  236.124541] BTRFS info (device dm-=
+10): found 167 extents, stage: update data pointers=0A[  248.011778] BTRF=
+S info (device dm-10): balance: ended with status: 0=0A=0AAs expected, al=
+l is good now!=0A=0ATested-By: St=C3=A9phane Lesimple <stephane_btrfs2@le=
+simple.fr>=0A=0A-- =0ASt=C3=A9phane.=0A=0AJanuary 4, 2021 5:18 PM, "David=
+ Sterba" <dsterba@suse.cz> wrote:=0A=0A> On Tue, Dec 29, 2020 at 09:29:34=
+PM +0800, Qu Wenruo wrote:=0A> =0A>> [BUG]=0A>> There are several bug rep=
+orts about recent kernel unable to relocate=0A>> certain data block group=
+s.=0A>> =0A>> Sometimes the error just go away, but there is one reporter=
+ who can=0A>> reproduce it reliably.=0A>> =0A>> The dmesg would look like=
+:=0A>> [ 438.260483] BTRFS info (device dm-10): balance: start -dvrange=
+=3D34625344765952..34625344765953=0A>> [ 438.269018] BTRFS info (device d=
+m-10): relocating block group 34625344765952 flags data|raid1=0A>> [ 450.=
+439609] BTRFS info (device dm-10): found 167 extents, stage: move data ex=
+tents=0A>> [ 463.501781] BTRFS info (device dm-10): balance: ended with s=
+tatus: -2=0A>> =0A>> [CAUSE]=0A>> The -ENOENT error is returned from the =
+following chall chain:=0A>> =0A>> add_data_references()=0A>> |- delete_v1=
+_space_cache();=0A>> |- if (!found)=0A>> return -ENOENT;=0A>> =0A>> The v=
+ariable @found is set to true if we find a data extent whose=0A>> disk by=
+tenr matches parameter @data_bytes.=0A>> =0A>> With extra debug, the offe=
+nding tree block looks like this:=0A>> leaf bytenr =3D 42676709441536, da=
+ta_bytenr =3D 34626327621632=0A>> =0A>> ctime 1567904822.739884119 (2019-=
+09-08 03:07:02)=0A>> mtime 0.0 (1970-01-01 01:00:00)=0A>> otime 0.0 (1970=
+-01-01 01:00:00)=0A>> item 27 key (51933 EXTENT_DATA 0) itemoff 9854 item=
+size 53=0A>> generation 1517381 type 2 (prealloc)=0A>> prealloc data disk=
+ byte 34626327621632 nr 262144 <<<=0A>> prealloc data offset 0 nr 262144=
+=0A>> item 28 key (52262 ROOT_ITEM 0) itemoff 9415 itemsize 439=0A>> gene=
+ration 2618893 root_dirid 256 bytenr 42677048360960 level 3 refs 1=0A>> l=
+astsnap 2618893 byte_limit 0 bytes_used 5557338112 flags 0x0(none)=0A>> u=
+uid d0d4361f-d231-6d40-8901-fe506e4b2b53=0A>> =0A>> Although item 27 has =
+disk bytenr 34626327621632, which matches the=0A>> data_bytenr, its type =
+is prealloc, not reg.=0A>> This makes the existing code skip that item, a=
+nd return -ENOENT.=0A>> =0A>> [FIX]=0A>> The code is modified in commit 1=
+9b546d7a1b2 ("btrfs: relocation: Use=0A>> btrfs_find_all_leafs to locate =
+data extent parent tree leaves"), before=0A>> that commit, we use somethi=
+ng like=0A>> "if (type =3D=3D BTRFS_FILE_EXTENT_INLINE) continue;".=0A>> =
+=0A>> But in that offending commit, we use (type =3D=3D BTRFS_FILE_EXTENT=
+_REG),=0A>> ignoring BTRFS_FILE_EXTENT_PREALLOC.=0A>> =0A>> Fix it by als=
+o checking BTRFS_FILE_EXTENT_PREALLOC.=0A>> =0A>> Reported-by: St=C3=A9ph=
+ane Lesimple <stephane_btrfs2@lesimple.fr>=0A>> Fixes: 19b546d7a1b2 ("btr=
+fs: relocation: Use btrfs_find_all_leafs to locate data extent parent tre=
+e=0A>> leaves")=0A>> Signed-off-by: Qu Wenruo <wqu@suse.com>=0A> =0A> Tha=
+nk you all for tracking down the bug, added to misc-next.
