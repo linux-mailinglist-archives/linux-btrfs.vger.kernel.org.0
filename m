@@ -2,126 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463362EA3F4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 04:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0A22EA582
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 07:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbhAEDeE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Jan 2021 22:34:04 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:33816 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728197AbhAEDeD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Jan 2021 22:34:03 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1053FUq2174381;
-        Tue, 5 Jan 2021 03:33:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ONyO0Pkpl7MMT+c26ipzPO0gCEMw8/vBrbjFFBW91K8=;
- b=AxZsJpVE0KJ/vkGa6gFHrpXgcEQz89U5ZKotmVQWh3urUGIB5oeZo9WEDJK4TYVaYBfo
- ftRg2bzl2gxXPpRGud7rQktuZ1WFAa1IwzoOlFpiUgsLl8+7L9CY9wYvG9RHYJYiCYBt
- Lt78bwNHFlQJ+FKkdOLlS1qQlPeMi8WFmDmcTDtetYZR7f1WKJ4KV9omqiiQUOs2NWes
- +5AHx0zbQ7rwdu2hrMvcBWJqfDDX8CJZCzDeno3fcAQWXVrGUJ3Rg386riaP5tUyRa/v
- zsQDW65TZ+Z2OeC9FnlKrGhXEr3rPq/n/YdZ71nCLAR/jAWC9Nr96+2nU5vGtGSufA4V fg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 35tebaq471-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 03:33:19 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1053VIkk175464;
-        Tue, 5 Jan 2021 03:31:18 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 35vct572x0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 03:31:18 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1053VA8d009791;
-        Tue, 5 Jan 2021 03:31:10 GMT
-Received: from [192.168.10.102] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Jan 2021 19:31:10 -0800
-Subject: Re: [PATCH v2 2/2] btrfs: tree-checker: check if chunk item end
- oveflows
-To:     Su Yue <l@damenly.su>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20210103092804.756-1-l@damenly.su>
- <20210103092804.756-3-l@damenly.su>
- <1a8dbe6a-f2db-4e0d-3b5f-dcd2073d6e1d@oracle.com> <y2h9kqqx.fsf@damenly.su>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <9be541dd-153a-dbb8-99ef-e890437c37fe@oracle.com>
-Date:   Tue, 5 Jan 2021 11:31:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726497AbhAEGjr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 5 Jan 2021 01:39:47 -0500
+Received: from mail.eclipso.de ([217.69.254.104]:52336 "EHLO mail.eclipso.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725290AbhAEGjr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 Jan 2021 01:39:47 -0500
+Received: from mail.eclipso.de (www1.eclipso.de [217.69.254.102])
+        by mail.eclipso.de with ESMTP id 26EF1C14
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Jan 2021 07:39:05 +0100 (CET)
+Date:   Tue, 05 Jan 2021 07:39:05 +0100
 MIME-Version: 1.0
-In-Reply-To: <y2h9kqqx.fsf@damenly.su>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050020
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9854 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050019
+Message-ID: <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
+X-Mailer: eclipso / 7.4.0
+From:   " " <Cedric.dewijs@eclipso.eu>
+Subject: Raid1 of a slow hdd and a fast(er) SSD,  howto to prioritize the SSD?
+Reply-To: " " <Cedric.dewijs@eclipso.eu>
+To:     <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+­I have put a SSD and a slow laptop HDD in btrfs raid. This was a bad idea, my system does not feel responsive. When i load a program, dstat shows half of the program is loaded from the SSD, and the rest from the slow hard drive.
 
->>> The image has a chunk item which has a logical start 37748736 and length
->>> 18446744073701163008. The calculated end 29360127 is overflowed 
->>> obviously.
->>> -EEXIST was caught by insert_state() because of the duplicate end and
->>> extent_io_tree_panic() was called.
->>> Add overflow check of chunk item end in tree checker then the image will
->>> be rejected to be mounted.
->>> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208929
->>> Signed-off-by: Su Yue <l@damenly.su>
->>> ---
->>>   fs/btrfs/tree-checker.c | 7 +++++++
->>>   1 file changed, 7 insertions(+)
->>> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
->>> index 028e733e42f3..39c65c1cbe96 100644
->>> --- a/fs/btrfs/tree-checker.c
->>> +++ b/fs/btrfs/tree-checker.c
->>> @@ -760,6 +760,7 @@ int btrfs_check_chunk_valid(struct extent_buffer 
->>> *leaf,
->>>   {
->>>       struct btrfs_fs_info *fs_info = leaf->fs_info;
->>>       u64 length;
->>> +    u64 chunk_end;
->>>       u64 stripe_len;
->>>       u16 num_stripes;
->>>       u16 sub_stripes;
->>> @@ -814,6 +815,12 @@ int btrfs_check_chunk_valid(struct extent_buffer 
->>> *leaf,
->>>                 "invalid chunk length, have %llu", length);
->>>           return -EUCLEAN;
->>>       }
->>> +    if (unlikely(check_add_overflow(logical, length, &chunk_end))) {
->>> +        chunk_err(leaf, chunk, logical,
->>> +              "invalid chunk logical/length, have logical %llu 
->>> length %llu",
->>> +              logical, length);
->>> +        return -EUCLEAN;
->>> +    }
->>>       if (unlikely(!is_power_of_2(stripe_len) || stripe_len !=   
->>> BTRFS_STRIPE_LEN)) {
->>>           chunk_err(leaf, chunk, logical,
->>>                 "invalid chunk stripe length: %llu",
->>>
->>
->> So this is a system chunk? It is not so evident from the trace above.
->>
-> It's a chunk item located in chunk tree leaf, not in system chunk array.
-> Tree checker checks chunk items in both locations.
+I was expecting btrfs to do almost all reads from the fast SSD, as both the data and the metadata is on that drive, so the slow hdd is only really needed when there's a bitflip on the SSD, and the data has to be reconstructed.
+
+Writing has to be done to both drives of course, but I don't expect slowdowns from that, as the system RAM should cache that. 
+
+Is there a way to tell btrfs to leave the slow hdd alone, and to prioritize the SSD?
+
+In detail:
+
+# mkfs.btrfs -f -d raid1 -m raid1 /dev/sda1 /dev/sdb1
+
+# btrfs filesystem show /
+Label: none  uuid: 485952f9-0cfc-499a-b5c2-xxxxxxxxx
+	Total devices 2 FS bytes used 63.62GiB
+	devid    2 size 223.57GiB used 65.03GiB path /dev/sda1
+	devid    3 size 149.05GiB used 65.03GiB path /dev/sdb1
 
 
-Ok. Thanks.
+ $ dstat -tdD sda,sdb --nocolor
+----system---- --dsk/sda-- --dsk/sdb--
+     time     | read  writ: read  writ
+05-01 08:19:39|   0     0 :   0     0 
+05-01 08:19:40|   0  4372k:   0  4096k
+05-01 08:19:41|  61M 4404k:  16k 4680k
+05-01 08:19:42|  52M    0 :6904k    0 
+05-01 08:19:43|4556k   76k:  31M   76k
+05-01 08:19:44|2640k    0 :  38M    0 
+05-01 08:19:45|4064k    0 :  30M    0 
+05-01 08:19:46|1252k    0 :  30M    0 
+05-01 08:19:47|2572k    0 :  37M    0 
+05-01 08:19:48|5840k    0 :  27M    0 
+05-01 08:19:49|4480k  492k:  22M  492k
+05-01 08:19:50|1284k    0 :  44M    0 
+05-01 08:19:51|1184k    0 :  33M    0 
+05-01 08:19:52|3592k    0 :  31M    0 
+05-01 08:19:53|  14M  156k:8268k  156k
+05-01 08:19:54|  22M 1956k:   0  1956k
+05-01 08:19:55|   0     0 :   0     0 
+05-01 08:19:56|7636k    0 :   0     0 
+05-01 08:19:57|  23M  116k:   0   116k
+05-01 08:19:58|2296k  552k:   0   552k
+05-01 08:19:59| 624k  132k:   0   132k
+05-01 08:20:00|   0     0 :   0     0 
+05-01 08:20:01|6948k  188k:   0   188k
+05-01 08:20:02|   0  1340k:4364k 1340k
+05-01 08:20:03|   0     0 :   0     0 
+05-01 08:20:04|   0   484k:   0   484k
+05-01 08:20:05|   0     0 :   0     0 
+05-01 08:20:06|   0     0 :   0     0 
+05-01 08:20:07|   0     0 :   0     0 
+05-01 08:20:08|   0    84k:   0    84k
+05-01 08:20:09|   0   132k:   0   132k
+05-01 08:20:10|   0     0 :   0     0 
+05-01 08:20:11|   0  7616k:  96k 7584k
+05-01 08:20:12|   0  2264k:   0  2296k
+05-01 08:20:13|   0     0 :   0     0 
+05-01 08:20:14|   0  1956k:   0  1956k
+05-01 08:20:15|   0     0 :   0     0 
+05-01 08:20:16|   0     0 :   0     0 
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+# fdisk -l
+**This is the SSD**
+Disk /dev/sda: 223.57 GiB, 240057409536 bytes, 468862128 sectors
+Disk model: CT240BX200SSD1  
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: dos
+Disk identifier: 0x12cfb9e1
+
+Device     Boot Start       End   Sectors   Size Id Type
+/dev/sda1        2048 468862127 468860080 223.6G 83 Linux
+
+**This is the hard drive**
+Disk /dev/sdb: 149.05 GiB, 160041885696 bytes, 312581808 sectors
+Disk model: Hitachi HTS54321
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x20000000
+
+Device     Boot Start       End   Sectors  Size Id Type
+/dev/sdb1        2048 312581807 312579760  149G 83 Linux
+
+
+
+---
+
+Take your mailboxes with you. Free, fast and secure Mail &amp; Cloud: https://www.eclipso.eu - Time to change!
+
+
