@@ -2,95 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2AF2EB4F1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 22:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDDD2EB576
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 23:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729680AbhAEVlC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Jan 2021 16:41:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        id S1728410AbhAEWlV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Jan 2021 17:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbhAEVlB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jan 2021 16:41:01 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9033AC061574
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jan 2021 13:40:21 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id u21so833598qtw.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Jan 2021 13:40:21 -0800 (PST)
+        with ESMTP id S1728224AbhAEWlU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jan 2021 17:41:20 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C38C061574
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jan 2021 14:40:40 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id v19so827521pgj.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Jan 2021 14:40:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aBac+HTbVD6bZQG9F6AJ55OuH6B842ZCpbG7gn/Mbv4=;
-        b=xkjjqrJzef+rez8XlPBxUjRHrmhV/HCb+rNaDVq7H7YjpXdk+4H652BNnwdFdHsa9U
-         v0voY1/kiaFakhaKKc5J6MfwIR9pBop2AxDvK5zfnuz+9IH55xE5RyM1LAJeIaZoNeqj
-         1S7Y4kOVsfcb00Q1MCkF7btYPkjJnieVGiCLlL+WfbavgcglL3oLTTbPtuqSWxMNV7Ta
-         1xUDpVRLn5UiLDjowB6wkcef44talUcP73QcHDzc+r8Kgp4piVX4rXvyyQNLlYEQBYoF
-         OCdwKrFCuxcfujk21EMywsi1Y2xBnvTY1SeJLE/nU5UCyDQv6DJ9QFlf94GlFo1AYeof
-         K7bg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=GokFglWoZ0pAbBaOhyeJxr7mEUEFukscETHDwZMjSto=;
+        b=okJgoZqhfX6HdB2HYL4WLI9JsNdDq2+WA/ECL/gksATFJb43jvQIIZ26RtNr4IDPdw
+         T5syc0EkPNnSupNyiH0JVnDNut2+pW9ifIXUxlp1A6V/FMdYnuaBXbJ3Dlph++VPdNpn
+         wm8GkxmVouY8GrqFHiyqtRt3kjoS/1okz+ISDDmTFrK0K0NoIxoUUhBevXgMSjgq8fZc
+         qfGJ3jCyh+C9dLu/ihAQHiFKB69NpFcQC+c6xedEOrPScmpq1QJDDF+AMIS6s/g/+yiA
+         anZe9VAMvtoOYPCMxQm3Qveb1vTOY+omnHRzQ4VUYP+7wKpxByFDdL/2+JN3fWOBpPrK
+         fvwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aBac+HTbVD6bZQG9F6AJ55OuH6B842ZCpbG7gn/Mbv4=;
-        b=bQyH069AET8aVX3/gDlChymZ2/5wDtRKgWEiBRX5H0NECCRkQDP6DyvdXF0SKlrl+D
-         u5gy947J9XcJuDclQ4P3TPW4YoA/VETCn9mt4KN25cjxhm9I9Xrn0p5E7yZjn5zNRqhY
-         ymvlbLbzkD+020snGqLsXsitl2W+u5qbskeNszbZbayAlBd/W6YzYBKLJ1AnLbbVlc++
-         2stNUHQN4YwoACnaKeZBGDBZpj6FEwKaKTjtau2Os531cSFZht45l/Pb0Ci/Vudx53SS
-         3XbEjUHAV/j+vGBo8KO27v37UxemMaFpmHdRwYVTgnRKZYPlAfZt6Gz0TxJpPOsOgurN
-         aeOg==
-X-Gm-Message-State: AOAM531gvQ+rBy5C90R7KS63VoKX+IYTHflXqFmpDfkGswicyIE7wUu+
-        ieSJ37zOI7td2fTfbX1/yb5gEfxzN5amMco3
-X-Google-Smtp-Source: ABdhPJz+4eMCuGHu3/5JAX3Kw4uC2QYkUVLgK1eIOi6BJRW+OjXqT8Ny5HVsYc6hVcnjkmGINaiXFg==
-X-Received: by 2002:ac8:5286:: with SMTP id s6mr1488693qtn.22.1609882820441;
-        Tue, 05 Jan 2021 13:40:20 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d2sm212447qtp.71.2021.01.05.13.40.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 13:40:19 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs-progs: properly exclude leaves for lowmem
-Date:   Tue,  5 Jan 2021 16:40:18 -0500
-Message-Id: <845796bfab85f02919d64908b63f3f7201a2abb3.1609882807.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=GokFglWoZ0pAbBaOhyeJxr7mEUEFukscETHDwZMjSto=;
+        b=HzgB1x/pWOmFGa5qzomk2ufVkBEALc0amlqIU0bOTYOUz7hEDhaXRw4X5ipWxAlp7Z
+         oUpxuUZE4gov0V5mMn2fm7LyCgIJjs3ZZeudWlFruFfpunrCSaIyCKHJfbhcvmvkaSTR
+         FjmNuMCcEuEtyfXytw5IlzYY4aI2ng4zmkki1b7zlyDvM8wuGRz35cqghapT7VN0Ba1R
+         dFciqkX0LsdOUNO16tWfN4TNYEZXIxU+rWJUigJHgex6BErwj9NJUJsdWojf/5urmVKD
+         RULKgOiafvchZiA56DOBcQWRezeIOO8tezJpuhzqkCKFdgw69zBgDq1WJb8fU8syPWHS
+         rczA==
+X-Gm-Message-State: AOAM532OWtOnxftSsr6ir9a4NdAbnJuj1uJge+dIHV8ArjF7Tp1iZW4J
+        TnQPfC6ufgJcCrc0YRuHhXga+869J3lAyxo9T3g=
+X-Google-Smtp-Source: ABdhPJzsksIvqNJIA1APNjQKcqiUrtYrMmj4v0Fv+j07G+STBDT9PULaUHfshwkJGfkSPKCNCrCV0VXk41MgxcuCozo=
+X-Received: by 2002:a63:2009:: with SMTP id g9mr1313425pgg.219.1609886439947;
+ Tue, 05 Jan 2021 14:40:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAKxU2N_=1uKoVMh20h=_8SyOnHM=WvfZjfQP3t81yN2QTZS4Xg@mail.gmail.com>
+ <20210104144437.GE6430@twin.jikos.cz> <CAKxU2N-Q5mjTS6arE5+-UgTgAZMGhTMDaGUAT-bQwe4BdjKOsg@mail.gmail.com>
+ <20210105153312.GM6430@twin.jikos.cz>
+In-Reply-To: <20210105153312.GM6430@twin.jikos.cz>
+From:   Rosen Penev <rosenp@gmail.com>
+Date:   Tue, 5 Jan 2021 14:40:28 -0800
+Message-ID: <CAKxU2N9XkG72T0pUb2iSeATXB-Sh9j+rBpSogfAVH0Zccui_mg@mail.gmail.com>
+Subject: Re: Question about btrfs and XOR offloading
+To:     dsterba@suse.cz, Rosen Penev <rosenp@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The lowmem mode excludes all referenced blocks from the allocator in
-order to avoid accidentally overwriting blocks while fixing the file
-system.  However for leaves it wouldn't exclude anything, it would just
-pin them down, which gets cleaned up on transaction commit.  We're safe
-for the first modification, but subsequent modifications could blow up
-in our face.  Fix this by properly excluding leaves as well as all of
-the nodes.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- check/mode-common.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/check/mode-common.c b/check/mode-common.c
-index a6489191..ef77b060 100644
---- a/check/mode-common.c
-+++ b/check/mode-common.c
-@@ -667,8 +667,12 @@ static int traverse_tree_blocks(struct extent_buffer *eb, int tree_root, int pin
- 
- 			/* If we aren't the tree root don't read the block */
- 			if (level == 1 && !tree_root) {
--				btrfs_pin_extent(gfs_info, bytenr,
--						 gfs_info->nodesize);
-+				if (pin)
-+					btrfs_pin_extent(gfs_info, bytenr,
-+							 gfs_info->nodesize);
-+				else
-+					set_extent_dirty(tree, bytenr,
-+							 gfs_info->nodesize);
- 				continue;
- 			}
- 
--- 
-2.26.2
-
+On Tue, Jan 5, 2021 at 7:35 AM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Mon, Jan 04, 2021 at 02:56:59PM -0800, Rosen Penev wrote:
+> > On Mon, Jan 4, 2021 at 6:46 AM David Sterba <dsterba@suse.cz> wrote:
+> > >
+> > > On Sat, Jan 02, 2021 at 07:50:38PM -0800, Rosen Penev wrote:
+> > > > I've noticed that internally, btrfs' XOR code is CPU only. Does anyone
+> > > > know if there is a performance advantage to using a hardware
+> > > > accelerated path? I ask as I use BTRFS on a Marvelll ARM platform with
+> > > > XOR offload capability.
+> > >
+> > > Even if it's CPU, it's accelerated and best algorithm is selected at
+> > > boot time:
+> > >
+> > > [   16.357703] raid6: avx2x4   gen() 30635 MB/s
+> > > [   16.425701] raid6: avx2x4   xor() 10727 MB/s
+> > > [   16.493701] raid6: avx2x2   gen() 32995 MB/s
+> > > [   16.561701] raid6: avx2x2   xor() 19596 MB/s
+> > > [   16.629701] raid6: avx2x1   gen() 26349 MB/s
+> > > [   16.697710] raid6: avx2x1   xor() 17794 MB/s
+> > > [   16.765701] raid6: sse2x4   gen() 17354 MB/s
+> > > [   16.833701] raid6: sse2x4   xor()  9653 MB/s
+> > > [   16.901706] raid6: sse2x2   gen() 18495 MB/s
+> > > [   16.969702] raid6: sse2x2   xor() 11562 MB/s
+> > > [   17.037701] raid6: sse2x1   gen() 14440 MB/s
+> > > [   17.105818] raid6: sse2x1   xor() 10387 MB/s
+> > > [   17.108300] raid6: using algorithm avx2x2 gen() 32995 MB/s
+> > > [   17.110703] raid6: .... xor() 19596 MB/s, rmw enabled
+> > > [   17.113587] raid6: using avx2x2 recovery algorithm
+> > > [   17.327666] xor: automatically using best checksumming function   avx
+> > Yeah...
+> >
+> > [    0.316064] raid6: neonx8   xor()  1087 MB/s
+> > [    0.452063] raid6: neonx4   xor()  1372 MB/s
+> > [    0.588064] raid6: neonx2   xor()  1610 MB/s
+> > [    0.724061] raid6: neonx1   xor()  1345 MB/s
+> > [    0.860072] raid6: int32x8  xor()   337 MB/s
+> > [    0.996092] raid6: int32x4  xor()   373 MB/s
+> > [    1.132087] raid6: int32x2  xor()   348 MB/s
+> > [    1.268090] raid6: int32x1  xor()   281 MB/s
+> > [    1.268093] raid6: .... xor() 1610 MB/s, rmw enabled
+> >
+> > Not as fast here.
+>
+> What's the raw speed of the hw offload? Measured on large data so that
+> the overhead is negligible.
+I have no idea how to benchmark such a thing. I assume it could be
+done indirectly.
+>
+> It might make sense to add the async support in case the speed is
+> comparable or better to the CPU, but also to reduce the CPU load.
+I think the latter is the reason Marvell added hardware support for
+doing parity calculations.
