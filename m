@@ -2,93 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3BB2EB443
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 21:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2AF2EB4F1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 22:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731282AbhAEUb0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Jan 2021 15:31:26 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:51272 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729608AbhAEUbZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jan 2021 15:31:25 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105KTMk3068731;
-        Tue, 5 Jan 2021 20:30:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=eZSBFhamGrQpMeqc4Oy2MNaowbrfBFp+pS4RKmYAnTc=;
- b=WU1yw3j4Sk7BiXNHZ+fLxnECk2T/4wZzZPPYWHcLf6I6LYKwvdE2A4JO9QjMkfLUetMc
- lV2F8YC6hTYWSDzqryNezjrT8XB712cnkOOM/D15XjkVMvxWmd+pj9thNX0v6OmPkpxl
- sKhm4bJB/N7C+8ap5ffxKQ93xmmH74yVHw2/rpIJPQvk2BT4shs91zh5H4Vdhppnodau
- /fEf9R0mf54C4BWbGFq6BDpGiUJyi4aIy3tCmQN8mObeBIPL2DGhUoIb1YZG82ONAgHJ
- MpczDF2w0A8i9+2Gl1lAYi68ftRgQyIfRGHxO9TbsULMbHm48/IDBSfDo5NJdIC9iy1W 4w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 35tg8r2nhr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 20:30:37 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105KUNLT152917;
-        Tue, 5 Jan 2021 20:30:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 35uxnt6kgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 20:30:36 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 105KUUXH032624;
-        Tue, 5 Jan 2021 20:30:30 GMT
-Received: from [10.175.190.169] (/10.175.190.169)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 05 Jan 2021 12:30:30 -0800
-Subject: Re: [LSFMMBPF 2021] A status update
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
-References: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
- <20201212172957.GE2443@casper.infradead.org>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <0b356707-1ad1-a147-cd5e-224a1a8658a0@oracle.com>
-Date:   Tue, 5 Jan 2021 20:30:26 +0000
+        id S1729680AbhAEVlC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Jan 2021 16:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbhAEVlB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jan 2021 16:41:01 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9033AC061574
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Jan 2021 13:40:21 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id u21so833598qtw.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Jan 2021 13:40:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aBac+HTbVD6bZQG9F6AJ55OuH6B842ZCpbG7gn/Mbv4=;
+        b=xkjjqrJzef+rez8XlPBxUjRHrmhV/HCb+rNaDVq7H7YjpXdk+4H652BNnwdFdHsa9U
+         v0voY1/kiaFakhaKKc5J6MfwIR9pBop2AxDvK5zfnuz+9IH55xE5RyM1LAJeIaZoNeqj
+         1S7Y4kOVsfcb00Q1MCkF7btYPkjJnieVGiCLlL+WfbavgcglL3oLTTbPtuqSWxMNV7Ta
+         1xUDpVRLn5UiLDjowB6wkcef44talUcP73QcHDzc+r8Kgp4piVX4rXvyyQNLlYEQBYoF
+         OCdwKrFCuxcfujk21EMywsi1Y2xBnvTY1SeJLE/nU5UCyDQv6DJ9QFlf94GlFo1AYeof
+         K7bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aBac+HTbVD6bZQG9F6AJ55OuH6B842ZCpbG7gn/Mbv4=;
+        b=bQyH069AET8aVX3/gDlChymZ2/5wDtRKgWEiBRX5H0NECCRkQDP6DyvdXF0SKlrl+D
+         u5gy947J9XcJuDclQ4P3TPW4YoA/VETCn9mt4KN25cjxhm9I9Xrn0p5E7yZjn5zNRqhY
+         ymvlbLbzkD+020snGqLsXsitl2W+u5qbskeNszbZbayAlBd/W6YzYBKLJ1AnLbbVlc++
+         2stNUHQN4YwoACnaKeZBGDBZpj6FEwKaKTjtau2Os531cSFZht45l/Pb0Ci/Vudx53SS
+         3XbEjUHAV/j+vGBo8KO27v37UxemMaFpmHdRwYVTgnRKZYPlAfZt6Gz0TxJpPOsOgurN
+         aeOg==
+X-Gm-Message-State: AOAM531gvQ+rBy5C90R7KS63VoKX+IYTHflXqFmpDfkGswicyIE7wUu+
+        ieSJ37zOI7td2fTfbX1/yb5gEfxzN5amMco3
+X-Google-Smtp-Source: ABdhPJz+4eMCuGHu3/5JAX3Kw4uC2QYkUVLgK1eIOi6BJRW+OjXqT8Ny5HVsYc6hVcnjkmGINaiXFg==
+X-Received: by 2002:ac8:5286:: with SMTP id s6mr1488693qtn.22.1609882820441;
+        Tue, 05 Jan 2021 13:40:20 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id d2sm212447qtp.71.2021.01.05.13.40.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 13:40:19 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs-progs: properly exclude leaves for lowmem
+Date:   Tue,  5 Jan 2021 16:40:18 -0500
+Message-Id: <845796bfab85f02919d64908b63f3f7201a2abb3.1609882807.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201212172957.GE2443@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050119
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 phishscore=0 bulkscore=0
- spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050119
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/12/20 5:29 PM, Matthew Wilcox wrote:
-> And most urgently, when should we have the GUP meeting?  On the call,
-> I suggested Friday the 8th of January, but I'm happy to set something
-> up for next week if we'd like to talk more urgently.  Please propose a
-> date & time.  I know we have people in Portugal and Nova Scotia who need
-> to be involved live, so a time friendly to UTC+0 and UTC-4 would be good.
+The lowmem mode excludes all referenced blocks from the allocator in
+order to avoid accidentally overwriting blocks while fixing the file
+system.  However for leaves it wouldn't exclude anything, it would just
+pin them down, which gets cleaned up on transaction commit.  We're safe
+for the first modification, but subsequent modifications could blow up
+in our face.  Fix this by properly excluding leaves as well as all of
+the nodes.
 
-FWIW, I would suggest the same time as you had for PageFolio (18h GMT / 10pm PT / 13h ET)
-given it can cover many tz in a not-so-bothersome time.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ check/mode-common.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-But instead of Jan 8 perhaps better for next week (Jan 15) in case folks
-are still in new year holidays (given we are in the first week of the year).
+diff --git a/check/mode-common.c b/check/mode-common.c
+index a6489191..ef77b060 100644
+--- a/check/mode-common.c
++++ b/check/mode-common.c
+@@ -667,8 +667,12 @@ static int traverse_tree_blocks(struct extent_buffer *eb, int tree_root, int pin
+ 
+ 			/* If we aren't the tree root don't read the block */
+ 			if (level == 1 && !tree_root) {
+-				btrfs_pin_extent(gfs_info, bytenr,
+-						 gfs_info->nodesize);
++				if (pin)
++					btrfs_pin_extent(gfs_info, bytenr,
++							 gfs_info->nodesize);
++				else
++					set_extent_dirty(tree, bytenr,
++							 gfs_info->nodesize);
+ 				continue;
+ 			}
+ 
+-- 
+2.26.2
 
-	Joao
