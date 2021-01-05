@@ -2,135 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406B72EB36A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 20:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3BB2EB443
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 21:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728466AbhAETUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Jan 2021 14:20:22 -0500
-Received: from box5.speed47.net ([188.165.215.42]:60150 "EHLO mx.speed47.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726234AbhAETUV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:20:21 -0500
-Received: from rain.speed47.net (nginx [192.168.80.2])
-        by box.speed47.net (Postfix) with ESMTPSA id 9BA7D35B;
-        Tue,  5 Jan 2021 20:19:38 +0100 (CET)
-Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
-        s=mail01; t=1609874378;
-        bh=Vihhu5cJoqA3BUVSKH1zMJ0Ehw+Q9rXYePw6FvSu/+E=;
-        h=Date:From:Subject:To:Cc:In-Reply-To:References;
-        b=Y8fYrzP+dzZepr4aOkRg8Vv9i5SQ21ZIQ7hTkSeGbvd0ESzzOjiaQDAP2qfetTM6E
-         ErS+DsgfIDrScOIedFo9Rw0Plnk1cmVDIp4HuvpSkLIyOktdsIkeOwhEE39B6HEeYZ
-         c3vyEgwgW/jipGTdePpWI6u1/LRYQWE29qlW2cSA=
+        id S1731282AbhAEUb0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Jan 2021 15:31:26 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:51272 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729608AbhAEUbZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Jan 2021 15:31:25 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105KTMk3068731;
+        Tue, 5 Jan 2021 20:30:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=eZSBFhamGrQpMeqc4Oy2MNaowbrfBFp+pS4RKmYAnTc=;
+ b=WU1yw3j4Sk7BiXNHZ+fLxnECk2T/4wZzZPPYWHcLf6I6LYKwvdE2A4JO9QjMkfLUetMc
+ lV2F8YC6hTYWSDzqryNezjrT8XB712cnkOOM/D15XjkVMvxWmd+pj9thNX0v6OmPkpxl
+ sKhm4bJB/N7C+8ap5ffxKQ93xmmH74yVHw2/rpIJPQvk2BT4shs91zh5H4Vdhppnodau
+ /fEf9R0mf54C4BWbGFq6BDpGiUJyi4aIy3tCmQN8mObeBIPL2DGhUoIb1YZG82ONAgHJ
+ MpczDF2w0A8i9+2Gl1lAYi68ftRgQyIfRGHxO9TbsULMbHm48/IDBSfDo5NJdIC9iy1W 4w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 35tg8r2nhr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 05 Jan 2021 20:30:37 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105KUNLT152917;
+        Tue, 5 Jan 2021 20:30:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 35uxnt6kgc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Jan 2021 20:30:36 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 105KUUXH032624;
+        Tue, 5 Jan 2021 20:30:30 GMT
+Received: from [10.175.190.169] (/10.175.190.169)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 05 Jan 2021 12:30:30 -0800
+Subject: Re: [LSFMMBPF 2021] A status update
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+References: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
+ <20201212172957.GE2443@casper.infradead.org>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <0b356707-1ad1-a147-cd5e-224a1a8658a0@oracle.com>
+Date:   Tue, 5 Jan 2021 20:30:26 +0000
 MIME-Version: 1.0
-Date:   Tue, 05 Jan 2021 19:19:38 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: RainLoop/1.12.1
-From:   "=?utf-8?B?U3TDqXBoYW5lIExlc2ltcGxl?=" <stephane_btrfs2@lesimple.fr>
-Message-ID: <ee715f644c3024a97efccbda2c8b22d2@lesimple.fr>
-Subject: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize
- the SSD?
-To:     Cedric.dewijs@eclipso.eu, "Qu Wenruo" <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <8af92960a09701579b6bcbb9b51489cc@mail.eclipso.de>
-References: <8af92960a09701579b6bcbb9b51489cc@mail.eclipso.de>
- <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
- <3c670816-35b9-4bb7-b555-1778d61685c7@gmx.com>
+In-Reply-To: <20201212172957.GE2443@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050119
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 phishscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050119
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-January 5, 2021 7:20 PM, Cedric.dewijs@eclipso.eu wrote:=0A=0A>>> I was e=
-xpecting btrfs to do almost all reads from the fast SSD, as both=0A> =0A>=
- the data and the metadata is on that drive, so the slow hdd is only real=
-ly=0A> needed when there's a bitflip on the SSD, and the data has to be r=
-econstructed.=0A> =0A>> IIRC there will be some read policy feature to do=
- that, but not yet=0A>> merged, and even merged, you still need to manual=
-ly specify the=0A>> priority, as there is no way for btrfs to know which =
-driver is faster=0A>> (except the non-rotational bit, which is not reliab=
-le at all).=0A> =0A> Manually specifying the priority drive would be a bi=
-g step in the right direction. Maybe btrfs=0A> could get a routine that b=
-enchmarks the sequential and random read and write speed of the drives at=
-=0A> (for instance) mount time, or triggered by an administrator? This co=
-uld lead to misleading results=0A> if btrfs doesn't get the whole drive t=
-o itself.=0A> =0A>>> Writing has to be done to both drives of course, but=
- I don't expect=0A> =0A> slowdowns from that, as the system RAM should ca=
-che that.=0A> =0A>> Write can still slow down the system even you have to=
-ns of memory.=0A>> Operations like fsync() or sync() will still wait for =
-the writeback,=0A>> thus in your case, it will also be slowed by the HDD =
-no matter what.=0A>> =0A>> In fact, in real world desktop, most of the wr=
-ites are from sometimes=0A>> unnecessary fsync().=0A>> =0A>> To get rid o=
-f such slow down, you have to go dangerous by disabling=0A>> barrier, whi=
-ch is never a safe idea.=0A> =0A> I suggest a middle ground, where btrfs =
-returns from fsync when one of the copies (instead of all=0A> the copies)=
- of the data has been written completely to disk. This poses a small data=
- risk, as this=0A> creates moments that there's only one copy of the data=
- on disk, while the software above btrfs=0A> thinks all data is written o=
-n two disks. one problem I see if the server is told to shut down while=
-=0A> there's a big backlog of data to be written to the slow drive, while=
- the big drive is already done.=0A> Then the server could cut the power w=
-hile the slow drive is still being written.=0A> =0A> i think this setting=
- should be given to the system administrator, it's not a good idea to jus=
-t=0A> blindly enable this behavior.=0A> =0A>>> Is there a way to tell btr=
-fs to leave the slow hdd alone, and to prioritize=0A> =0A> the SSD?=0A> =
-=0A>> Not in upstream kernel for now.=0A=0A=0AI happen to have written a =
-custom patch for my own use for a similar use case:=0AI have a bunch of s=
-low drives constituting a raid1 FS of dozens of terabytes,=0Aand just one=
- SSD, reserved only for metadata.=0A=0AMy patch adds an entry under sysfs=
- for each FS so that the admin can select the=0A"metadata_only" devid. Th=
-is is optional, if it's not done, the usual btrfs behavior=0Aapplies. Whe=
-n set, this device is:=0A- never considered for new data chunks allocatio=
-n=0A- preferred for new metadata chunk allocations=0A- preferred for meta=
-data reads=0A=0AThis way I still have raid1, but the metadata chunks on s=
-low drives are only=0Athere for redundancy and never accessed for reads a=
-s long as the SSD metadata=0Ais valid.=0A=0AThis *drastically* improved m=
-y snapshots rotation, and even made qgroups usable=0Aagain. I think I've =
-been running this for 1-2 years, but obviously I'd love seeing=0Asuch opt=
-ion on the vanilla kernel so that I can get rid of hacky patch :)=0A=0A>>=
- =0A>> Thus I guess you need something like bcache to do this.=0A> =0A> A=
-greed. However, one of the problems of bcache, it that it can't use 2 SSD=
-'s in mirrored mode to=0A> form a writeback cache in front of many spindl=
-es, so this structure is impossible:=0A> +-------------------------------=
-----------------------------+--------------+--------------+=0A> | btrfs r=
-aid 1 (2 copies) /mnt |=0A> +--------------+--------------+--------------=
-+--------------+--------------+--------------+=0A> | /dev/bcache0 | /dev/=
-bcache1 | /dev/bcache2 | /dev/bcache3 | /dev/bcache4 | /dev/bcache5 |=0A>=
- +--------------+--------------+--------------+--------------+-----------=
----+--------------+=0A> | Write Cache (2xSSD in raid 1, mirrored) |=0A> |=
- /dev/sda2 and /dev/sda3 |=0A> +--------------+--------------+-----------=
----+--------------+--------------+--------------+=0A> | Data | Data | Dat=
-a | Data | Data | Data |=0A> | /dev/sda9 | /dev/sda10 | /dev/sda11 | /dev=
-/sda12 | /dev/sda13 | /dev/sda14 |=0A> +--------------+--------------+---=
------------+--------------+--------------+--------------+=0A> =0A> In ord=
-er to get a system that has no data loss if a drive fails, the user eithe=
-r has to live with=0A> only a read cache, or the user has to put a separa=
-te writeback cache in front of each spindle like=0A> this:=0A> +---------=
---------------------------------------------------+=0A> | btrfs raid 1 (2=
- copies) /mnt |=0A> +--------------+--------------+--------------+-------=
--------+=0A> | /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 =
-|=0A> +--------------+--------------+--------------+--------------+=0A> |=
- Write Cache | Write Cache | Write Cache | Write Cache |=0A> |(Flash Driv=
-e) |(Flash Drive) |(Flash Drive) |(Flash Drive) |=0A> | /dev/sda5 | /dev/=
-sda6 | /dev/sda7 | /dev/sda8 |=0A> +--------------+--------------+-------=
--------+--------------+=0A> | Data | Data | Data | Data |=0A> | /dev/sda9=
- | /dev/sda10 | /dev/sda11 | /dev/sda12 |=0A> +--------------+-----------=
----+--------------+--------------+=0A> =0A> In the mainline kernel is's i=
-mpossible to put a bcache on top of a bcache, so a user does not have=0A>=
- the option to have 4 small write caches below one fast, big read cache l=
-ike this:=0A> +----------------------------------------------------------=
--+=0A> | btrfs raid 1 (2 copies) /mnt |=0A> +--------------+-------------=
--+--------------+--------------+=0A> | /dev/bcache4 | /dev/bcache5 | /dev=
-/bcache6 | /dev/bcache7 |=0A> +--------------+--------------+------------=
---++-------------+=0A> | Read Cache (SSD) |=0A> | /dev/sda4 |=0A> +------=
---------+--------------+--------------+--------------+=0A> | /dev/bcache0=
- | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 |=0A> +--------------+-----=
----------+--------------+--------------+=0A> | Write Cache | Write Cache =
-| Write Cache | Write Cache |=0A> |(Flash Drive) |(Flash Drive) |(Flash D=
-rive) |(Flash Drive) |=0A> | /dev/sda5 | /dev/sda6 | /dev/sda7 | /dev/sda=
-8 |=0A> +--------------+--------------+--------------+--------------+=0A>=
- | Data | Data | Data | Data |=0A> | /dev/sda9 | /dev/sda10 | /dev/sda11 =
-| /dev/sda12 |=0A> +--------------+--------------+--------------+--------=
-------+=0A> =0A>> Thanks,=0A>> Qu=0A> =0A> Thank you,=0A> Cedric=0A> =0A>=
- ---=0A> =0A> Take your mailboxes with you. Free, fast and secure Mail & =
-Cloud: https://www.eclipso.eu - Time to=0A> change!
+On 12/12/20 5:29 PM, Matthew Wilcox wrote:
+> And most urgently, when should we have the GUP meeting?  On the call,
+> I suggested Friday the 8th of January, but I'm happy to set something
+> up for next week if we'd like to talk more urgently.  Please propose a
+> date & time.  I know we have people in Portugal and Nova Scotia who need
+> to be involved live, so a time friendly to UTC+0 and UTC-4 would be good.
+
+FWIW, I would suggest the same time as you had for PageFolio (18h GMT / 10pm PT / 13h ET)
+given it can cover many tz in a not-so-bothersome time.
+
+But instead of Jan 8 perhaps better for next week (Jan 15) in case folks
+are still in new year holidays (given we are in the first week of the year).
+
+	Joao
