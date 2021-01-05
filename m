@@ -2,89 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36212EB279
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 19:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406B72EB36A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Jan 2021 20:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbhAESZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Jan 2021 13:25:09 -0500
-Received: from box5.speed47.net ([188.165.215.42]:47128 "EHLO mx.speed47.net"
+        id S1728466AbhAETUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Jan 2021 14:20:22 -0500
+Received: from box5.speed47.net ([188.165.215.42]:60150 "EHLO mx.speed47.net"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728815AbhAESZI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:25:08 -0500
+        id S1726234AbhAETUV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 Jan 2021 14:20:21 -0500
 Received: from rain.speed47.net (nginx [192.168.80.2])
-        by box.speed47.net (Postfix) with ESMTPSA id A0E66123;
-        Tue,  5 Jan 2021 19:24:24 +0100 (CET)
+        by box.speed47.net (Postfix) with ESMTPSA id 9BA7D35B;
+        Tue,  5 Jan 2021 20:19:38 +0100 (CET)
 Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
-        s=mail01; t=1609871064;
-        bh=VYb3xbdcI8bdtdOvrEj54YjWhHaYO+sRUasLVRBOB7Q=;
+        s=mail01; t=1609874378;
+        bh=Vihhu5cJoqA3BUVSKH1zMJ0Ehw+Q9rXYePw6FvSu/+E=;
         h=Date:From:Subject:To:Cc:In-Reply-To:References;
-        b=A1w7QxioEepD9gUv0NPKWCYrsiy7ooYfZQmxYI9oT41Nr0Q8GzlIcqKlEtgDmasTz
-         Y0e6qNn9ivJmah2jaCVaLl9BiOW7VXqPxhK4EQiZDY0ktjJexhPU/CwAdZ9QwCxZDQ
-         ADgTo6VXIsXaxp9Rhdv/8N4NV86GkHuECINbV4ck=
+        b=Y8fYrzP+dzZepr4aOkRg8Vv9i5SQ21ZIQ7hTkSeGbvd0ESzzOjiaQDAP2qfetTM6E
+         ErS+DsgfIDrScOIedFo9Rw0Plnk1cmVDIp4HuvpSkLIyOktdsIkeOwhEE39B6HEeYZ
+         c3vyEgwgW/jipGTdePpWI6u1/LRYQWE29qlW2cSA=
 MIME-Version: 1.0
-Date:   Tue, 05 Jan 2021 18:24:24 +0000
+Date:   Tue, 05 Jan 2021 19:19:38 +0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 X-Mailer: RainLoop/1.12.1
 From:   "=?utf-8?B?U3TDqXBoYW5lIExlc2ltcGxl?=" <stephane_btrfs2@lesimple.fr>
-Message-ID: <7f932027eebe43b2e63908f1d4889e24@lesimple.fr>
-Subject: Re: [PATCH] btrfs: relocation: fix wrong file extent type check
- to avoid false -ENOENT error
-To:     dsterba@suse.cz, "Qu Wenruo" <wqu@suse.com>
+Message-ID: <ee715f644c3024a97efccbda2c8b22d2@lesimple.fr>
+Subject: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize
+ the SSD?
+To:     Cedric.dewijs@eclipso.eu, "Qu Wenruo" <quwenruo.btrfs@gmx.com>
 Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <20210104161655.GJ6430@twin.jikos.cz>
-References: <20210104161655.GJ6430@twin.jikos.cz>
- <20201229132934.117325-1-wqu@suse.com>
+In-Reply-To: <8af92960a09701579b6bcbb9b51489cc@mail.eclipso.de>
+References: <8af92960a09701579b6bcbb9b51489cc@mail.eclipso.de>
+ <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
+ <3c670816-35b9-4bb7-b555-1778d61685c7@gmx.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-FWIW, just recompiled with the patch to be 100% sure, as I still had=0Ath=
-e problematic FS around untouched:=0A=0A[  199.722122] BTRFS info (device=
- dm-10): balance: start -dvrange=3D34625344765952..34625344765953=0A[  19=
-9.730267] BTRFS info (device dm-10): relocating block group 3462534476595=
-2 flags data|raid1=0A[  212.232222] BTRFS info (device dm-10): found 167 =
-extents, stage: move data extents=0A[  236.124541] BTRFS info (device dm-=
-10): found 167 extents, stage: update data pointers=0A[  248.011778] BTRF=
-S info (device dm-10): balance: ended with status: 0=0A=0AAs expected, al=
-l is good now!=0A=0ATested-By: St=C3=A9phane Lesimple <stephane_btrfs2@le=
-simple.fr>=0A=0A-- =0ASt=C3=A9phane.=0A=0AJanuary 4, 2021 5:18 PM, "David=
- Sterba" <dsterba@suse.cz> wrote:=0A=0A> On Tue, Dec 29, 2020 at 09:29:34=
-PM +0800, Qu Wenruo wrote:=0A> =0A>> [BUG]=0A>> There are several bug rep=
-orts about recent kernel unable to relocate=0A>> certain data block group=
-s.=0A>> =0A>> Sometimes the error just go away, but there is one reporter=
- who can=0A>> reproduce it reliably.=0A>> =0A>> The dmesg would look like=
-:=0A>> [ 438.260483] BTRFS info (device dm-10): balance: start -dvrange=
-=3D34625344765952..34625344765953=0A>> [ 438.269018] BTRFS info (device d=
-m-10): relocating block group 34625344765952 flags data|raid1=0A>> [ 450.=
-439609] BTRFS info (device dm-10): found 167 extents, stage: move data ex=
-tents=0A>> [ 463.501781] BTRFS info (device dm-10): balance: ended with s=
-tatus: -2=0A>> =0A>> [CAUSE]=0A>> The -ENOENT error is returned from the =
-following chall chain:=0A>> =0A>> add_data_references()=0A>> |- delete_v1=
-_space_cache();=0A>> |- if (!found)=0A>> return -ENOENT;=0A>> =0A>> The v=
-ariable @found is set to true if we find a data extent whose=0A>> disk by=
-tenr matches parameter @data_bytes.=0A>> =0A>> With extra debug, the offe=
-nding tree block looks like this:=0A>> leaf bytenr =3D 42676709441536, da=
-ta_bytenr =3D 34626327621632=0A>> =0A>> ctime 1567904822.739884119 (2019-=
-09-08 03:07:02)=0A>> mtime 0.0 (1970-01-01 01:00:00)=0A>> otime 0.0 (1970=
--01-01 01:00:00)=0A>> item 27 key (51933 EXTENT_DATA 0) itemoff 9854 item=
-size 53=0A>> generation 1517381 type 2 (prealloc)=0A>> prealloc data disk=
- byte 34626327621632 nr 262144 <<<=0A>> prealloc data offset 0 nr 262144=
-=0A>> item 28 key (52262 ROOT_ITEM 0) itemoff 9415 itemsize 439=0A>> gene=
-ration 2618893 root_dirid 256 bytenr 42677048360960 level 3 refs 1=0A>> l=
-astsnap 2618893 byte_limit 0 bytes_used 5557338112 flags 0x0(none)=0A>> u=
-uid d0d4361f-d231-6d40-8901-fe506e4b2b53=0A>> =0A>> Although item 27 has =
-disk bytenr 34626327621632, which matches the=0A>> data_bytenr, its type =
-is prealloc, not reg.=0A>> This makes the existing code skip that item, a=
-nd return -ENOENT.=0A>> =0A>> [FIX]=0A>> The code is modified in commit 1=
-9b546d7a1b2 ("btrfs: relocation: Use=0A>> btrfs_find_all_leafs to locate =
-data extent parent tree leaves"), before=0A>> that commit, we use somethi=
-ng like=0A>> "if (type =3D=3D BTRFS_FILE_EXTENT_INLINE) continue;".=0A>> =
-=0A>> But in that offending commit, we use (type =3D=3D BTRFS_FILE_EXTENT=
-_REG),=0A>> ignoring BTRFS_FILE_EXTENT_PREALLOC.=0A>> =0A>> Fix it by als=
-o checking BTRFS_FILE_EXTENT_PREALLOC.=0A>> =0A>> Reported-by: St=C3=A9ph=
-ane Lesimple <stephane_btrfs2@lesimple.fr>=0A>> Fixes: 19b546d7a1b2 ("btr=
-fs: relocation: Use btrfs_find_all_leafs to locate data extent parent tre=
-e=0A>> leaves")=0A>> Signed-off-by: Qu Wenruo <wqu@suse.com>=0A> =0A> Tha=
-nk you all for tracking down the bug, added to misc-next.
+January 5, 2021 7:20 PM, Cedric.dewijs@eclipso.eu wrote:=0A=0A>>> I was e=
+xpecting btrfs to do almost all reads from the fast SSD, as both=0A> =0A>=
+ the data and the metadata is on that drive, so the slow hdd is only real=
+ly=0A> needed when there's a bitflip on the SSD, and the data has to be r=
+econstructed.=0A> =0A>> IIRC there will be some read policy feature to do=
+ that, but not yet=0A>> merged, and even merged, you still need to manual=
+ly specify the=0A>> priority, as there is no way for btrfs to know which =
+driver is faster=0A>> (except the non-rotational bit, which is not reliab=
+le at all).=0A> =0A> Manually specifying the priority drive would be a bi=
+g step in the right direction. Maybe btrfs=0A> could get a routine that b=
+enchmarks the sequential and random read and write speed of the drives at=
+=0A> (for instance) mount time, or triggered by an administrator? This co=
+uld lead to misleading results=0A> if btrfs doesn't get the whole drive t=
+o itself.=0A> =0A>>> Writing has to be done to both drives of course, but=
+ I don't expect=0A> =0A> slowdowns from that, as the system RAM should ca=
+che that.=0A> =0A>> Write can still slow down the system even you have to=
+ns of memory.=0A>> Operations like fsync() or sync() will still wait for =
+the writeback,=0A>> thus in your case, it will also be slowed by the HDD =
+no matter what.=0A>> =0A>> In fact, in real world desktop, most of the wr=
+ites are from sometimes=0A>> unnecessary fsync().=0A>> =0A>> To get rid o=
+f such slow down, you have to go dangerous by disabling=0A>> barrier, whi=
+ch is never a safe idea.=0A> =0A> I suggest a middle ground, where btrfs =
+returns from fsync when one of the copies (instead of all=0A> the copies)=
+ of the data has been written completely to disk. This poses a small data=
+ risk, as this=0A> creates moments that there's only one copy of the data=
+ on disk, while the software above btrfs=0A> thinks all data is written o=
+n two disks. one problem I see if the server is told to shut down while=
+=0A> there's a big backlog of data to be written to the slow drive, while=
+ the big drive is already done.=0A> Then the server could cut the power w=
+hile the slow drive is still being written.=0A> =0A> i think this setting=
+ should be given to the system administrator, it's not a good idea to jus=
+t=0A> blindly enable this behavior.=0A> =0A>>> Is there a way to tell btr=
+fs to leave the slow hdd alone, and to prioritize=0A> =0A> the SSD?=0A> =
+=0A>> Not in upstream kernel for now.=0A=0A=0AI happen to have written a =
+custom patch for my own use for a similar use case:=0AI have a bunch of s=
+low drives constituting a raid1 FS of dozens of terabytes,=0Aand just one=
+ SSD, reserved only for metadata.=0A=0AMy patch adds an entry under sysfs=
+ for each FS so that the admin can select the=0A"metadata_only" devid. Th=
+is is optional, if it's not done, the usual btrfs behavior=0Aapplies. Whe=
+n set, this device is:=0A- never considered for new data chunks allocatio=
+n=0A- preferred for new metadata chunk allocations=0A- preferred for meta=
+data reads=0A=0AThis way I still have raid1, but the metadata chunks on s=
+low drives are only=0Athere for redundancy and never accessed for reads a=
+s long as the SSD metadata=0Ais valid.=0A=0AThis *drastically* improved m=
+y snapshots rotation, and even made qgroups usable=0Aagain. I think I've =
+been running this for 1-2 years, but obviously I'd love seeing=0Asuch opt=
+ion on the vanilla kernel so that I can get rid of hacky patch :)=0A=0A>>=
+ =0A>> Thus I guess you need something like bcache to do this.=0A> =0A> A=
+greed. However, one of the problems of bcache, it that it can't use 2 SSD=
+'s in mirrored mode to=0A> form a writeback cache in front of many spindl=
+es, so this structure is impossible:=0A> +-------------------------------=
+----------------------------+--------------+--------------+=0A> | btrfs r=
+aid 1 (2 copies) /mnt |=0A> +--------------+--------------+--------------=
++--------------+--------------+--------------+=0A> | /dev/bcache0 | /dev/=
+bcache1 | /dev/bcache2 | /dev/bcache3 | /dev/bcache4 | /dev/bcache5 |=0A>=
+ +--------------+--------------+--------------+--------------+-----------=
+---+--------------+=0A> | Write Cache (2xSSD in raid 1, mirrored) |=0A> |=
+ /dev/sda2 and /dev/sda3 |=0A> +--------------+--------------+-----------=
+---+--------------+--------------+--------------+=0A> | Data | Data | Dat=
+a | Data | Data | Data |=0A> | /dev/sda9 | /dev/sda10 | /dev/sda11 | /dev=
+/sda12 | /dev/sda13 | /dev/sda14 |=0A> +--------------+--------------+---=
+-----------+--------------+--------------+--------------+=0A> =0A> In ord=
+er to get a system that has no data loss if a drive fails, the user eithe=
+r has to live with=0A> only a read cache, or the user has to put a separa=
+te writeback cache in front of each spindle like=0A> this:=0A> +---------=
+--------------------------------------------------+=0A> | btrfs raid 1 (2=
+ copies) /mnt |=0A> +--------------+--------------+--------------+-------=
+-------+=0A> | /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 =
+|=0A> +--------------+--------------+--------------+--------------+=0A> |=
+ Write Cache | Write Cache | Write Cache | Write Cache |=0A> |(Flash Driv=
+e) |(Flash Drive) |(Flash Drive) |(Flash Drive) |=0A> | /dev/sda5 | /dev/=
+sda6 | /dev/sda7 | /dev/sda8 |=0A> +--------------+--------------+-------=
+-------+--------------+=0A> | Data | Data | Data | Data |=0A> | /dev/sda9=
+ | /dev/sda10 | /dev/sda11 | /dev/sda12 |=0A> +--------------+-----------=
+---+--------------+--------------+=0A> =0A> In the mainline kernel is's i=
+mpossible to put a bcache on top of a bcache, so a user does not have=0A>=
+ the option to have 4 small write caches below one fast, big read cache l=
+ike this:=0A> +----------------------------------------------------------=
+-+=0A> | btrfs raid 1 (2 copies) /mnt |=0A> +--------------+-------------=
+-+--------------+--------------+=0A> | /dev/bcache4 | /dev/bcache5 | /dev=
+/bcache6 | /dev/bcache7 |=0A> +--------------+--------------+------------=
+--++-------------+=0A> | Read Cache (SSD) |=0A> | /dev/sda4 |=0A> +------=
+--------+--------------+--------------+--------------+=0A> | /dev/bcache0=
+ | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 |=0A> +--------------+-----=
+---------+--------------+--------------+=0A> | Write Cache | Write Cache =
+| Write Cache | Write Cache |=0A> |(Flash Drive) |(Flash Drive) |(Flash D=
+rive) |(Flash Drive) |=0A> | /dev/sda5 | /dev/sda6 | /dev/sda7 | /dev/sda=
+8 |=0A> +--------------+--------------+--------------+--------------+=0A>=
+ | Data | Data | Data | Data |=0A> | /dev/sda9 | /dev/sda10 | /dev/sda11 =
+| /dev/sda12 |=0A> +--------------+--------------+--------------+--------=
+------+=0A> =0A>> Thanks,=0A>> Qu=0A> =0A> Thank you,=0A> Cedric=0A> =0A>=
+ ---=0A> =0A> Take your mailboxes with you. Free, fast and secure Mail & =
+Cloud: https://www.eclipso.eu - Time to=0A> change!
