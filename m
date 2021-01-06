@@ -2,334 +2,373 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D06B2EBA36
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Jan 2021 07:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A16A2EBA4F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Jan 2021 08:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbhAFGuR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Jan 2021 01:50:17 -0500
-Received: from mga12.intel.com ([192.55.52.136]:14726 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbhAFGuR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 6 Jan 2021 01:50:17 -0500
-IronPort-SDR: tUpA/ihs1bXEqdHSGvpPg+knSvQNjPsmJguAkZSfBKpNHAFCG3r9Tw72uPh9qNx54WV+5ZhpEF
- O0JTUmGV8HnQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="156427763"
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="156427763"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 22:49:37 -0800
-IronPort-SDR: UnDIG+U1v4JuI/GnQuwByAR5czCb5vjt9mXtw06cw1D3/G7/Dh9Sw1OIGVVRadRTpiTHsEXcWd
- nQicF7+2Oeug==
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="379175659"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.117]) ([10.239.13.117])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 22:49:35 -0800
-Subject: Re: [PATCH v3 20/22] btrfs: introduce btrfs_subpage for data inodes
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        kernel test robot <lkp@intel.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org
-References: <20210106010201.37864-21-wqu@suse.com>
- <202101061235.6i1d3d0Y-lkp@intel.com>
- <6dcda0b3-373f-71fd-d8eb-7a65ac9de4a6@gmx.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <6546bad5-b467-b246-4b5f-95d43b6658d9@intel.com>
-Date:   Wed, 6 Jan 2021 14:48:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <6dcda0b3-373f-71fd-d8eb-7a65ac9de4a6@gmx.com>
+        id S1725792AbhAFHEZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Jan 2021 02:04:25 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:28134 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725562AbhAFHEY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 6 Jan 2021 02:04:24 -0500
+X-Greylist: delayed 497 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Jan 2021 02:04:21 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1609916595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4WXxULKx9N1piIk5SfAGNtDRY4vrP9pY+FLXPdFbrgE=;
+        b=M2eZao1fJMsEYkQ4wsJ+KOPvPY0MXXMx0ztNDEJsnXRlnmC6DzDwP1nOs+4TZfLow1TtEp
+        knPzxp7ZtiUCgn0hibqplO1cETXW2lbiXkvFWDa3VqEuObvGEj69s5qO74zk8KQDta3Y0U
+        LmhLzZWOnEelVLsRJ8UfVPODu29aXlI=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2113.outbound.protection.outlook.com [104.47.18.113])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-21-fH6x_GwvMlKBqodIGzUzEw-1; Wed, 06 Jan 2021 07:54:57 +0100
+X-MC-Unique: fH6x_GwvMlKBqodIGzUzEw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hu4mP9M7+Hk0iBIiDcwXNtAfVpviZo183qrh1dytmlbDo5fNmw+dxGEa6viB/DrQenzQTBsfs5SEBXfvbBZf3GeaCplUdTp0mQeVQQuGSNMD8bIbhhM06zBpUToxHggyuqX0BH4sLV44xWZ41SrlqbnIdZ5qPODPGv3vPKcM5Dp84Sfz39UaywoYoxcLb0VkejKtrrwvfiK6ipXagrCDr3pPevTsbBD5ATtYLlMedBZzHPauQ1aKDTuNRBP8l2wObIs0tjd13uSSRGiTDJHemF9pBW0X2iO7FN5eKJZkXz56yVKXcfUaX8BRxpGzSc3QMWXe55c4GmmxuVjFX/orGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+TTME+yoSgARBlW/R9Y4fbamPAzbQwXvZqMPIeHZ9hk=;
+ b=kOKVVn5qlF1V6gL2xIioq4G5rF9fCjWW7zRy9A5XERCoWJIUEiq5v6Z0hJMG2BGonPqGb1s6GbtGr678+bKaBymdwen+o4JtzD/Je7qKd6NTdFEn4JHCnaRs5d+b6UyXa0DReZ8aJqImDDHbT72TMwv+oabz8pFXv8ctd2hiz+FZGKe/WX31kCpuhs2L04NuGBM36bWv4CJr7GWfGg2lYE/jDqr9NcTgdTSemFygcXv2AQrEtjBIxvTpkPo9nI3dPIXK010egaIKVinjFa3ZLw8ZUs9lO0uBPvEobgoyYy3YA/aaCojXqby1/EG8fD0KiGU8WT2cmft1VTbWWFHDSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from PA4PR04MB7533.eurprd04.prod.outlook.com (2603:10a6:102:f1::19)
+ by PA4PR04MB7822.eurprd04.prod.outlook.com (2603:10a6:102:b8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 6 Jan
+ 2021 06:54:56 +0000
+Received: from PA4PR04MB7533.eurprd04.prod.outlook.com
+ ([fe80::397a:950:d8c8:d709]) by PA4PR04MB7533.eurprd04.prod.outlook.com
+ ([fe80::397a:950:d8c8:d709%6]) with mapi id 15.20.3721.024; Wed, 6 Jan 2021
+ 06:54:56 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+References: <20210106010201.37864-1-wqu@suse.com>
+ <20210106010201.37864-9-wqu@suse.com>
+Subject: Re: [PATCH v3 08/22] btrfs: extent_io: make
+ attach_extent_buffer_page() to handle subpage case
+Message-ID: <844a6c6b-c5e9-c0c8-0177-fe3ae015c108@suse.com>
+Date:   Wed, 6 Jan 2021 14:54:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+In-Reply-To: <20210106010201.37864-9-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: SJ0PR13CA0103.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c5::18) To PA4PR04MB7533.eurprd04.prod.outlook.com
+ (2603:10a6:102:f1::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR13CA0103.namprd13.prod.outlook.com (2603:10b6:a03:2c5::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.2 via Frontend Transport; Wed, 6 Jan 2021 06:54:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 212dfe02-8770-474b-c649-08d8b20ff9fa
+X-MS-TrafficTypeDiagnostic: PA4PR04MB7822:
+X-Microsoft-Antispam-PRVS: <PA4PR04MB782294F6701783769927CA44D6D00@PA4PR04MB7822.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4i77AUdA4D3PFxdsCe9Ws3Ma74dl/gZqRFxx1cHW+X4DLKma5bTq6jfmakpQZzkMXfUK4+fVNsp21YOiCw6gKl/2UjynU22Ab4WOJr9GmBbFmvXfjkiSHiLxcp+YiwpMFyvBftGDv4nLDqBObLoxKGGkXX9CDiZCy/6ivMzFR0XfS2WWHXyIVh5zIYo8UjLntAzSh/mBWv/hJWRhot6YQdmtvYrZgcA2FFpJsrXa+yq+Ka1/gBMgh4SqF2U+0r58N3u2wAcBKgsYjt2Jpu+IzPYznS6D4hhh1CR9MOp/+7nQqpl4xeZuaKciYhtXfm3AU3ReK/ta9zDNQ0qOZhWVhDuxA6/kh7umuGRts+vUmrBiHfrF9td6jFodrXeBSfHXJlybJLwiGrHkFFV5z3g8ixQI5mB7qF6T85kvKrwyisSFMdnGtUU5CTR/te3tPAy8FsROPSfWiP1t2LfToH1iqF3qRHg9tpwKsisX94M6G5mw8kVbzRYj0Tap56sWrmgW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7533.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(376002)(366004)(396003)(39850400004)(86362001)(31686004)(31696002)(2906002)(6666004)(5660300002)(478600001)(8676002)(66476007)(2616005)(66556008)(956004)(66946007)(6916009)(6706004)(186003)(16576012)(6486002)(83380400001)(26005)(16526019)(8936002)(52116002)(316002)(36756003)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5hcYhe1Qjynmb5a/qCMO/uBV2ZKrfUixk09Z1iS/DI2EwslATry6aIw23Fr4?=
+ =?us-ascii?Q?LEUEBzGV/Zf31d+nH09fef9zJJGytnXSMNRqLc4enLxnGZKFZ5DtB18ONnQM?=
+ =?us-ascii?Q?W/IuiJzD/QxsEG173Rb9BX/O3DkouA8dum8o+4KmWytdFNfuVFGK92b6w5V6?=
+ =?us-ascii?Q?y2ElhA3QfZ4BrcK8hqPM47YfYuT44HgJMpN6iypMLSChiuf4z7sbPyL1TvcW?=
+ =?us-ascii?Q?/GNJi4/A3PQO5nokdVSEZeLfnm44/KLzpbYN7mQM/HdOmZ/P99XKjayFivU+?=
+ =?us-ascii?Q?T4kKMGNheRBPJaTwqrk8+bSdTBF3RyKwemON/xCNkB4rMhVyhr9LScOY40k5?=
+ =?us-ascii?Q?E2sZeRFYvUOuQ+aBFG8z/VefPozAAfam1Ame3hxYSKZgTT4YG8Nv8REslZI+?=
+ =?us-ascii?Q?5foD6D8sl7UPZCjUf174U1zQcswlqLwuE3g/mLjHwcGIET/weXKyVajcJTdr?=
+ =?us-ascii?Q?BjVqrxGSQ2HOK9IdCM5N+KZuaa6JUwnDYV76YXDuSBtI1ZZ4PY5PQfYB5Ukk?=
+ =?us-ascii?Q?f3xESIlsIe+kE2StsRLO2h6lp2NBwgJET7Yolczu5Q/95czM8vYVyJKE4xLO?=
+ =?us-ascii?Q?Fi55M+JIfeDCHZGbkZYktpOpPJabGUveY6U1j92SGC3CZAh/+YNlRPvihmwO?=
+ =?us-ascii?Q?RGcYRzZxYrBlvgiG0IfM3hnoQjP/lwNXr/aOACG/f9f6co8Uo1HCBEeummvd?=
+ =?us-ascii?Q?etAAoOo/VhqIVfpcgiJgqJVhhsktzR+35UvX0S9TmX41PhtHOUnyEff6Bw7c?=
+ =?us-ascii?Q?g+IeHzgzyKf7ihEz9Kg601ZrrgQkeLLnWhbkmHlR4U6xxNA9KOolsJuSzjMy?=
+ =?us-ascii?Q?k+z4aebBbi7592IIFXoeT0pEaa2BF58ipwutsWeFEGwd+pEourrWn7Kz3+n0?=
+ =?us-ascii?Q?pABiT4Dq2IuoX0dQE3qflufyr0rrFXShlIf1Ipg9epuDYbND9XIGtU1xRkr2?=
+ =?us-ascii?Q?KMVRu3bZNljxqbzrQ4i8EL+Me+zMA31prmp4gZdUx1G8t7uKmpphq5D5SVLt?=
+ =?us-ascii?Q?OXxW?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7533.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 06:54:55.9716
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Network-Message-Id: 212dfe02-8770-474b-c649-08d8b20ff9fa
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JZjwYPRn+jj/HeLjVJ0b4PVVa1LlS1zvF3o07QdPgt5RocyjRFAN3ZnTlisWuBfB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7822
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 1/6/21 1:32 PM, Qu Wenruo wrote:
->
->
-> On 2021/1/6 下午1:04, kernel test robot wrote:
->> Hi Qu,
->>
->> Thank you for the patch! Perhaps something to improve:
->>
->> [auto build test WARNING on kdave/for-next]
->> [also build test WARNING on v5.11-rc2 next-20210104]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url: 
->> https://github.com/0day-ci/linux/commits/Qu-Wenruo/btrfs-add-read-only-support-for-subpage-sector-size/20210106-090847
->> base: https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git 
->> for-next
->> config: m68k-randconfig-s032-20210106 (attached as .config)
->> compiler: m68k-linux-gcc (GCC) 9.3.0
->> reproduce:
->>          wget 
->> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
->> -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # apt-get install sparse
->>          # sparse version: v0.6.3-208-g46a52ca4-dirty
->>          # 
->> https://github.com/0day-ci/linux/commit/2c54bbf363f66a7c4d489fa0b7967ce5fc960afb
->>          git remote add linux-review https://github.com/0day-ci/linux
->>          git fetch --no-tags linux-review 
->> Qu-Wenruo/btrfs-add-read-only-support-for-subpage-sector-size/20210106-090847
->>          git checkout 2c54bbf363f66a7c4d489fa0b7967ce5fc960afb
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 
->> make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=m68k
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->>
->> "sparse warnings: (new ones prefixed by >>)"
->>>> fs/btrfs/inode.c:8352:13: sparse: sparse: incorrect type in 
->>>> assignment (different base types) @@     expected restricted 
->>>> vm_fault_t [assigned] [usertype] ret @@     got int @@
->>     fs/btrfs/inode.c:8352:13: sparse:     expected restricted 
->> vm_fault_t [assigned] [usertype] ret
->>     fs/btrfs/inode.c:8352:13: sparse:     got int
->>>> fs/btrfs/inode.c:8353:13: sparse: sparse: restricted vm_fault_t 
->>>> degrades to integer
->
-> Why I always forgot this...
->
-> Now it get properly fixed in github. Although the submitted patch is
-> still using @ret other than @ret2.
->
-> Is there anyway to let LKP to run on specific branch so that I can avoid
-> similar problems.
+On 2021/1/6 =E4=B8=8A=E5=8D=889:01, Qu Wenruo wrote:
+> For subpage case, we need to allocate new memory for each metadata page.
+>=20
+> So we need to:
+> - Allow attach_extent_buffer_page() to return int
+>    To indicate allocation failure
+>=20
+> - Prealloc page->private for alloc_extent_buffer()
+>    We don't want to call memory allocation with spinlock hold, so
+>    do preallocation before we acquire the spin lock.
+>=20
+> - Handle subpage and regular case differently in
+>    attach_extent_buffer_page()
+>    For regular case, just do the usual thing.
+>    For subpage case, allocate new memory and update the tree_block
+>    bitmap.
+>=20
+>    The bitmap update will be handled by new subpage specific helper,
+>    btrfs_subpage_set_tree_block().
+>=20
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/extent_io.c | 74 ++++++++++++++++++++++++++++++++++----------
+>   fs/btrfs/subpage.h   | 50 ++++++++++++++++++++++++++++++
+>   2 files changed, 108 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index d60f1837f8fb..2eeff925450f 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -24,6 +24,7 @@
+>   #include "rcu-string.h"
+>   #include "backref.h"
+>   #include "disk-io.h"
+> +#include "subpage.h"
+>  =20
+>   static struct kmem_cache *extent_state_cache;
+>   static struct kmem_cache *extent_buffer_cache;
+> @@ -3140,22 +3141,41 @@ static int submit_extent_page(unsigned int opf,
+>   	return ret;
+>   }
+>  =20
+> -static void attach_extent_buffer_page(struct extent_buffer *eb,
+> +static int attach_extent_buffer_page(struct extent_buffer *eb,
+>   				      struct page *page)
+>   {
+> -	/*
+> -	 * If the page is mapped to btree inode, we should hold the private
+> -	 * lock to prevent race.
+> -	 * For cloned or dummy extent buffers, their pages are not mapped and
+> -	 * will not race with any other ebs.
+> -	 */
+> -	if (page->mapping)
+> -		lockdep_assert_held(&page->mapping->private_lock);
+> +	struct btrfs_fs_info *fs_info =3D eb->fs_info;
+> +	int ret;
+>  =20
+> -	if (!PagePrivate(page))
+> -		attach_page_private(page, eb);
+> -	else
+> -		WARN_ON(page->private !=3D (unsigned long)eb);
+> +	if (fs_info->sectorsize =3D=3D PAGE_SIZE) {
+> +		/*
+> +		 * If the page is mapped to btree inode, we should hold the
+> +		 * private lock to prevent race.
+> +		 * For cloned or dummy extent buffers, their pages are not
+> +		 * mapped and will not race with any other ebs.
+> +		 */
+> +		if (page->mapping)
+> +			lockdep_assert_held(&page->mapping->private_lock);
+> +
+> +		if (!PagePrivate(page))
+> +			attach_page_private(page, eb);
+> +		else
+> +			WARN_ON(page->private !=3D (unsigned long)eb);
+> +		return 0;
+> +	}
+> +
+> +	/* Already mapped, just update the existing range */
+> +	if (PagePrivate(page))
+> +		goto update_bitmap;
+> +
+> +	/* Do new allocation to attach subpage */
+> +	ret =3D btrfs_attach_subpage(fs_info, page);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +update_bitmap:
+> +	btrfs_subpage_set_tree_block(fs_info, page, eb->start, eb->len);
+> +	return 0;
+>   }
+>  =20
+>   void set_page_extent_mapped(struct page *page)
+> @@ -5063,21 +5083,29 @@ struct extent_buffer *btrfs_clone_extent_buffer(c=
+onst struct extent_buffer *src)
+>   	if (new =3D=3D NULL)
+>   		return NULL;
+>  =20
+> +	set_bit(EXTENT_BUFFER_UPTODATE, &new->bflags);
+> +	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+> +
+>   	for (i =3D 0; i < num_pages; i++) {
+> +		int ret;
+> +
+>   		p =3D alloc_page(GFP_NOFS);
+>   		if (!p) {
+>   			btrfs_release_extent_buffer(new);
+>   			return NULL;
+>   		}
+> -		attach_extent_buffer_page(new, p);
+> +		ret =3D attach_extent_buffer_page(new, p);
+> +		if (ret < 0) {
+> +			put_page(p);
+> +			btrfs_release_extent_buffer(new);
+> +			return NULL;
+> +		}
+>   		WARN_ON(PageDirty(p));
+>   		SetPageUptodate(p);
+>   		new->pages[i] =3D p;
+>   		copy_page(page_address(p), page_address(src->pages[i]));
+>   	}
+>  =20
+> -	set_bit(EXTENT_BUFFER_UPTODATE, &new->bflags);
+> -	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
+>  =20
+>   	return new;
+>   }
+> @@ -5316,6 +5344,18 @@ struct extent_buffer *alloc_extent_buffer(struct b=
+trfs_fs_info *fs_info,
+>   			goto free_eb;
+>   		}
+>  =20
+> +		/*
+> +		 * Preallocate page->private for subpage case, so that
+> +		 * we won't allocate memory with private_lock hold.
+> +		 */
+> +		ret =3D btrfs_attach_subpage(fs_info, p);
 
-Hi Qu,
+Although we try to preallocate the subpage structure here, it's not=20
+reliable.
 
-LKP can test private branches if you can provide the git tree url, 
-please see
-https://github.com/intel/lkp-tests/wiki/LKP-FAQ#how-to-request-testing-a-new-kernel-tree-on-lkp
+I have hit a case just minutes before, where we still try to allocate=20
+memory inside that private_lock spinlock, and causes sleep inside atomic=20
+warning.
 
-Best Regards,
-Rong Chen
+The problem is, we can have a race where the page has one existing eb,=20
+and it's being freed.
 
->
-> Thanks,
-> Qu
->>     fs/btrfs/inode.c: note: in included file (through 
->> include/linux/mmzone.h, include/linux/gfp.h, include/linux/slab.h, ...):
->>     include/linux/spinlock.h:394:9: sparse: sparse: context imbalance 
->> in 'run_delayed_iput_locked' - unexpected unlock
->>
->> vim +8352 fs/btrfs/inode.c
->>
->>    8275
->>    8276    /*
->>    8277     * btrfs_page_mkwrite() is not allowed to change the file 
->> size as it gets
->>    8278     * called from a page fault handler when a page is first 
->> dirtied. Hence we must
->>    8279     * be careful to check for EOF conditions here. We set the 
->> page up correctly
->>    8280     * for a written page which means we get ENOSPC checking 
->> when writing into
->>    8281     * holes and correct delalloc and unwritten extent mapping 
->> on filesystems that
->>    8282     * support these features.
->>    8283     *
->>    8284     * We are not allowed to take the i_mutex here so we have 
->> to play games to
->>    8285     * protect against truncate races as the page could now be 
->> beyond EOF.  Because
->>    8286     * truncate_setsize() writes the inode size before 
->> removing pages, once we have
->>    8287     * the page lock we can determine safely if the page is 
->> beyond EOF. If it is not
->>    8288     * beyond EOF, then the page is guaranteed safe against 
->> truncation until we
->>    8289     * unlock the page.
->>    8290     */
->>    8291    vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->>    8292    {
->>    8293        struct page *page = vmf->page;
->>    8294        struct inode *inode = file_inode(vmf->vma->vm_file);
->>    8295        struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->>    8296        struct extent_io_tree *io_tree = 
->> &BTRFS_I(inode)->io_tree;
->>    8297        struct btrfs_ordered_extent *ordered;
->>    8298        struct extent_state *cached_state = NULL;
->>    8299        struct extent_changeset *data_reserved = NULL;
->>    8300        char *kaddr;
->>    8301        unsigned long zero_start;
->>    8302        loff_t size;
->>    8303        vm_fault_t ret;
->>    8304        int ret2;
->>    8305        int reserved = 0;
->>    8306        u64 reserved_space;
->>    8307        u64 page_start;
->>    8308        u64 page_end;
->>    8309        u64 end;
->>    8310
->>    8311        reserved_space = PAGE_SIZE;
->>    8312
->>    8313        sb_start_pagefault(inode->i_sb);
->>    8314        page_start = page_offset(page);
->>    8315        page_end = page_start + PAGE_SIZE - 1;
->>    8316        end = page_end;
->>    8317
->>    8318        /*
->>    8319         * Reserving delalloc space after obtaining the page 
->> lock can lead to
->>    8320         * deadlock. For example, if a dirty page is locked by 
->> this function
->>    8321         * and the call to btrfs_delalloc_reserve_space() ends 
->> up triggering
->>    8322         * dirty page write out, then the btrfs_writepage() 
->> function could
->>    8323         * end up waiting indefinitely to get a lock on the 
->> page currently
->>    8324         * being processed by btrfs_page_mkwrite() function.
->>    8325         */
->>    8326        ret2 = btrfs_delalloc_reserve_space(BTRFS_I(inode), 
->> &data_reserved,
->>    8327                            page_start, reserved_space);
->>    8328        if (!ret2) {
->>    8329            ret2 = file_update_time(vmf->vma->vm_file);
->>    8330            reserved = 1;
->>    8331        }
->>    8332        if (ret2) {
->>    8333            ret = vmf_error(ret2);
->>    8334            if (reserved)
->>    8335                goto out;
->>    8336            goto out_noreserve;
->>    8337        }
->>    8338
->>    8339        ret = VM_FAULT_NOPAGE; /* make the VM retry the fault */
->>    8340    again:
->>    8341        lock_page(page);
->>    8342        size = i_size_read(inode);
->>    8343
->>    8344        if ((page->mapping != inode->i_mapping) ||
->>    8345            (page_start >= size)) {
->>    8346            /* page got truncated out from underneath us */
->>    8347            goto out_unlock;
->>    8348        }
->>    8349        wait_on_page_writeback(page);
->>    8350
->>    8351        lock_extent_bits(io_tree, page_start, page_end, 
->> &cached_state);
->>> 8352        ret = set_page_extent_mapped(page);
->>> 8353        if (ret < 0)
->>    8354            goto out_unlock;
->>    8355
->>    8356        /*
->>    8357         * we can't set the delalloc bits if there are pending 
->> ordered
->>    8358         * extents.  Drop our locks and wait for them to finish
->>    8359         */
->>    8360        ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), 
->> page_start,
->>    8361                PAGE_SIZE);
->>    8362        if (ordered) {
->>    8363            unlock_extent_cached(io_tree, page_start, page_end,
->>    8364                         &cached_state);
->>    8365            unlock_page(page);
->>    8366            btrfs_start_ordered_extent(ordered, 1);
->>    8367            btrfs_put_ordered_extent(ordered);
->>    8368            goto again;
->>    8369        }
->>    8370
->>    8371        if (page->index == ((size - 1) >> PAGE_SHIFT)) {
->>    8372            reserved_space = round_up(size - page_start,
->>    8373                          fs_info->sectorsize);
->>    8374            if (reserved_space < PAGE_SIZE) {
->>    8375                end = page_start + reserved_space - 1;
->>    8376 btrfs_delalloc_release_space(BTRFS_I(inode),
->>    8377                        data_reserved, page_start,
->>    8378                        PAGE_SIZE - reserved_space, true);
->>    8379            }
->>    8380        }
->>    8381
->>    8382        /*
->>    8383         * page_mkwrite gets called when the page is firstly 
->> dirtied after it's
->>    8384         * faulted in, but write(2) could also dirty a page 
->> and set delalloc
->>    8385         * bits, thus in this case for space account reason, 
->> we still need to
->>    8386         * clear any delalloc bits within this page range 
->> since we have to
->>    8387         * reserve data&meta space before lock_page() (see 
->> above comments).
->>    8388         */
->>    8389        clear_extent_bit(&BTRFS_I(inode)->io_tree, page_start, 
->> end,
->>    8390                  EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
->>    8391                  EXTENT_DEFRAG, 0, 0, &cached_state);
->>    8392
->>    8393        ret2 = btrfs_set_extent_delalloc(BTRFS_I(inode), 
->> page_start, end, 0,
->>    8394                        &cached_state);
->>    8395        if (ret2) {
->>    8396            unlock_extent_cached(io_tree, page_start, page_end,
->>    8397                         &cached_state);
->>    8398            ret = VM_FAULT_SIGBUS;
->>    8399            goto out_unlock;
->>    8400        }
->>    8401
->>    8402        /* page is wholly or partially inside EOF */
->>    8403        if (page_start + PAGE_SIZE > size)
->>    8404            zero_start = offset_in_page(size);
->>    8405        else
->>    8406            zero_start = PAGE_SIZE;
->>    8407
->>    8408        if (zero_start != PAGE_SIZE) {
->>    8409            kaddr = kmap(page);
->>    8410            memset(kaddr + zero_start, 0, PAGE_SIZE - 
->> zero_start);
->>    8411            flush_dcache_page(page);
->>    8412            kunmap(page);
->>    8413        }
->>    8414        ClearPageChecked(page);
->>    8415        set_page_dirty(page);
->>    8416        SetPageUptodate(page);
->>    8417
->>    8418        BTRFS_I(inode)->last_trans = fs_info->generation;
->>    8419        BTRFS_I(inode)->last_sub_trans = 
->> BTRFS_I(inode)->root->log_transid;
->>    8420        BTRFS_I(inode)->last_log_commit = 
->> BTRFS_I(inode)->root->last_log_commit;
->>    8421
->>    8422        unlock_extent_cached(io_tree, page_start, page_end, 
->> &cached_state);
->>    8423
->>    8424        btrfs_delalloc_release_extents(BTRFS_I(inode), 
->> PAGE_SIZE);
->>    8425        sb_end_pagefault(inode->i_sb);
->>    8426        extent_changeset_free(data_reserved);
->>    8427        return VM_FAULT_LOCKED;
->>    8428
->>    8429    out_unlock:
->>    8430        unlock_page(page);
->>    8431    out:
->>    8432        btrfs_delalloc_release_extents(BTRFS_I(inode), 
->> PAGE_SIZE);
->>    8433        btrfs_delalloc_release_space(BTRFS_I(inode), 
->> data_reserved, page_start,
->>    8434                         reserved_space, (ret != 0));
->>    8435    out_noreserve:
->>    8436        sb_end_pagefault(inode->i_sb);
->>    8437        extent_changeset_free(data_reserved);
->>    8438        return ret;
->>    8439    }
->>    8440
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>
->
+At this point, we still have page::private.
+
+But before we acquire that private_lock, the eb get freed and since it's=20
+the only eb of that page (our eb hasn't yet being added to the page), it=20
+detach page private.
+
+> +		if (ret < 0) {
+> +			unlock_page(p);
+> +			put_page(p);
+> +			exists =3D ERR_PTR(-ENOMEM);
+> +			goto free_eb;
+> +		}
+> +
+>   		spin_lock(&mapping->private_lock);
+>   		exists =3D grab_extent_buffer(p);
+>   		if (exists) {
+> @@ -5325,8 +5365,10 @@ struct extent_buffer *alloc_extent_buffer(struct b=
+trfs_fs_info *fs_info,
+>   			mark_extent_buffer_accessed(exists, p);
+>   			goto free_eb;
+>   		}
+> +		/* Should not fail, as we have attached the subpage already */
+>   		attach_extent_buffer_page(eb, p);
+
+So here we can not rely on any result before we acquire private_lock.
+
+Thus I guess we have to pre-allocate the memory manually and pass the=20
+pointer in.
+
+Why I didn't hit the bug before sending the patches...
+
+Thanks,
+Qu
+
+>   		spin_unlock(&mapping->private_lock);
+> +
+>   		WARN_ON(PageDirty(p));
+>   		eb->pages[i] =3D p;
+>   		if (!PageUptodate(p))
+> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+> index 96f3b226913e..e49d4a7329e1 100644
+> --- a/fs/btrfs/subpage.h
+> +++ b/fs/btrfs/subpage.h
+> @@ -23,9 +23,59 @@
+>   struct btrfs_subpage {
+>   	/* Common members for both data and metadata pages */
+>   	spinlock_t lock;
+> +	union {
+> +		/* Structures only used by metadata */
+> +		struct {
+> +			u16 tree_block_bitmap;
+> +		};
+> +		/* structures only used by data */
+> +	};
+>   };
+>  =20
+>   int btrfs_attach_subpage(struct btrfs_fs_info *fs_info, struct page *pa=
+ge);
+>   void btrfs_detach_subpage(struct btrfs_fs_info *fs_info, struct page *p=
+age);
+>  =20
+> +/*
+> + * Convert the [start, start + len) range into a u16 bitmap
+> + *
+> + * E.g. if start =3D=3D page_offset() + 16K, len =3D 16K, we get 0x00f0.
+> + */
+> +static inline u16 btrfs_subpage_calc_bitmap(struct btrfs_fs_info *fs_inf=
+o,
+> +			struct page *page, u64 start, u32 len)
+> +{
+> +	int bit_start =3D offset_in_page(start) >> fs_info->sectorsize_bits;
+> +	int nbits =3D len >> fs_info->sectorsize_bits;
+> +
+> +	/* Basic checks */
+> +	ASSERT(PagePrivate(page) && page->private);
+> +	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+> +	       IS_ALIGNED(len, fs_info->sectorsize));
+> +
+> +	/*
+> +	 * The range check only works for mapped page, we can
+> +	 * still have unampped page like dummy extent buffer pages.
+> +	 */
+> +	if (page->mapping)
+> +		ASSERT(page_offset(page) <=3D start &&
+> +			start + len <=3D page_offset(page) + PAGE_SIZE);
+> +	/*
+> +	 * Here nbits can be 16, thus can go beyond u16 range. Here we make the
+> +	 * first left shift to be calculated in unsigned long (u32), then
+> +	 * truncate the result to u16.
+> +	 */
+> +	return (u16)(((1UL << nbits) - 1) << bit_start);
+> +}
+> +
+> +static inline void btrfs_subpage_set_tree_block(struct btrfs_fs_info *fs=
+_info,
+> +			struct page *page, u64 start, u32 len)
+> +{
+> +	struct btrfs_subpage *subpage =3D (struct btrfs_subpage *)page->private=
+;
+> +	unsigned long flags;
+> +	u16 tmp =3D btrfs_subpage_calc_bitmap(fs_info, page, start, len);
+> +
+> +	spin_lock_irqsave(&subpage->lock, flags);
+> +	subpage->tree_block_bitmap |=3D tmp;
+> +	spin_unlock_irqrestore(&subpage->lock, flags);
+> +}
+> +
+>   #endif /* BTRFS_SUBPAGE_H */
+>=20
 
