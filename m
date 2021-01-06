@@ -2,101 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C3A2EBA52
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Jan 2021 08:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A7B2EBB10
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Jan 2021 09:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725789AbhAFHJM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Jan 2021 02:09:12 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:35290 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbhAFHJL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Jan 2021 02:09:11 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1066lxXJ052394;
-        Wed, 6 Jan 2021 07:08:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=Uqie5oFvjUa/oam3MTlA2JT7nf2zgDix3GnOCCqf2TE=;
- b=V4ygUxnHrh/BK727BZI1r94VSRzdHMfWo0Lq6bhGO3OkSZXmh7E72RTCVM+aUFrqOjP7
- ngbJFS6JaBpji0Czn9TXneF/6dJMTTsnA3fK/XOt6TZROyaKIU6pRJB6xA8nruzNjH/R
- kYBU0Fa3rvgk6PgMlcLh7IU5qlDecN4Yvu5r1Pm6wLByuIdxYLMcjZP2L4HiN41KDp7t
- d2vuNyNNTIMRYemn1CRcWLDhvCA+y/cQYZqjwUc+FPZoqKBnwjhHeHnMffT4RbXeOOxF
- gKBwt27A/Guqf27NsKBLN9hrqb96anEeZEZJ8HznTNLoA34L0Pr2vXs7xJ9g+v9abtrV Hw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 35w53b0hkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 07:08:26 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1066isbF031439;
-        Wed, 6 Jan 2021 07:08:25 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 35v1f9k93s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 07:08:25 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10678O9C025784;
-        Wed, 6 Jan 2021 07:08:24 GMT
-Received: from localhost.localdomain (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Jan 2021 07:08:23 +0000
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, josef@toxicpanda.com
-Subject: [PATCH] btrfs: fixup read_policy latency
-Date:   Wed,  6 Jan 2021 15:08:15 +0800
-Message-Id: <e9cd491fb05be97dbba756b7d0b9df3418b02a1d.1609916374.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <df71f31c04177b7f5977944b0f1adcecca13391b.1603950490.git.anand.jain@oracle.com>
-References: <df71f31c04177b7f5977944b0f1adcecca13391b.1603950490.git.anand.jain@oracle.com>
+        id S1726143AbhAFIZp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Jan 2021 03:25:45 -0500
+Received: from pio-pvt-msa3.bahnhof.se ([79.136.2.42]:43928 "EHLO
+        pio-pvt-msa3.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbhAFIZo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Jan 2021 03:25:44 -0500
+X-Greylist: delayed 374 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Jan 2021 03:25:43 EST
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id 307113F414;
+        Wed,  6 Jan 2021 09:18:32 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.148
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.148 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.249, URIBL_BLOCKED=0.001]
+        autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa3.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa3.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id j8T0BWZZknxa; Wed,  6 Jan 2021 09:18:31 +0100 (CET)
+Received: by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id C1C903F3A4;
+        Wed,  6 Jan 2021 09:18:30 +0100 (CET)
+Received: from [192.168.0.10] (port=59580)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.93.0.4)
+        (envelope-from <forza@tnonline.net>)
+        id 1kx41V-0006vd-MX; Wed, 06 Jan 2021 09:18:29 +0100
+From:   Forza <forza@tnonline.net>
+Subject: Re: synchronize btrfs snapshots over a unreliable, slow connection
+To:     Cerem Cem ASLAN <ceremcem@ceremcem.net>,
+        Graham Cobb <g.btrfs@cobb.uk.net>
+Cc:     Cedric.dewijs@eclipso.eu, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <dc1e528567c9a57d089d77824f071af8@mail.eclipso.de>
+ <cd3a4a0a-e0b4-3224-f00c-5ec52c6362e3@tnonline.net>
+ <cc104d7c-b993-941c-2851-9366a1d87902@cobb.uk.net>
+ <CAN4oSBcL7ae_qwKDDoP=sbjkR4gcweTO8otEQv1Zh0YhStWZsw@mail.gmail.com>
+Message-ID: <b9662cf1-e45f-5113-5b23-bf1aaa73cb97@tnonline.net>
+Date:   Wed, 6 Jan 2021 09:18:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060039
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1015 adultscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 impostorscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060039
+In-Reply-To: <CAN4oSBcL7ae_qwKDDoP=sbjkR4gcweTO8otEQv1Zh0YhStWZsw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the meantime, since I have sent the base patch as below [1], the
-block layer commit 0d02129e76ed (block: merge struct block_device and
-struct hd_struct) has changed the first argument in the function
-part_stat_read_all() to struct block_device in 5.11-rc1. So the
-compilation will fail. This patch fixes it.
 
-This fixup patch must be rolled into its base patch [1].
-[1] [PATCH v2 1/4] btrfs: add read_policy latency
 
-I will include these changes in the base patch after the review comments.
+On 2021-01-05 13:24, Cerem Cem ASLAN wrote:
+> I also thought about a different approach in the past:
+> 
+> 1. Take a snapshot and rsync it to the server.
+> 2. When it succeeds, make it readonly and take a note on the remote
+> site that indicates the Received_UUID and checksum of entire
+> subvolume.
+> 3. When you want to send your diff, run `btrfs send -p ./first
+> ./second | list-file-changes -o my-diff-for-second.txt` if that
+> Received_UUID on the remote site matches with ./first. (Otherwise, you
+> should run rsync without taking advantage of
+> `my-diff-for-second.txt`.)
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/volumes.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+You can use `btrbk diff old-snap new-snap` to list changes between 
+snapshots.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 381eed52708e..7fc56274f3c1 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5550,8 +5550,8 @@ static int btrfs_find_best_stripe(struct btrfs_fs_info *fs_info,
- 		unsigned long read_ios;
- 		struct btrfs_device *device = map->stripes[index].dev;
- 
--		read_wait = part_stat_read(device->bdev->bd_part, nsecs[READ]);
--		read_ios = part_stat_read(device->bdev->bd_part, ios[READ]);
-+		read_wait = part_stat_read(device->bdev, nsecs[READ]);
-+		read_ios = part_stat_read(device->bdev, ios[READ]);
- 
- 		if (read_wait && read_ios && read_wait >= read_ios)
- 			avg_wait = div_u64(read_wait, read_ios);
--- 
-2.25.1
+Example:
+------------------------------------------------------------------------------
+#btrbk diff /mnt/systemRoot/snapshots/root.20210101T0001/ 
+/mnt/systemRoot/snapshots/root.20210102T0001/
 
+Subvolume Diff (btrbk command line client, version 0.30.0)
+
+     Date:   Wed Jan  6 09:06:37 2021
+
+Showing changed files for subvolume:
+   /mnt/systemRoot/snapshots/root.20210102T0001  (gen=6050233)
+
+Starting at generation after subvolume:
+   /mnt/systemRoot/snapshots/root.20210101T0001  (gen=6046626)
+
+This will show all files modified within generation range: 
+[6046627..6050233]
+Newest file generation (transid marker) was: 6050233
+
+Legend:
+     +..     file accessed at offset 0 (at least once)
+     .c.     flags COMPRESS or COMPRESS|INLINE set (at least once)
+     ..i     flags INLINE or COMPRESS|INLINE set (at least once)
+     <count> file was modified in <count> generations
+     <size>  file was modified for a total of <size> bytes
+------------------------------------------------------------------------------
++ci   1       1318  etc/csh.env
++ci   1       2116  etc/dispatch-conf.conf
++ci   1       1111  etc/environment.d/10-gentoo-env.conf
++ci   1       2000  etc/etc-update.conf
++c.   1      94208  etc/ld.so.cache
+...
+------------------------------------------------------------------------------
+
+You can also use `btrfs find-new` to list filesystem changes, but the 
+output is much more verbose than that of btrbk, and you need to figure 
+out the generation id's first. I also think that some things like 
+deleted files and renamed files do not get listed? [*]
+
+Example:
+------------------------------------------------------------------------------
+# btrfs subvolume find-new /mnt/systemRoot/snapshots/root.20210102T0001/ 
+6046626
+
+inode 3054490 file offset 0 len 8192 disk start 239676399616 offset 0 
+gen 6048209 flags COMPRESS etc/passwd-
+inode 9527306 file offset 0 len 4096 disk start 239792578560 offset 0 
+gen 6049979 flags COMPRESS var/lib/dhcp/dhclient.leases
+inode 9527306 file offset 4096 len 4096 disk start 239437688832 offset 0 
+gen 6050179 flags COMPRESS var/lib/dhcp/dhclient.leases
+inode 9527306 file offset 8192 len 4096 disk start 241226248192 offset 0 
+gen 6050220 flags NONE var/lib/dhcp/dhclient.leases
+inode 9527438 file offset 0 len 4096 disk start 244439986176 offset 0 
+gen 6049681 flags NONE var/lib/samba/wins.tdb
+inode 9527438 file offset 4096 len 4096 disk start 244569776128 offset 0 
+gen 6050217 flags NONE var/lib/samba/wins.tdb
+inode 9527438 file offset 8192 len 4096 disk start 243901612032 offset 0 
+gen 6049543 flags NONE var/lib/samba/wins.tdb
+inode 9527438 file offset 12288 len 8192 disk start 242191458304 offset 
+4096 gen 6048901 flags PREALLOC var/lib/samba/wins.tdb
+inode 9527438 file offset 20480 len 4096 disk start 244319576064 offset 
+0 gen 6049691 flags NONE var/lib/samba/wins.tdb
+------------------------------------------------------------------------------
+
+> 4. Use rsync to send the changed files listed in `my-diff-for-second.txt`.
+> 5. Verify by using a rolling hash, create a second snapshot and so on.
+> 
+> That approach will use all advantages of rsync and adds the "change
+> detection" benefit from BTRFS. The problem is, I don't know how to
+> implement the `list-file-changes` tool.
+> 
+> By the way, why wouldn't BTRFS keep a CHECKSUM field on readonly
+> subvolumes and simply use that field for diff and patch operations?
+> Calculating incremental checksums on every new readonly snapshot seems
+> like a computationally cheap operation. We could then transfer our
+> snapshots whatever method/tool we like (even we could create the
+> /home/foo/hello.txt file with "hello world" content manually and then
+> create another snapshot that will automatically match with our new
+> local snapshot).
+> 
+[*]http://marc.merlins.org/perso/btrfs/post_2014-05-19_Btrfs-diff-Between-Snapshots.html
