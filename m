@@ -2,252 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE91D2EE826
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jan 2021 23:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775E52EE82A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Jan 2021 23:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727379AbhAGWJO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Jan 2021 17:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGWJO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jan 2021 17:09:14 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBD0C0612F5
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Jan 2021 14:08:33 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id 143so6915887qke.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 07 Jan 2021 14:08:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ygm22H9Zo1y2Pjo2hIggiVafx+Xxm1wsNSuAi3DruUI=;
-        b=CRX+do8DpP2MULpKmYmrXOsT1g5jOIUcbik8pPsR4hcu0hI0yDq4DznCreYOOWe/Di
-         DGPb6m1VBOc6ChdJjC8x87DXcG6QeV9AfBfe5cu8dDHWGaWt14k3j6Wi3o7EUJcnBVzw
-         Pg3IIHCPJbsJknhLWfH9gbV5FZIfIp//XKJvAx2QQxABbplk5g9/Rcpx4upr34sBSh9S
-         tjuerh/g6tkltufvdL6y4BAqKp+Pk+MVhy5MQIOUSuhEI6zmTsBI4u1WcLEzR/FCqW1r
-         dwHQ1bwbPicO/SvfDH4Ryk7/lS4XoewyvPrRe1pr4aM0ZHVlAhSx7/0IFDAvclWUyPSm
-         yv/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ygm22H9Zo1y2Pjo2hIggiVafx+Xxm1wsNSuAi3DruUI=;
-        b=YIYJU3i1XbpTr+vbuFDBG7ipjY+HDMrBt5DnFyOrwlkbv0qWs+X2h+lKd30UK1iSVV
-         MZVmZH1sPSLkFC7AoTo9ifqndr39lMIwd2MTk39Fzno4Wr0dgggwy/LpJrlIPt3BfkgQ
-         Akb4Vxw20TIIDMP3EbTe0/E9jxspP/Skb2z5NgOzVMzafbwA0oBL3+kPxp5DXrqO1AtT
-         MzFRQT5jgok/7L0QA84ZZ469KQag9DDDHkcC3mCrT4CMXsRbNCU0wkehDYucspJIA5GK
-         XCzjKGyCtv8ST3BKwutlpG4bvULV8OPQpVRzwGLb2Q1kd2zRj+NB7yIv4mJ9HNEqG+ru
-         TevQ==
-X-Gm-Message-State: AOAM5313KMwo9fJrtAMsmsAWHp7faDRq0Ad7Mg4fbBS5NWjXN+clO1eu
-        AlzGNDqPEWolX4QrVZcaO7xv28I4phw+tXz9
-X-Google-Smtp-Source: ABdhPJw8+sXx4p0QupsWVlAgP3VItI6sWxNBBic1kKYNJEYNZJVmIXP9s3ovKyisQV430MaQHCIy2Q==
-X-Received: by 2002:a37:c49:: with SMTP id 70mr1120186qkm.365.1610057312398;
-        Thu, 07 Jan 2021 14:08:32 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 184sm3950910qkg.92.2021.01.07.14.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 14:08:31 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     stable@vger.kernel.org,
-        =?UTF-8?q?Ren=C3=A9=20Rebe?= <rene@exactcode.de>
-Subject: [PATCH v3] btrfs: shrink delalloc pages instead of full inodes
-Date:   Thu,  7 Jan 2021 17:08:30 -0500
-Message-Id: <5618514ccb0d1e823fe5ae41b3da6e1e76ddd792.1610057243.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
+        id S1727768AbhAGWMd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Jan 2021 17:12:33 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:46030 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbhAGWMc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Jan 2021 17:12:32 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id E577892CA6D; Thu,  7 Jan 2021 17:11:51 -0500 (EST)
+Date:   Thu, 7 Jan 2021 17:11:51 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Cedric.dewijs@eclipso.eu
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize
+ the SSD?
+Message-ID: <20210107221151.GY31381@hungrycats.org>
+References: <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
+ <3c670816-35b9-4bb7-b555-1778d61685c7@gmx.com>
+ <8af92960a09701579b6bcbb9b51489cc@mail.eclipso.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8af92960a09701579b6bcbb9b51489cc@mail.eclipso.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 38d715f494f2 ("btrfs: use btrfs_start_delalloc_roots in
-shrink_delalloc") cleaned up how we do delalloc shrinking by utilizing
-some infrastructure we have in place to flush inodes that we use for
-device replace and snapshot.  However this introduced a pretty serious
-performance regression.  To reproduce the user untarred the source
-tarball of Firefox, and would see it take anywhere from 5 to 20 times as
-long to untar in 5.10 compared to 5.9.
+On Tue, Jan 05, 2021 at 07:19:14PM +0100,   wrote:
+> >> I was expecting btrfs to do almost all reads from the fast SSD, as both
+> the data and the metadata is on that drive, so the slow hdd is only really
+> needed when there's a bitflip on the SSD, and the data has to be reconstructed.
+> 
+> > IIRC there will be some read policy feature to do that, but not yet
+> > merged, and even merged, you still need to manually specify the
+> > priority, as there is no way for btrfs to know which driver is faster
+> > (except the non-rotational bit, which is not reliable at all).
+> 
+> Manually specifying the priority drive would be a big step in the
+> right direction. Maybe btrfs could get a routine that benchmarks
+> the sequential and random read and write speed of the drives at (for
+> instance) mount time, or triggered by an administrator? This could lead
+> to misleading results if btrfs doesn't get the whole drive to itself.
+>
+>
+> >> Writing has to be done to both drives of course, but I don't expect
+> slowdowns from that, as the system RAM should cache that.
+> 
+> >Write can still slow down the system even you have tons of memory.
+> >Operations like fsync() or sync() will still wait for the writeback,
+> >thus in your case, it will also be slowed by the HDD no matter what.
+> 
+> >In fact, in real world desktop, most of the writes are from sometimes
+> >unnecessary fsync().
+> 
+> >To get rid of such slow down, you have to go dangerous by disabling
+> >barrier, which is never a safe idea.
+> 
+> I suggest a middle ground, where btrfs returns from fsync when one of
+> the copies (instead of all the copies) of the data has been written
+> completely to disk. This poses a small data risk, as this creates
+> moments that there's only one copy of the data on disk, while the
+> software above btrfs thinks all data is written on two disks. one
+> problem I see if the server is told to shut down while there's a big
+> backlog of data to be written to the slow drive, while the big drive
+> is already done. Then the server could cut the power while the slow
+> drive is still being written.
 
-The root cause is because before we would generally use the normal
-writeback path to reclaim delalloc space, and for this we would provide
-it with the number of pages we wanted to flush.  The referenced commit
-changed this to flush that many inodes, which drastically increased the
-amount of space we were flushing in certain cases, which severely
-affected performance.
+The tricky thing here is that kernel memory management for the filesystem
+is tied to transaction commits.  During a commit we have to finish the
+flush to _every_ disk before any more writes can proceed, because the
+transaction is holding locks that prevent memory from being modified or
+freed until all the writes we are going to do are done.
 
-We cannot revert this patch unfortunately because of
+If you have _short_ bursts of writes, you could put the spinning disk
+behind a dedicated block-layer write-barrier-preserving RAM cache device.
+btrfs would dump its writes into this cache and be able to complete
+transaction commit, reducing latency as long as the write cache isn't
+full (at that point writes must block).  btrfs could be modified to
+implement such a cache layer itself, but the gains would be modest
+compared to having an external block device do it (it saves some CPU
+copies, but the worst-case memory requirement is the same) and in the
+best case the data loss risks are identical.
 
-	btrfs: fix deadlock when cloning inline extent and low on free
-		metadata space
+As long as the block-layer cache strictly preserves write order barriers,
+you can recover from most crashes by doing a btrfs scrub with both
+disks online--the filesystem would behave as if the spinning disk was
+just really unreliable and corrupting data a lot.
 
-which requires the ability to skip flushing inodes that are being cloned
-in certain scenarios, which means we need to keep using our flushing
-infrastructure or risk re-introducing the deadlock.
+The crashes you can't recover from are csum collisions, where old and
+new data have the same csum and you can't tell whether you have current
+or stale data on the spinning disk.  You'll have silently corrupted data
+at the hash collision rate.  If your crashes are infrequent enough you
+can probably get away with this for a long time, or you can use blake2b
+or sha256 csums which make collisions effectively impossible.
 
-Instead to fix this problem we can go back to providing
-btrfs_start_delalloc_roots with a number of pages to flush, and then set
-up a writeback_control and utilize sync_inode() to handle the flushing
-for us.  This gives us the same behavior we had prior to the fix, while
-still allowing us to avoid the deadlock that was fixed by Filipe.  I
-redid the users original test and got the following results on one of
-our test machines (256gib of ram, 56 cores, 2tib Intel NVME drive)
+If the SSD dies and you only have the spinning disk left, the filesystem
+will appear to roll back in time some number of transactions, but that
+only happens when the SSD fails, so it might be an event rare enough to
+be tolerable for some use cases.
 
-5.9		0m54.258s
-5.10		1m26.212s
-5.10+patch	0m38.800s
+If there is a crash which prevents some writes from reaching the spinning
+disk, and after the crash, the SSD fails before a scrub can be completed,
+then the filesystem on the spinning disk will not be usable.  The spinning
+disk will have a discontiguous metadata write history and there is no
+longer an intact copy on the SSD to recover from, so the filesystem will
+have to be rebuilt by brute force scan of the surviving metadata leaf
+pages (i.e. btrfs check --repair --init-extent-tree, with no guarantee
+of success).
 
-5.10+patch is significantly faster than plain 5.9 because of my patch
-series "Change data reservations to use the ticketing infra" which
-contained the patch that introduced the regression, but generally
-improved the overall ENOSPC flushing mechanisms.
+lvmcache(7) documents something called "dm-writecache" which would
+theoretically provide the required write stream caching functionality,
+but I've never seen it work.
 
-CC: stable@vger.kernel.org # 5.10
-Reported-by: René Rebe <rene@exactcode.de>
-Fixes: 38d715f494f2 ("btrfs: use btrfs_start_delalloc_roots in shrink_delalloc")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v2->v3:
-- modified the changelog to add information about the patches referenced, and
-  detail the specs of the machine I used for the performance numbers.
+If you have continuous writes then this idea doesn't work--latency will
+degrade to at _least_ as slow as the spinning disk once the cache fills
+up, since it's not allowed to elide any writes in the stream.
 
- fs/btrfs/inode.c      | 60 +++++++++++++++++++++++++++++++------------
- fs/btrfs/space-info.c |  4 ++-
- 2 files changed, 46 insertions(+), 18 deletions(-)
+Alternatively, btrfs could be modified to implement transaction pipelining
+that might be smart enough to optimize redundant writes away (i.e. don't
+bother writing out a file to the spinner that is already deleted on the
+SSD).  That's not a trivial change, though--better to think of it as
+writing a new filesystem with a btrfs-compatible on-disk format, than
+as an extension of the current filesystem code.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 070716650df8..a8e0a6b038d3 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9390,7 +9390,8 @@ static struct btrfs_delalloc_work *btrfs_alloc_delalloc_work(struct inode *inode
-  * some fairly slow code that needs optimization. This walks the list
-  * of all the inodes with pending delalloc and forces them to disk.
-  */
--static int start_delalloc_inodes(struct btrfs_root *root, u64 *nr, bool snapshot,
-+static int start_delalloc_inodes(struct btrfs_root *root,
-+				 struct writeback_control *wbc, bool snapshot,
- 				 bool in_reclaim_context)
- {
- 	struct btrfs_inode *binode;
-@@ -9399,6 +9400,7 @@ static int start_delalloc_inodes(struct btrfs_root *root, u64 *nr, bool snapshot
- 	struct list_head works;
- 	struct list_head splice;
- 	int ret = 0;
-+	bool full_flush = wbc->nr_to_write == LONG_MAX;
- 
- 	INIT_LIST_HEAD(&works);
- 	INIT_LIST_HEAD(&splice);
-@@ -9427,18 +9429,24 @@ static int start_delalloc_inodes(struct btrfs_root *root, u64 *nr, bool snapshot
- 		if (snapshot)
- 			set_bit(BTRFS_INODE_SNAPSHOT_FLUSH,
- 				&binode->runtime_flags);
--		work = btrfs_alloc_delalloc_work(inode);
--		if (!work) {
--			iput(inode);
--			ret = -ENOMEM;
--			goto out;
--		}
--		list_add_tail(&work->list, &works);
--		btrfs_queue_work(root->fs_info->flush_workers,
--				 &work->work);
--		if (*nr != U64_MAX) {
--			(*nr)--;
--			if (*nr == 0)
-+		if (full_flush) {
-+			work = btrfs_alloc_delalloc_work(inode);
-+			if (!work) {
-+				iput(inode);
-+				ret = -ENOMEM;
-+				goto out;
-+			}
-+			list_add_tail(&work->list, &works);
-+			btrfs_queue_work(root->fs_info->flush_workers,
-+					 &work->work);
-+		} else {
-+			ret = sync_inode(inode, wbc);
-+			if (!ret &&
-+			    test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
-+				     &BTRFS_I(inode)->runtime_flags))
-+				ret = sync_inode(inode, wbc);
-+			btrfs_add_delayed_iput(inode);
-+			if (ret || wbc->nr_to_write <= 0)
- 				goto out;
- 		}
- 		cond_resched();
-@@ -9464,18 +9472,29 @@ static int start_delalloc_inodes(struct btrfs_root *root, u64 *nr, bool snapshot
- 
- int btrfs_start_delalloc_snapshot(struct btrfs_root *root)
- {
-+	struct writeback_control wbc = {
-+		.nr_to_write = LONG_MAX,
-+		.sync_mode = WB_SYNC_NONE,
-+		.range_start = 0,
-+		.range_end = LLONG_MAX,
-+	};
- 	struct btrfs_fs_info *fs_info = root->fs_info;
--	u64 nr = U64_MAX;
- 
- 	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
- 		return -EROFS;
- 
--	return start_delalloc_inodes(root, &nr, true, false);
-+	return start_delalloc_inodes(root, &wbc, true, false);
- }
- 
- int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, u64 nr,
- 			       bool in_reclaim_context)
- {
-+	struct writeback_control wbc = {
-+		.nr_to_write = (nr == U64_MAX) ? LONG_MAX : (unsigned long)nr,
-+		.sync_mode = WB_SYNC_NONE,
-+		.range_start = 0,
-+		.range_end = LLONG_MAX,
-+	};
- 	struct btrfs_root *root;
- 	struct list_head splice;
- 	int ret;
-@@ -9489,6 +9508,13 @@ int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, u64 nr,
- 	spin_lock(&fs_info->delalloc_root_lock);
- 	list_splice_init(&fs_info->delalloc_roots, &splice);
- 	while (!list_empty(&splice) && nr) {
-+		/*
-+		 * Reset nr_to_write here so we know that we're doing a full
-+		 * flush.
-+		 */
-+		if (nr == U64_MAX)
-+			wbc.nr_to_write = LONG_MAX;
-+
- 		root = list_first_entry(&splice, struct btrfs_root,
- 					delalloc_root);
- 		root = btrfs_grab_root(root);
-@@ -9497,9 +9523,9 @@ int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, u64 nr,
- 			       &fs_info->delalloc_roots);
- 		spin_unlock(&fs_info->delalloc_root_lock);
- 
--		ret = start_delalloc_inodes(root, &nr, false, in_reclaim_context);
-+		ret = start_delalloc_inodes(root, &wbc, false, in_reclaim_context);
- 		btrfs_put_root(root);
--		if (ret < 0)
-+		if (ret < 0 || wbc.nr_to_write <= 0)
- 			goto out;
- 		spin_lock(&fs_info->delalloc_root_lock);
- 	}
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 67e55c5479b8..e8347461c8dd 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -532,7 +532,9 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
- 
- 	loops = 0;
- 	while ((delalloc_bytes || dio_bytes) && loops < 3) {
--		btrfs_start_delalloc_roots(fs_info, items, true);
-+		u64 nr_pages = min(delalloc_bytes, to_reclaim) >> PAGE_SHIFT;
-+
-+		btrfs_start_delalloc_roots(fs_info, nr_pages, true);
- 
- 		loops++;
- 		if (wait_ordered && !trans) {
--- 
-2.26.2
+> i think this setting should be given to the system administrator,
+> it's not a good idea to just blindly enable this behavior.
 
+Definitely not a good idea to do it blindly.  There are novel failure
+modes leading to full filesystem loss in this configuration.
+
+> >> Is there a way to tell btrfs to leave the slow hdd alone, and to
+> prioritize the SSD?
+> 
+> > Not in upstream kernel for now.
+> 
+> > Thus I guess you need something like bcache to do this.
+> 
+> Agreed. However, one of the problems of bcache, it that it can't use 2 SSD's in mirrored mode to form a writeback cache in front of many spindles, so this structure is impossible:
+> +-----------------------------------------------------------+--------------+--------------+
+> |                               btrfs raid 1 (2 copies) /mnt                              |
+> +--------------+--------------+--------------+--------------+--------------+--------------+
+> | /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 | /dev/bcache4 | /dev/bcache5 |
+> +--------------+--------------+--------------+--------------+--------------+--------------+
+> |                          Write Cache (2xSSD in raid 1, mirrored)                        |
+> |                                 /dev/sda2 and /dev/sda3                                 |
+> +--------------+--------------+--------------+--------------+--------------+--------------+
+> | Data         | Data         | Data         | Data         | Data         | Data         |
+> | /dev/sda9    | /dev/sda10   | /dev/sda11   | /dev/sda12   | /dev/sda13   | /dev/sda14   |
+> +--------------+--------------+--------------+--------------+--------------+--------------+
+> 
+> In order to get a system that has no data loss if a drive fails,  the user either has to live with only a read cache, or the user has to put a separate writeback cache in front of each spindle like this:
+> +-----------------------------------------------------------+
+> |                btrfs raid 1 (2 copies) /mnt               |
+> +--------------+--------------+--------------+--------------+
+> | /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 |
+> +--------------+--------------+--------------+--------------+
+> | Write Cache  | Write Cache  | Write Cache  | Write Cache  |
+> |(Flash Drive) |(Flash Drive) |(Flash Drive) |(Flash Drive) |
+> | /dev/sda5    | /dev/sda6    | /dev/sda7    | /dev/sda8    |
+> +--------------+--------------+--------------+--------------+
+> | Data         | Data         | Data         | Data         |
+> | /dev/sda9    | /dev/sda10   | /dev/sda11   | /dev/sda12   |
+> +--------------+--------------+--------------+--------------+
+> 
+> In the mainline kernel is's impossible to put a bcache on top of a bcache, so a user does not have the option to have 4 small write caches below one fast, big read cache like this:
+> +-----------------------------------------------------------+
+> |                btrfs raid 1 (2 copies) /mnt               |
+> +--------------+--------------+--------------+--------------+
+> | /dev/bcache4 | /dev/bcache5 | /dev/bcache6 | /dev/bcache7 |
+> +--------------+--------------+--------------++-------------+
+> |                      Read Cache (SSD)                     |
+> |                        /dev/sda4                          |
+> +--------------+--------------+--------------+--------------+
+> | /dev/bcache0 | /dev/bcache1 | /dev/bcache2 | /dev/bcache3 |
+> +--------------+--------------+--------------+--------------+
+> | Write Cache  | Write Cache  | Write Cache  | Write Cache  |
+> |(Flash Drive) |(Flash Drive) |(Flash Drive) |(Flash Drive) |
+> | /dev/sda5    | /dev/sda6    | /dev/sda7    | /dev/sda8    |
+> +--------------+--------------+--------------+--------------+
+> | Data         | Data         | Data         | Data         |
+> | /dev/sda9    | /dev/sda10   | /dev/sda11   | /dev/sda12   |
+> +--------------+--------------+--------------+--------------+
+> 
+> >Thanks,
+> >Qu
+> 
+> Thank you,
+> Cedric
+> 
+> 
+> ---
+> 
+> Take your mailboxes with you. Free, fast and secure Mail &amp; Cloud: https://www.eclipso.eu - Time to change!
+> 
+> 
