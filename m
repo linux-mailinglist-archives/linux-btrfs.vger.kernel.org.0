@@ -2,22 +2,22 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A69C2EF3FF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 15:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA05D2EF406
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 15:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbhAHOgQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jan 2021 09:36:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45906 "EHLO mx2.suse.de"
+        id S1727363AbhAHOhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jan 2021 09:37:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47040 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725942AbhAHOgQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:36:16 -0500
+        id S1725901AbhAHOhk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:37:40 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6E531AD11;
-        Fri,  8 Jan 2021 14:35:34 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 03782AD78;
+        Fri,  8 Jan 2021 14:36:59 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C73F0DA6E9; Fri,  8 Jan 2021 15:33:43 +0100 (CET)
-Date:   Fri, 8 Jan 2021 15:33:43 +0100
+        id 9745ADA6E9; Fri,  8 Jan 2021 15:35:08 +0100 (CET)
+Date:   Fri, 8 Jan 2021 15:35:08 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Filipe Manana <fdmanana@gmail.com>
 Cc:     syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
@@ -30,7 +30,7 @@ Cc:     syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
         rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
         will@kernel.org
 Subject: Re: KASAN: null-ptr-deref Write in start_transaction
-Message-ID: <20210108143343.GY6430@twin.jikos.cz>
+Message-ID: <20210108143508.GZ6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
         syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
@@ -88,6 +88,4 @@ On Fri, Jan 08, 2021 at 02:22:00PM +0000, Filipe Manana wrote:
 > 
 >     btrfs: remove dio iomap DSYNC workaround
 
-Thanks!
-
-#syz unfix
+#syz fix: btrfs: remove dio iomap DSYNC workaround
