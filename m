@@ -2,53 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9C52EF38F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 15:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4AD2EF399
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 15:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbhAHN7v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jan 2021 08:59:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44072 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726215AbhAHN7v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:59:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 96809AD4D;
-        Fri,  8 Jan 2021 13:59:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 36A1EDA6E9; Fri,  8 Jan 2021 14:57:19 +0100 (CET)
-Date:   Fri, 8 Jan 2021 14:57:19 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, josef@toxicpanda.com
-Subject: Re: [PATCH] btrfs: fixup read_policy latency
-Message-ID: <20210108135719.GW6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com, josef@toxicpanda.com
-References: <df71f31c04177b7f5977944b0f1adcecca13391b.1603950490.git.anand.jain@oracle.com>
- <e9cd491fb05be97dbba756b7d0b9df3418b02a1d.1609916374.git.anand.jain@oracle.com>
+        id S1727042AbhAHOA7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 8 Jan 2021 09:00:59 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:38826 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726748AbhAHOA7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jan 2021 09:00:59 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id A166992E765; Fri,  8 Jan 2021 09:00:17 -0500 (EST)
+Date:   Fri, 8 Jan 2021 09:00:17 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Cedric.dewijs@eclipso.eu
+Cc:     Andrea Gelmini <andrea.gelmini@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize
+ the SSD?
+Message-ID: <20210108140017.GA31381@hungrycats.org>
+References: <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
+ <CAK-xaQZS+ANoD+QbPTHwL-ErapA-7PDZe_z=OOWq_axAyR1KfA@mail.gmail.com>
+ <eb0f5e05a563009af95439f446659cf3@mail.eclipso.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <e9cd491fb05be97dbba756b7d0b9df3418b02a1d.1609916374.git.anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <eb0f5e05a563009af95439f446659cf3@mail.eclipso.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 03:08:15PM +0800, Anand Jain wrote:
-> In the meantime, since I have sent the base patch as below [1], the
-> block layer commit 0d02129e76ed (block: merge struct block_device and
-> struct hd_struct) has changed the first argument in the function
-> part_stat_read_all() to struct block_device in 5.11-rc1. So the
-> compilation will fail. This patch fixes it.
+On Fri, Jan 08, 2021 at 09:36:13AM +0100,   wrote:
 > 
-> This fixup patch must be rolled into its base patch [1].
-> [1] [PATCH v2 1/4] btrfs: add read_policy latency
+> --- Ursprüngliche Nachricht ---
+> Von: Andrea Gelmini <andrea.gelmini@gmail.com>
+> Datum: 08.01.2021 09:16:26
+> An: Cedric.dewijs@eclipso.eu
+> Betreff: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize the SSD?
 > 
-> I will include these changes in the base patch after the review comments.
+> Il giorno mar 5 gen 2021 alle ore 07:44 <Cedric.dewijs@eclipso.eu>
+> ha scritto:
+> >
+> > Is there a way to tell btrfs to leave the slow hdd alone, and to prioritize
+> the SSD?
+> 
+> You can use mdadm to do this (I'm using this feature since years in
+> setup where I have to fallback on USB disks for any reason).
+> 
+> >From manpage:
+> 
+>        -W, --write-mostly
+>               subsequent  devices  listed in a --build, --create, or
+> --add command will be flagged as 'write-mostly'.  This is valid for
+>               RAID1 only and means that the 'md' driver will avoid
+> reading from these devices if at all possible.  This can be useful if
+>               mirroring over a slow link.
+> 
+>        --write-behind=
+>               Specify  that  write-behind  mode  should be enabled
+> (valid for RAID1 only).  If an argument is specified, it will set the
+>               maximum number of outstanding writes allowed.  The
+> default value is 256.  A write-intent bitmap is required  in  order
+> to
+>               use write-behind mode, and write-behind is only
+> attempted on drives marked as write-mostly.
+> 
+> So you can do this:
+> (be carefull, this wipe your data)
+> 
+> mdadm --create --verbose --assume-clean /dev/md0 --level=1
+> --raid-devices=2 /dev/sda1 --write-mostly /dev/sdb1
+> 
+> Then you use BTRFS on top of /dev/md0, after mkfs.btrfs, of course.
+> 
+> Ciao,
+> Gelma
+> 
+> Thanks Gelma.
+> 
+> What happens when I poison one of the drives in the mdadm array using
+> this command? Will all data come out OK?
+> dd if=/dev/urandom of=/dev/dev/sdb1 bs=1M count = 100?
 
-It would be better to resend the patchset in this case as the fixup is
-not just cosmetic. So far there's no discussion ongoing so resend would
-not break the flow.
+mdadm doesn't handle data corruption, and (except for a /sys counter),
+reads from mirror devices interchangeably, and silently propagates
+data between devices during resync, so the array will almost certainly
+be destroyed.
+
+> When I do this test on a plain btrfs raid 1 with 2 drives, all the data
+> comes out OK (while generating a lot of messages about correcting data
+> in dmesg -w)
+> 
+> Cheers,
+> Cedric
+> 
+> ---
+> 
+> Take your mailboxes with you. Free, fast and secure Mail &amp; Cloud: https://www.eclipso.eu - Time to change!
+> 
+> 
