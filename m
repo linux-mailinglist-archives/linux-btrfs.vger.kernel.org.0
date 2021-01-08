@@ -2,90 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA05D2EF406
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 15:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9012EF4FA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 16:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbhAHOhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jan 2021 09:37:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47040 "EHLO mx2.suse.de"
+        id S1727847AbhAHPig (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jan 2021 10:38:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55632 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbhAHOhk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:37:40 -0500
+        id S1726712AbhAHPig (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:38:36 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 03782AD78;
-        Fri,  8 Jan 2021 14:36:59 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 2A4A1ACC6;
+        Fri,  8 Jan 2021 15:37:54 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9745ADA6E9; Fri,  8 Jan 2021 15:35:08 +0100 (CET)
-Date:   Fri, 8 Jan 2021 15:35:08 +0100
+        id B5AACDA6E9; Fri,  8 Jan 2021 16:36:03 +0100 (CET)
+Date:   Fri, 8 Jan 2021 16:36:03 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Filipe David Borba Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        will@kernel.org
-Subject: Re: KASAN: null-ptr-deref Write in start_transaction
-Message-ID: <20210108143508.GZ6430@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org,
+        =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>
+Subject: Re: [PATCH v3] btrfs: shrink delalloc pages instead of full inodes
+Message-ID: <20210108153603.GA6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
-        syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Filipe David Borba Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        will@kernel.org
-References: <00000000000053e36405b3c538fc@google.com>
- <0000000000008f60c505b84f2cd0@google.com>
- <CAL3q7H63XwdxmHgTRZthh6xYtg1uyqAK3apbrwxobRQ660U+JA@mail.gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org,
+        =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>
+References: <5618514ccb0d1e823fe5ae41b3da6e1e76ddd792.1610057243.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H63XwdxmHgTRZthh6xYtg1uyqAK3apbrwxobRQ660U+JA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5618514ccb0d1e823fe5ae41b3da6e1e76ddd792.1610057243.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 02:22:00PM +0000, Filipe Manana wrote:
-> On Thu, Jan 7, 2021 at 1:13 PM syzbot
-> <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com> wrote:
-> >
-> > syzbot suspects this issue was fixed by commit:
-> >
-> > commit f30bed83426c5cb9fce6cabb3f7cc5a9d5428fcc
-> > Author: Filipe Manana <fdmanana@suse.com>
-> > Date:   Fri Nov 13 11:24:17 2020 +0000
-> >
-> >     btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ddc30b500000
-> > start commit:   521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
-> > git tree:       upstream
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=6700bca07dff187809c4
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a07ab2500000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe69c6500000
-> >
-> > If the result looks correct, please mark the issue as fixed by replying with:
-> >
-> > #syz fix: btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
+On Thu, Jan 07, 2021 at 05:08:30PM -0500, Josef Bacik wrote:
+> Commit 38d715f494f2 ("btrfs: use btrfs_start_delalloc_roots in
+> shrink_delalloc") cleaned up how we do delalloc shrinking by utilizing
+> some infrastructure we have in place to flush inodes that we use for
+> device replace and snapshot.  However this introduced a pretty serious
+> performance regression.  To reproduce the user untarred the source
+> tarball of Firefox, and would see it take anywhere from 5 to 20 times as
+> long to untar in 5.10 compared to 5.9.
 > 
-> Nop, it can't be this change.
+> The root cause is because before we would generally use the normal
+> writeback path to reclaim delalloc space, and for this we would provide
+> it with the number of pages we wanted to flush.  The referenced commit
+> changed this to flush that many inodes, which drastically increased the
+> amount of space we were flushing in certain cases, which severely
+> affected performance.
 > 
-> What should fix it should be the following commit:
+> We cannot revert this patch unfortunately because of
 > 
-> commit ecfdc08b8cc65d737eebc26a1ee1875a097fd6a0
-> Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> Date:   Thu Sep 24 11:39:21 2020 -0500
+> 	btrfs: fix deadlock when cloning inline extent and low on free
+> 		metadata space
 > 
->     btrfs: remove dio iomap DSYNC workaround
+> which requires the ability to skip flushing inodes that are being cloned
+> in certain scenarios, which means we need to keep using our flushing
+> infrastructure or risk re-introducing the deadlock.
+> 
+> Instead to fix this problem we can go back to providing
+> btrfs_start_delalloc_roots with a number of pages to flush, and then set
+> up a writeback_control and utilize sync_inode() to handle the flushing
+> for us.  This gives us the same behavior we had prior to the fix, while
+> still allowing us to avoid the deadlock that was fixed by Filipe.  I
+> redid the users original test and got the following results on one of
+> our test machines (256gib of ram, 56 cores, 2tib Intel NVME drive)
+> 
+> 5.9		0m54.258s
+> 5.10		1m26.212s
+> 5.10+patch	0m38.800s
+> 
+> 5.10+patch is significantly faster than plain 5.9 because of my patch
+> series "Change data reservations to use the ticketing infra" which
+> contained the patch that introduced the regression, but generally
+> improved the overall ENOSPC flushing mechanisms.
+> 
+> CC: stable@vger.kernel.org # 5.10
+> Reported-by: René Rebe <rene@exactcode.de>
+> Fixes: 38d715f494f2 ("btrfs: use btrfs_start_delalloc_roots in shrink_delalloc")
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v2->v3:
+> - modified the changelog to add information about the patches referenced, and
+>   detail the specs of the machine I used for the performance numbers.
 
-#syz fix: btrfs: remove dio iomap DSYNC workaround
+Great, thanks. Meanwhile I did some other tests, 'dbench 32' is
+basically the same and async random write with 'fio --rw=randwrite
+--size=4g --ioengine=libaio' as well.
+
+I'm going to send another rc3 pull request with this patch so we can get
+it to 5.10 stable.
