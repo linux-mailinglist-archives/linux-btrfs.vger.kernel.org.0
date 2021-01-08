@@ -2,114 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F782EF6B1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 18:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 737A12EF827
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Jan 2021 20:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728390AbhAHRof (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Jan 2021 12:44:35 -0500
-Received: from smtp-33.italiaonline.it ([213.209.10.33]:40984 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728114AbhAHRoe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:44:34 -0500
-Received: from venice.bhome ([94.37.172.193])
-        by smtp-33.iol.local with ESMTPA
-        id xvnkkAVkW11DDxvnkkasu0; Fri, 08 Jan 2021 18:43:52 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1610127832; bh=jx5qo6y0O1I1ndeTP56WD5SbJ/NhfGnisdYNBppy9BA=;
-        h=From;
-        b=Ie96ErOBuXXnsnk46bkchsQSt2OwV0MTpnRwaDQkzRKqCs3XIffsES6zw0n+kvvEk
-         JyKDn+D5lnziimVZzsNy7XLR0w5bhiDB0nQxRFBBlUK8eO8kRa5BeoY8RGwetFTZd3
-         Jr16x37I52el70U9JEkc6YA0BtsvC+1lcV2BSA1HaicI9al5B78FyndCLCDEZM8yXe
-         PpCFLvjRylVLqdveXO/W11VwMgglXbibh1ZigyVfhaB8yP0AHtW57lxw3McRXj/qbe
-         8Ha6rd6ky+zUwM3VUrmo7o33QpZ08p7UdhFTj0wlT6e/0Y9VnXSeG7MvJdQu8NKQ6O
-         46Ak1DtEuCYbQ==
-X-CNFS-Analysis: v=2.4 cv=ba6u7MDB c=1 sm=1 tr=0 ts=5ff899d8 cx=a_exe
- a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
- a=IkcTkHD0fZMA:10 a=QbysXcJIjD34N5RL6yQA:9 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: BTRFS and *CACHE setup [was Re: [RFC][PATCH V4] btrfs:
- preferred_metadata: preferred device for metadata]
-From:   Goffredo Baroncelli <kreijack@libero.it>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org, Michael <mclaud@roznica.com.ua>,
-        Hugo Mills <hugo@carfax.org.uk>,
-        Martin Svec <martin.svec@zoner.cz>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Paul Jones <paul@pauljones.id.au>,
-        Adam Borowski <kilobyte@angband.pl>
-References: <20200528183451.16654-1-kreijack@libero.it>
- <20210108010511.GZ31381@hungrycats.org>
- <bc7d874f-3f8b-7eff-6d18-f9613e7c6972@libero.it>
-Message-ID: <0dbec46b-8f46-afca-c61a-51b85300b0f2@libero.it>
-Date:   Fri, 8 Jan 2021 18:43:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728150AbhAHTaj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Jan 2021 14:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727262AbhAHTaj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Jan 2021 14:30:39 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D21C061380
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Jan 2021 11:29:59 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id r14so623788qvr.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Jan 2021 11:29:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LS9a8SZnezWObWA4gbLN4aj2SjwW+kHKnO3pKvWj0/I=;
+        b=Tx+gLGZR7BbaRvM4AR5M3H/75DwJZsX1amHOpfwmdRGPlaDurH2cggkGRMq+NResAL
+         EmD+b/nj0dv79v9QM4rjilWmgni/izDI2e32T1fWnSfvVggVB+kX7TCL8yOJ0cMrOZ9j
+         w9EiBVZtB38OJJv1hclrAjwaxEnuZX5X3UbmJ/GUPOi5g5pxbGQsttJt/c1x4FIsWruY
+         yYAYXW3JjHMPYwe5TQ+ZAqLkIg7wQw7aBA+VO0HTjQo4T1pcEEmDGLxxTl0TmaKiE/r1
+         /45hJ5/2Yp5OfknmPV9h7XMiT8LmS/xHEg7hpknh7vyOnKwucQvDnmqBFnpTSUbqoIQi
+         6n5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LS9a8SZnezWObWA4gbLN4aj2SjwW+kHKnO3pKvWj0/I=;
+        b=qOYO2TVMd+qfFasjgJkIVIuNaPg9PoBBKFd4s/oW9H/BSG7XnM5Ld5RuZT37m3Qws2
+         axJK5E96sh+Q0DiITKUPbiwNqQMXA0650e6e+I5kRyEWEZPNxUAyCxXbe251LkDlNe7A
+         1VDzmBEU3RoMyydcNjChnl2nqB38q0g1zaYiYsGahBEp6uwG/0PFHpYzvl5eS767rj23
+         LkBnLboEkqiRPq5uKahZ05qMrS5HHZ9p8spkKEq2t7VfTUMX0TZrV7dKMXEv/yYVecuB
+         SZCHl7uvyOC8onIrNfqIwRqbZRBXhNNp+GN3h4hOcjsWa3tOsneWBe96qjCn4+Itp4eT
+         oLtQ==
+X-Gm-Message-State: AOAM532kkl4HV2q23418IKdsIhT43BemQLJpa0dNYpJEgqCyyODzP2YN
+        Mrh67WCQ7OsbsU0SMGVKN4lpMHZ45nPRgDVPRgc=
+X-Google-Smtp-Source: ABdhPJwapYbq0slmelIZ4p29iSqn3WAtxCJhRfK6ccU37wDJcfGjPJutv+Un12rovOoxGk3J4lRUFB8Sd6dF9x2cwno=
+X-Received: by 2002:ad4:5188:: with SMTP id b8mr8251717qvp.55.1610134198295;
+ Fri, 08 Jan 2021 11:29:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <bc7d874f-3f8b-7eff-6d18-f9613e7c6972@libero.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfOYjQtd5RmlRl9ZedWnPmDMUuqlJAQjvwmP4/nt3x6gp5/EhVDkWdPEU9T3LSLfyX3HAzZ61TDAbVLgiir7ZeBVpT/zcxEbkGmON53AkDScHVTlYieLn
- Z2nOFLsag2ASt86er5++F3584u5yUrJ6yRo5YL3W/+jj9v9sCVusSrjAEpddX78VR6IizppLqjJKezRvS5bR1YMHMoS2NxVPFvFLzWhhtDZAooWHniVs0JrA
- hUVovkUJR792oQVlzo7hTAw5IoYa5jo/jZxGUAsXyHKushAQhHVTf1UT7v/knQ/cHErS6x4mV9O1Z5Wu8TlnpoqRhEPD0Iv9gzD0F64pKUzRdDcqxsBLrXZK
- OuopUBEmmlwDHIXAt3C7Gv9mw2WDbSF16dDaXLOlNic2bPlqItUIz9ZvFw9h39P1KeeuHHzu0/NhpblBRn29sU+vlPl1VA==
+References: <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
+ <CAK-xaQZS+ANoD+QbPTHwL-ErapA-7PDZe_z=OOWq_axAyR1KfA@mail.gmail.com> <eb0f5e05a563009af95439f446659cf3@mail.eclipso.de>
+In-Reply-To: <eb0f5e05a563009af95439f446659cf3@mail.eclipso.de>
+From:   Andrea Gelmini <andrea.gelmini@gmail.com>
+Date:   Fri, 8 Jan 2021 20:29:45 +0100
+Message-ID: <CAK-xaQbQPSS7=cH1qmb9S51CL34VRfyE_=eNwb-GhSL1b8Yz2g@mail.gmail.com>
+Subject: Re: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize
+ the SSD?
+To:     Cedric.dewijs@eclipso.eu
+Cc:     Linux BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/8/21 6:30 PM, Goffredo Baroncelli wrote:
-> On 1/8/21 2:05 AM, Zygo Blaxell wrote:
->> On Thu, May 28, 2020 at 08:34:47PM +0200, Goffredo Baroncelli wrote:
->>>
-> [...]
->>
->> I've been testing these patches for a while now.  They enable an
->> interesting use case that can't otherwise be done safely, sanely or
->> cheaply with btrfs.
-> 
-> Thanks Zygo for this feedback. As usual you are source of very interesting considerations.
->>
->> Normally if we have an array of, say, 10 spinning disks, and we want to
->> implement a writeback cache layer with SSD, we would need 10 distinct SSD
->> devices to avoid reducing btrfs's ability to recover from drive failures.
->> The writeback cache will be modified on both reads and writes, data and
->> metadata, so we need high endurance SSDs if we want them to make it to
->> the end of their warranty.  The SSD firmware has to not have crippling
->> performance bugs while under heavy write load, which means we are now
->> restricted to an expensive subset of high endurance SSDs targeted at
->> the enterprise/NAS/video production markets...and we need 10 of them!
->>
->> NVME has fairly draconian restrictions on drive count, and getting
->> anything close to 10 of them into a btrfs filesystem can be an expensive
->> challenge.  (I'm not counting solutions that use USB-to-NVME bridges
->> because those don't count as "sane" or "safe").
->>
->> We can share the cache between disks, but not safely in writeback mode,
->> because a failure in one SSD could affect multiple logical btrfs disks.
->> Strictly speaking we can't do it safely in any cache mode, but at least
->> with a writethrough cache we can recover the btrfs by throwing the SSDs
->> away.
-[...]
+Il giorno ven 8 gen 2021 alle ore 09:36 <Cedric.dewijs@eclipso.eu> ha scritto:
+> What happens when I poison one of the drives in the mdadm array using this command? Will all data come out OK?
+> dd if=/dev/urandom of=/dev/dev/sdb1 bs=1M count = 100?
 
-Hi Zygo,
+<smiling>
+Well, (happens) the same thing when your laptop is stolen or you read
+"open_ctree failed"...You restore backup...
+</smiling>
 
-could you elaborate the last sentence. What I understood is that in
-write-through mode, the ordering (and the barrier) are preserved.
-So this mode should be safe (bug a part).
+I have a few idea, but it's much more quicker to try it. Let's see:
 
-If this is true, it would be possible to have a btrfs multi (spinning)
-disks setup with only one SSD acting as cache. Of course, it will
-works only in write-through mode, and the main beneficial are related
-to caching the data for further next read.
+truncate -s 5G dev1
+truncate -s 5G dev2
+losetup /dev/loop31 dev1
+losetup /dev/loop32 dev2
+mdadm --create --verbose --assume-clean /dev/md0 --level=1
+--raid-devices=2 /dev/loop31 --write-mostly /dev/loop32
+mkfs.btrfs /dev/md0
+mount -o compress=lzo /dev/md0 /mnt/sg10/
+cd /mnt/sg10/
+cp -af /home/gelma/dev/kernel/ .
+root@glet:/mnt/sg10# dmesg -T
+[Fri Jan  8 19:51:33 2021] md/raid1:md0: active with 2 out of 2 mirrors
+[Fri Jan  8 19:51:33 2021] md0: detected capacity change from 0 to 5363466240
+[Fri Jan  8 19:51:53 2021] BTRFS: device fsid
+2fe43610-20e5-48de-873d-d1a6c2db2a6a devid 1 transid 5 /dev/md0
+scanned by mkfs.btrfs (512004)
+[Fri Jan  8 19:51:53 2021] md: data-check of RAID array md0
+[Fri Jan  8 19:52:19 2021] md: md0: data-check done.
+[Fri Jan  8 19:53:13 2021] BTRFS info (device md0): setting incompat
+feature flag for COMPRESS_LZO (0x8)
+[Fri Jan  8 19:53:13 2021] BTRFS info (device md0): use lzo compression, level 0
+[Fri Jan  8 19:53:13 2021] BTRFS info (device md0): disk space caching
+is enabled
+[Fri Jan  8 19:53:13 2021] BTRFS info (device md0): has skinny extents
+[Fri Jan  8 19:53:13 2021] BTRFS info (device md0): flagging fs with
+big metadata feature
+[Fri Jan  8 19:53:13 2021] BTRFS info (device md0): enabling ssd optimizations
+[Fri Jan  8 19:53:13 2021] BTRFS info (device md0): checking UUID tree
 
-Does anyone have further experiences ? Does anyone tried to
-recover a BTRFS filesystem when the cache disks died ?
+root@glet:/mnt/sg10# btrfs scrub start -B .
+scrub done for 2fe43610-20e5-48de-873d-d1a6c2db2a6a
+Scrub started:    Fri Jan  8 20:01:59 2021
+Status:           finished
+Duration:         0:00:04
+Total to scrub:   4.99GiB
+Rate:             1.23GiB/s
+Error summary:    no errors found
 
-Oh.. wait... Now I understood: if the caching disk read badly (but
-without returning an error), the bad data may be wrote on the other
-disks: in this case a single failure (the cache disk) may affect
-all the other disks and the redundancy is lost ...
+We check the array is in sync:
 
-BR
-G.Baroncelli
+root@glet:/mnt/sg10# cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5]
+[raid4] [raid10]
+md0 : active raid1 loop32[1](W) loop31[0]
+     5237760 blocks super 1.2 [2/2] [UU]
+
+unused devices: <none>
+
+Now we wipe the storage;
+root@glet:/mnt/sg10# dd if=/dev/urandom of=/dev/loop32 bs=1M count=100
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB, 100 MiB) copied, 0.919025 s, 114 MB/s
+
+sync
+
+echo 3 > /proc/sys/vm/drop_caches
+
+I do rm to force write i/o:
+
+root@glet:/mnt/sg10# rm kernel/v5.11/ -rf
+
+root@glet:/mnt/sg10# btrfs scrub start -B .
+scrub done for 2fe43610-20e5-48de-873d-d1a6c2db2a6a
+Scrub started:    Fri Jan  8 20:11:21 2021
+Status:           finished
+Duration:         0:00:03
+Total to scrub:   4.77GiB
+Rate:             1.54GiB/s
+Error summary:    no errors found
+
+Now, I stop the array and re-assembly:
+mdadm -Ss
+
+root@glet:/# mdadm --assemble /dev/md0 /dev/loop31 /dev/loop32
+mdadm: /dev/md0 has been started with 2 drives.
+
+root@glet:/# mount /dev/md0 /mnt/sg10/
+root@glet:/# btrfs scrub start -B  /mnt/sg10/
+scrub done for 2fe43610-20e5-48de-873d-d1a6c2db2a6a
+Scrub started:    Fri Jan  8 20:15:16 2021
+Status:           finished
+Duration:         0:00:03
+Total to scrub:   4.77GiB
+Rate:             1.54GiB/s
+Error summary:    no errors found
+
+Ciao,
+Gelma
