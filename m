@@ -2,118 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E632F0073
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Jan 2021 15:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6429D2F0111
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Jan 2021 17:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbhAIOOR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Jan 2021 09:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbhAIOOR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Jan 2021 09:14:17 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19670C061786
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 Jan 2021 06:13:37 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id t8so12838844iov.8
-        for <linux-btrfs@vger.kernel.org>; Sat, 09 Jan 2021 06:13:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ceremcem-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HauJ+Zr8V0QdZ7MLgF8LBDZcNv8m5GubtSjlVb0v0PE=;
-        b=Xi/3FMWHdB0yys7VESXun2Cokxxl4qMQpLO2solrbvRqiFA7H/mY9Kiyb13wUm6l7y
-         GUuY3jsQJRdz4zDqsKySL5BOeyXG7/c8zOJ4Zgwhm1BzpqcW2we6UJ8/Db1YDR8kXNB6
-         2E+h5HaWp6o0IdwqSptqOXDjHJ+Ibvu5X+W90SmCDhDo5HZQ3oe4KgLj0iyxY9EWAvLm
-         0I7+H9RMAWhZhd20oTBV+rBFLI2zO/1D1d14ycBi7hgVQBq9xnTYF943oHMyX1dW8+NI
-         5EBk/h6gxrr+FWWaOcL4Fopcx3PW5QonOALmqZrwepNTZu6VKzRJcS7wpShOZr7S8Dzk
-         cCjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HauJ+Zr8V0QdZ7MLgF8LBDZcNv8m5GubtSjlVb0v0PE=;
-        b=AeWx4X6lvv3qADfM26Q1JQ9oYQPgAKxbCBN3CsX1Er5keUe+H3fCs9ES8y9PJjm5s8
-         2rnfpB2JJjWzBKgjogQlMQEI+q6pZifnRdPvwBaZRdWuKQ1o6olWHz1jcFTAVw4vfnQf
-         mZhuJFCSMlfkSEqq0h4FCY/uYsyl5jdeqhHuTEJqBiYTh0tpNAP4ysjJ+Pa4fsp8zGy8
-         HTlSXICghFndpcpIenti0uE1eG/rPG2FVRP/jAWcj3z/xc++1RihDhHxG43xL/z8K+P2
-         EuBAHF+ujYYVCfkhjsM/SgdMAspcMKAckaMr59MIvfI75SzLRo9S6VrxDQcifROio8Pj
-         ihLA==
-X-Gm-Message-State: AOAM531PZjJWEzaPixwiG04FE7vVIRBhAc7Hflh8d0AcOfQlzuCOjVUw
-        jJ0lGd2tudxvzIYBES72RW5Ukwa48ID9qrE5tY9CsueXtOxjzlsC
-X-Google-Smtp-Source: ABdhPJyfhHNdpuChMKj7Eb1uycxWC06/qEixcOY6ydz0ondcgPXj+wq2l3/VSxAx91DZOB1D+UBABkmLH0ZeA+kzP8s=
-X-Received: by 2002:a6b:dc0f:: with SMTP id s15mr9197590ioc.180.1610201616291;
- Sat, 09 Jan 2021 06:13:36 -0800 (PST)
+        id S1726195AbhAIQCI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 9 Jan 2021 11:02:08 -0500
+Received: from mail.eclipso.de ([217.69.254.104]:34702 "EHLO mail.eclipso.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726005AbhAIQCI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 Jan 2021 11:02:08 -0500
+Received: from mail.eclipso.de (www1.eclipso.de [217.69.254.102])
+        by mail.eclipso.de with ESMTP id 7EE0E760
+        for <linux-btrfs@vger.kernel.org>; Sat, 09 Jan 2021 17:01:25 +0100 (CET)
+Date:   Sat, 09 Jan 2021 17:01:25 +0100
 MIME-Version: 1.0
-References: <CAN4oSBehVoPJxcdwD6wiohR9pSfAdSvzXabz6ohyFQibQ_VrxQ@mail.gmail.com>
- <CAJCQCtRx1kRDdDF7vK=9Y8vLS1azX5-Bh+_OosyqU=GuHhEv1w@mail.gmail.com>
-In-Reply-To: <CAJCQCtRx1kRDdDF7vK=9Y8vLS1azX5-Bh+_OosyqU=GuHhEv1w@mail.gmail.com>
-From:   Cerem Cem ASLAN <ceremcem@ceremcem.net>
-Date:   Sat, 9 Jan 2021 17:13:25 +0300
-Message-ID: <CAN4oSBcQsdKFVAn1yrpC+rzeOjmnWc5BWXVR_FWu5-yxqfTWng@mail.gmail.com>
-Subject: Re: btrfs receive eats CoW attributes
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <55cef4872380243c9422595700686b79@mail.eclipso.de>
+X-Mailer: eclipso / 7.4.0
+From:   " " <Cedric.dewijs@eclipso.eu>
+Subject: cloning a btrfs drive with send and receive: clone is bigger than the
+        original?
+Reply-To: " " <Cedric.dewijs@eclipso.eu>
+To:     <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I agree that the "--exclude" filter is the most necessary feature for
-'btrfs send' but I guess there must be some kind of technical issues
-which forced the author use "exclude by subvolume" approach.
+­I've got a drive with data, and 3 snapshots of that data. I've transferred all the snapshots to another drive using btrfs send and receive. The send drive has 3.62 GB of data, the receive drive has 4.99 GB of data. It seems like the snapshots don't share data between them that was unchanged.
 
-I guess any explicit settings should be transferred by default or
-there would be no default behavior and user should be required for an
-action explicitly.
+How can I transfer the snapshots in such a way that the snapshots only occupy the difference between the snapshots?
 
-There isn't a workaround till that day, is there?
+The data on the original drive is organized like this:
+/mnt/send/storage/ <= here's all the data
+/mnt/send/storage_snapshots/ <= here are the 3 snapshots
 
-Chris Murphy <lists@colorremedies.com>, 5 Oca 2021 Sal, 06:00
-tarihinde =C5=9Funu yazd=C4=B1:
->
-> On Mon, Jan 4, 2021 at 7:42 PM Cerem Cem ASLAN <ceremcem@ceremcem.net> wr=
-ote:
-> >
-> > I need my backups exactly same data, including the file attributes.
-> > Apparently "btrfs receive" ignores the CoW attribute. Here is the
-> > reproduction:
-> >
-> > btrfs sub create ./a
-> > mkdir a/b
-> > chattr +C a/b
-> > echo "hello" > a/b/file
-> > btrfs sub snap -r ./a ./a.ro
-> > mkdir x
-> > btrfs send a.ro | btrfs receive x
-> > lsattr a.ro
-> > lsattr x/a.ro
-> >
-> > Result is:
-> >
-> > # lsattr a.ro
-> > ---------------C--- a.ro/b
-> > # lsattr x/a.ro
-> > ------------------- x/a.ro/b
-> >
-> > Expected: x/a.ro/b folder should have CoW disabled (same as a.ro/b fold=
-er)
-> >
-> > How can I workaround this issue in order to have correct attributes in
-> > my backups?
->
-> It's the exact opposite issue with chattr +c (or btrfs property set
-> compression), you can't shake it off :)
->
-> I think we might need 'btrfs receive' to gain a new flag that filters
-> some or all of these? And the filter would be something like
-> --exclude=3D$1,$2,$3 and --exclude=3Dall
->
-> I have no strong opinion on what should be the default. But I think
-> probably the default should be "do not preserve any" because these
-> features aren't mkfs or mount time defaults, so I'd make preservation
-> explicitly opt in like they were on the original file system.
->
->
-> --
-> Chris Murphy
+The data on the receiving drive is organized like this:
+/mnt/rec/storage/ <= this folder is empty
+/mnt/rec/storage_snapshots/ <= here are the 3 snapshots
+/mnt/rec/btrfs_receive/ <= here are the 3 files generated by btrfs send 
+
+How can I transfer the snapshots in such a way that /mnt/rec/storage/ holds the latest version of the data, just like on the original drive?
+
+In detail:
+# mkfs.btrfs -L SEND /dev/sda3
+# mount /dev/sda3 /mnt/send/ -o,compress,noatime
+# mkfs.btrfs /dev/sdd2 -L DATA
+# mount /dev/sdd2 ./mnt/rec/ -o,compress,noatime
+# btrfs subvolume create /mnt/rec/btrfs_receive/
+Create subvolume '/mnt/rec/btrfs_receive'
+# btrfs subvolume create /mnt/rec/storage_snapshots
+
+# btrfs subvolume create /mnt/send/storage
+# btrfs subvolume create /mnt/send/storage_snapshots
+# cd /mnt/send/storage
+# /home/cedric/mkfiles_and_md5.sh <<generates/ change data on the send drive >>
+# btrfs subvolume snapshot -r /mnt/send/storage /mnt/send/storage_snapshots/storage-$(date +%Y_%m_%d-%H%m)
+Create a readonly snapshot of '/mnt/send/storage' in '/mnt/send/storage_snapshots/storage-2021_01_09-1301'
+# /home/cedric/mkfiles_and_md5.sh <<generates/ change data on the send drive >>
+btrfs subvolume snapshot -r /mnt/send/storage /mnt/send/storage_snapshots/storage-$(date +%Y_%m_%d-%H%m%S)
+Create a readonly snapshot of '/mnt/send/storage' in '/mnt/send/storage_snapshots/storage-2021_01_09-130120'
+# /home/cedric/mkfiles_and_md5.sh <<generates/ change data on the send drive >>
+# btrfs subvolume snapshot -r /mnt/send/storage /mnt/send/storage_snapshots/storage-$(date +%Y_%m_%d-%H%m%S)
+Create a readonly snapshot of '/mnt/send/storage' in '/mnt/send/storage_snapshots/storage-2021_01_09-130146'
+
+# btrfs send /mnt/send/storage_snapshots/storage-2021_01_09-1301 -f /mnt/rec/btrfs_receive/storage-2021_01_09-1301.btrfssend
+At subvol /mnt/send/storage_snapshots/storage-2021_01_09-1301
+[root@bcache-test rec]# btrfs send -p /mnt/send/storage_snapshots/storage-2021_01_09-1301 /mnt/send/storage_snapshots/storage-2021_01_09-130120 -f /mnt/rec/btrfs_receive/storage-2021_01_09-130120.btrfssend
+At subvol /mnt/send/storage_snapshots/storage-2021_01_09-130120
+[root@bcache-test rec]# btrfs send -p /mnt/send/storage_snapshots/storage-2021_01_09-130120 /mnt/send/storage_snapshots/storage-2021_01_09-130146 -f /mnt/rec/btrfs_receive/storage-2021_01_09-130146.btrfssend
+At subvol /mnt/send/storage_snapshots/storage-2021_01_09-130146
+
+# btrfs receive -f /mnt/rec/btrfs_receive/storage-2021_01_09-1301.btrfssend  /mnt/rec/storage_snapshots
+At subvol storage-2021_01_09-1301
+# btrfs receive -f /mnt/rec/btrfs_receive/storage-2021_01_09-130120.btrfssend  /mnt/rec/storage_snapshots
+At snapshot storage-2021_01_09-130120
+# btrfs receive -f /mnt/rec/btrfs_receive/storage-2021_01_09-130146.btrfssend /mnt/rec/storage_snapshots
+At snapshot storage-2021_01_09-130146
+
+# rm /mnt/rec/btrfs_receive/storage-2021_01_09-1301*
+# btrfs filesystem show
+Label: 'SEND'  uuid: 61b7e45f-62a7-4b04-bc0c-ba1304548b02
+	Total devices 1 FS bytes used 3.62GiB
+	devid    1 size 5.00GiB used 4.52GiB path /dev/sda3
+
+Label: 'DATA'  uuid: 95e85fa4-217c-429a-be55-833bb63e2c71
+	Total devices 1 FS bytes used 4.99GiB
+	devid    1 size 931.01GiB used 10.02GiB path /dev/sdd2
+
+
+---
+
+Take your mailboxes with you. Free, fast and secure Mail &amp; Cloud: https://www.eclipso.eu - Time to change!
+
+
