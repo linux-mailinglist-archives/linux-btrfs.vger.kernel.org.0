@@ -2,127 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6722F082B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 16:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BD62F0995
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 20:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbhAJPjR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Jan 2021 10:39:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbhAJPjQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Jan 2021 10:39:16 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3DEC061794
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jan 2021 07:38:35 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id v67so6008155lfa.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jan 2021 07:38:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oAcLaNVJTJBnqpgMhIvtj3rusLo/C8g3ZcWWSCdusSw=;
-        b=TKHEAnu2k9A5tP6KwSCm1369kHgWeLP9yOTWkn4gdluVJTBLjrN6Q+zirwuAS+irMH
-         7QWFNP/YRIUGb1o4QntIkopa1k9EbhM4tC2xqmUbNYRkRjyXlXTec1AUqDtV+pVbn3Kk
-         q3wPZtRMGSkBfouX/C6KhkE6gmMONoIAawcRrCYn/cMWMTmIkGDCMiT0xztz0lY1Xamn
-         ZZeh+h9y4bM4MkUX/GYcwOfbm2fNLp9p9aj2zDOWyDY64VmEo7HMzai8LxTKiZ37xgTB
-         5EBlMYUzKBUaGzPpz2D1OAn05lqyA1r0cDLy7Wqp+/NLxq6hBWv8XZwlRWDWsqShv/ng
-         kFrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oAcLaNVJTJBnqpgMhIvtj3rusLo/C8g3ZcWWSCdusSw=;
-        b=BLDJG4CzyLTg8Z4AF2cqkdVqYxDgYT5k8L2vU1Aq+r5OcVEzyCkmX8/sFOzJXIUpI5
-         zCBoz7X7bvNiLg1uffyXdtWNvHA04U46NycGYLULTEXoQvLzV76bjmGE2wZC8fymwucb
-         CjfWF3EUiED+q3yJIQT240YSKnhDnbtzk8xvuh61btLcGfH7tCT1qXHCvGYSQ/EyRAa6
-         8IPbORmHqWWB5n1h91SQra0lDsMDhN2wcMnOb4npm6yP6vObBAe8NUVjRGiimDUpn7OW
-         Iv0o998TyKlEooePprzIng6IR55MoWzadMAYTdWLwLcC8yDVDKSIULkUgH4WtTECCbvG
-         U2cg==
-X-Gm-Message-State: AOAM533CjdHw/jmnb+k3qdp95dtFeqOiYekaLkaNNAsnBYIj/VCwuZno
-        GMgMtxC6Sc62Y5e6GTZKl2nL2b7oH84=
-X-Google-Smtp-Source: ABdhPJxc3Y9j2aZgb7Y8qBWlgfcTChoQyYSlXIPM5k/o40GEf0+cX0PUuw0OH4SMBaU4Sbwlc3ZTpg==
-X-Received: by 2002:a19:cc05:: with SMTP id c5mr5283322lfg.393.1610293114269;
-        Sun, 10 Jan 2021 07:38:34 -0800 (PST)
-Received: from ?IPv6:2a00:1370:812d:ecb3:590f:aaab:50ba:573b? ([2a00:1370:812d:ecb3:590f:aaab:50ba:573b])
-        by smtp.gmail.com with ESMTPSA id v7sm2984952ljk.60.2021.01.10.07.38.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Jan 2021 07:38:33 -0800 (PST)
-Subject: Re: cloning a btrfs drive with send and receive: clone is bigger than
- the original?
-To:     Hugo Mills <hugo@carfax.org.uk>, Graham Cobb <g.btrfs@cobb.uk.net>,
-        Cedric.dewijs@eclipso.eu, linux-btrfs@vger.kernel.org
-References: <55cef4872380243c9422595700686b79@mail.eclipso.de>
- <2752504c-d086-0977-06a3-1bb22c799a70@gmail.com>
- <b709a56556c3adfc9ff352f2a51db3a3@mail.eclipso.de>
- <067af02fb023de04276f14aa6f26ae8e@mail.eclipso.de>
- <8344b57d-9a2a-f4e9-59cb-42d6a7fa0600@cobb.uk.net>
- <20210110132112.GA1374@savella.carfax.org.uk>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- mQGiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kbQmQW5kcmV5IEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT6IYAQTEQIAIAUCSXs6NQIbAwYLCQgHAwIE
- FQIIAwQWAgMBAh4BAheAAAoJEEeizLraXfeMLOYAnj4ovpka+mXNzImeYCd5LqW5to8FAJ4v
- P4IW+Ic7eYXxCLM7/zm9YMUVbrQmQW5kcmVpIEJvcnplbmtvdiA8YXJ2aWRqYWFyQGdtYWls
- LmNvbT6IZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AFAliWAiQCGQEACgkQ
- R6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE21cAnRCQTXd1hTgcRHfpArEd/Rcb5+Sc
- uQENBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw15A5asua10jm5It+hxzI9jDR9/bNEKDTK
- SciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/RKKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmm
- SN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaNnwADBwQAjNvMr/KBcGsV/UvxZSm/mdpv
- UPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPRgsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YI
- FpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhYvLYfkJnc62h8hiNeM6kqYa/x0BEddu92
- ZG6IRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhdAJ48P7WDvKLQQ5MKnn2D/TI337uA/gCg
- n5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <7de05d01-662d-f05f-cba8-a2524a088673@gmail.com>
-Date:   Sun, 10 Jan 2021 18:38:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726742AbhAJT4X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Jan 2021 14:56:23 -0500
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:38307 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726267AbhAJT4W (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 Jan 2021 14:56:22 -0500
+Received: from venice.bhome ([94.37.172.193])
+        by smtp-33.iol.local with ESMTPA
+        id ygoKkXNUE11DDygoKkmGTR; Sun, 10 Jan 2021 20:55:39 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1610308539; bh=7uezALET3L5FRHI5fim5Cq2+sW4b5wiNJqWYXou5HQw=;
+        h=From;
+        b=XXSTczz/KKNgv5WMQLin27cUtn+P8bjvt9qwWEtVqxsqZ87Wu0NEwjymcxmsGK2t1
+         O4HCb4FopgDfTTnMh2xbp7lyu2oAdxmwnGgBzWaGg2SsghDLVOOrbvZ6R281ZF18Fy
+         M9TPSlSKi5PhsvN5KigpJZsB3MICWAyczZUFlJ2lQyV9lKSnCpHmbEviKNSwADReTv
+         dzX5bizF5IoqH3SU7YcTHGt+YBqMxuGSPGew3ZRTOVe1BcShQxBq42Ae5WQciITazG
+         Wkzm/DepWsOYUfH0V75r3t0dF7GX63DsyhMVH07LJgkZj+SZt5oqcMl5kZhXI2RJJP
+         yzoJkJF6lXX0Q==
+X-CNFS-Analysis: v=2.4 cv=ba6u7MDB c=1 sm=1 tr=0 ts=5ffb5bbb cx=a_exe
+ a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
+ a=IkcTkHD0fZMA:10 a=uF-7IkXcZ87nL_LRmAkA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [RFC][PATCH V4] btrfs: preferred_metadata: preferred device for
+ metadata
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org, Michael <mclaud@roznica.com.ua>,
+        Hugo Mills <hugo@carfax.org.uk>,
+        Martin Svec <martin.svec@zoner.cz>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Paul Jones <paul@pauljones.id.au>,
+        Adam Borowski <kilobyte@angband.pl>
+References: <20200528183451.16654-1-kreijack@libero.it>
+ <20210108010511.GZ31381@hungrycats.org>
+ <bc7d874f-3f8b-7eff-6d18-f9613e7c6972@libero.it>
+ <20210109212332.GB31381@hungrycats.org>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <7a9baa1b-8426-751a-cd73-47ad246a946f@inwind.it>
+Date:   Sun, 10 Jan 2021 20:55:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210110132112.GA1374@savella.carfax.org.uk>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210109212332.GB31381@hungrycats.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNPymNDcNc4QPNpoNu/uKw9R5/Ou5wttvmIRG4VYZ4EvefuieXeyYJx7DobIqQyY06UbmGJkod0rIZ4s9FnLVu9L5uQ6wTmWo4nB4WH9s74hqI1h8Ny3
+ vlHoFpKnKo7U/xz2QVqcHHdYjW9A6Sbe1N3kz1wQwkcFQBp4wjww3LCSiVgPvenl+S1LYcYJ0iiFrgIUTWzfYViZS2trX1qK/Vo6QFp8FhN/bqmUMxXMRFM/
+ 1JkgfZxs3DctEuiyjG3AL3YUu41JOfjk6x4xhzDsg0efSryLxUin6oDcCrM5Kbl0pIIQ32iY2ce/X7KBpQHJU97VIWe5cgSHz1CuD5saL/WwzNjYHP2K5qZq
+ 78ICydB7b4cTr4at0gZECiA4dCbUFhVq8FX1XBuypLGJ0Pbl87756eFGNa8ZzP1nO6RWexwCl8v4pH5gkKi55f201M4m8A==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-10.01.2021 16:21, Hugo Mills пишет:
-> On Sun, Jan 10, 2021 at 01:06:44PM +0000, Graham Cobb wrote:
->> On 10/01/2021 07:41, Cedric.dewijs@eclipso.eu wrote:
->>> I've tested some more.
->>>
->>> Repeatedly sending the difference between two consecutive snapshots creates a structure on the target drive where all the snapshots share data. So 10 snapshots of 10 files of 100MB takes up 1GB, as expected.
->>>
->>> Repeatedly sending the difference between the first snapshot and each next snapshot creates a structure on the target drive where the snapshots are independent, so they don't share any data. How can that be avoided?
->>
->> If you send a snapshot B with a parent A, any files not present in A
->> will be created in the copy of B. The fact that you already happen to
->> have a copy of the files somewhere else on the target is not known to
->> either the sender or the receiver - how would it be?
->>
->> If you want the send process to take into account *other* snapshots that
->> have previously been sent, you need to tell send to also use those
->> snapshots as clone sources. That is what the -c option is for.
-> 
->    And even then, it won't spot files that are identical but which
-> don't share extents.
-> 
+On 1/9/21 10:23 PM, Zygo Blaxell wrote:
 
-It won't with "btrfs send -p" as well.
+> On a loaded test server, I observed 90th percentile fsync times
+> drop from 7 seconds without preferred_metadata to 0.7 seconds with
+> preferred_metadata when all the metadata is on the SSDs.  If some metadata
+> ever lands on a spinner, we go back to almost 7 seconds latency again
+> (it sometimes only gets up to 5 or 6 seconds, but it's still very bad).
+> We lost our performance gain, so our test resulted in failure.
 
->> Alternatively, use a deduper on the destination after the receive has
->> finished and let it work out what can be shared.
-> 
->    This is a viable approach.
-> 
->    Hugo.
-> 
+Wow, this is a very interesting information: an use case where there is a
+10x increase of speed !
 
+Could you share more detail about this server. With more data that supporting
+this patch, we can convince David to include it.
+
+[...]
+> 
+> We could handle all these use cases with two bits:
+> 
+> 	bit 0:  0 = prefer data, 1 = prefer metadata
+> 	bit 1:  0 = allow other types, 1 = exclude other types
+> 
+> which gives 4 encoded values:
+> 
+> 	0 = prefer data, allow metadata (default)
+> 	1 = prefer metadata, allow data (same as v4 patch)
+> 	2 = prefer data, disallow metadata
+> 	3 = prefer metadata, disallow data
+
+What you are suggesting allows the maximum flexibility. However I still
+fear that we are mixing two discussions that are unrelated except that
+the solution *may* be the same:
+
+1) the first discussion is related to the increasing of performance
+because we put the metadata in the faster disks and the data in
+the slower one.
+
+2) the second discussion is how avoid that the chunk data consumes space of
+the metadata.
+
+Regarding 2), I think that a more generic approach is something like:
+- don't allocate *data* chunk if the chunk free space is less than <X>
+Where <X> is the maximum size of a metadata chunk (IIRC 1GB ?), eventually
+multiplied by 2x or 3x.
+Instead the metadata allocation policy is still constrained only to have
+enough space. As further step (to allow a metadata balance command to success), we
+could constraint the metadata allocation policy to allocate up to the half of the
+available space ( or 1 GB, whichever is smaller)
+
+Regarding 1) I prefer to leave the patch as simple as possible to increase
+the likelihood of an inclusion. Eventually we can put further constraint after.
+
+Anyway I am rebasing the patch to the latest kernel. Let me to check how complex
+could be implement you algorithm (the two bits one).
+
+BR
+G.Baroncelli
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
