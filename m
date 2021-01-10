@@ -2,184 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EFC2F05DF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 08:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDC22F061C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 10:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbhAJHzn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Jan 2021 02:55:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
+        id S1725923AbhAJJA4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Jan 2021 04:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbhAJHzn (ORCPT
+        with ESMTP id S1725807AbhAJJA4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Jan 2021 02:55:43 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57774C061786
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 Jan 2021 23:55:02 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id m25so33267202lfc.11
-        for <linux-btrfs@vger.kernel.org>; Sat, 09 Jan 2021 23:55:02 -0800 (PST)
+        Sun, 10 Jan 2021 04:00:56 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49379C061786
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jan 2021 01:00:14 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id p14so12293694qke.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jan 2021 01:00:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IBzenC9f2sWtjRe3ACtPFvcwmoYxZAAAT3CLjDJsB8k=;
-        b=RF9+EyqjLG0mDVp0B6hVtMpZxMz7rlz5BhnzHZp6WMlc4cWB7+Cz3jajMnTcgZky9l
-         GiVpNrr2SNXIVbTydXJAzxVvkwJ4CW1isgsOOiKi53TZSamMZpinbPrBLLP3Q1FpKIto
-         ddgJCHjAqcORpO3gc0VK43qRTbN0vJdYtIBmcDqeyoDT1rnroV5T4G3gFyhzsahXlREy
-         iqUjLYQ+0gz3ZnQhdTNCGrOJlzxNZuL5zQiWUH+6seqDezc8s3j0TNlvhwQsgBuSOVOb
-         QFb5c5CA4AHgBa8InK0BXVG3Gwv8Thj7YgnEz2h8xGD9k+4R6CQQeCr5UK3HPr7DzjmP
-         5lcw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=baFJfo71OOE9so4+4MiZfwVdkPvUXb+hwOSL3OMq9Pc=;
+        b=U2TPiSxufF0GzsdvvAUJfC2JRCM4eFtNCJqolRHDKQq6ZUMEM+RlT+UtgIyuvaNU1H
+         NsTab5nZTIa2QrSEsAdKEh8nunHhTmZI0Fq6lmHFUxGCZa/eJ2a8+ycGoCITqmoVn/8K
+         oZKa7qy8q8bO8D1ktRNWMAv3BA7yW4CjqojMez4AV47kgzbLROCfVJe8B5khcXsbylcT
+         7x49VuizmYuEVKNgdQ7d5Wtd3VK5MGVKkVkxOdMpoFbODDYxolL5cTRqka11BZSFhkq1
+         8xlAkJpTI4xrQzDNrwizR2pFuPoyMIj7xEYzinvAGWkKrc+O84cRYE9WYouumVrEiLsj
+         ZWzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=IBzenC9f2sWtjRe3ACtPFvcwmoYxZAAAT3CLjDJsB8k=;
-        b=maeRVazJgkqBnSQCxsupNQCForKym2PC/xQJ9IGJZrqNRdEpq3bXJgUuuV/sUAAbrZ
-         CNNqJjelpQ1MaTUVfzBzlxZkdD/pZzm+WmU0jR1izX2EkqAPO3XCBAFVzO34wnvFXXH1
-         3xQDvNEooeunR67e62xF3A/dW4kylTuZhkBZbtaX/tatD+lkVmIPAJY2nJziPm6v1m1X
-         Hga9HE5zJEQ2o5HuZIthXDN0SVanMUh6YNA8MH88wNnfyJ5fa4E9+lIrlZACHTIiOiTr
-         CZ67qGkfazmrYtc9J/csGmS2gPCYemmzpWq+eOlf3gM8Y1hzEBcLI4KvqE5xoLmpWJVz
-         coQA==
-X-Gm-Message-State: AOAM531A4M0GakioCM+M/QEhtEUJD+EMOZzrZiMR20IMdk5XX0/RtXm0
-        8DJcFPo/zUWpR9/9TZRujREMIdwEwJM=
-X-Google-Smtp-Source: ABdhPJy5pEGp4O0tt54S+pzygG3rdWQoW5sO70oMRm8PELyoZd+woCdw69vqgPcPxd/rDBGoWlobDw==
-X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr5422885lfs.529.1610265300647;
-        Sat, 09 Jan 2021 23:55:00 -0800 (PST)
-Received: from ?IPv6:2a00:1370:812d:ecb3:590f:aaab:50ba:573b? ([2a00:1370:812d:ecb3:590f:aaab:50ba:573b])
-        by smtp.gmail.com with ESMTPSA id k11sm2944219lji.95.2021.01.09.23.54.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Jan 2021 23:55:00 -0800 (PST)
-Subject: Re: cloning a btrfs drive with send and receive: clone is bigger than
- the original?
-To:     Cedric.dewijs@eclipso.eu
-Cc:     linux-btrfs@vger.kernel.org
-References: <55cef4872380243c9422595700686b79@mail.eclipso.de>
- <2752504c-d086-0977-06a3-1bb22c799a70@gmail.com>
- <b709a56556c3adfc9ff352f2a51db3a3@mail.eclipso.de>
- <067af02fb023de04276f14aa6f26ae8e@mail.eclipso.de>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- mQGiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kbQmQW5kcmV5IEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT6IYAQTEQIAIAUCSXs6NQIbAwYLCQgHAwIE
- FQIIAwQWAgMBAh4BAheAAAoJEEeizLraXfeMLOYAnj4ovpka+mXNzImeYCd5LqW5to8FAJ4v
- P4IW+Ic7eYXxCLM7/zm9YMUVbrQmQW5kcmVpIEJvcnplbmtvdiA8YXJ2aWRqYWFyQGdtYWls
- LmNvbT6IZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AFAliWAiQCGQEACgkQ
- R6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE21cAnRCQTXd1hTgcRHfpArEd/Rcb5+Sc
- uQENBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw15A5asua10jm5It+hxzI9jDR9/bNEKDTK
- SciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/RKKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmm
- SN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaNnwADBwQAjNvMr/KBcGsV/UvxZSm/mdpv
- UPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPRgsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YI
- FpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhYvLYfkJnc62h8hiNeM6kqYa/x0BEddu92
- ZG6IRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhdAJ48P7WDvKLQQ5MKnn2D/TI337uA/gCg
- n5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <3ac5e61c-a6ca-dfd0-e4db-a02569657ff3@gmail.com>
-Date:   Sun, 10 Jan 2021 10:54:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=baFJfo71OOE9so4+4MiZfwVdkPvUXb+hwOSL3OMq9Pc=;
+        b=hFcndTe8LopSgorS8e4NKqthIovZgSgy+arPgX+nEO2IULXmt4eJsPxiQjYgdY9HAJ
+         Bm0V7ymUX9h06Ki5wzlS9NaPvM8MkOp54E3A37Lo3Ju6c+aPqjcLLBoDwqvThwSv/dXP
+         dwPm+QjMNH7b4zizuKL/kNe/shNOjBx7nBNZYAXw+xsoUrEg8cW6H0zI8h4RCQzWvb44
+         u8ib3Tr8dfrYIw6JhbGvbLNr885LjKnCl8zzBMbXmZdyatV/lf+Nzlsngh5RjbLllh79
+         Yr2pVR1342R7iUKKZ9SnRxq6uLYXCzSAhiWxTVltvzia+H7mb/f4Vpc7BL2KBZEXsRyf
+         t5VA==
+X-Gm-Message-State: AOAM530k+QWdXj5yFgc0oJEEaqh67vvePFA/pFYeHW6oQrYFj/RSRfmK
+        pDyRIzwq/FTwUcFH2xEUlKIXNkmUU/DqPEgkIyA=
+X-Google-Smtp-Source: ABdhPJz5wIEtTCP9LafdDPk4NdMS1CbwD4YwYYkhYt9y/W+TShpsP/ZZde4TraWd17+JtOVI6Grn53YvunXPy9LTJDg=
+X-Received: by 2002:a37:a06:: with SMTP id 6mr11434487qkk.376.1610269213388;
+ Sun, 10 Jan 2021 01:00:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <067af02fb023de04276f14aa6f26ae8e@mail.eclipso.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <28232f6c03d8ae635d2ddffe29c82fac@mail.eclipso.de>
+ <CAK-xaQZS+ANoD+QbPTHwL-ErapA-7PDZe_z=OOWq_axAyR1KfA@mail.gmail.com>
+ <eb0f5e05a563009af95439f446659cf3@mail.eclipso.de> <CAK-xaQbQPSS7=cH1qmb9S51CL34VRfyE_=eNwb-GhSL1b8Yz2g@mail.gmail.com>
+ <20210109214032.GC31381@hungrycats.org>
+In-Reply-To: <20210109214032.GC31381@hungrycats.org>
+From:   Andrea Gelmini <andrea.gelmini@gmail.com>
+Date:   Sun, 10 Jan 2021 10:00:01 +0100
+Message-ID: <CAK-xaQZ=ZNqkruDSjNdprDfj5nAh5TdCpT+sv0nB6LqCRu7dmQ@mail.gmail.com>
+Subject: Re: Re: Raid1 of a slow hdd and a fast(er) SSD, howto to prioritize
+ the SSD?
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Cedric.dewijs@eclipso.eu, Linux BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-10.01.2021 10:41, Cedric.dewijs@eclipso.eu пишет:
-> I've tested some more.
-> 
-> Repeatedly sending the difference between two consecutive snapshots creates a structure on the target drive where all the snapshots share data. So 10 snapshots of 10 files of 100MB takes up 1GB, as expected.
-> 
-> Repeatedly sending the difference between the first snapshot and each next snapshot creates a structure on the target drive where the snapshots are independent, so they don't share any data.
+Il giorno sab 9 gen 2021 alle ore 22:40 Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> ha scritto:
+>
+> On Fri, Jan 08, 2021 at 08:29:45PM +0100, Andrea Gelmini wrote:
+> > Il giorno ven 8 gen 2021 alle ore 09:36 <Cedric.dewijs@eclipso.eu> ha scritto:
+> > > What happens when I poison one of the drives in the mdadm array using this command? Will all data come out OK?
+> > > dd if=/dev/urandom of=/dev/dev/sdb1 bs=1M count = 100?
+> You have used --assume-clean and didn't tell mdadm otherwise since,
+> so this test didn't provide any information.
 
-How should "btrfs receive" know that in
+I know mdadm, no need of your explanation.
 
-btrfs send -p base snap1 | btrfs receive
-btrfs send -p base snap2 | btrfs receive
+"--assume-clean" is used on purpose because:
+a) the two devices are already identical;
+b) no need two sync something (even if they were random filled), that
+are going to be formatted and data filled, so - more or less - each
+block is rewritten.
 
-snap1 and snap2 are related? By definition "btrfs send -p base" computes
-difference to base snapshot and btrfs receive applies this difference to
-replica of base snapshot. btrfs receive cannot reuse replica of snap1
-because send stream does not contain any information about it.
+> On real disks a mdadm integrity check at this point fail very hard since
+> the devices have never been synced (unless they are both blank devices
+> filled with the same formatting test pattern or zeros).
 
+I disagree. My point is: who cares about blocks never touched by the filesystem?
 
-> How can that be avoided?
-> 
+> > root@glet:/mnt/sg10# dd if=/dev/urandom of=/dev/loop32 bs=1M count=100
+>
+> With --write-mostly, the above deterministically works, and
+>
+>         dd if=/dev/urandom of=/dev/loop31 bs=1M count=100
+>
+> deterministically damages or destroys the filesystem.
 
-You can specify additional clone sources (btrfs send -p base -c snap1
-snap2) but in your example the most efficient is to send delta between
-two consecutive snapshots.
+My friend, read the question, he asked about what happens if you
+poison the second device.
+Of course if you poison /dev/md0 or the main device what else can
+happen, in such situation?
+Thanks god you told us, because we are all so much stupid!
 
-> Script (version that sends the difference between the first snapshot and each current snapshot):
-> # cat ~/btrfs-send-test.sh 
-> #!/bin/bash
-> 
-> btrfs subvolume delete /mnt/send/storage
-> btrfs subvolume delete /mnt/send/snapshots/*
-> btrfs subvolume delete /mnt/send/snapshots/
-> btrfs subvolume delete /mnt/rec/diff
-> btrfs subvolume delete /mnt/rec/snapshots/*
-> btrfs subvolume delete /mnt/rec/snapshots/
-> sync
-> btrfs subvolume create /mnt/send/storage
-> btrfs subvolume create /mnt/send/snapshots/
-> btrfs subvolume create /mnt/rec/diff
-> btrfs subvolume create /mnt/rec/snapshots
-> 
-> btrfs subvolume snapshot -r /mnt/send/storage/ /mnt/send/snapshots/0
-> btrfs send /mnt/send/snapshots/0 | btrfs receive /mnt/rec/snapshots
-> 
-> onelesscounter=0
-> counter=1
-> while [ $counter -le 10 ]
-> do
-> 	dd if=/dev/urandom of=/mnt/send/storage/file$( printf %03d "$counter" ).bin bs=1M count=100
-> 	md5sum /mnt/send/storage/file$( printf %03d "$counter" ).bin >> /mnt/send/storage/md5sums.txt
-> 	btrfs subvolume snapshot -r /mnt/send/storage /mnt/send/snapshots/$counter
-> 	btrfs send -p /mnt/send/snapshots/0 /mnt/send/snapshots/$counter -f /mnt/rec/diff/$counter
-> 	#btrfs send -p /mnt/send/snapshots/$onelesscounter /mnt/send/snapshots/$counter -f /mnt/rec/diff/$counter 
-> 	btrfs receive -f /mnt/rec/diff/$counter /mnt/rec/snapshots
-> 	((counter++))
-> 	((onelesscounter++))
-> done
-> echo All done
-> 
-> # df -h
-> /dev/sda3       5.0G 1007M  3.6G  22% /mnt/send
-> /dev/sdd2       932G   11G  919G   2% /mnt/rec
-> 
-> # ls -lh /mtn/rec/diff
-> total 5.4G
-> -rw------- 1 root root  101M Jan 10 09:17 1
-> -rw------- 1 root root 1001M Jan 10 09:19 10
-> -rw------- 1 root root  201M Jan 10 09:17 2
-> -rw------- 1 root root  301M Jan 10 09:17 3
-> -rw------- 1 root root  401M Jan 10 09:17 4
-> -rw------- 1 root root  501M Jan 10 09:17 5
-> -rw------- 1 root root  601M Jan 10 09:18 6
-> -rw------- 1 root root  701M Jan 10 09:18 7
-> -rw------- 1 root root  801M Jan 10 09:18 8
-> -rw------- 1 root root  901M Jan 10 09:18 9
-> 
-> #rm /mtn/rec/diff/*
-> #sync
-> 
-> # df -h
-> /dev/sda3       5.0G 1007M  3.6G  22% /mnt/send
-> /dev/sdd2       932G  5.4G  924G   1% /mnt/rec  <= all data is individually stored in the snapshots?
-> 
-> 
-> 
-> ---
-> 
-> Take your mailboxes with you. Free, fast and secure Mail &amp; Cloud: https://www.eclipso.eu - Time to change!
-> 
-> 
+My point of view is: you can use mdadm to defend from real case
+scenario  (first hard drive die,
+the second slow one goes on, and you have all your data up to date,
+and if you are afraid of
+bit rotten data, you have btrfs checksum).
+Also, even if the second/slow hard drive is out-of-sync of seconds, it
+would like if unplugged while working.
+All cool feature of BTRFS (transaction, checksums, dup btree and so
+on) will recover filesystem and do the rest, isn't it?
 
+Thinking about "what if I trick my system here and there" is
+absolutely fun, but no real use case, for me.
+
+What if I expose BTRFS devices to cosmic rays and everything is wiped out?
+
+(I know, my only hero Qu is already preparing a patch - as usual -
+while others starts to write poems...)
+
+Don't take it personally and smile,
+Gelma
