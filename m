@@ -2,121 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BD62F0995
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 20:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1382F0A0A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 23:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbhAJT4X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Jan 2021 14:56:23 -0500
-Received: from smtp-33.italiaonline.it ([213.209.10.33]:38307 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726267AbhAJT4W (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Jan 2021 14:56:22 -0500
-Received: from venice.bhome ([94.37.172.193])
-        by smtp-33.iol.local with ESMTPA
-        id ygoKkXNUE11DDygoKkmGTR; Sun, 10 Jan 2021 20:55:39 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1610308539; bh=7uezALET3L5FRHI5fim5Cq2+sW4b5wiNJqWYXou5HQw=;
-        h=From;
-        b=XXSTczz/KKNgv5WMQLin27cUtn+P8bjvt9qwWEtVqxsqZ87Wu0NEwjymcxmsGK2t1
-         O4HCb4FopgDfTTnMh2xbp7lyu2oAdxmwnGgBzWaGg2SsghDLVOOrbvZ6R281ZF18Fy
-         M9TPSlSKi5PhsvN5KigpJZsB3MICWAyczZUFlJ2lQyV9lKSnCpHmbEviKNSwADReTv
-         dzX5bizF5IoqH3SU7YcTHGt+YBqMxuGSPGew3ZRTOVe1BcShQxBq42Ae5WQciITazG
-         Wkzm/DepWsOYUfH0V75r3t0dF7GX63DsyhMVH07LJgkZj+SZt5oqcMl5kZhXI2RJJP
-         yzoJkJF6lXX0Q==
-X-CNFS-Analysis: v=2.4 cv=ba6u7MDB c=1 sm=1 tr=0 ts=5ffb5bbb cx=a_exe
- a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
- a=IkcTkHD0fZMA:10 a=uF-7IkXcZ87nL_LRmAkA:9 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: [RFC][PATCH V4] btrfs: preferred_metadata: preferred device for
- metadata
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org, Michael <mclaud@roznica.com.ua>,
-        Hugo Mills <hugo@carfax.org.uk>,
-        Martin Svec <martin.svec@zoner.cz>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Paul Jones <paul@pauljones.id.au>,
-        Adam Borowski <kilobyte@angband.pl>
-References: <20200528183451.16654-1-kreijack@libero.it>
- <20210108010511.GZ31381@hungrycats.org>
- <bc7d874f-3f8b-7eff-6d18-f9613e7c6972@libero.it>
- <20210109212332.GB31381@hungrycats.org>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-Message-ID: <7a9baa1b-8426-751a-cd73-47ad246a946f@inwind.it>
-Date:   Sun, 10 Jan 2021 20:55:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726906AbhAJWq1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Jan 2021 17:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbhAJWq0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 Jan 2021 17:46:26 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5A1C061786
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jan 2021 14:45:46 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 3so13373676wmg.4
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Jan 2021 14:45:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oZJ/HURHostNBsAGSSvKBPkFbSQfDPFbv+ETaYZqdNQ=;
+        b=kA01pUZ7m3McI1aEBNVqYFpyndnTwYaOhTH7l0zwaBELm6ZKAE8huEH/TgMGseDOFX
+         xW3TWTvpqDrcySOGaHrB/0J3UktthA0ntNFP2DYoPdj7nx8+7lzMtD1VV8cgna4RY/fi
+         2arWU0xCc+fs2Sv54F6/Z7yP3ZNCu3oJLOhHJif8wplL/aCzwh5SXfZI+pt1le8TnNFc
+         JatrNcOq9KfSrphwZelZTHJdkuTQR5iRYwdCGK7fWHcQ1HDR10kyt3cmt+Z8AipjHWaY
+         vzeAL/KlE7Smt2qDV10VbPLOvU0KYh2qCkpMOw23PIRWlRiT3OevpDITs8dJB3z/x8N+
+         xExQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oZJ/HURHostNBsAGSSvKBPkFbSQfDPFbv+ETaYZqdNQ=;
+        b=eKVT3L1EHs4m+BRXAGQeefWv5NNAa7mN/672sIyaNAd+WUptTu5oHlVV7o9QIfcLZt
+         9I8i70gPnM8N9kTn1uBTvZ8ktNAAxFEv50swQeEILgTZLdHMHcfK0HHOSnZR+6U2v8f4
+         9wdVozA8XoniMAFMttiCTNajzCLr+77GhxzqrKaBbWrK4BUmSFa45eU181M2VKDokXwS
+         hKIAU0X0LGtLHVkoeMSFfrfeDn4EL9RS4hNUbjOcEIw9O7tN7skBV7vMuV98SKNqnllH
+         TUWOm+okJtOfn6h0Q8Q7P017MAS/yfQ1m81IK8ez9rpHN+Fbn3V7xX1fVeqNZHjZ4xcH
+         5Uiw==
+X-Gm-Message-State: AOAM533f4G9AL3upXIvdk8s5JXG8GTP8C5pt3+UMYuQ2G7VInIl5X48N
+        FU2xlZNhf+JByx9wO7n2YfYd1f0pVxW4vv1fuP/5uLwik9OZLw==
+X-Google-Smtp-Source: ABdhPJw92PpdsnjMsFH3WGwBY/whaToZTc1H57pFDGAXYTuaVVY3U69tMP3WLFp4VsCXA5AKm5+4lU7nycUmfI/YgfU=
+X-Received: by 2002:a7b:cf0d:: with SMTP id l13mr12439581wmg.168.1610318744935;
+ Sun, 10 Jan 2021 14:45:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210109212332.GB31381@hungrycats.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNPymNDcNc4QPNpoNu/uKw9R5/Ou5wttvmIRG4VYZ4EvefuieXeyYJx7DobIqQyY06UbmGJkod0rIZ4s9FnLVu9L5uQ6wTmWo4nB4WH9s74hqI1h8Ny3
- vlHoFpKnKo7U/xz2QVqcHHdYjW9A6Sbe1N3kz1wQwkcFQBp4wjww3LCSiVgPvenl+S1LYcYJ0iiFrgIUTWzfYViZS2trX1qK/Vo6QFp8FhN/bqmUMxXMRFM/
- 1JkgfZxs3DctEuiyjG3AL3YUu41JOfjk6x4xhzDsg0efSryLxUin6oDcCrM5Kbl0pIIQ32iY2ce/X7KBpQHJU97VIWe5cgSHz1CuD5saL/WwzNjYHP2K5qZq
- 78ICydB7b4cTr4at0gZECiA4dCbUFhVq8FX1XBuypLGJ0Pbl87756eFGNa8ZzP1nO6RWexwCl8v4pH5gkKi55f201M4m8A==
+References: <1ad3962943592e9a60f88aecdb493f368c70bbe1.camel@infradead.org>
+In-Reply-To: <1ad3962943592e9a60f88aecdb493f368c70bbe1.camel@infradead.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 10 Jan 2021 15:45:28 -0700
+Message-ID: <CAJCQCtQ2o=K2+ZNifF44mohYNmpYMgn8twz_7gsV45RRfg2YzA@mail.gmail.com>
+Subject: Re: Reading files with bad data checksum
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/9/21 10:23 PM, Zygo Blaxell wrote:
+On Sun, Jan 10, 2021 at 4:54 AM David Woodhouse <dwmw2@infradead.org> wrote:
+>
+> I filed https://bugzilla.redhat.com/show_bug.cgi?id=1914433
+>
+> What I see is that *both* disks of the RAID-1 have data which is
+> consistent, and does not match the checksum that btrfs expects:
 
-> On a loaded test server, I observed 90th percentile fsync times
-> drop from 7 seconds without preferred_metadata to 0.7 seconds with
-> preferred_metadata when all the metadata is on the SSDs.  If some metadata
-> ever lands on a spinner, we go back to almost 7 seconds latency again
-> (it sometimes only gets up to 5 or 6 seconds, but it's still very bad).
-> We lost our performance gain, so our test resulted in failure.
+Yeah either use nodatacow (chattr +C) or don't use O_DIRECT until
+there's a proper fix.
 
-Wow, this is a very interesting information: an use case where there is a
-10x increase of speed !
+> What's the best way to recover the data?
 
-Could you share more detail about this server. With more data that supporting
-this patch, we can convince David to include it.
+I'd say, kernel 5.11's new "mount -o ro,rescue=ignoredatacsums"
+feature. You can copy it out normally, no special tools.
 
-[...]
-> 
-> We could handle all these use cases with two bits:
-> 
-> 	bit 0:  0 = prefer data, 1 = prefer metadata
-> 	bit 1:  0 = allow other types, 1 = exclude other types
-> 
-> which gives 4 encoded values:
-> 
-> 	0 = prefer data, allow metadata (default)
-> 	1 = prefer metadata, allow data (same as v4 patch)
-> 	2 = prefer data, disallow metadata
-> 	3 = prefer metadata, disallow data
+The alternative is 'btrfs restore'.
 
-What you are suggesting allows the maximum flexibility. However I still
-fear that we are mixing two discussions that are unrelated except that
-the solution *may* be the same:
-
-1) the first discussion is related to the increasing of performance
-because we put the metadata in the faster disks and the data in
-the slower one.
-
-2) the second discussion is how avoid that the chunk data consumes space of
-the metadata.
-
-Regarding 2), I think that a more generic approach is something like:
-- don't allocate *data* chunk if the chunk free space is less than <X>
-Where <X> is the maximum size of a metadata chunk (IIRC 1GB ?), eventually
-multiplied by 2x or 3x.
-Instead the metadata allocation policy is still constrained only to have
-enough space. As further step (to allow a metadata balance command to success), we
-could constraint the metadata allocation policy to allocate up to the half of the
-available space ( or 1 GB, whichever is smaller)
-
-Regarding 1) I prefer to leave the patch as simple as possible to increase
-the likelihood of an inclusion. Eventually we can put further constraint after.
-
-Anyway I am rebasing the patch to the latest kernel. Let me to check how complex
-could be implement you algorithm (the two bits one).
-
-BR
-G.Baroncelli
 
 -- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Chris Murphy
