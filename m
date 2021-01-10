@@ -2,98 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2932F06AB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 12:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C70B2F06B0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Jan 2021 12:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbhAJLgR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 10 Jan 2021 06:36:17 -0500
-Received: from aposti.net ([89.234.176.197]:33724 "EHLO aposti.net"
+        id S1726416AbhAJLhr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 10 Jan 2021 06:37:47 -0500
+Received: from rin.romanrm.net ([51.158.148.128]:35484 "EHLO rin.romanrm.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726069AbhAJLgQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Jan 2021 06:36:16 -0500
-Date:   Sun, 10 Jan 2021 11:35:01 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [patch V3 13/37] mips/mm/highmem: Switch to generic kmap atomic
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     tglx@linutronix.de, airlied@linux.ie, airlied@redhat.com,
-        akpm@linux-foundation.org, arnd@arndb.de, bcrl@kvack.org,
-        bigeasy@linutronix.de, bristot@redhat.com, bsegall@google.com,
-        bskeggs@redhat.com, chris@zankel.net, christian.koenig@amd.com,
-        clm@fb.com, davem@davemloft.net, deanbo422@gmail.com,
-        dietmar.eggemann@arm.com, dri-devel@lists.freedesktop.org,
-        dsterba@suse.com, green.hu@gmail.com, hch@lst.de,
-        intel-gfx@lists.freedesktop.org, jcmvbkbc@gmail.com,
-        josef@toxicpanda.com, juri.lelli@redhat.com, kraxel@redhat.com,
-        linux-aio@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
-        mgorman@suse.de, mingo@kernel.org, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com,
-        nouveau@lists.freedesktop.org, paulmck@kernel.org,
-        paulus@samba.org, peterz@infradead.org, ray.huang@amd.com,
-        rodrigo.vivi@intel.com, rostedt@goodmis.org,
-        sparclinux@vger.kernel.org, spice-devel@lists.freedesktop.org,
-        sroland@vmware.com, torvalds@linuxfoundation.org,
-        vgupta@synopsys.com, vincent.guittot@linaro.org,
-        viro@zeniv.linux.org.uk, virtualization@lists.linux-foundation.org,
-        x86@kernel.org
-Message-Id: <DUUPMQ.U53A0W7YJPGM@crapouillou.net>
-In-Reply-To: <20210109003352.GA18102@alpha.franken.de>
-References: <JUTMMQ.NNFWKIUV7UUJ1@crapouillou.net>
-        <20210108235805.GA17543@alpha.franken.de>
-        <20210109003352.GA18102@alpha.franken.de>
+        id S1726398AbhAJLhr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 Jan 2021 06:37:47 -0500
+Received: from natsu (unknown [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
+        by rin.romanrm.net (Postfix) with SMTP id 48E76860;
+        Sun, 10 Jan 2021 11:37:05 +0000 (UTC)
+Date:   Sun, 10 Jan 2021 16:37:05 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     " " <Cedric.dewijs@eclipso.eu>
+Cc:     <linux-btrfs@vger.kernel.org>
+Subject: Re: btrfs send / receive via netcat, fails halfway?
+Message-ID: <20210110163705.1852c4a7@natsu>
+In-Reply-To: <0440549b7c78763ce787b03341ca5b9f@mail.eclipso.de>
+References: <0440549b7c78763ce787b03341ca5b9f@mail.eclipso.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Thomas,
+On Sun, 10 Jan 2021 11:34:27 +0100
+" " <Cedric.dewijs@eclipso.eu> wrote:
 
-Le sam. 9 janv. 2021 à 1:33, Thomas Bogendoerfer 
-<tsbogend@alpha.franken.de> a écrit :
-> On Sat, Jan 09, 2021 at 12:58:05AM +0100, Thomas Bogendoerfer wrote:
->>  On Fri, Jan 08, 2021 at 08:20:43PM +0000, Paul Cercueil wrote:
->>  > Hi Thomas,
->>  >
->>  > 5.11 does not boot anymore on Ingenic SoCs, I bisected it to this 
->> commit.
->>  >
->>  > Any idea what could be happening?
->> 
->>  not yet, kernel crash log of a Malta QEMU is below.
+> Â­I'm trying to transfer a btrfs snapshot via the network.
 > 
-> update:
-> 
-> This dirty hack lets the Malta QEMU boot again:
-> 
-> diff --git a/mm/highmem.c b/mm/highmem.c
-> index c3a9ea7875ef..190cdda1149d 100644
-> --- a/mm/highmem.c
-> +++ b/mm/highmem.c
-> @@ -515,7 +515,7 @@ void *__kmap_local_pfn_prot(unsigned long pfn, 
-> pgprot_t prot)
->  	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
->  	BUG_ON(!pte_none(*(kmap_pte - idx)));
->  	pteval = pfn_pte(pfn, prot);
-> -	set_pte_at(&init_mm, vaddr, kmap_pte - idx, pteval);
-> +	set_pte(kmap_pte - idx, pteval);
->  	arch_kmap_local_post_map(vaddr, pteval);
->  	current->kmap_ctrl.pteval[kmap_local_idx()] = pteval;
->  	preempt_enable();
-> 
-> set_pte_at() tries to update cache and could do an kmap_atomic() 
-> there.
-> Not sure, if this is allowed at this point.
+> First attempt: Both NC programs don't exit after the transfer is complete. When I ctrl-C the sending side, the receiving side exits OK.
 
-Yes, I can confirm that your workaround works here too.
+It is a common annoyance that NC doesn't exit in such scenario and needs to be
+Ctrl-C'ed after verifying that the transfer is over.
 
-Cheers,
--Paul
+Instead, at host2 try:
 
+  ssh host1 "btrfs send ..." | btrfs receive ...
 
+Also much more secure.
+
+-- 
+With respect,
+Roman
