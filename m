@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6605E2F204F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 21:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2782F2069
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 21:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404157AbhAKUCR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 15:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
+        id S2404033AbhAKUJA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 15:09:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731772AbhAKUCR (ORCPT
+        with ESMTP id S2391532AbhAKUIx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:02:17 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055D5C061794
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:01:37 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id b64so604006qkc.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:01:36 -0800 (PST)
+        Mon, 11 Jan 2021 15:08:53 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29D6C061786
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:08:12 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id 186so22696qkj.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:08:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mgrT4Altg8glIRE+MOOUJE15z5PhjqAtILPKl/TgNP8=;
-        b=yAxr2iADLTUmXEiDK5K7FSnU6C8ZRcfTqSe/09PKcZ8TVKMvCwCbCoRMezIqdg8GNS
-         oSz6KtIRvv0JoCzAqTfAnI4FYLWCYLdZlyjKGCAUIoSk73t1ORtJyksp/LsPxoSGGVpR
-         gt3g1rEW7lh0PRkq+tMnkqiLMqZuFyFYHhXHcu1hQ80FNmfRSfouTzwjDs1p8yA62ibJ
-         fuJCFti8lRVU+ffh2slTYfu+M2cAQ26u+LKFFA++ZkDaL8VIlsA0INfu0R427nTb9lXu
-         PR/WUQp/L5OWjB1KJgl2oYFlNaIXLCrVNwUlp/VyNZXHK4II/z5J12EEymLM0t4ZA56b
-         fIbg==
+        bh=FHth/aaRGXw8bPkksN5hjPH+DYHe+92fn3EKoOPKveU=;
+        b=xSKSRey0zDYxR9bJ7/hLqOBHXUc9MMX6Fkw6qu1x8skDncTMF78XOi1DpZ8ODOBDFY
+         d9MwZXZ54AUoqB3Od0Q0Rj5vtrB86BQ8hrPzGc0bcfQ12izILc7cOxJ0xTXw2XPsXE1C
+         DeAiElQ9+y2KeHsgZBdKDoJIjsEdFWH9EqDCj5O0Cd0KEg9MYI5bPUg4U4HINubTMDQ2
+         PSMfy269yHRn12ac5ISOsmbcC+p9ocWk7T/S4YhFxKSkk0mn/SOta9Ih6hseyLmwbiEV
+         H1UHa9QrKyC5s6R9j7vTIQmHbTMP9322xXbsgV003Sh2Bhb02hoUbbTw1QDkgEacYpqt
+         C4jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=mgrT4Altg8glIRE+MOOUJE15z5PhjqAtILPKl/TgNP8=;
-        b=mp5QUzMpoyTz3/wIHQsolubdc5w/p7FN+hQZcy+OCbN6JT8am5WttFEcUhYwT5E9z/
-         9hQWTjajrbIGlMg0dMcF30kGVCC76gvaIoZM5TtLcZHJybGY10l3Vanj8Z8pR7wTt1dd
-         kijjytwseT/IplHLCoANKele1JJ3RCe8GNMBjXsSd/EyVMIO1YSZYhnwUDkb5hbEkD1v
-         BAysSxXj9sGnoymPJIeerDOnqATQmq4aY76K8HtJUSckyhqm6i8Q9KzmblIZFraZXD4E
-         w7TyHrDHvy8loW37WrXk/VvJ5Feui8ObZs48nwsDjVORC6CQkSyeVTMUHrrTFRrVc4l/
-         nsUg==
-X-Gm-Message-State: AOAM5329gsxJnz9DjhkHpXJfejfoQZqEztp3j90h6oQPNI2mLxN23XV4
-        1AqTXZxzxeaIOoC67AgSw8/nyg==
-X-Google-Smtp-Source: ABdhPJz+0rghxG3TVomri2fQn9Hcffg7QPgRzkdOAnjI5IBHoiITb5e67MqI4j97kse2T6N0S0HrDg==
-X-Received: by 2002:a37:e504:: with SMTP id e4mr997913qkg.191.1610395296098;
-        Mon, 11 Jan 2021 12:01:36 -0800 (PST)
+        bh=FHth/aaRGXw8bPkksN5hjPH+DYHe+92fn3EKoOPKveU=;
+        b=FsJg5W0x32eBfxgfI/Gtb3OaQpXS7Kk1qYTaUqDvM+HNLYLFVo3ohYFXV22xUfBfOr
+         IJv6BupsznF+tchRDeoERWfSdw76oC2Zv7KIbRjhk7axd2VzTfsKts+7UKNqSerMEzU6
+         /Dlpe5jL+SRn7WGF6ranQj6uFCN/Z+uwSQKvucQk/v2ZpQiqAN8QbdRw9eiwGfsuCiDM
+         UwTaRPMvnSlNn0U8GACp4YGxvKMVWt60KCGtPW54t06S47uhAaBRzEUl9AhDAT+etksa
+         qEV90MwKfNMgQWbmANJaw/d71XW57fpS0r6OCHOE8CjYxLCWVzJEM0UlBWHqDIN5D2TT
+         wD0g==
+X-Gm-Message-State: AOAM530NZl7RqnzYMxxrAKWjxJunxhsruZajStuBTMsUb4vtnij9O+zQ
+        J1/KhppapoRNRx16jgxu5+vF8GWrrEqU9wq+
+X-Google-Smtp-Source: ABdhPJyHKp00d1h8tDaA+yMYqHjhyBUP9PWFx/rhtQ9gpobh9qAoUOCdrATVHf4Ij84rffpiFz5b2g==
+X-Received: by 2002:a05:620a:1467:: with SMTP id j7mr1064813qkl.266.1610395692123;
+        Mon, 11 Jan 2021 12:08:12 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y16sm443407qki.132.2021.01.11.12.01.34
+        by smtp.gmail.com with ESMTPSA id a22sm443706qkl.121.2021.01.11.12.08.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 12:01:35 -0800 (PST)
-Subject: Re: [PATCH v11 05/40] btrfs: release path before calling into
- btrfs_load_block_group_zone_info
+        Mon, 11 Jan 2021 12:08:11 -0800 (PST)
+Subject: Re: [PATCH v11 06/40] btrfs: do not load fs_info->zoned from incompat
+ flag
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
@@ -59,14 +59,14 @@ Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <8fa3073375cf26759f9c5d3ce083c64d573ad9a6.1608608848.git.naohiro.aota@wdc.com>
+ <fb24b16fb695d521254f92d70241246f859ffa36.1608608848.git.naohiro.aota@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <3f611f04-39fa-e95e-09f2-28c01f5e2a80@toxicpanda.com>
-Date:   Mon, 11 Jan 2021 15:01:34 -0500
+Message-ID: <21c01c81-22fd-437f-4e41-ce4563d71dc9@toxicpanda.com>
+Date:   Mon, 11 Jan 2021 15:08:10 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <8fa3073375cf26759f9c5d3ce083c64d573ad9a6.1608608848.git.naohiro.aota@wdc.com>
+In-Reply-To: <fb24b16fb695d521254f92d70241246f859ffa36.1608608848.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -77,43 +77,18 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 12/21/20 10:48 PM, Naohiro Aota wrote:
 > From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > 
-> Since we have no write pointer in conventional zones, we cannot determine
-> allocation offset from it. Instead, we set the allocation offset after the
-> highest addressed extent. This is done by reading the extent tree in
-> btrfs_load_block_group_zone_info(). However, this function is called from
-> btrfs_read_block_groups(), so the read lock for the tree node can
-> recursively taken.
+> Since fs_info->zoned is unioned with fs_info->zone_size, loading
+> fs_info->zoned from the incompat flag screw up the zone_size. So, let's
+> avoid to load it from the flag. It will be eventually set by
+> btrfs_get_dev_zone_info_all_devices().
 > 
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->   fs/btrfs/block-group.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index b8bbdd95743e..69e1b24bbbad 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1839,6 +1839,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
->   		return -ENOMEM;
->   
->   	read_block_group_item(cache, path, key);
-> +	btrfs_release_path(path);
->   
->   	set_free_space_tree_thresholds(cache);
->   
-> @@ -2009,7 +2010,6 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
->   			goto error;
->   		key.objectid += key.offset;
->   		key.offset = 0;
-> -		btrfs_release_path(path);
->   	}
->   	btrfs_release_path(path);
->   
-> 
 
-Instead why don't we just read in the bgi into the stack, and pass the pointer 
-into read_one_block_group(), drop the path before calling read_one_block_group? 
-  We don't use the path in read_one_block_group, there's no reason to pass it 
-in.  It'll fix your problem and make it a little cleaner.  Thanks,
+May want to take another crack at that changelog, the grammar is way off.  The 
+code is fine tho
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
