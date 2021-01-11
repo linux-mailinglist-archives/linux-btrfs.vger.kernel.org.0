@@ -2,70 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98942F1FBE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 20:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6605E2F204F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 21:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403803AbhAKTsK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 14:48:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
+        id S2404157AbhAKUCR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 15:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391127AbhAKTsK (ORCPT
+        with ESMTP id S1731772AbhAKUCR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:48:10 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A358AC061786
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 11:47:29 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id n142so644828qkn.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 11:47:29 -0800 (PST)
+        Mon, 11 Jan 2021 15:02:17 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055D5C061794
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:01:37 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id b64so604006qkc.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:01:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5lBtEYiIuyDpkn580so2o0MKfXnt8d1SY83rV91WVek=;
-        b=gaB8QJuAv3JjaKbID8UYwJa5ALw573Ic8rHebFTnp0HrTbYcxTzhBtp3ckQiWMSck+
-         gWPP1F4qnguqf19IJAhxDFpgUjuhrvk5wINAfIlPqEwYyLwUCNwyjQYttOqXkHWTHKIB
-         SPBb9QsrxYjSGSnrd/7gfStEP+dHjHrD4gNeb0VTTXscjCjmhF8jzaY1jXKvUM+/pcAm
-         BKa4NqRpgXy5UuJATpdkN3uAD2hkEpYNJt9spU9f2zuxNNL2LXxG5EaLokerFaPBkRZG
-         yVIYymmMN9RISeRAVFRMMcYsbbH1s4HivkLkP3UtVeKqWmrgGLiMeRllmeqUVjl/qniT
-         FTbA==
+        bh=mgrT4Altg8glIRE+MOOUJE15z5PhjqAtILPKl/TgNP8=;
+        b=yAxr2iADLTUmXEiDK5K7FSnU6C8ZRcfTqSe/09PKcZ8TVKMvCwCbCoRMezIqdg8GNS
+         oSz6KtIRvv0JoCzAqTfAnI4FYLWCYLdZlyjKGCAUIoSk73t1ORtJyksp/LsPxoSGGVpR
+         gt3g1rEW7lh0PRkq+tMnkqiLMqZuFyFYHhXHcu1hQ80FNmfRSfouTzwjDs1p8yA62ibJ
+         fuJCFti8lRVU+ffh2slTYfu+M2cAQ26u+LKFFA++ZkDaL8VIlsA0INfu0R427nTb9lXu
+         PR/WUQp/L5OWjB1KJgl2oYFlNaIXLCrVNwUlp/VyNZXHK4II/z5J12EEymLM0t4ZA56b
+         fIbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=5lBtEYiIuyDpkn580so2o0MKfXnt8d1SY83rV91WVek=;
-        b=fuhJkO28fBnAjsCGH8s80BvnBIuASDL0fUAfDC56DjRbNniSB0ONOrnDayIkGrSFXG
-         KDwI4b0wPYKgEeMF4LBwwo8J3hg47j6Hj/2OuqPI/5zfdJY+eDWISJ3WGqHIUoy14Ubh
-         3g8obCarm8BR5z+NlykjOk01cmZNy0nLvy7aXP15eog8LPdcKlDfBkG5f4mtNnDcoxsB
-         gAgBgAliTYRgEDW92Nxva/7yLpMIFXhprfPr4yMFvbWe256JqNX8jOJ7qxbFrbtAm1FQ
-         gzKCUiDJAffP9l/aoqaCnBmYyb+ICVkfsdyy4clYnX4OsaTVaIIpx+E1m369FH8xx+wq
-         imNQ==
-X-Gm-Message-State: AOAM533+l17dmw/XaRsLnlDPADMh3ck+QtCnQqyeFJ26vjZSgenuil0u
-        f39s8xWoOP4s8zBIrwcjtyehTw==
-X-Google-Smtp-Source: ABdhPJw5pHYCaxPhuLsOv0uhHXJGsVmGF8y+ND8jYZNHwVB+NwjjNhkvlDHKgVUpYq1aO2YMloX8bw==
-X-Received: by 2002:ae9:d801:: with SMTP id u1mr949350qkf.79.1610394448719;
-        Mon, 11 Jan 2021 11:47:28 -0800 (PST)
+        bh=mgrT4Altg8glIRE+MOOUJE15z5PhjqAtILPKl/TgNP8=;
+        b=mp5QUzMpoyTz3/wIHQsolubdc5w/p7FN+hQZcy+OCbN6JT8am5WttFEcUhYwT5E9z/
+         9hQWTjajrbIGlMg0dMcF30kGVCC76gvaIoZM5TtLcZHJybGY10l3Vanj8Z8pR7wTt1dd
+         kijjytwseT/IplHLCoANKele1JJ3RCe8GNMBjXsSd/EyVMIO1YSZYhnwUDkb5hbEkD1v
+         BAysSxXj9sGnoymPJIeerDOnqATQmq4aY76K8HtJUSckyhqm6i8Q9KzmblIZFraZXD4E
+         w7TyHrDHvy8loW37WrXk/VvJ5Feui8ObZs48nwsDjVORC6CQkSyeVTMUHrrTFRrVc4l/
+         nsUg==
+X-Gm-Message-State: AOAM5329gsxJnz9DjhkHpXJfejfoQZqEztp3j90h6oQPNI2mLxN23XV4
+        1AqTXZxzxeaIOoC67AgSw8/nyg==
+X-Google-Smtp-Source: ABdhPJz+0rghxG3TVomri2fQn9Hcffg7QPgRzkdOAnjI5IBHoiITb5e67MqI4j97kse2T6N0S0HrDg==
+X-Received: by 2002:a37:e504:: with SMTP id e4mr997913qkg.191.1610395296098;
+        Mon, 11 Jan 2021 12:01:36 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d25sm426544qkl.97.2021.01.11.11.47.27
+        by smtp.gmail.com with ESMTPSA id y16sm443407qki.132.2021.01.11.12.01.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 11:47:27 -0800 (PST)
-Subject: Re: [PATCH v11 04/40] btrfs: change superblock location on
- conventional zone
+        Mon, 11 Jan 2021 12:01:35 -0800 (PST)
+Subject: Re: [PATCH v11 05/40] btrfs: release path before calling into
+ btrfs_load_block_group_zone_info
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
         Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
 References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <42c1712556e6865837151ad58252fb5f6ecff8f7.1608608848.git.naohiro.aota@wdc.com>
+ <8fa3073375cf26759f9c5d3ce083c64d573ad9a6.1608608848.git.naohiro.aota@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <83c5e084-dbee-a0ae-4a1b-38fa271701a2@toxicpanda.com>
-Date:   Mon, 11 Jan 2021 14:47:26 -0500
+Message-ID: <3f611f04-39fa-e95e-09f2-28c01f5e2a80@toxicpanda.com>
+Date:   Mon, 11 Jan 2021 15:01:34 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <42c1712556e6865837151ad58252fb5f6ecff8f7.1608608848.git.naohiro.aota@wdc.com>
+In-Reply-To: <8fa3073375cf26759f9c5d3ce083c64d573ad9a6.1608608848.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,52 +75,45 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 12/21/20 10:48 PM, Naohiro Aota wrote:
-> We cannot use log-structured superblock writing in conventional zones since
-> there is no write pointer to determine the last written superblock
-> position. So, we write a superblock at a static location in a conventional
-> zone.
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > 
-> The written position is at the beginning of a zone, which is different from
-> an SB position of regular btrfs. This difference causes a "chicken-and-egg
-> problem" when supporting zoned emulation on a regular device. To know if
-> btrfs is (emulated) zoned btrfs, we need to load an SB and check the
-> feature flag. However, to load an SB, we need to know that it is zoned
-> btrfs to load it from a different position.
+> Since we have no write pointer in conventional zones, we cannot determine
+> allocation offset from it. Instead, we set the allocation offset after the
+> highest addressed extent. This is done by reading the extent tree in
+> btrfs_load_block_group_zone_info(). However, this function is called from
+> btrfs_read_block_groups(), so the read lock for the tree node can
+> recursively taken.
 > 
-> This patch moves the SB location on conventional zones so that the first SB
-> location will be the same as regular btrfs.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->   fs/btrfs/zoned.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>   fs/btrfs/block-group.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 90b8d1d5369f..e5619c8bcebb 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -465,7 +465,8 @@ static int sb_log_location(struct block_device *bdev, struct blk_zone *zones,
->   	int ret;
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index b8bbdd95743e..69e1b24bbbad 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1839,6 +1839,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+>   		return -ENOMEM;
 >   
->   	if (zones[0].type == BLK_ZONE_TYPE_CONVENTIONAL) {
-> -		*bytenr_ret = zones[0].start << SECTOR_SHIFT;
-> +		*bytenr_ret = (zones[0].start << SECTOR_SHIFT) +
-> +			btrfs_sb_offset(0);
->   		return 0;
+>   	read_block_group_item(cache, path, key);
+> +	btrfs_release_path(path);
+>   
+>   	set_free_space_tree_thresholds(cache);
+>   
+> @@ -2009,7 +2010,6 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+>   			goto error;
+>   		key.objectid += key.offset;
+>   		key.offset = 0;
+> -		btrfs_release_path(path);
 >   	}
+>   	btrfs_release_path(path);
 >   
+> 
 
-I'm confused, we call btrfs_sb_log_location_bdev(), which does
-
-         if (!bdev_is_zoned(bdev)) {
-                 *bytenr_ret = btrfs_sb_offset(mirror);
-                 return 0;
-         }
-
-so how does the emulation work, if we short circuit this if the block device 
-isn't zoned?  And then why does it matter where in the conventional zone that we 
-put the super block?  Can't we just emulate a conventional zone that starts at 
-offset 0, and then the btrfs_sb_offset() will be the same as zones[0].start + 
-btrfs_sb_offset(0)?  Thanks,
+Instead why don't we just read in the bgi into the stack, and pass the pointer 
+into read_one_block_group(), drop the path before calling read_one_block_group? 
+  We don't use the path in read_one_block_group, there's no reason to pass it 
+in.  It'll fix your problem and make it a little cleaner.  Thanks,
 
 Josef
