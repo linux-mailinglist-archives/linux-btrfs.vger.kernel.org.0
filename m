@@ -2,254 +2,215 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4542F11AA
+	by mail.lfdr.de (Postfix) with ESMTP id B67BD2F11AB
 	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 12:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729719AbhAKLm1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 06:42:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35146 "EHLO mail.kernel.org"
+        id S1729751AbhAKLmm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 06:42:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729672AbhAKLm1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:42:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB6C9224BD
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 11:41:44 +0000 (UTC)
+        id S1729674AbhAKLmm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:42:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BD1820735;
+        Mon, 11 Jan 2021 11:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610365305;
-        bh=fN5teSw8r3i8ISPN+sJfJWQu471dUXkfE2sQyd0TxVg=;
-        h=From:To:Subject:Date:From;
-        b=Hac9ZajXGcZCln6djUS+4SmErgUKggyQYzXJ+3KqCX0yxI3BadhJqyhzr4/xoTfJx
-         VoI9QXEpwqZDDz50XkVKuGE5bHJZ2EhRrd4QCRyPr8yMXdPjmTKNgmxhXsjIgaeMpr
-         oIu8FdsSUqk6zJYqXEqUO7FNLelzB5CjqkxnZY4oYelHWSUQ7sPxGvOptgNm/cN6jN
-         YJK1PaYLnRMn3vu6ENLLc989vytsQWkm9RVuTFPDYPAp6PWDFHlzZAwPmAr2eXm2Ac
-         ABoby/oWvH9Bw0ozCN/nL7fpXe+UmNKLLD6NOE1Cvla0t23Tr8za31LC9+YBBl/yk6
-         nsFqsdPp37uDQ==
+        s=k20201202; t=1610365321;
+        bh=8iWjMGAjtpoEUdqOeZSy456SqX09Ik6Edy26Nr/njsQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZCA9MBXfLNpRy9xDCBj9H1pcrBrhqqPP9nXns+uHkrZQtymekFs7Km1WYjGuwqWoT
+         GAERn6yCI2wprg4sG/+AucVKonAG6LuSVelWWN4UMd7fNtPB48AhQDSJIZvAmfGIgG
+         IG8fOnh6ULUUK39aq+0pTLHsRdA/+sNMfIRrLti/0stiJiNOZqSUhLWDzg+HCVohdQ
+         MdnxlrqvFg4TBQsZFjofcne6xyDM1EgWFssT9qc5W7fojXYfnPknLC5fDjdDK/0g4G
+         BoM1rEjHkWtfh9IDRTHu+QXciiyPV2FFiSEwClbhtgHuteCmzGOO6koV9DTSjSchN9
+         n30W1hHFwk55Q==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: send, fix invalid clone operations when cloning from the same file and root
-Date:   Mon, 11 Jan 2021 11:41:42 +0000
-Message-Id: <900493c40f7edbd42fe861ccd9a68851ea952499.1610363502.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.17.1
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: test incremental send after cloning extents from the same file
+Date:   Mon, 11 Jan 2021 11:41:54 +0000
+Message-Id: <8337e3633d362dba6c2df168bd13ff3b75c68a92.1610363747.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When an incremental send finds an extent that is shared, it checks which
-file extent items in the range refer to that extent, and for those it
-emits clone operations, while for others it emits regular write operations
-to avoid corruption at the destination (as described and fixed by commit
-d906d49fc5f4 ("Btrfs: send, fix file corruption due to incorrect cloning
-operations")).
+Test that an incremental send operation correctly issues clone operations
+for a file that had different parts of one of its extents cloned into
+itself, at different offsets, and a large part of that extent was
+overwritten, so all the reflinks only point to subranges of the extent.
 
-However when the root we are cloning from is the send root, we are cloning
-from the inode currently being processed and the source file range has
-several extent items that partially point to the desired extent, with an
-offset smaller than the offset in the file extent item for the range we
-want to clone into, it can cause the algorithm to issue a clone operation
-that starts at the current eof of the file being processed in the receiver
-side, in which case the receiver will fail, with -EINVAL, when attempting
-to execute the clone operation.
+This currently fails on btrfs but is fixed by a patch for the kernel that
+has the following subject:
 
-Example reproducer:
+ "btrfs: send, fix invalid clone operations when cloning from the same file and root"
 
-  $ cat test-send-clone.sh
-  #!/bin/bash
-
-  DEV=/dev/sdi
-  MNT=/mnt/sdi
-
-  mkfs.btrfs -f $DEV >/dev/null
-  mount $DEV $MNT
-
-  # Create our test file with a single and large extent (1M) and with
-  # different content for different file ranges that will be reflinked
-  # later.
-  xfs_io -f \
-         -c "pwrite -S 0xab 0 128K" \
-         -c "pwrite -S 0xcd 128K 128K" \
-         -c "pwrite -S 0xef 256K 256K" \
-         -c "pwrite -S 0x1a 512K 512K" \
-         $MNT/foobar
-
-  btrfs subvolume snapshot -r $MNT $MNT/snap1
-  btrfs send -f /tmp/snap1.send $MNT/snap1
-
-  # Now do a series of changes to our file such that we end up with
-  # different parts of the extent reflinked into different file offsets
-  # and we overwrite a large part of the extent too, so no file extent
-  # items refer to that part that was overwritten. This used to confure
-  # the algorithm used by the kernel to figure out which file ranges to
-  # clone, making it attempt to clone from a source range starting at
-  # the current eof of the file, resulting in the receiver to fail since
-  # it is an invalid clone operation.
-  #
-  xfs_io -c "reflink $MNT/foobar 64K 1M 960K" \
-         -c "reflink $MNT/foobar 0K 512K 256K" \
-         -c "reflink $MNT/foobar 512K 128K 256K" \
-         -c "pwrite -S 0x73 384K 640K" \
-         $MNT/foobar
-
-  btrfs subvolume snapshot -r $MNT $MNT/snap2
-  btrfs send -f /tmp/snap2.send -p $MNT/snap1 $MNT/snap2
-
-  echo -e "\nFile digest in the original filesystem:"
-  md5sum $MNT/snap2/foobar
-
-  # Now unmount the filesystem, create a new one, mount it and try to
-  # apply both send streams to recreate both snapshots.
-  umount $DEV
-
-  mkfs.btrfs -f $DEV >/dev/null
-  mount $DEV $MNT
-
-  btrfs receive -f /tmp/snap1.send $MNT
-  btrfs receive -f /tmp/snap2.send $MNT
-
-  # Must match what we got in the original filesystem of course.
-  echo -e "\nFile digest in the new filesystem:"
-  md5sum $MNT/snap2/foobar
-
-  umount $MNT
-
-When running the reproducer, the incremental send operation fails due to
-an invalid clone operation:
-
-  $ ./test-send-clone.sh
-  wrote 131072/131072 bytes at offset 0
-  128 KiB, 32 ops; 0.0015 sec (80.906 MiB/sec and 20711.9741 ops/sec)
-  wrote 131072/131072 bytes at offset 131072
-  128 KiB, 32 ops; 0.0013 sec (90.514 MiB/sec and 23171.6148 ops/sec)
-  wrote 262144/262144 bytes at offset 262144
-  256 KiB, 64 ops; 0.0025 sec (98.270 MiB/sec and 25157.2327 ops/sec)
-  wrote 524288/524288 bytes at offset 524288
-  512 KiB, 128 ops; 0.0052 sec (95.730 MiB/sec and 24506.9883 ops/sec)
-  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap1'
-  At subvol /mnt/sdi/snap1
-  linked 983040/983040 bytes at offset 1048576
-  960 KiB, 1 ops; 0.0006 sec (1.419 GiB/sec and 1550.3876 ops/sec)
-  linked 262144/262144 bytes at offset 524288
-  256 KiB, 1 ops; 0.0020 sec (120.192 MiB/sec and 480.7692 ops/sec)
-  linked 262144/262144 bytes at offset 131072
-  256 KiB, 1 ops; 0.0018 sec (133.833 MiB/sec and 535.3319 ops/sec)
-  wrote 655360/655360 bytes at offset 393216
-  640 KiB, 160 ops; 0.0093 sec (66.781 MiB/sec and 17095.8436 ops/sec)
-  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap2'
-  At subvol /mnt/sdi/snap2
-
-  File digest in the original filesystem:
-  9c13c61cb0b9f5abf45344375cb04dfa  /mnt/sdi/snap2/foobar
-  At subvol snap1
-  At snapshot snap2
-  ERROR: failed to clone extents to foobar: Invalid argument
-
-  File digest in the new filesystem:
-  132f0396da8f48d2e667196bff882cfc  /mnt/sdi/snap2/foobar
-
-The clone operation is invalid because its source range starts at the
-current eof of the file in the receiver, causing the receiver to get
-an -EINVAL error from the clone operation when attempting it.
-
-For the example above, what happens is the following:
-
-1) When processing the extent at file offset 1M, the algorithm checks that
-   the extent is shared and can be (fully or partially) found at file
-   offset 0.
-
-   At this point the file has a size (and eof) of 1M at the receiver;
-
-2) It finds that our extent item at file offset 1M has a data offset of
-   64K and, since the file extent item at file offset 0 has a data offset
-   of 0, it issues a clone operation, from the same file and root, that
-   has a source range offset of 64K, destination offset of 1M and a length
-   of 64K, since the extent item at file offset 0 refers only to the first
-   128K of the shared extent.
-
-   After this clone operation, the file size (and eof) at the receiver is
-   increased from 1M to 1088K (1M + 64K);
-
-3) Now there's still 896K (960K - 64K) of data left to clone or write, so
-   it checks for the next file extent item, which starts at file offset
-   128K. This file extent item has a data offset of 0 and a length of
-   256K, so a clone operation with a source range offset of 256K, a
-   destination offset of 1088K (1M + 64K) and length of 128K is issued.
-
-   After this operation the file size (and eof) at the receiver increases
-   from 1088K to 1216K (1088K + 128K);
-
-4) Now there's still 768K (896K - 128K) of data left to clone or write, so
-   it checks for the next file extent item, located at file offset 384K.
-   This file extent item points to a different extent, not the one we want
-   to clone, with a length of 640K. So we issue a write operation into the
-   file range 1216K (1088K + 128K, end of the last clone operation), with
-   a length of 640K and with a data matching the one we can find for that
-   range in send root.
-
-   After this operation, the file size (and eof) at the receiver increases
-   from 1216K to 1856K (1216K + 640K);
-
-5) Now there's still 128K (768K - 640K) of data left to clone or write, so
-   we look into the file extent item, which is for file offset 1M and it
-   points to the extent we want to clone, with a data offset of 64K and a
-   length of 960K.
-
-   However this matches the file offset we started with, the start of the
-   range to clone into. So we can't for sure find any file extent item
-   from here onwards with the rest of the data we want to clone, yet we
-   proceed and since the file extent item points to the shared extent,
-   with a data offset of 64K, we issue a clone operation with a source
-   range starting at file offset 1856K, which matches the file extent
-   item's offset, 1M, plus the amount of data cloned and written so far,
-   which is 64K (step 2) + 128K (step 3) + 640K (step 4). This clone
-   operation is invalid since the source range offset matches the current
-   eof of the file in the receiver. We should have stopped looking for
-   extents to clone at this point and instead fallback to write, which
-   would simply the contain the data in the file range from 1856K to
-   1856K + 128K.
-
-So fix this by stopping the loop that looks for file ranges to clone at
-clone_range() when we reach the current eof of the file being processed,
-if we are cloning from the same file and using the send root as the clone
-root. This ensures any data not yet cloned will be sent to the receiver
-through a write operation.
-
-A test case for fstests will follow soon.
-
-Reported-by: Massimo B. <massimo.b@gmx.net>
-Link: https://lore.kernel.org/linux-btrfs/6ae34776e85912960a253a8327068a892998e685.camel@gmx.net/
-Fixes: 11f2069c113e ("Btrfs: send, allow clone operations within the same file")
-CC: stable@vger.kernel.org # 5.5+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ tests/btrfs/228     | 109 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/228.out |  24 ++++++++++
+ tests/btrfs/group   |   1 +
+ 3 files changed, 134 insertions(+)
+ create mode 100755 tests/btrfs/228
+ create mode 100644 tests/btrfs/228.out
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 9dd59611838c..27a051848441 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -5496,6 +5496,21 @@ static int clone_range(struct send_ctx *sctx,
- 			break;
- 		offset += clone_len;
- 		clone_root->offset += clone_len;
+diff --git a/tests/btrfs/228 b/tests/btrfs/228
+new file mode 100755
+index 00000000..0a3fb249
+--- /dev/null
++++ b/tests/btrfs/228
+@@ -0,0 +1,109 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test No. btrfs/228
++#
++# Test that an incremental send operation correctly issues clone operations for
++# a file that had different parts of one of its extents cloned into itself, at
++# different offsets, and a large part of that extent was overwritten, so all the
++# reflinks only point to subranges of the extent.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
 +
-+		/*
-+		 * If we are cloning from the file we are currently processing,
-+		 * and using the send root as the clone root, we must stop once
-+		 * the current clone offset reaches the current eof of the file
-+		 * at the receiver, otherwise we would issue an invalid clone
-+		 * operation (source range going beyond eof) and cause the
-+		 * receiver to fail. So if we reach the current eof, bail out
-+		 * and fallback to a regular write.
-+		 */
-+		if (clone_root->root == sctx->send_root &&
-+		    clone_root->ino == sctx->cur_ino &&
-+		    clone_root->offset >= sctx->cur_inode_next_write_offset)
-+			break;
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
 +
- 		data_offset += clone_len;
- next:
- 		path->slots[0]++;
++_cleanup()
++{
++	cd /
++	rm -fr $send_files_dir
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/reflink
++
++# real QA test starts here
++_supported_fs btrfs
++_require_test
++_require_scratch_reflink
++
++send_files_dir=$TEST_DIR/btrfs-test-$seq
++
++rm -f $seqres.full
++rm -fr $send_files_dir
++mkdir $send_files_dir
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++# Create our test file with a single and large extent (1M) and with different
++# content for different file ranges that will be reflinked later.
++$XFS_IO_PROG -f \
++	     -c "pwrite -S 0xab 0 128K" \
++	     -c "pwrite -S 0xcd 128K 128K" \
++	     -c "pwrite -S 0xef 256K 256K" \
++	     -c "pwrite -S 0x1a 512K 512K" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++# Now create the base snapshot, which is going to be the parent snapshot for
++# a later incremental send.
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
++	$SCRATCH_MNT/mysnap1 > /dev/null
++
++$BTRFS_UTIL_PROG send -f $send_files_dir/1.snap \
++	$SCRATCH_MNT/mysnap1 2>&1 1>/dev/null | _filter_scratch
++
++# Now do a series of changes to our file such that we end up with different
++# parts of the extent reflinked into different file offsets and we overwrite
++# a large part of the extent too, so no file extent items refer to that part
++# that was overwritten. This used to confure the algorithm used by the kernel
++# to figure out which file ranges to clone, making it attempt to clone from
++# a source range starting at the current eof of the file, resulting in the
++# receiver to fail since it is an invalid clone operation.
++#
++$XFS_IO_PROG -c "reflink $SCRATCH_MNT/foobar 64K 1M 960K" \
++	     -c "reflink $SCRATCH_MNT/foobar 0K 512K 256K" \
++	     -c "reflink $SCRATCH_MNT/foobar 512K 128K 256K" \
++	     -c "pwrite -S 0x73 384K 640K" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT \
++		 $SCRATCH_MNT/mysnap2 > /dev/null
++$BTRFS_UTIL_PROG send -p $SCRATCH_MNT/mysnap1 -f $send_files_dir/2.snap \
++		 $SCRATCH_MNT/mysnap2 2>&1 1>/dev/null | _filter_scratch
++
++echo "File digest in the original filesystem:"
++_md5_checksum $SCRATCH_MNT/mysnap2/foobar
++
++# Now recreate the filesystem by receiving both send streams and verify we get
++# the same content that the original filesystem had.
++_scratch_unmount
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++$BTRFS_UTIL_PROG receive -f $send_files_dir/1.snap $SCRATCH_MNT > /dev/null
++
++# The receive operation below used to fail with the following error:
++#
++#    ERROR: failed to clone extents to foobar: Invalid argument
++#
++# This is because the send stream included a clone operation to clone from the
++# current file eof into eof (we can't clone from eof and neither the source
++# range can overlap with the destination range), resulting in the receiver to
++# fail with -EINVAL when attempting the clone operation.
++#
++$BTRFS_UTIL_PROG receive -f $send_files_dir/2.snap $SCRATCH_MNT > /dev/null
++
++# Must match what we had in the original filesystem.
++echo "File digest in the new filesystem:"
++_md5_checksum $SCRATCH_MNT/mysnap2/foobar
++
++status=0
++exit
+diff --git a/tests/btrfs/228.out b/tests/btrfs/228.out
+new file mode 100644
+index 00000000..b6e76fe3
+--- /dev/null
++++ b/tests/btrfs/228.out
+@@ -0,0 +1,24 @@
++QA output created by 228
++wrote 131072/131072 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 131072/131072 bytes at offset 131072
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 262144/262144 bytes at offset 262144
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 524288/524288 bytes at offset 524288
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++At subvol SCRATCH_MNT/mysnap1
++linked 983040/983040 bytes at offset 1048576
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++linked 262144/262144 bytes at offset 524288
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++linked 262144/262144 bytes at offset 131072
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 655360/655360 bytes at offset 393216
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++At subvol SCRATCH_MNT/mysnap2
++File digest in the original filesystem:
++9c13c61cb0b9f5abf45344375cb04dfa
++At subvol mysnap1
++File digest in the new filesystem:
++9c13c61cb0b9f5abf45344375cb04dfa
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index a9e53832..61e14bf4 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -229,3 +229,4 @@
+ 225 auto quick volume seed
+ 226 auto quick rw snapshot clone prealloc punch
+ 227 auto quick send
++228 auto quick send clone
 -- 
 2.28.0
 
