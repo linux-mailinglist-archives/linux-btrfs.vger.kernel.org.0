@@ -2,112 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6452F1E5A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 19:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2432F1E7C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 20:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390605AbhAKS5S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 13:57:18 -0500
-Received: from smtp-33.italiaonline.it ([213.209.10.33]:39102 "EHLO libero.it"
+        id S2390706AbhAKTDe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 14:03:34 -0500
+Received: from mail-eopbgr80049.outbound.protection.outlook.com ([40.107.8.49]:14190
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726063AbhAKS5R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:57:17 -0500
-Received: from venice.bhome ([94.37.172.193])
-        by smtp-33.iol.local with ESMTPA
-        id z2MlkhpdE11DDz2MlksDDd; Mon, 11 Jan 2021 19:56:35 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1610391395; bh=UP1G2iwVU7LUmmDBm9KZipFz6Xpfcx7zRDZ2Qs38FZk=;
-        h=From;
-        b=gkN+ba2Az1HAD/0eldEMBncfpiXgPEmQN63owxSRcvDz9FGih/fdo7x8zDiZlCHmm
-         XbQ8ym4CjFwLwtLt9QFQ7Lf/kHgqKiZapkdybzAorW7oBebz6a9XtDz/D/xizSKI2P
-         PiKlfmPwh8RMdM1RBxvn+0PqYrgWtjvyo/s0Zkr4WfUjSm4+KHEGaKOI7z1s5lizWb
-         xbLVm4Hhu9GGq6BzWRqvy66oDhNJPJrMI9AZYh7z6ZIA1lAnEUfzr3XtXyXOtqXX6/
-         kcVr7pHA40UtPRcvlwYNf29bvvxOqqFNbLenzfzyY8JUwWQSzLqA4CmYsCNPQxUWVp
-         Gf4Gnfc9Y1wjg==
-X-CNFS-Analysis: v=2.4 cv=ba6u7MDB c=1 sm=1 tr=0 ts=5ffc9f63 cx=a_exe
- a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
- a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=tT62RjUPrgIUnLq2FDMA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-Reply-To: kreijack@inwind.it
-Subject: Re: Reading files with bad data checksum
-To:     David Woodhouse <dwmw2@infradead.org>, Forza <forza@tnonline.net>,
-        linux-btrfs@vger.kernel.org
-References: <1ad3962943592e9a60f88aecdb493f368c70bbe1.camel@infradead.org>
- <de013d75-7fa1-4cb6-ac1e-a67864c68bf3@tnonline.net>
- <0544b98786dbd980e8bdde58bd5713247178a74e.camel@infradead.org>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <3e309cce-d322-1df8-052a-f370ccbd2784@libero.it>
-Date:   Mon, 11 Jan 2021 19:56:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2390703AbhAKTDe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:03:34 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EpfioXd78TrFGWrQ9Vg3ZMKz0DjwT6+WjMXopvNUJUCVHLQmA9AqR7U/eYWN1nALIwDVgEPjf/mxzUPiSZ48lv3LHPFtWjpZby6DFkmDCPdbDioLlV8y6YxdsORRxATp49DGxu79RtzVznGQNrlS7ipvBFPv6Y8EyrXBpgOzSSy9fgbY7KcMRhFoQTfOXYtsBrtW7jpWCHP45+AlHXYTtkIu5LeejIkeor1NbqdTDGi1y7LKh3xUVkuB6l1uF2UR0TVIGDv7g5FgpYO+9T0vEAa0bdtqLrU4fut4hjvQUr2gbJH/bFQvr/EMzis4vyFRwad/uhpkmKcN0y7P1MxP0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j8YcKYH6HpPtthGXPtsOE/n2gx/TK/J0nnUvuu3/oL8=;
+ b=nACm2NX0ELSeHDOqcK6zzuFSHMgYr2z6WGfJicm46R5B6MMxQG075sDPWvTWBBTUPcqTdUrsAi7dvVQuSVRkUvx5KaBYsN67kEPOLZTIw9MZK53KM095yXWFLDD32kbIKvbSrcSqmkfM/BooeUvifCNGtJ5uQeyO17m4JNbC7naiYR2A4hm9KDhKWqCsIfvJoYt0RrGpgUQVGCRFM+6GG2NVfjVcAQSeaqSCuXmo34ex/geiECxYLvi1D3uNX4iHCSQQGjbDXDk+JI2cs3PC6gCLRrmmdWYYzA4JjA2XQQyCj121iu52AKrQYdrKWyk5SJrnb6qjcTGt+1J8q/5jBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bdsu.de; dmarc=pass action=none header.from=bdsu.de; dkim=pass
+ header.d=bdsu.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bdsu.de; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j8YcKYH6HpPtthGXPtsOE/n2gx/TK/J0nnUvuu3/oL8=;
+ b=QWqM4lBR9f5OKMypvRXT2kcPUzUG9KtiBoeuzZBgF2iPUkaXEtbG7TZYk21Vah9ejIbLlzN3jV4hFQNLtHf9Tj2Rn6TEOKA+neEpJJIg+DE/xKwD8KLempHc8Jf/CHLQZRzDbcXAYqnK74BaRVyHcuczCI3ZwwJtTc55losnVq9JRfScFET5IHCxEhholdtr53TtdAUQzzLdZYhnlxr4OgEpJho0P+ybGaUTCgFqBh+pUeQ8hJpDZHZ2WThxtHX16CE9Ccwzpak+Sz5WkkTcb1ev2gEyCpdjHybzve+dTN7rSJQpjQYNukFqW7/MFLFHycBHsLBK1ggnMcXpXXPXqA==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=bdsu.de;
+Received: from DB7PR03MB4297.eurprd03.prod.outlook.com (2603:10a6:10:17::30)
+ by DB6PR0301MB2520.eurprd03.prod.outlook.com (2603:10a6:4:5b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.11; Mon, 11 Jan
+ 2021 19:02:44 +0000
+Received: from DB7PR03MB4297.eurprd03.prod.outlook.com
+ ([fe80::b53d:bd77:c4ae:93d]) by DB7PR03MB4297.eurprd03.prod.outlook.com
+ ([fe80::b53d:bd77:c4ae:93d%5]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 19:02:44 +0000
+From:   Roman Anasal <roman.anasal@bdsu.de>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Roman Anasal <roman.anasal@bdsu.de>
+Subject: [PATCH 0/2] btrfs: send: correctly recreate changed inodes
+Date:   Mon, 11 Jan 2021 20:02:41 +0100
+Message-Id: <20210111190243.4152-1-roman.anasal@bdsu.de>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [2001:a61:3aef:4c01:503:a276:cbe0:8dc0]
+X-ClientProxiedBy: AM9P192CA0009.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21d::14) To DB7PR03MB4297.eurprd03.prod.outlook.com
+ (2603:10a6:10:17::30)
 MIME-Version: 1.0
-In-Reply-To: <0544b98786dbd980e8bdde58bd5713247178a74e.camel@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBbxjUessjgf1oL62INSFgi78w4p5dRm8hDPBeJtmkkFM8HFaCRL2H1kOCT3zQqJH7engJoWcd48Bw1kMJJrMAHRGozIouXV0NtUwlEjwn2MEoH9FusO
- jlee2jrwiC9G/e/VZ5bRJTz4hXuqlT+Aw7k5pEI689f65FCgJWIC9AF3p6aD8miidshexor/kXWEWij1+MrmDrW16wbxt13SThcV3O3eCLb1E+thHelZQMQj
- zXO2NfY95a0Hf7NIbk8bEA==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nebukadnezar.fritz.box (2001:a61:3aef:4c01:503:a276:cbe0:8dc0) by AM9P192CA0009.EURP192.PROD.OUTLOOK.COM (2603:10a6:20b:21d::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 19:02:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 37039316-9647-4d2d-6c41-08d8b6637a2f
+X-MS-TrafficTypeDiagnostic: DB6PR0301MB2520:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0301MB25201F1709EA407E8F28CAAD94AB0@DB6PR0301MB2520.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Bta+9aq/gnJ7FnNe1S09k4bd7duafOTWAbCvob5oB9EBsN3vl5vzOqJh3IPbXiB/FTz/O5QXcjk7721PP7xP0gG+NADvJRZ3dF2rlRLTfDZAVbnEkUeTB+zPywDedFdAAjxHkWREebuxj2p7eqJWMoF6KhQgWPstHBISfc2ZlMSuQu+txYbptuViwI1UDX1FV+JfivMleaCw3OSPZSfKNiCEEFYLS7PTjHAun+yepJVJu33Yy/82v+sJi8vYAjs76OBfsyvV9ygILZSuQDzBqF00YBHqdk1W6ppv+Ms39CmqaXwIMJUYyToJ2r9QbOuJa40kxmtudCfZe+OP9DV5cr2eq5DpY0TzrzKENcQzQeC4d0mwATXOryPVoTY/CMfR218paiSEh2VERPnXsEvrtzKYfg+XqUc4gcYai0x28KJ6JNxUTBDLg87U7hGGu0X7Hz5q6MDvs3cHcDbhaaWn+Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4297.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39830400003)(396003)(136003)(366004)(376002)(316002)(786003)(44832011)(66476007)(66946007)(52116002)(36756003)(1076003)(66556008)(83380400001)(966005)(2616005)(107886003)(4326008)(86362001)(5660300002)(16526019)(186003)(6512007)(6506007)(6916009)(8936002)(2906002)(8676002)(6486002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9XG7PTELdH81e2ga75BZN9s5t/HxDJ9EUFZI/0aJVuvJwU7iFYqGxyQzE+KX?=
+ =?us-ascii?Q?88OByRjfLWkeLmXyY+zO9i799ozfN4KXKUybfvv/M+PGCz9x+mgHvddoimHR?=
+ =?us-ascii?Q?CC0WIhBUbPyHJHF8t0v3jzByuzqpL02AJu2OiFIWveXGyAcAbzBeJd0mylu8?=
+ =?us-ascii?Q?690jkQTSCCMK/eSaFn+JNtx4gZI4dpBEai4cakKcnXXfFwa18xkJe3dkAlH+?=
+ =?us-ascii?Q?SsrKZOKKexZ2YNmdUIS6mDsHodCcf3GkGgLKYyo73vVkRMcOZ+eH4I0hTYBQ?=
+ =?us-ascii?Q?ruhCPaBGIkVAH0dTuDzWx1f/q+b6MxdkEGzt9+S8Hd+pdI2o7mCbOwhgw/on?=
+ =?us-ascii?Q?asBNeNMrZus020qAKi9b26qi/2UgBbEApDmXA+KqIjHDA8l9egkaGIbRaNsN?=
+ =?us-ascii?Q?wOJTbQpBU6CFrR7NhQhK9WEuYt44pbS91amkvWf4b+syWG2hqTIZF8b8Sqf8?=
+ =?us-ascii?Q?tuI36N6QSczE9+3TCydDXtgR3D1VRbqbMunz7O+99UuGckpXH2VnwG0fa+a/?=
+ =?us-ascii?Q?qmlZIwK/93uD1O5N/zsZ5R+LFclsGQuNIIOfnYTh+FenwcSUsypNy2j6i1oz?=
+ =?us-ascii?Q?fQ3t+6cD31hBXQxkzKC1g3U2XXa7jnAeee0pjXZ8ULAaX4snqEYwSPaNW1km?=
+ =?us-ascii?Q?2dAfYMxsrJyzMZ8BSpLHWMgKREIFc0EZCK3KzBgK5KNTMBDb3q1W/+3vUGv6?=
+ =?us-ascii?Q?fTBEJG4Kt35pUiIoFRSWvcBiMMSSzAge4Fd5k2zCU5Y2Gxn4tgXostamHYkQ?=
+ =?us-ascii?Q?AZW37eUKuQ8reGn6lkIOeBxadjM48tJKA7rX34XWe92Jxc08Oa447oMnBt83?=
+ =?us-ascii?Q?4rnuibH5NyEvK8FZbyCZzjaXKPq0lF7d7HPxEUeJBwQG59ZL4+RWEM8BJ0SM?=
+ =?us-ascii?Q?fMZK+o92QyaltLTeAJdSoC2EE5YG2/ByNp1dio9/g+Mq/PMqje4tzAa2jdho?=
+ =?us-ascii?Q?0L6hQsj5ysRdFKI7mnernLaZF7t3WaBP5xk3Ek6me4RGGcKePY/8FsKoql57?=
+ =?us-ascii?Q?D4p31/hE/w2GrxmUky41TrR5OvvaEQcjRjOq4Xy8yWAYcXI=3D?=
+X-OriginatorOrg: bdsu.de
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4297.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 19:02:43.9631
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c0670a1-eeed-4da2-a08a-128fe03f692a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37039316-9647-4d2d-6c41-08d8b6637a2f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9zLUi3sTJM+j8T+yWXOCUFO9A7CCe4KETtF0x2sVn8FVAvBuY0oAI4B0aCD8h7UGXTZ0t9psxKWj3x1kiQ2LUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0301MB2520
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/10/21 1:36 PM, David Woodhouse wrote:
-> On Sun, 2021-01-10 at 13:08 +0100, Forza wrote:
-[...]
-> 
-> It showed up as errors. There appears to be a btrfs bug there but since
+Trying to incremental send and receive some subvolumes I repeatedly ran into
+errors with btrfs-receive failing. Taking a deeper look into the issue showed
+that btrfs-send was producing (semantically) invalid command streams. I could
+pin down the conditions of this happening to having inodes with the same number
+and the same generation but different inode type in the parent and the sent
+subvolume.
 
-Yes, it is an old btrfs bug. And qemu is not the guilty.
+The cause of this was that the kernel code for btrfs-send did not check if the
+type of the inode changed but only recreated the inode when the generation
+changed, too. Having the two inodes originate in the same generation though
+would produce a command stream that causes the receiver to fail.
 
-https://lore.kernel.org/linux-btrfs/cf8a733f-2c9d-7ffe-e865-4c13d99dfb60@libero.it/
-
-In my email there is a code to reproduce it.
-
-Basically it is difficult to have the checksum sync with the data when O_DIRECT
-is used. Even OpenZFS has problem with it. The OpenZFS solution is to lie about O_DIRECT:
-it allows the flag however it doesn't honor.
-
-I think that BTRFS should behave like ZFS: when csum are enable, O_DIRECT shouldn't be
-honored (or returning an error or behaving like ZFS).
-
-
-> I suspect it'll be easy to reproduce I'm more focused on recovery right
-> now.
-> 
->>> In the short term, all I want to do is make a copy of the file, using
->>> the data which are in the disk regardless of the fact that btrfs thinks
->>> the checksum doesn't match. Is there a way I can turn off *checking* of
->>> the checksum for that specific file (or file descriptor?).
->>>
->>> Or is the only way to do it with something like FIBMAP, reading the
->>> offending blocks directly from the underlying disk and then writing
->>> them into the appropriate offset in (a copy of) the file? A plan which
->>> is slightly complicated by the fact that of course btrfs doesn't
->>> support FIBMAP.
->>>
->>> What's the best way to recover the data?
->>>
->>
->> You can use GNU ddrescue to copy files. It can skip the offending blocks
->> and replace the bad data with zeroes. Not sure how well qemu will handle
->> that though.
-> 
-> Right. I've already copied the image with dd conv=sync,noerror to a new
-> one with the +C flag. It passes 'qemu-img check', and in fact the guest
-> is running just fine with it. I was expecting it to stop with
-> catastrophic file system errors but I can't see anything wrong at all.
-> I'm just paranoid that eventually I'll find out that the blocks belong
-> to some file(s) I actually want, and I'd like to recover them.
-> 
-> Right now I have a horribly fragmented image file with these 'errors'
-> cluttering up my file system and making backups of the host go
-> extremely slow. I'd like to get those blocks back so I can make a clean
-> copy of the image, and keep it around for reference in case I later
-> *do* discover that I need the contents of those blocks.
-> 
+This small patch set adds the check for the same type and causes a deleted and
+create of the inode if necessary.
+For this the first patch renames send_ctx.cur_inode_new_gen to
+cur_inode_recreated because that is what this currently _actually_ is used for:
+detecting whether an inode was/should be recreated.
+I deemed this refactoring/renaming to be appropriate because the second patch
+then adds another condition that will set cur_inode_recreated - i.e. if the
+inode types differ.
 
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Looking through the code and developing this patch I also identified an
+assumption that seems to be hard coded into many places and that probably caused
+other bugs, too, e.g. [1]:
+
+That people would only ever incremental send read-only snapshots of the provided
+parent snapshot that they're based off.
+
+But this assumption fails/causes bugs when send/receive is used with:
+1. snapshots that were modified after their creation
+2. subvolumes that were created independently and are not descendants of each
+   other
+
+(Although 2. may look like total nonsense it actually makes sense for
+independent subvolumes that share some extents e.g. by cp --reflink or some
+other means of deduplication.)
+
+Thus I suspect there to be further hidden bugs for very rare edge cases
+especially where the generation number is used to check for differences -
+because taking 1./2. into account the generations between the subvolume and
+parent may arbitrarily be smaller, equal or greater and as such does not qualify
+as a good indicator for change detection.
+The same is true for the inode numbers.
+
+This makes it also connected to [1]:
+"btrfs: send: fix wrong file path when there is an inode with a pending rmdir"
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/commit/?id=0b3f407e6728d990ae1630a02c7b952c21c288d3
+
+
+Roman Anasal (2):
+  btrfs: send: rename send_ctx.cur_inode_new_gen to cur_inode_recreated
+  btrfs: send: fix invalid commands for inodes with changed type but
+    same gen
+
+ fs/btrfs/send.c | 47 +++++++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
+
+--
+2.26.2
