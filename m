@@ -2,436 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE072F21BF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 22:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63472F21D5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 22:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730766AbhAKVZW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 16:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730263AbhAKVZV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:25:21 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3B3C061795
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 13:24:41 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id c14so342251qtn.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 13:24:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4T+K5UpI7h8e60O6SxSJZbs2CEk5XPra4sYje8ET1VM=;
-        b=DMHrlff4RAnLrxAYgm5KaUNzUfpzY0rRa5bdcrqu3l2mh8ii5A1NcTy52mBG41e2U8
-         ztVTpV7zi/nCiolL6mc+VrwrM6p1H/scIBMChNUWGb25iTMFkyHmJ8NRsk2wRyjNq0Zg
-         kM+leMh/3/4GebYnqXK3hteq1uxfw6tgH7yAb8je09TcEGfJo3872DgE8Q4GZeLYgzlB
-         dubW+ZFuX9ZWuoYZgkZ/1ks+TI5fHt+3ITfXc9fdwV0uk/4q5EqNHcT4npvSMEYeMfMR
-         cV3pu4Fw9Y0wsgdQ1NcfnIBArwnIb7i7pTLiAlU8WBhxPhCSllJY+w5Qdx52uiyXMMAi
-         Yo6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4T+K5UpI7h8e60O6SxSJZbs2CEk5XPra4sYje8ET1VM=;
-        b=KRDtzy53HtN7KeufS4ukrGZ1DU22OQzQAcQA8zNnHM0c7usIUwB0/BppSz0ijt8gyY
-         qivk8voRUvzzW0llTH18P+qEmKKzTBk6H9ZZfaUnv/Nq6bGPM9CNV6cVetL9NQpwW48N
-         mrvaUqTbrUcSgnRDCu4fTWCf6VKDjs1VS2iKdy4KHLABt68Je+FLCzeVo2PW6/wdTzCz
-         CNdvZC7hsDvgKbLw/f1nR8DoYMhyUrJchBwe/sQPR+sn+I0znkZ8NcSDd9twXGe4rdkx
-         wXpk0QmDDfU3HMin2p4xx9UJoBYLgfoxebp0E/O6pvAO4ZMEo5zbeJtt8OAnZ+ZquCJK
-         VcXg==
-X-Gm-Message-State: AOAM533XbKPFvqeqBNLiEcDylu7KxZeUI79qKXIuCGnvhGcZXlhIZsIs
-        f8mmfOHrmWk7mUhw1UcVwcMABw==
-X-Google-Smtp-Source: ABdhPJwfDGZfymcWueQdyO0KsVYCtAnzLckTGtbkTpPoaGlS07SdBtWbgBMkGY4RfPO2mkfuKAyKDw==
-X-Received: by 2002:ac8:220a:: with SMTP id o10mr1565682qto.280.1610400280213;
-        Mon, 11 Jan 2021 13:24:40 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d14sm375264qtg.97.2021.01.11.13.24.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 13:24:39 -0800 (PST)
-Subject: Re: [PATCH v11 09/40] btrfs: implement zoned chunk allocator
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
-        dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <6c977b7099812637cff36d09ac1a8e6ea2e00519.1608608848.git.naohiro.aota@wdc.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <e85bee22-a100-f9b3-8c03-ac216ad97a85@toxicpanda.com>
-Date:   Mon, 11 Jan 2021 16:24:38 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <6c977b7099812637cff36d09ac1a8e6ea2e00519.1608608848.git.naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1729941AbhAKVcW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 16:32:22 -0500
+Received: from mail-vi1eur05on2062.outbound.protection.outlook.com ([40.107.21.62]:30433
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727984AbhAKVcV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:32:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eCtT95SAozKNxSrHaIySGaTl1e10tbl6kQ4tleupIMKUXH+ezoC1wHbBoxmk3oCJBuitPD/6eDR1FvQCnCtWe9G/i9a2hMiBzJRGL3j4R2uR8ZHEGsOd6blix5hGMXXQsctRpJ3ZqpBqA1C0XKXlPjzAjkIIUAUnoNdUng0ZaFGjorHaeXEUdkftWHJrYoVG053QNeoEeiIl6L47cHQO5ThDlQ/q8eL/dh8IU/WHOGiN++Kc842CCkp0ArTSjVeQIBZ2GACUj0BHuPGWtgwB/JMOt5+R3WjFkbD0nRBhzQLl5xk4Jm1sDOoOzf+2MFMKrr0Xieg/t26YYPViXPQUFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wn+Esj+fVPKS034yM3jx6Fzmrd6OCcsltAWM2cZ9Djo=;
+ b=B677dYXHhhrzqSjprhkHaR9k2oiiPWYF87/x3s+Nnv+BrPE55Mu1KBycVwMRbF+z9LPjmb+lamY+9mmklnopIwA11HejHtvAsxhIO95CKAzJIhCE1OqX51uTwD4Va+KTq1sb/bgBei74WYLR8kLQtuiRIq3xo2XJ/jW0p3vPhpWh6zebazITSZhgAdBvPPwxraSkhaTBQoHdhBrmCeXNvu4qS0Efito6raT8WltEzmoLdONwZnsyJ1sr1pULRhPDvohFJ81kVm+HoAe7Vx+S2KGSyWFv+YV6yeLqZqN4hK4obwj0ggqWxfbti1fuBUSlmPeODW7R8y+TVCL3teU/9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bdsu.de; dmarc=pass action=none header.from=bdsu.de; dkim=pass
+ header.d=bdsu.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bdsu.de; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wn+Esj+fVPKS034yM3jx6Fzmrd6OCcsltAWM2cZ9Djo=;
+ b=nPVdFf3/yJNH0S6jRGPkHyS8ZFeA2DT67L7S626e4sXjGYAZO+sg4kYlWjEf/1XZY1JZ3CybT7bVqOZGX1zxg+FBMDwA6mnDlJUOAs3YhF7qxuHV2fNN6Svpq75fwdBmz1ktpQZAatWCst9/mfNYGsbqavCTd6OVq9UxwynU2TtYvKL2C2uDKT3+j/FmlKLcTHIfyZw3FA+30dsQq4bnzrrnKZH+2O4dOSwxFOL5WOlW+7nu+d6rq+1/7GZl38nZdjm92zZU79oGaF6n15NH31SHJCUU05qRNxgYwYaQ91A+7g1Dp9xccwpE6YpaRMTmL4bS1olOwBgwd8p7oNpg/w==
+Received: from DB7PR03MB4297.eurprd03.prod.outlook.com (2603:10a6:10:17::30)
+ by DB3PR0302MB3418.eurprd03.prod.outlook.com (2603:10a6:8:a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.11; Mon, 11 Jan
+ 2021 21:31:31 +0000
+Received: from DB7PR03MB4297.eurprd03.prod.outlook.com
+ ([fe80::b53d:bd77:c4ae:93d]) by DB7PR03MB4297.eurprd03.prod.outlook.com
+ ([fe80::b53d:bd77:c4ae:93d%5]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 21:31:31 +0000
+From:   Roman Anasal | BDSU <roman.anasal@bdsu.de>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 2/2] btrfs: send: fix invalid commands for inodes with
+ changed type but same gen
+Thread-Topic: [PATCH 2/2] btrfs: send: fix invalid commands for inodes with
+ changed type but same gen
+Thread-Index: AQHW6ExfcsLlXW2ATUu8CwlNGk82oqoi7S2AgAAEr4A=
+Date:   Mon, 11 Jan 2021 21:31:31 +0000
+Message-ID: <0363f5435d09d6fc0fdf4e680b408bfc96c8a698.camel@bdsu.de>
+References: <20210111190243.4152-1-roman.anasal@bdsu.de>
+         <20210111190243.4152-3-roman.anasal@bdsu.de>
+         <20210111211529.GE6430@twin.jikos.cz>
+In-Reply-To: <20210111211529.GE6430@twin.jikos.cz>
+Accept-Language: en-US, de-DE
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=bdsu.de;
+x-originating-ip: [2001:a61:3aef:4c01:503:a276:cbe0:8dc0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3da78550-1292-4cdf-01b8-08d8b6784383
+x-ms-traffictypediagnostic: DB3PR0302MB3418:
+x-microsoft-antispam-prvs: <DB3PR0302MB3418C99E1A8EB1FA99757D3794AB0@DB3PR0302MB3418.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3276;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hmHw+x3inDJqZTGkfdDdd6IpTULh6++BnqRbF/ypqwkOF4JHlLqgg3bwU73w3GWlcBQPL8Qr0TCqTztiBflGFicyAPq7IChDNZlHiZEdocI7RFVG0eeSanSlUTM+rWpZkES6rVUoHUu5YaeWm9LGXypdouCttp5wJ28LI0g8B9oypchTGf0CTmnMHPQJlypB7Sen9oR1j25nNa2/ksXpAy9hBG3JLazh7SPFXji/heZS8kByNFIp1kuSCqkhiEyVB5gftlqDW71LEfxVgXBLVmOKaKwdtmGVxZgqdjvv4i1/HQlBQnLQ075sU8xlZwjI7acOlYZL84TkH59XhFnZGHaKVwVO7eNOeoDfnOjQUDsJJLPXSvYrsSZnPQhy/9zw
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4297.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(136003)(366004)(39830400003)(186003)(36756003)(66446008)(76116006)(66946007)(6512007)(6486002)(64756008)(66556008)(6916009)(8676002)(4326008)(66476007)(71200400001)(786003)(2906002)(316002)(6506007)(91956017)(86362001)(478600001)(5660300002)(83380400001)(2616005)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?S1JpUkhlb0ZJMjQ5ZVY2Mm9Ob1pzbmFNWFVwRWNRT21xQWRXYXhSMVF1N2ox?=
+ =?utf-8?B?L1c1aEtwcS9jb0dEWEE4SHU3TTdaNDZQTkhYOXhRNjByK0lmb1VvYVNWUEdk?=
+ =?utf-8?B?L1dCbUdrZ04xZlduQXBYWHhyVTBLRng4UXpIZDluTTJ0Rkx0V3pGbExCMEZK?=
+ =?utf-8?B?Nmc3S2llRVM0YWNiMEE3M3JJQ0RvbmxnN1dXZ282aHhYY241OTZUa3JpRlZy?=
+ =?utf-8?B?YnhZbXI3L2VNMjJZUXhsVlhuUXQrQXpYRmxhUzlHcnJYTHNSQWhZc2lZT2RO?=
+ =?utf-8?B?NEJRbElBcmQraHFPQ0oweFdOWFEyODJ2KzJvS2ZrbHdiSWdsN3hMUkRUMFhQ?=
+ =?utf-8?B?UW5yR3RXbUZJTzROZmRvUVBmTm5XMlhJM1J4d0I4R2JhNlFpa0NOZGM2Ym05?=
+ =?utf-8?B?QU9NY2JObFd2YTBEQ2s2VGw5Q0V1aVJaNTN1RndIUGtnZHJVaHEyKzZ2Ymt4?=
+ =?utf-8?B?NHpxdy9iYmtSR25QQmpsR1ZJeE5FK1c2cjN3a2VLWU02VXJkMmZWK056UGZM?=
+ =?utf-8?B?SWgvRkxwVnFnSXpIMWF2Y3FGaVNYbTRjMXErVzJMRTc4d243UDVLVDR2TkE0?=
+ =?utf-8?B?anM3REU4ZGlScFZWcDJSM0FyZGc5OVRRN3dWZFMwY0pMSkpWWnBlUm9lYjlh?=
+ =?utf-8?B?M3Q4aFhTMU9KbWp4SHBtYldyRHRMV1hXY2JBa0RrR1VDM2ZEVVRlOHd1Wjho?=
+ =?utf-8?B?VGtaMTBBYVlvZjlPSy9yekJvdnR2U0NMZms4VVJDby9GaXZ5dkpENVBESTB6?=
+ =?utf-8?B?bnhnNHBGYVpSRHI3clJHRGc3YzJDMnJxL2JNM054WEg3a21hYUxWUjl2elJU?=
+ =?utf-8?B?Y1RlVnJoVVlKbnFtZHYxdnlDTGJpb0tmNjIrRXB5dWFPYUVkcE81VzFrMHd3?=
+ =?utf-8?B?WlhUVlZCbTNnbFlhc0xyS1cxR053THJ1K01IR3ludEljaXdkOENzaUNhL00y?=
+ =?utf-8?B?Rno1MkUxU0Z6LzZGZFJvNEVhbzF5Wk15R1hDRDYwNy8xaUJNdGgveDBBNVZ4?=
+ =?utf-8?B?SGxDdVZLem9vKzBndFJ1NlNlTjFUOE0yN1B6YkNiMHJ2SjRpM3k3ZDY4RHgv?=
+ =?utf-8?B?cXZNd0E3OXplVmltWThPcE5lWUttekRWWG9YVVlLa2EyZjZtQUZCS0t6OVJx?=
+ =?utf-8?B?QStXMlpnMmNWb1BabS8wVDNzVzhvWFQyMDB3V3dRUWMwTWZQb2t0RW5Pd0dS?=
+ =?utf-8?B?RGFubFVNekt4QlFidFcvQnZOTjU1bW5lNjBYbUJxczhkMFQ5QldVL0Jya3p0?=
+ =?utf-8?B?eVB4ZlBIWGd6SGVWV1JUK2NqMUNkUFZQZTRuM2NXMnZFUzBmSjkrV2RJQkhq?=
+ =?utf-8?B?bFN4S3RnWE9jZ2pCNFhHLzBCVkgxL0hHeFl0ZzZ0dTJ5M29sTWIzcTJqRnJs?=
+ =?utf-8?B?Q3U3K0pLNURMaVBCOStyeWtZaFJaQis2TkRrUmkra28xOFZGQklBRzNrMXpD?=
+ =?utf-8?Q?Pxnu/Bqp?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A2536544A96B0B469926CAC1AF6D644F@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: bdsu.de
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4297.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3da78550-1292-4cdf-01b8-08d8b6784383
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2021 21:31:31.7115
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8c0670a1-eeed-4da2-a08a-128fe03f692a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yeQmUuG1hvJeT8yvJXoeI9gCv0LEmkFgDkclCj39AcnmINHZkW3zHq/l8EXUT7b49pfaxEg8cjfcXk62q+fe9g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0302MB3418
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/21/20 10:49 PM, Naohiro Aota wrote:
-> This commit implements a zoned chunk/dev_extent allocator. The zoned
-> allocator aligns the device extents to zone boundaries, so that a zone
-> reset affects only the device extent and does not change the state of
-> blocks in the neighbor device extents.
-> 
-> Also, it checks that a region allocation is not overlapping any of the
-> super block zones, and ensures the region is empty.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->   fs/btrfs/volumes.c | 169 ++++++++++++++++++++++++++++++++++++++++-----
->   fs/btrfs/volumes.h |   1 +
->   fs/btrfs/zoned.c   | 144 ++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/zoned.h   |  25 +++++++
->   4 files changed, 323 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 2cdb5fe3e423..19c76cf9d2d2 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1424,11 +1424,62 @@ static u64 dev_extent_search_start(struct btrfs_device *device, u64 start)
->   		 * make sure to start at an offset of at least 1MB.
->   		 */
->   		return max_t(u64, start, SZ_1M);
-> +	case BTRFS_CHUNK_ALLOC_ZONED:
-> +		/*
-> +		 * We don't care about the starting region like regular
-> +		 * allocator, because we anyway use/reserve the first two
-> +		 * zones for superblock logging.
-> +		 */
-> +		return ALIGN(start, device->zone_info->zone_size);
->   	default:
->   		BUG();
->   	}
->   }
->   
-> +static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
-> +					u64 *hole_start, u64 *hole_size,
-> +					u64 num_bytes)
-> +{
-> +	u64 zone_size = device->zone_info->zone_size;
-> +	u64 pos;
-> +	int ret;
-> +	int changed = 0;
-> +
-> +	ASSERT(IS_ALIGNED(*hole_start, zone_size));
-> +
-> +	while (*hole_size > 0) {
-> +		pos = btrfs_find_allocatable_zones(device, *hole_start,
-> +						   *hole_start + *hole_size,
-> +						   num_bytes);
-> +		if (pos != *hole_start) {
-> +			*hole_size = *hole_start + *hole_size - pos;
-> +			*hole_start = pos;
-> +			changed = 1;
-> +			if (*hole_size < num_bytes)
-> +				break;
-> +		}
-> +
-> +		ret = btrfs_ensure_empty_zones(device, pos, num_bytes);
-> +
-> +		/* Range is ensured to be empty */
-> +		if (!ret)
-> +			return changed;
-> +
-> +		/* Given hole range was invalid (outside of device) */
-> +		if (ret == -ERANGE) {
-> +			*hole_start += *hole_size;
-> +			*hole_size = 0;
-> +			return 1;
-> +		}
-> +
-> +		*hole_start += zone_size;
-> +		*hole_size -= zone_size;
-> +		changed = 1;
-> +	}
-> +
-> +	return changed;
-> +}
-> +
->   /**
->    * dev_extent_hole_check - check if specified hole is suitable for allocation
->    * @device:	the device which we have the hole
-> @@ -1445,24 +1496,39 @@ static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
->   	bool changed = false;
->   	u64 hole_end = *hole_start + *hole_size;
->   
-> -	/*
-> -	 * Check before we set max_hole_start, otherwise we could end up
-> -	 * sending back this offset anyway.
-> -	 */
-> -	if (contains_pending_extent(device, hole_start, *hole_size)) {
-> -		if (hole_end >= *hole_start)
-> -			*hole_size = hole_end - *hole_start;
-> -		else
-> -			*hole_size = 0;
-> -		changed = true;
-> -	}
-> +	for (;;) {
-> +		/*
-> +		 * Check before we set max_hole_start, otherwise we could end up
-> +		 * sending back this offset anyway.
-> +		 */
-> +		if (contains_pending_extent(device, hole_start, *hole_size)) {
-> +			if (hole_end >= *hole_start)
-> +				*hole_size = hole_end - *hole_start;
-> +			else
-> +				*hole_size = 0;
-> +			changed = true;
-> +		}
-> +
-> +		switch (device->fs_devices->chunk_alloc_policy) {
-> +		case BTRFS_CHUNK_ALLOC_REGULAR:
-> +			/* No extra check */
-> +			break;
-> +		case BTRFS_CHUNK_ALLOC_ZONED:
-> +			if (dev_extent_hole_check_zoned(device, hole_start,
-> +							hole_size, num_bytes)) {
-> +				changed = true;
-> +				/*
-> +				 * The changed hole can contain pending
-> +				 * extent. Loop again to check that.
-> +				 */
-> +				continue;
-> +			}
-> +			break;
-> +		default:
-> +			BUG();
-> +		}
->   
-> -	switch (device->fs_devices->chunk_alloc_policy) {
-> -	case BTRFS_CHUNK_ALLOC_REGULAR:
-> -		/* No extra check */
->   		break;
-> -	default:
-> -		BUG();
->   	}
->   
->   	return changed;
-> @@ -1515,6 +1581,9 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
->   
->   	search_start = dev_extent_search_start(device, search_start);
->   
-> +	WARN_ON(device->zone_info &&
-> +		!IS_ALIGNED(num_bytes, device->zone_info->zone_size));
-> +
->   	path = btrfs_alloc_path();
->   	if (!path)
->   		return -ENOMEM;
-> @@ -4913,6 +4982,37 @@ static void init_alloc_chunk_ctl_policy_regular(
->   	ctl->dev_extent_min = BTRFS_STRIPE_LEN * ctl->dev_stripes;
->   }
->   
-> +static void init_alloc_chunk_ctl_policy_zoned(
-> +				      struct btrfs_fs_devices *fs_devices,
-> +				      struct alloc_chunk_ctl *ctl)
-> +{
-> +	u64 zone_size = fs_devices->fs_info->zone_size;
-> +	u64 limit;
-> +	int min_num_stripes = ctl->devs_min * ctl->dev_stripes;
-> +	int min_data_stripes = (min_num_stripes - ctl->nparity) / ctl->ncopies;
-> +	u64 min_chunk_size = min_data_stripes * zone_size;
-> +	u64 type = ctl->type;
-> +
-> +	ctl->max_stripe_size = zone_size;
-> +	if (type & BTRFS_BLOCK_GROUP_DATA) {
-> +		ctl->max_chunk_size = round_down(BTRFS_MAX_DATA_CHUNK_SIZE,
-> +						 zone_size);
-> +	} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
-> +		ctl->max_chunk_size = ctl->max_stripe_size;
-> +	} else if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
-> +		ctl->max_chunk_size = 2 * ctl->max_stripe_size;
-> +		ctl->devs_max = min_t(int, ctl->devs_max,
-> +				      BTRFS_MAX_DEVS_SYS_CHUNK);
-> +	}
-> +
-> +	/* We don't want a chunk larger than 10% of writable space */
-> +	limit = max(round_down(div_factor(fs_devices->total_rw_bytes, 1),
-> +			       zone_size),
-> +		    min_chunk_size);
-> +	ctl->max_chunk_size = min(limit, ctl->max_chunk_size);
-> +	ctl->dev_extent_min = zone_size * ctl->dev_stripes;
-> +}
-> +
->   static void init_alloc_chunk_ctl(struct btrfs_fs_devices *fs_devices,
->   				 struct alloc_chunk_ctl *ctl)
->   {
-> @@ -4933,6 +5033,9 @@ static void init_alloc_chunk_ctl(struct btrfs_fs_devices *fs_devices,
->   	case BTRFS_CHUNK_ALLOC_REGULAR:
->   		init_alloc_chunk_ctl_policy_regular(fs_devices, ctl);
->   		break;
-> +	case BTRFS_CHUNK_ALLOC_ZONED:
-> +		init_alloc_chunk_ctl_policy_zoned(fs_devices, ctl);
-> +		break;
->   	default:
->   		BUG();
->   	}
-> @@ -5059,6 +5162,38 @@ static int decide_stripe_size_regular(struct alloc_chunk_ctl *ctl,
->   	return 0;
->   }
->   
-> +static int decide_stripe_size_zoned(struct alloc_chunk_ctl *ctl,
-> +				    struct btrfs_device_info *devices_info)
-> +{
-> +	u64 zone_size = devices_info[0].dev->zone_info->zone_size;
-> +	/* Number of stripes that count for block group size */
-> +	int data_stripes;
-> +
-> +	/*
-> +	 * It should hold because:
-> +	 *    dev_extent_min == dev_extent_want == zone_size * dev_stripes
-> +	 */
-> +	ASSERT(devices_info[ctl->ndevs - 1].max_avail == ctl->dev_extent_min);
-> +
-> +	ctl->stripe_size = zone_size;
-> +	ctl->num_stripes = ctl->ndevs * ctl->dev_stripes;
-> +	data_stripes = (ctl->num_stripes - ctl->nparity) / ctl->ncopies;
-> +
-> +	/* stripe_size is fixed in ZONED. Reduce ndevs instead. */
-> +	if (ctl->stripe_size * data_stripes > ctl->max_chunk_size) {
-> +		ctl->ndevs = div_u64(div_u64(ctl->max_chunk_size * ctl->ncopies,
-> +					     ctl->stripe_size) + ctl->nparity,
-> +				     ctl->dev_stripes);
-> +		ctl->num_stripes = ctl->ndevs * ctl->dev_stripes;
-> +		data_stripes = (ctl->num_stripes - ctl->nparity) / ctl->ncopies;
-> +		ASSERT(ctl->stripe_size * data_stripes <= ctl->max_chunk_size);
-> +	}
-> +
-> +	ctl->chunk_size = ctl->stripe_size * data_stripes;
-> +
-> +	return 0;
-> +}
-> +
->   static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
->   			      struct alloc_chunk_ctl *ctl,
->   			      struct btrfs_device_info *devices_info)
-> @@ -5086,6 +5221,8 @@ static int decide_stripe_size(struct btrfs_fs_devices *fs_devices,
->   	switch (fs_devices->chunk_alloc_policy) {
->   	case BTRFS_CHUNK_ALLOC_REGULAR:
->   		return decide_stripe_size_regular(ctl, devices_info);
-> +	case BTRFS_CHUNK_ALLOC_ZONED:
-> +		return decide_stripe_size_zoned(ctl, devices_info);
->   	default:
->   		BUG();
->   	}
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 59d9d47f173d..c8841b714f2e 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -216,6 +216,7 @@ BTRFS_DEVICE_GETSET_FUNCS(bytes_used);
->   
->   enum btrfs_chunk_allocation_policy {
->   	BTRFS_CHUNK_ALLOC_REGULAR,
-> +	BTRFS_CHUNK_ALLOC_ZONED,
->   };
->   
->   /*
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index fc43a650cd79..b1ece6b978dd 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1,11 +1,13 @@
->   // SPDX-License-Identifier: GPL-2.0
->   
-> +#include <linux/bitops.h>
->   #include <linux/slab.h>
->   #include <linux/blkdev.h>
->   #include "ctree.h"
->   #include "volumes.h"
->   #include "zoned.h"
->   #include "rcu-string.h"
-> +#include "disk-io.h"
->   
->   /* Maximum number of zones to report per blkdev_report_zones() call */
->   #define BTRFS_REPORT_NR_ZONES   4096
-> @@ -529,6 +531,7 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
->   
->   	fs_info->zone_size = zone_size;
->   	fs_info->max_zone_append_size = max_zone_append_size;
-> +	fs_info->fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_ZONED;
->   
->   	/*
->   	 * Check mount options here, because we might change fs_info->zoned
-> @@ -746,3 +749,144 @@ int btrfs_reset_sb_log_zones(struct block_device *bdev, int mirror)
->   				sb_zone << zone_sectors_shift,
->   				zone_sectors * BTRFS_NR_SB_LOG_ZONES, GFP_NOFS);
->   }
-> +
-> +/*
-> + * btrfs_check_allocatable_zones - find allocatable zones within give region
-> + * @device:	the device to allocate a region
-> + * @hole_start: the position of the hole to allocate the region
-> + * @num_bytes:	the size of wanted region
-> + * @hole_size:	the size of hole
-> + *
-> + * Allocatable region should not contain any superblock locations.
-> + */
-> +u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
-> +				 u64 hole_end, u64 num_bytes)
-> +{
-> +	struct btrfs_zoned_device_info *zinfo = device->zone_info;
-> +	u8 shift = zinfo->zone_size_shift;
-> +	u64 nzones = num_bytes >> shift;
-> +	u64 pos = hole_start;
-> +	u64 begin, end;
-> +	bool have_sb;
-> +	int i;
-> +
-> +	ASSERT(IS_ALIGNED(hole_start, zinfo->zone_size));
-> +	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
-> +
-> +	while (pos < hole_end) {
-> +		begin = pos >> shift;
-> +		end = begin + nzones;
-> +
-> +		if (end > zinfo->nr_zones)
-> +			return hole_end;
-> +
-> +		/* Check if zones in the region are all empty */
-> +		if (btrfs_dev_is_sequential(device, pos) &&
-> +		    find_next_zero_bit(zinfo->empty_zones, end, begin) != end) {
-> +			pos += zinfo->zone_size;
-> +			continue;
-> +		}
-> +
-> +		have_sb = false;
-> +		for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
-> +			u32 sb_zone;
-> +			u64 sb_pos;
-> +
-> +			sb_zone = sb_zone_number(shift, i);
-> +			if (!(end <= sb_zone ||
-> +			      sb_zone + BTRFS_NR_SB_LOG_ZONES <= begin)) {
-> +				have_sb = true;
-> +				pos = ((u64)sb_zone + BTRFS_NR_SB_LOG_ZONES) << shift;
-> +				break;
-> +			}
-> +
-> +			/*
-> +			 * We also need to exclude regular superblock
-> +			 * positions
-> +			 */
-> +			sb_pos = btrfs_sb_offset(i);
-> +			if (!(pos + num_bytes <= sb_pos ||
-> +			      sb_pos + BTRFS_SUPER_INFO_SIZE <= pos)) {
-> +				have_sb = true;
-> +				pos = ALIGN(sb_pos + BTRFS_SUPER_INFO_SIZE,
-> +					    zinfo->zone_size);
-> +				break;
-> +			}
-> +		}
-> +		if (!have_sb)
-> +			break;
-> +
-
-Extra newline here, other than that you can add
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef
+T24gTW9uLCAyMDIxLTAxLTExIGF0IDIyOjE1ICswMTAwLCBEYXZpZCBTdGVyYmEgd3JvdGU6DQo+
+IE9uIE1vbiwgSmFuIDExLCAyMDIxIGF0IDA4OjAyOjQzUE0gKzAxMDAsIFJvbWFuIEFuYXNhbCB3
+cm90ZToNCj4gPiAtLS0gYS9mcy9idHJmcy9zZW5kLmMNCj4gPiArKysgYi9mcy9idHJmcy9zZW5k
+LmMNCj4gPiBAQCAtNjI5OSwxMiArNjI5OSwxOCBAQCBzdGF0aWMgaW50IGNoYW5nZWRfaW5vZGUo
+c3RydWN0IHNlbmRfY3R4DQo+ID4gKnNjdHgsDQo+ID4gIAkJcmlnaHRfZ2VuID0gYnRyZnNfaW5v
+ZGVfZ2VuZXJhdGlvbihzY3R4LT5yaWdodF9wYXRoLQ0KPiA+ID5ub2Rlc1swXSwNCj4gPiAgCQkJ
+CXJpZ2h0X2lpKTsNCj4gPiAgDQo+ID4gKwkJdTY0IGxlZnRfdHlwZSA9IFNfSUZNVCAmIGJ0cmZz
+X2lub2RlX21vZGUoDQo+ID4gKwkJCQlzY3R4LT5sZWZ0X3BhdGgtPm5vZGVzWzBdLCBsZWZ0X2lp
+KTsNCj4gPiArCQl1NjQgcmlnaHRfdHlwZSA9IFNfSUZNVCAmIGJ0cmZzX2lub2RlX21vZGUoDQo+
+ID4gKwkJCQlzY3R4LT5yaWdodF9wYXRoLT5ub2Rlc1swXSwgcmlnaHRfaWkpOw0KPiANCj4gTWlu
+b3Igbm90ZSwgd2UgZG9uJ3QgdXNlIHRoZSBkZWNsYXJhdGlvbnMgbWl4ZWQgd2l0aCBjb2RlLCBz
+byB0aGUNCj4gdmFyaWFibGVzIG5lZWQgdG8gYmUgZGVjbGFyZWQgc2VwYXJhdGVsbHksIGJ1dCBJ
+IGNhbiBmaXggdGhhdCB1bmxlc3MNCj4gdGhlcmUncyBhbm90aGVyIHJlYXNvbiB0byB1cGRhdGUg
+YW5kIHJlc2VuZCB0aGUgcGF0Y2hlcy4NCg0KQWggeWVzLCBJIHdhcyBxdWl0ZSB1bnN1cmUgd2hl
+cmUgdG8gcHV0IHRoZSBkZWNsYXJhdGlvbnMgYW5kIHRoZW4NCndhbnRlZCB0byBwdXQgdGhlbSBh
+cyBjbG9zZSBhcyBwb3NzaWJsZSB0byB0aGUgdXNhZ2UgYW5kIGRlY2lkZWQgdG8gcHV0DQp0aGVt
+IGluIHRoZSBzYW1lICJzY29wZSIuDQpCdXQganVzdCBub3cgSSByZWFsaXNlZCBJIHdhcyBzdGls
+bCB0aGlua2luZyBpbiB0aGUgd3JvbmcgcHJvZ3JhbW1pbmcNCmxhbmd1YWdlIGFuZCB0aGVyZSBp
+cyBubyAiaWYtYmxvY2stc2NvcGUiIGluIEMgOkQNCg0KU28gSSB1cGRhdGVkIHRoZSBjb21taXQg
+cmVzcGVjdGl2ZWx5IGFuZCBjYW4gcmVzZW5kIGlmIG5lZWRlZC4NCg==
