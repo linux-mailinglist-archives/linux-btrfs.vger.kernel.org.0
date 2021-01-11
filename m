@@ -2,31 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C092F0DF7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 09:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB142F0E38
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 09:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbhAKIYe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 03:24:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42488 "EHLO mx2.suse.de"
+        id S1727633AbhAKIeb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 03:34:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46930 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727623AbhAKIYd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:24:33 -0500
+        id S1727240AbhAKIeb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Jan 2021 03:34:31 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610353426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1610354023; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=VSooQKmbvM6Zq5FttRou+JTfO2i9A+8JCyxZJMBGs/o=;
-        b=az5YruikRQNZbJFwuCVK1ZdmaX2KnHoMUQMMSQwDOV/NG1ZC+2YBKXJT2DeDvMquOuw8SD
-        LNaaw+QxMk1XFPADPZVcPUKWya9rtoRirt5z1LJ+WJC413qhLOKzmnbVHiwvtbOaM53zd/
-        +SodoJBaTO0WNjsTQw4chFL2qx0OfJM=
+        bh=UXLPNKsBD5GYGpszvZzUTmSUT/besY4xtdUTVo+/xX0=;
+        b=Rb1Z+larmx4oNe8HaYMzSqv8vGauzsbkYNIdHfzvxJlia21orhn57DAb4uab9afP/Yadyk
+        LHlFL0Zuf3tLyDkNJUGe4MjRQDFwAGmZUus3RNbKxmkZwBtJYKXXYr+p5CC0OkxG1zPl2H
+        x2XlO/jllM2XFgyukFQ0lIzj8ljBUMo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6712AD8C;
-        Mon, 11 Jan 2021 08:23:46 +0000 (UTC)
-Subject: Re: Reading files with bad data checksum
-To:     David Woodhouse <dwmw2@infradead.org>, linux-btrfs@vger.kernel.org
-References: <1ad3962943592e9a60f88aecdb493f368c70bbe1.camel@infradead.org>
+        by mx2.suse.de (Postfix) with ESMTP id 685D7AD1E;
+        Mon, 11 Jan 2021 08:33:43 +0000 (UTC)
+Subject: Re: [PATCH v5 2/8] btrfs: only let one thread pre-flush delayed refs
+ in commit
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1608319304.git.josef@toxicpanda.com>
+ <9e47b11bdfe5b4905fdaa81e952de2e2466c6335.1608319304.git.josef@toxicpanda.com>
+ <20210108160109.GB6430@twin.jikos.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -70,12 +74,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <15e49989-8fe2-6da3-83fa-89dc13b465d8@suse.com>
-Date:   Mon, 11 Jan 2021 10:23:46 +0200
+Message-ID: <52aef9a6-efc7-0820-7056-067e69c2a856@suse.com>
+Date:   Mon, 11 Jan 2021 10:33:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1ad3962943592e9a60f88aecdb493f368c70bbe1.camel@infradead.org>
+In-Reply-To: <20210108160109.GB6430@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -85,49 +89,133 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 10.01.21 г. 13:52 ч., David Woodhouse wrote:
-> I migrated a system to btrfs which was hosting virtual machins with
-> qemu.
+On 8.01.21 г. 18:01 ч., David Sterba wrote:
+> On Fri, Dec 18, 2020 at 02:24:20PM -0500, Josef Bacik wrote:
+>> I've been running a stress test that runs 20 workers in their own
+>> subvolume, which are running an fsstress instance with 4 threads per
+>> worker, which is 80 total fsstress threads.  In addition to this I'm
+>> running balance in the background as well as creating and deleting
+>> snapshots.  This test takes around 12 hours to run normally, going
+>> slower and slower as the test goes on.
+>>
+>> The reason for this is because fsstress is running fsync sometimes, and
+>> because we're messing with block groups we often fall through to
+>> btrfs_commit_transaction, so will often have 20-30 threads all calling
+>> btrfs_commit_transaction at the same time.
+>>
+>> These all get stuck contending on the extent tree while they try to run
+>> delayed refs during the initial part of the commit.
+>>
+>> This is suboptimal, really because the extent tree is a single point of
+>> failure we only want one thread acting on that tree at once to reduce
+>> lock contention.  Fix this by making the flushing mechanism a bit
+>> operation, to make it easy to use test_and_set_bit() in order to make
+>> sure only one task does this initial flush.
+>>
+>> Once we're into the transaction commit we only have one thread doing
+>> delayed ref running, it's just this initial pre-flush that is
+>> problematic.  With this patch my stress test takes around 90 minutes to
+>> run, instead of 12 hours.
+>>
+>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>  fs/btrfs/delayed-ref.h | 12 ++++++------
+>>  fs/btrfs/transaction.c | 33 ++++++++++++++++-----------------
+>>  2 files changed, 22 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/fs/btrfs/delayed-ref.h b/fs/btrfs/delayed-ref.h
+>> index 1c977e6d45dc..6e414785b56f 100644
+>> --- a/fs/btrfs/delayed-ref.h
+>> +++ b/fs/btrfs/delayed-ref.h
+>> @@ -135,6 +135,11 @@ struct btrfs_delayed_data_ref {
+>>  	u64 offset;
+>>  };
+>>  
+>> +enum btrfs_delayed_ref_flags {
+>> +	/* Used to indicate that we are flushing delayed refs for the commit. */
+>> +	BTRFS_DELAYED_REFS_FLUSHING,
+>> +};
+>> +
+>>  struct btrfs_delayed_ref_root {
+>>  	/* head ref rbtree */
+>>  	struct rb_root_cached href_root;
+>> @@ -158,12 +163,7 @@ struct btrfs_delayed_ref_root {
+>>  
+>>  	u64 pending_csums;
+>>  
+>> -	/*
+>> -	 * set when the tree is flushing before a transaction commit,
+>> -	 * used by the throttling code to decide if new updates need
+>> -	 * to be run right away
+>> -	 */
+>> -	int flushing;
+>> +	unsigned long flags;
+>>  
+>>  	u64 run_delayed_start;
+>>  
+>> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+>> index f51f9e39bcee..ccd37fbe5db1 100644
+>> --- a/fs/btrfs/transaction.c
+>> +++ b/fs/btrfs/transaction.c
+>> @@ -909,9 +909,9 @@ bool btrfs_should_end_transaction(struct btrfs_trans_handle *trans)
+>>  {
+>>  	struct btrfs_transaction *cur_trans = trans->transaction;
+>>  
+>> -	smp_mb();
+>>  	if (cur_trans->state >= TRANS_STATE_COMMIT_START ||
+>> -	    cur_trans->delayed_refs.flushing)
+>> +	    test_bit(BTRFS_DELAYED_REFS_FLUSHING,
+>> +		     &cur_trans->delayed_refs.flags))
+>>  		return true;
+>>  
+>>  	return should_end_transaction(trans);
+>> @@ -2043,23 +2043,22 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+>>  	btrfs_trans_release_metadata(trans);
+>>  	trans->block_rsv = NULL;
+>>  
+>> -	/* make a pass through all the delayed refs we have so far
+>> -	 * any runnings procs may add more while we are here
+>> -	 */
+>> -	ret = btrfs_run_delayed_refs(trans, 0);
+>> -	if (ret) {
+>> -		btrfs_end_transaction(trans);
+>> -		return ret;
+>> -	}
+>> -
+>> -	cur_trans = trans->transaction;
+>> -
+>>  	/*
+>> -	 * set the flushing flag so procs in this transaction have to
+>> -	 * start sending their work down.
+>> +	 * We only want one transaction commit doing the flushing so we do not
+>> +	 * waste a bunch of time on lock contention on the extent root node.
+>>  	 */
+>> -	cur_trans->delayed_refs.flushing = 1;
+>> -	smp_wmb();
 > 
-> Using it without disabling copy-on-write was a mistake, of course, and
-> it became horribly fragmented and slow.
+> This barrier obviously separates the flushing = 1 and the rest of the
+> code, now implemented as test_and_set_bit, which implies full barrier.
 > 
-> So I tried copying it to a new file... but it has actual *errors* too,
-> which I think are because it was using the 'directsync' caching mode
-> for block I/O in qemu.
+> However, hunk in btrfs_should_end_transaction removes the barrier and
+> I'm not sure whether this is correct:
 > 
-> https://bugzilla.redhat.com/show_bug.cgi?id=1204569#c12
+> -	smp_mb();
+>  	if (cur_trans->state >= TRANS_STATE_COMMIT_START ||
+> -	    cur_trans->delayed_refs.flushing)
+> +	    test_bit(BTRFS_DELAYED_REFS_FLUSHING,
+> +		     &cur_trans->delayed_refs.flags))
+>  		return true;
 > 
-> I filed https://bugzilla.redhat.com/show_bug.cgi?id=1914433
-> 
-> What I see is that *both* disks of the RAID-1 have data which is
-> consistent, and does not match the checksum that btrfs expects:
-> 
-> [ 6827.513630] BTRFS warning (device sda3): csum failed root 5 ino 24387997 off 2935152640 csum 0x81529887 expected csum 0xb0093af0 mirror 1
-> [ 6827.517448] BTRFS error (device sda3): bdev /dev/sdb3 errs: wr 0, rd 0, flush 0, corrupt 8286, gen 0
-> [ 6827.527281] BTRFS warning (device sda3): csum failed root 5 ino 24387997 off 2935152640 csum 0x81529887 expected csum 0xb0093af0 mirror 2
-> [ 6827.530817] BTRFS error (device sda3): bdev /dev/sda3 errs: wr 0, rd 0, flush 0, corrupt 9115, gen 0
-> 
-> It looks like an O_DIRECT bug where the data *do* get updated without
-> updating the checksum. Which is kind of the worst of both worlds, I
-> suppose, since I also did get the appalling performance of COW and
-> fragmentation.
-> 
-> In the short term, all I want to do is make a copy of the file, using
-> the data which are in the disk regardless of the fact that btrfs thinks
-> the checksum doesn't match. Is there a way I can turn off *checking* of
-> the checksum for that specific file (or file descriptor?).
-> 
-> Or is the only way to do it with something like FIBMAP, reading the
-> offending blocks directly from the underlying disk and then writing
-> them into the appropriate offset in (a copy of) the file? A plan which
-> is slightly complicated by the fact that of course btrfs doesn't
-> support FIBMAP.
-> 
-> What's the best way to recover the data?
+> This is never called under locks so we don't have complete
+> synchronization of neither the transaction state nor the flushing bit.
+> btrfs_should_end_transaction is merely a hint and not called in critical
+> places so we could probably afford to keep it without a barrier, or keep
+> it with comment(s).
 
-I think you've hit this peculiarity of btrfs:
-
-https://linux-btrfs.vger.kernel.narkive.com/mR7V3G37/qemu-disk-images-on-btrfs-suffer-checksum-errors
+I think the point is moot in this case, because the test_bit either sees
+the flag or it doesn't. It's not possible for the flag to be set AND
+should_end_transaction return false that would be gross violation of
+program correctness.
 
 > 
