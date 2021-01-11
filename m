@@ -2,563 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3244B2F20E7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 21:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DCA2F212E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 21:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733049AbhAKUgI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 15:36:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730079AbhAKUgH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:36:07 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA39C061795
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:35:27 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id b64so46716qkc.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 12:35:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8/y5cwd0VZW6Cu2z3AkF3Ho3DIWg/GNVfRoypNv3Y7s=;
-        b=ELTpDE2q+UC7dcuA+W4TKsSwaXSP3uI/ZYMeQrkjz8MoKty9ail9DU/O4ZJWUFPFMP
-         aPRS/qIXddE9z542n/KL9gcuSO3EGt+8kz4vY5p1ai1tfX5ZQ3j+etps49venl3OSn2b
-         zxcvBsgTMVpDT5VceVTop/iWYobNPtz/jfYGFjxxuVPdZQb3PRzPEM0qjIHinOsX/ick
-         3xo4/e/qJAtqQnTXv+4kXqiWIy1BVwU5DGaNtMQ7LOGsyxoKEd5l72nB3CZrcbAn+Pbe
-         d6uJD+wtf0K6qpTFfjxQ2jiF38Xm+fvqB/eHtmKNJgNhzrqjbGofBa0mKFpibNN0r904
-         h8GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8/y5cwd0VZW6Cu2z3AkF3Ho3DIWg/GNVfRoypNv3Y7s=;
-        b=Q44E/37USWnnv97MZllmA8C92tNWoMamwo2UXcHGLesuPLm+xDvFesScR6F2nkaOKL
-         Lc/Ke4SHA3RORpW2rBG/Wv86HEtEcJuEBAuvkPVM9sHEDUajY8stXy5+H6BSwYHMDWZ9
-         eeBUOqd79XmxsnjtCHGPHW6Rpl2C1Sdk4O++BfdE454iqNu3OO4izd+NqcCkSUU3jPSK
-         yf+kt9VokjCfADdvxGK0aYIIM2KZdDuIWXYu8oD4CGoSOxTUBsU2IibsuzDJcH5oQEMm
-         16ktYzwPGhwaMnpMLW7i1Qvnsm8yGJhfAFO0m/HQXRWiWKyvgpeCJxeZsXJPK7ILaF/S
-         iDNw==
-X-Gm-Message-State: AOAM533CAiZVs/wUeG1kQFEFq4hKY8ika/cI8NkG402IsIItccO6901C
-        k9qy4+Gvmk1ttK1kkZqmiTITVQ==
-X-Google-Smtp-Source: ABdhPJwPYAwMbyVxFvDWcuAVahRiCJpi53qZeEoQ7daWJRIysV6Lb8xHP6IAG4nYUbpc97/6Z7ihMg==
-X-Received: by 2002:a05:620a:958:: with SMTP id w24mr1161785qkw.99.1610397326240;
-        Mon, 11 Jan 2021 12:35:26 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x130sm496954qkb.78.2021.01.11.12.35.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 12:35:25 -0800 (PST)
-Subject: Re: [PATCH v6 10/11] btrfs: implement RWF_ENCODED reads
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1605723568.git.osandov@fb.com>
- <da0b3c6b349ed47e02251e671ba6c33dd8628e1d.1605723568.git.osandov@fb.com>
- <d911c093-476e-0b24-1c46-b59b6c4a2d59@toxicpanda.com>
- <X/yzZyZVZBOBnvVH@relinquished.localdomain>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <1286c8c7-521f-d60c-97d5-c42dc57ce6a9@toxicpanda.com>
-Date:   Mon, 11 Jan 2021 15:35:24 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <X/yzZyZVZBOBnvVH@relinquished.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1728163AbhAKUyF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 15:54:05 -0500
+Received: from mail-eopbgr140053.outbound.protection.outlook.com ([40.107.14.53]:31554
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727448AbhAKUyE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Jan 2021 15:54:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YdSI1JrA3Dd9qwbpdXYB0Psd/ez4trDxqCPUm143t+uS/19BPpexJPMDg6CuvheeLowcX1zt3v0E8Jn6kVehIKEg2FpCrEs8H4oe3jhyG5+Or+yrVDL96MOLq3y+2E49xgdnD5D3i36li0udTSUy9K7ihfWyrcQ1Si7Y6uNyDVxfGXhmMN/yXhbd9t8vt/x5jzRZRasmSnbxlmOOj0hGyNiiWbmk2Z7a8AeayK66PEBiI1l+5qE/El4InRt6bjDeL4I6/zfL0Up5qGBVIO66WOus8izB/M2LQwQ/fMTy6BvSaQbQ8kakmbBjxZIh/aHMYrZXNVT3HYgUtwldeAezJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1rxpvLv9UJeh0iry/vFyJCJoU/2KuYAkVtH5wgWyFL4=;
+ b=VS+n9hF3314KczemL7s4J0IapGkie1caTtk2Xs5KATDXSeUWFr+PQ7/iJumlI24SBj2hk3N63kBrT4CHpnN4tgfs8ZLULd2+IdaVQTworEuzqw84jpnKxI8LS87w4W7duooSkfKHgpv857S/DaNKEdnJdM58Ctm5x/YWoBUBZgAiyx12CMbxxqAWSOQQwgBf8U82hG49emANoLWIvsGl2CmZJmfriEnuwSYYYG1ERQoiTpsMjGtuyRef1K40yOLqYiaUvrMSXwWIi29XjjMEWSCNulQNJe4SU43wiBv35hE+7MmUPsbqug6C5xvy5cKhcUsLDB5J3IR2NTPvpsh/yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bdsu.de; dmarc=pass action=none header.from=bdsu.de; dkim=pass
+ header.d=bdsu.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bdsu.de; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1rxpvLv9UJeh0iry/vFyJCJoU/2KuYAkVtH5wgWyFL4=;
+ b=WOUl7mHCZoZ1dOMfxkxPHf10fMinyanSN9w8oLhm8yUUuYq5oAhUcy7LL1Z7BDzaOf6squ9fCr8xVaMDwhozalysi7a0U514khT1W3FFCcVsDJudbsh7TzEv6gxh1DSS8F8I7GMsu7Mi2LzS8PT7/pKLF9f1+9YU7yMHsJH22wFCL+dgta/dveuxM0IaF/1gRJdahUJYAWmurtuTNcpWqSHqkXc6EkHppAZBt0Tmzeiwx0BB+v2Muo0ItZwne/YZYQrLhGTWCg7HXJzP8k02bitM1BcfQz5U7ujxPdDMgzGZOohLnozqaYSdDhzc1vF6fU8mboX9NKaimIM2H/C3Dg==
+Received: from DB7PR03MB4297.eurprd03.prod.outlook.com (2603:10a6:10:17::30)
+ by DB8PR03MB6059.eurprd03.prod.outlook.com (2603:10a6:10:e8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Mon, 11 Jan
+ 2021 20:53:14 +0000
+Received: from DB7PR03MB4297.eurprd03.prod.outlook.com
+ ([fe80::b53d:bd77:c4ae:93d]) by DB7PR03MB4297.eurprd03.prod.outlook.com
+ ([fe80::b53d:bd77:c4ae:93d%5]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 20:53:14 +0000
+From:   Roman Anasal | BDSU <roman.anasal@bdsu.de>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "arvidjaar@gmail.com" <arvidjaar@gmail.com>
+Subject: Re: [PATCH 2/2] btrfs: send: fix invalid commands for inodes with
+ changed type but same gen
+Thread-Topic: [PATCH 2/2] btrfs: send: fix invalid commands for inodes with
+ changed type but same gen
+Thread-Index: AQHW6ExfcsLlXW2ATUu8CwlNGk82oqoiz9CAgAAXWgA=
+Date:   Mon, 11 Jan 2021 20:53:14 +0000
+Message-ID: <424d62853024d8b0bc5ca03206eeca35be6014a2.camel@bdsu.de>
+References: <20210111190243.4152-1-roman.anasal@bdsu.de>
+         <20210111190243.4152-3-roman.anasal@bdsu.de>
+         <9e177865-0408-c321-951e-ce0f3ff33389@gmail.com>
+In-Reply-To: <9e177865-0408-c321-951e-ce0f3ff33389@gmail.com>
+Accept-Language: en-US, de-DE
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=bdsu.de;
+x-originating-ip: [2001:a61:3aef:4c01:503:a276:cbe0:8dc0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9a0cc353-755e-4158-10ad-08d8b672ea2c
+x-ms-traffictypediagnostic: DB8PR03MB6059:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB8PR03MB60598A809555797603FC54B094AB0@DB8PR03MB6059.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KpIUdPuhZh6hVxOEnDis245iH90Zs7+5EsUWEDhUEa+EBf+/nSzz6U/3IC8wFm8IlHcNcVFdYs+OSTlZYAAh6tNYE1mm5hP0AoRdtAtnruJO0dWykzH5Z2CSUSQ0SuuHtujM1av3aFo//imXjmfRlHgFx+fiuI6E98VLSF0A190evVZZGfy4AbWbFITXbXEf1Oxt3/pztaji1SU0qNvigDR4X/CYpiDtGO/fGqVEv8st0PRuUfxWrpOadECFdOzyFRksjoN6jEunwNe4scZ5VPP9K2nsETNjJAjU1DR53dhLdTLsU3+fP6y9ap0/CVq3j6HcQMdJVxRPD3Apxagf5BqDV4yht3+/MGQAQccIfAGXGyLKmc2ujBLqT7ZsB63LjlXAr1p9NuP7D0OMBijC0A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4297.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(39830400003)(376002)(396003)(83380400001)(5660300002)(8676002)(6512007)(86362001)(6506007)(478600001)(64756008)(91956017)(2616005)(36756003)(2906002)(6486002)(66556008)(66946007)(66476007)(71200400001)(8936002)(76116006)(110136005)(186003)(786003)(316002)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?cVArVXo5TzVrY0RYcU5ic2RabklRRGo0RjE2SHg4Njd1aWc4d01PM2NtaGlE?=
+ =?utf-8?B?dEM1SWxVdlovZGNzdTEyK3ZxemxRQ2FnWlRuNS8xSjJoOHRad1pKOFhlR0ZT?=
+ =?utf-8?B?OWZTMTFBdmtZSERFVFY2TVJRcE5RaExZeDZQMFo2VVAwWTJPZFV6MU1ydUdC?=
+ =?utf-8?B?Vm0vTW9yOUFhUG5nVUxjaUJYei81eUFHNmx0NnB3RjY3a3l4U0pYSkc4N0tp?=
+ =?utf-8?B?eXcwam40ZktMd2VncHZqRm5vQ1Q3NTVzQXRGWnloMG9BRWRTQ1I1Z0p1ZXgx?=
+ =?utf-8?B?cWErZHpkby95UnpRaGNJLzRkaExGRmtHb0ZDbVZGYjBpMmtVeHJ5c3pHSVhV?=
+ =?utf-8?B?dmpzNU1YbVdia2JSMW1hZDQyMGI3TGI0RVgrbGVYOFZtUmJWRmRmbjZ5Wndv?=
+ =?utf-8?B?cW95R2JiRkR0Z0lTMUJadVI5MFJIdVpzMHZjSVZ4c3krVkFRYVVVaGE4R055?=
+ =?utf-8?B?Y2FjR2srOWVvNVJMQUx3WWtBa2tBUEx5MXBIVmxJNkdtU2RQZ0J2aWtwYVFM?=
+ =?utf-8?B?S1BmUFhhaXN1Q1B2TFpzbFRZZmlkNGYvWlRUaWtibTkzL2tzNHpKSUkwdzlX?=
+ =?utf-8?B?THAwdm9iVkMraGFDckNjcnFRSjZ0MmxmSWR2Z1RYLyttbnFtSVNaTC9oRmZG?=
+ =?utf-8?B?RFY1SThJcVlGZ1N3NFVsbXZUcXdETlpabnhmaENZOVFWcGRDeW8zckJpUmNn?=
+ =?utf-8?B?VHVaL085MGxaZTh5Z0NPOVpHbi9aWHRHNXpReHYwS3QzVDZxWDBGcGRpVTls?=
+ =?utf-8?B?eTc5RlUwS1Z6THcrZDRiVFp5RTBOUm4xWGYvMFlxdGN6NzNKdFJNck1GQXJp?=
+ =?utf-8?B?QkRBSE5tMEpQeVIxWXZIV0U2azJzOEltMzNTY2UwUzJqUDFpN1IxZlprUGwy?=
+ =?utf-8?B?Mzhya051NGdQWVBabkFVQUFoZnRXY1FqQVdnbHVrK3VvY1NUbStiZHNOdUh1?=
+ =?utf-8?B?T2diSGtURVJQYkRQSDFxQ0Q0V0FKNERhamt2Q28zcDkrRFQvYzk0djNCU1ds?=
+ =?utf-8?B?amhRY2ZZNVFhQit2QUVkZUFJR2ZzWWNDc0lLaDRkR244QzVwQ09ETnJTTElx?=
+ =?utf-8?B?YW0yRFNaMldGMkdhVlJOREV6aklaUlNIUks3MTdmYWZQcDBBT0tSc09QYm1F?=
+ =?utf-8?B?MHIySDJqenhVb0UvODNUYm1iZCtxQWlWenY3RHpveDFncjJwZGJZZVBGalBW?=
+ =?utf-8?B?QzlHSU5QZStCQ3BEampSUEIxTHA5THR3ZXR2U1AyZ1Roa01aYjlFZkVoRnRz?=
+ =?utf-8?B?OTQydjRwSkFpWjFDWXJnaWZWemMxNzBLMmlEbjhjbUFCWkZKQzNlQXlBTVIv?=
+ =?utf-8?B?U0FpVjZaZkM4V2h4c1VGYkRoU2NoS2tSZXhibXY0OEVOYlUzbldwc2F0cytP?=
+ =?utf-8?B?d2pHTnpZek1HSFdXaktpSTJHQ2o5NjdhOGxlbkpsbXcwb0o0KzQzRVFNamVU?=
+ =?utf-8?Q?j9UXPh6H?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7EF00E74E7092D40B541617D022A2CBE@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: bdsu.de
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4297.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9a0cc353-755e-4158-10ad-08d8b672ea2c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2021 20:53:14.2599
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8c0670a1-eeed-4da2-a08a-128fe03f692a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ojdjJshEZV/Yp4WB+LFNS/rXSXgBX3Ht1bwlvosjCN5YujB9DmN9fW70mgqnOB71j/lTIxup8c1kqKpfFysotQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR03MB6059
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/11/21 3:21 PM, Omar Sandoval wrote:
-> On Thu, Dec 03, 2020 at 09:32:37AM -0500, Josef Bacik wrote:
->> On 11/18/20 2:18 PM, Omar Sandoval wrote:
->>> From: Omar Sandoval <osandov@fb.com>
->>>
->>> There are 4 main cases:
->>>
->>> 1. Inline extents: we copy the data straight out of the extent buffer.
->>> 2. Hole/preallocated extents: we fill in zeroes.
->>> 3. Regular, uncompressed extents: we read the sectors we need directly
->>>      from disk.
->>> 4. Regular, compressed extents: we read the entire compressed extent
->>>      from disk and indicate what subset of the decompressed extent is in
->>>      the file.
->>>
->>> This initial implementation simplifies a few things that can be improved
->>> in the future:
->>>
->>> - We hold the inode lock during the operation.
->>> - Cases 1, 3, and 4 allocate temporary memory to read into before
->>>     copying out to userspace.
->>> - We don't do read repair, because it turns out that read repair is
->>>     currently broken for compressed data.
->>>
->>> Signed-off-by: Omar Sandoval <osandov@fb.com>
->>> ---
->>>    fs/btrfs/ctree.h |   2 +
->>>    fs/btrfs/file.c  |   5 +
->>>    fs/btrfs/inode.c | 496 +++++++++++++++++++++++++++++++++++++++++++++++
->>>    3 files changed, 503 insertions(+)
->>>
->>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->>> index 6ab2ab002bf6..ce78424f1d98 100644
->>> --- a/fs/btrfs/ctree.h
->>> +++ b/fs/btrfs/ctree.h
->>> @@ -3133,6 +3133,8 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
->>>    int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
->>>    void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
->>>    					  u64 end, int uptodate);
->>> +ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter);
->>> +
->>>    extern const struct dentry_operations btrfs_dentry_operations;
->>>    extern const struct iomap_ops btrfs_dio_iomap_ops;
->>>    extern const struct iomap_dio_ops btrfs_dio_ops;
->>> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
->>> index 224295f8f1e1..193477565200 100644
->>> --- a/fs/btrfs/file.c
->>> +++ b/fs/btrfs/file.c
->>> @@ -3629,6 +3629,11 @@ static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->>>    {
->>>    	ssize_t ret = 0;
->>> +	if (iocb->ki_flags & IOCB_ENCODED) {
->>> +		if (iocb->ki_flags & IOCB_NOWAIT)
->>> +			return -EOPNOTSUPP;
->>> +		return btrfs_encoded_read(iocb, to);
->>> +	}
->>>    	if (iocb->ki_flags & IOCB_DIRECT) {
->>>    		ret = btrfs_direct_read(iocb, to);
->>>    		if (ret < 0 || !iov_iter_count(to) ||
->>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->>> index 1ff903f5c5a4..b0e800897b3b 100644
->>> --- a/fs/btrfs/inode.c
->>> +++ b/fs/btrfs/inode.c
->>> @@ -9936,6 +9936,502 @@ void btrfs_set_range_writeback(struct extent_io_tree *tree, u64 start, u64 end)
->>>    	}
->>>    }
->>> +static int encoded_iov_compression_from_btrfs(unsigned int compress_type)
->>> +{
->>> +	switch (compress_type) {
->>> +	case BTRFS_COMPRESS_NONE:
->>> +		return ENCODED_IOV_COMPRESSION_NONE;
->>> +	case BTRFS_COMPRESS_ZLIB:
->>> +		return ENCODED_IOV_COMPRESSION_BTRFS_ZLIB;
->>> +	case BTRFS_COMPRESS_LZO:
->>> +		/*
->>> +		 * The LZO format depends on the page size. 64k is the maximum
->>> +		 * sectorsize (and thus page size) that we support.
->>> +		 */
->>> +		if (PAGE_SIZE < SZ_4K || PAGE_SIZE > SZ_64K)
->>> +			return -EINVAL;
->>> +		return ENCODED_IOV_COMPRESSION_BTRFS_LZO_4K + (PAGE_SHIFT - 12);
->>> +	case BTRFS_COMPRESS_ZSTD:
->>> +		return ENCODED_IOV_COMPRESSION_BTRFS_ZSTD;
->>> +	default:
->>> +		return -EUCLEAN;
->>> +	}
->>> +}
->>> +
->>> +static ssize_t btrfs_encoded_read_inline(struct kiocb *iocb,
->>> +					 struct iov_iter *iter, u64 start,
->>> +					 u64 lockend,
->>> +					 struct extent_state **cached_state,
->>> +					 u64 extent_start, size_t count,
->>> +					 struct encoded_iov *encoded,
->>> +					 bool *unlocked)
->>> +{
->>> +	struct inode *inode = file_inode(iocb->ki_filp);
->>> +	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
->>> +	struct btrfs_path *path;
->>> +	struct extent_buffer *leaf;
->>> +	struct btrfs_file_extent_item *item;
->>> +	u64 ram_bytes;
->>> +	unsigned long ptr;
->>> +	void *tmp;
->>> +	ssize_t ret;
->>> +
->>> +	path = btrfs_alloc_path();
->>> +	if (!path) {
->>> +		ret = -ENOMEM;
->>> +		goto out;
->>> +	}
->>> +	ret = btrfs_lookup_file_extent(NULL, BTRFS_I(inode)->root, path,
->>> +				       btrfs_ino(BTRFS_I(inode)), extent_start,
->>> +				       0);
->>> +	if (ret) {
->>> +		if (ret > 0) {
->>> +			/* The extent item disappeared? */
->>> +			ret = -EIO;
->>> +		}
->>> +		goto out;
->>> +	}
->>> +	leaf = path->nodes[0];
->>> +	item = btrfs_item_ptr(leaf, path->slots[0],
->>> +			      struct btrfs_file_extent_item);
->>> +
->>> +	ram_bytes = btrfs_file_extent_ram_bytes(leaf, item);
->>> +	ptr = btrfs_file_extent_inline_start(item);
->>> +
->>> +	encoded->len = (min_t(u64, extent_start + ram_bytes, inode->i_size) -
->>> +			iocb->ki_pos);
->>> +	ret = encoded_iov_compression_from_btrfs(
->>> +				 btrfs_file_extent_compression(leaf, item));
->>> +	if (ret < 0)
->>> +		goto out;
->>> +	encoded->compression = ret;
->>> +	if (encoded->compression) {
->>> +		size_t inline_size;
->>> +
->>> +		inline_size = btrfs_file_extent_inline_item_len(leaf,
->>> +						btrfs_item_nr(path->slots[0]));
->>> +		if (inline_size > count) {
->>> +			ret = -ENOBUFS;
->>> +			goto out;
->>> +		}
->>> +		count = inline_size;
->>> +		encoded->unencoded_len = ram_bytes;
->>> +		encoded->unencoded_offset = iocb->ki_pos - extent_start;
->>> +	} else {
->>> +		encoded->len = encoded->unencoded_len = count =
->>> +			min_t(u64, count, encoded->len);
->>> +		ptr += iocb->ki_pos - extent_start;
->>> +	}
->>> +
->>> +	tmp = kmalloc(count, GFP_NOFS);
->>> +	if (!tmp) {
->>> +		ret = -ENOMEM;
->>> +		goto out;
->>> +	}
->>> +	read_extent_buffer(leaf, tmp, ptr, count);
->>> +	btrfs_release_path(path);
->>> +	unlock_extent_cached(io_tree, start, lockend, cached_state);
->>> +	inode_unlock_shared(inode);
->>> +	*unlocked = true;
->>> +
->>> +	ret = copy_encoded_iov_to_iter(encoded, iter);
->>> +	if (ret)
->>> +		goto out_free;
->>> +	ret = copy_to_iter(tmp, count, iter);
->>> +	if (ret != count)
->>> +		ret = -EFAULT;
->>> +out_free:
->>> +	kfree(tmp);
->>> +out:
->>> +	btrfs_free_path(path);
->>> +	return ret;
->>> +}
->>> +
->>> +struct btrfs_encoded_read_private {
->>> +	struct inode *inode;
->>> +	wait_queue_head_t wait;
->>> +	atomic_t pending;
->>> +	blk_status_t status;
->>> +	bool skip_csum;
->>> +};
->>> +
->>> +static blk_status_t submit_encoded_read_bio(struct inode *inode,
->>> +					    struct bio *bio, int mirror_num,
->>> +					    unsigned long bio_flags)
->>> +{
->>> +	struct btrfs_encoded_read_private *priv = bio->bi_private;
->>> +	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
->>> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->>> +	blk_status_t ret;
->>> +
->>> +	if (!priv->skip_csum) {
->>> +		ret = btrfs_lookup_bio_sums(inode, bio, io_bio->logical, NULL);
->>> +		if (ret)
->>> +			return ret;
->>> +	}
->>> +
->>> +	ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
->>> +	if (ret) {
->>> +		btrfs_io_bio_free_csum(io_bio);
->>> +		return ret;
->>> +	}
->>> +
->>> +	atomic_inc(&priv->pending);
->>> +	ret = btrfs_map_bio(fs_info, bio, mirror_num);
->>> +	if (ret) {
->>> +		atomic_dec(&priv->pending);
->>> +		btrfs_io_bio_free_csum(io_bio);
->>> +	}
->>> +	return ret;
->>> +}
->>> +
->>> +static blk_status_t btrfs_encoded_read_check_bio(struct btrfs_io_bio *io_bio)
->>> +{
->>> +	const bool uptodate = io_bio->bio.bi_status == BLK_STS_OK;
->>> +	struct btrfs_encoded_read_private *priv = io_bio->bio.bi_private;
->>> +	struct inode *inode = priv->inode;
->>> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->>> +	u32 sectorsize = fs_info->sectorsize;
->>> +	struct bio_vec *bvec;
->>> +	struct bvec_iter_all iter_all;
->>> +	u64 start = io_bio->logical;
->>> +	int icsum = 0;
->>> +
->>> +	if (priv->skip_csum || !uptodate)
->>> +		return io_bio->bio.bi_status;
->>> +
->>> +	bio_for_each_segment_all(bvec, &io_bio->bio, iter_all) {
->>> +		unsigned int i, nr_sectors, pgoff;
->>> +
->>> +		nr_sectors = BTRFS_BYTES_TO_BLKS(fs_info, bvec->bv_len);
->>> +		pgoff = bvec->bv_offset;
->>> +		for (i = 0; i < nr_sectors; i++) {
->>> +			ASSERT(pgoff < PAGE_SIZE);
->>> +			if (check_data_csum(inode, io_bio, icsum, bvec->bv_page,
->>> +					    pgoff, start))
->>> +				return BLK_STS_IOERR;
->>> +			start += sectorsize;
->>> +			icsum++;
->>> +			pgoff += sectorsize;
->>> +		}
->>> +	}
->>> +	return BLK_STS_OK;
->>> +}
->>> +
->>> +static void btrfs_encoded_read_endio(struct bio *bio)
->>> +{
->>> +	struct btrfs_encoded_read_private *priv = bio->bi_private;
->>> +	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
->>> +	blk_status_t status;
->>> +
->>> +	status = btrfs_encoded_read_check_bio(io_bio);
->>> +	if (status) {
->>> +		/*
->>> +		 * The memory barrier implied by the atomic_dec_return() here
->>> +		 * pairs with the memory barrier implied by the
->>> +		 * atomic_dec_return() or io_wait_event() in
->>> +		 * btrfs_encoded_read_regular_fill_pages() to ensure that this
->>> +		 * write is observed before the load of status in
->>> +		 * btrfs_encoded_read_regular_fill_pages().
->>> +		 */
->>> +		WRITE_ONCE(priv->status, status);
->>> +	}
->>> +	if (!atomic_dec_return(&priv->pending))
->>> +		wake_up(&priv->wait);
->>> +	btrfs_io_bio_free_csum(io_bio);
->>> +	bio_put(bio);
->>> +}
->>> +
->>> +static int btrfs_encoded_read_regular_fill_pages(struct inode *inode, u64 offset,
->>> +						 u64 disk_io_size, struct page **pages)
->>> +{
->>> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->>> +	struct btrfs_encoded_read_private priv = {
->>> +		.inode = inode,
->>> +		.pending = ATOMIC_INIT(1),
->>> +		.skip_csum = BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM,
->>> +	};
->>> +	unsigned long i = 0;
->>> +	u64 cur = 0;
->>> +	int ret;
->>> +
->>> +	init_waitqueue_head(&priv.wait);
->>> +	/*
->>> +	 * Submit bios for the extent, splitting due to bio or stripe limits as
->>> +	 * necessary.
->>> +	 */
->>> +	while (cur < disk_io_size) {
->>> +		struct btrfs_io_geometry geom;
->>> +		struct bio *bio = NULL;
->>> +		u64 remaining;
->>> +
->>> +		ret = btrfs_get_io_geometry(fs_info, BTRFS_MAP_READ,
->>> +					    offset + cur, disk_io_size - cur,
->>> +					    &geom);
->>> +		if (ret) {
->>> +			WRITE_ONCE(priv.status, errno_to_blk_status(ret));
->>> +			break;
->>> +		}
->>> +		remaining = min(geom.len, disk_io_size - cur);
->>> +		while (bio || remaining) {
->>> +			size_t bytes = min_t(u64, remaining, PAGE_SIZE);
->>> +
->>> +			if (!bio) {
->>> +				bio = btrfs_bio_alloc(offset + cur);
->>> +				bio->bi_end_io = btrfs_encoded_read_endio;
->>> +				bio->bi_private = &priv;
->>> +				bio->bi_opf = REQ_OP_READ;
->>> +			}
->>> +
->>> +			if (!bytes ||
->>> +			    bio_add_page(bio, pages[i], bytes, 0) < bytes) {
->>> +				blk_status_t status;
->>> +
->>> +				status = submit_encoded_read_bio(inode, bio, 0,
->>> +								 0);
->>> +				if (status) {
->>> +					WRITE_ONCE(priv.status, status);
->>> +					bio_put(bio);
->>> +					goto out;
->>> +				}
->>> +				bio = NULL;
->>> +				continue;
->>> +			}
->>> +
->>> +			i++;
->>> +			cur += bytes;
->>> +			remaining -= bytes;
->>> +		}
->>> +	}
->>> +
->>> +out:
->>> +	if (atomic_dec_return(&priv.pending))
->>> +		io_wait_event(priv.wait, !atomic_read(&priv.pending));
->>> +	/* See btrfs_encoded_read_endio() for ordering. */
->>> +	return blk_status_to_errno(READ_ONCE(priv.status));
->>> +}
->>> +
->>> +static ssize_t btrfs_encoded_read_regular(struct kiocb *iocb,
->>> +					  struct iov_iter *iter,
->>> +					  u64 start, u64 lockend,
->>> +					  struct extent_state **cached_state,
->>> +					  u64 offset, u64 disk_io_size,
->>> +					  size_t count,
->>> +					  const struct encoded_iov *encoded,
->>> +					  bool *unlocked)
->>> +{
->>> +	struct inode *inode = file_inode(iocb->ki_filp);
->>> +	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
->>> +	struct page **pages;
->>> +	unsigned long nr_pages, i;
->>> +	u64 cur;
->>> +	size_t page_offset;
->>> +	ssize_t ret;
->>> +
->>> +	nr_pages = DIV_ROUND_UP(disk_io_size, PAGE_SIZE);
->>> +	pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
->>> +	if (!pages)
->>> +		return -ENOMEM;
->>> +	for (i = 0; i < nr_pages; i++) {
->>> +		pages[i] = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
->>> +		if (!pages[i]) {
->>> +			ret = -ENOMEM;
->>> +			goto out;
->>> +		}
->>> +	}
->>> +
->>> +	ret = btrfs_encoded_read_regular_fill_pages(inode, offset, disk_io_size,
->>> +						    pages);
->>> +	if (ret)
->>> +		goto out;
->>> +
->>> +	unlock_extent_cached(io_tree, start, lockend, cached_state);
->>> +	inode_unlock_shared(inode);
->>> +	*unlocked = true;
->>> +
->>> +	ret = copy_encoded_iov_to_iter(encoded, iter);
->>> +	if (ret)
->>> +		goto out;
->>> +	if (encoded->compression) {
->>> +		i = 0;
->>> +		page_offset = 0;
->>> +	} else {
->>> +		i = (iocb->ki_pos - start) >> PAGE_SHIFT;
->>> +		page_offset = (iocb->ki_pos - start) & (PAGE_SIZE - 1);
->>> +	}
->>> +	cur = 0;
->>> +	while (cur < count) {
->>> +		size_t bytes = min_t(size_t, count - cur,
->>> +				     PAGE_SIZE - page_offset);
->>> +
->>> +		if (copy_page_to_iter(pages[i], page_offset, bytes,
->>> +				      iter) != bytes) {
->>> +			ret = -EFAULT;
->>> +			goto out;
->>> +		}
->>> +		i++;
->>> +		cur += bytes;
->>> +		page_offset = 0;
->>> +	}
->>> +	ret = count;
->>> +out:
->>> +	for (i = 0; i < nr_pages; i++) {
->>> +		if (pages[i])
->>> +			__free_page(pages[i]);
->>> +	}
->>> +	kfree(pages);
->>> +	return ret;
->>> +}
->>> +
->>> +ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter)
->>> +{
->>> +	struct inode *inode = file_inode(iocb->ki_filp);
->>> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->>> +	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
->>> +	ssize_t ret;
->>> +	size_t count;
->>> +	u64 start, lockend, offset, disk_io_size;
->>> +	struct extent_state *cached_state = NULL;
->>> +	struct extent_map *em;
->>> +	struct encoded_iov encoded = {};
->>> +	bool unlocked = false;
->>> +
->>> +	ret = generic_encoded_read_checks(iocb, iter);
->>> +	if (ret < 0)
->>> +		return ret;
->>> +	if (ret == 0)
->>> +		return copy_encoded_iov_to_iter(&encoded, iter);
->>> +	count = ret;
->>> +
->>> +	file_accessed(iocb->ki_filp);
->>> +
->>> +	inode_lock_shared(inode);
->>> +
->>> +	if (iocb->ki_pos >= inode->i_size) {
->>> +		inode_unlock_shared(inode);
->>> +		return copy_encoded_iov_to_iter(&encoded, iter);
->>> +	}
->>> +	start = ALIGN_DOWN(iocb->ki_pos, fs_info->sectorsize);
->>> +	/*
->>> +	 * We don't know how long the extent containing iocb->ki_pos is, but if
->>> +	 * it's compressed we know that it won't be longer than this.
->>> +	 */
->>> +	lockend = start + BTRFS_MAX_UNCOMPRESSED - 1;
->>> +
->>> +	for (;;) {
->>> +		struct btrfs_ordered_extent *ordered;
->>> +
->>> +		ret = btrfs_wait_ordered_range(inode, start,
->>> +					       lockend - start + 1);
->>> +		if (ret)
->>> +			goto out_unlock_inode;
->>> +		lock_extent_bits(io_tree, start, lockend, &cached_state);
->>> +		ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), start,
->>> +						     lockend - start + 1);
->>> +		if (!ordered)
->>> +			break;
->>> +		btrfs_put_ordered_extent(ordered);
->>> +		unlock_extent_cached(io_tree, start, lockend, &cached_state);
->>> +		cond_resched();
->>> +	}
->>
->> This can be replaced with btrfs_lock_and_flush_ordered_range().  Then you can add
-> 
-> Sorry, finally getting back to this after the break. Please correct me
-> if I'm wrong, but I don't think btrfs_lock_and_flush_ordered_range() is
-> strong enough here.
-> 
-> An encoded read needs to make sure that any buffered writes are on disk
-> (since it's basically direct I/O). btrfs_lock_and_flush_ordered_range()
-> bails immediately if there aren't any ordered extents. As far as I can
-> tell, ordered extents aren't created until writepage, so if I do some
-> buffered writes and call btrfs_lock_and_flush_ordered_range() before
-> writepage creates the ordered extents, it won't flush the buffered
-> writes like I need it to. This loop with btrfs_wait_ordered_range()
-> does.
-> 
-
-I didn't realize that btrfs_wait_ordered_range() does the fdatawrite_range, 
-awesome.  You can leave it then and add my reviewed-by.  Thanks,
-
-Josef
+T24gTW9uLCAyMDIxLTAxLTExIGF0IDIyOjMwICswMzAwLCBBbmRyZWkgQm9yemVua292IHdyb3Rl
+Og0KPiAxMS4wMS4yMDIxIDIyOjAyLCBSb21hbiBBbmFzYWwg0L/QuNGI0LXRgjoNCj4gPiBXaGVu
+IGRvaW5nIGEgc2VuZCwgaWYgYSBuZXcgaW5vZGUgaGFzIHRoZSBzYW1lIG51bWJlciBhcyBhbiBp
+bm9kZQ0KPiA+IGluIHRoZQ0KPiA+IHBhcmVudCBzdWJ2b2x1bWUgaXQgd2lsbCBvbmx5IGJlIGRl
+dGVjdGVkIGFzIHRvIGJlIHJlY3JlYXRlZCB3aGVuDQo+ID4gdGhlDQo+ID4gZ2VucmF0aW9ucyBk
+aWZmZXIuIEJ1dCB3aXRoIGlub2RlcyBpbiB0aGUgc2FtZSBnZW5lcmF0aW9uIHRoZQ0KPiA+IGVt
+aXR0ZWQNCj4gPiBjb21tYW5kcyB3aWxsIGNhdXNlIHRoZSByZWNlaXZlciB0byBmYWlsLg0KPiA+
+IA0KPiA+IFRoaXMgY2FzZSBkb2VzIG5vdCBoYXBwZW4gd2hlbiBkb2luZyBpbmNyZW1lbnRhbCBz
+ZW5kcyB3aXRoDQo+ID4gc25hcHNob3RzDQo+ID4gdGhhdCBhcmUga2VwdCByZWFkLW9ubHkgYnkg
+dGhlIHVzZXIgYWxsIHRoZSB0aW1lLCBidXQgaXQgbWF5IGhhcHBlbg0KPiA+IGlmDQo+ID4gLSBh
+IHNuYXBzaG90IHdhcyBtb2RpZmllZCBhZnRlciBpdCB3YXMgY3JlYXRlZA0KPiA+IC0gdGhlIHN1
+YnZvbCB1c2VkIGFzIHBhcmVudCB3YXMgY3JlYXRlZCBpbmRlcGVuZGVudGx5IGZyb20gdGhlIHNl
+bnQNCj4gPiBzdWJ2b2wNCj4gPiANCj4gPiBFeGFtcGxlIHJlcHJvZHVjZXJzOg0KPiA+IA0KPiA+
+ICAgIyBjYXNlIDE6IHNhbWUgaW5vIGF0IHNhbWUgcGF0aA0KPiA+ICAgYnRyZnMgc3Vidm9sdW1l
+IGNyZWF0ZSBzdWJ2b2wxDQo+ID4gICBidHJmcyBzdWJ2b2x1bWUgY3JlYXRlIHN1YnZvbDINCj4g
+PiAgIG1rZGlyIHN1YnZvbDEvYQ0KPiA+ICAgdG91Y2ggc3Vidm9sMi9hDQo+IA0KPiBXaGF0IGhh
+cHBlbnMgaW4gY2FzZSBvZg0KPiANCj4gZWNobyBmb28gPiBzdWJ2b2wxL2ENCj4gZWNobyBiYXIg
+PiBzdWJ2b2wyL2ENCj4gDQo+ID8NCg0KYGVjaG8gZm9vID4gc3Vidm9sMS9hYCB3b3VsZG4ndCB3
+b3JrIHNpbmNlIHN1YnZvbDEvYSBpcyBhIGRpcmVjdG9yeS4NCkhvd2V2ZXIsIHJlcGxhY2luZyBi
+b3RoIHByZWNlZGluZyBsaW5lcyB3aXRoOg0KDQogIG1rZGlyIHN1YnZvbDEvYQ0KICBlY2hvIGJh
+ciA+IHN1YnZvbDIvYQ0KDQo9PiBzYW1lIGFzIGJlZm9yZSB3aXRoL3dpdGhvdXQgdGhlIHBhdGNo
+LCBwbHVzIGFuIGFkZGl0aW9uYWwgd3JpdGUNCmNvbW1hbmQgZm9yIHRoZSBjb250ZW50DQoNCkFu
+ZCB3aXRoIGJvdGggbGluZXMgYXMNCg0KICBlY2hvIGZvbyA+IHN1YnZvbDEvYQ0KICBlY2hvIGJh
+ciA+IHN1YnZvbDIvYQ0KDQo9PiBwcm9kdWNlcyBhbiBpbnZhbGlkIHN0cmVhbSAod2l0aCBhbmQg
+d2l0aG91dCB0aGlzIHBhdGNoKSB3aXRoIGENCmBsaW5rIGEgLT4gYWAgZm9sbG93ZWQgYnkgYHVu
+bGluayBhYCBhcyBzZWVuIGluIHRoZSBleGFtcGxlIG91dHB1dA0KcXVvdGVkIGZ1cnRoZXIgYmVs
+b3cuDQoNClNvIHRoZXJlIGlzIGFub3RoZXIgYnVnIGhlcmUuIFRoZSBjb25kaXRpb25zIGZvciB0
+aGlzIHNlZW0gdG8gcm91Z2hseQ0KYmU6IGNoYW5nZWQvbmV3IGlub2RlIHdpdGggc2FtZSBudW1i
+ZXIsIHR5cGUgYW5kIGdlbmVyYXRpb24sIHNpbmNlDQpyZW9yZGVyaW5nIHRoZSBjb21tYW5kcyBz
+byB0aGUgaW5vZGVzIGhhdmUgZGlmZmVyZW50IGdlbmVyYXRpb25zDQpwcm9kdWNlcyBhIHZhbGlk
+IHN0cmVhbS4NCg0KQ2hhbmdpbmcgdGhlIG5hbWUgdG8gc3Vidm9sMi9iIGxpa2UgaW4gdGhlIHNl
+Y29uZCBjYXNlIGJlbG93IHByb2R1Y2VzIGENCnZhbGlkIHN0cmVhbSB3aXRoIGEgYGxpbmsgYiAt
+PiBhYCBmb2xsb3dlZCBieSBgdW5saW5rIGFgLg0KDQpJJ2xsIHRha2UgYSBsb29rIGludG8gdGhp
+cywgdG9vLCBhbmQgaWYgcG9zc2libGUgcHJvdmlkZSBhbm90aGVyIHBhdGNoDQpmb3IgdGhhdCBj
+YXNlLg0KDQoNCj4gPiAgIGJ0cmZzIHByb3BlcnR5IHNldCBzdWJ2b2wxIHJvIHRydWUNCj4gPiAg
+IGJ0cmZzIHByb3BlcnR5IHNldCBzdWJ2b2wyIHJvIHRydWUNCj4gPiAgIGJ0cmZzIHNlbmQgLXAg
+c3Vidm9sMSBzdWJ2b2wyIHwgYnRyZnMgcmVjZWl2ZSAtLWR1bXANCj4gPiANCj4gPiBUaGUgcHJv
+ZHVjZWQgdHJlZSBzdGF0ZSBoZXJlIGlzOg0KPiA+ICAgfC0tIHN1YnZvbDENCj4gPiAgIHwgICBg
+LS0gYS8gICAgICAgIChpbm8gMjU3KQ0KPiA+ICAgfA0KPiA+ICAgYC0tIHN1YnZvbDINCj4gPiAg
+ICAgICBgLS0gYSAgICAgICAgIChpbm8gMjU3KQ0KPiA+IA0KPiA+ICAgV2hlcmUgc3Vidm9sMS9h
+LyBpcyBhIGRpcmVjdG9yeSBhbmQgc3Vidm9sMi9hIGlzIGEgZmlsZSB3aXRoIHRoZQ0KPiA+IHNh
+bWUNCj4gPiAgIGlub2RlIG51bWJlciBhbmQgc2FtZSBnZW5lcmF0aW9uLg0KPiA+IA0KPiA+IEV4
+YW1wbGUgb3V0cHV0IG9mIHRoZSByZWNlaXZlIGNvbW1hbmQ6DQo+ID4gICBBdCBzdWJ2b2wgc3Vi
+dm9sMg0KPiA+ICAgc25hcHNob3QgICAgICAgIC4vc3Vidm9sMiAgICAgICAgICAgICAgICAgICAg
+ICAgdXVpZD0xOWQyYmUwYS0NCj4gPiA1YWYxLWZhNDQtOWIzZi1mMjE4MTUxNzhkMDAgdHJhbnNp
+ZD05IHBhcmVudF91dWlkPTFiYWM4YjEyLWRkYjItDQo+ID4gNjQ0MS04NTUxLTcwMDQ1Njk5MTc4
+NSBwYXJlbnRfdHJhbnNpZD05DQo+ID4gICB1dGltZXMgICAgICAgICAgLi9zdWJ2b2wyLyAgICAg
+ICAgICAgICAgICAgICAgICBhdGltZT0yMDIxLTAxLQ0KPiA+IDExVDEzOjQxOjM2KzAwMDAgbXRp
+bWU9MjAyMS0wMS0xMVQxMzo0MTozNiswMDAwIGN0aW1lPTIwMjEtMDEtDQo+ID4gMTFUMTM6NDE6
+MzYrMDAwMA0KPiA+ICAgbGluayAgICAgICAgICAgIC4vc3Vidm9sMi9hICAgICAgICAgICAgICAg
+ICAgICAgZGVzdD1hDQo+ID4gICB1bmxpbmsgICAgICAgICAgLi9zdWJ2b2wyL2ENCj4gPiAgIHV0
+aW1lcyAgICAgICAgICAuL3N1YnZvbDIvICAgICAgICAgICAgICAgICAgICAgIGF0aW1lPTIwMjEt
+MDEtDQo+ID4gMTFUMTM6NDE6MzYrMDAwMCBtdGltZT0yMDIxLTAxLTExVDEzOjQxOjM2KzAwMDAg
+Y3RpbWU9MjAyMS0wMS0NCj4gPiAxMVQxMzo0MTozNiswMDAwDQo+ID4gICBjaG1vZCAgICAgICAg
+ICAgLi9zdWJ2b2wyL2EgICAgICAgICAgICAgICAgICAgICBtb2RlPTY0NA0KPiA+ICAgdXRpbWVz
+ICAgICAgICAgIC4vc3Vidm9sMi9hICAgICAgICAgICAgICAgICAgICAgYXRpbWU9MjAyMS0wMS0N
+Cj4gPiAxMVQxMzo0MTozNiswMDAwIG10aW1lPTIwMjEtMDEtMTFUMTM6NDE6MzYrMDAwMCBjdGlt
+ZT0yMDIxLTAxLQ0KPiA+IDExVDEzOjQxOjM2KzAwMDANCj4gPiANCj4gPiA9PiB0aGUgYGxpbmtg
+IGNvbW1hbmQgY2F1c2VzIHRoZSByZWNlaXZlciB0byBmYWlsIHdpdGg6DQo+ID4gICAgRVJST1I6
+IGxpbmsgYSAtPiBhIGZhaWxlZDogRmlsZSBleGlzdHMNCj4gPiANCj4gPiBTZWNvbmQgZXhhbXBs
+ZToNCj4gPiAgICMgY2FzZSAyOiBzYW1lIGlubyBhdCBkaWZmZXJlbnQgcGF0aA0KPiA+ICAgYnRy
+ZnMgc3Vidm9sdW1lIGNyZWF0ZSBzdWJ2b2wxDQo+ID4gICBidHJmcyBzdWJ2b2x1bWUgY3JlYXRl
+IHN1YnZvbDINCj4gPiAgIG1rZGlyIHN1YnZvbDEvYQ0KPiA+ICAgdG91Y2ggc3Vidm9sMi9iDQo+
+ID4gICBidHJmcyBwcm9wZXJ0eSBzZXQgc3Vidm9sMSBybyB0cnVlDQo+ID4gICBidHJmcyBwcm9w
+ZXJ0eSBzZXQgc3Vidm9sMiBybyB0cnVlDQo+ID4gICBidHJmcyBzZW5kIC1wIHN1YnZvbDEgc3Vi
+dm9sMiB8IGJ0cmZzIHJlY2VpdmUgLS1kdW1wDQo+ID4gDQo+ID4gVGhlIHByb2R1Y2VkIHRyZWUg
+c3RhdGUgaGVyZSBpczoNCj4gPiAgIHwtLSBzdWJ2b2wxDQo+ID4gICB8ICAgYC0tIGEvICAgICAg
+ICAoaW5vIDI1NykNCj4gPiAgIHwNCj4gPiAgIGAtLSBzdWJ2b2wyDQo+ID4gICAgICAgYC0tIGIg
+ICAgICAgICAoaW5vIDI1NykNCj4gPiANCj4gPiAgIFdoZXJlIHN1YnZvbDEvYS8gaXMgYSBkaXJl
+Y3RvcnkgYW5kIHN1YnZvbDIvYiBpcyBhIGZpbGUgd2l0aCB0aGUNCj4gPiBzYW1lDQo+ID4gICBp
+bm9kZSBudW1iZXIgYW5kIHNhbWUgZ2VuZXJhdGlvbi4NCj4gPiANCj4gPiBFeGFtcGxlIG91dHB1
+dCBvZiB0aGUgcmVjZWl2ZSBjb21tYW5kOg0KPiA+ICAgQXQgc3Vidm9sIHN1YnZvbDINCj4gPiAg
+IHNuYXBzaG90ICAgICAgICAuL3N1YnZvbDIgICAgICAgICAgICAgICAgICAgICAgIHV1aWQ9ZWE5
+M2M0N2EtDQo+ID4gNWY0Ny03MjRmLThhNDMtZTE1Y2U3NDVhZWYwIHRyYW5zaWQ9MjAgcGFyZW50
+X3V1aWQ9ZjAzNTc4ZWYtNWJjYS0NCj4gPiAxNDQ1LWE0ODAtM2RmNjM2NzdmZGRmIHBhcmVudF90
+cmFuc2lkPTIwDQo+ID4gICB1dGltZXMgICAgICAgICAgLi9zdWJ2b2wyLyAgICAgICAgICAgICAg
+ICAgICAgICBhdGltZT0yMDIxLTAxLQ0KPiA+IDExVDEzOjU4OjAwKzAwMDAgbXRpbWU9MjAyMS0w
+MS0xMVQxMzo1ODowMCswMDAwIGN0aW1lPTIwMjEtMDEtDQo+ID4gMTFUMTM6NTg6MDArMDAwMA0K
+PiA+ICAgbGluayAgICAgICAgICAgIC4vc3Vidm9sMi9iICAgICAgICAgICAgICAgICAgICAgZGVz
+dD1hDQo+ID4gICB1bmxpbmsgICAgICAgICAgLi9zdWJ2b2wyL2ENCj4gPiAgIHV0aW1lcyAgICAg
+ICAgICAuL3N1YnZvbDIvICAgICAgICAgICAgICAgICAgICAgIGF0aW1lPTIwMjEtMDEtDQo+ID4g
+MTFUMTM6NTg6MDArMDAwMCBtdGltZT0yMDIxLTAxLTExVDEzOjU4OjAwKzAwMDAgY3RpbWU9MjAy
+MS0wMS0NCj4gPiAxMVQxMzo1ODowMCswMDAwDQo+ID4gICBjaG1vZCAgICAgICAgICAgLi9zdWJ2
+b2wyL2IgICAgICAgICAgICAgICAgICAgICBtb2RlPTY0NA0KPiA+ICAgdXRpbWVzICAgICAgICAg
+IC4vc3Vidm9sMi9iICAgICAgICAgICAgICAgICAgICAgYXRpbWU9MjAyMS0wMS0NCj4gPiAxMVQx
+Mzo1ODowMCswMDAwIG10aW1lPTIwMjEtMDEtMTFUMTM6NTg6MDArMDAwMCBjdGltZT0yMDIxLTAx
+LQ0KPiA+IDExVDEzOjU4OjAwKzAwMDANCj4gPiANCj4gPiA9PiB0aGUgYGxpbmtgIGNvbW1hbmQg
+Y2F1c2VzIHRoZSByZWNlaXZlciB0byBmYWlsIHdpdGg6DQo+ID4gICAgRVJST1I6IGxpbmsgYiAt
+PiBhIGZhaWxlZDogT3BlcmF0aW9uIG5vdCBwZXJtaXR0ZWQNCj4gPiANCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBSb21hbiBBbmFzYWwgPHJvbWFuLmFuYXNhbEBiZHN1LmRlPg0K
