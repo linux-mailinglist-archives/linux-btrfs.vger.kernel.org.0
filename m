@@ -2,65 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C74C2F1A05
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 16:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9F52F1A15
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 16:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729362AbhAKPtV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 10:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
+        id S1730554AbhAKPvP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 10:51:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbhAKPtU (ORCPT
+        with ESMTP id S1729958AbhAKPvO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:49:20 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464A6C061786
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 07:48:40 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id h13so1912544qvo.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 07:48:40 -0800 (PST)
+        Mon, 11 Jan 2021 10:51:14 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286DAC06179F
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 07:50:34 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id a6so11485228qtw.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 07:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9ln6bz3yyd1W5+sBe1fRyhA6q3eWpQ1fyqVKWkHkeXI=;
-        b=eNU+2aI4/iuXRY7vZWYfRR0CPwaIrW5wQF7NDgwxbO+S0eoYSOGqjRlPrxuHxx7Keu
-         2kpq/a/47hCnP4T7Dpie7E42Z5D3XhESPN1/6e29Z3z8C+QtzTWbX8aiiI4QJyfDOdz+
-         DefdZHOzjrP+6oaBFMNfctCQ/xAok+ANAChdY2XnO4NIxToLxOrOVuZsUa8iqXPrZiaM
-         Odp/uonVVMx0qGdUPP/UgaTL5QuBUK8FOQsgUsSXFzruqBWfrAKaD5LovEE689l6TRS4
-         M6HRMM1PxoG70eDI0O5Nd21GhhNgqdNLsDicnH4FuXIV2pg0e/w/hhwDIPkXID3WcaSA
-         q5wA==
+        bh=yeojcisLuU8d2k0Ck4Gduo97wdZD2Oi9SWZI2+gN5ks=;
+        b=LJEqAESOWAWKgSTL3qmGOgSp1axVNU0dX4rrzSrlcT2dWI+O4Dsz6Y5Vzk5W+OjlbS
+         ZvpM6YMPIA1e8wvCH7GY7tzyDv65jjMt1TIqTrWTxQczHRFyl7DnYOfZMFv+ojkbMm1h
+         6EAjuOyEy5HfR2FLa42Z/pYJOasBEtQezonMcxxi8yMqIVEoyq6tO5EqFHJZepxurSrW
+         +wuHSUiNjdGbk58YDyayB0LSisS+u3PksntCj0AABb8VgITx0aS/ZhkNTgIMDRgV6rfF
+         xMPWvCnS5Qo3VcDcJsOyOQ57gL2WHRr/3S51sV0ARYTMSAhG9x8CFSZvCMLjVezXfM4c
+         cs3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9ln6bz3yyd1W5+sBe1fRyhA6q3eWpQ1fyqVKWkHkeXI=;
-        b=dR+9LZxVdRjKJDy47vgrICDn3vAGkpuPj8bZjLKQUrO034Njzg4G0dO9fbyR6bpv+x
-         /hQQnw22ycn8RvvU6XLNFKfzg/BVaxwiHBaWtrWdoADWWeze2gPaZgkJkE9AM6dlJpd9
-         uBusdLTBcI4Cgus2mcAxmAHBTsHrLKtrshKX++luIKqqGVwkx8r47P/EBgQGX/8uAALb
-         k2OX3zePk6gs8uHBsrpg3BvtY37q9U6wbTphxBVA5vpVISfU0vJYVz9ZS81js10N2vjY
-         4lKWr0cI4IwDKPveEH4XyzAH2MCTXzwCUepZWnxNW9MPWSHP2RVLhElG5DtWySgLgI0A
-         msmA==
-X-Gm-Message-State: AOAM532lqhYhmWIqsdJCHgW3vnBjYvLDkpDD7W5Vuo1h5Ppz6RmirFNA
-        E6j3NX6e+OmvQVfSSTagGBDupO0mQ7ulBc/I
-X-Google-Smtp-Source: ABdhPJyuhu5ZPw8yi1s/evXfmjNXN99HU/zI2gp8JHUMQQ3K/UStoLxMf+mfxosg5kTHEDJ67AgEag==
-X-Received: by 2002:a0c:9e5e:: with SMTP id z30mr252307qve.56.1610380118402;
-        Mon, 11 Jan 2021 07:48:38 -0800 (PST)
+        bh=yeojcisLuU8d2k0Ck4Gduo97wdZD2Oi9SWZI2+gN5ks=;
+        b=TVgrc1zggGnls3kyohgLqM3YIEYGDWes0F+QWETNIwKyBgG/FpX0+ve8yn5AXFxV2M
+         /eOElq75Q3/UCLuJTdbrjGEfJFqCZhfwfuqTCbIYfcUhLJHrvphN/SnMmLXFZmBwvOy3
+         h5vVdzAcIPXSUi4TIIl9KyJ/i8b67cbQykoJWqqI7nA/l86we5XwHA74TqlSEMitNcre
+         HWBIimB4UVKGGzbtKEtmVFcPfel/PNSiNcvo1LuppTD9x9G0nETCm1w673IHjBITe06A
+         QKGdsVVkuSS2b3kwGUeBroGwnLMYLkFJMj5rRImr7WOglCG0FgucQWsX2JMbMPFmtljy
+         ebGA==
+X-Gm-Message-State: AOAM53205NnrPS694mgRQt443e4TScUhlmJpne0+ZFbPIyJcrZNbTINl
+        J3kLIpQe5s1fijKAv0N9WwBRj1dFilTEm4nF
+X-Google-Smtp-Source: ABdhPJxncpHLjrhCJavD03O85IrojkW9zJz/q1eqZqCZ5IVKeTh3ufpEJw0uPiXLapGLfqlimOlFbQ==
+X-Received: by 2002:aed:2ea1:: with SMTP id k30mr261289qtd.32.1610380233077;
+        Mon, 11 Jan 2021 07:50:33 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u4sm7868403qtv.49.2021.01.11.07.48.37
+        by smtp.gmail.com with ESMTPSA id b11sm2090239qtc.5.2021.01.11.07.50.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 07:48:37 -0800 (PST)
-Subject: Re: [PATCH 1/2] btrfs: Make btrfs_start_delalloc_root's nr argument a
- long
-To:     Nikolay Borisov <nborisov@suse.com>, dsterba@suse.cz
+        Mon, 11 Jan 2021 07:50:32 -0800 (PST)
+Subject: Re: [PATCH v2] btrfs: Add test 154
+To:     Nikolay Borisov <nborisov@suse.com>, fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-References: <20210111105812.423915-1-nborisov@suse.com>
+References: <20210111091742.393039-1-nborisov@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ad043e20-10de-d1f6-6361-9fec461dbaec@toxicpanda.com>
-Date:   Mon, 11 Jan 2021 10:48:36 -0500
+Message-ID: <a0cdd790-288c-8631-ec01-d0ac61b5f7d0@toxicpanda.com>
+Date:   Mon, 11 Jan 2021 10:50:31 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210111105812.423915-1-nborisov@suse.com>
+In-Reply-To: <20210111091742.393039-1-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,23 +67,15 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/11/21 5:58 AM, Nikolay Borisov wrote:
-> It's currently u64 which gets instantly translated either to LONG_MAX
-> (if U64_MAX is passed) or casted to an unsigned long (which is in fact,
-> wrong because iwriteback_control::nr_to_write is a signed, long type).
-> 
-> Just convert the function's argument to be long time which obviates the
-> need to manually convert u64 value to a long. Adjust all call sites
-> which pass U64_MAX to pass LONG_MAX. Finally ensure that in
-> shrink_delalloc the u64 is converted to a long without overflowing,
-> resulting in a negative number.
+On 1/11/21 4:17 AM, Nikolay Borisov wrote:
+> This test verifies btrfs' free objectid management. I.e it ensures that
+> the first objectid is always 256 in an fs tree.
 > 
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-You can add
-
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-to both patches, thanks,
+Will you add this to our staging branch so it gets picked up by the nightly runs 
+as well?  Thanks,
 
 Josef
