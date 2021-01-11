@@ -2,166 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823612F0EEF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 10:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82422F0F2C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Jan 2021 10:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbhAKJSc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 04:18:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50514 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727839AbhAKJSb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:18:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610356664; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=C+fCrcCNqrWxb+SBNtPVwbzNK7gFCw3wNGpJKXcJdfA=;
-        b=PYkK82kCDVIJ2/HBCtT95/oqchus81YfdU6hnTfPu1zuT0MMP2PXPUgAEmViMCMvWj7EsP
-        g/ReZpsIAIGDOPfvzQtpErzrKFfjx61Sc2yhrbXVTfMFl+NE8+N6D/RDpLwlQW86DlOmga
-        6HPCH2TpIoGK8EP6YvA4fdtQdroBGc0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4825AAD11;
-        Mon, 11 Jan 2021 09:17:44 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2] btrfs: Add test 154
-Date:   Mon, 11 Jan 2021 11:17:42 +0200
-Message-Id: <20210111091742.393039-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728421AbhAKJdC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Jan 2021 04:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727716AbhAKJdC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:33:02 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A91C061786
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 01:32:21 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id x15so17734674ilq.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 01:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ceremcem-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/c/5dDfFiOTVWqcRCQJ+HPISkYvwb8dwNJBYWbtKUeQ=;
+        b=lCHB8nawDcl0NCoI9rD4uCAagGPx9xKHh5exUVnHRbhJ3ilG5tunOnqJzMTM8f4H6R
+         KV238lcKBCqso7N3jEWY3o2R6twuHx2oMhLuNIPOpAPEcvyMQXuwV8aYmNXRTz4GQS+l
+         uo9Vlc5P6/7OEF7SPhvw7YDHfVEubKjte+0MUibO6PF8XrcyFpkseCYY7pQoKKkJ0xuE
+         k/pZVyAaSchRDBYFJhiC74++Hg4I1OD+jPnzBwYYFSWjoL/vtX3coxOOAJsDVnItxSWK
+         y0TTkvfBuK6K7KzeC1YCfkmn18RrADl4z1qc0wKzVmnBvlqfLgnoG+SdThfSpELH3j5p
+         iksg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/c/5dDfFiOTVWqcRCQJ+HPISkYvwb8dwNJBYWbtKUeQ=;
+        b=hW2pglc+DQdNMsBxqCkHN2zt0jYyOKNYNTz2gb585D6+PIf2yk5oAs4cd90LqFHP9V
+         z+HAsrGjalva3PhyfnGq9e8/eTvgenFkr4Y9wCo/eofL1xHnFs7yqGvqc3TYUTrMszEy
+         4tCG+YbT5ewRQDDfN05GjJCYF4HKb3HpuiLW9Y/ehDOMB40EHVk+btdLJ39YSTrnmgDZ
+         jyMlAVfVrpkUkt/rGGJYTTVsOvwHFcMa58EHyhFRKNFaQijd/r05uy9d14H+cnxdgsWu
+         F+0aLzNAS36LC8bHoGjL0vVcq/surZqI/lc+mMQ6GJUW3U6WcVDjdzMsI810HAhjfwAE
+         52RQ==
+X-Gm-Message-State: AOAM530gGLNFzyzYo4dBg2dnS32Fz3r95q7f6n/T1XzzAfAoOWupVykU
+        7lT68CkqUPPbnj6uZBimVvx9mi2dtDI9oqwiCdzfVNs0V9sYzn5/vS4=
+X-Google-Smtp-Source: ABdhPJyQtUYiY2+kN62aB62sHTvgDsEAT18+yZnQET2vh+n+xrghnOwJ4mUHZ3z79wWpfzkYPgguedAdvYOeXwMTJwE=
+X-Received: by 2002:a92:9e57:: with SMTP id q84mr4983726ili.112.1610357541177;
+ Mon, 11 Jan 2021 01:32:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <dc1e528567c9a57d089d77824f071af8@mail.eclipso.de>
+ <cd3a4a0a-e0b4-3224-f00c-5ec52c6362e3@tnonline.net> <cc104d7c-b993-941c-2851-9366a1d87902@cobb.uk.net>
+ <CAN4oSBcL7ae_qwKDDoP=sbjkR4gcweTO8otEQv1Zh0YhStWZsw@mail.gmail.com> <b9662cf1-e45f-5113-5b23-bf1aaa73cb97@tnonline.net>
+In-Reply-To: <b9662cf1-e45f-5113-5b23-bf1aaa73cb97@tnonline.net>
+From:   Cerem Cem ASLAN <ceremcem@ceremcem.net>
+Date:   Mon, 11 Jan 2021 12:32:10 +0300
+Message-ID: <CAN4oSBe4UR1BA_QpPoAWor0p7ijBNAZqWEgSy13oaRKc-t5MPg@mail.gmail.com>
+Subject: Re: synchronize btrfs snapshots over a unreliable, slow connection
+To:     Forza <forza@tnonline.net>
+Cc:     Graham Cobb <g.btrfs@cobb.uk.net>, Cedric.dewijs@eclipso.eu,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This test verifies btrfs' free objectid management. I.e it ensures that
-the first objectid is always 256 in an fs tree.
+> You can use `btrbk diff old-snap new-snap` to list changes between
+> snapshots.
+>
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
-* Changes since V1:
- - Added _require_btrfs_command
- - Save temporary output to a file and parse it from there
- - Call $AWK_PROG instead of plain 'awk'
- - Described the meaning of '256'
+The problem with 'btrbk diff' approach (as stated here [1]) is that it
+can not show changes for empty files, empty folders and deletions,
+because it also uses 'btrfs find_new' under the hood (see [2]).
 
- tests/btrfs/154     | 83 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/154.out |  2 ++
- tests/btrfs/group   |  1 +
- 3 files changed, 86 insertions(+)
- create mode 100755 tests/btrfs/154
- create mode 100644 tests/btrfs/154.out
+However, I found this[3] tool at the time of writing this reply, which
+works great and idea behind it (parsing 'btrfs send --no-data' output)
+is rock solid.
 
-diff --git a/tests/btrfs/154 b/tests/btrfs/154
-new file mode 100755
-index 000000000000..5a33380ce315
---- /dev/null
-+++ b/tests/btrfs/154
-@@ -0,0 +1,83 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2020 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 154
-+#
-+# Test correct operation of free objectid related functionality
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch
-+_require_btrfs_command inspect-internal dump-tree
-+
-+_scratch_mkfs > /dev/null
-+_scratch_mount
-+
-+# create a new subvolume to validate its objectid is initialized accordingly,
-+# the expected value is 256 as this is the first free objectid in a new file
-+# system
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/newvol >> $seqres.full 2>&1 \
-+	|| _fail "couldn't create subvol"
-+
-+$BTRFS_UTIL_PROG inspect-internal dump-tree -t1 $SCRATCH_DEV \
-+	| grep -q "256 ROOT_ITEM"  ||	_fail "First subvol with id 256 doesn't exist"
-+
-+# create new file in the new subvolume to validate its objectid is set as
-+# expected
-+touch $SCRATCH_MNT/newvol/file1 || _fail "Cannot create file in new subvol"
-+
-+# ensure we have consistent view on-disk
-+sync
-+
-+# get output related to the new root's dir entry
-+output_file=$tmp.output
-+$BTRFS_UTIL_PROG inspect-internal dump-tree -t5 $SCRATCH_DEV | grep -A2 "256 DIR_ITEM 1903355334" > $output_file
-+
-+# get the objectid of the new root
-+new_root_id=$($AWK_PROG '/location key/{printf $3}' $output_file | tr -d  '(')
-+[ $new_root_id -eq 256 ] || _fail "New root id not equal to 256"
-+
-+# the given root should always be item number 2, since it's the only item
-+item_seq=$($AWK_PROG '/item/ {printf $2}' $output_file)
-+[ $item_seq -eq 2 ] || _fail "New root not at item idx 2"
-+
-+# now parse the structure of the new subvol's tree
-+$BTRFS_UTIL_PROG inspect-internal dump-tree -t256 $SCRATCH_DEV > $output_file
-+
-+# this is the subvol's own ino
-+first_ino=$($AWK_PROG '/item 0/{printf $4}' $output_file | tr -d '(')
-+[ $first_ino -eq 256 ] || _fail "First ino objectid in subvol not 256"
-+
-+# this is ino of first file in subvol
-+second_ino=$($AWK_PROG '/item 4/{printf $4}' $output_file | tr -d '(')
-+[ $second_ino -eq 257 ] || _fail "Second ino objectid in subvol not 257"
-+
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/154.out b/tests/btrfs/154.out
-new file mode 100644
-index 000000000000..a18c304305c4
---- /dev/null
-+++ b/tests/btrfs/154.out
-@@ -0,0 +1,2 @@
-+QA output created by 154
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index d18450c7552e..44d33222def0 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -156,6 +156,7 @@
- 151 auto quick volume
- 152 auto quick metadata qgroup send
- 153 auto quick qgroup limit
-+154 auto quick
- 155 auto quick send
- 156 auto quick trim balance
- 157 auto quick raid
---
-2.17.1
-
+[1]: https://serverfault.com/a/580264/261445
+[2]: https://github.com/digint/btrbk/blob/7dc827bdc3c23fb839540ff1e41f1186fe5ffa19/btrbk#L5692
+[3]: https://github.com/sysnux/btrfs-snapshots-diff
