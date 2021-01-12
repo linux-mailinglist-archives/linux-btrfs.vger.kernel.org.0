@@ -2,98 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7F32F2550
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 02:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10462F290D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 08:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731384AbhALBNe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Jan 2021 20:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731358AbhALBNd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Jan 2021 20:13:33 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF367C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 17:12:52 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id j1so487922pld.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Jan 2021 17:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HeroSUVjjmC+Oi1TznGuZqpsMLfJSMPO+vq+1KmDVOY=;
-        b=eh3zl5GxXEYsEZi6yuaetcvNkJbsOPeSlI99r6w6+7dicC5rvtqC81rRI/VOQFtIVC
-         8RDAFZbcqMf72vNe80Ux6BOjdoCVwQEfACLjtQBWn8W02nAUK4QiR5WpPxLZy4FQXNSG
-         bTwU6ywKdhHi3J/GglPA+iyXCvAEk2QagSGKXk4Woz0M/A0+WybRt9hp9NVK1cX1RQIU
-         qeQpheXPopxYcL9OZ5gqX22NdJPSw1gAESQkovLj1Q7UJR+4yZix50BIcwqZftgllBVC
-         X5NCmW6DUy6srOhc6rTOK7zYFJHIqvKDtQOuTnZCwryddZ/17xuF0JTmskybdyoo8lSF
-         OxzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HeroSUVjjmC+Oi1TznGuZqpsMLfJSMPO+vq+1KmDVOY=;
-        b=h1SBiJwh6Q4XeVZfZ0LyumyYVRCHUuhslz/QZej3mtsfG+6j8siC4Kg4sw8SKwNNsc
-         MOpMHOzBuByjCFTCTcMytS2pq05u+iQzjC5Fi3hF0+qzybsM/QC06x8UHLsNfgW56C66
-         GzHpPen1TZLmQvwGCyd0YkYD2XeJX0pNJj0pswhVHoHA3Vbl//q2q/lD0bEt8WTsR3Ij
-         jaQfQUPNy6FnOX8kVJhLwOZpcchqnjTRwzz0qTvWhYL0UkWov0p0L/mjxxhVlOd8z0NA
-         8heW+dxmIbhhZxkXo57eCQBk4g9XSo1VUYcEZnElgVlF8HKSKZgkkVHqqedurX8tPDh3
-         lKFQ==
-X-Gm-Message-State: AOAM531BxDS7S7rQJfEpvnY+DhNx1aMfkci2EM1UpaNfovhCOL6MCXzB
-        4pmM7L/en2mD7czQg6S9DIBoKg==
-X-Google-Smtp-Source: ABdhPJxRF0FNun799Re6m0Dlhn3msDTubi+Ca34uUaYeDXhd5YM/gQp4x/Eq+sUbStMDe7j70fv8hA==
-X-Received: by 2002:a17:902:7c04:b029:dc:99f2:eea4 with SMTP id x4-20020a1709027c04b02900dc99f2eea4mr2508598pll.43.1610413972364;
-        Mon, 11 Jan 2021 17:12:52 -0800 (PST)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:675])
-        by smtp.gmail.com with ESMTPSA id o7sm921465pfp.144.2021.01.11.17.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 17:12:50 -0800 (PST)
-Date:   Mon, 11 Jan 2021 17:12:47 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com, linux-man <linux-man@vger.kernel.org>
-Subject: Re: Ping: [PATCH man-pages v6] Document encoded I/O
-Message-ID: <X/z3j7dtRrAMc8wC@relinquished.localdomain>
-References: <cover.1605723568.git.osandov@fb.com>
- <ec1588a618bd313e5a7c05a7f4954cc2b76ddac3.1605724767.git.osandov@osandov.com>
- <4d1430aa-a374-7565-4009-7ec5139bf311@gmail.com>
- <fb4a4270-eb7a-06d5-e703-9ee470b61f8b@gmail.com>
- <05e1f13c-5776-961b-edc4-0d09d02b7829@gmail.com>
- <dcb0679d-3ac5-dd95-5473-3c66ae4132b6@gmail.com>
- <559edb86-4223-71e9-9ebf-c917ae71a13d@gmail.com>
- <2aca4914-d247-28d1-22e0-102ea5ff826e@gmail.com>
- <7e2e061d-fd4b-1243-6b91-cc3168146bba@gmail.com>
- <48cc36d0-5e18-2429-9503-729ce01ac1c8@gmail.com>
+        id S1732374AbhALHlQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 02:41:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35648 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731152AbhALHlQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Jan 2021 02:41:16 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610437229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=l+17Z8U17hn65EbMyeS56FVSsrCwYzu5MR5vEvORGN8=;
+        b=OvG2OkYtSDMeir66Y+UoD3lzyL8mIx92kqV7iX6zEZ32ZhLQnk+eZsDYovDHQYgA6EDgfK
+        7y7WwM+gsq8ZXMzMEZEaby91IjHIBwBT1y/OBVJWIB1B/TcGes1y4DO4ic3DU/pjluqpaJ
+        j+iVUfc8XvpN3UXjZ/ngCIpjiv1pmYE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 22E36AB92;
+        Tue, 12 Jan 2021 07:40:29 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2] fstests: btrfs: check qgroup doesn't crash when beyond limit
+Date:   Tue, 12 Jan 2021 15:40:24 +0800
+Message-Id: <20210112074024.85020-1-wqu@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48cc36d0-5e18-2429-9503-729ce01ac1c8@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 11:32:17AM +0100, Alejandro Colomar (man-pages) wrote:
-> Hi Omar,
-> 
-> Linux 5.10 has been recently released.
-> Do you have any updates for this patch?
-> 
-> Thanks,
-> 
-> Alex
+There is a bug that, when btrfs is beyond qgroup limit, touching a file
+could crash btrfs.
 
-Hi, Alex,
+Such beyond limit situation needs to be intentionally created, e.g.
+writing 1GiB file, then limit the subvolume to 512 MiB.
+As current qgroup works pretty well at preventing us from reaching the
+limit.
 
-Now that the holidays are over I'm revisiting this series and plan to
-send a new version this week or next.
+This makes existing qgroup test cases unable to detect it.
 
-Thanks,
-Omar
+The regression is introduced by commit c53e9653605d ("btrfs: qgroup: try
+to flush qgroup space when we get -EDQUOT"), and the fix is titled
+"btrfs: qgroup: don't commit transaction when we have already
+ hold a transaction handler"
+
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1178634
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Use "0/5" to replace the double "$SCRATCH_MNT" in btrfs qgroup command
+  To reduce confusion.
+---
+ tests/btrfs/228     | 59 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/228.out |  2 ++
+ tests/btrfs/group   |  1 +
+ 3 files changed, 62 insertions(+)
+ create mode 100755 tests/btrfs/228
+ create mode 100644 tests/btrfs/228.out
+
+diff --git a/tests/btrfs/228 b/tests/btrfs/228
+new file mode 100755
+index 00000000..ecca3181
+--- /dev/null
++++ b/tests/btrfs/228
+@@ -0,0 +1,59 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2020 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 228
++#
++# Test if btrfs qgroup would crash if we're modifying the fs
++# after exceeding the limit
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++_supported_fs btrfs
++
++# Need at least 2GiB
++_require_scratch_size $((2 * 1024 * 1024))
++_scratch_mkfs > /dev/null 2>&1
++_scratch_mount
++
++_pwrite_byte 0xcd 0 1G $SCRATCH_MNT/file >> $seqres.full
++# Make sure the data reach disk so later qgroup scan can see it
++sync
++
++$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT
++$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
++
++# Set the limit to just 512MiB, which is way below the existing usage
++$BTRFS_UTIL_PROG qgroup limit  512M 0/5 $SCRATCH_MNT
++
++# Touch above file, if kernel not patched, it will trigger an ASSERT()
++#
++# Even for patched kernel, we will still get EDQUOT error, but that
++# is expected behavior.
++touch $SCRATCH_MNT/file 2>&1 | _filter_scratch
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/228.out b/tests/btrfs/228.out
+new file mode 100644
+index 00000000..9c250148
+--- /dev/null
++++ b/tests/btrfs/228.out
+@@ -0,0 +1,2 @@
++QA output created by 228
++touch: setting times of 'SCRATCH_MNT/file': Disk quota exceeded
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 1868208e..9b0dc5ca 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -230,3 +230,4 @@
+ 225 auto quick volume seed
+ 226 auto quick rw snapshot clone prealloc punch
+ 227 auto quick send
++228 auto quick qgroup limit
+-- 
+2.28.0
+
