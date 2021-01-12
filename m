@@ -2,161 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F142F3221
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 14:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7FA2F322C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 14:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728970AbhALNqW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jan 2021 08:46:22 -0500
-Received: from mout.gmx.net ([212.227.17.20]:41853 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbhALNqV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:46:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1610459086;
-        bh=xzW7W54/B49Go/OEtonnFy56QLfCndeqePFvmO+iXT8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZXusZpk6Cldg5V4GxbJg93qL1QKfAD0PVfbIGW/z86dhGp760lli8MkwbU93dJsFD
-         lj3l001D8BaJcxBu8VyrY0iXQN94sZAwTpVBoG0+M+CHELAWwhHqnlE45ynnBtDb+4
-         /abeaatL13a06xpeuEXvDJHSkudWv/dtZ/F0J2x0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1McpNy-1kQX7f1zu6-00ZuET; Tue, 12
- Jan 2021 14:44:46 +0100
-Subject: Re: [bug] Balance fails due to ENOSPC
-To:     Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <1540e370-a019-5d3b-312d-dc5e70169597@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <28a3f2db-dabf-9b59-4bb5-0608717656dc@gmx.com>
-Date:   Tue, 12 Jan 2021 21:44:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <1540e370-a019-5d3b-312d-dc5e70169597@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727836AbhALNtV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 08:49:21 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:40206 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbhALNtU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:49:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1610460289; x=1641996289;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=UCjSUM3EbNK9Uiwj8ng4m5Wcqst/t7yTmsn/cRjMGlo=;
+  b=qul7pMegv47dlpmXN4MrVoiIRG4EkGewGzXJuSeZQyQY51cm674ZfkqM
+   NEUH03oXqo0kX4eFXucsHGCShq0vJq0TAHaUiiZAO5wZWyLKFJlucDWPd
+   6SiOA3WzFYo/upEsoaUOim61IznJZ98opjVTkcOZaWzTRPdNW788L8bmB
+   9svZt5RhZE94Y+KGmDbstw9HPTzG623A3jB42nTRKXPc8JXVMLz4k8DJ2
+   hSgmvUMe9SInoIyow3HAxiweP/em/qT4RXI53ibEtjLB/5TojOLcHtRvR
+   7hEBQ31VvSBAiTjddPAfzjxL7N5g+TWW7dalkh8m964zMap7CCLjoHkJb
+   Q==;
+IronPort-SDR: h6/an+elC+j8wQuCWPbZqClK3DvZcBydpCFDkyErG6ntyt+lIskrUW4y0CTJL4BSFGY8uZujuk
+ UTdH58Mk7rLafCeYASxOpJLQHK3Svlt439OuKZFjuyM/dZFiAwh44NXzf1f0/xwuHwv84TBNpe
+ Sbw6mWKdZ1wByXKt7SPdksnpTEauFzSqJgnR/FJBHaoQMQDUVsUOePs+VOgPUWqtyfIEdD01yK
+ biPZknhtsJGN2WIse+iXL6+emaEbMZZEdZs0EhNwUNAN77bX5b8myhlY/fbR0e6Fxh/V3LoiPY
+ 7ZU=
+X-IronPort-AV: E=Sophos;i="5.79,341,1602518400"; 
+   d="scan'208";a="261140653"
+Received: from mail-bn8nam08lp2041.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.41])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Jan 2021 22:03:08 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AWxPF3H2N++1Zav146hXLmmer2d1FZfb3NzxBnWnYjMa20s6HDNuUm+oeDRS8YOrS9P+caxLxmM/iQ6UWmVy8ev/i62okDpWtIz8y5BkRExJER7KR+RYb+zfJiJ4DCZv3vYjMtC63t+F7sqcxCjIrn9TIq2s37oaZgGwV7ENhLrEfLOoZlUUfGUgsmFmGx6QWa420OlXA5h95LxUIRatyDa67zcSgT4iFb9+D3GnTdzEG25fxiFYZLalKawNCWIz4y9K0CK4IhrK/KKnm8aiT7eKC0tfsKFXBHnNhgIDoBRyfKPl1unvCzdO0mMk1S27n/Ul8UU6NGWVaJLal9m5Ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YyZljLbHzuxsN3FjNofOyPEJ63QOoLRXgDXZedxhsGE=;
+ b=WKSRd111q1TjvsczD80VlV6Jum6i3F2iIfEuZZ5MfWmwSL1HhmTyrpJl5xrjr33jsLLpasX7C0X0hMD3hmzkLzYssSdM9sSQGCsH/Ik4XKutD65g7FCRki3Ej6vbTzRCpRsJiqRkg5LEx0EAf1gfhmdcInmOHYnsmyd/fRx8H4lz0S7f0bgNszeGubhH9QTKzEPY76cDwajamKNy2mQ83k7M89gMuSDieLQkkKTCyWwQqH81HuyBKB2PZZp8tXuUGrT4BuebVyfwUPmbRdfu06rCAsrqfE2Id5xrmnkHe/wNdPbzhzaR6duKtpxX3NE1P3qxdZI08E5tMN7GjtN71g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YyZljLbHzuxsN3FjNofOyPEJ63QOoLRXgDXZedxhsGE=;
+ b=tFXrgpMvKxyblyIwQyhYdXrwQEaX5hcwzwotcR/kUMLgwgoVpPUWmOc+tpiEhI5nyC7O8dIGj/iEZmNVBBv31wVBs+Gfma7gFT5unjEZhvp7ruqtTFFMe5z/rufBF0bQHtSiDcUV12JId1wVCrQUPg8mjr+1TugFYukB4cLBnoI=
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
+ by DM6PR04MB4698.namprd04.prod.outlook.com (2603:10b6:5:20::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.8; Tue, 12 Jan
+ 2021 13:48:11 +0000
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::61b3:1707:5b14:6b59]) by DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::61b3:1707:5b14:6b59%5]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 13:48:11 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "hch@infradead.org" <hch@infradead.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v11 01/40] block: add bio_add_zone_append_page
+Thread-Topic: [PATCH v11 01/40] block: add bio_add_zone_append_page
+Thread-Index: AQHW2BWZvPW5wHn7UUGeLnRkjRGHMg==
+Date:   Tue, 12 Jan 2021 13:48:10 +0000
+Message-ID: <DM5PR0401MB3591058581A93F24D8C357349BAA0@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <cover.1608515994.git.naohiro.aota@wdc.com>
+ <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
+ <20201222133547.GC5099@infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:15c4:1c01:38c1:d5fb:3079:ba93]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: e8f9880d-8426-4ddd-3c63-08d8b700b376
+x-ms-traffictypediagnostic: DM6PR04MB4698:
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR04MB46989AFF7E0928310A9185149BAA0@DM6PR04MB4698.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dk/slc3mwP0nCG3BEEMZwxiaZGFCS54zhL721lG67Eo3O/5rY0RXrg9b/zChEysrdi+cAesnJx60lY05aYe38Wv69a+IrutCyUK/jlXSRB3em/h/fU+YsjNIdkG/64raLuiZueVh2sqlMAQDBkR77q9ULKGPJFv3gA9O59add2jHUh9cqa0+kWpQg0lLc8czjvyfk3cmL8vU5M3Ei/ki9xrt8L5jvjdI32geXMIQu0NXBYyrxGTBoCAzBKwgkpbUtoNCMixYkYoC23CoXJLAPfmBBgH0pdI1gQmrtJVjASgUevcu6zJA+d9X4MLGUTMeOzkhQsJRA2H/XcKBmWgim6VVMxJdwkMX8ad++vfCmoqk6K917mE70XT81JCFmRgHgaQQ5huMLWeo4wRmJ0spHQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(39850400004)(346002)(396003)(86362001)(6636002)(8676002)(2906002)(478600001)(9686003)(4744005)(55016002)(8936002)(66946007)(316002)(54906003)(33656002)(5660300002)(76116006)(71200400001)(53546011)(66476007)(52536014)(6506007)(7696005)(186003)(64756008)(66446008)(83380400001)(91956017)(4326008)(66556008)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5+ShvLe8KYaqmTxHHnd0/0bq/lQKiNP+HkdrsFjqIWkbLhfg38XuGVJj3poj?=
+ =?us-ascii?Q?Hni6Njlx2VK2Gz5KtYCPuLbgQLKzZ5hGsFXOCo6fQept/M2cc+I5f7JwxqOs?=
+ =?us-ascii?Q?rx9H1hiukRubOrM6RB503flhVBFfIgs4+PlUO+z5fY/jH12np3QofyebSsDk?=
+ =?us-ascii?Q?5G4E3/AElDx/iAAF3BveFN2FgzBZ+FXSaqUQcWM9+6kONtog+U5il+4A0e/1?=
+ =?us-ascii?Q?jhY4J7tBJ+6P0teRdFccEIAFX1bRtJ7Eb5IdvMgAo4gr5E1adGOTpXivtu1/?=
+ =?us-ascii?Q?N+AbK8nulGQzg8rz3jNOG2Svx8WGNt4q0RiMlLKZj6FXnKJSoaB8ap2JsMSa?=
+ =?us-ascii?Q?YO90Q9GoR9qdD460PQwrkQbLbjGvEX5lBo+yUURBaqXrIPGcIgqnminmfKX4?=
+ =?us-ascii?Q?/fZg10fgSkWcuB2/2Y+ytKtkHjF8k1OfyRTrWWjwvf2aEdOtQusav1aQSWpo?=
+ =?us-ascii?Q?plHsDAuiekxQ7SwU15C74IAw7SDvreixhULmvvCIrc41rElA38spHpz08dGB?=
+ =?us-ascii?Q?o2dudCvkcqG3sAtL+sTH5yH0cI5WnDGohOXoj24A35Gm0YLYryufnhzvNhBv?=
+ =?us-ascii?Q?9Eqh27tU41jSmAHBKiun/FebGvX8mgWp2vX7hZOHlN2pV3+i6GmF7TvlXBfT?=
+ =?us-ascii?Q?d+2Kf/sIqhkoVl6NiikdT0+MkRowMr9zur3PewzzGAO6IxyzZPQfiAq1HKPm?=
+ =?us-ascii?Q?SKP/drb6kckZ8PmAUltHT6o+qaxV4sOEQVMs0jfddxY1LDmNY/ZmTj0JfS9+?=
+ =?us-ascii?Q?ctMrQmBgQ5aOvCbYwTjJdEBqWxcTqxlPRzaTh9A3T7iP63xwD7LAdCz3j7Wj?=
+ =?us-ascii?Q?w44j7gn4WuXQ0y5qTTmsYDLlYQe7w+Fc3VJmo0nbAu3ZL51NYLnWtsrHiNMW?=
+ =?us-ascii?Q?2aPeDIUtqm4HNomJrTFiRf2sPcO+cKZ/8k950z/MhCGPPZd6hV4lLLpsUkhh?=
+ =?us-ascii?Q?c44wn0RMQafEdsA27r+49LJVcmUC9B3rQdoZdKdqfLE8yFka3qBPOD/6JVGM?=
+ =?us-ascii?Q?8NLRoKOUwhMzctkZrlFrVC0NyW/su6+XnXHXStcBYxD+e3GrVh1ks+lIJ4OW?=
+ =?us-ascii?Q?Cw9egS1d?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lwH5tEhuBaM21nluGdh5W0ZGlCFTuS2kwPTQQazSS8STtblz4Wd
- URcDRgTIZ6+Rxud2PtH8+eBg6vbowAWK4RPPaQi55N1+zat0jPwvF/9Qs/4CyiGo9S9if7E
- 1Q7tIOKWOgd8MPiPH5xTCpUzjXiSoi8qzwWLgTcu9ASDzB2nkgYTMC36xNt1MCgh/RQl6UY
- 7WX3EHPOwnuLwwUdU+HJA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bFB+sB20/Ik=:A/bUYptSNROc61BknTN3Jq
- ghdhXfKSNxLcWx8ld4bFuXa9Yh/yz8EvDq+2EW9B9emaid8c8bnG1h2GdyXPqgrgNIPc/zGyY
- lF/HWysUgjRbcjILYNh1Qh0uUaAw/TTN93B2RWknB4FWzT8juY68hKz5h9gtVqREPOBdxYf+r
- FDg0pZQP4ODrXDuXCUjYD1/TVzcmi2vEj9tSCasXFdDjZ2Wh1M1C7w0iyBralDDAgeyl11UZH
- HhnvAlJ9eM+Qx2hyeixKIEGdr7HBBXWO6d+/FtwMgyFZcRyhrxyocz42c6C95yJ4m1BK1UZmC
- cDeyDu2P7MPzfU4qB8Sdxdl9yqiwJfxnT7Mh9xaqpcAFRlossFXXv5XdbohMcfdZRjIR3cbcS
- fS9VymiE44bPBDmtO1BvfrTGPiCr4elfwOrbWqPozyz4/U6bXT2cLQQyRJJ9d9bxmX6stGy4w
- tba8l+D7ZyLz7qck0MhU57tQ+7qBnJVjNLTwVKdgOWXzsrah4MMk48o0/F0VcX2+hgrhj9dtS
- xnyZMAbzBrbmLGXf/v8dqH1RM/158DS9UVyiXX1dVTb2rNC2uPCM0LPckjD/aQT4giLqFKwot
- WL7wQLHrrTc0DZoPz3M46OuyIY20OEFOZmAQvnrUsSvtY/8wmN8K1zssTS4MfeJ1cVxiArvMJ
- fnFryhyniVYCcoRT0cQjtC4Ww8xHzQAwS2nWx2lUprxzAplnGCJnSLvFj2sqoEhEhgRIEqav0
- RI6fA3Nrfo82yz3kA8pEZqYlK60GFNldSMhDlkKwdOzmqV64sX8iS7otNJEG0FwjrvF81XsN8
- q7qtiTc4vHYWc7D8lLiBOkwmyePfqSxdD166zZpnvUTVUacmb50J5ufL4zFtSJQEOmF4L08WY
- XGoyVlzWiRD9CUPfieqA==
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8f9880d-8426-4ddd-3c63-08d8b700b376
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 13:48:11.0569
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: x2TL4CtVXVCR5HxIesU3JRRKjTax8UAODcbdmdQB69J7Kj00aJaiEG57h+5KAHXwsqxa0qAZYiNhRaYMgVZALUYLx4lrLgzYEC93M0jhdCw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4698
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/1/12 =E4=B8=8B=E5=8D=886:35, Anand Jain wrote:
->
->
-> Balance fails due to ENOSPC on 5.11.0-rc2+.
->
->
-> [ 2460.219094] BTRFS info (device sdb6): balance: start -f
-> -dconvert=3Dsingle -mconvert=3Dsingle -sconvert=3Dsingle
-> [ 2460.219224] BTRFS info (device sdb6): relocating block group
-> 194572713984 flags data
-> [ 2460.241299] ------------[ cut here ]------------
-> [ 2460.241302] BTRFS: Transaction aborted (error -28)
-> [ 2460.241328] WARNING: CPU: 3 PID: 4135 at fs/btrfs/volumes.c:3003
-> btrfs_remove_chunk+0x60e/0x6c0 [btrfs]
-> ::
-> [ 2460.241447] RIP: 0010:btrfs_remove_chunk+0x60e/0x6c0 [btrfs]
-> ::
-> [ 2460.241497] Call Trace:
-> [ 2460.241500]=C2=A0 btrfs_relocate_chunk+0x9d/0xd0 [btrfs]
-> [ 2460.241533]=C2=A0 __btrfs_balance+0x413/0xa30 [btrfs]
-> [ 2460.241566]=C2=A0 btrfs_balance+0x436/0x4d0 [btrfs]
-> [ 2460.241597]=C2=A0 btrfs_ioctl_balance+0x2d5/0x380 [btrfs]
-> [ 2460.241647]=C2=A0 btrfs_ioctl+0x565/0x22b0 [btrfs]
-> [ 2460.241693]=C2=A0 ? selinux_file_ioctl+0x174/0x220
-> [ 2460.241698]=C2=A0 ? handle_mm_fault+0xd7/0x2b0
-> [ 2460.241702]=C2=A0 __x64_sys_ioctl+0x91/0xc0
-> [ 2460.241705]=C2=A0 ? __x64_sys_ioctl+0x91/0xc0
-> [ 2460.241707]=C2=A0 do_syscall_64+0x38/0x50
-> [ 2460.241711]=C2=A0 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> ::
-> [ 2460.241735] ---[ end trace 95b8b7b84503a477 ]---
-> [ 2460.241738] BTRFS: error (device sdb6) in btrfs_remove_chunk:3003:
-> errno=3D-28 No space left
-> [ 2460.241743] BTRFS info (device sdb6): forced readonly
-> [ 2460.242646] BTRFS info (device sdb6): 1 enospc errors during balance
-> [ 2460.242649] BTRFS info (device sdb6): balance: ended with status: -30
->
->
-> btrfs fi us /Volumes/
-> Overall:
->  =C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 154.97GiB
->  =C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 154.97GiB
->  =C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00MiB
->  =C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00B
->  =C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 147.91GiB
->  =C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.75GiB=C2=A0=C2=A0=C2=A0 (min: 2.75GiB)
->  =C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.99
->  =C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.52
->  =C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 183.72MiB=C2=A0=C2=A0=C2=A0 (used: 0.00B)
->
-> Data,single: Size:894.00MiB, Used:0.00B (0.00%)
->  =C2=A0=C2=A0 /dev/sdb6=C2=A0=C2=A0=C2=A0=C2=A0 894.00MiB
->
-> Data,RAID1: Size:75.53GiB, Used:73.23GiB (96.96%)
->  =C2=A0=C2=A0 /dev/sdb6=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 75.53GiB
->  =C2=A0=C2=A0 /dev/sdc2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 75.53GiB
->
-> Metadata,single: Size:964.00MiB, Used:0.00B (0.00%)
->  =C2=A0=C2=A0 /dev/sdb6=C2=A0=C2=A0=C2=A0=C2=A0 964.00MiB
->
-> Metadata,RAID1: Size:1.00GiB, Used:737.25MiB (72.00%)
->  =C2=A0=C2=A0 /dev/sdb6=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00GiB
->  =C2=A0=C2=A0 /dev/sdc2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00GiB
-
-Metadata is only 1G, with 737M used, and 183 reserved as GlobalRSV.
-
-Although the GlobalRSV is a little smaller than older kernel, but it
-should be more or less enough.
-
-In theory, we should be able to modify the fs stealing from GlobalRSV,
-and since btrfs_remove_chunk:3003 is updating device time, either it
-means we didn't really reserve enough metadata when we start the trans,
-or we didn't do the steal when we really need.
-
-Would you like to provide the dmesg if you can reproduce with "-o
-enospc_debug" mount option?
-
-Thanks,
-Qu
->
-> System,single: Size:32.00MiB, Used:0.00B (0.00%)
->  =C2=A0=C2=A0 /dev/sdb6=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
->
-> System,RAID1: Size:32.00MiB, Used:16.00KiB (0.05%)
->  =C2=A0=C2=A0 /dev/sdb6=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
->  =C2=A0=C2=A0 /dev/sdc2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 32.00MiB
->
-> Unallocated:
->  =C2=A0=C2=A0 /dev/sdb6=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00MiB
->  =C2=A0=C2=A0 /dev/sdc2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.00MiB
+On 22/12/2020 14:35, Christoph Hellwig wrote:=0A=
+>> +int bio_add_zone_append_page(struct bio *bio, struct page *page,=0A=
+>> +			     unsigned int len, unsigned int offset)=0A=
+>> +{=0A=
+>> +	struct request_queue *q;=0A=
+>> +	bool same_page =3D false;=0A=
+>> +=0A=
+>> +	if (WARN_ON_ONCE(bio_op(bio) !=3D REQ_OP_ZONE_APPEND))=0A=
+>> +		return 0;=0A=
+>> +=0A=
+>> +	q =3D bio->bi_disk->queue;=0A=
+> =0A=
+> I'd still prefer to initialize q at declaration time.=0A=
+> =0A=
+> But except for this cosmetic nitpick the patch looks good:=0A=
+> =0A=
+> Reviewed-by: Christoph Hellwig <hch@lst.de>=0A=
+> =0A=
+=0A=
+Oops, fixed.=0A=
