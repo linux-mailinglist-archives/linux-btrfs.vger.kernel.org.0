@@ -2,245 +2,228 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B852F3249
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 14:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3D32F3292
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 15:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729388AbhALNzw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jan 2021 08:55:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbhALNzv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:55:51 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AD4C061575
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 05:55:11 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id b9so1560329qtr.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 05:55:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=ihfJdvXuo8gXYhL1o2qpY3R2l4myN2DC+kCqQgN5/3U=;
-        b=rrU8chnTCTVxVTIAJbeOZWXqIWe+PJa2uMgm5y9aN+uYYtmnW4j+Nj+qrYpbsBzrA2
-         2a1HE1+JUcnCBl925LAKiG5KuYMDt40/L19ReHsGZCb3HMlTfxGOOTObsTRfaMBRZgHQ
-         cTIcIEo3Qj0RUEwv6BADtgHx+SfkvW3IKI7PSwqsO9bi2pz4cNJUGaaGUu+XSGx37m90
-         RCkw9ew+2l/9Swbk9WHRxSXlWu6mnl1modAafRhbZUq8PZPXym/Yfwtgqh42oPs4OD6U
-         hlaXzPb6tGjkM40nYb/IB7w2AWOWNzvBlme2qki+qMvIkj9f69j7Thcay7xL33SkR4AW
-         RJhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=ihfJdvXuo8gXYhL1o2qpY3R2l4myN2DC+kCqQgN5/3U=;
-        b=PdLTfqcoIaApc18uxw2665X0PLb4Jt58Qio6e5jksgGWZbK7lUK2FshXQ1p8YtAedv
-         I3ip6JXTB7axPNKVrMU2PJxOMSPwaAR1QQSQgzUgUYyDRqBh/MSh/grhqUZu8l4Ibhf6
-         i2YDyJGMlP03sD3E7vKrx/a2udb52QsqzMRD061Qsws0PBdpKUFNZJOZl022qk1Q+cgY
-         tn+EJ6qp6jxEFEiTfmx5He2vM0DgipiqOaQLjLw4p6g6mIKlekL/TIkMYxzs8hTTjelf
-         d0KcBsDS7vRulZq+spa/vt8vYhlT3pa3zrhS+oBibQFOHBXfcmCzOeZY+o7ufbEywXfW
-         7MCA==
-X-Gm-Message-State: AOAM531S8O2L8But5XiCdqqXTRcIF2+TQpc9GfXn5JmdJ1OhGH2LYxay
-        0dt29CpaEW5ytPYQxHDD+j8kdWyY5ecwFsW/d2rXEbqryN0D/A==
-X-Google-Smtp-Source: ABdhPJzrNdaSjeYp46XvSgzo8LUeLwLwTAL3e6RpgmgxtqmUDF53BnDe05zA7Viv9zJRid1o9B9OuiSkdId7hCYD2Fc=
-X-Received: by 2002:ac8:7349:: with SMTP id q9mr4698868qtp.259.1610459710537;
- Tue, 12 Jan 2021 05:55:10 -0800 (PST)
+        id S1727144AbhALOE2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 09:04:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35362 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726560AbhALOE1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:04:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B7B07ABD6;
+        Tue, 12 Jan 2021 14:03:45 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 68FA8DA87C; Tue, 12 Jan 2021 15:01:53 +0100 (CET)
+Date:   Tue, 12 Jan 2021 15:01:53 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: send, fix invalid clone operations when cloning
+ from the same file and root
+Message-ID: <20210112140153.GO6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <900493c40f7edbd42fe861ccd9a68851ea952499.1610363502.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <20210111190243.4152-1-roman.anasal@bdsu.de> <20210111190243.4152-3-roman.anasal@bdsu.de>
- <9e177865-0408-c321-951e-ce0f3ff33389@gmail.com> <424d62853024d8b0bc5ca03206eeca35be6014a2.camel@bdsu.de>
- <CAL3q7H6YOPgcdgJKX8OETqrKqmfz8GRkQykPOQBMmnNSsc4sxw@mail.gmail.com> <0ce2d415308ab40874aff535031e9871a442cd9a.camel@bdsu.de>
-In-Reply-To: <0ce2d415308ab40874aff535031e9871a442cd9a.camel@bdsu.de>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 12 Jan 2021 13:54:59 +0000
-Message-ID: <CAL3q7H6T2oFwt7EXZ2HsbGhhtpfSrju961W5vysJ3LcuahsUxg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: send: fix invalid commands for inodes with
- changed type but same gen
-To:     "Roman Anasal | BDSU" <roman.anasal@bdsu.de>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <900493c40f7edbd42fe861ccd9a68851ea952499.1610363502.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:10 PM Roman Anasal | BDSU
-<roman.anasal@bdsu.de> wrote:
->
-> On Tue, 2021-01-12 at 11:27 +0000, Filipe Manana wrote:
-> > You get all these issues because you are using an incremental send in
-> > a way it's not supposed to.
-> > You are using two subvolumes that are completely unrelated.
-> Yes, I am aware of that and know that this is not a designed for use
-> case.
->
-> > My surprise here is that we actually allow a user to try that,
-> > instead
-> > of giving an error complaining that subvol1 and subvol2 aren't
-> > snapshots of the same subvolume.
-> This could be one way of solving it. But this is already harder than it
-> sounds, since the same issue may also happen *even when* the subvolumes
-> share a parent/are related, here an example reproducer:
->
->   btrfs subvolume create subvol1
->   btrfs subvolume snapshot subvol1 subvol2
->   mkdir subvol1/a
->   echo foo > subvol2/a
->   btrfs property set subvol1 ro true
->   btrfs property set subvol2 ro true
->   btrfs send -p subvol1 subvol2 | btrfs receive --dump
->
-> This will produce a stream that tries to write data into the cloned
-> directory inode.
+On Mon, Jan 11, 2021 at 11:41:42AM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When an incremental send finds an extent that is shared, it checks which
+> file extent items in the range refer to that extent, and for those it
+> emits clone operations, while for others it emits regular write operations
+> to avoid corruption at the destination (as described and fixed by commit
+> d906d49fc5f4 ("Btrfs: send, fix file corruption due to incorrect cloning
+> operations")).
+> 
+> However when the root we are cloning from is the send root, we are cloning
+> from the inode currently being processed and the source file range has
+> several extent items that partially point to the desired extent, with an
+> offset smaller than the offset in the file extent item for the range we
+> want to clone into, it can cause the algorithm to issue a clone operation
+> that starts at the current eof of the file being processed in the receiver
+> side, in which case the receiver will fail, with -EINVAL, when attempting
+> to execute the clone operation.
+> 
+> Example reproducer:
+> 
+>   $ cat test-send-clone.sh
+>   #!/bin/bash
+> 
+>   DEV=/dev/sdi
+>   MNT=/mnt/sdi
+> 
+>   mkfs.btrfs -f $DEV >/dev/null
+>   mount $DEV $MNT
+> 
+>   # Create our test file with a single and large extent (1M) and with
+>   # different content for different file ranges that will be reflinked
+>   # later.
+>   xfs_io -f \
+>          -c "pwrite -S 0xab 0 128K" \
+>          -c "pwrite -S 0xcd 128K 128K" \
+>          -c "pwrite -S 0xef 256K 256K" \
+>          -c "pwrite -S 0x1a 512K 512K" \
+>          $MNT/foobar
+> 
+>   btrfs subvolume snapshot -r $MNT $MNT/snap1
+>   btrfs send -f /tmp/snap1.send $MNT/snap1
+> 
+>   # Now do a series of changes to our file such that we end up with
+>   # different parts of the extent reflinked into different file offsets
+>   # and we overwrite a large part of the extent too, so no file extent
+>   # items refer to that part that was overwritten. This used to confure
+>   # the algorithm used by the kernel to figure out which file ranges to
+>   # clone, making it attempt to clone from a source range starting at
+>   # the current eof of the file, resulting in the receiver to fail since
+>   # it is an invalid clone operation.
+>   #
+>   xfs_io -c "reflink $MNT/foobar 64K 1M 960K" \
+>          -c "reflink $MNT/foobar 0K 512K 256K" \
+>          -c "reflink $MNT/foobar 512K 128K 256K" \
+>          -c "pwrite -S 0x73 384K 640K" \
+>          $MNT/foobar
+> 
+>   btrfs subvolume snapshot -r $MNT $MNT/snap2
+>   btrfs send -f /tmp/snap2.send -p $MNT/snap1 $MNT/snap2
+> 
+>   echo -e "\nFile digest in the original filesystem:"
+>   md5sum $MNT/snap2/foobar
+> 
+>   # Now unmount the filesystem, create a new one, mount it and try to
+>   # apply both send streams to recreate both snapshots.
+>   umount $DEV
+> 
+>   mkfs.btrfs -f $DEV >/dev/null
+>   mount $DEV $MNT
+> 
+>   btrfs receive -f /tmp/snap1.send $MNT
+>   btrfs receive -f /tmp/snap2.send $MNT
+> 
+>   # Must match what we got in the original filesystem of course.
+>   echo -e "\nFile digest in the new filesystem:"
+>   md5sum $MNT/snap2/foobar
+> 
+>   umount $MNT
+> 
+> When running the reproducer, the incremental send operation fails due to
+> an invalid clone operation:
+> 
+>   $ ./test-send-clone.sh
+>   wrote 131072/131072 bytes at offset 0
+>   128 KiB, 32 ops; 0.0015 sec (80.906 MiB/sec and 20711.9741 ops/sec)
+>   wrote 131072/131072 bytes at offset 131072
+>   128 KiB, 32 ops; 0.0013 sec (90.514 MiB/sec and 23171.6148 ops/sec)
+>   wrote 262144/262144 bytes at offset 262144
+>   256 KiB, 64 ops; 0.0025 sec (98.270 MiB/sec and 25157.2327 ops/sec)
+>   wrote 524288/524288 bytes at offset 524288
+>   512 KiB, 128 ops; 0.0052 sec (95.730 MiB/sec and 24506.9883 ops/sec)
+>   Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap1'
+>   At subvol /mnt/sdi/snap1
+>   linked 983040/983040 bytes at offset 1048576
+>   960 KiB, 1 ops; 0.0006 sec (1.419 GiB/sec and 1550.3876 ops/sec)
+>   linked 262144/262144 bytes at offset 524288
+>   256 KiB, 1 ops; 0.0020 sec (120.192 MiB/sec and 480.7692 ops/sec)
+>   linked 262144/262144 bytes at offset 131072
+>   256 KiB, 1 ops; 0.0018 sec (133.833 MiB/sec and 535.3319 ops/sec)
+>   wrote 655360/655360 bytes at offset 393216
+>   640 KiB, 160 ops; 0.0093 sec (66.781 MiB/sec and 17095.8436 ops/sec)
+>   Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap2'
+>   At subvol /mnt/sdi/snap2
+> 
+>   File digest in the original filesystem:
+>   9c13c61cb0b9f5abf45344375cb04dfa  /mnt/sdi/snap2/foobar
+>   At subvol snap1
+>   At snapshot snap2
+>   ERROR: failed to clone extents to foobar: Invalid argument
+> 
+>   File digest in the new filesystem:
+>   132f0396da8f48d2e667196bff882cfc  /mnt/sdi/snap2/foobar
+> 
+> The clone operation is invalid because its source range starts at the
+> current eof of the file in the receiver, causing the receiver to get
+> an -EINVAL error from the clone operation when attempting it.
+> 
+> For the example above, what happens is the following:
+> 
+> 1) When processing the extent at file offset 1M, the algorithm checks that
+>    the extent is shared and can be (fully or partially) found at file
+>    offset 0.
+> 
+>    At this point the file has a size (and eof) of 1M at the receiver;
+> 
+> 2) It finds that our extent item at file offset 1M has a data offset of
+>    64K and, since the file extent item at file offset 0 has a data offset
+>    of 0, it issues a clone operation, from the same file and root, that
+>    has a source range offset of 64K, destination offset of 1M and a length
+>    of 64K, since the extent item at file offset 0 refers only to the first
+>    128K of the shared extent.
+> 
+>    After this clone operation, the file size (and eof) at the receiver is
+>    increased from 1M to 1088K (1M + 64K);
+> 
+> 3) Now there's still 896K (960K - 64K) of data left to clone or write, so
+>    it checks for the next file extent item, which starts at file offset
+>    128K. This file extent item has a data offset of 0 and a length of
+>    256K, so a clone operation with a source range offset of 256K, a
+>    destination offset of 1088K (1M + 64K) and length of 128K is issued.
+> 
+>    After this operation the file size (and eof) at the receiver increases
+>    from 1088K to 1216K (1088K + 128K);
+> 
+> 4) Now there's still 768K (896K - 128K) of data left to clone or write, so
+>    it checks for the next file extent item, located at file offset 384K.
+>    This file extent item points to a different extent, not the one we want
+>    to clone, with a length of 640K. So we issue a write operation into the
+>    file range 1216K (1088K + 128K, end of the last clone operation), with
+>    a length of 640K and with a data matching the one we can find for that
+>    range in send root.
+> 
+>    After this operation, the file size (and eof) at the receiver increases
+>    from 1216K to 1856K (1216K + 640K);
+> 
+> 5) Now there's still 128K (768K - 640K) of data left to clone or write, so
+>    we look into the file extent item, which is for file offset 1M and it
+>    points to the extent we want to clone, with a data offset of 64K and a
+>    length of 960K.
+> 
+>    However this matches the file offset we started with, the start of the
+>    range to clone into. So we can't for sure find any file extent item
+>    from here onwards with the rest of the data we want to clone, yet we
+>    proceed and since the file extent item points to the shared extent,
+>    with a data offset of 64K, we issue a clone operation with a source
+>    range starting at file offset 1856K, which matches the file extent
+>    item's offset, 1M, plus the amount of data cloned and written so far,
+>    which is 64K (step 2) + 128K (step 3) + 640K (step 4). This clone
+>    operation is invalid since the source range offset matches the current
+>    eof of the file in the receiver. We should have stopped looking for
+>    extents to clone at this point and instead fallback to write, which
+>    would simply the contain the data in the file range from 1856K to
+>    1856K + 128K.
+> 
+> So fix this by stopping the loop that looks for file ranges to clone at
+> clone_range() when we reach the current eof of the file being processed,
+> if we are cloning from the same file and using the send root as the clone
+> root. This ensures any data not yet cloned will be sent to the receiver
+> through a write operation.
+> 
+> A test case for fstests will follow soon.
+> 
+> Reported-by: Massimo B. <massimo.b@gmx.net>
+> Link: https://lore.kernel.org/linux-btrfs/6ae34776e85912960a253a8327068a892998e685.camel@gmx.net/
+> Fixes: 11f2069c113e ("Btrfs: send, allow clone operations within the same file")
+> CC: stable@vger.kernel.org # 5.5+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Indeed, it will.
-
-That use case is a bit different however, the snapshot starts RW, is
-changed and then turned RO and used for an incremental send.
-
-But the idea of an incremental send was always to use snapshots from
-the same subvolume and the snapshots were always RO - once created you
-didn't change them.
-Otherwise you can never ensure full consistency.
-
-So in the end it's not that much different from the case of using
-unrelated subvolumes or snapshots as in the patch's changelog.
-
-
->
-> So we not only had to check the parent relationships but also ensure
-> that the descendant snapshot was not modified, i.e. was never set to
-> ro=3Dfalse.
-> As far as I know there is no flag tracking this on-disk? So this would
-> need additional work, too.
-
-There isn't.
-
-Maybe all we need for now is to document how the incremental send is
-supposed to be used.
-Adding a flag to mark if a snapshot was ever RW shouldn't be too hard.
-
->
->
-> > An incremental is supposed to work on snapshots of the same subvolume
-> > (hence, have the same parent uuid).
-> > That's what the entire code relies on to work correctly, and that's
-> > what makes sense - to compute and send the differences between two
-> > points in time of a subvolume.
-> > That's why the code base assumes that inodes with the same number and
-> > same generation must refer to the same inode in both the parent and
-> > the send root.
-> >
-> > What I think that needs to be answered is:
-> >
-> > 1) Are there actually people using incremental sends in that way?
-> > (It's the first time I see such use case)
-> Well, I did (:
-> But admittedly in a kind of experimental setup testing out the limits
-> of btrfs.
->
-> > 2) If so, why? That is completely unreliable, not only it can lead to
-> > failure to apply the streams, but can result in all sorts of
-> > weirdness
-> > (logical inconsistencies, etc) if applying such streams doesn't cause
-> > an error.
-> In my case I was moving around subvolumes between multiple disks and
-> deduplicating as much as possible. Trying to preserve already done
-> deduplication and purging some intermediate subvolumes I ended up using
-> "unrelated" subvolumes as parents.
->
-> Thinking of it, maybe just using them as clone sources would have just
-> worked? That would then of course produce much larger streams since
-> *all* meta data had to be transfered.
->
->
-> > 3) Making sure such use cases work reliably would require many, many
-> > changes to the send implementation, as it goes against what it
-> > currently expects.
-> >     Snapshot a subvolume, change the subvolume, snapshot it again,
-> > then use both snapshots for the incremental send, that's the expected
-> > scenario.
-> I actually don't think that it is really that much work since besides
-> from some edge cases it already *does* work - I tried ;)
->
->
-> > In other words, what I think we should have is a check that forbids
-> > using two roots for an incremental send that are not snapshots of the
-> > same subvolume (have different parent uuids).
-> I'd like to argue against that:
->    1. I don't think allowing this requires that much work
-
-For the cases you tried it surely didn't.
-
->    2. explicitly forbiding it requires work, too (and maybe even changes
->       to the on-disk format?)
->    3. fixing bugs for this unexpected use case will probably also fix bug=
-s
->       for the expected scenario which may only happen in very rare and
->       extremly unlikely - though still possible - cases and thus make the
->       code overall more resilient:
-
-I'd have to disagree with that.
-
-Having pretty much being the only one, apart from Robbie Ko who did
-solve some hard similar problems,
-solving this kind of problems since 2013, it's far from trivial work
-and there's always one more case to solve.
-
-Going through the change logs and send specific fstests should give an
-idea of why I don't think it's that trivial to add support for these
-use cases.
-
-My concern is that this will require a lot more work for a use case
-that is not standard, it was not designed for,
-and this always adds the risk of introducing regressions for the
-expected and typical use cases.
-
-So I really don't find it compelling to add support for cases that
-send was designed for - unless there are indeed users for them and
-there is a good reason why they can't use the standard way (use
-snapshots of the same subvolume and never modify the snapshots).
-
->
-> For example the assumption that inodes with the same number must refer
-> to the same inode doesn't even hold for direct snapshots - almost
-> always it does but in some rare conditions it doesn't, which is why
-> there already is an additional check for that.
-
-The assumptions everywhere take into account inode number and
-generation, not just the number.
-Any place that uses only the number to check if it's the same inode,
-then it's almost certainly a bug (a notable exception would be the
-pending directory renames iirc).
-
->
-> This already caused bugs before. And the bug I hit with my unexpected
-> use of btrfs-send and originally set out to find you had just fixed a
-> few weeks before [1], i.e. if you hadn't fixed it I would - because of
-> the unexpected use.
-> The bug my patch fixes I only discovered by reading the code and having
-> my scenario in mind.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/commi=
-t/?id=3D0b3f407e6728d990ae1630a02c7b952c21c288d3
->
-> That's why I think the work fixing arising bugs for that case is better
-> invested than in trying to just block it completely.
-> But given its very rare occurence I would agree to not put any priority
-> on it.
-
-Well, I'm sure there were plenty of bug fixes for the intended use
-cases that also fixed failures with the non-intended use cases.
-
-Thanks.
-
->
-> > Thanks.
-> >
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Added to misc-next, thanks.
