@@ -2,146 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B6A2F29AA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 09:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB572F2B15
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 10:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404388AbhALIHH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jan 2021 03:07:07 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:59401 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404365AbhALIHG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:07:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610438827; x=1641974827;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=NEEiqnyR6AYDejVazhEdM1NiebL7QGa+hO89s2u/Ohg=;
-  b=A6pw9wHDw3z2cx2WmNdQOyHe7NpP2+1SmDkAeIzFW8If+FwyV9ZtZbHF
-   i9lTO2alm+tDCpwciB43DssnjkEvkWLbniSarHayfWt7HCRgKaT9aCv4U
-   p+po4qfDeKQyxpmJf9FXF9TeNRqbnBl2Q8AKN+lhJxZJwDWcKTbpjCTVw
-   hNwDr3hA5E6Ko1CvrZpTmXHpuaJuWjAl87lvDfEZy+2lOtPLuGpNtAH/r
-   KCOU4Z+3SY2peoK+WosWzDdYWs5gcbpfAuLaxpLYiCyzQeOOCxABKyhrI
-   yzp4mpPkV4K9dujb9O7jSJAyia4gVd9uq+Runf/Clt4LukmwuMAvIR+H2
-   A==;
-IronPort-SDR: Pwql7p+wmY53E9ARfPaVYdV8VnxhGaedpvrsTzp2vxaY341SEzBeb/wTyeng+zcR8Iac9kJ2oE
- Er3yLRUW204BOV+gpJAp2G4EKy1E7jCYrDprkRGFVq7jM0MjhcIGKw3VLSlkMfQTDH7FBV3Q40
- ZowS3PkiCzm8vIUDA1z85DHtAXX7jHhoYnzvXB8oPehApzoEEExYn0tuUJO0DnqNwLPbNYZ+aL
- X9wdbaSAQANjV2SRbIr434ym+frK3YGsZuFheDn7oChIS9cUNNLBPj5lGnxfP2Wv1NRrzpFbh7
- e+c=
-X-IronPort-AV: E=Sophos;i="5.79,340,1602518400"; 
-   d="scan'208";a="158394868"
-Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Jan 2021 16:05:52 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LmpUv4ynfLQ3zCvjGSbRdG150tpRFMuo/zItL9a1D8KH9ukrMLz3E2gqddaW2v3ggI88/Ja59m2zaHcIZ+bxnH7EfrQzJKT2ByvV2IEDoOwTKlajpp5w3Ep4QOftH7sFGOoYy+tz039Hl64fTmemqwXrsy8yEAfstMeTwuvj0uzkNgkjIeGdUIJsRbmGZUFOkjlbWrZlhe+kadNwpZ5HSk9o+5LZ/7Ba3kUfCYG20l8c5uEKJKlfVSFg7NUCmB2rPrYicvEr+b5QHBslRxfMNTmPl1EdMOqbNQKbfYOgwg2fjL6oIwgocZqT3UXWLpV4zn/1W6LBM/1rtG4qkdvXqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fe/5fKHoZxOFTUtE+juIZ28spvncTJM6qA1nCLvvpOA=;
- b=kHrY8G8c89EdSU9hzD2zmoomaHF0XyTHRwp8eQS5RObSTzJSigVf0IzhjGdOg/sIrabZtGGrvVLIUgj/3TN46kwK9VGegPoP51cIb06hPV4F8VcaA9c9L8oQ2+d2U/VjMbals5xQ9hotzt3kBAa298ih1MyKq1f5YFRsRxR/pBH5wMRwVjbzW0A8Ztb+cvb+uvJy7//W7Gz4q357e/0Kr2xK9Y9WuyLlOgjZzwjj6JdyT9GqVGHcN/Mm7099/on0KQsgcMuEkiVAqizBWLkP/GH0lRoyT0pG59/h8eKlS8JoNW0tvnszlyAi8tQvngef8BO2GGTOQNP+7eS0vEowFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fe/5fKHoZxOFTUtE+juIZ28spvncTJM6qA1nCLvvpOA=;
- b=CmtqVmBg3J0fz6G+DzgpmjPirxPjJNqyiFTu62zuBd5P4B6uCY/WqoI/LKtKiX0CwDaNDWtgKh305u10HHFca3HnU1wN9CnF1+e6Erucs8auqSjtPhfSQz8cR7zU1ndafqwID5FpqQHYlCmFtpLa8ZyF7F/oKwDfUBvwR6cKMMQ=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SA0PR04MB7436.namprd04.prod.outlook.com
- (2603:10b6:806:e0::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
- 2021 08:05:50 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::146f:bed3:ce59:c87e]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::146f:bed3:ce59:c87e%3]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 08:05:50 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-CC:     "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH v11 05/40] btrfs: release path before calling into
- btrfs_load_block_group_zone_info
-Thread-Topic: [PATCH v11 05/40] btrfs: release path before calling into
- btrfs_load_block_group_zone_info
-Thread-Index: AQHW2BWcsaxUISKqhk6MwbLgb5WmWw==
-Date:   Tue, 12 Jan 2021 08:05:49 +0000
-Message-ID: <SN4PR0401MB3598BAACCF1B65FF6FF40E7D9BAA0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <8fa3073375cf26759f9c5d3ce083c64d573ad9a6.1608608848.git.naohiro.aota@wdc.com>
- <3f611f04-39fa-e95e-09f2-28c01f5e2a80@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:15c4:1c01:480d:3d08:9ab6:e110]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3f44a631-fb5b-4b9d-33ed-08d8b6d0dffb
-x-ms-traffictypediagnostic: SA0PR04MB7436:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA0PR04MB74364F45FBB10987D09CB7379BAA0@SA0PR04MB7436.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kE4LqDebRSd1OIWJFCJ1QQe/cBrR1OlQvFcO0rZFrdhAmTUs5L5dXaud+TNjDlrWS4C5ICPZCotyZRmR0xIycYGhbLNVzIllR/Gg8404wwVe6L+tjrXYtCvJtRkdOhoZ/KBBgwAuDIkhl7mmOaZx33JXGx4M+PcHP3o1tUAqn8N8Tgmdo4AKppUtIzgeaWoZHB2mmuJUI+IhS0AUO6SQgYLbuGUxkXFoW13DbhzEcVbB18sSWjUhauK6T9CK7y185YllbTDvwvbldh1nOVp73jFoBEP1FaygmE2H/H1luuTmZenje09kOpFiXo96XnYDtZGP66TLSB8GGGOz+ADrj8Oh7ew/QRQITk+fIVWSPpeITt4FIzHbdb/Tqyc4zIcSGQaWWE/S3iHBwQYmlnChuA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(396003)(346002)(366004)(9686003)(7696005)(91956017)(5660300002)(186003)(52536014)(4326008)(8936002)(66476007)(83380400001)(478600001)(316002)(2906002)(53546011)(6506007)(33656002)(55016002)(4744005)(76116006)(64756008)(66556008)(54906003)(66946007)(86362001)(66446008)(110136005)(8676002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?n5F39BsG419pXTkNGQOd/5z9z1yapkVHClJ7RClGAhRrMIAga8boO9T/11Gv?=
- =?us-ascii?Q?XpJ4zZv2nj4zoqk2zL/Pe09zVbtkgU/Ukzhvg2v/vzyd1uAZEcxsd9D9jjLY?=
- =?us-ascii?Q?8c/D+pczkukCjoAkYraCdHwZxsBEfRt/2bYfwJqcD4S/Kvx/WKJqlkKHDG71?=
- =?us-ascii?Q?N7FCoOwww/iJRZPHUmCM7EwaghP1Qf3S7ai6o8Sv1xK9QHb5BAmWcSesvs6a?=
- =?us-ascii?Q?DoY89cl61CW8+E1MEbmWBEflDIIjzYqFYpwebFmBB6YhLQ2fZnaA81G4lIny?=
- =?us-ascii?Q?LuauvsReTEeKYfHr0WyKvxdiYiYUaGf+dKz1AV+1SrjUl9Q7rCNSJC+EMjT9?=
- =?us-ascii?Q?oL3X+odtH8FbV9tFhhigXupblF5/QoHLvgQz4l2bA8SRryvC9M1R3UGsISwv?=
- =?us-ascii?Q?UBxz2SAapSeMTU8f79zLSGg00B0oI6ISIG/7DupilqVVkjcq5qV2LzJmRW43?=
- =?us-ascii?Q?yKH3T9IDAkvukw6w4WBgCWIaY9R/zMLH0/UZeAtIFis0j4nJaaxCWpikcVe4?=
- =?us-ascii?Q?bwrC+Ua/Yt1RKUOlgjQFEP0p+xHMetZbQ5x/jwucGrbm4gnu1GfoEkeP10Kf?=
- =?us-ascii?Q?PfX1VfAiEgT8Z8rX0TtmtI6flVkXi0S7ztzf8qe7OEYcFU5k/QNixWCjrQb0?=
- =?us-ascii?Q?COaxjRG+Sk7zBne+BgU14kvUfOKx473KsmpI4MKgNnASas2p0F1yeZoVzR+y?=
- =?us-ascii?Q?ktEs7aTOtUQijjQK//Pa3g+BS6BibqgXFcpFrAkl39lrf7h+B83W4jW6DfDy?=
- =?us-ascii?Q?pgqRMmv6QgwT75X0V0tUf+t4Vb8UmaH9NA/RyEX+1fPXY+l64GWsUSCQI44i?=
- =?us-ascii?Q?ZdRrys3WATvxswjAeOhbOIBs3GWxkwwvHBf93b/6VJYVukWocNhtu1CnXcoh?=
- =?us-ascii?Q?6GhvzgrjoR4HsK+rGY5Y09v3PyYVndeRgL+pLg96xxW99bck4NrNQz0pZvyY?=
- =?us-ascii?Q?Emc+LdWGrDIXvLuPv+Xicm1WOF6SOAN3nWdE6DKeW09CUByTDcraE7uWZexF?=
- =?us-ascii?Q?hc12c20mPPKbpPg7noewEvY2ybbZXuPK/5iRriyc9uBF1gZ4UuZ6p3yi4Ewh?=
- =?us-ascii?Q?QuR6ns5z?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2390634AbhALJSf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 04:18:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40550 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392544AbhALJSd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:18:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610443066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=XflxbYa9LUQjLUev+xvZhTvWAFz42QmEpPdg8UIk/j0=;
+        b=I+Aj3juG3UMMjorj4PVReAPEsOk3haoGI4qhfh0WGkEbPY8bQsyRDaOlIP2H5NwD63XWyU
+        +uw+lryST4nocwcBHQ3NsRKRwMtu274opccL7e7iYDXeQT7ufe+m2hxOoP5KgiYAcexeI+
+        ziZBulIVX4X0JpIfQDSYakOJrXZeE2Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CBEBFB7DE;
+        Tue, 12 Jan 2021 09:17:46 +0000 (UTC)
+Subject: Re: [PATCH v5 2/8] btrfs: only let one thread pre-flush delayed refs
+ in commit
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1608319304.git.josef@toxicpanda.com>
+ <9e47b11bdfe5b4905fdaa81e952de2e2466c6335.1608319304.git.josef@toxicpanda.com>
+ <20210108160109.GB6430@twin.jikos.cz>
+ <52aef9a6-efc7-0820-7056-067e69c2a856@suse.com>
+ <20210111215051.GH6430@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e1fd5cc1-0f28-f670-69f4-e9958b4964e6@suse.com>
+Date:   Tue, 12 Jan 2021 11:17:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f44a631-fb5b-4b9d-33ed-08d8b6d0dffb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 08:05:49.9230
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: C7wPj5o8ABtmVhgiay/31fX4Vinp4pC5A54/RQrKGQERwS4hW1EKVFBhtgZVvxKaQOhwz+qQgrtpkOyc3IYBL5QUN2rDPtrg8QYYVM7EZaI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR04MB7436
+In-Reply-To: <20210111215051.GH6430@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/01/2021 21:01, Josef Bacik wrote:=0A=
-> Instead why don't we just read in the bgi into the stack, and pass the po=
-inter =0A=
-> into read_one_block_group(), drop the path before calling read_one_block_=
-group? =0A=
->   We don't use the path in read_one_block_group, there's no reason to pas=
-s it =0A=
-> in.  It'll fix your problem and make it a little cleaner.=0A=
-=0A=
-Good point, I'll fix it up.=0A=
+
+
+On 11.01.21 г. 23:50 ч., David Sterba wrote:
+> On Mon, Jan 11, 2021 at 10:33:42AM +0200, Nikolay Borisov wrote:
+>> On 8.01.21 г. 18:01 ч., David Sterba wrote:
+>>> On Fri, Dec 18, 2020 at 02:24:20PM -0500, Josef Bacik wrote:
+>>>> @@ -2043,23 +2043,22 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+>>>>  	btrfs_trans_release_metadata(trans);
+>>>>  	trans->block_rsv = NULL;
+>>>>  
+>>>> -	/* make a pass through all the delayed refs we have so far
+>>>> -	 * any runnings procs may add more while we are here
+>>>> -	 */
+>>>> -	ret = btrfs_run_delayed_refs(trans, 0);
+>>>> -	if (ret) {
+>>>> -		btrfs_end_transaction(trans);
+>>>> -		return ret;
+>>>> -	}
+>>>> -
+>>>> -	cur_trans = trans->transaction;
+>>>> -
+>>>>  	/*
+>>>> -	 * set the flushing flag so procs in this transaction have to
+>>>> -	 * start sending their work down.
+>>>> +	 * We only want one transaction commit doing the flushing so we do not
+>>>> +	 * waste a bunch of time on lock contention on the extent root node.
+>>>>  	 */
+>>>> -	cur_trans->delayed_refs.flushing = 1;
+>>>> -	smp_wmb();
+>>>
+>>> This barrier obviously separates the flushing = 1 and the rest of the
+>>> code, now implemented as test_and_set_bit, which implies full barrier.
+>>>
+>>> However, hunk in btrfs_should_end_transaction removes the barrier and
+>>> I'm not sure whether this is correct:
+>>>
+>>> -	smp_mb();
+>>>  	if (cur_trans->state >= TRANS_STATE_COMMIT_START ||
+>>> -	    cur_trans->delayed_refs.flushing)
+>>> +	    test_bit(BTRFS_DELAYED_REFS_FLUSHING,
+>>> +		     &cur_trans->delayed_refs.flags))
+>>>  		return true;
+>>>
+>>> This is never called under locks so we don't have complete
+>>> synchronization of neither the transaction state nor the flushing bit.
+>>> btrfs_should_end_transaction is merely a hint and not called in critical
+>>> places so we could probably afford to keep it without a barrier, or keep
+>>> it with comment(s).
+>>
+>> I think the point is moot in this case, because the test_bit either sees
+>> the flag or it doesn't. It's not possible for the flag to be set AND
+>> should_end_transaction return false that would be gross violation of
+>> program correctness.
+> 
+> So that's for the flushing part, but what about cur_trans->state?
+
+Looking at the code, the barrier was there to order the publishing of
+the delayed_ref.flushing (now replaced by the bit flag) against
+surrounding code.
+
+So independently of this patch, let's reason about trans state. In
+should_end_transaction it's read without holding any locks. (U)
+
+It's modified in btrfs_cleanup_transaction without holding the
+fs_info->trans_lock (U), but the STATE_ERROR flag is going to be set.
+
+set in cleanup_transaction under fs_info->trans_lock (L)
+set in btrfs_commit_trans to COMMIT_START under fs_info->trans_lock.(L)
+set in btrfs_commit_trans to COMMIT_DOING under fs_info->trans_lock.(L)
+set in btrfs_commit_trans to COMMIT_UNBLOCK under fs_info->trans_lock.(L)
+
+set in btrfs_commit_trans to COMMIT_COMPLETED without locks but at this
+point the transaction is finished and fs_info->running_trans is NULL (U
+but irrelevant).
+
+So by the looks of it we can have a concurrent READ race with a Write,
+due to reads not taking a lock. In this case what we want to ensure is
+we either see new or old state. I consulted with Will Deacon and he said
+that in such a case we'd want to annotate the accesses to ->state with
+(READ|WRITE)_ONCE so as to avoid a theoretical tear, in this case I
+don't think this could happen but I imagine at some point kcsan would
+flag such an access as racy (which it is).
+
+> 
