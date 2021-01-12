@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D420D2F34E6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 17:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A29F2F34EE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 17:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404578AbhALP7o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jan 2021 10:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
+        id S2403978AbhALQBE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 11:01:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403925AbhALP7n (ORCPT
+        with ESMTP id S2392538AbhALQBD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:59:43 -0500
+        Tue, 12 Jan 2021 11:01:03 -0500
 Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40229C061575
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 07:59:03 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id az16so1090888qvb.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 07:59:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D9EC061786
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 08:00:22 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id bd6so1084494qvb.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 08:00:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KUcv6LzMppkGCODVRun0CKNx56RHfzLmoPbk/wo+uV4=;
-        b=EhDQxRQ5Stp5bIYIl1OfIyUV8ArmhTwHWVDbtKwZizv43fIYz1YlPxN0T8hy7qhMe3
-         +GUrLbLoJ24vuDrMdd3uA7NV6MQkMAGS5kSgwujpz5XyRGAOC1vJHWTTEko/4hetldfu
-         HgUc/nchO4GHUZ5uyWpkTgK0QdCY6RcXvYk7NClh8n/hfSoSrG/Oc3ct1CAgWj5cd26U
-         GAt9CFLupyBAs4o46zdBEWnrqeSwJ1OhDtZipCuc9zNVL5EGNjFwQAixkOrWiJCskgF7
-         zlN4Ro2AHAoT9YTsdhZeyS/ms24UVqZULySwqXcaWHyrEMWDP+0fIzWhg9gZ9zlEBGm2
-         Oh5A==
+        bh=hm+XQ7cN6+nZBQUgTtPLF8CqJXZZATNvEP8naU0e0lM=;
+        b=MfrHxoNX2f+Eq5xBiqzUMeFd83lZN+sBOVRSGgaaXU4ZabvFVSKP82/1S4Mf1/UnUN
+         +/n72KFCQJWyltfNiBChOvnIjPfYaF6rOS1zdtxtAN7+dfHoBgGNwIE/sPP5mtZAB8z6
+         28ONCslJZC2e5/d+PjkaXxu994VAQAJCteaDM0xucGhCXa5EkfivkbDu5ocqTcB1QsV2
+         sKEsy/N0AkQXXJ098VXjRNxwJJ+882EhT9kdM2F52UzGCwQLhWwOG7FI0zhku9obIiqn
+         am+SlyO8gv9jNkCv5sLk4zCn+PcYgTSbs557z3Y70woTezY0uX2RhJ+2gKSC5zWBtEGj
+         8CSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=KUcv6LzMppkGCODVRun0CKNx56RHfzLmoPbk/wo+uV4=;
-        b=kK28cmagzSzSNs9ni7kNkKWTX/OCOowKIo5gddVNXmuj7/7mradVeAy97cKhzswYWv
-         ghJRJ64vm6m39uF1QhERtqZ6TipFdWiVis7GGFbmcVjRxJnKJvdtH8lL/ss+9zgZIUkU
-         gl+kg9s7lhOvhrph9pBtqNptiIic/CI2KpbT2ADmmmCIAtJdobnEaYp55OeYxXlXdST3
-         1ok2v0opTqshyvZHfcgZ2XHDu+eZg5yfXs/6E6cSQs7MDf0JpXlHDnGoeczZ14yIdC8M
-         EAPmQbBdCIybUfyCKwhJ8OZ2msbOkEYHo8kR1W6DpI7UmRvllp1XhIDEeV7GDnuvBxdt
-         VnKw==
-X-Gm-Message-State: AOAM53316u/C3CSFX0nNPlaw8HAQSp7W2DPmRwT0pFj92yPKTmqfRdw0
-        Vq2FouevTPE8WXZJbCfVszlPtfchw1+SZtef
-X-Google-Smtp-Source: ABdhPJxT8YjrOQcqVt8A2wTor3ybPidzwAISlppufLMNFJCFfqPT4qWjE5iBvNVS5wYvTxjM36Cr3w==
-X-Received: by 2002:ad4:442a:: with SMTP id e10mr5231323qvt.12.1610467142356;
-        Tue, 12 Jan 2021 07:59:02 -0800 (PST)
+        bh=hm+XQ7cN6+nZBQUgTtPLF8CqJXZZATNvEP8naU0e0lM=;
+        b=hGrS+JfaNkmPi+g1LUObID/SYAvi4sSEAla4awXdeid6DrRGMYdzZr2kUBtTbJ3qjP
+         ncc+rKnAx5k+wYF128yzm8HtaEXwBmk9Iu6chBimKVTGtiL9hZ2x/ACSYJjE2hK4rA8k
+         riee/GIIIeyQnAMq6H/TQeoThWD243LA7FlnVRL+vicRft5FQTGs912sYQ55j3YbATon
+         rG71LtLiAOZZuhKGgk0HYYjXuocYXT8A1P4XkeebkqrwjRiLEtbnqtHoUsXEK6FYbppQ
+         gjry/UKOZeM/o36++2DuFgaTZLcglwZKdZIUHvrTvo8+VrsBFI89WImcs5qe94kMWgld
+         dXdQ==
+X-Gm-Message-State: AOAM533Inhkzj2XYMSi6dMWACLDTf5SfutmJdj6n0Gkr/FslY+sYLY7t
+        4ksjh195vZSEaL+ZLZvajp2+Rg==
+X-Google-Smtp-Source: ABdhPJwt8IffmZTXuWI69+4qRHELG5sypJHXeb9ddMqTFSRHTfa0wQDA8IeDqQ6ZweXJHYXkCH/kXQ==
+X-Received: by 2002:a0c:fd89:: with SMTP id p9mr101238qvr.8.1610467221998;
+        Tue, 12 Jan 2021 08:00:21 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n5sm1480952qkh.126.2021.01.12.07.59.01
+        by smtp.gmail.com with ESMTPSA id y17sm1466113qki.48.2021.01.12.08.00.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 07:59:01 -0800 (PST)
-Subject: Re: [PATCH v11 22/40] btrfs: split ordered extent when bio is sent
+        Tue, 12 Jan 2021 08:00:19 -0800 (PST)
+Subject: Re: [PATCH v11 23/40] btrfs: extend btrfs_rmap_block for specifying a
+ device
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
         Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        kernel test robot <lkp@intel.com>
+        "Darrick J. Wong" <darrick.wong@oracle.com>
 References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <e2332c7ecb8e4b1a98a769db75ceac899ab1c3c0.1608608848.git.naohiro.aota@wdc.com>
+ <62d40762a5bbcc27377d15ac76e5f5f874acbc1a.1608608848.git.naohiro.aota@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <1b259084-ec86-d9c3-740b-9463f3d044af@toxicpanda.com>
-Date:   Tue, 12 Jan 2021 10:59:00 -0500
+Message-ID: <e658df92-cbc6-1a17-2d72-6a21d5104423@toxicpanda.com>
+Date:   Tue, 12 Jan 2021 11:00:18 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <e2332c7ecb8e4b1a98a769db75ceac899ab1c3c0.1608608848.git.naohiro.aota@wdc.com>
+In-Reply-To: <62d40762a5bbcc27377d15ac76e5f5f874acbc1a.1608608848.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,177 +74,23 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 12/21/20 10:49 PM, Naohiro Aota wrote:
-> For a zone append write, the device decides the location the data is
-> written to. Therefore we cannot ensure that two bios are written
-> consecutively on the device. In order to ensure that a ordered extent maps
-> to a contiguous region on disk, we need to maintain a "one bio == one
-> ordered extent" rule.
+> btrfs_rmap_block currently reverse-maps the physical addresses on all
+> devices to the corresponding logical addresses.
 > 
-> This commit implements the splitting of an ordered extent and extent map
-> on bio submission to adhere to the rule.
+> This commit extends the function to match to a specified device. The old
+> functionality of querying all devices is left intact by specifying NULL as
+> target device.
 > 
-> [testbot] made extract_ordered_extent static
-> Reported-by: kernel test robot <lkp@intel.com>
+> We pass block_device instead of btrfs_device to __btrfs_rmap_block. This
+> function is intended to reverse-map the result of bio, which only have
+> block_device.
+> 
+> This commit also exports the function for later use.
+> 
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->   fs/btrfs/inode.c        | 89 +++++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/ordered-data.c | 76 +++++++++++++++++++++++++++++++++++
->   fs/btrfs/ordered-data.h |  2 +
->   3 files changed, 167 insertions(+)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 37782b4cfd28..15e0c7714c7f 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2217,6 +2217,86 @@ static blk_status_t btrfs_submit_bio_start(struct inode *inode, struct bio *bio,
->   	return btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
->   }
->   
-> +static int extract_ordered_extent(struct inode *inode, struct bio *bio,
-> +				  loff_t file_offset)
-> +{
-> +	struct btrfs_ordered_extent *ordered;
-> +	struct extent_map *em = NULL, *em_new = NULL;
-> +	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
-> +	u64 start = (u64)bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> +	u64 len = bio->bi_iter.bi_size;
-> +	u64 end = start + len;
-> +	u64 ordered_end;
-> +	u64 pre, post;
-> +	int ret = 0;
-> +
-> +	ordered = btrfs_lookup_ordered_extent(BTRFS_I(inode), file_offset);
-> +	if (WARN_ON_ONCE(!ordered))
-> +		return -EIO;
-> +
-> +	/* No need to split */
-> +	if (ordered->disk_num_bytes == len)
-> +		goto out;
-> +
-> +	/* We cannot split once end_bio'd ordered extent */
-> +	if (WARN_ON_ONCE(ordered->bytes_left != ordered->disk_num_bytes)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* We cannot split a compressed ordered extent */
-> +	if (WARN_ON_ONCE(ordered->disk_num_bytes != ordered->num_bytes)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* We cannot split a waited ordered extent */
-> +	if (WARN_ON_ONCE(wq_has_sleeper(&ordered->wait))) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	ordered_end = ordered->disk_bytenr + ordered->disk_num_bytes;
-> +	/* bio must be in one ordered extent */
-> +	if (WARN_ON_ONCE(start < ordered->disk_bytenr || end > ordered_end)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* Checksum list should be empty */
-> +	if (WARN_ON_ONCE(!list_empty(&ordered->list))) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	pre = start - ordered->disk_bytenr;
-> +	post = ordered_end - end;
-> +
-> +	btrfs_split_ordered_extent(ordered, pre, post);
-> +
-> +	read_lock(&em_tree->lock);
-> +	em = lookup_extent_mapping(em_tree, ordered->file_offset, len);
-> +	if (!em) {
-> +		read_unlock(&em_tree->lock);
-> +		ret = -EIO;
-> +		goto out;
-> +	}
-> +	read_unlock(&em_tree->lock);
-> +
-> +	ASSERT(!test_bit(EXTENT_FLAG_COMPRESSED, &em->flags));
-> +	em_new = create_io_em(BTRFS_I(inode), em->start + pre, len,
-> +			      em->start + pre, em->block_start + pre, len,
-> +			      len, len, BTRFS_COMPRESS_NONE,
-> +			      BTRFS_ORDERED_REGULAR);
-> +	free_extent_map(em_new);
-> +
-> +out:
-> +	free_extent_map(em);
-> +	btrfs_put_ordered_extent(ordered);
-> +
-> +	return ret;
-> +}
-> +
->   /*
->    * extent_io.c submission hook. This does the right thing for csum calculation
->    * on write, or reading the csums from the tree before a read.
-> @@ -2252,6 +2332,15 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
->   	if (btrfs_is_free_space_inode(BTRFS_I(inode)))
->   		metadata = BTRFS_WQ_ENDIO_FREE_SPACE;
->   
-> +	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-> +		struct page *page = bio_first_bvec_all(bio)->bv_page;
-> +		loff_t file_offset = page_offset(page);
-> +
-> +		ret = extract_ordered_extent(inode, bio, file_offset);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
->   	if (btrfs_op(bio) != BTRFS_MAP_WRITE) {
->   		ret = btrfs_bio_wq_end_io(fs_info, bio, metadata);
->   		if (ret)
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 79d366a36223..4f8f48e7a482 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -898,6 +898,82 @@ void btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode, u64 start,
->   	}
->   }
->   
-> +static void clone_ordered_extent(struct btrfs_ordered_extent *ordered, u64 pos,
-> +				 u64 len)
-> +{
-> +	struct inode *inode = ordered->inode;
-> +	u64 file_offset = ordered->file_offset + pos;
-> +	u64 disk_bytenr = ordered->disk_bytenr + pos;
-> +	u64 num_bytes = len;
-> +	u64 disk_num_bytes = len;
-> +	int type;
-> +	unsigned long flags_masked =
-> +		ordered->flags & ~(1 << BTRFS_ORDERED_DIRECT);
-> +	int compress_type = ordered->compress_type;
-> +	unsigned long weight;
-> +
-> +	weight = hweight_long(flags_masked);
-> +	WARN_ON_ONCE(weight > 1);
-> +	if (!weight)
-> +		type = 0;
-> +	else
-> +		type = __ffs(flags_masked);
-> +
-> +	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered->flags)) {
-> +		WARN_ON_ONCE(1);
-> +		btrfs_add_ordered_extent_compress(BTRFS_I(inode), file_offset,
-> +						  disk_bytenr, num_bytes,
-> +						  disk_num_bytes, type,
-> +						  compress_type);
-> +	} else if (test_bit(BTRFS_ORDERED_DIRECT, &ordered->flags)) {
-> +		btrfs_add_ordered_extent_dio(BTRFS_I(inode), file_offset,
-> +					     disk_bytenr, num_bytes,
-> +					     disk_num_bytes, type);
-> +	} else {
-> +		btrfs_add_ordered_extent(BTRFS_I(inode), file_offset,
-> +					 disk_bytenr, num_bytes, disk_num_bytes,
-> +					 type);
-> +	}
-> +}
 
-You're completely ignoring errors here which isn't ok.  Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
