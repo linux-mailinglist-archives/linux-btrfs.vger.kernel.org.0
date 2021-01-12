@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EE32F2FC6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 14:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F357B2F3043
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 14:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405123AbhALM6V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jan 2021 07:58:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54634 "EHLO mail.kernel.org"
+        id S1727895AbhALNFN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 08:05:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405024AbhALM6T (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:58:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 893572313C;
-        Tue, 12 Jan 2021 12:57:30 +0000 (UTC)
+        id S2405272AbhALM6c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:58:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCE0D2313F;
+        Tue, 12 Jan 2021 12:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610456251;
-        bh=vcKznMa2u/a9OV9xkSfB/VBRRxQ8U3Q9qzKuvbAJU1U=;
+        s=k20201202; t=1610456276;
+        bh=UjQvQFHStrLdbrFlj9sgiIn65/gp6NPowAmv5QJqKJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TZFi6ny3G93ceZBdTRf8PMglRiUW8wSkbl1M34KwE6wgqpvwWD/mlFiTo5kk9KmST
-         9tkhNkMy86b/dhxDLUH/YsGQtkGALVNsx4V6bDXcJnQPOP4DhRtG/q78ygXUGeA+oH
-         at6uZ+oY5FHWuv4LQ4HI9qgSmFBnbDcR6CVVgCotdiZAR5hVh/GM9Qg/jCaKL/Q2qj
-         9C0ogqrosfVoCfOjn6bx3LKH6zlVvOvOCGDNOz96G9QSdxGvLcOfuK7c48etemAx73
-         wzNVv9x2MbrzdibWTYznoE23G/SqgzVV/35M9lEY/QNqdcPtBDfW/2x8lK75g4OGf8
-         aNVvuAacYKVPg==
+        b=BqWYUb5h1Ep8B2PqJDM0RpjP+jRqFW2aktsFXivrGCPzX5IFu0kJ1i8POJoohi8Hm
+         WcKvj6uZAntGkOA9TLvIydSvxXqeoslVE2V4eyA6Ja3shLIxVXOx7VdmItjxVNPkS6
+         wbfwp/O41Y4C05M19Ior7lAayKa33ouS8O3ZZQvTTqpXOIiUQzLNsheiBiTZY1e3II
+         tu6H/zPSNaOSivERmczvdNPZLvC1CRwEzFklxYhUgzk8FMXfkrYmGlkPcPd/A7Ri2n
+         D6iWrAdik0MOlBb9dqAZWF37vmVkpEwzz2JHl5Se60w2fyh81/bLlJ3JxHzNK6VitH
+         DVhNZERBJzzWA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, Fabian Vogt <fvogt@suse.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 04/16] btrfs: fix transaction leak and crash after RO remount caused by qgroup rescan
-Date:   Tue, 12 Jan 2021 07:57:13 -0500
-Message-Id: <20210112125725.71014-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 04/13] btrfs: fix transaction leak and crash after RO remount caused by qgroup rescan
+Date:   Tue, 12 Jan 2021 07:57:40 -0500
+Message-Id: <20210112125749.71193-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210112125725.71014-1-sashal@kernel.org>
-References: <20210112125725.71014-1-sashal@kernel.org>
+In-Reply-To: <20210112125749.71193-1-sashal@kernel.org>
+References: <20210112125749.71193-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -650,10 +650,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 18 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 9936e4b991aa3..7bda5586e4332 100644
+index 53f6bb5d0b72c..47c28983fd01f 100644
 --- a/fs/btrfs/qgroup.c
 +++ b/fs/btrfs/qgroup.c
-@@ -2774,6 +2774,12 @@ static int qgroup_rescan_leaf(struct btrfs_trans_handle *trans,
+@@ -2614,6 +2614,12 @@ qgroup_rescan_leaf(struct btrfs_fs_info *fs_info, struct btrfs_path *path,
  	return ret;
  }
  
@@ -666,7 +666,7 @@ index 9936e4b991aa3..7bda5586e4332 100644
  static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
  {
  	struct btrfs_fs_info *fs_info = container_of(work, struct btrfs_fs_info,
-@@ -2782,6 +2788,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+@@ -2622,13 +2628,14 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
  	struct btrfs_trans_handle *trans = NULL;
  	int err = -ENOMEM;
  	int ret = 0;
@@ -674,8 +674,7 @@ index 9936e4b991aa3..7bda5586e4332 100644
  
  	path = btrfs_alloc_path();
  	if (!path)
-@@ -2794,7 +2801,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
- 	path->skip_locking = 1;
+ 		goto out;
  
  	err = 0;
 -	while (!err && !btrfs_fs_closing(fs_info)) {
@@ -683,7 +682,7 @@ index 9936e4b991aa3..7bda5586e4332 100644
  		trans = btrfs_start_transaction(fs_info->fs_root, 0);
  		if (IS_ERR(trans)) {
  			err = PTR_ERR(trans);
-@@ -2837,7 +2844,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+@@ -2671,7 +2678,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
  	}
  
  	mutex_lock(&fs_info->qgroup_rescan_lock);
@@ -692,7 +691,7 @@ index 9936e4b991aa3..7bda5586e4332 100644
  		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
  	if (trans) {
  		ret = update_qgroup_status_item(trans);
-@@ -2856,7 +2863,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
+@@ -2690,7 +2697,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
  
  	btrfs_end_transaction(trans);
  
@@ -702,10 +701,10 @@ index 9936e4b991aa3..7bda5586e4332 100644
  	} else if (err >= 0) {
  		btrfs_info(fs_info, "qgroup scan completed%s",
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 40f5b4dcb9276..521f6c2091ad1 100644
+index eb64d4b159e07..4edfd26594eda 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -1845,6 +1845,14 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+@@ -1784,6 +1784,14 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
  		btrfs_scrub_cancel(fs_info);
  		btrfs_pause_balance(fs_info);
  
