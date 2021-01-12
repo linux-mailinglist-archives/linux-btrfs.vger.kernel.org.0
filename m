@@ -2,164 +2,245 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E392F3238
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 14:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B852F3249
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 14:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728970AbhALNwM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jan 2021 08:52:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        id S1729388AbhALNzw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 08:55:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728132AbhALNwM (ORCPT
+        with ESMTP id S1726184AbhALNzv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:52:12 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4471DC0617A2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 05:51:23 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id u19so2402143edx.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 05:51:23 -0800 (PST)
+        Tue, 12 Jan 2021 08:55:51 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AD4C061575
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 05:55:11 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id b9so1560329qtr.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 05:55:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gR76E+hgdNRlJHpowh3xLAsehspUfAyQ4NgaYNaNiqI=;
-        b=XSibZhFRvJZDohRMzV6+t73OXFgW6De8K3ufGffee+z31Ye2gR/Ilr01EgaJEmnlwL
-         ZvpXtsqyg8hZMyFXUvtYWyDBrbSkBOoa/mJuQYQckbFEHWup5ZBxuA+Obs8dgGlQiShn
-         S6y1oYFJWXDD7jtkLOY1+PBoYoXaeZ5uiAlEpqgxA1hulebf1LeMSebaZhUw9qisGPUI
-         QYJK+AwC9hk98Qoo4vzmGHmHXJGf7fsEopq1aWLfeL7PD3vZu3ESJrxjWxrMYf+PcEIv
-         tJtfkw6iOT2EwqRpB2ydI4SuETItMfTbuVYTLDoae0FS+uCpP1GKxTdwIlVT163ocGk6
-         72fw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=ihfJdvXuo8gXYhL1o2qpY3R2l4myN2DC+kCqQgN5/3U=;
+        b=rrU8chnTCTVxVTIAJbeOZWXqIWe+PJa2uMgm5y9aN+uYYtmnW4j+Nj+qrYpbsBzrA2
+         2a1HE1+JUcnCBl925LAKiG5KuYMDt40/L19ReHsGZCb3HMlTfxGOOTObsTRfaMBRZgHQ
+         cTIcIEo3Qj0RUEwv6BADtgHx+SfkvW3IKI7PSwqsO9bi2pz4cNJUGaaGUu+XSGx37m90
+         RCkw9ew+2l/9Swbk9WHRxSXlWu6mnl1modAafRhbZUq8PZPXym/Yfwtgqh42oPs4OD6U
+         hlaXzPb6tGjkM40nYb/IB7w2AWOWNzvBlme2qki+qMvIkj9f69j7Thcay7xL33SkR4AW
+         RJhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gR76E+hgdNRlJHpowh3xLAsehspUfAyQ4NgaYNaNiqI=;
-        b=puIGp4iCoG+sZyrcxjwB+Jvv9N4mtLhcYf97qgSvY9Yhwk2jgLBsR5eNWMKcOVmFEO
-         WCxtDLSeMEGPEH0fUyML/CdDBSiJPGQVugR8fxX4S42IerhhBgryKU+CqLZRQ69wHYCl
-         jjeJxOxM+fE6FrhNO6ZnD+ohx8Zpl/h8Z74GmnxYQhCkbFO24G4BARHkw0gpw5FOTXDU
-         cZGI1kHmwYsqspZ5LCFCmZBKH+V3srNVU6V3xEkSqJ1tjqvpAo8mFv4ZSyOisRHdYgCd
-         /D5HtTuTK9F6O3XfaLcrM9SQLSrJAeGVjjBNt+J9iQwYywkI32mOzgqSdK1ausfccN4I
-         OArQ==
-X-Gm-Message-State: AOAM53329NnTAJPwhZTd61CPyq/JKLnNHsnlW1ZP71CMdIV2Ij1xtCEH
-        Fgw+Fqo1WavIorIGWmXWDbPrDHFVm83vAzrAginfIKl+aQ==
-X-Google-Smtp-Source: ABdhPJx605NSGp4j1uinNyJCwVFX1VMEUon54nemEZnMArRth7X4vUuuw5rSwz7bOLn+xqkTJxC/1/vEaRcM7/ExqxM=
-X-Received: by 2002:aa7:cd63:: with SMTP id ca3mr3528729edb.164.1610459481682;
- Tue, 12 Jan 2021 05:51:21 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=ihfJdvXuo8gXYhL1o2qpY3R2l4myN2DC+kCqQgN5/3U=;
+        b=PdLTfqcoIaApc18uxw2665X0PLb4Jt58Qio6e5jksgGWZbK7lUK2FshXQ1p8YtAedv
+         I3ip6JXTB7axPNKVrMU2PJxOMSPwaAR1QQSQgzUgUYyDRqBh/MSh/grhqUZu8l4Ibhf6
+         i2YDyJGMlP03sD3E7vKrx/a2udb52QsqzMRD061Qsws0PBdpKUFNZJOZl022qk1Q+cgY
+         tn+EJ6qp6jxEFEiTfmx5He2vM0DgipiqOaQLjLw4p6g6mIKlekL/TIkMYxzs8hTTjelf
+         d0KcBsDS7vRulZq+spa/vt8vYhlT3pa3zrhS+oBibQFOHBXfcmCzOeZY+o7ufbEywXfW
+         7MCA==
+X-Gm-Message-State: AOAM531S8O2L8But5XiCdqqXTRcIF2+TQpc9GfXn5JmdJ1OhGH2LYxay
+        0dt29CpaEW5ytPYQxHDD+j8kdWyY5ecwFsW/d2rXEbqryN0D/A==
+X-Google-Smtp-Source: ABdhPJzrNdaSjeYp46XvSgzo8LUeLwLwTAL3e6RpgmgxtqmUDF53BnDe05zA7Viv9zJRid1o9B9OuiSkdId7hCYD2Fc=
+X-Received: by 2002:ac8:7349:: with SMTP id q9mr4698868qtp.259.1610459710537;
+ Tue, 12 Jan 2021 05:55:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118102342.154277-1-omosnace@redhat.com>
-In-Reply-To: <20201118102342.154277-1-omosnace@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 12 Jan 2021 08:51:10 -0500
-Message-ID: <CAHC9VhQWbiqi_C-iw7i=qiz8gSikW6LM-EufNsPjs-pU3ABHcg@mail.gmail.com>
-Subject: Re: [PATCH] vfs: fix fsconfig(2) LSM mount option handling for btrfs
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Richard Haines <richard_c_haines@btinternet.com>
+References: <20210111190243.4152-1-roman.anasal@bdsu.de> <20210111190243.4152-3-roman.anasal@bdsu.de>
+ <9e177865-0408-c321-951e-ce0f3ff33389@gmail.com> <424d62853024d8b0bc5ca03206eeca35be6014a2.camel@bdsu.de>
+ <CAL3q7H6YOPgcdgJKX8OETqrKqmfz8GRkQykPOQBMmnNSsc4sxw@mail.gmail.com> <0ce2d415308ab40874aff535031e9871a442cd9a.camel@bdsu.de>
+In-Reply-To: <0ce2d415308ab40874aff535031e9871a442cd9a.camel@bdsu.de>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 12 Jan 2021 13:54:59 +0000
+Message-ID: <CAL3q7H6T2oFwt7EXZ2HsbGhhtpfSrju961W5vysJ3LcuahsUxg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] btrfs: send: fix invalid commands for inodes with
+ changed type but same gen
+To:     "Roman Anasal | BDSU" <roman.anasal@bdsu.de>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 5:23 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+On Tue, Jan 12, 2021 at 1:10 PM Roman Anasal | BDSU
+<roman.anasal@bdsu.de> wrote:
 >
-> When SELinux security options are passed to btrfs via fsconfig(2) rather
-> than via mount(2), the operation aborts with an error. What happens is
-> roughly this sequence:
+> On Tue, 2021-01-12 at 11:27 +0000, Filipe Manana wrote:
+> > You get all these issues because you are using an incremental send in
+> > a way it's not supposed to.
+> > You are using two subvolumes that are completely unrelated.
+> Yes, I am aware of that and know that this is not a designed for use
+> case.
 >
-> 1. vfs_parse_fs_param() eats away the LSM options and parses them into
->    fc->security.
-> 2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
->    nothing to btrfs.
-> [here btrfs calls another layer of vfs_kern_mount(), but let's ignore
->  that for simplicity]
-> 3. btrfs calls security_sb_set_mnt_opts() with empty options.
-> 4. vfs_get_tree() then calls its own security_sb_set_mnt_opts() with the
->    options stashed in fc->security.
-> 5. SELinux doesn't like that different options were used for the same
->    superblock and returns -EINVAL.
+> > My surprise here is that we actually allow a user to try that,
+> > instead
+> > of giving an error complaining that subvol1 and subvol2 aren't
+> > snapshots of the same subvolume.
+> This could be one way of solving it. But this is already harder than it
+> sounds, since the same issue may also happen *even when* the subvolumes
+> share a parent/are related, here an example reproducer:
 >
-> In the case of mount(2), the options are parsed by
-> legacy_parse_monolithic(), which skips the eating away of security
-> opts because of the FS_BINARY_MOUNTDATA flag, so they are passed to the
-> FS via ctx->legacy_data. The second call to security_sb_set_mnt_opts()
-> (from vfs_get_tree()) now passes empty opts, but the non-empty -> empty
-> sequence is allowed by SELinux for the FS_BINARY_MOUNTDATA case.
+>   btrfs subvolume create subvol1
+>   btrfs subvolume snapshot subvol1 subvol2
+>   mkdir subvol1/a
+>   echo foo > subvol2/a
+>   btrfs property set subvol1 ro true
+>   btrfs property set subvol2 ro true
+>   btrfs send -p subvol1 subvol2 | btrfs receive --dump
 >
-> It is a total mess, but the only sane fix for now seems to be to skip
-> processing the security opts in vfs_parse_fs_param() if the fc has
-> legacy opts set AND the fs specfies the FS_BINARY_MOUNTDATA flag. This
-> combination currently matches only btrfs and coda. For btrfs this fixes
-> the fsconfig(2) behavior, and for coda it makes setting security opts
-> via fsconfig(2) fail the same way as it would with mount(2) (because
-> FS_BINARY_MOUNTDATA filesystems are expected to call the mount opts LSM
-> hooks themselves, but coda never cared enough to do that). I believe
-> that is an acceptable state until both filesystems (or at least btrfs)
-> are converted to the new mount API (at which point btrfs won't need to
-> pretend it takes binary mount data any more and also won't need to call
-> the LSM hooks itself, assuming it will pass the fc->security information
-> properly).
->
-> Note that we can't skip LSM opts handling in vfs_parse_fs_param() solely
-> based on FS_BINARY_MOUNTDATA because that would break NFS.
->
-> See here for the original report and reproducer:
-> https://lore.kernel.org/selinux/c02674c970fa292610402aa866c4068772d9ad4e.camel@btinternet.com/
->
-> Reported-by: Richard Haines <richard_c_haines@btinternet.com>
-> Fixes: 3e1aeb00e6d1 ("vfs: Implement a filesystem superblock creation/configuration context")
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> ---
->  fs/fs_context.c | 28 ++++++++++++++++++++++------
->  1 file changed, 22 insertions(+), 6 deletions(-)
+> This will produce a stream that tries to write data into the cloned
+> directory inode.
 
-What do the VFS folks think about this patch?  It has been sitting for
-a couple of months now without any real comment and it would be nice
-to get some initial feedback on this as it fixes a real problem.
+Indeed, it will.
 
-> diff --git a/fs/fs_context.c b/fs/fs_context.c
-> index 2834d1afa6e80..cfc5ee2e381ef 100644
-> --- a/fs/fs_context.c
-> +++ b/fs/fs_context.c
-> @@ -106,12 +106,28 @@ int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
->         if (ret != -ENOPARAM)
->                 return ret;
->
-> -       ret = security_fs_context_parse_param(fc, param);
-> -       if (ret != -ENOPARAM)
-> -               /* Param belongs to the LSM or is disallowed by the LSM; so
-> -                * don't pass to the FS.
-> -                */
-> -               return ret;
-> +       /*
-> +        * In the legacy+binary mode, skip the security_fs_context_parse_param()
-> +        * call and let the legacy handler process also the security options.
-> +        * It will format them into the monolithic string, where the FS can
-> +        * process them (with FS_BINARY_MOUNTDATA it is expected to do it).
-> +        *
-> +        * Currently, this matches only btrfs and coda. Coda is broken with
-> +        * fsconfig(2) anyway, because it does actually take binary data. Btrfs
-> +        * only *pretends* to take binary data to work around the SELinux's
-> +        * no-remount-with-different-options check, so this allows it to work
-> +        * with fsconfig(2) properly.
-> +        *
-> +        * Once btrfs is ported to the new mount API, this hack can be reverted.
-> +        */
-> +       if (fc->ops != &legacy_fs_context_ops || !(fc->fs_type->fs_flags & FS_BINARY_MOUNTDATA)) {
-> +               ret = security_fs_context_parse_param(fc, param);
-> +               if (ret != -ENOPARAM)
-> +                       /* Param belongs to the LSM or is disallowed by the LSM;
-> +                        * so don't pass to the FS.
-> +                        */
-> +                       return ret;
-> +       }
->
->         if (fc->ops->parse_param) {
->                 ret = fc->ops->parse_param(fc, param);
-> --
-> 2.26.2
+That use case is a bit different however, the snapshot starts RW, is
+changed and then turned RO and used for an incremental send.
 
--- 
-paul moore
-www.paul-moore.com
+But the idea of an incremental send was always to use snapshots from
+the same subvolume and the snapshots were always RO - once created you
+didn't change them.
+Otherwise you can never ensure full consistency.
+
+So in the end it's not that much different from the case of using
+unrelated subvolumes or snapshots as in the patch's changelog.
+
+
+>
+> So we not only had to check the parent relationships but also ensure
+> that the descendant snapshot was not modified, i.e. was never set to
+> ro=3Dfalse.
+> As far as I know there is no flag tracking this on-disk? So this would
+> need additional work, too.
+
+There isn't.
+
+Maybe all we need for now is to document how the incremental send is
+supposed to be used.
+Adding a flag to mark if a snapshot was ever RW shouldn't be too hard.
+
+>
+>
+> > An incremental is supposed to work on snapshots of the same subvolume
+> > (hence, have the same parent uuid).
+> > That's what the entire code relies on to work correctly, and that's
+> > what makes sense - to compute and send the differences between two
+> > points in time of a subvolume.
+> > That's why the code base assumes that inodes with the same number and
+> > same generation must refer to the same inode in both the parent and
+> > the send root.
+> >
+> > What I think that needs to be answered is:
+> >
+> > 1) Are there actually people using incremental sends in that way?
+> > (It's the first time I see such use case)
+> Well, I did (:
+> But admittedly in a kind of experimental setup testing out the limits
+> of btrfs.
+>
+> > 2) If so, why? That is completely unreliable, not only it can lead to
+> > failure to apply the streams, but can result in all sorts of
+> > weirdness
+> > (logical inconsistencies, etc) if applying such streams doesn't cause
+> > an error.
+> In my case I was moving around subvolumes between multiple disks and
+> deduplicating as much as possible. Trying to preserve already done
+> deduplication and purging some intermediate subvolumes I ended up using
+> "unrelated" subvolumes as parents.
+>
+> Thinking of it, maybe just using them as clone sources would have just
+> worked? That would then of course produce much larger streams since
+> *all* meta data had to be transfered.
+>
+>
+> > 3) Making sure such use cases work reliably would require many, many
+> > changes to the send implementation, as it goes against what it
+> > currently expects.
+> >     Snapshot a subvolume, change the subvolume, snapshot it again,
+> > then use both snapshots for the incremental send, that's the expected
+> > scenario.
+> I actually don't think that it is really that much work since besides
+> from some edge cases it already *does* work - I tried ;)
+>
+>
+> > In other words, what I think we should have is a check that forbids
+> > using two roots for an incremental send that are not snapshots of the
+> > same subvolume (have different parent uuids).
+> I'd like to argue against that:
+>    1. I don't think allowing this requires that much work
+
+For the cases you tried it surely didn't.
+
+>    2. explicitly forbiding it requires work, too (and maybe even changes
+>       to the on-disk format?)
+>    3. fixing bugs for this unexpected use case will probably also fix bug=
+s
+>       for the expected scenario which may only happen in very rare and
+>       extremly unlikely - though still possible - cases and thus make the
+>       code overall more resilient:
+
+I'd have to disagree with that.
+
+Having pretty much being the only one, apart from Robbie Ko who did
+solve some hard similar problems,
+solving this kind of problems since 2013, it's far from trivial work
+and there's always one more case to solve.
+
+Going through the change logs and send specific fstests should give an
+idea of why I don't think it's that trivial to add support for these
+use cases.
+
+My concern is that this will require a lot more work for a use case
+that is not standard, it was not designed for,
+and this always adds the risk of introducing regressions for the
+expected and typical use cases.
+
+So I really don't find it compelling to add support for cases that
+send was designed for - unless there are indeed users for them and
+there is a good reason why they can't use the standard way (use
+snapshots of the same subvolume and never modify the snapshots).
+
+>
+> For example the assumption that inodes with the same number must refer
+> to the same inode doesn't even hold for direct snapshots - almost
+> always it does but in some rare conditions it doesn't, which is why
+> there already is an additional check for that.
+
+The assumptions everywhere take into account inode number and
+generation, not just the number.
+Any place that uses only the number to check if it's the same inode,
+then it's almost certainly a bug (a notable exception would be the
+pending directory renames iirc).
+
+>
+> This already caused bugs before. And the bug I hit with my unexpected
+> use of btrfs-send and originally set out to find you had just fixed a
+> few weeks before [1], i.e. if you hadn't fixed it I would - because of
+> the unexpected use.
+> The bug my patch fixes I only discovered by reading the code and having
+> my scenario in mind.
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/commi=
+t/?id=3D0b3f407e6728d990ae1630a02c7b952c21c288d3
+>
+> That's why I think the work fixing arising bugs for that case is better
+> invested than in trying to just block it completely.
+> But given its very rare occurence I would agree to not put any priority
+> on it.
+
+Well, I'm sure there were plenty of bug fixes for the intended use
+cases that also fixed failures with the non-intended use cases.
+
+Thanks.
+
+>
+> > Thanks.
+> >
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
