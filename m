@@ -2,122 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41DF2F2EB0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 13:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7BF2F2EE9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Jan 2021 13:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731920AbhALMIu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Jan 2021 07:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731600AbhALMIu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:08:50 -0500
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4ADC061786
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Jan 2021 04:08:09 -0800 (PST)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 374459C3B7; Tue, 12 Jan 2021 12:08:06 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1610453286;
-        bh=eWSlSrFnGGqSMBogTKE4saWx3ymxjSYR0htMSpenUdQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Jz6dsI6uSS1CC5CeTALn+/sc/FDMKpQ8TDMbpkPzF70U3LdWKnqQTVXTOG3p9PjLC
-         SjMXsAQluu7uKDzpT4A3eRDXGvZTDo2YMVrKJXsBf0nfMiZcKd4iulGntvQjmeZOwQ
-         LGxl5jyhgOkpU1X4P+gPWgqysbb0p/EoDdkKjKsN2RLwzl1kwd9MUK9y5nF6tazGEa
-         zTkwtwlhKsqSxBm3yHQx05HyQWSyu4bQq46IZeo+FHuMYjqq83QCoCZXqdCEcjKUrD
-         6j2t+bq4IJWwB82z1418Okr4OpdtR5kctNYJrgq+vqkB11JZyRDOe6o+F40PCmM1ol
-         As0S16K3OD3EA==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-3.0 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id E1D639BBD2;
-        Tue, 12 Jan 2021 12:07:55 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1610453276;
-        bh=eWSlSrFnGGqSMBogTKE4saWx3ymxjSYR0htMSpenUdQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=TVK3f01YJ9vyiE97fvMUV+j4FDRqZ2YoPveyZZYu6ghVyTos3pV41Aso0sg3Z4qSh
-         FxCq3l6fIGG7G1mi250bj3PnkIqhHX5VLda6IN5DTFr5b2lGbaqFBlRiO6wAWEztNT
-         JkPpSPpPBuJNPyTxkNYCfwqc0C6TImRSbRq9K0nuBVrPkjS7DkHZC6VoLUufErJWnS
-         xDEo3hyjqA60SPRqVWUgSx0cuTKGrToR4CoNUPy3xw+1iDRCyvDKkI5kFiuzZ+kz2G
-         7jaoeD5yVLHnZoHH9xyBi9um43flljQxdVJ9KfQkF1lgMLfoiUKqZBnui2wgjd+HRB
-         bMkBvQzUXSBJw==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 390C01D27B6;
-        Tue, 12 Jan 2021 12:07:55 +0000 (GMT)
-Subject: Re: [PATCH 2/2] btrfs: send: fix invalid commands for inodes with
- changed type but same gen
-To:     fdmanana@gmail.com, Roman Anasal | BDSU <roman.anasal@bdsu.de>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "arvidjaar@gmail.com" <arvidjaar@gmail.com>
-References: <20210111190243.4152-1-roman.anasal@bdsu.de>
- <20210111190243.4152-3-roman.anasal@bdsu.de>
- <9e177865-0408-c321-951e-ce0f3ff33389@gmail.com>
- <424d62853024d8b0bc5ca03206eeca35be6014a2.camel@bdsu.de>
- <CAL3q7H6YOPgcdgJKX8OETqrKqmfz8GRkQykPOQBMmnNSsc4sxw@mail.gmail.com>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <021cb9f5-4dcc-6c5e-f911-12add5bb95c4@cobb.uk.net>
-Date:   Tue, 12 Jan 2021 12:07:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1733202AbhALMUT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Jan 2021 07:20:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58746 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732808AbhALMUR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:20:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610453971; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Qr5gUCDhJ0euHo5W+scRCMfAWSVxfkBU2gtdrTWaIao=;
+        b=UBr8AlYBxyLQDkD8BdeZzMHZTgJLn57NWBNAB0/qQzf+N89r2qxbg/iDgBC1sTqUZZlLUU
+        wWQxFUBqvGJdsk3Kh7bXVI/gpc+PCccZkM3qVhw63u2RH+dikjPccC9FgJr4a1uMqbywdh
+        hGEB+xLkUrazohhP3rNBX/FUJJFQHaY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2D42FAE47;
+        Tue, 12 Jan 2021 12:19:31 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: make btrfs_dirty_inode() to always reserve
+ metadata space
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210108053659.87728-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e68db844-ec96-0ab4-1654-bd8cea6e78e0@suse.com>
+Date:   Tue, 12 Jan 2021 14:19:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H6YOPgcdgJKX8OETqrKqmfz8GRkQykPOQBMmnNSsc4sxw@mail.gmail.com>
+In-Reply-To: <20210108053659.87728-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/01/2021 11:27, Filipe Manana wrote:
-> ...
-> In other words, what I think we should have is a check that forbids
-> using two roots for an incremental send that are not snapshots of the
-> same subvolume (have different parent uuids).
 
-Are you suggesting that rule should also apply for clone sources (-c
-option)? Or are clone sources handled differently from the parent in the
-code?
+
+On 8.01.21 г. 7:36 ч., Qu Wenruo wrote:
+> There are several qgroup flush related bugs fixed recently, all of them
+> are caused by the fact that we can trigger qgroup metadata space
+> reservation holding a transaction handle.
+> 
+> Thankfully the only situation to trigger above reservation is
+> btrfs_dirty_inode().
+> 
+> Currently btrfs_dirty_inode() will try join transactio first, then
+> update the inode.
+> If btrfs_update_inode() fails with -ENOSPC, then it retry to start
+> transaction to reserve metadata space.
+> 
+> This not only forces us to reserve metadata space with a transaction
+> handle hold, but can't handle other errors like -EDQUOT.
+> 
+> This patch will make btrfs_dirty_inode() to call
+> btrfs_start_transaction() directly without first try joining then
+> starting, so that in try_flush_qgroup() we won't hold a trans handle.
+> 
+> This will slow down btrfs_dirty_inode() but my fstests doesn't show too
+> much different for most test cases, thus it may be worthy to skip such
+> performance "optimization".
+
+btrfs_dirty_inode is called everytime file_update_time is called or
+atime is updated. Given the default mount option is to use lazy a_time
+I'd say we needn't worry about it. file_update_time, however, is called
+within the write path so this change potentially makes file write more
+expensive. So instead of testing with fstests it needs proper
+benchmarking with fio.
+
+<snip>
+
