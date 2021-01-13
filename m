@@ -2,106 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF592F48E2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jan 2021 11:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD282F4A03
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Jan 2021 12:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbhAMKmT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Jan 2021 05:42:19 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:21481 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727340AbhAMKmT (ORCPT
+        id S1726703AbhAMLXE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Jan 2021 06:23:04 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:42782 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725998AbhAMLXE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:42:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610534930; x=1642070930;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1coX7kAwUe0LPk/zrUpTwwDI3hk732UpFXNIYnhsFrI=;
-  b=T5niHmq15nR3G+wTtmldIWWwlqcLSSYuV/6cfEv2Rt1v47prwd5BLJpS
-   Q14XBqGDR8SYV8rzpF3QJB0aqsaZyvLp5DpFP/hDU3mZ0ICKx4RRzxjke
-   S/1cwABLPaiqO+X8k/jZ6Ue4NeNSSlpBjJpiH2ytzrVjHZoE07qUpePXO
-   FqhjTB9MrWPfHE3lfvJ1fq6q/8ERQDsXwil/c9vNqyKXyp6XfFRBQbDRd
-   wEHjcR2NuX4JE/aeTkMmJeBPlrLQCrcUIhsCT915IH6O+ScGlAJZMAUBn
-   VA4fHlcgYJm2M9wKTNS/NKq/LNurV9A7wjUDu/V+urD5QBCKIJDEiGva2
-   A==;
-IronPort-SDR: 3YCnLwijngwxyLn7tNQjW+tmeupI1rPPFLaJTM5EQCs0veVNDkCyivPusAEFK1L7P4SEZdF/g8
- emvWnq3PDrwEh8E4AInUzjE4TpBR2iq5B6oGQUh43KVDEExBih3L2DEL5VAbjOsbEp8LmbjsX9
- B2ysNPSepK8aj1IuW4I14WXLactPJ7yiUmHsawbCb+bkjY2rpaQIDX8wbbLvgfxo0dwg+JQJVI
- KgcthkMkIn2ekN2vo1MWaC/fQQCtBJ5L7H8nDRodKMqxyiqMEG9Jlqi8XiUxiYBvlL5ujPyHWJ
- iPw=
-X-IronPort-AV: E=Sophos;i="5.79,344,1602518400"; 
-   d="scan'208";a="261232821"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jan 2021 18:47:11 +0800
-IronPort-SDR: /Dy98GsJ71+c/fWBmWGKVNLhsqw76Ho1W1Km9aLG9ojRP2BuXY4GCsgWnSkPTQoBPNa1Sf4iXq
- kcUWglTymcgUluR/xqw439Z17VMLy8i6aFo9ojwvgYyIzetXFxQmTuFhU+TITi2V8+ZYWccR5n
- ptm4x7+x0uV3CjIR/afvvCFhtN1yzd1Smpl4bljdkvRNSFYBx7Z1PIE+WijUPjC4vnq0cafRn8
- I8eLvsXsmbUoeQTAMtzvC4D6v8zfJHkcJv14sMluegb5laZAgnd4j2giAvHoSqh5VoerZeZCPU
- ApfDnZs3M2YubasUQ7jv5Xx5
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 02:24:02 -0800
-IronPort-SDR: A3zyPNEAp35ckAFmlUqqdZ64BkC68+8MJWGaAL/5ypBUv02WJ8AiGLzUsWSNyjwZFG2GT0LUU/
- X8d1c3YBAuRWu8ts9hABy/9ldLZXl5w9HrKGqA82YhtSY+aMT5jvED/FADX/KVJEf6fFuLIAuk
- DkwMJHF7188hmuEPV8enEPms2wS96nHQe1zs0YLU9yXQAEfJmuyqvoyslktO4H8skIY69WG9Cz
- l/84/JhvZVbR/us+xPlgvUBTp7gXkj9J5PmXWfh9P/uOQWKWWe7uYq0+8cF/PHUQIkSFnN5wDO
- WpY=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip01.wdc.com with SMTP; 13 Jan 2021 02:41:11 -0800
-Received: (nullmailer pid 503073 invoked by uid 1000);
-        Wed, 13 Jan 2021 10:41:11 -0000
-Date:   Wed, 13 Jan 2021 19:41:11 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH v11 27/40] btrfs: introduce dedicated data write path for
- ZONED mode
-Message-ID: <20210113104111.3yntypwyna3tegx6@naota.dhcp.fujisawa.hgst.com>
-References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <2b4271752514c9f376b1fc6a988336ed9238aa0d.1608608848.git.naohiro.aota@wdc.com>
- <5c4596ba-06b5-e972-bf85-5a6401a4dd16@toxicpanda.com>
+        Wed, 13 Jan 2021 06:23:04 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DBJCUo155891;
+        Wed, 13 Jan 2021 11:22:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ references : message-id : date : mime-version : in-reply-to : content-type
+ : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Z7eS4mLjVr/D+/UnydhY5ds+kvVXRR1V5nagix4uf+I=;
+ b=H9NBxk6qpKRIlbYm08EWDoOp7FknbK6j9/T7gt2Jx6LYvDSyYJMOiQ37OMl5WTxgIu1i
+ 0lC29CqbRtVrV/b6oMMifqxZfAzn4TY56rbGsBBy07HtOY9j60pogLJT96DHFX5vnkgd
+ Q367Qz9YDOZm8wB5q7rSC5qYEsj/kMhzCvWo5xsEqYYtatjQ3sSQDeSrGDGHjKnO0U5n
+ bNDLju0iFuvCdCrl7/XqiDkIXSn25FpUozgsnqsiUyyTCyURrvf1F/M0hY66DxuOH//B
+ h/uNrv8tnWFcecJulsOh+PpZgef1MAaFtvnWvz8cx1SAtJge+TMGsjtDNh6rjyvGzq3k 4g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 360kvk2vbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 11:22:21 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10DBK9To016179;
+        Wed, 13 Jan 2021 11:22:20 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 360kf0e3ct-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Jan 2021 11:22:20 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10DBMHqm011955;
+        Wed, 13 Jan 2021 11:22:18 GMT
+Received: from [192.168.10.102] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 13 Jan 2021 03:22:17 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH RFC] btrfs: no need to transition to rdonly for ENOSPC
+ error
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <169ba15cd316c181042bbe25e7d10c7963e3b7e8.1610444879.git.anand.jain@oracle.com>
+ <c5ccc5d5-c9e4-16ff-0b57-3b7dd2f3dfca@toxicpanda.com>
+Message-ID: <d6dcaeec-d227-fc97-13d9-ad9f143dc103@oracle.com>
+Date:   Wed, 13 Jan 2021 19:22:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <5c4596ba-06b5-e972-bf85-5a6401a4dd16@toxicpanda.com>
+In-Reply-To: <c5ccc5d5-c9e4-16ff-0b57-3b7dd2f3dfca@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101130069
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130069
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 02:24:09PM -0500, Josef Bacik wrote:
->On 12/21/20 10:49 PM, Naohiro Aota wrote:
->>If more than one IO is issued for one file extent, these IO can be written
->>to separate regions on a device. Since we cannot map one file extent to
->>such a separate area, we need to follow the "one IO == one ordered extent"
->>rule.
+On 12/1/21 10:41 pm, Josef Bacik wrote:
+> On 1/12/21 5:34 AM, Anand Jain wrote:
+>> In the current kernel both scrub and balance fails due to ENOSPC,
+>> however there is no reason that it should be transitioned to the
+>> RDONLY and making free spaces difficult.
 >>
->>The Normal buffered, uncompressed, not pre-allocated write path (used by
->>cow_file_range()) sometimes does not follow this rule. It can write a part
->>of an ordered extent when specified a region to write e.g., when its
->>called from fdatasync().
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   fs/btrfs/super.c | 3 +++
+>>   1 file changed, 3 insertions(+)
 >>
->>Introduces a dedicated (uncompressed buffered) data write path for ZONED
->>mode. This write path will CoW the region and write it at once.
+>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>> index 12d7d3be7cd4..8c1b858f55c4 100644
+>> --- a/fs/btrfs/super.c
+>> +++ b/fs/btrfs/super.c
+>> @@ -172,6 +172,9 @@ void __btrfs_handle_fs_error(struct btrfs_fs_info 
+>> *fs_info, const char *function
+>>       if (sb_rdonly(sb))
+>>           return;
+>> +    if (errno == -ENOSPC)
+>> +        return;
+>> +
+>>       btrfs_discard_stop(fs_info);
+>>       /* btrfs handle error by forcing the filesystem readonly */
 >>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->
->This means we'll write one page at a time, no coalescing of data 
->pages.  I'm not the one with zoned devices in production, but it might 
->be worth fixing this in the future so you're not generating a billion 
->bio's for large sequential data areas.
+> 
+> Filipe and Qu are right, but there are cases where we probably shouldn't 
+> flip read only on ENOSPC, and we should address those at the specific 
+> spots where this happens.  Do you have an example?  If it's happening at 
+> btrfs_search_slot() time then we're not reserving enough space in 
+> whatever reserve we use, but if it's happening somewhere else, for 
+> example trying to mark a block group as read only and getting an ENOSPC 
+> there, we could probably skip flipping read only for that sort of case.  
+> We need to address the specific scenarios you're hitting rather than 
+> blanket skipping the abort for ENOSPC, otherwise we'll get corrupt file 
+> systems.  Thanks,
+> 
 
-Actually, it is already wrting multiple pages in one bio. We get a
-delalloced range
-that spans multiple pages from btrfs_run_delalloc_range() and write all the
-pages with one bio in extent_write_locked_range().
+Ok. It makes sense to me.
 
->
->Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->
->Thanks,
->
->Josef
+Unfortunately, I had to restore my laptop, my only source of production.
+
+Per the stack trace below, ENOSPC is from the search.
+
+[ 2460.219094] BTRFS info (device sdb6): balance: start -f 
+-dconvert=single -mconvert=single -sconvert=single
+[ 2460.219224] BTRFS info (device sdb6): relocating block group 
+194572713984 flags data
+[ 2460.241299] ------------[ cut here ]------------
+[ 2460.241302] BTRFS: Transaction aborted (error -28)
+[ 2460.241328] WARNING: CPU: 3 PID: 4135 at fs/btrfs/volumes.c:3003 
+btrfs_remove_chunk+0x60e/0x6c0 [btrfs]
+::
+[ 2460.241447] RIP: 0010:btrfs_remove_chunk+0x60e/0x6c0 [btrfs]
+::
+[ 2460.241497] Call Trace:
+[ 2460.241500]  btrfs_relocate_chunk+0x9d/0xd0 [btrfs]
+[ 2460.241533]  __btrfs_balance+0x413/0xa30 [btrfs]
+[ 2460.241566]  btrfs_balance+0x436/0x4d0 [btrfs]
+[ 2460.241597]  btrfs_ioctl_balance+0x2d5/0x380 [btrfs]
+[ 2460.241647]  btrfs_ioctl+0x565/0x22b0 [btrfs]
+[ 2460.241693]  ? selinux_file_ioctl+0x174/0x220
+[ 2460.241698]  ? handle_mm_fault+0xd7/0x2b0
+[ 2460.241702]  __x64_sys_ioctl+0x91/0xc0
+[ 2460.241705]  ? __x64_sys_ioctl+0x91/0xc0
+[ 2460.241707]  do_syscall_64+0x38/0x50
+[ 2460.241711]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+::
+[ 2460.241735] ---[ end trace 95b8b7b84503a477 ]---
+[ 2460.241738] BTRFS: error (device sdb6) in btrfs_remove_chunk:3003: 
+errno=-28 No space left
+[ 2460.241743] BTRFS info (device sdb6): forced readonly
+[ 2460.242646] BTRFS info (device sdb6): 1 enospc errors during balance
+[ 2460.242649] BTRFS info (device sdb6): balance: ended with status: -30
+
+
+btrfs fi us /Volumes/
+Overall:
+     Device size:         154.97GiB
+     Device allocated:         154.97GiB
+     Device unallocated:           2.00MiB
+     Device missing:             0.00B
+     Used:             147.91GiB
+     Free (estimated):           2.75GiB    (min: 2.75GiB)
+     Data ratio:                  1.99
+     Metadata ratio:              1.52
+     Global reserve:         183.72MiB    (used: 0.00B)
+
+Data,single: Size:894.00MiB, Used:0.00B (0.00%)
+    /dev/sdb6     894.00MiB
+
+Data,RAID1: Size:75.53GiB, Used:73.23GiB (96.96%)
+    /dev/sdb6      75.53GiB
+    /dev/sdc2      75.53GiB
+
+Metadata,single: Size:964.00MiB, Used:0.00B (0.00%)
+    /dev/sdb6     964.00MiB
+
+Metadata,RAID1: Size:1.00GiB, Used:737.25MiB (72.00%)
+    /dev/sdb6       1.00GiB
+    /dev/sdc2       1.00GiB
+
+System,single: Size:32.00MiB, Used:0.00B (0.00%)
+    /dev/sdb6      32.00MiB
+
+System,RAID1: Size:32.00MiB, Used:16.00KiB (0.05%)
+    /dev/sdb6      32.00MiB
+    /dev/sdc2      32.00MiB
+
+Unallocated:
+    /dev/sdb6       1.00MiB
+    /dev/sdc2       1.00MiB
+--------
+
+
+But below is another ENOSPC leading rdonlyfs. Here it was during the 
+scrub. And while trying to finish the ordered extents.
+
+
+[ 2365.314375] ------------[ cut here ]------------
+[ 2365.314385] BTRFS: Transaction aborted (error -28)
+[ 2365.314470] WARNING: CPU: 2 PID: 4672 at fs/btrfs/inode.c:2823 
+btrfs_finish_ordered_io+0x8e6/0x950 [btrfs]
+<snap>
+[ 2365.314921] CPU: 2 PID: 4672 Comm: kworker/u8:11 Not tainted 
+5.11.0-rc2+ #3
+[ 2365.314933] Hardware name: LENOVO 20FAS6PN00/20FAS6PN00, BIOS 
+N1CET47W (1.15 ) 08/08/2016
+[ 2365.314939] Workqueue: btrfs-endio-write btrfs_work_helper [btrfs]
+[ 2365.315093] RIP: 0010:btrfs_finish_ordered_io+0x8e6/0x950 [btrfs]
+<snap>
+[ 2365.315290] Call Trace:
+[ 2365.315309] BTRFS warning (device sda6): 
+btrfs_finish_ordered_io:2823: Aborting unused transaction(No space left).
+[ 2365.315305]  finish_ordered_fn+0x15/0x20 [btrfs]
+[ 2365.315532]  btrfs_work_helper+0xcc/0x2f0 [btrfs]
+[ 2365.315763]  process_one_work+0x1ee/0x390
+[ 2365.315781]  worker_thread+0x50/0x3d0
+[ 2365.315797]  kthread+0x114/0x150
+[ 2365.315811]  ? process_one_work+0x390/0x390
+[ 2365.315824]  ? kthread_park+0x90/0x90
+[ 2365.315836]  ret_from_fork+0x22/0x30
+[ 2365.315861] ---[ end trace b0e289a2c3d424e8 ]---
+[ 2365.315871] BTRFS warning (device sda6): 
+btrfs_finish_ordered_io:2823: Aborting unused transaction(No space left).
+[ 2365.316713] BTRFS warning (device sda6): 
+btrfs_finish_ordered_io:2823: Aborting unused transaction(No space left).
+[ 2365.316796] BTRFS warning (device sda6): Skipping commit of aborted 
+transaction.
+[ 2365.316809] BTRFS: error (device sda6) in cleanup_transaction:1938: 
+errno=-30 Readonly filesystem
+[ 2365.316824] BTRFS info (device sda6): forced readonly
+[ 2365.359195] BTRFS info (device sda6): scrub: not finished on devid 2 
+with status: -125
+
+-Anand
+
+> Josef
+
