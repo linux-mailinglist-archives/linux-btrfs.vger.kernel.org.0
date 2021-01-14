@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9152F6A6C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 20:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FD22F6A6D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 20:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbhANTDj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Jan 2021 14:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        id S1728120AbhANTEK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Jan 2021 14:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbhANTDj (ORCPT
+        with ESMTP id S1726131AbhANTEJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:03:39 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C8CC0613D3
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:02:59 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id w79so9322469qkb.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:02:58 -0800 (PST)
+        Thu, 14 Jan 2021 14:04:09 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8DFC0613D6
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:03:00 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id p14so9324926qke.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=lwBRXcf/nnqtZXOUcyl0M7iOkuZ2sALJPEASw9ht3O8=;
-        b=EakxITne+9mUhfmerUbNe+bMwgK/HvH4BaxnKLXDxxvrBkgmqYOcBAa/dp/8pLhWlq
-         LwVoLpXvpk8VzYghQb1aXvD1b28TKEGeQOsW+0xlrI/BgJp0rRO/vpAa/4DZjOsz40p9
-         GuKjF4L67uzYxlt0MOV0STdogm6ceW9xrAogUmtGmOr998VviUxKEckDJ+s2yHyKtGSX
-         PO4nhFUzxpR7q19O6DuYZTxXFBSOZYlh5ReN9KbWs9ZQTp8Y+6nsbyqtm8AFSdiJ05a2
-         8Bm1goZ2gLKtzuUdRLayvcPR/zT3ioqo7uMZ+hBGzEjAybGxIz2s3Ye6tHRZUwkdVKlS
-         ss/Q==
+        bh=Kg+g9k9Xgo+a8nvYyCZ2YvBKfy3R8nKXhmyCv6ietbI=;
+        b=KB/zKjwdwwCoW+4VQ4LUn9ZFLd7O9CHb2EDSYCL/ALc2k8TUxHN8vops5chHpWBIQS
+         qjg8gU8lSOHkldCdlce5Jb8pabgJhDm59ftZFsK9toeblZcyhvwkArkXH2Zzjh6Bpe7j
+         hb4/c5n1qOUxP5Xcxb5D5hkn92DK7tVtqwy3VvGn6OrkFyUdQW4nwcGsbf63owspurXV
+         JBXedbILdsirrwumkuzdGh09LkTiIow83ufeQtj4yZM1sZ0jsO09eWfR/r4YnBZYwmQ8
+         Pvmn302KsFmyxSe0/B7Ab1L62abFrAh7hga2fAOwf/DYteXvqbGUCt+L3n3Z/dODLecS
+         6hhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lwBRXcf/nnqtZXOUcyl0M7iOkuZ2sALJPEASw9ht3O8=;
-        b=RHh1DVBAr9Cuzxw0GlIH7Q36fDByUDc6TiPwhB9jk8zx7kjv65H5oampbK6CggwtMO
-         d9OqN5qYofmc4TgIblCNPezLKhaUQqtHAcMsx8Hn8QvjaAfUvus0cJTifu8kGYalNEbd
-         XQi8mH2gbrz4/xvxu5ADxLav9o48K22utz5pm8qjKSXEoFNp0gHCK/UCxnOqJo+8PWVQ
-         xpWS3Q8eBTU2YzHykdXWCfkIoHzTSZzTR6Lu9WQfKyjxUIPx8zVvf6wEpWM3K6D+Vqv5
-         G7P2WIdUlZHuPCBmRh6dTMVF6+u2i32T1xkYKcy20RHdbaZ6VcS5PUoDn77HR0uoNZzp
-         g1qw==
-X-Gm-Message-State: AOAM531pcieE08q6XK/VjLeqIVlYvaKh1MuTgk4L6V4Wq7GaqhW41H4s
-        o/xB9ovFpk7qEKPd+RnHvcpmBEUqcyzwEHnm
-X-Google-Smtp-Source: ABdhPJyXFk27YJ5VQxH1YoFdCudt1gLWUAM032Qw52v9hDhZ9iUPmMzE7SdMNrfEaGEHuJwxdiQ+5g==
-X-Received: by 2002:a37:aa94:: with SMTP id t142mr8833736qke.116.1610650976993;
-        Thu, 14 Jan 2021 11:02:56 -0800 (PST)
+        bh=Kg+g9k9Xgo+a8nvYyCZ2YvBKfy3R8nKXhmyCv6ietbI=;
+        b=HaIZ90DjVh5ShcQ9Rme2os/ueWLM6izWI1dkboxoSfScWcWqxpRPlMzPk9c/nW24WM
+         2dS3X7bHKHowomfivK65D4O9YKqek4wf5nHjvOLrMt2hBx2BTXdgevJC+JFIxm5Ak3u5
+         F51nJL1/QtH0MPNC4XiJYF3LIYO6aZ28IauAQtq24EJOWcRvCGRqD8bV1ec4iKzAvdTt
+         gREEKKdxcMCyjL6lnrZwmmCoixk1YByY8+eVkDzEpIMmc19G//Xi1rvOlGVS3+xI4A+s
+         Ik3Ei1xvxopMt0RItvIvsZHlanIZSR5JZNmB4fjJO5vUKJv85kU/AuI2KZJFK31EJfwa
+         /+ow==
+X-Gm-Message-State: AOAM532zyjzGJD+vkbEDsF0K37QbXo33euFUPwfAIEf9guCTUAliRgot
+        YW9LrDPQimtqtlW1TLA/LQmiehXUrqJjiyvN
+X-Google-Smtp-Source: ABdhPJzqZY/j7P6jXxwkpIZ6WvJHQnt1hMOQjTMp02ET/VjnwTxbdIbDaiqedUfVIjPhRz0TjqhSJA==
+X-Received: by 2002:a37:e211:: with SMTP id g17mr8307963qki.298.1610650979083;
+        Thu, 14 Jan 2021 11:02:59 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c20sm3327854qtj.29.2021.01.14.11.02.56
+        by smtp.gmail.com with ESMTPSA id 60sm3345639qth.14.2021.01.14.11.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 11:02:56 -0800 (PST)
+        Thu, 14 Jan 2021 11:02:58 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 4/5] btrfs: add asserts for deleting backref cache nodes
-Date:   Thu, 14 Jan 2021 14:02:45 -0500
-Message-Id: <fd97fa2af421b5b9fe0c3ac1ee99dad0fcbf1f7d.1610650736.git.josef@toxicpanda.com>
+Subject: [PATCH v2 5/5] btrfs: abort the transaction if we fail to inc ref in btrfs_copy_root
+Date:   Thu, 14 Jan 2021 14:02:46 -0500
+Message-Id: <d8c8d547526b4cb3f0141caf297679021eff2365.1610650736.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1610650736.git.josef@toxicpanda.com>
 References: <cover.1610650736.git.josef@toxicpanda.com>
@@ -62,57 +62,51 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A weird KASAN problem that Zygo reported could have been easily caught
-if we checked for basic things in our backref freeing code.  We have two
-methods of freeing a backref node
+While testing my error handling patches, I added a error injection site
+at btrfs_inc_extent_ref, to validate the error handling I added was
+doing the correct thing.  However I hit a pretty ugly corruption while
+doing this check, with the following error injection stack trace
 
-- btrfs_backref_free_node: this just is kfree() essentially.
-- btrfs_backref_drop_node: this actually unlinks the node and cleans up
-  everything and then calls btrfs_backref_free_node().
+btrfs_inc_extent_ref
+btrfs_copy_root
+create_reloc_root
+otrfs_init_reloc_root
+btrfs_record_root_in_trans
+btrfs_start_transaction
+btrfs_update_inode
+btrfs_update_time
+touch_atime
+file_accessed
+btrfs_file_mmap
 
-We should mostly be using btrfs_backref_drop_node(), to make sure the
-node is properly unlinked from the backref cache, and only use
-btrfs_backref_free_node() when we know the node isn't actually linked to
-the backref cache.  We made a mistake here and thus got the KASAN splat.
-Make this style of issue easier to find by adding some ASSERT()'s to
-btrfs_backref_free_node() and adjusting our deletion stuff to properly
-init the list so we can rely on list_empty() checks working properly.
+This is because we do not catch the error from btrfs_inc_extent_ref,
+which in practice would be -ENOMEM, which means we lose the extent
+references for a root that has already been allocated and inserted,
+which is the problem.  Fix this by aborting the transaction if we fail
+to do the reference modification.
 
-Link: https://lore.kernel.org/linux-btrfs/20201208194607.GI31381@hungrycats.org/
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/backref.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/ctree.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/backref.h b/fs/btrfs/backref.h
-index ff705cc564a9..17abde7f794c 100644
---- a/fs/btrfs/backref.h
-+++ b/fs/btrfs/backref.h
-@@ -296,6 +296,9 @@ static inline void btrfs_backref_free_node(struct btrfs_backref_cache *cache,
- 					   struct btrfs_backref_node *node)
- {
- 	if (node) {
-+		ASSERT(list_empty(&node->list));
-+		ASSERT(list_empty(&node->lower));
-+		ASSERT(node->eb == NULL);
- 		cache->nr_nodes--;
- 		btrfs_put_root(node->root);
- 		kfree(node);
-@@ -340,11 +343,11 @@ static inline void btrfs_backref_drop_node_buffer(
- static inline void btrfs_backref_drop_node(struct btrfs_backref_cache *tree,
- 					   struct btrfs_backref_node *node)
- {
--	BUG_ON(!list_empty(&node->upper));
-+	ASSERT(list_empty(&node->upper));
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 56e132d825a2..95d9bae764ab 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -221,9 +221,10 @@ int btrfs_copy_root(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_inc_ref(trans, root, cow, 1);
+ 	else
+ 		ret = btrfs_inc_ref(trans, root, cow, 0);
+-
+-	if (ret)
++	if (ret) {
++		btrfs_abort_transaction(trans, ret);
+ 		return ret;
++	}
  
- 	btrfs_backref_drop_node_buffer(node);
--	list_del(&node->list);
--	list_del(&node->lower);
-+	list_del_init(&node->list);
-+	list_del_init(&node->lower);
- 	if (!RB_EMPTY_NODE(&node->rb_node))
- 		rb_erase(&node->rb_node, &tree->rb_root);
- 	btrfs_backref_free_node(tree, node);
+ 	btrfs_mark_buffer_dirty(cow);
+ 	*cow_ret = cow;
 -- 
 2.26.2
 
