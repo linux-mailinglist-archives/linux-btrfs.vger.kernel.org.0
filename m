@@ -2,145 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C6E2F63DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 16:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782522F655E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 17:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729239AbhANPLe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Jan 2021 10:11:34 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:8246 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727617AbhANPLd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:11:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610637093; x=1642173093;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1k0qgbblaaWf0EI2DMXS5oak/Zxu2YMt05VPfitItB8=;
-  b=ErT/3TU3jv+q0hi2TjLzJXZ2UF95h9LXknAEZff7fCigmiYaKjqGyoRc
-   qFk4X4L6GPXWyveYNddTm+RWG2wDufnmuGcgSXNq/4O4UPrIsmfp0jN0e
-   xeSCFdJIrYKb5zhpGlOlbOcMk5TwpxhfWnVW1LelIhjlaEnlAcx+2xlky
-   QM5ltR8XmqcFUxD5HIExwUuBy268WT1WVZ3tUAwmTS66+14Gr+uRyjbYy
-   IYS6JqjA8gEEydgEUrpgb7e2LrttT8AYtInSCcIxfnWKSjkGLIDxFDplV
-   rK1WX7oKVTDmNnOzwvGvubXczAAghKmAZ92Bw4AyXsYuIjQnz21fQqhqn
-   Q==;
-IronPort-SDR: 0Bou7UbXgibHacCsT9NP3ZJUOVV67KtLm4TnhdvnEZs00D0yw4R3RCrbUJR1+NAg85+sIu4vXq
- JHq6JhSfzbetI0Eujk6nFmpZzPFtroz04gTtOtqczJb+LLrfugK0jijotqR8soIQIinB4Qq/oe
- cyxiZkeUwHJk4Hy44X3hoo4xnlA6pb2056atumeyA9MtQoz4Tr3tCtuuEIn7w6D3ZrtEHfAD+j
- TqHSrjFSoNaluXrUwrLFBbNbvSr3ItJfClrmGlvaPpQIbaJMjRAnxBu+wkyngJtT2SD4wIuKIX
- QCQ=
-X-IronPort-AV: E=Sophos;i="5.79,347,1602518400"; 
-   d="scan'208";a="158599004"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Jan 2021 23:10:27 +0800
-IronPort-SDR: 8r37v3WcFvfYhyY/ktQ2mKC4bPu1aMeHH/gn9BSvEfGEgShTtoVEvuxK5PkN821MyzeWEy9O5s
- bxPxNDO739geTTK2QKKIVPVNtmfQastTtpLvOucNF0fGRXDIWGVw++wddbxFeRqotGTD8lHblu
- 3NgmFWVoahIOoBANV/nQGWPxT9ym7UwImh9ig19Pf60Q2xTMn2ul1scKQU2g35hGTGeE8DRbMv
- 5kqMTZbCkxfiYXRwgSGD5SuvO070bi6U5q2v4pFe9iyyvtYPG+392yjmjZytYPr82dPoM53LF0
- 0rPgUU8EhBVugHLS1iAaGFL+
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 06:53:14 -0800
-IronPort-SDR: eHqtSpse+62cNRiojh0ouGqPLgU0LJDU0C73a2FRHyCmEFTX2Wabc3EJelSlMr0SrDVN+5uojO
- xK47FLmbbERT0hZUN8p8uIROPkWx6Iovz7tAQVd/K2jEPJbQwSJsPy9ahLeQfUaftC5+3jMlOC
- OOpAI43OtAvTRutpFf/SPRFtjv4uA29Kg/v/AeQiJYIdLyKfEfIFy6RbNPy21yZzTcpN4VtVjI
- V+CNp6XF4ycaRFSyTzYZXFsQIC5s1YplfXitw3tgXlFGj0mmvRN6exjznuRgpBaegJOZJBjoVP
- uZw=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip01.wdc.com with SMTP; 14 Jan 2021 07:10:26 -0800
-Received: (nullmailer pid 1313840 invoked by uid 1000);
-        Thu, 14 Jan 2021 15:10:25 -0000
-Date:   Fri, 15 Jan 2021 00:10:25 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH v11 04/40] btrfs: change superblock location on
- conventional zone
-Message-ID: <20210114151025.4n4jv25gi37ougay@naota.dhcp.fujisawa.hgst.com>
-References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <42c1712556e6865837151ad58252fb5f6ecff8f7.1608608848.git.naohiro.aota@wdc.com>
- <83c5e084-dbee-a0ae-4a1b-38fa271701a2@toxicpanda.com>
+        id S1729296AbhANQCH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Jan 2021 11:02:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38978 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726810AbhANQCH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:02:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7DFEEAC24;
+        Thu, 14 Jan 2021 16:01:38 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 18E4FDA7EE; Thu, 14 Jan 2021 16:59:45 +0100 (CET)
+Date:   Thu, 14 Jan 2021 16:59:44 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Mark Harmstone <mark@harmstone.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Per-subvol compat flags?
+Message-ID: <20210114155944.GX6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Mark Harmstone <mark@harmstone.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <805c2fd3-d62b-2d0f-0f3d-c275609bd1b5@harmstone.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <83c5e084-dbee-a0ae-4a1b-38fa271701a2@toxicpanda.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <805c2fd3-d62b-2d0f-0f3d-c275609bd1b5@harmstone.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 02:47:26PM -0500, Josef Bacik wrote:
->On 12/21/20 10:48 PM, Naohiro Aota wrote:
->>We cannot use log-structured superblock writing in conventional zones since
->>there is no write pointer to determine the last written superblock
->>position. So, we write a superblock at a static location in a conventional
->>zone.
->>
->>The written position is at the beginning of a zone, which is different from
->>an SB position of regular btrfs. This difference causes a "chicken-and-egg
->>problem" when supporting zoned emulation on a regular device. To know if
->>btrfs is (emulated) zoned btrfs, we need to load an SB and check the
->>feature flag. However, to load an SB, we need to know that it is zoned
->>btrfs to load it from a different position.
->>
->>This patch moves the SB location on conventional zones so that the first SB
->>location will be the same as regular btrfs.
->>
->>Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>---
->>  fs/btrfs/zoned.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->>diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
->>index 90b8d1d5369f..e5619c8bcebb 100644
->>--- a/fs/btrfs/zoned.c
->>+++ b/fs/btrfs/zoned.c
->>@@ -465,7 +465,8 @@ static int sb_log_location(struct block_device *bdev, struct blk_zone *zones,
->>  	int ret;
->>  	if (zones[0].type == BLK_ZONE_TYPE_CONVENTIONAL) {
->>-		*bytenr_ret = zones[0].start << SECTOR_SHIFT;
->>+		*bytenr_ret = (zones[0].start << SECTOR_SHIFT) +
->>+			btrfs_sb_offset(0);
->>  		return 0;
->>  	}
->
->I'm confused, we call btrfs_sb_log_location_bdev(), which does
->
->        if (!bdev_is_zoned(bdev)) {
->                *bytenr_ret = btrfs_sb_offset(mirror);
->                return 0;
->        }
->
->so how does the emulation work, if we short circuit this if the block 
->device isn't zoned?  And then why does it matter where in the 
->conventional zone that we put the super block?  Can't we just emulate 
->a conventional zone that starts at offset 0, and then the 
->btrfs_sb_offset() will be the same as zones[0].start + 
->btrfs_sb_offset(0)?  Thanks,
->
->Josef
+Hi,
 
-I'm sorry for the confusion. Yes, it's really confusing we get
-btrfs_sb_log_location() != btrfs_sb_log_location_bdev() with zoned btrfs on
-regular devices.
+On Sun, Dec 27, 2020 at 04:07:44PM +0000, Mark Harmstone wrote:
+> I'm the creator of the Windows Btrfs driver. During the course of development,
+> it's become apparent that for 100% compatibility with NTFS there'd need to be
+> some minor changes to the disk format. Examples: Windows' LZNT1 compression
+> scheme, Windows' encryption scheme, case-sensitivity, arbitrary-length xattrs.
+> 
+> I'm loathe to nab a compat flag bit for these, as they're all relatively minor,
+> and most wouldn't be that useful for Linux. And sod's law says that if I
+> unilaterally grab the next bit, the Linux driver will sooner or later use the
+> same bit for something else.
+> 
+> Has anyone ever brought up the idea of per-subvol compat flags? The idea is that
+> if a new feature affects the FS root and nothing else, rather than adding a new
+> compat flag bit, there'd be an entry in the root tree after the ROOT_ITEM, e.g.
 
-What I'd like to do here is to place the primary SB at the same position as
-regular btrfs. Then, we can read the SB on a regular device at mount time
-without knowing if the btrfs is zoned or not.
+The compat bits have affected the whole filesystem so far and we don't
+have an example to follow. Per-subvolume flags in general make sense,
+I'm not sure about the compat flags though, namely because of the
+feedback to the user when such subvolume is being accessed. A failed
+mount vs 'cannot cd to the subvolume directory'.
 
-But, I noticed this solution is not working for SB mirrors and confusing to
-have different location between btrfs_sb_log_location() vs
-btrfs_sb_log_location_bdev().
+>     (0x100, 0x85, 0x2ed1c081232d)   for a compat entry, or
+>     (0x100, 0x86, 0x85f7583bc4b0)   for a readonly compat entry
 
-So, I'll replace this patch in the next version with a patch to use the
-regular btrfs' SB locations on non-zoned devices. Since it is non-zoned
-device, so we can just write SBs at the regular locations without
-consulting the emulated zones... And, we'll have the same results from
-btrfs_sb_log_location() and btrfs_sb_log_location_bdev().
+This means allocating 2 more key types, which are considered a precious
+resource so I'd rather look for other options:
 
-I think this change will solve the confusion.
+- regular subvolume flags (btrfs_root_item::flags), so far there's just
+  one BTRFS_ROOT_SUBVOL_RDONLY, out of 64 in total, reserving eg. 8 for
+  the windows driver sounds viable
 
-Regards,
+- properties attached to the subvolume inode (stored in xattrs), this
+  would be in a namespace btrfs.* and brings some questions as the
+  property/xattr namespace is not yet clearly defined
+
+- enhance existing key + item, which would be BTRFS_PERSISTENT_ITEM_KEY,
+  key is fixed but objectid and offset are basically unused, the format
+  would be like
+  (COMPAT_FEATURE_..., PERSISTENT_ITEM_KEY, subvolid)
+  stored in the subvolume tree
+
+> With the third number being an arbitrary identifier for the feature (i.e. like
+> a UUID). If the driver doesn't understand a certain feature, it'd make the
+> subvol readonly or inaccessible, as appropriate.
+
+This should work with all the types above, assuming the driver needs to
+lookup the compat bits before accessing the subvolume. Each type has
+some pros/cons, I'd favor the PERSISTENT_ITEM as I once repurposed the
+specific key for such extensions.
+
+> It'd also have to disable
+> certain features, such as balancing, but the rest of the FS would be usable.
+
+> As I see it, there's several advantages to this approach:
+> 
+> * Because the feature identifier is a 64-bit integer rather than a bit, it
+>   increases the effective compat flag namespace from 64 bits to 2^64.
+
+Besides the root_item::flags, the space for features is essentially
+unlimited.
+
+> * It makes out-of-tree development a lot easier, as the increased namespace
+>   makes it feasible to distribute patches without worrying about what's
+>   going to happen upstream.
+
+I'd rather have all patches upstream, but realistically it'd be a
+nightmare to manage and maintain. I know only about a handful of
+features implemented in out of tree btrfs code (like on some NAS boxes)
+and users have already seen problems when trying to access the
+filesystem from a non-vendor kernel.
+
+With more patches circling around, claiming feature bits in some
+established namespace would be too encouraging I'm afraid and causing
+chaos and incompatibility.
+
+Given the raising popularity of btrfs windows driver, I wouldn't mind
+reserving bits for windows-only use, possibly with some sane fallback
+behaviour on linux too.
+
+> * It lowers the cost of implementing new features (i.e., you don't have to
+>   let users know that new filesystems will only work on Linux 5.x). This would
+>   be especially important for encryption, as security means that you'd have to
+>   make it easy to add new algorithms when necessary.
+
+The kernel version of a feature is meant as a known point regardless of
+potential backports in vendor trees. Feature status has been exported in
+sysfs for that reason and is supposed to be checked instead of the
+version.
+
+Extensibility of encryption algorithms needs to be part of the design,
+so I wouldn't use that one as an example, also because implementing that
+is supposedly intrusive to many parts of the code.
+
+> * It allows for features to be controlled by Linux CONFIG flags, meaning that
+>   e.g. embedded devices wouldn't be burdened with a new feature for all time.
+
+I'm not a fan of adding per-feature config options, that's shifting the
+problems to a different stage. Not counting the debugging features like
+integrity checker or ref-verify and a historic relic ACLs, there are
+none. The main reason is to provide a filesystem driver with complete
+feature set so it works everywhere the same.
+
+I guess embedded usecase has to deal with limited resources or a
+specialized purpose so more intrusive code changes are necessary. We're
+more focused on the general usecase and try to keep it sane in terms of
+number of features or configurability (and it's getting complicated
+anyway).
