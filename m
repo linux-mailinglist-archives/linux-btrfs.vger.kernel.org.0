@@ -2,36 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782522F655E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 17:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F622F661A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 17:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbhANQCH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Jan 2021 11:02:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38978 "EHLO mx2.suse.de"
+        id S1726633AbhANQkF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Jan 2021 11:40:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47196 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726810AbhANQCH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Jan 2021 11:02:07 -0500
+        id S1726532AbhANQkE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:40:04 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7DFEEAC24;
-        Thu, 14 Jan 2021 16:01:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 19BF3AEBB;
+        Thu, 14 Jan 2021 16:39:23 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 18E4FDA7EE; Thu, 14 Jan 2021 16:59:45 +0100 (CET)
-Date:   Thu, 14 Jan 2021 16:59:44 +0100
+        id B2B1FDA7EE; Thu, 14 Jan 2021 17:37:29 +0100 (CET)
+Date:   Thu, 14 Jan 2021 17:37:29 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Mark Harmstone <mark@harmstone.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Per-subvol compat flags?
-Message-ID: <20210114155944.GX6430@twin.jikos.cz>
+To:     waxhead <waxhead@dirtcellar.net>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Why do we need these mount options?
+Message-ID: <20210114163729.GY6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Mark Harmstone <mark@harmstone.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <805c2fd3-d62b-2d0f-0f3d-c275609bd1b5@harmstone.com>
+Mail-Followup-To: dsterba@suse.cz, waxhead <waxhead@dirtcellar.net>,
+        linux-btrfs@vger.kernel.org
+References: <208dba68-b47e-101d-c893-8173df8fbbbf@dirtcellar.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <805c2fd3-d62b-2d0f-0f3d-c275609bd1b5@harmstone.com>
+In-Reply-To: <208dba68-b47e-101d-c893-8173df8fbbbf@dirtcellar.net>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -39,110 +38,82 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi,
 
-On Sun, Dec 27, 2020 at 04:07:44PM +0000, Mark Harmstone wrote:
-> I'm the creator of the Windows Btrfs driver. During the course of development,
-> it's become apparent that for 100% compatibility with NTFS there'd need to be
-> some minor changes to the disk format. Examples: Windows' LZNT1 compression
-> scheme, Windows' encryption scheme, case-sensitivity, arbitrary-length xattrs.
+On Thu, Jan 14, 2021 at 03:12:26AM +0100, waxhead wrote:
+> I was looking through the mount options and being a madman with strong 
+> opinions I can't help thinking that a lot of them does not really belong 
+> as mount options at all, but should rather be properties set on the 
+> subvolume - for example the toplevel subvolume.
+
+I agree that some of them should not be there but mount options still
+have their own usecase. They can be set from the outside and are
+supposed to affect the whole filesystem mount lifetime.
+
+However, they've been used as default values for some operations, which
+is something that points more to what you suggest. And as they're not
+persistent and need to be stored in /etc/fstab is also weighing for
+storage inside the fs.
+
+> And any options set on a child subvolume should override the parrent 
+> subvolume the way I see it.
+
+Yeah, that's one of the ways how to do it and I see it that way as well.
+Property set closer to the object takes precedence, roughly
+
+mount < subvolume < directory < file
+
+but last time we had a discussion about that, the other oppinion was
+that mount options beat everything, perhaps because they can be set from
+the outside and forced to ovrride whatever is on the filesystem.
+
+> By having a quick look - I don't see why these should be mount options 
+> at all.
 > 
-> I'm loathe to nab a compat flag bit for these, as they're all relatively minor,
-> and most wouldn't be that useful for Linux. And sod's law says that if I
-> unilaterally grab the next bit, the Linux driver will sooner or later use the
-> same bit for something else.
+> autodefrag / noautodefrag
+> commit
+> compress / compress-force
+> datacow / nodatacow
+> datasum / nodatasum
+> discard / nodiscard
+> inode_cache / noinode_cache
+> space_cache / nospace_cache
+> sdd / ssd_spread / nossd / no_ssdspread
+> user_subvol_rm_allowed
+
+So there are historical reasons and interface limitations that led to
+current state and multiple ways to do things.
+
+Per-inode attributes were originally private ioctl of ext2 that other
+filesystems adopted due to feature parity, and as the interface was
+bit-based, no additional values could be set eg. compression, limited
+number of bits, no precedence, inter-flag dependencies.
+
+> Stuff like compress and nodatacow can be set with chattr so there is as 
+> far as I am aware three methods of setting compression for example.
 > 
-> Has anyone ever brought up the idea of per-subvol compat flags? The idea is that
-> if a new feature affects the FS root and nothing else, rather than adding a new
-> compat flag bit, there'd be an entry in the root tree after the ROOT_ITEM, e.g.
-
-The compat bits have affected the whole filesystem so far and we don't
-have an example to follow. Per-subvolume flags in general make sense,
-I'm not sure about the compat flags though, namely because of the
-feedback to the user when such subvolume is being accessed. A failed
-mount vs 'cannot cd to the subvolume directory'.
-
->     (0x100, 0x85, 0x2ed1c081232d)   for a compat entry, or
->     (0x100, 0x86, 0x85f7583bc4b0)   for a readonly compat entry
-
-This means allocating 2 more key types, which are considered a precious
-resource so I'd rather look for other options:
-
-- regular subvolume flags (btrfs_root_item::flags), so far there's just
-  one BTRFS_ROOT_SUBVOL_RDONLY, out of 64 in total, reserving eg. 8 for
-  the windows driver sounds viable
-
-- properties attached to the subvolume inode (stored in xattrs), this
-  would be in a namespace btrfs.* and brings some questions as the
-  property/xattr namespace is not yet clearly defined
-
-- enhance existing key + item, which would be BTRFS_PERSISTENT_ITEM_KEY,
-  key is fixed but objectid and offset are basically unused, the format
-  would be like
-  (COMPAT_FEATURE_..., PERSISTENT_ITEM_KEY, subvolid)
-  stored in the subvolume tree
-
-> With the third number being an arbitrary identifier for the feature (i.e. like
-> a UUID). If the driver doesn't understand a certain feature, it'd make the
-> subvol readonly or inaccessible, as appropriate.
-
-This should work with all the types above, assuming the driver needs to
-lookup the compat bits before accessing the subvolume. Each type has
-some pros/cons, I'd favor the PERSISTENT_ITEM as I once repurposed the
-specific key for such extensions.
-
-> It'd also have to disable
-> certain features, such as balancing, but the rest of the FS would be usable.
-
-> As I see it, there's several advantages to this approach:
+> Either by mount options in fstab, by chattr or by btrfs property set
 > 
-> * Because the feature identifier is a 64-bit integer rather than a bit, it
->   increases the effective compat flag namespace from 64 bits to 2^64.
+> I think it would be more consistent to have one interface for adjusting 
+> behavior.
 
-Besides the root_item::flags, the space for features is essentially
-unlimited.
+I agree with that and there's a proposal to unify that into the
+properties as interface once for all, accessible through the extended
+attributes. But there are much more ways how to do that wrong so it
+hasn't been implemented so far.
 
-> * It makes out-of-tree development a lot easier, as the increased namespace
->   makes it feasible to distribute patches without worrying about what's
->   going to happen upstream.
+A suggestion for an inode flag here and there comes from time to time,
+fixing one problem each time. Repeating that would lead to a mess that
+can be demonstrated on the existing mount options, so we've been there
+and need to do it the right way.
 
-I'd rather have all patches upstream, but realistically it'd be a
-nightmare to manage and maintain. I know only about a handful of
-features implemented in out of tree btrfs code (like on some NAS boxes)
-and users have already seen problems when trying to access the
-filesystem from a non-vendor kernel.
+> As I asked before, the future plan to have different storage profiles on 
+> subvolumes seem to have been sneakily(?) removed from the wiki
 
-With more patches circling around, claiming feature bits in some
-established namespace would be too encouraging I'm afraid and causing
-chaos and incompatibility.
+I don't think the per-subvolume storage options were ever tracked on
+wiki, the closest match is per-subvolume mount options that's still
+there
 
-Given the raising popularity of btrfs windows driver, I wouldn't mind
-reserving bits for windows-only use, possibly with some sane fallback
-behaviour on linux too.
+https://btrfs.wiki.kernel.org/index.php/Project_ideas#Per-subvolume_mount_options
 
-> * It lowers the cost of implementing new features (i.e., you don't have to
->   let users know that new filesystems will only work on Linux 5.x). This would
->   be especially important for encryption, as security means that you'd have to
->   make it easy to add new algorithms when necessary.
-
-The kernel version of a feature is meant as a known point regardless of
-potential backports in vendor trees. Feature status has been exported in
-sysfs for that reason and is supposed to be checked instead of the
-version.
-
-Extensibility of encryption algorithms needs to be part of the design,
-so I wouldn't use that one as an example, also because implementing that
-is supposedly intrusive to many parts of the code.
-
-> * It allows for features to be controlled by Linux CONFIG flags, meaning that
->   e.g. embedded devices wouldn't be burdened with a new feature for all time.
-
-I'm not a fan of adding per-feature config options, that's shifting the
-problems to a different stage. Not counting the debugging features like
-integrity checker or ref-verify and a historic relic ACLs, there are
-none. The main reason is to provide a filesystem driver with complete
-feature set so it works everywhere the same.
-
-I guess embedded usecase has to deal with limited resources or a
-specialized purpose so more intrusive code changes are necessary. We're
-more focused on the general usecase and try to keep it sane in terms of
-number of features or configurability (and it's getting complicated
-anyway).
+> - if that is indeed a dropped goal I can see why it makes sense to
+> keep the mount options, if not I think the mount options should go in
+> favor of btrfs property set.
