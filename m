@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D552F6A69
+	by mail.lfdr.de (Postfix) with ESMTP id A56852F6A6A
 	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 20:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbhANTDd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Jan 2021 14:03:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
+        id S1729484AbhANTDf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Jan 2021 14:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbhANTDc (ORCPT
+        with ESMTP id S1726131AbhANTDf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:03:32 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30097C061757
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:02:52 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id a1so2797920qvd.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:02:52 -0800 (PST)
+        Thu, 14 Jan 2021 14:03:35 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDC8C0613C1
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:02:55 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id v126so9292414qkd.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Jan 2021 11:02:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=JYefdxrobOV1rQEofDea+JCI8iReXUtrHjFcLZAe9Xw=;
-        b=B8hyGL5KRJEQi9J2lzt6BOdgQI9MV35TuBkycEOLhFB7EBsY2V/YEEnMIwX3MTtwKv
-         jPdfFG6M3GMfmEVFr/ps3MefwxVUzcXxdbV9VOMPaeIcBivgci9PRcWek4e/yWZHgTrM
-         5MiiPOIdkIHEQlQQCBH+WveJsnlsLNGh6vyqSUae9tUDD7Zp4CsNe+Oep5hlqSnnB0rZ
-         8hNme6xoQ+96F0k99N7L9StahV61quIVGa9JX0vPjRa9zFifnt7/1EzZDz4YhTu40ay0
-         gVGgExPVRQYRXDu4aV2jHLHGk/IE5hqD5IzrBODc5eILN9bkKh7DHr4hrA8/FSCiE5G8
-         sYTg==
+        bh=5lBcsVSQe8zbkNB8rPvqQ0cdziK2TSe40j+jI9StjhI=;
+        b=EInvVC6Ob3QpOhXjZjbZ4BILEO3fynckCh9uQqdxc8nFugHnbuwpyzwChMWVAPu09u
+         XjtnDEcLcS1HrDsOER6t1fgSCWniwKDX3oWIjZuAySwpZnL9TqHDVJU+phSe+iPEHX8c
+         NLMs0MMCQeVlei9hAgY8wlxbKoqQnqRfoOhrlRfrkhnEr9JmStvmVgZ3FfPct0zATnVX
+         cxHEnXsuBfng/WSMxNzsCHjWl76Ip+KO+KL6yV6wPKGK6D3B1GldshmqMl70Ebd2dFHv
+         mv1B4Ywz/iYZv9+LjR/mXF80W0NQCJOcWlU+cF6qLFmTxh1d1krxY9N48QhKIqZi0H7O
+         3bGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JYefdxrobOV1rQEofDea+JCI8iReXUtrHjFcLZAe9Xw=;
-        b=nLFExKYjgi3zulpQwzxW/lQff1VLEA1zgkvMf92kcMrubkWTGn3cxUMaizgVgFnso4
-         Wv/KaE4+HRXHXN0op+pYvJfapd4aonCNzvWLnr0iitmHk8u6bZrode6wl5G/Rk8iKyr2
-         T+YxRMpNE9yja1UxmjjznnUHJJ1W1r9rMMz9B9vPQGaEOA6Jl/zBmFQRdku+vmM77AFd
-         f83MfFmikBJboAy+mbnO4GcTfIZwESyHPUQXp5reqiy3Hgm2fYLrd0pymTFxqX4B0VKg
-         4IyNSeogowrdVFwGeDEK3HC4w1XM1GPHTPlLHTx5JB8fenRyCwhbS9+VXCki/7C90A0n
-         NQlg==
-X-Gm-Message-State: AOAM533u+xaAXtZ3fIXo5yA0udI6xw5g8/nDop3mhFBsdez1Shc22M8Z
-        QD1OkOErZ9MdTOeffg1DH/URqOyPauXNWD3O
-X-Google-Smtp-Source: ABdhPJxJ0FJQ/U+9+9oaZ8vIfIYJmWOKZX4oSpwxluWFg5Bt68Ektcu5cFEHz8+DP+cE/ZARCY0p3g==
-X-Received: by 2002:a0c:ebc2:: with SMTP id k2mr8551518qvq.24.1610650971023;
-        Thu, 14 Jan 2021 11:02:51 -0800 (PST)
+        bh=5lBcsVSQe8zbkNB8rPvqQ0cdziK2TSe40j+jI9StjhI=;
+        b=crByix80XnBMPtMab8GkWH8RkpeQE51WhFjWeI6Mg1U8J6eSSAqK1a4uAPAzn2oEXq
+         H1Ih8MhzkfIEmhyM2GsDwg0wQfv+KezcHHowP+MNSWXRRO12eFCnxF51it80gCxlZCSD
+         EpP8q0RjRIbAOmvDhRjb+XgGEPj9ECVu+7D+AJub5oRQ9r1SawyVs/AdpkpRWPe2PKft
+         Exth6F42sEa+tI2J1rlTF4aY520EaP5xPIWdJKt1I5wKqKvdACBmmUMIkl8A+ak/Sciy
+         PgNeqwrNNuOM2gdd0P6sTGFASdFRCHeoPGawynHPAO876lcWKm7PqhDelzOlrDZoNU9d
+         IYBA==
+X-Gm-Message-State: AOAM533+2hC5ZlrRRT/ZqwKaUdRb15PRqngg0M/eaycKm6i7VpZeFx0M
+        VH5Pjmf2yLS/E4ZUUryB0Wsh6HidqwXe+kcm
+X-Google-Smtp-Source: ABdhPJxmJEPxOz8E/dCWgS+R3o4Cyibi4AdPzav0X81ZeS3AZmtaAhO2zJmbYttOz6yFOVQwWEts2Q==
+X-Received: by 2002:a37:a747:: with SMTP id q68mr8700917qke.352.1610650972712;
+        Thu, 14 Jan 2021 11:02:52 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c20sm3327671qtj.29.2021.01.14.11.02.49
+        by smtp.gmail.com with ESMTPSA id o29sm3415225qtl.7.2021.01.14.11.02.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 11:02:50 -0800 (PST)
+        Thu, 14 Jan 2021 11:02:52 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 1/5] btrfs: fix reloc root leak with 0 ref reloc roots on recovery
-Date:   Thu, 14 Jan 2021 14:02:42 -0500
-Message-Id: <aa39cd6739424107752368ca4911b605b64eac07.1610650736.git.josef@toxicpanda.com>
+Subject: [PATCH v2 2/5] btrfs: splice remaining dirty_bg's onto the transaction dirty bg list
+Date:   Thu, 14 Jan 2021 14:02:43 -0500
+Message-Id: <b7495cd02ea95c2d4a0859beec708723c018586e.1610650736.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1610650736.git.josef@toxicpanda.com>
 References: <cover.1610650736.git.josef@toxicpanda.com>
@@ -62,43 +62,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When recovering a relocation, if we run into a reloc root that has 0
-refs we simply add it to the reloc_control->reloc_roots list, and then
-clean it up later.  The problem with this is __del_reloc_root() doesn't
-do anything if the root isn't in the radix tree, which in this case it
-won't be because we never call __add_reloc_root() on the reloc_root.
+While doing error injection testing with my relocation patches I hit the
+following ASSERT()
 
-This exit condition simply isn't correct really.  During normal
-operation we can remove ourselves from the rb tree and then we're meant
-to clean up later at merge_reloc_roots() time, and this happens
-correctly.  During recovery we're depending on free_reloc_roots() to
-drop our references, but we're short-circuiting.
+assertion failed: list_empty(&block_group->dirty_list), in fs/btrfs/block-group.c:3356
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/ctree.h:3357!
+invalid opcode: 0000 [#1] SMP NOPTI
+CPU: 0 PID: 24351 Comm: umount Tainted: G        W         5.10.0-rc3+ #193
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+RIP: 0010:assertfail.constprop.0+0x18/0x1a
+RSP: 0018:ffffa09b019c7e00 EFLAGS: 00010282
+RAX: 0000000000000056 RBX: ffff8f6492c18000 RCX: 0000000000000000
+RDX: ffff8f64fbc27c60 RSI: ffff8f64fbc19050 RDI: ffff8f64fbc19050
+RBP: ffff8f6483bbdc00 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffa09b019c7c38 R11: ffffffff85d70928 R12: ffff8f6492c18100
+R13: ffff8f6492c18148 R14: ffff8f6483bbdd70 R15: dead000000000100
+FS:  00007fbfda4cdc40(0000) GS:ffff8f64fbc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbfda666fd0 CR3: 000000013cf66002 CR4: 0000000000370ef0
+Call Trace:
+ btrfs_free_block_groups.cold+0x55/0x55
+ close_ctree+0x2c5/0x306
+ ? fsnotify_destroy_marks+0x14/0x100
+ generic_shutdown_super+0x6c/0x100
+ kill_anon_super+0x14/0x30
+ btrfs_kill_super+0x12/0x20
+ deactivate_locked_super+0x36/0xa0
+ cleanup_mnt+0x12d/0x190
+ task_work_run+0x5c/0xa0
+ exit_to_user_mode_prepare+0x1b1/0x1d0
+ syscall_exit_to_user_mode+0x54/0x280
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Fix this by continuing to check if we're on the list and dropping
-ourselves from the reloc_control root list and dropping our reference
-appropriately.  Change the corresponding BUG_ON() to an ASSERT() that
-does the correct thing if we aren't in the rb tree.
+This happened because I injected an error in btrfs_cow_block() while
+running the dirty block groups.  When we run the dirty block groups, we
+splice the list onto a local list to process.  However if an error
+occurs, we only cleanup the transactions dirty block group list, not any
+pending block groups we have on our locally spliced list.
+
+In fact if we fail to allocate a path in this function we'll also fail
+to clean up the splice list.
+
+Fix this by splicing the list back onto the transaction dirty block
+group list so that the block groups are cleaned up.  Then add a 'out'
+label and have the error conditions jump to out so that the errors are
+handled properly.  This also has the side-effect of fixing a problem
+where we would clear 'ret' on error because we unconditionally ran
+btrfs_run_delayed_refs().
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/btrfs/block-group.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 9f2289bcdde6..d29baf3822a7 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -669,9 +669,7 @@ static void __del_reloc_root(struct btrfs_root *root)
- 			RB_CLEAR_NODE(&node->rb_node);
- 		}
- 		spin_unlock(&rc->reloc_root_tree.lock);
--		if (!node)
--			return;
--		BUG_ON((struct btrfs_root *)node->data != root);
-+		ASSERT(!node || (struct btrfs_root *)node->data == root);
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 0886e81e5540..73632782d0cd 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2556,8 +2556,10 @@ int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 
+ 	if (!path) {
+ 		path = btrfs_alloc_path();
+-		if (!path)
+-			return -ENOMEM;
++		if (!path) {
++			ret = -ENOMEM;
++			goto out;
++		}
  	}
  
  	/*
+@@ -2651,16 +2653,14 @@ int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 			btrfs_put_block_group(cache);
+ 		if (drop_reserve)
+ 			btrfs_delayed_refs_rsv_release(fs_info, 1);
+-
+-		if (ret)
+-			break;
+-
+ 		/*
+ 		 * Avoid blocking other tasks for too long. It might even save
+ 		 * us from writing caches for block groups that are going to be
+ 		 * removed.
+ 		 */
+ 		mutex_unlock(&trans->transaction->cache_write_mutex);
++		if (ret)
++			goto out;
+ 		mutex_lock(&trans->transaction->cache_write_mutex);
+ 	}
+ 	mutex_unlock(&trans->transaction->cache_write_mutex);
+@@ -2684,7 +2684,12 @@ int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans)
+ 			goto again;
+ 		}
+ 		spin_unlock(&cur_trans->dirty_bgs_lock);
+-	} else if (ret < 0) {
++	}
++out:
++	if (ret < 0) {
++		spin_lock(&cur_trans->dirty_bgs_lock);
++		list_splice_init(&dirty, &cur_trans->dirty_bgs);
++		spin_unlock(&cur_trans->dirty_bgs_lock);
+ 		btrfs_cleanup_dirty_bgs(cur_trans, fs_info);
+ 	}
+ 
 -- 
 2.26.2
 
