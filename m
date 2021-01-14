@@ -2,77 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F122F69F2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 19:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457D32F6A01
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Jan 2021 19:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbhANStl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Jan 2021 13:49:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40980 "EHLO mx2.suse.de"
+        id S1726986AbhANSw3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Jan 2021 13:52:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42400 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727773AbhANStl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:49:41 -0500
+        id S1726310AbhANSw3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:52:29 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7C9AB77D;
-        Thu, 14 Jan 2021 18:48:59 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 6E16CB1C4;
+        Thu, 14 Jan 2021 18:51:48 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7150BDA7EE; Thu, 14 Jan 2021 19:47:06 +0100 (CET)
-Date:   Thu, 14 Jan 2021 19:47:06 +0100
+        id 159B1DA7EE; Thu, 14 Jan 2021 19:49:55 +0100 (CET)
+Date:   Thu, 14 Jan 2021 19:49:54 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Stefano Babic <sbabic@denx.de>
-Cc:     dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: Re: btrfs-progs license
-Message-ID: <20210114184706.GD6430@twin.jikos.cz>
+To:     =?iso-8859-1?Q?St=E9phane?= Lesimple <stephane_btrfs2@lesimple.fr>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: check: allow force v1 space cache cleanup
+ even the fs has v2 space cache enabled
+Message-ID: <20210114184954.GE6430@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Stefano Babic <sbabic@denx.de>,
-        Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-References: <b927ca28-e280-4d79-184f-b72867dbdaa8@denx.de>
- <X8/pUT3B1+uluATv@relinquished.localdomain>
- <20201210112742.GC6430@twin.jikos.cz>
- <7f16d12b-c420-86f1-2cb5-ece52bec6a2f@denx.de>
+Mail-Followup-To: dsterba@suse.cz,
+        =?iso-8859-1?Q?St=E9phane?= Lesimple <stephane_btrfs2@lesimple.fr>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20201229003035.13329-1-wqu@suse.com>
+ <e471c466476658fd6c40cdaf71748d52@lesimple.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <7f16d12b-c420-86f1-2cb5-ece52bec6a2f@denx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e471c466476658fd6c40cdaf71748d52@lesimple.fr>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:03:04PM +0100, Stefano Babic wrote:
-> I read this, thanks.
+On Tue, Dec 29, 2020 at 09:34:51AM +0000, Stéphane Lesimple wrote:
+> December 29, 2020 1:32 AM, "Qu Wenruo" <wqu@suse.com> wrote:
 > 
-> I was quite confused about the license for libbtrfsutil due to both
-> "COPYING" and "COPYING.LESSER" in the library path. COPYING reports
-> GPLv3. But headers in file set LGPLv3, sure, and btrfs.h is GPLv2.
-> 
-> 
-> > I'd like to understand what's the problem with LGPLv3 before we'd
-> > consider switching to LGPLv2, which I'd rather not do.
+> > There are cases where v1 free space cache is still left while user has
+> > already enabled v2 cache.
 > > 
+> > In that case, we still want to force v1 space cache cleanup in
+> > btrfs-check.
+> > 
+> > This patch will remove the v2 check if we're cleaning up v1 cache,
+> > allowing us to cleanup the leftover.
+> > 
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> > check/main.c | 6 ------
+> > 1 file changed, 6 deletions(-)
+> > 
+> > diff --git a/check/main.c b/check/main.c
+> > index 8ad7f5886f06..f4755d260bfe 100644
+> > --- a/check/main.c
+> > +++ b/check/main.c
+> > @@ -9917,12 +9917,6 @@ static int do_clear_free_space_cache(int clear_version)
+> > int ret = 0;
+> > 
+> > if (clear_version == 1) {
+> > - if (btrfs_fs_compat_ro(gfs_info, FREE_SPACE_TREE)) {
+> > - error(
+> > - "free space cache v2 detected, use --clear-space-cache v2");
+> > - ret = 1;
+> > - goto close_out;
+> > - }
+> > ret = clear_free_space_cache();
+> > if (ret) {
+> > error("failed to clear free space cache");
+> > -- 
+> > 2.29.2
 > 
-> Please forgive me ig I am not correct because I am just a developer and
-> not a lawyer.
 > 
-> The question rised already when QT switched from LGPv2 to LGPLv3, and
-> after the switch what companies should do to be license compliant. Based
-> on information given by qt.io and from lawyers (I find again at least
-> this link https://www.youtube.com/watch?v=lSYDWnsfWUk), it is possible
-> to link even close source SW to libraries, but to avoid the known
-> "tivoization", the manufacturer or user of a library must provide
-> instruction to replace the running code. This is an issue for embedded
-> devices, specially in case the device is closed with keys by the
-> manufacturer to avoid attacks or replacement with malware - for example,
-> medical devices. This means that such a keys to be licence compliant
-> (anyone please correct me if I am wrong) must be provided, making the
-> keys itself without sense. The issue does not happen with LGPv2.1, and
-> this is the reason why many manufacturers are strictly checking to not
-> have (L)GPLv3 code on their device.
+> Maybe we should keep the message but make it not fatal?
+> Something like "free space cache v2 detected, use --clear-space-cache
+> v2 to clear it. Proceeding in clearing potential v1 leftovers as
+> asked..."?
 
-I haven't forgotten about this, but haven't researched that enough to
-make the decision. I need to do the 5.10 release and that will be
-without change to the license. There are no new changes to libbtrfsutil
-so the number of people who'd need to agree with the potential
-relicensing remains the same.
+This sounds like a good option, thanks. I'll update the patch when I
+commit it.
