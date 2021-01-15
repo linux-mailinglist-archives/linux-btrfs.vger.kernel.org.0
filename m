@@ -2,58 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB892F87A9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jan 2021 22:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7384F2F87E5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jan 2021 22:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbhAOV1C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jan 2021 16:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+        id S1726417AbhAOVtk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jan 2021 16:49:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbhAOV1A (ORCPT
+        with ESMTP id S1725933AbhAOVtj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jan 2021 16:27:00 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2166C0613D3
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jan 2021 13:26:20 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id c7so13146375qke.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jan 2021 13:26:20 -0800 (PST)
+        Fri, 15 Jan 2021 16:49:39 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695B6C061757
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jan 2021 13:48:59 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id n142so13228090qkn.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jan 2021 13:48:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VDhKbcgV/65GAMkqB69WL7wDM9iWs5UNRt7RJ3NENx4=;
-        b=CHT8B6mGyLv8lEEblqEMjBBW5K3OoOuaNpI705I7mrReU5m86FQyHRCbRHfH3yTXPw
-         +S3LCQS4jKg1ZqYAKA9GymPmaeLOU0Rz/DGFaZ7aubrkj+klIT+ZMnV+1Vy2j15hsX5L
-         cKiKYCsD1JAbReCUtiGQKnW0tvNpW7tAoiZTVQkLlNRQIVCg1jV9sQas2KrqJ7V8l6yq
-         jsV8yAiHN2pXyrEzxxL/EoFjd2XPzniCiXFO1nbJg34dSg+LhRSWyiREWzPiN4pS9Te2
-         KHf2y18q5ULf0gEbDA9QU9ETivkwDzqFOe1MHDD/RdAVqWD/eogWwPzHfdXNzKZWObuY
-         LwKw==
+        bh=UO+E42G065uPmcbDSA2LGRWeff5X0UJUo0nNweBTWyM=;
+        b=AxKKVIcCN561RN8X8M70pAU8vZFtYb7fsGTF5v5avbAofPGCfJPE3CJxZsab0OasMI
+         3pOUwgW8TmEO677URrXrOpWXG4mep/+IOCxo/WKmXbGp9/EOA3dqSFDJwFgrav2ndzr7
+         5FWw5bZ7UT1oItwEbGoU2J72onNgL8R6kA8GEpheUVPHtJZb2byobpxyFWg3ywofEaZt
+         S3V6iHviQyMMzry+65kvGVPQjynD+IxQo3o9HvRDKp0NpUUi6SlfEmDxwg0qpBKXrDjD
+         GSx3R9BREvOzmNBcgbup2BQvne/niMUwlzv3AhtQ7rBKKQjfkOyhN0kC8r0R05Yoxh6/
+         pD0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VDhKbcgV/65GAMkqB69WL7wDM9iWs5UNRt7RJ3NENx4=;
-        b=pZdjO/Bmq+3ohCJeobOtOV8P+321u3IUqsS1dSNO+ppmD85Qe/FBCO7C0e6D5/bD5t
-         O5WnL/8N4l6Twb/3SwMiwE6pmT9xncSkfXsZyagn1QurhjnUtF0GyJ4mF56q8WZtlfDn
-         gA+Z+qPNl/8zm4KGF33Ie0by2kv/Hq/rqr/cIqxGh9HvcQbsSoH/Dte+Ri/2J3ElXTVs
-         DDP6JW/HEP8eQAQz2kyMzjP8DO60arm8AKnAizAz8taKZADrUIDQUxPzomood/Dh5RzR
-         mehkGBFB7dGlvwjqSDwE/5tu5r2No2P75c4Z/zywehGR+V/AySMkymTwgfDch0AEq7di
-         HdDQ==
-X-Gm-Message-State: AOAM532SAxKt8jVkn15BOxSH4VJ+6wGwVb4Xqxk4GSC39WrxN1TN9Kps
-        2cCfVK17seg46aJb3WJ+RXTOFjFxcNJn840l
-X-Google-Smtp-Source: ABdhPJzNVdr8BHicNx9Y0BIHIJQpizCJF3LcWD4mX9s6ttErcvO5fMQNrMsskY+b+oAMpPokpS1CsQ==
-X-Received: by 2002:a37:5203:: with SMTP id g3mr14780618qkb.196.1610745979492;
-        Fri, 15 Jan 2021 13:26:19 -0800 (PST)
+        bh=UO+E42G065uPmcbDSA2LGRWeff5X0UJUo0nNweBTWyM=;
+        b=oFmn7g/+2iehro3CYhrgYXZKxudvi0aRb15nvO26pZpe2A5n5a+KnqOcYz4ejbeQdN
+         WkO3CpvLu6OtiUDvx+m3hZezUdxJQc7ycaHEaYr+BwtbvN/zQpmbXkjlAM6j5coTyRn8
+         pSvvmGw0G6GCnwEj1r+T/T1agn8WXwV1+3gj6XV+imjZplVQ4D56ZNcT/0g6u5leelLU
+         3BN3k3cLG+VE8cwreZL6X8l+Y20z0GqYDb4lifPwruUaZVbo5mJ4Y0DDcKkJPeS4bszI
+         ZEVmjXw1QKJP322x0erSMPlTAtwFCGwPctPE8suf2MaX70ItAuDbqjeikoe+vB88xHST
+         KMiA==
+X-Gm-Message-State: AOAM530EQLGfhyLasEYo4S+7D0/O6T+7pDS4XVDlLstoQVBaM6xE+d/G
+        Q7YmV+ADTY2DboBwoV5KBo6utdP9IudetRnQ
+X-Google-Smtp-Source: ABdhPJwA8sgPhCCyPnmvWttCQBxfFUYafeYZBtORSxNY61yc6HCom2W+GWJLpXcIgGz6aHKev9DN1Q==
+X-Received: by 2002:a05:620a:11ba:: with SMTP id c26mr15063114qkk.140.1610747338319;
+        Fri, 15 Jan 2021 13:48:58 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id r190sm5977524qka.54.2021.01.15.13.26.18
+        by smtp.gmail.com with ESMTPSA id z20sm5729784qkz.37.2021.01.15.13.48.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 13:26:18 -0800 (PST)
+        Fri, 15 Jan 2021 13:48:57 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     stable@vger.kernel.org
-Subject: [PATCH v3] btrfs: fix possible free space tree corruption with online conversion
-Date:   Fri, 15 Jan 2021 16:26:17 -0500
-Message-Id: <c3b7d56951de1a9163b96a8ce90ef71b3532ec71.1610745887.git.josef@toxicpanda.com>
+Subject: [PATCH v3 0/2] ->total_bytes_pinned fixes for early ENOSPC issues
+Date:   Fri, 15 Jan 2021 16:48:54 -0500
+Message-Id: <cover.1610747242.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,115 +60,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While running btrfs/011 in a loop I would often ASSERT() while trying to
-add a new free space entry that already existed, or get an -EEXIST while
-adding a new block to the extent tree, which is another indication of
-double allocation.
-
-This occurs because when we do the free space tree population, we create
-the new root and then populate the tree and commit the transaction.
-The problem is when you create a new root, the root node and commit root
-node are the same.  During this initial transaction commit we will run
-all of the delayed refs that were paused during the free space tree
-generation, and thus begin to cache block groups.  While caching block
-groups the caching thread will be reading from the main root for the
-free space tree, so as we make allocations we'll be changing the free
-space tree, which can cause us to add the same range twice which results
-in either the ASSERT(ret != -EEXIST); in __btrfs_add_free_space, or in a
-variety of different errors when running delayed refs because of a
-double allocation.
-
-Fix this by marking the fs_info as unsafe to load the free space tree,
-and fall back on the old slow method.  We could be smarter than this,
-for example caching the block group while we're populating the free
-space tree, but since this is a serious problem I've opted for the
-simplest solution.
-
-CC: stable@vger.kernel.org # 4.5+
-Fixes: a5ed91828518 ("Btrfs: implement the free space B-tree")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
 v2->v3:
-- Updated the changelog to be more specific about the scenario that the problem
-  happens under.
-- Fixed the stable tag as well.
-
+- Updated the changelog in patch 2 to refer to the patchset that inspired the
+  change.
+- Added Nik's reviewed-by for patch 2.
 v1->v2:
-- Dropped the UNTRUSTED bit on abort.
+- Rebase onto latest misc-next.
+- Added Nikolay's reviewed-by for the first patch.
 
- fs/btrfs/block-group.c     | 11 ++++++++++-
- fs/btrfs/ctree.h           |  3 +++
- fs/btrfs/free-space-tree.c | 10 +++++++++-
- 3 files changed, 22 insertions(+), 2 deletions(-)
+--- Original email ---
+Hello,
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 0886e81e5540..290f05e87a6b 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -673,7 +673,16 @@ static noinline void caching_thread(struct btrfs_work *work)
- 		wake_up(&caching_ctl->wait);
- 	}
- 
--	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
-+	/*
-+	 * If we are in the transaction that populated the free space tree we
-+	 * can't actually cache from the free space tree as our commit root and
-+	 * real root are the same, so we could change the contents of the blocks
-+	 * while caching.  Instead do the slow caching in this case, and after
-+	 * the transaction has committed we will be safe.
-+	 */
-+	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE) &&
-+	    !(test_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
-+		       &fs_info->flags)))
- 		ret = load_free_space_tree(caching_ctl);
- 	else
- 		ret = load_extent_tree_free(caching_ctl);
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 1bd416e5a731..1fdb5dbe5287 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -563,6 +563,9 @@ enum {
- 
- 	/* Indicate that we need to cleanup space cache v1 */
- 	BTRFS_FS_CLEANUP_SPACE_CACHE_V1,
-+
-+	/* Indicate that we can't trust the free space tree for caching yet. */
-+	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
- };
- 
- /*
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index e33a65bd9a0c..a33bca94d133 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -1150,6 +1150,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
- 		return PTR_ERR(trans);
- 
- 	set_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
-+	set_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
- 	free_space_root = btrfs_create_tree(trans,
- 					    BTRFS_FREE_SPACE_TREE_OBJECTID);
- 	if (IS_ERR(free_space_root)) {
-@@ -1171,11 +1172,18 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
- 	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
- 	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
- 	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
-+	ret = btrfs_commit_transaction(trans);
- 
--	return btrfs_commit_transaction(trans);
-+	/*
-+	 * Now that we've committed the transaction any reading of our commit
-+	 * root will be safe, so we can cache from the free space tree now.
-+	 */
-+	clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
-+	return ret;
- 
- abort:
- 	clear_bit(BTRFS_FS_CREATING_FREE_SPACE_TREE, &fs_info->flags);
-+	clear_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
- 	btrfs_abort_transaction(trans, ret);
- 	btrfs_end_transaction(trans);
- 	return ret;
+Nikolay discovered a regression with generic/371 with my delayed refs patches
+applied.  This isn't actually a regression caused by those patches, but rather
+those patches uncovered a problem that has existed forever, we just have papered
+over it with our aggressive delayed ref flushing.  Enter these two patches.
+
+The first patch is more of a refactoring and a simplification.  We've been
+passing in a &old_refs and a &new_refs into the delayed ref code, and
+duplicating the
+
+if (old_refs >= 0 && new_refs < 0)
+	->total_bytes_pinned += bytes;
+else if (old_refs < 0 && new_refs >= 0)
+	->total_bytes_pinned -= bytes;
+
+logic for data and metadata.  This was made even more confusing by the fact that
+we clean up this accounting when we drop the delayed ref, but also include it
+when we actually pin the extents down properly.  It took me quite a while to
+realize that we weren't mis-counting ->total_bytes_pinned because of how weirdly
+complicated the accounting was.
+
+I've refactored this code to make the handling distinct.  We modify it in the
+delayed refs code itself, which allows us to clean up a bunch of function
+arguments and duplicated code.  It also unifies how we handle the delayed ref
+side of the ->total_bytes_pinned modification.  Now it's a little easier to see
+who is responsible for the modification and where.
+
+The second patch is the actual fix for the problem.  Previously we had simply
+been assuming that ->total_ref_mod < 0 meant that we were freeing stuff.
+However if we allocate and free in the same transaction, ->total_ref_mod == 0
+also means we're freeing.  Adding that case is what fixes the problem Nikolay
+was seeing.  Thanks,
+
+Josef
+
+Josef Bacik (2):
+  btrfs: handle ->total_bytes_pinned inside the delayed ref itself
+  btrfs: account for new extents being deleted in total_bytes_pinned
+
+ fs/btrfs/block-group.c |  11 ++--
+ fs/btrfs/delayed-ref.c |  60 ++++++++++++-------
+ fs/btrfs/delayed-ref.h |  16 +++--
+ fs/btrfs/extent-tree.c | 129 ++++++++++-------------------------------
+ fs/btrfs/space-info.h  |  17 ++++++
+ 5 files changed, 103 insertions(+), 130 deletions(-)
+
 -- 
 2.26.2
 
