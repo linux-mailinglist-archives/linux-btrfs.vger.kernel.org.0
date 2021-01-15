@@ -2,159 +2,318 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527542F736B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jan 2021 08:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D962F7389
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jan 2021 08:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730598AbhAOHB3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jan 2021 02:01:29 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:41680 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730242AbhAOHBW (ORCPT
+        id S1731345AbhAOHJg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jan 2021 02:09:36 -0500
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:55830 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726494AbhAOHJf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:01:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610694081; x=1642230081;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=csLrrBm102qZuWi7D/pLp/YzsEOPSdkmDmkPCx5pep0=;
-  b=mx7jRgYdmq9jzwstZyKQKa/U7pNNHKfi5ALcw1Nfoe/Lyzj9tQM7yuLY
-   VImisj0m3itGLjLiO8zMw3LC+2dmt+y3SzZITb/iuXej9nVaYBoi8VOcU
-   S72ikRwFbpEQW/ZR6qBG0aYSuxw9O5VSpgQQNPMle1BIzzA6QknJd+h6j
-   g2+wBKjKekq+sIxIhe78XajBZ3VfoGKgpr/nHDrK5eyp7Ka0zxb2MCLXz
-   troYAAKDn4PnDvsPIYJZ1V/1TgCP/uiTrUH+N8vkHohZz4cdAfijsAWvN
-   aav32u9YO1TteCzk/HgmeGuhrmb+wq9jDZOIdbL+eohYIklBWhfVdh8Bm
-   g==;
-IronPort-SDR: 0U4N7+dTgMFXe6RnAa9LL1YliS+3V9Dz5e2aEqgx9BsIkM5VgjA8JNWPQkuSWiPrrYDKJ8Tcyt
- imgbJuBt301SDC7dfVrH17tew9IIMFX6KxtDyTAcw4M7PXKSsnxtAaNUUvtbfUeIYwtNqippcn
- B7QiKKRZJcmwPhzCMndvWFYQw8jiBPQ42/LPxDU1GKKJkf7Vaui5/QED/Mng6yRFFLbPzPdq6n
- yWWSu5b+QKfLnbHouo9K4onV9yBio/MA1zBPn+QyUCgV+DuT1sBLmUxRfrhB/46ZIu0xELdekx
- WtE=
-X-IronPort-AV: E=Sophos;i="5.79,348,1602518400"; 
-   d="scan'208";a="161928332"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Jan 2021 14:56:27 +0800
-IronPort-SDR: vqYf03/TOb5w/pmfOyfBil4T+Qxal3w7Z0npkwCs2ZPWoC7D/K0lzcyYxT4XY+FsTIsagyW/kE
- CVZJ8hVgp+H8F2QepHQ0Pprg6NxAPweJVzmDPf+TBf9UQCxFMap7zOLDK7mp5przhOg6iaGtdy
- iAO6OdXZMdJqs319MsfP+H895WD1ozowBpAvlvpr7Nq7Q6HCGzZKq7Hh3ao7dz96I7kV2ir6ZV
- K8V/5Ho53IF9mQcgrKKTfr6H+bufvkLtmAo58S6m3Zqkwp/G34hN6ICTZXE7s2rThiQqz4MR4w
- jOM1wD0Joqe91ZfulopxuosG
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2021 22:41:09 -0800
-IronPort-SDR: zFsbnVfml/IZovoWvEj385HiMenjtojOf4stmxLN/SV3DNmZh1WZG5OP48nu9oBlxI7T1ltz55
- JivfmctVVWz2EsCp1OnIsSHLgGf+7dFM8A/ZpRtqsUQNOUJsK1e14QFutnSjjPrzm+9+/xTWjf
- QzqLIAKZBVF4yoSSAjUl8eLmCe9YvH9sHqYJ86wzxeMmO39xy0cyX/HKwkd6u8ibPIYVZSyKTq
- lq70pS8Q90iF0M2dOPIObks4mgp1FN0vi95DTzPhZH32ozTeWVdtLZJKhjqd7AdVx9JdO3xdWC
- vMs=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip01.wdc.com with SMTP; 14 Jan 2021 22:56:26 -0800
-Received: (nullmailer pid 1916502 invoked by uid 1000);
-        Fri, 15 Jan 2021 06:55:02 -0000
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
+        Fri, 15 Jan 2021 02:09:35 -0500
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id E32916C007D6;
+        Fri, 15 Jan 2021 09:08:41 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1610694521; bh=GRqzfruJMHJhOS+73NqVaMpWtYx8YxcDSN1y5keLhag=;
+        h=References:From:To:Cc:Subject:In-reply-to:Date;
+        b=QaQAam72yaZMt3fmkr9UHXEwWfPXatJKKEHL2GshXEutG2F7h+4jTaRgVv8jsWZLZ
+         Q0vEiZZKauxN8ROBiXMyNHZJXvzyXEL3zWCLQfDkqX+OwV/SRh3RRg77LgIkyARiOv
+         XKwZcJ4UfmW7Ha5dN1/8Hdjd8nZtROUu14sXiaME=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id C32666C007D2;
+        Fri, 15 Jan 2021 09:08:41 +0200 (EET)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id 8RqygKFhkmwG; Fri, 15 Jan 2021 09:08:41 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 2A1766C007B1;
+        Fri, 15 Jan 2021 09:08:41 +0200 (EET)
+Received: from nas (unknown [45.87.95.231])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 6F0921BE00B3;
+        Fri, 15 Jan 2021 09:08:35 +0200 (EET)
+References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
+ <e2332c7ecb8e4b1a98a769db75ceac899ab1c3c0.1608608848.git.naohiro.aota@wdc.com>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Su Yue <l@damenly.su>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
+        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v12 41/41] btrfs: reorder log node allocation
-Date:   Fri, 15 Jan 2021 15:53:45 +0900
-Message-Id: <2bec51e7fed71bf3b386360686b8bd25b1c81e62.1610693037.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1610693036.git.naohiro.aota@wdc.com>
-References: <cover.1610693036.git.naohiro.aota@wdc.com>
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v11 22/40] btrfs: split ordered extent when bio is sent
+In-reply-to: <e2332c7ecb8e4b1a98a769db75ceac899ab1c3c0.1608608848.git.naohiro.aota@wdc.com>
+Message-ID: <eeim1xue.fsf@damenly.su>
+Date:   Fri, 15 Jan 2021 15:08:25 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6NpmlYxOGzysiV+lRWetdgtNzzYrL+Ds55TE3V0G3GeDUSOAe1YFVw6+mHJ0Tn2k
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is the 3/3 patch to enable tree-log on ZONED mode.
 
-The allocation order of nodes of "fs_info->log_root_tree" and nodes of
-"root->log_root" is not the same as the writing order of them. So, the
-writing causes unaligned write errors.
+On Tue 22 Dec 2020 at 11:49, Naohiro Aota <naohiro.aota@wdc.com> 
+wrote:
 
-This patch reorders the allocation of them by delaying allocation of the
-root node of "fs_info->log_root_tree," so that the node buffers can go out
-sequentially to devices.
+> For a zone append write, the device decides the location the 
+> data is
+> written to. Therefore we cannot ensure that two bios are written
+> consecutively on the device. In order to ensure that a ordered 
+> extent maps
+> to a contiguous region on disk, we need to maintain a "one bio 
+> == one
+> ordered extent" rule.
+>
+> This commit implements the splitting of an ordered extent and 
+> extent map
+> on bio submission to adhere to the rule.
+>
+> [testbot] made extract_ordered_extent static
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  fs/btrfs/inode.c        | 89 
+>  +++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/ordered-data.c | 76 
+>  +++++++++++++++++++++++++++++++++++
+>  fs/btrfs/ordered-data.h |  2 +
+>  3 files changed, 167 insertions(+)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 37782b4cfd28..15e0c7714c7f 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2217,6 +2217,86 @@ static blk_status_t 
+> btrfs_submit_bio_start(struct inode *inode, struct bio *bio,
+>  	return btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
+>  }
+>
+> +static int extract_ordered_extent(struct inode *inode, struct 
+> bio *bio,
+> +				  loff_t file_offset)
+> +{
+> +	struct btrfs_ordered_extent *ordered;
+> +	struct extent_map *em = NULL, *em_new = NULL;
+> +	struct extent_map_tree *em_tree = 
+> &BTRFS_I(inode)->extent_tree;
+> +	u64 start = (u64)bio->bi_iter.bi_sector << SECTOR_SHIFT;
+> +	u64 len = bio->bi_iter.bi_size;
+> +	u64 end = start + len;
+> +	u64 ordered_end;
+> +	u64 pre, post;
+> +	int ret = 0;
+> +
+> +	ordered = btrfs_lookup_ordered_extent(BTRFS_I(inode), 
+> file_offset);
+> +	if (WARN_ON_ONCE(!ordered))
+> +		return -EIO;
+> +
+> +	/* No need to split */
+> +	if (ordered->disk_num_bytes == len)
+> +		goto out;
+> +
+> +	/* We cannot split once end_bio'd ordered extent */
+> +	if (WARN_ON_ONCE(ordered->bytes_left != 
+> ordered->disk_num_bytes)) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	/* We cannot split a compressed ordered extent */
+> +	if (WARN_ON_ONCE(ordered->disk_num_bytes != 
+> ordered->num_bytes)) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	/* We cannot split a waited ordered extent */
+> +	if (WARN_ON_ONCE(wq_has_sleeper(&ordered->wait))) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	ordered_end = ordered->disk_bytenr + ordered->disk_num_bytes;
+> +	/* bio must be in one ordered extent */
+> +	if (WARN_ON_ONCE(start < ordered->disk_bytenr || end > 
+> ordered_end)) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	/* Checksum list should be empty */
+> +	if (WARN_ON_ONCE(!list_empty(&ordered->list))) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	pre = start - ordered->disk_bytenr;
+> +	post = ordered_end - end;
+> +
+> +	btrfs_split_ordered_extent(ordered, pre, post);
+> +
+> +	read_lock(&em_tree->lock);
+> +	em = lookup_extent_mapping(em_tree, ordered->file_offset, 
+> len);
+> +	if (!em) {
+> +		read_unlock(&em_tree->lock);
+> +		ret = -EIO;
+> +		goto out;
+> +	}
+> +	read_unlock(&em_tree->lock);
+> +
+> +	ASSERT(!test_bit(EXTENT_FLAG_COMPRESSED, &em->flags));
+> +	em_new = create_io_em(BTRFS_I(inode), em->start + pre, len,
+> +			      em->start + pre, em->block_start + pre, len,
+> +			      len, len, BTRFS_COMPRESS_NONE,
+> +			      BTRFS_ORDERED_REGULAR);
+>
+"if (IS_ERR(em_new)) ..." is lost.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/disk-io.c  |  7 -------
- fs/btrfs/tree-log.c | 24 ++++++++++++++++++------
- 2 files changed, 18 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 12c23cb410fd..0b403affa59c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1241,18 +1241,11 @@ int btrfs_init_log_root_tree(struct btrfs_trans_handle *trans,
- 			     struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_root *log_root;
--	int ret;
- 
- 	log_root = alloc_log_tree(trans, fs_info);
- 	if (IS_ERR(log_root))
- 		return PTR_ERR(log_root);
- 
--	ret = btrfs_alloc_log_tree_node(trans, log_root);
--	if (ret) {
--		btrfs_put_root(log_root);
--		return ret;
--	}
--
- 	WARN_ON(fs_info->log_root_tree);
- 	fs_info->log_root_tree = log_root;
- 	return 0;
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 71a1c0b5bc26..d8315363dc1e 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3159,6 +3159,16 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
- 	list_add_tail(&root_log_ctx.list, &log_root_tree->log_ctxs[index2]);
- 	root_log_ctx.log_transid = log_root_tree->log_transid;
- 
-+	mutex_lock(&fs_info->tree_log_mutex);
-+	if (!log_root_tree->node) {
-+		ret = btrfs_alloc_log_tree_node(trans, log_root_tree);
-+		if (ret) {
-+			mutex_unlock(&fs_info->tree_log_mutex);
-+			goto out;
-+		}
-+	}
-+	mutex_unlock(&fs_info->tree_log_mutex);
-+
- 	/*
- 	 * Now we are safe to update the log_root_tree because we're under the
- 	 * log_mutex, and we're a current writer so we're holding the commit
-@@ -3317,12 +3327,14 @@ static void free_log_tree(struct btrfs_trans_handle *trans,
- 		.process_func = process_one_buffer
- 	};
- 
--	ret = walk_log_tree(trans, log, &wc);
--	if (ret) {
--		if (trans)
--			btrfs_abort_transaction(trans, ret);
--		else
--			btrfs_handle_fs_error(log->fs_info, ret, NULL);
-+	if (log->node) {
-+		ret = walk_log_tree(trans, log, &wc);
-+		if (ret) {
-+			if (trans)
-+				btrfs_abort_transaction(trans, ret);
-+			else
-+				btrfs_handle_fs_error(log->fs_info, ret, NULL);
-+		}
- 	}
- 
- 	clear_extent_bits(&log->dirty_log_pages, 0, (u64)-1,
--- 
-2.27.0
+> +	free_extent_map(em_new);
+> +
+> +out:
+> +	free_extent_map(em);
+> +	btrfs_put_ordered_extent(ordered);
+> +
+> +	return ret;
+> +}
+> +
+>  /*
+>   * extent_io.c submission hook. This does the right thing for 
+>   csum calculation
+>   * on write, or reading the csums from the tree before a read.
+> @@ -2252,6 +2332,15 @@ blk_status_t btrfs_submit_data_bio(struct 
+> inode *inode, struct bio *bio,
+>  	if (btrfs_is_free_space_inode(BTRFS_I(inode)))
+>  		metadata = BTRFS_WQ_ENDIO_FREE_SPACE;
+>
+> +	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+> +		struct page *page = bio_first_bvec_all(bio)->bv_page;
+> +		loff_t file_offset = page_offset(page);
+> +
+> +		ret = extract_ordered_extent(inode, bio, file_offset);
+> +		if (ret)
+> +			goto out;
+> +	}
+> +
+>  	if (btrfs_op(bio) != BTRFS_MAP_WRITE) {
+>  		ret = btrfs_bio_wq_end_io(fs_info, bio, metadata);
+>  		if (ret)
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 79d366a36223..4f8f48e7a482 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -898,6 +898,82 @@ void 
+> btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode, 
+> u64 start,
+>  	}
+>  }
+>
+> +static void clone_ordered_extent(struct btrfs_ordered_extent 
+> *ordered, u64 pos,
+> +				 u64 len)
+> +{
+> +	struct inode *inode = ordered->inode;
+> +	u64 file_offset = ordered->file_offset + pos;
+> +	u64 disk_bytenr = ordered->disk_bytenr + pos;
+> +	u64 num_bytes = len;
+> +	u64 disk_num_bytes = len;
+> +	int type;
+> +	unsigned long flags_masked =
+> +		ordered->flags & ~(1 << BTRFS_ORDERED_DIRECT);
+> +	int compress_type = ordered->compress_type;
+> +	unsigned long weight;
+> +
+> +	weight = hweight_long(flags_masked);
+> +	WARN_ON_ONCE(weight > 1);
+> +	if (!weight)
+> +		type = 0;
+> +	else
+> +		type = __ffs(flags_masked);
+> +
+> +	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered->flags)) {
+> +		WARN_ON_ONCE(1);
+> +		btrfs_add_ordered_extent_compress(BTRFS_I(inode), 
+> file_offset,
+> +						  disk_bytenr, num_bytes,
+> +						  disk_num_bytes, type,
+> +						  compress_type);
+> +	} else if (test_bit(BTRFS_ORDERED_DIRECT, &ordered->flags)) {
+> +		btrfs_add_ordered_extent_dio(BTRFS_I(inode), file_offset,
+> +					     disk_bytenr, num_bytes,
+> +					     disk_num_bytes, type);
+> +	} else {
+> +		btrfs_add_ordered_extent(BTRFS_I(inode), file_offset,
+> +					 disk_bytenr, num_bytes, disk_num_bytes,
+> +					 type);
+> +	}
+> +}
+> +
+> +void btrfs_split_ordered_extent(struct btrfs_ordered_extent 
+> *ordered, u64 pre,
+> +				u64 post)
+> +{
+> +	struct inode *inode = ordered->inode;
+> +	struct btrfs_ordered_inode_tree *tree = 
+> &BTRFS_I(inode)->ordered_tree;
+> +	struct rb_node *node;
+> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> +
+> +	spin_lock_irq(&tree->lock);
+> +	/* Remove from tree once */
+> +	node = &ordered->rb_node;
+> +	rb_erase(node, &tree->tree);
+> +	RB_CLEAR_NODE(node);
+> +	if (tree->last == node)
+> +		tree->last = NULL;
+> +
+> +	ordered->file_offset += pre;
+> +	ordered->disk_bytenr += pre;
+> +	ordered->num_bytes -= (pre + post);
+> +	ordered->disk_num_bytes -= (pre + post);
+> +	ordered->bytes_left -= (pre + post);
+> +
+> +	/* Re-insert the node */
+> +	node = tree_insert(&tree->tree, ordered->file_offset,
+> +			   &ordered->rb_node);
+> +	if (node)
+> +		btrfs_panic(fs_info, -EEXIST,
+> +				"zoned: inconsistency in ordered tree at offset 
+> %llu",
+> +				ordered->file_offset);
+> +
+> +	spin_unlock_irq(&tree->lock);
+> +
+> +	if (pre)
+> +		clone_ordered_extent(ordered, 0, pre);
+> +	if (post)
+> +		clone_ordered_extent(ordered, pre + 
+> ordered->disk_num_bytes, post);
+> +}
+> +
+>  int __init ordered_data_init(void)
+>  {
+>  	btrfs_ordered_extent_cache = 
+>  kmem_cache_create("btrfs_ordered_extent",
+> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+> index 0bfa82b58e23..f9964276f85f 100644
+> --- a/fs/btrfs/ordered-data.h
+> +++ b/fs/btrfs/ordered-data.h
+> @@ -190,6 +190,8 @@ void btrfs_wait_ordered_roots(struct 
+> btrfs_fs_info *fs_info, u64 nr,
+>  void btrfs_lock_and_flush_ordered_range(struct btrfs_inode 
+>  *inode, u64 start,
+>  					u64 end,
+>  					struct extent_state **cached_state);
+> +void btrfs_split_ordered_extent(struct btrfs_ordered_extent 
+> *ordered, u64 pre,
+> +				u64 post);
+>  int __init ordered_data_init(void);
+>  void __cold ordered_data_exit(void);
 
