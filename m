@@ -2,318 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D962F7389
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jan 2021 08:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B502F7586
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Jan 2021 10:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731345AbhAOHJg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Jan 2021 02:09:36 -0500
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:55830 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbhAOHJf (ORCPT
+        id S1728353AbhAOJdi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Jan 2021 04:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726913AbhAOJdh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Jan 2021 02:09:35 -0500
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id E32916C007D6;
-        Fri, 15 Jan 2021 09:08:41 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1610694521; bh=GRqzfruJMHJhOS+73NqVaMpWtYx8YxcDSN1y5keLhag=;
-        h=References:From:To:Cc:Subject:In-reply-to:Date;
-        b=QaQAam72yaZMt3fmkr9UHXEwWfPXatJKKEHL2GshXEutG2F7h+4jTaRgVv8jsWZLZ
-         Q0vEiZZKauxN8ROBiXMyNHZJXvzyXEL3zWCLQfDkqX+OwV/SRh3RRg77LgIkyARiOv
-         XKwZcJ4UfmW7Ha5dN1/8Hdjd8nZtROUu14sXiaME=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id C32666C007D2;
-        Fri, 15 Jan 2021 09:08:41 +0200 (EET)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id 8RqygKFhkmwG; Fri, 15 Jan 2021 09:08:41 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 2A1766C007B1;
-        Fri, 15 Jan 2021 09:08:41 +0200 (EET)
-Received: from nas (unknown [45.87.95.231])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 6F0921BE00B3;
-        Fri, 15 Jan 2021 09:08:35 +0200 (EET)
-References: <06add214bc16ef08214de1594ecdfcc4cdcdbd78.1608608848.git.naohiro.aota@wdc.com>
- <e2332c7ecb8e4b1a98a769db75ceac899ab1c3c0.1608608848.git.naohiro.aota@wdc.com>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Su Yue <l@damenly.su>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, hare@suse.com,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v11 22/40] btrfs: split ordered extent when bio is sent
-In-reply-to: <e2332c7ecb8e4b1a98a769db75ceac899ab1c3c0.1608608848.git.naohiro.aota@wdc.com>
-Message-ID: <eeim1xue.fsf@damenly.su>
-Date:   Fri, 15 Jan 2021 15:08:25 +0800
+        Fri, 15 Jan 2021 04:33:37 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D25AC0613C1
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Jan 2021 01:32:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds202012; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
+        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LPvMXvj8kuJt/nvoVdEN22kVpc+M8DbpKiBCEowAcj0=; b=z3NkULbyhmaUBQZl6yazOwA4oY
+        P9HCPJr9QFOgr3in2TQ77wARBKe9MClRtDbsUQI4I6GaxgVEqWfD+c6VF/w8GfeihlbitO0bkZWIP
+        r0ZAKw8155eQxFKOnHar6BLC/jyPfyjsO+qf1hqSu0uwuZ/LdLuFjlvzyxNddKFYNumIgfv+yWntc
+        HbYRIsFd11IEFEk5zJAEJKhy6LaVfDToj75ll9s+PKqYlFTrZZo/Z1HnzsugXHjBsQZxOafbwPT0m
+        TUYzspK4qRHgkkEbs+uobGH98n+Xeqg1YtlbsoU1yqfi8z8Hs8mFJV9+Yiz/Em+3d1j6rVZAQBGVz
+        tBz9zTUQ==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:47635 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1l0LTF-00011l-S8; Fri, 15 Jan 2021 10:32:41 +0100
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: Why do we need these mount options?
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org
+References: <208dba68-b47e-101d-c893-8173df8fbbbf@dirtcellar.net>
+ <20210114163729.GY6430@twin.jikos.cz> <20210115035448.GD31381@hungrycats.org>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <649487eb-0161-877c-9e80-b0400d1097bf@dirtcellar.net>
+Date:   Fri, 15 Jan 2021 10:32:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.4
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 6NpmlYxOGzysiV+lRWetdgtNzzYrL+Ds55TE3V0G3GeDUSOAe1YFVw6+mHJ0Tn2k
+In-Reply-To: <20210115035448.GD31381@hungrycats.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Zygo Blaxell wrote:
+> 
+>>> commit
+>>> space_cache / nospace_cache
+>>> sdd / ssd_spread / nossd / no_ssdspread
+> 
+> How could those be anything other than filesystem-wide options?
+> 
 
-On Tue 22 Dec 2020 at 11:49, Naohiro Aota <naohiro.aota@wdc.com> 
-wrote:
+Well being me, I tend to live in a fantasy world where BTRFS have 
+complete world domination and has become the VFS layer.
+As I have nagged about before on this list - I really think that the 
+only sensible way forward for BTRFS (or dare I say BTRFS2) would be to 
+make it possible to assign "storage device groups" where you can make 
+certain btrfs device ids belong to group a,b,c, etc...
 
-> For a zone append write, the device decides the location the 
-> data is
-> written to. Therefore we cannot ensure that two bios are written
-> consecutively on the device. In order to ensure that a ordered 
-> extent maps
-> to a contiguous region on disk, we need to maintain a "one bio 
-> == one
-> ordered extent" rule.
->
-> This commit implements the splitting of an ordered extent and 
-> extent map
-> on bio submission to adhere to the rule.
->
-> [testbot] made extract_ordered_extent static
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  fs/btrfs/inode.c        | 89 
->  +++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/ordered-data.c | 76 
->  +++++++++++++++++++++++++++++++++++
->  fs/btrfs/ordered-data.h |  2 +
->  3 files changed, 167 insertions(+)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 37782b4cfd28..15e0c7714c7f 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2217,6 +2217,86 @@ static blk_status_t 
-> btrfs_submit_bio_start(struct inode *inode, struct bio *bio,
->  	return btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
->  }
->
-> +static int extract_ordered_extent(struct inode *inode, struct 
-> bio *bio,
-> +				  loff_t file_offset)
-> +{
-> +	struct btrfs_ordered_extent *ordered;
-> +	struct extent_map *em = NULL, *em_new = NULL;
-> +	struct extent_map_tree *em_tree = 
-> &BTRFS_I(inode)->extent_tree;
-> +	u64 start = (u64)bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> +	u64 len = bio->bi_iter.bi_size;
-> +	u64 end = start + len;
-> +	u64 ordered_end;
-> +	u64 pre, post;
-> +	int ret = 0;
-> +
-> +	ordered = btrfs_lookup_ordered_extent(BTRFS_I(inode), 
-> file_offset);
-> +	if (WARN_ON_ONCE(!ordered))
-> +		return -EIO;
-> +
-> +	/* No need to split */
-> +	if (ordered->disk_num_bytes == len)
-> +		goto out;
-> +
-> +	/* We cannot split once end_bio'd ordered extent */
-> +	if (WARN_ON_ONCE(ordered->bytes_left != 
-> ordered->disk_num_bytes)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* We cannot split a compressed ordered extent */
-> +	if (WARN_ON_ONCE(ordered->disk_num_bytes != 
-> ordered->num_bytes)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* We cannot split a waited ordered extent */
-> +	if (WARN_ON_ONCE(wq_has_sleeper(&ordered->wait))) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	ordered_end = ordered->disk_bytenr + ordered->disk_num_bytes;
-> +	/* bio must be in one ordered extent */
-> +	if (WARN_ON_ONCE(start < ordered->disk_bytenr || end > 
-> ordered_end)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* Checksum list should be empty */
-> +	if (WARN_ON_ONCE(!list_empty(&ordered->list))) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	pre = start - ordered->disk_bytenr;
-> +	post = ordered_end - end;
-> +
-> +	btrfs_split_ordered_extent(ordered, pre, post);
-> +
-> +	read_lock(&em_tree->lock);
-> +	em = lookup_extent_mapping(em_tree, ordered->file_offset, 
-> len);
-> +	if (!em) {
-> +		read_unlock(&em_tree->lock);
-> +		ret = -EIO;
-> +		goto out;
-> +	}
-> +	read_unlock(&em_tree->lock);
-> +
-> +	ASSERT(!test_bit(EXTENT_FLAG_COMPRESSED, &em->flags));
-> +	em_new = create_io_em(BTRFS_I(inode), em->start + pre, len,
-> +			      em->start + pre, em->block_start + pre, len,
-> +			      len, len, BTRFS_COMPRESS_NONE,
-> +			      BTRFS_ORDERED_REGULAR);
->
-"if (IS_ERR(em_new)) ..." is lost.
+And with that it would be possible to assign a weight to subvolumes so 
+that they would be preferred to be stored on group a (SSD's perhaps), 
+while other subvolumes would be stored mostly or exlusively on HDD's, 
+Fast HDD's, Archival HDD's etc... So maybe a bit over enthusiastic in 
+thinking perhaps , but hopefully you see now why I think it is right 
+that this is not filesystem-wide , but subvolume baseed properties.
 
+>>> discard / nodiscard
+> 
+> Maybe, but probably requires too much introspection in a fast path (we'd
+> have to add a check for the last owner of a deleted extent to see if it
+> had 'discard' set on some parent level).
+> 
+> On the other hand, I'm in favor of deprecating the whole discard option
+> and going with fstrim instead.  discard in its current form tends to
+> increase write wear rather than decrease it, especially on metadata-heavy
+> workloads.  discard is roughly equivalent to running fstrim thousands
+> of times a day, which is clearly bad for many (most?  all?) SSDs.
+> 
+> It might be possible to make the discard mount option's behavior more
+> sane (e.g. discard only full chunks, configurable minimum discard length,
+> discard only within data chunks, discard only once per hour, etc).
+> 
+Interesting, it might as well make sense to perhaps use the free space 
+cache and a slow LRU mechanism e.g. "these chunks has not been in use 
+for 64 hours/days" or something similar.
 
-> +	free_extent_map(em_new);
-> +
-> +out:
-> +	free_extent_map(em);
-> +	btrfs_put_ordered_extent(ordered);
-> +
-> +	return ret;
-> +}
-> +
->  /*
->   * extent_io.c submission hook. This does the right thing for 
->   csum calculation
->   * on write, or reading the csums from the tree before a read.
-> @@ -2252,6 +2332,15 @@ blk_status_t btrfs_submit_data_bio(struct 
-> inode *inode, struct bio *bio,
->  	if (btrfs_is_free_space_inode(BTRFS_I(inode)))
->  		metadata = BTRFS_WQ_ENDIO_FREE_SPACE;
->
-> +	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-> +		struct page *page = bio_first_bvec_all(bio)->bv_page;
-> +		loff_t file_offset = page_offset(page);
-> +
-> +		ret = extract_ordered_extent(inode, bio, file_offset);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
->  	if (btrfs_op(bio) != BTRFS_MAP_WRITE) {
->  		ret = btrfs_bio_wq_end_io(fs_info, bio, metadata);
->  		if (ret)
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 79d366a36223..4f8f48e7a482 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -898,6 +898,82 @@ void 
-> btrfs_lock_and_flush_ordered_range(struct btrfs_inode *inode, 
-> u64 start,
->  	}
->  }
->
-> +static void clone_ordered_extent(struct btrfs_ordered_extent 
-> *ordered, u64 pos,
-> +				 u64 len)
-> +{
-> +	struct inode *inode = ordered->inode;
-> +	u64 file_offset = ordered->file_offset + pos;
-> +	u64 disk_bytenr = ordered->disk_bytenr + pos;
-> +	u64 num_bytes = len;
-> +	u64 disk_num_bytes = len;
-> +	int type;
-> +	unsigned long flags_masked =
-> +		ordered->flags & ~(1 << BTRFS_ORDERED_DIRECT);
-> +	int compress_type = ordered->compress_type;
-> +	unsigned long weight;
-> +
-> +	weight = hweight_long(flags_masked);
-> +	WARN_ON_ONCE(weight > 1);
-> +	if (!weight)
-> +		type = 0;
-> +	else
-> +		type = __ffs(flags_masked);
-> +
-> +	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered->flags)) {
-> +		WARN_ON_ONCE(1);
-> +		btrfs_add_ordered_extent_compress(BTRFS_I(inode), 
-> file_offset,
-> +						  disk_bytenr, num_bytes,
-> +						  disk_num_bytes, type,
-> +						  compress_type);
-> +	} else if (test_bit(BTRFS_ORDERED_DIRECT, &ordered->flags)) {
-> +		btrfs_add_ordered_extent_dio(BTRFS_I(inode), file_offset,
-> +					     disk_bytenr, num_bytes,
-> +					     disk_num_bytes, type);
-> +	} else {
-> +		btrfs_add_ordered_extent(BTRFS_I(inode), file_offset,
-> +					 disk_bytenr, num_bytes, disk_num_bytes,
-> +					 type);
-> +	}
-> +}
-> +
-> +void btrfs_split_ordered_extent(struct btrfs_ordered_extent 
-> *ordered, u64 pre,
-> +				u64 post)
-> +{
-> +	struct inode *inode = ordered->inode;
-> +	struct btrfs_ordered_inode_tree *tree = 
-> &BTRFS_I(inode)->ordered_tree;
-> +	struct rb_node *node;
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> +
-> +	spin_lock_irq(&tree->lock);
-> +	/* Remove from tree once */
-> +	node = &ordered->rb_node;
-> +	rb_erase(node, &tree->tree);
-> +	RB_CLEAR_NODE(node);
-> +	if (tree->last == node)
-> +		tree->last = NULL;
-> +
-> +	ordered->file_offset += pre;
-> +	ordered->disk_bytenr += pre;
-> +	ordered->num_bytes -= (pre + post);
-> +	ordered->disk_num_bytes -= (pre + post);
-> +	ordered->bytes_left -= (pre + post);
-> +
-> +	/* Re-insert the node */
-> +	node = tree_insert(&tree->tree, ordered->file_offset,
-> +			   &ordered->rb_node);
-> +	if (node)
-> +		btrfs_panic(fs_info, -EEXIST,
-> +				"zoned: inconsistency in ordered tree at offset 
-> %llu",
-> +				ordered->file_offset);
-> +
-> +	spin_unlock_irq(&tree->lock);
-> +
-> +	if (pre)
-> +		clone_ordered_extent(ordered, 0, pre);
-> +	if (post)
-> +		clone_ordered_extent(ordered, pre + 
-> ordered->disk_num_bytes, post);
-> +}
-> +
->  int __init ordered_data_init(void)
->  {
->  	btrfs_ordered_extent_cache = 
->  kmem_cache_create("btrfs_ordered_extent",
-> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-> index 0bfa82b58e23..f9964276f85f 100644
-> --- a/fs/btrfs/ordered-data.h
-> +++ b/fs/btrfs/ordered-data.h
-> @@ -190,6 +190,8 @@ void btrfs_wait_ordered_roots(struct 
-> btrfs_fs_info *fs_info, u64 nr,
->  void btrfs_lock_and_flush_ordered_range(struct btrfs_inode 
->  *inode, u64 start,
->  					u64 end,
->  					struct extent_state **cached_state);
-> +void btrfs_split_ordered_extent(struct btrfs_ordered_extent 
-> *ordered, u64 pre,
-> +				u64 post);
->  int __init ordered_data_init(void);
->  void __cold ordered_data_exit(void);
+>>> compress / compress-force
+>>> datacow / nodatacow
+>>> datasum / nodatasum
+> 
+> Here's where I prefer the mount option over the more local attributes,
+> because I'd like filesystem-level sysadmin overrides for those.
+> i.e. disallow all users, even privileged ones, from being able to create
+> files that don't have csums or compression on a filesystem.
+> 
+Then how about a mount option that allow only root to do certain things? 
+e.g. a security restriction.
 
+> 
+>>> user_subvol_rm_allowed
+> 
+> I'd like "user_subvol_create_disallowed" too.  Unprivileged users can
+> create subvols, and that breaks backups that rely on atomic btrfs
+> snapshots.  It could be a feature (it allows users to exclude parts of
+> their home directory from backups) but most users I've met who have
+> discovered this "feature" the hard way didn't enjoy it.
+> 
+> Historically I had other reasons to disallow subvol creates by
+> unprivileged users, but they are mostly removed in 4.18, now that 'rmdir'
+> works on an empty subvol.
+> 
+Again see above...
