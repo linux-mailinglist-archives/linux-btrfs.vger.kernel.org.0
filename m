@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705B52F8C00
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Jan 2021 08:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547212F8C02
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Jan 2021 08:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbhAPHRS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 16 Jan 2021 02:17:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56166 "EHLO mx2.suse.de"
+        id S1726780AbhAPHRV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 16 Jan 2021 02:17:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56170 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726653AbhAPHRS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 16 Jan 2021 02:17:18 -0500
+        id S1726727AbhAPHRU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 16 Jan 2021 02:17:20 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610781370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1610781372; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tsHc5uf3/iu/mZIDjAjKCyHl7cajkBKg5XGXWlUfG/Y=;
-        b=o9oWyAOfI8XtnLcCuH072O2FFNr5EIEcIWmtkGx4qk2Rn/rRucl3Ba9QmgKZcoaUu1R4l8
-        r09E8CC87ZIdBQxnzqpueh8wc2NdFYbQ1dOcNfWK1nXAd4GaIcYSRkTgiZUuyY63iBxeXw
-        DlbO+ui1/+hd6IAyRjTK1ajLoVMw6bI=
+        bh=67oxTlFBGfM+7X1D+mSit2Atd1veT8boa2zvEYJRE4w=;
+        b=dnBscI17ABPbN+LbHNieVMxT1NEzqXsXTyk00jXOEowCkjtCNLYySS67g7TohASNF+DWhK
+        Kizct4OUCAj3GpK0L1cbdb5rtLIOVdQJRQvfgXfSXuhWt7v44z8RnELWOJOkm2xuZjGH74
+        Fpy1VzOWAqd91bRPQMUklcY71xxkU9Q=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95100B902
-        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 07:16:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 9B164B903
+        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 07:16:12 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 10/18] btrfs: make set/clear_extent_buffer_uptodate() to support subpage size
-Date:   Sat, 16 Jan 2021 15:15:25 +0800
-Message-Id: <20210116071533.105780-11-wqu@suse.com>
+Subject: [PATCH v4 11/18] btrfs: make btrfs_clone_extent_buffer() to be subpage compatible
+Date:   Sat, 16 Jan 2021 15:15:26 +0800
+Message-Id: <20210116071533.105780-12-wqu@suse.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210116071533.105780-1-wqu@suse.com>
 References: <20210116071533.105780-1-wqu@suse.com>
@@ -38,56 +38,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For those functions, to support subpage size they just need to call
-btrfs_page_set/clear_uptodate() wrappers.
+For btrfs_clone_extent_buffer(), it's mostly the same code of
+__alloc_dummy_extent_buffer(), except it has extra page copy.
+
+So to make it subpage compatible, we only need to:
+- Call set_extent_buffer_uptodate() instead of SetPageUptodate()
+  This will set correct uptodate bit for subpage and regular sector size
+  cases.
+
+Since we're calling set_extent_buffer_uptodate() which will also set
+EXTENT_BUFFER_UPTODATE bit, we don't need to manually set that bit
+either.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ fs/btrfs/extent_io.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7f94f00936d7..c2459cf56950 100644
+index c2459cf56950..74a37eec921f 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -5690,30 +5690,33 @@ bool set_extent_buffer_dirty(struct extent_buffer *eb)
+@@ -5164,7 +5164,6 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+ 	if (new == NULL)
+ 		return NULL;
  
- void clear_extent_buffer_uptodate(struct extent_buffer *eb)
- {
--	int i;
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	struct page *page;
- 	int num_pages;
-+	int i;
+-	set_bit(EXTENT_BUFFER_UPTODATE, &new->bflags);
+ 	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
  
- 	clear_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
- 	num_pages = num_extent_pages(eb);
  	for (i = 0; i < num_pages; i++) {
- 		page = eb->pages[i];
- 		if (page)
--			ClearPageUptodate(page);
-+			btrfs_page_clear_uptodate(fs_info, page,
-+						  eb->start, eb->len);
+@@ -5182,11 +5181,10 @@ struct extent_buffer *btrfs_clone_extent_buffer(const struct extent_buffer *src)
+ 			return NULL;
+ 		}
+ 		WARN_ON(PageDirty(p));
+-		SetPageUptodate(p);
+ 		new->pages[i] = p;
+ 		copy_page(page_address(p), page_address(src->pages[i]));
  	}
+-
++	set_extent_buffer_uptodate(new);
+ 
+ 	return new;
  }
- 
- void set_extent_buffer_uptodate(struct extent_buffer *eb)
- {
--	int i;
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
- 	struct page *page;
- 	int num_pages;
-+	int i;
- 
- 	set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
- 	num_pages = num_extent_pages(eb);
- 	for (i = 0; i < num_pages; i++) {
- 		page = eb->pages[i];
--		SetPageUptodate(page);
-+		btrfs_page_set_uptodate(fs_info, page, eb->start, eb->len);
- 	}
- }
- 
 -- 
 2.30.0
 
