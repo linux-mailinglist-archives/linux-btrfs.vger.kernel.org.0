@@ -2,116 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0D82F8F0B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Jan 2021 21:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D02F72F8F61
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Jan 2021 22:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbhAPUCI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 16 Jan 2021 15:02:08 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:41482 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbhAPUCI (ORCPT
+        id S1726751AbhAPVIy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 16 Jan 2021 16:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbhAPVIw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 16 Jan 2021 15:02:08 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 7D9EA941C48; Sat, 16 Jan 2021 15:01:26 -0500 (EST)
-Date:   Sat, 16 Jan 2021 15:01:26 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     Adam Borowski <kilobyte@angband.pl>, dsterba@suse.cz,
-        waxhead <waxhead@dirtcellar.net>, linux-btrfs@vger.kernel.org
-Subject: Re: Why do we need these mount options?
-Message-ID: <20210116200126.GI31381@hungrycats.org>
-References: <208dba68-b47e-101d-c893-8173df8fbbbf@dirtcellar.net>
- <20210114163729.GY6430@twin.jikos.cz>
- <20210115035448.GD31381@hungrycats.org>
- <94a65b16-3a23-6862-9de6-169620302308@gmail.com>
- <20210116151933.GA374963@angband.pl>
- <af37a93c-65d3-1213-73cf-1463679d815a@gmail.com>
+        Sat, 16 Jan 2021 16:08:52 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E56C061573
+        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 13:08:12 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id h4so15324889qkk.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 13:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=7WiDZMhT+FuOYgC043yx/Oo9rkdXp2l+H1SUNl257pI=;
+        b=LQAwXaOWDxbRO2h8FNJQqtuJpB1XHwX7k+GyOyowDzOOxZ0NewmLHNJD6NyPOp5bgh
+         6AB1zNPatfzIweqJ71sA+KsKPPV9QWGX+rM3iO1Sr8Mog2S3b3ohrr/qk2j9H2Akuyc0
+         4Yzre9QihPjJQLtBX55lHHUwqN4i+2rcl7VYrjYZ0nrxFQ73XFverZqaNkYf9rO3HlW8
+         fw5AGExJ0mVs9q2G+qwxf6DOHjdFmupXEj6hVcQCuMHfYJlzrJZiZPNn+MA19jFna3iD
+         GyVkEy6fOyJuF6MKRjKN8+trUabNZK2g280wuj+5zxj8mOUgIMls1LA1WsXsW4+ThQWu
+         4TdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=7WiDZMhT+FuOYgC043yx/Oo9rkdXp2l+H1SUNl257pI=;
+        b=rnjO2SxtA6qhEIElkuq6PEDRWlebXwxzCW3nWwwrDNpHPGdaRSjGW3Y+wphroL/Xnx
+         Bm+GHgMvmkWb4GiQhDpStAQ/K48x9xB4tysHx6QZGzv6DCWhRjvtYXyMgILMo0oEqzFY
+         CLKlqGriqGRxM1zeEXULF2ytbQSNcqhLm6/K2qO0sE0F/lXCpJStkZJ6WK8rke15OCcF
+         5Vr9VReHnPCH1UOKcZHw4Z5V6oSRQcVaZ6+88DzsnvZcaAPbwZvF6y0zVHbHkqfifnjX
+         CXnINO6C4bZlXZrWUB2B7iKm20bCgDTZTHQsb+YLknKtwYYLCAZh8qbL8Ix4JilR+goO
+         icgQ==
+X-Gm-Message-State: AOAM530Y+QexQqy2+XGMDiRg+QWBY3ADv3LKlqpDH+lOCf2+SNjywgLP
+        vC+MyRcgZIPQOEU92n+33A5xsOeDXrZLhQWqqyP7SrTlLRg=
+X-Google-Smtp-Source: ABdhPJyvCJk4B4IXIgbaEIWLePmhvzI2z5jHaCzKmcKXx15TCmFkn/x4vIUk8x5mTjcv1ctVtILt6zWUwVZnozaw+CU=
+X-Received: by 2002:a05:620a:62b:: with SMTP id 11mr18099154qkv.229.1610831291228;
+ Sat, 16 Jan 2021 13:08:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <af37a93c-65d3-1213-73cf-1463679d815a@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Tim Cuthbertson <ratcheer@gmail.com>
+Date:   Sat, 16 Jan 2021 15:08:00 -0600
+Message-ID: <CAAKzf7kPv_CmzrMDD8SupbfFGyABvcDqWXg4yZBzBx-QBY6yMw@mail.gmail.com>
+Subject: raid0 confusion question
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 08:21:16PM +0300, Andrei Borzenkov wrote:
-> 16.01.2021 18:19, Adam Borowski пишет:
-> > On Sat, Jan 16, 2021 at 10:39:51AM +0300, Andrei Borzenkov wrote:
-> >> 15.01.2021 06:54, Zygo Blaxell пишет:
-> >>> On the other hand, I'm in favor of deprecating the whole discard option
-> >>> and going with fstrim instead.  discard in its current form tends to
-> >>> increase write wear rather than decrease it, especially on metadata-heavy
-> >>> workloads.  discard is roughly equivalent to running fstrim thousands
-> >>> of times a day, which is clearly bad for many (most?  all?) SSDs.
-> >>
-> >> My (probably naive) understanding so far was that trim on SSD marks
-> >> areas as "unused" which means SSD need to copy less residual data from
-> >> erase block when reusing it. Assuming TRIM unit is (significantly)
-> >> smaller than erase block.
-> >>
-> >> I would appreciate if you elaborate how trim results in more write on SSD?
-> > 
-> > The areas are not only marked as unused, but also zeroed.  To keep the
-> > zeroing semantic, every discard must be persisted, thus requiring a write
-> > to the SSD's metadata (not btrfs metadata) area.
-> > 
-> 
-> There is no requirement that TRIM did it. If device sets RZAT SUPPORTED
-> bit, it should return zeroes for trimmed range, but there is no need to
-> physically zero anything - simply return zeroes for areas marked as
-> unallocated. Discard must be persisted in allocation table, but then
-> every write must be persisted in allocation table anyway.
+I thought raid0 "striped" the data across two or more devices to
+increase total capacity, for example when adding a new device to an
+existing filesystem. But that is not apparently what I ended up with.
 
-That is exactly the problem--the persistence is a write that counts
-against total drive wear.  That is why TRIM variants that leave
-the contents of the discarded LBAs undefined are better than those
-which define the contents as zero.
+Before:
+btrfs device usage /mnt/backup/
+/dev/sdc1, ID: 1
+   Device size:           300.00GiB
+   Device slack:              0.00B
+   Data,single:           226.01GiB
+   Metadata,DUP:            8.00GiB
+   System,DUP:             64.00MiB
+   Unallocated:            65.93GiB
 
-The effect seems to be the equivalent of a small write, i.e. a 16K
-write might be the same cost as any length of contiguous discard.
-So it's OK to discard block-group-sized regions, but not OK to issue
-one discard for every metadata free page hole.  Different drives have
-different ratios between these costs, so parity might occur at 4K or
-256K depending on the drive.
+/dev/sdc2, ID: 2
+   Device size:           300.00GiB
+   Device slack:              0.00B
+   Data,single:             1.00GiB
+   Unallocated:           299.00GiB
 
-AIUI there is a minimum discard length filter implemented in btrfs
-already, so maybe it just needs tuning?
+Then, I ran command:
+btrfs balance start -dconvert=raid0 -mconvert=raid1 /mnt/backup
 
-> Moreover, to actually zero on TRIM either trim request must be issued
-> for the full erase block or device must perform garbage collection.
-> 
-> Do you have any links that show that discards increase write load on
-> physical media? I am really curious.
+And what I ended up with seems to be double the amount of data used,
+like what I think would happen with raid1, not raid0:
 
-I have no links, it's a directly observed result.
+btrfs device usage /mnt/backup/
+/dev/sdc1, ID: 1
+   Device size:           300.00GiB
+   Device slack:              0.00B
+   Data,RAID0:            228.00GiB
+   Metadata,RAID1:          5.00GiB
+   System,RAID1:           64.00MiB
+   Unallocated:            66.94GiB
 
-It's fairly straightforward to replicate:  Set up a machine to do git
-checkouts of each Linux kernel tag in random order, in a loop (maybe
-multiple instances of this if needed to get the SSD device IO saturated).
-While that happens, watch the percentage used endurance indicator reported
-on the drives (smartctl -x).  Wait for the indicator to increment
-twice, and measure the time between the first and second increment.
-Use a low-cost consumer or OEM SSD so you get results in less than a
-few hundred hours.  Then mount -o discard=async and wait for two more
-increments.  Assuming the workload produces constant amounts of IO over
-time, and the percentage used endurance indicator variable from SMART is
-not a complete lie, the time between increments should roughly indicate
-the wear rates of the different workloads.
+/dev/sdc2, ID: 2
+   Device size:           300.00GiB
+   Device slack:              0.00B
+   Data,RAID0:            228.00GiB
+   Metadata,RAID1:          5.00GiB
+   System,RAID1:           64.00MiB
+   Unallocated:            66.94GiB
 
-In the field, we discovered this on CI builder workloads (lots of
-tiny files created, destroyed, and created again in rapid succession).
-They get almost double the SSD wear rate with discard on vs. discard off.
-We have monitoring on the p-u-e-i variable, and use it to project the date
-when 100% endurance will be reached.  If that date lands within the date
-range when we want to be using the SSD, we get an alert.  When discard
-is accidentally enabled on a CI server due to a configuration failure,
-we get an alert about a week later, as it shortens our drives' projected
-lifespan from more than 6 years to less than 4.
+Or, am I misinterpreting what I am seeing? Thank you.
 
-Other workloads are less sensitive to this.  If the workload has fewer
-metadata updates, bigger files, and sequential writes, then discard
-doesn't have a negative effect--though to be fair, it doesn't seem to
-have a positive effect either, at least not by this measurement method.
+# uname -a
+Linux tux 5.10.7-arch1-1 #1 SMP PREEMPT Wed, 13 Jan 2021 12:02:01
++0000 x86_64 GNU/Linux
+# btrfs --version
+btrfs-progs v5.9
+# btrfs fi show
+Label: none  uuid: c0f4c8e2-b580-4c0d-9562-abdb933b9625
+        Total devices 1 FS bytes used 13.11GiB
+        devid    1 size 449.51GiB used 14.01GiB path /dev/sda3
+
+Label: none  uuid: 4fe39403-7ba1-4f22-972f-5041e3b6ff6f
+        Total devices 1 FS bytes used 37.36GiB
+        devid    1 size 600.00GiB used 40.02GiB path /dev/sdb1
+
+Label: none  uuid: 1751eeca-c1a2-47bb-906b-c7199b09eb6d
+        Total devices 2 FS bytes used 229.57GiB
+        devid    1 size 300.00GiB used 233.06GiB path /dev/sdc1
+        devid    2 size 300.00GiB used 233.06GiB path /dev/sdc2
+
+# btrfs fi df /mnt/backup
+Data, RAID0: total=456.00GiB, used=226.65GiB
+System, RAID1: total=64.00MiB, used=64.00KiB
+Metadata, RAID1: total=5.00GiB, used=2.92GiB
+GlobalReserve, single: total=401.84MiB, used=0.00B
