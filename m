@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07692F8C03
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Jan 2021 08:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387852F8C04
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Jan 2021 08:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbhAPHRX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 16 Jan 2021 02:17:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56172 "EHLO mx2.suse.de"
+        id S1726820AbhAPHRZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 16 Jan 2021 02:17:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56174 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726774AbhAPHRV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 16 Jan 2021 02:17:21 -0500
+        id S1726774AbhAPHRZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 16 Jan 2021 02:17:25 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610781376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1610781378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S+9vN7M2PZa6q9YYsjhrEE6T+u8wJu0+OeJ8lum1vZ4=;
-        b=rlDaLD/TcNnWQOnjY1KAgToFzY6k2lukQe/VS2cBiF7j7SdrlBT515YvCNfYdqKkVrVIx2
-        UQUsTbVBaf/OeXdy68H/ugpAiOU3Kx5G4sgQaaqwKfuBFRB9rBok8isg6v909A2ElpB7sj
-        B/y9MDu9sOQS+oi9bMPjz0hIk8PMdA4=
+        bh=/sT2fqdjxOyZSG2aBq9ajFfzhdjRWPKjHFubMvulyHA=;
+        b=IQwt4xiF+2Z7zGTOhcmFV29nv1tuM1xGJyjrD/RMpe7WnSA5aWeZ0HR6SCLR3FmKG0JVb4
+        ohNnQr4Y9xwp+ldGhCK30lmMAv2gvKfvxf2oHU6xkHS5tskqMAXz31eF3Pl/PthbFRgFPA
+        uvWzb0awGe4j0cqTXYh8mCuOjXj37LU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 141B8B904
-        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 07:16:16 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 86BCAB905
+        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 07:16:18 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 12/18] btrfs: implement try_release_extent_buffer() for subpage metadata support
-Date:   Sat, 16 Jan 2021 15:15:27 +0800
-Message-Id: <20210116071533.105780-13-wqu@suse.com>
+Subject: [PATCH v4 13/18] btrfs: introduce read_extent_buffer_subpage()
+Date:   Sat, 16 Jan 2021 15:15:28 +0800
+Message-Id: <20210116071533.105780-14-wqu@suse.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210116071533.105780-1-wqu@suse.com>
 References: <20210116071533.105780-1-wqu@suse.com>
@@ -38,140 +38,119 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Unlike the original try_release_extent_buffer(),
-try_release_subpage_extent_buffer() will iterate through all the ebs in
-the page, and try to release each eb.
+Introduce a new helper, read_extent_buffer_subpage(), to do the subpage
+extent buffer read.
 
-And only if the page and no private attached, which implies we have
-released all ebs of the page, then we can release the full page.
+The difference between regular and subpage routines are:
+- No page locking
+  Here we completely rely on extent locking.
+  Page locking can reduce the concurrency greatly, as if we lock one
+  page to read one extent buffer, all the other extent buffers in the
+  same page will have to wait.
+
+- Extent uptodate condition
+  Despite the existing PageUptodate() and EXTENT_BUFFER_UPTODATE check,
+  We also need to check btrfs_subpage::uptodate_bitmap.
+
+- No page loop
+  Just one page, no need to loop, this greately simplified the subpage
+  routine.
+
+This patch only implemented the bio submit part, no endio support yet.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 106 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 104 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 70 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 74a37eec921f..9414219fa28b 100644
+index 9414219fa28b..291ff76d5b2e 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -6335,13 +6335,115 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
+@@ -5718,6 +5718,73 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
  	}
  }
  
-+static struct extent_buffer *get_next_extent_buffer(
-+		struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
++static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
++				      int mirror_num)
 +{
-+	struct extent_buffer *gang[BTRFS_SUBPAGE_BITMAP_SIZE];
-+	struct extent_buffer *found = NULL;
-+	u64 page_start = page_offset(page);
-+	int ret;
-+	int i;
++	struct btrfs_fs_info *fs_info = eb->fs_info;
++	struct extent_io_tree *io_tree;
++	struct page *page = eb->pages[0];
++	struct bio *bio = NULL;
++	int ret = 0;
 +
-+	ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
-+	ASSERT(PAGE_SIZE / fs_info->nodesize <= BTRFS_SUBPAGE_BITMAP_SIZE);
-+	lockdep_assert_held(&fs_info->buffer_lock);
++	ASSERT(!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags));
++	ASSERT(PagePrivate(page));
++	io_tree = &BTRFS_I(fs_info->btree_inode)->io_tree;
 +
-+	ret = radix_tree_gang_lookup(&fs_info->buffer_radix, (void **)gang,
-+			bytenr >> fs_info->sectorsize_bits,
-+			PAGE_SIZE / fs_info->nodesize);
-+	for (i = 0; i < ret; i++) {
-+		/* Already beyond page end */
-+		if (gang[i]->start >= page_start + PAGE_SIZE)
-+			break;
-+		/* Found one */
-+		if (gang[i]->start >= bytenr) {
-+			found = gang[i];
-+			break;
-+		}
++	if (wait == WAIT_NONE) {
++		ret = try_lock_extent(io_tree, eb->start,
++				      eb->start + eb->len - 1);
++		if (ret <= 0)
++			return ret;
++	} else {
++		ret = lock_extent(io_tree, eb->start, eb->start + eb->len - 1);
++		if (ret < 0)
++			return ret;
 +	}
-+	return found;
-+}
 +
-+static int try_release_subpage_extent_buffer(struct page *page)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
-+	u64 cur = page_offset(page);
-+	const u64 end = page_offset(page) + PAGE_SIZE;
-+	int ret;
-+
-+	while (cur < end) {
-+		struct extent_buffer *eb = NULL;
-+
-+		/*
-+		 * Unlike try_release_extent_buffer() which uses page->private
-+		 * to grab buffer, for subpage case we rely on radix tree, thus
-+		 * we need to ensure radix tree consistency.
-+		 *
-+		 * We also want an atomic snapshot of the radix tree, thus go
-+		 * spinlock other than RCU.
-+		 */
-+		spin_lock(&fs_info->buffer_lock);
-+		eb = get_next_extent_buffer(fs_info, page, cur);
-+		if (!eb) {
-+			/* No more eb in the page range after or at @cur */
-+			spin_unlock(&fs_info->buffer_lock);
-+			break;
-+		}
-+		cur = eb->start + eb->len;
-+
-+		/*
-+		 * The same as try_release_extent_buffer(), to ensure the eb
-+		 * won't disappear out from under us.
-+		 */
-+		spin_lock(&eb->refs_lock);
-+		if (atomic_read(&eb->refs) != 1 || extent_buffer_under_io(eb)) {
-+			spin_unlock(&eb->refs_lock);
-+			spin_unlock(&fs_info->buffer_lock);
-+			continue;
-+		}
-+		spin_unlock(&fs_info->buffer_lock);
-+
-+		/*
-+		 * If tree ref isn't set then we know the ref on this eb is a
-+		 * real ref, so just return, this eb will likely be freed soon
-+		 * anyway.
-+		 */
-+		if (!test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags)) {
-+			spin_unlock(&eb->refs_lock);
-+			continue;
-+		}
-+
-+		/*
-+		 * Here we don't care the return value, we will always check
-+		 * the page private at the end.
-+		 * And release_extent_buffer() will release the refs_lock.
-+		 */
-+		release_extent_buffer(eb);
++	ret = 0;
++	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags) ||
++	    PageUptodate(page) ||
++	    btrfs_subpage_test_uptodate(fs_info, page, eb->start, eb->len)) {
++		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
++		unlock_extent(io_tree, eb->start, eb->start + eb->len - 1);
++		return ret;
 +	}
-+	/*
-+	 * Finally to check if we have cleared page private, as if we have
-+	 * released all ebs in the page, the page private should be cleared now.
-+	 */
-+	spin_lock(&page->mapping->private_lock);
-+	if (!PagePrivate(page))
-+		ret = 1;
-+	else
-+		ret = 0;
-+	spin_unlock(&page->mapping->private_lock);
++
++	clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
++	eb->read_mirror = 0;
++	atomic_set(&eb->io_pages, 1);
++	check_buffer_tree_ref(eb);
++
++	ret = submit_extent_page(REQ_OP_READ | REQ_META, NULL, page, eb->start,
++				 eb->len, eb->start - page_offset(page), &bio,
++				 end_bio_extent_readpage, mirror_num, 0, 0,
++				 true);
++	if (ret) {
++		/*
++		 * In the endio function, if we hit something wrong we will
++		 * increase the io_pages, so here we need to decrease it for error
++		 * path.
++		 */
++		atomic_dec(&eb->io_pages);
++	}
++	if (bio) {
++		int tmp;
++
++		tmp = submit_one_bio(bio, mirror_num, 0);
++		if (tmp < 0)
++			return tmp;
++	}
++	if (ret || wait != WAIT_COMPLETE)
++		return ret;
++
++	wait_extent_bit(io_tree, eb->start, eb->start + eb->len - 1,
++			EXTENT_LOCKED);
++	if (!test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
++		ret = -EIO;
 +	return ret;
-+
 +}
 +
- int try_release_extent_buffer(struct page *page)
+ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
  {
- 	struct extent_buffer *eb;
+ 	int i;
+@@ -5734,6 +5801,9 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+ 	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
+ 		return 0;
  
-+	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
-+		return try_release_subpage_extent_buffer(page);
++	if (eb->fs_info->sectorsize < PAGE_SIZE)
++		return read_extent_buffer_subpage(eb, wait, mirror_num);
 +
- 	/*
--	 * We need to make sure nobody is attaching this page to an eb right
--	 * now.
-+	 * We need to make sure nobody is change page->private, as we rely on
-+	 * page->private as the pointer to extent buffer.
- 	 */
- 	spin_lock(&page->mapping->private_lock);
- 	if (!PagePrivate(page)) {
+ 	num_pages = num_extent_pages(eb);
+ 	for (i = 0; i < num_pages; i++) {
+ 		page = eb->pages[i];
 -- 
 2.30.0
 
