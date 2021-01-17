@@ -2,152 +2,590 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9065F2F9015
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jan 2021 02:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DECC2F9137
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jan 2021 08:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbhAQBji convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 16 Jan 2021 20:39:38 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:35196 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727691AbhAQBjh (ORCPT
+        id S1726537AbhAQHPm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Jan 2021 02:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbhAQHPi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 16 Jan 2021 20:39:37 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 35D4A94220D; Sat, 16 Jan 2021 20:38:56 -0500 (EST)
-Date:   Sat, 16 Jan 2021 20:38:56 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Tim Cuthbertson <ratcheer@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: raid0 confusion question
-Message-ID: <20210117013856.GJ31381@hungrycats.org>
-References: <CAAKzf7kPv_CmzrMDD8SupbfFGyABvcDqWXg4yZBzBx-QBY6yMw@mail.gmail.com>
+        Sun, 17 Jan 2021 02:15:38 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C70C061573
+        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 23:14:57 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id m6so8279479pfm.6
+        for <linux-btrfs@vger.kernel.org>; Sat, 16 Jan 2021 23:14:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8biZNhwPTrlIDXcp3WNbXoJuqUHOLuFkVFWK9tNSLKY=;
+        b=eLMuYPdomlUkO/lox1BNy7k/meHiBs9mhAPzJ0p7gzSYKW9J5bzdwr4oe5p2IwXDV4
+         /JeYAm0HSix9jsBwVDhQYpE4lN4f9B8Q+mjkYNw+oF4dapSWoZvWcRRO2grYsAejcwTT
+         zsW9CPsnZjrMA0LZD4fGg4fVxu6GJHx8la1XVrvQTTwrd1TeBeW9iG2NUf+rx0Ie2iTD
+         ykoqTY4TujNEz56Cavo5fjIS2sZBtVaLtFULNvkgi7Mz4BEjpjAnYr+SuhG9cEiIIOPE
+         l5oOBH+1cXTdAT5QWDbMnNKDT9GhYR7Nq3ha2me6m0oGVgdiEUwfLkMxY07EeZmc7bcR
+         5bow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8biZNhwPTrlIDXcp3WNbXoJuqUHOLuFkVFWK9tNSLKY=;
+        b=MgMbFqXoMgka4LzwbaHzg//9AsfuWN6GINaJLMcFzyow4QQX/rxsOOy1UYNq4bgAA7
+         CJKnS+LFgb4mZhQQdN7Dqv83LsrI65+WXKg+hxOGWBKVWD8TrZXjweXsRq1kka0Vlqak
+         d9MODGzvomSjGIo/PuzD9vrScYWSc2wkxz2IbBx1thp9HRzdSbRiLMGrrhnYfEGHEga7
+         INcO441+TuzDMdpWm9k+a3EUGYWPF8G7KEgu+WNX7r7rAkVGC1g3oNSJDs/wfZAf+dtv
+         Ak4ZF7v8276c1y8kWPKvKhaeLOhPoaDSuET8l3IVl3uZzWivNxFnzYl9BPQyus9mhis+
+         B56A==
+X-Gm-Message-State: AOAM530QwMi/EhDJmGekVSRHqnrqw1fPlnumiy26Lp8gnizj4KxObEFf
+        HLfJwbUTekSY2Rka7fHdPHX17MBpiAPdXQ==
+X-Google-Smtp-Source: ABdhPJx3rpkCY604Z9NBhoI3AJvt//1BpBcXaxQDcbn3L70HYCyvhz1NKhObgbF/vRoXOfFG4EdVxA==
+X-Received: by 2002:a63:2cd:: with SMTP id 196mr20723262pgc.398.1610867696433;
+        Sat, 16 Jan 2021 23:14:56 -0800 (PST)
+Received: from hosting.home (S010664777d4a88b3.cg.shawcable.net. [70.77.224.58])
+        by smtp.gmail.com with ESMTPSA id h15sm12526196pfo.71.2021.01.16.23.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Jan 2021 23:14:55 -0800 (PST)
+Sender: Sheng Mao <ks8xntk9mds5i@gmail.com>
+Date:   Sun, 17 Jan 2021 00:14:53 -0700
+From:   Sheng Mao <shngmao@gmail.com>
+To:     Steven Davies <btrfs-list@steev.me.uk>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH RFC] btrfs-progs: receive-dump, add JSON output format
+Message-ID: <20210117071453.GA3979@hosting.home>
+References: <ddaea074-c805-0d52-8336-8c91a20f659d@steev.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAAKzf7kPv_CmzrMDD8SupbfFGyABvcDqWXg4yZBzBx-QBY6yMw@mail.gmail.com>
+In-Reply-To: <ddaea074-c805-0d52-8336-8c91a20f659d@steev.me.uk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 03:08:00PM -0600, Tim Cuthbertson wrote:
-> I thought raid0 "striped" the data across two or more devices to
-> increase total capacity, for example when adding a new device to an
-> existing filesystem. But that is not apparently what I ended up with.
+
+Hi Steven,
+
+JSON output is a feature I have waited for a long time. Thank you! Just
+my two cents: why not create your own struct btrfs_send_ops object and
+your own set of print_* functions? I think that may be more OOP design.
+
+Regards,
+Sheng
+
+On Sat, Jan 16, 2021 at 03:56:06PM +0000, Steven Davies wrote:
+> I have seen a few requests from users on other forums for a way to find a
+> diff between two snapshots and some scripts have been created[1] which parse
+> a btrfs-send stream to get this information.
 > 
-> Before:
-> btrfs device usage /mnt/backup/
-> /dev/sdc1, ID: 1
->    Device size:           300.00GiB
->    Device slack:              0.00B
->    Data,single:           226.01GiB
->    Metadata,DUP:            8.00GiB
->    System,DUP:             64.00MiB
->    Unallocated:            65.93GiB
+> This patch adds native JSON format output support to the btrfs-receive dump
+> command which would make writing such scripts much easier as they can use
+> JSON parsing libraries rather than string or binary decoding.
 > 
-> /dev/sdc2, ID: 2
->    Device size:           300.00GiB
->    Device slack:              0.00B
->    Data,single:             1.00GiB
->    Unallocated:           299.00GiB
+> Usage: btrfs send --no-data <subvolume> | btrfs receive --dump-json
 > 
-> Then, I ran command:
-> btrfs balance start -dconvert=raid0 -mconvert=raid1 /mnt/backup
+> Sample output:
+> [
+>  {"operation": "subvol", "path": "./2021-01-16T03:01:36+00:00", "uuid":
+> "4f6756a2-c8e8-614b-beaa-483de9a7ed13", "transid": 47864957},
+>  {"operation": "chown", "path": "./2021-01-16T03:01:36+00:00/", "gid": 0, "uid": 0},
+>  {"operation": "chmod", "path": "./2021-01-16T03:01:36+00:00/", "mode": "755"},
+>  {"operation": "utimes", "path": "./2021-01-16T03:01:36+00:00/", "atime":
+> "2021-01-16T03:00:30+0000", "mtime": "1970-01-01T01:00:00+0100", "ctime":
+> "2021-01-13T03:00:38+0000"},
+>  {"operation": "mkdir", "path": "./2021-01-16T03:01:36+00:00/o257-2524-0"},
+>  {"operation": "rename", "path": "./2021-01-16T03:01:36+00:00/o257-2524-0",
+> "dest": "./2021-01-16T03:01:36+00:00/grub"},
+>  {}
+> ]
 > 
-> And what I ended up with seems to be double the amount of data used,
-> like what I think would happen with raid1, not raid0:
+> Patch is against current btrfs-progs master.
 > 
-> btrfs device usage /mnt/backup/
-> /dev/sdc1, ID: 1
->    Device size:           300.00GiB
->    Device slack:              0.00B
->    Data,RAID0:            228.00GiB
->    Metadata,RAID1:          5.00GiB
->    System,RAID1:           64.00MiB
->    Unallocated:            66.94GiB
+> [1] https://github.com/sysnux/btrfs-snapshots-diff
 > 
-> /dev/sdc2, ID: 2
->    Device size:           300.00GiB
->    Device slack:              0.00B
->    Data,RAID0:            228.00GiB
->    Metadata,RAID1:          5.00GiB
->    System,RAID1:           64.00MiB
->    Unallocated:            66.94GiB
+> Signed-off-by: Steven Davies <btrfs@steev.me.uk>
+> ---
+>  cmds/receive-dump.c | 268 +++++++++++++++++++++++++++++++++++++++++-----------
+>  cmds/receive-dump.h |   1 +
+>  cmds/receive.c      |  20 +++-
+>  3 files changed, 234 insertions(+), 55 deletions(-)
 > 
-> Or, am I misinterpreting what I am seeing? Thank you.
-
-btrfs divides disks into 1 GiB slices (on disks of this size), and the
-joins the slices together to make chunks with a RAID profile.  Data
-and metadata is then stored inside the chunks.
-
-btrfs dev usage will show you the size of the chunks, not the amount of
-(meta)data inside the chunks.
-
-> # uname -a
-> Linux tux 5.10.7-arch1-1 #1 SMP PREEMPT Wed, 13 Jan 2021 12:02:01
-> +0000 x86_64 GNU/Linux
-> # btrfs --version
-> btrfs-progs v5.9
-> # btrfs fi show
-> Label: none  uuid: c0f4c8e2-b580-4c0d-9562-abdb933b9625
->         Total devices 1 FS bytes used 13.11GiB
->         devid    1 size 449.51GiB used 14.01GiB path /dev/sda3
+> diff --git a/cmds/receive-dump.c b/cmds/receive-dump.c
+> index 648d9314..2c1af22e 100644
+> --- a/cmds/receive-dump.c
+> +++ b/cmds/receive-dump.c
+> @@ -51,7 +51,7 @@
+>   * Returns the length of the escaped characters. Unprintable characters are
+>   * escaped as octals.
+>   */
+> -static int print_path_escaped(const char *path)
+> +static int print_path_escaped(const char *path, int json)
+>  {
+>  	size_t i;
+>  	size_t path_len = strlen(path);
+> @@ -61,27 +61,44 @@ static int print_path_escaped(const char *path)
+>  		char c = path[i];
 > 
-> Label: none  uuid: 4fe39403-7ba1-4f22-972f-5041e3b6ff6f
->         Total devices 1 FS bytes used 37.36GiB
->         devid    1 size 600.00GiB used 40.02GiB path /dev/sdb1
+>  		len++;
+> -		switch (c) {
+> -		case '\a': putchar('\\'); putchar('a'); len++; break;
+> -		case '\b': putchar('\\'); putchar('b'); len++; break;
+> -		case '\e': putchar('\\'); putchar('e'); len++; break;
+> -		case '\f': putchar('\\'); putchar('f'); len++; break;
+> -		case '\n': putchar('\\'); putchar('n'); len++; break;
+> -		case '\r': putchar('\\'); putchar('r'); len++; break;
+> -		case '\t': putchar('\\'); putchar('t'); len++; break;
+> -		case '\v': putchar('\\'); putchar('v'); len++; break;
+> -		case ' ':  putchar('\\'); putchar(' '); len++; break;
+> -		case '\\': putchar('\\'); putchar('\\'); len++; break;
+> -		default:
+> -			  if (!isprint(c)) {
+> -				  printf("\\%c%c%c",
+> -						  '0' + ((c & 0300) >> 6),
+> -						  '0' + ((c & 070) >> 3),
+> -						  '0' + (c & 07));
+> -				  len += 3;
+> -			  } else {
+> -				  putchar(c);
+> -			  }
+> +		if (!json) {
+> +			switch (c) {
+> +			case '\a': putchar('\\'); putchar('a'); len++; break;
+> +			case '\b': putchar('\\'); putchar('b'); len++; break;
+> +			case '\e': putchar('\\'); putchar('e'); len++; break;
+> +			case '\f': putchar('\\'); putchar('f'); len++; break;
+> +			case '\n': putchar('\\'); putchar('n'); len++; break;
+> +			case '\r': putchar('\\'); putchar('r'); len++; break;
+> +			case '\t': putchar('\\'); putchar('t'); len++; break;
+> +			case '\v': putchar('\\'); putchar('v'); len++; break;
+> +			case ' ':  putchar('\\'); putchar(' '); len++; break;
+> +			case '\\': putchar('\\'); putchar('\\'); len++; break;
+> +			default:
+> +				  if (!isprint(c)) {
+> +					  printf("\\%c%c%c",
+> +							  '0' + ((c & 0300) >> 6),
+> +							  '0' + ((c & 070) >> 3),
+> +							  '0' + (c & 07));
+> +					  len += 3;
+> +				  } else {
+> +					  putchar(c);
+> +				  }
+> +			}
+> +		} else {
+> +			if (c < 0x20) {
+> +				printf("\\u%04x", c);
+> +				len += 5;
+> +			} else if (c == '\\') {
+> +				putchar('\\');
+> +				putchar('\\');
+> +				len++;
+> +			} else if (c == '"') {
+> +				putchar('\\');
+> +				putchar('"');
+> +				len++;
+> +			} else {
+> +				putchar(c);
+> +			}
+>  		}
+>  	}
+>  	return len;
+> @@ -109,22 +126,41 @@ static int __print_dump(int subvol, void *user, const char *path,
+>  		out_path = full_path;
+>  	}
 > 
-> Label: none  uuid: 1751eeca-c1a2-47bb-906b-c7199b09eb6d
->         Total devices 2 FS bytes used 229.57GiB
->         devid    1 size 300.00GiB used 233.06GiB path /dev/sdc1
->         devid    2 size 300.00GiB used 233.06GiB path /dev/sdc2
-
-btrfs fi show also reports chunk sizes (228 + 5 + 0.06 = 233.06).
-
-The difference between the btrfs device size and the amount of data
-allocated is called "unallocated" in 'btrfs dev usage' and 'btrfs
-fi usage'.
-
-The difference between btrfs device size and the physical device size
-is called "slack" in 'btrfs dev usage' output (it does not appear in
-'fi usage' output).
-
-> # btrfs fi df /mnt/backup
-> Data, RAID0: total=456.00GiB, used=226.65GiB
-> System, RAID1: total=64.00MiB, used=64.00KiB
-> Metadata, RAID1: total=5.00GiB, used=2.92GiB
-> GlobalReserve, single: total=401.84MiB, used=0.00B
-
-In 'btrfs fi df' output, 'total' is the size of chunks allocated, 'used'
-is the amount of space used within the chunks (GlobalReserve is deducted
-from metadata in RAM, it doesn't physically exist on any disk).
-
-If you had shown 'btrfs fi usage' here, it might be clearer.
-'fi usage' combines 'dev usage' with 'fi df', and it indicates
-how much data is stored in each profile separately from how much
-chunk space is allocated on each disk.
-
-Plain 'df' should be showing the same amount of available space,
-maybe a few GB different due to the metadata balance.
-
-It is still storing 226 GiB of data, but it has allocated a larger number
-of chunks (i.e. one chunk out for each chunk in, but the input chunks
-are 1GB and the output chunks are 2x1GB, so each chunk is half full).
-1GB of data at the beginning of the new chunk and then 1GB of empty space,
-give or take a few blocks.
-
-It's probably harmless, but if you want to waste a lot of iops for
-nothing, you can balance the data again and it should pack the data
-into chunks more tightly.  I wouldn't bother--the space is allocated
-for data, so if you add more data to the filesystem it will just
-fill in those chunks.  If you do a data balance, it will repack the
-data into the data chunks so that allocated space is closer to used
-space, but then later as you add more data to the filesystem new data
-chunks will have to be created again.  There's no fragmentation concern
-since the free space areas are likely all contiguous 1 GiB or larger.
-
-Same thing has happened with metadata, 5GiB allocated for ~3GiB used.
-Definitely do NOT balance the metadata (only balance metadata to change
-RAID profiles) because you'll need that extra 2GiB to be preallocated
-for metadata as the disk fills up.
+> -	/* Unified header */
+> -	printf("%-16s", title);
+> -	ret = print_path_escaped(out_path);
+> -	if (!fmt) {
+> +
+> +	if (!r->json) {
+> +		/* Unified header */
+> +		printf("%-16s", title);
+> +		ret = print_path_escaped(out_path, r->json);
+> +		if (!fmt) {
+> +			putchar('\n');
+> +			return 0;
+> +		}
+> +		/* Short paths are aligned to 32 chars; longer paths get a single space */
+> +		do {
+> +			putchar(' ');
+> +		} while (++ret < 32);
+> +		va_start(args, fmt);
+> +		/* Operation specified ones */
+> +		vprintf(fmt, args);
+> +		va_end(args);
+>  		putchar('\n');
+> -		return 0;
+> -	}
+> -	/* Short paths are aligned to 32 chars; longer paths get a single space */
+> -	do {
+> +	} else {
+> +		/* Unified header */
+> +		printf(" {\"operation\": \"%s\", \"path\": \"", title);
+> +		ret = print_path_escaped(out_path, r->json);
+> +		putchar('"');
+> +		if (!fmt) {
+> +			printf("},\n");
+> +			return 0;
+> +		}
+> +		putchar(',');
+>  		putchar(' ');
+> -	} while (++ret < 32);
+> -	va_start(args, fmt);
+> -	/* Operation specified ones */
+> -	vprintf(fmt, args);
+> -	va_end(args);
+> -	putchar('\n');
+> +		va_start(args, fmt);
+> +		/* Operation specified ones */
+> +		vprintf(fmt, args);
+> +		va_end(args);
+> +		printf("},\n");
+> +	}
+>  	return 0;
+>  }
+> 
+> @@ -140,11 +176,18 @@ static int print_subvol(const char *path, const u8 *uuid, u64 ctransid,
+>  			void *user)
+>  {
+>  	char uuid_str[BTRFS_UUID_UNPARSED_SIZE];
+> +	struct btrfs_dump_send_args *r = user;
+> 
+>  	uuid_unparse(uuid, uuid_str);
+> 
+> -	return PRINT_DUMP_SUBVOL(user, path, "subvol", "uuid=%s transid=%llu",
+> -				 uuid_str, ctransid);
+> +	if (!r->json) {
+> +		return PRINT_DUMP_SUBVOL(user, path, "subvol",
+> +			"uuid=%s transid=%llu", uuid_str, ctransid);
+> +	} else {
+> +		return PRINT_DUMP_SUBVOL(user, path, "subvol",
+> +			"\"uuid\": \"%s\", \"transid\": %llu",
+> +			uuid_str, ctransid);
+> +	}
+>  }
+> 
+>  static int print_snapshot(const char *path, const u8 *uuid, u64 ctransid,
+> @@ -154,14 +197,23 @@ static int print_snapshot(const char *path, const u8 *uuid, u64 ctransid,
+>  	char uuid_str[BTRFS_UUID_UNPARSED_SIZE];
+>  	char parent_uuid_str[BTRFS_UUID_UNPARSED_SIZE];
+>  	int ret;
+> +	struct btrfs_dump_send_args *r = user;
+> 
+>  	uuid_unparse(uuid, uuid_str);
+>  	uuid_unparse(parent_uuid, parent_uuid_str);
+> 
+> -	ret = PRINT_DUMP_SUBVOL(user, path, "snapshot",
+> -		"uuid=%s transid=%llu parent_uuid=%s parent_transid=%llu",
+> +	if (r->json) {
+> +		ret = PRINT_DUMP_SUBVOL(user, path, "snapshot",
+> +			"uuid=%s transid=%llu parent_uuid=%s parent_transid=%llu",
+>  				uuid_str, ctransid, parent_uuid_str,
+>  				parent_ctransid);
+> +	} else {
+> +		ret = PRINT_DUMP_SUBVOL(user, path, "snapshot",
+> +			"\"uuid\": \"%s\", \"transid\": %llu, \"parent_uuid\": \"%s\", \
+> +			\"parent_transid\": %llu",
+> +				uuid_str, ctransid, parent_uuid_str,
+> +				parent_ctransid);
+> +	}
+>  	return ret;
+>  }
+> 
+> @@ -177,8 +229,16 @@ static int print_mkdir(const char *path, void *user)
+> 
+>  static int print_mknod(const char *path, u64 mode, u64 dev, void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "mknod", "mode=%llo dev=0x%llx", mode,
+> -			  dev);
+> +	struct btrfs_dump_send_args *r = user;
+> +
+> +	if (!r->json) {
+> +		return PRINT_DUMP(user, path, "mknod", "mode=%llo dev=0x%llx",
+> +			  mode, dev);
+> +	} else {
+> +		return PRINT_DUMP(user, path,
+> +			  "mknod", "\"mode\": \"%llo\", \"dev\": \"0x%llx\"",
+> +			  mode, dev);
+> +	}
+>  }
+> 
+>  static int print_mkfifo(const char *path, void *user)
+> @@ -203,12 +263,26 @@ static int print_rename(const char *from, const char *to, void *user)
+>  	int ret;
+> 
+>  	PATH_CAT_OR_RET("rename", full_to, r->full_subvol_path, to, ret);
+> -	return PRINT_DUMP(user, from, "rename", "dest=%s", full_to);
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, from, "rename", "dest=%s", full_to);
+> +	} else {
+> +		ret = PRINT_DUMP(user, from, "rename", "\"dest\": \"%s\"",
+> +			  full_to);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_link(const char *path, const char *lnk, void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "link", "dest=%s", lnk);
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "link", "dest=%s", lnk);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "link", "\"dest\": \"%s\"", lnk);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_unlink(const char *path, void *user)
+> @@ -224,8 +298,18 @@ static int print_rmdir(const char *path, void *user)
+>  static int print_write(const char *path, const void *data, u64 offset,
+>  		       u64 len, void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "write", "offset=%llu len=%llu",
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "write", "offset=%llu len=%llu",
+> +			  offset, len);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path,
+> +			  "write", "\"offset\": %llu, \"len\": %llu",
+>  			  offset, len);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_clone(const char *path, u64 offset, u64 len,
+> @@ -239,37 +323,93 @@ static int print_clone(const char *path, u64 offset, u64 len,
+> 
+>  	PATH_CAT_OR_RET("clone", full_path, r->full_subvol_path, clone_path,
+>  			ret);
+> -	return PRINT_DUMP(user, path, "clone",
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "clone",
+>  			  "offset=%llu len=%llu from=%s clone_offset=%llu",
+>  			  offset, len, full_path, clone_offset);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "clone",
+> +			  "\"offset\": %llu, \"len\": %llu, \"from\": \"%s\""
+> +			  ", \"clone_offset\": %llu",
+> +			  offset, len, full_path, clone_offset);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_set_xattr(const char *path, const char *name,
+>  			   const void *data, int len, void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "set_xattr", "name=%s data=%.*s len=%d",
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path,
+> +			  "set_xattr", "name=%s data=%.*s len=%d",
+> +			  name, len, (char *)data, len);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path,
+> +			  "set_xattr", "\"name\": \"%s\""
+> +			  ", \"data\": \"%.*s\", \"len\": %d",
+>  			  name, len, (char *)data, len);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_remove_xattr(const char *path, const char *name, void *user)
+>  {
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> 
+> -	return PRINT_DUMP(user, path, "remove_xattr", "name=%s", name);
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "remove_xattr", "name=%s", name);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "remove_xattr",
+> +			  "\"name\": \"%s\"", name);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_truncate(const char *path, u64 size, void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "truncate", "size=%llu", size);
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "truncate", "size=%llu", size);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "truncate", "\"size\": %llu", size);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_chmod(const char *path, u64 mode, void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "chmod", "mode=%llo", mode);
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "chmod", "mode=%llo", mode);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "chmod", "\"mode\": \"%llo\"", mode);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_chown(const char *path, u64 uid, u64 gid, void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "chown", "gid=%llu uid=%llu", gid, uid);
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "chown", "gid=%llu uid=%llu",
+> +			  gid, uid);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "chown",
+> +			  "\"gid\": %llu, \"uid\": %llu",
+> +			  gid, uid);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int sprintf_timespec(struct timespec *ts, char *dest, int max_size)
+> @@ -297,6 +437,8 @@ static int print_utimes(const char *path, struct timespec *at,
+>  			struct timespec *mt, struct timespec *ct,
+>  			void *user)
+>  {
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+>  	char at_str[TIME_STRING_MAX];
+>  	char mt_str[TIME_STRING_MAX];
+>  	char ct_str[TIME_STRING_MAX];
+> @@ -305,15 +447,33 @@ static int print_utimes(const char *path, struct timespec *at,
+>  	    sprintf_timespec(mt, mt_str, TIME_STRING_MAX - 1) < 0 ||
+>  	    sprintf_timespec(ct, ct_str, TIME_STRING_MAX - 1) < 0)
+>  		return -EINVAL;
+> -	return PRINT_DUMP(user, path, "utimes", "atime=%s mtime=%s ctime=%s",
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path,
+> +			  "utimes", "atime=%s mtime=%s ctime=%s",
+> +			  at_str, mt_str, ct_str);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "utimes",
+> +			  "\"atime\": \"%s\", \"mtime\": \"%s\", " \
+> +			    "\"ctime\": \"%s\"",
+>  			  at_str, mt_str, ct_str);
+> +	}
+> +	return ret;
+>  }
+> 
+>  static int print_update_extent(const char *path, u64 offset, u64 len,
+>  			       void *user)
+>  {
+> -	return PRINT_DUMP(user, path, "update_extent", "offset=%llu len=%llu",
+> -			  offset, len);
+> +	struct btrfs_dump_send_args *r = user;
+> +	int ret;
+> +
+> +	if (!r->json) {
+> +		ret = PRINT_DUMP(user, path, "update_extent",
+> +			   "offset=%llu len=%llu", offset, len);
+> +	} else {
+> +		ret = PRINT_DUMP(user, path, "update_extent",
+> +			   "\"offset\": %llu, \"len\": %llu", offset, len);
+> +	}
+> +	return ret;
+>  }
+> 
+>  struct btrfs_send_ops btrfs_print_send_ops = {
+> diff --git a/cmds/receive-dump.h b/cmds/receive-dump.h
+> index 06a61085..d62462d0 100644
+> --- a/cmds/receive-dump.h
+> +++ b/cmds/receive-dump.h
+> @@ -22,6 +22,7 @@
+>  struct btrfs_dump_send_args {
+>  	char full_subvol_path[PATH_MAX];
+>  	char root_path[PATH_MAX];
+> +	int json;
+>  };
+> 
+>  extern struct btrfs_send_ops btrfs_print_send_ops;
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index 2aaba3ff..e977e9db 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -1244,6 +1244,8 @@ static const char * const cmd_receive_usage[] = {
+>  	"                 this file system is mounted.",
+>  	"--dump           dump stream metadata, one line per operation,",
+>  	"                 does not require the MOUNT parameter",
+> +	"--dump-json      dump stream metadata in JSON format,",
+> +	"                 does not require the MOUNT parameter",
+>  	"-v               deprecated, alias for global -v option",
+>  	HELPINFO_INSERT_GLOBALS,
+>  	HELPINFO_INSERT_VERBOSE,
+> @@ -1260,6 +1262,7 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
+>  	int receive_fd = fileno(stdin);
+>  	u64 max_errors = 1;
+>  	int dump = 0;
+> +	int dump_json = 0;
+>  	int ret = 0;
+> 
+>  	memset(&rctx, 0, sizeof(rctx));
+> @@ -1285,11 +1288,13 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
+>  	optind = 0;
+>  	while (1) {
+>  		int c;
+> -		enum { GETOPT_VAL_DUMP = 257 };
+> +		enum { GETOPT_VAL_DUMP = 257,
+> +			GETOPT_VAL_DUMP_JSON = 258 };
+>  		static const struct option long_opts[] = {
+>  			{ "max-errors", required_argument, NULL, 'E' },
+>  			{ "chroot", no_argument, NULL, 'C' },
+>  			{ "dump", no_argument, NULL, GETOPT_VAL_DUMP },
+> +			{ "dump-json", no_argument, NULL, GETOPT_VAL_DUMP_JSON },
+>  			{ "quiet", no_argument, NULL, 'q' },
+>  			{ NULL, 0, NULL, 0 }
+>  		};
+> @@ -1333,6 +1338,10 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
+>  		case GETOPT_VAL_DUMP:
+>  			dump = 1;
+>  			break;
+> +		case GETOPT_VAL_DUMP_JSON:
+> +			dump = 1;
+> +			dump_json = 1;
+> +			break;
+>  		default:
+>  			usage_unknown_option(cmd, argv);
+>  		}
+> @@ -1360,12 +1369,21 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
+>  		dump_args.root_path[1] = '\0';
+>  		dump_args.full_subvol_path[0] = '.';
+>  		dump_args.full_subvol_path[1] = '\0';
+> +		dump_args.json = dump_json;
+> +		if (dump_json) {
+> +			putchar('[');
+> +			putchar('\n');
+> +		}
+>  		ret = btrfs_read_and_process_send_stream(receive_fd,
+>  			&btrfs_print_send_ops, &dump_args, 0, max_errors);
+>  		if (ret < 0) {
+>  			errno = -ret;
+>  			error("failed to dump the send stream: %m");
+>  		}
+> +		if (dump_json) {
+> +			//Add an empty record so there isn't a trailing ,
+> +			printf(" {}\n]");
+> +		}
+>  	} else {
+>  		ret = do_receive(&rctx, tomnt, realmnt, receive_fd, max_errors);
+>  	}
