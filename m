@@ -2,276 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FDF72F94BF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jan 2021 19:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093AE2F94C0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jan 2021 19:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729773AbhAQSz2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Jan 2021 13:55:28 -0500
-Received: from smtp-36.italiaonline.it ([213.209.10.36]:34174 "EHLO libero.it"
+        id S1729865AbhAQSza (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Jan 2021 13:55:30 -0500
+Received: from smtp-36.italiaonline.it ([213.209.10.36]:40939 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728289AbhAQSzW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1728154AbhAQSzW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Sun, 17 Jan 2021 13:55:22 -0500
 Received: from venice.bhome ([94.37.172.193])
         by smtp-36.iol.local with ESMTPA
-        id 1DCAlJgx8i3tS1DCAlXz5v; Sun, 17 Jan 2021 19:54:38 +0100
+        id 1DCAlJgx8i3tS1DCAlXz62; Sun, 17 Jan 2021 19:54:38 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1610909678; bh=yFUK5L7fSe+yqQ81PJOxdumPD/CUiOY9ohbvSDMn1SY=;
+        t=1610909678; bh=Y7nXYGw4qHjnL9nQK+ew63FxvwvFvrVma7sXPXyBeBA=;
         h=From;
-        b=BkxDJJSIC4ucW86z8aWdQv/tSj/j6oQ+tiFeNoOiNX533CuRsBA4WYOMsJb70Qr2+
-         jHb6MKU4CBvge1st+IJB+b5Dki13cl6IOQb+f5ri44aylg3JFGQ6smNH+fil53SqEB
-         y0YBvv2IrPUER3rAL/Po5LE2cxW8rvEzHy0YYSaZPYupu/Quf/kc11hqPuiOdXqQa0
-         GIwKhR2nCrjWtJUBwLsK7rnKISTTXvPRRqsP8H0A6i1915lF8FJbLjogGftBrWAszr
-         3OgMq0mP4NGf6sxVeNQduAQ3UeBtFHrGU6S1tF49ViDDztDPWowIDH11qpVncZcoAR
-         mjNYMko3rXsyg==
+        b=MIMOK2nOZesLff779eQT0I/s+pZDSyptTjNQN6wXoiWxlvvKHXpo2OGPPPZLCb3lJ
+         AYKfTTqg3owumb3v3SnySCN8Id/M41xEEnu1pCCTpw+VmTAqjkKHooWbnD22isbVnb
+         +cAH+pZ5AjqcFgy1KScpNLh1uOpYu49vPgUoepW1KszEsFFeLnsnJF6ZCNlDC5+r8Y
+         w2W6mbwzW1TtYv+0k2MbMtpgI6zIt0ECsOggoAN3yZg9MV6N6aROf6QxY+KtD8b/GW
+         ijov/RaW/KZDzsLAPGCpxHD36JMkuGYCpA2ZlKiCYPh4HNZnbFIUk79jjci61SRElu
+         lL3rnGpWT2KSw==
 X-CNFS-Analysis: v=2.4 cv=FqfAQ0nq c=1 sm=1 tr=0 ts=600487ee cx=a_exe
  a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
- a=-9YWQ1_6VQTfzEFt-1QA:9
+ a=tAp6EsRIHxeSHigjOvkA:9
 From:   Goffredo Baroncelli <kreijack@libero.it>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Subject: [RFC][PATCH V5] btrfs: preferred_metadata: preferred device for metadata
-Date:   Sun, 17 Jan 2021 19:54:30 +0100
-Message-Id: <20210117185435.36263-1-kreijack@libero.it>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+Subject: [PATCH 1/5] Add an ioctl to set the device properties
+Date:   Sun, 17 Jan 2021 19:54:31 +0100
+Message-Id: <20210117185435.36263-2-kreijack@libero.it>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210117185435.36263-1-kreijack@libero.it>
+References: <20210117185435.36263-1-kreijack@libero.it>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CMAE-Envelope: MS4xfJGoC5bvLifK87rEfX5CGlzKQGcu0m+lebtnk5EwmvPM2gglJRL6HGITCJm+fccSKMCrNyYJL3HsCrtjv0q/Ntzo1/lYPoDbOvueB8AEKitUXXWygP1Z
- L0k9skfgi5JkWlVDUjUzwKJC+qfVHWNm0RT5Q/C4MjRs4qQZrhcL8oRAE1CBciwz0KsSXj8JIoNxsYJSeVV8TSjTZYo5eC6UPB2Zp0PnXdmnUDAK5HBQhaQv
- 1ZHqCUICjnAdQOhcVs8GYA==
+ L0k9skfgi5JkWpCGrvYGZy87SIpogaIhJMIUE+HdPxoIjHuuBAj9GKWYUkBTDjpQULPzPtsYr3f4jEjJ9BdZsuExzGuu6BcOFA4OhuHvUIwN/QqJ7sj1racN
+ CQHTG6IBH5dAYlheEXKROC40ExhEiuK9LgvfFo2rQ9Q=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Goffredo Baroncelli <kreijack@inwind.it>
 
-Hi all,
+---
+ fs/btrfs/ioctl.c           | 67 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c         |  2 +-
+ fs/btrfs/volumes.h         |  2 ++
+ include/uapi/linux/btrfs.h | 40 +++++++++++++++++++++++
+ 4 files changed, 110 insertions(+), 1 deletion(-)
 
-This is an RFC; I wrote this patch because I find the idea interesting
-even though it adds more complication to the chunk allocator.
-
-The basic idea is to store the metadata chunk in the fasters disks.
-The fasters disk are marked by the "preferred_metadata" flag.
-
-BTRFS when allocate a new metadata/system chunk, selects the
-"preferred_metadata" disks, otherwise it selectes the non
-"preferred_metadata" disks. The intial patch allowed to use the other
-kind of disk in case a set is full.
-
-This patches set is based on v5.11-rc2.
-
-For now, the only user of this patch that I am aware is Zygo. 
-However he asked to further constraint the allocation: i.e. avoid to
-allocated metadata on a not "preferred_metadata"
-disk. So I extended the patch adding 4 modes to operate.
-
-This is enabled passing the option "preferred_metadata=<mode>" at
-mount time. 
-
-There are 4 modes:
-- preferred_metadata=disabled
-  The allocator is the standard one.
-
-- preferred_metadata=soft
-  The metadata chunk are allocated on the disks marked with the
-  "preferred_metadata" flag.
-  The data chunk are allocated on the disks not marked with the
-  "preferred_metadata" flag.
-  If the space isn't enough, then it is possible to use the other kind
-  of disks.
-
-- preferred_metadata=hard
-  The metadata chunk are allocated on the disks marked with the
-  "preferred_metadata" flag.
-  The data chunk are allocated on the disks not marked with the
-  "preferred_metadata" flag.
-  If the space isn't enough, then "no space left" error is raised. It
-  is not possible to use the other kind of disks.
-        
-- preferred_metadata=metadata
-  The metadata chunk are allocated on the disks marked with the
-  "preferred_metadata" flag.
-  For metadata, if the space isn't enough, then it is possible to use the
-  other kind of disks.
-  The data chunk are allocated on the disks not marked with the
-  "preferred_metadata" flag.
-  For data, if the space isn't enough, then "no space left" error is raised.
-  It is not possible to use the other kind of disks.
-
-
-A separate patches set is sent to extend the "btrfs property" command
-for supporting the preferred_metadata device flag. The basic usage is:
-
-    $ # set a new value
-    $ sudo btrfs property set /dev/vde preferred_metadata 1
-
-    $ # get the current value
-    $ sudo btrfs property get /dev/vde preferred_metadata
-    devid=4, path=/dev/vde: dedicated_metadata=1
-
-Some examples: (/dev/sd[abc] are marked as preferred_metadata,
-and /dev/sd[ef] are not)
-
-Non striped profile: metadata->raid1, data->raid1
-The data is stored on /dev/sd[ef], metadata is stored on /dev/sd[abc].
-
-If mode is one of "soft" or "disabled", when /dev/sd[ef] are full
-the data chunk is allocated also on /dev/sd[abc]. Otherwise -ENOSPACE
-is raised.
-
-Striped profile: metadata->raid6, data->raid6
-raid6 requires 3 disks at minimum, so /dev/sd[ef] are not enough for a
-data profile raid6. If mode is one of "hard" or "metadata", an error 
-is returned. Otherwise to allow a data chunk allocation, the data profile
-raid6 will be stored on all the disks /dev/sd[abcdef].
-
-Instead the metadata profile raid6 will be allocated on /dev/sd[abc],
-because these are enough to host this chunk.
-
-When the disks /dev/sd[abc] are full, if the mode is "hard" an
-error is raised, otherwise the other disks may be used.
-
-The patches set is composed by four patches:
-
-- The first patch adds the ioctl to update the btrfs_dev_item.type field.
-The ioctl is generic to handle more fields, however now only the "type"
-field is supported.
-
-- The second patch adds the flag BTRFS_DEV_PREFERRED_METADATA which is
-used to mark a device as "preferred_metadata"
-
-- The third patch exports the btrfs_dev_item.type field via sysfs files
-/sys/fs/btrfs/<UUID>/devinfo/<devid>/type
-
-It is possible only to read the value. It is not implemented the updated
-of the value because in btrfs/stsfs.c there is a comment that states:
-"We don't want to do full transaction commit from inside sysfs".
-
-- The fourth patch implements the mount options handling
-
-- The 5th implements the different allocation strategies
-
-Changelog:
-v5: - add several modes to preferred_metadata mount option
-v4: - renamed ssd_metadata to preferred_metadata
-    - add the device property "preferred_metadata"
-    - add the ioctl BTRFS_IOC_DEV_PROPERTIES
-    - export the btrfs_dev_item.type values via sysfs
-v3: - correct the collision between BTRFS_MOUNT_DISCARD_ASYNC and
-      BTRFS_MOUNT_SSD_METADATA.
-v2: - rebased to v5.6.2
-    - correct the comparison about the rotational disks (>= instead of >)
-    - add the flag rotational to the struct btrfs_device_info to
-      simplify the comparison function (btrfs_cmp_device_info*() )
-v1: - first issue
-
-Below I collected some data to highlight the performance increment.
-
-Test setup:
-I performed as test a "dist-upgrade" of a Debian from stretch to buster.
-The test consisted in an image of a Debian stretch[1]  with the packages
-needed under /var/cache/apt/archives/ (so no networking was involved).
-For each test I formatted the filesystem from scratch, un-tar-red the
-image and the ran "apt-get dist-upgrade" [2]. For each disk(s)/filesystem
-combination I measured the time of apt dist-upgrade with and
-without the flag "force-unsafe-io" which reduce the using of sync(2) and
-flush(2). The ssd was 20GB big, the hdd was 230GB big,
-
-I considered the following scenarios:
-- btrfs over ssd
-- btrfs over ssd + hdd with my patch enabled
-- btrfs over bcache over hdd+ssd
-- btrfs over hdd (very, very slow....)
-- ext4 over ssd
-- ext4 over hdd
-
-The test machine was an "AMD A6-6400K" with 4GB of ram, where 3GB was used
-as cache/buff.
-
-Data analysis:
-
-Of course btrfs is slower than ext4 when a lot of sync/flush are involved. Using
-apt on a rotational was a dramatic experience. And IMHO  this should be replaced
-by using the btrfs snapshot capabilities. But this is another (not easy) story.
-
-Unsurprising bcache performs better than my patch. But this is an expected
-result because it can cache also the data chunk (the read can goes directly to
-the ssd). bcache perform about +60% slower when there are a lot of sync/flush
-and only +20% in the other case.
-
-Regarding the test with force-unsafe-io (fewer sync/flush), my patch reduce the
-time from +256% to +113%  than the hdd-only . Which I consider a good
-results considering how small is the patch.
-
-
-Raw data:
-The data below is the "real" time (as return by the time command) consumed by
-apt
-
-
-Test description         real (mmm:ss)	Delta %
---------------------     -------------  -------
-btrfs hdd w/sync	   142:38	+533%
-btrfs ssd+hdd w/sync        81:04	+260%
-ext4 hdd w/sync	            52:39	+134%
-btrfs bcache w/sync	    35:59	 +60%
-btrfs ssd w/sync	    22:31	reference
-ext4 ssd w/sync	            12:19	 -45%
-
-
-
-Test description         real (mmm:ss)	Delta %
---------------------     -------------  -------
-btrfs hdd	             56:2	+256%
-ext4 hdd	            51:32	+228%
-btrfs ssd+hdd	            33:30	+113%
-btrfs bcache	            18:57	 +20%
-btrfs ssd	            15:44	reference
-ext4 ssd	            11:49	 -25%
-
-
-[1] I created the image, using "debootrap stretch", then I installed a set
-of packages using the commands:
-
-  # debootstrap stretch test/
-  # chroot test/
-  # mount -t proc proc proc
-  # mount -t sysfs sys sys
-  # apt --option=Dpkg::Options::=--force-confold \
-        --option=Dpkg::options::=--force-unsafe-io \
-	install mate-desktop-environment* xserver-xorg vim \
-        task-kde-desktop task-gnome-desktop
-
-Then updated the release from stretch to buster changing the file /etc/apt/source.list
-Then I download the packages for the dist upgrade:
-
-  # apt-get update
-  # apt-get --download-only dist-upgrade
-
-Then I create a tar of this image.
-Before the dist upgrading the space used was about 7GB of space with 2281
-packages. After the dist-upgrade, the space used was 9GB with 2870 packages.
-The upgrade installed/updated about 2251 packages.
-
-
-[2] The command was a bit more complex, to avoid an interactive session
-
-  # mkfs.btrfs -m single -d single /dev/sdX
-  # mount /dev/sdX test/
-  # cd test
-  # time tar xzf ../image.tgz
-  # chroot .
-  # mount -t proc proc proc
-  # mount -t sysfs sys sys
-  # export DEBIAN_FRONTEND=noninteractive
-  # time apt-get -y --option=Dpkg::Options::=--force-confold \
-	--option=Dpkg::options::=--force-unsafe-io dist-upgrade
-
-
-BR
-G.Baroncelli
-
---
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 703212ff50a5..9e67741fa966 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -4842,6 +4842,71 @@ static int btrfs_ioctl_set_features(struct file *file, void __user *arg)
+ 	return ret;
+ }
+ 
++static long btrfs_ioctl_dev_properties(struct file *file,
++						void __user *argp)
++{
++	struct inode *inode = file_inode(file);
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct btrfs_ioctl_dev_properties dev_props;
++	struct btrfs_device	*device;
++        struct btrfs_root *root = fs_info->chunk_root;
++        struct btrfs_trans_handle *trans;
++	int ret;
++	u64 prev_type;
++
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
++	if (copy_from_user(&dev_props, argp, sizeof(dev_props)))
++		return -EFAULT;
++
++	device = btrfs_find_device(fs_info->fs_devices, dev_props.devid,
++				NULL, NULL);
++	if (!device) {
++		btrfs_info(fs_info, "change_dev_properties: unable to find device %llu",
++			   dev_props.devid);
++		return -ENODEV;
++	}
++
++	if (dev_props.properties & BTRFS_DEV_PROPERTY_READ) {
++		u64 props = dev_props.properties;
++		memset(&dev_props, 0, sizeof(dev_props));
++		if (props & BTRFS_DEV_PROPERTY_TYPE) {
++			dev_props.properties = BTRFS_DEV_PROPERTY_TYPE;
++			dev_props.type = device->type;
++		}
++		if(copy_to_user(argp, &dev_props, sizeof(dev_props)))
++			return -EFAULT;
++		return 0;
++	}
++
++	/* it is possible to set only BTRFS_DEV_PROPERTY_TYPE for now */
++	if (dev_props.properties & ~(BTRFS_DEV_PROPERTY_TYPE))
++		return -EPERM;
++
++	trans = btrfs_start_transaction(root, 0);
++        if (IS_ERR(trans))
++                return PTR_ERR(trans);
++
++	prev_type = device->type;
++	device->type = dev_props.type;
++	ret = btrfs_update_device(trans, device);
++
++        if (ret < 0) {
++                btrfs_abort_transaction(trans, ret);
++                btrfs_end_transaction(trans);
++		device->type = prev_type;
++		return  ret;
++        }
++
++        ret = btrfs_commit_transaction(trans);
++	if (ret < 0)
++		device->type = prev_type;
++
++	return ret;
++
++}
++
+ static int _btrfs_ioctl_send(struct file *file, void __user *argp, bool compat)
+ {
+ 	struct btrfs_ioctl_send_args *arg;
+@@ -5025,6 +5090,8 @@ long btrfs_ioctl(struct file *file, unsigned int
+ 		return btrfs_ioctl_get_subvol_rootref(file, argp);
+ 	case BTRFS_IOC_INO_LOOKUP_USER:
+ 		return btrfs_ioctl_ino_lookup_user(file, argp);
++	case BTRFS_IOC_DEV_PROPERTIES:
++		return btrfs_ioctl_dev_properties(file, argp);
+ 	}
+ 
+ 	return -ENOTTY;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index ee086fc56c30..68b346c5465d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2744,7 +2744,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+ 	return ret;
+ }
+ 
+-static noinline int btrfs_update_device(struct btrfs_trans_handle *trans,
++int btrfs_update_device(struct btrfs_trans_handle *trans,
+ 					struct btrfs_device *device)
+ {
+ 	int ret;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 1997a4649a66..d776b7f55d56 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -595,5 +595,7 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
+ int btrfs_bg_type_to_factor(u64 flags);
+ const char *btrfs_bg_type_to_raid_name(u64 flags);
+ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
++int btrfs_update_device(struct btrfs_trans_handle *trans,
++                                        struct btrfs_device *device);
+ 
+ #endif
+diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+index 5df73001aad4..e6caef42837a 100644
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -860,6 +860,44 @@ struct btrfs_ioctl_get_subvol_rootref_args {
+ 		__u8 align[7];
+ };
+ 
++#define BTRFS_DEV_PROPERTY_TYPE		(1ULL << 0)
++#define BTRFS_DEV_PROPERTY_DEV_GROUP	(1ULL << 1)
++#define BTRFS_DEV_PROPERTY_SEEK_SPEED	(1ULL << 2)
++#define BTRFS_DEV_PROPERTY_BANDWIDTH	(1ULL << 3)
++#define BTRFS_DEV_PROPERTY_READ		(1ULL << 60)
++
++/*
++ * The ioctl BTRFS_IOC_DEV_PROPERTIES can read and write the device properties.
++ *
++ * The properties that the user want to write have to be set
++ * in the 'properties' field using the BTRFS_DEV_PROPERTY_xxxx constants.
++ *
++ * If the ioctl is used to read the device properties, the bit
++ * BTRFS_DEV_PROPERTY_READ has to be set in the 'properties' field.
++ * In this case the properties that the user want have to be set in the
++ * 'properties' field. The kernel doesn't return a property that was not
++ * required, however it may return a subset of the requested properties.
++ * The returned properties have the corrispondent BTRFS_DEV_PROPERTY_xxxx
++ * flag set in the 'properties' field.
++ *
++ * Up to 2020/05/11 the only properties that can be read/write is the 'type'
++ * one.
++ */
++struct btrfs_ioctl_dev_properties {
++	__u64	devid;
++	__u64	properties;
++	__u64	type;
++	__u32	dev_group;
++	__u8	seek_speed;
++	__u8	bandwidth;
++
++	/*
++	 * for future expansion
++	 */
++	__u8	unused1[2];
++	__u64	unused2[4];
++};
++
+ /* Error codes as returned by the kernel */
+ enum btrfs_err_code {
+ 	BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET = 1,
+@@ -988,5 +1026,7 @@ enum btrfs_err_code {
+ 				struct btrfs_ioctl_ino_lookup_user_args)
+ #define BTRFS_IOC_SNAP_DESTROY_V2 _IOW(BTRFS_IOCTL_MAGIC, 63, \
+ 				struct btrfs_ioctl_vol_args_v2)
++#define BTRFS_IOC_DEV_PROPERTIES _IOW(BTRFS_IOCTL_MAGIC, 64, \
++				struct btrfs_ioctl_dev_properties)
+ 
+ #endif /* _UAPI_LINUX_BTRFS_H */
+-- 
+2.30.0
 
