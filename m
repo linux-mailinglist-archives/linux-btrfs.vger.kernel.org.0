@@ -2,141 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DFB2F94D9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jan 2021 20:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026EE2F9502
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Jan 2021 20:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730112AbhAQTX5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Jan 2021 14:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730092AbhAQTX2 (ORCPT
+        id S1729559AbhAQT4A convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 17 Jan 2021 14:56:00 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:46874 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729551AbhAQTz6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Jan 2021 14:23:28 -0500
-Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A90C061573
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jan 2021 11:22:48 -0800 (PST)
-Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
-        (envelope-from <hrm@savella.carfax.org.uk>)
-        id 1l1DcR-000303-PG; Sun, 17 Jan 2021 19:21:47 +0000
-Date:   Sun, 17 Jan 2021 19:21:47 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     Anders Halman <anders.halman@gmail.com>
+        Sun, 17 Jan 2021 14:55:58 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 896859436AC; Sun, 17 Jan 2021 14:55:16 -0500 (EST)
+Date:   Sun, 17 Jan 2021 14:55:16 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Graham Cobb <g.btrfs@cobb.uk.net>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: received uuid not set btrfs send/receive
-Message-ID: <20210117192147.GB4090@savella.carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        Anders Halman <anders.halman@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <95f9479d-2217-768e-f866-ae42509c3b2c@gmail.com>
+Subject: Re: NVME experience?
+Message-ID: <20210117195516.GK31381@hungrycats.org>
+References: <b5ea0996-578e-8584-2cc7-4b8422f75566@cobb.uk.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <95f9479d-2217-768e-f866-ae42509c3b2c@gmail.com>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <b5ea0996-578e-8584-2cc7-4b8422f75566@cobb.uk.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 10:49:26AM -0800, Anders Halman wrote:
-> Hello,
+On Sat, Jan 16, 2021 at 11:42:03PM +0000, Graham Cobb wrote:
+> I am about to deploy my first btrfs filesystems on NVME. Does anyone
+> have any hints or advice? Initially they will be root disks, but I am
+> thinking about also moving home disks and other frequently used data to
+> NVME, but probably not backups and other cold data.
 > 
-> I try to backup my laptop over an unreliable slow internet connection to a
-> even slower Raspberry Pi.
-> 
-> To bootstrap the backup I used the following:
-> 
-> # local
-> btrfs send root.send.ro | pigz | split --verbose -d -b 1G
-> rsync -aHAXxv --numeric-ids --partial --progress -e "ssh -T -o
-> Compression=no -x" x* remote-host:/mnt/backup/btrfs-backup/
-> 
-> # remote
-> cat x* > split.gz
-> pigz -d split.gz
-> btrfs receive -f split
+> I am mostly wondering about non-functionals like typical failure modes,
+> life and wear, etc. Which might affect decisions like how to split
+> different filesystems among the drives, whether to mix NVME with other
+> drives (SSD or HDD), etc.
 
-> worked nicely. But I don't understand why the "received uuid" on the remote
-> site in blank.
+It doesn't really make sense to RAID a NVME device except with another
+NVME device.  NVME's strength is access latency, and mirroring it with a
+SATA device loses that strength (there is also more bandwidth in NVME
+than SATA, if the underlying SSD is fast enough to use it).
 
-   Are you doing the receive as root?
+If you need to cram one more disk into a full machine, and all you have
+an unused NVME slot, it'll work, but it's wasteful.
 
-   Hugo.
+You can use a NVME device as a dm-cache or bcache device--the low-latency
+interface is ideal for caching use cases, if you have a suitably fast
+and robust SSD.
 
-> I tried it locally with smaller volumes and it worked.
-> 
-> The 'split' file contains the correct uuid, but it is not set (remote).
-> 
-> remote$ btrfs receive --dump -f split | head
-> subvol          ./root.send.ro uuid=99a34963-3506-7e4c-a82d-93e337191684
-> transid=1232187
-> 
-> local$ sudo btrfs sub show root.send.ro| grep -i uuid:
->     UUID:             99a34963-3506-7e4c-a82d-93e337191684
-> 
-> 
-> Questions:
-> 
-> - Is there a way to set the "received uuid"?
-> - Is it a matter of btrfs-progs version difference?
-> - What whould be a better approach?
-> 
-> 
-> Thank you
-> 
-> 
-> ----
-> 
-> # local
-> 
-> root@fos ~$ uname -a
-> Linux fos 5.9.16-200.fc33.x86_64 #1 SMP Mon Dec 21 14:08:22 UTC 2020 x86_64
-> x86_64 x86_64 GNU/Linux
-> 
-> root@fos ~$   btrfs --version
-> btrfs-progs v5.9
-> 
-> root@fos ~$   btrfs fi show
-> Label: 'DATA'  uuid: b6e675b3-84e3-4869-b858-218c5f0ac5ad
->     Total devices 1 FS bytes used 402.17GiB
->     devid    1 size 464.27GiB used 414.06GiB path
-> /dev/mapper/luks-e4e69cfa-faae-4af8-93f5-7b21b25ab4e6
-> 
-> root@fos ~$   btrfs fi df /btrfs-root/
-> Data, single: total=404.00GiB, used=397.80GiB
-> System, DUP: total=32.00MiB, used=64.00KiB
-> Metadata, DUP: total=5.00GiB, used=4.38GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> # remote
-> root@pih:~# uname -a
-> Linux pih 5.4.72+ #1356 Thu Oct 22 13:56:00 BST 2020 armv6l GNU/Linux
-> 
-> root@pih:~#   btrfs --version
-> btrfs-progs v4.20.1
-> 
-> root@pih:~#   btrfs fi show
-> Label: 'DATA'  uuid: 6be1e09c-d1a5-469d-932b-a8d1c339afae
->     Total devices 1 FS bytes used 377.57GiB
->     devid    2 size 931.51GiB used 383.06GiB path
-> /dev/mapper/luks_open_backup0
-> 
-> root@pih:~#   btrfs fi df /mnt/backup
-> Data, single: total=375.00GiB, used=374.25GiB
-> System, DUP: total=32.00MiB, used=64.00KiB
-> Metadata, DUP: total=4.00GiB, used=3.32GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> dmesg is empty for the time of import/btrfs receive.
+> Are NVME drives just SSDs with a different interface? With similar
+> lifetimes (by bytes written, or another measure)? And similar typical
+> failure modes?
 
--- 
-Hugo Mills             | If it ain't broke, hit it again.
-hugo@... carfax.org.uk |
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |                                                  Foon
+Pretty much.  Vendors will often sell model "XYZ123" as a SATA drive and
+model "XYZ124" as NVME, with identical specs other than the interface
+and different prices.  Probably most of the PCB is the same as well, as
+M.2 board area can fit inside a 2.5" SATA box.  Firmware on the interface
+side will be different, but firmware on the media side will be the same.
+
+As a result, the device lifetime, failure modes, and firmware bugs are
+often identical for NVME and SATA, and you have to read the data
+sheets just as carefully to know what you're getting.
+
+Like SATA disks, NVME devices can have volatile RAM caches and can
+therefore (in theory) have power-loss write-cache bugs--it's
+
+	nvme set-feature -f 6 -v 0 -s /dev/nvme...
+
+to disable write cache on those, not 'hdparm -W0 /dev/sd...' as for SATA.
+To date I haven't met an NVME device that needs this, but I have
+relatively few of them compared to SATA and the industry is still young,
+so I expect one will come along some day.
+
+> Are they better or worse in terms of firmware bugs? Error detection for
+> corrupted data? SMART or other indicators that they are starting to fail
+> and should be replaced?
+
+They need their own protocol for SMART and similar data, and the specific
+data sets returned are different, but this is not more different than
+it is between any other SATA drive models.  Up-to-date smartmontools
+just works on most of the NVMEs I've tried, the rest worked a month or
+two later at most.
+
+Since they're basically the same drives, their SMART data has basically
+the same usefulness on NVME and SATA within a device model family,
+i.e. if the firmware self-test can't detect bad sectors in the SATA model,
+it won't be able to detect them in the NVME version either.
+
+> I assume that they do not (in practice) suffer from "faulty cable" problems.
+
+This is a theoretical problem (like dust in the connector, bent pins,
+manufacturing defect, etc) but I've never hit it in practice so I can't
+say much about what it looks like.
+
+Usually if a PCIE card isn't seated correctly it doesn't work in
+obvious ways.  NVME would be similar.
+
+NVME devices are held in their slots with screws, so you're not going to
+have "loose connector" or "pulled cable" issues that are possible with
+SATA (though in cable-less setups, SATA drives are held in their slots
+with screws too).
+
+> Anyway, I am hoping someone has experiences to share which might be useful.
+
+If you want more than one or two NVME on the same consumer mainboard,
+then you sometimes have to worry about having enough PCIE lanes for your
+other devices, as each NVME device will permanently occupy one.  "You can
+use the second NVME port _or_ two of the built-in SATA ports _or_ one
+of the X16 slots" is a common trade-off as the BIOS can switch one PCIE
+lane to multiple points on the mainboard but not share it between devices.
+
+This means NVME devices are frequently limited to single-device
+configurations on consumer mainboards, two devices on some newer
+mainboards.
+
+You can buy M.2 SSDs that don't have NVME interfaces (they implement
+SATA in the connector, there's a B key notch instead of M key so they
+will not fit in an incompatible slot).  Watch out for that.
+
+> Graham
