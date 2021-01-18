@@ -2,191 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335262F9981
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jan 2021 06:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE12A2F9B99
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Jan 2021 09:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbhARFuF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Jan 2021 00:50:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbhARFuC (ORCPT
+        id S2388090AbhARI4y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Jan 2021 03:56:54 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:48028 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387940AbhARI4r (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Jan 2021 00:50:02 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D575C061573
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jan 2021 21:49:21 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id m25so22273330lfc.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Jan 2021 21:49:21 -0800 (PST)
+        Mon, 18 Jan 2021 03:56:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1610960205; x=1642496205;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=OorG9cK9Ae2APBL7+MFIdiCcA4w2cwLIS6Q1jFK0AhI=;
+  b=h3BGFq+VSk/Od+ww3hYWS1TB4E8jWlAcvoRAB9Lns92aXwmteIeIDIMC
+   GFUU6lo2PXAHE2GME9UVLop74JufpsO1q1A6g0o1J2kQtrmnbTdOf0W6S
+   LfrAcxrSDFvEnZw+4n0gTMs0RE4DMYDPMTbpSp/7VZD/inJ7+5JrVr+2D
+   SeqA+KPGyiHt0y5uyBhJ77XQfk8Eb5Vrd7uAw6Gn1JcfCvvW5bF3iLHqO
+   7KLlDxEBPwfh5SGxKujJzDYBOmePDwTNW3qt7/nbetl6azcj/YiDIxCzU
+   o4DQ3vBkhDQBrDvXnXStaOG89xnMZiJc2Hqaynv4u+pGHC2tfH3TxrD54
+   w==;
+IronPort-SDR: f4FZmxvxcOQ87rQV8v8Vus/cYk/CM2mCMNVciF6oWFUvz2qdtEgbJ/zVgycvYFMlvuG2O2Lkao
+ rPTG2X+TYmaQwT33wlM0rl4mdylA5jeY1/DmZy88V113lE/hpuEPgWn3y+DSb8K8oT6yaftPWN
+ dnzh5+5pPU3/+BhqUeDW9iSxstKqFprUWlHCibtbICfcB41SwH58MZzuPltFigg8+PmeNp5Qe0
+ 6eVCfzUOKbgg0x+C9AIUIUCMyVjavkpvtrhJ8fGoCl0xIKgkTRiAZKXhRyFCvGGsvFDbpzZIxY
+ Qn8=
+X-IronPort-AV: E=Sophos;i="5.79,355,1602518400"; 
+   d="scan'208";a="268009149"
+Received: from mail-bn8nam12lp2175.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.175])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Jan 2021 16:55:37 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jC40WqBP/jvd6/AHckhGL4/kF/0vza2wr9wVfrMpoKscY8vmBy/MRYh9dJ5BIHgqmHGmemSir0vwM9nuV4eHYXvDVEmWrsaYcpuEK0TtI9E6kJ2yN9ySrwhXjIW4Kf+FXHDAKk4Pi63Bd3bkCqJzs5380Rx28Vb0icnHg9T/Uol5iU0Y/QsMYAtsPTbNmM7A6+iLyEQM8PGSGP/tj57XGkmWjQQeKwS/XG0gkAaJUMsdrFfNKxcCVyePVuDENwn7KaQ5hQYOPPOaCKLXhlIk1j96KI164A2c1Euzqk8gaiggihgPfqHW4drBxCL4Lp7tr6k3Wtm8cT0b94whmncLyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G2ZvcLV+17IW43hsPQ9o/PcZ/QbQJIqDCsKD635FkN8=;
+ b=QG89SXCHZyfHzt0NA2f2hmxkFhnYt95uu8JFIOYkf/SUWg0Rmhumm5FN1lXzcJiCqrukJb6c7Rfh64uEMf9J5/I4KBZzgTu959pgxv/l2XDNfNeGT2VffWZNJZbGCVdCMR+e2WAdwwrj54nwErlN9sLfj5AU84aYdOvaWRQmpHZLX8bQmkcpwXGKgcpS3gikuhfEblR22auE9Jyc1UulWF+xgu60b09x6PbWIMJMYzQVhZ0YuqPNL4mpCVI0RdWEFoj4j7HorYdsMpxTu5fu2xBnOTMKL1WS4lZvpRqAf8unujpMkcgwT3+5gZNbZEeCR7swernv/ncVJtlV0Tv+Hg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M9a09kXBu50H5e7NMDxOOdvoPm4NH5M9b2BIh2UL+N4=;
-        b=Q650esZrCwtfSVf19uxgJ5N9j88o3C51NFWr3ChqPbmAGqR+PO9S0RRoObL1seIShG
-         WDkVT6FRQzRT9wmKaXk2/y97Unvlgve+bz7RryR13R6YHyHwNCdlkKeW7boi33KdwcC2
-         q9TX0Vcke8flGzQaUlH5IpQ/fB65HMUtbXxBv29bB/heYv05QU17CoihW9bnoVYY2JUG
-         L+kpuWmiTwY4n39laFn7KxMfT2NKAgSBirIddw2b2N7jHeE6wqnpFerm+28lBG2KPgEf
-         kP3rJ8cqAXOz3lIqWCv+G3QOOEJjJjre+7aIM/J7NfChNoTDZ9mXQ6r8dTkjCLHR6jPa
-         j8yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M9a09kXBu50H5e7NMDxOOdvoPm4NH5M9b2BIh2UL+N4=;
-        b=gC70csEDpgzjN+iRTE+gjesBZt6549qjuGRfcB/uhhCVyjSdxgl1YkydIuaIvm80kD
-         HoSUznONvdgHqBcZp6QxsncF61+5Ea1wkZUbGskfZC0wDaXDA40l6OWWOUQhOKROGStZ
-         ohjgYSmixNUzels6t0FwEjOvCqzisFMwNJ0VdGRTynvoSJ8wml9bOGp8SoHiY3xKlTfN
-         rwATZxGtzqjs/O0IXyNh6kr6bZCF/tKjSWPxBiYBzH0X2YAJOJXsR5iRkWo97GUJWdEn
-         /q9+sPsLUu8ib+UamIagxB7H3kFFiVH36rDYK8uCcuDEfw1RJMUYn9xANBK++39+kVqo
-         rntQ==
-X-Gm-Message-State: AOAM53087wwhxbkKuf10DxE1sd4qsTzqf+s0FXiL/BQIuDgKnoAQ04PO
-        rXIb7x5Vw4Mp/aDdamHmS0dOvvsSQNc=
-X-Google-Smtp-Source: ABdhPJwVXESArBfN9C7Gc2vTJrVagSFJ7D48gcXY5mhqSQLbBgEC4tH5os6EYE+4fesMayG2uViWWA==
-X-Received: by 2002:a19:9d8:: with SMTP id 207mr10984273lfj.581.1610948959898;
-        Sun, 17 Jan 2021 21:49:19 -0800 (PST)
-Received: from ?IPv6:2a00:1370:812d:ecb3:590f:aaab:50ba:573b? ([2a00:1370:812d:ecb3:590f:aaab:50ba:573b])
-        by smtp.gmail.com with ESMTPSA id 126sm1784920lfm.203.2021.01.17.21.49.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Jan 2021 21:49:19 -0800 (PST)
-Subject: Re: received uuid not set btrfs send/receive
-To:     Anders Halman <anders.halman@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <95f9479d-2217-768e-f866-ae42509c3b2c@gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- mQGiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kbQmQW5kcmV5IEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT6IYAQTEQIAIAUCSXs6NQIbAwYLCQgHAwIE
- FQIIAwQWAgMBAh4BAheAAAoJEEeizLraXfeMLOYAnj4ovpka+mXNzImeYCd5LqW5to8FAJ4v
- P4IW+Ic7eYXxCLM7/zm9YMUVbrQmQW5kcmVpIEJvcnplbmtvdiA8YXJ2aWRqYWFyQGdtYWls
- LmNvbT6IZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AFAliWAiQCGQEACgkQ
- R6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE21cAnRCQTXd1hTgcRHfpArEd/Rcb5+Sc
- uQENBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw15A5asua10jm5It+hxzI9jDR9/bNEKDTK
- SciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/RKKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmm
- SN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaNnwADBwQAjNvMr/KBcGsV/UvxZSm/mdpv
- UPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPRgsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YI
- FpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhYvLYfkJnc62h8hiNeM6kqYa/x0BEddu92
- ZG6IRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhdAJ48P7WDvKLQQ5MKnn2D/TI337uA/gCg
- n5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <688feaf7-23f1-c19b-8911-ce1069f6a56a@gmail.com>
-Date:   Mon, 18 Jan 2021 08:49:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <95f9479d-2217-768e-f866-ae42509c3b2c@gmail.com>
-Content-Type: text/plain; charset=utf-8
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G2ZvcLV+17IW43hsPQ9o/PcZ/QbQJIqDCsKD635FkN8=;
+ b=gLWY5f+Re2WwgruqMCtKltjxztTz4EA3ZVZGndSVnqmklVfQFgAXSwcEBJ3ITZObw7HX4QuLBer1cukLLTNvE0HjxOGRUVor9ZbTl9H/ejSA7qDb3OMUSprXgS42fdaBOw+QMBOufRYZ2WWBKTzhrZ42xuKd7bJW70N08dlXpBY=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN2PR04MB2240.namprd04.prod.outlook.com
+ (2603:10b6:804:e::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Mon, 18 Jan
+ 2021 08:55:36 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::146f:bed3:ce59:c87e]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::146f:bed3:ce59:c87e%3]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
+ 08:55:36 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>
+CC:     "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: [PATCH v12 05/41] btrfs: release path before calling into
+ btrfs_load_block_group_zone_info
+Thread-Topic: [PATCH v12 05/41] btrfs: release path before calling into
+ btrfs_load_block_group_zone_info
+Thread-Index: AQHW6wthcM4npzKSMUeHMA/mGsCCyA==
+Date:   Mon, 18 Jan 2021 08:55:36 +0000
+Message-ID: <SN4PR0401MB35982E318D23D91BC093637E9BA40@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <cover.1610693036.git.naohiro.aota@wdc.com>
+ <0786a9782ec6306cddb0a2808116c3f95a88849b.1610693037.git.naohiro.aota@wdc.com>
+ <8f7434ae-fdb8-32be-f781-a47f32ace949@toxicpanda.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: toxicpanda.com; dkim=none (message not signed)
+ header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:15c4:1c01:a8cb:1595:5b20:8662]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8bade78f-6a84-4749-39b8-08d8bb8ed2ab
+x-ms-traffictypediagnostic: SN2PR04MB2240:
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN2PR04MB22407DE6C1999A3573C4E76B9BA40@SN2PR04MB2240.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:68;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ib6GlsI6OMw8uMoNCGAVZLM9Wix8kfXOz1YkKGiiujEKbbuvKxR18eRsHrg2LHgxpk8sQPVF2pGG3rfVpJ06xXDRChVybdlHowEAe1DGqmoHWXUrlRQ5L3Zv3g/RLax9Db2+9jHxTS2zd9UFJJKsy7J3gedsRUh6iJ21uDDy8rysAqHD/VILsPHr6KuSvNEh70y5lEaYGOMDiGlXlLuiyVC5VOxSrY36pdl58kFW+8BFvhMKPtKJRVnNaxmw2DEcU6Lb+42q/wkgHqwHGyRQU8ZayAH8EhxooAvg2irWY3HtD4gwRcs4eocyy7vS0Xy/jcIKysb+LkL6MauKBf2q/ndryaoRh9TUOI4MHQQai4OnT+ZIek2VOzqDAvjJigCuHhPec6w6Gdb1krpQtuqLAw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(346002)(396003)(376002)(86362001)(66446008)(52536014)(54906003)(91956017)(2906002)(55016002)(5660300002)(558084003)(8676002)(478600001)(66476007)(9686003)(66556008)(7696005)(110136005)(33656002)(186003)(64756008)(4326008)(66946007)(316002)(71200400001)(76116006)(6506007)(53546011)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?WNZ90kwcRgT+hGtDwd9ohWD5rP8466exdO4MwWhteh1sukvFsZHp7XKZiPzP?=
+ =?us-ascii?Q?0Aho7DMjt+cKBku2wJYMy68rEswcHAGCq2nxjgDOB9hfq4V47pBBaYJYFnZZ?=
+ =?us-ascii?Q?+mxSX0kC1n8ugNLomAAMjQVNvI6+dCS7TzjGj2fjWwR1SKAFCM8SXH3bBQjU?=
+ =?us-ascii?Q?Lfn1tJn4Hp1WG2+zMQjWn5JZVn2QsviHIIRL92FhJnJp2bj/q+eqCyfjLP8o?=
+ =?us-ascii?Q?Dq7UBwF17NYiV20HQda83ppPg7yhqGlhsipVScG66EKeplQDgWIxaSH4sCal?=
+ =?us-ascii?Q?8ezyX37AnW2Cx69P9rzW4q8e5uX87ESGhcc8536sYpVAzrXN0fL3/uT2oP5K?=
+ =?us-ascii?Q?B2u7MWvL7x1IfAuJMv84s98nfxyV68nhCynXjwdU6Z/lFMiz0+w+DZ76sykZ?=
+ =?us-ascii?Q?LBgoTYPPNkCI22Rqdh0FQRA46I1B95tAkjhj43p04nN2dGiOIiLCQ2NTPSs1?=
+ =?us-ascii?Q?+zm9nXhjzBE3fcaZkYRe+M8F7UVJ4PjEryNZDzAL8f9BLMOMMJj3asXQ2XG0?=
+ =?us-ascii?Q?DOsOMZoE7FwP4j4MBgc+GmEUaBwVP3hR6W3tmpot0yq2KmXN2/iRa36X1AbD?=
+ =?us-ascii?Q?SYlLmu6IvNn8/dzQFggUf+1D1T3uEo65nSVRGGY4TQ/Glt+W/Y62vlP0Tmja?=
+ =?us-ascii?Q?N3PzLkv5i7+JRECZ1kxITwYK0Y2dvVT56z84zHiWa4605vXhn1ROEM+qBBmU?=
+ =?us-ascii?Q?1kITxSzobfSZ4DvXw943VTUpKpPJdjompHoljgW95+aloZ///f4ZTKFhjCIa?=
+ =?us-ascii?Q?3W2zw/FLviC5mTjXUhPckEbTECzLEsECuM4RaLmDXGNOKIxpk4KvP7ymLu42?=
+ =?us-ascii?Q?nX3JYKWLV7mxZItl/L4H0C2Uaz74h716Vvwnzhsf1r3ckSm+MsOsjrmeB92g?=
+ =?us-ascii?Q?4pmXTLYFUPSAMGFMJFY9BimpH1ISIfZw2p9GN4RdH/94mv9Q0qJXh3CvbeYh?=
+ =?us-ascii?Q?9t1hWayaey0wgvlWMr7/wPyPYJwgSqA2OHRKFDoeONCplgwkEbmRNMq5i68B?=
+ =?us-ascii?Q?fQPzp8nRN/PJM9c/JAfNOvSiBzDAnqNZaoSj2Sa+PXH5+acgUx0tnA3LAYb7?=
+ =?us-ascii?Q?gkidXlVe?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bade78f-6a84-4749-39b8-08d8bb8ed2ab
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jan 2021 08:55:36.6302
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IYhrwFYHs75C5uDOv/h+94EcksNfzRo8CIi0VAO6N9TclqQY4bWLkQitkSP2GqCPZ7tOLQHdGoIQ18PDcHZLy7gZmlkKMyUMteS9b9S6o5g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN2PR04MB2240
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-17.01.2021 21:49, Anders Halman пишет:
-> Hello,
-> 
-> I try to backup my laptop over an unreliable slow internet connection to
-> a even slower Raspberry Pi.
-> 
-> To bootstrap the backup I used the following:
-> 
-> # local
-> btrfs send root.send.ro | pigz | split --verbose -d -b 1G
-> rsync -aHAXxv --numeric-ids --partial --progress -e "ssh -T -o
-> Compression=no -x" x* remote-host:/mnt/backup/btrfs-backup/
-> 
-> # remote
-> cat x* > split.gz
-> pigz -d split.gz
-> btrfs receive -f split
-> 
-
-This command is missing argument.
-
-> worked nicely.
-
-It is impossible, you did not tell "btrfs receive" where to store
-incoming data.
-
-bor@bor-Latitude-E5450:~/src/btrfs-progs$ btrfs receive
-btrfs receive: exactly 1 argument expected, 0 given
-
-> But I don't understand why the "received uuid" on the
-> remote site in blank.
-
-Where is it blank? Show commands you used to check it.
-
-> I tried it locally with smaller volumes and it worked.
-> 
-> The 'split' file contains the correct uuid, but it is not set (remote).
-> 
-> remote$ btrfs receive --dump -f split | head
-> subvol          ./root.send.ro uuid=99a34963-3506-7e4c-a82d-93e337191684
-> transid=1232187
-> 
-> local$ sudo btrfs sub show root.send.ro| grep -i uuid:
->     UUID:             99a34963-3506-7e4c-a82d-93e337191684
-> 
-> 
-> Questions:
-> 
-> - Is there a way to set the "received uuid"?
-> - Is it a matter of btrfs-progs version difference?
-> - What whould be a better approach?
-> 
-> 
-> Thank you
-> 
-> 
-> ----
-> 
-> # local
-> 
-> root@fos ~$ uname -a
-> Linux fos 5.9.16-200.fc33.x86_64 #1 SMP Mon Dec 21 14:08:22 UTC 2020
-> x86_64 x86_64 x86_64 GNU/Linux
-> 
-> root@fos ~$   btrfs --version
-> btrfs-progs v5.9
-> 
-> root@fos ~$   btrfs fi show
-> Label: 'DATA'  uuid: b6e675b3-84e3-4869-b858-218c5f0ac5ad
->     Total devices 1 FS bytes used 402.17GiB
->     devid    1 size 464.27GiB used 414.06GiB path
-> /dev/mapper/luks-e4e69cfa-faae-4af8-93f5-7b21b25ab4e6
-> 
-> root@fos ~$   btrfs fi df /btrfs-root/
-> Data, single: total=404.00GiB, used=397.80GiB
-> System, DUP: total=32.00MiB, used=64.00KiB
-> Metadata, DUP: total=5.00GiB, used=4.38GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> # remote
-> root@pih:~# uname -a
-> Linux pih 5.4.72+ #1356 Thu Oct 22 13:56:00 BST 2020 armv6l GNU/Linux
-> 
-> root@pih:~#   btrfs --version
-> btrfs-progs v4.20.1
-> 
-> root@pih:~#   btrfs fi show
-> Label: 'DATA'  uuid: 6be1e09c-d1a5-469d-932b-a8d1c339afae
->     Total devices 1 FS bytes used 377.57GiB
->     devid    2 size 931.51GiB used 383.06GiB path
-> /dev/mapper/luks_open_backup0
-> 
-> root@pih:~#   btrfs fi df /mnt/backup
-> Data, single: total=375.00GiB, used=374.25GiB
-> System, DUP: total=32.00MiB, used=64.00KiB
-> Metadata, DUP: total=4.00GiB, used=3.32GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> dmesg is empty for the time of import/btrfs receive.
-
+On 15/01/2021 23:22, Josef Bacik wrote:=0A=
+> You're releasing the path and then reading from it, a potential UAF.  Tha=
+nks,=0A=
+=0A=
+*\@#%! I'm stupid, fixed for v13.=0A=
