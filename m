@@ -2,87 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFB32FBA1B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 15:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CFB2FBBBB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 16:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404231AbhASOly (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 09:41:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38046 "EHLO mx2.suse.de"
+        id S2391666AbhASPyb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 10:54:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51122 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390977AbhASM3M (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:29:12 -0500
+        id S2391657AbhASPyW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Jan 2021 10:54:22 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611059215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BkWZYUAG7HI4cAcD4oEPJaJd37Jy2TIv0AltZTE5yoQ=;
-        b=W6aWPEXWUWyKXgS3EibwOZF3gbrB0W0o5N/u2014TG4y02MQX65Wo41oYX7K91vHMAhtI8
-        SFX1o5z1is+FKhDbTyWju0UDJjKTvjoW3ItRw0vFuqJKs2RlZeU9fDfX/VLRm4EbxWJG5d
-        /2JiVdGr8CHiwOjY5/8UQ8wTDFt50Eg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4739BAFAC;
-        Tue, 19 Jan 2021 12:26:55 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 13/13] lib/zstd: Convert constants to defines
-Date:   Tue, 19 Jan 2021 14:26:49 +0200
-Message-Id: <20210119122649.187778-14-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119122649.187778-1-nborisov@suse.com>
-References: <20210119122649.187778-1-nborisov@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id AE6BDADD6;
+        Tue, 19 Jan 2021 15:53:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 15959DA6E3; Tue, 19 Jan 2021 16:51:46 +0100 (CET)
+Date:   Tue, 19 Jan 2021 16:51:45 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v4 03/18] btrfs: introduce the skeleton of btrfs_subpage
+ structure
+Message-ID: <20210119155145.GO6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+References: <20210116071533.105780-1-wqu@suse.com>
+ <20210116071533.105780-4-wqu@suse.com>
+ <20210118224647.GK6430@twin.jikos.cz>
+ <65ab6681-f694-5cc4-1b2d-b33b70ba40a3@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <65ab6681-f694-5cc4-1b2d-b33b70ba40a3@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Those constants are really used internally by zstd and including
-linux/zstd.h into users results in the following warnings:
+On Tue, Jan 19, 2021 at 06:54:28AM +0800, Qu Wenruo wrote:
+> On 2021/1/19 上午6:46, David Sterba wrote:
+> > On Sat, Jan 16, 2021 at 03:15:18PM +0800, Qu Wenruo wrote:
+> >> +		return;
+> >> +
+> >> +	subpage = (struct btrfs_subpage *)detach_page_private(page);
+> >> +	ASSERT(subpage);
+> >> +	kfree(subpage);
+> >> +}
+> >> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+> >> new file mode 100644
+> >> index 000000000000..96f3b226913e
+> >> --- /dev/null
+> >> +++ b/fs/btrfs/subpage.h
+> >> @@ -0,0 +1,31 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> +
+> >> +#ifndef BTRFS_SUBPAGE_H
+> >> +#define BTRFS_SUBPAGE_H
+> >> +
+> >> +#include <linux/spinlock.h>
+> >> +#include "ctree.h"
+> >
+> > So subpage.h would pull the whole ctree.h, that's not very nice. If
+> > anything, the .c could include ctree.h because there are lots of the
+> > common structure and function definitions, but not the .h. This creates
+> > unnecessary include dependencies.
+> >
+> > Any pointer type you'd need in structures could be forward declared.
+> 
+> Unfortunately, the main needed pointer is fs_info, and we're accessing
+> it pretty frequently (mostly for sector/node size).
+> 
+> I don't believe forward declaration would help in this case.
 
-In file included from fs/btrfs/zstd.c:19:
-./include/linux/zstd.h:798:21: warning: ‘ZSTD_skippableHeaderSize’ defined but not used [-Wunused-const-variable=]
-  798 | static const size_t ZSTD_skippableHeaderSize = 8;
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~
-./include/linux/zstd.h:796:21: warning: ‘ZSTD_frameHeaderSize_max’ defined but not used [-Wunused-const-variable=]
-  796 | static const size_t ZSTD_frameHeaderSize_max = ZSTD_FRAMEHEADERSIZE_MAX;
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~
-./include/linux/zstd.h:795:21: warning: ‘ZSTD_frameHeaderSize_min’ defined but not used [-Wunused-const-variable=]
-  795 | static const size_t ZSTD_frameHeaderSize_min = ZSTD_FRAMEHEADERSIZE_MIN;
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~
-./include/linux/zstd.h:794:21: warning: ‘ZSTD_frameHeaderSize_prefix’ defined but not used [-Wunused-const-variable=]
-  794 | static const size_t ZSTD_frameHeaderSize_prefix = 5;
-
-So fix those warnings by turning the constants into defines.
-
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- include/linux/zstd.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/zstd.h b/include/linux/zstd.h
-index 249575e2485f..e87f78c9b19c 100644
---- a/include/linux/zstd.h
-+++ b/include/linux/zstd.h
-@@ -791,11 +791,11 @@ size_t ZSTD_DStreamOutSize(void);
- /* for static allocation */
- #define ZSTD_FRAMEHEADERSIZE_MAX 18
- #define ZSTD_FRAMEHEADERSIZE_MIN  6
--static const size_t ZSTD_frameHeaderSize_prefix = 5;
--static const size_t ZSTD_frameHeaderSize_min = ZSTD_FRAMEHEADERSIZE_MIN;
--static const size_t ZSTD_frameHeaderSize_max = ZSTD_FRAMEHEADERSIZE_MAX;
-+#define ZSTD_frameHeaderSize_prefix 5
-+#define ZSTD_frameHeaderSize_min ZSTD_FRAMEHEADERSIZE_MIN
-+#define ZSTD_frameHeaderSize_max ZSTD_FRAMEHEADERSIZE_MAX
- /* magic number + skippable frame length */
--static const size_t ZSTD_skippableHeaderSize = 8;
-+#define ZSTD_skippableHeaderSize 8
- 
- 
- /*-*************************************
--- 
-2.25.1
-
+I've looked at the final subpage.h and you add way too many static
+inlines that don't seem to be necessary for the reasons the static
+inlines are supposed to be used.
