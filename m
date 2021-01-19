@@ -2,44 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE3F2FC195
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 21:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4322FC243
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 22:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729963AbhASUvX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 15:51:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44828 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728682AbhASUul (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:50:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7CC16AF28;
-        Tue, 19 Jan 2021 20:49:58 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B2C1EDA6E3; Tue, 19 Jan 2021 21:48:02 +0100 (CET)
-Date:   Tue, 19 Jan 2021 21:48:02 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 16/18] btrfs: introduce btrfs_subpage for data inodes
-Message-ID: <20210119204802.GR6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-17-wqu@suse.com>
+        id S1729381AbhASV0z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 16:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728924AbhASV0M (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Jan 2021 16:26:12 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060B3C061573
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 13:25:32 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id h21so917721qvb.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 13:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=zWwDgW9yn6n7N8JN9weOrJu8f65DjKIYKA7LMNgiAfs=;
+        b=rFkA9hVaIOZxWdVMB0/bSltwu+ve56nnAz2Qn57LHo35BfRFXyD+hO0Ifq/qZtYspt
+         xrCWeGsE1QqnVax+6Qx+R+UZW/aPg0/fGctRbekRztSEkxIcJbZI1IcMcsGO23D2esjc
+         mCGIg85pNZVS7kJZUJmUZiHJ3rrJTCFklGBHfe5dvHUTBzsH4tdwsGtCIJT/HIj0mT0c
+         RlXKQEMr7v/FNd7XL+FyYtduItrPomIYzIhn5cwrOJeFrzpEwTmeHN72eVjUpX309DTa
+         BPG6gviA9UN5+g8kt64NvqSPYOwddAxKtSZwesQoaKTKB6u7ohaD1bB7IjyKM3Vj/Hw9
+         iOrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zWwDgW9yn6n7N8JN9weOrJu8f65DjKIYKA7LMNgiAfs=;
+        b=IvsdpAsi6lYEDgBoWIOPhJVxkAeHwt/cc9R+5GX6xNujVMOp/mLW4qljgiwe+sxLlQ
+         Et5i/rQn27iPnhDKZIbW8KFrxeAqgFBdI8s+JeBNhZ/UaIkMMu+rG5ylP0bFiB1dR5N/
+         TICS1qmfMXPFy8Xwdw7ueJlBjyFw34RpHNl13o2IhVX0ehpIMTm1ImL/L7o1hFe5fMlC
+         QV5yHzSfXudy44HSHgytTKSnptNJ5FOWhs8PicCjnaZTnB67h5fxxT5md/2n/yFkSSQz
+         uoP0yCXZGCwmjDOvpkex7iKL992XGXP3+NBGzMnXuW3hvgNVWms84TEU5JAdtP2UXARe
+         x/qQ==
+X-Gm-Message-State: AOAM532iHiitzeWHAZQokTfy1kwaPykBiTEOKgL2aPRXTf+n5rQO/cD9
+        HOF7wImzteUgT5/h3CuViHglquPXKP21kzRfZQI=
+X-Google-Smtp-Source: ABdhPJye5GwxbxpJYFhm/8afPwlulRTs8gGTx2XvQSrRaewasraKy8Xo6MJVCewLTsK9QaE6c8dOKA==
+X-Received: by 2002:ad4:4f4a:: with SMTP id eu10mr6479359qvb.17.1611091530937;
+        Tue, 19 Jan 2021 13:25:30 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11d1::1325? ([2620:10d:c091:480::1:2a44])
+        by smtp.gmail.com with ESMTPSA id 6sm13790406qko.3.2021.01.19.13.25.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 13:25:30 -0800 (PST)
+Subject: Re: [PATCH 01/13] btrfs: Document modified paramater of
+ add_extent_mapping
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210119122649.187778-1-nborisov@suse.com>
+ <20210119122649.187778-2-nborisov@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <d535c9cd-6298-dd38-0725-4ae199e73de6@toxicpanda.com>
+Date:   Tue, 19 Jan 2021 16:25:29 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210116071533.105780-17-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210119122649.187778-2-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 03:15:31PM +0800, Qu Wenruo wrote:
-> -void set_page_extent_mapped(struct page *page)
-> +int __must_check set_page_extent_mapped(struct page *page)
+On 1/19/21 7:26 AM, Nikolay Borisov wrote:
+> Fixes fs/btrfs/extent_map.c:399: warning: Function parameter or member
+> 'modified' not described in 'add_extent_mapping'
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-We're not using the __must_check, errors from such functions need to be
-handled by default so I've dropped the attribute.
+Subject should be 'parameter'.  Thanks,
+
+Josef
