@@ -2,14 +2,14 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754FC2FB2B3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 08:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AA22FB2AF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 08:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390081AbhASF04 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 00:26:56 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:34587 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726322AbhASFJH (ORCPT
+        id S2387778AbhASF0X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 00:26:23 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:40916 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727140AbhASFJH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 19 Jan 2021 00:09:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -17,38 +17,38 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1611032947; x=1642568947;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=M0Lda0zS+SL7SE0DDozfWug6B1E4kFe/5QgiyTYkgeo=;
-  b=gBKkty7EvKEuqb71GF+ryOndspp3GoZHMNe9hlTMGz0Y0px3wKg5Xyoc
-   /U0sFq86W4Nv6bEOVEmfFAsKyg+wroj4jvMh97mRk11Ev9nAbbz8GnNim
-   I7nRHnNmcYDo0k2VZHA+GQUaQrs7s9HCAta1S1hf8Q4lpRH0MuC5o9zfY
-   SshxQn71654JSyFFn5F5cAOheZUdxn9wTqiVL0apAzHvhPR2LSFoH7kM1
-   w1QQm7FFPCCN6Fq8cRIa71hdOndiFPsN5JQNAc1Nt4Yj5ISeyZgJJrn+V
-   +Wg0xwB0w3nz810rZ2JFK42q2HzKi7co3HsBP4Mi+z20bZrlBnCqdRlNI
+  bh=xUOVrFleGb+eYEs5Yq2ctnwrCXH8hkiRL46tj+d0DVI=;
+  b=SgerIOQY1u4ZuHb3hrgXlm89lRSCpe4nyZChcPEhOVKfq07WeYDpFdHI
+   dFqoTs5v9ZVyRx/y5NMqcnO4qSFcEZpS9vja2r9nmrWVvD62Otqwsst0d
+   s3X+01h0/O+62uvplmznRYDkDgVzSgevu609gQWB9AC14WFvPsRQbdBYj
+   jglpYpcR43Bi5g+WAFxkrEhOUC4RX99dnUhe2UerabUp/RIKhje0Du17P
+   nbduwlIc7HO/aY8NHl51ZLZvsRySueJYoDwXS1gpdNqT3fjF4U1GCDqE1
+   E3VTD0HIrCJZbIyHz5O3Tk9A2T6MC78K0ejT7sGwbTMdW9geuc6WHvS2L
    w==;
-IronPort-SDR: UQWruiD78H7N4Gkqst/8tOPl2dR7Ggxtam5DUriWi6xcoodRN+tvxqacOU3dOhfPiuUHuxclAQ
- 73z0Q8nmhI+a3ldbRXrfoDbLHAm9Sx8E+O1CsUdqOkUzQBsmjlyjWd/9mp9bMS/cqkV4lD2MhB
- LsRymbgHALot1Dcjc6HK+E0Yb42MTP+nPHogAblwKJ/ecxRAIBbIIqNNKgkimVFOhfKvTTo25S
- Wb+axlef6NsO2TMdk8yMTWnYu3MBBJYtUAIQ3+BpI2ptLEEE0GYb8Lf9IqZCeS6183F+LTL+WV
- bDE=
+IronPort-SDR: n4OZNf/d9ls/PledLjKpOa1ItGyRx/+Cs3F2IzQV/e413ntRum4xgIf5gV2kpTve3o6zxr2E4N
+ o6fDNHVDoOdEnqe5acXJZ7UfRzfN58aZ7eDJh0tCjYeFGYK+KlN+sI8aQgnPhk5uoS9UEZiM0a
+ c4kWW1cLimsojsw8uxd9qMILsVL6yv1QsAWr3SeXbRwRBHTowZdck8JfsVSuW7OxSz7XKQqyBd
+ w78h0s9aMT+wv0tylvjObPfjA/pZIUKwVzGGOu7atffk1kpkUQzhe26DgnWUmvBjzpLb6DBSvQ
+ zBA=
 X-IronPort-AV: E=Sophos;i="5.79,357,1602518400"; 
-   d="scan'208";a="268080941"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:07:19 +0800
-IronPort-SDR: KiNvTzdfh0qM0zmFbJFhmfQuJC42fBwQJLXltFbmaLB1OvXxwaGf/DXulHxbdXwgW7ghAgQEwb
- 8lxDRDInE6vhwk5bie7sDgShBORVrt7eBsloUXTmMLsXgS32KbSqhxwZbOjQ09LciyRS3qtGgj
- 9puiFwua2qXS3jervxVR5ZLzhP8VfChUP27ovMOQdFaU+1/MrEy7OwoVbQPVFojgqmqQalGnvG
- LJPyUh7vxSVHNBeJsMtvs+Bt705eIBKWECRsyGkYLrQQFqfCmvqn5kUwvOyMPpZoldE+Hzw7Te
- wQ5wz2ue31xkO7HgDJ4V5Xe8
+   d="scan'208";a="157758552"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2021 13:07:40 +0800
+IronPort-SDR: kv9JJ63tZBM+0AnBjYhE2/cqh45kPVjnBFND+rTGrXRd5b1PD/gjKHbTAv5xI/BccPnpZj6SZJ
+ sTliytzWisL1tnXx9uFEqUhx98fR7P/UDK6px90mBtN2ZqeBdFHn651vC4vusLgHtWbiUD8Uhu
+ JN0w9fS2n46H4KAe7JzdHD7xIYr8f+zJmipMIDuL7kqIkzOpGlRCyNxOSHDXSPiq2Buma2dYqP
+ /vZIUHSOrTH4dqrl8bFOIi0mhBJe2reqgmoKTevNsyWekbJu/m37n8U7MFnyyrt9Dx6GpN8ovK
+ ud+naIy58NZiUYfz5YtowXfI
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:51:56 -0800
-IronPort-SDR: QBnDS7DVrddQpcsFsBzx6dUP1vCou2zr2+U/E8LncZi1HXSOtDax3BLEkAh4fkXsMSmQFWPGFy
- i9c3j/giOOU39nkkPY4ax6KBgaPpzPJAoufKOchG2Ou0rmyaYFKJUhk8ZPDWpGoP3x51bQeso4
- ExxBU/jV033SF8Q+teRhuDUjl9XHjbBJkEt8Ba8a4jICbdKDHOxkWO7MzEPD0dB8h3reWZeWBh
- KVK+JCC1W+90P0+/EdNiEnUM8xRZsi0+PwhkhSGTp7e4x6m4p6jDgQlTHPkRvWkNPGtHl7ZAoZ
- Mec=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 20:50:15 -0800
+IronPort-SDR: TM9dpxhc1bBjOypQU+TCA1+JHS3X6tbyUfX7CLJp8sH85tB99xJFscHBDCLFq2/sTR23LiC3TM
+ J8KKwbkNN7jjvKISe7zzGqpFWELclGi38nUt/LvFQapcIN9YFp8DZRQ2izF3uYGZWxHnRIgtO2
+ WhlQFVHRjq0w2Sygnwa63xoEK9fTLJNmudOASmzr+o1zZ38TO1TOJzzBzvspEDTXWPVaZigUus
+ O1/x342A0NXQzCNMPt4Ly8HseHr0drZDIxn0r08WsOUedcj3h8TiQqY/1oiIV4nQx5hppaJXgU
+ 55M=
 WDCIronportException: Internal
 Received: from vm.labspan.wdc.com (HELO vm.sc.wdc.com) ([10.6.137.102])
-  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:07:19 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Jan 2021 21:07:40 -0800
 From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 To:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -70,9 +70,9 @@ Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
         osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
         asml.silence@gmail.com, jefflexu@linux.alibaba.com,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: [RFC PATCH 06/37] gfs2: use bio_init_fields in lops
-Date:   Mon, 18 Jan 2021 21:06:00 -0800
-Message-Id: <20210119050631.57073-7-chaitanya.kulkarni@wdc.com>
+Subject: [RFC PATCH 09/37] iomap: use bio_init_fields in buffered-io
+Date:   Mon, 18 Jan 2021 21:06:03 -0800
+Message-Id: <20210119050631.57073-10-chaitanya.kulkarni@wdc.com>
 X-Mailer: git-send-email 2.22.1
 In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
 References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
@@ -84,26 +84,26 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 ---
- fs/gfs2/lops.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/iomap/buffered-io.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/gfs2/lops.c b/fs/gfs2/lops.c
-index 3922b26264f5..9f8a9757b086 100644
---- a/fs/gfs2/lops.c
-+++ b/fs/gfs2/lops.c
-@@ -264,10 +264,8 @@ static struct bio *gfs2_log_alloc_bio(struct gfs2_sbd *sdp, u64 blkno,
- 	struct super_block *sb = sdp->sd_vfs;
- 	struct bio *bio = bio_alloc(GFP_NOIO, BIO_MAX_PAGES);
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 16a1e82e3aeb..d256799569cf 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1222,10 +1222,9 @@ iomap_alloc_ioend(struct inode *inode, struct iomap_writepage_ctx *wpc,
+ 	struct bio *bio;
  
--	bio->bi_iter.bi_sector = blkno << sdp->sd_fsb2bb_shift;
--	bio_set_dev(bio, sb->s_bdev);
--	bio->bi_end_io = end_io;
--	bio->bi_private = sdp;
-+	bio_init_fields(bio, sb->s_bdev, blkno << sdp->sd_fsb2bb_shift,
-+			sdp, end_io, 0, 0);
+ 	bio = bio_alloc_bioset(GFP_NOFS, BIO_MAX_PAGES, &iomap_ioend_bioset);
+-	bio_set_dev(bio, wpc->iomap.bdev);
+-	bio->bi_iter.bi_sector = sector;
++	bio_init_fields(bio, wpc->iomap.bdev, sector, NULL, NULL, 0,
++			inode->i_write_hint);
+ 	bio->bi_opf = REQ_OP_WRITE | wbc_to_write_flags(wbc);
+-	bio->bi_write_hint = inode->i_write_hint;
+ 	wbc_init_bio(wbc, bio);
  
- 	return bio;
- }
+ 	ioend = container_of(bio, struct iomap_ioend, io_inline_bio);
 -- 
 2.22.1
 
