@@ -2,86 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6DE2FC397
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 23:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A672FC3EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 23:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389640AbhASOiB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 09:38:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37142 "EHLO mx2.suse.de"
+        id S1728386AbhASWkS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 17:40:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53652 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727326AbhASM1i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:27:38 -0500
+        id S1726859AbhASWiV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Jan 2021 17:38:21 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611059212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zJJ8UJvPDTPv+4tlliuXqfzOWxrcbZtOHaEvkNxTpmA=;
-        b=ImSNycUp5o88MO4AXdPCtaXtBxetXK6GnKDYQcaZx5gFJD4cDKIj7H4IfnEI7e2ou7OAx+
-        PnN+U9Jl9SLdIzessj+1CGgdWE+QKFZSGUNvF2iPh9UIE85JH6bmHKIz127rW5V0qjUAvX
-        CBFg2Gz/SsFdjyt2Qgmwq5dZNRwHHm4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 24214AB9F;
-        Tue, 19 Jan 2021 12:26:52 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 00/13] Make btrfs W=1 clean
-Date:   Tue, 19 Jan 2021 14:26:36 +0200
-Message-Id: <20210119122649.187778-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        by mx2.suse.de (Postfix) with ESMTP id DE483AB7A;
+        Tue, 19 Jan 2021 22:37:14 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1F4D9DA6E3; Tue, 19 Jan 2021 23:35:19 +0100 (CET)
+Date:   Tue, 19 Jan 2021 23:35:18 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 04/18] btrfs: make attach_extent_buffer_page() to
+ handle subpage case
+Message-ID: <20210119223518.GS6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210116071533.105780-1-wqu@suse.com>
+ <20210116071533.105780-5-wqu@suse.com>
+ <5a6223fc-9937-3bd6-ecd0-d6c5939f59a7@toxicpanda.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5a6223fc-9937-3bd6-ecd0-d6c5939f59a7@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Tue, Jan 19, 2021 at 04:54:28PM -0500, Josef Bacik wrote:
+> On 1/16/21 2:15 AM, Qu Wenruo wrote:
+> > +/* For rare cases where we need to pre-allocate a btrfs_subpage structure */
+> > +static inline int btrfs_alloc_subpage(struct btrfs_fs_info *fs_info,
+> > +				      struct btrfs_subpage **ret)
+> > +{
+> > +	if (fs_info->sectorsize == PAGE_SIZE)
+> > +		return 0;
+> > +
+> > +	*ret = kzalloc(sizeof(struct btrfs_subpage), GFP_NOFS);
+> > +	if (!*ret)
+> > +		return -ENOMEM;
+> > +	return 0;
+> > +}
+> 
+> We're allocating these for every metadata page, that deserves a dedicated 
+> kmem_cache.  Thanks,
 
-This patch series aims to fix all current warnings produced by compiling btrfs
-with W=1. My hopes are with these additions W=1 can become a default build
-options for btrfs. With this series applied misc-next currently produces 1
-genuine warning for an unused variable:
-
-fs/btrfs/zoned.c: In function ‘btrfs_sb_log_location_bdev’:
-fs/btrfs/zoned.c:491:6: warning: variable ‘zone_size’ set but not used [-Wunused-but-set-variable]
-  491 |  u64 zone_size;
-
-
-But I haven't fixed it since it's part of the WIP zoned support.
-
-Nikolay Borisov (13):
-  btrfs: Document modified paramater of add_extent_mapping
-  btrfs: Fix parameter description of btrfs_add_extent_mapping
-  btrfs: Fix function description format
-  btrfs: Fix paramter description in delayed-ref.c functions
-  btrfs: Improve parameter description for __btrfs_write_out_cache
-  btrfs: Document now parameter of peek_discard_list
-  btrfs: Document fs_info in btrfs_rmap_block
-  btrfs: Fix description format of fs_info parameter of
-    btrfs_wait_on_delayed_iputs
-  btrfs: Document btrfs_check_shared parameters
-  btrfs: Fix parameter description of
-    btrfs_inode_rsv_release/btrfs_delalloc_release_space
-  btrfs: Fix parameter description in space-info.c
-  btrfs: Fix parameter description for functions in extent_io.c
-  lib/zstd: Convert constants to defines
-
- fs/btrfs/backref.c          |  6 ++++++
- fs/btrfs/block-group.c      |  1 +
- fs/btrfs/delalloc-space.c   |  7 ++++---
- fs/btrfs/delayed-ref.c      | 16 +++++++++-------
- fs/btrfs/discard.c          |  1 +
- fs/btrfs/extent_io.c        | 34 +++++++++++++++++-----------------
- fs/btrfs/extent_map.c       | 12 +++++++-----
- fs/btrfs/file-item.c        | 22 ++++++++++++++--------
- fs/btrfs/free-space-cache.c | 10 ++++++----
- fs/btrfs/inode.c            |  2 +-
- fs/btrfs/space-info.c       | 35 +++++++++++++++++------------------
- include/linux/zstd.h        |  8 ++++----
- 12 files changed, 87 insertions(+), 67 deletions(-)
-
---
-2.25.1
-
+I'm not opposed to that idea but for the first implementation I'm ok
+with using the default slabs. As the subpage support depends on the
+filesystem, creating the cache unconditionally would waste resources and
+creating it on demand would need some care. Either way I'd rather see it
+in a separate patch.
