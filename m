@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4322FC243
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 22:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7E12FC252
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 22:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbhASV0z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 16:26:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S1727324AbhASV1X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 16:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728924AbhASV0M (ORCPT
+        with ESMTP id S1729510AbhASV06 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 16:26:12 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060B3C061573
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 13:25:32 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id h21so917721qvb.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 13:25:31 -0800 (PST)
+        Tue, 19 Jan 2021 16:26:58 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB31C0613D6
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 13:26:11 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id f26so23408555qka.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 13:26:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=zWwDgW9yn6n7N8JN9weOrJu8f65DjKIYKA7LMNgiAfs=;
-        b=rFkA9hVaIOZxWdVMB0/bSltwu+ve56nnAz2Qn57LHo35BfRFXyD+hO0Ifq/qZtYspt
-         xrCWeGsE1QqnVax+6Qx+R+UZW/aPg0/fGctRbekRztSEkxIcJbZI1IcMcsGO23D2esjc
-         mCGIg85pNZVS7kJZUJmUZiHJ3rrJTCFklGBHfe5dvHUTBzsH4tdwsGtCIJT/HIj0mT0c
-         RlXKQEMr7v/FNd7XL+FyYtduItrPomIYzIhn5cwrOJeFrzpEwTmeHN72eVjUpX309DTa
-         BPG6gviA9UN5+g8kt64NvqSPYOwddAxKtSZwesQoaKTKB6u7ohaD1bB7IjyKM3Vj/Hw9
-         iOrw==
+        bh=HsNLct/sOOQG9YQCemu0zkuoHTilJtn6aX14IEH/5Iw=;
+        b=qlS4N6fveje+n1oDfL/rwbpqEyw1WIDzZO49qyMP0sL7AY40vO+/oZ3zPowF/TgVwC
+         LCE1TXK2CAkxL9d61ZjMfjzUyLJwiHQ+IqJbbuOw0TNfJaBxpbZMf41hqJ8FC9DquWF2
+         ZjWhT3mx71ExqBdK/ZhnUimobbTWP9LxwfVmPWoZrVnrI+BQuMj0ULTlfvZ69Ojk/ESB
+         52KCta2Cgj3t9i6PSzTHfkKZCnvjTepVD+iSC3os1wMFaI+bNht8PubtSy/QYkkAvXCR
+         EMTABZ4uYyjEdqo3J86IeOpsAnS5jr1Uwb61NDze2JXgtyfDXG96yiu6RVtcJao+9gbg
+         oO3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=zWwDgW9yn6n7N8JN9weOrJu8f65DjKIYKA7LMNgiAfs=;
-        b=IvsdpAsi6lYEDgBoWIOPhJVxkAeHwt/cc9R+5GX6xNujVMOp/mLW4qljgiwe+sxLlQ
-         Et5i/rQn27iPnhDKZIbW8KFrxeAqgFBdI8s+JeBNhZ/UaIkMMu+rG5ylP0bFiB1dR5N/
-         TICS1qmfMXPFy8Xwdw7ueJlBjyFw34RpHNl13o2IhVX0ehpIMTm1ImL/L7o1hFe5fMlC
-         QV5yHzSfXudy44HSHgytTKSnptNJ5FOWhs8PicCjnaZTnB67h5fxxT5md/2n/yFkSSQz
-         uoP0yCXZGCwmjDOvpkex7iKL992XGXP3+NBGzMnXuW3hvgNVWms84TEU5JAdtP2UXARe
-         x/qQ==
-X-Gm-Message-State: AOAM532iHiitzeWHAZQokTfy1kwaPykBiTEOKgL2aPRXTf+n5rQO/cD9
-        HOF7wImzteUgT5/h3CuViHglquPXKP21kzRfZQI=
-X-Google-Smtp-Source: ABdhPJye5GwxbxpJYFhm/8afPwlulRTs8gGTx2XvQSrRaewasraKy8Xo6MJVCewLTsK9QaE6c8dOKA==
-X-Received: by 2002:ad4:4f4a:: with SMTP id eu10mr6479359qvb.17.1611091530937;
-        Tue, 19 Jan 2021 13:25:30 -0800 (PST)
+        bh=HsNLct/sOOQG9YQCemu0zkuoHTilJtn6aX14IEH/5Iw=;
+        b=JRIgKFiDdaQd5IoSkAP6wnA6fxgttdTnfoMZhCoFEgbJd2m0uN0yN5VsXXWbqDeo8i
+         So/JVKbyBym1rCKMe1byuL9bIQrEfL+FRchiiu2nbpAYHTmBYzOeOo8TJn5SPtIU02Om
+         nv6Ie1IRdU2+xqqZgPrjqf1VKijslruoiQpYlyLyrz1rDagBCeYJBbOPqrMPJ3mS9V01
+         VsmuGRJstl/XhCcj3wsuPjQ1nIki5oq81QzXiuzIfmob78aXb4liMeV2PgWbySV2jCEb
+         obs1Q4rutzrGFW1bZZ1hVuDukXgQbUXRr1q4SJq64bMuNRVsoOwC3pGVLgQqAEakd2Jm
+         3jKQ==
+X-Gm-Message-State: AOAM5321l2MZbhSdW75Ei39MB56Cqrd0eparEmMY6JKrYPGPluOI2STA
+        3syF3NkYePMm8m8GNWDr4nFuJikrroc0gryLjso=
+X-Google-Smtp-Source: ABdhPJwJTZMulSFPksU5fUyWaVztvy9JisQl1SwLW7TLUtyjOmvNsERRIMYZ1wBNLM786FqPPFXwhw==
+X-Received: by 2002:a37:d41:: with SMTP id 62mr6371792qkn.110.1611091570960;
+        Tue, 19 Jan 2021 13:26:10 -0800 (PST)
 Received: from ?IPv6:2620:10d:c0a8:11d1::1325? ([2620:10d:c091:480::1:2a44])
-        by smtp.gmail.com with ESMTPSA id 6sm13790406qko.3.2021.01.19.13.25.29
+        by smtp.gmail.com with ESMTPSA id d140sm13919082qkc.111.2021.01.19.13.26.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 13:25:30 -0800 (PST)
-Subject: Re: [PATCH 01/13] btrfs: Document modified paramater of
- add_extent_mapping
+        Tue, 19 Jan 2021 13:26:10 -0800 (PST)
+Subject: Re: [PATCH 04/13] btrfs: Fix paramter description in delayed-ref.c
+ functions
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210119122649.187778-1-nborisov@suse.com>
- <20210119122649.187778-2-nborisov@suse.com>
+ <20210119122649.187778-5-nborisov@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <d535c9cd-6298-dd38-0725-4ae199e73de6@toxicpanda.com>
-Date:   Tue, 19 Jan 2021 16:25:29 -0500
+Message-ID: <8233193c-78f6-369d-a3c9-63e02e2c018c@toxicpanda.com>
+Date:   Tue, 19 Jan 2021 16:26:09 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210119122649.187778-2-nborisov@suse.com>
+In-Reply-To: <20210119122649.187778-5-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,11 +69,9 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 1/19/21 7:26 AM, Nikolay Borisov wrote:
-> Fixes fs/btrfs/extent_map.c:399: warning: Function parameter or member
-> 'modified' not described in 'add_extent_mapping'
+> This fixes the following warnings:
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Subject should be 'parameter'.  Thanks,
+Subject should read 'parameter', thanks,
 
 Josef
