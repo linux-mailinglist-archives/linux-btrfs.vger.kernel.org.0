@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC092FBA16
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 15:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCAC2FBA1E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Jan 2021 15:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404134AbhASOlr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 09:41:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38048 "EHLO mx2.suse.de"
+        id S2404312AbhASOl5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 09:41:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38044 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390978AbhASM3M (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:29:12 -0500
+        id S2390971AbhASM3N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:29:13 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611059214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1611059215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qt19Bqx/BOaubuN1rJmaOmPmXgHGdf8NFei28dIduZY=;
-        b=pZU3bAHJLl+lLXzctu7/grJ2WjaVsa+Fz8WERXB5jVVv5EnmS5Is+BJi1Df2CdiTSDm9WW
-        MUy5JtIkUx8Gv9O9/gDehYcs7tOIKPv+l+uhzoCBg7L6hnEmE2MIitnmeuuAvPF0U2+jNw
-        3acUQ3PaYMQygOZdvvh+x7a3COhbIYU=
+        bh=BmcR2Ie6fb7Rd8E82AhOW2/0MIVQMzw7L/HTX9ZShUo=;
+        b=YJXAlfO4uuVHeYyaHAM0O0lIlcARkLuMgvuOUYmbM1ca46zCIJ+SUEt3AKN5CVjtJS6nSL
+        D/ifw5G6b0qapT1wKfaukMw/TlBVyhPKX/zu+mrFj1wUTjeHrHh1dj/bfgaetKx+WyPdzg
+        OpiHfpkvD0ggx86fJA7l3n0RAjZ8hGI=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7A59AF92;
-        Tue, 19 Jan 2021 12:26:54 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0C7D8AF9E;
+        Tue, 19 Jan 2021 12:26:55 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 11/13] btrfs: Fix parameter description in space-info.c
-Date:   Tue, 19 Jan 2021 14:26:47 +0200
-Message-Id: <20210119122649.187778-12-nborisov@suse.com>
+Subject: [PATCH 12/13] btrfs: Fix parameter description for functions in extent_io.c
+Date:   Tue, 19 Jan 2021 14:26:48 +0200
+Message-Id: <20210119122649.187778-13-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210119122649.187778-1-nborisov@suse.com>
 References: <20210119122649.187778-1-nborisov@suse.com>
@@ -39,106 +39,99 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With these fixes space-info.c is clearn for W=1 warnings, namely the
-following ones are fixed:
+This makes the file W=1 clean and fixes the following warnings:
 
-fs/btrfs/space-info.c:575: warning: Function parameter or member 'fs_info' not described in 'may_commit_transaction'
-fs/btrfs/space-info.c:575: warning: Function parameter or member 'space_info' not described in 'may_commit_transaction'
-fs/btrfs/space-info.c:1231: warning: Function parameter or member 'fs_info' not described in 'handle_reserve_ticket'
-fs/btrfs/space-info.c:1231: warning: Function parameter or member 'space_info' not described in 'handle_reserve_ticket'
-fs/btrfs/space-info.c:1231: warning: Function parameter or member 'ticket' not described in 'handle_reserve_ticket'
-fs/btrfs/space-info.c:1231: warning: Function parameter or member 'flush' not described in 'handle_reserve_ticket'
-fs/btrfs/space-info.c:1315: warning: Function parameter or member 'fs_info' not described in '__reserve_bytes'
-fs/btrfs/space-info.c:1315: warning: Function parameter or member 'space_info' not described in '__reserve_bytes'
-fs/btrfs/space-info.c:1315: warning: Function parameter or member 'orig_bytes' not described in '__reserve_bytes'
-fs/btrfs/space-info.c:1315: warning: Function parameter or member 'flush' not described in '__reserve_bytes'
-fs/btrfs/space-info.c:1427: warning: Function parameter or member 'root' not described in 'btrfs_reserve_metadata_bytes'
-fs/btrfs/space-info.c:1427: warning: Function parameter or member 'block_rsv' not described in 'btrfs_reserve_metadata_bytes'
-fs/btrfs/space-info.c:1427: warning: Function parameter or member 'orig_bytes' not described in 'btrfs_reserve_metadata_bytes'
-fs/btrfs/space-info.c:1427: warning: Function parameter or member 'flush' not described in 'btrfs_reserve_metadata_bytes'
-fs/btrfs/space-info.c:1462: warning: Function parameter or member 'fs_info' not described in 'btrfs_reserve_data_bytes'
-fs/btrfs/space-info.c:1462: warning: Function parameter or member 'bytes' not described in 'btrfs_reserve_data_bytes'
-fs/btrfs/space-info.c:1462: warning: Function parameter or member 'flush' not described in 'btrfs_reserve_data_bytes'
+fs/btrfs/extent_io.c:414: warning: Function parameter or member 'tree' not described in '__etree_search'
+fs/btrfs/extent_io.c:414: warning: Function parameter or member 'offset' not described in '__etree_search'
+fs/btrfs/extent_io.c:414: warning: Function parameter or member 'next_ret' not described in '__etree_search'
+fs/btrfs/extent_io.c:414: warning: Function parameter or member 'prev_ret' not described in '__etree_search'
+fs/btrfs/extent_io.c:414: warning: Function parameter or member 'p_ret' not described in '__etree_search'
+fs/btrfs/extent_io.c:414: warning: Function parameter or member 'parent_ret' not described in '__etree_search'
+fs/btrfs/extent_io.c:1607: warning: Function parameter or member 'tree' not described in 'find_contiguous_extent_bit'
+fs/btrfs/extent_io.c:1607: warning: Function parameter or member 'start' not described in 'find_contiguous_extent_bit'
+fs/btrfs/extent_io.c:1607: warning: Function parameter or member 'start_ret' not described in 'find_contiguous_extent_bit'
+fs/btrfs/extent_io.c:1607: warning: Function parameter or member 'end_ret' not described in 'find_contiguous_extent_bit'
+fs/btrfs/extent_io.c:1607: warning: Function parameter or member 'bits' not described in 'find_contiguous_extent_bit'
+fs/btrfs/extent_io.c:1644: warning: Function parameter or member 'tree' not described in 'find_first_clear_extent_bit'
+fs/btrfs/extent_io.c:1644: warning: Function parameter or member 'start' not described in 'find_first_clear_extent_bit'
+fs/btrfs/extent_io.c:1644: warning: Function parameter or member 'start_ret' not described in 'find_first_clear_extent_bit'
+fs/btrfs/extent_io.c:1644: warning: Function parameter or member 'end_ret' not described in 'find_first_clear_extent_bit'
+fs/btrfs/extent_io.c:1644: warning: Function parameter or member 'bits' not described in 'find_first_clear_extent_bit'
+fs/btrfs/extent_io.c:4187: warning: Function parameter or member 'epd' not described in 'extent_write_cache_pages'
+fs/btrfs/extent_io.c:4187: warning: Excess function parameter 'data' description in 'extent_write_cache_pages'
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/space-info.c | 35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ fs/btrfs/extent_io.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 84fb94e78a8f..55588da66dff 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -562,9 +562,8 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 7f689ad7709c..62f892238149 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -392,13 +392,13 @@ static struct rb_node *tree_insert(struct rb_root *root,
+  * __etree_search - searche @tree for an entry that contains @offset. Such
+  * entry would have entry->start <= offset && entry->end >= offset.
+  *
+- * @tree - the tree to search
+- * @offset - offset that should fall within an entry in @tree
+- * @next_ret - pointer to the first entry whose range ends after @offset
+- * @prev - pointer to the first entry whose range begins before @offset
+- * @p_ret - pointer where new node should be anchored (used when inserting an
++ * @tree:  the tree to search
++ * @offset: offset that should fall within an entry in @tree
++ * @next_ret: pointer to the first entry whose range ends after @offset
++ * @prev_ret: pointer to the first entry whose range begins before @offset
++ * @p_ret: pointer where new node should be anchored (used when inserting an
+  *	    entry in the tree)
+- * @parent_ret - points to entry which would have been the parent of the entry,
++ * @parent_ret: points to entry which would have been the parent of the entry,
+  *               containing @offset
+  *
+  * This function returns a pointer to the entry that contains @offset byte
+@@ -1589,11 +1589,11 @@ int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
  
  /**
-  * maybe_commit_transaction - possibly commit the transaction if its ok to
-- * @root - the root we're allocating for
-- * @bytes - the number of bytes we want to reserve
-- * @force - force the commit
-+ * @fs_info: fs context
-+ * @space_info: space_info we are checking for commit, either data or metadata
+  * find_contiguous_extent_bit: find a contiguous area of bits
+- * @tree - io tree to check
+- * @start - offset to start the search from
+- * @start_ret - the first offset we found with the bits set
+- * @end_ret - the final contiguous range of the bits that were set
+- * @bits - bits to look for
++ * @tree: io tree to check
++ * @start: offset to start the search from
++ * @start_ret: the first offset we found with the bits set
++ * @end_ret: the final contiguous range of the bits that were set
++ * @bits: bits to look for
   *
-  * This will check to make sure that committing the transaction will actually
-  * get us somewhere and then commit the transaction if it does.  Otherwise it
-@@ -1216,10 +1215,10 @@ static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
- 
- /**
-  * handle_reserve_ticket - do the appropriate flushing and waiting for a ticket
-- * @fs_info - the fs
-- * @space_info - the space_info for the reservation
-- * @ticket - the ticket for the reservation
-- * @flush - how much we can flush
-+ * @fs_info: the fs
-+ * @space_info: the space_info for the reservation
-+ * @ticket: the ticket for the reservation
-+ * @flush: how much we can flush
+  * set_extent_bit and clear_extent_bit can temporarily split contiguous ranges
+  * to set bits appropriately, and then merge them again.  During this time it
+@@ -1628,11 +1628,11 @@ int find_contiguous_extent_bit(struct extent_io_tree *tree, u64 start,
+  * find_first_clear_extent_bit - find the first range that has @bits not set.
+  * This range could start before @start.
   *
-  * This does the work of figuring out how to flush for the ticket, waiting for
-  * the reservation, and returning the appropriate error if there is one.
-@@ -1297,10 +1296,10 @@ static inline bool is_normal_flushing(enum btrfs_reserve_flush_enum flush)
- 
- /**
-  * reserve_metadata_bytes - try to reserve bytes from the block_rsv's space
-- * @root - the root we're allocating for
-- * @space_info - the space info we want to allocate from
-- * @orig_bytes - the number of bytes we want
-- * @flush - whether or not we can flush to make our reservation
-+ * @fs_info: fs context
-+ * @space_info: the space info we want to allocate from
-+ * @orig_bytes: the number of bytes we want
-+ * @flush: whether or not we can flush to make our reservation
+- * @tree - the tree to search
+- * @start - the offset at/after which the found extent should start
+- * @start_ret - records the beginning of the range
+- * @end_ret - records the end of the range (inclusive)
+- * @bits - the set of bits which must be unset
++ * @tree: the tree to search
++ * @start: the offset at/after which the found extent should start
++ * @start_ret: records the beginning of the range
++ * @end_ret: records the end of the range (inclusive)
++ * @bits: the set of bits which must be unset
   *
-  * This will reserve orig_bytes number of bytes from the space info associated
-  * with the block_rsv.  If there is not enough space it will make an attempt to
-@@ -1408,10 +1407,10 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 
- /**
-  * reserve_metadata_bytes - try to reserve bytes from the block_rsv's space
-- * @root - the root we're allocating for
-- * @block_rsv - the block_rsv we're allocating for
-- * @orig_bytes - the number of bytes we want
-- * @flush - whether or not we can flush to make our reservation
-+ * @root: the root we're allocating for
-+ * @block_rsv: the block_rsv we're allocating for
-+ * @orig_bytes: the number of bytes we want
-+ * @flush: whether or not we can flush to make our reservation
+  * Since unallocated range is also considered one which doesn't have the bits
+  * set it's possible that @end_ret contains -1, this happens in case the range
+@@ -4171,7 +4171,7 @@ int btree_write_cache_pages(struct address_space *mapping,
+  * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
+  * @mapping: address space structure to write
+  * @wbc: subtract the number of written pages from *@wbc->nr_to_write
+- * @data: data passed to __extent_writepage function
++ * @epd: holds context for the write, namely the bio
   *
-  * This will reserve orig_bytes number of bytes from the space info associated
-  * with the block_rsv.  If there is not enough space it will make an attempt to
-@@ -1450,9 +1449,9 @@ int btrfs_reserve_metadata_bytes(struct btrfs_root *root,
- 
- /**
-  * btrfs_reserve_data_bytes - try to reserve data bytes for an allocation
-- * @fs_info - the filesystem
-- * @bytes - the number of bytes we need
-- * @flush - how we are allowed to flush
-+ * @fs_info: the filesystem
-+ * @bytes: the number of bytes we need
-+ * @flush: how we are allowed to flush
-  *
-  * This will reserve bytes from the data space info.  If there is not enough
-  * space then we will attempt to flush space as specified by flush.
+  * If a page is already under I/O, write_cache_pages() skips it, even
+  * if it's dirty.  This is desirable behaviour for memory-cleaning writeback,
 -- 
 2.25.1
 
