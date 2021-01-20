@@ -2,113 +2,263 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EEF2FD588
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 17:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783282FD6AF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 18:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391430AbhATQW5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 20 Jan 2021 11:22:57 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:47368 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389590AbhATQV6 (ORCPT
+        id S1732934AbhATPqq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jan 2021 10:46:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732423AbhATPmR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:21:58 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id EEDC794A289; Wed, 20 Jan 2021 11:20:59 -0500 (EST)
-Date:   Wed, 20 Jan 2021 11:20:59 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Goffredo Baroncelli <kreijack@libero.it>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [RFC][PATCH V5] btrfs: preferred_metadata: preferred device for
- metadata
-Message-ID: <20210120162059.GN31381@hungrycats.org>
-References: <20210117185435.36263-1-kreijack@libero.it>
- <30cd0359-e649-dcc7-e373-4dd778fbf70b@toxicpanda.com>
+        Wed, 20 Jan 2021 10:42:17 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0FBC061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 07:41:36 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id d15so11100695qtw.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 07:41:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=47rEKaHYb19AbpnrHwPe94yPmH6lEZF0FSJAQ3Eljpo=;
+        b=CmtvaYXnX3JNpux5eWVkFctiiKGBBxrrqdm6hbKjYK2EdOXvu0rrKWaKg/qyJ7t+/a
+         ksW4yW5Na2sXUmpvVHvu0bdPZAK0R28RxtxZCtEVfzjtXMW77t9czM49vrHGaGYNN+RY
+         B54nnRb4q5fFuug+gJtDebP012SUdyoLy4lk4GoMSBRAtLY+rDF7hUN+mLQmo9deKVjz
+         aRTyrNyaiJOnf9GziE23EL+rdPCC+iUBEAh0lvUqFcmk1ZBCnhwP07hHh9X/Mn3L7qVL
+         /Q31xBXI0Sealiuj+rcnQ6i7lyUWQjt/4M9NcDI5eA63ysEtr8TwXBDu2T6jXpBDfOUD
+         U9Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=47rEKaHYb19AbpnrHwPe94yPmH6lEZF0FSJAQ3Eljpo=;
+        b=kT3dYOVdW7swkw5D9+2Wikv8tD6YYgbVhZ96OwuRjPEtuZLupdvMw/uFniW5x/qXfk
+         6zthrX1xBQZne0IyHRLSxN4Vb0PE7AAi0xUf8nUdVVKlO6n2LfskyYnsPY7/a9fW9atN
+         xdjZgTgeRqyyfhhs9h+xKvHi6UWDoSmBH/P91okR1REF1YCihdzI99PAp2fDaXcbvJjO
+         TnFwHL80woOM1VN7MUHtKiZDrCSBXP/g/QwD8YxCojW21jzz8KqcHWIC/ZS6jEe2OjJ5
+         ixPadIllaEQRWfkTiEfrL/sQpHNlXnSGiWDaUf+TeGJ8/J4hzdHHK+lwMWe/x5+ETN4b
+         206g==
+X-Gm-Message-State: AOAM531+XTOP0U91X+k88ijMqDYfi7/BRud+W6ob+Aap7MYtd/8TZRHm
+        M7rIEXFNzOWt+8E1jbCMrAncYPPE8FkQ5xcYfJ0=
+X-Google-Smtp-Source: ABdhPJwPePRpyqtGgQGj55tOfUzdeQ2i+AFxAjfPrORyvRMSkw/bfIL9VJ/aY6QZ8TRsGEsGWL+Fyg==
+X-Received: by 2002:ac8:16f2:: with SMTP id y47mr9487906qtk.96.1611157295038;
+        Wed, 20 Jan 2021 07:41:35 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id s186sm1546520qka.98.2021.01.20.07.41.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 07:41:34 -0800 (PST)
+Subject: Re: [PATCH v4 17/18] btrfs: integrate page status update for data
+ read path into begin/end_page_read()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210116071533.105780-1-wqu@suse.com>
+ <20210116071533.105780-18-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <b5e21d24-d2db-dc0f-bd96-1cbcad1a634e@toxicpanda.com>
+Date:   Wed, 20 Jan 2021 10:41:33 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <30cd0359-e649-dcc7-e373-4dd778fbf70b@toxicpanda.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210116071533.105780-18-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:02:41AM -0500, Josef Bacik wrote:
-> On 1/17/21 1:54 PM, Goffredo Baroncelli wrote:
-> > 
-> > Hi all,
-> > 
-> > This is an RFC; I wrote this patch because I find the idea interesting
-> > even though it adds more complication to the chunk allocator.
-> > 
-> > The basic idea is to store the metadata chunk in the fasters disks.
-> > The fasters disk are marked by the "preferred_metadata" flag.
-> > 
-> > BTRFS when allocate a new metadata/system chunk, selects the
-> > "preferred_metadata" disks, otherwise it selectes the non
-> > "preferred_metadata" disks. The intial patch allowed to use the other
-> > kind of disk in case a set is full.
-> > 
-> > This patches set is based on v5.11-rc2.
-> > 
-> > For now, the only user of this patch that I am aware is Zygo.
-> > However he asked to further constraint the allocation: i.e. avoid to
-> > allocated metadata on a not "preferred_metadata"
-> > disk. So I extended the patch adding 4 modes to operate.
-> > 
-> > This is enabled passing the option "preferred_metadata=<mode>" at
-> > mount time.
-> > 
+On 1/16/21 2:15 AM, Qu Wenruo wrote:
+> In btrfs data page read path, the page status update are handled in two
+> different locations:
 > 
-> I'll echo Zygo's hatred for mount options.  The more complicated policy
-> decisions belong in properties and sysfs knobs, not mount options.
-
-Well, I hated it for two distinct reasons.  Only one of those was the
-mount option.
-
-The feature is really a per-_device_ policy:  whether we put data or
-metadata or both (*) on the device, and in what order we fill devices
-with each.
-
-There's nothing filesystem-wide about the feature, other than we might
-want to ensure there are enough devices to do allocations with our
-raid profiles (e.g. if there are 2 data-only disks and raid1 data,
-don't allow one of those disks to become metadata-only).
-
-I had considered a couple of other ideas but dropped them:
-
-	- keep a filesystem-wide "off" feature.  If that makes sense at
-	all, it would be as a mount option, e.g. if you had painted your
-	filesystem into a corner with data-only devices and didn't have
-	enough metadata space to do a device property set to fix it.
-	I dropped the idea because we don't have an existing feature
-	for any other scenario where that happens (e.g. adding one disk
-	to a full raid1 array) and it should be possible to recover
-	immediately after the next mount using reserved metadata space.
-
-	- for each device, specify a priority for metadata and data
-	separately, with the lowest priority meaning "never use this
-	device for that kind of chunk".  That is a more general form
-	of the 4-device-type form (metadata only, metadata preferred,
-	data preferred, data only), but all of the additional device
-	orders that arbitrary sorting order permits will tend to make
-	data and metadata fight with each other, to the point that the
-	ordering isn't useful.  On the other hand, maybe this idea does
-	have a future as a kind of advanced "move the data where I tell
-	you to" balancing tool for complicated RAID array reshapes.
-
-> And then for the properties themselves, presumably we'll want to add other
-> FS wide properties in the future.  I'm not against adding new actual keys
-> and items to the tree itself, but is there a way we could use our existing
-> property infrastructure that we use for compression, and simply store the
-> xattrs in the tree root?  It looks like we're just toggling a policy
-> decision, and we don't actually need the other properties in the item you've
-> created, so why not just a btrfs.preferred_metadata property with the value
-> stored in it, dropped into the tree_root so it can be read on mount?
-> Thanks,
+>    btrfs_do_read_page()
+>    {
+> 	while (cur <= end) {
+> 		/* No need to read from disk */
+> 		if (HOLE/PREALLOC/INLINE){
+> 			memset();
+> 			set_extent_uptodate();
+> 			continue;
+> 		}
+> 		/* Read from disk */
+> 		ret = submit_extent_page(end_bio_extent_readpage);
+>    }
 > 
-> Josef
+>    end_bio_extent_readpage()
+>    {
+> 	endio_readpage_uptodate_page_status();
+>    }
+> 
+> This is fine for sectorsize == PAGE_SIZE case, as for above loop we
+> should only hit one branch and then exit.
+> 
+> But for subpage, there are more works to be done in page status update:
+> - Page Unlock condition
+>    Unlike regular page size == sectorsize case, we can no longer just
+>    unlock a page without a brain.
+>    Only the last reader of the page can unlock the page.
+>    This means, we can unlock the page either in the while() loop, or in
+>    the endio function.
+> 
+> - Page uptodate condition
+>    Since we have multiple sectors to read for a page, we can only mark
+>    the full page uptodate if all sectors are uptodate.
+> 
+> To handle both subpage and regular cases, introduce a pair of functions
+> to help handling page status update:
+> 
+> - being_page_read()
+>    For regular case, it does nothing.
+>    For subpage case, it update the reader counters so that later
+>    end_page_read() can know who is the last one to unlock the page.
+> 
+> - end_page_read()
+>    This is just endio_readpage_uptodate_page_status() renamed.
+>    The original name is a little too long and too specific for endio.
+> 
+>    The only new trick added is the condition for page unlock.
+>    Now for subage data, we unlock the page if we're the last reader.
+> 
+> This does not only provide the basis for subpage data read, but also
+> hide the special handling of page read from the main read loop.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/extent_io.c | 38 +++++++++++++++++++----------
+>   fs/btrfs/subpage.h   | 57 +++++++++++++++++++++++++++++++++++---------
+>   2 files changed, 72 insertions(+), 23 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 4bce03fed205..6ae820144ec7 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2839,8 +2839,17 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
+>   	processed->uptodate = uptodate;
+>   }
+>   
+> -static void endio_readpage_update_page_status(struct page *page, bool uptodate,
+> -					      u64 start, u32 len)
+> +static void begin_data_page_read(struct btrfs_fs_info *fs_info, struct page *page)
+> +{
+> +	ASSERT(PageLocked(page));
+> +	if (fs_info->sectorsize == PAGE_SIZE)
+> +		return;
+> +
+> +	ASSERT(PagePrivate(page));
+> +	btrfs_subpage_start_reader(fs_info, page, page_offset(page), PAGE_SIZE);
+> +}
+> +
+> +static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+>   {
+>   	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
+>   
+> @@ -2856,7 +2865,12 @@ static void endio_readpage_update_page_status(struct page *page, bool uptodate,
+>   
+>   	if (fs_info->sectorsize == PAGE_SIZE)
+>   		unlock_page(page);
+> -	/* Subpage locking will be handled in later patches */
+> +	else if (is_data_inode(page->mapping->host))
+> +		/*
+> +		 * For subpage data, unlock the page if we're the last reader.
+> +		 * For subpage metadata, page lock is not utilized for read.
+> +		 */
+> +		btrfs_subpage_end_reader(fs_info, page, start, len);
+>   }
+>   
+>   /*
+> @@ -2993,7 +3007,7 @@ static void end_bio_extent_readpage(struct bio *bio)
+>   		bio_offset += len;
+>   
+>   		/* Update page status and unlock */
+> -		endio_readpage_update_page_status(page, uptodate, start, len);
+> +		end_page_read(page, uptodate, start, len);
+>   		endio_readpage_release_extent(&processed, BTRFS_I(inode),
+>   					      start, end, uptodate);
+>   	}
+> @@ -3267,6 +3281,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+>   		      unsigned int read_flags, u64 *prev_em_start)
+>   {
+>   	struct inode *inode = page->mapping->host;
+> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>   	u64 start = page_offset(page);
+>   	const u64 end = start + PAGE_SIZE - 1;
+>   	u64 cur = start;
+> @@ -3310,6 +3325,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+>   			kunmap_atomic(userpage);
+>   		}
+>   	}
+> +	begin_data_page_read(fs_info, page);
+>   	while (cur <= end) {
+>   		bool force_bio_submit = false;
+>   		u64 disk_bytenr;
+> @@ -3327,13 +3343,14 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+>   					    &cached, GFP_NOFS);
+>   			unlock_extent_cached(tree, cur,
+>   					     cur + iosize - 1, &cached);
+> +			end_page_read(page, true, cur, iosize);
+>   			break;
+>   		}
+>   		em = __get_extent_map(inode, page, pg_offset, cur,
+>   				      end - cur + 1, em_cached);
+>   		if (IS_ERR_OR_NULL(em)) {
+> -			SetPageError(page);
+>   			unlock_extent(tree, cur, end);
+> +			end_page_read(page, false, cur, end + 1 - cur);
+>   			break;
+>   		}
+>   		extent_offset = cur - em->start;
+> @@ -3416,6 +3433,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+>   					    &cached, GFP_NOFS);
+>   			unlock_extent_cached(tree, cur,
+>   					     cur + iosize - 1, &cached);
+> +			end_page_read(page, true, cur, iosize);
+>   			cur = cur + iosize;
+>   			pg_offset += iosize;
+>   			continue;
+> @@ -3425,6 +3443,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+>   				   EXTENT_UPTODATE, 1, NULL)) {
+>   			check_page_uptodate(tree, page);
+>   			unlock_extent(tree, cur, cur + iosize - 1);
+> +			end_page_read(page, true, cur, iosize);
+>   			cur = cur + iosize;
+>   			pg_offset += iosize;
+>   			continue;
+> @@ -3433,8 +3452,8 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+>   		 * to date.  Error out
+>   		 */
+>   		if (block_start == EXTENT_MAP_INLINE) {
+> -			SetPageError(page);
+>   			unlock_extent(tree, cur, cur + iosize - 1);
+> +			end_page_read(page, false, cur, iosize);
+>   			cur = cur + iosize;
+>   			pg_offset += iosize;
+>   			continue;
+> @@ -3451,19 +3470,14 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+>   			nr++;
+>   			*bio_flags = this_bio_flag;
+>   		} else {
+> -			SetPageError(page);
+>   			unlock_extent(tree, cur, cur + iosize - 1);
+> +			end_page_read(page, false, cur, iosize);
+>   			goto out;
+>   		}
+>   		cur = cur + iosize;
+>   		pg_offset += iosize;
+>   	}
+>   out:
+> -	if (!nr) {
+> -		if (!PageError(page))
+> -			SetPageUptodate(page);
+> -		unlock_page(page);
+> -	}
 
-(*) I suppose logically there could be a "neither" option, but I'm not
-sure what it would be for.
+Huh?  Now in the normal case we're not getting an unlocked page.  Not only that 
+we're not setting it uptodate if we had to 0 the whole page, so we're just left 
+dangling here because the endio will never be called.
+
+Not to mention you're deleting all of teh SetPageError() calls for no reason 
+that I can see, and not replacing it with anything else, so you've essentially 
+ripped out any error handling on memory allocation.  Thanks,
+
+Josef
