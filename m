@@ -2,227 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061352FC5C3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 01:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF2F2FC834
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 03:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbhATA3A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 19:29:00 -0500
-Received: from mout.gmx.net ([212.227.17.20]:59429 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726134AbhATA26 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:28:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611102441;
-        bh=ToUFcBZOIYKF0rp8pQUtf29bll6H2DCid+x8nY2q2Xk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=XE3izyQEsjj2Q1GOu5KtuAZap/QBjtf7Fn1erncBZZHR4UrV1b5ZRjO8ZUImMAflR
-         z0P0FmpQQEfpjMWHp2th5496v9JVcVocWKsusHQCI3ACgg3bqTYvgH4p1qcrb1Z87B
-         lFoyaSYCO6ydG6lVmNYFkyFOJKzqKQJia5xMev1Y=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mzyuc-1lvcly12Jy-00x2tK; Wed, 20
- Jan 2021 01:27:20 +0100
-Subject: Re: [PATCH v4 04/18] btrfs: make attach_extent_buffer_page() to
- handle subpage case
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-5-wqu@suse.com>
- <5a6223fc-9937-3bd6-ecd0-d6c5939f59a7@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <a58c8366-f3b5-a152-92be-c7252891a7c6@gmx.com>
-Date:   Wed, 20 Jan 2021 08:27:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1731035AbhATCqk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 21:46:40 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57990 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726840AbhATCqC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Jan 2021 21:46:02 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K2e4jQ086267;
+        Wed, 20 Jan 2021 02:45:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ow3GRI/oubic+4/dRbZ4Mxt5v/lk1kBXabfnw5xGEFs=;
+ b=Rif+y0D/31al/DTRbptHY8r/E7H+ydmcrEcabv/wI/bQoHDag9gcGYCt14PAWpUQzryi
+ 2wSlCOgFqQuG6uuAyqrWW/OuVQbudWrKMrHFD8LmwU6DRRLajT7Wa6SRtdtJetEOFvl3
+ 8Hl1Z+fHlWqrXLFxRUzqfWmTWSkWxYHBHHjkQ2Wimp/gbu8C6wnRy+VRaQzc91JeztuF
+ fOsuJJ9Hnsk99ScSEujpYY9tb49EZZmfNy4uG7pahaJtss+YtFnSnLfQUEVyXidQbP3T
+ JPBDY6fMPX160oZGdCtSdSRNHQsvefU6Z8pVhqJ7Oa6Ac+ax/k8PLHshXbC0BUVPmJKV Gw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3668qa8epm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 02:45:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K2dheD042811;
+        Wed, 20 Jan 2021 02:43:16 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3668rc8j6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Jan 2021 02:43:16 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10K2hFRK001059;
+        Wed, 20 Jan 2021 02:43:15 GMT
+Received: from [192.168.10.137] (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 19 Jan 2021 18:43:14 -0800
+Subject: Re: [PATCH v3 1/4] btrfs: add read_policy latency
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <cover.1610324448.git.anand.jain@oracle.com>
+ <64bb4905dc4b77e9fa22d8ba2635a36d15a33469.1610324448.git.anand.jain@oracle.com>
+ <bf3eed32-6653-4151-85b6-1f249e601cf0@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <6df17b6b-d88e-93d6-5b6d-1cf026b0b402@oracle.com>
+Date:   Wed, 20 Jan 2021 10:43:08 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <5a6223fc-9937-3bd6-ecd0-d6c5939f59a7@toxicpanda.com>
+In-Reply-To: <bf3eed32-6653-4151-85b6-1f249e601cf0@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:kV/nsxMCVbZJuI2gXJFeFXLb1H8tr2bgQs+jHd0mDNx/k0zvOim
- ydG7x9D6mBZNwUjm0GJdYtoh1GPcKbfyg1IneQOEX7BLZp6M2KHJ+Y9mX8E0qbqwEHhWO11
- 2OtFjbErLnfHXBSQnb7wBmLQ6n7lyo4U0CsTUPTnI26adtpsrnq6XsfulofDvCTuPlNKwuS
- v28kq+ZHXWuRLJdLdCI9w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Rn8A+/d5UNM=:cJyvjf/M2EQPshuRwJMNHZ
- Y+2iZ0jzMg65h5kViro6vQZPq/T/a/tr1k3OmdlEJSXC5VbOg4lSWRgLnPlvBojPXFULq7FTZ
- dhA4WcGsYx53H9eBgCc9mPqToM0BXzkAf6ZJ1IZEOia6UC4xhVsyNLV6fyZR324Ucx0bGpH28
- hlSavnLL7xFw0cwYlJ+xtHJjcBbjjFupJLnazfgp3XqqEFMcQ1SFv8cAEprdtq8po7bKh5rH2
- 6q26CNiLAtjcpFzr5tc/1kHstaH2YZnf/2zWjg3Naasg42Q7AsYNUXlP5lCSl4606m+536vWD
- /+AlLL96wmDLWbeX3RPA2bslz4Tq0/7Gjs0Pd+0QI7Q9xQZScbXpWZmnzNGuu7BntHkw9yly3
- Vzuo7FdVuAB4GrBRTn91qRGMfC/he/6zSM3YpAshoIV2hQsk+tjy94wpzfu28DURv4twGYnRH
- 0sDWDlzlYjwcJmNJtxhpYPghSL4Q+YPhmaot5iBU3XUXcKU+zrTJ7PGAK3Bv0ttuyme5FgYaF
- nJYiwAg/CyE4YrkP+6tdEbWI9GnsM8biafwrXNXDcnx6ScfaUm4vA+GCU+X0Sj78gP++jo1PH
- g/euOdU58WfpE23/kGUnoCOP+Giz3wyIPScmUJD+ARMciVj148XxNRHgu0wpdrJfE1Mh2lmcG
- NYPFPTN0ia2MQA5RqszpsgGRIm/a7rAlpsWpklC7941dOpDExgkvN5seMaC/zsKnO9cZRICG5
- IIp7+/rfPjbz9vvAj5YcdLifD0h7D6UDxX+ODyxrNwGTp5vc6+PTInt8WCmZROSoCgDXOTyqi
- L9NwW/uaLY51eOHFu40C+DmIHD+vT3kQhvrepFbT4ieehPqsODU4YhpckPulxWl0G38iuXQju
- R8rdKb0XHokDB3SmkfJw==
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200014
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101200014
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjEvMS8yMCDkuIrljYg1OjU0LCBKb3NlZiBCYWNpayB3cm90ZToNCj4gT24gMS8x
-Ni8yMSAyOjE1IEFNLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBGb3Igc3VicGFnZSBjYXNlLCB3ZSBu
-ZWVkIHRvIGFsbG9jYXRlIG5ldyBtZW1vcnkgZm9yIGVhY2ggbWV0YWRhdGEgcGFnZS4NCj4+DQo+
-PiBTbyB3ZSBuZWVkIHRvOg0KPj4gLSBBbGxvdyBhdHRhY2hfZXh0ZW50X2J1ZmZlcl9wYWdlKCkg
-dG8gcmV0dXJuIGludA0KPj4gwqDCoCBUbyBpbmRpY2F0ZSBhbGxvY2F0aW9uIGZhaWx1cmUNCj4+
-DQo+PiAtIFByZWFsbG9jIGJ0cmZzX3N1YnBhZ2Ugc3RydWN0dXJlIGZvciBhbGxvY19leHRlbnRf
-YnVmZmVyKCkNCj4+IMKgwqAgV2UgZG9uJ3Qgd2FudCB0byBjYWxsIG1lbW9yeSBhbGxvY2F0aW9u
-IHdpdGggc3BpbmxvY2sgaG9sZCwgc28NCj4+IMKgwqAgZG8gcHJlYWxsb2NhdGlvbiBiZWZvcmUg
-d2UgYWNxdWlyZSBtYXBwaW5nLT5wcml2YXRlX2xvY2suDQo+Pg0KPj4gLSBIYW5kbGUgc3VicGFn
-ZSBhbmQgcmVndWxhciBjYXNlIGRpZmZlcmVudGx5IGluDQo+PiDCoMKgIGF0dGFjaF9leHRlbnRf
-YnVmZmVyX3BhZ2UoKQ0KPj4gwqDCoCBGb3IgcmVndWxhciBjYXNlLCBqdXN0IGRvIHRoZSB1c3Vh
-bCB0aGluZy4NCj4+IMKgwqAgRm9yIHN1YnBhZ2UgY2FzZSwgYWxsb2NhdGUgbmV3IG1lbW9yeSBv
-ciB1c2UgdGhlIHByZWFsbG9jYXRlZCBtZW1vcnkuDQo+Pg0KPj4gRm9yIGZ1dHVyZSBzdWJwYWdl
-IG1ldGFkYXRhLCB3ZSB3aWxsIG1ha2UgbW9yZSB1c2FnZSBvZiByYWRpeCB0cmVlIHRvDQo+PiBn
-cmFiIGV4dG5ldCBidWZmZXIuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogUXUgV2VucnVvIDx3cXVA
-c3VzZS5jb20+DQo+PiAtLS0NCj4+IMKgIGZzL2J0cmZzL2V4dGVudF9pby5jIHwgNzUgKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0NCj4+IMKgIGZzL2J0cmZzL3N1
-YnBhZ2UuaMKgwqAgfCAxNyArKysrKysrKysrDQo+PiDCoCAyIGZpbGVzIGNoYW5nZWQsIDgyIGlu
-c2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9mcy9idHJm
-cy9leHRlbnRfaW8uYyBiL2ZzL2J0cmZzL2V4dGVudF9pby5jDQo+PiBpbmRleCBhODE2YmE0YTg1
-MzcuLjMyMDczMTQ4N2FjMCAxMDA2NDQNCj4+IC0tLSBhL2ZzL2J0cmZzL2V4dGVudF9pby5jDQo+
-PiArKysgYi9mcy9idHJmcy9leHRlbnRfaW8uYw0KPj4gQEAgLTI0LDYgKzI0LDcgQEANCj4+IMKg
-ICNpbmNsdWRlICJyY3Utc3RyaW5nLmgiDQo+PiDCoCAjaW5jbHVkZSAiYmFja3JlZi5oIg0KPj4g
-wqAgI2luY2x1ZGUgImRpc2staW8uaCINCj4+ICsjaW5jbHVkZSAic3VicGFnZS5oIg0KPj4gwqAg
-c3RhdGljIHN0cnVjdCBrbWVtX2NhY2hlICpleHRlbnRfc3RhdGVfY2FjaGU7DQo+PiDCoCBzdGF0
-aWMgc3RydWN0IGttZW1fY2FjaGUgKmV4dGVudF9idWZmZXJfY2FjaGU7DQo+PiBAQCAtMzE0MCw5
-ICszMTQxLDEzIEBAIHN0YXRpYyBpbnQgc3VibWl0X2V4dGVudF9wYWdlKHVuc2lnbmVkIGludCBv
-cGYsDQo+PiDCoMKgwqDCoMKgIHJldHVybiByZXQ7DQo+PiDCoCB9DQo+PiAtc3RhdGljIHZvaWQg
-YXR0YWNoX2V4dGVudF9idWZmZXJfcGFnZShzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWIsDQo+PiAt
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBwYWdlICpw
-YWdlKQ0KPj4gK3N0YXRpYyBpbnQgYXR0YWNoX2V4dGVudF9idWZmZXJfcGFnZShzdHJ1Y3QgZXh0
-ZW50X2J1ZmZlciAqZWIsDQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHN0cnVjdCBwYWdlICpwYWdlLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfc3VicGFnZSAqcHJlYWxsb2MpDQo+PiDCoCB7
-DQo+PiArwqDCoMKgIHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvID0gZWItPmZzX2luZm87
-DQo+PiArwqDCoMKgIGludCByZXQ7DQo+IA0KPiBpbnQgcmV0ID0gMDsNCj4gDQo+PiArDQo+PiDC
-oMKgwqDCoMKgIC8qDQo+PiDCoMKgwqDCoMKgwqAgKiBJZiB0aGUgcGFnZSBpcyBtYXBwZWQgdG8g
-YnRyZWUgaW5vZGUsIHdlIHNob3VsZCBob2xkIHRoZSBwcml2YXRlDQo+PiDCoMKgwqDCoMKgwqAg
-KiBsb2NrIHRvIHByZXZlbnQgcmFjZS4NCj4+IEBAIC0zMTUyLDEwICszMTU3LDMyIEBAIHN0YXRp
-YyB2b2lkIGF0dGFjaF9leHRlbnRfYnVmZmVyX3BhZ2Uoc3RydWN0IA0KPj4gZXh0ZW50X2J1ZmZl
-ciAqZWIsDQo+PiDCoMKgwqDCoMKgIGlmIChwYWdlLT5tYXBwaW5nKQ0KPj4gwqDCoMKgwqDCoMKg
-wqDCoMKgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJnBhZ2UtPm1hcHBpbmctPnByaXZhdGVfbG9jayk7
-DQo+PiAtwqDCoMKgIGlmICghUGFnZVByaXZhdGUocGFnZSkpDQo+PiAtwqDCoMKgwqDCoMKgwqAg
-YXR0YWNoX3BhZ2VfcHJpdmF0ZShwYWdlLCBlYik7DQo+PiAtwqDCoMKgIGVsc2UNCj4+IC3CoMKg
-wqDCoMKgwqDCoCBXQVJOX09OKHBhZ2UtPnByaXZhdGUgIT0gKHVuc2lnbmVkIGxvbmcpZWIpOw0K
-Pj4gK8KgwqDCoCBpZiAoZnNfaW5mby0+c2VjdG9yc2l6ZSA9PSBQQUdFX1NJWkUpIHsNCj4+ICvC
-oMKgwqDCoMKgwqDCoCBpZiAoIVBhZ2VQcml2YXRlKHBhZ2UpKQ0KPj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgYXR0YWNoX3BhZ2VfcHJpdmF0ZShwYWdlLCBlYik7DQo+PiArwqDCoMKgwqDCoMKg
-wqAgZWxzZQ0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgV0FSTl9PTihwYWdlLT5wcml2YXRl
-ICE9ICh1bnNpZ25lZCBsb25nKWViKTsNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gMDsNCj4+
-ICvCoMKgwqAgfQ0KPj4gKw0KPj4gK8KgwqDCoCAvKiBBbHJlYWR5IG1hcHBlZCwganVzdCBmcmVl
-IHByZWFsbG9jICovDQo+PiArwqDCoMKgIGlmIChQYWdlUHJpdmF0ZShwYWdlKSkgew0KPj4gK8Kg
-wqDCoMKgwqDCoMKgIGtmcmVlKHByZWFsbG9jKTsNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4g
-MDsNCj4+ICvCoMKgwqAgfQ0KPj4gKw0KPj4gK8KgwqDCoCBpZiAocHJlYWxsb2MpIHsNCj4+ICvC
-oMKgwqDCoMKgwqDCoCAvKiBIYXMgcHJlYWxsb2NhdGVkIG1lbW9yeSBmb3Igc3VicGFnZSAqLw0K
-Pj4gK8KgwqDCoMKgwqDCoMKgIHNwaW5fbG9ja19pbml0KCZwcmVhbGxvYy0+bG9jayk7DQo+PiAr
-wqDCoMKgwqDCoMKgwqAgYXR0YWNoX3BhZ2VfcHJpdmF0ZShwYWdlLCBwcmVhbGxvYyk7DQo+PiAr
-wqDCoMKgIH0gZWxzZSB7DQo+PiArwqDCoMKgwqDCoMKgwqAgLyogRG8gbmV3IGFsbG9jYXRpb24g
-dG8gYXR0YWNoIHN1YnBhZ2UgKi8NCj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBidHJmc19hdHRh
-Y2hfc3VicGFnZShmc19pbmZvLCBwYWdlKTsNCj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAocmV0IDwg
-MCkNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiByZXQ7DQo+IA0KPiBEZWxldGUg
-dGhlIGFib3ZlIDIgbGluZXMuDQo+IA0KPj4gK8KgwqDCoCB9DQo+PiArDQo+PiArwqDCoMKgIHJl
-dHVybiAwOw0KPiANCj4gcmV0dXJuIHJldDsNCj4gDQo+PiDCoCB9DQo+PiDCoCB2b2lkIHNldF9w
-YWdlX2V4dGVudF9tYXBwZWQoc3RydWN0IHBhZ2UgKnBhZ2UpDQo+PiBAQCAtNTA2MiwyMSArNTA4
-OSwyOSBAQCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciANCj4+ICpidHJmc19jbG9uZV9leHRlbnRfYnVm
-ZmVyKGNvbnN0IHN0cnVjdCBleHRlbnRfYnVmZmVyICpzcmMpDQo+PiDCoMKgwqDCoMKgIGlmIChu
-ZXcgPT0gTlVMTCkNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gTlVMTDsNCj4+ICvCoMKg
-wqAgc2V0X2JpdChFWFRFTlRfQlVGRkVSX1VQVE9EQVRFLCAmbmV3LT5iZmxhZ3MpOw0KPj4gK8Kg
-wqDCoCBzZXRfYml0KEVYVEVOVF9CVUZGRVJfVU5NQVBQRUQsICZuZXctPmJmbGFncyk7DQo+PiAr
-DQo+IA0KPiBXaHkgYXJlIHlvdSBkb2luZyB0aGlzIGhlcmU/wqAgSXQgc2VlbXMgdW5yZWxhdGVk
-P8KgIExvb2tpbmcgYXQgdGhlIGNvZGUgDQo+IGl0IGFwcGVhcnMgdGhlcmUncyBhIHJlYXNvbiBm
-b3IgdGhpcyBsYXRlciwgYnV0IEkgaGFkIHRvIGdvIGxvb2sgdG8gbWFrZSANCj4gc3VyZSBJIHdh
-c24ndCBjcmF6eSwgc28gYXQgdGhlIHZlcnkgbGVhc3QgaXQgbmVlZHMgdG8gYmUgZG9uZSBpbiBh
-IG1vcmUgDQo+IHJlbGV2YW50IHBhdGNoLg0KDQpUaGlzIGlzIHRvIGhhbmRsZSBjYXNlIHdoZXJl
-IHdlIGFsbG9jYXRlZCBhIHBhZ2UgYnV0IGZhaWxlZCB0byBhbGxvY2F0ZSANCnN1YnBhZ2Ugc3Ry
-dWN0dXJlLg0KDQpJbiB0aGF0IGNhc2UsIGJ0cmZzX3JlbGVhc2VfZXh0ZW50X2J1ZmZlcigpIHdp
-bGwgZ28gZGlmZmVyZW50IHJvdXRpbmUgdG8gDQpmcmVlIHRoZSBlYi4NCg0KV2l0aG91dCBVTk1B
-UFBFRCBiaXQsIGl0IGp1c3QgZ28gd3Jvbmcgd2l0aG91dCBrbm93aW5nIGl0J3MgYSB1bm1hcHBl
-ZCBlYi4NCg0KVGhpcyBjaGFuZ2UgaXMgbW9zdGx5IGR1ZSB0byB0aGUgZXh0cmEgZmFpbHVyZSBw
-YXR0ZXJuIGludHJvZHVjZWQgYnkgdGhlIA0Kc3VicGFnZSBtZW1vcnkgYWxsb2NhdGlvbi4NCg0K
-PiANCj4+IMKgwqDCoMKgwqAgZm9yIChpID0gMDsgaSA8IG51bV9wYWdlczsgaSsrKSB7DQo+PiAr
-wqDCoMKgwqDCoMKgwqAgaW50IHJldDsNCj4+ICsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBwID0g
-YWxsb2NfcGFnZShHRlBfTk9GUyk7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKCFwKSB7DQo+
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBidHJmc19yZWxlYXNlX2V4dGVudF9idWZmZXIo
-bmV3KTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiBOVUxMOw0KPj4gwqDC
-oMKgwqDCoMKgwqDCoMKgIH0NCj4+IC3CoMKgwqDCoMKgwqDCoCBhdHRhY2hfZXh0ZW50X2J1ZmZl
-cl9wYWdlKG5ldywgcCk7DQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0ID0gYXR0YWNoX2V4dGVudF9i
-dWZmZXJfcGFnZShuZXcsIHAsIE5VTEwpOw0KPj4gK8KgwqDCoMKgwqDCoMKgIGlmIChyZXQgPCAw
-KSB7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwdXRfcGFnZShwKTsNCj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIGJ0cmZzX3JlbGVhc2VfZXh0ZW50X2J1ZmZlcihuZXcpOw0KPj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIE5VTEw7DQo+PiArwqDCoMKgwqDCoMKgwqAgfQ0K
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIFdBUk5fT04oUGFnZURpcnR5KHApKTsNCj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoCBTZXRQYWdlVXB0b2RhdGUocCk7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgbmV3
-LT5wYWdlc1tpXSA9IHA7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgY29weV9wYWdlKHBhZ2VfYWRk
-cmVzcyhwKSwgcGFnZV9hZGRyZXNzKHNyYy0+cGFnZXNbaV0pKTsNCj4+IMKgwqDCoMKgwqAgfQ0K
-Pj4gLcKgwqDCoCBzZXRfYml0KEVYVEVOVF9CVUZGRVJfVVBUT0RBVEUsICZuZXctPmJmbGFncyk7
-DQo+PiAtwqDCoMKgIHNldF9iaXQoRVhURU5UX0JVRkZFUl9VTk1BUFBFRCwgJm5ldy0+YmZsYWdz
-KTsNCj4+IMKgwqDCoMKgwqAgcmV0dXJuIG5ldzsNCj4+IMKgIH0NCj4+IEBAIC01MzA4LDEyICs1
-MzQzLDI4IEBAIHN0cnVjdCBleHRlbnRfYnVmZmVyIA0KPj4gKmFsbG9jX2V4dGVudF9idWZmZXIo
-c3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8sDQo+PiDCoMKgwqDCoMKgIG51bV9wYWdlcyA9
-IG51bV9leHRlbnRfcGFnZXMoZWIpOw0KPj4gwqDCoMKgwqDCoCBmb3IgKGkgPSAwOyBpIDwgbnVt
-X3BhZ2VzOyBpKyssIGluZGV4KyspIHsNCj4+ICvCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNf
-c3VicGFnZSAqcHJlYWxsb2MgPSBOVUxMOw0KPj4gKw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHAg
-PSBmaW5kX29yX2NyZWF0ZV9wYWdlKG1hcHBpbmcsIGluZGV4LCBHRlBfTk9GU3xfX0dGUF9OT0ZB
-SUwpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGlmICghcCkgew0KPj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgZXhpc3RzID0gRVJSX1BUUigtRU5PTUVNKTsNCj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIGdvdG8gZnJlZV9lYjsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9DQo+PiAr
-wqDCoMKgwqDCoMKgwqAgLyoNCj4+ICvCoMKgwqDCoMKgwqDCoMKgICogUHJlYWxsb2NhdGUgcGFn
-ZS0+cHJpdmF0ZSBmb3Igc3VicGFnZSBjYXNlLCBzbyB0aGF0DQo+PiArwqDCoMKgwqDCoMKgwqDC
-oCAqIHdlIHdvbid0IGFsbG9jYXRlIG1lbW9yeSB3aXRoIHByaXZhdGVfbG9jayBob2xkLg0KPj4g
-K8KgwqDCoMKgwqDCoMKgwqAgKiBUaGUgbWVtb3J5IHdpbGwgYmUgZnJlZWQgYnkgYXR0YWNoX2V4
-dGVudF9idWZmZXJfcGFnZSgpIG9yDQo+PiArwqDCoMKgwqDCoMKgwqDCoCAqIGZyZWVkIG1hbnVh
-bGx5IGlmIGV4aXQgZWFybGllci4NCj4+ICvCoMKgwqDCoMKgwqDCoMKgICovDQo+PiArwqDCoMKg
-wqDCoMKgwqAgcmV0ID0gYnRyZnNfYWxsb2Nfc3VicGFnZShmc19pbmZvLCAmcHJlYWxsb2MpOw0K
-Pj4gK8KgwqDCoMKgwqDCoMKgIGlmIChyZXQgPCAwKSB7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCB1bmxvY2tfcGFnZShwKTsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHB1dF9wYWdl
-KHApOw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZXhpc3RzID0gRVJSX1BUUihyZXQpOw0K
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBmcmVlX2ViOw0KPj4gK8KgwqDCoMKgwqDC
-oMKgIH0NCj4+ICsNCj4gDQo+IEkgcmVhbGl6ZSB0aGF0IGZvciBzdWJwYWdlIHNlY3RvcnNpemUg
-d2UnbGwgb25seSBoYXZlIDEgcGFnZSwgYnV0IEknZCANCj4gc3RpbGwgcmF0aGVyIHNlZSB0aGlz
-IG91dHNpZGUgb2YgdGhlIGZvciBsb29wLCBqdXN0IGZvciBjbGFyaXR5IHNha2UuDQoNClRoaXMg
-aXMgdGhlIHRyYWRlLW9mZi4NCkVpdGhlciB3ZSBkbyBldmVyeSBzZXBhcmF0ZWx5LCBzaGFyaW5n
-IHRoZSBtaW5pbWFsIGFtb3VudCBvZiBjb2RlIChhbmQgDQpuZWVkIGV4dHJhIGZvciBsb29wIGZv
-ciBmdXR1cmUgMTZLIHBhZ2VzKSwgb3IgdXNpbmcgdGhlIHNhbWUgbG9vcCANCnNhY3JpZmljZSBh
-IGxpdHRsZSByZWFkYWJpbGl0eS4NCg0KSGVyZSBJJ2Qgc2F5IHNoYXJpbmcgbW9yZSBjb2RlIGlz
-IG5vdCB0aGF0IGEgYmlnIGRlYWwuDQoNCj4gDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgc3Bpbl9s
-b2NrKCZtYXBwaW5nLT5wcml2YXRlX2xvY2spOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGV4aXN0
-cyA9IGdyYWJfZXh0ZW50X2J1ZmZlcihwKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoZXhp
-c3RzKSB7DQo+PiBAQCAtNTMyMSwxMCArNTM3MiwxNCBAQCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAN
-Cj4+ICphbGxvY19leHRlbnRfYnVmZmVyKHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvLA0K
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdW5sb2NrX3BhZ2UocCk7DQo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBwdXRfcGFnZShwKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIG1hcmtfZXh0ZW50X2J1ZmZlcl9hY2Nlc3NlZChleGlzdHMsIHApOw0KPj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAga2ZyZWUocHJlYWxsb2MpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgZ290byBmcmVlX2ViOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+IC3CoMKg
-wqDCoMKgwqDCoCBhdHRhY2hfZXh0ZW50X2J1ZmZlcl9wYWdlKGViLCBwKTsNCj4+ICvCoMKgwqDC
-oMKgwqDCoCAvKiBTaG91bGQgbm90IGZhaWwsIGFzIHdlIGhhdmUgcHJlYWxsb2NhdGVkIHRoZSBt
-ZW1vcnkgKi8NCj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBhdHRhY2hfZXh0ZW50X2J1ZmZlcl9w
-YWdlKGViLCBwLCBwcmVhbGxvYyk7DQo+PiArwqDCoMKgwqDCoMKgwqAgQVNTRVJUKCFyZXQpOw0K
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIHNwaW5fdW5sb2NrKCZtYXBwaW5nLT5wcml2YXRlX2xvY2sp
-Ow0KPj4gKw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIFdBUk5fT04oUGFnZURpcnR5KHApKTsNCj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoCBlYi0+cGFnZXNbaV0gPSBwOw0KPj4gwqDCoMKgwqDCoMKgwqDC
-oMKgIGlmICghUGFnZVVwdG9kYXRlKHApKQ0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL3N1YnBh
-Z2UuaCBiL2ZzL2J0cmZzL3N1YnBhZ2UuaA0KPj4gaW5kZXggOTZmM2IyMjY5MTNlLi5mNzAxMjU2
-ZGQxZTIgMTAwNjQ0DQo+PiAtLS0gYS9mcy9idHJmcy9zdWJwYWdlLmgNCj4+ICsrKyBiL2ZzL2J0
-cmZzL3N1YnBhZ2UuaA0KPj4gQEAgLTIzLDggKzIzLDI1IEBADQo+PiDCoCBzdHJ1Y3QgYnRyZnNf
-c3VicGFnZSB7DQo+PiDCoMKgwqDCoMKgIC8qIENvbW1vbiBtZW1iZXJzIGZvciBib3RoIGRhdGEg
-YW5kIG1ldGFkYXRhIHBhZ2VzICovDQo+PiDCoMKgwqDCoMKgIHNwaW5sb2NrX3QgbG9jazsNCj4+
-ICvCoMKgwqAgdW5pb24gew0KPj4gK8KgwqDCoMKgwqDCoMKgIC8qIFN0cnVjdHVyZXMgb25seSB1
-c2VkIGJ5IG1ldGFkYXRhICovDQo+PiArwqDCoMKgwqDCoMKgwqAgLyogU3RydWN0dXJlcyBvbmx5
-IHVzZWQgYnkgZGF0YSAqLw0KPj4gK8KgwqDCoCB9Ow0KPj4gwqAgfTsNCj4+ICsvKiBGb3IgcmFy
-ZSBjYXNlcyB3aGVyZSB3ZSBuZWVkIHRvIHByZS1hbGxvY2F0ZSBhIGJ0cmZzX3N1YnBhZ2UgDQo+
-PiBzdHJ1Y3R1cmUgKi8NCj4+ICtzdGF0aWMgaW5saW5lIGludCBidHJmc19hbGxvY19zdWJwYWdl
-KHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfc3VicGFnZSAqKnJldCkNCj4+ICt7
-DQo+PiArwqDCoMKgIGlmIChmc19pbmZvLT5zZWN0b3JzaXplID09IFBBR0VfU0laRSkNCj4+ICvC
-oMKgwqDCoMKgwqDCoCByZXR1cm4gMDsNCj4+ICsNCj4+ICvCoMKgwqAgKnJldCA9IGt6YWxsb2Mo
-c2l6ZW9mKHN0cnVjdCBidHJmc19zdWJwYWdlKSwgR0ZQX05PRlMpOw0KPj4gK8KgwqDCoCBpZiAo
-ISpyZXQpDQo+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FTk9NRU07DQo+PiArwqDCoMKgIHJl
-dHVybiAwOw0KPj4gK30NCj4gDQo+IFdlJ3JlIGFsbG9jYXRpbmcgdGhlc2UgZm9yIGV2ZXJ5IG1l
-dGFkYXRhIHBhZ2UsIHRoYXQgZGVzZXJ2ZXMgYSANCj4gZGVkaWNhdGVkIGttZW1fY2FjaGUuwqAg
-VGhhbmtzLA0KDQpUaGF0IG1ha2VzIHNlbnNlLCBlc3BlY2lhbGx5IGl0IHdpbGwgZ28gYm90aCBk
-YXRhIGFuZCBtZXRhZGF0YSBmb3Igc3VicGFnZS4NCg0KVGhhbmtzLA0KUXUNCg0KPiANCj4gSm9z
-ZWYNCg==
+On 20/1/21 3:36 am, Josef Bacik wrote:
+> On 1/11/21 4:41 AM, Anand Jain wrote:
+>> The read policy type latency routes the read IO based on the historical
+>> average wait-time experienced by the read IOs through the individual
+>> device. This patch obtains the historical read IO stats from the kernel
+>> block layer and calculates its average.
+>>
+>> Example usage:
+>>   echo "latency" > /sys/fs/btrfs/$uuid/read_policy
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>> v3: The block layer commit 0d02129e76ed (block: merge struct 
+>> block_device and
+>>      struct hd_struct) has changed the first argument in the function
+>>      part_stat_read_all() in 5.11-rc1. So the compilation will fail. 
+>> This patch
+>>      fixes it.
+>>      Commit log updated.
+>>
+>> v2: Use btrfs_debug_rl() instead of btrfs_info_rl()
+>>      It is better we have this debug until we test this on at least few
+>>      hardwares.
+>>      Drop the unrelated changes.
+>>      Update change log.
+>>
+>> v1: Drop part_stat_read_all instead use part_stat_read
+>>      Drop inflight
+>>
+>>
+>>   fs/btrfs/sysfs.c   |  3 ++-
+>>   fs/btrfs/volumes.c | 38 ++++++++++++++++++++++++++++++++++++++
+>>   fs/btrfs/volumes.h |  2 ++
+>>   3 files changed, 42 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+>> index 19b9fffa2c9c..96ca7bef6357 100644
+>> --- a/fs/btrfs/sysfs.c
+>> +++ b/fs/btrfs/sysfs.c
+>> @@ -915,7 +915,8 @@ static bool strmatch(const char *buffer, const 
+>> char *string)
+>>       return false;
+>>   }
+>> -static const char * const btrfs_read_policy_name[] = { "pid" };
+>> +/* Must follow the order as in enum btrfs_read_policy */
+>> +static const char * const btrfs_read_policy_name[] = { "pid", 
+>> "latency" };
+>>   static ssize_t btrfs_read_policy_show(struct kobject *kobj,
+>>                         struct kobj_attribute *a, char *buf)
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index f4037a6bd926..f7a0a83d2cd4 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -14,6 +14,7 @@
+>>   #include <linux/semaphore.h>
+>>   #include <linux/uuid.h>
+>>   #include <linux/list_sort.h>
+>> +#include <linux/part_stat.h>
+>>   #include "misc.h"
+>>   #include "ctree.h"
+>>   #include "extent_map.h"
+>> @@ -5490,6 +5491,39 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info 
+>> *fs_info, u64 logical, u64 len)
+>>       return ret;
+>>   }
+>> +static int btrfs_find_best_stripe(struct btrfs_fs_info *fs_info,
+>> +                  struct map_lookup *map, int first,
+>> +                  int num_stripe)
+>> +{
+>> +    u64 est_wait = 0;
+>> +    int best_stripe = 0;
+>> +    int index;
+>> +
+>> +    for (index = first; index < first + num_stripe; index++) {
+>> +        u64 read_wait;
+>> +        u64 avg_wait = 0;
+>> +        unsigned long read_ios;
+>> +        struct btrfs_device *device = map->stripes[index].dev;
+>> +
+>> +        read_wait = part_stat_read(device->bdev, nsecs[READ]);
+>> +        read_ios = part_stat_read(device->bdev, ios[READ]);
+>> +
+>> +        if (read_wait && read_ios && read_wait >= read_ios)
+>> +            avg_wait = div_u64(read_wait, read_ios);
+>> +        else
+>> +            btrfs_debug_rl(device->fs_devices->fs_info,
+> 
+> You can just use fs_info here, you already have it.  I'm not in love 
+> with doing this check every time, I'd rather cache the results 
+> somewhere.  However if we're read-only I can't think of a mechanism we 
+> could piggy back on, RW we could just do it every transaction commit.  
+> Fix the fs_info thing and you can add
+> 
+
+  Oh. I will fix it. Thanks for the review here and in other patches.
+-Anand
+
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> Thanks,
+> 
+> Josef
+
