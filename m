@@ -2,108 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EAB2FC8A5
+	by mail.lfdr.de (Postfix) with ESMTP id 81EDE2FC8A6
 	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 04:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbhATDUR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 22:20:17 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:52986 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387599AbhATClU (ORCPT
+        id S1730592AbhATDUV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 22:20:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730075AbhATDUC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:41:20 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K2e235086244;
-        Wed, 20 Jan 2021 02:40:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=PXytxwVzE5VR53HPMta1k/oaIyuKttBLtN1ccsE0Qp4=;
- b=s4AZug77Uuf1sknpBjVQxzEIlT+mjYZTytKD5p8SZFFMSKJbR8rURBRe5ILZKOPOQsog
- 8sO+yrKjnFd2LiT6N7wKVTenjDs1qt30jnxBsOBYYLTVcBRKctQXuJQci1kA00nUG29F
- hOei1e9YXWdYV621nteQ6t20uxzQ15mqR0YYIvNiXwa11I/Psrsx+wQUSVQzc8DX3lxB
- Lp4dFQWbLRT2935ef1TwuG1s4xiS+mMYrt+iUSt9JCMNG5xtsXPKj8c87FcKM97cQg+9
- lGhTFd/5ZtQeja/xa42K4+1bQONcxdMfKtvgeDs18zjAj1mevpesAfDharDMxeaYsp1M jg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3668qa8eeh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 02:40:23 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10K2dkJH073259;
-        Wed, 20 Jan 2021 02:40:22 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3668rd77vm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 20 Jan 2021 02:40:22 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10K2eLUh031064;
-        Wed, 20 Jan 2021 02:40:21 GMT
-Received: from [192.168.10.137] (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 19 Jan 2021 18:40:21 -0800
-Subject: Re: [PATCH RFC 4/4] btrfs: introduce new read_policy round-robin
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <cover.1610324448.git.anand.jain@oracle.com>
- <8e0afaa33f33d1a5efbf37fa4465954056ce3f59.1610324448.git.anand.jain@oracle.com>
- <b0cf6a1d-bd50-dbd5-ff8e-d24ab547e57a@toxicpanda.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <1337063c-1f3c-7d6f-8d0c-49b8a37beda3@oracle.com>
-Date:   Wed, 20 Jan 2021 10:40:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Tue, 19 Jan 2021 22:20:02 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECC3C061575
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 19:19:22 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id b8so11722577plh.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Jan 2021 19:19:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=mLtlOUG39CPJVc6ee+wqOlFOv5CgCiEUTvlNq98aWgQ=;
+        b=Rh4uBiNPZQawtD3A8c4Eau8c9epdNo83ZDQwyuwFqnUMjT/WgJC4zyBJtxpfEOCqpk
+         1BMhRmyr+vavQVoBY7Q4lsgUk4jVtRwmn7k9B/FO26UM7aX2CVyxMO8sFTigXHNXQAQp
+         qWC7nLiDA3vOH1RAT8e3nwcI5QHEm5BPlh8l6E5ANj/A7l4i/aAvjUeeDJ8C61VX5fIT
+         seza5IjTlUQ7G7z4T+uuUPScmtpVuEo6oSxk5XmzDnXSTd+1YSZPa7Q42c3Rto2W3W3r
+         WnVWKsejLKx763qoTJSB3CxAVnc96MD52SlawchYHATkcsJ7YKbzVQCoi6KlGG/Z9nZD
+         q4Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=mLtlOUG39CPJVc6ee+wqOlFOv5CgCiEUTvlNq98aWgQ=;
+        b=rD3rbaZ9g7Z8kzjkSHBd6oDdS8rO9veCM41TxeP8FWjFgllaw7joyQq6fQF675HJyl
+         ACP1tcJUnvzFIySteg2qnnhqhNHTf5sRUbjuHyTM55H689oM9qQLTZaDOA7svQe9YNyY
+         Ivy0da3SWmSHepiruk+UYpRDH6j9XdSL4ooEFpFNq+rqc4Do1f98nenHoE+Qdg+cNeS+
+         30vyYUr2Epc3hwC70UAAs4+FjGYOaA9dCMAtchBvL7snbGTWCRsj3UnCMLqg+xS7jetj
+         ZzXV9bJa+YOC/WVtn3xEshnbzT7ds/ALH6/at3hPjHCD8QYd6yyss7aiIwO5fm8ja/Bs
+         KwzA==
+X-Gm-Message-State: AOAM532dER7Xt/6/WR9arzqx+llDQ/jxVkPuaXJ6uKJJAw5gMkkPkRzp
+        zSIh83LsqsMhOHJ7376O5pO0QlawGuM=
+X-Google-Smtp-Source: ABdhPJwsU8iPjzoohIPZDJ56F8Hd9ZwyVKZHl7TplOTppExWKc7xVdhvJG6G9ScQJYOOrUv8bysrEA==
+X-Received: by 2002:a17:90a:5581:: with SMTP id c1mr3273090pji.86.1611112761423;
+        Tue, 19 Jan 2021 19:19:21 -0800 (PST)
+Received: from [192.168.1.74] (d206-116-119-5.bchsia.telus.net. [206.116.119.5])
+        by smtp.gmail.com with ESMTPSA id v9sm449805pff.102.2021.01.19.19.19.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jan 2021 19:19:20 -0800 (PST)
+Subject: Re: received uuid not set btrfs send/receive
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <95f9479d-2217-768e-f866-ae42509c3b2c@gmail.com>
+ <CAJCQCtRydKSXoYSL15=RHfadWESd_N-ed3eknhbX_95gpfiQEw@mail.gmail.com>
+From:   Anders Halman <anders.halman@gmail.com>
+Message-ID: <fc89cf76-022d-caff-23a6-d7456210c686@gmail.com>
+Date:   Tue, 19 Jan 2021 19:19:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <b0cf6a1d-bd50-dbd5-ff8e-d24ab547e57a@toxicpanda.com>
+In-Reply-To: <CAJCQCtRydKSXoYSL15=RHfadWESd_N-ed3eknhbX_95gpfiQEw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101200014
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9869 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101200014
+Content-Transfer-Encoding: 7bit
+Content-Language: en-DK
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 20/1/21 3:41 am, Josef Bacik wrote:
-> On 1/11/21 4:41 AM, Anand Jain wrote:
->> Add round-robin read policy to route the read IO to the next device in 
->> the
->> round-robin order. The chunk allocation and thus the stripe-index follows
->> the order of free space available on devices. So to make the round-robin
->> effective it shall follow the devid order instead of the stripe-index
->> order.
+Sorry for answering so late. I compiled a more recent (v5.9) version of 
+btrfs-progs first.
+The unpacking/receiving took about 2 days on the raspberry.
+
+$ nohup btrfs receive -v -f splitter . &
+$ tail -n1 nohup.out
+ERROR: short read from stream: expected 49233 read 44997
+
+thanks to your -v suggestions I got a little bit more information.
+
+first I figured the files on the local and remote host are not the same, 
+by md5sum.
+
+So I will solve this issue first. Is there any recommended way to 
+transfer btrfs subvolumes over an unstable connection?
+
+
+Am 17.01.21 um 13:07 schrieb Chris Murphy:
+> On Sun, Jan 17, 2021 at 11:51 AM Anders Halman <anders.halman@gmail.com> wrote:
+>> Hello,
 >>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> -- 
->> RFC because: Provides terrible performance with the fio tests.
->> I am not yet sure if there is any io workload or a block layer
->> tuning that shall make this policy better. As of now just an
->> experimental patch.
+>> I try to backup my laptop over an unreliable slow internet connection to
+>> a even slower Raspberry Pi.
 >>
-> 
-> Just drop this one, if we can't find a reason to use it then don't 
-> bother adding the code.  The other options have real world valuable 
-> uses, so stick with those.  Thanks,
-> 
-
-  Yep. I will drop this patch in the next iteration.
-
-  The low performance is attributed to the low number of read IO
-  mergers in the block layer. The consecutive blocks in my test case
-  (fio random read) were read from the other disk, so the block layer
-  lost the opportunity to merge the IOs.
-
-Thanks, Anand
-
-> Josef
-> 
-
+>> To bootstrap the backup I used the following:
+>>
+>> # local
+>> btrfs send root.send.ro | pigz | split --verbose -d -b 1G
+>> rsync -aHAXxv --numeric-ids --partial --progress -e "ssh -T -o
+>> Compression=no -x" x* remote-host:/mnt/backup/btrfs-backup/
+>>
+>> # remote
+>> cat x* > split.gz
+>> pigz -d split.gz
+>> btrfs receive -f split
+>>
+>> worked nicely. But I don't understand why the "received uuid" on the
+>> remote site in blank.
+>> I tried it locally with smaller volumes and it worked.
+> I suggest using -v or -vv on the receive side to dig into why the
+> receive is failing. Setting the received uuid is one of the last
+> things performed on receive, so if it's not set it suggests the
+> receive isn't finished.
+>
 
