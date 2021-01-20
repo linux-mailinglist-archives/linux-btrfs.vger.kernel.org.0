@@ -2,89 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A0C2FDCAD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 23:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D802FDD0F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 00:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbhATWeS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jan 2021 17:34:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52814 "EHLO mx2.suse.de"
+        id S1732759AbhATWfP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jan 2021 17:35:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732759AbhATVw0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:52:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611179504; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=yb5iSGNOaTd/8KoTGFupnP8FcYrMmZ4F4N+E8HNT0pc=;
-        b=nHFM7lokTH4GDEN35nIYTxRBahisnMk5BJOUeWOAYNLPAykUMH9pyVM5ZIFoQsQP1P8Uv4
-        fAqogNkgbzgvPAecOzefWWLMRRsEkTnFi8ECGqzDRxLO/BpzdG4nU71hdcsxuf1nAYd4wm
-        YAm3aLkhYVr33B+lGNluk6a5LM6If/4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DDE9BAB9F;
-        Wed, 20 Jan 2021 21:51:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A5F36DA6E3; Wed, 20 Jan 2021 22:49:47 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.11-rc5
-Date:   Wed, 20 Jan 2021 22:49:46 +0100
-Message-Id: <cover.1611178630.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1732882AbhATW1K (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Jan 2021 17:27:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 36C0A235E4;
+        Wed, 20 Jan 2021 22:26:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611181587;
+        bh=ve7pURTsRKdcm8d893lDukmE3h/bF0bwAyCinm90zNw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=do3ypckNZ3+w2u8N2KYfINGc6FcLG25p+uoKRKthV/5ubcHQDan+PapoPHcDCg/Aa
+         4gLdyzMovz3nI3/bTW7P+J6MSO7SgdYrdrec1FhfBuVhGMTcnPplVtDwgwltSEV2Kx
+         Mq0aJRWucrHq9GAfjS0twhjuF0goSczlJUvlskeLDZwX331cy0Fdh06VoRMyUklSY8
+         GJbh5TkrOWiSknAillBQSCP3ijSrkD86UvejW3/7LbLpjoet6YwJcaEHRKumY0SOHx
+         UvwkNuZArL4UyI0nMuv8U0itqL1YttkzZrypIPwVdQx98c8ACC5I+w9XkdQtD1CrIG
+         8sQhKpYdCHVsw==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 29D93604FC;
+        Wed, 20 Jan 2021 22:26:27 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.11-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1611178630.git.dsterba@suse.com>
+References: <cover.1611178630.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1611178630.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc4-tag
+X-PR-Tracked-Commit-Id: 34d1eb0e599875064955a74712f08ff14c8e3d5f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9791581c049c10929e97098374dd1716a81fefcc
+Message-Id: <161118158708.31946.5819274062586024596.pr-tracker-bot@kernel.org>
+Date:   Wed, 20 Jan 2021 22:26:27 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+The pull request you sent on Wed, 20 Jan 2021 22:49:46 +0100:
 
-a few more one line fixes for various bugs, stable material.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc4-tag
 
-- fix send when emitting clone operation from the same file and root
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9791581c049c10929e97098374dd1716a81fefcc
 
-- fix double free on error when cleaning backrefs
+Thank you!
 
-- lockdep fix during relocation
-
-- handle potential error during reloc when starting transaction
-
-- skip running delayed refs during commit (leftover from code removal in
-  this dev cycle)
-
-Please pull thanks.
-
-----------------------------------------------------------------
-The following changes since commit e076ab2a2ca70a0270232067cd49f76cd92efe64:
-
-  btrfs: shrink delalloc pages instead of full inodes (2021-01-08 16:36:44 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc4-tag
-
-for you to fetch changes up to 34d1eb0e599875064955a74712f08ff14c8e3d5f:
-
-  btrfs: don't clear ret in btrfs_start_dirty_block_groups (2021-01-18 16:00:11 +0100)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: no need to run delayed refs after commit_fs_roots during commit
-
-Filipe Manana (1):
-      btrfs: send: fix invalid clone operations when cloning from the same file and root
-
-Josef Bacik (4):
-      btrfs: don't get an EINTR during drop_snapshot for reloc
-      btrfs: do not double free backref nodes on error
-      btrfs: fix lockdep splat in btrfs_recover_relocation
-      btrfs: don't clear ret in btrfs_start_dirty_block_groups
-
- fs/btrfs/backref.c     |  2 +-
- fs/btrfs/block-group.c |  3 ++-
- fs/btrfs/extent-tree.c | 10 +++++++++-
- fs/btrfs/send.c        | 15 +++++++++++++++
- fs/btrfs/transaction.c |  8 --------
- fs/btrfs/volumes.c     |  2 ++
- 6 files changed, 29 insertions(+), 11 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
