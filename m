@@ -2,64 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A39E2FD3E6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 16:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6652FD42C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 16:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388381AbhATPX2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jan 2021 10:23:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
+        id S2390573AbhATPfD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jan 2021 10:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732023AbhATPJM (ORCPT
+        with ESMTP id S2390243AbhATO4E (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 10:09:12 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D439C0613C1
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 07:08:30 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id 19so25589670qkm.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 07:08:30 -0800 (PST)
+        Wed, 20 Jan 2021 09:56:04 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FCAC061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 06:55:22 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id c7so25554943qke.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 06:55:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=o3sHudAba8mxvCtjHDJK0MBVskEXRleGngNseXiGKQI=;
-        b=GXnE7EFLYjJndeXpIYsQgvHE/zvhWulYyI1VYQmb26ExObt0yqirXE8fWF4EoE0LDF
-         1Xndx7O2DFIbYM7/vvMGij7KgLeNeSRD11+ktlgaWkUhn9yMR5A31bvcD3/3SzoR5oYE
-         4FCzEdpdBRf41sllkddye0rN8jhKU5Qg8L7xabw/fUnstyIiMqHSRT3xnem0SHz0/h3H
-         1cPMNXXCfwOi+801vyaU3RUqGJ2Y3iW+F0tymk/HELdkZB7cBbvlYHLZvjJgCSrptIUb
-         WNYm+8fKr1R4IKqDntB5KGL1PbRUuEJUlCuXSJqmXn8R3BwvrJ3joPaiEzuJkLRN6nfO
-         QFqw==
+        bh=UXayqbGKSt+XJm4OnVgYugLuxd/qis3TbbHy3gP+Keo=;
+        b=BZ0tYPOaylm8CTtfq0tCUUQbsJ4SiwYMDuzwE56/DDDUYjdgRCH+wpvzbRdvbLaVXm
+         /G+L2mZhl9xT1n5dkpVHeYChExyDiTdRn3ZnYTuBDrt1rxffeLRQ3dlrT574ck099xSi
+         tA5mfC7L2Lr0zqn3uGtVuXTr5IA/aEDTYW/6ay2WdY1Rvb8joPynTMo2KSWWZm/uvFEp
+         4YaUQXjpRI9PF0qO955GGZm6eTOykrk/K5Wx2k3NzHYjp/gjszhYCN9rFPVIoU5Ppiqv
+         JayN4gRfn/mp9/vPI6cgkTpRGZi9qV1nU6eGx3tSph0lmBKN0WOYihbIaAqg/wRNdL4+
+         wGSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=o3sHudAba8mxvCtjHDJK0MBVskEXRleGngNseXiGKQI=;
-        b=hB4dRVZcMTZimbenybn1sMIWCz5VlHV3734Y0il7unVUusGuT2n/emORqAJOJX/8/M
-         i94jfs+0RFi5fPZ+WdCp0W3wNGa9U6MUVmS5kpqGQ8O+jRxUIJu+UuVNIR6GcSpwaJFp
-         TpLxeVfaCKw08l9ud1EvzoijfkSTdLgzSXaoYJ4lzpu9mAGrVqo1bcIEDyewr70wPSEl
-         Ke4G+peUt9g81LNfun7VPYNYaUYzERf/6nqmIRIfGdyF4KZSrMG4A9bovEKK5J1Xn8Rn
-         EUwJPw2zdlzAgeuS8VpB5T/enstlO3BxQKYF+XuEZ30ioGoHUvwkzu/gVaMJrxoRugaz
-         vkIA==
-X-Gm-Message-State: AOAM530zEop0IgNEIQYO6kZEaEM6EhRwAsKrN51AxezBfvZ/i0R14BHv
-        FKVg+Ft3vb3QYzlPs5zmPUu1v90PXKWnjZzWwwI=
-X-Google-Smtp-Source: ABdhPJww3KtnUBHhWC919JWH3o44vM6CBNFNTqtUCibqTSUTM0Xwp6cjDjUlH/9V+SMC7AkdUrrKXA==
-X-Received: by 2002:ae9:e858:: with SMTP id a85mr3022724qkg.279.1611155309356;
-        Wed, 20 Jan 2021 07:08:29 -0800 (PST)
+        bh=UXayqbGKSt+XJm4OnVgYugLuxd/qis3TbbHy3gP+Keo=;
+        b=kC8Y8mfGHVguUGoVssDzTdu+DmaDlwcSo+oqc5vP4XGYaLKdMMvkNWQw8THW1dgJ9X
+         244kJuDygkTP92ic/laN+gMRmxfVKoH1zSHZRR2NrI2aC4zb7aKbBv7Oa/rs+KvKR9CL
+         9D+H0E4wd3f18AoJziW3T4aAx7MlL0wlHVOr9dx4+R2U2KQkbZaA3MiHA2zc3mee8oSt
+         d9FXLQambyDSIAJMUBgS1TD4GQQ6wz2L09mprUOWHVIzgdlzT/TlO9s4e+P5Quv2B56c
+         HegRbHL2hpOViOwyXgt/3+L1hzPG3Ij45LCk0QleFbpctjTgbofDF3CsHifwQqcHAGb/
+         JU0g==
+X-Gm-Message-State: AOAM531DTX+sojZPPIT13itpVgUCEmKTdYNLcNdprlB1s+p1yoxJGBN7
+        aza/g5PnREUjJ565RVpIvtbiCpZ3zEKfZhm0eOU=
+X-Google-Smtp-Source: ABdhPJygEEkWf7yeHSTE5BszNZbKCobK8CI+4y7V1KAvdnYtBy3cOF/SeUyTEyKYoNH+y6pLQSQG4w==
+X-Received: by 2002:a37:ad0d:: with SMTP id f13mr9797783qkm.355.1611154521353;
+        Wed, 20 Jan 2021 06:55:21 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 1sm1453288qki.50.2021.01.20.07.08.27
+        by smtp.gmail.com with ESMTPSA id l38sm1256120qte.88.2021.01.20.06.55.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jan 2021 07:08:27 -0800 (PST)
-Subject: Re: [PATCH v4 13/18] btrfs: introduce read_extent_buffer_subpage()
+        Wed, 20 Jan 2021 06:55:20 -0800 (PST)
+Subject: Re: [PATCH v4 08/18] btrfs: introduce helper for subpage uptodate
+ status
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-14-wqu@suse.com>
+ <20210116071533.105780-9-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <9d2c3346-0194-5f9a-8c0f-05eb4acbc2dc@toxicpanda.com>
-Date:   Wed, 20 Jan 2021 10:08:27 -0500
+Message-ID: <65d45aa9-5a84-9885-2e05-77435161cbbc@toxicpanda.com>
+Date:   Wed, 20 Jan 2021 09:55:19 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210116071533.105780-14-wqu@suse.com>
+In-Reply-To: <20210116071533.105780-9-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,77 +69,67 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 1/16/21 2:15 AM, Qu Wenruo wrote:
-> Introduce a new helper, read_extent_buffer_subpage(), to do the subpage
-> extent buffer read.
+> This patch introduce the following functions to handle btrfs subpage
+> uptodate status:
+> - btrfs_subpage_set_uptodate()
+> - btrfs_subpage_clear_uptodate()
+> - btrfs_subpage_test_uptodate()
+>    Those helpers can only be called when the range is ensured to be
+>    inside the page.
 > 
-> The difference between regular and subpage routines are:
-> - No page locking
->    Here we completely rely on extent locking.
->    Page locking can reduce the concurrency greatly, as if we lock one
->    page to read one extent buffer, all the other extent buffers in the
->    same page will have to wait.
-> 
-> - Extent uptodate condition
->    Despite the existing PageUptodate() and EXTENT_BUFFER_UPTODATE check,
->    We also need to check btrfs_subpage::uptodate_bitmap.
-> 
-> - No page loop
->    Just one page, no need to loop, this greately simplified the subpage
->    routine.
-> 
-> This patch only implemented the bio submit part, no endio support yet.
+> - btrfs_page_set_uptodate()
+> - btrfs_page_clear_uptodate()
+> - btrfs_page_test_uptodate()
+>    Those helpers can handle both regular sector size and subpage without
+>    problem.
+>    Although caller should still ensure that the range is inside the page.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->   fs/btrfs/extent_io.c | 70 ++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 70 insertions(+)
+>   fs/btrfs/subpage.h | 115 +++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 115 insertions(+)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 9414219fa28b..291ff76d5b2e 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -5718,6 +5718,73 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
->   	}
->   }
+> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+> index d8b34879368d..3373ef4ffec1 100644
+> --- a/fs/btrfs/subpage.h
+> +++ b/fs/btrfs/subpage.h
+> @@ -23,6 +23,7 @@
+>   struct btrfs_subpage {
+>   	/* Common members for both data and metadata pages */
+>   	spinlock_t lock;
+> +	u16 uptodate_bitmap;
+>   	union {
+>   		/* Structures only used by metadata */
+>   		bool under_alloc;
+> @@ -78,4 +79,118 @@ static inline void btrfs_page_end_meta_alloc(struct btrfs_fs_info *fs_info,
+>   int btrfs_attach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
+>   void btrfs_detach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
 >   
-> +static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
-> +				      int mirror_num)
+> +/*
+> + * Convert the [start, start + len) range into a u16 bitmap
+> + *
+> + * E.g. if start == page_offset() + 16K, len = 16K, we get 0x00f0.
+> + */
+> +static inline u16 btrfs_subpage_calc_bitmap(struct btrfs_fs_info *fs_info,
+> +			struct page *page, u64 start, u32 len)
 > +{
-> +	struct btrfs_fs_info *fs_info = eb->fs_info;
-> +	struct extent_io_tree *io_tree;
-> +	struct page *page = eb->pages[0];
-> +	struct bio *bio = NULL;
-> +	int ret = 0;
+> +	int bit_start = offset_in_page(start) >> fs_info->sectorsize_bits;
+> +	int nbits = len >> fs_info->sectorsize_bits;
 > +
-> +	ASSERT(!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags));
-> +	ASSERT(PagePrivate(page));
-> +	io_tree = &BTRFS_I(fs_info->btree_inode)->io_tree;
+> +	/* Basic checks */
+> +	ASSERT(PagePrivate(page) && page->private);
+> +	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+> +	       IS_ALIGNED(len, fs_info->sectorsize));
 > +
-> +	if (wait == WAIT_NONE) {
-> +		ret = try_lock_extent(io_tree, eb->start,
-> +				      eb->start + eb->len - 1);
-> +		if (ret <= 0)
-> +			return ret;
-> +	} else {
-> +		ret = lock_extent(io_tree, eb->start, eb->start + eb->len - 1);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
-> +	ret = 0;
-> +	if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags) ||
-> +	    PageUptodate(page) ||
-> +	    btrfs_subpage_test_uptodate(fs_info, page, eb->start, eb->len)) {
-> +		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-> +		unlock_extent(io_tree, eb->start, eb->start + eb->len - 1);
-> +		return ret;
-> +	}
-> +
-> +	clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
-> +	eb->read_mirror = 0;
-> +	atomic_set(&eb->io_pages, 1);
-> +	check_buffer_tree_ref(eb);
+> +	/*
+> +	 * The range check only works for mapped page, we can
+> +	 * still have unampped page like dummy extent buffer pages.
+> +	 */
+> +	if (page->mapping)
+> +		ASSERT(page_offset(page) <= start &&
+> +			start + len <= page_offset(page) + PAGE_SIZE);
 
-We need btrfs_subpage_clear_error() here as well.  Thanks,
+Once you gate the helpers on UNMAPPED you'll always have page->mapping set and 
+you can drop the if statement.  Thanks,
 
 Josef
