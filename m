@@ -2,135 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07102FC55F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 01:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C732FC5AA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 01:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727734AbhATAAv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Jan 2021 19:00:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41684 "EHLO mx2.suse.de"
+        id S1728977AbhATAVj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Jan 2021 19:21:39 -0500
+Received: from mout.gmx.net ([212.227.17.21]:49189 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394964AbhASNx3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Jan 2021 08:53:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611064351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=iHKhjDkg2elRSLCRxcs3JrLM+Cwcg+VKeqaH+Rb+H6c=;
-        b=rDTgZ7xM0AN8Ucse2v7mBg8l0Jc0DJBU5I16P+0kPu6Ll3d1MYjww4/OSPhb827NAQfP3a
-        AICZcyHBf6nEypATvwx9kRZbFb+EuDroiPciU7vbGZXpZWf5BQXuaB+OroVtJXg0PBeUIO
-        NBdb1UgiuuGaVIXgCdiitPnNeC32Gk4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5E644B247;
-        Tue, 19 Jan 2021 13:52:31 +0000 (UTC)
-Subject: Re: [RFC PATCH 04/37] btrfs: use bio_init_fields in volumes
-To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        cluster-devel@redhat.com
-Cc:     jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
-        axboe@kernel.dk, philipp.reisner@linbit.com,
-        lars.ellenberg@linbit.com, efremov@linux.com, colyli@suse.de,
-        kent.overstreet@gmail.com, agk@redhat.com, snitzer@redhat.com,
-        song@kernel.org, hch@lst.de, sagi@grimberg.me,
-        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
-        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
-        naohiro.aota@wdc.com, jth@kernel.org, tj@kernel.org,
-        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
-        asml.silence@gmail.com, jefflexu@linux.alibaba.com
-References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
- <20210119050631.57073-5-chaitanya.kulkarni@wdc.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <89feb998-8c60-dbae-92a6-15a9ad4fd594@suse.com>
-Date:   Tue, 19 Jan 2021 15:52:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730751AbhATAU5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Jan 2021 19:20:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611101959;
+        bh=elQgK9nXTo4i/yTiH494/bv1KtP3KdZjFVbjgFX3zvY=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=kNt/z6p8YuzhG1L5Vd40QKKLcvrN9/vincPjST34htWeXFf5iIxuUHcShmE6Wpx8J
+         tvs09nJPogy8xCAGCh/ECZMptgG/98AWWvYaxdSSF0lo0YfZ2dlgJXiC3bA0Cms6o/
+         qiCHrpWGaOOdx/3F0cKpbur5N0y3MjZoKgUUbddI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7i8Y-1m5Tqm1jog-014hn2; Wed, 20
+ Jan 2021 01:19:19 +0100
+Subject: Re: [PATCH v4 03/18] btrfs: introduce the skeleton of btrfs_subpage
+ structure
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+References: <20210116071533.105780-1-wqu@suse.com>
+ <20210116071533.105780-4-wqu@suse.com> <20210118224647.GK6430@twin.jikos.cz>
+ <65ab6681-f694-5cc4-1b2d-b33b70ba40a3@gmx.com>
+ <20210119155145.GO6430@twin.jikos.cz> <20210119160625.GP6430@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <7a48d6b7-8620-b3ff-8bee-386da50f11bc@gmx.com>
+Date:   Wed, 20 Jan 2021 08:19:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210119050631.57073-5-chaitanya.kulkarni@wdc.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210119160625.GP6430@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QRZlYMo9soDWznF/FBnxWBSA0Q0WHCr7qbP5lUc+RgFNlBndWq+
+ LD9rNnY6eRIhbI/9lj60wWqee/2PhR7eRovDTI+ti73F2Ap2l0tMg2PvCM38DvLWi2RTC9G
+ PnxtE74bYyH79i47fZvNqJfBBjOsGt4FnYH2E5SEIj1BwN1RrTJnyLpLW7/n/HDsoIgA89n
+ I6Tl1pi+VDPMpLhtOQIqQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/dZ/0iwLuj8=:OfBVOm0xkkOALptPgzwZ+I
+ wXCMgbQSxlvBJWGExpPnY8VOy2DV3rRllW4xU3LE2faWqmqj/Eb/RksEgvIgAYFvM0bC21NOu
+ nwS4pTj2ccLH99r4i4HGC5Os7ourj8Grc202dNFVR+hC+JKIdKxSaUyr+LjUSpN+W4evcIvXd
+ 2S78S/pxLOnY4qhDk2wEwHTqGAuZK2YK+qHfxmr1twbqZTkdq0SytSDScTJgLQ/jDWhL6ej76
+ QNkX7UqYjlFKeRyPUD7/prcBgyOFwaHTVSMirLH6CLEo4/qrLCmDvZXMSkS7TXMFOa/VwkvXo
+ BUwN0kFXglefc3Yydgydlg3cGIJtSeQEh/rOMSNicckt9uqqC7HwSNqk07Pv11u5w5r3uaph6
+ 9AYVdLMjCxqJ8vZm64AS5AlLQJAJywvCKi7HN+tnvg75wwHWBH1u1ZqWcgd1ve0w1fzZK3SWw
+ /8x+57jOZl82E6A50ogCvfVXUZW9utHF7Gu6o/EbFE60t8qXdjsysoB0sEPPLiEtamAJ2kl+h
+ qeO7ZJqKbSZEkdcVpXMkowKQK7Q6UeT9TpdiJS5yxTWSVhQO4AuwVAcskmrKWHM/o4hdgfRF1
+ ErQ4CgyeO/erjv5S8nQnrtCJQtA+NajplHZqnP59bMEysWp4DZJMA62eyr+F/bMnm8gc810or
+ xIL99bQDyRQoIyoxEuVC2BTz3Lh93588M/3TDpQgn7RR1EIEz1ckc/3JOElxARo5E5E9OulUq
+ nsB1mZF472DmTnf+K+e6XDywSQdP9GLhzG1xbq979EtjJwyDjNk/uqWRXNHfCWzPrwjF51tCI
+ 6NFWAbRM/TveKF5dPNxmGibYJVYbqv/y5gyBcMDqP62gYx4iaHXLpe/sJeb/8zyEfg2FD4ESt
+ QtZyC/P+PxZbNHpXlNhg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 19.01.21 г. 7:05 ч., Chaitanya Kulkarni wrote:
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> ---
->  fs/btrfs/volumes.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index ee086fc56c30..836167212252 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6371,14 +6371,12 @@ static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
->  
->  	bio->bi_private = bbio;
-This line can be removed as ->private is initialized by bio_init_fields.
+On 2021/1/20 =E4=B8=8A=E5=8D=8812:06, David Sterba wrote:
+> On Tue, Jan 19, 2021 at 04:51:45PM +0100, David Sterba wrote:
+>> On Tue, Jan 19, 2021 at 06:54:28AM +0800, Qu Wenruo wrote:
+>>> On 2021/1/19 =E4=B8=8A=E5=8D=886:46, David Sterba wrote:
+>>>> On Sat, Jan 16, 2021 at 03:15:18PM +0800, Qu Wenruo wrote:
+>>>>> +		return;
+>>>>> +
+>>>>> +	subpage =3D (struct btrfs_subpage *)detach_page_private(page);
+>>>>> +	ASSERT(subpage);
+>>>>> +	kfree(subpage);
+>>>>> +}
+>>>>> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+>>>>> new file mode 100644
+>>>>> index 000000000000..96f3b226913e
+>>>>> --- /dev/null
+>>>>> +++ b/fs/btrfs/subpage.h
+>>>>> @@ -0,0 +1,31 @@
+>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>>> +
+>>>>> +#ifndef BTRFS_SUBPAGE_H
+>>>>> +#define BTRFS_SUBPAGE_H
+>>>>> +
+>>>>> +#include <linux/spinlock.h>
+>>>>> +#include "ctree.h"
+>>>>
+>>>> So subpage.h would pull the whole ctree.h, that's not very nice. If
+>>>> anything, the .c could include ctree.h because there are lots of the
+>>>> common structure and function definitions, but not the .h. This creat=
+es
+>>>> unnecessary include dependencies.
+>>>>
+>>>> Any pointer type you'd need in structures could be forward declared.
+>>>
+>>> Unfortunately, the main needed pointer is fs_info, and we're accessing
+>>> it pretty frequently (mostly for sector/node size).
+>>>
+>>> I don't believe forward declaration would help in this case.
+>>
+>> I've looked at the final subpage.h and you add way too many static
+>> inlines that don't seem to be necessary for the reasons the static
+>> inlines are supposed to be used.
+>
+> The only file that includes subpage.h is extent_io.c, so as long as it
+> stays like that it's manageable. But untangling the include hell still
+> needs to hapen some day and new code that makes it harder worries me.
+>
+If going through the github branch, you will see there are more files
+using subpage.h:
+- extent_io.c
+- disk-io.c
+- file.c
+- inode.c
+- reflink.c
+- relocation.c
 
->  	btrfs_io_bio(bio)->device = dev;
-> -	bio->bi_end_io = btrfs_end_bio;
-> -	bio->bi_iter.bi_sector = physical >> 9;
-> +	bio_init_fields(bio, dev->bdev, physical >> 9, bbio, btrfs_end_bio, 0, 0);
->  	btrfs_debug_in_rcu(fs_info,
->  	"btrfs_map_bio: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
->  		bio_op(bio), bio->bi_opf, bio->bi_iter.bi_sector,
->  		(unsigned long)dev->bdev->bd_dev, rcu_str_deref(dev->name),
->  		dev->devid, bio->bi_iter.bi_size);
-> -	bio_set_dev(bio, dev->bdev);
->  
->  	btrfs_bio_counter_inc_noblocked(fs_info);
->  
-> 
+And furthermore, about the static inline abuse, the part really need
+that static inline is the check against regular sector size, and
+unfortunately, most outside callers need such check.
+
+I can put the pure subpage callers into subpage.c, but the generic
+helpers handling both cases still need that.
+
+Thanks,
+Qu
