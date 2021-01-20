@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C3F2FCFDA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 13:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D19C2FCFE5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Jan 2021 13:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389450AbhATMPp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jan 2021 07:15:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37886 "EHLO mx2.suse.de"
+        id S2388592AbhATMRi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jan 2021 07:17:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37898 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730313AbhATK10 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 05:27:26 -0500
+        id S1730340AbhATK11 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Jan 2021 05:27:27 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611138329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1611138330; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/uT8/VvrF8b2zmVsgA7ZwS5+AHiVfq4utWWMf6YpYLA=;
-        b=RVmYXP4u3GbogLI0VPGMD5eTqoY5Zjl9oq8Q7K6ubeger9vhiRqUychLwvnD47338mrgMX
-        00398ms+8TUicb/YIpwSva0fVvYZmCdQa8Wi7IXaECF58bthO5CkfsH/pQ8T3Ry33lxlu4
-        lZfVSqS/6fma4UBgIOzUOhGdp/xqhzs=
+        bh=X/rbgAgA3yqs3tyfJy3HHB2rvWCt4iTowzO89M9PuuU=;
+        b=kSk4KSbpCeguXdBDZK3pAJ4GM3NKGrlrYYGEJDEW0Nck4C7FOigMXPRxeBv1zsKNLFtv/X
+        wm8xoP+qcpB0xYxQ+iC+RoxqNStSeZaZz34m/w7RKV8xJnQi/dFjmb8JXuEGrNr6CSyVaU
+        gBVkEP43oCyM4BCP+psY8NJahhjShp0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C74FBAFF9;
-        Wed, 20 Jan 2021 10:25:29 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0B45DAFF2;
+        Wed, 20 Jan 2021 10:25:30 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 08/14] btrfs: Fix description format of fs_info parameter of btrfs_wait_on_delayed_iputs
-Date:   Wed, 20 Jan 2021 12:25:20 +0200
-Message-Id: <20210120102526.310486-9-nborisov@suse.com>
+Subject: [PATCH v2 09/14] btrfs: Document btrfs_check_shared parameters
+Date:   Wed, 20 Jan 2021 12:25:21 +0200
+Message-Id: <20210120102526.310486-10-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210120102526.310486-1-nborisov@suse.com>
 References: <20210120102526.310486-1-nborisov@suse.com>
@@ -39,26 +39,28 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Fixes fs/btrfs/inode.c:3101: warning: Function parameter or member 'fs_info' not described in 'btrfs_wait_on_delayed_iputs'
-
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/backref.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5906b4267204..b6711c207808 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3089,7 +3089,7 @@ void btrfs_run_delayed_iputs(struct btrfs_fs_info *fs_info)
- 
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index ef71aba5bc15..50334b8cb64d 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -1503,6 +1503,12 @@ int btrfs_find_all_roots(struct btrfs_trans_handle *trans,
  /**
-  * btrfs_wait_on_delayed_iputs - wait on the delayed iputs to be done running
-- * @fs_info - the fs_info for this fs
-+ * @fs_info:  the fs_info for this fs
-  * @return - EINTR if we were killed, 0 if nothing's pending
+  * btrfs_check_shared - tell us whether an extent is shared
   *
-  * This will wait on any delayed iputs that are currently running with KILLABLE
++ * @root:   root inode belongs to
++ * @inum:   inode number of the inode whose extent we are checking
++ * @bytenr: logical bytenr of the extent we are checking
++ * @roots:  list of roots this extent is shared among
++ * @tmp:    temporary list used for iteration
++ *
+  * btrfs_check_shared uses the backref walking code but will short
+  * circuit as soon as it finds a root or inode that doesn't match the
+  * one passed in. This provides a significant performance benefit for
 -- 
 2.25.1
 
