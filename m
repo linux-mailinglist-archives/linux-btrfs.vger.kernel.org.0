@@ -2,201 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F99E2FE33A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 07:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F152FE415
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 08:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725986AbhAUGxZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Jan 2021 01:53:25 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:41158 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725933AbhAUGxR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:53:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1611211929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+        id S1727558AbhAUHgw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Jan 2021 02:36:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58978 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727380AbhAUHc3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:32:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611214295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YARoGCddBaFyY1fxWur2JGwIMRxgWBnOBAhTPVp9RqA=;
-        b=S0S2vl5dncuMd+e3XdsNoRP+yDGeqv0BHcEOTPXVbHggrc8FuZLcu9QDknGfMkogEAoZee
-        WgTp8tH//X+970J8/qR1N3faqN1K18JgO2tat19idMD2WpF/71Pu6C/Kzm7VzfmsjOXkrj
-        RAVIgrmlCIZcbNYOdQl8ahbP5R4XIHw=
-Received: from EUR02-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur02lp2055.outbound.protection.outlook.com [104.47.5.55]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-8-hl_EqsEmNc23Uh5WHMREjA-1;
- Thu, 21 Jan 2021 07:52:07 +0100
-X-MC-Unique: hl_EqsEmNc23Uh5WHMREjA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ew42Ar25ceJbgsTIEdeolLHReAdW1ipn0jdb3pBTb53ExbgOaDDbiUl7inTL8qbPdpA/C7GNNmidah4ci+vKAUyuOg1ihcd6sclbx3Zb2WINbbQ1XLslJy98ros92mO13oCJGSlCg+eOlIZJrJBfVM5wsaj/WajBI2w7xZeWgLcgUg6e6L9hjLjFVqmWL32Xflls50JceeUMFzDDneIl5ysoUAi66g/xT/zyJocGlUFaRor6GQHqIikaeYRYcEkI5Xt9S6+VihEIOhqBf7RVkRlYu+1T5Z9paGNnwvgT+vyJTYOc2VO6ea+X1knCJEtXYlvOuJM/hgWXU4XIg/zB6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b66rNSPgbzsFzkcPVOlOYdfylGz4+jmuG0byH8Py7ew=;
- b=MyiEvojzFLqCFeXunDqtsoM9dHpxpvu5GBxTTVXMhvGSTdIzJu0vyC9phIDnPgER8CiN8oPcf6wUOdD8NmXvw4ZNpnUPx2fU81jQq4KDIShmpcSrf42kUIhkpLvI5m2CxJIn+Gxed6Y1aR2m7ywwssCwAVXKGlaS0YufE2gnudf7j3UP05rhBpeeCmct+uKjg8dkhlieUtOt/yPsU//awoqrP5O3IhwZKeztRvByDk51ZG+1x6tIVFzL5tpnHlTpIb6RezpxTSYMN27PDvTKrlJdRaTTnRpoXnifI6HhmBR3FJu2i3ADBWkwWowCuJxJ6k+j8hf/f5l4F6VdDUDntQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0401MB2382.eurprd04.prod.outlook.com
- (2603:10a6:800:23::23) by VI1PR04MB4751.eurprd04.prod.outlook.com
- (2603:10a6:803:53::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Thu, 21 Jan
- 2021 06:52:04 +0000
-Received: from VI1PR0401MB2382.eurprd04.prod.outlook.com
- ([fe80::9c:2015:e996:e28]) by VI1PR0401MB2382.eurprd04.prod.outlook.com
- ([fe80::9c:2015:e996:e28%11]) with mapi id 15.20.3763.014; Thu, 21 Jan 2021
- 06:52:04 +0000
-Subject: Re: [PATCH v4 01/18] btrfs: update locked page dirty/writeback/error
- bits in __process_pages_contig()
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-2-wqu@suse.com>
- <b0360753-072a-f5c5-3ea6-08e9db2445dd@toxicpanda.com>
- <c4bd841c-6657-5a72-85ac-fc8359c87a74@gmx.com>
-From:   Qu Wenruo <wqu@suse.com>
-Message-ID: <bab806e1-ad3d-b34c-b623-915b39621983@suse.com>
-Date:   Thu, 21 Jan 2021 14:51:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <c4bd841c-6657-5a72-85ac-fc8359c87a74@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: BY3PR05CA0012.namprd05.prod.outlook.com
- (2603:10b6:a03:254::17) To VI1PR0401MB2382.eurprd04.prod.outlook.com
- (2603:10a6:800:23::23)
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=vLygc4yhm6XhoPkvwj6PYfOduxnCgA354sLyDTTsUUo=;
+        b=PYe09wTq6Goj9gMcKPnNqh85N4K5HCkrDThaREuk38ddBYL9HV2rF76KNimlm8qHubEdpW
+        5DwUgN8zSrZVoO0I5lTGb5P9WeSH9g6RWtD1lgp7IH1sj5A4Va2slR6JfJj/NY5W+Y6YA7
+        uYR/YZYOFhqaM3LPSK3E53+SpDngB9o=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E2A66B8F3;
+        Thu, 21 Jan 2021 07:31:34 +0000 (UTC)
+Subject: Re: [PATCH v2 14/14] btrfs: Enable W=1 checks for btrfs
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20210120102526.310486-1-nborisov@suse.com>
+ <20210120102526.310486-15-nborisov@suse.com>
+ <7d769a82-e573-4d04-a125-13ca99136d49@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <16775909-3cb6-ab13-5416-6f55546b0349@suse.com>
+Date:   Thu, 21 Jan 2021 09:31:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BY3PR05CA0012.namprd05.prod.outlook.com (2603:10b6:a03:254::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.7 via Frontend Transport; Thu, 21 Jan 2021 06:52:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0c27566b-e1b4-40cd-82b3-08d8bdd90fbd
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4751:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4751C864D37C9A36D6A75AE4D6A10@VI1PR04MB4751.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o9wiKE5NaAi63IafFhDG8+zmCx0wDdf8TAjEVDdoxNcT+zJxjT/nASv/dhzrHWhSVhug78iqHT5s61QSTag3/Vj5irDnbbjkUNEd5vWWH5I5LGeX4PghNO/KyBBF7LnAbwfmvOXA9WXu/n+pvskXEvOx4zFZbGu1mW2h0X+mKXCXmQx82FSnYNtBexHPedkgMp8rVzMsORTO+7083yNnn28ylCkf0s/soel56F9LY+4FYEGhbQcqDEvzfuDdHR4/S6DNyznRYMU6fouVvR1KzHtnYAwFJWO54pkebtCJUqjiFYDnITkbYVI36x3lc1ANdMBZ4Esc19/o7FRFfNoscbuLYcplf9nCliHuMZoimG576PGTbMTVbSp/CSBwfUL/ZJ2ShBpfCB5koJqaZJ/q6oYLW9hKSucAjIq1sXpX4a/yHQvFleUd4SPi46IdKVue1j8Sye8q/tufgSINrvtiEicDsm+4+TB3abrQ4VxiWgxq1ML2q/k7iLdMdpj5ruwn+DLDOzYG6LY2cWyaJMyNCw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2382.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(346002)(396003)(376002)(2906002)(2616005)(83380400001)(52116002)(186003)(478600001)(31686004)(956004)(26005)(5660300002)(6706004)(53546011)(8936002)(110136005)(6666004)(8676002)(16526019)(316002)(6486002)(31696002)(66946007)(66556008)(36756003)(86362001)(16576012)(66476007)(15650500001)(78286007)(14143004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ifrSg0ueUm6d0DHaoxLw4dQBtMlryMNCOMxUBN/AWuoJC9NJEm7pBvecFitB?=
- =?us-ascii?Q?AxobP59mGlt4cYAgPwqITLnLFRbIFTKyu72zNkGdf8yDhyLY7mD+atLQgshP?=
- =?us-ascii?Q?+ZrzouCWMx60GMOZA2HsIwnDyUJaolw/bCXhO4wubMNo8SFbU7IcIi/z/8SQ?=
- =?us-ascii?Q?4Ax/TJuHaN8LDbaDzQ3IDUAI94TRWyTq4Y7sIVhX8z5aFCIitztZ5WUR7i4W?=
- =?us-ascii?Q?kdGmyUM7N87jMt43y+HXJ/9W1RmRzlv58l4Nhvvp73AR5AAC9/ixO9C3KNas?=
- =?us-ascii?Q?urtXmOYh24lzJtBbFiUG/suOr5Sq27nq2kFLNlD44lnFU9AB6ykDKHsmA8WR?=
- =?us-ascii?Q?gT7FF4MdweSuMGHRwSaZ2CZIeC0IeFsJSrfaRO4z17nSAjEVP+zMeEgBSFph?=
- =?us-ascii?Q?Yx3jizkc8MwD3BK3mvfOhRuiVwwXv6VQh22D8jK83LDPCSjfwQ0BDrzm7y5N?=
- =?us-ascii?Q?kP30YT27cmqUFff15Ubiizc+btiWA/WHYsembLFEU0NnxGA/CNaG1CXE883e?=
- =?us-ascii?Q?SPLkWfWrkTGeusavom/+kCTIHHt7wFE3vWxf2/dBKroIuScn7HYX+mvAfsXn?=
- =?us-ascii?Q?lzkHf4NXVsW605S5g+wTqaVIN5XfJyDMLzQJyuNGYw9WCTS3JiV8rVcyVp6M?=
- =?us-ascii?Q?+utAJeiASOD5guuECgFsDtN522I+hEHlHKsSqr37slPn8ICDo8lHMek2sjU0?=
- =?us-ascii?Q?sd6K5PNNaeFjFaEyhcrdazlmgBQllIVXiX2kiKh6EWYx/cM6ckUt0WY84v1I?=
- =?us-ascii?Q?UMH64yM6G5l0Dmm0eIKMdIfgo1u8eDd3BnTdellcfQe182jnoz6JI8febhaq?=
- =?us-ascii?Q?IW30WnmXCoMn7NkUZZj0zCT4dVwYg/ryqHBl/D/daYTqxcoF9WCBO90vUJam?=
- =?us-ascii?Q?DFmYLiQw1mp0dx++aMRLLZK1lvEFyjztrC09JoCQfoajLXMcD5oB0LKEq6zs?=
- =?us-ascii?Q?DQLauvut5IhJkvkeZW+eMmVPUdw8jxfb+8j5hQC+lOejgdqRCyt0ZByoLPhs?=
- =?us-ascii?Q?JlqI?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c27566b-e1b4-40cd-82b3-08d8bdd90fbd
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2382.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 06:52:04.5924
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JlcfmhOFjfN/IQ1uxXf1tUduPiwcvuoUg5CAIv+D5BxxER6DDgm8GzMwfKxiuRr2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4751
+In-Reply-To: <7d769a82-e573-4d04-a125-13ca99136d49@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/1/21 =E4=B8=8B=E5=8D=882:32, Qu Wenruo wrote:
->=20
->=20
-> On 2021/1/20 =E4=B8=8A=E5=8D=885:41, Josef Bacik wrote:
->> On 1/16/21 2:15 AM, Qu Wenruo wrote:
->>> When __process_pages_contig() get called for
->>> extent_clear_unlock_delalloc(), if we hit the locked page, only Private=
-2
->>> bit is updated, but dirty/writeback/error bits are all skipped.
->>>
->>> There are several call sites call extent_clear_unlock_delalloc() with
->>> @locked_page and PAGE_CLEAR_DIRTY/PAGE_SET_WRITEBACK/PAGE_END_WRITEBACK
->>>
->>> - cow_file_range()
->>> - run_delalloc_nocow()
->>> - cow_file_range_async()
->>> =C2=A0=C2=A0 All for their error handling branches.
->>>
->>> For those call sites, since we skip the locked page for
->>> dirty/error/writeback bit update, the locked page will still have its
->>> dirty bit remaining.
->>>
->>> Thankfully, since all those call sites can only be hit with various
->>> serious errors, it's pretty hard to hit and shouldn't affect regular
->>> btrfs operations.
->>>
->>> But still, we shouldn't leave the locked_page with its
->>> dirty/error/writeback bits untouched.
->>>
->>> Fix this by only skipping lock/unlock page operations for locked_page.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On 20.01.21 г. 17:55 ч., Josef Bacik wrote:
+> On 1/20/21 5:25 AM, Nikolay Borisov wrote:
+>> Now that the btrfs' codebase is clean of W=1 warning let's enable those
+>> checks unconditionally for the entire fs/btrfs/ and its subdirectories.
 >>
->> Except this is handled by the callers.=C2=A0 We clear_page_dirty_for_io(=
-) the
->> page before calling btrfs_run_delalloc_range(), so we don't need the
->> PAGE_CLEAR_DIRTY, it's already cleared.=C2=A0 The SetPageError() is hand=
-led
->> in the error path for locked_page, as is the
->> set_writeback/end_writeback.=C2=A0 Now I don't think this patch causes
->> problems specifically, but the changelog is at least wrong, and I'd
->> rather we'd skip the handling of the locked_page here and leave it in
->> the proper error handling.=C2=A0 If you need to do this for some other r=
-eason
->> that I haven't gotten to yet then you need to make that clear in the
->> changelog, because as of right now I don't see why this is needed. =20
->> Thanks,
->=20
-> This is mostly to co-operate with a later patch on
-> __process_pages_contig(), where we need to make sure page locked by
-> __process_pages_contig() is only unlocked by __process_pages_contig() too=
-.
->=20
-> The exception is after cow_file_inline(), we call
-> __process_pages_contig() on the locked page, making it to clear page
-> writeback and unlock it.
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> 
+> Once this is enabled I get
+> 
+> fs/btrfs/zoned.c: In function ‘btrfs_sb_log_location_bdev’:
+> fs/btrfs/zoned.c:491:6: warning: variable ‘zone_size’ set but not used
+> [-Wunused-but-set-variable]
+>   491 |  u64 zone_size;
+>       |      ^~~~~~~~~
+> 
+> on misc-next.  Thanks,
+> 
 
-To be more clear, we call extent_clear_unlock_delalloc() with=20
-locked_page =3D=3D NULL, to allow __process_pages_contig() to unlock the=20
-locked page (while the locked page isn't locked by=20
-__process_pages_contig()).
+I know, I intentionally haven't fixed it since:
 
-For subpage data, we need writers accounting for subpage, but that=20
-accounting only happens in __process_pages_contig(), thus we don't want=20
-pages without the accounting to be unlocked by __process_pages_contig().
+a)  David might be intending to merge other patches which will utilize
+this member
 
-I can do extra page unlock/clear_dirty/end_writeback just for that=20
-exception, but it would definitely needs more comments.
+b) It shows a genuine problem that this patchset has uncovered ( I even
+mentioned this in the initial cover letter)
 
-Thanks,
-Qu
 
->=20
-> That is going to cause problems for subpage.
->=20
-> Thus I prefer to make __process_pages_contig() to clear page dirty/end
-> writeback for locked page.
->=20
-> Thanks,
-> Qu
->>
->> Josef
->=20
-
+> Josef
+> 
