@@ -2,112 +2,249 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D909F2FE251
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 07:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507882FE26D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 07:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbhAUGD5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Jan 2021 01:03:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393499AbhAUDBc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 22:01:32 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD714C0613CF;
-        Wed, 20 Jan 2021 19:00:51 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id l9so583797ejx.3;
-        Wed, 20 Jan 2021 19:00:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YdnR/g1AUsA802dFK4Bs9r1QCNRoeBKoAACTpgBxsAQ=;
-        b=S82oKn6Q+hAvCVWp3R9ocfOXM2/txxi1xOjHxUHmByrZ8kBz2L+vdZmpZsEoegtsH7
-         kEKPOe4hs5bnGP8bgsWbRPouosUnKNj9uWM25NvOl6npKH6Q3aIq351tyu35oZ16Gcd9
-         gI+/RZHwBoUQXrBob5pPzeDFlql7a72PNMpdC/G6NQL7jOeLy08k8OzSFgGhZ/81pKeb
-         bfGMAqvNxE6MPJJ+X7pfFTpMlP/b5cWbsk8wBXFKl5pUb3B1PIYLs2reLAOvnsUFUsv7
-         f1sf/+zO67e9eDmjS0bptW4tw0r9uzixuWtFOktEToRwo2mwE5lw5fhIJQSO5xGWaVtk
-         y6dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YdnR/g1AUsA802dFK4Bs9r1QCNRoeBKoAACTpgBxsAQ=;
-        b=ez9h2LlsuvWrYsPqp/PeF+WDfmqlNQbArORHLxSXOEglSJoXQgGO1qbofj49C2zR76
-         QME0+VhhuRakNmZQnYNwAFqJvBRjzcDp0+VKXHnG4i/lnLcHmAa2pXvd6VXi6VUtvEK5
-         5mKu3fvHenQji/0UfwZXh/NjDnGUZALGS/2NV89BOrO6+c36vb9l+M9L/CxOwJ4UJPh0
-         Ne8St4Uf0E3tocdo+8rQoWoz8qVD8VkpbtO8o5rsHAmLwSO3siEMI0+savsequQ2NRi/
-         r+VoaiNwHEA+MIzFlvu93p0EVMdO+H+N1Dz+0KppinyKsSBfQK+nZec+hZwGwnRJUi4n
-         Nx6g==
-X-Gm-Message-State: AOAM533fZeGuuVM+IMtHB9WAYJBYPR0JZRgY7vVzIWcez9FSQvyRRlJD
-        1I8IP3oT954QEQz91EpA0C2vILPUd4rAc4wHnmE=
-X-Google-Smtp-Source: ABdhPJx4hIKkKiU2iBKXjdqE5eWNNe7e0osIQ9gJJ07rfesCCPovnPnhiYH+s1vpHW57b+spuuKB7GPDWGgtgfAiGN4=
-X-Received: by 2002:a17:906:9619:: with SMTP id s25mr7999226ejx.345.1611198050485;
- Wed, 20 Jan 2021 19:00:50 -0800 (PST)
+        id S1726539AbhAUGPK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Jan 2021 01:15:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55894 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726524AbhAUGOx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:14:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611209639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=99YmFXNA+EbFLBmT86v6pywKSYuN7L0IBAwaxmXA6m4=;
+        b=b5gcw48QZQ+/NAAm+uCQtYj1E2ewz/0JtzJbTnEZOLIIoJpI5Xv51O/5ffhpnzbvLVaDul
+        gVRynGA+aaKa3QFBlmXCNIO9hXfsfo1MSUcopeDJab9OhNY2AXfsLqHzHO004ZSn1mpVIM
+        Ax2Kaj5q2XV6i/91eWgpbomeQksXWtc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 02369AAAE
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Jan 2021 06:13:59 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: rework the order of btrfs_ordered_extent::flags
+Date:   Thu, 21 Jan 2021 14:13:54 +0800
+Message-Id: <20210121061354.61271-1-wqu@suse.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
-In-Reply-To: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Thu, 21 Jan 2021 14:00:38 +1100
-Message-ID: <CAGRGNgWLspr6M1COgX9cuDDgYdiXvQQjWQb7XYLsmFpfMYt0sA@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
-To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc:     linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        jfs-discussion@lists.sourceforge.net, dm-devel@redhat.com,
-        Jens Axboe <axboe@kernel.dk>, philipp.reisner@linbit.com,
-        lars.ellenberg@linbit.com, Denis Efremov <efremov@linux.com>,
-        colyli@suse.de, kent.overstreet@gmail.com, agk@redhat.com,
-        snitzer@redhat.com, song@kernel.org,
-        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca, rpeterso@redhat.com, agruenba@redhat.com,
-        darrick.wong@oracle.com, shaggy@kernel.org, damien.lemoal@wdc.com,
-        naohiro.aota@wdc.com, jth@kernel.org, Tejun Heo <tj@kernel.org>,
-        osandov@fb.com, bvanassche@acm.org, gustavo@embeddedor.com,
-        asml.silence@gmail.com, jefflexu@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Chaitanya,
+[BUG]
+There is a long existing bug in the last parameter of
+btrfs_add_ordered_extent(), in commit 771ed689d2cd ("Btrfs: Optimize
+compressed writeback and reads") back to 2008.
 
-On Tue, Jan 19, 2021 at 5:01 PM Chaitanya Kulkarni
-<chaitanya.kulkarni@wdc.com> wrote:
->
-> Hi,
->
-> This is a *compile only RFC* which adds a generic helper to initialize
-> the various fields of the bio that is repeated all the places in
-> file-systems, block layer, and drivers.
->
-> The new helper allows callers to initialize various members such as
-> bdev, sector, private, end io callback, io priority, and write hints.
->
-> The objective of this RFC is to only start a discussion, this it not
-> completely tested at all.
-> Following diff shows code level benefits of this helper :-
->  38 files changed, 124 insertions(+), 236 deletions(-)
+In that ancient commit btrfs_add_ordered_extent() expects the @type
+parameter to be one of the following:
+- BTRFS_ORDERED_REGULAR
+- BTRFS_ORDERED_NOCOW
+- BTRFS_ORDERED_PREALLOC
+- BTRFS_ORDERED_COMPRESSED
 
-On a more abstract note, I don't think this diffstat is actually
-illustrating the benefits of this as much as you think it is.
+But we pass 0 in cow_file_range(), which means BTRFS_ORDERED_IO_DONE.
 
-Yeah, we've reduced the code by 112 lines, but that's barely half the
-curn here. It looks, from the diffstat, that you've effectively
-reduced 2 lines into 1. That isn't much of a saving.
+Ironically extra check in __btrfs_add_ordered_extent() won't set the bit
+if we're seeing (type == IO_DONE || type == IO_COMPLETE), and avoid any
+obvious bug.
 
-Thanks,
+But this still leads to regular COW ordered extent having no bit to
+indicate its type in various trace events, rendering REGULAR bit
+useless.
 
+[FIX]
+This patch will change the following aspects to avoid such problem:
+- Reorder btrfs_ordered_extent::flags
+  Now the type bits go first (REGULAR/NOCOW/PREALLCO/COMPRESSED), then
+  DIRECT bit, finally extra status bits like IO_DONE/COMPLETE/IOERR.
+
+- Add extra ASSERT() for btrfs_add_ordered_extent_*()
+
+- Remove @type parameter for btrfs_add_ordered_extent_compress()
+  As the only valid @type here is BTRFS_ORDERED_COMPRESSED.
+
+- Remove the unnecessary special check for IO_DONE/COMPLETE in
+  __btrfs_add_ordered_extent()
+  This is just to make the code work, with extra ASSERT(), there are
+  limited values can be passed in.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/inode.c             |  4 ++--
+ fs/btrfs/ordered-data.c      | 18 +++++++++++++-----
+ fs/btrfs/ordered-data.h      | 37 +++++++++++++++++++++++-------------
+ include/trace/events/btrfs.h |  7 ++++---
+ 4 files changed, 43 insertions(+), 23 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ef6cb7b620d0..ea9056cc5559 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -917,7 +917,6 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
+ 						ins.objectid,
+ 						async_extent->ram_size,
+ 						ins.offset,
+-						BTRFS_ORDERED_COMPRESSED,
+ 						async_extent->compress_type);
+ 		if (ret) {
+ 			btrfs_drop_extent_cache(inode, async_extent->start,
+@@ -1127,7 +1126,8 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		free_extent_map(em);
+ 
+ 		ret = btrfs_add_ordered_extent(inode, start, ins.objectid,
+-					       ram_size, cur_alloc_size, 0);
++					       ram_size, cur_alloc_size,
++					       BTRFS_ORDERED_REGULAR);
+ 		if (ret)
+ 			goto out_drop_extent_cache;
+ 
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index d5d326c674b1..bd7e187d9b16 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -199,8 +199,11 @@ static int __btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset
+ 	entry->compress_type = compress_type;
+ 	entry->truncated_len = (u64)-1;
+ 	entry->qgroup_rsv = ret;
+-	if (type != BTRFS_ORDERED_IO_DONE && type != BTRFS_ORDERED_COMPLETE)
+-		set_bit(type, &entry->flags);
++
++	ASSERT(type == BTRFS_ORDERED_REGULAR || type == BTRFS_ORDERED_NOCOW ||
++	       type == BTRFS_ORDERED_PREALLOC ||
++	       type == BTRFS_ORDERED_COMPRESSED);
++	set_bit(type, &entry->flags);
+ 
+ 	if (dio) {
+ 		percpu_counter_add_batch(&fs_info->dio_bytes, num_bytes,
+@@ -256,6 +259,8 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+ 			     u64 disk_bytenr, u64 num_bytes, u64 disk_num_bytes,
+ 			     int type)
+ {
++	ASSERT(type == BTRFS_ORDERED_REGULAR || type == BTRFS_ORDERED_NOCOW ||
++	       type == BTRFS_ORDERED_PREALLOC);
+ 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
+ 					  num_bytes, disk_num_bytes, type, 0,
+ 					  BTRFS_COMPRESS_NONE);
+@@ -265,6 +270,8 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
+ 				 u64 disk_bytenr, u64 num_bytes,
+ 				 u64 disk_num_bytes, int type)
+ {
++	ASSERT(type == BTRFS_ORDERED_REGULAR || type == BTRFS_ORDERED_NOCOW ||
++	       type == BTRFS_ORDERED_PREALLOC);
+ 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
+ 					  num_bytes, disk_num_bytes, type, 1,
+ 					  BTRFS_COMPRESS_NONE);
+@@ -272,11 +279,12 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
+ 
+ int btrfs_add_ordered_extent_compress(struct btrfs_inode *inode, u64 file_offset,
+ 				      u64 disk_bytenr, u64 num_bytes,
+-				      u64 disk_num_bytes, int type,
+-				      int compress_type)
++				      u64 disk_num_bytes, int compress_type)
+ {
++	ASSERT(compress_type != BTRFS_COMPRESS_NONE);
+ 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
+-					  num_bytes, disk_num_bytes, type, 0,
++					  num_bytes, disk_num_bytes,
++					  BTRFS_ORDERED_COMPRESSED, 0,
+ 					  compress_type);
+ }
+ 
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index 46194c2c05d4..151ec6bba405 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -27,7 +27,7 @@ struct btrfs_ordered_sum {
+ };
+ 
+ /*
+- * bits for the flags field:
++ * Bits for btrfs_ordered_extent::flags.
+  *
+  * BTRFS_ORDERED_IO_DONE is set when all of the blocks are written.
+  * It is used to make sure metadata is inserted into the tree only once
+@@ -38,24 +38,36 @@ struct btrfs_ordered_sum {
+  * IO is done and any metadata is inserted into the tree.
+  */
+ enum {
++	/*
++	 * Different types for direct io, one and only one of the 4 type can
++	 * be set when creating ordered extent.
++	 *
++	 * REGULAR:	For regular non-compressed COW write
++	 * NOCOW:	For NOCOW write into existing non-hole extent
++	 * PREALLOC:	For NOCOW write into preallocated extent
++	 * COMPRESSED:	For compressed COW write
++	 */
++	BTRFS_ORDERED_REGULAR,
++	BTRFS_ORDERED_NOCOW,
++	BTRFS_ORDERED_PREALLOC,
++	BTRFS_ORDERED_COMPRESSED,
++
++	/*
++	 * Extra bit for DirectIO, can only be set for
++	 * REGULAR/NOCOW/PREALLOC. No DIO for compressed extent.
++	 */
++	BTRFS_ORDERED_DIRECT,
++
++	/* Extra status bits for ordered extents */
++
+ 	/* set when all the pages are written */
+ 	BTRFS_ORDERED_IO_DONE,
+ 	/* set when removed from the tree */
+ 	BTRFS_ORDERED_COMPLETE,
+-	/* set when we want to write in place */
+-	BTRFS_ORDERED_NOCOW,
+-	/* writing a zlib compressed extent */
+-	BTRFS_ORDERED_COMPRESSED,
+-	/* set when writing to preallocated extent */
+-	BTRFS_ORDERED_PREALLOC,
+-	/* set when we're doing DIO with this extent */
+-	BTRFS_ORDERED_DIRECT,
+ 	/* We had an io error when writing this out */
+ 	BTRFS_ORDERED_IOERR,
+ 	/* Set when we have to truncate an extent */
+ 	BTRFS_ORDERED_TRUNCATED,
+-	/* Regular IO for COW */
+-	BTRFS_ORDERED_REGULAR,
+ 	/* Used during fsync to track already logged extents */
+ 	BTRFS_ORDERED_LOGGED,
+ 	/* We have already logged all the csums of the ordered extent */
+@@ -167,8 +179,7 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
+ 				 u64 disk_num_bytes, int type);
+ int btrfs_add_ordered_extent_compress(struct btrfs_inode *inode, u64 file_offset,
+ 				      u64 disk_bytenr, u64 num_bytes,
+-				      u64 disk_num_bytes, int type,
+-				      int compress_type);
++				      u64 disk_num_bytes, int compress_type);
+ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
+ 			   struct btrfs_ordered_sum *sum);
+ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *inode,
+diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+index ecd24c719de4..b9896fc06160 100644
+--- a/include/trace/events/btrfs.h
++++ b/include/trace/events/btrfs.h
+@@ -499,12 +499,13 @@ DEFINE_EVENT(
+ 
+ #define show_ordered_flags(flags)					   \
+ 	__print_flags(flags, "|",					   \
+-		{ (1 << BTRFS_ORDERED_IO_DONE), 	"IO_DONE" 	}, \
+-		{ (1 << BTRFS_ORDERED_COMPLETE), 	"COMPLETE" 	}, \
++		{ (1 << BTRFS_ORDERED_REGULAR), 	"REGULAR" 	}, \
+ 		{ (1 << BTRFS_ORDERED_NOCOW), 		"NOCOW" 	}, \
+-		{ (1 << BTRFS_ORDERED_COMPRESSED), 	"COMPRESSED" 	}, \
+ 		{ (1 << BTRFS_ORDERED_PREALLOC), 	"PREALLOC" 	}, \
++		{ (1 << BTRFS_ORDERED_COMPRESSED), 	"COMPRESSED" 	}, \
+ 		{ (1 << BTRFS_ORDERED_DIRECT),	 	"DIRECT" 	}, \
++		{ (1 << BTRFS_ORDERED_IO_DONE), 	"IO_DONE" 	}, \
++		{ (1 << BTRFS_ORDERED_COMPLETE), 	"COMPLETE" 	}, \
+ 		{ (1 << BTRFS_ORDERED_IOERR), 		"IOERR" 	}, \
+ 		{ (1 << BTRFS_ORDERED_TRUNCATED), 	"TRUNCATED"	})
+ 
 -- 
-Julian Calaby
+2.30.0
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
