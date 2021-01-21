@@ -2,216 +2,253 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94E12FE1AD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 06:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3612FE166
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 06:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbhAUDrK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jan 2021 22:47:10 -0500
-Received: from mout.gmx.net ([212.227.17.22]:53129 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728808AbhAUAx4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:53:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611190287;
-        bh=y46RDmwOCEcz1KoFpMnOWtF6rMZ+0/FGww0Yx+uqpx8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=HyudRhD6QHYho1tuW3BezriRrCOYA2MlSIfDDSKEQ08FCECXD4AEY75DK12RZ4Fmp
-         QNag3aWFfouc9zgUUHyEk5X8IAkSoS+Ixjwl2Fb/TCbEv+Kq9Mq0Y+6itCES4j4SXj
-         TR91B11O7cr/tSkFcRbVI7RqdVjGp3ik/bK3Bi14=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Msq24-1lqmzG14Nk-00tAeq; Thu, 21
- Jan 2021 01:51:26 +0100
-Subject: Re: [PATCH v4 12/18] btrfs: implement try_release_extent_buffer() for
- subpage metadata support
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        id S1731592AbhAUDrn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jan 2021 22:47:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392194AbhAUBjz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:39:55 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED01C061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 17:28:57 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id c12so506558qtv.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 17:28:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=dzA5x2BQcwui1LqdBt7FwPcWJRnAgQkx0oMeMjK8ZSc=;
+        b=UBtxCVmmW90m84j6R6Rm+XDCJPPcWijt62pkrpqTteITZn8JLSP7ltdWMponNpgH8H
+         3cwrqwByaIp1MywJn1AvUqYJaujyONKUCeo8dbGlJiS+wN4hqpTAMazY5A0uyQl+yAgG
+         eS+ucwan0tjB+Ru3KWzReAB3Z2Tdq+lQyh8q3gPrhHSMht7ilZe57KnKXtHLgEKZ6wr9
+         yWP3dypHiMstnzMgSmWm/L3AkQckuyaQ3XZiXrw3cxSY07ZlcUv78GhcFiSH4KSliVm5
+         Ogd+WUI7pGnj9Irb60XAii9vUWCXBgia3pKMdUaGOuAWxRf45qpHxiUSQbUXuB9hdGSX
+         1RZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dzA5x2BQcwui1LqdBt7FwPcWJRnAgQkx0oMeMjK8ZSc=;
+        b=QXdP/Mt12T1/Jq+5zNClZGcbiAMVxzJe9HmskyguCIwIF32ZZDdXh8zmI3dflsDQCp
+         x6+QjWP9oOWBzliJAgneb0qcMs8mTubKlgsoFGZbU5idReV2mXlz+Q7NGw6QbT30HcZ9
+         TE20KmcVZ7QjoNLnZ2ufGHq81+peyO/0uQkvQB19btSxRCGPJ0cDGLQ0x4kgL8thZ+Bl
+         I9cTaYYY42ip0X4PkSmMFD2o9jaY1HWQT9RKOKv3QB/+4N7iN0MB+87iR2Q1P1FSV/vj
+         Y8mGKgC/t5NYVM5174Im3LTviyDNC7G172J6kf87CK26kdY96vIXOa5kHSjrr4+xCI8h
+         nCGA==
+X-Gm-Message-State: AOAM531Wra01TL4T82BrnD/C034vTqRTmIxfvsp0vKNxamB88SBfFxWy
+        zP7mUm/TTgr1qpdRtRW4q1R1bMtsftdSFOjC
+X-Google-Smtp-Source: ABdhPJxWMav9GaOwpItB/C+U1mjK5RSP6Jd4wC4leaoc9LqKnA7QG6hctEIaKGcHKJJe1/PgxWPzQA==
+X-Received: by 2002:ac8:4e53:: with SMTP id e19mr11998370qtw.77.1611192535804;
+        Wed, 20 Jan 2021 17:28:55 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11c1::12ee? ([2620:10d:c091:480::1:6f58])
+        by smtp.gmail.com with ESMTPSA id c20sm1517678qke.103.2021.01.20.17.28.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 17:28:54 -0800 (PST)
+Subject: Re: [PATCH v4 08/18] btrfs: introduce helper for subpage uptodate
+ status
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-13-wqu@suse.com>
- <4732f7cb-8d1c-6af2-0ec4-9b9cf5a47c3e@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <e3f4f9d4-c521-83ec-b1cc-9064c90a658a@gmx.com>
-Date:   Thu, 21 Jan 2021 08:51:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ <20210116071533.105780-9-wqu@suse.com>
+ <812a4f48-3210-926f-cf59-de63bfcc4c0d@toxicpanda.com>
+ <3118cc60-2337-49da-648d-aa3b8cdcd70d@gmx.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <8ae381e9-2645-9b7c-fec0-a79a7a9f382d@toxicpanda.com>
+Date:   Wed, 20 Jan 2021 20:28:53 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <4732f7cb-8d1c-6af2-0ec4-9b9cf5a47c3e@toxicpanda.com>
+In-Reply-To: <3118cc60-2337-49da-648d-aa3b8cdcd70d@gmx.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1FF9TqztiSoiQx2OCXBqYxYy1MFpg6zzW9bqKDcF5jCt6YQBZFm
- vVTO9LsC99tYI6feQs+ehECgigjXYsbukHmW8RE02XXO8JOmp1wrNIx/q/YVkaIzaOjFNtQ
- Qpw3jDLIcg2VmnZxYYl3uzHPZkCc4yzB+YacJy7AhgYpTT3fkp3u7I+Z8QPBJXo/lJNLImj
- cxboK3I9AcufPmaFOEA1Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:EZ82QZOtGYo=:sXDBLRGbLpcQONzYJjTuCO
- pAklZv+w9Qez8Vfnbg0GGfJlwAf00E7Ad47KNJZPpd8ZoWGIoVRT3YtFeXSGVErqN4ZTXPnJA
- CiaKDpKRk2aBBhJ6aagumZJ5BGEv6c+gXf9bS6c1QID1rqfabhCChwIt77fUXRlbQJDULxRFE
- oGOLw33IEgWvtiT3AGQCtS6u3gV9KWqLpJdm6a5qcSQFMXUDy3wjecONDt4ktuVH1hiK5+LUL
- eA+YryxHoPdcRnc2HpF+l5vUxrCNfyaUoPGvqF2JgKNjDBQtcyME8S5w/517oJPGmhUk60jT1
- qrlO6C9fEuo5j3TusT+Al1EZcNbU1APh2lo3l91xDNivIRjGRBbXqJq+euQ/QwbFAXya1dpaE
- gAjW3ejoemmdmOuK+9A6NFCiz2VTod+x0347k3H2Tr2JcL0qoVzhhak5LiFmEg2ch6OgrFRfv
- UaNAjErFMzH1oBppDDxA4edYRkEsfsGgfM1r9yqD71+jCxPtpNeOHkWaIs25dfdV2c3buSQ5B
- CrOgtnWw6ImABh39XfKTucTuVo+i3LN1uPhzVcfyUAZVB/jYIYVNBtphHSXaM7kV0FSrmv4vE
- 4S/9428Z7rBwXsEeA807it/3ztlz10Z9cWqCEkGBGETGAXoGnwknU/wt9YHCVz9djp9VWxm1b
- oAS5RZjQcKCeOXdmTfmoeYrtF5hCpKE6u/C6DYOU5tXWfwRyVmSpcFUiHkRgW2DGyYW/Yry3u
- Fnq92KfgcGR+ODwgZRGq2bOcjJWecb58sQeZbOekaL89Hrx0GpvzFBD1mWsMbmlxhz6c1kknf
- o2umLRq3+Me+PXCaaeI2PkgXAELy+rWZAn+Ync1WD7j7iWQgb10rBrw4dbWX3GiJT90/xJwn1
- 0XOxghGQPM0Aucg2DhHw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/1/20 =E4=B8=8B=E5=8D=8811:05, Josef Bacik wrote:
-> On 1/16/21 2:15 AM, Qu Wenruo wrote:
->> Unlike the original try_release_extent_buffer(),
->> try_release_subpage_extent_buffer() will iterate through all the ebs in
->> the page, and try to release each eb.
+On 1/20/21 7:49 PM, Qu Wenruo wrote:
+> 
+> 
+> On 2021/1/20 下午11:00, Josef Bacik wrote:
+>> On 1/16/21 2:15 AM, Qu Wenruo wrote:
+>>> This patch introduce the following functions to handle btrfs subpage
+>>> uptodate status:
+>>> - btrfs_subpage_set_uptodate()
+>>> - btrfs_subpage_clear_uptodate()
+>>> - btrfs_subpage_test_uptodate()
+>>>    Those helpers can only be called when the range is ensured to be
+>>>    inside the page.
+>>>
+>>> - btrfs_page_set_uptodate()
+>>> - btrfs_page_clear_uptodate()
+>>> - btrfs_page_test_uptodate()
+>>>    Those helpers can handle both regular sector size and subpage without
+>>>    problem.
+>>>    Although caller should still ensure that the range is inside the page.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>   fs/btrfs/subpage.h | 115 +++++++++++++++++++++++++++++++++++++++++++++
+>>>   1 file changed, 115 insertions(+)
+>>>
+>>> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+>>> index d8b34879368d..3373ef4ffec1 100644
+>>> --- a/fs/btrfs/subpage.h
+>>> +++ b/fs/btrfs/subpage.h
+>>> @@ -23,6 +23,7 @@
+>>>   struct btrfs_subpage {
+>>>       /* Common members for both data and metadata pages */
+>>>       spinlock_t lock;
+>>> +    u16 uptodate_bitmap;
+>>>       union {
+>>>           /* Structures only used by metadata */
+>>>           bool under_alloc;
+>>> @@ -78,4 +79,118 @@ static inline void btrfs_page_end_meta_alloc(struct 
+>>> btrfs_fs_info *fs_info,
+>>>   int btrfs_attach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
+>>>   void btrfs_detach_subpage(struct btrfs_fs_info *fs_info, struct page *page);
+>>> +/*
+>>> + * Convert the [start, start + len) range into a u16 bitmap
+>>> + *
+>>> + * E.g. if start == page_offset() + 16K, len = 16K, we get 0x00f0.
+>>> + */
+>>> +static inline u16 btrfs_subpage_calc_bitmap(struct btrfs_fs_info *fs_info,
+>>> +            struct page *page, u64 start, u32 len)
+>>> +{
+>>> +    int bit_start = offset_in_page(start) >> fs_info->sectorsize_bits;
+>>> +    int nbits = len >> fs_info->sectorsize_bits;
+>>> +
+>>> +    /* Basic checks */
+>>> +    ASSERT(PagePrivate(page) && page->private);
+>>> +    ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
+>>> +           IS_ALIGNED(len, fs_info->sectorsize));
+>>> +
+>>> +    /*
+>>> +     * The range check only works for mapped page, we can
+>>> +     * still have unampped page like dummy extent buffer pages.
+>>> +     */
+>>> +    if (page->mapping)
+>>> +        ASSERT(page_offset(page) <= start &&
+>>> +            start + len <= page_offset(page) + PAGE_SIZE);
+>>> +    /*
+>>> +     * Here nbits can be 16, thus can go beyond u16 range. Here we make the
+>>> +     * first left shift to be calculated in unsigned long (u32), then
+>>> +     * truncate the result to u16.
+>>> +     */
+>>> +    return (u16)(((1UL << nbits) - 1) << bit_start);
+>>> +}
+>>> +
+>>> +static inline void btrfs_subpage_set_uptodate(struct btrfs_fs_info *fs_info,
+>>> +            struct page *page, u64 start, u32 len)
+>>> +{
+>>> +    struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
+>>> +    u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
+>>> +    unsigned long flags;
+>>> +
+>>> +    spin_lock_irqsave(&subpage->lock, flags);
+>>> +    subpage->uptodate_bitmap |= tmp;
+>>> +    if (subpage->uptodate_bitmap == U16_MAX)
+>>> +        SetPageUptodate(page);
+>>> +    spin_unlock_irqrestore(&subpage->lock, flags);
+>>> +}
+>>> +
+>>> +static inline void btrfs_subpage_clear_uptodate(struct btrfs_fs_info *fs_info,
+>>> +            struct page *page, u64 start, u32 len)
+>>> +{
+>>> +    struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
+>>> +    u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
+>>> +    unsigned long flags;
+>>> +
+>>> +    spin_lock_irqsave(&subpage->lock, flags);
+>>> +    subpage->uptodate_bitmap &= ~tmp;
+>>> +    ClearPageUptodate(page);
+>>> +    spin_unlock_irqrestore(&subpage->lock, flags);
+>>> +}
+>>> +
+>>> +/*
+>>> + * Unlike set/clear which is dependent on each page status, for test all bits
+>>> + * are tested in the same way.
+>>> + */
+>>> +#define DECLARE_BTRFS_SUBPAGE_TEST_OP(name)                \
+>>> +static inline bool btrfs_subpage_test_##name(struct btrfs_fs_info *fs_info, \
+>>> +            struct page *page, u64 start, u32 len)        \
+>>> +{                                    \
+>>> +    struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private; \
+>>> +    u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len); \
+>>> +    unsigned long flags;                        \
+>>> +    bool ret;                            \
+>>> +                                    \
+>>> +    spin_lock_irqsave(&subpage->lock, flags);            \
+>>> +    ret = ((subpage->name##_bitmap & tmp) == tmp);            \
+>>> +    spin_unlock_irqrestore(&subpage->lock, flags);            \
+>>> +    return ret;                            \
+>>> +}
+>>> +DECLARE_BTRFS_SUBPAGE_TEST_OP(uptodate);
+>>> +
+>>> +/*
+>>> + * Note that, in selftest, especially extent-io-tests, we can have empty
+>>> + * fs_info passed in.
+>>> + * Thankfully in selftest, we only test sectorsize == PAGE_SIZE cases so far,
+>>> + * thus we can fall back to regular sectorsize branch.
+>>> + */
+>>> +#define DECLARE_BTRFS_PAGE_OPS(name, set_page_func, clear_page_func,    \
+>>> +                   test_page_func)                \
+>>> +static inline void btrfs_page_set_##name(struct btrfs_fs_info *fs_info,    \
+>>> +            struct page *page, u64 start, u32 len)        \
+>>> +{                                    \
+>>> +    if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {    \
+>>> +        set_page_func(page);                    \
+>>> +        return;                            \
+>>> +    }                                \
+>>> +    btrfs_subpage_set_##name(fs_info, page, start, len);        \
+>>> +}                                    \
+>>> +static inline void btrfs_page_clear_##name(struct btrfs_fs_info *fs_info, \
+>>> +            struct page *page, u64 start, u32 len)        \
+>>> +{                                    \
+>>> +    if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {    \
+>>> +        clear_page_func(page);                    \
+>>> +        return;                            \
+>>> +    }                                \
+>>> +    btrfs_subpage_clear_##name(fs_info, page, start, len);        \
+>>> +}                                    \
+>>> +static inline bool btrfs_page_test_##name(struct btrfs_fs_info *fs_info, \
+>>> +            struct page *page, u64 start, u32 len)        \
+>>> +{                                    \
+>>> +    if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)    \
+>>> +        return test_page_func(page);                \
+>>> +    return btrfs_subpage_test_##name(fs_info, page, start, len);    \
+>>> +}
 >>
->> And only if the page and no private attached, which implies we have
->> released all ebs of the page, then we can release the full page.
+>> Another thing I just realized is you're doing this
 >>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> =C2=A0 fs/btrfs/extent_io.c | 106 +++++++++++++++++++++++++++++++++++++=
-+++++-
->> =C2=A0 1 file changed, 104 insertions(+), 2 deletions(-)
+>> btrfs_page_set_uptodate(fs_info, page, eb->start, eb->len);
 >>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 74a37eec921f..9414219fa28b 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -6335,13 +6335,115 @@ void memmove_extent_buffer(const struct
->> extent_buffer *dst,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 }
->> +static struct extent_buffer *get_next_extent_buffer(
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_in=
-fo, struct page *page, u64 bytenr)
->> +{
->> +=C2=A0=C2=A0=C2=A0 struct extent_buffer *gang[BTRFS_SUBPAGE_BITMAP_SIZ=
-E];
->> +=C2=A0=C2=A0=C2=A0 struct extent_buffer *found =3D NULL;
->> +=C2=A0=C2=A0=C2=A0 u64 page_start =3D page_offset(page);
->> +=C2=A0=C2=A0=C2=A0 int ret;
->> +=C2=A0=C2=A0=C2=A0 int i;
->> +
->> +=C2=A0=C2=A0=C2=A0 ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
->> +=C2=A0=C2=A0=C2=A0 ASSERT(PAGE_SIZE / fs_info->nodesize <=3D BTRFS_SUB=
-PAGE_BITMAP_SIZE);
->> +=C2=A0=C2=A0=C2=A0 lockdep_assert_held(&fs_info->buffer_lock);
->> +
->> +=C2=A0=C2=A0=C2=A0 ret =3D radix_tree_gang_lookup(&fs_info->buffer_rad=
-ix, (void **)gang,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 byt=
-enr >> fs_info->sectorsize_bits,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PAG=
-E_SIZE / fs_info->nodesize);
->> +=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < ret; i++) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Already beyond page end =
-*/
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (gang[i]->start >=3D pag=
-e_start + PAGE_SIZE)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bre=
-ak;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Found one */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (gang[i]->start >=3D byt=
-enr) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fou=
-nd =3D gang[i];
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bre=
-ak;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 return found;
->> +}
->> +
->> +static int try_release_subpage_extent_buffer(struct page *page)
->> +{
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D btrfs_sb(page->ma=
-pping->host->i_sb);
->> +=C2=A0=C2=A0=C2=A0 u64 cur =3D page_offset(page);
->> +=C2=A0=C2=A0=C2=A0 const u64 end =3D page_offset(page) + PAGE_SIZE;
->> +=C2=A0=C2=A0=C2=A0 int ret;
->> +
->> +=C2=A0=C2=A0=C2=A0 while (cur < end) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *eb =
-=3D NULL;
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Unlike try_release_=
-extent_buffer() which uses page->private
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * to grab buffer, for=
- subpage case we rely on radix tree, thus
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * we need to ensure r=
-adix tree consistency.
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * We also want an ato=
-mic snapshot of the radix tree, thus go
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * spinlock other than=
- RCU.
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&fs_info->buffer_=
-lock);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 eb =3D get_next_extent_buff=
-er(fs_info, page, cur);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!eb) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* =
-No more eb in the page range after or at @cur */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spi=
-n_unlock(&fs_info->buffer_lock);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bre=
-ak;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur =3D eb->start + eb->len=
-;
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The same as try_rel=
-ease_extent_buffer(), to ensure the eb
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * won't disappear out=
- from under us.
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&eb->refs_lock);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (atomic_read(&eb->refs) =
-!=3D 1 || extent_buffer_under_io(eb)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spi=
-n_unlock(&eb->refs_lock);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spi=
-n_unlock(&fs_info->buffer_lock);
->
-> Why continue at this point?=C2=A0 We know we can't drop this thing, brea=
-k here.
->
-> <snip>
->
->> +}
->> +
->> =C2=A0 int try_release_extent_buffer(struct page *page)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *eb;
->> +=C2=A0=C2=A0=C2=A0 if (btrfs_sb(page->mapping->host->i_sb)->sectorsize=
- < PAGE_SIZE)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return try_release_subpage_=
-extent_buffer(page);
->
-> You're using sectorsize again here.=C2=A0 I realize the problem is secto=
-rsize
-> !=3D PAGE_SIZE, but sectorsize !=3D nodesize all the time, so please cha=
-nge
-> all of the patches to check the actual relevant size for the
-> data/metadata type.=C2=A0 Thanks,
+>> but we default to a nodesize > PAGE_SIZE on x86.  This is fine, because you're 
+>> checking fs_info->sectorsize == PAGE_SIZE, which will mean we do the right thing.
+>>
+>> But what happens if fs_info->nodesize < PAGE_SIZE && fs_info->sectorsize == 
+>> PAGE_SIZE?  We by default have fs'es that ->nodesize != ->sectorsize, so 
+>> really what we should be doing is checking if len == PAGE_SIZE here, but then 
+>> you need to take into account the case that eb->len > PAGE_SIZE.  Fix this to 
+>> do the right thing in either of those cases. Thanks,
+> 
+> Impossible.
+> 
+> Nodesize must be >= sectorsize.
+> 
+> As sectorsize is currently the minimal access unit for both data and metadata.
+> 
 
-Again, nodesize >=3D sectorsize is the requirement for current mkfs.
+Ok the consider the alternative, we have PAGE_SIZE == 64k, nodesize == 64k and 
+sectorsize == 4k, something that's actually allowed.  You're now doing the 
+subpage operations on something that won't/shouldn't have the subpage private 
+attached to the page.  We need to key off of the right thing, so for metadata we 
+need to check ->nodesize, and data we check ->sectorsize, and for these 
+accessors you can simply do len >= PAGE_SIZE.  Thanks,
 
-As sectorsize is the minimal unit for both data and metadata.
-(We don't have separate data unit size and metadata unit size, they
-share sector size for now).
-
-Thanks,
-Qu
-
->
-> Josef
+Josef
