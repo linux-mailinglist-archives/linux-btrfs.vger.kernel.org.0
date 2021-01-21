@@ -2,173 +2,369 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8182FE4FB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 09:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166FD2FE73E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 11:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbhAUI0D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Jan 2021 03:26:03 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:11106 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726004AbhAUIZC (ORCPT
+        id S1728900AbhAUKNB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Jan 2021 05:13:01 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:49494 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728483AbhAUKLn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Jan 2021 03:25:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611217519; x=1642753519;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=5xDViCNWTWpt74+S63VrlNc8LWu+dxnOf+RyPFe7hss=;
-  b=HhFVAA+E4+S3it4ImT8VrG7pgo76LoNpf/ueeRpCKVdFUK+XoSBoy2Ce
-   1+Bjl/3HIobrEoA/8pYuIfhSnc2KfTWNcKnq1cys+FwgP/HuaHLrauCoC
-   NKO7nws9Zs2Vgak87sS77bOJTxYrnTvu4sxgqp4g+GTRCdCo7Rg17foG6
-   YqVYRy2CmP7fvpEFFy7Pb0Q+lhj0p2yLTM1K//+nQ33LZRSl1GNqZz+dJ
-   KDEf8qXIdLtY5vKU2bVimiT86cwn79kYQh+PPmkG6e0EyaQcXM8YeS1c8
-   6U1V/F+AxGUv1rCrCJNjOdC9nMy8Ysg/SP7ZhQ+xjHzK2KbY3yj5gjvgs
-   g==;
-IronPort-SDR: nopY/1/vZtTbFd6l0+IpzksjZWV827taoYGdI6nTCvXcD+NT6atg+8pFyCQqv+c16JkaXOoL0D
- KZ4ZA1yIKpkpX5wZeHBX/9xKxHqY0oEbQqAoXtVeOlDWitYpkamuITHncU/F4of0v0+vfTCvA1
- 8qvStsDmXY9OCQe7EPLXrsBBarKmqoRU5iWs00KcZ6PkYEsEa49IMfyV+qwhw4SkboXxG08Km6
- tzg8JeOoO/gZkor8VHecJdk53+ftE6lSIRjTitLfOZZNK7atzziYHzHo7RWXAh9orbProOBDgX
- qkU=
-X-IronPort-AV: E=Sophos;i="5.79,363,1602518400"; 
-   d="scan'208";a="261948044"
-Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Jan 2021 16:43:06 +0800
+        Thu, 21 Jan 2021 05:11:43 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LA8eXb124990;
+        Thu, 21 Jan 2021 10:10:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=sU3Yy1I70qUc++mph9dQG/34nEyPsgRkIHbp5TDTKtg=;
+ b=bitA0RussryxCOXX97aMlTNWqYyMKnyNPwTFZ9BWT0O18BDIKocT8hKHGUmQZc3j9p+s
+ cEdx0yFO99945DwKkKDjZfKgtNNgefqqJSa7E6tJTlFRltG1Bemg+LowTDhX92a/UcAM
+ WtPU8J+wy0HeW1R0b6KY1rCh18rtl+68uSp3S/VnTGeqRola44Ci2izrB0UHwfR9G3Ye
+ sZK2RegP2vBUAOUy9vV/1VQ6Q6VXRGXRo+3mp08/NPAGoTCRqVI5S6w8KsB2rBG6cE/p
+ ngyyEQGtnjlAkaiyEmKWT5g6cC+S9yKh13r0XiKxttCwbTXk6DNQqovuhx4lklFV7Sv7 Vw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 3668qrem9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 10:10:49 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10LA9sZl151400;
+        Thu, 21 Jan 2021 10:10:48 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2174.outbound.protection.outlook.com [104.47.58.174])
+        by aserp3020.oracle.com with ESMTP id 3668rfenn0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jan 2021 10:10:48 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lw68XCNKrU/qui9r1XSPq6hnWUBUdN/CfDi270C7BJeOnIzrp6qBQlCcjU+S9EGPNdg/DQ8OYphkmMhy7CVeybh82BxKsz4MwvpLcFqZIiOBiSQjpDQ2Bqol9TSWenr6xXXpcqa3xNnfKtOclaOqXDe9MnJy6nuBYdY6xn3P2cH223ZYGc4Yc8qw1KxiWmgpftekj+FIBNuNiz7iUfzVH04NZ+jD1ozB3trYByAOZMz6ZU+c3NCyxa8JoMF/m62PWe0Md2WN9/pUQtGLkUgsHuk6lut1C/P6B3ex214voxw3DMPYPzPhMXbM++tqT3pYdhe93xkdY8lAPQY+rboeag==
+ b=alYQo8rgU5VPRbljtV2wK5PCG9DJJPp8v/uayp7LMw6Rl4vjNbI2aqNSRrp2o3KTwCo+ZiU5XdUQrrak9SzaR2WM1oTjdAjqkGCIdDK7YcgE6dSeFJ/1Ze/hzkbRhgs246PnjLkpn28DAfZsGZns8n7PnsK4zKzabUD/Nd36A3HrWtg2OVBsLDUppi/1EXdvOwKqlrqDUca3vfgbNzGPTZVDLu07ywzz3kVBWJBxuwWjG4U15ruLzW6KdmhJuWCpWAAUQfiDbQypYrRqHQtO0B/VDfMOcuqfBdeuO93JGfzfP+BsTvf0WrdmF22CmqCXzW669OG4jSuCcwQ4tid3+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H0PH6GNao/klmOr5IzzIaOMg/PvFVYJ+pZQvveYwX64=;
- b=bOjNMUdbSeuUnFo9IrVW/LqAa07ep3nTQcmI2FgbBgtSEiGlbP9fxaIAWn2bLwbR0qxEwbpdToLb5qVWFFxaJfPspEcT6gxgUWyGagD3htFPcBoSUJobCMw95Ta5QLNipzaiy85bcNYkfnVc84J/ZnGPEkGjqpuM8TjJ28AgBENd0TJ28lmYt1CoJ/MssPzIgsbkg10pF6WAWCw5BgNsH3D9dOpKfeZ9EPW2PXfg4ZRHc/yakrCdIFQj9gu6QfyLcuag8hD2+fj0xanIYMuBDpIhztQAzTX6m6QXhR+FTzbm6JliOr6eDJ5KFR0uLV90E75pq3cV/uBINjreOzEzqg==
+ bh=sU3Yy1I70qUc++mph9dQG/34nEyPsgRkIHbp5TDTKtg=;
+ b=kw5IwYWhCMkGqETyLOkjpwl7/ncfnEz5NoINh6yurEftw3Ldasr/XOahfrCVYFtJ2/In2x7XmZnRMmp4cCCf3WW+7Ab+eiruYLhOw6/APuQuKC17tAw7yccp2Mla0upmclgblna/MCLstPAA/cdj7pzOAFuEWCpeA6VTnk3Mi2rb7Wn5uCkEOD7gdBWSM6zdXfFS59x6swj4Ka8FXXHRN9qWRhcre8g0ek9vi0A/sCQG8wTlkf1FjiAWQK7Jk3vZ1aBGZUqgdeFRecixJsiwxlCl9dc9knLhkJadWKhDLxCn9yBMdY8MHzYtAfw10ykBTJobDO8AR2SeMgveVobiNA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H0PH6GNao/klmOr5IzzIaOMg/PvFVYJ+pZQvveYwX64=;
- b=tgQ731nUeMOhgE+X8aJokO/3/gyG/vVOcs6a2e/emcs4H/n2HmGEuaZba4xmEtuF7WrO9aQ4Anb5zLf+0Gh/62xUtq6RSHNCkq8+v/D73mis01yDlsTmWrqZaqc9MCJ4Vvx5Fzn5ynIqnpCID+L0WCfk+HJopSJseRjrC1PJxRk=
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com (2603:10b6:5:fc::10) by
- DM5PR04MB1035.namprd04.prod.outlook.com (2603:10b6:4:3e::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3784.11; Thu, 21 Jan 2021 08:23:20 +0000
-Received: from DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::9a1:f2ba:2679:8188]) by DM6PR04MB4972.namprd04.prod.outlook.com
- ([fe80::9a1:f2ba:2679:8188%7]) with mapi id 15.20.3763.010; Thu, 21 Jan 2021
- 08:23:20 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Julian Calaby <julian.calaby@gmail.com>
-CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>
-Subject: Re: [RFC PATCH 00/37] block: introduce bio_init_fields()
-Thread-Topic: [RFC PATCH 00/37] block: introduce bio_init_fields()
-Thread-Index: AQHW7iDfXiv5iuHOl0mGSxMcJ7OwhA==
-Date:   Thu, 21 Jan 2021 08:23:20 +0000
-Message-ID: <DM6PR04MB4972029B58F81B22033E31F386A10@DM6PR04MB4972.namprd04.prod.outlook.com>
-References: <20210119050631.57073-1-chaitanya.kulkarni@wdc.com>
- <CAGRGNgWLspr6M1COgX9cuDDgYdiXvQQjWQb7XYLsmFpfMYt0sA@mail.gmail.com>
-Accept-Language: en-US
+ bh=sU3Yy1I70qUc++mph9dQG/34nEyPsgRkIHbp5TDTKtg=;
+ b=P5xEIWe3ecASf16LY/gd8Z7ti9EEwKdUb9CfLQc2wZdCLjgjed7N/VADquyzfI1FWY5s60DTJ+WVQhwnqNYzzvE4Cx50MCQhq5kowwMaKFLl8w+V2sWeYRJ6edJxMjIV0Z4dWAQokgb19C3qpOXSTklUUDXgKXbNGgmKIFRE8OA=
+Authentication-Results: toxicpanda.com; dkim=none (message not signed)
+ header.d=none;toxicpanda.com; dmarc=none action=none header.from=oracle.com;
+Received: from BN6PR10MB1683.namprd10.prod.outlook.com (2603:10b6:405:b::15)
+ by BN0PR10MB5336.namprd10.prod.outlook.com (2603:10b6:408:114::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Thu, 21 Jan
+ 2021 10:10:46 +0000
+Received: from BN6PR10MB1683.namprd10.prod.outlook.com
+ ([fe80::44c4:3dbe:4b78:f69a]) by BN6PR10MB1683.namprd10.prod.outlook.com
+ ([fe80::44c4:3dbe:4b78:f69a%3]) with mapi id 15.20.3784.012; Thu, 21 Jan 2021
+ 10:10:46 +0000
+Subject: Re: [PATCH v4 1/3] btrfs: add read_policy latency
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com
+References: <cover.1611114341.git.anand.jain@oracle.com>
+ <63f6f00e2ecc741efd2200c3c87b5db52c6be2fd.1611114341.git.anand.jain@oracle.com>
+ <20210120121416.GX6430@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <e46000d9-c2e1-ec7c-d6b1-a3bd16aa05f4@oracle.com>
+Date:   Thu, 21 Jan 2021 18:10:36 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
+In-Reply-To: <20210120121416.GX6430@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2600:1700:31ee:290:6c3f:2942:f9ba:e594]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1b399c6d-302c-405d-7f89-08d8bde5cfd2
-x-ms-traffictypediagnostic: DM5PR04MB1035:
-x-microsoft-antispam-prvs: <DM5PR04MB103558D7CAA67BC277FBE0E586A19@DM5PR04MB1035.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: luBm2A9fQFDbAs+wwf5UQLQqGI+U9qrY9qOoLl278vLFEhZYF8PCPE1mzg6Tt00oqorUoJZeH6SroLCiDqfwK9XrIA5LmEasW9gV2WFpREOKVrf0vl5YIGT/uz5MOZLMc95bMXi+Hw5BHRva63Z5/1PuoE1WocRTm129bzScDkldj9CvFwvFGhDH9Et4QKMXUX+IciSSEzf5XTQnwBQ4Ce56JAClngNy5hTRHQCC5L4OmkCPDAyuCVPr/ljXo1Jgx+wBya1uqegcbpFR6wk99WVD4J4hLzl4XOz2eSJuA7hIeWxB1OEAXp8WrdWox86N/lXoRtgzme1lqsuaDmQHfwv/fCM9Q/yzofM2yqu2Jy068UIlRYCsj/6zdaLjN0gxaku4C3m0vY9X1srG/ZD+9g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB4972.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(366004)(136003)(396003)(376002)(316002)(52536014)(6916009)(186003)(54906003)(5660300002)(76116006)(9686003)(55016002)(8936002)(71200400001)(83380400001)(4326008)(53546011)(7416002)(7696005)(8676002)(66476007)(91956017)(478600001)(33656002)(66946007)(64756008)(66556008)(86362001)(2906002)(66446008)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?iASZoPJYzsgBoHOG0e4uj4eYwMJzI7AYx9ibXkU8WlIY/45eI5Lozn9IMLqg?=
- =?us-ascii?Q?K1fUjrE61rIj9pVmoTN18nQMr+gvGY4G6wJ+Ny4pZYARx/NQUcSJcxlwZktO?=
- =?us-ascii?Q?bHqvL2+WTuwKfq2jk97rHh4iKZQYlGKj9o5IFGIIiC6E0WKGXNOAogExeiH7?=
- =?us-ascii?Q?tO53jk+LmhpLuLYm0OVz3gHZc25lTvqogVwbwvUqG3rX45XT/251vlSLhLDN?=
- =?us-ascii?Q?BiAaGVE7uBNDX6Lo7JJvKKpz+6vrvuvatx4hhONQ7MN7a+Zn8FxjYQrE2SUa?=
- =?us-ascii?Q?uH7RyUQL1jRl4VoRuKHUwCaNA0ebTkVOQKvC2VmJ6rJqt2gYMsgZjF2sAvYF?=
- =?us-ascii?Q?ZwtuZCJhEJsAawETHIlGBaxry0pr7057QSOs8vA7S+uAfyiqeL3YEqc6ejxT?=
- =?us-ascii?Q?RixON+06jvKRSioN7m1wLJ0XqsMUTEiwAu81zEEefyjFa/50E45jN0Pifbq2?=
- =?us-ascii?Q?YQIZxBpt2Hqxx1KKyTlN2pXg4IQbafIQchs+7TVmwY/vsp9tQR7uEafp0BDS?=
- =?us-ascii?Q?bu5T812yyckpVYAeXogWT4zDgQOCOO47FhLaIz3EFn6kvRW51FFMDKyBoiir?=
- =?us-ascii?Q?wXwhkX75FSf1Qw4pnCXK4hYvl2cDv1YYOEYl1WdmIjJ5O2HNpEWKeTvOxwCX?=
- =?us-ascii?Q?6grVS6+rBLLWAffAcMo7a016G35j79LX7hwn96/LgR3wCcwVNSh6y48Rw/g5?=
- =?us-ascii?Q?buriD3gNHqhP6WETZHEu3zlHI7zs9yJmY9x9tAS7fU8E1W8RjXRnFv3rsLTV?=
- =?us-ascii?Q?mGTcmEpB3F0x56xPLqIzECmw12+8LqLQ8UDlGJuGXusb8MbbIGileZPhB+uM?=
- =?us-ascii?Q?eYZwo7QTxj15lHNkB6nFsDURRPPebs3b77L/3uwexEDpxECQDVj7jI8ssHcj?=
- =?us-ascii?Q?+WRw7u4eTJ3rUDPixBZPxm7sdD54H8NacygfAoLOu7DQVosWaIjmoJMeqwei?=
- =?us-ascii?Q?UQpipq7k3iuDVr8GZd3RD+7YB2iiiLLxt9SAooJrWAExIIw2daPBw3LpDI2I?=
- =?us-ascii?Q?v+AxiMYRd5DaVrZHEoGe1XFXE53nsSzE545xeS/B8kIzqSQ6QWmjCxUgzTIz?=
- =?us-ascii?Q?RlRAUztqVUa3QAZZjmDwWD85Sb5txeijXEhtYjBST9cPs9YLaZg6pekySFU5?=
- =?us-ascii?Q?eMN2lhUlrZ6V1wO6BG46/XYS7R06vKBnUA=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [39.109.186.25]
+X-ClientProxiedBy: SG2PR06CA0085.apcprd06.prod.outlook.com
+ (2603:1096:3:14::11) To BN6PR10MB1683.namprd10.prod.outlook.com
+ (2603:10b6:405:b::15)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.137] (39.109.186.25) by SG2PR06CA0085.apcprd06.prod.outlook.com (2603:1096:3:14::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 10:10:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8f41b2ad-cf37-42eb-85dc-08d8bdf4d189
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5336:
+X-Microsoft-Antispam-PRVS: <BN0PR10MB533613765A18BEA45CA2680CE5A10@BN0PR10MB5336.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ca5i5r6EsWLxQ2Uc3MXo9vLbJgaA0a9MuSTtUolbfG5+p93sHnVAd8Fyjp/NSY9HfNxsvMgEarqNjTCLIcwsXXAm55eZVXSAU/ZmfEAetE4jSUwytO/SBxXGgkJvEDmO4vAZqjJwoPyp/EZyAXGtZ5pVRUkZ7XoG+j4xyHfBrxGhEhRRaH6GwZYenAVMqmtXzTj5fTNlbK35wbpIVd80dxJ4YhrlPWg4msGh0puKtd5oAsG/9tfWLCYg1rZ780izGSEy9+klnGXLC0KYsWg5i7lGijbVkrNLhRGL7DKurJ+bjbLnfWtdErYXRyy3oNsnnjc9zmlo5D+FeC/1bMk8e9tXHvRdlAYjbC0K13SkbqXnV+CHv4XzmbpDpvf//5ZhRHlPNJDRmPFCDfFgu8HiNKYlTipQMcoJ7EEDFzxkxBEoEHEZlTZskHQLPRXJcWrhC85FbF3eA1eQlUT895DF1fBAjFdWJrCbgozaPvgP6Fg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR10MB1683.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(376002)(396003)(366004)(316002)(16526019)(36756003)(31696002)(31686004)(508600001)(6666004)(44832011)(2906002)(83380400001)(186003)(8676002)(86362001)(6486002)(16576012)(5660300002)(956004)(53546011)(2616005)(66556008)(26005)(8936002)(66946007)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R1ZablVOSDZsZUhnSE9OVGprY3BoT2xUdm9iTzRuekVMd1hYbUtpdFFhL1lz?=
+ =?utf-8?B?dFo4bGl3TmhKb0tCaThGL2xQS2VqVVFZMHBhMFc1RGhNUWdUWGZwcWtOcm93?=
+ =?utf-8?B?OFBXaTlRNFhKU1lrOFJleHdwbGRXMjFmcWtDYzRrZTY1ODEzK0FOdFMwMXBu?=
+ =?utf-8?B?Z25GR1lLTDFINE9nMms1SkZoU2IrdVdQVFh3a0FpbVJnS1pobkQybFcrcCtZ?=
+ =?utf-8?B?ZmNxbERHdmUxU2dPeVNyK2g3U1RlbmNwNFpsRmpTTTRLeW1XOCs3MmhLS2Qz?=
+ =?utf-8?B?U2xZQ29YOStadHA3RUtnUXlMK3VlbDQxN1c2U1ZJSFlPZVpSU3hOMEV5YkJN?=
+ =?utf-8?B?bFpPbWlLSXg1d1g0R3ZUcE1jbTVCOHdZR3REQnFlSVpyb3Q0dnY1eGpTVEZX?=
+ =?utf-8?B?QXRnTkppck1hV2VIbWdpZ1Q1bzdmdnZMVmFqMXpabW85TXVmTmNldXJGalZZ?=
+ =?utf-8?B?ZmdvZkY4dWRYTEVKUGVMSGVFeWF1UVZoT2p5czYrc0Njd1d2VTlIaGJONlA3?=
+ =?utf-8?B?MkRwL1U0aGp1MGQ0SlNaMUdIdGlnWDRDYy81eTRsU2lEaDk0TVh0NjBsTkI3?=
+ =?utf-8?B?MTA2YmdvTUxtLzdjWURSUTdEcVNxTXVTSlFnbm4rWmMwSnFYK3dvMlFPT0xD?=
+ =?utf-8?B?RVhCZUVSUngwazlTeklhMkxId2hMaUladFpaUHJMdTlSQzJRa1FjNDBSellh?=
+ =?utf-8?B?czlNdGJKaElLUlhDdFdVOFJHMkVrTnp3NlJrQnBCRmY0TkZ3R3ZmYW93NHVi?=
+ =?utf-8?B?aitvSUhmektYcTVmOE14TXRDVUNraGtOTjRORk5SVnRwNTI1VVZUTGYvdUxz?=
+ =?utf-8?B?dFFNbWZCWitCKzhJaktiWDdpdkxEUjFNQ0RyY3d1RGZZWnNuYTJ1RUlRVzdj?=
+ =?utf-8?B?cGxpaG5Hamd4dHdzTEpDa2x3VmFWb3RjUHJabzNEV1lCRVRKTEQ4UkhNVjVs?=
+ =?utf-8?B?YytrUVNycksyNUxDRmUzVjdUMVBzYWtTeXJJaExaSTJTQUtQQVovTHBzUHN1?=
+ =?utf-8?B?dWxtNnBxVGVUUHFhSE54WWVITW9Cci9sczBnWXorbWRsK0w4ajlpdjBvUXhs?=
+ =?utf-8?B?SmFPL0J4cTZUemc4OXdPTXhpTUhMUTJZR3IxWXVjSEs1T2phN1Jab2QrZXZL?=
+ =?utf-8?B?YTMvdXVaeEs0QlVKazVucUU0bEVWWVFMNy9qNzdvUDI0WnluYjhWVHpuQ2h3?=
+ =?utf-8?B?ZE9QbE8vTXlDSVhtL3QxUXpIMUdBdmRqZjhOQ3pPWTNxSUp1QlFLQ25DWSsw?=
+ =?utf-8?B?WTVrMUxFbFF6WXE1WEVYeE5hcWw5K3NSYkhrcEkzeWNMNm5ocVlOU3N6eHow?=
+ =?utf-8?Q?Dr29eBzm9QrltDiRjHoODxFLFzflzeMe8R?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f41b2ad-cf37-42eb-85dc-08d8bdf4d189
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR10MB1683.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB4972.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b399c6d-302c-405d-7f89-08d8bde5cfd2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jan 2021 08:23:20.3555
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 10:10:46.1414
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q/0OYkC/ek5ytB2UVtDM2si2ySo1pVi+WyQqr0ClrR0sMEWiGpRaV17E+ClET0fPiMj8qHuKJIGPJIy3pAz1DySUTHtG+BdCm5OrLj07ghM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1035
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 72fjrTf+AVPAQRlgFG9QdbSEVEwXzc+bq5IzMxQeAUQXvEkFXhaJ4XlMFTIrpYN35/uybuKIU5JcVIgnzUPPHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5336
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101210053
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9870 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101210053
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/20/21 7:01 PM, Julian Calaby wrote:=0A=
-> Hi Chaitanya,=0A=
->=0A=
-> On Tue, Jan 19, 2021 at 5:01 PM Chaitanya Kulkarni=0A=
-> <chaitanya.kulkarni@wdc.com> wrote:=0A=
->> Hi,=0A=
->>=0A=
->> This is a *compile only RFC* which adds a generic helper to initialize=
-=0A=
->> the various fields of the bio that is repeated all the places in=0A=
->> file-systems, block layer, and drivers.=0A=
->>=0A=
->> The new helper allows callers to initialize various members such as=0A=
->> bdev, sector, private, end io callback, io priority, and write hints.=0A=
->>=0A=
->> The objective of this RFC is to only start a discussion, this it not=0A=
->> completely tested at all.=0A=
->> Following diff shows code level benefits of this helper :-=0A=
->>  38 files changed, 124 insertions(+), 236 deletions(-)=0A=
-> On a more abstract note, I don't think this diffstat is actually=0A=
-> illustrating the benefits of this as much as you think it is.=0A=
->=0A=
-> Yeah, we've reduced the code by 112 lines, but that's barely half the=0A=
-> curn here. It looks, from the diffstat, that you've effectively=0A=
-> reduced 2 lines into 1. That isn't much of a saving.=0A=
->=0A=
-> Thanks,=0A=
-The diff stat is not the only measure since every component fs/driver=0A=
-has a different style and nested call it just to show the effect.=0A=
-Thanks for your comment, we have decided to go with the bio_new approach.=
-=0A=
-=0A=
-=0A=
+
+
+On 20/1/21 8:14 pm, David Sterba wrote:
+> On Tue, Jan 19, 2021 at 11:52:05PM -0800, Anand Jain wrote:
+>> The read policy type latency routes the read IO based on the historical
+>> average wait-time experienced by the read IOs through the individual
+>> device. This patch obtains the historical read IO stats from the kernel
+>> block layer and calculates its average.
+> 
+> This does not say how the stripe is selected using the gathered numbers.
+> Ie. what is the criteria like minimum average time, "based on" is too
+> vague.
+> 
+
+
+Could you please add the following in the change log. Hope this will 
+suffice.
+
+----------
+This patch adds new read policy Latency. This policy routes the read
+I/Os based on the device's average wait time for read requests.
+The average is calculated by dividing the total wait time for read
+requests by the total read I/Os processed by the device.
+This policy uses kernel disk stat to calculate the average, so it needs
+the kernel stat to be enabled. If in case the kernel stat is disabled
+the policy uses the stripe 0.
+This policy can be set through the read_policy sysfs interface as shown
+below.
+
+     $ echo latency > /sys/fs/btrfs/<uuid>/read_policy
+     $ cat /sys/fs/btrfs/<uuid>/read_policy
+          pid [latency] device roundrobin
+
+This policy won't persist across reboot or mount unmount recycle as of
+now.
+
+Here below are few performance test results with latency compared with 
+pid policy.
+
+raid1 fio read 500m
+-----------------------------------------------------
+dev types   | nvme+ssd  nvme+ssd   all-nvme  all-nvme
+read type   | random    sequential random    sequential
+------------+------------------------------------------
+pid         | 744MiB/s  809MiB/s  2225MiB/s 2155MiB/s
+latency     | 2072MiB/s 2008MiB/s  1999MiB/s 1961MiB/s
+
+
+raid10 fio read 500m
+-----------------------------------------------------
+dev types   | nvme+ssd  nvme+ssd   all-nvme  all-nvme
+read type   | random    sequential random    sequential
+------------+------------------------------------------
+pid         | 1282MiB/s 1427MiB/s 2152MiB/s 1969MiB/s
+latency     | 2073MiB/s 1871MiB/s 1975MiB/s 1984MiB/s
+
+
+raid1c3 fio read 500m
+-----------------------------------------------------
+dev types   | nvme+ssd  nvme+ssd   all-nvme  all-nvme
+read type   | random    sequential random    sequential
+------------+------------------------------------------
+pid         |  973MiB/s  955MiB/s 2144MiB/s 1962MiB/s
+latency     | 2005MiB/s 1924MiB/s 2083MiB/s 1980MiB/s
+
+
+raid1c4 fio read 500m
+-----------------------------------------------------
+dev types   | nvme+ssd  nvme+ssd   all-nvme  all-nvme
+read type   | random    sequential random    sequential
+------------+------------------------------------------
+pid         | 1204MiB/s 1221MiB/s 2065MiB/s 1878MiB/s
+latency     | 1990MiB/s 1920MiB/s 1945MiB/s 1865MiB/s
+
+
+In the given fio I/O workload above, it is found that there are fewer 
+I/O merges in case of latency as compared to pid. So in the case of all 
+homogeneous devices pid performance little better.
+The latency is a better choice in the case of mixed types of devices. 
+Also if any one of the devices is under performing due to intermittent 
+I/Os retries, then the latency policy will automatically use the best 
+available.
+-----------
+
+
+
+
+>> Example usage:
+>>   echo "latency" > /sys/fs/btrfs/$uuid/read_policy
+> 
+> Do you have some sample results? I remember you posted something but it
+> would be good to have that in the changelog too.
+
+Thanks for suggesting now I have included it, as above.
+Also, I can generate a patch reroll with this change log if needed.
+Please, let me know.
+
+Thanks, Anand
+
+
+> 
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>> v4: For btrfs_debug_rl() use fs_info instead of
+>>      device->fs_devices->fs_info.
+>>
+>> v3: The block layer commit 0d02129e76ed (block: merge struct block_device and
+>>      struct hd_struct) has changed the first argument in the function
+>>      part_stat_read_all() in 5.11-rc1. So the compilation will fail. This patch
+>>      fixes it.
+>>      Commit log updated.
+>>
+>> v2: Use btrfs_debug_rl() instead of btrfs_info_rl()
+>>      It is better we have this debug until we test this on at least few
+>>      hardwares.
+>>      Drop the unrelated changes.
+>>      Update change log.
+>>
+>> rfc->v1: Drop part_stat_read_all instead use part_stat_read
+>>      Drop inflight
+>>
+>>   fs/btrfs/sysfs.c   |  3 ++-
+>>   fs/btrfs/volumes.c | 38 ++++++++++++++++++++++++++++++++++++++
+>>   fs/btrfs/volumes.h |  2 ++
+>>   3 files changed, 42 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+>> index 4522a1c4cd08..7c0324fe97b2 100644
+>> --- a/fs/btrfs/sysfs.c
+>> +++ b/fs/btrfs/sysfs.c
+>> @@ -915,7 +915,8 @@ static bool strmatch(const char *buffer, const char *string)
+>>   	return false;
+>>   }
+>>   
+>> -static const char * const btrfs_read_policy_name[] = { "pid" };
+>> +/* Must follow the order as in enum btrfs_read_policy */
+>> +static const char * const btrfs_read_policy_name[] = { "pid", "latency" };
+>>   
+>>   static ssize_t btrfs_read_policy_show(struct kobject *kobj,
+>>   				      struct kobj_attribute *a, char *buf)
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 62d6a890fc50..f361f1c87eb6 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -14,6 +14,7 @@
+>>   #include <linux/semaphore.h>
+>>   #include <linux/uuid.h>
+>>   #include <linux/list_sort.h>
+>> +#include <linux/part_stat.h>
+>>   #include "misc.h"
+>>   #include "ctree.h"
+>>   #include "extent_map.h"
+>> @@ -5490,6 +5491,39 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
+>>   	return ret;
+>>   }
+>>   
+>> +static int btrfs_find_best_stripe(struct btrfs_fs_info *fs_info,
+> 
+> The name btrfs_find_best_stripe should be more descriptive about the
+> selection criteria.
+> 
+>> +				  struct map_lookup *map, int first,
+>> +				  int num_stripe)
+>> +{
+>> +	u64 est_wait = 0;
+>> +	int best_stripe = 0;
+>> +	int index;
+>> +
+>> +	for (index = first; index < first + num_stripe; index++) {
+>> +		u64 read_wait;
+>> +		u64 avg_wait = 0;
+>> +		unsigned long read_ios;
+>> +		struct btrfs_device *device = map->stripes[index].dev;
+>> +
+>> +		read_wait = part_stat_read(device->bdev, nsecs[READ]);
+> 
+> This should use STAT_READ as this is supposed to be indexing the stats
+> members. READ is some generic constant with the same value.
+> 
+>> +		read_ios = part_stat_read(device->bdev, ios[READ]);
+>> +
+>> +		if (read_wait && read_ios && read_wait >= read_ios)
+>> +			avg_wait = div_u64(read_wait, read_ios);
+>> +		else
+>> +			btrfs_debug_rl(fs_info,
+>> +			"devid: %llu avg_wait ZERO read_wait %llu read_ios %lu",
+>> +				       device->devid, read_wait, read_ios);
+>> +
+>> +		if (est_wait == 0 || est_wait > avg_wait) {
+>> +			est_wait = avg_wait;
+>> +			best_stripe = index;
+>> +		}
+>> +	}
+>> +
+>> +	return best_stripe;
+>> +}
+>> +
+>>   static int find_live_mirror(struct btrfs_fs_info *fs_info,
+>>   			    struct map_lookup *map, int first,
+>>   			    int dev_replace_is_ongoing)
+>> @@ -5519,6 +5553,10 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+>>   	case BTRFS_READ_POLICY_PID:
+>>   		preferred_mirror = first + (current->pid % num_stripes);
+>>   		break;
+>> +	case BTRFS_READ_POLICY_LATENCY:
+>> +		preferred_mirror = btrfs_find_best_stripe(fs_info, map, first,
+>> +							  num_stripes);
+>> +		break;
+>>   	}
+>>   
+>>   	if (dev_replace_is_ongoing &&
+>> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+>> index 1997a4649a66..71ba1f0e93f4 100644
+>> --- a/fs/btrfs/volumes.h
+>> +++ b/fs/btrfs/volumes.h
+>> @@ -222,6 +222,8 @@ enum btrfs_chunk_allocation_policy {
+>>   enum btrfs_read_policy {
+>>   	/* Use process PID to choose the stripe */
+>>   	BTRFS_READ_POLICY_PID,
+>> +	/* Find and use device with the lowest latency */
+>> +	BTRFS_READ_POLICY_LATENCY,
+>>   	BTRFS_NR_READ_POLICY,
+>>   };
+>>   
+>> -- 
+>> 2.28.0
