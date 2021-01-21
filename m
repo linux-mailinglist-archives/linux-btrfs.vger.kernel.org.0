@@ -2,216 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44F62FE1AF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 06:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94E12FE1AD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 06:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731436AbhAUDq4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jan 2021 22:46:56 -0500
-Received: from mout.gmx.net ([212.227.15.15]:54059 "EHLO mout.gmx.net"
+        id S1729581AbhAUDrK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jan 2021 22:47:10 -0500
+Received: from mout.gmx.net ([212.227.17.22]:53129 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727177AbhAUAvY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:51:24 -0500
+        id S1728808AbhAUAx4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Jan 2021 19:53:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611190174;
-        bh=6vJ1MvcXnoJzuN/ZybcvetJpR8HzPC51zZamh5RagKM=;
+        s=badeba3b8450; t=1611190287;
+        bh=y46RDmwOCEcz1KoFpMnOWtF6rMZ+0/FGww0Yx+uqpx8=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=W1AElLaYF4IBcsoBFHtvIyS/3MsOT1hs7qVQJ3qf5kqNYeLvMmq977Xw8iXKkXq6i
-         1J4UWhL8UFJ9DfN5cZ6PFsyxI/sKQvgMLAzYf6VB1/+secXoWndnJSMX0ffGjMRX2Z
-         xy33nGCjzNNj69fusXICwIbDH9Gpe7j9FyW08abU=
+        b=HyudRhD6QHYho1tuW3BezriRrCOYA2MlSIfDDSKEQ08FCECXD4AEY75DK12RZ4Fmp
+         QNag3aWFfouc9zgUUHyEk5X8IAkSoS+Ixjwl2Fb/TCbEv+Kq9Mq0Y+6itCES4j4SXj
+         TR91B11O7cr/tSkFcRbVI7RqdVjGp3ik/bK3Bi14=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvbBk-1luce31a9G-00saXy; Thu, 21
- Jan 2021 01:49:34 +0100
-Subject: Re: [PATCH v4 08/18] btrfs: introduce helper for subpage uptodate
- status
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Msq24-1lqmzG14Nk-00tAeq; Thu, 21
+ Jan 2021 01:51:26 +0100
+Subject: Re: [PATCH v4 12/18] btrfs: implement try_release_extent_buffer() for
+ subpage metadata support
 To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-9-wqu@suse.com>
- <812a4f48-3210-926f-cf59-de63bfcc4c0d@toxicpanda.com>
+ <20210116071533.105780-13-wqu@suse.com>
+ <4732f7cb-8d1c-6af2-0ec4-9b9cf5a47c3e@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <3118cc60-2337-49da-648d-aa3b8cdcd70d@gmx.com>
-Date:   Thu, 21 Jan 2021 08:49:30 +0800
+Message-ID: <e3f4f9d4-c521-83ec-b1cc-9064c90a658a@gmx.com>
+Date:   Thu, 21 Jan 2021 08:51:22 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <812a4f48-3210-926f-cf59-de63bfcc4c0d@toxicpanda.com>
+In-Reply-To: <4732f7cb-8d1c-6af2-0ec4-9b9cf5a47c3e@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:yZWix0AiIL7C6u9kMA3yvHNvwct7ZXDKb73rzBaq/KUu7UzLnlY
- ju++TdDty15A2T7ymGvdRD7VXU1JuuWq0NDEyqyNTwYAyjuwm2ngd939Vvwb5Wnuhg3NKOq
- T61aKu3u+Ztw1KcQYWKgQZZa+g7RgJ5oSFhCeIeOMvta3cD7xE9N2dVzquP5NUh+eQ8U10J
- vcb5m4u+oJIBmUhKPXWDQ==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1FF9TqztiSoiQx2OCXBqYxYy1MFpg6zzW9bqKDcF5jCt6YQBZFm
+ vVTO9LsC99tYI6feQs+ehECgigjXYsbukHmW8RE02XXO8JOmp1wrNIx/q/YVkaIzaOjFNtQ
+ Qpw3jDLIcg2VmnZxYYl3uzHPZkCc4yzB+YacJy7AhgYpTT3fkp3u7I+Z8QPBJXo/lJNLImj
+ cxboK3I9AcufPmaFOEA1Q==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XDd9Uaj2s7M=:6FiWKXrHr1KlLnzEEoKu1b
- 2XrZWzggRoSE/zRpdNyPHjXdF4Avlh8uUN+9iErlmh2DQlL2MrKPH+5sLoLM0Xohco66rgvpM
- Do2lntBFsTJuq683skbIL91DtYCFA4DfohOdIqhtpSkz9raCtdjhfCfSVd27DrimcOM3RxJoe
- SK3Es3OeJlWJ+44rhUim8QIRRCxHPjFTjp4o4k9P2mYQX2Hyp+d1e+5X74mcI8FbbtlqMfBSj
- vQS7pBqzoHNhjGdBOZnEPsQdUZ8wbB1EwSdJjAjTl7R/yqcZL4gEV2hQB/IbvZjaXjH+y4oPS
- M0GPGp85sOLNJ19a2UZ5twDsGp24i+IqJeTR3HscD1H8VMLFW3oVqn2y0LO9mdbpRkL+IltAf
- 8spc42oT+0Rc6i/K7kADxjK5On76rKTlOCVkgJ1lCv56/1ylms2chUxY3ATyk9L4eC77gqU7o
- OK+0iT1jbb6eenD/Pj+AC73tbVICr3U0UwOamWgruiNReEqJh0H11W/E69q0cZuSLe/oFDzu8
- LEfIrN7x0eetzmazhisEeMSXKAOrPEWxnVD5IDi+UZ0s22/IJKlVsCDIbTon6CDofq+7Yg7sY
- B3oWMly51cTLN8mzqwyT7NUiRqSDO8LX9XsQFJjnctxzvBdk+R30iKwkhXOPUtsb/UZHF36MJ
- eFyawiR7nYM0o/tHJ+z/CSPXW7aMAZFosRk6xydX1cKtXZZw4UbzxoDQEL6Kg67cHIMH46k+9
- e47Q4T5sSoupHVqsyNSlvHUVjCO2bx9ve5XQ/ar3ffMAN+eNZwsAHAUF7M/pkO+68yoOZPYlw
- F5g0QGFv6f0EWGNjuCzhO4J7Z+FVcqrC2tZibe1MUVLVJgTZNB9YceMhRsp2T8R2y96fvumXm
- xTem+BeKCgF8+jsKmQbA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EZ82QZOtGYo=:sXDBLRGbLpcQONzYJjTuCO
+ pAklZv+w9Qez8Vfnbg0GGfJlwAf00E7Ad47KNJZPpd8ZoWGIoVRT3YtFeXSGVErqN4ZTXPnJA
+ CiaKDpKRk2aBBhJ6aagumZJ5BGEv6c+gXf9bS6c1QID1rqfabhCChwIt77fUXRlbQJDULxRFE
+ oGOLw33IEgWvtiT3AGQCtS6u3gV9KWqLpJdm6a5qcSQFMXUDy3wjecONDt4ktuVH1hiK5+LUL
+ eA+YryxHoPdcRnc2HpF+l5vUxrCNfyaUoPGvqF2JgKNjDBQtcyME8S5w/517oJPGmhUk60jT1
+ qrlO6C9fEuo5j3TusT+Al1EZcNbU1APh2lo3l91xDNivIRjGRBbXqJq+euQ/QwbFAXya1dpaE
+ gAjW3ejoemmdmOuK+9A6NFCiz2VTod+x0347k3H2Tr2JcL0qoVzhhak5LiFmEg2ch6OgrFRfv
+ UaNAjErFMzH1oBppDDxA4edYRkEsfsGgfM1r9yqD71+jCxPtpNeOHkWaIs25dfdV2c3buSQ5B
+ CrOgtnWw6ImABh39XfKTucTuVo+i3LN1uPhzVcfyUAZVB/jYIYVNBtphHSXaM7kV0FSrmv4vE
+ 4S/9428Z7rBwXsEeA807it/3ztlz10Z9cWqCEkGBGETGAXoGnwknU/wt9YHCVz9djp9VWxm1b
+ oAS5RZjQcKCeOXdmTfmoeYrtF5hCpKE6u/C6DYOU5tXWfwRyVmSpcFUiHkRgW2DGyYW/Yry3u
+ Fnq92KfgcGR+ODwgZRGq2bOcjJWecb58sQeZbOekaL89Hrx0GpvzFBD1mWsMbmlxhz6c1kknf
+ o2umLRq3+Me+PXCaaeI2PkgXAELy+rWZAn+Ync1WD7j7iWQgb10rBrw4dbWX3GiJT90/xJwn1
+ 0XOxghGQPM0Aucg2DhHw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjEvMS8yMCDkuIvljYgxMTowMCwgSm9zZWYgQmFjaWsgd3JvdGU6DQo+IE9uIDEv
-MTYvMjEgMjoxNSBBTSwgUXUgV2VucnVvIHdyb3RlOg0KPj4gVGhpcyBwYXRjaCBpbnRyb2R1Y2Ug
-dGhlIGZvbGxvd2luZyBmdW5jdGlvbnMgdG8gaGFuZGxlIGJ0cmZzIHN1YnBhZ2UNCj4+IHVwdG9k
-YXRlIHN0YXR1czoNCj4+IC0gYnRyZnNfc3VicGFnZV9zZXRfdXB0b2RhdGUoKQ0KPj4gLSBidHJm
-c19zdWJwYWdlX2NsZWFyX3VwdG9kYXRlKCkNCj4+IC0gYnRyZnNfc3VicGFnZV90ZXN0X3VwdG9k
-YXRlKCkNCj4+IMKgwqAgVGhvc2UgaGVscGVycyBjYW4gb25seSBiZSBjYWxsZWQgd2hlbiB0aGUg
-cmFuZ2UgaXMgZW5zdXJlZCB0byBiZQ0KPj4gwqDCoCBpbnNpZGUgdGhlIHBhZ2UuDQo+Pg0KPj4g
-LSBidHJmc19wYWdlX3NldF91cHRvZGF0ZSgpDQo+PiAtIGJ0cmZzX3BhZ2VfY2xlYXJfdXB0b2Rh
-dGUoKQ0KPj4gLSBidHJmc19wYWdlX3Rlc3RfdXB0b2RhdGUoKQ0KPj4gwqDCoCBUaG9zZSBoZWxw
-ZXJzIGNhbiBoYW5kbGUgYm90aCByZWd1bGFyIHNlY3RvciBzaXplIGFuZCBzdWJwYWdlIHdpdGhv
-dXQNCj4+IMKgwqAgcHJvYmxlbS4NCj4+IMKgwqAgQWx0aG91Z2ggY2FsbGVyIHNob3VsZCBzdGls
-bCBlbnN1cmUgdGhhdCB0aGUgcmFuZ2UgaXMgaW5zaWRlIHRoZSBwYWdlLg0KPj4NCj4+IFNpZ25l
-ZC1vZmYtYnk6IFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPg0KPj4gLS0tDQo+PiDCoCBmcy9idHJm
-cy9zdWJwYWdlLmggfCAxMTUgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrDQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMTE1IGluc2VydGlvbnMoKykNCj4+DQo+PiBk
-aWZmIC0tZ2l0IGEvZnMvYnRyZnMvc3VicGFnZS5oIGIvZnMvYnRyZnMvc3VicGFnZS5oDQo+PiBp
-bmRleCBkOGIzNDg3OTM2OGQuLjMzNzNlZjRmZmVjMSAxMDA2NDQNCj4+IC0tLSBhL2ZzL2J0cmZz
-L3N1YnBhZ2UuaA0KPj4gKysrIGIvZnMvYnRyZnMvc3VicGFnZS5oDQo+PiBAQCAtMjMsNiArMjMs
-NyBAQA0KPj4gwqAgc3RydWN0IGJ0cmZzX3N1YnBhZ2Ugew0KPj4gwqDCoMKgwqDCoCAvKiBDb21t
-b24gbWVtYmVycyBmb3IgYm90aCBkYXRhIGFuZCBtZXRhZGF0YSBwYWdlcyAqLw0KPj4gwqDCoMKg
-wqDCoCBzcGlubG9ja190IGxvY2s7DQo+PiArwqDCoMKgIHUxNiB1cHRvZGF0ZV9iaXRtYXA7DQo+
-PiDCoMKgwqDCoMKgIHVuaW9uIHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCAvKiBTdHJ1Y3R1cmVz
-IG9ubHkgdXNlZCBieSBtZXRhZGF0YSAqLw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGJvb2wgdW5k
-ZXJfYWxsb2M7DQo+PiBAQCAtNzgsNCArNzksMTE4IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCANCj4+
-IGJ0cmZzX3BhZ2VfZW5kX21ldGFfYWxsb2Moc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8s
-DQo+PiDCoCBpbnQgYnRyZnNfYXR0YWNoX3N1YnBhZ2Uoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZz
-X2luZm8sIHN0cnVjdCBwYWdlIA0KPj4gKnBhZ2UpOw0KPj4gwqAgdm9pZCBidHJmc19kZXRhY2hf
-c3VicGFnZShzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbywgc3RydWN0IHBhZ2UgDQo+PiAq
-cGFnZSk7DQo+PiArLyoNCj4+ICsgKiBDb252ZXJ0IHRoZSBbc3RhcnQsIHN0YXJ0ICsgbGVuKSBy
-YW5nZSBpbnRvIGEgdTE2IGJpdG1hcA0KPj4gKyAqDQo+PiArICogRS5nLiBpZiBzdGFydCA9PSBw
-YWdlX29mZnNldCgpICsgMTZLLCBsZW4gPSAxNkssIHdlIGdldCAweDAwZjAuDQo+PiArICovDQo+
-PiArc3RhdGljIGlubGluZSB1MTYgYnRyZnNfc3VicGFnZV9jYWxjX2JpdG1hcChzdHJ1Y3QgYnRy
-ZnNfZnNfaW5mbyANCj4+ICpmc19pbmZvLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3Ry
-dWN0IHBhZ2UgKnBhZ2UsIHU2NCBzdGFydCwgdTMyIGxlbikNCj4+ICt7DQo+PiArwqDCoMKgIGlu
-dCBiaXRfc3RhcnQgPSBvZmZzZXRfaW5fcGFnZShzdGFydCkgPj4gZnNfaW5mby0+c2VjdG9yc2l6
-ZV9iaXRzOw0KPj4gK8KgwqDCoCBpbnQgbmJpdHMgPSBsZW4gPj4gZnNfaW5mby0+c2VjdG9yc2l6
-ZV9iaXRzOw0KPj4gKw0KPj4gK8KgwqDCoCAvKiBCYXNpYyBjaGVja3MgKi8NCj4+ICvCoMKgwqAg
-QVNTRVJUKFBhZ2VQcml2YXRlKHBhZ2UpICYmIHBhZ2UtPnByaXZhdGUpOw0KPj4gK8KgwqDCoCBB
-U1NFUlQoSVNfQUxJR05FRChzdGFydCwgZnNfaW5mby0+c2VjdG9yc2l6ZSkgJiYNCj4+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBJU19BTElHTkVEKGxlbiwgZnNfaW5mby0+c2VjdG9yc2l6ZSkpOw0K
-Pj4gKw0KPj4gK8KgwqDCoCAvKg0KPj4gK8KgwqDCoMKgICogVGhlIHJhbmdlIGNoZWNrIG9ubHkg
-d29ya3MgZm9yIG1hcHBlZCBwYWdlLCB3ZSBjYW4NCj4+ICvCoMKgwqDCoCAqIHN0aWxsIGhhdmUg
-dW5hbXBwZWQgcGFnZSBsaWtlIGR1bW15IGV4dGVudCBidWZmZXIgcGFnZXMuDQo+PiArwqDCoMKg
-wqAgKi8NCj4+ICvCoMKgwqAgaWYgKHBhZ2UtPm1hcHBpbmcpDQo+PiArwqDCoMKgwqDCoMKgwqAg
-QVNTRVJUKHBhZ2Vfb2Zmc2V0KHBhZ2UpIDw9IHN0YXJ0ICYmDQo+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBzdGFydCArIGxlbiA8PSBwYWdlX29mZnNldChwYWdlKSArIFBBR0VfU0laRSk7DQo+
-PiArwqDCoMKgIC8qDQo+PiArwqDCoMKgwqAgKiBIZXJlIG5iaXRzIGNhbiBiZSAxNiwgdGh1cyBj
-YW4gZ28gYmV5b25kIHUxNiByYW5nZS4gSGVyZSB3ZSANCj4+IG1ha2UgdGhlDQo+PiArwqDCoMKg
-wqAgKiBmaXJzdCBsZWZ0IHNoaWZ0IHRvIGJlIGNhbGN1bGF0ZWQgaW4gdW5zaWduZWQgbG9uZyAo
-dTMyKSwgdGhlbg0KPj4gK8KgwqDCoMKgICogdHJ1bmNhdGUgdGhlIHJlc3VsdCB0byB1MTYuDQo+
-PiArwqDCoMKgwqAgKi8NCj4+ICvCoMKgwqAgcmV0dXJuICh1MTYpKCgoMVVMIDw8IG5iaXRzKSAt
-IDEpIDw8IGJpdF9zdGFydCk7DQo+PiArfQ0KPj4gKw0KPj4gK3N0YXRpYyBpbmxpbmUgdm9pZCBi
-dHJmc19zdWJwYWdlX3NldF91cHRvZGF0ZShzdHJ1Y3QgYnRyZnNfZnNfaW5mbyANCj4+ICpmc19p
-bmZvLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IHBhZ2UgKnBhZ2UsIHU2NCBz
-dGFydCwgdTMyIGxlbikNCj4+ICt7DQo+PiArwqDCoMKgIHN0cnVjdCBidHJmc19zdWJwYWdlICpz
-dWJwYWdlID0gKHN0cnVjdCBidHJmc19zdWJwYWdlIA0KPj4gKilwYWdlLT5wcml2YXRlOw0KPj4g
-K8KgwqDCoCB1MTYgdG1wID0gYnRyZnNfc3VicGFnZV9jYWxjX2JpdG1hcChmc19pbmZvLCBwYWdl
-LCBzdGFydCwgbGVuKTsNCj4+ICvCoMKgwqAgdW5zaWduZWQgbG9uZyBmbGFnczsNCj4+ICsNCj4+
-ICvCoMKgwqAgc3Bpbl9sb2NrX2lycXNhdmUoJnN1YnBhZ2UtPmxvY2ssIGZsYWdzKTsNCj4+ICvC
-oMKgwqAgc3VicGFnZS0+dXB0b2RhdGVfYml0bWFwIHw9IHRtcDsNCj4+ICvCoMKgwqAgaWYgKHN1
-YnBhZ2UtPnVwdG9kYXRlX2JpdG1hcCA9PSBVMTZfTUFYKQ0KPj4gK8KgwqDCoMKgwqDCoMKgIFNl
-dFBhZ2VVcHRvZGF0ZShwYWdlKTsNCj4+ICvCoMKgwqAgc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgm
-c3VicGFnZS0+bG9jaywgZmxhZ3MpOw0KPj4gK30NCj4+ICsNCj4+ICtzdGF0aWMgaW5saW5lIHZv
-aWQgYnRyZnNfc3VicGFnZV9jbGVhcl91cHRvZGF0ZShzdHJ1Y3QgYnRyZnNfZnNfaW5mbyANCj4+
-ICpmc19pbmZvLA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IHBhZ2UgKnBhZ2Us
-IHU2NCBzdGFydCwgdTMyIGxlbikNCj4+ICt7DQo+PiArwqDCoMKgIHN0cnVjdCBidHJmc19zdWJw
-YWdlICpzdWJwYWdlID0gKHN0cnVjdCBidHJmc19zdWJwYWdlIA0KPj4gKilwYWdlLT5wcml2YXRl
-Ow0KPj4gK8KgwqDCoCB1MTYgdG1wID0gYnRyZnNfc3VicGFnZV9jYWxjX2JpdG1hcChmc19pbmZv
-LCBwYWdlLCBzdGFydCwgbGVuKTsNCj4+ICvCoMKgwqAgdW5zaWduZWQgbG9uZyBmbGFnczsNCj4+
-ICsNCj4+ICvCoMKgwqAgc3Bpbl9sb2NrX2lycXNhdmUoJnN1YnBhZ2UtPmxvY2ssIGZsYWdzKTsN
-Cj4+ICvCoMKgwqAgc3VicGFnZS0+dXB0b2RhdGVfYml0bWFwICY9IH50bXA7DQo+PiArwqDCoMKg
-IENsZWFyUGFnZVVwdG9kYXRlKHBhZ2UpOw0KPj4gK8KgwqDCoCBzcGluX3VubG9ja19pcnFyZXN0
-b3JlKCZzdWJwYWdlLT5sb2NrLCBmbGFncyk7DQo+PiArfQ0KPj4gKw0KPj4gKy8qDQo+PiArICog
-VW5saWtlIHNldC9jbGVhciB3aGljaCBpcyBkZXBlbmRlbnQgb24gZWFjaCBwYWdlIHN0YXR1cywg
-Zm9yIHRlc3QgDQo+PiBhbGwgYml0cw0KPj4gKyAqIGFyZSB0ZXN0ZWQgaW4gdGhlIHNhbWUgd2F5
-Lg0KPj4gKyAqLw0KPj4gKyNkZWZpbmUgREVDTEFSRV9CVFJGU19TVUJQQUdFX1RFU1RfT1AobmFt
-ZSnCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4gK3N0YXRpYyBpbmxpbmUgYm9v
-bCBidHJmc19zdWJwYWdlX3Rlc3RfIyNuYW1lKHN0cnVjdCBidHJmc19mc19pbmZvIA0KPj4gKmZz
-X2luZm8sIFwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBwYWdlICpwYWdlLCB1
-NjQgc3RhcnQsIHUzMiBsZW4pwqDCoMKgwqDCoMKgwqAgXA0KPj4gK3vCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwN
-Cj4+ICvCoMKgwqAgc3RydWN0IGJ0cmZzX3N1YnBhZ2UgKnN1YnBhZ2UgPSAoc3RydWN0IGJ0cmZz
-X3N1YnBhZ2UgDQo+PiAqKXBhZ2UtPnByaXZhdGU7IFwNCj4+ICvCoMKgwqAgdTE2IHRtcCA9IGJ0
-cmZzX3N1YnBhZ2VfY2FsY19iaXRtYXAoZnNfaW5mbywgcGFnZSwgc3RhcnQsIGxlbik7IFwNCj4+
-ICvCoMKgwqAgdW5zaWduZWQgbG9uZyBmbGFnczvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgYm9vbCByZXQ7wqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIFwNCj4+ICvCoMKgwqAgc3Bpbl9sb2NrX2lycXNhdmUoJnN1YnBhZ2UtPmxvY2ssIGZsYWdz
-KTvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgcmV0ID0gKChzdWJwYWdlLT5u
-YW1lIyNfYml0bWFwICYgdG1wKSA9PSB0bXApO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4g
-K8KgwqDCoCBzcGluX3VubG9ja19pcnFyZXN0b3JlKCZzdWJwYWdlLT5sb2NrLCBmbGFncyk7wqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+PiArwqDCoMKgIHJldHVybiByZXQ7wqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICt9DQo+PiAr
-REVDTEFSRV9CVFJGU19TVUJQQUdFX1RFU1RfT1AodXB0b2RhdGUpOw0KPj4gKw0KPj4gKy8qDQo+
-PiArICogTm90ZSB0aGF0LCBpbiBzZWxmdGVzdCwgZXNwZWNpYWxseSBleHRlbnQtaW8tdGVzdHMs
-IHdlIGNhbiBoYXZlIGVtcHR5DQo+PiArICogZnNfaW5mbyBwYXNzZWQgaW4uDQo+PiArICogVGhh
-bmtmdWxseSBpbiBzZWxmdGVzdCwgd2Ugb25seSB0ZXN0IHNlY3RvcnNpemUgPT0gUEFHRV9TSVpF
-IGNhc2VzIA0KPj4gc28gZmFyLA0KPj4gKyAqIHRodXMgd2UgY2FuIGZhbGwgYmFjayB0byByZWd1
-bGFyIHNlY3RvcnNpemUgYnJhbmNoLg0KPj4gKyAqLw0KPj4gKyNkZWZpbmUgREVDTEFSRV9CVFJG
-U19QQUdFX09QUyhuYW1lLCBzZXRfcGFnZV9mdW5jLCANCj4+IGNsZWFyX3BhZ2VfZnVuYyzCoMKg
-wqAgXA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0ZXN0X3BhZ2Vf
-ZnVuYynCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4gK3N0YXRpYyBpbmxpbmUg
-dm9pZCBidHJmc19wYWdlX3NldF8jI25hbWUoc3RydWN0IGJ0cmZzX2ZzX2luZm8gDQo+PiAqZnNf
-aW5mbyzCoMKgwqAgXA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IHBhZ2UgKnBh
-Z2UsIHU2NCBzdGFydCwgdTMyIGxlbinCoMKgwqDCoMKgwqDCoCBcDQo+PiAre8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgXA0KPj4gK8KgwqDCoCBpZiAodW5saWtlbHkoIWZzX2luZm8pIHx8IGZzX2luZm8tPnNlY3Rv
-cnNpemUgPT0gUEFHRV9TSVpFKSB7wqDCoMKgIFwNCj4+ICvCoMKgwqDCoMKgwqDCoCBzZXRfcGFn
-ZV9mdW5jKHBhZ2UpO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+
-ICvCoMKgwqDCoMKgwqDCoCByZXR1cm47wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgfcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAg
-YnRyZnNfc3VicGFnZV9zZXRfIyNuYW1lKGZzX2luZm8sIHBhZ2UsIHN0YXJ0LCBsZW4pO8KgwqDC
-oMKgwqDCoMKgIFwNCj4+ICt9wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+PiArc3RhdGljIGlubGluZSB2b2lk
-IGJ0cmZzX3BhZ2VfY2xlYXJfIyNuYW1lKHN0cnVjdCBidHJmc19mc19pbmZvIA0KPj4gKmZzX2lu
-Zm8sIFwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBwYWdlICpwYWdlLCB1NjQg
-c3RhcnQsIHUzMiBsZW4pwqDCoMKgwqDCoMKgwqAgXA0KPj4gK3vCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+
-ICvCoMKgwqAgaWYgKHVubGlrZWx5KCFmc19pbmZvKSB8fCBmc19pbmZvLT5zZWN0b3JzaXplID09
-IFBBR0VfU0laRSkge8KgwqDCoCBcDQo+PiArwqDCoMKgwqDCoMKgwqAgY2xlYXJfcGFnZV9mdW5j
-KHBhZ2UpO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKg
-wqDCoMKgwqDCoCByZXR1cm47wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgfcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgYnRyZnNf
-c3VicGFnZV9jbGVhcl8jI25hbWUoZnNfaW5mbywgcGFnZSwgc3RhcnQsIGxlbik7wqDCoMKgwqDC
-oMKgwqAgXA0KPj4gK33CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICtzdGF0aWMgaW5saW5lIGJvb2wgYnRy
-ZnNfcGFnZV90ZXN0XyMjbmFtZShzdHJ1Y3QgYnRyZnNfZnNfaW5mbyANCj4+ICpmc19pbmZvLCBc
-DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgcGFnZSAqcGFnZSwgdTY0IHN0YXJ0
-LCB1MzIgbGVuKcKgwqDCoMKgwqDCoMKgIFwNCj4+ICt7wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+PiArwqDC
-oMKgIGlmICh1bmxpa2VseSghZnNfaW5mbykgfHwgZnNfaW5mby0+c2VjdG9yc2l6ZSA9PSBQQUdF
-X1NJWkUpwqDCoMKgIFwNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gdGVzdF9wYWdlX2Z1bmMo
-cGFnZSk7wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwNCj4+ICvCoMKgwqAgcmV0dXJu
-IGJ0cmZzX3N1YnBhZ2VfdGVzdF8jI25hbWUoZnNfaW5mbywgcGFnZSwgc3RhcnQsIGxlbik7wqDC
-oMKgIFwNCj4+ICt9DQo+IA0KPiBBbm90aGVyIHRoaW5nIEkganVzdCByZWFsaXplZCBpcyB5b3Un
-cmUgZG9pbmcgdGhpcw0KPiANCj4gYnRyZnNfcGFnZV9zZXRfdXB0b2RhdGUoZnNfaW5mbywgcGFn
-ZSwgZWItPnN0YXJ0LCBlYi0+bGVuKTsNCj4gDQo+IGJ1dCB3ZSBkZWZhdWx0IHRvIGEgbm9kZXNp
-emUgPiBQQUdFX1NJWkUgb24geDg2LsKgIFRoaXMgaXMgZmluZSwgYmVjYXVzZSANCj4geW91J3Jl
-IGNoZWNraW5nIGZzX2luZm8tPnNlY3RvcnNpemUgPT0gUEFHRV9TSVpFLCB3aGljaCB3aWxsIG1l
-YW4gd2UgZG8gDQo+IHRoZSByaWdodCB0aGluZy4NCj4gDQo+IEJ1dCB3aGF0IGhhcHBlbnMgaWYg
-ZnNfaW5mby0+bm9kZXNpemUgPCBQQUdFX1NJWkUgJiYgZnNfaW5mby0+c2VjdG9yc2l6ZSANCj4g
-PT0gUEFHRV9TSVpFP8KgIFdlIGJ5IGRlZmF1bHQgaGF2ZSBmcydlcyB0aGF0IC0+bm9kZXNpemUg
-IT0gLT5zZWN0b3JzaXplLCANCj4gc28gcmVhbGx5IHdoYXQgd2Ugc2hvdWxkIGJlIGRvaW5nIGlz
-IGNoZWNraW5nIGlmIGxlbiA9PSBQQUdFX1NJWkUgaGVyZSwgDQo+IGJ1dCB0aGVuIHlvdSBuZWVk
-IHRvIHRha2UgaW50byBhY2NvdW50IHRoZSBjYXNlIHRoYXQgZWItPmxlbiA+IA0KPiBQQUdFX1NJ
-WkUuwqAgRml4IHRoaXMgdG8gZG8gdGhlIHJpZ2h0IHRoaW5nIGluIGVpdGhlciBvZiB0aG9zZSBj
-YXNlcy4gIA0KPiBUaGFua3MsDQoNCkltcG9zc2libGUuDQoNCk5vZGVzaXplIG11c3QgYmUgPj0g
-c2VjdG9yc2l6ZS4NCg0KQXMgc2VjdG9yc2l6ZSBpcyBjdXJyZW50bHkgdGhlIG1pbmltYWwgYWNj
-ZXNzIHVuaXQgZm9yIGJvdGggZGF0YSBhbmQgDQptZXRhZGF0YS4NCg0KVGhhbmtzLA0KUXUNCg0K
-PiANCj4gSm9zZWYNCg==
+
+
+On 2021/1/20 =E4=B8=8B=E5=8D=8811:05, Josef Bacik wrote:
+> On 1/16/21 2:15 AM, Qu Wenruo wrote:
+>> Unlike the original try_release_extent_buffer(),
+>> try_release_subpage_extent_buffer() will iterate through all the ebs in
+>> the page, and try to release each eb.
+>>
+>> And only if the page and no private attached, which implies we have
+>> released all ebs of the page, then we can release the full page.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> =C2=A0 fs/btrfs/extent_io.c | 106 +++++++++++++++++++++++++++++++++++++=
++++++-
+>> =C2=A0 1 file changed, 104 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 74a37eec921f..9414219fa28b 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -6335,13 +6335,115 @@ void memmove_extent_buffer(const struct
+>> extent_buffer *dst,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0 }
+>> +static struct extent_buffer *get_next_extent_buffer(
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_in=
+fo, struct page *page, u64 bytenr)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 struct extent_buffer *gang[BTRFS_SUBPAGE_BITMAP_SIZ=
+E];
+>> +=C2=A0=C2=A0=C2=A0 struct extent_buffer *found =3D NULL;
+>> +=C2=A0=C2=A0=C2=A0 u64 page_start =3D page_offset(page);
+>> +=C2=A0=C2=A0=C2=A0 int ret;
+>> +=C2=A0=C2=A0=C2=A0 int i;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
+>> +=C2=A0=C2=A0=C2=A0 ASSERT(PAGE_SIZE / fs_info->nodesize <=3D BTRFS_SUB=
+PAGE_BITMAP_SIZE);
+>> +=C2=A0=C2=A0=C2=A0 lockdep_assert_held(&fs_info->buffer_lock);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 ret =3D radix_tree_gang_lookup(&fs_info->buffer_rad=
+ix, (void **)gang,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 byt=
+enr >> fs_info->sectorsize_bits,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PAG=
+E_SIZE / fs_info->nodesize);
+>> +=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < ret; i++) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Already beyond page end =
+*/
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (gang[i]->start >=3D pag=
+e_start + PAGE_SIZE)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bre=
+ak;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Found one */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (gang[i]->start >=3D byt=
+enr) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fou=
+nd =3D gang[i];
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bre=
+ak;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 return found;
+>> +}
+>> +
+>> +static int try_release_subpage_extent_buffer(struct page *page)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D btrfs_sb(page->ma=
+pping->host->i_sb);
+>> +=C2=A0=C2=A0=C2=A0 u64 cur =3D page_offset(page);
+>> +=C2=A0=C2=A0=C2=A0 const u64 end =3D page_offset(page) + PAGE_SIZE;
+>> +=C2=A0=C2=A0=C2=A0 int ret;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 while (cur < end) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *eb =
+=3D NULL;
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Unlike try_release_=
+extent_buffer() which uses page->private
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * to grab buffer, for=
+ subpage case we rely on radix tree, thus
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * we need to ensure r=
+adix tree consistency.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * We also want an ato=
+mic snapshot of the radix tree, thus go
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * spinlock other than=
+ RCU.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&fs_info->buffer_=
+lock);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 eb =3D get_next_extent_buff=
+er(fs_info, page, cur);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!eb) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* =
+No more eb in the page range after or at @cur */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spi=
+n_unlock(&fs_info->buffer_lock);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bre=
+ak;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur =3D eb->start + eb->len=
+;
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The same as try_rel=
+ease_extent_buffer(), to ensure the eb
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * won't disappear out=
+ from under us.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&eb->refs_lock);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (atomic_read(&eb->refs) =
+!=3D 1 || extent_buffer_under_io(eb)) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spi=
+n_unlock(&eb->refs_lock);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spi=
+n_unlock(&fs_info->buffer_lock);
+>
+> Why continue at this point?=C2=A0 We know we can't drop this thing, brea=
+k here.
+>
+> <snip>
+>
+>> +}
+>> +
+>> =C2=A0 int try_release_extent_buffer(struct page *page)
+>> =C2=A0 {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_buffer *eb;
+>> +=C2=A0=C2=A0=C2=A0 if (btrfs_sb(page->mapping->host->i_sb)->sectorsize=
+ < PAGE_SIZE)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return try_release_subpage_=
+extent_buffer(page);
+>
+> You're using sectorsize again here.=C2=A0 I realize the problem is secto=
+rsize
+> !=3D PAGE_SIZE, but sectorsize !=3D nodesize all the time, so please cha=
+nge
+> all of the patches to check the actual relevant size for the
+> data/metadata type.=C2=A0 Thanks,
+
+Again, nodesize >=3D sectorsize is the requirement for current mkfs.
+
+As sectorsize is the minimal unit for both data and metadata.
+(We don't have separate data unit size and metadata unit size, they
+share sector size for now).
+
+Thanks,
+Qu
+
+>
+> Josef
