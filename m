@@ -2,249 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507882FE26D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 07:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 694982FE2F5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 07:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbhAUGPK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Jan 2021 01:15:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55894 "EHLO mx2.suse.de"
+        id S1726665AbhAUGgD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Jan 2021 01:36:03 -0500
+Received: from mout.gmx.net ([212.227.17.20]:54765 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726524AbhAUGOx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Jan 2021 01:14:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611209639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=99YmFXNA+EbFLBmT86v6pywKSYuN7L0IBAwaxmXA6m4=;
-        b=b5gcw48QZQ+/NAAm+uCQtYj1E2ewz/0JtzJbTnEZOLIIoJpI5Xv51O/5ffhpnzbvLVaDul
-        gVRynGA+aaKa3QFBlmXCNIO9hXfsfo1MSUcopeDJab9OhNY2AXfsLqHzHO004ZSn1mpVIM
-        Ax2Kaj5q2XV6i/91eWgpbomeQksXWtc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 02369AAAE
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Jan 2021 06:13:59 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: rework the order of btrfs_ordered_extent::flags
-Date:   Thu, 21 Jan 2021 14:13:54 +0800
-Message-Id: <20210121061354.61271-1-wqu@suse.com>
-X-Mailer: git-send-email 2.30.0
+        id S1726576AbhAUGfG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Jan 2021 01:35:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611210766;
+        bh=aOut60LPOnDil1HjuYg7wSKFbMpgFlrB5QkJ647IOlo=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=JkW+Kvd7zPkFhuI7TCmOWM7gXihY1EUiES/DOxoISSgZmmrw3WqTl4LqfrsS6KgB6
+         5jLtXp5MrTRCih3VArcXz3LJTrpfCYhDghwAiJXWR5x+vS33We0dL8oWfvoky6l0Hk
+         CBjwLHWcZflufVHyqpZWN4XdIHfn+bnwgQcYPiTw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQvD5-1lPwUc3e7T-00NySj; Thu, 21
+ Jan 2021 07:32:46 +0100
+Subject: Re: [PATCH v4 01/18] btrfs: update locked page dirty/writeback/error
+ bits in __process_pages_contig()
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210116071533.105780-1-wqu@suse.com>
+ <20210116071533.105780-2-wqu@suse.com>
+ <b0360753-072a-f5c5-3ea6-08e9db2445dd@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <c4bd841c-6657-5a72-85ac-fc8359c87a74@gmx.com>
+Date:   Thu, 21 Jan 2021 14:32:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b0360753-072a-f5c5-3ea6-08e9db2445dd@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:G37dwui//e4n1Gp/TpJlGlVkpG8QGki6pVSZu2eIpZGWdn+SS92
+ yYbxdrWj7MR8lMcrbLh3pwKRRPZSDeGqHuIJzjaxY19WyPcxjpPqVw0JSRcfIMdcRTBqIoy
+ a8MQAoQfsBZiy4+kMpTerx+iZZ8gvMXXrnJc1O7mtD3qQ2j7ir0E6YtCqj7tr4vDubsjKx8
+ U8Q6s5NxO2zYDyMK6QC0g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NuKkhEKf4Lg=:e/MrFA0FwirrpX6yk1QWRp
+ EDOraJydrMAle8C4UuKcQESnea0hcSTeToIqh08kL4jZ164MC4xoZx9P8mPKESVEfrdi285SI
+ 1XNofyF+jRsRRM/aVfl+7RxckU+OZ86nZ/wSvnySSQVCI9oyCYNtb2BEE83h10HTX8qu3/Ocg
+ illrnkqIEiG3hWOfUW2Vyh9YUYLZU6rGXyz3GQ3RTjYwGYDMX14A/wzn50QIkA8sXxpdS0sn+
+ JtbbZIUOTP+jjNrkPkQ2XupP1xOHpzaqKs6eawR1ouRxPlQyLhUJDLrDBEsl7n56spDO7Dc57
+ cxHh6LwD5YBKRXd/Od8/x7+vZMvcYMNDfzUn5qsR3d7osE45oK1DEfLPbHUN4F4eXZetYN7Yh
+ WLimUn0i5BgL4QaaB6WyjcrcScAnbgoguAkgMVFyfu1o++KJuwDNc7EIVx/nDqQq7CJUAV6zk
+ vx0bl3z3OrsRSM1hJFDbxgtlV+1aPY2jp1eBdJcEQs/071S76E4APT9Z9LMgStDX/VDZDchSf
+ C5msXsXpFJOz2Qdju0uUMohLn5g6xpkScYDF889vyzsW8wDscvC3LFIqa5V6tcBHkyCgvysOr
+ PEWmai2H3Dt9CCMmnvfmEVbzkSQkw5ED7uF9mc9aat7/XBFIV1e6MQe/PbGnDl3WQZwyfolaP
+ HBlEyseGP09k3Ye6YKMSqYmhSrvEq3UHqFUk1vn6JCHiolUOIQyZoUuYv7CLGLS7QbQbYTOfo
+ 4cqA86XhgyfkIvzwAaQHJAHOWtP7nkkrdPYZGXem2khm06Ok3z80vWdfr1O6FlJk8hooIsCxP
+ Ch9rirK0xRY4qGnMDz5P+8VWi/LuYBb/LfqREB5MALYbCTPa+fIeQ+HuyXq/EaVs1cxpkOSR0
+ tvoXjcT4tfIBZTuTfGig==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a long existing bug in the last parameter of
-btrfs_add_ordered_extent(), in commit 771ed689d2cd ("Btrfs: Optimize
-compressed writeback and reads") back to 2008.
 
-In that ancient commit btrfs_add_ordered_extent() expects the @type
-parameter to be one of the following:
-- BTRFS_ORDERED_REGULAR
-- BTRFS_ORDERED_NOCOW
-- BTRFS_ORDERED_PREALLOC
-- BTRFS_ORDERED_COMPRESSED
 
-But we pass 0 in cow_file_range(), which means BTRFS_ORDERED_IO_DONE.
+On 2021/1/20 =E4=B8=8A=E5=8D=885:41, Josef Bacik wrote:
+> On 1/16/21 2:15 AM, Qu Wenruo wrote:
+>> When __process_pages_contig() get called for
+>> extent_clear_unlock_delalloc(), if we hit the locked page, only Private=
+2
+>> bit is updated, but dirty/writeback/error bits are all skipped.
+>>
+>> There are several call sites call extent_clear_unlock_delalloc() with
+>> @locked_page and PAGE_CLEAR_DIRTY/PAGE_SET_WRITEBACK/PAGE_END_WRITEBACK
+>>
+>> - cow_file_range()
+>> - run_delalloc_nocow()
+>> - cow_file_range_async()
+>> =C2=A0=C2=A0 All for their error handling branches.
+>>
+>> For those call sites, since we skip the locked page for
+>> dirty/error/writeback bit update, the locked page will still have its
+>> dirty bit remaining.
+>>
+>> Thankfully, since all those call sites can only be hit with various
+>> serious errors, it's pretty hard to hit and shouldn't affect regular
+>> btrfs operations.
+>>
+>> But still, we shouldn't leave the locked_page with its
+>> dirty/error/writeback bits untouched.
+>>
+>> Fix this by only skipping lock/unlock page operations for locked_page.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> Except this is handled by the callers.=C2=A0 We clear_page_dirty_for_io(=
+) the
+> page before calling btrfs_run_delalloc_range(), so we don't need the
+> PAGE_CLEAR_DIRTY, it's already cleared.=C2=A0 The SetPageError() is hand=
+led
+> in the error path for locked_page, as is the
+> set_writeback/end_writeback.=C2=A0 Now I don't think this patch causes
+> problems specifically, but the changelog is at least wrong, and I'd
+> rather we'd skip the handling of the locked_page here and leave it in
+> the proper error handling.=C2=A0 If you need to do this for some other r=
+eason
+> that I haven't gotten to yet then you need to make that clear in the
+> changelog, because as of right now I don't see why this is needed.=C2=A0=
+ Thanks,
 
-Ironically extra check in __btrfs_add_ordered_extent() won't set the bit
-if we're seeing (type == IO_DONE || type == IO_COMPLETE), and avoid any
-obvious bug.
+This is mostly to co-operate with a later patch on
+__process_pages_contig(), where we need to make sure page locked by
+__process_pages_contig() is only unlocked by __process_pages_contig() too.
 
-But this still leads to regular COW ordered extent having no bit to
-indicate its type in various trace events, rendering REGULAR bit
-useless.
+The exception is after cow_file_inline(), we call
+__process_pages_contig() on the locked page, making it to clear page
+writeback and unlock it.
 
-[FIX]
-This patch will change the following aspects to avoid such problem:
-- Reorder btrfs_ordered_extent::flags
-  Now the type bits go first (REGULAR/NOCOW/PREALLCO/COMPRESSED), then
-  DIRECT bit, finally extra status bits like IO_DONE/COMPLETE/IOERR.
+That is going to cause problems for subpage.
 
-- Add extra ASSERT() for btrfs_add_ordered_extent_*()
+Thus I prefer to make __process_pages_contig() to clear page dirty/end
+writeback for locked page.
 
-- Remove @type parameter for btrfs_add_ordered_extent_compress()
-  As the only valid @type here is BTRFS_ORDERED_COMPRESSED.
-
-- Remove the unnecessary special check for IO_DONE/COMPLETE in
-  __btrfs_add_ordered_extent()
-  This is just to make the code work, with extra ASSERT(), there are
-  limited values can be passed in.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c             |  4 ++--
- fs/btrfs/ordered-data.c      | 18 +++++++++++++-----
- fs/btrfs/ordered-data.h      | 37 +++++++++++++++++++++++-------------
- include/trace/events/btrfs.h |  7 ++++---
- 4 files changed, 43 insertions(+), 23 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index ef6cb7b620d0..ea9056cc5559 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -917,7 +917,6 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
- 						ins.objectid,
- 						async_extent->ram_size,
- 						ins.offset,
--						BTRFS_ORDERED_COMPRESSED,
- 						async_extent->compress_type);
- 		if (ret) {
- 			btrfs_drop_extent_cache(inode, async_extent->start,
-@@ -1127,7 +1126,8 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		free_extent_map(em);
- 
- 		ret = btrfs_add_ordered_extent(inode, start, ins.objectid,
--					       ram_size, cur_alloc_size, 0);
-+					       ram_size, cur_alloc_size,
-+					       BTRFS_ORDERED_REGULAR);
- 		if (ret)
- 			goto out_drop_extent_cache;
- 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index d5d326c674b1..bd7e187d9b16 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -199,8 +199,11 @@ static int __btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset
- 	entry->compress_type = compress_type;
- 	entry->truncated_len = (u64)-1;
- 	entry->qgroup_rsv = ret;
--	if (type != BTRFS_ORDERED_IO_DONE && type != BTRFS_ORDERED_COMPLETE)
--		set_bit(type, &entry->flags);
-+
-+	ASSERT(type == BTRFS_ORDERED_REGULAR || type == BTRFS_ORDERED_NOCOW ||
-+	       type == BTRFS_ORDERED_PREALLOC ||
-+	       type == BTRFS_ORDERED_COMPRESSED);
-+	set_bit(type, &entry->flags);
- 
- 	if (dio) {
- 		percpu_counter_add_batch(&fs_info->dio_bytes, num_bytes,
-@@ -256,6 +259,8 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
- 			     u64 disk_bytenr, u64 num_bytes, u64 disk_num_bytes,
- 			     int type)
- {
-+	ASSERT(type == BTRFS_ORDERED_REGULAR || type == BTRFS_ORDERED_NOCOW ||
-+	       type == BTRFS_ORDERED_PREALLOC);
- 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
- 					  num_bytes, disk_num_bytes, type, 0,
- 					  BTRFS_COMPRESS_NONE);
-@@ -265,6 +270,8 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
- 				 u64 disk_bytenr, u64 num_bytes,
- 				 u64 disk_num_bytes, int type)
- {
-+	ASSERT(type == BTRFS_ORDERED_REGULAR || type == BTRFS_ORDERED_NOCOW ||
-+	       type == BTRFS_ORDERED_PREALLOC);
- 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
- 					  num_bytes, disk_num_bytes, type, 1,
- 					  BTRFS_COMPRESS_NONE);
-@@ -272,11 +279,12 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
- 
- int btrfs_add_ordered_extent_compress(struct btrfs_inode *inode, u64 file_offset,
- 				      u64 disk_bytenr, u64 num_bytes,
--				      u64 disk_num_bytes, int type,
--				      int compress_type)
-+				      u64 disk_num_bytes, int compress_type)
- {
-+	ASSERT(compress_type != BTRFS_COMPRESS_NONE);
- 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
--					  num_bytes, disk_num_bytes, type, 0,
-+					  num_bytes, disk_num_bytes,
-+					  BTRFS_ORDERED_COMPRESSED, 0,
- 					  compress_type);
- }
- 
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 46194c2c05d4..151ec6bba405 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -27,7 +27,7 @@ struct btrfs_ordered_sum {
- };
- 
- /*
-- * bits for the flags field:
-+ * Bits for btrfs_ordered_extent::flags.
-  *
-  * BTRFS_ORDERED_IO_DONE is set when all of the blocks are written.
-  * It is used to make sure metadata is inserted into the tree only once
-@@ -38,24 +38,36 @@ struct btrfs_ordered_sum {
-  * IO is done and any metadata is inserted into the tree.
-  */
- enum {
-+	/*
-+	 * Different types for direct io, one and only one of the 4 type can
-+	 * be set when creating ordered extent.
-+	 *
-+	 * REGULAR:	For regular non-compressed COW write
-+	 * NOCOW:	For NOCOW write into existing non-hole extent
-+	 * PREALLOC:	For NOCOW write into preallocated extent
-+	 * COMPRESSED:	For compressed COW write
-+	 */
-+	BTRFS_ORDERED_REGULAR,
-+	BTRFS_ORDERED_NOCOW,
-+	BTRFS_ORDERED_PREALLOC,
-+	BTRFS_ORDERED_COMPRESSED,
-+
-+	/*
-+	 * Extra bit for DirectIO, can only be set for
-+	 * REGULAR/NOCOW/PREALLOC. No DIO for compressed extent.
-+	 */
-+	BTRFS_ORDERED_DIRECT,
-+
-+	/* Extra status bits for ordered extents */
-+
- 	/* set when all the pages are written */
- 	BTRFS_ORDERED_IO_DONE,
- 	/* set when removed from the tree */
- 	BTRFS_ORDERED_COMPLETE,
--	/* set when we want to write in place */
--	BTRFS_ORDERED_NOCOW,
--	/* writing a zlib compressed extent */
--	BTRFS_ORDERED_COMPRESSED,
--	/* set when writing to preallocated extent */
--	BTRFS_ORDERED_PREALLOC,
--	/* set when we're doing DIO with this extent */
--	BTRFS_ORDERED_DIRECT,
- 	/* We had an io error when writing this out */
- 	BTRFS_ORDERED_IOERR,
- 	/* Set when we have to truncate an extent */
- 	BTRFS_ORDERED_TRUNCATED,
--	/* Regular IO for COW */
--	BTRFS_ORDERED_REGULAR,
- 	/* Used during fsync to track already logged extents */
- 	BTRFS_ORDERED_LOGGED,
- 	/* We have already logged all the csums of the ordered extent */
-@@ -167,8 +179,7 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
- 				 u64 disk_num_bytes, int type);
- int btrfs_add_ordered_extent_compress(struct btrfs_inode *inode, u64 file_offset,
- 				      u64 disk_bytenr, u64 num_bytes,
--				      u64 disk_num_bytes, int type,
--				      int compress_type);
-+				      u64 disk_num_bytes, int compress_type);
- void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
- 			   struct btrfs_ordered_sum *sum);
- struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *inode,
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index ecd24c719de4..b9896fc06160 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -499,12 +499,13 @@ DEFINE_EVENT(
- 
- #define show_ordered_flags(flags)					   \
- 	__print_flags(flags, "|",					   \
--		{ (1 << BTRFS_ORDERED_IO_DONE), 	"IO_DONE" 	}, \
--		{ (1 << BTRFS_ORDERED_COMPLETE), 	"COMPLETE" 	}, \
-+		{ (1 << BTRFS_ORDERED_REGULAR), 	"REGULAR" 	}, \
- 		{ (1 << BTRFS_ORDERED_NOCOW), 		"NOCOW" 	}, \
--		{ (1 << BTRFS_ORDERED_COMPRESSED), 	"COMPRESSED" 	}, \
- 		{ (1 << BTRFS_ORDERED_PREALLOC), 	"PREALLOC" 	}, \
-+		{ (1 << BTRFS_ORDERED_COMPRESSED), 	"COMPRESSED" 	}, \
- 		{ (1 << BTRFS_ORDERED_DIRECT),	 	"DIRECT" 	}, \
-+		{ (1 << BTRFS_ORDERED_IO_DONE), 	"IO_DONE" 	}, \
-+		{ (1 << BTRFS_ORDERED_COMPLETE), 	"COMPLETE" 	}, \
- 		{ (1 << BTRFS_ORDERED_IOERR), 		"IOERR" 	}, \
- 		{ (1 << BTRFS_ORDERED_TRUNCATED), 	"TRUNCATED"	})
- 
--- 
-2.30.0
-
+Thanks,
+Qu
+>
+> Josef
