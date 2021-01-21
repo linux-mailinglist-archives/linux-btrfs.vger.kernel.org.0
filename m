@@ -2,33 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F152FE415
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 08:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 118C12FE425
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 08:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727558AbhAUHgw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Jan 2021 02:36:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58978 "EHLO mx2.suse.de"
+        id S1727495AbhAUHjG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Jan 2021 02:39:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36732 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727380AbhAUHc3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:32:29 -0500
+        id S1727468AbhAUHix (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:38:53 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611214295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1611214687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=vLygc4yhm6XhoPkvwj6PYfOduxnCgA354sLyDTTsUUo=;
-        b=PYe09wTq6Goj9gMcKPnNqh85N4K5HCkrDThaREuk38ddBYL9HV2rF76KNimlm8qHubEdpW
-        5DwUgN8zSrZVoO0I5lTGb5P9WeSH9g6RWtD1lgp7IH1sj5A4Va2slR6JfJj/NY5W+Y6YA7
-        uYR/YZYOFhqaM3LPSK3E53+SpDngB9o=
+        bh=ZyekRtuwcL6rmFXShlpi80pfIVx/0q3gXt2cqy36h+g=;
+        b=lK1jJrx9dNPPn4jwdrIlFIR5t/K4D/9ryfgd3KLrhK+ceKmWs6VzDd5tsnV509vusXqKk4
+        /9dJFZLqKXKbKxGISH9w5/XhS7JkFD5Y2s0P3eOCg6BmsjZBXmLTCmkaiNHWlCUcyUsBig
+        P+lf0jF+zqfmmjoUyeEI2hmpVlF8ITU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E2A66B8F3;
-        Thu, 21 Jan 2021 07:31:34 +0000 (UTC)
-Subject: Re: [PATCH v2 14/14] btrfs: Enable W=1 checks for btrfs
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20210120102526.310486-1-nborisov@suse.com>
- <20210120102526.310486-15-nborisov@suse.com>
- <7d769a82-e573-4d04-a125-13ca99136d49@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id 45D96AAAE;
+        Thu, 21 Jan 2021 07:38:07 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: rework the order of btrfs_ordered_extent::flags
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210121061354.61271-1-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -72,12 +70,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <16775909-3cb6-ab13-5416-6f55546b0349@suse.com>
-Date:   Thu, 21 Jan 2021 09:31:34 +0200
+Message-ID: <56969afe-0232-18a5-933c-d59c2436eb6d@suse.com>
+Date:   Thu, 21 Jan 2021 09:38:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <7d769a82-e573-4d04-a125-13ca99136d49@toxicpanda.com>
+In-Reply-To: <20210121061354.61271-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -87,32 +85,45 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 20.01.21 г. 17:55 ч., Josef Bacik wrote:
-> On 1/20/21 5:25 AM, Nikolay Borisov wrote:
->> Now that the btrfs' codebase is clean of W=1 warning let's enable those
->> checks unconditionally for the entire fs/btrfs/ and its subdirectories.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+On 21.01.21 г. 8:13 ч., Qu Wenruo wrote:
+> [BUG]
+> There is a long existing bug in the last parameter of
+> btrfs_add_ordered_extent(), in commit 771ed689d2cd ("Btrfs: Optimize
+> compressed writeback and reads") back to 2008.
 > 
-> Once this is enabled I get
+> In that ancient commit btrfs_add_ordered_extent() expects the @type
+> parameter to be one of the following:
+> - BTRFS_ORDERED_REGULAR
+> - BTRFS_ORDERED_NOCOW
+> - BTRFS_ORDERED_PREALLOC
+> - BTRFS_ORDERED_COMPRESSED
 > 
-> fs/btrfs/zoned.c: In function ‘btrfs_sb_log_location_bdev’:
-> fs/btrfs/zoned.c:491:6: warning: variable ‘zone_size’ set but not used
-> [-Wunused-but-set-variable]
->   491 |  u64 zone_size;
->       |      ^~~~~~~~~
+> But we pass 0 in cow_file_range(), which means BTRFS_ORDERED_IO_DONE.
 > 
-> on misc-next.  Thanks,
+> Ironically extra check in __btrfs_add_ordered_extent() won't set the bit
+> if we're seeing (type == IO_DONE || type == IO_COMPLETE), and avoid any
+> obvious bug.
 > 
-
-I know, I intentionally haven't fixed it since:
-
-a)  David might be intending to merge other patches which will utilize
-this member
-
-b) It shows a genuine problem that this patchset has uncovered ( I even
-mentioned this in the initial cover letter)
-
-
-> Josef
+> But this still leads to regular COW ordered extent having no bit to
+> indicate its type in various trace events, rendering REGULAR bit
+> useless.
 > 
+> [FIX]
+> This patch will change the following aspects to avoid such problem:
+> - Reorder btrfs_ordered_extent::flags
+>   Now the type bits go first (REGULAR/NOCOW/PREALLCO/COMPRESSED), then
+>   DIRECT bit, finally extra status bits like IO_DONE/COMPLETE/IOERR.
+> 
+> - Add extra ASSERT() for btrfs_add_ordered_extent_*()
+> 
+> - Remove @type parameter for btrfs_add_ordered_extent_compress()
+>   As the only valid @type here is BTRFS_ORDERED_COMPRESSED.
+> 
+> - Remove the unnecessary special check for IO_DONE/COMPLETE in
+>   __btrfs_add_ordered_extent()
+>   This is just to make the code work, with extra ASSERT(), there are
+>   limited values can be passed in.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
