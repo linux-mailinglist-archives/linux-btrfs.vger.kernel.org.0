@@ -2,97 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B2A2FE01E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 04:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBCF2FE0E3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Jan 2021 05:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729555AbhAUDp5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Jan 2021 22:45:57 -0500
-Received: from mout.gmx.net ([212.227.17.21]:47937 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728355AbhAUAt1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Jan 2021 19:49:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611190055;
-        bh=/LZ73s32K2JWwuwNVVS4TdVWjyTvlNgKdQ+QwvFrFYk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=f4x/o7n/sjLY+yU4v7ALrSj9dl4PU6iQ/HNXbbu5BPgiqJGo6KZ4YyZQmbkrFtENJ
-         Li7a+dwE9po0pke4Cw1RFbz5hWFzLyHHik1gIxX0sqO4u/dn2Bs5X8omqIgleiNkLw
-         GI/o8PXUPiwZv8G6nbOdKoXPFj9RNDEAlYKDa6yI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFbRm-1lF4e01Gne-00H8vc; Thu, 21
- Jan 2021 01:47:34 +0100
-Subject: Re: [PATCH v4 07/18] btrfs: attach private to dummy extent buffer
- pages
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-8-wqu@suse.com>
- <565f8da3-1fb7-d46f-b84c-19e4a784041f@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <5bca4f09-2436-ecde-3fba-c6fddc873447@gmx.com>
-Date:   Thu, 21 Jan 2021 08:47:31 +0800
+        id S1728028AbhAUEkF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Jan 2021 23:40:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732448AbhAUDzt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Jan 2021 22:55:49 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A05C061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 19:44:59 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id c132so512490pga.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Jan 2021 19:44:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=LlRAebKsvaJdpJ3H1qCQrgpMQhVoHplTIysa2z2AgyQ=;
+        b=VTvLuRFNgH/SDuqwmzME0BhPtyUUtCvWkW/DPRhOqpeWbqRbhRvFShz99ksswI/Xr4
+         dI9oZs+jin12TXrm7rsXfLl04WkdSz1Vqp/SfLziIqFM1h18umB/e6uGaCuFv6mC7Hqg
+         l/jZhb9xacbO8natDbrHSoqvIDpRGTb7kNZvgZf9EcqFkyxGO+M9hXajPYNKtdpv6QGc
+         pX9GtAAa6I8jyRReBfq8y6MWrKVfZJ7BmcnTaTanwKSF/BywMJL88aaXfa2y6nzhDEKz
+         yer/krUHbAVJxclfCmfVNGMpL5k3whSmwyLzmsn0krOEdEC96qHF21kN64Vz6OlF4WGo
+         f6XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=LlRAebKsvaJdpJ3H1qCQrgpMQhVoHplTIysa2z2AgyQ=;
+        b=qcPLY7XMkSlFkk+lpzWd5qZB7Vo5vANMYOPPBCyBMBGK2qip5VpcqGxabJ1p1cjRTc
+         pogjLVpCSxW+wkvVJ8lyh9x/YA4iYz8nkhFsRyX/Chpxn3S9mbzn5GjzMe1t0MXWRHxC
+         7LDbu4hZND3o+Usx8m6NnXh6e0m9ksg/UPLqw6Vg0wbSdUxZ36/t1vzPLQgtvLJbqnYs
+         bYjTmybxzkj5RszxdHlCeXc0fL4TaYrSGxgf9v4ELN7zmXj8yqRNlY02vUt6W8aP8Cfi
+         nA/MVnW3u1mNzVviPg5lGguClW6Q9SpuN6WgROEGLn5IKraC/14fTB6Iy6rf4G+3ivAy
+         cwfA==
+X-Gm-Message-State: AOAM530Ma/z41PwvlUZgS4Q4GnQApIsu+wrFqGiKF1avyT1IDwoLSHFC
+        oaLTSA4OjEFsCL4Hr5prsMW4Tm0z0Fc=
+X-Google-Smtp-Source: ABdhPJwqooNIFFsxg3jsTGoa7fky4e9EE+oSfqX+oJidg3IHAjjNVN+Zs5VqFIS39DVjGtpK7KNrRA==
+X-Received: by 2002:a63:4d41:: with SMTP id n1mr12567313pgl.147.1611200698196;
+        Wed, 20 Jan 2021 19:44:58 -0800 (PST)
+Received: from [192.168.1.74] (d206-116-119-5.bchsia.telus.net. [206.116.119.5])
+        by smtp.gmail.com with ESMTPSA id t2sm3945128pga.45.2021.01.20.19.44.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jan 2021 19:44:57 -0800 (PST)
+Subject: Re: [SOLVED] received uuid not set btrfs send/receive
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <95f9479d-2217-768e-f866-ae42509c3b2c@gmail.com>
+ <CAJCQCtRydKSXoYSL15=RHfadWESd_N-ed3eknhbX_95gpfiQEw@mail.gmail.com>
+From:   Anders Halman <anders.halman@gmail.com>
+Message-ID: <66c59dfb-5eaa-656c-f17e-e4ea71e53fa9@gmail.com>
+Date:   Wed, 20 Jan 2021 19:44:56 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <565f8da3-1fb7-d46f-b84c-19e4a784041f@toxicpanda.com>
+In-Reply-To: <CAJCQCtRydKSXoYSL15=RHfadWESd_N-ed3eknhbX_95gpfiQEw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KskAFnxejba+024BykAk7hVfvtwbHHAFF1k4jGVFrBPHDHeCI3B
- 7rMoCP8/UuhJn4hA7Eq1iMcELf+YUW3ig9JbneQtYDG1v4m01sE1BXBglmm2UwrPO3znr+0
- OMlt7aYpRNT8hMQzP8SdFteBgbXg9+iXsV51VMrBoDws/qR4vdUMia+QnfaGkC8lMH5Rfhq
- Ne3q2A74H08NN8hxl8cpw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TlPIi+BuHD0=:SS3OqrLENCjXUmuBBKVQw4
- PSWd86xlE/NeS2GaRdCxdwBzmIV8CQ0ZHKcxpNlNUks2lx/Lgkq3YX68JDaVILfWCZdDACP47
- TmeuRZW2iP1M3MKjmfzY3DqWr7t0hoGMEiQc32w1jidIsAp5tKZK4Z4LbcBeegZFLOUZia4Lg
- YFn/T5X+YjyG98QpKioxaRXw8mJjH0D7rGzS21aJr0H2DeXmZ0TC0zhEphjFWjsrZg3pbfA53
- C9PbwVefTVjZwBKiX+RpZKXwXgM0Thvk8AmSGMjS4PQ+CWHo+uHcdyj9ecwxU3sRuq7QoHVPF
- 0Vf658MxHvn6xJZ3I2eK37LCFX98gTaPR+urCxSmS01YCGxE72IaeXEzZ+297oZ2Q/iNqgkg5
- nN3tcnc5JKO1/AgFwJFbl3qBk24PR2CkWup4MDmD6Dnk+Ujw6B1rok8U4RnERVOapowwlk6rE
- KhHRNEDKlKAdHhjw4t8/4PsT/gIy3x78oK1vGjt9iBLj6I7RC/IxcuRqT8VqM1gRQbFXrQ73j
- rvmzrKxlg8rTfiHuWnY0FYVYdCaNxSS1Qcr5efU6Do1/ow5Tpzz2bvpFd6ArOt2mKmvEew6QY
- iT6AiZq90tAVfFtznxztPAbdnaalf67gBw39BtdY2If1Sr1DKKiOIwPJwinNiy5UyKJW925/4
- QBtoYkhBotfJoMj+PZzsSCfV0gGkV8cja1iaR0LXagT9nfaSgeSMJl/R/X0MYQ2cYkf7pUWA+
- hPVkhlzm1JaEy6QZAAfcvRURgV248WMKyC6EpZDku2LDVYyytPM/rjquRdG2rRxHl/M1YOvAF
- Zduzz4x/3PnU8p95BkJ7Nz8acXfNWevbLePdUtaVgOsyfzIyaugkaFUk4Diu3Ii+24kZj9bHJ
- S6wWVxBEblONoeiCZrjA==
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The problem was a corrupt "btrfs send file" or to be more specific, the 
+file got corrupt somewhere on the line of transport
+To recap the problem for further reference:
+
+check the import (btrfs receive) with the -v option like so:
+
+$ nohup btrfs receive -v -f root.receive.file . &
+
+the import is successful, thus the received uuid is set when you get 
+something like ....
+
+$ tail -n1 nohup.out
+BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=99a34963-3506-7e4c-a82d-93e337191684, 
+stransid=1232187
+
+... after "btrfs receive" is done.
+
+make sure to double check the file size and checksum (md5sum) of "btrfs 
+send file" and "btrfs receive file".
+
+I don't know exactly where the corruption happened, but in the second 
+attempt I successful combined the import like so:
+
+$ cat x* | pigz -d > root.receive.file
 
 
-On 2021/1/20 =E4=B8=8B=E5=8D=8810:48, Josef Bacik wrote:
-> On 1/16/21 2:15 AM, Qu Wenruo wrote:
->> Even for regular btrfs, there are locations where we allocate dummy
->> extent buffers for temporary usage.
+Thanks for the support
+
+
+Am 17.01.21 um 13:07 schrieb Chris Murphy:
+> On Sun, Jan 17, 2021 at 11:51 AM Anders Halman <anders.halman@gmail.com> wrote:
+>> Hello,
 >>
->> Like tree_mod_log_rewind() and get_old_root().
+>> I try to backup my laptop over an unreliable slow internet connection to
+>> a even slower Raspberry Pi.
 >>
->> Those dummy extent buffers will be handled by the same eb accessors, an=
-d
->> if they don't have page::private subpage eb accessors can fail.
+>> To bootstrap the backup I used the following:
 >>
->> To address such problems, make __alloc_dummy_extent_buffer() to attach
->> page private for dummy extent buffers too.
+>> # local
+>> btrfs send root.send.ro | pigz | split --verbose -d -b 1G
+>> rsync -aHAXxv --numeric-ids --partial --progress -e "ssh -T -o
+>> Compression=no -x" x* remote-host:/mnt/backup/btrfs-backup/
 >>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> # remote
+>> cat x* > split.gz
+>> pigz -d split.gz
+>> btrfs receive -f split
+>>
+>> worked nicely. But I don't understand why the "received uuid" on the
+>> remote site in blank.
+>> I tried it locally with smaller volumes and it worked.
+> I suggest using -v or -vv on the receive side to dig into why the
+> receive is failing. Setting the received uuid is one of the last
+> things performed on receive, so if it's not set it suggests the
+> receive isn't finished.
 >
-> We already know these eb's are fake because they have UNMAPPED set, just
-> adjust your subpage helpers to be no-op if UNMAPPED is set.=C2=A0 Thanks=
-,
 
-But then the helper behavior would be a mess.
-
-Some accessors, like read/write_extent_buffer() will still do subpage
-specific offset calcuation, even it has UNMAPPED bit.
-
-Thus I still prefer to do the same operations, reducing the branches in
-accessors.
-
-Thanks,
-Qu
->
-> Josef
