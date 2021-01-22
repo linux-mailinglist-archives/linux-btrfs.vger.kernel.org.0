@@ -2,64 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698532FFCB5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 07:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 377C52FFCE5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 07:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbhAVG2o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 01:28:44 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:51138 "EHLO
+        id S1727003AbhAVGd1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 01:33:27 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:51117 "EHLO
         esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726960AbhAVG17 (ORCPT
+        with ESMTP id S1726518AbhAVGYQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:27:59 -0500
+        Fri, 22 Jan 2021 01:24:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611296879; x=1642832879;
+  t=1611296655; x=1642832655;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=2s5NK8tSWvlhL5OFm4v5zkBSPKsGpOvG+1jvfV3eidk=;
-  b=U8Z3S2utgYHWukFkvx/PzUZlLV82DgUSOxK0Qc6aQb1d0Hn3R+ZPrJtL
-   cbs4AMKFj+zLQWkHXtbAJfJPL1akoXkNe0+0Jedg6WcLsfe1TXgyyY7Oy
-   RRJx6hQtqLuj3nUE+u+bucnOSAa3uDyNfbq4frMQPbybshHlHt5ZbH4mg
-   3GRyfIbVGfbSqrVCyOHYKyC2QKZmmHPIPoHooytijWS86U1U8p0bhBtCO
-   s79DcSe/eE5A9HSAnNIACVTdrBjkD/ALJL5KRClrp4KDFKkE6AUHpErkw
-   wvTyggpL74JRMXtTmJFb2OxVRnHfTgQ+L4ZTeTZA+w0Q05WLnRX4xELq3
-   w==;
-IronPort-SDR: 3JP02dlNIE3HMntMiEBw6AqR2CfWT3JsVe6EfK7JMUJBko83EqqlkQ1DZIcp9gmCZiLgGhBZq8
- 2vP1loh14+wWb5KN3litQ/UQFcSY0dmHk4bWOOUYgEJ01cPOK+S+vc/MrElLaLWCmdIbmtFNZp
- Y3GwIPD3COMtJVxLbtxIvsOBOdGmwcjMBYu4lXihkRWlictHR9zIga5P8hpzpoxfy45GllBUcp
- Ja7lscZ5psytBhrINJvRf2iiNp7sR28ZGCgvi764pRPGdk4iALdN1XXhyyJB1FdG8jgGcpJQGv
- 4DM=
+  bh=W00A4ElYUxWqx3pZQThpqSdlc1PopF9tk891Iam97g0=;
+  b=NsyUc4w0DSRMU8xDpMCP/Hw+RVo1bBsJkNdx/VbmhwrljUbr1Lm9/mLL
+   FgmPNM8pKVWB8f6IMrT19x21U4UEnfvHzMKdToN4zUhc5iRPSTdrJ6BB/
+   mfLpiluV/I1x/14TMpJvVYf0cleF5r/JU9nugNxbofBYh72pPk6ANql6K
+   0znP3DmEL8YzKVl85aEM5ZKnxOTGRSIqDFtQOWw+S4kI8XYiX44B/qx4I
+   9FBrpVBzS4Q2Vkc/YPPbDYYfOz4qv8SzW++u59OKgIiZdZ/DAiL4uCp/l
+   EdNebNEQzIwj5dB9dD9Ruy3c/V4qVmIpGkH5woiCtQ07ZGoYYHgCClTUI
+   A==;
+IronPort-SDR: sOLIAeJgKsrvuCzlYU3SS5lx4UrmZwmR06EgvzbyIF9RP7IZWnR1Ry24lxnUCdDI8DUHmXWTUR
+ TANG3qqAVwA0hGo7LY50QdTmc/TPVDwq66WeUuWDyUtayri4Nq56b9o8I0CO4GDCn3T83yYWhI
+ xMWnU/4kFrAdQkxTGM5jyHtcru5DZgCaOL4+Eexo7NE6cIzC1xk83cfNvTpr2iCcfRbH/X1owZ
+ dQ3BPqXcG1r80osx2D4Ko6htcDAp0Tfm6HH//8nlc24zN3TtY6Ko2PAtmbA8OikXKR+18gS2dw
+ hLQ=
 X-IronPort-AV: E=Sophos;i="5.79,365,1602518400"; 
-   d="scan'208";a="268392052"
+   d="scan'208";a="268391956"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Jan 2021 14:23:14 +0800
-IronPort-SDR: 9IZ1jthdsWqerJ1gd2YAlrRKtLmssF4RWXyOFM2/XI2N84E5oYVCiTgu7BLcOYnbJ6i5G2X1s/
- HTGl6p553w+J6vyDCA3Sc/8Bda6cWC3SKDZWFHQQ4xsJa4IpXh/ByTVhWxoVBa64PVbio6irk+
- 36CFw8SjwB6GtuZ11xVA1he9685fDPRvDTzsJKOL6r82miSJ6AbVTWoEu4G0s5i2QWfFN3Pgoi
- dVkuoVIglBfgCP/Ke0CaIcggsVc3xNbumiDis9UPhwR56FvPxdLK4gjV4JgD2MwAUyo3F3ckl3
- ws1gj2PKERsnBU1qyWs1alh+
+  by ob1.hgst.iphmx.com with ESMTP; 22 Jan 2021 14:22:32 +0800
+IronPort-SDR: FwpCZHtsc9P0qdCtKdx5GRhCUqklPms5xzFGUyUcAQy04qkqt8cgGQMbf25taLf8OdXub5NukV
+ gQ2KIqcXpoNS00cdCweuh+Z38eUfxbu1rceg5F3MXVzoJyplaNsVRVoRfcS6Th8LwfGpFU+Z/j
+ Yl2Zp/iwOIj50ldH/oy3oHM7hoghY3X3WTnnsqeX7npgAa2Uagaoc8FbFvHEr3snvjDY3AQujb
+ nS2vXVEgPSjAP8KpVfOLvjO5B3xv77Xss6bYhpqbeXIIxmQ1qHbKQQjfJODjSQY5yY9urE5TGD
+ kjcp3RlZTPX6RC14XSWJfBLT
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 22:05:45 -0800
-IronPort-SDR: KRiT5LtSciRwUL/uanpo1oUPnJBcJc+QClB/yOMrTkvt12/VNs31h1TIfshZxRTssu1MJC4dUj
- X8fYPUv9gQMad2Bh/O+wn88EDBUhhwXnT71iBKJhl7sn2IkjFD+XkAh68urQ79qcMYgqZ+Ekj9
- BbLfdawh71mojvyoOYLQo3OViOp4VRKxvU/lkdzHTQmJ2FdBbikOBL+eJAp41e3T07Hkd4h6wH
- 6CJt4mW7ukYkCpEi64YtVmbl90Cex/ansK+X2YGS1cDJ9uwbQ2aeVRK96BSRJf9jyvUUkxSUcN
- Lek=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 22:05:04 -0800
+IronPort-SDR: FJAjOkRi8Hoiclmmkk/J0XyduzZbt0eNyznGPNmLbYM/Sk+61YiKy1fbjoOSlxpwJnSCyo+zvl
+ 26uQm4eHkLueVd0UPr7Kwzz1O2ZgywvR1Haw51RBdvfU7kbHUdRlmJiFE8cCiMeu4sKo8aAn+S
+ +dQ96RU4d2iCG1M9L3IAEOjMEJQ2zUVbdgZq7zmGNH4pTb8OcgXrDGyXQ/Q+Fmg0t6CbcRDlt4
+ UZvL/ABBYsYvHuokXZy6aZyBS9ZgQyT0ibJrfn23N88KT5G21nnRBPwYccHDalBcMkCDWmk6BZ
+ Nu4=
 WDCIronportException: Internal
 Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 21 Jan 2021 22:23:12 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 21 Jan 2021 22:22:31 -0800
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
         Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v13 32/42] btrfs: avoid async metadata checksum on ZONED mode
-Date:   Fri, 22 Jan 2021 15:21:32 +0900
-Message-Id: <f3b4ec5cb8c2e5cbe6f60810bda39bdfbdf051c4.1611295439.git.naohiro.aota@wdc.com>
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v13 07/42] btrfs: disallow fitrim in ZONED mode
+Date:   Fri, 22 Jan 2021 15:21:07 +0900
+Message-Id: <51f6f258af8d5de433c3437c26a98936a69eea7e.1611295439.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1611295439.git.naohiro.aota@wdc.com>
 References: <cover.1611295439.git.naohiro.aota@wdc.com>
@@ -69,40 +68,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In ZONED, btrfs uses per-FS zoned_meta_io_lock to serialize the metadata
-write IOs.
+The implementation of fitrim is depending on space cache, which is not used
+and disabled for zoned btrfs' extent allocator. So the current code does
+not work with zoned btrfs. In the future, we can implement fitrim for zoned
+btrfs by enabling space cache (but, only for fitrim) or scanning the extent
+tree at fitrim time. But, for now, disallow fitrim in ZONED mode.
 
-Even with these serialization, write bios sent from btree_write_cache_pages
-can be reordered by async checksum workers as these workers are per CPU and
-not per zone.
-
-To preserve write BIO ordering, we can disable async metadata checksum on
-ZONED.  This does not result in lower performance with HDDs as a single CPU
-core is fast enough to do checksum for a single zone write stream with the
-maximum possible bandwidth of the device. If multiple zones are being
-written simultaneously, HDD seek overhead lowers the achievable maximum
-bandwidth, resulting again in a per zone checksum serialization not
-affecting performance.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/disk-io.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/ioctl.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index a41bdf9312d6..5d14100ecf72 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -814,6 +814,8 @@ static blk_status_t btree_submit_bio_start(struct inode *inode, struct bio *bio,
- static int check_async_write(struct btrfs_fs_info *fs_info,
- 			     struct btrfs_inode *bi)
- {
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 7f2935ea8d3a..f05b0b8b1595 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -527,6 +527,14 @@ static noinline int btrfs_ioctl_fitrim(struct btrfs_fs_info *fs_info,
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
++	/*
++	 * btrfs_trim_block_group() is depending on space cache, which is
++	 * not available in ZONED mode. So, disallow fitrim in ZONED mode
++	 * for now.
++	 */
 +	if (btrfs_is_zoned(fs_info))
-+		return 0;
- 	if (atomic_read(&bi->sync_writers))
- 		return 0;
- 	if (test_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags))
++		return -EOPNOTSUPP;
++
+ 	/*
+ 	 * If the fs is mounted with nologreplay, which requires it to be
+ 	 * mounted in RO mode as well, we can not allow discard on free space
 -- 
 2.27.0
 
