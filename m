@@ -2,113 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EE2300754
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 16:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDB6300756
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 16:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbhAVP3q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 10:29:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729062AbhAVP3U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:29:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 462BF23AA1
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 15:28:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611329319;
-        bh=EaWa5wVGN84rAWHQm4K9fRsLC36c9YB3QbKunFD3fug=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=o3r3GAdsrSSdcsBNoh+ZnxCCgAu8CV2Y3O+aHZo8zq51New43Wt2f8n0vExVRXVrz
-         2SmO90WcAwNJxMq21GH3/Qtu55zHM+rOVXdeqHUf/NkeQSDBLKxrVucn35J+nxWS32
-         LNNK8j6B3rCwg+wmvmAF1pEL1tXu0J2USMWekmP4ciGefcOPuxssULpMOOWQwIDpS7
-         4A10fHDhG82xJdGJFmA47BOqzrdjxPYfeQ/xSwX8HX0VcSs4Mj2u7DiNSBdHgkOYQA
-         tqlGFXcfFFFnbljcdl2jiKi9o4zQZHvixiVx0I+9aA79lFULUsH7bapYH79c6D28FG
-         KNnPTyDXZn1Zg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: fix log replay failure when space cache needs to be rebuilt
-Date:   Fri, 22 Jan 2021 15:28:35 +0000
-Message-Id: <7950c4b5c5e1579b541477e27fc1e597b5fc44e3.1611327201.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1611327201.git.fdmanana@suse.com>
-References: <cover.1611327201.git.fdmanana@suse.com>
+        id S1729132AbhAVPaA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 10:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728887AbhAVP3u (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:29:50 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F400EC06174A
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 07:29:09 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id n15so767839qkh.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 07:29:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JKLb6o26D9id29c1gopTQO3QeooNIY6URdOUGIbhzQk=;
+        b=GL8g5Xvq+ISbAf1o0xoFHkbq2PqPrctJC4eAywiFieJlMFtFiaILZUfjRD7izDX33f
+         LlXKP3iU5fRa0k7rtQo/BMNeaxQbPRSGDvlAWiy6v8vD7lG2Nv4jUi3nXTOkvBE35Afy
+         SIXsPusm8iKPs9KL6qrlgk/2s7aOJ6LQYZBpJE4sSE8zqWl4fXv3Pl3rOqQMGjPHFBK6
+         sf34vaSqTwLbHlKVMcUL3Z/4jCTiGbdD93+ZNLsPlAUnpneS4v2J5Zbo7jwGm0JZVBnb
+         PmVZfd6FRC4YGYKUYR019WOkA/Gt5ixDP2LGIod7OMtURTyCMeNN7sbX4tFpSF5pDcwV
+         DKGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JKLb6o26D9id29c1gopTQO3QeooNIY6URdOUGIbhzQk=;
+        b=L7Jp+8kuu8gj2NQ3nqDvcH8U+bh7mp/ByNtkTtn868Zct/5E9492PwGc5j7j41ce4Y
+         vEcX32+LttbPRaeYf1dvUF6jQd5TyChHlaxw3kmqo+8JD340o2lzdAYwgxIBukg/NUl3
+         WDYsBFH2c8Ln0Q+IuZ+jH232LW/on6GLkk0txWwMnNDNjD3q6kv/zET5z1ux0ZTfBI/i
+         v5U14rDwd+Sp4q8sXqaEzUNq1TgLbjecej5IBAFJLd65H/hWqjAlJJJ+K4fvpy6eR6Fg
+         /w3y99dQd8uLQ4ugC+rNSZXL496vYtXg7WFam0lk6gFN21lUgxtC1t6u6vJxUpCFc08Q
+         n4QA==
+X-Gm-Message-State: AOAM530iuj59egTJZoc3kTkVByn7sEHZ2ntdN3+TrqAxGX6vO3fYj6gs
+        aHCnbTpA7E5iK27DqmzIQQQGEg==
+X-Google-Smtp-Source: ABdhPJzHck4iJHxDMUmLShS9orB26IhKrxxUrp7Dcup5cAvEujhggvAK6h7/USfcVz0Ti3IkOgX7aA==
+X-Received: by 2002:a37:6f42:: with SMTP id k63mr770668qkc.291.1611329349174;
+        Fri, 22 Jan 2021 07:29:09 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id o75sm431299qke.77.2021.01.22.07.29.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jan 2021 07:29:08 -0800 (PST)
+Subject: Re: [PATCH v13 27/42] btrfs: use ZONE_APPEND write for ZONED btrfs
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <cover.1611295439.git.naohiro.aota@wdc.com>
+ <3ce68f36407d9aa3665c5d5b444382650a6e1967.1611295439.git.naohiro.aota@wdc.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <9de82784-13d5-cfd6-0763-a3f70266914a@toxicpanda.com>
+Date:   Fri, 22 Jan 2021 10:29:07 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3ce68f36407d9aa3665c5d5b444382650a6e1967.1611295439.git.naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On 1/22/21 1:21 AM, Naohiro Aota wrote:
+> This commit enables zone append writing for zoned btrfs. When using zone
+> append, a bio is issued to the start of a target zone and the device
+> decides to place it inside the zone. Upon completion the device reports
+> the actual written position back to the host.
+> 
+> Three parts are necessary to enable zone append in btrfs. First, modify
+> the bio to use REQ_OP_ZONE_APPEND in btrfs_submit_bio_hook() and adjust
+> the bi_sector to point the beginning of the zone.
+> 
+> Secondly, records the returned physical address (and disk/partno) to the
+> ordered extent in end_bio_extent_writepage() after the bio has been
+> completed. We cannot resolve the physical address to the logical address
+> because we can neither take locks nor allocate a buffer in this end_bio
+> context. So, we need to record the physical address to resolve it later in
+> btrfs_finish_ordered_io().
+> 
+> And finally, rewrites the logical addresses of the extent mapping and
+> checksum data according to the physical address (using __btrfs_rmap_block).
+> If the returned address matches the originally allocated address, we can
+> skip this rewriting process.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-During log replay we first start by walking the log trees and pin the
-ranges for their extent buffers, through calls to the function
-btrfs_pin_extent_for_log_replay().
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-However if the space cache for a block group is invalid and needs to be
-rebuilt, we can fail the log replay and mount with -EINVAL like this:
+Thanks,
 
- [72383.415114] BTRFS: device fsid 32b95b69-0ea9-496a-9f02-3f5a56dc9322 devid 1 transid 1432 /dev/sdb scanned by mount (3816007)
- [72383.417837] BTRFS info (device sdb): disk space caching is enabled
- [72383.418536] BTRFS info (device sdb): has skinny extents
- [72383.423846] BTRFS info (device sdb): start tree-log replay
- [72383.426416] BTRFS warning (device sdb): block group 30408704 has wrong amount of free space
- [72383.427686] BTRFS warning (device sdb): failed to load free space cache for block group 30408704, rebuilding it now
- [72383.454291] BTRFS: error (device sdb) in btrfs_recover_log_trees:6203: errno=-22 unknown (Failed to pin buffers while recovering log root tree.)
- [72383.456725] BTRFS: error (device sdb) in btrfs_replay_log:2253: errno=-22 unknown (Failed to recover log tree)
- [72383.460241] BTRFS error (device sdb): open_ctree failed
-
-This is because at the start of btrfs_pin_extent_for_log_replay() we mark
-the range for the extent buffer in excluded extents io tree. That is fine
-when the space cache is valid on disk and we can load it, in which case it
-causes no problems - in fact it is pointless since shortly after, still at
-btrfs_pin_extent_for_log_replay(), we remove the range from the free space
-cache with the call to btrfs_remove_free_space(().
-
-However, for the case where we need to rebuild the space cache, because it
-is either invalid or it is missing, having the extent buffer range marked
-in the excluded extents io tree leads to a -EINVAL failure from the call
-to btrfs_remove_free_space(), resulting in the log replay and mount to
-fail. This is because by having the range marked in the excluded extents
-io tree, the caching thread ends never marking adding the range of the
-extent buffer marked as free space in the block group since the calls to
-add_new_free_space(), called from load_extent_tree_free(), filter out any
-ranges that are marked as excluded extents.
-
-So fix this by not marking the extent buffer range in the excluded extents
-io tree at btrfs_pin_extent_for_log_replay() since it leads to the failure
-when a space cache needs to be rebuilt and it is useless when we do not
-need to rebuild a space cache. Also, remove the cleanup of ranges in the
-excluded extents io tree at btrfs_finish_extent_commit() since they were
-there to cleanup the ranges added by btrfs_pin_extent_for_log_replay().
-
-Fixes: f2fb72983bdcf5 ("btrfs: Mark pinned log extents as excluded")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/extent-tree.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 594534482ad3..4fc3f560c3dd 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2603,8 +2603,6 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
- 	struct btrfs_caching_control *caching_ctl;
- 	int ret;
- 
--	btrfs_add_excluded_extent(trans->fs_info, bytenr, num_bytes);
--
- 	cache = btrfs_lookup_block_group(trans->fs_info, bytenr);
- 	if (!cache)
- 		return -EINVAL;
-@@ -2871,9 +2869,6 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 			mutex_unlock(&fs_info->unused_bg_unpin_mutex);
- 			break;
- 		}
--		if (test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags))
--			clear_extent_bits(&fs_info->excluded_extents, start,
--					  end, EXTENT_UPTODATE);
- 
- 		if (btrfs_test_opt(fs_info, DISCARD_SYNC))
- 			ret = btrfs_discard_extent(fs_info, start,
--- 
-2.28.0
-
+Josef
