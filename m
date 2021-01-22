@@ -2,137 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F422B30007A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 11:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDCE30033D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 13:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbhAVKgf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 05:36:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58462 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727688AbhAVK1m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:27:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611311215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=YotHZdrRM3mkJ3wVR1bpz2ZsZ4Id2jlgiffD62RH+QA=;
-        b=sX5GM9IHbjiZkz7U2J8lltIZk4QRBzgQxzoVZTnK/90B0CT1x+CDUxMLIJKi7QdnUfKD7W
-        U/M8J3ISmy8ssJ9S7VUHfyTldoOHtHmSMm4GomS6Yv6cYSjCShZCrMhBR3Xkhr2xyUU9OX
-        YvPJ9EuNPnnxdaExKQr/QaCvcJ0n+HQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 57399AB9F;
-        Fri, 22 Jan 2021 10:26:55 +0000 (UTC)
-Subject: Re: [PATCH v3 13/14] lib/zstd: Convert constants to defines
+        id S1727217AbhAVMdk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 07:33:40 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:24857 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727401AbhAVMdV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:33:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611318802; x=1642854802;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=FM/XAH0sp37Ed7EFwdOc+mnpO2dybtf/cSPvIcs8BJk=;
+  b=C7vrYLmKDPFm5gEcdqidqsiRryQrocm0TKpnv1NgKQJE4W5LGIKn8IQd
+   6X4yGoZD05W7ys9rnGBX+YRxPyJ88YHr5dXIecH2KSv+RHP4ul04uc47a
+   IaWlcQsFu/2SsKpMdCZjfgObSmPrhM8sUrp75ndLKtzhlwXEZy66f+41u
+   BBhMiHIdpflJ80LA9qQeXhMig8/MhQr4RByJZvft5Qoy5ZrSaQmxw3N3E
+   TnK7oiO2P94P2x9jtyRM7AlW0N5x8LD+DdjuLutrGX7SSGwc/I51aNnOb
+   hkZcsv/eu1nWr3JBvVA4DGsy5y2aL4ZuOewpmkqLhEABprhneYB76UtuY
+   A==;
+IronPort-SDR: hqlif8UOQZplad5yf/vpE+g0Qf9ZS8+aijSGoDQzcnC7Vo0ILf5dK6IugGkPZAvuHzZHg+EiP2
+ ioA1WNS8cIJo7tnck/4aYCR9mPMVPe5qGtb8BHeu+uQCPeVNU8B6NcCodJx4XcaIjXPYkfFuE2
+ p8OnGkLS7C0A5AGfLYxawhq7/pwt08U3JtP1nUS8IcrYaQ0M3cTmoshX2LotVG5ZMBJZ9VxTQB
+ 3+PZeUxjI0jt1omjwGhdwoR6X72Tjp5g/Dlnj7dJsdC1o10PjafB0HbEAzv2aD2ZahwcLGRVRB
+ wZ4=
+X-IronPort-AV: E=Sophos;i="5.79,366,1602518400"; 
+   d="scan'208";a="159261527"
+Received: from mail-bn8nam11lp2173.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.173])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Jan 2021 20:32:09 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cvrxMYtD3PTprmelIFY4Q6adfS8U4tWc57hqL3UTZZC7/vcoeBp2+tg8JlmkLC/nmQR7XU6kJ1GUbqWzJiAtUMWariY97jMqfAgbEvFQMU5tf7s9ds/jNHNUqMy9cd/e2qjS/MYiDafA37a8/wXgxvS348PBJ2Hj9PpYIYx1NtoyikDsSLYgxZ6Tu2fM3NtsvScEKEgLQGRqtQgpPfAiCGt4W3z/MS6V5xUepEectL+7zt0y55tA4oJ/uvxDqXN26FTbXU2UT3uODzIKweYrM9fyUSJRZXvdXucgeotKSNIHgKdecxU6HPCD72bCiiDCpnT/jHTCacsUk1ZTyMsL/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zo/LOwaGTuBFsUyR4ocGnzUJfXYKfesLN1ZU3+Qz3/U=;
+ b=BrrchKWgGinS5/uK4o5hkZNCKU1EPUy7Qztf56pc9dkD71/ruYvS5qycWuSKHBmxSMBewbsWTMfySZ3XsL6wQQuKJl4V8jubpK1njA5+AbWTx08+49Os3Q0o4D6tKk3Z8bsJCylEIavnXmhtCsuWExAVKTyhVzCHMHp9wbi6Y9iXkGoCw/RMySuVOVBs5ik90uiZQ3Ioj1Lqc/v27mFYvSUePbAa131kC+Lge/nai+6Gk9eB+6hQVR/r/3UK1wbC9enpCCNvE1BgD7rKC8sd8oR3bGZamaqFnGpSd2SpA/jjxJdYRletr6gvCoEjsIWU95OjUHPOPDBnI/QpnTTJ7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zo/LOwaGTuBFsUyR4ocGnzUJfXYKfesLN1ZU3+Qz3/U=;
+ b=DWh6A+r9H8clxvovgImI70dFhU7y5X+qH6O42Prm09hgQcPXOD5xnXII2zQNyo5RlskIoOsG7KAuAGIahnO3fwHcY8riuUlv+7Re2FU0k5wHvlfUYDUZYQkoqiWRkbZgXOVThMHrqgoOoFWA2HxueKFK5OGEd1Mkdj+ll3fa2QE=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3680.namprd04.prod.outlook.com
+ (2603:10b6:803:4e::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.14; Fri, 22 Jan
+ 2021 12:32:07 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::146f:bed3:ce59:c87e]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::146f:bed3:ce59:c87e%3]) with mapi id 15.20.3763.014; Fri, 22 Jan 2021
+ 12:32:07 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v3 01/14] btrfs: Document modified parameter of
+ add_extent_mapping
+Thread-Topic: [PATCH v3 01/14] btrfs: Document modified parameter of
+ add_extent_mapping
+Thread-Index: AQHW8KfBpR+nY/poTUG4A0Obkh3qCA==
+Date:   Fri, 22 Jan 2021 12:32:07 +0000
+Message-ID: <SN4PR0401MB35984B16F4371720DE2E2BDB9BA00@SN4PR0401MB3598.namprd04.prod.outlook.com>
 References: <20210122095805.620458-1-nborisov@suse.com>
- <20210122095805.620458-14-nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-To:     Nick Terrell <terrelln@fb.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <468866f6-ec3c-1d9e-e457-81818fc02b4e@suse.com>
-Date:   Fri, 22 Jan 2021 12:26:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210122095805.620458-14-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8
+ <20210122095805.620458-2-nborisov@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a61:4cc:4501:d881:6dc:68d2:9b00]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ee92dde8-792c-4799-9ec4-08d8bed1bb7c
+x-ms-traffictypediagnostic: SN4PR0401MB3680:
+x-microsoft-antispam-prvs: <SN4PR0401MB3680D4EBDC246105AFEA84819BA00@SN4PR0401MB3680.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6kjtuPlPF+wAuSCPR3Nk14Fo++t3oxdOu0XpyHAm49PWl9b11HFqTYjb33qJB2QQZs/7vR4luLFk8OHRcdU9/fmItIlG2aApAci/IYB8DwkZYndBfYKp/8PTczMtnQ+FJ+m6CS00OYrs7I/D/YnESFpUcOr36jgCyu+PApXBUVrTK5ImPEg1mNXvFmu9IoSx7s7Ihd6KwNnPYXMP8xTJs6Tv+wePiI39NBSIzUPvdlw2ZtJXBKrxSEDl2IBn/9MEnx4NHLI7gVACynImNiNq5gNASaS/uMmxZXG/JsyLVyJkaajGkUg54Z9yRo1JKub6Go7vVdylMCLweiKBwTyTaqBVeIHW54AkiZ7iULcZSGwkphUSQ6h9U8d1+be4Xomi95fM11WINdZ/6fyysih2cA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(136003)(346002)(39860400002)(55016002)(8676002)(2906002)(8936002)(91956017)(478600001)(9686003)(71200400001)(53546011)(64756008)(110136005)(5660300002)(6506007)(86362001)(33656002)(316002)(7696005)(66946007)(52536014)(76116006)(66476007)(66556008)(186003)(83380400001)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uyANBP+Q5xIah9DIUTX/yfiMBZKPpb9oVz9Pc4Ua02Pk73EBhBeQrYeJT8RI?=
+ =?us-ascii?Q?UuZ2GhCzvlHG2Klbpf+F6yFF/SiqYcEqgsb6IOSHv495TTGLAdlYThdfdPK+?=
+ =?us-ascii?Q?JxBPlczbonOxtARF6Tp2R9jAJn8vj8oxIpSHK33ZCogOgPpUFo2Qu0z5sJpZ?=
+ =?us-ascii?Q?hrK1RcyutGbVhXHac50kq8WYf1upf8+zG87aSwRyqwLYqVLXlNzdDMNAPVTC?=
+ =?us-ascii?Q?l+pFrzw9gikIHDlZZVhk5UYSpHZIJ8xQBMpuxHJQswLgmM9WLQkFEA6tdi9a?=
+ =?us-ascii?Q?OYte/Z7R6np1DtWLCtwNksZ0A2xFxCucYxgFXkTi+Cf8zbqdrwJ8WwfjwQcn?=
+ =?us-ascii?Q?Lh5wOjC1UYEmPZMn7j60mupZhYX+KlhxRmj4cZ0AAqtKQSKSSVXKt9zSsRq2?=
+ =?us-ascii?Q?m6KpTpIKC/jBq4+yO8XFOYiAUKg8xHNT4wwFiqqk9PNTRAeWE6wQT8S2EcVP?=
+ =?us-ascii?Q?eUwl1b9VeckWzlUgh4C5JoNfHXSE1k9dHUbofiF/jTNN/cRvg0NJeij+vO1n?=
+ =?us-ascii?Q?dN+i6s6s85QnQauly15ekuqcbLIFahF2lN/Kyw/9wxxJfvIaN6qmZ/kp0Tey?=
+ =?us-ascii?Q?Kbyy8NuNhq+IWDYaTxGZgz6G3RQ9U65qFpLeVG19HWGsuVlCu748cern3zUj?=
+ =?us-ascii?Q?OHRyIkrqQPcq/76Zkog6Uk8BiTKaOcNcRrGmXcdOrkVrTVCxQ6ccGwMGc2Lb?=
+ =?us-ascii?Q?vGFNbtTzNnOZyowz1We9WA/GyMwgtgRJU4dDKTfKiN8UH8/m9DHAZwV77/Yk?=
+ =?us-ascii?Q?JlrkSqg3Y08330WtP9ZeFD1DjbIYNerJpznSn+jABfLg+227GGy8Gaq7oU28?=
+ =?us-ascii?Q?+GRHx8DsE9Q/i0HZEjxeLRgXXBBZnZlpqfOygrxO8P9AeE3EUfirfdkh5omV?=
+ =?us-ascii?Q?eIagGCUSSCeRQRM5iy3W0bqbcciP9e79WcDrM46/7j2agKcoQyQAnAtWbfzG?=
+ =?us-ascii?Q?LQB3m48Ae+g0uvHhTef6yDZNln9h44IEJ3nrBE1AcPUYHS/SdDrUkfQGXsot?=
+ =?us-ascii?Q?NnlqY2/s4ouOMkG4+lfN2tdRxR8cD/B54NgXed75CQXpYJeBrS4Vb2h/CLhg?=
+ =?us-ascii?Q?m4F/R29k?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee92dde8-792c-4799-9ec4-08d8bed1bb7c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 12:32:07.5364
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8ZTjPJcb4GC7E9h51Sa69C/HdYtzH1RPE2kzdNMg1S9jOyI7NKjf+30JI6LIf9RiMLtvXeJlCvQBekiqMi3u+uKGXIf979OanIHca5c1Ys4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3680
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Nick,
-
-Can we get your ACK for the below changes. THey don't seem to be used
-outside of core zstd code, yet they result in warnings in code which
-includes zstd.h. By switching them to defines we don't lose anything.
-
-On 22.01.21 г. 11:58 ч., Nikolay Borisov wrote:
-> Those constants are really used internally by zstd and including
-> linux/zstd.h into users results in the following warnings:
-> 
-> In file included from fs/btrfs/zstd.c:19:
-> ./include/linux/zstd.h:798:21: warning: ‘ZSTD_skippableHeaderSize’ defined but not used [-Wunused-const-variable=]
->   798 | static const size_t ZSTD_skippableHeaderSize = 8;
->       |                     ^~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/linux/zstd.h:796:21: warning: ‘ZSTD_frameHeaderSize_max’ defined but not used [-Wunused-const-variable=]
->   796 | static const size_t ZSTD_frameHeaderSize_max = ZSTD_FRAMEHEADERSIZE_MAX;
->       |                     ^~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/linux/zstd.h:795:21: warning: ‘ZSTD_frameHeaderSize_min’ defined but not used [-Wunused-const-variable=]
->   795 | static const size_t ZSTD_frameHeaderSize_min = ZSTD_FRAMEHEADERSIZE_MIN;
->       |                     ^~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/linux/zstd.h:794:21: warning: ‘ZSTD_frameHeaderSize_prefix’ defined but not used [-Wunused-const-variable=]
->   794 | static const size_t ZSTD_frameHeaderSize_prefix = 5;
-> 
-> So fix those warnings by turning the constants into defines.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  include/linux/zstd.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/zstd.h b/include/linux/zstd.h
-> index 249575e2485f..e87f78c9b19c 100644
-> --- a/include/linux/zstd.h
-> +++ b/include/linux/zstd.h
-> @@ -791,11 +791,11 @@ size_t ZSTD_DStreamOutSize(void);
->  /* for static allocation */
->  #define ZSTD_FRAMEHEADERSIZE_MAX 18
->  #define ZSTD_FRAMEHEADERSIZE_MIN  6
-> -static const size_t ZSTD_frameHeaderSize_prefix = 5;
-> -static const size_t ZSTD_frameHeaderSize_min = ZSTD_FRAMEHEADERSIZE_MIN;
-> -static const size_t ZSTD_frameHeaderSize_max = ZSTD_FRAMEHEADERSIZE_MAX;
-> +#define ZSTD_frameHeaderSize_prefix 5
-> +#define ZSTD_frameHeaderSize_min ZSTD_FRAMEHEADERSIZE_MIN
-> +#define ZSTD_frameHeaderSize_max ZSTD_FRAMEHEADERSIZE_MAX
->  /* magic number + skippable frame length */
-> -static const size_t ZSTD_skippableHeaderSize = 8;
-> +#define ZSTD_skippableHeaderSize 8
->  
->  
->  /*-*************************************
-> 
+On 22/01/2021 11:17, Nikolay Borisov wrote:=0A=
+> Fixes fs/btrfs/extent_map.c:399: warning: Function parameter or member=0A=
+> 'modified' not described in 'add_extent_mapping'=0A=
+> =0A=
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>=0A=
+> ---=0A=
+>  fs/btrfs/extent_map.c | 5 ++++-=0A=
+>  1 file changed, 4 insertions(+), 1 deletion(-)=0A=
+> =0A=
+> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c=0A=
+> index bd6229fb2b6f..c540a37cbdb2 100644=0A=
+> --- a/fs/btrfs/extent_map.c=0A=
+> +++ b/fs/btrfs/extent_map.c=0A=
+> @@ -385,9 +385,12 @@ static void extent_map_device_clear_bits(struct exte=
+nt_map *em, unsigned bits)=0A=
+>  }=0A=
+>  =0A=
+>  /**=0A=
+> - * add_extent_mapping - add new extent map to the extent tree=0A=
+> + * Add new extent map to the extent tree=0A=
+> + *=0A=
+>   * @tree:	tree to insert new map in=0A=
+>   * @em:		map to insert=0A=
+> + * @modified:	bool indicating whether the given @em should be added to t=
+he=0A=
+> + *	        modified list, which indicates the extent needs to be logged=
+=0A=
+>   *=0A=
+>   * Insert @em into @tree or perform a simple forward/backward merge with=
+=0A=
+>   * existing mappings.  The extent_map struct passed in will be inserted=
+=0A=
+> =0A=
+=0A=
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+=0A=
+Although this warrants a follow up patch changing modified from int to bool=
+=0A=
+(and for setup_extent_mapping as well).=0A=
