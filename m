@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58394300EB5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 22:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D34300EB2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 22:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729371AbhAVVQD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 16:16:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49332 "EHLO
+        id S1730161AbhAVVPz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 16:15:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728807AbhAVUtW (ORCPT
+        with ESMTP id S1729468AbhAVUtW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 22 Jan 2021 15:49:22 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC9CC0617AB
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:47:21 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id u4so4642664pjn.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:47:21 -0800 (PST)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB40FC061352
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:47:23 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id h15so1482992pli.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:47:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rUrSv5a3k4qaJA6xCjOA8O8ZkzvHiOJp37R6oMRhd/s=;
-        b=cy0QcBWEJOpNlrEEH0Rtvrozscq6t7muLe7G4vOHIQmvaG6O34slLP+UhdcVfMS2Ij
-         m50JAjx5fsKG6cHJiQ1VHW5woqouctcQZDdXSy8ZXhzewz3YtBTXfMdIyYe2Y2K3wWVN
-         6/Nch2PFRFvWM6ApcJD+68fu26qelaHpN7z5kuw6HVAiBssB6r1QRILGkS6+9SnQ5yfT
-         0di5h77BoSxmZD10Mjk+1KvTyHmRR6DHI7QghfEo6IsYdhYBA+VjQtAMTLq96j4leXhK
-         riaGoCpLAWX1SeVu0bJgSpbDsthPNPd/sstc3ceGHV3/a1SJl4L2pYHh3767mev3QHbF
-         bLGg==
+        bh=ebBFLla+oq6Fu8NNd3NcGHArvFeQ09WYnlC9IkZrxIc=;
+        b=CRAF4UcnAm/BtIvVRfBo4+C4xSKqe1kvd5ymqv1SnomF7F+lPPFW3nV2U014DKZ8/m
+         gaInPQXQnY7Kuk4NQ/xioc90wp6AhyUMUn2STCF1ZMP66n9zzOCuUrXhU/I6xofMKjSl
+         2fVQQHKy7GEdsijw6IeX/rSTujpvHskGJ0arnytgw8N+ZDxHidc8PY/BAhqaJO+5iAKM
+         h6FD00W5lpR+pXoQGg8T4sgCRCC0hytnlCibvHPRdCd9G2gIy5mMvkmOf8pt2dNwIKTC
+         FJ9qNFyTLo0RLmDkV81EarSPHAGWoykD2mriPKAF6HO2j1Eo3i0PbHFhTG/6gnyTd+dQ
+         lLvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rUrSv5a3k4qaJA6xCjOA8O8ZkzvHiOJp37R6oMRhd/s=;
-        b=QZyK3C6MOMLp8VUofWIVhCCO5FbJvMbGVdr81lrwhOc3XzJlb0PbKapar/7Nl+znJl
-         RjYCG9XTx/5NSGnV4mk0cFSPEP4vb6ME/bOe4AAqnNzlMwTSx6zaXzvHNx2p5ErVxp9s
-         uKSPI3OjkB/j62fYTKLbIsS6t5xb4glKGFYHeSjZPmYzLuew6j7JYE485CJT2azClY3V
-         sNRV5W+OA2lAXydq0URex8pVTMdS0k84YHBviw6YZqQaAUu9UDzN2ScfPr4QvWCrE24z
-         wt3uXQJGT6oM7XHKbXFCUt5NMGjuQAUWbtds+a7H+GB8vDhG6E8xjyBw2p6Rj/743ekC
-         D7iA==
-X-Gm-Message-State: AOAM530r6mi6ORkfRpGIo3r0xfqJfwknYp2GGPc0Aiou8RJRgylQHRi+
-        eqw6A4jkwci9HeAYuQTgl+8QAA==
-X-Google-Smtp-Source: ABdhPJz1B4n6Rk7dvmWq3RNevUOFnZeWA8G4FgacZGyIY3z/iihHeNfBrAFENgHBLu0CfBfWS3X5tQ==
-X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr7239385pjb.113.1611348441102;
-        Fri, 22 Jan 2021 12:47:21 -0800 (PST)
+        bh=ebBFLla+oq6Fu8NNd3NcGHArvFeQ09WYnlC9IkZrxIc=;
+        b=WJzIctJHpY8oN4wrZQ0Gj27QUqsWCIvSVDBNRymDOEuq64goERTc9VG6OyUqcu+Vqg
+         O40jjkzCHTvElZpZcP5nZSQ5lC0lm8ya7ZkgHXdnAch71F0H6GWz30/xy4QpjIIALKzU
+         NNDHGb1np1cWJxOQiWzPSqy3GR40gQ5APSUPQAYu7Mnl3UwS7Jkq461s1TviFCdyJUab
+         GCpNBbwoPrg4QuZ6K7zFw+ghquIo1rjnM50dc2nYXHjoSTuiB839yb8VN+ihWs2+01MR
+         8L9gv5ijylK0+vjhqr9mPmVZ2h3Q+G9N4r4WrSCmqiZgb34bhIJFbyeyI+CDrEnoGEiU
+         QMrg==
+X-Gm-Message-State: AOAM53214kzFPSdKvIyJAWBwmpgDsuNn+jzsCVAu28foR9YsO0glqTcF
+        EVUi3MuWsdEEf8JqOcHnHc3DYg==
+X-Google-Smtp-Source: ABdhPJzlU6VoXtH6Y1tNDhS0ekWFfZXU5C+5K1BPn9WzwPAHc8pTtFnqs9nco3ZT5ZQORSBVeehdnQ==
+X-Received: by 2002:a17:90b:78f:: with SMTP id l15mr214949pjz.234.1611348443355;
+        Fri, 22 Jan 2021 12:47:23 -0800 (PST)
 Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:ea88])
-        by smtp.gmail.com with ESMTPSA id j18sm4092900pfc.99.2021.01.22.12.47.18
+        by smtp.gmail.com with ESMTPSA id j18sm4092900pfc.99.2021.01.22.12.47.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 12:47:20 -0800 (PST)
+        Fri, 22 Jan 2021 12:47:22 -0800 (PST)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Al Viro <viro@zeniv.linux.org.uk>,
@@ -56,9 +56,9 @@ Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
         Amir Goldstein <amir73il@gmail.com>,
         Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v7 01/10] iov_iter: add copy_struct_from_iter()
-Date:   Fri, 22 Jan 2021 12:46:48 -0800
-Message-Id: <e71e712d27b2e2c19efc5b1454bd8581ad98d900.1611346706.git.osandov@fb.com>
+Subject: [PATCH v7 02/10] fs: add O_ALLOW_ENCODED open flag
+Date:   Fri, 22 Jan 2021 12:46:49 -0800
+Message-Id: <09988d880282a6ef0dd04d1fce7db1dbbd2d335c.1611346706.git.osandov@fb.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <cover.1611346706.git.osandov@fb.com>
 References: <cover.1611346706.git.osandov@fb.com>
@@ -70,122 +70,147 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Omar Sandoval <osandov@fb.com>
 
-This is essentially copy_struct_from_user() but for an iov_iter.
+The upcoming RWF_ENCODED operation introduces some security concerns:
 
-Suggested-by: Aleksa Sarai <cyphar@cyphar.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+1. Compressed writes will pass arbitrary data to decompression
+   algorithms in the kernel.
+2. Compressed reads can leak truncated/hole punched data.
+
+Therefore, we need to require privilege for RWF_ENCODED. It's not
+possible to do the permissions checks at the time of the read or write
+because, e.g., io_uring submits IO from a worker thread. So, add an open
+flag which requires CAP_SYS_ADMIN. It can also be set and cleared with
+fcntl(). The flag is not cleared in any way on fork or exec.
+
+Note that the usual issue that unknown open flags are ignored doesn't
+really matter for O_ALLOW_ENCODED; if the kernel doesn't support
+O_ALLOW_ENCODED, then it doesn't support RWF_ENCODED, either.
+
 Signed-off-by: Omar Sandoval <osandov@fb.com>
 ---
- include/linux/uio.h |  2 ++
- lib/iov_iter.c      | 82 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 84 insertions(+)
+ arch/alpha/include/uapi/asm/fcntl.h  |  1 +
+ arch/parisc/include/uapi/asm/fcntl.h |  1 +
+ arch/sparc/include/uapi/asm/fcntl.h  |  1 +
+ fs/fcntl.c                           | 10 ++++++++--
+ fs/namei.c                           |  4 ++++
+ include/linux/fcntl.h                |  2 +-
+ include/uapi/asm-generic/fcntl.h     |  4 ++++
+ 7 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 72d88566694e..f4e6ea85a269 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -121,6 +121,8 @@ size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
- 			 struct iov_iter *i);
- size_t copy_page_from_iter(struct page *page, size_t offset, size_t bytes,
- 			 struct iov_iter *i);
-+int copy_struct_from_iter(void *dst, size_t ksize, struct iov_iter *i,
-+			  size_t usize);
+diff --git a/arch/alpha/include/uapi/asm/fcntl.h b/arch/alpha/include/uapi/asm/fcntl.h
+index 50bdc8e8a271..391e0d112e41 100644
+--- a/arch/alpha/include/uapi/asm/fcntl.h
++++ b/arch/alpha/include/uapi/asm/fcntl.h
+@@ -34,6 +34,7 @@
  
- size_t _copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i);
- size_t _copy_from_iter(void *addr, size_t bytes, struct iov_iter *i);
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index a21e6a5792c5..f45826ed7528 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -948,6 +948,88 @@ size_t copy_page_from_iter(struct page *page, size_t offset, size_t bytes,
- }
- EXPORT_SYMBOL(copy_page_from_iter);
+ #define O_PATH		040000000
+ #define __O_TMPFILE	0100000000
++#define O_ALLOW_ENCODED	0200000000
  
-+/**
-+ * copy_struct_from_iter - copy a struct from an iov_iter
-+ * @dst: Destination buffer.
-+ * @ksize: Size of @dst struct.
-+ * @i: Source iterator.
-+ * @usize: (Alleged) size of struct in @i.
-+ *
-+ * Copies a struct from an iov_iter in a way that guarantees
-+ * backwards-compatibility for struct arguments in an iovec (as long as the
-+ * rules for copy_struct_from_user() are followed).
-+ *
-+ * The recommended usage is that @usize be taken from the current segment:
-+ *
-+ *   int do_foo(struct iov_iter *i)
-+ *   {
-+ *     size_t usize = iov_iter_single_seg_count(i);
-+ *     struct foo karg;
-+ *     int err;
-+ *
-+ *     if (usize > PAGE_SIZE)
-+ *       return -E2BIG;
-+ *     if (usize < FOO_SIZE_VER0)
-+ *       return -EINVAL;
-+ *     err = copy_struct_from_iter(&karg, sizeof(karg), i, usize);
-+ *     if (err)
-+ *       return err;
-+ *
-+ *     // ...
-+ *   }
-+ *
-+ * Return: 0 on success, -errno on error (see copy_struct_from_user()).
-+ *
-+ * On success, the iterator is advanced @usize bytes. On error, the iterator is
-+ * not advanced.
-+ */
-+int copy_struct_from_iter(void *dst, size_t ksize, struct iov_iter *i,
-+			  size_t usize)
-+{
-+	if (usize <= ksize) {
-+		if (!copy_from_iter_full(dst, usize, i))
-+			return -EFAULT;
-+		memset(dst + usize, 0, ksize - usize);
-+	} else {
-+		size_t copied = 0, copy;
-+		int ret;
-+
-+		if (WARN_ON(iov_iter_is_pipe(i)) || unlikely(i->count < usize))
-+			return -EFAULT;
-+		if (iter_is_iovec(i))
-+			might_fault();
-+		iterate_all_kinds(i, usize, v, ({
-+			copy = min(ksize - copied, v.iov_len);
-+			if (copy && copyin(dst + copied, v.iov_base, copy))
-+				return -EFAULT;
-+			copied += copy;
-+			ret = check_zeroed_user(v.iov_base + copy,
-+						v.iov_len - copy);
-+			if (ret <= 0)
-+				return ret ?: -E2BIG;
-+			0;}), ({
-+			char *addr = kmap_atomic(v.bv_page);
-+			copy = min_t(size_t, ksize - copied, v.bv_len);
-+			memcpy(dst + copied, addr + v.bv_offset, copy);
-+			copied += copy;
-+			ret = memchr_inv(addr + v.bv_offset + copy, 0,
-+					 v.bv_len - copy) ? -E2BIG : 0;
-+			kunmap_atomic(addr);
-+			if (ret)
-+				return ret;
-+			}), ({
-+			copy = min(ksize - copied, v.iov_len);
-+			memcpy(dst + copied, v.iov_base, copy);
-+			if (memchr_inv(v.iov_base, 0, v.iov_len))
-+				return -E2BIG;
-+			})
-+		)
-+		iov_iter_advance(i, usize);
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(copy_struct_from_iter);
-+
- static size_t pipe_zero(size_t bytes, struct iov_iter *i)
+ #define F_GETLK		7
+ #define F_SETLK		8
+diff --git a/arch/parisc/include/uapi/asm/fcntl.h b/arch/parisc/include/uapi/asm/fcntl.h
+index 03dee816cb13..72ea9bdf5f04 100644
+--- a/arch/parisc/include/uapi/asm/fcntl.h
++++ b/arch/parisc/include/uapi/asm/fcntl.h
+@@ -19,6 +19,7 @@
+ 
+ #define O_PATH		020000000
+ #define __O_TMPFILE	040000000
++#define O_ALLOW_ENCODED	100000000
+ 
+ #define F_GETLK64	8
+ #define F_SETLK64	9
+diff --git a/arch/sparc/include/uapi/asm/fcntl.h b/arch/sparc/include/uapi/asm/fcntl.h
+index 67dae75e5274..ac3e8c9cb32c 100644
+--- a/arch/sparc/include/uapi/asm/fcntl.h
++++ b/arch/sparc/include/uapi/asm/fcntl.h
+@@ -37,6 +37,7 @@
+ 
+ #define O_PATH		0x1000000
+ #define __O_TMPFILE	0x2000000
++#define O_ALLOW_ENCODED	0x8000000
+ 
+ #define F_GETOWN	5	/*  for sockets. */
+ #define F_SETOWN	6	/*  for sockets. */
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index 05b36b28f2e8..2c1f0580a497 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -30,7 +30,8 @@
+ #include <asm/siginfo.h>
+ #include <linux/uaccess.h>
+ 
+-#define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NOATIME)
++#define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NOATIME | \
++		    O_ALLOW_ENCODED)
+ 
+ static int setfl(int fd, struct file * filp, unsigned long arg)
  {
- 	struct pipe_inode_info *pipe = i->pipe;
+@@ -49,6 +50,11 @@ static int setfl(int fd, struct file * filp, unsigned long arg)
+ 		if (!inode_owner_or_capable(inode))
+ 			return -EPERM;
+ 
++	/* O_ALLOW_ENCODED can only be set by superuser */
++	if ((arg & O_ALLOW_ENCODED) && !(filp->f_flags & O_ALLOW_ENCODED) &&
++	    !capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	/* required for strict SunOS emulation */
+ 	if (O_NONBLOCK != O_NDELAY)
+ 	       if (arg & O_NDELAY)
+@@ -1035,7 +1041,7 @@ static int __init fcntl_init(void)
+ 	 * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
+ 	 * is defined as O_NONBLOCK on some platforms and not on others.
+ 	 */
+-	BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=
++	BUILD_BUG_ON(22 - 1 /* for O_RDONLY being 0 */ !=
+ 		HWEIGHT32(
+ 			(VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
+ 			__FMODE_EXEC | __FMODE_NONOTIFY));
+diff --git a/fs/namei.c b/fs/namei.c
+index 78443a85480a..73b925b133a0 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2892,6 +2892,10 @@ static int may_open(const struct path *path, int acc_mode, int flag)
+ 	if (flag & O_NOATIME && !inode_owner_or_capable(inode))
+ 		return -EPERM;
+ 
++	/* O_ALLOW_ENCODED can only be set by superuser */
++	if ((flag & O_ALLOW_ENCODED) && !capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
+ 	return 0;
+ }
+ 
+diff --git a/include/linux/fcntl.h b/include/linux/fcntl.h
+index 921e750843e6..dc66c557b7d0 100644
+--- a/include/linux/fcntl.h
++++ b/include/linux/fcntl.h
+@@ -10,7 +10,7 @@
+ 	(O_RDONLY | O_WRONLY | O_RDWR | O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC | \
+ 	 O_APPEND | O_NDELAY | O_NONBLOCK | __O_SYNC | O_DSYNC | \
+ 	 FASYNC	| O_DIRECT | O_LARGEFILE | O_DIRECTORY | O_NOFOLLOW | \
+-	 O_NOATIME | O_CLOEXEC | O_PATH | __O_TMPFILE)
++	 O_NOATIME | O_CLOEXEC | O_PATH | __O_TMPFILE | O_ALLOW_ENCODED)
+ 
+ /* List of all valid flags for the how->upgrade_mask argument: */
+ #define VALID_UPGRADE_FLAGS \
+diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+index 9dc0bf0c5a6e..75321c7a66ac 100644
+--- a/include/uapi/asm-generic/fcntl.h
++++ b/include/uapi/asm-generic/fcntl.h
+@@ -89,6 +89,10 @@
+ #define __O_TMPFILE	020000000
+ #endif
+ 
++#ifndef O_ALLOW_ENCODED
++#define O_ALLOW_ENCODED	040000000
++#endif
++
+ /* a horrid kludge trying to make sure that this will fail on old kernels */
+ #define O_TMPFILE (__O_TMPFILE | O_DIRECTORY)
+ #define O_TMPFILE_MASK (__O_TMPFILE | O_DIRECTORY | O_CREAT)      
 -- 
 2.30.0
 
