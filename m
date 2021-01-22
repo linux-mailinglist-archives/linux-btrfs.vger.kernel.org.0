@@ -2,314 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9910300E82
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 22:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C1B300E68
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 22:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729934AbhAVVGq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 16:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S1730242AbhAVU7N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 15:59:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730836AbhAVUxt (ORCPT
+        with ESMTP id S1730956AbhAVU6X (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:53:49 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822A6C0698DB
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:48:54 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id s15so3965559plr.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:48:54 -0800 (PST)
+        Fri, 22 Jan 2021 15:58:23 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6DAC061788
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:57:43 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id m5so4654711pjv.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 12:57:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=E/JWnKjh8JJUiCDC+qgCUNoPAkGFIHrKhH6SmGrWjAU=;
-        b=eTBhYcBLaaLyV8XtkiR5gw1x8/knvOUE2sI7MEn7do7+5Pw9+p2yxP+Ks/D0EgJHTu
-         cuBqoDpaZFt0WpaGgm9glkzysRkxqjtSEaW49cDkDw7A9uuVb+mzTdc5TCizttXjvjl3
-         BqmPee09ZrGd+tAsMcEDyUTfoF/Z2CnxvpTXW50Nk/9+eDXe7IPTA2oK9csFgugkBOuJ
-         3jyMC6r3P39T4AfPAiARpZypmodP/vNLeYiClZNBcWBID8SPcnkDIqcK5PTLqIKnC4tO
-         RrXZh0p9iO4iKWMonihzQYlvZBpcUw5PF8Xq5lDfJh0plcqP034ovzf3duT2tmP8wkR+
-         TWlg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ra2bY9IB522xV23Eugk7PmgYePrcblUWlzmySd0Cyyc=;
+        b=nPIrv/PxJkej0AaX/G67VsiC44S4PoFpYmZ/4uEkewsvCiOYAua/TiA226LS94agfK
+         Pbubmlpj3q0BjWgTNCio+/SxWMCp1bLh5C4/J0cHl4poaHYklPUc9ovXet95wQ6Z0YKw
+         JloNhdrHmlj0Bu2Ny69x0X80jfW98Cj3lYgaHengqVNE2ZdQITyxAZQjX6NA9H+V0erZ
+         pi7NaH8b4Ft70WCezcASCHF+zcnvzJPNkjiZPDroL5b54enb7WepuC8SZpVP3XoBTbqF
+         W3vGDMFrGkw01vPlnESvnu7HoajqESdTPn1U0j4JYPinYT4C8kcibuGGI5J5X/k2+j9Z
+         qseQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=E/JWnKjh8JJUiCDC+qgCUNoPAkGFIHrKhH6SmGrWjAU=;
-        b=Vl84Hq/xiSvhsDN8xYIH+OMWPsDuBWR+NAt4jCD1rzKZb84sx/4umjIghDJL8esZVm
-         TablV5EXQbFlRnvV/RcNA+E6h0s8ZTUknKxR2Mi5hXruLUDdKI8Qb5aQkEXVJUn+X1qj
-         KJZchNjvSD3pTfcbyHf7EjL9QXSIBPHkaa+Kn0uyeHRJKIhDcIUAh8VK2SGXMITKhMwE
-         7atD2HKA3yYECcopSMZROwMNVLId/hbCWb57IobCCjDNDmHR5ZM3WaZk3hKmN3F/Tr7P
-         7Bl3OqgSJXKc0n2O8ndPCp0EnWge1olJcmffJnxFh0/PjFlHKWXb83mZsLr9bsTD+d7p
-         xpIw==
-X-Gm-Message-State: AOAM531w8mwtub7cE/k4sOZryfV9dsx8ML6t1BtdZy5s0F/Guf6fpJsV
-        8gZCTuAyRivLuzMLw5jvrnSKiqts9ft7Eg==
-X-Google-Smtp-Source: ABdhPJxUfpVqwMdLWE8Z1VtdiijNuS9Q4EecFI+1Q6H6PJJbhVYibYVPk/i3KkYZ95p/sesM2XHSFw==
-X-Received: by 2002:a17:90b:30d4:: with SMTP id hi20mr7261836pjb.41.1611348533227;
-        Fri, 22 Jan 2021 12:48:53 -0800 (PST)
-Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:ea88])
-        by smtp.gmail.com with ESMTPSA id y16sm9865617pfb.83.2021.01.22.12.48.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ra2bY9IB522xV23Eugk7PmgYePrcblUWlzmySd0Cyyc=;
+        b=LsB4+EaISagYwOVrv7Vv5PFeNlc5tKz6FG+0dY7retD01gTLvQ8RtrRr/uh5hAUcIy
+         3TGwRk1GKjZfvaTkRSwKDQqj+1uXGqIm+He13drLARwEbyJazdeq6UlF0dHt1zOaDPTK
+         E3s30lOHpByhcTMx4PDPVmh6SaJs5vYFO5vIV+DSZvxT7RiBK9fBp6HKFhXMgVPMbBeQ
+         75K8GppNXhlIyRPvvdKjH8iWRIS4HcOyImWRVoNB5xIVzwzB33Hwt2kCNGoRz+0G+hbk
+         e987B3eqNbjOXaNnX4bcY463MVZjCFH6K7LBoa58lgPrZ3rHHMzNoa6vai+jRPLn6nld
+         L3eg==
+X-Gm-Message-State: AOAM531MB3ROA3ateaqJj174Kkzs3FG8MgnCj6wD2p2H26MqH35hIIaw
+        /FeWk5pTnjJsjdXGYTch80Bp/A==
+X-Google-Smtp-Source: ABdhPJykGHqNXYwdYpOh5VuPtfXAMvcdM+WsEFAIkshYbFLTPUVz0m6ITIn/WzY5/X3TGd6tiHcG1Q==
+X-Received: by 2002:a17:902:d4c3:b029:de:84a5:aaf2 with SMTP id o3-20020a170902d4c3b02900de84a5aaf2mr132118plg.80.1611349062803;
+        Fri, 22 Jan 2021 12:57:42 -0800 (PST)
+Received: from relinquished.localdomain ([2601:602:8b80:8e0::703])
+        by smtp.gmail.com with ESMTPSA id s187sm9546419pfb.161.2021.01.22.12.57.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 12:48:51 -0800 (PST)
+        Fri, 22 Jan 2021 12:57:41 -0800 (PST)
+Date:   Fri, 22 Jan 2021 12:57:40 -0800
 From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 10/11] btrfs-progs: send: stream v2 ioctl flags
-Date:   Fri, 22 Jan 2021 12:47:57 -0800
-Message-Id: <2e9257fac6e09c9f58a2b2c8c0ee1179c9e3e014.1611347859.git.osandov@osandov.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1611347187.git.osandov@fb.com>
-References: <cover.1611347187.git.osandov@fb.com>
+To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v7 11/15] btrfs: add send stream v2 definitions
+Message-ID: <YAs8RIWG708aKJnB@relinquished.localdomain>
+References: <cover.1611346574.git.osandov@fb.com>
+ <ca550f6e2d6d1e7d79dee6c811638d4da02a56cc.1611346574.git.osandov@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca550f6e2d6d1e7d79dee6c811638d4da02a56cc.1611346574.git.osandov@fb.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
-
-To make the btrfs send ioctl use the stream v2 format requires passing
-BTRFS_SEND_FLAG_STREAM_V2 in flags. Further, to cause the ioctl to emit
-encoded_write commands for encoded extents, we must set that flag as
-well as BTRFS_SEND_FLAG_COMPRESSED. Finally, we bump up the version in
-send.h as well, since we are now fully compatible with v2.
-
-Add two command line arguments to btrfs send: --stream-version and
---compressed-data. --stream-version requires an argument which it parses
-as an integer and sets STREAM_V2 if the argument is 2. --compressed-data
-does not require an argument and automatically implies STREAM_V2 as well
-(COMPRESSED alone causes the ioctl to error out).
-
-Some examples to illustrate edge cases:
-
-// v1, old format and no encoded_writes
-btrfs send subvol
-btrfs send --stream-version 1 subvol
-
-// v2 and compressed, we will see encoded_writes
-btrfs send --compressed-data subvol
-btrfs send --compressed-data --stream-version 2 subvol
-
-// v2 only, new format but no encoded_writes
-btrfs send --stream-version 2 subvol
-
-// error: compressed needs version >= 2
-btrfs send --compressed-data --stream-version 1 subvol
-
-// error: invalid version (not 1 or 2)
-btrfs send --stream-version 3 subvol
-btrfs send --compressed-data --stream-version 0 subvol
-btrfs send --compressed-data --stream-version 10 subvol
-
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- Documentation/btrfs-send.asciidoc | 16 ++++++++-
- cmds/send.c                       | 54 ++++++++++++++++++++++++++++++-
- ioctl.h                           | 17 +++++++++-
- libbtrfsutil/btrfs.h              | 17 +++++++++-
- send.h                            |  2 +-
- 5 files changed, 101 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/btrfs-send.asciidoc b/Documentation/btrfs-send.asciidoc
-index c4a05672..202bcd97 100644
---- a/Documentation/btrfs-send.asciidoc
-+++ b/Documentation/btrfs-send.asciidoc
-@@ -55,7 +55,21 @@ send in 'NO_FILE_DATA' mode
- The output stream does not contain any file
- data and thus cannot be used to transfer changes. This mode is faster and
- is useful to show the differences in metadata.
---q|--quiet::::
-+
-+--stream-version <1|2>::
-+Use the given send stream version. The default is 1. Version 2 encodes file
-+data slightly more efficiently; it is also required for sending compressed data
-+directly (see '--compressed-data'). Version 2 requires at least btrfs-progs
-+5.12 on both the sender and receiver and at least Linux 5.12 on the sender.
-+
-+--compressed-data::
-+Send data that is compressed on the filesystem directly without decompressing
-+it. If the receiver supports encoded I/O (see `encoded_io`(7)), it can also
-+write it directly without decompressing it. Otherwise, the receiver will fall
-+back to decompressing it and writing it normally. This implies
-+'--stream-version 2'.
-+
-+-q|--quiet::
- (deprecated) alias for global '-q' option
- -v|--verbose::
- (deprecated) alias for global '-v' option
-diff --git a/cmds/send.c b/cmds/send.c
-index 3bfc69f5..80eb2510 100644
---- a/cmds/send.c
-+++ b/cmds/send.c
-@@ -452,6 +452,21 @@ static const char * const cmd_send_usage[] = {
- 	"                 does not contain any file data and thus cannot be used",
- 	"                 to transfer changes. This mode is faster and useful to",
- 	"                 show the differences in metadata.",
-+	"--stream-version <1|2>",
-+	"                 Use the given send stream version. The default is",
-+	"                 1. Version 2 encodes file data slightly more",
-+	"                 efficiently; it is also required for sending",
-+	"                 compressed data directly (see --compressed-data).",
-+	"                 Version 2 requires at least btrfs-progs 5.12 on both",
-+	"                 the sender and receiver and at least Linux 5.12 on the",
-+	"                 sender.",
-+	"--compressed-data",
-+	"                 Send data that is compressed on the filesystem",
-+	"                 directly without decompressing it. If the receiver",
-+	"                 supports encoded I/O, it can also write it directly",
-+	"                 without decompressing it. Otherwise, the receiver will",
-+	"                 fall back to decompressing it and writing it normally.",
-+	"                 This implies --stream-version 2.",
- 	"-v|--verbose     deprecated, alias for global -v option",
- 	"-q|--quiet       deprecated, alias for global -q option",
- 	HELPINFO_INSERT_GLOBALS,
-@@ -463,6 +478,7 @@ static const char * const cmd_send_usage[] = {
- static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- {
- 	char *subvol = NULL;
-+	char *end;
- 	int ret;
- 	char outname[PATH_MAX];
- 	struct btrfs_send send;
-@@ -474,6 +490,7 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 	int full_send = 1;
- 	int new_end_cmd_semantic = 0;
- 	u64 send_flags = 0;
-+	long stream_version = 0;
- 
- 	memset(&send, 0, sizeof(send));
- 	send.dump_fd = fileno(stdout);
-@@ -492,11 +509,17 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 
- 	optind = 0;
- 	while (1) {
--		enum { GETOPT_VAL_SEND_NO_DATA = 256 };
-+		enum {
-+			GETOPT_VAL_SEND_NO_DATA = 256,
-+			GETOPT_VAL_SEND_STREAM_V2,
-+			GETOPT_VAL_SEND_COMPRESSED_DATA,
-+		};
- 		static const struct option long_options[] = {
- 			{ "verbose", no_argument, NULL, 'v' },
- 			{ "quiet", no_argument, NULL, 'q' },
- 			{ "no-data", no_argument, NULL, GETOPT_VAL_SEND_NO_DATA },
-+			{ "stream-version", required_argument, NULL, GETOPT_VAL_SEND_STREAM_V2 },
-+			{ "compressed-data", no_argument, NULL, GETOPT_VAL_SEND_COMPRESSED_DATA },
- 			{ NULL, 0, NULL, 0 }
- 		};
- 		int c = getopt_long(argc, argv, "vqec:f:i:p:", long_options, NULL);
-@@ -585,10 +608,39 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 		case GETOPT_VAL_SEND_NO_DATA:
- 			send_flags |= BTRFS_SEND_FLAG_NO_FILE_DATA;
- 			break;
-+		case GETOPT_VAL_SEND_STREAM_V2:
-+			stream_version = strtol(optarg, &end, 10);
-+			if (*end != '\0' ||
-+			    stream_version < 1 || stream_version > 2) {
-+				ret = 1;
-+				error("invalid --stream-version. valid values: {1, 2}");
-+				goto out;
-+			}
-+			if (stream_version == 2)
-+				send_flags |= BTRFS_SEND_FLAG_STREAM_V2;
-+			break;
-+		case GETOPT_VAL_SEND_COMPRESSED_DATA:
-+			send_flags |= BTRFS_SEND_FLAG_COMPRESSED;
-+			/*
-+			 * We want to default to stream v2 if only compressed is
-+			 * set. If stream_version is explicitly set to 0, that
-+			 * will trigger its own error condition for being an
-+			 * invalid version.
-+			 */
-+			if (stream_version == 0) {
-+				stream_version = 2;
-+				send_flags |= BTRFS_SEND_FLAG_STREAM_V2;
-+			}
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
- 	}
-+	if (stream_version < 2 && (send_flags & BTRFS_SEND_FLAG_COMPRESSED)) {
-+		ret = 1;
-+		error("--compressed requires --stream-version >= 2");
-+		goto out;
-+	}
- 
- 	if (check_argc_min(argc - optind, 1))
- 		return 1;
-diff --git a/ioctl.h b/ioctl.h
-index ade6dcb9..46de8ac8 100644
---- a/ioctl.h
-+++ b/ioctl.h
-@@ -653,10 +653,25 @@ BUILD_ASSERT(sizeof(struct btrfs_ioctl_received_subvol_args_32) == 192);
-  */
- #define BTRFS_SEND_FLAG_OMIT_END_CMD		0x4
- 
-+/*
-+ * Use version 2 of the send stream, which adds new commands and supports larger
-+ * writes.
-+ */
-+#define BTRFS_SEND_FLAG_STREAM_V2		0x8
-+
-+/*
-+ * Send compressed data using the ENCODED_WRITE command instead of decompressing
-+ * the data and sending it with the WRITE command. This requires
-+ * BTRFS_SEND_FLAG_STREAM_V2.
-+ */
-+#define BTRFS_SEND_FLAG_COMPRESSED		0x10
-+
- #define BTRFS_SEND_FLAG_MASK \
- 	(BTRFS_SEND_FLAG_NO_FILE_DATA | \
- 	 BTRFS_SEND_FLAG_OMIT_STREAM_HEADER | \
--	 BTRFS_SEND_FLAG_OMIT_END_CMD)
-+	 BTRFS_SEND_FLAG_OMIT_END_CMD | \
-+	 BTRFS_SEND_FLAG_STREAM_V2 | \
-+	 BTRFS_SEND_FLAG_COMPRESSED)
- 
- struct btrfs_ioctl_send_args {
- 	__s64 send_fd;			/* in */
-diff --git a/libbtrfsutil/btrfs.h b/libbtrfsutil/btrfs.h
-index 60d51ff6..8430a40d 100644
---- a/libbtrfsutil/btrfs.h
-+++ b/libbtrfsutil/btrfs.h
-@@ -731,10 +731,25 @@ struct btrfs_ioctl_received_subvol_args {
-  */
- #define BTRFS_SEND_FLAG_OMIT_END_CMD		0x4
- 
-+/*
-+ * Use version 2 of the send stream, which adds new commands and supports larger
-+ * writes.
-+ */
-+#define BTRFS_SEND_FLAG_STREAM_V2		0x8
-+
-+/*
-+ * Send compressed data using the ENCODED_WRITE command instead of decompressing
-+ * the data and sending it with the WRITE command. This requires
-+ * BTRFS_SEND_FLAG_STREAM_V2.
-+ */
-+#define BTRFS_SEND_FLAG_COMPRESSED		0x10
-+
- #define BTRFS_SEND_FLAG_MASK \
- 	(BTRFS_SEND_FLAG_NO_FILE_DATA | \
- 	 BTRFS_SEND_FLAG_OMIT_STREAM_HEADER | \
--	 BTRFS_SEND_FLAG_OMIT_END_CMD)
-+	 BTRFS_SEND_FLAG_OMIT_END_CMD | \
-+	 BTRFS_SEND_FLAG_STREAM_V2 | \
-+	 BTRFS_SEND_FLAG_COMPRESSED)
- 
- struct btrfs_ioctl_send_args {
- 	__s64 send_fd;			/* in */
-diff --git a/send.h b/send.h
-index 3c47e0c7..fac90588 100644
---- a/send.h
-+++ b/send.h
-@@ -31,7 +31,7 @@ extern "C" {
- #endif
- 
- #define BTRFS_SEND_STREAM_MAGIC "btrfs-stream"
--#define BTRFS_SEND_STREAM_VERSION 1
-+#define BTRFS_SEND_STREAM_VERSION 2
- 
- #define BTRFS_SEND_BUF_SIZE_V1 SZ_64K
- #define BTRFS_SEND_READ_SIZE (1024 * 48)
--- 
-2.30.0
-
+Please ignore 11-15. I fat fingered format-patch, these are part of the
+other series.
