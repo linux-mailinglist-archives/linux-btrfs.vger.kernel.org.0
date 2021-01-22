@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E96630097D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 18:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F061D300A55
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 18:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbhAVQrm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 11:47:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
+        id S1729503AbhAVR0m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 12:26:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729372AbhAVQnp (ORCPT
+        with ESMTP id S1729688AbhAVQyz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:43:45 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31685C06178B
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 08:43:08 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id o18so4516775qtp.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 08:43:08 -0800 (PST)
+        Fri, 22 Jan 2021 11:54:55 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F03C061788
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 08:54:07 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id cu2so2918592qvb.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 08:54:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=1ovhGaTBdETVnoaNSx37ZdDcTGayv0Bm5/iEGE7X0UI=;
-        b=TWtj/JmDTXRFs8HB8dc/bGLZwiUUPF8QSAkdMHpigZ7+BCMvOH9QhLHOvPBAMtKxFs
-         TMFg2E0ViS0eBMvge3gLBjv8g2iu9P5gGR5VPIyL5AGaEu8vLBi46doToGs8l/AhNj7/
-         5u9LPiBBFEkmkp16oDaGKFGS9GHn8QLfqfpIstu8v3isClbqsjLl2ljN5kgj9Bn0UThj
-         scvIUzah0G9xVMK3VKYg5f6igUmCqsFcVvFtFkegBjipXBdkxHGvgxo4Q9bB1Je6azeG
-         cRm22dQBtxqltSpXnKVkAWvY2pMOk0AIFgN7M9Ya+2Gt7LBOMbtfgMm99EE4VW0g5H8N
-         iUMQ==
+        bh=M//QUaCP9gtYK1VJeIu1wSekQcqWIx/FWFz51MntAK0=;
+        b=jo/9xZzdBl0whJ0n1I8iVSqMfgAD4evQESQ+RxHk8wOsfGdL5oXIXST1Bf9riIKTQq
+         0XUjVcP1vXFjascnWT0TFgZbp7OjlkyHAjCqn+b+zhS0sw/bep36vRnTOctL2a9UIAkb
+         X9VH8c/XVn00wNkzwOQFkTnnoi7gtumFZrzzA/o+ISZYtNEB9nPNdJJoQ5PRh96lNsny
+         ARbUkDyLMu2oBKS98AP6rk6lQB5YofnR6a5JyAI8rH11N8rSWgQZ8ocPKGgQSDJbHhtm
+         CPQoUhyulQjMg5tjYlvXrsV1SXDWlxgYx5la4z1YDd9T04p5jQS3PSPPYLnrJwY4HVqh
+         FgTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=1ovhGaTBdETVnoaNSx37ZdDcTGayv0Bm5/iEGE7X0UI=;
-        b=XcA5K7IDpReTW/5XbD0u3kYQUe/QsSh2esw+iBqrWouss1KCihO8RROukkbvRPswQj
-         x49LlgNSmauSnQj+N74Zpb6jXHlkPbsraJtDDD8FBNh4b/WCbqqNsoQ3lduObb87tA+W
-         qHpne/hxBWzxk2F+uXinbjgc/6/7JYSbIjbx3Wgi8y/23GZq83RuejZ2aVWRlcSo0cwz
-         R09DWsQXA3pTY/WYIvmdFzX4P9Oco+Be6o8yXqHWG0e8Ib0xIE5x7SfIfAKb2kDXA3hp
-         CuEn3Le+pT6KalQS0JD49URcBhQq886OoLxZahzqXnMknjnvAtWD8FqnXYTkdpatxgbe
-         328Q==
-X-Gm-Message-State: AOAM530TriUYstjYZFUQnXu+B+4TWevPNenO1ZVKY/KTX9yVKvzksdPt
-        I5E2J+kU/JIPO1g6gPABF1N1ClFlzSTtrrh/
-X-Google-Smtp-Source: ABdhPJwBZXkjM+f1h3yCkp3gbHOws6fe9F/dXfyYQ6NAEvxWAfe+KOXdNTbnCInAXy/lMN/qkfj03A==
-X-Received: by 2002:ac8:4d93:: with SMTP id a19mr4984020qtw.356.1611333786797;
-        Fri, 22 Jan 2021 08:43:06 -0800 (PST)
+        bh=M//QUaCP9gtYK1VJeIu1wSekQcqWIx/FWFz51MntAK0=;
+        b=Hi4rsu/tKmcQeN2qZpHZ8d3lcgPRiLPWXeDmiB+sjGQK93+O0nhnvuHawKKMlbNd+Q
+         oH/XfKLrU0QHmQpGyyyi2oJGecEvtLQ7xL9g5yoSe3sOSds3tEFSuYIAt5d9tN0TjOrS
+         16CRYH3j0/MM0hLymH3/x/hGspnW8/FHAd8Rqu4V0xOX9pcrAQpqLpQ0FEyk2NOlubkl
+         HfALdO4NgZNCIkVZaL5fM4kd5OoIbP9CKQUVQtexbzND+QgISKIA27gZLQfDxj1o4KFd
+         5aYZELAHouRCa75N667QK0bbi8KLfawi17njgn0Y+SYvG4k1hQPsfS+IZ3vyi0ez1kOm
+         EDeQ==
+X-Gm-Message-State: AOAM530mf6hYGeQuA1S1Xq2Ox62L9IA6N2FP+FztBgY7z+sT54rpwUKm
+        0ex1tbpEMJRyig11vPr7P26Nlp7hSXRE8Bjb
+X-Google-Smtp-Source: ABdhPJw5v0KE/RAxwuUB25Bqdfm26SpuMnibCYrNuaxmMPCOLt2+VSlIeHbGdgoHSLrMLqLF5BIVjw==
+X-Received: by 2002:ad4:4e4d:: with SMTP id eb13mr973464qvb.6.1611334445792;
+        Fri, 22 Jan 2021 08:54:05 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id s6sm3260877qtx.63.2021.01.22.08.43.05
+        by smtp.gmail.com with ESMTPSA id 186sm1267363qkh.30.2021.01.22.08.54.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 08:43:05 -0800 (PST)
-Subject: Re: [PATCH 1/2] btrfs: fix log replay failure due to race with space
- cache rebuild
+        Fri, 22 Jan 2021 08:54:05 -0800 (PST)
+Subject: Re: [PATCH 2/2] btrfs: fix log replay failure when space cache needs
+ to be rebuilt
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1611327201.git.fdmanana@suse.com>
- <d20f67adb1ab345a9af9e0262e1aba0772832751.1611327201.git.fdmanana@suse.com>
+ <7950c4b5c5e1579b541477e27fc1e597b5fc44e3.1611327201.git.fdmanana@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <89cf3d62-7544-9c7a-7c5a-145d4252389c@toxicpanda.com>
-Date:   Fri, 22 Jan 2021 11:43:05 -0500
+Message-ID: <d5e3406d-a4a1-18b4-523e-03f11413b6d2@toxicpanda.com>
+Date:   Fri, 22 Jan 2021 11:54:04 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <d20f67adb1ab345a9af9e0262e1aba0772832751.1611327201.git.fdmanana@suse.com>
+In-Reply-To: <7950c4b5c5e1579b541477e27fc1e597b5fc44e3.1611327201.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,77 +71,64 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 1/22/21 10:28 AM, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> After a sudden power failure we may end up with a space cache on disk that
-> is not valid and needs to be rebuilt from scratch.
+> During log replay we first start by walking the log trees and pin the
+> ranges for their extent buffers, through calls to the function
+> btrfs_pin_extent_for_log_replay().
 > 
-> If that happens, during log replay when we attempt to pin an extent buffer
-> from a log tree, at btrfs_pin_extent_for_log_replay(), we do not wait for
-> the space cache to be rebuilt through the call to:
+> However if the space cache for a block group is invalid and needs to be
+> rebuilt, we can fail the log replay and mount with -EINVAL like this:
 > 
->      btrfs_cache_block_group(cache, 1);
+>   [72383.415114] BTRFS: device fsid 32b95b69-0ea9-496a-9f02-3f5a56dc9322 devid 1 transid 1432 /dev/sdb scanned by mount (3816007)
+>   [72383.417837] BTRFS info (device sdb): disk space caching is enabled
+>   [72383.418536] BTRFS info (device sdb): has skinny extents
+>   [72383.423846] BTRFS info (device sdb): start tree-log replay
+>   [72383.426416] BTRFS warning (device sdb): block group 30408704 has wrong amount of free space
+>   [72383.427686] BTRFS warning (device sdb): failed to load free space cache for block group 30408704, rebuilding it now
+>   [72383.454291] BTRFS: error (device sdb) in btrfs_recover_log_trees:6203: errno=-22 unknown (Failed to pin buffers while recovering log root tree.)
+>   [72383.456725] BTRFS: error (device sdb) in btrfs_replay_log:2253: errno=-22 unknown (Failed to recover log tree)
+>   [72383.460241] BTRFS error (device sdb): open_ctree failed
 > 
-> That is because that only waits for the task (work queue job) that loads
-> the space cache to change the cache state from BTRFS_CACHE_FAST to any
-> other value. That is ok when the space cache on disk exists and is valid,
-> but when the cache is not valid and needs to be rebuilt, it ends up
-> returning as soon as the cache state changes to BTRFS_CACHE_STARTED (done
-> at caching_thread()).
+> This is because at the start of btrfs_pin_extent_for_log_replay() we mark
+> the range for the extent buffer in excluded extents io tree. That is fine
+> when the space cache is valid on disk and we can load it, in which case it
+> causes no problems - in fact it is pointless since shortly after, still at
+> btrfs_pin_extent_for_log_replay(), we remove the range from the free space
+> cache with the call to btrfs_remove_free_space(().
 > 
-> So this means that we can end up trying to unpin a range which is not yet
-> marked as free in the block group. This results in the call to
-> btrfs_remove_free_space() to return -EINVAL to
-> btrfs_pin_extent_for_log_replay(), which in turn makes the log replay fail
-> as well as mounting the filesystem. When this happens we got the following
-> in dmesg/syslog:
+> However, for the case where we need to rebuild the space cache, because it
+> is either invalid or it is missing, having the extent buffer range marked
+> in the excluded extents io tree leads to a -EINVAL failure from the call
+> to btrfs_remove_free_space(), resulting in the log replay and mount to
+> fail. This is because by having the range marked in the excluded extents
+> io tree, the caching thread ends never marking adding the range of the
+> extent buffer marked as free space in the block group since the calls to
+> add_new_free_space(), called from load_extent_tree_free(), filter out any
+> ranges that are marked as excluded extents.
 > 
-> [72383.415114] BTRFS: device fsid 32b95b69-0ea9-496a-9f02-3f5a56dc9322 devid 1 transid 1432 /dev/sdb scanned by mount (3816007)
-> [72383.417837] BTRFS info (device sdb): disk space caching is enabled
-> [72383.418536] BTRFS info (device sdb): has skinny extents
-> [72383.423846] BTRFS info (device sdb): start tree-log replay
-> [72383.426416] BTRFS warning (device sdb): block group 30408704 has wrong amount of free space
-> [72383.427686] BTRFS warning (device sdb): failed to load free space cache for block group 30408704, rebuilding it now
-> [72383.454291] BTRFS: error (device sdb) in btrfs_recover_log_trees:6203: errno=-22 unknown (Failed to pin buffers while recovering log root tree.)
-> [72383.456725] BTRFS: error (device sdb) in btrfs_replay_log:2253: errno=-22 unknown (Failed to recover log tree)
-> [72383.460241] BTRFS error (device sdb): open_ctree failed
+> So fix this by not marking the extent buffer range in the excluded extents
+> io tree at btrfs_pin_extent_for_log_replay() since it leads to the failure
+> when a space cache needs to be rebuilt and it is useless when we do not
+> need to rebuild a space cache. Also, remove the cleanup of ranges in the
+> excluded extents io tree at btrfs_finish_extent_commit() since they were
+> there to cleanup the ranges added by btrfs_pin_extent_for_log_replay().
 > 
-> So fix this by making sure that during log replay we wait for the caching
-> task to finish completely when we need to rebuild a space cache.
-> 
-> Fixes: e747853cae3ae3 ("btrfs: load free space cache asynchronously")
+> Fixes: f2fb72983bdcf5 ("btrfs: Mark pinned log extents as excluded")
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-This could actually happen before, it was just less likely because we'd start 
-the async thread from the callers context.  I assume we're getting the -EINVAL 
-from the remove_from_bitmap() function?  So we've loaded part of the free space 
-but not all of it, and thus get the -EINVAL.  This probably needs the earlier 
-Fixes, all the async patch did was make it easier to hit.
+Hmm it took some time to convince myself this is correct, but because we 
+unconditionally do that remove we really have to force ourselves to cache the 
+block group every time.  That means my suggestion to do
 
-<snip>
+if (btrfs_test_opt(fs_info, SPACE_CACHE))
+	cache block group
 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 30b1a630dc2f..594534482ad3 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2600,6 +2600,7 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
->   				    u64 bytenr, u64 num_bytes)
->   {
->   	struct btrfs_block_group *cache;
-> +	struct btrfs_caching_control *caching_ctl;
->   	int ret;
->   
->   	btrfs_add_excluded_extent(trans->fs_info, bytenr, num_bytes);
-> @@ -2615,6 +2616,13 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
->   	 * the pinned extents.
->   	 */
->   	btrfs_cache_block_group(cache, 1);
+would actually cause problems with this patch as well.  I think the best course 
+of action is to get rid of this idea that we can do it the fast way or skip it 
+altogether now, and just force a full caching of any block group at log replay 
+time and then this patch will be the right thing to do.  You can add
 
-Instead we could probably just do
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-if (btrfs_test_opt(fs_info, SPACE_CACHE)) {
-	btrfs_cache_block_group(cache, 0);
-	btrfs_wait_block_group_cache_done(cache);
-}
-
-here instead of changing all of the function arguments and such.  Thanks,
+Thanks,
 
 Josef
