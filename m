@@ -2,185 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBD6300AE1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 19:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7660B300B4B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 19:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbhAVSLU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 13:11:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728777AbhAVR45 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:56:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C00223A6A
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Jan 2021 17:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611338174;
-        bh=xyY/VwXHsncqyVTun6MYZ1umssdfB2oETd58ubmdn6E=;
-        h=From:To:Subject:Date:From;
-        b=IdjlqxrLjReP3Wn153jLQ5mVHGzjIbeNcZ6b6BYde77IZHctKCdMRa0Eq8Oh6Zp8t
-         MGOblmupBZWt/ESTH+Yuf1YC3n4VUV4Ns1GZISOz4ogidYSrl5wT6nK9rEPFOQ0hBg
-         6fXsMXscrZ8psmRGELz6YkYTr+0znXSQpQCezlGHmXDse+8SidVKmLXjjhzDK7nqkU
-         VVqKQmoGukW7wVEllSJiFL7ESDbAHY6h0HTf4SrG+0ZMRHeZYozqJodQsMvrsAaOSR
-         ZGbbk731asRM725GeTEj++Y0tcWcw/oK3AmNr+bbMdrZcSvh4jESFSLJwTAUrVP7Fw
-         34FKanIE6jdmw==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix log replay failure due to race with space cache rebuild
-Date:   Fri, 22 Jan 2021 17:56:08 +0000
-Message-Id: <c655306f61af9b2d75ed22053a7cdc3f21022d72.1611337435.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729173AbhAVScU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 13:32:20 -0500
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:45028 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728583AbhAVScI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Jan 2021 13:32:08 -0500
+Received: from venice.bhome ([94.37.172.193])
+        by smtp-33.iol.local with ESMTPA
+        id 31DLlw91i11DD31DLlZV2b; Fri, 22 Jan 2021 19:31:19 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1611340279; bh=6AlophqYKg4ZMCQfyPgga5BnQni3GqYeAKqhDbZmj94=;
+        h=From;
+        b=Xmk3foonbbnckvjXelRnWDvIdk34jNf5ct/2Rs2NwfQhQL/jggnYETplRzDQSy9bE
+         T9UoeAzjUQNMB6ZmZ4vHycXxO9URzRy6pjqzhmkO8t/4RuMYTX7RR/gPuxdJw2W5+8
+         jr1Z3BKsba3SxUZw4NjSL1sC/4su43AzJaJllTycbIWdljZxlK+JNjdexgxoBmSVXn
+         dbmER0GbzleMTARRFdgy78LtrcJxAR17wMKqTneHCncLLDp+IYyggDbSMrbv15hTYr
+         AijMiUE7TyYU8PjZN7XwagjLsQeAuLx23Jkj8xUeM/g36qSXHm/CxugOhtRRePQDfD
+         ZAKPTbHTL8rfQ==
+X-CNFS-Analysis: v=2.4 cv=ba6u7MDB c=1 sm=1 tr=0 ts=600b19f7 cx=a_exe
+ a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
+ a=IkcTkHD0fZMA:10 a=vjV27OyoboYHZ0UY2dEA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [RFC][PATCH V5] btrfs: preferred_metadata: preferred device for
+ metadata
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20210117185435.36263-1-kreijack@libero.it>
+ <30cd0359-e649-dcc7-e373-4dd778fbf70b@toxicpanda.com>
+ <765cec4e-b989-081b-2ad7-e2d1c9cf7f55@libero.it>
+ <20210121185400.GH28049@hungrycats.org>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <89ee4ab9-64cd-b093-92d2-02eee4997250@inwind.it>
+Date:   Fri, 22 Jan 2021 19:31:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <20210121185400.GH28049@hungrycats.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfB9y9z+/yhJx/A1p6+kw0ui0tWDlImu0HNFpjgE7nQDWTlpkJH/OIxEgIe9hWFyiEGl/OSiIydwbbYflYOto9y2qBNl1X1nbTb3PFhnLdMvYcyQOWlTV
+ fO0h5pVUAx/mv6+s1v31jcriquoqxPdVni+EKzB27Zk7oV++WXRybWPrYSyCwkFbNc4iA0N+/aNlIUw5VCs8C+nUwmBnS8cWE3vaJyjPr4KFhcCuqwrA4HLD
+ 2a9DNuSmfhKpyYiguafwVBIweisciHEKD55CumZIpF8=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On 1/21/21 7:54 PM, Zygo Blaxell wrote:
+> On Thu, Jan 21, 2021 at 07:16:05PM +0100, Goffredo Baroncelli wrote:
+>> On 1/20/21 5:02 PM, Josef Bacik wrote:
+>>> On 1/17/21 1:54 PM, Goffredo Baroncelli wrote:
+>>>>
+>>>> Hi all,
+>>>>
+>>>> This is an RFC; I wrote this patch because I find the idea interesting
+>>>> even though it adds more complication to the chunk allocator.
+>>>>
+>>>> The basic idea is to store the metadata chunk in the fasters disks.
+>>>> The fasters disk are marked by the "preferred_metadata" flag.
+>>>>
+>>>> BTRFS when allocate a new metadata/system chunk, selects the
+>>>> "preferred_metadata" disks, otherwise it selectes the non
+>>>> "preferred_metadata" disks. The intial patch allowed to use the other
+>>>> kind of disk in case a set is full.
+>>>>
+>>>> This patches set is based on v5.11-rc2.
+>>>>
+>>>> For now, the only user of this patch that I am aware is Zygo.
+>>>> However he asked to further constraint the allocation: i.e. avoid to
+>>>> allocated metadata on a not "preferred_metadata"
+>>>> disk. So I extended the patch adding 4 modes to operate.
+>>>>
+>>>> This is enabled passing the option "preferred_metadata=<mode>" at
+>>>> mount time.
+>>>>
+>>>
+>>> I'll echo Zygo's hatred for mount options.  The more complicated policy decisions belong in properties and sysfs knobs, not mount options.
+>>>
+>> I tend to agree. However adding a filesystem property can be done in a second time. I don't think that this a problem. However I prefer to make the patch smaller.
+>>
+>> Anyway I have to point out that we need a way to change the allocation
+>> policy without changing the metadata otherwise we risk to be in the
+>> loop of exhausting metadata space: - how we can increase the space for
+>> metadata if we don't have space for metadata but I need to allocate
+>> few block of metadata....
+>>
+>> What I mean is that even if we store the setting as filesystem
+>> properties (and definitely we have to do), we need a way to override
+>> in an emergency scenario.
+> 
+> There are no new issues introduced by this change, thus no requirement
+> for a mount option to deal with new issues.
+> 
+> The same issue comes up when changing RAID profile, or removing devices,
+> or when existing devices simply fill up.  Part of the solution is the
+> global reserve, which ensures we can always create a transaction to modify
+> a few metadata pages.
+> 
+> Part of the solution is a run-time check to ensure we have min_devs for
+> active RAID profiles whenever we change a device policy to reject data
+> or metadata (see btrfs_check_raid_min_devices).  This is currently
+> implemented for the device remove ioctl, and a similar check will
+> be needed for the device property set ioctl for preferred_metadata.
+> That part is missing in v5 of this patch and will have to be added,
+> though even now it works most of the time without.
+> 
+> v5 is also missing changes to the df statvfs code to deal with metadata
+> only devices.  At this stage it's an RFC patch, so that's OK, but it
+> will also need to be fixed.  We presume these will be addressed in future
+> versions.  Again, it works now, but 'df' will give the wrong number.
+> 
+> None of the above requirements is addressed by a mount option, and
+> the mount option adds new requirements that we don't want.
+> 
+>>> And then for the properties themselves, presumably we'll want to
+>> add other FS wide properties in the future.  I'm not against adding
+>> new actual keys and items to the tree itself, but is there a way
+>> we could use our existing property infrastructure that we use for
+>> compression, and simply store the xattrs in the tree root?  It looks
+>> like we're just toggling a policy decision, and we don't actually
+>> need the other properties in the item you've created, so why not
+>> just a btrfs.preferred_metadata property with the value stored in it,
+>> dropped into the tree_root so it can be read on mount?  Thanks,
+>>
+>> What if the root subvolume is not mounted ?
+> 
+> Same as device add or remove--if the filesystem isn't mounted, you can't
+> make any changes.
 
-After a sudden power failure we may end up with a space cache on disk that
-is not valid and needs to be rebuilt from scratch.
+I am referring to a case where a subvolume (id != 5) is mounted but not the root one (id=5).
+The point is that (e.g.) in the current implementation you can use
 
-If that happens, during log replay when we attempt to pin an extent buffer
-from a log tree, at btrfs_pin_extent_for_log_replay(), we do not wait for
-the space cache to be rebuilt through the call to:
+$ sudo btrfs property set /dev/vde preferred_metadata 1
 
-    btrfs_cache_block_group(cache, 1);
+in any case where the filesystem is mounted (doesn't matter which
+subvvolume).
 
-That is because that only waits for the task (work queue job) that loads
-the space cache to change the cache state from BTRFS_CACHE_FAST to any
-other value. That is ok when the space cache on disk exists and is valid,
-but when the cache is not valid and needs to be rebuilt, it ends up
-returning as soon as the cache state changes to BTRFS_CACHE_STARTED (done
-at caching_thread()).
+I like the Josef idea: instead to develop a new api to retrive/change/list/store/delete/create
+some setting, we could use the xattr api which already exists.
 
-So this means that we can end up trying to unpin a range which is not yet
-marked as free in the block group. This results in the call to
-btrfs_remove_free_space() to return -EINVAL to
-btrfs_pin_extent_for_log_replay(), which in turn makes the log replay fail
-as well as mounting the filesystem. More specifically the -EINVAL comes
-from free_space_cache.c:remove_from_bitmap(), because the requested range
-is not marked as free space (ones in the bitmap), we have the following
-condition triggered:
+# adding properties
+$ sudo setfattr -n "btrfs.metadata_preferred_disk=aabbcc" -v "mode=1"  /
+$ sudo setfattr -n "btrfs.metadata_preferred_disk=aabbee" -v "mode=1"  /
+$ sudo setfattr -n "btrfs.metadata_preferred" -v "1"  /
 
-static noinline int remove_from_bitmap(struct btrfs_free_space_ctl *ctl,
-(...)
-       if (ret < 0 || search_start != *offset)
-            return -EINVAL;
-(...)
+# listing properties and their values
+$ sudo getfattr -d /
+getfattr: Removing leading '/' from absolute path names
+# file: .
+btrfs.metadata_preferred_disk\075aabbcc="mode=1"
+btrfs.metadata_preferred_disk\075aabbee="mode=1"
+btrfs.metadata_preferred="1"
 
-It's the "search_start != *offset" that results in the condition being
-evaluated to true.
+# removing a properties
+$ sudo setfattr -x "btrfs.metadata_preferred_disk=aabbcc" /
 
-When this happens we got the following in dmesg/syslog:
+However the xattr requires an inode to attach the .. xattrs. But when we are talking about
+filesystem properties, which is the right inode ? The only stable inode is the '.' of
+the root subvolume. The other inodes may be deleted so are not suitable to store per
+filesystem properties.
 
-[72383.415114] BTRFS: device fsid 32b95b69-0ea9-496a-9f02-3f5a56dc9322 devid 1 transid 1432 /dev/sdb scanned by mount (3816007)
-[72383.417837] BTRFS info (device sdb): disk space caching is enabled
-[72383.418536] BTRFS info (device sdb): has skinny extents
-[72383.423846] BTRFS info (device sdb): start tree-log replay
-[72383.426416] BTRFS warning (device sdb): block group 30408704 has wrong amount of free space
-[72383.427686] BTRFS warning (device sdb): failed to load free space cache for block group 30408704, rebuilding it now
-[72383.454291] BTRFS: error (device sdb) in btrfs_recover_log_trees:6203: errno=-22 unknown (Failed to pin buffers while recovering log root tree.)
-[72383.456725] BTRFS: error (device sdb) in btrfs_replay_log:2253: errno=-22 unknown (Failed to recover log tree)
-[72383.460241] BTRFS error (device sdb): open_ctree failed
+So the point is: what happens if the root subvolume is not mounted ?
 
-We also mark the range for the extent buffer in the excluded extents io
-tree. That is fine when the space cache is valid on disk and we can load
-it, in which case it causes no problems.
+Of course we can tweak the xattr api to deal this case, but doing so is not
+so different than developing a new api, which (I think) is not what Josef suggested.
 
-However, for the case where we need to rebuild the space cache, because it
-is either invalid or it is missing, having the extent buffer range marked
-in the excluded extents io tree leads to a -EINVAL failure from the call
-to btrfs_remove_free_space(), resulting in the log replay and mount to
-fail. This is because by having the range marked in the excluded extents
-io tree, the caching thread ends up never adding the range of the extent
-buffer as free space in the block group since the calls to
-add_new_free_space(), called from load_extent_tree_free(), filter out any
-ranges that are marked as excluded extents.
+> 
+> Note that all the required properties are per-device, so really you just
+> need any open FD on the filesystem.  (I think Josef didn't read that far
+> down).
+> 
+> The per-device policy storage can go in dev_root (tree 4) along with the
+> device stats data, if we don't want to use btrfs_device::type.  You'd still
+> need an ioctl to get to it.
+> 
+> Or maybe I'm misreading Josef here, and his idea is to make the per-device
+> configuration a string blob that can be set by putting an xattr on the
+> root subvol?  I'm not sure that's better, but it'll work.
+> 
+>> Yes we can create a further
+>> api to store/retrive this kind of metadata without mounting the root
+>> subvolume, but doing so in what it would be different than adding a
+>> key to the root fs like the default subvolume ioctl does ?
+> 
+>>>
+>>> Josef
+>>
+>>
+>> -- 
+>> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+>> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+>>
 
-So fix this by making sure that during log replay we wait for the caching
-task to finish completely when we need to rebuild a space cache, and also
-drop the need to mark the extent buffer range in the excluded extents io
-tree, as well as clearing ranges from that tree at
-btrfs_finish_extent_commit().
 
-This started to happen with some frequency on large filesystems having
-block groups with a lot of fragmentation since the recent commit
-e747853cae3ae3 ("btrfs: load free space cache asynchronously"), but in
-fact the issue has been there for years, it was just much less likely
-to happen.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/extent-tree.c | 27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 30b1a630dc2f..89d1b0551cf8 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2602,8 +2602,6 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
- 	struct btrfs_block_group *cache;
- 	int ret;
- 
--	btrfs_add_excluded_extent(trans->fs_info, bytenr, num_bytes);
--
- 	cache = btrfs_lookup_block_group(trans->fs_info, bytenr);
- 	if (!cache)
- 		return -EINVAL;
-@@ -2615,6 +2613,15 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_trans_handle *trans,
- 	 * the pinned extents.
- 	 */
- 	btrfs_cache_block_group(cache, 1);
-+	/*
-+	 * Make sure we wait until the cache is completely built in case it is
-+	 * missing or is invalid and therefore needs to be rebuilt.
-+	 */
-+	if (btrfs_test_opt(trans->fs_info, SPACE_CACHE)) {
-+		ret = btrfs_wait_block_group_cache_done(cache);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	pin_down_extent(trans, cache, bytenr, num_bytes, 0);
- 
-@@ -2635,7 +2642,7 @@ static int __exclude_logged_extent(struct btrfs_fs_info *fs_info,
- 	if (!block_group)
- 		return -EINVAL;
- 
--	btrfs_cache_block_group(block_group, 0);
-+	btrfs_cache_block_group(block_group, 1);
- 	caching_ctl = btrfs_get_caching_control(block_group);
- 
- 	if (!caching_ctl) {
-@@ -2644,10 +2651,15 @@ static int __exclude_logged_extent(struct btrfs_fs_info *fs_info,
- 		ret = btrfs_remove_free_space(block_group, start, num_bytes);
- 	} else {
- 		/*
--		 * We must wait for v1 caching to finish, otherwise we may not
--		 * remove our space.
-+		 * Make sure we wait until the cache is completely built in case it is
-+		 * missing or is invalid and therefore needs to be rebuilt.
- 		 */
--		btrfs_wait_space_cache_v1_finished(block_group, caching_ctl);
-+		if (btrfs_test_opt(fs_info, SPACE_CACHE)) {
-+			ret = btrfs_wait_block_group_cache_done(block_group);
-+			if (ret)
-+				return ret;
-+		}
-+
- 		mutex_lock(&caching_ctl->mutex);
- 
- 		if (start >= caching_ctl->progress) {
-@@ -2863,9 +2875,6 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 			mutex_unlock(&fs_info->unused_bg_unpin_mutex);
- 			break;
- 		}
--		if (test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags))
--			clear_extent_bits(&fs_info->excluded_extents, start,
--					  end, EXTENT_UPTODATE);
- 
- 		if (btrfs_test_opt(fs_info, DISCARD_SYNC))
- 			ret = btrfs_discard_extent(fs_info, start,
 -- 
-2.28.0
-
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
