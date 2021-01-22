@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1AB2FFFF1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 11:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DCA2FFFF2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 11:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbhAVKOx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 05:14:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56136 "EHLO mx2.suse.de"
+        id S1727294AbhAVKPA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 05:15:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56148 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727742AbhAVJ7I (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:59:08 -0500
+        id S1727746AbhAVJ7J (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Jan 2021 04:59:09 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1611309487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o2vvEqnBTmuFupWNIga98trZCfyZ8zEMUa3jTuOvNIY=;
-        b=CFcNEt5wgK+b3luHLNXqlzx3Q/J72LIIn0jfUqNP+dzhywtS67h2c/tdQRzyiXQliLN07h
-        olLoDgk4j8WO/grqpcKvM53izVHOaW9KWSPA1vZTwB/Wp955FUhDGZXvxcdGUXW0YqAUBm
-        fqJJOOtbf+QGjPaUM/v03gz6CGltByk=
+        bh=WcrhPWIyjx0XK+NOmqVj/44JWO8Crt6PiVrYwj5og3Y=;
+        b=iGdvsncYXGYcb7BRZ9ukNXeGv9UfM47WBqFG2Fih93OTcWDMF+EY39+GXTOajmgDWy3lYF
+        tv0eIdIj4ct7II97Gp7xO2XuS83kcJqp8u2SPcLWiRPZh34mSdOVB0zjlOGY5fDRhEEIvt
+        ARttYSXMcI7EckOibtG+KVB/jAc6hQk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 34278AC45;
+        by mx2.suse.de (Postfix) with ESMTP id 6D0C3AEAC;
         Fri, 22 Jan 2021 09:58:07 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v3 01/14] btrfs: Document modified parameter of add_extent_mapping
-Date:   Fri, 22 Jan 2021 11:57:52 +0200
-Message-Id: <20210122095805.620458-2-nborisov@suse.com>
+Subject: [PATCH v3 02/14] btrfs: Fix parameter description of btrfs_add_extent_mapping
+Date:   Fri, 22 Jan 2021 11:57:53 +0200
+Message-Id: <20210122095805.620458-3-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210122095805.620458-1-nborisov@suse.com>
 References: <20210122095805.620458-1-nborisov@suse.com>
@@ -39,32 +39,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Fixes fs/btrfs/extent_map.c:399: warning: Function parameter or member
-'modified' not described in 'add_extent_mapping'
+This fixes the following compiler warnings:
+
+fs/btrfs/extent_map.c:601: warning: Function parameter or member 'fs_info' not described in 'btrfs_add_extent_mapping'
+fs/btrfs/extent_map.c:601: warning: Function parameter or member 'em_tree' not described in 'btrfs_add_extent_mapping'
+fs/btrfs/extent_map.c:601: warning: Function parameter or member 'em_in' not described in 'btrfs_add_extent_mapping'
+fs/btrfs/extent_map.c:601: warning: Function parameter or member 'start' not described in 'btrfs_add_extent_mapping'
+fs/btrfs/extent_map.c:601: warning: Function parameter or member 'len' not described in 'btrfs_add_extent_mapping'
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/extent_map.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/btrfs/extent_map.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index bd6229fb2b6f..c540a37cbdb2 100644
+index c540a37cbdb2..fc6503218caa 100644
 --- a/fs/btrfs/extent_map.c
 +++ b/fs/btrfs/extent_map.c
-@@ -385,9 +385,12 @@ static void extent_map_device_clear_bits(struct extent_map *em, unsigned bits)
+@@ -577,12 +577,13 @@ static noinline int merge_extent_mapping(struct extent_map_tree *em_tree,
  }
  
  /**
-- * add_extent_mapping - add new extent map to the extent tree
-+ * Add new extent map to the extent tree
+- * btrfs_add_extent_mapping - add extent mapping into em_tree
+- * @fs_info - used for tracepoint
+- * @em_tree - the extent tree into which we want to insert the extent mapping
+- * @em_in   - extent we are inserting
+- * @start   - start of the logical range btrfs_get_extent() is requesting
+- * @len     - length of the logical range btrfs_get_extent() is requesting
++ * Add extent mapping into em_tree
 + *
-  * @tree:	tree to insert new map in
-  * @em:		map to insert
-+ * @modified:	bool indicating whether the given @em should be added to the
-+ *	        modified list, which indicates the extent needs to be logged
++ * @fs_info:  the filesystem
++ * @em_tree:  the extent tree into which we want to insert the extent mapping
++ * @em_in:    extent we are inserting
++ * @start:    start of the logical range btrfs_get_extent() is requesting
++ * @len:      length of the logical range btrfs_get_extent() is requesting
   *
-  * Insert @em into @tree or perform a simple forward/backward merge with
-  * existing mappings.  The extent_map struct passed in will be inserted
+  * Note that @em_in's range may be different from [start, start+len),
+  * but they must be overlapped.
 -- 
 2.25.1
 
