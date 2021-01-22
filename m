@@ -2,152 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2802FF995
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 01:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F8B2FFBF3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 05:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbhAVAvD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Jan 2021 19:51:03 -0500
-Received: from mout.gmx.net ([212.227.15.18]:44453 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbhAVAvA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:51:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611276567;
-        bh=4nzfo6CkEZlhMrNYA8FEn1zogEt8jnuhyD/UpcNbjv0=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=U/53U2UzuH392ONXUtp4sP51q82JBzszPo/gipgoB2jLpPGnN8l+/p41GKtOcOnYs
-         890Nho7WZ12L47nRnWLLR3HV9vrMNzP1+Ej/Csw3nrON6tpkxqNqGqKQ385OXvOCUi
-         S9hZY5ktavoN9BsOK6BTrIcVgQZ22YkOXJ4DghpQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1ML9uK-1lJs5E3V3a-00I9Ur; Fri, 22
- Jan 2021 01:49:27 +0100
-Subject: Re: Access Beyond End of Device & Input/Output Errors
-To:     chainofflowers <chainofflowers@neuromante.net>,
-        linux-btrfs@vger.kernel.org
-References: <5975832.dRgAyDc8OP@luna>
- <09596ccd-56b4-d55e-ad06-26d5c84b9ab6@gmx.com>
- <83f3d990-dc07-8070-aa07-303a6b8507be@neuromante.net>
- <5494566e-ff98-9aa9-efa3-95db37509b88@neuromante.net>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <3a374bca-2c0b-7c95-d471-3d88fc805b57@gmx.com>
-Date:   Fri, 22 Jan 2021 08:49:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726444AbhAVEyV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Jan 2021 23:54:21 -0500
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:42888 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbhAVEyQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Jan 2021 23:54:16 -0500
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 59F706C007B0;
+        Fri, 22 Jan 2021 06:53:28 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1611291208; bh=Km/F6ABJJwVBFUbMwwQJF/wazQaPWhv67wPVHMttxdw=;
+        h=References:From:To:Cc:Subject:In-reply-to:Date;
+        b=XZbOtmiqHHQkb8TiU6d/dNToknjAZhqUrlxtLNT59LUs8Dr60UaVFvgIP3s3b9jJE
+         xoK5D6/aNDZW5LUlgw88N6HWCz0GqOQBWNyxZ0bv91xzTZUuyGzx6KbiJdQOtjC13W
+         Cz6ekA5GTe2loPtcXGa6tzNu5ANzPreuoTySozpA=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 474EA6C00792;
+        Fri, 22 Jan 2021 06:53:28 +0200 (EET)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id Wu7vWTsR6Dng; Fri, 22 Jan 2021 06:53:27 +0200 (EET)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id A4F586C0076C;
+        Fri, 22 Jan 2021 06:53:27 +0200 (EET)
+Received: from nas (unknown [153.127.9.202])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 89B9E1BE00FF;
+        Fri, 22 Jan 2021 06:53:24 +0200 (EET)
+References: <20210121113910.14681-1-l@damenly.su>
+ <20210121170756.GE6430@twin.jikos.cz>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Su Yue <l@damenly.su>
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
+        Erhard F <erhard_f@mailbox.org>, dave@stgolabs.net
+Subject: Re: [PATCH] btrfs: fix lockdep warning due to seqcount_mutex_init()
+ with wrong address
+In-reply-to: <20210121170756.GE6430@twin.jikos.cz>
+Message-ID: <h7n9tvwl.fsf@damenly.su>
+Date:   Fri, 22 Jan 2021 12:53:14 +0800
 MIME-Version: 1.0
-In-Reply-To: <5494566e-ff98-9aa9-efa3-95db37509b88@neuromante.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/PonhmypvQBobyTnXHWkRs/RpDBaZNTzR1nm6lRS4PC7NZnab0/
- yNZJH9oK47mQIVaGXVSNkb2TkiyeIGPqNf8mo6s74oWpvOi1JpSrmIFNMTY6DsdKyrXfoUC
- yI3VxUq1W15BvSlKzY8IVgibQyvUZ8978jGXIXizqH6g/Y0oGLZ7pI+f5WnkcmlWzHUuSB7
- YiOWuxHLpUu8aNEvgI90w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:I94hfk8mw4c=:MpJBrgvlDS8SSy8gF0FDiy
- oAxxoZffZ3rOYuMESLv6s5FRZV81FEAb8Q8Dv06psBei0Sg5rEoeZ1w5Jgzj2ILnAHJOyfWIV
- P+2vxoJ6G8Gurel3T0CJRIdnEdjVh/kl3qmIahWWUOi3+DlUy39u7a9WucamdhGlJMTA/Qbt6
- ryvyivXHkgxrPzaEB4P+Sq0zhkO3/SB9O/eD+5ihLW/kBXbSSP4asCXOrJFmAX0HGPykuASck
- QPsApUDevenCUcNrw4ZxN6MXq/XejOEaCte38sr1xaZ/AziaIov94XCnJqhim5EXWbbShxDND
- SL75Mv2pjtXfzqGvnQbO7kreAmefmk+ZyflXFL+oEIM8H1xomFdo58GA5t1sjPVOqEAhjZ0Tg
- jyUjfeveJoVHSir784YG9KU9FRY0wvRwl7p+hz+jgpEjbma3xAn0o9NN77MK3lQ9gbdOzD+Uc
- wM/WcWWSIVTt+XDG+1yPg55LVx3gkX5kNncXRQ/IsG/VPl6tWkei03BFuDorcofqCbe0gsUsA
- E+29xT7Y+IwA8UQsuZtkb7KZENCtG3mlgelIAxRVlsP3lhaXFTrGO2qzv+JQ4QYcrDKpfjjzi
- kj0zlLIyxdKngdOBBN4avgKbkdYlk8kDORhG1sfrq2QbZ1zBs7RxyLy+KiKWuuOyXwQsWfuPt
- 333tq3cAVA5g/DjMuyR4esnXUQZ8ZevKwGy2ry6O2UhnTKsee2v7SG9DFFa+TTCjit+7YE3gZ
- /5j4pkmUyuhVItxOUe3S2yNfDMt+odlY47p0+mo1pQov/LYisLWfjgXBUJ8AOaAcMkXUMubzo
- ELUitFW5706s4M4+5AWmA/U/iIfGBatxJ2W1E0RJr3cDHxCymYMoFDhzVUzY53UNXPJrVrNrv
- sGrtu+5zn0CTrzgRyE8A==
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6N1mkZY3ejOlj12/QnnZGw8prSpLQJ6b9qflkAEq73aAUTLmCkUMVhC2n2R1THi+og==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On Fri 22 Jan 2021 at 01:07, David Sterba <dsterba@suse.cz> wrote:
 
-On 2021/1/22 =E4=B8=8A=E5=8D=887:55, chainofflowers wrote:
-> Hi Qu,
+> Adding Davidlohr to CC as it's about reverting his patch.
 >
-> it happened again. This time on my /home partition.
-> I rebooted from an external disk and ran btrfs check without first going
-> through btrfs scrub, and this is the output, no errors:
+> In d5c8238849e7 ("btrfs: convert data_seqcount to 
+> seqcount_mutex_t")
+> the seqcount_mutex_t was added as an annotation for lockep so by 
+> revert
+> we'd lose that again.
 >
-> ------------------------------------------
-> [manjaro oc]# btrfs check /dev/mapper/OMO
-> Opening filesystem to check=E2=80=A6
-> Checking filesystem on /dev/mapper/OMO
-> UUID: 9362ac9d-c280-451d-9c8a-c09798e1c887
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 137523740672 bytes used, no error found
-> total csum bytes: 113842816
-> total tree bytes: 1740537856
-> total fs tree bytes: 1444249600
-> total extent tree bytes: 143835136
-> btree space waste bytes: 325744995
-> file data blocks allocated: 210346024960
->   referenced 172314374144
-> ------------------------------------------
->
-> Then, I rebooted from my internal disk, everything went well. I ran
-> btrfs scrub and also got no errors.
+> On Thu, Jan 21, 2021 at 07:39:10PM +0800, Su Yue wrote:
+>> while running xfstests on 32 bits test box, many tests failed 
+>> because of
+>> warnings in dmesg. One of those warnings(btrfs/003):
+>> ========================================================================
+>> [   66.441305] ------------[ cut here ]------------
+>> [   66.441317] WARNING: CPU: 6 PID: 9251 at 
+>> include/linux/seqlock.h:279 btrfs_remove_chunk+0x58b/0x7b0 
+>> [btrfs]
+>> [   66.441446] CPU: 6 PID: 9251 Comm: btrfs Tainted: G 
+>> O      5.11.0-rc4-custom+ #5
+>> [   66.441449] Hardware name: QEMU Standard PC (i440FX + PIIX, 
+>> 1996), BIOS ArchLinux 1.14.0-1 04/01/2014
+>> [   66.441451] EIP: btrfs_remove_chunk+0x58b/0x7b0 [btrfs]
+>> [   66.441472] EAX: 00000000 EBX: 00000001 ECX: c576070c EDX: 
+>> c6b15803
+>> [   66.441475] ESI: 10000000 EDI: 00000000 EBP: c56fbcfc ESP: 
+>> c56fbc70
+>> [   66.441477] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 
+>> EFLAGS: 00010246
+>> [   66.441481] CR0: 80050033 CR2: 05c8da20 CR3: 04b20000 CR4: 
+>> 00350ed0
+>> [   66.441485] Call Trace:
+>> [   66.441510]  btrfs_relocate_chunk+0xb1/0x100 [btrfs]
+>> [   66.441529]  ? btrfs_lookup_block_group+0x17/0x20 [btrfs]
+>> [   66.441562]  btrfs_balance+0x8ed/0x13b0 [btrfs]
+>> [   66.441586]  ? btrfs_ioctl_balance+0x333/0x3c0 [btrfs]
+>> [   66.441619]  ? __this_cpu_preempt_check+0xf/0x11
+>> [   66.441643]  btrfs_ioctl_balance+0x333/0x3c0 [btrfs]
+>> [   66.441664]  ? btrfs_ioctl_get_supported_features+0x30/0x30 
+>> [btrfs]
+>> [   66.441683]  btrfs_ioctl+0x414/0x2ae0 [btrfs]
+>> [   66.441700]  ? __lock_acquire+0x35f/0x2650
+>> [   66.441717]  ? lockdep_hardirqs_on+0x87/0x120
+>> [   66.441720]  ? lockdep_hardirqs_on_prepare+0xd0/0x1e0
+>> [   66.441724]  ? call_rcu+0x2d3/0x530
+>> [   66.441731]  ? __might_fault+0x41/0x90
+>> [   66.441736]  ? kvm_sched_clock_read+0x15/0x50
+>> [   66.441740]  ? sched_clock+0x8/0x10
+>> [   66.441745]  ? sched_clock_cpu+0x13/0x180
+>> [   66.441750]  ? btrfs_ioctl_get_supported_features+0x30/0x30 
+>> [btrfs]
+>> [   66.441750]  ? btrfs_ioctl_get_supported_features+0x30/0x30 
+>> [btrfs]
+>> [   66.441768]  __ia32_sys_ioctl+0x165/0x8a0
+>> [   66.441773]  ? __this_cpu_preempt_check+0xf/0x11
+>> [   66.441785]  ? __might_fault+0x89/0x90
+>> [   66.441791]  __do_fast_syscall_32+0x54/0x80
+>> [   66.441796]  do_fast_syscall_32+0x32/0x70
+>> [   66.441801]  do_SYSENTER_32+0x15/0x20
+>> [   66.441805]  entry_SYSENTER_32+0x9f/0xf2
+>> [   66.441808] EIP: 0xab7b5549
+>> [   66.441814] EAX: ffffffda EBX: 00000003 ECX: c4009420 EDX: 
+>> bfa91f5c
+>> [   66.441816] ESI: 00000003 EDI: 00000001 EBP: 00000000 ESP: 
+>> bfa91e98
+>> [   66.441818] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b 
+>> EFLAGS: 00000292
+>> [   66.441833] irq event stamp: 42579
+>> [   66.441835] hardirqs last  enabled at (42585): [<c60eb065>] 
+>> console_unlock+0x495/0x590
+>> [   66.441838] hardirqs last disabled at (42590): [<c60eafd5>] 
+>> console_unlock+0x405/0x590
+>> [   66.441840] softirqs last  enabled at (41698): [<c601b76c>] 
+>> call_on_stack+0x1c/0x60
+>> [   66.441843] softirqs last disabled at (41681): [<c601b76c>] 
+>> call_on_stack+0x1c/0x60
+>> [   66.441846] ---[ end trace 7a9311b3f90a392e ]---
+>> ========================================================================
+>>
+>> ========================================================================
+>> btrfs_remove_chunk+0x58b/0x7b0:
+>> __seqprop_mutex_assert at linux/./include/linux/seqlock.h:279
+>> (inlined by) btrfs_device_set_bytes_used at 
+>> linux/fs/btrfs/volumes.h:212
+>> (inlined by) btrfs_remove_chunk at 
+>> linux/fs/btrfs/volumes.c:2994
+>> ========================================================================
+>>
+>> The warning is produced by lockdep_assert_held() in
+>> __seqprop_mutex_assert() if CONFIG_LOCKDEP is enabled.
+>> And "volumes.c:2994" is btrfs_device_set_bytes_used() with 
+>> mutex lock
+>> &fs_info->chunk_mutex hold already.
+>>
 
-So far so good.
+My bad. btrfs_get/set_device_*() -> btrfs_device_get/set_*()
 
->
-> I have dumped the messages from journalctl, and the debug ones related
-> to btrfs were only the ones from btrfs_trim_block_group - so, the issue
-> is related to free space extents I guess?
+>> After adding some debug prints, the cause was found that manyq
+>> __alloc_device() are called with NULL @fs_info. Inside the 
+>> function,
+>> btrfs_device_data_ordered_init() is expanded to 
+>> seqcount_mutex_init().
+>> In this scenario, its second parameter(&info->chunk_mutex) 
+>> passed is
+>> &NULL->chunk_mutex which equals to offsetof(struct 
+>> btrfs_fs_info,
+>> chunk_mutex) unexpectly. Thus, seqcount_mutex_init() is called 
+>> in wrong
+>> way. And later btrfs_get/set_device_*() helpers triger lockdep 
+>> warnings.
+>>
 
-Unfortunately, without the crash output, it can be anything.
+Same here.
 
+>> The complex solution is to delay the call of 
+>> btrfs_device_data_ordered_
+>> init() so the lockdep functionality can work well.
+>> It requires that no btrfs_get/set_device_*() is called between
+>> btrfs_alloc_device with NULL @fs_info and the delayed
+>> btrfs_device_data_ordered_init(). Otherwise, total_bytes, 
+>> disk_total_
+>> bytes and bytes_uesed of device may be inconsistent in 32 bits
+>> environments.
 >
-> I have attached the logs.
-> You can see that the last line:
->
-> ------------------------------------------
-> Jan 21 23:57:25 <***> kernel: btrfs_trim_block_group: enter bg
-> start=3D26864517120 start=3D26864517120 end=3D27938258944 minlen=3D512
-> ------------------------------------------
->
-> does not have a second matching line with "ret=3D0", because the kernel
-> stopped storing messages in the log. So, I guess the issue occurred
-> while btrfs_trim_block_group was working on 26864517120..27938258944.
+> If the fs_info is not available at all times, would it be 
+> possible to
+> set it once it is? (And reset when the fs_info is released).
 
-If you have some machine running 24x7, like a RPi, I would recommend to
-setup netconsole to catch the full dying message to be extra safe.
-
-Or setup kdump, to catch the dying message.
-
-Personally speaking, netconsole would be much easier to setup though.
-
-Currently with truncated journal it's really hard to say.
-
-Thanks,
-Qu
->
-> Unfortunately I did not dump the output of dmesg directly in that
-> moment, so all I could get is what was available in the journal after
-> the reboot.
->
-> In the log you can also see that some time before BTRFS detected that
-> the space cache for dm-3 needed to be rebuilt:
-> ------------------------------------------
-> Jan 21 19:29:17 <***> kernel: BTRFS warning (device dm-3): block group
-> 82699091968 has wrong amount of free space
-> Jan 21 19:29:17 <***> kernel: BTRFS warning (device dm-3): failed to
-> load free space cache for block group 82699091968, rebuilding it now
-> ------------------------------------------
->
-> Any hint about what I could do now?
->
-> Thanks! :-)
->
->
->
-> (c)
->
+Please correct me if I am wrong. AFAIK, 
+btrfs_device_data_ordered_init()
+can be called correctly but only for the first time.
+Looking at include/linux/seqlock.h, seqcount_mutex_t::lock is 
+touched
+only in its initial timing. So when fs_info is released, there is
+not api to reset the seqcount_mutex_t::lock. Then warnings are 
+still
+there. Or we can allocate btrfs_device::data_seqcount in runtime.
+But is it worth changing struct btrfs_device only for the lockdep
+reason on 32 bits machines?
