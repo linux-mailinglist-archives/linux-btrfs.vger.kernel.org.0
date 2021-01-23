@@ -2,116 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C1F3017FE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jan 2021 20:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4169930180E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jan 2021 20:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbhAWTPh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Jan 2021 14:15:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52506 "EHLO mx2.suse.de"
+        id S1726282AbhAWTkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Jan 2021 14:40:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55600 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726198AbhAWTPd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Jan 2021 14:15:33 -0500
+        id S1725765AbhAWTkL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 23 Jan 2021 14:40:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 85868AD18;
-        Sat, 23 Jan 2021 19:14:50 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 05379AD18;
+        Sat, 23 Jan 2021 19:39:30 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CFDE3DA823; Sat, 23 Jan 2021 20:13:04 +0100 (CET)
-Date:   Sat, 23 Jan 2021 20:13:04 +0100
+        id 7749CDA823; Sat, 23 Jan 2021 20:37:44 +0100 (CET)
+Date:   Sat, 23 Jan 2021 20:37:44 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 01/18] btrfs: update locked page dirty/writeback/error
- bits in __process_pages_contig()
-Message-ID: <20210123191304.GA1993@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v4 03/18] btrfs: introduce the skeleton of btrfs_subpage
+ structure
+Message-ID: <20210123193744.GB1993@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
 References: <20210116071533.105780-1-wqu@suse.com>
- <20210116071533.105780-2-wqu@suse.com>
- <b0360753-072a-f5c5-3ea6-08e9db2445dd@toxicpanda.com>
- <c4bd841c-6657-5a72-85ac-fc8359c87a74@gmx.com>
- <bab806e1-ad3d-b34c-b623-915b39621983@suse.com>
+ <20210116071533.105780-4-wqu@suse.com>
+ <20210118224647.GK6430@twin.jikos.cz>
+ <65ab6681-f694-5cc4-1b2d-b33b70ba40a3@gmx.com>
+ <20210119155145.GO6430@twin.jikos.cz>
+ <20210119160625.GP6430@twin.jikos.cz>
+ <7a48d6b7-8620-b3ff-8bee-386da50f11bc@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bab806e1-ad3d-b34c-b623-915b39621983@suse.com>
+In-Reply-To: <7a48d6b7-8620-b3ff-8bee-386da50f11bc@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 02:51:46PM +0800, Qu Wenruo wrote:
+On Wed, Jan 20, 2021 at 08:19:14AM +0800, Qu Wenruo wrote:
 > 
 > 
-> On 2021/1/21 下午2:32, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2021/1/20 上午5:41, Josef Bacik wrote:
-> >> On 1/16/21 2:15 AM, Qu Wenruo wrote:
-> >>> When __process_pages_contig() get called for
-> >>> extent_clear_unlock_delalloc(), if we hit the locked page, only Private2
-> >>> bit is updated, but dirty/writeback/error bits are all skipped.
+> On 2021/1/20 上午12:06, David Sterba wrote:
+> > On Tue, Jan 19, 2021 at 04:51:45PM +0100, David Sterba wrote:
+> >> On Tue, Jan 19, 2021 at 06:54:28AM +0800, Qu Wenruo wrote:
+> >>> On 2021/1/19 上午6:46, David Sterba wrote:
+> >>>> On Sat, Jan 16, 2021 at 03:15:18PM +0800, Qu Wenruo wrote:
+> >>>>> +		return;
+> >>>>> +
+> >>>>> +	subpage = (struct btrfs_subpage *)detach_page_private(page);
+> >>>>> +	ASSERT(subpage);
+> >>>>> +	kfree(subpage);
+> >>>>> +}
+> >>>>> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+> >>>>> new file mode 100644
+> >>>>> index 000000000000..96f3b226913e
+> >>>>> --- /dev/null
+> >>>>> +++ b/fs/btrfs/subpage.h
+> >>>>> @@ -0,0 +1,31 @@
+> >>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+> >>>>> +
+> >>>>> +#ifndef BTRFS_SUBPAGE_H
+> >>>>> +#define BTRFS_SUBPAGE_H
+> >>>>> +
+> >>>>> +#include <linux/spinlock.h>
+> >>>>> +#include "ctree.h"
+> >>>>
+> >>>> So subpage.h would pull the whole ctree.h, that's not very nice. If
+> >>>> anything, the .c could include ctree.h because there are lots of the
+> >>>> common structure and function definitions, but not the .h. This creates
+> >>>> unnecessary include dependencies.
+> >>>>
+> >>>> Any pointer type you'd need in structures could be forward declared.
 > >>>
-> >>> There are several call sites call extent_clear_unlock_delalloc() with
-> >>> @locked_page and PAGE_CLEAR_DIRTY/PAGE_SET_WRITEBACK/PAGE_END_WRITEBACK
+> >>> Unfortunately, the main needed pointer is fs_info, and we're accessing
+> >>> it pretty frequently (mostly for sector/node size).
 > >>>
-> >>> - cow_file_range()
-> >>> - run_delalloc_nocow()
-> >>> - cow_file_range_async()
-> >>>    All for their error handling branches.
-> >>>
-> >>> For those call sites, since we skip the locked page for
-> >>> dirty/error/writeback bit update, the locked page will still have its
-> >>> dirty bit remaining.
-> >>>
-> >>> Thankfully, since all those call sites can only be hit with various
-> >>> serious errors, it's pretty hard to hit and shouldn't affect regular
-> >>> btrfs operations.
-> >>>
-> >>> But still, we shouldn't leave the locked_page with its
-> >>> dirty/error/writeback bits untouched.
-> >>>
-> >>> Fix this by only skipping lock/unlock page operations for locked_page.
-> >>>
-> >>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >>> I don't believe forward declaration would help in this case.
 > >>
-> >> Except this is handled by the callers.  We clear_page_dirty_for_io() the
-> >> page before calling btrfs_run_delalloc_range(), so we don't need the
-> >> PAGE_CLEAR_DIRTY, it's already cleared.  The SetPageError() is handled
-> >> in the error path for locked_page, as is the
-> >> set_writeback/end_writeback.  Now I don't think this patch causes
-> >> problems specifically, but the changelog is at least wrong, and I'd
-> >> rather we'd skip the handling of the locked_page here and leave it in
-> >> the proper error handling.  If you need to do this for some other reason
-> >> that I haven't gotten to yet then you need to make that clear in the
-> >> changelog, because as of right now I don't see why this is needed.  
-> >> Thanks,
-> > 
-> > This is mostly to co-operate with a later patch on
-> > __process_pages_contig(), where we need to make sure page locked by
-> > __process_pages_contig() is only unlocked by __process_pages_contig() too.
-> > 
-> > The exception is after cow_file_inline(), we call
-> > __process_pages_contig() on the locked page, making it to clear page
-> > writeback and unlock it.
+> >> I've looked at the final subpage.h and you add way too many static
+> >> inlines that don't seem to be necessary for the reasons the static
+> >> inlines are supposed to be used.
+> >
+> > The only file that includes subpage.h is extent_io.c, so as long as it
+> > stays like that it's manageable. But untangling the include hell still
+> > needs to hapen some day and new code that makes it harder worries me.
+> >
+> If going through the github branch, you will see there are more files
+> using subpage.h:
+> - extent_io.c
+> - disk-io.c
+> - file.c
+> - inode.c
+> - reflink.c
+> - relocation.c
 > 
-> To be more clear, we call extent_clear_unlock_delalloc() with 
-> locked_page == NULL, to allow __process_pages_contig() to unlock the 
-> locked page (while the locked page isn't locked by 
-> __process_pages_contig()).
+> And furthermore, about the static inline abuse, the part really need
+> that static inline is the check against regular sector size, and
+> unfortunately, most outside callers need such check.
 > 
-> For subpage data, we need writers accounting for subpage, but that 
-> accounting only happens in __process_pages_contig(), thus we don't want 
-> pages without the accounting to be unlocked by __process_pages_contig().
-> 
-> I can do extra page unlock/clear_dirty/end_writeback just for that 
-> exception, but it would definitely needs more comments.
+> I can put the pure subpage callers into subpage.c, but the generic
+> helpers handling both cases still need that.
 
-This is patch 1 and other depend on the changed behaviour so if it's
-just updated changelog and comments, and Josef is ok with the result, I
-can take it but otherwise this could delay the series once the rest is
-reworked.
+I had a look and this is too much. Just by counting 'static inline'
+(wher it's also part of the btrfs_page_clamp_* helpers) it's 30 and not
+all the functions are short enough for static inlines. Please make them
+all regular functions and put them to subpage.c and don't include
+ctree.h.
