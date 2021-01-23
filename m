@@ -2,353 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5A3301035
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Jan 2021 23:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111ED301270
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jan 2021 03:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbhAVWnz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Jan 2021 17:43:55 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:33318 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728586AbhAVWnh (ORCPT
+        id S1726440AbhAWCvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Jan 2021 21:51:41 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:45787 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726533AbhAWCve (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:43:37 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 7BAA0950024; Fri, 22 Jan 2021 17:42:53 -0500 (EST)
-Date:   Fri, 22 Jan 2021 17:42:53 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [RFC][PATCH V5] btrfs: preferred_metadata: preferred device for
- metadata
-Message-ID: <20210122224253.GI28049@hungrycats.org>
-References: <20210117185435.36263-1-kreijack@libero.it>
- <30cd0359-e649-dcc7-e373-4dd778fbf70b@toxicpanda.com>
- <765cec4e-b989-081b-2ad7-e2d1c9cf7f55@libero.it>
- <20210121185400.GH28049@hungrycats.org>
- <89ee4ab9-64cd-b093-92d2-02eee4997250@inwind.it>
+        Fri, 22 Jan 2021 21:51:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611370294; x=1642906294;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=3XclkR8L9i0FGb3L0ElSvIwlZkppnoPbiWyWoN09pm4=;
+  b=Fn7KsHP55MdvMdmJo2h9hRjIylvQTcD4Wu63jTA40zx+HNYjh4LmqDtd
+   4aR+ZzHR73xuQx9n2Ox9J1VhVRXreL4DV49yec11Wg0opkvB64I4TIRpq
+   Cx3xAha3YmC5Irp4whAHyJY3rP+w6IDpRbw4NZsMFt3GrtJj2I9NHlGFV
+   S46C07vRpCtmNAxMQ7bGwRAZdFVVS/OaAQqr3nyXXZEh5Xt6xI5TAELv6
+   fnKNPZWoRMnKfhlBFnnGop5MocAxdnYU4iIvZGOuF4OshMM9zM3qWgxOG
+   HZxVL42+OVh4UgTdX+SgbAX1QwZ7Bvb++6rwDYnUCBtUZDW2j5cEO2LaD
+   Q==;
+IronPort-SDR: ZKfX+E9pjYGSvXE6C/h54AJmMkWY4b9iwxK/f5YxL4vsudyLeqYLkl8W6uDc7+qH/DQ2AZfh1c
+ 7VZdRjlS66r0zG8JroRLYpeLSEutEhTYxI0k4Eiqd6OAlgEuz3g6Oymq7FfKXgFfl7N9rnjBBS
+ Q382pTdqtZAynanWDxSkzvoOQEUoQZuWU/c4dHarTsWSImveJRVaihtccxTckmlYHbZE/FXhvB
+ q9rM/SRgDlyT7lUFJFINkFe4HuPdQP6G77gAaGp0xRKBUcRgdnVqH40Ha7EI2FTMYIK0mfDUec
+ /r8=
+X-IronPort-AV: E=Sophos;i="5.79,368,1602518400"; 
+   d="scan'208";a="158138568"
+Received: from mail-co1nam11lp2172.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.172])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jan 2021 10:50:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EbkGrZ+rFVz335vMEgFas7Is4GnST03BSkP6We5ctHQl4Rao1WIkc59ydVdlPmSWQadk4gb0d7vt5Ae9hq2w4CiCvojRRNoo3nAFA8Fj/TVJ/srIiMN6FrYgdkhxrJEHa7dRAnyryFZMQG6VaFo7fiDXEFAExxwOJXVDkayU7RIDCd31SWeMp15IGPP4CJ9z7wtv9Bnq4tQaQBOWG/S6BZqnM04r7BaPOrQR1ksW5LXl8HlNECe59rzATe1Rh8bx+UP6HLsSV4LdIuL3BPyoYZcs3h9eMaBWLqoT/Q1LgVUa3PrIOjeki18A/M+sZoS/nUb8wCglRc7ssvP7nwI5ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3XclkR8L9i0FGb3L0ElSvIwlZkppnoPbiWyWoN09pm4=;
+ b=PVb7mao9JLpf0UjN30jo5HBUS9mjAjCvVTeH7Pt6XEEn9+me+0VT7irhkcxejkgOzubq4W+CQ77W/VpksoED5XJ9ITil6vZcTy6xS9d60oXRdewn1yanpb7SoGT0lxuS/r97MiuX20JGGzEsA8ptBHV+ErxMmKTYGUBv72nGjWSJgBVBgILxwnFLmZr01iinusT6nDyl7UA7pdDTSNywX8pla5ET8hZyGuuajx+E1c87+xlPBSY0DFX6JKFUXsMWczWluGSaTyHkAxwapSJgzXC9JjB1acGUWsiNHd4zUWQc0QMJIa29gAXDfPKZLyGB40mvmGRbK5nW2qOIQao3kQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3XclkR8L9i0FGb3L0ElSvIwlZkppnoPbiWyWoN09pm4=;
+ b=DicMMMT/1WQlxOLqhNussyeJMhm+1Xs17yr4Ovt+cRGr8G/6VkalBVdmghwESK255l04LpkS+mI6wsGk7GlMXCZVGFwUQElM/aGsyZGVkTpdjqB7oYWTZj4/uM9U+KSAn21psGOruxYmJxNnh+J3L1wQYGEOEXOz2XFLvplLboU=
+Received: from DM6PR04MB4972.namprd04.prod.outlook.com (2603:10b6:5:fc::10) by
+ DM6PR04MB6188.namprd04.prod.outlook.com (2603:10b6:5:12c::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3784.13; Sat, 23 Jan 2021 02:50:23 +0000
+Received: from DM6PR04MB4972.namprd04.prod.outlook.com
+ ([fe80::9a1:f2ba:2679:8188]) by DM6PR04MB4972.namprd04.prod.outlook.com
+ ([fe80::9a1:f2ba:2679:8188%7]) with mapi id 15.20.3763.017; Sat, 23 Jan 2021
+ 02:50:23 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>
+CC:     "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v13 01/42] block: add bio_add_zone_append_page
+Thread-Topic: [PATCH v13 01/42] block: add bio_add_zone_append_page
+Thread-Index: AQHW8IdLf0pDgmmWhUSc59BsHZKVgQ==
+Date:   Sat, 23 Jan 2021 02:50:23 +0000
+Message-ID: <DM6PR04MB49724F6C4B6BF2C9DF7B904886BF0@DM6PR04MB4972.namprd04.prod.outlook.com>
+References: <cover.1611295439.git.naohiro.aota@wdc.com>
+ <94eb00fce052ef7c64a45b067a86904d174e92fb.1611295439.git.naohiro.aota@wdc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2600:1700:31ee:290:89ac:da1d:fcc3:58a9]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 29a0b746-ad21-4f5f-c02b-08d8bf49a148
+x-ms-traffictypediagnostic: DM6PR04MB6188:
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR04MB6188EB4AC72563C01749D88F86BF9@DM6PR04MB6188.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:595;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: NCZYUkpIpEAlzyMvyxD3MJaMHli0ETWgP03QccPwPBMdhg4wG85tzUHkGo1EuL0NjSCmsHlZ/iBXTK9lOamwoeiA5St+0uAvX4VGMQfzraUTaVxeNduHxn9ITzIkpMxrwmdPqoUWzt4R8SxzFDk42FRtdCxmSvJko5pjOQxBrISYvacgT4OQXdyQ7fgqkmiQMasA9HEQO48TQ3XQoEwG4MMY2AJ1/c4XIbfN22w6GPnCSdykJdLTKvvgV0wzT4L9ViMfTA85ZBX9Jhpl4SPVm4RV2RdyCeR50eKFfjzhk8I7Ibl3GAzyftG/9WkFIPK9VeodNgNlvJwc7JEV7IlRYlNxgOqhQypFWQ1q2IlEXuEbvvkWiiyuXwFMYwEWQcpap8M7Q2CqALHIxzxDHR46lg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB4972.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(376002)(346002)(39860400002)(4744005)(5660300002)(33656002)(71200400001)(186003)(66476007)(8936002)(66556008)(52536014)(8676002)(66946007)(64756008)(66446008)(4326008)(86362001)(91956017)(478600001)(316002)(110136005)(6506007)(9686003)(53546011)(54906003)(7696005)(2906002)(76116006)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?gS56mlfPzygFKF7aS5gI7yVkw6PJv4fpRmcClodRxaDsM2FEPz+EpkQ/8HjL?=
+ =?us-ascii?Q?nwgmugnfY/X1nIherkpC7Y449nRVg/5kYycdBb5Jn2OJ1QIS98OhF58eJkzz?=
+ =?us-ascii?Q?K+BSvFyV+haJ2ZKl8pIhSy4PQbQd+TkxnafHX6YRdN1YUQoXEZaiafGXlwNQ?=
+ =?us-ascii?Q?QCD/WNj8KWDeElSL1WItNhXEx7xl/iFWdV80okYbMEmshU/6uR1QAwkCUP+g?=
+ =?us-ascii?Q?KTb+edkwRWVwncjpHXi6UxlmzHTES/5wx91Yfzh1QitZKV/HHcDX5afxLl/6?=
+ =?us-ascii?Q?AtMGpSEfJLFC1GCqbf0ftVDKNKL+g+7ntD3uIA/LcdvyB2LRYJRmCTy3amla?=
+ =?us-ascii?Q?2TgLz7YF40UtOh1rP54g69Obl+8K3st5W4LBfMuH1+yObjZWcbusm8aaQGjX?=
+ =?us-ascii?Q?VlGrkZcHzWD2kX3a19GTdIakSAWfgDmmdN2/ZZLQcXGgU4b/UgNXjE1UzLsR?=
+ =?us-ascii?Q?dcfir/3hsmZy2txR1yJ51aX37RIvSBDKW37m8MtfluVVD2tsc3bepd3LpDHv?=
+ =?us-ascii?Q?vLpYCALYi7LvuwnV4lHXAMjPDWswks4ubaVyO3TZTL9oXBmdxbQtpGyummlk?=
+ =?us-ascii?Q?EuhiI32AvYdSrQnKcHYrEEP5vL0wuz6Kl/zO+xqazgM8sFSehR6rQWR7Vj4L?=
+ =?us-ascii?Q?W4009ED+J4TFXfk0WNZdL/fHmJmw56kYcrQPa8LfIVa4Iz1sqkAc2FT8QeBY?=
+ =?us-ascii?Q?yZFiEcIDAQQdkE94dXTvlsOg8w7wronIkakZd3+rrEDae2nU/ayRq8WKrOyO?=
+ =?us-ascii?Q?txxSxATAKHwW8dZNc4658QCZamzexdCXw2WH7dalwl+vlZP/uxSyn76Vt/n+?=
+ =?us-ascii?Q?lnBd/fjx6gFJUULsrB39Xai+W7Aw2opgcq4A5lwVI7GX63XNVKIoKO/DTbqS?=
+ =?us-ascii?Q?VlXhaSwBok7TH4hcSJUFxGAVF5RAmEoztFQ+WtKJyq9Ck1w8Pyuosb3MMJVH?=
+ =?us-ascii?Q?fC1KGX2WVMwTPdieqRsfyP3AL00tvdgkyalpSf06wNnSlYc5oZ4PUrQ4un+A?=
+ =?us-ascii?Q?1x9hU7uBm5VTuTh56D52ibH23rNRDwPFrRTsPs8Q4kAFOATxMN/XwE4CVOa+?=
+ =?us-ascii?Q?y+4RIlOZGZ6/7M9V59GbsTSMSdf9+VoWt33xc5ynW85xWvRQGHl5lyNtoAhd?=
+ =?us-ascii?Q?Y4ALIuYlerQ81zK00HszY8Zc0m0s39TcUA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <89ee4ab9-64cd-b093-92d2-02eee4997250@inwind.it>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB4972.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29a0b746-ad21-4f5f-c02b-08d8bf49a148
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2021 02:50:23.0993
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zRh4nfrRpD8CpWWSKg2TGj2ssy1JwYtySJaW3llZa1BZlADErdAA/G4Osp7jotozmvcfbbuHBceb/SGbM5Az+gpjFVnwnp2VsJIpiy2m2Z0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6188
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 07:31:18PM +0100, Goffredo Baroncelli wrote:
-> On 1/21/21 7:54 PM, Zygo Blaxell wrote:
-> > On Thu, Jan 21, 2021 at 07:16:05PM +0100, Goffredo Baroncelli wrote:
-> > > On 1/20/21 5:02 PM, Josef Bacik wrote:
-> > > > On 1/17/21 1:54 PM, Goffredo Baroncelli wrote:
-> > > > > 
-> > > > > Hi all,
-> > > > > 
-> > > > > This is an RFC; I wrote this patch because I find the idea interesting
-> > > > > even though it adds more complication to the chunk allocator.
-> > > > > 
-> > > > > The basic idea is to store the metadata chunk in the fasters disks.
-> > > > > The fasters disk are marked by the "preferred_metadata" flag.
-> > > > > 
-> > > > > BTRFS when allocate a new metadata/system chunk, selects the
-> > > > > "preferred_metadata" disks, otherwise it selectes the non
-> > > > > "preferred_metadata" disks. The intial patch allowed to use the other
-> > > > > kind of disk in case a set is full.
-> > > > > 
-> > > > > This patches set is based on v5.11-rc2.
-> > > > > 
-> > > > > For now, the only user of this patch that I am aware is Zygo.
-> > > > > However he asked to further constraint the allocation: i.e. avoid to
-> > > > > allocated metadata on a not "preferred_metadata"
-> > > > > disk. So I extended the patch adding 4 modes to operate.
-> > > > > 
-> > > > > This is enabled passing the option "preferred_metadata=<mode>" at
-> > > > > mount time.
-> > > > > 
-> > > > 
-> > > > I'll echo Zygo's hatred for mount options.  The more complicated policy decisions belong in properties and sysfs knobs, not mount options.
-> > > > 
-> > > I tend to agree. However adding a filesystem property can be done in a second time. I don't think that this a problem. However I prefer to make the patch smaller.
-> > > 
-> > > Anyway I have to point out that we need a way to change the allocation
-> > > policy without changing the metadata otherwise we risk to be in the
-> > > loop of exhausting metadata space: - how we can increase the space for
-> > > metadata if we don't have space for metadata but I need to allocate
-> > > few block of metadata....
-> > > 
-> > > What I mean is that even if we store the setting as filesystem
-> > > properties (and definitely we have to do), we need a way to override
-> > > in an emergency scenario.
-> > 
-> > There are no new issues introduced by this change, thus no requirement
-> > for a mount option to deal with new issues.
-> > 
-> > The same issue comes up when changing RAID profile, or removing devices,
-> > or when existing devices simply fill up.  Part of the solution is the
-> > global reserve, which ensures we can always create a transaction to modify
-> > a few metadata pages.
-> > 
-> > Part of the solution is a run-time check to ensure we have min_devs for
-> > active RAID profiles whenever we change a device policy to reject data
-> > or metadata (see btrfs_check_raid_min_devices).  This is currently
-> > implemented for the device remove ioctl, and a similar check will
-> > be needed for the device property set ioctl for preferred_metadata.
-> > That part is missing in v5 of this patch and will have to be added,
-> > though even now it works most of the time without.
-> > 
-> > v5 is also missing changes to the df statvfs code to deal with metadata
-> > only devices.  At this stage it's an RFC patch, so that's OK, but it
-> > will also need to be fixed.  We presume these will be addressed in future
-> > versions.  Again, it works now, but 'df' will give the wrong number.
-> > 
-> > None of the above requirements is addressed by a mount option, and
-> > the mount option adds new requirements that we don't want.
-> > 
-> > > > And then for the properties themselves, presumably we'll want to
-> > > add other FS wide properties in the future.  I'm not against adding
-> > > new actual keys and items to the tree itself, but is there a way
-> > > we could use our existing property infrastructure that we use for
-> > > compression, and simply store the xattrs in the tree root?  It looks
-> > > like we're just toggling a policy decision, and we don't actually
-> > > need the other properties in the item you've created, so why not
-> > > just a btrfs.preferred_metadata property with the value stored in it,
-> > > dropped into the tree_root so it can be read on mount?  Thanks,
-> > > 
-> > > What if the root subvolume is not mounted ?
-> > 
-> > Same as device add or remove--if the filesystem isn't mounted, you can't
-> > make any changes.
-> 
-> I am referring to a case where a subvolume (id != 5) is mounted but not the root one (id=5).
-> The point is that (e.g.) in the current implementation you can use
-> 
-> $ sudo btrfs property set /dev/vde preferred_metadata 1
-> 
-> in any case where the filesystem is mounted (doesn't matter which
-> subvvolume).
-> 
-> I like the Josef idea: instead to develop a new api to retrive/change/list/store/delete/create
-> some setting, we could use the xattr api which already exists.
-
-Yeah, I've been thinking about that since yesterday and I am now thinking
-it's a good idea if we can wave away some problems.  We don't need special
-tools to set an xattr, and we can define new schema versions by changing
-the attribute name.
-
-My one lingering concern is what happens when the xattr is propagated
-to other filesystems, e.g. by backups.  You might have very different
-devices on the backup server than on the origin server, and you wouldn't
-want this attribute to suddenly make the backup server unusably slow,
-nor would you want the entire backup to fail because it can't set this
-attribute to the new value on a backup filesystem because some of the
-devids don't exist there.
-
-I'm tempted to say "well you shouldn't back up the root subvol of a
-btrfs anyway, and if you do, you should explictly exclude this attribute"
-and leave it at that, but there's probably someone out there with
-working backup scripts that will be broken by this change.
-
-Maybe a compromise solution is to keep the kernel-parsed string encoding,
-but store that string in a persistent dev tree item so it doesn't show
-up in any subvol's metadata.
-
-> # adding properties
-> $ sudo setfattr -n "btrfs.metadata_preferred_disk=aabbcc" -v "mode=1"  /
-> $ sudo setfattr -n "btrfs.metadata_preferred_disk=aabbee" -v "mode=1"  /
-> $ sudo setfattr -n "btrfs.metadata_preferred" -v "1"  /
-> 
-> # listing properties and their values
-> $ sudo getfattr -d /
-> getfattr: Removing leading '/' from absolute path names
-> # file: .
-> btrfs.metadata_preferred_disk\075aabbcc="mode=1"
-> btrfs.metadata_preferred_disk\075aabbee="mode=1"
-> btrfs.metadata_preferred="1"
-> 
-> # removing a properties
-> $ sudo setfattr -x "btrfs.metadata_preferred_disk=aabbcc" /
-
-If the specification is a single string blob, then we get atomic updates
-for free--no need to figure out the right order of operations if you
-suddenly want to flip metadata from devices 1,2,3 to 4,5,6 with raid1c3
-metadata.  The kernel would just ACK or NAK the entire new string, and
-tools could manipulate the whole string without trying to guess what
-might make one order of changes work while another order fails.
-
-Of course we can haggle for a few more weeks about what that string
-should look like, but the mechanism of "configure this thing through a
-kernel-parsed single string" seems OK.
-
-I was thinking something like:
-
-	-n btrfs.chunk_policy -v only_metadata=1:only_data=3:prefer_metadata=2
-
-for device 1 = NVME, 2 = SSD, 3 = HDD, where the SSD is shared between
-data and metadata, or
-
-	-n btrfs.chunk_policy -v only_metadata=7,8:only_data=1,2,3,4,5,6
-
-for a big NVME (7, 8) and HDD (1-6) array with no device sharing.
-
-Any devid not listed in the string gets "prefer_data".
-
-Metadata is allocated on devices listed with "only_metadata" first,
-followed by "prefer_metadata" devices, followed by "prefer_data" devices.
-No metadata is allocated on "only_data" devices.
-
-Data is allocated on devices listed with "only_data" first, followed by
-"prefer_data" devices, followed by "prefer_metadata" devices.  No data
-is allocated on "only_metadata" devices.
-
-Devids may be mentioned in the string that do not exist in the filesystem.
-This allows us to do 'dev remove' without changing the xattr string at
-the same time (though we still would have to prevent 'dev remove' if this
-makes it impossible to allocate new chunks of any existing raid profile).
-
-A special devid "default" specifies the policy for devices that are not
-otherwise listed.  This can be used to define what happens to new devices
-before they are added, e.g.
-
-	-n btrfs.chunk_policy -v only_metadata=1,2:only_data=default
-
-Or, we move away from the "preferred" concept, and specify the device
-order explicitly.
-
-In the following syntax, "," separates device IDs, and ":" defines a
-boundary between ordering tiers, where we fill every device before ":"
-before any device after ":", but we let btrfs do its normal equalizing
-fill algorithm with any device between ":".
-
-The special device id "default" can be used to specify where unlisted
-devices appear in the order, which might not be at the end.  If a
-device is listed by ID for either data or metadata, it is excluded from
-"default" in either string.  We might also define other shorthands like
-"rotational" later, if some day the btrfs_device::type field ever does
-mean anything useful.
-
-The NVME (1), SSD (2), HDD (3) example is:
-
-	-n btrfs.device_fill_order.data     -v 3:2
-	-n btrfs.device_fill_order.metadata -v 1:2
-
-i.e. we put data on devid 3 first, then if that is full put data on
-devid 2, while we put metadata on devid 1 first, then if that is full
-put metadata on devid 2.  We never put metadata on devid 3 or data on
-devid 1.  Any devices added to the filesystem don't get chunks at all
-until someone changes the device_fill_order policy to say what to do
-with the new devices.
-
-The 2xNVME (7, 8) and 6xHDD (1-6) example could be:
-
-	-n btrfs.device_fill_order.data     -v 1,2,3,4,5,6:default
-	-n btrfs.device_fill_order.metadata -v 7,8
-
-Note that since devids 7 and 8 are explicitly listed in metadata, they
-are not covered by 'default' in data, and no data will be allocated
-on devices 7 and 8.  The "," operator does not specify an order, so
-btrfs will pick devices from 1-6 according to its equal-fill algorithm.
-Any new devices added to the array will be filled with data only after
-the existing devices are all full.
-
-The following order might be useful if we add disks 2 at a time, and want
-to rotate out the old ones.  We want the data to be preferentially
-located on the devices that are added last, starting with devices that
-have not been added yet:
-
-	-n btrfs.device_fill_order.data     -v default:5,6:3,4:1,2
-	-n btrfs.device_fill_order.metadata -v 7,8
-
-This could also be (ab)used to get narrower stripes than the entire
-array in striping profiles.  I'm not sure if that's good or bad.
-
-This is equivalent to the absence of each xattr:
-
-	-n btrfs.device_fill_order.data     -v default
-	-n btrfs.device_fill_order.metadata -v default
-
-This is preferred_metadata=soft with metadata on devid 1:
-
-	-n btrfs.device_fill_order.data     -v default:1
-	-n btrfs.device_fill_order.metadata -v 1:default
-
-This is preferred_metadata=hard with metadata on devid 1:
-
-	-n btrfs.device_fill_order.data     -v default
-	-n btrfs.device_fill_order.metadata -v 1
-
-This is preferred_metadata=metadata with metadata on devid 1, allowing
-metadata to overflow onto data devices but not the opposite:
-
-	-n btrfs.device_fill_order.data     -v default
-	-n btrfs.device_fill_order.metadata -v 1:default
-
-This is the "laptop with one SSD and one HDD" example, where we want only
-metadata on the SSD but we will allow data to overflow from HDD to SSD:
-
-	-n btrfs.device_fill_order.data     -v default:1
-	-n btrfs.device_fill_order.metadata -v 1
-
-Obviously we'd want to compile the ordering preferences into an attribute
-attached to each device the in-kernel device list, so sort can just order
-devices by the value of the attribute.  The attribute would be recomputed
-on mount, device add, and changes to the xattr string (dev remove and
-dev replace doesn't change the order, though they might require special
-cases in the code for other reasons).
-
-> However the xattr requires an inode to attach the .. xattrs. But when we are talking about
-> filesystem properties, which is the right inode ? The only stable inode is the '.' of
-> the root subvolume. The other inodes may be deleted so are not suitable to store per
-> filesystem properties.
-> 
-> So the point is: what happens if the root subvolume is not mounted ?
-
-It's not an onerous requirement to mount the root subvol.  You can do (*)
-
-	tmp="$(mktemp -d)"
-	mount -osubvolid=5 /dev/btrfs "$tmp"
-	setfattr -n 'btrfs...' -v... "$tmp"
-	umount "$tmp"
-	rmdir "$tmp"
-
-any time you need to change the policy, regardless of whether the root
-subvol is mounted anywhere else at the time.
-
-> Of course we can tweak the xattr api to deal this case, but doing so is not
-> so different than developing a new api, which (I think) is not what Josef suggested.
-> 
-> > 
-> > Note that all the required properties are per-device, so really you just
-> > need any open FD on the filesystem.  (I think Josef didn't read that far
-> > down).
-> > 
-> > The per-device policy storage can go in dev_root (tree 4) along with the
-> > device stats data, if we don't want to use btrfs_device::type.  You'd still
-> > need an ioctl to get to it.
-> > 
-> > Or maybe I'm misreading Josef here, and his idea is to make the per-device
-> > configuration a string blob that can be set by putting an xattr on the
-> > root subvol?  I'm not sure that's better, but it'll work.
-> > 
-> > > Yes we can create a further
-> > > api to store/retrive this kind of metadata without mounting the root
-> > > subvolume, but doing so in what it would be different than adding a
-> > > key to the root fs like the default subvolume ioctl does ?
-> > 
-> > > > 
-> > > > Josef
-> > > 
-> > > 
-> > > -- 
-> > > gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> > > Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-> > > 
-> 
-> 
-> -- 
-> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
-
-(*) but don't do exactly that, it will seriously and dangerously confuse
-anything that thinks it owns /tmp.  Use some private directory under
-/var or /mnt where there is no possibility of some cron job waking up
-and deciding it needs to delete everything.
+On 1/21/21 10:24 PM, Naohiro Aota wrote:=0A=
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+>=0A=
+> Add bio_add_zone_append_page(), a wrapper around bio_add_hw_page() which=
+=0A=
+> is intended to be used by file systems that directly add pages to a bio=
+=0A=
+> instead of using bio_iov_iter_get_pages().=0A=
+>=0A=
+> Cc: Jens Axboe <axboe@kernel.dk>=0A=
+> Reviewed-by: Christoph Hellwig <hch@lst.de>=0A=
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>=0A=
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+Looks good.=0A=
+=0A=
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
