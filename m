@@ -2,86 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F28301531
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jan 2021 13:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8223301611
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jan 2021 15:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbhAWMaO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 23 Jan 2021 07:30:14 -0500
-Received: from mail.cobios.de ([193.142.191.78]:52394 "EHLO mail.cobios.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726702AbhAWMaM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Jan 2021 07:30:12 -0500
-X-Greylist: delayed 439 seconds by postgrey-1.27 at vger.kernel.org; Sat, 23 Jan 2021 07:30:11 EST
-Received: from cloud.cobios.de (unknown [192.168.78.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.cobios.de (Postfix) with ESMTPSA id D57FA666D4
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jan 2021 13:22:11 +0100 (CET)
-MIME-Version: 1.0
-Date:   Sat, 23 Jan 2021 12:22:11 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: RainLoop/1.14.0
-From:   alexino@cobios.de
-Message-ID: <50f51b01788af83b1bf542f2089a56fe@cobios.de>
-Subject: performance implications of btrfs filesystem sync vs btrfs
- subvolume snaphot
+        id S1725768AbhAWOtP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Jan 2021 09:49:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbhAWOtO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:49:14 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B36EC06174A
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jan 2021 06:48:34 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id j13so9934699edp.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jan 2021 06:48:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=fJ3GZaxPNZCJGnmOIYCR9Wk9fNV3MPQbOZ8vWrxLPp4=;
+        b=K0LObnpVWkkdSYxr5VrT/1oTEPgGE5DCBQdmchX05EH5y2Ic0ccNyqXCkH40TS7eY+
+         pjT8Jqg8frzaW0UudbGbEsL8aHrgKFdvGBYskoOEX05TJn5vbayQeR7Nz89OZgIDzbKQ
+         tkIXroaiPfnCd20fU8YvNu4l2I8AqKsPIDJ28W63haVVxnpi7wmW7QkbENy91GJOarDa
+         rma9LBku5qBHz9Vk/LXC1hLjlT9q54vZRWs38VlVAXcOx6MNfmxiboLCJbXuKLQn+eXR
+         lQCllEhHXCHL78O/XIkZ3M30Xu6Tp0peoSJZhtcSKcE2g53vM9rjCjlAWhUTYeqLfwOo
+         G4lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=fJ3GZaxPNZCJGnmOIYCR9Wk9fNV3MPQbOZ8vWrxLPp4=;
+        b=BHj+R9S1d4diaTatXWUhA/X4/gkIHq9ubnPCRVdZvdetS5krXFZa1JH9ES2r8FCRFc
+         VZ0gGdZwbCd6JGov7fBMBzt2A/yOeVkJGkk1WMzaP/LPNo02Fh1ttFkssam/8SSAV3KB
+         pbDmodDgvKdWibrIoFzHFflnc6L0FAL05fLuxcV5GjvpGsDRDQphGlEemqwAeWRumHIX
+         98nmE1RKULf9CBLIJpQRwAVh0SLwbR74aUsV4LwxupuVLYb6sYf1AgbNHOQSkcZ8WXW6
+         OQCsnzWqjZH70OzoXM6dQWU+9FYA3N+MlUjgvCko9+SkFO1+AvrwlCjd+EoeP//zTOD+
+         rh8Q==
+X-Gm-Message-State: AOAM533N6kf/jmBvRicj1ZLsXgEzQe9IOXrcyeoWhfh0n2LsezO9F7K5
+        43dJYGxWdF067sAynNitMWMLBLz7yqta
+X-Google-Smtp-Source: ABdhPJzHKUraDOfR8M+KCncKshH/N+S4lwdwI/1/wUob8Ee15/v0S8Yo7Mvn21fqIdwAh+5lSIfnHA==
+X-Received: by 2002:a50:fd12:: with SMTP id i18mr7206810eds.220.1611413312063;
+        Sat, 23 Jan 2021 06:48:32 -0800 (PST)
+Received: from ?IPv6:2a02:810d:413f:dea0:18de:8a50:20d7:c1dd? ([2a02:810d:413f:dea0:18de:8a50:20d7:c1dd])
+        by smtp.gmail.com with ESMTPSA id x17sm7112697edd.76.2021.01.23.06.48.30
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Jan 2021 06:48:31 -0800 (PST)
 To:     linux-btrfs@vger.kernel.org
+From:   =?UTF-8?Q?Jakob_Sch=c3=b6ttl?= <jschoett@gmail.com>
+Subject: Only one subvolume can be mounted after replace/balance
+Message-ID: <b693c33d-ed2e-3749-a8ac-b162e9523abb@gmail.com>
+Date:   Sat, 23 Jan 2021 15:48:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello everybody :)
+Hi,
 
-first time participant on linux-btrfs@vger.kernel.org mailinglist, 
-hence please excuse (yet tell me about) any problems. thank you.
+In short:
+When mounting a second subvolume from a pool, I get this error:
+"mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda, 
+missing code page or helper program, or other."
+dmesg | grep BTRFS only shows this error:
+info (device sda): disk space caching is enabled
+error (device sda): Remounting read-write after error is not allowed
 
-My question/topic is:
-Wanting to generate backups of a btrfs filesystems on a running system
-it seems that using `btrfs subvolume snapshot` would be a possible way
-to make certain that data kept in RAM (i.e. buffer/cache) would be 
-synced to the disk.  
+What happened:
 
-Reading this mailing list I stumpled upon this:
+In my RAID1 pool with two disk, I successfully replaced one disk with
 
->> Subject:    Re: freezes during snapshot creation/deletion -- to be expected? (Was: Re: btrfs based backup?)
->> From:       Zygo Blaxell <ce3g8jdj () umail ! furryterror ! org>
->>
->> [..]
->>
->> Snapshot create has unbounded running time on 5.0 kernels.  The creation
->> process has to flush dirty buffers to the filesystem to get a clean
->> snapshot state.  Any process that is writing data while the flush is
->> running gets its data included in the snapshot flush, so in the worst
->> possible case, the snapshot flush never ends (unless you run out of disk
->> space, or whatever was writing new data stops, whichever comes first).
->> [..]
+btrfs replace start 2 /dev/sdx
 
-Now I wonder that if `btrfs filesystem sync` would be a viable alternative 
-to `btrfs subvolume snapshot`, with respect of not having to risk a 
-"snapshot flush never ends" situation? 
+After that, I mounted the pool and did
 
-My layman perception is that.
+btrfs fi show /mnt
 
-1) "btrfs on-disk-persistet data is ideally alway non-corrupted". Since
-changes are commited via COW and hence in a atomic fashion, meaning that
-at worst data on disk is outdated, but never corrupt. (unless hardware or 
-blockdevice issues )
+which showed WARNINGs about
+"filesystems with multiple block group profiles detected"
+(don't remember exactly)
 
-2) btrfs filesystem sync or sync(1) should flush data out from memory
-to disk - which would once finished - lead to a "more recent" consistent
-data on disk. 
+I thought it is a good idea to do
 
-3) btrfs subvolume snapshot implies a sync
+btrfs balance start /mnt
 
-Are those perceptions roughly correct?
+which finished without errors.
 
-If so I am unsure if the issue with a "neverending flush" is related to
-the btrfs filesystem sync and consequently relying on btrfs filesystem 
-sync as alternative to btrfs snapshot to prevent "a neverending flush"
-is not a possibility. 
+Now, I can only mount one (sub)volume of the pool at a time. Others can 
+only be mounted read-only. See error messages at top of this mail.
 
-Tahnk yo and best regards,
+Do you have any idea what happened or how to fix it?
 
-Alexander Mahr
+I already tried rescue zero-log and super-recovery which was successful 
+but didn't help.
+
+Regards, Jakob
