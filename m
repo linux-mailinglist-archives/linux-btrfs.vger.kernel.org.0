@@ -2,209 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36677301795
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jan 2021 19:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C1F3017FE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Jan 2021 20:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbhAWSXS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Jan 2021 13:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbhAWSXP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Jan 2021 13:23:15 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AE9C061788
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jan 2021 10:22:32 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id s15so5120895plr.9
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Jan 2021 10:22:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Om8lBnTeC8/y59N0vdmo+IqmU216IV5ocYAsBqf2YOw=;
-        b=mY0id1iWYZ3tQP4kJz1DOCYcOfFgzQPtJKmBljhuMT2RsPVeEjmS3FspRxfLa1kS0p
-         /Ih7rfNmBSC3D2nBzKmEkpZFyOlzrOtrSLbeZnl3iAp4I2jqWpx1DH1f4WSNQ/W67NdG
-         F8J1qBUdUTaVjyttcEGawEjpIZr6LQZ7MyXbV4yMUHiSkMZbfp6MeXWytOvjP8VRW+MB
-         IaibktyFls7IO6qF9tydGJ3EsXyc3NrXtMNhHib1ePR3j6tzN7DcHJ4bEDyh41KeV/iy
-         Jf3zNqVAeB13aTZ4Xu7vE+9PtlAJ064MXpW+LIBGOUTOlh35sScxDEcXQeYWm+hdVJMc
-         Wuww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Om8lBnTeC8/y59N0vdmo+IqmU216IV5ocYAsBqf2YOw=;
-        b=nif58htzQ0GB71U08rpIEMvsDwodUzy1Cjsyqz9kby2iqaxebAsRAQ0s+bITzDYPa1
-         1lNHjkVFETjWOOEJo+tsy//WCHXevLXFHUoHiG2b77aCGGgVMEEMvaCvHHaUBsuBS56L
-         KCVvHSG5WVZEbdNSWX7oiiHdT6g5UHJzBwJfs5mV0YZBQrQkiBI7xTl9Vdi3UglcvbHL
-         Clz9EZGhXho1MJf/mYPP4iXW6+VOoO1GU7g7E1fhxkwdf4l4+sfrr1iMaJkpaAZ09shZ
-         HENNhR+VwRPSXCagRdRJ7v5Z4hDIvuj8eW7lJI6SPmq11EvSdF4Li6P6RUrfjP7uudVI
-         0EHg==
-X-Gm-Message-State: AOAM530KFaYNiYYikKq+3gsULiUpKz/JZ9gGjJrbDm0SXUTGQAZ4kTp6
-        i/46MVvOOIAAtsk1Wt3fl2IdsIv4WYuP0g==
-X-Google-Smtp-Source: ABdhPJxxQqYh+q9DyqJ90Eb00WPmVpcYv+/3ChKV1cwG81HHwntzkxGk1KNdiR2dA1n351A8raHfvw==
-X-Received: by 2002:a17:902:b986:b029:df:e5d6:cd71 with SMTP id i6-20020a170902b986b02900dfe5d6cd71mr2306377pls.42.1611426151621;
-        Sat, 23 Jan 2021 10:22:31 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id g17sm12360210pfk.184.2021.01.23.10.22.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Jan 2021 10:22:31 -0800 (PST)
-Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
-To:     Lennert Buytenhek <buytenh@wantstofly.org>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20210123114152.GA120281@wantstofly.org>
- <b5b978ee-1a56-ead7-43bc-83ae2398b160@kernel.dk>
- <20210123181636.GA121842@wantstofly.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fe842ed5-bcef-b40b-f06e-4a33abf16160@kernel.dk>
-Date:   Sat, 23 Jan 2021 11:22:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726310AbhAWTPh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Jan 2021 14:15:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52506 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726198AbhAWTPd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 23 Jan 2021 14:15:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 85868AD18;
+        Sat, 23 Jan 2021 19:14:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CFDE3DA823; Sat, 23 Jan 2021 20:13:04 +0100 (CET)
+Date:   Sat, 23 Jan 2021 20:13:04 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 01/18] btrfs: update locked page dirty/writeback/error
+ bits in __process_pages_contig()
+Message-ID: <20210123191304.GA1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20210116071533.105780-1-wqu@suse.com>
+ <20210116071533.105780-2-wqu@suse.com>
+ <b0360753-072a-f5c5-3ea6-08e9db2445dd@toxicpanda.com>
+ <c4bd841c-6657-5a72-85ac-fc8359c87a74@gmx.com>
+ <bab806e1-ad3d-b34c-b623-915b39621983@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210123181636.GA121842@wantstofly.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bab806e1-ad3d-b34c-b623-915b39621983@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/23/21 11:16 AM, Lennert Buytenhek wrote:
-> On Sat, Jan 23, 2021 at 10:37:25AM -0700, Jens Axboe wrote:
-> 
->>> IORING_OP_GETDENTS64 behaves like getdents64(2) and takes the same
->>> arguments.
->>>
->>> Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
->>> ---
->>> This seems to work OK, but I'd appreciate a review from someone more
->>> familiar with io_uring internals than I am, as I'm not entirely sure
->>> I did everything quite right.
->>>
->>> A dumb test program for IORING_OP_GETDENTS64 is available here:
->>>
->>> 	https://krautbox.wantstofly.org/~buytenh/uringfind.c
->>>
->>> This does more or less what find(1) does: it scans recursively through
->>> a directory tree and prints the names of all directories and files it
->>> encounters along the way -- but then using io_uring.  (The uring version
->>> prints the names of encountered files and directories in an order that's
->>> determined by SQE completion order, which is somewhat nondeterministic
->>> and likely to differ between runs.)
->>>
->>> On a directory tree with 14-odd million files in it that's on a
->>> six-drive (spinning disk) btrfs raid, find(1) takes:
->>>
->>> 	# echo 3 > /proc/sys/vm/drop_caches 
->>> 	# time find /mnt/repo > /dev/null
->>>
->>> 	real    24m7.815s
->>> 	user    0m15.015s
->>> 	sys     0m48.340s
->>> 	#
->>>
->>> And the io_uring version takes:
->>>
->>> 	# echo 3 > /proc/sys/vm/drop_caches 
->>> 	# time ./uringfind /mnt/repo > /dev/null
->>>
->>> 	real    10m29.064s
->>> 	user    0m4.347s
->>> 	sys     0m1.677s
->>> 	#
->>>
->>> These timings are repeatable and consistent to within a few seconds.
->>>
->>> (btrfs seems to be sending most metadata reads to the same drive in the
->>> array during this test, even though this filesystem is using the raid1c4
->>> profile for metadata, so I suspect that more drive-level parallelism can
->>> be extracted with some btrfs tweaks.)
->>>
->>> The fully cached case also shows some speedup for the io_uring version:
->>>
->>> 	# time find /mnt/repo > /dev/null
->>>
->>> 	real    0m5.223s
->>> 	user    0m1.926s
->>> 	sys     0m3.268s
->>> 	#
->>>
->>> vs:
->>>
->>> 	# time ./uringfind /mnt/repo > /dev/null
->>>
->>> 	real    0m3.604s
->>> 	user    0m2.417s
->>> 	sys     0m0.793s
->>> 	#
->>>
->>> That said, the point of this patch isn't primarily to enable
->>> lightning-fast find(1) or du(1), but more to complete the set of
->>> filesystem I/O primitives available via io_uring, so that applications
->>> can do all of their filesystem I/O using the same mechanism, without
->>> having to manually punt some of their work out to worker threads -- and
->>> indeed, an object storage backend server that I wrote a while ago can
->>> run with a pure io_uring based event loop with this patch.
->>
->> The results look nice for sure.
-> 
-> Thanks!  And thank you for having a look.
+On Thu, Jan 21, 2021 at 02:51:46PM +0800, Qu Wenruo wrote:
 > 
 > 
->> Once concern is that io_uring generally
->> guarantees that any state passed in is stable once submit is done. For
->> the below implementation, that doesn't hold as the linux_dirent64 isn't
->> used until later in the process. That means if you do:
->>
->> submit_getdents64(ring)
->> {
->> 	struct linux_dirent64 dent;
->> 	struct io_uring_sqe *sqe;
->>
->> 	sqe = io_uring_get_sqe(ring);
->> 	io_uring_prep_getdents64(sqe, ..., &dent);
->> 	io_uring_submit(ring);
->> }
->>
->> other_func(ring)
->> {
->> 	struct io_uring_cqe *cqe;
->>
->> 	submit_getdents64(ring);
->> 	io_uring_wait_cqe(ring, &cqe);
->> 	
->> }
->>
->> then the kernel side might get garbage by the time the sqe is actually
->> submitted. This is true because you don't use it inline, only from the
->> out-of-line async context. Usually this is solved by having the prep
->> side copy in the necessary state, eg see io_openat2_prep() for how we
->> make filename and open_how stable by copying them into kernel memory.
->> That ensures that if/when these operations need to go async and finish
->> out-of-line, the contents are stable and there's no requirement for the
->> application to keep them valid once submission is done.
->>
->> Not sure how best to solve that, since the vfs side relies heavily on
->> linux_dirent64 being a user pointer...
+> On 2021/1/21 下午2:32, Qu Wenruo wrote:
+> > 
+> > 
+> > On 2021/1/20 上午5:41, Josef Bacik wrote:
+> >> On 1/16/21 2:15 AM, Qu Wenruo wrote:
+> >>> When __process_pages_contig() get called for
+> >>> extent_clear_unlock_delalloc(), if we hit the locked page, only Private2
+> >>> bit is updated, but dirty/writeback/error bits are all skipped.
+> >>>
+> >>> There are several call sites call extent_clear_unlock_delalloc() with
+> >>> @locked_page and PAGE_CLEAR_DIRTY/PAGE_SET_WRITEBACK/PAGE_END_WRITEBACK
+> >>>
+> >>> - cow_file_range()
+> >>> - run_delalloc_nocow()
+> >>> - cow_file_range_async()
+> >>>    All for their error handling branches.
+> >>>
+> >>> For those call sites, since we skip the locked page for
+> >>> dirty/error/writeback bit update, the locked page will still have its
+> >>> dirty bit remaining.
+> >>>
+> >>> Thankfully, since all those call sites can only be hit with various
+> >>> serious errors, it's pretty hard to hit and shouldn't affect regular
+> >>> btrfs operations.
+> >>>
+> >>> But still, we shouldn't leave the locked_page with its
+> >>> dirty/error/writeback bits untouched.
+> >>>
+> >>> Fix this by only skipping lock/unlock page operations for locked_page.
+> >>>
+> >>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >>
+> >> Except this is handled by the callers.  We clear_page_dirty_for_io() the
+> >> page before calling btrfs_run_delalloc_range(), so we don't need the
+> >> PAGE_CLEAR_DIRTY, it's already cleared.  The SetPageError() is handled
+> >> in the error path for locked_page, as is the
+> >> set_writeback/end_writeback.  Now I don't think this patch causes
+> >> problems specifically, but the changelog is at least wrong, and I'd
+> >> rather we'd skip the handling of the locked_page here and leave it in
+> >> the proper error handling.  If you need to do this for some other reason
+> >> that I haven't gotten to yet then you need to make that clear in the
+> >> changelog, because as of right now I don't see why this is needed.  
+> >> Thanks,
+> > 
+> > This is mostly to co-operate with a later patch on
+> > __process_pages_contig(), where we need to make sure page locked by
+> > __process_pages_contig() is only unlocked by __process_pages_contig() too.
+> > 
+> > The exception is after cow_file_inline(), we call
+> > __process_pages_contig() on the locked page, making it to clear page
+> > writeback and unlock it.
 > 
-> No data is passed into the kernel on a getdents64(2) call via user
-> memory, i.e. getdents64(2) only ever writes into the supplied
-> linux_dirent64 user pointer, it never reads from it.  The only things
-> that we need to keep stable here are the linux_dirent64 pointer itself
-> and the 'count' argument and those are both passed in via the SQE, and
-> we READ_ONCE() them from the SQE in the prep function.  I think that's
-> probably the source of confusion here?
+> To be more clear, we call extent_clear_unlock_delalloc() with 
+> locked_page == NULL, to allow __process_pages_contig() to unlock the 
+> locked page (while the locked page isn't locked by 
+> __process_pages_contig()).
+> 
+> For subpage data, we need writers accounting for subpage, but that 
+> accounting only happens in __process_pages_contig(), thus we don't want 
+> pages without the accounting to be unlocked by __process_pages_contig().
+> 
+> I can do extra page unlock/clear_dirty/end_writeback just for that 
+> exception, but it would definitely needs more comments.
 
-Good point, in fact even if we did read from it as well, the fact that
-we write to it already means that it must be stable until completion
-on the application side anyway. So I guess there's no issue here!
-
-For the "real" patch, I'd split the vfs prep side into a separate one,
-and then have patch 2 be the io_uring side only. Then we'll need a
-test case that can be added to liburing as well (and necessary changes
-on the liburing side, like op code and prep helper).
-
--- 
-Jens Axboe
-
+This is patch 1 and other depend on the changed behaviour so if it's
+just updated changelog and comments, and Josef is ok with the result, I
+can take it but otherwise this could delay the series once the rest is
+reworked.
