@@ -2,129 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD44F301E84
-	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Jan 2021 20:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E277301E9B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 24 Jan 2021 21:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbhAXTsm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 24 Jan 2021 14:48:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbhAXTsk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 24 Jan 2021 14:48:40 -0500
-Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E72C061573
-        for <linux-btrfs@vger.kernel.org>; Sun, 24 Jan 2021 11:48:00 -0800 (PST)
-Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
-        (envelope-from <hrm@savella.carfax.org.uk>)
-        id 1l3lKs-0008G7-IB; Sun, 24 Jan 2021 19:46:10 +0000
-Date:   Sun, 24 Jan 2021 19:46:10 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     Jakob =?iso-8859-1?Q?Sch=F6ttl?= <jschoett@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Cannot resize filesystem: not enough free space
-Message-ID: <20210124194610.GG4090@savella.carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        Jakob =?iso-8859-1?Q?Sch=F6ttl?= <jschoett@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <8735yqw5wm.fsf@gmail.com>
- <20210124182828.GF4090@savella.carfax.org.uk>
- <87mtwyup3q.fsf@gmail.com>
+        id S1726164AbhAXUGG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 24 Jan 2021 15:06:06 -0500
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:41388 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726103AbhAXUGF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 24 Jan 2021 15:06:05 -0500
+Received: from venice.bhome ([94.37.172.193])
+        by smtp-33.iol.local with ESMTPA
+        id 3ldSlExHh11DD3ldSlnaBF; Sun, 24 Jan 2021 21:05:23 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1611518723; bh=N1LmADQ2vefsOHzsEDJqPVy95jZFYngDCgh3RsKHqhI=;
+        h=From;
+        b=jSzTWIKdjrtaWZKJzK7Nxldt/siy4yLwzM2VdweJVcFJOndpysR/MzxamKTPKz11V
+         KMO1yFSSZFyRDbdjvvTDetix0Wt7PPJYIksipxKw2FDuRArxMJUPEkTcxD/SlCYM5N
+         SfU5bN/ljBunXL0AKdf3Ftba2EzroDnVNXS/J9067Dtx9wgEZfCGfZSUsuTd93ppfs
+         0r+J5ELhuL2igzp0o4sRyBsTCD93cNFUxzf/a5aTOn5csaxJZBVdfFMPkj1AzLq1Bs
+         BTUOLPBmQAJyZCqtyOLVH0sUuKj/5/6+TKtcnw43cLeImCq+RptJ6b8A3Mj7GqCzPv
+         x7KRL9QLHXKIQ==
+X-CNFS-Analysis: v=2.4 cv=ba6u7MDB c=1 sm=1 tr=0 ts=600dd303 cx=a_exe
+ a=z1y4hvBwYU35dpVEhKc0WA==:117 a=z1y4hvBwYU35dpVEhKc0WA==:17
+ a=IkcTkHD0fZMA:10 a=5LBUgWogq-e1LdEdfLQA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [RFC][PATCH V5] btrfs: preferred_metadata: preferred device for
+ metadata
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+References: <20210117185435.36263-1-kreijack@libero.it>
+ <30cd0359-e649-dcc7-e373-4dd778fbf70b@toxicpanda.com>
+ <765cec4e-b989-081b-2ad7-e2d1c9cf7f55@libero.it>
+ <20210121185400.GH28049@hungrycats.org>
+ <89ee4ab9-64cd-b093-92d2-02eee4997250@inwind.it>
+ <20210122224253.GI28049@hungrycats.org>
+ <7b73eb0f-1b59-e6dd-5420-ef2d31a9fd62@cobb.uk.net>
+ <20210123172118.GJ28049@hungrycats.org>
+ <24522e9a-8cfb-73ab-2332-c7e0c6b9677c@cobb.uk.net>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <133c5436-ad39-2c92-d789-5be6529f81ba@inwind.it>
+Date:   Sun, 24 Jan 2021 21:05:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87mtwyup3q.fsf@gmail.com>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <24522e9a-8cfb-73ab-2332-c7e0c6b9677c@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMULX0YvHoUgrtzESuRdJ+vAMOORq5FINlLtRJjo/sLGCZB4sXKlAh9Yvfh9Uv+j2QrNJnsRC1t+6yLdx36eqnc1XTwRiM/F/yJfm3QcrljHWIomrxMj
+ DMUuLvDLLNOGzYJCQb6byliXNnxujHR/q8g4zqOfqiHfq/MFrzMIjjK0kIgchs4nokPkxnaFpTamsPs9bhZb+S7DhqvRWJgpZaaGef9FAHmTirxN8EuER8mV
+ n9j8KAFhpqxapX4gcnx/g46C3tXTJcTzuSTvmO/NRIRirlAJ6O0HaPk35xBTEBh+TDIpP9NDdmgRZqB+tpZEgw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 08:11:37PM +0100, Jakob Schöttl wrote:
+On 1/23/21 6:44 PM, Graham Cobb wrote:
+[...]
+> I gave a few very simple examples, but I can think of many more cases
+> where a disk may contain files which users might be able to access if
+> the disk was mounted (maybe the disk has subvols used by many different
+> systems but UIDs are not coordinated, or ...).  And, of course, if they
+> can open a FD during the brief time it is mounted, they can stop it
+> being unmounted again.
 > 
-> Hugo Mills <hugo@carfax.org.uk> writes:
-> 
-> > On Sun, Jan 24, 2021 at 07:23:21PM +0100, Jakob Schöttl wrote:
-> > > 
-> > > Help please, increasing the filesystem size doesn't work.
-> > > 
-> > > When mounting my btrfs filesystem, I had errors saying, "no space
-> > > left
-> > > on device". Now I managed to mount the filesystem with -o
-> > > skip_balance but:
-> > > 
-> > > # btrfs fi df /mnt
-> > > Data, RAID1: total=147.04GiB, used=147.02GiB
-> > > System, RAID1: total=8.00MiB, used=48.00KiB
-> > > Metadata, RAID1: total=1.00GiB, used=458.84MiB
-> > > GlobalReserve, single: total=181.53MiB, used=0.00B
-> > 
-> >    Can you show the output of "sudo btrfs fi show" as well?
-> > 
-> >    Hugo.
-> 
-> Thanks, Hugo, for the quick response.
-> 
-> # btrfs fi show /mnt/
-> Label: 'data'  uuid: fc991007-6ef3-4c2c-9ca7-b4d637fccafb
->        Total devices 2 FS bytes used 148.43GiB
->        devid    1 size 232.89GiB used 149.05GiB path /dev/sda
->        devid    2 size 149.05GiB used 149.05GiB path /dev/sdb
-> 
-> Oh, now I see! Resize only worked for one sda!
-> 
-> # btrfs fi resize 1:max /mnt/
-> # btrfs fi resize 2:max /mnt/
-> # btrfs fi show /mnt/
-> Label: 'data'  uuid: fc991007-6ef3-4c2c-9ca7-b4d637fccafb
->        Total devices 2 FS bytes used 150.05GiB
->        devid    1 size 232.89GiB used 151.05GiB path /dev/sda
->        devid    2 size 465.76GiB used 151.05GiB path /dev/sdb
-> 
-> Now it works. Thank you!
+> No. If I have chosen to mount just a subvol, it is because I don't want
+> to mount the whole disk.
 
-   Note that the new configuration is going to waste about 232 GiB of
-/dev/sdb, because you've got RAID-1, and there won't be spare space to
-mirror anything onto once /dev/sda fills up.
+I agree with Graham, if we have to mount the root subvolume, it means
+that the api is not so good.
+Moreover, as explained also by you, the xattr are "exposed" to the risk
+of be copied by a simple rsync -X (or cp --preserve=all ...)
 
-   You can add a third device of 232 GiB (250 GB) or more to the FS
-and that'll allow the use of the remaining space on /dev/sdb.
+BR
+G.Baroncelli
 
-   Hugo.
-
-> > > It is full and resize doesn't work although both block devices sda
-> > > and
-> > > sdb have more 250 GB and more nominal capacity (I don't have
-> > > partitions,
-> > > btrfs is directly on sda and sdb):
-> > > 
-> > > # fdisk -l /dev/sd{a,b}*
-> > > Disk /dev/sda: 232.89 GiB, 250059350016 bytes, 488397168 sectors
-> > > [...]
-> > > Disk /dev/sdb: 465.76 GiB, 500107862016 bytes, 976773168 sectors
-> > > [...]
-> > > 
-> > > I tried:
-> > > 
-> > > # btrfs fi resize 230G /mnt
-> > > runs without errors but has no effect
-> > > 
-> > > # btrfs fi resize max /mnt
-> > > runs without errors but has no effect
-> > > 
-> > > # btrfs fi resize +1G /mnt
-> > > ERROR: unable to resize '/mnt': no enough free space
-> > > 
-> > > Any ideas? Thank you!
-> 
-> 
 
 -- 
-Hugo Mills             | Have found Lost City of Atlantis. High Priest is
-hugo@... carfax.org.uk | winning at quoits.
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |                                       Terry Pratchett
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
