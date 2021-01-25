@@ -2,192 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE5330311F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 02:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB71E30329C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 04:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732051AbhAYX6i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jan 2021 18:58:38 -0500
-Received: from mail-eopbgr80055.outbound.protection.outlook.com ([40.107.8.55]:23525
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732081AbhAYTnz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:43:55 -0500
+        id S1726444AbhAYJWy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jan 2021 04:22:54 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:13642 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbhAYJU0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:20:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611566425; x=1643102425;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=uRJcKx81fJuavLhsSBHghPySJYEvX4LQ0TuErL4NTzg=;
+  b=j1kv9h2FsBZPzelQ8Fxd1W/rKRJTxc83WxnnOGywSDrWNs/z55Y2P6MW
+   41EBgVRtzqZU2PB5nH14VH00YDLDsh2OR2wIGDfMV7Yzza0eq2fOvp9ue
+   g+sipQbzaVKrUmT46JwnZkuD9dLoUkYosVyNWL2DUWzsBEukcHXdkcAlV
+   BdD+m95kS4sfi6n5Jkta9y7WrWUfanPEPUX0epHHTGnq01gLGgTLNHFQC
+   9aNnnlsDh0sTFHSosl7IZ6RIQXTNkngKL3hPkiPwu9xdos/G5b9pJwLIa
+   fySnIOsO4lTgKKF+1x0Ri+xSyfCa2fFZxNfTsfDb5KPsf0T0OMjKv+zAs
+   A==;
+IronPort-SDR: zhn/mhSkpL7qGuxXhJ0xtJ/7i0RFoPqjKlWHjuDvOhkne/PATRNvBTohdDh9HZKHcvbSJWFH1B
+ 511DuWAizbYNJj7b3r9gF8xcFB/2si7S5dnofIYATUc6Bs74EZpiuKwQC7H6wX+Z1ZygZgMWKR
+ i81AaZSZVCTckeE4vcj+AGw0YV6BD/A1SQgJ6pKe4iFpkOPspCsToWcPm+NL+JiyXtR9AzJe6Q
+ EgkLfWeMqA8x1AqTbXIYwfA5MB8UgxBHKpQtLGvVpACfcaKKnB9zFzDWztKz0dcW/c3BgvHthP
+ F88=
+X-IronPort-AV: E=Sophos;i="5.79,373,1602518400"; 
+   d="scan'208";a="268597579"
+Received: from mail-co1nam11lp2176.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.176])
+  by ob1.hgst.iphmx.com with ESMTP; 25 Jan 2021 16:56:30 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YHQU/Y8KNMknxF/iw1RoLN9V0hUo3YP/rbnZN0bYZFXmwgh18P5HEB/FtRFpNtWzyhy66he8AWfKQoTAbcVEGxFsjXzEK0N5CBCDuznmDSVMLe0cEcWDSoYVtBLRhANOBW/3mw4cqj57Mx9VNEUIXqo/soNzhfIXQuAPOmImy+h97spitrrI78O4Vggs9TbaD2r5Mnywiw/ulmNMIpAdvgaazeJhXjaD3E+V5mzPI7kk2oJ+8FwAVWHvUq3x5oYPSgaxnTakZtuqTbnkAIeLIHdivgwvmxfGBdz91wpqp56bOHREcwz4/3iRiJf1BQgARgcI21FAXW2ayxZmwKD5KA==
+ b=EkNrUvmHLpj25Nxiix1MMviSb9jIMUd2aNMywLwfPwR5N53DUFUOpTSCZ/1q2HNNBUFDegQLjD1IgiH8UIf5IwlXmR3N/OjYswNIEaYwH7ua7G44KXrAzW3IM8d/hynGh6KY2MhtkChlL+pTXvzoXvf8X9idBe1GjKzpH6Gwa6qZx6C2rFFDdW8RWgGMoVw46bnjwQuP4cDSXTIOXK10UwR52d+51nZ0p/uLFG9kcLyBxGfDaoW+/tNl/JjalM1/XiSAZdp/7sgA3tVWUXzn0QbaX0+a+TLmExGBFl3Ti/wdBMDGqDe/qokvE8epFMtoHq9T1MUkO2BH7qJIpiGhhg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BR22kljIC6t7FuEDHJVejagCLDpNch30HZDv0D+oCaI=;
- b=mbN0kRsyCWIszuFTzMA+UmUIZtH4xQwaLqguB1C5F+7xjeorx+uOD0pK5EHkRuLfpPmUMb3Mrph1lGqVO0BytAqYWFUn+XxdjLj7REnMwG+6qBBtf3y8aGbwrBgq+p0r38gta3lQRSAZ7kC/w5II7/Ldh/r6Ko2eTYAESqT16sIBYOixxXN0cqEPCXVHZV/IywtsWy5BbxPuqJvZG+obVcurQnu4h4i3SOVKPpOA0283aIs8epIol+4OwErQ4Iv4prXKQsHMi6OeWiBsfEsoOAyYuqHGA3Z6psr0OBueimV1e+NXrOK/SWEgPS5kbGiLJQWVq03sEOUMiVVdJGVBUg==
+ bh=neMrZQ7UBSOSCTdytXEuUu6lfwZ+qXQU3ja01lwBj30=;
+ b=EhUibeE4L39NAGgZ0xC5zjXf3LK4qe07kpCgVvMb+w1MXq2PU7ppU/NQAis8Vx6LyY2sKhya/7H9DRkEEDNIUe93nCEddRuy2GB98MhBy4Vj7nMMwDkxpeliXaoy5ipWAP4WH19cSz3HY7fBo5VtJw1C69qvcwfwBjGQoz5zzjs3Q4D9zng7r+8CGNFsTt2EZGxPc5IQOnxesVoJW6L/pT2W9CogFT9PaF4wDFIWNeIOEgINm5A9Tf69f6EVI8hMMsWePmUoMa5MWXPwF73LK2bPsk3kzm/sY+mCPlaG5jSyNcSEPsDtjF3hc1PlLg4nd848WhQ4MmshHDCNLfShnA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bdsu.de; dmarc=pass action=none header.from=bdsu.de; dkim=pass
- header.d=bdsu.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bdsu.de; s=selector2;
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BR22kljIC6t7FuEDHJVejagCLDpNch30HZDv0D+oCaI=;
- b=D2d8nXI9O7dGe3U0T851CN5al9mjW2odsfZxuMMbzz1zEuElvWOjqjz9KzKBBvqCSg+tWT7lqTVFMUUv++/AxiY6URS1L3AlI8C0BAVI3pFP/Pu+rosyzmlcto1FHJ+UogcMsy0Laa7p7UBSsFF44vhJEqla1KQqCJbYyA2Tvuwa9d4f1Mt1kjDw7pGMbHYvBui5nrUGbvJnpTTwQ4YJ7YLNpv+r7COD+1zSF/ul5E/wXh1Eya1OKyUEWkq/rlbf/aY9TLnM/DN8mQ5cqtoUhHYWYnKBek4jdxOLjy39DS0pqWtC799QZbbYkJQvEJZ00IFVznDkU1b4qRV7ipRQBw==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=bdsu.de;
-Received: from DB7PR03MB4297.eurprd03.prod.outlook.com (2603:10a6:10:17::30)
- by DB8PR03MB5962.eurprd03.prod.outlook.com (2603:10a6:10:e9::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
- 2021 19:42:12 +0000
-Received: from DB7PR03MB4297.eurprd03.prod.outlook.com
- ([fe80::b53d:bd77:c4ae:93d]) by DB7PR03MB4297.eurprd03.prod.outlook.com
- ([fe80::b53d:bd77:c4ae:93d%6]) with mapi id 15.20.3784.016; Mon, 25 Jan 2021
- 19:42:12 +0000
-From:   Roman Anasal <roman.anasal@bdsu.de>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Roman Anasal <roman.anasal@bdsu.de>
-Subject: [PATCH v2 4/4] btrfs: send: fix invalid commands for inodes in disconnected roots
-Date:   Mon, 25 Jan 2021 20:42:10 +0100
-Message-Id: <20210125194210.24071-5-roman.anasal@bdsu.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210125194210.24071-1-roman.anasal@bdsu.de>
-References: <20210125194210.24071-1-roman.anasal@bdsu.de>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2001:a61:3aef:4c01:503:a276:cbe0:8dc0]
-X-ClientProxiedBy: AM0PR05CA0081.eurprd05.prod.outlook.com
- (2603:10a6:208:136::21) To DB7PR03MB4297.eurprd03.prod.outlook.com
- (2603:10a6:10:17::30)
+ bh=neMrZQ7UBSOSCTdytXEuUu6lfwZ+qXQU3ja01lwBj30=;
+ b=GcPtPRqNyY7h65/Il5bcvHFokJdmoqVaquXUYRpOdbOcTODmlCiJPmItt6blpRZvb0vkdoU/GgfQQnloplnNVw/FQJcE6ApPiQkVglTTn6jnKLC70uriCV+h0QbrTw05ElQtDidsF3eAeRT3dsvwKe3JtGR/HtXNUAAp1JronEQ=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.17; Mon, 25 Jan
+ 2021 08:56:30 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::c19b:805:20e0:6274]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::c19b:805:20e0:6274%6]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 08:56:29 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>
+CC:     "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v13 22/42] btrfs: split ordered extent when bio is sent
+Thread-Topic: [PATCH v13 22/42] btrfs: split ordered extent when bio is sent
+Thread-Index: AQHW8IfvPraG/TW9u0miP5VLw5sG9Q==
+Date:   Mon, 25 Jan 2021 08:56:29 +0000
+Message-ID: <SN4PR0401MB35989156A42BA764116B57B29BBD9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <cover.1611295439.git.naohiro.aota@wdc.com>
+ <25b86d9571b1af386f1711d0d0ae626ae6a86b35.1611295439.git.naohiro.aota@wdc.com>
+ <e265540c-9613-9473-f7e6-0f55d455b18e@toxicpanda.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: toxicpanda.com; dkim=none (message not signed)
+ header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2f1a20c4-1d86-4a90-5857-08d8c10f1b4e
+x-ms-traffictypediagnostic: SN4PR0401MB3598:
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN4PR0401MB35987308F2EE65A6298D7F3E9BBD9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2887;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AW3XVbdVwUaltiF/EBegrYYou30H7ZklcrDW+vOr75hkLIqLg67pk20mY0ujkWDdxbbIeRK0fELlJc8lD2TlAMVXY9m3KjpvGTXlsP0VXDcu5fnzks/E/J35hw6lLBXrHDILR3QjdVM0sNncZ37zpyd6KG4Wi3fsTg7hYD2yoNwVRrNZ5FaV2OW+DAZWakjh9dl+X1DDPGH6/ndfB1fkCbcMs7TxNJeiJDdUtodfQVXt8Ap70bKlGYFvXBK1iSif2B+D+acdDaiQIF+33sk2r3i+DbV+vN32ASWYr21gndqqGQ9nXDSN5w7E6DPhI68lGranAzV3ghlPhmtqTs7Fw+18dc4k9qg8hL4RSMME4p2uDiciBlQB/6K7L3owIeTh+ZD6EH+HTvA/QMNfV3b/8Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(346002)(136003)(396003)(9686003)(478600001)(83380400001)(91956017)(5660300002)(55016002)(110136005)(33656002)(66946007)(186003)(2906002)(66476007)(8676002)(26005)(53546011)(64756008)(66446008)(66556008)(6506007)(7696005)(4326008)(8936002)(86362001)(76116006)(52536014)(71200400001)(558084003)(316002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?SernjOzFRIJHdDNsrpUg9FdpM3zxyq2aIldlZGBWOrbbOXpB/HRARhc6Wy8N?=
+ =?us-ascii?Q?d9qxNpqoI1o5NW8iZ2iBFaivmRXeutqc5In50KJe43gBzs0yzhBfml2czaCF?=
+ =?us-ascii?Q?QqM9EoNiUobG1YRCV04NnoZmYVkiS8fBZ6tq/o+62D/nQI4InifX0cVMve55?=
+ =?us-ascii?Q?eyYikcQL79XmhuVSVi1n44bjirYmEaKWV7hclX6VKvauEv9UcaI+iMIpP2VD?=
+ =?us-ascii?Q?Ya0yX9iwCfnPQ4rMrW08G5dOgfIDLAsBgJn9Sh5eo2sru4QxT5OIO6431g/h?=
+ =?us-ascii?Q?4H53urvBDw8s+E05qBSPrGlQIqEk6XPRENSaCYujYr1n3f9vwKty6079MWS7?=
+ =?us-ascii?Q?W+n9W2e4K9TauC+ShUOsNPTrG8e7tUOMHMC3ep6B7JES+SEhajelTqaPSvq3?=
+ =?us-ascii?Q?A3kwyd4sK1RUJAhOhgh12AM2ghHUdzHOttJ0R+QPwdUFio7LineEEZfWLB4a?=
+ =?us-ascii?Q?2K0GPa/KYD8sWdbDyOXt5fEB+I5kReZjVNtyKxBIJRusqwUfjpwxEj9KzY9T?=
+ =?us-ascii?Q?2w4NvlsrCeqLdpwL3kpXgloplXoPJVROg3vbGkKD+hWfdvDTnb5ygLr1pFWA?=
+ =?us-ascii?Q?CPTFMe+lW0h4Zh9zqdIQ8gxor/7vztYl3QWpuqrz4h1Pgxf6kRY25G0p21j4?=
+ =?us-ascii?Q?FPhgRJakn9HMv6mVFbkUUo4UFne3KLfr3QUHzj+G9WS9d05k8GoEBuRS5NbP?=
+ =?us-ascii?Q?8D36tMcotzD9sJzw5XIyszmZsE/YqhFBpa3V1d7dVxXGLz8p2FJlrhOAFkye?=
+ =?us-ascii?Q?yFOVfwzBSgth8yeJkEk+VNGLxER0xKBezueM/xAjcZEFvS21Sp8JZtN+MX6c?=
+ =?us-ascii?Q?NVtJ9ReOIm+4U8A9AbFMZoIujpK3tgwx71g6o5QWpPUdQUPZzMR5GkdfR1Su?=
+ =?us-ascii?Q?7XIGXi7KQwA7JdTbZ6aZXkyBOfafCSWGplfBeOMY67HW3xGdDSGdPPEf7sX3?=
+ =?us-ascii?Q?4ON5UiFs62ig0ZrV6VQL4PasIjfQEBTbOjwq3seaIR9GnJJvHCybi4wuUcm1?=
+ =?us-ascii?Q?I0OK?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nebukadnezar.fritz.box (2001:a61:3aef:4c01:503:a276:cbe0:8dc0) by AM0PR05CA0081.eurprd05.prod.outlook.com (2603:10a6:208:136::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Mon, 25 Jan 2021 19:42:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c2c18c6e-8702-4cca-688f-08d8c1694f96
-X-MS-TrafficTypeDiagnostic: DB8PR03MB5962:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR03MB5962736BAB19218D28BBFA5D94BD0@DB8PR03MB5962.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oqBkIqG8MU1l2wpUQyv62TZqFCxMhz/Rpb0Quprgnwut1rLUmYoXYAho2HqYF0Qn8TRy5SseRB8cTAJ6AI5X35fvFMtSW56lt50hFw6XwZSLdLr5/xmqBIc9dTiznleiidurEctgFoNy646wEyT0/MoyA1hsJAUArpLL4C1Y+kbGRtdn4qcxg6uH9Xkiyr7F2OV77hJAFNvqMi/1aM8N4f4iizoAQ8kJ9tVRa2tn5WIxiFo2BpnJhEFGeAlOd/h2YT2A6XsPDOVReZ0gKb80L6HDNnppPN9qoCyi25bLy35Jtv0KlsdBcJox6GxTol1fpETsuY19xWpinRPd8Oc2i6J9fm4Np4HD74siX/S+n76bc2Up/XZFkNil6evhx2n9g6/x+EcRkmi7QxVRtwQ0VxYSBFcdooAhLTO2uR7Jf1zN2lCYM/kc1Tni0KUc+ldT8SvjwruR09z1monquyw84Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4297.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(39830400003)(396003)(346002)(86362001)(8936002)(2616005)(5660300002)(8676002)(107886003)(66476007)(66946007)(66556008)(83380400001)(52116002)(36756003)(44832011)(1076003)(966005)(16526019)(478600001)(6506007)(2906002)(786003)(316002)(4326008)(6916009)(186003)(6486002)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?G+bQNkv4JbH1uzkUWN1uVevLb4WSo63OY2F2dIK7Zj2d/aRQbIQxv8g3tumD?=
- =?us-ascii?Q?YJUPbBPuDCB/4KODdPmvr4WWTFZgunwdfQEYwf9jVPOVWq7kuJ+v693yo1eM?=
- =?us-ascii?Q?Zmg9ZHS9eBaSGHqhcgebjI6Qj9bhPT2OxGA4EIpJ1eE2sLpMuFNuxZp1/8V1?=
- =?us-ascii?Q?/52hml28SlGzdMGK2aN/UNRCU96OOisiOLr+a9m4mQyOJMCA1c9+AP3jGKWl?=
- =?us-ascii?Q?lW9F3k8sScafsYZ/XwdBNuS4WwvVYRFlv9bWLGJTz5pEwbPOkhfj0sK0epe2?=
- =?us-ascii?Q?Y9W4fnEiXLPe5iat5jzaoxPDKfSchsi9iAvWO5+FbgMi/vv38Kk/MDVqIxtM?=
- =?us-ascii?Q?dTCtqfSc3t0Q1qqULzCOUfYb9PMRQpoAb2wNXjjOyicSx5uaUefQ79/dlZ/e?=
- =?us-ascii?Q?NvgsIWuRJ1oosarVgJLBdLera75Fjr8cy0qmjDyq+aCl5/AdWQ5oh+biYN8r?=
- =?us-ascii?Q?V5K5SFnZ06HsJxKv98S/lnB/z7QWuMY4EuF7OP8pt74xNsgGfKpVK8kuk9K0?=
- =?us-ascii?Q?8AUOz+9q2PNzRecP3ujI0OuPontoTH2NvqtpjOf/+IgRCvM4VQDNixy2eAKU?=
- =?us-ascii?Q?4onvrOXqU18IjkxBAP4jl4GSGvZ6BE+1S2vFLAz1yxFuo+Qn8+ugtv/dvK7f?=
- =?us-ascii?Q?VOF4wvUrsQwWFea7OGhPQfW1YwWQvM/4QSOrSg1ESfLZbn8YFkAViqYAaxwO?=
- =?us-ascii?Q?b/fUjlAc6VGKZeFCID2rlaroY7JDDF/3IYcsmLEBX04l9omOXTeWxkLKX2Ap?=
- =?us-ascii?Q?VRp6q5bWUjTlNy14m3mz4a81PyCf1yDiByc3OVMNSMPdQ3YdU26yPXei77Lm?=
- =?us-ascii?Q?wJJkirLPyynCXqeAwZlXQE4ocbfL/4eJgAUjheEEwjH0DND6MHypP7hP6ob4?=
- =?us-ascii?Q?1QDfIFqC37okA4W6ScXpcYlt1C59WDeHwS5+xU2R0sUkFBFOh5JSo0nloRfh?=
- =?us-ascii?Q?yXdKUOtrJPukhGgI8fKYQXq1bbABlY0OJlJcHi9RiMFhmmzd7GAfaRG2D8b2?=
- =?us-ascii?Q?jjue3JZ328X5J1Eqlf4DWp4645LyUarAPOiU+s64DiOlCSlbZOJI0mv87dVM?=
- =?us-ascii?Q?Sl+00pfR/yu1t5BTvi7NqKhPKUFskyaNIaEHrzaSSdgHQKclIsiCeC3TqOEY?=
- =?us-ascii?Q?3EpI3VJzn5/i?=
-X-OriginatorOrg: bdsu.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2c18c6e-8702-4cca-688f-08d8c1694f96
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4297.eurprd03.prod.outlook.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 19:42:12.5178
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f1a20c4-1d86-4a90-5857-08d8c10f1b4e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 08:56:29.9105
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c0670a1-eeed-4da2-a08a-128fe03f692a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JYttLQ6CXTLex38Kv39LqXHQKo0vSq+j5Lgd+vTI2wKjjE76vq+5pekwNSWK44zUoV8Tt0mrvtz3SfX5ytYR1A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR03MB5962
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: u83sSkE0zNQ516IbDopKU7cpQGcPf7LMzHk/uXBicnjGhUGUYOpQwBJ2iiT972wGnGNKgoancTcb5B28v4gic9DF3MKgoXY9yOyJeoa7HNo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3598
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When doing an inceremental send using an independently created subvolume
-as the send parent compare_refs will falsely report changed refs for
-inodes with the same inode number, same generation and same ref name.
-
-This is due to dir_changed returning true if the generations of the
-parent directory differ in the subvolume and the send parent. Normally
-this situation would cause the parent directory to be recreated and the
-contained inodes would need to be moved (e.g. by link/unlink).
-
-In the case of the root directory (ino BTRFS_FIRST_FREE_OBJECTID) though
-changed_inode will not try to recreated it since this would produce a
-stream trying to remove and recreate the subvolume itself.
-For independently created subvolumes the generation will always be
-different since create_subvol() commits the transaction after createing
-a new subvolume.
-By handling this case in dir_changed as well the produced commands are
-correct again.
-
-Summarizing the conditions for this:
-- inode has same number, type/rdev, ref and generation in subvolume and
-  send parent
-- ref is a child of the subvolume root directory
-- root directory has the same inode number - which is always
-  BTRFS_FIRST_FREE_OBJECTID
-- root directory has different generation in subvolume and send parent
-  which is always true for independent subvolumes, i.e. if they're not
-  snapshots (of snapshots) of one another
-
-Example reproducer:
-  btrfs subvolume create subvol1
-  btrfs subvolume create subvol2
-  touch subvol1/a subvol2/a
-  btrfs property set subvol1 ro true
-  btrfs property set subvol2 ro true
-  btrfs send -p subvol1 subvol2 | btrfs receive --dump
-
-The produced tree state here is (starting at gen 6):
-  |-- subvol1       (ino 256, gen 6)
-  |   `-- a         (ino 257, gen 8)
-  |
-  `-- subvol2       (ino 256, gen 7)
-      `-- a         (ino 257, gen 8)
-
-subvol1/a and subvol2/a are files with the same inode number, generation
-and path name. The subvolume root directories have the same inode number
-but different generations.
-
-Example output of the receive command:
-  At subvol subvol2
-  snapshot        ./subvol2                       uuid=e783948d-4fd5-0d47-9777-43036e468170 transid=8 parent_uuid=7b0cefdb-738d-e342-a903-501df1877b01 parent_transid=8
-  utimes          ./subvol2/                      atime=2021-01-25T18:07:42+0000 mtime=2021-01-25T18:07:42+0000 ctime=2021-01-25T18:07:42+0000
-  link            ./subvol2/a                     dest=a
-  unlink          ./subvol2/a
-  utimes          ./subvol2/                      atime=2021-01-25T18:07:42+0000 mtime=2021-01-25T18:07:42+0000 ctime=2021-01-25T18:07:42+0000
-  utimes          ./subvol2/a                     atime=2021-01-25T18:07:42+0000 mtime=2021-01-25T18:07:42+0000 ctime=2021-01-25T18:07:42+0000
-
-=> the `link` command causes the receiver to fail with:
-   ERROR: link a -> a failed: File exists
-
-Signed-off-by: Roman Anasal <roman.anasal@bdsu.de>
----
-v2:
-  - add this patch based on feedback in
-    https://lore.kernel.org/linux-btrfs/9e177865-0408-c321-951e-ce0f3ff33389@gmail.com/
----
- fs/btrfs/send.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index ef544525f..3114770be 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -6543,6 +6543,15 @@ static int dir_changed(struct send_ctx *sctx, u64 dir)
- 	u64 orig_gen, new_gen;
- 	int ret;
- 
-+	/*
-+	 * Treat the root dir case special here: changed_inode will never
-+	 * produce a stream that tries to delete/rmdir/rename the root dir.
-+	 * So we must assume the root always as unchanged here to not produce
-+	 * incorrect link/rename commands for contained refs.
-+	 */
-+	if (dir == BTRFS_FIRST_FREE_OBJECTID)
-+		return 0;
-+
- 	ret = get_inode_info(sctx->send_root, dir, NULL, &new_gen, NULL, NULL,
- 			     NULL, NULL);
- 	if (ret)
--- 
-2.26.2
-
+On 22/01/2021 16:24, Josef Bacik wrote:=0A=
+>> +	/* We cannot split a waited ordered extent */=0A=
+>> +	if (WARN_ON_ONCE(wq_has_sleeper(&ordered->wait))) {=0A=
+>> +		ret =3D -EINVAL;=0A=
+>> +		goto out;=0A=
+>> +	}=0A=
+=0A=
+Oops that must be a leftover from debugging. Though we never hit that=0A=
+WARN().=0A=
