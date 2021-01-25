@@ -2,199 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94200302873
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 18:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A7C3028F8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 18:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbhAYRJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jan 2021 12:09:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44766 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728836AbhAYQ4Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:56:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37B01AD4E;
-        Mon, 25 Jan 2021 16:55:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 98CD6DA7D2; Mon, 25 Jan 2021 17:53:46 +0100 (CET)
-Date:   Mon, 25 Jan 2021 17:53:46 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Su Yue <l@damenly.su>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org, Erhard F <erhard_f@mailbox.org>,
-        dave@stgolabs.net
-Subject: Re: [PATCH] btrfs: fix lockdep warning due to seqcount_mutex_init()
- with wrong address
-Message-ID: <20210125165346.GM1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Su Yue <l@damenly.su>,
-        linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        Erhard F <erhard_f@mailbox.org>, dave@stgolabs.net
-References: <20210121113910.14681-1-l@damenly.su>
- <20210121170756.GE6430@twin.jikos.cz>
- <h7n9tvwl.fsf@damenly.su>
+        id S1730963AbhAYRcx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jan 2021 12:32:53 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:28318 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728765AbhAYRcc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:32:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611595951; x=1643131951;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=9Q4GfYulpIGixGAfnFrtKqVh/gTdxLMxdYgEUz3wIQE=;
+  b=CRkTUptTky1wAZEciyI5ssxC6E83Hl+iIujM3MSGSFqIiZga+GC3tXPy
+   v2p2OCjD5TLSmNdN3z/zIRkeX/3W9zj0sO1AhbxZb0qK/pFvYcHxCjf4i
+   AB1YZGhQsF7GAnb+zcPFH/A1f//Vk09RXebvZfeDTz3qGYC8MbsmCBO1V
+   4xT5ZUmsSpfTMHwe6KI6BRAc/23H14IAYQ67L6Qw9jLI7nxrAX+ZtmZpr
+   ZSkCcDqZvNMT12SLAbBepK7q1nGvsCnxV+X6uDQFTsL0DcT2lnMH+1QNz
+   0YA8gwz8ZZ8pGyg4y9xFlZ9oBgzyzbx1dxPMDKa5r65ZLfjKCGsfK9hfg
+   A==;
+IronPort-SDR: kxQILlYNOFXIryrMaDc8as9WY+4tQpEeUde4umlGt1e5hlPcOE/yUGYmBElW6jk1F5tkmn5lcB
+ bDTnvcQIsCMtfyUghriyOmKx+F+LoofmcpbT/brULad4/eu1Hio34xbytfRgpTKvF5Rf86kOQO
+ yw6OuDIePBfvXEDtjeS4bOPHRswJ0wGQBLfjLj6xqPyNrCOdowBxAJ+UzWYcyfBl5PdW596SvB
+ 7kFF7ch6O0r4k/4f0P+y5/GQdAlxAH4YPEe0ipimFC8IoF9jVE7Fi2IKgXxeesCWYzwTrJHzgg
+ hAA=
+X-IronPort-AV: E=Sophos;i="5.79,374,1602518400"; 
+   d="scan'208";a="162716528"
+Received: from mail-mw2nam12lp2046.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.46])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 01:31:22 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FDuHqOZiSgHPbiLkZKqbRpV8nh2AQ/2SuJ1HHyzExVzR1fscIoBsgoXHVQUTJkej6lKZnd2QdA3bjaRKtT6cYebDLeC5IpA/tFHBhqNB3cFnglb8pSho+yEbxE3Z20Wms94LfOIqeu7aTC+nBGsldGDNNxvpgFMkrEqLw+Oo5x02DsV332YbUvsu2/XaUcTPY+MtL/BX7NVP4mwJGR6frN9EXVv4xQg1QRoTs/WnkIT+JGyC+0KCP9Vk1uoXobHg2y/xG8U7kO9LynuHaIgi2p2I/ddc/Y8R3NsNfm7BQ8Mc+ni2Tey446lAU+k/hT24bmZxewerrfkiaDlnOQjVCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BuErFjTy0m7cEIyYOHAd0th3GI9OvUAVWCLf/pcEn3Y=;
+ b=HtMzzQ8vD+Xx04fjGn1r4mk5W/7f0Z9PhG4k52F0EBPdu/6yRl0QagbJ7NHtwK+jW4MYBh/+utM4lRGhooV1qUibSjue2vg5qjS2YAENBHdZnszbMlVsK9oXWgKB6ze5INNnkw3EObwL04gt89dfmDpJD2CDxPqpdehltJMKgG2f9txh8ADRyzApBVqg+fHlDPD/viFO9+G/ooLi+f9auJ6E2ybHfnNAfr4XMVQT283IKBhHukM090fmqG3dWaiJnGW98qO+vBn+C/TruUNJT0i4KSplHq3tgO1AkSiwyL3qiyNKRZ+4LfyBGK5xbgsylvdhgjeCnajWh68E1F5UcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BuErFjTy0m7cEIyYOHAd0th3GI9OvUAVWCLf/pcEn3Y=;
+ b=IYsK5iVFCfRar/hE0EbK1QmOsJxY6rrtuzUFW8eg2rvBwEqi5mCXFdhtBws8+rqT0zhYZfcSaXPBwNtCu7JnUFr/hAMpLOJNG93ucKwpCpTnHhOyLySH9x09z1ob+vt5dTsVtUQJHqoX14QxpRAkVlYh0WXqytCZDfRbGoh3yO0=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN4PR0401MB3679.namprd04.prod.outlook.com
+ (2603:10b6:803:46::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.19; Mon, 25 Jan
+ 2021 17:31:21 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::c19b:805:20e0:6274]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::c19b:805:20e0:6274%6]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 17:31:20 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>
+CC:     "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v13 01/42] block: add bio_add_zone_append_page
+Thread-Topic: [PATCH v13 01/42] block: add bio_add_zone_append_page
+Thread-Index: AQHW8IbzSZfcMzGXs0GKDBI5eLFroA==
+Date:   Mon, 25 Jan 2021 17:31:20 +0000
+Message-ID: <SN4PR0401MB35987B7E6E5815571E49A7659BBD9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <cover.1611295439.git.naohiro.aota@wdc.com>
+ <94eb00fce052ef7c64a45b067a86904d174e92fb.1611295439.git.naohiro.aota@wdc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: d6cc58bf-d6da-4eef-6df6-08d8c15707c1
+x-ms-traffictypediagnostic: SN4PR0401MB3679:
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN4PR0401MB367975FC3FA8C08145358BC39BBD9@SN4PR0401MB3679.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 19AVZCojIAFkL3KIdwVNTeXvp4AE/mCXhYeJUnf5Uer2jy0o29Hkf1kguzczOih4cY2aWnIIkSvM8sV9tFdZTQWR8ogZygHeVUllVWVODdmtKbPZK+gJnDQ7VWrCs2ddBgkR7nuyZaw+XIaM/lNTNZq3pzY0uxt9sU3AETc5Nday9ku0p+WOYgHig+b5td6RXiXZsL0HHo0wECYWHRABXsVAuclZWgiORhAWhDFrHx0d/ZRxcx1vOi0DK4dCnbmgU996mqGP7kXBzPQtO8nY69iKo7oGeGFJcWXq0AT8OIto9E0hve7C9289DcxfwO9M+nb9iGk4CDjPuymI8Hh8aOm+Pyr8eMWk+BC68Ekkz/Gdk70VRC8jZlu4EgP969CGbZBFLcsQmhzthd774moc6w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(376002)(396003)(366004)(7696005)(9686003)(66556008)(8936002)(66446008)(64756008)(4326008)(55016002)(66476007)(66946007)(71200400001)(8676002)(76116006)(91956017)(33656002)(52536014)(54906003)(478600001)(2906002)(6506007)(53546011)(110136005)(83380400001)(86362001)(5660300002)(26005)(316002)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+DAga5dAWaBU4EmU4xQoxkOCu9jl09/LSNw/2fpCoYgF4XMPbaU5+rd5n3uP?=
+ =?us-ascii?Q?i/XW7HIVvF2dA6GR7qv03IAbWFvRFgPPjNLa4v5PZbf+ck3HBXlj5AIAxvKM?=
+ =?us-ascii?Q?jR9+peZqU6udFDt74Tydd8h7/IWF1mEQY63OYDWQ+QByjkx99+rqiKMdfLqO?=
+ =?us-ascii?Q?7aYUX5P/rj6V98gfsMkQqa2WXMnB9Z2ciWjSaKUvFBrs/wKwdNYkaG2Uzg+0?=
+ =?us-ascii?Q?dJo8ynYTupYf8CtFepRZp9VwK/XUZ4ermMd5HxDOPWz5q/JLznjafw7vm8Ud?=
+ =?us-ascii?Q?Nwyb6pfOmDA9s7gdoT1MiINYAwXC7/+vUivNnhhPTqFWeH0XeRyR6MKocBXW?=
+ =?us-ascii?Q?k6GoCqNQtkMr6dWxJ9Ct7xegbmeUCfasX3q5vhYsgp1aXH8Q33FI3nZLTkhL?=
+ =?us-ascii?Q?G+DQFTUgDO71yrLl5DYjp5yiMpLG+y35cdU+hvW4FgGh3NbhzCPOW2d7XqDm?=
+ =?us-ascii?Q?cwtfkbyGJU76FcgqzsKhucWOQxZCeqes67ueYbMfGGDT919Phb3Q841GgkY2?=
+ =?us-ascii?Q?Y1ljymO4JtiEPCZFbfqtwm5OcmssbMZc/2oz7iM4Muiqvbr94cFNO5Fg7iRG?=
+ =?us-ascii?Q?mfh9kPK7LwRWcV0gfFEWLw08KgRHdcxNEa0CdehIg9OdmcVl7n6JwoK87YR+?=
+ =?us-ascii?Q?hLgmmZiM/YjrbkMJMa4uvhgb+HusDHITif7u3qnAYStq+IthQYNPvFMcE/2r?=
+ =?us-ascii?Q?Kcq7roM6J4TotCxD0O6NEYIIefV5d5Xv6UKCTYqzm8jesoLW49TKD21IM8K5?=
+ =?us-ascii?Q?REk8qYYIgAlJitNtEkg8AT+oR/jFSuyj5KHt+Lc+JWr8/yPy8TVRNpHnPh11?=
+ =?us-ascii?Q?Z/u3QGJar/in6XE4XiZ6a9Kb9/+ybPpDVwvKFxKRy3uCi3tDWTO31nWpfxeF?=
+ =?us-ascii?Q?PJvMt1sQxmD2NetLkDR385COGTLtu068+9LosxRM+cfs3Cl/6+o3l4M2UEZX?=
+ =?us-ascii?Q?N33V83hUuaevH1OJmC6uBbaUxbUAGNagej82LtiokfzdVrhBbS+69HlVBTb2?=
+ =?us-ascii?Q?HzBGCWJPeF0NB2Nvp58lH9F8N5FJKswJEy2tr17pFFSZi0fuzbrysycklIht?=
+ =?us-ascii?Q?GAEGKX2UBGb96uqJhoMmoWiDjWkZHA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <h7n9tvwl.fsf@damenly.su>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6cc58bf-d6da-4eef-6df6-08d8c15707c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 17:31:20.8268
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FljgXWe3O4uabZfY5lkNKPu0ko/SAL+6SwjuO4rbD93tulwkrANSDlgK8+11jihWak+BAPP3U5mtlZcdlIje93AiaZed6699dnC6F2ymY/Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3679
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 12:53:14PM +0800, Su Yue wrote:
-> On Fri 22 Jan 2021 at 01:07, David Sterba <dsterba@suse.cz> wrote:
-> > Adding Davidlohr to CC as it's about reverting his patch.
-> >
-> > In d5c8238849e7 ("btrfs: convert data_seqcount to 
-> > seqcount_mutex_t")
-> > the seqcount_mutex_t was added as an annotation for lockep so by 
-> > revert
-> > we'd lose that again.
-> >
-> > On Thu, Jan 21, 2021 at 07:39:10PM +0800, Su Yue wrote:
-> >> while running xfstests on 32 bits test box, many tests failed 
-> >> because of
-> >> warnings in dmesg. One of those warnings(btrfs/003):
-> >> ========================================================================
-> >> [   66.441305] ------------[ cut here ]------------
-> >> [   66.441317] WARNING: CPU: 6 PID: 9251 at 
-> >> include/linux/seqlock.h:279 btrfs_remove_chunk+0x58b/0x7b0 
-> >> [btrfs]
-> >> [   66.441446] CPU: 6 PID: 9251 Comm: btrfs Tainted: G 
-> >> O      5.11.0-rc4-custom+ #5
-> >> [   66.441449] Hardware name: QEMU Standard PC (i440FX + PIIX, 
-> >> 1996), BIOS ArchLinux 1.14.0-1 04/01/2014
-> >> [   66.441451] EIP: btrfs_remove_chunk+0x58b/0x7b0 [btrfs]
-> >> [   66.441472] EAX: 00000000 EBX: 00000001 ECX: c576070c EDX: 
-> >> c6b15803
-> >> [   66.441475] ESI: 10000000 EDI: 00000000 EBP: c56fbcfc ESP: 
-> >> c56fbc70
-> >> [   66.441477] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 
-> >> EFLAGS: 00010246
-> >> [   66.441481] CR0: 80050033 CR2: 05c8da20 CR3: 04b20000 CR4: 
-> >> 00350ed0
-> >> [   66.441485] Call Trace:
-> >> [   66.441510]  btrfs_relocate_chunk+0xb1/0x100 [btrfs]
-> >> [   66.441529]  ? btrfs_lookup_block_group+0x17/0x20 [btrfs]
-> >> [   66.441562]  btrfs_balance+0x8ed/0x13b0 [btrfs]
-> >> [   66.441586]  ? btrfs_ioctl_balance+0x333/0x3c0 [btrfs]
-> >> [   66.441619]  ? __this_cpu_preempt_check+0xf/0x11
-> >> [   66.441643]  btrfs_ioctl_balance+0x333/0x3c0 [btrfs]
-> >> [   66.441664]  ? btrfs_ioctl_get_supported_features+0x30/0x30 
-> >> [btrfs]
-> >> [   66.441683]  btrfs_ioctl+0x414/0x2ae0 [btrfs]
-> >> [   66.441700]  ? __lock_acquire+0x35f/0x2650
-> >> [   66.441717]  ? lockdep_hardirqs_on+0x87/0x120
-> >> [   66.441720]  ? lockdep_hardirqs_on_prepare+0xd0/0x1e0
-> >> [   66.441724]  ? call_rcu+0x2d3/0x530
-> >> [   66.441731]  ? __might_fault+0x41/0x90
-> >> [   66.441736]  ? kvm_sched_clock_read+0x15/0x50
-> >> [   66.441740]  ? sched_clock+0x8/0x10
-> >> [   66.441745]  ? sched_clock_cpu+0x13/0x180
-> >> [   66.441750]  ? btrfs_ioctl_get_supported_features+0x30/0x30 
-> >> [btrfs]
-> >> [   66.441750]  ? btrfs_ioctl_get_supported_features+0x30/0x30 
-> >> [btrfs]
-> >> [   66.441768]  __ia32_sys_ioctl+0x165/0x8a0
-> >> [   66.441773]  ? __this_cpu_preempt_check+0xf/0x11
-> >> [   66.441785]  ? __might_fault+0x89/0x90
-> >> [   66.441791]  __do_fast_syscall_32+0x54/0x80
-> >> [   66.441796]  do_fast_syscall_32+0x32/0x70
-> >> [   66.441801]  do_SYSENTER_32+0x15/0x20
-> >> [   66.441805]  entry_SYSENTER_32+0x9f/0xf2
-> >> [   66.441808] EIP: 0xab7b5549
-> >> [   66.441814] EAX: ffffffda EBX: 00000003 ECX: c4009420 EDX: 
-> >> bfa91f5c
-> >> [   66.441816] ESI: 00000003 EDI: 00000001 EBP: 00000000 ESP: 
-> >> bfa91e98
-> >> [   66.441818] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b 
-> >> EFLAGS: 00000292
-> >> [   66.441833] irq event stamp: 42579
-> >> [   66.441835] hardirqs last  enabled at (42585): [<c60eb065>] 
-> >> console_unlock+0x495/0x590
-> >> [   66.441838] hardirqs last disabled at (42590): [<c60eafd5>] 
-> >> console_unlock+0x405/0x590
-> >> [   66.441840] softirqs last  enabled at (41698): [<c601b76c>] 
-> >> call_on_stack+0x1c/0x60
-> >> [   66.441843] softirqs last disabled at (41681): [<c601b76c>] 
-> >> call_on_stack+0x1c/0x60
-> >> [   66.441846] ---[ end trace 7a9311b3f90a392e ]---
-> >> ========================================================================
-> >>
-> >> ========================================================================
-> >> btrfs_remove_chunk+0x58b/0x7b0:
-> >> __seqprop_mutex_assert at linux/./include/linux/seqlock.h:279
-> >> (inlined by) btrfs_device_set_bytes_used at 
-> >> linux/fs/btrfs/volumes.h:212
-> >> (inlined by) btrfs_remove_chunk at 
-> >> linux/fs/btrfs/volumes.c:2994
-> >> ========================================================================
-> >>
-> >> The warning is produced by lockdep_assert_held() in
-> >> __seqprop_mutex_assert() if CONFIG_LOCKDEP is enabled.
-> >> And "volumes.c:2994" is btrfs_device_set_bytes_used() with 
-> >> mutex lock
-> >> &fs_info->chunk_mutex hold already.
-> >>
-> 
-> My bad. btrfs_get/set_device_*() -> btrfs_device_get/set_*()
-> 
-> >> After adding some debug prints, the cause was found that manyq
-> >> __alloc_device() are called with NULL @fs_info. Inside the 
-> >> function,
-> >> btrfs_device_data_ordered_init() is expanded to 
-> >> seqcount_mutex_init().
-> >> In this scenario, its second parameter(&info->chunk_mutex) 
-> >> passed is
-> >> &NULL->chunk_mutex which equals to offsetof(struct 
-> >> btrfs_fs_info,
-> >> chunk_mutex) unexpectly. Thus, seqcount_mutex_init() is called 
-> >> in wrong
-> >> way. And later btrfs_get/set_device_*() helpers triger lockdep 
-> >> warnings.
-> >>
-> 
-> Same here.
-> 
-> >> The complex solution is to delay the call of 
-> >> btrfs_device_data_ordered_
-> >> init() so the lockdep functionality can work well.
-> >> It requires that no btrfs_get/set_device_*() is called between
-> >> btrfs_alloc_device with NULL @fs_info and the delayed
-> >> btrfs_device_data_ordered_init(). Otherwise, total_bytes, 
-> >> disk_total_
-> >> bytes and bytes_uesed of device may be inconsistent in 32 bits
-> >> environments.
-> >
-> > If the fs_info is not available at all times, would it be 
-> > possible to
-> > set it once it is? (And reset when the fs_info is released).
-> 
-> Please correct me if I am wrong. AFAIK, 
-> btrfs_device_data_ordered_init()
-> can be called correctly but only for the first time.
-> Looking at include/linux/seqlock.h, seqcount_mutex_t::lock is 
-> touched
-> only in its initial timing. So when fs_info is released, there is
-> not api to reset the seqcount_mutex_t::lock. Then warnings are 
-> still
-> there.
-
-We could still statically initialize it by SEQCNT_MUTEX_ZERO, or to
-proper fs_info->chunk_mutex if we have a valid fs_info.
-But that would mean to touch the variable in different contexts while it
-could potentially be used by some other code.
-
-> Or we can allocate btrfs_device::data_seqcount in runtime.
-> But is it worth changing struct btrfs_device only for the lockdep
-> reason on 32 bits machines?
-
-IMO it's not, though some kind of annotation could be useful. The patch
-introducing the seqcount mutex does not mention any warning so it's
-probably meant only for clarity of the lock nesting or maybe real-time
-related as there are some comments regarding that in seqlock.h.
-
-Even for a dynamic allocation we'd need a way to synchronize setting the
-variable, it could be possible, but the lockdep report needs to be
-fixed. Right now I don't see another way than the revert.
+On 22/01/2021 07:22, Naohiro Aota wrote:=0A=
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+> =0A=
+> Add bio_add_zone_append_page(), a wrapper around bio_add_hw_page() which=
+=0A=
+> is intended to be used by file systems that directly add pages to a bio=
+=0A=
+> instead of using bio_iov_iter_get_pages().=0A=
+> =0A=
+> Cc: Jens Axboe <axboe@kernel.dk>=0A=
+> Reviewed-by: Christoph Hellwig <hch@lst.de>=0A=
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>=0A=
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+Jens ping?=0A=
+=0A=
+=0A=
+> ---=0A=
+>  block/bio.c         | 33 +++++++++++++++++++++++++++++++++=0A=
+>  include/linux/bio.h |  2 ++=0A=
+>  2 files changed, 35 insertions(+)=0A=
+> =0A=
+> diff --git a/block/bio.c b/block/bio.c=0A=
+> index 1f2cc1fbe283..2f21d2958b60 100644=0A=
+> --- a/block/bio.c=0A=
+> +++ b/block/bio.c=0A=
+> @@ -851,6 +851,39 @@ int bio_add_pc_page(struct request_queue *q, struct =
+bio *bio,=0A=
+>  }=0A=
+>  EXPORT_SYMBOL(bio_add_pc_page);=0A=
+>  =0A=
+> +/**=0A=
+> + * bio_add_zone_append_page - attempt to add page to zone-append bio=0A=
+> + * @bio: destination bio=0A=
+> + * @page: page to add=0A=
+> + * @len: vec entry length=0A=
+> + * @offset: vec entry offset=0A=
+> + *=0A=
+> + * Attempt to add a page to the bio_vec maplist of a bio that will be su=
+bmitted=0A=
+> + * for a zone-append request. This can fail for a number of reasons, suc=
+h as the=0A=
+> + * bio being full or the target block device is not a zoned block device=
+ or=0A=
+> + * other limitations of the target block device. The target block device=
+ must=0A=
+> + * allow bio's up to PAGE_SIZE, so it is always possible to add a single=
+ page=0A=
+> + * to an empty bio.=0A=
+> + *=0A=
+> + * Returns: number of bytes added to the bio, or 0 in case of a failure.=
+=0A=
+> + */=0A=
+> +int bio_add_zone_append_page(struct bio *bio, struct page *page,=0A=
+> +			     unsigned int len, unsigned int offset)=0A=
+> +{=0A=
+> +	struct request_queue *q =3D bio->bi_disk->queue;=0A=
+> +	bool same_page =3D false;=0A=
+> +=0A=
+> +	if (WARN_ON_ONCE(bio_op(bio) !=3D REQ_OP_ZONE_APPEND))=0A=
+> +		return 0;=0A=
+> +=0A=
+> +	if (WARN_ON_ONCE(!blk_queue_is_zoned(q)))=0A=
+> +		return 0;=0A=
+> +=0A=
+> +	return bio_add_hw_page(q, bio, page, len, offset,=0A=
+> +			       queue_max_zone_append_sectors(q), &same_page);=0A=
+> +}=0A=
+> +EXPORT_SYMBOL_GPL(bio_add_zone_append_page);=0A=
+> +=0A=
+>  /**=0A=
+>   * __bio_try_merge_page - try appending data to an existing bvec.=0A=
+>   * @bio: destination bio=0A=
+> diff --git a/include/linux/bio.h b/include/linux/bio.h=0A=
+> index 1edda614f7ce..de62911473bb 100644=0A=
+> --- a/include/linux/bio.h=0A=
+> +++ b/include/linux/bio.h=0A=
+> @@ -455,6 +455,8 @@ void bio_chain(struct bio *, struct bio *);=0A=
+>  extern int bio_add_page(struct bio *, struct page *, unsigned int,unsign=
+ed int);=0A=
+>  extern int bio_add_pc_page(struct request_queue *, struct bio *, struct =
+page *,=0A=
+>  			   unsigned int, unsigned int);=0A=
+> +int bio_add_zone_append_page(struct bio *bio, struct page *page,=0A=
+> +			     unsigned int len, unsigned int offset);=0A=
+>  bool __bio_try_merge_page(struct bio *bio, struct page *page,=0A=
+>  		unsigned int len, unsigned int off, bool *same_page);=0A=
+>  void __bio_add_page(struct bio *bio, struct page *page,=0A=
+> =0A=
+=0A=
