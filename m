@@ -2,182 +2,339 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619313023C6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 11:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8C5302594
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 14:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbhAYKkX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jan 2021 05:40:23 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:58812 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727533AbhAYKje (ORCPT
+        id S1728949AbhAYNhM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jan 2021 08:37:12 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:39260 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728935AbhAYNhC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:39:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611571759; x=1643107759;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=Ufgi/gm/+klQQE6N7sCRfoge72DLc5YeeXesESSthgk=;
-  b=aJAjnSUGGjg8fCD3wsQw3SuZwgZrf6qmyX7fkz0buaJr3fRIIQQ6Dl1g
-   6jknd3Y0T17uslAw45IMvQquT+3AHSB8hz6AoTSoDwdm1A4FhOAdyUkdf
-   k8pxguGbttW7CLw7393riFqBCIQpiztcPLNCfbi3DTjuBItoxuJw32UXw
-   j2ZiZwiWVRP4Q9lTP0jJvg8UQBrEAa1iD8vP0kT9OHwUxsu5wZH1hap5Y
-   nMFD6pJDQGokJPbTbicRBq9GG4yKrKwV6sUDIf/FFZC9BeK3E3rbM6ZP3
-   DjmDKJwVEmoQANwEVul1CS1PwYCQTxXys3vq1xC9ov5mfqj8k8t3x5A/z
-   g==;
-IronPort-SDR: 2WICECgF0O13pT0Y3I3rquduzR528W+4IZ117HxqXGbPrDEy7H3vG2UXqgXjgAgOkHvL7Keprl
- HEmaq+3T4xEODSRaJxQEYfbxfW99RqIY1fV1C8SrshMiLXMZIFYoc6VD93eFrehnO2O1Rk5NZi
- ZAAGg2wffC9hccH1RIUgQCzx2jmuC81yPYqkeBBn0t45TYT6QCmw/8kdBpUT0x5nJCi3e1Km6o
- WGfA7AMqgkhsNZptd9wgDxs7Ud1kD1bDW8CRoJzaPeS1WGR6zsSkYGOYwk0bHSqSbJ7Tf9/e12
- h7Q=
-X-IronPort-AV: E=Sophos;i="5.79,373,1602518400"; 
-   d="scan'208";a="262247850"
-Received: from mail-bl2nam02lp2059.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.59])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Jan 2021 18:46:49 +0800
+        Mon, 25 Jan 2021 08:37:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1611581745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1pkeXNb3MAOCYEvqm/1+KIily0SObGY1hi9CYEBmfVs=;
+        b=PfS2VWqvFhlHrzh2kK6f4F7rrrRrYyGZFOfT/DN79X0Z3SBEKlO3DYTtwPHRdDiXFYbQz4
+        OGbprqJRtiSLHtuXQ6yx/25B5RpZg5+3wojmTJoidEmreAky/MQxAEpN0xQGzzSXNIFJS7
+        RGIbE3AgkEHjYf1EaDMLS138N5ajC/o=
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur03lp2051.outbound.protection.outlook.com [104.47.9.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-11-8VyWRjvwOUOF_xkQkyT9yw-1; Mon, 25 Jan 2021 14:35:43 +0100
+X-MC-Unique: 8VyWRjvwOUOF_xkQkyT9yw-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fcA/6z68P2IBc+P9LoxBcA6ZbMDKsJGb8gh9kk693UngZvRKC6gjTXJmvDpYKRnvDWi3sqG5BKRxk1O/czTSluCPUZLqjvocE2XeVFgsqHudnDw1b5d2Yv1oDTD8Gca5xJyyYBkm1XZ45w8ceee/SvN41hlDonOJxjNWprQhrjSXUtU5C6yZ/uBkBNjfm6rO+uf8etbmwmKXH1GyG5B5GX6G7wTbG47m0wWXfyXkjgnGo9R8B7Q53fEkMuuRV+LzpKNgVm21C0HNu/f9lc8kE7XuG9/jxO3phR5RBSgWx8AhEAT8+fmg1FVdxRhp8RSYSF52s5W7wASuY0nMqZkYfw==
+ b=aY4/w6VkOMGok2oqhs7eunpQbhM8cm61nVC+ZKjMWYBPuPzCmpNQGTYYpmq+qwM7yQwbzPXBLkeqY2AxDkfb1uF1S89VVPvJvY7neH4qn1mlfAd4/gMeL0Jaq9el86tj7gcsP3QkoSHXfQeynP51QPHpNEhaCSwVP4jFpMS5esgCBaSLVec+OUrxJ4nFu8rXK7zuyKFcjBk3bKuzIDYwNoi0sVeVLVrZ+3KuEsH29kqnaFE27g+L9qYqfkBzQBkemvFbU4DsqbWV0RXCZcyJ6vQm8ZrgJ6MRZc3bE5Fk26Mgvv3APvZcAdtypjCFxpW56rUOvi9OPqkKLvj87G2IXw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sP7yOS/EcR7exqWLTMFmhWdL0f+sUCqvSMspFAke1kU=;
- b=PQh8T1FfwQkAXW6qlZwvHu0ldwutbLrw8u0UsnjoXZXgvhoDkkgbgnS0WFnKcBQqoAAlYoOEA+oFOpLRUmHrQ/a3oKmpHiTXgso2FVXXltekEvd9S0x+2eZa1tR3hX0FHFaMMECBzouYPYBBT+Q+5pim3XdJYoAR+/F5QjYM4xW2QJmbZ9C3BbEeepEgBP8poR77fadHO1VOKGzdB+sFMvE4gKFyssthJM38XglBhNlWJBVTZm+WS90/c20p7sdJzzaKiKuuGwVOCslwFEpIJJ/BRnrF/HXNG4a2xIRdSAM34kQwLGzsds/ihhoc7kfiHuHXNmbdAOumAjR07pjduQ==
+ bh=APeJ7HVW7yc3dv7u1iS98AbUHkU69xmEl4YpAO9Kkfc=;
+ b=BSZkme129pbSrsnhdB8ZNMypY4X/SAnEVM7NtU26TDUtGlGPZ/4CM/5VwbH5rqXxsrq0x1MkxvYHiWu4OiTEsE0Jm7dBZvTfEo6kH3JXUugR96Kk8DudxKfRi4UCRGc7Zfi+0RIWFWWxrR+DiqyXfkIJyPZbQ5To1GrjKLpLaL7ODExr6dR1/jqbCbJ9DzyBxB9XKYAgIBNVj7SUk2ph8VtjDYy/cUGvYn7pxGZp+8mYlgQEL14PBJdke2RPenVjrEplvB0fEXT1dIsmXEcmJ712qaowvinK40aUW21P+DnH5pOxasq/JmhQkgjQ2kLNQBuC/IP82b8mzU5aYISTSg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sP7yOS/EcR7exqWLTMFmhWdL0f+sUCqvSMspFAke1kU=;
- b=fMQH2cXxAO9rS/NoexxfoNWiQtV9g0E65IB1Qp+KXFBptWkx4PTwK0OIa611QNQc/wZP2V50/bxYTjZxo1d9bA0OvNbhqLSIHWatDvhyS12d+CS3JBZ8+jHn0LJlENgisSxZQNJCaG4KZA/+/QSBeUPEi2lCYHJxcHYKsemF8ZU=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB3885.namprd04.prod.outlook.com
- (2603:10b6:805:48::20) with Microsoft SMTP Server (version=TLS1_2,
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR0401MB2382.eurprd04.prod.outlook.com
+ (2603:10a6:800:23::23) by VE1PR04MB6653.eurprd04.prod.outlook.com
+ (2603:10a6:803:122::28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Mon, 25 Jan
- 2021 10:37:52 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::c19b:805:20e0:6274]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::c19b:805:20e0:6274%6]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
- 10:37:52 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-CC:     "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH v13 13/42] btrfs: track unusable bytes for zones
-Thread-Topic: [PATCH v13 13/42] btrfs: track unusable bytes for zones
-Thread-Index: AQHW8IkI4np8096mREKqp6/IhMqn7A==
-Date:   Mon, 25 Jan 2021 10:37:51 +0000
-Message-ID: <SN4PR0401MB3598871C917A824777BBA6649BBD9@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1611295439.git.naohiro.aota@wdc.com>
- <b949ad399801a5c5c5a07cafcb259b6151e66e48.1611295439.git.naohiro.aota@wdc.com>
- <7f676b7d-ab80-5dc1-6fbf-ed29e4bf4512@toxicpanda.com>
-Accept-Language: en-US
+ 2021 13:35:42 +0000
+Received: from VI1PR0401MB2382.eurprd04.prod.outlook.com
+ ([fe80::9c:2015:e996:e28]) by VI1PR0401MB2382.eurprd04.prod.outlook.com
+ ([fe80::9c:2015:e996:e28%11]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 13:35:42 +0000
+Subject: Re: [PATCH] btrfs: rework the order of btrfs_ordered_extent::flags
+To:     fdmanana@gmail.com, dsterba@suse.cz,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20210121061354.61271-1-wqu@suse.com>
+ <20210121164706.GD6430@twin.jikos.cz>
+ <CAL3q7H4D_Hu=Xk0+dazruwnqwW7+kqdS3VXTxQ5kWSe+EuT8kg@mail.gmail.com>
+From:   Qu Wenruo <wqu@suse.com>
+Message-ID: <616293a7-1bee-f256-ac47-02d5c0750da6@suse.com>
+Date:   Mon, 25 Jan 2021 21:35:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+In-Reply-To: <CAL3q7H4D_Hu=Xk0+dazruwnqwW7+kqdS3VXTxQ5kWSe+EuT8kg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 44bb08a6-088c-4bfe-3dbd-08d8c11d4480
-x-ms-traffictypediagnostic: SN6PR04MB3885:
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR04MB3885C8328789575D03C172F19BBD9@SN6PR04MB3885.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kd3KvHbmH6vjm01aGacAg3JhEQnvkxUExY25dt+1WiiDOBDr8hPsm6uFaTBILAnNNjr34BBSl1mhD3wizZwcqvUKqa7WvMYiMxdRBoW9E5oEzyIlmwT4FQARDefIp2n7RUPynmkaBEnndl8HdBf/iaTLHzJdJhmao6A4uY39l1BG2zZVjdHFFpUsFIm+SIkMfa1thjsuq4Ouc4xKy6Ifs18o/RRJXMGswgFvOLkuOPUumz6oyTETg83q1kh75avXXosP1lQFMJ2tzDclWPfURvOcZiJukuFRlFCKc8k3qM8/IhNGuwpDKNYJ3Uwgd/R3em/JTsiFTlluAn3k2V1mOCTQTXs8mItEUFbO5+QekarLBZoEMc5M2HsYckYnhQUjuM0pKrFMDT8b4JWhYKdWEA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(39860400002)(376002)(366004)(83380400001)(53546011)(6506007)(2906002)(5660300002)(8936002)(66446008)(4326008)(7696005)(33656002)(52536014)(110136005)(186003)(316002)(66946007)(8676002)(55016002)(54906003)(86362001)(9686003)(91956017)(71200400001)(64756008)(66476007)(66556008)(76116006)(26005)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?b+AnjqPyVgBWECHgaAfZ3yUY2EEmxVk6a6X9pikqrJcwnqtGMb3mQTa7NwER?=
- =?us-ascii?Q?GdH5MUE5Js+xQU/DKNp08DQlKhMeutriBZcb/RC9DA4XuotS7q06F+bDon1v?=
- =?us-ascii?Q?pLax6eHgixPDTxnw5V38XB7IRizA9o6Gg60T1zGGSNfqq4flaxzq9iO3CS20?=
- =?us-ascii?Q?aEV8TkSqXgJfXlaB8sISMzbgjvqZ7DDoxvts0dcwbKRhdKeDBnBXTyKBdeNc?=
- =?us-ascii?Q?4/jWtZuQQw93p8gCsDEzRvZO/zNy1+/OBPdlcLNtgz6T9EdyYvRhEMiPYiej?=
- =?us-ascii?Q?72xNN2hEMooN/pJhGTBmCR3nszQ7LKnhA1xceBsF1ocp+9bz5+w3Ygy4e1y1?=
- =?us-ascii?Q?EdnP5Kn2QM/5Xv+133N7iOXG03JHCgpRtuoWCE7LIIg4lfxfaMDrnYrmuXh+?=
- =?us-ascii?Q?t80SVKbmRTRG/Tt5X/SvRsdU4IOlaDxUG6u/9RgISCN2nK5mndcH4npm/fEc?=
- =?us-ascii?Q?R81aqjQIVXbBddOVgkxSJ6s2Cn/f6nx/+5ERRWKBeZPvrgLhJq2VTXxqBR/8?=
- =?us-ascii?Q?sP9AqivWkNs7LwCamJCcsnEEeD/Ne1ZjibDfCILuQ6UBDBlmrSS1EcrDaE1i?=
- =?us-ascii?Q?kwDgSTDar3VHHYTSlmQbtRcWHE9O/oKkUhuI329zfXvxhsbKHa8b0lF6Sn0m?=
- =?us-ascii?Q?/Gz+1c6QHE41vwx+fyKsSGsTU1VwSWIT8jPLopBhIdVjfFTE7zgoNsXMZpwS?=
- =?us-ascii?Q?zkovhmTo+RyQ6Ywi/Z/f25Raooz/UtjuFbdXTE9+E18mc9MHQVF8idpeTpi0?=
- =?us-ascii?Q?oYQtbIWI5j/wt9HVfVFX+EKv9joJpZdGMiscUmVXBf/1HcSN0loaTwj88G42?=
- =?us-ascii?Q?3jM2ptaMHKJoCfFp71RYQfqiEevZzrSflmA5BQFf7ZDoFJidtKl0b6aa43Jq?=
- =?us-ascii?Q?tja9scTJscff4J9ltksoAH3p17dxFbr5HJhT8KGdveblL0IvLc4AV8Kjeadc?=
- =?us-ascii?Q?Yz55Y07L3FkDRq5QxjKVJwTNIEkdQPinrLHfmUVDWxaGNzKDwo6ZvJUAM/AW?=
- =?us-ascii?Q?d2pt?=
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: SJ0PR03CA0128.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::13) To VI1PR0401MB2382.eurprd04.prod.outlook.com
+ (2603:10a6:800:23::23)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0128.namprd03.prod.outlook.com (2603:10b6:a03:33c::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Mon, 25 Jan 2021 13:35:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 434a943c-4735-46b0-c595-08d8c1361be6
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6653:
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6653A7792319595227C39FD1D6BD0@VE1PR04MB6653.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Jpz2VIsUen4sjd5LbYuNJO7xXEoeD986PByeyJu7OMkY0j69Atn20L3DBUyI116CBIdFX/Frc5niWs4vrz91d1oSXt6gyWM+q0fuMuFgTBMr8dvDj7ScWxcxfqOd6sgtzNh0G7wr+5MfKFMYjLAKk7WQ1r1uU1i/EA0eW/lx3RaLmoot3zA6PezTwDeKBhGnnFCeZpjY94HJGMv0CGXV6N5FQgd54+DZYn8Yj+u5K/MIy9oFcbAi3mnGIEIxJxsxboaykx7DJ0Qh0p6MQkvczRhisl1wRC1zc7ddXAzmL9irItDElbPlZQMVSgpUWlLg2pab9N08b5pN2HXt/774kVQMZIYOFnjb8S5tlDIdWumYiYnKjLEsnrrLXyukMdRvlIv8TQ7X1MY+HjJnXutD8synyj9g3LV6h+hGJX1TNRB7VOwcDLhL04PDyMN10jjrY9/pR6ymjjgdswScWWVCcH41NE9aqfo2Ll8HYdZbFluQQElr25N3DFZ3BMmsVae/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2382.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(39850400004)(136003)(366004)(8936002)(6706004)(6916009)(478600001)(66556008)(5660300002)(86362001)(36756003)(6666004)(26005)(83380400001)(8676002)(31686004)(66946007)(316002)(2616005)(66476007)(53546011)(52116002)(6486002)(16526019)(186003)(956004)(16576012)(31696002)(2906002)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?clQPdKWyVGLSNdAt7WzXzz3gjb9srot9PyFUO8/vEzblnmDWd1plNoR9gUG4?=
+ =?us-ascii?Q?8UltY1arteRVKVTFymO/Ixm67gLhE1rTxcsMNGk0tpUoaCmmY8CSiWmRmvNc?=
+ =?us-ascii?Q?VUhrFyaBg9+IGnFEnmx7lBKmGJqX/aCC53767gDvSvNyIVKDHAV41Kmlt4bY?=
+ =?us-ascii?Q?inQniqMTaEslvVMeP+b3vv32dkgnceBoGdFxVqXTxPMpQifyosIrd5ZvdxDr?=
+ =?us-ascii?Q?t9uIQoABPJiX/0YC0Wpe5SYCmxy9yX+EInZKauqA3Ww8Wd91azW/GZKYXG9R?=
+ =?us-ascii?Q?BlOLhm1dYT2HKYBA/gOZqH8TUQXw0X2xREOJTZk5iMR5qjyg9ETrVPBGMULY?=
+ =?us-ascii?Q?uhGx6J7gCvOoTlqzO4t7t98c98mB2xdylF1VcQJKPEUhNTMSx6ZnMwGbuk6j?=
+ =?us-ascii?Q?69EeXAHKL6G6dimBHkNZvlEl23OMmTtlGv0nrvMdH1Oo5HxYIImcyGSrmR6v?=
+ =?us-ascii?Q?WT/H1Rk/zBf3biUYVXVAtV3Oy9+J5AzasYW6lpgrfl45j+GlBDfg0i8EnzbP?=
+ =?us-ascii?Q?8jKHqA/beVxDXOwUi2kTF7l/zjzcjqEvbrr68/Nyh2cUyXY/maG1QrPiWLBo?=
+ =?us-ascii?Q?Ek5Hhyis/focTFmhtSQ/F4b4ZN5hX2+R3Y0hTc6OeaYvPg5+2UbJgkpjaBDf?=
+ =?us-ascii?Q?zr8biakstNB4+SbIeEo0Y3rQM2svGbSq386A0BcU5iihwTedqOWmgfD0atR/?=
+ =?us-ascii?Q?zMS+zyezwv+tG0r6T2fTqCfjyL71Tf8SgB6bqo8skJp2IFvXcCzleqGj7aTn?=
+ =?us-ascii?Q?IE7n1uw4244gCjfqSBPSsdYGCh4SsXZfMP/buj6d7XFsJo/Py9jxoczAJCvI?=
+ =?us-ascii?Q?VL8XzYhT4uMovgWMzO//JhwB2I7V7p0VqWV2mNfgKB8wOriH7l491wKlIWTw?=
+ =?us-ascii?Q?ZX0XfKMe4uzGp4BX9SU17DibnktOpwY3hdT7m153iGr/BfTgUwBZKILV+0Sd?=
+ =?us-ascii?Q?LkomsaAiVmvfxKA/UdTdPnhpAL9WaHlPJ7Cv5CiwLJQgz6MDFLIkudft3ejv?=
+ =?us-ascii?Q?ouBzUq85b7pdMcdlDh8p54rg9aOfQmkua2/3SXJ3BM6D+xmVuJHEZGkNcNVT?=
+ =?us-ascii?Q?msSYeAi3?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 434a943c-4735-46b0-c595-08d8c1361be6
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2382.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44bb08a6-088c-4bfe-3dbd-08d8c11d4480
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 10:37:51.9553
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 13:35:41.9196
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nA89RaC90kza6vffisHYEUp4gZSjy5ir6AADPhQo+Xnf5VxIHTrwYMK8Si2pI/PWPJybshW4LQnUImjBqfYhLS5tdVr7almiOz8D/3BRLkU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB3885
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kqBclCk6SM+ulWjjvOKuj1OuP3DPb5Ef4gW2fTuP3X6nDgaFaIOkuR6vVWy3gLcL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6653
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 22/01/2021 16:15, Josef Bacik wrote:=0A=
->> @@ -2725,6 +2726,9 @@ fetch_cluster_info(struct btrfs_fs_info *fs_info,=
-=0A=
->>   {=0A=
->>   	struct btrfs_free_cluster *ret =3D NULL;=0A=
->>   =0A=
->> +	if (btrfs_is_zoned(fs_info))=0A=
->> +		return NULL;=0A=
->> +=0A=
-> =0A=
-> This is unrelated to the rest of the changes, seems like something that w=
-as just =0A=
-> missed?  Should probably be in its own patch.=0A=
-=0A=
-Hmm probably belongs to another patch, just need to find to which.=0A=
-=0A=
-> =0A=
->>   	*empty_cluster =3D 0;=0A=
->>   	if (btrfs_mixed_space_info(space_info))=0A=
->>   		return ret;=0A=
->> @@ -2808,7 +2812,11 @@ static int unpin_extent_range(struct btrfs_fs_inf=
-o *fs_info,=0A=
->>   		space_info->max_extent_size =3D 0;=0A=
->>   		percpu_counter_add_batch(&space_info->total_bytes_pinned,=0A=
->>   			    -len, BTRFS_TOTAL_BYTES_PINNED_BATCH);=0A=
->> -		if (cache->ro) {=0A=
->> +		if (btrfs_is_zoned(fs_info)) {=0A=
->> +			/* Need reset before reusing in a zoned block group */=0A=
->> +			space_info->bytes_zone_unusable +=3D len;=0A=
->> +			readonly =3D true;=0A=
->> +		} else if (cache->ro) {=0A=
->>   			space_info->bytes_readonly +=3D len;=0A=
->>   			readonly =3D true;=0A=
->>   		}=0A=
-> =0A=
-> Is this right?  If we're balancing a block group then it could be marked =
-ro and =0A=
-> be zoned, so don't we want to account for this in ->bytes_readonly if it'=
-s read =0A=
-> only?  So probably more correct to do=0A=
-> =0A=
-> if (cache->ro) {=0A=
-> 	/* stuff */=0A=
-> } else if (btrfs_is_zoned(fs_info) {=0A=
-> 	/* other stuff */=0A=
-> }=0A=
-> =0A=
-=0A=
-Fixed=0A=
+
+
+On 2021/1/25 =E4=B8=8B=E5=8D=888:15, Filipe Manana wrote:
+> On Thu, Jan 21, 2021 at 4:52 PM David Sterba <dsterba@suse.cz> wrote:
+>>
+>> On Thu, Jan 21, 2021 at 02:13:54PM +0800, Qu Wenruo wrote:
+>>> [BUG]
+>>> There is a long existing bug in the last parameter of
+>>> btrfs_add_ordered_extent(), in commit 771ed689d2cd ("Btrfs: Optimize
+>>> compressed writeback and reads") back to 2008.
+>>>
+>>> In that ancient commit btrfs_add_ordered_extent() expects the @type
+>>> parameter to be one of the following:
+>>> - BTRFS_ORDERED_REGULAR
+>>> - BTRFS_ORDERED_NOCOW
+>>> - BTRFS_ORDERED_PREALLOC
+>>> - BTRFS_ORDERED_COMPRESSED
+>>>
+>>> But we pass 0 in cow_file_range(), which means BTRFS_ORDERED_IO_DONE.
+>>>
+>>> Ironically extra check in __btrfs_add_ordered_extent() won't set the bi=
+t
+>>> if we're seeing (type =3D=3D IO_DONE || type =3D=3D IO_COMPLETE), and a=
+void any
+>>> obvious bug.
+>>>
+>>> But this still leads to regular COW ordered extent having no bit to
+>>> indicate its type in various trace events, rendering REGULAR bit
+>>> useless.
+>>>
+>>> [FIX]
+>>> This patch will change the following aspects to avoid such problem:
+>>> - Reorder btrfs_ordered_extent::flags
+>>>    Now the type bits go first (REGULAR/NOCOW/PREALLCO/COMPRESSED), then
+>>>    DIRECT bit, finally extra status bits like IO_DONE/COMPLETE/IOERR.
+>>>
+>>> - Add extra ASSERT() for btrfs_add_ordered_extent_*()
+>>>
+>>> - Remove @type parameter for btrfs_add_ordered_extent_compress()
+>>>    As the only valid @type here is BTRFS_ORDERED_COMPRESSED.
+>>>
+>>> - Remove the unnecessary special check for IO_DONE/COMPLETE in
+>>>    __btrfs_add_ordered_extent()
+>>>    This is just to make the code work, with extra ASSERT(), there are
+>>>    limited values can be passed in.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>
+>> Added to misc-next thanks.
+>=20
+> Btw, I see that you added a Reviewed-by tag from me to the patch.
+> However I did not give the tag, not because I forgot but because there
+> was a small detail in a comment that should be fixed, which was not
+> addressed in misc-next.
+
+And that comment update should not mention directIO completely.
+
+Should I resend the patch with proper comment updated?
+
+Thanks,
+Qu
+
+>=20
+> Thanks.
+>=20
+>>
+>>> ---
+>>>   fs/btrfs/inode.c             |  4 ++--
+>>>   fs/btrfs/ordered-data.c      | 18 +++++++++++++-----
+>>>   fs/btrfs/ordered-data.h      | 37 +++++++++++++++++++++++------------=
+-
+>>>   include/trace/events/btrfs.h |  7 ++++---
+>>>   4 files changed, 43 insertions(+), 23 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>>> index ef6cb7b620d0..ea9056cc5559 100644
+>>> --- a/fs/btrfs/inode.c
+>>> +++ b/fs/btrfs/inode.c
+>>> @@ -917,7 +917,6 @@ static noinline void submit_compressed_extents(stru=
+ct async_chunk *async_chunk)
+>>>                                                ins.objectid,
+>>>                                                async_extent->ram_size,
+>>>                                                ins.offset,
+>>> -                                             BTRFS_ORDERED_COMPRESSED,
+>>>                                                async_extent->compress_t=
+ype);
+>>>                if (ret) {
+>>>                        btrfs_drop_extent_cache(inode, async_extent->sta=
+rt,
+>>> @@ -1127,7 +1126,8 @@ static noinline int cow_file_range(struct btrfs_i=
+node *inode,
+>>>                free_extent_map(em);
+>>>
+>>>                ret =3D btrfs_add_ordered_extent(inode, start, ins.objec=
+tid,
+>>> -                                            ram_size, cur_alloc_size, =
+0);
+>>> +                                            ram_size, cur_alloc_size,
+>>> +                                            BTRFS_ORDERED_REGULAR);
+>>>                if (ret)
+>>>                        goto out_drop_extent_cache;
+>>>
+>>> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+>>> index d5d326c674b1..bd7e187d9b16 100644
+>>> --- a/fs/btrfs/ordered-data.c
+>>> +++ b/fs/btrfs/ordered-data.c
+>>> @@ -199,8 +199,11 @@ static int __btrfs_add_ordered_extent(struct btrfs=
+_inode *inode, u64 file_offset
+>>>        entry->compress_type =3D compress_type;
+>>>        entry->truncated_len =3D (u64)-1;
+>>>        entry->qgroup_rsv =3D ret;
+>>> -     if (type !=3D BTRFS_ORDERED_IO_DONE && type !=3D BTRFS_ORDERED_CO=
+MPLETE)
+>>> -             set_bit(type, &entry->flags);
+>>> +
+>>> +     ASSERT(type =3D=3D BTRFS_ORDERED_REGULAR || type =3D=3D BTRFS_ORD=
+ERED_NOCOW ||
+>>> +            type =3D=3D BTRFS_ORDERED_PREALLOC ||
+>>> +            type =3D=3D BTRFS_ORDERED_COMPRESSED);
+>>
+>> I've reformatted that so that all the checks are on separate lines, it's
+>> easier to read though it does not fill the whole line.
+>>
+>>> +     set_bit(type, &entry->flags);
+>>>
+>>>        if (dio) {
+>>>                percpu_counter_add_batch(&fs_info->dio_bytes, num_bytes,
+>>> @@ -256,6 +259,8 @@ int btrfs_add_ordered_extent(struct btrfs_inode *in=
+ode, u64 file_offset,
+>>>                             u64 disk_bytenr, u64 num_bytes, u64 disk_nu=
+m_bytes,
+>>>                             int type)
+>>>   {
+>>> +     ASSERT(type =3D=3D BTRFS_ORDERED_REGULAR || type =3D=3D BTRFS_ORD=
+ERED_NOCOW ||
+>>> +            type =3D=3D BTRFS_ORDERED_PREALLOC);
+>>>        return __btrfs_add_ordered_extent(inode, file_offset, disk_byten=
+r,
+>>>                                          num_bytes, disk_num_bytes, typ=
+e, 0,
+>>>                                          BTRFS_COMPRESS_NONE);
+>>> @@ -265,6 +270,8 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode=
+ *inode, u64 file_offset,
+>>>                                 u64 disk_bytenr, u64 num_bytes,
+>>>                                 u64 disk_num_bytes, int type)
+>>>   {
+>>> +     ASSERT(type =3D=3D BTRFS_ORDERED_REGULAR || type =3D=3D BTRFS_ORD=
+ERED_NOCOW ||
+>>> +            type =3D=3D BTRFS_ORDERED_PREALLOC);
+>>>        return __btrfs_add_ordered_extent(inode, file_offset, disk_byten=
+r,
+>>>                                          num_bytes, disk_num_bytes, typ=
+e, 1,
+>>>                                          BTRFS_COMPRESS_NONE);
+>>> @@ -272,11 +279,12 @@ int btrfs_add_ordered_extent_dio(struct btrfs_ino=
+de *inode, u64 file_offset,
+>>>
+>>>   int btrfs_add_ordered_extent_compress(struct btrfs_inode *inode, u64 =
+file_offset,
+>>>                                      u64 disk_bytenr, u64 num_bytes,
+>>> -                                   u64 disk_num_bytes, int type,
+>>> -                                   int compress_type)
+>>> +                                   u64 disk_num_bytes, int compress_ty=
+pe)
+>>>   {
+>>> +     ASSERT(compress_type !=3D BTRFS_COMPRESS_NONE);
+>>>        return __btrfs_add_ordered_extent(inode, file_offset, disk_byten=
+r,
+>>> -                                       num_bytes, disk_num_bytes, type=
+, 0,
+>>> +                                       num_bytes, disk_num_bytes,
+>>> +                                       BTRFS_ORDERED_COMPRESSED, 0,
+>>>                                          compress_type);
+>>>   }
+>>>
+>>> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+>>> index 46194c2c05d4..151ec6bba405 100644
+>>> --- a/fs/btrfs/ordered-data.h
+>>> +++ b/fs/btrfs/ordered-data.h
+>>> @@ -27,7 +27,7 @@ struct btrfs_ordered_sum {
+>>>   };
+>>>
+>>>   /*
+>>> - * bits for the flags field:
+>>> + * Bits for btrfs_ordered_extent::flags.
+>>>    *
+>>>    * BTRFS_ORDERED_IO_DONE is set when all of the blocks are written.
+>>>    * It is used to make sure metadata is inserted into the tree only on=
+ce
+>>> @@ -38,24 +38,36 @@ struct btrfs_ordered_sum {
+>>>    * IO is done and any metadata is inserted into the tree.
+>>>    */
+>>>   enum {
+>>> +     /*
+>>> +      * Different types for direct io, one and only one of the 4 type =
+can
+>>
+>> direct io
+>>
+>>> +      * be set when creating ordered extent.
+>>> +      *
+>>> +      * REGULAR:     For regular non-compressed COW write
+>>> +      * NOCOW:       For NOCOW write into existing non-hole extent
+>>> +      * PREALLOC:    For NOCOW write into preallocated extent
+>>> +      * COMPRESSED:  For compressed COW write
+>>> +      */
+>>> +     BTRFS_ORDERED_REGULAR,
+>>> +     BTRFS_ORDERED_NOCOW,
+>>> +     BTRFS_ORDERED_PREALLOC,
+>>> +     BTRFS_ORDERED_COMPRESSED,
+>>> +
+>>> +     /*
+>>> +      * Extra bit for DirectIO, can only be set for
+>>
+>> DirectIO
+>>
+>>> +      * REGULAR/NOCOW/PREALLOC. No DIO for compressed extent.
+>>
+>> DIO
+>>
+>> Three different ways to spell that but one is enough. Fixed.
+>=20
+>=20
+>=20
+
