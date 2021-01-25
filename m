@@ -2,258 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1928E302BED
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 20:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1572C302C28
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 21:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732060AbhAYTpm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jan 2021 14:45:42 -0500
-Received: from mail-eopbgr80048.outbound.protection.outlook.com ([40.107.8.48]:62438
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732080AbhAYTn5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:43:57 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HY45OepgjEFaPZXYZ+X5ydJrMnrQa9RfuSUDs/B5A3KeN3hBdGwt1gV0u9qI+geWTm8dmwRFAkjuoK1sLA5BBTks0D+NMWlaRe4mIdtR6tSm+6BleFfQZF71Pvef7QiF1oEcfBNGy3Ob9KrOmciJnKjgwzeskF1rY5a0yTSIUtedvczc+YrvwNjpxrk9YG9mIBKVwgsCzus76rP0CKWrss8/nOqVwpWstObJu3CeaRiOP2Um0pRt3i+W8rYhwGbtgnfvouTVqH7qB4fUxtn6mC2vMR8CrfbjofzOrV3GmZschcrHghjdlYTu9eNc7rHO7YXr29c2WQ8Sgx8ii3Wh8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F6z5UFG0TkCEPw/dudiFKMVK1rl9HIDGKoFW0X2z8LI=;
- b=YgLntgTcibboVbE7jT7hT16k8VVqPzEuXZzylzwrwI1t6UygUjKp2i0PuMRXdJRiMlG6PfWsqM4wf8zLkmtH6XmQQitBVmpnFQ0FX99/IvnXk8kMpZOFstryBzul94K3XEUoOBGfDkaC39itqRQmhjKuPe/k1tDwWx9WfIpetEPJP844WEMBpw0ZvnPAXuxhDx3pCx34/HLOSVz3KHIeM+2bKjcU8RoR+38mehaIApB69wZ8gkXog57pKCpDwFpdYysqLE47i+DVWtC8sCJnZhejTksjgZbrvnb3qDT6ZUZnqkqk/tM4D0YlsMpYYAQyDaU1Y/LbuYrlw8OJsLrl1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bdsu.de; dmarc=pass action=none header.from=bdsu.de; dkim=pass
- header.d=bdsu.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bdsu.de; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F6z5UFG0TkCEPw/dudiFKMVK1rl9HIDGKoFW0X2z8LI=;
- b=DcSekaQMBKOPRZPtDZ6olEqWCK1h1QKK2mI+NhrseRj4r9+wB+nEKwc9h/vVsqEyojmu9pC+eEGgpAZjhQacmeTUZSEMADvzYm2cGBCPO1aw4gv27WvS4fBjPFlQZDRMU0+FHfHNM24/jTvrqSWNrlbytAYpYqMT6o54UjJL8y7AplO3OPhwRCOneLF6p3LAelhAfNBVyVu54lNI5Z72Jb0s2scPSWc8dyDQCCczZWBzsssWJP4qqS9qVgK0+LlUnLjYHAEJMv4jbEHvBiefkOacKC6VBvtLqX9CmslEsODgwxhDU3EyVO7oHa3b3veO3uc3JSu+91NIXZn0dziThA==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=bdsu.de;
-Received: from DB7PR03MB4297.eurprd03.prod.outlook.com (2603:10a6:10:17::30)
- by DB8PR03MB5962.eurprd03.prod.outlook.com (2603:10a6:10:e9::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
- 2021 19:42:09 +0000
-Received: from DB7PR03MB4297.eurprd03.prod.outlook.com
- ([fe80::b53d:bd77:c4ae:93d]) by DB7PR03MB4297.eurprd03.prod.outlook.com
- ([fe80::b53d:bd77:c4ae:93d%6]) with mapi id 15.20.3784.016; Mon, 25 Jan 2021
- 19:42:09 +0000
-From:   Roman Anasal <roman.anasal@bdsu.de>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Roman Anasal <roman.anasal@bdsu.de>
-Subject: [PATCH v2 3/4] btrfs: send: fix invalid commands for inodes with changed rdev but same gen
-Date:   Mon, 25 Jan 2021 20:42:09 +0100
-Message-Id: <20210125194210.24071-4-roman.anasal@bdsu.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210125194210.24071-1-roman.anasal@bdsu.de>
-References: <20210125194210.24071-1-roman.anasal@bdsu.de>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2001:a61:3aef:4c01:503:a276:cbe0:8dc0]
-X-ClientProxiedBy: AM0PR05CA0081.eurprd05.prod.outlook.com
- (2603:10a6:208:136::21) To DB7PR03MB4297.eurprd03.prod.outlook.com
- (2603:10a6:10:17::30)
+        id S1731960AbhAYUD4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jan 2021 15:03:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731701AbhAYUDH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:03:07 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4408C061573
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 12:02:26 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id 2so6798916qvd.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 12:02:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=nRELTcsUsqCX705U8IxnzBn+shulInkj4sNk+U13Iio=;
+        b=cGauJafFghIE0qUcpZ93tlD/sWjul0eckD0IzK+Y0V5tOTlLvoIIk4xSwEItxLRuej
+         AWx5iK9VJoQAZKeeieM6wRLhhrQy2WZ5JxGwbDMeeYYa8uRFImx4yRFfwO0n8p/H2EiM
+         ELNKFfd+fC4kWfgZtspdkS4qf7ai1dhxcN30Lmay7r5x4QI4LifORzwGp7RhTgZ6DbP2
+         zHNcqinE8yucrwySdz9rrQdSQC0KDksWsWwMhpMr2tZlmdwpZXTnZoTvyrzNUN+ZI4M0
+         Dsq6SZsT5SBUGeZaOxkv7YwKbvhPPW4AksXvaM3xPByG4OpobUhIW/G75+ExuWNS3U8A
+         t4iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nRELTcsUsqCX705U8IxnzBn+shulInkj4sNk+U13Iio=;
+        b=I+5kh/PBPTrZEn/7FX9+kyhqCxfjr2TFVZYwepfJ4cGL81hoH5h04HOGvJJodLlzau
+         ov5HXXcmIx4IkchA71ImxApHc4z1btV5iVGr/ET8IGjJimDk5hw1PrCPsGxH7lbwmzUb
+         us4JV6+4FMI3jf/K3hE5IVNMYo0+BvK5nfxLUIyHxTz6Y9YjHYhFZ/MqVd+IJ8r484qQ
+         zU9FGip75PWVfTsNYknbeh1FVVz3uUToUh0Q9WK/qX2G8Xw5XHvf+ml7ZI2aKm62TbJq
+         lCZ906aeglmQktmQDN79WlICvMEhyiyJT51p1jSKT43Bw1ZSG37hNAVKYXUACYpb5lBu
+         3xtw==
+X-Gm-Message-State: AOAM532m5ktVzpASHGE1GDf+p4cnBTZhUcas2Vyfmp20S+J7a1IVnCg8
+        g2NH5G4gnsY1F7BC7S1+zkgaGHm9QAtSSAMH
+X-Google-Smtp-Source: ABdhPJyjKlkqvzVkV/Z2+LkMvaHXctOO8LsXVwRjOOcg+pNvt54FDI6bGn1KyPh9euu27vi1nOHChw==
+X-Received: by 2002:ad4:468c:: with SMTP id bq12mr2420833qvb.11.1611604945749;
+        Mon, 25 Jan 2021 12:02:25 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11c1::12e0? ([2620:10d:c091:480::1:8a2c])
+        by smtp.gmail.com with ESMTPSA id c17sm12907102qkb.13.2021.01.25.12.02.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 12:02:24 -0800 (PST)
+Subject: Re: [PATCH v4 12/18] btrfs: implement try_release_extent_buffer() for
+ subpage metadata support
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210116071533.105780-1-wqu@suse.com>
+ <20210116071533.105780-13-wqu@suse.com>
+ <4732f7cb-8d1c-6af2-0ec4-9b9cf5a47c3e@toxicpanda.com>
+ <20210123203650.GC1993@twin.jikos.cz>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <d72e01a9-8816-2af7-6eb8-c625654d78ea@toxicpanda.com>
+Date:   Mon, 25 Jan 2021 15:02:23 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nebukadnezar.fritz.box (2001:a61:3aef:4c01:503:a276:cbe0:8dc0) by AM0PR05CA0081.eurprd05.prod.outlook.com (2603:10a6:208:136::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Mon, 25 Jan 2021 19:42:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 77d087bc-9e8a-41ee-e2a0-08d8c1694de0
-X-MS-TrafficTypeDiagnostic: DB8PR03MB5962:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR03MB5962D840A14F779971ED9B4B94BD0@DB8PR03MB5962.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uXOYSKt4FLrojYekJEA8nYOHDCogTbs1XWU74Xk3RToD0JVBMs5S080toIdh1340u8k06OxNLCuJS4yM9/bD+USKPxlbFaR1c5n/p8Fej2JZqbfIWqEcHz4LrU9u42DWPL4RWzgK/++ggnKa5YgPqiG6KmXeOwP0Z3m+e19GEilOYrqJuehomf3fZkKS7L/FBLyqe0UDzUlxRtxp3T0aX7mHqL6GjlF7xxNsprZgJWvhlxQbUhJPURyBJSPpHdIzqHeqGwTVLXe05zeLf9gF8yye9XWLEfExiVyPv38UF6hvxcQQuejNmU+sCWhnQdtWDOmTY58Vvf+GYDKXnL41q+manGw6kRtqxfiUFyE+c0ulWxAnfsIrAOgr6tMfenApr2UPBcAmgp/4ONzY2w5yJA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4297.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(39830400003)(396003)(346002)(86362001)(8936002)(2616005)(5660300002)(8676002)(107886003)(66476007)(66946007)(66556008)(83380400001)(52116002)(36756003)(44832011)(1076003)(16526019)(478600001)(6506007)(2906002)(786003)(316002)(4326008)(6916009)(186003)(6486002)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/ANWlDfdJPzLr/nNLr/RfiBuurPOcF3prFe1JnYz2jQHYGU/Xtg3XBdnMrb2?=
- =?us-ascii?Q?iduLMFfGuNDMOy/C9MbSGkTrtGF6ZvhZx0J7fEC6PyXGyMjeu4LaZGRZnfK1?=
- =?us-ascii?Q?FcE4Cx/z4rIGRr05OcIDzQ+A6wNL1799GY2HKHqKFWvb8XG8PMpKaN5HDmih?=
- =?us-ascii?Q?MEvwUh+BstyI9w6Py7HqbaU2ssva3aqkwYN2jfb7leefsUa7Yk7BgrMUodZz?=
- =?us-ascii?Q?lwjkD5oVo1AUARyPDe5q/OCmo8Q/PPThvZOFX6Zc2rCWmuEzDCLJ2rPESK2f?=
- =?us-ascii?Q?EaR/+4jwh7iR2jsd0VAxYo5dI9vfoeGDZYengT2z4MJSeBKG4nOO7Z7eyXpn?=
- =?us-ascii?Q?0/gvRLT3oPBdgcfABBq4nWyb343MNV7CCKXQXuLu6tVGPMPkFIInCNHE3VK9?=
- =?us-ascii?Q?bZ2TCyXGXYUbkLy9qs6l0ix1pAMUMlurPz2hl3L2CqT3RSWCte9alebta7dL?=
- =?us-ascii?Q?TNEt+yfoLHyJkYQKKHJF3prs01ciUhbE89/kAxI4acf642ywQguT26UeWXtR?=
- =?us-ascii?Q?Z4fnqEzE2+WaTB94QGAyOD9YS1v/EZN2at4EJVYrQ6QocFMErXIms0TD+ivL?=
- =?us-ascii?Q?teNy5mhWOYUlXbR93DUzpE9rMhWfmeNyIl8XUOZu1r0DVLQBqGQWo7Wtgk/R?=
- =?us-ascii?Q?8xB1pRzva94DUnA+6ancNM+T0e5RVwwuYZgQVBok9o/K6NwnBBFtWK4J1qfI?=
- =?us-ascii?Q?5u5GiA8Hln09ipt38cBEBrwmf9BVx1Ay45TphqLAvHkQPVm5pPwPRP6bR6Jw?=
- =?us-ascii?Q?9GAUzVCMG1cOtsdpxGAKwGgEH2RoFjKfbT+OiYpqglfY/01A2gWxxZZkM7BT?=
- =?us-ascii?Q?O/LnC4RxHj5IBmcS4OVFIuwahiS7mxjSyiWe9Hb9BT6rf3/SPg+doyVRFOee?=
- =?us-ascii?Q?NsRIILkqhSaRqF4MVr3R3lj+X9G6k3HNbCjd6yEKnyrixLeJl1aa5oFuTrmm?=
- =?us-ascii?Q?WEJxB9t2PNjKnFASZt3j6BqwSCbdPZyYRFSIiEsGXqAxvuK2kE67Eu8s9dXS?=
- =?us-ascii?Q?BxULF4Ug2GrrTWv8rEtI0ugqjYp/L3FSIfYlKET2Qliv6XYAJshBBVXbWyyY?=
- =?us-ascii?Q?3RKTKR72FGonhXEjHPt7qRSQzFITAHd8kLsPcCjwcNjde8tiqX7TCW8ffSwP?=
- =?us-ascii?Q?MVj/Ypgp0ZAW?=
-X-OriginatorOrg: bdsu.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77d087bc-9e8a-41ee-e2a0-08d8c1694de0
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4297.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 19:42:09.6764
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c0670a1-eeed-4da2-a08a-128fe03f692a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qHS5in64SZtOtqyJgD5RLgH1RXTySJpuwLN5rIO52WatdodVNzNebfUSQT5OZmx9K9B9O1K1hBMH90HDPO+VZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR03MB5962
+In-Reply-To: <20210123203650.GC1993@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is analogous to the preceding patch ("btrfs: send: fix invalid
-commands for inodes with changed type but same gen") but for changed
-rdev:
+On 1/23/21 3:36 PM, David Sterba wrote:
+> On Wed, Jan 20, 2021 at 10:05:56AM -0500, Josef Bacik wrote:
+>> On 1/16/21 2:15 AM, Qu Wenruo wrote:
+>>>    int try_release_extent_buffer(struct page *page)
+>>>    {
+>>>    	struct extent_buffer *eb;
+>>>    
+>>> +	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
+>>> +		return try_release_subpage_extent_buffer(page);
+>>
+>> You're using sectorsize again here.  I realize the problem is sectorsize !=
+>> PAGE_SIZE, but sectorsize != nodesize all the time, so please change all of the
+>> patches to check the actual relevant size for the data/metadata type.  Thanks,
+> 
+> We had a long discussion with Qu about that on slack some time ago.
+> Right now we have sectorsize defining the data block size and also the
+> metadata unit size and check that as a constraint.
+> 
+> This is not perfect and does not cover all possible page/data/metadata
+> block size combinations and in the code looks odd, like in
+> scrub_checksum_tree_block, see the comment.
+> 
+> Adding the subpage support is quite intrusive and we can't cover all
+> size combinations at the same time so we agreed on first iteration where
+> sectorsize is still used as the nodesize constraint. This allows to test
+> the new code and the whole subpage infrastructure on real hw like arm64
+> or ppc64.
+> 
+> That we'll need to decouple sectorsize from the metadata won't be
+> forgotten, I've agreed with that conditionally and given how many
+> patches are floating around it'll become even harder to move forward
+> with the patches.
+> 
 
-When doing an incremental send, if a new inode has the same number as an
-inode in the parent subvolume, was created with the same generation but
-has differing rdev it will not be detected as changed and thus not
-recreated. This will lead to incorrect results on the receiver where the
-inode will keep the rdev of the inode in the parent subvolume or even
-fail when also the ref is unchanged.
+Alright that's fine, I'll ignore the weird mismatch'ed checks for now.  Thanks,
 
-This case does not happen when doing incremental sends with snapshots
-that are kept read-only by the user all the time, but it may happen if
-- a snapshot was modified in the same transaction as its parent after it
-  was created
-- the subvol used as parent was created independently from the sent subvol
-
-Example reproducers:
-
-  # case 1: same ino at same path
-  btrfs subvolume create subvol1
-  btrfs subvolume create subvol2
-  mknod subvol1/a c 1 3
-  mknod subvol2/a c 1 5
-  btrfs property set subvol1 ro true
-  btrfs property set subvol2 ro true
-  btrfs send -p subvol1 subvol2 | btrfs receive --dump
-
-The produced tree state here is:
-  |-- subvol1
-  |   `-- a         (ino 257, c 1,3)
-  |
-  `-- subvol2
-      `-- a         (ino 257, c 1,5)
-
-Where subvol1/a and subvol2/a are character devices with differing minor
-numbers but same inode number and same generation.
-
-Example output of the receive command:
-  At subvol subvol2
-  snapshot        ./subvol2                       uuid=7513941c-4ef7-f847-b05e-4fdfe003af7b transid=9 parent_uuid=b66f015b-c226-2548-9e39-048c7fdbec99 parent_transid=9
-  utimes          ./subvol2/                      atime=2021-01-25T17:14:36+0000 mtime=2021-01-25T17:14:36+0000 ctime=2021-01-25T17:14:36+0000
-  link            ./subvol2/a                     dest=a
-  unlink          ./subvol2/a
-  utimes          ./subvol2/                      atime=2021-01-25T17:14:36+0000 mtime=2021-01-25T17:14:36+0000 ctime=2021-01-25T17:14:36+0000
-  utimes          ./subvol2/a                     atime=2021-01-25T17:14:36+0000 mtime=2021-01-25T17:14:36+0000 ctime=2021-01-25T17:14:36+0000
-
-=> the `link` command causes the receiver to fail with:
-   ERROR: link a -> a failed: File exists
-
-Second example:
-  # case 2: same ino at different path
-  btrfs subvolume create subvol1
-  btrfs subvolume create subvol2
-  mknod subvol1/a c 1 3
-  mknod subvol2/b c 1 5
-  btrfs property set subvol1 ro true
-  btrfs property set subvol2 ro true
-  btrfs send -p subvol1 subvol2 | btrfs receive --dump
-
-The produced tree state here is:
-  |-- subvol1
-  |   `-- a         (ino 257, c 1,3)
-  |
-  `-- subvol2
-      `-- b         (ino 257, c 1,5)
-
-Where subvol1/a and subvol2/b are character devices with differing minor
-numbers but same inode number and same generation.
-
-Example output of the receive command:
-  At subvol subvol2
-  snapshot        ./subvol2                       uuid=1c175819-8b97-0046-a20e-5f95e37cbd40 transid=13 parent_uuid=bad4a908-21b4-6f40-9a08-6b0768346725 parent_transid=13
-  utimes          ./subvol2/                      atime=2021-01-25T17:18:46+0000 mtime=2021-01-25T17:18:46+0000 ctime=2021-01-25T17:18:46+0000
-  link            ./subvol2/b                     dest=a
-  unlink          ./subvol2/a
-  utimes          ./subvol2/                      atime=2021-01-25T17:18:46+0000 mtime=2021-01-25T17:18:46+0000 ctime=2021-01-25T17:18:46+0000
-  utimes          ./subvol2/b                     atime=2021-01-25T17:18:46+0000 mtime=2021-01-25T17:18:46+0000 ctime=2021-01-25T17:18:46+0000
-
-=> subvol1/a is renamed to subvol2/b instead of recreated to updated
-   rdev which results in received subvol2/b having the wrong minor
-   number:
-
-  257 crw-r--r--. 1 root root 1, 3 Jan 25 17:18 subvol2/b
-
-Signed-off-by: Roman Anasal <roman.anasal@bdsu.de>
----
-v2:
-  - add this patch to also handle changed rdev
----
- fs/btrfs/send.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index c8b1f441f..ef544525f 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -6263,6 +6263,7 @@ static int changed_inode(struct send_ctx *sctx,
- 	struct btrfs_inode_item *right_ii = NULL;
- 	u64 left_gen = 0;
- 	u64 right_gen = 0;
-+	u64 left_rdev, right_rdev;
- 	u64 left_type, right_type;
- 
- 	sctx->cur_ino = key->objectid;
-@@ -6285,6 +6286,8 @@ static int changed_inode(struct send_ctx *sctx,
- 				struct btrfs_inode_item);
- 		left_gen = btrfs_inode_generation(sctx->left_path->nodes[0],
- 				left_ii);
-+		left_rdev = btrfs_inode_rdev(sctx->left_path->nodes[0],
-+				left_ii);
- 	} else {
- 		right_ii = btrfs_item_ptr(sctx->right_path->nodes[0],
- 				sctx->right_path->slots[0],
-@@ -6300,6 +6303,9 @@ static int changed_inode(struct send_ctx *sctx,
- 		right_gen = btrfs_inode_generation(sctx->right_path->nodes[0],
- 				right_ii);
- 
-+		right_rdev = btrfs_inode_rdev(sctx->right_path->nodes[0],
-+				right_ii);
-+
- 		left_type = S_IFMT & btrfs_inode_mode(
- 				sctx->left_path->nodes[0], left_ii);
- 		right_type = S_IFMT & btrfs_inode_mode(
-@@ -6310,7 +6316,8 @@ static int changed_inode(struct send_ctx *sctx,
- 		 * the inode as deleted+reused because it would generate a
- 		 * stream that tries to delete/mkdir the root dir.
- 		 */
--		if ((left_gen != right_gen || left_type != right_type) &&
-+		if ((left_gen != right_gen || left_type != right_type ||
-+		    left_rdev != right_rdev) &&
- 		    sctx->cur_ino != BTRFS_FIRST_FREE_OBJECTID)
- 			sctx->cur_inode_recreated = 1;
- 	}
-@@ -6350,8 +6357,7 @@ static int changed_inode(struct send_ctx *sctx,
- 				sctx->left_path->nodes[0], left_ii);
- 		sctx->cur_inode_mode = btrfs_inode_mode(
- 				sctx->left_path->nodes[0], left_ii);
--		sctx->cur_inode_rdev = btrfs_inode_rdev(
--				sctx->left_path->nodes[0], left_ii);
-+		sctx->cur_inode_rdev = left_rdev;
- 		if (sctx->cur_ino != BTRFS_FIRST_FREE_OBJECTID)
- 			ret = send_create_inode_if_needed(sctx);
- 	} else if (result == BTRFS_COMPARE_TREE_DELETED) {
-@@ -6396,8 +6402,7 @@ static int changed_inode(struct send_ctx *sctx,
- 					sctx->left_path->nodes[0], left_ii);
- 			sctx->cur_inode_mode = btrfs_inode_mode(
- 					sctx->left_path->nodes[0], left_ii);
--			sctx->cur_inode_rdev = btrfs_inode_rdev(
--					sctx->left_path->nodes[0], left_ii);
-+			sctx->cur_inode_rdev = left_rdev;
- 			ret = send_create_inode_if_needed(sctx);
- 			if (ret < 0)
- 				goto out;
--- 
-2.26.2
-
+Josef
