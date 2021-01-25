@@ -2,262 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73407302D01
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 21:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12554302D1A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 22:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732350AbhAYUxb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jan 2021 15:53:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        id S1732250AbhAYU6D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jan 2021 15:58:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732358AbhAYUwb (ORCPT
+        with ESMTP id S1732008AbhAYU57 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:52:31 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C6BC061573
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 12:51:51 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id z9so10751193qtv.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 12:51:50 -0800 (PST)
+        Mon, 25 Jan 2021 15:57:59 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCAEC061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 12:57:14 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id u20so5324751qku.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 12:57:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=u3CunL95z4Y4C3X3Rg9oAtOWwPRis+D18Y3Q+DxpcK8=;
-        b=Ko1ZFXA2nkOnVZvlhW9qfsn7cTX1Pqy+hreGbjUN7MqdwjjCWfPpk+exWJyKyF3QV0
-         hiVMLSvE9kTqV/vHUig+yyGYUskNXcNP0Zc6nT6Lr8PB7Pk4OM00KoJTb8VpXK7HnO5v
-         sMNxr7WDwZ9jnnh4jwoA/iGQYp9eC529CjL6alglmrqDjqZMTf0NK64jhQl2dpMfozWI
-         o2pK6I7zxlR5CGDaGkUkD/MphRnWtvvzgwPIFZaBLgJV2K3QHZKrRFDHnaMHmQ0Zgn3D
-         yNMDOeB2ioI9uO43XmzN9rj2sPxZ+JPewuduY5THa2uLqd+fd+WgkYO/oW/qKesnxJWf
-         WJDA==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=niKnqml7zC5pFULMCBl20DPmuabrsvNS8Avv00VlMWE=;
+        b=nTwcgXacBOWIyO17J3T7x4kCqlbmnHrOXW8cNj49+Sti0s/kd5lxVHG5FYAW3uiJpi
+         BITVuCZSXrV6IF4DeVo9wp0meCHiPwz7ThSz1kzfwWxFdt2QwObyj4EN3eeLr4WGNhGb
+         lqKl3P8odkxgN6z8fZG+9l0sU29VH5dnb0zoNd1A7mvV59SYS+S9J+wh2PvbXjQ0jMaU
+         TvMLpsfScaxEVmSRfFTnJkvaXGOx2kpdlDT5+NUSCnImbmsMzK3LfPl9Qx8Ljx7mfAvZ
+         Jlf2W7tMNMeaW2PQ3pAtE0cNOwSbI73W94MEbOX+dmgfEHdKo8fkbNUQZ/wvi9oRsGjM
+         1FyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=u3CunL95z4Y4C3X3Rg9oAtOWwPRis+D18Y3Q+DxpcK8=;
-        b=qmwoZa/nGbhFQt1YogIjCHN7BJA0YNy13nMg30qh12a3OQyTdY8x5wqgjFCJjMMSEm
-         7zE2K4HzmKMu5KwffyQfYfxYh3mOY39/2/WK3YSAtjBgavzimSd4Ku0zl/z0O63cBzGK
-         T73XrLwfInDHbzo8v1OLm30NjxszRZnIoKIOwBtIK2vkWTgrlB5SNIdQpa0TufwQKN3J
-         V+1b0pDM/gFQz2Q5KyAiVDCxYPMh1tYwdc1KiyDheKCIBvRVGgTW3qgxk43Pe/HpFL8S
-         wrEw0eFGjAVZEW/zVUMCSgZijJ8QQJoE4kqBEQ+0MBi3KAoQFkBV1Mrpyvs7pFOrIEGp
-         Lzdw==
-X-Gm-Message-State: AOAM5336NSjtu/8mA/VpeNGMbxkrYzgZbjbYMx6cDOh3s9VmtN2aEhxB
-        00vmi1IB9cqfHMM7//eO6QunljBq13qGkzYgFVsJY66o
-X-Google-Smtp-Source: ABdhPJyRVZSJwKzeoSrgKNIOhQaQ02XfzFsT1LdC15x3KKcvdB+qQwsUtn+jL7GcPpAZNLO/zyeyi8cgsO5Xr759uEs=
-X-Received: by 2002:ac8:7762:: with SMTP id h2mr2286758qtu.259.1611607910131;
- Mon, 25 Jan 2021 12:51:50 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=niKnqml7zC5pFULMCBl20DPmuabrsvNS8Avv00VlMWE=;
+        b=L+ngB8yyJ0jnXLiHUaX37NL80LTe32uhXuHX/W634e3rjR568TW7bFGPSTc69dYZOG
+         Rc+/UdpCUzqviKIxmjZl90gezCYHtVyXSCwp3Mb/I6y7hP3VXgULdgPt5HqLm3k5/hC4
+         rFcW1LaS5y9D31chzpi9H4rXJVG3ka9EkaDq0uTXP5mo+NIqZPn2GiPeaomRFSdUDrHQ
+         cG1Ut+eZITZ/4wcDgkIE5dASRAZYlPyUSULO2JtIItcf9l/F+xlBBN3t/mlccZUGiTKR
+         cENOxyImEF3/tr5zjrD9hKwug+G9ShldRLc1OjVbLn53V1IeBh2brlNLLvVyax4siXcA
+         893w==
+X-Gm-Message-State: AOAM530oVklYHb0e49bzU9lsyjK3J8WPyAH17bSwK+GMaWEbP/ZEdtCy
+        Jr63WW81qENzhURNt/7b9sXp6PZK9D3JdfSU
+X-Google-Smtp-Source: ABdhPJzPgdW3PPLtjzqPd28b002hA5VqIxXzmwvjqq0kI3Uga2Y7QtGJeuapu9ljTVXbLg6lKogZCQ==
+X-Received: by 2002:ae9:e716:: with SMTP id m22mr2753241qka.245.1611608233438;
+        Mon, 25 Jan 2021 12:57:13 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11c1::12e0? ([2620:10d:c091:480::1:8a2c])
+        by smtp.gmail.com with ESMTPSA id l22sm3537574qtl.96.2021.01.25.12.57.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 12:57:12 -0800 (PST)
+Subject: Re: [PATCH v7 02/10] fs: add O_ALLOW_ENCODED open flag
+To:     Omar Sandoval <osandov@osandov.com>, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1611346706.git.osandov@fb.com>
+ <09988d880282a6ef0dd04d1fce7db1dbbd2d335c.1611346706.git.osandov@fb.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <53d9bf65-7076-c136-b464-f5c35de37790@toxicpanda.com>
+Date:   Mon, 25 Jan 2021 15:57:10 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210125194210.24071-1-roman.anasal@bdsu.de> <20210125194210.24071-4-roman.anasal@bdsu.de>
-In-Reply-To: <20210125194210.24071-4-roman.anasal@bdsu.de>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 25 Jan 2021 20:51:39 +0000
-Message-ID: <CAL3q7H79meSfikTKvTujQzA_SRb3bfF9ajYtWSVTfu0+pLE8wQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] btrfs: send: fix invalid commands for inodes with
- changed rdev but same gen
-To:     Roman Anasal <roman.anasal@bdsu.de>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <09988d880282a6ef0dd04d1fce7db1dbbd2d335c.1611346706.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 7:51 PM Roman Anasal <roman.anasal@bdsu.de> wrote:
->
-> This is analogous to the preceding patch ("btrfs: send: fix invalid
-> commands for inodes with changed type but same gen") but for changed
-> rdev:
->
-> When doing an incremental send, if a new inode has the same number as an
-> inode in the parent subvolume, was created with the same generation but
-> has differing rdev it will not be detected as changed and thus not
-> recreated. This will lead to incorrect results on the receiver where the
-> inode will keep the rdev of the inode in the parent subvolume or even
-> fail when also the ref is unchanged.
->
-> This case does not happen when doing incremental sends with snapshots
-> that are kept read-only by the user all the time, but it may happen if
-> - a snapshot was modified in the same transaction as its parent after it
->   was created
-> - the subvol used as parent was created independently from the sent subvo=
-l
->
-> Example reproducers:
->
->   # case 1: same ino at same path
->   btrfs subvolume create subvol1
->   btrfs subvolume create subvol2
->   mknod subvol1/a c 1 3
->   mknod subvol2/a c 1 5
->   btrfs property set subvol1 ro true
->   btrfs property set subvol2 ro true
->   btrfs send -p subvol1 subvol2 | btrfs receive --dump
->
-> The produced tree state here is:
->   |-- subvol1
->   |   `-- a         (ino 257, c 1,3)
->   |
->   `-- subvol2
->       `-- a         (ino 257, c 1,5)
->
-> Where subvol1/a and subvol2/a are character devices with differing minor
-> numbers but same inode number and same generation.
->
-> Example output of the receive command:
->   At subvol subvol2
->   snapshot        ./subvol2                       uuid=3D7513941c-4ef7-f8=
-47-b05e-4fdfe003af7b transid=3D9 parent_uuid=3Db66f015b-c226-2548-9e39-048c=
-7fdbec99 parent_transid=3D9
->   utimes          ./subvol2/                      atime=3D2021-01-25T17:1=
-4:36+0000 mtime=3D2021-01-25T17:14:36+0000 ctime=3D2021-01-25T17:14:36+0000
->   link            ./subvol2/a                     dest=3Da
->   unlink          ./subvol2/a
->   utimes          ./subvol2/                      atime=3D2021-01-25T17:1=
-4:36+0000 mtime=3D2021-01-25T17:14:36+0000 ctime=3D2021-01-25T17:14:36+0000
->   utimes          ./subvol2/a                     atime=3D2021-01-25T17:1=
-4:36+0000 mtime=3D2021-01-25T17:14:36+0000 ctime=3D2021-01-25T17:14:36+0000
->
-> =3D> the `link` command causes the receiver to fail with:
->    ERROR: link a -> a failed: File exists
->
-> Second example:
->   # case 2: same ino at different path
->   btrfs subvolume create subvol1
->   btrfs subvolume create subvol2
->   mknod subvol1/a c 1 3
->   mknod subvol2/b c 1 5
->   btrfs property set subvol1 ro true
->   btrfs property set subvol2 ro true
->   btrfs send -p subvol1 subvol2 | btrfs receive --dump
+On 1/22/21 3:46 PM, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> The upcoming RWF_ENCODED operation introduces some security concerns:
+> 
+> 1. Compressed writes will pass arbitrary data to decompression
+>     algorithms in the kernel.
+> 2. Compressed reads can leak truncated/hole punched data.
+> 
+> Therefore, we need to require privilege for RWF_ENCODED. It's not
+> possible to do the permissions checks at the time of the read or write
+> because, e.g., io_uring submits IO from a worker thread. So, add an open
+> flag which requires CAP_SYS_ADMIN. It can also be set and cleared with
+> fcntl(). The flag is not cleared in any way on fork or exec.
+> 
+> Note that the usual issue that unknown open flags are ignored doesn't
+> really matter for O_ALLOW_ENCODED; if the kernel doesn't support
+> O_ALLOW_ENCODED, then it doesn't support RWF_ENCODED, either.
+> 
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-As I've told you before for the v1 patchset from a week or two ago,
-this is not a supported scenario for incremental sends.
-Incremental sends are meant to be used on RO snapshots of the same
-subvolume, and those snapshots must never be changed after they were
-created.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Incremental sends were simply not designed for these cases, and can
-never be guaranteed to work with such cases.
+Thanks,
 
-The bug is not having incremental sends fail right away, with an
-explicit error message, when the send and parent roots aren't RO
-snapshots of the same subvolume.
-
->
-> The produced tree state here is:
->   |-- subvol1
->   |   `-- a         (ino 257, c 1,3)
->   |
->   `-- subvol2
->       `-- b         (ino 257, c 1,5)
->
-> Where subvol1/a and subvol2/b are character devices with differing minor
-> numbers but same inode number and same generation.
->
-> Example output of the receive command:
->   At subvol subvol2
->   snapshot        ./subvol2                       uuid=3D1c175819-8b97-00=
-46-a20e-5f95e37cbd40 transid=3D13 parent_uuid=3Dbad4a908-21b4-6f40-9a08-6b0=
-768346725 parent_transid=3D13
->   utimes          ./subvol2/                      atime=3D2021-01-25T17:1=
-8:46+0000 mtime=3D2021-01-25T17:18:46+0000 ctime=3D2021-01-25T17:18:46+0000
->   link            ./subvol2/b                     dest=3Da
->   unlink          ./subvol2/a
->   utimes          ./subvol2/                      atime=3D2021-01-25T17:1=
-8:46+0000 mtime=3D2021-01-25T17:18:46+0000 ctime=3D2021-01-25T17:18:46+0000
->   utimes          ./subvol2/b                     atime=3D2021-01-25T17:1=
-8:46+0000 mtime=3D2021-01-25T17:18:46+0000 ctime=3D2021-01-25T17:18:46+0000
->
-> =3D> subvol1/a is renamed to subvol2/b instead of recreated to updated
->    rdev which results in received subvol2/b having the wrong minor
->    number:
->
->   257 crw-r--r--. 1 root root 1, 3 Jan 25 17:18 subvol2/b
->
-> Signed-off-by: Roman Anasal <roman.anasal@bdsu.de>
-> ---
-> v2:
->   - add this patch to also handle changed rdev
-> ---
->  fs/btrfs/send.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index c8b1f441f..ef544525f 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -6263,6 +6263,7 @@ static int changed_inode(struct send_ctx *sctx,
->         struct btrfs_inode_item *right_ii =3D NULL;
->         u64 left_gen =3D 0;
->         u64 right_gen =3D 0;
-> +       u64 left_rdev, right_rdev;
->         u64 left_type, right_type;
->
->         sctx->cur_ino =3D key->objectid;
-> @@ -6285,6 +6286,8 @@ static int changed_inode(struct send_ctx *sctx,
->                                 struct btrfs_inode_item);
->                 left_gen =3D btrfs_inode_generation(sctx->left_path->node=
-s[0],
->                                 left_ii);
-> +               left_rdev =3D btrfs_inode_rdev(sctx->left_path->nodes[0],
-> +                               left_ii);
->         } else {
->                 right_ii =3D btrfs_item_ptr(sctx->right_path->nodes[0],
->                                 sctx->right_path->slots[0],
-> @@ -6300,6 +6303,9 @@ static int changed_inode(struct send_ctx *sctx,
->                 right_gen =3D btrfs_inode_generation(sctx->right_path->no=
-des[0],
->                                 right_ii);
->
-> +               right_rdev =3D btrfs_inode_rdev(sctx->right_path->nodes[0=
-],
-> +                               right_ii);
-> +
->                 left_type =3D S_IFMT & btrfs_inode_mode(
->                                 sctx->left_path->nodes[0], left_ii);
->                 right_type =3D S_IFMT & btrfs_inode_mode(
-> @@ -6310,7 +6316,8 @@ static int changed_inode(struct send_ctx *sctx,
->                  * the inode as deleted+reused because it would generate =
-a
->                  * stream that tries to delete/mkdir the root dir.
->                  */
-> -               if ((left_gen !=3D right_gen || left_type !=3D right_type=
-) &&
-> +               if ((left_gen !=3D right_gen || left_type !=3D right_type=
- ||
-> +                   left_rdev !=3D right_rdev) &&
->                     sctx->cur_ino !=3D BTRFS_FIRST_FREE_OBJECTID)
->                         sctx->cur_inode_recreated =3D 1;
->         }
-> @@ -6350,8 +6357,7 @@ static int changed_inode(struct send_ctx *sctx,
->                                 sctx->left_path->nodes[0], left_ii);
->                 sctx->cur_inode_mode =3D btrfs_inode_mode(
->                                 sctx->left_path->nodes[0], left_ii);
-> -               sctx->cur_inode_rdev =3D btrfs_inode_rdev(
-> -                               sctx->left_path->nodes[0], left_ii);
-> +               sctx->cur_inode_rdev =3D left_rdev;
->                 if (sctx->cur_ino !=3D BTRFS_FIRST_FREE_OBJECTID)
->                         ret =3D send_create_inode_if_needed(sctx);
->         } else if (result =3D=3D BTRFS_COMPARE_TREE_DELETED) {
-> @@ -6396,8 +6402,7 @@ static int changed_inode(struct send_ctx *sctx,
->                                         sctx->left_path->nodes[0], left_i=
-i);
->                         sctx->cur_inode_mode =3D btrfs_inode_mode(
->                                         sctx->left_path->nodes[0], left_i=
-i);
-> -                       sctx->cur_inode_rdev =3D btrfs_inode_rdev(
-> -                                       sctx->left_path->nodes[0], left_i=
-i);
-> +                       sctx->cur_inode_rdev =3D left_rdev;
->                         ret =3D send_create_inode_if_needed(sctx);
->                         if (ret < 0)
->                                 goto out;
-> --
-> 2.26.2
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Josef
