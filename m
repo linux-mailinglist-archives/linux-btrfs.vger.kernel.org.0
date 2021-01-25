@@ -2,109 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D09302E2E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 22:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A92BB302F5D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Jan 2021 23:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbhAYVoB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Jan 2021 16:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S1731500AbhAYWs6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Jan 2021 17:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732179AbhAYVnS (ORCPT
+        with ESMTP id S1732530AbhAYWsP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:43:18 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119B6C061574
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 13:42:38 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id t63so1423562qkc.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 13:42:38 -0800 (PST)
+        Mon, 25 Jan 2021 17:48:15 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED792C061573
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 14:47:34 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id c12so14607380wrc.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 14:47:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I3VPeS0Sg3Q8+v3wgX+8fkragpLOZtDtYWDmBB8Y/eE=;
-        b=xSHDyOYX5f3rZwU9FLUQywklufhCsHaBbgpTK8ecGZartqkIqpwfIFvJELYg2MpzHm
-         EAH47uHxHAZVNQsyn/l2WGeQsSM+/9lRiaXCZDrzEzj5JoFpox14gem+Cczf4gw7yztk
-         wly2VBEgsj9BoTYnjnW6hQxqk0FfQTsXhDCL1fMx/87c55OuL60QawE3iupaEv8DU4EQ
-         76Qra22F+iTEtHfQ65rQN8vCJRnDZBeODdaOW3ugKq8Fiomr6nMNOQK8j39MrSk2mZiI
-         BHNSbDbCRFzztQaNmxbEPZpRm8WiVyRUMDstiLraCOK1i89ZhEBNCluYxVsdCrqk2MCH
-         qwgg==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pXFXlU7e9FNZWc314CzDD4oC3eLzXznJmc7MwxnCyN0=;
+        b=iqoFBqFXMSf8+u17+/ShN8xG0rcNmmFThpTvjeCzDvkKBaC/s/rM+W/4+xzoGNcQbv
+         KeHclEMwXVJxRCTx0+KIfk5C5HWmKUgvnc8pjMmx6MJseR107kOan4UXg3+gHlWcphXu
+         VmA4NLnwlULvG+vtWxGmDRsc1C7oMOxoc8VgvWhvxz1co9y6Dk0XedRR8aoS1IXHgiT1
+         YnUEi34ytJCNG0GXuJGy0wo7hTcDCMGd6k7yD6RINkQd2Bm9IoB+oB4Ez6c7OOTVbfut
+         E3vDuGA66NLugOj8N+A6w8zwxFEHgxl9pv6B23AlgXPKkQaBETXgoVEbPip0SmIPZvsn
+         DKSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I3VPeS0Sg3Q8+v3wgX+8fkragpLOZtDtYWDmBB8Y/eE=;
-        b=LrcwSkLYwZ5p6fSbSO7kyUl0m2GICoDRy27DCJ986NrzKMN6zp/hmLhJNKJv+Yp1ny
-         bdoxVgSnvcGso9RCl9YDeSdZYrgK0t6GiNRn/pAPwRVYmrh3v5l9UZy79BbboHYrfIA7
-         ElYRdIyrfhJIrVagv7NCad0iA/8Q63XWpy/+rUTFQY2cVpE0V29wyyis6ujrRfP0xpjq
-         rTkEGHnOlY6HKI4ismlWDySEqDWrV6WyDA7DiL5s9ITlaVVFCrrzyQxaG4l4bPYq9m9u
-         QdOcw/8aORkagh0AVCJ4Wjhr+Q5k95s+2CeIa6pw4wh7c4HocBiAAS1uFW+ShYTq9p28
-         6yIQ==
-X-Gm-Message-State: AOAM530u4czRJbfco/JBRtqsLe00kVnUVxKNBuB/EHCG5G6UoaFSIrUJ
-        0jrN8SHYig2OpZpo5Pc9SIBz66sV/CTHMYs9
-X-Google-Smtp-Source: ABdhPJxGPjapu+ZgK+q+A3UmaoG++sjrnqArXGSLES9To0ATvdaEgQy6sX6Nbu8qIyu82o+i6WcVaw==
-X-Received: by 2002:a05:620a:124c:: with SMTP id a12mr2943773qkl.372.1611610956957;
-        Mon, 25 Jan 2021 13:42:36 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id q25sm5016971qkc.23.2021.01.25.13.42.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 13:42:36 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     stable@vger.kernel.org
-Subject: [PATCH] btrfs: avoid double put of block group when emptying cluster
-Date:   Mon, 25 Jan 2021 16:42:35 -0500
-Message-Id: <5ca694ff4f8cff4c0ef6896593a1f1d01fbe956d.1611610947.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pXFXlU7e9FNZWc314CzDD4oC3eLzXznJmc7MwxnCyN0=;
+        b=NUgPaqnPcMSeCbCtAfDXWfeehDfjoPw6As8+xBPuJKXj7CcSLZMD5pQsv6DSjPxPho
+         aGbi6b8gPxXLaNZT+dCRa+PmdyOURbaWbHAXZsctSLaS5aNV5UeE1KHpyppaQe+WbNET
+         /eHMt3Ut3t+Lcqtw+gXen3pD25pkzHZSU0iHPk4+G7E2DW63o0nayDrhCSZmJ6tBH09P
+         ZooLeo6E9qLFmURNIRMDiP6sGeIx1khEZIDNUxLLqqjf0OzrfoUe18eRdXnhqjdDX8Uz
+         tmwEDwiwyPYu2kwjKBb/hWsL4mYUb0Ffo1oVPAadb5CuSr+u/nolQqW4s3evYxW7IdUK
+         KB0w==
+X-Gm-Message-State: AOAM532Ffs/HGkYGsqj7Ao3aPNGftA9nGnlAIB1MF+JAQY7agsfBMgeK
+        QG0EB7iKGyK2iEiSQ6CdIsgOYvkehNE0yGALclT7Gg==
+X-Google-Smtp-Source: ABdhPJw3VfO4ip7PsgTDtnX2ak+eKFFaztRB+iibAr9ypgOhkAWbw5veGtJX7qW2uDCNifwAWh3s2O9GMH84L4Nsgg8=
+X-Received: by 2002:a5d:414f:: with SMTP id c15mr3214914wrq.42.1611614853718;
+ Mon, 25 Jan 2021 14:47:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <b693c33d-ed2e-3749-a8ac-b162e9523abb@gmail.com>
+In-Reply-To: <b693c33d-ed2e-3749-a8ac-b162e9523abb@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 25 Jan 2021 15:47:17 -0700
+Message-ID: <CAJCQCtSwC--k1agUzBcGgdCZZu426fVoUw-V3m8C4XjeN7yQaA@mail.gmail.com>
+Subject: Re: Only one subvolume can be mounted after replace/balance
+To:     =?UTF-8?Q?Jakob_Sch=C3=B6ttl?= <jschoett@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In __btrfs_return_cluster_to_free_space we will bail doing the cleanup
-of the cluster if the block group we passed in doesn't match the block
-group on the cluster.  However we drop a reference to block_group, as
-the cluster holds a reference to the block group while it's attached to
-the cluster.  If cluster->block_group != block_group however then this
-is an extra put, which means we'll go negative and free this block group
-down the line, leading to a UAF.
+On Sat, Jan 23, 2021 at 7:50 AM Jakob Sch=C3=B6ttl <jschoett@gmail.com> wro=
+te:
+>
+> Hi,
+>
+> In short:
+> When mounting a second subvolume from a pool, I get this error:
+> "mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda,
+> missing code page or helper program, or other."
+> dmesg | grep BTRFS only shows this error:
+> info (device sda): disk space caching is enabled
+> error (device sda): Remounting read-write after error is not allowed
 
-Fix this by simply bailing if the block group we passed in does not
-match the block group on the cluster.
+It went read-only before this because it's confused. You need to
+unmount it before it can be mounted rw. In some cases a reboot is
+needed.
 
-CC: stable@vger.kernel.org
-Fixes: fa9c0d795f7b ("Btrfs: rework allocation clustering")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/free-space-cache.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> What happened:
+>
+> In my RAID1 pool with two disk, I successfully replaced one disk with
+>
+> btrfs replace start 2 /dev/sdx
+>
+> After that, I mounted the pool and did
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 0d6dcb5ff963..8be36cc6cbd8 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -2711,8 +2711,10 @@ static void __btrfs_return_cluster_to_free_space(
- 	struct rb_node *node;
- 
- 	spin_lock(&cluster->lock);
--	if (cluster->block_group != block_group)
--		goto out;
-+	if (cluster->block_group != block_group) {
-+		spin_unlock(&cluster->lock);
-+		return;
-+	}
- 
- 	cluster->block_group = NULL;
- 	cluster->window_start = 0;
-@@ -2750,8 +2752,6 @@ static void __btrfs_return_cluster_to_free_space(
- 				   entry->offset, &entry->offset_index, bitmap);
- 	}
- 	cluster->root = RB_ROOT;
--
--out:
- 	spin_unlock(&cluster->lock);
- 	btrfs_put_block_group(block_group);
- }
--- 
-2.26.2
+I don't understand this sequence. In order to do a replace, the file
+system is already mounted.
 
+>
+> btrfs fi show /mnt
+>
+> which showed WARNINGs about
+> "filesystems with multiple block group profiles detected"
+> (don't remember exactly)
+>
+> I thought it is a good idea to do
+>
+> btrfs balance start /mnt
+>
+> which finished without errors.
+
+Balance alone does not convert block groups to a new profile. You have
+to explicitly select a conversion filter, e.g.
+
+btrfs balance start -dconvert=3Draid1,soft -mconvert=3Draid1,soft /mnt
+
+> Now, I can only mount one (sub)volume of the pool at a time. Others can
+> only be mounted read-only. See error messages at top of this mail.
+>
+> Do you have any idea what happened or how to fix it?
+>
+> I already tried rescue zero-log and super-recovery which was successful
+> but didn't help.
+
+I advise anticipating the confusion will get worse, and take the
+opportunity to refresh the backups. That's the top priority, not
+fixing the file system.
+
+Next let us know the following:
+
+kernel version
+btrfs-progs version
+Output from commands:
+btrfs fi us /mnt
+btrfs check --readonly
+
+
+--=20
+Chris Murphy
