@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3785A30358D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 06:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327D7303591
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 06:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388706AbhAZFp3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jan 2021 00:45:29 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:38256 "EHLO
+        id S2388750AbhAZFp7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 00:45:59 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:33033 "EHLO
         esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732097AbhAZCgS (ORCPT
+        with ESMTP id S1732136AbhAZCiW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:36:18 -0500
+        Mon, 25 Jan 2021 21:38:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611628578; x=1643164578;
+  t=1611628701; x=1643164701;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=gvbD4z5IB2RF0Zbskb8h6rGcV0uN7PdkjCyrNVFHGfE=;
-  b=WiOjE9/BX02hKw5PlZezYyMcZzFMyklMGODLH9zkiYjGCm7Fwrs95Ze4
-   M7ovt9iit3arAt8kKpz7gYbet3ZkgBM1lJnPCz56etbvc9r39SF44CIQG
-   tkaCRRwAoZhSQyD320XCxX+IUHYcW3HffacM+OyLRmsPIovOaTf8nnHP1
-   nCFfhxKqXy32rxm4M5ah+ZR9iwjRijGhUHlVEDrlJXV3BVvrC7bidcfi7
-   1JIVsBKWtUzh9uaVAH2Y3oD+UG8owX+C+e/TECbKzyBgsCDB8FVX4E4ai
-   e6cLpmma2c92OaEEv2S3DHTckIGcmAStNoiJM48fIA4YgaAqaVxG/1JsQ
+  bh=TPIdQDn9DfTnmfdGppIQ7mhUm11+1iLGE3pAmciGZjM=;
+  b=K4r9oiwU+MfVQdwFJK7332hiU5+V/qAmjC9TAPo/3DBv/T5lHnNcsUSK
+   R/tDtr9Q/16KkPSVCzBXAhcysRZ0Wf/pjR7bBwIjTJowA95AlRwjofGDD
+   JmwOqV+iDNYeU8Rs+TpC7JCG3HX/2RWp07oXpNZ5MbpXLx5qYYGyA8xKZ
+   vgDGKV8SZhvsEcAXAnEuorIedSaxPz356qEYZyK135uvXPFa22lAQl+Pa
+   Yi8e2jNxoIBjj5ctzahV5doLi4PxEuB8GTNOHEkokSS5Emj1VuYF4ZM3k
+   Guupcng/QJYYh9b9LmirgAjIs2FJAm4CI6gUa4jB9Ifb/jh8S4bchvr8S
    Q==;
-IronPort-SDR: k4LpN99b4XT6Zq4bWdw3begrLZ1qMvF1Km7vc3jqgxHj0n/aVGmk/AJBEbV6qDcpfW14NxBrPw
- Fy9OwDmS/mqg+j92Y8Qcm0h3eginUXnqe7yAS9+hrD+0zhEGmQumg9sFEMV17vavRgsaktL6Qa
- VvKTilUgsuVDTasZo1o8EuH3Mfc36QTGLpzevMKgxypNYE3WfhnkOWuu6IqK+JkziQoed+0c8V
- UnbMbu4nKVQOnDXrWlVPSzZxeQE+IxNhnUjgoQgpsiEDoK0HbnMfWYMhdPs5xrdMW2XP8DPKYA
- 5Ik=
+IronPort-SDR: raoLNe2xct/YVZgEb3wzsFelkEk5Bxe9EDofDwxZpWvMUbxwcjqGVPw75fZin5gPNB/BTzvzpU
+ 6A+3+mMHiKm7dyGYb3ljpeKN2lfUSR2sSQAaEoyVVQj4KB/Ab0E0hLcy7xlnkVakqP/6wHcw1F
+ vEI2iaVU7FBg6UE2xXpgOrnDJFwLvucyn+WkMpKA89ZcdyK5SA6zI/iuo779fL6UtEUdsq07cr
+ iIftDzVp65Dl0PTBwZNLwlXES/3ClsqITEGdN8anZvgNxAs2a62pDlqZWWmXE/I10+BH8AEVF0
+ /Ic=
 X-IronPort-AV: E=Sophos;i="5.79,375,1602518400"; 
-   d="scan'208";a="159483555"
+   d="scan'208";a="159483558"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 10:26:38 +0800
-IronPort-SDR: d6fKTtOpH5EemapAftatn7Ai4/mAeMEZMRW5V4JnSIn+r4fEW7jaIaTHSFUKajOEwzT838460f
- vmwJkSwRi9gqeyeN3Z6W738TbGRoRRCFcnd+H8uhX97WpZuuaSckXtYeA8LCXwz3mElYTbW1fG
- +vhIel9gXquIzZehQ86xpRLnno9pZghFCrSz5PHWWr43E1sV4M2nqlrHrFTRIFNT1MxxizvNsp
- acOG1wzky3YHn638EqJhlZg52iPTzObflYwaazdWjmKOCs1y3bgbhVPXikNC7PmVB4OVAFriE+
- xjvwpHD8OIhkBUjfmDMDmntR
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 10:26:42 +0800
+IronPort-SDR: 7kMGEyTaXm9TWn1YvpZbqrp4MFHS7D7j3fg+7CdriszOCP7gmpbr4KBSTaZdIT5Cd3u6ziRK+H
+ HIJUGcMLAy6Ck8CSP7FcVUFDgIAa9N4ULW7D8rQYnN5/Ed3hpYU/1Z1RSRqVzq+IJwtnEqbdMH
+ dHkZGaM3ejlPVGdzWxoqIEh1LHiyU489S8YRuzmOJUhhw1cc3bOqGN2WLU5DPXXgLT1LYItwoV
+ nNLh5nrQ12Sl+3hxUmWSQTFwTosH5Rdj+4IyJCKZMUAzEzR3v5aAhmtAg/3Ol/p1hgjERwRfho
+ 24Vsyb5W9V+8n9pDzWZg+dP1
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 18:11:05 -0800
-IronPort-SDR: SlkyZqQhJEYFkVpk8OrMkvn61ZlafXC45jpVCdvH7dC6G4WihOx1dSlpm4KI2EQwlgP8yatPEP
- N/dwpEwV0fDtTsLrTDLmGSP5XfM5ovAX38fjuY46IfNvmTCHGy8ddtyrlSE+G1Vu95bEBPhSP9
- DVBzPyTbF2W75EkhDT+yBN2NpXK+6WHtRhjSoD/kkHI6z7HFDK8ZeH1DMRqVXaerhrSTSPvF2+
- 5UM0xpPn7dEEzg4NqNkloTCd1R5ko+fzmQ7tZribXcbj2P/MlNTpYyy8g3g545SMe2sSNOHmLO
- c9s=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 18:11:08 -0800
+IronPort-SDR: VB8H1rMRHfe5tUzN4+dQ8JfGDwB/YcfLi/OkEn6wv7OE+bWddWRJ9WNyXyI3cLFAnzMJrdx+AO
+ a+THcKHwQWskEvwt9wDq7ZYLGeUSko5QltHqwTNB6qlj0LVFLMQPQgmdPiMRsRUw+6tYAcWaoE
+ u8eh2JXIalpdUrnDsF3KsSK6AZZ+bGMXbHDLP7A390bYYLTNRz11v1IZEPphLiffrqUEFIJueA
+ 1R3B0tqCI2kFkmk7Tp1GsZxEyjWgKRIi7FZlHWaru1b6uCnZ5SN9ffRPwFEpkL6vEABDu71xo4
+ 1tA=
 WDCIronportException: Internal
 Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jan 2021 18:26:36 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jan 2021 18:26:40 -0800
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
@@ -56,11 +56,10 @@ Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
         Christoph Hellwig <hch@infradead.org>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
         Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v14 23/42] btrfs: check if bio spans across an ordered extent
-Date:   Tue, 26 Jan 2021 11:25:01 +0900
-Message-Id: <430fac31a56a9d251c42f1e3036d7614abe56be4.1611627788.git.naohiro.aota@wdc.com>
+Subject: [PATCH v14 25/42] btrfs: cache if block-group is on a sequential zone
+Date:   Tue, 26 Jan 2021 11:25:03 +0900
+Message-Id: <bbc251e8d71f081b6f8baabd5f0a67c19b401f57.1611627788.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1611627788.git.naohiro.aota@wdc.com>
 References: <cover.1611627788.git.naohiro.aota@wdc.com>
@@ -72,96 +71,100 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-To ensure that an ordered extent maps to a contiguous region on disk, we
-need to maintain a "one bio == one ordered extent" rule.
+In zoned mode, cache if a block-group is on a sequential write only zone.
+On sequential write only zones, we can use REQ_OP_ZONE_APPEND for writing
+of data, therefore provide btrfs_use_zone_append() to figure out if I/O is
+targeting a sequential write only zone and we can use said
+REQ_OP_ZONE_APPEND for data writing.
 
-This commit ensures that constructing bio does not span across an ordered
-extent.
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/ctree.h     |  2 ++
- fs/btrfs/extent_io.c |  9 +++++++--
- fs/btrfs/inode.c     | 29 +++++++++++++++++++++++++++++
- 3 files changed, 38 insertions(+), 2 deletions(-)
+ fs/btrfs/block-group.h |  2 ++
+ fs/btrfs/zoned.c       | 29 +++++++++++++++++++++++++++++
+ fs/btrfs/zoned.h       |  5 +++++
+ 3 files changed, 36 insertions(+)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 29976d37f4f9..6c4ff56eeb5e 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3119,6 +3119,8 @@ void btrfs_split_delalloc_extent(struct inode *inode,
- 				 struct extent_state *orig, u64 split);
- int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 			     unsigned long bio_flags);
-+bool btrfs_bio_fits_in_ordered_extent(struct page *page, struct bio *bio,
-+				      unsigned int size);
- void btrfs_set_range_writeback(struct extent_io_tree *tree, u64 start, u64 end);
- vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf);
- int btrfs_readpage(struct file *file, struct page *page);
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ad19757d685d..6092ca6edc86 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3098,10 +3098,15 @@ static bool btrfs_bio_add_page(struct bio *bio, struct page *page,
- 	if (btrfs_bio_fits_in_stripe(page, size, bio, bio_flags))
- 		return false;
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 9df00ada09f9..a1d96c4cfa3b 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -184,6 +184,8 @@ struct btrfs_block_group {
+ 	/* Record locked full stripes for RAID5/6 block group */
+ 	struct btrfs_full_stripe_locks_tree full_stripe_locks_root;
  
--	if (bio_op(bio) == REQ_OP_ZONE_APPEND)
-+	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-+		struct page *first_page = bio_first_bvec_all(bio)->bv_page;
++	/* Flag indicating this block-group is placed on a sequential zone */
++	bool seq_zone;
+ 	/*
+ 	 * Allocation offset for the block group to implement sequential
+ 	 * allocation. This is used only with ZONED mode enabled.
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index db6cb0070220..abe6b415de98 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1103,6 +1103,9 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
+ 		}
+ 	}
+ 
++	if (num_sequential > 0)
++		cache->seq_zone = true;
 +
-+		if (!btrfs_bio_fits_in_ordered_extent(first_page, bio, size))
-+			return false;
- 		ret = bio_add_zone_append_page(bio, page, size, pg_offset);
--	else
-+	} else {
- 		ret = bio_add_page(bio, page, size, pg_offset);
-+	}
- 
- 	return ret == size;
+ 	if (num_conventional > 0) {
+ 		/*
+ 		 * Avoid calling calculate_alloc_pointer() for new BG. It
+@@ -1223,3 +1226,29 @@ void btrfs_free_redirty_list(struct btrfs_transaction *trans)
+ 	}
+ 	spin_unlock(&trans->releasing_ebs_lock);
  }
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 92fae7654a3a..419f4290bdf8 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2217,6 +2217,35 @@ static blk_status_t btrfs_submit_bio_start(struct inode *inode, struct bio *bio,
- 	return btrfs_csum_one_bio(BTRFS_I(inode), bio, 0, 0);
- }
- 
 +
-+
-+bool btrfs_bio_fits_in_ordered_extent(struct page *page, struct bio *bio,
-+				      unsigned int size)
++bool btrfs_use_zone_append(struct btrfs_inode *inode, struct extent_map *em)
 +{
-+	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
 +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	struct btrfs_ordered_extent *ordered;
-+	u64 len = bio->bi_iter.bi_size + size;
-+	bool ret = true;
++	struct btrfs_block_group *cache;
++	bool ret = false;
 +
-+	ASSERT(btrfs_is_zoned(fs_info));
-+	ASSERT(fs_info->max_zone_append_size > 0);
-+	ASSERT(bio_op(bio) == REQ_OP_ZONE_APPEND);
++	if (!btrfs_is_zoned(fs_info))
++		return false;
 +
-+	/* Ordered extent not yet created, so we're good */
-+	ordered = btrfs_lookup_ordered_extent(inode, page_offset(page));
-+	if (!ordered)
-+		return ret;
++	if (!fs_info->max_zone_append_size)
++		return false;
 +
-+	if ((bio->bi_iter.bi_sector << SECTOR_SHIFT) + len >
-+	    ordered->disk_bytenr + ordered->disk_num_bytes)
-+		ret = false;
++	if (!is_data_inode(&inode->vfs_inode))
++		return false;
 +
-+	btrfs_put_ordered_extent(ordered);
++	cache = btrfs_lookup_block_group(fs_info, em->block_start);
++	ASSERT(cache);
++	if (!cache)
++		return false;
++
++	ret = cache->seq_zone;
++	btrfs_put_block_group(cache);
 +
 +	return ret;
 +}
-+
- static blk_status_t extract_ordered_extent(struct btrfs_inode *inode,
- 					   struct bio *bio, loff_t file_offset)
- {
+diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
+index 331951978487..92888eb86055 100644
+--- a/fs/btrfs/zoned.h
++++ b/fs/btrfs/zoned.h
+@@ -46,6 +46,7 @@ void btrfs_calc_zone_unusable(struct btrfs_block_group *cache);
+ void btrfs_redirty_list_add(struct btrfs_transaction *trans,
+ 			    struct extent_buffer *eb);
+ void btrfs_free_redirty_list(struct btrfs_transaction *trans);
++bool btrfs_use_zone_append(struct btrfs_inode *inode, struct extent_map *em);
+ #else /* CONFIG_BLK_DEV_ZONED */
+ static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
+ 				     struct blk_zone *zone)
+@@ -134,6 +135,10 @@ static inline void btrfs_redirty_list_add(struct btrfs_transaction *trans,
+ 					  struct extent_buffer *eb) { }
+ static inline void btrfs_free_redirty_list(struct btrfs_transaction *trans) { }
+ 
++bool btrfs_use_zone_append(struct btrfs_inode *inode, struct extent_map *em)
++{
++	return false;
++}
+ #endif
+ 
+ static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
 -- 
 2.27.0
 
