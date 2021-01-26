@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4E4304527
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 18:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F8F30445A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 18:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389602AbhAZRYK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jan 2021 12:24:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54950 "EHLO mx2.suse.de"
+        id S2390229AbhAZIhQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 03:37:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54956 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728502AbhAZIgM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1729409AbhAZIgM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 26 Jan 2021 03:36:12 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611650069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1611650077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YAlpLzJU7IxvYSBWyZmuKFX7gvKK9uEoAFAvodNgg4Q=;
-        b=Bq+OD3eW4uothn+B0IRYWlEDIBw1aZmG49Ggia33QwAeaHxEUE4UUpxDS/t2nu1zFGCyao
-        x3AnP5HpBoVYXgQpyEMD+M/O9i6qy8WCGXDl/6c8KEvKWTEIIBkaWLq9kXZrllpWj2Djv2
-        /hMA3hoP72f8JR7FNUJTSo1mUDAx5PE=
+        bh=RwmTXdlxYy4Mp9tw9NVf4mZQW+bcQd25JUReFusnWZQ=;
+        b=BCrGXspdQyWJ7X1BHiYIt3aVzJI3BrQPYh6FVu3zGpgLr3lxjJePQ8TZjZIAbUJY5qPpkH
+        9UAPL2898vESqeVp6JFy5TcZPHi7hWxg+OueEuKI0BLRiitN8oYUZeZtfcqxuiT1LepqZ/
+        mlk+feEm08pCKFpoKKz3QajPWZskcmE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 37837ACF4;
-        Tue, 26 Jan 2021 08:34:29 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4C966AF4C;
+        Tue, 26 Jan 2021 08:34:37 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH v5 05/18] btrfs: make grab_extent_buffer_from_page() handle subpage case
-Date:   Tue, 26 Jan 2021 16:33:49 +0800
-Message-Id: <20210126083402.142577-6-wqu@suse.com>
+Subject: [PATCH v5 07/18] btrfs: attach private to dummy extent buffer pages
+Date:   Tue, 26 Jan 2021 16:33:51 +0800
+Message-Id: <20210126083402.142577-8-wqu@suse.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210126083402.142577-1-wqu@suse.com>
 References: <20210126083402.142577-1-wqu@suse.com>
@@ -39,59 +39,53 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For subpage case, grab_extent_buffer() can't really get an extent buffer
-just from btrfs_subpage.
+There are locations where we allocate dummy extent buffers for temporary
+usage, like in tree_mod_log_rewind() or get_old_root().
 
-We have radix tree lock protecting us from inserting the same eb into
-the tree.  Thus we don't really need to do the extra hassle, just let
-alloc_extent_buffer() handle the existing eb in radix tree.
+These dummy extent buffers will be handled by the same eb accessors, and
+if they don't have page::private subpage eb accessors could fail.
 
-Now if two ebs are being allocated as the same time, one will fail with
--EEIXST when inserting into the radix tree.
-
-So for grab_extent_buffer(), just always return NULL for subpage case.
+To address such problems, make __alloc_dummy_extent_buffer() attach
+page private for dummy extent buffers too.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_io.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ea105cb69e3a..16a29f63cfd1 100644
+index 118874926179..7ee28d94bae9 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -5282,10 +5282,19 @@ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
- }
- #endif
+@@ -5183,9 +5183,14 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
  
--static struct extent_buffer *grab_extent_buffer(struct page *page)
-+static struct extent_buffer *grab_extent_buffer(
-+		struct btrfs_fs_info *fs_info, struct page *page)
- {
- 	struct extent_buffer *exists;
- 
-+	/*
-+	 * For subpage case, we completely rely on radix tree to ensure we
-+	 * don't try to insert two ebs for the same bytenr.  So here we always
-+	 * return NULL and just continue.
-+	 */
-+	if (fs_info->sectorsize < PAGE_SIZE)
-+		return NULL;
+ 	num_pages = num_extent_pages(eb);
+ 	for (i = 0; i < num_pages; i++) {
++		int ret;
 +
- 	/* Page not yet attached to an extent buffer */
- 	if (!PagePrivate(page))
- 		return NULL;
-@@ -5371,7 +5380,7 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		}
+ 		eb->pages[i] = alloc_page(GFP_NOFS);
+ 		if (!eb->pages[i])
+ 			goto err;
++		ret = attach_extent_buffer_page(eb, eb->pages[i], NULL);
++		if (ret < 0)
++			goto err;
+ 	}
+ 	set_extent_buffer_uptodate(eb);
+ 	btrfs_set_header_nritems(eb, 0);
+@@ -5193,8 +5198,10 @@ struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
  
- 		spin_lock(&mapping->private_lock);
--		exists = grab_extent_buffer(p);
-+		exists = grab_extent_buffer(fs_info, p);
- 		if (exists) {
- 			spin_unlock(&mapping->private_lock);
- 			unlock_page(p);
+ 	return eb;
+ err:
+-	for (; i > 0; i--)
++	for (; i > 0; i--) {
++		detach_extent_buffer_page(eb, eb->pages[i - 1]);
+ 		__free_page(eb->pages[i - 1]);
++	}
+ 	__free_extent_buffer(eb);
+ 	return NULL;
+ }
 -- 
 2.30.0
 
