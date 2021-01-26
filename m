@@ -2,196 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38503048AE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 20:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943DF304D34
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 00:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388441AbhAZFoa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jan 2021 00:44:30 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:38250 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbhAZC1n (ORCPT
+        id S1731705AbhAZXEo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 18:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729331AbhAZEzK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:27:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611628062; x=1643164062;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=A8PFG3Diie06Y2nM5+Pb7vgzC9jKX3Ev6iZz/zowzC8=;
-  b=Ojhq2rt7TkWrMDZlqqbmLmydalhLLLzbrfm+cZC9GStIM/d7Ho1GzTtg
-   5qocebYNhXDRHz10wsM5weH0SYnLlxQwph+hSTTRH2t7oPFr369ICgrVb
-   ijvJmIfGUAjhd/NX0yYSuJ1633ZZ9cROllR8oh9+ZTRLpKRFkJlmZi18i
-   7yaEnm+a0b0q/gA1ORacTp6UHercfvOReilVHqcpXSzuDXeXgdKzYM3ax
-   dUv5pJLeA0sGDh34yfXfedzEuehV64Ki+SiL6/4pcUd4AXK7qT1VwC9TW
-   SW3y95MqHeZ+9pMxNXN0NKro7nD02uFXGA73KBsJvaSTmGEqMz+ulSb+i
-   g==;
-IronPort-SDR: lsw/RpoY+Og1AYFDO2vQAIJ6x/UUa4N+WxcTmlqTIEWPKJ+Tnb4Ji26zVkiemhHL64rZEITy16
- z8E23cKpBjowUUL1gehIJNgw0yt80B9WK1sUaVzW1QrCwKTibbVNUUGU0HrwdvUmgUVU6LtoUq
- FylkgTiCYwftIjbkRkenU70YV5fELfVapAUHHuFjg/WNhFrbnhE/avSyFs8chTbTzkbTbLTGm7
- eyXcJLSpGZs+WvX2bzCsxemMT22quL+lP1UqL70+4pULqPrHN6xX20tiMrRURtag98gFZNV6GQ
- JCU=
-X-IronPort-AV: E=Sophos;i="5.79,375,1602518400"; 
-   d="scan'208";a="159483502"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 10:26:04 +0800
-IronPort-SDR: Nq+72Ti/JXAMvJ+15nYOcpYgUgnWYT0rnJY4k9NJa1g9We/Dm9Np8kctCVhuaCkX8voegpLpIE
- uGxHCftCyH6ziZxF8zsDhHJVSCWGYQ3FFm5hiUhUNoD20Fe72qZY3wwfCEyFOhcW8rxiXwjEMb
- Hewjq/0OyrMGBHZxv1B7BcYANnXJABBXfKwyirYGhNXsdD24MwURTOOD2OimMAhp40LogRQkGu
- O+NaMjQFyHri6Kf73OsoFWmYVIkqlaVwdzBBZFUmfELz5CG5fuPx0e3UjSd5Jz4+3lxHAKHodA
- XYnl38rcKCHGDwx1rW1ok6IE
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 18:10:31 -0800
-IronPort-SDR: rDrtun07R3GdynqfAyO+viUrPAJg8nAlh2+MkkpTtcHGBggLcTHmw50M9T/gRRnbTF1wwOqIwo
- gw268IU1AURbVAxcmL8fuC+AFWB+lnR1R41dVJIdJx3T4WYpgUiV730GIhQz4f4+kY9qZA82hS
- r5Un9bE70NoebBbI6ep9FnGrGG/dsWGO8AwaDnC+V1e6z5yDiTbuRhYbywNt+j7IJn+bKAUZhj
- 1xqhjGlpWYPyqHvlRlRBNeD3kOmc9ODgjpj+VAlEH6Yc2ISCiUL8+V76x4G+mMjL4i1u6rmdMZ
- LeQ=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jan 2021 18:26:02 -0800
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v14 03/42] btrfs: defer loading zone info after opening trees
-Date:   Tue, 26 Jan 2021 11:24:41 +0900
-Message-Id: <d995c6d145d65b93fc1be56d5c5dfab869f50911.1611627788.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1611627788.git.naohiro.aota@wdc.com>
-References: <cover.1611627788.git.naohiro.aota@wdc.com>
+        Mon, 25 Jan 2021 23:55:10 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6909EC061788
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 20:54:30 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id m187so1352242wme.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Jan 2021 20:54:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rkjnsn-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=MPmCQXWKSTe1cJLnEO8jNShLQ8wkO39ZYX/ENh9wByE=;
+        b=Pjm09QXfgTxtD9dCeDpreWDU3uecONSs3FmOSxy+kAPVdT9O4WRtUHtJ2cIYhLBdIV
+         FWXESixfykdntFRuiKhaD3UZkTGC4uDrQfGc6WwoYIfIconl4gcvnQk+oG1rpJyFo8Ea
+         sC+AqeqX2gBHX5L+2j4A2EZ+fpZB1qM2qWmlZjQF2s6DzFkPYsaXNDIncn4LIoF/sulk
+         MSxI1V3F4jlb5h+S0vXxBFZ6E+LCb5dSHVNCeeu6ovRh9kGLsMEVRohhpQRDFf87vu36
+         7kR3H+jZ6qeUnUd/9X9G4ECUrL+hrtXQ9eKZ8wFDvsj3FpeG3eMxqn3NZWMhgprCiU6f
+         k2RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=MPmCQXWKSTe1cJLnEO8jNShLQ8wkO39ZYX/ENh9wByE=;
+        b=l6l24U06kPursRvOVE24gnjQmTF/b+YPjLoycP431jH7oZ1CBKzIJj1TgYmSMlzo+Z
+         8AgV9bXedihoDGBMuWIqioUEHhbhbvQ08268LPOk3jvTbc8fBo5E7cutVbDnoNZkY5ej
+         z3VXpa0hpSVk8Qwd/fhcNS/QTRSSN/Y7mdx8ex5ZyP7/vKbyFpfxHVxDlPudfnvMonBJ
+         UhMN12WCRMB+95W8oCBB/QM2tWou5NDjU0GsO+NFSeEfXMilWQmT+3H3lx2ze6Iz+l1n
+         tpF9twqmMKh45RKvim0c2K2GgVIo5HNb58UfLrMqJ/FdyNXgpFSeJKd5/I0k9LdLvdHB
+         z99Q==
+X-Gm-Message-State: AOAM533SmsKEeggX0KcVUKqgu9+zOE0jJ9o4XKfprFTIAWKPqeezjs3b
+        zIOc+YQ8bDupnWhIdMBEFse9/9Q3Elzu/k40UVU/BXW+sCqUxA==
+X-Google-Smtp-Source: ABdhPJxIu41ZXYmQTu48t3mzrpsVs6yBF5LhcetEr71P52gCK0Vh+DYEE2KrLgwl8o7lOMJGY2YyM1Sp0FuS2hdXx3s=
+X-Received: by 2002:a1c:2341:: with SMTP id j62mr2937455wmj.34.1611636869004;
+ Mon, 25 Jan 2021 20:54:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
+ <20190521091842.GS1667@carfax.org.uk> <CAMj6ewPKbRA_eT7JYA9ob9Qk9ZROoshOqaJE=4N_X9bPaskLUw@mail.gmail.com>
+ <CAMj6ewOHrJVdwfKrgXZxwfwE=eoTaB9MS57zha33yb1_iOLWiw@mail.gmail.com>
+ <8aa09a61-aa1c-5dcd-093f-ec096a38a7b5@gmx.com> <CAMj6ewO229vq6=s+T7GhUegwDADv4dzhqPiM0jo10QiKujvytA@mail.gmail.com>
+ <684e89f3-666f-6ae6-5aa2-a4db350c1cd4@gmx.com> <CAMj6ewMqXLtrBQgTJuz04v3MBZ0W95fU4pT0jP6kFhuP830TuA@mail.gmail.com>
+ <218f6448-c558-2551-e058-8a69caadcb23@gmx.com> <CAMj6ewPR8hVYmUSoNWVk6gZvy-HyKnmtMXexAr2f4VQU_7bbUw@mail.gmail.com>
+ <3b2fe3d7-1919-d236-e6bb-483593287cc5@gmx.com> <CAMj6ewNDQFzXsvF5c1=raJc11iMvMKcHH=AbkUkrNeV2e3XGVg@mail.gmail.com>
+ <CAMj6ewPiEvXbtHC1auSfRag5QGtYJxwH_Hvoi2t_18uDSxzm8w@mail.gmail.com>
+ <CAMj6ewNjSs-_3akOquO1Zry5RBNEPqQWf7ZKjs8JOzTA7ZGZ7w@mail.gmail.com>
+ <2abb2701-5dde-cd5d-dd25-084682313b11@gmx.com> <b2bbff7d-22d0-84c2-7749-ac9e27d4ab3d@gmx.com>
+ <CAMj6ewOqCJTGjykDijun9_LWYELA=92HrE+KjGo-ehJTutR_+w@mail.gmail.com>
+In-Reply-To: <CAMj6ewOqCJTGjykDijun9_LWYELA=92HrE+KjGo-ehJTutR_+w@mail.gmail.com>
+From:   Erik Jensen <erikjensen@rkjnsn.net>
+Date:   Mon, 25 Jan 2021 20:54:17 -0800
+Message-ID: <CAMj6ewP-NK3g1xzHNF+fKt6M+_W-ec29Sq+CBtwcb1dcqc7dNA@mail.gmail.com>
+Subject: Re: "bad tree block start" when trying to mount on ARM
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Hugo Mills <hugo@carfax.org.uk>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is preparation patch to implement zone emulation on a regular device.
+On Wed, Jan 20, 2021 at 1:08 AM Erik Jensen <erikjensen@rkjnsn.net> wrote:
+>
+> On Wed, Jan 20, 2021 at 12:31 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
+:
+> > On 2021/1/20 =E4=B8=8B=E5=8D=884:21, Qu Wenruo wrote:
+> > > On 2021/1/19 =E4=B8=8B=E5=8D=885:28, Erik Jensen wrote:
+> > >> On Mon, Jan 18, 2021 at 9:22 PM Erik Jensen <erikjensen@rkjnsn.net>
+> > >> wrote:
+> > >>>
+> > >>> On Mon, Jan 18, 2021 at 4:12 AM Erik Jensen <erikjensen@rkjnsn.net>
+> > >>> wrote:
+> > >>>>
+> > >>>> The offending system is indeed ARMv7 (specifically a Marvell ARMAD=
+A=C2=AE
+> > >>>> 388), but I believe the Broadcom BCM2835 in my Raspberry Pi is
+> > >>>> actually ARMv6 (with hardware float support).
+> > >>>
+> > >>> Using NBD, I have verified that I receive the same error when
+> > >>> attempting to mount the filesystem on my ARMv6 Raspberry Pi:
+> > >>> [ 3491.339572] BTRFS info (device dm-4): disk space caching is enab=
+led
+> > >>> [ 3491.394584] BTRFS info (device dm-4): has skinny extents
+> > >>> [ 3492.385095] BTRFS error (device dm-4): bad tree block start, wan=
+t
+> > >>> 26207780683776 have 3395945502747707095
+> > >>> [ 3492.514071] BTRFS error (device dm-4): bad tree block start, wan=
+t
+> > >>> 26207780683776 have 3395945502747707095
+> > >>> [ 3492.553599] BTRFS warning (device dm-4): failed to read tree roo=
+t
+> > >>> [ 3492.865368] BTRFS error (device dm-4): open_ctree failed
+> > >>>
+> > >>> The Raspberry Pi is running Linux 5.4.83.
+> > >>>
+> > >>
+> > >> Okay, after some more testing, ARM seems to be irrelevant, and 32-bi=
+t
+> > >> is the key factor. On a whim, I booted up an i686, 5.8.14 kernel in =
+a
+> > >> VM, attached the drives via NBD, ran cryptsetup, tried to mount, and=
+=E2=80=A6
+> > >> I got the exact same error message.
+> > >>
+> > > My educated guess is on 32bit platforms, we passed incorrect sector i=
+nto
+> > > bio, thus gave us garbage.
+> >
+> > To prove that, you can use bcc tool to verify it.
+> > biosnoop can do that:
+> > https://github.com/iovisor/bcc/blob/master/tools/biosnoop_example.txt
+> >
+> > Just try mount the fs with biosnoop running.
+> > With "btrfs ins dump-tree -t chunk <dev>", we can manually calculate th=
+e
+> > offset of each read to see if they matches.
+> > If not match, it would prove my assumption and give us a pretty good
+> > clue to fix.
+> >
+> > Thanks,
+> > Qu
+> >
+> > >
+> > > Is this bug happening only on the fs, or any other btrfs can also
+> > > trigger similar problems on 32bit platforms?
+> > >
+> > > Thanks,
+> > > Qu
+>
+> I have only observed this error on this file system. Additionally, the
+> error mounting with the NAS only started after I did a `btrfs replace`
+> on all five 8TB drives using an x86_64 system. (Ironically, I did this
+> with the goal of making it faster to use the filesystem on the NAS by
+> re-encrypting the drives to use a cipher supported by my NAS's crypto
+> accelerator.)
+>
+> Maybe this process of shuffling 40TB around caused some value in the
+> filesystem to increment to the point that a calculation using it
+> overflows on 32-bit systems?
+>
+> I should be able to try biosnoop later this week, and I'll report back
+> with the results.
 
-To emulate zoned mode on a regular (non-zoned) device, we need to decide an
-emulating zone size. Instead of making it compile-time static value, we'll
-make it configurable at mkfs time. Since we have one zone == one device
-extent restriction, we can determine the emulated zone size from the size
-of a device extent. We can extend btrfs_get_dev_zone_info() to show a
-regular device filled with conventional zones once the zone size is
-decided.
+Okay, I tried running biosnoop, but I seem to be running into this
+bug: https://github.com/iovisor/bcc/issues/3241 (That bug was reported
+for cpudist, but I'm seeing the same error when I try to run
+biosnoop.)
 
-The current call site of btrfs_get_dev_zone_info() during the mount process
-is earlier than reading the trees, so we can't slice a regular device to
-conventional zones. This patch defers the loading of zone info to
-open_ctree() to load the emulated zone size from a device extent.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/disk-io.c | 13 +++++++++++++
- fs/btrfs/volumes.c |  4 ----
- fs/btrfs/zoned.c   | 24 ++++++++++++++++++++++++
- fs/btrfs/zoned.h   |  7 +++++++
- 4 files changed, 44 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 5473bed6a7e8..39cbe10a81b6 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3257,6 +3257,19 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	if (ret)
- 		goto fail_tree_roots;
- 
-+	/*
-+	 * Get zone type information of zoned block devices. This will also
-+	 * handle emulation of the zoned mode for btrfs if a regular device has
-+	 * the zoned incompat feature flag set.
-+	 */
-+	ret = btrfs_get_dev_zone_info_all_devices(fs_info);
-+	if (ret) {
-+		btrfs_err(fs_info,
-+			  "failed to read device zone info: %d",
-+			  ret);
-+		goto fail_block_groups;
-+	}
-+
- 	/*
- 	 * If we have a uuid root and we're not being told to rescan we need to
- 	 * check the generation here so we can set the
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index badb972919eb..bb3f341f6a22 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -669,10 +669,6 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
- 	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
- 	device->mode = flags;
- 
--	ret = btrfs_get_dev_zone_info(device);
--	if (ret != 0)
--		goto error_free_page;
--
- 	fs_devices->open_devices++;
- 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
- 	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index c38846659019..bcabdb2c97f1 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -143,6 +143,30 @@ static int btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
- 	return 0;
- }
- 
-+int btrfs_get_dev_zone_info_all_devices(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	struct btrfs_device *device;
-+	int ret = 0;
-+
-+	if (!btrfs_fs_incompat(fs_info, ZONED))
-+		return 0;
-+
-+	mutex_lock(&fs_devices->device_list_mutex);
-+	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-+		/* We can skip reading of zone info for missing devices */
-+		if (!device->bdev)
-+			continue;
-+
-+		ret = btrfs_get_dev_zone_info(device);
-+		if (ret)
-+			break;
-+	}
-+	mutex_unlock(&fs_devices->device_list_mutex);
-+
-+	return ret;
-+}
-+
- int btrfs_get_dev_zone_info(struct btrfs_device *device)
- {
- 	struct btrfs_zoned_device_info *zone_info = NULL;
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 8abe2f83272b..5e0e7de84a82 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -25,6 +25,7 @@ struct btrfs_zoned_device_info {
- #ifdef CONFIG_BLK_DEV_ZONED
- int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
- 		       struct blk_zone *zone);
-+int btrfs_get_dev_zone_info_all_devices(struct btrfs_fs_info *fs_info);
- int btrfs_get_dev_zone_info(struct btrfs_device *device);
- void btrfs_destroy_dev_zone_info(struct btrfs_device *device);
- int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info);
-@@ -42,6 +43,12 @@ static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
- 	return 0;
- }
- 
-+static inline int btrfs_get_dev_zone_info_all_devices(
-+	struct btrfs_fs_info *fs_info)
-+{
-+	return 0;
-+}
-+
- static inline int btrfs_get_dev_zone_info(struct btrfs_device *device)
- {
- 	return 0;
--- 
-2.27.0
-
+Anything else I can try?
