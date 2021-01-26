@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78102304855
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 20:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA31304853
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 20:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388716AbhAZFpa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jan 2021 00:45:30 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:33036 "EHLO
+        id S2388736AbhAZFpy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 00:45:54 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:33029 "EHLO
         esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732134AbhAZCiK (ORCPT
+        with ESMTP id S1732135AbhAZCiT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:38:10 -0500
+        Mon, 25 Jan 2021 21:38:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611628690; x=1643164690;
+  t=1611628698; x=1643164698;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IkN5GoeRkESPBFBXYtV8ezLFrKmoz8xW5id1nnpCmBc=;
-  b=Y9PP5Kg1QdJZuUUXn87TIUdFuz85vNHLHODuNaWkQFrjiHHVBI+o7s2A
-   QYo4tLOLpBzPCVpIs7O3OYFjH7Nc8ySQdTpbiIamO4uf7H0hpVW4aeRd/
-   29YDm18/fOmI+9vbjciDahRVkZmMZUrdOY+yQGap73qCnJ0InwEIhFXM4
-   6vJRn6e2iHenOcKa3MsMl2ufqY5hx5WXUGazPLXsT9o4LrxUNAPUTtaRV
-   OP9Rb64axu9EWO7dkhrOKGtY0wS2v3tnAFJzYD1fZrPpqVd7y2gMZD2SG
-   9v3HMRP4yL2BJLeHjkLR5o3LL+2ODitb1CaCwQdrtb0NKxhRtOsvxA9Z1
-   w==;
-IronPort-SDR: 7klANJk52sUAj/cf3wOTaMd2V1FQh79ZwY0L5QtYpjJQWlJKCUm5/+L8e2hPPB4uppnlWB19ke
- wX3Iu23j/A9Qd7cGNR/w97yhm4vkDvSUNR60nFNLVd+vAVA4mEfN409kWIvYZ5QG/kOJe7R7qY
- Vfn7WT5c6kuUf+dEsTM/qWfdCnN7DM2FnN6DyZddsPphB+mTKQ+PbesdvgNkm6qn7tFkYxrM6z
- Q5YAccgWhPPSAzsvFvK7AX5kCVheiPNcpxtCSmvXAGw3WXjZlpnFHWe65Ui70lL1zFf8dPKstI
- Oo4=
+  bh=PzKrK+/EaIAWaAVbsVXNTR19q/xbdDY3gO/u9Gs5HxI=;
+  b=al5MRWWOWX+ganXxPF4fGSZ08w9YrJ1JUx/ihIHYD/W5uWHscz0/fFYU
+   cTu3Lbq1/bsFzMv3DKiqnPMTwYYKN3IJpBXi7RrFTnBQn186R9PIwolay
+   pUT6KbeubwAnlDiy6mYhYpy06jpDg+QYh4mrH9oQn/A3bbw4JmahB1t0P
+   gTxMaSpsszC+Vyb34onojd2mk5lW3GDSvI8wV2xc4VPMoXwwS/+M9MIkK
+   eTZUMBl7u76I0JihA3SgmBN0AhqxCCe0BmZtwyPWNebot0tw0N0FJVqGJ
+   aXaYLz4D2OzWc/9nwFaqtfWPJt0qOAFP0ioPR4m3MscUmYHECrWtr9vfu
+   A==;
+IronPort-SDR: s6kB/mrcJQS3hMrOD8w6YzmHYSIVkjcBOGlu/TS2Jf3CsFw2tS7Yk6ehd8cI1GFHiK3fAPopQ/
+ GqPbPrTGztA1Rmcwp2UyhhIxFvnwqJNaA7rRM87QPnPTl7cAzKyJnPYIvqvkly/qjcHTlc9e7g
+ fI26FghZJ9kgoYvS2wrlIKWaYsM1KzVWkx7L1bwopqlUMn8dTSpXcTdi3qWlYnMlZSHsdeT8P4
+ 8j0B8/IafcjqPautlrZCGFE4YBXPsa3rvS/dLQtm0VBFoqnGOd9JkPOc8OsoKmtfA21IR3av8H
+ DRQ=
 X-IronPort-AV: E=Sophos;i="5.79,375,1602518400"; 
-   d="scan'208";a="159483557"
+   d="scan'208";a="159483560"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 10:26:40 +0800
-IronPort-SDR: jExnuyg8UvRQlhTwcGhyxWLkAmA81aZWa5BJi5gqE+dd996BIBthpQEK7sayC9XtYoZgEyBeYA
- Pd1JtZTNHnsrSu6Zd63rcAVwhEdHP+keQMM3aTfMmofTEuUSKuZx1tCT+8BqdrQJEtccSWNz1O
- IL5NWTOSz/U+yTQUqgj3zpBHbOrIXAriTNKMbxDmK/pfWtZt+eE09RknfiiCyPKvv5ar9iAiRl
- WDmXodpQ6X7UihuoV05QxUYrICp5p4IKaCu23FZZOwUMcR7SZCoxCdL2F7jkpT2SVvPgVwCdyS
- GOsrCEFip9c0OeUnXpnIjgn8
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 10:26:43 +0800
+IronPort-SDR: dXdjsie99ZTF1mhznwTjD46mbzYzQn7VVue/ULPKyf+l+RhNKgb9fOKphV24RZy3RUFgSCDWYg
+ AEpdTPfTq7BXpPYPNUKXyXWAAlNIn8y6ycrVUTqqKqA4sMFTHk2Bz7tQmuSZWr5g5Zj1FYKCla
+ xGjBp9Fc4jiT7Yqjob7GvSQr7MIGK3SExyg6RNaJQbz6SPAkXHV4W0fi58ey73WAKEsFQIFQrL
+ BNb8h9WeR7kcYP6qkDgezWcNGvGS6G8vMQZHAO0y56DnZI/7MNlpdYK/jPCCc2d2n7jgdBRFgG
+ bsC9GsEVuBLimdeih9aV63G1
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 18:11:06 -0800
-IronPort-SDR: xORTNpDQKqloZPqpsyeEgcsOH3RQSHaz/8K08ftwQrjDPteQgXjpcYBKgICbRCnUMXjR8zb+EE
- W8k9eBUeMrSc+y/nfLhsz+D6gub5sxDqYnDe7iEjdfu0LYvCqB5VUkqeOE+f2Fr8xXE/TYUmZg
- 5ehE9coM8a/nkWIEnAGGR8eb0QtFX3BenpvUXJY+FLXAR6KjGJNJ/jkY6P1fu3NzYZA6UOMSV1
- PdZTmx5uP19Ftbzh2WeD+sDqYRhjacE83mF7OEjTciOLBoc6lxM/kR45hrk02iaM5fKJ6G4J7q
- 938=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 18:11:10 -0800
+IronPort-SDR: GqNM1ae1aOnsw80gVOcTeh/lB/EXYHMdwjPaITkGBlGqUqz+CPqEBK4zL2WU0+zcySCd1Cyk5E
+ sPzJv8KwN2rNgJJW8WbV++zVvM9cxMsEbcwxF39tfdb3lk4sCPBfte7jbITYel4amS5c2epxn5
+ /q1mfxgyDFFdmc9GfKxUZbFrRy7qL7j2xhi/kbtB1u/VY3wM/my+NzL/uIwNV9aEX+M4Y0E/5q
+ IlX5z3Po2M2UZnlutDgKHaKAzR/BacVoTQxvaL60qjAOP2iDm4KiYsdAjlrKZ+U9UXnzDz8sVA
+ IDw=
 WDCIronportException: Internal
 Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
-  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jan 2021 18:26:38 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 25 Jan 2021 18:26:41 -0800
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
         Jens Axboe <axboe@kernel.dk>,
         Christoph Hellwig <hch@infradead.org>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v14 24/42] btrfs: extend btrfs_rmap_block for specifying a device
-Date:   Tue, 26 Jan 2021 11:25:02 +0900
-Message-Id: <cc11870fa46fd284b777508e6860f559458215d7.1611627788.git.naohiro.aota@wdc.com>
+Subject: [PATCH v14 26/42] btrfs: save irq flags when looking up an ordered extent
+Date:   Tue, 26 Jan 2021 11:25:04 +0900
+Message-Id: <a4b8f87040376a80df0899d922d7aa3de5491a5a.1611627788.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1611627788.git.naohiro.aota@wdc.com>
 References: <cover.1611627788.git.naohiro.aota@wdc.com>
@@ -69,135 +69,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_rmap_block currently reverse-maps the physical addresses on all
-devices to the corresponding logical addresses.
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-This commit extends the function to match to a specified device. The old
-functionality of querying all devices is left intact by specifying NULL as
-target device.
+A following patch will add another caller of
+btrfs_lookup_ordered_extent() from a bio endio context.
 
-We pass block_device instead of btrfs_device to __btrfs_rmap_block. This
-function is intended to reverse-map the result of bio, which only have
-block_device.
+btrfs_lookup_ordered_extent() uses spin_lock_irq() which unconditionally
+disables interrupts. Change this to spin_lock_irqsave() so interrupts
+aren't disabled and re-enabled unconditionally.
 
-This commit also exports the function for later use.
-
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/block-group.c            | 17 ++++++++++++-----
- fs/btrfs/block-group.h            |  8 +++-----
- fs/btrfs/tests/extent-map-tests.c |  2 +-
- 3 files changed, 16 insertions(+), 11 deletions(-)
+ fs/btrfs/ordered-data.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 9801df6cbfd8..7facc4439116 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1583,6 +1583,8 @@ static void set_avail_alloc_bits(struct btrfs_fs_info *fs_info, u64 flags)
-  *
-  * @fs_info:       the filesystem
-  * @chunk_start:   logical address of block group
-+ * @bdev:	   physical device to resolve. Can be NULL to indicate any
-+ *                 device.
-  * @physical:	   physical address to map to logical addresses
-  * @logical:	   return array of logical addresses which map to @physical
-  * @naddrs:	   length of @logical
-@@ -1592,9 +1594,9 @@ static void set_avail_alloc_bits(struct btrfs_fs_info *fs_info, u64 flags)
-  * Used primarily to exclude those portions of a block group that contain super
-  * block copies.
-  */
--EXPORT_FOR_TESTS
- int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
--		     u64 physical, u64 **logical, int *naddrs, int *stripe_len)
-+		     struct block_device *bdev, u64 physical, u64 **logical,
-+		     int *naddrs, int *stripe_len)
- {
- 	struct extent_map *em;
- 	struct map_lookup *map;
-@@ -1612,6 +1614,7 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
- 	map = em->map_lookup;
- 	data_stripe_length = em->orig_block_len;
- 	io_stripe_size = map->stripe_len;
-+	chunk_start = em->start;
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 23aae67fe9e9..7c061146ead9 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -768,9 +768,10 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *ino
+ 	struct btrfs_ordered_inode_tree *tree;
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
++	unsigned long flags;
  
- 	/* For RAID5/6 adjust to a full IO stripe length */
- 	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
-@@ -1626,14 +1629,18 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
- 	for (i = 0; i < map->num_stripes; i++) {
- 		bool already_inserted = false;
- 		u64 stripe_nr;
-+		u64 offset;
- 		int j;
+ 	tree = &inode->ordered_tree;
+-	spin_lock_irq(&tree->lock);
++	spin_lock_irqsave(&tree->lock, flags);
+ 	node = tree_search(tree, file_offset);
+ 	if (!node)
+ 		goto out;
+@@ -781,7 +782,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *ino
+ 	if (entry)
+ 		refcount_inc(&entry->refs);
+ out:
+-	spin_unlock_irq(&tree->lock);
++	spin_unlock_irqrestore(&tree->lock, flags);
+ 	return entry;
+ }
  
- 		if (!in_range(physical, map->stripes[i].physical,
- 			      data_stripe_length))
- 			continue;
- 
-+		if (bdev && map->stripes[i].dev->bdev != bdev)
-+			continue;
-+
- 		stripe_nr = physical - map->stripes[i].physical;
--		stripe_nr = div64_u64(stripe_nr, map->stripe_len);
-+		stripe_nr = div64_u64_rem(stripe_nr, map->stripe_len, &offset);
- 
- 		if (map->type & BTRFS_BLOCK_GROUP_RAID10) {
- 			stripe_nr = stripe_nr * map->num_stripes + i;
-@@ -1647,7 +1654,7 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
- 		 * instead of map->stripe_len
- 		 */
- 
--		bytenr = chunk_start + stripe_nr * io_stripe_size;
-+		bytenr = chunk_start + stripe_nr * io_stripe_size + offset;
- 
- 		/* Ensure we don't add duplicate addresses */
- 		for (j = 0; j < nr; j++) {
-@@ -1689,7 +1696,7 @@ static int exclude_super_stripes(struct btrfs_block_group *cache)
- 
- 	for (i = 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {
- 		bytenr = btrfs_sb_offset(i);
--		ret = btrfs_rmap_block(fs_info, cache->start,
-+		ret = btrfs_rmap_block(fs_info, cache->start, NULL,
- 				       bytenr, &logical, &nr, &stripe_len);
- 		if (ret)
- 			return ret;
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 0f3c62c561bc..9df00ada09f9 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -277,6 +277,9 @@ void btrfs_put_block_group_cache(struct btrfs_fs_info *info);
- int btrfs_free_block_groups(struct btrfs_fs_info *info);
- void btrfs_wait_space_cache_v1_finished(struct btrfs_block_group *cache,
- 				struct btrfs_caching_control *caching_ctl);
-+int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
-+		       struct block_device *bdev, u64 physical, u64 **logical,
-+		       int *naddrs, int *stripe_len);
- 
- static inline u64 btrfs_data_alloc_profile(struct btrfs_fs_info *fs_info)
- {
-@@ -303,9 +306,4 @@ static inline int btrfs_block_group_done(struct btrfs_block_group *cache)
- void btrfs_freeze_block_group(struct btrfs_block_group *cache);
- void btrfs_unfreeze_block_group(struct btrfs_block_group *cache);
- 
--#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
--int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
--		     u64 physical, u64 **logical, int *naddrs, int *stripe_len);
--#endif
--
- #endif /* BTRFS_BLOCK_GROUP_H */
-diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-map-tests.c
-index 57379e96ccc9..c0aefe6dee0b 100644
---- a/fs/btrfs/tests/extent-map-tests.c
-+++ b/fs/btrfs/tests/extent-map-tests.c
-@@ -507,7 +507,7 @@ static int test_rmap_block(struct btrfs_fs_info *fs_info,
- 		goto out_free;
- 	}
- 
--	ret = btrfs_rmap_block(fs_info, em->start, btrfs_sb_offset(1),
-+	ret = btrfs_rmap_block(fs_info, em->start, NULL, btrfs_sb_offset(1),
- 			       &logical, &out_ndaddrs, &out_stripe_len);
- 	if (ret || (out_ndaddrs == 0 && test->expected_mapped_addr)) {
- 		test_err("didn't rmap anything but expected %d",
 -- 
 2.27.0
 
