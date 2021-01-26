@@ -2,260 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B99F305774
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 10:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 500BF3057FF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbhA0Jyj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 04:54:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56366 "EHLO mx2.suse.de"
+        id S314331AbhAZXFR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 18:05:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47238 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235634AbhA0Jwa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:52:30 -0500
+        id S2392584AbhAZRiw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:38:52 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4495CAD78;
-        Wed, 27 Jan 2021 09:51:40 +0000 (UTC)
-From:   Michal Rostecki <mrostecki@suse.de>
-Cc:     Michal Rostecki <mrostecki@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: Avoid calling btrfs_get_chunk_map() twice
-Date:   Wed, 27 Jan 2021 10:51:31 +0100
-Message-Id: <20210127095131.22600-1-mrostecki@suse.de>
-X-Mailer: git-send-email 2.30.0
+        by mx2.suse.de (Postfix) with ESMTP id 83ED3AB92;
+        Tue, 26 Jan 2021 17:38:10 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6EF86DA7D2; Tue, 26 Jan 2021 18:36:23 +0100 (CET)
+Date:   Tue, 26 Jan 2021 18:36:23 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v5 2/8] btrfs: only let one thread pre-flush delayed refs
+ in commit
+Message-ID: <20210126173623.GR1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1608319304.git.josef@toxicpanda.com>
+ <9e47b11bdfe5b4905fdaa81e952de2e2466c6335.1608319304.git.josef@toxicpanda.com>
+ <20210108160109.GB6430@twin.jikos.cz>
+ <52aef9a6-efc7-0820-7056-067e69c2a856@suse.com>
+ <20210111215051.GH6430@twin.jikos.cz>
+ <e1fd5cc1-0f28-f670-69f4-e9958b4964e6@suse.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <e1fd5cc1-0f28-f670-69f4-e9958b4964e6@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Michal Rostecki <mrostecki@suse.com>
+On Tue, Jan 12, 2021 at 11:17:45AM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 11.01.21 г. 23:50 ч., David Sterba wrote:
+> > On Mon, Jan 11, 2021 at 10:33:42AM +0200, Nikolay Borisov wrote:
+> >> On 8.01.21 г. 18:01 ч., David Sterba wrote:
+> >>> On Fri, Dec 18, 2020 at 02:24:20PM -0500, Josef Bacik wrote:
+> >>>> @@ -2043,23 +2043,22 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> >>>>  	btrfs_trans_release_metadata(trans);
+> >>>>  	trans->block_rsv = NULL;
+> >>>>  
+> >>>> -	/* make a pass through all the delayed refs we have so far
+> >>>> -	 * any runnings procs may add more while we are here
+> >>>> -	 */
+> >>>> -	ret = btrfs_run_delayed_refs(trans, 0);
+> >>>> -	if (ret) {
+> >>>> -		btrfs_end_transaction(trans);
+> >>>> -		return ret;
+> >>>> -	}
+> >>>> -
+> >>>> -	cur_trans = trans->transaction;
+> >>>> -
+> >>>>  	/*
+> >>>> -	 * set the flushing flag so procs in this transaction have to
+> >>>> -	 * start sending their work down.
+> >>>> +	 * We only want one transaction commit doing the flushing so we do not
+> >>>> +	 * waste a bunch of time on lock contention on the extent root node.
+> >>>>  	 */
+> >>>> -	cur_trans->delayed_refs.flushing = 1;
+> >>>> -	smp_wmb();
+> >>>
+> >>> This barrier obviously separates the flushing = 1 and the rest of the
+> >>> code, now implemented as test_and_set_bit, which implies full barrier.
+> >>>
+> >>> However, hunk in btrfs_should_end_transaction removes the barrier and
+> >>> I'm not sure whether this is correct:
+> >>>
+> >>> -	smp_mb();
+> >>>  	if (cur_trans->state >= TRANS_STATE_COMMIT_START ||
+> >>> -	    cur_trans->delayed_refs.flushing)
+> >>> +	    test_bit(BTRFS_DELAYED_REFS_FLUSHING,
+> >>> +		     &cur_trans->delayed_refs.flags))
+> >>>  		return true;
+> >>>
+> >>> This is never called under locks so we don't have complete
+> >>> synchronization of neither the transaction state nor the flushing bit.
+> >>> btrfs_should_end_transaction is merely a hint and not called in critical
+> >>> places so we could probably afford to keep it without a barrier, or keep
+> >>> it with comment(s).
+> >>
+> >> I think the point is moot in this case, because the test_bit either sees
+> >> the flag or it doesn't. It's not possible for the flag to be set AND
+> >> should_end_transaction return false that would be gross violation of
+> >> program correctness.
+> > 
+> > So that's for the flushing part, but what about cur_trans->state?
+> 
+> Looking at the code, the barrier was there to order the publishing of
+> the delayed_ref.flushing (now replaced by the bit flag) against
+> surrounding code.
+> 
+> So independently of this patch, let's reason about trans state. In
+> should_end_transaction it's read without holding any locks. (U)
+> 
+> It's modified in btrfs_cleanup_transaction without holding the
+> fs_info->trans_lock (U), but the STATE_ERROR flag is going to be set.
+> 
+> set in cleanup_transaction under fs_info->trans_lock (L)
+> set in btrfs_commit_trans to COMMIT_START under fs_info->trans_lock.(L)
+> set in btrfs_commit_trans to COMMIT_DOING under fs_info->trans_lock.(L)
+> set in btrfs_commit_trans to COMMIT_UNBLOCK under fs_info->trans_lock.(L)
+> 
+> set in btrfs_commit_trans to COMMIT_COMPLETED without locks but at this
+> point the transaction is finished and fs_info->running_trans is NULL (U
+> but irrelevant).
+> 
+> So by the looks of it we can have a concurrent READ race with a Write,
+> due to reads not taking a lock. In this case what we want to ensure is
+> we either see new or old state. I consulted with Will Deacon and he said
+> that in such a case we'd want to annotate the accesses to ->state with
+> (READ|WRITE)_ONCE so as to avoid a theoretical tear, in this case I
+> don't think this could happen but I imagine at some point kcsan would
+> flag such an access as racy (which it is).
 
-Before this change, the btrfs_get_io_geometry() function was calling
-btrfs_get_chunk_map() to get the extent mapping, necessary for
-calculating the I/O geometry. It was using that extent mapping only
-internally and freeing the pointer after its execution.
-
-That resulted in calling btrfs_get_chunk_map() de facto twice by the
-__btrfs_map_block() function. It was calling btrfs_get_io_geometry()
-first and then calling btrfs_get_chunk_map() directly to get the extent
-mapping, used by the rest of the function.
-
-This change fixes that by passing the extent mapping to the
-btrfs_get_io_geometry() function as an argument.
-
-Fixes: 89b798ad1b42 ("btrfs: Use btrfs_get_io_geometry appropriately")
-Signed-off-by: Michal Rostecki <mrostecki@suse.com>
----
- fs/btrfs/inode.c   | 37 ++++++++++++++++++++++++++++---------
- fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
- fs/btrfs/volumes.h |  5 +++--
- 3 files changed, 47 insertions(+), 34 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0dbe1aaa0b71..a4ce8501ed4d 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 	struct inode *inode = page->mapping->host;
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	u64 logical = bio->bi_iter.bi_sector << 9;
-+	struct extent_map *em;
- 	u64 length = 0;
- 	u64 map_length;
--	int ret;
-+	int ret = 0;
- 	struct btrfs_io_geometry geom;
- 
- 	if (bio_flags & EXTENT_BIO_COMPRESSED)
-@@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 
- 	length = bio->bi_iter.bi_size;
- 	map_length = length;
--	ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
--				    &geom);
-+	em = btrfs_get_chunk_map(fs_info, logical, map_length);
-+	if (IS_ERR(em))
-+		return PTR_ERR(em);
-+	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
-+				    map_length, &geom);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
--	if (geom.len < length + size)
--		return 1;
--	return 0;
-+	if (geom.len < length + size) {
-+		ret = 1;
-+		goto out;
-+	}
-+out:
-+	free_extent_map(em);
-+	return ret;
- }
- 
- /*
-@@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 	u64 submit_len;
- 	int clone_offset = 0;
- 	int clone_len;
-+	int logical;
- 	int ret;
- 	blk_status_t status;
- 	struct btrfs_io_geometry geom;
- 	struct btrfs_dio_data *dio_data = iomap->private;
-+	struct extent_map *em;
- 
- 	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
- 	if (!dip) {
-@@ -7970,11 +7980,17 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 	}
- 
- 	start_sector = dio_bio->bi_iter.bi_sector;
-+	logical = start_sector << 9;
- 	submit_len = dio_bio->bi_iter.bi_size;
- 
- 	do {
--		ret = btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
--					    start_sector << 9, submit_len,
-+		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
-+		if (IS_ERR(em)) {
-+			status = errno_to_blk_status(ret);
-+			goto out_err;
-+		}
-+		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
-+					    logical, submit_len,
- 					    &geom);
- 		if (ret) {
- 			status = errno_to_blk_status(ret);
-@@ -8030,12 +8046,15 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 		clone_offset += clone_len;
- 		start_sector += clone_len >> 9;
- 		file_offset += clone_len;
-+
-+		free_extent_map(em);
- 	} while (submit_len > 0);
- 	return BLK_QC_T_NONE;
- 
- out_err:
- 	dip->dio_bio->bi_status = status;
- 	btrfs_dio_private_put(dip);
-+	free_extent_map(em);
- 	return BLK_QC_T_NONE;
- }
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a8ec8539cd8d..4c753b17c0a2 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5940,23 +5940,24 @@ static bool need_full_stripe(enum btrfs_map_op op)
- }
- 
- /*
-- * btrfs_get_io_geometry - calculates the geomery of a particular (address, len)
-+ * btrfs_get_io_geometry - calculates the geometry of a particular (address, len)
-  *		       tuple. This information is used to calculate how big a
-  *		       particular bio can get before it straddles a stripe.
-  *
-- * @fs_info - the filesystem
-- * @logical - address that we want to figure out the geometry of
-- * @len	    - the length of IO we are going to perform, starting at @logical
-- * @op      - type of operation - write or read
-- * @io_geom - pointer used to return values
-+ * @fs_info: the filesystem
-+ * @em:      mapping containing the logical extent
-+ * @op:      type of operation - write or read
-+ * @logical: address that we want to figure out the geometry of
-+ * @len:     the length of IO we are going to perform, starting at @logical
-+ * @io_geom: pointer used to return values
-  *
-  * Returns < 0 in case a chunk for the given logical address cannot be found,
-  * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
-  */
--int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
--			u64 logical, u64 len, struct btrfs_io_geometry *io_geom)
-+int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
-+			  enum btrfs_map_op op, u64 logical, u64 len,
-+			  struct btrfs_io_geometry *io_geom)
- {
--	struct extent_map *em;
- 	struct map_lookup *map;
- 	u64 offset;
- 	u64 stripe_offset;
-@@ -5964,14 +5965,9 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	u64 stripe_len;
- 	u64 raid56_full_stripe_start = (u64)-1;
- 	int data_stripes;
--	int ret = 0;
- 
- 	ASSERT(op != BTRFS_MAP_DISCARD);
- 
--	em = btrfs_get_chunk_map(fs_info, logical, len);
--	if (IS_ERR(em))
--		return PTR_ERR(em);
--
- 	map = em->map_lookup;
- 	/* Offset of this logical address in the chunk */
- 	offset = logical - em->start;
-@@ -5985,8 +5981,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		btrfs_crit(fs_info,
- "stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu",
- 			stripe_offset, offset, em->start, logical, stripe_len);
--		ret = -EINVAL;
--		goto out;
-+		return -EINVAL;
- 	}
- 
- 	/* stripe_offset is the offset of this block in its stripe */
-@@ -6033,10 +6028,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	io_geom->stripe_offset = stripe_offset;
- 	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
- 
--out:
--	/* once for us */
--	free_extent_map(em);
--	return ret;
-+	return 0;
- }
- 
- static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
-@@ -6069,12 +6061,13 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
- 	ASSERT(bbio_ret);
- 	ASSERT(op != BTRFS_MAP_DISCARD);
- 
--	ret = btrfs_get_io_geometry(fs_info, op, logical, *length, &geom);
-+	em = btrfs_get_chunk_map(fs_info, logical, *length);
-+	ASSERT(!IS_ERR(em));
-+
-+	ret = btrfs_get_io_geometry(fs_info, em, op, logical, *length, &geom);
- 	if (ret < 0)
- 		return ret;
- 
--	em = btrfs_get_chunk_map(fs_info, logical, *length);
--	ASSERT(!IS_ERR(em));
- 	map = em->map_lookup;
- 
- 	*length = geom.len;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index c43663d9c22e..04e2b26823c2 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -440,8 +440,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 		     u64 logical, u64 *length,
- 		     struct btrfs_bio **bbio_ret);
--int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
--		u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
-+int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *map,
-+			  enum btrfs_map_op op, u64 logical, u64 len,
-+			  struct btrfs_io_geometry *io_geom);
- int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
- int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
- int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
--- 
-2.30.0
-
+Thanks for the analysis, I've copied it to the changelog as there's
+probably no shorter way to explain it.
