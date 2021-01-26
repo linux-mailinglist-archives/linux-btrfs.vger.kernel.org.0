@@ -2,147 +2,260 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C3730357A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 06:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF9A303580
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 06:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388364AbhAZFm5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jan 2021 00:42:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37476 "EHLO mx2.suse.de"
+        id S2388125AbhAZFoQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 00:44:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59098 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727593AbhAYKor (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:44:47 -0500
+        id S1732990AbhAZBYY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:24:24 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611571440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qe6lCcfR/lVJ31oI/FVTUkgbA3Bo/fUCRAB/Xk1GYEE=;
-        b=hiNZFUZGCzWW7n/A7/8jOiIH3xckhGfLMWiwsMv7zGX8aZ0ipOroF+sZllFIItp8Cju4fl
-        IXSVE99mm4mcVuuCG49JuetkCR2g+gCzUQoEFWlvU6OW+Ls2Rb+IwPQliMMMFRfmHEkv5P
-        pgPgZ9gVIAcvHEBwuDAPJ1bd+UpbQiA=
+        t=1611621349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oBXHXc7lbEszSRQf2EXXx0E75Oso1AStvYzCxGZFvdY=;
+        b=meXn0ncy4x5RocLqGR8+p64Rdm5+t0w3qdNs+MNgkuwmMi5NO4+GiQSldtziIQnE0P17qL
+        ndPkZF1PiajhgWcCWb2qYc6nbuMPjCdcPvqiGD/hYGU5TxlHhrIUMF/a+HZtwVv6WETw+u
+        PwslSsxku8/YDOVwSfwJ6dV0E7qyJ9s=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9ED31B759;
-        Mon, 25 Jan 2021 10:44:00 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 77C5BADC4;
+        Tue, 26 Jan 2021 00:35:49 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 2/2] btrfs-progs: Remove duplicate checks from cmd_filesystem_resize
-Date:   Mon, 25 Jan 2021 12:43:58 +0200
-Message-Id: <20210125104358.817072-2-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210125104358.817072-1-nborisov@suse.com>
-References: <20210125104358.817072-1-nborisov@suse.com>
+Subject: [PATCH v2] btrfs: rework the order of btrfs_ordered_extent::flags
+Date:   Tue, 26 Jan 2021 08:35:45 +0800
+Message-Id: <20210126003545.8885-1-wqu@suse.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_open_dir already has a check whether the passed path is a
-directory and if so it returns a specific error code (-3) when such an
-error occurs. Use this instead of open-coding the directory check. To avoid
-regression in cli/003 test also move directory checks before fs type in
-btrfs_open
+[BUG]
+There is a long existing bug in the last parameter of
+btrfs_add_ordered_extent(), in commit 771ed689d2cd ("Btrfs: Optimize
+compressed writeback and reads") back to 2008.
 
-Output before this check :
+In that ancient commit btrfs_add_ordered_extent() expects the @type
+parameter to be one of the following:
+- BTRFS_ORDERED_REGULAR
+- BTRFS_ORDERED_NOCOW
+- BTRFS_ORDERED_PREALLOC
+- BTRFS_ORDERED_COMPRESSED
 
-ERROR: resize works on mounted filesystems and accepts only
-directories as argument. Passing file containing a btrfs image
-would resize the underlying filesystem instead of the image.
+But we pass 0 in cow_file_range(), which means BTRFS_ORDERED_IO_DONE.
 
-After:
+Ironically extra check in __btrfs_add_ordered_extent() won't set the bit
+if we're seeing (type == IO_DONE || type == IO_COMPLETE), and avoid any
+obvious bug.
 
-ERROR: not a directory: /root/btrfs-progs/tests/test.img
-ERROR: resize works on mounted filesystems and accepts only
-directories as argument. Passing file containing a btrfs image
-would resize the underlying filesystem instead of the image.
+But this still leads to regular COW ordered extent having no bit to
+indicate its type in various trace events, rendering REGULAR bit
+useless.
 
+[FIX]
+This patch will change the following aspects to avoid such problem:
+- Reorder btrfs_ordered_extent::flags
+  Now the type bits go first (REGULAR/NOCOW/PREALLCO/COMPRESSED), then
+  DIRECT bit, finally extra status bits like IO_DONE/COMPLETE/IOERR.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+- Add extra ASSERT() for btrfs_add_ordered_extent_*()
+
+- Remove @type parameter for btrfs_add_ordered_extent_compress()
+  As the only valid @type here is BTRFS_ORDERED_COMPRESSED.
+
+- Remove the unnecessary special check for IO_DONE/COMPLETE in
+  __btrfs_add_ordered_extent()
+  This is just to make the code work, with extra ASSERT(), there are
+  limited values can be passed in.
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- cmds/filesystem.c | 21 +++++++--------------
- common/utils.c    | 16 ++++++++--------
- 2 files changed, 15 insertions(+), 22 deletions(-)
+Changelog:
+v2:
+- Put ASSERT() on type check to separate line for each condition
+- Unify DirectIO/DIO to "direct IO"
+- Update comment on ordered extent type bits
+---
+ fs/btrfs/inode.c             |  4 ++--
+ fs/btrfs/ordered-data.c      | 21 +++++++++++++++-----
+ fs/btrfs/ordered-data.h      | 37 +++++++++++++++++++++++-------------
+ include/trace/events/btrfs.h |  7 ++++---
+ 4 files changed, 46 insertions(+), 23 deletions(-)
 
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index ba2e5928cc02..8379fd7a8151 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -1082,7 +1082,6 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 	char	*amount, *path;
- 	DIR	*dirstream = NULL;
- 	int ret;
--	struct stat st;
- 	bool enqueue = false;
-
- 	/*
-@@ -1115,21 +1114,15 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
- 		return 1;
- 	}
-
--	res = stat(path, &st);
--	if (res < 0) {
--		error("resize: cannot stat %s: %m", path);
--		return 1;
--	}
--	if (!S_ISDIR(st.st_mode)) {
--		error("resize works on mounted filesystems and accepts only\n"
--			"directories as argument. Passing file containing a btrfs image\n"
--			"would resize the underlying filesystem instead of the image.\n");
--		return 1;
--	}
--
- 	fd = btrfs_open_dir(path, &dirstream, 1);
--	if (fd < 0)
-+	if (fd < 0) {
-+		if (fd == -3) {
-+			error("resize works on mounted filesystems and accepts only\n"
-+			      "directories as argument. Passing file containing a btrfs image\n"
-+			      "would resize the underlying filesystem instead of the image.\n");
-+		}
- 		return 1;
-+	}
-
- 	ret = check_running_fs_exclop(fd, BTRFS_EXCLOP_RESIZE, enqueue);
- 	if (ret != 0) {
-diff --git a/common/utils.c b/common/utils.c
-index f7dc320c8915..15fda84ed291 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -185,24 +185,24 @@ int btrfs_open(const char *path, DIR **dirstream, int verbose, int dir_only)
- 	struct stat st;
- 	int ret;
-
--	if (statfs(path, &stfs) != 0) {
-+	if (stat(path, &st) != 0) {
- 		error_on(verbose, "cannot access '%s': %m", path);
- 		return -1;
- 	}
-
--	if (stfs.f_type != BTRFS_SUPER_MAGIC) {
--		error_on(verbose, "not a btrfs filesystem: %s", path);
--		return -2;
-+	if (dir_only && !S_ISDIR(st.st_mode)) {
-+		error_on(verbose, "not a directory: %s", path);
-+		return -3;
- 	}
-
--	if (stat(path, &st) != 0) {
-+	if (statfs(path, &stfs) != 0) {
- 		error_on(verbose, "cannot access '%s': %m", path);
- 		return -1;
- 	}
-
--	if (dir_only && !S_ISDIR(st.st_mode)) {
--		error_on(verbose, "not a directory: %s", path);
--		return -3;
-+	if (stfs.f_type != BTRFS_SUPER_MAGIC) {
-+		error_on(verbose, "not a btrfs filesystem: %s", path);
-+		return -2;
- 	}
-
- 	ret = open_file_or_dir(path, dirstream);
---
-2.25.1
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ef6cb7b620d0..ea9056cc5559 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -917,7 +917,6 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
+ 						ins.objectid,
+ 						async_extent->ram_size,
+ 						ins.offset,
+-						BTRFS_ORDERED_COMPRESSED,
+ 						async_extent->compress_type);
+ 		if (ret) {
+ 			btrfs_drop_extent_cache(inode, async_extent->start,
+@@ -1127,7 +1126,8 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		free_extent_map(em);
+ 
+ 		ret = btrfs_add_ordered_extent(inode, start, ins.objectid,
+-					       ram_size, cur_alloc_size, 0);
++					       ram_size, cur_alloc_size,
++					       BTRFS_ORDERED_REGULAR);
+ 		if (ret)
+ 			goto out_drop_extent_cache;
+ 
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index d5d326c674b1..b4e6500548a2 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -199,8 +199,12 @@ static int __btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset
+ 	entry->compress_type = compress_type;
+ 	entry->truncated_len = (u64)-1;
+ 	entry->qgroup_rsv = ret;
+-	if (type != BTRFS_ORDERED_IO_DONE && type != BTRFS_ORDERED_COMPLETE)
+-		set_bit(type, &entry->flags);
++
++	ASSERT(type == BTRFS_ORDERED_REGULAR ||
++	       type == BTRFS_ORDERED_NOCOW ||
++	       type == BTRFS_ORDERED_PREALLOC ||
++	       type == BTRFS_ORDERED_COMPRESSED);
++	set_bit(type, &entry->flags);
+ 
+ 	if (dio) {
+ 		percpu_counter_add_batch(&fs_info->dio_bytes, num_bytes,
+@@ -256,6 +260,9 @@ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+ 			     u64 disk_bytenr, u64 num_bytes, u64 disk_num_bytes,
+ 			     int type)
+ {
++	ASSERT(type == BTRFS_ORDERED_REGULAR ||
++	       type == BTRFS_ORDERED_NOCOW ||
++	       type == BTRFS_ORDERED_PREALLOC);
+ 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
+ 					  num_bytes, disk_num_bytes, type, 0,
+ 					  BTRFS_COMPRESS_NONE);
+@@ -265,6 +272,9 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
+ 				 u64 disk_bytenr, u64 num_bytes,
+ 				 u64 disk_num_bytes, int type)
+ {
++	ASSERT(type == BTRFS_ORDERED_REGULAR ||
++	       type == BTRFS_ORDERED_NOCOW ||
++	       type == BTRFS_ORDERED_PREALLOC);
+ 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
+ 					  num_bytes, disk_num_bytes, type, 1,
+ 					  BTRFS_COMPRESS_NONE);
+@@ -272,11 +282,12 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
+ 
+ int btrfs_add_ordered_extent_compress(struct btrfs_inode *inode, u64 file_offset,
+ 				      u64 disk_bytenr, u64 num_bytes,
+-				      u64 disk_num_bytes, int type,
+-				      int compress_type)
++				      u64 disk_num_bytes, int compress_type)
+ {
++	ASSERT(compress_type != BTRFS_COMPRESS_NONE);
+ 	return __btrfs_add_ordered_extent(inode, file_offset, disk_bytenr,
+-					  num_bytes, disk_num_bytes, type, 0,
++					  num_bytes, disk_num_bytes,
++					  BTRFS_ORDERED_COMPRESSED, 0,
+ 					  compress_type);
+ }
+ 
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index 46194c2c05d4..673a030714a8 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -27,7 +27,7 @@ struct btrfs_ordered_sum {
+ };
+ 
+ /*
+- * bits for the flags field:
++ * Bits for btrfs_ordered_extent::flags.
+  *
+  * BTRFS_ORDERED_IO_DONE is set when all of the blocks are written.
+  * It is used to make sure metadata is inserted into the tree only once
+@@ -38,24 +38,36 @@ struct btrfs_ordered_sum {
+  * IO is done and any metadata is inserted into the tree.
+  */
+ enum {
++	/*
++	 * Different types for ordered extent, one and only one of the 4 types
++	 * can be set when creating ordered extent.
++	 *
++	 * REGULAR:	For regular non-compressed COW write
++	 * NOCOW:	For NOCOW write into existing non-hole extent
++	 * PREALLOC:	For NOCOW write into preallocated extent
++	 * COMPRESSED:	For compressed COW write
++	 */
++	BTRFS_ORDERED_REGULAR,
++	BTRFS_ORDERED_NOCOW,
++	BTRFS_ORDERED_PREALLOC,
++	BTRFS_ORDERED_COMPRESSED,
++
++	/*
++	 * Extra bit for direct IO, can only be set for
++	 * REGULAR/NOCOW/PREALLOC. No direct IO for compressed extent.
++	 */
++	BTRFS_ORDERED_DIRECT,
++
++	/* Extra status bits for ordered extents */
++
+ 	/* set when all the pages are written */
+ 	BTRFS_ORDERED_IO_DONE,
+ 	/* set when removed from the tree */
+ 	BTRFS_ORDERED_COMPLETE,
+-	/* set when we want to write in place */
+-	BTRFS_ORDERED_NOCOW,
+-	/* writing a zlib compressed extent */
+-	BTRFS_ORDERED_COMPRESSED,
+-	/* set when writing to preallocated extent */
+-	BTRFS_ORDERED_PREALLOC,
+-	/* set when we're doing DIO with this extent */
+-	BTRFS_ORDERED_DIRECT,
+ 	/* We had an io error when writing this out */
+ 	BTRFS_ORDERED_IOERR,
+ 	/* Set when we have to truncate an extent */
+ 	BTRFS_ORDERED_TRUNCATED,
+-	/* Regular IO for COW */
+-	BTRFS_ORDERED_REGULAR,
+ 	/* Used during fsync to track already logged extents */
+ 	BTRFS_ORDERED_LOGGED,
+ 	/* We have already logged all the csums of the ordered extent */
+@@ -167,8 +179,7 @@ int btrfs_add_ordered_extent_dio(struct btrfs_inode *inode, u64 file_offset,
+ 				 u64 disk_num_bytes, int type);
+ int btrfs_add_ordered_extent_compress(struct btrfs_inode *inode, u64 file_offset,
+ 				      u64 disk_bytenr, u64 num_bytes,
+-				      u64 disk_num_bytes, int type,
+-				      int compress_type);
++				      u64 disk_num_bytes, int compress_type);
+ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
+ 			   struct btrfs_ordered_sum *sum);
+ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *inode,
+diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+index ecd24c719de4..b9896fc06160 100644
+--- a/include/trace/events/btrfs.h
++++ b/include/trace/events/btrfs.h
+@@ -499,12 +499,13 @@ DEFINE_EVENT(
+ 
+ #define show_ordered_flags(flags)					   \
+ 	__print_flags(flags, "|",					   \
+-		{ (1 << BTRFS_ORDERED_IO_DONE), 	"IO_DONE" 	}, \
+-		{ (1 << BTRFS_ORDERED_COMPLETE), 	"COMPLETE" 	}, \
++		{ (1 << BTRFS_ORDERED_REGULAR), 	"REGULAR" 	}, \
+ 		{ (1 << BTRFS_ORDERED_NOCOW), 		"NOCOW" 	}, \
+-		{ (1 << BTRFS_ORDERED_COMPRESSED), 	"COMPRESSED" 	}, \
+ 		{ (1 << BTRFS_ORDERED_PREALLOC), 	"PREALLOC" 	}, \
++		{ (1 << BTRFS_ORDERED_COMPRESSED), 	"COMPRESSED" 	}, \
+ 		{ (1 << BTRFS_ORDERED_DIRECT),	 	"DIRECT" 	}, \
++		{ (1 << BTRFS_ORDERED_IO_DONE), 	"IO_DONE" 	}, \
++		{ (1 << BTRFS_ORDERED_COMPLETE), 	"COMPLETE" 	}, \
+ 		{ (1 << BTRFS_ORDERED_IOERR), 		"IOERR" 	}, \
+ 		{ (1 << BTRFS_ORDERED_TRUNCATED), 	"TRUNCATED"	})
+ 
+-- 
+2.30.0
 
