@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF72304D7E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 01:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C714C304D82
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 01:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732233AbhAZXJj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jan 2021 18:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        id S1732284AbhAZXKA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 18:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730366AbhAZVZk (ORCPT
+        with ESMTP id S1730370AbhAZVZl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:25:40 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EA7C061794
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jan 2021 13:24:56 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id es14so82917qvb.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jan 2021 13:24:56 -0800 (PST)
+        Tue, 26 Jan 2021 16:25:41 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0FAC0617A7
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jan 2021 13:25:00 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id l14so87800qvp.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jan 2021 13:25:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SlPFu4lBYS5XRiSORK34z2z5M4INkKulUNtRUu9/dPg=;
-        b=jukiSguvCOviD/9JSRXraXAs+2XFpsN7pduxHV/x131YcV0U8EOg1+9HGogP1kVFoX
-         c5Iq1IVEO7kSDK7sgjMmnXJvkKG76UR9QOPed/rWu2GOzPdF/Yg60uBaJPgESePzqmod
-         y4CrbgQK+TdOEoZj13VgS8XIx4/+FbWB4ywI0cM67D/Cjcmr1P0+Kf8gd4YWtX9j7Ep5
-         aYIKTqufOLS8Iv6UyEUsouQUO/3naq42ApODPxoQsYj9kaHFMBBzt6dvBoBkY7JbwL3r
-         SFBNz3N27FTMhipYWdwVltPS/zbfd1M8znFlNkJbRJ2NyZMF6RPxQ0THCmyoeUwu5JdB
-         7ElA==
+        bh=GtfFhqLetCDo5PfWyUBopRiiM5NKqrE4VCIJDTPHS6s=;
+        b=AwLSYCADwYQR2i2W4NUh52rsu4A+Ll9F/9uw4htSA7SDGYMv2GMtvz0gLuLpMeFdBC
+         Y+eqZ9eEBeqbH6HLhnS4LpO6S2QKlsc60LxlSbzE1Y+ME3PvbKQe9wURUqPFHx+/HfBy
+         GyPiq6RW680LexVbFg/MYi0l6+SklFyqmfpDUPVtWtrhNfWMr95zBgqHU1nxMNINXZJv
+         O1OUsvi/Cr2mqOi9uyVFiMND+f3RIqharuIgP2gM7SPdUKmx0PQRrvHdlj1oeRGWnWXp
+         Dpt8P+VJPzLQ+KROHJ4/Gsvw/1dwBT03bQtGHANCWZo4UnyUcYr/5PjJSmBWVHVuvN7t
+         hTWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SlPFu4lBYS5XRiSORK34z2z5M4INkKulUNtRUu9/dPg=;
-        b=rjeqTC9ZcsNvjLfwjc4YY2fRoucDm+EOaTIFgB1/KaHUZux48Zsn1zhZKgDyIfPVI9
-         4xkV6Hk9OXmipm9LJUuv1R5E0e6bS/Lir9E7kpRMDxofzALozdUmj0JzxsX5nIaNA3ll
-         qNuRwvSFzno6EiU8S+fWb6mekZJ8OlrVOkbsBMsyg6zTw/FSeZn4NaQpP99MCvHUE1Vz
-         bT3vdSsyQrATQ7bILyNCema5tnqifb6HpafbCxXVaE+P+hDdhwQFqULL5cb17K/MqvJi
-         W/e9tBrElrW/3CHV0TGEIUFOLDhTStHHI0pW4BHPbBXkTiHt0NnviGw3MODif8+CgPDQ
-         Ftuw==
-X-Gm-Message-State: AOAM532pToQ9viU989M1QPlclFePR142eIat4XRUEtN3ZVLTymyaJ46A
-        rHYED4TYRGweK5BekGjJGOTsUN7XWMCBNrnH
-X-Google-Smtp-Source: ABdhPJxNzrqDQszb5W3ZJZ+kYf2c5EhznPkL5SxWGteEqNT9+Wf5x6teMOUXcC7KUWmKTRzSLPtAKg==
-X-Received: by 2002:ad4:45b0:: with SMTP id y16mr7648729qvu.3.1611696295654;
-        Tue, 26 Jan 2021 13:24:55 -0800 (PST)
+        bh=GtfFhqLetCDo5PfWyUBopRiiM5NKqrE4VCIJDTPHS6s=;
+        b=VnUsUuYFftl8JU4MzG7zmZ+iqFgVR6a9nqPlCdOJJzRr0sUmo1wocg7pPdE+UttXXI
+         uyKjGe8FtiQ0fLYQFGabS49CAhuVlHPxjrwmPafV5+ApyxiDnIZ0woLTVa360IyY/FM+
+         PmUudV+eqosRHIz05frOCHzMKYsSRf3XG/Fftz2kH8FvfyBW0nDjWWroOMzh4jXUxjA7
+         isvEZ0i5HVRzf7H2EbogGmSvljjo6uijLP0mEbdqEgxMwvwLntB2j05VchY0EAhsi/4W
+         42T3AZYngnti5IFMUhkztokU5CYl+5sg6dCwASKm+lZvcG/Rd6LWLwpn3s+KUFZxOKsM
+         oA6Q==
+X-Gm-Message-State: AOAM530iQk+WyNQI44L+pBbCU+zE7G4WyM4H847EcsEOni615MMHy8Ch
+        RnRqPvbh6JqwMJjsj3G9lcSHM5qQNXj2SPje
+X-Google-Smtp-Source: ABdhPJyX3DMEWYj0j7L+R00AMnjWH/nBVP/0hELV3Pqr1A0Y5KFFA3TZWjx+/O0sjL4gG8mKZOW7yw==
+X-Received: by 2002:a05:6214:32e:: with SMTP id j14mr7591837qvu.13.1611696299857;
+        Tue, 26 Jan 2021 13:24:59 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h6sm13529774qtx.39.2021.01.26.13.24.54
+        by smtp.gmail.com with ESMTPSA id v67sm15647989qkd.94.2021.01.26.13.24.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 13:24:55 -0800 (PST)
+        Tue, 26 Jan 2021 13:24:58 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v4 10/12] btrfs: implement space clamping for preemptive flushing
-Date:   Tue, 26 Jan 2021 16:24:34 -0500
-Message-Id: <8bece7f165ba8b7b17aedc131533302434093afc.1611695838.git.josef@toxicpanda.com>
+Subject: [PATCH v4 12/12] btrfs: add a trace class for dumping the current ENOSPC state
+Date:   Tue, 26 Jan 2021 16:24:36 -0500
+Message-Id: <97fadce8246431ef3b9f7cac29716432e690905f.1611695838.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1611695838.git.josef@toxicpanda.com>
 References: <cover.1611695838.git.josef@toxicpanda.com>
@@ -63,150 +63,106 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Starting preemptive flushing at 50% of available free space is a good
-start, but some workloads are particularly abusive and can quickly
-overwhelm the preemptive flushing code and drive us into using tickets.
-
-Handle this by clamping down on our threshold for starting and
-continuing to run preemptive flushing.  This is particularly important
-for our overcommit case, as we can really drive the file system into
-overages and then it's more difficult to pull it back as we start to
-actually fill up the file system.
-
-The clamping is essentially 2^CLAMP, but we start at 1 so whatever we
-calculate for overcommit is the baseline.
+Often when I'm debugging ENOSPC related issues I have to resort to
+printing the entire ENOSPC state with trace_printk() in different spots.
+This gets pretty annoying, so add a trace state that does this for us.
+Then add a trace point at the end of preemptive flushing so you can see
+the state of the space_info when we decide to exit preemptive flushing.
+This helped me figure out we weren't kicking in the preemptive flushing
+soon enough.
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 51 +++++++++++++++++++++++++++++++++++++++++--
- fs/btrfs/space-info.h |  4 ++++
- 2 files changed, 53 insertions(+), 2 deletions(-)
+ fs/btrfs/space-info.c        |  1 +
+ include/trace/events/btrfs.h | 62 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 1c4226f78e27..6afb9cac694a 100644
+index 48c2a4eae235..868fd328bf2d 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -206,6 +206,7 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
- 	INIT_LIST_HEAD(&space_info->ro_bgs);
- 	INIT_LIST_HEAD(&space_info->tickets);
- 	INIT_LIST_HEAD(&space_info->priority_tickets);
-+	space_info->clamp = 1;
- 
- 	ret = btrfs_sysfs_add_space_info_type(info, space_info);
- 	if (ret)
-@@ -809,13 +810,26 @@ static bool need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
- 	 * because this doesn't quite work how we want.  If we had more than 50%
- 	 * of the space_info used by bytes_used and we had 0 available we'd just
- 	 * constantly run the background flusher.  Instead we want it to kick in
--	 * if our reclaimable space exceeds 50% of our available free space.
-+	 * if our reclaimable space exceeds our clamped free space.
-+	 *
-+	 * Our clamping range is 2^1 -> 2^8.  Practically speaking that means
-+	 * the following
-+	 *
-+	 * Amount of RAM	Minimum threshold	Maximum threshold
-+	 * 256GIB		1GIB			128GIB
-+	 * 128GIB		512MIB			64GIB
-+	 * 64GIB		256MIB			32GIB
-+	 * 32GIB		128MIB			16GIB
-+	 * 16GIB		64MIB			8GIB
-+	 *
-+	 * These are the range our thresholds will fall in, corresponding to how
-+	 * much delalloc we need for the background flusher to kick in.
- 	 */
- 	thresh = calc_available_free_space(fs_info, space_info,
- 					   BTRFS_RESERVE_FLUSH_ALL);
- 	thresh += (space_info->total_bytes - space_info->bytes_used -
- 		   space_info->bytes_reserved - space_info->bytes_readonly);
--	thresh >>= 1;
-+	thresh >>= space_info->clamp;
- 
- 	used = space_info->bytes_pinned;
- 
-@@ -1039,6 +1053,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 	struct btrfs_block_rsv *delayed_refs_rsv;
- 	struct btrfs_block_rsv *global_rsv;
- 	struct btrfs_block_rsv *trans_rsv;
-+	int loops = 0;
- 
- 	fs_info = container_of(work, struct btrfs_fs_info,
- 			       preempt_reclaim_work);
-@@ -1055,6 +1070,8 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 		u64 to_reclaim, block_rsv_size;
- 		u64 global_rsv_size = global_rsv->reserved;
- 
-+		loops++;
-+
- 		/*
- 		 * We don't have a precise counter for the metadata being
- 		 * reserved for delalloc, so we'll approximate it by subtracting
-@@ -1112,6 +1129,10 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
- 		cond_resched();
- 		spin_lock(&space_info->lock);
- 	}
-+
-+	/* We only went through once, back off our clamping. */
-+	if (loops == 1 && !space_info->reclaim_size)
-+		space_info->clamp = max(1, space_info->clamp - 1);
+@@ -1134,6 +1134,7 @@ static void btrfs_preempt_reclaim_metadata_space(struct work_struct *work)
+ 	/* We only went through once, back off our clamping. */
+ 	if (loops == 1 && !space_info->reclaim_size)
+ 		space_info->clamp = max(1, space_info->clamp - 1);
++	trace_btrfs_done_preemptive_reclaim(fs_info, space_info);
  	spin_unlock(&space_info->lock);
  }
  
-@@ -1434,6 +1455,24 @@ static inline bool is_normal_flushing(enum btrfs_reserve_flush_enum flush)
- 		(flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
- }
+diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+index 74e5cc247b80..d9dbf9af5ef3 100644
+--- a/include/trace/events/btrfs.h
++++ b/include/trace/events/btrfs.h
+@@ -2029,6 +2029,68 @@ TRACE_EVENT(btrfs_convert_extent_bit,
+ 		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
+ );
  
-+static inline void maybe_clamp_preempt(struct btrfs_fs_info *fs_info,
-+				       struct btrfs_space_info *space_info)
-+{
-+	u64 ordered = percpu_counter_sum_positive(&fs_info->ordered_bytes);
-+	u64 delalloc = percpu_counter_sum_positive(&fs_info->delalloc_bytes);
++DECLARE_EVENT_CLASS(btrfs_dump_space_info,
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
++		 const struct btrfs_space_info *sinfo),
 +
-+	/*
-+	 * If we're heavy on ordered operations then clamping won't help us.  We
-+	 * need to clamp specifically to keep up with dirty'ing buffered
-+	 * writers, because there's not a 1:1 correlation of writing delalloc
-+	 * and freeing space, like there is with flushing delayed refs or
-+	 * delayed nodes.  If we're already more ordered than delalloc then
-+	 * we're keeping up, otherwise we aren't and should probably clamp.
-+	 */
-+	if (ordered < delalloc)
-+		space_info->clamp = min(space_info->clamp + 1, 8);
-+}
++	TP_ARGS(fs_info, sinfo),
 +
- /**
-  * Try to reserve bytes from the block_rsv's space
-  *
-@@ -1527,6 +1566,14 @@ static int __reserve_bytes(struct btrfs_fs_info *fs_info,
- 			list_add_tail(&ticket.list,
- 				      &space_info->priority_tickets);
- 		}
++	TP_STRUCT__entry_btrfs(
++		__field(	u64,	flags			)
++		__field(	u64,	total_bytes		)
++		__field(	u64,	bytes_used		)
++		__field(	u64,	bytes_pinned		)
++		__field(	u64,	bytes_reserved		)
++		__field(	u64,	bytes_may_use		)
++		__field(	u64,	bytes_readonly		)
++		__field(	u64,	reclaim_size		)
++		__field(	int,	clamp			)
++		__field(	u64,	global_reserved		)
++		__field(	u64,	trans_reserved		)
++		__field(	u64,	delayed_refs_reserved	)
++		__field(	u64,	delayed_reserved	)
++		__field(	u64,	free_chunk_space	)
++	),
 +
-+		/*
-+		 * We were forced to add a reserve ticket, so our preemptive
-+		 * flushing is unable to keep up.  Clamp down on the threshold
-+		 * for the preemptive flushing in order to keep up with the
-+		 * workload.
-+		 */
-+		maybe_clamp_preempt(fs_info, space_info);
- 	} else if (!ret && space_info->flags & BTRFS_BLOCK_GROUP_METADATA) {
- 		used += orig_bytes;
- 		/*
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index 74706f604bce..8870bd7805b5 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -22,6 +22,10 @@ struct btrfs_space_info {
- 				   the space info if we had an ENOSPC in the
- 				   allocator. */
- 
-+	int clamp;		/* Used to scale our threshold for preemptive
-+				   flushing.  The value is >> clamp, so
-+				   turns out to be a 2^clamp divisor. */
++	TP_fast_assign_btrfs(fs_info,
++		__entry->flags			=	sinfo->flags;
++		__entry->total_bytes		=	sinfo->total_bytes;
++		__entry->bytes_used		=	sinfo->bytes_used;
++		__entry->bytes_pinned		=	sinfo->bytes_pinned;
++		__entry->bytes_reserved		=	sinfo->bytes_reserved;
++		__entry->bytes_may_use		=	sinfo->bytes_may_use;
++		__entry->bytes_readonly		=	sinfo->bytes_readonly;
++		__entry->reclaim_size		=	sinfo->reclaim_size;
++		__entry->clamp			=	sinfo->clamp;
++		__entry->global_reserved	=	fs_info->global_block_rsv.reserved;
++		__entry->trans_reserved		=	fs_info->trans_block_rsv.reserved;
++		__entry->delayed_refs_reserved	=	fs_info->delayed_refs_rsv.reserved;
++		__entry->delayed_reserved	=	fs_info->delayed_block_rsv.reserved;
++		__entry->free_chunk_space	=	atomic64_read(&fs_info->free_chunk_space);
++	),
 +
- 	unsigned int full:1;	/* indicates that we cannot allocate any more
- 				   chunks for this space */
- 	unsigned int chunk_alloc:1;	/* set if we are allocating a chunk */
++	TP_printk_btrfs("flags=%s total_bytes=%llu bytes_used=%llu "
++			"bytes_pinned=%llu bytes_reserved=%llu "
++			"bytes_may_use=%llu bytes_readonly=%llu "
++			"reclaim_size=%llu clamp=%d global_reserved=%llu "
++			"trans_reserved=%llu delayed_refs_reserved=%llu "
++			"delayed_reserved=%llu chunk_free_space=%llu",
++			__print_flags(__entry->flags, "|", BTRFS_GROUP_FLAGS),
++			__entry->total_bytes, __entry->bytes_used,
++			__entry->bytes_pinned, __entry->bytes_reserved,
++			__entry->bytes_may_use, __entry->bytes_readonly,
++			__entry->reclaim_size, __entry->clamp,
++			__entry->global_reserved, __entry->trans_reserved,
++			__entry->delayed_refs_reserved,
++			__entry->delayed_reserved, __entry->free_chunk_space)
++);
++
++DEFINE_EVENT(btrfs_dump_space_info, btrfs_done_preemptive_reclaim,
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
++		 const struct btrfs_space_info *sinfo),
++	TP_ARGS(fs_info, sinfo)
++);
++
+ TRACE_EVENT(btrfs_reserve_ticket,
+ 	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, u64 bytes,
+ 		 u64 start_ns, int flush, int error),
 -- 
 2.26.2
 
