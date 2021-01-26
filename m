@@ -2,106 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9818304068
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 15:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D1B30412B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Jan 2021 15:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405027AbhAZOey (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Jan 2021 09:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
+        id S2405998AbhAZO6Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Jan 2021 09:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392746AbhAZOb2 (ORCPT
+        with ESMTP id S2405967AbhAZO6L (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:31:28 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FDDC061A31
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jan 2021 06:30:48 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id c1so12320695qtc.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Jan 2021 06:30:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cnQKRa1F2EPOzJJlOmZC39ZEc9CoOc05/pnXM6vhQqM=;
-        b=CqAIGBek2YTA0stJ19SPJ0SnPEZycikjeY7CnanSn4ZRyjS3R5O0Jw/kBb6sW+GpNv
-         RSntH39V+WBlBz+d0FIDe6vGApF+EXdsRFTY+cP0Y9oLF94KgApG4RRHvWftK2DNqPST
-         c9Hqu7nzlOwuNZAIIBmaJyBYWYWc6Npz/1I3rXipdd7ivNUPjRUgkrH/94xqDRegM0ld
-         6x3fo/VzwHlIguvgHVzL4v/Qq3Tow3yV9D0MV1Otad59Olqx+ssg5KBujuaEMn8WHbgf
-         7oTQPBYVbcMwF+Fz7P8rqcHqJr9S7nvH1Ldm720no8yzgEyNfx8MsDqE1KZawRNoXOa/
-         nHkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cnQKRa1F2EPOzJJlOmZC39ZEc9CoOc05/pnXM6vhQqM=;
-        b=aVKugF/c0RctRQk5m3PxQYSwQcSeCc8UQ1Ttu2f/jjGqa5jFRal2zQ5uqKugtzvFAI
-         kMSlHYaVllhQmZPmnCajchHy+kiYef2ZTGDKTGYPeqxtV92u35Gfayn+YBb65SIXl80H
-         fex9LYVHNHV8yzI1PSdGG/7bggeFqa4vqxQDtLH3j3lIOBUS3k0ncEz7ruPN4GVMDPip
-         nEfc2/1KpTbgR3Z9dK6k4UoEZWp4KX2xmRF9UmZmkOfIPIF99QK+Vto4nTmiztSsIULo
-         mN8u4TDIKexGO8Y57PWYHXmHMjB/jDSjwnaqZBJeZ3kEqgN5NUi7wjbpfdxbay6H+cIG
-         pAtw==
-X-Gm-Message-State: AOAM532zc23lVHyqaXDDlOucj8lHKIT7BAotf/Q0vYGQp3JyBXU6/2p6
-        rG7+18Q4aqoPOLOd5pd+z0TGyw==
-X-Google-Smtp-Source: ABdhPJx1dfNA+3TC6TmAw/g8cbA7ibCQPo6igGadI3jLfsIn4j6YIBUeA2X/Atpah6vFvKLsPESV+A==
-X-Received: by 2002:aed:2644:: with SMTP id z62mr5394060qtc.146.1611671447521;
-        Tue, 26 Jan 2021 06:30:47 -0800 (PST)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c12sm13611176qtq.76.2021.01.26.06.30.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 06:30:46 -0800 (PST)
-Subject: Re: [PATCH] btrfs: avoid double put of block group when emptying
- cluster
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Cc:     stable@vger.kernel.org
-References: <5ca694ff4f8cff4c0ef6896593a1f1d01fbe956d.1611610947.git.josef@toxicpanda.com>
- <bf8cd92d-12a0-3bb3-34c0-dd9c938bf349@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ad0ea42a-5e41-f9b9-986d-8c70e9f2eed3@toxicpanda.com>
-Date:   Tue, 26 Jan 2021 09:30:45 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Tue, 26 Jan 2021 09:58:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36854C0698C2;
+        Tue, 26 Jan 2021 06:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=DlGuhvUuF5545bhBTyuoYUED18e0Xo1tptPGH+ZCVWM=; b=jMQTwjqfgxOzhYVUlZs0z9WFMS
+        HRM3mdeuPCtX41haFTd6hK9e25Otzz6mCyGNcv34gLl3lwXKlK5lNyLTebUWNNaFab+hdAbStB327
+        6X13dSBciQr1C4yXzcvGmt62gd3mz/quTqo9WjsRSWJx4E4YtRztVJUQF2aYf33t7c4ozLh5cmFBq
+        jtTnUIVw6VgPNfzXwq64Crdqp9Bei9fIWZOg+evdMuBCYdR8RMjwHbP99COwLm/oF7u4+vzFrU+Tm
+        2WUpSisrQMH9uO9aOlv+vEiHmHKQMMIj8qQj2cijQqFQjcvZAiJ5jVKPz8liZXt3v3QT/yndTE765
+        OTjGoq6g==;
+Received: from [2001:4bb8:191:e347:5918:ac86:61cb:8801] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4Pi4-005luv-Pc; Tue, 26 Jan 2021 14:53:04 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        linux-nilfs@vger.kernel.org, dm-devel@redhat.com,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: misc bio allocation cleanups
+Date:   Tue, 26 Jan 2021 15:52:30 +0100
+Message-Id: <20210126145247.1964410-1-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <bf8cd92d-12a0-3bb3-34c0-dd9c938bf349@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/26/21 4:02 AM, Nikolay Borisov wrote:
-> 
-> 
-> On 25.01.21 г. 23:42 ч., Josef Bacik wrote:
->> In __btrfs_return_cluster_to_free_space we will bail doing the cleanup
->> of the cluster if the block group we passed in doesn't match the block
->> group on the cluster.  However we drop a reference to block_group, as
->> the cluster holds a reference to the block group while it's attached to
->> the cluster.  If cluster->block_group != block_group however then this
->> is an extra put, which means we'll go negative and free this block group
->> down the line, leading to a UAF.
-> 
-> Was this found by code inspection or did you hit in production. Also why
-> in btrfs_remove_free_space_cache just before
-> __btrfs_return_cluster_to_free_space there is:
-> 
+Hi Jens,
 
-It was found in production sort of halfway.  I was doing something for WhatsApp 
-and had to convert our block group reference counting to the refcount stuff so I 
-could find where I made a mistake.  Turns out this was where the problem was, my 
-stuff had just made it way more likely to happen.  I don't have the stack trace 
-because this was like 6 months ago, I'm going through all my WhatsApp magic and 
-getting them actually usable for upstream.
+this series contains various cleanups for how bios are allocated or
+initialized plus related fallout.
 
-> WARN_ON(cluster->block_group != block_group);
-> 
-> IMO this patch should also remove the WARN_ON if it's a valid condition
-> to have the passed bg be different than the one in the cluster. Also
-> that WARN_ON is likely racy since it's done outside of cluster->lock.
-> 
-
-Yup that's in a follow up thing, I wanted to get the actual fix out before I got 
-distracted by my mountain of meetings this week.  Thanks,
-
-Josef
+Diffstat:
+ Documentation/filesystems/f2fs.rst |    1 
+ block/bio.c                        |  167 ++++++++++++++++++-------------------
+ block/blk-crypto-fallback.c        |    2 
+ block/blk-flush.c                  |   17 +--
+ drivers/block/drbd/drbd_actlog.c   |    2 
+ drivers/block/drbd/drbd_bitmap.c   |    2 
+ drivers/block/drbd/drbd_int.h      |    2 
+ drivers/block/drbd/drbd_main.c     |   13 --
+ drivers/block/drbd/drbd_req.c      |    5 -
+ drivers/block/drbd/drbd_req.h      |   12 --
+ drivers/block/drbd/drbd_worker.c   |    5 -
+ drivers/md/dm-clone-target.c       |   14 ---
+ drivers/md/dm-zoned-metadata.c     |    6 -
+ drivers/md/md.c                    |   48 +++-------
+ drivers/md/md.h                    |    2 
+ drivers/md/raid1.c                 |    2 
+ drivers/md/raid10.c                |    2 
+ drivers/md/raid5-ppl.c             |    2 
+ drivers/md/raid5.c                 |  108 +++++++++--------------
+ drivers/nvme/target/io-cmd-bdev.c  |    2 
+ fs/block_dev.c                     |    2 
+ fs/btrfs/volumes.c                 |    2 
+ fs/exfat/file.c                    |    2 
+ fs/ext4/fast_commit.c              |    4 
+ fs/ext4/fsync.c                    |    2 
+ fs/ext4/ialloc.c                   |    2 
+ fs/ext4/super.c                    |    2 
+ fs/f2fs/data.c                     |   28 ------
+ fs/f2fs/f2fs.h                     |    2 
+ fs/f2fs/segment.c                  |   12 --
+ fs/f2fs/super.c                    |    1 
+ fs/fat/file.c                      |    2 
+ fs/hfsplus/inode.c                 |    2 
+ fs/hfsplus/super.c                 |    2 
+ fs/jbd2/checkpoint.c               |    2 
+ fs/jbd2/commit.c                   |    4 
+ fs/jbd2/recovery.c                 |    2 
+ fs/libfs.c                         |    2 
+ fs/nfs/blocklayout/blocklayout.c   |    5 -
+ fs/nilfs2/segbuf.c                 |    4 
+ fs/nilfs2/the_nilfs.h              |    2 
+ fs/ocfs2/file.c                    |    2 
+ fs/reiserfs/file.c                 |    2 
+ fs/xfs/xfs_super.c                 |    2 
+ fs/zonefs/super.c                  |    4 
+ include/linux/bio.h                |    6 -
+ include/linux/blkdev.h             |    4 
+ include/linux/swap.h               |    1 
+ mm/page_io.c                       |   45 ++-------
+ mm/swapfile.c                      |   10 --
+ 50 files changed, 213 insertions(+), 363 deletions(-)
