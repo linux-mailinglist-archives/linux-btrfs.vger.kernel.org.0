@@ -2,68 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23778306002
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 16:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8886306033
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 16:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236547AbhA0PpO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 10:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S236062AbhA0Pud (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 10:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbhA0Pmz (ORCPT
+        with ESMTP id S1343864AbhA0PnV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 10:42:55 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FAAC061573
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 07:42:14 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id l27so2074915qki.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 07:42:14 -0800 (PST)
+        Wed, 27 Jan 2021 10:43:21 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0187FC061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 07:42:41 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id p5so1232038qvs.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 07:42:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ihrtKWzpdHFZt9pWsXJXNdeksPNF+yYepokyiwSc9Uo=;
-        b=1gWaBHJ8p0dp2S2n5i7zNoULYJhfNtK+NiqQqewa868oA7nRjxQvQwjqYq87Dti5E6
-         1cuspcidHdEkceunwSL/s/GZfTv1LdEioYl6AwruqRbkdISvTbGqwkh96dYCKGLYLzlm
-         C8wepxas46t3qRtZUQFlEN5tVPcHmaW3mw3pJ/dW8IbJ66qykjYiQuPm7fzS9cwg1R8N
-         TXrHQ8kLQNbh+PBpCU2XL1wJ3VCH6W077jz3wji3KP3lbVgLeqQ9t6COaG9cAAevHWZ3
-         DksS33JXp/rvTNlbdSWYOe6fNrslCUYELEBprmtSiLgWqa6b12n+Fx3/RUDU85prqIK/
-         oSzQ==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=WeQalZ8UFKuQoZez+lNEwBLovMJkRC/g2YE3Sc7rV2A=;
+        b=Y5HkyU2xtFBZo142s2YbPghTHHLRwZI7mqAnhSa1Wy8kAHwigRW5GjwcDxSzuAyQgq
+         A72L209E60oBCsHiTJ1oYBtDL2C6AUpRNX5/ichbbBXmPU+2nlLYFmzGiPe2sJEnnbB4
+         2/T9vDn3XGtnp+sB4YfaeKZeKyZ77lNpX87By8GXsIhmKGAxCdxsM8784SkdnaVWT7nq
+         /H6VR6pgTPb0hy5r5TCrVakZC4B4PrQlZQ5Y2F4O90fG9N1nTe8S/Dwrw+xlKSlkTr0d
+         FjueAo8Ibl2bL6OiaSkdT5ITR1a222MD4MveMO4fseN8kN7gjWCicBx9w4eUNQIUJ6Ro
+         gjqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ihrtKWzpdHFZt9pWsXJXNdeksPNF+yYepokyiwSc9Uo=;
-        b=Zu+h4O61qY56Pnz04znEm59Wd0blZtxJNRnRjH7JaHEkLoxaibSML3Tn9+0wYZ9wWA
-         Rx3vBEp+/p8WwYJ+Twuu4OikwmP1Y2GgrxwAyG9D8K/Z9ygOuMEbgohUD6BDmUbGeWSk
-         P3HU5tADsVgFDsKMkKCuzcaE7lWAU+gjN1FlPAw/fGAooNjrhm/axcl28UzIRXAiGAIU
-         Dlcd59/XGRVyoBRbnhQbBTd0++z6OLC8xACtDHeo+xk1xEHhousX/iMioAF8TG/8HeQj
-         vFk5MhFyZE8C9TLyWulcHd2yXz3GlktSSN29fTkahbAw38YgfPKGvRQ7QPDUjWl/bq7R
-         UlBw==
-X-Gm-Message-State: AOAM531NkxRXXwQ+xaRe7s1FKtwg6Hwf8EL+w4zK8Dy1PQpamv/TnzCQ
-        ayhtGJGFij3UZKoCibTUf5ttxbGtcONOjuUs
-X-Google-Smtp-Source: ABdhPJyo5Ab7dmjlfIfeaUCrtnsFur4bO93hHD5v8xzrTyxRoYWxjf2JNo5iHH9PEP4CPA75XqEzug==
-X-Received: by 2002:a37:4f4a:: with SMTP id d71mr11332859qkb.55.1611762133291;
-        Wed, 27 Jan 2021 07:42:13 -0800 (PST)
+        bh=WeQalZ8UFKuQoZez+lNEwBLovMJkRC/g2YE3Sc7rV2A=;
+        b=FBhyhpKSvsKaEo/b69lOcAh4v6zqlklEPsdYGQdO+ar/3BOXcS1eOQmc1HJ7M4WhLn
+         CxAnIiG8Y4gCZDiKA2dmA++erYrtms1oGuAOttSfZvRZDbw+kzSrS3gCM8/zaQw1G3Jb
+         R7xDxEuZVOnSv8ObVEduRQoZt7T9jSx/c6O/fQc0QQY6S8RhoVx7u068D+4tJHqngemR
+         hviFbQF3yPSPEIjP93ZCwpfuC1mNMxXFH+u24H8SM1O4SVhnGli65s41Co9FYp1ILSDn
+         QEcQOBAGoutc6w47Zr9Dh4XlzKYENCsWHmEWTv3EZ1pqz2VoljsPDShvv0Sii/Ya94Zf
+         zA9g==
+X-Gm-Message-State: AOAM532IHq6DWykFW+KPV14bKBcfetf84Tyo25+uvzWVSMDMkKJpgMZV
+        u3chY3zo56QCfS4ZlQJ1imSUliLg/tEl2eSj
+X-Google-Smtp-Source: ABdhPJzbZqYZyAGpFJvSGFkuczn8boSxXeRrQzScerJb1lkLEx4EeabjpRjVypgkBcLXu0awcSrDVw==
+X-Received: by 2002:ad4:5241:: with SMTP id s1mr10813351qvq.36.1611762159718;
+        Wed, 27 Jan 2021 07:42:39 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h63sm431994qtd.14.2021.01.27.07.42.12
+        by smtp.gmail.com with ESMTPSA id 196sm1374233qkn.64.2021.01.27.07.42.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 07:42:12 -0800 (PST)
-Subject: Re: [PATCH 6/7] btrfs: remove unnecessary
- check_parent_dirs_for_sync()
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+        Wed, 27 Jan 2021 07:42:39 -0800 (PST)
+Subject: Re: [PATCH 0/7] btrfs: more performance improvements for dbench
+ workloads
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <cover.1611742865.git.fdmanana@suse.com>
- <77b21c64a5aed56e5602c59558c1b09254f3b494.1611742865.git.fdmanana@suse.com>
- <1a949e1e-4138-abef-bff7-0ce525be6ae3@toxicpanda.com>
- <CAL3q7H674gb03GJh3owLSVBndSO0JsT3STVHJDeOGU72_Ar4LQ@mail.gmail.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <3fec2b88-99e8-7aba-25bd-f746aed8ac7f@toxicpanda.com>
-Date:   Wed, 27 Jan 2021 10:42:12 -0500
+Message-ID: <91fb4c24-8642-1dbf-8ae6-08baea8badce@toxicpanda.com>
+Date:   Wed, 27 Jan 2021 10:42:38 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H674gb03GJh3owLSVBndSO0JsT3STVHJDeOGU72_Ar4LQ@mail.gmail.com>
+In-Reply-To: <cover.1611742865.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,90 +67,38 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/27/21 10:36 AM, Filipe Manana wrote:
-> On Wed, Jan 27, 2021 at 3:23 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> On 1/27/21 5:34 AM, fdmanana@kernel.org wrote:
->>> From: Filipe Manana <fdmanana@suse.com>
->>>
->>> Whenever we fsync an inode, if it is a directory, a regular file that was
->>> created in the current transaction or has last_unlink_trans set to the
->>> generation of the current transaction, we check if any of its ancestor
->>> inodes (and the inode itself if it is a directory) can not be logged and
->>> need a fallback to a full transaction commit - if so, we return with a
->>> value of 1 in order to fallback to a transaction commit.
->>>
->>> However we often do not need to fallback to a transaction commit because:
->>>
->>> 1) The ancestor inode is not an immediate parent, and therefore there is
->>>      not an explicit request to log it and it is not needed neither to
->>>      guarantee the consistency of the inode originally asked to be logged
->>>      (fsynced) nor its immediate parent;
->>>
->>> 2) The ancestor inode was already logged before, in which case any link,
->>>      unlink or rename operation updates the log as needed.
->>>
->>> So for these two cases we can avoid an unnecessary transaction commit.
->>> Therefore remove check_parent_dirs_for_sync() and add a check at the top
->>> of btrfs_log_inode() to make us fallback immediately to a transaction
->>> commit when we are logging a directory inode that can not be logged and
->>> needs a full transaction commit. All we need to protect is the case where
->>> after renaming a file someone fsyncs only the old directory, which would
->>> result is losing the renamed file after a log replay.
->>>
->>> This patch is part of a patchset comprised of the following patches:
->>>
->>>     btrfs: remove unnecessary directory inode item update when deleting dir entry
->>>     btrfs: stop setting nbytes when filling inode item for logging
->>>     btrfs: avoid logging new ancestor inodes when logging new inode
->>>     btrfs: skip logging directories already logged when logging all parents
->>>     btrfs: skip logging inodes already logged when logging new entries
->>>     btrfs: remove unnecessary check_parent_dirs_for_sync()
->>>     btrfs: make concurrent fsyncs wait less when waiting for a transaction commit
->>>
->>> Performance results, after applying all patches, are mentioned in the
->>> change log of the last patch.
->>>
->>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->>
->> I'm having a hard time with this one.
->>
->> Previously we would commit the transaction if the inode was a regular file, that
->> was created in this current transaction, and had been renamed.  Now with this
->> patch you're only committing the transaction if we are a directory and were
->> renamed ourselves.  Before if you already had directories A and B and then did
->> something like
->>
->> echo "foo" > /mnt/test/A/blah
->> fsync(/mnt/test/A/blah);
->> fsync(/mnt/test/A);
->> mv /mnt/test/A/blah /mnt/test/B
->> fsync(/mnt/test/B/blah);
->>
->> we would commit the transaction on this second fsync, but with your patch we are
->> not.  I suppose that's keeping in line with how fsync is allowed to work, but
->> it's definitely a change in behavior from what we used to do.  Not sure if
->> that's good or not, I'll have to think about it.  Thanks,
+On 1/27/21 5:34 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Yes. Because of the rename (or a link), we will set last_unlink_trans
-> to the current transaction, and when logging the file that will cause
-> logging of all its old parents (A). That was added several years ago
-> to fix corruptions, and it turned out to be needed later as well to
-> ensure we have
-> a behaviour similar to xfs and ext4 (and others) regarding strictly
-> ordered metadata updates (I added several tests to fstests over the
-> years for all the cases).
-> There's also the fact that on replay we will delete any inode refs
-> that aren't in the log (that one was added in commit 1f250e929a9c
-> ("Btrfs: fix log replay failure after unlink and link combination").
+> The following patchset brings one more batch of performance improvements
+> with dbench workloads, or anything that mixes file creation, file writes,
+> renames, unlinks, etc with fsync like dbench does. This patchset is mostly
+> based on avoiding logging directory inodes multiple times when not necessary,
+> falling back to transaction commits less frequently and often waiting less
+> time for transaction commits to complete. Performance results are listed in
+> the change log of the last patch, but in short, I've experienced a reduction
+> of maximum latency up to about -40% and throuhput gains up to about +6%.
 > 
-> For that example we also have A updated in the log by the rename. So
-> we know the log is consistent.
+> Filipe Manana (7):
+>    btrfs: remove unnecessary directory inode item update when deleting dir entry
+>    btrfs: stop setting nbytes when filling inode item for logging
+>    btrfs: avoid logging new ancestor inodes when logging new inode
+>    btrfs: skip logging directories already logged when logging all parents
+>    btrfs: skip logging inodes already logged when logging new entries
+>    btrfs: remove unnecessary check_parent_dirs_for_sync()
+>    btrfs: make concurrent fsyncs wait less when waiting for a transaction commit
 > 
-> So that's why the whole check_parents_for_sync() is not needed.
+>   fs/btrfs/file.c        |   1 +
+>   fs/btrfs/transaction.c |  39 +++++++--
+>   fs/btrfs/transaction.h |   2 +
+>   fs/btrfs/tree-log.c    | 195 ++++++++++++-----------------------------
+>   4 files changed, 92 insertions(+), 145 deletions(-)
 > 
 
-Ok that's reasonable, thanks,
+You can add
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+to the whole series, thanks,
 
 Josef
-
