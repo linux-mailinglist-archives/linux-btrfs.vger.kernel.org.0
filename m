@@ -2,17 +2,16 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F03A3056C1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 10:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C443056D2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 10:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbhA0JV5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 04:21:57 -0500
-Received: from smtp81.iad3a.emailsrvr.com ([173.203.187.81]:50227 "EHLO
-        smtp81.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234382AbhA0JH3 (ORCPT
+        id S234768AbhA0JYW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 04:24:22 -0500
+Received: from smtp84.iad3a.emailsrvr.com ([173.203.187.84]:48595 "EHLO
+        smtp84.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232001AbhA0JWg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:07:29 -0500
-X-Greylist: delayed 527 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 Jan 2021 04:07:28 EST
+        Wed, 27 Jan 2021 04:22:36 -0500
 Received: from smtp78.iad3a.emailsrvr.com (relay.iad3a.rsapps.net [172.27.255.110])
         by smtp11.relay.iad3a.emailsrvr.com (SMTP Server) with ESMTPS id 7C35E3AD5
         for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 03:58:39 -0500 (EST)
