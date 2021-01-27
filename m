@@ -2,61 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D131F30553A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 09:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DF530556E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 09:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbhA0IE4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 03:04:56 -0500
-Received: from smtp77.ord1d.emailsrvr.com ([184.106.54.77]:60801 "EHLO
-        smtp77.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234177AbhA0ICa (ORCPT
+        id S234716AbhA0IQY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 03:16:24 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:24901 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233981AbhA0IMo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 03:02:30 -0500
-X-Auth-ID: a.isaev@rqc.ru
-Received: by smtp18.relay.ord1d.emailsrvr.com (Authenticated sender: a.isaev-AT-rqc.ru) with ESMTPSA id 59A62A0148
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 02:08:09 -0500 (EST)
-From:   Alexey Isaev <a.isaev@rqc.ru>
-Subject: btrfs becomes read-only
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <cf9189c0-614c-26e8-9d3e-8e18555c064f@rqc.ru>
-Date:   Wed, 27 Jan 2021 10:08:07 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: ru
-X-Classification-ID: af5e707b-d7d9-4897-bfe6-5172d4b7ff93-1-1
+        Wed, 27 Jan 2021 03:12:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UN1h2f8_1611735103;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN1h2f8_1611735103)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Jan 2021 16:11:47 +0800
+From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Team <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] btrfs: Simplify the calculation of variables
+Date:   Wed, 27 Jan 2021 16:11:37 +0800
+Message-Id: <1611735097-101599-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello!
+Fix the following coccicheck warnings:
 
-BTRFS volume becomes read-only with this messages in dmesg.
-What can i do to repair btrfs partition?
+./fs/btrfs/delayed-inode.c:1157:39-41: WARNING !A || A && B is
+equivalent to !A || B.
 
-[Jan25 08:18] BTRFS error (device sdg): parent transid verify failed on 
-52180048330752 wanted 132477 found 132432
-[  +0.007587] BTRFS error (device sdg): parent transid verify failed on 
-52180048330752 wanted 132477 found 132432
-[  +0.000132] BTRFS error (device sdg): qgroup scan failed with -5
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
+Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+---
+ fs/btrfs/delayed-inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[Jan25 19:52] BTRFS error (device sdg): parent transid verify failed on 
-52180048330752 wanted 132477 found 132432
-[  +0.009783] BTRFS error (device sdg): parent transid verify failed on 
-52180048330752 wanted 132477 found 132432
-[  +0.000132] BTRFS: error (device sdg) in __btrfs_cow_block:1176: 
-errno=-5 IO failure
-[  +0.000060] BTRFS info (device sdg): forced readonly
-[  +0.000004] BTRFS info (device sdg): failed to delete reference to 
-ftrace.h, inode 2986197 parent 2989315
-[  +0.000002] BTRFS: error (device sdg) in __btrfs_unlink_inode:4220: 
-errno=-5 IO failure
-[  +0.006071] BTRFS error (device sdg): pending csums is 430080
-
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 70c0340..ec0b50b8 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1154,7 +1154,7 @@ static int __btrfs_run_delayed_items(struct btrfs_trans_handle *trans, int nr)
+ 	delayed_root = fs_info->delayed_root;
+ 
+ 	curr_node = btrfs_first_delayed_node(delayed_root);
+-	while (curr_node && (!count || (count && nr--))) {
++	while (curr_node && (!count || nr--)) {
+ 		ret = __btrfs_commit_inode_delayed_items(trans, path,
+ 							 curr_node);
+ 		if (ret) {
 -- 
-Best Regards,
-Aleksey Isaev,
-RQC
+1.8.3.1
 
