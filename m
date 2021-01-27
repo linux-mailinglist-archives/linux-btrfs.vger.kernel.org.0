@@ -2,333 +2,346 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5243058EA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A83305986
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 12:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235534AbhA0K4W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 05:56:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S236591AbhA0LWr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 06:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236136AbhA0Kx7 (ORCPT
+        with ESMTP id S236028AbhA0LVv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:53:59 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD60C061756
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 02:53:18 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id e15so1019533qte.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 02:53:18 -0800 (PST)
+        Wed, 27 Jan 2021 06:21:51 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F43C061573;
+        Wed, 27 Jan 2021 03:21:07 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id l11so873859qvt.1;
+        Wed, 27 Jan 2021 03:21:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=SFbCblXIHhLkzyuu3Diys43MRjETKihw3ZxCoHmXWpo=;
-        b=U52xiF4Mt+gFISSZrUy0AEKpVl1lPUGqj7Lec11KcsvKqg3hQK4yMvxyGKqe9T8Lwe
-         cKASwuILbQBQo2G7siNihrUCBOTPG4/MCZntXK27jqw5WE4ezbpMDbr9Y05jKOLgaotw
-         3qtrmBLmWzhgSem07VnyyogHaw9hSQr/QqR2BW+q7b93CFIiDvJ/ng/LefiJYAfC6hJA
-         pjwx0Aoz8XquW9TQ+T7jr5abV7MsMHCSPYrFPYWYLCkV0YRiG8DwO8lw2UTKTgeLYdPE
-         2e3IcLJQLF6K1Yp7B1iSOBjunX+IaLexRJpDiNT5rtbzmSxvrdE0CZMgXkZR0H/P4O6s
-         G29Q==
+        bh=aqIq+k6ngwvHS9rzH62rhuvo6L8qpKFVuTT3B/5XLJ4=;
+        b=ZA3myDz5DYsilxAoDorTsW6Az5ZK/ZBxy9Hgg5eSFOt5GRHLZSQ3OmTQocMoro0O5f
+         C+23kzkssU2hlU19Pn0LgFmyL/GeK/CUm+JpkJxQ9HALZa/pFdolOAkPC7omm67iB1HZ
+         SdKI/9p8S0ebyIH4yfpcpyZSHheWLjqM0wjlQh2vmLXmOdJNCHjpFTlK7E/T8WfLp6Q7
+         8N+1ibJTwfQ1c3wm8tUNPOy3+WghRwKRRPomyD8QEt8lh1vXyrk+Ndd7u4MJXR9dzL75
+         Yxe4S6WgJdYMDrd5wJNQH11vvZa3PcOCN4G/uKt8eW+mhPNo/lwBrYxjZK4DtMBawfzw
+         Gp7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=SFbCblXIHhLkzyuu3Diys43MRjETKihw3ZxCoHmXWpo=;
-        b=bJ3oIRl4utabxtZLAXMRKXfsn5KLVd1vfeHZh2NibmaNKE7SmfkbhiJvT1fnQquSkW
-         KV4Pq0kBp0CEwKjWQUJNIGwJubO7uqjaY7ElvdQSXmEzChWOxY23O/tSYveWbgiYDoV/
-         PgrvYIv7dB45AFvJm+GC2iR16Ictl+j31M23JIkUjZCzzce3GoWSM8HtV6iWAiPykUX/
-         eSdsB+nXnTcagzHRGxEgQIu6kI6IWItajxJo9TrF+HJd3nZrGCvwCBWFU9Ej1qermTHL
-         oa/GPwtvxkZ1TvTC37r/gbUnSk9Jo59t+u30wR4F6c44ayKWznWoojQPd/XcUrMpTifw
-         Oflg==
-X-Gm-Message-State: AOAM532g4pk/zE3ieceUoFJTH62cScvmTsx8AmFEODDcLd0hSIFKAUzW
-        clpx9s68if5tAN7eHm5jWD/css+eZg4gJUmYK36W0Brg
-X-Google-Smtp-Source: ABdhPJxvRMKNNEOg9qmqtdrOiwA7SIpZXMHT7kr3XFCZO0y2in6S7h26YSNqTBttWcnnyRYwCrnZGtUCdcPz5AMG/Tk=
-X-Received: by 2002:aed:2f01:: with SMTP id l1mr9242272qtd.21.1611744797861;
- Wed, 27 Jan 2021 02:53:17 -0800 (PST)
+        bh=aqIq+k6ngwvHS9rzH62rhuvo6L8qpKFVuTT3B/5XLJ4=;
+        b=WFsyLjcd03ZjaEADPuFAq7CzAcS8DeTGGJFVIpGQ+EMmHFOe+9VLZyM5KLtp5Rrl2i
+         R0ad2sOjPk8RLM3VfP3vi0guC9LFTCgyXpUwNyBMLKbSKQeRnP5Au+LidrCuSWInY/He
+         XoOVFC/a3xyBFipZTFjRcMm4SDG/ubiZzMUheksATYiSbX94nizAGrrniFuXft6ehW/J
+         RT4uCiKkVsp2mLyVKO76dGx0vGIKgr4QEuzVHVH5nVJ1zPNfRvVbBHHQuR3kxG0uUwPN
+         W69SGtTj77TaaDlbLfdgTIFzY8Dj/KCdHPhHARsbQBW1AaJmG6vd8We2H255eTOtUDPW
+         PjZw==
+X-Gm-Message-State: AOAM5322Vj7CKorW+c+HHPSCP4mFAIBXe4hBym+op1VfwVonsKYEKZHg
+        IhRHaCfKOiIPYQ/v1isOjYAsMvd9j2yuPnEG/TNMAQ4+NZ4=
+X-Google-Smtp-Source: ABdhPJx1BcWRf//YwJNMj1gUDhI3b1fiRlG3oDbfX6LwoH5R0Wwvb5zbqUuaVpfhUV3AL2Vg2VwtVmWSbKk7FvRcEDo=
+X-Received: by 2002:a0c:ac44:: with SMTP id m4mr9943284qvb.45.1611746466556;
+ Wed, 27 Jan 2021 03:21:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20210125194210.24071-1-roman.anasal@bdsu.de> <20210125194210.24071-4-roman.anasal@bdsu.de>
- <CAL3q7H79meSfikTKvTujQzA_SRb3bfF9ajYtWSVTfu0+pLE8wQ@mail.gmail.com> <24207f5b9cea6a9a82739ecc5f62678ea6749663.camel@bdsu.de>
-In-Reply-To: <24207f5b9cea6a9a82739ecc5f62678ea6749663.camel@bdsu.de>
+References: <20210127095131.22600-1-mrostecki@suse.de>
+In-Reply-To: <20210127095131.22600-1-mrostecki@suse.de>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 27 Jan 2021 10:53:06 +0000
-Message-ID: <CAL3q7H6Dtqr3816KSeitCvYqnO0ZY6PNceMFAOtARah+XrRFFA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] btrfs: send: fix invalid commands for inodes with
- changed rdev but same gen
-To:     "Roman Anasal | BDSU" <roman.anasal@bdsu.de>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Date:   Wed, 27 Jan 2021 11:20:55 +0000
+Message-ID: <CAL3q7H4Bs7DfK09bpRGFE00yNY7YbwkGvHBcR_2mJ3uSk2FTbg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Avoid calling btrfs_get_chunk_map() twice
+To:     Michal Rostecki <mrostecki@suse.de>
+Cc:     Michal Rostecki <mrostecki@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 7:19 PM Roman Anasal | BDSU
-<roman.anasal@bdsu.de> wrote:
+On Wed, Jan 27, 2021 at 9:59 AM Michal Rostecki <mrostecki@suse.de> wrote:
 >
-> Am Montag, den 25.01.2021, 20:51 +0000 schrieb Filipe Manana:
-> > On Mon, Jan 25, 2021 at 7:51 PM Roman Anasal <roman.anasal@bdsu.de>
-> > wrote:
-> > > This is analogous to the preceding patch ("btrfs: send: fix invalid
-> > > commands for inodes with changed type but same gen") but for
-> > > changed
-> > > rdev:
-> > >
-> > > When doing an incremental send, if a new inode has the same number
-> > > as an
-> > > inode in the parent subvolume, was created with the same generation
-> > > but
-> > > has differing rdev it will not be detected as changed and thus not
-> > > recreated. This will lead to incorrect results on the receiver
-> > > where the
-> > > inode will keep the rdev of the inode in the parent subvolume or
-> > > even
-> > > fail when also the ref is unchanged.
-> > >
-> > > This case does not happen when doing incremental sends with
-> > > snapshots
-> > > that are kept read-only by the user all the time, but it may happen
-> > > if
-> > > - a snapshot was modified in the same transaction as its parent
-> > > after it
-> > >   was created
-> > > - the subvol used as parent was created independently from the sent
-> > > subvol
-> > >
-> > > Example reproducers:
-> > >
-> > >   # case 1: same ino at same path
-> > >   btrfs subvolume create subvol1
-> > >   btrfs subvolume create subvol2
-> > >   mknod subvol1/a c 1 3
-> > >   mknod subvol2/a c 1 5
-> > >   btrfs property set subvol1 ro true
-> > >   btrfs property set subvol2 ro true
-> > >   btrfs send -p subvol1 subvol2 | btrfs receive --dump
-> > >
-> > > The produced tree state here is:
-> > >   |-- subvol1
-> > >   |   `-- a         (ino 257, c 1,3)
-> > >   |
-> > >   `-- subvol2
-> > >       `-- a         (ino 257, c 1,5)
-> > >
-> > > Where subvol1/a and subvol2/a are character devices with differing
-> > > minor
-> > > numbers but same inode number and same generation.
-> > >
-> > > Example output of the receive command:
-> > >   At subvol subvol2
-> > >   snapshot        ./subvol2                       uuid=3D7513941c-
-> > > 4ef7-f847-b05e-4fdfe003af7b transid=3D9 parent_uuid=3Db66f015b-c226-
-> > > 2548-9e39-048c7fdbec99 parent_transid=3D9
-> > >   utimes          ./subvol2/                      atime=3D2021-01-
-> > > 25T17:14:36+0000 mtime=3D2021-01-25T17:14:36+0000 ctime=3D2021-01-
-> > > 25T17:14:36+0000
-> > >   link            ./subvol2/a                     dest=3Da
-> > >   unlink          ./subvol2/a
-> > >   utimes          ./subvol2/                      atime=3D2021-01-
-> > > 25T17:14:36+0000 mtime=3D2021-01-25T17:14:36+0000 ctime=3D2021-01-
-> > > 25T17:14:36+0000
-> > >   utimes          ./subvol2/a                     atime=3D2021-01-
-> > > 25T17:14:36+0000 mtime=3D2021-01-25T17:14:36+0000 ctime=3D2021-01-
-> > > 25T17:14:36+0000
-> > >
-> > > =3D> the `link` command causes the receiver to fail with:
-> > >    ERROR: link a -> a failed: File exists
-> > >
-> > > Second example:
-> > >   # case 2: same ino at different path
-> > >   btrfs subvolume create subvol1
-> > >   btrfs subvolume create subvol2
-> > >   mknod subvol1/a c 1 3
-> > >   mknod subvol2/b c 1 5
-> > >   btrfs property set subvol1 ro true
-> > >   btrfs property set subvol2 ro true
-> > >   btrfs send -p subvol1 subvol2 | btrfs receive --dump
-> >
-> > As I've told you before for the v1 patchset from a week or two ago,
-> > this is not a supported scenario for incremental sends.
-> > Incremental sends are meant to be used on RO snapshots of the same
-> > subvolume, and those snapshots must never be changed after they were
-> > created.
-> >
-> > Incremental sends were simply not designed for these cases, and can
-> > never be guaranteed to work with such cases.
-> >
-> > The bug is not having incremental sends fail right away, with an
-> > explicit error message, when the send and parent roots aren't RO
-> > snapshots of the same subvolume.
+> From: Michal Rostecki <mrostecki@suse.com>
 >
-> I am sorry, I didn't want to anger you or to appear to be just stubborn
-> by posting this.
+> Before this change, the btrfs_get_io_geometry() function was calling
+> btrfs_get_chunk_map() to get the extent mapping, necessary for
+> calculating the I/O geometry. It was using that extent mapping only
+> internally and freeing the pointer after its execution.
 >
-> As I wrote in the cover letter I am aware that this is not a supported
-> use case and I understand that that makes the patches likely to be
-> rejected.
+> That resulted in calling btrfs_get_chunk_map() de facto twice by the
+> __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+> first and then calling btrfs_get_chunk_map() directly to get the extent
+> mapping, used by the rest of the function.
+>
+> This change fixes that by passing the extent mapping to the
+> btrfs_get_io_geometry() function as an argument.
+>
+> Fixes: 89b798ad1b42 ("btrfs: Use btrfs_get_io_geometry appropriately")
 
-Ok, now I got the cover letter and the remaining v2 patches.
-Vger has been having some lag this week, only got the mails during the
-last evening.
+Generally we only use the Fixes tag for bug fixes or serious
+performance regressions.
+Have you seen here a serious performance regression?
+
+> Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+> ---
+>  fs/btrfs/inode.c   | 37 ++++++++++++++++++++++++++++---------
+>  fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
+>  fs/btrfs/volumes.h |  5 +++--
+>  3 files changed, 47 insertions(+), 34 deletions(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0dbe1aaa0b71..a4ce8501ed4d 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, si=
+ze_t size, struct bio *bio,
+>         struct inode *inode =3D page->mapping->host;
+>         struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+>         u64 logical =3D bio->bi_iter.bi_sector << 9;
+> +       struct extent_map *em;
+>         u64 length =3D 0;
+>         u64 map_length;
+> -       int ret;
+> +       int ret =3D 0;
+>         struct btrfs_io_geometry geom;
+>
+>         if (bio_flags & EXTENT_BIO_COMPRESSED)
+> @@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, s=
+ize_t size, struct bio *bio,
+>
+>         length =3D bio->bi_iter.bi_size;
+>         map_length =3D length;
+> -       ret =3D btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, ma=
+p_length,
+> -                                   &geom);
+> +       em =3D btrfs_get_chunk_map(fs_info, logical, map_length);
+> +       if (IS_ERR(em))
+> +               return PTR_ERR(em);
+> +       ret =3D btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical=
+,
+> +                                   map_length, &geom);
+>         if (ret < 0)
+> -               return ret;
+> +               goto out;
+>
+> -       if (geom.len < length + size)
+> -               return 1;
+> -       return 0;
+> +       if (geom.len < length + size) {
+> +               ret =3D 1;
+> +               goto out;
+> +       }
+> +out:
+> +       free_extent_map(em);
+> +       return ret;
+>  }
+>
+>  /*
+> @@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode =
+*inode, struct iomap *iomap,
+>         u64 submit_len;
+>         int clone_offset =3D 0;
+>         int clone_len;
+> +       int logical;
+>         int ret;
+>         blk_status_t status;
+>         struct btrfs_io_geometry geom;
+>         struct btrfs_dio_data *dio_data =3D iomap->private;
+> +       struct extent_map *em;
+>
+>         dip =3D btrfs_create_dio_private(dio_bio, inode, file_offset);
+>         if (!dip) {
+> @@ -7970,11 +7980,17 @@ static blk_qc_t btrfs_submit_direct(struct inode =
+*inode, struct iomap *iomap,
+>         }
+>
+>         start_sector =3D dio_bio->bi_iter.bi_sector;
+> +       logical =3D start_sector << 9;
+>         submit_len =3D dio_bio->bi_iter.bi_size;
+>
+>         do {
+> -               ret =3D btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
+> -                                           start_sector << 9, submit_len=
+,
+> +               em =3D btrfs_get_chunk_map(fs_info, logical, submit_len);
+> +               if (IS_ERR(em)) {
+> +                       status =3D errno_to_blk_status(ret);
+> +                       goto out_err;
+
+em must be set to NULL before going to "out_err", otherwise we get a
+crash due to an invalid memory access.
+
+Also, status should be set to "errno_to_blk_status(PTR_ERR(em))". The
+value of ret at this point is undefined.
+
+Other than that, it looks good.
 
 Thanks.
 
-> As said the reason I _wrote_ the patches was simply to learn more about
-> the btrfs code and its internals and see if I would be able to
-> understand it enough. The reason I _submitted_ them was just to
-> document what I found out so others could have a look into it and just
-> in case it maybe useful at a later time.
+> +               }
+> +               ret =3D btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_b=
+io),
+> +                                           logical, submit_len,
+>                                             &geom);
+>                 if (ret) {
+>                         status =3D errno_to_blk_status(ret);
+> @@ -8030,12 +8046,15 @@ static blk_qc_t btrfs_submit_direct(struct inode =
+*inode, struct iomap *iomap,
+>                 clone_offset +=3D clone_len;
+>                 start_sector +=3D clone_len >> 9;
+>                 file_offset +=3D clone_len;
+> +
+> +               free_extent_map(em);
+>         } while (submit_len > 0);
+>         return BLK_QC_T_NONE;
 >
-> I also don't want to claim that these will add full support for sending
-> unrelated roots - they don't! They only handle those very specific edge
-> cases I found, which are currently _possible_, although still not
-> supported.
+>  out_err:
+>         dip->dio_bio->bi_status =3D status;
+>         btrfs_dio_private_put(dip);
+> +       free_extent_map(em);
+>         return BLK_QC_T_NONE;
+>  }
 >
-> I took a deeper look into the rest to see if it could be supported:
-> the comparing algorithm actually works fine, even with completely
-> unrelated subvolumes (i.e. btrfs_compare_trees, changed_cb,
-> changed_inode etc.), but the processing of the changes (i.e.
-> process_recorded_refs etc.) is heavily based on (ino, gen) as
-> identifying handle, which can not be changed without the high risk of
-> regression - just as you said in your earlier comments - since side
-> effects of any changes are hard to see or understand without a very
-> deep understanding of the whole code; which is why I didn't even try to
-> touch that parts.
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index a8ec8539cd8d..4c753b17c0a2 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -5940,23 +5940,24 @@ static bool need_full_stripe(enum btrfs_map_op op=
+)
+>  }
 >
-> I apologize if I appeared to be stubborn or ignorant of your feedback!
-> That really wasn't my intent.
+>  /*
+> - * btrfs_get_io_geometry - calculates the geomery of a particular (addre=
+ss, len)
+> + * btrfs_get_io_geometry - calculates the geometry of a particular (addr=
+ess, len)
+>   *                    tuple. This information is used to calculate how b=
+ig a
+>   *                    particular bio can get before it straddles a strip=
+e.
+>   *
+> - * @fs_info - the filesystem
+> - * @logical - address that we want to figure out the geometry of
+> - * @len            - the length of IO we are going to perform, starting =
+at @logical
+> - * @op      - type of operation - write or read
+> - * @io_geom - pointer used to return values
+> + * @fs_info: the filesystem
+> + * @em:      mapping containing the logical extent
+> + * @op:      type of operation - write or read
+> + * @logical: address that we want to figure out the geometry of
+> + * @len:     the length of IO we are going to perform, starting at @logi=
+cal
+> + * @io_geom: pointer used to return values
+>   *
+>   * Returns < 0 in case a chunk for the given logical address cannot be f=
+ound,
+>   * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
+>   */
+> -int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_=
+op op,
+> -                       u64 logical, u64 len, struct btrfs_io_geometry *i=
+o_geom)
+> +int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_m=
+ap *em,
+> +                         enum btrfs_map_op op, u64 logical, u64 len,
+> +                         struct btrfs_io_geometry *io_geom)
+>  {
+> -       struct extent_map *em;
+>         struct map_lookup *map;
+>         u64 offset;
+>         u64 stripe_offset;
+> @@ -5964,14 +5965,9 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs=
+_info, enum btrfs_map_op op,
+>         u64 stripe_len;
+>         u64 raid56_full_stripe_start =3D (u64)-1;
+>         int data_stripes;
+> -       int ret =3D 0;
 >
+>         ASSERT(op !=3D BTRFS_MAP_DISCARD);
 >
-> > > The produced tree state here is:
-> > >   |-- subvol1
-> > >   |   `-- a         (ino 257, c 1,3)
-> > >   |
-> > >   `-- subvol2
-> > >       `-- b         (ino 257, c 1,5)
-> > >
-> > > Where subvol1/a and subvol2/b are character devices with differing
-> > > minor
-> > > numbers but same inode number and same generation.
-> > >
-> > > Example output of the receive command:
-> > >   At subvol subvol2
-> > >   snapshot        ./subvol2                       uuid=3D1c175819-
-> > > 8b97-0046-a20e-5f95e37cbd40 transid=3D13 parent_uuid=3Dbad4a908-21b4-
-> > > 6f40-9a08-6b0768346725 parent_transid=3D13
-> > >   utimes          ./subvol2/                      atime=3D2021-01-
-> > > 25T17:18:46+0000 mtime=3D2021-01-25T17:18:46+0000 ctime=3D2021-01-
-> > > 25T17:18:46+0000
-> > >   link            ./subvol2/b                     dest=3Da
-> > >   unlink          ./subvol2/a
-> > >   utimes          ./subvol2/                      atime=3D2021-01-
-> > > 25T17:18:46+0000 mtime=3D2021-01-25T17:18:46+0000 ctime=3D2021-01-
-> > > 25T17:18:46+0000
-> > >   utimes          ./subvol2/b                     atime=3D2021-01-
-> > > 25T17:18:46+0000 mtime=3D2021-01-25T17:18:46+0000 ctime=3D2021-01-
-> > > 25T17:18:46+0000
-> > >
-> > > =3D> subvol1/a is renamed to subvol2/b instead of recreated to
-> > > updated
-> > >    rdev which results in received subvol2/b having the wrong minor
-> > >    number:
-> > >
-> > >   257 crw-r--r--. 1 root root 1, 3 Jan 25 17:18 subvol2/b
-> > >
-> > > Signed-off-by: Roman Anasal <roman.anasal@bdsu.de>
-> > > ---
-> > > v2:
-> > >   - add this patch to also handle changed rdev
-> > > ---
-> > >  fs/btrfs/send.c | 15 ++++++++++-----
-> > >  1 file changed, 10 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > > index c8b1f441f..ef544525f 100644
-> > > --- a/fs/btrfs/send.c
-> > > +++ b/fs/btrfs/send.c
-> > > @@ -6263,6 +6263,7 @@ static int changed_inode(struct send_ctx
-> > > *sctx,
-> > >         struct btrfs_inode_item *right_ii =3D NULL;
-> > >         u64 left_gen =3D 0;
-> > >         u64 right_gen =3D 0;
-> > > +       u64 left_rdev, right_rdev;
-> > >         u64 left_type, right_type;
-> > >
-> > >         sctx->cur_ino =3D key->objectid;
-> > > @@ -6285,6 +6286,8 @@ static int changed_inode(struct send_ctx
-> > > *sctx,
-> > >                                 struct btrfs_inode_item);
-> > >                 left_gen =3D btrfs_inode_generation(sctx->left_path-
-> > > >nodes[0],
-> > >                                 left_ii);
-> > > +               left_rdev =3D btrfs_inode_rdev(sctx->left_path-
-> > > >nodes[0],
-> > > +                               left_ii);
-> > >         } else {
-> > >                 right_ii =3D btrfs_item_ptr(sctx->right_path-
-> > > >nodes[0],
-> > >                                 sctx->right_path->slots[0],
-> > > @@ -6300,6 +6303,9 @@ static int changed_inode(struct send_ctx
-> > > *sctx,
-> > >                 right_gen =3D btrfs_inode_generation(sctx-
-> > > >right_path->nodes[0],
-> > >                                 right_ii);
-> > >
-> > > +               right_rdev =3D btrfs_inode_rdev(sctx->right_path-
-> > > >nodes[0],
-> > > +                               right_ii);
-> > > +
-> > >                 left_type =3D S_IFMT & btrfs_inode_mode(
-> > >                                 sctx->left_path->nodes[0],
-> > > left_ii);
-> > >                 right_type =3D S_IFMT & btrfs_inode_mode(
-> > > @@ -6310,7 +6316,8 @@ static int changed_inode(struct send_ctx
-> > > *sctx,
-> > >                  * the inode as deleted+reused because it would
-> > > generate a
-> > >                  * stream that tries to delete/mkdir the root dir.
-> > >                  */
-> > > -               if ((left_gen !=3D right_gen || left_type !=3D
-> > > right_type) &&
-> > > +               if ((left_gen !=3D right_gen || left_type !=3D
-> > > right_type ||
-> > > +                   left_rdev !=3D right_rdev) &&
-> > >                     sctx->cur_ino !=3D BTRFS_FIRST_FREE_OBJECTID)
-> > >                         sctx->cur_inode_recreated =3D 1;
-> > >         }
-> > > @@ -6350,8 +6357,7 @@ static int changed_inode(struct send_ctx
-> > > *sctx,
-> > >                                 sctx->left_path->nodes[0],
-> > > left_ii);
-> > >                 sctx->cur_inode_mode =3D btrfs_inode_mode(
-> > >                                 sctx->left_path->nodes[0],
-> > > left_ii);
-> > > -               sctx->cur_inode_rdev =3D btrfs_inode_rdev(
-> > > -                               sctx->left_path->nodes[0],
-> > > left_ii);
-> > > +               sctx->cur_inode_rdev =3D left_rdev;
-> > >                 if (sctx->cur_ino !=3D BTRFS_FIRST_FREE_OBJECTID)
-> > >                         ret =3D send_create_inode_if_needed(sctx);
-> > >         } else if (result =3D=3D BTRFS_COMPARE_TREE_DELETED) {
-> > > @@ -6396,8 +6402,7 @@ static int changed_inode(struct send_ctx
-> > > *sctx,
-> > >                                         sctx->left_path->nodes[0],
-> > > left_ii);
-> > >                         sctx->cur_inode_mode =3D btrfs_inode_mode(
-> > >                                         sctx->left_path->nodes[0],
-> > > left_ii);
-> > > -                       sctx->cur_inode_rdev =3D btrfs_inode_rdev(
-> > > -                                       sctx->left_path->nodes[0],
-> > > left_ii);
-> > > +                       sctx->cur_inode_rdev =3D left_rdev;
-> > >                         ret =3D send_create_inode_if_needed(sctx);
-> > >                         if (ret < 0)
-> > >                                 goto out;
-> > > --
-> > > 2.26.2
-> > >
-> >
-> >
-
+> -       em =3D btrfs_get_chunk_map(fs_info, logical, len);
+> -       if (IS_ERR(em))
+> -               return PTR_ERR(em);
+> -
+>         map =3D em->map_lookup;
+>         /* Offset of this logical address in the chunk */
+>         offset =3D logical - em->start;
+> @@ -5985,8 +5981,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_=
+info, enum btrfs_map_op op,
+>                 btrfs_crit(fs_info,
+>  "stripe math has gone wrong, stripe_offset=3D%llu offset=3D%llu start=3D=
+%llu logical=3D%llu stripe_len=3D%llu",
+>                         stripe_offset, offset, em->start, logical, stripe=
+_len);
+> -               ret =3D -EINVAL;
+> -               goto out;
+> +               return -EINVAL;
+>         }
+>
+>         /* stripe_offset is the offset of this block in its stripe */
+> @@ -6033,10 +6028,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs=
+_info, enum btrfs_map_op op,
+>         io_geom->stripe_offset =3D stripe_offset;
+>         io_geom->raid56_stripe_offset =3D raid56_full_stripe_start;
+>
+> -out:
+> -       /* once for us */
+> -       free_extent_map(em);
+> -       return ret;
+> +       return 0;
+>  }
+>
+>  static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+> @@ -6069,12 +6061,13 @@ static int __btrfs_map_block(struct btrfs_fs_info=
+ *fs_info,
+>         ASSERT(bbio_ret);
+>         ASSERT(op !=3D BTRFS_MAP_DISCARD);
+>
+> -       ret =3D btrfs_get_io_geometry(fs_info, op, logical, *length, &geo=
+m);
+> +       em =3D btrfs_get_chunk_map(fs_info, logical, *length);
+> +       ASSERT(!IS_ERR(em));
+> +
+> +       ret =3D btrfs_get_io_geometry(fs_info, em, op, logical, *length, =
+&geom);
+>         if (ret < 0)
+>                 return ret;
+>
+> -       em =3D btrfs_get_chunk_map(fs_info, logical, *length);
+> -       ASSERT(!IS_ERR(em));
+>         map =3D em->map_lookup;
+>
+>         *length =3D geom.len;
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index c43663d9c22e..04e2b26823c2 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -440,8 +440,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, en=
+um btrfs_map_op op,
+>  int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op=
+,
+>                      u64 logical, u64 *length,
+>                      struct btrfs_bio **bbio_ret);
+> -int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_=
+op op,
+> -               u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
+> +int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_m=
+ap *map,
+> +                         enum btrfs_map_op op, u64 logical, u64 len,
+> +                         struct btrfs_io_geometry *io_geom);
+>  int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
+>  int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
+>  int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
+> --
+> 2.30.0
+>
 
 
 --=20
