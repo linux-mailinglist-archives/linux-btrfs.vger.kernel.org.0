@@ -2,55 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C463062FB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 19:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F823062FF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 19:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344353AbhA0SEx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 13:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        id S234770AbhA0SHU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 13:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344336AbhA0SEd (ORCPT
+        with ESMTP id S234684AbhA0SHS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:04:33 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06365C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:03:53 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id u20so2612844qku.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:03:52 -0800 (PST)
+        Wed, 27 Jan 2021 13:07:18 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EA2C061573
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:06:38 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id a7so2596828qkb.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4rPnUBxqM9G//9qOahLs/sqsjnaOAWtvt4RahjK16Io=;
-        b=Hs2ULQi2fn7qbjMoL3CTXn8N9CbwumqD/j3rTIruytU+XgHRSrQyw1uGg1YbAWX/H0
-         3bBcGEugqz16dCJ+jaOMj3t+Eni2UpwQnHI4WahoCfYgHJyn1MbxzVN4JZ1tXtToNEr5
-         iB2ucn93nR/PnFhIzXXugzRmj9TIZyPWDdKtDzKUUrrsE1Zx298sSPTTfD5G2ZGnIw3T
-         XOKZfOa//mjhr8RNppX7yh1KHppABdYziF4cC8DIM3Oy84s/BPHya5vcwsNvmB3fa9aN
-         wq4oboFRHcqdE1F29v5DUMtQMvNsEKynI0yOgMGIeHUz5jh5X51tgthYW0MZjI5USDW3
-         YSIw==
+        bh=ytbpICBwwAswu0lM5h+6T7WQmz+iQOy5Eel5alHGS4s=;
+        b=pRqogWMj87ZbOiM5Dn6nOJ0T+TBIT7flIY14jFyRT9lkjvSmgbxB+c/axnR7BWQ7LX
+         Xy5Byz/pEV5+QgiHlGZXj7d2QXUlLFuvTYQgoO6mmJjmALb+Spx3XQU4ZQmL03EWULHv
+         dCnkJ2ze8BodbgwDvtHrVvp7CaYYC+N3DF8j8pp4KNWwbWE9r7MO9syPkXwpM7nbYvDP
+         pqIGCmffrVvSYbtZvtyrDahFE834EDCWR3h2sOLdMfF2rXESnFfer6IC12Sx0a0krBPk
+         7cF/BCMXJrxI3vEFEkn2PxFqF5OuptYhEMX3EWBZHQGZvzYgs5ISQf1TAsuPiauuLURb
+         R/aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=4rPnUBxqM9G//9qOahLs/sqsjnaOAWtvt4RahjK16Io=;
-        b=rqmvsANQ2kApRG6/OuifHmLEOysmwxecHgjpCuZJAds8ZltoEYCB0FPEt4M11f4YsN
-         vVgT+8l2+k8L9BOy7RSoJg7NLv5IcUz1+bIOODbQZYZZQ4+jSqrKAwSe5yVwwWzz6R+m
-         SFdYnHo6xkbTNRJBJS3i5ZyFI6bZvBDYVI+5G4thCQ82y/xsv48U2bdB4rAVPWaFXyud
-         arXQWM4cKfWhKyTxk9OXEt7PjT4t75PIyVjcYQwEyrSFvT+t/gY+G8tzOVgPdUnLWGAr
-         7mazMyjHiBJJOC6FLbkqWLd3ilyH0zZmTwJkffozHk/CxPCXzQtwIBhIXr7I72BkWS+9
-         rvEA==
-X-Gm-Message-State: AOAM532AF8RlNTcDZSwCMHSGqQhGMbX+Ml+NAn7Z+wPZjmWNf0zBErqF
-        +c+wwnW9OnTzVnG9r8mP3qBy5w==
-X-Google-Smtp-Source: ABdhPJzId3KvIqJDJtpQpeAHUX93XlW64tCFrI4jvwLDR8RCIYAMydCiNsdnFq9+7dRo2Jt9VNDn7w==
-X-Received: by 2002:a05:620a:b04:: with SMTP id t4mr2672162qkg.392.1611770632039;
-        Wed, 27 Jan 2021 10:03:52 -0800 (PST)
+        bh=ytbpICBwwAswu0lM5h+6T7WQmz+iQOy5Eel5alHGS4s=;
+        b=GLcJatIWuDiEHD03qUGAyM0U2qHS2OTttB+/oAtjv1py2cR/HjoNzNfOHAAhBkcKgf
+         77VBZ2jxg24ieDztovzYWXaEQ7IESG2SGio9XWDW6jK9qLm1ue+uzwRovW3TGFroWnXw
+         GARGHXE2i8JF2UbNysB+s5YEecBVt4+Di2itYsrLqbdGmkZOAtWH6TUBOeH/EZ3Asuhj
+         vjZBS7ngayxKaE4RNYmBBcgVdLYp3kGax0OzN4Vr5gVvPMBcJLZJOFXQwGqXmfWD2ETh
+         2HOX3bJh6YD1K5Z813YMmJoedxW+2BA9rDyk/MLp00TiFL+3g2/ixx8JAjN+CM+LHkl5
+         rKoQ==
+X-Gm-Message-State: AOAM5311VOzV/3mTkml6/O/etmTWkvBE90ZCe6cCyzbzpaJAta+w5jkB
+        oWViFIcxS0Pz/KSbemuYcUv/QQ==
+X-Google-Smtp-Source: ABdhPJzrhg1ZW29vb1Qi0qOdClCC1NOTw+/bu5hVd+uWE0Jo9GYf91CnbDLG1Ox3e8UsNnt6SnWtUg==
+X-Received: by 2002:ae9:f511:: with SMTP id o17mr11361112qkg.215.1611770797656;
+        Wed, 27 Jan 2021 10:06:37 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g128sm1579216qkd.91.2021.01.27.10.03.50
+        by smtp.gmail.com with ESMTPSA id p12sm1740303qtw.27.2021.01.27.10.06.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 10:03:51 -0800 (PST)
-Subject: Re: [PATCH v14 12/42] btrfs: calculate allocation offset for
- conventional zones
+        Wed, 27 Jan 2021 10:06:37 -0800 (PST)
+Subject: Re: [PATCH v14 13/42] btrfs: track unusable bytes for zones
 To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
         dsterba@suse.com
 Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
@@ -58,14 +57,14 @@ Cc:     hare@suse.com, linux-fsdevel@vger.kernel.org,
         Christoph Hellwig <hch@infradead.org>,
         "Darrick J. Wong" <darrick.wong@oracle.com>
 References: <cover.1611627788.git.naohiro.aota@wdc.com>
- <583b2d2e286c482f9bcd53c71043a1be1a1c3cec.1611627788.git.naohiro.aota@wdc.com>
+ <a46c503f1419e9a7ec13ab227159e0391d1e6868.1611627788.git.naohiro.aota@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <6b8a86e8-b0cf-a188-a92c-b38be2146ccf@toxicpanda.com>
-Date:   Wed, 27 Jan 2021 13:03:47 -0500
+Message-ID: <75b2b514-f735-048f-ece0-c5e6976b0a4c@toxicpanda.com>
+Date:   Wed, 27 Jan 2021 13:06:34 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <583b2d2e286c482f9bcd53c71043a1be1a1c3cec.1611627788.git.naohiro.aota@wdc.com>
+In-Reply-To: <a46c503f1419e9a7ec13ab227159e0391d1e6868.1611627788.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,18 +73,21 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 1/25/21 9:24 PM, Naohiro Aota wrote:
-> Conventional zones do not have a write pointer, so we cannot use it to
-> determine the allocation offset if a block group contains a conventional
-> zone.
+> In zoned btrfs a region that was once written then freed is not usable
+> until we reset the underlying zone. So we need to distinguish such
+> unusable space from usable free space.
 > 
-> But instead, we can consider the end of the last allocated extent in the
-> block group as an allocation offset.
+> Therefore we need to introduce the "zone_unusable" field  to the block
+> group structure, and "bytes_zone_unusable" to the space_info structure to
+> track the unusable space.
 > 
-> For new block group, we cannot calculate the allocation offset by
-> consulting the extent tree, because it can cause deadlock by taking extent
-> buffer lock after chunk mutex (which is already taken in
-> btrfs_make_block_group()). Since it is a new block group, we can simply set
-> the allocation offset to 0, anyway.
+> Pinned bytes are always reclaimed to the unusable space. But, when an
+> allocated region is returned before using e.g., the block group becomes
+> read-only between allocation time and reservation time, we can safely
+> return the region to the block group. For the situation, this commit
+> introduces "btrfs_add_free_space_unused". This behaves the same as
+> btrfs_add_free_space() on regular btrfs. On zoned btrfs, it rewinds the
+> allocation offset.
 > 
 > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
