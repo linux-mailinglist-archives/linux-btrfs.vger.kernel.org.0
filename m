@@ -2,66 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9243230611C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 17:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB8930611F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 17:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhA0Qgh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 11:36:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
+        id S232348AbhA0QhK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 11:37:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbhA0Qff (ORCPT
+        with ESMTP id S234413AbhA0QgK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 11:35:35 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F20C061756
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 08:34:55 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id t63so2307680qkc.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 08:34:55 -0800 (PST)
+        Wed, 27 Jan 2021 11:36:10 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1ECC0613D6
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 08:35:29 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id n7so2296913qkc.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 08:35:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zJx5daZ2qlG6dbwbIfLWdvPtan/DZhj5bNigO3D4vmo=;
-        b=nyFsvAzsCriDCrUREzEyIpRpIJ3R8548sFYTNz/H027OjmzQGo7w8V3LngtDVVjhw5
-         zMgE+hLkbnjCccPyfGGg6c5ERGBZy73tZ8fUEtzG/a83neE8IZiEtR6nEdo7KO21FH8Q
-         f2x303+My5VBL0753PDLwKR1JijBQoPUhxEHTbsACMNmOxOPEHB+Homc5sp9OVThsxl7
-         BrjQ0mu2MaPkM9YTnsKe0usfxVCVAEG/jWdtYHMI/SWYZi7j3tHTHijxJxuQKRocxQZV
-         6Eo7o6aqsBHikeuL8/lFfHN5u46QeTXudceaax99M21f6jN3ZPHv7J8tFVy4w38MnZzv
-         K38g==
+        bh=IZ3e4ZNyWjInugbKP8rgk2TOYZ9rSI32VBGWEa5ifrs=;
+        b=QIk6CnXMzwfirTkgSJja95odV7lv1/BC2/lOw9747y0jE19G1B4Dx4pXzmoKCbhDhk
+         RWC0EevB2FnuyG2M1eUtvgOUs2prGJay2Lwb0LHmBoJ91amWthke+7ksiFf/sZs8/f+x
+         FX3YBZLQ8AUfh3TzLx+G1jvxO7Y3Kpt1YQ+Httx0Dn8m12DKmu+i4zM4AgJhMArrpG5v
+         UEuRRIpo7G1u+7ewRlyUjX2BgNeQtBitJ1aVGNWZyJU409MjmLjZwL4Rdnd6f2l6pCQP
+         kAL2cz6a0tMZ5Da8Rm2Y3pydzI6jAdz7oOxIQSAs9GpbUP09bZbLvXMKHPLNT5S94tDy
+         1Tdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=zJx5daZ2qlG6dbwbIfLWdvPtan/DZhj5bNigO3D4vmo=;
-        b=Qf51hx3xeP80cZJiF7PDL+oGQcdrDRHYzh/GeshqCtMVCEKQ5aI2oSvNHRc1mKCi9z
-         JIJ6Ez8OplcUFwil75lY6zrFu7ytPIs2xDfRXYZSERiT7lHH7zoeWmMPYKGhWT6+8xol
-         g1w2P3vfOr7PcUK0kNFWwIAvhP+6xv+vfh17dWzMcUQc5ELgXZrJzEyoFxp7rQFsBUuO
-         T8QczIdbnNhNqrdjpUEGKpnHc0XBRjL9iw0wFFUvDYRSYFYPQe8WXmllcynpTksY3VfR
-         WQPl2zoI2iCx6jrH13S/8GWY9p4vg9VUL96ftAXBHufBHUqaQESe6eMrevzI2RCxre7P
-         QNVQ==
-X-Gm-Message-State: AOAM532JrVOfZcUvVTSejl6msXeYOLQtnYBN8RxgFET317mWuHWGq1ZC
-        odJZ7s7WRJKtx7GJsBqhTIRU2A==
-X-Google-Smtp-Source: ABdhPJwOwv2TyMGKKOT3idjZkGFH2lpYH76tCVa/1OFot1+xzfR0NUlCWqUegZqt5s711FQxZxvanA==
-X-Received: by 2002:a37:7641:: with SMTP id r62mr11466897qkc.227.1611765294808;
-        Wed, 27 Jan 2021 08:34:54 -0800 (PST)
+        bh=IZ3e4ZNyWjInugbKP8rgk2TOYZ9rSI32VBGWEa5ifrs=;
+        b=aYbiosTMjzR+1YEwCo/P3ARAKF4KYxGjTvUVpPhMeaCEdr0c0nH0Cu7koUPgWns5xS
+         ZYec6EpNLmKeU5qyOQ5h/EoMiCkAKLOVyyjdfScI90kUHmfZB/bba6SlXpnb9QWSHi6P
+         GWrMHHhjxdgS0LwuQqdLA6ZE3SNL2F8Boi9i/MithT8yHRpB7+9q/EJwOKK/CTAwfS1Q
+         farytXJ9dCd1vpq9+BUPArG9DBXlIfNMwA1SKYwjSNQQ26mJ0zRUwS9T2LeO9B576kHS
+         C+urWsTbMWfzyB/cT/60UAZ3n/u8MFy2VmHI9qladtb/ZQDFSY3SB/aPJSWiSDpmIi9x
+         CkQA==
+X-Gm-Message-State: AOAM533+VCiI2+ldvY9NjlYlLo8eEw5IoIdNSWW6VuUwBmP14g5DRAvQ
+        yYbDbz8DOB6NA1zepSw8nPrLkPfpkihV2A+t
+X-Google-Smtp-Source: ABdhPJw1XvlEaGnASUaWMb0ZpMQ7XNZeeRe/gEADVXcmRuMsGK+Qh0oVMSTYHwii2550PZCz+nagCw==
+X-Received: by 2002:a37:8b81:: with SMTP id n123mr11614711qkd.242.1611765328974;
+        Wed, 27 Jan 2021 08:35:28 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id o10sm1523181qtg.37.2021.01.27.08.34.53
+        by smtp.gmail.com with ESMTPSA id j21sm1524614qtr.74.2021.01.27.08.35.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 08:34:54 -0800 (PST)
-Subject: Re: [PATCH v5 09/18] btrfs: introduce helpers for subpage error
- status
+        Wed, 27 Jan 2021 08:35:28 -0800 (PST)
+Subject: Re: [PATCH v5 10/18] btrfs: support subpage in
+ set/clear_extent_buffer_uptodate()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
 References: <20210126083402.142577-1-wqu@suse.com>
- <20210126083402.142577-10-wqu@suse.com>
+ <20210126083402.142577-11-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <06035378-f808-7db8-edc8-3f4e15344e92@toxicpanda.com>
-Date:   Wed, 27 Jan 2021 11:34:53 -0500
+Message-ID: <66795dd0-a9b9-4535-1a86-2c6ba3412d51@toxicpanda.com>
+Date:   Wed, 27 Jan 2021 11:35:27 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210126083402.142577-10-wqu@suse.com>
+In-Reply-To: <20210126083402.142577-11-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,19 +70,9 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 1/26/21 3:33 AM, Qu Wenruo wrote:
-> Introduce the following functions to handle subpage error status:
-> 
-> - btrfs_subpage_set_error()
-> - btrfs_subpage_clear_error()
-> - btrfs_subpage_test_error()
->    These helpers can only be called when the page has subpage attached
->    and the range is ensured to be inside the page.
-> 
-> - btrfs_page_set_error()
-> - btrfs_page_clear_error()
-> - btrfs_page_test_error()
->    These helpers can handle both regular sector size and subpage without
->    problem.
+> To support subpage in set_extent_buffer_uptodate and
+> clear_extent_buffer_uptodate we only need to use the subpage-aware
+> helpers to update the page bits.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > Reviewed-by: David Sterba <dsterba@suse.com>
