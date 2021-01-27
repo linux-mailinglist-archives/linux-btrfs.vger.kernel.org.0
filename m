@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F963058AA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406D93058A9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236006AbhA0Kkf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 05:40:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53074 "EHLO mail.kernel.org"
+        id S236016AbhA0KlH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 05:41:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236007AbhA0KiZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:38:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D8B820780
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:35:08 +0000 (UTC)
+        id S236010AbhA0Ki1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:38:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC2620781
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:35:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611743709;
-        bh=Jtxz1Gt1cVJlfkFGfVSaBVXgzfE2MXW6E/QWWSMVkC8=;
+        bh=ZAFPaVcpqJlPci1Idchoh39eTJxfXRuaY85UtemkQrA=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=JxN1DIWQiEUWA/M/AzCuXGusYOJiQVWvXCappWRzOFrcEBBoIuDonY4Zr90DUF0Ow
-         mU1Q3S26CHq4lBm9Uwwb6ct82BoVLT1FhfWGC+PEzUc7yqDfjLG36rKuLwSOR2WcNE
-         NznxTeuXJw0+W5sCgynmldM5sMW1BASGGZgxyhpbHwgmx0Kud1QfgWxNGrHkoaMh2F
-         f9abxjVsKYhcw4UwC1xvxJZ7m3q9RRb8DkV+TKdlsBc68Mxwzu+po1iZqKJV9ptQ+s
-         L+zCH1xM7GC+Hhmh6O/vnvwAhxZROSMYDZK29gvWQTMYEitRULDq792PdUxGJUkX6h
-         1aEOpBiOLKF+w==
+        b=J5x/+oxHRcQtqaqq5hOehCW0CaisO6JWRsmbE6qjRRJyD4ilv4pNiEBq7dZBzhn/X
+         RYzVLr9fXvtbeNF/fkIjJxhg5AKIHl4v66XtGMkxxo/1c1Qi3OifyvtFbVTlayMbbU
+         NndvNGm0V1Hh8hAv0lPH6rb874Hi5zn+zb1xMF/S+JTyii1AlHBYr1q9ePJ1BPgdTU
+         MLw6wuSGUkgyEOgV810Fm6vGOiKirUunRt1aBfi57x+noxBybW7i95RhVZENESpwP3
+         tKlN3Rh3MK72Rd8aOLEr+fZSL3VyIsRQ8mjHcCI1HGyppKkWnivuvMh8wkM/fP7Ouj
+         Re4Znzh7HNP0Q==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 6/7] btrfs: remove unnecessary check_parent_dirs_for_sync()
-Date:   Wed, 27 Jan 2021 10:34:59 +0000
-Message-Id: <77b21c64a5aed56e5602c59558c1b09254f3b494.1611742865.git.fdmanana@suse.com>
+Subject: [PATCH 7/7] btrfs: make concurrent fsyncs wait less when waiting for a transaction commit
+Date:   Wed, 27 Jan 2021 10:35:00 +0000
+Message-Id: <8c391b7c0a7a6a7e827644d424cd4c343f39588e.1611742865.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1611742865.git.fdmanana@suse.com>
 References: <cover.1611742865.git.fdmanana@suse.com>
@@ -39,30 +39,28 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Whenever we fsync an inode, if it is a directory, a regular file that was
-created in the current transaction or has last_unlink_trans set to the
-generation of the current transaction, we check if any of its ancestor
-inodes (and the inode itself if it is a directory) can not be logged and
-need a fallback to a full transaction commit - if so, we return with a
-value of 1 in order to fallback to a transaction commit.
+Often an fsync needs to fallback to a transaction commit for several
+reasons (to ensure consistency after a power failure, a new block group
+was allocated or a temporary error such as ENOMEM or ENOSPC happened).
 
-However we often do not need to fallback to a transaction commit because:
+In that case the log is marked as needing a full commit and any concurrent
+tasks attempting to log inodes or commit the log will also fallback to the
+transaction commit. When this happens they all wait for the task that first
+started the transaction commit to finish the transaction commit - however
+they wait until the full transaction commit happens, which is not needed,
+as they only need to wait for the superblocks to be persisted and not for
+unpinning all the extents pinned during the transaction's lifetime, which
+even for short lived transactions can be a few thousand and take some
+significant amount of time to complete - for dbench workloads I have
+observed up to 4~5 milliseconds of time spent unpinning extents in the
+worst cases, and the number of pinned extents was between 2 to 3 thousand.
 
-1) The ancestor inode is not an immediate parent, and therefore there is
-   not an explicit request to log it and it is not needed neither to
-   guarantee the consistency of the inode originally asked to be logged
-   (fsynced) nor its immediate parent;
-
-2) The ancestor inode was already logged before, in which case any link,
-   unlink or rename operation updates the log as needed.
-
-So for these two cases we can avoid an unnecessary transaction commit.
-Therefore remove check_parent_dirs_for_sync() and add a check at the top
-of btrfs_log_inode() to make us fallback immediately to a transaction
-commit when we are logging a directory inode that can not be logged and
-needs a full transaction commit. All we need to protect is the case where
-after renaming a file someone fsyncs only the old directory, which would
-result is losing the renamed file after a log replay.
+So allow fsync tasks to skip waiting for the unpinning of extents when
+they call btrfs_commit_transaction() and they were not the task that
+started the transaction commit (that one has to do it, the alternative
+would be to offload the transaction commit to another task so that it
+could avoid waiting for the extent unpinning or offload the extent
+unpinning to another task).
 
 This patch is part of a patchset comprised of the following patches:
 
@@ -74,184 +72,262 @@ This patch is part of a patchset comprised of the following patches:
   btrfs: remove unnecessary check_parent_dirs_for_sync()
   btrfs: make concurrent fsyncs wait less when waiting for a transaction commit
 
-Performance results, after applying all patches, are mentioned in the
-change log of the last patch.
+After applying the entire patchset, dbench shows improvements in respect
+to throughput and latency. The script used to measure it is the following:
+
+  $ cat dbench-test.sh
+  #!/bin/bash
+
+  DEV=/dev/sdk
+  MNT=/mnt/sdk
+  MOUNT_OPTIONS="-o ssd"
+  MKFS_OPTIONS="-m single -d single"
+
+  echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+  umount $DEV &> /dev/null
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV
+  mount $MOUNT_OPTIONS $DEV $MNT
+
+  dbench -D $MNT -t 300 64
+
+  umount $MNT
+
+The test was run on a physical machine with 12 cores (Intel corei7), 64G
+of ram, using a NVMe device and a non-debug kernel configuration (Debian's
+default configuration).
+
+Before applying patchset, 32 clients:
+
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    9627107     0.153    61.938
+ Close        7072076     0.001     3.175
+ Rename        407633     1.222    44.439
+ Unlink       1943895     0.658    44.440
+ Deltree          256    17.339   110.891
+ Mkdir            128     0.003     0.009
+ Qpathinfo    8725406     0.064    17.850
+ Qfileinfo    1529516     0.001     2.188
+ Qfsinfo      1599884     0.002     1.457
+ Sfileinfo     784200     0.005     3.562
+ Find         3373513     0.411    30.312
+ WriteX       4802132     0.053    29.054
+ ReadX        15089959     0.002     5.801
+ LockX          31344     0.002     0.425
+ UnlockX        31344     0.001     0.173
+ Flush         674724     5.952   341.830
+
+Throughput 1008.02 MB/sec  32 clients  32 procs  max_latency=341.833 ms
+
+After applying patchset, 32 clients:
+
+After patchset, with 32 clients:
+
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    9931568     0.111    25.597
+ Close        7295730     0.001     2.171
+ Rename        420549     0.982    49.714
+ Unlink       2005366     0.497    39.015
+ Deltree          256    11.149    89.242
+ Mkdir            128     0.002     0.014
+ Qpathinfo    9001863     0.049    20.761
+ Qfileinfo    1577730     0.001     2.546
+ Qfsinfo      1650508     0.002     3.531
+ Sfileinfo     809031     0.005     5.846
+ Find         3480259     0.309    23.977
+ WriteX       4952505     0.043    41.283
+ ReadX        15568127     0.002     5.476
+ LockX          32338     0.002     0.978
+ UnlockX        32338     0.001     2.032
+ Flush         696017     7.485   228.835
+
+Throughput 1049.91 MB/sec  32 clients  32 procs  max_latency=228.847 ms
+
+ --> +4.1% throughput, -39.6% max latency
+
+Before applying patchset, 64 clients:
+
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    8956748     0.342   108.312
+ Close        6579660     0.001     3.823
+ Rename        379209     2.396    81.897
+ Unlink       1808625     1.108   131.148
+ Deltree          256    25.632   172.176
+ Mkdir            128     0.003     0.018
+ Qpathinfo    8117615     0.131    55.916
+ Qfileinfo    1423495     0.001     2.635
+ Qfsinfo      1488496     0.002     5.412
+ Sfileinfo     729472     0.007     8.643
+ Find         3138598     0.855    78.321
+ WriteX       4470783     0.102    79.442
+ ReadX        14038139     0.002     7.578
+ LockX          29158     0.002     0.844
+ UnlockX        29158     0.001     0.567
+ Flush         627746    14.168   506.151
+
+Throughput 924.738 MB/sec  64 clients  64 procs  max_latency=506.154 ms
+
+After applying patchset, 64 clients:
+
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX    9069003     0.303    43.193
+ Close        6662328     0.001     3.888
+ Rename        383976     2.194    46.418
+ Unlink       1831080     1.022    43.873
+ Deltree          256    24.037   155.763
+ Mkdir            128     0.002     0.005
+ Qpathinfo    8219173     0.137    30.233
+ Qfileinfo    1441203     0.001     3.204
+ Qfsinfo      1507092     0.002     4.055
+ Sfileinfo     738775     0.006     5.431
+ Find         3177874     0.936    38.170
+ WriteX       4526152     0.084    39.518
+ ReadX        14213562     0.002    24.760
+ LockX          29522     0.002     1.221
+ UnlockX        29522     0.001     0.694
+ Flush         635652    14.358   422.039
+
+Throughput 990.13 MB/sec  64 clients  64 procs  max_latency=422.043 ms
+
+ --> +6.8% throughput, -18.1% max latency
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 121 ++++++--------------------------------------
- 1 file changed, 15 insertions(+), 106 deletions(-)
+ fs/btrfs/file.c        |  1 +
+ fs/btrfs/transaction.c | 39 +++++++++++++++++++++++++++++++--------
+ fs/btrfs/transaction.h |  2 ++
+ 3 files changed, 34 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 6dc376a16cf2..4c7b283ed2b2 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5265,6 +5265,21 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 		mutex_lock(&inode->log_mutex);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index d81ae1f518f2..be5350f5bedf 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2238,6 +2238,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 		ret = PTR_ERR(trans);
+ 		goto out_release_extents;
  	}
++	trans->in_fsync = true;
  
-+	/*
-+	 * This is for cases where logging a directory could result in losing a
-+	 * a file after replaying the log. For example, if we move a file from a
-+	 * directory A to a directory B, then fsync directory A, we have no way
-+	 * to known the file was moved from A to B, so logging just A would
-+	 * result in losing the file after a log replay.
-+	 */
-+	if (S_ISDIR(inode->vfs_inode.i_mode) &&
-+	    inode_only == LOG_INODE_ALL &&
-+	    inode->last_unlink_trans >= trans->transid) {
-+		btrfs_set_log_full_commit(trans);
-+		err = 1;
-+		goto out_unlock;
-+	}
-+
- 	/*
- 	 * a brute force approach to making sure we get the most uptodate
- 	 * copies of everything.
-@@ -5428,99 +5443,6 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 	return err;
+ 	ret = btrfs_log_dentry_safe(trans, dentry, &ctx);
+ 	btrfs_release_log_ctx_extents(&ctx);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 3bcb5444536e..ff8efa6f8986 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -107,6 +107,11 @@ static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
+ 					   __TRANS_JOIN |
+ 					   __TRANS_JOIN_NOLOCK |
+ 					   __TRANS_JOIN_NOSTART),
++	[TRANS_STATE_SUPER_COMMITTED]	= (__TRANS_START |
++					   __TRANS_ATTACH |
++					   __TRANS_JOIN |
++					   __TRANS_JOIN_NOLOCK |
++					   __TRANS_JOIN_NOSTART),
+ 	[TRANS_STATE_COMPLETED]		= (__TRANS_START |
+ 					   __TRANS_ATTACH |
+ 					   __TRANS_JOIN |
+@@ -826,10 +831,11 @@ btrfs_attach_transaction_barrier(struct btrfs_root *root)
+ 	return trans;
  }
  
--/*
-- * Check if we must fallback to a transaction commit when logging an inode.
-- * This must be called after logging the inode and is used only in the context
-- * when fsyncing an inode requires the need to log some other inode - in which
-- * case we can't lock the i_mutex of each other inode we need to log as that
-- * can lead to deadlocks with concurrent fsync against other inodes (as we can
-- * log inodes up or down in the hierarchy) or rename operations for example. So
-- * we take the log_mutex of the inode after we have logged it and then check for
-- * its last_unlink_trans value - this is safe because any task setting
-- * last_unlink_trans must take the log_mutex and it must do this before it does
-- * the actual unlink operation, so if we do this check before a concurrent task
-- * sets last_unlink_trans it means we've logged a consistent version/state of
-- * all the inode items, otherwise we are not sure and must do a transaction
-- * commit (the concurrent task might have only updated last_unlink_trans before
-- * we logged the inode or it might have also done the unlink).
-- */
--static bool btrfs_must_commit_transaction(struct btrfs_trans_handle *trans,
--					  struct btrfs_inode *inode)
--{
--	bool ret = false;
--
--	mutex_lock(&inode->log_mutex);
--	if (inode->last_unlink_trans >= trans->transid) {
--		/*
--		 * Make sure any commits to the log are forced to be full
--		 * commits.
--		 */
--		btrfs_set_log_full_commit(trans);
--		ret = true;
--	}
--	mutex_unlock(&inode->log_mutex);
--
--	return ret;
--}
--
--/*
-- * follow the dentry parent pointers up the chain and see if any
-- * of the directories in it require a full commit before they can
-- * be logged.  Returns zero if nothing special needs to be done or 1 if
-- * a full commit is required.
-- */
--static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
--					       struct btrfs_inode *inode,
--					       struct dentry *parent,
--					       struct super_block *sb)
--{
--	int ret = 0;
--	struct dentry *old_parent = NULL;
--
--	/*
--	 * for regular files, if its inode is already on disk, we don't
--	 * have to worry about the parents at all.  This is because
--	 * we can use the last_unlink_trans field to record renames
--	 * and other fun in this file.
--	 */
--	if (S_ISREG(inode->vfs_inode.i_mode) &&
--	    inode->generation < trans->transid &&
--	    inode->last_unlink_trans < trans->transid)
--		goto out;
--
--	if (!S_ISDIR(inode->vfs_inode.i_mode)) {
--		if (!parent || d_really_is_negative(parent) || sb != parent->d_sb)
--			goto out;
--		inode = BTRFS_I(d_inode(parent));
--	}
--
--	while (1) {
--		if (btrfs_must_commit_transaction(trans, inode)) {
--			ret = 1;
--			break;
--		}
--
--		if (!parent || d_really_is_negative(parent) || sb != parent->d_sb)
--			break;
--
--		if (IS_ROOT(parent)) {
--			inode = BTRFS_I(d_inode(parent));
--			if (btrfs_must_commit_transaction(trans, inode))
--				ret = 1;
--			break;
--		}
--
--		parent = dget_parent(parent);
--		dput(old_parent);
--		old_parent = parent;
--		inode = BTRFS_I(d_inode(parent));
--
--	}
--	dput(old_parent);
--out:
--	return ret;
--}
--
- /*
-  * Check if we need to log an inode. This is used in contexts where while
-  * logging an inode we need to log another inode (either that it exists or in
-@@ -5686,9 +5608,6 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 				log_mode = LOG_INODE_ALL;
- 			ret = btrfs_log_inode(trans, root, BTRFS_I(di_inode),
- 					      log_mode, ctx);
--			if (!ret &&
--			    btrfs_must_commit_transaction(trans, BTRFS_I(di_inode)))
--				ret = 1;
- 			btrfs_add_delayed_iput(di_inode);
- 			if (ret)
- 				goto next_dir_inode;
-@@ -5835,9 +5754,6 @@ static int btrfs_log_all_parents(struct btrfs_trans_handle *trans,
- 				ctx->log_new_dentries = false;
- 			ret = btrfs_log_inode(trans, root, BTRFS_I(dir_inode),
- 					      LOG_INODE_ALL, ctx);
--			if (!ret &&
--			    btrfs_must_commit_transaction(trans, BTRFS_I(dir_inode)))
--				ret = 1;
- 			if (!ret && ctx && ctx->log_new_dentries)
- 				ret = log_new_dir_dentries(trans, root,
- 						   BTRFS_I(dir_inode), ctx);
-@@ -6053,12 +5969,9 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+-/* wait for a transaction commit to be fully complete */
+-static noinline void wait_for_commit(struct btrfs_transaction *commit)
++/* Wait for a transaction commit to reach at least the given state. */
++static noinline void wait_for_commit(struct btrfs_transaction *commit,
++				     const enum btrfs_trans_state min_state)
  {
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
--	struct super_block *sb;
- 	int ret = 0;
- 	bool log_dentries = false;
+-	wait_event(commit->commit_wait, commit->state == TRANS_STATE_COMPLETED);
++	wait_event(commit->commit_wait, commit->state >= min_state);
+ }
  
--	sb = inode->vfs_inode.i_sb;
--
- 	if (btrfs_test_opt(fs_info, NOTREELOG)) {
- 		ret = 1;
- 		goto end_no_trans;
-@@ -6069,10 +5982,6 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
- 		goto end_no_trans;
+ int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid)
+@@ -884,7 +890,7 @@ int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid)
+ 			goto out;  /* nothing committing|committed */
  	}
  
--	ret = check_parent_dirs_for_sync(trans, inode, parent, sb);
--	if (ret)
--		goto end_no_trans;
--
- 	/*
- 	 * Skip already logged inodes or inodes corresponding to tmpfiles
- 	 * (since logging them is pointless, a link count of 0 means they
+-	wait_for_commit(cur_trans);
++	wait_for_commit(cur_trans, TRANS_STATE_COMPLETED);
+ 	btrfs_put_transaction(cur_trans);
+ out:
+ 	return ret;
+@@ -2102,11 +2108,15 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 
+ 	spin_lock(&fs_info->trans_lock);
+ 	if (cur_trans->state >= TRANS_STATE_COMMIT_START) {
++		enum btrfs_trans_state want_state = TRANS_STATE_COMPLETED;
++
+ 		spin_unlock(&fs_info->trans_lock);
+ 		refcount_inc(&cur_trans->use_count);
+-		ret = btrfs_end_transaction(trans);
+ 
+-		wait_for_commit(cur_trans);
++		if (trans->in_fsync)
++			want_state = TRANS_STATE_SUPER_COMMITTED;
++		ret = btrfs_end_transaction(trans);
++		wait_for_commit(cur_trans, want_state);
+ 
+ 		if (TRANS_ABORTED(cur_trans))
+ 			ret = cur_trans->aborted;
+@@ -2120,13 +2130,19 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	wake_up(&fs_info->transaction_blocked_wait);
+ 
+ 	if (cur_trans->list.prev != &fs_info->trans_list) {
++		enum btrfs_trans_state want_state = TRANS_STATE_COMPLETED;
++
++		if (trans->in_fsync)
++			want_state = TRANS_STATE_SUPER_COMMITTED;
++
+ 		prev_trans = list_entry(cur_trans->list.prev,
+ 					struct btrfs_transaction, list);
+-		if (prev_trans->state != TRANS_STATE_COMPLETED) {
++		if (prev_trans->state < want_state) {
+ 			refcount_inc(&prev_trans->use_count);
+ 			spin_unlock(&fs_info->trans_lock);
+ 
+-			wait_for_commit(prev_trans);
++			wait_for_commit(prev_trans, want_state);
++
+ 			ret = READ_ONCE(prev_trans->aborted);
+ 
+ 			btrfs_put_transaction(prev_trans);
+@@ -2345,6 +2361,13 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	if (ret)
+ 		goto scrub_continue;
+ 
++	/*
++	 * We needn't acquire the lock here because there is no other task
++	 * which can change it.
++	 */
++	cur_trans->state = TRANS_STATE_SUPER_COMMITTED;
++	wake_up(&cur_trans->commit_wait);
++
+ 	btrfs_finish_extent_commit(trans);
+ 
+ 	if (test_bit(BTRFS_TRANS_HAVE_FREE_BGS, &cur_trans->flags))
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 31ca81bad822..935bd6958a8a 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -16,6 +16,7 @@ enum btrfs_trans_state {
+ 	TRANS_STATE_COMMIT_START,
+ 	TRANS_STATE_COMMIT_DOING,
+ 	TRANS_STATE_UNBLOCKED,
++	TRANS_STATE_SUPER_COMMITTED,
+ 	TRANS_STATE_COMPLETED,
+ 	TRANS_STATE_MAX,
+ };
+@@ -133,6 +134,7 @@ struct btrfs_trans_handle {
+ 	bool can_flush_pending_bgs;
+ 	bool reloc_reserved;
+ 	bool dirty;
++	bool in_fsync;
+ 	struct btrfs_root *root;
+ 	struct btrfs_fs_info *fs_info;
+ 	struct list_head new_bgs;
 -- 
 2.28.0
 
