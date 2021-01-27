@@ -2,104 +2,260 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5BC30575A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 10:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B99F305774
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 10:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbhA0Jtv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 04:49:51 -0500
-Received: from mout.gmx.net ([212.227.17.21]:48661 "EHLO mout.gmx.net"
+        id S235521AbhA0Jyj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 04:54:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56366 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234742AbhA0JsY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 04:48:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611740796;
-        bh=/v3JfsKDq3K17fM5XuYkGVKInvAlWtx1vUeh3eUqJYA=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=LuWg/pZyVPEQ0Ve1NKJ8qYNymVUPkM3/tsr1LTiS2OVzJkeno0wI2/UsOA/3l4wkP
-         m34O8UOy89toUnE0pAzcFCB3GN59nyq2p95EsXgwEBDWXwljF6/14b8GDiaw2bIuxh
-         yINqDxE+eu4oXhR4z41Qqjy6UgpWnYb79WWNSxKI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mt79F-1lxdXW1X1F-00tRf8; Wed, 27
- Jan 2021 10:46:35 +0100
-Subject: Re: [PATCH] fs: btrfs: Select SHA256 in Kconfig
-To:     matthias.bgg@kernel.org, Qu Wenruo <wqu@suse.com>,
-        Marek Behun <marek.behun@nic.cz>
-Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
-        Matthias Brugger <mbrugger@suse.com>
-References: <20210127094231.11740-1-matthias.bgg@kernel.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <2e1865ff-af6e-feec-a224-2364dbb80a0c@gmx.com>
-Date:   Wed, 27 Jan 2021 17:46:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S235634AbhA0Jwa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Jan 2021 04:52:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4495CAD78;
+        Wed, 27 Jan 2021 09:51:40 +0000 (UTC)
+From:   Michal Rostecki <mrostecki@suse.de>
+Cc:     Michal Rostecki <mrostecki@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: Avoid calling btrfs_get_chunk_map() twice
+Date:   Wed, 27 Jan 2021 10:51:31 +0100
+Message-Id: <20210127095131.22600-1-mrostecki@suse.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <20210127094231.11740-1-matthias.bgg@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PYXwCd6ZYs03KiysJMzHv3zWc4juz8J908M0TCTtUI/6GuY2R3Y
- 62NUjduyy2vidiMWEQKem0r1UA5cJV1uW9W3y8hCZt7fV6jiNAHSpy8xs9G6zywRbYBolfI
- nJ5/CwWMdBIOfMXH/f2mA3nQ371aqFhRtg8OuELFD9XqxQMx+rHbWhY5W/Y8yKfXxUYLPp5
- vhtj8MJpWT6zvr/mXyYeA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9ie2M+hVmAY=:zUzAil4G68aEEUY2aoyQ0g
- DLdVKUl4vFmjg4JVKcCtpo5+BGWe7CE7hkEEbWi6bn3X1iY1wsbpx01gfAWfkgqZ+3YjKhJ9X
- HxMcLGuGn5DQQ1zEuxT0+lsSRh6dGEdWkTnz6fd2lCeFZYzSv9OeLbBj7W1ORYqTIIBV+n+Hx
- 8frFcVf8VyJVj4UT3an1ilH9Ilbu3bNdwBoDxfZerQkiLn7RK7A/+G3rlBjYawkj/ztuQ1pZp
- rkS98E4bVBJ40/k/abg6hICfcwJ70RROWdCmH1xmins+wHAv9uuUAWXl4f7lqla7/NAExf51/
- d7Z5PvPf2hUS/AUkRtVclyS8RMdDOKHscxmuzIwC0R4Jo4q6DLPVmGABjcah12RaR2DpHhu0O
- imEWeFj3GhFZ5BImc46C8kziDQ8IJTFN//QKPGZHCxcvdM8hcBcEhsg48mib5/iHUZxhbQk5N
- 223exMtqbql5NZGWgktIPCoVFRESoCNvQwk5c3BErguCp7mw2Dz9Ap6BJg2T/6keHpR8YZnCf
- lJk8i6lGQPU9HbFXu6AxVUuB84+fM6gNkr4hZL3FkRUm9IORYhnRc9OpmtRLY6OajDgnbsg/u
- dq3sJnplecjbRm3IcL0FMZaVt66I5ZGjkqKJHseqT9Xq4QK4sllHPtMEEZZvun6cv+ScgTGKy
- R8A+c3iGNxFVp7BcP4/z+OixUpLftfNCchL/sgQ1xlDnb0m3MZO+g0hj32kDfOFmCPSPBnufR
- aiFU12Ms1cqBLjs1jzBAghtzSySDUy0EEtRZD+i0uPM257xoNIdf6CG7Pa8Jv5pFv811nVl8T
- WZVKlc+rxTvsk4QzOzyeoGJnqxtOPqNtRu/uiyWsT1o4yR/x50Eb4ck+0uy1D6ZbckXCmhMxM
- j/Y9tsgscYnidmm0rRUg==
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Michal Rostecki <mrostecki@suse.com>
 
+Before this change, the btrfs_get_io_geometry() function was calling
+btrfs_get_chunk_map() to get the extent mapping, necessary for
+calculating the I/O geometry. It was using that extent mapping only
+internally and freeing the pointer after its execution.
 
-On 2021/1/27 =E4=B8=8B=E5=8D=885:42, matthias.bgg@kernel.org wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
->
-> Since commit 565a4147d17a ("fs: btrfs: Add more checksum algorithms")
-> btrfs uses the sha256 checksum algorithm. But Kconfig lacks to select
-> it. This leads to compilation errors:
-> fs/built-in.o: In function `hash_sha256':
-> fs/btrfs/crypto/hash.c:25: undefined reference to `sha256_starts'
-> fs/btrfs/crypto/hash.c:26: undefined reference to `sha256_update'
-> fs/btrfs/crypto/hash.c:27: undefined reference to `sha256_finish'
->
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+That resulted in calling btrfs_get_chunk_map() de facto twice by the
+__btrfs_map_block() function. It was calling btrfs_get_io_geometry()
+first and then calling btrfs_get_chunk_map() directly to get the extent
+mapping, used by the rest of the function.
 
-Oh, forgot to select sha256.
+This change fixes that by passing the extent mapping to the
+btrfs_get_io_geometry() function as an argument.
 
-Thanks for the fix.
+Fixes: 89b798ad1b42 ("btrfs: Use btrfs_get_io_geometry appropriately")
+Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+---
+ fs/btrfs/inode.c   | 37 ++++++++++++++++++++++++++++---------
+ fs/btrfs/volumes.c | 39 ++++++++++++++++-----------------------
+ fs/btrfs/volumes.h |  5 +++--
+ 3 files changed, 47 insertions(+), 34 deletions(-)
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0dbe1aaa0b71..a4ce8501ed4d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2183,9 +2183,10 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+ 	struct inode *inode = page->mapping->host;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	u64 logical = bio->bi_iter.bi_sector << 9;
++	struct extent_map *em;
+ 	u64 length = 0;
+ 	u64 map_length;
+-	int ret;
++	int ret = 0;
+ 	struct btrfs_io_geometry geom;
+ 
+ 	if (bio_flags & EXTENT_BIO_COMPRESSED)
+@@ -2193,14 +2194,21 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+ 
+ 	length = bio->bi_iter.bi_size;
+ 	map_length = length;
+-	ret = btrfs_get_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
+-				    &geom);
++	em = btrfs_get_chunk_map(fs_info, logical, map_length);
++	if (IS_ERR(em))
++		return PTR_ERR(em);
++	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical,
++				    map_length, &geom);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
+ 
+-	if (geom.len < length + size)
+-		return 1;
+-	return 0;
++	if (geom.len < length + size) {
++		ret = 1;
++		goto out;
++	}
++out:
++	free_extent_map(em);
++	return ret;
+ }
+ 
+ /*
+@@ -7941,10 +7949,12 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+ 	u64 submit_len;
+ 	int clone_offset = 0;
+ 	int clone_len;
++	int logical;
+ 	int ret;
+ 	blk_status_t status;
+ 	struct btrfs_io_geometry geom;
+ 	struct btrfs_dio_data *dio_data = iomap->private;
++	struct extent_map *em;
+ 
+ 	dip = btrfs_create_dio_private(dio_bio, inode, file_offset);
+ 	if (!dip) {
+@@ -7970,11 +7980,17 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+ 	}
+ 
+ 	start_sector = dio_bio->bi_iter.bi_sector;
++	logical = start_sector << 9;
+ 	submit_len = dio_bio->bi_iter.bi_size;
+ 
+ 	do {
+-		ret = btrfs_get_io_geometry(fs_info, btrfs_op(dio_bio),
+-					    start_sector << 9, submit_len,
++		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
++		if (IS_ERR(em)) {
++			status = errno_to_blk_status(ret);
++			goto out_err;
++		}
++		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
++					    logical, submit_len,
+ 					    &geom);
+ 		if (ret) {
+ 			status = errno_to_blk_status(ret);
+@@ -8030,12 +8046,15 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+ 		clone_offset += clone_len;
+ 		start_sector += clone_len >> 9;
+ 		file_offset += clone_len;
++
++		free_extent_map(em);
+ 	} while (submit_len > 0);
+ 	return BLK_QC_T_NONE;
+ 
+ out_err:
+ 	dip->dio_bio->bi_status = status;
+ 	btrfs_dio_private_put(dip);
++	free_extent_map(em);
+ 	return BLK_QC_T_NONE;
+ }
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a8ec8539cd8d..4c753b17c0a2 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5940,23 +5940,24 @@ static bool need_full_stripe(enum btrfs_map_op op)
+ }
+ 
+ /*
+- * btrfs_get_io_geometry - calculates the geomery of a particular (address, len)
++ * btrfs_get_io_geometry - calculates the geometry of a particular (address, len)
+  *		       tuple. This information is used to calculate how big a
+  *		       particular bio can get before it straddles a stripe.
+  *
+- * @fs_info - the filesystem
+- * @logical - address that we want to figure out the geometry of
+- * @len	    - the length of IO we are going to perform, starting at @logical
+- * @op      - type of operation - write or read
+- * @io_geom - pointer used to return values
++ * @fs_info: the filesystem
++ * @em:      mapping containing the logical extent
++ * @op:      type of operation - write or read
++ * @logical: address that we want to figure out the geometry of
++ * @len:     the length of IO we are going to perform, starting at @logical
++ * @io_geom: pointer used to return values
+  *
+  * Returns < 0 in case a chunk for the given logical address cannot be found,
+  * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
+  */
+-int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+-			u64 logical, u64 len, struct btrfs_io_geometry *io_geom)
++int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *em,
++			  enum btrfs_map_op op, u64 logical, u64 len,
++			  struct btrfs_io_geometry *io_geom)
+ {
+-	struct extent_map *em;
+ 	struct map_lookup *map;
+ 	u64 offset;
+ 	u64 stripe_offset;
+@@ -5964,14 +5965,9 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	u64 stripe_len;
+ 	u64 raid56_full_stripe_start = (u64)-1;
+ 	int data_stripes;
+-	int ret = 0;
+ 
+ 	ASSERT(op != BTRFS_MAP_DISCARD);
+ 
+-	em = btrfs_get_chunk_map(fs_info, logical, len);
+-	if (IS_ERR(em))
+-		return PTR_ERR(em);
+-
+ 	map = em->map_lookup;
+ 	/* Offset of this logical address in the chunk */
+ 	offset = logical - em->start;
+@@ -5985,8 +5981,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		btrfs_crit(fs_info,
+ "stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu",
+ 			stripe_offset, offset, em->start, logical, stripe_len);
+-		ret = -EINVAL;
+-		goto out;
++		return -EINVAL;
+ 	}
+ 
+ 	/* stripe_offset is the offset of this block in its stripe */
+@@ -6033,10 +6028,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	io_geom->stripe_offset = stripe_offset;
+ 	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
+ 
+-out:
+-	/* once for us */
+-	free_extent_map(em);
+-	return ret;
++	return 0;
+ }
+ 
+ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+@@ -6069,12 +6061,13 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+ 	ASSERT(bbio_ret);
+ 	ASSERT(op != BTRFS_MAP_DISCARD);
+ 
+-	ret = btrfs_get_io_geometry(fs_info, op, logical, *length, &geom);
++	em = btrfs_get_chunk_map(fs_info, logical, *length);
++	ASSERT(!IS_ERR(em));
++
++	ret = btrfs_get_io_geometry(fs_info, em, op, logical, *length, &geom);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	em = btrfs_get_chunk_map(fs_info, logical, *length);
+-	ASSERT(!IS_ERR(em));
+ 	map = em->map_lookup;
+ 
+ 	*length = geom.len;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index c43663d9c22e..04e2b26823c2 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -440,8 +440,9 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		     u64 logical, u64 *length,
+ 		     struct btrfs_bio **bbio_ret);
+-int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+-		u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
++int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, struct extent_map *map,
++			  enum btrfs_map_op op, u64 logical, u64 len,
++			  struct btrfs_io_geometry *io_geom);
+ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
+ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
+ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
+-- 
+2.30.0
 
-Thanks,
-Qu
->
-> ---
->
->   fs/btrfs/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-> index f302b1fbef..2a32f42ad1 100644
-> --- a/fs/btrfs/Kconfig
-> +++ b/fs/btrfs/Kconfig
-> @@ -4,6 +4,7 @@ config FS_BTRFS
->   	select LZO
->   	select ZSTD
->   	select RBTREE
-> +	select SHA256
->   	help
->   	  This provides a single-device read-only BTRFS support. BTRFS is a
->   	  next-generation Linux file system based on the copy-on-write
->
