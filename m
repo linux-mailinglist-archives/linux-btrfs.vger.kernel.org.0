@@ -2,332 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406D93058A9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 100703058C0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236016AbhA0KlH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 05:41:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236010AbhA0Ki1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 05:38:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AC2620781
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:35:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611743709;
-        bh=ZAFPaVcpqJlPci1Idchoh39eTJxfXRuaY85UtemkQrA=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=J5x/+oxHRcQtqaqq5hOehCW0CaisO6JWRsmbE6qjRRJyD4ilv4pNiEBq7dZBzhn/X
-         RYzVLr9fXvtbeNF/fkIjJxhg5AKIHl4v66XtGMkxxo/1c1Qi3OifyvtFbVTlayMbbU
-         NndvNGm0V1Hh8hAv0lPH6rb874Hi5zn+zb1xMF/S+JTyii1AlHBYr1q9ePJ1BPgdTU
-         MLw6wuSGUkgyEOgV810Fm6vGOiKirUunRt1aBfi57x+noxBybW7i95RhVZENESpwP3
-         tKlN3Rh3MK72Rd8aOLEr+fZSL3VyIsRQ8mjHcCI1HGyppKkWnivuvMh8wkM/fP7Ouj
-         Re4Znzh7HNP0Q==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/7] btrfs: make concurrent fsyncs wait less when waiting for a transaction commit
-Date:   Wed, 27 Jan 2021 10:35:00 +0000
-Message-Id: <8c391b7c0a7a6a7e827644d424cd4c343f39588e.1611742865.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1611742865.git.fdmanana@suse.com>
-References: <cover.1611742865.git.fdmanana@suse.com>
+        id S236179AbhA0KsA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 05:48:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236104AbhA0Kpk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Jan 2021 05:45:40 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705A9C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 02:44:59 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id es14so823272qvb.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 02:44:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=BE3hbEvYnXepdoPqe4SXxH7E2xVEXlIkS9rgcMN068Q=;
+        b=KcZkI1JKYcgG6wvsBExJE0xshMj+pwzOZXm2UJ3ruwhNrh1vYjwVVhVK/dCIgWXtqa
+         tjRQkaG7IxSVzegoT6jWtLECKUo0tPpCKENCSxCAkgZKENBLC52uywKNeZYmpdmmRlZZ
+         skL5sZdwXMNcgJgfz1R3PLyMnSbwQcs/O5yPhN9DIOOHb7GY6Rmy14xigAYUGKKmFIVj
+         UiKIDFBV1X5pY/Q7p4zeOUo3gh1nwBE3Xlyeug7pLL+HQyRUCqBZH8dbhXC2B0DdXjqs
+         kdl463bhZbdiCNFsM6bSyJhiEj+HI4iYJkTETe511eQwmSSN+xyzZVmU24B8tiUd002j
+         VbTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=BE3hbEvYnXepdoPqe4SXxH7E2xVEXlIkS9rgcMN068Q=;
+        b=JUiK7Pqt6oM2+f/HjLfwx9SUqQAGQrunJv9lFv//7uzhmLB+tk8fXUuNJwXRve0Xyo
+         veVUI914Dal3hN8/JYcI+QX32RJV2mERroYfF8fxY8o7O55RnBuQMEqHk+gtH79ZB/Kc
+         +EZLBdjwlMjqo53eMIqDrRi6lVjzfj1JVjkYCcopNN9dBwPTiGkH+9yILAMpW54bp23o
+         2glXueWlg7LW0ZL8Saj4YuWpuBL7EUiQINfqHnqdodUmJxTJ/XYk94Vc3aj56qW/l6hk
+         h2tZgnbtxXL3SRMqOhqDpEEcsCqQeaUEZ5gTHpwZ9Ur3rluCQLbqVbxGyEb7T5JYw3ZI
+         4fug==
+X-Gm-Message-State: AOAM530sNRWELswId5oAXH49x+TaIfOge+Lbo6BTWGelKzfonZCOduwr
+        MtPeHFyQNwyAzaXjaY7pNRTTqTePT890W6gMW1g=
+X-Google-Smtp-Source: ABdhPJy/2Ym/BB5XWoXHwMjFVQwVKs+BtH1/Yhiu3Nyc5bHgEC4iOlt9C5Vgs2rvvKGewcT3UBiAvDoq9jVPyOFtSAc=
+X-Received: by 2002:a05:6214:10e7:: with SMTP id q7mr9791078qvt.28.1611744298678;
+ Wed, 27 Jan 2021 02:44:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210127063848.72528-1-wqu@suse.com>
+In-Reply-To: <20210127063848.72528-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 27 Jan 2021 10:44:47 +0000
+Message-ID: <CAL3q7H4kBWVewu8-yof-xzEZ1q24Xrz_h7hZHrOPEj_=9Lh1zA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix a bug that btrfs_invalidapge() can double
+ account ordered extent for subpage
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Jan 27, 2021 at 8:29 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Commit dbfdb6d1b369 ("Btrfs: Search for all ordered extents that could
+> span across a page") make btrfs_invalidapage() to search all ordered
+> extents.
+>
+> The offending code looks like this:
+>
+> again:
+>         start =3D page_start;
+>         ordered =3D btrfs_lookup_ordered_range(inode, start, page_end - s=
+tart + 1);
+>         if (ordred) {
+>                 end =3D min(page_end,
+>                           ordered->file_offset + ordered->num_bytes - 1);
+>
+>                 /* Do the cleanup */
+>
+>                 start =3D end + 1;
+>                 if (start < page_end)
+>                         goto again;
+>         }
+>
+> The behavior is indeed necessary for the incoming subpage support, but
+> when it iterate through all the ordered extents, it also resets the
+> search range @start.
+>
+> This means, for the following cases, we can double account the ordered
+> extents, causing its bytes_left underflow:
+>
+>         Page offset
+>         0               16K             32K
+>         |<--- OE 1  --->|<--- OE 2 ---->|
+>
+> As the first iteration will find OE 1, which doesn't cover the full
+> page, thus after cleanup code, we need to retry again.
+> But again label will reset start to page_start, and we got OE 1 again,
+> which causes double account on OE1, and cause OE1's byte_left to
+> underflow.
+>
+> The only good news is, this problem can only happen for subpage case, as
+> for regular sectorsize =3D=3D PAGE_SIZE case, we will always find a OE en=
+ds
+> at or after page end, thus no way to trigger the problem.
+>
+> This patch will move the again label after start =3D page_start, to fix
+> the bug.
+> This is just a quick fix, which is easy to backport.
 
-Often an fsync needs to fallback to a transaction commit for several
-reasons (to ensure consistency after a power failure, a new block group
-was allocated or a temporary error such as ENOMEM or ENOSPC happened).
+Hum? Why does it need to be backported?
+There are no kernel releases that support subpage sector size yet and
+this does not affect the case where sector size is the same as the
+page size.
 
-In that case the log is marked as needing a full commit and any concurrent
-tasks attempting to log inodes or commit the log will also fallback to the
-transaction commit. When this happens they all wait for the task that first
-started the transaction commit to finish the transaction commit - however
-they wait until the full transaction commit happens, which is not needed,
-as they only need to wait for the superblocks to be persisted and not for
-unpinning all the extents pinned during the transaction's lifetime, which
-even for short lived transactions can be a few thousand and take some
-significant amount of time to complete - for dbench workloads I have
-observed up to 4~5 milliseconds of time spent unpinning extents in the
-worst cases, and the number of pinned extents was between 2 to 3 thousand.
+>
+> There will be more comprehensive rework to convert the open coded loop to
+> a proper while loop.
+>
+> Fixes: dbfdb6d1b369 ("Btrfs: Search for all ordered extents that could sp=
+an across a page")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-So allow fsync tasks to skip waiting for the unpinning of extents when
-they call btrfs_commit_transaction() and they were not the task that
-started the transaction commit (that one has to do it, the alternative
-would be to offload the transaction commit to another task so that it
-could avoid waiting for the extent unpinning or offload the extent
-unpinning to another task).
+Anyway, it looks good to me, thanks.
 
-This patch is part of a patchset comprised of the following patches:
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-  btrfs: remove unnecessary directory inode item update when deleting dir entry
-  btrfs: stop setting nbytes when filling inode item for logging
-  btrfs: avoid logging new ancestor inodes when logging new inode
-  btrfs: skip logging directories already logged when logging all parents
-  btrfs: skip logging inodes already logged when logging new entries
-  btrfs: remove unnecessary check_parent_dirs_for_sync()
-  btrfs: make concurrent fsyncs wait less when waiting for a transaction commit
+> ---
+>  fs/btrfs/inode.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index ef6cb7b620d0..2eea7d22405a 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -8184,8 +8184,9 @@ static void btrfs_invalidatepage(struct page *page,=
+ unsigned int offset,
+>
+>         if (!inode_evicting)
+>                 lock_extent_bits(tree, page_start, page_end, &cached_stat=
+e);
+> -again:
+> +
+>         start =3D page_start;
+> +again:
+>         ordered =3D btrfs_lookup_ordered_range(inode, start, page_end - s=
+tart + 1);
+>         if (ordered) {
+>                 found_ordered =3D true;
+> --
+> 2.30.0
+>
 
-After applying the entire patchset, dbench shows improvements in respect
-to throughput and latency. The script used to measure it is the following:
 
-  $ cat dbench-test.sh
-  #!/bin/bash
+--=20
+Filipe David Manana,
 
-  DEV=/dev/sdk
-  MNT=/mnt/sdk
-  MOUNT_OPTIONS="-o ssd"
-  MKFS_OPTIONS="-m single -d single"
-
-  echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-
-  umount $DEV &> /dev/null
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  dbench -D $MNT -t 300 64
-
-  umount $MNT
-
-The test was run on a physical machine with 12 cores (Intel corei7), 64G
-of ram, using a NVMe device and a non-debug kernel configuration (Debian's
-default configuration).
-
-Before applying patchset, 32 clients:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    9627107     0.153    61.938
- Close        7072076     0.001     3.175
- Rename        407633     1.222    44.439
- Unlink       1943895     0.658    44.440
- Deltree          256    17.339   110.891
- Mkdir            128     0.003     0.009
- Qpathinfo    8725406     0.064    17.850
- Qfileinfo    1529516     0.001     2.188
- Qfsinfo      1599884     0.002     1.457
- Sfileinfo     784200     0.005     3.562
- Find         3373513     0.411    30.312
- WriteX       4802132     0.053    29.054
- ReadX        15089959     0.002     5.801
- LockX          31344     0.002     0.425
- UnlockX        31344     0.001     0.173
- Flush         674724     5.952   341.830
-
-Throughput 1008.02 MB/sec  32 clients  32 procs  max_latency=341.833 ms
-
-After applying patchset, 32 clients:
-
-After patchset, with 32 clients:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    9931568     0.111    25.597
- Close        7295730     0.001     2.171
- Rename        420549     0.982    49.714
- Unlink       2005366     0.497    39.015
- Deltree          256    11.149    89.242
- Mkdir            128     0.002     0.014
- Qpathinfo    9001863     0.049    20.761
- Qfileinfo    1577730     0.001     2.546
- Qfsinfo      1650508     0.002     3.531
- Sfileinfo     809031     0.005     5.846
- Find         3480259     0.309    23.977
- WriteX       4952505     0.043    41.283
- ReadX        15568127     0.002     5.476
- LockX          32338     0.002     0.978
- UnlockX        32338     0.001     2.032
- Flush         696017     7.485   228.835
-
-Throughput 1049.91 MB/sec  32 clients  32 procs  max_latency=228.847 ms
-
- --> +4.1% throughput, -39.6% max latency
-
-Before applying patchset, 64 clients:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    8956748     0.342   108.312
- Close        6579660     0.001     3.823
- Rename        379209     2.396    81.897
- Unlink       1808625     1.108   131.148
- Deltree          256    25.632   172.176
- Mkdir            128     0.003     0.018
- Qpathinfo    8117615     0.131    55.916
- Qfileinfo    1423495     0.001     2.635
- Qfsinfo      1488496     0.002     5.412
- Sfileinfo     729472     0.007     8.643
- Find         3138598     0.855    78.321
- WriteX       4470783     0.102    79.442
- ReadX        14038139     0.002     7.578
- LockX          29158     0.002     0.844
- UnlockX        29158     0.001     0.567
- Flush         627746    14.168   506.151
-
-Throughput 924.738 MB/sec  64 clients  64 procs  max_latency=506.154 ms
-
-After applying patchset, 64 clients:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    9069003     0.303    43.193
- Close        6662328     0.001     3.888
- Rename        383976     2.194    46.418
- Unlink       1831080     1.022    43.873
- Deltree          256    24.037   155.763
- Mkdir            128     0.002     0.005
- Qpathinfo    8219173     0.137    30.233
- Qfileinfo    1441203     0.001     3.204
- Qfsinfo      1507092     0.002     4.055
- Sfileinfo     738775     0.006     5.431
- Find         3177874     0.936    38.170
- WriteX       4526152     0.084    39.518
- ReadX        14213562     0.002    24.760
- LockX          29522     0.002     1.221
- UnlockX        29522     0.001     0.694
- Flush         635652    14.358   422.039
-
-Throughput 990.13 MB/sec  64 clients  64 procs  max_latency=422.043 ms
-
- --> +6.8% throughput, -18.1% max latency
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c        |  1 +
- fs/btrfs/transaction.c | 39 +++++++++++++++++++++++++++++++--------
- fs/btrfs/transaction.h |  2 ++
- 3 files changed, 34 insertions(+), 8 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index d81ae1f518f2..be5350f5bedf 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2238,6 +2238,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 		ret = PTR_ERR(trans);
- 		goto out_release_extents;
- 	}
-+	trans->in_fsync = true;
- 
- 	ret = btrfs_log_dentry_safe(trans, dentry, &ctx);
- 	btrfs_release_log_ctx_extents(&ctx);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 3bcb5444536e..ff8efa6f8986 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -107,6 +107,11 @@ static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
- 					   __TRANS_JOIN |
- 					   __TRANS_JOIN_NOLOCK |
- 					   __TRANS_JOIN_NOSTART),
-+	[TRANS_STATE_SUPER_COMMITTED]	= (__TRANS_START |
-+					   __TRANS_ATTACH |
-+					   __TRANS_JOIN |
-+					   __TRANS_JOIN_NOLOCK |
-+					   __TRANS_JOIN_NOSTART),
- 	[TRANS_STATE_COMPLETED]		= (__TRANS_START |
- 					   __TRANS_ATTACH |
- 					   __TRANS_JOIN |
-@@ -826,10 +831,11 @@ btrfs_attach_transaction_barrier(struct btrfs_root *root)
- 	return trans;
- }
- 
--/* wait for a transaction commit to be fully complete */
--static noinline void wait_for_commit(struct btrfs_transaction *commit)
-+/* Wait for a transaction commit to reach at least the given state. */
-+static noinline void wait_for_commit(struct btrfs_transaction *commit,
-+				     const enum btrfs_trans_state min_state)
- {
--	wait_event(commit->commit_wait, commit->state == TRANS_STATE_COMPLETED);
-+	wait_event(commit->commit_wait, commit->state >= min_state);
- }
- 
- int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid)
-@@ -884,7 +890,7 @@ int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid)
- 			goto out;  /* nothing committing|committed */
- 	}
- 
--	wait_for_commit(cur_trans);
-+	wait_for_commit(cur_trans, TRANS_STATE_COMPLETED);
- 	btrfs_put_transaction(cur_trans);
- out:
- 	return ret;
-@@ -2102,11 +2108,15 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 
- 	spin_lock(&fs_info->trans_lock);
- 	if (cur_trans->state >= TRANS_STATE_COMMIT_START) {
-+		enum btrfs_trans_state want_state = TRANS_STATE_COMPLETED;
-+
- 		spin_unlock(&fs_info->trans_lock);
- 		refcount_inc(&cur_trans->use_count);
--		ret = btrfs_end_transaction(trans);
- 
--		wait_for_commit(cur_trans);
-+		if (trans->in_fsync)
-+			want_state = TRANS_STATE_SUPER_COMMITTED;
-+		ret = btrfs_end_transaction(trans);
-+		wait_for_commit(cur_trans, want_state);
- 
- 		if (TRANS_ABORTED(cur_trans))
- 			ret = cur_trans->aborted;
-@@ -2120,13 +2130,19 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	wake_up(&fs_info->transaction_blocked_wait);
- 
- 	if (cur_trans->list.prev != &fs_info->trans_list) {
-+		enum btrfs_trans_state want_state = TRANS_STATE_COMPLETED;
-+
-+		if (trans->in_fsync)
-+			want_state = TRANS_STATE_SUPER_COMMITTED;
-+
- 		prev_trans = list_entry(cur_trans->list.prev,
- 					struct btrfs_transaction, list);
--		if (prev_trans->state != TRANS_STATE_COMPLETED) {
-+		if (prev_trans->state < want_state) {
- 			refcount_inc(&prev_trans->use_count);
- 			spin_unlock(&fs_info->trans_lock);
- 
--			wait_for_commit(prev_trans);
-+			wait_for_commit(prev_trans, want_state);
-+
- 			ret = READ_ONCE(prev_trans->aborted);
- 
- 			btrfs_put_transaction(prev_trans);
-@@ -2345,6 +2361,13 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	if (ret)
- 		goto scrub_continue;
- 
-+	/*
-+	 * We needn't acquire the lock here because there is no other task
-+	 * which can change it.
-+	 */
-+	cur_trans->state = TRANS_STATE_SUPER_COMMITTED;
-+	wake_up(&cur_trans->commit_wait);
-+
- 	btrfs_finish_extent_commit(trans);
- 
- 	if (test_bit(BTRFS_TRANS_HAVE_FREE_BGS, &cur_trans->flags))
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 31ca81bad822..935bd6958a8a 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -16,6 +16,7 @@ enum btrfs_trans_state {
- 	TRANS_STATE_COMMIT_START,
- 	TRANS_STATE_COMMIT_DOING,
- 	TRANS_STATE_UNBLOCKED,
-+	TRANS_STATE_SUPER_COMMITTED,
- 	TRANS_STATE_COMPLETED,
- 	TRANS_STATE_MAX,
- };
-@@ -133,6 +134,7 @@ struct btrfs_trans_handle {
- 	bool can_flush_pending_bgs;
- 	bool reloc_reserved;
- 	bool dirty;
-+	bool in_fsync;
- 	struct btrfs_root *root;
- 	struct btrfs_fs_info *fs_info;
- 	struct list_head new_bgs;
--- 
-2.28.0
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
