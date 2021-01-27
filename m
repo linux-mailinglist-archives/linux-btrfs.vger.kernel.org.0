@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5221A3058A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F963058AA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 11:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235098AbhA0Kks (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 05:40:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53076 "EHLO mail.kernel.org"
+        id S236006AbhA0Kkf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 05:40:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236008AbhA0KiZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S236007AbhA0KiZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 27 Jan 2021 05:38:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE15920773
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:35:07 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D8B820780
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 10:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611743708;
-        bh=IgAegIguo12oSqOVBxDaVBbCr4bKsxSGPcOcMxGYwBs=;
+        s=k20201202; t=1611743709;
+        bh=Jtxz1Gt1cVJlfkFGfVSaBVXgzfE2MXW6E/QWWSMVkC8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fQCRVbFSmRnawGoIDkX+JjI2EblwH2scq2JlrkVGUM0jI4ZznJadLPHchsZW4Sikl
-         znfB+hR9gR6xMzGVRrDLc8lFp2la3THSJfB+JdPgfYL1f7u8/uTQtiELztj3bxz2tv
-         ml/e/7ysMJksbRzNl4hQOxm98IUORoH48QB0sEO2C9fXPOfizwePDxzU7y/wexHXiO
-         bpmuX2qvitmBBexr6eX5FAmNQK5nok4O7gxB9P6sh4PbGzhoHKmis8Hht4k3v7KG23
-         zxYpXeOHMgvx/7LoqjVwKnbci22YXWPN3n0mPwyuBO1Q9dI8hHQ+ZgWZ/56us9fIH7
-         +3afD8pnVxiUA==
+        b=JxN1DIWQiEUWA/M/AzCuXGusYOJiQVWvXCappWRzOFrcEBBoIuDonY4Zr90DUF0Ow
+         mU1Q3S26CHq4lBm9Uwwb6ct82BoVLT1FhfWGC+PEzUc7yqDfjLG36rKuLwSOR2WcNE
+         NznxTeuXJw0+W5sCgynmldM5sMW1BASGGZgxyhpbHwgmx0Kud1QfgWxNGrHkoaMh2F
+         f9abxjVsKYhcw4UwC1xvxJZ7m3q9RRb8DkV+TKdlsBc68Mxwzu+po1iZqKJV9ptQ+s
+         L+zCH1xM7GC+Hhmh6O/vnvwAhxZROSMYDZK29gvWQTMYEitRULDq792PdUxGJUkX6h
+         1aEOpBiOLKF+w==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/7] btrfs: skip logging inodes already logged when logging new entries
-Date:   Wed, 27 Jan 2021 10:34:58 +0000
-Message-Id: <ec2887f0b8ac633a377496206c4124154700eb3b.1611742865.git.fdmanana@suse.com>
+Subject: [PATCH 6/7] btrfs: remove unnecessary check_parent_dirs_for_sync()
+Date:   Wed, 27 Jan 2021 10:34:59 +0000
+Message-Id: <77b21c64a5aed56e5602c59558c1b09254f3b494.1611742865.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1611742865.git.fdmanana@suse.com>
 References: <cover.1611742865.git.fdmanana@suse.com>
@@ -39,22 +39,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When logging new directory entries of a directory, we log the inodes of
-new dentries and the inodes of dentries pointing to directories that
-may have been created in past transactions. For the case of directories
-we log in full mode, which can be particularly expensive for large
-directories.
+Whenever we fsync an inode, if it is a directory, a regular file that was
+created in the current transaction or has last_unlink_trans set to the
+generation of the current transaction, we check if any of its ancestor
+inodes (and the inode itself if it is a directory) can not be logged and
+need a fallback to a full transaction commit - if so, we return with a
+value of 1 in order to fallback to a transaction commit.
 
-We do use btrfs_inode_in_log() to skip already logged inodes, however for
-that helper to return true, it requires that the log transaction used to
-log the inode to be already committed. This means that when we have more
-than one task using the same log transaction we can end up logging an
-inode multiple times, which is a waste of time and not necessary since
-the log will be committed by one of the tasks and the others will wait for
-the log transaction to be committed before returning to user space.
+However we often do not need to fallback to a transaction commit because:
 
-So simply replace the use of btrfs_inode_in_log() with the new helper
-function need_log_inode(), introduced in a previous commit.
+1) The ancestor inode is not an immediate parent, and therefore there is
+   not an explicit request to log it and it is not needed neither to
+   guarantee the consistency of the inode originally asked to be logged
+   (fsynced) nor its immediate parent;
+
+2) The ancestor inode was already logged before, in which case any link,
+   unlink or rename operation updates the log as needed.
+
+So for these two cases we can avoid an unnecessary transaction commit.
+Therefore remove check_parent_dirs_for_sync() and add a check at the top
+of btrfs_log_inode() to make us fallback immediately to a transaction
+commit when we are logging a directory inode that can not be logged and
+needs a full transaction commit. All we need to protect is the case where
+after renaming a file someone fsyncs only the old directory, which would
+result is losing the renamed file after a log replay.
 
 This patch is part of a patchset comprised of the following patches:
 
@@ -71,22 +79,179 @@ change log of the last patch.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/tree-log.c | 121 ++++++--------------------------------------
+ 1 file changed, 15 insertions(+), 106 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index c0dce99c2c14..6dc376a16cf2 100644
+index 6dc376a16cf2..4c7b283ed2b2 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -5676,7 +5676,7 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 				goto next_dir_inode;
- 			}
+@@ -5265,6 +5265,21 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 		mutex_lock(&inode->log_mutex);
+ 	}
  
--			if (btrfs_inode_in_log(BTRFS_I(di_inode), trans->transid)) {
-+			if (!need_log_inode(trans, BTRFS_I(di_inode))) {
- 				btrfs_add_delayed_iput(di_inode);
- 				break;
- 			}
++	/*
++	 * This is for cases where logging a directory could result in losing a
++	 * a file after replaying the log. For example, if we move a file from a
++	 * directory A to a directory B, then fsync directory A, we have no way
++	 * to known the file was moved from A to B, so logging just A would
++	 * result in losing the file after a log replay.
++	 */
++	if (S_ISDIR(inode->vfs_inode.i_mode) &&
++	    inode_only == LOG_INODE_ALL &&
++	    inode->last_unlink_trans >= trans->transid) {
++		btrfs_set_log_full_commit(trans);
++		err = 1;
++		goto out_unlock;
++	}
++
+ 	/*
+ 	 * a brute force approach to making sure we get the most uptodate
+ 	 * copies of everything.
+@@ -5428,99 +5443,6 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	return err;
+ }
+ 
+-/*
+- * Check if we must fallback to a transaction commit when logging an inode.
+- * This must be called after logging the inode and is used only in the context
+- * when fsyncing an inode requires the need to log some other inode - in which
+- * case we can't lock the i_mutex of each other inode we need to log as that
+- * can lead to deadlocks with concurrent fsync against other inodes (as we can
+- * log inodes up or down in the hierarchy) or rename operations for example. So
+- * we take the log_mutex of the inode after we have logged it and then check for
+- * its last_unlink_trans value - this is safe because any task setting
+- * last_unlink_trans must take the log_mutex and it must do this before it does
+- * the actual unlink operation, so if we do this check before a concurrent task
+- * sets last_unlink_trans it means we've logged a consistent version/state of
+- * all the inode items, otherwise we are not sure and must do a transaction
+- * commit (the concurrent task might have only updated last_unlink_trans before
+- * we logged the inode or it might have also done the unlink).
+- */
+-static bool btrfs_must_commit_transaction(struct btrfs_trans_handle *trans,
+-					  struct btrfs_inode *inode)
+-{
+-	bool ret = false;
+-
+-	mutex_lock(&inode->log_mutex);
+-	if (inode->last_unlink_trans >= trans->transid) {
+-		/*
+-		 * Make sure any commits to the log are forced to be full
+-		 * commits.
+-		 */
+-		btrfs_set_log_full_commit(trans);
+-		ret = true;
+-	}
+-	mutex_unlock(&inode->log_mutex);
+-
+-	return ret;
+-}
+-
+-/*
+- * follow the dentry parent pointers up the chain and see if any
+- * of the directories in it require a full commit before they can
+- * be logged.  Returns zero if nothing special needs to be done or 1 if
+- * a full commit is required.
+- */
+-static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
+-					       struct btrfs_inode *inode,
+-					       struct dentry *parent,
+-					       struct super_block *sb)
+-{
+-	int ret = 0;
+-	struct dentry *old_parent = NULL;
+-
+-	/*
+-	 * for regular files, if its inode is already on disk, we don't
+-	 * have to worry about the parents at all.  This is because
+-	 * we can use the last_unlink_trans field to record renames
+-	 * and other fun in this file.
+-	 */
+-	if (S_ISREG(inode->vfs_inode.i_mode) &&
+-	    inode->generation < trans->transid &&
+-	    inode->last_unlink_trans < trans->transid)
+-		goto out;
+-
+-	if (!S_ISDIR(inode->vfs_inode.i_mode)) {
+-		if (!parent || d_really_is_negative(parent) || sb != parent->d_sb)
+-			goto out;
+-		inode = BTRFS_I(d_inode(parent));
+-	}
+-
+-	while (1) {
+-		if (btrfs_must_commit_transaction(trans, inode)) {
+-			ret = 1;
+-			break;
+-		}
+-
+-		if (!parent || d_really_is_negative(parent) || sb != parent->d_sb)
+-			break;
+-
+-		if (IS_ROOT(parent)) {
+-			inode = BTRFS_I(d_inode(parent));
+-			if (btrfs_must_commit_transaction(trans, inode))
+-				ret = 1;
+-			break;
+-		}
+-
+-		parent = dget_parent(parent);
+-		dput(old_parent);
+-		old_parent = parent;
+-		inode = BTRFS_I(d_inode(parent));
+-
+-	}
+-	dput(old_parent);
+-out:
+-	return ret;
+-}
+-
+ /*
+  * Check if we need to log an inode. This is used in contexts where while
+  * logging an inode we need to log another inode (either that it exists or in
+@@ -5686,9 +5608,6 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
+ 				log_mode = LOG_INODE_ALL;
+ 			ret = btrfs_log_inode(trans, root, BTRFS_I(di_inode),
+ 					      log_mode, ctx);
+-			if (!ret &&
+-			    btrfs_must_commit_transaction(trans, BTRFS_I(di_inode)))
+-				ret = 1;
+ 			btrfs_add_delayed_iput(di_inode);
+ 			if (ret)
+ 				goto next_dir_inode;
+@@ -5835,9 +5754,6 @@ static int btrfs_log_all_parents(struct btrfs_trans_handle *trans,
+ 				ctx->log_new_dentries = false;
+ 			ret = btrfs_log_inode(trans, root, BTRFS_I(dir_inode),
+ 					      LOG_INODE_ALL, ctx);
+-			if (!ret &&
+-			    btrfs_must_commit_transaction(trans, BTRFS_I(dir_inode)))
+-				ret = 1;
+ 			if (!ret && ctx && ctx->log_new_dentries)
+ 				ret = log_new_dir_dentries(trans, root,
+ 						   BTRFS_I(dir_inode), ctx);
+@@ -6053,12 +5969,9 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_root *root = inode->root;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+-	struct super_block *sb;
+ 	int ret = 0;
+ 	bool log_dentries = false;
+ 
+-	sb = inode->vfs_inode.i_sb;
+-
+ 	if (btrfs_test_opt(fs_info, NOTREELOG)) {
+ 		ret = 1;
+ 		goto end_no_trans;
+@@ -6069,10 +5982,6 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+ 		goto end_no_trans;
+ 	}
+ 
+-	ret = check_parent_dirs_for_sync(trans, inode, parent, sb);
+-	if (ret)
+-		goto end_no_trans;
+-
+ 	/*
+ 	 * Skip already logged inodes or inodes corresponding to tmpfiles
+ 	 * (since logging them is pointless, a link count of 0 means they
 -- 
 2.28.0
 
