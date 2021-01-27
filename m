@@ -2,123 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F64D305CBA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 14:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ACF305D9A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 14:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238165AbhA0NOM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 08:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343746AbhA0NL0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 08:11:26 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C74C06174A
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 05:10:34 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id bl23so2572082ejb.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 05:10:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Whvqbb41dytwuURUKI7jrzkIAo/FtTo6aKsGqHtatnA=;
-        b=LhhwShEuNl3VS4Op5sQWhyXEq1zdL0DE5UrEm9+P7ZigeDfDqMuYuyfsEj5XviBkMc
-         3+KPdWBHFBwDCPQBuJ5FNSJLneBGsJ6bKztcBwVG+8ygGNJ7wHSSzKeFfWoZ2fc6XHCu
-         MzZ2Td4pGNliwlVXkdn06VjBJGyvQ7wQu7iEXbQTP1cJhn2aF/2T1O+gwpjSoAaRAJXb
-         hBQKtkJWNxi/j7rrhYbmMrXXDyhm2uGhi7dXqKsruukoumFmzWdwuZXFLL2fPqK/d3rY
-         rfKlrUGyqD/fFwQw9t0rdw1uSF5KRyqtkLucg9rnXVsqUCScmOpO6PAQL8ToIBTD+4As
-         +lIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Whvqbb41dytwuURUKI7jrzkIAo/FtTo6aKsGqHtatnA=;
-        b=r5J0YRIpJyAp+Y16GZr04q1D8rCVzngexghc9Kh9KvUqUyy+5J0ShmnRW9/mPD49dq
-         x4sZDX9YfLDu6SG/BWGNzur+gg1tIC3j9MnAIS53pc9leeZAi9MRHncPPMD30q707OXk
-         Fq2Lvcdspv21AflIxHBa9W/aOEetsllHih76B6mQ5NcvzlZjk8Ex18uHYRknlnW4UqPB
-         OOQgG7+vbsX5RhVQvpq9HG9ZZzXPaKuoAvXYqtNRj+TxHVnEloVnaKsm9IybOBifHq97
-         rCG7DrjEfh9tmbNAdIJucbEeI77hIuLMd20blBKxwroh1K/EwO2O3gzPyjdMu03A9Qhc
-         Togg==
-X-Gm-Message-State: AOAM5321i66WPg58Mv4uz0OvRo2yw3rfBVSlhK49tYe/bjkoEZaAm3eJ
-        XOosUPE3OU87/f9XEaEeHszFKKW2Tw+Q
-X-Google-Smtp-Source: ABdhPJxYw/j023VGeL+yR9T+tfi1kKrpVnU/Na+bb5gCKXWHACgjR6J3n+HieCW15yIQcfm+xEaZGg==
-X-Received: by 2002:a17:906:278b:: with SMTP id j11mr6783375ejc.438.1611753032897;
-        Wed, 27 Jan 2021 05:10:32 -0800 (PST)
-Received: from ?IPv6:2001:a61:12bd:4801:f4ba:f461:eb0a:d0a6? ([2001:a61:12bd:4801:f4ba:f461:eb0a:d0a6])
-        by smtp.gmail.com with ESMTPSA id p15sm815944ejd.121.2021.01.27.05.10.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 27 Jan 2021 05:10:31 -0800 (PST)
-Subject: Re: Only one subvolume can be mounted after replace/balance
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <b693c33d-ed2e-3749-a8ac-b162e9523abb@gmail.com>
- <CAJCQCtSwC--k1agUzBcGgdCZZu426fVoUw-V3m8C4XjeN7yQaA@mail.gmail.com>
-From:   =?UTF-8?Q?Jakob_Sch=c3=b6ttl?= <jschoett@gmail.com>
-Message-ID: <bfbe313c-4f4d-eeab-1a6b-10d58b5b4b91@gmail.com>
-Date:   Wed, 27 Jan 2021 14:10:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232274AbhA0Nvb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 08:51:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34192 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231415AbhA0Nuf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Jan 2021 08:50:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 44975AD8C;
+        Wed, 27 Jan 2021 13:49:46 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 03F98DA84C; Wed, 27 Jan 2021 14:47:58 +0100 (CET)
+Date:   Wed, 27 Jan 2021 14:47:58 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     dsterba@suse.cz, matthias.bgg@kernel.org,
+        Marek Behun <marek.behun@nic.cz>, u-boot@lists.denx.de,
+        linux-btrfs@vger.kernel.org, Matthias Brugger <mbrugger@suse.com>
+Subject: Re: [PATCH] fs: btrfs: Select SHA256 in Kconfig
+Message-ID: <20210127134758.GA1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        matthias.bgg@kernel.org, Marek Behun <marek.behun@nic.cz>,
+        u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
+        Matthias Brugger <mbrugger@suse.com>
+References: <20210127094231.11740-1-matthias.bgg@kernel.org>
+ <20210127120146.GZ1993@twin.jikos.cz>
+ <5ae76d50-a52d-6f0e-1f23-335cb32f0371@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtSwC--k1agUzBcGgdCZZu426fVoUw-V3m8C4XjeN7yQaA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5ae76d50-a52d-6f0e-1f23-335cb32f0371@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thank you Chris, it's resolved now, see below.
+On Wed, Jan 27, 2021 at 08:14:31PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2021/1/27 下午8:01, David Sterba wrote:
+> > On Wed, Jan 27, 2021 at 10:42:30AM +0100, matthias.bgg@kernel.org wrote:
+> >> From: Matthias Brugger <mbrugger@suse.com>
+> >>
+> >> Since commit 565a4147d17a ("fs: btrfs: Add more checksum algorithms")
+> >> btrfs uses the sha256 checksum algorithm. But Kconfig lacks to select
+> >> it. This leads to compilation errors:
+> >> fs/built-in.o: In function `hash_sha256':
+> >> fs/btrfs/crypto/hash.c:25: undefined reference to `sha256_starts'
+> >> fs/btrfs/crypto/hash.c:26: undefined reference to `sha256_update'
+> >> fs/btrfs/crypto/hash.c:27: undefined reference to `sha256_finish'
+> >>
+> >> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> > 
+> > So this is a fix for u-boot, got me confused and not for the first time
+> > as there's Kconfig and the same fs/btrfs/ directory structure.
+> > 
+> Well, sometimes too unified file structure/code base can also be a problem.
+> 
+> Considering I'm also going to continue cross-porting more code to 
+> U-boot, any recommendation on this?
+> Using different prefix?
 
-Am 25.01.21 um 23:47 schrieb Chris Murphy:
-> On Sat, Jan 23, 2021 at 7:50 AM Jakob Sch=C3=B6ttl <jschoett@gmail.com>=
- wrote:
->> Hi,
->>
->> In short:
->> When mounting a second subvolume from a pool, I get this error:
->> "mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda,
->> missing code page or helper program, or other."
->> dmesg | grep BTRFS only shows this error:
->> info (device sda): disk space caching is enabled
->> error (device sda): Remounting read-write after error is not allowed
-> It went read-only before this because it's confused. You need to
-> unmount it before it can be mounted rw. In some cases a reboot is
-> needed.
-Oh, I didn't notice that the pool was already mounted (via fstab).
-The filesystem where out of space and I had to resize both disks=20
-separately. And I had to mount with -o skip_balance for that. Now it=20
-works again.
-
->> What happened:
->>
->> In my RAID1 pool with two disk, I successfully replaced one disk with
->>
->> btrfs replace start 2 /dev/sdx
->>
->> After that, I mounted the pool and did
-> I don't understand this sequence. In order to do a replace, the file
-> system is already mounted.
-That was, what I did before my actual problem occurred. But it's=20
-resolved now.
-
->> btrfs fi show /mnt
->>
->> which showed WARNINGs about
->> "filesystems with multiple block group profiles detected"
->> (don't remember exactly)
->>
->> I thought it is a good idea to do
->>
->> btrfs balance start /mnt
->>
->> which finished without errors.
-> Balance alone does not convert block groups to a new profile. You have
-> to explicitly select a conversion filter, e.g.
->
-> btrfs balance start -dconvert=3Draid1,soft -mconvert=3Draid1,soft /mnt
-I didn't want to convert to a new profile. I thought btrfs replace=20
-automatically uses the same profile as the pool?
-
-Regards, Jakob
-
+If it's a series then please mention u-boot in the cover letter, no need
+to change the patches, I'll go check CC if I'm too confused about the
+patch.
