@@ -2,150 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C57306599
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Jan 2021 22:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8116B3068A9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Jan 2021 01:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbhA0VEZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Jan 2021 16:04:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233256AbhA0VEA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:04:00 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB5FC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 13:03:19 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id i9so2840957wmq.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Jan 2021 13:03:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bHclYNBpq2zDbINEjXZGiBeixuCrln8kUP9mpMAPAhA=;
-        b=fs9bIdYxDTOaqa/VnpG+8sXyIcEr4tXd3bkuW3Sh47UvGPVMkYYO6U1tj5XnzFNA9q
-         X5wXmtud0IIYZOWpwmq2wD0PoljNWzSTZ/BfZggLHeRPmFQKADfYNIO8WlaMCBUd8hAt
-         ubP8GMaSwIFhFYKn3DzT9C4NkxsTdPb2RwjnXWLOdNV04+zgm03frNUBAdBCb3IvyHPC
-         EOQRisHL0X/fYYunXvMChX+HbxnACr9VD22bHW7+8EKUhhFm3nojLa7H4HT42oM9EJYq
-         HWaGw36xqwQg+knBRTxCUQ4wDe6mQQvZNJdVp2JiIUZbGvopiUFi+7J5roASW0INkW3/
-         UIhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bHclYNBpq2zDbINEjXZGiBeixuCrln8kUP9mpMAPAhA=;
-        b=CWaVsTGUpPsOUDcjXr2+xHTw43yh6OL0KDbjXcf+WKi831I1nQViSLgLxbUip7xz60
-         VyAr0ohXG2C4sPDuBMyrs9VVI28HVVznrzwVwXXUeQh7xZQkXl0Mn3MNd677Ybq1sgVB
-         ZKTPzEJBmEokBCPUeY6a5rGC4ZbSbFVDEWLroqlWk2OXAn9ZtLIjVG/Wf5a6nFXbtDDz
-         JaYg7m1jVuiGU2hPKqHUz6aAqRZfhibrd6GmhizE8oEnNoQxMopBIv0g/SocHoRIrpct
-         wKEArgzl5JiANb3lTLsLvbqhVBsvRSCvk1vF9dIhWdyD23LeZqOMZfBctKY2V6gyfNua
-         GxQQ==
-X-Gm-Message-State: AOAM532ahOTu4TsNUwneqK1V5JB1AbF3jWKrbNDZIRNEHLBA2G5xF0Ma
-        b8GrEcW7FVxcZi+TTP3NXiQyF4NyKduERLi64rwe+0ZFhPF1qQ==
-X-Google-Smtp-Source: ABdhPJznd0y4JA7kSXv4mxoGw/pDaG+8YjBBYNmXyulxuW/SYd1YFkgUTJa8Eh4pyYokQSIASv03dDkS62Oh1EKfpQA=
-X-Received: by 2002:a1c:cc19:: with SMTP id h25mr5756063wmb.124.1611781398575;
- Wed, 27 Jan 2021 13:03:18 -0800 (PST)
+        id S231374AbhA1AcC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Jan 2021 19:32:02 -0500
+Received: from mout.gmx.net ([212.227.17.20]:50511 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhA1AcA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:32:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611793825;
+        bh=YOaI6Mb8lV4KYNhUVIRax19hcqxS2evKHl/eZHPUNJg=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=J5OKFMYLbJUwPHKYoZvLpk4EB7Kq3TmgwpR633K6l3R3VWez58XTiWYbcSuiYLds8
+         iy8Xz242orRBbEFQtCcjyXs2VSk/XtAt+Em0wl64l6m8Nu1Jwkk2bYOYWxUp4TPosw
+         jDXZOiHKcus2kt3OhNVV5oZPEu7tBpxPAPagg1Hs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4b1y-1l5TAU2Iv0-001hsh; Thu, 28
+ Jan 2021 01:30:25 +0100
+Subject: Re: [PATCH v5 00/18] btrfs: add read-only support for subpage sector
+ size
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210126083402.142577-1-wqu@suse.com>
+ <a448ea77-957b-b7fc-c05a-29a4a13352b8@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <e370c8d6-8559-c8a0-9938-160e003e933b@gmx.com>
+Date:   Thu, 28 Jan 2021 08:30:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <0102017744df8bf8-cbdaa286-cfcc-4f6f-8332-69a98b3a4073-000000@eu-west-1.amazonses.com>
-In-Reply-To: <0102017744df8bf8-cbdaa286-cfcc-4f6f-8332-69a98b3a4073-000000@eu-west-1.amazonses.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 27 Jan 2021 14:03:02 -0700
-Message-ID: <CAJCQCtROhiK+pEnS-kdApzkzZtFU1-yOAh5Uyv9hBtpyNJ3qig@mail.gmail.com>
-Subject: Re: ENOSPC in btrfs_run_delayed_refs with 5.10.8 + zstd
-To:     Martin Raiber <martin@urbackup.org>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a448ea77-957b-b7fc-c05a-29a4a13352b8@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hdlTzUEM6O+oYnTwvfMETl+oV+Tm2Iv8ZCgerFpIs1+g8KqiEW6
+ il/sTPElBBCirb4/lr/CSqozpqqo+w1+UJnLMxvW0PaF4ddOPo+nMRdTRpxfGcBjPI5slwR
+ /bQFloSXYYKPBxuBkxFLSzB0i3ucJ2HgCAku6rk0eKF50oTYQwrC3nGConbgEbduJOb5IMk
+ WlcceUIT9TEylMwEJlilA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DXYOAvNe/FE=:0eoMYHnyVIorYMDG5OgiTA
+ fIj0Mt/S+Hsv2eacE/OensBvyBIbuBePU8nLhNtBGV7TQwu0GChtsskXTDj7WwVTwgravFIJM
+ 6hE/aetZtfmPKOF9/sA+aVKPbQrZfctCbbo/RqVSZiLjyVKESbSuQkto6jnBKL9KqhO2Sye3o
+ Rybb1oEsOU18CWk1IiFrtatAk3y3aNcpMxDfUantvmcsxB/l71kW0UouBawIe1cr0gt/wL/f5
+ RZDNYJujjE5c75xYa9FFpWAFn4NFjfiFDnSN3tz58845xRuqOEiLLNe1Jj5TFsd/COnXQ7x5o
+ j3e+E9TdaXisQaBukVaT7tEhXijAu6BMiz/RcApi6PKjb63bSsXFcBD4lp73hO7TONJ13gc2J
+ 5w+pNTK2k7XObDb6fWGCu4sa5I6teN88iHeAnAm52U4EWiXwAe8JZQVqS9y7kfSeD4I0Qd037
+ AI8n/0sf/8roXxqCnowmrop/TCMVnCitT/OObGyJrR9ovLKGCUUrJK5nQGb5mXWpkfrmD1Lej
+ TpO98oG/yoGlKw2DJj3RhUhAs7n9YppFk/MJngUCuTTZhmmKduDcpjBX3vHHd56tgsBlxuKTQ
+ 3O9AYjYNGH9Tb/QqmRlTxk/Y0Nk72rybvz2PvUspY5FSLiJil8NlRWB/gJGic4Vs+xgZxPIzO
+ TVo71rCqjkmVkJllR7hsmjXJwlT8HO3q7ts/P0Jetf8wbFSaFj/eQBa3kBTW8tjSwB3SFu6VJ
+ WwFEkW5ma2YZTWHzuu8mKa3po1yB8HiNZIsXocbXFRqqy/mrVZADeD9YAfa/uEpUqPs37C/Yu
+ 87zw6F7r+Bc3BxOiQRSrA91u7Ffb4K7hNWy/RREQsuk2j7e4z15jco97Cvup+/K+PDr2R76GO
+ XhRCZ87AHeJMChiy4sCg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 10:27 AM Martin Raiber <martin@urbackup.org> wrote:
->
-> Hi,
->
-> seems 5.10.8 still has the ENOSPC issue when compression is used (compress-force=zstd,space_cache=v2):
->
-> Jan 27 11:02:14  kernel: [248571.569840] ------------[ cut here ]------------
-> Jan 27 11:02:14  kernel: [248571.569843] BTRFS: Transaction aborted (error -28)
-> Jan 27 11:02:14  kernel: [248571.569845] BTRFS: error (device dm-0) in add_to_free_space_tree:1039: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.569848] BTRFS info (device dm-0): forced readonly
-> Jan 27 11:02:14  kernel: [248571.569851] BTRFS: error (device dm-0) in add_to_free_space_tree:1039: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.569852] BTRFS: error (device dm-0) in __btrfs_free_extent:3270: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.569854] BTRFS: error (device dm-0) in btrfs_run_delayed_refs:2191: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.569898] WARNING: CPU: 3 PID: 21255 at fs/btrfs/free-space-tree.c:1039 add_to_free_space_tree+0xe8/0x130
-> Jan 27 11:02:14  kernel: [248571.569913] BTRFS: error (device dm-0) in __btrfs_free_extent:3270: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.569939] Modules linked in:
-> Jan 27 11:02:14  kernel: [248571.569966] BTRFS: error (device dm-0) in btrfs_run_delayed_refs:2191: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.569992]  bfq zram bcache crc64 loop dm_crypt xfs dm_mod st sr_mod cdrom nf_tables nfnetlink iptable_filter bridge stp llc intel_powerclamp coretemp k$
-> Jan 27 11:02:14  kernel: [248571.570075] CPU: 3 PID: 21255 Comm: kworker/u50:22 Tainted: G          I       5.10.8 #1
-> Jan 27 11:02:14  kernel: [248571.570076] Hardware name: Dell Inc. PowerEdge R510/0DPRKF, BIOS 1.13.0 03/02/2018
-> Jan 27 11:02:14  kernel: [248571.570079] Workqueue: events_unbound btrfs_async_reclaim_metadata_space
-> Jan 27 11:02:14  kernel: [248571.570081] RIP: 0010:add_to_free_space_tree+0xe8/0x130
-> Jan 27 11:02:14  kernel: [248571.570082] Code: 55 50 f0 48 0f ba aa 40 0a 00 00 02 72 22 83 f8 fb 74 4c 83 f8 e2 74 47 89 c6 48 c7 c7 b8 39 49 82 89 44 24 04 e8 8a 99 4a 00 <0f> 0b 8$
-> Jan 27 11:02:14  kernel: [248571.570083] RSP: 0018:ffffc90009c57b88 EFLAGS: 00010282
-> Jan 27 11:02:14  kernel: [248571.570084] RAX: 0000000000000000 RBX: 0000000000004000 RCX: 0000000000000027
-> Jan 27 11:02:14  kernel: [248571.570085] RDX: 0000000000000027 RSI: 0000000000000004 RDI: ffff888617a58b88
-> Jan 27 11:02:14  kernel: [248571.570086] RBP: ffff8889ecb874e0 R08: ffff888617a58b80 R09: 0000000000000000
-> Jan 27 11:02:14  kernel: [248571.570087] R10: 0000000000000001 R11: ffffffff822372e0 R12: 0000005741510000
-> Jan 27 11:02:14  kernel: [248571.570087] R13: ffff8884e05727e0 R14: ffff88815ae4fc00 R15: ffff88815ae4fdd8
-> Jan 27 11:02:14  kernel: [248571.570088] FS:  0000000000000000(0000) GS:ffff888617a40000(0000) knlGS:0000000000000000
-> Jan 27 11:02:14  kernel: [248571.570089] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> Jan 27 11:02:14  kernel: [248571.570090] CR2: 00007eb4a3a4f00a CR3: 000000000260a005 CR4: 00000000000206e0
-> Jan 27 11:02:14  kernel: [248571.570091] Call Trace:
-> Jan 27 11:02:14  kernel: [248571.570097]  __btrfs_free_extent.isra.0+0x56a/0xa10
-> Jan 27 11:02:14  kernel: [248571.570100]  __btrfs_run_delayed_refs+0x659/0xf20
-> Jan 27 11:02:14  kernel: [248571.570102]  btrfs_run_delayed_refs+0x73/0x200
-> Jan 27 11:02:14  kernel: [248571.570103]  flush_space+0x4e8/0x5e0
-> Jan 27 11:02:14  kernel: [248571.570105]  ? btrfs_get_alloc_profile+0x66/0x1b0
-> Jan 27 11:02:14  kernel: [248571.570106]  ? btrfs_get_alloc_profile+0x66/0x1b0
-> Jan 27 11:02:14  kernel: [248571.570107]  btrfs_async_reclaim_metadata_space+0x107/0x3a0
-> Jan 27 11:02:14  kernel: [248571.570111]  process_one_work+0x1b6/0x350
-> Jan 27 11:02:14  kernel: [248571.570112]  worker_thread+0x50/0x3b0
-> Jan 27 11:02:14  kernel: [248571.570114]  ? process_one_work+0x350/0x350
-> Jan 27 11:02:14  kernel: [248571.570116]  kthread+0xfe/0x140
-> Jan 27 11:02:14  kernel: [248571.570117]  ? kthread_park+0x90/0x90
-> Jan 27 11:02:14  kernel: [248571.570120]  ret_from_fork+0x22/0x30
-> Jan 27 11:02:14  kernel: [248571.570122] ---[ end trace 568d2f30de65b1c0 ]---
-> Jan 27 11:02:14  kernel: [248571.570123] BTRFS: error (device dm-0) in add_to_free_space_tree:1039: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.570151] BTRFS: error (device dm-0) in __btrfs_free_extent:3270: errno=-28 No space left
-> Jan 27 11:02:14  kernel: [248571.570178] BTRFS: error (device dm-0) in btrfs_run_delayed_refs:2191: errno=-28 No space left
->
->
-> btrfs fi usage:
->
-> Overall:
->     Device size:                 931.49GiB
->     Device allocated:            931.49GiB
->     Device unallocated:            1.00MiB
->     Device missing:                  0.00B
->     Used:                        786.39GiB
->     Free (estimated):            107.69GiB      (min: 107.69GiB)
->     Data ratio:                       1.00
->     Metadata ratio:                   1.00
->     Global reserve:              512.00MiB      (used: 0.00B)
->     Multiple profiles:                  no
->
-> Data,single: Size:884.48GiB, Used:776.79GiB (87.82%)
->    /dev/mapper/LUKS-RC-a6414fd731ce4f878af44c3987bce533  884.48GiB
->
-> Metadata,single: Size:47.01GiB, Used:9.59GiB (20.41%)
->    /dev/mapper/LUKS-RC-a6414fd731ce4f878af44c3987bce533   47.01GiB
->
-> System,single: Size:4.00MiB, Used:144.00KiB (3.52%)
->    /dev/mapper/LUKS-RC-a6414fd731ce4f878af44c3987bce533    4.00MiB
->
-> Unallocated:
->    /dev/mapper/LUKS-RC-a6414fd731ce4f878af44c3987bce533    1.00MiB
-
-Can you mount or remount with enospc_debug, and reproduce the problem?
-That'll include some debug info that might be helpful to a developing
-coming across this report. Also it might help:
-
-cd /sys/fs/btrfs/$UUID/allocation
-grep -R .
-
-And post that too. The $UUID is the file system UUID for this specific
-file system, as reported by blkid or lsblk -f.
 
 
--- 
-Chris Murphy
+On 2021/1/28 =E4=B8=8A=E5=8D=8812:17, Josef Bacik wrote:
+> On 1/26/21 3:33 AM, Qu Wenruo wrote:
+>> Patches can be fetched from github:
+>> https://github.com/adam900710/linux/tree/subpage
+>> Currently the branch also contains partial RW data support (still some
+>> ordered extent and data csum mismatch problems)
+>>
+>> Great thanks to David/Nikolay/Josef for their effort reviewing and
+>> merging the preparation patches into misc-next.
+>>
+>> =3D=3D=3D What works =3D=3D=3D
+>> Just from the patchset:
+>> - Data read
+>> =C2=A0=C2=A0 Both regular and compressed data, with csum check.
+>>
+>> - Metadata read
+>>
+>> This means, with these patchset, 64K page systems can at least mount
+>> btrfs with 4K sector size read-only.
+>> This should provide the ability to migrate data at least.
+>>
+>> While on the github branch, there are already experimental RW supports,
+>> there are still ordered extent related bugs for me to fix.
+>> Thus only the RO part is sent for review and testing.
+>>
+>> =3D=3D=3D Patchset structure =3D=3D=3D
+>> Patch 01~02:=C2=A0=C2=A0=C2=A0 Preparation patches which don't have fun=
+ctional change
+>> Patch 03~12:=C2=A0=C2=A0=C2=A0 Subpage metadata allocation and freeing
+>> Patch 13~15:=C2=A0=C2=A0=C2=A0 Subpage metadata read path
+>> Patch 16~17:=C2=A0=C2=A0=C2=A0 Subpage data read path
+>> Patch 18:=C2=A0=C2=A0=C2=A0 Enable subpage RO support
+>>
+>> =3D=3D=3D Changelog =3D=3D=3D
+>> v1:
+>> - Separate the main implementation from previous huge patchset
+>> =C2=A0=C2=A0 Huge patchset doesn't make much sense.
+>>
+>> - Use bitmap implementation
+>> =C2=A0=C2=A0 Now page::private will be a pointer to btrfs_subpage struc=
+ture, which
+>> =C2=A0=C2=A0 contains bitmaps for various page status.
+>>
+>> v2:
+>> - Use page::private as btrfs_subpage for extra info
+>> =C2=A0=C2=A0 This replace old extent io tree based solution, which redu=
+ces latency
+>> =C2=A0=C2=A0 and don't require memory allocation for its operations.
+>>
+>> - Cherry-pick new preparation patches from RW development
+>> =C2=A0=C2=A0 Those new preparation patches improves the readability by =
+their own.
+>>
+>> v3:
+>> - Make dummy extent buffer to follow the same subpage accessors
+>> =C2=A0=C2=A0 Fsstress exposed several ASSERT() for dummy extent buffers=
+.
+>> =C2=A0=C2=A0 It turns out we need to make dummy extent buffer to own th=
+e same
+>> =C2=A0=C2=A0 btrfs_subpage structure to make eb accessors to work prope=
+rly
+>>
+>> - Two new small __process_pages_contig() related preparation patches
+>> =C2=A0=C2=A0 One to make __process_pages_contig() to enhance the error =
+handling
+>> =C2=A0=C2=A0 path for locked_page, one to merge one macro.
+>>
+>> - Extent buffers refs count update
+>> =C2=A0=C2=A0 Except try_release_extent_buffer(), all other eb uses will=
+ try to
+>> =C2=A0=C2=A0 increase the ref count of the eb.
+>> =C2=A0=C2=A0 For try_release_extent_buffer(), the eb refs check will ha=
+ppen inside
+>> =C2=A0=C2=A0 the rcu critical section to avoid eb being freed.
+>>
+>> - Comment updates
+>> =C2=A0=C2=A0 Addressing the comments from the mail list.
+>>
+>> v4:
+>> - Get rid of btrfs_subpage::tree_block_bitmap
+>> =C2=A0=C2=A0 This is to reduce lock complexity (no need to bother extra=
+ subpage
+>> =C2=A0=C2=A0 lock for metadata, all locks are existing locks)
+>> =C2=A0=C2=A0 Now eb looking up mostly depends on radix tree, with small=
+ help from
+>> =C2=A0=C2=A0 btrfs_subpage::under_alloc.
+>> =C2=A0=C2=A0 Now I haven't experieneced metadata related problems any m=
+ore during
+>> =C2=A0=C2=A0 my local fsstress tests.
+>>
+>> - Fix a race where metadata page dirty bit can race
+>> =C2=A0=C2=A0 Fixed in the metadata RW patchset though.
+>>
+>> - Rebased to latest misc-next branch
+>> =C2=A0=C2=A0 With 4 patches removed, as they are already in misc-next.
+>>
+>> v5:
+>> - Use the updated version from David as base
+>> =C2=A0=C2=A0 Most comment/commit message update should be kept as is.
+>>
+>> - A new separate patch to move UNMAPPED bit set timing
+>>
+>> - New comment on why we need to prealloc subpage inside a loop
+>> =C2=A0=C2=A0 Mostly for further 16K page size support, where we can hav=
+e
+>> =C2=A0=C2=A0 eb across multiple pages.
+>>
+>> - Remove one patch which is too RW specific
+>> =C2=A0=C2=A0 Since it introduces functional change which only makes sen=
+se for RW
+>> =C2=A0=C2=A0 support, it's not a good idea to include it in RO support.
+>>
+>> - Error handling fixes
+>> =C2=A0=C2=A0 Great thanks to Josef.
+>>
+>> - Refactor btrfs_subpage allocation/freeing
+>> =C2=A0=C2=A0 Now we have btrfs_alloc_subpage() and btrfs_free_subpage()=
+ helpers to
+>> =C2=A0=C2=A0 do all the allocation/freeing.
+>> =C2=A0=C2=A0 It's pretty easy to convert to kmem_cache using above help=
+ers.
+>> =C2=A0=C2=A0 (already internally tested using kmem_cache without proble=
+m, in fact
+>> =C2=A0=C2=A0=C2=A0 it's all the problems found in kmem_cache test leads=
+ to the new
+>> =C2=A0=C2=A0=C2=A0 interface)
+>>
+>> - Use btrfs_subpage::eb_refs to replace old under_alloc
+>> =C2=A0=C2=A0 This makes checking whether the page has any eb left much =
+easier.
+>>
+>> Qu Wenruo (18):
+>> =C2=A0=C2=A0 btrfs: merge PAGE_CLEAR_DIRTY and PAGE_SET_WRITEBACK to
+>> =C2=A0=C2=A0=C2=A0=C2=A0 PAGE_START_WRITEBACK
+>> =C2=A0=C2=A0 btrfs: set UNMAPPED bit early in btrfs_clone_extent_buffer=
+() for
+>> =C2=A0=C2=A0=C2=A0=C2=A0 subpage support
+>> =C2=A0=C2=A0 btrfs: introduce the skeleton of btrfs_subpage structure
+>> =C2=A0=C2=A0 btrfs: make attach_extent_buffer_page() handle subpage cas=
+e
+>> =C2=A0=C2=A0 btrfs: make grab_extent_buffer_from_page() handle subpage =
+case
+>> =C2=A0=C2=A0 btrfs: support subpage for extent buffer page release
+>
+> I don't have this patch in my inbox so I can't reply to it directly, but
+> you include refcount.h, but then use normal atomics.=C2=A0 Please used t=
+he
+> actual refcount_t, as it gets us all the debugging stuff that makes
+> finding problems much easier.=C2=A0 Thanks,
+
+My bad, my initial plan is to use refcount, but the use case has valid 0
+refcount usage, thus refcount is not good here.
+
+I'll remove the remaining including line.
+
+Thanks,
+Qu
+>
+> Josef
