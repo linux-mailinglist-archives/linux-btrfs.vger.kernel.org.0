@@ -2,143 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91412307483
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Jan 2021 12:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD84307494
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Jan 2021 12:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhA1LMh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Jan 2021 06:12:37 -0500
-Received: from mout.gmx.net ([212.227.17.20]:48997 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231138AbhA1LMc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Jan 2021 06:12:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611832255;
-        bh=vmYAaInkHZkZ4XKJrtRRmtPI+1GzegMTbVv8CilHfEU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=DOkAJTR6DGLWrJOqry5KVa7bg9JjlJiJYmi5XL5Tkk/JWOxuE5yOg3DViHxbHWPQk
-         7xpZjRJA4VgmAzXmxaHY9s2Zn6vvRjdh7iEJgaObL041XiRfHczSRa8gfg1463Lp4o
-         2gJWkKciAyvf9ibLk4RxDX97SFlQAA4EobvnXl4k=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBlxM-1lHDCk0gpg-00CB8h; Thu, 28
- Jan 2021 12:10:54 +0100
-Subject: Re: [bug report] btrfs: introduce read_extent_buffer_subpage()
-To:     Dan Carpenter <dan.carpenter@oracle.com>, wqu@suse.com
-Cc:     linux-btrfs@vger.kernel.org
-References: <YBKW31GtQ2Rc6EfC@mwanda>
- <e19e87e2-17eb-7244-008d-2a0c9cc2dac7@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <d96ea770-4d95-1d9d-c633-4c6c4bb192b9@gmx.com>
-Date:   Thu, 28 Jan 2021 19:10:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S229667AbhA1LSm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Jan 2021 06:18:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229569AbhA1LSl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:18:41 -0500
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8522EC061573
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Jan 2021 03:18:01 -0800 (PST)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1l55H6-0005eI-IF; Thu, 28 Jan 2021 11:15:44 +0000
+Date:   Thu, 28 Jan 2021 11:15:44 +0000
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     Andrew Vaughan <andrewjvaughan@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: super_total_bytes mismatch with fs_devices total_rw_bytes
+Message-ID: <20210128111544.GI4090@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        Andrew Vaughan <andrewjvaughan@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CALxwgb59wUpyC1dinzYjG05781JesjrEf2WaXcP5bpm85-n52A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <e19e87e2-17eb-7244-008d-2a0c9cc2dac7@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:XX7btywoLXOxandIZUo5nsQ8b9UIlSHXb3O6WKT4nF/+paks9IW
- WQhINIWJi01+EHJFyvzVg3pQ0Nelth6v26miBFr9qL4V1SsytxZk4DmOo2MTxFp1OWRE9cj
- +Jmb66O84XDONcbj9XiUb0h26AZb3izpMi8Jc5uXnJTD850ee/zr3Ko5znpUsVsfIlDfNyN
- u1eQc85LsPMQUFIyov7Rg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QZD+zoW+QXw=:BL7COOYRwpbriQ10COU0FD
- D8BaesDX1oORwi8cVRQ9ZTorynoWBtUkmPjJ52zFvkdN1ake1Pn1bMvtakgpV9B0NebpE2A+Y
- 8hkd1X4QLbQ7WERM5pvHQHJjTyWzwrV+u0743ktTgvPYTDE/PDbBeDhXZlKSR8T2vRGey5tdX
- SMAu70jZyWjN9zv81OCdkTYywz2Es3xyffdKNZ1oDKN77tOFnM3S0mSAWXpL1/fEsCta/QJAn
- Nxvi402j+LXCvqM4ht2X/DUtYDADrgTm0MCSwKYb1PjZGnFLtw5mb+yOiO/L04RJHcGVmYRW8
- mdDv9FnguGDLn6TuNmAlzj5AAWk0BVSnbxo8hSfPtFE3Q+xF6eu1pDvlPvfQRbUgD6Qjrqqe4
- mqQmQ1SsFkjvrHoLy45pfk1unyuYfrCTdvxCYHAXsvDv1NWA9hMg5YAHBXsvlKTYf1yLdY+la
- JGcY6qTfHNErVlUgv5k4Ycf4Hkks9iTF9emDDJ3AIO07PTf5/o9idoegViXXSlKwl5LmYYpA9
- lStEX+Fsq1X+enb4qhTTYcZbE6/PJsv2ooQTvohKImQ0yAV5aCvZ8gSy2DxgTtNyrHxwIMEAu
- o6vcApUopT1nCjTnkmC2s7goNVhSQUdgNkNnOM7Is/FHxDRuyYZf/JOg0pbiM/KYRe0kdPp9i
- t4139QMfqjKW+nQSosKs77uMp3m8EpM9gabGWKV6RrpGOLL9L3VyOe50GjyuGzm4hfKHFY4iR
- xE8i+UCzyrVq5RV6rvi67ji6kkX+dnoK/66S2zekx8qU05WWLhr+qZkcyCqj02kVokwuVB4aZ
- XwmE9n6TbGLocPONJMvId+SrMxXgwyWnbWp10DAjfRpM2goUV3fHOar1IM/jVUmXl9D+bUBn+
- j3s02h/oafmg4tG4p2PQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALxwgb59wUpyC1dinzYjG05781JesjrEf2WaXcP5bpm85-n52A@mail.gmail.com>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjEvMS8yOCDkuIvljYg3OjA2LCBRdSBXZW5ydW8gd3JvdGU6DQo+IA0KPiANCj4g
-T24gMjAyMS8xLzI4IOS4i+WNiDY6NTAsIERhbiBDYXJwZW50ZXIgd3JvdGU6DQo+PiBIZWxsbyBR
-dSBXZW5ydW8sDQo+Pg0KPj4gVGhlIHBhdGNoIDVjNjBhNTIyZjFlYTogImJ0cmZzOiBpbnRyb2R1
-Y2UNCj4+IHJlYWRfZXh0ZW50X2J1ZmZlcl9zdWJwYWdlKCkiIGZyb20gSmFuIDE2LCAyMDIxLCBs
-ZWFkcyB0byB0aGUNCj4+IGZvbGxvd2luZyBzdGF0aWMgY2hlY2tlciB3YXJuaW5nOg0KPj4NCj4+
-IMKgwqDCoMKgZnMvYnRyZnMvZXh0ZW50X2lvLmM6NTc5NyByZWFkX2V4dGVudF9idWZmZXJfc3Vi
-cGFnZSgpDQo+PiDCoMKgwqDCoGluZm86IHJldHVybiBhIGxpdGVyYWwgaW5zdGVhZCBvZiAncmV0
-Jw0KPj4NCj4+IGZzL2J0cmZzL2V4dGVudF9pby5jDQo+PiDCoMKgIDU3ODDCoCBzdGF0aWMgaW50
-IHJlYWRfZXh0ZW50X2J1ZmZlcl9zdWJwYWdlKHN0cnVjdCBleHRlbnRfYnVmZmVyIA0KPj4gKmVi
-LCBpbnQgd2FpdCwNCj4+IMKgwqAgNTc4McKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpbnQgbWlycm9y
-X251bSkNCj4+IMKgwqAgNTc4MsKgIHsNCj4+IMKgwqAgNTc4M8KgwqDCoMKgwqDCoMKgwqDCoCBz
-dHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbyA9IGViLT5mc19pbmZvOw0KPj4gwqDCoCA1Nzg0
-wqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBleHRlbnRfaW9fdHJlZSAqaW9fdHJlZTsNCj4+IMKg
-wqAgNTc4NcKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgcGFnZSAqcGFnZSA9IGViLT5wYWdlc1sw
-XTsNCj4+IMKgwqAgNTc4NsKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYmlvICpiaW8gPSBOVUxM
-Ow0KPj4gwqDCoCA1Nzg3wqDCoMKgwqDCoMKgwqDCoMKgIGludCByZXQgPSAwOw0KPj4gwqDCoCA1
-Nzg4DQo+PiDCoMKgIDU3ODnCoMKgwqDCoMKgwqDCoMKgwqAgQVNTRVJUKCF0ZXN0X2JpdChFWFRF
-TlRfQlVGRkVSX1VOTUFQUEVELCAmZWItPmJmbGFncykpOw0KPj4gwqDCoCA1NzkwwqDCoMKgwqDC
-oMKgwqDCoMKgIEFTU0VSVChQYWdlUHJpdmF0ZShwYWdlKSk7DQo+PiDCoMKgIDU3OTHCoMKgwqDC
-oMKgwqDCoMKgwqAgaW9fdHJlZSA9ICZCVFJGU19JKGZzX2luZm8tPmJ0cmVlX2lub2RlKS0+aW9f
-dHJlZTsNCj4+IMKgwqAgNTc5Mg0KPj4gwqDCoCA1NzkzwqDCoMKgwqDCoMKgwqDCoMKgIGlmICh3
-YWl0ID09IFdBSVRfTk9ORSkgew0KPj4gwqDCoCA1Nzk0wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCByZXQgPSB0cnlfbG9ja19leHRlbnQoaW9fdHJlZSwgZWItPnN0YXJ0LA0KPj4g
-wqDCoCA1Nzk1wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGViLT5zdGFydCArIGViLT5sZW4gLSAxKTsN
-Cj4+IMKgwqAgNTc5NsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKHJldCA8
-PSAwKQ0KPj4gwqDCoCA1Nzk3wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgcmV0dXJuIHJldDsNCj4+DQo+PiBJZiB0cnlfbG9ja19leHRlbnQoKSBmYWls
-cyB0byBnZXQgdGhlIGxvY2sgYW5kIHJldHVybnMgMCwgdGhlbiBpcw0KPj4gcmV0dXJuaW5nIHpl
-cm8gaGVyZSByZWFsbHkgdGhlIGNvcnJlY3QgYmVoYXZpb3I/DQo+IA0KPiBUaGlzIGlzIHRoZSBz
-YW1lIGJlaGF2aW9yIG9mIHJlYWRfZXh0ZW50X2J1ZmZlcl9wYWdlcygpIGZvciByZWd1bGFyDQo+
-IHNlY3RvciBzaXplOg0KPiANCj4gaW50IHJlYWRfZXh0ZW50X2J1ZmZlcl9wYWdlcyhzdHJ1Y3Qg
-ZXh0ZW50X2J1ZmZlciAqZWIsIGludCB3YWl0LCBpbnQNCj4gbWlycm9yX251bSkNCj4gew0KPiAg
-wqDCoMKgwqAuLi4NCj4gIMKgwqDCoMKgwqDCoMKgIGludCByZXQgPSAwOw0KPiAgwqDCoMKgwqAu
-Li4NCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbnVtX3BhZ2VzID0gbnVtX2V4dGVudF9wYWdl
-cyhlYik7DQo+ICDCoMKgwqDCoMKgwqDCoCBmb3IgKGkgPSAwOyBpIDwgbnVtX3BhZ2VzOyBpKysp
-IHsNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwYWdlID0gZWItPnBhZ2VzW2ld
-Ow0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmICh3YWl0ID09IFdBSVRfTk9O
-RSkgew0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBp
-ZiAoIXRyeWxvY2tfcGFnZShwYWdlKSkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gdW5sb2NrX2V4aXQ7IDw8PDwN
-Cj4gIMKgwqDCoMKgLi4uDQo+IHVubG9ja19leGl0Og0KPiAgwqDCoMKgwqDCoMKgwqAgd2hpbGUg
-KGxvY2tlZF9wYWdlcyA+IDApIHsNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBs
-b2NrZWRfcGFnZXMtLTsNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBwYWdlID0g
-ZWItPnBhZ2VzW2xvY2tlZF9wYWdlc107DQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgdW5sb2NrX3BhZ2UocGFnZSk7DQo+ICDCoMKgwqDCoMKgwqDCoCB9DQo+ICDCoMKgwqDCoMKg
-wqDCoCByZXR1cm4gcmV0Ow0KPiB9DQo+IA0KPiBIZXJlIHdoZW4gd2UgaGl0IHRyeWxvY2tfcGFn
-ZSgpID09IGZhbHNlIGNhc2UsIHdlIGRpcmVjdGx5IGdvDQo+IHVubG9ja19leGl0LCBhbmQgYnkg
-dGhhdCB0aW1lLCBAcmV0IGlzIHN0aWxsIDAuDQo+IA0KPiANCj4gSSdtIG5vdCB5ZXQgY29uZmlk
-ZW50IGVub3VnaCB0byBzYXkgd2h5IGl0J3MgT0ssIGJ1dCBteSBpbml0aWFsIGd1ZXNzDQo+IGlz
-LCB3ZSB3b24ndCBoYXZlICh3YWl0ID09IFdBSVRfTk9ORSkgY2FzZSBmb3IgbWV0YWRhdGEgcmVh
-ZC4NCj4gDQo+IFRoYW5rIHlvdSBmb3IgdGhlIGhpbnQsIEknbGwgdGFrZSBtb3JlIHRpbWUgdG8g
-bWFrZSBzdXJlIHRoZSBvcmlnaW5hbA0KPiBiZWhhdmlvciBpcyBjb3JyZWN0LCBhbmQgaWYgaXQn
-cyByZWFsbHkgKHdhaXQgPT0gV0FJVF9OT05FKSB3aWxsIG5ldmVyDQo+IGJlIHRydWUgZm9yIG1l
-dGFkYXRhLCBJJ2xsIHNlbmQgb3V0IGNsZWFudXAgZm9yIHRoaXMuDQoNCkZhY2VwYWxtLCBJIHNo
-b3VsZCBjaGVjayB0aGUgY29kZSBiZWZvcmUgaGl0dGluZyBzZW5kLg0KDQpUaGUgV0FJVF9OT05F
-IGNhc2UgaXMgZm9yIHJlYWRhaGVhZCwgdGh1cyB3ZSBhcmUgY29tcGxldGVseSBmaW5lIG5vdCB0
-byANCnJlYWQgdGhlIHRyZWUgYmxvY2sgYW5kIGp1c3QgcmV0dXJuIDAuDQoNCkZvciByZWFsIHRy
-ZWUgcmVhZHMsIHdlIGFsd2F5cyBoYXZlIFdBSVRfQ09NUExFVEUuDQoNCkJ1dCBzdGlsbCwgSSds
-bCBhZGQgc29tZSBjb21tZW50IG9uIHRoZSBvcmlnaW5hbCBjb2RlIHRvIGV4cGxhaW4gd2h5IA0K
-d2UncmUgc2FmZSB0byByZXR1cm4gMCBkaXJlY3RseSBpZiB3ZSBjYW4ndCBsb2NrIHRoZSBwYWdl
-IGRpcmVjdGx5Lg0KDQpUaGFua3MsDQpRdQ0KPiANCj4gVGhhbmtzLA0KPiBRdQ0KPiANCj4+IMKg
-SXQgZmVlbHMgbGlrZSB0aGVyZQ0KPj4gc2hvdWxkIGJlIHNvbWUgZG9jdW1lbnRhdGlvbiBiZWNh
-dXNlIHRoaXMgYmVoYXZpb3IgaXMgdW5leHBlY3RlZC4NCj4+DQo+PiDCoMKgIDU3OTjCoMKgwqDC
-oMKgwqDCoMKgwqAgfSBlbHNlIHsNCj4+IMKgwqAgNTc5OcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgcmV0ID0gbG9ja19leHRlbnQoaW9fdHJlZSwgZWItPnN0YXJ0LCANCj4+IGVi
-LT5zdGFydCArIGViLT5sZW4gLSAxKTsNCj4+IMKgwqAgNTgwMMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgaWYgKHJldCA8IDApDQo+PiDCoMKgIDU4MDHCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0Ow0KPj4gwqDCoCA1
-ODAywqDCoMKgwqDCoMKgwqDCoMKgIH0NCj4+IMKgwqAgNTgwMw0KPj4gwqDCoCA1ODA0wqDCoMKg
-wqDCoMKgwqDCoMKgIHJldCA9IDA7DQo+PiDCoMKgIDU4MDXCoMKgwqDCoMKgwqDCoMKgwqAgaWYg
-KHRlc3RfYml0KEVYVEVOVF9CVUZGRVJfVVBUT0RBVEUsICZlYi0+YmZsYWdzKSB8fA0KPj4gwqDC
-oCA1ODA2wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgUGFnZVVwdG9kYXRlKHBhZ2UpIHx8DQo+
-PiDCoMKgIDU4MDfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBidHJmc19zdWJwYWdlX3Rlc3Rf
-dXB0b2RhdGUoZnNfaW5mbywgcGFnZSwgDQo+PiBlYi0+c3RhcnQsIGViLT5sZW4pKSB7DQo+PiDC
-oMKgIDU4MDjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNldF9iaXQoRVhURU5U
-X0JVRkZFUl9VUFRPREFURSwgJmViLT5iZmxhZ3MpOw0KPj4gwqDCoCA1ODA5wqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1bmxvY2tfZXh0ZW50KGlvX3RyZWUsIGViLT5zdGFydCwg
-ZWItPnN0YXJ0ICsgDQo+PiBlYi0+bGVuIC0gMSk7DQo+PiDCoMKgIDU4MTDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiByZXQ7DQo+PiDCoMKgIDU4MTHCoMKgwqDCoMKg
-wqDCoMKgwqAgfQ0KPj4NCj4+IHJlZ2FyZHMsDQo+PiBkYW4gY2FycGVudGVyDQo+Pg0K
+   I'm not sure I'm confident enough to recommend a course of action
+on this one, but one note from something you said:
+
+On Thu, Jan 28, 2021 at 10:03:08PM +1100, Andrew Vaughan wrote:
+[...]
+> Today I did '# btrfs fi resize 4:max /srv/shared' as preparation for a
+> balance to make the extra drive space available.  (The old drives are
+> all fairly full.  About 130 GB free space on each.  I initially tried
+> btrfs fi resize max /srv/shared as the syntax on the manpage implies
+> that devid is optional.  Since that command errored, I assume it
+> didn't change the filesystem).
+
+   The devid is indeed optional, but it then assumes that you mean
+device 1 (which is what it is on a single-device FS). It looks like
+your FS, for historical reasons, no longer has a device 1, hence the
+error. That should be completely harmless.
+
+[...]
+> # uname -a
+> Linux nl40 5.10.0-2-amd64 #1 SMP Debian 5.10.9-1 (2021-01-20) x86_64 GNU/Linux
+> 
+> # mount -t btrfs /dev/sdd1 /mnt/sdd-tmp
+> mount: /mnt/sdd-tmp: wrong fs type, bad option, bad superblock on
+> /dev/sdd1, missing codepage or helper program, or other error.
+> 
+> # dmesg | grep -i btrfs
+> [    5.799637] Btrfs loaded, crc32c=crc32c-generic
+> [    6.428245] BTRFS: device label samba.btrfs devid 8 transid 1281994
+> /dev/sdb1 scanned by btrfs (172)
+> [    6.428804] BTRFS: device label samba.btrfs devid 5 transid 1281994
+> /dev/sdd1 scanned by btrfs (172)
+> [    6.429473] BTRFS: device label samba.btrfs devid 4 transid 1281994
+> /dev/sde1 scanned by btrfs (172)
+> [ 2004.140494] BTRFS info (device sde1): disk space caching is enabled
+> [ 2004.790843] BTRFS error (device sde1): super_total_bytes
+> 22004298366976 mismatch with fs_devices total_rw_bytes 22004298370048
+> [ 2004.790854] BTRFS error (device sde1): failed to read chunk tree: -22
+> [ 2004.805043] BTRFS error (device sde1): open_ctree failed
+> 
+> Note that drive identifiers have changed between reboots.  I haven't
+> seen that on this system before.
+
+   It happens sometimes. Sometimes between kernels, sometimes changed
+hardware responds slightly faster than the previous device. Sometimes
+devices get bumped along by having something new attached to an
+earlier controller in the enumeration sequence. I've seen machines
+that have had totally stable hardware for years suddenly decide to
+flip enumeration order on one reboot. I wouldn't worry about it. :)
+
+   The good news is I don't see any of the usual horribly fatal error
+messages here, so it's probably fixable.
+
+> Questions
+> =========
+> 
+> Is btrfs rescue fix-device-size <device> considered the best way to
+> recover?  Should I run that once for each device in the filesystem?
+
+   I'm not confident enough to answer anything more than "probably" to
+both of those.
+
+> Do you want me to run any other commands to help diagnose the cause
+> before attempting recovery?
+
+   Looks like a fairly complete report to me (but see above).
+
+   Hugo.
+
+-- 
+Hugo Mills             | Be pure.
+hugo@... carfax.org.uk | Be vigilant.
+http://carfax.org.uk/  | Behave.
+PGP: E2AB1DE4          |                                   Torquemada, Nemesis
