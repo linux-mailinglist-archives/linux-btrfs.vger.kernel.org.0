@@ -2,355 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AEC30912E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Jan 2021 02:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FEC309131
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Jan 2021 02:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhA3BLX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Jan 2021 20:11:23 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:38624 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhA3BET (ORCPT
+        id S232307AbhA3BO0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Jan 2021 20:14:26 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40514 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232918AbhA3BKC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Jan 2021 20:04:19 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id E6BEC96124C; Fri, 29 Jan 2021 20:03:29 -0500 (EST)
-Date:   Fri, 29 Jan 2021 20:03:29 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Unexpected reflink/subvol snapshot behaviour
-Message-ID: <20210130010329.GB32440@hungrycats.org>
-References: <20210121222051.GB4626@dread.disaster.area>
- <20210124001903.GS31381@hungrycats.org>
- <20210124214346.GC4626@dread.disaster.area>
+        Fri, 29 Jan 2021 20:10:02 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10U18rr6020817;
+        Sat, 30 Jan 2021 01:08:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=/IB82OA6fCwj5HPzE3/O0/5y3RaTZdUbkR6ON3Ef7+4=;
+ b=xCeruK/C+CanIm9Qly/m0GUddYD+iEFVwli3oCtzTZCU2UTpoKHicseB/+5zBokv4Jkt
+ UsSdbMVn3/Sw/d8lQyynUoX/tX9l3QXYuZY0rQXmTSxn+grHaDbxqUpI6+ImHcqVTpAu
+ 0JwwhuxAj7b3x889io52m7ENtSMlvn4GC2xJZkgxgOF6H60srBGAX6CBKptJ6CvLtzD3
+ CeD+7b3lhmO80hN4BCluEN2fiHJOhWyLROUiDKs9ZryOdA8ePAVWztBwoa3CJ7qIxxfW
+ r1mUozaLvaNJ2zVp/ZDidY6zXiEg8lelIKwhZUm1HJI3IykJ2GFkNtFsBC8n3XQNFn3p Ow== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 36cmf8a2vd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 30 Jan 2021 01:08:53 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10U0kHe1068435;
+        Sat, 30 Jan 2021 01:08:52 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2059.outbound.protection.outlook.com [104.47.36.59])
+        by userp3030.oracle.com with ESMTP id 36cvjr9wq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 30 Jan 2021 01:08:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bgFMD4YKf8dNec2Ip3R7IqtWjQ3+fHMCMHiMt0S9mIcedsgxHvupXEpj3jymdgAvGMr+2ylnF5Ch+JLUGUC+lLc66YoeJFtULGCenJLUiSEaDVxUmAMs0EARjq1ZWr3Ugo3Wlj0ejgNaaXLzEz+EcxNiXWGwUwqQZ0bMXLPMqVKnluHkMoPmGU9AeNz5Gbr7GV/j8nZd+FOQ/RncuPQbjZaXg1XSRN4WsSptCIGMw/pnGUnkWBMjAzaICxAJWa0eZGKpBNWljc/JAGs1zag3OqOzNObuyECnKC1ZksxHP4tmj9qluQ6wg9lMW7kCW8Hg4hxXP5TY0uKY56gRTBu6dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/IB82OA6fCwj5HPzE3/O0/5y3RaTZdUbkR6ON3Ef7+4=;
+ b=CZg2W9KdGMrA5AgyTOt1DlGA+dJPHInCT00MTFGeWbIDVkkWL76DM/Oyj5OR/Vfaoj4oek68qdfs3OTpxEFDDhHPtFepcuPE/6LruQOMLFbJ01YkLztjRwsXJmysxfTvRsjPB4mjF8F7401f125NaPbtnIZS5C+xtvLqbm6u1R4QeTR4PiHUe5epYh6Q4jcnr6fcdL6BT3hH1yfLPf2blv1m5FnvO/i15PwqBTWo6CQvEtTxdmlNHlKF2Ke5U01C2zBqK0M3/UZeVoI8+WogbtY9+IWzWhVz1Kugw5gSmx4GB8uIfa3Uxo6EYguQVtN9FfWiX9u6Zrv5vb0BoSc0cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/IB82OA6fCwj5HPzE3/O0/5y3RaTZdUbkR6ON3Ef7+4=;
+ b=tZ9BksUfeBAh0bY9TQQYyYQ+MeLhvtwiJ5p6mTtGFzvkrzDzjBgs9knb1Qipg4Yj/KSO9+iVVfGz4rfJAfR0Tfe+7arCuQlScukm6TKN2ExpTNK8AF3uiffAg9mAdVrIHe6WuYOJONf1VodtNOdgSMFtXEHlmesjDx4vZjxShMk=
+Authentication-Results: toxicpanda.com; dkim=none (message not signed)
+ header.d=none;toxicpanda.com; dmarc=none action=none header.from=oracle.com;
+Received: from BN6PR10MB1683.namprd10.prod.outlook.com (2603:10b6:405:b::15)
+ by BN0PR10MB4840.namprd10.prod.outlook.com (2603:10b6:408:12b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Sat, 30 Jan
+ 2021 01:08:50 +0000
+Received: from BN6PR10MB1683.namprd10.prod.outlook.com
+ ([fe80::44c4:3dbe:4b78:f69a]) by BN6PR10MB1683.namprd10.prod.outlook.com
+ ([fe80::44c4:3dbe:4b78:f69a%3]) with mapi id 15.20.3784.019; Sat, 30 Jan 2021
+ 01:08:50 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH v4 1/3] btrfs: add read_policy latency
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        josef@toxicpanda.com
+References: <cover.1611114341.git.anand.jain@oracle.com>
+ <63f6f00e2ecc741efd2200c3c87b5db52c6be2fd.1611114341.git.anand.jain@oracle.com>
+ <20210120121416.GX6430@twin.jikos.cz>
+ <e46000d9-c2e1-ec7c-d6b1-a3bd16aa05f4@oracle.com>
+ <20210121175243.GF6430@twin.jikos.cz>
+ <28b7ef3d-b5b9-f4a6-8d6f-1e6fc1103815@oracle.com>
+Message-ID: <9f406301-c16a-72a5-4ff3-d3bda127895e@oracle.com>
+Date:   Sat, 30 Jan 2021 09:08:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+In-Reply-To: <28b7ef3d-b5b9-f4a6-8d6f-1e6fc1103815@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2406:3003:2006:2288:fc7c:d331:6af2:386f]
+X-ClientProxiedBy: SG2PR06CA0138.apcprd06.prod.outlook.com
+ (2603:1096:1:1f::16) To BN6PR10MB1683.namprd10.prod.outlook.com
+ (2603:10b6:405:b::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124214346.GC4626@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2406:3003:2006:2288:fc7c:d331:6af2:386f] (2406:3003:2006:2288:fc7c:d331:6af2:386f) by SG2PR06CA0138.apcprd06.prod.outlook.com (2603:1096:1:1f::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Sat, 30 Jan 2021 01:08:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 32e3d68c-50bc-421d-9960-08d8c4bb9aa7
+X-MS-TrafficTypeDiagnostic: BN0PR10MB4840:
+X-Microsoft-Antispam-PRVS: <BN0PR10MB48404C28B5DFE6F4C3AECF27E5B89@BN0PR10MB4840.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1332;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Td+8i+PXwXT5DWBl6rMEtIHpG/hhtYt1XHDtA+F9OjJezD2xVoXNXbYiCVgszCvOGWoBZ5sPsdQ8/6pgnVxIQrth/c+UPJXTUqGiNec03bqfgc9r1izXnPvHhIXVEyoV0j11T9kiIvEZbLJ9wj0xC5w/UgvW3Wakwim8FfTcnvVyp0vNpTWf+cQ6tNi6wawbyEEck04Jn/cfENsRFqsYpxmm/uwvF8BlJTj5Ykuv0gB9pEMjeJz1vWYVmV0jHmSpMAWqRdD9/VGIA0XqvzKiGlUMLmAgfwP5T91quRCOnzm2w7GPNNI3t13hMat2qIm+sSh5noY+ihqgS5Dv4wftmyJCuglsPLOhqbxvlszHEn6d6CedqGRvbvNV4rE+iBIeCzJFfeC/u1FJPAdQgNwaA9E3otNfhRzszc5R42ulAQmdYxwTXt2O7+2AU4UgRjXj9O5V72Cy2U/UshMTRMUPEI9nKHETK3PnBK8zCvykXjG6MwvoAT9Mv1vguYoH/R8Ww+JBzustv5CGhbjLw+tBZ57UKoQxIeCsVUV+wq8DlGKh9pnuo5tV0acEiXX2CubPqBswrxq0Y5F8iqGLln76wcOGrRI3PuBld3sWRbjRF6Y=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR10MB1683.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(39860400002)(346002)(396003)(5660300002)(6486002)(6666004)(66556008)(66476007)(8676002)(316002)(66946007)(2906002)(36756003)(2616005)(86362001)(8936002)(44832011)(186003)(31696002)(16526019)(478600001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eXJBVzZWM010UE1PNVd1cmFraGVyV0NmNjEwSTNmSFRWZWVpeHJrY2hwUm5F?=
+ =?utf-8?B?d1ZyUlE0cW1KY3lDWEFWVlBCbzZWRmhWZDdkb3Fid25OdU40Q3ZqVUJPUG0v?=
+ =?utf-8?B?VHNqVmQ4NFFKeE1HZUl1SU41ZXF6VjhOY2JhUFNGbEdIRDJkQ2F0RWhlVXFw?=
+ =?utf-8?B?TUhTUWFueDFZTmI5OUY1Rm51dlZqcTBjc1doak5oaFdEZTJKL3ZkZFJpUjJH?=
+ =?utf-8?B?NlJCeUN5bE0rTXJIV2ZFUWl5SlNmOGJwZGF4T1M3OXRpcTBaQ21uSlVTaEpR?=
+ =?utf-8?B?aGRlZ2hURHEzelJFK1lMcC9HNG96T01aaHM5MkJFRjVQTERhV2ZBUTlFWFdC?=
+ =?utf-8?B?UVovQVFyQWIwRXZ2TkFxQWVWNXprOXQ2dkFuRTEzVlRqbnZxbkpuSU1odDh1?=
+ =?utf-8?B?ejFDM09mQzM4cHlyTEJtK2hTYm5xa1FEMUgzQ1NmSU9qcHNVRWFhNWFqa2Qr?=
+ =?utf-8?B?NVIxYkE2eXAyaVNIRHFkTEd1Uit6eTY4cFRpbjlrbXU1UGVnN3pDSGNSeVMz?=
+ =?utf-8?B?UkdCV2sxdllVak53U0NNRDBSZE02MDlNNVRrTkE2WGs2T1N1d1Rsd3F6RkV3?=
+ =?utf-8?B?Q1R3a1c1RGhuRzRwWTZRRHRyRnNadnZIZDMzdVp6KzJrNnpmckMyV2hzNlVa?=
+ =?utf-8?B?LzlnR2VReDVXUUtrYnFzL1RvWVM0SXNKVDJtSUJFUkZBOUdyaVk2eWk2ZEc3?=
+ =?utf-8?B?VEF2T21QbUJLb0ZXbGsyWTNieThYUWthQTY0NHpDTUh3ZGc2eVFvK2o1ZjVi?=
+ =?utf-8?B?c3NZZ29QTWJ0ejF3VjFLcXVwR3pndWFBN2NqK0IzeVBDTGhjdTR1MTRJZmlC?=
+ =?utf-8?B?d3NYc0RSb0h2T1FGeFowQXlibEJKc0E4YUhRbjh0Q1BnUGkrYUV5YmdGNXRt?=
+ =?utf-8?B?aDNsRkE5NjcrK0dLUUZGSEovNmxjL3dpOWVveUxvZ2dUSG5XQmIydzNkWGtr?=
+ =?utf-8?B?OE5pRU02U0RHakYrUEZodFgzTVlaKzZ6MHdkRnpIYkFWWHN0QUxYVUgyR3I2?=
+ =?utf-8?B?cDNWVjYxcmdOWldCMVVJT0YzaGVkSUR6d2hTemRmcmlCWC9lM1ZmbzBaWFBz?=
+ =?utf-8?B?T3lmZCt6WjUrSVFQRlk0enFSYWdYc2xrR1F3N2RCQ2F0cFZ5TFMxZHJyakND?=
+ =?utf-8?B?eklldk5lWnhDTnhUK3g3TFJXTTNMbjdLRFdFalFTc3JaWDMrcm5VdlBabXpY?=
+ =?utf-8?B?cHBMUEk0R3A4OFRwbUk3TmsvKzBhK1JTcnBicTZYeXJnaVg0cUFUUzNqNnV1?=
+ =?utf-8?B?YlRxa2l3Rjl0cUFyRVIzN2ZtOGNlV2lHMXlyeWdyRkM0QzRpc01wc2lzLy9r?=
+ =?utf-8?B?N1BVUjlybjVRdnFCYUR2YVdMUmJGTU5PYzkzL1FYOHJpMWg4cHovdHlHaEgw?=
+ =?utf-8?B?VnJjZFpqY3A2T3doazNsYkFPVnNUNnl1M2hMZ1hhcnZBSHpTOWM5bjR2S3lT?=
+ =?utf-8?B?eEdVaW92T2JFcE0rNGhHWHVVdkY1KzhUcURsbW5nZXBIalZrNjRWd1FvYkdG?=
+ =?utf-8?Q?lNY/RIxNyILlqbsORKT2hOTKis2?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32e3d68c-50bc-421d-9960-08d8c4bb9aa7
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR10MB1683.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2021 01:08:50.7008
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gw67Mg5ttq0Dpfg9Ce3Uz4ejNIMIfwt3CqF9XznYpN1p+3zou7zfxV5gcFbWlT1gCmDn+vbqv0PB5VCxlAjlRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB4840
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101300001
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9879 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 lowpriorityscore=0
+ spamscore=0 clxscore=1015 adultscore=0 priorityscore=1501 impostorscore=0
+ phishscore=0 mlxscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101300002
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:43:46AM +1100, Dave Chinner wrote:
-> On Sat, Jan 23, 2021 at 07:19:03PM -0500, Zygo Blaxell wrote:
-> > On Fri, Jan 22, 2021 at 09:20:51AM +1100, Dave Chinner wrote:
-> > > Hi btrfs-gurus,
-> > > 
-> > > I'm running a simple reflink/snapshot/COW scalability test at the
-> > > moment. It is just a loop that does "fio overwrite of 10,000 4kB
-> > > random direct IOs in a 4GB file; snapshot" and I want to check a
-> > > couple of things I'm seeing with btrfs. fio config file is appended
-> > > to the email.
-> 
-> ....
-> 
-> > >  --
-> > >  snapshot 945 15.32
-> > >  snapshot 946 0.05
-> > >  snapshot 947 15.52
-> > >  --
-> > >  snapshot 971 15.30
-> > >  snapshot 972 0.03
-> > >  snapshot 973 14.88
-> > > 
-> > > It seems .... unlikely that random snapshots of exactly the same
-> > > repeating workloadi have such a variance in execution time. And then
-> > 
-> > btrfs delays a lot of metadata updates (millions, if you have enough
-> > memory) and then runs them in giant batches during commits, so they can
-> > show up as latency spikes at random times while you're benchmarking.
-> > That is likely part of what is happening here.
-> 
-> Evidence points to this being exactly the problem - multiple
-> gigabytes of page cache dirtying at writeback points leading to
-> memory pressure and huge amounts of physical IO being issued. A
-> single CPU running this workload basically stalls a kernel on a mostly idle
-> 32GB/32p machine with 150,000 random 4kB write IOPS capability for
-> seconds at a time.
-> 
-> > The current behavior is something of a regression--there used to be a
-> > latency feedback loop to avoid queueing up too many metadata updates
-> > before throttling the processes that were generating the updates.
-> > It's not clear that simply reverting that change is a good way forward.
-> 
-> I see. Rock and a hard place. Am I correct in assuming that that I
-> shouldn't expect a fix for either the excessive metadata writeback
-> bandwidth or the non-deterministic system-wide behaviour that
-> results from it any time soon?
 
-Josef did some investigation into it a year ago based on some of my
-test cases.  There were some simple patches that made big improvements,
-but they uncovered other problems.  Fixes for those are working their
-way through the dev pipeline.
+>> 500m is really small data size for such measurement
 
-Part of the problem in your test case is just the sheer size of the
-metadata.  That's unlikely to change soon, but you could throw RAM at
-the problem.
+I reran the read policy tests with some changes in the fio command
+options. Mainly to measure IOPS throughput and latency on the filesystem
+with latency-policy and pid-policy.
 
-> > > ---
-> > > fio loop 971:   write: IOPS=8539, BW=33.4MiB/s (34.0MB/s)(39.1MiB/1171msec); 0 zone resets
-> > > fio loop 972:   write: IOPS=579, BW=2317KiB/s (2372kB/s)(39.1MiB/17265msec); 0 zone resets
-> > > fio loop 973:   write: IOPS=6265, BW=24.5MiB/s (25.7MB/s)(39.1MiB/1596msec); 0 zone resets
-> > > ---
-> > > 
-> > > 
-> > > In these instances, fio takes about as long as I would expect the
-> > > snapshot to have taken to run. Regardless of the cause, something
-> > > looks to be broken here...
-> > > 
-> > > An astute reader might also notice that fio performance really drops
-> > > away quickly as the number of snapshots goes up. Loop 0 is the "no
-> > > snapshots" performance. By 10 snapshots, performance is half the
-> > > no-snapshot rate. By 50 snapshots, performance is a quarter of the
-> > > no-snapshot peroframnce. It levels out around 6-7000 IOPS, which is
-> > > about 15% of the non-snapshot performance. Is this expected
-> > > performance degradation as snapshot count increases?
+Each of these tests was run for 3 iterations and the best and worst of
+those 3 iterations are shown below.
 
-> > Somewhere in that workload, there's probably a pretty high write
-> > multiplier for unsharing subvol metadata pages in snapshots.  The worst
-> > case is about 300x write multiply for the first few pages after a snapshot
-> > is created, because every item referenced on the shared subvol metadata
-> > page (there can be 150-300 of them) must have a new backreference added
-> > to the newly created unshared metadata page, and in the worst case every
-> > one of those new items lives in a separate metadata page that also
-> > has to be read, modified, and written.  The write multiplier rapidly
-> > levels off to 1x once all the snapshot's metadata pages are unshared,
-> > after random writes to around 0.3% of the subvol.  So writing 4K to a
-> > file in a subvol right after a snapshot was taken could hit the disks
-> > with up to 20MB of random read and write iops before it's over.
-> 
-> That's .... really bad. but it tallies with 10,000 4kB data writes
-> triggering 10GB of dirty metadata pages and GB/s of write bandwidth.
-> 
-> Given this is how the snapshot+COW algorithm is designed, I having
-> trouble seeing how this problem could be mitigated. Am I correct in
-> assuming that this level of write amplification as snapshot cycles
-> increase "is what it is"?
+These workloads are performing read-write which is the most commonly
+used workload, on a single type of device (which is nvme here) and two
+devices are configured for RAID1.
 
-I don't see any way to get rid of that write multiplication case without
-making incompatible disk format changes, and maybe rethinking the entire
-snapshot concept.
+In all these read-write workloads, pid-policy performed ~25% better than
+the latency-policy for both throughput and IOPS, and 3% better on the
+latency parameter.
 
-In normal workloads (even yours), the write multiplication burst ends
-pretty quickly, but you also keep creating new snapshots and starting
-new bursts.
+I haven't analyzed these read-write workloads on RAID1c3/RAID1c4 yet,
+but RAID1 is more common than other types, IMO.
 
-It's more of a concern for user desktops that run backups overnight.
-Things run many times slower as the user logs in in the morning,
-and unshares metadata in $HOME.  By the time the user has logged in,
-the write multiplication is mostly over.
+So I think pid-policy should remain as our default read policy.
 
-> > Fragmentation pushes everything toward the worst-case scenario because it
-> > spreads the referenced items around to separate pages, which could explain
-> > the asymptotic performance curve for snapshots.
-> 
-> THe performance continues to worsen long after the per-file extent
-> count maxxes out at just over 1 million (about cyle 100). So it
-> seems more to be related to the metadata overhead of the subvol, not
-> su much the individual file.
-> 
-> FWIW, concentrating on "it's a single file with lots of extents"
-> misses the bigger picture of "it's a compact simulation of a subvol
-> with tens of thousands of files in it and being randomly updated by
-> the production workload between snapshots". IOWs, I'm using this
-> workload to perform accelerated aging on a constantly modified
-> filesystem under a rolling snapshot regime. A snapshot every few
-> minutes, 24x7, is ~5-10,000 snapshots a year. I'm compressing the
-> modification time domain down from 5-10 minutes to a few hundred
-> milliseconds so I can run thousands of iterations a day and hence
-> see what happens over a period of months in a couple of hours...
+However as shown before, pid-policy perform worst in the case of special
+configs such as volumes with mixed types of devices. For those special
+mixed types of devices, latency-policy performs better than pid-policy.
+As tested before typically latency-policy provided ~175% better
+throughput performance in the case of mixed types of devices (SSD and
+nvme).
 
-I'm thinking of the effects of free space fragmentation here, not
-individual file fragmentation, i.e. objects get spread out over the
-disk because they are landing in free space holes that are spread out
-over the disk.  These objects have related items that are closely packed
-in some trees (subvols) and sparsely packed in other trees (extent, csum)
-because one tree is keyed by logical address and the other by physical.
+Feedbacks welcome.
 
-There's not much difference in btrfs between a lot of small files and
-a few big ones--in subvol metadata, they get densely packed into btree
-pages either way.  A whole directory tree of files can live on one page.
+Fio logs below.
 
-> > Without fragmentation,
-> > all the referenced items tend to appear on the same or at least a few
-> > adjacent pages, so the unsharing cost is much lower.  It's the same
-> > number of pages to unshare whether it's 1 snapshot or 1000, but the
-> > referenced items will get spread around a lot after 1000 iterarations
-> > of that fio loop.
-> 
-> Yeah, sure, but when the data is not physically located (such as a
-> large dataset in a subvol), you get the random overwrite behaviour
-> this test exercises....
-> 
-> > Reflinks don't share metadata pages, so they don't have this problem
-> > (except when the dst of the reflink is modifying metadata pages that are
-> > shared with a snapshot, like any other write).
-> 
-> Evidence suggests that they do have the same problem.  i.e. this:
-> 
-> > > And before you ask, reflink copies of the fio file rather than
-> > > subvol snapshots have largely the same performance, IO and
-> > > behavioural characteristics. The only difference is that clone
-> > > copying also has a cyclic FIO performance dip (every 3-4 cycles)
-> > > that corresponds with the system driving hard into memory reclaim
-> > > during periodic writeback from btrfs.
-> 
-> would be explained by the same metadata COW explosion after a
-> reflink on the per-inode extent tree, rather than full subvol
-> tree. Is that the case?
 
-I don't think so.  The metadata COW explosion would explain why reflinks
-are _faster_ than snapshots, which I think you said you didn't observe.
-(Are we talking about the 300x write multiplication explosion for
-fresh snapshots here?  There are arguably multiple events that could be
-described as "metadata explosion" in this test case.)
+IOPS focused readwrite workload:
+fio --filename=/btrfs/foo --size=500GB --direct=1 --rw=randrw --bs=4k 
+--ioengine=libaio --iodepth=256 --runtime=120 --numjobs=4 --time_based 
+--group_reporting --name=iops-randomreadwrite --eta-newline=1
 
-The 300x metadata write multiplication transforms a snapshot (immutable
-shared subvol metadata) into a reflink copy (mutable unshared subvol
-metadata).  If the file is a reflink copy to start with, then there's
-no need to do any more work to make it one.
+pid [latency] device roundrobin ( 00)
+   read: IOPS=40.6k, BW=159MiB/s (166MB/s)(18.6GiB/120002msec)
 
-> > > Oh, I almost forget - FIEMAP performance. After the reflink test, I
-> > > map all the extents in all the cloned files to a) count the extents
-> > > and b) confirm that the difference between clones is correct (~10000
-> > > extents not shared with the previous iteration). Pulling the extent
-> > > maps out of XFS takes about 3s a clone (~850,000 extents), or 30
-> > > minutes for the whole set when run serialised. btrfs takes 90-100s
-> > > per clone - after 8 hours it had only managed to map 380 files and
-> > > was running at 6-7000 read IOPS the entire time. IOWs, it was taking
-> > > _half a million_ read IOs to map the extents of a single clone that
-> > > only had a million extents in it. Is it expected that FIEMAP is so
-> > > slow and IO intensive on cloned files?
-> > 
-> > There were severe performance issues with FIEMAP (or anything else that
-> > does backref lookup) on kernels before 5.7, especially on files bigger
-> > than a few hundred MB (among other things, it was searching the entire
-> > file for matching forward ref instead of just around the area where the
-> > backref was).  FIEMAP looks at backrefs to populate the 'shared' bit,
-> > so it was affected by this bug.
-> 
-> I'm testing on a vanilla 5.10 kernel, so this bug should not be
-> present in the kernel.
-> 
-> > There might still be a big IO overhead for backref search on current
-> > kernels.  The worst case is some gigabytes of metadata pages for extent
-> > references, if every referencing item ends up stored on its own metadata
-> > page, and if FIEMAP has to read many of them before it finds a reference
-> > that matches the logical file offset so it can set or clear the 'shared'
-> > bit.
-> 
-> So it's a least a quadratic complexity algorithm?
+[pid] latency device roundrobin ( 00)
+   read: IOPS=50.7k, BW=198MiB/s (208MB/s)(23.2GiB/120001msec)
 
-Worst case is O(number_of_reflinks * number_of_snapshots * btree_depth)
-for each query (which for FIEMAP would be the first block in each
-logical extent reference).
+IOPS is 25% better with pid policy.
 
-Some of the backref items come with CPU search overheads because the
-backrefs sometimes point to pages, not individual items.
 
-btree depth is O(log(n)) random seeks on btrees which are probably far
-more expensive than the CPU, so the CPU term won't show up in O-notation.
+Throughput focused readwrite workload:
+fio --filename=/btrfs/foo --size=500GB --direct=1 --rw=randrw --bs=64k 
+--ioengine=libaio --iodepth=64 --runtime=120 --numjobs=4 --time_based 
+--group_reporting --name=throughput-randomreadwrite --eta-newline=1
 
-If your extent references mostly overlap the same physical blocks, they
-will short-circuit some computations for FIEMAP.  e.g. if a physical
-extent has 32768 references, but they are all 4K and none overlap, then
-FIEMAP will loop all 32768 times to determine a block is not SHARED.
-e.g. 2 if an extent has 1000 references but they all refer to the entire
-physical extent, then the loop will terminate on the second iteration.
+pid [latency] device roundrobin ( 00)
+   read: IOPS=8525, BW=533MiB/s (559MB/s)(62.4GiB/120003msec)
 
-I'd call it O(N * log(n)) for each extent, with some noticeably large
-constant terms, assuming there aren't any silly bugs left.  There are
-a lot of variables that can affect the performance.
+[pid] latency device roundrobin ( 00)
+   read: IOPS=10.7k, BW=670MiB/s (702MB/s)(78.5GiB/120005msec)
 
-There's no caching, so every FIEMAP call forgets everything it learns
-before the next FIEMAP call.  I don't know if it even caches the metadata
-pages it reads.
+Throughput is 25% better with pid policy
 
-> > I'm not sure the worst case is even bounded--you could have billions of
-> > references to an extent and I don't know of any reason why you couldn't
-> > fill a disk with them (other than btrfs getting too slow to finish before
-> > the disk crumbles to dust).
-> 
-> Hmmm. This also sounds like a result of the way btrfs is physically
-> structured. Am I correct to assume this behaviour won't change any
-> time soon?
+Latency focused readwrite workload:
+fio --filename=/btrfs/foo --size=500GB --direct=1 --rw=randrw --bs=4k 
+--ioengine=libaio --iodepth=1 --runtime=120 --numjobs=4 --time_based 
+--group_reporting --name=latency-randomreadwrite --eta-newline=1
+pid [latency] device roundrobin ( 00)
+   read: IOPS=59.8k, BW=234MiB/s (245MB/s)(27.4GiB/120003msec)
+      lat (usec): min=68, max=826930, avg=1917.20, stdev=4210.90
 
-FIEMAP, a foreign ioctl that originated on an alien filesystem, has
-three basic problems on btrfs:
+[pid] latency device roundrobin ( 00)
+   read: IOPS=61.9k, BW=242MiB/s (253MB/s)(28.3GiB/120001msec)
+      lat (usec): min=64, max=751557, avg=1846.07, stdev=4082.97
 
-1.  On btrfs, physical extents and logical extent references have separate
-offsets and sizes.  FIEMAP provides for only one size and offset in struct
-fiemap_extent, so the btrfs version discards the physical size information
-and adds the physical offset to the physical extent's base address.
-This makes FIEMAP useless for analyzing physical extent sharing on btrfs
-in any case where physical.offset != 0 or physical.size != logical.size
-(i.e. when you use dedupe, reflinks, snapshots, compression, prealloc,
-nodatacow, or just partially overwrite extents in files).
-
-2.  Physical extent sharing in btrfs is a per-block property, not a
-per-extent property as understood by FIEMAP.  The btrfs implementation
-of FIEMAP doesn't break up logical extent records into contiguous
-SHARED/not-SHARED pieces, so when the struct fiemap_extent describes more
-than one logical block, the SHARED bit is not necessarily accurate for
-the entire logical extent.
-
-3.  btrfs doesn't maintain backref information to the precision required
-to answer FIEMAP queries trivially.  In common cases the forward
-reference information can be changed without needing to update the
-backward reference information at all, even though the forward reference
-changes location or is duplicated.
-
-The obvious fix for item 1 is to add the two missing fields to struct
-fiemap_extent.  The fix for item 2 is less obvious:  we could add a
-fm_flag that says "I don't care about sharing (or I'll compute my own
-sharing), please don't waste my time on SHARED thanks" or "I really
-care about sharing, please split up logical extents into contiguous
-SHARED/not-SHARED and do all the extra work to calculate that accurately"
-or "I only care about definitely-not-shared blocks, you can have a
-few false positives for speed" so btrfs FIEMAP users could control the
-cost vs quality of FIEMAP's output.  It's not obvious that item 3 even
-needs fixing.
-
-If we make those changes, we get an ioctl that looks very much like
-TREE_SEARCH_V2 in the low-cost mode.  Applications that need accurate
-physical sharing information on btrfs already use TREE_SEARCH_V2, so
-FIEMAP does not get much attention on btrfs.
-
-FIEMAP is the equivalent of looking at btrfs through a funhouse mirror.
-FIEMAP on btrfs is slow and full of lies.
-
-> > TREE_SEARCH_V2 doesn't have a 'shared' bit to populate, so it runs _much_
-> > faster than FIEMAP.
-> 
-> Assuming I don't need to know about shared extents. The whole point
-> of using fiemap here is to be able to look at the shared extents in
-> the file. That's a diagnostic we use in the field for analysing
-> problems with reflink copied files on XFS, so I see no reason why we
-> wouldn't need that information on btrfs. So using a special ioctl
-> that doesn't provide shared extent visiblity is not a viable
-> solution here...
-
-In your specific case, FIEMAP doesn't indicate that the prealloc at the
-beginning of your test created thousands of non-overlapping 4K references
-to 128MB extents in every snapshot, because there's no place to put that
-information in its output.
-
-TREE_SEARCH_V2 makes this obvious, it shows every tiny extent is a slice
-of a few unique huge extents.  I don't even need to process the output
-to see that--the same physical extent base address appears over and over
-again on every other line, with only the physical offset changing from
-one logical extent to the next.
-
-compsize calculates block-level reference overlap in less than a second
-per file (at least until the reference data gets larger than memory).
-It doesn't report any of that information filefrag-style, but it does
-produce the data internally.
-
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
+Latency is 3% better with pid policy.
