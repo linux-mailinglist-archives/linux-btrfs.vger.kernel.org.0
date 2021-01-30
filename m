@@ -2,98 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87BD3092FE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Jan 2021 10:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B472A309362
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Jan 2021 10:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhA3JMw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Jan 2021 04:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbhA3EQf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:16:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69CFC061354;
-        Fri, 29 Jan 2021 19:57:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=DenP85I1Njjb0sm/Pv5awH6u78JiwmjeMN74Dl7XDmA=; b=H8SDl3brId4iyEQMOwW4BfEUQ2
-        Xy9mZcqFmFvcWvR6dxLgQ3QUwF+RwC9GNnBM28jr+2J7JQ5Bm8pWtzkJy9Bu5683unOHOgLMv+gFM
-        jYIfOM6Ao2NNEjEzqoWU83ro0i2k1QtT++2jpOr8mpPL1+MxGJTvy2GRgyUg+z6xssmGMSAnWY2zd
-        lqlVaZEtkQfNNrYTdAkx5Dh4tKL60XSKbWMPsTXg7ShS8Q1MALyQ1L4XvADIPpEa3DQT7A35auYCK
-        RYKeUzMDMR7ROqaOWCMHMSpzECR3dkUR8mtXMmO0lgMzXZcgza2tXYiFwaZvQ9UvVr3UoISIOLjsY
-        syMo01WQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5hNO-00Afhm-T1; Sat, 30 Jan 2021 03:56:47 +0000
-Date:   Sat, 30 Jan 2021 03:56:46 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        id S231303AbhA3J3M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Jan 2021 04:29:12 -0500
+Received: from mga02.intel.com ([134.134.136.20]:47814 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231668AbhA3J1c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:27:32 -0500
+IronPort-SDR: HvVow2k8quNeuvP0f+7KtKadGH1lgI991vr0/VCFu3uw0LAaOIX7osn7FArhgubDNAnKGAkmcB
+ PJcBqzaZaRcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="167616204"
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="167616204"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 22:49:54 -0800
+IronPort-SDR: Q64dFHw/De9JkkTQE2S6EZVPZpB4ve2EHh7SSIZpC+NPBOo8d4MYoglWOfzJejikq6BUTd5Svo
+ PVFSc6EVjo3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="576761034"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 29 Jan 2021 22:49:52 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l5k4t-0004LQ-UR; Sat, 30 Jan 2021 06:49:51 +0000
+Date:   Sat, 30 Jan 2021 14:49:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     kbuild-all@lists.01.org, David Sterba <dsterba@suse.com>,
         Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        linux-nilfs@vger.kernel.org, dm-devel@redhat.com,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 04/17] block: split bio_kmalloc from bio_alloc_bioset
-Message-ID: <20210130035646.GH308988@casper.infradead.org>
-References: <20210126145247.1964410-1-hch@lst.de>
- <20210126145247.1964410-5-hch@lst.de>
+        Chris Mason <chris.mason@fusionio.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: fix boolreturn.cocci warnings
+Message-ID: <20210130064927.GA96852@a09516cde295>
+References: <202101301416.gmP3XmvI-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210126145247.1964410-5-hch@lst.de>
+In-Reply-To: <202101301416.gmP3XmvI-lkp@intel.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 03:52:34PM +0100, Christoph Hellwig wrote:
-> bio_kmalloc shares almost no logic with the bio_set based fast path
-> in bio_alloc_bioset.  Split it into an entirely separate implementation.
->=20
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  block/bio.c         | 167 ++++++++++++++++++++++----------------------
->  include/linux/bio.h |   6 +-
->  2 files changed, 86 insertions(+), 87 deletions(-)
+From: kernel test robot <lkp@intel.com>
 
-This patch causes current linux-next to OOM for me when running xfstests
-after about ten minutes.  Haven't looked into why yet, this is just the
-results of a git bisect.
+fs/btrfs/volumes.c:1462:10-11: WARNING: return of 0/1 in function 'dev_extent_hole_check_zoned' with return type bool
 
-The qemu command line is:
+ Return statements in functions returning bool should use
+ true/false instead of 1/0.
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
 
-qemu-system-x86_64 -nodefaults -nographic -cpu host -machine accel=3Dkvm,nv=
-dimm -m 2G,slots=3D8,maxmem=3D1T -smp 6 -kernel /home/willy/kernel/folio/.b=
-uild_test_kernel-x86_64/kpgk/vmlinuz -append console=3Dhvc0 root=3D/dev/sda=
- rw log_buf_len=3D8M ktest.dir=3D/home/willy/kernel/ktest ktest.env=3D/tmp/=
-build-test-kernel-nJO6QgxOmo/env quiet systemd.show_status=3D0 systemd.log-=
-target=3Djournal crashkernel=3D128M no_console_suspend -device virtio-seria=
-l -chardev stdio,id=3Dconsole -device virtconsole,chardev=3Dconsole -serial=
- unix:/tmp/build-test-kernel-nJO6QgxOmo/vm-kgdb,server,nowait -monitor unix=
-:/tmp/build-test-kernel-nJO6QgxOmo/vm-mon,server,nowait -gdb unix:/tmp/buil=
-d-test-kernel-nJO6QgxOmo/vm-gdb,server,nowait -device virtio-rng-pci -virtf=
-s local,path=3D/,mount_tag=3Dhost,security_model=3Dnone -device virtio-scsi=
--pci,id=3Dhba -nic user,model=3Dvirtio,hostfwd=3Dtcp:127.0.0.1:24674-:22 -d=
-rive if=3Dnone,format=3Draw,id=3Ddisk0,file=3D/var/lib/ktest/root.amd64,sna=
-pshot=3Don -device scsi-hd,bus=3Dhba.0,drive=3Ddisk0 -drive if=3Dnone,forma=
-t=3Draw,id=3Ddisk1,file=3D/tmp/build-test-kernel-nJO6QgxOmo/dev-1,cache=3Du=
-nsafe -device scsi-hd,bus=3Dhba.0,drive=3Ddisk1 -drive if=3Dnone,format=3Dr=
-aw,id=3Ddisk2,file=3D/tmp/build-test-kernel-nJO6QgxOmo/dev-2,cache=3Dunsafe=
- -device scsi-hd,bus=3Dhba.0,drive=3Ddisk2 -drive if=3Dnone,format=3Draw,id=
-=3Ddisk3,file=3D/tmp/build-test-kernel-nJO6QgxOmo/dev-3,cache=3Dunsafe -dev=
-ice scsi-hd,bus=3Dhba.0,drive=3Ddisk3
+Fixes: 69e81c8e2824 ("btrfs: implement zoned chunk allocator")
+CC: Naohiro Aota <naohiro.aota@wdc.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+---
 
+tree:   https://github.com/kdave/btrfs-devel.git for-next-20210129
+head:   6e043613b2c4377ce095ea826160d42031156d35
+commit: 69e81c8e2824ec495071293cfebb74faca15e616 [14784/14851] btrfs: implement zoned chunk allocator
+
+ volumes.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1459,7 +1459,7 @@ static bool dev_extent_hole_check_zoned(
+ 		if (ret == -ERANGE) {
+ 			*hole_start += *hole_size;
+ 			*hole_size = 0;
+-			return 1;
++			return true;
+ 		}
+ 
+ 		*hole_start += zone_size;
