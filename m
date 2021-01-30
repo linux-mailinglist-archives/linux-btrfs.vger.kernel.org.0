@@ -2,111 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D4B309801
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Jan 2021 20:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF177309823
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Jan 2021 21:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbhA3TWd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Jan 2021 14:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbhA3TWa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Jan 2021 14:22:30 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4D7C061573
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Jan 2021 11:21:50 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id o18so9304346qtp.10
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Jan 2021 11:21:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=b86EgwHuaDBQ9U8hYiwFU47RjeRX+DDu7MTgkbOp5Sk=;
-        b=eB1L++nxBie/f6KfqhZ0RkzlN+0F4E0X3RGsA30HNmm6tkzssEjXAMGF1S53OQdyS/
-         TPCtKSCPl8UDnKKcfhesibOP8Bo7l8gXZMSC/8U0V62Kr7/EIyoJgJ3nbEhCt0Aa+7SM
-         x51dreGs1+Zbb9kIBDkUPHotrECdgTDLO7ChE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=b86EgwHuaDBQ9U8hYiwFU47RjeRX+DDu7MTgkbOp5Sk=;
-        b=ayHeZZtIK8HYcLzdshTJqVkJf1JNyQRCzgNyhnugHFLF69af1Pr21dVhui4XR4CEhv
-         R9TXDABumYfUO6WHeK7Q5wXVjqn1d6fCOp2Khm1WZ5Nle9lO0OikWsYeRdI4u72/1n1s
-         SHfb+drq7OaP7K3cqZ7mi21sv1VGHCwtsoDw1yL5wn1sjyB3jaJ/pGtmGGMif7LsGbC9
-         o7tKFVfYpjcYnQVRWQnLt018t3O2KkGcNYxmdEsfnLGc+a+RqTkRGGv82b6pwErM/v6d
-         bzx2fXzp7ilzY10cTY4DEV8K2CtgWLeBQK4PSCyXR9mwFIVXHQtRLuXYMNHfjAQJzv9d
-         tNkw==
-X-Gm-Message-State: AOAM530iSz2AeNwqiwuNQyeBLlXthaKRtFuxPOLrompdMYOA9/CNDFOf
-        9WH+m7a8TBjCSsEiInbTFbyEwAQXQpXaDw==
-X-Google-Smtp-Source: ABdhPJzDO3WdFltRP7etzinN+JXhkvJlPQuvwmRK0Sp9vDomJQqW6V8OX+lPnxujQ4RQyy3vQrcZyw==
-X-Received: by 2002:ac8:382c:: with SMTP id q41mr9265168qtb.288.1612034509661;
-        Sat, 30 Jan 2021 11:21:49 -0800 (PST)
-Received: from bill-the-cat (2603-6081-7b07-927a-baca-3aff-fe98-1abb.res6.spectrum.com. [2603:6081:7b07:927a:baca:3aff:fe98:1abb])
-        by smtp.gmail.com with ESMTPSA id w91sm8986318qte.83.2021.01.30.11.21.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 30 Jan 2021 11:21:48 -0800 (PST)
-Date:   Sat, 30 Jan 2021 14:21:47 -0500
-From:   Tom Rini <trini@konsulko.com>
-To:     matthias.bgg@kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, Marek Behun <marek.behun@nic.cz>,
-        u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
-        Matthias Brugger <mbrugger@suse.com>
-Subject: Re: [PATCH] fs: btrfs: Select SHA256 in Kconfig
-Message-ID: <20210130192147.GQ7530@bill-the-cat>
-References: <20210127094231.11740-1-matthias.bgg@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3bp/g53igxzXRwId"
-Content-Disposition: inline
-In-Reply-To: <20210127094231.11740-1-matthias.bgg@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S231394AbhA3UCB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Jan 2021 15:02:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhA3UCA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 30 Jan 2021 15:02:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1DD7264DDE;
+        Sat, 30 Jan 2021 20:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612036880;
+        bh=Jz+z0rUUN0yE1nyMgKiXn+DiiWZFjTURqL6sRW1krhE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=da9Mgj861H4jREg6YrRa9UvQHLdNrIN6YLVVUeJKEJu17Zz9Lin7HqlAuotE60Rxb
+         CzsI7o90Vm4j4czvd6M8P+jBKkEk4sHJtUff3zIsmoPG7NtQwP+86iuW5WdCVSnvWu
+         zyiC5msTeuI2Nfj99gFDaxG4fw0CVB34vLQl9FPJgakrRMp3X7KDe/ZFL8rdIaA/Hs
+         7c7SCPRXqrU0mNmUM0JHgAKteYjcDaf2dEeP054APRosmaeXPkSKgLJcgiAJCsDKLb
+         G2hIYpEbw+CcwUNx7iAabqIYcDjZ8UN5u6lIbLm78ZIT4X3v/wN50zsRUjpt1OnZ4/
+         +ZmvprJXbfS9g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0BCF060983;
+        Sat, 30 Jan 2021 20:01:20 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.11-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1611932305.git.dsterba@suse.com>
+References: <cover.1611932305.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1611932305.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc5-tag
+X-PR-Tracked-Commit-Id: 9ad6d91f056b99dbe59a262810cb342519ea8d39
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c05d51c773fb365bdbd683b3e4e80679c8b8b176
+Message-Id: <161203687998.22475.12520605258458720086.pr-tracker-bot@kernel.org>
+Date:   Sat, 30 Jan 2021 20:01:19 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The pull request you sent on Sat, 30 Jan 2021 01:35:38 +0100:
 
---3bp/g53igxzXRwId
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc5-tag
 
-On Wed, Jan 27, 2021 at 10:42:30AM +0100, matthias.bgg@kernel.org wrote:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c05d51c773fb365bdbd683b3e4e80679c8b8b176
 
-> From: Matthias Brugger <mbrugger@suse.com>
->=20
-> Since commit 565a4147d17a ("fs: btrfs: Add more checksum algorithms")
-> btrfs uses the sha256 checksum algorithm. But Kconfig lacks to select
-> it. This leads to compilation errors:
-> fs/built-in.o: In function `hash_sha256':
-> fs/btrfs/crypto/hash.c:25: undefined reference to `sha256_starts'
-> fs/btrfs/crypto/hash.c:26: undefined reference to `sha256_update'
-> fs/btrfs/crypto/hash.c:27: undefined reference to `sha256_finish'
->=20
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+Thank you!
 
-Applied to u-boot/master, thanks!
-
---=20
-Tom
-
---3bp/g53igxzXRwId
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmAVscoACgkQFHw5/5Y0
-tyzlNQv/XD7d74+lTVsoXIlkvCnc/n3l3HQetxxXsF5/EMOWR79HLeU69UEbqnWb
-jWB9piFxnMe9doRXTkX6UkQZWQ1FG2CPvQqwnM/SYFNiV8x6HoO/NL+wro+ehwtP
-C7ALeU8rNVpTOOXD022/IM+64NKXghJ+TG/LkukSiItyNo8AaC5xHRZh0koUoYQp
-EiRwX3gfqEgxaGNhXPzonliu7HNjRhMqk8N//l3PCC8tvq05jIp0s57hGE8M9Z3o
-Y22MoepPgJ3SuB73u1SnUcmrF9rci9xthwt+2oFm44gYu6JeNHxUqWn06sFW43Kd
-Nsk0tXONmp0mhaIkhwtdlunN9MNXw2yeV4KYv+ynCA/OECMFHGR71zT6YBEeL3jr
-wRRJCSQ2q1t4ktmk/0EEutgV6CbWPYZRUe6gXx2cVR7z+Bb4ccp3Hj9I+LFnlR6n
-Oaj3pQwjjajRipRmRD4jCYI4ymcZgUikx7hOnnFWBu3cGIBvGyO3ODgyYZnB+aOb
-Au4Hcuh0
-=9xcX
------END PGP SIGNATURE-----
-
---3bp/g53igxzXRwId--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
