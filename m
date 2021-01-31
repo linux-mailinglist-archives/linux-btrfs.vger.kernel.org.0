@@ -2,64 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2E930CDB7
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Feb 2021 22:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD63309F4E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Feb 2021 00:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbhBBVKU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Feb 2021 16:10:20 -0500
-Received: from [20.39.40.203] ([20.39.40.203]:65313 "EHLO optinix.in"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S231256AbhBBVKS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:10:18 -0500
-dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
-        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
-        b=TP5ImnyHcJd6ZOutD2G4fr5f8wWoUQwQgOLW2PI/280OHeTqlZLToIxAIofahXeo75Wu3EjCyPUkWCAvONVwZu0fevODO9NabCWAisW+z0dGu9MXtR6qZycknhfK+mQQvORufc2uJdOyxsLmIaqgju02ah6NTaY7MUrrDAsnypqV/dHvFc1ZCeNq9M9cnBgI6P8moRvB3Uy5b0Di8H1i0zAyCi2Ui0iRGfGkTkO0ugXob5Evs8zBCz+bQn
-        OGNJsvkyEuoIiGf1dhK8ZygeNRPTDeubCEGrI3iP2v+CePRDNJj0O+GADoZLV93dYARi5DbbBgbqte2GtdOqu1KHIrhw==
-Received: from User (Unknown [52.231.31.5])
-        by optinix.in with ESMTP
-        ; Sat, 30 Jan 2021 02:13:52 +0000
-Message-ID: <8F335769-7194-475D-8960-10F7C26454EB@optinix.in>
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <support@digitalsol.in>
-Subject: Re:read
-Date:   Sat, 30 Jan 2021 02:13:50 -0000
+        id S229645AbhAaW7m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 31 Jan 2021 17:59:42 -0500
+Received: from bee.birch.relay.mailchannels.net ([23.83.209.14]:41096 "EHLO
+        bee.birch.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229535AbhAaW7g (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 31 Jan 2021 17:59:36 -0500
+X-Sender-Id: instrampxe0y3a|x-authsender|calestyo@scientia.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 323EA2262E
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 Jan 2021 22:50:26 +0000 (UTC)
+Received: from mailgw-02.dd24.net (100-96-18-11.trex.outbound.svc.cluster.local [100.96.18.11])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 5046B226CA
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 Jan 2021 22:50:25 +0000 (UTC)
+X-Sender-Id: instrampxe0y3a|x-authsender|calestyo@scientia.net
+Received: from mailgw-02.dd24.net (mailgw-02.dd24.net [193.46.215.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.96.18.11 (trex/6.0.2);
+        Sun, 31 Jan 2021 22:50:26 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authsender|calestyo@scientia.net
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Arithmetic-Cooing: 18838bdd04e7f78e_1612133425861_2622138207
+X-MC-Loop-Signature: 1612133425861:3759016569
+X-MC-Ingress-Time: 1612133425861
+Received: from heisenberg.scientia.net (p57b044d2.dip0.t-ipconnect.de [87.176.68.210])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: calestyo@scientia.net)
+        by smtp.dd24.net (Postfix) with ESMTPSA id 517455FC4B
+        for <linux-btrfs@vger.kernel.org>; Sun, 31 Jan 2021 22:50:23 +0000 (UTC)
+Message-ID: <956e08b1aed7805f7ee387cc4994702c02b61560.camel@scientia.net>
+Subject: Re: is back and forth incremental send/receive supported/stable?
+From:   Christoph Anton Mitterer <calestyo@scientia.net>
+To:     linux-btrfs@vger.kernel.org
+Date:   Sun, 31 Jan 2021 23:50:22 +0100
+In-Reply-To: <20210129192058.GN4090@savella.carfax.org.uk>
+References: <157ed91bb66820d1fef89eb05d00e65c25607938.camel@scientia.net>
+         <20210129192058.GN4090@savella.carfax.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Hey Hugo.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+Thanks for your explanation.
+I assume such a swapped send/receive would fail at least gracefully?
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
 
-Regards,
-Ms. Reem.
+On Fri, 2021-01-29 at 19:20 +0000, Hugo Mills wrote:
+>    In your scenario with MASTER and COPY-1 swapped, you'd have to
+> match the received_uuid from the sending side (on old COPY-1) to the
+> actual UUID on old MASTER. The code doesn't do this, so you'd have to
+> patch send/receive to do this.
+
+Well from the mailing list thread you've referenced it seems that the
+whole thing is rather quite non-trivial... so I guess it's nothing for
+someone who has basically no insight into btrfs code ^^
+
+
+It's a pity though, that this doesn't work. Especially the use case of
+sending back (backup)snapshots would seem pretty useful.
+
+Given that this thread is nearly 6 years, I'd guess the whole idea has
+been abandoned upstream?!
+
+
+Cheers,
+Chris.
 
