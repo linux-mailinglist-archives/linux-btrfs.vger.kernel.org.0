@@ -2,39 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50E930B213
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Feb 2021 22:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4624930B217
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Feb 2021 22:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhBAV3K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Feb 2021 16:29:10 -0500
-Received: from smtp-36.italiaonline.it ([213.209.10.36]:46918 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232322AbhBAV3G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:29:06 -0500
+        id S232448AbhBAV3P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Feb 2021 16:29:15 -0500
+Received: from smtp-36-i2.italiaonline.it ([213.209.12.36]:48938 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231426AbhBAV3H (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Feb 2021 16:29:07 -0500
 Received: from venice.bhome ([84.220.24.72])
         by smtp-36.iol.local with ESMTPA
-        id 6gkAlJHqMi3tS6gkClGsx4; Mon, 01 Feb 2021 22:28:24 +0100
+        id 6gkAlJHqMi3tS6gkClGsxB; Mon, 01 Feb 2021 22:28:24 +0100
 x-libjamoibt: 1601
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1612214904; bh=4pM90owA0lQuOq3sYarqIs3hyXtA+t9DmatR8v2mPtc=;
+        t=1612214904; bh=ncWAEAMifVXLmJIv4yy/NJKZs8/oXW42ms01fKRoWRM=;
         h=From;
-        b=JDTpQ2E9CupMknuntp1HbfBqbiRNRYYhwUxM5FizMzNE8IPz4zgIYtItD14ofzs1Q
-         ACB9zaYRsPbLSyfBMskfU2r92n3J9/Y2gp6aQ5Sj4oexhbBI6umwYlvPWyc01VeL6R
-         Fe4Pr6GSLj4+w4xgMfuej07a5fCYfB60T2t8VZCYsHL3eKlvq05uwkM/KO678ZuRC0
-         IMGSwgivPqkKXqsSlZX3+bXaG5fBP70zsmD7XBxfQPZ/cwuEN01357hHcw9GuUKUbn
-         Pb269yGdsuHP9++tEJLns0xRzXwA6x+SzCc9IsKUOIQ6sLMuL1bGG9ou/WmLia7Xjj
-         Nns006e05y1lg==
+        b=em+nOQ7O2g6D52oFiNM6BgLXz4Sg8H94xK5z6Vr7bzwxD/Zr7khEWR5rUmRKhHTqM
+         7r9EHmNBYiZ0hHZ7N46ZFhsX3xDFJv9BbZ6bmJlFcJVJUqGuaT4DOb+QqSrFGib6OA
+         p23P0I75v9mBtcIYoUyxa1t1aMopDLrh32ZWwJh8JpqoDX3oE5pBE8JZ7MUywV6xUY
+         iUXocsxtZBf+Hxgp7HOkEOEUrdgbRBgqMeBC1Ii1gfdnqFR29Q8Op1/1nFBSfbH8No
+         M0IjuicFp3gZHT1QR4D4VVEnaeIXlMVjaEicmsRi0tjiOgX4+RzY8hqWUqA4HnrilB
+         QDg4PH2Ru0XNQ==
 X-CNFS-Analysis: v=2.4 cv=FqfAQ0nq c=1 sm=1 tr=0 ts=60187278 cx=a_exe
  a=tAq5w2qrEf5dL+VNPEPBHQ==:117 a=tAq5w2qrEf5dL+VNPEPBHQ==:17
- a=WOvS8Uw1l4o9L0ZJ_KUA:9
+ a=5fC9_dISOduuxPbwqfAA:9
 From:   Goffredo Baroncelli <kreijack@libero.it>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
         Josef Bacik <josef@toxicpanda.com>,
         Goffredo Baroncelli <kreijack@inwind.it>
-Subject: [PATCH 4/5] btrfs: add allocation_hint option.
-Date:   Mon,  1 Feb 2021 22:28:19 +0100
-Message-Id: <20210201212820.64381-5-kreijack@libero.it>
+Subject: [PATCH 5/5] btrfs: add allocator_hint mode
+Date:   Mon,  1 Feb 2021 22:28:20 +0100
+Message-Id: <20210201212820.64381-6-kreijack@libero.it>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210201212820.64381-1-kreijack@libero.it>
 References: <20210201212820.64381-1-kreijack@libero.it>
@@ -49,110 +49,166 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goffredo Baroncelli <kreijack@inwind.it>
 
-Add allocation_hint mount option. This option accepts the following values:
+When this mode is enabled, the chunk allocation policy is modified as follow.
 
-- 0 (default):  the chunks allocator ignores the disk hints
-- 1:            the chunks allocator considers the disk hints
+Each disk may have a different tag:
+- BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
+- BTRFS_DEV_ALLOCATION_METADATA_ONLY
+- BTRFS_DEV_ALLOCATION_DATA_ONLY
+- BTRFS_DEV_ALLOCATION_PREFERRED_DATA (default)
 
-Signed-off-by: Goffredo Baroncelli <kreijack@winwind.it>
+Where:
+- ALLOCATION_PREFERRED_X means that it is preferred to use this disk for the
+X chunk type (the other type may be allowed when the space is low)
+- ALLOCATION_X_ONLY means that it is used *only* for the X chunk type. This
+means also that it is a preferred choice.
+
+Each time the allocator allocates a chunk of type X , first it takes the disks
+tagged as ALLOCATION_X_ONLY or ALLOCATION_PREFERRED_X; if the space is not
+enough, it uses also the disks tagged as ALLOCATION_METADATA_ONLY; if the space
+is not enough, it uses also the other disks, with the exception of the one
+marked as ALLOCATION_PREFERRED_Y, where Y the other type of chunk (i.e. not X).
+
+Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
 ---
- fs/btrfs/ctree.h   | 12 ++++++++++++
- fs/btrfs/disk-io.c |  2 ++
- fs/btrfs/super.c   | 17 +++++++++++++++++
- 3 files changed, 31 insertions(+)
+ fs/btrfs/volumes.c | 81 +++++++++++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/volumes.h |  1 +
+ 2 files changed, 81 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 1d3c1e479f3d..5cd6d658f157 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -570,6 +570,15 @@ enum btrfs_exclusive_operation {
- 	BTRFS_EXCLOP_SWAP_ACTIVATE,
- };
- 
-+/*
-+ * allocation_hint mode
-+ */
-+
-+enum btrfs_allocation_hint_modes {
-+	BTRFS_ALLOCATION_HINT_DISABLED,
-+	BTRFS_ALLOCATION_HINT_ENABLED
-+};
-+
- struct btrfs_fs_info {
- 	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
- 	unsigned long flags;
-@@ -961,6 +970,9 @@ struct btrfs_fs_info {
- 		u64 zoned;
- 	};
- 
-+	/* allocation_hint mode */
-+	int allocation_hint_mode;
-+
- 	/* Max size to emit ZONE_APPEND write command */
- 	u64 max_zone_append_size;
- 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 765deefda92b..1edd219c347c 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2794,6 +2794,8 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
- 	fs_info->swapfile_pins = RB_ROOT;
- 
- 	fs_info->send_in_progress = 0;
-+
-+	fs_info->allocation_hint_mode = BTRFS_ALLOCATION_HINT_DISABLED;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 68b346c5465d..57ee3e2fdac0 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4806,13 +4806,18 @@ static int btrfs_add_system_chunk(struct btrfs_fs_info *fs_info,
  }
  
- static int init_mount_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 022f20810089..d0c69c950cd9 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -359,6 +359,7 @@ enum {
- 	Opt_thread_pool,
- 	Opt_treelog, Opt_notreelog,
- 	Opt_user_subvol_rm_allowed,
-+	Opt_allocation_hint,
+ /*
+- * sort the devices in descending order by max_avail, total_avail
++ * sort the devices in descending order by alloc_hint,
++ * max_avail, total_avail
+  */
+ static int btrfs_cmp_device_info(const void *a, const void *b)
+ {
+ 	const struct btrfs_device_info *di_a = a;
+ 	const struct btrfs_device_info *di_b = b;
  
- 	/* Rescue options */
- 	Opt_rescue,
-@@ -432,6 +433,7 @@ static const match_table_t tokens = {
- 	{Opt_treelog, "treelog"},
- 	{Opt_notreelog, "notreelog"},
- 	{Opt_user_subvol_rm_allowed, "user_subvol_rm_allowed"},
-+	{Opt_allocation_hint, "allocation_hint=%d"},
++	if (di_a->alloc_hint > di_b->alloc_hint)
++		return -1;
++	if (di_a->alloc_hint < di_b->alloc_hint)
++		return 1;
+ 	if (di_a->max_avail > di_b->max_avail)
+ 		return -1;
+ 	if (di_a->max_avail < di_b->max_avail)
+@@ -4939,6 +4944,15 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 	int ndevs = 0;
+ 	u64 max_avail;
+ 	u64 dev_offset;
++	int hint;
++
++	static const char alloc_hint_map[BTRFS_DEV_ALLOCATION_MASK_COUNT] = {
++		[BTRFS_DEV_ALLOCATION_DATA_ONLY] = -1,
++		[BTRFS_DEV_ALLOCATION_PREFERRED_DATA] = 0,
++		[BTRFS_DEV_ALLOCATION_METADATA_ONLY] = 1,
++		[BTRFS_DEV_ALLOCATION_PREFERRED_METADATA] = 2
++		/* the other values are set to 0 */
++	};
  
- 	/* Rescue options */
- 	{Opt_rescue, "rescue=%s"},
-@@ -889,6 +891,19 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 		case Opt_user_subvol_rm_allowed:
- 			btrfs_set_opt(info->mount_opt, USER_SUBVOL_RM_ALLOWED);
- 			break;
-+		case Opt_allocation_hint:
-+			ret = match_int(&args[0], &intarg);
-+			if (ret || (intarg != 1 && intarg != 0)) {
-+				btrfs_err(info, "invalid allocation_hint= parameter\n");
-+				ret = -EINVAL;
-+				goto out;
-+			}
-+			if (intarg)
-+				btrfs_info(info, "allocation_hint enabled");
-+			else
-+				btrfs_info(info, "allocation_hint disabled");
-+			info->allocation_hint_mode = intarg;
+ 	/*
+ 	 * in the first pass through the devices list, we gather information
+@@ -4991,16 +5005,81 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
+ 		devices_info[ndevs].max_avail = max_avail;
+ 		devices_info[ndevs].total_avail = total_avail;
+ 		devices_info[ndevs].dev = device;
++
++		if (((ctl->type & BTRFS_BLOCK_GROUP_DATA) &&
++		     (ctl->type & BTRFS_BLOCK_GROUP_METADATA)) ||
++		    info->allocation_hint_mode == 
++		     BTRFS_ALLOCATION_HINT_DISABLED) {
++			/*
++			 * if mixed bg or the allocator hint is
++			 * disable, set all the alloc_hint
++			 * fields to the same value, so the sorting
++			 * is not affected
++			 */
++			devices_info[ndevs].alloc_hint = 0;
++		} else if(ctl->type & BTRFS_BLOCK_GROUP_DATA) {
++			hint = device->type & BTRFS_DEV_ALLOCATION_MASK;
++
++			/*
++			 * skip BTRFS_DEV_METADATA_ONLY disks
++			 */
++			if (hint == BTRFS_DEV_ALLOCATION_METADATA_ONLY)
++				continue;
++			/*
++			 * if a data chunk must be allocated,
++			 * sort also by hint (data disk
++			 * higher priority)
++			 */
++			devices_info[ndevs].alloc_hint = -alloc_hint_map[hint];
++		} else { /* BTRFS_BLOCK_GROUP_METADATA */
++			hint = device->type & BTRFS_DEV_ALLOCATION_MASK;
++
++			/*
++			 * skip BTRFS_DEV_DATA_ONLY disks
++			 */
++			if (hint == BTRFS_DEV_ALLOCATION_DATA_ONLY)
++				continue;
++			/*
++			 * if a data chunk must be allocated,
++			 * sort also by hint (metadata hint
++			 * higher priority)
++			 */
++			devices_info[ndevs].alloc_hint = alloc_hint_map[hint];
++		}
++
+ 		++ndevs;
+ 	}
+ 	ctl->ndevs = ndevs;
+ 
++	/*
++	 * no devices available
++	 */
++	if (!ndevs)
++		return 0;
++
+ 	/*
+ 	 * now sort the devices by hole size / available space
+ 	 */
+ 	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
+ 	     btrfs_cmp_device_info, NULL);
+ 
++	/*
++	 * select the minimum set of disks grouped by hint that
++	 * can host the chunk
++	 */
++	ndevs = 0;
++	while (ndevs < ctl->ndevs) {
++		hint = devices_info[ndevs++].alloc_hint;
++		while (devices_info[ndevs].alloc_hint == hint &&
++		       ndevs < ctl->ndevs)
++				ndevs++;
++		if (ndevs >= ctl->devs_min)
 +			break;
- 		case Opt_enospc_debug:
- 			btrfs_set_opt(info->mount_opt, ENOSPC_DEBUG);
- 			break;
-@@ -1495,6 +1510,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 		seq_puts(seq, ",clear_cache");
- 	if (btrfs_test_opt(info, USER_SUBVOL_RM_ALLOWED))
- 		seq_puts(seq, ",user_subvol_rm_allowed");
-+	if (info->allocation_hint_mode)
-+		seq_puts(seq, ",allocation_hint=1");
- 	if (btrfs_test_opt(info, ENOSPC_DEBUG))
- 		seq_puts(seq, ",enospc_debug");
- 	if (btrfs_test_opt(info, AUTO_DEFRAG))
++	}
++
++	BUG_ON(ndevs > ctl->ndevs);
++	ctl->ndevs = ndevs;
++
+ 	return 0;
+ }
+ 
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index d776b7f55d56..31a3e4cf93b5 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -364,6 +364,7 @@ struct btrfs_device_info {
+ 	u64 dev_offset;
+ 	u64 max_avail;
+ 	u64 total_avail;
++	int alloc_hint;
+ };
+ 
+ struct btrfs_raid_attr {
 -- 
 2.30.0
 
