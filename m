@@ -2,91 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4856B30A3A0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Feb 2021 09:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD6830A5C4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Feb 2021 11:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhBAIyb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Feb 2021 03:54:31 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:59406 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbhBAIy3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Feb 2021 03:54:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612169668; x=1643705668;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=P7dGYzeLWW4wl8EYqV0toxgCzcdURANZDs1hKBF78b0=;
-  b=U0kxzg4dQk3nyyAEBGGdT/3bc5WbVa37A2c6K4nUeDjGCynjQd9o5gBt
-   W9Fea1ia8hhhv13HUwcgbiI8zupTVMVTWxKaXY63E/OCLGfWr3glQ9B2W
-   SU+CU8D0aapu2a45kM3RABO/WR4H7TrLWBhdxlrArFkq2I6plwmChhd5A
-   kWg2qwIc05V19uO//7fqA1Jh7tSY7Sq/IV9c3Imh9lHXKlPA083B+sGoN
-   Rle5aIfAfRafe6DraNlNVQuJXW3LgAg79bf5NJCnoiORjAVPhNZWDWn9p
-   a357j2qSP9LBDT2elvmJdF32ezluACqnfMIx8JFLcfJ5JrIii+JSNLppx
-   A==;
-IronPort-SDR: kBP7i78lc9yIUy+dQqLG42RuPt2QMZ3UtsifgqZlJahAabarN2ejTb0omn81BhSzeqz9fM9l7N
- rWQYj4IumQZFf/x/9fYb3rzvKTp/8VrxVGphLRLFue481hg9A4S0kpc/vAYsLpw/IGiFiokcPF
- W1xfCqRLebzK3kooxe7lGn0gS30jX2hGuuye7ok3v0U6AOiHcMJnrd9xBfXcr00NhV7CPM28pm
- p7nV1Xx7P2X5K2jT/A7q6nyY5Dn0aqGow8iqJgI34Vb0DrfaXJnAG1JjT+LWl2XfDvIoVS11Yf
- /ls=
-X-IronPort-AV: E=Sophos;i="5.79,392,1602518400"; 
-   d="scan'208";a="158797708"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Feb 2021 16:52:23 +0800
-IronPort-SDR: bxvQg72kNKDjMKOhHWLOFeKLmqTrpnC5B/qQG+ocslNTlFGBnCQWWby8v6xbq4bUqAVhc5ffHO
- LJ3Fx4j34tpQem+8s5bkvrC3dxM7TH7lUyOeEK/CLCIzHQt91urjEInwjiLbQrfD8XkNWe5OWv
- oVOz0A5qVWlWjdopnOvQ9xBn0lc9Xt4hjoCw87VYX1kmE5Uv+844vZeRhem02IW06G6npv4D01
- eX5Axx68plIjtoEd+p+Ka254yr7OpLxuL56fy0yNLc0OjaAp5dpC3r0WGp46D/4OuczvsEWmPZ
- zrWXAoyA4A/08zUt0Jd7/odO
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 00:36:34 -0800
-IronPort-SDR: 7/8Y5EVz2Hr+tlGAWztCNwWy9+oLVrlOVgQzPbA/GUGvThihy13LqGfdn+F/2r15eZZsQwWtel
- Pzwew2Qrr0DEmorIw5Dn9Sjer32063yA5ZrQ7afyEZShXzB2ZrjKHQ2T3I0wXQlPMioOuMTh3M
- I24j2pzc5vPfkVY8OkQl82nf7vz8/xYNY8Fb6ZJxKAZiBdD7NyEup/XJhmIjaoZSNyyYIZ8h4+
- sd3ZVwT1Xh4tTLu/BpfkHy/nxxapUIpySz96K1admvSPo8CPubqY0wvJclWgcZBLkH7TWn+Gqm
- a9s=
-WDCIronportException: Internal
-Received: from 7459l3apk6t.hitachigst.global (HELO naota-xeon.wdc.com) ([10.84.71.70])
-  by uls-op-cesaip01.wdc.com with ESMTP; 01 Feb 2021 00:52:22 -0800
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Anand Jain <anand.jain@oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-fsdevel@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH for-next 3/3] btrfs: fix a typo in comment
-Date:   Mon,  1 Feb 2021 17:52:04 +0900
-Message-Id: <20210201085204.700090-4-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210201085204.700090-1-naohiro.aota@wdc.com>
-References: <20210201085204.700090-1-naohiro.aota@wdc.com>
+        id S232869AbhBAKth (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Feb 2021 05:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232714AbhBAKtg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Feb 2021 05:49:36 -0500
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF40C061573
+        for <linux-btrfs@vger.kernel.org>; Mon,  1 Feb 2021 02:48:55 -0800 (PST)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1l6Wif-00017c-V8; Mon, 01 Feb 2021 10:46:09 +0000
+Date:   Mon, 1 Feb 2021 10:46:09 +0000
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     Christoph Anton Mitterer <calestyo@scientia.net>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: is back and forth incremental send/receive supported/stable?
+Message-ID: <20210201104609.GO4090@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        Christoph Anton Mitterer <calestyo@scientia.net>,
+        linux-btrfs@vger.kernel.org
+References: <157ed91bb66820d1fef89eb05d00e65c25607938.camel@scientia.net>
+ <20210129192058.GN4090@savella.carfax.org.uk>
+ <956e08b1aed7805f7ee387cc4994702c02b61560.camel@scientia.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <956e08b1aed7805f7ee387cc4994702c02b61560.camel@scientia.net>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Fixes: 9e802babe329 ("btrfs: allow zoned mode on non-zoned block devices")
-Reported-by: Anand Jain <anand.jain@oracle.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/zoned.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, Jan 31, 2021 at 11:50:22PM +0100, Christoph Anton Mitterer wrote:
+> Hey Hugo.
+> 
+> 
+> Thanks for your explanation.
+> I assume such a swapped send/receive would fail at least gracefully?
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 362df27040ff..746066d2fd3c 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -490,7 +490,7 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
- 
- 		model = bdev_zoned_model(device->bdev);
- 		/*
--		 * A Host-Managed zoned device msut be used as a zoned
-+		 * A Host-Managed zoned device must be used as a zoned
- 		 * device. A Host-Aware zoned device and a non-zoned devices
- 		 * can be treated as a zoned device, if ZONED flag is
- 		 * enabled in the superblock.
+   It'll fail *obviously*. I'm not sure how graceful it is. :)
+
+> On Fri, 2021-01-29 at 19:20 +0000, Hugo Mills wrote:
+> >    In your scenario with MASTER and COPY-1 swapped, you'd have to
+> > match the received_uuid from the sending side (on old COPY-1) to the
+> > actual UUID on old MASTER. The code doesn't do this, so you'd have to
+> > patch send/receive to do this.
+> 
+> Well from the mailing list thread you've referenced it seems that the
+> whole thing is rather quite non-trivial... so I guess it's nothing for
+> someone who has basically no insight into btrfs code ^^
+> 
+> It's a pity though, that this doesn't work. Especially the use case of
+> sending back (backup)snapshots would seem pretty useful.
+> 
+> Given that this thread is nearly 6 years, I'd guess the whole idea has
+> been abandoned upstream?!
+
+   It can be made to work, in a number of different ways -- the option
+above is one way; another would be to add extra history of subvolume
+identities -- but I guess it's not a priority for the devs, and at
+least the latter approach would require extending the on-disk FS
+format. Both approaches would need changes to the send stream format.
+
+   Hugo.
+
 -- 
-2.30.0
-
+Hugo Mills             | Great oxymorons of the world, no. 7:
+hugo@... carfax.org.uk | The Simple Truth
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |
