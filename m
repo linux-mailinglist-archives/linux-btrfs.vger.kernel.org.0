@@ -2,409 +2,275 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6BD30BD1F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Feb 2021 12:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B488530BD7D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Feb 2021 12:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhBBLbL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Feb 2021 06:31:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231348AbhBBL3A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:29:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E34B664EC1
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Feb 2021 11:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612265299;
-        bh=XxgGS6onvutTXLN/8nymY5vlhgJcJb1hGweKSIysSdc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bZcHXf94qsTCnQ9BGoqqRAgBlTN3ml9k6FhJ+NNn9/21XUzAyvFkZXbHm4yWsQHmo
-         1cVhEjz5QKc80YN3AOG46P62oqN0bj/JT/VpdEGKR0L7CyvkWmft0YrU+c417ZlJzC
-         fHZxoBKeJuQ7f4tKhIOXmSOHirsVVl1N7+OmwPyfIMeWwwlgcz8EKSc7U9CVnpKNvv
-         RG/h7xBYgIwfs7YwMO3CL/dv38UizZKi2mQWGGDNkB4S9TRNCFFOaNBQ/9pTO/sqCW
-         Lc+rRD2ZKa73EXEdZ6JWcNz56Zesvs36RG6s1+lqnWstE0wPo1FRoKEL15Uzzz1fsS
-         EY2sAYeFAa6dQ==
-Received: by mail-qk1-f182.google.com with SMTP id v126so19365019qkd.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Feb 2021 03:28:18 -0800 (PST)
-X-Gm-Message-State: AOAM531PnMFl8LVYRBzQlOEFxhQvhy4NCXSOZu+hln1OTGsoXJOFk5EG
-        o+p3x+KjXfd9+ofNVoBXoaKNVeqk0pM4If0S21E=
-X-Google-Smtp-Source: ABdhPJzdVGzLek3sGmDzg2wD4Zaig6zzIQFcEp2K2jOjUgl/bxp1QRruUpDrv1hrYUwF4kt4tTe12aJWbLcW6pcg2sw=
-X-Received: by 2002:a05:620a:69a:: with SMTP id f26mr20526892qkh.0.1612265297897;
- Tue, 02 Feb 2021 03:28:17 -0800 (PST)
+        id S229870AbhBBLya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Feb 2021 06:54:30 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:56042 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhBBLy1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Feb 2021 06:54:27 -0500
+X-Greylist: delayed 1507 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 06:54:25 EST
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112BO7FX009364;
+        Tue, 2 Feb 2021 11:28:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=i51biKQpzoF9ohKms+uRXMvnydhLVFDu7NNMxBqC04E=;
+ b=oMhSPxfBtqHGeiXxtusYhLrnjRlt0Jr18dVHHU4Zh4ZWvungoM1KAMRdru+mk6GKYDXQ
+ GMYC7ggPk7dveGGWBuipPszeq4URroZg+J3UKdt4+mS20Rb7w9G6HJefJcDMrE7wevX5
+ 7eI63MLufqtBxRWHdFXmvI+PBKGFVu8iH/lw91ypWWYfDu4OnAlaUaZX5a+BNdTHlLmI
+ 40YHvW4k+OIs2oV8fUbzyPMf1ckDB/FVStGJT05BAd1ABNL0SZnKhT0dOWzvCGOR1Vl+
+ 4YklUTA0O6l98CdYFfR9tIpHhBzPm+QmNALmxA1epqR1hJdgDL8SSz+Ie/tsLQmm2auw bw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 36dn4wg5sg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 11:28:31 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112BQqTC010354;
+        Tue, 2 Feb 2021 11:28:31 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by userp3030.oracle.com with ESMTP id 36dhcwh66d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 11:28:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XXW7xf7jk2jpoueFzVB3/mLiEZyX9Sacab72y2aXpmWoZo2vZWWoG/nruMypj2xmw5+k7e14//Vs+zYDRn+KrfW2L9HcSb1866lrgDUMfz1AjpsauBMDGC2jjXXSeHlLUvzFpVlt5YfnaTGFxp23xu65uq1lnSBGBXlO4UhqmAB2ysVf/Ug0slMVu3KhdqNzSGsOXqhIWALQHqM9rI3HJ8OXKzleE4X+p0Tk6vcCICkLNpGK9MhEOqhQvj7gU4Xk8tcgc+yL+w3g9KlUbpHVWeXWFisgRCemYVeGO8cuHlk0nRouOCt0wO8xjBL8qd0PBJOsA677w36Z/jJxMBlkVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i51biKQpzoF9ohKms+uRXMvnydhLVFDu7NNMxBqC04E=;
+ b=Iae9fWm54t8nWdr0KmmV6fRPbTvVhQEoWjsr7Gi/pF+DHvDpzdMunPkYTKMhQjkhtrldFY6GtJRirCwigkF/GEpmmkSBEhdjFZ7OLfkMx92PtE8KZl4XVqmBsWvn3YqRp3kQqN8AYzxaxtCWHD7RAmx/NPOrI/B4CrK+YIOb/V0HJPQRXKc1AWMps3m97uZt7Cq0gbQ83FNSRaMZeuhx/RoZ+Ezs9tSPUzsE30sD6iUeH5C3DxaoXtPGM1BhIT29dRD8U8m/eCSNrN0hIAuVnDesiodZsyXuPtkutSAxRiS5GABCPWcwpMHn8x+oXyM3IQkexwowkGH92YtzM8MsjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i51biKQpzoF9ohKms+uRXMvnydhLVFDu7NNMxBqC04E=;
+ b=vwgbrr71dZGHwxZXXbOWsbBWOKL7rooTQm51Nf5gk32cnYmG0PlgEuSUXwSt4rwUtu+zqVNgdv8tZsJRVVGJfgfAG4xHlqMCoIv8HEvn98nKsmYc+xmQxSuIyhd6VL9ouZDEi8Wx35+JdIR/43k8hVH81U+HkuESCwxY9iaucbM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BN6PR10MB1683.namprd10.prod.outlook.com (2603:10b6:405:b::15)
+ by BN0PR10MB5191.namprd10.prod.outlook.com (2603:10b6:408:116::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Tue, 2 Feb
+ 2021 11:28:29 +0000
+Received: from BN6PR10MB1683.namprd10.prod.outlook.com
+ ([fe80::44c4:3dbe:4b78:f69a]) by BN6PR10MB1683.namprd10.prod.outlook.com
+ ([fe80::44c4:3dbe:4b78:f69a%3]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
+ 11:28:28 +0000
+Subject: Re: [bug report] Unable to handle kernel paging request
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210126083402.142577-1-wqu@suse.com>
+ <5afbf08b-a93d-5633-8212-0e540625594a@oracle.com>
+ <d55afd47-189f-e0a6-5577-0e89dab9e37d@gmx.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <913e7523-5700-27ad-4045-200d83e37deb@oracle.com>
+Date:   Tue, 2 Feb 2021 19:28:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+In-Reply-To: <d55afd47-189f-e0a6-5577-0e89dab9e37d@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [2406:3003:2006:2288:594f:b4bd:cd09:1ee4]
+X-ClientProxiedBy: SG2PR04CA0184.apcprd04.prod.outlook.com
+ (2603:1096:4:14::22) To BN6PR10MB1683.namprd10.prod.outlook.com
+ (2603:10b6:405:b::15)
 MIME-Version: 1.0
-References: <cover.1606305501.git.fdmanana@suse.com> <d9df3c01bd2fbfeddfe205fa229ecea2d7478711.1606305501.git.fdmanana@suse.com>
- <20210202133838.1639.409509F4@e16-tech.com>
-In-Reply-To: <20210202133838.1639.409509F4@e16-tech.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 2 Feb 2021 11:28:06 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H73JQk=ndXM7NB0iqyL6J60-pUw3O8X_LMRYfO+gKUt4g@mail.gmail.com>
-Message-ID: <CAL3q7H73JQk=ndXM7NB0iqyL6J60-pUw3O8X_LMRYfO+gKUt4g@mail.gmail.com>
-Subject: Re: [PATCH 6/6] btrfs: do not block inode logging for so long during
- transaction commit
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2406:3003:2006:2288:594f:b4bd:cd09:1ee4] (2406:3003:2006:2288:594f:b4bd:cd09:1ee4) by SG2PR04CA0184.apcprd04.prod.outlook.com (2603:1096:4:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 2 Feb 2021 11:28:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dfc6a9a9-c2ac-4c3f-e492-08d8c76da996
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5191:
+X-Microsoft-Antispam-PRVS: <BN0PR10MB5191AE0ACB3C14B13BE552C2E5B59@BN0PR10MB5191.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kgcvwh8sgTPDNWgbM23+N30UNeiyM3AaXoZfU0ovB5JdBp7zBad/vwMg5mR4Z7AL54LzdxnzPkoQyY8HfjTkQWYSK5TkNJUD623mAxU30lWKxUJKrNmGui+CMPo73GnRc9s/1vOJh/X6mmYdaOG/WuRK5LeuOP4XsPrNLS22OYdjwGWGityM7egBXGvkCWXE2aPURPx/LqC5S7JtkZPhK/BC5RkxOurBndp/74SknKyGxqwWMnXV141sWSWuOCVoPueE4HNL/X0xO7hUUqVVbEFY/6Gr8oc8O5P9Tx/IzdLlHIfa67BOEMnoXrjw8ycgLPyzlZ/c7h5qrvZNmrpCm3NVXVXxvDNv6xzHqlN1V783JlhkvGf5BUT7zdDn8ZEeDtxyr7Ly0CIYdOA4/YwCtWET2lVD/fKXSwzry1pvlRbQfopaiuxEkB5ppbBsm5QVOc8jyI/ur3X0eKBtx6TVbnlFTDzJISwG2vDlj5I8Tr0oUwTz8aPk2C+Gz2H9V8oo1EKUsizEzjAIF8lD8BKxbwc8Jjj/giwADJtXoO3H4eqN48/TwT2gepIaFKlqMXKFiV49qDnRW9qi7bRMoZFBa6Y7tYxxEh5cjlVpZmAEw2M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR10MB1683.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(39860400002)(396003)(366004)(2616005)(31686004)(8936002)(53546011)(44832011)(66476007)(5660300002)(6486002)(86362001)(83380400001)(478600001)(66946007)(36756003)(316002)(2906002)(31696002)(8676002)(110136005)(186003)(66556008)(45080400002)(6666004)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VEhDZVJPYmJ1Z0Q4aG1JclV6bnNEOEVmN2QyVk9NUjFrbWMvbEVTM0xtUk1u?=
+ =?utf-8?B?RG45dlpFaUN4NmJqS0pOVHlBRHhFcmhoblplRUt6V1BKalRwdG1Rc1JPcFFJ?=
+ =?utf-8?B?SkdRcFpWS3R1ZFNaZE90TDlHamRPODdMS2V1NGNnL1h6ajNoNjFpQlRQUERw?=
+ =?utf-8?B?VmdoSFVlVzBBejcwWkRFaGwwMG5YZzN6bUYvcTk1UmxaMU5RekRjc2phekFu?=
+ =?utf-8?B?TTF3Q2h0ZlV3SExiUmFxZ2F3a3Q2dUJydGdoV0hQL2YzYUFEU3hWZTZ4OG83?=
+ =?utf-8?B?U0NKUnArRnpKT2ZudTAwck5mRkVvR2phNTU2L0s1RVY5aGV5cVdGeDRmVmV1?=
+ =?utf-8?B?U3BMR24xUSsyYjFGWXU4d1lUektMc3EvSHBjczhPcllSV0laUE9SVjJ6T096?=
+ =?utf-8?B?VFZ6OUh6dUV4cVo4R01pcy9GMUxuU2ZhYVpmKzBZcWRSUjlzdWIxUlJqbXRr?=
+ =?utf-8?B?YUtndi9UQW5mYjdzNkJmSVo3Y3kxai9IVVZCeVVuNmhrMVUxSjZXRDltZ3RO?=
+ =?utf-8?B?MTFuWjlIM2UralBURDIvbVNxL3ZwZkpPV0NObkZ0Z3RNTVNLN2lId2hJSTJ1?=
+ =?utf-8?B?aW9MZm9MSFNYZWE1cmdpZzE5a2JHOWIzWUpkdkNoTFNwYjREditBSndVK0NN?=
+ =?utf-8?B?SG5DdmFsbjVlbUk1dzVDd2JwSzNqb01ySUNFR2Fpb0JncE5laEFvRDFPNDdV?=
+ =?utf-8?B?UysrRkRtMXNzL2JJNnhLS1pYOGhzKzIvLy8zS0FDRlovSGRCRVZhOStYN1g3?=
+ =?utf-8?B?QWZuUHJIMGpwNDZaUU0vWkx4UG96MFVnQTVJdThNOGxBLzk2bGNFV0xYVnli?=
+ =?utf-8?B?NHc0dWk5Z0pYN09mUjlqNDJsZVZVYXYycC9tT3YyNGE2TnJaVjFXSkpDRjhm?=
+ =?utf-8?B?UHFNbFRlM3BxelhMMmF4MmdiWFMzM1BsUXlwQzc4R3N5b2s2SERXVjdONzhL?=
+ =?utf-8?B?OXpRRGp1Zmk1T2llaGdkbHhpTUZJOGtpM3VmK2JUd3FxaTd6Y3E0bWNGcWQw?=
+ =?utf-8?B?TXJzS1BXQU9VU1JjT1A5SDF5UHNwa3JZaHUvUU0xa3hiR0tPbjdBUkZjbE1D?=
+ =?utf-8?B?UHQyS1ZqMElLckVyTnRhR3VoT3JjMjh6TjJDVElzZ2VoMG13VlkwOVovUEdG?=
+ =?utf-8?B?SVVJRi85NlJFdEtib2F6ck9mK3dCYm02U0VESC9zMndWVDNaUng1NFp3aDAx?=
+ =?utf-8?B?Qk9DakdWRU5UWEw3cUNjSDQrclFINUhkKzdOaWQvSHlwQVIyb2IvQ3d5ZkVI?=
+ =?utf-8?B?WjNKSGlEbklmWG9DSE81QnBCZjlOSWdBQ0w0ZFlkZUFNeTBtTnR3NzFMdFhD?=
+ =?utf-8?B?VGFacm1ZVHRGTkpTeVBRVTExY2t2blpqandvNnkybEExSGExTCt3TXdPNGJs?=
+ =?utf-8?B?UXMwU0RXelF3NHNzN0JnSW5IeTRTSmJTTmIvTlZJN2xGQ1piVzFIS2x0NW5P?=
+ =?utf-8?B?K3JqbGNjVDRabGFXV0tmQUtBRy8vQThEbmZ1dWRRZnhhUklHd3pzOEZSUndn?=
+ =?utf-8?Q?hXIT6ONY7aF3NUH7hlwp1fwrKjH?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfc6a9a9-c2ac-4c3f-e492-08d8c76da996
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR10MB1683.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 11:28:28.8014
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xmW2GjSjRmYwjAdi36lNBH8MxyyXxZiohwtHsaOVSiVli8sFAolmT+22+w1i2RwFXvy6kqM6eYFbobdrDgNQTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5191
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ spamscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102020079
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1011 bulkscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102020079
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 5:42 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
->
-> Hi, Filipe Manana
->
-> The dbench result with these patches is very good. thanks a lot.
->
-> This is the dbench(synchronous mode) result , and then a question.
->
-> command: dbench -s -t 60 -D /btrfs/ 32
-> mount option:ssd,space_cache=v2
-> kernel:5.10.12 + patchset 1 + this patchset
 
-patchset 1 and "this patchset" are the same, did you mean two
-different patchsets or just a single patchset?
 
-> patchset 1:
-> 0001-btrfs-fix-race-causing-unnecessary-inode-logging-dur.patch
-> 0002-btrfs-fix-race-that-results-in-logging-old-extents-d.patch
-> 0003-btrfs-fix-race-that-causes-unnecessary-logging-of-an.patch
-> 0004-btrfs-fix-race-that-makes-inode-logging-fallback-to-.patch
-> 0005-btrfs-fix-race-leading-to-unnecessary-transaction-co.patch
-> 0006-btrfs-do-not-block-inode-logging-for-so-long-during-.patch
->
-> We get two types of result as below, and the result type 1 is not easy
-> to reproduce now.
+On 2/2/2021 6:23 PM, Qu Wenruo wrote:
+> 
+> 
+> On 2021/2/2 下午5:21, Anand Jain wrote:
+>>
+>> Qu,
+>>
+>>   fstests ran fine on an aarch64 kvm with this patch set.
+> 
+> Do you mean subpage patchset?
+> 
+> With 4K sector size?
+> No way it can run fine...
 
-Ok, there are outliers often, that's why multiple tests should be done.
+  No . fstests ran with sectorsize == pagesize == 64k. These aren't
+  subpage though. I mean just regression checks.
 
+> Long enough fsstress can crash the kernel with btrfs_csum_one_bio()
+> unable to locate the corresponding ordered extent.
 >
-> Question:
-> for synchronous mode, the result type 1 is perfect?
+>>   Further, I was running few hand tests as below, and it fails
+>>   with - Unable to handle kernel paging.
+>>
+>>   Test case looks something like..
+>>
+>>   On x86_64 create btrfs on a file 11g
+>>   copy /usr into /test-mnt stops at enospc
+>>   set compression property on the root sunvol
+>>   run defrag with -czstd
+> 
+> I don't even consider compression a supported feature for subpage.
 
-What do you mean by perfect? You mean if result 1 is better than result 2?
+  It should fail the ro mount, which it didn't. Similar test case
+  without compression is fine.
 
-> and there is still some minor place about the flush to do for
-> the result type2?
+> Are you really talking about the subpage patchset with 4K sector size,
+> on 64K page size AArch64?
 
-By "minor place" you mean the huge difference I suppose.
+  yes readonly mount test case as above.
 
->
->
-> result type 1:
->
->  Operation      Count    AvgLat    MaxLat
->  ----------------------------------------
->  NTCreateX     868942     0.028     3.017
->  Close         638536     0.003     0.061
->  Rename         36851     0.663     4.000
->  Unlink        175182     0.399     5.358
->  Qpathinfo     789014     0.014     1.846
->  Qfileinfo     137684     0.002     0.047
->  Qfsinfo       144241     0.004     0.059
->  Sfileinfo      70913     0.008     0.046
->  Find          304554     0.057     1.889
-> ** WriteX        429696     3.960  2239.973
->  ReadX        1363356     0.005     0.358
->  LockX           2836     0.004     0.038
->  UnlockX         2836     0.002     0.018
-> ** Flush          60771     0.621     6.794
->
-> Throughput 452.385 MB/sec (sync open)  32 clients  32 procs  max_latency=1963.312 ms
-> + stat -f -c %T /btrfs/
-> btrfs
-> + uname -r
-> 5.10.12-4.el7.x86_64
->
->
-> result type 2:
->  Operation      Count    AvgLat    MaxLat
->  ----------------------------------------
->  NTCreateX     888943     0.028     2.679
->  Close         652765     0.002     0.058
->  Rename         37705     0.572     3.962
->  Unlink        179713     0.383     3.983
->  Qpathinfo     806705     0.014     2.294
->  Qfileinfo     140752     0.002     0.125
->  Qfsinfo       147909     0.004     0.049
->  Sfileinfo      72374     0.008     0.104
->  Find          311839     0.058     2.305
-> ** WriteX        439656     3.854  1872.109
->  ReadX        1396868     0.005     0.324
->  LockX           2910     0.004     0.026
->  UnlockX         2910     0.002     0.025
-> ** Flush          62260     0.750  1659.364
->
-> Throughput 461.856 MB/sec (sync open)  32 clients  32 procs  max_latency=1872.118 ms
-> + stat -f -c %T /btrfs/
-> btrfs
-> + uname -r
-> 5.10.12-4.el7.x86_64
+Thanks, Anand
 
-I'm not sure what your question is exactly.
 
-Are both results after applying the same patchset, or are they before
-and after applying the patchset, respectively?
+> If really so, I appreciate your effort on testing very much, it means
+> the patchset is doing way better than it is.
+> But I don't really believe it's even true to pass fstests....
 
-If they are both with the patchset applied, and you wonder about the
-big variation in the "Flush" operations, I am not sure about why it is
-so.
-Both throughput and max latency are better in result 2.
 
-It's normal to have variations across dbench runs, I get them too, and
-I do several runs (5 or 6) to check things out.
 
-I don't use virtualization (testing on bare metal), I set the cpu
-governor mode to performance (instead of the "powersave" default) and
-use a non-debug kernel configuration, because otherwise I get
-significant variations in latencies and throughput too (though I never
-got a huge difference such as from 6.794 to 1659.364).
-
-Thanks.
-
->
->
->
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2021/02/02
->
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Early on during a transaction commit we acquire the tree_log_mutex and
-> > hold it until after we write the super blocks. But before writing the
-> > extent buffers dirtied by the transaction and the super blocks we unblock
-> > the transaction by setting its state to TRANS_STATE_UNBLOCKED and setting
-> > fs_info->running_transaction to NULL.
-> >
-> > This means that after that and before writing the super blocks, new
-> > transactions can start. However if any transaction wants to log an inode,
-> > it will block waiting for the transaction commit to write its dirty
-> > extent buffers and the super blocks because the tree_log_mutex is only
-> > released after those operations are complete, and starting a new log
-> > transaction blocks on that mutex (at start_log_trans()).
-> >
-> > Writing the dirty extent buffers and the super blocks can take a very
-> > significant amount of time to complete, but we could allow the tasks
-> > wanting to log an inode to proceed with most of their steps:
-> >
-> > 1) create the log trees
-> > 2) log metadata in the trees
-> > 3) write their dirty extent buffers
-> >
-> > They only need to wait for the previous transaction commit to complete
-> > (write its super blocks) before they attempt to write their super blocks,
-> > otherwise we could end up with a corrupt filesystem after a crash
-> >
-> > So change start_log_trans() to use the root tree's log_mutex to serialize
-> > for the creation of the log root tree instead of using the tree_log_mutex,
-> > and make btrfs_sync_log() acquire the tree_log_mutex before writing the
-> > super blocks. This allows for inode logging to wait much less time when
-> > there is a previous transaction that is still committing, often not having
-> > to wait at all, as by the time when we try to sync the log the previous
-> > transaction already wrote its super blocks.
-> >
-> > This patch belongs to a patch set that is comprised of the following
-> > patches:
-> >
-> >   btrfs: fix race causing unnecessary inode logging during link and rename
-> >   btrfs: fix race that results in logging old extents during a fast fsync
-> >   btrfs: fix race that causes unnecessary logging of ancestor inodes
-> >   btrfs: fix race that makes inode logging fallback to transaction commit
-> >   btrfs: fix race leading to unnecessary transaction commit when logging inode
-> >   btrfs: do not block inode logging for so long during transaction commit
-> >
-> > The following script that uses dbench was used to measure the impact of
-> > the whole patchset:
-> >
-> >   $ cat test-dbench.sh
-> >   #!/bin/bash
-> >
-> >   DEV=/dev/nvme0n1
-> >   MNT=/mnt/btrfs
-> >   MOUNT_OPTIONS="-o ssd"
-> >
-> >   echo "performance" | \
-> >       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-> >
-> >   mkfs.btrfs -f -m single -d single $DEV
-> >   mount $MOUNT_OPTIONS $DEV $MNT
-> >
-> >   dbench -D $MNT -t 300 64
-> >
-> >   umount $MNT
-> >
-> > The test was run on a machine with 12 cores, 64G of ram, using a NVMe
-> > device and a non-debug kernel configuration (Debian's default).
-> >
-> > Before patch set:
-> >
-> >  Operation      Count    AvgLat    MaxLat
-> >  ----------------------------------------
-> >  NTCreateX    11277211    0.250    85.340
-> >  Close        8283172     0.002     6.479
-> >  Rename        477515     1.935    86.026
-> >  Unlink       2277936     0.770    87.071
-> >  Deltree          256    15.732    81.379
-> >  Mkdir            128     0.003     0.009
-> >  Qpathinfo    10221180    0.056    44.404
-> >  Qfileinfo    1789967     0.002     4.066
-> >  Qfsinfo      1874399     0.003     9.176
-> >  Sfileinfo     918589     0.061    10.247
-> >  Find         3951758     0.341    54.040
-> >  WriteX       5616547     0.047    85.079
-> >  ReadX        17676028    0.005     9.704
-> >  LockX          36704     0.003     1.800
-> >  UnlockX        36704     0.002     0.687
-> >  Flush         790541    14.115   676.236
-> >
-> > Throughput 1179.19 MB/sec  64 clients  64 procs  max_latency=676.240 ms
-> >
-> > After patch set:
-> >
-> > Operation      Count    AvgLat    MaxLat
-> >  ----------------------------------------
-> >  NTCreateX    12687926    0.171    86.526
-> >  Close        9320780     0.002     8.063
-> >  Rename        537253     1.444    78.576
-> >  Unlink       2561827     0.559    87.228
-> >  Deltree          374    11.499    73.549
-> >  Mkdir            187     0.003     0.005
-> >  Qpathinfo    11500300    0.061    36.801
-> >  Qfileinfo    2017118     0.002     7.189
-> >  Qfsinfo      2108641     0.003     4.825
-> >  Sfileinfo    1033574     0.008     8.065
-> >  Find         4446553     0.408    47.835
-> >  WriteX       6335667     0.045    84.388
-> >  ReadX        19887312    0.003     9.215
-> >  LockX          41312     0.003     1.394
-> >  UnlockX        41312     0.002     1.425
-> >  Flush         889233    13.014   623.259
-> >
-> > Throughput 1339.32 MB/sec  64 clients  64 procs  max_latency=623.265 ms
-> >
-> > +12.7% throughput, -8.2% max latency
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  fs/btrfs/ctree.h    |  2 +-
-> >  fs/btrfs/tree-log.c | 56 +++++++++++++++++++++++++++++++--------------
-> >  2 files changed, 40 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > index c0c6e79c43f9..7185384f475a 100644
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > @@ -1026,7 +1026,7 @@ enum {
-> >       BTRFS_ROOT_DEAD_RELOC_TREE,
-> >       /* Mark dead root stored on device whose cleanup needs to be resumed */
-> >       BTRFS_ROOT_DEAD_TREE,
-> > -     /* The root has a log tree. Used only for subvolume roots. */
-> > +     /* The root has a log tree. Used for subvolume roots and the tree root. */
-> >       BTRFS_ROOT_HAS_LOG_TREE,
-> >       /* Qgroup flushing is in progress */
-> >       BTRFS_ROOT_QGROUP_FLUSHING,
-> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > index bc5b652f4f64..e8b84543d565 100644
-> > --- a/fs/btrfs/tree-log.c
-> > +++ b/fs/btrfs/tree-log.c
-> > @@ -139,8 +139,25 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
-> >                          struct btrfs_log_ctx *ctx)
-> >  {
-> >       struct btrfs_fs_info *fs_info = root->fs_info;
-> > +     struct btrfs_root *tree_root = fs_info->tree_root;
-> >       int ret = 0;
-> >
-> > +     /*
-> > +      * First check if the log root tree was already created. If not, create
-> > +      * it before locking the root's log_mutex, just to keep lockdep happy.
-> > +      */
-> > +     if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state)) {
-> > +             mutex_lock(&tree_root->log_mutex);
-> > +             if (!fs_info->log_root_tree) {
-> > +                     ret = btrfs_init_log_root_tree(trans, fs_info);
-> > +                     if (!ret)
-> > +                             set_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state);
-> > +             }
-> > +             mutex_unlock(&tree_root->log_mutex);
-> > +             if (ret)
-> > +                     return ret;
-> > +     }
-> > +
-> >       mutex_lock(&root->log_mutex);
-> >
-> >       if (root->log_root) {
-> > @@ -156,13 +173,6 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
-> >                       set_bit(BTRFS_ROOT_MULTI_LOG_TASKS, &root->state);
-> >               }
-> >       } else {
-> > -             mutex_lock(&fs_info->tree_log_mutex);
-> > -             if (!fs_info->log_root_tree)
-> > -                     ret = btrfs_init_log_root_tree(trans, fs_info);
-> > -             mutex_unlock(&fs_info->tree_log_mutex);
-> > -             if (ret)
-> > -                     goto out;
-> > -
-> >               ret = btrfs_add_log_tree(trans, root);
-> >               if (ret)
-> >                       goto out;
-> > @@ -3022,6 +3032,8 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
-> >       int log_transid = 0;
-> >       struct btrfs_log_ctx root_log_ctx;
-> >       struct blk_plug plug;
-> > +     u64 log_root_start;
-> > +     u64 log_root_level;
-> >
-> >       mutex_lock(&root->log_mutex);
-> >       log_transid = ctx->log_transid;
-> > @@ -3199,22 +3211,31 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
-> >               goto out_wake_log_root;
-> >       }
-> >
-> > -     btrfs_set_super_log_root(fs_info->super_for_commit,
-> > -                              log_root_tree->node->start);
-> > -     btrfs_set_super_log_root_level(fs_info->super_for_commit,
-> > -                                    btrfs_header_level(log_root_tree->node));
-> > -
-> > +     log_root_start = log_root_tree->node->start;
-> > +     log_root_level = btrfs_header_level(log_root_tree->node);
-> >       log_root_tree->log_transid++;
-> >       mutex_unlock(&log_root_tree->log_mutex);
-> >
-> >       /*
-> > -      * Nobody else is going to jump in and write the ctree
-> > -      * super here because the log_commit atomic below is protecting
-> > -      * us.  We must be called with a transaction handle pinning
-> > -      * the running transaction open, so a full commit can't hop
-> > -      * in and cause problems either.
-> > +      * Here we are guaranteed that nobody is going to write the superblock
-> > +      * for the current transaction before us and that neither we do write
-> > +      * our superblock before the previous transaction finishes its commit
-> > +      * and writes its superblock, because:
-> > +      *
-> > +      * 1) We are holding a handle on the current transaction, so no body
-> > +      *    can commit it until we release the handle;
-> > +      *
-> > +      * 2) Before writing our superblock we acquire the tree_log_mutex, so
-> > +      *    if the previous transaction is still committing, and hasn't yet
-> > +      *    written its superblock, we wait for it to do it, because a
-> > +      *    transaction commit acquires the tree_log_mutex when the commit
-> > +      *    begins and releases it only after writing its superblock.
-> >        */
-> > +     mutex_lock(&fs_info->tree_log_mutex);
-> > +     btrfs_set_super_log_root(fs_info->super_for_commit, log_root_start);
-> > +     btrfs_set_super_log_root_level(fs_info->super_for_commit, log_root_level);
-> >       ret = write_all_supers(fs_info, 1);
-> > +     mutex_unlock(&fs_info->tree_log_mutex);
-> >       if (ret) {
-> >               btrfs_set_log_full_commit(trans);
-> >               btrfs_abort_transaction(trans, ret);
-> > @@ -3299,6 +3320,7 @@ int btrfs_free_log_root_tree(struct btrfs_trans_handle *trans,
-> >       if (fs_info->log_root_tree) {
-> >               free_log_tree(trans, fs_info->log_root_tree);
-> >               fs_info->log_root_tree = NULL;
-> > +             clear_bit(BTRFS_ROOT_HAS_LOG_TREE, &fs_info->tree_root->state);
-> >       }
-> >       return 0;
-> >  }
-> > --
-> > 2.28.0
->
->
+> Thanks,
+> Qu
+> 
+>>   truncate a large file 4gb
+>>   punch holes on it
+>>   truncate couple of smaller files
+>>   unmount
+>>   send file to an aarch64 (64k pagesize) kvm
+>>   mount -o ro
+>>   run sha256sum on all the files
+>>
+>> ---------------------
+>> [37012.027764] BTRFS warning (device loop0): csum failed root 5 ino 611
+>> off 228659200 csum 0x1dcefc2d expected csum 0x69412d2a mirror 1
+>> [37012.030971] BTRFS error (device loop0): bdev /dev/loop0 errs: wr 0,
+>> rd 0, flush 0, corrupt 9, gen 0
+>> [37012.036223] BTRFS warning (device loop0): csum failed root 5 ino 616
+>> off 228724736 csum 0x73f63661 expected csum 0xaf922a6f mirror 1
+>> [37012.036250] BTRFS error (device loop0): bdev /dev/loop0 errs: wr 0,
+>> rd 0, flush 0, corrupt 10, gen 0
+>> [37012.123917] Unable to handle kernel paging request at virtual address
+>> 0061d1f66c080000
+>> [37012.126104] Mem abort info:
+>> [37012.126951]   ESR = 0x96000004
+>> [37012.127791]   EC = 0x25: DABT (current EL), IL = 32 bits
+>> [37012.129207]   SET = 0, FnV = 0
+>> [37012.130043]   EA = 0, S1PTW = 0
+>> [37012.131269] Data abort info:
+>> [37012.132165]   ISV = 0, ISS = 0x00000004
+>> [37012.133211]   CM = 0, WnR = 0
+>> [37012.134014] [0061d1f66c080000] address between user and kernel
+>> address ranges
+>> [37012.136050] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+>> [37012.137567] Modules linked in: btrfs blake2b_generic xor xor_neon
+>> zstd_compress raid6_pq crct10dif_ce ip_tables x_tables ipv6
+>> [37012.140742] CPU: 0 PID: 289001 Comm: kworker/u64:3 Not tainted
+>> 5.11.0-rc5+ #10
+>> [37012.142839] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0
+>> 02/06/2015
+>> [37012.144787] Workqueue: btrfs-endio btrfs_work_helper [btrfs]
+>> [37012.146474] pstate: 20000005 (nzCv daif -PAN -UAO -TCO BTYPE=--)
+>> [37012.148175] pc : __crc32c_le+0x84/0xe8
+>> [37012.149266] lr : chksum_digest+0x24/0x40
+>> [37012.150420] sp : ffff80001638f8f0
+>> [37012.151491] x29: ffff80001638f8f0 x28: ffff0000c7bb0000
+>> [37012.152982] x27: ffff0000d1a27000 x26: ffff0002f21b56e0
+>> [37012.154565] x25: ffff800011df3948 x24: 0000004000000000
+>> [37012.156063] x23: ffff000000000000 x22: ffff80001638fa00
+>> [37012.157570] x21: 0000000000000004 x20: ffff0000c7bb0050
+>> [37012.159145] x19: ffff80001638fc88 x18: 0000000000000000
+>> [37012.160684] x17: 0000000000000000 x16: 0000000000000000
+>> [37012.162190] x15: 0000051d5454c764 x14: 000000000000017a
+>> [37012.163774] x13: 0000000000000145 x12: 0000000000000001
+>> [37012.165282] x11: 0000000000000000 x10: 00000000000009d0
+>> [37012.166849] x9 : ffff0000ca305564 x8 : 0000000000000000
+>> [37012.168395] x7 : 0000000000000000 x6 : ffff800011f23980
+>> [37012.169883] x5 : 00000000006f6964 x4 : ffff8000105dd7a8
+>> [37012.171476] x3 : ffff80001638fc88 x2 : 0000000000010000
+>> [37012.172997] x1 : bc61d1f66c080000 x0 : 00000000ffffffff
+>> [37012.174642] Call trace:
+>> [37012.175427]  __crc32c_le+0x84/0xe8
+>> [37012.176419]  crypto_shash_digest+0x34/0x58
+>> [37012.177616]  check_compressed_csum+0xd0/0x2b0 [btrfs]
+>> [37012.179160]  end_compressed_bio_read+0xb8/0x308 [btrfs]
+>> [37012.180731]  bio_endio+0x12c/0x1d8
+>> [37012.181712]  end_workqueue_fn+0x3c/0x60 [btrfs]
+>> [37012.183161]  btrfs_work_helper+0xf4/0x5a8 [btrfs]
+>> [37012.184570]  process_one_work+0x1ec/0x4c0
+>> [37012.185727]  worker_thread+0x48/0x478
+>> [37012.186823]  kthread+0x158/0x160
+>> [37012.187768]  ret_from_fork+0x10/0x34
+>> [37012.188791] Code: 9ac55c08 9ac65d08 1a880000 b4000122 (a8c21023)
+>> [37012.190486] ---[ end trace 4f73e813d058b84c ]---
+>> [37019.180684] note: kworker/u64:3[289001] exited with preempt_count 1
+>> ---------------
+>>
+>>   Could you please take a look?
+>>
+>> Thanks, Anand
