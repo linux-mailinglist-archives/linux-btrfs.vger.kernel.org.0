@@ -2,183 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F339730BD85
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Feb 2021 12:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF01630BEF9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Feb 2021 14:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbhBBL50 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Feb 2021 06:57:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhBBL5Z (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Feb 2021 06:57:25 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2B7C061573
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Feb 2021 03:56:45 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id l23so14633001qtq.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Feb 2021 03:56:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=7lsCzJGHLvr8Kj2E1UlXtenLUTlo64+FCBy95fDW3Cg=;
-        b=DzaK3QBTE8qh2JHpIWyeIorAFMa5M99xqaH61sMYWU1HgRwHIf1dcdAKA6d1BF+m5c
-         un7b6FSeqS/aNgvf0l8aZCPQHsXu9u/cd9jk3C1EH/qJP61DRXpK02htTDVwxKi1EzfT
-         lkGebkFGl09qTbMF3re4ptZSyn6MtK6pi0zZbYODGM7+RPslymwaIKMS5rQTWn8+hvtM
-         fyn2qM6Sqnj8ZV8/i8lUzPBRpPYM9cgrjvbEUj4ihXsqgwrgh/PEHYtOlFJVh5La/EFX
-         4gSUxUJs7B8HT3SeLxuw9RS+/q2S6VBsIibv0Uky6r1DeBPKdgZJvN9oARve7Ms2yFT0
-         KytQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=7lsCzJGHLvr8Kj2E1UlXtenLUTlo64+FCBy95fDW3Cg=;
-        b=gxethLmnV4/fdYkamXPIHnj1jrPHF5pADv2C7027fObN1zHf9JOqnnr8cuYyhiII7G
-         qNFayVtGJmz5kw8LhQk1JfTdAMs+wN4N3m8TiD0Fxtn1wqSnkO7X3rOF57VUl7GXyrKE
-         5wtjytKdNfmq8lr0AZrlt2vEokQByIT6Rg4VzhGdDO+H+sBhMLpHUZX01MJ2nNA6Gnq1
-         hjvaHFz8uM9HXK28Q5gNkl9NscPP2CCh3GU1i+DidF9an3X5TXt+eqBwNVxdZCqBJmuP
-         ivWGFFcgiD54dIferf87y0OjCwWstQNxvSy4p+G4E1NeG3jG0e/VYXCsG9SI3cWCHeB0
-         dt4A==
-X-Gm-Message-State: AOAM530R60FMYcKfzhKRrixUt9YmDbGtj/Co+PSiQNc0V0JYEMM3SB84
-        lW4+5HciYCdDK3uvFqfJTmtxBks/SLXUqUyIb3Ibyb0n
-X-Google-Smtp-Source: ABdhPJynSRmcWBbeItCSSYWLXAy6+Fxt0JKpDuooebQJJK49X2QCbNyEmWfdoeFL49zcdWMELZtLTYF80RKvg5p8lzs=
-X-Received: by 2002:ac8:7762:: with SMTP id h2mr19294360qtu.259.1612267004940;
- Tue, 02 Feb 2021 03:56:44 -0800 (PST)
+        id S232135AbhBBNCs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Feb 2021 08:02:48 -0500
+Received: from out20-73.mail.aliyun.com ([115.124.20.73]:41524 "EHLO
+        out20-73.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230025AbhBBNCr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Feb 2021 08:02:47 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04884866|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0102302-0.00602453-0.983745;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.JU5eHNO_1612270910;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JU5eHNO_1612270910)
+          by smtp.aliyun-inc.com(10.147.40.44);
+          Tue, 02 Feb 2021 21:01:50 +0800
+Date:   Tue, 02 Feb 2021 21:01:53 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Subject: Re: [PATCH 6/6] btrfs: do not block inode logging for so long during transaction commit
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <CAL3q7H73JQk=ndXM7NB0iqyL6J60-pUw3O8X_LMRYfO+gKUt4g@mail.gmail.com>
+References: <20210202133838.1639.409509F4@e16-tech.com> <CAL3q7H73JQk=ndXM7NB0iqyL6J60-pUw3O8X_LMRYfO+gKUt4g@mail.gmail.com>
+Message-Id: <20210202210151.4AE7.409509F4@e16-tech.com>
 MIME-Version: 1.0
-References: <20210125194210.24071-1-roman.anasal@bdsu.de> <20210125194210.24071-4-roman.anasal@bdsu.de>
- <CAL3q7H79meSfikTKvTujQzA_SRb3bfF9ajYtWSVTfu0+pLE8wQ@mail.gmail.com> <aa2cf62fc268c9db63d47ef408accca79bc7b22f.camel@bdsu.de>
-In-Reply-To: <aa2cf62fc268c9db63d47ef408accca79bc7b22f.camel@bdsu.de>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 2 Feb 2021 11:56:33 +0000
-Message-ID: <CAL3q7H7DcSuM4ba6HU3vjsZ+h-i61Gb-21D1sqLScD0sdX2xZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] btrfs: send: fix invalid commands for inodes with
- changed rdev but same gen
-To:     "Roman Anasal | BDSU" <roman.anasal@bdsu.de>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 3:52 PM Roman Anasal | BDSU
-<roman.anasal@bdsu.de> wrote:
->
-> On Mon, Jan 25, 2021 at 20:51 +0000 Filipe Manana wrote:
-> > On Mon, Jan 25, 2021 at 7:51 PM Roman Anasal <roman.anasal@bdsu.de>
-> > wrote:
-> > > Second example:
-> > >   # case 2: same ino at different path
-> > >   btrfs subvolume create subvol1
-> > >   btrfs subvolume create subvol2
-> > >   mknod subvol1/a c 1 3
-> > >   mknod subvol2/b c 1 5
-> > >   btrfs property set subvol1 ro true
-> > >   btrfs property set subvol2 ro true
-> > >   btrfs send -p subvol1 subvol2 | btrfs receive --dump
+Hi, Filipe Manana
+
+> On Tue, Feb 2, 2021 at 5:42 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
 > >
-> > As I've told you before for the v1 patchset from a week or two ago,
-> > this is not a supported scenario for incremental sends.
-> > Incremental sends are meant to be used on RO snapshots of the same
-> > subvolume, and those snapshots must never be changed after they were
-> > created.
+> > Hi, Filipe Manana
 > >
-> > Incremental sends were simply not designed for these cases, and can
-> > never be guaranteed to work with such cases.
+> > The dbench result with these patches is very good. thanks a lot.
 > >
-> > The bug is not having incremental sends fail right away, with an
-> > explicit error message, when the send and parent roots aren't RO
-> > snapshots of the same subvolume.
->
-> Since this should be fixed then I'd like to propose to add the
-> following check:
->
-> The inodes of the subvolumes' root directories (ino
-> BTRFS_FIRST_FREE_OBJECTID =3D 256) must have the same generation.
->
-> Since create_subvol() will always commit the transaction, i.e.
-> increment the generation, no two _independently_ created subvolumes can
-> be created within the same generation (are there race conditions
-> possible here?).
+> > This is the dbench(synchronous mode) result , and then a question.
+> >
+> > command: dbench -s -t 60 -D /btrfs/ 32
+> > mount option:ssd,space_cache=v2
+> > kernel:5.10.12 + patchset 1 + this patchset
+> 
+> patchset 1 and "this patchset" are the same, did you mean two
+> different patchsets or just a single patchset?
 
-That is currently true, but it has been discussed and proposed the
-ability to skip the transaction commit when creating a subvolume
-Boris sent a proposal patch for that a few months ago.
+patchset1:
+btrfs: some performance improvements for dbench alike workloads
 
-I don't think that should be assumed. Avoiding the transaction commit,
-either by default or optionally, is something that makes sense.
-Plus for a case like snapshots, we can actually batch the creation of
-several ones in a single transaction.
+patchset2:
+btrfs: more performance improvements for dbench workloads
+https://patchwork.kernel.org/project/linux-btrfs/list/?series=422801
 
-> Taking a snapshot of a subvolume does not modify the generation of the
-> root dir inode. Also it is not possible to change or delete/re-create
-> the root directory of a subvolume since this would delete the subvolume
-> itself.
->
->
-> So having two subvolumes with root directories created with different
-> generations means they were created independently and can not share a
-> common ancestor. Doing an incremental send with them is unsafe and thus
-> must return an error.
-> With the root directories at the same generation though the subvolumes
-> are based on a common ancestor which is a requirement for a safe
-> incremental send.
->
-> Are my assumptions and my understanding here correct? Then this check
-> would catch most of the unsafe parents.
-> If so I could have a shot at a patch for this if you'd like me to?
+I'm sorroy that I have replayed to the wrong patchset.
 
-That is too complex and makes too many assumptions.
+> 
+> >
+> > Question:
+> > for synchronous mode, the result type 1 is perfect?
+> 
+> What do you mean by perfect? You mean if result 1 is better than result 2?
 
-To check if two roots are snapshots of the same subvolume (the send
-and parent roots), you can simply check if they have non-null uuids in
-the "parent_uuid" field of their root items and that they match.
+In result 1,  the MaxLat of Flush of dbench synchronous mode is fast as
+expected, the same level as  kernel 5.4.91.
 
-While this is more straightforward to do in the kernel, I would prefer
-to have it in btrfs-progs, because:
+But in result 2, the MaxLat of Flush of dbench synchronous mode is big
+as write level, but this is synchronous mode, most job should be done
+already before flush.
 
-1) In btrfs-progs we can explicitly print an informative error message
-to the user, while in the kernel you can only return an errno value
-and log something dmesg/syslog, which is much less user friendly;
+> > and there is still some minor place about the flush to do for
+> > the result type2?
+> 
+> By "minor place" you mean the huge difference I suppose.
+> 
+> >
+> >
+> > result type 1:
+> >
+> >  Operation      Count    AvgLat    MaxLat
+> >  ----------------------------------------
+> >  NTCreateX     868942     0.028     3.017
+> >  Close         638536     0.003     0.061
+> >  Rename         36851     0.663     4.000
+> >  Unlink        175182     0.399     5.358
+> >  Qpathinfo     789014     0.014     1.846
+> >  Qfileinfo     137684     0.002     0.047
+> >  Qfsinfo       144241     0.004     0.059
+> >  Sfileinfo      70913     0.008     0.046
+> >  Find          304554     0.057     1.889
+> > ** WriteX        429696     3.960  2239.973
+> >  ReadX        1363356     0.005     0.358
+> >  LockX           2836     0.004     0.038
+> >  UnlockX         2836     0.002     0.018
+> > ** Flush          60771     0.621     6.794
+> >
+> > Throughput 452.385 MB/sec (sync open)  32 clients  32 procs  max_latency=1963.312 ms
+> > + stat -f -c %T /btrfs/
+> > btrfs
+> > + uname -r
+> > 5.10.12-4.el7.x86_64
+> >
+> >
+> > result type 2:
+> >  Operation      Count    AvgLat    MaxLat
+> >  ----------------------------------------
+> >  NTCreateX     888943     0.028     2.679
+> >  Close         652765     0.002     0.058
+> >  Rename         37705     0.572     3.962
+> >  Unlink        179713     0.383     3.983
+> >  Qpathinfo     806705     0.014     2.294
+> >  Qfileinfo     140752     0.002     0.125
+> >  Qfsinfo       147909     0.004     0.049
+> >  Sfileinfo      72374     0.008     0.104
+> >  Find          311839     0.058     2.305
+> > ** WriteX        439656     3.854  1872.109
+> >  ReadX        1396868     0.005     0.324
+> >  LockX           2910     0.004     0.026
+> >  UnlockX         2910     0.002     0.025
+> > ** Flush          62260     0.750  1659.364
+> >
+> > Throughput 461.856 MB/sec (sync open)  32 clients  32 procs  max_latency=1872.118 ms
+> > + stat -f -c %T /btrfs/
+> > btrfs
+> > + uname -r
+> > 5.10.12-4.el7.x86_64
+> 
+> I'm not sure what your question is exactly.
+> 
+> Are both results after applying the same patchset, or are they before
+> and after applying the patchset, respectively?
 
-2) The check would be on by default but could be skipped with some new
-flag - this is just being conservative to avoid breaking any existing
-workflows we might not be aware of.
-    In particular I'm thinking about people using "btrfs send" with -c
-and omitting -p, in which case btrfs-progs selects one of the -c roots
-to be used as the parent root,
-    but the selected root might not be a snapshot of the same
-subvolume as the send root.
-    Then maybe one day that option to skip the check would be removed,
-after we are more sure no one is using or really needs such workflows.
+Both result after applying the same patchset.
+and both on the same server, same SAS SSD disk.
+but the result is not stable, and the major diff is MaxLat of Flush.
 
->
->
-> This check still does not solve the second edge case though, when
-> snapshots are modified afterwards and diverge independently form one
-> another. For this I still see no good solution besides a new on-disk
-> flag whether a snapshot was *ever* set to ro=3Dfalse. But with that I'm
-> not sure how to (not) inherit that flag in a safe way ...
-
-I'm afraid there's nothing, codewise, to do about that case.
-
-Setting some flag on the root to make it unusable for send in case it
-was ever RW would break send in at least one way:
-
-During a receive we create the root as RW, apply the send stream and
-then change the root to RO.
-After such change, it would mean we could not send the received
-snapshot anymore. There's no way to make sure that only btrfs-receive
-can do that, since anyone can use the ioctl.
-
-Perhaps all that needs to be done is to document this well in the man
-pages and wiki in case it's not already there.
-
-Thanks.
+Server:Dell T7610
+CPU: E5-2660 v2(10core 20threads) x2
+SSD:TOSHIBA  PX05SMQ040
+Memory:192G (with ECC)
 
 
---=20
-Filipe David Manana,
+> If they are both with the patchset applied, and you wonder about the
+> big variation in the "Flush" operations, I am not sure about why it is
+> so.
+> Both throughput and max latency are better in result 2.
+> 
+> It's normal to have variations across dbench runs, I get them too, and
+> I do several runs (5 or 6) to check things out.
+> 
+> I don't use virtualization (testing on bare metal), I set the cpu
+> governor mode to performance (instead of the "powersave" default) and
+> use a non-debug kernel configuration, because otherwise I get
+> significant variations in latencies and throughput too (though I never
+> got a huge difference such as from 6.794 to 1659.364).
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+This is a bare metal(dell T7610).
+CPU mode is set to performance by BIOS. and I checked it by
+'cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor'
+
+Maybe I used a SAS ssd, and the queue depth of SAS SSD is 254.
+smaller than 1023 of a NVMe SSD,but it is still enough for
+dbench 32 threads?
+
+
+The huge difference of MaxLat of Flush such as from 6.794 to 1659.364 is
+a problem.
+It is not easy to re-product both,  mabye easy to reproduce the small
+one, maybe easy to reproduce the big one.
+
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/02/02
+
+
