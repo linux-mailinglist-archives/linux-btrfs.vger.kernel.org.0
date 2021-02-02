@@ -2,378 +2,356 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C131230B542
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Feb 2021 03:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D41030B73D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Feb 2021 06:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhBBC33 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Feb 2021 21:29:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59652 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229603AbhBBC32 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:29:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612232920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=JIjEjb/k1unngWJAaI8YrQy6fiXt15RzHNDs1XNl1Y0=;
-        b=Uc5JB9xxRSgwnTGXWBHgRuHBUnixRpT6zyQuzjtcHIpKAKzEUSayeMR04499Z4/Oe3/GTz
-        WTHpQowsil9mna89CekbrfVkpiwbghlVNV540gU0iZZsKFEc2ws1cMYH3OLMBc5ckG33aL
-        CxBuzsc64TUKjxw7K2l6Hq/GIGKzON4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CB654AC55;
-        Tue,  2 Feb 2021 02:28:40 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH v5.1 17/62] btrfs: integrate page status update for data read path into begin/end_page_read()
-Date:   Tue,  2 Feb 2021 10:28:36 +0800
-Message-Id: <20210202022836.290783-1-wqu@suse.com>
-X-Mailer: git-send-email 2.30.0
+        id S231701AbhBBFjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Feb 2021 00:39:33 -0500
+Received: from out20-73.mail.aliyun.com ([115.124.20.73]:39326 "EHLO
+        out20-73.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231678AbhBBFjb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Feb 2021 00:39:31 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436284|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00730966-0.000369831-0.992321;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.JTun0rY_1612244317;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JTun0rY_1612244317)
+          by smtp.aliyun-inc.com(10.147.40.233);
+          Tue, 02 Feb 2021 13:38:37 +0800
+Date:   Tue, 02 Feb 2021 13:38:39 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     fdmanana@kernel.org
+Subject: Re: [PATCH 6/6] btrfs: do not block inode logging for so long during transaction commit
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <d9df3c01bd2fbfeddfe205fa229ecea2d7478711.1606305501.git.fdmanana@suse.com>
+References: <cover.1606305501.git.fdmanana@suse.com> <d9df3c01bd2fbfeddfe205fa229ecea2d7478711.1606305501.git.fdmanana@suse.com>
+Message-Id: <20210202133838.1639.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs data page read path, the page status update are handled in two
-different locations:
+Hi, Filipe Manana
 
-  btrfs_do_read_page()
-  {
-	while (cur <= end) {
-		/* No need to read from disk */
-		if (HOLE/PREALLOC/INLINE){
-			memset();
-			set_extent_uptodate();
-			continue;
-		}
-		/* Read from disk */
-		ret = submit_extent_page(end_bio_extent_readpage);
-  }
+The dbench result with these patches is very good. thanks a lot. 
 
-  end_bio_extent_readpage()
-  {
-	endio_readpage_uptodate_page_status();
-  }
+This is the dbench(synchronous mode) result , and then a question.
 
-This is fine for sectorsize == PAGE_SIZE case, as for above loop we
-should only hit one branch and then exit.
+command: dbench -s -t 60 -D /btrfs/ 32
+mount option:ssd,space_cache=v2
+kernel:5.10.12 + patchset 1 + this patchset
+patchset 1:
+0001-btrfs-fix-race-causing-unnecessary-inode-logging-dur.patch
+0002-btrfs-fix-race-that-results-in-logging-old-extents-d.patch
+0003-btrfs-fix-race-that-causes-unnecessary-logging-of-an.patch
+0004-btrfs-fix-race-that-makes-inode-logging-fallback-to-.patch
+0005-btrfs-fix-race-leading-to-unnecessary-transaction-co.patch
+0006-btrfs-do-not-block-inode-logging-for-so-long-during-.patch
 
-But for subpage, there are more works to be done in page status update:
-- Page Unlock condition
-  Unlike regular page size == sectorsize case, we can no longer just
-  unlock a page without a brain.
-  Only the last reader of the page can unlock the page.
-  This means, we can unlock the page either in the while() loop, or in
-  the endio function.
+We get two types of result as below, and the result type 1 is not easy
+to reproduce now.
 
-- Page uptodate condition
-  Since we have multiple sectors to read for a page, we can only mark
-  the full page uptodate if all sectors are uptodate.
+Question:
+for synchronous mode, the result type 1 is perfect?
+and there is still some minor place about the flush to do for
+the result type2?
 
-To handle both subpage and regular cases, introduce a pair of functions
-to help handling page status update:
 
-- begin_page_read()
-  For regular case, it does nothing.
-  For subpage case, it update the reader counters so that later
-  end_page_read() can know who is the last one to unlock the page.
+result type 1:
 
-- end_page_read()
-  This is just endio_readpage_uptodate_page_status() renamed.
-  The original name is a little too long and too specific for endio.
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX     868942     0.028     3.017
+ Close         638536     0.003     0.061
+ Rename         36851     0.663     4.000
+ Unlink        175182     0.399     5.358
+ Qpathinfo     789014     0.014     1.846
+ Qfileinfo     137684     0.002     0.047
+ Qfsinfo       144241     0.004     0.059
+ Sfileinfo      70913     0.008     0.046
+ Find          304554     0.057     1.889
+** WriteX        429696     3.960  2239.973
+ ReadX        1363356     0.005     0.358
+ LockX           2836     0.004     0.038
+ UnlockX         2836     0.002     0.018
+** Flush          60771     0.621     6.794
 
-  The only new trick added is the condition for page unlock.
-  Now for subage data, we unlock the page if we're the last reader.
+Throughput 452.385 MB/sec (sync open)  32 clients  32 procs  max_latency=1963.312 ms
++ stat -f -c %T /btrfs/
+btrfs
++ uname -r
+5.10.12-4.el7.x86_64
 
-This does not only provide the basis for subpage data read, but also
-hide the special handling of page read from the main read loop.
 
-Also, since we're changing how the page lock is handled, there are two
-existing error paths where we need to manually unlock the page before
-calling begin_page_read().
+result type 2:
+ Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX     888943     0.028     2.679
+ Close         652765     0.002     0.058
+ Rename         37705     0.572     3.962
+ Unlink        179713     0.383     3.983
+ Qpathinfo     806705     0.014     2.294
+ Qfileinfo     140752     0.002     0.125
+ Qfsinfo       147909     0.004     0.049
+ Sfileinfo      72374     0.008     0.104
+ Find          311839     0.058     2.305
+** WriteX        439656     3.854  1872.109
+ ReadX        1396868     0.005     0.324
+ LockX           2910     0.004     0.026
+ UnlockX         2910     0.002     0.025
+** Flush          62260     0.750  1659.364
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
-Changelog:
-v5.1:
-- Modify the error paths before calling begin_page_read()
-  The error path needs to unlock the page manually.
+Throughput 461.856 MB/sec (sync open)  32 clients  32 procs  max_latency=1872.118 ms
++ stat -f -c %T /btrfs/
+btrfs
++ uname -r
+5.10.12-4.el7.x86_64
 
-To David,
 
-The modification to both error paths would be more sutiable as a
-separate patch.
-As they look like existing bugs.
 
-If needed, I can grab your existing branch and resend the separate
-patch.
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/02/02
 
-Thanks,
-Qu
----
- fs/btrfs/extent_io.c | 42 +++++++++++++++++++++++----------
- fs/btrfs/subpage.c   | 56 ++++++++++++++++++++++++++++++++++----------
- fs/btrfs/subpage.h   |  8 +++++++
- 3 files changed, 81 insertions(+), 25 deletions(-)
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Early on during a transaction commit we acquire the tree_log_mutex and
+> hold it until after we write the super blocks. But before writing the
+> extent buffers dirtied by the transaction and the super blocks we unblock
+> the transaction by setting its state to TRANS_STATE_UNBLOCKED and setting
+> fs_info->running_transaction to NULL.
+> 
+> This means that after that and before writing the super blocks, new
+> transactions can start. However if any transaction wants to log an inode,
+> it will block waiting for the transaction commit to write its dirty
+> extent buffers and the super blocks because the tree_log_mutex is only
+> released after those operations are complete, and starting a new log
+> transaction blocks on that mutex (at start_log_trans()).
+> 
+> Writing the dirty extent buffers and the super blocks can take a very
+> significant amount of time to complete, but we could allow the tasks
+> wanting to log an inode to proceed with most of their steps:
+> 
+> 1) create the log trees
+> 2) log metadata in the trees
+> 3) write their dirty extent buffers
+> 
+> They only need to wait for the previous transaction commit to complete
+> (write its super blocks) before they attempt to write their super blocks,
+> otherwise we could end up with a corrupt filesystem after a crash
+> 
+> So change start_log_trans() to use the root tree's log_mutex to serialize
+> for the creation of the log root tree instead of using the tree_log_mutex,
+> and make btrfs_sync_log() acquire the tree_log_mutex before writing the
+> super blocks. This allows for inode logging to wait much less time when
+> there is a previous transaction that is still committing, often not having
+> to wait at all, as by the time when we try to sync the log the previous
+> transaction already wrote its super blocks.
+> 
+> This patch belongs to a patch set that is comprised of the following
+> patches:
+> 
+>   btrfs: fix race causing unnecessary inode logging during link and rename
+>   btrfs: fix race that results in logging old extents during a fast fsync
+>   btrfs: fix race that causes unnecessary logging of ancestor inodes
+>   btrfs: fix race that makes inode logging fallback to transaction commit
+>   btrfs: fix race leading to unnecessary transaction commit when logging inode
+>   btrfs: do not block inode logging for so long during transaction commit
+> 
+> The following script that uses dbench was used to measure the impact of
+> the whole patchset:
+> 
+>   $ cat test-dbench.sh
+>   #!/bin/bash
+> 
+>   DEV=/dev/nvme0n1
+>   MNT=/mnt/btrfs
+>   MOUNT_OPTIONS="-o ssd"
+> 
+>   echo "performance" | \
+>       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+> 
+>   mkfs.btrfs -f -m single -d single $DEV
+>   mount $MOUNT_OPTIONS $DEV $MNT
+> 
+>   dbench -D $MNT -t 300 64
+> 
+>   umount $MNT
+> 
+> The test was run on a machine with 12 cores, 64G of ram, using a NVMe
+> device and a non-debug kernel configuration (Debian's default).
+> 
+> Before patch set:
+> 
+>  Operation      Count    AvgLat    MaxLat
+>  ----------------------------------------
+>  NTCreateX    11277211    0.250    85.340
+>  Close        8283172     0.002     6.479
+>  Rename        477515     1.935    86.026
+>  Unlink       2277936     0.770    87.071
+>  Deltree          256    15.732    81.379
+>  Mkdir            128     0.003     0.009
+>  Qpathinfo    10221180    0.056    44.404
+>  Qfileinfo    1789967     0.002     4.066
+>  Qfsinfo      1874399     0.003     9.176
+>  Sfileinfo     918589     0.061    10.247
+>  Find         3951758     0.341    54.040
+>  WriteX       5616547     0.047    85.079
+>  ReadX        17676028    0.005     9.704
+>  LockX          36704     0.003     1.800
+>  UnlockX        36704     0.002     0.687
+>  Flush         790541    14.115   676.236
+> 
+> Throughput 1179.19 MB/sec  64 clients  64 procs  max_latency=676.240 ms
+> 
+> After patch set:
+> 
+> Operation      Count    AvgLat    MaxLat
+>  ----------------------------------------
+>  NTCreateX    12687926    0.171    86.526
+>  Close        9320780     0.002     8.063
+>  Rename        537253     1.444    78.576
+>  Unlink       2561827     0.559    87.228
+>  Deltree          374    11.499    73.549
+>  Mkdir            187     0.003     0.005
+>  Qpathinfo    11500300    0.061    36.801
+>  Qfileinfo    2017118     0.002     7.189
+>  Qfsinfo      2108641     0.003     4.825
+>  Sfileinfo    1033574     0.008     8.065
+>  Find         4446553     0.408    47.835
+>  WriteX       6335667     0.045    84.388
+>  ReadX        19887312    0.003     9.215
+>  LockX          41312     0.003     1.394
+>  UnlockX        41312     0.002     1.425
+>  Flush         889233    13.014   623.259
+> 
+> Throughput 1339.32 MB/sec  64 clients  64 procs  max_latency=623.265 ms
+> 
+> +12.7% throughput, -8.2% max latency
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/ctree.h    |  2 +-
+>  fs/btrfs/tree-log.c | 56 +++++++++++++++++++++++++++++++--------------
+>  2 files changed, 40 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index c0c6e79c43f9..7185384f475a 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1026,7 +1026,7 @@ enum {
+>  	BTRFS_ROOT_DEAD_RELOC_TREE,
+>  	/* Mark dead root stored on device whose cleanup needs to be resumed */
+>  	BTRFS_ROOT_DEAD_TREE,
+> -	/* The root has a log tree. Used only for subvolume roots. */
+> +	/* The root has a log tree. Used for subvolume roots and the tree root. */
+>  	BTRFS_ROOT_HAS_LOG_TREE,
+>  	/* Qgroup flushing is in progress */
+>  	BTRFS_ROOT_QGROUP_FLUSHING,
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index bc5b652f4f64..e8b84543d565 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -139,8 +139,25 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+>  			   struct btrfs_log_ctx *ctx)
+>  {
+>  	struct btrfs_fs_info *fs_info = root->fs_info;
+> +	struct btrfs_root *tree_root = fs_info->tree_root;
+>  	int ret = 0;
+>  
+> +	/*
+> +	 * First check if the log root tree was already created. If not, create
+> +	 * it before locking the root's log_mutex, just to keep lockdep happy.
+> +	 */
+> +	if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state)) {
+> +		mutex_lock(&tree_root->log_mutex);
+> +		if (!fs_info->log_root_tree) {
+> +			ret = btrfs_init_log_root_tree(trans, fs_info);
+> +			if (!ret)
+> +				set_bit(BTRFS_ROOT_HAS_LOG_TREE, &tree_root->state);
+> +		}
+> +		mutex_unlock(&tree_root->log_mutex);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	mutex_lock(&root->log_mutex);
+>  
+>  	if (root->log_root) {
+> @@ -156,13 +173,6 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+>  			set_bit(BTRFS_ROOT_MULTI_LOG_TASKS, &root->state);
+>  		}
+>  	} else {
+> -		mutex_lock(&fs_info->tree_log_mutex);
+> -		if (!fs_info->log_root_tree)
+> -			ret = btrfs_init_log_root_tree(trans, fs_info);
+> -		mutex_unlock(&fs_info->tree_log_mutex);
+> -		if (ret)
+> -			goto out;
+> -
+>  		ret = btrfs_add_log_tree(trans, root);
+>  		if (ret)
+>  			goto out;
+> @@ -3022,6 +3032,8 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+>  	int log_transid = 0;
+>  	struct btrfs_log_ctx root_log_ctx;
+>  	struct blk_plug plug;
+> +	u64 log_root_start;
+> +	u64 log_root_level;
+>  
+>  	mutex_lock(&root->log_mutex);
+>  	log_transid = ctx->log_transid;
+> @@ -3199,22 +3211,31 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+>  		goto out_wake_log_root;
+>  	}
+>  
+> -	btrfs_set_super_log_root(fs_info->super_for_commit,
+> -				 log_root_tree->node->start);
+> -	btrfs_set_super_log_root_level(fs_info->super_for_commit,
+> -				       btrfs_header_level(log_root_tree->node));
+> -
+> +	log_root_start = log_root_tree->node->start;
+> +	log_root_level = btrfs_header_level(log_root_tree->node);
+>  	log_root_tree->log_transid++;
+>  	mutex_unlock(&log_root_tree->log_mutex);
+>  
+>  	/*
+> -	 * Nobody else is going to jump in and write the ctree
+> -	 * super here because the log_commit atomic below is protecting
+> -	 * us.  We must be called with a transaction handle pinning
+> -	 * the running transaction open, so a full commit can't hop
+> -	 * in and cause problems either.
+> +	 * Here we are guaranteed that nobody is going to write the superblock
+> +	 * for the current transaction before us and that neither we do write
+> +	 * our superblock before the previous transaction finishes its commit
+> +	 * and writes its superblock, because:
+> +	 *
+> +	 * 1) We are holding a handle on the current transaction, so no body
+> +	 *    can commit it until we release the handle;
+> +	 *
+> +	 * 2) Before writing our superblock we acquire the tree_log_mutex, so
+> +	 *    if the previous transaction is still committing, and hasn't yet
+> +	 *    written its superblock, we wait for it to do it, because a
+> +	 *    transaction commit acquires the tree_log_mutex when the commit
+> +	 *    begins and releases it only after writing its superblock.
+>  	 */
+> +	mutex_lock(&fs_info->tree_log_mutex);
+> +	btrfs_set_super_log_root(fs_info->super_for_commit, log_root_start);
+> +	btrfs_set_super_log_root_level(fs_info->super_for_commit, log_root_level);
+>  	ret = write_all_supers(fs_info, 1);
+> +	mutex_unlock(&fs_info->tree_log_mutex);
+>  	if (ret) {
+>  		btrfs_set_log_full_commit(trans);
+>  		btrfs_abort_transaction(trans, ret);
+> @@ -3299,6 +3320,7 @@ int btrfs_free_log_root_tree(struct btrfs_trans_handle *trans,
+>  	if (fs_info->log_root_tree) {
+>  		free_log_tree(trans, fs_info->log_root_tree);
+>  		fs_info->log_root_tree = NULL;
+> +		clear_bit(BTRFS_ROOT_HAS_LOG_TREE, &fs_info->tree_root->state);
+>  	}
+>  	return 0;
+>  }
+> -- 
+> 2.28.0
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index eeee3213daaa..7be517f093bf 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2839,8 +2839,17 @@ static void endio_readpage_release_extent(struct processed_extent *processed,
- 	processed->uptodate = uptodate;
- }
- 
--static void endio_readpage_update_page_status(struct page *page, bool uptodate,
--					      u64 start, u32 len)
-+static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
-+{
-+	ASSERT(PageLocked(page));
-+	if (fs_info->sectorsize == PAGE_SIZE)
-+		return;
-+
-+	ASSERT(PagePrivate(page));
-+	btrfs_subpage_start_reader(fs_info, page, page_offset(page), PAGE_SIZE);
-+}
-+
-+static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
- 
-@@ -2856,7 +2865,12 @@ static void endio_readpage_update_page_status(struct page *page, bool uptodate,
- 
- 	if (fs_info->sectorsize == PAGE_SIZE)
- 		unlock_page(page);
--	/* Subpage locking will be handled in later patches */
-+	else if (is_data_inode(page->mapping->host))
-+		/*
-+		 * For subpage data, unlock the page if we're the last reader.
-+		 * For subpage metadata, page lock is not utilized for read.
-+		 */
-+		btrfs_subpage_end_reader(fs_info, page, start, len);
- }
- 
- /*
-@@ -2993,7 +3007,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		bio_offset += len;
- 
- 		/* Update page status and unlock */
--		endio_readpage_update_page_status(page, uptodate, start, len);
-+		end_page_read(page, uptodate, start, len);
- 		endio_readpage_release_extent(&processed, BTRFS_I(inode),
- 					      start, end, uptodate);
- 	}
-@@ -3263,6 +3277,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		      unsigned int read_flags, u64 *prev_em_start)
- {
- 	struct inode *inode = page->mapping->host;
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	u64 start = page_offset(page);
- 	const u64 end = start + PAGE_SIZE - 1;
- 	u64 cur = start;
-@@ -3282,7 +3297,8 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 	ret = set_page_extent_mapped(page);
- 	if (ret < 0) {
- 		unlock_extent(tree, start, end);
--		SetPageError(page);
-+		btrfs_page_set_error(fs_info, page, start, PAGE_SIZE);
-+		unlock_page(page);
- 		goto out;
- 	}
- 
-@@ -3290,6 +3306,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		if (cleancache_get_page(page) == 0) {
- 			BUG_ON(blocksize != PAGE_SIZE);
- 			unlock_extent(tree, start, end);
-+			unlock_page(page);
- 			goto out;
- 		}
- 	}
-@@ -3306,6 +3323,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 			kunmap_atomic(userpage);
- 		}
- 	}
-+	begin_page_read(fs_info, page);
- 	while (cur <= end) {
- 		bool force_bio_submit = false;
- 		u64 disk_bytenr;
-@@ -3323,13 +3341,14 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 					    &cached, GFP_NOFS);
- 			unlock_extent_cached(tree, cur,
- 					     cur + iosize - 1, &cached);
-+			end_page_read(page, true, cur, iosize);
- 			break;
- 		}
- 		em = __get_extent_map(inode, page, pg_offset, cur,
- 				      end - cur + 1, em_cached);
- 		if (IS_ERR_OR_NULL(em)) {
--			SetPageError(page);
- 			unlock_extent(tree, cur, end);
-+			end_page_read(page, false, cur, end + 1 - cur);
- 			break;
- 		}
- 		extent_offset = cur - em->start;
-@@ -3412,6 +3431,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 					    &cached, GFP_NOFS);
- 			unlock_extent_cached(tree, cur,
- 					     cur + iosize - 1, &cached);
-+			end_page_read(page, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
- 			continue;
-@@ -3421,6 +3441,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 				   EXTENT_UPTODATE, 1, NULL)) {
- 			check_page_uptodate(tree, page);
- 			unlock_extent(tree, cur, cur + iosize - 1);
-+			end_page_read(page, true, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
- 			continue;
-@@ -3429,8 +3450,8 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		 * to date.  Error out
- 		 */
- 		if (block_start == EXTENT_MAP_INLINE) {
--			SetPageError(page);
- 			unlock_extent(tree, cur, cur + iosize - 1);
-+			end_page_read(page, false, cur, iosize);
- 			cur = cur + iosize;
- 			pg_offset += iosize;
- 			continue;
-@@ -3447,19 +3468,14 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 			nr++;
- 			*bio_flags = this_bio_flag;
- 		} else {
--			SetPageError(page);
- 			unlock_extent(tree, cur, cur + iosize - 1);
-+			end_page_read(page, false, cur, iosize);
- 			goto out;
- 		}
- 		cur = cur + iosize;
- 		pg_offset += iosize;
- 	}
- out:
--	if (!nr) {
--		if (!PageError(page))
--			SetPageUptodate(page);
--		unlock_page(page);
--	}
- 	return ret;
- }
- 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 2fe55a712557..c85f0f1c7441 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -54,6 +54,8 @@ int btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
- 	spin_lock_init(&(*ret)->lock);
- 	if (type == BTRFS_SUBPAGE_METADATA)
- 		atomic_set(&(*ret)->eb_refs, 0);
-+	else
-+		atomic_set(&(*ret)->readers, 0);
- 	return 0;
- }
- 
-@@ -102,23 +104,13 @@ void btrfs_page_dec_eb_refs(const struct btrfs_fs_info *fs_info,
- 	atomic_dec(&subpage->eb_refs);
- }
- 
--/*
-- * Convert the [start, start + len) range into a u16 bitmap
-- *
-- * For example: if start == page_offset() + 16K, len = 16K, we get 0x00f0.
-- */
--static inline u16 btrfs_subpage_calc_bitmap(
--		const struct btrfs_fs_info *fs_info, struct page *page,
--		u64 start, u32 len)
-+static void btrfs_subpage_assert(const struct btrfs_fs_info *fs_info,
-+	struct page *page, u64 start, u32 len)
- {
--	const int bit_start = offset_in_page(start) >> fs_info->sectorsize_bits;
--	const int nbits = len >> fs_info->sectorsize_bits;
--
- 	/* Basic checks */
- 	ASSERT(PagePrivate(page) && page->private);
- 	ASSERT(IS_ALIGNED(start, fs_info->sectorsize) &&
- 	       IS_ALIGNED(len, fs_info->sectorsize));
--
- 	/*
- 	 * The range check only works for mapped page, we can still have
- 	 * unampped page like dummy extent buffer pages.
-@@ -126,6 +118,46 @@ static inline u16 btrfs_subpage_calc_bitmap(
- 	if (page->mapping)
- 		ASSERT(page_offset(page) <= start &&
- 			start + len <= page_offset(page) + PAGE_SIZE);
-+}
-+
-+void btrfs_subpage_start_reader(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+	const int nbits = len >> fs_info->sectorsize_bits;
-+	int ret;
-+
-+	btrfs_subpage_assert(fs_info, page, start, len);
-+
-+	ret = atomic_add_return(nbits, &subpage->readers);
-+	ASSERT(ret == nbits);
-+}
-+
-+void btrfs_subpage_end_reader(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+	const int nbits = len >> fs_info->sectorsize_bits;
-+
-+	btrfs_subpage_assert(fs_info, page, start, len);
-+	ASSERT(atomic_read(&subpage->readers) >= nbits);
-+	if (atomic_sub_and_test(nbits, &subpage->readers))
-+		unlock_page(page);
-+}
-+
-+/*
-+ * Convert the [start, start + len) range into a u16 bitmap
-+ *
-+ * For example: if start == page_offset() + 16K, len = 16K, we get 0x00f0.
-+ */
-+static u16 btrfs_subpage_calc_bitmap(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	const int bit_start = offset_in_page(start) >> fs_info->sectorsize_bits;
-+	const int nbits = len >> fs_info->sectorsize_bits;
-+
-+	btrfs_subpage_assert(fs_info, page, start, len);
-+
- 	/*
- 	 * Here nbits can be 16, thus can go beyond u16 range. We make the
- 	 * first left shift to be calculate in unsigned long (at least u32),
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 8a580b3ef968..53183f136b20 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -30,6 +30,9 @@ struct btrfs_subpage {
- 		 */
- 		atomic_t eb_refs;
- 		/* Structures only used by data */
-+		struct {
-+			atomic_t readers;
-+		};
- 	};
- };
- 
-@@ -54,6 +57,11 @@ void btrfs_page_inc_eb_refs(const struct btrfs_fs_info *fs_info,
- void btrfs_page_dec_eb_refs(const struct btrfs_fs_info *fs_info,
- 			    struct page *page);
- 
-+void btrfs_subpage_start_reader(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len);
-+void btrfs_subpage_end_reader(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len);
-+
- /*
-  * Template for subpage related operations.
-  *
--- 
-2.30.0
 
