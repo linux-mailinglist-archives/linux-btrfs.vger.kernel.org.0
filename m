@@ -2,137 +2,200 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476FA30DCB9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Feb 2021 15:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B3C30DDF5
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Feb 2021 16:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhBCO2L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Feb 2021 09:28:11 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:48560 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbhBCO2J (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Feb 2021 09:28:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612362488; x=1643898488;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=T/4WrHP5DQJuzyxmOK990XNNEginC0shJysASazRa6I=;
-  b=AhX6w/J4WpUyvloISbV1EqfGNSbVlycfXLxOUJXEnBJxlo/kJipwD2I5
-   AnVeksV7xAgwpj6Km5nbWo3SAgQTTcgtsDcpv4MLGmZP6cSwkE58M+Kvf
-   phZgSdAyRZTAEoqwKltbUkYQfJnr6TmskiA8HSGEhugov2Ygljgr3bopP
-   PWh0SzTOklcT0bJBTVDDFAYFfNbr5AHApFZaXaUefWSVehwxV19B0G1bw
-   wY2S6wav29kDxrjMU3u+i7xLayG2Y63BYsy9/vLxXX4xlnvBHCA5T0p84
-   FXOie08QoL+4tr85bVWUaxHFFYPq2rGJA9Cbyx/BGSbrDGvyAJH+GHUGP
-   g==;
-IronPort-SDR: dUg2paLC2tPQEgrcgvXZooNW+2oJTz1MV0M58Uepwn5A0tmKhk8MFUuPE/jjjPfxd2KLaasMSC
- 4iTuxUQvmtTyTdNj2x0dE8MBB9g9/MTjp9CbyhS1s7tjrDEUHEbIQlgnpyCJDlRMbZhNELcfXF
- XBVMvPwv5CwxIPM1nvPGPrJdxZVX2PIqL1RLczSIhXdR9WzyYRylAS+liP769hdnY9cEprjffT
- US8OaOMnJzKWYtiY+ekTZvP6jAHhsBfqcYO7mxW6GSidZj7FFpicr2gxB685KvNjSz4mdwwq2q
- A9g=
-X-IronPort-AV: E=Sophos;i="5.79,398,1602518400"; 
-   d="scan'208";a="163475231"
-Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Feb 2021 22:26:59 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d8gnh6rv4LjnCACZNRhxhwjpLnky3TB5M5FjLvZOp5b8KOh2wsBrTu0DBzRs6I0gKboW5ehi07FTU+UuEL7K8vAo2Q/ebVFI5DQxVylPsUUNEbEY0ZpDEPXzCprYZ0kJYa59ew9GTNKKeCTHYxanjHqTCoTBCr+dIX2t+v5qwzlAIUGbh95jIg9nGQxWmAWu8OrC3waKfr2x/23vQszjLRM6EpHfw+gqMwkdEV+4wvwnXegKUItW/Fnb1oNDQMRi/NG77Ecc5mum/T6pwiF1BbBX7BEyh9Z2aaMe6UY9R9IyRQS3cC1OU4XfssZ8HExa7jkzIgbACNFnPo8Pvbcyqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PO5lauoZaBPSUBjWcQ62Y1jx/WVcUsBs6FpyMbKGx5Q=;
- b=nh++3YuAbTpVWTeJgJpMKzEdsIqHhxPQygIjPKFGqXq7+cYDhF8Kln+6oTr1mI6p2iL/ygSgkK/WjPR1lR6lEa07TopGzLOKJSRtbBY//lV5n9+BADLiw3MLWeM2ItVBC2ASZ/NfNp8AsPXAz8GOdeAbfvAX8t7GAxPzPx0opN6M5KXZtNCSJBVmn1cYhBqw74gbJmv6uhimlpXo5wqxlus86tOnskxRVJ6BKUJHAdCNWw+ZG7gqTPuOlszmVvzFV3ykbcAh7b8JVs8+9gOZjpHGDBrnjsLFE/O0AhHOkqk+TPyHde6Q/rcNhoJ5DkQmz8msBTAP04zbba6sKJEyrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PO5lauoZaBPSUBjWcQ62Y1jx/WVcUsBs6FpyMbKGx5Q=;
- b=oIJWAwYa/nh8QRDWxbutOtrpUqJv/d0M/qoGR9V1M7/eyTpfmxhjX/v0+FTDVh8ziRBB1BzJbCHxglSPBur85dCnt81ze3MsD1vW4agzBXKcPxG6vgooqMh4K5ahdBiL9N6ZNmZZ9WU6uLdNb3Oult0wUfQCb8hpKtkh+2WhUa8=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SA2PR04MB7595.namprd04.prod.outlook.com
- (2603:10b6:806:148::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Wed, 3 Feb
- 2021 14:26:59 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::c19b:805:20e0:6274]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::c19b:805:20e0:6274%7]) with mapi id 15.20.3805.024; Wed, 3 Feb 2021
- 14:26:59 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [bug report] btrfs: mark block groups to copy for device-replace
-Thread-Topic: [bug report] btrfs: mark block groups to copy for device-replace
-Thread-Index: AQHW+gqiMTOgTmw7ME6uYHES0uz5iA==
-Date:   Wed, 3 Feb 2021 14:26:59 +0000
-Message-ID: <SN4PR0401MB3598D6C76962E2CC5925A9AE9BB49@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <YBpk4PZ9hkOl+aKj@mwanda>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1542:e101:51f:6b4a:2171:57e6]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8ac0e274-b8d4-48da-b760-08d8c84fc41f
-x-ms-traffictypediagnostic: SA2PR04MB7595:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR04MB7595AA84E23016ADDB977EB69BB49@SA2PR04MB7595.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tK/TTLWZRJX2av0XNiQBnRJZcg1sYiUNMNHLSjQqSrJccwDodmDcPBp4p5BntdDslYC0qsNpFJVxGEq79CdJ7tUGcYTrrHj/zRl4wVlUxrYsCu8herzYBw32zfB9gPC2AVizwn5irj4JmQrHQsBWRZ1N0oR03IRGGZiXWZnyaa5bUE+pJswnnlDhs+XsxVZOLGnjKi8xqVmJRE7JR8C89ksdRFa3geedpRX8nIkFt9PYW6iJ+d27zw3TmPHsx5aImqPYdxmv9oJtzIBQFtGp3pga5hE5eegUn84QnNUawujMbgI5nS59bE1aV9j05HDvBhMhI7sk+seEI05hZOdd5Azw4GSkmH+qgfQX31qYivh9jONfg4a1+H38wp1yIpXfqGxLAAM/WouhEKQBq0EBs2cAEvzeGYH/c5zCFRHocWiNPW8SHtQ8e16AdcSMuip/Z1T/UoRYlMVKnFWWcVHaYJmqbbQGQioMPCh2QcUM5CzMbxj3T+KVD+EbiOyE3h9SiQqrKWiOG49MHOFoav0tKA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(376002)(136003)(39840400004)(2906002)(6636002)(52536014)(66556008)(53546011)(91956017)(66946007)(6506007)(55016002)(4326008)(76116006)(186003)(478600001)(9686003)(86362001)(8936002)(8676002)(5660300002)(316002)(66446008)(110136005)(33656002)(71200400001)(7696005)(4744005)(83380400001)(66476007)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MugQbtd1MumEzU2ZNoTw6MartpGiMatR2jCY3quf4YekJt54l11iK8gbJN55?=
- =?us-ascii?Q?I7Wf/s10miIn8nj9LljiRdNbAcbOifnEBEYAYb/Mb+G7ge5+wlzoEMhl+48V?=
- =?us-ascii?Q?FmIPpewpjBmNuIz+KQY0DaEG3ofOZEy7LIk9Y9AGxfA7lLJ+IeHfIlUfn8Yh?=
- =?us-ascii?Q?jgl1Y2k6YfJpogkVZnrEAJ0HUUIXl5OsLm5sZJ7qqxTmMLPqEBKE0LUAeUWi?=
- =?us-ascii?Q?LKLw4VfivfLxOIuIRJg/gwTRRzGDJ7wWb58M0iUqqOUGK+AgKsI4f+6OFbRD?=
- =?us-ascii?Q?J+OVnMhq1+LhQSVomMcJgxm7/hSQHXX/w5k+KSsqF4yU67qBoel4H+3TBV1S?=
- =?us-ascii?Q?4PR/obBjyr8M1Xw2KZuXoJMikoGSaPVk5DdpzCvE7HvKHgMICzl8Y+l5YvSN?=
- =?us-ascii?Q?+HtIV9uGDTRbQ8evoTKLOVtcSMjZmbF1GHjJ60FbSB+ZvMQYTtD4k7Jjz04Q?=
- =?us-ascii?Q?K5OgInM7N0cx+RTS2FJGbn/jUl0XwoObhymnjeOI3hRT48J4aXm+6gI7dvH7?=
- =?us-ascii?Q?f7QRL0E8qEWMZeFA7y1iw2uecglAFrxUkWZqDj0zcbKC6KKPOw1aa+ASRqs9?=
- =?us-ascii?Q?0uKty7nJa0Xl8AZ3QJ3pgztt7aG+CBS+7P2BVlopRKSa/YKbSaZ8Cx9aNBiC?=
- =?us-ascii?Q?j2IJDLWv+pYAjS8bPkWWZIAi//MRY9wraU/c4q95OIqyj3vPqSx14h+oflM5?=
- =?us-ascii?Q?5e2wS1SX1LAyGx41mB0kZfYUG6yneZGpxAHrduheRLH2c7Th2lPTHfCJVmwn?=
- =?us-ascii?Q?1KYt6agytfP6n6rVxy0CKDYgRyMF/vwJ+6cE52UBfpaAPF8cBQx+67sIXFMH?=
- =?us-ascii?Q?uhEdzTAg4DuGN/QUq/CjqS9VFI/6T6XAMBl6qOpHy1wXVKfg9zNlCQShN1s0?=
- =?us-ascii?Q?wROKqSBXssGeevvsb7eOwIL8C8LyiUNvmUjOgW/MUblbcQrvp8ET2SXaqiIo?=
- =?us-ascii?Q?4xo/pYE91T5/mKS8QtKPTKbK7Vw1f45GyZC770825jInnhcLLcs0A6awO582?=
- =?us-ascii?Q?/pg5oNxFtFR6ofuv5v90gpNIdunfg3CJmdDRtk7h8cPmWPMJj1olnW3xeaek?=
- =?us-ascii?Q?k6rgozAzZVHxK8Kub2HfPXQKfKf+1AoAPDh8DIJboKKXPrSmj5czHZTO3/2Z?=
- =?us-ascii?Q?hlp/BKddKyRuYfvTsCIOKYG9BiHWmZdL2w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234445AbhBCPT3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Feb 2021 10:19:29 -0500
+Received: from out20-50.mail.aliyun.com ([115.124.20.50]:60544 "EHLO
+        out20-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhBCPRr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Feb 2021 10:17:47 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436288|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.017184-0.00167768-0.981138;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.JUgaeGW_1612365413;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JUgaeGW_1612365413)
+          by smtp.aliyun-inc.com(10.147.43.230);
+          Wed, 03 Feb 2021 23:16:53 +0800
+Date:   Wed, 03 Feb 2021 23:16:57 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH 6/6] btrfs: do not block inode logging for so long during transaction commit
+Cc:     Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <c83533db-5a2d-1ca3-5e4c-7bd3b5f2fd8c@suse.com>
+References: <CAL3q7H5GsZucNBBeTvbtmT5tcrwQi3qA6fOkp3N3uObuuczzCQ@mail.gmail.com> <c83533db-5a2d-1ca3-5e4c-7bd3b5f2fd8c@suse.com>
+Message-Id: <20210203231649.F5D8.409509F4@e16-tech.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ac0e274-b8d4-48da-b760-08d8c84fc41f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2021 14:26:59.0300
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tr8g2C/ha/dt6G2EA8n+AZorcjZ9szIieoYBmtZ/SHQH4XeJ0D4V/XM0kQdLo2ABgrzRKgIxw+GMuCwW9i6vdPvEUv3tLBhFAz3WU+hL7I0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR04MB7595
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 8bit
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03/02/2021 09:57, Dan Carpenter wrote:=0A=
-> Hello Naohiro Aota,=0A=
-> =0A=
-> The patch 0d57e73ac5ae: "btrfs: mark block groups to copy for=0A=
-> device-replace" from Jan 26, 2021, leads to the following static=0A=
-> checker warning:=0A=
-> =0A=
-> 	fs/btrfs/dev-replace.c:505 mark_block_group_to_copy()=0A=
-> 	error: double unlocked '&fs_info->trans_lock' (orig line 486)=0A=
-> =0A=
-=0A=
-Fixed thanks for the report.=0A=
+Hi,
+
+There is the dbench(sync open) test result of misc-next(5.11-rc6 +81patches)
+
+1, the MaxLat is changed from 1900ms level to 1000ms level.
+    that is a good improvement.
+
+2, It is OK that NTCreateX/Rename/Unlink/WriteX have the same level of
+    MaxLat because all of them will write something to disk.
+
+3, I'm not sure whether MaxLat of Flush is OK.
+    there should be nothing to write for Flush because of 
+    dbench(sync open) mode. but I'm not sure whether some
+    scsi comand such as Synchronize Cache will be executed by Flush.
+
+Operation      Count    AvgLat    MaxLat
+ ----------------------------------------
+ NTCreateX     924298     0.035   745.523
+ Close         678499     0.002     0.093
+ Rename         39280     0.597   744.714
+ Unlink        187119     0.435   745.547
+ Qpathinfo     838558     0.013     0.978
+ Qfileinfo     146308     0.002     0.055
+ Qfsinfo       154172     0.004     0.108
+ Sfileinfo      75423     0.010     0.109
+ Find          324478     0.050     1.115
+ WriteX        457376     3.665   957.922
+ ReadX        1454051     0.005     0.131
+ LockX           3032     0.004     0.027
+ UnlockX         3032     0.002     0.022
+ Flush          64867     0.649   718.676
+
+Throughput 481.002 MB/sec (sync open)  32 clients  32 procs  max_latency=957.929 ms
++ stat -f -c %T /btrfs/
+btrfs
++ uname -r
+5.11.0-0.rc6.141.el8.x86_64
+
+detail:
+  32     33682   548.70 MB/sec  execute   1 sec  latency 7.024 ms
+  32     36692   538.41 MB/sec  execute   2 sec  latency 6.719 ms
+  32     39787   544.75 MB/sec  execute   3 sec  latency 6.405 ms
+  32     42850   540.09 MB/sec  execute   4 sec  latency 7.717 ms
+  32     45872   535.64 MB/sec  execute   5 sec  latency 7.271 ms
+  32     48861   524.29 MB/sec  execute   6 sec  latency 6.685 ms
+  32     51343   512.54 MB/sec  execute   7 sec  latency 128.666 ms
+  32     53366   496.73 MB/sec  execute   8 sec  latency 703.255 ms *1
+  32     56428   498.60 MB/sec  execute   9 sec  latency 6.346 ms
+  32     59471   498.40 MB/sec  execute  10 sec  latency 9.958 ms
+  32     62175   495.68 MB/sec  execute  11 sec  latency 14.270 ms
+  32     65143   498.90 MB/sec  execute  12 sec  latency 9.391 ms
+  32     68116   502.19 MB/sec  execute  13 sec  latency 5.713 ms
+  32     71078   501.45 MB/sec  execute  14 sec  latency 6.235 ms
+  32     74030   500.43 MB/sec  execute  15 sec  latency 7.135 ms
+  32     76908   500.82 MB/sec  execute  16 sec  latency 7.071 ms
+  32     79794   499.61 MB/sec  execute  17 sec  latency 7.556 ms
+  32     82791   502.30 MB/sec  execute  18 sec  latency 6.509 ms
+  32     85676   502.05 MB/sec  execute  19 sec  latency 6.938 ms
+  32     86950   486.44 MB/sec  execute  20 sec  latency 554.015 ms *2
+  32     89670   487.60 MB/sec  execute  21 sec  latency 901.490 ms *3
+  32     92577   487.64 MB/sec  execute  22 sec  latency 6.715 ms
+  32     95528   488.03 MB/sec  execute  23 sec  latency 7.457 ms
+  32     98507   488.76 MB/sec  execute  24 sec  latency 7.266 ms
+  32    101340   488.76 MB/sec  execute  25 sec  latency 6.699 ms
+  32    104331   489.94 MB/sec  execute  26 sec  latency 6.506 ms
+  32    107166   490.87 MB/sec  execute  27 sec  latency 6.582 ms
+  32    110022   490.17 MB/sec  execute  28 sec  latency 7.072 ms
+  32    112931   490.34 MB/sec  execute  29 sec  latency 6.484 ms
+  32    115658   489.67 MB/sec  execute  30 sec  latency 6.767 ms
+  32    118569   490.14 MB/sec  execute  31 sec  latency 6.825 ms
+  32    121334   490.34 MB/sec  execute  32 sec  latency 7.270 ms
+  32    124182   489.95 MB/sec  execute  33 sec  latency 6.849 ms
+  32    127073   490.05 MB/sec  execute  34 sec  latency 6.934 ms
+  32    129835   489.56 MB/sec  execute  35 sec  latency 7.455 ms
+  32    130952   481.58 MB/sec  execute  36 sec  latency 635.676 ms *4
+  32    133736   481.74 MB/sec  execute  37 sec  latency 957.929 ms *5
+  32    136646   481.79 MB/sec  execute  38 sec  latency 7.339 ms
+  32    139616   483.23 MB/sec  execute  39 sec  latency 7.199 ms
+  32    142526   483.62 MB/sec  execute  40 sec  latency 7.344 ms
+  32    145429   483.58 MB/sec  execute  41 sec  latency 6.967 ms
+  32    148329   484.09 MB/sec  execute  42 sec  latency 8.043 ms
+  32    151091   483.89 MB/sec  execute  43 sec  latency 7.476 ms
+  32    153913   484.33 MB/sec  execute  44 sec  latency 7.611 ms
+  32    156679   484.29 MB/sec  execute  45 sec  latency 7.612 ms
+  32    159534   483.90 MB/sec  execute  46 sec  latency 8.295 ms
+  32    162328   484.17 MB/sec  execute  47 sec  latency 6.582 ms
+  32    165080   483.64 MB/sec  execute  48 sec  latency 8.939 ms
+  32    167861   484.12 MB/sec  execute  49 sec  latency 6.684 ms
+  32    170616   483.56 MB/sec  execute  50 sec  latency 7.051 ms
+  32    173557   483.89 MB/sec  execute  51 sec  latency 6.923 ms
+  32    176424   484.52 MB/sec  execute  52 sec  latency 6.689 ms
+  32    179255   484.14 MB/sec  execute  53 sec  latency 7.973 ms
+  32    181195   481.47 MB/sec  execute  54 sec  latency 305.495 ms
+  32    183309   479.62 MB/sec  execute  55 sec  latency 866.862 ms *6
+  32    186256   479.82 MB/sec  execute  56 sec  latency 7.016 ms
+  32    189209   480.82 MB/sec  execute  57 sec  latency 6.789 ms
+  32    192072   480.93 MB/sec  execute  58 sec  latency 7.305 ms
+  32    195054   481.00 MB/sec  execute  59 sec  latency 7.432 ms
+
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/02/03
+
+> 
+> 
+> On 3.02.21 §Ô. 12:51 §é., Filipe Manana wrote:
+> > On Tue, Feb 2, 2021 at 2:15 PM Wang Yugui <wangyugui@e16-tech.com> wrote:
+> >>
+> >> Hi, Filipe Manana
+> >>
+> >> There are some dbench(sync mode) result on the same hardware,
+> >> but with different linux kernel
+> >>
+> >> 4.14.200
+> >> Operation      Count    AvgLat    MaxLat
+> >>  ----------------------------------------
+> >>  WriteX        225281     5.163    82.143
+> >>  Flush          32161     2.250    62.669
+> >> Throughput 236.719 MB/sec (sync open)  32 clients  32 procs  max_latency=82.149 ms
+> >>
+> >> 4.19.21
+> >> Operation      Count    AvgLat    MaxLat
+> >>  ----------------------------------------
+> >>  WriteX        118842    10.946   116.345
+> >>  Flush          16506     0.115    44.575
+> >> Throughput 125.973 MB/sec (sync open)  32 clients  32 procs  max_latency=116.390 ms
+> >>
+> >> 4.19.150
+> >>  Operation      Count    AvgLat    MaxLat
+> >>  ----------------------------------------
+> >>  WriteX        144509     9.151   117.353
+> >>  lush          20563     0.128    52.014
+> >> Throughput 153.707 MB/sec (sync open)  32 clients  32 procs  max_latency=117.379 ms
+> >>
+> >> 5.4.91
+> >>  Operation      Count    AvgLat    MaxLat
+> >>  ----------------------------------------
+> >>  WriteX        367033     4.377  1908.724
+> >>  Flush          52037     0.159    39.871
+> >> Throughput 384.554 MB/sec (sync open)  32 clients  32 procs  max_latency=1908.968 ms
+> > 
+> > Ok, it seems somewhere between 4.19 and 5.4, something made the
+> > latency much worse for you at least.
+> > 
+> > Is it only when using sync open (O_SYNC, dbench's -s flag), what about
+> > when not using it?
+> > 
+> > I'll have to look at it, but it will likely take some time.
+> 
+> 
+> This seems like the perf regression I observed starting with kernel 5.0,
+> essentially preemptive flush of metadata was broken for quite some time,
+> but kernel 5.0 removed a btrfs_end_transaction call from
+> should_end_transaction which unmasked the issue.
+> 
+> In particular this should have been fixed by the following commit in
+> misc-next:
+> 
+> https://github.com/kdave/btrfs-devel/commit/28d7e221e4323a5b98e5d248eb5603ff5206a188
+> which is part of a larger series of patches. So Wang, in order to test
+> this hypothesis can you re-run those tests with the latest misc-next
+> branch .
+> 
+> <snip>
+
+
