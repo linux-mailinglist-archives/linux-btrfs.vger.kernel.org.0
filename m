@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F8530D85A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Feb 2021 12:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 707C430D85C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Feb 2021 12:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbhBCLSh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Feb 2021 06:18:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
+        id S234138AbhBCLSj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Feb 2021 06:18:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233983AbhBCLSe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Feb 2021 06:18:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17A5864F74
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Feb 2021 11:17:52 +0000 (UTC)
+        id S234021AbhBCLSg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Feb 2021 06:18:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF4D664F6A
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Feb 2021 11:17:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612351073;
-        bh=eqLKGlahv72gTBWCi8BJ/rDOzf8XUgsXJ3XVqRYA03o=;
+        s=k20201202; t=1612351074;
+        bh=yq8wnwlglHlDuix1iQoTRsp8q8A7iSJniFO1ZuPkI9w=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=AvDAm7v+KJuWaUX0Cgf8nVLLnsyJvHfUZVZn83njRCtrh51+T7pn2LJM13VxrC8gk
-         Tyd8qJStTRmMgdsYfoWQZ6sgG8k+O3a2a3W411SCk0OmYKOl+phC0JWaGxI4lttsur
-         s/wuOprOPAQAqFYNFaO2RSJOKMqbQDsBelEv9K9kLkN4pU/euGvq+xF2lkZnhiZfos
-         O09UX/E/N6PM6tEVbDxapJ9SKmwdKCJvJhs9XaZuIlsl7pI0CXeHGZ4LHsqT365E3+
-         w8ebmqJk8HPo22fgBu5pg2kNCZFRbc+ZT15t+pa9EgC9L+mX0/HBsy9Wjd8p0u+1Pd
-         sVJgebOeAI3OQ==
+        b=k/QkkHweLypvNkjvt9QUSKrU2Qwok++I1JKvq/+Tu5AeLa0RbxnySlqxh6Dcdx3RD
+         XG0K+W17qA4BAn6QPGPkSv4Zwdvl0ImAnaUZJLwccz9NlfAmzu7T5C8ukz+Tco1zzW
+         s1fKD5+LAzlIX9yZrYv1m2i46Cit1mokL5BYOQwzZfMJhzXPINENwphlHOA8UUB86d
+         08K9dyEn+LsTROS3w5ReU6Bg7snWX+NtI7RGNaQ8vtVjb8D7PmudIMSNV88abmBUnE
+         I9pmTxDum2dS7b5Z06/R4YOHijhQx3dhr7vPTnvsq7JBpEh9fS6VSxN1LhkLNmrBhQ
+         xFmA9ReLunK9A==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/4] btrfs: remove no longer used function btrfs_extent_readonly()
-Date:   Wed,  3 Feb 2021 11:17:46 +0000
-Message-Id: <62b700e55d7b9cec8cf4d19e1adfcaa450d9cfed.1612350698.git.fdmanana@suse.com>
+Subject: [PATCH 4/4] btrfs: fix race between swap file activation and snapshot creation
+Date:   Wed,  3 Feb 2021 11:17:47 +0000
+Message-Id: <84a80739d04185bc50a4f911d2284d3b9f80cf4a.1612350698.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1612350698.git.fdmanana@suse.com>
 References: <cover.1612350698.git.fdmanana@suse.com>
@@ -39,55 +39,103 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-After the two previous patches:
+When creating a snapshot we check if the current number of swap files, in
+the root, is non-zero, and if it is, we error out and warn that we can not
+create the snapshot because there are active swap files.
 
-  btrfs: avoid checking for RO block group twice during nocow writeback
-  btrfs: fix race between writes to swap files and scrub
+However this is racy because when a task started activation of a swap
+file, another task might have started already snapshot creation and might
+have seen the counter for the number of swap files as zero. This means
+that after the swap file is activated we may end up with a snapshot of the
+same root successfully created, and therefore when the first write to the
+swap file happens it has to fall back into COW mode, which should never
+happen for active swap files.
 
-it is no longer used, so just remove it.
+Basically what can happen is:
 
+1) Task A starts snapshot creation and enters ioctl.c:create_snapshot().
+   There it sees that root->nr_swapfiles has a value of 0 so it continues;
+
+2) Task B enters btrfs_swap_activate(). It is not aware that another task
+   started snapshot creation but it did not finish yet. It increments
+   root->nr_swapfiles from 0 to 1;
+
+3) Task B checks that the file meets all requirements to be an active
+   swap file - it has NOCOW set, there are no snapshots for the inode's
+   root at the moment, no file holes, no reflinked extents, etc;
+
+4) Task B returns success and now the file is an active swap file;
+
+5) Task A commits the transaction to create the snapshot and finishes.
+   The swap file's extents are now shared between the original root and
+   the snapshot;
+
+6) A write into an extent of the swap file is attempted - there is a
+   snapshot of the file's root, so we fall back to COW mode and therefore
+   the physical location of the extent changes on disk.
+
+So fix this by taking the snapshot lock during swap file activation before
+locking the extent range, as that is the order in which we lock these
+during buffered writes.
+
+Fixes: ed46ff3d42378 ("Btrfs: support swap files")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.h       |  1 -
- fs/btrfs/extent-tree.c | 13 -------------
- 2 files changed, 14 deletions(-)
+ fs/btrfs/inode.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 5269777a4fb4..65d158082b86 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2686,7 +2686,6 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans);
- int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
- 			 struct btrfs_ref *generic_ref);
- 
--int btrfs_extent_readonly(struct btrfs_fs_info *fs_info, u64 bytenr);
- void btrfs_clear_space_info_full(struct btrfs_fs_info *info);
- 
- /*
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 5476ab84e544..11ef4259cacb 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2455,19 +2455,6 @@ int btrfs_dec_ref(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 	return __btrfs_mod_ref(trans, root, buf, full_backref, 0);
- }
- 
--int btrfs_extent_readonly(struct btrfs_fs_info *fs_info, u64 bytenr)
--{
--	struct btrfs_block_group *block_group;
--	int readonly = 0;
--
--	block_group = btrfs_lookup_block_group(fs_info, bytenr);
--	if (!block_group || block_group->ro)
--		readonly = 1;
--	if (block_group)
--		btrfs_put_block_group(block_group);
--	return readonly;
--}
--
- static u64 get_alloc_profile_by_root(struct btrfs_root *root, int data)
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 464c289c402d..ca89f3166dd7 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -10093,7 +10093,8 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
+ 			       sector_t *span)
  {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct inode *inode = file_inode(file);
+-	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
++	struct btrfs_root *root = BTRFS_I(inode)->root;
++	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+ 	struct extent_state *cached_state = NULL;
+ 	struct extent_map *em = NULL;
+@@ -10144,13 +10145,27 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
+ 	   "cannot activate swapfile while exclusive operation is running");
+ 		return -EBUSY;
+ 	}
++
++	/*
++	 * Prevent snapshot creation while we are activating the swap file.
++	 * We do not want to race with snapshot creation. If snapshot creation
++	 * already started before we bumped nr_swapfiles from 0 to 1 and
++	 * completes before the first write into the swap file after it is
++	 * activated, than that write would fallback to COW.
++	 */
++	if (!btrfs_drew_try_write_lock(&root->snapshot_lock)) {
++		btrfs_exclop_finish(fs_info);
++		btrfs_warn(fs_info,
++	   "cannot activate swapfile because snapshot creation is in progress");
++		return -EINVAL;
++	}
+ 	/*
+ 	 * Snapshots can create extents which require COW even if NODATACOW is
+ 	 * set. We use this counter to prevent snapshots. We must increment it
+ 	 * before walking the extents because we don't want a concurrent
+ 	 * snapshot to run after we've already checked the extents.
+ 	 */
+-	atomic_inc(&BTRFS_I(inode)->root->nr_swapfiles);
++	atomic_inc(&root->nr_swapfiles);
+ 
+ 	isize = ALIGN_DOWN(inode->i_size, fs_info->sectorsize);
+ 
+@@ -10296,6 +10311,8 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
+ 	if (ret)
+ 		btrfs_swap_deactivate(file);
+ 
++	btrfs_drew_write_unlock(&root->snapshot_lock);
++
+ 	btrfs_exclop_finish(fs_info);
+ 
+ 	if (ret)
 -- 
 2.28.0
 
