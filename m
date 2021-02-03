@@ -2,75 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA31C30E400
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Feb 2021 21:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3A130E57C
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Feb 2021 23:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbhBCUZz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Feb 2021 15:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhBCUZz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Feb 2021 15:25:55 -0500
-X-Greylist: delayed 93 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 03 Feb 2021 12:25:10 PST
-Received: from fbo-3.mxes.net (fbo-3.mxes.net [IPv6:2605:d100:2f:10::324])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259CFC061573
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Feb 2021 12:25:10 -0800 (PST)
-Received: from smtp-out-4.mxes.net (smtp-out-4.mxes.net [198.205.123.69])
-        by fbi-3.mxes.net (Postfix) with ESMTP id 967C575966
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Feb 2021 15:24:23 -0500 (EST)
-Received: from Customer-MUA (mua.mxes.net [IPv6:fd::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S232841AbhBCWBj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Feb 2021 17:01:39 -0500
+Received: from mail.mailmag.net ([5.135.159.181]:41274 "EHLO mail.mailmag.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232825AbhBCWBZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Feb 2021 17:01:25 -0500
+X-Greylist: delayed 345 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Feb 2021 17:01:24 EST
+Received: from authenticated-user (mail.mailmag.net [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp.mxes.net (Postfix) with ESMTPSA id 56B1C759D5;
-        Wed,  3 Feb 2021 15:23:31 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mxes.net; s=mta;
-        t=1612383813; bh=gH1cctNBCMvN3nWzG1KbSrfOwG+cttPES9YzWpytr8s=;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=P4J7ozZwu1eXcX30AY4kT4hENbTxv2FJCurLIhLPWWG1M4FPomQ4lnWHBFbAcXRvG
-         bGrpbOhjKmtmtDUgJ4pXhOz2xQmy50NwGXk0sL/zI72YnD0pfUGCo0j5iB4cXC5NYW
-         t55+FvO10CotYMUkaH+XRK4HrtYi4w/TKaSXOxZo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=andrewnesbit.org;
-        s=default; t=1612383813;
-        bh=gH1cctNBCMvN3nWzG1KbSrfOwG+cttPES9YzWpytr8s=; l=816;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=Sd3dNwPF1UmWfgFOT6oeK+hEPCwMVc3+QRtREt0O4S4ih+Cv9Y+iyzYf6J240tG96
-         b0V6LPSRHv5lHyTwYewIitWdq6ZZyQVeNE9JMTO+arsyMto31iApK1CnAwJhEnCJHW
-         B8+0puLsbs7ElK9z7nGCtzK06cGIanIJtTfkrLpI=
-Subject: Re: put 2 hard drives in mdadm raid 1 and detect bitrot like btrfs
- does, what's that called?
-To:     Cedric.dewijs@eclipso.eu, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <f5d8af48e8d5543267089286c01c476f@mail.eclipso.de>
-From:   Andrew Luke Nesbit <ullbeking@andrewnesbit.org>
-Message-ID: <b143d6c2-4b13-ca6b-9e74-81d385da90f5@andrewnesbit.org>
-Date:   Wed, 3 Feb 2021 20:23:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        by mail.mailmag.net (Postfix) with ESMTPSA id 76180EC08C5
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Feb 2021 12:54:54 -0900 (AKST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net; s=mail;
+        t=1612389294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ukpt2nE+u8wZDsDewYuTssb/d91wTqgpxvo648xJVss=;
+        b=zkYUUW1dZja1xRALag+HczpZ9zwmv67BEnViy+ZkNKUPQfIeReZOk+UC1z5iJ9Ej1zp7KR
+        urlAdLfcGjpmO3Ca6Mp7cfmWAcwdK+ofL4IgLjfRb/lNv2d4TxqPp/koeEwP1QWPEdzAgG
+        dw36yIbWoGLMDy3DJuQM/bTAVVWsNH8=
 MIME-Version: 1.0
-In-Reply-To: <f5d8af48e8d5543267089286c01c476f@mail.eclipso.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Sent-To: <bGludXgtYnRyZnNAdmdlci5rZXJuZWwub3Jn>
+Date:   Wed, 03 Feb 2021 21:54:54 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+From:   joshua@mailmag.net
+Message-ID: <e23a835842fa7ecf5b8877e818bc68ea@mailmag.net>
+Subject: Large multi-device BTRFS array (usually) fails to mount on boot.
+To:     linux-btrfs@vger.kernel.org
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net;
+        s=mail; t=1612389294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ukpt2nE+u8wZDsDewYuTssb/d91wTqgpxvo648xJVss=;
+        b=TqHZNHKwjEmP7T+RT4/6+zdzG0VV/rvWqQaK80AzgyFWdgNH3+AiJbg4S39tCPpESybaVT
+        vaztaJjzYjXvLVscJAgpSXP2+jV9wakcIQVTODvSsQWfoOqTop4h3SfJshhk9BfkUdCjox
+        tAexWPy9C8SLoxbv/6WqSNc9qjMwWLk=
+ARC-Seal: i=1; s=mail; d=mailmag.net; t=1612389294; a=rsa-sha256; cv=none;
+        b=Sw+kNFWieomKbHkByfmsyeD6SDFfWd4LCnBjRCsy/WGG8F1CPuzdMubdnR2vtxIxu8ejVr
+        CMCHy0wBIWZMVx9fp0tYeIv+xt1pFnC6Wn6WG2aBBQS9TZhhHkgYkA5oR5Iasq7cPTIIUd
+        Zn6V4DTiqkdz3YFWpcjtLf91BxNDOvU=
+ARC-Authentication-Results: i=1;
+        mail.mailmag.net;
+        auth=pass smtp.mailfrom=joshua@mailmag.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03/02/2021 19:04, Cedric.dewijs@eclipso.eu wrote:
-> I am looking for a way to make a raid 1 of two SSD's, and to be able to detect corrupted blocks, much like btrfs does that. I recall being told about a month ago to use a specific piece of software for that, but i forgot to make a note of it, and I can't find it anymore.
-
-Running SSD's in RAID1 has been contentious from the perspective that I 
-have been researching storage technology.
-
-Is there any serious, properly researched, and learned infornmation 
-available about this?
-
-The reason I ask is that, in a related situation, I have 4x high quality 
-HGST SLC SAS SSD's, and I was seriously thinking that RAID0 might be the 
-appropriate way to configure them.  This assumes a well designed backup 
-strategy of course.
-
-Is this foolhardy?
-
-Andrew
+Good Evening.=0A=0AI have a large BTRFS array, (14 Drives, ~100 TB RAW) w=
+hich has been having problems mounting on boot without timing out. This c=
+auses the system to drop to emergency mode. I am then able to mount the a=
+rray in emergency mode and all data appears fine, but upon reboot it fail=
+s again.=0A=0AI actually first had this problem around a year ago, and in=
+itially put considerable effort into extending the timeout in systemd, as=
+ I believed that to be the problem. However, all the methods I attempted =
+did not work properly or caused the system to continue booting before the=
+ array was mounted, causing all sorts of issues. Eventually, I was able t=
+o almost completely resolve it by defragmenting the extent tree and subvo=
+lume tree for each subvolume. (btrfs fi defrag /mountpoint/subvolume/) Th=
+is seemed to reduce the time required to mount, and made it mount on boot=
+ the majority of the time.=0A=0ARecently I expanded the array yet again b=
+y adding another drive, (and some more data) and now I am having the same=
+ issue again. I've posted the relevant entries from my dmesg, as well as =
+some information on my array and system below. I ran a defrag as mentione=
+d above on each subvolume, and was able to get the system to boot success=
+fully. Any ideas on a more reliable and permanent solution this this? Tha=
+nks much!=0A=0Admesg entries upon boot:=0A[ 22.775439] BTRFS info (device=
+ sdh): use lzo compression, level 0=0A[ 22.775441] BTRFS info (device sdh=
+): using free space tree=0A[ 22.775442] BTRFS info (device sdh): has skin=
+ny extents=0A[ 124.250554] BTRFS error (device sdh): open_ctree failed=0A=
+=0Admesg entries after running 'mount -a' in emergency mode:=0A[ 178.3173=
+39] BTRFS info (device sdh): force zstd compression, level 2=0A[ 178.3173=
+42] BTRFS info (device sdh): using free space tree=0A[ 178.317343] BTRFS =
+info (device sdh): has skinny extents=0A=0Auname -a:=0ALinux HOSTNAME 5.1=
+0.0-2-amd64 #1 SMP Debian 5.10.9-1 (2021-01-20) x86-64 GNU/Linux=0A=0Abtr=
+fs --version:=0Abtrfs-progs v5.10=0A=0Abtrfs fi show /mountpoint:=0ALabel=
+: 'DATA' uuid: {snip}=0ATotal devices 14 FS bytes used 41.94TiB=0Adevid 1=
+ size 2.73TiB used 2.46TiB path /dev/sdh=0Adevid 2 size 7.28TiB used 6.87=
+TiB path /dev/sdm=0Adevid 3 size 2.73TiB used 2.46TiB path /dev/sdk=0Adev=
+id 4 size 9.10TiB used 8.57TiB path /dev/sdj=0Adevid 5 size 9.10TiB used =
+8.57TiB path /dev/sde=0Adevid 6 size 9.10TiB used 8.57TiB path /dev/sdn=
+=0Adevid 7 size 7.28TiB used 4.65TiB path /dev/sdc=0Adevid 9 size 9.10TiB=
+ used 8.57TiB path /dev/sdf=0Adevid 10 size 2.73TiB used 2.21TiB path /de=
+v/sdl=0Adevid 12 size 2.73TiB used 2.20TiB path /dev/sdg=0Adevid 13 size =
+9.10TiB used 8.57TiB path /dev/sdd=0Adevid 15 size 7.28TiB used 6.75TiB p=
+ath /dev/sda=0Adevid 16 size 7.28TiB used 6.75TiB path /dev/sdi=0Adevid 1=
+7 size 7.28TiB used 6.75TiB path /dev/sdb=0A=0Abtrfs fi usage /mountpoint=
+:=0AOverall:=0ADevice size: 92.78TiB=0ADevice allocated: 83.96TiB=0ADevic=
+e unallocated: 8.83TiB=0ADevice missing: 0.00B=0AUsed: 83.94TiB=0AFree (e=
+stimated): 4.42TiB (min: 2.95TiB)=0AFree (statfs, df): 3.31TiB=0AData rat=
+io: 2.00=0AMetadata ratio: 3.00=0AGlobal reserve: 512.00MiB (used: 0.00B)=
+=0AMultiple profiles: no=0A=0AData,RAID1: Size:41.88TiB, Used:41.877TiB (=
+99.99%)=0A{snip}=0A=0AMetadata,RAID1C3: Size:68GiB, Used:63.79GiB (93.81%=
+)=0A{snip}=0A=0ASystem,RAID1C3: Size:32MiB, Used:6.69MiB (20.90%)=0A{snip=
+}=0A=0AUnallocated:=0A{snip}
