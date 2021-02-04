@@ -2,196 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D2F30EDAF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 08:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3D530EE4B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 09:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234736AbhBDHsm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Feb 2021 02:48:42 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:58416 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234605AbhBDHsk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Feb 2021 02:48:40 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1147dcE2108818;
-        Thu, 4 Feb 2021 07:47:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=3NtOn0U2b17mInrYj1qtNnmY+BPfl5C3GPZBG/l+9ck=;
- b=R4O3W/oQOwlmIiMe1V79tN5q3tI2kdXwiAcwTIYSdV58+zXq8RX5N3+doCjMwmRtVzHM
- jEOz6AjWnRlMusBwCFh2gYOB7WxsNMzWBeJXqHoeK5Me2l7RmXFYy3+tikYkWhR7CYix
- k1Yc8TtyoyYKFjH6kMrZZYhIQnNhFvreiEmJ3JVG/fG+5xC2M2E8swAgF6lW7ia9h5Rf
- hzHfiGvOzHv28DXQiv+rTyXfgqWKZDmu2Yi0oX0rJQI/Y38uWseUketziu+zzHBFmgAA
- pSeYoUAhdUoH6DEJzYpkjEFsvLfTIyw6VV72Hl2UUv54AeHHhsCgM89/x2vApOwhOel9 SQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36cvyb41c2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Feb 2021 07:47:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1147j5on053401;
-        Thu, 4 Feb 2021 07:47:57 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2054.outbound.protection.outlook.com [104.47.36.54])
-        by aserp3020.oracle.com with ESMTP id 36dhc2apwm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Feb 2021 07:47:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KkaCK81lOErSwGGit6+H6LJxLGeOBKreEq+lIWhut1SGdGyAWE566iHPQyDfmcLlCIv6f957uNoiepfwC5v4MdxU7EOvKHmARQ7RgijVjNPpxhNWNZA3DSABkOy4GDvDgG0lItBHBViD12Tcm+cwkdDZpYk0KwG/oZbhk4QxO9B5sIkH+sHCn8uwpT4OjEJ+q/3NV5gczT0efc6OYRcxEcZm1jE65dAj9HYe6s2oDYwWq8agFRD74vZMNME2jO1S5hjUd+wf3RSd2ZokO4CY7OlBwYe6VBdVeXaTYwyJ05TwK0gsqpRPbwP8p/KMWJ0WiLMMgnRjtl02WfUxrs+cPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3NtOn0U2b17mInrYj1qtNnmY+BPfl5C3GPZBG/l+9ck=;
- b=FRenw/fqwatypRnbcylpjXrsWwCTIjs5l3wxOtoJZcyK+GtNSHgemTaL8UcPnBloJsA1onHXafQLhCH0woFULYCYVUmEWR9gHJHA4KF+cX1QzimJzrlFQSVaZqBU32tCVZ7QTwNV1vJpsyPjJnOaZ+sM1pd3b+Fs7WhUtvECQt2R959t77q+v0gVXgMEQekI21mZU7qURvniGpUUdfYVcbgd2+eiu0XYpykZfrXQSpjNK0p97dfRAce3F9U8uivMinP0+tDialzgUBC5WKUC8lOihcL6kz6RxDkBxMPj6iBgXB1+K12G3567pp6oe7coWTRloL44xeHOEAGU73R9pw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3NtOn0U2b17mInrYj1qtNnmY+BPfl5C3GPZBG/l+9ck=;
- b=0VNwEo61SZm41jrJByVknO7mtFpaWnuY4GQJFxEwxr85aFTFT7r16ks/F1rlNyBAmGF8b/THkl1gV6MTjQnWfnCMFYPQq16lgJrdsRBXRZsr+GOE14P9i4BADf3RDfvrWLTrUPYThhH7JQBaeGCe+J5RlwYoO3sQMf+ISkfwjdA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BN6PR10MB1683.namprd10.prod.outlook.com (2603:10b6:405:b::15)
- by BN0PR10MB5223.namprd10.prod.outlook.com (2603:10b6:408:12a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.20; Thu, 4 Feb
- 2021 07:47:55 +0000
-Received: from BN6PR10MB1683.namprd10.prod.outlook.com
- ([fe80::44c4:3dbe:4b78:f69a]) by BN6PR10MB1683.namprd10.prod.outlook.com
- ([fe80::44c4:3dbe:4b78:f69a%3]) with mapi id 15.20.3805.028; Thu, 4 Feb 2021
- 07:47:55 +0000
-Subject: Re: [PATCH 1/4] btrfs: avoid checking for RO block group twice during
- nocow writeback
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1612350698.git.fdmanana@suse.com>
- <9d42ab56ffa6b454998453764dbb1c899d10bc40.1612350698.git.fdmanana@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <8a8fad5a-26db-a082-3a21-68852054b29e@oracle.com>
-Date:   Thu, 4 Feb 2021 15:47:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-In-Reply-To: <9d42ab56ffa6b454998453764dbb1c899d10bc40.1612350698.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2406:3003:2006:2288:d057:c9b6:8962:237a]
-X-ClientProxiedBy: SG2PR06CA0191.apcprd06.prod.outlook.com (2603:1096:4:1::23)
- To BN6PR10MB1683.namprd10.prod.outlook.com (2603:10b6:405:b::15)
+        id S234854AbhBDI0m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Feb 2021 03:26:42 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:34343 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233305AbhBDI0l (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Feb 2021 03:26:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1612427200; x=1643963200;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=GtdY8LtyTR9VUmf4SBTpHa/Kososx3pGVqasa7L3upw=;
+  b=O/p9bA7PL2eRFL9nnEk+IJnC/21PlNR8eKAfnrw5+OEVxwd2WXmmT126
+   kZxhjVck05bKPDQFTVrheyVCrl/dKPIBjO7Z0b0hLIz3un1w7aYlt241Y
+   nLoUZ1+jUwzqsF+ydSbfybUgWFDpRXdKvRMYgBHBd6ohmLr6IGgv9oSrM
+   OQftAiWtzKE2edbasUBD3uECgHCHuSqyrAd3FrWMokFQc+aNlnVt06f/Y
+   C0a8k2WSZXU19EdhM8MqaP80UuKblsC1TPmLSezexV+X6lvok9n09b2uH
+   Z2d3erTr56x9C8QH4yQ/9WyF7YI1Gc19rOScplycb4XsNGVvkZrPxGc+f
+   A==;
+IronPort-SDR: JEV6O0hUYtO2Wn0XsG7UlCSCNTE5OBnUTVp5Qf/TgzfMAcM/UfkvVP2p5my1cXZ7gYDDAaAjZU
+ NJrJUns7+A62NzFS4h8b/v28Ct4Pii17QLDxYvfY2jYAGAeVO/PtwWa6Of2CwpQHuJp25yV/CH
+ /q8Epuhm20+dMEWVYD1QIGbCP2PzioQ1ZqW/xGRW55SBk1apRNoF9Xhm1PxGsJZZuWo4uld6tw
+ oA8OhRcypBJwVbhPnZopNFHavfjT54jf5k4nCmFI1ew1a9g1aPMQV93fCYHDDugSG0K/OS5GJV
+ Nic=
+X-IronPort-AV: E=Sophos;i="5.79,400,1602518400"; 
+   d="scan'208";a="269527913"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Feb 2021 16:25:34 +0800
+IronPort-SDR: INL2Vsu8nw0TnRK7BBvkPRK72lgOUCzvrXJ0wqUAr4qPpbCMOf4xRz6Ir9pdXivfqXUS+FCF1y
+ Yop8/Qb1rblVzQsgqANlWDx/rQbZDRN4AucXJZkNozsaX75xro4sQU0RghGQq6chxkwwSYudME
+ j2li30esH85Vsb9ZSlfaeTAKpfAxkmHEpyt++rElRGH1SGRGV4CzKxei8oqVhbYjNucmcm/mNf
+ ruxOtRfBe7FXehdUJlh/21y+7q8QWki6Tq3K1KVBbqz5g/oi1E23PRPDkJGuf0AN7po+9GIC7c
+ mhSZ857i5Gg1MjDjFKWjFuTb
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 00:07:38 -0800
+IronPort-SDR: fn/zU2u4FnEBE2zzzTbalQiz2PvTVBgRfs21HVlRvr/5FkHs6VAT6c6Uasj4iSER8zR2O7QSVD
+ w50MMqS8/zwbhCiOtI+rLhDL1VclGMao6YODg7ijzttM38g3OGfS+s2xlKdnQVksUsqmZcDktF
+ qq+E+Vs94MbUXsp4gZpH7RxPtTvM7qrHYkm+WG8UG377KNzgA8tbz4jFC2RZc2RQXEZQ8vQik/
+ dQMw7hMQoRfmOoeYwkpJjgxfCkbtkvH7o7K6N5Lal4Vj13eVpnUYvPqpTzCxWf98auqBSWG9V3
+ iDw=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.52.155])
+  by uls-op-cesaip01.wdc.com with SMTP; 04 Feb 2021 00:25:34 -0800
+Received: (nullmailer pid 969874 invoked by uid 1000);
+        Thu, 04 Feb 2021 08:25:32 -0000
+Date:   Thu, 4 Feb 2021 17:25:32 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        hare@suse.com, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v14 29/42] btrfs: introduce dedicated data write path for
+ ZONED mode
+Message-ID: <20210204082532.ljbe2bpjkbxtmsim@naota.dhcp.fujisawa.hgst.com>
+References: <cover.1611627788.git.naohiro.aota@wdc.com>
+ <698bfc6446634e06a9399fa819d0f19aba3b4196.1611627788.git.naohiro.aota@wdc.com>
+ <20210202150045.GY1993@twin.jikos.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2406:3003:2006:2288:d057:c9b6:8962:237a] (2406:3003:2006:2288:d057:c9b6:8962:237a) by SG2PR06CA0191.apcprd06.prod.outlook.com (2603:1096:4:1::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Thu, 4 Feb 2021 07:47:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3b19520a-0667-4691-cce5-08d8c8e12eb0
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5223:
-X-Microsoft-Antispam-PRVS: <BN0PR10MB52234D4B100DF22ABCEC2AB4E5B39@BN0PR10MB5223.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3Ftd4Tnc+tayFjF3rASxbZix3qiolHlH8d6/Ud+jrZjFjWfvxOJaV/Fc9nPexI4Lgmukv45d8T045Gu7etTBTFOWkkYZX1WVMONY5mk5XLQbSsp/CPLJxMPbM4cRF5ibNr6k/WLVe1x/78LjZLFNThYTXbKRXTiOdCnp30CvYtz2dsgvXdxHCk3ivVPDvZuLbnIj21mWxNFWJZ0n6JvJqKHAR6WqWjzWqUuUryw1MBbZXGiXQjAUdPYMP/8r2oIRqMinsqSZofM1z76I0HZ6vc8oGm0xMuV3f/IHfvtCpinHZNVJkuYDPUfOprfT7nlnoWF/sA3NQ4FGikFebH6XIDUP3k7ppng5mI2TSkvg9mm848YCN/YfYmhuBb3ehpslVUKhTlHp6YlpnqP2FosoUbjcCeDYLCRs7gxpbrYyiX+fJMulwaJERRmJ9F0BLhLMrfcuxVXHC8PS1KTXilxoX3lwSlTqQGpxbfrDX2tKCfVvtfvdMolZ50rtg9FbFasJ/tIjwYIi9Ec9UxwY7wXYqNYdy/gq+vLMSpO73AVFdkdNnZF6jggeHaysZ6ve5MAOJX9QU3ns5wE696bZZBqMHU40mxWTXyvGj7lcFYPN4f4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR10MB1683.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(366004)(136003)(396003)(36756003)(6486002)(186003)(2906002)(53546011)(6666004)(16526019)(31686004)(83380400001)(86362001)(316002)(5660300002)(478600001)(8676002)(8936002)(44832011)(66946007)(66476007)(66556008)(2616005)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MUx5eTJuS0dtNlB0cW9aWGg2TWdtZEx4NlduazNCdEdQNE9IUXY2eUdkYVRZ?=
- =?utf-8?B?aFpWZGEvV1JWM0xmeTN1bVF1b21idlJHN1NsSDkrcDE5VEd5NkRkMDFQK1B6?=
- =?utf-8?B?bUhTSHB6emI2TW4wM0lnT204akJxSHFlUlRsRU15bmdMalJtOEI1U291M1V4?=
- =?utf-8?B?QmZtMkoxTmcxVUwreXY2Q3Z5czNZWFBlZk9QcUVNSk1URHdTMzZHT3kwNVBM?=
- =?utf-8?B?a1RsdWhDbkZLOWZlYndxSkJXcXNWYUJ5RE1Yb1BPM0hxVWpJalBXcWM2NTJF?=
- =?utf-8?B?d3l1TVJDMk1nU2ZoRWlXckFaTDB0MlJ1ZWh6bnpyeUJPK1lmRkIrWWlVZ0oz?=
- =?utf-8?B?bVdXV3NrdEZDelI1WXZ4dVpMNXFHWWpTdFR1RXJnQVJNOUNxY00waU4yWmti?=
- =?utf-8?B?amZ5emp6aExWajI3TVhxMVpua0VjaE1CZUs0ZXdMQVMydlJVNFRvZ0NCMzda?=
- =?utf-8?B?ZDluWENYZnNqaHpXakFxZlhGYTNUQmV3ZDQ1NWhwOTlHUU91Y3RFSHByWklm?=
- =?utf-8?B?MTBYaXNYdG1MMkQyZnVDeDNaWTMxZURBZnJLMXlTSlpOQk5SS1Z3S1F1dEdF?=
- =?utf-8?B?YkZnMUF3NFl2SDJVR0dueG9Mck5vVEdUZGxmdjkvcTdlb3lVMGR4aWtFSXRD?=
- =?utf-8?B?c1V5dk93cCtZbDJUTXB1dFJWNUdnaVdiV29OTTVkeTVyL3IvejhzdTMxdm16?=
- =?utf-8?B?aDJEVW1uZkN1Umd2My9kU05JTWpCWFdHWDAzK0w1OVNMSmtPeHAwc2tERWNV?=
- =?utf-8?B?eUZiYU1ySDBTOHF0SStSRXVJMnlTMk5UWlRPS1pWOVlETU1ZdUtma0dRWldG?=
- =?utf-8?B?b3JSbHNvQ3JaR2hEeVVDMVpHN3cyZVJ0RnRiRWpXaS8rZnZmd2RrUWZsMFVM?=
- =?utf-8?B?dy9TNVVvWEZRSWZ3bUN3bFRRTHZYeWc4d2NWUXlKbTd0VlNGQXp1aXNWT0h5?=
- =?utf-8?B?SFpnbkJOSGVSZC9MSUNOMjIvVU9KS21pdmVpbG5GK2tkT1NGTmw3V3pyK1Zj?=
- =?utf-8?B?MFJiUzVQSDh3MTNIT21OMU5iQjFNRUd0TFhKVDdrZ1FTVVJxMU0wS3BLY04w?=
- =?utf-8?B?M2RKb2E3djJ6RTZzMUVkWHlUV0F4eVBFM0JrY3EwdmgxdExUMGZod0E4WVE3?=
- =?utf-8?B?Z1FtL0VMMFVFRzdsRmR0ZkZUMHRtV3BwVStHQlNLR0Rnd1F5Ui9KdXpWc1dW?=
- =?utf-8?B?Z0hlMU9BVUN3NlRCdGJDTHJ3QkdRVEEvNk9jaHB2UXRZaXhvSGtpU1Y3OVE1?=
- =?utf-8?B?SnBEMHd5ZkV0WnFkZ0dUT1lBbmVoWW0wSDFNUjZSSlZSOG5MaWttYmlNT1ho?=
- =?utf-8?B?VE1jUnJnRGZBdCtkdHFZZXJERzNzNmNWeEVEOWt5K0tjdW40UUhteEdqUStq?=
- =?utf-8?B?M1Buck9Rd2hzMGt0WDlVUGVFZGN3R1JETlhsUHY5SjROclFWU1NwWnVFeGhR?=
- =?utf-8?B?cG1LYVpCTzFFdWJYYlVPYkd5T2dtRTBPSzQ1MDB4RWQ2bnFxOUtCYWJYcnNr?=
- =?utf-8?B?VkVyTVRhRFB3SHUyUG5EdlhiWnY3VCs0TjZzQzJQN1RFOTVqUFppYkNxU3Jm?=
- =?utf-8?B?aHAyQjZFcjhHQ0pYZzR0NWZ6TmY0V3N1U2xxU1ZrN3lyQlo2Zlo3MklOemk3?=
- =?utf-8?B?cmhTNHZvWHZrNStWS1V1S3hwVlhJdm9STFJCR0tKRWxreDJYUlB0ejEramhw?=
- =?utf-8?B?ZHp3RkdMdXFDNzJTc0pzYkZudWVvQmtQYkRsTTZhUlN2OC9iWStNWS9aUHAz?=
- =?utf-8?B?c1FoYjVGQUw5OVlpMEkzUWcvTzkwdnkxeVNGV2xqODFDUlhkd3FxYVEyMXN0?=
- =?utf-8?B?ODJnNTkyVUV5T2dzZEFDbVJENms4WEpGSVpFb3k4SjNOdFlwaUJYZkRyTnhD?=
- =?utf-8?Q?RaeIVr2Ndrh12?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b19520a-0667-4691-cce5-08d8c8e12eb0
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR10MB1683.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Feb 2021 07:47:55.5558
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ym1/lKEhYr6phX7FihvYvUIsLqEmhM2woolwhkVadePK/4HxHbB/WGJtEOr7BeTVNU3bPeU2umGIl1OR+UmyRQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5223
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102040046
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9884 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102040045
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210202150045.GY1993@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/3/2021 7:17 PM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> During the nocow writeback path, we currently iterate the rbtree of block
-> groups twice: once for checking if the target block group is RO with the
-> call to btrfs_extent_readonly()), and once again for getting a nocow
-> reference on the block group with a call to btrfs_inc_nocow_writers().
-> 
-> Since btrfs_inc_nocow_writers() already returns false when the target
-> block group is RO, remove the call to btrfs_extent_readonly(). Not only
-> we avoid searching the blocks group rbtree twice, it also helps reduce
-> contention on the lock that protects it (specially since it is a spin
-> lock and not a read-write lock). That may make a noticeable difference
-> on very large filesystems, with thousands of allocated block groups.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Tue, Feb 02, 2021 at 04:00:45PM +0100, David Sterba wrote:
+>On Tue, Jan 26, 2021 at 11:25:07AM +0900, Naohiro Aota wrote:
+>> If more than one IO is issued for one file extent, these IO can be written
+>> to separate regions on a device. Since we cannot map one file extent to
+>> such a separate area, we need to follow the "one IO == one ordered extent"
+>> rule.
+>>
+>> The Normal buffered, uncompressed, not pre-allocated write path (used by
+>> cow_file_range()) sometimes does not follow this rule. It can write a part
+>> of an ordered extent when specified a region to write e.g., when its
+>> called from fdatasync().
+>>
+>> Introduces a dedicated (uncompressed buffered) data write path for ZONED
+>> mode. This write path will CoW the region and write it at once.
+>>
+>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>> ---
+>>  fs/btrfs/inode.c | 34 ++++++++++++++++++++++++++++++++--
+>>  1 file changed, 32 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index a9bf78eaed42..6d43aaa1f537 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -1400,6 +1400,29 @@ static int cow_file_range_async(struct btrfs_inode *inode,
+>>  	return 0;
+>>  }
+>>
+>> +static noinline int run_delalloc_zoned(struct btrfs_inode *inode,
+>> +				       struct page *locked_page, u64 start,
+>> +				       u64 end, int *page_started,
+>> +				       unsigned long *nr_written)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = cow_file_range(inode, locked_page, start, end,
+>> +			     page_started, nr_written, 0);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	if (*page_started)
+>> +		return 0;
+>> +
+>> +	__set_page_dirty_nobuffers(locked_page);
+>> +	account_page_redirty(locked_page);
+>> +	extent_write_locked_range(&inode->vfs_inode, start, end, WB_SYNC_ALL);
+>> +	*page_started = 1;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static noinline int csum_exist_in_range(struct btrfs_fs_info *fs_info,
+>>  					u64 bytenr, u64 num_bytes)
+>>  {
+>> @@ -1879,17 +1902,24 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+>>  {
+>>  	int ret;
+>>  	int force_cow = need_force_cow(inode, start, end);
+>> +	const bool do_compress = inode_can_compress(inode) &&
+>> +		inode_need_compress(inode, start, end);
+>
+>This would make sense to cache the values, but inode_need_compress is
+>quite heavy as it runs the compression heuristic. This would affect all
+>cases and drop some perf.
+>
+>> +	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
+>>
+>>  	if (inode->flags & BTRFS_INODE_NODATACOW && !force_cow) {
+>> +		ASSERT(!zoned);
+>>  		ret = run_delalloc_nocow(inode, locked_page, start, end,
+>>  					 page_started, 1, nr_written);
+>>  	} else if (inode->flags & BTRFS_INODE_PREALLOC && !force_cow) {
+>> +		ASSERT(!zoned);
+>>  		ret = run_delalloc_nocow(inode, locked_page, start, end,
+>>  					 page_started, 0, nr_written);
+>> -	} else if (!inode_can_compress(inode) ||
+>> -		   !inode_need_compress(inode, start, end)) {
+>> +	} else if (!do_compress && !zoned) {
+>>  		ret = cow_file_range(inode, locked_page, start, end,
+>>  				     page_started, nr_written, 1);
+>> +	} else if (!do_compress && zoned) {
+>> +		ret = run_delalloc_zoned(inode, locked_page, start, end,
+>> +					 page_started, nr_written);
+>
+>The part of the condition is shared so it should be structured lik
+>
+>	} else if (!<the compression checks>) {
+>		if (zoned)
+>			run_delalloc_zoned
+>		else
+>			cow_file_range
+>	} ...
+>
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-Thanks.
+Sure. I'll rewrite the code like this in v15.
 
-> ---
->   fs/btrfs/inode.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 589030cefd90..b10fc42f9e9a 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1657,9 +1657,6 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
->   			 */
->   			btrfs_release_path(path);
->   
-> -			/* If extent is RO, we must COW it */
-> -			if (btrfs_extent_readonly(fs_info, disk_bytenr))
-> -				goto out_check;
->   			ret = btrfs_cross_ref_exist(root, ino,
->   						    found_key.offset -
->   						    extent_offset, disk_bytenr, false);
-> @@ -1706,6 +1703,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
->   				WARN_ON_ONCE(freespace_inode);
->   				goto out_check;
->   			}
-> +			/* If the extent's block group is RO, we must COW. */
->   			if (!btrfs_inc_nocow_writers(fs_info, disk_bytenr))
->   				goto out_check;
->   			nocow = true;
-> 
+Thanks,
 
+>>  	} else {
+>>  		set_bit(BTRFS_INODE_HAS_ASYNC_EXTENT, &inode->runtime_flags);
+>>  		ret = cow_file_range_async(inode, wbc, locked_page, start, end,
+>> --
+>> 2.27.0
