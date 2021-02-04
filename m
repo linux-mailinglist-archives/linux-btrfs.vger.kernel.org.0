@@ -2,316 +2,236 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BC530EBC7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 06:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDA530EC64
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 07:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhBDFPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Feb 2021 00:15:04 -0500
-Received: from mout.gmx.net ([212.227.15.15]:50851 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229752AbhBDFPC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Feb 2021 00:15:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1612415603;
-        bh=wArzhVsWaqMu78fKxpAjcOfFnXnZTiL73fUpMuKbp60=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=YQtE7Naxty2yaTfDm3uCBLfynwTLM9DZPMvp+fuDIJKatnZpINOgkQSCiOBL/4b/1
-         siqU2WpDhhVrFK+O8xyqV5OZYi5bQ0UET8+Ha7pRc1qiZwGe+zJjiTc+g9J6VTiVqQ
-         SaY0H3zVmf7M3u499HIMotTHX0nMQ15VxXGvn6Uk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MzQg6-1ltsNW3bcW-00vMAj; Thu, 04
- Feb 2021 06:13:23 +0100
-Subject: Re: [bug report] Unable to handle kernel paging request
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210126083402.142577-1-wqu@suse.com>
- <5afbf08b-a93d-5633-8212-0e540625594a@oracle.com>
- <d55afd47-189f-e0a6-5577-0e89dab9e37d@gmx.com>
- <913e7523-5700-27ad-4045-200d83e37deb@oracle.com>
- <91e2bcba-c326-4b5d-6242-e537b38ff455@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <61d23f81-dd3e-6bb6-9423-81b3dadb519c@gmx.com>
-Date:   Thu, 4 Feb 2021 13:13:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231872AbhBDGRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Feb 2021 01:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230270AbhBDGRp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Feb 2021 01:17:45 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5742DC061573
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Feb 2021 22:17:05 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id m13so2037679wro.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Feb 2021 22:17:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rkjnsn-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=P6gvMkB/MmcTsfrQsGh/vvtP9+bkjZRH1lHqzTaaXl8=;
+        b=sOqs8MFNJF0Gr7Zm+lTd4Crkqo9xG2cvF33BuN5ONZql+aJRMU3qBwmZQdm4fc50zr
+         38HSz1yx/JOIhRyE3+mYcyUkkGVmBJhgJGrjZ+cpaBq5mDaG8yD7oxjfEvuby/n6G20A
+         G0BBRSoqj+X3cvMakrw9GD7m4CjsszmZxY5y8V9BjPZJbmyLTr2JAjb8iJZHrfBntAHM
+         bYHjWZN6/AVkaGbW+T+nKQx5LW3/ZvqaY+8doMtehyzN2iLQ4KSO0c3xqnLhQ8qha7Qf
+         JHtX3h6axmD021YGf0+HV9zQI3KHauuf081eciP+FzEGERr/w5+rMl6228Rjz3/9V7p8
+         lBNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=P6gvMkB/MmcTsfrQsGh/vvtP9+bkjZRH1lHqzTaaXl8=;
+        b=qpFan3duOAzHDh2YIor9reTWFg5y457ABS1TqqUGEoeMGbFJSA7/0GauAw234lMswv
+         xvso2kHHhEJd77E8QlZoUydvOJlAs+KZ1dM+vyAIfh7AwxDs1VcV2Ece1Dgi1SfJ6R0F
+         p3R5vtVRxpi6IoUaqHWhHLUltmMEl4BNnxv2uZLiwQvYMDGaNY90vEDhTsg2r3F3O7Bf
+         N2TPdcgIGWAbz+mcqeYz6zI5SsJqo8iUvOARYJyMsOmuW5Il6yG6RK6qLYb0s9mLjEUV
+         CyKZNwI7tAc1pHyFJoHkyDZB//I5z51H9eSyS/Af8/Z8/PXPW9gg4ZdIQv9y3RV7Z47V
+         zb6A==
+X-Gm-Message-State: AOAM533bQukNzad9y1I0E1+B45/WcstDkxixtKVO5sZXv7pf7/GcMCYj
+        1YxTqt5HwYZJ+zjMdtHbM9JHCrVVVDio8fISzGgd5g==
+X-Google-Smtp-Source: ABdhPJw8m3CVeHTjyLqeNgtRUej/C2g5jJzgmo2rNbouhKBfIiuQXLvc2//HGE1ZwG7pqLLOwYONFc4nKzn8lUjXn40=
+X-Received: by 2002:a5d:6cb4:: with SMTP id a20mr7369818wra.192.1612419424018;
+ Wed, 03 Feb 2021 22:17:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <91e2bcba-c326-4b5d-6242-e537b38ff455@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
+ <8aa09a61-aa1c-5dcd-093f-ec096a38a7b5@gmx.com> <CAMj6ewO229vq6=s+T7GhUegwDADv4dzhqPiM0jo10QiKujvytA@mail.gmail.com>
+ <684e89f3-666f-6ae6-5aa2-a4db350c1cd4@gmx.com> <CAMj6ewMqXLtrBQgTJuz04v3MBZ0W95fU4pT0jP6kFhuP830TuA@mail.gmail.com>
+ <218f6448-c558-2551-e058-8a69caadcb23@gmx.com> <CAMj6ewPR8hVYmUSoNWVk6gZvy-HyKnmtMXexAr2f4VQU_7bbUw@mail.gmail.com>
+ <3b2fe3d7-1919-d236-e6bb-483593287cc5@gmx.com> <CAMj6ewNDQFzXsvF5c1=raJc11iMvMKcHH=AbkUkrNeV2e3XGVg@mail.gmail.com>
+ <CAMj6ewPiEvXbtHC1auSfRag5QGtYJxwH_Hvoi2t_18uDSxzm8w@mail.gmail.com>
+ <CAMj6ewNjSs-_3akOquO1Zry5RBNEPqQWf7ZKjs8JOzTA7ZGZ7w@mail.gmail.com>
+ <2abb2701-5dde-cd5d-dd25-084682313b11@gmx.com> <b2bbff7d-22d0-84c2-7749-ac9e27d4ab3d@gmx.com>
+ <CAMj6ewOqCJTGjykDijun9_LWYELA=92HrE+KjGo-ehJTutR_+w@mail.gmail.com>
+ <CAMj6ewP-NK3g1xzHNF+fKt6M+_W-ec29Sq+CBtwcb1dcqc7dNA@mail.gmail.com>
+ <CAMj6ewPtDJdkQ=H3DO6BSPucdkqSoHOkeb-xgTd8mo+AaUWhkA@mail.gmail.com>
+ <16d35c47-40c5-25a9-c2ba-f6aab00db8e6@gmx.com> <mtwofibp.fsf@damenly.su>
+In-Reply-To: <mtwofibp.fsf@damenly.su>
+From:   Erik Jensen <erikjensen@rkjnsn.net>
+Date:   Wed, 3 Feb 2021 22:16:52 -0800
+Message-ID: <CAMj6ewNYSnFUFPER06qweZaypWC6qVHmUX7gYxRXO7Gbuw_16A@mail.gmail.com>
+Subject: Re: "bad tree block start" when trying to mount on ARM
+To:     Su Yue <l@damenly.su>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Hugo Mills <hugo@carfax.org.uk>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IuDINrk7aczyrte87fufQ/khnYgKv34kyAlAlpuF9rBn/s6zNkv
- 2ccW9IVZi8x76B2a7hGjm/BRO2FdwK29mKylJLlPb3xOzy3NVELYeNimIMyJvJ/XkH++Wbz
- bUC4PxkBau8SlzfvJmgtFDu68c+sQf/AhnFXtwrOUc/+w8hHMIxGqHwS1vPbV/e01dsb1J8
- zS6vg+Fa0/F4BznmY5P+g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1015erw8IFs=:W89S6ioaxP/eIBuf+oRkTh
- zLTKs0B2JgKA5xaMLcs8VyOmoMBuLvJzdqr3erok99cweuM5zvykkyNx7vYKyADWHjPICXJFm
- McsM027qPcgRheyO2zPDaetJ3o4ogdJvii2eRd7uvGBHPSM7dbp3oGKiQ8vs9opCD0fvCFw/E
- fWZT1lFgodZbVVU1A1/+29qAza1AOTUDZ6hDzzuHLcEveARdOO4Mz+78l7T8g8ksN8nnDSaUg
- YqlocvXieD8nSu7CqlGb9IOyKBjKcQsbjmk0GCDZH9hfadYbO5IOUZAz9+tLtXYArvHRaEGYE
- lfiDcOUBI5y5aleB5zdfiaQYgb3LGRBs8P+sDJ8owqF9eoYnZ1kzsP5OHSrP3MEcGiY85ShRu
- +Z1O/WmO7u6AmxfDAr+IQIiTffq10oH7H4mtjXf4EsELmJlFLL4ynaeGBQFsDoyPf5DS/La6y
- JQ7QDV5wWstaN5vKrp9GSGHr7F8D9OxQcfgQOlQbjOb8CJOiNtZlSwUNHSOAk+TIA/6nMOvzN
- /VkmOFV92+pLg9HaR9YDMHebbRFgSsb+MTbYTVZw9OnwV5rruzsPdD5Cs2mpYbljJzCvNXEwC
- wM5M6Q7rwa3WWMGXlushZ7kRg3tVlFP+CNqKEwRFpucjivj/4ZBF7ok16ZaKcEXO9TWixpgmW
- WrnU/I5MApLVfaVylFwexFDy7aXQUEtaUE3Vu0MlxlaTt6H7Ueai4sgT7p45WG/t9zRAcoyks
- aim2c6dV0aap6KHmnAU4MK9i+TbGTlRhEZ8cE8pPwYnOXICwp+Cn5KezXA9DzGBiJ1yhqUNqH
- oYidBpE90hBAXHzLkoPeNbH7udAE3QU2q+ncO2f9FIBq4NsFOhbhpD456jH9YrYzBLzOULBvt
- vRJ2vLY/OW7nXuGvXliw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sun, Jan 31, 2021 at 9:50 PM Su Yue <l@damenly.su> wrote:
+> On Mon 01 Feb 2021 at 10:35, Qu Wenruo <quwenruo.btrfs@gmx.com>
+> wrote:
+> > On 2021/1/29 =E4=B8=8B=E5=8D=882:39, Erik Jensen wrote:
+> >> On Mon, Jan 25, 2021 at 8:54 PM Erik Jensen
+> >> <erikjensen@rkjnsn.net> wrote:
+> >>> On Wed, Jan 20, 2021 at 1:08 AM Erik Jensen
+> >>> <erikjensen@rkjnsn.net> wrote:
+> >>>> On Wed, Jan 20, 2021 at 12:31 AM Qu Wenruo
+> >>>> <quwenruo.btrfs@gmx.com> wrote:
+> >>>>> On 2021/1/20 =E4=B8=8B=E5=8D=884:21, Qu Wenruo wrote:
+> >>>>>> On 2021/1/19 =E4=B8=8B=E5=8D=885:28, Erik Jensen wrote:
+> >>>>>>> On Mon, Jan 18, 2021 at 9:22 PM Erik Jensen
+> >>>>>>> <erikjensen@rkjnsn.net>
+> >>>>>>> wrote:
+> >>>>>>>>
+> >>>>>>>> On Mon, Jan 18, 2021 at 4:12 AM Erik Jensen
+> >>>>>>>> <erikjensen@rkjnsn.net>
+> >>>>>>>> wrote:
+> >>>>>>>>>
+> >>>>>>>>> The offending system is indeed ARMv7 (specifically a
+> >>>>>>>>> Marvell ARMADA=C2=AE
+> >>>>>>>>> 388), but I believe the Broadcom BCM2835 in my Raspberry
+> >>>>>>>>> Pi is
+> >>>>>>>>> actually ARMv6 (with hardware float support).
+> >>>>>>>>
+> >>>>>>>> Using NBD, I have verified that I receive the same error
+> >>>>>>>> when
+> >>>>>>>> attempting to mount the filesystem on my ARMv6 Raspberry
+> >>>>>>>> Pi:
+> >>>>>>>> [ 3491.339572] BTRFS info (device dm-4): disk space
+> >>>>>>>> caching is enabled
+> >>>>>>>> [ 3491.394584] BTRFS info (device dm-4): has skinny
+> >>>>>>>> extents
+> >>>>>>>> [ 3492.385095] BTRFS error (device dm-4): bad tree block
+> >>>>>>>> start, want
+> >>>>>>>> 26207780683776 have 3395945502747707095
+> >>>>>>>> [ 3492.514071] BTRFS error (device dm-4): bad tree block
+> >>>>>>>> start, want
+> >>>>>>>> 26207780683776 have 3395945502747707095
+> >>>>>>>> [ 3492.553599] BTRFS warning (device dm-4): failed to
+> >>>>>>>> read tree root
+> >>>>>>>> [ 3492.865368] BTRFS error (device dm-4): open_ctree
+> >>>>>>>> failed
+> >>>>>>>>
+> >>>>>>>> The Raspberry Pi is running Linux 5.4.83.
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Okay, after some more testing, ARM seems to be irrelevant,
+> >>>>>>> and 32-bit
+> >>>>>>> is the key factor. On a whim, I booted up an i686, 5.8.14
+> >>>>>>> kernel in a
+> >>>>>>> VM, attached the drives via NBD, ran cryptsetup, tried to
+> >>>>>>> mount, and=E2=80=A6
+> >>>>>>> I got the exact same error message.
+> >>>>>>>
+> >>>>>> My educated guess is on 32bit platforms, we passed
+> >>>>>> incorrect sector into
+> >>>>>> bio, thus gave us garbage.
+> >>>>>
+> >>>>> To prove that, you can use bcc tool to verify it.
+> >>>>> biosnoop can do that:
+> >>>>> https://github.com/iovisor/bcc/blob/master/tools/biosnoop_example.t=
+xt
+> >>>>>
+> >>>>> Just try mount the fs with biosnoop running.
+> >>>>> With "btrfs ins dump-tree -t chunk <dev>", we can manually
+> >>>>> calculate the
+> >>>>> offset of each read to see if they matches.
+> >>>>> If not match, it would prove my assumption and give us a
+> >>>>> pretty good
+> >>>>> clue to fix.
+> >>>>>
+> >>>>> Thanks,
+> >>>>> Qu
+> >>>>>
+> >>>>>>
+> >>>>>> Is this bug happening only on the fs, or any other btrfs
+> >>>>>> can also
+> >>>>>> trigger similar problems on 32bit platforms?
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>> Qu
+> >>>>
+> >>>> I have only observed this error on this file system.
+> >>>> Additionally, the
+> >>>> error mounting with the NAS only started after I did a `btrfs
+> >>>> replace`
+> >>>> on all five 8TB drives using an x86_64 system. (Ironically, I
+> >>>> did this
+> >>>> with the goal of making it faster to use the filesystem on
+> >>>> the NAS by
+> >>>> re-encrypting the drives to use a cipher supported by my
+> >>>> NAS's crypto
+> >>>> accelerator.)
+> >>>>
+> >>>> Maybe this process of shuffling 40TB around caused some value
+> >>>> in the
+> >>>> filesystem to increment to the point that a calculation using
+> >>>> it
+> >>>> overflows on 32-bit systems?
+> >>>>
+> >>>> I should be able to try biosnoop later this week, and I'll
+> >>>> report back
+> >>>> with the results.
+> >>>
+> >>> Okay, I tried running biosnoop, but I seem to be running into
+> >>> this
+> >>> bug: https://github.com/iovisor/bcc/issues/3241 (That bug was
+> >>> reported
+> >>> for cpudist, but I'm seeing the same error when I try to run
+> >>> biosnoop.)
+> >>>
+> >>> Anything else I can try?
+> >>
+> >> Is it possible to add printks to retrieve the same data?
+> >>
+> > Sorry for the late reply, busying testing subpage patchset. (And
+> > unfortunately no much process).
+> >
+> > If bcc is not possible, you can still use ftrace events, but
+> > unfortunately I didn't find good enough one. (In fact, the trace
+> > events
+> > for block layer is pretty limited).
+> >
+> > You can try to add printk()s in function blk_account_io_done()
+> > to
+> > emulate what's done in function trace_req_completion() of
+> > biosnoop.
+> >
+> > The time delta is not important, we only need the device name,
+> > sector
+> > and length.
+> >
+>
+> Tips: There are ftrace events called block:block_rq_issue and
+> block:block_rq_complete to fetch those infomation. No need to
+> add printk().
+>
+> >
+> > Thanks,
+> > Qu
+>
 
+Okay, here's the output of the trace:
+https://gist.github.com/rkjnsn/4cf606874962b5a0284249b2f2e934f5
 
-On 2021/2/2 =E4=B8=8B=E5=8D=889:37, Anand Jain wrote:
->
->
-> It is much simpler to reproduce. I am using two systems with different
-> pagesizes to test the subpage readonly support.
->
-> On a host with pagesize =3D 4k.
->  =C2=A0 truncate -s 3g 3g.img
->  =C2=A0 mkfs.btrfs ./3g.img
->  =C2=A0 mount -o loop,compress=3Dzstd ./3g.img /btrfs
->  =C2=A0 xfs_io -f -c "pwrite -S 0xab 0 128k" /btrfs/foo
->  =C2=A0 umount /btrfs
->
-> Copy the file 3g.img to another host with pagesize =3D 64k.
->  =C2=A0 mount -o ro,loop ./3g.img /btrfs
->  =C2=A0 sha256sum /btrfs/foo
->
->  =C2=A0 leads to Unable to handle kernel NULL pointer dereference
+And here's the output dump-tree:
+https://gist.github.com/rkjnsn/630b558eaf90369478d670a1cb54b40f
 
-Thanks for the report.
+One important note is that ftrace only captured requests at the
+underlying block device (nbd, in this case), not at the device mapper
+level. The encryption header on these drives is 16 MiB, so the offset
+reported in the trace will be 16777216 bytes larger than the offset
+brtfs was actually trying to read at the time.
 
-Although in my case, I can't reproduce the crash, but only csum data
-mismatch with "csum hole found for disk bytenr range" error message.
-
-Anyway, it should be fixed for compressed read.
-
-I'll investigate the case.
-
-Thanks,
-Qu
-> ----------------
-> [=C2=A0 +0.001387] BTRFS warning (device loop0): csum hole found for dis=
-k
-> bytenr range [13672448, 13676544)
-> [=C2=A0 +0.001514] BTRFS warning (device loop0): csum failed root 5 ino =
-257
-> off 13697024 csum 0xbcd798f5 expected csum 0xf11c5ebf mirror 1
-> [=C2=A0 +0.002301] BTRFS error (device loop0): bdev /dev/loop0 errs: wr =
-0, rd
-> 0, flush 0, corrupt 1, gen 0
-> [=C2=A0 +0.001647] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000000
-> [=C2=A0 +0.001670] Mem abort info:
-> [=C2=A0 +0.000506]=C2=A0=C2=A0 ESR =3D 0x96000005
-> [=C2=A0 +0.000471]=C2=A0=C2=A0 EC =3D 0x25: DABT (current EL), IL =3D 32=
- bits
-> [=C2=A0 +0.000783]=C2=A0=C2=A0 SET =3D 0, FnV =3D 0
-> [=C2=A0 +0.000450]=C2=A0=C2=A0 EA =3D 0, S1PTW =3D 0
-> [=C2=A0 +0.000462] Data abort info:
-> [=C2=A0 +0.000530]=C2=A0=C2=A0 ISV =3D 0, ISS =3D 0x00000005
-> [=C2=A0 +0.000755]=C2=A0=C2=A0 CM =3D 0, WnR =3D 0
-> [=C2=A0 +0.000466] user pgtable: 64k pages, 48-bit VAs, pgdp=3D000000010=
-717ce00
-> [=C2=A0 +0.001027] [0000000000000000] pgd=3D0000000000000000,
-> p4d=3D0000000000000000, pud=3D0000000000000000
-> [=C2=A0 +0.001402] Internal error: Oops: 96000005 [#1] PREEMPT SMP
->
-> Message from syslogd@aa3 at Feb=C2=A0 2 08:18:05 ...
->  =C2=A0kernel:Internal error: Oops: 96000005 [#1] PREEMPT SMP
-> [=C2=A0 +0.000958] Modules linked in: btrfs blake2b_generic xor xor_neon
-> zstd_compress raid6_pq crct10dif_ce ip_tables x_tables ipv6
-> [=C2=A0 +0.001779] CPU: 25 PID: 5754 Comm: kworker/u64:1 Not tainted
-> 5.11.0-rc5+ #10
-> [=C2=A0 +0.001122] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0
-> 02/06/2015
-> [=C2=A0 +0.001286] Workqueue: btrfs-endio btrfs_work_helper [btrfs]
-> [=C2=A0 +0.001139] pstate: 20000005 (nzCv daif -PAN -UAO -TCO BTYPE=3D--=
-)
-> [=C2=A0 +0.001110] pc : __crc32c_le+0x84/0xe8
-> [=C2=A0 +0.000726] lr : chksum_digest+0x24/0x40
-> [=C2=A0 +0.000731] sp : ffff800017def8f0
-> [=C2=A0 +0.000624] x29: ffff800017def8f0 x28: ffff0000c84dca00
-> [=C2=A0 +0.000994] x27: ffff0000c44f5400 x26: ffff0000e3a008b0
-> [=C2=A0 +0.000985] x25: ffff800011df3948 x24: 0000004000000000
-> [=C2=A0 +0.001006] x23: ffff000000000000 x22: ffff800017defa00
-> [=C2=A0 +0.000993] x21: 0000000000000004 x20: ffff0000c84dca50
-> [=C2=A0 +0.000983] x19: ffff800017defc88 x18: 0000000000000010
-> [=C2=A0 +0.000995] x17: 0000000000000000 x16: ffff800009352a98
-> [=C2=A0 +0.001008] x15: 000009a9d48628c0 x14: 0000000000000209
-> [=C2=A0 +0.000999] x13: 00000000000003d1 x12: 0000000000000001
-> [=C2=A0 +0.000986] x11: 0000000000000001 x10: 00000000000009d0
-> [=C2=A0 +0.000982] x9 : ffff0000c5418064 x8 : 0000000000000000
-> [=C2=A0 +0.001008] x7 : 0000000000000000 x6 : ffff800011f23980
-> [=C2=A0 +0.001025] x5 : 00000000006f6964 x4 : ffff8000105dd7a8
-> [=C2=A0 +0.000997] x3 : ffff800017defc88 x2 : 0000000000010000
-> [=C2=A0 +0.000986] x1 : 0000000000000000 x0 : 00000000ffffffff
-> [=C2=A0 +0.001011] Call trace:
-> [=C2=A0 +0.000459]=C2=A0 __crc32c_le+0x84/0xe8
-> [=C2=A0 +0.000649]=C2=A0 crypto_shash_digest+0x34/0x58
-> [=C2=A0 +0.000766]=C2=A0 check_compressed_csum+0xd0/0x2b0 [btrfs]
-> [=C2=A0 +0.001011]=C2=A0 end_compressed_bio_read+0xb8/0x308 [btrfs]
-> [=C2=A0 +0.001060]=C2=A0 bio_endio+0x12c/0x1d8
-> [=C2=A0 +0.000651]=C2=A0 end_workqueue_fn+0x3c/0x60 [btrfs]
-> [=C2=A0 +0.000916]=C2=A0 btrfs_work_helper+0xf4/0x5a8 [btrfs]
-> [=C2=A0 +0.000934]=C2=A0 process_one_work+0x1ec/0x4c0
-> [=C2=A0 +0.000751]=C2=A0 worker_thread+0x48/0x478
-> [=C2=A0 +0.000701]=C2=A0 kthread+0x158/0x160
-> [=C2=A0 +0.000618]=C2=A0 ret_from_fork+0x10/0x34
-> [=C2=A0 +0.000697] Code: 9ac55c08 9ac65d08 1a880000 b4000122 (a8c21023)
-> [=C2=A0 +0.001075] ---[ end trace d4f31b4f11a947b7 ]---
-> [ +14.775765] note: kworker/u64:1[5754] exited with preempt_count 1
-> ------------------------
->
->
-> Thanks, Anand
->
->
->
-> On 2/2/2021 7:28 PM, Anand Jain wrote:
->>
->>
->> On 2/2/2021 6:23 PM, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/2/2 =E4=B8=8B=E5=8D=885:21, Anand Jain wrote:
->>>>
->>>> Qu,
->>>>
->>>> =C2=A0=C2=A0fstests ran fine on an aarch64 kvm with this patch set.
->>>
->>> Do you mean subpage patchset?
->>>
->>> With 4K sector size?
->>> No way it can run fine...
->>
->> =C2=A0=C2=A0No . fstests ran with sectorsize =3D=3D pagesize =3D=3D 64k=
-. These aren't
->> =C2=A0=C2=A0subpage though. I mean just regression checks.
->>
->>> Long enough fsstress can crash the kernel with btrfs_csum_one_bio()
->>> unable to locate the corresponding ordered extent.
->>>
->>>> =C2=A0=C2=A0Further, I was running few hand tests as below, and it fa=
-ils
->>>> =C2=A0=C2=A0with - Unable to handle kernel paging.
->>>>
->>>> =C2=A0=C2=A0Test case looks something like..
->>>>
->>>> =C2=A0=C2=A0On x86_64 create btrfs on a file 11g
->>>> =C2=A0=C2=A0copy /usr into /test-mnt stops at enospc
->>>> =C2=A0=C2=A0set compression property on the root sunvol
->>>> =C2=A0=C2=A0run defrag with -czstd
->>>
->>> I don't even consider compression a supported feature for subpage.
->>
->> =C2=A0=C2=A0It should fail the ro mount, which it didn't. Similar test =
-case
->> =C2=A0=C2=A0without compression is fine.
->>
->>> Are you really talking about the subpage patchset with 4K sector size,
->>> on 64K page size AArch64?
->>
->> =C2=A0=C2=A0yes readonly mount test case as above.
->>
->> Thanks, Anand
->>
->>
->>> If really so, I appreciate your effort on testing very much, it means
->>> the patchset is doing way better than it is.
->>> But I don't really believe it's even true to pass fstests....
->>
->>
->>
->>> Thanks,
->>> Qu
->>>
->>>> =C2=A0=C2=A0truncate a large file 4gb
->>>> =C2=A0=C2=A0punch holes on it
->>>> =C2=A0=C2=A0truncate couple of smaller files
->>>> =C2=A0=C2=A0unmount
->>>> =C2=A0=C2=A0send file to an aarch64 (64k pagesize) kvm
->>>> =C2=A0=C2=A0mount -o ro
->>>> =C2=A0=C2=A0run sha256sum on all the files
->>>>
->>>> ---------------------
->>>> [37012.027764] BTRFS warning (device loop0): csum failed root 5 ino 6=
-11
->>>> off 228659200 csum 0x1dcefc2d expected csum 0x69412d2a mirror 1
->>>> [37012.030971] BTRFS error (device loop0): bdev /dev/loop0 errs: wr 0=
-,
->>>> rd 0, flush 0, corrupt 9, gen 0
->>>> [37012.036223] BTRFS warning (device loop0): csum failed root 5 ino 6=
-16
->>>> off 228724736 csum 0x73f63661 expected csum 0xaf922a6f mirror 1
->>>> [37012.036250] BTRFS error (device loop0): bdev /dev/loop0 errs: wr 0=
-,
->>>> rd 0, flush 0, corrupt 10, gen 0
->>>> [37012.123917] Unable to handle kernel paging request at virtual
->>>> address
->>>> 0061d1f66c080000
->>>> [37012.126104] Mem abort info:
->>>> [37012.126951]=C2=A0=C2=A0 ESR =3D 0x96000004
->>>> [37012.127791]=C2=A0=C2=A0 EC =3D 0x25: DABT (current EL), IL =3D 32 =
-bits
->>>> [37012.129207]=C2=A0=C2=A0 SET =3D 0, FnV =3D 0
->>>> [37012.130043]=C2=A0=C2=A0 EA =3D 0, S1PTW =3D 0
->>>> [37012.131269] Data abort info:
->>>> [37012.132165]=C2=A0=C2=A0 ISV =3D 0, ISS =3D 0x00000004
->>>> [37012.133211]=C2=A0=C2=A0 CM =3D 0, WnR =3D 0
->>>> [37012.134014] [0061d1f66c080000] address between user and kernel
->>>> address ranges
->>>> [37012.136050] Internal error: Oops: 96000004 [#1] PREEMPT SMP
->>>> [37012.137567] Modules linked in: btrfs blake2b_generic xor xor_neon
->>>> zstd_compress raid6_pq crct10dif_ce ip_tables x_tables ipv6
->>>> [37012.140742] CPU: 0 PID: 289001 Comm: kworker/u64:3 Not tainted
->>>> 5.11.0-rc5+ #10
->>>> [37012.142839] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0
->>>> 02/06/2015
->>>> [37012.144787] Workqueue: btrfs-endio btrfs_work_helper [btrfs]
->>>> [37012.146474] pstate: 20000005 (nzCv daif -PAN -UAO -TCO BTYPE=3D--)
->>>> [37012.148175] pc : __crc32c_le+0x84/0xe8
->>>> [37012.149266] lr : chksum_digest+0x24/0x40
->>>> [37012.150420] sp : ffff80001638f8f0
->>>> [37012.151491] x29: ffff80001638f8f0 x28: ffff0000c7bb0000
->>>> [37012.152982] x27: ffff0000d1a27000 x26: ffff0002f21b56e0
->>>> [37012.154565] x25: ffff800011df3948 x24: 0000004000000000
->>>> [37012.156063] x23: ffff000000000000 x22: ffff80001638fa00
->>>> [37012.157570] x21: 0000000000000004 x20: ffff0000c7bb0050
->>>> [37012.159145] x19: ffff80001638fc88 x18: 0000000000000000
->>>> [37012.160684] x17: 0000000000000000 x16: 0000000000000000
->>>> [37012.162190] x15: 0000051d5454c764 x14: 000000000000017a
->>>> [37012.163774] x13: 0000000000000145 x12: 0000000000000001
->>>> [37012.165282] x11: 0000000000000000 x10: 00000000000009d0
->>>> [37012.166849] x9 : ffff0000ca305564 x8 : 0000000000000000
->>>> [37012.168395] x7 : 0000000000000000 x6 : ffff800011f23980
->>>> [37012.169883] x5 : 00000000006f6964 x4 : ffff8000105dd7a8
->>>> [37012.171476] x3 : ffff80001638fc88 x2 : 0000000000010000
->>>> [37012.172997] x1 : bc61d1f66c080000 x0 : 00000000ffffffff
->>>> [37012.174642] Call trace:
->>>> [37012.175427]=C2=A0 __crc32c_le+0x84/0xe8
->>>> [37012.176419]=C2=A0 crypto_shash_digest+0x34/0x58
->>>> [37012.177616]=C2=A0 check_compressed_csum+0xd0/0x2b0 [btrfs]
->>>> [37012.179160]=C2=A0 end_compressed_bio_read+0xb8/0x308 [btrfs]
->>>> [37012.180731]=C2=A0 bio_endio+0x12c/0x1d8
->>>> [37012.181712]=C2=A0 end_workqueue_fn+0x3c/0x60 [btrfs]
->>>> [37012.183161]=C2=A0 btrfs_work_helper+0xf4/0x5a8 [btrfs]
->>>> [37012.184570]=C2=A0 process_one_work+0x1ec/0x4c0
->>>> [37012.185727]=C2=A0 worker_thread+0x48/0x478
->>>> [37012.186823]=C2=A0 kthread+0x158/0x160
->>>> [37012.187768]=C2=A0 ret_from_fork+0x10/0x34
->>>> [37012.188791] Code: 9ac55c08 9ac65d08 1a880000 b4000122 (a8c21023)
->>>> [37012.190486] ---[ end trace 4f73e813d058b84c ]---
->>>> [37019.180684] note: kworker/u64:3[289001] exited with preempt_count =
-1
->>>> ---------------
->>>>
->>>> =C2=A0=C2=A0Could you please take a look?
->>>>
->>>> Thanks, Anand
->
+In case it's helpful, I believe this is the mapping of which
+(encrypted) nbd device node in the trace corresponds to which
+(decrypted) filesystem device:
+43,0    33c75e20-26f2-4328-a565-5ef3484832aa
+43,32   9bdfdb8f-abfb-47c5-90af-d360d754a958
+43,64   39a9463d-65f5-499b-bca8-dae6b52eb729
+43,96   f1174dea-ea10-42f2-96b4-4589a2980684
+43,128  e669d804-6ea2-4516-8536-1d266f88ebad
