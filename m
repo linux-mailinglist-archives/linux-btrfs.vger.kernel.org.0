@@ -2,169 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FF230E911
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 02:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A402730EACC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 04:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbhBDA5z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Feb 2021 19:57:55 -0500
-Received: from mout.gmx.net ([212.227.17.22]:49095 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233789AbhBDA5h (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:57:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1612400163;
-        bh=1T00oOsXexoB4lOo5EmR5AtjqJK+Gt5HQ660iudJ34A=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=NWiAkHH9yGw9yI+CwK2z1U+5RSnMjYoEReoEuUJ7Z0OuHCj0SkbIQ8SkMZmTBqhah
-         BHp/19qRWMsCHAsCclH6/CeLyTvxb5z4ivABziw6kVLeVPIKCOCykj3Eb98JxoKWlP
-         LzTHTV+qfN2akZ+OXoDZRVHJzWwuS+uZkRuFxciM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFbRm-1lAGku3xIE-00H8dy; Thu, 04
- Feb 2021 01:56:03 +0100
-Subject: Re: Large multi-device BTRFS array (usually) fails to mount on boot.
-To:     joshua@mailmag.net, linux-btrfs@vger.kernel.org
-References: <e23a835842fa7ecf5b8877e818bc68ea@mailmag.net>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <45064ba0-08e5-f311-1f9e-9a4ec62abaab@gmx.com>
-Date:   Thu, 4 Feb 2021 08:56:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231759AbhBDDRP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Feb 2021 22:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231284AbhBDDRM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Feb 2021 22:17:12 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4162C061573
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Feb 2021 19:16:31 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id m13so1693890wro.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Feb 2021 19:16:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6Yq9Fnw5KAtmb36TWsdyp0QSrOG2/CChM5v8osxuGnk=;
+        b=Vyddu0V/lf9Bk23p6nM7k0UDIWt13fW0CikS0GOXP5hrK9AmJnzbNU6uMYsBmMRB+f
+         WKzVHf0z+to6HLsMPDrKVuFHvtzcAfXYqaNfQu/qDBqs28fe9q6xYB6xCZ0aNFMA1tGT
+         /2ckk38dkZ9F5iLgWBcDHSFFuPZcrJcG/HOjFHqi3ww6ExXu5A7VZINvRgAmD5xogrBW
+         WM0I4G4k3iYgbbpljIymp5YuoSi+gsg01WbnVRcdtUJ8NNl39onythUHM32HfhEtLgLp
+         FV2yLRuo6XimB532sC64+8eHzqZC77v8+hAgUqcnSNvLfOPes/Y3ZRtZuzpcprQTNmAa
+         BoDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6Yq9Fnw5KAtmb36TWsdyp0QSrOG2/CChM5v8osxuGnk=;
+        b=aEjB7M21mRiTwfAHgv4+C1w2BRL96eR00ZR+BsRSjDznHGYG+QFSpADfn8Kj1qM/E3
+         RO/wo0Yv2sOjQaFC07h7bg49usd78+BjTumb7s9vj0dyUzu4Hw9l4CF+6Sn7cXppitNj
+         K49UXdeOE35Ecq6oJb/v6SnYj0zc6bn2R68rzl9KxBgNYog3UEXk1k3KZBViUh2pLHYY
+         1/hCJ4F2XmrdmfpK4qFmiwrHgcaWv+Z2yitzx+rubjbSlseAxSkJaQp7Nlyu+seZC5JN
+         ezhMJ9PrZlQKyoqyARaoURjKWkVk9IkEijANWjjGBYTsTfHC8niNuE9h8lPchLwbdoWL
+         o2Lg==
+X-Gm-Message-State: AOAM533LSw4ytRNSso3wGHY65Ah3pCN9qXrQ/mPjCDnIRorALavjvHcG
+        71KtovIuzhadqRbJB1Bk1iEvTrhjz1k2fJLBI1sfdH0fZjtocvmn
+X-Google-Smtp-Source: ABdhPJz+X6O7+buOEUn8r8dD59ayD9rSlByCzSO0rLQxvJHEAnUIzuMlR+ocsmjg3zMsd6N4sys0hN1GAsFSA/30XGs=
+X-Received: by 2002:a5d:414f:: with SMTP id c15mr6768245wrq.42.1612408590661;
+ Wed, 03 Feb 2021 19:16:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <e23a835842fa7ecf5b8877e818bc68ea@mailmag.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:A4VojlR/F9E70TAbrfLpYBjStfKg3Icer7+ZWEvkU6GwNWcu3aS
- /aOAAIQJD9q5xSSJusXb+/lfi6eK3kcA2SCV0Bbm+VNBsUgUYc9NQZdlTT5aK+hhn0jcf2+
- RsyJc0RnqwCmBUpZabaGYIf2ES6dANCVQM8fXHyf07o3VQhQsdtJTNVgtN1jyOjDdcZNM2r
- Toag80qx5JsnfNhV24n5w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ouipcHigSMw=:56wpAjU7RIlXHVX6zgPuId
- kfJEmyDUHQG0VlKgqqow7Z1MbsaiSigEXaziGLGDYxi5FDCVf4a98rDVaOV+yfMV7KjTkjn74
- bX5gBE63V7bDqBw3Cr6/OAoUX+DJetfl9Gb56PyB/d6iSLMK9bUI2uEC9zBF38kngZ0YvvJqK
- sZso9bhKVXq38ofwWHJ1wj1tkER8IY4a0tsgmNAjoGsdI5Wn7unjR3dgpEmgsKpoixlT5e3C6
- 8ofbMoKpCpc4bud+maqpzRJMb0cmUZQ8NR0XbB0LO8ZdJTd7srQ0In3zQ4MZjo2Yq5U+DTWuJ
- tfQar+OxsTd73jdEh4QZsqgc9lR0gLWqz0wIGJ1BTXeCMcyHEbYZS34K67g06PVFNL5uCPAP1
- XT0lyo/mSdnOQiKbXAhqNehxd6FQAagbz89kvZW5Y/zYByD1qGtLblEAVkq7kpR+Tkiu1wFLq
- KqMNrg/z+qNCePYBWro0Y30OHK3O3EXD7iqiuks/i1iieWZ33yt0GCj4k/sBjeMo6xB2fMhTx
- NFLLLZY5BeHqK+BvX/3o58ENWKkcdcuERcF1YdGYZnDaxVcCfbS/v4IWd6XuRmYLA6EFsEc44
- YYbM2lq4aIEX7R6aUy325m3CI2IndK7bDZA3fQfQDOheIj1RZY6D1/DLkNTIXljmAyBbjrj8c
- kFwLg09hqvm8u4IvhJYeg+P+zalYjZAoeHPPm2VVNv7OZPblcYR02VPXMdUnA3HBVQm2b+Nft
- qMHW6QX1BLz8QBEPevYQAo4A2H4i49+GuCbhyQrQfpdLRtcNrMl4KKPu06AEFqtoYanQFN7I6
- uyQVIK7THw6c9uTLKvgRE90tOwb2v7I91guThlSFuZpEvA9nmu/HKudaJhvTanrMifTAgbsE7
- feh2m3szt/7lGtuzGLIQ==
+References: <D97BD745-505D-4F88-B92D-A59DB92AA7BF@gmx.net>
+In-Reply-To: <D97BD745-505D-4F88-B92D-A59DB92AA7BF@gmx.net>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 3 Feb 2021 20:16:14 -0700
+Message-ID: <CAJCQCtRKR=4hfPG7iY=PKeKxDH0ZE-mzZ1Ppt3SrzqkcyeAU-Q@mail.gmail.com>
+Subject: Re: Need help for my Unraid cache drive
+To:     Patrick Bihlmayer <p.bihlmayer@gmx.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, Jan 30, 2021 at 1:59 AM Patrick Bihlmayer <p.bihlmayer@gmx.net> wrote:
+>
+> Hello together,
+>
+> today i had an issue with my cache drive on my Unraid Server.
+> I used a 500GB SSD as cache drive.
+>
+> Unfortunately i added another cache drive (wanted a separate drive for my VMs and accidentally added into the cache device pool)
+> After starting the array and all the setup for the cache device pool was done i stopped the array again.
+> I removed the second drive from my cache device pool again.
+>
+> I started the array again - formatted the removed drive mounted it with unassigned devices.#
+> And then i realized the following error in my Unraid Cache Devices
+>
+>
+>
+> Unfortunately i cannot mount it again.
+> Can you please help me?
+
+I don't know anything about unraid. The attached dmesg contains:
+[ 3660.395013] BTRFS info (device sdb1): allowing degraded mounts
+[ 3660.395014] BTRFS info (device sdb1): disk space caching is enabled
+[ 3660.395014] BTRFS info (device sdb1): has skinny extents
+[ 3660.395733] BTRFS error (device sdb1): failed to read chunk root
+[ 3660.404212] BTRFS error (device sdb1): open_ctree failed
+
+Is that sdb1 device part of the unraid? Is there a device missing? The
+'allowing degraded mounts' message along with 'open_ctree failed'
+suggests that there's still too many devices missing. I suggest a
+relatively recent btrfs-progs, 5.7 or higher, and provide the output
+from:
+
+btrfs insp dump-s /dev/sdb1
 
 
-On 2021/2/4 =E4=B8=8A=E5=8D=885:54, joshua@mailmag.net wrote:
-> Good Evening.
->
-> I have a large BTRFS array, (14 Drives, ~100 TB RAW) which has been havi=
-ng problems mounting on boot without timing out. This causes the system to=
- drop to emergency mode. I am then able to mount the array in emergency mo=
-de and all data appears fine, but upon reboot it fails again.
->
-> I actually first had this problem around a year ago, and initially put c=
-onsiderable effort into extending the timeout in systemd, as I believed th=
-at to be the problem. However, all the methods I attempted did not work pr=
-operly or caused the system to continue booting before the array was mount=
-ed, causing all sorts of issues. Eventually, I was able to almost complete=
-ly resolve it by defragmenting the extent tree and subvolume tree for each=
- subvolume. (btrfs fi defrag /mountpoint/subvolume/) This seemed to reduce=
- the time required to mount, and made it mount on boot the majority of the=
- time.
->
-> Recently I expanded the array yet again by adding another drive, (and so=
-me more data) and now I am having the same issue again. I've posted the re=
-levant entries from my dmesg, as well as some information on my array and =
-system below. I ran a defrag as mentioned above on each subvolume, and was=
- able to get the system to boot successfully. Any ideas on a more reliable=
- and permanent solution this this? Thanks much!
->
-> dmesg entries upon boot:
-> [ 22.775439] BTRFS info (device sdh): use lzo compression, level 0
-> [ 22.775441] BTRFS info (device sdh): using free space tree
-> [ 22.775442] BTRFS info (device sdh): has skinny extents
-> [ 124.250554] BTRFS error (device sdh): open_ctree failed
->
-> dmesg entries after running 'mount -a' in emergency mode:
-> [ 178.317339] BTRFS info (device sdh): force zstd compression, level 2
-> [ 178.317342] BTRFS info (device sdh): using free space tree
-> [ 178.317343] BTRFS info (device sdh): has skinny extents
->
-> uname -a:
-> Linux HOSTNAME 5.10.0-2-amd64 #1 SMP Debian 5.10.9-1 (2021-01-20) x86-64=
- GNU/Linux
->
-> btrfs --version:
-> btrfs-progs v5.10
->
-> btrfs fi show /mountpoint:
-> Label: 'DATA' uuid: {snip}
-> Total devices 14 FS bytes used 41.94TiB
-> devid 1 size 2.73TiB used 2.46TiB path /dev/sdh
-> devid 2 size 7.28TiB used 6.87TiB path /dev/sdm
-> devid 3 size 2.73TiB used 2.46TiB path /dev/sdk
-> devid 4 size 9.10TiB used 8.57TiB path /dev/sdj
-> devid 5 size 9.10TiB used 8.57TiB path /dev/sde
-> devid 6 size 9.10TiB used 8.57TiB path /dev/sdn
-> devid 7 size 7.28TiB used 4.65TiB path /dev/sdc
-> devid 9 size 9.10TiB used 8.57TiB path /dev/sdf
-> devid 10 size 2.73TiB used 2.21TiB path /dev/sdl
-> devid 12 size 2.73TiB used 2.20TiB path /dev/sdg
-> devid 13 size 9.10TiB used 8.57TiB path /dev/sdd
-> devid 15 size 7.28TiB used 6.75TiB path /dev/sda
-> devid 16 size 7.28TiB used 6.75TiB path /dev/sdi
-> devid 17 size 7.28TiB used 6.75TiB path /dev/sdb
-
-With such a large array, the extent tree is considerably large.
-
-And that's causing the mount time problem, as at mount we need to load
-each block group item into memory.
-When extent tree goes large, the read is mostly random read which is
-never a good thing for HDD.
-
-I was pushing skinny block group tree for btrfs, which arrange block
-group items into a very compact tree, just like chunk tree.
-
-This should greatly improve the mount performance, but there are several
-problems:
-- The feature is not yet merged
-- The feature needs to convert existing fs to the new tree
-   For your fs, it may take quite some time
-
-So unfortunately, no good short term solution yet.
-
-THanks,
-Qu
->
-> btrfs fi usage /mountpoint:
-> Overall:
-> Device size: 92.78TiB
-> Device allocated: 83.96TiB
-> Device unallocated: 8.83TiB
-> Device missing: 0.00B
-> Used: 83.94TiB
-> Free (estimated): 4.42TiB (min: 2.95TiB)
-> Free (statfs, df): 3.31TiB
-> Data ratio: 2.00
-> Metadata ratio: 3.00
-> Global reserve: 512.00MiB (used: 0.00B)
-> Multiple profiles: no
->
-> Data,RAID1: Size:41.88TiB, Used:41.877TiB (99.99%)
-> {snip}
->
-> Metadata,RAID1C3: Size:68GiB, Used:63.79GiB (93.81%)
-> {snip}
->
-> System,RAID1C3: Size:32MiB, Used:6.69MiB (20.90%)
-> {snip}
->
-> Unallocated:
-> {snip}
->
+-- 
+Chris Murphy
