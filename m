@@ -2,187 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AF030F2C7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 12:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B9C30F2CB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 13:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235766AbhBDL6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Feb 2021 06:58:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235637AbhBDL6P (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Feb 2021 06:58:15 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA691C061573;
-        Thu,  4 Feb 2021 03:57:34 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id z22so2107002qto.7;
-        Thu, 04 Feb 2021 03:57:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=UklazaNAycz2BFsJtlkthid2wC2kf6KqSFJIrZZTFqE=;
-        b=MIezhuXYhG2D0R9kN2+/693HsVznla+jJAQSYJIa0kNaGGnMVC5X+kKrKP5vslBpYH
-         edLxX9VVhPuBm0omPBu6Sr32lwLnQgUoO+3/aPxeAFZy4iDulcVAxpKpP5qg6rRcgkrF
-         1/n9cf4OpnyT9/xez9+A59uyzl+64CCUzOWohlAEoj28TXUnPY5nM7IzlWFCADGnJyy7
-         qpPgguI1RChxuCJSCxKWmnXFFRJ876ID5bIF+0ViO4atxInnFa8FY9xQt4/NjSF2SXW9
-         C6NSR+l3nJQUF1+ordXp+JGf/D3URpcQiwLDiIYRn/J9ZDlXLJEex0qHp89Uu7O2HFfG
-         +zew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=UklazaNAycz2BFsJtlkthid2wC2kf6KqSFJIrZZTFqE=;
-        b=dPMShg/0bnlN9P62DRwIWxkkVL4K2uL64/piAAtcp347xMqNtd1MilkrGwyomOqr8D
-         wVdlV3mA1kgj9UMkEoOsURlealCGPDVcF8Aq4X/8KkQjbSDY4vAFZADKOPV/7iZeJeb+
-         kZdXJWLZ4E5w+Y4hBz0r4H04yeaONaLDYz360Y//nNJ/0w6dhogYqWIn5bAU0aEA20AO
-         ywTDDVwcDhLxInxB7HVdLEdaw8MC/cSg53iMGvDqX2RB17YfYzEf1dXhG5EdjIb44zcs
-         488ScmBEejKQFOuf4JmnniLwgHmDHW+lzxqY81lb2EtK746BCvFa5yIoNzoP1iYysoqG
-         rBYw==
-X-Gm-Message-State: AOAM533IDkwUw+26C8C0qEtdEMhfF6gbmocFa2F0UYNqO9J83HfdFdst
-        fLBFpLztYd/hYygvlznl2lSY5UY65ijR8YPXTQ0=
-X-Google-Smtp-Source: ABdhPJy1WDuOpN9VovHrQg0qbPDBjI26sfuwcaAuX9B+XfkYd+rSWhWiYl1AzHqW+cYQQhzf1IWf/WcnVNGbeFJ3G/A=
-X-Received: by 2002:ac8:7773:: with SMTP id h19mr6713770qtu.213.1612439853520;
- Thu, 04 Feb 2021 03:57:33 -0800 (PST)
+        id S235869AbhBDL7F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Feb 2021 06:59:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52640 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235856AbhBDL7C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:59:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612439895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Mz7mf1I8JaCTaFvSCNA+e75q1qRDySQIs0mj2auGoOs=;
+        b=rpuusJg+dBDa0w7gbgNjf+yAAHVMRjkdUEENYVx0JhkGhg463pu/ZGEGwZu+czBy/VS9Yt
+        MK7nViKhZHSrohs+s35470/LyLwn0rsH9zmBbnpd0v1RUDsWGs8Eof53cJW8FponpIuNNX
+        oeSArnM79bS0ODyhAvTW4j/OZaop8Ys=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B480DAC97;
+        Thu,  4 Feb 2021 11:58:15 +0000 (UTC)
+Subject: Re: [PATCH 6/6] btrfs: do not block inode logging for so long during
+ transaction commit
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20210204111706.0AD1.409509F4@e16-tech.com>
+ <cc5841f1-d74c-e211-742b-b9bd2b4bb7af@suse.com>
+ <20210204193431.68E5.409509F4@e16-tech.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <6196ffee-e5a4-6135-b579-720859959038@suse.com>
+Date:   Thu, 4 Feb 2021 13:58:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <b36444df121d46c6d9638a8ae8eacecaa845fbe4.1612434091.git.naohiro.aota@wdc.com>
- <492da9326ecb5f888e76117983603bb502b7b589.1612434091.git.naohiro.aota@wdc.com>
-In-Reply-To: <492da9326ecb5f888e76117983603bb502b7b589.1612434091.git.naohiro.aota@wdc.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 4 Feb 2021 11:57:22 +0000
-Message-ID: <CAL3q7H7mzAngA8SF13+FOgVserhF3iyA2a8tggYuO+qi+woLOw@mail.gmail.com>
-Subject: Re: [PATCH v15 41/42] btrfs: zoned: reorder log node allocation on
- zoned filesystem
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, hare@suse.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210204193431.68E5.409509F4@e16-tech.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 10:23 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
->
-> This is the 3/3 patch to enable tree-log on zoned filesystems.
->
-> The allocation order of nodes of "fs_info->log_root_tree" and nodes of
-> "root->log_root" is not the same as the writing order of them. So, the
-> writing causes unaligned write errors.
->
-> Reorder the allocation of them by delaying allocation of the root node of
-> "fs_info->log_root_tree," so that the node buffers can go out sequentiall=
-y
-> to devices.
->
-> Cc: Filipe Manana <fdmanana@gmail.com>
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  fs/btrfs/disk-io.c  | 12 +++++++-----
->  fs/btrfs/tree-log.c | 27 +++++++++++++++++++++------
->  2 files changed, 28 insertions(+), 11 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 84c6650d5ef7..c2576c5fe62e 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1298,16 +1298,18 @@ int btrfs_init_log_root_tree(struct btrfs_trans_h=
-andle *trans,
->                              struct btrfs_fs_info *fs_info)
->  {
->         struct btrfs_root *log_root;
-> -       int ret;
->
->         log_root =3D alloc_log_tree(trans, fs_info);
->         if (IS_ERR(log_root))
->                 return PTR_ERR(log_root);
->
-> -       ret =3D btrfs_alloc_log_tree_node(trans, log_root);
-> -       if (ret) {
-> -               btrfs_put_root(log_root);
-> -               return ret;
-> +       if (!btrfs_is_zoned(fs_info)) {
-> +               int ret =3D btrfs_alloc_log_tree_node(trans, log_root);
-> +
-> +               if (ret) {
-> +                       btrfs_put_root(log_root);
-> +                       return ret;
-> +               }
->         }
->
->         WARN_ON(fs_info->log_root_tree);
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 8be3164d4c5d..7ba044bfa9b1 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -3159,6 +3159,19 @@ int btrfs_sync_log(struct btrfs_trans_handle *tran=
-s,
->         list_add_tail(&root_log_ctx.list, &log_root_tree->log_ctxs[index2=
-]);
->         root_log_ctx.log_transid =3D log_root_tree->log_transid;
->
-> +       if (btrfs_is_zoned(fs_info)) {
-> +               mutex_lock(&fs_info->tree_log_mutex);
-> +               if (!log_root_tree->node) {
-
-As commented in v14, the log root tree is not protected by
-fs_info->tree_log_mutex anymore.
-It is fs_info->tree_root->log_mutex as of 5.10.
-
-Everything else was addressed and looks good.
-Thanks.
-
-> +                       ret =3D btrfs_alloc_log_tree_node(trans, log_root=
-_tree);
-> +                       if (ret) {
-> +                               mutex_unlock(&fs_info->tree_log_mutex);
-> +                               mutex_unlock(&log_root_tree->log_mutex);
-> +                               goto out;
-> +                       }
-> +               }
-> +               mutex_unlock(&fs_info->tree_log_mutex);
-> +       }
-> +
->         /*
->          * Now we are safe to update the log_root_tree because we're unde=
-r the
->          * log_mutex, and we're a current writer so we're holding the com=
-mit
-> @@ -3317,12 +3330,14 @@ static void free_log_tree(struct btrfs_trans_hand=
-le *trans,
->                 .process_func =3D process_one_buffer
->         };
->
-> -       ret =3D walk_log_tree(trans, log, &wc);
-> -       if (ret) {
-> -               if (trans)
-> -                       btrfs_abort_transaction(trans, ret);
-> -               else
-> -                       btrfs_handle_fs_error(log->fs_info, ret, NULL);
-> +       if (log->node) {
-> +               ret =3D walk_log_tree(trans, log, &wc);
-> +               if (ret) {
-> +                       if (trans)
-> +                               btrfs_abort_transaction(trans, ret);
-> +                       else
-> +                               btrfs_handle_fs_error(log->fs_info, ret, =
-NULL);
-> +               }
->         }
->
->         clear_extent_bits(&log->dirty_log_pages, 0, (u64)-1,
-> --
-> 2.30.0
->
 
 
---=20
-Filipe David Manana,
+On 4.02.21 §Ô. 13:34 §é., Wang Yugui wrote:
+> Hi,
+> 
+>> On 4.02.21 §Ô. 5:17 §é., Wang Yugui wrote:
+>>> Hi,
+>>>
+>>> I tried to run btrfs misc-next(5.11-rc6 +81patches) based on linux LTS
+>>> 5.10.12 with the same other kernel components and the same kernel config.
+>>>
+>>> Better dbench(sync open) result on both Throughput and max_latency.
+>>>
+>>
+>> If i understand correctly you rebased current misc-next to 5.10.12, if
+>> so this means there is something else in the main kernel, that's not
+>> btrfs related which degrades performance, it seems you've got a 300ms
+>> win by running on 5.10 as compared on 5.11-rc6-based misc next, is that
+>> right?
+> 
+> Yes.
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+I just realized this could also be caused by btrfs code that has already
+landed in v5.11-rc1 for example. I.e the main pull req for this release.
+
+> 
+> maybye some code rather than btrfs in main kernel 5.11.rc6 have degrades
+> performance.
+> or maybe just because of different kernel config.
+> kernel config I used:
+> https://kojipkgs.fedoraproject.org/packages/kernel/5.11.0/0.rc6.141.eln108/
+> https://kojipkgs.fedoraproject.org/packages/kernel/5.10.12/200.fc33/
+> 
+> I rebased current misc-next to 5.10.12, so that there is only diff in
+> btrfs source code.
+> 
+> only 3 minor patch needed for this rebase, there seems no broken kernel API
+>  change for btrfs between 5.10 and 5.11.
+> # add-to-5.10  0001-block-add-a-bdev_kobj-helper.patch
+> # drop-from-btrs-misc-next  0001-block-remove-i_bdev.patch
+> # fix-to-btrfs-misc-next  	0001-btrfs-bdev_nr_sectors.patch
+> 
+> more patch come into misc-next today, they are yet not rebased/tested.
+> 
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2021/02/04
+> 
