@@ -2,99 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CCA30EC7F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 07:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6498D30ECD0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Feb 2021 07:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhBDGaO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Feb 2021 01:30:14 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54083 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229711AbhBDGaN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Feb 2021 01:30:13 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UNpIIO2_1612420145;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNpIIO2_1612420145)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 04 Feb 2021 14:29:06 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] btrfs: Remove unneeded return variable
-Date:   Thu,  4 Feb 2021 14:29:03 +0800
-Message-Id: <1612420143-16004-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232151AbhBDG6p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Feb 2021 01:58:45 -0500
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:13009 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231546AbhBDG6o (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Feb 2021 01:58:44 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 818B3403D0;
+        Thu,  4 Feb 2021 07:57:46 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.077
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.077 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.178, URIBL_BLOCKED=0.001]
+        autolearn=ham autolearn_force=no
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 65OzVvoaW4Lr; Thu,  4 Feb 2021 07:57:45 +0100 (CET)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id C1EBE403C9;
+        Thu,  4 Feb 2021 07:57:45 +0100 (CET)
+Received: from [192.168.0.10] (port=62377)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.93.0.4)
+        (envelope-from <forza@tnonline.net>)
+        id 1l7YaG-000Hi8-RF; Thu, 04 Feb 2021 07:57:44 +0100
+Subject: Re: put 2 hard drives in mdadm raid 1 and detect bitrot like btrfs
+ does, what's that called?
+To:     Andrew Luke Nesbit <ullbeking@andrewnesbit.org>,
+        Cedric.dewijs@eclipso.eu, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <f5d8af48e8d5543267089286c01c476f@mail.eclipso.de>
+ <b143d6c2-4b13-ca6b-9e74-81d385da90f5@andrewnesbit.org>
+From:   Forza <forza@tnonline.net>
+Message-ID: <f71fbef6-6e22-c308-5275-93b518aaac49@tnonline.net>
+Date:   Thu, 4 Feb 2021 07:57:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <b143d6c2-4b13-ca6b-9e74-81d385da90f5@andrewnesbit.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch removes unneeded return variables, using only
-'0' instead.
-It fixes the following warning detected by coccinelle:
-./fs/btrfs/extent_map.c:299:5-8: Unneeded variable: "ret". Return "0" on
-line 331
-./fs/btrfs/disk-io.c:4402:5-8: Unneeded variable: "ret". Return "0" on
-line 4410
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/btrfs/disk-io.c    | 5 ++---
- fs/btrfs/extent_map.c | 3 +--
- 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 6b35b7e..e951da7 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4399,7 +4399,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
- 	struct rb_node *node;
- 	struct btrfs_delayed_ref_root *delayed_refs;
- 	struct btrfs_delayed_ref_node *ref;
--	int ret = 0;
- 
- 	delayed_refs = &trans->delayed_refs;
- 
-@@ -4407,7 +4406,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
- 	if (atomic_read(&delayed_refs->num_entries) == 0) {
- 		spin_unlock(&delayed_refs->lock);
- 		btrfs_debug(fs_info, "delayed_refs has NO entry");
--		return ret;
-+		return 0;
- 	}
- 
- 	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
-@@ -4473,7 +4472,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
- 
- 	spin_unlock(&delayed_refs->lock);
- 
--	return ret;
-+	return 0;
- }
- 
- static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index bd6229f..bac7eba 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
- int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 		       u64 gen)
- {
--	int ret = 0;
- 	struct extent_map *em;
- 	bool prealloc = false;
- 
-@@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 	free_extent_map(em);
- out:
- 	write_unlock(&tree->lock);
--	return ret;
-+	return 0;
- 
- }
- 
--- 
-1.8.3.1
+On 2021-02-03 21:23, Andrew Luke Nesbit wrote:
+> On 03/02/2021 19:04, Cedric.dewijs@eclipso.eu wrote:
+>> I am looking for a way to make a raid 1 of two SSD's, and to be able 
+>> to detect corrupted blocks, much like btrfs does that. I recall being 
+>> told about a month ago to use a specific piece of software for that, 
+>> but i forgot to make a note of it, and I can't find it anymore.
+> 
+> Running SSD's in RAID1 has been contentious from the perspective that I 
+> have been researching storage technology.
+> 
+> Is there any serious, properly researched, and learned infornmation 
+> available about this?
+> 
+> The reason I ask is that, in a related situation, I have 4x high quality 
+> HGST SLC SAS SSD's, and I was seriously thinking that RAID0 might be the 
+> appropriate way to configure them.  This assumes a well designed backup 
+> strategy of course.
+> 
+> Is this foolhardy?
+> 
+> Andrew
 
+Is there a reason why you are not considering Btrfs RAID1? It provides 
+redundancy and checksums to protect against bit errors on either mirror. 
+Remember that Btrfs RAID1 does not work the same way as mdadm's 
+alternative.
+
+RAID0 provides no fault tolerance at all. Is there any added performance 
+you need from RAID0 in your application?
+
+Forza
