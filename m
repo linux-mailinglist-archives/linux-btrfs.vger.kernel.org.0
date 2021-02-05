@@ -2,138 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB6C310549
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 07:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A07DE3105C6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 08:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhBEG7J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Feb 2021 01:59:09 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:47669 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230525AbhBEG7I (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:59:08 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5A6925C017D;
-        Fri,  5 Feb 2021 01:58:22 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 05 Feb 2021 01:58:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=1QFQ4r2IEzqwUNfZ7z0OEstKT2u
-        PxCUG/ZcEkPuTpSQ=; b=GXVcDuRpxdefCBfTaSC7uYdBPxyw7Z3Znj4Srnqamy7
-        fAdNX2JOAzuXDEzr9Tv16Bs2nlOwUXed7vs6c0Twfv5Ok+ELDBRgI5nzcO5deaPT
-        2wbKiETzrCasDmMGI7DrQHkLvJlxanCGeAnW8cThTdpBA9sgW27g1/TvPItLx9oR
-        GEBL3iZp0V0FqUVn9+TGVyEVU+NBGOu3EWZbx76cZJwAB4D0mZ9AGaXimc/X4Bpi
-        gW9hWxThK6RMyROFIuK4mpJbMXTABTe6v1Q8sbYXEJV4LgvQbhJLM0NeZnPBR9Z3
-        NaILLf5Jby5T2p0XHj9vkfMrhm1K5+vvcI8/GaWonuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=1QFQ4r
-        2IEzqwUNfZ7z0OEstKT2uPxCUG/ZcEkPuTpSQ=; b=MV7UxJjuLetZyQR8d1eqoN
-        IGrgYqGsgMKIzUt4Tk4pp0tK8InsPCzQr6jYle6w/oFJRstpvkyoUzOAtfYSaRTB
-        16UFlt9ph46+kuOTSlMz4HMM03sw46FezDGMWyFOTNdis7rp+vJs02FYYTt1A7bh
-        qcrya+fyQDLMfXP76rzW+sLSG7yDhoW/9CHPh6Dq6zU8XT6jx4ObjxBMyhesQy8N
-        T2yEmWH1G+5mwS9zrKxfXaz8/zvZvu+0dW4dyKdHjPtvgThL+D/RZicm4Cmlg+lM
-        VQXsF2zNIONaIXNHhPmpQKHcGx5nUQTsIDaDHpfEoILmDz7e3zTxIyYwi6ivu16Q
-        ==
-X-ME-Sender: <xms:juwcYGDIRmpnHC5bskHpmT96TPzvgLHxGd5Gm2HAm1YOzXJla8lIXw>
-    <xme:juwcYAitnxhGKV93QFb1Qoz3duyGAlTyfLzFd4x7ZoyVZ1v9mdSdLfe1tupiB3TY8
-    fZPVVHjns9kQetvSik>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgeehgddutddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    dvhffghfetueeggfdtgeduvedugeekgeeuvddvhfdugeduhfetkeevtdeitdegueenucfk
-    phepudeifedruddugedrudefvddrfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:juwcYJk0MlyiBYMaip1luOnuEpq7kV6kF1FNOdHIT0jKq4ZGvGiXkw>
-    <xmx:juwcYExHkcz1Oy7BuqH54Tek7T2DuFGcmyD8KSiQb8FZm-lDOEon1A>
-    <xmx:juwcYLRnPX6GZaNNLhHCOXe-2GiO03mMoiSXd0Z8hHjRCpDXp4FDow>
-    <xmx:juwcYM7rjdq3wsl07hGijjmzKk5aRlolyMosqsyP3oyjs-MovCoGAw>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BF56C240062;
-        Fri,  5 Feb 2021 01:58:21 -0500 (EST)
-Date:   Thu, 4 Feb 2021 22:58:19 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/5] btrfs: support fsverity
-Message-ID: <20210205065819.GB2428856@devbig008.ftw2.facebook.com>
-References: <cover.1612475783.git.boris@bur.io>
- <YBziIn5FhtekZ7ZP@sol.localdomain>
+        id S231269AbhBEHWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Feb 2021 02:22:35 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:40648 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231509AbhBEHWV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Feb 2021 02:22:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1612509741; x=1644045741;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=CtGa6PXGliWvj4xqnJ2iDsm1A39zzC/rmeqXuAW2a74=;
+  b=VZ3q7NLSbF4XPrj1muUtXUzvi0mcARIP4eUiFiBXsdTUjVaLG6Jfu4Pa
+   /0vfVhtYPr24orLwXNkdYDkREZENiJsUAGy70UbA5i3HZYNr/O8d0Mw9Q
+   yJxCAg9DfccTaDONJ6ZLWkp5q8NBi13JDHtraRFaCHM0Zd7bTzBbAN3eG
+   iuC9qC4TpYdGf4Dh0lL8F0Oznw8PI23IfrN4OJTQjpXSb8qc32Vfp1txu
+   10Rh9FMtGQX0oRj2oY16eOhs3Fw2Fy3u7whOjbR8Z5BrxHe+y85SpnBux
+   e0qnzhozBaQCf35sIkw/lG7nSAifObwmvcFB/hTulrMsew+c3SUeJfPyd
+   A==;
+IronPort-SDR: BPRBhwUJ+Wfrsp4p124KpPHvEJGgslbsrAZCSc/c58PbNZdRR+wC2xis1i2PB/65zf5qUp9xAD
+ xE1jjY0r9TwmmNxTBqk7+bWid7hgAwMs+dFiy92mwCtajSgyUIA/oBWAk/EWBjZ7yJhTThR23R
+ N/6d+9slV5uSe6B0a4uJG4hOYlBTlDJT506t/VQej38K78avCpdHUHDyiqS4cmI5j9vy5vQA7m
+ X0orF51kD2uvJCQ7ymh+dztiJJEBwqQcE0wJ6z8yi9KwU+IyF2I39qdEECZlI/vUL5rKECIQG7
+ 5/A=
+X-IronPort-AV: E=Sophos;i="5.81,154,1610380800"; 
+   d="scan'208";a="269642017"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Feb 2021 15:21:15 +0800
+IronPort-SDR: Y/JedinuIgBfimM2+/WdUQuIbmVRU8iPnGPCTp5/O8qV8nbctcVvGd0ZhoBQKvCKIytYxNuU5G
+ Dcal0soDkrvX5p8GFA2Qrg28xbzRttMl/9q/J3XeTDuTHA9aIxQHHfCt/exJrLaycFM25JNz53
+ 0zujGuLceWZWSW7nEGNOKQ73U7nUil5Ax3iNT1UIhhBwV8QiMbcp4io65Uyfs2K5LoBzgSbeIR
+ 1WUjrpFShwCj7HZS1bpMcmcbESE6GD41r9ghR7I0A6XXcxMbDIGFC3lvt/RhPf7Tlw7TmXG9cO
+ W3Et9vPuoWFc1g+p76dPYc02
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 23:05:12 -0800
+IronPort-SDR: r3Nfrha7AR6I4IjM4xC0vcz/ixVGdK1WdMQwTTjHzoiP+wT+NFHGcZGBcvwti+7vZmEypesKvC
+ wCzUBAZs5PuZz9w3nU+QKPO57HEPiremkatbEbmx5noz0t5DFUd7dOAR7kotaxuc/DLwbTSbn5
+ FJQGNezpBHdKk7YV7IcQAsBESat4qS/Fyn0vkc6CXfbxV7FodfhKoRLLy1RpmilmilBw0guqj1
+ 3cs5iTMLKNMEXxvDEzOoujlckHLfSB2B6fBDP44NLx2Uq0vYduiDC7MF0jPjAtZemq8MJM1MVJ
+ ClU=
+WDCIronportException: Internal
+Received: from jfklab-fym3sg2.ad.shared (HELO naota-xeon) ([10.84.71.79])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2021 23:21:13 -0800
+Date:   Fri, 5 Feb 2021 16:21:12 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, hare@suse.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v15 40/42] btrfs: zoned: serialize log transaction on
+ zoned filesystems
+Message-ID: <20210205072033.nxnbf5s2zlyofems@naota-xeon>
+References: <b36444df121d46c6d9638a8ae8eacecaa845fbe4.1612434091.git.naohiro.aota@wdc.com>
+ <5eabc4600691c618f34f8f39c156d9c094f2687b.1612434091.git.naohiro.aota@wdc.com>
+ <CAL3q7H7UGEm14j1nNiX7FMkfdFq3dViw2o4uEdbZE+qpk7amLQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YBziIn5FhtekZ7ZP@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H7UGEm14j1nNiX7FMkfdFq3dViw2o4uEdbZE+qpk7amLQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 10:13:54PM -0800, Eric Biggers wrote:
-> On Thu, Feb 04, 2021 at 03:21:36PM -0800, Boris Burkov wrote:
-> > This patchset provides support for fsverity in btrfs.
+On Thu, Feb 04, 2021 at 11:50:45AM +0000, Filipe Manana wrote:
+> On Thu, Feb 4, 2021 at 10:23 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
+> >
+> > This is the 2/3 patch to enable tree-log on zoned filesystems.
+> >
+> > Since we can start more than one log transactions per subvolume
+> > simultaneously, nodes from multiple transactions can be allocated
+> > interleaved. Such mixed allocation results in non-sequential writes at the
+> > time of a log transaction commit. The nodes of the global log root tree
+> > (fs_info->log_root_tree), also have the same problem with mixed
+> > allocation.
+> >
+> > Serializes log transactions by waiting for a committing transaction when
+> > someone tries to start a new transaction, to avoid the mixed allocation
+> > problem. We must also wait for running log transactions from another
+> > subvolume, but there is no easy way to detect which subvolume root is
+> > running a log transaction. So, this patch forbids starting a new log
+> > transaction when other subvolumes already allocated the global log root
+> > tree.
+> >
+> > Cc: Filipe Manana <fdmanana@gmail.com>
+> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > ---
+> >  fs/btrfs/tree-log.c | 29 +++++++++++++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >
+> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> > index c02eeeac439c..8be3164d4c5d 100644
+> > --- a/fs/btrfs/tree-log.c
+> > +++ b/fs/btrfs/tree-log.c
+> > @@ -105,6 +105,7 @@ static noinline int replay_dir_deletes(struct btrfs_trans_handle *trans,
+> >                                        struct btrfs_root *log,
+> >                                        struct btrfs_path *path,
+> >                                        u64 dirid, int del_all);
+> > +static void wait_log_commit(struct btrfs_root *root, int transid);
+> >
+> >  /*
+> >   * tree logging is a special write ahead log used to make sure that
+> > @@ -140,6 +141,7 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+> >  {
+> >         struct btrfs_fs_info *fs_info = root->fs_info;
+> >         struct btrfs_root *tree_root = fs_info->tree_root;
+> > +       const bool zoned = btrfs_is_zoned(fs_info);
+> >         int ret = 0;
+> >
+> >         /*
+> > @@ -160,12 +162,20 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+> >
+> >         mutex_lock(&root->log_mutex);
+> >
+> > +again:
+> >         if (root->log_root) {
+> > +               int index = (root->log_transid + 1) % 2;
+> > +
+> >                 if (btrfs_need_log_full_commit(trans)) {
+> >                         ret = -EAGAIN;
+> >                         goto out;
+> >                 }
+> >
+> > +               if (zoned && atomic_read(&root->log_commit[index])) {
+> > +                       wait_log_commit(root, root->log_transid - 1);
+> > +                       goto again;
+> > +               }
+> > +
+> >                 if (!root->log_start_pid) {
+> >                         clear_bit(BTRFS_ROOT_MULTI_LOG_TASKS, &root->state);
+> >                         root->log_start_pid = current->pid;
+> > @@ -173,6 +183,17 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+> >                         set_bit(BTRFS_ROOT_MULTI_LOG_TASKS, &root->state);
+> >                 }
+> >         } else {
+> > +               if (zoned) {
+> > +                       mutex_lock(&fs_info->tree_log_mutex);
+> > +                       if (fs_info->log_root_tree)
+> > +                               ret = -EAGAIN;
+> > +                       else
+> > +                               ret = btrfs_init_log_root_tree(trans, fs_info);
+> > +                       mutex_unlock(&fs_info->tree_log_mutex);
+> > +               }
 > 
-> Very interested to see this!  It generally looks good, but I have some comments.
+> So, nothing here changed since v14 - all my comments still apply [1]
+> This is based on pre-5.10 code and is broken as it is - it results in
+> every fsync falling back to a transaction commit, defeating the
+> purpose of all the patches that deal with log trees on zoned
+> filesystems.
 > 
-> Also, when you send this out next, can you include
-> linux-fscrypt@vger.kernel.org, as per 'get_maintainer.pl fs/verity/'?
+> Thanks.
 > 
+> [1] https://lore.kernel.org/linux-btrfs/CAL3q7H5pv416FVwThOHe+M3L5B-z_n6_ZGQQxsUq5vC5fsAoJw@mail.gmail.com/
 
-Sorry for missing that, definitely will do for v2.
+Yes...
 
-> > At a high level, we store the verity descriptor and Merkle tree data
-> > in the file system btree with the file's inode as the objectid, and
-> > direct reads/writes to those items to implement the generic fsverity
-> > interface required by fs/verity/.
-> > 
-> > The first patch is a preparatory patch which adds a notion of
-> > compat_flags to the btrfs_inode and inode_item in order to allow
-> > enabling verity on a file without making the file system unmountable for
-> > older kernels. (It runs afoul of the leaf corruption check otherwise)
+As noted in the cover letter, there is a fix for this issue
+itself. However, the fix revealed other failures in fsync() path.
+But, with further investigation, I found the failures are not really
+related to zoned fsync() code. So, I will soon post two patches (one
+incremental for this one, and one to deal with a regression case)..
+
 > 
-> In ext4, verity is a ro_compat filesystem feature rather than a compat feature.
-> That's because we wanted to prevent old kernels from writing to verity files,
-> which would corrupt them (get them out of sync with their Merkle trees).
 > 
-> Are you sure you want to make this a "compat" flag?
+> > +               if (ret)
+> > +                       goto out;
+> > +
+> >                 ret = btrfs_add_log_tree(trans, root);
+> >                 if (ret)
+> >                         goto out;
+> > @@ -201,14 +222,22 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+> >   */
+> >  static int join_running_log_trans(struct btrfs_root *root)
+> >  {
+> > +       const bool zoned = btrfs_is_zoned(root->fs_info);
+> >         int ret = -ENOENT;
+> >
+> >         if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &root->state))
+> >                 return ret;
+> >
+> >         mutex_lock(&root->log_mutex);
+> > +again:
+> >         if (root->log_root) {
+> > +               int index = (root->log_transid + 1) % 2;
+> > +
+> >                 ret = 0;
+> > +               if (zoned && atomic_read(&root->log_commit[index])) {
+> > +                       wait_log_commit(root, root->log_transid - 1);
+> > +                       goto again;
+> > +               }
+> >                 atomic_inc(&root->log_writers);
+> >         }
+> >         mutex_unlock(&root->log_mutex);
+> > --
+> > 2.30.0
+> >
 > 
-
-I wasn't sure, so I'm glad you brought it up. That's a pretty compelling
-argument for making it ro_comnpat, in my opinion. I was also worried
-about the old kernel deleting the file and leaking the Merkle items.
-
-On the other hand, it feels a shame to make the whole file system read
-only over "just one file".
-
-Do you have any good strategies for getting back a file system after
-creating some verity files but then running a kernel without verity?
-
-I could write some utilities to list/delete verity files before doing
-that transition?
-
-> > 
-> > The second patch is the bulk of the fsverity implementation. It
-> > implements the fsverity interface and adds verity checks for the typical
-> > file reading case.
-> > 
-> > The third patch cleans up the corner cases in readpage, covering inline
-> > extents, preallocated extents, and holes.
-> > 
-> > The fourth patch handles direct io of a veritied file by falling back to
-> > buffered io.
-> > 
-> > The fifth patch adds a feature file in sysfs for verity.
 > 
-> I'm also wondering if you've tested using this in combination with btrfs
-> compression.  f2fs also supports compression and verity in combination, and
-> there have been some problems caused by that combination not being properly
-> tested.  It should just work though.
+> -- 
+> Filipe David Manana,
 > 
-
-I hadn't tested it with compression yet, but I'll definitely do so,
-especially since it was a pain point before. Thanks for the tip.
-
-> - Eric
+> “Whether you think you can, or you think you can't — you're right.”
