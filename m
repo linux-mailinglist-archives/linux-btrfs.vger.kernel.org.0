@@ -2,140 +2,208 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B93311615
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 23:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512B7311617
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 23:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhBEWub (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Feb 2021 17:50:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232170AbhBEM4Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:56:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6476264FC2
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Feb 2021 12:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612529743;
-        bh=8YnBvJF4mtgHZe/R/x8FW/QBLSrAtSHONRLlz/ioyqs=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=iNU5bZ7ecKmJf3oM9mSXqZ3diGeyJcikf4j7wTotsJz74KRNJgBHrcrxh3VRpUX/I
-         TZ8C6NG92jnEDRjICq20AulEDOAFDgqX8sW5d4U6mc2CDp5T7GIkZ9xwkUa7qjdvqu
-         VeLKNeqT8U6Oh+xLrJ4NSQeGLdaIBQMK+Wolk265pOh7FaVJ+mIyJDWUwS+gwBKuZ0
-         Yr9bPCMPSbMbhrrEMQsf3qZAlVsKFXbOodp3/PLvbxN7SAaMmZQOTUpWMv7LNzJLb7
-         U/nXg8MmlobHq22Pgdh8EXhMiz0tZvPW4EYwi6cA9syn2wtf1XnfmZPuZOHmVIfrUk
-         BNgU3zdW6hxzQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: fix race between swap file activation and snapshot creation
-Date:   Fri,  5 Feb 2021 12:55:38 +0000
-Message-Id: <e7669602a731fc542034cbe933b067326c5aa3ad.1612529182.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1612529182.git.fdmanana@suse.com>
-References: <cover.1612529182.git.fdmanana@suse.com>
+        id S231646AbhBEWue (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Feb 2021 17:50:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231277AbhBENKv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Feb 2021 08:10:51 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9A4C061221;
+        Fri,  5 Feb 2021 05:07:41 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id a19so6777832qka.2;
+        Fri, 05 Feb 2021 05:07:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=eifO5w09vaVkYD/HNL+OdTyeOvd9OOp5ZX1K5KzvrTo=;
+        b=uux1/nfGwEFnTg/EJ2HdZY7y2r9LwQKaqqCMlBfo/r+87x8xBc1uCR0W4HA3Am8xxl
+         ND1paPnztrtHvNqVIgvl09Jb1LpjoEee062glaCBFJhxTMlYL2zD4VLZjUfhr7KJXI/X
+         fJvt+NE/9xjR/1gC3nfciFI0dFE3sHddFXC0ahFKSrUk0s6KY4qJR8IwJ3WKvRGVXVK4
+         E+3VIHAJpsRFvpC08M2b03BT4xu2f3usNNGnS1eJnSkz6j72tNoGD4aOY1kmQB2mfx+W
+         pFA/+RQmR/jGXkd87VAeGcFW6y6uO9LeK2MDx1Lyd/NE+9NNWjpB/gI+QQZ3d6tEahWl
+         72CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=eifO5w09vaVkYD/HNL+OdTyeOvd9OOp5ZX1K5KzvrTo=;
+        b=NbkmFD8Cy96L60BIf4Y9FbWQ9BT7BWsXHZ05oxxb+sG6qs4Jvsq9gOjBMIuiW+J6Pt
+         rDddVTwzMQZwXpRhg3cDm7ipK+fmdRVfdf/nNz9YzMyyxy9sAJxgMLuD7ZxYRhy/MuiR
+         upKTIPIYYZwSOHVgOYyLBJV8UqIHJCuY/tU9XaWtuTkd39E5WG6pzt2NNvFXpEWnkVsN
+         F07TaQkR/zQSuYCQN4fDGKQVjwc7YE9IkWpwPlPJuuiQd9tCBEfqrZyp00DRSx/xw3bY
+         sWM2PalPNlJ/NoaCWX4EBsWLLGTLYw/F38OwUj/Z+bfmbQfSutfU1dyze4JIVzsaiMYd
+         /PlQ==
+X-Gm-Message-State: AOAM531LEjxhayoPDMFnkuGZcg252qAUj41hrsbBoUaD5pCbPUqG2O1w
+        8SZihCe1SZQ92rmlxzO6Oc2RSjUZmlw42Y9tPio=
+X-Google-Smtp-Source: ABdhPJx6LvF5n7cqNVXse1TC5iGMbFDY6ruGVS89G9oW4Vnhy82FeiuC3aqWafe15OIyMsm+d23xaqLM96nQCFOTmFY=
+X-Received: by 2002:a37:6491:: with SMTP id y139mr3989047qkb.479.1612530460261;
+ Fri, 05 Feb 2021 05:07:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1612433345.git.naohiro.aota@wdc.com> <b36444df121d46c6d9638a8ae8eacecaa845fbe4.1612434091.git.naohiro.aota@wdc.com>
+ <20210205092635.i6w3c7brawlv6pgs@naota-xeon> <CAL3q7H6REfruE-DSyiqZQ_Y0=HmXbiTbEC3d18Q7+3Z7pf5QzQ@mail.gmail.com>
+ <20210205125526.4oeqd3utuho3b2hv@naota-xeon>
+In-Reply-To: <20210205125526.4oeqd3utuho3b2hv@naota-xeon>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 5 Feb 2021 13:07:29 +0000
+Message-ID: <CAL3q7H6x4hcs3T17EKPQkHwth_2_M6c=c8=GxGy1eu1nDDDAUQ@mail.gmail.com>
+Subject: Re: [PATCH v15 43/43] btrfs: zoned: deal with holes writing out
+ tree-log pages
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, hare@suse.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Feb 5, 2021 at 12:55 PM Naohiro Aota <naohiro.aota@wdc.com> wrote:
+>
+> On Fri, Feb 05, 2021 at 11:49:05AM +0000, Filipe Manana wrote:
+> > On Fri, Feb 5, 2021 at 9:26 AM Naohiro Aota <naohiro.aota@wdc.com> wrot=
+e:
+> > >
+> > > Since the zoned filesystem requires sequential write out of metadata,=
+ we
+> > > cannot proceed with a hole in tree-log pages. When such a hole exists=
+,
+> > > btree_write_cache_pages() will return -EAGAIN. We cannot wait for the=
+ range
+> > > to be written, because it will cause a deadlock. So, let's bail out t=
+o a
+> > > full commit in this case.
+> > >
+> > > Cc: Filipe Manana <fdmanana@gmail.com>
+> > > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > > ---
+> > >  fs/btrfs/tree-log.c | 19 ++++++++++++++++++-
+> > >  1 file changed, 18 insertions(+), 1 deletion(-)
+> > >
+> > > This patch solves a regression introduced by fixing patch 40. I'm
+> > > sorry for the confusing patch numbering.
+> >
+> > Hum, how does patch 40 can cause this?
+> > And is it before the fixup or after?
+>
+> With pre-5.10 code base + zoned series at that time, it passed
+> xfstests without this patch.
+>
+> With current code base + zoned series without the fixup for patch 40,
+> it also passed the tests, because we are mostly bailing out to a full
+> commit.
+>
+> The fixup now stressed the new fsync code on zoned mode and revealed
+> an issue to have -EAGAIN from btrfs_write_marked_extents(). This error
+> happens when a concurrent transaction commit is writing a dirty extent
+> in this tree-log commit. This issue didn't occur previously because of
+> a longer critical section, I guess.
 
-When creating a snapshot we check if the current number of swap files, in
-the root, is non-zero, and if it is, we error out and warn that we can not
-create the snapshot because there are active swap files.
+Ok, if I understand you correctly, the problem is a transaction commit
+and an fsync both allocating metadata extents at the same time.
 
-However this is racy because when a task started activation of a swap
-file, another task might have started already snapshot creation and might
-have seen the counter for the number of swap files as zero. This means
-that after the swap file is activated we may end up with a snapshot of the
-same root successfully created, and therefore when the first write to the
-swap file happens it has to fall back into COW mode, which should never
-happen for active swap files.
+>
+> >
+> > >
+> > > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> > > index 4e72794342c0..629e605cd62d 100644
+> > > --- a/fs/btrfs/tree-log.c
+> > > +++ b/fs/btrfs/tree-log.c
+> > > @@ -3120,6 +3120,14 @@ int btrfs_sync_log(struct btrfs_trans_handle *=
+trans,
+> > >          */
+> > >         blk_start_plug(&plug);
+> > >         ret =3D btrfs_write_marked_extents(fs_info, &log->dirty_log_p=
+ages, mark);
+> > > +       /*
+> > > +        * There is a hole writing out the extents and cannot proceed=
+ it on
+> > > +        * zoned filesystem, which require sequential writing. We can
+> >
+> > require -> requires
+> >
+> > > +        * ignore the error for now, since we don't wait for completi=
+on for
+> > > +        * now.
+> >
+> > So why can we ignore the error for now?
+> > Why not just bail out here and mark the log for full commit? (without
+> > a transaction abort)
+>
+> As described above, -EAGAIN happens when a concurrent process writes
+> out an extent buffer of this tree-log commit. This concurrent write
+> out will fill a hole for us, so the next write out might
+> succeed. Indeed we can bail out here, but I opted to try the next
+> write.
 
-Basically what can happen is:
+Ok, if I understand you correctly, you mean it will be fine if after
+this point no one allocates metadata extents from the hole?
 
-1) Task A starts snapshot creation and enters ioctl.c:create_snapshot().
-   There it sees that root->nr_swapfiles has a value of 0 so it continues;
+I think such a clear explanation would fit nicely in the comment.
 
-2) Task B enters btrfs_swap_activate(). It is not aware that another task
-   started snapshot creation but it did not finish yet. It increments
-   root->nr_swapfiles from 0 to 1;
+Thanks.
 
-3) Task B checks that the file meets all requirements to be an active
-   swap file - it has NOCOW set, there are no snapshots for the inode's
-   root at the moment, no file holes, no reflinked extents, etc;
+>
+> > > +        */
+> > > +       if (ret =3D=3D -EAGAIN)
+> > > +               ret =3D 0;
+> > >         if (ret) {
+> > >                 blk_finish_plug(&plug);
+> > >                 btrfs_abort_transaction(trans, ret);
+> > > @@ -3229,7 +3237,16 @@ int btrfs_sync_log(struct btrfs_trans_handle *=
+trans,
+> > >                                          &log_root_tree->dirty_log_pa=
+ges,
+> > >                                          EXTENT_DIRTY | EXTENT_NEW);
+> > >         blk_finish_plug(&plug);
+> > > -       if (ret) {
+> > > +       /*
+> > > +        * There is a hole in the extents, and failed to sequential w=
+rite
+> > > +        * on zoned filesystem. We cannot wait for this write outs, s=
+inc it
+> >
+> > this -> these
+> >
+> > > +        * cause a deadlock. Bail out to the full commit, instead.
+> > > +        */
+> > > +       if (ret =3D=3D -EAGAIN) {
+> > > +               btrfs_wait_tree_log_extents(log, mark);
+> > > +               mutex_unlock(&log_root_tree->log_mutex);
+> > > +               goto out_wake_log_root;
+> >
+> > Must also call btrfs_set_log_full_commit(trans);
+>
+> Oops, I missed this one.
+>
+> > Thanks.
+> >
+> > > +       } else if (ret) {
+> > >                 btrfs_set_log_full_commit(trans);
+> > >                 btrfs_abort_transaction(trans, ret);
+> > >                 mutex_unlock(&log_root_tree->log_mutex);
+> > > --
+> > > 2.30.0
+> > >
+> >
+> >
+> > --
+> > Filipe David Manana,
+> >
+> > =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 yo=
+u're right.=E2=80=9D
 
-4) Task B returns success and now the file is an active swap file;
 
-5) Task A commits the transaction to create the snapshot and finishes.
-   The swap file's extents are now shared between the original root and
-   the snapshot;
 
-6) A write into an extent of the swap file is attempted - there is a
-   snapshot of the file's root, so we fall back to COW mode and therefore
-   the physical location of the extent changes on disk.
+--=20
+Filipe David Manana,
 
-So fix this by taking the snapshot lock during swap file activation before
-locking the extent range, as that is the order in which we lock these
-during buffered writes.
-
-Fixes: ed46ff3d42378 ("Btrfs: support swap files")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 715ae1320383..a9fb6a4eb9dd 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -10116,7 +10116,8 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 			       sector_t *span)
- {
- 	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
-+	struct btrfs_root *root = BTRFS_I(inode)->root;
-+	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
- 	struct extent_state *cached_state = NULL;
- 	struct extent_map *em = NULL;
-@@ -10167,13 +10168,27 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 	   "cannot activate swapfile while exclusive operation is running");
- 		return -EBUSY;
- 	}
-+
-+	/*
-+	 * Prevent snapshot creation while we are activating the swap file.
-+	 * We do not want to race with snapshot creation. If snapshot creation
-+	 * already started before we bumped nr_swapfiles from 0 to 1 and
-+	 * completes before the first write into the swap file after it is
-+	 * activated, than that write would fallback to COW.
-+	 */
-+	if (!btrfs_drew_try_write_lock(&root->snapshot_lock)) {
-+		btrfs_exclop_finish(fs_info);
-+		btrfs_warn(fs_info,
-+	   "cannot activate swapfile because snapshot creation is in progress");
-+		return -EINVAL;
-+	}
- 	/*
- 	 * Snapshots can create extents which require COW even if NODATACOW is
- 	 * set. We use this counter to prevent snapshots. We must increment it
- 	 * before walking the extents because we don't want a concurrent
- 	 * snapshot to run after we've already checked the extents.
- 	 */
--	atomic_inc(&BTRFS_I(inode)->root->nr_swapfiles);
-+	atomic_inc(&root->nr_swapfiles);
- 
- 	isize = ALIGN_DOWN(inode->i_size, fs_info->sectorsize);
- 
-@@ -10319,6 +10334,8 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 	if (ret)
- 		btrfs_swap_deactivate(file);
- 
-+	btrfs_drew_write_unlock(&root->snapshot_lock);
-+
- 	btrfs_exclop_finish(fs_info);
- 
- 	if (ret)
--- 
-2.28.0
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
