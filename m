@@ -2,119 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E084310504
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 07:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEC4310505
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 07:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhBEGjh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Feb 2021 01:39:37 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34103 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230191AbhBEGjg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Feb 2021 01:39:36 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 723BC5C0187;
-        Fri,  5 Feb 2021 01:38:30 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 05 Feb 2021 01:38:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=9Qe7wwHaUKVDGesS/xCBgQu4QdU
-        AnFGxd+l8QTGV1p0=; b=T3RmIlclHjPBHUfn1v7epP4y5X3vNwEf9hN99xIsVMV
-        cDd9Kd5bisYukEdrA2oAcIYEL5amJqqsmzKaovRspUD+KI2rXUbqfuqU2NCqgTOm
-        q5bCNxHoKB1g9VRxmOVueloFPAhLpjtdXewATvQkoTBz/5GOt27fnCvZA2CQk1bB
-        ByM0GuCkqiGouNc3a1/D/xN42C5vLuaLuiVhfVPGwMijsOmkBZmMgoDRC6NFbC5k
-        BiDjwxR4jroK87aURNtqjaAoePa9zkVR5joe8slAahAVWv0B5PVP7xa3nf/2uVAe
-        5cMDX0GCAG2k+f/oZjsm2OvduazlvGAt/YyVzhwfM+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=9Qe7ww
-        HaUKVDGesS/xCBgQu4QdUAnFGxd+l8QTGV1p0=; b=XewWKUwl0tjM34dUryfa6f
-        eabmxi/Ihb3aMPLDEqMpQ7oHmIfolIZzIpfT4pSnCeMB0xpxaAOvVY3rNuhHXoFo
-        PeDuE/5Sh9QfS4Cps7ZKYnkbWJ9hkWIIsEVm+4UpZPYHLVbjP0th7VLAVK14sLCx
-        /mQYKY4G2P9QERQHQpsG9e40CnaWBOQncU1HnQtJAz4loNCm8PecohujBtlqvb57
-        xHkwB5GeAwUXDMw6Fc2uqUNsOfSFM3McADgSy5Q7OdHgukARTGrO1dQWqyqmdqaV
-        wzNcMgjk0qeYb4+He+x2WpuLHsSCo0b7P7zGvx27cUCRLOVzYK9QP+86vJNfJGUg
-        ==
-X-ME-Sender: <xms:5uccYChdyjW-ZT19KVYNk6KEGDiMNJ55SPIsbPLhxZNrTujj1V9k6Q>
-    <xme:5uccYDC2sY-1a88E9VDJ3ELlxoZJI2CqFwDJdRIVn_7S9eh4Wb1YAADKdBr66Qaro
-    yDLcXb9c4v2aUxPNBU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgeehgdeliecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepvd
-    fhgffhteeugefgtdegudevudegkeeguedvvdfhudegudfhteekvedtiedtgeeunecukfhp
-    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:5uccYKEK-mPzrY2mB1RZep_vqjxLi_rkNut0DEtG8cOpawADoz1d4Q>
-    <xmx:5uccYLSYUuZNHmH2eVOCpTUt1BMR-IndCaiT27_WwLN0lLqiJ42TTA>
-    <xmx:5uccYPyAkGCX82WA2WK3n0YFmvB0ux8h3GWcRfg0VQ2kxu-voMxLGg>
-    <xmx:5uccYIqG2Padsl3_4f2KhkxBb5DE0fjm9RW9U-hmxpvBM30mKVJbVg>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BBE691080057;
-        Fri,  5 Feb 2021 01:38:29 -0500 (EST)
-Date:   Thu, 4 Feb 2021 22:38:23 -0800
-From:   Boris Burkov <boris@bur.io>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add a test for btrfs fsverity
-Message-ID: <20210205063823.GA2428856@devbig008.ftw2.facebook.com>
-References: <c16cbe8ad5795f059af45bfe7cf673dab58028a2.1612468162.git.boris@bur.io>
- <YBzf1z6EGCAK7JWN@sol.localdomain>
+        id S230406AbhBEGkL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Feb 2021 01:40:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229492AbhBEGkK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Feb 2021 01:40:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79E0C64F10;
+        Fri,  5 Feb 2021 06:39:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612507168;
+        bh=hpZtN0Aqnss96YC/dADnXc5NyF8ZUnBWNcAKb4gtS4c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qbuU79DBYJRrNU6/JZn4lXhLUOWvE4x41NWFpmzKiU1VGgN0kAFPpnbV0Upbvkmms
+         pV0NidzmnNPq7Jkgb8yO+dKzOb7N4TX1LSmozBtPtDtnQEoVHCrDMa5RISUtx9AUxw
+         P0BXJzGCGnQYr5nxZpHKp/sLuHAHHrRkkuoequ7u7Tq/v1piJic2/cBz9Wl+/NYNbs
+         vd8xpmL8twuIRpNcNe3StN2sxTm3P2mNFZMRpcz97ukDCgKWTaab42CJ8rXmuy9LaD
+         6Tl8l6JYYVtCPahbfOv1FIWrzZ6XzBxD12oXzUOatPKE8Z2Fj3OTuvg9wm7NkN7iB6
+         YvzOPpqHljy+Q==
+Date:   Thu, 4 Feb 2021 22:39:26 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 2/5] btrfs: initial fsverity support
+Message-ID: <YBzoHniIpslKZtbp@sol.localdomain>
+References: <cover.1612475783.git.boris@bur.io>
+ <88389022bd9f264f215c9d85fe48214190402fd6.1612475783.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBzf1z6EGCAK7JWN@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <88389022bd9f264f215c9d85fe48214190402fd6.1612475783.git.boris@bur.io>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thu, Feb 04, 2021 at 10:04:07PM -0800, Eric Biggers wrote:
-> Thanks for writing a test for this!
-> 
-> On Thu, Feb 04, 2021 at 03:24:26PM -0800, Boris Burkov wrote:
-> > There are some btrfs specific fsverity scenarios that don't map
-> > neatly onto the tests in generic/574, like holes, inline extents,
-> > and preallocated extents. Cover those in a btrfs specific test.
-> > 
-> > That test relies on assumptions about how the Merkle tree is stored
-> > by ext4/f2fs which don't apply to btrfs, so we also test Merkle tree
-> > corruption here. This could be merged by some generic abstraction.
-> 
-> The only part of generic/574 that cares where the Merkle tree is stored is
-> _fsv_scratch_corrupt_merkle_tree().  Couldn't that be updated to handle btrfs?
-> 
+On Thu, Feb 04, 2021 at 03:21:38PM -0800, Boris Burkov wrote:
+> +/*
+> + * drop all the items for this inode with this key_type.  Before
+> + * doing a verity enable we cleanup any existing verity items.
+> + *
+> + * This is also used to clean up if a verity enable failed half way
+> + * through
+> + */
+> +static int drop_verity_items(struct btrfs_inode *inode, u8 key_type)
 
-I agree that would be an easy enough fix, I'll make it in this patch.
-Until I get 574 fully passing, I think I ought to leave the Merkle
-corruption here as well, though, right?
+I assume you checked whether there's already code in btrfs that does this?  This
+seems like a fairly generic thing that might be needed elsewhere in btrfs.
+Similarly for write_key_bytes() and read_key_bytes().
 
-> > Finally, that test relies extensively on fiemap, which is currently
-> > broken on btrfs for offsets and sizes that don't align to PAGE_SIZE,
-> > so put a simple regular file case in this test for now, while we fix
-> > fiemap or generalize extent lookup.
-> 
-> fiemap is only used by _fsv_scratch_corrupt_bytes().  It just wants to know the
-> list of extents that intersect the requested byte range.  Does that really not
-> work on btrfs if the range isn't page-aligned?
-> 
+> +/*
+> + * fsverity does a two pass setup for reading the descriptor, in the first pass
+> + * it calls with buf_size = 0 to query the size of the descriptor,
+> + * and then in the second pass it actually reads the descriptor off
+> + * disk.
+> + */
+> +static int btrfs_get_verity_descriptor(struct inode *inode, void *buf,
+> +				       size_t buf_size)
+> +{
+> +	ssize_t ret = 0;
+> +
+> +	if (!buf_size) {
+> +		return read_key_bytes(BTRFS_I(inode),
+> +				     BTRFS_VERITY_DESC_ITEM_KEY,
+> +				     0, NULL, (u64)-1, NULL);
+> +	}
+> +
+> +	ret = read_key_bytes(BTRFS_I(inode),
+> +			     BTRFS_VERITY_DESC_ITEM_KEY, 0,
+> +			     buf, buf_size, NULL);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (ret != buf_size)
+> +		return -EIO;
+> +
+> +	return buf_size;
+> +}
 
-Unfortunately, fiemap is in fact broken in btrfs in that case, and prints
-silly stuff like [K..K-1]. I wrote up a fix for it, but am still figuring
-out how to test it, and decided to get the verity stuff out ahead of it.
+This doesn't return the right value when buf_size != 0 && buf_size != desc_size.
+It's supposed to return the actual size or -ERANGE, like getxattr() does; see
+the comment above fsverity_operations::get_verity_descriptor.
 
-However, even if I did get that fix in, it would still not be quite
-right. Btrfs fiemap is in terms of logical block addresses, so
-an additional translation with btrfs-map-logical is needed, and I
-couldn't figure out how to elegantly inject that into
-_fsv_scratch_corrupt_bytes. I do hope to get btrfs to pass generic/574
-soon, though.
+It doesn't matter much because that case doesn't happen currently, but it would
+be nice to keep things consistent.
 
-> - Eric 
+> +/*
+> + * reads and caches a merkle tree page.  These are stored in the btree,
+> + * but we cache them in the inode's address space after EOF.
+> + */
+> +static struct page *btrfs_read_merkle_tree_page(struct inode *inode,
+> +					       pgoff_t index,
+> +					       unsigned long num_ra_pages)
+> +{
+> +	struct page *p;
+> +	u64 start = index << PAGE_SHIFT;
+> +	unsigned long mapping_index;
+> +	ssize_t ret;
+> +	int err;
+> +
+> +	/*
+> +	 * the file is readonly, so i_size can't change here.  We jump
+> +	 * some pages past the last page to cache our merkles.  The goal
+> +	 * is just to jump past any hugepages that might be mapped in.
+> +	 */
+> +	mapping_index = (i_size_read(inode) >> PAGE_SHIFT) + 2048 + index;
 
-Thanks for the review,
-Boris
+btrfs allows files of up to the page cache limit of MAX_LFS_FILESIZE already.
+So if the Merkle tree pages are cached past EOF like this, it would be necessary
+to limit the size of files that verity can be enabled on, like what ext4 and
+f2fs do.  See the -EFBIG case in pagecache_write() in fs/ext4/verity.c and
+fs/f2fs/verity.c.
+
+Note that this extra limit isn't likely to be encountered in practice, as it
+would only decrease a very large limit by about 1%, and fs-verity isn't likely
+to be used on terabyte-sized files.
+
+However maybe there's a way to avoid this weirdness entirely, e.g. by allocating
+a temporary in-memory inode and using its address_space?
+
+- Eric
