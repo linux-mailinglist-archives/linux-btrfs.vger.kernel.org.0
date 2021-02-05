@@ -2,178 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD23E310B7B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 14:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A2D310F76
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 19:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhBENA2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Feb 2021 08:00:28 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:65166 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbhBEM4w (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Feb 2021 07:56:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612530901; x=1644066901;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=nPbJNNiKhDXUmDl63Oh5kvlKMraRDsXrcXttq+porWE=;
-  b=gMBCqqbmaZK33xAIy85R5h79yDT1k01xvUyOksSXGyEeJYI+vO5zxela
-   Lox05lToYJqvvfWcXzQCsIqYrThWOy5axh6r+DrCfLT++IUM3mtFS/FX8
-   A4kMr934ubVNq7nVayiosTUGZMEiFDpVGDUVzukTIA0Dw0cyBA47Mbwjb
-   rNemwCA9AsyHkBnHGXVzPps3rbbO97JqoM0M/lAPV+TxrR3XrAM6VGQqx
-   1wNyV9zrYcewQ5HysxQHIoXptBgDAAP+DvDpVggRckKHopB8x9YiiGaHm
-   zcDo1Ow7ngfLwunnT0D51Kh7zdtstpCoDxALAcO4eBb5m7gliqCvPHIrY
-   A==;
-IronPort-SDR: tI17OXoFy/ChcfG4FzTGtVhJeG7HgehImzg/C+omr3kL8lHkiZ14Q/9zqVhfp82eufKOdYU/ip
- e2aeoxUktNc19HRgKjF1iQ97k2QCRF+8B0lIKkoCaALhkD1lb59DHE/f8y+2SmbIlMb769aW3m
- BlprxsacsHa/QqThRAgLUiBbAnZdu61jPGIadJKsEw6CeOF23dRy+pnYPj+O3q4CUxTiQxLcXM
- 7wD7ycPEH1jM+zuDBfr+lWdpH2MSXwn9m7Sx3nx1q9n4fUsl+rBJMw2yg1HyASV6iKNcIdU+Fc
- o7I=
-X-IronPort-AV: E=Sophos;i="5.81,154,1610380800"; 
-   d="scan'208";a="263336881"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Feb 2021 21:12:59 +0800
-IronPort-SDR: TmxEXe4ReweihNG02w8BQYYdI6OaT6wQjQB5RyefxwzJff2IU/waXTJAsTvdrbQpruvcpmoWns
- oV4nH4LyLqCvrj/BIpGnWEbw5l+2xaEem6RWT8uCmnapi9y2+sMpM5ObtFpshOANQN7j9eyGF0
- 1TVSPSH3AJBjSux3IfUTJSkmYguZiVKQm+8W085ZYzRkUd4HKI6uBZrzG53SFAKIdEMnDvB/bC
- cCHONTZSW8e7VCmQjzo7PatI//j68gBYWsbYpYvS9JHLK1RLSbTqfKWU+WYU4xrX3C9OfSKoFO
- 6ejAyqDpPsh9KnatiQSgL02B
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 04:37:32 -0800
-IronPort-SDR: CGPXaILYdaFGQb6SHnpVfqGic51mOVIIi4Uw7TTdaDvS6PRYBzJyFSaT8HrlNORSrAr59+GUji
- Qh0H4u8tqZHTI4GtTRE9Ga90TkX/dHAv3Zv5OYFzy7Y6Ios1rnq5CcjZoBkVBR3KsI/mal+ZSZ
- 0hOT8mpw43frHzKiChAIBcVt+Nya/SHtKXyEAHfH1zTuGFp5WkQIr0tEU30vJrzOcG8EEOqjvt
- vtSCDn9ol1bnpHa48Vz9w/R/x6mxs7adUCRKouTzB9P2KFgEQk3Wr3dmZ4CjqgO+duVT23bmgG
- nEY=
-WDCIronportException: Internal
-Received: from jfklab-fym3sg2.ad.shared (HELO naota-xeon) ([10.84.71.79])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2021 04:55:27 -0800
-Date:   Fri, 5 Feb 2021 21:55:26 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, hare@suse.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v15 43/43] btrfs: zoned: deal with holes writing out
- tree-log pages
-Message-ID: <20210205125526.4oeqd3utuho3b2hv@naota-xeon>
-References: <cover.1612433345.git.naohiro.aota@wdc.com>
- <b36444df121d46c6d9638a8ae8eacecaa845fbe4.1612434091.git.naohiro.aota@wdc.com>
- <20210205092635.i6w3c7brawlv6pgs@naota-xeon>
- <CAL3q7H6REfruE-DSyiqZQ_Y0=HmXbiTbEC3d18Q7+3Z7pf5QzQ@mail.gmail.com>
+        id S233578AbhBEQXq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Feb 2021 11:23:46 -0500
+Received: from smtp-33.italiaonline.it ([213.209.10.33]:35814 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233590AbhBEQUP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Feb 2021 11:20:15 -0500
+Received: from venice.bhome ([84.220.31.15])
+        by smtp-33.iol.local with ESMTPA
+        id 85QWl4Fo711DD85QWl430a; Fri, 05 Feb 2021 19:01:53 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1612548113; bh=vB2P/FA9P5mgNG9EoUzFsYBBIfvKwGFhbqzqqJalARY=;
+        h=From;
+        b=C+Cc7VWbAr6jfHLyw8D9D4OhGdBcK2YX+4qSHkikTvbcD32iH01jgurDWTK0H2pcS
+         Zg3wHKJbmj3q+wS2Oezy+Y7eF8IdcP85CKRA6AVo1KcgKjBLOGsH9H08T2SJIcqVsF
+         PKMK6+C34bSH2Hucxr6pIvIfbxev0aGG6D6ObBnINNKwtMxWm6oHpu8LPcJaQr36Ew
+         9KDbqi/7fTnQuhgK9Q+Tg4hlaqe8eyTzuXgu2BfuH4eWlY+w86SfcHNs5LZy95cu2o
+         IX5rQOpHLk+olo0gtn65cDPkQccxLHgk/3DDT5A3BwKuRtVIvsdi4YogJmGN7SYe0M
+         5G1hXhh9j9GjQ==
+X-CNFS-Analysis: v=2.4 cv=ba6u7MDB c=1 sm=1 tr=0 ts=601d8811 cx=a_exe
+ a=x2dg/lNnxV9i/e65rnwt7A==:117 a=x2dg/lNnxV9i/e65rnwt7A==:17
+ a=IkcTkHD0fZMA:10 a=fystPN74lEtJ2zckaD0A:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH 5/5] btrfs: add allocator_hint mode
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Goffredo Baroncelli <kreijack@inwind.it>
+References: <20210201212820.64381-1-kreijack@libero.it>
+ <20210201212820.64381-6-kreijack@libero.it>
+ <20210204232445.GC32440@hungrycats.org>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <9b4fc7b1-750c-643d-8487-153e5cf7cebd@libero.it>
+Date:   Fri, 5 Feb 2021 19:01:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H6REfruE-DSyiqZQ_Y0=HmXbiTbEC3d18Q7+3Z7pf5QzQ@mail.gmail.com>
+In-Reply-To: <20210204232445.GC32440@hungrycats.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfPImS0kAAoSPwSr4grpSCKJLfjEuoeJwrE3YP08p5o13fM/wQ1COeK+rtGaWEt93E0q3yw9ZB8+ONDTV3Qqr1czSx/cfoB+0BA0w9uYeZjEuR+B7a78a
+ 7IDJMzr9o4XOdMxbeoHZgRrlrtjU63wLOom9qBIvLr0iaqcgYmsVgDBTn3QuPHkGn7twgYd2DsxbT6AOc9K1YLtnWlwHSrTzG3CLSMsvgHkW30LLsYn6Iyal
+ 52S5tDjAWU3eLvJX66PhUSoDXVM2paAxhUYJUzZFYz/+kAlaQo8fpRbRNu0XiCwo
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 05, 2021 at 11:49:05AM +0000, Filipe Manana wrote:
-> On Fri, Feb 5, 2021 at 9:26 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
-> >
-> > Since the zoned filesystem requires sequential write out of metadata, we
-> > cannot proceed with a hole in tree-log pages. When such a hole exists,
-> > btree_write_cache_pages() will return -EAGAIN. We cannot wait for the range
-> > to be written, because it will cause a deadlock. So, let's bail out to a
-> > full commit in this case.
-> >
-> > Cc: Filipe Manana <fdmanana@gmail.com>
-> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > ---
-> >  fs/btrfs/tree-log.c | 19 ++++++++++++++++++-
-> >  1 file changed, 18 insertions(+), 1 deletion(-)
-> >
-> > This patch solves a regression introduced by fixing patch 40. I'm
-> > sorry for the confusing patch numbering.
+On 2/5/21 12:24 AM, Zygo Blaxell wrote:
+> On Mon, Feb 01, 2021 at 10:28:20PM +0100, Goffredo Baroncelli wrote:
+>> From: Goffredo Baroncelli <kreijack@inwind.it>
+[...]
+Hi Zygo
 > 
-> Hum, how does patch 40 can cause this?
-> And is it before the fixup or after?
+> Well, I guess if you're going to keep putting the mount option in each
+> new patch version, then I'm going to keep saying "please remove the
+> mount option" from each new patch version.
+> 
+> The right side of this || can be deleted, and the entire patch 4/5
+> (which adds the mount option).
 
-With pre-5.10 code base + zoned series at that time, it passed
-xfstests without this patch.
+In the next iteration I will move the "mount option" patch at the end of the chain; this will help you to remove this part of the patch that you don't like.
 
-With current code base + zoned series without the fixup for patch 40,
-it also passed the tests, because we are mostly bailing out to a full
-commit.
+[...]
 
-The fixup now stressed the new fsync code on zoned mode and revealed
-an issue to have -EAGAIN from btrfs_write_marked_extents(). This error
-happens when a concurrent transaction commit is writing a dirty extent
-in this tree-log commit. This issue didn't occur previously because of
-a longer critical section, I guess.
+
+
+> 	(gdb) l *(btrfs_alloc_chunk+0x74b)
+> 	0xffffffff8190c3ab is in btrfs_alloc_chunk (fs/btrfs/volumes.c:5047).
+> 	5042            ndevs = 0;
+> 	5043            while (ndevs < ctl->ndevs) {
+> 	5044                    hint = devices_info[ndevs++].alloc_hint;
+
+> 	5045                    while (devices_info[ndevs].alloc_hint == hint &&
+> 	5046                           ndevs < ctl->ndevs)
+
+this check is WRONG. The left and right side of && have to be swapped. Otherwise it is possible
+an access to the last element+1 of the array before the out of bound check.
+My fault.
+
+> 	5047                                    ndevs++;
+> 	5048                    if (ndevs >= ctl->devs_min)
+> 	5049                            break;
+> 	5050            }
+> 	5051
+
+BR
+G.Baroncelli
+
 
 > 
-> >
-> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > index 4e72794342c0..629e605cd62d 100644
-> > --- a/fs/btrfs/tree-log.c
-> > +++ b/fs/btrfs/tree-log.c
-> > @@ -3120,6 +3120,14 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
-> >          */
-> >         blk_start_plug(&plug);
-> >         ret = btrfs_write_marked_extents(fs_info, &log->dirty_log_pages, mark);
-> > +       /*
-> > +        * There is a hole writing out the extents and cannot proceed it on
-> > +        * zoned filesystem, which require sequential writing. We can
-> 
-> require -> requires
-> 
-> > +        * ignore the error for now, since we don't wait for completion for
-> > +        * now.
-> 
-> So why can we ignore the error for now?
-> Why not just bail out here and mark the log for full commit? (without
-> a transaction abort)
+>> +		if (ndevs >= ctl->devs_min)
+>> +			break;
+>> +	}
+>> +
+>> +	BUG_ON(ndevs > ctl->ndevs);
+>> +	ctl->ndevs = ndevs;
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+>> index d776b7f55d56..31a3e4cf93b5 100644
+>> --- a/fs/btrfs/volumes.h
+>> +++ b/fs/btrfs/volumes.h
+>> @@ -364,6 +364,7 @@ struct btrfs_device_info {
+>>   	u64 dev_offset;
+>>   	u64 max_avail;
+>>   	u64 total_avail;
+>> +	int alloc_hint;
+>>   };
+>>   
+>>   struct btrfs_raid_attr {
+>> -- 
+>> 2.30.0
+>>
 
-As described above, -EAGAIN happens when a concurrent process writes
-out an extent buffer of this tree-log commit. This concurrent write
-out will fill a hole for us, so the next write out might
-succeed. Indeed we can bail out here, but I opted to try the next
-write.
 
-> > +        */
-> > +       if (ret == -EAGAIN)
-> > +               ret = 0;
-> >         if (ret) {
-> >                 blk_finish_plug(&plug);
-> >                 btrfs_abort_transaction(trans, ret);
-> > @@ -3229,7 +3237,16 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
-> >                                          &log_root_tree->dirty_log_pages,
-> >                                          EXTENT_DIRTY | EXTENT_NEW);
-> >         blk_finish_plug(&plug);
-> > -       if (ret) {
-> > +       /*
-> > +        * There is a hole in the extents, and failed to sequential write
-> > +        * on zoned filesystem. We cannot wait for this write outs, sinc it
-> 
-> this -> these
-> 
-> > +        * cause a deadlock. Bail out to the full commit, instead.
-> > +        */
-> > +       if (ret == -EAGAIN) {
-> > +               btrfs_wait_tree_log_extents(log, mark);
-> > +               mutex_unlock(&log_root_tree->log_mutex);
-> > +               goto out_wake_log_root;
-> 
-> Must also call btrfs_set_log_full_commit(trans);
-
-Oops, I missed this one.
-
-> Thanks.
-> 
-> > +       } else if (ret) {
-> >                 btrfs_set_log_full_commit(trans);
-> >                 btrfs_abort_transaction(trans, ret);
-> >                 mutex_unlock(&log_root_tree->log_mutex);
-> > --
-> > 2.30.0
-> >
-> 
-> 
-> -- 
-> Filipe David Manana,
-> 
-> “Whether you think you can, or you think you can't — you're right.”
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
