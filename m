@@ -2,226 +2,475 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB5331060A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 08:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A6531065E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Feb 2021 09:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhBEHpi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Feb 2021 02:45:38 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:46290 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231466AbhBEHpb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Feb 2021 02:45:31 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1157d29f134853;
-        Fri, 5 Feb 2021 07:44:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=mMidxL1z5wgmvpHP2tRHBkn6wJ06P6kujtMXymqBER4=;
- b=XgUT+yjNSXxnysn4VFhJD3buy8Zb0Me15yNCP5ljj95G4igllIRj2bxg1sYjbo9DyMPb
- z46m/lpz3eO8FmEvc/QC9omdRnAyLS9K4AFC2ItfUIPM8p11vw4242TzUtA8wv61/VSH
- nEtl3CJvOeP5SOi/gEy4cFiZB7YjJsvqkRBcnQyX2o2ELITXdEiGUe4ZtdA9G/TND62+
- MDCmFp0NPkiD0ii5P1D5VD8E9awyak/Dp3lP/uG9DuJT21ntbf7YKPkgRPiAqVuZxokc
- dHh+p/6c10vaZKLbbamJpECJo+blrOmyx5H2rhaYmzPHqemdu3AdPtpO24ej6Zscw9yQ TQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 36cydm8pb0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 07:44:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1157ihOm101479;
-        Fri, 5 Feb 2021 07:44:44 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2047.outbound.protection.outlook.com [104.47.73.47])
-        by userp3030.oracle.com with ESMTP id 36dhd2j2kq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Feb 2021 07:44:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QAIHtMueehvaCvbzhF1p1WLYC45TCwkWd4Df3junOfqQ77qmrYurO3s1VLHLEcVKv+7w43NJxfoBbDq0YovktTPwPjs8u5G2qOuo8Jl5sMBHQjfgYfAdzBZkRKB1cZtn5MYYQ+DZN9Qq9WyDTOs/5aXyGyU+1wx+8uFiLkiZSQRlL4liYF9EzT0LXyEjdW1UvUY5JEZsBy14cCIKjKF4oF1svCqT8vRw4KYDo02G0oVm+d+6leIYuGAL93bFaJHRkdoMkzdmwScnjEci7+RdSqpXvxoo1v4wxRHGgLfnwaL7DG5bP9586i5wRChsMJKtdyRIX93n9RAlTUVNSuPH3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mMidxL1z5wgmvpHP2tRHBkn6wJ06P6kujtMXymqBER4=;
- b=RgESuIZff4wy5r0JwEfIjGBaA1+/8qUMK2fg1dE9QMB08DOlBxZYY68TNfd3S19qckSgV0xHwO+28E9kuZB16VxnHIi5A8Zh8ZRWouZR/pLByQq17YYTHgcZPMEqDU4f+COljJmaQhwHa9lI/7Keq4GhzCYVVh6Q5MO9kPRqr2z0qHC6C261flcXDr1ShiFYjG+M9TKmant5wP3/o+8yx8quPZpYdMYAE7INGnOm6nHQfFOCHOrH0sHbdFWifuuocowPJ1h4bU5zjDZtXGDgr9Rxcq1kXEof9FKCHb5TqmJWnAi2geCtz/pas5Forhuf3gK5Hcx1wCc72MmVKIVz9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mMidxL1z5wgmvpHP2tRHBkn6wJ06P6kujtMXymqBER4=;
- b=OagwySGi/Y60DuHo7Yi26hsHdRY5LZdkolj2Sk9IYi03ngsjAv3OMRRNkCYa6/XsgzB1zJVPVGinAMZ3RjgDr0iASeYge/NsAx3f9RHEMvJmNVardUgAwgS+SwOH9CJJwd6ZpWsJljAOi/7yWj8PdGCmDqkKWEe3bYoH/Z+CBF0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BN6PR10MB1683.namprd10.prod.outlook.com (2603:10b6:405:b::15)
- by BN8PR10MB3620.namprd10.prod.outlook.com (2603:10b6:408:be::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Fri, 5 Feb
- 2021 07:44:41 +0000
-Received: from BN6PR10MB1683.namprd10.prod.outlook.com
- ([fe80::44c4:3dbe:4b78:f69a]) by BN6PR10MB1683.namprd10.prod.outlook.com
- ([fe80::44c4:3dbe:4b78:f69a%3]) with mapi id 15.20.3805.033; Fri, 5 Feb 2021
- 07:44:41 +0000
-Subject: Re: [PATCH 2/4] btrfs: fix race between writes to swap files and
- scrub
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <cover.1612350698.git.fdmanana@suse.com>
- <0da379a02fdabaf9ca295a34f7de287b5d5465f7.1612350698.git.fdmanana@suse.com>
- <169460c5-8e7b-2d0a-119f-87ef403e070f@oracle.com>
- <CAL3q7H5OOyZHja4hG8cmMOjcsOQSUKvMms9kZHG28i4GqNkOjA@mail.gmail.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <d563cfa9-5cf2-b408-0a7f-cdb597ebc9cc@oracle.com>
-Date:   Fri, 5 Feb 2021 15:44:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-In-Reply-To: <CAL3q7H5OOyZHja4hG8cmMOjcsOQSUKvMms9kZHG28i4GqNkOjA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2406:3003:2006:2288:5425:9056:4f2f:9d91]
-X-ClientProxiedBy: SG2PR06CA0149.apcprd06.prod.outlook.com
- (2603:1096:1:1f::27) To BN6PR10MB1683.namprd10.prod.outlook.com
- (2603:10b6:405:b::15)
+        id S231494AbhBEIHS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Feb 2021 03:07:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47774 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231526AbhBEIGz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Feb 2021 03:06:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612512368; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=H80M80adGynsn62BUi0i4xZOgnqkAvTklc959wEWSUg=;
+        b=thHvCgCz+xj7J6Gw4FTUzBDnrs3Ux0f8hZA1y7D2JDxd8qL8IbOr9kwHXgakUgscrYXffy
+        5vGGHqGUBuKw3Rd5wCvyvY6U8FiZiMdHbH2FE8gXOewqka3kwZEJNUK5rNDLRJuu65woIT
+        3oHnlIGrOnb7/xelWdlhvLGhetRFRFI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 92CF0B05C;
+        Fri,  5 Feb 2021 08:06:08 +0000 (UTC)
+Subject: Re: [PATCH 2/5] btrfs: initial fsverity support
+To:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, Eric Biggers <ebiggers@kernel.org>
+References: <cover.1612475783.git.boris@bur.io>
+ <88389022bd9f264f215c9d85fe48214190402fd6.1612475783.git.boris@bur.io>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b3e49ee9-2910-7971-9ba7-54207625078d@suse.com>
+Date:   Fri, 5 Feb 2021 10:06:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2406:3003:2006:2288:5425:9056:4f2f:9d91] (2406:3003:2006:2288:5425:9056:4f2f:9d91) by SG2PR06CA0149.apcprd06.prod.outlook.com (2603:1096:1:1f::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.19 via Frontend Transport; Fri, 5 Feb 2021 07:44:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fcc31ca1-d767-4800-7049-08d8c9a9e59c
-X-MS-TrafficTypeDiagnostic: BN8PR10MB3620:
-X-Microsoft-Antispam-PRVS: <BN8PR10MB36208840DBD6A4CCA1E201ADE5B29@BN8PR10MB3620.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gVCZTqJH50AT9mgtq+e+YzWoX0Dgh+Gf8WJ2LaxU2ZGQjOZj8Gt+wU8iUKMPDh0Fr2B+m7h/Wp/i4UWfy85RRcuOb96b3y0qW8kDeAiFhe2nIFuGXGnwTRdHDMdah0JMWPFI81LsmkhpZOak4FKOvd0cRpyVAdZFGLpqtr46uJdMhA8HckiPR9Hqmf3QYyuNkcVat0UAMCBJYNi23lX6HY5LTCPyJgeyguzXaj/IG0EqEz/gJ/PVT7N8snkL1ymGP3ehiagXgg12EISqOjfDmro749TWSzGiTIZMv7ezP5VN5j5GLT9mwRJdUrdfpdEQPWs6FpYFBSuQv34L5+dVXn+vlHrnLk4amh6kkOvJRgjE5wwGeBDcWOBGn94lvoRRY84MCSZkw8OWnub91iA1/WAzeK8k8KAIeHti9bLcFarb9mIej846BeynSi/eTYwqfw8eoVrTLQw8HTWJNE8lEovcgq/xOu6KEe42I6g1byXtMFEVhHpHN+fpFUKxRio35x4LixFsC+fNjM1dMxZizpYaHOOKc/oziyrXALPVT7HE/crRLuY3o08eHGamgj8/ex058HEazcb+gZ+32W1wp7c2khQPEy8RoCOP6E4wbZw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR10MB1683.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(346002)(396003)(136003)(39860400002)(6486002)(36756003)(8676002)(478600001)(66556008)(316002)(83380400001)(66476007)(66946007)(6666004)(53546011)(5660300002)(2906002)(6916009)(86362001)(4326008)(44832011)(31686004)(8936002)(186003)(31696002)(2616005)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y2V5NTZmWXpnNFNiaThvNjBNS2lFVkxEcU55a1lndElxeHdseUIrNnZadmFq?=
- =?utf-8?B?YVNtU28xY2VrVWtmQmc4a2krdFZkdVVVOUU5SEVDZDhkT0tjU2VRaTVBQytz?=
- =?utf-8?B?VHFLeGpqMjk2ZXp0dlpSZG9kV3ExZXZPVjlKVXp4L0haQWNHMElUeXpzTjlV?=
- =?utf-8?B?eUN0Z2tKQnpXRGdNSHA1WGNDa3FuZWlDRUIvYktSS0JhbW16YjJsZGhhU0I4?=
- =?utf-8?B?VDRZSk44VDlPeW81VWkwSzhKb0xhakhWUnJ4UXBLQUM2Q21pL3NXY1lXN2Ux?=
- =?utf-8?B?UEVrNTE3QXlpUVZIT1VIakdzYmtsVlgxbTNjaU5VcnJ2Zi9VU1JPNDZPa3po?=
- =?utf-8?B?VTBJRUl4YzJ6eXZIVHhOdHgvY0tXb25Tem82VC9BcXE3cGlxbStPMnhVYWJV?=
- =?utf-8?B?bXJBVFg5bjU1RDBaRElHYXFOT2xTVUduOTQxeWhvS1JnZXk0SytVUUlWK0Yr?=
- =?utf-8?B?cmJxUFBPUVoveWVtUWFWWGg0WVV6RmNtaWcrN2NMcWNoaEZoaXpIT0VaRWxu?=
- =?utf-8?B?Q2RPSVF1ay9KTVRDaUxxSzBXNTVrTXh5NGptUDZGS3dJSk1pMVVQOW0zUmxY?=
- =?utf-8?B?MmhUK1NhUERvMUFWWC9qSXYwMENmL0VJMW9VL1YwemdZRWZraG9MTkJxSFBa?=
- =?utf-8?B?MWw0OWtXUEx3U01JN2RuWkNMalJKNHptSUswNXVrOXlKMTNieS81dERpYTFU?=
- =?utf-8?B?cC8zV0JybkdpOW9RK3BmRUl0LzFwZGtYV0NldmdJbi9zWS9rOWpFUGdaNHRP?=
- =?utf-8?B?d3NySUFSNGJYOE5YNUVqaUh6dkRaYXExL21MdDBnaDVKcmpnd0wzZDU3TkYr?=
- =?utf-8?B?SHdrY2pTR3Npc3JJUktrdWRjOStQSlJEaTdlcXdnQXRuejA1VGhXMTNaWmYr?=
- =?utf-8?B?Wkwxb1lFZzBDajdMWk4vdVRXQSsrTXRlempqZDBhczJuTGNwSlRmdGRuQVZG?=
- =?utf-8?B?U05DcGtIejJLUXZEcTA4QjQ2UUJyejNxWlh3QlAvOWxrRStOdE1oRHRVZ0hR?=
- =?utf-8?B?MkdkcGZITnFteDdoa1JoVUp4L05tM3JRakp2TndQMFpFb2NickRnRWd3clZs?=
- =?utf-8?B?VFFrOWR6bEM1anVMQ3RQRDJQb3JHakFRSWo4YTZlZCszbDVDaXZ6dDlOQ0xG?=
- =?utf-8?B?MUlEdCtoc0pPOEJ4dFMzaWdVdDhzVjNhVk9BKzB6Uk9aUDIyRzg5NDhFWm9M?=
- =?utf-8?B?NU9CenJOYmpwODVqT2xEajBBaWhDa1V4MjZWOTdlRkVkWnIzbE9rbW9BRGRS?=
- =?utf-8?B?OXc3N2ZkQkk5aUc0WXNmWmczRjh6RTFPQUlra0FGa1krQmdkTmVOb1FsQlZJ?=
- =?utf-8?B?SVRYbjhXSlRqNzBUQ1dQZGhZNVJZSFFTSG54UXkzdUZvZ3NRN0lkZVJtYjUw?=
- =?utf-8?B?TkJxS0czZWpPaEFmOWk3USsvZlE4eUY2YW4rNzhuTVM5NHhxU0Q1WFUwKy82?=
- =?utf-8?B?emZBaFN5Y3Y4cDFLeFNiVTA5TmtJdGpSL09lb3dFUEtaTEMvS0FjRnR2bHFM?=
- =?utf-8?B?U0Q3M0hrU1RreTEzQVdOZzU2b1JySmFHV1RXM3NwMjhwYXNOM3BjM3pYTFVr?=
- =?utf-8?B?ZHBUKzQ2TWN6OWNtUE1TbmdETk9zcVFqejR4TnJnZ01seTVrb3hBSTM4NFZa?=
- =?utf-8?B?ZU5leklOL0hiT1VzeE5Ec21PT3MvMzNYaGNydXd3eGFIZy9KdVlkR3IvSEVG?=
- =?utf-8?B?TGtQYm9RVElnNkh1bHZCemlQZ1VVNy94YmFpdVB4ZjMvMXlpN3BnWWQ1NkNa?=
- =?utf-8?B?V1dxam11R0dVM2J6dWdRRGo1aS81TklvbXFBcktwQUlhdVY0cGZORzM0SnR4?=
- =?utf-8?B?bE5RNStFMFhkSm9LN3V2cHhCMVZ2eVYzN2I3YkV2QU9YS3ZoN09LSzd1VnFY?=
- =?utf-8?Q?Foq0uad1lofjZ?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcc31ca1-d767-4800-7049-08d8c9a9e59c
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR10MB1683.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Feb 2021 07:44:41.5014
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /FKoaLP80Y00fWaw8HYh58kCOoQx9laaAb42TZhAqGJ4avQ6qfs4oH0i0M17ZQCC8yiLWnxl/TKbr07hvkqnAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR10MB3620
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 phishscore=0
- spamscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102050050
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9885 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
- spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102050049
+In-Reply-To: <88389022bd9f264f215c9d85fe48214190402fd6.1612475783.git.boris@bur.io>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/4/2021 6:11 PM, Filipe Manana wrote:
-> On Thu, Feb 4, 2021 at 8:48 AM Anand Jain <anand.jain@oracle.com> wrote:
->>
->> On 2/3/2021 7:17 PM, fdmanana@kernel.org wrote:
->>> From: Filipe Manana <fdmanana@suse.com>
->>>
->>> When we active a swap file, at btrfs_swap_activate(), we acquire the
->>> exclusive operation lock to prevent the physical location of the swap
->>> file extents to be changed by operations such as balance and device
->>> replace/resize/remove. We also call there can_nocow_extent() which,
->>> among other things, checks if the block group of a swap file extent is
->>> currently RO, and if it is we can not use the extent, since a write
->>> into it would result in COWing the extent.
->>>
->>> However we have no protection against a scrub operation running after we
->>> activate the swap file, which can result in the swap file extents to be
->>> COWed while the scrub is running and operating on the respective block
->>> group, because scrub turns a block group into RO before it processes it
->>> and then back again to RW mode after processing it. That means an attempt
->>> to write into a swap file extent while scrub is processing the respective
->>> block group, will result in COWing the extent, changing its physical
->>> location on disk.
->>>
->>> Fix this by making sure that block groups that have extents that are used
->>> by active swap files can not be turned into RO mode, therefore making it
->>> not possible for a scrub to turn them into RO mode.
->>
->>> When a scrub finds a
->>> block group that can not be turned to RO due to the existence of extents
->>> used by swap files, it proceeds to the next block group and logs a warning
->>> message that mentions the block group was skipped due to active swap
->>> files - this is the same approach we currently use for balance.
->>
->>    It is better if this info is documented in the scrub man-page. IMO.
->>
->>> This ends up removing the need to call btrfs_extent_readonly() from
->>> can_nocow_extent(), as btrfs_swap_activate() now checks if a block group
->>> is RO through the new function btrfs_inc_block_group_swap_extents().
->>>
 
 
->>> The only other caller of can_nocow_extent() is the direct IO write path,
+On 5.02.21 г. 1:21 ч., Boris Burkov wrote:
+> From: Chris Mason <clm@fb.com>
+> 
+> Add support for fsverity in btrfs. To support the generic interface in
+> fs/verity, we add two new item types in the fs tree for inodes with
+> verity enabled. One stores the per-file verity descriptor and the other
+> stores the Merkle tree data itself.
+> 
+> Verity checking is done at the end of IOs to ensure each page is checked
+> before it is marked uptodate.
+> 
+> Verity relies on PageChecked for the Merkle tree data itself to avoid
+> re-walking up shared paths in the tree. For this reason, we need to
+> cache the Merkle tree data. Since the file is immutable after verity is
+> turned on, we can cache it at an index past EOF.
+> 
+> Use the new inode compat_flags to store verity on the inode item, so
+> that we can enable verity on a file, then rollback to an older kernel
+> and still mount the file system and read the file.
+> 
+> Signed-off-by: Chris Mason <clm@fb.com>
+> ---
+>  fs/btrfs/Makefile               |   1 +
+>  fs/btrfs/btrfs_inode.h          |   1 +
+>  fs/btrfs/ctree.h                |  12 +-
+>  fs/btrfs/extent_io.c            |   5 +-
+>  fs/btrfs/file.c                 |   6 +
+>  fs/btrfs/inode.c                |  28 +-
+>  fs/btrfs/ioctl.c                |  14 +-
+>  fs/btrfs/super.c                |   1 +
+>  fs/btrfs/verity.c               | 527 ++++++++++++++++++++++++++++++++
+>  include/uapi/linux/btrfs_tree.h |   8 +
+>  10 files changed, 587 insertions(+), 16 deletions(-)
+>  create mode 100644 fs/btrfs/verity.c
+> 
 
-There is a third caller. check_can_nocow() also calls 
-can_nocow_extent(), which I missed before. Any idea where does it get to 
-know that extent is RO in the threads using check_can_nocow()? I have to 
-back out the RB for this reason for now.
+<snip>
 
+> diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
+> new file mode 100644
+> index 000000000000..6f3dbaee81b7
+> --- /dev/null
+> +++ b/fs/btrfs/verity.c
+> @@ -0,0 +1,527 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Facebook.  All rights reserved.
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/fs.h>
+> +#include <linux/slab.h>
+> +#include <linux/rwsem.h>
+> +#include <linux/xattr.h>
+> +#include <linux/security.h>
+> +#include <linux/posix_acl_xattr.h>
+> +#include <linux/iversion.h>
+> +#include <linux/fsverity.h>
+> +#include <linux/sched/mm.h>
+> +#include "ctree.h"
+> +#include "btrfs_inode.h"
+> +#include "transaction.h"
+> +#include "disk-io.h"
+> +#include "locking.h"
+> +
+> +/*
+> + * Just like ext4, we cache the merkle tree in pages after EOF in the page
+> + * cache.  Unlike ext4, we're storing these in dedicated btree items and
+> + * not just shoving them after EOF in the file.  This means we'll need to
+> + * do extra work to encrypt them once encryption is supported in btrfs,
+> + * but btrfs has a lot of careful code around i_size and it seems better
+> + * to make a new key type than try and adjust all of our expectations
+> + * for i_size.
+> + *
+> + * fs verity items are stored under two different key types on disk.
+> + *
+> + * The descriptor items:
+> + * [ inode objectid, BTRFS_VERITY_DESC_ITEM_KEY, offset ]
+> + *
+> + * These start at offset 0 and hold the fs verity descriptor.  They are opaque
+> + * to btrfs, we just read and write them as a blob for the higher level
+> + * verity code.  The most common size for this is 256 bytes.
+> + *
+> + * The merkle tree items:
+> + * [ inode objectid, BTRFS_VERITY_MERKLE_ITEM_KEY, offset ]
+> + *
+> + * These also start at offset 0, and correspond to the merkle tree bytes.
+> + * So when fsverity asks for page 0 of the merkle tree, we pull up one page
+> + * starting at offset 0 for this key type.  These are also opaque to btrfs,
+> + * we're blindly storing whatever fsverity sends down.
+> + *
+> + * This file is just reading and writing the various items whenever
+> + * fsverity needs us to.
+> + */
 
->>> btrfs_get_blocks_direct_write(), but that already checks if a block group
->>> is RO through the call to btrfs_inc_nocow_writers().
+The description of on-disk items should ideally be documented in
+https://github.com/btrfs/btrfs-dev-docs/blob/master/tree-items.txt
 
->>> In fact, after this
->>> change we end up optimizing the direct IO write path, since we no longer
->>> iterate the block groups rbtree twice, once with btrfs_extent_readonly(),
->>> through can_nocow_extent(), and once again with btrfs_inc_nocow_writers().
->>> This can save time and reduce contention on the lock that protects the
->>> rbtree (specially because it is a spinlock and not a read/write lock) on
->>> very large filesystems, with several thousands of allocated block groups.
->>>
->>> Fixes: ed46ff3d42378 ("Btrfs: support swap files")
->>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->>
->>    I am not sure about the optimization of direct IO part, but as such
->>    changes looks good.
+> +
+> +/*
+> + * drop all the items for this inode with this key_type.  Before
+> + * doing a verity enable we cleanup any existing verity items.
+> + *
+> + * This is also used to clean up if a verity enable failed half way
+> + * through
+> + */
+> +static int drop_verity_items(struct btrfs_inode *inode, u8 key_type)
+> +{
 
-Clarifying about the optimization part (for both buffered and direct IO) 
-- After patch 1, and patch 2, now we check on the RO extents after the 
-functions btrfs_cross_ref_exist(), and csum_exist_in_range(), both of 
-them have search_slot, whereas, before patch 1, and patch 2, we used to 
-fail early (if the extent is RO) and avoided the search_slot, so I am 
-not sure if there is optimization.
+You should ideally be using btrfs_truncate_inode_items as it also
+implements throttling policies and keeps everything in one place. If for
+any reason that interface is not sufficient I'd rather see it refactored
+and broken down in smaller pieces than just copying stuff around, this
+just increments the maintenance burden.
 
-Thanks, Anand
+<snip>
+
+> +
+> +/*
+> + * helper function to insert a single item.  Returns zero if all went
+> + * well
+> + */
+
+Also given that we are aiming at improving the overall state of the code
+please document each parameter properly. Also the name is somewhat
+terse. For information about the the preferred style please refer to
+
+https://btrfs.wiki.kernel.org/index.php/Development_notes#Coding_style_preferences
+and search for "Comments:"
+
+> +static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> +			   const char *src, u64 len)
+
+This function should be moved to inode-item.c as it seems generic
+enough. SOmething like write_inode_generic_bytes or something like that.
+
+<snip>
+
+> +
+> +/*
+> + * helper function to read items from the btree.  This returns the number
+> + * of bytes read or < 0 for errors.  We can return short reads if the
+> + * items don't exist on disk or aren't big enough to fill the desired length
+> + *
+> + * Since we're potentially copying into page cache, passing dest_page
+> + * will make us kmap_atomic that page and then use the kmap address instead
+> + * of dest.
+> + *
+> + * pass dest == NULL to find out the size of all the items up to len bytes
+> + * we'll just do the tree walk without copying anything
+> + */
+
+dittor re documenting function.
+
+> +static ssize_t read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> +			  char *dest, u64 len, struct page *dest_page)
+> +{
+> +	struct btrfs_path *path;
+> +	struct btrfs_root *root = inode->root;
+> +	struct extent_buffer *leaf;
+> +	struct btrfs_key key;
+> +	u64 item_end;
+> +	u64 copy_end;
+> +	u64 copied = 0;
+> +	u32 copy_offset;
+> +	unsigned long copy_bytes;
+> +	unsigned long dest_offset = 0;
+> +	void *data;
+> +	char *kaddr = dest;
+> +	int ret;
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	if (dest_page)
+> +		path->reada = READA_FORWARD;
+> +
+> +	key.objectid = btrfs_ino(inode);
+> +	key.offset = offset;
+> +	key.type = key_type;
+> +
+> +	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+> +	if (ret < 0) {
+> +		goto out;
+> +	} else if (ret > 0) {
+> +		ret = 0;
+> +		if (path->slots[0] == 0)
+> +			goto out;
+> +		path->slots[0]--;
+> +	}
+> +
+> +	while (len > 0) {
+> +		leaf = path->nodes[0];
+> +		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+> +
+> +		if (key.objectid != btrfs_ino(inode) ||
+> +		    key.type != key_type)
+> +			break;
+> +
+> +		item_end = btrfs_item_size_nr(leaf, path->slots[0]) + key.offset;
+> +
+> +		if (copied > 0) {
+> +			/*
+> +			 * once we've copied something, we want all of the items
+> +			 * to be sequential
+> +			 */
+> +			if (key.offset != offset)
+> +				break;
+> +		} else {
+> +			/*
+> +			 * our initial offset might be in the middle of an
+> +			 * item.  Make sure it all makes sense
+> +			 */
+> +			if (key.offset > offset)
+> +				break;
+> +			if (item_end <= offset)
+> +				break;
+> +		}
+> +
+> +		/* desc = NULL to just sum all the item lengths */
+
+nit: typo - dest instead of desc
+
+<snip>
+
+> +
+> +/*
+> + * fsverity calls this to ask us to setup the inode for enabling.  We
+> + * drop any existing verity items and set the in progress bit
+> + */
+> +static int btrfs_begin_enable_verity(struct file *filp)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	int ret;
+> +
+> +	if (test_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags))
+> +		return -EBUSY;
+> +
+> +	/*
+> +	 * ext4 adds the inode to the orphan list here, presumably because the
+> +	 * truncate done at orphan processing time will delete partial
+> +	 * measurements.  TODO: setup orphans
+> +	 */
+
+Any plans when orphan support is going to be implemented?
+
+> +	set_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
+> +	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
+> +	if (ret)
+> +		goto err;
+
+A slightly higher-level question:
+
+In drop_verity_items you are doing transaction-per-item, so what happens
+during a crash and only some of the items being deleted? Is this fine,
+presumably that'd make the file unreadable? I.e what should be the
+granule of atomicity when dealing with verity items - all or nothing or
+per-item is sufficient?
+
+> +
+> +	return 0;
+> +
+> +err:
+> +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
+> +	return ret;
+> +
+> +}
+> +
+> +/*
+> + * fsverity calls this when it's done with all of the pages in the file
+> + * and all of the merkle items have been inserted.  We write the
+> + * descriptor and update the inode in the btree to reflect it's new life
+> + * as a verity file
+> + */
+> +static int btrfs_end_enable_verity(struct file *filp, const void *desc,
+> +				  size_t desc_size, u64 merkle_tree_size)
+> +{
+> +	struct btrfs_trans_handle *trans;
+> +	struct inode *inode = file_inode(filp);
+> +	struct btrfs_root *root = BTRFS_I(inode)->root;
+> +	int ret;
+> +
+> +	if (desc != NULL) {
+
+Redundant check as the descriptor can never be null as per enable_verity.
+
+> +		/* write out the descriptor */
+> +		ret = write_key_bytes(BTRFS_I(inode),
+> +				      BTRFS_VERITY_DESC_ITEM_KEY, 0,
+> +				      desc, desc_size);
+> +		if (ret)
+> +			goto out;
+> +
+> +		/* update our inode flags to include fs verity */
+> +		trans = btrfs_start_transaction(root, 1);
+> +		if (IS_ERR(trans)) {
+> +			ret = PTR_ERR(trans);
+> +			goto out;
+> +		}
+> +		BTRFS_I(inode)->compat_flags |= BTRFS_INODE_VERITY;
+> +		btrfs_sync_inode_flags_to_i_flags(inode);
+> +		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
+> +		btrfs_end_transaction(trans);
+> +	}
+> +
+> +out:
+> +	if (desc == NULL || ret) {
+
+Just checking for ret is sufficient.
+
+> +		/* If we failed, drop all the verity items */
+> +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
+> +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
+> +	}
+> +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
+> +	return ret;
+> +}
+> +
+> +/*
+> + * fsverity does a two pass setup for reading the descriptor, in the first pass
+> + * it calls with buf_size = 0 to query the size of the descriptor,
+> + * and then in the second pass it actually reads the descriptor off
+> + * disk.
+> + */
+> +static int btrfs_get_verity_descriptor(struct inode *inode, void *buf,
+> +				       size_t buf_size)
+> +{
+> +	ssize_t ret = 0;
+> +
+> +	if (!buf_size) {
+
+nit: since buf_size is a numeric size checking for buf_size == 0 is more
+readable.
+
+> +		return read_key_bytes(BTRFS_I(inode),
+> +				     BTRFS_VERITY_DESC_ITEM_KEY,
+> +				     0, NULL, (u64)-1, NULL);
+> +	}
+> +
+> +	ret = read_key_bytes(BTRFS_I(inode),
+> +			     BTRFS_VERITY_DESC_ITEM_KEY, 0,
+> +			     buf, buf_size, NULL);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (ret != buf_size)
+> +		return -EIO;
+> +
+> +	return buf_size;
+> +}
+> +
+> +/*
+> + * reads and caches a merkle tree page.  These are stored in the btree,
+> + * but we cache them in the inode's address space after EOF.
+> + */
+> +static struct page *btrfs_read_merkle_tree_page(struct inode *inode,
+> +					       pgoff_t index,
+> +					       unsigned long num_ra_pages)
+> +{
+> +	struct page *p;
+> +	u64 start = index << PAGE_SHIFT;
+> +	unsigned long mapping_index;
+> +	ssize_t ret;
+> +	int err;
+> +
+> +	/*
+> +	 * the file is readonly, so i_size can't change here.  We jump
+> +	 * some pages past the last page to cache our merkles.  The goal
+> +	 * is just to jump past any hugepages that might be mapped in.
+> +	 */
+> +	mapping_index = (i_size_read(inode) >> PAGE_SHIFT) + 2048 + index;
+
+So what does this magic number 2048 mean, how was it derived? Perhaps
+give it a symbolic name either via a local const var or via a define,
+something like
+
+#define INODE_VERITY_EOF_OFFSET 2048 or something along those lines.
+
+If the file is RO then why do you need to add such a large offset, it's
+not clear what the hugepages issue is.
+
+<snip>
