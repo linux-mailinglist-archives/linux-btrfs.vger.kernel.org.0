@@ -2,240 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191DF311885
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Feb 2021 03:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58350311B43
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Feb 2021 06:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhBFCje (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Feb 2021 21:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhBFCdX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Feb 2021 21:33:23 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA53C03327C
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Feb 2021 17:57:51 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id t142so5298027wmt.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Feb 2021 17:57:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rkjnsn-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=M87ILczPV+TPGsVbbp9Eza7zJDPnh98rpo4/KGX1HTc=;
-        b=aAG1oMJWdNMmosNj56vJG/izGIBBzVtq7bNaKq82QBPlrE08/O8WiRpHr+WDCd4eN2
-         oNvq78lS0g5e0ffjY9fgR+Gf4HI4GDw32ET7bRbCaSLYka0fREyFuNZOn6eddEKGkEzK
-         E4MZdGMyKP43JA33BO0t9bfFwy6OuNgnNmS0wQ+Tkp32MnaRT5LANJPN06qm06bTuMdh
-         xLa8ZlKGVyjjxF6RIrtYJMoq6E+BA7TY58dSwk4BE8PdE86DQ82YkE0hg00d/6Kay6je
-         R3V55Yb/ynoZ7uHlhAfZKp07hgo7nkM0x7WkBgBrHgVMc9u2Kru/uJIwxC+lpg/3xC1V
-         KY5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=M87ILczPV+TPGsVbbp9Eza7zJDPnh98rpo4/KGX1HTc=;
-        b=owN9qjY6oLzFUUS3IJgK28mzNftMmUBlr1weY7DLJluEB/38/ss7jn9ZR+7RbvERiw
-         uj/qfDqcQkc3K0oGoyyFOhF4o9dvHdTTpxPoS7GazxEAAjLeYhSdR2FqsD19DZfeEETV
-         iOigm4dA+ErTSTLfzamRWWLGIuEWlZOv9+HXgp8855hrJVxUaxpeqkCron5rIo4Ee58J
-         jNP3dbF2Nu8/tOodsHS3vmMMpsC0xe4VyIf0gZE7D3AjqFXVID0KNFpirhl07XVHB/66
-         2CPsABJjhPnm/FCzdQWVmbGp7/UCuO3Igp6/MFGkemcC6kwPj6VliTMR60i4vC7cx5pg
-         IFFw==
-X-Gm-Message-State: AOAM530skIF3h593dX1ZIIyzzBjZKnSUo6A2NC7bPUXzuoTzVS7NoKc3
-        s6IfFr7iQYMmJzFZE2PjY9+8vuvwPDOetiXZqXuhyw==
-X-Google-Smtp-Source: ABdhPJzTw1pXzlWBRpe4PeVSl366r2Qc7oYIJ9Ey/Ldok179d7joKNZpTkQJI56UnuK/7+vhaW70ifMfrEYnjRWsB5c=
-X-Received: by 2002:a7b:cb45:: with SMTP id v5mr5629936wmj.58.1612576669597;
- Fri, 05 Feb 2021 17:57:49 -0800 (PST)
+        id S230046AbhBFFBd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 6 Feb 2021 00:01:33 -0500
+Received: from mail.mailmag.net ([5.135.159.181]:41970 "EHLO mail.mailmag.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230427AbhBFFBI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 6 Feb 2021 00:01:08 -0500
+Received: from authenticated-user (mail.mailmag.net [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mailmag.net (Postfix) with ESMTPSA id 70813EC0365;
+        Fri,  5 Feb 2021 20:00:25 -0900 (AKST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net; s=mail;
+        t=1612587625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YLiM6+HVOw3ecZqZNehdC7AaFLwnMH7AQAC1gnqs+FU=;
+        b=Mu7Kgk7ja7g04AobZHaDaQvoaxOSaY3J2uyvDXfhZ6p+iY+clzIUA9QZY97tVmBvHiFUW/
+        y/gl4aLr+sumJXfnHxhPBlKhcO/Z+/HEl8+26BckzZ6OR/ngL8VYkfgqovf0bb8npMIghW
+        BruA9PFNZCTmeviP8Q+Nvjzp1K3BzTw=
 MIME-Version: 1.0
-References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
- <8aa09a61-aa1c-5dcd-093f-ec096a38a7b5@gmx.com> <CAMj6ewO229vq6=s+T7GhUegwDADv4dzhqPiM0jo10QiKujvytA@mail.gmail.com>
- <684e89f3-666f-6ae6-5aa2-a4db350c1cd4@gmx.com> <CAMj6ewMqXLtrBQgTJuz04v3MBZ0W95fU4pT0jP6kFhuP830TuA@mail.gmail.com>
- <218f6448-c558-2551-e058-8a69caadcb23@gmx.com> <CAMj6ewPR8hVYmUSoNWVk6gZvy-HyKnmtMXexAr2f4VQU_7bbUw@mail.gmail.com>
- <3b2fe3d7-1919-d236-e6bb-483593287cc5@gmx.com> <CAMj6ewNDQFzXsvF5c1=raJc11iMvMKcHH=AbkUkrNeV2e3XGVg@mail.gmail.com>
- <CAMj6ewPiEvXbtHC1auSfRag5QGtYJxwH_Hvoi2t_18uDSxzm8w@mail.gmail.com>
- <CAMj6ewNjSs-_3akOquO1Zry5RBNEPqQWf7ZKjs8JOzTA7ZGZ7w@mail.gmail.com>
- <2abb2701-5dde-cd5d-dd25-084682313b11@gmx.com> <b2bbff7d-22d0-84c2-7749-ac9e27d4ab3d@gmx.com>
- <CAMj6ewOqCJTGjykDijun9_LWYELA=92HrE+KjGo-ehJTutR_+w@mail.gmail.com>
- <CAMj6ewP-NK3g1xzHNF+fKt6M+_W-ec29Sq+CBtwcb1dcqc7dNA@mail.gmail.com>
- <CAMj6ewPtDJdkQ=H3DO6BSPucdkqSoHOkeb-xgTd8mo+AaUWhkA@mail.gmail.com>
- <16d35c47-40c5-25a9-c2ba-f6aab00db8e6@gmx.com> <mtwofibp.fsf@damenly.su> <CAMj6ewNYSnFUFPER06qweZaypWC6qVHmUX7gYxRXO7Gbuw_16A@mail.gmail.com>
-In-Reply-To: <CAMj6ewNYSnFUFPER06qweZaypWC6qVHmUX7gYxRXO7Gbuw_16A@mail.gmail.com>
-From:   Erik Jensen <erikjensen@rkjnsn.net>
-Date:   Fri, 5 Feb 2021 17:57:38 -0800
-Message-ID: <CAMj6ewMSw+UzZHhEEN=rhxN8O3pN9gWA05usAodk2xX5+s-Qjw@mail.gmail.com>
-Subject: Re: "bad tree block start" when trying to mount on ARM
-To:     Su Yue <l@damenly.su>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Hugo Mills <hugo@carfax.org.uk>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Sat, 06 Feb 2021 05:00:24 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
+From:   "Joshua" <joshua@mailmag.net>
+Message-ID: <4ea56b2ba7077892079754c2449e923f@mailmag.net>
+Subject: Re: Large multi-device BTRFS array (usually) fails to mount on 
+ boot.
+To:     "Qu Wenruo" <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+In-Reply-To: <45064ba0-08e5-f311-1f9e-9a4ec62abaab@gmx.com>
+References: <45064ba0-08e5-f311-1f9e-9a4ec62abaab@gmx.com>
+ <e23a835842fa7ecf5b8877e818bc68ea@mailmag.net>
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net;
+        s=mail; t=1612587625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YLiM6+HVOw3ecZqZNehdC7AaFLwnMH7AQAC1gnqs+FU=;
+        b=N9sOtqlGduWgvkeHWB3oOCxLJ9i3u+2A6dQurtfoeohIzRPMgaA5y4Dp/2cNKsEPE7De8V
+        nG7wzTIf2Vu9ifvm0WeL0orBHlHBk4kXY/uLGe5IzoLNGbFPcdnjEXSZbDYjGI2WoEpfIM
+        yjFCe3E49tGt0tJ+/iCqXw6+T9rMWPs=
+ARC-Seal: i=1; s=mail; d=mailmag.net; t=1612587625; a=rsa-sha256; cv=none;
+        b=EeTXfxoFdwJb5z9718pfYE7RpXSVNaT78JFClwBLtPAQY6fHCcToS08XpiNpHTvoYLSR1h
+        Uvy0r0/Mc0xd+Luzw8shSrucmPELFrYFbH8JXGzU5taZY2hdODWUxvcil8vcGSu3wZLe/s
+        wxtHNuihHWd1yeVI3YqqhOVeC5PLrYM=
+ARC-Authentication-Results: i=1;
+        mail.mailmag.net;
+        auth=pass smtp.mailfrom=joshua@mailmag.net
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 10:16 PM Erik Jensen <erikjensen@rkjnsn.net> wrote:
-> On Sun, Jan 31, 2021 at 9:50 PM Su Yue <l@damenly.su> wrote:
-> > On Mon 01 Feb 2021 at 10:35, Qu Wenruo <quwenruo.btrfs@gmx.com>
-> > wrote:
-> > > On 2021/1/29 =E4=B8=8B=E5=8D=882:39, Erik Jensen wrote:
-> > >> On Mon, Jan 25, 2021 at 8:54 PM Erik Jensen
-> > >> <erikjensen@rkjnsn.net> wrote:
-> > >>> On Wed, Jan 20, 2021 at 1:08 AM Erik Jensen
-> > >>> <erikjensen@rkjnsn.net> wrote:
-> > >>>> On Wed, Jan 20, 2021 at 12:31 AM Qu Wenruo
-> > >>>> <quwenruo.btrfs@gmx.com> wrote:
-> > >>>>> On 2021/1/20 =E4=B8=8B=E5=8D=884:21, Qu Wenruo wrote:
-> > >>>>>> On 2021/1/19 =E4=B8=8B=E5=8D=885:28, Erik Jensen wrote:
-> > >>>>>>> On Mon, Jan 18, 2021 at 9:22 PM Erik Jensen
-> > >>>>>>> <erikjensen@rkjnsn.net>
-> > >>>>>>> wrote:
-> > >>>>>>>>
-> > >>>>>>>> On Mon, Jan 18, 2021 at 4:12 AM Erik Jensen
-> > >>>>>>>> <erikjensen@rkjnsn.net>
-> > >>>>>>>> wrote:
-> > >>>>>>>>>
-> > >>>>>>>>> The offending system is indeed ARMv7 (specifically a
-> > >>>>>>>>> Marvell ARMADA=C2=AE
-> > >>>>>>>>> 388), but I believe the Broadcom BCM2835 in my Raspberry
-> > >>>>>>>>> Pi is
-> > >>>>>>>>> actually ARMv6 (with hardware float support).
-> > >>>>>>>>
-> > >>>>>>>> Using NBD, I have verified that I receive the same error
-> > >>>>>>>> when
-> > >>>>>>>> attempting to mount the filesystem on my ARMv6 Raspberry
-> > >>>>>>>> Pi:
-> > >>>>>>>> [ 3491.339572] BTRFS info (device dm-4): disk space
-> > >>>>>>>> caching is enabled
-> > >>>>>>>> [ 3491.394584] BTRFS info (device dm-4): has skinny
-> > >>>>>>>> extents
-> > >>>>>>>> [ 3492.385095] BTRFS error (device dm-4): bad tree block
-> > >>>>>>>> start, want
-> > >>>>>>>> 26207780683776 have 3395945502747707095
-> > >>>>>>>> [ 3492.514071] BTRFS error (device dm-4): bad tree block
-> > >>>>>>>> start, want
-> > >>>>>>>> 26207780683776 have 3395945502747707095
-> > >>>>>>>> [ 3492.553599] BTRFS warning (device dm-4): failed to
-> > >>>>>>>> read tree root
-> > >>>>>>>> [ 3492.865368] BTRFS error (device dm-4): open_ctree
-> > >>>>>>>> failed
-> > >>>>>>>>
-> > >>>>>>>> The Raspberry Pi is running Linux 5.4.83.
-> > >>>>>>>>
-> > >>>>>>>
-> > >>>>>>> Okay, after some more testing, ARM seems to be irrelevant,
-> > >>>>>>> and 32-bit
-> > >>>>>>> is the key factor. On a whim, I booted up an i686, 5.8.14
-> > >>>>>>> kernel in a
-> > >>>>>>> VM, attached the drives via NBD, ran cryptsetup, tried to
-> > >>>>>>> mount, and=E2=80=A6
-> > >>>>>>> I got the exact same error message.
-> > >>>>>>>
-> > >>>>>> My educated guess is on 32bit platforms, we passed
-> > >>>>>> incorrect sector into
-> > >>>>>> bio, thus gave us garbage.
-> > >>>>>
-> > >>>>> To prove that, you can use bcc tool to verify it.
-> > >>>>> biosnoop can do that:
-> > >>>>> https://github.com/iovisor/bcc/blob/master/tools/biosnoop_example=
-.txt
-> > >>>>>
-> > >>>>> Just try mount the fs with biosnoop running.
-> > >>>>> With "btrfs ins dump-tree -t chunk <dev>", we can manually
-> > >>>>> calculate the
-> > >>>>> offset of each read to see if they matches.
-> > >>>>> If not match, it would prove my assumption and give us a
-> > >>>>> pretty good
-> > >>>>> clue to fix.
-> > >>>>>
-> > >>>>> Thanks,
-> > >>>>> Qu
-> > >>>>>
-> > >>>>>>
-> > >>>>>> Is this bug happening only on the fs, or any other btrfs
-> > >>>>>> can also
-> > >>>>>> trigger similar problems on 32bit platforms?
-> > >>>>>>
-> > >>>>>> Thanks,
-> > >>>>>> Qu
-> > >>>>
-> > >>>> I have only observed this error on this file system.
-> > >>>> Additionally, the
-> > >>>> error mounting with the NAS only started after I did a `btrfs
-> > >>>> replace`
-> > >>>> on all five 8TB drives using an x86_64 system. (Ironically, I
-> > >>>> did this
-> > >>>> with the goal of making it faster to use the filesystem on
-> > >>>> the NAS by
-> > >>>> re-encrypting the drives to use a cipher supported by my
-> > >>>> NAS's crypto
-> > >>>> accelerator.)
-> > >>>>
-> > >>>> Maybe this process of shuffling 40TB around caused some value
-> > >>>> in the
-> > >>>> filesystem to increment to the point that a calculation using
-> > >>>> it
-> > >>>> overflows on 32-bit systems?
-> > >>>>
-> > >>>> I should be able to try biosnoop later this week, and I'll
-> > >>>> report back
-> > >>>> with the results.
-> > >>>
-> > >>> Okay, I tried running biosnoop, but I seem to be running into
-> > >>> this
-> > >>> bug: https://github.com/iovisor/bcc/issues/3241 (That bug was
-> > >>> reported
-> > >>> for cpudist, but I'm seeing the same error when I try to run
-> > >>> biosnoop.)
-> > >>>
-> > >>> Anything else I can try?
-> > >>
-> > >> Is it possible to add printks to retrieve the same data?
-> > >>
-> > > Sorry for the late reply, busying testing subpage patchset. (And
-> > > unfortunately no much process).
-> > >
-> > > If bcc is not possible, you can still use ftrace events, but
-> > > unfortunately I didn't find good enough one. (In fact, the trace
-> > > events
-> > > for block layer is pretty limited).
-> > >
-> > > You can try to add printk()s in function blk_account_io_done()
-> > > to
-> > > emulate what's done in function trace_req_completion() of
-> > > biosnoop.
-> > >
-> > > The time delta is not important, we only need the device name,
-> > > sector
-> > > and length.
-> > >
-> >
-> > Tips: There are ftrace events called block:block_rq_issue and
-> > block:block_rq_complete to fetch those infomation. No need to
-> > add printk().
-> >
-> > >
-> > > Thanks,
-> > > Qu
-> >
->
-> Okay, here's the output of the trace:
-> https://gist.github.com/rkjnsn/4cf606874962b5a0284249b2f2e934f5
->
-> And here's the output dump-tree:
-> https://gist.github.com/rkjnsn/630b558eaf90369478d670a1cb54b40f
->
-> One important note is that ftrace only captured requests at the
-> underlying block device (nbd, in this case), not at the device mapper
-> level. The encryption header on these drives is 16 MiB, so the offset
-> reported in the trace will be 16777216 bytes larger than the offset
-> brtfs was actually trying to read at the time.
->
-> In case it's helpful, I believe this is the mapping of which
-> (encrypted) nbd device node in the trace corresponds to which
-> (decrypted) filesystem device:
-> 43,0    33c75e20-26f2-4328-a565-5ef3484832aa
-> 43,32   9bdfdb8f-abfb-47c5-90af-d360d754a958
-> 43,64   39a9463d-65f5-499b-bca8-dae6b52eb729
-> 43,96   f1174dea-ea10-42f2-96b4-4589a2980684
-> 43,128  e669d804-6ea2-4516-8536-1d266f88ebad
-
-What are the chances it's something simple like a long getting used
-somewhere in the code that should actually be a 64-bit int?
+February 3, 2021 4:56 PM, "Qu Wenruo" <quwenruo.btrfs@gmx.com> wrote:=0A=
+=0A> On 2021/2/4 =E4=B8=8A=E5=8D=885:54, joshua@mailmag.net wrote:=0A> =
+=0A>> Good Evening.=0A>> =0A>> I have a large BTRFS array, (14 Drives, ~1=
+00 TB RAW) which has been having problems mounting on=0A>> boot without t=
+iming out. This causes the system to drop to emergency mode. I am then ab=
+le to mount=0A>> the array in emergency mode and all data appears fine, b=
+ut upon reboot it fails again.=0A>> =0A>> I actually first had this probl=
+em around a year ago, and initially put considerable effort into=0A>> ext=
+ending the timeout in systemd, as I believed that to be the problem. Howe=
+ver, all the methods I=0A>> attempted did not work properly or caused the=
+ system to continue booting before the array was=0A>> mounted, causing al=
+l sorts of issues. Eventually, I was able to almost completely resolve it=
+ by=0A>> defragmenting the extent tree and subvolume tree for each subvol=
+ume. (btrfs fi defrag=0A>> /mountpoint/subvolume/) This seemed to reduce =
+the time required to mount, and made it mount on boot=0A>> the majority o=
+f the time.=0A>> =0A>> Recently I expanded the array yet again by adding =
+another drive, (and some more data) and now I am=0A>> having the same iss=
+ue again. I've posted the relevant entries from my dmesg, as well as some=
+=0A>> information on my array and system below. I ran a defrag as mention=
+ed above on each subvolume, and=0A>> was able to get the system to boot s=
+uccessfully. Any ideas on a more reliable and permanent=0A>> solution thi=
+s this? Thanks much!=0A>> =0A>> dmesg entries upon boot:=0A>> [ 22.775439=
+] BTRFS info (device sdh): use lzo compression, level 0=0A>> [ 22.775441]=
+ BTRFS info (device sdh): using free space tree=0A>> [ 22.775442] BTRFS i=
+nfo (device sdh): has skinny extents=0A>> [ 124.250554] BTRFS error (devi=
+ce sdh): open_ctree failed=0A>> =0A>> dmesg entries after running 'mount =
+-a' in emergency mode:=0A>> [ 178.317339] BTRFS info (device sdh): force =
+zstd compression, level 2=0A>> [ 178.317342] BTRFS info (device sdh): usi=
+ng free space tree=0A>> [ 178.317343] BTRFS info (device sdh): has skinny=
+ extents=0A>> =0A>> uname -a:=0A>> Linux HOSTNAME 5.10.0-2-amd64 #1 SMP D=
+ebian 5.10.9-1 (2021-01-20) x86-64 GNU/Linux=0A>> =0A>> btrfs --version:=
+=0A>> btrfs-progs v5.10=0A>> =0A>> btrfs fi show /mountpoint:=0A>> Label:=
+ 'DATA' uuid: {snip}=0A>> Total devices 14 FS bytes used 41.94TiB=0A>> de=
+vid 1 size 2.73TiB used 2.46TiB path /dev/sdh=0A>> devid 2 size 7.28TiB u=
+sed 6.87TiB path /dev/sdm=0A>> devid 3 size 2.73TiB used 2.46TiB path /de=
+v/sdk=0A>> devid 4 size 9.10TiB used 8.57TiB path /dev/sdj=0A>> devid 5 s=
+ize 9.10TiB used 8.57TiB path /dev/sde=0A>> devid 6 size 9.10TiB used 8.5=
+7TiB path /dev/sdn=0A>> devid 7 size 7.28TiB used 4.65TiB path /dev/sdc=
+=0A>> devid 9 size 9.10TiB used 8.57TiB path /dev/sdf=0A>> devid 10 size =
+2.73TiB used 2.21TiB path /dev/sdl=0A>> devid 12 size 2.73TiB used 2.20Ti=
+B path /dev/sdg=0A>> devid 13 size 9.10TiB used 8.57TiB path /dev/sdd=0A>=
+> devid 15 size 7.28TiB used 6.75TiB path /dev/sda=0A>> devid 16 size 7.2=
+8TiB used 6.75TiB path /dev/sdi=0A>> devid 17 size 7.28TiB used 6.75TiB p=
+ath /dev/sdb=0A> =0A> With such a large array, the extent tree is conside=
+rably large.=0A> =0A> And that's causing the mount time problem, as at mo=
+unt we need to load=0A> each block group item into memory.=0A> When exten=
+t tree goes large, the read is mostly random read which is=0A> never a go=
+od thing for HDD.=0A> =0A> I was pushing skinny block group tree for btrf=
+s, which arrange block=0A> group items into a very compact tree, just lik=
+e chunk tree.=0A> =0A> This should greatly improve the mount performance,=
+ but there are several=0A> problems:=0A> - The feature is not yet merged=
+=0A> - The feature needs to convert existing fs to the new tree=0A> For y=
+our fs, it may take quite some time=0A> =0A> So unfortunately, no good sh=
+ort term solution yet.=0A> =0A> THanks,=0A> Qu=0A=0AThanks for the inform=
+ation, that's more or less what I was wondering, but didn't really know.=
+=0A=0ALuckily the solution proposed by Graham appears to be working, and =
+'solved' the problem for me, allowing my system to boot reliably.=0A=0ATh=
+e only remaining issue is the annoyance of boot times (mount times) being=
+ so long, but luckily that's not a very big deal for my situation, and I =
+don't need to reboot (mount) very frequently.=0A=0A=0AThanks,=0A--Joshua =
+Villwock=0A=0A=0A>> btrfs fi usage /mountpoint:=0A>> Overall:=0A>> Device=
+ size: 92.78TiB=0A>> Device allocated: 83.96TiB=0A>> Device unallocated: =
+8.83TiB=0A>> Device missing: 0.00B=0A>> Used: 83.94TiB=0A>> Free (estimat=
+ed): 4.42TiB (min: 2.95TiB)=0A>> Free (statfs, df): 3.31TiB=0A>> Data rat=
+io: 2.00=0A>> Metadata ratio: 3.00=0A>> Global reserve: 512.00MiB (used: =
+0.00B)=0A>> Multiple profiles: no=0A>> =0A>> Data,RAID1: Size:41.88TiB, U=
+sed:41.877TiB (99.99%)=0A>> {snip}=0A>> =0A>> Metadata,RAID1C3: Size:68Gi=
+B, Used:63.79GiB (93.81%)=0A>> {snip}=0A>> =0A>> System,RAID1C3: Size:32M=
+iB, Used:6.69MiB (20.90%)=0A>> {snip}=0A>> =0A>> Unallocated:=0A>> {snip}
