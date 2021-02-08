@@ -2,18 +2,18 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40DB313762
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Feb 2021 16:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F81731378A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Feb 2021 16:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbhBHPYk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Feb 2021 10:24:40 -0500
-Received: from verein.lst.de ([213.95.11.211]:41777 "EHLO verein.lst.de"
+        id S233408AbhBHP1c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Feb 2021 10:27:32 -0500
+Received: from verein.lst.de ([213.95.11.211]:41809 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233681AbhBHPUF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:20:05 -0500
+        id S233682AbhBHPZR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Feb 2021 10:25:17 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id B592868AFE; Mon,  8 Feb 2021 16:19:20 +0100 (CET)
-Date:   Mon, 8 Feb 2021 16:19:20 +0100
+        id 3C0C868AFE; Mon,  8 Feb 2021 16:24:31 +0100 (CET)
+Date:   Mon, 8 Feb 2021 16:24:30 +0100
 From:   Christoph Hellwig <hch@lst.de>
 To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
 Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
@@ -21,45 +21,77 @@ Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
         darrick.wong@oracle.com, dan.j.williams@intel.com,
         willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
         linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
-Message-ID: <20210208151920.GE12872@lst.de>
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com> <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com>
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
+Subject: Re: [PATCH 6/7] fs/xfs: Handle CoW for fsdax write() path
+Message-ID: <20210208152430.GF12872@lst.de>
+References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com> <20210207170924.2933035-7-ruansy.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com>
+In-Reply-To: <20210207170924.2933035-7-ruansy.fnst@cn.fujitsu.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 01:09:22AM +0800, Shiyang Ruan wrote:
-> With dax we cannot deal with readpage() etc. So, we create a
-> funciton callback to perform the file data comparison and pass
+> --- a/fs/xfs/xfs_bmap_util.c
+> +++ b/fs/xfs/xfs_bmap_util.c
+> @@ -977,10 +977,14 @@ xfs_free_file_space(
+>  	if (offset + len > XFS_ISIZE(ip))
+>  		len = XFS_ISIZE(ip) - offset;
+>  	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
+> -			&xfs_buffered_write_iomap_ops);
+> +		  IS_DAX(VFS_I(ip)) ?
+> +		  &xfs_direct_write_iomap_ops : &xfs_buffered_write_iomap_ops);
+>  	if (error)
+>  		return error;
+> +	if (xfs_is_reflink_inode(ip))
+> +		xfs_reflink_end_cow(ip, offset, len);
 
-s/funciton/function/g
+Maybe we need to add (back) and xfs_zero_range helper that encapsulates
+the details?
 
-> +#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+>  	trace_xfs_file_dax_write(ip, count, pos);
+>  	ret = dax_iomap_rw(iocb, from, &xfs_direct_write_iomap_ops);
+> -	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
+> -		i_size_write(inode, iocb->ki_pos);
+> -		error = xfs_setfilesize(ip, pos, ret);
+> +	if (ret > 0) {
+> +		if (iocb->ki_pos > i_size_read(inode)) {
+> +			i_size_write(inode, iocb->ki_pos);
+> +			error = xfs_setfilesize(ip, pos, ret);
+> +		}
+> +		if (xfs_is_cow_inode(ip))
+> +			xfs_reflink_end_cow(ip, pos, ret);
 
-This should use the existing min or min_t helpers.
+Nitpick, but I'd just goto out for ret <= 0 to reduce the indentation a
+bit.
 
+>  	}
+>  out:
+>  	xfs_iunlock(ip, iolock);
+> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> index 7b9ff824e82d..d6d4cc0f084e 100644
+> --- a/fs/xfs/xfs_iomap.c
+> +++ b/fs/xfs/xfs_iomap.c
+> @@ -765,13 +765,14 @@ xfs_direct_write_iomap_begin(
+>  		goto out_unlock;
+>  
+>  	if (imap_needs_cow(ip, flags, &imap, nimaps)) {
+> +		bool need_convert = flags & IOMAP_DIRECT || IS_DAX(inode);
+>  		error = -EAGAIN;
+>  		if (flags & IOMAP_NOWAIT)
+>  			goto out_unlock;
+>  
+>  		/* may drop and re-acquire the ilock */
+>  		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
+> -				&lockmode, flags & IOMAP_DIRECT);
+> +				&lockmode, need_convert);
 
->  int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
->  				  struct file *file_out, loff_t pos_out,
-> -				  loff_t *len, unsigned int remap_flags)
-> +				  loff_t *len, unsigned int remap_flags,
-> +				  compare_range_t compare_range_fn)
+Why not:
 
-Can we keep generic_remap_file_range_prep as-is, and add a new
-dax_remap_file_range_prep, both sharing a low-level
-__generic_remap_file_range_prep implementation?  And for that
-implementation I'd also go for classic if/else instead of the function
-pointer.
+		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
+				&lockmode,
+				(flags & IOMAP_DIRECT) || IS_DAX(inode));
 
-> +extern int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> +					 struct inode *dest, loff_t destoff,
-> +					 loff_t len, bool *is_same);
-
-no need for the extern.
+?
