@@ -2,81 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB1B314C34
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 10:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDF4314E75
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 12:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhBIJz6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Feb 2021 04:55:58 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:8552 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229963AbhBIJxt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Feb 2021 04:53:49 -0500
-X-IronPort-AV: E=Sophos;i="5.81,164,1610380800"; 
-   d="scan'208";a="104368304"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 09 Feb 2021 17:46:18 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 7E31B4CE6F81;
-        Tue,  9 Feb 2021 17:46:13 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 9 Feb
- 2021 17:46:12 +0800
-Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
-        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
-        <david@fromorbit.com>, <rgoldwyn@suse.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
- <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com>
- <20210208151920.GE12872@lst.de>
- <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com>
- <20210209093438.GA630@lst.de>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
-Date:   Tue, 9 Feb 2021 17:46:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230188AbhBILvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Feb 2021 06:51:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229623AbhBILt6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Feb 2021 06:49:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2693D64E3B
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Feb 2021 11:49:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612871355;
+        bh=Ix8sK+v3/nrZ5dnsB2JDucVLA4p8ek+mQnSiOO/mcxU=;
+        h=From:To:Subject:Date:From;
+        b=lD3viqVq5L8bLcfSj47tBZn7EsnLg1iD3qOHsx+QFdXu99jaiWtmH+BidRkIo88GD
+         7xWu4hpLL9d+laqittLjTOM20u8PH20isM6U0SdlqJXSECg9ijvAYiKh3XUCaaC5/u
+         A1sbWSfyHhInwn+cWNWKjHAHlANiMl4l5DyYtilX/a9PImPsPUOghNTsClfBUt4OVK
+         nOW/6+hNFyk95unHkJ7XcIRGkT9Osy8TB2R8P9aeBoJJJIIxqW5eLEFHCSx9NgviVe
+         ICSwbP4cLy4mh+zENjtojYzSyy8sb45FB+zlFCrvdob7wOKeXngDwkpvxZaPdy7ARd
+         RL5v4v0qtXqKw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: remove workaround for setting capabilities in the receive command
+Date:   Tue,  9 Feb 2021 11:49:12 +0000
+Message-Id: <e35e5d556cd5964a4ab80bdd997856ee5be8b888.1612870936.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210209093438.GA630@lst.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 7E31B4CE6F81.AEF5B
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
+We had a few bugs on the kernel side of send/receive where capabilities
+ended up being lost after receiving a send stream. They all stem from the
+fact that the kernel used to send all xattrs before issuing the chown
+command, and the later clears any existing capabilities in a file or
+directory.
 
-On 2021/2/9 下午5:34, Christoph Hellwig wrote:
-> On Tue, Feb 09, 2021 at 05:15:13PM +0800, Ruan Shiyang wrote:
->> The dax dedupe comparison need the iomap_ops pointer as argument, so my
->> understanding is that we don't modify the argument list of
->> generic_remap_file_range_prep(), but move its code into
->> __generic_remap_file_range_prep() whose argument list can be modified to
->> accepts the iomap_ops pointer.  Then it looks like this:
-> 
-> I'd say just add the iomap_ops pointer to
-> generic_remap_file_range_prep and do away with the extra wrappers.  We
-> only have three callers anyway.
+Initially a workaround was added to btrfs-progs' receive command, in commit
+123a2a085027e ("btrfs-progs: receive: restore capabilities after chown"),
+and that fixed some instances of the problem. More recently, other instances
+of the problem were found, a proper fix for the kernel was made, which fixes
+the root problem by making send always emit the sexattr command for setting
+capabilities after issuing a chown command. This was done in kernel commit
+89efda52e6b693 ("btrfs: send: emit file capabilities after chown"), which
+landed in kernel 5.8.
 
-OK.
+However, the workaround on the receive command now causes us to incorrectly
+set a capability on a file that should not have it, because it assumes all
+setxattr commands for a file always comes before a chown.
 
+Example reproducer:
 
---
-Thanks,
-Ruan Shiyang.
-> 
-> 
+  $ cat send-caps.sh
+  #!/bin/bash
 
+  DEV1=/dev/sdh
+  DEV2=/dev/sdi
+
+  MNT1=/mnt/sdh
+  MNT2=/mnt/sdi
+
+  mkfs.btrfs -f $DEV1 > /dev/null
+  mkfs.btrfs -f $DEV2 > /dev/null
+
+  mount $DEV1 $MNT1
+  mount $DEV2 $MNT2
+
+  touch $MNT1/foo
+  touch $MNT1/bar
+  setcap cap_net_raw=p $MNT1/foo
+
+  btrfs subvolume snapshot -r $MNT1 $MNT1/snap1
+
+  btrfs send $MNT1/snap1 | btrfs receive $MNT2
+
+  echo
+  echo "capabilities on destination filesystem:"
+  echo
+  getcap $MNT2/snap1/foo
+  getcap $MNT2/snap1/bar
+
+  umount $MNT1
+  umount $MNT2
+
+When running the test script, we can see that both files foo and bar get
+the capability set, when only file foo should have it:
+
+  $ ./send-caps.sh
+  Create a readonly snapshot of '/mnt/sdh' in '/mnt/sdh/snap1'
+  At subvol /mnt/sdh/snap1
+  At subvol snap1
+
+  capabilities on destination filesystem:
+
+  /mnt/sdi/snap1/foo cap_net_raw=p
+  /mnt/sdi/snap1/bar cap_net_raw=p
+
+Since the kernel fix was backported to all currently supported stable
+releases (5.10.x, 5.4.x, 4.19.x, 4.14.x, 4.9.x and 4.4.x), remove the
+workaround from receive. Having such a workaround relying on the order
+of commands in a send stream is always troublesome and doomed to break
+one day.
+
+A test case for fstests will come soon.
+
+Reported-by: Richard Brown <rbrown@suse.de>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ cmds/receive.c | 49 -------------------------------------------------
+ 1 file changed, 49 deletions(-)
+
+diff --git a/cmds/receive.c b/cmds/receive.c
+index 2aaba3ff..b4099bc4 100644
+--- a/cmds/receive.c
++++ b/cmds/receive.c
+@@ -77,14 +77,6 @@ struct btrfs_receive
+ 	struct subvol_uuid_search sus;
+ 
+ 	int honor_end_cmd;
+-
+-	/*
+-	 * Buffer to store capabilities from security.capabilities xattr,
+-	 * usually 20 bytes, but make same room for potentially larger
+-	 * encodings. Must be set only once per file, denoted by length > 0.
+-	 */
+-	char cached_capabilities[64];
+-	int cached_capabilities_len;
+ };
+ 
+ static int finish_subvol(struct btrfs_receive *rctx)
+@@ -825,22 +817,6 @@ static int process_set_xattr(const char *path, const char *name,
+ 		goto out;
+ 	}
+ 
+-	if (strcmp("security.capability", name) == 0) {
+-		if (bconf.verbose >= 4)
+-			fprintf(stderr, "set_xattr: cache capabilities\n");
+-		if (rctx->cached_capabilities_len)
+-			warning("capabilities set multiple times per file: %s",
+-				full_path);
+-		if (len > sizeof(rctx->cached_capabilities)) {
+-			error("capabilities encoded to %d bytes, buffer too small",
+-				len);
+-			ret = -E2BIG;
+-			goto out;
+-		}
+-		rctx->cached_capabilities_len = len;
+-		memcpy(rctx->cached_capabilities, data, len);
+-	}
+-
+ 	if (bconf.verbose >= 3) {
+ 		fprintf(stderr, "set_xattr %s - name=%s data_len=%d "
+ 				"data=%.*s\n", path, name, len,
+@@ -961,23 +937,6 @@ static int process_chown(const char *path, u64 uid, u64 gid, void *user)
+ 		error("chown %s failed: %m", path);
+ 		goto out;
+ 	}
+-
+-	if (rctx->cached_capabilities_len) {
+-		if (bconf.verbose >= 3)
+-			fprintf(stderr, "chown: restore capabilities\n");
+-		ret = lsetxattr(full_path, "security.capability",
+-				rctx->cached_capabilities,
+-				rctx->cached_capabilities_len, 0);
+-		memset(rctx->cached_capabilities, 0,
+-				sizeof(rctx->cached_capabilities));
+-		rctx->cached_capabilities_len = 0;
+-		if (ret < 0) {
+-			ret = -errno;
+-			error("restoring capabilities %s: %m", path);
+-			goto out;
+-		}
+-	}
+-
+ out:
+ 	return ret;
+ }
+@@ -1155,14 +1114,6 @@ static int do_receive(struct btrfs_receive *rctx, const char *tomnt,
+ 		goto out;
+ 
+ 	while (!end) {
+-		if (rctx->cached_capabilities_len) {
+-			if (bconf.verbose >= 4)
+-				fprintf(stderr, "clear cached capabilities\n");
+-			memset(rctx->cached_capabilities, 0,
+-					sizeof(rctx->cached_capabilities));
+-			rctx->cached_capabilities_len = 0;
+-		}
+-
+ 		ret = btrfs_read_and_process_send_stream(r_fd, &send_ops,
+ 							 rctx,
+ 							 rctx->honor_end_cmd,
+-- 
+2.28.0
 
