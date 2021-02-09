@@ -2,33 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814FA31552F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 18:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAB53155BA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 19:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhBIRgl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Feb 2021 12:36:41 -0500
-Received: from mail.nic.cz ([217.31.204.67]:34870 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232938AbhBIRfJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:35:09 -0500
+        id S232921AbhBIST3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Feb 2021 13:19:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233157AbhBISRu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Feb 2021 13:17:50 -0500
+X-Greylist: delayed 1860 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 Feb 2021 10:05:26 PST
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BEBC06178B
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Feb 2021 10:05:26 -0800 (PST)
 Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:8982:ed8c:62b1:c0c8])
-        by mail.nic.cz (Postfix) with ESMTPSA id 80FD413FD0E;
-        Tue,  9 Feb 2021 18:34:23 +0100 (CET)
+        by mail.nic.cz (Postfix) with ESMTPSA id A4DAC140A94;
+        Tue,  9 Feb 2021 19:05:24 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1612892063; bh=EBMx+zpY74gnPIYMRVud8JLa1FxIsNwqSbrosdN1yH0=;
+        t=1612893924; bh=MrBhBwBEB0/woWhybRYmQ/Xb97qPyqOd18InPxK+o3A=;
         h=From:To:Date;
-        b=lsG7ifGg2tm2PJos9YY6D/nDjT0qr2ZEZtFz02ZjPFlTYCvYrPRCKqK7oGO6/hdp8
-         Q7YINoMPLgYl0eIt4Ouq5uDDqLM+PhTKvU1tEP8WrM8xFpnGsxWlJhfq/vssFmdGfe
-         p4ScNsQMckdbthgfvIx+qvV9o1zjQz7a0GeTbS4Y=
+        b=MLXKSdk95kv3QYSloK4pUu9e2Pe56OXsEN6yVZcA1PYP4Tvi8GxXtTUb/cOqtOHoR
+         RThDUJRZA3Mx2IH3gAUwJJPfpnJQVKTMze4UAwE5NOUqcwWediE0ZYjvB8BYSO8cT1
+         aA+rjht7lhc7SVUFoNr9vdAlAfFAtSuhvH+MPQ5Y=
 From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
-To:     linux-btrfs@vger.kernel.org
-Cc:     u-boot@lists.denx.de,
+To:     u-boot@lists.denx.de
+Cc:     linux-btrfs@vger.kernel.org,
         =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
         David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
         Tom Rini <trini@konsulko.com>
-Subject: [PATCH btrfs-progs] btrfs-progs: do not fail when offset of a ROOT_ITEM is not -1
-Date:   Tue,  9 Feb 2021 18:34:06 +0100
-Message-Id: <20210209173406.16691-1-marek.behun@nic.cz>
+Subject: [PATCH u-boot 1/2] fs: btrfs: skip xattrs in directory listing
+Date:   Tue,  9 Feb 2021 19:05:07 +0100
+Message-Id: <20210209180508.22132-1-marek.behun@nic.cz>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +47,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When the btrfs_read_fs_root() function is searching a ROOT_ITEM with
-location key offset other than -1, it currently fails via BUG_ON.
-
-The offset can have other value than -1, though. This can happen for
-example if a subvolume is renamed:
-
-  $ btrfs subvolume create X && sync
-  Create subvolume './X'
-  $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: X$
-        location key (270 ROOT_ITEM 18446744073709551615) type DIR
-        transid 283 data_len 0 name_len 1
-        name: X
-  $ mv X Y && sync
-  $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: Y$
-        location key (270 ROOT_ITEM 0) type DIR
-        transid 285 data_len 0 name_len 1
-        name: Y
-
-As can be seen the offset changed from -1ULL to 0.
-
-Do not fail in this case.
+Skip xattrs in directory listing. U-Boot filesystem drivers do not list
+xattrs.
 
 Signed-off-by: Marek Behún <marek.behun@nic.cz>
 Cc: David Sterba <dsterba@suse.com>
 Cc: Qu Wenruo <wqu@suse.com>
 Cc: Tom Rini <trini@konsulko.com>
 ---
- kernel-shared/disk-io.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/btrfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 6f584986..ba8ffd8b 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -752,8 +752,7 @@ struct btrfs_root *btrfs_read_fs_root(struct btrfs_fs_info *fs_info,
- 		return fs_info->free_space_root ? fs_info->free_space_root :
- 						ERR_PTR(-ENOENT);
+diff --git a/fs/btrfs/btrfs.c b/fs/btrfs/btrfs.c
+index 346b2c4341..6b4c5feb53 100644
+--- a/fs/btrfs/btrfs.c
++++ b/fs/btrfs/btrfs.c
+@@ -29,7 +29,6 @@ static int show_dir(struct btrfs_root *root, struct extent_buffer *eb,
+ 		[BTRFS_FT_FIFO]		= "FIFO",
+ 		[BTRFS_FT_SOCK]		= "SOCK",
+ 		[BTRFS_FT_SYMLINK]	= "SYMLINK",
+-		[BTRFS_FT_XATTR]	= "XATTR"
+ 	};
+ 	u8 type = btrfs_dir_type(eb, di);
+ 	char namebuf[BTRFS_NAME_LEN];
+@@ -38,6 +37,10 @@ static int show_dir(struct btrfs_root *root, struct extent_buffer *eb,
+ 	time_t mtime;
+ 	int ret = 0;
  
--	BUG_ON(location->objectid == BTRFS_TREE_RELOC_OBJECTID ||
--	       location->offset != (u64)-1);
-+	BUG_ON(location->objectid == BTRFS_TREE_RELOC_OBJECTID);
++	/* skip XATTRs in directory listing */
++	if (type == BTRFS_FT_XATTR)
++		return 0;
++
+ 	btrfs_dir_item_key_to_cpu(eb, di, &key);
  
- 	node = rb_search(&fs_info->fs_root_tree, (void *)&objectid,
- 			 btrfs_fs_roots_compare_objectids, NULL);
+ 	if (key.type == BTRFS_ROOT_ITEM_KEY) {
 -- 
 2.26.2
 
