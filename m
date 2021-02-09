@@ -2,103 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E873315E2B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 05:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251C9315E51
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 05:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhBJEZk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Feb 2021 23:25:40 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:16556 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229684AbhBJEZj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Feb 2021 23:25:39 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Db69h3nZ6z2d;
-        Wed, 10 Feb 2021 05:24:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1612931096; bh=QHxzW/XJK3U0oNQjGYevmIuaZObRFPo3K4Pd9Nk0lHM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bMcD2oq404OShRFj1fd4CTBBo5rmZXa0Z2HJCX6iLLEpoAzr7mPzW6q2yYUOqp8a0
-         rwtNsp5kkM2LBtyWaNUr8PAkSGFoWjtA5qrhlhj+FLMZbM3Uw7tyb8nQ01obvBBnZu
-         5XSOiQh9WaizlWsTs+PpQY03kyv/NruzHjQKxmV9oR9nMlbH0x9Z9fB6vsDTJwETuZ
-         B0BAtkGWsp24Y1Ak/mZ1Yt/2DsWbb7oxyPt8cNrfUV4d9JDB1gmfK31/f1J79cF4/c
-         kCBTgjCHgniUGBH4eptG9XW4+dd3pL8vbk7ncoMUIMHAv+IDLbKH4AIP9klFperz2w
-         1Az1SUNujMmzg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Wed, 10 Feb 2021 05:24:28 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Michal Rostecki <mrostecki@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210210042428.GC12086@qmqm.qmqm.pl>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
+        id S230331AbhBJEsM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 9 Feb 2021 23:48:12 -0500
+Received: from spam.auroraoh.com ([24.56.89.101]:44954 "EHLO
+        barracuda.auroraoh.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230305AbhBJEsK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Feb 2021 23:48:10 -0500
+X-ASG-Debug-ID: 1612932423-112c0d6a799c4e0001-6jHSXT
+Received: from COASRV-MAIL2.auroraoh.loc (coasrv-mail2.auroraoh.loc [10.3.1.15]) by barracuda.auroraoh.com with ESMTP id M960RLKO2n5aF262; Tue, 09 Feb 2021 23:47:03 -0500 (EST)
+X-Barracuda-Envelope-From: JanuskaD@auroraoh.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.3.1.15
+Received: from [172.20.10.5] (197.210.29.8) by COASRV-MAIL2.auroraoh.loc
+ (10.3.1.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 9 Feb 2021
+ 02:44:01 -0500
+Content-Type: text/plain; charset="iso-8859-1"
+X-Barracuda-RBL-Trusted-Forwarder: 172.20.10.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210209203041.21493-7-mrostecki@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: We are a registered Private Loan Investment Company in the United Kingdom,
+ we also registered with the Turkish British Chamber of Commerce and Industry
+ (TBCCI) we have operations in Europe and Asia.
+To:     Recipients <januskad@auroraoh.com>
+X-ASG-Orig-Subj: We are a registered Private Loan Investment Company in the United Kingdom,
+ we also registered with the Turkish British Chamber of Commerce and Industry
+ (TBCCI) we have operations in Europe and Asia.
+From:   <januskad@auroraoh.com>
+Date:   Tue, 9 Feb 2021 15:43:15 +0800
+Reply-To: <cfolimiited@gmail.com>
+X-Priority: 1 (High)
+X-Antivirus: Avast (VPS 210207-2, 02/07/2021), Outbound message
+X-Antivirus-Status: Clean
+Message-ID: <67115bd0-7ba7-4a38-8269-fd8c74a9c433@COASRV-MAIL2.auroraoh.loc>
+X-Originating-IP: [197.210.29.8]
+X-ClientProxiedBy: COASRV-MAIL3.auroraoh.loc (10.3.1.13) To
+ COASRV-MAIL2.auroraoh.loc (10.3.1.15)
+X-Barracuda-Connect: coasrv-mail2.auroraoh.loc[10.3.1.15]
+X-Barracuda-Start-Time: 1612932423
+X-Barracuda-URL: https://10.3.1.12:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at auroraoh.com
+X-Barracuda-Scan-Msg-Size: 755
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 1.61
+X-Barracuda-Spam-Status: No, SCORE=1.61 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=5.0 tests=BSF_SC0_SA609_NRN, BSF_SC0_SA912_RP_FR, BSF_SC0_SA_TO_FROM_ADDR_MATCH, NO_REAL_NAME
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.87877
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+        0.00 NO_REAL_NAME           From: does not include a real name
+        0.01 BSF_SC0_SA912_RP_FR    Custom Rule BSF_SC0_SA912_RP_FR
+        0.50 BSF_SC0_SA_TO_FROM_ADDR_MATCH Sender Address Matches Recipient
+                                   Address
+        1.10 BSF_SC0_SA609_NRN      Custom Rule SA609_NRN
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 09:30:40PM +0100, Michal Rostecki wrote:
-[...]
-> For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
-> (429MB/s) performance. Adding the penalty value 1 resulted in a
-> performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
-> was making the performance even worse.
-> 
-> For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
-> rotational disks resulted in the best performance - 541MiB/s (567MB/s).
-> Not adding any value and increasing the value was making the performance
-> worse.
-> 
-> Adding penalty value to non-rotational disks was always decreasing the
-> performance, which motivated setting it as 0 by default. For the purpose
-> of testing, it's still configurable.
-[...]
-> +	bdev = map->stripes[mirror_index].dev->bdev;
-> +	inflight = mirror_load(fs_info, map, mirror_index, stripe_offset,
-> +			       stripe_nr);
-> +	queue_depth = blk_queue_depth(bdev->bd_disk->queue);
-> +
-> +	return inflight < queue_depth;
-[...]
-> +	last_mirror = this_cpu_read(*fs_info->last_mirror);
-[...]
-> +	for (i = last_mirror; i < first + num_stripes; i++) {
-> +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> +					    stripe_nr)) {
-> +			preferred_mirror = i;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	for (i = first; i < last_mirror; i++) {
-> +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> +					    stripe_nr)) {
-> +			preferred_mirror = i;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	preferred_mirror = last_mirror;
-> +
-> +out:
-> +	this_cpu_write(*fs_info->last_mirror, preferred_mirror);
+We are seeking for beneficiaries who source for fund to expand/relocating their business interest abroad. We are ready to fund projects outside Turkey and United Kingdom in the form of Soft Loan. We grant loans to both corporate and private entities at a low interest rate of 2% R.O.I per annul.
 
-This looks like it effectively decreases queue depth for non-last
-device. After all devices are filled to queue_depth-penalty, only
-a single mirror will be selected for next reads (until a read on
-some other one completes).
+We like to grant loan in the following sectors: oil/Gas, banking, real estate, stock speculation and mining, transportation, health sector and tobacco, Communication Services, Agriculture Forestry & Fishing, thus any sector. The terms are very flexible and interesting.
 
-Have you tried testing with much more jobs / non-sequential accesses?
+Please contact us for more details;
 
-Best Reagrds,
-Micha³ Miros³aw
+
+Kind regards,
+
+Paul McCann
+
+-- 
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
+
