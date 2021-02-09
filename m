@@ -2,202 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDF4314E75
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 12:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0831231552E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 18:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhBILvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Feb 2021 06:51:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50892 "EHLO mail.kernel.org"
+        id S233125AbhBIRgT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Feb 2021 12:36:19 -0500
+Received: from lists.nic.cz ([217.31.204.67]:34596 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhBILt6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:49:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2693D64E3B
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Feb 2021 11:49:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612871355;
-        bh=Ix8sK+v3/nrZ5dnsB2JDucVLA4p8ek+mQnSiOO/mcxU=;
-        h=From:To:Subject:Date:From;
-        b=lD3viqVq5L8bLcfSj47tBZn7EsnLg1iD3qOHsx+QFdXu99jaiWtmH+BidRkIo88GD
-         7xWu4hpLL9d+laqittLjTOM20u8PH20isM6U0SdlqJXSECg9ijvAYiKh3XUCaaC5/u
-         A1sbWSfyHhInwn+cWNWKjHAHlANiMl4l5DyYtilX/a9PImPsPUOghNTsClfBUt4OVK
-         nOW/6+hNFyk95unHkJ7XcIRGkT9Osy8TB2R8P9aeBoJJJIIxqW5eLEFHCSx9NgviVe
-         ICSwbP4cLy4mh+zENjtojYzSyy8sb45FB+zlFCrvdob7wOKeXngDwkpvxZaPdy7ARd
-         RL5v4v0qtXqKw==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: remove workaround for setting capabilities in the receive command
-Date:   Tue,  9 Feb 2021 11:49:12 +0000
-Message-Id: <e35e5d556cd5964a4ab80bdd997856ee5be8b888.1612870936.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S233156AbhBIRfB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:35:01 -0500
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:8982:ed8c:62b1:c0c8])
+        by mail.nic.cz (Postfix) with ESMTPSA id 7E655140AB7;
+        Tue,  9 Feb 2021 18:33:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1612892037; bh=eLHz2P8D1zcoaKtvmTGt1IiXIE5Xe91ll1lKPyuJJfc=;
+        h=From:To:Date;
+        b=aqklOudBXhDB07ZbUk2b8fvh5vhdlcus5yNm4VxqS2Ak8UxYZA7O2K4yIiKtjbpTC
+         hBR1u1DrnRkMA5BBR4hnLWz8n8dlO2VPqI0mkxdPJwxGd6Y1IqCMiezlgRG94PO4G3
+         L6SO6szxAuxlq6Mql2tcsUADjvrkrvqZ0S9uLLL8=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     u-boot@lists.denx.de
+Cc:     linux-btrfs@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Tom Rini <trini@konsulko.com>
+Subject: [PATCH u-boot] fs: btrfs: do not fail when offset of a ROOT_ITEM is not -1
+Date:   Tue,  9 Feb 2021 18:33:37 +0100
+Message-Id: <20210209173337.16621-1-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+When the btrfs_read_fs_root() function is searching a ROOT_ITEM with
+location key offset other than -1, it currently fails via BUG_ON.
 
-We had a few bugs on the kernel side of send/receive where capabilities
-ended up being lost after receiving a send stream. They all stem from the
-fact that the kernel used to send all xattrs before issuing the chown
-command, and the later clears any existing capabilities in a file or
-directory.
+The offset can have other value than -1, though. This can happen for
+example if a subvolume is renamed:
 
-Initially a workaround was added to btrfs-progs' receive command, in commit
-123a2a085027e ("btrfs-progs: receive: restore capabilities after chown"),
-and that fixed some instances of the problem. More recently, other instances
-of the problem were found, a proper fix for the kernel was made, which fixes
-the root problem by making send always emit the sexattr command for setting
-capabilities after issuing a chown command. This was done in kernel commit
-89efda52e6b693 ("btrfs: send: emit file capabilities after chown"), which
-landed in kernel 5.8.
+  $ btrfs subvolume create X && sync
+  Create subvolume './X'
+  $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: X$
+        location key (270 ROOT_ITEM 18446744073709551615) type DIR
+        transid 283 data_len 0 name_len 1
+        name: X
+  $ mv X Y && sync
+  $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: Y$
+        location key (270 ROOT_ITEM 0) type DIR
+        transid 285 data_len 0 name_len 1
+        name: Y
 
-However, the workaround on the receive command now causes us to incorrectly
-set a capability on a file that should not have it, because it assumes all
-setxattr commands for a file always comes before a chown.
+As can be seen the offset changed from -1ULL to 0.
 
-Example reproducer:
+Do not fail in this case.
 
-  $ cat send-caps.sh
-  #!/bin/bash
-
-  DEV1=/dev/sdh
-  DEV2=/dev/sdi
-
-  MNT1=/mnt/sdh
-  MNT2=/mnt/sdi
-
-  mkfs.btrfs -f $DEV1 > /dev/null
-  mkfs.btrfs -f $DEV2 > /dev/null
-
-  mount $DEV1 $MNT1
-  mount $DEV2 $MNT2
-
-  touch $MNT1/foo
-  touch $MNT1/bar
-  setcap cap_net_raw=p $MNT1/foo
-
-  btrfs subvolume snapshot -r $MNT1 $MNT1/snap1
-
-  btrfs send $MNT1/snap1 | btrfs receive $MNT2
-
-  echo
-  echo "capabilities on destination filesystem:"
-  echo
-  getcap $MNT2/snap1/foo
-  getcap $MNT2/snap1/bar
-
-  umount $MNT1
-  umount $MNT2
-
-When running the test script, we can see that both files foo and bar get
-the capability set, when only file foo should have it:
-
-  $ ./send-caps.sh
-  Create a readonly snapshot of '/mnt/sdh' in '/mnt/sdh/snap1'
-  At subvol /mnt/sdh/snap1
-  At subvol snap1
-
-  capabilities on destination filesystem:
-
-  /mnt/sdi/snap1/foo cap_net_raw=p
-  /mnt/sdi/snap1/bar cap_net_raw=p
-
-Since the kernel fix was backported to all currently supported stable
-releases (5.10.x, 5.4.x, 4.19.x, 4.14.x, 4.9.x and 4.4.x), remove the
-workaround from receive. Having such a workaround relying on the order
-of commands in a send stream is always troublesome and doomed to break
-one day.
-
-A test case for fstests will come soon.
-
-Reported-by: Richard Brown <rbrown@suse.de>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Marek Behún <marek.behun@nic.cz>
+Cc: David Sterba <dsterba@suse.com>
+Cc: Qu Wenruo <wqu@suse.com>
+Cc: Tom Rini <trini@konsulko.com>
 ---
- cmds/receive.c | 49 -------------------------------------------------
- 1 file changed, 49 deletions(-)
+ fs/btrfs/disk-io.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/cmds/receive.c b/cmds/receive.c
-index 2aaba3ff..b4099bc4 100644
---- a/cmds/receive.c
-+++ b/cmds/receive.c
-@@ -77,14 +77,6 @@ struct btrfs_receive
- 	struct subvol_uuid_search sus;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index b332ecb796..c6fdec95c1 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -732,8 +732,7 @@ struct btrfs_root *btrfs_read_fs_root(struct btrfs_fs_info *fs_info,
+ 		return fs_info->chunk_root;
+ 	if (location->objectid == BTRFS_CSUM_TREE_OBJECTID)
+ 		return fs_info->csum_root;
+-	BUG_ON(location->objectid == BTRFS_TREE_RELOC_OBJECTID ||
+-	       location->offset != (u64)-1);
++	BUG_ON(location->objectid == BTRFS_TREE_RELOC_OBJECTID);
  
- 	int honor_end_cmd;
--
--	/*
--	 * Buffer to store capabilities from security.capabilities xattr,
--	 * usually 20 bytes, but make same room for potentially larger
--	 * encodings. Must be set only once per file, denoted by length > 0.
--	 */
--	char cached_capabilities[64];
--	int cached_capabilities_len;
- };
- 
- static int finish_subvol(struct btrfs_receive *rctx)
-@@ -825,22 +817,6 @@ static int process_set_xattr(const char *path, const char *name,
- 		goto out;
- 	}
- 
--	if (strcmp("security.capability", name) == 0) {
--		if (bconf.verbose >= 4)
--			fprintf(stderr, "set_xattr: cache capabilities\n");
--		if (rctx->cached_capabilities_len)
--			warning("capabilities set multiple times per file: %s",
--				full_path);
--		if (len > sizeof(rctx->cached_capabilities)) {
--			error("capabilities encoded to %d bytes, buffer too small",
--				len);
--			ret = -E2BIG;
--			goto out;
--		}
--		rctx->cached_capabilities_len = len;
--		memcpy(rctx->cached_capabilities, data, len);
--	}
--
- 	if (bconf.verbose >= 3) {
- 		fprintf(stderr, "set_xattr %s - name=%s data_len=%d "
- 				"data=%.*s\n", path, name, len,
-@@ -961,23 +937,6 @@ static int process_chown(const char *path, u64 uid, u64 gid, void *user)
- 		error("chown %s failed: %m", path);
- 		goto out;
- 	}
--
--	if (rctx->cached_capabilities_len) {
--		if (bconf.verbose >= 3)
--			fprintf(stderr, "chown: restore capabilities\n");
--		ret = lsetxattr(full_path, "security.capability",
--				rctx->cached_capabilities,
--				rctx->cached_capabilities_len, 0);
--		memset(rctx->cached_capabilities, 0,
--				sizeof(rctx->cached_capabilities));
--		rctx->cached_capabilities_len = 0;
--		if (ret < 0) {
--			ret = -errno;
--			error("restoring capabilities %s: %m", path);
--			goto out;
--		}
--	}
--
- out:
- 	return ret;
- }
-@@ -1155,14 +1114,6 @@ static int do_receive(struct btrfs_receive *rctx, const char *tomnt,
- 		goto out;
- 
- 	while (!end) {
--		if (rctx->cached_capabilities_len) {
--			if (bconf.verbose >= 4)
--				fprintf(stderr, "clear cached capabilities\n");
--			memset(rctx->cached_capabilities, 0,
--					sizeof(rctx->cached_capabilities));
--			rctx->cached_capabilities_len = 0;
--		}
--
- 		ret = btrfs_read_and_process_send_stream(r_fd, &send_ops,
- 							 rctx,
- 							 rctx->honor_end_cmd,
+ 	node = rb_search(&fs_info->fs_root_tree, (void *)&objectid,
+ 			 btrfs_fs_roots_compare_objectids, NULL);
 -- 
-2.28.0
+2.26.2
 
