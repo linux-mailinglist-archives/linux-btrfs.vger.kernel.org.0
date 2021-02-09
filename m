@@ -2,130 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2150131588C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 22:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC6031588E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 22:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhBIVWP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Feb 2021 16:22:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233726AbhBIUj1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Feb 2021 15:39:27 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AE7C0698CD
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Feb 2021 12:26:58 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id n6so10804785wrv.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Feb 2021 12:26:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t887Mrotcb3azIiQkBBxJS1vSfb2K9dq1H7ePy38UN0=;
-        b=uoUosk2w1pNeB5fM/MOReVWLi2LyreheTlO8EVkaHT/Ub+4u3tgcB9f8IM66CdlkcL
-         yU06eBOZ4gOOOOUsIf975eFIgwgnjleKTHQRe7Sa8NWnC9m9qpjlvfd9SjAQtN8HvPVZ
-         NtFDANlrLBzL5SKcdAQd1YHYIRRJ1uK48dn8nyL3S/l+BYH2HdJ7O/qNxMuZoWJmHuIA
-         Q7aPXIVczMx10WuELYmcsHcF3hU2qbwPZ8ChfsXI8aTp/lUJZ6KFaCsNsUTRZRXtQ19t
-         OUzMf8wPh+xRDbhxrVmHjwSX5APbHL7p34hH9XDuS2SnYeD978uOZHQBtgJudBLvSGEV
-         RO6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t887Mrotcb3azIiQkBBxJS1vSfb2K9dq1H7ePy38UN0=;
-        b=BSlWFH73oQANIi/biHmj2d+oCQpRkht/B59rBGebYAOHEACKbS6O2GBP8KnpKUab+W
-         tMmWWLnO6VK96TCpFgESdgZO5IzizzQJXcRvHNA4wcuEF4qlIV/+R74oUpAc+mWZpUct
-         8mbluH94ttejo3uJxZGqFH/7Ovid+XdaBtq2TT+pjkYtWOp0ntNKF4ICT/4dA8qdVCRP
-         SHyC/dYs6l5k5TQgHfYJU2gJuTzk/cx1Lg/HBQqa743DjRHc2vG6pN1U0sVF+K3sYEcy
-         X0whWBBn3s+sZWb41Iqoa0141qjSwWTQZ3iGqTF7XHUtcQy6VTyJMTh6lVU4HR8zSC1W
-         /ZfQ==
-X-Gm-Message-State: AOAM531U7gXJ2r3AbALXmuyIABsvDMnU8dSOzT2XuVBGCWMsNL7VZehO
-        7z3ShHL3XTSSiTwxjBY8d9tR9xNcV9t+bGWf/ETTxA==
-X-Google-Smtp-Source: ABdhPJxImYFpAbXJVUijcnhhUBsSYPBqWnUkJnWOsrSZRIplxXRkp/vnpY5Bv1C3Et8q8yU+Lgs8YSNQ2y/ApamFMHo=
-X-Received: by 2002:adf:ec52:: with SMTP id w18mr27202551wrn.65.1612902416959;
- Tue, 09 Feb 2021 12:26:56 -0800 (PST)
+        id S233985AbhBIVYd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Feb 2021 16:24:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51922 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234158AbhBIUyV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Feb 2021 15:54:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 753BEB14C;
+        Tue,  9 Feb 2021 20:31:23 +0000 (UTC)
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Michal Rostecki <mrostecki@suse.com>
+Subject: [PATCH RFC 3/6] btrfs: Add stripe_physical function
+Date:   Tue,  9 Feb 2021 21:30:37 +0100
+Message-Id: <20210209203041.21493-4-mrostecki@suse.de>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210209203041.21493-1-mrostecki@suse.de>
+References: <20210209203041.21493-1-mrostecki@suse.de>
 MIME-Version: 1.0
-References: <CAJCQCtSx=HcCRMiE0eganPWJVTB+b4zfb_mnd68L2VapGGKi7Q@mail.gmail.com>
- <3897f126-e977-d842-f91d-b48b74958f3d@libero.it> <CAJCQCtScUYMoMpw==HTbBB6s0BFnXuT=MvSuVJYEVBrA7-RbHA@mail.gmail.com>
- <839d9baa-8df5-7efd-94ee-b28f282ef9ec@inwind.it> <CAJCQCtSqESuYawuh6E8b6Xd=z4D13J2=v-6rn8+0mwuThXNtkg@mail.gmail.com>
- <7650c455-297a-f746-c59e-3104fdbf8896@inwind.it>
-In-Reply-To: <7650c455-297a-f746-c59e-3104fdbf8896@inwind.it>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 9 Feb 2021 13:26:40 -0700
-Message-ID: <CAJCQCtR1fCSFYYbo7YvDPTmhALNvUyZB5C4zfMsUH-iU0xs6zQ@mail.gmail.com>
-Subject: Re: is BTRFS_IOC_DEFRAG behavior optimal?
-To:     Goffredo Baroncelli <kreijack@inwind.it>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 12:45 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
->
-> On 2/9/21 8:01 PM, Chris Murphy wrote:
-> > On Tue, Feb 9, 2021 at 11:13 AM Goffredo Baroncelli <kreijack@inwind.it> wrote:
-> >>
-> >> On 2/9/21 1:42 AM, Chris Murphy wrote:
-> >>> Perhaps. Attach strace to journald before --rotate, and then --rotate
-> >>>
-> >>> https://pastebin.com/UGihfCG9
-> >>
-> >> I looked to this strace.
-> >>
-> >> in line 115: it is called a ioctl(<BTRFS-DEFRAG>)
-> >> in line 123: it is called a ioctl(<BTRFS-DEFRAG>)
-> >>
-> >> However the two descriptors for which the defrag is invoked are never sync-ed before.
-> >>
-> >> I was expecting is to see a sync (flush the data on the platters) and then a
-> >> ioctl(<BTRFS-defrag>. This doesn't seems to be looking from the strace.
-> >>
-> >> I wrote a script (see below) which basically:
-> >> - create a fragmented file
-> >> - run filefrag on it
-> >> - optionally sync the file             <-----
-> >> - run btrfs fi defrag on it
-> >> - run filefrag on it
-> >>
-> >> If I don't perform the sync, the defrag is ineffective. But if I sync the
-> >> file BEFORE doing the defrag, I got only one extent.
-> >> Now my hypothesis is: the journal log files are bad de-fragmented because these
-> >> are not sync-ed before.
-> >> This could be tested quite easily putting an fsync() before the
-> >> ioctl(<BTRFS_DEFRAG>).
-> >>
-> >> Any thought ?
-> >
-> > No idea. If it's a full sync then it could be expensive on either
-> > slower devices or heavier workloads. On the one hand, there's no point
-> > of doing an ineffective defrag so maybe the defrag ioctl should  just
-> > do the sync first? On the other hand, this would effectively make the
-> > defrag ioctl a full file system sync which might be unexpected. It's a
-> > set of tradeoffs and I don't know what the expectation is.
-> >
-> > What about fdatasync() on the journal file rather than a full sync?
->
-> I tried a fsync(2) call, and the results is the same.
-> Only after reading your reply I realized that I used a sync(2), when
-> I meant to use fsync(2).
->
-> I update my python test code
+From: Michal Rostecki <mrostecki@suse.com>
 
-Ok fsync should be least costly of the three.
+Move the calculation of the physical address for a stripe to the new
+function - stripe_physical(). It can be used by raid1 read policies to
+calculate the offset and select mirrors based on I/O locality.
 
-The three unique things about systemd-journald that might be factors:
+Signed-off-by: Michal Rostecki <mrostecki@suse.com>
+---
+ fs/btrfs/volumes.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-* nodatacow file
-* fallocated file in 8MB increments multiple times up to 128M
-* BTRFS_IOC_DEFRAG, whereas btrfs-progs uses BTRFS_IOC_DEFRAG_RANGE
-
-So maybe it's all explained by lack of fsync, I'm not sure. But the
-commit that added this doesn't show any form of sync.
-
-https://github.com/systemd/systemd/commit/f27a386430cc7a27ebd06899d93310fb3bd4cee7
-
-
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 292175206873..1ac364a2f105 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5498,6 +5498,23 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
+ 	return ret;
+ }
+ 
++/*
++ * Calculates the physical location for the given stripe and I/O geometry.
++ *
++ * @map:           mapping containing the logical extent
++ * @stripe_index:  index of the stripe to make a calculation for
++ * @stripe_offset: offset of the block in its stripe
++ * @stripe_nr:     index of the stripe whete the block falls in
++ *
++ * Returns the physical location.
++ */
++static u64 stripe_physical(struct map_lookup *map, u32 stripe_index,
++			   u64 stripe_offset, u64 stripe_nr)
++{
++	return map->stripes[stripe_index].physical + stripe_offset +
++		stripe_nr * map->stripe_len;
++}
++
+ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+ 			    struct map_lookup *map, int first,
+ 			    int dev_replace_is_ongoing)
+@@ -6216,8 +6233,9 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+ 	}
+ 
+ 	for (i = 0; i < num_stripes; i++) {
+-		bbio->stripes[i].physical = map->stripes[stripe_index].physical +
+-			stripe_offset + stripe_nr * map->stripe_len;
++		bbio->stripes[i].physical = stripe_physical(map, stripe_index,
++							    stripe_offset,
++							    stripe_nr);
+ 		bbio->stripes[i].dev = map->stripes[stripe_index].dev;
+ 		stripe_index++;
+ 	}
 -- 
-Chris Murphy
+2.30.0
+
