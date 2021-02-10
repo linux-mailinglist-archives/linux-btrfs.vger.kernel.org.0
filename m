@@ -2,60 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E356D3167D3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 14:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A927316897
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 15:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhBJNUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 08:20:22 -0500
-Received: from verein.lst.de ([213.95.11.211]:51090 "EHLO verein.lst.de"
+        id S231898AbhBJOBJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Feb 2021 09:01:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47212 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231583AbhBJNUN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 08:20:13 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E84686736F; Wed, 10 Feb 2021 14:19:28 +0100 (CET)
-Date:   Wed, 10 Feb 2021 14:19:28 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
-        dan.j.williams@intel.com, willy@infradead.org, jack@suse.cz,
-        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, david@fromorbit.com, rgoldwyn@suse.de,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
-Message-ID: <20210210131928.GA30109@lst.de>
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com> <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com> <20210208151920.GE12872@lst.de> <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com> <20210209093438.GA630@lst.de> <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
+        id S231822AbhBJOA7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:00:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A7A47AE1B;
+        Wed, 10 Feb 2021 14:00:16 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 14:00:15 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 0/6] Add roundrobin raid1 read policy
+Message-ID: <20210210140015.GE23499@wotan.suse.de>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <4f24ef7f-c1cf-3cda-b12f-a2c8c84a7e45@oracle.com>
+ <20210210121853.GA23499@wotan.suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210210121853.GA23499@wotan.suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 05:46:13PM +0800, Ruan Shiyang wrote:
->
->
-> On 2021/2/9 下午5:34, Christoph Hellwig wrote:
->> On Tue, Feb 09, 2021 at 05:15:13PM +0800, Ruan Shiyang wrote:
->>> The dax dedupe comparison need the iomap_ops pointer as argument, so my
->>> understanding is that we don't modify the argument list of
->>> generic_remap_file_range_prep(), but move its code into
->>> __generic_remap_file_range_prep() whose argument list can be modified to
->>> accepts the iomap_ops pointer.  Then it looks like this:
->>
->> I'd say just add the iomap_ops pointer to
->> generic_remap_file_range_prep and do away with the extra wrappers.  We
->> only have three callers anyway.
->
-> OK.
+On Wed, Feb 10, 2021 at 12:18:53PM +0000, Michal Rostecki wrote:
+> > These patches look good. But as only round-robin policy requires
+> > to monitor the inflight and last-offset. Could you bring them under
+> > if policy=roundrobin? Otherwise, it is just a waste of CPU cycles
+> > if the policy != roundrobin.
+> > 
+> 
+> If I bring those stats under if policy=roundrobin, they are going to be
+> inaccurate if someone switches policies on the running system, after
+> doing any I/O in that filesystem.
+> 
+> I'm open to suggestions how can I make those stats as lightweight as
+> possible. Unfortunately, I don't think I can store the last physical
+> location without atomic_t.
+> 
+> The BIO percpu counter is probably the least to be worried about, though
+> I could maybe get rid of it entirely in favor of using part_stat_read().
+> 
 
-So looking at this again I think your proposal actaully is better,
-given that the iomap variant is still DAX specific.  Sorry for
-the noise.
+Actually, after thinking about that more, I'm wondering if I should just
+drop the last-offset stat and penalty mechanism entirely. They seem to
+improve performance slightly only on mixed workloads (thought I need to
+check if that's the case in all-SDD od all NVMe arrays), but still
+perform worse than policies that you proposed.
 
-Also I think dax_file_range_compare should use iomap_apply instead
-of open coding it.
+Maybe it'd be better if I just focus on getting the best performance on
+non-mixed environments in my policy and thus stick to the simple
+`inflight < queue_depth` check...
+
+Thanks,
+Michal
