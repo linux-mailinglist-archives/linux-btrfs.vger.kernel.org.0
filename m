@@ -2,74 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C4A31735A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 23:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E248B3173B6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 23:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhBJW3Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 17:29:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48078 "EHLO mx2.suse.de"
+        id S233502AbhBJWwv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Feb 2021 17:52:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40542 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233150AbhBJW3L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:29:11 -0500
+        id S233454AbhBJWwu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Feb 2021 17:52:50 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B97A2AC88;
-        Wed, 10 Feb 2021 22:28:29 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 8BD7FACB7;
+        Wed, 10 Feb 2021 22:52:08 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 117DEDA6E9; Wed, 10 Feb 2021 23:26:36 +0100 (CET)
-Date:   Wed, 10 Feb 2021 23:26:35 +0100
+        id DCC4FDA6E9; Wed, 10 Feb 2021 23:50:14 +0100 (CET)
+Date:   Wed, 10 Feb 2021 23:50:14 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Fix race between extent freeing/allocation when
- using bitmaps
-Message-ID: <20210210222635.GZ1993@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: avoid double put of block group when emptying
+ cluster
+Message-ID: <20210210225014.GA1993@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-References: <20210208082652.2654024-1-nborisov@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, stable@vger.kernel.org
+References: <5ca694ff4f8cff4c0ef6896593a1f1d01fbe956d.1611610947.git.josef@toxicpanda.com>
+ <bf8cd92d-12a0-3bb3-34c0-dd9c938bf349@suse.com>
+ <ad0ea42a-5e41-f9b9-986d-8c70e9f2eed3@toxicpanda.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210208082652.2654024-1-nborisov@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ad0ea42a-5e41-f9b9-986d-8c70e9f2eed3@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 10:26:54AM +0200, Nikolay Borisov wrote:
-> During allocation the allocator will try to allocate an extent using
-> cluster policy. Once the current cluster is exhausted it will remove the
-> its entry under btrfs_free_cluster::lock and subsequently acquire
-> btrfs_free_space_ctl::tree_lock to dispose of the already-deleted
-> entry and adjust btrfs_free_space_ctl::total_bitmap. This poses a
-> problem because there exists a race condition between removing the
-> entry under one lock and doing the necessary accounting holding a
-> different lock since extent freeing only uses the 2nd lock. This can
-> result in the following situation:
+On Tue, Jan 26, 2021 at 09:30:45AM -0500, Josef Bacik wrote:
+> On 1/26/21 4:02 AM, Nikolay Borisov wrote:
+> > On 25.01.21 г. 23:42 ч., Josef Bacik wrote:
+> >> In __btrfs_return_cluster_to_free_space we will bail doing the cleanup
+> >> of the cluster if the block group we passed in doesn't match the block
+> >> group on the cluster.  However we drop a reference to block_group, as
+> >> the cluster holds a reference to the block group while it's attached to
+> >> the cluster.  If cluster->block_group != block_group however then this
+> >> is an extra put, which means we'll go negative and free this block group
+> >> down the line, leading to a UAF.
+> > 
+> > Was this found by code inspection or did you hit in production. Also why
+> > in btrfs_remove_free_space_cache just before
+> > __btrfs_return_cluster_to_free_space there is:
+> > 
 > 
-> T1:                                    T2:
-> btrfs_alloc_from_cluster               insert_into_bitmap <holds tree_lock>
->  if (entry->bytes == 0)                   if (block_group && !list_empty(&block_group->cluster_list)) {
->     rb_erase(entry)
+> It was found in production sort of halfway.  I was doing something for WhatsApp 
+> and had to convert our block group reference counting to the refcount stuff so I 
+> could find where I made a mistake.  Turns out this was where the problem was, my 
+> stuff had just made it way more likely to happen.  I don't have the stack trace 
+> because this was like 6 months ago, I'm going through all my WhatsApp magic and 
+> getting them actually usable for upstream.
 > 
->  spin_unlock(&cluster->lock);
->    (total_bitmaps is still 4)           spin_lock(&cluster->lock);
->                                          <doesn't find entry in cluster->root>
->  spin_lock(&ctl->tree_lock);             <goes to new_bitmap label, adds
-> <blocked since T2 holds tree_lock>       <a new entry and calls add_new_bitmap>
-> 					    recalculate_thresholds  <crashes,
->                                               due to total_bitmaps
-> 					      becoming 5 and triggering
-> 					      an ASSERT>
+> > WARN_ON(cluster->block_group != block_group);
+> > 
+> > IMO this patch should also remove the WARN_ON if it's a valid condition
+> > to have the passed bg be different than the one in the cluster. Also
+> > that WARN_ON is likely racy since it's done outside of cluster->lock.
+> > 
 > 
-> To fix this ensure that once depleted, the cluster entry is deleted when
-> both cluster lock and tree locks are held in the allocator (T1), this
-> ensures that even if there is a race with a concurrent
-> insert_into_bitmap call it will correctly find the entry in the cluster
-> and add the new space to it.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> Cc: <stable@vger.kernel.org>
+> Yup that's in a follow up thing, I wanted to get the actual fix out before I got 
+> distracted by my mountain of meetings this week.  Thanks,
 
-Added to for-next, targeting 5.12-rc, thanks.
+Removing the WARN_ON in a separate patch sounds ok to me, this patch
+clearly fixes the refcounting bug, the warning condition is the same but
+would need a different reasoning.
+
+Nikolay, if you're ok with current patch version let me know if you want
+a rev-by added.
