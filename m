@@ -2,145 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2923158AA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Feb 2021 22:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA378315B47
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 01:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhBIVac (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Feb 2021 16:30:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60730 "EHLO mx2.suse.de"
+        id S235081AbhBJAdL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Feb 2021 19:33:11 -0500
+Received: from mout.gmx.net ([212.227.15.19]:59131 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234323AbhBIVNn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Feb 2021 16:13:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE373AD24;
-        Tue,  9 Feb 2021 21:12:05 +0000 (UTC)
-Date:   Tue, 9 Feb 2021 21:12:00 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
-        josef@toxicpanda.com
-Subject: Re: [PATCH v4 1/3] btrfs: add read_policy latency
-Message-ID: <20210209211200.GA1662@wotan.suse.de>
-References: <cover.1611114341.git.anand.jain@oracle.com>
- <63f6f00e2ecc741efd2200c3c87b5db52c6be2fd.1611114341.git.anand.jain@oracle.com>
- <20210120121416.GX6430@twin.jikos.cz>
- <e46000d9-c2e1-ec7c-d6b1-a3bd16aa05f4@oracle.com>
- <20210121175243.GF6430@twin.jikos.cz>
- <28b7ef3d-b5b9-f4a6-8d6f-1e6fc1103815@oracle.com>
- <9f406301-c16a-72a5-4ff3-d3bda127895e@oracle.com>
- <34cecc3d-235e-2f47-0992-675dc576b5be@oracle.com>
+        id S235007AbhBJALG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 9 Feb 2021 19:11:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612915759;
+        bh=s+opzyFTcyKb9Np/I+ncpXPKeNNsVH37+uEc2yIG2uw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=bSVfggDwtHZXo/JxTFqFGhXmihux9+VO+Hf8N6feIqR/MZaTEsYjs/5WW0zmMWacm
+         ga7H34RehlIc+MPWaHOw9TOlYsyDUiq8s+veVnmDQkM2vdiqmHrmB3z/QsL3Jev8D0
+         iTpAaYMXUk0iOIfaHYNPIEEccMzg6xt+lef/bvT0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mw9Q6-1m1jDv05ye-00s2Iw; Wed, 10
+ Feb 2021 01:09:19 +0100
+Subject: Re: [PATCH u-boot] fs: btrfs: do not fail when offset of a ROOT_ITEM
+ is not -1
+To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <marek.behun@nic.cz>,
+        u-boot@lists.denx.de
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Qu Wenruo <wqu@suse.com>, Tom Rini <trini@konsulko.com>
+References: <20210209173337.16621-1-marek.behun@nic.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <40e38323-0013-6799-1527-02cbac8dc93e@gmx.com>
+Date:   Wed, 10 Feb 2021 08:09:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <34cecc3d-235e-2f47-0992-675dc576b5be@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210209173337.16621-1-marek.behun@nic.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aTm3a8X29GZo8Hs7sEE1w+TXseXQ5zvOYYZmIQgYrfEQxWq866/
+ 54nvkFrkLaXBzMD4cIqA3ZNns+puKOnoRhx81w7WTeZ0g+nCLepVs7MGuaD68V5+cZoihkt
+ HpkAlxV/qlV//rNQJU7r4q9n3sEnirA/wz1tgu6OjdS94rsTdkoOsjIIFeVNehbhYu0qtSF
+ OKh/dXGUofxSbJAkk+JVg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DjJMwkEtfEA=:wRhD6HoUPcL+ieAKYC891n
+ SqG4AtvkhZlLTRh9k4tfkuRuyWufoaXccSHRCvzRq4xjJe/d7ylaBdSBmNUYq5W3oLbWbw1r3
+ S/v0dfisz242lcDIZSsyJlBo63fxfi7+1DX1DRgaAlpO7RuB6WjR8SRlQg9zT9S6qgKHEe/Kc
+ cn3con6t/anMLIJEzV2i3U2rgt5VkcnF6qB2+t5NSIXJm9NYCD9JSx0yjso4SStaFj9MzqlEg
+ 7AXBnqhphPCpxTDyOCFPk0bDXZtWuUc+mmYSrRXXm7Rcvbf8AAY3jfR/vKOLV/F5s2p60VEZg
+ ZTWRuzPUQcAzE4EPis8GCuZShoXTI0ASgFf9aB/jFugZ/ib+rZpOQ0hqCUiVYvF+5irjbB8iu
+ Gqzj5UEeTjyTcIUmB4fmaItwz0JJ1ng4uIGK30ClEd3X+vQGAONjQG+DMAJ3/T2vh/k5GVeqn
+ 9LvcZfYJ3GX7nYgb/T/B5eSE2ykgLh9i7bllyZmj7OVLichT3/+DJQeMKIjspx6G3x7ASGW4+
+ RIoWvVFIP6jxXoy8ZVv0CSLLNaw2zuNkwSnWg4exnWjgp4Alc/E2jpDxRfV30n834SaNKX5pV
+ /ewlFGm14ncOSUPoZ5sK7+9V2wgEIPmXUOKXDxUdh0sp4pYZrP3LXgB6eQuQYtSe6Hcul0xFH
+ /lykIpmLIQEzK8WSGun5d3pJDYJan9Oe497Uf0kOj+yD84A2poF00uoNUwZMp5zNUZp03OUEa
+ TAIDb+ZmtKnwbxcmNKRUdMPYHNlr+3VUovGreT1mWKDgD7NR4vDQhzx1MKBhVNKE3mQagxJCV
+ QajnDGJ1HGF90csCGW8KmxMoOvPP8+TUAzr3S7l2YYtKsyqMyaoVHBlr2tLgdqTNNpuifYPVb
+ +3ciFIJhQVCFrS+Pbe7w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 08:30:01PM +0800, Anand Jain wrote:
-> 
-> Hi Michal,
-> 
->  Did you get any chance to run the evaluation with this patchset?
-> 
-> Thanks, Anand
-> 
 
-Hi Anand,
 
-Yes, I tested your policies now. Sorry for late response.
+On 2021/2/10 =E4=B8=8A=E5=8D=881:33, Marek Beh=C3=BAn wrote:
+> When the btrfs_read_fs_root() function is searching a ROOT_ITEM with
+> location key offset other than -1, it currently fails via BUG_ON.
+>
+> The offset can have other value than -1, though. This can happen for
+> example if a subvolume is renamed:
+>
+>    $ btrfs subvolume create X && sync
+>    Create subvolume './X'
+>    $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: X$
+>          location key (270 ROOT_ITEM 18446744073709551615) type DIR
+>          transid 283 data_len 0 name_len 1
+>          name: X
+>    $ mv X Y && sync
+>    $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: Y$
+>          location key (270 ROOT_ITEM 0) type DIR
+>          transid 285 data_len 0 name_len 1
+>          name: Y
+>
+> As can be seen the offset changed from -1ULL to 0.
 
-For the singlethreaded test:
 
-  [global]
-  name=btrfs-raid1-seqread
-  filename=btrfs-raid1-seqread
-  rw=read
-  bs=64k
-  direct=0
-  numjobs=1
-  time_based=0
+Offset for subvolume ROOT_ITEM can be other values, especially for
+snapshot that offset is the transid when it get created.
 
-  [file1]
-  size=10G
-  ioengine=libaio
+But the problem is, if we call btrfs_read_fs_root() for subvolume tree,
+the offset of the key really doesn't matter, the only important thing is
+the objectid.
 
-results are:
+Thus we use that BUG_ON() to catch careless callers.
 
-- raid1c3 with 3 HDDs:
-  3 x Segate Barracuda ST2000DM008 (2TB)
-  * pid policy
-    READ: bw=215MiB/s (226MB/s), 215MiB/s-215MiB/s (226MB/s-226MB/s),
-    io=10.0GiB (10.7GB), run=47537-47537msec
-  * latency policy
-    READ: bw=219MiB/s (229MB/s), 219MiB/s-219MiB/s (229MB/s-229MB/s),
-    io=10.0GiB (10.7GB), run=46852-46852msec
-  * device policy - didn't test it here, I guess it doesn't make sense
-    to check it on non-mixed arrays ;)
-- raid1c3 with 2 HDDs and 1 SSD:
-  2 x Segate Barracuda ST2000DM008 (2TB)
-  1 x Crucial CT256M550SSD1 (256GB)
-  * pid policy
-    READ: bw=219MiB/s (230MB/s), 219MiB/s-219MiB/s (230MB/s-230MB/s),
-    io=10.0GiB (10.7GB), run=46749-46749msec
-  * latency policy
-    READ: bw=517MiB/s (542MB/s), 517MiB/s-517MiB/s (542MB/s-542MB/s),
-    io=10.0GiB (10.7GB), run=19823-19823msec
-  * device policy
-    READ: bw=517MiB/s (542MB/s), 517MiB/s-517MiB/s (542MB/s-542MB/s),
-    io=10.0GiB (10.7GB), run=19810-19810msec
+Would you please provide a case where we wrongly call
+btrfs_read_fs_root() with incorrect offset inside btrfs-progs/uboot?
 
-For the multithreaded test:
+I believe that would be the proper way to fix.
 
-  [global]
-  name=btrfs-raid1-seqread
-  filename=btrfs-raid1-seqread
-  rw=read
-  bs=64k
-  direct=0
-  numjobs=1
-  time_based=0
-
-  [file1]
-  size=10G
-  ioengine=libaio
-
-results are:
-
-- raid1c3 with 3 HDDs:
-  3 x Segate Barracuda ST2000DM008 (2TB)
-  * pid policy
-    READ: bw=1608MiB/s (1686MB/s), 201MiB/s-201MiB/s (211MB/s-211MB/s),
-    io=80.0GiB (85.9GB), run=50948-50949msec
-  * latency policy
-    READ: bw=1515MiB/s (1588MB/s), 189MiB/s-189MiB/s (199MB/s-199MB/s),
-    io=80.0GiB (85.9GB), run=54081-54084msec
-- raid1c3 with 2 HDDs and 1 SSD:
-  2 x Segate Barracuda ST2000DM008 (2TB)
-  1 x Crucial CT256M550SSD1 (256GB)
-  * pid policy
-    READ: bw=1843MiB/s (1932MB/s), 230MiB/s-230MiB/s (242MB/s-242MB/s),
-    io=80.0GiB (85.9GB), run=44449-44450msec
-  * latency policy
-    READ: bw=4213MiB/s (4417MB/s), 527MiB/s-527MiB/s (552MB/s-552MB/s),
-    io=80.0GiB (85.9GB), run=19444-19446msec
-  * device policy
-    READ: bw=4196MiB/s (4400MB/s), 525MiB/s-525MiB/s (550MB/s-550MB/s),
-    io=80.0GiB (85.9GB), run=19522-19522msec
-
-To sum it up - I think that your policies are indeed a very good match
-for mixed (nonrot and rot) arrays.
-
-They perform either slightly better or worse (depending on the test)
-than pid policy on all-HDD arrays.
-
-I've just sent out my proposal of roundrobin policy, which seems to give
-better performance for all-HDD than your policies (and better than pid
-policy in all cases):
-
-https://patchwork.kernel.org/project/linux-btrfs/patch/20210209203041.21493-7-mrostecki@suse.de/
-
-Cheers,
-Michal
+Thanks,
+Qu
+>
+> Do not fail in this case.
+>
+> Signed-off-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: Qu Wenruo <wqu@suse.com>
+> Cc: Tom Rini <trini@konsulko.com>
+> ---
+>   fs/btrfs/disk-io.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index b332ecb796..c6fdec95c1 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -732,8 +732,7 @@ struct btrfs_root *btrfs_read_fs_root(struct btrfs_f=
+s_info *fs_info,
+>   		return fs_info->chunk_root;
+>   	if (location->objectid =3D=3D BTRFS_CSUM_TREE_OBJECTID)
+>   		return fs_info->csum_root;
+> -	BUG_ON(location->objectid =3D=3D BTRFS_TREE_RELOC_OBJECTID ||
+> -	       location->offset !=3D (u64)-1);
+> +	BUG_ON(location->objectid =3D=3D BTRFS_TREE_RELOC_OBJECTID);
+>
+>   	node =3D rb_search(&fs_info->fs_root_tree, (void *)&objectid,
+>   			 btrfs_fs_roots_compare_objectids, NULL);
+>
