@@ -2,197 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9B8316740
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 13:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC53B31675E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 14:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhBJM5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 07:57:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55716 "EHLO mx2.suse.de"
+        id S231649AbhBJNBm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Feb 2021 08:01:42 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:36286 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230450AbhBJM4P (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:56:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3FDDAEB9;
-        Wed, 10 Feb 2021 12:55:31 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 12:55:30 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Filipe Manana <fdmanana@gmail.com>
+        id S231668AbhBJM7d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:59:33 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DbKZX4sYxz6r;
+        Wed, 10 Feb 2021 13:58:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1612961924; bh=CrEz6PwI0HJJcQyRSYFbySp7b7sxuUv30wgP5keoK7I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cbOP0DorpbnwPhgeBg/RJ85LhzJMZjIzOwzLX6BEOmMr+SdD2QxSkVs+Rg7M4lHXD
+         +gSh1npIbqE6EyTcBaG+xPgtA8hh9pFaCfI2ONWG5Pl64/ihIxzPMsS1/rc+uH7RmG
+         SNDqx6sOOQySG0A5ohwXVLb90fz5QsydW8BiE+pwAdt0Th7J1hEMlK/Q0oIb1/9Mj2
+         vqEC/mKH7DKR3+XdSClBvs0AlaCZEMrrIqb4ugLBIzdU1fjATYC+wwukDx94CxaNeB
+         VKz3c8VxsFypEA9MF0FFS4zzd4NLwt971THkLPAJ1dgOnXUJc0yFsI/mhFWcu5nZX5
+         RPqUgDFgdG6bQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Wed, 10 Feb 2021 13:58:15 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Michal Rostecki <mrostecki@suse.de>
 Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
         Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 4/6] btrfs: Check if the filesystem is has mixed type
- of devices
-Message-ID: <20210210125530.GD23499@wotan.suse.de>
+Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
+Message-ID: <20210210125815.GA20903@qmqm.qmqm.pl>
 References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-5-mrostecki@suse.de>
- <CAL3q7H7Y6Mh9L4niCHzUVOfo4_PDK9o6Ho_aZfxENOQsiWwk9g@mail.gmail.com>
+ <20210209203041.21493-7-mrostecki@suse.de>
+ <20210210042428.GC12086@qmqm.qmqm.pl>
+ <20210210122925.GB23499@wotan.suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7Y6Mh9L4niCHzUVOfo4_PDK9o6Ho_aZfxENOQsiWwk9g@mail.gmail.com>
+In-Reply-To: <20210210122925.GB23499@wotan.suse.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 10:09:10AM +0000, Filipe Manana wrote:
-> On Tue, Feb 9, 2021 at 9:32 PM Michal Rostecki <mrostecki@suse.de> wrote:
-> >
-> > From: Michal Rostecki <mrostecki@suse.com>
-> >
-> > Add the btrfs_check_mixed() function which checks if the filesystem has
-> > the mixed type of devices (non-rotational and rotational). This
-> > information is going to be used in roundrobin raid1 read policy.
-> >
-> > Signed-off-by: Michal Rostecki <mrostecki@suse.com>
-> > ---
-> >  fs/btrfs/volumes.c | 44 ++++++++++++++++++++++++++++++++++++++++++--
-> >  fs/btrfs/volumes.h |  7 +++++++
-> >  2 files changed, 49 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index 1ac364a2f105..1ad30a595722 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -617,6 +617,35 @@ static int btrfs_free_stale_devices(const char *path,
-> >         return ret;
-> >  }
-> >
-> > +/*
-> > + * Checks if after adding the new device the filesystem is going to have mixed
-> > + * types of devices (non-rotational and rotational).
-> > + *
-> > + * @fs_devices:          list of devices
-> > + * @new_device_rotating: if the new device is rotational
-> > + *
-> > + * Returns true if there are mixed types of devices, otherwise returns false.
-> > + */
-> > +static bool btrfs_check_mixed(struct btrfs_fs_devices *fs_devices,
-> > +                             bool new_device_rotating)
-> > +{
-> > +       struct btrfs_device *device, *prev_device;
-> > +
-> > +       list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> > +               if (prev_device == NULL &&
+On Wed, Feb 10, 2021 at 12:29:25PM +0000, Michal Rostecki wrote:
+> On Wed, Feb 10, 2021 at 05:24:28AM +0100, Micha≥ Miros≥aw wrote:
+> > On Tue, Feb 09, 2021 at 09:30:40PM +0100, Michal Rostecki wrote:
+> > [...]
+> > > For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
+> > > (429MB/s) performance. Adding the penalty value 1 resulted in a
+> > > performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
+> > > was making the performance even worse.
+> > > 
+> > > For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
+> > > rotational disks resulted in the best performance - 541MiB/s (567MB/s).
+> > > Not adding any value and increasing the value was making the performance
+> > > worse.
+> > > 
+> > > Adding penalty value to non-rotational disks was always decreasing the
+> > > performance, which motivated setting it as 0 by default. For the purpose
+> > > of testing, it's still configurable.
+> > [...]
+> > > +	bdev = map->stripes[mirror_index].dev->bdev;
+> > > +	inflight = mirror_load(fs_info, map, mirror_index, stripe_offset,
+> > > +			       stripe_nr);
+> > > +	queue_depth = blk_queue_depth(bdev->bd_disk->queue);
+> > > +
+> > > +	return inflight < queue_depth;
+> > [...]
+> > > +	last_mirror = this_cpu_read(*fs_info->last_mirror);
+> > [...]
+> > > +	for (i = last_mirror; i < first + num_stripes; i++) {
+> > > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
+> > > +					    stripe_nr)) {
+> > > +			preferred_mirror = i;
+> > > +			goto out;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	for (i = first; i < last_mirror; i++) {
+> > > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
+> > > +					    stripe_nr)) {
+> > > +			preferred_mirror = i;
+> > > +			goto out;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	preferred_mirror = last_mirror;
+> > > +
+> > > +out:
+> > > +	this_cpu_write(*fs_info->last_mirror, preferred_mirror);
+> > 
+> > This looks like it effectively decreases queue depth for non-last
+> > device. After all devices are filled to queue_depth-penalty, only
+> > a single mirror will be selected for next reads (until a read on
+> > some other one completes).
+> > 
 > 
-> Hum, prev_device is not initialized when we enter the first iteration
-> of the loop.
-> 
-> > +                   device->rotating != new_device_rotating)
-> > +                       return true;
-> > +               if (prev_device != NULL &&
-> > +                   (device->rotating != prev_device->rotating ||
-> 
-> Here it's more dangerous, dereferencing an uninitialized pointer can
-> result in a crash.
-> 
-> With this fixed, it would be better to redo the benchmarks when using
-> mixed device types.
-> 
-> Thanks.
-> 
+> Good point. And if all devices are going to be filled for longer time,
+> this function will keep selecting the last one. Maybe I should select
+> last+1 in that case. Would that address your concern or did you have any
+> other solution in mind?
 
-Thanks for pointing that out. Will fix and redo benchmarks for v2.
+The best would be to postpone the selection until one device becomes free
+again. But if that's not doable, then yes, you could make sure it stays
+round-robin after filling the queues (the scheduling will loose the
+"penalty"-driven adjustment though).
 
-> > +                    device->rotating != new_device_rotating))
-> > +                       return true;
-> > +
-> > +               prev_device = device;
-> > +       }
-> > +
-> > +       return false;
-> > +}
-> > +
-> >  /*
-> >   * This is only used on mount, and we are protected from competing things
-> >   * messing with our fs_devices by the uuid_mutex, thus we do not need the
-> > @@ -629,6 +658,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> >         struct request_queue *q;
-> >         struct block_device *bdev;
-> >         struct btrfs_super_block *disk_super;
-> > +       bool rotating;
-> >         u64 devid;
-> >         int ret;
-> >
-> > @@ -669,8 +699,12 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
-> >         }
-> >
-> >         q = bdev_get_queue(bdev);
-> > -       if (!blk_queue_nonrot(q))
-> > +       rotating = !blk_queue_nonrot(q);
-> > +       device->rotating = rotating;
-> > +       if (rotating)
-> >                 fs_devices->rotating = true;
-> > +       if (!fs_devices->mixed)
-> > +               fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
-> >
-> >         device->bdev = bdev;
-> >         clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
-> > @@ -2418,6 +2452,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
-> >         fs_devices->open_devices = 0;
-> >         fs_devices->missing_devices = 0;
-> >         fs_devices->rotating = false;
-> > +       fs_devices->mixed = false;
-> >         list_add(&seed_devices->seed_list, &fs_devices->seed_list);
-> >
-> >         generate_random_uuid(fs_devices->fsid);
-> > @@ -2522,6 +2557,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
-> >         int seeding_dev = 0;
-> >         int ret = 0;
-> >         bool locked = false;
-> > +       bool rotating;
-> >
-> >         if (sb_rdonly(sb) && !fs_devices->seeding)
-> >                 return -EROFS;
-> > @@ -2621,8 +2657,12 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
-> >
-> >         atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
-> >
-> > -       if (!blk_queue_nonrot(q))
-> > +       rotating = !blk_queue_nonrot(q);
-> > +       device->rotating = rotating;
-> > +       if (rotating)
-> >                 fs_devices->rotating = true;
-> > +       if (!fs_devices->mixed)
-> > +               fs_devices->mixed = btrfs_check_mixed(fs_devices, rotating);
-> >
-> >         orig_super_total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
-> >         btrfs_set_super_total_bytes(fs_info->super_copy,
-> > diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> > index 6e544317a377..594f1207281c 100644
-> > --- a/fs/btrfs/volumes.h
-> > +++ b/fs/btrfs/volumes.h
-> > @@ -147,6 +147,9 @@ struct btrfs_device {
-> >         /* I/O stats for raid1 mirror selection */
-> >         struct percpu_counter inflight;
-> >         atomic_t last_offset;
-> > +
-> > +       /* If the device is rotational */
-> > +       bool rotating;
-> >  };
-> >
-> >  /*
-> > @@ -274,6 +277,10 @@ struct btrfs_fs_devices {
-> >          * nonrot flag set
-> >          */
-> >         bool rotating;
-> > +       /* Set when we find or add both nonrot and rot disks in the
-> > +        * filesystem
-> > +        */
-> > +       bool mixed;
-> >
-> >         struct btrfs_fs_info *fs_info;
-> >         /* sysfs kobjects */
-> > --
-> > 2.30.0
-> >
-> 
-> 
-> -- 
-> Filipe David Manana,
-> 
-> ‚ÄúWhether you think you can, or you think you can't ‚Äî you're right.‚Äù
+Best Reagrds,
+Micha≥ Miros≥aw
