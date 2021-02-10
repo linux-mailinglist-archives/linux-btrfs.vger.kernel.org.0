@@ -2,63 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8280B316A3B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 16:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3D2316AB1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 17:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbhBJPbe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 10:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        id S232004AbhBJQFW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Feb 2021 11:05:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbhBJPbc (ORCPT
+        with ESMTP id S231966AbhBJQFG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 10:31:32 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F458C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 07:30:51 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id q85so1978622qke.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 07:30:51 -0800 (PST)
+        Wed, 10 Feb 2021 11:05:06 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2AFC06174A
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 08:04:25 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id v3so1872981qtw.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 08:04:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=pDXXtxKBe0PUoiIr7dtfU7Mocygm0Cj76jVIzhJTiOQ=;
-        b=lxVy+VBXxAQd0UwhRmvB6oJa4sJLIf8EpBlLrPiHVKWVXkcJYH0DZAtwQfCLd3EdEF
-         JXijuKoxHa9YZLHjvz4ZTcbcdUsPLlGCMSTDoTLkx6Dt0q/p0ssJq+f/DFJwIv3EKn7A
-         CLs3K0+8oivsR7rONro43a+lZijEOWLK1Kes45VpUgzDHcmbnXDkRz2wAfgDXh0O4IIZ
-         npoauibNJJGD4bO8gyFIJJZzXoho7jerZ+xUWKziGIrFBTogOwXCqqSkVRrDVW9criOg
-         q7o642qxgv4rgQx3AK33YTxtV1fodUi6PJfcyfyYLIaPSJktQ5AqreSQo04JO4dFfiTk
-         /HVA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vWMh0ttac95aV6wXLGVtvseMLVxZT4WzhboTV8D41OA=;
+        b=IYCeUBmgWiNEm9CAb3ENBFvZto/T8d4Z5It2E0xgQSiEZtuTF25mXUPV+eDInkP1F6
+         Y3Jk0NO4yLsD+2QiCz/gyOqeLi1sANoLwn3FNI+poYEK62ZWSHbWDWuPGcx4v1j07ilt
+         Q41jwcjLRGdOgeuFZqviXniFFwsrc1i9S4uV+beERQ2kE0euougiqPOdb9DcT/59sxOZ
+         fPjfjNynSt8kHemOpYzrsFB3XpXSX7nVAC2xEAnarEHSK1MnKoL9CgaohsCMxbrp6Ldh
+         Z/AOLkDLSAkOY7ZKO9zRoWkXGsx+KZr2gJ+0+UgC5vNKKT9rOCb9DqcprzZ/wuDKddz9
+         bCVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=pDXXtxKBe0PUoiIr7dtfU7Mocygm0Cj76jVIzhJTiOQ=;
-        b=YbUa8o0tNJZAos7ZTzE3CGdaT2aK5YYAJBwJ7HhS87R5EnEPVtrg+JaL65jkdng+NX
-         R5djnMTzyks3oA0WdXf6zHJ8nAvqQB90oLSfO0RlJUiUU9HUKmlAnWryv1QjnJP3DKJI
-         YmCUPBQUrb/UfNbgT/H2t1/bt/wdsmqVsMdk9rAq2TmTpYrf2lmFuDbxQ6m1R9bjzSwe
-         cYIBuY9yBSZppisMSDzD4pWUV61JBLjy1F3Ua05ab5GwIIxiTut4sbFkL3tMVkYTJ40j
-         q+qmoDttVzRSNmh3PCLlsXva1qP1vwD2wA9YrX3lKXULDSDHHjKcX2+JTOE3E3HBxo9H
-         yFdQ==
-X-Gm-Message-State: AOAM530XxNNLCXRyVFFSDkBFoLx78Up+in/rDqG6ErD7oAm2oYGU2Kzw
-        dV69pMUyyDu46TevgBSXLNmInlx5F06FA9y8
-X-Google-Smtp-Source: ABdhPJyjl8Fw8bYFN4dfPhmMxO3ZB+rXS5T8bWhGPXdYyQ1qVt4kXKpK6Ro/c3g44c9PdmVPn+Qt1w==
-X-Received: by 2002:a05:620a:6c8:: with SMTP id 8mr3887777qky.220.1612971050286;
-        Wed, 10 Feb 2021 07:30:50 -0800 (PST)
+        bh=vWMh0ttac95aV6wXLGVtvseMLVxZT4WzhboTV8D41OA=;
+        b=eC9vCMnI92v87wz18Qmn43lKtjDNNrsafpW38t2oh+fs5sEGwJ0SKX4A4OzclAS5dM
+         lTfZMwBmu7nCev2vlJ9Mu59BRAzvjw/W0XrleJJ3AXXrii/a1oRgXFxo2he2nFaNWZ64
+         0GQPq6Qyb6UalA0fTddwXC01O9tmzrrQEQnga3Ir6liqbEqKH1IUMIRO92HZanaU4HCn
+         XIm7ZpPuDGuPyJ8A8JfjjFobp+oZud06O/b6SIFixbbSlR3Q1+qCUzm3+UcyyvFgbUZI
+         187kset4Drb1kUr9KKlud4OA9FGa1+2VzyN8rnxa3Pc+8/nOcWeYu7Yy2yaLb07mbblA
+         HtTg==
+X-Gm-Message-State: AOAM530ykimmMRcL+PP+1Z0CXXuMF5pF2YKEvJTPIkCvlQlbX3uu8XXH
+        mGc0IWKR9tDNdz+WgMQsiMP/yA==
+X-Google-Smtp-Source: ABdhPJyYBMKQDDA+f08DxFIJowHsI7B55kE+1YebLicE4xDHzTCWcAGO0ovW3t50+g6ECeDFuqrF7w==
+X-Received: by 2002:aed:3964:: with SMTP id l91mr3387064qte.32.1612973064545;
+        Wed, 10 Feb 2021 08:04:24 -0800 (PST)
 Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c63sm1690262qkf.8.2021.02.10.07.30.49
+        by smtp.gmail.com with ESMTPSA id h5sm1534375qti.22.2021.02.10.08.04.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Feb 2021 07:30:49 -0800 (PST)
-Subject: Re: [PATCH 0/4] btrfs: fix a couple swapfile support bugs
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1612350698.git.fdmanana@suse.com>
+        Wed, 10 Feb 2021 08:04:23 -0800 (PST)
+Subject: Re: [RFC][PATCH V6] btrfs: allocation_hint mode
+To:     Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <20210201212820.64381-1-kreijack@libero.it>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <d8dd8f74-ca4b-f41b-4e07-72ee406167d7@toxicpanda.com>
-Date:   Wed, 10 Feb 2021 10:30:48 -0500
+Message-ID: <df7f0dd3-d648-ea9f-2856-7034a6833a51@toxicpanda.com>
+Date:   Wed, 10 Feb 2021 11:04:22 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1612350698.git.fdmanana@suse.com>
+In-Reply-To: <20210201212820.64381-1-kreijack@libero.it>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -66,20 +68,33 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/3/21 6:17 AM, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 2/1/21 4:28 PM, Goffredo Baroncelli wrote:
 > 
-> The following patchset fixes 2 bugs with the swapfile support, where we can
-> end up falling back to COW when writing to an active swapfile. As a bonus,
-> it makes the NOCOW write patch, for both buffered and direct IO, more efficient
-> by avoiding doing repeated worked when checking if the target block group is
-> read-only.
+> Hi all,
+> 
+> the previous V5 serie was called "btrfs: preferred_metadata: preferred device
+> for metadata".
 > 
 
-You can add
+A few general points up front, first I'd highly recommend reading our patch 
+submission guidelines
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+https://github.com/btrfs/btrfs-workflow/blob/master/patch-submission.md
 
-To the series, thanks,
+specifically the 'Git config options' section, as it tells you how to apply our 
+git hooks to your local repo.  This will check your patches for all the 
+automatic formatting things we'll complain about, that way you don't have to get 
+bogged down in those style of comments in the review.  For example as soon as I 
+started applying your patches I was getting a ton of whitespace warnings, these 
+are better caught before sending them along.
+
+Also try to develop on Dave's misc-next branch.  I realize this is a moving 
+target, so I'm fine with massaging patches so I can review, but again everything 
+needed massaging.
+
+And finally for a new feature we're going to need an xfstest or two in order to 
+merge them.  I realize we're still working out the details, but the further you 
+get into this it would be good to go ahead and have a test that validates 
+everything.  Thanks,
 
 Josef
