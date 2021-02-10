@@ -2,116 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC53B31675E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 14:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E356D3167D3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 14:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhBJNBm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 08:01:42 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:36286 "EHLO rere.qmqm.pl"
+        id S231380AbhBJNUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Feb 2021 08:20:22 -0500
+Received: from verein.lst.de ([213.95.11.211]:51090 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231668AbhBJM7d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 07:59:33 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DbKZX4sYxz6r;
-        Wed, 10 Feb 2021 13:58:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1612961924; bh=CrEz6PwI0HJJcQyRSYFbySp7b7sxuUv30wgP5keoK7I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cbOP0DorpbnwPhgeBg/RJ85LhzJMZjIzOwzLX6BEOmMr+SdD2QxSkVs+Rg7M4lHXD
-         +gSh1npIbqE6EyTcBaG+xPgtA8hh9pFaCfI2ONWG5Pl64/ihIxzPMsS1/rc+uH7RmG
-         SNDqx6sOOQySG0A5ohwXVLb90fz5QsydW8BiE+pwAdt0Th7J1hEMlK/Q0oIb1/9Mj2
-         vqEC/mKH7DKR3+XdSClBvs0AlaCZEMrrIqb4ugLBIzdU1fjATYC+wwukDx94CxaNeB
-         VKz3c8VxsFypEA9MF0FFS4zzd4NLwt971THkLPAJ1dgOnXUJc0yFsI/mhFWcu5nZX5
-         RPqUgDFgdG6bQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Wed, 10 Feb 2021 13:58:15 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Michal Rostecki <mrostecki@suse.de>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210210125815.GA20903@qmqm.qmqm.pl>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
- <20210210042428.GC12086@qmqm.qmqm.pl>
- <20210210122925.GB23499@wotan.suse.de>
+        id S231583AbhBJNUN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Feb 2021 08:20:13 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E84686736F; Wed, 10 Feb 2021 14:19:28 +0100 (CET)
+Date:   Wed, 10 Feb 2021 14:19:28 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        dan.j.williams@intel.com, willy@infradead.org, jack@suse.cz,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, rgoldwyn@suse.de,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
+Message-ID: <20210210131928.GA30109@lst.de>
+References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com> <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com> <20210208151920.GE12872@lst.de> <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com> <20210209093438.GA630@lst.de> <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210210122925.GB23499@wotan.suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:29:25PM +0000, Michal Rostecki wrote:
-> On Wed, Feb 10, 2021 at 05:24:28AM +0100, Micha³ Miros³aw wrote:
-> > On Tue, Feb 09, 2021 at 09:30:40PM +0100, Michal Rostecki wrote:
-> > [...]
-> > > For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
-> > > (429MB/s) performance. Adding the penalty value 1 resulted in a
-> > > performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
-> > > was making the performance even worse.
-> > > 
-> > > For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
-> > > rotational disks resulted in the best performance - 541MiB/s (567MB/s).
-> > > Not adding any value and increasing the value was making the performance
-> > > worse.
-> > > 
-> > > Adding penalty value to non-rotational disks was always decreasing the
-> > > performance, which motivated setting it as 0 by default. For the purpose
-> > > of testing, it's still configurable.
-> > [...]
-> > > +	bdev = map->stripes[mirror_index].dev->bdev;
-> > > +	inflight = mirror_load(fs_info, map, mirror_index, stripe_offset,
-> > > +			       stripe_nr);
-> > > +	queue_depth = blk_queue_depth(bdev->bd_disk->queue);
-> > > +
-> > > +	return inflight < queue_depth;
-> > [...]
-> > > +	last_mirror = this_cpu_read(*fs_info->last_mirror);
-> > [...]
-> > > +	for (i = last_mirror; i < first + num_stripes; i++) {
-> > > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> > > +					    stripe_nr)) {
-> > > +			preferred_mirror = i;
-> > > +			goto out;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	for (i = first; i < last_mirror; i++) {
-> > > +		if (mirror_queue_not_filled(fs_info, map, i, stripe_offset,
-> > > +					    stripe_nr)) {
-> > > +			preferred_mirror = i;
-> > > +			goto out;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	preferred_mirror = last_mirror;
-> > > +
-> > > +out:
-> > > +	this_cpu_write(*fs_info->last_mirror, preferred_mirror);
-> > 
-> > This looks like it effectively decreases queue depth for non-last
-> > device. After all devices are filled to queue_depth-penalty, only
-> > a single mirror will be selected for next reads (until a read on
-> > some other one completes).
-> > 
-> 
-> Good point. And if all devices are going to be filled for longer time,
-> this function will keep selecting the last one. Maybe I should select
-> last+1 in that case. Would that address your concern or did you have any
-> other solution in mind?
+On Tue, Feb 09, 2021 at 05:46:13PM +0800, Ruan Shiyang wrote:
+>
+>
+> On 2021/2/9 ä¸‹åˆ5:34, Christoph Hellwig wrote:
+>> On Tue, Feb 09, 2021 at 05:15:13PM +0800, Ruan Shiyang wrote:
+>>> The dax dedupe comparison need the iomap_ops pointer as argument, so my
+>>> understanding is that we don't modify the argument list of
+>>> generic_remap_file_range_prep(), but move its code into
+>>> __generic_remap_file_range_prep() whose argument list can be modified to
+>>> accepts the iomap_ops pointer.  Then it looks like this:
+>>
+>> I'd say just add the iomap_ops pointer to
+>> generic_remap_file_range_prep and do away with the extra wrappers.  We
+>> only have three callers anyway.
+>
+> OK.
 
-The best would be to postpone the selection until one device becomes free
-again. But if that's not doable, then yes, you could make sure it stays
-round-robin after filling the queues (the scheduling will loose the
-"penalty"-driven adjustment though).
+So looking at this again I think your proposal actaully is better,
+given that the iomap variant is still DAX specific.  Sorry for
+the noise.
 
-Best Reagrds,
-Micha³ Miros³aw
+Also I think dax_file_range_compare should use iomap_apply instead
+of open coding it.
