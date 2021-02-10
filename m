@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9729C317315
+	by mail.lfdr.de (Postfix) with ESMTP id D1A2B317317
 	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Feb 2021 23:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhBJWP0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 17:15:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
+        id S232903AbhBJWP2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Feb 2021 17:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhBJWPW (ORCPT
+        with ESMTP id S232891AbhBJWPY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 17:15:22 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF075C0613D6
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 14:14:41 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id o193so3374951qke.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 14:14:41 -0800 (PST)
+        Wed, 10 Feb 2021 17:15:24 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B692FC061786
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 14:14:43 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id h8so3386021qkk.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 14:14:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mEHNIYeLl7iOw3nd1CdxJKtufXh4H/Rnl9mCb/QuHtg=;
-        b=ct+AxeqwF+/RHWdDfJGyS9kDrNaThi0eX0ctTdnW461NS1Sr3J21GIju2bwetP40JM
-         jnKRI7zqUkvdNO8apgm1nivD2I8HAsb1nVrWbf6/gzQ80Pca7AJCPvGEsb7jFxyHnzGi
-         Vhv+rJQZMAZCeIaETfEPEQSiu3CxKg9EXQy8iYj9pUWAmKltVQj02CviCn76Y7+rZVbF
-         aMI3U3j5Hz9biOtpvjgWSq0usuT9C9Ap+8PaMrH0Ij7O0UCB4qmy4kQmUxNLc4/26vgN
-         AaXpRD0TBhvdvotnNrTCqN04gQoEb10oVnOWBFcizgK1sT9pbmCUO5N5xtYKw2cCChjI
-         GQxw==
+        bh=UUKqMOoaVU6i360/ikILJBalJxPMx24J0kCBLuD9Ymk=;
+        b=aaWWEvrCKOSw0DRZVrO2RZt/WvMwqWuvpaeg3/XVQJ7FRAkiKaRPgN5N3wQ17ePRaa
+         AQyXJ6rZ4ONoM7QsNy23/YEB2iAt8FAf97IH8TNtEhrOsGfuqOCc5R7OMae4lrHfT8Uy
+         Z6jVEsslSeZpoEiYbdSBll9RPVSRvrJ3OHWntGjAKhzELbw6RKnoVw96Hzkg83G6LAEX
+         0mk/o+EUqAEbF0054I4JTxHV655wlqQ6JUGxIm84Vk33DIVlajxDi8txC/vqfFkEJUUJ
+         X8d04k5Uq+GS6LFX0lUMjgWC6NQ7ZPM1t0NfsRVY4+Tiv13UyKjxD6kdF1f/6xacH9Cu
+         T4vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mEHNIYeLl7iOw3nd1CdxJKtufXh4H/Rnl9mCb/QuHtg=;
-        b=LM8SI0Qf/TA1ZE1MJd14wU9yTyY9hrmRf7PakvTIT+HupjfGsDMlNEDESUfbV5P+77
-         imLzBCv1EBQERKqRJbSV5Uz8AYxV52r6HTzVz2YX+2gAh1tM73WGRUNOzMBiHhf2BfUz
-         aYx6Rs3kitMzZaOqlmfr4XTrQfe0zx3o+vxuKXENi2gCprV71dBNdRw1B68nnvYQrh1F
-         cH3f2K0fU2dfZYgTgxxv+t1rgt0t1JeIV9liMS4eUkZx7urV3h9Bexcin8CNIplrM7uL
-         c9AxV0rPYJWtA2lcYMT+Z0yMVEaz8HsoXnMd7zeMniRlAQrCz5arFWMZnkAG//5QmEPp
-         rZCw==
-X-Gm-Message-State: AOAM533COv1OqJfH0HkqIwfpxJoJLQLZ1opehdJzh6Nsr+4aZ6R8riwa
-        TrzyDMqFkIGGdwjIFDNlAtlku4qAKSbbDaoE
-X-Google-Smtp-Source: ABdhPJzX+Pk3E3LhsZQFcK8TOgqmlGRPknuGu6HxbpchctfPkbj4bsUdpQfbl86m4P+syZo+qXRZXA==
-X-Received: by 2002:a05:620a:959:: with SMTP id w25mr4673782qkw.345.1612995280705;
-        Wed, 10 Feb 2021 14:14:40 -0800 (PST)
+        bh=UUKqMOoaVU6i360/ikILJBalJxPMx24J0kCBLuD9Ymk=;
+        b=mYRej6PzslLeuyRFHPa0l8VgvJnWjbX5XpUwQwr/v1UhmtlSyH9pFLUVdAPxFigXtr
+         tXxP1x9M2bC64Q0o7PYUmEdSiXDzPDtYwk8hIkPyXdF+bAgStzV7k8CpKD7UGwpJGTZc
+         rwPf5Dd6WbnjBWhdglR1OmzmZ1F0Ts+5/XMsrc9LUr3Gu8ocmaAqXSFAdVci0wrU+AeV
+         fLtR0fbCW1FlMn0R5Wd+2uVC+lCsp6XBezIuKDoG4Egoq7sL/br9J7YwP1cW3GwmkjQs
+         9XOXsth2g10wF7V/qCFOvL6IkouA9p/HQAf9K3KpMR/j9EWIb38Y/l0vgc0SUW8i9nGY
+         S/8w==
+X-Gm-Message-State: AOAM532cYO1lx8gNsoMQ4IGanBY6uBnRf0G67SK9BSua6SO+6jHgmtGz
+        BWUIO7YmKDe+rcpp0gkKJfxfgQwlm9pUZRsF
+X-Google-Smtp-Source: ABdhPJyffQZux4vA1bQGFsQeM9bvwTw0jybt5F4YY858EX9FO1A+ukKtN0tH69H4zNcMtPnGgpLG4w==
+X-Received: by 2002:a37:b96:: with SMTP id 144mr5902390qkl.314.1612995282545;
+        Wed, 10 Feb 2021 14:14:42 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id i5sm2458810qkg.32.2021.02.10.14.14.39
+        by smtp.gmail.com with ESMTPSA id l137sm2539326qke.6.2021.02.10.14.14.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 14:14:40 -0800 (PST)
+        Wed, 10 Feb 2021 14:14:41 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2 1/4] btrfs: add a i_mmap_lock to our inode
-Date:   Wed, 10 Feb 2021 17:14:33 -0500
-Message-Id: <1963d741dfcd35e9585e1d7f96d1e45a44288125.1612995212.git.josef@toxicpanda.com>
+Subject: [PATCH v2 2/4] btrfs: cleanup inode_lock/inode_unlock uses
+Date:   Wed, 10 Feb 2021 17:14:34 -0500
+Message-Id: <89a4671fb7927a5485cf52a95822bebfe64302cc.1612995212.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1612995212.git.josef@toxicpanda.com>
 References: <cover.1612995212.git.josef@toxicpanda.com>
@@ -63,125 +63,273 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We need to be able to exclude page_mkwrite from happening concurrently
-with certain operations.  To facilitate this, add a i_mmap_lock to our
-inode, down_read() it in our mkwrite, and add a new ILOCK flag to
-indicate that we want to take the i_mmap_lock as well.  I used pahole to
-check the size of the btrfs_inode, the sizes are as follows
-
-no lockdep:
-before: 1120 (3 per 4k page)
-after: 1160 (3 per 4k page)
-
-lockdep:
-before: 2072 (1 per 4k page)
-after: 2224 (1 per 4k page)
-
-We're slightly larger but it doesn't change how many objects we can fit
-per page.
+A few places we intermix btrfs_inode_lock with a inode_unlock, and some
+places we just use inode_lock/inode_unlock instead of btrfs_inode_lock.
+None of these places are using this incorrectly, but as we adjust some
+of these callers it would be nice to keep everything consistent, so
+convert everybody to use btrfs_inode_lock/btrfs_inode_unlock.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/btrfs_inode.h |  1 +
- fs/btrfs/ctree.h       |  1 +
- fs/btrfs/inode.c       | 10 ++++++++++
- 3 files changed, 12 insertions(+)
+ fs/btrfs/delayed-inode.c |  4 ++--
+ fs/btrfs/file.c          | 18 +++++++++---------
+ fs/btrfs/ioctl.c         | 26 +++++++++++++-------------
+ fs/btrfs/reflink.c       |  4 ++--
+ fs/btrfs/relocation.c    |  4 ++--
+ 5 files changed, 28 insertions(+), 28 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 28e202e89660..26837c3ca7f6 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -220,6 +220,7 @@ struct btrfs_inode {
- 	/* Hook into fs_info->delayed_iputs */
- 	struct list_head delayed_iput;
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index ec0b50b8c5d6..ec6c277f1f91 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1588,8 +1588,8 @@ bool btrfs_readdir_get_delayed_items(struct inode *inode,
+ 	 * We can only do one readdir with delayed items at a time because of
+ 	 * item->readdir_list.
+ 	 */
+-	inode_unlock_shared(inode);
+-	inode_lock(inode);
++	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
++	btrfs_inode_lock(inode, 0);
  
-+	struct rw_semaphore i_mmap_lock;
- 	struct inode vfs_inode;
- };
+ 	mutex_lock(&delayed_node->mutex);
+ 	item = __btrfs_first_delayed_insertion_item(delayed_node);
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 01a72f53fb5d..728736e3d4b8 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2122,7 +2122,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	if (ret)
+ 		goto out;
  
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 3bc00aed13b2..5a410c812978 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3174,6 +3174,7 @@ extern const struct iomap_dio_ops btrfs_dio_ops;
- /* Inode locking type flags, by default the exclusive lock is taken */
- #define BTRFS_ILOCK_SHARED	(1U << 0)
- #define BTRFS_ILOCK_TRY 	(1U << 1)
-+#define BTRFS_ILOCK_MMAP	(1U << 2)
+-	inode_lock(inode);
++	btrfs_inode_lock(inode, 0);
  
- int btrfs_inode_lock(struct inode *inode, unsigned int ilock_flags);
- void btrfs_inode_unlock(struct inode *inode, unsigned int ilock_flags);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 535abf898225..4c3ba0a3e0e6 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -102,6 +102,7 @@ static void __endio_write_update_ordered(struct btrfs_inode *inode,
-  * BTRFS_ILOCK_SHARED - acquire a shared lock on the inode
-  * BTRFS_ILOCK_TRY - try to acquire the lock, if fails on first attempt
-  *		     return -EAGAIN
-+ * BTRFS_ILOCK_MMAP - acquire a write lock on the i_mmap_lock
-  */
- int btrfs_inode_lock(struct inode *inode, unsigned int ilock_flags)
- {
-@@ -122,6 +123,8 @@ int btrfs_inode_lock(struct inode *inode, unsigned int ilock_flags)
- 		}
- 		inode_lock(inode);
+ 	atomic_inc(&root->log_batch);
+ 
+@@ -2154,7 +2154,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	 */
+ 	ret = start_ordered_ops(inode, start, end);
+ 	if (ret) {
+-		inode_unlock(inode);
++		btrfs_inode_unlock(inode, 0);
+ 		goto out;
  	}
-+	if (ilock_flags & BTRFS_ILOCK_MMAP)
-+		down_write(&BTRFS_I(inode)->i_mmap_lock);
- 	return 0;
+ 
+@@ -2255,7 +2255,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 	 * file again, but that will end up using the synchronization
+ 	 * inside btrfs_sync_log to keep things safe.
+ 	 */
+-	inode_unlock(inode);
++	btrfs_inode_unlock(inode, 0);
+ 
+ 	if (ret != BTRFS_NO_LOG_SYNC) {
+ 		if (!ret) {
+@@ -2285,7 +2285,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 
+ out_release_extents:
+ 	btrfs_release_log_ctx_extents(&ctx);
+-	inode_unlock(inode);
++	btrfs_inode_unlock(inode, 0);
+ 	goto out;
  }
  
-@@ -133,6 +136,8 @@ int btrfs_inode_lock(struct inode *inode, unsigned int ilock_flags)
-  */
- void btrfs_inode_unlock(struct inode *inode, unsigned int ilock_flags)
- {
-+	if (ilock_flags & BTRFS_ILOCK_MMAP)
-+		up_write(&BTRFS_I(inode)->i_mmap_lock);
- 	if (ilock_flags & BTRFS_ILOCK_SHARED)
- 		inode_unlock_shared(inode);
+@@ -2868,7 +2868,7 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 	if (ret)
+ 		return ret;
+ 
+-	inode_lock(inode);
++	btrfs_inode_lock(inode, 0);
+ 	ino_size = round_up(inode->i_size, fs_info->sectorsize);
+ 	ret = find_first_non_hole(BTRFS_I(inode), &offset, &len);
+ 	if (ret < 0)
+@@ -2908,7 +2908,7 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 		truncated_block = true;
+ 		ret = btrfs_truncate_block(BTRFS_I(inode), offset, 0, 0);
+ 		if (ret) {
+-			inode_unlock(inode);
++			btrfs_inode_unlock(inode, 0);
+ 			return ret;
+ 		}
+ 	}
+@@ -3009,7 +3009,7 @@ static int btrfs_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+ 				ret = ret2;
+ 		}
+ 	}
+-	inode_unlock(inode);
++	btrfs_inode_unlock(inode, 0);
+ 	return ret;
+ }
+ 
+@@ -3374,7 +3374,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+ 
+ 	if (mode & FALLOC_FL_ZERO_RANGE) {
+ 		ret = btrfs_zero_range(inode, offset, len, mode);
+-		inode_unlock(inode);
++		btrfs_inode_unlock(inode, 0);
+ 		return ret;
+ 	}
+ 
+@@ -3484,7 +3484,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+ 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, alloc_start, locked_end,
+ 			     &cached_state);
+ out:
+-	inode_unlock(inode);
++	btrfs_inode_unlock(inode, 0);
+ 	/* Let go of our reservation. */
+ 	if (ret != 0 && !(mode & FALLOC_FL_ZERO_RANGE))
+ 		btrfs_free_reserved_data_space(BTRFS_I(inode), data_reserved,
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index a8c60d46d19c..c9f2bc0602d6 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -226,7 +226,7 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
+ 	if (ret)
+ 		return ret;
+ 
+-	inode_lock(inode);
++	btrfs_inode_lock(inode, 0);
+ 	fsflags = btrfs_mask_fsflags_for_type(inode, fsflags);
+ 	old_fsflags = btrfs_inode_flags_to_fsflags(binode->flags);
+ 
+@@ -353,7 +353,7 @@ static int btrfs_ioctl_setflags(struct file *file, void __user *arg)
+  out_end_trans:
+ 	btrfs_end_transaction(trans);
+  out_unlock:
+-	inode_unlock(inode);
++	btrfs_inode_unlock(inode, 0);
+ 	mnt_drop_write_file(file);
+ 	return ret;
+ }
+@@ -449,7 +449,7 @@ static int btrfs_ioctl_fssetxattr(struct file *file, void __user *arg)
+ 	if (ret)
+ 		return ret;
+ 
+-	inode_lock(inode);
++	btrfs_inode_lock(inode, 0);
+ 
+ 	old_flags = binode->flags;
+ 	old_i_flags = inode->i_flags;
+@@ -501,7 +501,7 @@ static int btrfs_ioctl_fssetxattr(struct file *file, void __user *arg)
+ 		inode->i_flags = old_i_flags;
+ 	}
+ 
+-	inode_unlock(inode);
++	btrfs_inode_unlock(inode, 0);
+ 	mnt_drop_write_file(file);
+ 
+ 	return ret;
+@@ -1013,7 +1013,7 @@ static noinline int btrfs_mksubvol(const struct path *parent,
+ out_dput:
+ 	dput(dentry);
+ out_unlock:
+-	inode_unlock(dir);
++	btrfs_inode_unlock(dir, 0);
+ 	return error;
+ }
+ 
+@@ -1611,7 +1611,7 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+ 			ra_index += cluster;
+ 		}
+ 
+-		inode_lock(inode);
++		btrfs_inode_lock(inode, 0);
+ 		if (IS_SWAPFILE(inode)) {
+ 			ret = -ETXTBSY;
+ 		} else {
+@@ -1620,13 +1620,13 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+ 			ret = cluster_pages_for_defrag(inode, pages, i, cluster);
+ 		}
+ 		if (ret < 0) {
+-			inode_unlock(inode);
++			btrfs_inode_unlock(inode, 0);
+ 			goto out_ra;
+ 		}
+ 
+ 		defrag_count += ret;
+ 		balance_dirty_pages_ratelimited(inode->i_mapping);
+-		inode_unlock(inode);
++		btrfs_inode_unlock(inode, 0);
+ 
+ 		if (newer_than) {
+ 			if (newer_off == (u64)-1)
+@@ -1674,9 +1674,9 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+ 
+ out_ra:
+ 	if (do_compress) {
+-		inode_lock(inode);
++		btrfs_inode_lock(inode, 0);
+ 		BTRFS_I(inode)->defrag_compress = BTRFS_COMPRESS_NONE;
+-		inode_unlock(inode);
++		btrfs_inode_unlock(inode, 0);
+ 	}
+ 	if (!file)
+ 		kfree(ra);
+@@ -3092,9 +3092,9 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 		goto out_dput;
+ 	}
+ 
+-	inode_lock(inode);
++	btrfs_inode_lock(inode, 0);
+ 	err = btrfs_delete_subvolume(dir, dentry);
+-	inode_unlock(inode);
++	btrfs_inode_unlock(inode, 0);
+ 	if (!err) {
+ 		fsnotify_rmdir(dir, dentry);
+ 		d_delete(dentry);
+@@ -3103,7 +3103,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ out_dput:
+ 	dput(dentry);
+ out_unlock_dir:
+-	inode_unlock(dir);
++	btrfs_inode_unlock(dir, 0);
+ free_subvol_name:
+ 	kfree(subvol_name_ptr);
+ free_parent:
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index b24396cf2f99..12df3ee84e93 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -819,7 +819,7 @@ loff_t btrfs_remap_file_range(struct file *src_file, loff_t off,
+ 		return -EINVAL;
+ 
+ 	if (same_inode)
+-		inode_lock(src_inode);
++		btrfs_inode_lock(src_inode, 0);
  	else
-@@ -8538,6 +8543,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 		lock_two_nondirectories(src_inode, dst_inode);
  
- 	ret = VM_FAULT_NOPAGE; /* make the VM retry the fault */
- again:
-+	down_read(&BTRFS_I(inode)->i_mmap_lock);
- 	lock_page(page);
- 	size = i_size_read(inode);
- 
-@@ -8566,6 +8572,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 		unlock_extent_cached(io_tree, page_start, page_end,
- 				     &cached_state);
- 		unlock_page(page);
-+		up_read(&BTRFS_I(inode)->i_mmap_lock);
- 		btrfs_start_ordered_extent(ordered, 1);
- 		btrfs_put_ordered_extent(ordered);
- 		goto again;
-@@ -8623,6 +8630,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	BTRFS_I(inode)->last_log_commit = BTRFS_I(inode)->root->last_log_commit;
- 
- 	unlock_extent_cached(io_tree, page_start, page_end, &cached_state);
-+	up_read(&BTRFS_I(inode)->i_mmap_lock);
- 
- 	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
- 	sb_end_pagefault(inode->i_sb);
-@@ -8631,6 +8639,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+@@ -835,7 +835,7 @@ loff_t btrfs_remap_file_range(struct file *src_file, loff_t off,
  
  out_unlock:
- 	unlock_page(page);
-+	up_read(&BTRFS_I(inode)->i_mmap_lock);
- out:
- 	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
- 	btrfs_delalloc_release_space(BTRFS_I(inode), data_reserved, page_start,
-@@ -8882,6 +8891,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	INIT_LIST_HEAD(&ei->delalloc_inodes);
- 	INIT_LIST_HEAD(&ei->delayed_iput);
- 	RB_CLEAR_NODE(&ei->rb_node);
-+	init_rwsem(&ei->i_mmap_lock);
+ 	if (same_inode)
+-		inode_unlock(src_inode);
++		btrfs_inode_unlock(src_inode, 0);
+ 	else
+ 		unlock_two_nondirectories(src_inode, dst_inode);
  
- 	return inode;
- }
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 232d5da7b7be..bf269ee17e68 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2578,7 +2578,7 @@ static noinline_for_stack int prealloc_file_extent_cluster(
+ 		return btrfs_end_transaction(trans);
+ 	}
+ 
+-	inode_lock(&inode->vfs_inode);
++	btrfs_inode_lock(&inode->vfs_inode, 0);
+ 	for (nr = 0; nr < cluster->nr; nr++) {
+ 		start = cluster->boundary[nr] - offset;
+ 		if (nr + 1 < cluster->nr)
+@@ -2596,7 +2596,7 @@ static noinline_for_stack int prealloc_file_extent_cluster(
+ 		if (ret)
+ 			break;
+ 	}
+-	inode_unlock(&inode->vfs_inode);
++	btrfs_inode_unlock(&inode->vfs_inode, 0);
+ 
+ 	if (cur_offset < prealloc_end)
+ 		btrfs_free_reserved_data_space_noquota(inode->root->fs_info,
 -- 
 2.26.2
 
