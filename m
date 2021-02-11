@@ -2,149 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E89D3187AD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 11:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4385D318972
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 12:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhBKKDi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Feb 2021 05:03:38 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:11491 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhBKJ7W (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Feb 2021 04:59:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1613037562; x=1644573562;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=7e6wLdJ9l7mwodWobHjKlaMpHwfB4OpGJ8LveFo8Lis=;
-  b=j2Vg5tOrP2llYLYbPN2BXr9kqS5MjYgF4dQjW+g99bL50xa4HauH3kgy
-   R0wwNDpJc27pOC4PglzxUM+ylwm/bD0pBVqUNcRaJQt6ivFrdt+cOqh3S
-   6d8m9wNZGlO/dB4DO66gldRPeKpcS6/4zJPjbVTqrU76XoNugHqOFddAi
-   n3PsXIiDicGRI0YAMrhuvpZIKXMt3dD+HmxMOiwMCOUPXxqFrw++kl+pj
-   eb5jfEkxZ9OqfOXuVzBZAZmCOl3uOMzuUZ+hqEgRwDRjMgxGYztct3IAS
-   cDg2DcXQ3fEDWRq8ZWckICVx0V2S6JEqnfxGwa25GMzdIbWMbgnZJmWCb
-   A==;
-IronPort-SDR: NkuDoAQF3yHhosLHAq3lEZ7M1XcyYXKzZ12LuLMUs1TFYWZOkqvK47+lCs7zt0/sjewSgo+gMw
- K+KSXeZxIJ5RdanVgKFykf2bfo+mcmuBcPN8rOhv0IYcTpaQUoZY8sKMWannzzq9puQF412m3N
- fqKOuSoBlJgiNyWWCb5xRjP1LN7oQWiQXb3I7Neht9IRZ6OrOal63HpkttcBpgoRSOqfmWrFpt
- CIWuvkT7RCkGPoIxCDzf3JY4spjoyA2BH/r8oZXOBwqYtfU9jb53MsF+xjcbjs0kVnauavuscz
- Yno=
-X-IronPort-AV: E=Sophos;i="5.81,170,1610380800"; 
-   d="scan'208";a="160912987"
-Received: from mail-dm6nam11lp2171.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.171])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Feb 2021 17:58:12 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CM3YwoVxDSXwzA2oeeEcOGgqR4ldTOIphQhobuPNN/Xix8ac3vX/ZMkfkrkLMEmm7/8XRB/JbXNQ3GOq/hzpkjj0ixRwUYBRri4mgo0lKo/wxteoc0mCGQT2M9ZU3OBcowsNxse4SllMDIu+UJpnhXJXBfwRjEFASJDEgUZHaLbddQWpj2Yb9CW8zF5KLeN/YtvMTpJ3kSeWl/JQgn/wrwYbdy9sBiqxhZ+DBZ+0TidNHjRSo76WgHNa8aq+Tm+KnLHZOVp1sTgnA2xlO6EQtQdGNQOEhRzzK4Dr+padyG6NTBcy6vSilO+1FwVwh9/+Wjp3nK+HWkQun9Z0jckdQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7e6wLdJ9l7mwodWobHjKlaMpHwfB4OpGJ8LveFo8Lis=;
- b=m17NYzmm+1ZJkqZOSeO6MSYaIrY7ogZT8KkF+ALxOLXJbpAn07lbh62a7h2yaYL4QYvEnsy1YRscBKoKo6fhDyijVEU3EEP3LZ/WWlznCArCeVl3l5D3+yE2LqmBn1OD6HA7LwFN8JAjdeSal2AE9LUqeoMhsuoHXW7+WIXU06JWVdv3NdWPJG2wMa/UBf69MBGoI4hFJaQfkPooRGCM9taUzPAbPrPtS5SqheBzus9AeHl3sANyF5AJD+j0dRcLW/QaNhLlSkGo4tlQYWYvj5jsKNpQ6ooafiarfkgSvOfDykMK47oVgRAvlK0rzd5hwNfh2MEwtx53FcSqMjEnQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7e6wLdJ9l7mwodWobHjKlaMpHwfB4OpGJ8LveFo8Lis=;
- b=QXUD43tqX48BZUJLpUsts674ts2ARcqTbEgPWZePveOgKxLq0lvFnL5xLVpZCp7ooRJsqf0ceDEC2dmmJxT+QL3MHWD8m5r3laFdRvVbKQzfqSfMQYQFkkJbY0LefbEPTpXpJiLzJYLSyZ6sbsyC3qLt1CIKp/WDVzYVJycgAcs=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4400.namprd04.prod.outlook.com
- (2603:10b6:805:39::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Thu, 11 Feb
- 2021 09:58:09 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::c19b:805:20e0:6274]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::c19b:805:20e0:6274%7]) with mapi id 15.20.3846.029; Thu, 11 Feb 2021
- 09:58:09 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v15 00/42] btrfs: zoned block device support
-Thread-Topic: [PATCH v15 00/42] btrfs: zoned block device support
-Thread-Index: AQHW+uBDi/qAxtbkv0uUNvQXEiNsGQ==
-Date:   Thu, 11 Feb 2021 09:58:09 +0000
-Message-ID: <SN4PR0401MB35987EE941FA59E2ECB8D7269B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <cover.1612433345.git.naohiro.aota@wdc.com>
- <20210210195829.GW1993@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 02cfc2c9-5303-4c03-bed8-08d8ce73899a
-x-ms-traffictypediagnostic: SN6PR04MB4400:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR04MB4400B93D92669AA1C6B6B3719B8C9@SN6PR04MB4400.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nNHEQJ1inDoj6h3MZBJq1aWSyRABgUOmPt/UZNAA6WEiBHkocz18CNTxBmcQ3idfTI0pJvWWG+ZSb20IN+rtoMlMEaWeKZJ6DOmVpzVyLFQNmh6oMNTmxIfLuk0r5bPrBCNHO7irWtxKK8MT14cfI36AVdYInzI5oG4jjQVs7Au6owOLEK8W1qRolWCxX2o2llBhRWsk27mU5Haenx/PPtrPkGnePbGK5uXKEnU/v7JXL94c2LY5wYrhsec1CBSEi5IT+62MC9yxxpWz12QNCgF01oDVKuN13S4iIhrTUiqA7G8hcykLM0ovkV/XtGX5MWDe4eKgVswJka9jYPlCDLqLTXa53tAt+cAf5yLNBArd/p0t8Xtxtv6hBORj9Izd5Qp7Ul4z8dbq+lqspn03xuY5eAm9ZuEFjMzFHogl8ZhecSX7p+EuHepg+M9hwQZALlfB5xk7ZVqeve3ux0JsxhyQrrivQ3qd/wooifBfMhURH5fcaRbBHjJ53t/FqsWdVduKtxKzv/5T+WzAx9Ijcg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(376002)(396003)(4744005)(54906003)(110136005)(7696005)(478600001)(316002)(2906002)(83380400001)(33656002)(6506007)(4326008)(86362001)(6636002)(9686003)(53546011)(55016002)(64756008)(66946007)(26005)(52536014)(5660300002)(66476007)(71200400001)(66446008)(91956017)(66556008)(8676002)(76116006)(186003)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5iqZq0vxK1J36TnMZvXSLX7bA7iB6cqEUjuHhaL2cM4NbJwHoy5Y4cVZa9ug?=
- =?us-ascii?Q?O5HWfS8vinPt9Yf0cR/zbmREaDaclWJKRb2l1J7+g+jJImVn6O/G+oeRBvgG?=
- =?us-ascii?Q?M9RjqINzu5IX7Oj13XhIjVHwgRBqBOpTacZZjpE2saV4fvh/lEZsWNZFZGsn?=
- =?us-ascii?Q?dud+HFRK+/vb4NuhDJu5D5tp4L6i/UMUdJVuPX369jdB4hIhLO4Erd0lNp25?=
- =?us-ascii?Q?WvNv/DxF0DL5A4EdLIb7zECNN31xVpKOh2w4vTkvFQgCFwYJob9Bc9X3VVk6?=
- =?us-ascii?Q?/5Axwo4mH50Fx8Nfl7+bkcShr48JwV4Qr+p/Xzp8O3lBmNJstlsgrAkWjHMC?=
- =?us-ascii?Q?lp/69h3HIDZE1vMgkYwFAUfsxOwIh9jCr7qArCi8Iv1M8k8egd/bwYJFb9yl?=
- =?us-ascii?Q?5qxxioAwuQuePlFiXzPhkaHHcslXIeKVUpZjO3aKrJsNlMK8HbtfCjQLJ+S2?=
- =?us-ascii?Q?PuMLCzgQ+WbnkJ+AwDKhg4Bz3Y25+Rhz/0kBKvxCRmNa0g+zihK1o9JtqV+v?=
- =?us-ascii?Q?9xhZs2H0a53XoZ7GTw+RtoQTgutOKuqRm22IOGP54ySUcMy+xLF8Uk2JplVz?=
- =?us-ascii?Q?RN+Za7N3tWQ+S9cxuSO9Rcw7Nj2BYYxT7EKQomXgZK48QL2Y2YuXaL/ZagdJ?=
- =?us-ascii?Q?3F0WuAplo57IsojShKtMt3Co8Y0kZoUsrdiXfYoSie8HmgVW85pryoP+W2KK?=
- =?us-ascii?Q?yD66nSOTNgdjqSVPCGB77dn0QPnwRuY1obupTrv3D3ocNMkj/RtJYC0ylrS4?=
- =?us-ascii?Q?otyJH7KigvWygNEE5wPoaSH//XDRMNxVEpRLIMU+2677M1fRULbn0mF7eT4e?=
- =?us-ascii?Q?Y2NMG9W52aei5pjc9BR3WJDHHFW2Rn06JGogYsogPv71SY3AFtKJNHflSfCx?=
- =?us-ascii?Q?Av+SsW+o6QM3OWzB7YnILOVmLgQ4IPyml8OEM/+ogeaUE7E9N6Py5fl4p+FC?=
- =?us-ascii?Q?19ETepIVq7bOFS8/uq8DlsAkxQBtru7qwNPbhVxclZovS8RtWTpjjKWpUrI2?=
- =?us-ascii?Q?dX+USt8XkGqQ2S0GX7jK17tEQewXuZvrCf92Rnrby41HvCMN/qvLqDxmWIpB?=
- =?us-ascii?Q?MMVfPcwOtfIMjt2dx0qRLiz/aKcpJQvJzxBqcbYmzkDDmsPsiHjRxZQZdG4z?=
- =?us-ascii?Q?JMi2c2XRXO6XC/RrV8iQ0YAPEbzNYtxHQoDBWusf2Yh19P2aCQ0HBcxt/u6m?=
- =?us-ascii?Q?nr2CqJ8t3WY2kfStWbOhvPUZSIdswN/qsfmcARn5gFBzx9U8580z5Vl8LuqM?=
- =?us-ascii?Q?b/pjvMXdrE2zNGKs2FVgR+kMTPEdGSTpqBmdMuHsDk8lP3WGdPmVcmtCqOmb?=
- =?us-ascii?Q?ZCsjJyW/PVBdDvVIvMscIvxm7uwO+Nzaj+5Ts7HXtL1dMg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231604AbhBKL3G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Feb 2021 06:29:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40214 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231215AbhBKL0m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Feb 2021 06:26:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613042754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=1w2zYZzVu/kN/xdrmtBPuljrT1JGHIIdDgmFx1ldrRU=;
+        b=E9iKLZQkZ3042WHpsi/v9r0SRvCwZ5P+U11IaeCy5pHu/RTe9Am6RbICJcl9gBEaDJTCKm
+        mEaNQjOIgeHdXZtiGzpJC5HQPOIv1AMH+iuwCHthZKcTuH3sjYU8XJYVoAXKU5Z/Igub7f
+        bOixfGTl8X+6W7qLR9cV0NVflFzd3+M=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E4E78AD2B;
+        Thu, 11 Feb 2021 11:25:53 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: avoid double put of block group when emptying
+ cluster
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+References: <5ca694ff4f8cff4c0ef6896593a1f1d01fbe956d.1611610947.git.josef@toxicpanda.com>
+ <bf8cd92d-12a0-3bb3-34c0-dd9c938bf349@suse.com>
+ <ad0ea42a-5e41-f9b9-986d-8c70e9f2eed3@toxicpanda.com>
+ <20210210225014.GA1993@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <dd555517-d6c8-4b6f-54f6-5cbaf5874c00@suse.com>
+Date:   Thu, 11 Feb 2021 13:25:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02cfc2c9-5303-4c03-bed8-08d8ce73899a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Feb 2021 09:58:09.7146
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rYyaYolOkhccfm6YA9QXyRFrudXs7wGkjP3IEKYU6UsPYDRu9r5yUwLsfwGC6+QatfY1uuRBNpE8B0WIUKGTI9lBN0rvzHuiNmlJe6BoHT8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4400
+In-Reply-To: <20210210225014.GA1993@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/02/2021 21:02, David Sterba wrote:=0A=
->> This series implements superblock log writing. It uses two zones as a=0A=
->> circular buffer to write updated superblocks. Once the first zone is fil=
-led=0A=
->> up, start writing into the second zone. The first zone will be reset onc=
-e=0A=
->> both zones are filled. We can determine the postion of the latest=0A=
->> superblock by reading the write pointer information from a device.=0A=
-> =0A=
-> About that, in this patchset it's still leaving superblock at the fixed=
-=0A=
-> zone number while we want it at a fixed location, spanning 2 zones=0A=
-> regardless of their size.=0A=
-> =0A=
-=0A=
-We'll always need 2 zones or otherwise we won't be powercut safe.=0A=
+
+
+On 11.02.21 г. 0:50 ч., David Sterba wrote:
+> On Tue, Jan 26, 2021 at 09:30:45AM -0500, Josef Bacik wrote:
+>> On 1/26/21 4:02 AM, Nikolay Borisov wrote:
+>>> On 25.01.21 г. 23:42 ч., Josef Bacik wrote:
+>>>> In __btrfs_return_cluster_to_free_space we will bail doing the cleanup
+>>>> of the cluster if the block group we passed in doesn't match the block
+>>>> group on the cluster.  However we drop a reference to block_group, as
+>>>> the cluster holds a reference to the block group while it's attached to
+>>>> the cluster.  If cluster->block_group != block_group however then this
+>>>> is an extra put, which means we'll go negative and free this block group
+>>>> down the line, leading to a UAF.
+>>>
+>>> Was this found by code inspection or did you hit in production. Also why
+>>> in btrfs_remove_free_space_cache just before
+>>> __btrfs_return_cluster_to_free_space there is:
+>>>
+>>
+>> It was found in production sort of halfway.  I was doing something for WhatsApp 
+>> and had to convert our block group reference counting to the refcount stuff so I 
+>> could find where I made a mistake.  Turns out this was where the problem was, my 
+>> stuff had just made it way more likely to happen.  I don't have the stack trace 
+>> because this was like 6 months ago, I'm going through all my WhatsApp magic and 
+>> getting them actually usable for upstream.
+>>
+>>> WARN_ON(cluster->block_group != block_group);
+>>>
+>>> IMO this patch should also remove the WARN_ON if it's a valid condition
+>>> to have the passed bg be different than the one in the cluster. Also
+>>> that WARN_ON is likely racy since it's done outside of cluster->lock.
+>>>
+>>
+>> Yup that's in a follow up thing, I wanted to get the actual fix out before I got 
+>> distracted by my mountain of meetings this week.  Thanks,
+> 
+> Removing the WARN_ON in a separate patch sounds ok to me, this patch
+> clearly fixes the refcounting bug, the warning condition is the same but
+> would need a different reasoning.
+> 
+> Nikolay, if you're ok with current patch version let me know if you want
+> a rev-by added.
+> 
+
+
+Codewise I'm fine with it. However just had another read of the commit
+message and I think it could be rewritten to be somewhat simpler:
+
+It's wrong calling btrfs_put_block_group in
+__btrfs_return_cluster_to_free_space if the block group passed is
+different than the block group the cluster represents. As this means the
+cluster doesn't have a reference to the passed block group. This results
+in double put and an UAF.
+
+What prompted me is that the 2nd and 3rd sentences read somewhat awkward
+due to starting with 'However'
+
+
+
