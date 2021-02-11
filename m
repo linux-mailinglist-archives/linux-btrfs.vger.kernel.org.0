@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA03031908F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 18:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED827319091
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 18:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhBKRDh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Feb 2021 12:03:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41924 "EHLO mail.kernel.org"
+        id S230093AbhBKREf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Feb 2021 12:04:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230292AbhBKRBa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Feb 2021 12:01:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D363864E4A
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Feb 2021 17:00:46 +0000 (UTC)
+        id S232049AbhBKRCH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:02:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65C4464E15;
+        Thu, 11 Feb 2021 17:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613062847;
-        bh=CAht9X6DKIyIFRV69GClhDPYJ9NYG88Yv9E7rLvQAdI=;
-        h=From:To:Subject:Date:From;
-        b=tsVBFhog7GjwQu7egJQgx97kkeXaYI3cZQRC0U4h6/WR+/z/Mkw1QRoy9WBR6AEo8
-         f1er9YJW/Mpbcko4B8N/dywLRTrHG02o0Kus4uyrB12KpHx9KDuzvJCN/pVshc8hDN
-         AY7ayNIt/WENpOFYbdAVziOoSEcuzI90VBjWQkAtK/gJmMklGKCSYiypxB4qkigKpB
-         ZfbjzihbSUddkm2ty77pgLEnmbejS3QLD/yFAfr6+FhADp2MZyn0dRYURub+RuaBPe
-         PVC+XAuGo7tmQ3BuTBq1t45kEUtdd06H3YeANuzmK6jerx0mrT9OpC445bO14YagIt
-         UOgcMiveiGIaw==
+        s=k20201202; t=1613062886;
+        bh=/UHp4jUiJeDClnyi15TJNaHQJrMGTxZdNhBpOabQHKw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OtCeITjWNiRO98jUIUZ8I4EmYqaW1D1qoyhsTJp6jakYXy7NC5NnADTBblFN8mtL3
+         PuOm8KSuWIIzNMKg6JU8DcjbhinI9lXTCyTLmLxNermGgbF/rSrPs02i+uFF2Pl9ri
+         gYVEovbjs4VYWTJGeWFaPh4gdoTxkBj1A77IbYeeM4C1+Ued3U3jHzy12nzs6QF7rK
+         B24fPj0/3EllsoZWxAfh2gnOiiVeSXbp+p21dV1G2zrfiRhaJDjgyYqJx+o4AhI/GC
+         sMKOtvn2Xbuau0rAcAOGGGEJwpjcxfTuWXSI0f4A2GcxoqmFBpN/IymAnhBxsQPLtk
+         DCfmdzlTxyjaQ==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO write with O_DSYNC
-Date:   Thu, 11 Feb 2021 17:00:44 +0000
-Message-Id: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: add test for cases when a dio write has to fallback to a buffered write
+Date:   Thu, 11 Feb 2021 17:01:18 +0000
+Message-Id: <20210211170118.12551-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -37,136 +38,126 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Whenever we attempt to do a non-aligned direct IO write with O_DSYNC, we
-end up triggering an assertion and crashing. Example reproducer:
+Test cases where a direct IO write, with O_DSYNC, can not be done and has
+to fallback to a buffered write.
 
-  $ cat test.sh
-  #!/bin/bash
+This is motivated by a regression that was introduced in kernel 5.10 by
+commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")) and was
+fixed in kernel 5.11 by commit ecfdc08b8cc65d ("btrfs: remove dio iomap
+DSYNC workaround").
 
-  DEV=/dev/sdj
-  MNT=/mnt/sdj
-
-  mkfs.btrfs -f $DEV > /dev/null
-  mount $DEV $MNT
-
-  # Do a direct IO write with O_DSYNC into a non-aligned range...
-  xfs_io -f -d -s -c "pwrite -S 0xab -b 64K 1111 64K" $MNT/foobar
-
-  umount $MNT
-
-When running the reproducer an assertion fails and produces the following
-trace:
-
-  [ 2418.403134] assertion failed: !current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA, in fs/btrfs/space-info.c:1467
-  [ 2418.403745] ------------[ cut here ]------------
-  [ 2418.404306] kernel BUG at fs/btrfs/ctree.h:3286!
-  [ 2418.404862] invalid opcode: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC PTI
-  [ 2418.405451] CPU: 1 PID: 64705 Comm: xfs_io Tainted: G      D           5.10.15-btrfs-next-87 #1
-  [ 2418.406026] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-  [ 2418.407228] RIP: 0010:assertfail.constprop.0+0x18/0x26 [btrfs]
-  [ 2418.407835] Code: e6 48 c7 (...)
-  [ 2418.409078] RSP: 0018:ffffb06080d13c98 EFLAGS: 00010246
-  [ 2418.409696] RAX: 000000000000006c RBX: ffff994c1debbf08 RCX: 0000000000000000
-  [ 2418.410302] RDX: 0000000000000000 RSI: 0000000000000027 RDI: 00000000ffffffff
-  [ 2418.410904] RBP: ffff994c21770000 R08: 0000000000000000 R09: 0000000000000000
-  [ 2418.411504] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000010000
-  [ 2418.412111] R13: ffff994c22198400 R14: ffff994c21770000 R15: 0000000000000000
-  [ 2418.412713] FS:  00007f54fd7aff00(0000) GS:ffff994d35200000(0000) knlGS:0000000000000000
-  [ 2418.413326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [ 2418.413933] CR2: 000056549596d000 CR3: 000000010b928003 CR4: 0000000000370ee0
-  [ 2418.414528] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [ 2418.415109] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [ 2418.415669] Call Trace:
-  [ 2418.416254]  btrfs_reserve_data_bytes.cold+0x22/0x22 [btrfs]
-  [ 2418.416812]  btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
-  [ 2418.417380]  btrfs_buffered_write+0x1b0/0x7f0 [btrfs]
-  [ 2418.418315]  btrfs_file_write_iter+0x2a9/0x770 [btrfs]
-  [ 2418.418920]  new_sync_write+0x11f/0x1c0
-  [ 2418.419430]  vfs_write+0x2bb/0x3b0
-  [ 2418.419972]  __x64_sys_pwrite64+0x90/0xc0
-  [ 2418.420486]  do_syscall_64+0x33/0x80
-  [ 2418.420979]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  [ 2418.421486] RIP: 0033:0x7f54fda0b986
-  [ 2418.421981] Code: 48 c7 c0 (...)
-  [ 2418.423019] RSP: 002b:00007ffc40569c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-  [ 2418.423547] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f54fda0b986
-  [ 2418.424075] RDX: 0000000000010000 RSI: 000056549595e000 RDI: 0000000000000003
-  [ 2418.424596] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000400
-  [ 2418.425119] R10: 0000000000000400 R11: 0000000000000246 R12: 00000000ffffffff
-  [ 2418.425644] R13: 0000000000000400 R14: 0000000000010000 R15: 0000000000000000
-  [ 2418.426148] Modules linked in: btrfs blake2b_generic (...)
-  [ 2418.429540] ---[ end trace ef2aeb44dc0afa34 ]---
-
-1) At btrfs_file_write_iter() we set current->journal_info to
-   BTRFS_DIO_SYNC_STUB;
-
-2) We then call __btrfs_direct_write(), which calls btrfs_direct_IO();
-
-3) We can't do the direct IO write because it starts at a non-aligned
-   offset (1111). So at btrfs_direct_IO() we return -EINVAL (coming from
-   check_direct_IO() which does the alignment check), but we leave
-   current->journal_info set to BTRFS_DIO_SYNC_STUB - we only clear it
-   at btrfs_dio_iomap_begin(), because we assume we always get there;
-
-4) Then at __btrfs_direct_write() we see that the attempt to do the
-   direct IO write was not successful, 0 bytes written, so we fallback
-   to a buffered write by calling btrfs_buffered_write();
-
-5) There we call btrfs_check_data_free_space() which in turn calls
-   btrfs_alloc_data_chunk_ondemand() and that calls
-   btrfs_reserve_data_bytes() with flush == BTRFS_RESERVE_FLUSH_DATA;
-
-6) Then at btrfs_reserve_data_bytes() we have current->journal_info set to
-   BTRFS_DIO_SYNC_STUB, therefore not NULL, and flush has the value
-   BTRFS_RESERVE_FLUSH_DATA, triggering the second assertion:
-
-  int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
-                               enum btrfs_reserve_flush_enum flush)
-  {
-      struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
-      int ret;
-
-      ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
-             flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
-      ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
-  (...)
-
-So fix that by setting the journal to NULL whenever check_direct_IO()
-returns a failure.
-
-This bug only affects 5.10 kernels, and the regression was introduced in
-5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
-The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
-("btrfs: remove dio iomap DSYNC workaround"), which depends on other
-changes that went into the merge window for 5.11. So this is a fix only
-for 5.10.x stable kernels, as there are people hitting this.
-
-Fixes: 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
-CC: stable@vger.kernel.org # 5.10 (and only 5.10)
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1181605
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tests/btrfs/231     | 61 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/231.out | 21 ++++++++++++++++
+ tests/btrfs/group   |  1 +
+ 3 files changed, 83 insertions(+)
+ create mode 100755 tests/btrfs/231
+ create mode 100644 tests/btrfs/231.out
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index acc47e2ffb46..b536d21541a9 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8026,8 +8026,12 @@ ssize_t btrfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	bool relock = false;
- 	ssize_t ret;
- 
--	if (check_direct_IO(fs_info, iter, offset))
-+	if (check_direct_IO(fs_info, iter, offset)) {
-+		ASSERT(current->journal_info == NULL ||
-+		       current->journal_info == BTRFS_DIO_SYNC_STUB);
-+		current->journal_info = NULL;
- 		return 0;
-+	}
- 
- 	count = iov_iter_count(iter);
- 	if (iov_iter_rw(iter) == WRITE) {
+diff --git a/tests/btrfs/231 b/tests/btrfs/231
+new file mode 100755
+index 00000000..9a404f57
+--- /dev/null
++++ b/tests/btrfs/231
+@@ -0,0 +1,61 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test No. btrfs/231
++#
++# Test cases where a direct IO write, with O_DSYNC, can not be done and has to
++# fallback to a buffered write.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/attr
++
++# real QA test starts here
++_supported_fs btrfs
++_require_scratch
++_require_odirect
++_require_chattr c
++
++rm -f $seqres.full
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++# First lets test with an attempt to write into a file range with compressed
++# extents.
++touch $SCRATCH_MNT/foo
++$CHATTR_PROG +c $SCRATCH_MNT/foo
++
++$XFS_IO_PROG -s -c "pwrite -S 0xab -b 1M 0 1M" $SCRATCH_MNT/foo | _filter_xfs_io
++# Now do the direct IO write...
++$XFS_IO_PROG -d -s -c "pwrite -S 0xcd 512K 512K" $SCRATCH_MNT/foo | _filter_xfs_io
++
++# Now try doing a write into an unaligned offset...
++$XFS_IO_PROG -f -d -s -c "pwrite -S 0xef 1111 512K" $SCRATCH_MNT/bar | _filter_xfs_io
++
++# Unmount, mount again, and verify we have the expected data.
++_scratch_cycle_mount
++
++echo "File foo data:"
++od -A d -t x1 $SCRATCH_MNT/foo
++echo "File bar data:"
++od -A d -t x1 $SCRATCH_MNT/bar
++
++status=0
++exit
+diff --git a/tests/btrfs/231.out b/tests/btrfs/231.out
+new file mode 100644
+index 00000000..def05769
+--- /dev/null
++++ b/tests/btrfs/231.out
+@@ -0,0 +1,21 @@
++QA output created by 231
++wrote 1048576/1048576 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 524288/524288 bytes at offset 524288
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 524288/524288 bytes at offset 1111
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File foo data:
++0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
++*
++0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
++*
++1048576
++File bar data:
++0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
++*
++0001104 00 00 00 00 00 00 00 ef ef ef ef ef ef ef ef ef
++0001120 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
++*
++0525392 ef ef ef ef ef ef ef
++0525399
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index a7c65983..9f63db69 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -233,3 +233,4 @@
+ 228 auto quick volume
+ 229 auto quick send clone
+ 230 auto quick qgroup limit
++231 auto quick compress rw
 -- 
 2.28.0
 
