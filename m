@@ -2,81 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCD031841D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 04:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88533184DA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 06:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBKDxo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 22:53:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhBKDxm (ORCPT
+        id S229517AbhBKF0g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Feb 2021 00:26:36 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:46026 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229773AbhBKF0V (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 22:53:42 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB3AC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 19:53:01 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id u14so3877173wmq.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Feb 2021 19:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+NlD/tZ31KVpEgbfyyvAU7j8b6l3z78lDmvqrMElvSU=;
-        b=m8wqN1/e70zwmY6NyYuJRHsO8xzlCZfB0N71R0aA3L1l4KaQTqg9C+QiYfLVVjFt/A
-         I4M8H+GMbk1ECoIkXVo1tWx0fcJUZ/nBdn1n1bekjky1ZAdwCSPYLXjngi+qwBB8ACQT
-         +8r+eQ3ZWAoOSf0QiHDPBQyfVv/bcfHTUSy69y/nFptk2WQ7eA6IvftsoZF+c5mCDTKp
-         YYGONPlDjG9Byps6eNPe9u6Lm5wVi+d9rbSIAuGgUGtBza9nXkDO8ZIuGvY4z4LJdM+q
-         hqqXLxuJVsak9ufRvusvhtSs9mzbXA1l0AMnd2bmj8Paf0JpQ+9NhUenw9o/bSjFGyU4
-         r98w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+NlD/tZ31KVpEgbfyyvAU7j8b6l3z78lDmvqrMElvSU=;
-        b=qVGXTCqjTZOUrBGxFxSPrqIEhxcosMS8Kv103oVwvoiQ+RaGBIn+Qm8m8q2JAIciYQ
-         Muj3T+9GYTg0Q2xVYHt9LbDEdZAJLXvvAyk/oQJ/1mfZZ4c06gT+Zs7qIbDSvRkaPPn6
-         WnAgiC1ak7TwUXWpDbUU8fjjaFT3s0fd7KqtOAmNVeejMJ5dJETpfYmaKueVtpP4H8FT
-         tvpGWGBW92QpXAurMVxFh0HDGTX6m5GtutOWlhmZSTfdL7xahZdp62WoETbn7E6rjTEo
-         +71/dP19KvoXwirxBMhk94+01N5i8q4u4BksLVR+BCKVoT9t7wlQMzuLyDZCPrc8tvWi
-         sxzQ==
-X-Gm-Message-State: AOAM531iEZ5pKTmpESSkpV6PCbaB6nSKva21/6wg2lflHUtXi+7LPi2B
-        ue50rqBq0wkZkg58aOfEyz3Vbkt0qXQtgqhcaln4rg==
-X-Google-Smtp-Source: ABdhPJzOrwqj6jBYoheUNU/llo1OwQPgKpn1IqDU1Ohv97wB5todBKA8WKRMXW2BxhrwRm8uXH0RNCHyOI9DDy8Gk1E=
-X-Received: by 2002:a7b:cb58:: with SMTP id v24mr2759612wmj.182.1613015580706;
- Wed, 10 Feb 2021 19:53:00 -0800 (PST)
+        Thu, 11 Feb 2021 00:26:21 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B5Oqwd153273;
+        Thu, 11 Feb 2021 05:25:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=tkrtsuB4nOosd/iSYfgnHW5+MJDa9OZsW0EIBC/MpgQ=;
+ b=yn0rr6PHa9KFn+hga2KPuub2jtD82YW267dtXFdmTa1bVutmvdCxHqohXh1okkShExlf
+ sO1xfhkWWLBK0kJ0iOzludE1BXMV40B4UxGJNj8M7167QFRdfqKpVCTLJrl90tACUx1D
+ ZByjyunLD4iK5OE1HSczJbjEQNvPBitgT1y68gj8Kw/gtAyS99NZtFe0Ji7ZcImuA6sz
+ OoczdMNNvxjyvqWAPulGe8YWwmKRcINZ+z+VAcha7Q5mUdBaOiFVi6fHHif78qe4c9Br
+ sT1ZOl8pJCfIKZsu1JlgimdgLDMxLGijgmGEP+SOYg/nDJD7ml6GooArv4LzbFrOH+du qw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36mv9dr925-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 05:25:36 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11B5P6wq176909;
+        Thu, 11 Feb 2021 05:25:35 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 36j51yg4hk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 05:25:35 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11B5PYvH015018;
+        Thu, 11 Feb 2021 05:25:35 GMT
+Received: from ca-dev104.us.oracle.com (/10.129.135.33)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 10 Feb 2021 21:25:34 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     josef@toxicpanda.com
+Subject: [PATCH 0/5] cleanups btrfs_extent_readonly() and scrub, part1
+Date:   Wed, 10 Feb 2021 21:25:14 -0800
+Message-Id: <cover.1613019838.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <CAJCQCtSx=HcCRMiE0eganPWJVTB+b4zfb_mnd68L2VapGGKi7Q@mail.gmail.com>
- <3897f126-e977-d842-f91d-b48b74958f3d@libero.it> <CAJCQCtScUYMoMpw==HTbBB6s0BFnXuT=MvSuVJYEVBrA7-RbHA@mail.gmail.com>
- <839d9baa-8df5-7efd-94ee-b28f282ef9ec@inwind.it> <CAJCQCtSqESuYawuh6E8b6Xd=z4D13J2=v-6rn8+0mwuThXNtkg@mail.gmail.com>
- <7650c455-297a-f746-c59e-3104fdbf8896@inwind.it> <CAJCQCtR1fCSFYYbo7YvDPTmhALNvUyZB5C4zfMsUH-iU0xs6zQ@mail.gmail.com>
- <CAJCQCtSqvv6RRvtcbFBNEXTBbvNEAqE9twNtRE=4sF9+jcjh9A@mail.gmail.com>
- <4b01d738-5930-1100-03a4-6f1b7af445e5@inwind.it> <20210211030836.GE32440@hungrycats.org>
- <20210211031306.GL28049@hungrycats.org>
-In-Reply-To: <20210211031306.GL28049@hungrycats.org>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 10 Feb 2021 20:52:44 -0700
-Message-ID: <CAJCQCtQ80jPFPduRqTcLhbSx+UzdaoKg8b5HeveaL=mESV9s8g@mail.gmail.com>
-Subject: Re: is BTRFS_IOC_DEFRAG behavior optimal?
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Goffredo Baroncelli <kreijack@inwind.it>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110045
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9891 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=999
+ bulkscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
+ mlxscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102110045
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 8:13 PM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> > At file close, the systemd should copy the data to a new file with no
-> > special attributes and discard or recycle the old inode.  This copy
-> > will be mostly contiguous and have desirable properties like csums and
-> > compression, and will have iops equivalent to btrfs fi defrag.
+This patchset makes btrfs_extent_readonly() static and changes the return
+type to bool.
+And drops few unwanted function declarations in the scrub.c.
 
-Or switch to a cow-friendly format that's no worse on overwriting file
-systems, but improves things on Btrfs and ZFS. RocksDB does well.
+Thanks. Anand
 
+Anand Jain (5):
+  btrfs: make btrfs_extent_readonly() static
+  btrfs: btrfs_extent_readonly() change return type to bool
+  btrfs: scrub drop few function declarations
+  btrfs: scrub_checksum_tree_block() drop its function declaration
+  btrfs: scrub_checksum_data() drop its function declaration
+
+ fs/btrfs/ctree.h       |   1 -
+ fs/btrfs/extent-tree.c |  13 ---
+ fs/btrfs/inode.c       |  13 +++
+ fs/btrfs/scrub.c       | 202 ++++++++++++++++++++---------------------
+ 4 files changed, 109 insertions(+), 120 deletions(-)
 
 -- 
-Chris Murphy
+2.27.0
+
