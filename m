@@ -2,134 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4712F318F46
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 17:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA03031908F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 18:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhBKP6s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Feb 2021 10:58:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46032 "EHLO mx2.suse.de"
+        id S230327AbhBKRDh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Feb 2021 12:03:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230205AbhBKP42 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:56:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A9195B077;
-        Thu, 11 Feb 2021 15:55:34 +0000 (UTC)
-Date:   Thu, 11 Feb 2021 15:55:33 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
-Message-ID: <20210211155533.GB1263@wotan.suse.de>
-References: <20210209203041.21493-1-mrostecki@suse.de>
- <20210209203041.21493-7-mrostecki@suse.de>
- <c2cbf3a7-3db2-afae-4984-450e758f4987@oracle.com>
+        id S230292AbhBKRBa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Feb 2021 12:01:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D363864E4A
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Feb 2021 17:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613062847;
+        bh=CAht9X6DKIyIFRV69GClhDPYJ9NYG88Yv9E7rLvQAdI=;
+        h=From:To:Subject:Date:From;
+        b=tsVBFhog7GjwQu7egJQgx97kkeXaYI3cZQRC0U4h6/WR+/z/Mkw1QRoy9WBR6AEo8
+         f1er9YJW/Mpbcko4B8N/dywLRTrHG02o0Kus4uyrB12KpHx9KDuzvJCN/pVshc8hDN
+         AY7ayNIt/WENpOFYbdAVziOoSEcuzI90VBjWQkAtK/gJmMklGKCSYiypxB4qkigKpB
+         ZfbjzihbSUddkm2ty77pgLEnmbejS3QLD/yFAfr6+FhADp2MZyn0dRYURub+RuaBPe
+         PVC+XAuGo7tmQ3BuTBq1t45kEUtdd06H3YeANuzmK6jerx0mrT9OpC445bO14YagIt
+         UOgcMiveiGIaw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO write with O_DSYNC
+Date:   Thu, 11 Feb 2021 17:00:44 +0000
+Message-Id: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2cbf3a7-3db2-afae-4984-450e758f4987@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 04:20:20PM +0800, Anand Jain wrote:
-> On 10/02/2021 04:30, Michal Rostecki wrote:
-> > The penalty value is an additional value added to the number of inflight
-> > requests when a scheduled request is non-local (which means it would
-> > start from the different physical location than the physical location of
-> > the last request processed by the given device). By default, it's
-> > applied only in filesystems which have mixed types of devices
-> > (non-rotational and rotational), but it can be configured to be applied
-> > without that condition.
-> > 
-> > The configuration is done through sysfs:
-> > > - /sys/fs/btrfs/[fsid]/read_policies/roundrobin_nonlocal_inc_mixed_only
-> > 
-> > where 1 (the default) value means applying penalty only in mixed arrays,
-> > 0 means applying it unconditionally.
-> >
-> > The exact penalty value is defined separately for non-rotational and
-> > rotational devices. By default, it's 0 for non-rotational devices and 1
-> > for rotational devices. Both values are configurable through sysfs:
-> > 
-> > - /sys/fs/btrfs/[fsid]/read_policies/roundrobin_nonrot_nonlocal_inc
-> > - /sys/fs/btrfs/[fsid]/read_policies/roundrobin_rot_nonlocal_inc
-> > 
-> > To sum it up - the default case is applying the penalty under the
-> > following conditions:
-> > 
-> > - the raid1 array consists of mixed types of devices
-> > - the scheduled request is going to be non-local for the given disk
-> > - the device is rotational
-> >
-> > That default case is based on a slight preference towards non-rotational
-> > disks in mixed arrays and has proven to give the best performance in
-> > tested arrays.
-> >> For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
-> > (429MB/s) performance. Adding the penalty value 1 resulted in a
-> > performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
-> > was making the performance even worse.
-> > 
-> > For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
-> > rotational disks resulted in the best performance - 541MiB/s (567MB/s).
-> > Not adding any value and increasing the value was making the performance
-> > worse.
-> > > Adding penalty value to non-rotational disks was always decreasing the
-> > performance, which motivated setting it as 0 by default. For the purpose
-> > of testing, it's still configurable.
-> >
-> > To measure the performance of each policy and find optimal penalty
-> > values, I created scripts which are available here:
-> > 
-> 
-> So in summary
->  rotational + non-rotational: penalty = 1
->  all-rotational and homo    : penalty = 0
->  all-non-rotational and homo: penalty = 0
-> 
-> I can't find any non-deterministic in your findings above.
-> It is not very clear to me if we need the configurable
-> parameters here.
-> 
+From: Filipe Manana <fdmanana@suse.com>
 
-Honestly, the main reason why I made it configurable is to check the
-performance of different values without editing and recompiling the
-kernel. I was trying to find the best set of values with my simple Python
-script which tries all values from 0 to 9 and runs fio. I left those
-partameters to be configurable in my patches just in case someone else
-would like to try to tune them on their environments.
+Whenever we attempt to do a non-aligned direct IO write with O_DSYNC, we
+end up triggering an assertion and crashing. Example reproducer:
 
-The script is here:
+  $ cat test.sh
+  #!/bin/bash
 
-https://github.com/mrostecki/btrfs-perf/blob/main/roundrobin-tune.py
+  DEV=/dev/sdj
+  MNT=/mnt/sdj
 
-But on the other hand, as I mentioned in the other mail - I'm getting
-skeptical about having the whole penalty mechanism in general. As I
-wrote and as you pointed, it improves the performance only for mixed
-arrays. And since the roundrobin policy doesn't perform on mixed as good
-as policies you proposed, but it performs good on homogeneous arays,
-maybe it's better if I just focus on homogeneous case, and save some CPU
-cycles by not storing physical locations.
+  mkfs.btrfs -f $DEV > /dev/null
+  mount $DEV $MNT
 
-> It is better to have random workloads in the above three categories
-> of configs.
-> 
-> Apart from the above three configs, there is also
->  all-non-rotational with hetero
-> For example, ssd and nvme together both are non-rotational.
-> And,
->  all-rotational with hetero
-> For example, rotational disks with different speeds.
-> 
-> 
-> The inflight calculation is local to btrfs. If the device is busy due to
-> external factors, it would not switch to the better performing device.
-> 
+  # Do a direct IO write with O_DSYNC into a non-aligned range...
+  xfs_io -f -d -s -c "pwrite -S 0xab -b 64K 1111 64K" $MNT/foobar
 
-Good point. Maybe I should try to use the part stats instead of storing
-inflight locally in btrfs.
+  umount $MNT
+
+When running the reproducer an assertion fails and produces the following
+trace:
+
+  [ 2418.403134] assertion failed: !current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA, in fs/btrfs/space-info.c:1467
+  [ 2418.403745] ------------[ cut here ]------------
+  [ 2418.404306] kernel BUG at fs/btrfs/ctree.h:3286!
+  [ 2418.404862] invalid opcode: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC PTI
+  [ 2418.405451] CPU: 1 PID: 64705 Comm: xfs_io Tainted: G      D           5.10.15-btrfs-next-87 #1
+  [ 2418.406026] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+  [ 2418.407228] RIP: 0010:assertfail.constprop.0+0x18/0x26 [btrfs]
+  [ 2418.407835] Code: e6 48 c7 (...)
+  [ 2418.409078] RSP: 0018:ffffb06080d13c98 EFLAGS: 00010246
+  [ 2418.409696] RAX: 000000000000006c RBX: ffff994c1debbf08 RCX: 0000000000000000
+  [ 2418.410302] RDX: 0000000000000000 RSI: 0000000000000027 RDI: 00000000ffffffff
+  [ 2418.410904] RBP: ffff994c21770000 R08: 0000000000000000 R09: 0000000000000000
+  [ 2418.411504] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000010000
+  [ 2418.412111] R13: ffff994c22198400 R14: ffff994c21770000 R15: 0000000000000000
+  [ 2418.412713] FS:  00007f54fd7aff00(0000) GS:ffff994d35200000(0000) knlGS:0000000000000000
+  [ 2418.413326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [ 2418.413933] CR2: 000056549596d000 CR3: 000000010b928003 CR4: 0000000000370ee0
+  [ 2418.414528] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  [ 2418.415109] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  [ 2418.415669] Call Trace:
+  [ 2418.416254]  btrfs_reserve_data_bytes.cold+0x22/0x22 [btrfs]
+  [ 2418.416812]  btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
+  [ 2418.417380]  btrfs_buffered_write+0x1b0/0x7f0 [btrfs]
+  [ 2418.418315]  btrfs_file_write_iter+0x2a9/0x770 [btrfs]
+  [ 2418.418920]  new_sync_write+0x11f/0x1c0
+  [ 2418.419430]  vfs_write+0x2bb/0x3b0
+  [ 2418.419972]  __x64_sys_pwrite64+0x90/0xc0
+  [ 2418.420486]  do_syscall_64+0x33/0x80
+  [ 2418.420979]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  [ 2418.421486] RIP: 0033:0x7f54fda0b986
+  [ 2418.421981] Code: 48 c7 c0 (...)
+  [ 2418.423019] RSP: 002b:00007ffc40569c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+  [ 2418.423547] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f54fda0b986
+  [ 2418.424075] RDX: 0000000000010000 RSI: 000056549595e000 RDI: 0000000000000003
+  [ 2418.424596] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000400
+  [ 2418.425119] R10: 0000000000000400 R11: 0000000000000246 R12: 00000000ffffffff
+  [ 2418.425644] R13: 0000000000000400 R14: 0000000000010000 R15: 0000000000000000
+  [ 2418.426148] Modules linked in: btrfs blake2b_generic (...)
+  [ 2418.429540] ---[ end trace ef2aeb44dc0afa34 ]---
+
+1) At btrfs_file_write_iter() we set current->journal_info to
+   BTRFS_DIO_SYNC_STUB;
+
+2) We then call __btrfs_direct_write(), which calls btrfs_direct_IO();
+
+3) We can't do the direct IO write because it starts at a non-aligned
+   offset (1111). So at btrfs_direct_IO() we return -EINVAL (coming from
+   check_direct_IO() which does the alignment check), but we leave
+   current->journal_info set to BTRFS_DIO_SYNC_STUB - we only clear it
+   at btrfs_dio_iomap_begin(), because we assume we always get there;
+
+4) Then at __btrfs_direct_write() we see that the attempt to do the
+   direct IO write was not successful, 0 bytes written, so we fallback
+   to a buffered write by calling btrfs_buffered_write();
+
+5) There we call btrfs_check_data_free_space() which in turn calls
+   btrfs_alloc_data_chunk_ondemand() and that calls
+   btrfs_reserve_data_bytes() with flush == BTRFS_RESERVE_FLUSH_DATA;
+
+6) Then at btrfs_reserve_data_bytes() we have current->journal_info set to
+   BTRFS_DIO_SYNC_STUB, therefore not NULL, and flush has the value
+   BTRFS_RESERVE_FLUSH_DATA, triggering the second assertion:
+
+  int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
+                               enum btrfs_reserve_flush_enum flush)
+  {
+      struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
+      int ret;
+
+      ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
+             flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
+      ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
+  (...)
+
+So fix that by setting the journal to NULL whenever check_direct_IO()
+returns a failure.
+
+This bug only affects 5.10 kernels, and the regression was introduced in
+5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
+The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
+("btrfs: remove dio iomap DSYNC workaround"), which depends on other
+changes that went into the merge window for 5.11. So this is a fix only
+for 5.10.x stable kernels, as there are people hitting this.
+
+Fixes: 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
+CC: stable@vger.kernel.org # 5.10 (and only 5.10)
+Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1181605
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/inode.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index acc47e2ffb46..b536d21541a9 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8026,8 +8026,12 @@ ssize_t btrfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 	bool relock = false;
+ 	ssize_t ret;
+ 
+-	if (check_direct_IO(fs_info, iter, offset))
++	if (check_direct_IO(fs_info, iter, offset)) {
++		ASSERT(current->journal_info == NULL ||
++		       current->journal_info == BTRFS_DIO_SYNC_STUB);
++		current->journal_info = NULL;
+ 		return 0;
++	}
+ 
+ 	count = iov_iter_count(iter);
+ 	if (iov_iter_rw(iter) == WRITE) {
+-- 
+2.28.0
+
