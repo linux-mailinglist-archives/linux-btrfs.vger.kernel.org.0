@@ -2,120 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9CD3182A0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 01:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B4A31838F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 03:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhBKA1s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Feb 2021 19:27:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60100 "EHLO mx2.suse.de"
+        id S229707AbhBKC2y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Feb 2021 21:28:54 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:63295 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhBKA1k (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:27:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 10E54AD2B;
-        Thu, 11 Feb 2021 00:26:58 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5CE8ADA6E9; Thu, 11 Feb 2021 01:25:04 +0100 (CET)
-Date:   Thu, 11 Feb 2021 01:25:04 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: remove workaround for setting capabilities
- in the receive command
-Message-ID: <20210211002504.GC1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <e35e5d556cd5964a4ab80bdd997856ee5be8b888.1612870936.git.fdmanana@suse.com>
+        id S229454AbhBKC2x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Feb 2021 21:28:53 -0500
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DbgXP1497z80;
+        Thu, 11 Feb 2021 03:28:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1613010485; bh=7etFCYWGEl/OZ7P9hv12y5xpLpd1kZTNFqO9sQS7uSE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bkTpBL8So8vuXm1sM+zV2aVcpLFtM7zC16lwCOfvTz6NyNTjfCUKIjP1EiI++gRUZ
+         C56ry08sPLk3qLDrfqWMjPZV5Hnb/tMXdL3rGjMxvXyMl7IBE3ArNph3oFGAYEbYTF
+         pqYzAqcnDj0q3P5uaZEfttjKlr+/jtywOJR7kZFB1NDkKj6wTt9TTgn6WNQlODNcra
+         DmYxj9kd81ONOGKIny7DsI3Iub9c+3cxdssFb/oDwRyIGtGLvGnDqEkYX+xrRy0eCy
+         RiyPnTrGD0s8eVV5xYsFqavDzh6sjESKUBYEkxfR3mp//ETl9t0wkKKyXcyGsY/mq4
+         AXTCh/sGfNDMg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Thu, 11 Feb 2021 03:27:38 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Michal Rostecki <mrostecki@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
+Message-ID: <20210211022738.GB4933@qmqm.qmqm.pl>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <20210209203041.21493-7-mrostecki@suse.de>
+ <20210210042428.GC12086@qmqm.qmqm.pl>
+ <20210210122925.GB23499@wotan.suse.de>
+ <20210210125815.GA20903@qmqm.qmqm.pl>
+ <20210210192304.GA28777@wotan.suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <e35e5d556cd5964a4ab80bdd997856ee5be8b888.1612870936.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210210192304.GA28777@wotan.suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:49:12AM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Wed, Feb 10, 2021 at 07:23:04PM +0000, Michal Rostecki wrote:
+> On Wed, Feb 10, 2021 at 01:58:15PM +0100, Micha³ Miros³aw wrote:
+> > On Wed, Feb 10, 2021 at 12:29:25PM +0000, Michal Rostecki wrote:
+> > > On Wed, Feb 10, 2021 at 05:24:28AM +0100, Micha³ Miros³aw wrote:
+> > > > This looks like it effectively decreases queue depth for non-last
+> > > > device. After all devices are filled to queue_depth-penalty, only
+> > > > a single mirror will be selected for next reads (until a read on
+> > > > some other one completes).
+> > > > 
+> > > 
+> > > Good point. And if all devices are going to be filled for longer time,
+> > > this function will keep selecting the last one. Maybe I should select
+> > > last+1 in that case. Would that address your concern or did you have any
+> > > other solution in mind?
+> > 
+> > The best would be to postpone the selection until one device becomes free
+> > again. But if that's not doable, then yes, you could make sure it stays
+> > round-robin after filling the queues (the scheduling will loose the
+> > "penalty"-driven adjustment though).
 > 
-> We had a few bugs on the kernel side of send/receive where capabilities
-> ended up being lost after receiving a send stream. They all stem from the
-> fact that the kernel used to send all xattrs before issuing the chown
-> command, and the later clears any existing capabilities in a file or
-> directory.
+> Or another idea - when all the queues are filled, return the mirror
+> which has the lowest load (inflight + penalty), even though it's greater
+> than queue depth. In that case the scheduling will not lose the penalty
+> adjustment and the load is going to be spreaded more fair.
 > 
-> Initially a workaround was added to btrfs-progs' receive command, in commit
-> 123a2a085027e ("btrfs-progs: receive: restore capabilities after chown"),
-> and that fixed some instances of the problem. More recently, other instances
-> of the problem were found, a proper fix for the kernel was made, which fixes
-> the root problem by making send always emit the sexattr command for setting
-> capabilities after issuing a chown command. This was done in kernel commit
-> 89efda52e6b693 ("btrfs: send: emit file capabilities after chown"), which
-> landed in kernel 5.8.
+> I'm not sure if postponing the selection is that good idea. I think it's
+> better if the request is added to the iosched queue anyway, even if the
+> disks' queues are filled, and let the I/O scheduler handle that. The
+> length of the iosched queue (nr_requests, attribute of the iosched) is
+> usually greater than queue depth (attribute of the devide), which means
+> that it's fine to schedule more requests for iosched to handle.
 > 
-> However, the workaround on the receive command now causes us to incorrectly
-> set a capability on a file that should not have it, because it assumes all
-> setxattr commands for a file always comes before a chown.
+> IMO btrfs should use the information given by iosched only for heuristic
+> mirror selection, rather than implement its own throttling logic.
 > 
-> Example reproducer:
+> Does it make sense to you?
 > 
->   $ cat send-caps.sh
->   #!/bin/bash
-> 
->   DEV1=/dev/sdh
->   DEV2=/dev/sdi
-> 
->   MNT1=/mnt/sdh
->   MNT2=/mnt/sdi
-> 
->   mkfs.btrfs -f $DEV1 > /dev/null
->   mkfs.btrfs -f $DEV2 > /dev/null
-> 
->   mount $DEV1 $MNT1
->   mount $DEV2 $MNT2
-> 
->   touch $MNT1/foo
->   touch $MNT1/bar
->   setcap cap_net_raw=p $MNT1/foo
-> 
->   btrfs subvolume snapshot -r $MNT1 $MNT1/snap1
-> 
->   btrfs send $MNT1/snap1 | btrfs receive $MNT2
-> 
->   echo
->   echo "capabilities on destination filesystem:"
->   echo
->   getcap $MNT2/snap1/foo
->   getcap $MNT2/snap1/bar
-> 
->   umount $MNT1
->   umount $MNT2
-> 
-> When running the test script, we can see that both files foo and bar get
-> the capability set, when only file foo should have it:
-> 
->   $ ./send-caps.sh
->   Create a readonly snapshot of '/mnt/sdh' in '/mnt/sdh/snap1'
->   At subvol /mnt/sdh/snap1
->   At subvol snap1
-> 
->   capabilities on destination filesystem:
-> 
->   /mnt/sdi/snap1/foo cap_net_raw=p
->   /mnt/sdi/snap1/bar cap_net_raw=p
-> 
-> Since the kernel fix was backported to all currently supported stable
-> releases (5.10.x, 5.4.x, 4.19.x, 4.14.x, 4.9.x and 4.4.x), remove the
-> workaround from receive. Having such a workaround relying on the order
-> of commands in a send stream is always troublesome and doomed to break
-> one day.
-> 
-> A test case for fstests will come soon.
-> 
-> Reported-by: Richard Brown <rbrown@suse.de>
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> An another idea could be an additional iteration in regard to
+> nr_requests, if all load values are greater than queue depths, though it
+> might be an overkill. I would prefer to stick to my first idea if
+> everyone agrees.
 
-Thanks. I'm going to add a btrfs-progs test case as well, based on the
-script in the changelog.
+What if iosched could provide an estimate of request's latency? Then
+btrfs could always select the lowest. For reads from NVME/SSD I would
+normally expect something simple: speed_factor * (pending_bytes + req_bytes).
+For HDDs this could do more computation like looking into what is there
+in the queue already.
+
+This would deviate from simple round-robin scheme, though.
+
+Best Regards
+Micha³ Miros³aw
