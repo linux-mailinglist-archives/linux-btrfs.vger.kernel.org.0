@@ -2,113 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D17318F2B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 16:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4712F318F46
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 17:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhBKPvC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Feb 2021 10:51:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55730 "EHLO mx2.suse.de"
+        id S230011AbhBKP6s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Feb 2021 10:58:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46032 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230002AbhBKPtD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:49:03 -0500
+        id S230205AbhBKP42 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:56:28 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14EF3B083;
-        Thu, 11 Feb 2021 15:48:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id ED3FEDA6E9; Thu, 11 Feb 2021 16:46:27 +0100 (CET)
-Date:   Thu, 11 Feb 2021 16:46:27 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v15 00/42] btrfs: zoned block device support
-Message-ID: <20210211154627.GE1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <cover.1612433345.git.naohiro.aota@wdc.com>
- <20210210195829.GW1993@twin.jikos.cz>
- <SN4PR0401MB35987EE941FA59E2ECB8D7269B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20210211151901.GD1993@twin.jikos.cz>
- <SN4PR0401MB3598ADA963CA60A715DE5EDE9B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+        by mx2.suse.de (Postfix) with ESMTP id A9195B077;
+        Thu, 11 Feb 2021 15:55:34 +0000 (UTC)
+Date:   Thu, 11 Feb 2021 15:55:33 +0000
+From:   Michal Rostecki <mrostecki@suse.de>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michal Rostecki <mrostecki@suse.com>
+Subject: Re: [PATCH RFC 6/6] btrfs: Add roundrobin raid1 read policy
+Message-ID: <20210211155533.GB1263@wotan.suse.de>
+References: <20210209203041.21493-1-mrostecki@suse.de>
+ <20210209203041.21493-7-mrostecki@suse.de>
+ <c2cbf3a7-3db2-afae-4984-450e758f4987@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN4PR0401MB3598ADA963CA60A715DE5EDE9B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <c2cbf3a7-3db2-afae-4984-450e758f4987@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 03:26:04PM +0000, Johannes Thumshirn wrote:
-> On 11/02/2021 16:21, David Sterba wrote:
-> > On Thu, Feb 11, 2021 at 09:58:09AM +0000, Johannes Thumshirn wrote:
-> >> On 10/02/2021 21:02, David Sterba wrote:
-> >>>> This series implements superblock log writing. It uses two zones as a
-> >>>> circular buffer to write updated superblocks. Once the first zone is filled
-> >>>> up, start writing into the second zone. The first zone will be reset once
-> >>>> both zones are filled. We can determine the postion of the latest
-> >>>> superblock by reading the write pointer information from a device.
-> >>>
-> >>> About that, in this patchset it's still leaving superblock at the fixed
-> >>> zone number while we want it at a fixed location, spanning 2 zones
-> >>> regardless of their size.
-> >>
-> >> We'll always need 2 zones or otherwise we won't be powercut safe.
+On Wed, Feb 10, 2021 at 04:20:20PM +0800, Anand Jain wrote:
+> On 10/02/2021 04:30, Michal Rostecki wrote:
+> > The penalty value is an additional value added to the number of inflight
+> > requests when a scheduled request is non-local (which means it would
+> > start from the different physical location than the physical location of
+> > the last request processed by the given device). By default, it's
+> > applied only in filesystems which have mixed types of devices
+> > (non-rotational and rotational), but it can be configured to be applied
+> > without that condition.
 > > 
-> > Yes we do, that hasn't changed.
+> > The configuration is done through sysfs:
+> > > - /sys/fs/btrfs/[fsid]/read_policies/roundrobin_nonlocal_inc_mixed_only
+> > 
+> > where 1 (the default) value means applying penalty only in mixed arrays,
+> > 0 means applying it unconditionally.
+> >
+> > The exact penalty value is defined separately for non-rotational and
+> > rotational devices. By default, it's 0 for non-rotational devices and 1
+> > for rotational devices. Both values are configurable through sysfs:
+> > 
+> > - /sys/fs/btrfs/[fsid]/read_policies/roundrobin_nonrot_nonlocal_inc
+> > - /sys/fs/btrfs/[fsid]/read_policies/roundrobin_rot_nonlocal_inc
+> > 
+> > To sum it up - the default case is applying the penalty under the
+> > following conditions:
+> > 
+> > - the raid1 array consists of mixed types of devices
+> > - the scheduled request is going to be non-local for the given disk
+> > - the device is rotational
+> >
+> > That default case is based on a slight preference towards non-rotational
+> > disks in mixed arrays and has proven to give the best performance in
+> > tested arrays.
+> >> For the array with 3 HDDs, not adding any penalty resulted in 409MiB/s
+> > (429MB/s) performance. Adding the penalty value 1 resulted in a
+> > performance drop to 404MiB/s (424MB/s). Increasing the value towards 10
+> > was making the performance even worse.
+> > 
+> > For the array with 2 HDDs and 1 SSD, adding penalty value 1 to
+> > rotational disks resulted in the best performance - 541MiB/s (567MB/s).
+> > Not adding any value and increasing the value was making the performance
+> > worse.
+> > > Adding penalty value to non-rotational disks was always decreasing the
+> > performance, which motivated setting it as 0 by default. For the purpose
+> > of testing, it's still configurable.
+> >
+> > To measure the performance of each policy and find optimal penalty
+> > values, I created scripts which are available here:
+> > 
 > 
-> OK that I don't understand, with the log structured superblocks on a zoned
-> filesystem, we're writing a new superblock until the 1st zone is filled.
-> Then we advance to the second zone. As soon as we wrote a superblock to
-> the second zone we can reset the first.
-> If we only use one zone,
+> So in summary
+>  rotational + non-rotational: penalty = 1
+>  all-rotational and homo    : penalty = 0
+>  all-non-rotational and homo: penalty = 0
+> 
+> I can't find any non-deterministic in your findings above.
+> It is not very clear to me if we need the configurable
+> parameters here.
+> 
 
-No, that can't work and nobody suggests that.
+Honestly, the main reason why I made it configurable is to check the
+performance of different values without editing and recompiling the
+kernel. I was trying to find the best set of values with my simple Python
+script which tries all values from 0 to 9 and runs fio. I left those
+partameters to be configurable in my patches just in case someone else
+would like to try to tune them on their environments.
 
-> we would need to write until it's end, reset and
-> start writing again from the beginning. But if a powercut happens between
-> reset and first write after the reset, we end up with no superblock.
+The script is here:
 
-What I'm saying and what we discussed on slack in December, we can't fix
-the zone number for the 1st and 2nd copy of superblock like it is now in
-sb_zone_number.
+https://github.com/mrostecki/btrfs-perf/blob/main/roundrobin-tune.py
 
-The primary superblock must be there for any reference and to actually
-let the tools learn about the incompat bits.
+But on the other hand, as I mentioned in the other mail - I'm getting
+skeptical about having the whole penalty mechanism in general. As I
+wrote and as you pointed, it improves the performance only for mixed
+arrays. And since the roundrobin policy doesn't perform on mixed as good
+as policies you proposed, but it performs good on homogeneous arays,
+maybe it's better if I just focus on homogeneous case, and save some CPU
+cycles by not storing physical locations.
 
-The 1st copy is now fixed zone 16, which depends on the zone size. The
-idea is to define the superblock offsets to start at given offsets,
-where the ring buffer has the two consecutive zones, regardless of their
-size.
+> It is better to have random workloads in the above three categories
+> of configs.
+> 
+> Apart from the above three configs, there is also
+>  all-non-rotational with hetero
+> For example, ssd and nvme together both are non-rotational.
+> And,
+>  all-rotational with hetero
+> For example, rotational disks with different speeds.
+> 
+> 
+> The inflight calculation is local to btrfs. If the device is busy due to
+> external factors, it would not switch to the better performing device.
+> 
 
-primary:		   0
-1st copy:		 16G
-2nd copy:		256G
-
-Due to the variability of the zones in future devices, we'll reserve a
-space at the superblock interval, assuming the zone sizes can grow up to
-several gigabytes. Current working number is 1G, with some safety margin
-the reserved ranges would be (eg. for a 4G zone size):
-
-primary:		0 up to 8G
-1st copy:		16G up to 24G
-2nd copy:		256G up to 262G
-
-It is wasteful but we want to be future proof and expecting disk sizes
-from tens of terabytes to a hundred terabytes, it's not significant
-loss of space.
-
-If the zone sizes can be expected higher than 4G, the 1st copy can be
-defined at 64G, that would leave us some margin until somebody thinks
-that 32G zones are a great idea.
+Good point. Maybe I should try to use the part stats instead of storing
+inflight locally in btrfs.
