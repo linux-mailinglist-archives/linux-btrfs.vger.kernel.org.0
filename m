@@ -2,99 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFF7318681
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 09:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D4E318691
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Feb 2021 09:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhBKIta (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Feb 2021 03:49:30 -0500
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:58966 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhBKIsw (ORCPT
+        id S229501AbhBKI4F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Feb 2021 03:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229763AbhBKIzv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Feb 2021 03:48:52 -0500
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id D020B45BF14;
-        Thu, 11 Feb 2021 10:38:44 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1613032724; bh=ufMZrgozIAfSve7tX+hWmfGwhLTQYAvxrYm7T5zMN2w=;
-        h=From:To:Cc:Subject:Date;
-        b=TAzKxpJwIKxCyEH+aTQCTE9aVwEXY6fjq18IhYk12hMJkTAAxJNBgD6aXdEgo6m+I
-         +2aJ0zIyPUDYwjJnMoIgFt9+RkcTrlHro7KeRNJW8m1dgVeUmRBxfugZpZF3qEM/e+
-         At4HiW8WMQlCRt9rwFY1J3BWbLKZ5AKWTZ58BlZE=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id B4B4345BF12;
-        Thu, 11 Feb 2021 10:38:44 +0200 (EET)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id 7yCbwQ4sXH_I; Thu, 11 Feb 2021 10:38:44 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 68A8345BF11;
-        Thu, 11 Feb 2021 10:38:44 +0200 (EET)
-Received: from localhost.localdomain (unknown [117.89.40.51])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 079611BE007B;
-        Thu, 11 Feb 2021 10:38:42 +0200 (EET)
-From:   Su Yue <l@damenly.su>
-To:     linux-btrfs@vger.kernel.org
-Cc:     l@damenly.su
-Subject: [PATCH] btrfs: initialize btrfs_fs_info::csum_size earlier in open_ctree()
-Date:   Thu, 11 Feb 2021 16:38:28 +0800
-Message-Id: <20210211083828.6835-1-l@damenly.su>
-X-Mailer: git-send-email 2.30.0
+        Thu, 11 Feb 2021 03:55:51 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC2BC06178B
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Feb 2021 00:46:24 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id i9so4750167wmq.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Feb 2021 00:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UCpQqQlNZTZO+XpRc2C0JsKxWVfJizd3Zbn0YDeDFfE=;
+        b=vzWNC5MAkXX7+AnJHgKeIEVoo9VfmpFB/iVKxNqvHGbYk/yr0tiEFZP5RU2c85blam
+         exXXLMUThZI+zlJOg+TpwFH18pqPkdaPahRxfavb40ddyzn5xpEvUKXsyWkVjO7v/ncD
+         09NAikFXLu1QudsLZ9yJ/2m5DkErXkNBMVuDyE60/pSWsyLoe8osvjSV2MIR5iNgMsjM
+         HINth06K75zj7dxslbL5h9+r1uF+BJYYHTEXy8AXT69Pn2jO50j2xUmFVDIyebBP5SEy
+         OQHdPtm4F0cDtV9kZaBGxYvHhLpZMdETc1ffABFFjOvMcr0r71t5kYGx4agrV32bTvtq
+         3AkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UCpQqQlNZTZO+XpRc2C0JsKxWVfJizd3Zbn0YDeDFfE=;
+        b=Z0FiPt6FDwoobyKQLxiiy7NLbNlT6IjFeTpDHLHEWgrQJlUh5BtHzjtDw1hzjc0Vb4
+         xg/48CAOyQSmyhUUD+x9knekZ0KlYROmz+dkvaI5lXobfi5g9bKEMfhQcXP4O1bF1DQC
+         eLKfLt0w2ibG/WCU9aSm3mlUdKmW3naVq9Io2cFwWfCbUTsAVfNQLPnfB3lGLvhRPh+r
+         tyZYOwEota5llgoHPBSY4iNyCMkf+jko19oIJcXdpJyyrEG39SEVC+Dlz2ZHrGCLU7TH
+         ZzdFsPdU/oTKxXRVoPcRh+S8+nOtM6qrQui/0MvDybBogyhrcDehBfU9j3nCsU9gQIhT
+         VfHQ==
+X-Gm-Message-State: AOAM531WqfiEAVR1prwP8Y3N3xrlyVvbavAQOF0bUz2QLgxwkVuFZN9C
+        ekZBsPoEQU9s+JnGtzZJ/ib2CG5ROxhf61lZ+jrTuw==
+X-Google-Smtp-Source: ABdhPJyRCsPYEgQ9czvoeyQApvgSLCHVRjpSUmQ4lI7KkJsT1LudeHRXtAHJ5TgQt2J0fsQ3zsrRNABk/KvZqcJ+EuA=
+X-Received: by 2002:a1c:998a:: with SMTP id b132mr3950438wme.37.1613033183674;
+ Thu, 11 Feb 2021 00:46:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: OK
-X-ESPOL: +d1m5/RSaUCpygHhXwK+CAc2qDRBVfPh+/m/0QE76Hb7Ny6FfEAOURSxgQ4FQH6k
+References: <CAJCQCtScUYMoMpw==HTbBB6s0BFnXuT=MvSuVJYEVBrA7-RbHA@mail.gmail.com>
+ <839d9baa-8df5-7efd-94ee-b28f282ef9ec@inwind.it> <CAJCQCtSqESuYawuh6E8b6Xd=z4D13J2=v-6rn8+0mwuThXNtkg@mail.gmail.com>
+ <7650c455-297a-f746-c59e-3104fdbf8896@inwind.it> <CAJCQCtR1fCSFYYbo7YvDPTmhALNvUyZB5C4zfMsUH-iU0xs6zQ@mail.gmail.com>
+ <CAJCQCtSqvv6RRvtcbFBNEXTBbvNEAqE9twNtRE=4sF9+jcjh9A@mail.gmail.com>
+ <4b01d738-5930-1100-03a4-6f1b7af445e5@inwind.it> <20210211030836.GE32440@hungrycats.org>
+ <20210211031306.GL28049@hungrycats.org> <CAJCQCtQ48Vy+FxoqDseu=bAsna5gMo8mc8Fo+ybRG3v_SYFbjg@mail.gmail.com>
+ <20210211061220.GF32440@hungrycats.org>
+In-Reply-To: <20210211061220.GF32440@hungrycats.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 11 Feb 2021 01:46:07 -0700
+Message-ID: <CAJCQCtQnvVUVhTPQ1v=mw=jDBbsHb5HAa5=s3E+AWuBD7pSO2g@mail.gmail.com>
+Subject: Re: is BTRFS_IOC_DEFRAG behavior optimal?
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Goffredo Baroncelli <kreijack@inwind.it>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-User reported that btrfs-progs misc-tests/028-superblock-recover fails:
-    [TEST/misc]   028-superblock-recover
-unexpected success: mounted fs with corrupted superblock
-test failed for case 028-superblock-recover
+On Wed, Feb 10, 2021 at 11:12 PM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
 
-The test case expects that a broken image with bad superblock will be
-rejected to be mounted. However, the test image just passed csum check
-of superblock and was successfully mounted.
 
-Commit 55fc29bed8dd ("btrfs: use cached value of fs_info::csum_size
-everywhere") replaces all calls to btrfs_super_csum_size by
-fs_info::csum_size. The calls include the place where fs_info->csum_size
-is not initialized. So btrfs_check_super_csum() passes because memcmp()
-with len 0 always returns 0.
+>
+> If we want the data compressed (and who doesn't?  journal data compresses
+> 8:1 with btrfs zstd) then we'll always need to make a copy at close.
+> Because systemd used prealloc, the copy is necessarily to a new inode,
+> as there's no way to re-enable compression on an inode once prealloc
+> is used (this has deep disk-format reasons, but not as deep as the
+> nodatacow ones).
 
-Fix it by caching csum size in btrfs_fs_info::csum_size once we know the
-csum type in superblock is valid in open_ctree().
+Pretty sure sd-journald still fallocates when datacow by touching
+/etc/tmpfiles.d/journal-nocow.conf
 
-Link: https://github.com/kdave/btrfs-progs/issues/250
-Fixes: 55fc29bed8dd ("btrfs: use cached value of fs_info::csum_size everywhere")
-Signed-off-by: Su Yue <l@damenly.su>
----
- fs/btrfs/disk-io.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+And I know for sure those datacow files do compress on rotation.
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 6b35b7e88136..07a2b4f69b10 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3044,6 +3044,8 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_alloc;
- 	}
- 
-+	fs_info->csum_size = btrfs_super_csum_size(disk_super);
-+
- 	ret = btrfs_init_csum_hash(fs_info, csum_type);
- 	if (ret) {
- 		err = ret;
-@@ -3161,7 +3163,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	fs_info->nodesize = nodesize;
- 	fs_info->sectorsize = sectorsize;
- 	fs_info->sectorsize_bits = ilog2(sectorsize);
--	fs_info->csum_size = btrfs_super_csum_size(disk_super);
- 	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
- 	fs_info->stripesize = stripesize;
- 
+Preallocated datacow might not be so bad if it weren't for that one
+damn header or indexing block, whatever the proper term is, that
+sd-journald hammers every time it fsyncs. I don't know if I wanna know
+what it means to snapshot a datacow file that's prealloc. But in
+theory if the same blocks weren't all being hammered, a preallocated
+file shouldn't fragment like hell if each prealloc block gets just one
+write.
+
+
+> If we don't care about compression or datasums, then keep the file
+> nodatacow and do nothing at close.  The defrag isn't needed and the
+> FS_NOCOW_FL flag change doesn't work.
+
+Agreed.
+
+
+> It makes sense for SSD too.  It's 4K extents, so the metadata and small-IO
+> overheads will be non-trivial even on SSD.  Deleting or truncating datacow
+> journal files will put a lot of tiny free space holes into the filesystem.
+> It will flood the next commit with delayed refs and push up latency.
+
+I haven't seen meaningful latency on a single journal file, datacow
+and heavily fragmented, on ssd. But to test on more than one file at a
+time i need to revert the defrag commits, and build systemd, and let a
+bunch of journals accumulate somehow. If I dump too much data
+artificially to try and mimic aging, I know I will get nowhere near as
+many of those 4KiB extents. So I dunno.
+
+
+>
+> > In that case the fragmentation is
+> > quite considerable, hundreds to thousands of extents. It's
+> > sufficiently bad that it'd be probably be better if they were
+> > defragmented automatically with a trigger that tests for number of
+> > non-contiguous small blocks that somehow cheaply estimates latency
+> > reading all of them.
+>
+> Yeah it would be nice of autodefrag could be made to not suck.
+
+It triggers on inserts, not appends. So it doesn't do anything for the
+sd-journald case.
+
+I would think the active journals are the one more likely to get
+searched for recent events than archived journals. So in the datacow
+case, you only get relief once it's rotated. It'd be nice to find an
+decent, not necessarily perfect, way for them to not get so fragmented
+in the first place. Or just defrag once a file has 16M of
+non-contiguous extents.
+
+Estimating extents though is another issue, especially with compression enabled.
+
 -- 
-2.30.0
-
+Chris Murphy
