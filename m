@@ -2,59 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7956731ADDC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Feb 2021 21:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8DA31B182
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Feb 2021 18:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBMUEZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Feb 2021 15:04:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229694AbhBMUEX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Feb 2021 15:04:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6F7C164E29;
-        Sat, 13 Feb 2021 20:03:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613246623;
-        bh=hZnvRJr3oD9IDR8yD3jP5BPGlWkf1jcsDop0WiXLF58=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KVZwBfO2A8hMBELKkMFr47VE18Ou5RP843wd3hrtDOXaYequXXbVhZ5SGb9/TBbVO
-         dhi5Jcp1CfmAhJJc5M8dr2DiOseFevsCxk48YfBXTNBbjx2xkXeRlcxV25cn0QLGra
-         Td3Y1gVYF+HLxCbJbzBKfGzd5zg/2F+zp/3SEY40t8dpKYjztHbgJcT3tvbFiKHN8d
-         9kK68w2ie0j3YqBBe4Nc9ZvgZhjiPofEBlpn2NTnaElxrFvmQVfo4aSof92Ju1jGTp
-         bWjT7BFbdAfuK5U+V1AW7Ls5XQXzdgEuHT6lme/aJd6Nmd7DRbCaCIY6W9p7xOu7R3
-         IZdd6hj7u9Lrg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 61CF660A2F;
-        Sat, 13 Feb 2021 20:03:43 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 5.11-rc8
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1613141613.git.dsterba@suse.com>
-References: <cover.1613141613.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1613141613.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc7-tag
-X-PR-Tracked-Commit-Id: 83c68bbcb6ac2dbbcaf12e2281a29a9f73b97d0f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e42ee56fe59759023cb252fabb3d6f279fe8cec8
-Message-Id: <161324662334.16511.11554487863932417402.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Feb 2021 20:03:43 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S229848AbhBNRS3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Feb 2021 12:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhBNRS2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 14 Feb 2021 12:18:28 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD459C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Feb 2021 09:17:47 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id a4so1334279pgc.11
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Feb 2021 09:17:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OTDUH2DePQvdquK/8WT+5kp6hCAqlJhwjpyhBdCqCaA=;
+        b=E0PVX/1jF77/uTqkWXzIj5vIQ7IOq1JuFwLtFNes5T/JKfEZ7ePS1NxuEstuAWOfV5
+         Y9wdC5Zo2KHPwwD9yQFcMXjbGLb3dM2wJWYD9+WtgQnJAgVfGzaI/FTIPRHdYiXqmn+Z
+         LdTUa7zFgshRWbDbp6IqbiC7lIrAHnoxeGtPvF5W7e4Bf5aE3P1tlm406f6BPq4uWyHt
+         VI8Lz2uEKe4SRZ04Mxx45SnPnaQp4ynxUdiokmVJ/nOgMIPjSbY8mtfl+w5ek+SMNW17
+         Ztxn+1gk0xHL/aaG9+35zKryZ7UhmVq/Ou6IStVBZ1rzi4UdtSXObkMlx2dJaBuI5Zyj
+         t9sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OTDUH2DePQvdquK/8WT+5kp6hCAqlJhwjpyhBdCqCaA=;
+        b=krKGECY/54zRY6V4dFQhZnG3reoqSeYyY8lk6uzxL6/jr+TU6DGTJvO096KtLj3cmj
+         5ZSaPWwAMUTUsy7B2QZfSPeHMJl6oUOe01DnQukUJ1uXUWf+cxns7l8f5mjIbSuGoYhc
+         EA5nOKf3SRfPIEhb5vC/FLkbY1mPzl3H5VuG+Q5P34WMmxAHdIJBl9aGhuAOTkL5ZseC
+         qE6Gk18aAgJ6pYnTfOYUio8GEa2YpylwV3mHi8MhIMU8PE5uSM75AdhzAo2Ekkrh8dZl
+         ccB0Odnxfqh1qsl/q8gC/a2uYGT6WirOdDLxf7qt0St63RKjMNXnvhhSSv1uzOwcDZi1
+         t3jA==
+X-Gm-Message-State: AOAM532YMNHpv/3++KZUc4xFKt7SmVoljs02GxCQheOzS4UgA/VPrBXp
+        9CT9Tuk0oswJcixNE4z7QU5HCXDlguq02g==
+X-Google-Smtp-Source: ABdhPJziif3Bya0Wr9IVE+IoADkwsGiDccHv7nQ6nY8zV6LaiASu8+NJaTDawx22zegIhD9r8BqEoQ==
+X-Received: by 2002:aa7:9a8d:0:b029:1da:f808:a422 with SMTP id w13-20020aa79a8d0000b02901daf808a422mr11689956pfi.66.1613323067178;
+        Sun, 14 Feb 2021 09:17:47 -0800 (PST)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id r5sm15346242pfh.13.2021.02.14.09.17.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 09:17:46 -0800 (PST)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH] btrfs-progs: docs: add seeding device section for btrfs-man5
+Date:   Sun, 14 Feb 2021 17:17:38 +0000
+Message-Id: <20210214171738.23919-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sat, 13 Feb 2021 14:02:31 +0100:
+This patch adds a section about seeding device for btrfs-man5.
+Description and examples are from btrfs-wiki page.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc7-tag
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+ Documentation/btrfs-man5.asciidoc | 74 +++++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e42ee56fe59759023cb252fabb3d6f279fe8cec8
-
-Thank you!
-
+diff --git a/Documentation/btrfs-man5.asciidoc b/Documentation/btrfs-man5.asciidoc
+index e5edbe53..db2b5f1f 100644
+--- a/Documentation/btrfs-man5.asciidoc
++++ b/Documentation/btrfs-man5.asciidoc
+@@ -995,6 +995,80 @@ that report space usage: 'filesystem df', 'device usage'. The command
+ ---------------
+ 
+ 
++SEEDING DEVICE
++--------------
++
++The original filesystem and devices are included as a readonly starting point to
++the new FS. All modifications go onto different devices and the COW machinery
++makes sure the original is unchanged.
++
++--------------------
++# dd if=/dev/zero of=/mnt/gentoo/btrfs-test-1 count=2 bs=1G
++# dd if=/dev/zero of=/mnt/gentoo/btrfs-test-2 count=2 bs=1G
++--------------------
++
++--------------------
++# losetup /dev/loop0 /mnt/gentoo/btrfs-test-1
++# losetup /dev/loop1 /mnt/gentoo/btrfs-test-2
++--------------------
++
++--------------------
++# mkfs.btrfs /dev/loop0
++--------------------
++
++--------------------
++# mount /dev/loop0 /mnt/test/
++# echo a > /mnt/test/a
++# echo b > /mnt/test/b
++--------------------
++
++--------------------
++# umount /mnt/test
++--------------------
++
++Now we will use this filesystem as a seed device:
++--------------------
++# btrfstune -S 1 /dev/loop0
++--------------------
++For more details, see `btrfstune`(8).
++
++--------------------
++# mount /dev/loop0 /mnt/test
++mount: block device /dev/loop0 is write-protected, mounting read-only
++# btrfs device add /dev/loop1 /mnt/test
++# ls /mnt/test
++a  b
++# echo c > /mnt/test/c
++bash: c: Read-only file system
++--------------------
++
++--------------------
++# mount -o remount,rw /mnt/test
++OR
++# umount /mnt/test
++# mount /dev/loop1 /mnt/test
++--------------------
++
++--------------------
++# echo c > /mnt/test/c
++# echo d > /mnt/test/d
++# umount /mnt/test
++--------------------
++
++--------------------
++# mount /dev/loop0 /mnt/test
++mount: block device /dev/loop0 is write-protected, mounting read-only
++# ls /mnt/test
++a  b
++# umount /mnt/test
++# mount /dev/loop1 /mnt/test
++# ls /mnt/test
++a  b  c  d
++# cat /mnt/test/c
++c
++--------------------
++
++
+ SEE ALSO
+ --------
+ `acl`(5),
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
