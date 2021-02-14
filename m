@@ -2,158 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8DA31B182
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Feb 2021 18:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F5231B266
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Feb 2021 21:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhBNRS3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Feb 2021 12:18:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        id S229934AbhBNUZj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Feb 2021 15:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhBNRS2 (ORCPT
+        with ESMTP id S229928AbhBNUZi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Feb 2021 12:18:28 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD459C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Feb 2021 09:17:47 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id a4so1334279pgc.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Feb 2021 09:17:47 -0800 (PST)
+        Sun, 14 Feb 2021 15:25:38 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC40DC061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Feb 2021 12:25:40 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id l8so5165320ybe.12
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Feb 2021 12:25:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=OTDUH2DePQvdquK/8WT+5kp6hCAqlJhwjpyhBdCqCaA=;
-        b=E0PVX/1jF77/uTqkWXzIj5vIQ7IOq1JuFwLtFNes5T/JKfEZ7ePS1NxuEstuAWOfV5
-         Y9wdC5Zo2KHPwwD9yQFcMXjbGLb3dM2wJWYD9+WtgQnJAgVfGzaI/FTIPRHdYiXqmn+Z
-         LdTUa7zFgshRWbDbp6IqbiC7lIrAHnoxeGtPvF5W7e4Bf5aE3P1tlm406f6BPq4uWyHt
-         VI8Lz2uEKe4SRZ04Mxx45SnPnaQp4ynxUdiokmVJ/nOgMIPjSbY8mtfl+w5ek+SMNW17
-         Ztxn+1gk0xHL/aaG9+35zKryZ7UhmVq/Ou6IStVBZ1rzi4UdtSXObkMlx2dJaBuI5Zyj
-         t9sw==
+        bh=PUhHSzImQTW37yT+un+Q6WkgSZIZiToO9snRXp1DdyM=;
+        b=aynibPBmbTvCcurB/tJytA+bncbjJGrn/FrS237Tjm9knhOOhAf0YSPZfPOiQp5jRS
+         7yN6mHguK3lNwEZTAqbCIVyHmVTh/1mzddW8xaETGoV91rGs1wgplgKue0fqtKpXT29l
+         7L1uelLzkzqS9c5B4adVC61Dmzow4A4jGX6MlUDmqFWTEUPatZUSwW/FPN54juPpztmO
+         NT4W7VtP+cqv9naUNstOBTkrl5p1SODBecJwPKjhdDxTk+hneUU4dv89NjAXGEYlY8Me
+         qhAFg+R8VOekQHHE9S8KhEq/dvRLoZNyAvYSjH7GQEnVifOo4o49i/LkX8kyAx/d2m0H
+         1kPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=OTDUH2DePQvdquK/8WT+5kp6hCAqlJhwjpyhBdCqCaA=;
-        b=krKGECY/54zRY6V4dFQhZnG3reoqSeYyY8lk6uzxL6/jr+TU6DGTJvO096KtLj3cmj
-         5ZSaPWwAMUTUsy7B2QZfSPeHMJl6oUOe01DnQukUJ1uXUWf+cxns7l8f5mjIbSuGoYhc
-         EA5nOKf3SRfPIEhb5vC/FLkbY1mPzl3H5VuG+Q5P34WMmxAHdIJBl9aGhuAOTkL5ZseC
-         qE6Gk18aAgJ6pYnTfOYUio8GEa2YpylwV3mHi8MhIMU8PE5uSM75AdhzAo2Ekkrh8dZl
-         ccB0Odnxfqh1qsl/q8gC/a2uYGT6WirOdDLxf7qt0St63RKjMNXnvhhSSv1uzOwcDZi1
-         t3jA==
-X-Gm-Message-State: AOAM532YMNHpv/3++KZUc4xFKt7SmVoljs02GxCQheOzS4UgA/VPrBXp
-        9CT9Tuk0oswJcixNE4z7QU5HCXDlguq02g==
-X-Google-Smtp-Source: ABdhPJziif3Bya0Wr9IVE+IoADkwsGiDccHv7nQ6nY8zV6LaiASu8+NJaTDawx22zegIhD9r8BqEoQ==
-X-Received: by 2002:aa7:9a8d:0:b029:1da:f808:a422 with SMTP id w13-20020aa79a8d0000b02901daf808a422mr11689956pfi.66.1613323067178;
-        Sun, 14 Feb 2021 09:17:47 -0800 (PST)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id r5sm15346242pfh.13.2021.02.14.09.17.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Feb 2021 09:17:46 -0800 (PST)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH] btrfs-progs: docs: add seeding device section for btrfs-man5
-Date:   Sun, 14 Feb 2021 17:17:38 +0000
-Message-Id: <20210214171738.23919-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=PUhHSzImQTW37yT+un+Q6WkgSZIZiToO9snRXp1DdyM=;
+        b=h5YlFNMDaegKoJR2GOezevhWow3P+5uk6Dofko8otVgZZkhZqgI/rXNd0hm9RUijvd
+         YpKV/B62cYJihdAM2QJ4lqQBMrME8nVvQdL5oOBJMItdCV6Ws+ph93MstoKbDnRGA7gr
+         iPi+IMWTjnJ4uN+TlebqMfFLkasKK+cAgl88QBiv8sZu8WuHo0hwdD7kbnYufkGHbBnm
+         6uIZOID2y7p6Ds+nlOEyRZ+T3LG9+PUoAl4Ai5JmIGuzCNu8w+J9UDnEXWMOU1azry4o
+         VRtexAl/TpMNL4DcUJio0KTDBpL0FXhsB3yRMUO26t5VjhkgpWSonNSIXlre6820jVE5
+         PeLw==
+X-Gm-Message-State: AOAM533ylsAID4uGuTB+Ai1gn/yuKqNP27C70VuYrwEi4AWjRlMC/ITd
+        d79JTP/oimnDl6+NiKRThkam/ZDrBbgAXZwRtyrb40Nh75Y=
+X-Google-Smtp-Source: ABdhPJz12gFFfE3UMTn9sdS/b/mVb0pXOGAImUEPoItsY0e9tUsOL2NGIaWsSukfU0tHEbZ345un9rKY6BqE4LHghkw=
+X-Received: by 2002:a25:4f41:: with SMTP id d62mr18382449ybb.354.1613334339923;
+ Sun, 14 Feb 2021 12:25:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Sun, 14 Feb 2021 15:25:04 -0500
+Message-ID: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
+Subject: Recovering Btrfs from a freak failure of the disk controller
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch adds a section about seeding device for btrfs-man5.
-Description and examples are from btrfs-wiki page.
+Hey all,
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
- Documentation/btrfs-man5.asciidoc | 74 +++++++++++++++++++++++++++++++
- 1 file changed, 74 insertions(+)
+So one of my main computers recently had a disk controller failure
+that caused my machine to freeze. After rebooting, Btrfs refuses to
+mount. I tried to do a mount and the following errors show up in the
+journal:
 
-diff --git a/Documentation/btrfs-man5.asciidoc b/Documentation/btrfs-man5.asciidoc
-index e5edbe53..db2b5f1f 100644
---- a/Documentation/btrfs-man5.asciidoc
-+++ b/Documentation/btrfs-man5.asciidoc
-@@ -995,6 +995,80 @@ that report space usage: 'filesystem df', 'device usage'. The command
- ---------------
- 
- 
-+SEEDING DEVICE
-+--------------
-+
-+The original filesystem and devices are included as a readonly starting point to
-+the new FS. All modifications go onto different devices and the COW machinery
-+makes sure the original is unchanged.
-+
-+--------------------
-+# dd if=/dev/zero of=/mnt/gentoo/btrfs-test-1 count=2 bs=1G
-+# dd if=/dev/zero of=/mnt/gentoo/btrfs-test-2 count=2 bs=1G
-+--------------------
-+
-+--------------------
-+# losetup /dev/loop0 /mnt/gentoo/btrfs-test-1
-+# losetup /dev/loop1 /mnt/gentoo/btrfs-test-2
-+--------------------
-+
-+--------------------
-+# mkfs.btrfs /dev/loop0
-+--------------------
-+
-+--------------------
-+# mount /dev/loop0 /mnt/test/
-+# echo a > /mnt/test/a
-+# echo b > /mnt/test/b
-+--------------------
-+
-+--------------------
-+# umount /mnt/test
-+--------------------
-+
-+Now we will use this filesystem as a seed device:
-+--------------------
-+# btrfstune -S 1 /dev/loop0
-+--------------------
-+For more details, see `btrfstune`(8).
-+
-+--------------------
-+# mount /dev/loop0 /mnt/test
-+mount: block device /dev/loop0 is write-protected, mounting read-only
-+# btrfs device add /dev/loop1 /mnt/test
-+# ls /mnt/test
-+a  b
-+# echo c > /mnt/test/c
-+bash: c: Read-only file system
-+--------------------
-+
-+--------------------
-+# mount -o remount,rw /mnt/test
-+OR
-+# umount /mnt/test
-+# mount /dev/loop1 /mnt/test
-+--------------------
-+
-+--------------------
-+# echo c > /mnt/test/c
-+# echo d > /mnt/test/d
-+# umount /mnt/test
-+--------------------
-+
-+--------------------
-+# mount /dev/loop0 /mnt/test
-+mount: block device /dev/loop0 is write-protected, mounting read-only
-+# ls /mnt/test
-+a  b
-+# umount /mnt/test
-+# mount /dev/loop1 /mnt/test
-+# ls /mnt/test
-+a  b  c  d
-+# cat /mnt/test/c
-+c
-+--------------------
-+
-+
- SEE ALSO
- --------
- `acl`(5),
--- 
-2.25.1
+> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): disk spa=
+ce caching is enabled
+> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): has skin=
+ny extents
+> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corr=
+upt leaf: root=3D401 block=3D796082176 slot=3D15 ino=3D203657, invalid inod=
+e transid: has 888896 expect [0, 888895]
+> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=
+=3D796082176 read time tree block corruption detected
+> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corr=
+upt leaf: root=3D401 block=3D796082176 slot=3D15 ino=3D203657, invalid inod=
+e transid: has 888896 expect [0, 888895]
+> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=
+=3D796082176 read time tree block corruption detected
+> Feb 14 15:20:49 localhost-live kernel: BTRFS warning (device sda3): could=
+n't read tree root
+> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): open_ct=
+ree failed
 
+I've tried to do -o recovery,ro mount and get the same issue. I can't
+seem to find any reasonably good information on how to do recovery in
+this scenario, even to just recover enough to copy data off.
+
+I'm on Fedora 33, the system was on Linux kernel version 5.9.16 and
+the Fedora 33 live ISO I'm using has Linux kernel version 5.10.14. I'm
+using btrfs-progs v5.10.
+
+Can anyone help?
+
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
