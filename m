@@ -2,200 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FD131CD0D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 16:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 723AD31CD2E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 16:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhBPPfP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 10:35:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229708AbhBPPfM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 10:35:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D763764E09;
-        Tue, 16 Feb 2021 15:34:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613489670;
-        bh=ARsNE1NxC+JfopDdUzgWJ+FA3xe9icgjcqn6avAY61I=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=vcqPikqqyxs3jiebArImfc7BVZ9LFNhuxra+WFbAJGXFSDZ2nPY3McnFdwobS01/N
-         +MhFT9Vr5HqKmShYVwryeH9GtGol9mZur+8sENGbWx4IfldQzYp7Vk9uDhSUBMBbvh
-         Igf1A4cDa3+1FN4DG652Lv41u5mV3wzY1iRy8Z9g=
-Date:   Tue, 16 Feb 2021 16:34:27 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     dsterba@suse.cz, fdmanana@kernel.org, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO
- write with O_DSYNC
-Message-ID: <YCvmAz/gtKQwkqOc@kroah.com>
-References: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
- <YCvbvJujcuiGcBSj@kroah.com>
- <20210216151546.GQ1993@twin.jikos.cz>
+        id S230248AbhBPPtk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 10:49:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhBPPte (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 10:49:34 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01152C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 07:48:52 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id c3so9147435qkj.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 07:48:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=9edAs0nseDg9TvXiZylAJ4oS3FlHxnBMfe2ThGci0G8=;
+        b=JpDaxuPJ8J57SU3byNZlo3nXDW6FQ4gDJGg6bT4ZspW40ynvAI2MxczTHZikyA0fhT
+         Jpmn2PUayj6JCgcl/SXd5A7AQzv0YRwsiENuWnInHzSsPeJc0m2QslMC00TnFXvqGjnH
+         pyPVEFvM7nhkwXsPE0i2gLf1Wm4E4TZaL9DXQuC56SNhmZ2biJ5DTEfZKCYvc/uxEFnC
+         XUalalPxVNsUJgHE3p8KQPZj6/EyAbDEVi1qc3Y3Nx9DLYb6PKmMp0/E0qjsl4kXN8a7
+         +nwje/QhouHMNQc9096xBiECY1VJC8+ZVWuTmYeFmD9s2frmU60jVirH5T56fIkzYz+q
+         aSYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9edAs0nseDg9TvXiZylAJ4oS3FlHxnBMfe2ThGci0G8=;
+        b=ElG0aHpvg64c85zSGNp3+vcrSQ+cjgP3PsO7MnAzvZ0io7vdbAlUiIl7nWc2aKtgdC
+         7Y3e7lIXvfWggV6/t1bUG9dJfl4kU54MOgOoTPC6ZTU2utVRn+fOrHmhY9c9kYpkmwWc
+         HmJHuquYyz2Nib5YMHQ6SV0p0z37QUTZA4MyLawCSl2LZJQVI86mMQKQrJkEqwJSOXa/
+         xH33k118r2XbE//NCD5buG6L6njXN9f+WrAqewB5lv/fP41c0eaiNGEG3Gyj8TpUAMgY
+         3os6T3D+FIq7ZxiqImeHPfWPZ05IKOxrxWM5dTN1BBHiQrKSnEwsjk9u5AhYyE0zbM7e
+         7U9Q==
+X-Gm-Message-State: AOAM532GRS4ptg3fLlcUPH24hyqxAffZe8yo8JI0VcB0/RofC52UGXjA
+        PjZQwBY2cL0sjnV0dp/l3r0N3Bxa+lDsOrhp
+X-Google-Smtp-Source: ABdhPJxj5bwF4bBynAG4VToHxSVXCX+Sl1YlksEyZ+IMoW28m7lmQYg2pDNxog70kCJXotY+48MlPg==
+X-Received: by 2002:a37:b404:: with SMTP id d4mr20398119qkf.183.1613490530764;
+        Tue, 16 Feb 2021 07:48:50 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id 199sm15162065qkj.9.2021.02.16.07.48.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Feb 2021 07:48:50 -0800 (PST)
+Subject: Re: [PATCH] btrfs: fix stale data exposure after cloning a hole with
+ NO_HOLES enabled
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <07067d184eb90be19874190df45cc83f06186307.1613473473.git.fdmanana@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <40803a05-1f71-b648-4b59-dade906e48cf@toxicpanda.com>
+Date:   Tue, 16 Feb 2021 10:48:49 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210216151546.GQ1993@twin.jikos.cz>
+In-Reply-To: <07067d184eb90be19874190df45cc83f06186307.1613473473.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 04:15:46PM +0100, David Sterba wrote:
-> On Tue, Feb 16, 2021 at 03:50:36PM +0100, Greg KH wrote:
-> > On Tue, Feb 16, 2021 at 02:40:31PM +0000, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > > 
-> > > Whenever we attempt to do a non-aligned direct IO write with O_DSYNC, we
-> > > end up triggering an assertion and crashing. Example reproducer:
-> > > 
-> > >   $ cat test.sh
-> > >   #!/bin/bash
-> > > 
-> > >   DEV=/dev/sdj
-> > >   MNT=/mnt/sdj
-> > > 
-> > >   mkfs.btrfs -f $DEV > /dev/null
-> > >   mount $DEV $MNT
-> > > 
-> > >   # Do a direct IO write with O_DSYNC into a non-aligned range...
-> > >   xfs_io -f -d -s -c "pwrite -S 0xab -b 64K 1111 64K" $MNT/foobar
-> > > 
-> > >   umount $MNT
-> > > 
-> > > When running the reproducer an assertion fails and produces the following
-> > > trace:
-> > > 
-> > >   [ 2418.403134] assertion failed: !current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA, in fs/btrfs/space-info.c:1467
-> > >   [ 2418.403745] ------------[ cut here ]------------
-> > >   [ 2418.404306] kernel BUG at fs/btrfs/ctree.h:3286!
-> > >   [ 2418.404862] invalid opcode: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC PTI
-> > >   [ 2418.405451] CPU: 1 PID: 64705 Comm: xfs_io Tainted: G      D           5.10.15-btrfs-next-87 #1
-> > >   [ 2418.406026] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-> > >   [ 2418.407228] RIP: 0010:assertfail.constprop.0+0x18/0x26 [btrfs]
-> > >   [ 2418.407835] Code: e6 48 c7 (...)
-> > >   [ 2418.409078] RSP: 0018:ffffb06080d13c98 EFLAGS: 00010246
-> > >   [ 2418.409696] RAX: 000000000000006c RBX: ffff994c1debbf08 RCX: 0000000000000000
-> > >   [ 2418.410302] RDX: 0000000000000000 RSI: 0000000000000027 RDI: 00000000ffffffff
-> > >   [ 2418.410904] RBP: ffff994c21770000 R08: 0000000000000000 R09: 0000000000000000
-> > >   [ 2418.411504] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000010000
-> > >   [ 2418.412111] R13: ffff994c22198400 R14: ffff994c21770000 R15: 0000000000000000
-> > >   [ 2418.412713] FS:  00007f54fd7aff00(0000) GS:ffff994d35200000(0000) knlGS:0000000000000000
-> > >   [ 2418.413326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >   [ 2418.413933] CR2: 000056549596d000 CR3: 000000010b928003 CR4: 0000000000370ee0
-> > >   [ 2418.414528] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > >   [ 2418.415109] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > >   [ 2418.415669] Call Trace:
-> > >   [ 2418.416254]  btrfs_reserve_data_bytes.cold+0x22/0x22 [btrfs]
-> > >   [ 2418.416812]  btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
-> > >   [ 2418.417380]  btrfs_buffered_write+0x1b0/0x7f0 [btrfs]
-> > >   [ 2418.418315]  btrfs_file_write_iter+0x2a9/0x770 [btrfs]
-> > >   [ 2418.418920]  new_sync_write+0x11f/0x1c0
-> > >   [ 2418.419430]  vfs_write+0x2bb/0x3b0
-> > >   [ 2418.419972]  __x64_sys_pwrite64+0x90/0xc0
-> > >   [ 2418.420486]  do_syscall_64+0x33/0x80
-> > >   [ 2418.420979]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > >   [ 2418.421486] RIP: 0033:0x7f54fda0b986
-> > >   [ 2418.421981] Code: 48 c7 c0 (...)
-> > >   [ 2418.423019] RSP: 002b:00007ffc40569c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-> > >   [ 2418.423547] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f54fda0b986
-> > >   [ 2418.424075] RDX: 0000000000010000 RSI: 000056549595e000 RDI: 0000000000000003
-> > >   [ 2418.424596] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000400
-> > >   [ 2418.425119] R10: 0000000000000400 R11: 0000000000000246 R12: 00000000ffffffff
-> > >   [ 2418.425644] R13: 0000000000000400 R14: 0000000000010000 R15: 0000000000000000
-> > >   [ 2418.426148] Modules linked in: btrfs blake2b_generic (...)
-> > >   [ 2418.429540] ---[ end trace ef2aeb44dc0afa34 ]---
-> > > 
-> > > 1) At btrfs_file_write_iter() we set current->journal_info to
-> > >    BTRFS_DIO_SYNC_STUB;
-> > > 
-> > > 2) We then call __btrfs_direct_write(), which calls btrfs_direct_IO();
-> > > 
-> > > 3) We can't do the direct IO write because it starts at a non-aligned
-> > >    offset (1111). So at btrfs_direct_IO() we return -EINVAL (coming from
-> > >    check_direct_IO() which does the alignment check), but we leave
-> > >    current->journal_info set to BTRFS_DIO_SYNC_STUB - we only clear it
-> > >    at btrfs_dio_iomap_begin(), because we assume we always get there;
-> > > 
-> > > 4) Then at __btrfs_direct_write() we see that the attempt to do the
-> > >    direct IO write was not successful, 0 bytes written, so we fallback
-> > >    to a buffered write by calling btrfs_buffered_write();
-> > > 
-> > > 5) There we call btrfs_check_data_free_space() which in turn calls
-> > >    btrfs_alloc_data_chunk_ondemand() and that calls
-> > >    btrfs_reserve_data_bytes() with flush == BTRFS_RESERVE_FLUSH_DATA;
-> > > 
-> > > 6) Then at btrfs_reserve_data_bytes() we have current->journal_info set to
-> > >    BTRFS_DIO_SYNC_STUB, therefore not NULL, and flush has the value
-> > >    BTRFS_RESERVE_FLUSH_DATA, triggering the second assertion:
-> > > 
-> > >   int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
-> > >                                enum btrfs_reserve_flush_enum flush)
-> > >   {
-> > >       struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
-> > >       int ret;
-> > > 
-> > >       ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
-> > >              flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
-> > >       ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
-> > >   (...)
-> > > 
-> > > So fix that by setting the journal to NULL whenever check_direct_IO()
-> > > returns a failure.
-> > > 
-> > > This bug only affects 5.10 kernels, and the regression was introduced in
-> > > 5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
-> > > The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
-> > > ("btrfs: remove dio iomap DSYNC workaround"), which depends on a large
-> > > patchset that went into the merge window for 5.11. So this is a fix only
-> > > for 5.10.x stable kernels, as there are people hitting this bug.
-> > > 
-> > > Fixes: 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
-> > > CC: stable@vger.kernel.org # 5.10 (and only 5.10)
-> > > CC: David Sterba <dsterba@suse.cz>
-> > > Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1181605
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >  fs/btrfs/inode.c | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > As this is a one-off patch, I need the btrfs maintainers to ack this and
-> > really justify why we can't take the larger patch or patch series here
-> > instead, as that is almost always the correct thing to do instead.
+On 2/16/21 6:09 AM, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Acked-by: David Sterba <dsterba@suse.com>
+> When using the NO_HOLES feature, if we clone a file range that spans only
+> a hole into a range that is at or beyond the current i_size of the
+> destination file, we end up not setting the full sync runtime flag on the
+> inode. As a result, if we then fsync the destination file and have a power
+> failure, after log replay we can end up exposing stale data instead of
+> having a hole for that range.
 > 
-> The full backport would be patches
+> The conditions for this to happen are the following:
 > 
-> ecfdc08b8cc6 btrfs: remove dio iomap DSYNC workaround
-> a42fa643169d btrfs: call iomap_dio_complete() without inode_lock
-> 502756b38093 btrfs: remove btrfs_inode::dio_sem
-> e9adabb9712e btrfs: use shared lock for direct writes within EOF
-> c35237063340 btrfs: push inode locking and unlocking into buffered/direct write
-> a14b78ad06ab btrfs: introduce btrfs_inode_lock()/unlock()
-> b8d8e1fd570a btrfs: introduce btrfs_write_check()
+> 1) We have a file with a size of, for example, 1280K;
 > 
-> and maybe more.
+> 2) There is a written (non-prealloc) extent for the file range from 1024K
+>     to 1280K with a length of 256K;
 > 
-> $ git diff b8d8e1fd570a^..ecfdc08b8cc6 | diffstat
->  btrfs_inode.h |   10 -
->  ctree.h       |    8 +
->  file.c        |  338 +++++++++++++++++++++++++++-------------------------------
->  inode.c       |   96 +++++++---------
->  transaction.h |    1 
->  5 files changed, 213 insertions(+), 240 deletions(-)
+> 3) This particular file extent layout is durably persisted, so that the
+>     existing superblock persisted on disk points to a subvolume root where
+>     the file has that exact file extent layout and state;
 > 
-> That seems too much for a backport, the fix Filipe implemented is
-> simpler and IMO qualifies as the exceptional stable-only patch.
+> 4) The file is truncated to a smaller size, to an offset lower than the
+>     start offset of its last extent, for example to 800K. The truncate sets
+>     the full sync runtime flag on the inode;
+> 
+> 6) Fsync the file to log it and clear the full sync runtime flag;
+> 
+> 7) Clone a region that covers only a hole (implicit hole due to NO_HOLES)
+>     into the file with a destination offset that starts at or beyond the
+>     256K file extent item we had - for example to offset 1024K;
+> 
+> 8) Since the clone operation does not find extents in the source range,
+>     we end up in the if branch at the bottom of btrfs_clone() where we
+>     punch a hole for the file range starting at offset 1024K by calling
+>     btrfs_replace_file_extents(). There we end up not setting the full
+>     sync flag on the inode, because we don't know we are being called in
+>     a clone context (and not fallocate's punch hole operation), and
+>     neither do we create an extent map to represent a hole because the
+>     requested range is beyond eof;
+> 
+> 9) A further fsync to the file will be a fast fsync, since the clone
+>     operation did not set the full sync flag, and therefore it relies on
+>     modified extent maps to correctly log the file layout. But since
+>     it does not find any extent map marking the range from 1024K (the
+>     previous eof) to the new eof, it does not log a file extent item
+>     for that range representing the hole;
+> 
+> 10) After a power failure no hole for the range starting at 1024K is
+>     punched and we end up exposing stale data from the old 256K extent.
+> 
+> Turning this into exact steps:
+> 
+>    $ mkfs.btrfs -f -O no-holes /dev/sdi
+>    $ mount /dev/sdi /mnt
+> 
+>    # Create our test file with 3 extents of 256K and a 256K hole at offset
+>    # 256K. The file has a size of 1280K.
+>    $ xfs_io -f -s \
+>                -c "pwrite -S 0xab -b 256K 0 256K" \
+>                -c "pwrite -S 0xcd -b 256K 512K 256K" \
+>                -c "pwrite -S 0xef -b 256K 768K 256K" \
+>                -c "pwrite -S 0x73 -b 256K 1024K 256K" \
+>                /mnt/sdi/foobar
+> 
+>    # Make sure it's durably persisted. We want the last committed super
+>    # block to point to this particular file extent layout.
+>    sync
+> 
+>    # Now truncate our file to a smaller size, falling within a position of
+>    # the second extent. This sets the full sync runtime flag on the inode.
+>    # Then fsync the file to log it and clear the full sync flag from the
+>    # inode. The third extent is no longer part of the file and therefore
+>    # it is not logged.
+>    $ xfs_io -c "truncate 800K" -c "fsync" /mnt/foobar
+> 
+>    # Now do a clone operation that only clones the hole and sets back the
+>    # file size to match the size it had before the truncate operation
+>    # (1280K).
+>    $ xfs_io \
+>          -c "reflink /mnt/foobar 256K 1024K 256K" \
+>          -c "fsync" \
+>          /mnt/foobar
+> 
+>    # File data before power failure:
+>    $ od -A d -t x1 /mnt/foobar
+>    0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+>    *
+>    0262144 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>    *
+>    0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
+>    *
+>    0786432 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
+>    *
+>    0819200 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>    *
+>    1310720
+> 
+>    <power fail>
+> 
+>    # Mount the fs again to replay the log tree.
+>    $ mount /dev/sdi /mnt
+> 
+>    # File data after power failure:
+>    $ od -A d -t x1 /mnt/foobar
+>    0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+>    *
+>    0262144 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>    *
+>    0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
+>    *
+>    0786432 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
+>    *
+>    0819200 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>    *
+>    1048576 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73
+>    *
+>    1310720
+> 
+> The range from 1024K to 1280K should correspond to a hole but instead it
+> points to stale data, to the 256K extent that should not exist after the
+> truncate operation.
+> 
+> The issue does not exists when not using NO_HOLES, because for that case
+> we use file extent items to represent holes, these are found and copied
+> during the loop that iterates over extents at btrfs_clone(), and that
+> causes btrfs_replace_file_extents() to be called with a non-NULL
+> extent_info argument and therefore set the full sync runtime flag on the
+> inode.
+> 
+> So fix this by making the code that deals with a trailing hole during
+> cloning, at btrfs_clone(), to set the full sync flag on the inode, if the
+> range starts at or beyond the current i_size.
+> 
+> A test case for fstests will follow soon.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Why is that too much?  For 7 patches that's a small overall diffstat.
-And you match identically what is upstream in Linus's tree.  That means
-over time, backporting fixing is much easier, and understanding the code
-for everyone is simpler.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-It's almost always better to track what is in Linus's tree than to do
-one-off patches as 95% of the time we do one-off patches they are buggy
-and cause problems as no one else is running them.
+Thanks,
 
-So how about sending the above backported series instead please.
-
-thanks,
-
-greg k-h
+Josef
