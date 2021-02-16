@@ -2,174 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8762331CC46
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 15:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851C831CC4A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 15:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhBPOma (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 09:42:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36198 "EHLO mail.kernel.org"
+        id S230332AbhBPOmx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 09:42:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230131AbhBPOmR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:42:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0086764DF5;
-        Tue, 16 Feb 2021 14:41:35 +0000 (UTC)
+        id S230131AbhBPOmf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:42:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4F6264E02
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 14:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613486496;
-        bh=r5SKLNl9WSrYnlql4Vrvet2zV2hcBh65M0I4PVxdgHE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PbAeZnvgaYvIPO+FoWR0coptqA/ebtkoqyxxMtKeKENkTNe/igUj4NsFpaMGBlHgq
-         rHGfLmlMBJiwhFCxT97wR5PCffhZF4lV4CcqHw3qbinKgfGWV11W1ecHVdcuWIKhuq
-         tLWBk/5v1yQ5CchszWRC7mGRHDGWstgztQoxBc02G/pZDbGLShu65GgdHoVhpO1LIo
-         K7kKRHg/0EvP72dKN7Mjm4i8QxxZVw7ih8iXmwUJvKiyDpqLbPiCv01WmafQrvS42g
-         ddgZO7kL1+V1th9Bb4Ddh9KbFvVr9QGFn9SeQMzbtgAz2mZsiEnLtoGFuJM8WLayfs
-         XF58LxpeQ6q2Q==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Cc:     stable@vger.kernel.org, dsterba@suse.cz,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO write with O_DSYNC
-Date:   Tue, 16 Feb 2021 14:40:31 +0000
-Message-Id: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.28.0
+        s=k20201202; t=1613486515;
+        bh=itnIz3sjHP/DZGz2W2DM6QkhAXFVXZlL+hEn8fkP600=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=Pn1LEZcBY6yn4CmfXWswukc0w15a3cB/pyXwgKwiVgImR7F2VfASOyDvWvJIFYHkE
+         m+S1Mp91CBwJwkPsYaqHmLY51fn858ER0eWDQEs5yV61HEtn49xpQczEXR4kh/kTPp
+         9JsJSQnc74SCpLymrR+Q6K1tE7l4fmsDv9WefA7X6aT/Bl7aWPQ+Pp7bqtz+uFFnVJ
+         WYkcIak5QYOfyySDxVsxgBHX7BLUPVs3CnARVdrIniy9ZBsTnxqZtNk0HTsVRIzalh
+         0nrv79Z9fiJW3chZ96eomhdQ+4Dd2MHcLvfXwxGUtnIUeWKxoEtXA5Wiq9jXhKC/+F
+         HymNYGKDHj8Kg==
+Received: by mail-qk1-f178.google.com with SMTP id w19so9496346qki.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 06:41:54 -0800 (PST)
+X-Gm-Message-State: AOAM530Hqm6io0XE64KKdjGleJhOMKVN8cRL3iolQwwztTVQvaBoTmeG
+        V9+W0YtqGBlRTCDnDYUfEQLDytj0Zq3sOVceThc=
+X-Google-Smtp-Source: ABdhPJwKM/KbjET2EE2+kS6CaUUTCUi2L0M2Ln4B8qxWzQ+TCyZbbDCBYlr/bvIvHkisl8nyusT0fTeS1Se7f2uKO24=
+X-Received: by 2002:a37:65d8:: with SMTP id z207mr19620201qkb.479.1613486514096;
+ Tue, 16 Feb 2021 06:41:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
+ <20210213090416.926A.409509F4@e16-tech.com> <CAL3q7H45VddXz+OVcFG8uDM2WJJsdCn0VuTVfJAb28HzU78J6w@mail.gmail.com>
+ <20210216142324.GO1993@twin.jikos.cz>
+In-Reply-To: <20210216142324.GO1993@twin.jikos.cz>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Tue, 16 Feb 2021 14:41:43 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H562aEiLRGTZKQdSRpaf8oAnLCN6yfitTomaOfMVKmKLw@mail.gmail.com>
+Message-ID: <CAL3q7H562aEiLRGTZKQdSRpaf8oAnLCN6yfitTomaOfMVKmKLw@mail.gmail.com>
+Subject: Re: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO write
+ with O_DSYNC
+To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Feb 16, 2021 at 2:25 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Mon, Feb 15, 2021 at 11:05:33AM +0000, Filipe Manana wrote:
+> > On Sat, Feb 13, 2021 at 1:07 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
+> > > > This bug only affects 5.10 kernels, and the regression was introduced in
+> > > > 5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
+> > > > The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
+> > > > ("btrfs: remove dio iomap DSYNC workaround"), which depends on other
+> > > > changes that went into the merge window for 5.11. So this is a fix only
+> > > > for 5.10.x stable kernels, as there are people hitting this.
+> > >
+> > > It is OK too to backport commit ecfdc08b8cc65d
+> > >  ("btrfs: remove dio iomap DSYNC workaround") to 5.10 for this problem?
+> > >
+> > > the iomap issue for commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
+> > > is already fixed in 5.10?
+> >
+> > Quoting the changelog:
+> >
+> > "commit ecfdc08b8cc65d
+> > ("btrfs: remove dio iomap DSYNC workaround"), which depends on other
+> > changes that went into the merge window for 5.11."
+> >
+> > All the changes, are (at least):
+> >
+> > commit ecfdc08b8cc65d737eebc26a1ee1875a097fd6a0   --> 5.11-rc1
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Thu Sep 24 11:39:21 2020 -0500
+> >
+> >     btrfs: remove dio iomap DSYNC workaround
+> >
+> > commit a42fa643169d2325602572633fcaa16862990e28
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Thu Sep 24 11:39:20 2020 -0500
+> >
+> >     btrfs: call iomap_dio_complete() without inode_lock
+> >
+> > commit 502756b380938022c848761837f8fa3976906aa1
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Thu Sep 24 11:39:19 2020 -0500
+> >
+> >     btrfs: remove btrfs_inode::dio_sem
+> >
+> > commit e9adabb9712ef9424cbbeeaa027d962ab5262e19
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Thu Sep 24 11:39:18 2020 -0500
+> >
+> >     btrfs: use shared lock for direct writes within EOF
+> >
+> > commit c352370633400d13765cc88080c969799ea51108
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Thu Sep 24 11:39:17 2020 -0500
+> >
+> >     btrfs: push inode locking and unlocking into buffered/direct write
+> >
+> > commit a14b78ad06aba0fa7e76d2bc13c5ba581a7f331a
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Thu Sep 24 11:39:16 2020 -0500
+> >
+> >     btrfs: introduce btrfs_inode_lock()/unlock()
+> >
+> > commit b8d8e1fd570a194904f545b135efc880d96a41a4
+> > Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Date:   Thu Sep 24 11:39:15 2020 -0500
+> >
+> >     btrfs: introduce btrfs_write_check()
+> >
+> > That's probably too much to add to stable at once, plus I'm assuming
+> > all required iomap dependencies are in 5.10 already (it seems so,
+> > unless I missed something).
+> >
+> > Usually we don't add patches to stable that didn't go through Linus'
+> > tree either (there were 1 or 2 very rare exceptions in the past I
+> > think), but when a backport depends on so many patches, and not all
+> > from the same patchset, the risk of getting something wrong is
+> > significant. That's why I opted to send this patch, which is much more
+> > simple.
+>
+> Agreed, in this case the backport would be too big, just the diffstat
+> between b8d8e1fd570^..ecfdc08b8cc6 is
+>
+>  5 files changed, 213 insertions(+), 240 deletions(-)
+>
+> This fix is minimal and suitable for stable as an exception. You did not
+> CC stable@vger.kernel.org so you'll need to send it again. Please CC me
+> too in case there are some questions from stable team. Thanks.
 
-Whenever we attempt to do a non-aligned direct IO write with O_DSYNC, we
-end up triggering an assertion and crashing. Example reproducer:
-
-  $ cat test.sh
-  #!/bin/bash
-
-  DEV=/dev/sdj
-  MNT=/mnt/sdj
-
-  mkfs.btrfs -f $DEV > /dev/null
-  mount $DEV $MNT
-
-  # Do a direct IO write with O_DSYNC into a non-aligned range...
-  xfs_io -f -d -s -c "pwrite -S 0xab -b 64K 1111 64K" $MNT/foobar
-
-  umount $MNT
-
-When running the reproducer an assertion fails and produces the following
-trace:
-
-  [ 2418.403134] assertion failed: !current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA, in fs/btrfs/space-info.c:1467
-  [ 2418.403745] ------------[ cut here ]------------
-  [ 2418.404306] kernel BUG at fs/btrfs/ctree.h:3286!
-  [ 2418.404862] invalid opcode: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC PTI
-  [ 2418.405451] CPU: 1 PID: 64705 Comm: xfs_io Tainted: G      D           5.10.15-btrfs-next-87 #1
-  [ 2418.406026] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-  [ 2418.407228] RIP: 0010:assertfail.constprop.0+0x18/0x26 [btrfs]
-  [ 2418.407835] Code: e6 48 c7 (...)
-  [ 2418.409078] RSP: 0018:ffffb06080d13c98 EFLAGS: 00010246
-  [ 2418.409696] RAX: 000000000000006c RBX: ffff994c1debbf08 RCX: 0000000000000000
-  [ 2418.410302] RDX: 0000000000000000 RSI: 0000000000000027 RDI: 00000000ffffffff
-  [ 2418.410904] RBP: ffff994c21770000 R08: 0000000000000000 R09: 0000000000000000
-  [ 2418.411504] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000010000
-  [ 2418.412111] R13: ffff994c22198400 R14: ffff994c21770000 R15: 0000000000000000
-  [ 2418.412713] FS:  00007f54fd7aff00(0000) GS:ffff994d35200000(0000) knlGS:0000000000000000
-  [ 2418.413326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [ 2418.413933] CR2: 000056549596d000 CR3: 000000010b928003 CR4: 0000000000370ee0
-  [ 2418.414528] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [ 2418.415109] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [ 2418.415669] Call Trace:
-  [ 2418.416254]  btrfs_reserve_data_bytes.cold+0x22/0x22 [btrfs]
-  [ 2418.416812]  btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
-  [ 2418.417380]  btrfs_buffered_write+0x1b0/0x7f0 [btrfs]
-  [ 2418.418315]  btrfs_file_write_iter+0x2a9/0x770 [btrfs]
-  [ 2418.418920]  new_sync_write+0x11f/0x1c0
-  [ 2418.419430]  vfs_write+0x2bb/0x3b0
-  [ 2418.419972]  __x64_sys_pwrite64+0x90/0xc0
-  [ 2418.420486]  do_syscall_64+0x33/0x80
-  [ 2418.420979]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  [ 2418.421486] RIP: 0033:0x7f54fda0b986
-  [ 2418.421981] Code: 48 c7 c0 (...)
-  [ 2418.423019] RSP: 002b:00007ffc40569c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-  [ 2418.423547] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f54fda0b986
-  [ 2418.424075] RDX: 0000000000010000 RSI: 000056549595e000 RDI: 0000000000000003
-  [ 2418.424596] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000400
-  [ 2418.425119] R10: 0000000000000400 R11: 0000000000000246 R12: 00000000ffffffff
-  [ 2418.425644] R13: 0000000000000400 R14: 0000000000010000 R15: 0000000000000000
-  [ 2418.426148] Modules linked in: btrfs blake2b_generic (...)
-  [ 2418.429540] ---[ end trace ef2aeb44dc0afa34 ]---
-
-1) At btrfs_file_write_iter() we set current->journal_info to
-   BTRFS_DIO_SYNC_STUB;
-
-2) We then call __btrfs_direct_write(), which calls btrfs_direct_IO();
-
-3) We can't do the direct IO write because it starts at a non-aligned
-   offset (1111). So at btrfs_direct_IO() we return -EINVAL (coming from
-   check_direct_IO() which does the alignment check), but we leave
-   current->journal_info set to BTRFS_DIO_SYNC_STUB - we only clear it
-   at btrfs_dio_iomap_begin(), because we assume we always get there;
-
-4) Then at __btrfs_direct_write() we see that the attempt to do the
-   direct IO write was not successful, 0 bytes written, so we fallback
-   to a buffered write by calling btrfs_buffered_write();
-
-5) There we call btrfs_check_data_free_space() which in turn calls
-   btrfs_alloc_data_chunk_ondemand() and that calls
-   btrfs_reserve_data_bytes() with flush == BTRFS_RESERVE_FLUSH_DATA;
-
-6) Then at btrfs_reserve_data_bytes() we have current->journal_info set to
-   BTRFS_DIO_SYNC_STUB, therefore not NULL, and flush has the value
-   BTRFS_RESERVE_FLUSH_DATA, triggering the second assertion:
-
-  int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
-                               enum btrfs_reserve_flush_enum flush)
-  {
-      struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
-      int ret;
-
-      ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
-             flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
-      ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
-  (...)
-
-So fix that by setting the journal to NULL whenever check_direct_IO()
-returns a failure.
-
-This bug only affects 5.10 kernels, and the regression was introduced in
-5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
-The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
-("btrfs: remove dio iomap DSYNC workaround"), which depends on a large
-patchset that went into the merge window for 5.11. So this is a fix only
-for 5.10.x stable kernels, as there are people hitting this bug.
-
-Fixes: 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
-CC: stable@vger.kernel.org # 5.10 (and only 5.10)
-CC: David Sterba <dsterba@suse.cz>
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1181605
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/inode.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index acc47e2ffb46..b536d21541a9 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8026,8 +8026,12 @@ ssize_t btrfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 	bool relock = false;
- 	ssize_t ret;
- 
--	if (check_direct_IO(fs_info, iter, offset))
-+	if (check_direct_IO(fs_info, iter, offset)) {
-+		ASSERT(current->journal_info == NULL ||
-+		       current->journal_info == BTRFS_DIO_SYNC_STUB);
-+		current->journal_info = NULL;
- 		return 0;
-+	}
- 
- 	count = iov_iter_count(iter);
- 	if (iov_iter_rw(iter) == WRITE) {
--- 
-2.28.0
-
+Ah yes, my usual script to send patches suppresses all cc by default,
+I missed that.
+Ok, sent again. Thanks.
