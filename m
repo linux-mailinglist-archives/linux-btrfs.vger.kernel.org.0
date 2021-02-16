@@ -2,101 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D96E31CFB2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 18:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4754931CFCF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 19:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbhBPRzA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 12:55:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231326AbhBPRy7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:54:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 639B1AB4C;
-        Tue, 16 Feb 2021 17:54:17 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 44ED2DA6EF; Tue, 16 Feb 2021 18:52:21 +0100 (CET)
-Date:   Tue, 16 Feb 2021 18:52:21 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     dsterba@suse.cz, fdmanana@kernel.org, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO
- write with O_DSYNC
-Message-ID: <20210216175221.GS1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Greg KH <gregkh@linuxfoundation.org>,
-        fdmanana@kernel.org, linux-btrfs@vger.kernel.org,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
- <YCvbvJujcuiGcBSj@kroah.com>
- <20210216151546.GQ1993@twin.jikos.cz>
- <YCvmAz/gtKQwkqOc@kroah.com>
+        id S230381AbhBPSDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 13:03:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhBPSDG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:03:06 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECFBC061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 10:02:25 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id h26so17396605lfm.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 10:02:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vlad.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=mnZudgudpTrQqmAYhURTk96KhkGS1dCnCf33agB7luA=;
+        b=f4+WZRbhvbQhFNtpmAYx8ZjF2FR38VSiPem9se7xLPs17m86G7FWoE791fOLHNHb6P
+         4n/6TBoFeJK8zcSe/SufubMbNQ7pgo+QhjgtzKb1jXBgcj0KUkMjnjtUV8hg7uqgfR92
+         Mc8bXovpazd7/VX0WClRTF0Z6bRdNRgiRiVsc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=mnZudgudpTrQqmAYhURTk96KhkGS1dCnCf33agB7luA=;
+        b=EAxEVtpJrPQRBNDmm2zcRmFyEOdeFmqNAbqdE5zgdL97tyDZwxkHpfqswrGyq4abHr
+         oEAF8/0i+/T0oJA+7TITKz0tsKcLUT/HDO6yZ64Q0pV0jdE+wcAgNr/Q20QGuyGPc6NA
+         HvqoJpIGYC77pqovg6luG3/MBPdypCQ0mGU31wvu7uTctzD3qDoa3FYT2a6RbkHoD1NE
+         NtZemTbf6+4LR5OyespXwFvScwLJ4Fcvsi+rdz/dT0skhFn0xjB4+rl3HT1gsX5VgBVc
+         e8tfdNr0IINbd/8NUjGIh3ahg31tYmCd6AIBdnq7xPReeyX+qE2r0fx6j5ttHYfMj5XO
+         SfPg==
+X-Gm-Message-State: AOAM531Ajy8iq/OR8Ka2gKWEcG+QMbcF9Qmy1gPiVbEYvjetX8/HdnJB
+        R3xUqFvcassqoUhsqAWikGJD5pdb3E4qG9ODV7fZOQ==
+X-Google-Smtp-Source: ABdhPJw1qnhDlSBVo4fVnCrDnOZM2e2slR+mMIDPCKmEHkVT/bP48nvouGNjRliQj00I+PR899U1GpSZOkigGqjGupg=
+X-Received: by 2002:ac2:5982:: with SMTP id w2mr5497389lfn.338.1613498543856;
+ Tue, 16 Feb 2021 10:02:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCvmAz/gtKQwkqOc@kroah.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CAFTxqD_-OiGjA3EEycKwKGteYPmA6OjPhMxce8f1w8Ly=wd2pg@mail.gmail.com>
+ <e70bbe98-f6dc-9eaa-8506-cd356a1c2ed8@suse.com> <CAFTxqD9E2egJ22MorzXPAHaNDKg5QoEBK=Cd4ChOdT6Odiy6Rg@mail.gmail.com>
+ <aeed56c3-e641-46a1-5692-04c6ae75d212@gmail.com> <CAFTxqD-SpnKBRY9Ri9xWFfNgWuHYVggYwCPdyXgF6ipUAzxNTg@mail.gmail.com>
+ <20210216174906.iv5ylu3p7jn347kb@tiamat>
+In-Reply-To: <20210216174906.iv5ylu3p7jn347kb@tiamat>
+From:   "Pal, Laszlo" <vlad@vlad.hu>
+Date:   Tue, 16 Feb 2021 19:01:47 +0100
+Message-ID: <CAFTxqD_RgvZTPCZywE28nW==PjT5N68_8q7zr1Te-VAiHMp1oQ@mail.gmail.com>
+Subject: Re: performance recommendations
+To:     Leonidas Spyropoulos <artafinde@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 04:34:27PM +0100, Greg KH wrote:
-> On Tue, Feb 16, 2021 at 04:15:46PM +0100, David Sterba wrote:
-> > On Tue, Feb 16, 2021 at 03:50:36PM +0100, Greg KH wrote:
-> > > On Tue, Feb 16, 2021 at 02:40:31PM +0000, fdmanana@kernel.org wrote:
-> > > As this is a one-off patch, I need the btrfs maintainers to ack this and
-> > > really justify why we can't take the larger patch or patch series here
-> > > instead, as that is almost always the correct thing to do instead.
-> > 
-> > Acked-by: David Sterba <dsterba@suse.com>
-> > 
-> > The full backport would be patches
-> > 
-> > ecfdc08b8cc6 btrfs: remove dio iomap DSYNC workaround
-> > a42fa643169d btrfs: call iomap_dio_complete() without inode_lock
-> > 502756b38093 btrfs: remove btrfs_inode::dio_sem
-> > e9adabb9712e btrfs: use shared lock for direct writes within EOF
-> > c35237063340 btrfs: push inode locking and unlocking into buffered/direct write
-> > a14b78ad06ab btrfs: introduce btrfs_inode_lock()/unlock()
-> > b8d8e1fd570a btrfs: introduce btrfs_write_check()
-> > 
-> > and maybe more.
-> > 
-> > $ git diff b8d8e1fd570a^..ecfdc08b8cc6 | diffstat
-> >  btrfs_inode.h |   10 -
-> >  ctree.h       |    8 +
-> >  file.c        |  338 +++++++++++++++++++++++++++-------------------------------
-> >  inode.c       |   96 +++++++---------
-> >  transaction.h |    1 
-> >  5 files changed, 213 insertions(+), 240 deletions(-)
-> > 
-> > That seems too much for a backport, the fix Filipe implemented is
-> > simpler and IMO qualifies as the exceptional stable-only patch.
-> 
-> Why is that too much?  For 7 patches that's a small overall diffstat.
-> And you match identically what is upstream in Linus's tree.  That means
-> over time, backporting fixing is much easier, and understanding the code
-> for everyone is simpler.
+Hi,
 
-The changes are not trivial and touch eg. inode locking and other
-subsystems (iomap), so they're not self contained inside btrfs. And the
-list of possibly related patches is not entirely known at this moment,
-the above is an example that was obvious, but Filipe has expressed
-doubts that it's complete and I agree.
+Thank you. If I have to clone, I think I'll just get rid of the
+machine and recreate with some other file system. I'm aware, this is
+my fault -lack of research and time pressure-, but I think if I can
+boot it with the old kernel I'll keep it running as long as it can and
+I'll use this time to create another, better designed machine.
 
-Backporting them to 5.10.x would need same amount of testing and
-validation that the 5.11 version got during the whole development cycle.
+Answering your question regarding the ctree, no there is nothing else
+in the log but when I check dmesg on the booted rescueCD during mount,
+I can see some similar message "btrfs transaction blocked more than
+xxx seconds" and the the end "open_ctree", so it seems I really have
+some file system corruption as the root cause (maybe created by some
+bugs in the old code, or some unexpected reboot)
 
-> It's almost always better to track what is in Linus's tree than to do
-> one-off patches as 95% of the time we do one-off patches they are buggy
-> and cause problems as no one else is running them.
+Thx
+Laszlo
 
-While I understand that concern in general, in this case it's trading
-changes by lots of code with a targeted fix with a reproducer, basically
-fixing the buggy error handling path.
-
-> So how about sending the above backported series instead please.
-
-Considering the risk I don't want to do that.
+On Tue, Feb 16, 2021 at 6:52 PM Leonidas Spyropoulos
+<artafinde@gmail.com> wrote:
+>
+> Hi Laszlo,
+>
+> On 16/02/21, Pal, Laszlo wrote:
+> > Hi,
+> >
+> > Thank you. So, I've installed a new centos7 with the same
+> > configuration, old kernel and using btrfs. Then, upgraded the kernel
+> > to 5.11 and all went well, so I thought let's do it on the prod server
+> >
+> Since this is a VM can you clone the disk / partition and attach it to
+> another VM which running a newer kernel and btrfs progs?
+>
+> This way you can try debugging it without affecting prod server.
+>
+> > Unfortunately when I boot on 5.11 sysroot mount times out and I have
+> > something like this in log
+> >
+> > btrfs open ctree failed
+> So before that `dmesg` doesn't have any relevant logs?
+> >
+> > Any quick fix for this? I'm able to mount btrfs volume using a rescuCD
+> > but I have the same issues, like rm a big file takes 10 minutes....
+>
+> If you manage to mount the disk in a newer kernel and btrfs progs try
+> creating a new file system to take advantage of the new feature (on
+> creation) - then migrate the data and follow the recommendations
+> mentioned already.
+>
+> Cheers,
+>
+> --
+> Leonidas Spyropoulos
+>
+> A: Because it messes up the order in which people normally read text.
+> Q: Why is it such a bad thing?
+> A: Top-posting.
+> Q: What is the most annoying thing on usenet and in e-mail?
+>
