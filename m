@@ -2,196 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D5831D1B5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 21:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 668EF31D205
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 22:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbhBPUop (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 15:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47380 "EHLO
+        id S230234AbhBPVZl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 16:25:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhBPUon (ORCPT
+        with ESMTP id S230224AbhBPVZk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 15:44:43 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3DDC061756
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 12:44:03 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id w19so10717281qki.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 12:44:03 -0800 (PST)
+        Tue, 16 Feb 2021 16:25:40 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508A0C061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 13:25:00 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id t62so10874148qke.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 13:25:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BlhUCFkFFCmq/UyxFYfOqs8IE46QXChUuNbPvSI3D6Q=;
-        b=UuwEG9ByE6qSVUT2fSdwxtjhCEdV2n07Y73oADEzI2/UNkiUXorDrLsb9mMpH4Ey+C
-         SN1DgmUoxHvVNKLH0kvw4mpvAKTFHs3XsmcepW4Q9ZwZhrlUV/HDC3g5U+UjEwLkGqHU
-         re7Qdbbq2NMSRMEZoYrdiIfb4t8cAQF532+bpuEuk8Gp2Rc9ODnvdVwQToD4svb+KKZr
-         YHVMl1Iect8uD6M/kCIaNCXCV7OgRaJa45F0aPQlR8xEoD3oe9ig7yO/Os+BK8D0eUih
-         qre0/JoDjynkWimvT3Hc+EmvJryQ/NQMBRL48od6AOjeLDq7q5R4nREhcT4ykK3e7wJ2
-         hxzA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TiKegM4nlemREbwsF18GNQVb2KibxsrrxpW4ZK6JyG4=;
+        b=AI6/MDMxbWE18CZqrZaFwn+d/iwsw765vq/SrjztJ/LLqzjKcpLCWBjObV3703kULL
+         caqGgs9Ji+uQGsG/ItVWJVPCBXdf1wF2rTqkjC4wr/ycvcnxHdmPhnss3+Dvjr8tXnep
+         Lm4ft0ckpV0Ex6iMu9z5d51lpTzAKyhKSG/89rpTsfdruC60HSPL8By4JDOEwrjNe+cu
+         8QOpM+biCgbvGUBFcjN/RCwdRe4DR+IZ0FtCP/2hRm0X0FB5OWpMkm/U3eqEsy1rpdGg
+         B3tCOXNm/pfuXmQbM/EG2XTE0vT2O5eMz0hwe7PHYn7CIy7MHDG5zz98uqECuP+AtBXu
+         oSzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=BlhUCFkFFCmq/UyxFYfOqs8IE46QXChUuNbPvSI3D6Q=;
-        b=VI5VQeOg2vOX1blhsM/8XzDkB+30k1ynkq7dPkx2oLZz6wnrqTpuLckSsdrO9dz6b7
-         mbaFPFRnE+/IQJc50k7tf+stICWbFE7DY3xYYkEYZ32voRlO68RFNDUJUB3E78k6aVKC
-         XpTqNOZjmCHejLtNqsSWRFXx6UICpFT2jLmHLYs+6pKKbp6WU0KNMIv31eZI6CwrR5qt
-         FYEc7utqkyQR6IqxaeuxIsKPWoget9womMcW/2llXJNi5weSZio43Ne/mgvZiPO0tGG+
-         pRqqKjZYCPQA4Cnvm4zJNPYX8/C54uzhNAZG3mG94s0fc98eVJNrFb83CU6sGaYGnGXN
-         Rn3w==
-X-Gm-Message-State: AOAM532a+c0DJ98zuna4K0ahRvWhBYWlSY4XuqfFHJCmULRfbOgX2+WJ
-        M4GLV/eYVk+aRqnjM7dZysNzRPm27iSxAm5d
-X-Google-Smtp-Source: ABdhPJyu+g4xq/rHkINc52ogc3D9r7M1xtI/D0ebCk3KkSIj+p+0c9O4zTVAa/jObzw+4aASt3CJ6w==
-X-Received: by 2002:a37:478a:: with SMTP id u132mr21913077qka.135.1613508241838;
-        Tue, 16 Feb 2021 12:44:01 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n5sm14035824qtd.5.2021.02.16.12.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 12:44:01 -0800 (PST)
+        bh=TiKegM4nlemREbwsF18GNQVb2KibxsrrxpW4ZK6JyG4=;
+        b=uNXJrvNO35RxZTeOsSuNEg2weD3oQhVO0jmZIZ/3EBUdgCwjz+UBDe+TjIK96nUeZA
+         IdN+kubH6YhxwsW94er7Ur111hJ6haYs4K+toaxf3Ck66sorXSAyfHnVj9FcxIr/0bQM
+         OE2XlTMhU6O75QVWzeJUUPPwAXfP0g43OeMkcD4z5OKkCuN5bS63pxFRVsYvU8Y/oV0b
+         ZxpEnVbAMprtLyuSiLfs4zaaZ/Zacf8Y2B9Gw4cifFBoWMeLWUBRuh/zt0RNZtFAkq/A
+         lmoQcojfiZU7oRnv1D11YqiPuz0U5iC3WEG5ZUP5tHOvXtjRRhd9r3rC7HSXaEgmgQDl
+         AqKA==
+X-Gm-Message-State: AOAM531WnOSbxRFghbN5/tyrVJVDyspNBnMSEbBo5p1stDw52/jfvXgl
+        NaupjdFq90WON0LRapofVsrWLaLT5mpYwcZW
+X-Google-Smtp-Source: ABdhPJy3i3Gl17NhtpCEgt0MKBOh2Sol5ch42P6vMVG69HFf5KtGtfZeVJy9gJQB21McqzykgwlOMg==
+X-Received: by 2002:a37:49cd:: with SMTP id w196mr21334780qka.288.1613510698966;
+        Tue, 16 Feb 2021 13:24:58 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id w14sm10247642qto.46.2021.02.16.13.24.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Feb 2021 13:24:58 -0800 (PST)
+Subject: Re: Recovering Btrfs from a freak failure of the disk controller
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
+ <0c4701b2-23ef-fd7a-d198-258b49eedea8@toxicpanda.com>
+ <CAEg-Je9NGV0Mvhw7v8CwcyAZ9zd9T5Fmk2iQyZ1PFWVUOXaP+Q@mail.gmail.com>
+ <90da9117-6b02-3c27-17a0-ff497eb04496@toxicpanda.com>
+ <CAEg-Je-zRWrkKOQM-Y_Y17eHhUrJe+d1_H9iLzQB4w7T+Een=w@mail.gmail.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Subject: [PATCH] fstests: test a regression with btrfs extent reference collisions
-Date:   Tue, 16 Feb 2021 15:44:00 -0500
-Message-Id: <5e341bd2e900b2ba6e42109ca20e2ababc6f0873.1613508208.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
+Message-ID: <74ca64e1-3933-c12b-644a-21745cf2d849@toxicpanda.com>
+Date:   Tue, 16 Feb 2021 16:24:57 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEg-Je-zRWrkKOQM-Y_Y17eHhUrJe+d1_H9iLzQB4w7T+Een=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a regression test for a problem where we would flip read only if
-we reflink'ed enough extents to generate key'ed references, and then got
-a hash collision with those references.  This is a test for the fix
+On 2/16/21 3:29 PM, Neal Gompa wrote:
+> On Tue, Feb 16, 2021 at 1:11 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>>
+>> On 2/16/21 11:27 AM, Neal Gompa wrote:
+>>> On Tue, Feb 16, 2021 at 10:19 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>
+>>>> On 2/14/21 3:25 PM, Neal Gompa wrote:
+>>>>> Hey all,
+>>>>>
+>>>>> So one of my main computers recently had a disk controller failure
+>>>>> that caused my machine to freeze. After rebooting, Btrfs refuses to
+>>>>> mount. I tried to do a mount and the following errors show up in the
+>>>>> journal:
+>>>>>
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): has skinny extents
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
+>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
+>>>>>
+>>>>> I've tried to do -o recovery,ro mount and get the same issue. I can't
+>>>>> seem to find any reasonably good information on how to do recovery in
+>>>>> this scenario, even to just recover enough to copy data off.
+>>>>>
+>>>>> I'm on Fedora 33, the system was on Linux kernel version 5.9.16 and
+>>>>> the Fedora 33 live ISO I'm using has Linux kernel version 5.10.14. I'm
+>>>>> using btrfs-progs v5.10.
+>>>>>
+>>>>> Can anyone help?
+>>>>
+>>>> Can you try
+>>>>
+>>>> btrfs check --clear-space-cache v1 /dev/whatever
+>>>>
+>>>> That should fix the inode generation thing so it's sane, and then the tree
+>>>> checker will allow the fs to be read, hopefully.  If not we can work out some
+>>>> other magic.  Thanks,
+>>>>
+>>>> Josef
+>>>
+>>> I got the same error as I did with btrfs-check --readonly...
+>>>
+>>
+>> Oh lovely, what does btrfs check --readonly --backup do?
+>>
+> 
+> No dice...
+> 
+> # btrfs check --readonly --backup /dev/sda3
+>> Opening filesystem to check...
+>> parent transid verify failed on 791281664 wanted 888893 found 888895
+>> parent transid verify failed on 791281664 wanted 888893 found 888895
+>> parent transid verify failed on 791281664 wanted 888893 found 888895
 
-	btrfs: do not error out if the extent ref hash doesn't match
+Hey look the block we're looking for, I wrote you some magic, just pull
 
-and is relatively straightforward, simply generate such a file and
-watch for fireworks.
+https://github.com/josefbacik/btrfs-progs/tree/for-neal
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- tests/btrfs/231     | 81 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/231.out | 11 ++++++
- tests/btrfs/group   |  1 +
- 3 files changed, 93 insertions(+)
- create mode 100755 tests/btrfs/231
- create mode 100644 tests/btrfs/231.out
+build, and then run
 
-diff --git a/tests/btrfs/231 b/tests/btrfs/231
-new file mode 100755
-index 00000000..b4787f9f
---- /dev/null
-+++ b/tests/btrfs/231
-@@ -0,0 +1,81 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 Josef Bacik.  All Rights Reserved.
-+#
-+# FS QA Test 231
-+#
-+# This is a regression test for a problem fixed by
-+#
-+#    btrfs: do not error out if the extent ref hash doesn't match
-+#
-+# Simply generate a file with a lot of extent references, then reflink in a few
-+# offsets that will generate hash collisions, sync and validate we can still
-+# write to the file system.
-+
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/reflink
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+_require_test
-+_require_scratch_reflink
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_scratch_mount
-+
-+FILE=$SCRATCH_MNT/file
-+
-+# Create a 1m extent to reflink
-+$XFS_IO_PROG -f -c "pwrite 0 1M" -c "fsync" $FILE | _filter_xfs_io
-+
-+# Generate a bunch of extent references so we're forced to use key'ed extent
-+# references.
-+offset=2
-+for i in {0..10000}
-+do
-+	$XFS_IO_PROG -c "reflink ${FILE} 0 ${offset}M 1M" $FILE \
-+		> /dev/null 2>&1
-+	offset=$(( offset + 2 ))
-+done
-+
-+# Our key is
-+#
-+# key.objectid = bytenr
-+# key.type = BTRFS_EXTENT_DATA_REF_KEY
-+# key.offset = hash(tree, inode, offset)
-+#
-+# The tree id is 5, the inode is 257, and the reflink'ed offset is 0, the below
-+# offsets generate a hash collision with that offset.  We only need two to
-+# collide, but if it's worth doing it's worth overdoing.
-+$XFS_IO_PROG -c "reflink ${FILE} 0 17999258914816 1M" $FILE | _filter_xfs_io
-+$XFS_IO_PROG -c "reflink ${FILE} 0 35998517829632 1M" $FILE | _filter_xfs_io
-+$XFS_IO_PROG -c "reflink ${FILE} 0 53752752058368 1M" $FILE | _filter_xfs_io
-+
-+# Sync to make sure this works, it'll error out if we abort the transaction, but
-+# write a file just to make sure
-+$BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-+$XFS_IO_PROG -f -c "pwrite 0 1M" $SCRATCH_MNT/write | _filter_xfs_io
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/231.out b/tests/btrfs/231.out
-new file mode 100644
-index 00000000..f52c71ac
---- /dev/null
-+++ b/tests/btrfs/231.out
-@@ -0,0 +1,11 @@
-+QA output created by 231
-+wrote 1048576/1048576 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+linked 1048576/1048576 bytes at offset 17999258914816
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+linked 1048576/1048576 bytes at offset 35998517829632
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+linked 1048576/1048576 bytes at offset 53752752058368
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 1048576/1048576 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index a7c65983..65cedf7f 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -233,3 +233,4 @@
- 228 auto quick volume
- 229 auto quick send clone
- 230 auto quick qgroup limit
-+231 auto
--- 
-2.26.2
+btrfs-neal-magic /dev/sda3 791281664 888895
 
+This will force us to point at the old root with (hopefully) the right bytenr 
+and gen, and then hopefully you'll be able to recover from there.  This is kind 
+of saucy, so yolo, but I can undo it if it makes things worse.  Thanks,
+
+Josef
