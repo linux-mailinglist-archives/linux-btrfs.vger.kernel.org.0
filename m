@@ -2,108 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0518931CF94
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 18:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D96E31CFB2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 18:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhBPRtz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 12:49:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhBPRtt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 12:49:49 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4BDC061756
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 09:49:09 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id l12so14261409wry.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 09:49:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hr0rdHMZmolBtvThpYX8F47EmZTO33KvwcYJC73JYiA=;
-        b=VT9UNpWDYBNcyzhHxrk0sjTeU0VzXm9ZlI898KPk78IClZImpc7WFbtBa0GP08HETy
-         Npr5cUXahf8I8gyrR/x5V7vAtghO5bNL/62WIUwBXwsQ8YAq5HgTf9RBMxSebAfJnJQL
-         gVJ5czdaH41W1ulRdt9AkFzk+FfSSUyfFCVb4G7pRDN40i6AdrOGRNe3wkRKNMrUCHWI
-         JaswBk0xv98nTJxDVJW08voPvLV7otDwestPUHQv2EE9Ajf85Hc7csqtsy1AeNWJPweC
-         4XZdRmHwoN882AOmGdvvkny8Fajm1qeOtocI3cxWB7xI+5KwWMhw9s2a7f26AsEV2ou+
-         s7aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=hr0rdHMZmolBtvThpYX8F47EmZTO33KvwcYJC73JYiA=;
-        b=k33C7R9b25g8dxLg7FaHitudX59lqiQwsN+dJot1C1ATIcME6hTjwqJ7n3p8V9Ddoq
-         DqvUep/+xAnUarfiKrcXJ4wzp8zMCVJZBOFDfDIlbzubHw+/PO+MmXBDPmrn2CQ3X/ep
-         asiJp3n0fodP99h/zMH2VRRllzQliCvtqXj0kuY1EAZQzbBi4KPxNEnGNynQDzg7aZPZ
-         15JnCUmxXUR7Pkw0cHRq5dkjGGk5Rff6v5OS3SfWHs2vojWscQJMNTlkN5YdzaRWrmpi
-         leLT7Ue7fgnLBqgG66StYOvzkBEA68Dx6YyYgJh/QEdg6jCevwTIRl2ZwgAntQhRzJt+
-         5WMg==
-X-Gm-Message-State: AOAM5307AbP4go2H6+M+BP2GbUW5TgTaOHrVVArtfYOcKDmQAy+oKzJ3
-        VhVr5pYXbpC6U/JHUelcRhpGBHqYxgvxbg==
-X-Google-Smtp-Source: ABdhPJx+c6+XU6ZsE3+FFpIh3r7P0iCDs/wXFTR//iBGY/vfNdkKy+BWmfO2bppZ58LlmjTIfAd0FA==
-X-Received: by 2002:a05:6000:1543:: with SMTP id 3mr25060627wry.254.1613497747709;
-        Tue, 16 Feb 2021 09:49:07 -0800 (PST)
-Received: from localhost ([141.0.156.136])
-        by smtp.gmail.com with ESMTPSA id y6sm4840120wma.10.2021.02.16.09.49.07
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 09:49:07 -0800 (PST)
-Date:   Tue, 16 Feb 2021 17:49:06 +0000
-From:   Leonidas Spyropoulos <artafinde@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: performance recommendations
-Message-ID: <20210216174906.iv5ylu3p7jn347kb@tiamat>
-Mail-Followup-To: Leonidas Spyropoulos <artafinde@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CAFTxqD_-OiGjA3EEycKwKGteYPmA6OjPhMxce8f1w8Ly=wd2pg@mail.gmail.com>
- <e70bbe98-f6dc-9eaa-8506-cd356a1c2ed8@suse.com>
- <CAFTxqD9E2egJ22MorzXPAHaNDKg5QoEBK=Cd4ChOdT6Odiy6Rg@mail.gmail.com>
- <aeed56c3-e641-46a1-5692-04c6ae75d212@gmail.com>
- <CAFTxqD-SpnKBRY9Ri9xWFfNgWuHYVggYwCPdyXgF6ipUAzxNTg@mail.gmail.com>
+        id S231338AbhBPRzA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 12:55:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231326AbhBPRy7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 12:54:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 639B1AB4C;
+        Tue, 16 Feb 2021 17:54:17 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 44ED2DA6EF; Tue, 16 Feb 2021 18:52:21 +0100 (CET)
+Date:   Tue, 16 Feb 2021 18:52:21 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     dsterba@suse.cz, fdmanana@kernel.org, linux-btrfs@vger.kernel.org,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO
+ write with O_DSYNC
+Message-ID: <20210216175221.GS1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Greg KH <gregkh@linuxfoundation.org>,
+        fdmanana@kernel.org, linux-btrfs@vger.kernel.org,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
+ <YCvbvJujcuiGcBSj@kroah.com>
+ <20210216151546.GQ1993@twin.jikos.cz>
+ <YCvmAz/gtKQwkqOc@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFTxqD-SpnKBRY9Ri9xWFfNgWuHYVggYwCPdyXgF6ipUAzxNTg@mail.gmail.com>
+In-Reply-To: <YCvmAz/gtKQwkqOc@kroah.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Laszlo,
-
-On 16/02/21, Pal, Laszlo wrote:
-> Hi,
+On Tue, Feb 16, 2021 at 04:34:27PM +0100, Greg KH wrote:
+> On Tue, Feb 16, 2021 at 04:15:46PM +0100, David Sterba wrote:
+> > On Tue, Feb 16, 2021 at 03:50:36PM +0100, Greg KH wrote:
+> > > On Tue, Feb 16, 2021 at 02:40:31PM +0000, fdmanana@kernel.org wrote:
+> > > As this is a one-off patch, I need the btrfs maintainers to ack this and
+> > > really justify why we can't take the larger patch or patch series here
+> > > instead, as that is almost always the correct thing to do instead.
+> > 
+> > Acked-by: David Sterba <dsterba@suse.com>
+> > 
+> > The full backport would be patches
+> > 
+> > ecfdc08b8cc6 btrfs: remove dio iomap DSYNC workaround
+> > a42fa643169d btrfs: call iomap_dio_complete() without inode_lock
+> > 502756b38093 btrfs: remove btrfs_inode::dio_sem
+> > e9adabb9712e btrfs: use shared lock for direct writes within EOF
+> > c35237063340 btrfs: push inode locking and unlocking into buffered/direct write
+> > a14b78ad06ab btrfs: introduce btrfs_inode_lock()/unlock()
+> > b8d8e1fd570a btrfs: introduce btrfs_write_check()
+> > 
+> > and maybe more.
+> > 
+> > $ git diff b8d8e1fd570a^..ecfdc08b8cc6 | diffstat
+> >  btrfs_inode.h |   10 -
+> >  ctree.h       |    8 +
+> >  file.c        |  338 +++++++++++++++++++++++++++-------------------------------
+> >  inode.c       |   96 +++++++---------
+> >  transaction.h |    1 
+> >  5 files changed, 213 insertions(+), 240 deletions(-)
+> > 
+> > That seems too much for a backport, the fix Filipe implemented is
+> > simpler and IMO qualifies as the exceptional stable-only patch.
 > 
-> Thank you. So, I've installed a new centos7 with the same
-> configuration, old kernel and using btrfs. Then, upgraded the kernel
-> to 5.11 and all went well, so I thought let's do it on the prod server
-> 
-Since this is a VM can you clone the disk / partition and attach it to
-another VM which running a newer kernel and btrfs progs?
+> Why is that too much?  For 7 patches that's a small overall diffstat.
+> And you match identically what is upstream in Linus's tree.  That means
+> over time, backporting fixing is much easier, and understanding the code
+> for everyone is simpler.
 
-This way you can try debugging it without affecting prod server.
+The changes are not trivial and touch eg. inode locking and other
+subsystems (iomap), so they're not self contained inside btrfs. And the
+list of possibly related patches is not entirely known at this moment,
+the above is an example that was obvious, but Filipe has expressed
+doubts that it's complete and I agree.
 
-> Unfortunately when I boot on 5.11 sysroot mount times out and I have
-> something like this in log
-> 
-> btrfs open ctree failed
-So before that `dmesg` doesn't have any relevant logs?
-> 
-> Any quick fix for this? I'm able to mount btrfs volume using a rescuCD
-> but I have the same issues, like rm a big file takes 10 minutes....
+Backporting them to 5.10.x would need same amount of testing and
+validation that the 5.11 version got during the whole development cycle.
 
-If you manage to mount the disk in a newer kernel and btrfs progs try
-creating a new file system to take advantage of the new feature (on
-creation) - then migrate the data and follow the recommendations
-mentioned already.
+> It's almost always better to track what is in Linus's tree than to do
+> one-off patches as 95% of the time we do one-off patches they are buggy
+> and cause problems as no one else is running them.
 
-Cheers,
+While I understand that concern in general, in this case it's trading
+changes by lots of code with a targeted fix with a reproducer, basically
+fixing the buggy error handling path.
 
--- 
-Leonidas Spyropoulos
+> So how about sending the above backported series instead please.
 
-A: Because it messes up the order in which people normally read text.
-Q: Why is it such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing on usenet and in e-mail?
-
+Considering the risk I don't want to do that.
