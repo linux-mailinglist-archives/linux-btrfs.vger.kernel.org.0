@@ -2,120 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8475F31C8EC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 11:38:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2450131C948
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 12:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbhBPKiQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 05:38:16 -0500
-Received: from ns.bouton.name ([109.74.195.142]:34054 "EHLO mail.bouton.name"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhBPKiP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 05:38:15 -0500
-X-Greylist: delayed 510 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Feb 2021 05:38:14 EST
-Received: from [192.168.0.39] (82-65-239-81.subs.proxad.net [82.65.239.81])
-        by mail.bouton.name (Postfix) with ESMTP id 75301B84D;
-        Tue, 16 Feb 2021 11:28:58 +0100 (CET)
-Subject: Re: performance recommendations
-To:     "Pal, Laszlo" <vlad@vlad.hu>, Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CAFTxqD_-OiGjA3EEycKwKGteYPmA6OjPhMxce8f1w8Ly=wd2pg@mail.gmail.com>
- <e70bbe98-f6dc-9eaa-8506-cd356a1c2ed8@suse.com>
- <CAFTxqD9E2egJ22MorzXPAHaNDKg5QoEBK=Cd4ChOdT6Odiy6Rg@mail.gmail.com>
-From:   Lionel Bouton <lionel-subscription@bouton.name>
-Message-ID: <0fbd4108-153f-ab89-b7d9-1c56c23c6f60@bouton.name>
-Date:   Tue, 16 Feb 2021 11:28:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230260AbhBPLDY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 06:03:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229917AbhBPLBK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:01:10 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731BEC06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 03:00:30 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id a1so4443604qvd.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 03:00:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=D8H30sA17kTl86l43+m0AhnUpo6/9Xc/mrnWZW0/Vqo=;
+        b=C8WicJWeQKSAH3Bl8e/kQFpwvTjEmh8HaeZdeZ025NQB9LfUmZeXnCb7bbODUL+oTA
+         WVADkoR3iz6cdmv0O7NW4N9cJfp3ftHJ4DK73722kaCQlsOYppBwRooSKfBECleU2ZC2
+         SCzu98F4o0M43dP4Qn9HSrqBKN44M07kFiDAP2SzmmvC160hJLHrN4pijm0NrqxaSfmo
+         rqQbtsjCBk0LNQwrb3biDePlAnXwViWvsz1xWzuf2WESeGcAcKrH36Lw6/UBnUwrsZt5
+         2wgy393xIesvbuNpYaIYRGeq6bfBKyPewNqulPEpDxVP7afTFLGghvVwAiDtw/VsyDhn
+         CHIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=D8H30sA17kTl86l43+m0AhnUpo6/9Xc/mrnWZW0/Vqo=;
+        b=KY3021CgDYlHvmkykeZJomvufuwAJzzi4H4G7Cw/2lk+WnxtHdlNJVvmnn/Qk/dgmd
+         0HkOvIwwNNJM3MZrpSLuMQFV/ZxGW8KEfeohnyZeBki5Y93G5vDz5cFtsyL2rEb62ZTU
+         j31n0x+ONcOtV0PqNS5BOjLuahDFetVb74NoT5DsCHcrq2kPcFHMoZyoZTkj3J86DChB
+         M+ZSSuHi3f5drdbUvlXyocAUvzCRhuYiaz0s+WW1YqtaAbOllStuPcHfb+W2rLdtrlyS
+         7uLizwF9Ss7WLdX5qlr5NJlYifVKz3HOSv/YM7CAZqAJMSGtrCLnHxkCzOmENygBYBNU
+         iEzw==
+X-Gm-Message-State: AOAM533lFC9u9+iDKTTC47M1bC8n5fsu9H0sMRX5xIASwXsGFkpdHd3N
+        dihsyW/5IOVyzOoyP0VcHdU/vVv4bJL7+3n977NKA/fymez3NA==
+X-Google-Smtp-Source: ABdhPJwLo+KCptg+gZnMhAXfEBCJLj51NhV/y6t/UM47YqBF+uTrtfDnJ21Bu2ORU1vatVxp7LGsze+iajMG19U4REc=
+X-Received: by 2002:a0c:906c:: with SMTP id o99mr18768186qvo.28.1613473229626;
+ Tue, 16 Feb 2021 03:00:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAFTxqD9E2egJ22MorzXPAHaNDKg5QoEBK=Cd4ChOdT6Odiy6Rg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210205112506.4274-1-dsterba@suse.com>
+In-Reply-To: <20210205112506.4274-1-dsterba@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 16 Feb 2021 11:00:18 +0000
+Message-ID: <CAL3q7H58PJk3Fyq4b7WTWGrzVmz5zATDDTCKO3SPS0EF=x0k4g@mail.gmail.com>
+Subject: Re: Btrfs progs release 5.10.1
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-Le 16/02/2021 à 09:54, Pal, Laszlo a écrit :
-> [...]
-> So, as far as I see the action plan is the following
-> - enable v2 space_cache. is this safe/stable enough?
-> - run defrag on old data, I suppose it will run weeks, but I'm ok with
-> it if the server can run smoothly during this process
-> - compress=zstd is the recommended mount option? is this performing
-> better than the default?
-> - I'm also thinking to -after defrag- compress my logs with
-> traditional gzip compression and turn off on-the-fly compress (is this
-> a huge performance gain?)
+On Fri, Feb 5, 2021 at 11:33 AM David Sterba <dsterba@suse.com> wrote:
 >
-> [...]
+> Hi,
 >
-> 3.10.0-1160.6.1.el7.x86_64 #1 SMP Tue Nov 17 13:59:11 UTC 2020 x86_64
-> x86_64 x86_64 GNU/Linux
+> btrfs-progs version 5.10.1 have been released.
 >
+> The static build got broken due to libmount added in 5.10, this works now=
+. The
+> minimum libmount version is 2.24 that is not available on some LTS distro=
+s like
+> CentOS 7. The plan is to bring the support back, reimplementing some libm=
+ount
+> functionality and dropping the dependency again.
+>
+> Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-prog=
+s/
+> Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+>
+> Shortlog:
+>
+> David Sterba (6):
+>       btrfs-progs: build: fix linking with static libmount
 
-As Nikolay pointed out, this is a vendor kernel based on a very (more
-than 7 years) old kernel version and this can create problems.
-For reference, see
-https://btrfs.wiki.kernel.org/index.php/Changelog#By_feature
+Btw, this causes two fstests to fail:
 
-- v2 space_cache appeared in 4.3.
-- compress=zstd appeared in 4.14.
+$ ./check btrfs/100 btrfs/101
+FSTYP         -- btrfs
+PLATFORM      -- Linux/x86_64 debian8 5.11.0-rc6-btrfs-next-80 #1 SMP
+PREEMPT Wed Feb 3 11:28:05 WET 2021
+MKFS_OPTIONS  -- /dev/sdc
+MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
 
-So for the 2 questions related to those, you'll have to ask the
-distribution if they back-ported them (I doubt it, usually only bugfixes
-are backported).
+btrfs/100 6s ... [failed, exit status 1]- output mismatch (see
+/home/fdmanana/git/hub/xfstests/results//btrfs/100.out.bad)
+    --- tests/btrfs/100.out 2020-06-10 19:29:03.818519162 +0100
+    +++ /home/fdmanana/git/hub/xfstests/results//btrfs/100.out.bad
+2021-02-16 10:55:53.145343890 +0000
+    @@ -2,10 +2,7 @@
+     Label: none  uuid: <UUID>
+      Total devices <NUM> FS bytes used <SIZE>
+      devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+    - devid <DEVID> size <SIZE> used <SIZE> path /dev/mapper/error-test
+    + devid <DEVID> size <SIZE> used <SIZE> path dm-0
 
-I wouldn't be comfortable using a 3.10 based kernel with BTRFS. For
-example there was at least one compress=lzo bug (race condition?) that
-corrupted data on occasions that was fixed (from memory) in either a
-late 3.x kernel or a 4.x kernel. The stability and performance on such a
-base will not compare well with the current state of BTRFS.
+    -Label: none  uuid: <UUID>
+    ...
+    (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/100.out
+/home/fdmanana/git/hub/xfstests/results//btrfs/100.out.bad'  to see
+the entire diff)
+btrfs/101 8s ... [failed, exit status 1]- output mismatch (see
+/home/fdmanana/git/hub/xfstests/results//btrfs/101.out.bad)
+    --- tests/btrfs/101.out 2020-06-10 19:29:03.818519162 +0100
+    +++ /home/fdmanana/git/hub/xfstests/results//btrfs/101.out.bad
+2021-02-16 10:55:58.105503554 +0000
+    @@ -2,10 +2,7 @@
+     Label: none  uuid: <UUID>
+      Total devices <NUM> FS bytes used <SIZE>
+      devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
+    - devid <DEVID> size <SIZE> used <SIZE> path /dev/mapper/error-test
+    + devid <DEVID> size <SIZE> used <SIZE> path dm-0
 
-If you really want to go ahead with this kernel and BTRFS I would at
-least avoid compression with it and as you suggested in your last point
-compress at the application level.
-
-Note that compression will make fragmentation worse. BTRFS uses small
-individually compressed extents (probably because there isn't any other
-decent way to minimize the costs of seeking into a file). The more
-extents you have the more opportunity for fragmentation exist.
-
-For defragmentation, I use something I coded to replace autodefrag which
-was not usable in my use cases :
-https://github.com/jtek/ceph-utils/blob/master/btrfs-defrag-scheduler.rb
-The complexity is worth it for me because it allows good performance on
-filesystem where I need BTRFS (either for checksums or snapshots). For a
-log server I wouldn't consider it but you already bit the BTRFS bullet
-so it might help depending on the details (it could be adapted to handle
-a transition to a more sane state for example).
-Initially it was fine-tuned to handle Ceph OSDs and latter on adapted to
-very large BTRFS volumes backing NFS servers, backup servers (see the
-README in the same repository) or even some of our PostgreSQL replicas.
-The initialization on an existing filesystem needs special (undocumented
-unfortunately) care though. By default the first pass goes very fast to
-get an estimation of the number of files and this can create a very
-large I/O load. If you decide to test it, I can provide directions (or
-update the documentation). For a pure log server it is overkill (you
-could simply defragment files on file rotation).
+    -Label: none  uuid: <UUID>
+    ...
+    (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/101.out
+/home/fdmanana/git/hub/xfstests/results//btrfs/101.out.bad'  to see
+the entire diff)
+Ran: btrfs/100 btrfs/101
+Failures: btrfs/100 btrfs/101
+Failed 2 of 2 tests
 
 
-To sum up : if I were in your position I would probably choose between
-these alternatives :
-- switch to ext4 (maybe the easiest unless the migration is impractical),
-- defragment old files that aren't written to anymore and schedule
-defragmentation when log files are archived (maybe using logrotate),
-- use my defragmentation scheduler as a last resort (might be a solution
-if you store other data than logs in the filesystem too).
+Is there any plan to fix this?
 
-In all cases I would avoid BTRFS compression and compress on log
-rotation. You'll get better performance and compression this way.
+Thanks.
 
-If you can update the kernel, use space_cache=v2, it is stable on recent
-kernels (I don't even remember it being buggy even with the earlier
-kernels).
 
-Best regards,
+>       btrfs-progs: tests: add support to test the .static binaries
+>       btrfs-progs: docs: clarify scrub requiring mounted filesystem
+>       btrfs-progs: INSTALL: update build dependencies
+>       btrfs-progs: update CHANGES for 5.10.1
+>       Btrfs progs v5.10.1
 
-Lionel
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
