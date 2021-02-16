@@ -2,186 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAA031CC51
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 15:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A7E31CC6C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 15:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhBPOqz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 09:46:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbhBPOqt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:46:49 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9C8C06178A
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 06:46:04 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id f17so9577849qkl.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 06:46:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=gr/aiBrV0gs5GqXfKgOv2X1jpB1MplezztrS6AZfNxs=;
-        b=qoc9hHh0pbHfb0+xuFQSo+wzGpj0xqho4gwCeT3qZCBPl7qkAwUR6wCGNRayu9i0R9
-         CX2+LCsxUaK/Z7nhMSRuF01fXWz2LNv+KJavOB3Upi0AX+nOcMMMVRfB+qavZA7Z68f0
-         DpHPzcAbn10AO5Hzng6HAb3g3x+puKlw+W/H6AVtVuJBFy6NKuRqoSWTr3QXo6az5aok
-         Uk31ClHN01mmDwAUm9DIvHOqRnDYudrFUpLpGjwzTHjSkOiy5U1epnE+CbTfVNNNRY2R
-         JVqgc7QNMemc5mrHK/1h4ZTwlwOOt71QEV7+Eh8uj1uQziPu2WLRKxiwI/lxz/7f/NWo
-         MTBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=gr/aiBrV0gs5GqXfKgOv2X1jpB1MplezztrS6AZfNxs=;
-        b=E6r4Jy2anaZbUyBHcxmvCFXXsQj3czlOACOk1u36UWTU2pobFuuTIQ/IFVU8rUXl1O
-         fEIHXQzHRbLUPaUfBUCIH/kyMmkeorvjcj5fjjUisiTfcQqoXO6zokbbELKPhDqpiDl4
-         0P+w29jPW947pQ9eF1v28xWlF3CSnic4/Mp84w2KuXMg2WADOdT874o4oe/FnSiw9dfu
-         QV6ggLPguPdOUOy+B6RjkyZh+sjD4Gt0RUkB8ybPOxuMlONtpulwgIYwt7MAJHCgTowI
-         rzJRnu7pYwqp0rsXvtAaEKkPfo+dlOu6+dwusblaXwrUc460aGw02VU7LGh1FKrueuIB
-         EMJg==
-X-Gm-Message-State: AOAM53218PxGlXzMkDj8ZiBmvLXZB+Co65NEMwiLzDw6RsUyql8hOWDa
-        iVurseqeeKrKbBwMJhzfz+2V26wh3vOGc+q+aPcYUjamZAVVKg==
-X-Google-Smtp-Source: ABdhPJzmq9q/xmGUgqEUgu06z62i7T9yRMRKr2xwo70mD9fGoCIARDQv41dzjyk8nSXtVXSiRGFHSf3hckhKsoNVkdA=
-X-Received: by 2002:a05:620a:118e:: with SMTP id b14mr20439569qkk.438.1613486763842;
- Tue, 16 Feb 2021 06:46:03 -0800 (PST)
+        id S230108AbhBPOvW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 09:51:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229864AbhBPOvU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 09:51:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3C2064E02;
+        Tue, 16 Feb 2021 14:50:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613487039;
+        bh=GGp1KAFm9RLMWTYZb/hVJC7oWfltwVTWP3gbTtqcZVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x43LtFHUnePRcJPQ0SKdNsLN5OWfowvVO6raFahfA4vRRiQPJjLxjg++0c8y1dkFn
+         qC2b9KQJbXlHS9a5O0iwoaojEA8SkLBhCKWC0eehZL63A8fNUQO1/6RuPE0mDNTp12
+         uJcubX/ShSnf8iHccYi4ZWQgZclyQu5YDUIFxXiI=
+Date:   Tue, 16 Feb 2021 15:50:36 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
+        dsterba@suse.cz, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO
+ write with O_DSYNC
+Message-ID: <YCvbvJujcuiGcBSj@kroah.com>
+References: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <20200624115527.855816-1-wqu@suse.com>
-In-Reply-To: <20200624115527.855816-1-wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 16 Feb 2021 14:45:52 +0000
-Message-ID: <CAL3q7H5sgq_vXpP5rB+bBOBNqaq1+AszGLZvfdgdMLDruQZ4_w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] btrfs-progs: convert: Ensure the data chunks size
- never exceed device size
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Jiachen YANG <farseerfc@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 10:00 PM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> The following script could lead to corrupted btrfs fs after
-> btrfs-convert:
->
->   fallocate -l 1G test.img
->   mkfs.ext4 test.img
->   mount test.img $mnt
->   fallocate -l 200m $mnt/file1
->   fallocate -l 200m $mnt/file2
->   fallocate -l 200m $mnt/file3
->   fallocate -l 200m $mnt/file4
->   fallocate -l 205m $mnt/file1
->   fallocate -l 205m $mnt/file2
->   fallocate -l 205m $mnt/file3
->   fallocate -l 205m $mnt/file4
->   umount $mnt
->   btrfs-convert test.img
->
-> The result btrfs will have a device extent beyond its boundary:
->   pening filesystem to check...
->   Checking filesystem on test.img
->   UUID: bbcd7399-fd5b-41a7-81ae-d48bc6935e43
->   [1/7] checking root items
->   [2/7] checking extents
->   ERROR: dev extent devid 1 physical offset 993198080 len 85786624 is bey=
-ond device boundary 1073741824
->   ERROR: errors found in extent allocation tree or chunk allocation
->   [3/7] checking free space cache
->   [4/7] checking fs roots
->   [5/7] checking only csums items (without verifying data)
->   [6/7] checking root refs
->   [7/7] checking quota groups skipped (not enabled on this FS)
->   found 913960960 bytes used, error(s) found
->   total csum bytes: 891500
->   total tree bytes: 1064960
->   total fs tree bytes: 49152
->   total extent tree bytes: 16384
->   btree space waste bytes: 144885
->   file data blocks allocated: 2129063936
->    referenced 1772728320
->
-> [CAUSE]
-> Btrfs-convert first collect all used blocks in the original fs, then
-> slightly enlarge the used blocks range as new btrfs data chunks.
->
-> However the enlarge part has a problem, that it doesn't take the device
-> boundary into consideration.
->
-> Thus it caused device extents and data chunks to go beyond device
-> boundary.
->
-> [FIX]
-> Just to extra check before inserting data chunks into
-> btrfs_convert_context::data_chunk.
->
-> Reported-by: Jiachen YANG <farseerfc@gmail.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-So, having upgraded a test box from btrfs-progs v5.6.1 to v5.10.1, I
-now have btrfs/136 (fstests) failing:
-
-$ ./check btrfs/136
-FSTYP         -- btrfs
-PLATFORM      -- Linux/x86_64 debian8 5.11.0-rc7-btrfs-next-81 #1 SMP
-PREEMPT Tue Feb 16 12:29:07 WET 2021
-MKFS_OPTIONS  -- /dev/sdc
-MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
-
-btrfs/136 7s ... [failed, exit status 1]- output mismatch (see
-/home/fdmanana/git/hub/xfstests/results//btrfs/136.out.bad)
-    --- tests/btrfs/136.out 2020-06-10 19:29:03.818519162 +0100
-    +++ /home/fdmanana/git/hub/xfstests/results//btrfs/136.out.bad
-2021-02-16 14:31:30.669559188 +0000
-    @@ -1,2 +1,3 @@
-     QA output created by 136
-    -Silence is golden
-    +btrfs-convert failed
-    +(see /home/fdmanana/git/hub/xfstests/results//btrfs/136.full for detai=
-ls)
-    ...
-    (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/136.out
-/home/fdmanana/git/hub/xfstests/results//btrfs/136.out.bad'  to see
-the entire diff)
-Ran: btrfs/136
-Failures: btrfs/136
-Failed 1 of 1 tests
-
-A bisect pointed to this patch.
-Did you get this failure on your test box as well?
-
-Thanks.
-
+On Tue, Feb 16, 2021 at 02:40:31PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Whenever we attempt to do a non-aligned direct IO write with O_DSYNC, we
+> end up triggering an assertion and crashing. Example reproducer:
+> 
+>   $ cat test.sh
+>   #!/bin/bash
+> 
+>   DEV=/dev/sdj
+>   MNT=/mnt/sdj
+> 
+>   mkfs.btrfs -f $DEV > /dev/null
+>   mount $DEV $MNT
+> 
+>   # Do a direct IO write with O_DSYNC into a non-aligned range...
+>   xfs_io -f -d -s -c "pwrite -S 0xab -b 64K 1111 64K" $MNT/foobar
+> 
+>   umount $MNT
+> 
+> When running the reproducer an assertion fails and produces the following
+> trace:
+> 
+>   [ 2418.403134] assertion failed: !current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA, in fs/btrfs/space-info.c:1467
+>   [ 2418.403745] ------------[ cut here ]------------
+>   [ 2418.404306] kernel BUG at fs/btrfs/ctree.h:3286!
+>   [ 2418.404862] invalid opcode: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC PTI
+>   [ 2418.405451] CPU: 1 PID: 64705 Comm: xfs_io Tainted: G      D           5.10.15-btrfs-next-87 #1
+>   [ 2418.406026] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>   [ 2418.407228] RIP: 0010:assertfail.constprop.0+0x18/0x26 [btrfs]
+>   [ 2418.407835] Code: e6 48 c7 (...)
+>   [ 2418.409078] RSP: 0018:ffffb06080d13c98 EFLAGS: 00010246
+>   [ 2418.409696] RAX: 000000000000006c RBX: ffff994c1debbf08 RCX: 0000000000000000
+>   [ 2418.410302] RDX: 0000000000000000 RSI: 0000000000000027 RDI: 00000000ffffffff
+>   [ 2418.410904] RBP: ffff994c21770000 R08: 0000000000000000 R09: 0000000000000000
+>   [ 2418.411504] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000010000
+>   [ 2418.412111] R13: ffff994c22198400 R14: ffff994c21770000 R15: 0000000000000000
+>   [ 2418.412713] FS:  00007f54fd7aff00(0000) GS:ffff994d35200000(0000) knlGS:0000000000000000
+>   [ 2418.413326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [ 2418.413933] CR2: 000056549596d000 CR3: 000000010b928003 CR4: 0000000000370ee0
+>   [ 2418.414528] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>   [ 2418.415109] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>   [ 2418.415669] Call Trace:
+>   [ 2418.416254]  btrfs_reserve_data_bytes.cold+0x22/0x22 [btrfs]
+>   [ 2418.416812]  btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
+>   [ 2418.417380]  btrfs_buffered_write+0x1b0/0x7f0 [btrfs]
+>   [ 2418.418315]  btrfs_file_write_iter+0x2a9/0x770 [btrfs]
+>   [ 2418.418920]  new_sync_write+0x11f/0x1c0
+>   [ 2418.419430]  vfs_write+0x2bb/0x3b0
+>   [ 2418.419972]  __x64_sys_pwrite64+0x90/0xc0
+>   [ 2418.420486]  do_syscall_64+0x33/0x80
+>   [ 2418.420979]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>   [ 2418.421486] RIP: 0033:0x7f54fda0b986
+>   [ 2418.421981] Code: 48 c7 c0 (...)
+>   [ 2418.423019] RSP: 002b:00007ffc40569c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
+>   [ 2418.423547] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f54fda0b986
+>   [ 2418.424075] RDX: 0000000000010000 RSI: 000056549595e000 RDI: 0000000000000003
+>   [ 2418.424596] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000400
+>   [ 2418.425119] R10: 0000000000000400 R11: 0000000000000246 R12: 00000000ffffffff
+>   [ 2418.425644] R13: 0000000000000400 R14: 0000000000010000 R15: 0000000000000000
+>   [ 2418.426148] Modules linked in: btrfs blake2b_generic (...)
+>   [ 2418.429540] ---[ end trace ef2aeb44dc0afa34 ]---
+> 
+> 1) At btrfs_file_write_iter() we set current->journal_info to
+>    BTRFS_DIO_SYNC_STUB;
+> 
+> 2) We then call __btrfs_direct_write(), which calls btrfs_direct_IO();
+> 
+> 3) We can't do the direct IO write because it starts at a non-aligned
+>    offset (1111). So at btrfs_direct_IO() we return -EINVAL (coming from
+>    check_direct_IO() which does the alignment check), but we leave
+>    current->journal_info set to BTRFS_DIO_SYNC_STUB - we only clear it
+>    at btrfs_dio_iomap_begin(), because we assume we always get there;
+> 
+> 4) Then at __btrfs_direct_write() we see that the attempt to do the
+>    direct IO write was not successful, 0 bytes written, so we fallback
+>    to a buffered write by calling btrfs_buffered_write();
+> 
+> 5) There we call btrfs_check_data_free_space() which in turn calls
+>    btrfs_alloc_data_chunk_ondemand() and that calls
+>    btrfs_reserve_data_bytes() with flush == BTRFS_RESERVE_FLUSH_DATA;
+> 
+> 6) Then at btrfs_reserve_data_bytes() we have current->journal_info set to
+>    BTRFS_DIO_SYNC_STUB, therefore not NULL, and flush has the value
+>    BTRFS_RESERVE_FLUSH_DATA, triggering the second assertion:
+> 
+>   int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
+>                                enum btrfs_reserve_flush_enum flush)
+>   {
+>       struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
+>       int ret;
+> 
+>       ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
+>              flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
+>       ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
+>   (...)
+> 
+> So fix that by setting the journal to NULL whenever check_direct_IO()
+> returns a failure.
+> 
+> This bug only affects 5.10 kernels, and the regression was introduced in
+> 5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
+> The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
+> ("btrfs: remove dio iomap DSYNC workaround"), which depends on a large
+> patchset that went into the merge window for 5.11. So this is a fix only
+> for 5.10.x stable kernels, as there are people hitting this bug.
+> 
+> Fixes: 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
+> CC: stable@vger.kernel.org # 5.10 (and only 5.10)
+> CC: David Sterba <dsterba@suse.cz>
+> Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1181605
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 > ---
->  convert/main.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/convert/main.c b/convert/main.c
-> index c86ddd988c63..7709e9a6c085 100644
-> --- a/convert/main.c
-> +++ b/convert/main.c
-> @@ -669,6 +669,8 @@ static int calculate_available_space(struct btrfs_con=
-vert_context *cctx)
->                         cur_off =3D cache->start;
->                 cur_len =3D max(cache->start + cache->size - cur_off,
->                               min_stripe_size);
-> +               /* data chunks should never exceed device boundary */
-> +               cur_len =3D min(cctx->total_bytes - cur_off, cur_len);
->                 ret =3D add_merge_cache_extent(data_chunks, cur_off, cur_=
-len);
->                 if (ret < 0)
->                         goto out;
-> --
-> 2.27.0
->
+>  fs/btrfs/inode.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 
+As this is a one-off patch, I need the btrfs maintainers to ack this and
+really justify why we can't take the larger patch or patch series here
+instead, as that is almost always the correct thing to do instead.
 
---=20
-Filipe David Manana,
+thanks,
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+greg k-h
