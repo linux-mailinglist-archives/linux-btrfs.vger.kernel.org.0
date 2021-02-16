@@ -2,117 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4754931CFCF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 19:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E015131CFEF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 19:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhBPSDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 13:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        id S229806AbhBPSM1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 13:12:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhBPSDG (ORCPT
+        with ESMTP id S229742AbhBPSMX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:03:06 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECFBC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 10:02:25 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id h26so17396605lfm.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 10:02:25 -0800 (PST)
+        Tue, 16 Feb 2021 13:12:23 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EAF2C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 10:11:43 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id o21so7714073qtr.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 10:11:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vlad.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=mnZudgudpTrQqmAYhURTk96KhkGS1dCnCf33agB7luA=;
-        b=f4+WZRbhvbQhFNtpmAYx8ZjF2FR38VSiPem9se7xLPs17m86G7FWoE791fOLHNHb6P
-         4n/6TBoFeJK8zcSe/SufubMbNQ7pgo+QhjgtzKb1jXBgcj0KUkMjnjtUV8hg7uqgfR92
-         Mc8bXovpazd7/VX0WClRTF0Z6bRdNRgiRiVsc=
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=irwhJdx/cFWGU41yvbGj3EgeW3fbqSR33w+W7m4LvII=;
+        b=uL8qW4vG8jGZRbX+/yIdjVRMAObxuaPt0X2W9QOKY253BAT35qCDPC9gVaerhZRDWq
+         U7HsQmKi6723vkfV//N8LLg9U5f52GBBEYMS3qhwPAKsTyFcR6RZVIxsgfxhf80uK5+r
+         oWu5cbYemcHNSF7uH0xX8qLwJ215/NNaBHcfKJA2F+zu12NqGn2crmlPX1CUdgd87K8i
+         vi7658khDSOULDEbjL3ORIMMtvSo9aAaj2UVlejYWvZvNRSGQyhY3GyH8Psqzd/g30s3
+         O7sdamS8otKylecTz/pzKka9u3XyGS3wWfI32AcT71JQAB405eQDbJypw7+NNUZs0e9l
+         q6eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=mnZudgudpTrQqmAYhURTk96KhkGS1dCnCf33agB7luA=;
-        b=EAxEVtpJrPQRBNDmm2zcRmFyEOdeFmqNAbqdE5zgdL97tyDZwxkHpfqswrGyq4abHr
-         oEAF8/0i+/T0oJA+7TITKz0tsKcLUT/HDO6yZ64Q0pV0jdE+wcAgNr/Q20QGuyGPc6NA
-         HvqoJpIGYC77pqovg6luG3/MBPdypCQ0mGU31wvu7uTctzD3qDoa3FYT2a6RbkHoD1NE
-         NtZemTbf6+4LR5OyespXwFvScwLJ4Fcvsi+rdz/dT0skhFn0xjB4+rl3HT1gsX5VgBVc
-         e8tfdNr0IINbd/8NUjGIh3ahg31tYmCd6AIBdnq7xPReeyX+qE2r0fx6j5ttHYfMj5XO
-         SfPg==
-X-Gm-Message-State: AOAM531Ajy8iq/OR8Ka2gKWEcG+QMbcF9Qmy1gPiVbEYvjetX8/HdnJB
-        R3xUqFvcassqoUhsqAWikGJD5pdb3E4qG9ODV7fZOQ==
-X-Google-Smtp-Source: ABdhPJw1qnhDlSBVo4fVnCrDnOZM2e2slR+mMIDPCKmEHkVT/bP48nvouGNjRliQj00I+PR899U1GpSZOkigGqjGupg=
-X-Received: by 2002:ac2:5982:: with SMTP id w2mr5497389lfn.338.1613498543856;
- Tue, 16 Feb 2021 10:02:23 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=irwhJdx/cFWGU41yvbGj3EgeW3fbqSR33w+W7m4LvII=;
+        b=srk+DTvMdgl8LaTitVbZm4/TZxVqRGOK02EUr7sSPO+fOzSkpwmEFMApcV935ZW2kN
+         GZMSDkWO0La3PulMxFIrEBaqCUf1sJUrhA+jiC6yJX0yT3v/5UWmPjOpiJc9sB3gnlyf
+         f5FNi76TNXJS2lDi0/NeLheamudfle4Y21DmozCudYm6vaN0okeJqR9RseFzhppV3evO
+         2AX2lG55PhS2n8B9C224pmiLs0iyGkvXhmyMf276AQDyAZxt9PQDKSGEJg/ZDI3E+7Re
+         UNi2ABlV91qy8GDkUWpnJWPG9bCRib2xCXLEuH4widCwyWtt7htEXzO+jW65HhfuzYpt
+         U1RA==
+X-Gm-Message-State: AOAM531r5QXC/TnemNHHxjfPbikvuzxt7lrIZaBUbvolfVj/2cbUoaVh
+        a8wod8L5uxZta+4YZ82ccL5+ynWqZYjoNSLQ
+X-Google-Smtp-Source: ABdhPJxMR3yqZgGopkRfhZDaV6/mpZ1L1YLQoAGq8/Qvn76zimswx7ERBqc6n16OOCVif+0R0qTSow==
+X-Received: by 2002:ac8:524a:: with SMTP id y10mr4117870qtn.376.1613499102205;
+        Tue, 16 Feb 2021 10:11:42 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id k8sm7342569qkk.81.2021.02.16.10.11.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Feb 2021 10:11:41 -0800 (PST)
+Subject: Re: Recovering Btrfs from a freak failure of the disk controller
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
+ <0c4701b2-23ef-fd7a-d198-258b49eedea8@toxicpanda.com>
+ <CAEg-Je9NGV0Mvhw7v8CwcyAZ9zd9T5Fmk2iQyZ1PFWVUOXaP+Q@mail.gmail.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <90da9117-6b02-3c27-17a0-ff497eb04496@toxicpanda.com>
+Date:   Tue, 16 Feb 2021 13:11:40 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <CAFTxqD_-OiGjA3EEycKwKGteYPmA6OjPhMxce8f1w8Ly=wd2pg@mail.gmail.com>
- <e70bbe98-f6dc-9eaa-8506-cd356a1c2ed8@suse.com> <CAFTxqD9E2egJ22MorzXPAHaNDKg5QoEBK=Cd4ChOdT6Odiy6Rg@mail.gmail.com>
- <aeed56c3-e641-46a1-5692-04c6ae75d212@gmail.com> <CAFTxqD-SpnKBRY9Ri9xWFfNgWuHYVggYwCPdyXgF6ipUAzxNTg@mail.gmail.com>
- <20210216174906.iv5ylu3p7jn347kb@tiamat>
-In-Reply-To: <20210216174906.iv5ylu3p7jn347kb@tiamat>
-From:   "Pal, Laszlo" <vlad@vlad.hu>
-Date:   Tue, 16 Feb 2021 19:01:47 +0100
-Message-ID: <CAFTxqD_RgvZTPCZywE28nW==PjT5N68_8q7zr1Te-VAiHMp1oQ@mail.gmail.com>
-Subject: Re: performance recommendations
-To:     Leonidas Spyropoulos <artafinde@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEg-Je9NGV0Mvhw7v8CwcyAZ9zd9T5Fmk2iQyZ1PFWVUOXaP+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On 2/16/21 11:27 AM, Neal Gompa wrote:
+> On Tue, Feb 16, 2021 at 10:19 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>
+>> On 2/14/21 3:25 PM, Neal Gompa wrote:
+>>> Hey all,
+>>>
+>>> So one of my main computers recently had a disk controller failure
+>>> that caused my machine to freeze. After rebooting, Btrfs refuses to
+>>> mount. I tried to do a mount and the following errors show up in the
+>>> journal:
+>>>
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): has skinny extents
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
+>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
+>>>
+>>> I've tried to do -o recovery,ro mount and get the same issue. I can't
+>>> seem to find any reasonably good information on how to do recovery in
+>>> this scenario, even to just recover enough to copy data off.
+>>>
+>>> I'm on Fedora 33, the system was on Linux kernel version 5.9.16 and
+>>> the Fedora 33 live ISO I'm using has Linux kernel version 5.10.14. I'm
+>>> using btrfs-progs v5.10.
+>>>
+>>> Can anyone help?
+>>
+>> Can you try
+>>
+>> btrfs check --clear-space-cache v1 /dev/whatever
+>>
+>> That should fix the inode generation thing so it's sane, and then the tree
+>> checker will allow the fs to be read, hopefully.  If not we can work out some
+>> other magic.  Thanks,
+>>
+>> Josef
+> 
+> I got the same error as I did with btrfs-check --readonly...
+> 
 
-Thank you. If I have to clone, I think I'll just get rid of the
-machine and recreate with some other file system. I'm aware, this is
-my fault -lack of research and time pressure-, but I think if I can
-boot it with the old kernel I'll keep it running as long as it can and
-I'll use this time to create another, better designed machine.
+Oh lovely, what does btrfs check --readonly --backup do?
 
-Answering your question regarding the ctree, no there is nothing else
-in the log but when I check dmesg on the booted rescueCD during mount,
-I can see some similar message "btrfs transaction blocked more than
-xxx seconds" and the the end "open_ctree", so it seems I really have
-some file system corruption as the root cause (maybe created by some
-bugs in the old code, or some unexpected reboot)
-
-Thx
-Laszlo
-
-On Tue, Feb 16, 2021 at 6:52 PM Leonidas Spyropoulos
-<artafinde@gmail.com> wrote:
->
-> Hi Laszlo,
->
-> On 16/02/21, Pal, Laszlo wrote:
-> > Hi,
-> >
-> > Thank you. So, I've installed a new centos7 with the same
-> > configuration, old kernel and using btrfs. Then, upgraded the kernel
-> > to 5.11 and all went well, so I thought let's do it on the prod server
-> >
-> Since this is a VM can you clone the disk / partition and attach it to
-> another VM which running a newer kernel and btrfs progs?
->
-> This way you can try debugging it without affecting prod server.
->
-> > Unfortunately when I boot on 5.11 sysroot mount times out and I have
-> > something like this in log
-> >
-> > btrfs open ctree failed
-> So before that `dmesg` doesn't have any relevant logs?
-> >
-> > Any quick fix for this? I'm able to mount btrfs volume using a rescuCD
-> > but I have the same issues, like rm a big file takes 10 minutes....
->
-> If you manage to mount the disk in a newer kernel and btrfs progs try
-> creating a new file system to take advantage of the new feature (on
-> creation) - then migrate the data and follow the recommendations
-> mentioned already.
->
-> Cheers,
->
-> --
-> Leonidas Spyropoulos
->
-> A: Because it messes up the order in which people normally read text.
-> Q: Why is it such a bad thing?
-> A: Top-posting.
-> Q: What is the most annoying thing on usenet and in e-mail?
->
+Josef
