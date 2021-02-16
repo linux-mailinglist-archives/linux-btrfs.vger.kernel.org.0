@@ -2,205 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C3431C96E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 12:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD30D31CA29
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Feb 2021 12:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhBPLLz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 06:11:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36098 "EHLO mail.kernel.org"
+        id S230201AbhBPLup (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 06:50:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49866 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhBPLLD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:11:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1C2F64DEC;
-        Tue, 16 Feb 2021 11:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613473821;
-        bh=hOGq63Vcn2noy0pigCTc4z8TRW2DIDi2V9SW0uQR45o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZEnzN/hExiiAdQPzc57e70jTkAPg8GSh1Pemm3gIoSQ1oDbsuTFVBIBGY099zqEba
-         cgEWnsJFGMLiVikdpz3l08y0mEEyMoghmZ25xa8LvR+PuifkoJWzI2wKQblmVsUcuM
-         1Q/Cgto6VEgs4VJhNRUcFRHN398YNHyl5lVYtRA7GTrLNhI1giWDDBxXjX0AbowXBR
-         zDJQZDlKGqDABo9UG/Rw0ybvw95U4E+VjOBQ76gHhAj39KJFaYYVzHVzDXV5HwxPo7
-         qhwYKJwZfd4yLDHBWoVbZkA8bRRX+yq2Q15+3yioebult6szoO90p4rIQU46XUAAQc
-         RUBsJseK5Z2yQ==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: add test for cloning a hole post eof when using NO_HOLES feature
-Date:   Tue, 16 Feb 2021 11:10:15 +0000
-Message-Id: <845bba7c2f3d46ef521858cebcc95231a4fba507.1613473625.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.28.0
+        id S230310AbhBPLsw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:48:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0AF90AF9F;
+        Tue, 16 Feb 2021 11:48:08 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D5105DA6EF; Tue, 16 Feb 2021 12:46:11 +0100 (CET)
+Date:   Tue, 16 Feb 2021 12:46:11 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: Re: [PATCH v15 00/42] btrfs: zoned block device support
+Message-ID: <20210216114611.GM1993@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+References: <cover.1612433345.git.naohiro.aota@wdc.com>
+ <20210210195829.GW1993@twin.jikos.cz>
+ <SN4PR0401MB35987EE941FA59E2ECB8D7269B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20210211151901.GD1993@twin.jikos.cz>
+ <SN4PR0401MB3598ADA963CA60A715DE5EDE9B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20210211154627.GE1993@twin.jikos.cz>
+ <SN4PR0401MB359821DC2BBF171C946142D09B889@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20210216043247.cjxybi7dudpgvvyg@naota-xeon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216043247.cjxybi7dudpgvvyg@naota-xeon>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Feb 16, 2021 at 01:33:28PM +0900, Naohiro Aota wrote:
+> On Mon, Feb 15, 2021 at 04:58:05PM +0000, Johannes Thumshirn wrote:
+> > On 11/02/2021 16:48, David Sterba wrote:
+> > > On Thu, Feb 11, 2021 at 03:26:04PM +0000, Johannes Thumshirn wrote:
+> > >> On 11/02/2021 16:21, David Sterba wrote:
+> > >>> On Thu, Feb 11, 2021 at 09:58:09AM +0000, Johannes Thumshirn wrote:
+> > >>>> On 10/02/2021 21:02, David Sterba wrote:
+> > >>>>>> This series implements superblock log writing. It uses two zones as a
+> > >>>>>> circular buffer to write updated superblocks. Once the first zone is filled
+> > >>>>>> up, start writing into the second zone. The first zone will be reset once
+> > >>>>>> both zones are filled. We can determine the postion of the latest
+> > >>>>>> superblock by reading the write pointer information from a device.
+> > >>>>>
+> > >>>>> About that, in this patchset it's still leaving superblock at the fixed
+> > >>>>> zone number while we want it at a fixed location, spanning 2 zones
+> > >>>>> regardless of their size.
+> > >>>>
+> > >>>> We'll always need 2 zones or otherwise we won't be powercut safe.
+> > >>>
+> > >>> Yes we do, that hasn't changed.
+> > >>
+> > >> OK that I don't understand, with the log structured superblocks on a zoned
+> > >> filesystem, we're writing a new superblock until the 1st zone is filled.
+> > >> Then we advance to the second zone. As soon as we wrote a superblock to
+> > >> the second zone we can reset the first.
+> > >> If we only use one zone,
+> > > 
+> > > No, that can't work and nobody suggests that.
+> > > 
+> > >> we would need to write until it's end, reset and
+> > >> start writing again from the beginning. But if a powercut happens between
+> > >> reset and first write after the reset, we end up with no superblock.
+> > > 
+> > > What I'm saying and what we discussed on slack in December, we can't fix
+> > > the zone number for the 1st and 2nd copy of superblock like it is now in
+> > > sb_zone_number.
+> > > 
+> > > The primary superblock must be there for any reference and to actually
+> > > let the tools learn about the incompat bits.
+> > > 
+> > > The 1st copy is now fixed zone 16, which depends on the zone size. The
+> > > idea is to define the superblock offsets to start at given offsets,
+> > > where the ring buffer has the two consecutive zones, regardless of their
+> > > size.
+> > > 
+> > > primary:		   0
+> > > 1st copy:		 16G
+> > > 2nd copy:		256G
+> > > 
+> > > Due to the variability of the zones in future devices, we'll reserve a
+> > > space at the superblock interval, assuming the zone sizes can grow up to
+> > > several gigabytes. Current working number is 1G, with some safety margin
+> > > the reserved ranges would be (eg. for a 4G zone size):
+> > > 
+> > > primary:		0 up to 8G
+> > > 1st copy:		16G up to 24G
+> > > 2nd copy:		256G up to 262G
+> > > 
+> > > It is wasteful but we want to be future proof and expecting disk sizes
+> > > from tens of terabytes to a hundred terabytes, it's not significant
+> > > loss of space.
+> > > 
+> > > If the zone sizes can be expected higher than 4G, the 1st copy can be
+> > > defined at 64G, that would leave us some margin until somebody thinks
+> > > that 32G zones are a great idea.
+> > > 
+> > 
+> > We've been talking about this today and our proposal would be as follows:
+> > Primary SB is two zones starting at LBA 0
+> > Seconday SB the two zones starting with the zone that contains the address 16G
+> 
+> For the secondary SB on a file system < 16GB, how do you think of
+> using the last two zones (or zones #2, #3 will do)? Then, we can
+> assure to have two SB copies even on such a file system.
 
-Test that when using the NO_HOLES feature, if we truncate down a file,
-clone a file range covering only a hole into an offset beyond the current
-file size, and then fsync the file, after a power failure we get the
-expected file content and we do not get stale data corresponding to file
-extents that existed before truncating the file.
-
-This currently fails on btrfs and is fixed by a patch for the kernel that
-has the following subject:
-
-  "btrfs: fix stale data exposure after cloning a hole with NO_HOLES enabled"
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/232     | 87 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/232.out | 35 ++++++++++++++++++
- tests/btrfs/group   |  1 +
- 3 files changed, 123 insertions(+)
- create mode 100755 tests/btrfs/232
- create mode 100644 tests/btrfs/232.out
-
-diff --git a/tests/btrfs/232 b/tests/btrfs/232
-new file mode 100755
-index 00000000..5b69dbf2
---- /dev/null
-+++ b/tests/btrfs/232
-@@ -0,0 +1,87 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FSQA Test No. 232
-+#
-+# Test that when using the NO_HOLES feature, if we truncate down a file, clone a
-+# file range covering only a hole into an offset beyond the current file size,
-+# and then fsync the file, after a power failure we get the expected file content
-+# and we do not get stale data corresponding to file extents that existed before
-+# truncating the file.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	_cleanup_flakey
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmflakey
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+_require_scratch
-+_require_btrfs_fs_feature "no_holes"
-+_require_btrfs_mkfs_feature "no-holes"
-+_require_dm_target flakey
-+
-+rm -f $seqres.full
-+
-+_scratch_mkfs -O no-holes >>$seqres.full 2>&1
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+# Create our test file with 3 extents of 256K and a 256K hole at offset 256K.
-+# The file has a size of 1280K.
-+$XFS_IO_PROG -f -s \
-+	     -c "pwrite -S 0xab -b 256K 0 256K" \
-+	     -c "pwrite -S 0xcd -b 256K 512K 256K" \
-+	     -c "pwrite -S 0xef -b 256K 768K 256K" \
-+	     -c "pwrite -S 0x73 -b 256K 1024K 256K" \
-+	     $SCRATCH_MNT/foobar | _filter_xfs_io
-+
-+# Make sure it's durably persisted. We want the last committed super block to
-+# point to this particular file extent layout.
-+sync
-+
-+# Now truncate our file to a smaller size, falling within a position of the
-+# second extent. This sets the full sync runtime flag on the inode.
-+# Then fsync the file to log it and clear the full sync flag from the inode.
-+# The third extent is no longer part of the file and therefore it is not logged.
-+$XFS_IO_PROG -c "truncate 800K" -c "fsync" $SCRATCH_MNT/foobar
-+
-+# Now do a clone operation that only clones the hole and sets back the file size
-+# to match the size it had before the truncate operation (1280K).
-+$XFS_IO_PROG \
-+	-c "reflink $SCRATCH_MNT/foobar 256K 1024K 256K" \
-+	-c "fsync" \
-+	$SCRATCH_MNT/foobar | _filter_xfs_io
-+
-+echo "File data before power failure:"
-+od -A d -t x1 $SCRATCH_MNT/foobar
-+
-+# Simulate a power failure and then mount again the filesystem to replay the log
-+# tree.
-+_flakey_drop_and_remount
-+
-+# This should match what we got before the power failure. The range from 1024K
-+# to 1280K should be a hole and not point to an extent full of bytes with a
-+# value of 0x73.
-+echo "File data after power failure:"
-+od -A d -t x1 $SCRATCH_MNT/foobar
-+
-+_unmount_flakey
-+status=0
-+exit
-diff --git a/tests/btrfs/232.out b/tests/btrfs/232.out
-new file mode 100644
-index 00000000..3c0f061f
---- /dev/null
-+++ b/tests/btrfs/232.out
-@@ -0,0 +1,35 @@
-+QA output created by 232
-+wrote 262144/262144 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 262144/262144 bytes at offset 524288
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 262144/262144 bytes at offset 786432
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 262144/262144 bytes at offset 1048576
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+linked 262144/262144 bytes at offset 1048576
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File data before power failure:
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-+*
-+0262144 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
-+*
-+0786432 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
-+*
-+0819200 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+1310720
-+File data after power failure:
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-+*
-+0262144 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
-+*
-+0786432 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
-+*
-+0819200 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+1310720
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 9f63db69..440270bb 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -234,3 +234,4 @@
- 229 auto quick send clone
- 230 auto quick qgroup limit
- 231 auto quick compress rw
-+232 auto quick clone log replay
--- 
-2.28.0
-
+For real hardware I think this is not relevant but for the emulated mode
+we need to deal with that case. The reserved size is wasteful and this
+will become noticeable for devices < 16G but I'd rather keep the logic
+simple and not care much about this corner case. So, the superblock
+range would be reserved and if there's not enough to store the secondary
+sb, then don't.
