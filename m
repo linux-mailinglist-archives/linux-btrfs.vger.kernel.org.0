@@ -2,176 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3C131DE22
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 18:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE4531DE39
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 18:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhBQR0r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Feb 2021 12:26:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34818 "EHLO mx2.suse.de"
+        id S234091AbhBQRcT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Feb 2021 12:32:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36756 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234406AbhBQR0p (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:26:45 -0500
+        id S233885AbhBQRcL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:32:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3E5E7B7C0;
-        Wed, 17 Feb 2021 17:26:04 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 068AFB7BA;
+        Wed, 17 Feb 2021 17:31:29 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B0629DA7C5; Wed, 17 Feb 2021 18:24:07 +0100 (CET)
-Date:   Wed, 17 Feb 2021 18:24:07 +0100
+        id 7A1EBDA7C5; Wed, 17 Feb 2021 18:29:32 +0100 (CET)
+Date:   Wed, 17 Feb 2021 18:29:32 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix stale data exposure after cloning a hole with
- NO_HOLES enabled
-Message-ID: <20210217172407.GU1993@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: avoid double put of block group when emptying
+ cluster
+Message-ID: <20210217172932.GV1993@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <07067d184eb90be19874190df45cc83f06186307.1613473473.git.fdmanana@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, stable@vger.kernel.org
+References: <5ca694ff4f8cff4c0ef6896593a1f1d01fbe956d.1611610947.git.josef@toxicpanda.com>
+ <bf8cd92d-12a0-3bb3-34c0-dd9c938bf349@suse.com>
+ <ad0ea42a-5e41-f9b9-986d-8c70e9f2eed3@toxicpanda.com>
+ <20210210225014.GA1993@twin.jikos.cz>
+ <dd555517-d6c8-4b6f-54f6-5cbaf5874c00@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <07067d184eb90be19874190df45cc83f06186307.1613473473.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dd555517-d6c8-4b6f-54f6-5cbaf5874c00@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:09:25AM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu, Feb 11, 2021 at 01:25:52PM +0200, Nikolay Borisov wrote:
 > 
-> When using the NO_HOLES feature, if we clone a file range that spans only
-> a hole into a range that is at or beyond the current i_size of the
-> destination file, we end up not setting the full sync runtime flag on the
-> inode. As a result, if we then fsync the destination file and have a power
-> failure, after log replay we can end up exposing stale data instead of
-> having a hole for that range.
 > 
-> The conditions for this to happen are the following:
+> On 11.02.21 г. 0:50 ч., David Sterba wrote:
+> > On Tue, Jan 26, 2021 at 09:30:45AM -0500, Josef Bacik wrote:
+> >> On 1/26/21 4:02 AM, Nikolay Borisov wrote:
+> >>> On 25.01.21 г. 23:42 ч., Josef Bacik wrote:
+> >>>> In __btrfs_return_cluster_to_free_space we will bail doing the cleanup
+> >>>> of the cluster if the block group we passed in doesn't match the block
+> >>>> group on the cluster.  However we drop a reference to block_group, as
+> >>>> the cluster holds a reference to the block group while it's attached to
+> >>>> the cluster.  If cluster->block_group != block_group however then this
+> >>>> is an extra put, which means we'll go negative and free this block group
+> >>>> down the line, leading to a UAF.
+> >>>
+> >>> Was this found by code inspection or did you hit in production. Also why
+> >>> in btrfs_remove_free_space_cache just before
+> >>> __btrfs_return_cluster_to_free_space there is:
+> >>>
+> >>
+> >> It was found in production sort of halfway.  I was doing something for WhatsApp 
+> >> and had to convert our block group reference counting to the refcount stuff so I 
+> >> could find where I made a mistake.  Turns out this was where the problem was, my 
+> >> stuff had just made it way more likely to happen.  I don't have the stack trace 
+> >> because this was like 6 months ago, I'm going through all my WhatsApp magic and 
+> >> getting them actually usable for upstream.
+> >>
+> >>> WARN_ON(cluster->block_group != block_group);
+> >>>
+> >>> IMO this patch should also remove the WARN_ON if it's a valid condition
+> >>> to have the passed bg be different than the one in the cluster. Also
+> >>> that WARN_ON is likely racy since it's done outside of cluster->lock.
+> >>>
+> >>
+> >> Yup that's in a follow up thing, I wanted to get the actual fix out before I got 
+> >> distracted by my mountain of meetings this week.  Thanks,
+> > 
+> > Removing the WARN_ON in a separate patch sounds ok to me, this patch
+> > clearly fixes the refcounting bug, the warning condition is the same but
+> > would need a different reasoning.
+> > 
+> > Nikolay, if you're ok with current patch version let me know if you want
+> > a rev-by added.
+> > 
 > 
-> 1) We have a file with a size of, for example, 1280K;
 > 
-> 2) There is a written (non-prealloc) extent for the file range from 1024K
->    to 1280K with a length of 256K;
+> Codewise I'm fine with it. However just had another read of the commit
+> message and I think it could be rewritten to be somewhat simpler:
 > 
-> 3) This particular file extent layout is durably persisted, so that the
->    existing superblock persisted on disk points to a subvolume root where
->    the file has that exact file extent layout and state;
+> It's wrong calling btrfs_put_block_group in
+> __btrfs_return_cluster_to_free_space if the block group passed is
+> different than the block group the cluster represents. As this means the
+> cluster doesn't have a reference to the passed block group. This results
+> in double put and an UAF.
 > 
-> 4) The file is truncated to a smaller size, to an offset lower than the
->    start offset of its last extent, for example to 800K. The truncate sets
->    the full sync runtime flag on the inode;
-> 
-> 6) Fsync the file to log it and clear the full sync runtime flag;
-> 
-> 7) Clone a region that covers only a hole (implicit hole due to NO_HOLES)
->    into the file with a destination offset that starts at or beyond the
->    256K file extent item we had - for example to offset 1024K;
-> 
-> 8) Since the clone operation does not find extents in the source range,
->    we end up in the if branch at the bottom of btrfs_clone() where we
->    punch a hole for the file range starting at offset 1024K by calling
->    btrfs_replace_file_extents(). There we end up not setting the full
->    sync flag on the inode, because we don't know we are being called in
->    a clone context (and not fallocate's punch hole operation), and
->    neither do we create an extent map to represent a hole because the
->    requested range is beyond eof;
-> 
-> 9) A further fsync to the file will be a fast fsync, since the clone
->    operation did not set the full sync flag, and therefore it relies on
->    modified extent maps to correctly log the file layout. But since
->    it does not find any extent map marking the range from 1024K (the
->    previous eof) to the new eof, it does not log a file extent item
->    for that range representing the hole;
-> 
-> 10) After a power failure no hole for the range starting at 1024K is
->    punched and we end up exposing stale data from the old 256K extent.
-> 
-> Turning this into exact steps:
-> 
->   $ mkfs.btrfs -f -O no-holes /dev/sdi
->   $ mount /dev/sdi /mnt
-> 
->   # Create our test file with 3 extents of 256K and a 256K hole at offset
->   # 256K. The file has a size of 1280K.
->   $ xfs_io -f -s \
->               -c "pwrite -S 0xab -b 256K 0 256K" \
->               -c "pwrite -S 0xcd -b 256K 512K 256K" \
->               -c "pwrite -S 0xef -b 256K 768K 256K" \
->               -c "pwrite -S 0x73 -b 256K 1024K 256K" \
->               /mnt/sdi/foobar
-> 
->   # Make sure it's durably persisted. We want the last committed super
->   # block to point to this particular file extent layout.
->   sync
-> 
->   # Now truncate our file to a smaller size, falling within a position of
->   # the second extent. This sets the full sync runtime flag on the inode.
->   # Then fsync the file to log it and clear the full sync flag from the
->   # inode. The third extent is no longer part of the file and therefore
->   # it is not logged.
->   $ xfs_io -c "truncate 800K" -c "fsync" /mnt/foobar
-> 
->   # Now do a clone operation that only clones the hole and sets back the
->   # file size to match the size it had before the truncate operation
->   # (1280K).
->   $ xfs_io \
->         -c "reflink /mnt/foobar 256K 1024K 256K" \
->         -c "fsync" \
->         /mnt/foobar
-> 
->   # File data before power failure:
->   $ od -A d -t x1 /mnt/foobar
->   0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
->   *
->   0262144 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->   *
->   0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
->   *
->   0786432 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
->   *
->   0819200 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->   *
->   1310720
-> 
->   <power fail>
-> 
->   # Mount the fs again to replay the log tree.
->   $ mount /dev/sdi /mnt
-> 
->   # File data after power failure:
->   $ od -A d -t x1 /mnt/foobar
->   0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
->   *
->   0262144 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->   *
->   0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
->   *
->   0786432 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
->   *
->   0819200 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->   *
->   1048576 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73 73
->   *
->   1310720
-> 
-> The range from 1024K to 1280K should correspond to a hole but instead it
-> points to stale data, to the 256K extent that should not exist after the
-> truncate operation.
-> 
-> The issue does not exists when not using NO_HOLES, because for that case
-> we use file extent items to represent holes, these are found and copied
-> during the loop that iterates over extents at btrfs_clone(), and that
-> causes btrfs_replace_file_extents() to be called with a non-NULL
-> extent_info argument and therefore set the full sync runtime flag on the
-> inode.
-> 
-> So fix this by making the code that deals with a trailing hole during
-> cloning, at btrfs_clone(), to set the full sync flag on the inode, if the
-> range starts at or beyond the current i_size.
-> 
-> A test case for fstests will follow soon.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> What prompted me is that the 2nd and 3rd sentences read somewhat awkward
+> due to starting with 'However'
 
-Added to misc-next, thanks.
+Ok, updated, thanks. I left the last paragraph "Fix that ...".
