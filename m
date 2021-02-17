@@ -2,14 +2,14 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751B231DA05
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 14:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7795D31DA03
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 14:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhBQNNm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Feb 2021 08:13:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56740 "EHLO mx2.suse.de"
+        id S232716AbhBQNNk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Feb 2021 08:13:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56752 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231686AbhBQNNj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S232660AbhBQNNj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 17 Feb 2021 08:13:39 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
@@ -17,19 +17,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=R3UVrqH47izlpphBs2JT2WVmNApTdt3hth55B/RYWB4=;
-        b=G7SzKImvnrbYwSYlw13Xfnp1NoTW7jChGCl3WHE1xRrzHyNxlZDiEaxPF4syipqYWcOFfB
-        98JfKAGFlKLVia1aWvomM9uito5mMGDtPgPYhIDLAr6LgGMRBFf0ATUZsPeJnguWXt7cjI
-        R4ldmgvqdb4SW5DapNiommbXSepN0PA=
+        bh=m/u1KLvq3raS0AkW9Mh8M2Xx5F7eAZcpuR6UdbWqv9I=;
+        b=Adm2IO9G2cUAezE7PfTPZdYgQBQfQw4bkIouDiaGlFkZEDIGIMLhUa8mwi8uLS8xvAO+hn
+        1hxaQvP55pWEvvPkVWjCwu9fSsm44RmcaSBLlsp9br4j0AgV8SH1nzWzh+jCjXdPzOxstQ
+        n42zN4fU04AoY9Mp+q6oirnC6Xz0/gg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 15CE4B8F3;
+        by mx2.suse.de (Postfix) with ESMTP id 502B8B8F4;
         Wed, 17 Feb 2021 13:12:53 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 3/4] btrfs: Replace offset_in_entry with in_range
-Date:   Wed, 17 Feb 2021 15:12:49 +0200
-Message-Id: <20210217131250.265859-4-nborisov@suse.com>
+Subject: [PATCH 4/4] btrfs: Replace opencoded while loop with proper construct
+Date:   Wed, 17 Feb 2021 15:12:50 +0200
+Message-Id: <20210217131250.265859-5-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210217131250.265859-1-nborisov@suse.com>
 References: <20210217131250.265859-1-nborisov@suse.com>
@@ -39,72 +39,75 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-No point in duplicating the functionality just use the generic helper
-we have.
+btrfs_inc_block_group_ro wants to ensure that the current transaction is
+not running dirty block groups, if it is it waits and loops again.
+That logic is currently implemented using a goto label. Actually using
+a proper do {} while() construct doesn't hurt readibility nor does it
+introduce excessive nesting and makes the relevant code stand out by
+being encompassed in the loop construct. No functional changes.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/ordered-data.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ fs/btrfs/block-group.c | 42 +++++++++++++++++++++++-------------------
+ 1 file changed, 23 insertions(+), 19 deletions(-)
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 985a21558437..07b0b4218791 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -107,17 +107,6 @@ static struct rb_node *__tree_search(struct rb_root *root, u64 file_offset,
- 	return NULL;
- }
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 5064be59dac5..fabd25b76abb 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2262,29 +2262,33 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
+ 	struct btrfs_trans_handle *trans;
+ 	u64 alloc_flags;
+ 	int ret;
++	bool dirty_bg_running;
  
--/*
-- * helper to check if a given offset is inside a given entry
-- */
--static int offset_in_entry(struct btrfs_ordered_extent *entry, u64 file_offset)
--{
--	if (file_offset < entry->file_offset ||
--	    entry->file_offset + entry->num_bytes <= file_offset)
--		return 0;
--	return 1;
--}
--
- static int range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
- 			  u64 len)
- {
-@@ -142,7 +131,7 @@ static inline struct rb_node *tree_search(struct btrfs_ordered_inode_tree *tree,
- 	if (tree->last) {
- 		entry = rb_entry(tree->last, struct btrfs_ordered_extent,
- 				 rb_node);
--		if (offset_in_entry(entry, file_offset))
-+		if (in_range(file_offset, entry->file_offset, entry->num_bytes))
- 			return tree->last;
- 	}
- 	ret = __tree_search(root, file_offset, &prev);
-@@ -349,7 +338,7 @@ bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 		goto out;
+-again:
+-	trans = btrfs_join_transaction(fs_info->extent_root);
+-	if (IS_ERR(trans))
+-		return PTR_ERR(trans);
++	do {
++		trans = btrfs_join_transaction(fs_info->extent_root);
++		if (IS_ERR(trans))
++			return PTR_ERR(trans);
  
- 	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
--	if (!offset_in_entry(entry, *file_offset))
-+	if (!in_range(*file_offset, entry->file_offset, entry->num_bytes))
- 		goto out;
+-	/*
+-	 * we're not allowed to set block groups readonly after the dirty
+-	 * block groups cache has started writing.  If it already started,
+-	 * back off and let this transaction commit
+-	 */
+-	mutex_lock(&fs_info->ro_block_group_mutex);
+-	if (test_bit(BTRFS_TRANS_DIRTY_BG_RUN, &trans->transaction->flags)) {
+-		u64 transid = trans->transid;
++		dirty_bg_running = false;
  
- 	dec_start = max(*file_offset, entry->file_offset);
-@@ -428,7 +417,7 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
+-		mutex_unlock(&fs_info->ro_block_group_mutex);
+-		btrfs_end_transaction(trans);
++		/*
++		 * we're not allowed to set block groups readonly after the dirty
++		 * block groups cache has started writing.  If it already started,
++		 * back off and let this transaction commit
++		 */
++		mutex_lock(&fs_info->ro_block_group_mutex);
++		if (test_bit(BTRFS_TRANS_DIRTY_BG_RUN, &trans->transaction->flags)) {
++			u64 transid = trans->transid;
  
- 	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
- have_entry:
--	if (!offset_in_entry(entry, file_offset))
-+	if (!in_range(file_offset, entry->file_offset, entry->num_bytes))
- 		goto out;
+-		ret = btrfs_wait_for_commit(fs_info, transid);
+-		if (ret)
+-			return ret;
+-		goto again;
+-	}
++			mutex_unlock(&fs_info->ro_block_group_mutex);
++			btrfs_end_transaction(trans);
++
++			ret = btrfs_wait_for_commit(fs_info, transid);
++			if (ret)
++				return ret;
++			dirty_bg_running = true;
++		}
++	} while (dirty_bg_running);
  
- 	if (io_size > entry->bytes_left)
-@@ -779,7 +768,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_extent(struct btrfs_inode *ino
- 		goto out;
- 
- 	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
--	if (!offset_in_entry(entry, file_offset))
-+	if (!in_range(file_offset, entry->file_offset, entry->num_bytes))
- 		entry = NULL;
- 	if (entry)
- 		refcount_inc(&entry->refs);
+ 	if (do_chunk_alloc) {
+ 		/*
 -- 
 2.25.1
 
