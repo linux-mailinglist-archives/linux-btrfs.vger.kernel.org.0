@@ -2,116 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FFB31D437
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 04:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA7E31D541
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 07:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBQDZN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 22:25:13 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:19791 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229796AbhBQDZK (ORCPT
+        id S231588AbhBQGFx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Feb 2021 01:05:53 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:35386 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231566AbhBQGFp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 22:25:10 -0500
-X-IronPort-AV: E=Sophos;i="5.81,184,1610380800"; 
-   d="scan'208";a="104562120"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 17 Feb 2021 11:24:20 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 1AC344CE602A;
-        Wed, 17 Feb 2021 11:24:20 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 17 Feb
- 2021 11:24:18 +0800
-Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
-        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
-        <david@fromorbit.com>, <rgoldwyn@suse.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
- <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com>
- <20210208151920.GE12872@lst.de>
- <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com>
- <20210209093438.GA630@lst.de>
- <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
- <20210210131928.GA30109@lst.de>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <b00cfda5-464c-6161-77c6-6a25b1cc7a77@cn.fujitsu.com>
-Date:   Wed, 17 Feb 2021 11:24:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 17 Feb 2021 01:05:45 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H60GlI005907;
+        Wed, 17 Feb 2021 06:04:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=IV9DUOBZsJgn3sW/ZDjfRk2u64J3qZbzCRAclBjXrAQ=;
+ b=hTxcesg4JEE2Qd0fLfHoeo3VNzobykQKOF3sAhuHbiqX59rG4Zwww2/TlrPeRe1vFYq+
+ PqmEzf611uGWn4InyMP22M5DbxiqTIlXFW2EMu/ZSx/XniS3TtmN0hO9XJ510JHRFsBW
+ CVcpA9z+O7lLnJnL56G+5bCJXS6y8JmKQgjaY/bt96apsMxRJi5oJnwIOFE6ehWJbg8k
+ mxf/miwKTuubopTtR81YyG0M6jv3yVNXuvmqfWBD4VBwhbSVLS6LjwdF/VLmaqON/lyD
+ KBNBnZZItpB1goWjPJ7NJP+R8kZJ9CxNDc6/MBjUXccLuCY8YQKZgxycVmEh4tPQZ9qp tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 36p7dnh38n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Feb 2021 06:04:46 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H60DRa177255;
+        Wed, 17 Feb 2021 06:04:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 36prnyu6wv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Feb 2021 06:04:44 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11H64g3R006439;
+        Wed, 17 Feb 2021 06:04:42 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 16 Feb 2021 22:04:41 -0800
+Date:   Wed, 17 Feb 2021 09:04:34 +0300
+From:   Dan Carpenter <dancarpenter@oracle.com>
+To:     Chris Mason <clm@fb.com>, Arne Jansen <sensille@gmx.net>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] btrfs: prevent potential out of bounds in
+ btrfs_ioctl_snap_create_v2()
+Message-ID: <YCyx8u40HaplP7a+@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20210210131928.GA30109@lst.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 1AC344CE602A.A9FC5
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102170046
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102170046
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The problem is we're copying "inherit" from user space but we don't
+necessarily know that we're copying enough data for a 64 byte
+struct.  Then the next problem is that "inherit" has a variable size
+array at the end, and we have to verify that array is the size we
+expected.
 
+Fixes: 6f72c7e20dba: ("Btrfs: add qgroup inheritance")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Presumably only root can create snapshots.  Anyway, I have not tested
+this fix.  I believe it is correct, of course.  But perhaps it's best
+to check.
 
-On 2021/2/10 下午9:19, Christoph Hellwig wrote:
-> On Tue, Feb 09, 2021 at 05:46:13PM +0800, Ruan Shiyang wrote:
->>
->>
->> On 2021/2/9 下午5:34, Christoph Hellwig wrote:
->>> On Tue, Feb 09, 2021 at 05:15:13PM +0800, Ruan Shiyang wrote:
->>>> The dax dedupe comparison need the iomap_ops pointer as argument, so my
->>>> understanding is that we don't modify the argument list of
->>>> generic_remap_file_range_prep(), but move its code into
->>>> __generic_remap_file_range_prep() whose argument list can be modified to
->>>> accepts the iomap_ops pointer.  Then it looks like this:
->>>
->>> I'd say just add the iomap_ops pointer to
->>> generic_remap_file_range_prep and do away with the extra wrappers.  We
->>> only have three callers anyway.
->>
->> OK.
-> 
-> So looking at this again I think your proposal actaully is better,
-> given that the iomap variant is still DAX specific.  Sorry for
-> the noise.
-> 
-> Also I think dax_file_range_compare should use iomap_apply instead
-> of open coding it.
-> 
+The calculation for the number of elements in the array was copied from
+btrfs_qgroup_inherit().
 
-There are two files, which are not reflinked, need to be direct_access() 
-here.  The iomap_apply() can handle one file each time.  So, it seems 
-that iomap_apply() is not suitable for this case...
+ fs/btrfs/ioctl.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-
-The pseudo code of this process is as follows:
-
-   srclen = ops->begin(&srcmap)
-   destlen = ops->begin(&destmap)
-
-   direct_access(&srcmap, &saddr)
-   direct_access(&destmap, &daddr)
-
-   same = memcpy(saddr, daddr, min(srclen,destlen))
-
-   ops->end(&destmap)
-   ops->end(&srcmap)
-
-I think a nested call like this is necessary.  That's why I use the open 
-code way.
-
-
---
-Thanks,
-Ruan Shiyang.
-> 
-
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 384d33ab02c7..9d7b24d3e3bd 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1941,15 +1941,34 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
+ 	if (vol_args->flags & BTRFS_SUBVOL_RDONLY)
+ 		readonly = true;
+ 	if (vol_args->flags & BTRFS_SUBVOL_QGROUP_INHERIT) {
+-		if (vol_args->size > PAGE_SIZE) {
++		u64 nums;
++
++		if (vol_args->size < sizeof(*inherit) ||
++		    vol_args->size > PAGE_SIZE) {
+ 			ret = -EINVAL;
+ 			goto free_args;
+ 		}
++
+ 		inherit = memdup_user(vol_args->qgroup_inherit, vol_args->size);
+ 		if (IS_ERR(inherit)) {
+ 			ret = PTR_ERR(inherit);
+ 			goto free_args;
+ 		}
++
++		/* quick and dirty checks to prevent integer overflows */
++		if (inherit->num_qgroups > PAGE_SIZE ||
++		    inherit->num_ref_copies > PAGE_SIZE ||
++		    inherit->num_excl_copies > PAGE_SIZE) {
++			ret = -EINVAL;
++			goto free_inherit;
++		}
++
++		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
++		       2 * inherit->num_excl_copies;
++		if (vol_args->size != struct_size(inherit, qgroups, nums)) {
++			ret = -EINVAL;
++			goto free_inherit;
++		}
+ 	}
+ 
+ 	ret = __btrfs_ioctl_snap_create(file, vol_args->name, vol_args->fd,
+-- 
+2.30.0
 
