@@ -2,207 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F4731D310
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 00:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430BA31D3E5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 03:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhBPXoX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Feb 2021 18:44:23 -0500
-Received: from mout.gmx.net ([212.227.17.20]:33063 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229734AbhBPXoX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Feb 2021 18:44:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613518954;
-        bh=BF9VhfP5Mbla71qJAOUg3VLseOky5TvbxPSY0i8swMk=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=KAUpcNEL6cgwxCPZ/HEn2XNJBhhNVsK5y+9vReXp4qP3WLMSgf5MV+cFKe9yWsTgM
-         PNtE0p8PzXMkCfY3dVA5m3zhDYnGT9tK51db/WaPmMJnNNvjIv+ovUxBlxQaMLjpgo
-         lYkCPXjRW/DCxy6sDrolYml/CDN10ic6uP8kgt3g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mof9F-1lfBGy0oSf-00p65k; Wed, 17
- Feb 2021 00:42:33 +0100
-Subject: Re: [PATCH 1/2] btrfs-progs: convert: Ensure the data chunks size
- never exceed device size
-To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Jiachen YANG <farseerfc@gmail.com>
-References: <20200624115527.855816-1-wqu@suse.com>
- <CAL3q7H5sgq_vXpP5rB+bBOBNqaq1+AszGLZvfdgdMLDruQZ4_w@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <5ba8b5d2-d76b-835d-31c0-80f700104230@gmx.com>
-Date:   Wed, 17 Feb 2021 07:42:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230221AbhBQCGd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Feb 2021 21:06:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhBQCGb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Feb 2021 21:06:31 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDC0C061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 18:05:49 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id p193so12358810yba.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Feb 2021 18:05:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EZ+HzO5sX4wrYvSQlGtjKLQh/1MocsCRmeBIizuC6e0=;
+        b=sPFx4G3f0nacDgq0R9gDC8ApUlF5o+vRj0UP4bUsOnwW/j6M077rEoUaloiVRvQyTb
+         DPt1BBE9HfuzpY9v6g3ZSnKPW3F70M4kbHBEYMW8AMRg8KqfUJVgwzp1FTu3damt/yfs
+         sKAKftkDEUZx0ZuMeUQXaNLnQ0x+sBXwQ7qglo879swA/IJBeBDypU7vKKOwdNSw+pFC
+         DMNS63tznkJWtmDpp6HOYNNl9h+3d3xyz8SOYq8cfiIUwUEOQQROXmJoMfJ8cZbaxUgc
+         vby4U14Vu7DPfvLbDff2ORUuI0tylPTQdalus5a0lCn07HRyoZxMaiiAby44y4codGj2
+         pxjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EZ+HzO5sX4wrYvSQlGtjKLQh/1MocsCRmeBIizuC6e0=;
+        b=aVvvQhAspLiMS3zP/JDFHLFho7Unbxaatqwz68r5Dzeiv0sXH9iIJ5Q2s1bb/bUSJE
+         +VDxF4++wa8HdlcTj0SNczukdbOeHdKpV0Pva7xOp0hZGbEjimme+WyXNWODt4JJ0ZPf
+         DrQsWLQd/mWQTsSHTWvFYERzZlDoWrUYWUaVgsfl55eVNpYLB4ntfGYkvpwLsgZhqFfy
+         oBIt0UMfCKTISvDuoYIo3/JEiflAqB+Mo4hMKxi0iz+0jlTC+Viln33KBYs9U3ILXPf9
+         HdQpCaqcYhieIoUH6ua+6tELhsWd23jg699YerdlaulLW8Pl7vayv+yvzIhJt1JLKbzs
+         lKsA==
+X-Gm-Message-State: AOAM5324grkvmIgpPNCXfbkcBxfQW805nIlKu8K5vD7aB01ya2TKoGRD
+        L4MBusAF60B+wIU3IKN2CJZJAthv08RTxntkeWC0HusuuMzVDg==
+X-Google-Smtp-Source: ABdhPJxwHyc3/oyL57HPcP+eAdqefDx6sdGFiTGq3BFo6HdmrFiomdQqFzme+gq+JiO+7QltAbw+6nRoluKU6RFC5lE=
+X-Received: by 2002:a25:424f:: with SMTP id p76mr25161366yba.109.1613527549140;
+ Tue, 16 Feb 2021 18:05:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H5sgq_vXpP5rB+bBOBNqaq1+AszGLZvfdgdMLDruQZ4_w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+References: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
+ <0c4701b2-23ef-fd7a-d198-258b49eedea8@toxicpanda.com> <CAEg-Je9NGV0Mvhw7v8CwcyAZ9zd9T5Fmk2iQyZ1PFWVUOXaP+Q@mail.gmail.com>
+ <90da9117-6b02-3c27-17a0-ff497eb04496@toxicpanda.com> <CAEg-Je-zRWrkKOQM-Y_Y17eHhUrJe+d1_H9iLzQB4w7T+Een=w@mail.gmail.com>
+ <74ca64e1-3933-c12b-644a-21745cf2d849@toxicpanda.com>
+In-Reply-To: <74ca64e1-3933-c12b-644a-21745cf2d849@toxicpanda.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Tue, 16 Feb 2021 21:05:13 -0500
+Message-ID: <CAEg-Je9FZhLMx0MuxhyhTDUsRzfbi2_VZsHa3Bs+46jY8F82ZA@mail.gmail.com>
+Subject: Re: Recovering Btrfs from a freak failure of the disk controller
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gFTxFaANx8yVgIJicRpKmk1Na+MeiN3Ev9GflehHnxse9pAwuMm
- FMfkBE+RSoaDMa0Ymq7PQfCk7a8+jMC/9XZlo42hb16j6OFOLL8q5Ts06tN2rlgGKC7SXps
- mQkY4/Ot4w9fKPfl32+hpOjgkmSbyd0VfjsSsAgv00yLIfe1jX9hjhLFNuQsNAq/5YsAI0B
- RHvQmlP0fID7kWdeRhb2A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:e+hmyaoT3hY=:h+XMx6I0H8JfbK6S37tCtV
- QkLaDm4oU9SRHvi4xEqHM01kUoYQoEbYnH8eCwvUaUWo/U6ZmritTRMzd/1+6TRmKRYI/s3Cp
- CQcvbzhV3SBmpGe/rn8j6uK3y2SOP4ERXZvnIGs03GUmztQXWSNhELht9YxEjqv88OQH6/Y57
- 521vLT1LZWhWrJx3nZCRRlLxxozBI/Ew1mXqCDpxEAbkiOfoVa2X+6anyG1q3qzshmCRrR0Cv
- zvI819+uNbMG9QSETLa+J1QSE0tdSfAntdwnQ+58uf+WwUetKdrXF7hwo9Z2wV+kme3ZAMfum
- P0IaV4qgKn3zD4sNUEXQAbd7BsNwgvMxnSZm7fBHV1QayyfBol5F4HhMT7PvNpKkYm776cz6C
- oFgSt/N+6ab3CBNQugIjyBnjd7gqlRxQOhlhD8FrtBvGOhktaqodgzaGYCRpGHkIR6aORBwm0
- 1LKyVPzDbZeZuCOn8o9uvHpNXdcugE1WqyYKK6XFnIWpNMHaNzmTGRhXDn7Tk0nf5fAsTiaFM
- JPxKB0KMpYr86cfs1SDvyzlSP2B+FpTrY51VfVECGVaxAFJ0zca+/5ZgLkf2sneIeemzavs/m
- iHFD/T1xv9iNBFRBQhl1/5V7AUDXtSLjTt0q8+sZeobFDc/wpJzsNd2buKCyp+9JMF0NqEPtx
- cXH5Bj83BpemKtOXEuH7aqcoYYZH+uUKSBcxlB40L9+HhLl24Pu7LlUPnGZW4cC3899APx245
- SAa/zwGa6GWY9SOXgsOfbBW3a+J/Noq0twBQ5HV+Ord+S/GtPAewYkih6dUO6rd51MnBn2RHc
- vvbkHD3FjNBDvYJKoMHmTSh7DOzQ3GQ36p0t3oY8vzU5eSNg7TmG8Pv52MBiuKxt+OVjcc0WN
- YMqZ5IJ/9RUkpcbWmR3w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Feb 16, 2021 at 4:24 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On 2/16/21 3:29 PM, Neal Gompa wrote:
+> > On Tue, Feb 16, 2021 at 1:11 PM Josef Bacik <josef@toxicpanda.com> wrot=
+e:
+> >>
+> >> On 2/16/21 11:27 AM, Neal Gompa wrote:
+> >>> On Tue, Feb 16, 2021 at 10:19 AM Josef Bacik <josef@toxicpanda.com> w=
+rote:
+> >>>>
+> >>>> On 2/14/21 3:25 PM, Neal Gompa wrote:
+> >>>>> Hey all,
+> >>>>>
+> >>>>> So one of my main computers recently had a disk controller failure
+> >>>>> that caused my machine to freeze. After rebooting, Btrfs refuses to
+> >>>>> mount. I tried to do a mount and the following errors show up in th=
+e
+> >>>>> journal:
+> >>>>>
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): d=
+isk space caching is enabled
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): h=
+as skinny extents
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3=
+): corrupt leaf: root=3D401 block=3D796082176 slot=3D15 ino=3D203657, inval=
+id inode transid: has 888896 expect [0, 888895]
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): =
+block=3D796082176 read time tree block corruption detected
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3=
+): corrupt leaf: root=3D401 block=3D796082176 slot=3D15 ino=3D203657, inval=
+id inode transid: has 888896 expect [0, 888895]
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): =
+block=3D796082176 read time tree block corruption detected
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS warning (device sda3)=
+: couldn't read tree root
+> >>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): =
+open_ctree failed
+> >>>>>
+> >>>>> I've tried to do -o recovery,ro mount and get the same issue. I can=
+'t
+> >>>>> seem to find any reasonably good information on how to do recovery =
+in
+> >>>>> this scenario, even to just recover enough to copy data off.
+> >>>>>
+> >>>>> I'm on Fedora 33, the system was on Linux kernel version 5.9.16 and
+> >>>>> the Fedora 33 live ISO I'm using has Linux kernel version 5.10.14. =
+I'm
+> >>>>> using btrfs-progs v5.10.
+> >>>>>
+> >>>>> Can anyone help?
+> >>>>
+> >>>> Can you try
+> >>>>
+> >>>> btrfs check --clear-space-cache v1 /dev/whatever
+> >>>>
+> >>>> That should fix the inode generation thing so it's sane, and then th=
+e tree
+> >>>> checker will allow the fs to be read, hopefully.  If not we can work=
+ out some
+> >>>> other magic.  Thanks,
+> >>>>
+> >>>> Josef
+> >>>
+> >>> I got the same error as I did with btrfs-check --readonly...
+> >>>
+> >>
+> >> Oh lovely, what does btrfs check --readonly --backup do?
+> >>
+> >
+> > No dice...
+> >
+> > # btrfs check --readonly --backup /dev/sda3
+> >> Opening filesystem to check...
+> >> parent transid verify failed on 791281664 wanted 888893 found 888895
+> >> parent transid verify failed on 791281664 wanted 888893 found 888895
+> >> parent transid verify failed on 791281664 wanted 888893 found 888895
+>
+> Hey look the block we're looking for, I wrote you some magic, just pull
+>
+> https://github.com/josefbacik/btrfs-progs/tree/for-neal
+>
+> build, and then run
+>
+> btrfs-neal-magic /dev/sda3 791281664 888895
+>
+> This will force us to point at the old root with (hopefully) the right by=
+tenr
+> and gen, and then hopefully you'll be able to recover from there.  This i=
+s kind
+> of saucy, so yolo, but I can undo it if it makes things worse.  Thanks,
+>
+
+# btrfs check --readonly /dev/sda3
+> Opening filesystem to check...
+> ERROR: could not setup extent tree
+> ERROR: cannot open file system
+# btrfs check --clear-space-cache v1 /dev/sda3
+> Opening filesystem to check...
+> ERROR: could not setup extent tree
+> ERROR: cannot open file system
+
+It's better, but still no dice... :(
 
 
-On 2021/2/16 =E4=B8=8B=E5=8D=8810:45, Filipe Manana wrote:
-> On Wed, Jun 24, 2020 at 10:00 PM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [BUG]
->> The following script could lead to corrupted btrfs fs after
->> btrfs-convert:
->>
->>    fallocate -l 1G test.img
->>    mkfs.ext4 test.img
->>    mount test.img $mnt
->>    fallocate -l 200m $mnt/file1
->>    fallocate -l 200m $mnt/file2
->>    fallocate -l 200m $mnt/file3
->>    fallocate -l 200m $mnt/file4
->>    fallocate -l 205m $mnt/file1
->>    fallocate -l 205m $mnt/file2
->>    fallocate -l 205m $mnt/file3
->>    fallocate -l 205m $mnt/file4
->>    umount $mnt
->>    btrfs-convert test.img
->>
->> The result btrfs will have a device extent beyond its boundary:
->>    pening filesystem to check...
->>    Checking filesystem on test.img
->>    UUID: bbcd7399-fd5b-41a7-81ae-d48bc6935e43
->>    [1/7] checking root items
->>    [2/7] checking extents
->>    ERROR: dev extent devid 1 physical offset 993198080 len 85786624 is =
-beyond device boundary 1073741824
->>    ERROR: errors found in extent allocation tree or chunk allocation
->>    [3/7] checking free space cache
->>    [4/7] checking fs roots
->>    [5/7] checking only csums items (without verifying data)
->>    [6/7] checking root refs
->>    [7/7] checking quota groups skipped (not enabled on this FS)
->>    found 913960960 bytes used, error(s) found
->>    total csum bytes: 891500
->>    total tree bytes: 1064960
->>    total fs tree bytes: 49152
->>    total extent tree bytes: 16384
->>    btree space waste bytes: 144885
->>    file data blocks allocated: 2129063936
->>     referenced 1772728320
->>
->> [CAUSE]
->> Btrfs-convert first collect all used blocks in the original fs, then
->> slightly enlarge the used blocks range as new btrfs data chunks.
->>
->> However the enlarge part has a problem, that it doesn't take the device
->> boundary into consideration.
->>
->> Thus it caused device extents and data chunks to go beyond device
->> boundary.
->>
->> [FIX]
->> Just to extra check before inserting data chunks into
->> btrfs_convert_context::data_chunk.
->>
->> Reported-by: Jiachen YANG <farseerfc@gmail.com>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> So, having upgraded a test box from btrfs-progs v5.6.1 to v5.10.1, I
-> now have btrfs/136 (fstests) failing:
->
-> $ ./check btrfs/136
-> FSTYP         -- btrfs
-> PLATFORM      -- Linux/x86_64 debian8 5.11.0-rc7-btrfs-next-81 #1 SMP
-> PREEMPT Tue Feb 16 12:29:07 WET 2021
-> MKFS_OPTIONS  -- /dev/sdc
-> MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
->
-> btrfs/136 7s ... [failed, exit status 1]- output mismatch (see
-> /home/fdmanana/git/hub/xfstests/results//btrfs/136.out.bad)
->      --- tests/btrfs/136.out 2020-06-10 19:29:03.818519162 +0100
->      +++ /home/fdmanana/git/hub/xfstests/results//btrfs/136.out.bad
-> 2021-02-16 14:31:30.669559188 +0000
->      @@ -1,2 +1,3 @@
->       QA output created by 136
->      -Silence is golden
->      +btrfs-convert failed
->      +(see /home/fdmanana/git/hub/xfstests/results//btrfs/136.full for d=
-etails)
->      ...
->      (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/136.out
-> /home/fdmanana/git/hub/xfstests/results//btrfs/136.out.bad'  to see
-> the entire diff)
-> Ran: btrfs/136
-> Failures: btrfs/136
-> Failed 1 of 1 tests
->
-> A bisect pointed to this patch.
-> Did you get this failure on your test box as well?
-
-Nope.
-
-Just tested with btrfs-progs v5.10.1, it passes:
-  $ which btrfs
-  /usr/bin/btrfs
-  $ btrfs --version
-  btrfs-progs v5.10.1
-  $ sudo ./check btrfs/136
-  FSTYP         -- btrfs
-  PLATFORM      -- Linux/x86_64 btrfs-desktop-vm 5.11.0-rc4-custom+ #4
-SMP PREEMPT Mon Jan 25 18:35:22 CST 2021
-  MKFS_OPTIONS  -- /dev/mapper/test-scratch1
-  MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
-
-  btrfs/136 6s ...  10s
-  Ran: btrfs/136
-  Passed all 1 tests
-
-Would you mind to provide the 136.full to help debugging the failure?
-
-Thanks,
-Qu
->
-> Thanks.
->
->> ---
->>   convert/main.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/convert/main.c b/convert/main.c
->> index c86ddd988c63..7709e9a6c085 100644
->> --- a/convert/main.c
->> +++ b/convert/main.c
->> @@ -669,6 +669,8 @@ static int calculate_available_space(struct btrfs_c=
-onvert_context *cctx)
->>                          cur_off =3D cache->start;
->>                  cur_len =3D max(cache->start + cache->size - cur_off,
->>                                min_stripe_size);
->> +               /* data chunks should never exceed device boundary */
->> +               cur_len =3D min(cctx->total_bytes - cur_off, cur_len);
->>                  ret =3D add_merge_cache_extent(data_chunks, cur_off, c=
-ur_len);
->>                  if (ret < 0)
->>                          goto out;
->> --
->> 2.27.0
->>
->
->
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
