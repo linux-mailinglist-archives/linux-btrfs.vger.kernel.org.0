@@ -2,132 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA7E31D541
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 07:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5371F31D59D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 08:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbhBQGFx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Feb 2021 01:05:53 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:35386 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbhBQGFp (ORCPT
+        id S231351AbhBQHHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Feb 2021 02:07:46 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:6399 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhBQHHp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:05:45 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H60GlI005907;
-        Wed, 17 Feb 2021 06:04:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=IV9DUOBZsJgn3sW/ZDjfRk2u64J3qZbzCRAclBjXrAQ=;
- b=hTxcesg4JEE2Qd0fLfHoeo3VNzobykQKOF3sAhuHbiqX59rG4Zwww2/TlrPeRe1vFYq+
- PqmEzf611uGWn4InyMP22M5DbxiqTIlXFW2EMu/ZSx/XniS3TtmN0hO9XJ510JHRFsBW
- CVcpA9z+O7lLnJnL56G+5bCJXS6y8JmKQgjaY/bt96apsMxRJi5oJnwIOFE6ehWJbg8k
- mxf/miwKTuubopTtR81YyG0M6jv3yVNXuvmqfWBD4VBwhbSVLS6LjwdF/VLmaqON/lyD
- KBNBnZZItpB1goWjPJ7NJP+R8kZJ9CxNDc6/MBjUXccLuCY8YQKZgxycVmEh4tPQZ9qp tg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 36p7dnh38n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 06:04:46 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H60DRa177255;
-        Wed, 17 Feb 2021 06:04:44 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 36prnyu6wv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 06:04:44 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11H64g3R006439;
-        Wed, 17 Feb 2021 06:04:42 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Feb 2021 22:04:41 -0800
-Date:   Wed, 17 Feb 2021 09:04:34 +0300
-From:   Dan Carpenter <dancarpenter@oracle.com>
-To:     Chris Mason <clm@fb.com>, Arne Jansen <sensille@gmx.net>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] btrfs: prevent potential out of bounds in
- btrfs_ioctl_snap_create_v2()
-Message-ID: <YCyx8u40HaplP7a+@mwanda>
+        Wed, 17 Feb 2021 02:07:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1613545664; x=1645081664;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0roR2gTdO3yQSWi1HiSp47lPa8ibaBqppFCitPPUjR8=;
+  b=e/W5FjMfifpdeuXcfIeNkhf5yWQ0Se9pqxkuz/gsxOveEhY5X501glZF
+   ghygz+RI+DjqroyB+maaC541D1phrJDVI/7XNk7s9mVGoVQzufZ5KVDkO
+   6KVhH39Pfc0nrZWJODND4Lu9o4p/GfbzYUqbeGkwJVKLKM/WMZXgbKpgr
+   oQkLA1Nx6KOVyWgrZhbSiOJbzEgNRz97xb6/5AhcHSlLqyfzkWVT3H0VS
+   FZFDn5iUpLM//pfIKRbDfGfliNSTK1dTyJ/XQK4G8p2BsuPd2MIwKM/SD
+   SNtZz2cc1boeefBvyK7tpCjNWzmviUrA7KqHCVqtt5VKBrdv7tfGbYNXk
+   g==;
+IronPort-SDR: i9TLUm7YL/eKnbg3MHPpvXvfiIH9pFaIK5QSwzFW5UDFNt0Pb+QbyjgxLh/Wejtc7TS1H0CCQM
+ 2vzq2KdbWujyxmyY/q8I18KuJJdjbVes46kEbCeuFRd2Gp6tFxST5NwWXENEGUXFrmpDtI8a/M
+ ns29dCiKLV0Tui2vW6Sb4vy7hvvPi4+7KBQQSl6rGBlv0Gneji5YCtqQ4BiksWs2Rhd2UGLqx7
+ 1ZEU8aXzXE79Tj+IDAPrAt+blSm/iSpXFHCdEy6IuEyiSgyg7xG8FVI/xquvK2P1I+NkxafE3i
+ xsc=
+X-IronPort-AV: E=Sophos;i="5.81,184,1610380800"; 
+   d="scan'208";a="160124248"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 17 Feb 2021 15:06:39 +0800
+IronPort-SDR: 3WIXLPoXkFm2rMuBfz0jVeqgpNMAX/1/fAweG4hHFSWhkpNLu+hJCxTtE0Ga2EN9Mxh3WuiAvT
+ ePzv5xCDxZA8VG1ezcoLKj7jKUt+34tbtcQtWbuhXCqFoFt24i438dFemfa4CqFP/y86YtKT6y
+ OKUXIMdWWtvFzOR/Lx1Q+B20HXJS6djyC2UR6v/TkkKYrXsJWUr/u88/qbkS5p3xKlOGLrjN0e
+ Q/eEPPIZdvl5eutmFlIpEC7MM2GwjLzbwtlJmYO8ZlXhbxlQhgxK9dyLK1OOakQHKmHGrkiNaO
+ EG07qunD6s+8INFy7dglro+n
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 22:50:11 -0800
+IronPort-SDR: GP4ZUw9AZs08r/kHoCiRBnL0Ra9kiJe2/l/lFHtDrFyF30abvAzpbuHq1GKAnKfOeZgn8/ifGv
+ dXxVO6FgF+ZZI2hNAagFmiN1JHm/RkIKMl9T9KFvkX1G6RIG1QBQKuuvU28cqV6IPkTEJPn8sh
+ RLVidWDfGi3i8ZtZKjBd3aIZkX7OzQArM2xRCpW3LNoABnRNVjb445ApEASF0Im+SsxaWCLc5Z
+ FAss/9xTONy07sHqv+qnDEVx6sVtxrJU1vrRhBLp87WV1bvr18MyfgFBZSNRM7bj0PRBKpaMBX
+ vpc=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 16 Feb 2021 23:06:38 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs: zoned: fix possible deadlock on log sync
+Date:   Wed, 17 Feb 2021 16:06:18 +0900
+Message-Id: <ba64e01fa8f13d10daebe1d8e24ad1a20de9b231.1613545566.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170046
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102170046
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The problem is we're copying "inherit" from user space but we don't
-necessarily know that we're copying enough data for a 64 byte
-struct.  Then the next problem is that "inherit" has a variable size
-array at the end, and we have to verify that array is the size we
-expected.
+Lockdep with fstests test-case btrfs/041 detected a unsafe locking
+scenario when we allocate the log node on a zoned filesystem.
 
-Fixes: 6f72c7e20dba: ("Btrfs: add qgroup inheritance")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+btrfs/041
+ ============================================
+ WARNING: possible recursive locking detected
+ 5.11.0-rc7+ #939 Not tainted
+ --------------------------------------------
+ xfs_io/698 is trying to acquire lock:
+ ffff88810cd673a0 (&root->log_mutex){+.+.}-{3:3}, at: btrfs_sync_log+0x3d1/0xee0 [btrfs]
+
+ but task is already holding lock:
+ ffff88810b0fc3a0 (&root->log_mutex){+.+.}-{3:3}, at: btrfs_sync_log+0x313/0xee0 [btrfs]
+
+ other info that might help us debug this:
+  Possible unsafe locking scenario:
+
+        CPU0
+        ----
+   lock(&root->log_mutex);
+   lock(&root->log_mutex);
+
+  *** DEADLOCK ***
+
+  May be due to missing lock nesting notation
+
+ 2 locks held by xfs_io/698:
+  #0: ffff88810cd66620 (sb_internal){.+.+}-{0:0}, at: btrfs_sync_file+0x2c3/0x570 [btrfs]
+  #1: ffff88810b0fc3a0 (&root->log_mutex){+.+.}-{3:3}, at: btrfs_sync_log+0x313/0xee0 [btrfs]
+
+ stack backtrace:
+ CPU: 0 PID: 698 Comm: xfs_io Not tainted 5.11.0-rc7+ #939
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
+ Call Trace:
+  dump_stack+0x77/0x97
+  __lock_acquire.cold+0xb9/0x32a
+  lock_acquire+0xb5/0x400
+  ? btrfs_sync_log+0x3d1/0xee0 [btrfs]
+  __mutex_lock+0x7b/0x8d0
+  ? btrfs_sync_log+0x3d1/0xee0 [btrfs]
+  ? btrfs_sync_log+0x3d1/0xee0 [btrfs]
+  ? find_first_extent_bit+0x9f/0x100 [btrfs]
+  ? __mutex_unlock_slowpath+0x35/0x270
+  btrfs_sync_log+0x3d1/0xee0 [btrfs]
+  btrfs_sync_file+0x3a8/0x570 [btrfs]
+  __x64_sys_fsync+0x34/0x60
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7f1e856b8ecb
+ Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 b3 f6 ff ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 11 f7 ff ff 8b 44
+ RSP: 002b:00007ffde89011b0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+ RAX: ffffffffffffffda RBX: 0000557ef97886c0 RCX: 00007f1e856b8ecb
+ RDX: 0000000000000002 RSI: 0000557ef97886e0 RDI: 0000000000000003
+ RBP: 0000557ef97886e0 R08: 0000000000000000 R09: 0000000000000003
+ R10: fffffffffffff50e R11: 0000000000000293 R12: 0000000000000001
+ R13: 0000557ef97886c0 R14: 0000000000000001 R15: 0000557ef976e2a0
+
+This happens, because we are taking the ->log_mutex albeit it has already
+been locked.
+
+Also while at it, fix the bogus unlock of the tree_log_mutex in the error
+handling.
+
+Fixes: 3ddebf27fcd3 ("btrfs: zoned: reorder log node allocation on zoned filesystem")
+Cc: Filipe Manana <fdmanana@suse.com>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
-Presumably only root can create snapshots.  Anyway, I have not tested
-this fix.  I believe it is correct, of course.  But perhaps it's best
-to check.
+ fs/btrfs/tree-log.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-The calculation for the number of elements in the array was copied from
-btrfs_qgroup_inherit().
-
- fs/btrfs/ioctl.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 384d33ab02c7..9d7b24d3e3bd 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1941,15 +1941,34 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 	if (vol_args->flags & BTRFS_SUBVOL_RDONLY)
- 		readonly = true;
- 	if (vol_args->flags & BTRFS_SUBVOL_QGROUP_INHERIT) {
--		if (vol_args->size > PAGE_SIZE) {
-+		u64 nums;
-+
-+		if (vol_args->size < sizeof(*inherit) ||
-+		    vol_args->size > PAGE_SIZE) {
- 			ret = -EINVAL;
- 			goto free_args;
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index d90695c1ab6c..2f1acc9aea9e 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3174,16 +3174,13 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	root_log_ctx.log_transid = log_root_tree->log_transid;
+ 
+ 	if (btrfs_is_zoned(fs_info)) {
+-		mutex_lock(&fs_info->tree_root->log_mutex);
+ 		if (!log_root_tree->node) {
+ 			ret = btrfs_alloc_log_tree_node(trans, log_root_tree);
+ 			if (ret) {
+-				mutex_unlock(&fs_info->tree_log_mutex);
+ 				mutex_unlock(&log_root_tree->log_mutex);
+ 				goto out;
+ 			}
  		}
-+
- 		inherit = memdup_user(vol_args->qgroup_inherit, vol_args->size);
- 		if (IS_ERR(inherit)) {
- 			ret = PTR_ERR(inherit);
- 			goto free_args;
- 		}
-+
-+		/* quick and dirty checks to prevent integer overflows */
-+		if (inherit->num_qgroups > PAGE_SIZE ||
-+		    inherit->num_ref_copies > PAGE_SIZE ||
-+		    inherit->num_excl_copies > PAGE_SIZE) {
-+			ret = -EINVAL;
-+			goto free_inherit;
-+		}
-+
-+		nums = inherit->num_qgroups + 2 * inherit->num_ref_copies +
-+		       2 * inherit->num_excl_copies;
-+		if (vol_args->size != struct_size(inherit, qgroups, nums)) {
-+			ret = -EINVAL;
-+			goto free_inherit;
-+		}
+-		mutex_unlock(&fs_info->tree_root->log_mutex);
  	}
  
- 	ret = __btrfs_ioctl_snap_create(file, vol_args->name, vol_args->fd,
+ 	/*
 -- 
 2.30.0
 
