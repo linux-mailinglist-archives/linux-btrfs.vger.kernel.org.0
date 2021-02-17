@@ -2,105 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE4531DE39
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 18:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964B131DE6D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Feb 2021 18:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhBQRcT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Feb 2021 12:32:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36756 "EHLO mx2.suse.de"
+        id S234526AbhBQRhX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Feb 2021 12:37:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38710 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233885AbhBQRcL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:32:11 -0500
+        id S231905AbhBQRgR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:36:17 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 068AFB7BA;
-        Wed, 17 Feb 2021 17:31:29 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D9615B7B8;
+        Wed, 17 Feb 2021 17:35:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7A1EBDA7C5; Wed, 17 Feb 2021 18:29:32 +0100 (CET)
-Date:   Wed, 17 Feb 2021 18:29:32 +0100
+        id 1D70BDA7C5; Wed, 17 Feb 2021 18:33:38 +0100 (CET)
+Date:   Wed, 17 Feb 2021 18:33:37 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: avoid double put of block group when emptying
- cluster
-Message-ID: <20210217172932.GV1993@twin.jikos.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH] btrfs: zoned: fix possible deadlock on log sync
+Message-ID: <20210217173337.GW1993@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, stable@vger.kernel.org
-References: <5ca694ff4f8cff4c0ef6896593a1f1d01fbe956d.1611610947.git.josef@toxicpanda.com>
- <bf8cd92d-12a0-3bb3-34c0-dd9c938bf349@suse.com>
- <ad0ea42a-5e41-f9b9-986d-8c70e9f2eed3@toxicpanda.com>
- <20210210225014.GA1993@twin.jikos.cz>
- <dd555517-d6c8-4b6f-54f6-5cbaf5874c00@suse.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+References: <ba64e01fa8f13d10daebe1d8e24ad1a20de9b231.1613545566.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dd555517-d6c8-4b6f-54f6-5cbaf5874c00@suse.com>
+In-Reply-To: <ba64e01fa8f13d10daebe1d8e24ad1a20de9b231.1613545566.git.johannes.thumshirn@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 01:25:52PM +0200, Nikolay Borisov wrote:
+On Wed, Feb 17, 2021 at 04:06:18PM +0900, Johannes Thumshirn wrote:
+> Lockdep with fstests test-case btrfs/041 detected a unsafe locking
+> scenario when we allocate the log node on a zoned filesystem.
 > 
+> btrfs/041
+>  ============================================
+>  WARNING: possible recursive locking detected
+>  5.11.0-rc7+ #939 Not tainted
+>  --------------------------------------------
+>  xfs_io/698 is trying to acquire lock:
+>  ffff88810cd673a0 (&root->log_mutex){+.+.}-{3:3}, at: btrfs_sync_log+0x3d1/0xee0 [btrfs]
 > 
-> On 11.02.21 г. 0:50 ч., David Sterba wrote:
-> > On Tue, Jan 26, 2021 at 09:30:45AM -0500, Josef Bacik wrote:
-> >> On 1/26/21 4:02 AM, Nikolay Borisov wrote:
-> >>> On 25.01.21 г. 23:42 ч., Josef Bacik wrote:
-> >>>> In __btrfs_return_cluster_to_free_space we will bail doing the cleanup
-> >>>> of the cluster if the block group we passed in doesn't match the block
-> >>>> group on the cluster.  However we drop a reference to block_group, as
-> >>>> the cluster holds a reference to the block group while it's attached to
-> >>>> the cluster.  If cluster->block_group != block_group however then this
-> >>>> is an extra put, which means we'll go negative and free this block group
-> >>>> down the line, leading to a UAF.
-> >>>
-> >>> Was this found by code inspection or did you hit in production. Also why
-> >>> in btrfs_remove_free_space_cache just before
-> >>> __btrfs_return_cluster_to_free_space there is:
-> >>>
-> >>
-> >> It was found in production sort of halfway.  I was doing something for WhatsApp 
-> >> and had to convert our block group reference counting to the refcount stuff so I 
-> >> could find where I made a mistake.  Turns out this was where the problem was, my 
-> >> stuff had just made it way more likely to happen.  I don't have the stack trace 
-> >> because this was like 6 months ago, I'm going through all my WhatsApp magic and 
-> >> getting them actually usable for upstream.
-> >>
-> >>> WARN_ON(cluster->block_group != block_group);
-> >>>
-> >>> IMO this patch should also remove the WARN_ON if it's a valid condition
-> >>> to have the passed bg be different than the one in the cluster. Also
-> >>> that WARN_ON is likely racy since it's done outside of cluster->lock.
-> >>>
-> >>
-> >> Yup that's in a follow up thing, I wanted to get the actual fix out before I got 
-> >> distracted by my mountain of meetings this week.  Thanks,
-> > 
-> > Removing the WARN_ON in a separate patch sounds ok to me, this patch
-> > clearly fixes the refcounting bug, the warning condition is the same but
-> > would need a different reasoning.
-> > 
-> > Nikolay, if you're ok with current patch version let me know if you want
-> > a rev-by added.
-> > 
+>  but task is already holding lock:
+>  ffff88810b0fc3a0 (&root->log_mutex){+.+.}-{3:3}, at: btrfs_sync_log+0x313/0xee0 [btrfs]
 > 
+>  other info that might help us debug this:
+>   Possible unsafe locking scenario:
 > 
-> Codewise I'm fine with it. However just had another read of the commit
-> message and I think it could be rewritten to be somewhat simpler:
+>         CPU0
+>         ----
+>    lock(&root->log_mutex);
+>    lock(&root->log_mutex);
 > 
-> It's wrong calling btrfs_put_block_group in
-> __btrfs_return_cluster_to_free_space if the block group passed is
-> different than the block group the cluster represents. As this means the
-> cluster doesn't have a reference to the passed block group. This results
-> in double put and an UAF.
+>   *** DEADLOCK ***
 > 
-> What prompted me is that the 2nd and 3rd sentences read somewhat awkward
-> due to starting with 'However'
+>   May be due to missing lock nesting notation
+> 
+>  2 locks held by xfs_io/698:
+>   #0: ffff88810cd66620 (sb_internal){.+.+}-{0:0}, at: btrfs_sync_file+0x2c3/0x570 [btrfs]
+>   #1: ffff88810b0fc3a0 (&root->log_mutex){+.+.}-{3:3}, at: btrfs_sync_log+0x313/0xee0 [btrfs]
+> 
+>  stack backtrace:
+>  CPU: 0 PID: 698 Comm: xfs_io Not tainted 5.11.0-rc7+ #939
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
+>  Call Trace:
+>   dump_stack+0x77/0x97
+>   __lock_acquire.cold+0xb9/0x32a
+>   lock_acquire+0xb5/0x400
+>   ? btrfs_sync_log+0x3d1/0xee0 [btrfs]
+>   __mutex_lock+0x7b/0x8d0
+>   ? btrfs_sync_log+0x3d1/0xee0 [btrfs]
+>   ? btrfs_sync_log+0x3d1/0xee0 [btrfs]
+>   ? find_first_extent_bit+0x9f/0x100 [btrfs]
+>   ? __mutex_unlock_slowpath+0x35/0x270
+>   btrfs_sync_log+0x3d1/0xee0 [btrfs]
+>   btrfs_sync_file+0x3a8/0x570 [btrfs]
+>   __x64_sys_fsync+0x34/0x60
+>   do_syscall_64+0x33/0x40
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>  RIP: 0033:0x7f1e856b8ecb
+>  Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 b3 f6 ff ff 8b 7c 24 0c 41 89 c0 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 11 f7 ff ff 8b 44
 
-Ok, updated, thanks. I left the last paragraph "Fix that ...".
+This line should be deleted from the stacktraces.
+
+>  RSP: 002b:00007ffde89011b0 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
+>  RAX: ffffffffffffffda RBX: 0000557ef97886c0 RCX: 00007f1e856b8ecb
+>  RDX: 0000000000000002 RSI: 0000557ef97886e0 RDI: 0000000000000003
+>  RBP: 0000557ef97886e0 R08: 0000000000000000 R09: 0000000000000003
+>  R10: fffffffffffff50e R11: 0000000000000293 R12: 0000000000000001
+>  R13: 0000557ef97886c0 R14: 0000000000000001 R15: 0000557ef976e2a0
+> 
+> This happens, because we are taking the ->log_mutex albeit it has already
+> been locked.
+> 
+> Also while at it, fix the bogus unlock of the tree_log_mutex in the error
+> handling.
+> 
+> Fixes: 3ddebf27fcd3 ("btrfs: zoned: reorder log node allocation on zoned filesystem")
+> Cc: Filipe Manana <fdmanana@suse.com>
+> Cc: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+With updated subject adde to misc-next, thanks.
