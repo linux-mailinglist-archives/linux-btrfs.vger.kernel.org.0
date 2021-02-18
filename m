@@ -2,107 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6D431EE19
+	by mail.lfdr.de (Postfix) with ESMTP id ED69531EE1A
 	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 19:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhBRSQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Feb 2021 13:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhBRQPC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:15:02 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8952CC06121D
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 08:14:20 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id o21so1763829qtr.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 08:14:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=zmmyy/59e13ZAH2hA2IJQINd+2FrJeGOnuo1dgsSw3M=;
-        b=nIHAFV0fpy64FkT0TILvnx3FiXhhxyv6ZE7pywc+PifgkKcYtAUpIbhh/a4mUYf2H3
-         g4/NUSTCUZ1qSBuysepavnMKO7yNUA07T3zCv+XM8uyM7S9fGHlAk1fhjaf5OyAQ5y/J
-         XnEGE4Hn1jHPZbI33Qxb66Vl6hT58lOWtX7sWkqAFpMSPdF8LFr/ybF/yPIk0Oguv0sW
-         DPOFB2fNe5fYAdkriIa7QrH05hAIPx5E4AASpBdwDKwZKiUK3Ud6/sVw/ItscfXMBbF6
-         dTRptEsbNjktv96M3u0fZJRW4lWpQGRwrcQSREQWVRRzfM+T5WMj6KVutRbdevMKONhN
-         MNTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zmmyy/59e13ZAH2hA2IJQINd+2FrJeGOnuo1dgsSw3M=;
-        b=t/s2EfpbQ9ZDUaJa7LlT7GZLZ90KGfaQf7HhmHG0uJhjKQ2FB0F+zBrEq4d2mipa4p
-         h3ElatvH8csXMAAy660y6XI2sJhzURl0QqgFJEuTO5OulJ8kf2+SAFn5yH1+n0iBbHI6
-         f3dfVzTGoKC3HaIBrIgLgDxVwXEB4ZrsEvCRJbKVeM/AzRkDylfY6SWp26bRyhkMSmIA
-         mGm2Zmm8Dk+/SanzG0hKTWhLbQb6KlcnKxE3dBNS/mH5zqlIqTuS5PuPGSdnUqRCZWsC
-         51DPRTwlFZzcoM2a3u4uV9fl6r3oF5XC0GpgJv4irD7qgtdoltl46HW7BuDIb+I+ZV3T
-         H6kw==
-X-Gm-Message-State: AOAM5306a3I8/YiBgW6Ybzn25umwAS2ggM0iVwSvtl9wfx817J0dNBB1
-        nFHBt8jEb+nfOj2X/p5LIMbI846ri9CnQBLd
-X-Google-Smtp-Source: ABdhPJyScK5wEG6Ng33OHGnN3StaAZSTlheeagQsU7RpGCTPITq/poKrQG9OiLseoUOKJCdE+fYcTw==
-X-Received: by 2002:ac8:44a3:: with SMTP id a3mr3106684qto.322.1613664859136;
-        Thu, 18 Feb 2021 08:14:19 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:11d9::1105? ([2620:10d:c091:480::1:70a3])
-        by smtp.gmail.com with ESMTPSA id c9sm4250063qkl.60.2021.02.18.08.14.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 08:14:18 -0800 (PST)
-Subject: Re: [PATCH] btrfs: make btrfs_dirty_inode() to always reserve
- metadata space
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210108053659.87728-1-wqu@suse.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <6bc8bef5-43a0-f6c6-9b43-2f62a3e4e051@toxicpanda.com>
-Date:   Thu, 18 Feb 2021 11:14:16 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        id S231731AbhBRSQ4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Feb 2021 13:16:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232893AbhBRQVA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:21:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51A6C61606;
+        Thu, 18 Feb 2021 16:20:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613665218;
+        bh=GHp96I/gVd4EmUFAptDHDpHWkNykmmfyndnECL0NAbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Eyayc5+YfPPtm0uaK+Eoc1D452WYMv+Gsf/tSxdxcgIBxZ47Sz4L0Yy8hVK/SLqx6
+         XO/kXCl8dDL5C/rADkEKSc8s4mF1h1M9xk6GJieFChIq611ekNwu520by4ngKi9Uby
+         5Jkkh9IZ/FM3Dq6PiiUBUQDvkRQFGFJxeYPu2GzlIm2GGGkbYOaTBSbmp/Zu7sH8M+
+         5zJuAWQtKw0mt4Qm5XdwLhrzBFUZmIYmx0gUxsOEJi3AAUQYJnPjqP3SmvfrudqHl3
+         DcnpOpt/ULK5VHeAqy8g9d6NbAjYHgry/RNbogkUYu6b26kGS+4zN6U7HzRiK/aCtQ
+         vcPx7EI2hpCkA==
+Date:   Thu, 18 Feb 2021 08:20:18 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        dan.j.williams@intel.com, willy@infradead.org, jack@suse.cz,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, rgoldwyn@suse.de,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
+Message-ID: <20210218162018.GT7193@magnolia>
+References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
+ <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com>
+ <20210208151920.GE12872@lst.de>
+ <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com>
+ <20210209093438.GA630@lst.de>
+ <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com>
+ <20210210131928.GA30109@lst.de>
+ <b00cfda5-464c-6161-77c6-6a25b1cc7a77@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <20210108053659.87728-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b00cfda5-464c-6161-77c6-6a25b1cc7a77@cn.fujitsu.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 1/8/21 12:36 AM, Qu Wenruo wrote:
-> There are several qgroup flush related bugs fixed recently, all of them
-> are caused by the fact that we can trigger qgroup metadata space
-> reservation holding a transaction handle.
+On Wed, Feb 17, 2021 at 11:24:18AM +0800, Ruan Shiyang wrote:
 > 
-> Thankfully the only situation to trigger above reservation is
-> btrfs_dirty_inode().
 > 
-> Currently btrfs_dirty_inode() will try join transactio first, then
-> update the inode.
-> If btrfs_update_inode() fails with -ENOSPC, then it retry to start
-> transaction to reserve metadata space.
+> On 2021/2/10 下午9:19, Christoph Hellwig wrote:
+> > On Tue, Feb 09, 2021 at 05:46:13PM +0800, Ruan Shiyang wrote:
+> > > 
+> > > 
+> > > On 2021/2/9 下午5:34, Christoph Hellwig wrote:
+> > > > On Tue, Feb 09, 2021 at 05:15:13PM +0800, Ruan Shiyang wrote:
+> > > > > The dax dedupe comparison need the iomap_ops pointer as argument, so my
+> > > > > understanding is that we don't modify the argument list of
+> > > > > generic_remap_file_range_prep(), but move its code into
+> > > > > __generic_remap_file_range_prep() whose argument list can be modified to
+> > > > > accepts the iomap_ops pointer.  Then it looks like this:
+> > > > 
+> > > > I'd say just add the iomap_ops pointer to
+> > > > generic_remap_file_range_prep and do away with the extra wrappers.  We
+> > > > only have three callers anyway.
+> > > 
+> > > OK.
+> > 
+> > So looking at this again I think your proposal actaully is better,
+> > given that the iomap variant is still DAX specific.  Sorry for
+> > the noise.
+> > 
+> > Also I think dax_file_range_compare should use iomap_apply instead
+> > of open coding it.
+> > 
 > 
-> This not only forces us to reserve metadata space with a transaction
-> handle hold, but can't handle other errors like -EDQUOT.
+> There are two files, which are not reflinked, need to be direct_access()
+> here.  The iomap_apply() can handle one file each time.  So, it seems that
+> iomap_apply() is not suitable for this case...
 > 
-> This patch will make btrfs_dirty_inode() to call
-> btrfs_start_transaction() directly without first try joining then
-> starting, so that in try_flush_qgroup() we won't hold a trans handle.
 > 
-> This will slow down btrfs_dirty_inode() but my fstests doesn't show too
-> much different for most test cases, thus it may be worthy to skip such
-> performance "optimization".
+> The pseudo code of this process is as follows:
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>   srclen = ops->begin(&srcmap)
+>   destlen = ops->begin(&destmap)
+> 
+>   direct_access(&srcmap, &saddr)
+>   direct_access(&destmap, &daddr)
+> 
+>   same = memcpy(saddr, daddr, min(srclen,destlen))
+> 
+>   ops->end(&destmap)
+>   ops->end(&srcmap)
+> 
+> I think a nested call like this is necessary.  That's why I use the open
+> code way.
 
-I'm not interested in slowing down the !qgroups case just for qgroups.  We want 
-to short circuit the start here because it has the potential to be _very_ 
-expensive, when we may very well have space already allocated for the inode.
+This might be a good place to implement an iomap_apply2() loop that
+actually /does/ walk all the extents of file1 and file2.  There's now
+two users of this idiom.
 
-The best solution I can think of for this is to add a bool to indicate that we 
-don't want to attempt to make reservations.  The only problem here is if the 
-inode doesn't have space allocated for it, if it doesn't we need to fall back 
-anyway.  The speed up comes from inodes that already have the delayed inode 
-setup.  So simply tell it to error out if we're not already set up, and then we 
-can fail back to btrfs_start_transaction().  That'll keep us in line with our 
-performance for !qgroups and solve your qgroup related deadlock problems.  Thanks,
+(Possibly structured as a "get next mappings from both" generator
+function like Matthew Wilcox keeps asking for. :))
 
-Josef
+--D
+
+> 
+> --
+> Thanks,
+> Ruan Shiyang.
+> > 
+> 
+> 
