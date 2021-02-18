@@ -2,264 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579F431EB8E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 16:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9FD31EE17
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 19:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhBRP1L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Feb 2021 10:27:11 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:48954 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbhBROcN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:32:13 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IEOH9L161820;
-        Thu, 18 Feb 2021 14:31:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=T9T+UviDPpppBnESCrX5j41t2ij7oQ/jHRSeEmTV2mI=;
- b=DwLbWe+OmLTRV1ZqqQU9+WbD/cyqpxaJ6z3Xma9ZevM5NKWsP1JRZ4qHCw0sYdgOlMlG
- BBm64F8gCD2s2wroQ2OI1PmTkwAgS63b797dNEIEPgVDaXMigEAh9E7BiC0hXEQ92tyS
- cDJevxEnpcGB6SD2iRDQr8ohy27Ite8v/GcmhgU1nmYU6AfIiwAqye3Vr5d32fojlhlD
- eOY1Y3stHpBkKHpxYWi3paq0+1CqUTIH/fz5ySAE2l7LafWXTgXNQBBeE+Tpg7rbgWl9
- 4WtFNfBiaxjB/TYF6NdZLcEsmdfUROwsqzl4GqTsZt5mmqA2MkR6EY/rCrqf56EXtikK 2A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 36p7dnp15y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 14:31:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IEUH3X105357;
-        Thu, 18 Feb 2021 14:31:05 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 36prp1km8e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 14:31:05 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11IEV3Qj032389;
-        Thu, 18 Feb 2021 14:31:03 GMT
-Received: from ca-dev104.us.oracle.com (/10.129.135.33)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Feb 2021 06:31:03 -0800
-From:   Anand Jain <anand.jain@oracle.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com
-Subject: [RFC][PATCH] btrfs: random read fio test for read policy
-Date:   Thu, 18 Feb 2021 06:30:54 -0800
-Message-Id: <746eadd73fb847050f1dc3a6c47756259c73e73d.1613658256.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        id S231326AbhBRSQa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Feb 2021 13:16:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232389AbhBRP3N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:29:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613662104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=zGcDkIOvJjW3mlFMtSYMMqs3yYFC8kl+WhnBz2WVBvU=;
+        b=ubAclM7bBnVo+rlWSSTsKhk5FVewTgHHnVHDoUt+5B7uRLWlOUDIQQxcvyItOK9F7np/x+
+        GfUvqDbd4BOfXzKLcsGxCg3FaFwCwR9YeV+gDjo1VWHmQe3lFHTEHlIkQw8lUGQXX50V+q
+        NrM3VxKIvUowhMv35jjyZGGh3KR8yLM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3D40AAD57;
+        Thu, 18 Feb 2021 15:28:24 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: make btrfs_dirty_inode() to always reserve
+ metadata space
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210108053659.87728-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <fe04fa6f-57b9-546c-1715-ecc97e81fe14@suse.com>
+Date:   Thu, 18 Feb 2021 17:28:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210108053659.87728-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180130
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102180129
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are two objectives of this test case. 1. by default, with
-LOAD_FACTOR = 1, it sanity tests the read policies. And 2. Run the
-test case individually with a larger LOAD_FACTOR. For example, 10
-for the comparative study of the read policy performance.
 
-LOAD_FACTOR parameter controls the fio scalability. For the
-LOAD_FACTOR = 1 (default), this runs fio for file size = 1G and num
-of jobs = 1, which approximately takes 65s to finish.
 
-This test case runs fio for raid1/10/1c3/1c4 profiles and all the
-available read policies in the system. At the end of the test case,
-a comparative summary of the result is in the $seqresfull-file.
+On 8.01.21 г. 7:36 ч., Qu Wenruo wrote:
+> There are several qgroup flush related bugs fixed recently, all of them
+> are caused by the fact that we can trigger qgroup metadata space
+> reservation holding a transaction handle.
+> 
+> Thankfully the only situation to trigger above reservation is
+> btrfs_dirty_inode().
+> 
+> Currently btrfs_dirty_inode() will try join transactio first, then
+> update the inode.
+> If btrfs_update_inode() fails with -ENOSPC, then it retry to start
+> transaction to reserve metadata space.
+> 
+> This not only forces us to reserve metadata space with a transaction
+> handle hold, but can't handle other errors like -EDQUOT.
+> 
+> This patch will make btrfs_dirty_inode() to call
+> btrfs_start_transaction() directly without first try joining then
+> starting, so that in try_flush_qgroup() we won't hold a trans handle.
+> 
+> This will slow down btrfs_dirty_inode() but my fstests doesn't show too
+> much different for most test cases, thus it may be worthy to skip such
+> performance "optimization".
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-I find tests/btrfs as the placeholder for this test case. As it
-contains many things which are btrfs specific and didn't fit well
-under perf.
 
-Feedback/suggestions welcome.
+Ok I actually run 2 tests against this patch. The first one is a 10
+second run of  stress-ng's utime test (stress-ng --temp-path
+/media/scratch --utime 4 -M -t 10 ; done) to see if I can reproduce
+intel's results and here's what I found:
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- tests/btrfs/231     | 145 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/231.out |   2 +
- tests/btrfs/group   |   1 +
- 3 files changed, 148 insertions(+)
- create mode 100755 tests/btrfs/231
- create mode 100644 tests/btrfs/231.out
+	
+bogo ops/s real (Before-patch)	bogo ops/s real (After Patch)
+	35993	                         32968
+	35712	                         33146
+	35369	                         32996
+	35544	                         33159
+	35623	                         33000
+	35939	                         33016
+	35693	                         32829
+	35562	                         32685
+	35675	                         32815
+Std dev	182.161981912585	146.829034703967
+HMean	35677.9600871036	32957.1111111111
+Diff%:		                -7.626
 
-diff --git a/tests/btrfs/231 b/tests/btrfs/231
-new file mode 100755
-index 000000000000..c08b5826f60a
---- /dev/null
-+++ b/tests/btrfs/231
-@@ -0,0 +1,145 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 Anand Jain.  All Rights Reserved.
-+#
-+# FS QA Test 231
-+#
-+# Random read fio test for raid1(10)(c3)(c4) with available
-+# read policy.
-+# 
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+fio_config=$tmp.fio
-+fio_results=$tmp.fio_out
-+
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch_dev_pool 4
-+
-+njob=$LOAD_FACTOR
-+size=$LOAD_FACTOR
-+_require_scratch_size $(($size * 2 * 1024 * 1024))
-+echo size=$size njob=$njob >> $seqres.full
-+
-+make_fio_config()
-+{
-+	#Set direct IO to true, help to avoid buffered IO so that read happens
-+	#from the devices.
-+	cat >$fio_config <<EOF
-+[global]
-+bs=64K
-+iodepth=64
-+direct=1
-+invalidate=1
-+allrandrepeat=1
-+ioengine=libaio
-+group_reporting
-+size=${size}G
-+rw=randread
-+EOF
-+}
-+#time_based
-+#runtime=5
-+
-+make_fio_config
-+for job in $(seq 0 $njob); do
-+	echo "[foo$job]" >> $fio_config
-+	echo  "filename=$SCRATCH_MNT/$job/file" >> $fio_config
-+done
-+_require_fio $fio_config
-+cat $fio_config >> $seqres.full
-+
-+work()
-+{
-+ 	raid=$1
-+
-+	echo ------------- profile: $raid ---------- >> $seqres.full
-+	echo >> $seqres.full
-+	_scratch_pool_mkfs $raid >> $seqres.full 2>&1
-+	_scratch_mount
-+
-+	fsid=$($BTRFS_UTIL_PROG filesystem show -m $SCRATCH_MNT | grep uuid: | \
-+	     $AWK_PROG '{print $4}')
-+	readpolicy_path="/sys/fs/btrfs/$fsid/read_policy"
-+	policies=$(cat $readpolicy_path | sed 's/\[//g' | sed 's/\]//g')
-+
-+	for policy in $policies; do
-+		echo $policy > $readpolicy_path || _fail "Fail to set readpolicy"
-+		echo -n "activating readpolicy: " >> $seqres.full
-+		cat $readpolicy_path >> $seqres.full
-+		echo >> $seqres.full
-+
-+		> $fio_results
-+		$FIO_PROG --output=$fio_results $fio_config
-+		cat $fio_results >> $seqres.full
-+	done
-+
-+	_scratch_unmount
-+	_scratch_dev_pool_put
-+}
-+
-+_scratch_dev_pool_get 2
-+work "-m raid1 -d single"
-+
-+_scratch_dev_pool_get 2
-+work "-m raid1 -d raid1"
-+
-+_scratch_dev_pool_get 4
-+work "-m raid10 -d raid10"
-+
-+_scratch_dev_pool_get 3
-+work "-m raid1c3 -d raid1c3"
-+
-+_scratch_dev_pool_get 4
-+work "-m raid1c4 -d raid1c4"
-+
-+
-+# Now benchmark the raw device performance
-+> $fio_config
-+make_fio_config
-+_scratch_dev_pool_get 4
-+for dev in $SCRATCH_DEV_POOL; do
-+	echo "[$dev]" >> $fio_config
-+	echo  "filename=$dev" >> $fio_config
-+done
-+_require_fio $fio_config
-+cat $fio_config >> $seqres.full
-+
-+echo ------------- profile: raw disk ---------- >> $seqres.full
-+echo >> $seqres.full
-+> $fio_results
-+$FIO_PROG --output=$fio_results $fio_config
-+cat $fio_results >> $seqres.full
-+
-+echo >> $seqres.full
-+echo ===== Summary ====== >> $seqres.full
-+cat $seqres.full | egrep -A1 "Run status|Disk stats|profile:|readpolicy" >> $seqres.full
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/231.out b/tests/btrfs/231.out
-new file mode 100644
-index 000000000000..a31b87a289bf
---- /dev/null
-+++ b/tests/btrfs/231.out
-@@ -0,0 +1,2 @@
-+QA output created by 231
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index a7c6598326c4..7f449d1db99e 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -233,3 +233,4 @@
- 228 auto quick volume
- 229 auto quick send clone
- 230 auto quick qgroup limit
-+231 other
--- 
-2.27.0
+So there's a 7.6% decrease in the rate of utime() calls we can make,
+given that we now start a transaction I'd say that's expected.
 
+The other test was a randwrite with fio as I was mostly worried that
+making btrfs_dirty_inode more expensive would hit write performance
+since file_update_times is called from the generic iter. But inspecting
+the code btrfs uses update_time_for_write which doesn't dirty the inode
+per-se as this is deferred to endio completion time.  I also measured
+the impact during buffered read time as file_accessed is called a lot of
+times but the following bpftrace script:
+
+BEGIN {@execs = 0; }
+kprobe:btrfs_dirty_inode
+{
+	@test[kstack] = count();
+	@execs++;
+}
+
+kprobe:touch_atime
+{
+	@test[kstack] = count();
+}
+END{
+	printf("Total btrfs_dirty_inode calls: %llu\n", @execs);
+}
+
+
+confirmed we only ever execute around 8 btrfs_dirty_inode out of 1048773
+execution of touch_atimes from generic_file_buffered_read with the
+following fio workload:
+
+fio --name=random-readers --thread --ioengine=sync --iodepth=4
+--rw=randread --bs=4k --direct=0 --size=1g --numjobs=4
+--directory=/media/scratch --filename_format=FioWorkloads.\$jobnum
+--new_group --group_reporting=1
+
+
+So performance-wise I'm inclined to give it a "pass".
