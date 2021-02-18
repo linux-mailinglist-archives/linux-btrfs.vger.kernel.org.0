@@ -2,91 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9FD31EE17
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 19:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6D431EE19
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 19:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhBRSQa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Feb 2021 13:16:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42176 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232389AbhBRP3N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:29:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613662104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=zGcDkIOvJjW3mlFMtSYMMqs3yYFC8kl+WhnBz2WVBvU=;
-        b=ubAclM7bBnVo+rlWSSTsKhk5FVewTgHHnVHDoUt+5B7uRLWlOUDIQQxcvyItOK9F7np/x+
-        GfUvqDbd4BOfXzKLcsGxCg3FaFwCwR9YeV+gDjo1VWHmQe3lFHTEHlIkQw8lUGQXX50V+q
-        NrM3VxKIvUowhMv35jjyZGGh3KR8yLM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3D40AAD57;
-        Thu, 18 Feb 2021 15:28:24 +0000 (UTC)
+        id S231279AbhBRSQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Feb 2021 13:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233231AbhBRQPC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:15:02 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8952CC06121D
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 08:14:20 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id o21so1763829qtr.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 08:14:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=zmmyy/59e13ZAH2hA2IJQINd+2FrJeGOnuo1dgsSw3M=;
+        b=nIHAFV0fpy64FkT0TILvnx3FiXhhxyv6ZE7pywc+PifgkKcYtAUpIbhh/a4mUYf2H3
+         g4/NUSTCUZ1qSBuysepavnMKO7yNUA07T3zCv+XM8uyM7S9fGHlAk1fhjaf5OyAQ5y/J
+         XnEGE4Hn1jHPZbI33Qxb66Vl6hT58lOWtX7sWkqAFpMSPdF8LFr/ybF/yPIk0Oguv0sW
+         DPOFB2fNe5fYAdkriIa7QrH05hAIPx5E4AASpBdwDKwZKiUK3Ud6/sVw/ItscfXMBbF6
+         dTRptEsbNjktv96M3u0fZJRW4lWpQGRwrcQSREQWVRRzfM+T5WMj6KVutRbdevMKONhN
+         MNTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zmmyy/59e13ZAH2hA2IJQINd+2FrJeGOnuo1dgsSw3M=;
+        b=t/s2EfpbQ9ZDUaJa7LlT7GZLZ90KGfaQf7HhmHG0uJhjKQ2FB0F+zBrEq4d2mipa4p
+         h3ElatvH8csXMAAy660y6XI2sJhzURl0QqgFJEuTO5OulJ8kf2+SAFn5yH1+n0iBbHI6
+         f3dfVzTGoKC3HaIBrIgLgDxVwXEB4ZrsEvCRJbKVeM/AzRkDylfY6SWp26bRyhkMSmIA
+         mGm2Zmm8Dk+/SanzG0hKTWhLbQb6KlcnKxE3dBNS/mH5zqlIqTuS5PuPGSdnUqRCZWsC
+         51DPRTwlFZzcoM2a3u4uV9fl6r3oF5XC0GpgJv4irD7qgtdoltl46HW7BuDIb+I+ZV3T
+         H6kw==
+X-Gm-Message-State: AOAM5306a3I8/YiBgW6Ybzn25umwAS2ggM0iVwSvtl9wfx817J0dNBB1
+        nFHBt8jEb+nfOj2X/p5LIMbI846ri9CnQBLd
+X-Google-Smtp-Source: ABdhPJyScK5wEG6Ng33OHGnN3StaAZSTlheeagQsU7RpGCTPITq/poKrQG9OiLseoUOKJCdE+fYcTw==
+X-Received: by 2002:ac8:44a3:: with SMTP id a3mr3106684qto.322.1613664859136;
+        Thu, 18 Feb 2021 08:14:19 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11d9::1105? ([2620:10d:c091:480::1:70a3])
+        by smtp.gmail.com with ESMTPSA id c9sm4250063qkl.60.2021.02.18.08.14.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 08:14:18 -0800 (PST)
 Subject: Re: [PATCH] btrfs: make btrfs_dirty_inode() to always reserve
  metadata space
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210108053659.87728-1-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <fe04fa6f-57b9-546c-1715-ecc97e81fe14@suse.com>
-Date:   Thu, 18 Feb 2021 17:28:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <6bc8bef5-43a0-f6c6-9b43-2f62a3e4e051@toxicpanda.com>
+Date:   Thu, 18 Feb 2021 11:14:16 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
 In-Reply-To: <20210108053659.87728-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 8.01.21 г. 7:36 ч., Qu Wenruo wrote:
+On 1/8/21 12:36 AM, Qu Wenruo wrote:
 > There are several qgroup flush related bugs fixed recently, all of them
 > are caused by the fact that we can trigger qgroup metadata space
 > reservation holding a transaction handle.
@@ -112,62 +93,16 @@ On 8.01.21 г. 7:36 ч., Qu Wenruo wrote:
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
+I'm not interested in slowing down the !qgroups case just for qgroups.  We want 
+to short circuit the start here because it has the potential to be _very_ 
+expensive, when we may very well have space already allocated for the inode.
 
-Ok I actually run 2 tests against this patch. The first one is a 10
-second run of  stress-ng's utime test (stress-ng --temp-path
-/media/scratch --utime 4 -M -t 10 ; done) to see if I can reproduce
-intel's results and here's what I found:
+The best solution I can think of for this is to add a bool to indicate that we 
+don't want to attempt to make reservations.  The only problem here is if the 
+inode doesn't have space allocated for it, if it doesn't we need to fall back 
+anyway.  The speed up comes from inodes that already have the delayed inode 
+setup.  So simply tell it to error out if we're not already set up, and then we 
+can fail back to btrfs_start_transaction().  That'll keep us in line with our 
+performance for !qgroups and solve your qgroup related deadlock problems.  Thanks,
 
-	
-bogo ops/s real (Before-patch)	bogo ops/s real (After Patch)
-	35993	                         32968
-	35712	                         33146
-	35369	                         32996
-	35544	                         33159
-	35623	                         33000
-	35939	                         33016
-	35693	                         32829
-	35562	                         32685
-	35675	                         32815
-Std dev	182.161981912585	146.829034703967
-HMean	35677.9600871036	32957.1111111111
-Diff%:		                -7.626
-
-So there's a 7.6% decrease in the rate of utime() calls we can make,
-given that we now start a transaction I'd say that's expected.
-
-The other test was a randwrite with fio as I was mostly worried that
-making btrfs_dirty_inode more expensive would hit write performance
-since file_update_times is called from the generic iter. But inspecting
-the code btrfs uses update_time_for_write which doesn't dirty the inode
-per-se as this is deferred to endio completion time.  I also measured
-the impact during buffered read time as file_accessed is called a lot of
-times but the following bpftrace script:
-
-BEGIN {@execs = 0; }
-kprobe:btrfs_dirty_inode
-{
-	@test[kstack] = count();
-	@execs++;
-}
-
-kprobe:touch_atime
-{
-	@test[kstack] = count();
-}
-END{
-	printf("Total btrfs_dirty_inode calls: %llu\n", @execs);
-}
-
-
-confirmed we only ever execute around 8 btrfs_dirty_inode out of 1048773
-execution of touch_atimes from generic_file_buffered_read with the
-following fio workload:
-
-fio --name=random-readers --thread --ioengine=sync --iodepth=4
---rw=randread --bs=4k --direct=0 --size=1g --numjobs=4
---directory=/media/scratch --filename_format=FioWorkloads.\$jobnum
---new_group --group_reporting=1
-
-
-So performance-wise I'm inclined to give it a "pass".
+Josef
