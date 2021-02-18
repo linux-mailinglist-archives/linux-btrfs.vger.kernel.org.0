@@ -2,311 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CAD31F020
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 20:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9AF31F151
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 21:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhBRTlp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Feb 2021 14:41:45 -0500
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:45883 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231234AbhBRTLv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:11:51 -0500
-Received: from venice.bhome ([78.12.28.43])
-        by smtp-35.iol.local with ESMTPA
-        id CohclVSyjpK9wCohclVMCz; Thu, 18 Feb 2021 20:11:05 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1613675465; bh=gCMjHwYfII2gUHX9EX+JZ8vveNB7dCulcOirCBKg5s4=;
-        h=From;
-        b=ROqbIJM64YoynTdhTVcXVwbtZXFFC4xgBeqmGTfd69yzqdveAF/IvKELov/kMH2lh
-         V5cf7vheRCvk7GcD+tL1afFPym93TC7box6tT2pIrcWkxuR6+PFMsbVt4rx+A5hKGL
-         c1jTjgLrNgalZHvTKiQCoQOrlO+6sXBT9kWe8tvvVkUGdgpX5gE1ZYB9qT3pMIWpmF
-         HL6lSsKxLtDZUkFBlCeYjHpd10oY4MAHllMkAgLH0YB0LJdxKADvEM3ruQgRBa1f+A
-         b8rXXJfCRDSWfel9kcEUG7p1yx6h/ohQKsmuxleaj9cZwXz5VFMqRUrCnKGO6HOi0+
-         VoAMOcpwWKDRA==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=602ebbc9 cx=a_exe
- a=Q5/16X4GlyvtzKxRBiE+Uw==:117 a=Q5/16X4GlyvtzKxRBiE+Uw==:17
- a=IkcTkHD0fZMA:10 a=yPCof4ZbAAAA:8 a=O4XOP55q0EOH1iYhKZ0A:9 a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: [RFC][PATCH] btrfs: sysfs for chunk layout hint
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-References: <0ed770d6d5e37fc942f3034d917d2b38477d7d20.1613668002.git.anand.jain@oracle.com>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <dade948e-7e66-4081-6ea1-f84a4dd6a11a@libero.it>
-Date:   Thu, 18 Feb 2021 20:11:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229994AbhBRUqy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Feb 2021 15:46:54 -0500
+Received: from wilbur.contactoffice.com ([212.3.242.68]:48744 "EHLO
+        wilbur.contactoffice.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhBRUqx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Feb 2021 15:46:53 -0500
+Received: from smtpauth1.co-bxl (smtpauth1.co-bxl [10.2.0.15])
+        by wilbur.contactoffice.com (Postfix) with ESMTP id 44964B71;
+        Thu, 18 Feb 2021 21:46:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1613681166;
+        s=20200308-xcrr; d=rmz.io; i=me@rmz.io;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        l=2760; bh=Z9TnRD1KyDgqaHFjfdSS3KPToxqxuHckqssbiiROjDw=;
+        b=dwzFFiebnaChNvDadKMRFqRZNKaFI0aveI118rfn2YLD0adE4yenoMROBWNHc0cj
+        5Ej6KbQKLBoB9LYl1zZlQpgYuRpt0NII6j4ZK7kr0PVtfxLyv+0lZPRtrS4I4r3kVd3
+        /ctQ0sJ+xKQCwJzqBAaWvBsylIq7c38K1YDAeH26YMLy7FkEilsW1gGRH0WRgBAbljk
+        6h0l7oG7vl63EWGQwS7KiPcxEQ51HmH6zqzQzjE27N2+AKpbJ7UFBOvW6r2N/K+GcrI
+        UhBq+VF9MgB0huNCdw1JtA69Vyh5BHq1O0mINmCjoAcUw4vhpvV8fKKK+Fshmm5YxcS
+        +ndzeW/x9A==
+Received: by smtp.mailfence.com with ESMTPA ; Thu, 18 Feb 2021 21:46:03 +0100 (CET)
+Date:   Thu, 18 Feb 2021 20:46:02 +0000
+From:   Samir Benmendil <me@rmz.io>
+To:     Hugo Mills <hugo@carfax.org.uk>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: BTRFS error (device dm-0): block=711870922752 write time tree
+ block corruption detected
+Message-ID: <20210218204602.d63ix6us3sp7fj3m@hactar>
+X-Clacks-Overhead: GNU Terry Pratchett
+References: <20210217132640.r44q7ccfz2fohvxy@hactar>
+ <20210217134502.GU4090@savella.carfax.org.uk>
+ <F222B7F7-84A4-4681-85FE-2EAA81446B21@rmz.io>
 MIME-Version: 1.0
-In-Reply-To: <0ed770d6d5e37fc942f3034d917d2b38477d7d20.1613668002.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDrieDsbKIVD2CqJHpSwUMWfKibEuA4jSN2UnvzjX3/J70NZ4W/W34UN8llW1l0Xx64OaN+vMNKo/yNj5xEQEqlc5TO2heV1pOM+S/meWVOQ4nbkoruM
- w0r7AM6IvlindmZ6PwHQOzRkNnKiajn/f46VzWNuRfWDMwAijDO2UZJi7HjnepDsVVqvlDtY8iAGoryJmTAyV8cJWKsx9TZW6THKxnbIMUiKwbURrqSDXBwf
- d9ei5S0lwYTkKUEeL+JEmnIVMpu5pOyVm2+tCtnfZn8Qh7fkOiEb4Tn8+vNoQTED
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pemmclltms3ixk3e"
+Content-Disposition: inline
+In-Reply-To: <F222B7F7-84A4-4681-85FE-2EAA81446B21@rmz.io>
+X-Spam-Flag: NO
+X-Spam-Status: No, hits=-2.9 required=4.7 symbols=ALL_TRUSTED,BAYES_00 device=10.2.0.1
+X-ContactOffice-Account: com:225813835
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/18/21 6:20 PM, Anand Jain wrote:
-> btrfs_chunk_alloc() uses dev_alloc_list to allocate new chunks. The
-> function's stack leading to btrfs_cmp_device_info() sorts the
-> dev_alloc_list in the descending order of unallocated space. This
-> sorting helps to maximize the filesystem space.
-> 
-> But, there might be other types of preferences when allocating the
-> chunks. For example, allocation by device latency, with which the
-> metadata could go to the device with the least latency.
-> 
-> This patch is a preparatory patch and makes the existing allocation
-> layout a configurable parameter using sysfs, as shown below.
-> 
-> cd /sys/fs/btrfs/863c787e-fdbd-49ca-a0ea-22f36934ff1f
-> cat chunk_layout_data
-> [size]
-> cat chunk_layout_metadata
-> [size]
-> 
-> We could add more chunk allocation types by adding to the list in
-> enum btrfs_chunk_layout{ }.
+--pemmclltms3ixk3e
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Feb 17, 2021 at 16:56, Samir Benmendil wrote:
+> On 17 February 2021 13:45:02 GMT+00:00, Hugo Mills=20
+> <hugo@carfax.org.uk> wrote:
+>> On Wed, Feb 17, 2021 at 01:26:40PM +0000, Samir Benmendil wrote:
+>>> Any advice on what to do next would be appreciated.
+>>=20
+>>   The first thing to do is run memtest for a while (I'd usually
+>> recomment at least overnight) to identify your broken RAM module and
+>> replace it. Don't try using the machine normally until you've done
+>> that.
+>=20
+> Memtest just finished it's first pass with no errors, but printed a=20
+> note regarding vulnerability to high freq row hammer bit flips.
+>=20
+> I'll keep it running for a while longer.
+
+2nd pass flagged a few errors, removed one of the RAM module, tested=20
+again and it passed. I then booted and ran `btrfs check --readonly` with=20
+no errors.
+
+     [root@hactar ~]# btrfs check --readonly /dev/mapper/home_ramsi
+     Opening filesystem to check...
+     Checking filesystem on /dev/mapper/home_ramsi
+     UUID: 1e0fea36-a9c9-4634-ba82-1afc3fe711ea
+     [1/7] checking root items
+     [2/7] checking extents
+     [3/7] checking free space cache
+     [4/7] checking fs roots
+     [5/7] checking only csums items (without verifying data)
+     [6/7] checking root refs
+     [7/7] checking quota groups skipped (not enabled on this FS)
+     found 602514441102 bytes used, no error found
+     total csum bytes: 513203560
+     total tree bytes: 63535939584
+     total fs tree bytes: 58347077632
+     total extent tree bytes: 4500455424
+     btree space waste bytes: 15290027113
+     file data blocks allocated: 25262661455872
+     referenced 4022677716992
 
 
-Hi Anand,
+Thanks again for your help Hugo.
 
-I like the idea. My patches set (allocation hint), provides a similar functionality.
-However I used a "static" priority (each disks has an user-defined tag which give a priority for the allocation).
+Samir
 
-In any case the logic is always the same: until now btrfs_cmp_device_info() sorts the
-devices on the basis of two criterion:
-- the max_avail
-- the total_vail
+--pemmclltms3ixk3e
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I added another criterion, that I called "alloc_hint" that decides the sorting.
+-----BEGIN PGP SIGNATURE-----
 
-I go even further, because Zygo asked me to add a flag which may exclude some disks.[*]
+iQIzBAABCgAdFiEEO8iRpJat6BxHTtT0gmAAVevIWpMFAmAu0goACgkQgmAAVevI
+WpNZpQ/+KIr7Vio/XC3UDIgHjKYMkQk7P5FM3qNMuy0sNcNj+HJTp3m0SRbJ0Fkm
+WI9t6SuYCFENss4x/EjT/+NDaRHemxYiCyUYel71zgx4YEHTbx4HggxGihBGHxE0
+8zzKVKCitZUxcxbth703WqBuLEsYlOKBVOgOLJoEoej4aGCkyiXy3zCFA7XVMpby
+0HzytFTPhwtSRJR6C6JQa+TGYhsSPH2EL8teuBYUXI5zJXz9Xd5EVeu8/Zrjrtdj
+WoGZeGth5awHXU6LQ4N7QB2XQ07w8mIGG98hzdYo5t2VA+9jhXUi7DudkFV196LK
+9Y9eK8c5Twq5UFsG6uXnkJ0aN4NR4+4cTvKJMJ5gpFCBnLl56eq3NQgdBSpNLYPw
+NM01rxCGbRXvbag6dbiBGFRJeOCmoR1rq4UN3DkiVwXGjqZxJorzfzmo9yXs79I4
+AFUg3DYb8Bsta5lSsPNG/ScLjQa4UIiLMIbICMSHx7dqA9pOznwT3GDZEo0B5bGU
+WpI9w95pIl9UJ8mGy8Pwun6LDTVopxP4Crq8oH9crFQJE9fRk820atB3Opyyweru
+xof7FyTM3CK0VHhNGEayVs2RWBmqueLi0wD9CvhUxzSlfEN+sZDnvCDxf6HWpXYQ
+cCKvQKck3PhiZNFI9KQCLkdqfD1xFn4i9Dl4AWOwiL0U4y/chuE=
+=yrOw
+-----END PGP SIGNATURE-----
 
-If we don't want to consider the idea to combine different criteria (like order by
-speed AND latency AND space AND ... ) which increase the management complexity, the
-main differences is that I used an "arbitrary user defined criterion", instead you may
-suggest to use some specific performance index of the disks (like speed, latency...).
-
-But in the end, because the latency or the speed are a "static" attribute (they should not change
-during the life of the disks, or these change quite slowly) the results don't change.
-
-So my concern is that my approach (which basically stores in the disk the priority) and your one (allow
-to change the priority criterion) are quite overlapped but not completely and difficult
-to combine.
-
-BR
-G.Baroncelli
-
-
-[*] Zygo has an user case for this, however I fear the complexity that it adds from
-a "free space report" point of view...
-
-> 
-> This is only a preparatory patch. The parameter is only an in-memory
-> as of now. A persistent disk structure can be added on top of this
-> when we have a consensus.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> This + sequential chunk layout hint (experimental) (patch not yet sent)
-> helped me get consistent performance numbers for read_policy pid.
-> As chunk layout hint is not set at mkfs, a balance after setting the
-> desired chunk layout hint is needed.
-> 
->   fs/btrfs/ctree.h   |  3 ++
->   fs/btrfs/disk-io.c |  3 ++
->   fs/btrfs/sysfs.c   | 98 ++++++++++++++++++++++++++++++++++++++++++++++
->   fs/btrfs/volumes.c |  4 +-
->   fs/btrfs/volumes.h | 10 +++++
->   5 files changed, 117 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 3bc00aed13b2..c37bd2d7f5d4 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -993,6 +993,9 @@ struct btrfs_fs_info {
->   	spinlock_t eb_leak_lock;
->   	struct list_head allocated_ebs;
->   #endif
-> +
-> +	int chunk_layout_data;
-> +	int chunk_layout_metadata;
->   };
->   
->   static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index c2576c5fe62e..c81f95339a35 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2890,6 +2890,9 @@ void btrfs_init_fs_info(struct btrfs_fs_info *fs_info)
->   	fs_info->swapfile_pins = RB_ROOT;
->   
->   	fs_info->send_in_progress = 0;
-> +
-> +	fs_info->chunk_layout_data = BTRFS_CHUNK_LAYOUT_SIZE;
-> +	fs_info->chunk_layout_metadata = BTRFS_CHUNK_LAYOUT_SIZE;
->   }
->   
->   static int init_mount_fs_info(struct btrfs_fs_info *fs_info, struct super_block *sb)
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 30e1cfcaa925..788784b1ed44 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -967,6 +967,102 @@ static ssize_t btrfs_read_policy_store(struct kobject *kobj,
->   }
->   BTRFS_ATTR_RW(, read_policy, btrfs_read_policy_show, btrfs_read_policy_store);
->   
-> +static const char * const btrfs_chunk_layout_name[] = { "size" };
-> +
-> +static ssize_t btrfs_chunk_layout_data_show(struct kobject *kobj,
-> +					    struct kobj_attribute *a, char *buf)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +	ssize_t ret = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < BTRFS_NR_CHUNK_LAYOUT; i++) {
-> +		if (fs_info->chunk_layout_data == i)
-> +			ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s[%s]",
-> +					 (ret == 0 ? "" : " "),
-> +					 btrfs_chunk_layout_name[i]);
-> +		else
-> +			ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
-> +					 (ret == 0 ? "" : " "),
-> +					 btrfs_chunk_layout_name[i]);
-> +	}
-> +
-> +	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t btrfs_chunk_layout_data_store(struct kobject *kobj,
-> +					     struct kobj_attribute *a,
-> +					     const char *buf, size_t len)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +	int i;
-> +
-> +	for (i = 0; i < BTRFS_NR_CHUNK_LAYOUT; i++) {
-> +		if (strmatch(buf, btrfs_chunk_layout_name[i])) {
-> +			if (i != fs_info->chunk_layout_data) {
-> +				fs_info->chunk_layout_data = i;
-> +				btrfs_info(fs_info, "chunk_layout_data set to '%s'",
-> +					   btrfs_chunk_layout_name[i]);
-> +			}
-> +			return len;
-> +		}
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +BTRFS_ATTR_RW(, chunk_layout_data, btrfs_chunk_layout_data_show,
-> +	      btrfs_chunk_layout_data_store);
-> +
-> +static ssize_t btrfs_chunk_layout_metadata_show(struct kobject *kobj,
-> +						struct kobj_attribute *a,
-> +						char *buf)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +	ssize_t ret = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < BTRFS_NR_CHUNK_LAYOUT; i++) {
-> +		if (fs_info->chunk_layout_metadata == i)
-> +			ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s[%s]",
-> +					 (ret == 0 ? "" : " "),
-> +					 btrfs_chunk_layout_name[i]);
-> +		else
-> +			ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
-> +					 (ret == 0 ? "" : " "),
-> +					 btrfs_chunk_layout_name[i]);
-> +	}
-> +
-> +	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t btrfs_chunk_layout_metadata_store(struct kobject *kobj,
-> +						 struct kobj_attribute *a,
-> +						 const char *buf, size_t len)
-> +{
-> +	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
-> +	int i;
-> +
-> +	for (i = 0; i < BTRFS_NR_CHUNK_LAYOUT; i++) {
-> +		if (strmatch(buf, btrfs_chunk_layout_name[i])) {
-> +			if (i != fs_info->chunk_layout_metadata) {
-> +				fs_info->chunk_layout_metadata = i;
-> +				btrfs_info(fs_info,
-> +					   "chunk_layout_metadata set to '%s'",
-> +					   btrfs_chunk_layout_name[i]);
-> +			}
-> +			return len;
-> +		}
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +BTRFS_ATTR_RW(, chunk_layout_metadata, btrfs_chunk_layout_metadata_show,
-> +	      btrfs_chunk_layout_metadata_store);
-> +
->   static const struct attribute *btrfs_attrs[] = {
->   	BTRFS_ATTR_PTR(, label),
->   	BTRFS_ATTR_PTR(, nodesize),
-> @@ -978,6 +1074,8 @@ static const struct attribute *btrfs_attrs[] = {
->   	BTRFS_ATTR_PTR(, exclusive_operation),
->   	BTRFS_ATTR_PTR(, generation),
->   	BTRFS_ATTR_PTR(, read_policy),
-> +	BTRFS_ATTR_PTR(, chunk_layout_data),
-> +	BTRFS_ATTR_PTR(, chunk_layout_metadata),
->   	NULL,
->   };
->   
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index d1ba160ef73b..2223c4263d4a 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5097,7 +5097,9 @@ static int gather_device_info(struct btrfs_fs_devices *fs_devices,
->   	ctl->ndevs = ndevs;
->   
->   	/*
-> -	 * now sort the devices by hole size / available space
-> +	 * Now sort the devices by hole size / available space.
-> +	 * This sort helps to pick device(s) with larger space.
-> +	 * That is BTRFS_CHUNK_LAYOUT_SIZE.
->   	 */
->   	sort(devices_info, ndevs, sizeof(struct btrfs_device_info),
->   	     btrfs_cmp_device_info, NULL);
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index d0a90dc7fc03..b514d09f4ba8 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -218,6 +218,16 @@ enum btrfs_chunk_allocation_policy {
->   	BTRFS_CHUNK_ALLOC_ZONED,
->   };
->   
-> +/*
-> + * If we have more than the required number of the devices for striping,
-> + * chunk_layout let us know which device to use.
-> + */
-> +enum btrfs_chunk_layout {
-> +	/* Use in the order of the size of the unallocated space on the device */
-> +	BTRFS_CHUNK_LAYOUT_SIZE,
-> +	BTRFS_NR_CHUNK_LAYOUT,
-> +};
-> +
->   /*
->    * Read policies for mirrored block group profiles, read picks the stripe based
->    * on these policies.
-> 
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+--pemmclltms3ixk3e--
