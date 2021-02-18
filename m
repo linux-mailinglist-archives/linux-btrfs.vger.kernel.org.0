@@ -2,109 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C08D31F1B5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Feb 2021 22:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E15731F333
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 00:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbhBRV14 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Feb 2021 16:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
+        id S229743AbhBRX6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Feb 2021 18:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhBRV1y (ORCPT
+        with ESMTP id S229656AbhBRX6U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:27:54 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A253C061756
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 13:27:14 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id t26so1991981pgv.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 13:27:14 -0800 (PST)
+        Thu, 18 Feb 2021 18:58:20 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D54C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 15:57:39 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id a132so5228799wmc.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 15:57:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rkjnsn-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=c+m79ciEPQtD3HXhDa9Mx7ioE7eB7tEB4Vc2ZMwa3tU=;
-        b=kMtwIBeVJIlXUzdhySveJr/AeMa8rcI/Bk61f8oH2huplsyeFRVvT1yS8Gc1djF5Tz
-         DEmybvfbWBdc95TC/424Wid7kLXfy44gK9F6Ixdz9dN0QoRPPb0eEItRK7qUNv6z6w+v
-         9C1SOz5gUwdXpPw/RyQFaJKXLvhyXBbsKAWmPCSjtyF3ez02pK8rBhZUYlOE2+7X6Jny
-         HKayWOJq6YuBEY+/1hB3WNBztfuiobxGv/vcIk537c0I0LFISpJsFzGXqQr7MhbhGL1Y
-         9ZytG+S0EObBXOara0UC95mIkAKydr5xcOyzQh4DSE4GsMAwvUHmxNGkFV/SteX6fb5N
-         o4FA==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z5qqSqK/SoOLw+TsCqefUyjPihEfTtVASAB1PPVQtpg=;
+        b=aM+FQIxjy0v5OvnTqCOA4fXI3Haz+CqAcjxQK5tOHmMDUD9SwLqoCxg6CM4HDs5t+8
+         FoeElCJLKPayAc/1dgvEc8zQS2cHbZhx/w3exZTjMKqF3/pfabb8InJSRx2K2hfAqOwV
+         S58Jo7bS7Ei9hWDPwBkX7yXpZZ6xc4vGN48zo/RYnFWvElbYML5RCQSaFr0m3vtl6/Sz
+         PvrylZaL4wT+sH5etTPumKi7+nj3UUBf+VXI5FNWst8A8a/PBrjbVJZjADEENDNe/Zs+
+         Ygty6gbA4+AhIgGeAIpv59bNJwZehfOIIDFwGf2VYphf7Zn0Ur9P0e0GNoaYSzZizfZs
+         2fsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=c+m79ciEPQtD3HXhDa9Mx7ioE7eB7tEB4Vc2ZMwa3tU=;
-        b=eXFGak1LsiltLHu5DDm375hn2e2kJyJmUyQ1vM7FAc0LPLVw8FdS2PhzC5gsGFdgr8
-         bAwg0i8Y+XfkxdDBrSG3D5qxm+2aZQ5S8QzJ39fQotc6tU2idO4we2kClgZLNcR4y4Xi
-         s5c3mEbuQU8enXj13rjGgOcRAXdZH52Or1crZxVbWG3jfozopCTFJYseIlAV9GTnyx8G
-         0pThGGS0llmlii/Wnl6FMKmLulNpHCUpmZL9+4XtTV5f4lDCsh9+s+S8r1eYt6UfRoxm
-         SjbTB07VWhrJriRFw9yWjL4c5/Mv1i+6u3H6x/1LRweBG/npYf5Yu+r9ARAONyu77zPL
-         CnGA==
-X-Gm-Message-State: AOAM5309tOBe+Zi9jxvRwwDddAuMNyepTM/7+X0VBXU4Fb6/YFOlcKzl
-        C4YZLDG4HX5HVXzpcplTjKfx3m0AnDYUZkUstmY=
-X-Google-Smtp-Source: ABdhPJyGQfUvusezDX6eZOyJlUrPSWdxOsvET5Pr6Fbz2U6vnS7DjzgJxmFA3P3nI3Or9F3nq+sq5A==
-X-Received: by 2002:a05:6a00:8d4:b029:1b7:7ad9:4864 with SMTP id s20-20020a056a0008d4b02901b77ad94864mr6043969pfu.34.1613683633830;
-        Thu, 18 Feb 2021 13:27:13 -0800 (PST)
-Received: from [10.64.183.147] (static-198-54-131-136.cust.tzulo.com. [198.54.131.136])
-        by smtp.gmail.com with ESMTPSA id u3sm7806487pfm.144.2021.02.18.13.27.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 13:27:13 -0800 (PST)
-Subject: Re: page->index limitation on 32bit system?
-To:     Matthew Wilcox <willy@infradead.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com>
- <20210218121503.GQ2858050@casper.infradead.org>
-From:   Erik Jensen <erikjensen@rkjnsn.net>
-Message-ID: <927c018f-c951-c44c-698b-cb76d15d67bb@rkjnsn.net>
-Date:   Thu, 18 Feb 2021 13:27:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z5qqSqK/SoOLw+TsCqefUyjPihEfTtVASAB1PPVQtpg=;
+        b=Q7aJqp9pinJoDGOENR6YxyCXHXDFjUdmMWh8SdVTyf7GqJAGkAP62sPCN3uxmnkwWs
+         HrU6UScnHU7yNV4BvpaWK0QQA9vFZT2RYMG3gEpTzsSbIz96iogm+ScrMUmDkr/PVsq0
+         MYlr7cvlb3ybr+032Jv81pfe0vAPdRGHieat7dfKRNKmMXXPPVF9kdeAYG/Uada5LL5L
+         BFzTFkGnSv+qHRQbH2vzpynaaVf49Z/nc9EkCWXmZkRuU9fah7SJktQJ3eGfQKPRaBvn
+         HcN4CqDR5PdSvtJKJQw5pR/J0mpQaQwhxbmqnEjrX4CGU2xObUmFfOtBi4dxxnHZVlRi
+         FTrA==
+X-Gm-Message-State: AOAM5311Lo79d/rbSu+HGqdk/IJM3HI26OpmTkqn5uyiCYV90dTAR10G
+        hBterMy16aKkY5t/jvQU3JJLAuOvZ9wx+jXcN2g/dw==
+X-Google-Smtp-Source: ABdhPJwGbhyA1RGQKlWrdZVZbGAeP6WI7plVOXhAQLWSYsgVLD72DCWA/9LxmUcKMpUItDbEpI9V0ouozquGMX8WEDQ=
+X-Received: by 2002:a7b:cb58:: with SMTP id v24mr5610512wmj.182.1613692658550;
+ Thu, 18 Feb 2021 15:57:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210218121503.GQ2858050@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <83750bf0-19a8-4f97-155c-b3e36cb227da@gmail.com>
+In-Reply-To: <83750bf0-19a8-4f97-155c-b3e36cb227da@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 18 Feb 2021 16:57:22 -0700
+Message-ID: <CAJCQCtQGyHJjPwmKxwxCBptfeb0jgdgyEXF=qvGf-1HBDvX1=w@mail.gmail.com>
+Subject: Re: corrupt leaf, unexpected item end, unmountable
+To:     Daniel Dawson <danielcdawson@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/18/21 4:15 AM, Matthew Wilcox wrote:
-
-> On Thu, Feb 18, 2021 at 04:54:46PM +0800, Qu Wenruo wrote:
->> Recently we got a strange bug report that, one 32bit systems like armv6
->> or non-64bit x86, certain large btrfs can't be mounted.
->>
->> It turns out that, since page->index is just unsigned long, and on 32bit
->> systemts, that can just be 32bit.
->>
->> And when filesystems is utilizing any page offset over 4T, page->index
->> get truncated, causing various problems.
-> 4TB?  I think you mean 16TB (4kB * 4GB)
+On Wed, Feb 17, 2021 at 7:43 PM Daniel Dawson <danielcdawson@gmail.com> wrote:
 >
-> Yes, this is a known limitation.  Some vendors have gone to the trouble
-> of introducing a new page_index_t.  I'm not convinced this is a problem
-> worth solving.  There are very few 32-bit systems with this much storage
-> on a single partition (everything should work fine if you take a 20TB
-> drive and partition it into two 10TB partitions).
-For what it's worth, I'm the reporter of the original bug. My use case 
-is a custom NAS system. It runs on a 32-bit ARM processor, and has 5 8TB 
-drives, which I'd like to use as a single, unified storage array. I 
-chose btrfs for this project due to the filesystem-integrated snapshots 
-and checksums. Currently, I'm working around this issue by exporting the 
-raw drives using nbd and mounting them on a 64-bit system to access the 
-filesystem, but this is very inconvenient, only allows one machine to 
-access the filesystem at a time, and prevents running any tools that 
-need access to the filesystem (such as backup and file sync utilities) 
-on the NAS itself.
+> I was attempting to replace the drives in an array with RAID6 profile.
 
-It sounds like this limitation would also prevent me from trying to use 
-a different filesystem on top of software RAID, since in that case the 
-logical filesystem would still be over 16TB.
+metadata raid6 as well?
 
-> As usual, the best solution is for people to stop buying 32-bit systems.
-I purchased this device in 2018, so it's not exactly ancient. At the 
-time, it was the only SBC I could find that was low power, used ECC RAM, 
-had a crypto accelerator, and had multiple sata ports with 
-port-multiplier support.
+What replacement command(s) are you using?
+
+
+> The first replacement was seemingly successful (and there was a scrub
+> afterward, with no errors). However, about 0.6% into the second
+> replacement (sdc), something went wrong, and it went read-only (I should
+> have copied the log of that somehow). Now it refuses to mount, and a
+> (readonly) check cannot get started.
+>
+>
+> # mount -o ro,degraded /dev/sda3 /mnt
+> mount: /mnt: can't read superblock on /dev/sda3.
+> # btrfs rescue super-recover /dev/sda3
+> All supers are valid, no need to recover
+>
+>
+> For this, dmesg shows:
+>
+> [  202.675384] BTRFS info (device sdc3): allowing degraded mounts
+> [  202.675387] BTRFS info (device sdc3): disk space caching is enabled
+> [  202.675389] BTRFS info (device sdc3): has skinny extents
+> [  202.676302] BTRFS warning (device sdc3): devid 3 uuid
+> 911a642e-0a4c-4483-9a1f-cde7b87c5519 is missing
+> [  202.676601] BTRFS warning (device sdc3): devid 3 uuid
+> 911a642e-0a4c-4483-9a1f-cde7b87c5519 is missing
+
+What device is devid 3?
+
+
+> [  202.985528] BTRFS info (device sdc3): bdev /dev/sdb3 errs: wr 0, rd
+> 0, flush 0, corrupt 26, gen 0
+> [  202.985533] BTRFS info (device sdc3): bdev /dev/sdd3 errs: wr 0, rd
+> 0, flush 0, corrupt 98, gen 0
+> [  203.278131] BTRFS info (device sdc3): start tree-log replay
+> [  203.454496] BTRFS critical (device sdc3): corrupt leaf: root=7
+> block=371567214592 slot=0, unexpected item end, have 16315 expect 16283
+> [  203.454499] BTRFS error (device sdc3): block=371567214592 read time
+> tree block corruption detected
+> [  203.454634] BTRFS critical (device sdc3): corrupt leaf: root=7
+> block=371567214592 slot=0, unexpected item end, have 16315 expect 16283
+> [  203.454636] BTRFS error (device sdc3): block=371567214592 read time
+> tree block corruption detected
+> [  203.455794] BTRFS critical (device sdc3): corrupt leaf: root=7
+> block=371567214592 slot=0, unexpected item end, have 16315 expect 16283
+
+16315=0x3fbb, 16283=0x3f9b, 16315^16283 = 32 or 0x20
+
+11111110111011
+11111110011011
+        ^
+
+Do a RAM test for as long as you can tolerate it, or it finds the
+defect. Sometimes they show up quickly, other times days.
+
+
+> [  203.455796] BTRFS error (device sdc3): block=371567214592 read time
+> tree block corruption detected
+> [  203.455820] BTRFS: error (device sdc3) in __btrfs_free_extent:3105:
+> errno=-5 IO failure
+> [  203.455823] BTRFS: error (device sdc3) in
+> btrfs_run_delayed_refs:2208: errno=-5 IO failure
+> [  203.455833] BTRFS: error (device sdc3) in btrfs_replay_log:2287:
+> errno=-5 IO failure (Failed to recover log tree)
+> [  203.747758] BTRFS error (device sdc3): open_ctree failed
+>
+>
+> I've looked for, but can't find, any bad blocks on the devices. Also, if
+> it adds any info...
+>
+> # btrfs check --readonly /dev/sda3
+> Opening filesystem to check...
+> warning, device 3 is missing
+> checksum verify failed on 371587727360 found 000000FF wanted 00000049
+> checksum verify failed on 371587727360 found 00000005 wanted 00000010
+> checksum verify failed on 371587727360 found 00000005 wanted 00000010
+> bad tree block 371587727360, bytenr mismatch, want=371587727360,
+> have=1076190010624
+> ERROR: could not setup extent tree
+> ERROR: cannot open file system
+>
+>
+> Note: I'm running this off of System Rescue 7.01, which has earlier
+> versions of things than what the machine in question has installed (the
+> latter being Linux 5.10.16, with btrfs-progs v5.10.1).
+>
+> # uname -a
+> Linux sysrescue 5.4.78-1-lts #1 SMP Wed, 18 Nov 2020 19:51:49 +0000
+> x86_64 GNU/Linux
+> # btrfs --version
+> btrfs-progs v5.4.1
+> # btrfs filesystem show
+> Label: 'vroot2020'  uuid: 5214d903-783a-4d14-ac78-046da5ac1db7
+>         Total devices 4 FS bytes used 65.98GiB
+>         devid    0 size 457.64GiB used 39.53GiB path /dev/sdc3
+>         devid    1 size 457.64GiB used 39.56GiB path /dev/sda3
+>         devid    2 size 457.64GiB used 39.56GiB path /dev/sdb3
+>         devid    4 size 457.64GiB used 39.53GiB path /dev/sdd3
+
+
+This is confusing. devid 3 is claimed to be missing, but fi show isn't
+showing any missing devices. If none of sd[abcd] are devid 3, then
+what dev node is devid 3 and where is it?
+
+But yeah you're probably best off not trying to fix this file system
+until the memory is sorted out.
+
+
+-- 
+Chris Murphy
