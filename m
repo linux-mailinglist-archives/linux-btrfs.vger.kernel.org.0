@@ -2,69 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067FD31FE65
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 18:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF71D31FEA1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 19:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhBSRyA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Feb 2021 12:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhBSRx4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:53:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5F3C061756;
-        Fri, 19 Feb 2021 09:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DpJIXqTDzO/x763liA6RQLEdv/ADHIQ+yoQ4Md32Szw=; b=U5N1GpYMNHkrngFmVypkXI6b3a
-        XMTJJ3wGoaMJhaACv43pIp8/ZgYdjJaCFmAJv4lgLp74qh3qvaEE213+F+B7e3E09vqDduP9JayTA
-        AqSYnZ0VQ3dL+hx7DQRt/xqWGByHvkVFrjzPrpc2acnYR2LF+kgzdS3yT1rnEF74fQRSfUL/SSUgb
-        kjaO/Tl3m4SCyIZpOQj5nhwTe++Jh8KtO8+7zTb8vD5GYwCdLLCLG6fFD9MsC16vXWZXYbOo7bcMK
-        v3X4/1fGfx8q+QrK+NP5Tp2IooRQiTFIEMjtYfIvgQMaWj78kLsCkmEeuRydFnTFBYJdxMiLRp3AZ
-        1+KPicmw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lD9vo-00382g-Sz; Fri, 19 Feb 2021 17:51:31 +0000
-Date:   Fri, 19 Feb 2021 17:51:08 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Erik Jensen <erikjensen@rkjnsn.net>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: page->index limitation on 32bit system?
-Message-ID: <20210219175108.GV2858050@casper.infradead.org>
-References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com>
- <20210218121503.GQ2858050@casper.infradead.org>
- <927c018f-c951-c44c-698b-cb76d15d67bb@rkjnsn.net>
- <20210219142201.GU2858050@casper.infradead.org>
+        id S229546AbhBSSOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Feb 2021 13:14:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhBSSO2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Feb 2021 13:14:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EEDBFABAE;
+        Fri, 19 Feb 2021 18:13:46 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 80E5EDA6FC; Fri, 19 Feb 2021 19:11:49 +0100 (CET)
+Date:   Fri, 19 Feb 2021 19:11:49 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
+Subject: Re: [PATCH v3] btrfs-progs: filesystem-resize: make output more
+ readable
+Message-ID: <20210219181149.GI1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210219171818.10170-1-realwakka@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219142201.GU2858050@casper.infradead.org>
+In-Reply-To: <20210219171818.10170-1-realwakka@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 02:22:01PM +0000, Matthew Wilcox wrote:
-> In the last decade, nobody's tried to fix it in mainline that I know of.
-> As I said, some vendors have tried to fix it in their NAS products,
-> but I don't know where to find that patch any more.
+On Fri, Feb 19, 2021 at 05:18:18PM +0000, Sidong Yang wrote:
+> This patch make output of filesystem-resize command more readable and
+> give detail information for users. This patch provides more information
+> about filesystem like below.
+> 
+> Before:
+> Resize '/mnt' of '1:-1G'
+> 
+> After:
+> Resize device id 1 (/dev/vdb) from 4.00GiB to 3.00GiB
+> 
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
 
-Arnd found it for me.
+Code-wise it looks good, but I tried a simple test and it does not work:
 
-https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/alpine-source/linux-3.10.x-bsp.txz/download
+# truncate -s 4g image
+# mkfs.btrfs image
+# mount -o loop image mnt
+# btrfs fi resize -1G mnt
+ERROR: cannot find devid: 0
 
-They've done a perfect job of making the source available while making it
-utterly dreadful to extract anything useful from.
-
- 16084 files changed, 1322769 insertions(+), 285257 deletions(-)
-
-It's full of gratuitous whitespace changes to files that definitely
-aren't used (arch/alpha?  really?) and they've stripped out a lot of
-comments that they didn't need to touch.
-
-Forward porting a patch from 10 years ago wouldn't be easy, even if
-they hadn't tried very hard to obfuscate their patch.  I don't think
-this will be a fruitful line of inquiry.
+while running the same command with the installed system 'btrfs' resizes
+the fs: "Resize '.' of '-1G'".
