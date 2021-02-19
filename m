@@ -2,174 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E15731F333
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 00:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826DA31F34A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 01:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhBRX6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Feb 2021 18:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhBRX6U (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Feb 2021 18:58:20 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D54C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 15:57:39 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id a132so5228799wmc.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 15:57:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z5qqSqK/SoOLw+TsCqefUyjPihEfTtVASAB1PPVQtpg=;
-        b=aM+FQIxjy0v5OvnTqCOA4fXI3Haz+CqAcjxQK5tOHmMDUD9SwLqoCxg6CM4HDs5t+8
-         FoeElCJLKPayAc/1dgvEc8zQS2cHbZhx/w3exZTjMKqF3/pfabb8InJSRx2K2hfAqOwV
-         S58Jo7bS7Ei9hWDPwBkX7yXpZZ6xc4vGN48zo/RYnFWvElbYML5RCQSaFr0m3vtl6/Sz
-         PvrylZaL4wT+sH5etTPumKi7+nj3UUBf+VXI5FNWst8A8a/PBrjbVJZjADEENDNe/Zs+
-         Ygty6gbA4+AhIgGeAIpv59bNJwZehfOIIDFwGf2VYphf7Zn0Ur9P0e0GNoaYSzZizfZs
-         2fsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z5qqSqK/SoOLw+TsCqefUyjPihEfTtVASAB1PPVQtpg=;
-        b=Q7aJqp9pinJoDGOENR6YxyCXHXDFjUdmMWh8SdVTyf7GqJAGkAP62sPCN3uxmnkwWs
-         HrU6UScnHU7yNV4BvpaWK0QQA9vFZT2RYMG3gEpTzsSbIz96iogm+ScrMUmDkr/PVsq0
-         MYlr7cvlb3ybr+032Jv81pfe0vAPdRGHieat7dfKRNKmMXXPPVF9kdeAYG/Uada5LL5L
-         BFzTFkGnSv+qHRQbH2vzpynaaVf49Z/nc9EkCWXmZkRuU9fah7SJktQJ3eGfQKPRaBvn
-         HcN4CqDR5PdSvtJKJQw5pR/J0mpQaQwhxbmqnEjrX4CGU2xObUmFfOtBi4dxxnHZVlRi
-         FTrA==
-X-Gm-Message-State: AOAM5311Lo79d/rbSu+HGqdk/IJM3HI26OpmTkqn5uyiCYV90dTAR10G
-        hBterMy16aKkY5t/jvQU3JJLAuOvZ9wx+jXcN2g/dw==
-X-Google-Smtp-Source: ABdhPJwGbhyA1RGQKlWrdZVZbGAeP6WI7plVOXhAQLWSYsgVLD72DCWA/9LxmUcKMpUItDbEpI9V0ouozquGMX8WEDQ=
-X-Received: by 2002:a7b:cb58:: with SMTP id v24mr5610512wmj.182.1613692658550;
- Thu, 18 Feb 2021 15:57:38 -0800 (PST)
+        id S229652AbhBSAVP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Feb 2021 19:21:15 -0500
+Received: from mout.gmx.net ([212.227.15.19]:43949 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229468AbhBSAVN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Feb 2021 19:21:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613693980;
+        bh=BCEDHNyssoLjJ9PAp9YC5PKH44pf6vk6zFgTJFAdfwY=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=i/mk9an/3Ww5ICN0BammIX+zdeUGTjzv7J+TMUYWcVXdetusmyKFCu5LzXehhWhZW
+         4xfUCnLdg9MHa3c0dpB2lKV9N+GGn5hn0NSd6y2GQg1cXf+VymkiWr20cVl5n2Syqe
+         L4U+G/Br7HnyfrAu2YK46b4qLyfD9m/8GZymJL3c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mq2nA-1lhKn33FMw-00nCKk; Fri, 19
+ Feb 2021 01:19:40 +0100
+Subject: Re: [PATCH] btrfs: make btrfs_dirty_inode() to always reserve
+ metadata space
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210108053659.87728-1-wqu@suse.com>
+ <fe04fa6f-57b9-546c-1715-ecc97e81fe14@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <9308da0b-a705-1ab4-d44d-2639a0ddb8e5@gmx.com>
+Date:   Fri, 19 Feb 2021 08:19:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <83750bf0-19a8-4f97-155c-b3e36cb227da@gmail.com>
-In-Reply-To: <83750bf0-19a8-4f97-155c-b3e36cb227da@gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 18 Feb 2021 16:57:22 -0700
-Message-ID: <CAJCQCtQGyHJjPwmKxwxCBptfeb0jgdgyEXF=qvGf-1HBDvX1=w@mail.gmail.com>
-Subject: Re: corrupt leaf, unexpected item end, unmountable
-To:     Daniel Dawson <danielcdawson@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <fe04fa6f-57b9-546c-1715-ecc97e81fe14@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:z4bBI4tgvKgmjQ/ANzI/TF3UHVtzcZhDD2516nNTVK38pvxElhs
+ SGagMRJmRVErhA5TOmd6q5j3gO6m2mPMbEXaRJREXZ45KaTNZdLwXqdh8P147DCQReai37I
+ DMKEAAPNfHkiFx3je0CB9QqPDC622cevpQXgkfn8amOnhzoegEfPwVxmX7Gkm/0l6hNd+7h
+ TCppQsoD4uTP93YsUyXzg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wNDDrUabgSQ=:q1cRYcZzmPvKG+n4LVZ4V8
+ ZbK7ztojqGl70dTrkJoWQubIbF4wkBL3var+oEnAtU5xNHer0phjQc8USdpJwsGWTLtedE4SN
+ w785S/kV0nGzhCCgYFZluqS/b1/ta8ZHtKyW4gvCUYrmAZ0qDLCA8g2WUswE2E0McQdT/y0e1
+ gJ1ctkVddYyrBwkASEWVzpEBeq1cUBu6Hh/BA6D8QK/9HBr6rxn7FjCA6U8eOxQV5dj9gdX5L
+ KiKHXXWYeXx4loXF6i8wu/UN7HveYM3yftX3xInuzD5bp3vNgihCqSjmq2nCYrYhkonUFFooR
+ nvH4Hzg9yNK8PNLgg1j0FLA4NMw7grIYpqa1u0KdaJh3CbhbsuTz8mZOzBLRaWE0wsxTMRBvC
+ zyntiP2odkpPpWfUQZe4flUaI5Z1tooWDfnzinHpy6/L1glYjEZn5pe7v990RUUtK/MMyCB6w
+ OFDu3FQ0TqqPfWUsgRiI2oGJP0LuzJnZ1GSosPpoxEbBhhKtEBcD8irzhVqvZT4JdpC+Mg2XI
+ qRx0HnssCzP3pYMV9m7G6gwE4vrl1qHhrBYw2ZoW0jUDStICLup6NP5LbIRaF3cYjTSzxImAu
+ /rJBzM266NNTn0K2mNY65EdodmDm3GLtiQvTEHZV0+kkFIn2cIJdziInW5bKsgdKO3mY2rucQ
+ W7mFMckZ4+lMXktQlCiYF02X24n6CmduXeiq+xYwZz1d1K0tDFqzNUx/H9TLo57SwrAN+E3vJ
+ Z26KjdkR7w/e5wUZcfNIOeaNmhqOkV/tUeHDDyZd147UaJxIP4oRWv6bqd/i19USByJ5HU5CV
+ WEf41fsSacsdU6yAACcyNS2P+WmsAfqSMdqKhQ0bZF7hMjNCS5BiYicUyLQhOieCkpG1qTnS4
+ m+5gOUT3J4uemEjXxkWQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 7:43 PM Daniel Dawson <danielcdawson@gmail.com> wrote:
->
-> I was attempting to replace the drives in an array with RAID6 profile.
-
-metadata raid6 as well?
-
-What replacement command(s) are you using?
 
 
-> The first replacement was seemingly successful (and there was a scrub
-> afterward, with no errors). However, about 0.6% into the second
-> replacement (sdc), something went wrong, and it went read-only (I should
-> have copied the log of that somehow). Now it refuses to mount, and a
-> (readonly) check cannot get started.
+On 2021/2/18 =E4=B8=8B=E5=8D=8811:28, Nikolay Borisov wrote:
 >
 >
-> # mount -o ro,degraded /dev/sda3 /mnt
-> mount: /mnt: can't read superblock on /dev/sda3.
-> # btrfs rescue super-recover /dev/sda3
-> All supers are valid, no need to recover
+> On 8.01.21 =D0=B3. 7:36 =D1=87., Qu Wenruo wrote:
+>> There are several qgroup flush related bugs fixed recently, all of them
+>> are caused by the fact that we can trigger qgroup metadata space
+>> reservation holding a transaction handle.
+>>
+>> Thankfully the only situation to trigger above reservation is
+>> btrfs_dirty_inode().
+>>
+>> Currently btrfs_dirty_inode() will try join transactio first, then
+>> update the inode.
+>> If btrfs_update_inode() fails with -ENOSPC, then it retry to start
+>> transaction to reserve metadata space.
+>>
+>> This not only forces us to reserve metadata space with a transaction
+>> handle hold, but can't handle other errors like -EDQUOT.
+>>
+>> This patch will make btrfs_dirty_inode() to call
+>> btrfs_start_transaction() directly without first try joining then
+>> starting, so that in try_flush_qgroup() we won't hold a trans handle.
+>>
+>> This will slow down btrfs_dirty_inode() but my fstests doesn't show too
+>> much different for most test cases, thus it may be worthy to skip such
+>> performance "optimization".
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >
 >
-> For this, dmesg shows:
->
-> [  202.675384] BTRFS info (device sdc3): allowing degraded mounts
-> [  202.675387] BTRFS info (device sdc3): disk space caching is enabled
-> [  202.675389] BTRFS info (device sdc3): has skinny extents
-> [  202.676302] BTRFS warning (device sdc3): devid 3 uuid
-> 911a642e-0a4c-4483-9a1f-cde7b87c5519 is missing
-> [  202.676601] BTRFS warning (device sdc3): devid 3 uuid
-> 911a642e-0a4c-4483-9a1f-cde7b87c5519 is missing
-
-What device is devid 3?
-
-
-> [  202.985528] BTRFS info (device sdc3): bdev /dev/sdb3 errs: wr 0, rd
-> 0, flush 0, corrupt 26, gen 0
-> [  202.985533] BTRFS info (device sdc3): bdev /dev/sdd3 errs: wr 0, rd
-> 0, flush 0, corrupt 98, gen 0
-> [  203.278131] BTRFS info (device sdc3): start tree-log replay
-> [  203.454496] BTRFS critical (device sdc3): corrupt leaf: root=7
-> block=371567214592 slot=0, unexpected item end, have 16315 expect 16283
-> [  203.454499] BTRFS error (device sdc3): block=371567214592 read time
-> tree block corruption detected
-> [  203.454634] BTRFS critical (device sdc3): corrupt leaf: root=7
-> block=371567214592 slot=0, unexpected item end, have 16315 expect 16283
-> [  203.454636] BTRFS error (device sdc3): block=371567214592 read time
-> tree block corruption detected
-> [  203.455794] BTRFS critical (device sdc3): corrupt leaf: root=7
-> block=371567214592 slot=0, unexpected item end, have 16315 expect 16283
-
-16315=0x3fbb, 16283=0x3f9b, 16315^16283 = 32 or 0x20
-
-11111110111011
-11111110011011
-        ^
-
-Do a RAM test for as long as you can tolerate it, or it finds the
-defect. Sometimes they show up quickly, other times days.
-
-
-> [  203.455796] BTRFS error (device sdc3): block=371567214592 read time
-> tree block corruption detected
-> [  203.455820] BTRFS: error (device sdc3) in __btrfs_free_extent:3105:
-> errno=-5 IO failure
-> [  203.455823] BTRFS: error (device sdc3) in
-> btrfs_run_delayed_refs:2208: errno=-5 IO failure
-> [  203.455833] BTRFS: error (device sdc3) in btrfs_replay_log:2287:
-> errno=-5 IO failure (Failed to recover log tree)
-> [  203.747758] BTRFS error (device sdc3): open_ctree failed
+> Ok I actually run 2 tests against this patch. The first one is a 10
+> second run of  stress-ng's utime test (stress-ng --temp-path
+> /media/scratch --utime 4 -M -t 10 ; done) to see if I can reproduce
+> intel's results and here's what I found:
 >
 >
-> I've looked for, but can't find, any bad blocks on the devices. Also, if
-> it adds any info...
+> bogo ops/s real (Before-patch)	bogo ops/s real (After Patch)
+> 	35993	                         32968
+> 	35712	                         33146
+> 	35369	                         32996
+> 	35544	                         33159
+> 	35623	                         33000
+> 	35939	                         33016
+> 	35693	                         32829
+> 	35562	                         32685
+> 	35675	                         32815
+> Std dev	182.161981912585	146.829034703967
+> HMean	35677.9600871036	32957.1111111111
+> Diff%:		                -7.626
 >
-> # btrfs check --readonly /dev/sda3
-> Opening filesystem to check...
-> warning, device 3 is missing
-> checksum verify failed on 371587727360 found 000000FF wanted 00000049
-> checksum verify failed on 371587727360 found 00000005 wanted 00000010
-> checksum verify failed on 371587727360 found 00000005 wanted 00000010
-> bad tree block 371587727360, bytenr mismatch, want=371587727360,
-> have=1076190010624
-> ERROR: could not setup extent tree
-> ERROR: cannot open file system
+> So there's a 7.6% decrease in the rate of utime() calls we can make,
+> given that we now start a transaction I'd say that's expected.
+>
+> The other test was a randwrite with fio as I was mostly worried that
+> making btrfs_dirty_inode more expensive would hit write performance
+> since file_update_times is called from the generic iter. But inspecting
+> the code btrfs uses update_time_for_write which doesn't dirty the inode
+> per-se as this is deferred to endio completion time.  I also measured
+> the impact during buffered read time as file_accessed is called a lot of
+> times but the following bpftrace script:
+>
+> BEGIN {@execs =3D 0; }
+> kprobe:btrfs_dirty_inode
+> {
+> 	@test[kstack] =3D count();
+> 	@execs++;
+> }
+>
+> kprobe:touch_atime
+> {
+> 	@test[kstack] =3D count();
+> }
+> END{
+> 	printf("Total btrfs_dirty_inode calls: %llu\n", @execs);
+> }
 >
 >
-> Note: I'm running this off of System Rescue 7.01, which has earlier
-> versions of things than what the machine in question has installed (the
-> latter being Linux 5.10.16, with btrfs-progs v5.10.1).
+> confirmed we only ever execute around 8 btrfs_dirty_inode out of 1048773
+> execution of touch_atimes from generic_file_buffered_read with the
+> following fio workload:
 >
-> # uname -a
-> Linux sysrescue 5.4.78-1-lts #1 SMP Wed, 18 Nov 2020 19:51:49 +0000
-> x86_64 GNU/Linux
-> # btrfs --version
-> btrfs-progs v5.4.1
-> # btrfs filesystem show
-> Label: 'vroot2020'  uuid: 5214d903-783a-4d14-ac78-046da5ac1db7
->         Total devices 4 FS bytes used 65.98GiB
->         devid    0 size 457.64GiB used 39.53GiB path /dev/sdc3
->         devid    1 size 457.64GiB used 39.56GiB path /dev/sda3
->         devid    2 size 457.64GiB used 39.56GiB path /dev/sdb3
->         devid    4 size 457.64GiB used 39.53GiB path /dev/sdd3
+> fio --name=3Drandom-readers --thread --ioengine=3Dsync --iodepth=3D4
+> --rw=3Drandread --bs=3D4k --direct=3D0 --size=3D1g --numjobs=3D4
+> --directory=3D/media/scratch --filename_format=3DFioWorkloads.\$jobnum
+> --new_group --group_reporting=3D1
+>
+>
+> So performance-wise I'm inclined to give it a "pass".
+>
+Great. Mind me to add such info into the commit message and add you as sob=
+?
 
-
-This is confusing. devid 3 is claimed to be missing, but fi show isn't
-showing any missing devices. If none of sd[abcd] are devid 3, then
-what dev node is devid 3 and where is it?
-
-But yeah you're probably best off not trying to fix this file system
-until the memory is sorted out.
-
-
--- 
-Chris Murphy
+Thanks,
+Qu
