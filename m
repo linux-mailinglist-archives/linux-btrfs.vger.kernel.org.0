@@ -2,98 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027A131FA7E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 15:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417E931FB64
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 15:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhBSOXz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Feb 2021 09:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhBSOXz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:23:55 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CC3C061574;
-        Fri, 19 Feb 2021 06:23:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wz2Nx7ok9lIMmSB/ZDAfj7FZQpYP3BsNpceZvExmG8g=; b=oJ27mjRsxdwn++86shGQQ0Ca8/
-        OuU2704ESLy2oaUOwstVOYpQPuKy/GEixxBwJx00zH0W7fjw20AY63bV65/Oa0ur4NyzjoWasYihe
-        t4ko8q6a7kGbySkINIkluQrF/ux1c4t4e/wB3a/MW1KwL/zxKbfsY5U0mIIkMesz1qtsOPrBSOBBW
-        SMcPJ2PPdtR2JZSleCxBfkjuN+Fh2QMx7pYzOtDRsL24S1PJRL2Y2HFEFkZXV19sewaSQD1SyOorw
-        21itSWWa8cC/GBLC1dL9BJhUYPs2lMJjckRrI/O6Oz4Akkm1lLkBNyEuPVOuDzs98bdC6jUH7g+Ky
-        zV9MigZA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lD6fR-002xwD-Bj; Fri, 19 Feb 2021 14:22:27 +0000
-Date:   Fri, 19 Feb 2021 14:22:01 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Erik Jensen <erikjensen@rkjnsn.net>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: page->index limitation on 32bit system?
-Message-ID: <20210219142201.GU2858050@casper.infradead.org>
-References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com>
- <20210218121503.GQ2858050@casper.infradead.org>
- <927c018f-c951-c44c-698b-cb76d15d67bb@rkjnsn.net>
+        id S229649AbhBSOvw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Feb 2021 09:51:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60892 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229998AbhBSOu4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:50:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E46F2ACBF;
+        Fri, 19 Feb 2021 14:50:14 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 83CD3DA6EF; Fri, 19 Feb 2021 15:48:17 +0100 (CET)
+Date:   Fri, 19 Feb 2021 15:48:17 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz, kernel-team@fb.com
+Subject: Re: [PATCH 0/3] btrfs-progs: rescue: Add create-control-device
+ subcommand
+Message-ID: <20210219144817.GD1993@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Daniel Xu <dxu@dxuuu.xyz>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1604013169.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <927c018f-c951-c44c-698b-cb76d15d67bb@rkjnsn.net>
+In-Reply-To: <cover.1604013169.git.dxu@dxuuu.xyz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 01:27:09PM -0800, Erik Jensen wrote:
-> On 2/18/21 4:15 AM, Matthew Wilcox wrote:
+On Thu, Oct 29, 2020 at 04:17:35PM -0700, Daniel Xu wrote:
+> This patchset adds a new `btrfs rescue create-control-device` subcommand
+> that acts as a convenient way to invoke:
 > 
-> > On Thu, Feb 18, 2021 at 04:54:46PM +0800, Qu Wenruo wrote:
-> > > Recently we got a strange bug report that, one 32bit systems like armv6
-> > > or non-64bit x86, certain large btrfs can't be mounted.
-> > > 
-> > > It turns out that, since page->index is just unsigned long, and on 32bit
-> > > systemts, that can just be 32bit.
-> > > 
-> > > And when filesystems is utilizing any page offset over 4T, page->index
-> > > get truncated, causing various problems.
-> > 4TB?  I think you mean 16TB (4kB * 4GB)
-> > 
-> > Yes, this is a known limitation.  Some vendors have gone to the trouble
-> > of introducing a new page_index_t.  I'm not convinced this is a problem
-> > worth solving.  There are very few 32-bit systems with this much storage
-> > on a single partition (everything should work fine if you take a 20TB
-> > drive and partition it into two 10TB partitions).
-> For what it's worth, I'm the reporter of the original bug. My use case is a
-> custom NAS system. It runs on a 32-bit ARM processor, and has 5 8TB drives,
-> which I'd like to use as a single, unified storage array. I chose btrfs for
-> this project due to the filesystem-integrated snapshots and checksums.
-> Currently, I'm working around this issue by exporting the raw drives using
-> nbd and mounting them on a 64-bit system to access the filesystem, but this
-> is very inconvenient, only allows one machine to access the filesystem at a
-> time, and prevents running any tools that need access to the filesystem
-> (such as backup and file sync utilities) on the NAS itself.
+> 	# mknod --mode=600 c 10 234 /dev/btrfs-control
 > 
-> It sounds like this limitation would also prevent me from trying to use a
-> different filesystem on top of software RAID, since in that case the logical
-> filesystem would still be over 16TB.
-> 
-> > As usual, the best solution is for people to stop buying 32-bit systems.
-> I purchased this device in 2018, so it's not exactly ancient. At the time,
-> it was the only SBC I could find that was low power, used ECC RAM, had a
-> crypto accelerator, and had multiple sata ports with port-multiplier
-> support.
+> on systems that don't have `mknod` installed or when you're lazy.
 
-I'm sorry you bought unsupported hardware.
+Well, I don't think the part 'lazy' applies.
 
-This limitation has been known since at least 2009:
-https://lore.kernel.org/lkml/19041.4714.686158.130252@notabene.brown/
+The whole thing with the control device is simpler that I originally
+thought. On a system without loaded btrfs module there's no
+/dev/btrfs-control. This is correct because the device node is created
+at load time or when btrfs_interface_init is called.
 
-In the last decade, nobody's tried to fix it in mainline that I know of.
-As I said, some vendors have tried to fix it in their NAS products,
-but I don't know where to find that patch any more.
+Creating just the device node makes no sense because there's nothing
+handling it. Once module is loaded it appears and works as expected.
 
-https://bootlin.com/blog/large-page-support-for-nas-systems-on-32-bit-arm/
-might help you, but btrfs might still contain assumptions that will trip
-you up.
+The only case where the rescue command makes sense is when the module is
+loaded, device node creatd and then manually deleted. This is possible
+but highly unlikely. For that reason the rescue command still has some
+sense but the reasoning needs to reflect how it's related to the module
+status.
+
+As this is docs update only, I'll fix that myself, no need to resend.
