@@ -2,119 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEEA31FBA2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 16:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE5131FBE3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 16:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbhBSPE2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Feb 2021 10:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhBSPEO (ORCPT
+        id S229766AbhBSPVh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Feb 2021 10:21:37 -0500
+Received: from out20-110.mail.aliyun.com ([115.124.20.110]:49770 "EHLO
+        out20-110.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhBSPVe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:04:14 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD319C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 07:03:31 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id ba1so3523293plb.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 07:03:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=znTzbqFTaXxlyZ4X5JmsabF5FMFcaQRUUyVTExfdb50=;
-        b=D3joHeUA4zQBPXF6DDmWOxvlDoiDxA+/HQK+GAmWB/zEXcpiWJOBp1LRKG7QYyg0ib
-         Nr0fpLAHcBLB3a85/l43oCGOso4WksA8WwHPM7sBqiPghMVTzvTJzEJ14ap+bpK6Ny2x
-         fM5Xnfc9bheAUYl+iuX46/lWeZZUBKF6syFO2q9/2PwjCz3j4zWQl4mEyz/g0G8wGgoI
-         XdfLqcUTrKTe0M5hdpnt5fVzKq6NJn4BKwcg4tv2wg+Jkxbi0D2tLUUqIwFa40lercV0
-         YQIr6AoKxdiMMLZ+uIRx/C56tcCHJV91Ho5SZ5xUq/eC/3lhgULmQZ4NEuMBBCYTMW/A
-         E4Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=znTzbqFTaXxlyZ4X5JmsabF5FMFcaQRUUyVTExfdb50=;
-        b=UEQCzTmtSWbSZ9U1pug6WOq9XQymRhNaQLpA+qhs8HOlPDXMNd9ECNeDzB7oBsCSQR
-         xxC2NhwlrF8rzsDegYhqNBc6AVPaVkCGgWdKFuciPa0yJ4IXPWa3CR4Q9rOFrpx+bwYI
-         p+wTts1Ts56S7fUd+M3Gi/OCN0MgU2qZp7j0K6c/cWMsciz7WRpC6Y5BYcI/EI+PHVMM
-         g/txrnogCtXgT4obU7RyhYMtWkqsVF44irTBGz4R4M6797ukQ+25QrEulVaiJrXVSzh/
-         wJQj4MINys7NZPUB854NA2deqTA7oxIBj1wMqEAjCOhH4fR17dn9O+WN1NRvsF8LUZfz
-         fylQ==
-X-Gm-Message-State: AOAM530uP395c0xzg0YoQZHAEBFn8h0imomFLHJChUhX+08ri+k8TaFo
-        T28O0WRF8WFq5c5okktu/UkCbgSEHZM=
-X-Google-Smtp-Source: ABdhPJzRJEXuWIkvP12fqXRUji+lb9E9wvFThEPumgra33xNXAalmyW2x3Ib7tZXvniGoxWywWoNqQ==
-X-Received: by 2002:a17:90b:3596:: with SMTP id mm22mr1407579pjb.73.1613747010986;
-        Fri, 19 Feb 2021 07:03:30 -0800 (PST)
-Received: from ddawson.local ([2602:ae:1f30:4900:7285:c2ff:fe89:df61])
-        by smtp.gmail.com with ESMTPSA id np7sm8460742pjb.10.2021.02.19.07.03.30
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 07:03:30 -0800 (PST)
-Received: from localhost.local ([::1] helo=ddawson.local)
-        by ddawson.local with esmtp (Exim 4.94)
-        (envelope-from <danielcdawson@gmail.com>)
-        id 1lD7JZ-0005LN-JA
-        for linux-btrfs@vger.kernel.org; Fri, 19 Feb 2021 07:03:29 -0800
-From:   Daniel Dawson <danielcdawson@gmail.com>
-Subject: Re: corrupt leaf, unexpected item end, unmountable
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <83750bf0-19a8-4f97-155c-b3e36cb227da@gmail.com>
- <CAJCQCtQGyHJjPwmKxwxCBptfeb0jgdgyEXF=qvGf-1HBDvX1=w@mail.gmail.com>
- <80058635-0bd9-05cc-2f5e-b4986a065be3@gmail.com>
- <CAJCQCtTCKSC46kNaoENdEpCNTxB1_MeD6PHwbmtRnJdbGWBswA@mail.gmail.com>
-Message-ID: <31ab01c3-ab49-4528-d73e-e90da28d4e67@gmail.com>
-Date:   Fri, 19 Feb 2021 07:03:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Feb 2021 10:21:34 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.05383348|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0939308-0.000954575-0.905115;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Jae6Omv_1613748044;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Jae6Omv_1613748044)
+          by smtp.aliyun-inc.com(10.147.44.129);
+          Fri, 19 Feb 2021 23:20:45 +0800
+Date:   Fri, 19 Feb 2021 23:20:51 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Holger Hoffst?tte <holger@applied-asynchrony.com>
+Subject: Re: error in backport of 'btrfs: fix possible free space tree corruption with online conversion'
+Cc:     josef@toxicpanda.com, linux-btrfs@vger.kernel.org
+In-Reply-To: <d07905be-f714-3cbd-01c7-d348ea13c07e@applied-asynchrony.com>
+References: <20210219111741.95DD.409509F4@e16-tech.com> <d07905be-f714-3cbd-01c7-d348ea13c07e@applied-asynchrony.com>
+Message-Id: <20210219232049.554C.409509F4@e16-tech.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTCKSC46kNaoENdEpCNTxB1_MeD6PHwbmtRnJdbGWBswA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 8bit
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/18/21 9:03 PM, Chris Murphy wrote:
-> Once everything else is figured out, you should consider converting
-> metadata to raid1c3.
+Hi,
 
-Got it.
+> On 2021-02-19 04:17, Wang Yugui wrote:
+> > Hi, Josef Bacik
+> >
+> > We noticed an error in 5.10.x backport of 'btrfs: fix possible free
+> > space tree corruption with online conversion'
+> >
+> > It is wrong in 5.10.13, but right in 5.11.
+> >
+> > 5.10.13
+> > @@ -146,6 +146,9 @@ enum {
+> >   	BTRFS_FS_STATE_DEV_REPLACING,
+> >   	/* The btrfs_fs_info created for self-tests */
+> >   	BTRFS_FS_STATE_DUMMY_FS_INFO,
+> > +
+> > +	/* Indicate that we can't trust the free space tree for caching yet */
+> > +	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
+> >   };
+> >
+> > the usage sample of this enum:
+> > set_bit(BTRFS_FS_STATE_DUMMY_FS_INFO, &fs_info->fs_state);
+> >
+> >
+> > 5.11
+> > enum{
+> > ..
+> >      /* Indicate that the discard workqueue can service discards. */
+> >      BTRFS_FS_DISCARD_RUNNING,
+> >
+> >      /* Indicate that we need to cleanup space cache v1 */
+> >      BTRFS_FS_CLEANUP_SPACE_CACHE_V1,
+> >
+> >      /* Indicate that we can't trust the free space tree for caching yet */
+> >      BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
+> > };
+> >
+> > the usage sample of this enum:
+> > set_bit(BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED, &fs_info->flags);
+> > 
+> Out of curiosity I decided to check how this happened, but don't see it.
+> Here is the commit that went into 5.10.13 and it looks correct to me:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.10.y&id=2175bf57dc9522c58d93dcd474758434a3f05c57
 
-> The new replacement is devid 0 during the replacement. The drive being
-> replaced keeps its devid until the end, and then there's a switch,
-> that device is removed, and the signature on the old drive is wiped.
-> Sooo.... something is still wrong with the above because there's no
-> devid 3, there's kernel and btrfs check messages saying devid 3 is
-> missing.
->
-> It doesn't seem likely that /dev/sdc3 is devid 3 because it can't be
-> both missing and be the mounted dev node.
+> The patch that went into 5.10 looks identical to the original commit in 5.11.
+> What tree are you looking at?
 
-It seems I was unclear. I removed the old drive prior to the
-replacement, hence degraded mode.
+the 5.10.y is the URL that you point out.
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.10.y&id=2175bf57dc9522c58d93dcd474758434a3f05c57
 
-A while ago, I imaged the drives, to see what I could do without risk
-(on another machine). Turns out I was able to mount the filesystem using
--o ro,nologreplay,degraded and copy almost all files. A small number
-were unreadable/un-stat-able. Fortunately nothing critical, though the
-OS may well be unusable.
+but the right one for 5.11 is
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/btrfs?id=2f96e40212d435b328459ba6b3956395eed8fa9f
 
-(Also, in case you were wondering, memory testing has revealed no errors
-so far.)
+5.11:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/btrfs?id=2f96e40212d435b328459ba6b3956395eed8fa9f
 
-> If a tree log is damaged and prevents mount then, you need to make a
-> calculation. You can try to mount with ro,nologreplay and freshen
-> backups for anything you'd rather not lose - just in case things get
-> worse. And then you can zero the log and see if that'll let you
-> normally mount the device (i.e. rw and not degraded). But some of it
-> will depend on what's wrong.
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 0225c5208f44c..47ca8edafb5e6 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -564,6 +564,9 @@ enum {
+ 
+ 	/* Indicate that we need to cleanup space cache v1 */
+ 	BTRFS_FS_CLEANUP_SPACE_CACHE_V1,
++
++	/* Indicate that we can't trust the free space tree for caching yet */
++	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
+ };
+ 
+ /*
 
-That doesn't work. It gives the same errors as when I tried to run
-check, but repeated once each for extent tree and device tree. It just
-can't get past this problem.
+but 5.10.y:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.10.y&id=2175bf57dc9522c58d93dcd474758434a3f05c57
 
-At this point, I think it's best to just reinstall with a fresh
-filesystem, and not make the same mistakes. Thanks for the help, once again.
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index e01545538e07f..30ea9780725ff 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -146,6 +146,9 @@ enum {
+ 	BTRFS_FS_STATE_DEV_REPLACING,
+ 	/* The btrfs_fs_info created for self-tests */
+ 	BTRFS_FS_STATE_DUMMY_FS_INFO,
++
++	/* Indicate that we can't trust the free space tree for caching yet */
++	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
+ };
+ 
+ #define BTRFS_BACKREF_REV_MAX		256
+
+Both the line(Line:146 vs Line:564) and the content are wrong.
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/02/19
 
 
