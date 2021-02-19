@@ -2,214 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13BE31FA14
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 14:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CD731FA46
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 15:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhBSNrB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Feb 2021 08:47:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54676 "EHLO mx2.suse.de"
+        id S230091AbhBSOHk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Feb 2021 09:07:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52882 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229799AbhBSNq6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:46:58 -0500
+        id S229998AbhBSOHj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:07:39 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1249DAC6E;
-        Fri, 19 Feb 2021 13:46:17 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5776DAC6E;
+        Fri, 19 Feb 2021 14:06:58 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A0F2CDA813; Fri, 19 Feb 2021 14:44:19 +0100 (CET)
-Date:   Fri, 19 Feb 2021 14:44:19 +0100
+        id E0536DA813; Fri, 19 Feb 2021 15:05:00 +0100 (CET)
+Date:   Fri, 19 Feb 2021 15:05:00 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: filesystem-resize: make output more
- readable
-Message-ID: <20210219134419.GA1993@twin.jikos.cz>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     linux-btrfs@vger.kernel.org, u-boot@lists.denx.de,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Tom Rini <trini@konsulko.com>
+Subject: Re: [PATCH btrfs-progs] btrfs-progs: do not fail when offset of a
+ ROOT_ITEM is not -1
+Message-ID: <20210219140500.GB1993@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210123153720.4294-1-realwakka@gmail.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        linux-btrfs@vger.kernel.org, u-boot@lists.denx.de,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Tom Rini <trini@konsulko.com>
+References: <20210209173406.16691-1-marek.behun@nic.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210123153720.4294-1-realwakka@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210209173406.16691-1-marek.behun@nic.cz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 03:37:20PM +0000, Sidong Yang wrote:
-> This patch make output of filesystem-resize command more readable and
-> give detail information for users. This patch provides more information
-> about filesystem like below.
+On Tue, Feb 09, 2021 at 06:34:06PM +0100, Marek Behún wrote:
+> When the btrfs_read_fs_root() function is searching a ROOT_ITEM with
+> location key offset other than -1, it currently fails via BUG_ON.
 > 
-> Before:
-> Resize '/mnt' of '1:-1G'
+> The offset can have other value than -1, though. This can happen for
+> example if a subvolume is renamed:
 > 
-> After:
-> Resize device id 1 (/dev/vdb) from 4.00GiB to 3.00GiB
+>   $ btrfs subvolume create X && sync
+>   Create subvolume './X'
+>   $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: X$
+>         location key (270 ROOT_ITEM 18446744073709551615) type DIR
+>         transid 283 data_len 0 name_len 1
+>         name: X
+>   $ mv X Y && sync
+>   $ btrfs inspect-internal dump-tree /dev/root | grep -B 2 'name: Y$
+>         location key (270 ROOT_ITEM 0) type DIR
+>         transid 285 data_len 0 name_len 1
+>         name: Y
 > 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> ---
-> v2:
->   - print more detailed error
->   - covers all the possibilities format provides
-> ---
->  cmds/filesystem.c | 112 +++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 111 insertions(+), 1 deletion(-)
+> As can be seen the offset changed from -1ULL to 0.
 > 
-> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-> index ba2e5928..cec3f380 100644
-> --- a/cmds/filesystem.c
-> +++ b/cmds/filesystem.c
-> @@ -28,6 +28,7 @@
->  #include <linux/limits.h>
->  #include <linux/version.h>
->  #include <getopt.h>
-> +#include <limits.h>
->  
->  #include <btrfsutil.h>
->  
-> @@ -1074,6 +1075,109 @@ static const char * const cmd_filesystem_resize_usage[] = {
->  	NULL
->  };
->  
-> +static int check_resize_args(const char *amount, const char *path) {
-> +	struct btrfs_ioctl_fs_info_args fi_args;
-> +	struct btrfs_ioctl_dev_info_args *di_args = NULL;
-> +	int ret, i, devid = 0, dev_idx = -1;
+> Do not fail in this case.
+> 
+> Signed-off-by: Marek Behún <marek.behun@nic.cz>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: Qu Wenruo <wqu@suse.com>
+> Cc: Tom Rini <trini@konsulko.com>
 
-devid should be u64
-
-> +	const char *res_str = NULL;
-> +	char *devstr = NULL, *sizestr = NULL;
-> +	u64 new_size = 0, old_size = 0;
-> +	int mod = 0;
-> +	char amount_dup[BTRFS_VOL_NAME_MAX];
-
-Bffer of a fixed size ...
-
-> +
-> +	ret = get_fs_info(path, &fi_args, &di_args);
-> +
-> +	if (ret) {
-> +		error("unable to retrieve fs info");
-> +		return 1;
-> +	}
-> +
-> +	if (!fi_args.num_devices) {
-> +		error("no devices found");
-> +		free(di_args);
-> +		return 1;
-> +	}
-> +
-> +	strcpy(amount_dup, amount);
-
-... and strcpy from a user specified buffer, this is from chapter 1 of
-how buffer overflows in C work. Please use safe string copy.
-
-> +	devstr = strchr(amount_dup, ':');
-> +	if (devstr) {
-> +		sizestr = devstr + 1;
-> +		*devstr = '\0';
-> +		devstr = amount_dup;
-> +
-> +		errno = 0;
-> +		devid = strtoull(devstr, NULL, 10);
-> +
-> +		if (errno) {
-> +			error("failed to parse devid %s", devstr);
-> +			free(di_args);
-> +			return 1;
-> +		}
-> +	}
-> +
-> +	dev_idx = -1;
-> +	for(i = 0; i < fi_args.num_devices; i++) {
-> +		if (di_args[i].devid == devid) {
-> +			dev_idx = i;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (dev_idx < 0) {
-> +		error("cannot find devid : %d", devid);
-> +		free(di_args);
-> +		return 1;
-> +	}
-> +
-> +	if (!strcmp(sizestr, "max")) {
-> +		res_str = "max";
-> +	}
-> +	else {
-> +		if (sizestr[0] == '-') {
-> +			mod = -1;
-> +			sizestr++;
-> +		} else if (sizestr[0] == '+') {
-> +			mod = 1;
-> +			sizestr++;
-> +		}
-> +		new_size = parse_size(sizestr);
-> +		if (!new_size) {
-> +			error("failed to parse size %s", sizestr);
-> +			free(di_args);
-> +			return 1;
-> +		}
-> +		old_size = di_args[dev_idx].total_bytes;
-> +
-> +		if (mod < 0) {
-> +			if (new_size > old_size) {
-> +				error("current size is %s which is smaller than %s",
-> +				      pretty_size_mode(old_size, UNITS_DEFAULT),
-> +				      pretty_size_mode(new_size, UNITS_DEFAULT));
-> +				free(di_args);
-> +				return 1;
-> +			}
-> +			new_size = old_size - new_size;
-> +		} else if (mod > 0) {
-> +			if (new_size > ULLONG_MAX - old_size) {
-> +				error("increasing %s is out of range",
-> +				      pretty_size_mode(new_size, UNITS_DEFAULT));
-> +				free(di_args);
-> +				return 1;
-> +			}
-> +			new_size = old_size + new_size;
-
-This all got me confused, old_size and new_size sound like absolute
-numbers for the size but new_size is in fact used as the delta, or the
-relative change.
-
-Otherwise looks good.
-
-> +		}
-> +		new_size = round_down(new_size, fi_args.sectorsize);
-> +		res_str = pretty_size_mode(new_size, UNITS_DEFAULT);
-> +	}
-> +
-> +	printf("Resize device id %d (%s) from %s to %s\n", devid, di_args[dev_idx].path,
-> +		pretty_size_mode(di_args[dev_idx].total_bytes, UNITS_DEFAULT),
-> +		res_str);
-> +
-> +	free(di_args);
-> +	return 0;
-> +}
-> +
->  static int cmd_filesystem_resize(const struct cmd_struct *cmd,
->  				 int argc, char **argv)
->  {
-> @@ -1139,7 +1243,13 @@ static int cmd_filesystem_resize(const struct cmd_struct *cmd,
->  		return 1;
->  	}
->  
-> -	printf("Resize '%s' of '%s'\n", path, amount);
-> +	ret = check_resize_args(path, amount);
-> +	if (ret != 0) {
-> +		close_file_or_dir(fd, dirstream);
-> +		return 1;
-> +	}
-> +
-> +
->  	memset(&args, 0, sizeof(args));
->  	strncpy_null(args.name, amount);
->  	res = ioctl(fd, BTRFS_IOC_RESIZE, &args);
-> -- 
-> 2.25.1
+Added to devel, thanks.
