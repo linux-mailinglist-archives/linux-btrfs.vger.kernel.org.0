@@ -2,136 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FC331F35E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 01:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A3931F387
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Feb 2021 02:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhBSAkE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Feb 2021 19:40:04 -0500
-Received: from mout.gmx.net ([212.227.15.18]:35661 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhBSAkD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Feb 2021 19:40:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613695054;
-        bh=pInc6uPG7HB09z6ZvJFfn7PDeFmncjM6F/Zg1GnOzKo=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=ecR9l4bGetmsuPDvxFh93ZR09Ij/zPFLISy/fEKChwk1LgjSqnTm++dc2TTco3Ohl
-         H+qSR8WDGkCT5cjuMavzKIJVvKO3O5fp/rOPUouaOcrA6V3bgTKF0TqI4mzDNddMpc
-         rmepnXj9lgNuIpAT/+DQNStmvXuqDSmzzGJsGx7Y=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Md6Mj-1llPfZ0Mk7-00aFnI; Fri, 19
- Feb 2021 01:37:34 +0100
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com>
- <20210218121503.GQ2858050@casper.infradead.org>
- <af1aac2f-e7dc-76f3-0b3a-4cb36b22247f@gmx.com>
- <20210218133954.GR2858050@casper.infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: page->index limitation on 32bit system?
-Message-ID: <e0faf229-ce7f-70b8-8998-ed7870c702a5@gmx.com>
-Date:   Fri, 19 Feb 2021 08:37:30 +0800
+        id S229620AbhBSBLE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Feb 2021 20:11:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhBSBLD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Feb 2021 20:11:03 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFFCC061756
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 17:10:23 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id j12so2756422pfj.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Feb 2021 17:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=49Bzl/Rksl1aOmlAgXLC8OdYTUcW/2yvs4S03TDO7bU=;
+        b=Joqy2WqRyJiIZEOvfvBTPQzEZU3Dy6PvnRr5edAfrWPXVr4WXGSuct0pKc6EPJ8Dq6
+         KMTDuhdO0CI7BrmijO9hu9QKhXjBTuuyNH7+g++7ZShK2K68lAg2qcxiIpaiuWfTmpxE
+         Unen4ORWwxldRM7DCSPJpsNUXxz4iUJZA3JVXYlNXiGbH6h3A4GwYP0oINvNN4ZvbkJt
+         SC9bV4+fuUkEfH3gvt6PkqyBkRpvrVroz3pONsD+2Fw4GlyGFDOrHcDWTE9aBRkiEoa3
+         C6/WLOFhrbsZwbqpnTnjlaOX3oNZsIVtJiWjOBzHUmFK+/hh9oi+GsTmx4Dswl1dOO6k
+         63Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=49Bzl/Rksl1aOmlAgXLC8OdYTUcW/2yvs4S03TDO7bU=;
+        b=sjIPlI3TpMJTLup4cbCY97f5Y9+d62cUWnJ37Y4Pc+wNwfuAfYgZ23kMgdXUrcQoZf
+         //NzjUmZQ0PePoIP1TCeBX176D3cYfhRThLY/KyIlL32+mpz37sShe9dnXe6Lz6FckzS
+         BmcCPx0rw1CYpYFO89IzgupYKiytDPrOEYwT9JN0xNup9hN4dRVSyWA8lzrQk4OwyS8/
+         HBEebrP6aU7agVUAhaEQNKKdOF9POfv8YB368I06TcSDvpPEGsdwJ30d2r3elP9ro51/
+         6ToAL4+gPySXKPgIZWtsdfNBaB0w4iDZhQGPa5ezOCYXy2xLmOm4KILVZXirdioNm2Qm
+         CLgg==
+X-Gm-Message-State: AOAM531cmyUn4ykqDnvLAVzfd49qbHoDFwG8dn84pqrEq41UphBSrxVz
+        m0/kTfDOEp9DrtDZTaN6BGrUgWcheJ0=
+X-Google-Smtp-Source: ABdhPJyp+HF2Qbn0SRQjYnIWi0o1paF5Tj5S7saZuc82hRzXnIXvlG3BsSj/QbOpqhjb3RicPJSWeg==
+X-Received: by 2002:aa7:87d5:0:b029:1ec:da11:3033 with SMTP id i21-20020aa787d50000b02901ecda113033mr6888583pfo.53.1613697022740;
+        Thu, 18 Feb 2021 17:10:22 -0800 (PST)
+Received: from ddawson.local ([2602:ae:1f30:4900:7285:c2ff:fe89:df61])
+        by smtp.gmail.com with ESMTPSA id e125sm7647972pfh.175.2021.02.18.17.10.22
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 17:10:22 -0800 (PST)
+Received: from localhost.local ([::1] helo=ddawson.local)
+        by ddawson.local with esmtp (Exim 4.94)
+        (envelope-from <danielcdawson@gmail.com>)
+        id 1lCuJD-0017PF-Ls
+        for linux-btrfs@vger.kernel.org; Thu, 18 Feb 2021 17:10:15 -0800
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <83750bf0-19a8-4f97-155c-b3e36cb227da@gmail.com>
+ <CAJCQCtQGyHJjPwmKxwxCBptfeb0jgdgyEXF=qvGf-1HBDvX1=w@mail.gmail.com>
+From:   Daniel Dawson <danielcdawson@gmail.com>
+Subject: Re: corrupt leaf, unexpected item end, unmountable
+Message-ID: <80058635-0bd9-05cc-2f5e-b4986a065be3@gmail.com>
+Date:   Thu, 18 Feb 2021 17:10:15 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210218133954.GR2858050@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAJCQCtQGyHJjPwmKxwxCBptfeb0jgdgyEXF=qvGf-1HBDvX1=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YD87Avkz+R8uz268iyEgTfqiD6799tgxDSeX8GinEBJb5pLPlju
- QM7rWz8ozpJig/G4c7lZ7W/1KHmQBl/8ji5C6up1OhlhM1jAHHV2xM7iaRH4bcI+mX7mRXO
- TDoLYeQpqRdNAVpCVJcpOs8OhyL3xI71nTzzdEaiERIw/Ur2SUKHXq9xSJltMAYOUxLgMOh
- W6o7f9ozcG/VbIpn5o6Rw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:iAmBwf1UjLE=:0poaa+tpcFLvAXv4j84jMM
- FeBiEhlvXg9Cb6QFXPq/34NrMfV6j0jlUqCjqjUaO/fVbrn7vmNnrXYKO9YcpYsbxVcArp/3N
- Hv/0PakVJg1Vdj4QsfT/aA0Z9VTf3la8d18W7zMmi/4YnKUoPqrJpIqaV3MP/Wee3/stuFmDQ
- 8Zml+VyIfH2+OlWjbjE1n5xww0XBK386+l1NBIApg7RG+Y7PnqalN76MsjJOMJhnKPW3Jr/Cg
- 0+iIID3/UNUn/ZIEAqg7oPs7UEaQI69B7hLhU3QjD/67UshX3bfDa3FM1kbpbpk4vDpwdkOhz
- hCJizCELOgYblyL0E1GYGnKuJHuRDRYbpA9aJjY3/oXW1oOGf219iWtFlp7yjaPtgj7unB80Q
- ORS8gtgFvRNpnuuYbqwsq+CoxRfm3n1QpDmUU78UMJU7wdZ/GsQKW2RhSf4D2q1T7k8g6VYmw
- 5W6X6fzPM0TotBh0oeEATlqHm1Z1mROEhchsjbW61frr7LwG+6+RTsrEDDR2fa89Xn/vL+Aol
- ZOwGvUyc/U60IE15PadP4vhdWqdrhZX4JFv2DF99saxJq6ydfRh0Yk0Idtb7XYiMeaG8iEprr
- Lc+uEomt+ajfuYvZaPverRk4sRRpKZOgQkqDsaQu2U+0eMafwMuC+53NWp6gtijsmjvrrFtgK
- wW/kFE4hzDKK2dtJyXPzrUli1xPL/5ZAfnax/Qr+GBGhL/QDbhAObOllv2nOwPgvRrsvnlebn
- x8mjRXeLMyBDoobQsKP5jIgFFBF/3N2BKO3tJtca/GN/aXa0Evob6UyjSTNL5G8Oxd66+h/WD
- ZfuIrVRBSW4D32bgfT6w9Ur4o6d0KX9REl5QSqlXTfQhRr90uPaAYyHKoNbmVYndvZN9ua+qu
- yX0mYaYrvhIB83zcVjRQ==
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 2/18/21 3:57 PM, Chris Murphy wrote:
+> metadata raid6 as well?
 
+Yes.
 
-On 2021/2/18 =E4=B8=8B=E5=8D=889:39, Matthew Wilcox wrote:
-> On Thu, Feb 18, 2021 at 08:42:14PM +0800, Qu Wenruo wrote:
->> On 2021/2/18 =E4=B8=8B=E5=8D=888:15, Matthew Wilcox wrote:
->>> Yes, this is a known limitation.  Some vendors have gone to the troubl=
-e
->>> of introducing a new page_index_t.  I'm not convinced this is a proble=
-m
->>> worth solving.  There are very few 32-bit systems with this much stora=
-ge
->>> on a single partition (everything should work fine if you take a 20TB
->>> drive and partition it into two 10TB partitions).
->> What would happen if a user just tries to write 4K at file offset 16T
->> fir a sparse file?
->>
->> Would it be blocked by other checks before reaching the underlying fs?
+> What replacement command(s) are you using?
+
+For this drive, it was "btrfs replace start -r 3 /dev/sda3 /"
+
+> What device is devid 3?=20
+It would normally be sdc3. I'll address the confusion below.
+> 16315=3D0x3fbb, 16283=3D0x3f9b, 16315^16283 =3D 32 or 0x20
+> 11111110111011
+> 11111110011011
+>         ^
 >
-> /* Page cache limit. The filesystems should put that into their s_maxbyt=
-es
->     limits, otherwise bad things can happen in VM. */
-> #if BITS_PER_LONG=3D=3D32
-> #define MAX_LFS_FILESIZE        ((loff_t)ULONG_MAX << PAGE_SHIFT)
-> #elif BITS_PER_LONG=3D=3D64
-> #define MAX_LFS_FILESIZE        ((loff_t)LLONG_MAX)
-> #endif
+> Do a RAM test for as long as you can tolerate it, or it finds the
+> defect. Sometimes they show up quickly, other times days.
+I didn't think of a flipped bit. Thanks.
+>>         devid    0 size 457.64GiB used 39.53GiB path /dev/sdc3
+>>         devid    1 size 457.64GiB used 39.56GiB path /dev/sda3
+>>         devid    2 size 457.64GiB used 39.56GiB path /dev/sdb3
+>>         devid    4 size 457.64GiB used 39.53GiB path /dev/sdd3
 >
->> This is especially true for btrfs, which has its internal address space
->> (and it can be any aligned U64 value).
->> Even 1T btrfs can have its metadata at its internal bytenr way larger
->> than 1T. (although those ranges still needs to be mapped inside the dev=
-ice).
->
-> Sounds like btrfs has a problem to fix.
+> This is confusing. devid 3 is claimed to be missing, but fi show isn't
+> showing any missing devices. If none of sd[abcd] are devid 3, then
+> what dev node is devid 3 and where is it?
+It looks to me like btrfs is temporarily assigning devid 0 to the new
+device being used as a replacement. That is what I observed before; once
+the replace operation was complete, it went back to the normal number.
+Since the replacement didn't finish this time, sdc3 is still devid 0.
+> But yeah you're probably best off not trying to fix this file system
+> until the memory is sorted out.
+Right. I'll get on that soon and see if anything pops up. Thanks for the
+help so far.
 
-You're kinda right. Btrfs metadata uses an inode to organize the whole
-metadata as a file, but that doesn't take the limit into consideration.
-
-Although to fix it there will be tons of new problems.
-
-We will have cases like the initial fs meets the limit, but when user
-wants to do something like balance, then it may go beyond the limit and
-cause problems.
-
-And when such problem happens, users won't be happy anyway.
->
->> And considering the reporter is already using 32bit with 10T+ storage, =
-I
->> doubt if it's really not worthy.
->>
->> BTW, what would be the extra cost by converting page::index to u64?
->> I know tons of printk() would cause warning, but most 64bit systems
->> should not be affected anyway.
->
-> No effect for 64-bit systems, other than the churn.
->
-> For 32-bit systems, it'd have some pretty horrible overhead.  You don't
-> just have to touch the page cache, you have to convert the XArray.
-> It's doable (I mean, it's been done), but it's very costly for all the
-> 32-bit systems which don't use a humongous filesystem.  And we could
-> minimise that overhead with a typedef, but then the source code gets
-> harder to work with.
->
-So it means the 32bit archs are already 2nd tier targets for at least
-upstream linux kernel?
-
-Or would it be possible to make it an option to make the index u64?
-So guys who really wants large file support can enable it while most
-other 32bit guys can just keep the existing behavior?
-
-Thanks,
-Qu
