@@ -2,143 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C6A32031F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Feb 2021 03:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A26320336
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Feb 2021 03:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBTCVg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Feb 2021 21:21:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        id S229767AbhBTCsN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Feb 2021 21:48:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhBTCV0 (ORCPT
+        with ESMTP id S229745AbhBTCsM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Feb 2021 21:21:26 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E47C06178A
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 18:20:46 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id z68so6490464pgz.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 18:20:46 -0800 (PST)
+        Fri, 19 Feb 2021 21:48:12 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5ADC061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 18:47:32 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id w4so8596826wmi.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 18:47:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rkjnsn-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gSTCCB0fzNTUP1l+5eYx31ofwbtI5AXxGEPYjYPLSqA=;
-        b=i4hJ1oPfMsNGEpOwMcRdyKUOZ8Imrz6W57beqIyvRorlQNlSRp5TIegxzzzoyfMYtJ
-         /35I0JBScWDTvlLw1fHrRR4rIupYZbRsXuSK5zm6Vx+5DogidTVEM66IUciQfQIpkljj
-         8GPgcuYyxxWQg8+2wqJL8eS1zNp1OhokMMZWbV4GFGN2Ssn0K5/YtR80MBAwHovtWn64
-         tW2AC09UPYpNnJF+JHqrGRnlrGhH7pj1bEYdpD7Ue7F0UECA8lN9O67P7NQsSJ059JBd
-         je2JYOrU2bpIa6AdaARwf+O5cV4T+nP83h2sibxkBkF2VLYIbDyKq1004otPv58oa1Da
-         MV3w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f6aO7Mb5plsxBkdQ9fpT/wHuDURjkxXDr4847dyjauI=;
+        b=CagLpkyg4TwlrZ1y5b7ROM+L9O1t9xLxSIOcFRmJgXK0ckIysHwsRd7MbTtXgemN/6
+         +1zHD+VAwWSyvWZW47bXp/99Cs0w7oujye0aiYv9egFTtIoHhtXbvvPKbxlILa2N3+9r
+         0Ix+GmRkMOBOFRqN6YB2yCg0ml0oTxiatdK/yJct8TXzYY8+OWDwHOXO7zj7seFPU8Wi
+         qTqMWJ3DnzLz0aIHonFoyuQaq3jt5KiDUtqH7luVkbW1O40jdCV4u7OJhmeSIE9BlYn5
+         cdruVwfdAFFkjof0/7sWMVRWTTamDXZ+Ne+PP30xjvRLmoLg0AbTasvwDWzhP6YKD5q2
+         UyGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gSTCCB0fzNTUP1l+5eYx31ofwbtI5AXxGEPYjYPLSqA=;
-        b=P5i5idHiNnIMf7RQkhwJDEeKdRfgx7yUdu5CtxB0yKBnWAsT8ZzShS3XsQbVeGhhNl
-         9HuzG8So2im+yKN+DLEULIFj9nHA47Qc9E+Io+9X51jcPPVztg6Gv9LHYwEjYFeKGd+D
-         IiLoJe87PHZ3sBWdxzudMG64ivJGU3ksWzyAOxb9UZ2McGxp2kK2rCEF23pEXgM87w6O
-         FyRb6Yw0Try+xP2El4FDJNNAufjU7ZETlXyGC0rq541NzrXcSLVG5/V8tHVg1rFwPHgC
-         6wdS2UZImVKyAQ6uh46XpskRnxazqVABMA2ZhkT3Nx8VobW1P5xsJDoxGjPNcWRSI5xG
-         TTlQ==
-X-Gm-Message-State: AOAM53194u0rgj0XwJC+loyZYDDAaHy2xKrte++0Wn94c9xiL+9sLEeN
-        3BlxqKPhp1wg4eJryBFBeqK1/MfPtpQEp+YJVwE=
-X-Google-Smtp-Source: ABdhPJwhhv5MyxWhhSmcx+037umRXGPAy3f+jBiftsaIqSY5aDj2aQRjU/MwDHaUvGYzW2eKoYUjuA==
-X-Received: by 2002:a63:cd08:: with SMTP id i8mr11017284pgg.425.1613787645282;
-        Fri, 19 Feb 2021 18:20:45 -0800 (PST)
-Received: from [10.64.183.147] (static-198-54-131-136.cust.tzulo.com. [198.54.131.136])
-        by smtp.gmail.com with ESMTPSA id x9sm10976293pfc.114.2021.02.19.18.20.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 18:20:44 -0800 (PST)
-Subject: Re: page->index limitation on 32bit system?
-To:     Theodore Ts'o <tytso@mit.edu>, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com>
- <20210218121503.GQ2858050@casper.infradead.org>
- <af1aac2f-e7dc-76f3-0b3a-4cb36b22247f@gmx.com>
- <20210218133954.GR2858050@casper.infradead.org>
- <e0faf229-ce7f-70b8-8998-ed7870c702a5@gmx.com> <YC/jYW/K9krbfnfl@mit.edu>
-From:   Erik Jensen <erikjensen@rkjnsn.net>
-Message-ID: <a79562ac-1b87-8761-05a6-43b911e093a0@rkjnsn.net>
-Date:   Fri, 19 Feb 2021 18:20:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f6aO7Mb5plsxBkdQ9fpT/wHuDURjkxXDr4847dyjauI=;
+        b=nFP3XCDtRoxoX5jFZg8AhQP4uSQEVGbPFhxQ0b/QRveZpACFQSik73QRv8i/e1lmhr
+         xfAVN+gVJFsKR267ClPKx+1VYfOEUPUi2WUDE8D/P6CMXenXKk84R3l08KbagBnzTpJG
+         nZc2idRNII79h7WwOknb3nBDnnfy/LKSdrbn13uRz6HrSrEby2JE1iBol0hdpLkkSJOy
+         hnHjZyzSTKb1k96c9POJeMISqeZu6Io849LBvQZ9/91XcvtSmCA/qMlbqDGqtG5lIoIT
+         LwAfIGmJjsFLSh0QJ4lEDnl7z7dy40sqUz0yBcEq0TD2u59KJw07yYB7Y11RT66l2eEw
+         Axhw==
+X-Gm-Message-State: AOAM530XqnBZGlWS2SWT6bb6kC5bViLTwwsEJ7H+HA6Sjz8l45PSW9b8
+        fVOI2LdopAT9uAiWuNliIH/b3KhiefVzpVQrB0MmYbCRspa3C8nVNyA=
+X-Google-Smtp-Source: ABdhPJxqPxLL/U2wCsIdpIrmV3zq38cYdG7k6AjuiIYwqOY+s0wP8GKFFa4fuizZ7R64PdV071xRHJey3r1j7mK6Xfw=
+X-Received: by 2002:a7b:cbc2:: with SMTP id n2mr10643211wmi.34.1613789250146;
+ Fri, 19 Feb 2021 18:47:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YC/jYW/K9krbfnfl@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
+ <mtwofibp.fsf@damenly.su> <CAMj6ewNYSnFUFPER06qweZaypWC6qVHmUX7gYxRXO7Gbuw_16A@mail.gmail.com>
+ <CAMj6ewMSw+UzZHhEEN=rhxN8O3pN9gWA05usAodk2xX5+s-Qjw@mail.gmail.com>
+ <7d32a06e-dc2e-c2c4-ddce-1f2693980c5b@gmx.com> <CAMj6ewOc+jJAo=rLmH_mBzaqO10daPkcN5XacPiwx6eh9PVvBQ@mail.gmail.com>
+ <90ce8de3-c759-da91-f89e-3d1ac7b3d049@gmx.com> <2ac19a21-1674-b34a-7e0a-8a5744f0513a@gmx.com>
+ <CAMj6ewPbivS1yZOmvT22hJsMxHGK-fWhyGgm3PJ4TVUbo04Eew@mail.gmail.com>
+ <b06c1665-7547-2321-3863-4c68c9818f90@gmx.com> <CAMj6ewOze4Ngw7ydj_Ry2nLeyvWs_dB=fuGJ2zBdCEepTiC6yA@mail.gmail.com>
+ <c6c8cb80-455a-181b-ada5-83001d387044@gmx.com> <CAMj6ewP-xUUa2G448HhPDPV9ZB7XiYVf4eCv+SMMtLH5MzTJ8g@mail.gmail.com>
+ <08061b36-c49d-9604-49dc-7e85720b5040@gmx.com> <CAMj6ewM2wr2tRrMjRk+sztH0nD7RG1J4tXKfoekg3-rqEL3RWA@mail.gmail.com>
+ <50599154-2ab4-2184-7562-f0758cf216eb@gmx.com> <CAMj6ewPGbkxH-OdsRt+xKQyLUUgR3J7dV7Xcf9XMq2-E=n3-tA@mail.gmail.com>
+ <b040e855-c0a6-cd75-c26a-4ed73ffeb08d@gmx.com>
+In-Reply-To: <b040e855-c0a6-cd75-c26a-4ed73ffeb08d@gmx.com>
+From:   Erik Jensen <erikjensen@rkjnsn.net>
+Date:   Fri, 19 Feb 2021 18:47:19 -0800
+Message-ID: <CAMj6ewOJpH_Lo3JcL540-ACwvbFNr33XS0LixEt+wAzf-T4vag@mail.gmail.com>
+Subject: Re: "bad tree block start" when trying to mount on ARM
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Su Yue <l@damenly.su>, Hugo Mills <hugo@carfax.org.uk>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/19/21 8:12 AM, Theodore Ts'o wrote:
-> On Fri, Feb 19, 2021 at 08:37:30AM +0800, Qu Wenruo wrote:
->> So it means the 32bit archs are already 2nd tier targets for at least
->> upstream linux kernel?
-> 
-> At least as far as btrfs is concerned, anyway....
-> 
->> Or would it be possible to make it an option to make the index u64?
->> So guys who really wants large file support can enable it while most
->> other 32bit guys can just keep the existing behavior?
-> 
-> I think if this is going to be done at all, it would need to be a
-> compile-time CONFIG option to make the index be 64-bits.  That's
-> because there are a huge number of low-end Android devices (retail
-> price ~$30 USD in India, for example --- this set of customers is
-> sometimes called "the next billion users" by some folks) that are
-> using 32-bit ARM systems.  And they will be using ext4 or f2fs, and it
-> would be massively unfortunate/unfair/etc. to impose that performance
-> penalty on them.
+On Thu, Feb 18, 2021 at 12:59 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> Just send a mail to the fs-devel mail list, titled "page->index
+> limitation on 32bit system?".
+>
+> I guess your experience as a real world user would definitely bring more
+> weight to the discussion.
+>
+> Thanks,
+> Qu
 
-A CONFIG option would certainly work for my use case. I was also 
-wondering (and I ask this as and end user with admittedly no knowledge 
-whatsoever about how the page cache works) whether it might be possible 
-to treat the top bit as a kind of "extended address" bit, with some kind 
-of additional side table that handles indexes more than 31 bits. That 
-way, filesystems that are 8TB or less wouldn't lose any performance, 
-while still supporting those larger than 16TB.
+Given that it sounds like the issue is the metadata address space, and
+given that I surely don't actually have 16TiB of metadata on a 24TiB
+file system (indeed, Metadata, RAID1: total=30.00GiB, used=28.91GiB),
+is there any way I could compact the metadata offsets into the lower
+16TiB of the virtual metadata inode? Perhaps that could be something
+balance could be taught to do? (Obviously, the initial run of such a
+balance would have to be performed using a 64-bit system.)
 
-I assume the 4KiB entry size in the page cache is fundamental, and can't 
-be, e.g., increased to 16KiB to allow addressing up to 64TiB of storage?
-
-> It sounds like what Willy is saying is that supporting a 64-bit page
-> index on 32-bit platforms is going to be have a lot of downsides, and
-> not just the performance / memory overhead issue.  It's also a code
-> mainteinance concern, and that tax would land on the mm developers.
-> And if it's not well-maintained, without regular testing, it's likely
-> to be heavily subject to bitrot.  (Although I suppose if we don't mind
-> doubling the number of configs that kernelci has to test, this could
-> be mitigated.)
-> 
-> In contrast, changing btrfs to not depend on a single address space
-> for all of its metadata might be a lot of work, but it's something
-> which lands on the btrfs developers, as opposed to a another (perhaps
-> more central) kernel subsystem.  Managing at this tradeoff is
-> something that is going to be between the mm developers and the btrfs
-> developers, but as someone who doesn't do any work on either of these
-> subsystems, it seems like a pretty obvious choice.
-> 
-> The final observation I'll make is that if we know which NAS box
-> vendor can (properly) support volumes > 16 TB, we can probably find
-> the 64-bit page index patch.  It'll probably be against a fairly old
-> kernel, so it might not all _that_ helpful, but it might give folks a
-> bit of a head start.
-> 
-> I can tell you that the NAS box vendor that it _isn't_ is Synology.
-> Synology boxes uses btrfs, and on 32-bit processors, they have a 16TB
-> volume size limit, and this is enforced by the Synology NAS
-> software[1].  However, Synology NAS boxes can support multiple
-> volumes; until today, I never understood why, since it seemed to be
-> unnecessary complexity, but I suspect the real answer was this was how
-> Synology handled storage array sizes > 16TB on their older systems.
-> (All of their new NAS boxes use 64-bit processors.)
-> 
-> [1] https://www.reddit.com/r/synology/comments/a62xrx/max_volume_size_of_16tb/
-> 
-> Cheers,
-> 
-> 					- Ted
-> 
+Perhaps, on 32-bit, btrfs itself or some monitoring tool could even
+kick off such a metadata balance automatically when the offset hits
+10TiB to hopefully avoid ever reaching 16TiB?
