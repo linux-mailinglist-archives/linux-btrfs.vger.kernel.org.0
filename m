@@ -2,36 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D7932068D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Feb 2021 18:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89613320795
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Feb 2021 00:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBTR4m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 Feb 2021 12:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S229883AbhBTXDT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 Feb 2021 18:03:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhBTR4m (ORCPT
+        with ESMTP id S229849AbhBTXDP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:56:42 -0500
-X-Greylist: delayed 635 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 20 Feb 2021 09:55:52 PST
-Received: from ns2.wdyn.eu (ns2.wdyn.eu [IPv6:2a03:4000:40:5b2::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46A9EC061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Feb 2021 09:55:52 -0800 (PST)
-From:   Alexander Wetzel <alexander@wetzel-home.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wetzel-home.de;
-        s=wetzel-home; t=1613843146;
-        bh=ayOYTmUn+MOFFoghqAExQG84H2oYvpVexKmi16LWF9g=;
-        h=From:Subject:To:Date;
-        b=I5xJLNRuYnS9q9K/tDR1B4Cm97n1F1U7rOdgIInFAONkAkyzF5oIF2bkeDeopUKJn
-         Ylsnol1eZcBwntQ9YCA1YBmX40sveOied4sQYwBx7MfC+pDeSBobFDNk9BBMgXwBgr
-         mSVASJEWCiL0hXRfb9Z1ubBd40eP9vfclwKM97I8=
-Subject: Unexpected "ERROR: clone: did not find source subvol" on btrfs
- receive
-To:     linux-btrfs@vger.kernel.org
-Message-ID: <41b096e1-5345-ae9c-810b-685499813183@wetzel-home.de>
-Date:   Sat, 20 Feb 2021 18:45:10 +0100
+        Sat, 20 Feb 2021 18:03:15 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3A0C061786
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Feb 2021 15:02:29 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id t9so1192221pjl.5
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Feb 2021 15:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rkjnsn-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zV/zw5La8U3xJZZG8tv4AZYTeBQe18ySz8+OhOD5gZ4=;
+        b=YPyD3K4mppLdxQl9wmSUIAjFt/R407AErBjQ/NrshpP93xVVU3l+77eXD9ddBqM2wa
+         ab1okMyY081nljcNxh3OzA07rQyPgf1zKzcuHNAhrG7DCW6ZvQxyLz/bN2gMxtvVVWKx
+         IeUf/zNuEozKPt3/jkW5xG2IVIlbcar6kjRVjvhERKdjO7vjBohpI4X4p8/pnI0jam4q
+         M4gqD6U9fnc58W513SP51gmY60GbXNz2mPKxb4trb5PbqIQF8+5Vr/jwlZRF1VKFhlkC
+         Zr43LDuRhkYvEoGFMBjyXmBOC9cq5QMtB/nZQ3QzWE8dNZfoVDwcvsDtKSev1vO9eUtN
+         voqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zV/zw5La8U3xJZZG8tv4AZYTeBQe18ySz8+OhOD5gZ4=;
+        b=F8UcY0isQzR8perMXFp9cl8PIeOXN8YHu4LrhR5WRCPo7PP+AOiPXnhSUVYrm2lO/I
+         sbtlBV1CwZIHtPLOLZV7Ak2XJpgOjb2gsOyCQA49Lx3KoKXvsoTvdZDDSwNYbP7dDp64
+         lznpA7tKKHWQQVulBj2Cf5Hw55JOEr4Z1LCkSB+kT42uIOyJCovMj/qUz7eFGZv94wi6
+         nouoD8JYMmWt7+Lt9NERaBdbr8s1V3nJXMby+gKxa+qibRSuJa8QVjH6ilDshR2AWId2
+         JOnlQ90JQ/cufa30fujqTEXSDeKCeuArlHcAoBWWgsIiklKi3kmRCZcp1W714hyAdFJM
+         vNxw==
+X-Gm-Message-State: AOAM531vJo0ycDSDKWFUGdmVvOQQm3Yit9+QkzZp8el6NcHd3iYy2oE3
+        XF4AlkxXrvaD12K4IZ9ciWWmZ1/ldRV7Sw+NLK0=
+X-Google-Smtp-Source: ABdhPJwgq+o/Aduf30e5inIM9BrbtyKwNCFWoPTC4kaIRSQ0CVRWFHzYHS3RUVasSfNtnQ3Vu417Xw==
+X-Received: by 2002:a17:90a:ae12:: with SMTP id t18mr15958251pjq.92.1613862148230;
+        Sat, 20 Feb 2021 15:02:28 -0800 (PST)
+Received: from [10.64.183.147] (static-198-54-131-136.cust.tzulo.com. [198.54.131.136])
+        by smtp.gmail.com with ESMTPSA id u18sm13152709pfn.11.2021.02.20.15.02.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Feb 2021 15:02:27 -0800 (PST)
+Subject: Re: page->index limitation on 32bit system?
+To:     Matthew Wilcox <willy@infradead.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com>
+ <20210218121503.GQ2858050@casper.infradead.org>
+ <af1aac2f-e7dc-76f3-0b3a-4cb36b22247f@gmx.com>
+ <20210218133954.GR2858050@casper.infradead.org>
+From:   Erik Jensen <erikjensen@rkjnsn.net>
+Message-ID: <b3e40749-a30d-521a-904f-8182c6d0e258@rkjnsn.net>
+Date:   Sat, 20 Feb 2021 15:02:26 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210218133954.GR2858050@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -39,185 +72,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On 2/18/21 5:39 AM, Matthew Wilcox wrote:
+> On Thu, Feb 18, 2021 at 08:42:14PM +0800, Qu Wenruo wrote:
+>> [...]
+>> BTW, what would be the extra cost by converting page::index to u64?
+>> I know tons of printk() would cause warning, but most 64bit systems
+>> should not be affected anyway.
+> 
+> No effect for 64-bit systems, other than the churn.
+> 
+> For 32-bit systems, it'd have some pretty horrible overhead.  You don't
+> just have to touch the page cache, you have to convert the XArray.
+> It's doable (I mean, it's been done), but it's very costly for all the
+> 32-bit systems which don't use a humongous filesystem.  And we could
+> minimise that overhead with a typedef, but then the source code gets
+> harder to work with.
 
-I have a strange problem with btrfs send/receive.
-While I can create incremental snaphosts but when I try to restore them
-I reproducible get:
+Out of curiosity, would it be at all feasible to use 64-bits for the 
+page offset *without* changing XArray, perhaps by indexing by the lower 
+32-bits, and evicting the page that's there if the top bits don't match 
+(vaguely like how the CPU cache works)? Or, if there are cases where a 
+page can't be evicted (I don't know if this can ever happen), use chaining?
 
- > At snapshot 2021-02-20-TEMP
- > ERROR: clone: did not find source subvol
-
-I've no "real" problem by that. Just want to report the issue so someone 
-with more btrfs knowledge can dig into what went wrong here. After all 
-that looks like a bug...
-
-So I plan to keep it as it is for some more days and then play around to 
-get incremental send/receive working again.
-
-Here the procedure how I can reproduce the issue:
-
-At start I have the following snapshots in the root of the affected file 
-system. (Subvol "active is mounted as / and the btrfs root on 
-/mnt/backup/backupdev):
-
-active		<- the live RW filesystem
-2021-02-14	<- a RO snapshot of the above from some days ago
-
-And these steps reproducible are failing on btrfs recive:
-
-1) create a new RO snapshot of active
-# btrfs sub snap -r active/ 2021-02-20-TEMP
-Create a readonly snapshot of 'active/' in './2021-02-20-TEMP'
-
-2) btrfs send with 2021-02-14 as parent into test2
-# btrfs send -p 2021-02-14 2021-02-20-TEMP -f test2
-At subvol 2021-02-20-TEMP
-
-3) remove the snapshot 2021-02-20-TEMP
-# btrfs sub del 2021-02-20-TEMP
-Delete subvolume (no-commit): '/mnt/backup/backupdev/2021-02-20-TEMP'
-
-4) and try to import it again from test2
-# btrfs receive -f test2 .
-At snapshot 2021-02-20-TEMP
-ERROR: clone: did not find source subvol
-
-The same procedure is working for another btrfs filesystem on the same 
-system.
-
-The system is an Ubuntu 20.04 (kernel 5.4.0-65-generic, btrfs-progs v5.4.1).
-
-And here some more information which may be useful:
-
-# btrfs sub show active
-active
-         Name:                   active
-         UUID:                   a2ff485b-9f8f-2543-ad03-dc7c917e143b
-         Parent UUID:            6da3d5ab-4d9f-4805-b77e-0eab8ce2abc8
-         Received UUID:          -
-         Creation time:          2020-11-08 13:58:23 +0100
-         Subvolume ID:           264
-         Generation:             206432
-         Gen at creation:        167
-         Parent ID:              5
-         Top level ID:           5
-         Flags:                  -
-         Snapshot(s):
-
-# btrfs sub show 2021-02-14
-2021-02-14
-         Name:                   2021-02-14
-         UUID:                   d31d553f-0917-3c48-b65c-ec51fd0c6d89
-         Parent UUID:            a2ff485b-9f8f-2543-ad03-dc7c917e143b
-         Received UUID:          -
-         Creation time:          2021-02-14 21:46:26 +0100
-         Subvolume ID:           358
-         Generation:             206378
-         Gen at creation:        195056
-         Parent ID:              5
-         Top level ID:           5
-         Flags:                  readonly
-         Snapshot(s):
-
-# btrfs sub show 2021-02-20-TEMP
-2021-02-20-TEMP
-         Name:                   2021-02-20-TEMP
-         UUID:                   120113e6-f83c-b240-ba27-259be4c92ea7
-         Parent UUID:            a2ff485b-9f8f-2543-ad03-dc7c917e143b
-         Received UUID:          -
-         Creation time:          2021-02-20 18:06:29 +0100
-         Subvolume ID:           375
-         Generation:             206770
-         Gen at creation:        206770
-         Parent ID:              5
-         Top level ID:           5
-         Flags:                  readonly
-         Snapshot(s):
-
-
-# time btrfs receive -v -f test2 .
-receiving snapshot 2021-02-20-TEMP 
-uuid=120113e6-f83c-b240-ba27-259be4c92ea7, ctransid=206769 
-parent_uuid=d31d553f-0917-3c48-b65c-ec51fd0c6d89, parent_ctransid=195056
-write var/log/lastlog - offset=290816 length=4096
-write var/log/wtmp - offset=122880 length=4096
-write var/log/wtmp - offset=126976 length=4096
-write var/log/wtmp - offset=131072 length=4096
-write var/log/wtmp - offset=135168 length=384
-write boot/grub/grubenv - offset=0 length=1024
-write var/lib/systemd/random-seed - offset=0 length=512
-write var/log/cloud-init.log - offset=1138688 length=49152
-write var/log/cloud-init.log - offset=1187840 length=11555
-write var/log/cloud-init-output.log - offset=53248 length=5329
-write var/lib/cloud/instances/iid-datasource-none/datasource - offset=0 
-length=31
-write var/lib/cloud/data/previous-datasource - offset=0 length=31
-write var/lib/cloud/data/instance-id - offset=0 length=20
-write var/lib/cloud/data/previous-instance-id - offset=0 length=20
-write var/lib/cloud/instances/iid-datasource-none/obj.pkl - offset=0 
-length=8107
-write var/lib/cloud/instances/iid-datasource-none/user-data.txt - 
-offset=0 length=356
-write var/lib/cloud/instances/iid-datasource-none/user-data.txt.i - 
-offset=0 length=661
-write var/lib/cloud/instances/iid-datasource-none/vendor-data.txt.i - 
-offset=0 length=308
-write var/lib/cloud/instances/iid-datasource-none/cloud-config.txt - 
-offset=0 length=435
-write var/cache/motd-news - offset=0 length=184
-<removed 10200 lines>
-write var/lib/mysql/mysql/innodb_index_stats.ibd - offset=393216 
-length=16384
-write var/lib/mysql/mysql/innodb_index_stats.ibd - offset=409600 
-length=16384
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=0 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=8192 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=16384 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=24576 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=40960 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=49152 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=114688 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=155648 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=180224 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=212992 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=229376 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=253952 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=278528 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=294912 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=319488 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=385024 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=483328 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=516096 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=720896 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=729088 length=8192
-write var/lib/mysql/nextcloud/oc_activity.ibd - offset=737280 length=8192
-ERROR: clone: did not find source subvol
-At snapshot 2021-02-20-TEMP
-
-real    0m0.741s
-user    0m0.246s
-sys     0m0.127s
-
-
-Noteworthy here is, that var/lib/mysql/ has set "chattr +C" set:
-
-# lsattr 2021-02-20-TEMP/var/lib/mysql
----------------C---- 2021-02-20-TEMP/var/lib/mysql/aria_log.00000001
----------------C---- 2021-02-20-TEMP/var/lib/mysql/aria_log_control
----------------C---- 2021-02-20-TEMP/var/lib/mysql/debian-10.3.flag
----------------C---- 2021-02-20-TEMP/var/lib/mysql/ib_logfile0
----------------C---- 2021-02-20-TEMP/var/lib/mysql/ib_logfile1
----------------C---- 2021-02-20-TEMP/var/lib/mysql/ibdata1
----------------C---- 2021-02-20-TEMP/var/lib/mysql/multi-master.info
----------------C---- 2021-02-20-TEMP/var/lib/mysql/mysql_upgrade_info
----------------C---- 2021-02-20-TEMP/var/lib/mysql/mysql
----------------C---- 2021-02-20-TEMP/var/lib/mysql/nextcloud
----------------C---- 2021-02-20-TEMP/var/lib/mysql/performance_schema
----------------C---- 2021-02-20-TEMP/var/lib/mysql/roundcube
----------------C---- 2021-02-20-TEMP/var/lib/mysql/wordpress
----------------C---- 2021-02-20-TEMP/var/lib/mysql/mailserver
----------------C---- 2021-02-20-TEMP/var/lib/mysql/ib_buffer_pool
----------------C---- 2021-02-20-TEMP/var/lib/mysql/tc.log
----------------C---- 2021-02-20-TEMP/var/lib/mysql/ibtmp1
-
+I would expect index contention to be extremely uncommon, and it could 
+only happen for inodes larger than 16 TiB, which can't be used at all 
+today. I don't know how many data structures store page offsets today, 
+but it seems like this should significantly reduce the performance 
+impact versus upping XArray to 64-bit indexes.
