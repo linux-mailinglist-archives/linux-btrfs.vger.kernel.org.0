@@ -2,260 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2E0320305
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Feb 2021 03:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C6A32031F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Feb 2021 03:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBTCJj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Feb 2021 21:09:39 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36632 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230153AbhBTCH0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Feb 2021 21:07:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613786798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=S9YCN05k/6l9I5LthBZU4EDvad2m6ybyVabGxcSx+1U=;
-        b=BDPM66ni4b0aXEykKZ27mFfdBj/kwJPBDdBCCobjHAqeRn865FEGX1bhVwwxdXken4dsuW
-        KCswJiouaCIcDnnMa1bS3SvkAl46emJdh8szwtyls4XhvYrev+t4bV4KhYVH1RkCHedm6X
-        FKcKK4YLtE9QbWzyY5GtTrY+Y+hJlgM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 323C8ADCD;
-        Sat, 20 Feb 2021 02:06:38 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Erik Jensen <erikjensen@rkjnsn.net>
-Subject: [PATCH] btrfs: do more graceful error/warning for 32bit kernel
-Date:   Sat, 20 Feb 2021 10:06:33 +0800
-Message-Id: <20210220020633.53400-1-wqu@suse.com>
-X-Mailer: git-send-email 2.30.0
+        id S229889AbhBTCVg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Feb 2021 21:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229874AbhBTCV0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Feb 2021 21:21:26 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E47C06178A
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 18:20:46 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id z68so6490464pgz.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Feb 2021 18:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rkjnsn-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gSTCCB0fzNTUP1l+5eYx31ofwbtI5AXxGEPYjYPLSqA=;
+        b=i4hJ1oPfMsNGEpOwMcRdyKUOZ8Imrz6W57beqIyvRorlQNlSRp5TIegxzzzoyfMYtJ
+         /35I0JBScWDTvlLw1fHrRR4rIupYZbRsXuSK5zm6Vx+5DogidTVEM66IUciQfQIpkljj
+         8GPgcuYyxxWQg8+2wqJL8eS1zNp1OhokMMZWbV4GFGN2Ssn0K5/YtR80MBAwHovtWn64
+         tW2AC09UPYpNnJF+JHqrGRnlrGhH7pj1bEYdpD7Ue7F0UECA8lN9O67P7NQsSJ059JBd
+         je2JYOrU2bpIa6AdaARwf+O5cV4T+nP83h2sibxkBkF2VLYIbDyKq1004otPv58oa1Da
+         MV3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gSTCCB0fzNTUP1l+5eYx31ofwbtI5AXxGEPYjYPLSqA=;
+        b=P5i5idHiNnIMf7RQkhwJDEeKdRfgx7yUdu5CtxB0yKBnWAsT8ZzShS3XsQbVeGhhNl
+         9HuzG8So2im+yKN+DLEULIFj9nHA47Qc9E+Io+9X51jcPPVztg6Gv9LHYwEjYFeKGd+D
+         IiLoJe87PHZ3sBWdxzudMG64ivJGU3ksWzyAOxb9UZ2McGxp2kK2rCEF23pEXgM87w6O
+         FyRb6Yw0Try+xP2El4FDJNNAufjU7ZETlXyGC0rq541NzrXcSLVG5/V8tHVg1rFwPHgC
+         6wdS2UZImVKyAQ6uh46XpskRnxazqVABMA2ZhkT3Nx8VobW1P5xsJDoxGjPNcWRSI5xG
+         TTlQ==
+X-Gm-Message-State: AOAM53194u0rgj0XwJC+loyZYDDAaHy2xKrte++0Wn94c9xiL+9sLEeN
+        3BlxqKPhp1wg4eJryBFBeqK1/MfPtpQEp+YJVwE=
+X-Google-Smtp-Source: ABdhPJwhhv5MyxWhhSmcx+037umRXGPAy3f+jBiftsaIqSY5aDj2aQRjU/MwDHaUvGYzW2eKoYUjuA==
+X-Received: by 2002:a63:cd08:: with SMTP id i8mr11017284pgg.425.1613787645282;
+        Fri, 19 Feb 2021 18:20:45 -0800 (PST)
+Received: from [10.64.183.147] (static-198-54-131-136.cust.tzulo.com. [198.54.131.136])
+        by smtp.gmail.com with ESMTPSA id x9sm10976293pfc.114.2021.02.19.18.20.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 18:20:44 -0800 (PST)
+Subject: Re: page->index limitation on 32bit system?
+To:     Theodore Ts'o <tytso@mit.edu>, Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com>
+ <20210218121503.GQ2858050@casper.infradead.org>
+ <af1aac2f-e7dc-76f3-0b3a-4cb36b22247f@gmx.com>
+ <20210218133954.GR2858050@casper.infradead.org>
+ <e0faf229-ce7f-70b8-8998-ed7870c702a5@gmx.com> <YC/jYW/K9krbfnfl@mit.edu>
+From:   Erik Jensen <erikjensen@rkjnsn.net>
+Message-ID: <a79562ac-1b87-8761-05a6-43b911e093a0@rkjnsn.net>
+Date:   Fri, 19 Feb 2021 18:20:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YC/jYW/K9krbfnfl@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Due to the pagecache limit of 32bit systems, btrfs can't access metadata
-at or beyond 16T boundary correctly.
+On 2/19/21 8:12 AM, Theodore Ts'o wrote:
+> On Fri, Feb 19, 2021 at 08:37:30AM +0800, Qu Wenruo wrote:
+>> So it means the 32bit archs are already 2nd tier targets for at least
+>> upstream linux kernel?
+> 
+> At least as far as btrfs is concerned, anyway....
+> 
+>> Or would it be possible to make it an option to make the index u64?
+>> So guys who really wants large file support can enable it while most
+>> other 32bit guys can just keep the existing behavior?
+> 
+> I think if this is going to be done at all, it would need to be a
+> compile-time CONFIG option to make the index be 64-bits.  That's
+> because there are a huge number of low-end Android devices (retail
+> price ~$30 USD in India, for example --- this set of customers is
+> sometimes called "the next billion users" by some folks) that are
+> using 32-bit ARM systems.  And they will be using ext4 or f2fs, and it
+> would be massively unfortunate/unfair/etc. to impose that performance
+> penalty on them.
 
-And unlike other fses, btrfs uses internally mapped u64 address space for
-all of its metadata, this is more tricky than other fses.
+A CONFIG option would certainly work for my use case. I was also 
+wondering (and I ask this as and end user with admittedly no knowledge 
+whatsoever about how the page cache works) whether it might be possible 
+to treat the top bit as a kind of "extended address" bit, with some kind 
+of additional side table that handles indexes more than 31 bits. That 
+way, filesystems that are 8TB or less wouldn't lose any performance, 
+while still supporting those larger than 16TB.
 
-Users can have a fs which doesn't have metadata beyond 16T boundary at
-mount time, but later balance can cause btrfs to create metadata beyond
-16T boundary.
+I assume the 4KiB entry size in the page cache is fundamental, and can't 
+be, e.g., increased to 16KiB to allow addressing up to 64TiB of storage?
 
-And modification to MM layer is unrealistic just for such minor use
-case.
-
-To address such problem, this patch will introduce the following checks:
-
-- Mount time rejection
-  This will reject any fs which has metadata chunk at or beyond 16T
-  boundary.
-
-- Mount time early warning
-  If there is any metadata chunk beyond 10T boundary, we do an early
-  warning and hope the end user will see it.
-
-- Runtime extent buffer rejection
-  If we're going to allocate an extent buffer at or beyond 16T boundary,
-  reject such request with -EOVERFLOW.
-
-- Runtime extent buffer early warning
-  If an extent buffer beyond 10T is beyond allocated, do an early
-  warning.
-
-Above error/warning message will only be outputted once for each fs to
-reduce dmesg flood.
-
-Reported-by: Erik Jensen <erikjensen@rkjnsn.net>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h     | 12 ++++++++++
- fs/btrfs/extent_io.c | 12 ++++++++++
- fs/btrfs/super.c     | 24 ++++++++++++++++++++
- fs/btrfs/volumes.c   | 54 ++++++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 100 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 40ec3393d2a1..91536c3bd5d8 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -572,6 +572,12 @@ enum {
- 
- 	/* Indicate that we can't trust the free space tree for caching yet */
- 	BTRFS_FS_FREE_SPACE_TREE_UNTRUSTED,
-+
-+#if BITS_PER_LONG == 32
-+	/* Indicate if we have error/warn message outputted for 32bit system */
-+	BTRFS_FS_32BIT_ERROR,
-+	BTRFS_FS_32BIT_WARN,
-+#endif
- };
- 
- /*
-@@ -3405,6 +3411,12 @@ static inline void assertfail(const char *expr, const char* file, int line) { }
- #define ASSERT(expr)	(void)(expr)
- #endif
- 
-+#if BITS_PER_LONG == 32
-+#define BTRFS_32BIT_EARLY_WARN_THRESHOLD	(10ULL * 1024 * SZ_1G)
-+void btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info);
-+void btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info);
-+#endif
-+
- /*
-  * Get the correct offset inside the page of extent buffer.
-  *
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 4dfb3ead1175..6af6714d49c1 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5554,6 +5554,18 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-+#if BITS_PER_LONG == 32
-+	if (start >= MAX_LFS_FILESIZE) {
-+		btrfs_err(fs_info,
-+		"extent buffer %llu is beyond 32bit page cache limit",
-+			  start);
-+		btrfs_err_32bit_limit(fs_info);
-+		return ERR_PTR(-EOVERFLOW);
-+	}
-+	if (start >= BTRFS_32BIT_EARLY_WARN_THRESHOLD)
-+		btrfs_warn_32bit_limit(fs_info);
-+#endif
-+
- 	if (fs_info->sectorsize < PAGE_SIZE &&
- 	    offset_in_page(start) + len > PAGE_SIZE) {
- 		btrfs_err(fs_info,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f8435641b912..bd959fc664b5 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -252,6 +252,30 @@ void __cold btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, .
- }
- #endif
- 
-+#if BITS_PER_LONG == 32
-+void __cold btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info)
-+{
-+	if (!test_and_set_bit(BTRFS_FS_32BIT_WARN, &fs_info->flags)) {
-+		btrfs_warn(fs_info, "btrfs is reaching 32bit kernel limit.");
-+		btrfs_warn(fs_info,
-+"due to 32bit page cache limit, btrfs can't access metadata at or beyond 16T.");
-+		btrfs_warn(fs_info,
-+			   "please consider upgrade to 64bit kernel/hardware.");
-+	}
-+}
-+
-+void __cold btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info)
-+{
-+	if (!test_and_set_bit(BTRFS_FS_32BIT_ERROR, &fs_info->flags)) {
-+		btrfs_err(fs_info, "btrfs reached 32bit kernel limit.");
-+		btrfs_err(fs_info,
-+"due to 32bit page cache limit, btrfs can't access metadata at or beyond 16T.");
-+		btrfs_err(fs_info,
-+			   "please consider upgrade to 64bit kernel/hardware.");
-+	}
-+}
-+#endif
-+
- /*
-  * We only mark the transaction aborted and then set the file system read-only.
-  * This will prevent new transactions from starting or trying to join this
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b8fab44394f5..5dc22daa684d 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6787,6 +6787,46 @@ static u64 calc_stripe_length(u64 type, u64 chunk_len, int num_stripes)
- 	return div_u64(chunk_len, data_stripes);
- }
- 
-+#if BITS_PER_LONG == 32
-+/*
-+ * Due to page cache limit, btrfs can't access metadata at or beyond
-+ * MAX_LFS_FILESIZE (16T) on 32bit systemts.
-+ *
-+ * This function do mount time check to reject the fs if it already has
-+ * metadata chunk beyond that limit.
-+ */
-+static int check_32bit_meta_chunk(struct btrfs_fs_info *fs_info,
-+				  u64 logical, u64 length, u64 type)
-+{
-+	if (!(type & BTRFS_BLOCK_GROUP_METADATA))
-+		return 0;
-+
-+	if (logical + length < MAX_LFS_FILESIZE)
-+		return 0;
-+
-+	btrfs_err_32bit_limit(fs_info);
-+	return -EOVERFLOW;
-+}
-+
-+/*
-+ * This is to give early warning for any metadata chunk reaching
-+ * 10T boundary.
-+ * Although we can still access the metadata, it's a timed bomb thus an early
-+ * warning is definitely needed.
-+ */
-+static void warn_32bit_meta_chunk(struct btrfs_fs_info *fs_info,
-+				  u64 logical, u64 length, u64 type)
-+{
-+	if (!(type & BTRFS_BLOCK_GROUP_METADATA))
-+		return;
-+
-+	if (logical + length < BTRFS_32BIT_EARLY_WARN_THRESHOLD)
-+		return;
-+
-+	btrfs_warn_32bit_limit(fs_info);
-+}
-+#endif
-+
- static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 			  struct btrfs_chunk *chunk)
- {
-@@ -6797,6 +6837,7 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 	u64 logical;
- 	u64 length;
- 	u64 devid;
-+	u64 type;
- 	u8 uuid[BTRFS_UUID_SIZE];
- 	int num_stripes;
- 	int ret;
-@@ -6804,8 +6845,17 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 
- 	logical = key->offset;
- 	length = btrfs_chunk_length(leaf, chunk);
-+	type = btrfs_chunk_type(leaf, chunk);
- 	num_stripes = btrfs_chunk_num_stripes(leaf, chunk);
- 
-+#if BITS_PER_LONG == 32
-+	ret = check_32bit_meta_chunk(fs_info, logical, length, type);
-+	if (ret < 0)
-+		return ret;
-+	warn_32bit_meta_chunk(fs_info, logical, length, type);
-+#endif
-+
-+
- 	/*
- 	 * Only need to verify chunk item if we're reading from sys chunk array,
- 	 * as chunk item in tree block is already verified by tree-checker.
-@@ -6849,10 +6899,10 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 	map->io_width = btrfs_chunk_io_width(leaf, chunk);
- 	map->io_align = btrfs_chunk_io_align(leaf, chunk);
- 	map->stripe_len = btrfs_chunk_stripe_len(leaf, chunk);
--	map->type = btrfs_chunk_type(leaf, chunk);
-+	map->type = type;
- 	map->sub_stripes = btrfs_chunk_sub_stripes(leaf, chunk);
- 	map->verified_stripes = 0;
--	em->orig_block_len = calc_stripe_length(map->type, em->len,
-+	em->orig_block_len = calc_stripe_length(type, em->len,
- 						map->num_stripes);
- 	for (i = 0; i < num_stripes; i++) {
- 		map->stripes[i].physical =
--- 
-2.30.0
-
+> It sounds like what Willy is saying is that supporting a 64-bit page
+> index on 32-bit platforms is going to be have a lot of downsides, and
+> not just the performance / memory overhead issue.  It's also a code
+> mainteinance concern, and that tax would land on the mm developers.
+> And if it's not well-maintained, without regular testing, it's likely
+> to be heavily subject to bitrot.  (Although I suppose if we don't mind
+> doubling the number of configs that kernelci has to test, this could
+> be mitigated.)
+> 
+> In contrast, changing btrfs to not depend on a single address space
+> for all of its metadata might be a lot of work, but it's something
+> which lands on the btrfs developers, as opposed to a another (perhaps
+> more central) kernel subsystem.  Managing at this tradeoff is
+> something that is going to be between the mm developers and the btrfs
+> developers, but as someone who doesn't do any work on either of these
+> subsystems, it seems like a pretty obvious choice.
+> 
+> The final observation I'll make is that if we know which NAS box
+> vendor can (properly) support volumes > 16 TB, we can probably find
+> the 64-bit page index patch.  It'll probably be against a fairly old
+> kernel, so it might not all _that_ helpful, but it might give folks a
+> bit of a head start.
+> 
+> I can tell you that the NAS box vendor that it _isn't_ is Synology.
+> Synology boxes uses btrfs, and on 32-bit processors, they have a 16TB
+> volume size limit, and this is enforced by the Synology NAS
+> software[1].  However, Synology NAS boxes can support multiple
+> volumes; until today, I never understood why, since it seemed to be
+> unnecessary complexity, but I suspect the real answer was this was how
+> Synology handled storage array sizes > 16TB on their older systems.
+> (All of their new NAS boxes use 64-bit processors.)
+> 
+> [1] https://www.reddit.com/r/synology/comments/a62xrx/max_volume_size_of_16tb/
+> 
+> Cheers,
+> 
+> 					- Ted
+> 
