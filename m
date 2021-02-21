@@ -2,126 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E61320A1F
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Feb 2021 12:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF49F320AEA
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Feb 2021 15:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhBUL6P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 21 Feb 2021 06:58:15 -0500
-Received: from ns2.wdyn.eu ([5.252.227.236]:37852 "EHLO ns2.wdyn.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229817AbhBUL6F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 21 Feb 2021 06:58:05 -0500
-Subject: Re: Unexpected "ERROR: clone: did not find source subvol" on btrfs
- receive
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wetzel-home.de;
-        s=wetzel-home; t=1613908672;
-        bh=Aw+qEFGxiA1qtxrWzAMS9IrbaxbHvO2RHY7TkPLUEgo=;
-        h=Subject:From:To:References:Date:In-Reply-To;
-        b=XhB1yzJ1EpGnIEfPd+bdaPsD4DWBy73zvoQCZXpqjbXluV91HE4d9L8UfHnROo19Q
-         nwTK6gTlNQZ7EpG2LCkxzxb71roLBK1h6n8VKkNhP9FKz5849FzkLrPUAwASS4Hjdx
-         c6xH7+a+kyJ1/VbXCMnPZtzcmAAmI40l+E8MdfH8=
-From:   Alexander Wetzel <alexander@wetzel-home.de>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
-References: <41b096e1-5345-ae9c-810b-685499813183@wetzel-home.de>
- <0fcbd697-11c5-0b32-7e08-80cf8d355271@gmail.com>
- <0d8ff769-59b3-9bbe-d958-9879e6f34719@wetzel-home.de>
-Message-ID: <a2e5da8e-4267-4ef4-b259-18fa98aac263@wetzel-home.de>
-Date:   Sun, 21 Feb 2021 12:57:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229826AbhBUOKU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 21 Feb 2021 09:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhBUOKT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 21 Feb 2021 09:10:19 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9970BC061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Feb 2021 06:09:39 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id j12so4932566pfj.12
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Feb 2021 06:09:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qUvTM+uKl/sqrClcKAOXOznZgQBMfO9VsVlb/ACXbuM=;
+        b=S+w+PXlBqc+AoRLgRQuCf6mavNKY38q5IG1GJezbuN9l5Q+n0CknqFiC1O74GsA1DZ
+         baPMWpJbeJe0T1DowKtu4VTtGXQNNo+bZ60XHtvPWrrMCI5bfpyvVZvvmcFjdTAvl1f3
+         6fVqIggp6HlVd8Ew2nGex59gBVsWn3b3QDVPLV2TMv3OxBsPb3qRAjS1/6sAnSwz8tBc
+         yjjBXEarN8ezFNEAJhDEKrM5zFjHtB6K3bp+uo5p1Fauuwaku/+vdwPSjgIYSSEplGzP
+         +yv0drQL7LXqJSAVArbcbQLaY2N/5hPAO6QSac/2lH5yz2S7R4ZzEmoccMw+d5dY8JDH
+         iCTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qUvTM+uKl/sqrClcKAOXOznZgQBMfO9VsVlb/ACXbuM=;
+        b=L346CGnz6R1tX/gpTvFRRyJaIuCkLY0hp+KVyRUKbGJuG43lXDXDM4cwMiT7qWY4uM
+         7DUA0fLXfHpVdFyuXRQKN1+/AQDUFv/TLkpRds/1ziUDhG8LW18MeHgj3taMVEcb4xKI
+         ReXwYky4qCxEihj8QMCijMZQ/K9MpZISp5uk4kvM4dBvnebrOltSTuYwChc+OnNV597s
+         JcrRB0xPBc8rrhu6tO0rsVm+fbPl1EF1lWHGGlcvuzm+ZNZdFgaSkYeviJ6Zs6M9lszK
+         kqg3CJsF1Y4bswhnt7otDm92+JYPc0KTTss4R1+eCYNsRH+U3TpeosAQXd7ZfZL9fHwg
+         A5jg==
+X-Gm-Message-State: AOAM532/zH1SxN5mAnU4eR+X0m7ScVWMhq+a/bbFjOf+TETh8OOqaG53
+        CZHurGwRlognPNQ/Hu6aVhY=
+X-Google-Smtp-Source: ABdhPJxgdy9G6bl3kvUIpcxga9TPDO5gvtyCeFu8aLn4RyBG7pY/wZgKSeHdgUSTIGieIq2bjoiSGw==
+X-Received: by 2002:a62:8606:0:b029:1ed:55db:22b7 with SMTP id x6-20020a6286060000b02901ed55db22b7mr9696370pfd.75.1613916579020;
+        Sun, 21 Feb 2021 06:09:39 -0800 (PST)
+Received: from realwakka ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id t5sm2648185pgl.89.2021.02.21.06.09.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 06:09:38 -0800 (PST)
+Date:   Sun, 21 Feb 2021 14:09:30 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs-progs test error on fsck/012-leaf-corruption
+Message-ID: <20210221140930.GA18617@realwakka>
+References: <20210218025614.GA1755@realwakka>
+ <20210219161707.GF1993@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <0d8ff769-59b3-9bbe-d958-9879e6f34719@wetzel-home.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219161707.GF1993@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> While compiling I also switched to 
-> https://github.com/kdave/btrfs-progs.git. Same problem.
+On Fri, Feb 19, 2021 at 05:17:07PM +0100, David Sterba wrote:
+> On Thu, Feb 18, 2021 at 02:56:14AM +0000, Sidong Yang wrote:
+> > I found some error when I run unittest code in btrfs-progs.
+> > fsck/012-leaf-corruption test corrupt leaf and check that it's recovered.
+> > but the test was failed and demsg below
+> > 
+> > [   47.284095] BTRFS error (device loop5): device total_bytes should be at most 27660288 but found 67108864
+> > [   47.284207] BTRFS error (device loop5): failed to read chunk tree: -22
+> > [   47.286465] BTRFS error (device loop5): open_ctree failed
+> > 
+> > I'm using kernel version 5.11 and there is no error in old version kernel.
+> > I traced the kernel code and found the code that prints error message.
+> > When it tried to mount btrfs, the function read_one_dev() failed.
+> > I found that code added by the commit 3a160a9331112 cause this problem.
+> > The unittest in btrfs-progs should be changed or kernel code should be patched?
 > 
-> I then tracked the error down up to btrfs_uuid_tree_lookup_any():
+> The kernel check makes sense. The unit test fails because the image is
+> restored from a dump and not extended to the full size automatically.
 > 
-> nr_items is zero after the call
-> ret = ioctl(fd, BTRFS_IOC_TREE_SEARCH, &search_arg);
-> (ret is also zero)
+> After 'extract_image' the image is
 > 
-> So looks like this is a filesystem issue?
+> -rw-r--r-- 1 root root 27660288 Feb 19 17:47 good.img.restored
+> -rw-r--r-- 1 root root   186392 Jul 27  2020 good.img.xz
+> -rwxr-xr-x 1 root root     2788 Feb 19 17:46 test.sh
+> 
+> but with a manual 'truncate -s 67108864 good.img.restored' the test
+> succeeds.
+> 
+> btrfs-image enlarges the file but it's probably taking the wrong size
+> 
+> 2281         dev_size = key.offset + btrfs_dev_extent_length(path.nodes[0], dev_ext);
+> 2282         btrfs_release_path(&path);
+> 2283
+> 2284         btrfs_set_stack_device_total_bytes(dev_item, dev_size);
+> 2285         btrfs_set_stack_device_bytes_used(dev_item, mdres->alloced_chunks);
+> 2286         ret = fstat(out_fd, &buf);
+> 2287         if (ret < 0) {
+> 2288                 error("failed to stat result image: %m");
+> 2289                 return -errno;
+> 2290         }
+> 2291         if (S_ISREG(buf.st_mode)) {
+> 2292                 /* Don't forget to enlarge the real file */
+> 2293                 ret = ftruncate64(out_fd, dev_size);
+> 2294                 if (ret < 0) {
+> 2295                         error("failed to enlarge result image: %m");
+> 2296                         return -errno;
+> 2297                 }
+> 2298         }
+> 
+> here it's the 'dev_size'. In the superblock dump, the sb.total_size and
+> sb.dev_item.total_size are both 67108864, which is the correct value.
+> 
+> The size as obtained from the device item in the device tree also matches the
+> right value
+> 
+>         item 6 key (1 DEV_EXTENT 61210624) itemoff 3667 itemsize 48
+>                 dev extent chunk_tree 3
+>                 chunk_objectid 256 chunk_offset 61210624 length 5898240
+>                 chunk_tree_uuid b2834867-4e78-47ee-9877-94d4e39bda43
+> 
+> Which is the key.offset + length = 61210624 + 5898240 = 67108864.
+> 
+> But the code is not called in restore_metadump because of condition
+> "btrfs_super_num_devices(mdrestore.original_super) != 1"
 
-I've now "reused" the ret < 0 output in btrfs_uuid_tree_lookup_any() and 
-added nt_items to it, too.
+Thanks for reply. I read the commit 73dd4e3c87c and I understood a
+purpose of the commit. but I'm confused the code block that isn't called
+in restore_metadump should be called in multi device?
 
-Then I get:
-
-# /home/alex/src/b2/btrfs-progs/btrfs  receive -f test2 .
-At snapshot 2021-02-20-TEMP
-ioctl(BTRFS_IOC_TREE_SEARCH, uuid, key 483c17093f551dd3, UUID_KEY, 
-896d0cfd51ec5cb6, nr_items=0) ret=0, error: No such file or directory
-ioctl(BTRFS_IOC_TREE_SEARCH, uuid, key 483c17093f551dd3, UUID_KEY, 
-896d0cfd51ec5cb6, nr_items=0) ret=0, error: No such file or directory
-ERROR: clone: did not find source subvol si=0, 
-uuid=d31d553f-0917-3c48-b65c-ec51fd0c6d89
-
-Any ideas what I can check with that information? The key looks 
-interesting...
-
-Here my debug patch against current git:
-
-diff --git a/cmds/receive.c b/cmds/receive.c
-index 2aaba3ff..29244f88 100644
---- a/cmds/receive.c
-+++ b/cmds/receive.c
-@@ -726,6 +726,7 @@ static int process_clone(const char *path, u64 
-offset, u64 len,
-  	char full_path[PATH_MAX];
-  	const char *subvol_path;
-  	char full_clone_path[PATH_MAX];
-+	char uuid_str[BTRFS_UUID_UNPARSED_SIZE];
-  	int clone_fd = -1;
-
-  	ret = path_cat_out(full_path, rctx->full_subvol_path, path);
-@@ -750,7 +751,8 @@ static int process_clone(const char *path, u64 
-offset, u64 len,
-  				ret = -ENOENT;
-  			else
-  				ret = PTR_ERR(si);
--			error("clone: did not find source subvol");
-+			uuid_unparse(clone_uuid, uuid_str);
-+			error("clone: did not find source subvol si=%i, uuid=%s", si, uuid_str);
-  			goto out;
-  		}
-  		/* strip the subvolume that we are receiving to from the start of 
-subvol_path */
-diff --git a/kernel-shared/uuid-tree.c b/kernel-shared/uuid-tree.c
-index 21115a4d..82f6d078 100644
---- a/kernel-shared/uuid-tree.c
-+++ b/kernel-shared/uuid-tree.c
-@@ -64,16 +64,17 @@ static int btrfs_uuid_tree_lookup_any(int fd, const 
-u8 *uuid, u8 type,
-  	search_arg.key.max_transid = (u64)-1;
-  	search_arg.key.nr_items = 1;
-  	ret = ioctl(fd, BTRFS_IOC_TREE_SEARCH, &search_arg);
--	if (ret < 0) {
-+	if ((ret < 0) || (search_arg.key.nr_items < 1)) {
-  		fprintf(stderr,
--			"ioctl(BTRFS_IOC_TREE_SEARCH, uuid, key %016llx, UUID_KEY, %016llx) 
-ret=%d, error: %m\n",
-+			"ioctl(BTRFS_IOC_TREE_SEARCH, uuid, key %016llx, UUID_KEY, %016llx, 
-nr_items=%d) ret=%d, error: %m\n",
-  			(unsigned long long)key.objectid,
--			(unsigned long long)key.offset, ret);
-+			(unsigned long long)key.offset, search_arg.key.nr_items, ret);
-  		ret = -ENOENT;
-  		goto out;
-  	}
-
-  	if (search_arg.key.nr_items < 1) {
-+		fprintf(stderr, "DDD2 ret=%i nr_items=%i\n", ret, 
-search_arg.key.nr_items);
-  		ret = -ENOENT;
-  		goto out;
-  	}
-
-
-
+I also checked that test goes good when removing the condition in
+restore_metadump().
