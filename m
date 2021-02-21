@@ -2,63 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED530320985
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Feb 2021 10:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC713209CC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Feb 2021 12:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhBUJoL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 21 Feb 2021 04:44:11 -0500
-Received: from smtp-out-4.tiscali.co.uk ([62.24.135.132]:47508 "EHLO
-        smtp-out-4.tiscali.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhBUJoA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 21 Feb 2021 04:44:00 -0500
-X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Feb 2021 04:43:59 EST
-Received: from [192.168.1.96] ([31.51.156.132])
-        by smtp.talktalk.net with SMTP
-        id DlAYl7qfakzENDlAYlTftT; Sun, 21 Feb 2021 09:36:50 +0000
-X-Originating-IP: [31.51.156.132]
-Subject: Re: [PATCH RFC] btrfs: Don't create SINGLE or DUP chunks for degraded
- rw mount
-Reply-To: tai63@dial.pipex.com
-References: <173bc320-4d67-6752-86cb-119dc9fb9a69@dial.pipex.com>
-To:     linux-btrfs@vger.kernel.org
-From:   tai63 <tai63@dial.pipex.com>
-X-Forwarded-Message-Id: <173bc320-4d67-6752-86cb-119dc9fb9a69@dial.pipex.com>
-Message-ID: <4a793b28-8814-7898-e72c-0cb2c7f29054@dial.pipex.com>
-Date:   Sun, 21 Feb 2021 09:36:50 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S229889AbhBULRO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 21 Feb 2021 06:17:14 -0500
+Received: from ns2.wdyn.eu ([5.252.227.236]:37848 "EHLO ns2.wdyn.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229884AbhBULRN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 21 Feb 2021 06:17:13 -0500
+X-Greylist: delayed 63069 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Feb 2021 06:17:12 EST
+Subject: Re: Unexpected "ERROR: clone: did not find source subvol" on btrfs
+ receive
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wetzel-home.de;
+        s=wetzel-home; t=1613906217;
+        bh=Ryreu3yZKN2Rmi+3cHi/vcYzPG+t2OjnAHMS4izGuDs=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=puyDynpiferXHkzXaHSCugtXvXWSEn/GBe0+Zqt1OTp/0blS0TEzyPcCqxC4cY4G4
+         RCr72bLHEic+Yrzgxvt1NZSOWBQCWoZTSOimAbJj/NnK28b+OrOR3cwdVEMJbQiAw1
+         kcV94vSVpfZ6Pd3NU3JwL6P2ToU3hYVonENR+OyM=
+To:     Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
+References: <41b096e1-5345-ae9c-810b-685499813183@wetzel-home.de>
+ <0fcbd697-11c5-0b32-7e08-80cf8d355271@gmail.com>
+From:   Alexander Wetzel <alexander@wetzel-home.de>
+Message-ID: <0d8ff769-59b3-9bbe-d958-9879e6f34719@wetzel-home.de>
+Date:   Sun, 21 Feb 2021 12:16:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <173bc320-4d67-6752-86cb-119dc9fb9a69@dial.pipex.com>
+In-Reply-To: <0fcbd697-11c5-0b32-7e08-80cf8d355271@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Antivirus: Avast (VPS 210221-0, 21/02/2021), Outbound message
-X-Antivirus-Status: Clean
-X-CMAE-Envelope: MS4wfFc9J9MYRaSXLaf9IRoR/k5mUhbIj5I4TuOvp1nzSRFPmD2jM57DVn7X4EC6F3Yv5W5N7jcRsBEbMCwDKucXUYOa5Uivlj72Q9VV0PhD6Gmfx7g8WB0I
- g7n+zll0ECAsolDfPgrEQ3KxZiFIVanu033ad0KL3DcEb+HFx4XSbs3fb2ffvpT5m0O335pamaoDNA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Qu Wenruo/all
+Am 21.02.21 um 07:54 schrieb Andrei Borzenkov:
+> 20.02.2021 20:45, Alexander Wetzel пишет:
+>>
+>> # time btrfs receive -v -f test2 .
+>> receiving snapshot 2021-02-20-TEMP
+>> uuid=120113e6-f83c-b240-ba27-259be4c92ea7, ctransid=206769
+>> parent_uuid=d31d553f-0917-3c48-b65c-ec51fd0c6d89, parent_ctransid=195056
+> ...
+>> write var/lib/mysql/nextcloud/oc_activity.ibd - offset=737280 length=8192
+>> ERROR: clone: did not find source subvol
+> 
+> Unforutnately btrfs receive does not print clone source UUID even with
+> "btrfs receive --dump". The best is to modify process_clone to print
+> full command including UUID which was not found.
+> 
 
+I've patched cmds/receive.c to print out the uuid subvol_uuid_search was 
+not able to find:
 
-Did this patch ever get accepted?
+Basically these I replaced the original error message with:
+uuid_unparse(clone_uuid, uuid_str);
+error("clone: did not find source subvol si=%i, uuid=%s", si, uuid_str);
 
-This is the one which allowed a degraded disk to be RW if it was safe to 
-do so.
+With that modification I get:
 
-For my use case (2 disk NAS RAID1) this is the one patch I'm waiting for 
-before upgrading to BTRFS, I suspect I'm not alone.
+At snapshot 2021-02-20-TEMP
+ERROR: clone: did not find source subvol si=0, 
+uuid=d31d553f-0917-3c48-b65c-ec51fd0c6d89
 
-It would help avoid being locked into a Read Only situation on disk failure
+But uuid d31d553f-0917-3c48-b65c-ec51fd0c6d89 is the uuid of the correct 
+parent...
 
+The problem here seems to be the zero return of ubvol_uuid_search().
 
-FYI the original RFC was submitted on Mon, 11 Feb 2019 23:04:25
+While compiling I also switched to 
+https://github.com/kdave/btrfs-progs.git. Same problem.
 
+I then tracked the error down up to btrfs_uuid_tree_lookup_any():
 
-Thanks
+nr_items is zero after the call
+ret = ioctl(fd, BTRFS_IOC_TREE_SEARCH, &search_arg);
+(ret is also zero)
 
-Tai
+So looks like this is a filesystem issue?
 
+Alexander
