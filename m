@@ -2,176 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EA132160A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Feb 2021 13:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE67321865
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Feb 2021 14:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhBVMQX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Feb 2021 07:16:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
+        id S231243AbhBVNUT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Feb 2021 08:20:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36750 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230399AbhBVMPq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D7A664F12;
-        Mon, 22 Feb 2021 12:14:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996073;
-        bh=YQRGc5ZUeibdSR2xq8N0L7mh/79nWG0Mxa3J9FETjYo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cLhzo4EaB8Aw3Ox+Wrh87dXCveQlwGRAcaOl93Tqs22ZYly93KqZJhg2jSG0biAz4
-         rYUpzzLe1+ILyQL8WgsE2+8/vXRbuP41hjHMnvq4LAh66N15NpRtq4E/T3AjJ1Uzsb
-         XB3ZDd9ajU8jQKo/dDj3wv+LFBzAj55XaD/76MBM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "stable@vger.kernel.org, dsterba@suse.cz, Filipe Manana" 
-        <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 5.10 28/29] btrfs: fix crash after non-aligned direct IO write with O_DSYNC
-Date:   Mon, 22 Feb 2021 13:13:22 +0100
-Message-Id: <20210222121025.628566179@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
-References: <20210222121019.444399883@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S230295AbhBVNSQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Feb 2021 08:18:16 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7490FAF3E
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Feb 2021 13:17:34 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 07:17:49 -0600
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: Remove force argument from run_delalloc_nocow()
+Message-ID: <20210222131749.dxkq45umwehqm33i@fiona>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+force_nocow can be calculated by btrfs_inode and does not need to be
+passed as an argument.
 
-Whenever we attempt to do a non-aligned direct IO write with O_DSYNC, we
-end up triggering an assertion and crashing. Example reproducer:
+This simplifies run_delalloc_nocow() call from btrfs_run_delalloc_range()
+where should_nocow() checks for BTRFS_INODE_NODATASUM and
+BTRFS_INODE_PREALLOC flags or if EXTENT_DEFRAG flags are set.
 
-  $ cat test.sh
-  #!/bin/bash
+should_nocow() has been re-arranged so EXTENT_DEFRAG has higher priority
+in checks.
 
-  DEV=/dev/sdj
-  MNT=/mnt/sdj
-
-  mkfs.btrfs -f $DEV > /dev/null
-  mount $DEV $MNT
-
-  # Do a direct IO write with O_DSYNC into a non-aligned range...
-  xfs_io -f -d -s -c "pwrite -S 0xab -b 64K 1111 64K" $MNT/foobar
-
-  umount $MNT
-
-When running the reproducer an assertion fails and produces the following
-trace:
-
-  [ 2418.403134] assertion failed: !current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA, in fs/btrfs/space-info.c:1467
-  [ 2418.403745] ------------[ cut here ]------------
-  [ 2418.404306] kernel BUG at fs/btrfs/ctree.h:3286!
-  [ 2418.404862] invalid opcode: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC PTI
-  [ 2418.405451] CPU: 1 PID: 64705 Comm: xfs_io Tainted: G      D           5.10.15-btrfs-next-87 #1
-  [ 2418.406026] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-  [ 2418.407228] RIP: 0010:assertfail.constprop.0+0x18/0x26 [btrfs]
-  [ 2418.407835] Code: e6 48 c7 (...)
-  [ 2418.409078] RSP: 0018:ffffb06080d13c98 EFLAGS: 00010246
-  [ 2418.409696] RAX: 000000000000006c RBX: ffff994c1debbf08 RCX: 0000000000000000
-  [ 2418.410302] RDX: 0000000000000000 RSI: 0000000000000027 RDI: 00000000ffffffff
-  [ 2418.410904] RBP: ffff994c21770000 R08: 0000000000000000 R09: 0000000000000000
-  [ 2418.411504] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000010000
-  [ 2418.412111] R13: ffff994c22198400 R14: ffff994c21770000 R15: 0000000000000000
-  [ 2418.412713] FS:  00007f54fd7aff00(0000) GS:ffff994d35200000(0000) knlGS:0000000000000000
-  [ 2418.413326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [ 2418.413933] CR2: 000056549596d000 CR3: 000000010b928003 CR4: 0000000000370ee0
-  [ 2418.414528] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [ 2418.415109] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [ 2418.415669] Call Trace:
-  [ 2418.416254]  btrfs_reserve_data_bytes.cold+0x22/0x22 [btrfs]
-  [ 2418.416812]  btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
-  [ 2418.417380]  btrfs_buffered_write+0x1b0/0x7f0 [btrfs]
-  [ 2418.418315]  btrfs_file_write_iter+0x2a9/0x770 [btrfs]
-  [ 2418.418920]  new_sync_write+0x11f/0x1c0
-  [ 2418.419430]  vfs_write+0x2bb/0x3b0
-  [ 2418.419972]  __x64_sys_pwrite64+0x90/0xc0
-  [ 2418.420486]  do_syscall_64+0x33/0x80
-  [ 2418.420979]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  [ 2418.421486] RIP: 0033:0x7f54fda0b986
-  [ 2418.421981] Code: 48 c7 c0 (...)
-  [ 2418.423019] RSP: 002b:00007ffc40569c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-  [ 2418.423547] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f54fda0b986
-  [ 2418.424075] RDX: 0000000000010000 RSI: 000056549595e000 RDI: 0000000000000003
-  [ 2418.424596] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000400
-  [ 2418.425119] R10: 0000000000000400 R11: 0000000000000246 R12: 00000000ffffffff
-  [ 2418.425644] R13: 0000000000000400 R14: 0000000000010000 R15: 0000000000000000
-  [ 2418.426148] Modules linked in: btrfs blake2b_generic (...)
-  [ 2418.429540] ---[ end trace ef2aeb44dc0afa34 ]---
-
-1) At btrfs_file_write_iter() we set current->journal_info to
-   BTRFS_DIO_SYNC_STUB;
-
-2) We then call __btrfs_direct_write(), which calls btrfs_direct_IO();
-
-3) We can't do the direct IO write because it starts at a non-aligned
-   offset (1111). So at btrfs_direct_IO() we return -EINVAL (coming from
-   check_direct_IO() which does the alignment check), but we leave
-   current->journal_info set to BTRFS_DIO_SYNC_STUB - we only clear it
-   at btrfs_dio_iomap_begin(), because we assume we always get there;
-
-4) Then at __btrfs_direct_write() we see that the attempt to do the
-   direct IO write was not successful, 0 bytes written, so we fallback
-   to a buffered write by calling btrfs_buffered_write();
-
-5) There we call btrfs_check_data_free_space() which in turn calls
-   btrfs_alloc_data_chunk_ondemand() and that calls
-   btrfs_reserve_data_bytes() with flush == BTRFS_RESERVE_FLUSH_DATA;
-
-6) Then at btrfs_reserve_data_bytes() we have current->journal_info set to
-   BTRFS_DIO_SYNC_STUB, therefore not NULL, and flush has the value
-   BTRFS_RESERVE_FLUSH_DATA, triggering the second assertion:
-
-  int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
-                               enum btrfs_reserve_flush_enum flush)
-  {
-      struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
-      int ret;
-
-      ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
-             flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
-      ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
-  (...)
-
-So fix that by setting the journal to NULL whenever check_direct_IO()
-returns a failure.
-
-This bug only affects 5.10 kernels, and the regression was introduced in
-5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
-The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
-("btrfs: remove dio iomap DSYNC workaround"), which depends on a large
-patchset that went into the merge window for 5.11. So this is a fix only
-for 5.10.x stable kernels, as there are people hitting this bug.
-
-Fixes: 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
-CC: stable@vger.kernel.org # 5.10 (and only 5.10)
-Acked-by: David Sterba <dsterba@suse.com>
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1181605
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/inode.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 4f2f1e932751..2115d8cc6f18 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -8026,8 +8026,12 @@ ssize_t btrfs_direct_IO(struct kiocb *io
- 	bool relock = false;
- 	ssize_t ret;
+@@ -1516,7 +1516,7 @@ static int fallback_to_cow(struct btrfs_inode *inode, struct page *locked_page,
+ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 				       struct page *locked_page,
+ 				       const u64 start, const u64 end,
+-				       int *page_started, int force,
++				       int *page_started,
+ 				       unsigned long *nr_written)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+@@ -1530,6 +1530,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	u64 ino = btrfs_ino(inode);
+ 	bool nocow = false;
+ 	u64 disk_bytenr = 0;
++	bool force = inode->flags & BTRFS_INODE_NODATACOW;
  
--	if (check_direct_IO(fs_info, iter, offset))
-+	if (check_direct_IO(fs_info, iter, offset)) {
-+		ASSERT(current->journal_info == NULL ||
-+		       current->journal_info == BTRFS_DIO_SYNC_STUB);
-+		current->journal_info = NULL;
- 		return 0;
-+	}
+ 	path = btrfs_alloc_path();
+ 	if (!path) {
+@@ -1863,13 +1864,9 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	return ret;
+ }
  
- 	count = iov_iter_count(iter);
- 	if (iov_iter_rw(iter) == WRITE) {
-
-
+-static inline int need_force_cow(struct btrfs_inode *inode, u64 start, u64 end)
++static inline bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
+ {
+ 
+-	if (!(inode->flags & BTRFS_INODE_NODATACOW) &&
+-	    !(inode->flags & BTRFS_INODE_PREALLOC))
+-		return 0;
+-
+ 	/*
+ 	 * @defrag_bytes is a hint value, no spinlock held here,
+ 	 * if is not zero, it means the file is defragging.
+@@ -1877,9 +1874,15 @@ static inline int need_force_cow(struct btrfs_inode *inode, u64 start, u64 end)
+ 	 */
+ 	if (inode->defrag_bytes &&
+ 	    test_range_bit(&inode->io_tree, start, end, EXTENT_DEFRAG, 0, NULL))
+-		return 1;
++		return false;
+ 
+-	return 0;
++	if (inode->flags & BTRFS_INODE_NODATACOW)
++		return true;
++
++	if (inode->flags & BTRFS_INODE_PREALLOC)
++		return true;
++
++	return false;
+ }
+ 
+ /*
+@@ -1891,17 +1894,12 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+ 		struct writeback_control *wbc)
+ {
+ 	int ret;
+-	int force_cow = need_force_cow(inode, start, end);
+ 	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
+ 
+-	if (inode->flags & BTRFS_INODE_NODATACOW && !force_cow) {
+-		ASSERT(!zoned);
+-		ret = run_delalloc_nocow(inode, locked_page, start, end,
+-					 page_started, 1, nr_written);
+-	} else if (inode->flags & BTRFS_INODE_PREALLOC && !force_cow) {
++	if (should_nocow(inode, start, end)) {
+ 		ASSERT(!zoned);
+ 		ret = run_delalloc_nocow(inode, locked_page, start, end,
+-					 page_started, 0, nr_written);
++					 page_started, nr_written);
+ 	} else if (!inode_can_compress(inode) ||
+ 		   !inode_need_compress(inode, start, end)) {
+ 		if (zoned)
+-- 
+2.30.1
