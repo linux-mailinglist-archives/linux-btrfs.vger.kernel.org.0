@@ -2,255 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65564322180
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Feb 2021 22:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803AC3222B4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 00:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhBVVf1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Feb 2021 16:35:27 -0500
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:60512 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230444AbhBVVfZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:35:25 -0500
-Received: from venice.bhome ([78.12.28.43])
-        by smtp-35.iol.local with ESMTPA
-        id EIqklyApGpK9wEIqkloLSc; Mon, 22 Feb 2021 22:34:39 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1614029679; bh=Lvvo0ZIcZ2idicJfoWiiRjftBZyjN4L7Eoq1FHimWD4=;
-        h=From;
-        b=am+8YbZo2mAuYZ6O6vTaJuIjYBwfXWj+eVza5H54n0kNE3wDhDyxkpHYkCZpycT5a
-         /Q4/uF1NuB62BRTB18gp74uHp/HsP9Ob8oGKdGhVoGOVWlzb5g1ddtWBAQ1fxVuALe
-         t4jJyk0EotMmY9s38yfKEeGNTjpSoLm3Nz+hL7xrHTNaWYGzGasUp8jbwmdVyWsE0z
-         TWfxfgN2f2Bqs1SBVojXPV085eKMxxGHk3SD2fyHuRSBDOvsv1fasVxburfDsLEe7l
-         CE5k7XxDobKkW86/vsHDOnlsQ53nD0upGHoSnI11ygWVDESpZeS24rf0ybGenQ9NKh
-         wuFCXrMJ6i/LA==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=6034236f cx=a_exe
- a=Q5/16X4GlyvtzKxRBiE+Uw==:117 a=Q5/16X4GlyvtzKxRBiE+Uw==:17
- a=IkcTkHD0fZMA:10 a=dfLDlhdaAAAA:20 a=VwQbUJbxAAAA:8 a=kT-NTsFwAAAA:8
- a=s0AQ7pHfopNBOQdBoV4A:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=TLwuWKmryFjkTYsgBL5T:22
-Reply-To: kreijack@inwind.it
-Subject: Re: [RFC][PATCH V7][PATCH 0/4] btrfs: allocation_hint mode
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <cover.1613678288.git.kreijack@inwind.it>
- <cover.1613678288.git.kreijack@inwind.it>
- <98f4121c-3306-3f8f-4759-7b78f55f83f8@libero.it>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-Message-ID: <8bb65540-1d70-6e97-79ac-db002e356582@inwind.it>
-Date:   Mon, 22 Feb 2021 22:34:38 +0100
+        id S231345AbhBVXmo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Feb 2021 18:42:44 -0500
+Received: from mout.gmx.net ([212.227.15.18]:59465 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231215AbhBVXmm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Feb 2021 18:42:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614037269;
+        bh=NwM7JEgH3zhlpiLcXvhbvrRTcL69w8XrzPXbsfc5AiI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=OcGnDV5hEXgSNjfZFUax4JBBN0RCa8nxeHrr3QBKpfQknOHh8SjOPQVo6TMc5BcUA
+         IeztfkCBOmkuooVygRRicNM5ooTpL4zb8rhH4q5oQK+wSqLHs95QQQ0UVzYVtzb+7Q
+         X03vixgcYpkF0GXqqpODjPd5pwNnveMBo8TXujfc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdefD-1lnwcn3wFF-00Zg8N; Tue, 23
+ Feb 2021 00:41:09 +0100
+Subject: Re: [PATCH 1/6] btrfs: Free correct amount of space in
+ btrfs_delayed_inode_reserve_metadata
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210222164047.978768-1-nborisov@suse.com>
+ <20210222164047.978768-2-nborisov@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <6a5e7c60-d8ee-cf6c-065c-c2450308602c@gmx.com>
+Date:   Tue, 23 Feb 2021 07:41:06 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <98f4121c-3306-3f8f-4759-7b78f55f83f8@libero.it>
+In-Reply-To: <20210222164047.978768-2-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfKJs8NzUT6K79o2wIMcl3DYQSlKWFgSMVR67AVae2LfVF/x7xK1aQvuShGYg8DNy1HSD+BbiT/yrJ7YLIQ8oXemTH0oni2WkL4tnREFGopDQkxrC7ktR
- jq9Et9LD4behxo7neMBEpCS3lPTA3qQyomzXlsHoUNyx3AgZAnOE8m7x4jVMldTQ4JHISeHG7w0ynBOMmefQv1AaLLHnJWWQmNAMNF1fNL6CksXESuxpfkkD
- Tk3xG8Gjc6dLpjCtzQyMuLTYp7xmMaH/oM/kiTcd1fc=
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fpqSz4YFwdz3v+SRg8DLVB8OqEJU0V0vxef0qxG3JxxLxk42390
+ 9zcpZinGIv2aJ9mKPt3M7EwLQo45dzAohxVhR1M/2C+evLH9+iDZzeccrymNSeAHc7B43RQ
+ E4vAeHwBaShsKsJW/OlmfRDl7+5iDzeT3gyH1LCQIAAiTmF552CUHFu/fPP16LX9P43WBcS
+ I2rICYA/6sd9ncjoIFmPg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wJlvuHSsZTg=:4nS4/ynRPo0cL3coY8avUV
+ 2+2Jq9Zdn0jOtQ17MR/vXqHD1myWPU4gVu+XQFxtoUu7qoT2Ifa4VDaUI+KelJGRI8hq6yF+B
+ 48lQEQXLvDVgk2e6WnFbuRZQSVaKJA+dc1vmER+OYFXrwhkbdW6YZhHFC4TyjyNjg9R3G+i9L
+ 6UFw2S7ghQLEmXV3rtowdSyMv+2+pZY1KUiFY/nKWW4wv+DGPdyXrSF+VRXnpWkd9cnnm+EK2
+ GjiZeR5dL2vk4Ql2UG9PqJA7j6R/PPy4ZPio+FVyDUDh6qlULuhaCUoDQH9DL6PPOLOfewa3N
+ L7ty1v1s/8bKIkBJsPMVOTdXTwTxqZ2jKmTQrW4pzMGP0qzAzDgYfTFyoA7hLC/wubXMkpc3R
+ j2zKufdDGy3OmXbfYBfghSqU9wOaUVV4AJlHr9c96SOEIH5PYT//DySMhHHHEZD3ZFdEDspgE
+ 9lhUUeWVhJbldOSj4fcmdMcxfyvH6zlv91Amg/KKWSwcijgOdIb0MrxcChG/HXzy24Tdcdsd+
+ e1WseRO878Qz8ELaWxpaIsNjTqpd1AMhU3L3RkuB1hF5U+OOrYrq4ZlytvzF/TO4D2QMESfZh
+ HVdnuFdxj+C9dPSkAGeEBynYu2bdU8Ig5kRDV5fEs4HkwjkZfjxnpaUPvucLEuDiOd+W2aqaN
+ LcNX3bIfFaCAGN3pVyoboocl4IlgKNR3bjmCDimQN5oOBcDLujT6NQw9a46T70lWJ8tS40xgE
+ Tpl8ztofrd9y7TqMWrGwfNVYeC22qE8XZN6GDZhnPc4J2Wcm7LROx2in/CKXzRZmvsSuCHy05
+ 6uPQa19K+iUnxWZOeP7uATBjViNg1X7PCDr1v2WGWSyL2dEOfKQ8Z/XSloyrS2GBp6jgfNLcb
+ cycT4hVETAOJbqJnZdbQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Zygo,
-
-if you are using the previous patches set, pay attention that there is a bug in the previous iteration (V5 and V6) which could cause the crash of btrfs.
-
-BR
-G.Baroncelli
-
-On 2/22/21 10:22 PM, Goffredo Baroncelli wrote:
-> Sorry, the subject is wrong, it should be [RFC][PATCH V7][PATCH 0/4] btrfs: allocation_hint mode (seven instead six)
-> 
-> On 2/22/21 10:19 PM, Goffredo Baroncelli wrote:
->> Hi all,
->>
->> This patches set was born after some discussion between me, Zygo and Josef.
->> Some details can be found in https://github.com/btrfs/btrfs-todo/issues/19.
->>
->> Some further information about a real use case can be found in
->> https://lore.kernel.org/linux-btrfs/20210116002533.GE31381@hungrycats.org/
->>
->> The idea behind this patches set, is to dedicate some disks (the fastest one)
->> to the metadata chunk. My initial idea was a "soft" hint. However Zygo
->> asked an option for a "strong" hint (== mandatory). The result is that
->> each disk can be "tagged" by one of the following flags:
->> - BTRFS_DEV_ALLOCATION_METADATA_ONLY
->> - BTRFS_DEV_ALLOCATION_PREFERRED_METADATA
->> - BTRFS_DEV_ALLOCATION_PREFERRED_DATA
->> - BTRFS_DEV_ALLOCATION_DATA_ONLY
->>
->> When the chunk allocator search a disks to allocate a chunk, scans the disks
->> in an order decided by these tags. For metadata, the order is:
->> *_METADATA_ONLY
->> *_PREFERRED_METADATA
->> *_PREFERRED_DATA
->>
->> The *_DATA_ONLY are not eligible from metadata chunk allocation.
->>
->> For the data chunk, the order is reversed, and the *_METADATA_ONLY are
->> excluded.
->>
->> The exact sort logic is to sort first for the "tag", and then for the space
->> available. If there is no space available, the next "tag" disks set are
->> selected.
->>
->> To set these tags, a new property called "allocation_hint" was created.
->> There is a dedicated btrfs-prog patches set [[PATCH V5] btrfs-progs:
->> allocation_hint disk property].
->>
->> $ sudo mount /dev/loop0 /mnt/test-btrfs/
->> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
->> devid=1, path=/dev/loop0: allocation_hint=PREFERRED_METADATA
->> devid=2, path=/dev/loop1: allocation_hint=PREFERRED_METADATA
->> devid=3, path=/dev/loop2: allocation_hint=PREFERRED_DATA
->> devid=4, path=/dev/loop3: allocation_hint=PREFERRED_DATA
->> devid=5, path=/dev/loop4: allocation_hint=PREFERRED_DATA
->> devid=6, path=/dev/loop5: allocation_hint=DATA_ONLY
->> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
->> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
->>
->> $ sudo ./btrfs fi us /mnt/test-btrfs/
->> Overall:
->>      Device size:           2.75GiB
->>      Device allocated:           1.34GiB
->>      Device unallocated:           1.41GiB
->>      Device missing:             0.00B
->>      Used:             400.89MiB
->>      Free (estimated):           1.04GiB    (min: 1.04GiB)
->>      Data ratio:                  2.00
->>      Metadata ratio:              1.00
->>      Global reserve:           3.25MiB    (used: 0.00B)
->>      Multiple profiles:                no
->>
->> Data,RAID1: Size:542.00MiB, Used:200.25MiB (36.95%)
->>     /dev/loop0     288.00MiB
->>     /dev/loop1     288.00MiB
->>     /dev/loop2     127.00MiB
->>     /dev/loop3     127.00MiB
->>     /dev/loop4     127.00MiB
->>     /dev/loop5     127.00MiB
->>
->> Metadata,single: Size:256.00MiB, Used:384.00KiB (0.15%)
->>     /dev/loop1     256.00MiB
->>
->> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
->>     /dev/loop0      32.00MiB
->>
->> Unallocated:
->>     /dev/loop0     704.00MiB
->>     /dev/loop1     480.00MiB
->>     /dev/loop2       1.00MiB
->>     /dev/loop3       1.00MiB
->>     /dev/loop4       1.00MiB
->>     /dev/loop5       1.00MiB
->>     /dev/loop6     128.00MiB
->>     /dev/loop7     128.00MiB
->>
->> # change the tag of some disks
->>
->> $ sudo ./btrfs prop set /dev/loop0 allocation_hint DATA_ONLY
->> $ sudo ./btrfs prop set /dev/loop1 allocation_hint DATA_ONLY
->> $ sudo ./btrfs prop set /dev/loop5 allocation_hint METADATA_ONLY
->>
->> $ for i in /dev/loop[0-9]; do sudo ./btrfs prop get $i allocation_hint; done
->> devid=1, path=/dev/loop0: allocation_hint=DATA_ONLY
->> devid=2, path=/dev/loop1: allocation_hint=DATA_ONLY
->> devid=3, path=/dev/loop2: allocation_hint=PREFERRED_DATA
->> devid=4, path=/dev/loop3: allocation_hint=PREFERRED_DATA
->> devid=5, path=/dev/loop4: allocation_hint=PREFERRED_DATA
->> devid=6, path=/dev/loop5: allocation_hint=METADATA_ONLY
->> devid=7, path=/dev/loop6: allocation_hint=METADATA_ONLY
->> devid=8, path=/dev/loop7: allocation_hint=METADATA_ONLY
->>
->> $ sudo btrfs bal start --full-balance /mnt/test-btrfs/
->> $ sudo ./btrfs fi us /mnt/test-btrfs/
->> Overall:
->>      Device size:           2.75GiB
->>      Device allocated:         735.00MiB
->>      Device unallocated:           2.03GiB
->>      Device missing:             0.00B
->>      Used:             400.72MiB
->>      Free (estimated):           1.10GiB    (min: 1.10GiB)
->>      Data ratio:                  2.00
->>      Metadata ratio:              1.00
->>      Global reserve:           3.25MiB    (used: 0.00B)
->>      Multiple profiles:                no
->>
->> Data,RAID1: Size:288.00MiB, Used:200.19MiB (69.51%)
->>     /dev/loop0     288.00MiB
->>     /dev/loop1     288.00MiB
->>
->> Metadata,single: Size:127.00MiB, Used:336.00KiB (0.26%)
->>     /dev/loop5     127.00MiB
->>
->> System,single: Size:32.00MiB, Used:16.00KiB (0.05%)
->>     /dev/loop7      32.00MiB
->>
->> Unallocated:
->>     /dev/loop0     736.00MiB
->>     /dev/loop1     736.00MiB
->>     /dev/loop2     128.00MiB
->>     /dev/loop3     128.00MiB
->>     /dev/loop4     128.00MiB
->>     /dev/loop5       1.00MiB
->>     /dev/loop6     128.00MiB
->>     /dev/loop7      96.00MiB
->>
->>
->> #As you can see all the metadata were placed on the disk loop5/loop7 even if
->> #the most empty one are loop0 and loop1.
->>
->>
->>
->> TODO:
->> - more tests
->> - the tool which show the space available should consider the tagging (
->>    the disks tagged by _METADATA_ONLY should be excluded from the data
->>    availability)
->>
->>
->> Comments are welcome
->> BR
->> G.Baroncelli
->>
->> -- 
->> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
->> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
->>
->> Revision:
->> V7:
->> - make more room in the struct btrfs_ioctl_dev_properties up to 1K
->> - leave in btrfs_tree.h only the costants
->> - removed the mount option (sic)
->> - correct an 'use before check' in the while loop (signaled
->>    by Zygo)
->> - add a 2nd sort to be sure that the device_info array is in the
->>    expected order
->>
->> V6:
->> - add further values to the hints: add the possibility to
->>    exclude a disk for a chunk type
->>
->>    btrfs: add ioctl BTRFS_IOC_DEV_PROPERTIES.
->>    btrfs: add flags to give an hint to the chunk allocator
->>    btrfs: export dev_item.type in
->>      /sys/fs/btrfs/<uuid>/devinfo/<devid>/type
->>    btrfs: add allocator_hint mode
->>
->>   fs/btrfs/ioctl.c                | 68 ++++++++++++++++++++++++++
->>   fs/btrfs/sysfs.c                | 11 +++++
->>   fs/btrfs/volumes.c              | 86 ++++++++++++++++++++++++++++++++-
->>   fs/btrfs/volumes.h              |  3 ++
->>   include/uapi/linux/btrfs.h      | 39 +++++++++++++++
->>   include/uapi/linux/btrfs_tree.h | 14 ++++++
->>   6 files changed, 219 insertions(+), 2 deletions(-)
->>
-> 
-> 
 
 
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+On 2021/2/23 =E4=B8=8A=E5=8D=8812:40, Nikolay Borisov wrote:
+> Following commit f218ea6c4792 ("btrfs: delayed-inode: Remove wrong
+> qgroup meta reservation calls") this function now reserves num_bytes,
+> rather than the fixed amount of nodesize. As such this requires the
+> same amount to be freed in case of failure. Fix this by adjusting
+> the amount we are freeing.
+>
+> Fixes f218ea6c4792 ("btrfs: delayed-inode: Remove wrong qgroup meta rese=
+rvation calls")
+>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>   fs/btrfs/delayed-inode.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> index ec0b50b8c5d6..ac9966e76a2f 100644
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -649,7 +649,7 @@ static int btrfs_delayed_inode_reserve_metadata(
+>   						      btrfs_ino(inode),
+>   						      num_bytes, 1);
+>   		} else {
+> -			btrfs_qgroup_free_meta_prealloc(root, fs_info->nodesize);
+> +			btrfs_qgroup_free_meta_prealloc(root, num_bytes);
+>   		}
+>   		return ret;
+>   	}
+>
