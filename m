@@ -2,91 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803EF321BD6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Feb 2021 16:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B9F321C28
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Feb 2021 17:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhBVPtA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Feb 2021 10:49:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56090 "EHLO mx2.suse.de"
+        id S231321AbhBVQDk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Feb 2021 11:03:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37994 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230261AbhBVPs7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:48:59 -0500
+        id S231253AbhBVQDb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:03:31 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27C40AF4C;
-        Mon, 22 Feb 2021 15:48:16 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4CEC4AFBF;
+        Mon, 22 Feb 2021 16:02:48 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E682DDA7FF; Mon, 22 Feb 2021 16:46:16 +0100 (CET)
-Date:   Mon, 22 Feb 2021 16:46:16 +0100
+        id 4C219DA7FF; Mon, 22 Feb 2021 17:00:49 +0100 (CET)
+Date:   Mon, 22 Feb 2021 17:00:49 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@gmail.com>
-Subject: Re: [RFC] btrfs-progs: format-output: remove newline in fmt_end text
- mode
-Message-ID: <20210222154616.GQ1993@twin.jikos.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     dsterba@suse.cz, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Subject: Re: [PATCH v15 00/42] btrfs: zoned block device support
+Message-ID: <20210222160049.GR1993@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@gmail.com>
-References: <20210216162840.167845-1-realwakka@gmail.com>
- <20210219215611.GM1993@twin.jikos.cz>
- <20210220164238.GB11258@realwakka>
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+References: <cover.1612433345.git.naohiro.aota@wdc.com>
+ <20210210195829.GW1993@twin.jikos.cz>
+ <SN4PR0401MB35987EE941FA59E2ECB8D7269B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20210211151901.GD1993@twin.jikos.cz>
+ <SN4PR0401MB3598ADA963CA60A715DE5EDE9B8C9@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20210211154627.GE1993@twin.jikos.cz>
+ <SN4PR0401MB359821DC2BBF171C946142D09B889@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20210216043247.cjxybi7dudpgvvyg@naota-xeon>
+ <20210216114611.GM1993@suse.cz>
+ <20210222075043.3g7watpx5gedguaj@naota-xeon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210220164238.GB11258@realwakka>
+In-Reply-To: <20210222075043.3g7watpx5gedguaj@naota-xeon>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 04:42:38PM +0000, Sidong Yang wrote:
-> On Fri, Feb 19, 2021 at 10:56:11PM +0100, David Sterba wrote:
-> > On Tue, Feb 16, 2021 at 04:28:40PM +0000, Sidong Yang wrote:
-> > > Remove a code that inserting new line in fmt_end() for text mode.
-> > > Old code made a failure in fstest btrfs/006.
-> > > 
-> > > Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> > > ---
-> > > Hi, I've just read mail that Filipe written that some failure about fstest.
-> > > I'm worried about this patch makes other problem. So make it RFC. Thanks.
-> > 
-> > I found the discussion under the device stats patch adding json, the
-> > added line was known and "hopefully not causing problems", but the
-> > fstests seem to notice.
-> > 
-> > I think we can fix that by removing the fmt_end newline but we also need
-> > to update how the fmt_print is done for the text output. Ie. for json
-> > there are some strict rules for line continuations  (",") but for the
-> > textual output, each line ended by "\n" right away, without delaying
-> > that to the next fmt_* call should work.
+On Mon, Feb 22, 2021 at 04:50:43PM +0900, Naohiro Aota wrote:
+> > For real hardware I think this is not relevant but for the emulated mode
+> > we need to deal with that case. The reserved size is wasteful and this
+> > will become noticeable for devices < 16G but I'd rather keep the logic
+> > simple and not care much about this corner case. So, the superblock
+> > range would be reserved and if there's not enough to store the secondary
+> > sb, then don't.
 > 
-> You mean that if this patch applied and the code prints device stats for
-> text format manually replaced to fmt_print(), there is no last new line
-> for text output? fmt_print() prints new line before print some value now.
-> I think that it should prints new line at the end of each fmt_print().
-> like below
+> Sure. That works. I'm running xfstests with these new SB
+> locations. Once it passed, I'll post the patch.
 > 
-> diff --git a/common/format-output.c b/common/format-output.c
-> index f5b12548..9a9f5bf7 100644
-> --- a/common/format-output.c
-> +++ b/common/format-output.c
-> @@ -242,7 +239,6 @@ void fmt_print(struct format_ctx *fctx, const char* key, ...)
->                 const bool print_colon = row->out_text[0];
->                 int len;
->  
-> -               putchar('\n');
->                 fmt_indent1(fctx->indent);
->                 len = strlen(row->out_text);
->  
-> @@ -312,6 +308,8 @@ void fmt_print(struct format_ctx *fctx, const char* key, ...)
->         }
->  
->         fmt_end_value(fctx, row);
-> +       if (bconf.output_format == CMD_FORMAT_TEXT)
-> +               putchar('\n');
+> One corner case left. What should we do with zone size > 8G? In this
+> case, the primary SB zones and the 1st copy SB zones overlap. I know
+> this is unrealistic for real hardware, but you can still create such a
+> device with null_blk.
+> 
+> 1) Use the following zones (zones #2, #3) as the primary SB zones
+> 2) Do not write the primary SBs
+> 3) Reject to mkfs
+> 
+> To be simple logic, method #3 would be appropriate here?
+> 
+> Technically, all the log zones overlap with zone size > 128 GB. I'm
+> considering to reject to mkfs in this insane case anyway.
 
-Yeah effectively that, but inside fmt_end_value and removing it from
-fmt_end. It's fixed in devel now with some comments updated as the plain
-text and json are different.
+The 8G zone size idea is to buy us some time to support future hardware,
+once this won't suffice we'll add an incompat bit like BIGZONES that
+will allow larger zone sizes. At that time we'll probably have a better
+idea about an exact number. So it's #3.
