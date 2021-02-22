@@ -2,153 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065623211AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Feb 2021 08:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C128B3214C6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Feb 2021 12:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBVH66 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Feb 2021 02:58:58 -0500
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:47164 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhBVH65 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:58:57 -0500
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id F09056C00745;
-        Mon, 22 Feb 2021 09:58:07 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1613980688; bh=bbQ62V4GthswWegrgcoqUrD5BftmNKmNud6bUQAcOyM=;
-        h=References:From:To:Cc:Subject:In-reply-to:Date;
-        b=C4aBDRRoIhv2H/+Rzf5Q+fT07fAK/6ZX8ob0ufBki4KKofEOZiQWtPCaq3dNvrz16
-         VW52uo5TKYQXdU9iwncM9SytpOHSUYugTS0xJvmLpYVWt4TNLOPHAFNYw4rkaTlQku
-         Z2yN67sbDWzRDGcnHXmPSwXXspcRMxLpYW0TF6CU=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id E7E9D6C00754;
-        Mon, 22 Feb 2021 09:58:07 +0200 (EET)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id i5aLIWdz25LU; Mon, 22 Feb 2021 09:58:07 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 68D976C0074F;
-        Mon, 22 Feb 2021 09:58:07 +0200 (EET)
-Received: from nas (unknown [45.87.95.231])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id CF8D01BE00B1;
-        Mon, 22 Feb 2021 09:58:05 +0200 (EET)
-References: <20210222063357.92930-1-wqu@suse.com>
- <20210222063357.92930-4-wqu@suse.com>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Su Yue <l@damenly.su>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 03/12] btrfs: disk-io: allow btree_set_page_dirty() to
- do more sanity check on subpage metadata
-In-reply-to: <20210222063357.92930-4-wqu@suse.com>
-Message-ID: <im6kr0tz.fsf@damenly.su>
-Date:   Mon, 22 Feb 2021 15:58:00 +0800
+        id S230063AbhBVLHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Feb 2021 06:07:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230361AbhBVLHs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Feb 2021 06:07:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F98F64DD0;
+        Mon, 22 Feb 2021 11:07:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613992027;
+        bh=iYnfRJzuuvrWl9J1H0O2Vmbq4Mjay3jDy0pUgADT1TA=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=V8vXFAXWFYHGFNlYrF60BEVa5ruxXB/HPqXEaFkKHpSjXgHLLlPF9xS1SSkiMcgtf
+         gbD1qL28fgqpFl1QMblL5wsp4n2SHX7MSKTrVaQLOsQgs6p9/Q0jIcrQBsyuXTnYmA
+         7UpdvKJkIQhqhzatTAbAJ8IBt3E+XDpkYfA/IEjQ=
+Date:   Mon, 22 Feb 2021 12:07:05 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     dsterba@suse.cz, fdmanana@kernel.org, linux-btrfs@vger.kernel.org,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 5.10.x] btrfs: fix crash after non-aligned direct IO
+ write with O_DSYNC
+Message-ID: <YDOQWY26qlJJ+r6H@kroah.com>
+References: <94663c8a2172dc96b760d356a538d45c36f46040.1613062764.git.fdmanana@suse.com>
+ <YCvbvJujcuiGcBSj@kroah.com>
+ <20210216151546.GQ1993@twin.jikos.cz>
+ <YCvmAz/gtKQwkqOc@kroah.com>
+ <20210216175221.GS1993@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 6NpmlYxOGzysiV+lRWe8dgs1s1k3Ua26u/vDsBBdmWXyNjCNe1YPUxGr7h97Nxyk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216175221.GS1993@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Feb 16, 2021 at 06:52:21PM +0100, David Sterba wrote:
+> On Tue, Feb 16, 2021 at 04:34:27PM +0100, Greg KH wrote:
+> > On Tue, Feb 16, 2021 at 04:15:46PM +0100, David Sterba wrote:
+> > > On Tue, Feb 16, 2021 at 03:50:36PM +0100, Greg KH wrote:
+> > > > On Tue, Feb 16, 2021 at 02:40:31PM +0000, fdmanana@kernel.org wrote:
+> > > > As this is a one-off patch, I need the btrfs maintainers to ack this and
+> > > > really justify why we can't take the larger patch or patch series here
+> > > > instead, as that is almost always the correct thing to do instead.
+> > > 
+> > > Acked-by: David Sterba <dsterba@suse.com>
+> > > 
+> > > The full backport would be patches
+> > > 
+> > > ecfdc08b8cc6 btrfs: remove dio iomap DSYNC workaround
+> > > a42fa643169d btrfs: call iomap_dio_complete() without inode_lock
+> > > 502756b38093 btrfs: remove btrfs_inode::dio_sem
+> > > e9adabb9712e btrfs: use shared lock for direct writes within EOF
+> > > c35237063340 btrfs: push inode locking and unlocking into buffered/direct write
+> > > a14b78ad06ab btrfs: introduce btrfs_inode_lock()/unlock()
+> > > b8d8e1fd570a btrfs: introduce btrfs_write_check()
+> > > 
+> > > and maybe more.
+> > > 
+> > > $ git diff b8d8e1fd570a^..ecfdc08b8cc6 | diffstat
+> > >  btrfs_inode.h |   10 -
+> > >  ctree.h       |    8 +
+> > >  file.c        |  338 +++++++++++++++++++++++++++-------------------------------
+> > >  inode.c       |   96 +++++++---------
+> > >  transaction.h |    1 
+> > >  5 files changed, 213 insertions(+), 240 deletions(-)
+> > > 
+> > > That seems too much for a backport, the fix Filipe implemented is
+> > > simpler and IMO qualifies as the exceptional stable-only patch.
+> > 
+> > Why is that too much?  For 7 patches that's a small overall diffstat.
+> > And you match identically what is upstream in Linus's tree.  That means
+> > over time, backporting fixing is much easier, and understanding the code
+> > for everyone is simpler.
+> 
+> The changes are not trivial and touch eg. inode locking and other
+> subsystems (iomap), so they're not self contained inside btrfs. And the
+> list of possibly related patches is not entirely known at this moment,
+> the above is an example that was obvious, but Filipe has expressed
+> doubts that it's complete and I agree.
+> 
+> Backporting them to 5.10.x would need same amount of testing and
+> validation that the 5.11 version got during the whole development cycle.
+> 
+> > It's almost always better to track what is in Linus's tree than to do
+> > one-off patches as 95% of the time we do one-off patches they are buggy
+> > and cause problems as no one else is running them.
+> 
+> While I understand that concern in general, in this case it's trading
+> changes by lots of code with a targeted fix with a reproducer, basically
+> fixing the buggy error handling path.
+> 
+> > So how about sending the above backported series instead please.
+> 
+> Considering the risk I don't want to do that.
 
-On Mon 22 Feb 2021 at 14:33, Qu Wenruo <wqu@suse.com> wrote:
+Ok, thanks, now queued up.
 
-> For btree_set_page_dirty(), we should also check the extent 
-> buffer
-> sanity for subpage support.
->
-> Unlike the regular sector size case, since one page can contain 
-> multiple
-> extent buffers, we need to make sure there is at least one dirty 
-> extent
-> buffer in the page.
->
-> So this patch will iterate through the 
-> btrfs_subpage::dirty_bitmap
-> to get the extent buffers, and check if any dirty extent buffer 
-> in the page
-> range has EXTENT_BUFFER_DIRTY and proper refs.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/disk-io.c | 47 
->  ++++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 41 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index c2576c5fe62e..437e6b2163c7 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -42,6 +42,7 @@
->  #include "discard.h"
->  #include "space-info.h"
->  #include "zoned.h"
-> +#include "subpage.h"
->
->  #define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
->  				 BTRFS_HEADER_FLAG_RELOC |\
-> @@ -992,14 +993,48 @@ static void btree_invalidatepage(struct 
-> page *page, unsigned int offset,
->  static int btree_set_page_dirty(struct page *page)
->  {
->  #ifdef DEBUG
-> +	struct btrfs_fs_info *fs_info = 
-> btrfs_sb(page->mapping->host->i_sb);
-> +	struct btrfs_subpage *subpage;
->  	struct extent_buffer *eb;
-> +	int cur_bit;
->
-cur_bit is not initialized.
-
-> +	u64 page_start = page_offset(page);
-> +
-> +	if (fs_info->sectorsize == PAGE_SIZE) {
-> +		BUG_ON(!PagePrivate(page));
-> +		eb = (struct extent_buffer *)page->private;
-> +		BUG_ON(!eb);
-> +		BUG_ON(!test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-> +		BUG_ON(!atomic_read(&eb->refs));
-> +		btrfs_assert_tree_locked(eb);
-> +		return __set_page_dirty_nobuffers(page);
-> +	}
-> +	ASSERT(PagePrivate(page) && page->private);
-> +	subpage = (struct btrfs_subpage *)page->private;
-> +
-> +	ASSERT(subpage->dirty_bitmap);
-> +	while (cur_bit < BTRFS_SUBPAGE_BITMAP_SIZE) {
-> +		unsigned long flags;
-> +		u64 cur;
-> +		u16 tmp = (1 << cur_bit);
-> +
-> +		spin_lock_irqsave(&subpage->lock, flags);
-> +		if (!(tmp & subpage->dirty_bitmap)) {
-> +			spin_unlock_irqrestore(&subpage->lock, flags);
-> +			cur_bit++;
-> +			continue;
-> +		}
-> +		spin_unlock_irqrestore(&subpage->lock, flags);
-> +		cur = page_start + cur_bit * fs_info->sectorsize;
->
-> -	BUG_ON(!PagePrivate(page));
-> -	eb = (struct extent_buffer *)page->private;
-> -	BUG_ON(!eb);
-> -	BUG_ON(!test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-> -	BUG_ON(!atomic_read(&eb->refs));
-> -	btrfs_assert_tree_locked(eb);
-> +		eb = find_extent_buffer(fs_info, cur);
-> +		ASSERT(eb);
-> +		ASSERT(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-> +		ASSERT(atomic_read(&eb->refs));
-> +		btrfs_assert_tree_locked(eb);
-> +		free_extent_buffer(eb);
-> +
-> +		cur_bit += (fs_info->nodesize >> 
-> fs_info->sectorsize_bits);
-> +	}
->  #endif
->  	return __set_page_dirty_nobuffers(page);
->  }
-
+greg k-h
