@@ -2,60 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6124F3229C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 12:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB17A322A53
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 13:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhBWLxy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Feb 2021 06:53:54 -0500
-Received: from mail.jvpinto.com ([65.49.11.60]:49930 "EHLO mail.JVPinto.com"
+        id S232658AbhBWMLp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Feb 2021 07:11:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232495AbhBWLxB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:53:01 -0500
-Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
- RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 23 Feb 2021 03:52:13 -0800
-Received: from User (52.231.198.195) by RW-EXC1.JVPinto.com (172.32.1.13) with
- Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Tue, 23 Feb 2021
- 03:51:59 -0800
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <johnpinto@jvpinto.com>
-Subject: Hello okay
-Date:   Tue, 23 Feb 2021 11:52:12 +0000
+        id S232685AbhBWMJc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Feb 2021 07:09:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC7A164E21
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 12:08:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614082132;
+        bh=OrFXc0DCi1CRQ8jui8shbWd58unAZ1vdn/84MuWwbro=;
+        h=From:To:Subject:Date:From;
+        b=MDA/0JfOhArOpKH/2JYp1H8Uq07Gbj9FT/pGoNdAbYGLKFdwnjXK97qlNiPZQZ5wy
+         co6QxcrnIbE89LScNLY9vlVSwN2TRe8FQcZTh800lPu5li2d2Bo55xT8k7wO10cmzV
+         mklKKHHMKXfEaUPipqlZni+0b33fQnZ0/PhQli91BVuqQt0hPdqkNCQo24D8Yqz0kL
+         OYQY3a0Ojt7EWL6LkWT7yDfZKlOMvYWoLMop0xW+MqD4r5XoTeucDqp5j8KpVjOaRY
+         hyg6tuz79ENTerHEOkKjCkIGEa1OTucipvd91FCUPviviNYB2I4G0+QwEaGbS18E8H
+         03tIiYmCY7D+w==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/3] btrfs: fix a couple races between fsync and other code
+Date:   Tue, 23 Feb 2021 12:08:46 +0000
+Message-Id: <cover.1614081281.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <a979b4e3f4df4cf8baf7c5db5d0603cc@RW-EXC1.JVPinto.com>
-To:     Undisclosed recipients:;
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+From: Filipe Manana <fdmanana@suse.com>
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+The first patch fixes a race between fsync and memory mapped writes, which
+can result in corruptions. The second one fixes a different race that in
+practice should be "impossible" to happen, but in case it's triggered
+somehow, results in not logging an inode when it has new extents. The last
+patch just removes some no longer needed code.
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+The first patch, as mentioned in its changelog, depends on Josef's patchset
+which has the subject:
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+   "Introduce a mmap sem to deal with some mmap issues"
 
-Regards,
-Ms. Reem.
+The others are independent of it.
+
+Filipe Manana (3):
+  btrfs: fix race between memory mapped writes and fsync
+  btrfs: fix race between marking inode needs to be logged and log
+    syncing
+  btrfs: remove stale comment and logic from btrfs_inode_in_log()
+
+ fs/btrfs/btrfs_inode.h | 32 +++++++++++++++++++-------------
+ fs/btrfs/file.c        | 28 +++++++++++-----------------
+ fs/btrfs/inode.c       |  4 +---
+ fs/btrfs/transaction.h |  2 +-
+ 4 files changed, 32 insertions(+), 34 deletions(-)
+
+-- 
+2.28.0
+
