@@ -2,239 +2,260 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B601C322D20
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 16:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AACA322DE8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 16:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhBWPGZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Feb 2021 10:06:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
+        id S233417AbhBWPrV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Feb 2021 10:47:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbhBWPGV (ORCPT
+        with ESMTP id S233392AbhBWPq5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Feb 2021 10:06:21 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55B5C06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 07:05:40 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id w6so4598911qti.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 07:05:40 -0800 (PST)
+        Tue, 23 Feb 2021 10:46:57 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA6C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 07:46:15 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id d5so5599680iln.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 07:46:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iZCO5iWYHcEQb35PXrDaavY5r0fvPx25cRBnSI7VCrk=;
-        b=OR5UEmi2qtqNvUVi/Wya/3Fj0EbDRHqs2ZaOtd+C1c6dYEQN++bW7ACiuhM8U9Hhxa
-         /YnwV057hNQDeOce+xX59AyGZTx2de4DfcFnn6NInSJ+p0NcWNt+mbQHi7Ti09Z8xu0k
-         ugo3ysioVu3ePHS3TofiKGxE9E6rU+H6xGqLvcY6kiIQhTLxdnHu4YUnNZ5Gq1PuqXnr
-         CDvjZ3tavoT/RLkHcXwCwjy76xaTIPzRvlQPeq8H5D7AJ/g42tKRGqrC2iy5AtGoFHV1
-         ny8RubK9sT2J7n98vZgpGVPzhAJbYY8P5MsF7bjCJMOIvCeRRCBQC6Rv4UNDqS5hpnkZ
-         FA/w==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=HeB9/rVOC73M3wHWIhLI44Y56YJe6d58NpvYTbe+Pb0=;
+        b=lGtI/roXtRjT9N+IiX3kSVca0tS1XsvT+APY1RSa1P46AjoKZtUykMAJJifxqjhfeO
+         OEeb6NT/KMlv95Do/Cmu4gvmcLcZD4TdIFghH5HJ5wQE3pcru3xb5G7KzAN+KIROT85V
+         r3UJ8hFLG3v/0NJ4QEBw0GyQA+HKItpVmqOYWkpZvrI8uS/iGeZ1SFmN2blX4gugdSXv
+         1oRLxs+cFUccULsPF9qF/5X+52h+7Vxq7mPPgkCT7jjdaKT7nQN7mXHr8RGBaukdYDzq
+         awK9lxNmm4Td90iQWg0Xaxmrf3b/V3qdMdlm5weWUVgDxO8UDy9J0t7XO4TYbha/kL0P
+         lClA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=iZCO5iWYHcEQb35PXrDaavY5r0fvPx25cRBnSI7VCrk=;
-        b=gV+iAtTjqlAghunAT9B4cTsuYmvOabqXYtMqesvya8/GB+7IA5GQL96ofpatkizFCm
-         1YsZGG2oYk+gPuYsGT2gJ364AN2AfDq70ayKyNkY9IhiIQxQIa6qU2uXZHMh3qnTr6NF
-         LU7zSWObPlutWdeQsvmg1/MCBxc7IlxZXy9JN3zGq+XzeKYEaFB4ZFS9bjCk7+bfsea3
-         zH8dtQQ58kOyu5oSXZhzIe2W8Ma4Bs4CR+HakM9//qz0YypzHFxOSVzMK6pr9dvuEQIn
-         rASE2mNGr8jK1/RMJ8w2AsjcMG7LAc7kGrw+irg2VqMhpGZUP0fJZTBsm3FAQ7Kzqpy4
-         teNA==
-X-Gm-Message-State: AOAM532ZAxptOo3Aw6Iox638EfNgiCNvQ+UUdpYWwPnY2yEytVuSYus3
-        6w56nyARNeFsR482Nc3SI+gjITKCIIM7GkiD
-X-Google-Smtp-Source: ABdhPJxzUoeMI6uEDjtcAn/j8Vs5jr8uLcLL0vuOtd4hKD+5ylmvovMZTA6eeO6LfRzAA8BvRI56cQ==
-X-Received: by 2002:ac8:598e:: with SMTP id e14mr25903973qte.346.1614092738887;
-        Tue, 23 Feb 2021 07:05:38 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:11c9::1397? ([2620:10d:c091:480::1:7ecc])
-        by smtp.gmail.com with ESMTPSA id b20sm13505394qto.45.2021.02.23.07.05.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Feb 2021 07:05:37 -0800 (PST)
-Subject: Re: Recovering Btrfs from a freak failure of the disk controller
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
- <0c4701b2-23ef-fd7a-d198-258b49eedea8@toxicpanda.com>
- <CAEg-Je9NGV0Mvhw7v8CwcyAZ9zd9T5Fmk2iQyZ1PFWVUOXaP+Q@mail.gmail.com>
- <90da9117-6b02-3c27-17a0-ff497eb04496@toxicpanda.com>
- <CAEg-Je-zRWrkKOQM-Y_Y17eHhUrJe+d1_H9iLzQB4w7T+Een=w@mail.gmail.com>
- <74ca64e1-3933-c12b-644a-21745cf2d849@toxicpanda.com>
- <CAEg-Je9FZhLMx0MuxhyhTDUsRzfbi2_VZsHa3Bs+46jY8F82ZA@mail.gmail.com>
- <ab38ba5a-f684-0634-c5d8-d317541e37b9@toxicpanda.com>
- <CAEg-Je-cxaM3SuoLfHL6cGv0-0r7s-hccS4ixs66oO6YYOtbwg@mail.gmail.com>
- <56747283-fe34-51c5-9dbf-930bdafffaed@toxicpanda.com>
- <CAEg-Je_=jUMJfAqwtuZwcPE4+HOAJB7JC5gKSw4EeZrutxk5kA@mail.gmail.com>
- <58f4fe54-a462-b256-df60-17b1084235f6@toxicpanda.com>
- <CAEg-Je-_r3_AsLHa_HDDOUwVs+Jtty5roFvEyF4K-T2D7oEayA@mail.gmail.com>
- <58246f4c-4e26-c89c-a589-376cfe23d783@toxicpanda.com>
- <CAEg-Je-yPqueyW3JqSWrAE_9ckc1KTyaNoFwjbozNLrvb7_tEg@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <a9561d44-24a3-fa87-e292-98feb4846ab9@toxicpanda.com>
-Date:   Tue, 23 Feb 2021 10:05:36 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        bh=HeB9/rVOC73M3wHWIhLI44Y56YJe6d58NpvYTbe+Pb0=;
+        b=ileI2JFXyaf3gTbQQqZpqkgNPSca8E9+U2le0WgFwykJKQ1MH0nafjyIMaEH3AyHLO
+         TmDGJ0zqOl7KQ13I7MA95sBQyWVjmReim4JkfRBdHjgp+FVHoBcf3OcAG84M6Sm7a5oS
+         VbA1S3bvNbNDLgnlYrecW4oQgcwZob7BKfnCJ+qR2eW6m3Un/vQbn6rmtGzIHpz+FbMc
+         9TL5vVJGM/HmgieEg1NvFtDf4p2hAPwfAzZ1TdX5ibdG3TO+iq34Za0DfyL+5GHzdx7n
+         d2z5axl83r60HvbTyKQA2MPRzIiz5qg1dD61E9wcpju10nAjxSFbOvSCNQKkA4CLTsT6
+         WB3w==
+X-Gm-Message-State: AOAM531zEBUHA2FYUl60IRxYEZLVtBJphe5boj4BYduiwpMzp3U06bCo
+        BlC3Q/Vmbs+zJyPrUxhvHRk61Xzox/Tb+FqHeu8s0cdC3kc=
+X-Google-Smtp-Source: ABdhPJxg93rRW1HVr6euNH0NqIHt9TOxV99ZXLoowJi3EM05bWCWGRNQmBodtEIMIe31uGOYTAiKP0Lnd8GGve5f1Y8=
+X-Received: by 2002:a92:4105:: with SMTP id o5mr19734631ila.47.1614095175315;
+ Tue, 23 Feb 2021 07:46:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAEg-Je-yPqueyW3JqSWrAE_9ckc1KTyaNoFwjbozNLrvb7_tEg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Sebastian Roller <sebastian.roller@gmail.com>
+Date:   Tue, 23 Feb 2021 16:45:39 +0100
+Message-ID: <CALS+qHMo-XVzXKEfd44E6BG7TPnWKT+r2m7p1wFtFs5XjQApEA@mail.gmail.com>
+Subject: All files are damaged after btrfs restore
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/22/21 11:03 PM, Neal Gompa wrote:
-> On Mon, Feb 22, 2021 at 2:34 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> On 2/21/21 1:27 PM, Neal Gompa wrote:
->>> On Wed, Feb 17, 2021 at 11:44 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>
->>>> On 2/17/21 11:29 AM, Neal Gompa wrote:
->>>>> On Wed, Feb 17, 2021 at 9:59 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>
->>>>>> On 2/17/21 9:50 AM, Neal Gompa wrote:
->>>>>>> On Wed, Feb 17, 2021 at 9:36 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>
->>>>>>>> On 2/16/21 9:05 PM, Neal Gompa wrote:
->>>>>>>>> On Tue, Feb 16, 2021 at 4:24 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>
->>>>>>>>>> On 2/16/21 3:29 PM, Neal Gompa wrote:
->>>>>>>>>>> On Tue, Feb 16, 2021 at 1:11 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>
->>>>>>>>>>>> On 2/16/21 11:27 AM, Neal Gompa wrote:
->>>>>>>>>>>>> On Tue, Feb 16, 2021 at 10:19 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> On 2/14/21 3:25 PM, Neal Gompa wrote:
->>>>>>>>>>>>>>> Hey all,
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> So one of my main computers recently had a disk controller failure
->>>>>>>>>>>>>>> that caused my machine to freeze. After rebooting, Btrfs refuses to
->>>>>>>>>>>>>>> mount. I tried to do a mount and the following errors show up in the
->>>>>>>>>>>>>>> journal:
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): has skinny extents
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
->>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> I've tried to do -o recovery,ro mount and get the same issue. I can't
->>>>>>>>>>>>>>> seem to find any reasonably good information on how to do recovery in
->>>>>>>>>>>>>>> this scenario, even to just recover enough to copy data off.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> I'm on Fedora 33, the system was on Linux kernel version 5.9.16 and
->>>>>>>>>>>>>>> the Fedora 33 live ISO I'm using has Linux kernel version 5.10.14. I'm
->>>>>>>>>>>>>>> using btrfs-progs v5.10.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Can anyone help?
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Can you try
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> btrfs check --clear-space-cache v1 /dev/whatever
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> That should fix the inode generation thing so it's sane, and then the tree
->>>>>>>>>>>>>> checker will allow the fs to be read, hopefully.  If not we can work out some
->>>>>>>>>>>>>> other magic.  Thanks,
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Josef
->>>>>>>>>>>>>
->>>>>>>>>>>>> I got the same error as I did with btrfs-check --readonly...
->>>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> Oh lovely, what does btrfs check --readonly --backup do?
->>>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> No dice...
->>>>>>>>>>>
->>>>>>>>>>> # btrfs check --readonly --backup /dev/sda3
->>>>>>>>>>>> Opening filesystem to check...
->>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
->>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
->>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
->>>>>>>>>>
->>>>>>>>>> Hey look the block we're looking for, I wrote you some magic, just pull
->>>>>>>>>>
->>>>>>>>>> https://github.com/josefbacik/btrfs-progs/tree/for-neal
->>>>>>>>>>
->>>>>>>>>> build, and then run
->>>>>>>>>>
->>>>>>>>>> btrfs-neal-magic /dev/sda3 791281664 888895
->>>>>>>>>>
->>>>>>>>>> This will force us to point at the old root with (hopefully) the right bytenr
->>>>>>>>>> and gen, and then hopefully you'll be able to recover from there.  This is kind
->>>>>>>>>> of saucy, so yolo, but I can undo it if it makes things worse.  Thanks,
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> # btrfs check --readonly /dev/sda3
->>>>>>>>>> Opening filesystem to check...
->>>>>>>>>> ERROR: could not setup extent tree
->>>>>>>>>> ERROR: cannot open file system
->>>>>>>>> # btrfs check --clear-space-cache v1 /dev/sda3
->>>>>>>>>> Opening filesystem to check...
->>>>>>>>>> ERROR: could not setup extent tree
->>>>>>>>>> ERROR: cannot open file system
->>>>>>>>>
->>>>>>>>> It's better, but still no dice... :(
->>>>>>>>>
->>>>>>>>>
->>>>>>>>
->>>>>>>> Hmm it's not telling us what's wrong with the extent tree, which is annoying.
->>>>>>>> Does mount -o rescue=all,ro work now that the root tree is normal?  Thanks,
->>>>>>>>
->>>>>>>
->>>>>>> Nope, I see this in the journal:
->>>>>>>
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): enabling all of the rescue options
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): ignoring data csums
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): ignoring bad roots
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): disabling log replay at mount time
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): has skinny extents
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): tree level mismatch detected, bytenr=791281664 level expected=1 has=2
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): tree level mismatch detected, bytenr=791281664 level expected=1 has=2
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
->>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
->>>>>>>
->>>>>>>
->>>>>>
->>>>>> Ok git pull for-neal, rebuild, then run
->>>>>>
->>>>>> btrfs-neal-magic /dev/sda3 791281664 888895 2
->>>>>>
->>>>>> I thought of this yesterday but in my head was like "naaahhhh, whats the chances
->>>>>> that the level doesn't match??".  Thanks,
->>>>>>
->>>>>
->>>>> Tried rescue mount again after running that and got a stack trace in
->>>>> the kernel, detailed in the following attached log.
->>>>
->>>> Huh I wonder how I didn't hit this when testing, I must have only tested with
->>>> zero'ing the extent root and the csum root.  You're going to have to build a
->>>> kernel with a fix for this
->>>>
->>>> https://paste.centos.org/view/7b48aaea
->>>>
->>>> and see if that gets you further.  Thanks,
->>>>
->>>
->>> I built a kernel build as an RPM with your patch[1] and tried it.
->>>
->>> [root@fedora ~]# mount -t btrfs -o rescue=all,ro /dev/sdb3 /mnt
->>> Killed
->>>
->>> The log from the journal is attached.
->>
->>
->> Ahh crud my bad, this should do it
->>
->> https://paste.centos.org/view/ac2e61ef
->>
-> 
-> Patch doesn't apply (note it is patch 667 below):
+Hello all.
+Sorry for asking here directly, but I'm in a desperate situation and
+out of options.
+I have a 72 TB btrfs filesystem which functions as a backup drive.
+After a recent controller hardware failure while the backup was
+running, both original and backup fs were severely damaged.
 
-Ah sorry, should have just sent you an iterative patch.  You can take the above 
-patch and just delete the hunk from volumes.c as you already have that applied 
-and then it'll work.  Thanks,
+Kernel version is 5.7.7. btrfs-progs is (now) 5.9.
 
-Josef
+At the moment I am unable to mount the btrfs filesystem.
+
+root@hikitty:~$ mount -t btrfs -o ro,recovery /dev/sdf1 /mnt/
+mount: wrong fs type, bad option, bad superblock on /dev/sdf1,
+       missing codepage or helper program, or other error
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+
+[165097.777496] BTRFS warning (device sdf1): 'recovery' is deprecated,
+use 'usebackuproot' instead
+[165097.777500] BTRFS info (device sdf1): trying to use backup root at
+mount time
+[165097.777502] BTRFS info (device sdf1): disk space caching is enabled
+[165097.777505] BTRFS info (device sdf1): has skinny extents
+[165101.721250] BTRFS error (device sdf1): bad tree block start, want
+126718415241216 have 0
+[165101.750951] BTRFS error (device sdf1): bad tree block start, want
+126718415241216 have 0
+[165101.755753] BTRFS error (device sdf1): failed to verify dev
+extents against chunks: -5
+[165101.895065] BTRFS error (device sdf1): open_ctree failed
+
+
+Since I desperately need the data I ran btrfs restore.
+root@hikitty:~$ install/btrfs-progs-5.9/btrfs -v restore -i -s -m -S
+--path-regex '^/(|@(|/backup(|/home(|/.*))))$' /dev/sdf1
+/mnt/dumpo/home/
+checksum verify failed on 109911545430016 found 000000B6 wanted 00000000
+checksum verify failed on 109911545462784 found 000000B6 wanted 00000000
+checksum verify failed on 57767345897472 found 000000B6 wanted 00000000
+Restoring /mnt/dumpo/home/@
+Restoring /mnt/dumpo/home/@/backup
+Restoring /mnt/dumpo/home/@/backup/home
+=E2=80=A6
+(2.1 GB of log file)
+=E2=80=A6
+Done searching /@/backup/home
+Reached the end of the tree searching the directory
+Reached the end of the tree searching the directory
+Reached the end of the tree searching the directory
+
+
+Using that restore I was able to restore approx. 7 TB of the
+originally stored 22 TB under that directory.
+Unfortunately nearly all the files are damaged. Small text files are
+still OK. But every larger binary file is useless.
+Is there any possibility to fix the filesystem in a way, that I get
+the data less damaged?
+
+So far I ran no btrfs check --repair.
+
+Since the original and the backup have been damaged any help would be
+highly appreciated.
+Thanks for your assistance.
+
+Kind regards,
+Sebastian Roller
+
+----------------  Attachment. All outputs. -------------------
+uname -a
+Linux hikitty 5.7.7-1.el7.elrepo.x86_64 #1 SMP Wed Jul 1 11:53:16 EDT
+2020 x86_64 x86_64 x86_64 GNU/Linux
+
+
+root@hikitty:~$ install/btrfs-progs-5.9/btrfs --version
+btrfs-progs v5.9
+(Version v5.10 fails to compile)
+
+
+root@hikitty:~$ btrfs fi show
+Label: 'history'  uuid: 56051c5f-fca6-4d54-a04e-1c1d8129fe56
+        Total devices 1 FS bytes used 68.37TiB
+        devid    2 size 72.77TiB used 68.59TiB path /dev/sdf1
+
+
+root@hikitty:~$ mount -t btrfs -o ro,recovery /dev/sdf1 /mnt/hist/
+mount: wrong fs type, bad option, bad superblock on /dev/sdf1,
+       missing codepage or helper program, or other error
+
+       In some cases useful info is found in syslog - try
+       dmesg | tail or so.
+
+[165097.777496] BTRFS warning (device sdf1): 'recovery' is deprecated,
+use 'usebackuproot' instead
+[165097.777500] BTRFS info (device sdf1): trying to use backup root at
+mount time
+[165097.777502] BTRFS info (device sdf1): disk space caching is enabled
+[165097.777505] BTRFS info (device sdf1): has skinny extents
+[165101.721250] BTRFS error (device sdf1): bad tree block start, want
+126718415241216 have 0
+[165101.750951] BTRFS error (device sdf1): bad tree block start, want
+126718415241216 have 0
+[165101.755753] BTRFS error (device sdf1): failed to verify dev
+extents against chunks: -5
+[165101.895065] BTRFS error (device sdf1): open_ctree failed
+
+
+root@hikitty:~$ btrfs rescue super-recover -v /dev/sdf1
+All Devices:
+        Device: id =3D 2, name =3D /dev/sdh1
+
+Before Recovering:
+        [All good supers]:
+                device name =3D /dev/sdh1
+                superblock bytenr =3D 65536
+
+                device name =3D /dev/sdh1
+                superblock bytenr =3D 67108864
+
+                device name =3D /dev/sdh1
+                superblock bytenr =3D 274877906944
+
+        [All bad supers]:
+
+All supers are valid, no need to recover
+
+
+root@hikitty:/mnt$ btrfs rescue chunk-recover /dev/sdf1
+Scanning: DONE in dev0
+checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
+checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
+checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+bytenr mismatch, want=3D124762809384960, have=3D0
+open with broken chunk error
+Chunk tree recovery failed
+
+^^ This was btrfs v4.14
+
+
+root@hikitty:~$ install/btrfs-progs-5.9/btrfs check --readonly /dev/sdi1
+Opening filesystem to check...
+checksum verify failed on 99593231630336 found 000000B6 wanted 00000000
+checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+bad tree block 124762809384960, bytenr mismatch, want=3D124762809384960, ha=
+ve=3D0
+ERROR: failed to read block groups: Input/output error
+ERROR: cannot open file system
+
+
+FIRST MOUNT AT BOOT TIME AFTER DESASTER
+Feb 15 08:05:11 hikitty kernel: BTRFS info (device sdf1): disk space
+caching is enabled
+Feb 15 08:05:11 hikitty kernel: BTRFS info (device sdf1): has skinny extent=
+s
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944039161856 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944039161856 (dev /dev/sdf1 sector 3974114336)
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944039165952 (dev /dev/sdf1 sector 3974114344)
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944039170048 (dev /dev/sdf1 sector 3974114352)
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944039174144 (dev /dev/sdf1 sector 3974114360)
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944037851136 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944037851136 (dev /dev/sdf1 sector 3974111776)
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944037855232 (dev /dev/sdf1 sector 3974111784)
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944037859328 (dev /dev/sdf1 sector 3974111792)
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944037863424 (dev /dev/sdf1 sector 3974111800)
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944040767488 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944040767488 (dev /dev/sdf1 sector 3974117472)
+Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+corrected: ino 0 off 141944040771584 (dev /dev/sdf1 sector 3974117480)
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944035147776 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944035115008 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944035131392 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944036327424 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944036278272 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944035164160 have 0
+Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+block start, want 141944036294656 have 0
+Feb 15 08:05:16 hikitty kernel: BTRFS error (device sdf1): failed to
+verify dev extents against chunks: -5
+Feb 15 08:05:16 hikitty kernel: BTRFS error (device sdf1): open_ctree faile=
+d
