@@ -2,142 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6D7322C68
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 15:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECC3322D05
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 16:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbhBWOdD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Feb 2021 09:33:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46856 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231367AbhBWOdC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:33:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8DA4EACE5;
-        Tue, 23 Feb 2021 14:32:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 16665DA7AA; Tue, 23 Feb 2021 15:30:20 +0100 (CET)
-Date:   Tue, 23 Feb 2021 15:30:20 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Steven Davies <btrfs-list@steev.me.uk>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Anand Jain <anand.jain@oracle.com>
-Subject: Re: 5.11.0: open ctree failed: devide total_bytes should be at most
- X but found Y
-Message-ID: <20210223143020.GW1993@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Steven Davies <btrfs-list@steev.me.uk>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Anand Jain <anand.jain@oracle.com>
-References: <34d881ab-7484-6074-7c0b-b5c8d9e46379@steev.me.uk>
- <PH0PR04MB7416AA577A3ED39E4C5833819B809@PH0PR04MB7416.namprd04.prod.outlook.com>
- <PH0PR04MB74167CACC7802BA85638105F9B809@PH0PR04MB7416.namprd04.prod.outlook.com>
+        id S231177AbhBWPA2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Feb 2021 10:00:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhBWPA0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Feb 2021 10:00:26 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9102DC061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 06:59:46 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id s24so17360118iob.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 06:59:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ceremcem-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/I4hv0Lkd3p6/uGOOYRrIAtBdkkf59SsHTwvedQIB1k=;
+        b=lkgHlxx/MOF7ZrEBC5Wi7K6BI7cTHl1YhMfgBfoLw6qtmybmD5xVpwBIpg+6P4QMOQ
+         nro0ua7qTmXjxW4LmDTnTBfyo1G3TK1riSU4Sous9ACS3/blme/RXwEE+xphBcfzho78
+         uhj1pu5Ot6lZrdBQ19Nh3YN49C6yysQnqXEwwN56vsWjq5PitBruXGTF8xj3I+zQAXis
+         KwYe92UxqTyVx5PWdHPuoag/AJGtJPt7rP05ujgRfHDZEw3gCeqwkC69gLZJKm8mhZv1
+         OW5m9Hr+viPS4HF5KEyaMmfTL0+CcfwY4C3UfRDcg0ZxE/2VNuvmi+JLbd0UP6cjkUrD
+         nWVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/I4hv0Lkd3p6/uGOOYRrIAtBdkkf59SsHTwvedQIB1k=;
+        b=rfoB+uElels7gd39wHFwfJEr/rlmuaRvvNooHEzqYboCiUiEmh7hcFR7MJ6mi0zaHX
+         hBZRA3CaHM18JB3EORVvzaZjc7eQ3IdygxazMKvJzYUbhVfo5u8Tlk0amVr1aQwaUbqS
+         5cBvzXv9huCPCksY78pQE+VVE7mbGA8Yq8G68iWgYPloZW320NhSdYuWc3mj5Au3qVTN
+         FiCPSfrgw3cgcu3255j/UipfG7RQkvIzDQ2GsyWHyKcWiwAw9k0SOfHHzBgJ0rl0HcgE
+         8bEs27suQm/Tat2yrz7i8gv1kUEQkZZ2gR2SWWaB+rlvSFeRbZDYvEjeUu2QSkltLR01
+         Bc0g==
+X-Gm-Message-State: AOAM533b3WJTIUxjQ18hHum8EONQo8PYlnfr36YtziAJH3XYF2RyLuP5
+        /epvpUlNMIDagAStn02Kxo5dZJbXMebOZNlZbNdTPg==
+X-Google-Smtp-Source: ABdhPJzrji+kLgc6sJ/J95LsGYY+7GjWRxjspkK7JVmEy+6ldENTW3skoESCwEyiCFS1OtYRLWRqRQ/iHh43JsAJjo8=
+X-Received: by 2002:a05:6638:44e:: with SMTP id r14mr9755642jap.138.1614092385977;
+ Tue, 23 Feb 2021 06:59:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR04MB74167CACC7802BA85638105F9B809@PH0PR04MB7416.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CAN4oSBftCwpZvm-96bvOQzCVCsWHW1e8r6hWjWOtMr9ntCDcxg@mail.gmail.com>
+ <CAL3q7H64Y=nckuqz8a1+LFuR0AqDV2Gvu0+9k6Y-fNFj1ADx9g@mail.gmail.com>
+In-Reply-To: <CAL3q7H64Y=nckuqz8a1+LFuR0AqDV2Gvu0+9k6Y-fNFj1ADx9g@mail.gmail.com>
+From:   Cerem Cem ASLAN <ceremcem@ceremcem.net>
+Date:   Tue, 23 Feb 2021 17:59:35 +0300
+Message-ID: <CAN4oSBfepq3WixmyOMiVU2sZ8OtEHK1JbwzxA7wWU53jqC-5mA@mail.gmail.com>
+Subject: Re: btrfs receive started to fail constantly for a subvolume
+To:     fdmanana@gmail.com
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 09:43:04AM +0000, Johannes Thumshirn wrote:
-> On 23/02/2021 10:13, Johannes Thumshirn wrote:
-> > On 22/02/2021 21:07, Steven Davies wrote:
-> > 
-> > [+CC Anand ]
-> > 
-> >> Booted my system with kernel 5.11.0 vanilla with the first time and received this:
-> >>
-> >> BTRFS info (device nvme0n1p2): has skinny extents
-> >> BTRFS error (device nvme0n1p2): device total_bytes should be at most 964757028864 but found 
-> >> 964770336768
-> >> BTRFS error (device nvme0n1p2): failed to read chunk tree: -22
-> >>
-> >> Booting with 5.10.12 has no issues.
-> >>
-> >> # btrfs filesystem usage /
-> >> Overall:
-> >>      Device size:                 898.51GiB
-> >>      Device allocated:            620.06GiB
-> >>      Device unallocated:          278.45GiB
-> >>      Device missing:                  0.00B
-> >>      Used:                        616.58GiB
-> >>      Free (estimated):            279.94GiB      (min: 140.72GiB)
-> >>      Data ratio:                       1.00
-> >>      Metadata ratio:                   2.00
-> >>      Global reserve:              512.00MiB      (used: 0.00B)
-> >>
-> >> Data,single: Size:568.00GiB, Used:566.51GiB (99.74%)
-> >>     /dev/nvme0n1p2        568.00GiB
-> >>
-> >> Metadata,DUP: Size:26.00GiB, Used:25.03GiB (96.29%)
-> >>     /dev/nvme0n1p2         52.00GiB
-> >>
-> >> System,DUP: Size:32.00MiB, Used:80.00KiB (0.24%)
-> >>     /dev/nvme0n1p2         64.00MiB
-> >>
-> >> Unallocated:
-> >>     /dev/nvme0n1p2        278.45GiB
-> >>
-> >> # parted -l
-> >> Model: Sabrent Rocket Q (nvme)
-> >> Disk /dev/nvme0n1: 1000GB
-> >> Sector size (logical/physical): 512B/512B
-> >> Partition Table: gpt
-> >> Disk Flags:
-> >>
-> >> Number  Start   End     Size    File system     Name  Flags
-> >>   1      1049kB  1075MB  1074MB  fat32                 boot, esp
-> >>   2      1075MB  966GB   965GB   btrfs
-> >>   3      966GB   1000GB  34.4GB  linux-swap(v1)        swap
-> >>
-> >> What has changed in 5.11 which might cause this?
-> >>
-> >>
-> > 
-> > This line:
-> >> BTRFS info (device nvme0n1p2): has skinny extents
-> >> BTRFS error (device nvme0n1p2): device total_bytes should be at most 964757028864 but found 
-> >> 964770336768
-> >> BTRFS error (device nvme0n1p2): failed to read chunk tree: -22
-> > 
-> > comes from 3a160a933111 ("btrfs: drop never met disk total bytes check in verify_one_dev_extent")
-> > which went into v5.11-rc1.
-> > 
-> > IIUIC the device item's total_bytes and the block device inode's size are off by 12M, so the check
-> > introduced in the above commit refuses to mount the FS.
-> > 
-> > Anand any idea?
-> 
-> OK this is getting interesting:
-> btrfs-porgs sets the device's total_bytes at mkfs time and obtains it from ioctl(..., BLKGETSIZE64, ...); 
-> 
-> BLKGETSIZE64 does:
-> return put_u64(argp, i_size_read(bdev->bd_inode));
-> 
-> The new check in read_one_dev() does:
-> 
->                u64 max_total_bytes = i_size_read(device->bdev->bd_inode);
-> 
->                if (device->total_bytes > max_total_bytes) {
->                        btrfs_err(fs_info,
->                        "device total_bytes should be at most %llu but found %llu",
->                                  max_total_bytes, device->total_bytes);
->                        return -EINVAL;
-> 
-> 
-> So the bdev inode's i_size must have changed between mkfs and mount.
+Thanks for the info. I upgraded the kernel to 5.10.0-0.bpo.3-amd64.
 
-The kernel side verifies that the physical device size is not smaller
-than the size recorded in the device item, so that makes sense. I was a
-bit doubtful about the check but it can detect real problems or point
-out some weirdness.
-
-The 12M delta is not big, but I'd expect that for a physical device it
-should not change. Another possibility would be some kind of rounding to
-a reasonable number, like 16M.
+Filipe Manana <fdmanana@gmail.com>, 15 =C5=9Eub 2021 Pzt, 14:09 tarihinde =
+=C5=9Funu yazd=C4=B1:
+>
+> On Sat, Feb 13, 2021 at 3:09 PM Cerem Cem ASLAN <ceremcem@ceremcem.net> w=
+rote:
+> >
+> > Basically I'm using btrbk to create snapshots on main disk (MMM) and
+> > send them 2 distinct disks (AAA and BBB). I have many nested
+> > subvolumes (X, X/foo/Y, etc), so every distinct subvolume is
+> > enumerated separately, like X.111, X.112, ..., X/foo/Y.111,
+> > X/foo/Y.112, etc. Setup worked well for 100s of snapshots and backups
+> > (send/receive) within the last 2 months.
+> >
+> > Currently there is one offending subvolume that couldn't be sent to
+> > disk AAA (say X.111). I tried to send it a couple of times even though
+> > the huge size (230GB, takes 4 hour for every test) but there was no
+> > success.
+> >
+> > Error was like:
+> >
+> > ERROR: ... sh: btrfs send -p
+> > /mnt/MMM-root/snapshots/erik3/rootfs.20210213T0356 -c
+> > /mnt/MMM-root/snapshots/erik3/rootfs.20210213T0414
+> > /mnt/MMM-root/snapshots/erik3/home/ceremcem.20210213T0356 | mbuffer -v
+> > 1 | btrfs receive /mnt/AAA-root/snapshots/erik3/home/
+> > ERROR: ... cannot open
+> > /mnt/AAA-root/snapshots/erik3/home/ceremcem.20210213T0356/o10179316-137=
+012-0:
+> > No such file or directory
+> >
+> > I tried to issue `btrfs send
+> > /mnt/MMM-root/snapshots/erik3/home/ceremcem.20210213T0356 | pv >
+> > /dev/null` to see if there is anything wrong with the source snapshot,
+> > but it succeeded.
+> >
+> > Skipping the other intermediate attempts, I tried to remove every
+> > snapshot in AAA, BBB, reformat AAA and BBB with mkfs.btrfs, deleted
+> > all snapshots and created a new set on MMM, tried to send everything
+> > from scratch. It failed with nearly the same error (can't remember
+> > now) on the same subvolume
+> > (/mnt/MMM-root/snapshots/erik3/home/ceremcem.XXX).
+> >
+> > I ran a btrfs scrub on /mnt/MMM-root and there were no errors.
+> >
+> > Why do I keep getting this error?
+> >
+> > uname -a
+> > Linux erik3 5.9.0-0.bpo.5-amd64 #1 SMP Debian 5.9.15-1~bpo10+1
+>
+> Assuming this is a 5.9.0 vanilla kernel, or something close enough,
+> then you are missing some bug fixes that are likely to solve this:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3D0b3f407e6728d990ae1630a02c7b952c21c288d3
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3D9c2b4e0347067396ceb3ae929d6888c81d610259
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3D98272bb77bf4cc20ed1ffca89832d713e70ebf09
+>
+> These are all in recent stable kernels (the versions listed in kernel.org=
+).
+>
+> > (2020-12-31) x86_64 GNU/Linux
+> >
+> > btrfs-progs v5.10
+>
+>
+>
+> --
+> Filipe David Manana,
+>
+> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
+re right.=E2=80=9D
