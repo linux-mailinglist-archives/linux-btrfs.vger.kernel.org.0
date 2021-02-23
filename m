@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D943322A50
+	by mail.lfdr.de (Postfix) with ESMTP id C183F322A51
 	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Feb 2021 13:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbhBWMLk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Feb 2021 07:11:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41630 "EHLO mail.kernel.org"
+        id S232452AbhBWMLl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Feb 2021 07:11:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232689AbhBWMJe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S232690AbhBWMJe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 23 Feb 2021 07:09:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 901DD64E25
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 12:08:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7009764E32
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Feb 2021 12:08:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614082133;
-        bh=2fez1eKCiJtOXj51F8XTqr8DVrp7oBIqvrZhWsIjCW4=;
+        bh=Co0/NHNHWHYPqn528EX0MjRKqrULSIK1Jy+x6KpP4mI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=bg3QI/A1CtpNiyVobNf/3V+O5zvY0MzmGcDLEZvt3NIHvUM49dtcxgKtY8pZyfMuV
-         fX4HlIy3EVdYSIODxPt4kjk2X5PPo9Ln5aQCEjovc9nmyCRIh8dezg5bAlQ8zfkbHD
-         DDK/l0ObsxSGSMGzXCW8tOYUZc+xyFZvWdOd2C6ipL9PSEWKrntfe4o8I6S7uLIAOZ
-         RrfZEjWNGSR7USYrs/u+oKcjySSmVTtxlo6/fqbWqB2A5wIjxNYgXS2kU2scyOaa/P
-         ya9Ukqowola+VRIv2p2JXTsEKkb6UonjIWABwqqPUIPzHmWNX/foKxu1UiIcxZfh9s
-         0qhd/GWVhHcAA==
+        b=PkbWuFBDaxL8WZ4SFbSOh7aIfI8bSwvM/63IOcVCwt5tShuPMrYDn7CpZl6oXxctU
+         tEZy2T9C+/SvjnMLPTakdR1OhXJ69jrmmiFx1GnCJYtRshmdxusAWHS9Elx1CNT65Q
+         SVjwWXVlB5UGukdHTDyVkmGHSAeCkijUmOlJ79XnCHEmns9zSBnnZRjcE82SvHhQD/
+         +epRcBd5HSeKyjleP6P6C+4yys5fa3wDdsGX5crJwbCqzmV1lg4sNyLiuJP2y7eRE9
+         POC+Hx9wsXhknAc+1zUK3yRfW5V0IXuyg9ClumIhZtIEcn1YgoMb9BhOrKEJeWMJ31
+         1iYFfDuX+hThA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: fix race between memory mapped writes and fsync
-Date:   Tue, 23 Feb 2021 12:08:47 +0000
-Message-Id: <913b5529db9d7ff6dcfb370785e471e0024241c2.1614081281.git.fdmanana@suse.com>
+Subject: [PATCH 2/3] btrfs: fix race between marking inode needs to be logged and log syncing
+Date:   Tue, 23 Feb 2021 12:08:48 +0000
+Message-Id: <2afba65e798814e2a4a3af69f210c5a35a63fb3d.1614081281.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1614081281.git.fdmanana@suse.com>
 References: <cover.1614081281.git.fdmanana@suse.com>
@@ -39,248 +39,205 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When doing an fsync we flush all delalloc, lock the inode (vfs lock), flush
-any new delalloc that might have been created before taking the lock and
-then wait either for the ordered extents to complete or just for the
-writeback to complete (depending on whether the full sync flag is set or
-not). We then start logging the inode and assume that while we are doing it
-no one else is touching the inode's file extent items (or adding new ones).
+We have a race between marking that an inode needs to be logged, either
+at btrfs_set_inode_last_trans() or at btrfs_page_mkwrite(), and between
+btrfs_sync_log(). The following steps describe how the race happens.
 
-That is generally true because all operations that modify an inode acquire
-the inode's lock first, including buffered and direct IO writes. However
-there is one exception: memory mapped writes, which do not and can not
-acquire the inode's lock.
+1) We are at transaction N;
 
-This can cause two types of issues: ending up logging file extent items
-with overlapping ranges, which is detected by the tree checker and will
-result in aborting the transaction when starting writeback for a log
-tree's extent buffers, or a silent corruption where we log a version of
-the file that never existed.
+2) Inode I was previously fsynced in the current transaction so it has:
 
-Scenario 1 - logging overlapping extents
+    inode->logged_trans set to N;
 
-The following steps explain how we can end up with file extents items with
-overlapping ranges in a log tree due to a race between a fsync and memory
-mapped writes:
+3) The inode's root currently has:
 
-1) Task A starts an fsync on inode X, which has the full sync runtime flag
-   set. First it starts by flushing all delalloc for the inode;
+   root->log_transid set to 1
+   root->last_log_commit set to 0
 
-2) Task A then locks the inode and flushes any other delalloc that might
-   have been created after the previous flush and waits for all ordered
-   extents to complete;
+   Which means only one log transaction was committed to far, log
+   transaction 0. When a log tree is created we set ->log_transid and
+   ->last_log_commit of its parent root to 0 (at btrfs_add_log_tree());
 
-3) In the inode's root we have the following leaf:
+4) One more range of pages is dirtied in inode I;
 
-   Leaf N, generation == current transaction id:
+5) Some task A starts an fsync against some other inode J (same root), and
+   so it joins log transaction 1.
 
-   ---------------------------------------------------------
-   | (...)  [ file extent item, offset 640K, length 128K ] |
-   ---------------------------------------------------------
+   Before task A calls btrfs_sync_log()...
 
-   The last file extent item in leaf N covers the file range from 640K to
-   768K;
+6) Task B starts an fsync against inode I, which currently has the full
+   sync flag set, so it starts delalloc and waits for the ordered extent
+   to complete before calling btrfs_inode_in_log() at btrfs_sync_file();
 
-4) Task B does a memory mapped write for the page corresponding to the
-   file range from 764K to 768K;
+7) During ordered extent completion we have btrfs_update_inode() called
+   against inode I, which in turn calls btrfs_set_inode_last_trans(),
+   which does the following:
 
-5) Task A starts logging the inode. At copy_inode_items_to_log() it uses
-   btrfs_search_forward() to search for leafs modified in the current
-   transaction that contain items for the inode. It finds leaf N and copies
-   all the inode items from that leaf into the log tree.
+     spin_lock(&inode->lock);
+     inode->last_trans = trans->transaction->transid;
+     inode->last_sub_trans = inode->root->log_transid;
+     inode->last_log_commit = inode->root->last_log_commit;
+     spin_unlock(&inode->lock);
 
-   Now the log tree has a copy of the last file extent item from leaf N.
+   So ->last_trans is set to N and ->last_sub_trans set to 1.
+   But before setting ->last_log_commit...
 
-   At the end of the while loop at copy_inode_items_to_log(), we have the
-   minimum key set to:
+8) Task A is at btrfs_sync_log():
 
-   min_key.objectid = <inode X number>
-   min_key.type = BTRFS_EXTENT_DATA_KEY
-   min_key.offset = 640K
+   - it increments root->log_transid to 2
+   - starts writeteback for all log tree extent buffers
+   - waits for the writeback to complete
+   - writes the super blocks
+   - updates root->last_log_commit to 1
 
-   Then we increment the key's offset by 1 so that the next call to
-   btrfs_search_forward() leaves us at the first key greater than the key
-   we just processed.
+   It's a lot of slow steps between updating root->log_transid and
+   root->last_log_commit;
 
-   But before btrfs_search_forward() is called again...
+9) The task doing the ordered extent completion, currently at
+   btrfs_set_inode_last_trans(), then finally runs:
 
-6) Dellaloc for the page at offset 764K, dirtied by task B, is started.
-   It can be started for several reasons:
+     inode->last_log_commit = inode->root->last_log_commit;
+     spin_unlock(&inode->lock);
 
-     - The async reclaim task is attempting to satisfy metadata or data
-       reservation requests, and it has reached a point where it decided
-       to flush delalloc;
-     - Due to memory pressure the vm triggers writeback of dirty pages;
-     - The system call sync_file_range(2) is called from user space.
+   Which results in inode->last_log_commit being set to 1.
+   The ordered extent completes;
 
-7) When the respective ordered extent completes, it trims the length of
-   the existing file extent item for file offset 640K from 128K to 124K,
-   and a new file extent item is added with a key offset of 764K and a
-   length of 4K;
+10) Task B is resumed, and it calls btrfs_inode_in_log() whichs returns
+    true because we have all the following conditions met:
 
-8) Task A calls btrfs_search_forward(), which returns us a path pointing
-   to the leaf (can be leaf N or some other) containing the new file extent
-   item for file offset 764K.
+    inode->logged_trans == N which matches fs_info->generation &&
+    inode->last_subtrans (1) <= inode->last_log_commit (1) &&
+    inode->last_subtrans (1) <= root->last_log_commit (1) &&
+    list inode->extent_tree.modified_extents is empty
 
-   We end up copying this item to the log tree, which overlaps with the
-   last copied file extent item, which covers the file range from 640K to
-   768K.
+    And as a consequence we return without logging the inode, so the
+    existing logged version of the inode does not point to the extent
+    that was written after the previous fsync.
 
-   When writeback is triggered for log tree's extent buffers, the issue
-   will be detected by the tree checker which will dump a trace and an
-   error message on dmesg/syslog. If the writeback is triggered when
-   syncing the log, which typically is, then we also end up aborting the
-   current transaction.
+It should be impossible in practice for one task be able to do so much
+progress in btrfs_sync_log() while another task is at
+btrfs_set_inode_last_trans() right after it reads root->log_transid and
+before it reads root->last_log_commit. Even if kernel preemption is enabled
+we know the task at btrfs_set_inode_last_trans() can not be preempted
+because it is holding the inode's spinlock.
 
-This is the same type of problem fixed in 0c713cbab6200b ("Btrfs: fix race
-between ranged fsync and writeback of adjacent ranges").
+However there is another place where we do the same without holding the
+spinlock, which is in the memory mapped write path at:
 
-Scenario 2 - logging a version of the file that never existed
+  vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+  {
+     (...)
+     BTRFS_I(inode)->last_trans = fs_info->generation;
+     BTRFS_I(inode)->last_sub_trans = BTRFS_I(inode)->root->log_transid;
+     BTRFS_I(inode)->last_log_commit = BTRFS_I(inode)->root->last_log_commit;
+     (...)
 
-This scenario only happens when using the NO_HOLES feature and results in
-a silent corruption, in the sense that is not detectable by 'btrfs check'
-or the tree checker:
+So with preemption happening after setting ->last_sub_trans and before
+setting ->last_log_commit, it is less of a stretch to have another task
+do enough progress at btrfs_sync_log() such that the task doing the memory
+mapped write ends up with ->last_sub_trans and ->last_log_commit set to
+the same value. It is still a big stretch to get there, as the task doing
+btrfs_sync_log() has to start writeback, wait for its completion and write
+the super blocks.
 
-1) We have an inode I with a size of 1M and two file extent items, one
-   covering an extent with disk_bytenr == X for the file range [0, 512K[
-   and another one covering another extent with disk_bytenr == Y for the
-   file range [512K, 1M[;
+So fix this in two different ways:
 
-2) A hole is punched for the file range [512K, 1M[;
+1) For btrfs_set_inode_last_trans(), simply set ->last_log_commit to the
+   value of ->last_sub_trans minus 1;
 
-3) Task A starts an fsync of inode I, which has the full sync runtime flag
-   set. It starts by flushing all existing delalloc, locks the inode (VFS
-   lock), starts any new delalloc that might have been created before
-   taking the lock and waits for all ordered extents to complete;
+2) For btrfs_page_mkwrite() only set the inode's ->last_sub_trans, just
+   like we do for buffered and direct writes at btrfs_file_write_iter(),
+   which is all we need to make sure multiple writes and fsyncs to an
+   inode in the same transaction never result in an fsync missing that
+   the inode changed and needs to be logged. Turn this into a helper
+   function and use it both at btrfs_page_mkwrite() and at
+   btrfs_file_write_iter() - this also fixes the problem that at
+   btrfs_page_mkwrite() we were setting those fields without the
+   protection of the inode's spinlock.
 
-4) Some other task does a memory mapped write for the page corresponding to
-   the file range [640K, 644K[ for example;
-
-5) Task A then logs all items of the inode with the call to
-   copy_inode_items_to_log();
-
-6) In the meanwhile delalloc for the range [640K, 644K[ is started. It can
-   be started for several reasons:
-
-     - The async reclaim task is attempting to satisfy metadata or data
-       reservation requests, and it has reached a point where it decided
-       to flush delalloc;
-     - Due to memory pressure the vm triggers writeback of dirty pages;
-     - The system call sync_file_range(2) is called from user space.
-
-7) The ordered extent for the range [640K, 644K[ completes and a file
-   extent item for that range is added to the subvolume tree, pointing
-   to a 4K extent with a disk_bytenr == Z;
-
-8) Task A then calls btrfs_log_holes(), to scan for implicit holes in
-   the subvolume tree. It finds two implicit holes:
-
-   - one for the file range [512K, 640K[
-   - one for the file range [644K, 1M[
-
-   As a result we end up neither logging a hole for the range [640K, 644K[
-   nor logging the file extent item with a disk_bytenr == Z.
-   This means that if we have a power failure and replay the log tree we
-   end up getting the following file extent layout:
-
-   [ disk_bytenr X ]    [   hole   ]    [ disk_bytenr Y ]    [  hole  ]
-   0             512K  512K      640K  640K           644K  644K     1M
-
-   Which does not corresponding to any layout the file ever had before
-   the power failure. The only two valid layouts would be:
-
-   [ disk_bytenr X ]    [   hole   ]
-   0             512K  512K        1M
-
-   and
-
-   [ disk_bytenr X ]    [   hole   ]    [ disk_bytenr Z ]    [  hole  ]
-   0             512K  512K      640K  640K           644K  644K     1M
-
-This can be fixed by serializing memory mapped writes with fsync, and there
-are two ways to do it:
-
-1) Make a fsync lock the entire file range, from 0 to (u64)-1 / LLONG_MAX
-   in the inode's io tree. This prevents the race but also blocks any reads
-   during the duration of the fsync, which has a negative impact for many
-   common workloads;
-
-2) Make an fsync write lock the i_mmap_lock semaphore in the inode. This
-   semaphore was recently added by Josef's patch set:
-
-   btrfs: add a i_mmap_lock to our inode
-   btrfs: cleanup inode_lock/inode_unlock uses
-   btrfs: exclude mmaps while doing remap
-   btrfs: exclude mmap from happening during all fallocate operations
-
-   and is used to solve races between memory mapped writes and
-   clone/dedupe/fallocate. This also makes us have the same behaviour we
-   have regarding other writes (buffered and direct IO) and fsync - block
-   them while the inode logging is in progress.
-
-This change uses the second approach due to the performance impact of the
-first one.
+This is an extremely unlikely race to happen in pratice.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/btrfs/btrfs_inode.h | 15 +++++++++++++++
+ fs/btrfs/file.c        | 10 ++--------
+ fs/btrfs/inode.c       |  4 +---
+ fs/btrfs/transaction.h |  2 +-
+ 4 files changed, 19 insertions(+), 12 deletions(-)
 
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 26837c3ca7f6..8011596e1eb3 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -300,6 +300,21 @@ static inline void btrfs_mod_outstanding_extents(struct btrfs_inode *inode,
+ 						  mod);
+ }
+ 
++/*
++ * Called every time after doing a buffered, direct IO or memory mapped write.
++ *
++ * This is to ensure that if we write to a file that was previously fsynced in
++ * the current transaction, then try to fsync it again in the same transaction,
++ * we will know that there were changes in the file and that it needs to be
++ * logged.
++ */
++static inline void btrfs_set_inode_last_sub_trans(struct btrfs_inode *inode)
++{
++	spin_lock(&inode->lock);
++	inode->last_sub_trans = inode->root->log_transid;
++	spin_unlock(&inode->lock);
++}
++
+ static inline int btrfs_inode_in_log(struct btrfs_inode *inode, u64 generation)
+ {
+ 	int ret = 0;
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 3a2928749349..809eee806505 100644
+index 809eee806505..2dcbe3602b6a 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -2122,7 +2122,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	if (ret)
- 		goto out;
+@@ -2014,14 +2014,8 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 	else
+ 		num_written = btrfs_buffered_write(iocb, from);
  
--	btrfs_inode_lock(inode, 0);
-+	btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
+-	/*
+-	 * We also have to set last_sub_trans to the current log transid,
+-	 * otherwise subsequent syncs to a file that's been synced in this
+-	 * transaction will appear to have already occurred.
+-	 */
+-	spin_lock(&inode->lock);
+-	inode->last_sub_trans = inode->root->log_transid;
+-	spin_unlock(&inode->lock);
++	btrfs_set_inode_last_sub_trans(inode);
++
+ 	if (num_written > 0)
+ 		num_written = generic_write_sync(iocb, num_written);
  
- 	atomic_inc(&root->log_batch);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 1710060eb2dc..ae3b439565b4 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8623,9 +8623,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 	set_page_dirty(page);
+ 	SetPageUptodate(page);
  
-@@ -2135,11 +2135,11 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 			     &BTRFS_I(inode)->runtime_flags);
+-	BTRFS_I(inode)->last_trans = fs_info->generation;
+-	BTRFS_I(inode)->last_sub_trans = BTRFS_I(inode)->root->log_transid;
+-	BTRFS_I(inode)->last_log_commit = BTRFS_I(inode)->root->last_log_commit;
++	btrfs_set_inode_last_sub_trans(BTRFS_I(inode));
  
- 	/*
--	 * Before we acquired the inode's lock, someone may have dirtied more
--	 * pages in the target range. We need to make sure that writeback for
--	 * any such pages does not start while we are logging the inode, because
--	 * if it does, any of the following might happen when we are not doing a
--	 * full inode sync:
-+	 * Before we acquired the inode's lock and the mmap lock, someone may
-+	 * have dirtied more pages in the target range. We need to make sure
-+	 * that writeback for any such pages does not start while we are logging
-+	 * the inode, because if it does, any of the following might happen when
-+	 * we are not doing a full inode sync:
- 	 *
- 	 * 1) We log an extent after its writeback finishes but before its
- 	 *    checksums are added to the csum tree, leading to -EIO errors
-@@ -2154,7 +2154,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	 */
- 	ret = start_ordered_ops(inode, start, end);
- 	if (ret) {
--		btrfs_inode_unlock(inode, 0);
-+		btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
- 		goto out;
- 	}
- 
-@@ -2255,7 +2255,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	 * file again, but that will end up using the synchronization
- 	 * inside btrfs_sync_log to keep things safe.
- 	 */
--	btrfs_inode_unlock(inode, 0);
-+	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
- 
- 	if (ret != BTRFS_NO_LOG_SYNC) {
- 		if (!ret) {
-@@ -2285,7 +2285,7 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 
- out_release_extents:
- 	btrfs_release_log_ctx_extents(&ctx);
--	btrfs_inode_unlock(inode, 0);
-+	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
- 	goto out;
+ 	unlock_extent_cached(io_tree, page_start, page_end, &cached_state);
+ 	up_read(&BTRFS_I(inode)->i_mmap_lock);
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 6335716e513f..dd7c3eea08ad 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -175,7 +175,7 @@ static inline void btrfs_set_inode_last_trans(struct btrfs_trans_handle *trans,
+ 	spin_lock(&inode->lock);
+ 	inode->last_trans = trans->transaction->transid;
+ 	inode->last_sub_trans = inode->root->log_transid;
+-	inode->last_log_commit = inode->root->last_log_commit;
++	inode->last_log_commit = inode->last_sub_trans - 1;
+ 	spin_unlock(&inode->lock);
  }
  
 -- 
