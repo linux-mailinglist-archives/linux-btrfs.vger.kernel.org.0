@@ -2,147 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F533244D8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 21:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F7B3245E0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 22:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbhBXUC7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Feb 2021 15:02:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45880 "EHLO mx2.suse.de"
+        id S236021AbhBXVkU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Feb 2021 16:40:20 -0500
+Received: from sandeen.net ([63.231.237.45]:40372 "EHLO sandeen.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235120AbhBXUCW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:02:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BAE60AC1D
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Feb 2021 20:01:40 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 14:01:57 -0600
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Remove force argument from run_delalloc_nocow()
-Message-ID: <20210224200157.qsay5t2aft6rciaj@fiona>
-References: <20210222131749.dxkq45umwehqm33i@fiona>
- <20210224185656.GA1993@twin.jikos.cz>
+        id S235962AbhBXVkR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Feb 2021 16:40:17 -0500
+Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id 8459617264;
+        Wed, 24 Feb 2021 15:39:20 -0600 (CST)
+Subject: Re: xfstests seems broken on btrfs with multi-dev TEST_DEV
+From:   Eric Sandeen <sandeen@sandeen.net>
+To:     linux-btrfs@vger.kernel.org
+Cc:     fstests@vger.kernel.org
+References: <3e8f846d-e248-52a3-9863-d188f031401e@sandeen.net>
+Message-ID: <5e133067-ec0c-f2c6-7fb6-84620e26881e@sandeen.net>
+Date:   Wed, 24 Feb 2021 15:39:34 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224185656.GA1993@twin.jikos.cz>
+In-Reply-To: <3e8f846d-e248-52a3-9863-d188f031401e@sandeen.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 19:56 24/02, David Sterba wrote:
-> On Mon, Feb 22, 2021 at 07:17:49AM -0600, Goldwyn Rodrigues wrote:
-> > force_nocow can be calculated by btrfs_inode and does not need to be
-> > passed as an argument.
-> > 
-> > This simplifies run_delalloc_nocow() call from btrfs_run_delalloc_range()
-> > where should_nocow() checks for BTRFS_INODE_NODATASUM and
-> > BTRFS_INODE_PREALLOC flags or if EXTENT_DEFRAG flags are set.
-> > 
-> > should_nocow() has been re-arranged so EXTENT_DEFRAG has higher priority
-> > in checks.
-> 
-> Why is that? In the check sequence, test_range_bit is called first but
-> that's more expensive as it needs to iterate the range.
+On 2/24/21 10:12 AM, Eric Sandeen wrote:
+> Last week I was curious to just see how btrfs is faring with RAID5 in
+> xfstests, so I set it up for a quick run with devices configured as:
 
-The test_range() is conditional and short-circuited by
-inode->defrag_bytes. So, the worst case scenario would be when
-defrag_bytes > 0, and EXTENT_DEFRAG is not set for the range.
+Whoops this was supposed to cc: fstests, not fsdevel, sorry.
 
-I did it for readability, but if you think need_force_cow() is faster, I
-am fine with keeping it.
+-Eric
 
-
+> TEST_DEV=/dev/sdb1 # <--- this was a 3-disk "-d raid5" filesystem
+> SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4 /dev/sdb5 /dev/sdb6"
 > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > ---
-> >  fs/btrfs/inode.c | 28 +++++++++++++---------------
-> >  1 file changed, 13 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 4f2f1e932751..2115d8cc6f18 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -1516,7 +1516,7 @@ static int fallback_to_cow(struct btrfs_inode *inode, struct page *locked_page,
-> >  static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
-> >  				       struct page *locked_page,
-> >  				       const u64 start, const u64 end,
-> > -				       int *page_started, int force,
-> > +				       int *page_started,
-> >  				       unsigned long *nr_written)
-> >  {
-> >  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> > @@ -1530,6 +1530,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
-> >  	u64 ino = btrfs_ino(inode);
-> >  	bool nocow = false;
-> >  	u64 disk_bytenr = 0;
-> > +	bool force = inode->flags & BTRFS_INODE_NODATACOW;
-> >  
-> >  	path = btrfs_alloc_path();
-> >  	if (!path) {
-> > @@ -1863,13 +1864,9 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
-> >  	return ret;
-> >  }
-> >  
-> > -static inline int need_force_cow(struct btrfs_inode *inode, u64 start, u64 end)
-> > +static inline bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
-> >  {
-> >  
-> > -	if (!(inode->flags & BTRFS_INODE_NODATACOW) &&
-> > -	    !(inode->flags & BTRFS_INODE_PREALLOC))
-> > -		return 0;
-> > -
-> >  	/*
-> >  	 * @defrag_bytes is a hint value, no spinlock held here,
-> >  	 * if is not zero, it means the file is defragging.
-> > @@ -1877,9 +1874,15 @@ static inline int need_force_cow(struct btrfs_inode *inode, u64 start, u64 end)
-> >  	 */
-> >  	if (inode->defrag_bytes &&
-> >  	    test_range_bit(&inode->io_tree, start, end, EXTENT_DEFRAG, 0, NULL))
-> > -		return 1;
-> > +		return false;
-> >  
-> > -	return 0;
-> > +	if (inode->flags & BTRFS_INODE_NODATACOW)
-> > +		return true;
-> > +
-> > +	if (inode->flags & BTRFS_INODE_PREALLOC)
-> > +		return true;
+> and fired off ./check -g auto
 > 
-> So here it needs to do test_range_bit first, while before the two checks
-> were fast path.
+> Every test after btrfs/124 fails, because that test btrfs/124 does this:
 > 
-> > +
-> > +	return false;
-> >  }
-> >  
-> >  /*
-> > @@ -1891,17 +1894,12 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
-> >  		struct writeback_control *wbc)
-> >  {
-> >  	int ret;
-> > -	int force_cow = need_force_cow(inode, start, end);
-> >  	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
-> >  
-> > -	if (inode->flags & BTRFS_INODE_NODATACOW && !force_cow) {
-> > -		ASSERT(!zoned);
-> > -		ret = run_delalloc_nocow(inode, locked_page, start, end,
-> > -					 page_started, 1, nr_written);
-> > -	} else if (inode->flags & BTRFS_INODE_PREALLOC && !force_cow) {
-> > +	if (should_nocow(inode, start, end)) {
-> >  		ASSERT(!zoned);
-> >  		ret = run_delalloc_nocow(inode, locked_page, start, end,
-> > -					 page_started, 0, nr_written);
-> > +					 page_started, nr_written);
+> # un-scan the btrfs devices
+> _btrfs_forget_or_module_reload
 > 
-> Merging the two calls into one branch makes sense so that all the
-> reasons for 'nocow' are in one helper, so ok.
+> and nothing re-scans devices after that, so every attempt to mount TEST_DEV
+> will fail:
 > 
-> >  	} else if (!inode_can_compress(inode) ||
-> >  		   !inode_need_compress(inode, start, end)) {
-> >  		if (zoned)
-> > -- 
-> > 2.30.1
-
--- 
-Goldwyn
+>> devid 2 uuid e42cd5b8-2de6-4c85-ae51-74b61172051e is missing"
+> 
+> Other btrfs tests seeme to have the same problem.
+> 
+> If xfstest coverage on multi-device btrfs volumes is desired, it might be
+> a good idea for someone who understands the btrfs framework in xfstests
+> to fix this.
+> 
+> Thanks,
+> -Eric
+> 
