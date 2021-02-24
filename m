@@ -2,117 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B537323EC2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 14:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25953323EC8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 14:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237185AbhBXNsB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Feb 2021 08:48:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236924AbhBXNa6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:30:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38B2B64F9B;
-        Wed, 24 Feb 2021 12:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614171304;
-        bh=YVFZtCS13rLWVOsj1afugY2qk29ygE76ymbfvutD12A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MED/IwSWJRg/M46cricB+KK7gq6vUCf+ri5Dwf8/V5z1Uhyqo6xGTGg3HTPHIBt3+
-         63sUDZyoN+V2B48Y7eLIDCGi/9eX+Nq5LzkoCF81txrjUMY6TS0CYTJ4yHA7lMvHDl
-         EebkJ9oLllN8PZGTVIXA9uv+TMG6uZBCHCOikIipaBgha4UYYJsVBnFgwsIPH0Gk5Q
-         5gc/A0236jjobWR4ic4HKADX7xUzaqqHxKA2Vj1zW3y92/ZzGUeMBw/RaEVY/5G38n
-         nXucItXB9ngbyq+vC2JGQgDB76gCzhhbBH0BOE9YsI99HaMenb5EMTg0aFAGh44g+k
-         Cxf/pqWYcV4Sg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 22/26] btrfs: fix error handling in commit_fs_roots
-Date:   Wed, 24 Feb 2021 07:54:30 -0500
-Message-Id: <20210224125435.483539-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210224125435.483539-1-sashal@kernel.org>
-References: <20210224125435.483539-1-sashal@kernel.org>
+        id S237797AbhBXNsO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Feb 2021 08:48:14 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:43540 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237001AbhBXNcn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:32:43 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UPT6LS4_1614173506;
+Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0UPT6LS4_1614173506)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Feb 2021 21:31:46 +0800
+Date:   Wed, 24 Feb 2021 21:31:46 +0800
+From:   Eryu Guan <eguan@linux.alibaba.com>
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Su Yue <l@damenly.su>, guaneryu <guaneryu@gmail.com>,
+        fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH] generic/473: fix expectation properly in out file
+Message-ID: <20210224133146.GE96449@e18g06458.et15sqa>
+References: <20210223134042.2212341-1-cgxu519@mykernel.net>
+ <4ki1rjgu.fsf@damenly.su>
+ <177d33c0982.10b8858b515683.1169986601273192029@mykernel.net>
+ <wnuxq0px.fsf@damenly.su>
+ <177d3666a3c.e47042d016248.8805085013477614929@mykernel.net>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <177d3666a3c.e47042d016248.8805085013477614929@mykernel.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+On Wed, Feb 24, 2021 at 05:37:20PM +0800, Chengguang Xu wrote:
+>  ---- 在 星期三, 2021-02-24 17:22:35 Su Yue <l@damenly.su> 撰写 ----
+>  > 
+>  > On Wed 24 Feb 2021 at 16:51, Chengguang Xu <cgxu519@mykernel.net> 
+>  > wrote:
+>  > 
+>  > >  ---- 在 星期三, 2021-02-24 15:52:17 Su Yue <l@damenly.su> 撰写 
+>  > >  ----
+>  > >  >
+>  > >  > Cc to the author and linux-xfs, since it's xfsprogs related.
+>  > >  >
+>  > >  > On Tue 23 Feb 2021 at 21:40, Chengguang Xu 
+>  > >  > <cgxu519@mykernel.net>
+>  > >  > wrote:
+>  > >  >
+>  > >  > > It seems the expected result of testcase of "Hole + Data"
+>  > >  > > in generic/473 is not correct, so just fix it properly.
+>  > >  > >
+>  > >  >
+>  > >  > But it's not proper...
+>  > >  >
+>  > >  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+>  > >  > > ---
+>  > >  > >  tests/generic/473.out | 2 +-
+>  > >  > >  1 file changed, 1 insertion(+), 1 deletion(-)
+>  > >  > >
+>  > >  > > diff --git a/tests/generic/473.out b/tests/generic/473.out
+>  > >  > > index 75816388..f1ee5805 100644
+>  > >  > > --- a/tests/generic/473.out
+>  > >  > > +++ b/tests/generic/473.out
+>  > >  > > @@ -6,7 +6,7 @@ Data + Hole
+>  > >  > >  1: [256..287]: hole
+>  > >  > >  Hole + Data
+>  > >  > >  0: [0..127]: hole
+>  > >  > > -1: [128..255]: data
+>  > >  > > +1: [128..135]: data
+>  > >  > >
+>  > >  > The line is produced by `$XFS_IO_PROG -c "fiemap -v 0 65k" 
+>  > >  > $file |
+>  > >  > _filter_fiemap`.
+>  > >  > 0-64k is a hole and 64k-128k is a data extent.
+>  > >  > fiemap ioctl always returns *complete* ranges of extents.
+>  > >
+>  > > Manual testing result in latest kernel like below.
+>  > >
+>  > > [root@centos test]# uname -a
+>  > > Linux centos 5.11.0+ #5 SMP Tue Feb 23 21:02:27 CST 2021 x86_64 
+>  > > x86_64 x86_64 GNU/Linux
+>  > >
+>  > > [root@centos test]# xfs_io -V
+>  > > xfs_io version 5.0.0
+>  > >
+>  > > [root@centos test]# stat a
+>  > >   File: a
+>  > >   Size: 4194304         Blocks: 0          IO Block: 4096 
+>  > >   regular file
+>  > > Device: fc01h/64513d    Inode: 140         Links: 1
+>  > > Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/ 
+>  > > root)
+>  > > Access: 2021-02-24 16:33:20.235654140 +0800
+>  > > Modify: 2021-02-24 16:33:25.070641521 +0800
+>  > > Change: 2021-02-24 16:33:25.070641521 +0800
+>  > >  Birth: -
+>  > >
+>  > > [root@centos test]# xfs_io -c "pwrite 64k 64k" a
+>  > > wrote 65536/65536 bytes at offset 65536
+>  > > 64 KiB, 16 ops; 0.0000 sec (992.063 MiB/sec and 253968.2540 
+>  > > ops/sec)
+>  > >
+>  > > [root@VM-8-4-centos test]# xfs_io -c "fiemap -v 0 65k" a
+>  > > a:
+>  > >  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>  > >    0: [0..127]:        hole               128
+>  > >    1: [128..135]:      360..367             8   0x1
+>  > >
+>  > 
+>  > Sorry, my carelessness. I only checked btrfs implementation but 
+>  > xfs
+>  > and ext4 do return the change you made.
+>  > 
+> 
+> Yeah, it seems there is no bad side effect to show  only specified range of extents
+> and keep all the same behavior is also good for testing. I can post a fix patch for
+> this but before that let us to wait some feedback from maintainers and experts.
 
-[ Upstream commit 4f4317c13a40194940acf4a71670179c4faca2b5 ]
+generic/473 is marked as broken by commit 715eac1a9e66 ("generic/47[23]:
+remove from auto/quick groups").
 
-While doing error injection I would sometimes get a corrupt file system.
-This is because I was injecting errors at btrfs_search_slot, but would
-only do it one time per stack.  This uncovered a problem in
-commit_fs_roots, where if we get an error we would just break.  However
-we're in a nested loop, the first loop being a loop to find all the
-dirty fs roots, and then subsequent root updates would succeed clearing
-the error value.
-
-This isn't likely to happen in real scenarios, however we could
-potentially get a random ENOMEM once and then not again, and we'd end up
-with a corrupted file system.  Fix this by moving the error checking
-around a bit to the main loop, as this is the only place where something
-will fail, and return the error as soon as it occurs.
-
-With this patch my reproducer no longer corrupts the file system.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/transaction.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 8829d89eb4aff..1b52c960682d6 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1249,7 +1249,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 	struct btrfs_root *gang[8];
- 	int i;
- 	int ret;
--	int err = 0;
- 
- 	spin_lock(&fs_info->fs_roots_radix_lock);
- 	while (1) {
-@@ -1261,6 +1260,8 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 			break;
- 		for (i = 0; i < ret; i++) {
- 			struct btrfs_root *root = gang[i];
-+			int ret2;
-+
- 			radix_tree_tag_clear(&fs_info->fs_roots_radix,
- 					(unsigned long)root->root_key.objectid,
- 					BTRFS_ROOT_TRANS_TAG);
-@@ -1282,17 +1283,17 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 						    root->node);
- 			}
- 
--			err = btrfs_update_root(trans, fs_info->tree_root,
-+			ret2 = btrfs_update_root(trans, fs_info->tree_root,
- 						&root->root_key,
- 						&root->root_item);
-+			if (ret2)
-+				return ret2;
- 			spin_lock(&fs_info->fs_roots_radix_lock);
--			if (err)
--				break;
- 			btrfs_qgroup_free_meta_all_pertrans(root);
- 		}
- 	}
- 	spin_unlock(&fs_info->fs_roots_radix_lock);
--	return err;
-+	return 0;
- }
- 
- /*
--- 
-2.27.0
-
+Thanks,
+Eryu
