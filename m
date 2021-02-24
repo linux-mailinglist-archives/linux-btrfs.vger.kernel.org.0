@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D781323EC0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 14:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B537323EC2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 14:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237770AbhBXNrb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Feb 2021 08:47:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58408 "EHLO mail.kernel.org"
+        id S237185AbhBXNsB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Feb 2021 08:48:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235793AbhBXNG6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Feb 2021 08:06:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7187164F87;
-        Wed, 24 Feb 2021 12:54:22 +0000 (UTC)
+        id S236924AbhBXNa6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Feb 2021 08:30:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38B2B64F9B;
+        Wed, 24 Feb 2021 12:55:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614171263;
-        bh=YTCBPefOUoG89KtBq5r6rrPr10r8HCEbcZB1j4fUuLo=;
+        s=k20201202; t=1614171304;
+        bh=YVFZtCS13rLWVOsj1afugY2qk29ygE76ymbfvutD12A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQrgssfRQlBJBh7yORUs7Lx6rYYxwzaRTA+1WqXvZflZJh3+rZeLNDPDH9iCnA0yD
-         su/9ClXWfNqufFqI4ppugiG4SUImQKtWpAi0odbZNfRf0PVMrXdxD1aM3bXjE86xtV
-         USaTVYaa2GYskn2I9EcuGUSzIVAkvQjgQ6hI+nPj8JHINEnH+WgXgvXLpUC87c71cN
-         BC78utZei6VhCTtYZuXOMGpJGUSMjevpohlmbt3AITG8c6wPA1Uk/qznq9hLxN9maG
-         aag6PD2B+19EU2yuLg2/ou8WPY6idLmrLGhHMdJwf8O5zSPq1dIklkOMNAjkl27SkR
-         kYlD/VaJO4hFA==
+        b=MED/IwSWJRg/M46cricB+KK7gq6vUCf+ri5Dwf8/V5z1Uhyqo6xGTGg3HTPHIBt3+
+         63sUDZyoN+V2B48Y7eLIDCGi/9eX+Nq5LzkoCF81txrjUMY6TS0CYTJ4yHA7lMvHDl
+         EebkJ9oLllN8PZGTVIXA9uv+TMG6uZBCHCOikIipaBgha4UYYJsVBnFgwsIPH0Gk5Q
+         5gc/A0236jjobWR4ic4HKADX7xUzaqqHxKA2Vj1zW3y92/ZzGUeMBw/RaEVY/5G38n
+         nXucItXB9ngbyq+vC2JGQgDB76gCzhhbBH0BOE9YsI99HaMenb5EMTg0aFAGh44g+k
+         Cxf/pqWYcV4Sg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 32/40] btrfs: fix error handling in commit_fs_roots
-Date:   Wed, 24 Feb 2021 07:53:32 -0500
-Message-Id: <20210224125340.483162-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 22/26] btrfs: fix error handling in commit_fs_roots
+Date:   Wed, 24 Feb 2021 07:54:30 -0500
+Message-Id: <20210224125435.483539-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210224125340.483162-1-sashal@kernel.org>
-References: <20210224125340.483162-1-sashal@kernel.org>
+In-Reply-To: <20210224125435.483539-1-sashal@kernel.org>
+References: <20210224125435.483539-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -71,10 +71,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index c346ee7ec18d4..aca6c467d7761 100644
+index 8829d89eb4aff..1b52c960682d6 100644
 --- a/fs/btrfs/transaction.c
 +++ b/fs/btrfs/transaction.c
-@@ -1212,7 +1212,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+@@ -1249,7 +1249,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
  	struct btrfs_root *gang[8];
  	int i;
  	int ret;
@@ -82,7 +82,7 @@ index c346ee7ec18d4..aca6c467d7761 100644
  
  	spin_lock(&fs_info->fs_roots_radix_lock);
  	while (1) {
-@@ -1224,6 +1223,8 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+@@ -1261,6 +1260,8 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
  			break;
  		for (i = 0; i < ret; i++) {
  			struct btrfs_root *root = gang[i];
@@ -91,7 +91,7 @@ index c346ee7ec18d4..aca6c467d7761 100644
  			radix_tree_tag_clear(&fs_info->fs_roots_radix,
  					(unsigned long)root->root_key.objectid,
  					BTRFS_ROOT_TRANS_TAG);
-@@ -1245,17 +1246,17 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+@@ -1282,17 +1283,17 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
  						    root->node);
  			}
  
