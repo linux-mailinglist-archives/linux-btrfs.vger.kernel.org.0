@@ -2,315 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC59323553
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 02:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0233235AC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Feb 2021 03:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhBXBaX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Feb 2021 20:30:23 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:58796 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233889AbhBXBVZ (ORCPT
+        id S232245AbhBXC2q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Feb 2021 21:28:46 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:38432 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229961AbhBXC2p (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Feb 2021 20:21:25 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O1If6k030244;
-        Wed, 24 Feb 2021 01:20:27 GMT
+        Tue, 23 Feb 2021 21:28:45 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O2JfJM171531;
+        Wed, 24 Feb 2021 02:27:55 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=z1G3G2IOb8ZT6d2mEtrX2p2cOHdjEe41BPnb10Vdgh8=;
- b=kSbxWiJEhXSGLLBCKcqnm5ki4G1Hc9Ft1A7Wavdv+Y/kLoNOJtRlm1tmgTIYdRcXA8Nk
- Tqhqk+zPirLj2+S+8UH64oTq5mDrhSakVuXXa/drvgNWghema1/hUowjfEHgH2OAMkTZ
- 8uVBmC/KPnrWhfQBJrJpzu0nSIQvFizOv70pDu/GYm2Nh4TxSFu9e1LDfsQSqd6p9s2V
- YTj9bZE6Cz9FujWTECNpc31s7MEa8HnD1h1wxj9qVs0k54mNTdxvcqOGgQS45Ut2t1YN
- mrhJPxvuW+58rbVjrj/OlbLWqToKqrMul+yt0rXk0GUqEm8wGr6aVYuXElJidctxdKHp Hw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36vr623pj1-1
+ bh=gBujZyx39KZPIzOgbRsdemPpUwcxANEyygJe3W4gi7w=;
+ b=s3fi8WsArfwiTNwn5IR83QDrTR9GMi3YiMdAFVrD5cU5glW59hPiTR4r00hBB43px6cn
+ 933pK2YMzPmFQCNnPy4EBMeG1Lmk3aCV3aOu8OD+y9GuTYIsg5gLZddLKPl2D/N7c2NM
+ Z2UTUZ2ixn0iPgRtRPYX7lsp0SdVSk7z5EVH040bAJkhSZjXj3Jsegj+NTscnBrOU7mV
+ eQWUj5ocV8ibK3r21mkZpF7+T8GU7/SSX0bENzKQo+fe55tAPfeMo5YypDRzIk2Vtt9e
+ iW/QR4UZbWMecyV5A/vfts84ZGPKyA9HntQMlXqvz0/BUCsfQpJfbKlbiGCdDf9J8IsM 4w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36tsur1f0w-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 01:20:27 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O1KRh2166448;
-        Wed, 24 Feb 2021 01:20:27 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
-        by aserp3030.oracle.com with ESMTP id 36v9m5anf3-1
+        Wed, 24 Feb 2021 02:27:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11O2QUBw123011;
+        Wed, 24 Feb 2021 02:27:55 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
+        by userp3030.oracle.com with ESMTP id 36ucby95gf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Feb 2021 01:20:26 +0000
+        Wed, 24 Feb 2021 02:27:55 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YZIa71mdiVz0GgchqBz1dui+xIytR6ZxI8tq2kvE4xRhlgPKpvQYhZjC4RiFqNJ8PH/vvWMr/CV8HkGwvD6Z50aDFXaWjLWzo3PeeOIRSnWB8pbXWj4C10XPufk5cq1fp5mYJYMHTvoyzWUzFbHVdof0OnY22sZsG0G+Qr+l1ebqHRy+pbXvo+SsKX7hWFkj6alHy95Jpc8H5GmgkxI6gFE1AvJf08enNFOpI8AgHPni6gMTXuqi2EsIPn8IUepDHrX8Rv8j562coCGzhggGxGHfbSArxHLnm7J41hyvX9qoX5jIYB/E8XNHuvUbP/nhUg76dzZ3Csh8KY4dSPnUtw==
+ b=MtNwa5+EhBWB8i+5aUMZoc+LdN5zvdIFO3ErbYARnFTlUk9Zg8g6GYRU5BIcYZ532awZi5nSTWNIpO2UVXE58n5eHhqNYa+2K+JW2b7xHwcP5xV3wi4cjVgNOel4ykPGMMedVewdVQqD2892AUcFwmZrF70ugA9fGnmkrtrc3aTmdZ3WirMXJirVVAwN15IYzOanBmNNAIYw10y6XpfsDzC1JVo6mq+6pq+w8OsJkMSh1x89IMQYGRlyqU25TE7YFRbWHVCYivUf7FigQMc+wi64FrG5eaFCWERf1pPJ1ov+lVlnwhl/aem0/g2qxak37MLrKdfmIZS4K5ULHoH3Sg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z1G3G2IOb8ZT6d2mEtrX2p2cOHdjEe41BPnb10Vdgh8=;
- b=RXixfoxkb+JxjZ6arxBNXwpCnDMdxDvZyYLgn9w6JchgbDT+t4k0jMhOzacpV6vXOYnydVVuPTl1pVSqS8dp/13vdJvU4KEyl/8DsZXvJ9I9syf7OZNxJ4C5m1KAbKyAF+Uq236L5B8EKVBGlz9z7TnN3B4rkjRcXT4BjK4tIw8Usq3pUvPGYpqC7PTDEmQTqyu4qQWXuhdtL0OGnqgGjpVLOP52IqeOiA3/LQMZFzJ7Ze05vAoWzX/lfv7AA8m3ji93oy4HEfiK+6goS1Otn2wA3GiIqFHGdPr8VZagix3JxjTympeR7QDHNycq/yKZ2FPEE9RQu0KtSSyvuHA+IA==
+ bh=gBujZyx39KZPIzOgbRsdemPpUwcxANEyygJe3W4gi7w=;
+ b=M0U1aDlyj/S6ZoDayWhaUzTur9jNrr2lEe966C5DzLK4USHpHR83e0Ahbto+qK4LPxiz7DRJIpWKd5T2gUzRLvqa92uGbg1RByaAtfrTKMUnOPUf3NXAGoKDhx9uGV8AVhfJu3oSkYg1aOY1/ea0nOg25tNtI982RdBSThcitOWsLfM7uI26ek5pwL/B7WnrV7UjPp7N5Og+zJ3N62AYLE3Re1yHFvl2sBkWQbhWG9GBFwlWtR0QAl09H8Ig9yWtZRbhOU8c31gRvOQUh+Bv9AhVJvPJNlAUl2hzCjXW7o8St8aUse6ga9+NOPodL2c9aQ8V9DK99l894T6/UYEdzw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z1G3G2IOb8ZT6d2mEtrX2p2cOHdjEe41BPnb10Vdgh8=;
- b=nO3YO0jI+uBdkzVKc0jtEyb23OM4tc68rxzi2p+rLZs9nhqNlkQ3Z6q7c9ni3M2G0LQxvCTeZlUF1LdXBkFEOY+t1mH0CcLF4XZ2yIujh5g+MmRyrBtzFt+QXBP3xmj+AWITKRqZxgJ3B2g2EYda9wmovDmp51Os2tuu9NAe/BQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+ bh=gBujZyx39KZPIzOgbRsdemPpUwcxANEyygJe3W4gi7w=;
+ b=F/VsUxNIOjl7WsCMTG1rn7fUMPq6/5FJSeNICHrmpUVtZW83Nh4tP+8kXB3ZRgz/+CVGsaihUMzJ2ySTsJpa1T9/9s9860N9SgFxNCm2G/SAmnzjkwVf1EiacWhfcWltPsIbE8Dmw6pI910maawdRHYlUj2jJBEw0v7NIqEJcaE=
+Authentication-Results: inwind.it; dkim=none (message not signed)
+ header.d=none;inwind.it; dmarc=none action=none header.from=oracle.com;
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4352.namprd10.prod.outlook.com (2603:10b6:208:1de::10) with
+ by MN2PR10MB4334.namprd10.prod.outlook.com (2603:10b6:208:1d9::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Wed, 24 Feb
- 2021 01:20:13 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27; Wed, 24 Feb
+ 2021 02:27:53 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::e5b0:9afa:a555:a125]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::e5b0:9afa:a555:a125%8]) with mapi id 15.20.3890.019; Wed, 24 Feb 2021
- 01:20:12 +0000
-Subject: Re: 5.11.0: open ctree failed: devide total_bytes should be at most X
- but found Y
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Steven Davies <btrfs-list@steev.me.uk>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <34d881ab-7484-6074-7c0b-b5c8d9e46379@steev.me.uk>
- <PH0PR04MB7416AA577A3ED39E4C5833819B809@PH0PR04MB7416.namprd04.prod.outlook.com>
- <PH0PR04MB74167CACC7802BA85638105F9B809@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20210223143020.GW1993@twin.jikos.cz>
- <457bf37240392e63a84c7e1546f7d47a@steev.me.uk>
- <PH0PR04MB741625481C6DAC65BB52857E9B809@PH0PR04MB7416.namprd04.prod.outlook.com>
+ 02:27:53 +0000
+Subject: Re: [PATCH 1/4] btrfs: add ioctl BTRFS_IOC_DEV_PROPERTIES.
+To:     dsterba@suse.cz, Goffredo Baroncelli <kreijack@libero.it>,
+        linux-btrfs@vger.kernel.org,
+        Goffredo Baroncelli <kreijack@inwind.it>
+References: <cover.1614028083.git.kreijack@inwind.it>
+ <d48a0e28d4ba516602297437b1f132f2a8efd5d2.1614028083.git.kreijack@inwind.it>
+ <20210223135330.GU1993@twin.jikos.cz>
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <d75bcf2d-dbee-ed1f-5602-23ed7d5597b0@oracle.com>
-Date:   Wed, 24 Feb 2021 09:20:04 +0800
+Message-ID: <e60ed8a6-833c-77ed-f5a0-b069680b2cab@oracle.com>
+Date:   Wed, 24 Feb 2021 10:27:45 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
-In-Reply-To: <PH0PR04MB741625481C6DAC65BB52857E9B809@PH0PR04MB7416.namprd04.prod.outlook.com>
+In-Reply-To: <20210223135330.GU1993@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2406:3003:2006:2288:f531:6ae1:a422:5681]
-X-ClientProxiedBy: SG2PR06CA0096.apcprd06.prod.outlook.com
- (2603:1096:3:14::22) To MN2PR10MB4128.namprd10.prod.outlook.com
+X-ClientProxiedBy: SG2PR0401CA0020.apcprd04.prod.outlook.com
+ (2603:1096:3:1::30) To MN2PR10MB4128.namprd10.prod.outlook.com
  (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2406:3003:2006:2288:f531:6ae1:a422:5681] (2406:3003:2006:2288:f531:6ae1:a422:5681) by SG2PR06CA0096.apcprd06.prod.outlook.com (2603:1096:3:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Wed, 24 Feb 2021 01:20:10 +0000
+Received: from [IPv6:2406:3003:2006:2288:f531:6ae1:a422:5681] (2406:3003:2006:2288:f531:6ae1:a422:5681) by SG2PR0401CA0020.apcprd04.prod.outlook.com (2603:1096:3:1::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Wed, 24 Feb 2021 02:27:51 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48dc66ad-7cc8-4d23-ecbf-08d8d8625560
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4352:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4352295D9EF4D58BD2BA7742E59F9@MN2PR10MB4352.namprd10.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 3b017c98-c4cc-468f-ec0c-08d8d86bc96a
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4334:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB43343BE6C20817BCEE97F991E59F9@MN2PR10MB4334.namprd10.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dM1B/sXreB2fCfC9aFBbUXjXcjrOIrmC/BFdDQfRY6C0eU417oL9XcFBIEyevJ/TMdoblky1lfwCFbs+U6qBYgqRxQuoTVWryluDWGHWy2twx7ir53bUzD31x8LUZ4Rm/H8aVkauKQYBl+7nfmj5jugttZMZbGZJeHfMDKholCI1bmN2eLe3xrHgON4PW6r1er4m/LgOZb6cg/5CUPB8Ro1Yvof9X+AUeg0r1kJ+khE+FoKWAYa5jIIsLtaiNmafvw+DvTRav1Bh3jLMfDMTIAKoE5qj8dB1C4tCxWAxHQlDRU7pEY6MN8MNZfGfpnGxJP8SCtl3KhwkjzbfFhQ2TNSvBJIUrjFmTzzinZHSJrIhkrRMnz72bqKY2jmk76imyFnZX2WXn3wnviQKfQoITPU46EhoBRm4eRu3rGhH2xz0JxuD8DC3IxLQTt6hcLGxqRdVFHbaedxDqaW/fl+JDdVZzOcL4alAZ5pw23A62xsG0x7HTvqNxiZnsxtDF019H7+jnnza2m+k3UCqDmckEIBQUg5wTZlY0kLMNA8hE45SbLH0yCHHwEURZ90DtOYZ1nkyr/1B8uyH+U7otCdjzDQbQPr34/nmo2RbI9y4F2g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(136003)(376002)(346002)(110136005)(44832011)(2616005)(83380400001)(6666004)(31686004)(53546011)(66946007)(478600001)(16526019)(316002)(186003)(5660300002)(6486002)(66476007)(66556008)(2906002)(86362001)(8676002)(31696002)(36756003)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eTJQczdYVmQ0N2xucjcwc2JjZkFSUUhIb0ZFakQ0VTFMUWI4OVBLUHJDOVc5?=
- =?utf-8?B?ZEJpengyZWc2eHNpd2NSOHNsQ1VnMUMwUEZPRThuUFRBcFZtOHFXeEFybVVT?=
- =?utf-8?B?dE16Q2lwZnJzWVJZcTVvdHIwdHZ3cTdLU0dSQWt5TThMOUwyODQzQnNhOW5E?=
- =?utf-8?B?YUhJZ1lwRXFUNVZlZENOU0c0NFZGQk1zVnhEN3QxMm1HODYwbGU0b3U0UjU0?=
- =?utf-8?B?MlZwRXRoZVNvWmZ1MmdTWG1Bc3BiUzFRbzcrMHA3am1QQzZDaXdsbEtoYjJ6?=
- =?utf-8?B?WXZBbUZZQzBiTFkzVUNBUU1SVnRvZ2xnaVpTMkJJZnlvbTA1V2tDRFhFald0?=
- =?utf-8?B?dTFqeGZKWE9RNjhRNnI0eUx3WE9OZit3MWRabUJLRmVPN0VvQjIzSER3MHM3?=
- =?utf-8?B?Z05sNW5ZQmpQZDlQejQ4cEppOVpWN2ZQcWhMM0pwNE0yVXNMK3d4a3VlK0I3?=
- =?utf-8?B?MjlScWRzanFUanFBaThvbWtoTENhUkhJSzJtTTdYcGM4cHp2NGJyZTNkQjlC?=
- =?utf-8?B?em9aSjFtZTUyMFloUzZJd0VQL2piYmJqSGxhRGl0VHZ3QXVpY2dmczh5REJ0?=
- =?utf-8?B?SGVabFNQZGcyQ0k3Zmo0c0taQUxaRXZnRXJhN2tad1VMVGVUa1lSd1JpUEFE?=
- =?utf-8?B?TmI0K0Z0dy8xUGFnbHVMdkkxV2NYZ2VvdGk5Ky9CMnBTTTVTOHh1cUlUalZ1?=
- =?utf-8?B?YXpnS3VZZXV2Z2I2c2hPTk5MZGZQZHV4dlB5OUI3UWJzdXJseUt0ZStENXoz?=
- =?utf-8?B?YjhvbGp4N3BzN0hNc3lNM3RIRlBsMWF0Vm84N2lObTZYbWtsRHF1S3A1VGxW?=
- =?utf-8?B?d3o1Y2VyVG9qQXVGZndkWXlkVi9JNDdKZ0ZqSDVJU29tb3BCZXEwYjBwTEFv?=
- =?utf-8?B?aUoydERPSmhrRWtvdCtCWSt6N3NUcEp6aStJZk5Pb1BNZHJXbmFEdlZYbWI0?=
- =?utf-8?B?L1hnQWdXWWlKU0xzSDJlR29ub1VLcHJPcEZFZFJoQUdiTld0QnRBWGhHZ1Ri?=
- =?utf-8?B?Y1dFT0gybTdWOW0yTUhQcUMwWFVmdFFMTU1HZ2NnZEdIOE5tQnl0YTd5Ulhy?=
- =?utf-8?B?QlFSQ1RaL2tFN0FnczhuQnNzVkhzWk5UL29VTng1Z2NDRCtOcEpLVXdtL00r?=
- =?utf-8?B?cFZsUGtLVzlwWjk1RzNzeE93TkIvK1k5L0VrZ0x2ZUFYdW8zanFsVmpmV3Vu?=
- =?utf-8?B?empNWURrZk5kQ3FrbDFnYllXQ3JGcnlDSW1vbzEvSFJkcTBTK0w1YlZHSmVE?=
- =?utf-8?B?djVLY3pqVW13ekJWWXRMVWViM3pCekhSVmp5SlFobTZxM3pJSnJFU05ydExV?=
- =?utf-8?B?UUtySm44QzZhdTFPTkJzQkJ6VDhtU2h2RG5nYlRwRWovTmxSUGdQWHVxZ2I3?=
- =?utf-8?B?a1NucndNeXIrMmNsTjYya1V2NGxZTmNzdGNBNXdjQUxHdU9ySGFlL1J4d3FE?=
- =?utf-8?B?dmloOWpYa1NBUjh2VDRNK3RMN3czbGhzMm9sRytUS2ZmSUQrYXNlK2JYc1hq?=
- =?utf-8?B?dlUva3QyeFpscW5xeGwydC9RSERSbVJKN2szY2pMUmRGczNPS3hTdER2c2Jj?=
- =?utf-8?B?V2lJLzVhdW1DdmdSL3BDdG5TZk40TGkxWU9PVTJmb002Z0tIQjlMMDB4VnZh?=
- =?utf-8?B?bVZ4bDRsY2NFVyt2ZWZzOHZBVUtHVkI5WVlUYTR4ejFkRllOVDR2dmFBNjI1?=
- =?utf-8?B?SnorTzNyNktRd2hsckd3T2p4L2ltZFBIUng0aU9LcmRPcDZXNG9KeThHQTg3?=
- =?utf-8?B?andOWkQxNDdxd0k2SUNFWXY0NlBMeGN2NzNuTzRDSDFPUWk5YVgzSFQyNXNN?=
- =?utf-8?B?MXFFTXdwMm1LYVp1VmF3enFLN2drQ1NLT0RNWDRsV2ZLd3dZNHhtUDJEbnJL?=
- =?utf-8?Q?Mus4/zCiSLeuW?=
+X-Microsoft-Antispam-Message-Info: eGEsahsIe4Wpqi7QR95Tg2Vt8HxEdBX2qvrdGjoSoab6+BSA1NxFNYJUDEW4SWJ7CNXjHkdlmBD8BycoP/8MP/Yx5gVv0cbh/ARdEnoz0+Wh3eDV6SldwUkZlfnnN7WuCPjK6dFOcWcyn2jUCDb9U5PvITvRcnC+FFj31rMpVXIsSKBzmPHx8piCKWdaylvNZkwMeQcxOG8AYLrXAVu02uZuSKrbXDhZGdqAzJu2HIatuB1tAcQDBerA5j579Qfwa3XKySZz5MsCpeoMnbIwqZrUy4z6isLx7Jot3O8xKJRiobAqXpshCUiNsdioCeUrK4QZ5mb/axLJIyIGqn7U5MZp4dIMyxx4vLilqRSh8x9OJesLgiegCmM0GZCTD9Mpq0eNNt0CchN6PAUXXkqydAeZG5LZVHaKlNkuRVH1lODwLEic/6XOpi4u61H2CWfTShSFRFV4AboaYIHTm3ReyWqnpy3wVLb+paDozNoMiAxnLQsbkUzeka5SmdmaUwmBiy9qxISgKPHvFwsgzedJNO8p/ZhHZQlcazZHKX+JXUk0ByNqbjGFTn2aU8c66Pf8pWsGjblP0ritycM2YpzvFMRXjvDp3XN03tw5ziEW3uJBUjvWR9UDDpoHuvSvifBpPC3XuEdBWR9/5x/yEi8aqmg9fRFf6xBAJPrx0pNeWqc2QKgXc90iwF4N5RwJMF0m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(39860400002)(366004)(376002)(8936002)(186003)(31696002)(316002)(86362001)(16526019)(53546011)(6486002)(66946007)(31686004)(478600001)(44832011)(110136005)(66476007)(66556008)(2616005)(966005)(2906002)(4744005)(5660300002)(6666004)(8676002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TDNOeFJLMlhQNWcyWFQ1c1luQXd1OEFvZ3NkeFltM3pKV2c3QnZnejFDT0h0?=
+ =?utf-8?B?emR6L3M3eUx6Q21VdnV4MTZVdWQxQnRCY2R5QnpPYjZ5d1J2d21mbGN3VG95?=
+ =?utf-8?B?NnAyU1RQYnNkbUlvTWJTRURUWGZ4aWVhS1RjdUIyNjdwektvUGdLZ1EzTG45?=
+ =?utf-8?B?TFN0TTJFT2hjSzBWaTZiOWR4WFFoVTNLbWhicHJhc1ludUFTblVFVVNPL05B?=
+ =?utf-8?B?R01yeC9oTjNIWTZqSnI4NzZ2bjF6d21VMHlIM0lJeTZ1K2JBa28zT1hjaTUy?=
+ =?utf-8?B?WEdMV01tTXNxZ2kyYjFIQ3EvOWpSaVJjb0VkeStyb3BLclE3U0ozVkhCTGto?=
+ =?utf-8?B?TmFiay9EQVliNStENkFkc210R09MT0QxajJaVjVhZGloaUIyNElBWER3L2Y4?=
+ =?utf-8?B?TEwxVHhtRGtlSWFIZFBIVW9rN09RampPZm4xay83RktCQi85MjMwVVZ0SW1X?=
+ =?utf-8?B?Y2NqZWxyT2F6NUpTV09vMEV6KzgwSjZGZytlUmErTktGYVdUZzhtUWx2Q3hW?=
+ =?utf-8?B?WWNQUlBETGVMSlNkSlNrNTk1dUgvZnVFY3cwR0NxS2tEdjdBTmFmSVVSMjh6?=
+ =?utf-8?B?SXIrNUFQZFhiYnd1UzlydjZXUWFJYlhSZU9hd3NraXhvSHdTKzhlb1d4ZHFn?=
+ =?utf-8?B?aGRHM2gxVkZUQVFwZVlzZ2ZoMFVpQm82V3FtdlFwZTYzMmZMVFZWeUt6Y3E5?=
+ =?utf-8?B?U3NBMTFJU2Q5K3Zydk9aVXYvamZ4ODNwazEwRDhac2FGdy9CZytOdmdxb0ts?=
+ =?utf-8?B?bWh6Z0R4NVpWNjk1ekFmWFBDOGhFamU5UncvZ0c5WTRMdE91RE5mdW93Tisw?=
+ =?utf-8?B?ZWVQdThOcFgrUkdWSnJxU3JFOWp4VGhyUnBxb2lIMjBJb2EyVldUSkhaTUdS?=
+ =?utf-8?B?MDBEejBtQy94WXovb1VYWlYyL1FONCt2MHROS1NqeGpndzV3N2ZsQ1oxOXVq?=
+ =?utf-8?B?a054a1VxWFlGamhOQ1dpTWNBcHRDRlh1U0h4NFQxSTNWZUVFQ2R6aWRSQy82?=
+ =?utf-8?B?cENvTmc5ZElOeWVuUkErOTRGa1BiS2R5clh0NFlmcmk2b2l2MXRydHArbjhw?=
+ =?utf-8?B?alkwenM5bWFLYzQ3S0Vkd2lUR1gxSzVydlljdHB6aDFoNXp0dGRpUzM3eFkr?=
+ =?utf-8?B?QTdGT1U1NWZ1SkU0a0tySkl1a1JKSTJlWXBmV2w1WHpydzlKa3VaTjcxOWMw?=
+ =?utf-8?B?b0RzRzBEc2UxVXpUZkdpakFXcWxNWVh0OExOODVlbS9sclZsMWdDMktSWXBa?=
+ =?utf-8?B?Q2VoWmdKc3FaVGtDZnA5MVpqV0ExZExwN1BmZTNyclpkTzVtbVdMRGRmcWw4?=
+ =?utf-8?B?dVRMdDNscTlxUmdYYzRvS2Y2OGgzQlNHd3o2aGovNVFiRi9xTkZFeWgvanE5?=
+ =?utf-8?B?YWtZblBMNzJ3d3lZVEhFRklhc05QSW9VazdmZnIwblV0a2pVVE5wZVU2ZW5T?=
+ =?utf-8?B?YkdHWHZyNUw4NFI2TllEV1ZqQkNtQWF4UFo3UjJDaGQ2VDNFRlBIaktrL21J?=
+ =?utf-8?B?MmtnS05pRFpPUXBXVzNWeFNLMG05dHBUaTE3Q3FEbFFoZXcrdHJNKzVZcGl1?=
+ =?utf-8?B?azlKcjZvVTZET1I4R25SMktQVkVnYUM2Ly93b3pMb0FsS0NldmFmUkk3ZkU1?=
+ =?utf-8?B?MHdoQnJ6MkZYbnN2bFU0TzBzdURDcTJTeGVVbXplaE5wZC9MckdPcDR0MTBk?=
+ =?utf-8?B?SkFJcEEwMmxGa1JhdVFYOHgzTGtpQVBrVkVCdHlQak9VenhGSE9lWlJOZFZK?=
+ =?utf-8?B?MHV6QzFRbGZCS09FS0kvWjhvKzE5UWthZllGaEpUTWJmaWg0UytERHNpcnM3?=
+ =?utf-8?B?UnpQcEJkWjF3MXJVOVZNQWljS1J0dE5XZ1pkRGhYRTdFVHcyc0NJblBhNklF?=
+ =?utf-8?Q?FrfFlcrvpR27P?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48dc66ad-7cc8-4d23-ecbf-08d8d8625560
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b017c98-c4cc-468f-ec0c-08d8d86bc96a
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2021 01:20:12.5756
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2021 02:27:52.9355
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cV7i4ziszmjcFvwQwZ9fryaKm3yWigha2A9Szyw/pR5yNQiR4ZAQSUttwyhd83BW5FP3t+jpaQMp0bhfVnKI+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4352
+X-MS-Exchange-CrossTenant-UserPrincipalName: /LLfod1KV5lNduk1cPijhEQgd1xDFBqWMydxCaD6RejKiUszJszwTc31CkadGh9cQx3zyB1GfZMW9C8DtN3o4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4334
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102240007
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 spamscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240019
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9904 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1011 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- impostorscore=0 adultscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102240007
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0 malwarescore=0
+ clxscore=1015 phishscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102240018
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 24/02/2021 01:35, Johannes Thumshirn wrote:
-> On 23/02/2021 18:20, Steven Davies wrote:
->> On 2021-02-23 14:30, David Sterba wrote:
->>> On Tue, Feb 23, 2021 at 09:43:04AM +0000, Johannes Thumshirn wrote:
->>>> On 23/02/2021 10:13, Johannes Thumshirn wrote:
->>>>> On 22/02/2021 21:07, Steven Davies wrote:
->>>>>
->>>>> [+CC Anand ]
->>>>>
->>>>>> Booted my system with kernel 5.11.0 vanilla with the first time and received this:
->>>>>>
->>>>>> BTRFS info (device nvme0n1p2): has skinny extents
->>>>>> BTRFS error (device nvme0n1p2): device total_bytes should be at most 964757028864 but found
->>>>>> 964770336768
->>>>>> BTRFS error (device nvme0n1p2): failed to read chunk tree: -22
->>>>>>
->>>>>> Booting with 5.10.12 has no issues.
->>>>>>
->>>>>> # btrfs filesystem usage /
->>>>>> Overall:
->>>>>>       Device size:                 898.51GiB
->>>>>>       Device allocated:            620.06GiB
->>>>>>       Device unallocated:          278.45GiB
->>>>>>       Device missing:                  0.00B
->>>>>>       Used:                        616.58GiB
->>>>>>       Free (estimated):            279.94GiB      (min: 140.72GiB)
->>>>>>       Data ratio:                       1.00
->>>>>>       Metadata ratio:                   2.00
->>>>>>       Global reserve:              512.00MiB      (used: 0.00B)
->>>>>>
->>>>>> Data,single: Size:568.00GiB, Used:566.51GiB (99.74%)
->>>>>>      /dev/nvme0n1p2        568.00GiB
->>>>>>
->>>>>> Metadata,DUP: Size:26.00GiB, Used:25.03GiB (96.29%)
->>>>>>      /dev/nvme0n1p2         52.00GiB
->>>>>>
->>>>>> System,DUP: Size:32.00MiB, Used:80.00KiB (0.24%)
->>>>>>      /dev/nvme0n1p2         64.00MiB
->>>>>>
->>>>>> Unallocated:
->>>>>>      /dev/nvme0n1p2        278.45GiB
->>>>>>
->>>>>> # parted -l
->>>>>> Model: Sabrent Rocket Q (nvme)
->>>>>> Disk /dev/nvme0n1: 1000GB
->>>>>> Sector size (logical/physical): 512B/512B
->>>>>> Partition Table: gpt
->>>>>> Disk Flags:
->>>>>>
->>>>>> Number  Start   End     Size    File system     Name  Flags
->>>>>>    1      1049kB  1075MB  1074MB  fat32                 boot, esp
->>>>>>    2      1075MB  966GB   965GB   btrfs
->>>>>>    3      966GB   1000GB  34.4GB  linux-swap(v1)        swap
->>>>>>
->>>>>> What has changed in 5.11 which might cause this?
->>>>>>
->>>>>>
->>>>>
->>>>> This line:
->>>>>> BTRFS info (device nvme0n1p2): has skinny extents
->>>>>> BTRFS error (device nvme0n1p2): device total_bytes should be at most 964757028864 but found
->>>>>> 964770336768
->>>>>> BTRFS error (device nvme0n1p2): failed to read chunk tree: -22
->>>>>
->>>>> comes from 3a160a933111 ("btrfs: drop never met disk total bytes check in verify_one_dev_extent")
->>>>> which went into v5.11-rc1.
->>>>>
->>>>> IIUIC the device item's total_bytes and the block device inode's size are off by 12M, so the check
->>>>> introduced in the above commit refuses to mount the FS.
->>>>>
->>>>> Anand any idea?
->>>>
->>>> OK this is getting interesting:
->>>> btrfs-porgs sets the device's total_bytes at mkfs time and obtains it
->>>> from ioctl(..., BLKGETSIZE64, ...);
->>>>
->>>> BLKGETSIZE64 does:
->>>> return put_u64(argp, i_size_read(bdev->bd_inode));
->>>>
->>>> The new check in read_one_dev() does:
->>>>
->>>>                 u64 max_total_bytes =
->>>> i_size_read(device->bdev->bd_inode);
->>>>
->>>>                 if (device->total_bytes > max_total_bytes) {
->>>>                         btrfs_err(fs_info,
->>>>                         "device total_bytes should be at most %llu but
->>>> found %llu",
->>>>                                   max_total_bytes,
->>>> device->total_bytes);
->>>>                         return -EINVAL;
->>>>
->>>>
->>>> So the bdev inode's i_size must have changed between mkfs and mount.
+On 23/02/2021 21:53, David Sterba wrote:
+> On Mon, Feb 22, 2021 at 10:19:06PM +0100, Goffredo Baroncelli wrote:
+>> From: Goffredo Baroncelli <kreijack@inwind.it>
 >>
-
-
->> That's likely, this is my development/testing machine and I've changed
->> partitions (and btrfs RAID levels) around more than once since mkfs
->> time. I can't remember if or how I've modified the fs to take account of
->> this.
->>
-
-  What you say matches with the kernel logs.
-
->>>> Steven, can you please run:
->>>> blockdev --getsize64 /dev/nvme0n1p2
->>
->> # blockdev --getsize64 /dev/nvme0n1p2
->> 964757028864
-
-
-  Size at the time of mkfs is 964770336768. Now it is 964757028864.
-
-
->>
->>>
->>> The kernel side verifies that the physical device size is not smaller
->>> than the size recorded in the device item, so that makes sense. I was a
->>> bit doubtful about the check but it can detect real problems or point
->>> out some weirdness.
->>
->> Agreed. It's useful, but somewhat painful when it refuses to mount a
->> root device after reboot.
->>
->>> The 12M delta is not big, but I'd expect that for a physical device it
->>> should not change. Another possibility would be some kind of rounding
->>> to
->>> a reasonable number, like 16M.
->>
->> Is there a simple way to fix this partition so that btrfs and the
->> partition table agree on its size?
->>
+>> This ioctl is a base for returning / setting information from / to  the
+>> fields of the btrfs_dev_item object.
 > 
-> Unless someone's yelling at me that this is a bad advice (David, Anand?),
+> Please don't add a new ioctl for properties, they're using the xattr as
+> interface alrady.
+> 
 
+IMO a feature like this can be in memory only initially[1]. And later
+when this feature is stable, add its on-disk.
 
-> I'd go for:
-> btrfs filesystem resize max /
+[1] 
+https://patchwork.kernel.org/project/linux-btrfs/patch/0ed770d6d5e37fc942f3034d917d2b38477d7d20.1613668002.git.anand.jain@oracle.com/
 
-  I was thinking about the same step when I was reading above.
-
-> I've personally never shrinked a device but looking at the code it will
-> write the blockdevice's inode i_size to the device extents, and possibly
-> relocate data.
-
-
-  Shrink works. I have tested it before.
-  I hope shrink helps here too. Please let us know.
 
 Thanks, Anand
 
-> 
-> Hope I didn't give a bad advice,
-> Johannes
-> 
