@@ -2,238 +2,285 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16AB3249D0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 05:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4C7324A3B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 06:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhBYEkh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Feb 2021 23:40:37 -0500
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:48228 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbhBYEkf (ORCPT
+        id S231786AbhBYFlF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Feb 2021 00:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhBYFlF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Feb 2021 23:40:35 -0500
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id DFEBC455DF5;
-        Thu, 25 Feb 2021 06:39:46 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1614227986; bh=hNOwWB1vx3TnW6HCVr5m9NG3BD9ExlWvrUI5S7bfTuo=;
-        h=From:To:Cc:Subject:Date;
-        b=kei76oXHjlyaNi8KynXNvpnoU5FMuYrZl87Wz7P2WA7FCUPXAudPI/rXsJXDIda0/
-         wIyWdI7bk4cQ4DKb6q63bGNfuSy1JiYBzUtpkvUgW2VMEhzuSWqxM73kkCSv/MVqhh
-         1hFxBBsPs9uB6Xt9dhIiGAbQhY3N/Wn6e1QgRyLw=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id CB0DE4594A5;
-        Thu, 25 Feb 2021 06:39:46 +0200 (EET)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id D2P5pdsVivof; Thu, 25 Feb 2021 06:39:46 +0200 (EET)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 3A8EF22A68;
-        Thu, 25 Feb 2021 06:39:46 +0200 (EET)
-Received: from nas (unknown [45.87.95.231])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 9E8A41BE009C;
-        Thu, 25 Feb 2021 06:39:44 +0200 (EET)
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Su Yue <l@damenly.su>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Anand Jain <anand.jain@oracle.com>
-Subject: [report] lockdep warning when mounting seed device
-Message-ID: <tuq0pxpx.fsf@damenly.su>
-Date:   Thu, 25 Feb 2021 12:39:39 +0800
+        Thu, 25 Feb 2021 00:41:05 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0974C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Feb 2021 21:40:24 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id i9so3317047wml.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Feb 2021 21:40:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ovM5qbeFBFD73UPJw99m1OGdnAezLZmrcThtp+UyWIo=;
+        b=gI6F5mle/m1FUzhH5ZR14QNP2yc85Xu3c3sSbOpl4OfaDbWm1iqpXUBZ3azUy9wm5o
+         zJzNJQyf8vpOY5uIYbBSAWADTWNWngKOvHB76/6J7LrrfuC/Uw6Q/2FXGcDPd9CSyp6t
+         Vunc711l5mFZFnJNCKNoQ0TLB2odIecJBGnseMaUnUE6v1xLdAV1O4kJpUL19q3ZU/3+
+         sqi6VwtwxZcfKKdzxLcct5/VEkaEirQC+qgHxmHuUpFYJTzgKbnWvJQqJOZaI/V0q2pD
+         LnqyulIUzCeRrs6Nc955w76Uqldx5yFdlgnp5GFrBjgV7+Lzhbw/asiv+aK/Fb5foJIA
+         zjZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ovM5qbeFBFD73UPJw99m1OGdnAezLZmrcThtp+UyWIo=;
+        b=N1nD8uemrXV4AsapAKuTYnU5oeAxijBkQ63gzkjJiAf+Mu5DUo6740dpvkqamhODfR
+         5juGtidiFW8RGvSLAeU1myUdMwiRtWiimlMzEBW8iF1k97gQCuwJ38/WwhbgGPOrRUAQ
+         BSnfqh3cLnKj5B9DaJmB7uzZoc112WNz1jtkbj2GPgawZcP8fz2qPHsJYpPaRUFLj+Gk
+         HMmLWrHnEPFZFbQSTU8At4M6TaOqxIv6RwhByJg4OnXiv8FtlZm7EB7Ym40XdubJzIYH
+         zBYx4U0Wdj7rHNtqdKGWYO1ADFCOc5RZT5EWIm1wPpdqDpbw1Xi9K+SuTQfYdwhO5X8K
+         r/gg==
+X-Gm-Message-State: AOAM530xxY6Vi/y3or9WRn8EULAOnjDrmgAtPijvTVWvWnNlx763J0EO
+        G9v1Xd55FWa7U1ttFrmV+VP3VQ1SgpRD3lXKXIQHFg==
+X-Google-Smtp-Source: ABdhPJzcO+Ryus1yqJ9dqPN2/YdF9UACO9GIMtqwml6cn29/SIHNDjoQ7wA5WFQpf5uUSM+K6tTV85g0ro3zh+TYyYQ=
+X-Received: by 2002:a1c:3b42:: with SMTP id i63mr1414908wma.124.1614231623396;
+ Wed, 24 Feb 2021 21:40:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: +d1m7upSeE2piELYI3baABg/qDRAWfPn+Oamo2NU3CS6LUzwc0kLUBG1lW93SXqk
+References: <CALS+qHMo-XVzXKEfd44E6BG7TPnWKT+r2m7p1wFtFs5XjQApEA@mail.gmail.com>
+In-Reply-To: <CALS+qHMo-XVzXKEfd44E6BG7TPnWKT+r2m7p1wFtFs5XjQApEA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 24 Feb 2021 22:40:07 -0700
+Message-ID: <CAJCQCtT38_0Uk7_V-EnfJ-qj4dheJnqVcWEZEKvVRsw6tY5VDg@mail.gmail.com>
+Subject: Re: All files are damaged after btrfs restore
+To:     Sebastian Roller <sebastian.roller@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Feb 23, 2021 at 8:49 AM Sebastian Roller
+<sebastian.roller@gmail.com> wrote:
+>
+> Hello all.
+> Sorry for asking here directly, but I'm in a desperate situation and
+> out of options.
+> I have a 72 TB btrfs filesystem which functions as a backup drive.
+> After a recent controller hardware failure while the backup was
+> running, both original and backup fs were severely damaged.
+>
+> Kernel version is 5.7.7. btrfs-progs is (now) 5.9.
+>
+> At the moment I am unable to mount the btrfs filesystem.
+>
+> root@hikitty:~$ mount -t btrfs -o ro,recovery /dev/sdf1 /mnt/
+> mount: wrong fs type, bad option, bad superblock on /dev/sdf1,
+>        missing codepage or helper program, or other error
+>
+>        In some cases useful info is found in syslog - try
+>        dmesg | tail or so.
+>
+> [165097.777496] BTRFS warning (device sdf1): 'recovery' is deprecated,
+> use 'usebackuproot' instead
+> [165097.777500] BTRFS info (device sdf1): trying to use backup root at
+> mount time
+> [165097.777502] BTRFS info (device sdf1): disk space caching is enabled
+> [165097.777505] BTRFS info (device sdf1): has skinny extents
+> [165101.721250] BTRFS error (device sdf1): bad tree block start, want
+> 126718415241216 have 0
+> [165101.750951] BTRFS error (device sdf1): bad tree block start, want
+> 126718415241216 have 0
+> [165101.755753] BTRFS error (device sdf1): failed to verify dev
+> extents against chunks: -5
+> [165101.895065] BTRFS error (device sdf1): open_ctree failed
+>
+>
+> Since I desperately need the data I ran btrfs restore.
+> root@hikitty:~$ install/btrfs-progs-5.9/btrfs -v restore -i -s -m -S
+> --path-regex '^/(|@(|/backup(|/home(|/.*))))$' /dev/sdf1
+> /mnt/dumpo/home/
+> checksum verify failed on 109911545430016 found 000000B6 wanted 00000000
+> checksum verify failed on 109911545462784 found 000000B6 wanted 00000000
+> checksum verify failed on 57767345897472 found 000000B6 wanted 00000000
+> Restoring /mnt/dumpo/home/@
+> Restoring /mnt/dumpo/home/@/backup
+> Restoring /mnt/dumpo/home/@/backup/home
+> =E2=80=A6
+> (2.1 GB of log file)
+> =E2=80=A6
+> Done searching /@/backup/home
+> Reached the end of the tree searching the directory
+> Reached the end of the tree searching the directory
+> Reached the end of the tree searching the directory
+>
+>
+> Using that restore I was able to restore approx. 7 TB of the
+> originally stored 22 TB under that directory.
+> Unfortunately nearly all the files are damaged. Small text files are
+> still OK. But every larger binary file is useless.
+> Is there any possibility to fix the filesystem in a way, that I get
+> the data less damaged?
+>
+> So far I ran no btrfs check --repair.
+>
+> Since the original and the backup have been damaged any help would be
+> highly appreciated.
+> Thanks for your assistance.
+>
+> Kind regards,
+> Sebastian Roller
+>
+> ----------------  Attachment. All outputs. -------------------
+> uname -a
+> Linux hikitty 5.7.7-1.el7.elrepo.x86_64 #1 SMP Wed Jul 1 11:53:16 EDT
+> 2020 x86_64 x86_64 x86_64 GNU/Linux
+>
+>
+> root@hikitty:~$ install/btrfs-progs-5.9/btrfs --version
+> btrfs-progs v5.9
+> (Version v5.10 fails to compile)
+>
+>
+> root@hikitty:~$ btrfs fi show
+> Label: 'history'  uuid: 56051c5f-fca6-4d54-a04e-1c1d8129fe56
+>         Total devices 1 FS bytes used 68.37TiB
+>         devid    2 size 72.77TiB used 68.59TiB path /dev/sdf1
+>
+>
+> root@hikitty:~$ mount -t btrfs -o ro,recovery /dev/sdf1 /mnt/hist/
+> mount: wrong fs type, bad option, bad superblock on /dev/sdf1,
+>        missing codepage or helper program, or other error
+>
+>        In some cases useful info is found in syslog - try
+>        dmesg | tail or so.
+>
+> [165097.777496] BTRFS warning (device sdf1): 'recovery' is deprecated,
+> use 'usebackuproot' instead
+> [165097.777500] BTRFS info (device sdf1): trying to use backup root at
+> mount time
+> [165097.777502] BTRFS info (device sdf1): disk space caching is enabled
+> [165097.777505] BTRFS info (device sdf1): has skinny extents
+> [165101.721250] BTRFS error (device sdf1): bad tree block start, want
+> 126718415241216 have 0
+> [165101.750951] BTRFS error (device sdf1): bad tree block start, want
+> 126718415241216 have 0
+> [165101.755753] BTRFS error (device sdf1): failed to verify dev
+> extents against chunks: -5
+> [165101.895065] BTRFS error (device sdf1): open_ctree failed
+>
+>
+> root@hikitty:~$ btrfs rescue super-recover -v /dev/sdf1
+> All Devices:
+>         Device: id =3D 2, name =3D /dev/sdh1
+>
+> Before Recovering:
+>         [All good supers]:
+>                 device name =3D /dev/sdh1
+>                 superblock bytenr =3D 65536
+>
+>                 device name =3D /dev/sdh1
+>                 superblock bytenr =3D 67108864
+>
+>                 device name =3D /dev/sdh1
+>                 superblock bytenr =3D 274877906944
+>
+>         [All bad supers]:
+>
+> All supers are valid, no need to recover
+>
+>
+> root@hikitty:/mnt$ btrfs rescue chunk-recover /dev/sdf1
+> Scanning: DONE in dev0
+> checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
+> checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
+> checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+> checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+> checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+> checksum verify failed on 124762809384960 found E4E3BDB6 wanted 00000000
+> bytenr mismatch, want=3D124762809384960, have=3D0
+> open with broken chunk error
+> Chunk tree recovery failed
+>
+> ^^ This was btrfs v4.14
+>
+>
+> root@hikitty:~$ install/btrfs-progs-5.9/btrfs check --readonly /dev/sdi1
+> Opening filesystem to check...
+> checksum verify failed on 99593231630336 found 000000B6 wanted 00000000
+> checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+> checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+> checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+> bad tree block 124762809384960, bytenr mismatch, want=3D124762809384960, =
+have=3D0
+> ERROR: failed to read block groups: Input/output error
+> ERROR: cannot open file system
+>
+>
+> FIRST MOUNT AT BOOT TIME AFTER DESASTER
+> Feb 15 08:05:11 hikitty kernel: BTRFS info (device sdf1): disk space
+> caching is enabled
+> Feb 15 08:05:11 hikitty kernel: BTRFS info (device sdf1): has skinny exte=
+nts
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944039161856 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944039161856 (dev /dev/sdf1 sector 3974114336)
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944039165952 (dev /dev/sdf1 sector 3974114344)
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944039170048 (dev /dev/sdf1 sector 3974114352)
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944039174144 (dev /dev/sdf1 sector 3974114360)
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944037851136 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944037851136 (dev /dev/sdf1 sector 3974111776)
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944037855232 (dev /dev/sdf1 sector 3974111784)
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944037859328 (dev /dev/sdf1 sector 3974111792)
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944037863424 (dev /dev/sdf1 sector 3974111800)
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944040767488 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944040767488 (dev /dev/sdf1 sector 3974117472)
+> Feb 15 08:05:12 hikitty kernel: BTRFS info (device sdf1): read error
+> corrected: ino 0 off 141944040771584 (dev /dev/sdf1 sector 3974117480)
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944035147776 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944035115008 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944035131392 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944036327424 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944036278272 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944035164160 have 0
+> Feb 15 08:05:12 hikitty kernel: BTRFS error (device sdf1): bad tree
+> block start, want 141944036294656 have 0
+> Feb 15 08:05:16 hikitty kernel: BTRFS error (device sdf1): failed to
+> verify dev extents against chunks: -5
+> Feb 15 08:05:16 hikitty kernel: BTRFS error (device sdf1): open_ctree fai=
+led
 
-While playing with seed device(misc/next and v5.11), lockdep 
-complains the following:
+I think you best chance is to start out trying to restore from a
+recent snapshot. As long as the failed controller wasn't writing
+totally spurious data in random locations, that snapshot should be
+intact.
 
-To reproduce:
+If there are no recent snapshots, and it's unknown what the controller
+was doing while it was failing or how long it was failing for?
+Recovery can be difficult.
 
-dev1=/dev/sdb1
-dev2=/dev/sdb2
-
-umount /mnt
-
-mkfs.btrfs -f $dev1
-
-btrfstune -S 1 $dev1
-
-mount $dev1 /mnt
-
-btrfs device add $dev2 /mnt/ -f
-
-umount /mnt
-
-mount $dev2 /mnt
-
-umount /mnt
+Try using btrfs-find-root to find older roots, and use that value with
+btrfs restore -t option. These are not as tidy as snapshots though,
+the older they are, the more they dead end into more recent
+overwrites. So you want to start out with the most recent roots you
+can and work backwards in time.
 
 
-Warning:
-
-[  104.348749] BTRFS: device fsid 
-9a34d68b-fd18-470c-8cfc-44916c364c76 devid 1 transid 5 /dev/sdb1 
-scanned by mkfs.btrfs (627)
-[  104.377243] BTRFS info (device sdb1): disk space caching is 
-enabled
-[  104.378091] BTRFS info (device sdb1): has skinny extents
-[  104.378800] BTRFS info (device sdb1): flagging fs with big 
-metadata feature
-[  104.512522] BTRFS info (device sdb1): relocating block group 
-567279616 flags system|dup
-[  104.535912] BTRFS info (device sdb1): relocating block group 
-22020096 flags system|dup
-[  104.571307] BTRFS info (device sdb1): disk added /dev/sdb2
-[  104.602831] BTRFS info (device sdb2): disk space caching is 
-enabled
-[  104.603692] BTRFS info (device sdb2): has skinny extents
-
-[  104.606389] 
-======================================================
-[  104.607212] WARNING: possible circular locking dependency 
-detected
-[  104.608025] 5.11.0-rc7-custom+ #55 Tainted: G           O
-[  104.608790] 
-------------------------------------------------------
-[  104.609599] mount/670 is trying to acquire lock:
-[  104.610207] ffffa2274d7158e8 
-(&fs_devs->device_list_mutex){+.+.}-{3:3}, at: 
-clone_fs_devices+0x4f/0x160 [btrfs]
-[  104.611585]
-               but task is already holding lock:
-[  104.612334] ffffa22750e32f20 (btrfs-chunk-00){++++}-{3:3}, at: 
-__btrfs_tree_read_lock+0x2d/0x110 [btrfs]
-[  104.651264]
-               which lock already depends on the new lock.
-
-[  104.708041]
-               the existing dependency chain (in reverse order) 
-               is:
-[  104.743619]
-               -> #1 (btrfs-chunk-00){++++}-{3:3}:
-[  104.777693]        down_read_nested+0x4b/0x140
-[  104.794386]        __btrfs_tree_read_lock+0x2d/0x110 [btrfs]
-[  104.811338]        btrfs_read_lock_root_node+0x36/0x50 [btrfs]
-[  104.828574]        btrfs_search_slot+0x473/0x900 [btrfs]
-[  104.845543]        btrfs_update_device+0x71/0x1a0 [btrfs]
-[  104.862164]        btrfs_finish_chunk_alloc+0x121/0x490 [btrfs]
-[  104.878474] 
-btrfs_create_pending_block_groups+0x151/0x2c0 [btrfs]
-[  104.894725]        btrfs_commit_transaction+0x82/0xb30 [btrfs]
-[  104.910808]        btrfs_init_new_device+0x1015/0x14d0 [btrfs]
-[  104.926879]        btrfs_ioctl+0x1ff/0x2fc0 [btrfs]
-[  104.942996]        __x64_sys_ioctl+0x91/0xc0
-[  104.958874]        do_syscall_64+0x38/0x50
-[  104.974554]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  104.990108]
-               -> #0 (&fs_devs->device_list_mutex){+.+.}-{3:3}:
-[  105.020508]        __lock_acquire+0x11e0/0x1ea0
-[  105.035759]        lock_acquire+0xd8/0x3c0
-[  105.050434]        __mutex_lock+0x8f/0x870
-[  105.064614]        mutex_lock_nested+0x1b/0x20
-[  105.078641]        clone_fs_devices+0x4f/0x160 [btrfs]
-[  105.092984]        btrfs_read_chunk_tree+0x30e/0x7f0 [btrfs]
-[  105.107031]        open_ctree+0xb40/0x176a [btrfs]
-[  105.120673]        btrfs_mount_root.cold+0x12/0xeb [btrfs]
-[  105.134564]        legacy_get_tree+0x34/0x60
-[  105.148347]        vfs_get_tree+0x2d/0xc0
-[  105.162053]        vfs_kern_mount.part.0+0x78/0xc0
-[  105.176072]        vfs_kern_mount+0x13/0x20
-[  105.189844]        btrfs_mount+0x11f/0x3c0 [btrfs]
-[  105.203396]        legacy_get_tree+0x34/0x60
-[  105.217129]        vfs_get_tree+0x2d/0xc0
-[  105.230536]        path_mount+0x48c/0xd30
-[  105.243915]        __x64_sys_mount+0x108/0x140
-[  105.257030]        do_syscall_64+0x38/0x50
-[  105.270084]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  105.283382]
-               other info that might help us debug this:
-
-[  105.321699]  Possible unsafe locking scenario:
-
-[  105.347053]        CPU0                    CPU1
-[  105.359640]        ----                    ----
-[  105.372004]   lock(btrfs-chunk-00);
-[  105.384023] 
-lock(&fs_devs->device_list_mutex);
-[  105.396858] 
-lock(btrfs-chunk-00);
-[  105.409215]   lock(&fs_devs->device_list_mutex);
-[  105.421625]
-                *** DEADLOCK ***
-
-[  105.457447] 3 locks held by mount/670:
-[  105.469302]  #0: ffffa2270932e0e8 
-(&type->s_umount_key#54/1){+.+.}-{3:3}, at: alloc_super+0xdf/0x3c0
-[  105.494413]  #1: ffffffffc0bdfdd0 (uuid_mutex){+.+.}-{3:3}, at: 
-btrfs_read_chunk_tree+0x5c/0x7f0 [btrfs]
-[  105.521072]  #2: ffffa22750e32f20 (btrfs-chunk-00){++++}-{3:3}, 
-at: __btrfs_tree_read_lock+0x2d/0x110 [btrfs]
-[  105.549753]
-               stack backtrace:
-[  105.578187] CPU: 6 PID: 670 Comm: mount Tainted: G           O 
-5.11.0-rc7-custom+ #55
-[  105.607477] Hardware name: QEMU Standard PC (i440FX + PIIX, 
-1996), BIOS ArchLinux 1.14.0-1 04/01/2014
-[  105.638608] Call Trace:
-[  105.653967]  dump_stack+0x90/0xb8
-[  105.669419]  print_circular_bug.cold+0x13d/0x142
-[  105.684814]  check_noncircular+0xf2/0x110
-[  105.700322]  ? check_path.constprop.0+0x26/0x40
-[  105.715821]  __lock_acquire+0x11e0/0x1ea0
-[  105.731388]  ? __this_cpu_preempt_check+0x13/0x20
-[  105.747097]  ? lockdep_unlock+0x33/0xd0
-[  105.763012]  lock_acquire+0xd8/0x3c0
-[  105.779043]  ? clone_fs_devices+0x4f/0x160 [btrfs]
-[  105.795343]  __mutex_lock+0x8f/0x870
-[  105.811251]  ? clone_fs_devices+0x4f/0x160 [btrfs]
-[  105.827385]  ? lockdep_init_map_waits+0x51/0x250
-[  105.843343]  ? clone_fs_devices+0x4f/0x160 [btrfs]
-[  105.859264]  ? debug_mutex_init+0x36/0x50
-[  105.875378]  ? __mutex_init+0x62/0x70
-[  105.891493]  mutex_lock_nested+0x1b/0x20
-[  105.907847]  clone_fs_devices+0x4f/0x160 [btrfs]
-[  105.923756]  ? btrfs_get_64+0x63/0x110 [btrfs]
-[  105.939389]  btrfs_read_chunk_tree+0x30e/0x7f0 [btrfs]
-[  105.954580]  open_ctree+0xb40/0x176a [btrfs]
-[  105.969477]  ? bdi_register_va+0x1b/0x20
-[  105.983674]  ? super_setup_bdi_name+0x79/0xd0
-[  105.997611]  btrfs_mount_root.cold+0x12/0xeb [btrfs]
-[  106.011564]  ? __kmalloc_track_caller+0x217/0x3b0
-[  106.026013]  legacy_get_tree+0x34/0x60
-[  106.040045]  vfs_get_tree+0x2d/0xc0
-[  106.053904]  vfs_kern_mount.part.0+0x78/0xc0
-[  106.067296]  vfs_kern_mount+0x13/0x20
-[  106.080125]  btrfs_mount+0x11f/0x3c0 [btrfs]
-[  106.093144]  ? kfree+0x5ff/0x670
-[  106.106064]  ? __kmalloc_track_caller+0x217/0x3b0
-[  106.119249]  legacy_get_tree+0x34/0x60
-[  106.132216]  vfs_get_tree+0x2d/0xc0
-[  106.145225]  path_mount+0x48c/0xd30
-[  106.157899]  __x64_sys_mount+0x108/0x140
-[  106.170654]  do_syscall_64+0x38/0x50
-[  106.183208]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  106.196111] RIP: 0033:0x7fafa8869ebe
-[  106.208994] Code: 48 8b 0d b5 0f 0c 00 f7 d8 64 89 01 48 83 c8 
-ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 a5 
-00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 82 0f 0c 00 
-f7 d8 64 89 01 48
-[  106.250073] RSP: 002b:00007ffc04365b98 EFLAGS: 00000246 
-ORIG_RAX: 00000000000000a5
-[  106.278571] RAX: ffffffffffffffda RBX: 00007fafa8994264 RCX: 
-00007fafa8869ebe
-[  106.294048] RDX: 0000556726a02e00 RSI: 00005567269fc690 RDI: 
-00005567269fc670
-[  106.309646] RBP: 00005567269fc440 R08: 0000000000000000 R09: 
-00007fafa892ba60
-[  106.325336] R10: 0000000000000000 R11: 0000000000000246 R12: 
-0000000000000000
-[  106.340847] R13: 00005567269fc670 R14: 0000556726a02e00 R15: 
-00005567269fc440
-[  106.357929] BTRFS info (device sdb2): checking UUID tree
+--=20
+Chris Murphy
