@@ -2,134 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C16032508F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 14:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F5F3251EB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 16:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhBYNdb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Feb 2021 08:33:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbhBYNda (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:33:30 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C2AC061574;
-        Thu, 25 Feb 2021 05:32:50 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id w19so5513620qki.13;
-        Thu, 25 Feb 2021 05:32:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=/HozBozd0HS9TGCZ8dbG2UcJHoDOsGOVwFw4J3/77Mw=;
-        b=FJRSm9IFwgxNVM9WCaw1zLyhGOQsFXkh7vBL0Z0AHV/PqwRVaRlmqXix2ah4NrtaTL
-         +sQTEKS6U8a3Z4f7sqcOmXM2oNE3BK6mBG8gmh3un6BqFDcUm88SkydJb//xJU3fdkvN
-         Dx2GGtqJDKUZnBjY/iquV1NVtICIzFgegLTSeIDsVNOSo3vvTJB4kiNT68K+Os0AoSnq
-         1e40Xe/ubLeksCnry23XtuPT6sXPgIMZjaUTF5lqnmUPJpqlS29b7LqlXQypUCPlLUSZ
-         wNK1n+WifB4Lu5/3d3UHWi679e7aEouJmhkvener4O8P6YdCUEsJc9bG39YZokhP7YcY
-         aMQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=/HozBozd0HS9TGCZ8dbG2UcJHoDOsGOVwFw4J3/77Mw=;
-        b=cJLyFazbJmCbvVSiJOtZSKgSkfSebl3J3nUtie6dFcalM1GjLqHOz/vUvoHLI1NhwL
-         /+0LlU86IMIdrkPHTRqGfF9+3b1/Tc2Lk1GBFGPK+iH6czk6DmLRBADSBVLEPoFjYHna
-         QgP6MO4KXJUg2Nx7bIlyKuaG4dPemeKCk97phwGeZmUs8OB5rg2/s8xBNdbdKshLX8kw
-         gf2HTR3bvQIeSXbfMd+tM/h2A7ygpcy5iHoCkX8X+pKbj4cMKhFy6J0yHLR9QOVvcrT2
-         grsbJa0FSomS7VxvGSFNHeYm9TeR/TGpJ1/4TucmPJYn+lMZBYpxjG1CB2WL+OEKN1jn
-         diFw==
-X-Gm-Message-State: AOAM53081dJ5wZchAQnjMQhC/aYP4eHBzmOMBHgnxV0kOYdHWCoN5cYU
-        maG6MlxQCPZ/FUFEnfYsdidr7q2jAs2/2Gc8aoU=
-X-Google-Smtp-Source: ABdhPJw6E3Or11svH8GhUTKrjsCjzoCy4xqe+Yu0x1sVcoakG4LJvysmWudeFkbVD//UDzAE2NOMyLkGBp30g0Ny4bA=
-X-Received: by 2002:a37:65d8:: with SMTP id z207mr2553122qkb.479.1614259969559;
- Thu, 25 Feb 2021 05:32:49 -0800 (PST)
+        id S231974AbhBYPCf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Feb 2021 10:02:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60644 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232429AbhBYPCC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Feb 2021 10:02:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A9416B022;
+        Thu, 25 Feb 2021 15:01:13 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DE2CCDA790; Thu, 25 Feb 2021 15:59:20 +0100 (CET)
+Date:   Thu, 25 Feb 2021 15:59:20 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, 'Chris Murphy ' <lists@colorremedies.com>
+Subject: Re: [PATCH] btrfs: fix spurious free_space_tree remount warning
+Message-ID: <20210225145920.GC7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, 'Chris Murphy ' <lists@colorremedies.com>
+References: <4a019f01584f1d818203b7c2ed65204583a11592.1614104082.git.boris@bur.io>
+ <8769846e-68b2-766f-5fdd-43ffb79f4586@suse.com>
 MIME-Version: 1.0
-References: <CAE1WUT53F+xPT-Rt83EStGimQXKoU-rE+oYgcib87pjP4Sm0rw@mail.gmail.com>
- <CAEg-Je-Hs3+F9yshrW2MUmDNTaN-y6J-YxeQjneZx=zC5=58JA@mail.gmail.com>
-In-Reply-To: <CAEg-Je-Hs3+F9yshrW2MUmDNTaN-y6J-YxeQjneZx=zC5=58JA@mail.gmail.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 25 Feb 2021 13:32:38 +0000
-Message-ID: <CAL3q7H6H0gokXic_-st71zcyzoegeUbRR86pc2hpXF30Ow_Sxg@mail.gmail.com>
-Subject: Re: Adding LZ4 compression support to Btrfs
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Amy Parker <enbyamy@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8769846e-68b2-766f-5fdd-43ffb79f4586@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 1:23 PM Neal Gompa <ngompa13@gmail.com> wrote:
->
-> On Wed, Feb 24, 2021 at 11:10 PM Amy Parker <enbyamy@gmail.com> wrote:
-> >
-> > The compression options in Btrfs are great, and help save a ton of
-> > space on disk. Zstandard works extremely well for this, and is fairly
-> > fast. However, it can heavily reduce the speed of quick disks, does
-> > not work well on lower-end systems, and does not scale well across
-> > multiple cores. Zlib is even slower and worse on compression ratio,
-> > and LZO suffers on both the compression ratio and speed.
-> >
-> > I've been laying out my plans for a backup software recently, and
-> > stumbled upon LZ4. Tends to hover around LZO compression ratios.
-> > Performs better than Zstandard and LZO slightly for compression - but
-> > significantly outpaces them on decompression, which matters
-> > significantly more for users:
-> >
-> > zstd 1.4.5:
-> >  - ratio 2.884
-> >  - compression 500 MiB/s
-> >  - decompression 1.66 GiB/s
-> > zlib 1.2.11:
-> >  - ratio 2.743
-> >  - compression 90 MiB/s
-> >  - decompression 400 MiB/s
-> > lzo 2.10:
-> >  - ratio 2.106
-> >  - compression 690 MiB/s
-> >  - decompression 820 MiB/s
-> > lz4 1.9.2:
-> >  - ratio 2.101
-> >  - compression 740 MiB/s
-> >  - decompression 4.5 GiB/s
-> >
-> > LZ4's speeds are high enough to allow many applications which
-> > previously declined to use any compression due to speed to increase
-> > their possible space while keeping fast write and especially read
-> > access.
-> >
-> > What're thoughts like on adding something like LZ4 as a compression
-> > option in btrfs? Is it feasible given the current implementation of
-> > compression in btrfs?
->
-> This is definitely possible. I think the only reason lz4 isn't enabled
-> for Btrfs has been the lack of interest in it. I'd defer to some of
-> the kernel folks (I'm just a user and integrator myself), but I think
-> that's definitely worth having lz4 compression supported.
+On Tue, Feb 23, 2021 at 08:28:10PM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 23.02.21 г. 20:22 ч., Boris Burkov wrote:
+> > The intended logic of the check is to catch cases where the desired
+> > free_space_tree setting doesn't match the mounted setting, and the
+> > remount is anything but ro->rw. However, it makes the mistake of
+> > checking equality on a masked integer (btrfs_test_opt) against a boolean
+> > (btrfs_fs_compat_ro).
+> > 
+> > If you run the reproducer:
+> > mount -o space_cache=v2 dev mnt
+> > mount -o remount,ro mnt
+> > 
+> > you would expect no warning, because the remount is not attempting to
+> > change the free space tree setting, but we do see the warning.
+> > 
+> > To fix this, convert the option test to a boolean.
+> > 
+> > I tested a variety of transitions:
+> > sudo mount -o space_cache=v2 /dev/vg0/lv0 mnt/lol
+> > (fst enabled)
+> > mount -o remount,ro mnt/lol
+> > (no warning, no fst change)
+> > sudo mount -o remount,rw,space_cache=v1,clear_cache
+> > (no warning, ro->rw)
+> > sudo mount -o remount,rw,space_cache=v2 mnt
+> > (warning, rw->rw with change)
+> > sudo mount -o remount,ro mnt
+> > (no warning, no fst change)
+> > sudo mount -o remount,rw,space_cache=v2 mnt
+> > (no warning, no fst change)
+> > 
+> > Reported-by: Chris Murphy <lists@colorremedies.com>
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  fs/btrfs/super.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> > index f8435641b912..d4992ceab5ea 100644
+> > --- a/fs/btrfs/super.c
+> > +++ b/fs/btrfs/super.c
+> > @@ -1918,7 +1918,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+> >  	btrfs_resize_thread_pool(fs_info,
+> >  		fs_info->thread_pool_size, old_thread_pool_size);
+> >  
+> > -	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE) !=
+> > +	if (!!btrfs_test_opt(fs_info, FREE_SPACE_TREE) !=
+> 
+> I'd rather thave the !! convert to  bool magic in the macro definition i.e : 
+> 
+> #define btrfs_test_opt(fs_info, opt)    !!((fs_info)->mount_opt & \               
+>                                                BTRFS_MOUNT_##opt)                     
 
-This has been brought up over and over for many years:
-
-https://btrfs.wiki.kernel.org/index.php/FAQ#Will_btrfs_support_LZ4.3F
-
-Things have to be evaluated in btrfs' context, i.e. how it uses compression=
-.
-More details there anyway.
-
->
->
->
-> --
-> =E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=
-=EF=BC=81/ Always, there's only one truth!
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Yeah, that sounds safer and we should convert all predicate functions to
+bool eg. __btrfs_fs_compat_ro. The whole value of the macro needs to be
+in ( .. ) too.
