@@ -2,112 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994C332504B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 14:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E5432506E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 14:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhBYNUL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Feb 2021 08:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38584 "EHLO
+        id S232923AbhBYN1U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Feb 2021 08:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhBYNUK (ORCPT
+        with ESMTP id S231591AbhBYNZY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:20:10 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78664C061574;
-        Thu, 25 Feb 2021 05:19:29 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 133so5368082ybd.5;
-        Thu, 25 Feb 2021 05:19:29 -0800 (PST)
+        Thu, 25 Feb 2021 08:25:24 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BEBC061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Feb 2021 05:25:01 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id d11so3279998qtx.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Feb 2021 05:25:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4JV2j4UkKblrD8dvxt7pVuzmkwSyT4nO4+MXb/5296c=;
-        b=EH70tK7qxc9ePO4ZUWjXeeXo2zXb6vx5BB1v+9BVVqbqGhPpVG9xayDnw44BFrzneF
-         tOKBtiJP31f52ivwd3vszEOJj7kbCk/Q/61a+3qurr0njlEyrfVhfGwAKWRmAwzDNyPc
-         +kbbq7q7RpAlBZfQ9duf4JUo20Ko8qSBrnsVWbBbUCNg3QHtZmuWtUGpEJQE7MnuBskr
-         jXkctkzUCYoXxwmjMMiHO+evBHP5XHqVDBF7V0A/O2UwlQTKY+LWfyCHGNTn0ncSimAu
-         e/BgeqfXmPhnj6P2Mu7IL9p5/OE7ZubFQeElq18E3uoHX1zyp3DQKGopwimFlZlZxmE3
-         E9FQ==
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sTpa+cy0LcyHYxnfVutPcJ2bo6k1tlUvUKzalYcYcow=;
+        b=lWGAfrumx4r6x+RhD4FdAjPW7HCmZhAoa+doueFexMKaGdNYhypKi0jpprezPtCsQD
+         nzbambReanTaff+e1FzgUMg6Q/yxubp/L1KeK3afkOaMuzu9XdiwXMo7uXREtv8OtEhy
+         hqniQNVvBYLPV8UugDJdV95g6CjGAA9qs1y/k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4JV2j4UkKblrD8dvxt7pVuzmkwSyT4nO4+MXb/5296c=;
-        b=IgeMa/oWL5Bh3f4O48GkqgJqUimKUSpJwK9OaekGyJOk2ajhHF4X2SAltpNk3VNN0R
-         iC0mNpknB1hMK0FImSMOsayJ2l5gy/lzu0IKav+3kSlN4MjP5vwWgNvbEWBlsGYIdvM/
-         V1E920BVMuUOOOAQtDmFeXj3AyX4nOjAghSg5fGCyRMFUo+uFL0wd3mckmrk8ffYzyNv
-         kDWSw7pclw18OwHAUqeZQwboA4sMjxw0tOblHcNg2gBe3yY5duGiuf/OZHOPPx5EMNyj
-         7mGIzsr6VYCaIsQ82OVTuTe/l1kaopp2qY5W8W9JKYd8GOFYB/tqoIUwcla1DEZ2HkAe
-         vKIA==
-X-Gm-Message-State: AOAM530JZAcE3EZ4ADZLWpOvsViFLgWZVP6hhTIvq9tZR8RW3im8Ytab
-        nbwaGp8Rw/CV3Pxi3atRzTOe/KlUIgnWGjUIV0Y=
-X-Google-Smtp-Source: ABdhPJzIhuYph4dFAyEjbDgWes+B0xljjyrLlBNo8C6OOrkds3LH6oHV4pLkDCBJ+VCf9u0hxZmzbBRFM9waZGC9xYU=
-X-Received: by 2002:a05:6902:4b0:: with SMTP id r16mr4086758ybs.184.1614259168783;
- Thu, 25 Feb 2021 05:19:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sTpa+cy0LcyHYxnfVutPcJ2bo6k1tlUvUKzalYcYcow=;
+        b=iHOOdCI6E28rDRxhxGG29aT61RoZ/hky7PT1q7ylerZlegQxkTfvbriY7G4YYQ22kf
+         d63qBH01m2jA1pWIjXNZ5hLMOuC/9HRXVxN1VAJqYuvuAfvTWJl2kuKcBJMqzA48umEE
+         IpqxLM2JjIwq0WTPOR5z4GWfV2UcUGJhnFVBkRlsiP9D2iMsFTA5dAj89mSmEHJPDEVO
+         iVyMeRd4SRVJ3uQk0fojEtxmPR3SYRjB56WGwNZvAo9EbJI2sk191UZACvBjkfQ+23Oa
+         eblldyfma4qfrYIuHwKRaw3UShBAlaovs9JjA8tUZGIM6jRUxHRNKNaDhI72UMCwBxae
+         snDQ==
+X-Gm-Message-State: AOAM530t3jluRmwUvERl1LCXDDLZbvhkYPjzLlmib3fDBUcEsHezCw8e
+        T3h0Fo4dIveUeRmbroVk4qyWaVo2PorZXA==
+X-Google-Smtp-Source: ABdhPJwx/987C2x0ZUlpGwM1JF5D3JEh3eZS1HPN/PPDJGo0JG7nLd0OLiVWVTCb7uNlD3bDzW5EAw==
+X-Received: by 2002:ac8:ace:: with SMTP id g14mr2246025qti.156.1614259500857;
+        Thu, 25 Feb 2021 05:25:00 -0800 (PST)
+Received: from bill-the-cat (2603-6081-7b07-927a-4842-8631-dad1-fa95.res6.spectrum.com. [2603:6081:7b07:927a:4842:8631:dad1:fa95])
+        by smtp.gmail.com with ESMTPSA id 18sm3291856qtw.70.2021.02.25.05.24.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 25 Feb 2021 05:25:00 -0800 (PST)
+Date:   Thu, 25 Feb 2021 08:24:58 -0500
+From:   Tom Rini <trini@konsulko.com>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH u-boot 1/2] fs: btrfs: skip xattrs in directory listing
+Message-ID: <20210225132458.GT10169@bill-the-cat>
+References: <20210209180508.22132-1-marek.behun@nic.cz>
 MIME-Version: 1.0
-References: <CAE1WUT53F+xPT-Rt83EStGimQXKoU-rE+oYgcib87pjP4Sm0rw@mail.gmail.com>
-In-Reply-To: <CAE1WUT53F+xPT-Rt83EStGimQXKoU-rE+oYgcib87pjP4Sm0rw@mail.gmail.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Thu, 25 Feb 2021 08:18:53 -0500
-Message-ID: <CAEg-Je-Hs3+F9yshrW2MUmDNTaN-y6J-YxeQjneZx=zC5=58JA@mail.gmail.com>
-Subject: Re: Adding LZ4 compression support to Btrfs
-To:     Amy Parker <enbyamy@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3Jd6iylqttSgi8bZ"
+Content-Disposition: inline
+In-Reply-To: <20210209180508.22132-1-marek.behun@nic.cz>
+X-Clacks-Overhead: GNU Terry Pratchett
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 11:10 PM Amy Parker <enbyamy@gmail.com> wrote:
->
-> The compression options in Btrfs are great, and help save a ton of
-> space on disk. Zstandard works extremely well for this, and is fairly
-> fast. However, it can heavily reduce the speed of quick disks, does
-> not work well on lower-end systems, and does not scale well across
-> multiple cores. Zlib is even slower and worse on compression ratio,
-> and LZO suffers on both the compression ratio and speed.
->
-> I've been laying out my plans for a backup software recently, and
-> stumbled upon LZ4. Tends to hover around LZO compression ratios.
-> Performs better than Zstandard and LZO slightly for compression - but
-> significantly outpaces them on decompression, which matters
-> significantly more for users:
->
-> zstd 1.4.5:
->  - ratio 2.884
->  - compression 500 MiB/s
->  - decompression 1.66 GiB/s
-> zlib 1.2.11:
->  - ratio 2.743
->  - compression 90 MiB/s
->  - decompression 400 MiB/s
-> lzo 2.10:
->  - ratio 2.106
->  - compression 690 MiB/s
->  - decompression 820 MiB/s
-> lz4 1.9.2:
->  - ratio 2.101
->  - compression 740 MiB/s
->  - decompression 4.5 GiB/s
->
-> LZ4's speeds are high enough to allow many applications which
-> previously declined to use any compression due to speed to increase
-> their possible space while keeping fast write and especially read
-> access.
->
-> What're thoughts like on adding something like LZ4 as a compression
-> option in btrfs? Is it feasible given the current implementation of
-> compression in btrfs?
 
-This is definitely possible. I think the only reason lz4 isn't enabled
-for Btrfs has been the lack of interest in it. I'd defer to some of
-the kernel folks (I'm just a user and integrator myself), but I think
-that's definitely worth having lz4 compression supported.
+--3Jd6iylqttSgi8bZ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 09, 2021 at 07:05:07PM +0100, Marek Beh=FAn wrote:
 
+> Skip xattrs in directory listing. U-Boot filesystem drivers do not list
+> xattrs.
+>=20
+> Signed-off-by: Marek Beh=FAn <marek.behun@nic.cz>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: Qu Wenruo <wqu@suse.com>
+> Cc: Tom Rini <trini@konsulko.com>
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Applied to u-boot/master, thanks!
 
 --=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Tom
+
+--3Jd6iylqttSgi8bZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmA3pSoACgkQFHw5/5Y0
+tyxHVQwAhC6/DI+8jPVcJp79vO1k5nIpQKEFzUJIsLa6Uy/SlSjFjfewNC/5okby
+SkBBTFa7CbXqOBihUBF1C+jKz1YijKJYwsoxLA1CYOCH9NgNQ9aONVLlYOP6lDVK
+D2L43v2t9EMmehEz9s7R0wH1ZExunnJGGAASw9Gm3wo80fSZJSMAKYQdkGK3FkSz
+VuG09lSyknc6oCh2n4GcQwsINaj2Er/SaEs0V1vUyeOMZ9OmH/7N4rjKLmVBa9pA
+cUb45gEU4B/xzQ0A3sOTkwfgfdpj3Ky/9/xGvIAqjuSsaz1X5UJd0g3zXxjznf/v
+D2G2Hq0r1JpLf7/ho+ps8Iq958xDluNnV50Oxc9N4p9aqVmmfhJMFv8OWmMDkX3A
+aZUwcH5u2IjXFYy10KB28M76DA3v/yx9YrDh3vqXiK4I4KPsCTEubA54f6hkQGAb
+tR37KwqVbQ60RkX9a9MGdDgUY9AGwgU/BkNQpNUee6nm1xR24HyFSVRPebwN2S6E
+orcsEwTb
+=+shO
+-----END PGP SIGNATURE-----
+
+--3Jd6iylqttSgi8bZ--
