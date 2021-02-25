@@ -2,61 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2446325388
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 17:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C4E3255D6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 19:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhBYQa0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Feb 2021 11:30:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41560 "EHLO mx2.suse.de"
+        id S232350AbhBYSvk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Feb 2021 13:51:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230201AbhBYQaY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Feb 2021 11:30:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C90F8AC1D;
-        Thu, 25 Feb 2021 16:29:42 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1EF33DA790; Thu, 25 Feb 2021 17:27:50 +0100 (CET)
-Date:   Thu, 25 Feb 2021 17:27:50 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/6] btrfs: Export qgroup_reserve_meta
-Message-ID: <20210225162749.GH7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210222164047.978768-1-nborisov@suse.com>
- <20210222164047.978768-3-nborisov@suse.com>
- <c5936976-95af-b937-dbb8-6545bca70792@gmx.com>
+        id S229548AbhBYSvi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Feb 2021 13:51:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A1C64F03;
+        Thu, 25 Feb 2021 18:50:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614279058;
+        bh=o45Nk/ThRtDbh8TB+VXox+YC5iOPmiQu7TH0gfp3lyk=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=ODWbpXfCeIgx2hvzfs4UlwvmOOPwFkrDELGt6KxQesUUs5l7ON+DgqG4d1lgtryIl
+         bovrPkQc7g/HlCLeYo+ViK9h+ZdvujlmTXdVEWHpfjxOVv+zuLjFql2YLWt7EE2bII
+         x51BTgmyk1bwfbOrtCPmlfpm7Y/zog6Ty8FfTiSPx0SljwcC5JUPMS94R/en0k5rvn
+         YKj+ADR9vka7hhceXHJF0kbr60FxGUV0IN6Uw480WDdotjTIXxCP5royI5M05+Gpxi
+         hpTkemzn0m6pFBNB3FmcvUbE1ySHxddd0JvlP8vurjOroOPBVDSW6Xby3F9ZegZH1I
+         yVnSg728aT6Mw==
+Date:   Thu, 25 Feb 2021 10:50:56 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
+        Amy Parker <enbyamy@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: Adding LZ4 compression support to Btrfs
+Message-ID: <YDfxkGkWnLEfsDwZ@gmail.com>
+References: <CAE1WUT53F+xPT-Rt83EStGimQXKoU-rE+oYgcib87pjP4Sm0rw@mail.gmail.com>
+ <CAEg-Je-Hs3+F9yshrW2MUmDNTaN-y6J-YxeQjneZx=zC5=58JA@mail.gmail.com>
+ <20210225132647.GB7604@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c5936976-95af-b937-dbb8-6545bca70792@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210225132647.GB7604@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 07:42:48AM +0800, Qu Wenruo wrote:
+On Thu, Feb 25, 2021 at 02:26:47PM +0100, David Sterba wrote:
 > 
+> LZ4 support has been asked for so many times that it has it's own FAQ
+> entry:
+> https://btrfs.wiki.kernel.org/index.php/FAQ#Will_btrfs_support_LZ4.3F
 > 
-> On 2021/2/23 上午12:40, Nikolay Borisov wrote:
-> > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> Considering how small the export is, I prefer this to be merged with
-> next patch, as it's much easier to understand why we want to export the
-> function.
-> 
-> And since it will be exported, may be it's a good idea to rename it as
-> btrfs_qgroup_reserve_meta_atomic() or btrfs_qgroup_reserve_meta_noflush()?
+> The decompression speed is not the only thing that should be evaluated,
+> the way compression works in btrfs (in 4k blocks) does not allow good
+> compression ratios and overall LZ4 does not do much better than LZO. So
+> this is not worth the additional costs of compatibility. With ZSTD we
+> got the high compression and recently there have been added real-time
+> compression levels that we'll use in btrfs eventually.
 
-Yes the exported functions should have the btrfs_ prefix and because
-that needs changing all callers it's usually a good idea to do it in a
-separate patch.
+When ZSTD support was being added to btrfs, it was claimed that btrfs compresses
+up to 128KB at a time
+(https://lore.kernel.org/r/5a7c09dd-3415-0c00-c0f2-a605a0656499@fb.com).
+So which is it -- 4KB or 128KB?
 
-About the rename, using _atomic could be confusing as it has already two
-other meanings in linux.  There's already __btrfs_qgroup_reserve_meta,
-looking at all the other reserve_meta helpers, I think we can keep it as
-btrfs_qgroup_reserve_meta, but the _noflush suffix also makes sense.
+- Eric
