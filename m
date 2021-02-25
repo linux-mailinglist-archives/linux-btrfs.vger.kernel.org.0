@@ -2,238 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDAF32479A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 00:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9796032486F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 02:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbhBXXqB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Feb 2021 18:46:01 -0500
-Received: from mout.gmx.net ([212.227.17.20]:46337 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232929AbhBXXp6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Feb 2021 18:45:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614210263;
-        bh=U1sJNrxPN9haBy0ghPiFgq7iBFP65syHB4yzxlXmQn8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=S+VlpHSOXng1tHTFcUsp7X/47FV9z92dLjlKnjQXMD83zrGgmnbFF3fyI2Dt6C2JR
-         hHf3G/97UcCmwu9KOhJ/bswBJLeLm6138zpgKv8bQSrEE/nnJuLZc7QFTpSTxMFYgu
-         ZhYqaA61Fymd2D29jjFzCsaXeMpGEgpHL5LevQh8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MacSY-1lpmUX0KgE-00c9Ww; Thu, 25
- Feb 2021 00:44:23 +0100
-Subject: Re: [PATCH] btrfs: do more graceful error/warning for 32bit kernel
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Erik Jensen <erikjensen@rkjnsn.net>
-References: <20210220020633.53400-1-wqu@suse.com>
- <20210224191823.GC1993@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <550d771d-f328-8d37-b1a0-1758e683b1ca@gmx.com>
-Date:   Thu, 25 Feb 2021 07:44:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S234853AbhBYBRq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Feb 2021 20:17:46 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:49296 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235346AbhBYBRo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Feb 2021 20:17:44 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11P1FMaA009300;
+        Thu, 25 Feb 2021 01:16:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=5/Mtkyv8h+AsnumLPAX2WsPq0KTw/k1nIYkZa1a9cF8=;
+ b=No1xnUym+E8mqko+LIX6WTWCK4AabybajnBFaVrSH5oLrVkRveb7h+4ho5/r3px0OD0T
+ bafcNl8xp0atuO44QW7PG7ANtU28VdKZ2IC77My222KZkkeFeNtr7G0z7CLfoii5hwZc
+ 3NwtCqfRFyzVIuofnC/2QaBRyVE06rpUHOSCj9OPaYcFYYFhHNJOGXvY8B2RJAa0iNxN
+ UOz0zYwJVaVUILmNSQKHSBxW3QSep0Qglk7JUKMHijoWqaif+HvW8iRU7Wxbs7M4OGF5
+ 3Spqtwcqkw+Sd3V/+d3J6R+hYTDljxg/QWnKO1dtiJTlrocwjOySp7LkGrCtVNM5Xeg6 Iw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 36ugq3kr5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Feb 2021 01:16:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11P1EfEk171746;
+        Thu, 25 Feb 2021 01:16:58 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2051.outbound.protection.outlook.com [104.47.36.51])
+        by aserp3020.oracle.com with ESMTP id 36ucb1e8t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Feb 2021 01:16:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D0Dhgh1eYe2I7DrY4dEESlQ1PQtRCi9jjxeRpFlov1KwJH4sMKqABtVQBKJlaF8ZK7gPKW3+Etz5LiVpK1PSn9w8eA81i1oMi2tmIDVYQNeeabNajCbjzYlgE2DApR4Lsp/qokMz0W2l9G5BMZ1l5gAzXoYngRK6MiryKvSCwBNV1UJ+o0vaWvOUXWCwsXywm3iyP4E2ibLGHbTC3/F0eh/T2ctU20T9/l8OGrHrVJXpYog7EJznu9QG+PHw3xJAqEtqdsySQgHlOo0Q+BkVvzgcV87ybOFBUHR8boj0JOI79OSVVe5Plolc9V358V98b/hnDEW/61W63PQqKR37iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5/Mtkyv8h+AsnumLPAX2WsPq0KTw/k1nIYkZa1a9cF8=;
+ b=lnDj6nm+f3qtXpaRqALt2U6InQyCq7cDNZUnglaB2mz5YIrWpRK86NP1XAUvZDe+0kAw773sNa25oD6bncomNyxC4ZvaIFyfBCqJZAGcPX2e5HBaF3YER7qkYffUmLdE1fJCbdt21zG8vV7d+3ulAjjFWXgum/QukLdC8py6z2urbAwiiNVc1d158/fO7Ld7KNMRcyZoDe0EnM7qOV/iO1C/AaQUUJFKzo2GFnIJaSW0Mk+MePhSDyfoy2fI3Mby/Z4APvBqqN/w0ygXdqqUs+3zEFWQCiXuYV8ZFAGMHedGQ4GiyDRJw69C7CB2qTE41v1yEA9jRIVEkRgPymjaeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5/Mtkyv8h+AsnumLPAX2WsPq0KTw/k1nIYkZa1a9cF8=;
+ b=V07Hyqx8BOSCPXiE2x5xjn/2Cc7A4BYWMpvVc87j+d/s8kKZVU8MGM9aTahFzlyEVVOP2h2Fj71OknRz61g5R8xvTPPvY2ffF+bE120i5iyxFGo5AFpn30f1nlvDHITT6AIDcNm/An877sbWblpnkFhq0Gi6x79hOqytVoTjmh0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BL0PR10MB2993.namprd10.prod.outlook.com (2603:10b6:208:7d::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Thu, 25 Feb
+ 2021 01:16:57 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::e5b0:9afa:a555:a125]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::e5b0:9afa:a555:a125%8]) with mapi id 15.20.3890.019; Thu, 25 Feb 2021
+ 01:16:57 +0000
+Subject: Re: xfstests seems broken on btrfs with multi-dev TEST_DEV
+To:     Eric Sandeen <sandeen@sandeen.net>, linux-btrfs@vger.kernel.org
+Cc:     fstests@vger.kernel.org
+References: <3e8f846d-e248-52a3-9863-d188f031401e@sandeen.net>
+ <5e133067-ec0c-f2c6-7fb6-84620e26881e@sandeen.net>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <407b5343-4124-2e30-0202-13f42d612b7c@oracle.com>
+Date:   Thu, 25 Feb 2021 09:16:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210224191823.GC1993@twin.jikos.cz>
+In-Reply-To: <5e133067-ec0c-f2c6-7fb6-84620e26881e@sandeen.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mW7a5x3rRpL0JuBbtywMXpV7xmh5YgDAjjBSzerAhTTPXfqILQP
- 24pOf8yNN+3NLnREFhyf00g/oswsVmdiazMLNyH9mbn2aHdrXXhkQa4aHzP7+Hhhjki0ySn
- HiZ5FsNYe4VACD+2s505N+Lq7blCVJjBGWA5l/Odo6z7ngPt5uddSMKbGuPDvU3Qf1/fuHn
- hmao1bG+KGR7ha7UFcVpg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vfRlUcB3zY4=:O8Qbt/Bpi9rI2Mz2cxJ1pU
- +r23uBU1QJixlfZ2uJgAh9ZrrWwRxkZHF26ITd1npHWoE8ZY0OFwrQtRoFpdx5hRXppyeiaTs
- Mt9uQbMUMxUAQGtpJIMoeTfx/0BpB+DD4E4/rspBOG36BWZ6FcCpBGXhA5pDNdlQEfKiYjv96
- 79Sw88AB/i74fPOQzwCOsswHWpmGtozPU9KwZEXPK3Zc5jt2fqcR+rMFeYNnothlyxP84KkJZ
- +HaZ0LQqp8uOb9FZxXdAa9LSVQHXx23pYQDulXzV3Fr70/OqPLnDgU4OQ+BWianHx89UJO5+F
- VxSpqpaVObjDDdc3j9GbQunbU5NI8h6HewGZAxw8q5YRNBSZwM8SOCwyf9H42rqmmolWuH+WO
- zW7SQJs9ehjnarkwf4ZyOLOfb+flgvp6Pe5MpTQvwP1dJdj0CeaLnL2p7A0KO+f3Lz/HGWnHM
- MJvWOA2wUBl9XomJdaSr1aCRKAR8IyfpNCVSL8TvCOP9/69is7+ES2vfL7wsn93BLKJAQ/OyM
- 8gNkfeEu2Ws0fhHZs5om4PL+iAejdbdFuit8CBq1X5jIhalwE6K2bYuXsKh8emdMMEU54RzRb
- 5CM7nF2su9k8DjIVOW+vj4u6qbu26GW3goSW4xhxILMUm36piT1GVpKAQbZoUllVo2/F5Hd47
- 5q3Nu/W2mkq0twELl/M/uRZqCbkSYUNNmHPsoRv31a4MmTXiBig3D7qnLr67C3lmP5miFX2jt
- JAlkTrpHfBZy6lHpwkWDmoepLs+WCMIljoOuxlctIprujOkKDzbWjCaTOp+gsSp//6lJPSs7p
- 4fk2qDvaJZMifAfXmqgrHSnAkV+dox4AgXwmQpFwE/bz0dlr+dD5/6Fi0tE7I7ZS6Z4W9Ss93
- X5R6v+dQ3gEvea6QRr+g==
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [39.109.186.25]
+X-ClientProxiedBy: SG2PR06CA0103.apcprd06.prod.outlook.com
+ (2603:1096:3:14::29) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.102] (39.109.186.25) by SG2PR06CA0103.apcprd06.prod.outlook.com (2603:1096:3:14::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20 via Frontend Transport; Thu, 25 Feb 2021 01:16:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 25a4eebb-f56d-426c-35b4-08d8d92b0aa9
+X-MS-TrafficTypeDiagnostic: BL0PR10MB2993:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB2993CC5E8CBAFE3EC00F6087E59E9@BL0PR10MB2993.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VeU7rW0HUTxyi5ggEX92L6WtkWst0h8N0blZFax4RcmJo3iEHJh0VJa5/rLl94/B7Si/NuVtI7iatQcLWXR2yQo5KYB+GQHp/ip2r8wvoOZYpwOfkQunEiIOjSn3DV2OpitJ7j3atl2xoqUtaFiigoFJziMKIuVUKSltmVRN3EkenoD80eUack1wddTD87KO4J3A7viYJ0wk19VZgJ2V7hLymgBLjAgP10g7Nnx9QmqnnMaAbesDbFRivVXo2CYt1FX3FVW1t698FqybYkW7bmizfusBJJIHaLYsbb4z6y6G4tEMPL+rIoS07DaMfajrH2QTwx0GLF4FuwQ4uSV+0gTwgDAE06UgRK3H+ep6Z2hojFhdI4/s9BKQRjgDRD0+yMqNZAW3nEMCcWMuiLt9hjjDNjOvpZSmKBCNYBUgXQYv2gqYRMSxmVCFuMA+LNefde3xu9mFGIyNnCfNECG9ZccAABXAEY14FQMPjHJrohcOsO5LQ2skoIByHhxU35SKDjwBvIv7CHW4B/ImIStz8aOXPRXYDQzPXCiERMLKyR9cXVvwamjZPB1FrYPl9wq+0dwSHD2Tm0uOTGv62J3v3HutgRRJfu7rVVQA72oWMTY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(396003)(376002)(136003)(5660300002)(44832011)(316002)(86362001)(16576012)(6486002)(4326008)(66946007)(31696002)(956004)(2616005)(478600001)(26005)(186003)(66476007)(66556008)(31686004)(2906002)(6666004)(53546011)(8936002)(36756003)(8676002)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?b0FWUjVkRElVTVpJM0hhWkNLQ2RidmZBSnQ3RGRCdEZxSUtYRnFXQ2lKMzBX?=
+ =?utf-8?B?dVJuZlFzVjl3L3FKU052ZHFldUl6clZHRUpNcDlDZkh3cWJNRCtiVE1mbVYv?=
+ =?utf-8?B?VVBlWFhmdkpZSFhncDJjdk5sR1l6THV0ODZSaEc2RkFmMURTYnFWV2F2RDcw?=
+ =?utf-8?B?cEtrNVd2S1djQWpZZ2hEa2FEWURidjhlWjQwelEweVhjSjFtenFmZHAydFAr?=
+ =?utf-8?B?VHF0M1BPSzlpVTRHK3paZytjOEtEaG9zRmhwSmFVc2hWaDkrdHYxNDhjZDR5?=
+ =?utf-8?B?UlNGalZqTkZlU1JXMGYzeWhvaVRhOXJ3Sm9iV1VsUkgrUUQ0aEM4SGxMcGxK?=
+ =?utf-8?B?c3RSMW1RaXBPTllRdmVzZ2JGZE1hajdWdjFNT3FQUEo1NlNqTi9DejFrK1Uz?=
+ =?utf-8?B?b2dvWU5sb1hoY1V4ZUdSb1BmNHBpdFNVczJ6UEYzUnlMRjBmRVp2d2dsdXZC?=
+ =?utf-8?B?RG1ZRDhiWWNhZzhWNysyRExGVlRhaWtBNUtuZzRWNHFwK1dNNUJGWUowdEJM?=
+ =?utf-8?B?SW1qRFRNWGxmODIrMGZWQzFNSExmcHcrM1dENVR3Nlc5TUVmdiszRWUwTXRU?=
+ =?utf-8?B?Tm0xYmR4YWpzcDRMMmE5djl0L1BSM2RRaU9nRTQxd0dZSnNMdEhaWEFHb1Js?=
+ =?utf-8?B?TWlWMGlEU1RnYUxHbnRwM0xKcElDUlRuN2s2dVVZeXRBVzJHbXoyU3ozNDVj?=
+ =?utf-8?B?UTVBbXpheEE2TlZxOTJHcVNyUjQ5ZjU3TEh4anEreGZnVllkYTJ0OTJKYmJY?=
+ =?utf-8?B?dy9OUm5sKzNEK2o5N09tQTNLWkphMW9PMnNZRUwxTlh4REJKK0Z6K0xpYllS?=
+ =?utf-8?B?d04zdHlwR1YwQzFKSmhqby80Q3k0S21ETkxPYjdtUldvekdFMlZDV2d3TWpk?=
+ =?utf-8?B?bmxvdGo5ZC9QZ2M5aEcvemEvYUxObnczUVczWFR2QnRHbitiSDVuVE1NaWR5?=
+ =?utf-8?B?My90OVgycXQ0eWJaMDR6dmpzZ2RQd05qazBZczJGTHMvYjVuZzgwRnI5NU5F?=
+ =?utf-8?B?VVRKRXJnR1dLL05WdUlES1ZuTXNCVEErSHlWTXEySDcwUWM3SG1KbEtaSVBz?=
+ =?utf-8?B?MThEODd6YzZISW0xN0FMaXY5SWlhcG15VGFRVGNOdFpzLzI1Z0hBcDVRUEUw?=
+ =?utf-8?B?a0NJUW1HNW9TRDE5NUQ0Z3VudXI0NTVCTnVTWUk2Z21zY1VxQ2xkRmUxVzZW?=
+ =?utf-8?B?bjdHRTFYQnlqbnBrUkJmWlFNS1VPQ08vMDBjeFNtTmwxSXYydy9vVkF1eUQy?=
+ =?utf-8?B?bFFFbU9BNDFuQmtmREdsN3V4akdZbHhvangzc1BKUVJkR2dVemJwUkNqQ3Nr?=
+ =?utf-8?B?a3JoY1Y2QVAxN3BYcEVWRnk1ai9PdU8vUW1LbFFTa2dZeVlIYjE3aUQ4bTJN?=
+ =?utf-8?B?NkR4QnpJKzB4TWtoUjlra1dqRVdaRWZOMitPdHpZb25lUEJiZ0lSeGxRVXFj?=
+ =?utf-8?B?cjl4Qm11VWpNaXgrL24wZ21Sa3hMdmRSMzhmTFBaMWpoUEtRbnpOMUZjY1NI?=
+ =?utf-8?B?OEhDL3hmamw2MG43eEhZQzl4dEcxV0FyRlBxc0ZudE85RE5pemxuOG1tV1Rx?=
+ =?utf-8?B?MVJHRFREY2w2QU5lNUp6bVZ6VHVoVVVXc2NtL2NGSjhWREZTYjRqWWIwZWI2?=
+ =?utf-8?B?TnhxeUVGSTdFNjdCaHY3Sk8xTFFzY1piZEtnSHgwWjNjZHFXZUtIZzJJOVNF?=
+ =?utf-8?B?MW12cFhsNXhOZFpSMmpaUmJKem8wR05HZ3M5SktTeHpQVnZtVGVRdFcra1I3?=
+ =?utf-8?Q?HY68xpnLsDxvho0YmLLxJTp+Z+rWcnpiNDYMGGU?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25a4eebb-f56d-426c-35b4-08d8d92b0aa9
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2021 01:16:57.0973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: shDlqzQnDt3O7NLpGk5Zq0133HJ27OcCPy+2PPCPRk1jcS3qcnxHyhSE0SM/2WmnSnuPIV5fP4VRF25PHJ7WMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2993
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9905 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102250006
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9905 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ clxscore=1011 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102250006
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/2/25 =E4=B8=8A=E5=8D=883:18, David Sterba wrote:
-> On Sat, Feb 20, 2021 at 10:06:33AM +0800, Qu Wenruo wrote:
->> Due to the pagecache limit of 32bit systems, btrfs can't access metadat=
-a
->> at or beyond 16T boundary correctly.
+On 25/02/2021 05:39, Eric Sandeen wrote:
+> On 2/24/21 10:12 AM, Eric Sandeen wrote:
+>> Last week I was curious to just see how btrfs is faring with RAID5 in
+>> xfstests, so I set it up for a quick run with devices configured as:
+> 
+> Whoops this was supposed to cc: fstests, not fsdevel, sorry.
+> 
+> -Eric
+> 
+>> TEST_DEV=/dev/sdb1 # <--- this was a 3-disk "-d raid5" filesystem
+>> SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4 /dev/sdb5 /dev/sdb6"
 >>
->> And unlike other fses, btrfs uses internally mapped u64 address space f=
-or
->> all of its metadata, this is more tricky than other fses.
+>> and fired off ./check -g auto
 >>
->> Users can have a fs which doesn't have metadata beyond 16T boundary at
->> mount time, but later balance can cause btrfs to create metadata beyond
->> 16T boundary.
->
-> As this is for the interhal logical offsets, it should be fixable by
-> reusing the range below 16T on 32bit systems. There's some logic relying
-> on the highest logical offset and block group flags so this needs to be
-> done with some care, but is possible in principle.
-
-I doubt, as with the dropping price per-GB, user can still have extreme
-case where all metadata goes beyond 16T in size.
-
-The proper fix may be multiple metadata address spaces for 32bit
-systems, but that would bring extra problems too.
-
-Finally it doesn't really solve the problem that we don't have enough
-test coverage for 32 bit at all.
-
-So for now I still believe we should just reject and do early warning.
-
-[...]
+>> Every test after btrfs/124 fails, because that test btrfs/124 does this:
 >>
->> +#if BITS_PER_LONG =3D=3D 32
->> +#define BTRFS_32BIT_EARLY_WARN_THRESHOLD	(10ULL * 1024 * SZ_1G)
-
-Although the threshold should be calculated based on page size, not a
-fixed value.
-
-[...]
->> +#if BITS_PER_LONG =3D=3D 32
->> +void __cold btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info)
->> +{
->> +	if (!test_and_set_bit(BTRFS_FS_32BIT_WARN, &fs_info->flags)) {
->> +		btrfs_warn(fs_info, "btrfs is reaching 32bit kernel limit.");
->> +		btrfs_warn(fs_info,
->> +"due to 32bit page cache limit, btrfs can't access metadata at or beyo=
-nd 16T.");
-
-Also for the limit.
-
-Thanks,
-Qu
->> +		btrfs_warn(fs_info,
->> +			   "please consider upgrade to 64bit kernel/hardware.");
->> +	}
->> +}
->> +
->> +void __cold btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info)
->> +{
->> +	if (!test_and_set_bit(BTRFS_FS_32BIT_ERROR, &fs_info->flags)) {
->> +		btrfs_err(fs_info, "btrfs reached 32bit kernel limit.");
->> +		btrfs_err(fs_info,
->> +"due to 32bit page cache limit, btrfs can't access metadata at or beyo=
-nd 16T.");
->> +		btrfs_err(fs_info,
->> +			   "please consider upgrade to 64bit kernel/hardware.");
->> +	}
->> +}
->> +#endif
->> +
->>   /*
->>    * We only mark the transaction aborted and then set the file system =
-read-only.
->>    * This will prevent new transactions from starting or trying to join=
- this
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index b8fab44394f5..5dc22daa684d 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -6787,6 +6787,46 @@ static u64 calc_stripe_length(u64 type, u64 chun=
-k_len, int num_stripes)
->>   	return div_u64(chunk_len, data_stripes);
->>   }
+>> # un-scan the btrfs devices
+>> _btrfs_forget_or_module_reload
 >>
->> +#if BITS_PER_LONG =3D=3D 32
->> +/*
->> + * Due to page cache limit, btrfs can't access metadata at or beyond
->> + * MAX_LFS_FILESIZE (16T) on 32bit systemts.
->> + *
->> + * This function do mount time check to reject the fs if it already ha=
-s
->> + * metadata chunk beyond that limit.
->> + */
->> +static int check_32bit_meta_chunk(struct btrfs_fs_info *fs_info,
->> +				  u64 logical, u64 length, u64 type)
->> +{
->> +	if (!(type & BTRFS_BLOCK_GROUP_METADATA))
->> +		return 0;
->> +
->> +	if (logical + length < MAX_LFS_FILESIZE)
->> +		return 0;
->> +
->> +	btrfs_err_32bit_limit(fs_info);
->> +	return -EOVERFLOW;
->> +}
->> +
->> +/*
->> + * This is to give early warning for any metadata chunk reaching
->> + * 10T boundary.
->> + * Although we can still access the metadata, it's a timed bomb thus a=
-n early
->> + * warning is definitely needed.
->> + */
->> +static void warn_32bit_meta_chunk(struct btrfs_fs_info *fs_info,
->> +				  u64 logical, u64 length, u64 type)
->> +{
->> +	if (!(type & BTRFS_BLOCK_GROUP_METADATA))
->> +		return;
->> +
->> +	if (logical + length < BTRFS_32BIT_EARLY_WARN_THRESHOLD)
->> +		return;
->> +
->> +	btrfs_warn_32bit_limit(fs_info);
->> +}
->> +#endif
->> +
->>   static int read_one_chunk(struct btrfs_key *key, struct extent_buffer=
- *leaf,
->>   			  struct btrfs_chunk *chunk)
->>   {
->> @@ -6797,6 +6837,7 @@ static int read_one_chunk(struct btrfs_key *key, =
-struct extent_buffer *leaf,
->>   	u64 logical;
->>   	u64 length;
->>   	u64 devid;
->> +	u64 type;
->>   	u8 uuid[BTRFS_UUID_SIZE];
->>   	int num_stripes;
->>   	int ret;
->> @@ -6804,8 +6845,17 @@ static int read_one_chunk(struct btrfs_key *key,=
- struct extent_buffer *leaf,
+>> and nothing re-scans devices after that, so every attempt to mount TEST_DEV
+>> will fail:
 >>
->>   	logical =3D key->offset;
->>   	length =3D btrfs_chunk_length(leaf, chunk);
->> +	type =3D btrfs_chunk_type(leaf, chunk);
->>   	num_stripes =3D btrfs_chunk_num_stripes(leaf, chunk);
+>>> devid 2 uuid e42cd5b8-2de6-4c85-ae51-74b61172051e is missing"
 >>
->> +#if BITS_PER_LONG =3D=3D 32
->> +	ret =3D check_32bit_meta_chunk(fs_info, logical, length, type);
->> +	if (ret < 0)
->> +		return ret;
->> +	warn_32bit_meta_chunk(fs_info, logical, length, type);
->> +#endif
->> +
->> +
->>   	/*
->>   	 * Only need to verify chunk item if we're reading from sys chunk ar=
-ray,
->>   	 * as chunk item in tree block is already verified by tree-checker.
->> @@ -6849,10 +6899,10 @@ static int read_one_chunk(struct btrfs_key *key=
-, struct extent_buffer *leaf,
->>   	map->io_width =3D btrfs_chunk_io_width(leaf, chunk);
->>   	map->io_align =3D btrfs_chunk_io_align(leaf, chunk);
->>   	map->stripe_len =3D btrfs_chunk_stripe_len(leaf, chunk);
->> -	map->type =3D btrfs_chunk_type(leaf, chunk);
->> +	map->type =3D type;
->>   	map->sub_stripes =3D btrfs_chunk_sub_stripes(leaf, chunk);
->>   	map->verified_stripes =3D 0;
->> -	em->orig_block_len =3D calc_stripe_length(map->type, em->len,
->> +	em->orig_block_len =3D calc_stripe_length(type, em->len,
->>   						map->num_stripes);
->>   	for (i =3D 0; i < num_stripes; i++) {
->>   		map->stripes[i].physical =3D
->> --
->> 2.30.0
+>> Other btrfs tests seeme to have the same problem.
+>>
+>> If xfstest coverage on multi-device btrfs volumes is desired, it might be
+>> a good idea for someone who understands the btrfs framework in xfstests
+>> to fix this.
+
+Eric,
+
+  All our multi-device test-cases under tests/btrfs used the
+  SCRATCH_DEV_POOL. Unless I am missing something, any idea if
+  TEST_DEV can be made optional for test cases that don't need TEST_DEV?
+  OR I don't understand how TEST_DEV is useful in some of these
+  test-cases under tests/btrfs.
+
+Thanks, Anand
+
+>>
+>> Thanks,
+>> -Eric
+>>
+
