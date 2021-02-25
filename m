@@ -2,60 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32558324B2E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 08:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5367324B7C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 08:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbhBYHYu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Feb 2021 02:24:50 -0500
-Received: from mail.jvpinto.com ([65.49.11.60]:34123 "EHLO mail.JVPinto.com"
+        id S235032AbhBYHrj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Feb 2021 02:47:39 -0500
+Received: from verein.lst.de ([213.95.11.211]:40562 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhBYHYd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Feb 2021 02:24:33 -0500
-Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
- RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 24 Feb 2021 23:20:13 -0800
-Received: from User (51.13.72.83) by RW-EXC1.JVPinto.com (172.32.1.13) with
- Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Wed, 24 Feb 2021
- 23:19:55 -0800
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <johnpinto@jvpinto.com>
-Subject: Hello okay
-Date:   Thu, 25 Feb 2021 07:20:13 +0000
+        id S233137AbhBYHrg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Feb 2021 02:47:36 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id D893868B05; Thu, 25 Feb 2021 08:35:25 +0100 (CET)
+Date:   Thu, 25 Feb 2021 08:35:25 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        dan.j.williams@intel.com, willy@infradead.org, jack@suse.cz,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, david@fromorbit.com, rgoldwyn@suse.de,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 5/7] fsdax: Dedup file range to use a compare function
+Message-ID: <20210225073525.GA3448@lst.de>
+References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com> <20210207170924.2933035-6-ruansy.fnst@cn.fujitsu.com> <20210208151920.GE12872@lst.de> <9193e305-22a1-3928-0675-af1cecd28942@cn.fujitsu.com> <20210209093438.GA630@lst.de> <79b0d65c-95dd-4821-e412-ab27c8cb6942@cn.fujitsu.com> <20210210131928.GA30109@lst.de> <b00cfda5-464c-6161-77c6-6a25b1cc7a77@cn.fujitsu.com> <20210218162018.GT7193@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <2bee6e9d04fe41d6afe289b4526d1e70@RW-EXC1.JVPinto.com>
-To:     Undisclosed recipients:;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218162018.GT7193@magnolia>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Thu, Feb 18, 2021 at 08:20:18AM -0800, Darrick J. Wong wrote:
+> > I think a nested call like this is necessary.  That's why I use the open
+> > code way.
+> 
+> This might be a good place to implement an iomap_apply2() loop that
+> actually /does/ walk all the extents of file1 and file2.  There's now
+> two users of this idiom.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+Why do we need a special helper for that?
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+> (Possibly structured as a "get next mappings from both" generator
+> function like Matthew Wilcox keeps asking for. :))
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
-
-Regards,
-Ms. Reem.
+OTOH this might be a good first use for that.
