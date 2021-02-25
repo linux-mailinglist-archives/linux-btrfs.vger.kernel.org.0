@@ -2,128 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32966325072
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 14:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DAF325088
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Feb 2021 14:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhBYN14 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Feb 2021 08:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232588AbhBYNZn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Feb 2021 08:25:43 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D772DC061793
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Feb 2021 05:25:05 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id w19so5489741qki.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Feb 2021 05:25:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=inYPpxPwJG2BYPpBgcE6xlzzrofIrJInlhcpS4qdOi4=;
-        b=s7AVrO+k7qhn4xqjUYtDNdmTZuSdaQ9oBhX+kSvLNOqfqTNQK+V2xm0JvLTA2gAg1k
-         5x8V9n1O6iwXwTevXz1yBFYw5yMLm7gH/YB/SgWXhMAxEAAppAqw/XecOUwSxVgKaW2Z
-         nk0svu0rYVGIXOY3vQMhCzlAa96iG5vczQJEg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=inYPpxPwJG2BYPpBgcE6xlzzrofIrJInlhcpS4qdOi4=;
-        b=lzv8LqiRJQykgTu3VWfKiVGQ76zDyn6O0ci3yRGztMhTIsKq+/tjPNNNyJ/IEGcCva
-         mM0y+/RY1/rkXJqa9/BSqBBj3STrNcLCgQjD3o8so8Eqz2FbBGsNLfvkMBBu4tJUuFio
-         tt37wUNOGT02qGwb2Lq1GSOp3tf48als9MOnqXcWRJzgX/WIm/2oSOCg27DZSuJ0yJnL
-         HAebThzAQOBTWDPGLs3u8SUmnV7ckgDF8zUzyl9klI+hsqk5W7RKWS+RGnOEd0/GpdCJ
-         CiRfgOELWd+GhW7+bXOFkbrQXInPDJfUC3QR+80GXSmtIDx5SCw9xSg3ApJw3+FoG4W2
-         TP6w==
-X-Gm-Message-State: AOAM533nbOx14ynazGYygk0ZafM3S8zhYlCFcXF3gqF7pI2WEY1c9XGV
-        VgqyoLPFtb173gqUgysuFRSGtQ==
-X-Google-Smtp-Source: ABdhPJxHhI0Md2TDcUXXizBELfEvK8v4RtWgE5bEuk8nx79wfhz1JiB/btOSITh658UgYkKEJ829CQ==
-X-Received: by 2002:a37:6492:: with SMTP id y140mr2452620qkb.415.1614259505144;
-        Thu, 25 Feb 2021 05:25:05 -0800 (PST)
-Received: from bill-the-cat (2603-6081-7b07-927a-4842-8631-dad1-fa95.res6.spectrum.com. [2603:6081:7b07:927a:4842:8631:dad1:fa95])
-        by smtp.gmail.com with ESMTPSA id p81sm3899813qke.18.2021.02.25.05.25.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Feb 2021 05:25:04 -0800 (PST)
-Date:   Thu, 25 Feb 2021 08:25:02 -0500
-From:   Tom Rini <trini@konsulko.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH u-boot 2/2] fs: btrfs: change directory list output to be
- aligned as before
-Message-ID: <20210225132502.GU10169@bill-the-cat>
-References: <20210209180508.22132-1-marek.behun@nic.cz>
- <20210209180508.22132-2-marek.behun@nic.cz>
+        id S231154AbhBYNbL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Feb 2021 08:31:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49632 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229722AbhBYN3X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Feb 2021 08:29:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 42252AF6F;
+        Thu, 25 Feb 2021 13:28:40 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 991F4DA790; Thu, 25 Feb 2021 14:26:47 +0100 (CET)
+Date:   Thu, 25 Feb 2021 14:26:47 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Amy Parker <enbyamy@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: Adding LZ4 compression support to Btrfs
+Message-ID: <20210225132647.GB7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
+        Amy Parker <enbyamy@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <CAE1WUT53F+xPT-Rt83EStGimQXKoU-rE+oYgcib87pjP4Sm0rw@mail.gmail.com>
+ <CAEg-Je-Hs3+F9yshrW2MUmDNTaN-y6J-YxeQjneZx=zC5=58JA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Bu/gFhZaPob7yHqb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209180508.22132-2-marek.behun@nic.cz>
-X-Clacks-Overhead: GNU Terry Pratchett
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAEg-Je-Hs3+F9yshrW2MUmDNTaN-y6J-YxeQjneZx=zC5=58JA@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Feb 25, 2021 at 08:18:53AM -0500, Neal Gompa wrote:
+> On Wed, Feb 24, 2021 at 11:10 PM Amy Parker <enbyamy@gmail.com> wrote:
+> >
+> > The compression options in Btrfs are great, and help save a ton of
+> > space on disk. Zstandard works extremely well for this, and is fairly
+> > fast. However, it can heavily reduce the speed of quick disks, does
+> > not work well on lower-end systems, and does not scale well across
+> > multiple cores. Zlib is even slower and worse on compression ratio,
+> > and LZO suffers on both the compression ratio and speed.
+> >
+> > I've been laying out my plans for a backup software recently, and
+> > stumbled upon LZ4. Tends to hover around LZO compression ratios.
+> > Performs better than Zstandard and LZO slightly for compression - but
+> > significantly outpaces them on decompression, which matters
+> > significantly more for users:
+> >
+> > zstd 1.4.5:
+> >  - ratio 2.884
+> >  - compression 500 MiB/s
+> >  - decompression 1.66 GiB/s
+> > zlib 1.2.11:
+> >  - ratio 2.743
+> >  - compression 90 MiB/s
+> >  - decompression 400 MiB/s
+> > lzo 2.10:
+> >  - ratio 2.106
+> >  - compression 690 MiB/s
+> >  - decompression 820 MiB/s
+> > lz4 1.9.2:
+> >  - ratio 2.101
+> >  - compression 740 MiB/s
+> >  - decompression 4.5 GiB/s
+> >
+> > LZ4's speeds are high enough to allow many applications which
+> > previously declined to use any compression due to speed to increase
+> > their possible space while keeping fast write and especially read
+> > access.
+> >
+> > What're thoughts like on adding something like LZ4 as a compression
+> > option in btrfs? Is it feasible given the current implementation of
+> > compression in btrfs?
+> 
+> This is definitely possible. I think the only reason lz4 isn't enabled
+> for Btrfs has been the lack of interest in it. I'd defer to some of
+> the kernel folks (I'm just a user and integrator myself), but I think
+> that's definitely worth having lz4 compression supported.
 
---Bu/gFhZaPob7yHqb
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+LZ4 support has been asked for so many times that it has it's own FAQ
+entry:
+https://btrfs.wiki.kernel.org/index.php/FAQ#Will_btrfs_support_LZ4.3F
 
-On Tue, Feb 09, 2021 at 07:05:08PM +0100, Marek Beh=FAn wrote:
-
-> Since commit 325dd1f642dd ("fs: btrfs: Use btrfs_iter_dir() to ...")
-> when btrfs is listing a directory, the output is not aligned:
->=20
->   <SYMLINK>         15  Wed Sep 09 13:20:03 2020  boot.scr -> @/boot/boot=
-=2Escr
->   <DIR>          0  Tue Feb 02 12:42:09 2021  @
->   <FILE>        108  Tue Feb 02 12:54:04 2021  1.info
->=20
-> Return back to how it was displayed previously, i.e.:
->=20
->   <SYM>         15  Wed Sep 09 13:20:03 2020  boot.scr -> @/boot/boot.scr
->   <DIR>          0  Tue Feb 02 12:42:09 2021  @
->   <   >        108  Tue Feb 02 12:54:04 2021  1.info
->=20
-> Instead of '<FILE>', print '<   >', as ext4 driver.
->=20
-> If an unknown directory item type is encountered, we will print the type
-> number left padded with spaces, enclosed by '?', instead of '<' and '>',
-> i.e.:
->=20
->   ? 30?        .............................  name
->=20
-> Signed-off-by: Marek Beh=FAn <marek.behun@nic.cz>
-> Fixes: 325dd1f642dd ("fs: btrfs: Use btrfs_iter_dir() to replace ...")
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: Qu Wenruo <wqu@suse.com>
-> Cc: Tom Rini <trini@konsulko.com>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Applied to u-boot/master, thanks!
-
---=20
-Tom
-
---Bu/gFhZaPob7yHqb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmA3pS4ACgkQFHw5/5Y0
-tywXLAv/c8flXr9i01KbSiS1DLSJJ4z8sf68pKUh58IV3J5hEhKUX9E+Yddu3tvp
-55t0OYVfiod1AvzPGME0SXb1/Okf1UTzKc5jdHcq2vEFb/BFMWtPNA/cjPL25o1R
-AsUKG74Kke+n4YZYI9vSlBNYoLmuwhxc5X3CvZJm0Bf2bbXWnEWfZnfC+zhKv+PE
-FVsfUtlBGGDK69jTn0g0VUgNlZTyrN8QjXHEuu2pPdpJIXK+28JhZBCQSpmCC7RY
-ABUTNjORC/aUjEgE3Ydi7Ccr2H0skzOoKU0049aiHiuIt7B/usqtSlvpkLNcmnoL
-lts4qn0kchZgo56EJ9wzEwCQnIiVcr/b4ghfi3m0kvOx6UUt4g1dMEQo4jV7bp/A
-ctVF7sS7/yruJyz+knrssUMqMcj/So78pcDCjN3iy2nX9QT+1MVth2lzKbVga25O
-jr/f2u+0bxtk9tWJzndH9TUo1yO1i/f9G4CBubCbIGRbHTlUL59UM87F2bwC0/dS
-V5Zl3RH4
-=UOix
------END PGP SIGNATURE-----
-
---Bu/gFhZaPob7yHqb--
+The decompression speed is not the only thing that should be evaluated,
+the way compression works in btrfs (in 4k blocks) does not allow good
+compression ratios and overall LZ4 does not do much better than LZO. So
+this is not worth the additional costs of compatibility. With ZSTD we
+got the high compression and recently there have been added real-time
+compression levels that we'll use in btrfs eventually.
