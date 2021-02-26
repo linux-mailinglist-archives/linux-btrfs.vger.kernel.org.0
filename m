@@ -2,100 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8613266F7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 19:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBD432671B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 19:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhBZSdp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Feb 2021 13:33:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52806 "EHLO mx2.suse.de"
+        id S231215AbhBZSrx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Feb 2021 13:47:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56940 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230367AbhBZSdf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Feb 2021 13:33:35 -0500
+        id S231217AbhBZSro (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Feb 2021 13:47:44 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4A9B2AB8C;
-        Fri, 26 Feb 2021 18:32:53 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D6DE4DA7FF; Fri, 26 Feb 2021 19:30:59 +0100 (CET)
-Date:   Fri, 26 Feb 2021 19:30:59 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v7 03/38] btrfs: handle errors from select_reloc_root()
-Message-ID: <20210226183059.GP7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1608135849.git.josef@toxicpanda.com>
- <aa44497f5c2b8c96ca1229daa4dfdb6503971f31.1608135849.git.josef@toxicpanda.com>
+        by mx2.suse.de (Postfix) with ESMTP id 60EC6AAAE
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Feb 2021 18:47:02 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 12:47:20 -0600
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: Remove force argument from run_delalloc_nocow()
+Message-ID: <20210226184720.7ul23jknjth4h6j2@fiona>
+References: <20210225205822.mgx5ei3tzcqmlts6@fiona>
+ <20210226171421.GO7604@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa44497f5c2b8c96ca1229daa4dfdb6503971f31.1608135849.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210226171421.GO7604@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:26:19AM -0500, Josef Bacik wrote:
-> Currently select_reloc_root() doesn't return an error, but followup
-> patches will make it possible for it to return an error.  We do have
-> proper error recovery in do_relocation however, so handle the
-> possibility of select_reloc_root() having an error properly instead of
-> BUG_ON(!root).  I've also adjusted select_reloc_root() to return
-> ERR_PTR(-ENOENT) if we don't find a root, instead of NULL, to make the
-> error case easier to deal with.  I've replaced the BUG_ON(!root) with an
-> ASSERT(0) for this case as it indicates we messed up the backref walking
-> code, but it could also indicate corruption.
+On 18:14 26/02, David Sterba wrote:
+> On Thu, Feb 25, 2021 at 02:58:22PM -0600, Goldwyn Rodrigues wrote:
+> > force_nocow can be calculated by btrfs_inode and does not need to be
+> > passed as an argument.
+> > 
+> > This simplifies run_delalloc_nocow() call from btrfs_run_delalloc_range()
+> > since the decision whether the extent is cow'd or not can be derived
+> > from need_force_cow(). Since BTRFS_INODE_NODATACOW and
+> > BTRFS_INODE_PREALLOC flags are checked in need_force_cow(), there is
+> > no need to check it again.
+> > 
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > Change since v1:
+> >  - Kept need_force_cow() as it is
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/relocation.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
+> Added to misc-next, thanks.
 > 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 08ffaa93b78f..741068580455 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -2024,8 +2024,14 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
->  		if (!next || next->level <= node->level)
->  			break;
->  	}
-> -	if (!root)
-> -		return NULL;
-> +	if (!root) {
-> +		/*
-> +		 * This can happen if there's fs corruption or if there's a bug
-> +		 * in the backref lookup code.
-> +		 */
-> +		ASSERT(0);
+> > ---
+> >  fs/btrfs/inode.c | 12 ++++--------
+> >  1 file changed, 4 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > index 4f2f1e932751..e5dd8d7ef0c8 100644
+> > --- a/fs/btrfs/inode.c
+> > +++ b/fs/btrfs/inode.c
+> > @@ -1516,7 +1516,7 @@ static int fallback_to_cow(struct btrfs_inode *inode, struct page *locked_page,
+> >  static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+> >  				       struct page *locked_page,
+> >  				       const u64 start, const u64 end,
+> > -				       int *page_started, int force,
+> > +				       int *page_started,
+> >  				       unsigned long *nr_written)
+> >  {
+> >  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> > @@ -1530,6 +1530,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+> >  	u64 ino = btrfs_ino(inode);
+> >  	bool nocow = false;
+> >  	u64 disk_bytenr = 0;
+> > +	bool force = inode->flags & BTRFS_INODE_NODATACOW;
+> >  
+> >  	path = btrfs_alloc_path();
+> >  	if (!path) {
+> > @@ -1891,17 +1892,12 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+> >  		struct writeback_control *wbc)
+> >  {
+> >  	int ret;
+> > -	int force_cow = need_force_cow(inode, start, end);
+> >  	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
+> >  
+> > -	if (inode->flags & BTRFS_INODE_NODATACOW && !force_cow) {
+> > +	if (!need_force_cow(inode, start, end)) {
+> 
+> We may want to reverse the logic and naming so it says
+> 'need_force_nocow', right now it's "we don't need to force COW, so let's
+> do NOCOW", because COW is the default and the condition should pick the
+> exceptional case.
 
-You've added these assert(0) to several patches and I think it's wrong.
-The asserts are supposed to verify invariants, you can hardly say that
-we're expecting 0 to be true, so the construct serves as "please crash
-here", which is no better than BUG().  It's been spreading, there are
-like 25 now.
+Calling it need_force_nocow() or should_nocow() will result in the same
+concept as previous patch where EXTENT_DEFRAG range would need to be
+checked before checking inode flags BTRFS_INODE_NODATACOW and
+BTRFS_INODE_PREALLOC. That's because EXTENT_DEFRAG in range
+should result in a COW sequence immaterial of what CoW sequence the
+inode flags say. Isn't it?
 
-> +		return ERR_PTR(-ENOENT);
+Maybe something like this would keep inode flags checks earlier than
+test_range_bit():
 
-The caller that does expect ENOENT because that would be a logical error
-should do the assert.
+static inline bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
+{
+        if (inode->flags & (BTRFS_INODE_NODATACOW | BTRFS_INODE_PREALLOC)) {
+                if (inode->defrag_bytes &&
+                    test_range_bit(&inode->io_tree, start, end, EXTENT_DEFRAG, 0, NULL))
+                        return false;
+                return true;
+        }
+        return false;
+}
 
-> +	}
->  
->  	next = node;
->  	/* setup backref node path for btrfs_reloc_cow_block */
-> @@ -2196,7 +2202,10 @@ static int do_relocation(struct btrfs_trans_handle *trans,
->  
->  		upper = edge->node[UPPER];
->  		root = select_reloc_root(trans, rc, upper, edges);
-> -		BUG_ON(!root);
-> +		if (IS_ERR(root)) {
-> +			ret = PTR_ERR(root);
-> +			goto next;
-> +		}
->  
->  		if (upper->eb && !upper->locked) {
->  			if (!lowest) {
-> -- 
-> 2.26.2
+
+
+> 
+> >  		ASSERT(!zoned);
+> >  		ret = run_delalloc_nocow(inode, locked_page, start, end,
+> > -					 page_started, 1, nr_written);
+> > -	} else if (inode->flags & BTRFS_INODE_PREALLOC && !force_cow) {
+> > -		ASSERT(!zoned);
+> > -		ret = run_delalloc_nocow(inode, locked_page, start, end,
+> > -					 page_started, 0, nr_written);
+> > +					 page_started, nr_written);
+> >  	} else if (!inode_can_compress(inode) ||
+> >  		   !inode_need_compress(inode, start, end)) {
+> >  		if (zoned)
+
+-- 
+Goldwyn
