@@ -2,122 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A822326735
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 20:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A9A326732
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 20:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhBZTGP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Feb 2021 14:06:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38054 "EHLO mx2.suse.de"
+        id S230198AbhBZTFj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Feb 2021 14:05:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230188AbhBZTGM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:06:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CB0E5AD5C;
-        Fri, 26 Feb 2021 19:05:30 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 69F61DA7FF; Fri, 26 Feb 2021 20:03:37 +0100 (CET)
-Date:   Fri, 26 Feb 2021 20:03:37 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Qu Wenruo <wqu@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v7 02/38] btrfs: return an error from
- btrfs_record_root_in_trans
-Message-ID: <20210226190337.GQ7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Qu Wenruo <wqu@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <cover.1608135849.git.josef@toxicpanda.com>
- <0b7c322b530735e98a2c6e9db4fc024c9e137546.1608135849.git.josef@toxicpanda.com>
+        id S229545AbhBZTFi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Feb 2021 14:05:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B1D464F1B;
+        Fri, 26 Feb 2021 19:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614366295;
+        bh=PfeQuDYBIjQHtNJ4RxOXOTAV74C+Re27WPBrWtzUDU4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nGGKVLRykjmczWP3FyivF6q0SYw6J8EAG4OIZIx2MxP8mAiZ/Isk3756eCG1HlOdt
+         E/oCaXcPPD8hThBiCj/+yfoWeN0n2CjA/Z/05xkmNmTvaxvC1Tmwpj9PM+P6+2q7zT
+         1w2DKcFQSLF7aMWyQc2Zr1L3FiSB1ZR1/RjUmfWcmebygeM6qp0oenFuBe1DutDFWw
+         2iXkgZarGC5e6UNsbo+wm3l93zCTzETISjYVwRYJZGJwUvovCL9yboyyXfx4sLxw+y
+         qGOl89rmrHNo9QgYn5VEseoY1bwzOSPMtj4cw8YtZWrBYgo4prpP+aUsJsoXaYAW5S
+         kdxN4BoF0OWHg==
+Date:   Fri, 26 Feb 2021 11:04:54 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+Message-ID: <20210226190454.GD7272@magnolia>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0b7c322b530735e98a2c6e9db4fc024c9e137546.1608135849.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 11:26:18AM -0500, Josef Bacik wrote:
-> We can create a reloc root when we record the root in the trans, which
-> can fail for all sorts of different reasons.  Propagate this error up
-> the chain of callers.  Future patches will fix the callers of
-> btrfs_record_root_in_trans() to handle the error.
+On Fri, Feb 26, 2021 at 09:45:45AM +0000, ruansy.fnst@fujitsu.com wrote:
+> Hi, guys
 > 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/transaction.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> Beside this patchset, I'd like to confirm something about the
+> "EXPERIMENTAL" tag for dax in XFS.
 > 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index f51f9e39bcee..eba48578159e 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -400,6 +400,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
->  			       int force)
->  {
->  	struct btrfs_fs_info *fs_info = root->fs_info;
-> +	int ret = 0;
->  
->  	if ((test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
->  	    root->last_trans < trans->transid) || force) {
-> @@ -448,11 +449,11 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
->  		 * lock.  smp_wmb() makes sure that all the writes above are
->  		 * done before we pop in the zero below
->  		 */
-> -		btrfs_init_reloc_root(trans, root);
-> +		ret = btrfs_init_reloc_root(trans, root);
+> In XFS, the "EXPERIMENTAL" tag, which is reported in waring message
+> when we mount a pmem device with dax option, has been existed for a
+> while.  It's a bit annoying when using fsdax feature.  So, my initial
+> intention was to remove this tag.  And I started to find out and solve
+> the problems which prevent it from being removed.
+> 
+> As is talked before, there are 3 main problems.  The first one is "dax
+> semantics", which has been resolved.  The rest two are "RMAP for
+> fsdax" and "support dax reflink for filesystem", which I have been
+> working on.  
 
-This is patch 2 from the series and got me curious if it's ok to add the
-error value check here, because that would mean that the whole callgraph
-from btrfs_init_reloc_root is also error handling clean (ie. no
-BUG_ONs).
+<nod>
 
-And it's not until patch 19.
+> So, what I want to confirm is: does it means that we can remove the
+> "EXPERIMENTAL" tag when the rest two problem are solved?
 
-btrfs_init_reloc_root
-  create_reloc_root
-    kmalloc + BUG_ON
-    btrfs_copy_root + BUG_ON, twice
-    btrfs_insert_root + BUG_ON
-    btrfs_read_tree_root + BUG_ON
-  __add_reloc_root
-    ...
+Yes.  I'd keep the experimental tag for a cycle or two to make sure that
+nothing new pops up, but otherwise the two patchsets you've sent close
+those two big remaining gaps.  Thank you for working on this!
 
-All the patches in between add handling the record_root_in_trans errors,
-which is fine as end result, but the proper error handling needs to be
-pushed upwards from all leaf functions. That way it's cleaner and an
-understandable pattern as we can review one step in the callgraph,
-assuming that the calless are OK.
+> Or maybe there are other important problems need to be fixed before
+> removing it?  If there are, could you please show me that?
 
-After reading the whole patchset it looks like the end result is more
-or less what it should be but it's not a sequence of reviewable steps
-patch-to-patch.
+That remains to be seen through QA/validation, but I think that's it.
 
-So it's patch ordering and maybe some context fixups, where the leaf
-functions are BUG_ON-free and then all individual callers are updated.
+Granted, I still have to read through the two patchsets...
 
-Roughly in that order:
+--D
 
-- __add_reloc_root
-- create_reloc_root
-- btrfs_init_reloc_root
-- record_root_in_trans
-- select_reloc_root
-
->  		smp_mb__before_atomic();
->  		clear_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
->  	}
-> -	return 0;
-> +	return ret;
->  }
->  
->  
-> -- 
-> 2.26.2
+> 
+> Thank you.
+> 
+> 
+> --
+> Ruan Shiyang.
