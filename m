@@ -2,263 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BF9326496
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 16:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132EF32649C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 16:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhBZPRt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Feb 2021 10:17:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
+        id S230010AbhBZPVU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Feb 2021 10:21:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38530 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230041AbhBZPRr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:17:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9712764EF0
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Feb 2021 15:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614352627;
-        bh=Tv98pzZ0Q1TZRWbYMd8qm2rEJ1SykiN/P4dCGqeOa5s=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=fadrPEDxhOKjJtI1VQYclnwDajVWYYwEf65EbvLTLpHqpWp1Ll29BijlvN0fnLqlS
-         lpETTcaC5z2J3fJgusxw9dl7MDoWEkl8GMI2L4mu+JC3JqHFKdwIuYXlycXW1ic7eG
-         RyRRbnUhybN8it5SoddzAfEbrrbjFkTnM49MXDkEkF/EeaUdLv2i9O+ung7x4/nk9f
-         zi8YFClaXHR+NtVhuSoyhBW5BCpe6yz1D14i4kurUrRkkspTAlvoa3XBEJUbj8ZZL+
-         ovFKQeV2IbltFnxqvjRn5HkuU8fWjuccPATrbQJtz3aIhNp1ujsoHB2P6wB44Eygwn
-         o7FTJuaWFzPGQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: add btree read ahead for incremental send operations
-Date:   Fri, 26 Feb 2021 15:17:02 +0000
-Message-Id: <c2ff5dd6cecbe00e7bf6ea957e5eea86d27b1e67.1614351671.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1614351671.git.fdmanana@suse.com>
-References: <cover.1614351671.git.fdmanana@suse.com>
+        id S229545AbhBZPVT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Feb 2021 10:21:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6533EAD57;
+        Fri, 26 Feb 2021 15:20:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 37967DA7FF; Fri, 26 Feb 2021 16:18:44 +0100 (CET)
+Date:   Fri, 26 Feb 2021 16:18:44 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Erik Jensen <erikjensen@rkjnsn.net>
+Subject: Re: [PATCH] btrfs: do more graceful error/warning for 32bit kernel
+Message-ID: <20210226151844.GM7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        Erik Jensen <erikjensen@rkjnsn.net>
+References: <20210220020633.53400-1-wqu@suse.com>
+ <20210224191823.GC1993@twin.jikos.cz>
+ <550d771d-f328-8d37-b1a0-1758e683b1ca@gmx.com>
+ <20210225153443.GD7604@twin.jikos.cz>
+ <47f12020-b3c1-0f05-53c2-6b3230dd6bc8@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <47f12020-b3c1-0f05-53c2-6b3230dd6bc8@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, Feb 26, 2021 at 07:43:36AM +0800, Qu Wenruo wrote:
+> On 2021/2/25 下午11:34, David Sterba wrote:
+> > On Thu, Feb 25, 2021 at 07:44:19AM +0800, Qu Wenruo wrote:
+> >>
+> >>
+> >> On 2021/2/25 上午3:18, David Sterba wrote:
+> >>> On Sat, Feb 20, 2021 at 10:06:33AM +0800, Qu Wenruo wrote:
+> >>>> Due to the pagecache limit of 32bit systems, btrfs can't access metadata
+> >>>> at or beyond 16T boundary correctly.
+> >>>>
+> >>>> And unlike other fses, btrfs uses internally mapped u64 address space for
+> >>>> all of its metadata, this is more tricky than other fses.
+> >>>>
+> >>>> Users can have a fs which doesn't have metadata beyond 16T boundary at
+> >>>> mount time, but later balance can cause btrfs to create metadata beyond
+> >>>> 16T boundary.
+> >>>
+> >>> As this is for the interhal logical offsets, it should be fixable by
+> >>> reusing the range below 16T on 32bit systems. There's some logic relying
+> >>> on the highest logical offset and block group flags so this needs to be
+> >>> done with some care, but is possible in principle.
+> >>
+> >> I doubt, as with the dropping price per-GB, user can still have extreme
+> >> case where all metadata goes beyond 16T in size.
+> >
+> > But unlikely on a 32bit machine. And if yes we'll have the warnings in
+> > place, as a stop gap.
+> >
+> >> The proper fix may be multiple metadata address spaces for 32bit
+> >> systems, but that would bring extra problems too.
+> >>
+> >> Finally it doesn't really solve the problem that we don't have enough
+> >> test coverage for 32 bit at all.
+> >
+> > That's true and it'll be worse as distributions drop 32bit builds. There
+> > are stil non-intel arches that slowly get the 64bit CPUs but such
+> > machines are not likely to have huge storage attached. Vendors of NAS
+> > boxes patch their kernels anyway.
+> >
+> >> So for now I still believe we should just reject and do early warning.
+> >
+> > I agree.
+> >>
+> >> [...]
+> >>>>
+> >>>> +#if BITS_PER_LONG == 32
+> >>>> +#define BTRFS_32BIT_EARLY_WARN_THRESHOLD	(10ULL * 1024 * SZ_1G)
+> >>
+> >> Although the threshold should be calculated based on page size, not a
+> >> fixed value.
+> >
+> > Would it make a difference? I think setting the early warning to 10T
+> > sounds reasonable in all cases. IMHO you could keep it as is.
+> 
+> The problem is page size.
+> 
+> If we have 64K page size, the file size limit would be 256T, and then
+> 10T threshold is definitely too low.
 
-Currently we do not do btree read ahead when doing an incremental send,
-however we know that we will read and process any node or leaf in the
-send root that has a generation greater than the generation of the parent
-root. So triggering read ahead for such nodes and leafs is beneficial
-for an incremental send.
+That makes sense but are there 32bit CPUs with 64K pages? Adding the
+warning won't cause harm, of course.
 
-This change does that, triggers read ahead of any node or leaf in the
-send root that has a generation greater then the generation of the
-parent root. As for the parent root, no readahead is triggered because
-knowing in advance which nodes/leaves are going to be read is not so
-linear and there's often a large time window between visiting nodes or
-leaves of the parent root. So I opted to leave out the parent root,
-and triggering read ahead for every node/leaf of the parent root made
-things slightly worse (as expected).
-
-The following test script was used to measure the improvement on a box
-using an average, consumer grade, spinning disk and with 16Gb of ram:
-
-  $ cat test.sh
-  #!/bin/bash
-
-  DEV=/dev/sdj
-  MNT=/mnt/sdj
-  MKFS_OPTIONS="--nodesize 16384"     # default, just to be explicit
-  MOUNT_OPTIONS="-o max_inline=2048"  # default, just to be explicit
-
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV > /dev/null
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  # Create files with inline data to make it easier and faster to create
-  # large btrees.
-  add_files()
-  {
-      local total=$1
-      local start_offset=$2
-      local number_jobs=$3
-      local total_per_job=$(($total / $number_jobs))
-
-      echo "Creating $total new files using $number_jobs jobs"
-      for ((n = 0; n < $number_jobs; n++)); do
-          (
-              local start_num=$(($start_offset + $n * $total_per_job))
-              for ((i = 1; i <= $total_per_job; i++)); do
-                  local file_num=$((start_num + $i))
-                  local file_path="$MNT/file_${file_num}"
-                  xfs_io -f -c "pwrite -S 0xab 0 2000" $file_path > /dev/null
-                  if [ $? -ne 0 ]; then
-                      echo "Failed creating file $file_path"
-                      break
-                  fi
-              done
-          ) &
-          worker_pids[$n]=$!
-      done
-
-      wait ${worker_pids[@]}
-
-      sync
-      echo
-      echo "btree node/leaf count: $(btrfs inspect-internal dump-tree -t 5 $DEV | egrep '^(node|leaf) ' | wc -l)"
-  }
-
-  initial_file_count=500000
-  add_files $initial_file_count 0 4
-
-  echo
-  echo "Creating first snapshot..."
-  btrfs subvolume snapshot -r $MNT $MNT/snap1
-
-  echo
-  echo "Adding more files..."
-  add_files $((initial_file_count / 4)) $initial_file_count 4
-
-  echo
-  echo "Updating 1/50th of the initial files..."
-  for ((i = 1; i < $initial_file_count; i += 50)); do
-      xfs_io -c "pwrite -S 0xcd 0 20" $MNT/file_$i > /dev/null
-  done
-
-  echo
-  echo "Creating second snapshot..."
-  btrfs subvolume snapshot -r $MNT $MNT/snap2
-
-  umount $MNT
-
-  echo 3 > /proc/sys/vm/drop_caches
-  blockdev --flushbufs $DEV &> /dev/null
-  hdparm -F $DEV &> /dev/null
-
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  echo
-  echo "Testing full send..."
-  start=$(date +%s)
-  btrfs send $MNT/snap1 > /dev/null
-  end=$(date +%s)
-  echo
-  echo "Full send took $((end - start)) seconds"
-
-  echo
-  echo "Testing incremental send..."
-  start=$(date +%s)
-  btrfs send -p $MNT/snap1 $MNT/snap2 > /dev/null
-  end=$(date +%s)
-  echo
-  echo "Incremental send took $((end - start)) seconds"
-
-  umount $MNT
-
-Before this change, incremental send duration:
-
-with $initial_file_count == 200000: 64 seconds
-with $initial_file_count == 500000: 179 seconds
-
-After this change, incremental send duration:
-
-with $initial_file_count == 200000:  52 seconds (-20.7%)
-with $initial_file_count == 500000:  130 seconds (-31.7%)
-
-For $initial_file_count == 200000 there are 62600 nodes and leaves in the
-btree of the first snapshot, and 77759 nodes and leaves in the btree of
-the second snapshot.
-
-While for $initial_file_count == 500000 there are 152476 nodes and leaves
-in the btree of the first snapshot, and 190511 nodes and leaves in the
-btree of the second snapshot.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/send.c | 29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 7ff81da30af4..b53d16721b2d 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -6692,15 +6692,22 @@ static int full_send_tree(struct send_ctx *sctx)
- 	return ret;
- }
- 
--static int tree_move_down(struct btrfs_path *path, int *level)
-+static int tree_move_down(struct btrfs_path *path, int *level, u64 min_reada_gen)
- {
- 	struct extent_buffer *eb;
-+	struct extent_buffer *parent = path->nodes[*level];
-+	const int nritems = btrfs_header_nritems(parent);
-+	int slot = path->slots[*level];
- 
- 	BUG_ON(*level == 0);
--	eb = btrfs_read_node_slot(path->nodes[*level], path->slots[*level]);
-+	eb = btrfs_read_node_slot(parent, slot);
- 	if (IS_ERR(eb))
- 		return PTR_ERR(eb);
- 
-+	for (slot++; slot < nritems; slot++)
-+		if (btrfs_node_ptr_generation(parent, slot) > min_reada_gen)
-+			btrfs_readahead_node_child(parent, slot);
-+
- 	path->nodes[*level - 1] = eb;
- 	path->slots[*level - 1] = 0;
- 	(*level)--;
-@@ -6740,14 +6747,15 @@ static int tree_move_next_or_upnext(struct btrfs_path *path,
- static int tree_advance(struct btrfs_path *path,
- 			int *level, int root_level,
- 			int allow_down,
--			struct btrfs_key *key)
-+			struct btrfs_key *key,
-+			u64 min_reada_gen)
- {
- 	int ret;
- 
- 	if (*level == 0 || !allow_down) {
- 		ret = tree_move_next_or_upnext(path, level, root_level);
- 	} else {
--		ret = tree_move_down(path, level);
-+		ret = tree_move_down(path, level, min_reada_gen);
- 	}
- 	if (ret >= 0) {
- 		if (*level == 0)
-@@ -6821,6 +6829,7 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
- 	u64 right_blockptr;
- 	u64 left_gen;
- 	u64 right_gen;
-+	u64 min_reada_gen;
- 
- 	left_path = btrfs_alloc_path();
- 	if (!left_path) {
-@@ -6900,6 +6909,14 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
- 		ret = -ENOMEM;
- 		goto out;
- 	}
-+	/*
-+	 * Our right root is the parent root, while the left root is the "send"
-+	 * root. We know that all new nodes/leaves in the left root must have
-+	 * a generation greater than the right root's generation, so we trigger
-+	 * readahead for those nodes and leaves of the left root, as we know we
-+	 * will read them for sure.
-+	 */
-+	min_reada_gen = btrfs_header_generation(right_root->commit_root);
- 	up_read(&fs_info->commit_root_sem);
- 
- 	if (left_level == 0)
-@@ -6924,7 +6941,7 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
- 			ret = tree_advance(left_path, &left_level,
- 					left_root_level,
- 					advance_left != ADVANCE_ONLY_NEXT,
--					&left_key);
-+					&left_key, min_reada_gen);
- 			if (ret == -1)
- 				left_end_reached = ADVANCE;
- 			else if (ret < 0)
-@@ -6935,7 +6952,7 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
- 			ret = tree_advance(right_path, &right_level,
- 					right_root_level,
- 					advance_right != ADVANCE_ONLY_NEXT,
--					&right_key);
-+					&right_key, min_reada_gen);
- 			if (ret == -1)
- 				right_end_reached = ADVANCE;
- 			else if (ret < 0)
--- 
-2.28.0
-
+So out of curiosity I searched for that cpu/page combo at it is allowed
+eg. on MIPS, oh well.
