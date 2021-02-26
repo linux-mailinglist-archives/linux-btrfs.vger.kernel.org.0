@@ -2,127 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBD432671B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 19:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A822326735
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 20:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhBZSrx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Feb 2021 13:47:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56940 "EHLO mx2.suse.de"
+        id S230228AbhBZTGP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Feb 2021 14:06:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38054 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231217AbhBZSro (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Feb 2021 13:47:44 -0500
+        id S230188AbhBZTGM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Feb 2021 14:06:12 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 60EC6AAAE
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Feb 2021 18:47:02 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 12:47:20 -0600
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: Remove force argument from run_delalloc_nocow()
-Message-ID: <20210226184720.7ul23jknjth4h6j2@fiona>
-References: <20210225205822.mgx5ei3tzcqmlts6@fiona>
- <20210226171421.GO7604@twin.jikos.cz>
+        by mx2.suse.de (Postfix) with ESMTP id CB0E5AD5C;
+        Fri, 26 Feb 2021 19:05:30 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 69F61DA7FF; Fri, 26 Feb 2021 20:03:37 +0100 (CET)
+Date:   Fri, 26 Feb 2021 20:03:37 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH v7 02/38] btrfs: return an error from
+ btrfs_record_root_in_trans
+Message-ID: <20210226190337.GQ7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <cover.1608135849.git.josef@toxicpanda.com>
+ <0b7c322b530735e98a2c6e9db4fc024c9e137546.1608135849.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210226171421.GO7604@twin.jikos.cz>
+In-Reply-To: <0b7c322b530735e98a2c6e9db4fc024c9e137546.1608135849.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 18:14 26/02, David Sterba wrote:
-> On Thu, Feb 25, 2021 at 02:58:22PM -0600, Goldwyn Rodrigues wrote:
-> > force_nocow can be calculated by btrfs_inode and does not need to be
-> > passed as an argument.
-> > 
-> > This simplifies run_delalloc_nocow() call from btrfs_run_delalloc_range()
-> > since the decision whether the extent is cow'd or not can be derived
-> > from need_force_cow(). Since BTRFS_INODE_NODATACOW and
-> > BTRFS_INODE_PREALLOC flags are checked in need_force_cow(), there is
-> > no need to check it again.
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > Change since v1:
-> >  - Kept need_force_cow() as it is
+On Wed, Dec 16, 2020 at 11:26:18AM -0500, Josef Bacik wrote:
+> We can create a reloc root when we record the root in the trans, which
+> can fail for all sorts of different reasons.  Propagate this error up
+> the chain of callers.  Future patches will fix the callers of
+> btrfs_record_root_in_trans() to handle the error.
 > 
-> Added to misc-next, thanks.
+> Reviewed-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/transaction.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> > ---
-> >  fs/btrfs/inode.c | 12 ++++--------
-> >  1 file changed, 4 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index 4f2f1e932751..e5dd8d7ef0c8 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -1516,7 +1516,7 @@ static int fallback_to_cow(struct btrfs_inode *inode, struct page *locked_page,
-> >  static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
-> >  				       struct page *locked_page,
-> >  				       const u64 start, const u64 end,
-> > -				       int *page_started, int force,
-> > +				       int *page_started,
-> >  				       unsigned long *nr_written)
-> >  {
-> >  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> > @@ -1530,6 +1530,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
-> >  	u64 ino = btrfs_ino(inode);
-> >  	bool nocow = false;
-> >  	u64 disk_bytenr = 0;
-> > +	bool force = inode->flags & BTRFS_INODE_NODATACOW;
-> >  
-> >  	path = btrfs_alloc_path();
-> >  	if (!path) {
-> > @@ -1891,17 +1892,12 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
-> >  		struct writeback_control *wbc)
-> >  {
-> >  	int ret;
-> > -	int force_cow = need_force_cow(inode, start, end);
-> >  	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
-> >  
-> > -	if (inode->flags & BTRFS_INODE_NODATACOW && !force_cow) {
-> > +	if (!need_force_cow(inode, start, end)) {
-> 
-> We may want to reverse the logic and naming so it says
-> 'need_force_nocow', right now it's "we don't need to force COW, so let's
-> do NOCOW", because COW is the default and the condition should pick the
-> exceptional case.
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index f51f9e39bcee..eba48578159e 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -400,6 +400,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
+>  			       int force)
+>  {
+>  	struct btrfs_fs_info *fs_info = root->fs_info;
+> +	int ret = 0;
+>  
+>  	if ((test_bit(BTRFS_ROOT_SHAREABLE, &root->state) &&
+>  	    root->last_trans < trans->transid) || force) {
+> @@ -448,11 +449,11 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
+>  		 * lock.  smp_wmb() makes sure that all the writes above are
+>  		 * done before we pop in the zero below
+>  		 */
+> -		btrfs_init_reloc_root(trans, root);
+> +		ret = btrfs_init_reloc_root(trans, root);
 
-Calling it need_force_nocow() or should_nocow() will result in the same
-concept as previous patch where EXTENT_DEFRAG range would need to be
-checked before checking inode flags BTRFS_INODE_NODATACOW and
-BTRFS_INODE_PREALLOC. That's because EXTENT_DEFRAG in range
-should result in a COW sequence immaterial of what CoW sequence the
-inode flags say. Isn't it?
+This is patch 2 from the series and got me curious if it's ok to add the
+error value check here, because that would mean that the whole callgraph
+from btrfs_init_reloc_root is also error handling clean (ie. no
+BUG_ONs).
 
-Maybe something like this would keep inode flags checks earlier than
-test_range_bit():
+And it's not until patch 19.
 
-static inline bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
-{
-        if (inode->flags & (BTRFS_INODE_NODATACOW | BTRFS_INODE_PREALLOC)) {
-                if (inode->defrag_bytes &&
-                    test_range_bit(&inode->io_tree, start, end, EXTENT_DEFRAG, 0, NULL))
-                        return false;
-                return true;
-        }
-        return false;
-}
+btrfs_init_reloc_root
+  create_reloc_root
+    kmalloc + BUG_ON
+    btrfs_copy_root + BUG_ON, twice
+    btrfs_insert_root + BUG_ON
+    btrfs_read_tree_root + BUG_ON
+  __add_reloc_root
+    ...
 
+All the patches in between add handling the record_root_in_trans errors,
+which is fine as end result, but the proper error handling needs to be
+pushed upwards from all leaf functions. That way it's cleaner and an
+understandable pattern as we can review one step in the callgraph,
+assuming that the calless are OK.
 
+After reading the whole patchset it looks like the end result is more
+or less what it should be but it's not a sequence of reviewable steps
+patch-to-patch.
 
-> 
-> >  		ASSERT(!zoned);
-> >  		ret = run_delalloc_nocow(inode, locked_page, start, end,
-> > -					 page_started, 1, nr_written);
-> > -	} else if (inode->flags & BTRFS_INODE_PREALLOC && !force_cow) {
-> > -		ASSERT(!zoned);
-> > -		ret = run_delalloc_nocow(inode, locked_page, start, end,
-> > -					 page_started, 0, nr_written);
-> > +					 page_started, nr_written);
-> >  	} else if (!inode_can_compress(inode) ||
-> >  		   !inode_need_compress(inode, start, end)) {
-> >  		if (zoned)
+So it's patch ordering and maybe some context fixups, where the leaf
+functions are BUG_ON-free and then all individual callers are updated.
 
--- 
-Goldwyn
+Roughly in that order:
+
+- __add_reloc_root
+- create_reloc_root
+- btrfs_init_reloc_root
+- record_root_in_trans
+- select_reloc_root
+
+>  		smp_mb__before_atomic();
+>  		clear_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
+>  	}
+> -	return 0;
+> +	return ret;
+>  }
+>  
+>  
+> -- 
+> 2.26.2
