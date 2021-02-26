@@ -2,104 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF55A3265B7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 17:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04ACA326605
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 18:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhBZQkd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Feb 2021 11:40:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47228 "EHLO mail.kernel.org"
+        id S229622AbhBZRDH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Feb 2021 12:03:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56846 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229849AbhBZQkb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:40:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7922464F13;
-        Fri, 26 Feb 2021 16:39:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614357589;
-        bh=lEfZYpuP4K1vJFK/jjoqcBdS+eR6xUvZ/xZlU6zhtq0=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=bc07srVxXcvI8rWV5nMNBUvBERF8r7/QwecNmvSChB8zZM9TYJDYyK6ygYIt49Xto
-         K1fw5efDEqIwWpOEXZAZQcLHFKWU4WJCjOk7F/iWw0rnrWNPFWKzXFq9L/UUAXAWWC
-         mgIdJ3HItbpaY/ixV4ESkv+6PNj5m6crKN/7ABjybtysAJleREsXmlkgdg6lux3EQA
-         HFo5bDUZm7bU++SE6dVX7WGg903Wdr/gHDLZ+JYs95HSPnxxyfwoZBclv2djYSJFw0
-         2KGmeSNt6UppLGKE33DSkgebDJ64uHlwqWQTKZXwMEDyHYoZM1tchUqsvjGIZplznH
-         g0/a0YXYsLIpg==
-Date:   Fri, 26 Feb 2021 08:39:47 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
-        Amy Parker <enbyamy@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: Adding LZ4 compression support to Btrfs
-Message-ID: <YDkkUx7UXszXi6hV@gmail.com>
-References: <CAE1WUT53F+xPT-Rt83EStGimQXKoU-rE+oYgcib87pjP4Sm0rw@mail.gmail.com>
- <CAEg-Je-Hs3+F9yshrW2MUmDNTaN-y6J-YxeQjneZx=zC5=58JA@mail.gmail.com>
- <20210225132647.GB7604@twin.jikos.cz>
- <YDfxkGkWnLEfsDwZ@gmail.com>
- <20210226093653.GI7604@twin.jikos.cz>
+        id S229545AbhBZRDG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:03:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1931AAF30;
+        Fri, 26 Feb 2021 17:02:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C5767DA7FF; Fri, 26 Feb 2021 18:00:30 +0100 (CET)
+Date:   Fri, 26 Feb 2021 18:00:30 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Martin Raiber <martin@urbackup.org>
+Cc:     linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Prevent nowait or async read from doing sync IO
+Message-ID: <20210226170030.GN7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Martin Raiber <martin@urbackup.org>,
+        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org
+References: <01020176df4d86ba-658b4ef1-1b4a-464f-afe4-fb69ca60e04e-000000@eu-west-1.amazonses.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210226093653.GI7604@twin.jikos.cz>
+In-Reply-To: <01020176df4d86ba-658b4ef1-1b4a-464f-afe4-fb69ca60e04e-000000@eu-west-1.amazonses.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 10:36:53AM +0100, David Sterba wrote:
-> On Thu, Feb 25, 2021 at 10:50:56AM -0800, Eric Biggers wrote:
-> > On Thu, Feb 25, 2021 at 02:26:47PM +0100, David Sterba wrote:
-> > > 
-> > > LZ4 support has been asked for so many times that it has it's own FAQ
-> > > entry:
-> > > https://btrfs.wiki.kernel.org/index.php/FAQ#Will_btrfs_support_LZ4.3F
-> > > 
-> > > The decompression speed is not the only thing that should be evaluated,
-> > > the way compression works in btrfs (in 4k blocks) does not allow good
-> > > compression ratios and overall LZ4 does not do much better than LZO. So
-> > > this is not worth the additional costs of compatibility. With ZSTD we
-> > > got the high compression and recently there have been added real-time
-> > > compression levels that we'll use in btrfs eventually.
-> > 
-> > When ZSTD support was being added to btrfs, it was claimed that btrfs compresses
-> > up to 128KB at a time
-> > (https://lore.kernel.org/r/5a7c09dd-3415-0c00-c0f2-a605a0656499@fb.com).
-> > So which is it -- 4KB or 128KB?
+On Fri, Jan 08, 2021 at 12:02:48AM +0000, Martin Raiber wrote:
+> When reading from btrfs file via io_uring I get following
+> call traces:
 > 
-> Logical extent ranges are sliced to 128K that are submitted to the
-> compression routine. Then, the whole range is fed by 4K (or more exactly
-> by page sized chunks) to the compression. Depending on the capabilities
-> of the compression algorithm, the 4K chunks are either independent or
-> can reuse some internal state of the algorithm.
+> [<0>] wait_on_page_bit+0x12b/0x270
+> [<0>] read_extent_buffer_pages+0x2ad/0x360
+> [<0>] btree_read_extent_buffer_pages+0x97/0x110
+> [<0>] read_tree_block+0x36/0x60
+> [<0>] read_block_for_search.isra.0+0x1a9/0x360
+> [<0>] btrfs_search_slot+0x23d/0x9f0
+> [<0>] btrfs_lookup_csum+0x75/0x170
+> [<0>] btrfs_lookup_bio_sums+0x23d/0x630
+> [<0>] btrfs_submit_data_bio+0x109/0x180
+> [<0>] submit_one_bio+0x44/0x70
+> [<0>] extent_readahead+0x37a/0x3a0
+> [<0>] read_pages+0x8e/0x1f0
+> [<0>] page_cache_ra_unbounded+0x1aa/0x1f0
+> [<0>] generic_file_buffered_read+0x3eb/0x830
+> [<0>] io_iter_do_read+0x1a/0x40
+> [<0>] io_read+0xde/0x350
+> [<0>] io_issue_sqe+0x5cd/0xed0
+> [<0>] __io_queue_sqe+0xf9/0x370
+> [<0>] io_submit_sqes+0x637/0x910
+> [<0>] __x64_sys_io_uring_enter+0x22e/0x390
+> [<0>] do_syscall_64+0x33/0x80
+> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> LZO and LZ4 use some kind of embedded dictionary in the same buffer, and
-> references to that dictionary directly. Ie. assuming the whole input
-> range to be contiguous. Which is something that's not trivial to achive
-> in kernel because of pages that are not contiguous in general.
+> Prevent those by setting IOCB_NOIO before calling
+> generic_file_buffered_read.
 > 
-> Thus, LZO and LZ4 compress 4K at a time, each chunk is independent. This
-> results in worse compression ratio because of less data reuse
-> possibilities. OTOH this allows decompression in place.
+> Async read has the same problem. So disable that by removing
+> FMODE_BUF_RASYNC. This was added with commit
+> 8730f12b7962b21ea9ad2756abce1e205d22db84 ("btrfs: flag files as
+> supporting buffered async reads") with 5.9. Io_uring will read
+> the data via worker threads if it can't be read without sync IO
+> this way.
 > 
-> ZLIB and ZSTD can have a separate dictionary and don't need the input
-> chunks to be contiguous. This brings some additional overhead like
-> copying parts of the input to the dictionary and additional memory for
-> themporary structures, but with higher compression ratios.
+> Signed-off-by: Martin Raiber <martin@urbackup.org>
+> ---
+>  fs/btrfs/file.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
 > 
-> IIRC the biggest problem for LZ4 was the cost of setting up each 4K
-> chunk, the work memory had to be zeroed. The size of the work memory is
-> tunable but trading off compression ratio. Either way it was either too
-> slow or too bad.
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 0e41459b8..8bb561f6d 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -3589,7 +3589,7 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
+>  
+>  static int btrfs_file_open(struct inode *inode, struct file *filp)
+>  {
+> -	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
+> +	filp->f_mode |= FMODE_NOWAIT;
+>  	return generic_file_open(inode, filp);
+>  }
+>  
+> @@ -3639,7 +3639,18 @@ static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>  			return ret;
+>  	}
+>  
+> -	return generic_file_buffered_read(iocb, to, ret);
+> +	if (iocb->ki_flags & IOCB_NOWAIT)
+> +		iocb->ki_flags |= IOCB_NOIO;
+> +
+> +	ret = generic_file_buffered_read(iocb, to, ret);
+> +
+> +	if (iocb->ki_flags & IOCB_NOWAIT) {
+> +		iocb->ki_flags &= ~IOCB_NOIO;
+> +		if (ret == 0)
+> +			ret = -EAGAIN;
+> +	}
 
-Okay so you have 128K to compress, but not in a virtually contiguous buffer, so
-you need the algorithm to support streaming of 4K chunks.  And the LZ4
-implementation doesn't properly support that.  (Note that this is a property of
-the LZ4 *implementation*, not the LZ4 *format*.)
+Christoph has some doubts about the code,
+https://lore.kernel.org/lkml/20210226051626.GA2072@lst.de/
 
-How about using vm_map_ram() to get a contiguous buffer, like what f2fs does?
-Then you wouldn't need streaming support.
-
-There is some overhead in setting up page mappings, but it might actually turn
-out to be faster (also for the other algorithms, not just LZ4) since it avoids
-the overhead of streaming, such as the algorithm having to copy all the data
-into an internal buffer for matchfinding.
-
-- Eric
+The patch has been in for-next but as I'm not sure it's correct and
+don't have a reproducer, I'll remove it again. We do want to fix the
+warning, maybe there's only something trivial missing but we need to be
+sure, I don't have enough expertise here.
