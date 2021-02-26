@@ -2,78 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C47F32648D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 16:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B48326494
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Feb 2021 16:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhBZPNa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Feb 2021 10:13:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58892 "EHLO mx2.suse.de"
+        id S230024AbhBZPRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Feb 2021 10:17:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230135AbhBZPNT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:13:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B599AAB8C;
-        Fri, 26 Feb 2021 15:12:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8D6D5DA7FF; Fri, 26 Feb 2021 16:10:44 +0100 (CET)
-Date:   Fri, 26 Feb 2021 16:10:44 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Su Yue <l@damenly.su>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: [report] lockdep warning when mounting seed device
-Message-ID: <20210226151044.GL7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        Su Yue <l@damenly.su>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <tuq0pxpx.fsf@damenly.su>
- <50ff53e3-6e6f-bc6d-31dc-ac376ed944ce@oracle.com>
+        id S230006AbhBZPRq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Feb 2021 10:17:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5B7F64EE7
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Feb 2021 15:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614352625;
+        bh=W/0CKMqaGb4JA1N+vxnmbfb4H23VOmUB+dEABBp9q2E=;
+        h=From:To:Subject:Date:From;
+        b=eLHm4+P+lMyah0Vn3l+JW7yCwhU1hx+0upMymZ01Lg7c5B2nUK6gisUEJiHz5rgUs
+         fEqZIKU180jc6faANEICAs1E3Q+MnFUI2oSMDMRrqQ9ObM+zx3Z3SveS/OvU9NP893
+         2S9JD5x4D3e97MwVWXLBJz+gnTGMcaeFUnSajh/WD6C9qCnvJx4uNf6x7BAKC1nVX4
+         2+Y+1qEMWJeXJH2sxR0W7z0Aao0Xb0P8z0qEYR2PpPwE4N4MFplMgvkH2LjDZkB5W7
+         SI6nYo/5aMyQFYx853Ri6rvrLNsrhRdHMqmSYMJVjjUajHELkLEBYZ8kzbp5/eTidL
+         ITMV2hMxeCOzw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: add btree read ahead for send operations
+Date:   Fri, 26 Feb 2021 15:17:00 +0000
+Message-Id: <cover.1614351671.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <50ff53e3-6e6f-bc6d-31dc-ac376ed944ce@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 01:01:02PM +0800, Anand Jain wrote:
-> On 25/02/2021 12:39, Su Yue wrote:
-> > 
-> > While playing with seed device(misc/next and v5.11), lockdep complains 
-> > the following:
-> > 
-> > To reproduce:
-> > 
-> > dev1=/dev/sdb1
-> > dev2=/dev/sdb2
-> > 
-> > umount /mnt
-> > 
-> > mkfs.btrfs -f $dev1
-> > 
-> > btrfstune -S 1 $dev1
-> > 
-> > mount $dev1 /mnt
-> > 
-> > btrfs device add $dev2 /mnt/ -f
-> > 
-> > umount /mnt
-> > 
-> > mount $dev2 /mnt
-> > 
-> > umount /mnt
-> > 
-> > 
-> 
-> In my understanding the commit 01d01caf19ff7c537527d352d169c4368375c0a1
->   (btrfs: move the chunk_mutex in btrfs_read_chunk_tree
->   fixed this bug in 5.9.
-> Could you please try this [1] patch,
-> [1] 
-> https://patchwork.kernel.org/project/linux-btrfs/patch/20200717100525.320697-1-anand.jain@oracle.com/
-> Patch [1] still relevant as the device_list_mutex in clone_fs_devices() 
-> is redundant. We could remove it as well.
+From: Filipe Manana <fdmanana@suse.com>
 
-So the fix 01d01caf19ff7c was not sufficient, the lockdep splat is
-reproducible.
+This patchset adds btree read ahead for full and incremental send operations,
+which results in some nice speedups. Test and results are mentioned in the
+change log of each patch.
+
+Filipe Manana (2):
+  btrfs: add btree read ahead for full send operations
+  btrfs: add btree read ahead for incremental send operations
+
+ fs/btrfs/send.c | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
+
+-- 
+2.28.0
+
