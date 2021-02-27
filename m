@@ -2,344 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD30326C88
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Feb 2021 10:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C783326DA7
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Feb 2021 16:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhB0JeR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 27 Feb 2021 04:34:17 -0500
-Received: from vulcan.natalenko.name ([104.207.131.136]:59144 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhB0JeO (ORCPT
+        id S230045AbhB0PvW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 27 Feb 2021 10:51:22 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:37448 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229999AbhB0PvV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 27 Feb 2021 04:34:14 -0500
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 644429B230D;
-        Sat, 27 Feb 2021 10:33:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1614418400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QcJypWcCuL78hRHAlISMRw7nAhYWTCY5Lq3ma6FxYuY=;
-        b=UUMOWHs8CzeAE9y8ezxkJdta0INmCZwf82IXv8Mrqyy04Ldo4H5tfmOBDP7uHvMoQwbveJ
-        X6a9Pd5sFOTuoaFzuInmL1+sPmSnN4Xw7ovyxlu3+560Jq6QnliKVKfDiyLKzcuMOv/sa/
-        v2kqphQQQQ9GIIeDfoXPoX/lHZxXarA=
-Date:   Sat, 27 Feb 2021 10:33:19 +0100
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Nick Terrell <nickrterrell@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Subject: Re: [PATCH v7 0/3] Update to zstd-1.4.6
-Message-ID: <20210227093319.tgzmg6di5zlmrnik@spock.localdomain>
-References: <20201203205114.1395668-1-nickrterrell@gmail.com>
+        Sat, 27 Feb 2021 10:51:21 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 3F8C89AA0A4; Sat, 27 Feb 2021 10:50:38 -0500 (EST)
+Date:   Sat, 27 Feb 2021 10:50:38 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: misc-next a646ddc2bba2: kernel BUG at fs/btrfs/ctree.c:1210!  tree
+ mod log
+Message-ID: <20210227155037.GN28049@hungrycats.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201203205114.1395668-1-nickrterrell@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi.
+Hit this twice so far, while running the usual
+balance/dedupe/rsync/snapshots/all at once on:
 
-On Thu, Dec 03, 2020 at 12:51:11PM -0800, Nick Terrell wrote:
-> From: Nick Terrell <terrelln@fb.com>
-> 
-> Please pull from
-> 
->   git@github.com:terrelln/linux.git tags/v7-zstd-1.4.6
-> 
-> to get these changes. Alternatively the patchset is included.
-> 
-> This patchset upgrades the zstd library to the latest upstream release. The
-> current zstd version in the kernel is a modified version of upstream zstd-1.3.1.
-> At the time it was integrated, zstd wasn't ready to be used in the kernel as-is.
-> But, it is now possible to use upstream zstd directly in the kernel.
-> 
-> I have not yet released zstd-1.4.6 upstream. I want the zstd version in the
-> kernel to match up with a known upstream release, so we know exactly what code
-> is running. Whenever this patchset is ready for merge, I will cut a release at
-> the upstream commit that gets merged. This should not be necessary for future
-> releases.
-> 
-> The kernel zstd library is automatically generated from upstream zstd. A script
-> makes the necessary changes and imports it into the kernel. The changes are:
-> 
-> 1. Replace all libc dependencies with kernel replacements and rewrite includes.
-> 2. Remove unncessary portability macros like: #if defined(_MSC_VER).
-> 3. Use the kernel xxhash instead of bundling it.
-> 
-> This automation gets tested every commit by upstream's continuous integration.
-> When we cut a new zstd release, we will submit a patch to the kernel to update
-> the zstd version in the kernel.
-> 
-> I've updated zstd to upstream with one big patch because every commit must build,
-> so that precludes partial updates. Since the commit is 100% generated, I hope the
-> review burden is lightened. I considered replaying upstream commits, but that is
-> not possible because there have been ~3500 upstream commits since the last zstd
-> import, and the commits don't all build individually. The bulk update preserves
-> bisectablity because bugs can be bisected to the zstd version update. At that
-> point the update can be reverted, and we can work with upstream to find and fix
-> the bug. After this big switch in how the kernel consumes zstd, future patches
-> will be smaller, because they will only have one upstream release worth of
-> changes each.
-> 
-> This patchset adds a new kernel-style wrapper around zstd. This wrapper API is
-> functionally equivalent to the subset of the current zstd API that is currently
-> used. The wrapper API changes to be kernel style so that the symbols don't
-> collide with zstd's symbols. The update to zstd-1.4.6 maintains the same API
-> and preserves the semantics, so that none of the callers need to be updated.
-> 
-> This patchset comes in 2 parts:
-> 1. The first 2 patches prepare for the zstd upgrade. The first patch adds the
->    new kernel style API so zstd can be upgraded without modifying any callers.
->    The second patch adds an indirection for the lib/decompress_unzstd.c
->    including of all decompression source files.
-> 2. Import zstd-1.4.6. This patch is completely generated from upstream using
->    automated tooling.
-> 
-> I tested every caller of zstd on x86_64. I tested both after the 1.4.6 upgrade
-> using the compatibility wrapper, and after the final patch in this series. 
-> 
-> I tested kernel and initramfs decompression in i386 and arm.
-> 
-> I ran benchmarks to compare the current zstd in the kernel with zstd-1.4.6.
-> I benchmarked on x86_64 using QEMU with KVM enabled on an Intel i9-9900k.
-> I found:
-> * BtrFS zstd compression at levels 1 and 3 is 5% faster
-> * BtrFS zstd decompression+read is 15% faster
-> * SquashFS zstd decompression+read is 15% faster
-> * F2FS zstd compression+write at level 3 is 8% faster
-> * F2FS zstd decompression+read is 20% faster
-> * ZRAM decompression+read is 30% faster
-> * Kernel zstd decompression is 35% faster
-> * Initramfs zstd decompression+build is 5% faster
-> 
-> The latest zstd also offers bug fixes and a 1 KB reduction in stack uage during
-> compression. For example the recent problem with large kernel decompression has
-> been fixed upstream for over 2 years https://lkml.org/lkml/2020/9/29/27.
-> 
-> Please let me know if there is anything that I can do to ease the way for these
-> patches. I think it is important because it gets large performance improvements,
-> contains bug fixes, and is switching to a more maintainable model of consuming
-> upstream zstd directly, making it easy to keep up to date.
-> 
-> Best,
-> Nick Terrell
-> 
-> v1 -> v2:
-> * Successfully tested F2FS with help from Chao Yu to fix my test.
-> * (1/9) Fix ZSTD_initCStream() wrapper to handle pledged_src_size=0 means unknown.
->   This fixes F2FS with the zstd-1.4.6 compatibility wrapper, exposed by the test.
-> 
-> v2 -> v3:
-> * (3/9) Silence warnings by Kernel Test Robot:
->   https://github.com/facebook/zstd/pull/2324
->   Stack size warnings remain, but these aren't new, and the functions it warns on
->   are either unused or not in the maximum stack path. This patchset reduces zstd
->   compression stack usage by 1 KB overall. I've gotten the low hanging fruit, and
->   more stack reduction would require significant changes that have the potential
->   to introduce new bugs. However, I do hope to continue to reduce zstd stack
->   usage in future versions.
-> 
-> v3 -> v4:
-> * (3/9) Fix errors and warnings reported by Kernel Test Robot:
->   https://github.com/facebook/zstd/pull/2326
->   - Replace mem.h with a custom kernel implementation that matches the current
->     lib/zstd/mem.h in the kernel. This avoids calls to __builtin_bswap*() which
->     don't work on certain architectures, as exposed by the Kernel Test Robot.
->   - Remove ASAN/MSAN (un)poisoning code which doesn't work in the kernel, as
->     exposed by the Kernel Test Robot.
->   - I've fixed all of the valid cppcheck warnings reported, but there were many
->     false positives, where cppcheck was incorrectly analyzing the situation,
->     which I did not fix. I don't believe it is reasonable to expect that upstream
->     zstd silences all the static analyzer false positives. Upstream zstd uses
->     clang scan-build for its static analysis. We find that supporting multiple
->     static analysis tools multiplies the burden of silencing false positives,
->     without providing enough marginal value over running a single static analysis
->     tool.
-> 
-> v4 -> v5:
-> * Rebase onto v5.10-rc2
-> * (6/9) Merge with other F2FS changes (no functional change in patch).
-> 
-> v5 -> v6:
-> * Rebase onto v5.10-rc6.
-> * Switch to using a kernel style wrapper API as suggested by Cristoph.
-> 
-> v6 -> v7:
-> * Expose the upstream library header as `include/linux/zstd_lib.h`.
->   Instead of creating new structs mirroring the upstream zstd structs
->   use upstream's structs directly with a typedef to get a kernel style name.
->   This removes the memcpy cruft.
-> * (1/3) Undo ZSTD_WINDOWLOG_MAX and handle_zstd_error changes.
-> * (3/3) Expose zstd_errors.h as `include/linux/zstd_errors.h` because it
->   is needed by the kernel wrapper API.
-> 
-> 
-> Nick Terrell (3):
->   lib: zstd: Add kernel-specific API
->   lib: zstd: Add decompress_sources.h for decompress_unzstd
->   lib: zstd: Upgrade to latest upstream zstd version 1.4.6
-> 
->  crypto/zstd.c                                 |   28 +-
->  fs/btrfs/zstd.c                               |   68 +-
->  fs/f2fs/compress.c                            |   56 +-
->  fs/pstore/platform.c                          |    2 +-
->  fs/squashfs/zstd_wrapper.c                    |   16 +-
->  include/linux/zstd.h                          | 1225 +----
->  include/linux/zstd_errors.h                   |   76 +
->  include/linux/zstd_lib.h                      | 2104 +++++++++
->  lib/decompress_unzstd.c                       |   48 +-
->  lib/zstd/Makefile                             |   35 +-
->  lib/zstd/bitstream.h                          |  379 --
->  lib/zstd/common/bitstream.h                   |  437 ++
->  lib/zstd/common/compiler.h                    |  150 +
->  lib/zstd/common/cpu.h                         |  194 +
->  lib/zstd/common/debug.c                       |   24 +
->  lib/zstd/common/debug.h                       |  101 +
->  lib/zstd/common/entropy_common.c              |  355 ++
->  lib/zstd/common/error_private.c               |   55 +
->  lib/zstd/common/error_private.h               |   66 +
->  lib/zstd/common/fse.h                         |  709 +++
->  lib/zstd/common/fse_decompress.c              |  380 ++
->  lib/zstd/common/huf.h                         |  352 ++
->  lib/zstd/common/mem.h                         |  258 +
->  lib/zstd/common/zstd_common.c                 |   83 +
->  lib/zstd/common/zstd_deps.h                   |  124 +
->  lib/zstd/common/zstd_internal.h               |  438 ++
->  lib/zstd/compress.c                           | 3485 --------------
->  lib/zstd/compress/fse_compress.c              |  625 +++
->  lib/zstd/compress/hist.c                      |  165 +
->  lib/zstd/compress/hist.h                      |   75 +
->  lib/zstd/compress/huf_compress.c              |  764 +++
->  lib/zstd/compress/zstd_compress.c             | 4157 +++++++++++++++++
->  lib/zstd/compress/zstd_compress_internal.h    | 1103 +++++
->  lib/zstd/compress/zstd_compress_literals.c    |  158 +
->  lib/zstd/compress/zstd_compress_literals.h    |   29 +
->  lib/zstd/compress/zstd_compress_sequences.c   |  433 ++
->  lib/zstd/compress/zstd_compress_sequences.h   |   54 +
->  lib/zstd/compress/zstd_compress_superblock.c  |  849 ++++
->  lib/zstd/compress/zstd_compress_superblock.h  |   32 +
->  lib/zstd/compress/zstd_cwksp.h                |  465 ++
->  lib/zstd/compress/zstd_double_fast.c          |  521 +++
->  lib/zstd/compress/zstd_double_fast.h          |   32 +
->  lib/zstd/compress/zstd_fast.c                 |  496 ++
->  lib/zstd/compress/zstd_fast.h                 |   31 +
->  lib/zstd/compress/zstd_lazy.c                 | 1138 +++++
->  lib/zstd/compress/zstd_lazy.h                 |   61 +
->  lib/zstd/compress/zstd_ldm.c                  |  619 +++
->  lib/zstd/compress/zstd_ldm.h                  |  104 +
->  lib/zstd/compress/zstd_opt.c                  | 1200 +++++
->  lib/zstd/compress/zstd_opt.h                  |   50 +
->  lib/zstd/decompress.c                         | 2531 ----------
->  lib/zstd/decompress/huf_decompress.c          | 1205 +++++
->  lib/zstd/decompress/zstd_ddict.c              |  241 +
->  lib/zstd/decompress/zstd_ddict.h              |   44 +
->  lib/zstd/decompress/zstd_decompress.c         | 1836 ++++++++
->  lib/zstd/decompress/zstd_decompress_block.c   | 1540 ++++++
->  lib/zstd/decompress/zstd_decompress_block.h   |   62 +
->  .../decompress/zstd_decompress_internal.h     |  195 +
->  lib/zstd/decompress_sources.h                 |   19 +
->  lib/zstd/entropy_common.c                     |  243 -
->  lib/zstd/error_private.h                      |   53 -
->  lib/zstd/fse.h                                |  575 ---
->  lib/zstd/fse_compress.c                       |  795 ----
->  lib/zstd/fse_decompress.c                     |  325 --
->  lib/zstd/huf.h                                |  212 -
->  lib/zstd/huf_compress.c                       |  772 ---
->  lib/zstd/huf_decompress.c                     |  960 ----
->  lib/zstd/mem.h                                |  151 -
->  lib/zstd/zstd_common.c                        |   75 -
->  lib/zstd/zstd_compress_module.c               |  103 +
->  lib/zstd/zstd_decompress_module.c             |   96 +
->  lib/zstd/zstd_internal.h                      |  273 --
->  lib/zstd/zstd_opt.h                           | 1014 ----
->  73 files changed, 24800 insertions(+), 12929 deletions(-)
->  create mode 100644 include/linux/zstd_errors.h
->  create mode 100644 include/linux/zstd_lib.h
->  delete mode 100644 lib/zstd/bitstream.h
->  create mode 100644 lib/zstd/common/bitstream.h
->  create mode 100644 lib/zstd/common/compiler.h
->  create mode 100644 lib/zstd/common/cpu.h
->  create mode 100644 lib/zstd/common/debug.c
->  create mode 100644 lib/zstd/common/debug.h
->  create mode 100644 lib/zstd/common/entropy_common.c
->  create mode 100644 lib/zstd/common/error_private.c
->  create mode 100644 lib/zstd/common/error_private.h
->  create mode 100644 lib/zstd/common/fse.h
->  create mode 100644 lib/zstd/common/fse_decompress.c
->  create mode 100644 lib/zstd/common/huf.h
->  create mode 100644 lib/zstd/common/mem.h
->  create mode 100644 lib/zstd/common/zstd_common.c
->  create mode 100644 lib/zstd/common/zstd_deps.h
->  create mode 100644 lib/zstd/common/zstd_internal.h
->  delete mode 100644 lib/zstd/compress.c
->  create mode 100644 lib/zstd/compress/fse_compress.c
->  create mode 100644 lib/zstd/compress/hist.c
->  create mode 100644 lib/zstd/compress/hist.h
->  create mode 100644 lib/zstd/compress/huf_compress.c
->  create mode 100644 lib/zstd/compress/zstd_compress.c
->  create mode 100644 lib/zstd/compress/zstd_compress_internal.h
->  create mode 100644 lib/zstd/compress/zstd_compress_literals.c
->  create mode 100644 lib/zstd/compress/zstd_compress_literals.h
->  create mode 100644 lib/zstd/compress/zstd_compress_sequences.c
->  create mode 100644 lib/zstd/compress/zstd_compress_sequences.h
->  create mode 100644 lib/zstd/compress/zstd_compress_superblock.c
->  create mode 100644 lib/zstd/compress/zstd_compress_superblock.h
->  create mode 100644 lib/zstd/compress/zstd_cwksp.h
->  create mode 100644 lib/zstd/compress/zstd_double_fast.c
->  create mode 100644 lib/zstd/compress/zstd_double_fast.h
->  create mode 100644 lib/zstd/compress/zstd_fast.c
->  create mode 100644 lib/zstd/compress/zstd_fast.h
->  create mode 100644 lib/zstd/compress/zstd_lazy.c
->  create mode 100644 lib/zstd/compress/zstd_lazy.h
->  create mode 100644 lib/zstd/compress/zstd_ldm.c
->  create mode 100644 lib/zstd/compress/zstd_ldm.h
->  create mode 100644 lib/zstd/compress/zstd_opt.c
->  create mode 100644 lib/zstd/compress/zstd_opt.h
->  delete mode 100644 lib/zstd/decompress.c
->  create mode 100644 lib/zstd/decompress/huf_decompress.c
->  create mode 100644 lib/zstd/decompress/zstd_ddict.c
->  create mode 100644 lib/zstd/decompress/zstd_ddict.h
->  create mode 100644 lib/zstd/decompress/zstd_decompress.c
->  create mode 100644 lib/zstd/decompress/zstd_decompress_block.c
->  create mode 100644 lib/zstd/decompress/zstd_decompress_block.h
->  create mode 100644 lib/zstd/decompress/zstd_decompress_internal.h
->  create mode 100644 lib/zstd/decompress_sources.h
->  delete mode 100644 lib/zstd/entropy_common.c
->  delete mode 100644 lib/zstd/error_private.h
->  delete mode 100644 lib/zstd/fse.h
->  delete mode 100644 lib/zstd/fse_compress.c
->  delete mode 100644 lib/zstd/fse_decompress.c
->  delete mode 100644 lib/zstd/huf.h
->  delete mode 100644 lib/zstd/huf_compress.c
->  delete mode 100644 lib/zstd/huf_decompress.c
->  delete mode 100644 lib/zstd/mem.h
->  delete mode 100644 lib/zstd/zstd_common.c
->  create mode 100644 lib/zstd/zstd_compress_module.c
->  create mode 100644 lib/zstd/zstd_decompress_module.c
->  delete mode 100644 lib/zstd/zstd_internal.h
->  delete mode 100644 lib/zstd/zstd_opt.h
-> 
-> -- 
-> 2.29.2
-> 
+	a646ddc2bba2 (kdave-gitlab/misc-next) btrfs: unlock extents in btrfs_zero_range in case of quota reservation errors
 
-So, what's the fate of this submission please?
+Looks like tree mod log bugs are back (or never went away?).
 
-Thanks.
+	[40422.398920][T28995] BTRFS info (device dm-0): balance: canceled
+	[40607.394003][T11577] BTRFS info (device dm-0): balance: start -dlimit=9
+	[40607.398597][T11577] BTRFS info (device dm-0): relocating block group 315676950528 flags data
+	[40643.279661][T11577] BTRFS info (device dm-0): found 12686 extents, loops 1, stage: move data extents
+	[40692.752695][T11577] BTRFS info (device dm-0): found 12686 extents, loops 2, stage: update data pointers
+	[40704.860522][T11577] BTRFS info (device dm-0): relocating block group 314603208704 flags data
+	[40704.919977][T19054] ------------[ cut here ]------------
+	[40704.921895][T19054] kernel BUG at fs/btrfs/ctree.c:1210!
+	[40704.923497][T19054] invalid opcode: 0000 [#1] SMP KASAN PTI
+	[40704.925549][T19054] CPU: 1 PID: 19054 Comm: crawl_335 Tainted: G        W         5.11.0-2d11c0084b02-misc-next+ #89
+	[40704.929192][T19054] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+	[40704.931640][T19054] RIP: 0010:__tree_mod_log_rewind+0x3b1/0x3c0
+	[40704.933301][T19054] Code: 05 48 8d 74 10 65 ba 19 00 00 00 e8 89 f3 06 00 e9 a7 fd ff ff 4c 8d 7b 2c 4c 89 ff e8 f8 bd c8 ff 48 63 43 2c e9 a2 fe ff ff <0f> 0b 0f 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 55 48
+	[40704.938566][T19054] RSP: 0018:ffffc90001eb70b8 EFLAGS: 00010297
+	[40704.940483][T19054] RAX: 0000000000000000 RBX: ffff88812344e400 RCX: ffffffffb28933b6
+	[40704.942668][T19054] RDX: 0000000000000007 RSI: dffffc0000000000 RDI: ffff88812344e42c
+	[40704.945002][T19054] RBP: ffffc90001eb7108 R08: 1ffff11020b60a20 R09: ffffed1020b60a20
+	[40704.948513][T19054] R10: ffff888105b050f9 R11: ffffed1020b60a1f R12: 00000000000000ee
+	[40704.951601][T19054] R13: ffff8880195520c0 R14: ffff8881bc958500 R15: ffff88812344e42c
+	[40704.954607][T19054] FS:  00007fd1955e8700(0000) GS:ffff8881f5600000(0000) knlGS:0000000000000000
+	[40704.957704][T19054] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+	[40704.960125][T19054] CR2: 00007efdb7928718 CR3: 000000010103a006 CR4: 0000000000170ee0
+	[40704.963186][T19054] Call Trace:
+	[40704.964229][T19054]  btrfs_search_old_slot+0x265/0x10d0
+	[40704.967068][T19054]  ? lock_acquired+0xbb/0x600
+	[40704.969148][T19054]  ? btrfs_search_slot+0x1090/0x1090
+	[40704.971106][T19054]  ? free_extent_buffer.part.61+0xd7/0x140
+	[40704.973020][T19054]  ? free_extent_buffer+0x13/0x20
+	[40704.974537][T19054]  resolve_indirect_refs+0x3e9/0xfc0
+	[40704.976154][T19054]  ? lock_downgrade+0x3d0/0x3d0
+	[40704.977602][T19054]  ? __kasan_check_read+0x11/0x20
+	[40704.980765][T19054]  ? add_prelim_ref.part.11+0x150/0x150
+	[40704.983136][T19054]  ? lock_downgrade+0x3d0/0x3d0
+	[40704.985206][T19054]  ? __kasan_check_read+0x11/0x20
+	[40704.987403][T19054]  ? lock_acquired+0xbb/0x600
+	[40704.989309][T19054]  ? __kasan_check_write+0x14/0x20
+	[40704.991385][T19054]  ? do_raw_spin_unlock+0xa8/0x140
+	[40704.993454][T19054]  ? rb_insert_color+0x30/0x360
+	[40704.995402][T19054]  ? prelim_ref_insert+0x12d/0x430
+	[40704.997247][T19054]  find_parent_nodes+0x5c3/0x1830
+	[40704.999305][T19054]  ? resolve_indirect_refs+0xfc0/0xfc0
+	[40705.000951][T19054]  ? lock_release+0xc8/0x620
+	[40705.002748][T19054]  ? fs_reclaim_acquire+0x67/0xf0
+	[40705.004753][T19054]  ? lock_acquire+0xc7/0x510
+	[40705.006233][T19054]  ? lock_downgrade+0x3d0/0x3d0
+	[40705.007683][T19054]  ? lockdep_hardirqs_on_prepare+0x160/0x210
+	[40705.009677][T19054]  ? lock_release+0xc8/0x620
+	[40705.011405][T19054]  ? fs_reclaim_acquire+0x67/0xf0
+	[40705.012937][T19054]  ? lock_acquire+0xc7/0x510
+	[40705.014293][T19054]  ? poison_range+0x38/0x40
+	[40705.015635][T19054]  ? unpoison_range+0x14/0x40
+	[40705.017166][T19054]  ? trace_hardirqs_on+0x55/0x120
+	[40705.018827][T19054]  btrfs_find_all_roots_safe+0x142/0x1e0
+	[40705.020610][T19054]  ? find_parent_nodes+0x1830/0x1830
+	[40705.022573][T19054]  ? btrfs_inode_flags_to_xflags+0x50/0x50
+	[40705.024743][T19054]  iterate_extent_inodes+0x20e/0x580
+	[40705.026839][T19054]  ? tree_backref_for_extent+0x230/0x230
+	[40705.029021][T19054]  ? lock_downgrade+0x3d0/0x3d0
+	[40705.030432][T19054]  ? read_extent_buffer+0xdd/0x110
+	[40705.031909][T19054]  ? lock_downgrade+0x3d0/0x3d0
+	[40705.033274][T19054]  ? __kasan_check_read+0x11/0x20
+	[40705.034782][T19054]  ? lock_acquired+0xbb/0x600
+	[40705.036234][T19054]  ? __kasan_check_write+0x14/0x20
+	[40705.037670][T19054]  ? _raw_spin_unlock+0x22/0x30
+	[40705.039014][T19054]  ? __kasan_check_write+0x14/0x20
+	[40705.040419][T19054]  iterate_inodes_from_logical+0x129/0x170
+	[40705.044668][T19054]  ? iterate_inodes_from_logical+0x129/0x170
+	[40705.047340][T19054]  ? btrfs_inode_flags_to_xflags+0x50/0x50
+	[40705.049936][T19054]  ? iterate_extent_inodes+0x580/0x580
+	[40705.051938][T19054]  ? __vmalloc_node+0x92/0xb0
+	[40705.053270][T19054]  ? init_data_container+0x34/0xb0
+	[40705.054903][T19054]  ? init_data_container+0x34/0xb0
+	[40705.056876][T19054]  ? kvmalloc_node+0x60/0x80
+	[40705.058372][T19054]  btrfs_ioctl_logical_to_ino+0x158/0x230
+	[40705.060233][T19054]  btrfs_ioctl+0x205e/0x4040
+	[40705.061465][T19054]  ? __might_sleep+0x71/0xe0
+	[40705.063108][T19054]  ? btrfs_ioctl_get_supported_features+0x30/0x30
+	[40705.065188][T19054]  ? getrusage+0x4b6/0x9c0
+	[40705.066678][T19054]  ? __kasan_check_read+0x11/0x20
+	[40705.071937][T19054]  ? lock_release+0xc8/0x620
+	[40705.075584][T19054]  ? __might_fault+0x64/0xd0
+	[40705.084175][T19054]  ? lock_acquire+0xc7/0x510
+	[40705.091566][T19054]  ? lock_downgrade+0x3d0/0x3d0
+	[40705.095180][T19054]  ? lockdep_hardirqs_on_prepare+0x210/0x210
+	[40705.099880][T19054]  ? lockdep_hardirqs_on_prepare+0x210/0x210
+	[40705.101645][T19054]  ? __kasan_check_read+0x11/0x20
+	[40705.103977][T19054]  ? do_vfs_ioctl+0xfc/0x9d0
+	[40705.105936][T19054]  ? ioctl_file_clone+0xe0/0xe0
+	[40705.107658][T19054]  ? lock_downgrade+0x3d0/0x3d0
+	[40705.109423][T19054]  ? lockdep_hardirqs_on_prepare+0x210/0x210
+	[40705.119233][T19054]  ? __kasan_check_read+0x11/0x20
+	[40705.123581][T19054]  ? lock_release+0xc8/0x620
+	[40705.125226][T19054]  ? __task_pid_nr_ns+0xd3/0x250
+	[40705.126984][T19054]  ? lock_acquire+0xc7/0x510
+	[40705.128678][T19054]  ? __fget_files+0x160/0x230
+	[40705.130365][T19054]  ? __fget_light+0xf2/0x110
+	[40705.131959][T19054]  __x64_sys_ioctl+0xc3/0x100
+	[40705.133637][T19054]  do_syscall_64+0x37/0x80
+	[40705.138627][T19054]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	[40705.140552][T19054] RIP: 0033:0x7fd1976e2427
+	[40705.142005][T19054] Code: 00 00 90 48 8b 05 69 aa 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 aa 0c 00 f7 d8 64 89 01 48
+	[40705.148519][T19054] RSP: 002b:00007fd1955e5cf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+	[40705.151247][T19054] RAX: ffffffffffffffda RBX: 00007fd1955e5f40 RCX: 00007fd1976e2427
+	[40705.153903][T19054] RDX: 00007fd1955e5f48 RSI: 00000000c038943b RDI: 0000000000000004
+	[40705.156554][T19054] RBP: 0000000001000000 R08: 0000000000000000 R09: 00007fd1955e6120
+	[40705.159228][T19054] R10: 0000557835366b00 R11: 0000000000000246 R12: 0000000000000004
+	[40705.161902][T19054] R13: 00007fd1955e5f48 R14: 00007fd1955e5f40 R15: 00007fd1955e5ef8
+	[40705.164567][T19054] Modules linked in:
+	[40705.165991][T19054] ---[ end trace ec8931a1c36e57be ]---
 
--- 
-  Oleksandr Natalenko (post-factum)
+	(gdb) l *(__tree_mod_log_rewind+0x3b1)
+	0xffffffff81893521 is in __tree_mod_log_rewind (fs/btrfs/ctree.c:1210).
+	1205                     * the modification. as we're going backwards, we do the
+	1206                     * opposite of each operation here.
+	1207                     */
+	1208                    switch (tm->op) {
+	1209                    case MOD_LOG_KEY_REMOVE_WHILE_FREEING:
+	1210                            BUG_ON(tm->slot < n);
+	1211                            fallthrough;
+	1212                    case MOD_LOG_KEY_REMOVE_WHILE_MOVING:
+	1213                    case MOD_LOG_KEY_REMOVE:
+	1214                            btrfs_set_node_key(eb, &tm->key, tm->slot);
