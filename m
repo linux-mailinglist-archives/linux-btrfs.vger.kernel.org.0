@@ -2,130 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AB5327F79
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 14:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A63327FE2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 14:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235738AbhCAN2E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Mar 2021 08:28:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35498 "EHLO mx2.suse.de"
+        id S235871AbhCANqz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Mar 2021 08:46:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45008 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235717AbhCAN16 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:27:58 -0500
+        id S235866AbhCANqx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:46:53 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614606371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=N2seae7zAZtgooEhZqlxXihiEXq8ZUjfrzDAid5SFmc=;
+        b=NZZN5C2uaKSaSvNbbriwyulgux/csQIzhqmkTgbDWSXtg8WmYNyfva2aXzCLHE6en5knqU
+        OQN6U+tQOQlfFD0o2Bb06fYKp43OYmRpEbMnhhBz+l9EZYwABsg6YZIbA6GmKZ+q8SBnEq
+        53Qa93gA5ghlVoBD2JGMwY+wKbr/Vy0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 59310AC24;
-        Mon,  1 Mar 2021 13:27:16 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 9638CAB8C;
+        Mon,  1 Mar 2021 13:46:11 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 99542DA7AF; Mon,  1 Mar 2021 14:25:21 +0100 (CET)
-Date:   Mon, 1 Mar 2021 14:25:21 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] btrfs: zoned: move superblock logging zone location
-Message-ID: <20210301132521.GU7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "hare@suse.com" <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <cover.1614331998.git.naohiro.aota@wdc.com>
- <7d02b9117f15101e70d2cd37da05ca93c2fd624d.1614331998.git.naohiro.aota@wdc.com>
- <20210226191130.GR7604@twin.jikos.cz>
- <20210301045548.zirmwk56almxgint@naota-xeon>
- <BL0PR04MB651469B0D0AE850CF0E069ADE79A9@BL0PR04MB6514.namprd04.prod.outlook.com>
+        id 126B1DA7D7; Mon,  1 Mar 2021 14:44:17 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 5.12-rc2
+Date:   Mon,  1 Mar 2021 14:44:16 +0100
+Message-Id: <cover.1614605230.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BL0PR04MB651469B0D0AE850CF0E069ADE79A9@BL0PR04MB6514.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 05:17:52AM +0000, Damien Le Moal wrote:
-> On 2021/03/01 14:02, Naohiro Aota wrote:
-> > On Fri, Feb 26, 2021 at 08:11:30PM +0100, David Sterba wrote:
-> >> On Fri, Feb 26, 2021 at 06:34:36PM +0900, Naohiro Aota wrote:
-> >>> This commit moves the location of superblock logging zones basing on the
-> >>> static address instead of the static zone number.
-> >>>
-> >>> The following zones are reserved as the circular buffer on zoned btrfs.
-> >>>   - The primary superblock: zone at LBA 0 and the next zone
-> >>>   - The first copy: zone at LBA 16G and the next zone
-> >>>   - The second copy: zone at LBA 256G and the next zone
-> >>
-> >> This contains all the important information but somehow feels too short
-> >> given how many mails we've exchanged and all the reasoning why we do
-> >> that
-> > 
-> > Yep, sure. I'll expand the description and repost.
-> > 
-> >>>
-> >>> We disallow zone size larger than 8GB not to overlap the superblock log
-> >>> zones.
-> >>>
-> >>> Since the superblock zones overlap, we disallow zone size larger than 8GB.
-> >>
-> >> or why we chose 8G to be the reasonable upper limit for the zone size.
-> >>
-> >>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> >>> ---
-> >>>  fs/btrfs/zoned.c | 21 +++++++++++++++------
-> >>>  1 file changed, 15 insertions(+), 6 deletions(-)
-> >>>
-> >>> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> >>> index 9a5cf153da89..40cb99854844 100644
-> >>> --- a/fs/btrfs/zoned.c
-> >>> +++ b/fs/btrfs/zoned.c
-> >>> @@ -112,10 +112,9 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
-> >>>  
-> >>>  /*
-> >>>   * The following zones are reserved as the circular buffer on ZONED btrfs.
-> >>> - *  - The primary superblock: zones 0 and 1
-> >>> - *  - The first copy: zones 16 and 17
-> >>> - *  - The second copy: zones 1024 or zone at 256GB which is minimum, and
-> >>> - *                     the following one
-> >>> + *  - The primary superblock: zone at LBA 0 and the next zone
-> >>> + *  - The first copy: zone at LBA 16G and the next zone
-> >>> + *  - The second copy: zone at LBA 256G and the next zone
-> >>>   */
-> >>>  static inline u32 sb_zone_number(int shift, int mirror)
-> >>>  {
-> >>> @@ -123,8 +122,8 @@ static inline u32 sb_zone_number(int shift, int mirror)
-> >>>  
-> >>>  	switch (mirror) {
-> >>>  	case 0: return 0;
-> >>> -	case 1: return 16;
-> >>> -	case 2: return min_t(u64, btrfs_sb_offset(mirror) >> shift, 1024);
-> >>> +	case 1: return 1 << (const_ilog2(SZ_16G) - shift);
-> >>> +	case 2: return 1 << (const_ilog2(SZ_1G) + 8 - shift);
-> >>
-> >> This ilog(SZ_1G) + 8 is confusing, it should have been 256G for clarity,
-> >> as it's a constant it'll get expanded at compile time.
-> > 
-> > I'd like to use SZ_256G here, but linux/sizes.h does not define
-> > it. I'll define one for us and use it in the next version.
-> 
-> Or just use const_ilog2(256 * SZ_1G)... That is fairly easy to understand :)
-> 
-> I would even go further and add:
-> 
-> #define BTRFS_SB_FIRST_COPY_OFST		(16ULL * SZ_1G)
-> #define BTRFS_SB_SECOND_COPY_OFST		(256ULL * SZ_1G)
-> 
-> To be clear about what the values represent.
-> Then you can have:
-> 
-> +	case 1: return 1 << (const_ilog2(BTRFS_SB_FIRST_COPY_OFST) - shift);
-> +	case 2: return 1 << (const_ilog2(BTRFS_SB_SECOND_COPY_OFST) - shift);
+From: David Sterba <dsterba@suse.cz>
 
-That's even better, so the magic constants are defined in a more visible
-place. Maybe the shift can be also defined separately and then just used
-here, like we have PAGE_SIZE/PAGE_SHIFT and such.
+Hi,
+
+first batch of fixes that usually arrive during the merge window code
+freeze. Regressions and stable material. Please pull, thanks.
+
+Regressions:
+
+- fix deadlock in log sync in zoned mode
+
+- fix bugs in subpage mode still wrongly assuming sectorsize == page
+  size
+
+Fixes:
+
+- fix missing kunmap of the Q stripe in RAID6
+
+- block group fixes:
+  - fix race between extent freeing/allocation when using bitmaps
+  - avoid double put of block group when emptying cluster
+
+- swapfile fixes:
+  - fix swapfile writes vs running scrub
+  - fix swapfile activation vs snapshot creation
+
+- fix stale data exposure after cloning a hole with NO_HOLES enabled
+
+- remove tree-checker check that does not work in case information from
+  other leaves is necessary
+
+----------------------------------------------------------------
+The following changes since commit 9d294a685fbcb256ce8c5f7fd88a7596d0f52a8a:
+
+  btrfs: zoned: enable to mount ZONED incompat flag (2021-02-09 02:52:24 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc1-tag
+
+for you to fetch changes up to 6e37d245994189ba757df7dc2950a44d31421ac6:
+
+  btrfs: zoned: fix deadlock on log sync (2021-02-22 18:08:48 +0100)
+
+----------------------------------------------------------------
+Filipe Manana (4):
+      btrfs: avoid checking for RO block group twice during nocow writeback
+      btrfs: fix race between writes to swap files and scrub
+      btrfs: fix race between swap file activation and snapshot creation
+      btrfs: fix stale data exposure after cloning a hole with NO_HOLES enabled
+
+Ira Weiny (1):
+      btrfs: fix raid6 qstripe kmap
+
+Johannes Thumshirn (1):
+      btrfs: zoned: fix deadlock on log sync
+
+Josef Bacik (2):
+      btrfs: tree-checker: do not error out if extent ref hash doesn't match
+      btrfs: avoid double put of block group when emptying cluster
+
+Nikolay Borisov (1):
+      btrfs: fix race between extent freeing/allocation when using bitmaps
+
+Qu Wenruo (2):
+      btrfs: make btrfs_submit_compressed_read() subpage compatible
+      btrfs: make check_compressed_csum() to be subpage compatible
+
+ fs/btrfs/block-group.c      | 33 +++++++++++++++++++++++-
+ fs/btrfs/block-group.h      |  9 +++++++
+ fs/btrfs/compression.c      | 62 +++++++++++++++++++++++++++++++--------------
+ fs/btrfs/ctree.h            |  5 ++++
+ fs/btrfs/free-space-cache.c | 14 +++++-----
+ fs/btrfs/inode.c            | 44 +++++++++++++++++++++++++++-----
+ fs/btrfs/raid56.c           | 21 ++++++++-------
+ fs/btrfs/reflink.c          | 18 +++++++++++++
+ fs/btrfs/scrub.c            |  9 ++++++-
+ fs/btrfs/tree-checker.c     | 16 +++---------
+ fs/btrfs/tree-log.c         |  3 ---
+ 11 files changed, 175 insertions(+), 59 deletions(-)
