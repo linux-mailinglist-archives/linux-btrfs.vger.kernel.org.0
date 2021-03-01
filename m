@@ -2,53 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9CC328CD6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 20:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D03F1329236
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 21:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbhCATAF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Mar 2021 14:00:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39032 "EHLO mx2.suse.de"
+        id S241919AbhCAUlh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Mar 2021 15:41:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240796AbhCAS5z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:57:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8477EAD5C;
-        Mon,  1 Mar 2021 18:57:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EB391DA7AA; Mon,  1 Mar 2021 19:55:18 +0100 (CET)
-Date:   Mon, 1 Mar 2021 19:55:18 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] Qgroup/delayed node related fixes
-Message-ID: <20210301185518.GB7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210222164047.978768-1-nborisov@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222164047.978768-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S243538AbhCAUgj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:36:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 887F56024A;
+        Mon,  1 Mar 2021 19:44:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614627852;
+        bh=OfSBaJPBhc/fjGQk4m3zQhQDW9sTgfgItYBfLQNB2/k=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=LdKtzKESoDxk+F9VIjiqCS9rDn4NL3qxWEQUYeb3qw73t6r6Hg5lKyxAPOmhyAz0U
+         EEmF/JKZk8huu4l/PQSCg6ugmId9tZY7cBggxhT2MO9r2FliKUDq1zH9gr83C4X666
+         sveJmwET2Iy5iWCfa7qwh/7vaIB1nK0qMQzxLEC397sDA4SfT+d5mOjYOXrOrHVwX2
+         koOtv0VEvoBuu6zGLPe5+8FxZf46dSrx6Kl96CBTxstHblkbARo7DphZmxDEKO4VgD
+         4uqOUJgsfuGacH5HYOlsO1VoB3IYaXy1JEh1bbGadNeV8JzBV6KKB5iA9Bn7DdSJOy
+         LxhoLQOSxS2aw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 83D6F60A1B;
+        Mon,  1 Mar 2021 19:44:12 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs updates for 5.12-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1614605230.git.dsterba@suse.com>
+References: <cover.1614605230.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1614605230.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc1-tag
+X-PR-Tracked-Commit-Id: 6e37d245994189ba757df7dc2950a44d31421ac6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c608aca57dd034d09f307b109b670d1cfb829279
+Message-Id: <161462785253.2736.17440051067724079509.pr-tracker-bot@kernel.org>
+Date:   Mon, 01 Mar 2021 19:44:12 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.cz>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 06:40:41PM +0200, Nikolay Borisov wrote:
-> This series contains a couple of fixes and code simplifications around qgroup
-> and delayed node interation. The first 3 patches fix 2 separate issues - one
-> possible underflow when freeing qgroup-reserved space and the other one is a
-> deadlock. Next 3 patches build on the fixes to clean up and simplify qgroup's
-> flushing code.
-> 
-> Nikolay Borisov (6):
->   btrfs: Free correct amount of space in btrfs_delayed_inode_reserve_metadata
->   btrfs: Export qgroup_reserve_meta
->   btrfs: Don't flush from btrfs_delayed_inode_reserve_metadata
->   btrfs: Cleanup try_flush_qgroup
->   btrfs: Remove btrfs_inode from btrfs_delayed_inode_reserve_metadata
->   btrfs: Simplify code flow in btrfs_delayed_inode_reserve_metadata
+The pull request you sent on Mon,  1 Mar 2021 14:44:16 +0100:
 
-Patchset added to misc-next, thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc1-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c608aca57dd034d09f307b109b670d1cfb829279
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
