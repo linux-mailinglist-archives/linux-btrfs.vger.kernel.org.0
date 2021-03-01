@@ -2,68 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BE2328813
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 18:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0DF328CD3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 20:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbhCARcl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Mar 2021 12:32:41 -0500
-Received: from mail.knebb.de ([188.68.42.176]:58586 "EHLO mail.knebb.de"
+        id S238233AbhCAS7o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Mar 2021 13:59:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38994 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238458AbhCAR2W (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:28:22 -0500
-Received: by mail.knebb.de (Postfix, from userid 121)
-        id B165FE358F; Mon,  1 Mar 2021 18:27:32 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on netcup.knebb.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=1.7 tests=ALL_TRUSTED,NICE_REPLY_A
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from [192.168.9.194] (p5de00be0.dip0.t-ipconnect.de [93.224.11.224])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cvoelker)
-        by mail.knebb.de (Postfix) with ESMTPSA id 406C4E0C20
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 Mar 2021 18:27:32 +0100 (CET)
-Subject: Re: Adding Device Fails - Why?
-From:   =?UTF-8?Q?Christian_V=c3=b6lker?= <cvoelker@knebb.de>
-To:     linux-btrfs@vger.kernel.org
-References: <36a13b99-7003-d114-568d-6c03b66190b2@knebb.de>
-Message-ID: <4744a69e-0adb-7cad-577e-7f17741519be@knebb.de>
-Date:   Mon, 1 Mar 2021 18:24:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S236762AbhCAS52 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:57:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 24E04AD57;
+        Mon,  1 Mar 2021 18:56:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7CF02DA7AA; Mon,  1 Mar 2021 19:54:52 +0100 (CET)
+Date:   Mon, 1 Mar 2021 19:54:52 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 6/6] btrfs: Simplify code flow in
+ btrfs_delayed_inode_reserve_metadata
+Message-ID: <20210301185452.GA7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210222164047.978768-1-nborisov@suse.com>
+ <20210222164047.978768-7-nborisov@suse.com>
+ <20210301161532.GV7604@twin.jikos.cz>
+ <7129f1a4-ba72-c35e-7a77-0ead54f7fede@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <36a13b99-7003-d114-568d-6c03b66190b2@knebb.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: de-DE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7129f1a4-ba72-c35e-7a77-0ead54f7fede@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Mon, Mar 01, 2021 at 06:20:29PM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 1.03.21 г. 18:15 ч., David Sterba wrote:
+> > On Mon, Feb 22, 2021 at 06:40:47PM +0200, Nikolay Borisov wrote:
+> >> btrfs_block_rsv_add can return only ENOSPC since it's called with
+> >> NO_FLUSH modifier. This so simplify the logic in
+> >> btrfs_delayed_inode_reserve_metadata to exploit this invariant.
+> > 
+> > This seems quite fragile, it's not straightforward to see from the
+> > context that the NO_FLUSH code will always return ENOSPC. I followed a
+> > few calls down from btrfs_block_rsv_add and it's well hidden inside
+> > __reserve_bytes. So in case it's an invariant I'd rather add an
+> > assertion, ie. ASSERT(ret == 0 || ret == -ENOSPC) so at least we know
+> > when this gets broken. Otherwise looks ok.
+> 
+> Fair enough, I'm fine with it. In any case we no longer return eagain
+> when reserving. either we succeed or we return ENOSPC - either because
+> we don't have space and we can't flush or because even after the
+> flushing machinery did its work a ticket still couldn't be satisfied, in
+> which case we failed it hence ENOSPC got returned.
 
-just a little update on the issue.
-
-As soon as I omit the encryption part I can easily add the device to the 
-btrfs filesystem. It does not matter if the crypted device is on top of 
-DRBD or directly on the /dev/sdc. In both cases btrs refuses to add the 
-device when a luks-encrypted device is on top.
-
-In case I am swapping my setup (drbd on top of encryption) and add the 
-drbd device to btrfs it works without any issues.
-
-However, I prefer the other way round- and as the other two btrfs 
-devices are both encryption on top of drbd it should work...
-
-It appears it does not like to add a third device-mapper device...
-
-Let me know how I can help in debugging. If i have some time I will 
-setup a machine trying to reproduce this.
-
-any ideas otherwise? Let me know!
-
-Thanks!
-
-/KNEBB
-
+Yeah but this is a precaution when somebody reworks the flushing logic
+yet another time and suddenly EAGAIN or whatever else can become the
+return code again. Hunting such bugs can be quite difficult as it
+depends on the runtime state and the space stat on disk etc.
