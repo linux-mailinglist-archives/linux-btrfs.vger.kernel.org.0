@@ -2,129 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12503278BC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 08:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F8A3279B1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 09:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhCAH5S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Mar 2021 02:57:18 -0500
-Received: from mout.gmx.net ([212.227.17.22]:59333 "EHLO mout.gmx.net"
+        id S233446AbhCAIpp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Mar 2021 03:45:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43618 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232676AbhCAH5F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Mar 2021 02:57:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614585331;
-        bh=XFHC5ac0afiwN0pQnK766BXUmPRnF49/Wtqs8//J58Y=;
-        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
-        b=bBZaGgjk1ir7vzVljTSijS49xv1dBsF0fygubfDbRNhZiePlRofHwWKeUU+ydjREk
-         xxFUwQCAOU1DetwSk6jxYfZFxWnRZFOJJag3byOmqBHVk/csgTgdsebjpsKFU5tsKm
-         VyvvPR/BCHgGl9SJoY+yW+EXMAqm8s5baV/nbCdA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49hB-1lys1D2pH7-0106Vo; Mon, 01
- Mar 2021 08:55:31 +0100
-Subject: Re: Bio read race with different ranges inside the same page?
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <d38d7a97-b413-a5cd-1c86-193453c4b51e@gmx.com>
-Message-ID: <bb189a2f-e419-c4f1-3b2b-90c5a401d81f@gmx.com>
-Date:   Mon, 1 Mar 2021 15:55:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S233420AbhCAIpg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:45:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614588288; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=NyXfuLSNkKHCqJkVaQiixSPcqD7Iu3GyJU9jigZIBd4=;
+        b=BFQ391k72h+8d0ILjm/i7p7SMyIaQ3dKUF+1N2Ch7KrplJVX0p9mAe6IGD/Zgx0Y2kxW3c
+        kRShHg8tPqc70b3uf9GqpVRWcO8SskVkcD9a2OHCgs00pNnbcM0VZxyBziXvh59FcS51Yg
+        5kLsb8nFV3Wh+Vk4sY86Trs+uvo0wXY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 93CD0AF84;
+        Mon,  1 Mar 2021 08:44:48 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] btrfs: fix the false data csum mismatch error caused
+Date:   Mon,  1 Mar 2021 16:44:22 +0800
+Message-Id: <20210301084422.103716-1-wqu@suse.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <d38d7a97-b413-a5cd-1c86-193453c4b51e@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XwNEUF4niBnVchOqI0g04ORLCU6AvCrehJz4d56IOGkLGQAc8F/
- KpF6xzpJag5UtBaP9eSqM5b5V3ebtcenrb3fmS1NuxPAjFPs/lex5v8+eUujWyv5jmYruQ5
- 4g3VGGecBWGeIlOZzqneXMkX6AQGW7S4Uv1er3Ip2XjNmLWQyNQyVQbVZvVAWXv7Y9o7tup
- tuOnf68sxuIV+1h7XY4AQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B2H8Rnftp1I=:uspYPD5ev2CB9kmOVyaC3h
- g0vVHxuUqodQr+f6nmLvdoNZ7gsxFnr0uEwXoqUFBpzSmI0kiW5DpE9Idts/OR0LxnzgGoytN
- Kjht5BrndP2ecWiwQhHBCG8peoZoa6xdzBt82uPQtTBAqtPaWcSLUpATUD8u4DdsaSrInA457
- prWidvHkzSQ3GwjAC2OW13lS8GFtBR7pYguZMdgN95sbeFffERAC7eqrDAQOeKUp/j0ip90qW
- 9iiWZZMw41oKUcT9S6taxEezcJH4ct12VYjAdGl68MedneXXWjmDQNMeg6z3va4ChzhC1b7fQ
- +ymFlyJDaGB9MNAAPqNm59p91mHEyynCxK4C9UEFUJ1jQ3ixwSCv5mZtMPQRtyc3VnNdx3Qch
- odabRsoomuyaSm19CHzW3nahNES5PgBx6tKf9P4jyDA5HEPGkju04UBRK4JjCLJPeFiWTjHVN
- 5mF6xuRB59mt+bk2KiSR+a4oQzhqjgluUoUlB+Apbi6LhdPtyP0h2BdKI4FQPbUJVjGuuzKIP
- mY96bOXJxA4KLznN8Vyp3NKLQJsBbzorGruJIkCTiFy9NeWsr7pU57anVnjI12nB+lx41vqWl
- 3bJ9ews62HvtKoobFypCS2hYFkWF14sfHpyQIHQw0WGVOj35cc0XFlUu7xLYYnHpE2Rdk9YNM
- 50p5q7wAL1JpGK1a4Xb8RaI0awAiwya6g+hi/t6jp+vcx5VANz+FuRs9ADmHPhQ90jrsDAYOV
- c8vtr4Fx9zL0ZopytoyWpZZmozCnuJZCKmkXNefwHqqqlkO2jSdELUHLDnYhhmXROZa6aFHiM
- JbIH0FW1miKbEZVqWqf8R9bJe23TR1tNs8p+hZl9Ja36BaTSfyuU6lxX5WEzEXX7miwIIgxiC
- PzldvLz2KHhU8DJ9u9CQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+When running fstresss, we can hit strange data csum mismatch where the
+on-disk data is in fact correct (passes both scrub and btrfs check
+--check-data-csum).
 
+With some extra debug info added, we have the following traces:
 
-On 2021/2/26 =E4=B8=8B=E5=8D=883:02, Qu Wenruo wrote:
-> Hi,
->
-> Is it possible that multiple ranges of the same page are submitted to
-> one or more bios, and such ranges race with each other and cause data
-> corruption.
->
-> Recently I'm trying to add subpage read/write support for btrfs, and
-> notice one strange false data corruption.
->
-> E.g, there is a 64K page to be read from disk:
->
-> 0=C2=A0=C2=A0=C2=A0 16K=C2=A0=C2=A0=C2=A0 32K=C2=A0=C2=A0=C2=A0 48K=C2=
-=A0=C2=A0=C2=A0 64K
-> |///////|=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |///////|=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 |
->
-> Where |///| means data which needs to be read from disk.
-> And |=C2=A0=C2=A0 | means hole, we just zeroing the range.
->
-> Currently the code will:
->
-> - Submit bio for [0, 16K)
-> - Zero [16K, 32K)
-> - Submit bio for [32K, 48K)
-> - Zero [48K, 64k)
->
-> Between bio submission and zero, there is no need to wait for submitted
-> bio to finish, as I assume the submitted bio won't touch any range of
-> the page, except the one specified.
->
-> But randomly (not reliable), btrfs csum verification at the endio time
-> reports errors for the data read from disk mismatch from csum.
->
-> However the following things show it's read path has something wrong:
-> - On-disk data matches with csum
->
-> - If fully serialized the read path, the error just disappera
->  =C2=A0 If I changed the read path to be fully serialized, e.g:
->  =C2=A0 - Submit bio for [0, 16K)
->  =C2=A0 - Wait bio for [0, 16K) to finish
->  =C2=A0 - Zero [16K, 32K)
->  =C2=A0 - Submit bio for [32K, 48K)
->  =C2=A0 - Wait bio for [32K, 48K) to finish
->  =C2=A0 - Zero [48K, 64k)
->  =C2=A0 Then the problem just completely disappears.
+510482us : btrfs_do_readpage: root=5 ino=284 offset=393216, submit force=0 pgoff=0 iosize=8192
+510494us : btrfs_do_readpage: root=5 ino=284 offset=401408, submit force=0 pgoff=8192 iosize=4096
+510498us : btrfs_submit_data_bio: root=5 ino=284 bio first bvec=393216 len=8192
+510591us : btrfs_do_readpage: root=5 ino=284 offset=405504, submit force=0 pgoff=12288 iosize=36864
+510594us : btrfs_submit_data_bio: root=5 ino=284 bio first bvec=401408 len=4096
+510863us : btrfs_submit_data_bio: root=5 ino=284 bio first bvec=405504 len=36864
+510933us : btrfs_verify_data_csum: root=5 ino=284 offset=393216 len=8192
+510967us : btrfs_do_readpage: root=5 ino=284 offset=442368, skip beyond isize pgoff=49152 iosize=16384
+511047us : btrfs_verify_data_csum: root=5 ino=284 offset=401408 len=4096
+511163us : btrfs_verify_data_csum: root=5 ino=284 offset=405504 len=36864
+511290us : check_data_csum: !!! root=5 ino=284 offset=438272 pg_off=45056 !!!
+517387us : end_bio_extent_readpage: root=5 ino=284 before pending_read_bios=0
 
-Never mind, the bio read part is doing what we expect, they won't really
-touch any thing beyond the range specified.
+[CAUSE]
+Normally we expect all submitted bio read to only touch the range we
+specified, and under subpage context, it means we should only touch the
+range spcified in each bvec.
 
-It's the endio of btrfs end_bio_extent_readpage() doing zeroing which is
-always to page end causing the problem.
+But in data read path, inside end_bio_extent_readpage(), we have page
+zeroing which only takes regular page size into consideration.
 
-Thanks,
-Qu
+This means for subpage if we have an inode whose content looks like below:
 
->
-> So this looks like that, the read path hole zeroing and bio submission
-> is racing with each other?
->
-> Shouldn't bios only touch the range specified and not touching anything
-> else?
->
-> Or is there something I missed like off-by-one bug?
->
-> Thanks,
-> Qu
+  0       16K     32K     48K     64K
+  |///////|       |///////|       |
+
+  |//| = data needs to be read from disk
+  |  | = hole
+
+And i_size is 64K initially.
+
+Then the following race can happen:
+
+		T1		|		T2
+--------------------------------+--------------------------------
+btrfs_do_readpage()		|
+|- isize = 64K;			|
+|  At this time, the isize is 	|
+|  64K				|
+|				|
+|- submit_extent_page()		|
+|  submit previous assembled bio|
+|  assemble bio for [0, 16K)	|
+|				|
+|- submit_extent_page()		|
+   submit read bio for [0, 16K) |
+   assemble read bio for	|
+   [32K, 48K)			|
+ 				|
+				| btrfs_setsize()
+				| |- i_size_write(, 16K);
+				|    Now i_size is only 16K
+end_io() for [0K, 16K)		|
+|- end_bio_extent_readpage()	|
+   |- btrfs_verify_data_csum()  |
+   |  No csum error		|
+   |- i_size = 16K;		|
+   |- zero_user_segment(16K,	|
+      PAGE_SIZE);		|
+      !!! We zeroed range	|
+      !!! [32K, 48K)		|
+				| end_io for [32K, 48K)
+				| |- end_bio_extent_readpage()
+				|    |- btrfs_verify_data_csum()
+				|       ! CSUM MISMATCH !
+				|       ! As the range is zeroed now !
+
+[FIX]
+To fix the problem, make end_bio_extent_readpage() to only zero the
+range of bvec.
+
+Thankfully the bug only affects subpage read-write support, as for full
+read-only mount we can't change i_size thus won't hit the race
+condition.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 424fc9ae99bc..8479ea84b6d9 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3041,12 +3041,23 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		if (likely(uptodate)) {
+ 			loff_t i_size = i_size_read(inode);
+ 			pgoff_t end_index = i_size >> PAGE_SHIFT;
+-			unsigned off;
+ 
+-			/* Zero out the end if this page straddles i_size */
+-			off = offset_in_page(i_size);
+-			if (page->index == end_index && off)
+-				zero_user_segment(page, off, PAGE_SIZE);
++			/*
++			 * Zero out the remaining part if this range straddles
++			 * i_size.
++			 *
++			 * Here we should only zero the range inside the
++			 * bvec, not touch anything else.
++			 *
++			 * NOTE: i_size is exclusive while end is inclusive.
++			 */
++			if (page->index == end_index && i_size <= end) {
++				u32 zero_start = max(offset_in_page(i_size),
++						     offset_in_page(end));
++
++				zero_user_segment(page, zero_start,
++						  offset_in_page(end) + 1);
++			}
+ 		}
+ 		ASSERT(bio_offset + len > bio_offset);
+ 		bio_offset += len;
+-- 
+2.30.1
+
