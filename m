@@ -2,175 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A207A3275F0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 02:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB9A3276C8
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 06:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhCABuq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 Feb 2021 20:50:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhCABuq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 Feb 2021 20:50:46 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF1EC06174A;
-        Sun, 28 Feb 2021 17:50:05 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id v5so22849466lft.13;
-        Sun, 28 Feb 2021 17:50:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=2realms.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RMgNTJPOAg+qQMXwj/r3vYLwLDCB8oAbkinZW7qbAWo=;
-        b=RNajYS1RBlyo70JbifMa8d+4/2KHLfnKnvomLVhV29cGqMRhLAcTWLMKfyxnbSmGBt
-         6vvyCOZvGLfbTY6qwa5UED254ZyGkeJpFtVJHOZSbsFTBniSHib7arzhkbDOwMauxj4x
-         iB2jSCZZo9wCLLRYwHAWyV+B2wfCqXIr6n4D8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RMgNTJPOAg+qQMXwj/r3vYLwLDCB8oAbkinZW7qbAWo=;
-        b=jKTEx/ui+Jb9ENyHDNQKJR5l3i3IHzk4Y2nQAOM1ZlhlO4GYuqvonEEQSNE8d0pJ4O
-         TK7qXRRn8uMAFeheEXOJmJ4HhWeH8fGTsuRzk3JysU0vFgy6Mro4XJLQvUoYKTVyAKZY
-         jESgwpNoRX5ldyHrGNjjWuhTKB2p16qaFmuLk1JaEH2ebi0Uoph8GzOOitFCZNghtx9Z
-         X5RMJCPvkHD703qLEvKeyjgHwcclZMsXvO+l7Ia24BZd2iltNSP/xoWbALozR+BQu991
-         lcENEmiQc94YXM8hrLP/U7SfMe4/lqBKD7Oz7S9EryT+Ih5PGh4MeuxuerYvSjaJmaL/
-         RIuQ==
-X-Gm-Message-State: AOAM533dC+4cSbnzok44e51HtsHsBt3B1XevUBQUX9TJINDzWf8uJZgv
-        ZSQ5ZbpE7j9Pn/fSdgFTnHnfXD0Typ44fLvRMDt3L1nRcY8=
-X-Google-Smtp-Source: ABdhPJwK5Nvh9BNvLEkZovgQTEJPl6MR/K6ohmOrnYQm11sjAukYEI/8aL6gHduiL4N+JlRo7tBzd8gwyIAokqOLh2Q=
-X-Received: by 2002:a19:c14c:: with SMTP id r73mr8341900lff.581.1614563402083;
- Sun, 28 Feb 2021 17:50:02 -0800 (PST)
+        id S231757AbhCAFCH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Mar 2021 00:02:07 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:7318 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhCAFCB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Mar 2021 00:02:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1614574922; x=1646110922;
+  h=date:from:to:subject:message-id:references:mime-version:
+   in-reply-to;
+  bh=9vC9iIdCtQcnsi30gaVjoF2yU6hKJpuznKwhI8fRwYw=;
+  b=PX04XRVsY+nzycd3TLzs4f8afpneRro7l1ch4ys0vaHyWV1FlCz472IW
+   e6MJFWdC8lT8MFXF0Pql1tWCAl9BPf2ozZ9yWyWaF58jWCDyXH7QSsx1w
+   J3LpWCWmAOdwahaqdgUrzq4loqw9/5qpa+kdrlkdqONXJ2sWp6QN0zgda
+   LTKqlAbzWFfHWmubFS3mlOk+XaEWCJtTt0ZgRx5quMmRLwqK9jmIoUu9z
+   didlXiVvmP3dRo4TYGqEABIx6Psvu7yP7ZSYkq49v2fBuBGHcvdVbFFbV
+   2fpMCi8BwB++ErCy64C9FjXIKPhor15Z4vjEMlojmHDkkGUvCsoAyG3aK
+   A==;
+IronPort-SDR: RLvOzBgDK0F2XXDVASArPmzpP/Uz/9dNyEr5Laj3j5D9nUER16jJy2RQjZQzbKhEGBCB/aD3FV
+ 6jBq/hDan4NpD65nsTm4uKAeG9wQ3f8st567HO7sUycw5xFIo1GKuMpx/nOcVdFi7hy9DpN8MT
+ y73RqBs//GZaKUMJuXSddtvZtzmWkmJmOqJ6Yz93flFdZF29m7tAYLypTcmpwucn9KKbO/1E+b
+ RmADv87Cluwb72/SJJ1bUfYJ/ynnnFfnA6wDzeUgTV1lSoG/vJvsQHXKivQrHyXb0jMXN5Ctv2
+ 2J8=
+X-IronPort-AV: E=Sophos;i="5.81,214,1610380800"; 
+   d="scan'208";a="162200950"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Mar 2021 12:55:51 +0800
+IronPort-SDR: 56UT7LqdYFca2hA1N7akaeRRXHXSVfAfoU6P783sKgmSpfnXXhkzTknHB0zO3EQ+8apntBQMAg
+ YGgs+6f9hG/qtiTnjgbCIOPtNRbdq5gKEWVvBu4kWIHC/zG6baxNdA2bnEGjH4X5E1THNDGyaX
+ 7CjsqnpLSUSjkgHN+3krC78mzOC9HPyHTcO/Tf9Fl6XunMnbPJfOV+e+rLBn17D9cNGu1Cu6jJ
+ fiu1RWky9UakaXh6UcrM4aqQfMfqS11XCbWR3NyhsPUPE1ZSXGxQLumZ5r7Qx3nQk8FUwexW2r
+ PLdZnO8oenMwsQqIBYZ4kkdo
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 20:37:08 -0800
+IronPort-SDR: RChYY+3QClU3mq5Y/5WM7AQSldWMBGqO+aYTWaG6t2/pSBFETCAQkXA13UpNLgs1SR52gGzo/B
+ Mg/ohsDZbMzMQUp+Qo9ogkNlLJ0v6jJv4myyPSDg3bwRVsUdQxsFPPHKrEhbpCOAMn3gBAiRXb
+ QFB9DNXbPbXMp33U6gSn/rSe2CB4+TqRm0EtTFaUywc1qE+bWt23tUFlsrMhpYj04TR39CPPvL
+ RbbuyAClyFALzRzICz5cpzfZX3vI85UM0FBudIa57PiTDtfZa79kkmSxrTwRZkCvjP2JP0erNP
+ giI=
+WDCIronportException: Internal
+Received: from 4bypzw2.ad.shared (HELO naota-xeon) ([10.225.48.68])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 20:55:49 -0800
+Date:   Mon, 1 Mar 2021 13:55:48 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        hare@suse.com, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs: zoned: move superblock logging zone location
+Message-ID: <20210301045548.zirmwk56almxgint@naota-xeon>
+References: <cover.1614331998.git.naohiro.aota@wdc.com>
+ <7d02b9117f15101e70d2cd37da05ca93c2fd624d.1614331998.git.naohiro.aota@wdc.com>
+ <20210226191130.GR7604@twin.jikos.cz>
 MIME-Version: 1.0
-References: <1783f16d-7a28-80e6-4c32-fdf19b705ed0@gmx.com> <20210218121503.GQ2858050@casper.infradead.org>
- <927c018f-c951-c44c-698b-cb76d15d67bb@rkjnsn.net> <20210219142201.GU2858050@casper.infradead.org>
- <20210222014844.GB4626@dread.disaster.area>
-In-Reply-To: <20210222014844.GB4626@dread.disaster.area>
-From:   GWB <gwb@2realms.com>
-Date:   Sun, 28 Feb 2021 19:49:25 -0600
-Message-ID: <CAP8EXU0JMsL=G=tSfuOVCdnx8W5_N3J-q4WmCy3+PSVdJmHhXg@mail.gmail.com>
-Subject: Re: page->index limitation on 32bit system?
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Erik Jensen <erikjensen@rkjnsn.net>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226191130.GR7604@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Getting btrfs patched for 32 bit arm would be of interest, but I'm not
-suggesting the devs can do much more with that.  In practical usage,
-we ran into similar difficulties a while back on embedded and
-dedicated devices which would boot btrfs, but eventually it was easier
-to put storage on nilfs2.  Nilfs2 is nice, but not nearly as developed
-as btrfs (it snapshots, but did not allow sending and incremental
-backups, and it is comparatively slow).  No idea, however, if it would
-even compile on arm 32.
+On Fri, Feb 26, 2021 at 08:11:30PM +0100, David Sterba wrote:
+> On Fri, Feb 26, 2021 at 06:34:36PM +0900, Naohiro Aota wrote:
+> > This commit moves the location of superblock logging zones basing on the
+> > static address instead of the static zone number.
+> > 
+> > The following zones are reserved as the circular buffer on zoned btrfs.
+> >   - The primary superblock: zone at LBA 0 and the next zone
+> >   - The first copy: zone at LBA 16G and the next zone
+> >   - The second copy: zone at LBA 256G and the next zone
+> 
+> This contains all the important information but somehow feels too short
+> given how many mails we've exchanged and all the reasoning why we do
+> that
 
-I'm delighted, Erik, that you were able to get btrfs to function to
-the extent that it did, and that you're willing to put time and effort
-in btrfs on arm 32 bit.  But before you do, consider nilfs2 for
-storage.  You can even get zfs to work on some 32 bit systems but RAM
-is an issue.  Also take a look at the Raspberry Pi 4's.  They have an
-8gig 64 bit embedded version called Compute Module 4, which seems to
-handle btrfs, and are not too pricey.  ZFS can work, but its too
-memory intensive for 8 gigs.
+Yep, sure. I'll expand the description and repost.
 
-Gordon
+> > 
+> > We disallow zone size larger than 8GB not to overlap the superblock log
+> > zones.
+> > 
+> > Since the superblock zones overlap, we disallow zone size larger than 8GB.
+> 
+> or why we chose 8G to be the reasonable upper limit for the zone size.
+> 
+> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > ---
+> >  fs/btrfs/zoned.c | 21 +++++++++++++++------
+> >  1 file changed, 15 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> > index 9a5cf153da89..40cb99854844 100644
+> > --- a/fs/btrfs/zoned.c
+> > +++ b/fs/btrfs/zoned.c
+> > @@ -112,10 +112,9 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
+> >  
+> >  /*
+> >   * The following zones are reserved as the circular buffer on ZONED btrfs.
+> > - *  - The primary superblock: zones 0 and 1
+> > - *  - The first copy: zones 16 and 17
+> > - *  - The second copy: zones 1024 or zone at 256GB which is minimum, and
+> > - *                     the following one
+> > + *  - The primary superblock: zone at LBA 0 and the next zone
+> > + *  - The first copy: zone at LBA 16G and the next zone
+> > + *  - The second copy: zone at LBA 256G and the next zone
+> >   */
+> >  static inline u32 sb_zone_number(int shift, int mirror)
+> >  {
+> > @@ -123,8 +122,8 @@ static inline u32 sb_zone_number(int shift, int mirror)
+> >  
+> >  	switch (mirror) {
+> >  	case 0: return 0;
+> > -	case 1: return 16;
+> > -	case 2: return min_t(u64, btrfs_sb_offset(mirror) >> shift, 1024);
+> > +	case 1: return 1 << (const_ilog2(SZ_16G) - shift);
+> > +	case 2: return 1 << (const_ilog2(SZ_1G) + 8 - shift);
+> 
+> This ilog(SZ_1G) + 8 is confusing, it should have been 256G for clarity,
+> as it's a constant it'll get expanded at compile time.
 
-On Sun, Feb 21, 2021 at 7:52 PM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Fri, Feb 19, 2021 at 02:22:01PM +0000, Matthew Wilcox wrote:
-> > On Thu, Feb 18, 2021 at 01:27:09PM -0800, Erik Jensen wrote:
-> > > On 2/18/21 4:15 AM, Matthew Wilcox wrote:
-> > >
-> > > > On Thu, Feb 18, 2021 at 04:54:46PM +0800, Qu Wenruo wrote:
-> > > > > Recently we got a strange bug report that, one 32bit systems like armv6
-> > > > > or non-64bit x86, certain large btrfs can't be mounted.
-> > > > >
-> > > > > It turns out that, since page->index is just unsigned long, and on 32bit
-> > > > > systemts, that can just be 32bit.
-> > > > >
-> > > > > And when filesystems is utilizing any page offset over 4T, page->index
-> > > > > get truncated, causing various problems.
-> > > > 4TB?  I think you mean 16TB (4kB * 4GB)
-> > > >
-> > > > Yes, this is a known limitation.  Some vendors have gone to the trouble
-> > > > of introducing a new page_index_t.  I'm not convinced this is a problem
-> > > > worth solving.  There are very few 32-bit systems with this much storage
-> > > > on a single partition (everything should work fine if you take a 20TB
-> > > > drive and partition it into two 10TB partitions).
-> > > For what it's worth, I'm the reporter of the original bug. My use case is a
-> > > custom NAS system. It runs on a 32-bit ARM processor, and has 5 8TB drives,
-> > > which I'd like to use as a single, unified storage array. I chose btrfs for
-> > > this project due to the filesystem-integrated snapshots and checksums.
-> > > Currently, I'm working around this issue by exporting the raw drives using
-> > > nbd and mounting them on a 64-bit system to access the filesystem, but this
-> > > is very inconvenient, only allows one machine to access the filesystem at a
-> > > time, and prevents running any tools that need access to the filesystem
-> > > (such as backup and file sync utilities) on the NAS itself.
-> > >
-> > > It sounds like this limitation would also prevent me from trying to use a
-> > > different filesystem on top of software RAID, since in that case the logical
-> > > filesystem would still be over 16TB.
-> > >
-> > > > As usual, the best solution is for people to stop buying 32-bit systems.
-> > > I purchased this device in 2018, so it's not exactly ancient. At the time,
-> > > it was the only SBC I could find that was low power, used ECC RAM, had a
-> > > crypto accelerator, and had multiple sata ports with port-multiplier
-> > > support.
-> >
-> > I'm sorry you bought unsupported hardware.
-> >
-> > This limitation has been known since at least 2009:
-> > https://lore.kernel.org/lkml/19041.4714.686158.130252@notabene.brown/
->
-> 2004:
->
-> commit 839099eb5ea07aef093ae2c5674f5a16a268f8b6
-> Author: Eric Sandeen <sandeen@sgi.com>
-> Date:   Wed Jul 14 20:02:01 2004 +0000
->
->     Add filesystem size limit even when XFS_BIG_BLKNOS is
->     in effect; limited by page cache index size (16T on ia32)
->
-> This all popped up on XFS around 2003 when the the disk address
-> space was expanded from 32 bits to 64 bits on 32 bit systems
-> (CONFIG_LBD) and so XFS could define XFS_BIG_FILESYSTEMS on 32 bit
-> systems for the first time.
->
-> FWIW, from an early 1994 commit into xfs_types.h:
->
-> +/*
-> + * Some types are conditional based on the selected configuration.
-> + * Set XFS_BIG_FILES=1 or 0 and XFS_BIG_FILESYSTEMS=1 or 0 depending
-> + * on the desired configuration.
-> + * XFS_BIG_FILES needs pgno_t to be 64 bits.
-> + * XFS_BIG_FILESYSTEMS needs daddr_t to be 64 bits.
-> + *
-> + * Expect these to be set from klocaldefs, or from the machine-type
-> + * defs files for the normal case.
-> + */
->
-> So limiting file and filesystem sizes on 32 bit systems is
-> something XFS has done right from the start...
->
-> > In the last decade, nobody's tried to fix it in mainline that I know of.
-> > As I said, some vendors have tried to fix it in their NAS products,
-> > but I don't know where to find that patch any more.
->
-> It's not suportable from a disaster recovery perspective. I recently
-> saw a 14TB filesystem with billions of hardlinks in it require 240GB
-> of RAM to run xfs_repair. We just can't support large filesystems
-> on 32 bit systems, and it has nothing to do with simple stuff like
-> page cache index sizes...
->
-> Cheers,
->
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
+I'd like to use SZ_256G here, but linux/sizes.h does not define
+it. I'll define one for us and use it in the next version.
+
+> >  	}
+> >  
+> >  	return 0;
+> > @@ -300,6 +299,16 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
+> >  		zone_sectors = bdev_zone_sectors(bdev);
+> >  	}
+> >  
+> > +	/* We don't support zone size > 8G that SB log zones overlap. */
+> > +	if (zone_sectors > (SZ_8G >> SECTOR_SHIFT)) {
+> > +		btrfs_err_in_rcu(fs_info,
+> > +				 "zoned: %s: zone size %llu is too large",
+> > +				 rcu_str_deref(device->name),
+> > +				 (u64)zone_sectors << SECTOR_SHIFT);
+> > +		ret = -EINVAL;
+> > +		goto out;
+> > +	}
+> > +
+> >  	nr_sectors = bdev_nr_sectors(bdev);
+> >  	/* Check if it's power of 2 (see is_power_of_2) */
+> >  	ASSERT(zone_sectors != 0 && (zone_sectors & (zone_sectors - 1)) == 0);
+> > -- 
+> > 2.30.1
