@@ -2,169 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D090327E07
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 13:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AB5327F79
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Mar 2021 14:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233707AbhCAMPF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Mar 2021 07:15:05 -0500
-Received: from mail.knebb.de ([188.68.42.176]:56630 "EHLO mail.knebb.de"
+        id S235738AbhCAN2E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Mar 2021 08:28:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35498 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233460AbhCAMPA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:15:00 -0500
-Received: by mail.knebb.de (Postfix, from userid 121)
-        id 6A44DE358F; Mon,  1 Mar 2021 13:14:16 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on netcup.knebb.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=1.7 tests=ALL_TRUSTED,NICE_REPLY_A
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from [192.168.9.194] (p5de00be0.dip0.t-ipconnect.de [93.224.11.224])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cvoelker)
-        by mail.knebb.de (Postfix) with ESMTPSA id 92AC8E0C25;
-        Mon,  1 Mar 2021 13:14:14 +0100 (CET)
-Subject: Re: Adding Device Fails - Why?
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <36a13b99-7003-d114-568d-6c03b66190b2@knebb.de>
- <0a746faf-6c3c-542b-ac71-8d5012e998bc@gmx.com>
-From:   =?UTF-8?Q?Christian_V=c3=b6lker?= <cvoelker@knebb.de>
-Message-ID: <fae2c36d-956f-29a6-7001-28e973f86408@knebb.de>
-Date:   Mon, 1 Mar 2021 13:10:44 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S235717AbhCAN16 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:27:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 59310AC24;
+        Mon,  1 Mar 2021 13:27:16 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 99542DA7AF; Mon,  1 Mar 2021 14:25:21 +0100 (CET)
+Date:   Mon, 1 Mar 2021 14:25:21 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] btrfs: zoned: move superblock logging zone location
+Message-ID: <20210301132521.GU7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "hare@suse.com" <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+References: <cover.1614331998.git.naohiro.aota@wdc.com>
+ <7d02b9117f15101e70d2cd37da05ca93c2fd624d.1614331998.git.naohiro.aota@wdc.com>
+ <20210226191130.GR7604@twin.jikos.cz>
+ <20210301045548.zirmwk56almxgint@naota-xeon>
+ <BL0PR04MB651469B0D0AE850CF0E069ADE79A9@BL0PR04MB6514.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <0a746faf-6c3c-542b-ac71-8d5012e998bc@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: de-DE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL0PR04MB651469B0D0AE850CF0E069ADE79A9@BL0PR04MB6514.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Mon, Mar 01, 2021 at 05:17:52AM +0000, Damien Le Moal wrote:
+> On 2021/03/01 14:02, Naohiro Aota wrote:
+> > On Fri, Feb 26, 2021 at 08:11:30PM +0100, David Sterba wrote:
+> >> On Fri, Feb 26, 2021 at 06:34:36PM +0900, Naohiro Aota wrote:
+> >>> This commit moves the location of superblock logging zones basing on the
+> >>> static address instead of the static zone number.
+> >>>
+> >>> The following zones are reserved as the circular buffer on zoned btrfs.
+> >>>   - The primary superblock: zone at LBA 0 and the next zone
+> >>>   - The first copy: zone at LBA 16G and the next zone
+> >>>   - The second copy: zone at LBA 256G and the next zone
+> >>
+> >> This contains all the important information but somehow feels too short
+> >> given how many mails we've exchanged and all the reasoning why we do
+> >> that
+> > 
+> > Yep, sure. I'll expand the description and repost.
+> > 
+> >>>
+> >>> We disallow zone size larger than 8GB not to overlap the superblock log
+> >>> zones.
+> >>>
+> >>> Since the superblock zones overlap, we disallow zone size larger than 8GB.
+> >>
+> >> or why we chose 8G to be the reasonable upper limit for the zone size.
+> >>
+> >>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> >>> ---
+> >>>  fs/btrfs/zoned.c | 21 +++++++++++++++------
+> >>>  1 file changed, 15 insertions(+), 6 deletions(-)
+> >>>
+> >>> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> >>> index 9a5cf153da89..40cb99854844 100644
+> >>> --- a/fs/btrfs/zoned.c
+> >>> +++ b/fs/btrfs/zoned.c
+> >>> @@ -112,10 +112,9 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
+> >>>  
+> >>>  /*
+> >>>   * The following zones are reserved as the circular buffer on ZONED btrfs.
+> >>> - *  - The primary superblock: zones 0 and 1
+> >>> - *  - The first copy: zones 16 and 17
+> >>> - *  - The second copy: zones 1024 or zone at 256GB which is minimum, and
+> >>> - *                     the following one
+> >>> + *  - The primary superblock: zone at LBA 0 and the next zone
+> >>> + *  - The first copy: zone at LBA 16G and the next zone
+> >>> + *  - The second copy: zone at LBA 256G and the next zone
+> >>>   */
+> >>>  static inline u32 sb_zone_number(int shift, int mirror)
+> >>>  {
+> >>> @@ -123,8 +122,8 @@ static inline u32 sb_zone_number(int shift, int mirror)
+> >>>  
+> >>>  	switch (mirror) {
+> >>>  	case 0: return 0;
+> >>> -	case 1: return 16;
+> >>> -	case 2: return min_t(u64, btrfs_sb_offset(mirror) >> shift, 1024);
+> >>> +	case 1: return 1 << (const_ilog2(SZ_16G) - shift);
+> >>> +	case 2: return 1 << (const_ilog2(SZ_1G) + 8 - shift);
+> >>
+> >> This ilog(SZ_1G) + 8 is confusing, it should have been 256G for clarity,
+> >> as it's a constant it'll get expanded at compile time.
+> > 
+> > I'd like to use SZ_256G here, but linux/sizes.h does not define
+> > it. I'll define one for us and use it in the next version.
+> 
+> Or just use const_ilog2(256 * SZ_1G)... That is fairly easy to understand :)
+> 
+> I would even go further and add:
+> 
+> #define BTRFS_SB_FIRST_COPY_OFST		(16ULL * SZ_1G)
+> #define BTRFS_SB_SECOND_COPY_OFST		(256ULL * SZ_1G)
+> 
+> To be clear about what the values represent.
+> Then you can have:
+> 
+> +	case 1: return 1 << (const_ilog2(BTRFS_SB_FIRST_COPY_OFST) - shift);
+> +	case 2: return 1 << (const_ilog2(BTRFS_SB_SECOND_COPY_OFST) - shift);
 
-unfortunately I do not have any sources or compilers installed on this 
-box. So I am unable to install this here. I can not even take a snapshot 
-to install and compile because it is a two-node setup with drbd so 
-resetting to a snapshot will fail for the drbd sync.
-
-A reboot did not help.
-
-I am happy in helping to debug this issue. But compiling on the 
-"production" machine is not really fine...
-
-I will setup a different machine to see if I can reproduce it there (I 
-doubt it, though)....
-
-/KNEBB
-
-Am 01.03.2021 um 13:06 schrieb Qu Wenruo:
->
->
-> On 2021/3/1 下午7:19, Christian Völker wrote:
->> Hi all,
->>
->> I am using BTRS on a Debian10 system. I am trying to extend my existing
->> filesystem with another device but adding it fails for no reason.
->>
->> This is my setup of existing btrfs:
->>
->>   2x DRBD Devices (Network RAID1)
->>   top of each a luks encrypted device (crypt_drbd1 and crypt_drbd3):
->>
->> vdb                         254:16   0  1,1T  0 disk
->> └─drbd1                     147:1    0  1,1T  0 disk
->>    └─crypt_drbd1             253:3    0  1,1T  0 crypt
->> vdc                         254:32   0  900G  0 disk
->> └─drbd2                     147:2    0  900G  0 disk
->>    └─crypt2                  253:4    0  900G  0 crypt
->> vdd                         254:48   0  800G  0 disk
->> └─drbd3                     147:3    0  800G  0 disk
->>    └─crypt_drbd3             253:5    0  800G  0 crypt /var/lib/backuppc
->>
->>
->>
->> I have now a third drbd device (drbd2) which I encrypted, too (crypt2).
->> And tried to add to existing fi.
->> Here further system information:
->>
->> Linux backuppc41 5.10.0-3-amd64 #1 SMP Debian 5.10.13-1 (2021-02-06)
->> x86_64 GNU/Linux
->> btrfs-progs v5.10.1
->>
->> root@backuppc41:~# btrfs fi sh
->> Label: 'backcuppc'  uuid: 73b98c7b-832a-437a-a15b-6cb00734e5db
->>          Total devices 2 FS bytes used 1.83TiB
->>          devid    3 size 799.96GiB used 789.96GiB path dm-5
->>          devid    4 size 1.07TiB used 1.06TiB path dm-3
->>
->>
->> I can create an additional btrfs filesystem with mkfs.btrfs on the new
->> device without any issues:
->>
->> root@backuppc41:~# btrfs fi sh
->> Label: 'backcuppc'  uuid: 73b98c7b-832a-437a-a15b-6cb00734e5db
->>          Total devices 2 FS bytes used 1.83TiB
->>          devid    3 size 799.96GiB used 789.96GiB path dm-5
->>          devid    4 size 1.07TiB used 1.06TiB path dm-3
->>
->> Label: none  uuid: b111a08e-2969-457a-b9f1-551ff65451d1
->>          Total devices 1 FS bytes used 128.00KiB
->>          devid    1 size 899.96GiB used 2.02GiB path /dev/mapper/crypt2
->>
->>
->> But I can not add this device to the existing btrfs fi:
->> root@backuppc41:~# wipefs /dev/mapper/crypt2 -a
->> /dev/mapper/crypt2: 8 bytes were erased at offset 0x00010040 (btrfs): 5f
->> 42 48 52 66 53 5f 4d
->>
->> root@backuppc41:~# btrfs device add /dev/mapper/crypt2 
->> /var/lib/backuppc/
->> ERROR: error adding device 'dm-4': No such file or directory
->>
->> This is what I see in dmesg:
->> [43827.535383] BTRFS info (device dm-5): disk added /dev/drbd2
->> [43868.910994] BTRFS info (device dm-5): device deleted: /dev/drbd2
->> [48125.323995] BTRFS: device fsid 2b4b631c-b500-4f8d-909c-e88b012eba1e
->> devid 1 transid 5 /dev/mapper/crypt2 scanned by mkfs.btrfs (4937)
->> [57799.499249] BTRFS: device fsid b111a08e-2969-457a-b9f1-551ff65451d1
->> devid 1 transid 5 /dev/mapper/crypt2 scanned by mkfs.btrfs (5178)
->
-> If you can recompile btrfs module, would you mind to test the following
-> diff to help us debugging the problem?
->
-> Of course, after applying the diff and recompiling the module, you still
-> need to use the new btrfs module to try add the device again to trigger
-> the error.
->
-> Thanks,
-> Qu
->>
->>
->>
->> And these are the mapping in dm:
->>
->> root@backuppc41:~# ll /dev/mapper/
->> insgesamt 0
->> lrwxrwxrwx 1 root root       7 28. Feb 21:08 backuppc41--vg-root -> 
->> ../dm-1
->> lrwxrwxrwx 1 root root       7 28. Feb 21:08 backuppc41--vg-swap_1 ->
->> ../dm-2
->> crw------- 1 root root 10, 236 28. Feb 21:08 control
->> lrwxrwxrwx 1 root root       7  1. Mär 12:12 crypt2 -> ../dm-4
->> lrwxrwxrwx 1 root root       7 28. Feb 20:21 crypt_drbd1 -> ../dm-3
->> lrwxrwxrwx 1 root root       7 28. Feb 20:21 crypt_drbd3 -> ../dm-5
->> lrwxrwxrwx 1 root root       7 28. Feb 21:08 vda5_crypt -> ../dm-0
->>
->>
->> Anyone having an idea why I can not add the device to the existing
->> filesystem? The error message is not really helpful...
->>
->> Thanks a lot!
->>
->> /KNEBB
->>
->>
->>
-
+That's even better, so the magic constants are defined in a more visible
+place. Maybe the shift can be also defined separately and then just used
+here, like we have PAGE_SIZE/PAGE_SHIFT and such.
