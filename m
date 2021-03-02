@@ -2,290 +2,288 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD5932B23D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D345432B252
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241509AbhCCB6H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Mar 2021 20:58:07 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:32161 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1382785AbhCBKQZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:16:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1614680116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yRjycvWkEsl4nXw/AUKzkVX3KrTRdiA3aYfsnSGiL8k=;
-        b=NHXZfEgohP9wDj53IH6dourP+DJsJMgFU8kAl1n0/x1KA0d8eEKHElzhOa3mLdVC/saLWk
-        Xd+pI0E5BY9bdDBfBl9OPVfjt5L8Ok1hm/E+2/l1cR+YAyge/B0akF6Diyg0IxcnGzjGeg
-        NIZbuuQhDiNcyBgCsN8cF++z1MsdcQU=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2109.outbound.protection.outlook.com [104.47.17.109])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-37-I2gmrVWZMXyOkc6TZLExoA-1; Tue, 02 Mar 2021 11:15:15 +0100
-X-MC-Unique: I2gmrVWZMXyOkc6TZLExoA-1
+        id S242181AbhCCB6O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Mar 2021 20:58:14 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:56517 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379933AbhCBK3L (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Mar 2021 05:29:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1614682032; x=1646218032;
+  h=from:to:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=oP97R3KibnlnG+/nuk2X0Hz+DqD1WsEEdErTssm2LrA=;
+  b=owk4clOId3ekMQlEF1YCCCsWpVCYMjDMDCaLrbkYzITLNY4Dz/xPCbUk
+   1FeMIlO2dXKbA8tVkCuOtRcjV8cU51cQCXMqFo86thbLbQSP8jFpEVPP2
+   MwGb66yeqdxXI82JOcyMftC8NeAQkQHLETTbyCi5BWl+mbtlguhMivAit
+   P7PlHF75fVw0J0dwcE2npiSYZ2QD81RcBenaOdpMC0q7IkGKkAZj8N3lg
+   E87V1NXKMUldzWagyWsX6QdUnq5WcSBdejz0fh3l9u56Oydm4564M+mAq
+   f24FnZccdyvtbMGm87s5Sft4dSL2sBJ6IdfRRfIbP8twpgO/G5AAkj/db
+   Q==;
+IronPort-SDR: 7Y9ug100r99JITZyd5CIedviJJ/ERifdxLQNNhcl7a6s/1Lhw1XNThT7uSn4zu1S5hYWxocYZd
+ R/lTABREMfJRycWGzY9pfUcu4HdpmZ238pfsL7Ige3d3UUShl/VlymPegfSZQi3cWoibKA42FK
+ hYXjSkVMxNB6O20lQkd6ufuR0gnOb5l6r56elmjzyi2zb4STcdCob4s5I8osSQwYsau/qaLI8a
+ sJJMJPR6jnDYL/hcAaJeiWme76GiEQT7rydxRHVpM8QxsFwdnsRGpTi0s/vx1Z4x9BiQNxkkcV
+ vPA=
+X-IronPort-AV: E=Sophos;i="5.81,216,1610380800"; 
+   d="scan'208";a="265428581"
+Received: from mail-bn7nam10lp2102.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.102])
+  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2021 18:44:54 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aHX5wCpjAEcdNUxVdZ4BhcDW1xuyiPWxHeeoLC08tq0DwERz9RtsICFt9I1ZWsbmXPsSZNmIwSMce4RVECN1fH6EdMFdVY+uQuhbFK1QIffCyRYhjUjGGiGSeKg7GMga3qt5tK9iMmckgV0/1NUa8BUpnL8P23hagfM8pk/D+nuTyYh7aW/PMUbiesMiKAHG4lYPzt0yq5kY6S+ckUnjUxTFz6luoGGfByhnF2PcAuBLv33bdj+JaH396tFp1cebpJFO8KfgEOiKRF5VG8w35SOwAxtqzUMASU1VT94sLtW4Y4fqIbarutA7S63OjqxtGMtqXSNdvimfieX7tHFTnQ==
+ b=JcmmEOL4ai50Ew9TNtCuNLSmQ/ook5zFKJ/voNOhy2fYPnbIT+eIgoBv2+d51iw00AGKdXIuacPbVxUq0kkO9JFRVvR5Pwpo08es0URWYZvwUp3aQtXEJc/4C4WS0cAqc4mp5lqfU1CwLEiiDnB5XdvYQh7rbhO065aMEgqEoyMO7dT3tUOWUZc9YyzB9tetX3kqmfkN+a7vGpPzL4c5HelOjr4s5YQe3u2q+Vjw9r5kj3Uqam6UYBlxuG5l9d8BcmwNxwIcF789GGpj+QBdIHwtZ/lj5vwl1yN/YBFR8qvl2A0t2r0IEG8P9Kn46+dnVCbLMuQlTxn8zWaSXu3cyA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=835+a4rAkkjb75BlWQJE2xuJaBk7CTVCr2sUm9RuKbE=;
- b=dypNrofzQAk54GnNKTASUwyvUulsbf/xNNt5Fjh6rErn3nYvN+h2OXgan27twtqY7jqAKJlFEZY9Xyyz4NH0/qXokXmWtZH8IrH4k5EVgxKmOcNmHTic04u4CdjTm5oF6vpNi4I3EnhMEj3UAva2Ua+f3oUZrCCriksjGUi8Jk1xEmSF9XKmWTlO81NE/FjmYK59hIdDiy1FMxPnqHC7xSv5cP2g4Rlwj8SB3vQCbzrdOaLXquzFraD5NzmFS3cSsdqnoyU/1MgVSYwmzFyaZyJyvcXDLCK/lXcNOIixVct8WjNZVLcc9Tv2Q1ITFEQYDdJ30T94O4sIcSOUeW1nLg==
+ bh=wVjArujLuPX1+isnXStz5MVfezueis4DmcWtZtzyfWE=;
+ b=ThFc8E1o5krLHWKKuYjQ2+ZZgTvQkQx/5lsM9/OjhiqI2aqmNK+0ynFj0zW0Xs3eDiBilgBEpJlLX1SMqgs56UtFbVLq5jhfizOfbEOPv76P1xMUoH06HQKWlfFGz8JuGf2PaNA1Qx53aAN4rdVxEQTPr9xsrjB/iCjFjEA6cIAU76DrSW0L0sE3r3ecioZG2vFVgoEIrArIi6wyxWd08FZPfivqiR7x3duG03mOwGBP+LjtOa/gwRSG7npVHMWtAQtkfwsD0RBWFCz9Ko6W1EoJbkpVzZAJ8ZBAfX1l+sN1MUDuVMOP5NigAdOSv/UQDXx++XXWEu+KU7bjtFofEQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM5PR04MB3041.eurprd04.prod.outlook.com (2603:10a6:206:4::12) with
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wVjArujLuPX1+isnXStz5MVfezueis4DmcWtZtzyfWE=;
+ b=M0v+X/IeRQubSpOXnELsdrSYG1MUAfnJn/zghMA/uwpDcjMqThlHX104PNCrbvQ2KyEDY3HDwlpdZRZy3Frwgv1WhFa44bPWpXfGvRAUCvgDO897c6+eMAFDu70DwBYPMhZtgnXwOFG5b/nvvHC0tgpexZldUJkOfZuw0ZiYoPU=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7397.namprd04.prod.outlook.com (2603:10b6:510:1d::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Tue, 2 Mar
- 2021 10:15:14 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::355a:d09c:cbf8:657e]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::355a:d09c:cbf8:657e%6]) with mapi id 15.20.3868.036; Tue, 2 Mar 2021
- 10:15:14 +0000
-To:     Wang Yugui <wangyugui@e16-tech.com>
-CC:     linux-btrfs@vger.kernel.org
-References: <20201109053952.490678-1-wqu@suse.com>
- <20201109053952.490678-2-wqu@suse.com>
- <20210302164758.28C1.409509F4@e16-tech.com>
-From:   Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH 1/2] btrfs-progs: check: detect and warn about tree blocks
- cross 64K page boundary
-Message-ID: <e478e495-e2f6-452d-c615-a7e1f32805e7@suse.com>
-Date:   Tue, 2 Mar 2021 18:14:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-In-Reply-To: <20210302164758.28C1.409509F4@e16-tech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Tue, 2 Mar
+ 2021 10:27:28 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3c7d:5381:1232:e725]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3c7d:5381:1232:e725%7]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
+ 10:27:28 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>
+Subject: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Thread-Topic: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+Thread-Index: AQHXD06lWpni3H/DnUiny8ST2cCO2g==
+Date:   Tue, 2 Mar 2021 10:27:28 +0000
+Message-ID: <PH0PR04MB74169B4B92CC269611F54BF09B999@PH0PR04MB7416.namprd04.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1542:e101:cf6:7682:fb45:6590]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4ec908c4-9c32-454b-699e-08d8dd65c7f4
+x-ms-traffictypediagnostic: PH0PR04MB7397:
+x-microsoft-antispam-prvs: <PH0PR04MB73977B4F44DEAE360C0CF2C29B999@PH0PR04MB7397.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bGoPVbf8EA2xLQZJlW8qAsiDmlIpB8GAN7smhHd1xxn9RioASOsNNhPdFXzgJUhc7xSjXXoh+WVnG1UQNm3lNTN8P9xhlq1wTu02/STmK715BBcNL0v1JHzhHZp9Qqcw6oIy06bMxGNYRqgfJ5UIuhQTsIKQpDupPhsA3Q7NvvUdXb26JB+6xxFhntXinyon8+KVynBMGWoLOgL5gSBFmlpavgfZcZ4hGulVXp5ujWXxsu0V4Dqfibw4B+YdeZssH72C7S41w2ks/S2k/ZLcme2qGique6TfMwTuR6biMa1nUPNdEBDvdxZa/RCdj2GnTAlfiHjbAFYUA59YbCpf2EfwH0e1hnMQIe79CVgCLBZ00G/zOlT504MXZDhBYhmeE7MrdazZ4SQhx37nRVyYd+Z8RqVXyDMuMF4v5TQZpWr88hnVZYJXitb4RL11uKyxEZW4hhqzItlaLQ8qamDMsV/tJiRK3eF5bfsW9U1RGQsURJ1hE6N2e+e+PPsW5PPNr5m3YMBS6BhiU19UZtKoTQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(346002)(376002)(396003)(66946007)(9686003)(5660300002)(64756008)(33656002)(316002)(52536014)(6916009)(2906002)(86362001)(83380400001)(91956017)(478600001)(186003)(71200400001)(66476007)(7696005)(8676002)(8936002)(6506007)(66556008)(76116006)(66446008)(7116003)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mltaRpGW9bGwq9upE6hyrdpZn0QcunFWFAscVVjTCrArpgg07jY82hYFrx4/?=
+ =?us-ascii?Q?o5p0k65ihXDP4osnv3SUdEzHx9MdMbljGZUNn0eQInb98tZhE9q16roAogOq?=
+ =?us-ascii?Q?LHgNolWAkOvT64r5ryJtkutJO/Min7/OyNjXGJKf65aS9nH8Ic8W5hd7si0J?=
+ =?us-ascii?Q?ZFwU61QO5Gm7r2UIZOEgexMbSUvwGcX9jBaHlxJC1sRKakW7Za629d/h0RUK?=
+ =?us-ascii?Q?wWyCcfiDwqNQVOZwDb2JlK6TBfosa9BoMWu1Gcm8hyAdsBtoEZULUYqxu7tT?=
+ =?us-ascii?Q?PSDQmMXM1S5mt03sigtYhignnp0EHJ9tque90iJ/SyPXyCfFdguQvGvkc20i?=
+ =?us-ascii?Q?UuCpmBnsHEAaouY79wyKzaXdjKng2HojFirP+sZKl1rwTj5e/3B9i2xg04CN?=
+ =?us-ascii?Q?6ypVvVxNfTteurHeuA7RaMrFEBnsL9PNty7wvtnCB7Uhf4aEjFxaGo0kzfhV?=
+ =?us-ascii?Q?dhe99TY6QqVjOPd8V2g34NHMh436mhHNCKXF3TcFO3jXYmz/Cix5Z7QfKYjK?=
+ =?us-ascii?Q?wgOiDZB6c2tmhFKoyaZW+WqIFCV3vMzyPtpUUhDjvd9KbKiy+bTav8mNBg5G?=
+ =?us-ascii?Q?5GZMxbD5lAQb6DyPnDqhT4A48v1z3TCDlGg5lmIY8f6XPDH+NBmHyAanh5MQ?=
+ =?us-ascii?Q?DUTXBJXoqERjkvuoTv4CNgvBvINOPoem5YpgWeMkksASzBzxlX/v/VXmoSH7?=
+ =?us-ascii?Q?HFL/gPmVqILYeUPF3vyWRZQQa0AD7c/2G/UfSbDsX9SBALduOHIJ4eY2MwzZ?=
+ =?us-ascii?Q?QXswwTMc63/4+fy1Y7tSKipSe3Ji29y1eBvIelZREd+ACxUyRMYHhZOxu+N2?=
+ =?us-ascii?Q?2E3uoMfCcTQkoGx7hz6OYZgakl56eq9+uXIShfk0rEYvYgbZF78pdYVn3RwE?=
+ =?us-ascii?Q?i9dImvhUBF45RzYGOYk68X6RgV/NhUnca98HQS7XyWcR7pO6iCyWh/WsYGeG?=
+ =?us-ascii?Q?/iWR56qYnyiQaFlhMZXxu9ngqxkWDEDMEqAKUYdmQLUGrwVcdsgvxOf0KbeF?=
+ =?us-ascii?Q?LPfUTnabDtHg3OdHnTySoZfoWJbH2/Y4mW2sfrDqX5zs0tQWiZ/2Ai9YxUDL?=
+ =?us-ascii?Q?9f1rWk284QVa2+DWhfKHa7JuL+oK8inLB+UDLcX9szTc9r9nSDKU5oCEMX+E?=
+ =?us-ascii?Q?VWBB43nfTDvH7G5tVtHxrwIb4pNanePt1msxcFS+u9rtaR2NP+PdiSlCfmfp?=
+ =?us-ascii?Q?YKV1qMEJXj4C7jn3f+1j1B337YLRw1j4fbqz2Y+plt3eZExyHDLtWiFsAWeP?=
+ =?us-ascii?Q?Eezb45CnoGKkRgjQszPkheCFGKjXBnqTVM9WOZUAPcvRZ9kxGWieqEhQW3qR?=
+ =?us-ascii?Q?L6PUU9R2y4dj6d0okTpV0jg9t0xV6m5qZzAWEH/kRu3WUk5BxeXbr83wLBnU?=
+ =?us-ascii?Q?+bhddaRA9axCWcmL3/+SkOVihZl9Fuj670OpuGy2hLCVOwxTjQ=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: BYAPR06CA0046.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::23) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR06CA0046.namprd06.prod.outlook.com (2603:10b6:a03:14b::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 2 Mar 2021 10:15:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9e1527e8-abf9-4402-f2dc-08d8dd641211
-X-MS-TrafficTypeDiagnostic: AM5PR04MB3041:
-X-Microsoft-Antispam-PRVS: <AM5PR04MB30415B3086EAE97ABEDD1DA7D6999@AM5PR04MB3041.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RobKMAZqWtsY8ertFzoBsBeySwk2n9M9mz708A7VYyf10oE9OfoAZcQIy81uigbBo4qRSvF46AII4/i9/SapNYpS0YWS+gjqKsjB43JfCUTwcrmOATid0WUbUUMLT4Dr6f5gW1H/LnkEAmpI4xuDxqghspubtfcJug7z84J+1UYaMUYkjo/Ihgp/PLRfwcmkH6KpXRyK8RH8MhDk7oxkvA2maiyqwkr+UNnzbOoENym+j44j9XA/hpdOj/gBdivN2obaZFxsHggsXtOmZHHwavBgV9oKZk/9rMSYe7SZRWoI65L+M9nKHlcL9tYSdfo8hE9QFGynrgRcUm1glfi9jKyq4yNp19bWPpT10k4iFn3teoYubn82NQJqY0SDqvj9ZgwqLAEet6NOkvTZriRF/03mfePAbGl+tNmn9JvKEiATnYYvMuKS46ooFF4PPBw5M9ZtrLV4Vk0LY+D3naiX6+ZiIOizEc0dFpMwjCts0a1NkPxhQdg1uxPTCAKBBirDU5kQoyk8ekZnljoqFwI6NWdx2ej/vwgjK+ctu7BkvSqr14Zxc2S68mFjd8TksKmRLyIh/jhOQVJNqeUTYI1YD2N4oDwDutjyYg2pFKPPFdMcx8q8qT/gYSNBlSrmFJ1b
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(39850400004)(346002)(376002)(66556008)(66946007)(66476007)(16526019)(186003)(52116002)(16576012)(316002)(8676002)(86362001)(6666004)(26005)(31696002)(6486002)(478600001)(6916009)(6706004)(36756003)(956004)(31686004)(2616005)(83380400001)(2906002)(8936002)(5660300002)(4326008)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?pGq/h+KkREiDPG5jOZBSSLrmDsRwHPexL/gRylWBi2CFNDxiJSXMbBK4qTdp?=
- =?us-ascii?Q?eQCJkDtIcbYpyxcTHsri6Gk+6JEvfKJvNn9eb6W9SjswHxMFca4H3NssPaJt?=
- =?us-ascii?Q?FkGZ0ps+jknxTZhktVufAXP5R8CFLTXdNEz+49UiIjtY4GAISjnSW42Gyd3A?=
- =?us-ascii?Q?eAtHqlxlV1vUOMGhOWTuCjpBGwY4R0TyajXt3Giqr9iK42TzoThgcbbXGj8B?=
- =?us-ascii?Q?GDCEa+DOHl/iUScMybXZLMFqpSlkb8quRu12glYNPmZszMCH4Hg+B7ePRzQ1?=
- =?us-ascii?Q?oatxN5dBa5WQPPZwYl2ladC691wL0TnTNwytCDL9HuKJTMxmUiCrSeSVu1Si?=
- =?us-ascii?Q?hkRn9PSJUue3jti1SHfAbDTtxdWODvGLpfwVRx0L+SFFkLFwhgd+kBaOLsaX?=
- =?us-ascii?Q?k6g6XHXO5u6wm7NrqDFYsbPgL3Jv+7sJNDK1imCbhq5sNjGHNgAPv5TZ/CEN?=
- =?us-ascii?Q?gEj7qRvhP+zmN6+bjpLWMrw26D+YBE3fFQqTGOFiDrxc6huWNjwAfJM0/ftb?=
- =?us-ascii?Q?7XF1bsJbFOnGGNpJrExvKqm4/AFLxYKDBhI+kqmf6uMt3XX7mvV0dOEF/IPc?=
- =?us-ascii?Q?DJiYvo7keaFa4bQFtjX0c7S9t0W/pq8Adgvnk2ExTRdqNfC+aoNlbJUFhuqG?=
- =?us-ascii?Q?WoBOzFtrxZyhemXnvDimw3bDxIzVN72NmRN7X4BNE3aoKhCLY3YUUZ8iwUWh?=
- =?us-ascii?Q?zU9orwmGehJa9RkZGFuFjwnvgeSObVHHuIyZgpocSFndR7i4Nod0TJN9rNA7?=
- =?us-ascii?Q?YeY/09NWQaRj7nNwI6GzhuC5FKiq+vXv2J6pYpClZ9AqxjCPh3+8aswaKlUN?=
- =?us-ascii?Q?gD/K36JMIWOtq9dky3kAjI6LjQUmoO6zG+rw9P1VEYtQbTiuWPHT2RZi2fYy?=
- =?us-ascii?Q?ZzZV0L4Z1p2Hpg+H2PwjfVIyirIY5HJbPFWcSrWru4+zWxMrqoYoa7T9ZNLS?=
- =?us-ascii?Q?YraO7TQumEuHlMqfjwKXHri1u2JUUMz2IYx+VfUdMTbWG4Xx/I3de7Q/nAMY?=
- =?us-ascii?Q?pPVYn8ucMkO+L3BgHNbDz/Ye/vzO2kloS5Fj2wp8vGD5jI1uFJ56ZiUdG+SB?=
- =?us-ascii?Q?8NA5Rp/etuVhWKwBzrhhQXQugkrntEFFXdLqw6U/zpGqwoFiY2LP1ypN5f5C?=
- =?us-ascii?Q?5ik6FP8CsOBXFrk1UKLgKo6GmiOVVs8r56VTPsKABTWCQ5wCCwNcMY37Fzo/?=
- =?us-ascii?Q?vD8yNbnPNyW/EQ6OuWuy+Q/6FwfCiSu+0HJ14YPXEphAB/XY/1QcHhiKNPAv?=
- =?us-ascii?Q?d7MlLo0kP2ioFmzLKL7CBRYA8qF3zCZfwdigSKNPoJej60RX/zxzakhTEFsW?=
- =?us-ascii?Q?+i0siWAc2eD7lUcNLnOwiyTL?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e1527e8-abf9-4402-f2dc-08d8dd641211
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 10:15:14.4032
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ec908c4-9c32-454b-699e-08d8dd65c7f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2021 10:27:28.7849
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vswrBlDh8bUsWY7J5Yz2xphsGLrBePyX7FRtFtLe8zgRWoMa9eBqGPi1Wnwlasb+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3041
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MyiRhvAY8uTk3Q3C5fVfwjQD8KW1dfli0jEfJDAv9YBmUn0obklHb3S8//pP1EuYXYITpPZLqYXtwjRskISM8nYgKbYC/WjXs7BGiIUwnyY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7397
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/3/2 =E4=B8=8B=E5=8D=884:48, Wang Yugui wrote:
-> Hi, Qu Wenruo
->=20
-> This warning message happen even in new created filesystem on amd64
-> system.
->=20
-> Should we slicent it before mkfs.btrfs is ready for  64K page system?
-
-Nope.
-
-If your fs reports such problem, it means your metadata chunk is not=20
-properly aligned.
-
-The behavior of chunk allocator alignment has been there for a long long=20
-time, thus most metadata chunks should already been properly aligned to 64K=
-.
-
-Either btrfs kernel module or mkfs.btrfs has something wrong.
-
-
->=20
-> The paration is aligned in 1GiB
->=20
-> btrfs-progs: v5.10.x branch
->=20
-> # mkfs.btrfs /dev/sdb1 -f
->=20
-
-And running v5.10.1 I can't reproduce it.
-
-> # btrfs check /dev/sdb1
-> Opening filesystem to check...
-> Checking filesystem on /dev/sdb1
-> UUID: b298271d-6d1d-4792-a579-fb93653aa811
-> [1/7] checking root items
-> [2/7] checking extents
-> WARNING: tree block [5292032, 5308416) crosses 64K page boudnary, may cau=
-se problem for 64K page system
-> WARNING: tree block [5357568, 5373952) crosses 64K page boudnary, may cau=
-se problem for 64K page system
-
-I doubt if you're really using v5.10.x mkfs.btrfs.
-
-As for default btrfs, the metadata chunk is after DATA and SYS chunks,=20
-this means metadata chunks should only exist after bytenr 16M, but here=20
-your metadata is only at around 5M.
-
-I strongly doubt your mkfs parameters.
-
-Please attach the full mkfs output.
-
-Thanks,
-Qu
-
-> [3/7] checking free space tree
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 147456 bytes used, no error found
-> total csum bytes: 0
-> total tree bytes: 147456
-> total fs tree bytes: 32768
-> total extent tree bytes: 16384
-> btree space waste bytes: 140356
-> file data blocks allocated: 0
->   referenced 0
->=20
-> # parted /dev/sdb unit KiB print
-> Model: TOSHIBA PX05SMQ040 (scsi)
-> Disk /dev/sdb: 390711384kiB
-> Sector size (logical/physical): 4096B/4096B
-> Partition Table: gpt
-> Disk Flags:
->=20
-> Number  Start         End           Size         File system  Name     Fl=
-ags
->   1      1048576kiB    63963136kiB   62914560kiB  btrfs        primary
->=20
->=20
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2021/03/02
->=20
->> For the incoming subpage support, there is a new requirement for tree
->> blocks.
->> Tree blocks should not cross 64K page boudnary.
->>
->> For current btrfs-progs and kernel, there shouldn't be any causes to
->> create such tree blocks.
->>
->> But still, we want to detect such tree blocks in the wild before subpage
->> support fully lands in upstream.
->>
->> This patch will add such check for both lowmem and original mode.
->> Currently it's just a warning, since there aren't many users using 64K
->> page size yet.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   check/main.c        |  2 ++
->>   check/mode-common.h | 18 ++++++++++++++++++
->>   check/mode-lowmem.c |  2 ++
->>   3 files changed, 22 insertions(+)
->>
->> diff --git a/check/main.c b/check/main.c
->> index e7996b7c8c0e..0ce9c2f334b4 100644
->> --- a/check/main.c
->> +++ b/check/main.c
->> @@ -5375,6 +5375,8 @@ static int process_extent_item(struct btrfs_root *=
-root,
->>   		      num_bytes, gfs_info->sectorsize);
->>   		return -EIO;
->>   	}
->> +	if (metadata)
->> +		btrfs_check_subpage_eb_alignment(key.objectid, num_bytes);
->>  =20
->>   	memset(&tmpl, 0, sizeof(tmpl));
->>   	tmpl.start =3D key.objectid;
->> diff --git a/check/mode-common.h b/check/mode-common.h
->> index 4efc07a4f44d..bcda0f53e2c4 100644
->> --- a/check/mode-common.h
->> +++ b/check/mode-common.h
->> @@ -171,4 +171,22 @@ static inline u32 btrfs_type_to_imode(u8 type)
->>  =20
->>   	return imode_by_btrfs_type[(type)];
->>   }
->> +
->> +/*
->> + * Check tree block alignement for future subpage support on 64K page s=
-ystem.
->> + *
->> + * Subpage support on 64K page size require one eb to be completely con=
-tained
->> + * by a page. Not allowing a tree block to cross 64K page boudanry.
->> + *
->> + * Since subpage support is still under development, this check only pr=
-ovides
->> + * warning.
->> + */
->> +static inline void btrfs_check_subpage_eb_alignment(u64 start, u32 len)
->> +{
->> +	if (start / BTRFS_MAX_METADATA_BLOCKSIZE !=3D
->> +	    (start + len) / BTRFS_MAX_METADATA_BLOCKSIZE)
->> +		warning(
->> +"tree block [%llu, %llu) crosses 64K page boudnary, may cause problem f=
-or 64K page system",
->> +			start, start + len);
->> +}
->>   #endif
->> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
->> index 2b689b2abf63..6dbfe829bb7c 100644
->> --- a/check/mode-lowmem.c
->> +++ b/check/mode-lowmem.c
->> @@ -4206,6 +4206,8 @@ static int check_extent_item(struct btrfs_path *pa=
-th)
->>   		      key.objectid, key.objectid + nodesize);
->>   		err |=3D CROSSING_STRIPE_BOUNDARY;
->>   	}
->> +	if (metadata)
->> +		btrfs_check_subpage_eb_alignment(key.objectid, nodesize);
->>  =20
->>   	ptr =3D (unsigned long)(ei + 1);
->>  =20
->> --=20
->> 2.29.2
->=20
->=20
-
+I've just tripped over this lockdep splat on v5.12-rc1 (Linus' tree not mis=
+c-next),=0A=
+while investigating a different bug report.=0A=
+=0A=
+=0A=
+[ 1250.721882] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!=0A=
+[ 1250.722641] turning off the locking correctness validator.=0A=
+[ 1250.723486] CPU: 0 PID: 468 Comm: fsstress Not tainted 5.12.0-rc1 #950=
+=0A=
+[ 1250.724483] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
+rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014=0A=
+[ 1250.726180] Call Trace:=0A=
+[ 1250.726551]  dump_stack+0x6d/0x89=0A=
+[ 1250.727052]  __lock_acquire.cold+0x2dd/0x2e2=0A=
+[ 1250.727676]  lock_acquire+0xab/0x350=0A=
+[ 1250.728204]  ? btrfs_add_delayed_tree_ref+0x1ae/0x4a0 [btrfs]=0A=
+[ 1250.729215]  ? debug_mutex_init+0x33/0x40=0A=
+[ 1250.729822]  _raw_spin_lock+0x2c/0x40=0A=
+[ 1250.730340]  ? btrfs_add_delayed_tree_ref+0x1ae/0x4a0 [btrfs]=0A=
+[ 1250.731208]  btrfs_add_delayed_tree_ref+0x1ae/0x4a0 [btrfs]=0A=
+[ 1250.732047]  ? kmem_cache_alloc+0x17a/0x300=0A=
+[ 1250.732635]  btrfs_alloc_tree_block+0x292/0x320 [btrfs]=0A=
+[ 1250.733417]  alloc_tree_block_no_bg_flush+0x4f/0x60 [btrfs]=0A=
+[ 1250.734253]  __btrfs_cow_block+0x13b/0x5e0 [btrfs]=0A=
+[ 1250.734964]  btrfs_cow_block+0x117/0x240 [btrfs]=0A=
+[ 1250.735662]  btrfs_search_slot+0x688/0xc60 [btrfs]=0A=
+[ 1250.736378]  ? mark_held_locks+0x49/0x70=0A=
+[ 1250.736927]  btrfs_insert_empty_items+0x58/0xa0 [btrfs]=0A=
+[ 1250.737706]  btrfs_insert_file_extent+0x8d/0x1c0 [btrfs]=0A=
+[ 1250.738494]  btrfs_cont_expand+0x359/0x4c0 [btrfs]=0A=
+[ 1250.739226]  btrfs_setattr+0x380/0x660 [btrfs]=0A=
+[ 1250.739900]  ? ktime_get_coarse_real_ts64+0xcb/0xe0=0A=
+[ 1250.740578]  ? current_time+0x1b/0xd0=0A=
+[ 1250.741088]  notify_change+0x27b/0x490=0A=
+[ 1250.741613]  ? do_truncate+0x6d/0xb0=0A=
+[ 1250.742122]  do_truncate+0x6d/0xb0=0A=
+[ 1250.742604]  vfs_truncate+0x108/0x140=0A=
+[ 1250.743122]  do_sys_truncate.part.0+0x6a/0x80=0A=
+[ 1250.743738]  do_syscall_64+0x33/0x40=0A=
+[ 1250.744250]  entry_SYSCALL_64_after_hwframe+0x44/0xae=0A=
+[ 1250.744946] RIP: 0033:0x7f38d7819b8b=0A=
+[ 1250.745453] Code: 48 8b 4c 24 28 64 48 2b 0c 25 28 00 00 00 75 05 48 83 =
+c4 38 c3 e8 c5 69 01 00 0f 1f 44 00 00 f3 0f 1e fa b8 4c 00 00 00 0f 05 <48=
+> 3d 00 f0 ff ff 77 05 c3 0f 1f 40 00 48 8b 15 b1 92 0c 00 f7 d8=0A=
+[ 1250.748044] RSP: 002b:00007ffdf2983ed8 EFLAGS: 00000202 ORIG_RAX: 000000=
+000000004c=0A=
+[ 1250.749096] RAX: ffffffffffffffda RBX: 00007ffdf2984030 RCX: 00007f38d78=
+19b8b=0A=
+[ 1250.750081] RDX: 00000000001b92a2 RSI: 00000000001b92a2 RDI: 0000000000b=
+db380=0A=
+[ 1250.751061] RBP: 00000000001b92a2 R08: 0000000000000029 R09: 00007ffdf29=
+8402c=0A=
+[ 1250.752052] R10: 0000000000000002 R11: 0000000000000202 R12: 00000000000=
+00010=0A=
+[ 1250.753040] R13: 00000000001b92a2 R14: 0000000000000000 R15: 00000000000=
+00001=0A=
+[ 1260.719289] BTRFS info (device md0): scrub: started on devid 1=0A=
+[ 1262.030768] BTRFS info (device md0): scrub: finished on devid 1 with sta=
+tus: 0=0A=
+=0A=
+To trigger the bug I did several (4-5 I think) runs of this script:=0A=
+=0A=
+rapido1:/home/johannes/src/xfstests-dev# cat test.sh =0A=
+#!/bin/sh=0A=
+=0A=
+SCRATCH_DIR=3D/mnt/scratch=0A=
+=0A=
+echo "running fsstress"=0A=
+./ltp/fsstress -w -f unlink=3D1 -f rmdir=3D1 -f symlink=3D1 -f sync=3D1 -f =
+link=3D1 \=0A=
+        -f rename=3D1 -f fdatasync=3D1 -f removefattr=3D1 -f fsync=3D1 -f s=
+etfattr=3D1 \=0A=
+        -f setxattr=3D1 -f unresvsp=3D1 -f mkdir=3D1 -f mknod=3D1 -f chown=
+=3D1 -f fiemap=3D1 \=0A=
+        -f freesp=3D1 -f snapshot=3D1 -f rnoreplace=3D1 -f rexchange=3D1 -f=
+ rwhiteout=3D1 \=0A=
+        -f allocsp=3D1 -f subvol_create=3D1 -f subvol_delete=3D1 -f awrite=
+=3D1 \=0A=
+        -f writev=3D1 -f write=3D1 -f splice=3D1 -f mread=3D1 -f deduperang=
+e=3D1 \=0A=
+        -f mwrite=3D1 -f dwrite=3D1 -f clonerange=3D1 -f copyrange=3D1 -f t=
+runcate=3D1 \=0A=
+        -f fallocate=3D1 -f punch=3D1 -f zero=3D1 -f collapse=3D1 -f insert=
+=3D1 -p 30 \=0A=
+        -n 1000 -S t -d $SCRATCH_DIR=0A=
+=0A=
+echo "scrubbing"=0A=
+btrfs scrub start -Bd $SCRATCH_DIR || exit 1=0A=
+=0A=
+echo "cleaning up"=0A=
+rm -rf $SCRATCH_DIR/*=0A=
+=0A=
+=0A=
+$SCRATCH_DIR is mounted on top of a md-raid1 array: =0A=
+=0A=
+rapido1:/home/johannes/src/xfstests-dev# mdadm --detail /dev/md0=0A=
+/dev/md0:=0A=
+           Version : 1.2=0A=
+     Creation Time : Tue Mar  2 09:38:17 2021=0A=
+        Raid Level : raid1=0A=
+        Array Size : 3142656 (3.00 GiB 3.22 GB)=0A=
+     Used Dev Size : 3142656 (3.00 GiB 3.22 GB)=0A=
+      Raid Devices : 4=0A=
+     Total Devices : 4=0A=
+       Persistence : Superblock is persistent=0A=
+=0A=
+       Update Time : Tue Mar  2 09:58:57 2021=0A=
+             State : clean =0A=
+    Active Devices : 4=0A=
+   Working Devices : 4=0A=
+    Failed Devices : 0=0A=
+     Spare Devices : 0=0A=
+=0A=
+Consistency Policy : resync=0A=
+=0A=
+              Name : rapido1:0  (local to host rapido1)=0A=
+              UUID : 10a4866b:6da1ccdc:e069e6da:79196fb1=0A=
+            Events : 19=0A=
+=0A=
+    Number   Major   Minor   RaidDevice State=0A=
+       0     251        1        0      active sync   /dev/zram1=0A=
+       1     251        4        1      active sync   /dev/zram4=0A=
+       2     251        2        2      active sync   /dev/zram2=0A=
+       3     251        3        3      active sync   /dev/zram3=0A=
+=0A=
+=0A=
+=0A=
+johannes@redsun60:linux(master)$ ./scripts/faddr2line fs/btrfs/btrfs.ko btr=
+fs_add_delayed_tree_ref+0x1ae=0A=
+btrfs_add_delayed_tree_ref+0x1ae/0x4a0:=0A=
+btrfs_add_delayed_tree_ref at /home/johannes/src/linux/fs/btrfs/delayed-ref=
+.c:999=0A=
+johannes@redsun60:linux(master)$ cat -n fs/btrfs/delayed-ref.c | grep -C 10=
+ 999=0A=
+   989                                is_system);=0A=
+   990          head_ref->extent_op =3D extent_op;=0A=
+   991=0A=
+   992          delayed_refs =3D &trans->transaction->delayed_refs;=0A=
+   993          spin_lock(&delayed_refs->lock);=0A=
+   994=0A=
+   995          /*=0A=
+   996           * insert both the head node and the new ref without droppi=
+ng=0A=
+   997           * the spin lock=0A=
+   998           */=0A=
+   999          head_ref =3D add_delayed_ref_head(trans, head_ref, record,=
+=0A=
+  1000                                          action, &qrecord_inserted);=
+=0A=
+  1001=0A=
+  1002          ret =3D insert_delayed_ref(trans, delayed_refs, head_ref, &=
+ref->node);=0A=
+  1003          spin_unlock(&delayed_refs->lock);=0A=
+  1004=0A=
+  1005          /*=0A=
+  1006           * Need to update the delayed_refs_rsv with any changes we =
+may have=0A=
+  1007           * made.=0A=
+  1008           */=0A=
+  1009          btrfs_update_delayed_refs_rsv(trans);=0A=
+=0A=
+Has anyone seen this before?=0A=
