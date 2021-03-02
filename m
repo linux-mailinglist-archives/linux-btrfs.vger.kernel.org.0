@@ -2,191 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B8232B170
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B076032B189
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhCCBtv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Mar 2021 20:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347652AbhCBFvw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Mar 2021 00:51:52 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2B0C06178B
-        for <linux-btrfs@vger.kernel.org>; Mon,  1 Mar 2021 21:50:30 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id w1so32926491ejf.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 01 Mar 2021 21:50:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mNZE31gswus170slngXjiwYWAkhOfZUEI/tWqeY6+Ew=;
-        b=Q/OzweNBKTN/p31Gfi5+pQqOQLOS8ZN89cCgWPq5hATdbuSvGCLn+xZgiTqHaV8ovA
-         WPKN7gxWkd/+30M9nOOTji8DLoErcoaIiwcYKBsZU/JkB5jhdpz4wr0X2R9eV7Om8Q0N
-         RILeOr2BWoJJHRoqZ4VrOk84X5EAfMP2kLyBknuDlFE1TifyhnA4CM+YMvmSNBdnnmEE
-         gh0wmMjxGG9kl+Zi/KvsWuhE9ss4/c2eFFp6TBVG9D6DSlyPgmcR3v+BtzohWvyCOGjR
-         5pmqvqEAeig8HYJ40mUttD9ivnt7wJthGN3a7/JqWUToJ2QNAehPFT6Lplucu2vvBVXy
-         2Bsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mNZE31gswus170slngXjiwYWAkhOfZUEI/tWqeY6+Ew=;
-        b=QrZFmbPPAOjxkULTefB3SEJODYftW5iVsLzXFGlfTskKEDp72lGsZt1QbvWiO6CAHH
-         dXhtgVyVC+QJDA99NPVc26kven4TQU724IPyiuZMX2YLT8ZzvuzZVq5AvkiW8Z1cWKCl
-         fCtmC1QaP7/2Bl6EtL8GLyGynmkvg3OyHY+h0EJ2I/qX+yASuvi5jzTykZLXomvnoxxA
-         U+8WkpdBMABBVYwEvoj5CG3f+MpzetNwPKtvRf8O5PKmqfVHzhOQhsduIsOYHjuDUpG2
-         9MUohPs7ehoQBlbWq+faB2vNM4RR427nA7muEHTvJLWRNZ5so9sV2QuTiLA0CDdLGd6n
-         fSIw==
-X-Gm-Message-State: AOAM531bE3KGXonVN7+CdY41V+OQWV79nDo6/daqUEBCCiuugkz46qxW
-        8PQKih1JTrxJodhAojNeSWyCGjXhdsb6vzIuGfvFMQ==
-X-Google-Smtp-Source: ABdhPJxLO+hVTmt5Q/tH6FezKM4fb+QRR9ZU9IG9BkPzIKgW3o8mPLtbsk6FDkn6ClsqBLu20m+e0BUjDu7jfCSGcRk=
-X-Received: by 2002:a17:906:6088:: with SMTP id t8mr19715072ejj.323.1614664229502;
- Mon, 01 Mar 2021 21:50:29 -0800 (PST)
+        id S235260AbhCCBwK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Mar 2021 20:52:10 -0500
+Received: from mail.knebb.de ([188.68.42.176]:35938 "EHLO mail.knebb.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1837113AbhCBHYe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:24:34 -0500
+Received: by mail.knebb.de (Postfix, from userid 121)
+        id AD125E38FE; Tue,  2 Mar 2021 08:13:46 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on netcup.knebb.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=1.7 tests=ALL_TRUSTED,NICE_REPLY_A
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from [192.168.9.194] (p5de00be0.dip0.t-ipconnect.de [93.224.11.224])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        (Authenticated sender: cvoelker)
+        by mail.knebb.de (Postfix) with ESMTPSA id 9BB4DE358F;
+        Tue,  2 Mar 2021 08:13:45 +0100 (CET)
+Subject: Re: Adding Device Fails - Why?
+To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+References: <36a13b99-7003-d114-568d-6c03b66190b2@knebb.de>
+ <4744a69e-0adb-7cad-577e-7f17741519be@knebb.de>
+ <6e37dc95-cca7-a7fc-774a-87068f03c16b@gmx.com>
+From:   =?UTF-8?Q?Christian_V=c3=b6lker?= <cvoelker@knebb.de>
+Message-ID: <4a7b34e7-ca78-782e-1470-20ea4f81cd98@knebb.de>
+Date:   Tue, 2 Mar 2021 08:10:15 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210226212748.GY4662@dread.disaster.area> <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
- <20210227223611.GZ4662@dread.disaster.area> <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
- <20210228223846.GA4662@dread.disaster.area> <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
- <20210301224640.GG4662@dread.disaster.area> <CAPcyv4iTqDJApZY0o_Q0GKn93==d2Gta2NM5x=upf=3JtTia7Q@mail.gmail.com>
- <20210302024227.GH4662@dread.disaster.area> <CAPcyv4ja8gnTR1E-Ge5etm+y69cHwdWN6Bg79wPPF4M=C-w79A@mail.gmail.com>
- <20210302053828.GI4662@dread.disaster.area>
-In-Reply-To: <20210302053828.GI4662@dread.disaster.area>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 1 Mar 2021 21:50:21 -0800
-Message-ID: <CAPcyv4g03VU8Z8MarMOrW6oJpO-4QFe9-P=CFu3C0z6St3vLuQ@mail.gmail.com>
-Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6e37dc95-cca7-a7fc-774a-87068f03c16b@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: de-DE
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 9:38 PM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Mon, Mar 01, 2021 at 07:33:28PM -0800, Dan Williams wrote:
-> > On Mon, Mar 1, 2021 at 6:42 PM Dave Chinner <david@fromorbit.com> wrote:
-> > [..]
-> > > We do not need a DAX specific mechanism to tell us "DAX device
-> > > gone", we need a generic block device interface that tells us "range
-> > > of block device is gone".
-> >
-> > This is the crux of the disagreement. The block_device is going away
-> > *and* the dax_device is going away.
->
-> No, that is not the disagreement I have with what you are saying.
-> You still haven't understand that it's even more basic and generic
-> than devices going away. At the simplest form, all the filesystem
-> wants is to be notified of is when *unrecoverable media errors*
-> occur in the persistent storage that underlies the filesystem.
->
-> The filesystem does not care what that media is build from - PMEM,
-> flash, corroded spinning disks, MRAM, or any other persistent media
-> you can think off. It just doesn't matter.
->
-> What we care about is that the contents of a *specific LBA range* no
-> longer contain *valid data*. IOWs, the data in that range of the
-> block device has been lost, cannot be retreived and/or cannot be
-> written to any more.
->
-> PMEM taking a MCE because ECC tripped is a media error because data
-> is lost and inaccessible until recovery actions are taken.
->
-> MD RAID failing a scrub is a media error and data is lost and
-> unrecoverable at that layer.
->
-> A device disappearing is a media error because the storage media is
-> now permanently inaccessible to the higher layers.
->
-> This "media error" categorisation is a fundamental property of
-> persistent storage and, as such, is a property of the block devices
-> used to access said persistent storage.
->
-> That's the disagreement here - that you and Christoph are saying
-> ->corrupted_range is not a block device property because only a
-> pmem/DAX device currently generates it.
->
-> You both seem to be NACKing a generic interface because it's only
-> implemented for the first subsystem that needs it. AFAICT, you
-> either don't understand or are completely ignoring the architectural
-> need for it to be provided across the rest of the storage stack that
-> *block device based filesystems depend on*.
+Hi Qu Wenro,
 
-No I'm NAKing it because it's the wrong interface. See my 'struct
-badblocks' argument in the reply to Darrick. That 'struct badblocks'
-infrastructure arose from MD and is shared with PMEM.
+thanks for debugging this. What I am wondering- why did it work when 
+creating the initial device?
+For Debian it looks like there is no other version of btrfs-progs 
+available, so I used this version (5.10.1-1) to create the btrfs device.
 
->
-> Sure, there might be dax device based fielsystems around the corner.
-> They just require a different pmem device ->corrupted_range callout
-> to implement the notification - one that directs to the dax device
-> rather than the block device. That's simple and trivial to
-> implement, but such functionaity for DAX devices  does not replace
-> the need for the same generic functionality to be provided across a
-> *range of different block devices* as required by *block device
-> based filesystems*.
->
-> And that's fundamentally the problem. XFS is block device based, not
-> DAX device based. We require errors to be reported through block
-> device mechanisms. fs-dax does not change this - it is based on pmem
-> being presented as a primarily as a block device to the block device
-> based filesystems and only secondarily as a dax device. Hence if it
-> can be trivially implemented as a block device interface, that's
-> where it should go, because then all the other block devices that
-> the filesytem runs on can provide the same functionality for similar
-> media error events....
+And may I workaround this issue by manually creating a softlink 
+/dev/manualdevice to /dev/mappper/crypt_drbd3? The link will be gone 
+after reboot but btrfs should then find the device by it's UUID, 
+shouldn't it?
 
-Sure, use 'struct badblocks' not struct block_device and
-block_device_operations.
->
-> > The dax_device removal implies one
-> > set of actions (direct accessed pfns invalid) the block device removal
-> > implies another (block layer sector access offline).
->
-> There you go again, saying DAX requires an action, while the block
-> device notification is a -state change- (i.e. goes offline).
+Greetings
 
-There you go reacting to the least generous interpretation of what I said.
+/KNEBB
 
-s/pfns invalid/pfns offline/
 
+Am 02.03.2021 um 02:18 schrieb Qu Wenruo:
 >
-> This is exactly what I said was wrong in my last email.
 >
-> > corrupted_range
-> > is blurring the notification for 2 different failure domains. Look at
-> > the nascent idea to mount a filesystem on dax sans a block device.
-> > Look at the existing plumbing for DM to map dax_operations through a
-> > device stack.
+> On 2021/3/2 上午1:24, Christian Völker wrote:
+>> Hi,
+>>
+>> just a little update on the issue.
+>>
+>> As soon as I omit the encryption part I can easily add the device to the
+>> btrfs filesystem. It does not matter if the crypted device is on top of
+>> DRBD or directly on the /dev/sdc. In both cases btrs refuses to add the
+>> device when a luks-encrypted device is on top.
+>>
+>> In case I am swapping my setup (drbd on top of encryption) and add the
+>> drbd device to btrfs it works without any issues.
+>>
+>> However, I prefer the other way round- and as the other two btrfs
+>> devices are both encryption on top of drbd it should work...
+>>
+>> It appears it does not like to add a third device-mapper device...
+>>
+>> Let me know how I can help in debugging. If i have some time I will
+>> setup a machine trying to reproduce this.
 >
-> Ummm, it just maps the direct_access call to the underlying device
-> and calls it's ->direct_access method. All it's doing is LBA
-> mapping. That's all it needs to do for ->corrupted_range, too.
-> I have no clue why you think this is a problem for error
-> notification...
+> Got the problem reproduced here.
 >
-> > Look at the pushback Ruan got for adding a new
-> > block_device operation for corrupted_range().
+> And surprisingly, it's something related to btrfs-progs, not the kernel.
 >
-> one person said "no". That's hardly pushback. Especially as I think
-> Christoph's objection about this being dax specific functionality
-> is simply wrong, as per above.
+> I just added one debug info in btrfs-progs, it shows:
+>
+> $ sudo ./btrfs dev add /dev/test/scratch2  /mnt/btrfs
+> cmd_device_add: path=dm-5
+> ERROR: error adding device 'dm-5': No such file or directory
+>
+> See the problem?
+>
+> The path which should be passed to kernel lacks the "/dev/test/" prefix,
+> thus it's not pointing to correct path and cause the ENOENT error, since
+> there is no "dm-5" in current path.
+>
+> Thankfully it's already fixed in devel branch with commit 2347b34af4d8
+> ("btrfs-progs: fix device mapper path canonicalization").
+>
+> The offending patch is 922eaa7b5472 ("btrfs-progs: build: fix linking
+> with static libmount"), which is in v5.10.1.
+>
+> You can revert back to v5.10 to workaroud it.
+>
+>
+> TO David,
+>
+> Would you consider to add a new v5.10.2 to fix the problem? As it seems
+> to affect the end user quite badly.
+>
+> Thanks,
+> Qu
+>>
+>> any ideas otherwise? Let me know!
+>>
+>> Thanks!
+>>
+>> /KNEBB
+>>
 
-It's not wrong when we have a perfectly suitable object for sector
-based error notification and when we're trying to disentangle 'struct
-block_device' from 'struct dax_device'.
