@@ -2,122 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8969032B215
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB9132B22A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240069AbhCCB5v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Mar 2021 20:57:51 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:44751 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1837948AbhCBJPo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Mar 2021 04:15:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1614676544; x=1646212544;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lqys5MXEvTKBSvS3WmFhjdv9eLqHBzV2Qh4O5+5gNHM=;
-  b=NZ4um3fTKshHJ+i4RtFXsSfkb2qwjIAnpZ3UJGODvpMtnpNoXGtQBpmu
-   uD+M3x7WHClEj4dvgwLALWkP0nlcopQc7J41IjFf2gZUBxcUP5dflIENy
-   52u8dVTx6cGpLSK/9KPiXZpvKVIL+3mYZsC+CAGFE141fQFSJpPvd8Dqv
-   Nutig1NB33GJ5Qpx/jHZtchohkVq3Ymt90eQbSKV0J7Lol1lPUPeUD8Lr
-   JfcTryOsjidpnGP/+8+XccmxqXO2NlYhbFLgyv5IRfL7e0ypBJSuC+ec8
-   JmX9uOMHPz1stN66AxLBOygmMZu2j54Lb8Ng6FVJL17hPDEuzYuWWAVzu
-   g==;
-IronPort-SDR: mPaiPAvfuO336j2JYe3X5+J/RqYWrkRY5wrunoBCtxx2CApNbZzN4J3KAHcRnWu0F+yyO/AF9k
- XHilXETVggcdtsKIhOhS8yJdr/08LfOWfBwgdSECqI5RhM/1I6xnWYL0sqmoFPZ/ZskLD/QqXm
- 2EyXGWl0qjxbQ21VfERnLW0nvphWKrnCBGwLzUR7SeoNgdHg+1tQ1Xt6PMkBSiIiJkN7A/93zt
- 1p5ycz/j/w5vURnUKrCJytgAS01upnJ2ZqRPXKCK7NHWkSynLajoYtqbMIWMh5jdFkx6zf63nn
- U1c=
-X-IronPort-AV: E=Sophos;i="5.81,216,1610380800"; 
-   d="scan'208";a="165623460"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2021 17:13:15 +0800
-IronPort-SDR: yKXriEGLZc2UVAnVcXdHxvJ7GrOTTbdmULA01Qf8AGT5hpTWRforVMq0vKVoPXEBDstbAFfCKd
- tlxGb3zFNfztPbuKk/vKZuKdPFbDD7E0MyITkqZAmv3C+jgixBCBG81j+WAeK5SZEFjet93Inn
- PdM19KqrGa9ZpWa6yjXzQojLsEeQ0DaThbIWc2pJtlx9uJ4Y3Qgq6Vk62K+SD0YfAAQiRJqxU5
- EAB6Tpfmx+cYek66VdEgtMrhjy8N49v8D9RzYImVqEFFvgQDzwF93vz3pn8Ys+ShWpL2cFznHM
- sRVGV5MhpVVowYnjCw5UZcWz
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 00:54:31 -0800
-IronPort-SDR: N4jZOJUBUEuSuEFIDGDGh70ydIvN7xt7F8awvZyfiHrgpU97FH6+cTGBM3GLqMqDDDtfVRK7Bv
- 9ULLEOid25v+C9Chg1Yg/mXIlLujMgB205VLETr2kt15P4c0hx85cYVnzu23ot7vTfMjgN8s2/
- dp354yviEAH5VsBNUZQtKpPFnOYbfDAJxOnYzNX7rQiir7LVx/kjyONjwK54wOdaK+SY6W10pn
- PkeqCUIlY4LW3SWR6FSSj/ZJYsf8v9kK98ieyiljWmZHtjpJWKd6djsHGT8jtZPsv902kQX8cd
- ukw=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 02 Mar 2021 01:13:16 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 2/2] btrfs: require discard functionality from scratch device
-Date:   Tue,  2 Mar 2021 18:13:05 +0900
-Message-Id: <20210302091305.27828-3-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210302091305.27828-1-johannes.thumshirn@wdc.com>
-References: <20210302091305.27828-1-johannes.thumshirn@wdc.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S241032AbhCCB6B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Mar 2021 20:58:01 -0500
+Received: from ciao.gmane.io ([116.202.254.214]:36530 "EHLO ciao.gmane.io"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1838145AbhCBKIq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:08:46 -0500
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
+        id 1lH1py-0007eb-MC
+        for linux-btrfs@vger.kernel.org; Tue, 02 Mar 2021 11:01:06 +0100
+X-Injected-Via-Gmane: http://gmane.org/
+Mail-Followup-To: linux-btrfs@vger.kernel.org
+To:     linux-btrfs@vger.kernel.org
+From:   Torsten Bronger <bronger@physik.rwth-aachen.de>
+Subject: Re: Unexpected "ERROR: clone: did not find source subvol" on btrfs receive
+Date:   Tue, 02 Mar 2021 11:00:06 +0100
+Organization: Phoenix Foundation
+Message-ID: <87pn0hooyh.fsf@physik.rwth-aachen.de>
+References: <41b096e1-5345-ae9c-810b-685499813183@wetzel-home.de>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=sha256;   protocol="application/pkcs7-signature"
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Cancel-Lock: sha1:+aC0DIUtu7SY+7/0yZ9dSCP9Rik=
+X-PGP-Fingerprint: C5C8 D6E2 79D2 EFE9 8C0F  6D77 D5E3 CEFC 9F51 6B77
+X-Home-Page: http://www.wikipedia.org/wiki/User:Bronger
+X-Face: +wpw"|jN2Fde|7<r"A\7[g0RGE#"N'WgB|46ohZy$RfV+Y!oH=FKMC>_<EQ_IdY;pJcjJrx
+ {m$r$vTG>lKBa0\7!_6<ouwhB1|a+k#?z597ims{Y+POGr7Z{,b]wj]6Z"PqUHzA2\|m(:>suIE_m!
+ x)'S9ytBu8tkt'k779jbzQ4o|p+@H_DCrIdnKG]E*w
+X-Binford: 6100 (more power)
+X-Accept-Language: de, en
+Mail-Copies-To: never
+In-reply-to: <41b096e1-5345-ae9c-810b-685499813183@wetzel-home.de>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Some test cases for btrfs require the scratch device to support discard.
-Check if the scratch device does support discard before trying to execute
-the test.
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- common/rc       | 8 ++++++++
- tests/btrfs/116 | 1 +
- tests/btrfs/156 | 1 +
- 3 files changed, 10 insertions(+)
+Hall=C3=B6chen!
 
-diff --git a/common/rc b/common/rc
-index 7254130ffe22..9fca7f31d6a2 100644
---- a/common/rc
-+++ b/common/rc
-@@ -3513,6 +3513,14 @@ _require_batched_discard()
- 	$FSTRIM_PROG $1 > /dev/null 2>&1 || _notrun "FITRIM not supported on $1"
- }
- 
-+_require_scratch_discard()
-+{
-+	local sdev="$(_short_dev $SCRATCH_DEV)"
-+	local discard=$(cat /sys/block/$sdev/queue/discard_granularity)
-+
-+	[ $discard -gt 0 ] || _notrun "discard not supported"
-+}
-+
- _require_dumpe2fs()
- {
- 	if [ -z "$DUMPE2FS_PROG" ]; then
-diff --git a/tests/btrfs/116 b/tests/btrfs/116
-index 3ed097eccf03..f4db439caef8 100755
---- a/tests/btrfs/116
-+++ b/tests/btrfs/116
-@@ -29,6 +29,7 @@ _cleanup()
- # real QA test starts here
- _supported_fs btrfs
- _require_scratch
-+_require_scratch_discard
- 
- rm -f $seqres.full
- 
-diff --git a/tests/btrfs/156 b/tests/btrfs/156
-index 89c80e7161e2..56206d99c801 100755
---- a/tests/btrfs/156
-+++ b/tests/btrfs/156
-@@ -42,6 +42,7 @@ rm -f $seqres.full
- _supported_fs btrfs
- _require_scratch
- _require_fstrim
-+_require_scratch_discard
- 
- # 1024fs size
- fs_size=$((1024 * 1024 * 1024))
--- 
-2.30.0
+Alexander Wetzel writes:
+
+> I have a strange problem with btrfs send/receive.  While I can
+> create incremental snaphosts but when I try to restore them I
+> reproducible get:
+>
+>> At snapshot 2021-02-20-TEMP
+>> ERROR: clone: did not find source subvol
+
+I observe the same thing regularly (but not every time) and logged
+it for a couple of weeks, using kernel 5.8.0 (Ubuntu 20.04) for send
+and receive, and btrfs-progs v5.4.1.  I use send/receive to sync
+large VirtualBox images between my two laptops and a server.
+
+I observed:
+
+=2D UUID and Receive UUID on both sides match the same way, both if
+  its working or if the error occurs.  (I.e., Receive UUID on one
+  side matches UUID on the other side, which has no Receive UUID.)
+
+=2D The =E2=80=9CGeneration=E2=80=9D and =E2=80=9CGen at creation=E2=80=9D =
+never match, not amongst
+  each other, and not on sending and receiving side.
+
+=2D I *seem* to suffer no data loss due to it.
+
+I am willing to log further things, or test things.
+
+Regards,
+Torsten.
+
+=2D-=20
+Torsten Bronger
+
+--=-=-=
+Content-Type: application/pkcs7-signature; name=smime.p7s
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=smime.p7s
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEI8w
+ggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYTAkRFMSsw
+KQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYDVQQLDBZULVN5
+c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFsUm9vdCBDbGFzcyAy
+MB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNVBAYTAkRFMUUwQwYDVQQK
+EzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMg
+ZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERGTi1WZXJlaW4gQ2VydGlmaWNhdGlv
+biBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMtg1/9moUHN0vqH
+l4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZsFVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8F
+XRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0peQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+Ba
+L2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qL
+NupOkSk9s1FcragMvp0049ENF4N1xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz
+9AkH4wKGMUZrAcUQDBHHWekCAwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQU
+k+PYMiba1fFKpZFK4OpL4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYD
+VR0TAQH/BAgwBgEB/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGC
+LB4wCAYGZ4EMAQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUv
+cmwvVGVsZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYB
+BQUHMAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
+Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5jZXIw
+DQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4eTizDnS6
+dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/MOaZ/SLick0+
+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3SPXez7vTXTf/D6OWS
+T1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc22CzeIs2LgtjZeOJVEqM7
+h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bPZYoaorVyGTkwggWsMIIElKAD
+AgECAgcbY7rQHiw9MA0GCSqGSIb3DQEBCwUAMIGVMQswCQYDVQQGEwJERTFFMEMGA1UEChM8VmVy
+ZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYu
+MRAwDgYDVQQLEwdERk4tUEtJMS0wKwYDVQQDEyRERk4tVmVyZWluIENlcnRpZmljYXRpb24gQXV0
+aG9yaXR5IDIwHhcNMTYwNTI0MTEzODQwWhcNMzEwMjIyMjM1OTU5WjCBjTELMAkGA1UEBhMCREUx
+RTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5n
+c25ldHplcyBlLiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9i
+YWwgSXNzdWluZyBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ07eRxH3h+Gy8Zp
+1xCeOdfZojDbchwFfylfS2jxrRnWTOFrG7ELf6Gr4HuLi9gtzm6IOhDuV+UefwRRNuu6cG1joL6W
+LkDh0YNMZj0cZGnlm6Stcq5oOVGHecwX064vXWNxSzl660Knl5BpBb+Q/6RAcL0D57+eGIgfn5mI
+TQ5HjUhfZZkQ0tkqSe3BuS0dnxLLFdM/fx5ULzquk1enfnjK1UriGuXtQX1TX8izKvWKMKztFwUk
+P7agCwf9TRqaA1KgNpzeJIdl5Of6x5ZzJBTN0OgbaJ4YWa52fvfRCng8h0uwN89Tyjo4EPPLR22M
+ZD08WkVKusqAfLjz56dMTM0CAwEAAaOCAgUwggIBMBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
+AQH/BAQDAgEGMCkGA1UdIAQiMCAwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAdBgNV
+HQ4EFgQUazqYi/nyU4na4K2yMh4JH+iqO3QwHwYDVR0jBBgwFoAUk+PYMiba1fFKpZFK4OpL4qIM
+z+EwgY8GA1UdHwSBhzCBhDBAoD6gPIY6aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwtcm9v
+dC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDBAoD6gPIY6aHR0cDovL2NkcDIucGNhLmRmbi5kZS9n
+bG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDCB3QYIKwYBBQUHAQEEgdAwgc0wMwYI
+KwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4uZGUvT0NTUC1TZXJ2ZXIvT0NTUDBKBggrBgEF
+BQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1jYS9wdWIvY2FjZXJ0
+L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZ2xvYmFsLXJv
+b3QtZzItY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0MA0GCSqGSIb3DQEBCwUAA4IBAQCBeEWkTqR/
+DlXwCbFqPnjMaDWpHPOVnj/z+N9rOHeJLI21rT7H8pTNoAauusyosa0zCLYkhmI2THhuUPDVbmCN
+T1IxQ5dGdfBi5G5mUcFCMWdQ5UnnOR7Ln8qGSN4IFP8VSytmm6A4nwDO/afr0X9XLchMX9wQEZc+
+lgQCXISoKTlslPwQkgZ7nu7YRrQbtQMMONncsKk/cQYLsgMHM8KNSGMlJTx6e1du94oFOO+4oK4v
+9NsH1VuEGMGpuEvObJAaguS5Pfp38dIfMwK/U+d2+dwmJUFvL6Yb+qQTkPp8ftkLYF3sv8pBoGH7
+EUkp2KgtdRXYShjqFu9VNCIaE40GMIIFxTCCBK2gAwIBAgIMITwlCcbKdKftcTO4MA0GCSqGSIb3
+DQEBCwUAMIGNMQswCQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVp
+bmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUw
+IwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBMB4XDTE5MDcwMzEzMDI1NVoXDTIy
+MDcwMjEzMDI1NVowWTELMAkGA1UEBhMCREUxFDASBgNVBAoMC1JXVEggQWFjaGVuMRowGAYDVQQL
+DBFGYWNoZ3J1cHBlIFBoeXNpazEYMBYGA1UEAwwPVG9yc3RlbiBCcm9uZ2VyMIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxIt1wvBlWL2/0G7NCH8mUFfYMKxDGvkhTDYpmB4k+6GtNT9l
+2mka4RjFpNyd/e5l3/ocZ3IhmGKwAaqB6tuIuIfgYP5J1jZ5msb11uHL7Bpx7phFXC6EG0ML3zk0
+qcdSibcSHVtxiaI7fl+O1y9XGc0DVXVTWn15uv2SsXNXhVHTGe6Z+wpdCssWV2pi+b4crAAp7K3t
+2mUikg/uacH4R8YGoCUPVDitg3U+KUQK8PSFjBU+4FmS9fkXDdu8HeEWQevJqfPdMl4KTkPaR4iz
+SoP4pagxRsGZ4CsweHt4NvrfDkFxmNuocXs1urmnCgYV9L7iZpkWdFyP6RVfiNae0wIDAQABo4IC
+VjCCAlIwPgYDVR0gBDcwNTAPBg0rBgEEAYGtIYIsAQEEMBAGDisGAQQBga0hgiwBAQQEMBAGDisG
+AQQBga0hgiwCAQQEMAkGA1UdEwQCMAAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUF
+BwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUNZQD5+pPH0gqw7F8YDbUDcYUuJowHwYDVR0jBBgwFoAU
+azqYi/nyU4na4K2yMh4JH+iqO3QwKAYDVR0RBCEwH4EdYnJvbmdlckBwaHlzaWsucnd0aC1hYWNo
+ZW4uZGUwgY0GA1UdHwSBhTCBgjA/oD2gO4Y5aHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tY2Et
+Z2xvYmFsLWcyL3B1Yi9jcmwvY2FjcmwuY3JsMD+gPaA7hjlodHRwOi8vY2RwMi5wY2EuZGZuLmRl
+L2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9jYWNybC5jcmwwgdsGCCsGAQUFBwEBBIHOMIHLMDMG
+CCsGAQUFBzABhidodHRwOi8vb2NzcC5wY2EuZGZuLmRlL09DU1AtU2VydmVyL09DU1AwSQYIKwYB
+BQUHMAKGPWh0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0
+L2NhY2VydC5jcnQwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWds
+b2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwDQYJKoZIhvcNAQELBQADggEBAE95rsRSu+9O
+2hw2ZEmTXrVZLN52MNXJbOwdXguommCHvIuxkxaNwIUHEF3pVo5Z5UO55oZZaIcFyw2PS9XUhYkN
+rh4T5Lp6Nqca0b3AfZOBcR16FD3bbUIpPdSQQwkuQCPiXEMam2QjCUfyC3oYja+bmPU2JDiKpunY
+NJ6/KEp4Yi32U5YEKvkr7ixzl13IKdLoNjO79VCz0iXi9aZ82ixcEli3CXEDxWbo601OTm8abNUX
+6QUomu5IDPGAPK65GimsXJbNYN2lhayrgGYKMslQd2ygVm2x5amfrxo1j9I6XvfnnVO1BtJ+e8Cm
+BPZgGN3+6fE9G6c9IvEhfKUeWZoxggJgMIICXAIBATCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNV
+BAoMPFZlcmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHpl
+cyBlLiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNz
+dWluZyBDQQIMITwlCcbKdKftcTO4MA0GCWCGSAFlAwQCAQUAoIGTMBgGCSqGSIb3DQEJAzELBgkq
+hkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDMwMjEwMDAwNlowKAYJKoZIhvcNAQkPMRswGTAL
+BglghkgBZQMEAQIwCgYIKoZIhvcNAwcwLwYJKoZIhvcNAQkEMSIEID/3qEv0p/3lXFVBmOTpm1iI
+JUVcIk9PwX0fC7SQKc6cMA0GCSqGSIb3DQEBAQUABIIBAK+f8J9Psk0fPehNE7CC7z1f3hbFk9c2
+boHFMELn/9Lkokj3O/tX2EWnc8sxcTTFrrvsA2nzA2aW9YHRTOBl6NTUDNZLGhVBCg3eR2+qRebi
+7GSaBCY01uW4znkJccC6l2bzkFHx/HzVxTuWzuZBVpyHVxQQmPAckRTP/5cOQxhKIv0PK+ePcI+F
+kESaqn380hz5cmAH7P6nIa4QchmJzfT/nFQ6NCb1nqdidv2oMuGHvCqWums+C6ZFL5GfiNGu6vHv
+jmYtQV0EaQ1jfR9OyGwNAjqmRSmCcWlvJKA1kh5ZNmqoE/kUWMBMH8xjynXbiLFfDqPb6mC0GjRE
+pMWatQ4AAAAAAAA=
+--=-=-=--
 
