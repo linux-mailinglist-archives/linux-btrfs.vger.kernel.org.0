@@ -2,267 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA9F32A13C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Mar 2021 14:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE96432A159
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Mar 2021 14:49:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347527AbhCBF3f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Mar 2021 00:29:35 -0500
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:35965 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245010AbhCAWuT (ORCPT
+        id S1347624AbhCBFuw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Mar 2021 00:50:52 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:27109 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235849AbhCBAT5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:50:19 -0500
-Received: from dread.disaster.area (pa49-179-130-210.pa.nsw.optusnet.com.au [49.179.130.210])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 96FFC78B08D;
-        Tue,  2 Mar 2021 09:46:41 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lGrJI-00AYOj-RV; Tue, 02 Mar 2021 09:46:40 +1100
-Date:   Tue, 2 Mar 2021 09:46:40 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
-Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
-Message-ID: <20210301224640.GG4662@dread.disaster.area>
-References: <20210226190454.GD7272@magnolia>
- <CAPcyv4iJiYsM5FQdpMvCi24aCi7RqUnnxC6sM0umFqiN+Q59cg@mail.gmail.com>
- <20210226205126.GX4662@dread.disaster.area>
- <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
- <20210226212748.GY4662@dread.disaster.area>
- <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
- <20210227223611.GZ4662@dread.disaster.area>
- <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
- <20210228223846.GA4662@dread.disaster.area>
- <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
+        Mon, 1 Mar 2021 19:19:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1614644323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eyUB7At0trJam76pIZ/3nPAQ0Ux/fYhTHC5+m1EyJbU=;
+        b=PdzvEyvxYf1SjWU6rZTwSKI/GNNsIRnafemAPGR/PSEpYQyuT/QYmyIWivkx5H8qDs7Q2T
+        t7F3fH25OVKjlSOnfU9lkTJW5EbkoRo0wbd1Wn5VQwsQcT6EnwAhqDYRw+OOXZVhEEOV17
+        45uXlolFpW2fsHVuLHMqnm2o6ACIJjQ=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2111.outbound.protection.outlook.com [104.47.18.111])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-33-dzUiLhcfMAS-YA-JgC9NJw-1; Tue, 02 Mar 2021 01:18:42 +0100
+X-MC-Unique: dzUiLhcfMAS-YA-JgC9NJw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J2fiRuXtclhx1lSf1pTMyVjs3uzI2k2Dh+rdfQOkcZ57h43+jdg/RRBhh/Km5ZH9hc9d2ZX+K4IQoqqMqmz6LI+/QC+qkiL+K3w3A68qy5SJTDGCnc0s0/l9AuuY8pH9aIM0DnE54/3QRaBNaJnWDAh3sVAIlfYKtWfj2ce8Jbd28acDZjKN1M4tTcGrt6h2hWhtem/5pKyAzbu4LZ4lb1mt3sZoOtRKyGUUzgMoZZgzvN2GrmqMa2Y1pMLk2842Y5IXPbpGnkaL1ymAPkOdUHCoWFpvD2uZNeP6fi0S0yYi/yaAi9Ah3EaqiMlcLPQrBJCb0JPgAp65Fd2/CDB1Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6czF7fsbEhtBA4aE+SUGHTatcnlnLATA61EOsFSLFn0=;
+ b=F98RCc5gAubID2cJIUALWZoBLfPRG2Bdx5ex2xpDoBfhwQvI4X8+++NeOX7ZHwt/fE36Je/i/2ccS72S6cz92Dl24TH7fNfblr66NyRe/3XlUwMGf4u9toYVSnOGNahMnUgChSUv6+ZVgnX+8jyiT9h04s/Oj8FzKewMgEi0rHFbbk1Xp8O8wh4NPkNFzczShg8yPgtEd1hZ1n/iPCAay+BWLiPUx03PmVuJIp1h6aKLpcqWW3r/c34LkloqlUP6+nqamjuUuIvKiY9hctrsWG7UjdjTXqXCGDRTooPGbsjZFA6HGbv5p0Yuwhce/+9ketDNJhBHqj/s3XXwbmp6Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM5PR04MB3155.eurprd04.prod.outlook.com (2603:10a6:206:4::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Tue, 2 Mar
+ 2021 00:18:41 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::355a:d09c:cbf8:657e]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::355a:d09c:cbf8:657e%6]) with mapi id 15.20.3868.036; Tue, 2 Mar 2021
+ 00:18:41 +0000
+Subject: Re: [PATCH 00/12] btrfs: support read-write for subpage metadata
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20210222063357.92930-1-wqu@suse.com>
+ <20210301163045.GY7604@twin.jikos.cz>
+From:   Qu Wenruo <wqu@suse.com>
+Message-ID: <64219e86-9a0e-67a5-25bb-486482204978@suse.com>
+Date:   Tue, 2 Mar 2021 08:18:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+In-Reply-To: <20210301163045.GY7604@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: BY5PR17CA0001.namprd17.prod.outlook.com
+ (2603:10b6:a03:1b8::14) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=JD06eNgDs9tuHP7JIKoLzw==:117 a=JD06eNgDs9tuHP7JIKoLzw==:17
-        a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=7-415B0cAAAA:8
-        a=A7xB1iZnyS4vYbptKj0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BY5PR17CA0001.namprd17.prod.outlook.com (2603:10b6:a03:1b8::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Tue, 2 Mar 2021 00:18:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 393ccc90-e4e8-459f-a51d-08d8dd10bb9a
+X-MS-TrafficTypeDiagnostic: AM5PR04MB3155:
+X-MS-Exchange-MinimumUrlDomainAge: github.com#4893
+X-Microsoft-Antispam-PRVS: <AM5PR04MB3155D8F4644FDF406657C4F0D6999@AM5PR04MB3155.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: K3j2ipl+GU74AftDQnZA7I0Wa1JF1ztlWjtU3IP1K5ux2oqx9K7RgzQs+xAYPicesGUzgvMmytwFBAf6w7A835UValbbDYWUeD54Baog9cPqvRV0zphKgZBKG9K5+9nrMcc009tVkotBUXKMchPPyUY+yudLhb0b5RGuQceXdkHYYBdh5T5wwTzVp6e+Ruo8ldhymGxN9+uBrzy5Ay/BvOW14GYsxKnoZVcn2+OfGfpmo11RgjG0wyiU19Y08FeOdUWFaZ1E0PxQU91aituaIR1gLNS9Bt579Yi1LpbSQXdV4HySSJuhDwfKw/n+Yk1fdYsIToucV/EolIhTTbWfg/WL/AlReJXYSquc2oFsIcEGm+7s+3ZA07OfdHKNOaCG2efCCs573xC0fTXrUBqtX5R+abL6FVBlLtSOZ4UjhB73g06BBSe41lNQU8UtP82enIyjKL7i5sSKbw59CLFV3mhFewKxBBjw3gSctcRtJ77uBjgW03VaawglrGJimp4CipKPEsyXc1y3r9pg8yNN9CBJ4y9h7Yu4lwMRDUB1MTxBZf2RAIXtdFf+70t9vDo4HvQ27sL4K1iOrqxbs1PzyCReWiKtdiKGdUsSpCWlXhYCEea+1h7+Arsb9cVHP4EiIZp9aXI/PCWL+7iyfCctPX+f8zRK7gRuKJAKuqbnwsgmJxwLFvsuDf2khrEE39sQl6IAvMcBFx5Z+qXmEzZdMA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(136003)(346002)(396003)(366004)(6706004)(956004)(8936002)(186003)(478600001)(6666004)(36756003)(8676002)(6486002)(316002)(966005)(83380400001)(86362001)(31696002)(26005)(16526019)(2906002)(31686004)(5660300002)(2616005)(66476007)(66556008)(52116002)(66946007)(16576012)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3Nkrqqe58Q8Hvvgg+CDgjRJVobEJG4JhmWOLtL//dhAzHVpCX4wpbBDlsADI?=
+ =?us-ascii?Q?qVK4A4hdKt2Srv1riafFk4/pWil5dM+m0R4wFAcGiSasHrxuGfyrthsH24eA?=
+ =?us-ascii?Q?GndiFQtMoi60q41ZUJK04qC3JCGV1XU3RWjrASL5/31FYZvdK3YzD0KAEk8F?=
+ =?us-ascii?Q?h13WuFdtXSWeAQuWsfEiWNKy1L0gaRhC2ZXxcYoAp+tGJck6padF3MpUg3IQ?=
+ =?us-ascii?Q?LYPcHDWjwfTR64M2BG++z2XpLPdqwAs4HShb2EesmiEI/M/Rvsba7as4WDhT?=
+ =?us-ascii?Q?9zZUBaixA2gMakU6bM0iTDuUdQ8hpqJp2Q729vpgXZu0Wg69NvTss+tuRB0f?=
+ =?us-ascii?Q?0aHWZkzK3BcX+rXn6CmdfA9hCL2R06huAwtLcyeVTsfUYAyo2Cl6BD9g8eKp?=
+ =?us-ascii?Q?66I9chfI+hqoITGtGCu4DqfBhGGJWtYh7ekEG21pqX0fa3aw1ZjEgcesuDQP?=
+ =?us-ascii?Q?BNxrSzyh3BmiitSUzx9rY0n3VoQlBNEdc7k5TZVvLIsLXWTpDWXgb1UUOFxS?=
+ =?us-ascii?Q?VesTtV/TrSffJtASqxsW8TgrOJcswcjT+6Mon6bQm+5tkgKN0pXIQ8aApy65?=
+ =?us-ascii?Q?8xIR3vV+oOVATwaNEWsc74UOv9VF4gYXK2wcEvZzQ3O5KNOFfBZNmjfXZA/a?=
+ =?us-ascii?Q?71vMEzPL5FbnoGQBxz0XEWCNL3mpDGOxu02iKj/OdKekdA5hYgrPUPcBsfZ6?=
+ =?us-ascii?Q?ebG7/jsJoRBrBeJ2iJ5mnWJrncIBW8TkpjkzGayguXcd8ESjPhbj4dIGEYC6?=
+ =?us-ascii?Q?teQdUZhM4qGPKTJV8MxistjQb9oMz3wquxslk2F4hML09zz6G7Jz9JKftLUS?=
+ =?us-ascii?Q?/ahmOsNohe7WLb5OizbkPtiNRgWkI7ZCplgH2ZAMeBPbfnwVVMKGFGcM9xyK?=
+ =?us-ascii?Q?63oAi5okfBOdhshThsNJje/M0DFWnE79kVUrUVDQDS6xycPnmLiIH77JmBKD?=
+ =?us-ascii?Q?//EZ3sf7wPomlS5L+4oWIMT0LPNkdVFITrhth2tmHnrMTYsQXNKg/Nf5bzQp?=
+ =?us-ascii?Q?5Nn4c8MULiyCa04A8BCQk2nH49eQBfPL3mT1U/95dPprdi6L9CdAKvCBuRpk?=
+ =?us-ascii?Q?NbbJvxj6LR7mcloTLs5HR3So16qmoqVPrtxfF0zT17ngYjqnw/3gl9+/4Ggr?=
+ =?us-ascii?Q?dwaSmfeINmQJHcJIUd5Mu6z6r0zUTK5yB1SgkDlzIUVneb7HAYBnrbp36qRN?=
+ =?us-ascii?Q?H8b0jrxuc521olCb/3Fgu+if2E+V2vopHR974rk21YMn9hftRgycbKo6/spC?=
+ =?us-ascii?Q?AcLdQ1b2zHF1jKMnNo2NgbSTrwU878BXu5usrLjo631kxUgB+W6r3SpLCKEa?=
+ =?us-ascii?Q?A5+ao5cb7as+uDaoEUh4miyL?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 393ccc90-e4e8-459f-a51d-08d8dd10bb9a
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 00:18:41.3607
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ogcEpwkHEfBAdBYyuun1N/rOcqBZH69Co51flPKSkTN+D5qo1HKr0jrLjeIL5pd+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3155
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 12:55:53PM -0800, Dan Williams wrote:
-> On Sun, Feb 28, 2021 at 2:39 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Sat, Feb 27, 2021 at 03:40:24PM -0800, Dan Williams wrote:
-> > > On Sat, Feb 27, 2021 at 2:36 PM Dave Chinner <david@fromorbit.com> wrote:
-> > > > On Fri, Feb 26, 2021 at 02:41:34PM -0800, Dan Williams wrote:
-> > > > > On Fri, Feb 26, 2021 at 1:28 PM Dave Chinner <david@fromorbit.com> wrote:
-> > > > > > On Fri, Feb 26, 2021 at 12:59:53PM -0800, Dan Williams wrote:
-> > > > it points to, check if it points to the PMEM that is being removed,
-> > > > grab the page it points to, map that to the relevant struct page,
-> > > > run collect_procs() on that page, then kill the user processes that
-> > > > map that page.
-> > > >
-> > > > So why can't we walk the ptescheck the physical pages that they
-> > > > map to and if they map to a pmem page we go poison that
-> > > > page and that kills any user process that maps it.
-> > > >
-> > > > i.e. I can't see how unexpected pmem device unplug is any different
-> > > > to an MCE delivering a hwpoison event to a DAX mapped page.
-> > >
-> > > I guess the tradeoff is walking a long list of inodes vs walking a
-> > > large array of pages.
-> >
-> > Not really. You're assuming all a filesystem has to do is invalidate
-> > everything if a device goes away, and that's not true. Finding if an
-> > inode has a mapping that spans a specific device in a multi-device
-> > filesystem can be a lot more complex than that. Just walking inodes
-> > is easy - determining whihc inodes need invalidation is the hard
-> > part.
-> 
-> That inode-to-device level of specificity is not needed for the same
-> reason that drop_caches does not need to be specific. If the wrong
-> page is unmapped a re-fault will bring it back, and re-fault will fail
-> for the pages that are successfully removed.
-> 
-> > That's where ->corrupt_range() comes in - the filesystem is already
-> > set up to do reverse mapping from physical range to inode(s)
-> > offsets...
-> 
-> Sure, but what is the need to get to that level of specificity with
-> the filesystem for something that should rarely happen in the course
-> of normal operation outside of a mistake?
 
-Dan, you made this mistake with the hwpoisoning code that we're
-trying to fix that here. Hard coding a 1:1 physical address to
-inode/offset into the DAX mapping was a bad mistake. It's also one
-that should never have occurred because it's *obviously wrong* to
-filesystem developers and has been for a long time.
 
-Now we have the filesytem people providing a mechanism for the pmem
-devices to tell the filesystems about physical device failures so
-they can handle such failures correctly themselves. Having the
-device go away unexpectedly from underneath a mounted and active
-filesystem is a *device failure*, not an "unplug event".
+On 2021/3/2 =E4=B8=8A=E5=8D=8812:30, David Sterba wrote:
+> On Mon, Feb 22, 2021 at 02:33:45PM +0800, Qu Wenruo wrote:
+>> This patchset can be fetched from the following github repo, along with
+>> the full subpage RW support:
+>> https://github.com/adam900710/linux/tree/subpage
+>>
+>> This patchset is for metadata read write support.
+>>
+>> [TEST]
+>> Since the data write path is not included in this patchset, we can't
+>> really test it, but during the lunar new year vocation, I have tested
+>> the full RW patchset with "fstresss -n 10000 -p2" on my Aarch64 board.
+>>
+>> And the full RW patchset survives without any crash for a full week.
+>>
+>> There is only one remaining bug exposed during the test, that we have
+>> random data checksum mismatch, which is still under investigation.
+>>
+>> But the metadata part should be OK for submission.
+>>
+>> [DIFFERENCE AGAINST REGULAR SECTORSIZE]
+>> The metadata part in fact has more new code than data part, as it has
+>> some different behaviors compared to the regular sector size handling:
+>>
+>> - No more page locking
+>>    Now metadata read/write relies on extent io tree locking, other than
+>>    page locking.
+>>    This is to allow behaviors like read lock one eb while also try to
+>>    read lock another eb in the same page.
+>>    We can't rely on page lock as now we have multiple extent buffers in
+>>    the same page.
+>>
+>> - Page status update
+>>    Now we use subpage wrappers to handle page status update.
+>>
+>> - How to submit dirty extent buffers
+>>    Instead of just grabbing extent buffer from page::private, we need to
+>>    iterate all dirty extent buffers in the page and submit them.
+>>
+>> Qu Wenruo (12):
+>>    btrfs: subpage: introduce helper for subpage dirty status
+>>    btrfs: subpage: introduce helper for subpage writeback status
+>>    btrfs: disk-io: allow btree_set_page_dirty() to do more sanity check
+>>      on subpage metadata
+>>    btrfs: disk-io: support subpage metadata csum calculation at write
+>>      time
+>>    btrfs: extent_io: make alloc_extent_buffer() check subpage dirty
+>>      bitmap
+>>    btrfs: extent_io: make the page uptodate assert check to handle
+>>      subpage
+>>    btrfs: extent_io: make set/clear_extent_buffer_dirty() to support
+>>      subpage sized metadata
+>>    btrfs: extent_io: make set_btree_ioerr() accept extent buffer and
+>>      handle subpage metadata
+>>    btrfs: extent_io: introduce end_bio_subpage_eb_writepage() function
+>>    btrfs: extent_io: introduce write_one_subpage_eb() function
+>>    btrfs: extent_io: make lock_extent_buffer_for_io() to support subpage
+>>      metadata
+>>    btrfs: extent_io: introduce submit_eb_subpage() to submit a subpage
+>>      metadata page
+>=20
+> Please don't use "extent_io" nor "disk-io" in subjects.
+>=20
+Oh, those patches are too old before the naming schema change.
 
-The mistake you made was not understanding how filesystems work,
-nor actually asking filesystem developers what they actually needed.
-You're doing the same thing here - you're telling us what you think
-the solution filesystems need is. Please listen when we say "that is
-not sufficient" because we don't want to be backed into a corner
-that we have to fix ourselves again before we can enable some basic
-filesystem functionality that we should have been able to support on
-DAX from the start...
+I should recheck all the checklist on them.
 
-> > > There's likely always more pages than inodes, but perhaps it's more
-> > > efficient to walk the 'struct page' array than sb->s_inodes?
-> >
-> > I really don't see you seem to be telling us that invalidation is an
-> > either/or choice. There's more ways to convert physical block
-> > address -> inode file offset and mapping index than brute force
-> > inode cache walks....
-> 
-> Yes, but I was trying to map it to an existing mechanism and the
-> internals of drop_pagecache_sb() are, in coarse terms, close to what
-> needs to happen here.
+Thanks,
+Qu
 
-No.
-
-drop_pagecache_sb() is not a relevant model for telling a filesystem
-that the block device underneath has gone away, nor for a device to
-ensure that access protections that *are managed by the filesystem*
-are enforced/revoked sanely.
-
-drop_pagecache_sb() is a brute-force model for invalidating user
-data mappings that the filesystem performs in response to such a
-notification. It only needs this brute-force approach if it has no
-other way to find active DAX mappings across the range of the device
-that has gone away.
-
-But this model doesn't work for direct mapped metadata, journals or
-any other internal direct filesystem mappings that aren't referenced
-by inodes that the filesytem might be using. The filesystem still
-needs to invalidate all those mappings and prevent further access to
-them, even from within the kernel itself.
-
-Filesystems are way more complex than pure DAX devices, and hence
-handle errors and failure events differently. Unlike DAX devices, we
-have both internal and external references to the DAX device, and we
-can have both external and internal direct maps.  Invalidating user
-data mappings is all dax devices need to do on unplug, but for
-filesystems it is only a small part of what we have to do when a
-range of a device goes bad.
-
-IOWs, there is no "one size fits all" approach that works for all
-filesystems, nor is there one strategy that is is optimal for all
-filesystems. Failure handling in a filesystem is almost always
-filesystem specific...
-
-> > > Ok, I think I set this discussion in the wrong direction implying any
-> > > mapping of this action to a "filesystem dead" event. It's just a "zap
-> > > all ptes" event and upper layers recover from there.
-> >
-> > Yes, that's exactly what ->corrupt_range() is intended for. It
-> > allows the filesystem to lock out access to the bad range
-> > and then recover the data. Or metadata, if that's where the bad
-> > range lands. If that recovery fails, it can then report a data
-> > loss/filesystem shutdown event to userspace and kill user procs that
-> > span the bad range...
-> >
-> > FWIW, is this notification going to occur before or after the device
-> > has been physically unplugged?
-> 
-> Before. This will be operations that happen in the pmem driver
-> ->remove() callback.
-> 
-> > i.e. what do we do about the
-> > time-of-unplug-to-time-of-invalidation window where userspace can
-> > still attempt to access the missing pmem though the
-> > not-yet-invalidated ptes? It may not be likely that people just yank
-> > pmem nvdimms out of machines, but with NVMe persistent memory
-> > spaces, there's every chance that someone pulls the wrong device...
-> 
-> The physical removal aspect is only theoretical today.
-
-For actual pmem, maybe. But hotplug RAM is a thing; big numa
-machines that can hotplug nodes into their fabric and so have CPUs
-and memory able to come and go from a live machine. It's not a small
-stretch to extend that to having PMEM in those nodes. So it's a
-practical design concern right now, even ignoring that NVMe is
-hotplug....
-
-> While the pmem
-> driver has a ->remove() path that's purely a software unbind
-> operation. That said the vulnerability window today is if a process
-> acquires a dax mapping, the pmem device hosting that filesystem goes
-> through an unbind / bind cycle, and then a new filesystem is created /
-> mounted. That old pte may be able to access data that is outside its
-> intended protection domain.
-
-So what is being done to prevent stale DAX mappings from being
-leaked this way right now, seeing as the leak you mention here
-doesn't appear in any way to be filesystem related?
-
-> Going forward, for buses like CXL, there will be a managed physical
-> remove operation via PCIE native hotplug. The flow there is that the
-> PCIE hotplug driver will notify the OS of a pending removal, trigger
-> ->remove() on the pmem driver, and then notify the technician (slot
-> status LED) that the card is safe to pull.
-
-That doesn't protect against pulling the wrong device, or having
-someone pull the device without first running an admin command that
-makes systems using DAX safe to pull the device....
-
-And once you take into account that "pulling the wrong device" can
-happen, how does the filesystem tell tell the difference between a
-device being pulled and a drive cage just dying and so the drive
-just disappear from the system? How are these accidental vs real
-failures any different from the perspective of a filesystem mounted
-on that device?
-
-And then there is the elephant in the room: if there's a "human in
-the loop" step needed to hot unplug a pmem device safely, then
-why the hell is the filesystem on that device still mounted and the
-DAX applications still running?
-
-This just makes no sense at all from an operations perspective - if
-you know that you are about to do an unplug that will result in all
-your DAX apps and filesystems being killed (i.e. fatal production
-environment failure) then why haven't they all been stopped by the
-admin before the device unplug is done? Why does this "human in the
-loop" admin task require the applications and filesystems to handle
-this without warning and have to treat it as a "device failure"
-event when this can all be avoided for normal, scheduled, controlled
-unplug operations? The "unexpected unplug" is a catastrophic failure
-event which may have severe side effects on system operation and
-stability. Why would you design an unplug process that does not
-start with a clean, a controlled shutdown process from the top down?
-If we make the assumption that planned unplugs are well planned,
-organised and scheduled, then the only thing that an unplug event
-needs to mean to a filesystem is "catastrophic device failure has
-occurred".
-
-So from a system level, the way you are describing the way hot
-unplug events are supposed to occur and work looks completely
-screwed up to me. Exactly what use case do you have for pmem device
-hot-unplug from under a live filesystem that isn't considered a
-*catastrophic runtime device failure* by the filesystem?
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
