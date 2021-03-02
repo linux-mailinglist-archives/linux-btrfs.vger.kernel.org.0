@@ -2,195 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC27C32B1AF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7011A32B1B8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238150AbhCCBzm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Mar 2021 20:55:42 -0500
-Received: from mout.gmx.net ([212.227.17.21]:58927 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381445AbhCBHcz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:32:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614670267;
-        bh=RyMiRwE+xvJzglLAopMZQGkqL3gmSoc1A7c2zNYOuec=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=VneZ8NozsV3oN5YQNnz4VYdhHyFtrI0DuNM5bEBEGZCmcWTC/DX5fuKgGlWPluIsU
-         qls4kh4tr+WQfZV3SpRAf8y5OLZzzMimUTtNnxt/bDkYbUJF8AGY5K2wxlefu9pkET
-         y52teXi/ks0ZzWplJe3+YG35uShW+QLOEmMLCs+c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Ml6m4-1ldudj0gvs-00lR67; Tue, 02
- Mar 2021 08:31:07 +0100
-To:     =?UTF-8?Q?Christian_V=c3=b6lker?= <cvoelker@knebb.de>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <36a13b99-7003-d114-568d-6c03b66190b2@knebb.de>
- <4744a69e-0adb-7cad-577e-7f17741519be@knebb.de>
- <6e37dc95-cca7-a7fc-774a-87068f03c16b@gmx.com>
- <4890dd37-3ef1-e589-9fd1-543a993436c4@knebb.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Adding Device Fails - Why?
-Message-ID: <f2237d9e-bd3a-f694-b64e-f229b67a1064@gmx.com>
-Date:   Tue, 2 Mar 2021 15:31:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S238463AbhCCB4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Mar 2021 20:56:17 -0500
+Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:33075 "EHLO
+        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376815AbhCBIAl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:00:41 -0500
+Received: from dread.disaster.area (pa49-179-130-210.pa.nsw.optusnet.com.au [49.179.130.210])
+        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 740D3105F88;
+        Tue,  2 Mar 2021 18:57:37 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lGzuS-00B8zi-8j; Tue, 02 Mar 2021 18:57:36 +1100
+Date:   Tue, 2 Mar 2021 18:57:36 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+Message-ID: <20210302075736.GJ4662@dread.disaster.area>
+References: <20210226205126.GX4662@dread.disaster.area>
+ <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
+ <20210226212748.GY4662@dread.disaster.area>
+ <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
+ <20210227223611.GZ4662@dread.disaster.area>
+ <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
+ <20210228223846.GA4662@dread.disaster.area>
+ <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
+ <20210302032805.GM7272@magnolia>
+ <CAPcyv4jXH0F+aii6ZtYQ3=Rx-mOWM7NFHC9wVxacW-b1o_s20g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4890dd37-3ef1-e589-9fd1-543a993436c4@knebb.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jZBMwQjdmLnk+F2QdorEMug44LFxv8MssTMAj7Zd01JCbDO/ec8
- M+Py/28U6lVTC7cZvHUr/5wASKpXM2NAyW9VrYJdwoSwLYDMoe6vZYCtDzW3kPOf7wEyhZ5
- IYMxZW9TvHCtR2WYJEeXRaZc9RWviZpx/lJx6nfk2NahHqGhSSCrtvjRENlkRqwCWgs2dO9
- uPeI4PxUt9m5Px39S++bg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MYTqOE8INJ4=:OXxgo7RP/FfzqJag+ryZA+
- BlrOW/jjk9pohZfBsZ5Aec6EuQ9OS2JqKRTNP1Nh/8vWljFoxMuSGikLikqr4e5+WpP5Glpv0
- piQHim7egkKGQYCbUSRGQ9fDbzKBUvbzhHZXWnOemx1befFO7uh+LOTbUjPNJUpbdJmosij0u
- HczVDr5HaysRV6AvyjKaXEONCnI1CuJxpBP44FjluwR5/Wku+WDVwcoA71ppwl5v0rd3FDnZE
- tH9j8w6YvdJZSXpH1dUnsrf4+l5EBJQfxNHKFQMF1HCg1Vu0dXc5JhFSDl4yuehvZQKZ/OAIW
- 9Uytw73lARrdf5jvdQbIlzAFZhX1ctC0v1IwGbYjQAmh4NBeNUiGczBT/a7ZSLh1b7uOye9Ss
- /5D8KhLgCp8Mt3yeTqb/22Y/JEI0pxWopfDHyWASoOTZz+tBGAOleNz6nsfs869j6mgMXIlWJ
- 0m6qkHgDZ8ScOM6OpSx6mOglSL/QI9uh2bDMJvut+xdaipM4BGxm99iKOVbScYcxWUf6rb1Xf
- 4cVpRqbQN5dnVOub1Mo4PAaeFYIA6PIfTDkcrJ7n+2tR2C6LHFjPhsOpdRHwWf3k375tIIwBr
- aCUeAz/gqqZLQPAXSWl60N5A+Bwa88Kf1KK00fdl6ZhJv5TYJ88UyHlFfigpMx5cMSm28+hYm
- mLznWEjyPTy7w0CqF5fxWQ+G19iFnuuUm93G59SlLuSLTGxSxSPF3of6on0kxcuDO6DbzpIVq
- 46XMNErgB3y/CzzzDeh1SFcL7YEf1CdVr29HvzcHUJ83qZpHScO1+WRUhaTtgFeTtjNoUhAKK
- F9A+2mf/InnEiZbpoLcUoSe+ldniWYHnG+1SMSvR0Onf54ukA/Kx3q92ZuvPFFQXemAAEGSD7
- 9ssBv8WRkIU3yK1ojhEg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jXH0F+aii6ZtYQ3=Rx-mOWM7NFHC9wVxacW-b1o_s20g@mail.gmail.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=JD06eNgDs9tuHP7JIKoLzw==:117 a=JD06eNgDs9tuHP7JIKoLzw==:17
+        a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
+        a=sNTs5Pk-nQt0djJhEW0A:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Mar 01, 2021 at 09:41:02PM -0800, Dan Williams wrote:
+> On Mon, Mar 1, 2021 at 7:28 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> > > > I really don't see you seem to be telling us that invalidation is an
+> > > > either/or choice. There's more ways to convert physical block
+> > > > address -> inode file offset and mapping index than brute force
+> > > > inode cache walks....
+> > >
+> > > Yes, but I was trying to map it to an existing mechanism and the
+> > > internals of drop_pagecache_sb() are, in coarse terms, close to what
+> > > needs to happen here.
+> >
+> > Yes.  XFS (with rmap enabled) can do all the iteration and walking in
+> > that function except for the invalidate_mapping_* call itself.  The goal
+> > of this series is first to wire up a callback within both the block and
+> > pmem subsystems so that they can take notifications and reverse-map them
+> > through the storage stack until they reach an fs superblock.
+> 
+> I'm chuckling because this "reverse map all the way up the block
+> layer" is the opposite of what Dave said at the first reaction to my
+> proposal, "can't the mm map pfns to fs inode  address_spaces?".
 
+Ah, no, I never said that the filesystem can't do reverse maps. I
+was asking if the mm could directly (brute-force) invalidate PTEs
+pointing at physical pmem ranges without needing walk the inode
+mappings. That would be far more efficient if it could be done....
 
-On 2021/3/2 =E4=B8=8B=E5=8D=883:09, Christian V=C3=B6lker wrote:
-> Hi Qu Wenro,
->
-> thanks for debugging this. What I am wondering- why did it work when
-> creating the initial device?
+> Today whenever the pmem driver receives new corrupted range
+> notification from the lower level nvdimm
+> infrastructure(nd_pmem_notify) it updates the 'badblocks' instance
+> associated with the pmem gendisk and then notifies userspace that
+> there are new badblocks. This seems a perfect place to signal an upper
+> level stacked block device that may also be watching disk->bb. Then
+> each gendisk in a stacked topology is responsible for watching the
+> badblock notifications of the next level and storing a remapped
+> instance of those blocks until ultimately the filesystem mounted on
+> the top-level block device is responsible for registering for those
+> top-level disk->bb events.
+> 
+> The device gone notification does not map cleanly onto 'struct badblocks'.
 
-Fs creation (mkfs) doesn't canonicalize the path, and it all happens in
-user space, so no problem.
+Filesystems are not allowed to interact with the gendisk
+infrastructure - that's for supporting the device side of a block
+device. It's a layering violation, and many a filesytem developer
+has been shouted at for trying to do this. At most we can peek
+through it to query functionality support from the request queue,
+but otherwise filesystems do not interact with anything under
+bdev->bd_disk.
 
-Only device add is affected, and if the device to be added is not a
-device mapped dev (aka /dev/dm-*) then even with the offending v5.10.1
-you can still add the device, just like what you tried by using drbd
-over luks.
+As it is, badblocks are used by devices to manage internal state.
+e.g. md for recording stripes that need recovery if the system
+crashes while they are being written out.
 
-> For Debian it looks like there is no other version of btrfs-progs
-> available, so I used this version (5.10.1-1) to create the btrfs device.
->
-> And may I workaround this issue by manually creating a softlink
-> /dev/manualdevice to /dev/mappper/crypt_drbd3? The link will be gone
-> after reboot but btrfs should then find the device by it's UUID,
-> shouldn't it?
+> If an upper level agent really cared about knowing about ->remove()
+> events before they happened it could maybe do something like:
+> 
+> dev = disk_to_dev(bdev->bd_disk)->parent;
+> bus_register_notifier(dev->bus. &disk_host_device_notifier_block)
 
-I just tried, that, it doesn't work.
+Yeah, that's exactly the sort of thing that filesystems have been
+aggressively discouraged from doing for years.
 
-The path canonicalization happens by following the softlink until it
-reaches the final /dev/dm-* block file, and then cut the "/dev/" prefix
-wrongly, leaving just "dm-*".
+Part of the reason for this is that gendisk based mechanisms are not
+very good for stacked device error reporting. Part of the problem
+here is that every layer of the stacked device has to hook the
+notifier of the block devices underneath it, then translate the
+event to match the upper block device map, then regenerate the
+notification for the next layer up. This isn't an efficient way to
+pass a notification through a series of stacked devices and it is
+messy and cumbersome to maintain.
 
-So even you added a softlink, it won't help.
-I just tried that, and it failed:
-  $ sudo ln -sf /dev/test/scratch2  /dev/whatever
-  $ sudo btrfs dev add /dev/whatever /mnt/btrfs/ -f
-  ERROR: error adding device 'dm-5': No such file or directory
+It can be effective for getting notifications to userspace about
+something that happens to a specific block device. But The userspace
+still ends up having to solve the "what does this error resolve to"
+problem. i.e. Userspace still needs to map that notification to a
+filesystem, and for data loss events map it to objects within the
+filesystem, which can be extremely expensive to do from userspace.
 
+This is exactly the sort of userspace error reporting mess that
+various projects have asked us to try to fix. Plumbing errors
+internally through the kernel up to the filesystem where the
+filesytem can point directly to the user data that is affected is a
+simple, effective solution to the problem. Especially if we then
+have a generic error notification mechanism for filesystems to emit
+errors to registered userspace watchers...
 
-But, if you manually create a block device file, with the same device
-major/minor number, then you can add it using the newly created block
-device file, just like this:
+> I still don't think that solves the need for a separate mechanism for
+> global dax_device pte invalidation.
 
-  $ ls -alh /dev/dm-5
-  brw-rw---- 1 root disk 253, 5 Mar  2 15:24 /dev/dm-5
-  $ sudo mknod ~/whatever b 253 5
-  $ sudo btrfs dev add ~/whatever /mnt/btrfs/ -f
-  $ sudo btrfs fi show /mnt/btrfs/
-  Label: none  uuid: 82631967-0b16-40f2-b545-0039fe9b9653
-         Total devices 2 FS bytes used 192.00KiB
-         devid    1 size 10.00GiB used 536.00MiB path dm-4
-         devid    2 size 10.00GiB used 0.00B path /home/adam/whatever
+It's just another type of media error because.....
 
-Thanks,
-Qu
+> I think that global dax_device invalidation needs new kernel
+> infrastructure to allow internal users, like dm-writecache and future
+> filesystems using dax for metadata, to take a fault when pmem is
+> offlined.
 
->
-> Greetings
->
-> /KNEBB
->
->
->
->
-> Am 02.03.2021 um 02:18 schrieb Qu Wenruo:
->>
->>
->> On 2021/3/2 =E4=B8=8A=E5=8D=881:24, Christian V=C3=B6lker wrote:
->>> Hi,
->>>
->>> just a little update on the issue.
->>>
->>> As soon as I omit the encryption part I can easily add the device to t=
-he
->>> btrfs filesystem. It does not matter if the crypted device is on top o=
-f
->>> DRBD or directly on the /dev/sdc. In both cases btrs refuses to add th=
-e
->>> device when a luks-encrypted device is on top.
->>>
->>> In case I am swapping my setup (drbd on top of encryption) and add the
->>> drbd device to btrfs it works without any issues.
->>>
->>> However, I prefer the other way round- and as the other two btrfs
->>> devices are both encryption on top of drbd it should work...
->>>
->>> It appears it does not like to add a third device-mapper device...
->>>
->>> Let me know how I can help in debugging. If i have some time I will
->>> setup a machine trying to reproduce this.
->>
->> Got the problem reproduced here.
->>
->> And surprisingly, it's something related to btrfs-progs, not the kernel=
-.
->>
->> I just added one debug info in btrfs-progs, it shows:
->>
->> $ sudo ./btrfs dev add /dev/test/scratch2=C2=A0 /mnt/btrfs
->> cmd_device_add: path=3Ddm-5
->> ERROR: error adding device 'dm-5': No such file or directory
->>
->> See the problem?
->>
->> The path which should be passed to kernel lacks the "/dev/test/" prefix=
-,
->> thus it's not pointing to correct path and cause the ENOENT error, sinc=
-e
->> there is no "dm-5" in current path.
->>
->> Thankfully it's already fixed in devel branch with commit 2347b34af4d8
->> ("btrfs-progs: fix device mapper path canonicalization").
->>
->> The offending patch is 922eaa7b5472 ("btrfs-progs: build: fix linking
->> with static libmount"), which is in v5.10.1.
->>
->> You can revert back to v5.10 to workaroud it.
->>
->>
->> TO David,
->>
->> Would you consider to add a new v5.10.2 to fix the problem? As it seems
->> to affect the end user quite badly.
->>
->> Thanks,
->> Qu
->>>
->>> any ideas otherwise? Let me know!
->>>
->>> Thanks!
->>>
->>> /KNEBB
->>>
->
+.... if userspace has directly mapped into the cache, and the cache
+storage goes away, the userspace app has to be killed because we
+have no idea if the device going away has caused data loss or not.
+IOWs, if userspace writes direct to the cache device and it hasn't
+been written back to other storage when it gets yanked, we have just
+caused data corruption to occur.
+
+At minimum, we now have to tell the filesystem that the dirty data
+in the cache is now bad, and direct map applications that map those
+dirty ranges need to be killed because their backing store is no
+longer valid nor does the backup copy contain the data they last
+wrote. Nor is it acessible by direct access, which is going to be
+interesting because dynamically changing dax to non-dax access can't
+be done without forcibly kicking the inode out of the cache. That
+requires all references to the inode to go away. And that means the
+event really has to go up to the filesystem.
+
+But I think the biggest piece of the puzzle that you haven't grokked
+here is that the dm cache device isn't a linear map - it's made up of
+random ranges from the underlying devices. Hence the "remove" of a dm
+cache device turns into a huge number of small, sparse corrupt
+ranges, not a single linear device remove event.
+
+IOWs, device unplug/remove events are not just simple "pass it on"
+events in a stacked storage setup. There can be non-trivial mappings
+through the layers, and device disappearance may in fact manifest to
+the user as data corruption rather than causing data to be
+inaccessible.
+
+Hence "remove" notifications just don't work in the storage stack.
+They need to be translated to block ranges going bad (i.e.  media
+errors), and reported to higher layers as bad ranges, not as device
+removal.
+
+The same goes for DAX devices. The moment they can be placed in
+storage stacks in non-trivial configurations and/or used as cache
+devices that can be directly accessed over tranditional block
+devices, we end up with error conditions that can only be mapped as
+ranges of blocks that have gone bad.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
