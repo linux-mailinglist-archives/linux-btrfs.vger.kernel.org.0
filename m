@@ -2,58 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4DF32B282
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386C332B286
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Mar 2021 04:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243423AbhCCB6a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Mar 2021 20:58:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50404 "EHLO mx2.suse.de"
+        id S243440AbhCCB6c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Mar 2021 20:58:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57980 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241536AbhCBMY5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:24:57 -0500
+        id S1448306AbhCBOTj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:19:39 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8F58AAF44;
-        Tue,  2 Mar 2021 12:09:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 722C6B12F;
+        Tue,  2 Mar 2021 14:18:56 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 74266DA8BB; Tue,  2 Mar 2021 13:07:08 +0100 (CET)
-Date:   Tue, 2 Mar 2021 13:07:08 +0100
+        id 6A952DA8BB; Tue,  2 Mar 2021 15:17:01 +0100 (CET)
+Date:   Tue, 2 Mar 2021 15:17:01 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: turn btrfs_destroy_all_ordered_extents() into
- void functions
-Message-ID: <20210302120708.GH7604@suse.cz>
+To:     =?utf-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: Fix checksum output for "checksum verify
+ failed"
+Message-ID: <20210302141701.GI7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Yang Li <yang.lee@linux.alibaba.com>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1614675476-79534-1-git-send-email-yang.lee@linux.alibaba.com>
+Mail-Followup-To: dsterba@suse.cz,
+        =?utf-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210227200702.11977-1-davispuh@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1614675476-79534-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210227200702.11977-1-davispuh@gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 04:57:56PM +0800, Yang Li wrote:
-> These functions always return '0' and no callers use the return
-> value. So make it a void function.
+On Sat, Feb 27, 2021 at 10:07:02PM +0200, Dāvis Mosāns wrote:
+> Currently only single checksum byte is outputted.
+> This fixes it so that full checksum is outputted.
 
-The reasoning needs to go the other way around: you can make a function
-return void iff all callees also return void and don't do BUG_ON instead
-of proper error handling.
+Thanks, that really needs fixing.
 
-Which in this case does not hold, because the function itself still does
-BUG_ON.
+> Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
+> ---
+>  kernel-shared/disk-io.c | 47 ++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 42 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+> index 6f584986..8773eed7 100644
+> --- a/kernel-shared/disk-io.c
+> +++ b/kernel-shared/disk-io.c
+> @@ -160,10 +160,45 @@ int btrfs_csum_data(u16 csum_type, const u8 *data, u8 *out, size_t len)
+>  	return -1;
+>  }
+>  
+> +int btrfs_format_csum(u16 csum_type, const char *data, char *output)
+> +{
+> +	int i;
+> +	int csum_len = 0;
+> +	int position = 0;
+> +	int direction = 1;
+> +	switch (csum_type) {
+> +		case BTRFS_CSUM_TYPE_CRC32:
+> +			csum_len = 4;
 
-> It fixes the following warning detected by coccinelle:
-> ./fs/btrfs/disk-io.c:4522:5-8: Unneeded variable: "ret". Return "0" on
-> line 4530
+This duplicates the per-csum size, you could use btrfs_csum_type_size
 
-Yeah tools can identify the simple cases but fixing that properly needs
-to extend to the whole callgraph and understand all the contexts where
-local data are undone and errors propagated up the callchanin.
+> +			position = csum_len - 1;
+> +			direction = -1;
+> +			break;
+> +		case BTRFS_CSUM_TYPE_XXHASH:
+> +			csum_len = 8;
+> +			position = csum_len - 1;
+> +			direction = -1;
+
+So the direction says if it's big endian or little endian, right, so for
+xxhash it's bigendian but the crc32c above it's little.
+
+In kernel the format is 0x%*phN, which translates to 'hexadecimal with
+variable length', so all the work is hidden inside printk. But still
+there are no changes in the 'direction'.
+
+I haven't actually checked if the printed format matches what kernel
+does but would think that there should be no direction adjustment
+needed.
+
+> +			break;
+> +		case BTRFS_CSUM_TYPE_SHA256:
+> +		case BTRFS_CSUM_TYPE_BLAKE2:
+> +			csum_len = 32;
+> +			break;
+> +		default:
+> +			fprintf(stderr, "ERROR: unknown csum type: %d\n", csum_type);
+> +			ASSERT(0);
+> +	}
+> +
+> +	for (i = 0; i < csum_len; i++) {
+> +		sprintf(output + i*2, "%02X", data[position + i*direction] & 0xFF);
+> +	}
+> +
+> +	return csum_len;
+> +}
+> +
+>  static int __csum_tree_block_size(struct extent_buffer *buf, u16 csum_size,
+>  				  int verify, int silent, u16 csum_type)
+>  {
+>  	u8 result[BTRFS_CSUM_SIZE];
+> +	char found[BTRFS_CSUM_SIZE * 2 + 1]; // 2 hex chars for each byte + null
+> +	char expected[BTRFS_CSUM_SIZE * 2 + 1];
+>  	u32 len;
+>  
+>  	len = buf->len - BTRFS_CSUM_SIZE;
+> @@ -172,12 +207,14 @@ static int __csum_tree_block_size(struct extent_buffer *buf, u16 csum_size,
+>  
+>  	if (verify) {
+>  		if (memcmp_extent_buffer(buf, result, 0, csum_size)) {
+> -			/* FIXME: format */
+> -			if (!silent)
+> -				printk("checksum verify failed on %llu found %08X wanted %08X\n",
+> +			if (!silent) {
+> +				btrfs_format_csum(csum_type, (char *)result, found);
+> +				btrfs_format_csum(csum_type, buf->data, expected);
+> +				printk("checksum verify failed on %llu found %s wanted %s\n",
+>  				       (unsigned long long)buf->start,
+> -				       result[0],
+> -				       buf->data[0]);
+> +				       found,
+> +				       expected);
+> +			}
+>  			return 1;
+>  		}
+>  	} else {
+> -- 
+> 2.30.1
