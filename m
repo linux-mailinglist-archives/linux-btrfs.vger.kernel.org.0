@@ -2,313 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0187F32C4F1
+	by mail.lfdr.de (Postfix) with ESMTP id 7A29F32C4F3
 	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354752AbhCDAS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:28 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:31108 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1451362AbhCCGDA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Mar 2021 01:03:00 -0500
+        id S1355073AbhCDASe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Mar 2021 19:18:34 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:38737 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1839563AbhCCIFW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Mar 2021 03:05:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1614751379; x=1646287379;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rJBaxnWWvl+K1CTo7fGZgrtTmx1xOutkeMIExgBhjHM=;
-  b=QCfH+VpUJ8brh/4S8aREt4YwHUZY3FpVYu6M8QWaYSeVexqA93oBroPK
-   ComMLBYOCTD1lhfmKcm0SEwA0YP1eu6layLbiQhB0Fk+43GCY5alXKAw8
-   pLOItDNH0rdw6qmTpaFr6JBxK3hCV1CjeUJJB6pp1TtX3uhED3qwDYfEN
-   RLp2BIHp9XfrMWi//vj7zHdU8PFVHuVfQEmAYC5SzunDWj2n7BX5IyEab
-   3caNEvFZ3bpAAK+i4r5hsWSldiccKTVnsWK7QOesM4jPJS/eCzCjcRluO
-   1phuTtpUEHsAGjInOkw9t9UUwAMa7DawNG8ojPCBqdqYxnxAqC5qDRlPU
-   Q==;
-IronPort-SDR: RgfBQx1zOQaryAgyLBNTVdeD33i7FegMQQc00/JVW54okaiYj7I3WtcWdO/wA7nsPMPy6Vdhew
- BG/Tbln+5XvJR/M3lLhjU7d+OQpmczXDPFx1gNZ+WLBQLX1VG3Vik/R23NlzSJxHeKgWu07cMh
- 9l4JyfPPZ8+BJLrqGieogN9hVIVeDqFWhXsKnbAk379wnruOKspPRdXr2wHET/NbFvKtPhAm06
- gvsA/SiuWL0dXLQt/pliGFaQTtbB0P5gFXu8u/QphOmw6E4bJeZQ7v3fPoct1YVSnIJOU3ek5U
- ESU=
+  t=1614758720; x=1646294720;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=4lYQ2MHWW6rsRqfT2NmYPp9CgXtWa0kM+CK774h4NFY=;
+  b=IxSgEG3Z7OCxM1cZCeNT6IenZ+CGw+VPChL5BGTNOvo2n9ObpdWwkK6o
+   4pXjxXj1n2JEFxZfzhTuiZm1cWFx+gHLgZw82YvZ+PuQ7pCF7KMxhxtCL
+   2QWVmqODQKsB1Tl3uv7AGGl71DnCEBR0yzhjuoNwmHGkTiydR2fleAw2E
+   inDUVxJTEeA3q6hwKakABxa7opApR3okfAASJfIpZAVLdncMR88blPis1
+   DjoQoeboEleLbxWr0QQl8Lqu15r/WDFWdthXldx8TY7bxpgn5xgLecEl2
+   DFD89Vsx3SbkuKKGb30P4/JSRse/GGm/GBJDrCKn/1tnLHUsxNhIRJ8YD
+   g==;
+IronPort-SDR: +fiN4r7NDW9vF7IspDbt0qnEdHuKDk4Cbt5qdtK7iguuYCXol2rsM8nyRf0HHMBpsrLHWEZZe0
+ SAcdWMlYNrOojM9wPbxLqmYzk5zYsJfQjZ6Lp9A9swBhEuWJiXGC4z8EFUdKRQICCBF/FEzCGY
+ V4xf4PKFNKqWV8CwzsbSp9bX+HvIuAOHYbOtoSzM6dOVuiLbGjyRlPDz9DHxlZwJDhAl3LM59R
+ LGNWTJn/10spIrYWA5lttSggU6Fn/3RECaZPjfQugSxMYPIxwU7zsxpvbVv9XWPCnCCZGWRmZH
+ zMI=
 X-IronPort-AV: E=Sophos;i="5.81,219,1610380800"; 
-   d="scan'208";a="161241995"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Mar 2021 14:01:54 +0800
-IronPort-SDR: MNTofaKaCZh70LKpfByYN5USj65dMrZoeM6gh0YvgZmgtifEqQeibEUOSx3tcAtaG7Km0xoeCu
- h74TwUrUzJbUyyQyL0K8JFKiis4O0gppRdeUT+dX6OtdKOSV42h6pNiJHM8NJIBPdfP7zcvhXq
- f0245Rm3PslA23GT15i+ko1O0xWETjPlZdVOTi6vANZgqysMJJmKmmvsgfXLOSe1iMwWB5OISl
- LoQcJ2G87QOCpcTEIpXvMSiTE0gf3oAiWfMijyrTFtG3h6kn1TsJNXLItgWTHsU5KO5vzeNx2D
- Uzxupoz4y9RtxhE0fIJjtbNI
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 21:43:09 -0800
-IronPort-SDR: DMFS7Z2dyHAno26ORbp4IAf03tDAjRNVqIWyGwf7gE3toAChurUBS/7BYZ5PCupbtOEhy/FZaR
- cM9cLiBIPAnzJfcZw7TH8zJNNoWN14YSPvN6FTPp6hu6bbNtJ94Vqv2ovAKkutwSv81ZvdtrcA
- 9y+cD7cbOg3myqDBGbh/YEJX0UPG23+x8d0uYoWd55r6I746TeAmyfJRcY7EPrkTFKDzNQCPaO
- V2aueWJGvgZTgB42qukxYmCogpq88MLCcthMZajox/gtXJe/z/FuZfQWKLv04pZk4JaH2PbdcZ
- EFo=
-WDCIronportException: Internal
-Received: from bksm5s2.ad.shared (HELO naota-xeon) ([10.225.49.22])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 22:01:54 -0800
-Date:   Wed, 3 Mar 2021 15:01:52 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] fstests: add missing checks of fallocate feature
-Message-ID: <20210303060152.r2xi46ke6bpfifyk@naota-xeon>
+   d="scan'208";a="271853875"
+Received: from mail-mw2nam10lp2104.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.104])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Mar 2021 16:04:14 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GQlUAW+DRGSmOZ0WkKcWZ9gG4S+TnvQtg/YTxYamI6BTOSv10k24M5ab2D+pLIseMMdnLxm/UXp4KkPxPwnnQw0HY/qHkSxbE19YZlzUMAebXYJzHwTOSDAf2UZjf+r7R7mSZji2V74LsPhSFMId4EU0/mqzQBeIFnIC8o1SNuGUNAtIgHlOCQt7gFrSHLCK1Q/seloFK6bMF180t/2/88fCTN41x1S0VBROFdHvdrBDXa8tTXJ3yUX4lc9hYqLlprOOo6K4gReVKiLgK20YJ00i+IycTsG/2R+qM/OLHYgdiH8isrXcFtyRxoBcchbHGfCRekM/dYjzxnPm6jMPkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4lYQ2MHWW6rsRqfT2NmYPp9CgXtWa0kM+CK774h4NFY=;
+ b=VxAn7kZQafUshvNvaF+Pz3wXImuCVWKpHOu2entrdFyF6axQMfnnjOlf6A0nY8fF446ZN7+4oyv6N0k0FvE0Yk3moHgR1LmuM3Oo+4OuPcnxMCsXEU78nGk783a9SQ3+S8pp1XiBEcTe/BBWN2DX0cUSpeSNi8pVN1FZthdhXsOkCUbijE1iqenlSCUgE85z15PqnJ1enUe0WH9MddQrCuuUWC+T+MZIYAKrAZxPDn48T7Q0wtB+yAKcOn+Z9gnJGVbgVXGCROc2NpwAsxKbAXzhPhK760yR1kbzVaXHTenoMDntp7H6LVp1l4TuVLEQA7cquaYHAac53ZFduE8bog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4lYQ2MHWW6rsRqfT2NmYPp9CgXtWa0kM+CK774h4NFY=;
+ b=O28OqsRm1N39iQdcLpF3GNiUh0BrV/k51cmYm4g2As8q4Bx1o3VHSui/8mi6x0XlKdL+EPWHsHtm57sgRc3oceABfjeO6dMHhyE7aE2As52dfjvi2Xf4PqT+CUYd4K9Op+3J4oRdM0QkPr8Z1cY7GCeIGzDRw8NdB7hF8WAwE0s=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7464.namprd04.prod.outlook.com (2603:10b6:510:15::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Wed, 3 Mar
+ 2021 08:04:13 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3c7d:5381:1232:e725]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3c7d:5381:1232:e725%7]) with mapi id 15.20.3890.030; Wed, 3 Mar 2021
+ 08:04:13 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 0/2] fstests: two preperation patches for zoned device
+ support
+Thread-Topic: [PATCH 0/2] fstests: two preperation patches for zoned device
+ support
+Thread-Index: AQHXD0RJAH6zuG/GxkOzttD3+qguUQ==
+Date:   Wed, 3 Mar 2021 08:04:13 +0000
+Message-ID: <PH0PR04MB7416A0DA052E91B4E17A0DB59B989@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <20210302091305.27828-1-johannes.thumshirn@wdc.com>
- <20210302091305.27828-2-johannes.thumshirn@wdc.com>
+ <20210303055857.yfevx2uyyhltn2jk@naota-xeon>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1542:e101:ccec:1858:7740:59e7]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: dd90405b-9993-47ad-83b7-08d8de1aef5b
+x-ms-traffictypediagnostic: PH0PR04MB7464:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR04MB7464C44FEEB48191EC8F355F9B989@PH0PR04MB7464.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:51;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: y+6KSD+XnbsnFJAiiGQivgn27fg7I/gDLSyFQgpYDu56P609cHueRed8LvVaBx7n9PjO7+QOynBKsxSbcjrlmOwrewW8Ax4bNm3vEjKjBMGOgPvOsDyhP9YnVpFqoy6Us9QkOEFU/oxVDaH2J/Z3tiiAPzSXm01hiyA3ly/dhPy+cbtipJkf9UQnaRraKNVTRo0w/JQnWNjs3cGCdJLvnQRokciPi9217EsVg1rVIrwlPRl3b4ErOoX30I3bkaw2EVbTmXA4QBGiXsTPobvcU2je616ypyJC2/yy0ORUFx6/b/ViL8HlfY0tYFGwiarFqB2pwWWrDSXzg0+fysj9RvqevOR8xIUG1pRrUY/6NOijDyxCw9r+6E4rBhA0Tb4OYIOI98ErQ6BpMhpUYf2ZvF/iYgm0RpRk5qlUngbn5xXOkgNoWinos3cXdMFgLYeElgLcwz2FymdG8SiI+kijUD30CDs+fFDFCsCWNTSkcJ02uj9gz4ZQ3HwVdRXRIpiYNafG7f6YS8rvg2RU4WGDcw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(39860400002)(366004)(346002)(316002)(86362001)(478600001)(186003)(76116006)(9686003)(55016002)(91956017)(54906003)(53546011)(71200400001)(8676002)(8936002)(6636002)(33656002)(4326008)(66946007)(2906002)(66556008)(6862004)(52536014)(7696005)(450100002)(66446008)(558084003)(66476007)(6506007)(64756008)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/AxPvhdnqpJPnXM5jBU/RA+W7OXIM6Kmg9fsz2OcknmiXRepdBVkl8TCK+Oy?=
+ =?us-ascii?Q?HmftCM+n5sDaD67ozvoyA/jPcjXYvS7/CVF07AMAmOg3RtPq3syjK10g3hTh?=
+ =?us-ascii?Q?p3RAUyqKh5CE82+CmKhvoWxV8Zzk20NulA7u2tCnp26KRmQ4fs7qY8O8Ct+Q?=
+ =?us-ascii?Q?LYaEj1Ry9hKsnIyddiNRT3VETF6dpvD4MdJw18s7EkLbqlwifgjPBkYG645f?=
+ =?us-ascii?Q?XlWfHYra6rS+jOZT/HQRn9UCHk94xg2F2rc5ruP4cIbR+9oztXqoxyJ8QSVO?=
+ =?us-ascii?Q?DKVSpMl99+ECp/YypeuiZDUCD+HW9u6d3yj7+zg9IIe72Xn60e4TV3ICTlrQ?=
+ =?us-ascii?Q?odwbMQJa6D8PtJzs5pc5/IG0NY23QMI/rX7D9zd629r3FQQeqSW5gtJVVfz6?=
+ =?us-ascii?Q?ar8z0WOQrFWGjP7VgeXi7OKrnCJNboqdcq2XK4YqZtq0Lt18p0hxTBoSJYiT?=
+ =?us-ascii?Q?9UUDlInN6RxLHQFLlyucV/zd5sIXHJay8seWTyVZId1qcq37reNWk/nGS/6J?=
+ =?us-ascii?Q?XF9JrGfhxx+N2l5NcDJdu0FT1SRriEiYcpAAcTZ9HJcvbBWiwlBzYDukeI4u?=
+ =?us-ascii?Q?OFwHs0HI23Gs/QmKC5W6sM4W5oRtvB1Sh9dMZ/j8m5HZEilko7tC1s5sZHtm?=
+ =?us-ascii?Q?BG5wyStVLtfNY4zPriArpasRkul3sR/MIhxG3nYhuNmvSaK+3CZx/ZiB9ET3?=
+ =?us-ascii?Q?zGG4ngamX2+roanAJHvNkDWSb0zoWXvkKXMe+k2dCY4Y41uDunnc2bdYf+La?=
+ =?us-ascii?Q?r5nvD1LIx6mwOGbn4gN3ZDHbGU9Dvgr2nqd5sN71qwdqqJ5JGFUVFXGvYDg4?=
+ =?us-ascii?Q?aMCHstNNVDX5sC3j/M/l8yyHKhzWMrHE+DtrVQXoGen+7Oex/DvjRpscILHE?=
+ =?us-ascii?Q?83vPooRImjGz3SP5FKPuua+2uRHoFLOMzQtWpcbjxhgO44eVnMOUGXAQb0uR?=
+ =?us-ascii?Q?I38VzbgYKHylL5TFbwyb5cZpJjDQjGRc9VOuPcf1IflHuy8JiHwsNYurr3WB?=
+ =?us-ascii?Q?NnqYH/Q70x1WhK+dLkUSEazAQCtNP6yY2Lf6oA4rTXLvQLBSspspXmXYyL46?=
+ =?us-ascii?Q?vYJ/xxfDNEsSIIXBJfhfzHD4DCkr+Tv1gZiUBUPyXFU6ALYZNQAbilnpOVmx?=
+ =?us-ascii?Q?jwfsCgtjiVAQ4OLNnw3wR9n8+vy5ELRqpTyBb26PkKDB0AfpQl/JYFT/iQ0A?=
+ =?us-ascii?Q?faaH+WyNF/sDvWjMj7MrIGZ5E0Eo4jQosS2dZGp8ushP5CJXk5HjLz5/1G+s?=
+ =?us-ascii?Q?NTyEVydXTR1uWxtKJADaCKMgDl+7t8P/drIPkrmGRXY71Bc8RQ4heFi6T/sB?=
+ =?us-ascii?Q?EMgf0J+r+bFdC311yjyqrI+1c7JL5ZakiqpurxrCvkJbXgHtFFjZizyA1hXn?=
+ =?us-ascii?Q?e/MAnPb6rPevqLQIKUTCmhTYeVivfd6v2ggyBOzrtbYjoiPoMA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302091305.27828-2-johannes.thumshirn@wdc.com>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd90405b-9993-47ad-83b7-08d8de1aef5b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Mar 2021 08:04:13.7948
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PI+TJJ8DLEH+zzXYZgSTOCT64wzbh+pWdGYdnrdMHz8/ZIcy6l2WDXfEKJW3q1q0CsS0RqXlAeeY4Lywq52fgEcKRVWSBcrdv+e7IJ51iT4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7464
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 06:13:04PM +0900, Johannes Thumshirn wrote:
-> From: Naohiro Aota <naohiro.aota@wdc.com>
-> 
-> Many test cases use xfs_io -c 'falloc' but forgot to add
-> _require_xfs_io_command "falloc". This will fail the test case if we run
-> the test case on a file system without fallcoate support e.g. F2FS ZZ
->
-
-The sentences between "This will " .. "e.g. F2FS ZZ" should be removed.
-# Vim command leaked to the log ... oops.
-
-> While we believe that normal fallocate(mode = 0) is always supported on
-> Linux, it is not true. Fallocate is disabled in several implementations of
-> zoned block support for file systems because the pre-allocated region will
-> break the sequential writing rule.
-> 
-> Currently, several test cases unconditionally call fallocate(). Let's add
-> _require_xfs_io_command "falloc" to properly check the feature is supported
-> by a testing file system.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  tests/btrfs/013   | 1 +
->  tests/btrfs/016   | 1 +
->  tests/btrfs/025   | 1 +
->  tests/btrfs/034   | 1 +
->  tests/btrfs/037   | 1 +
->  tests/btrfs/046   | 1 +
->  tests/btrfs/107   | 1 +
->  tests/ext4/001    | 1 +
->  tests/f2fs/001    | 1 +
->  tests/generic/456 | 1 +
->  tests/xfs/042     | 1 +
->  tests/xfs/114     | 1 +
->  tests/xfs/118     | 1 +
->  tests/xfs/331     | 1 +
->  tests/xfs/341     | 1 +
->  tests/xfs/342     | 1 +
->  tests/xfs/423     | 1 +
->  17 files changed, 17 insertions(+)
-> 
-> diff --git a/tests/btrfs/013 b/tests/btrfs/013
-> index 9252c82a2076..5e03ed4a4b4b 100755
-> --- a/tests/btrfs/013
-> +++ b/tests/btrfs/013
-> @@ -33,6 +33,7 @@ trap "_cleanup ; exit \$status" 0 1 2 3 15
->  # real QA test starts here
->  _supported_fs btrfs
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  
->  rm -f $seqres.full
->  
-> diff --git a/tests/btrfs/016 b/tests/btrfs/016
-> index 8fd237cbdb64..015ec17f93d6 100755
-> --- a/tests/btrfs/016
-> +++ b/tests/btrfs/016
-> @@ -35,6 +35,7 @@ _supported_fs btrfs
->  _require_test
->  _require_scratch
->  _require_fssum
-> +_require_xfs_io_command "falloc"
->  
->  _scratch_mkfs > /dev/null 2>&1
->  
-> diff --git a/tests/btrfs/025 b/tests/btrfs/025
-> index 42cd7cefe825..5c8140552bfb 100755
-> --- a/tests/btrfs/025
-> +++ b/tests/btrfs/025
-> @@ -31,6 +31,7 @@ _cleanup()
->  # real QA test starts here
->  _supported_fs btrfs
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  
->  rm -f $seqres.full
->  
-> diff --git a/tests/btrfs/034 b/tests/btrfs/034
-> index bc7a4aae3886..07c84c347d3b 100755
-> --- a/tests/btrfs/034
-> +++ b/tests/btrfs/034
-> @@ -28,6 +28,7 @@ _cleanup()
->  # real QA test starts here
->  _supported_fs btrfs
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  
->  rm -f $seqres.full
->  
-> diff --git a/tests/btrfs/037 b/tests/btrfs/037
-> index 1cfaf5be58c8..9ef199a93413 100755
-> --- a/tests/btrfs/037
-> +++ b/tests/btrfs/037
-> @@ -35,6 +35,7 @@ _cleanup()
->  # real QA test starts here
->  _supported_fs btrfs
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  
->  rm -f $seqres.full
->  
-> diff --git a/tests/btrfs/046 b/tests/btrfs/046
-> index 882db8eacc4e..a1d82e1cdd54 100755
-> --- a/tests/btrfs/046
-> +++ b/tests/btrfs/046
-> @@ -37,6 +37,7 @@ _cleanup()
->  _supported_fs btrfs
->  _require_test
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  _require_fssum
->  
->  rm -f $seqres.full
-> diff --git a/tests/btrfs/107 b/tests/btrfs/107
-> index e57c9dead499..80db5ab9822d 100755
-> --- a/tests/btrfs/107
-> +++ b/tests/btrfs/107
-> @@ -34,6 +34,7 @@ rm -f $seqres.full
->  
->  _supported_fs btrfs
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  
->  # Use 64K file size to match any sectorsize
->  # And with a unaligned tailing range to ensure it will be at least 2 pages
-> diff --git a/tests/ext4/001 b/tests/ext4/001
-> index bbb74f1ea5bc..9650303d15b5 100755
-> --- a/tests/ext4/001
-> +++ b/tests/ext4/001
-> @@ -29,6 +29,7 @@ trap "_cleanup ; exit \$status" 0 1 2 3 15
->  
->  # real QA test starts here
->  _supported_fs ext4
-> +_require_xfs_io_command "falloc"
->  _require_xfs_io_command "fzero"
->  _require_test
->  
-> diff --git a/tests/f2fs/001 b/tests/f2fs/001
-> index 98bd2682d60f..0753a09b5576 100755
-> --- a/tests/f2fs/001
-> +++ b/tests/f2fs/001
-> @@ -36,6 +36,7 @@ _cleanup()
->  
->  _supported_fs f2fs
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  
->  testfile=$SCRATCH_MNT/testfile
->  dummyfile=$SCRATCH_MNT/dummyfile
-> diff --git a/tests/generic/456 b/tests/generic/456
-> index 2f9df5e5edc4..65667d449dd3 100755
-> --- a/tests/generic/456
-> +++ b/tests/generic/456
-> @@ -38,6 +38,7 @@ trap "_cleanup; exit \$status" 0 1 2 3 15
->  # real QA test starts here
->  _supported_fs generic
->  _require_scratch
-> +_require_xfs_io_command "falloc"
->  _require_dm_target flakey
->  _require_xfs_io_command "falloc" "-k"
->  _require_xfs_io_command "fzero"
-> diff --git a/tests/xfs/042 b/tests/xfs/042
-> index b55d642c5170..fcd5181cf590 100755
-> --- a/tests/xfs/042
-> +++ b/tests/xfs/042
-> @@ -31,6 +31,7 @@ trap "_cleanup ; exit \$status" 0 1 2 3 15
->  
->  # real QA test starts here
->  _supported_fs xfs
-> +_require_xfs_io_command "falloc"
->  
->  _require_scratch
->  
-> diff --git a/tests/xfs/114 b/tests/xfs/114
-> index b936452461c6..3f5575a61dfb 100755
-> --- a/tests/xfs/114
-> +++ b/tests/xfs/114
-> @@ -32,6 +32,7 @@ _cleanup()
->  _supported_fs xfs
->  _require_test_program "punch-alternating"
->  _require_xfs_scratch_rmapbt
-> +_require_xfs_io_command "falloc"
->  _require_xfs_io_command "fcollapse"
->  _require_xfs_io_command "finsert"
->  
-> diff --git a/tests/xfs/118 b/tests/xfs/118
-> index 5e23617b39dd..9a431821aa62 100755
-> --- a/tests/xfs/118
-> +++ b/tests/xfs/118
-> @@ -41,6 +41,7 @@ _supported_fs xfs
->  
->  _require_scratch
->  _require_command "$XFS_FSR_PROG" "xfs_fsr"
-> +_require_xfs_io_command "falloc"
->  
->  # 50M
->  _scratch_mkfs_sized $((50 * 1024 * 1024)) >> $seqres.full 2>&1
-> diff --git a/tests/xfs/331 b/tests/xfs/331
-> index 4ea54e2a534b..8e92b2e36a8d 100755
-> --- a/tests/xfs/331
-> +++ b/tests/xfs/331
-> @@ -33,6 +33,7 @@ _require_xfs_scratch_rmapbt
->  _require_scratch_reflink
->  _require_xfs_io_command "falloc"
->  _require_test_program "punch-alternating"
-> +_require_xfs_io_command "falloc"
->  
->  rm -f "$seqres.full"
->  
-> diff --git a/tests/xfs/341 b/tests/xfs/341
-> index e1fbe588d9eb..8bf05087e1ba 100755
-> --- a/tests/xfs/341
-> +++ b/tests/xfs/341
-> @@ -31,6 +31,7 @@ _require_realtime
->  _require_xfs_scratch_rmapbt
->  _require_test_program "punch-alternating"
->  _disable_dmesg_check
-> +_require_xfs_io_command "falloc"
->  
->  rm -f "$seqres.full"
->  
-> diff --git a/tests/xfs/342 b/tests/xfs/342
-> index 2be5f7698f01..4db222d65fb2 100755
-> --- a/tests/xfs/342
-> +++ b/tests/xfs/342
-> @@ -30,6 +30,7 @@ _supported_fs xfs
->  _require_realtime
->  _require_xfs_scratch_rmapbt
->  _require_test_program "punch-alternating"
-> +_require_xfs_io_command "falloc"
->  
->  rm -f "$seqres.full"
->  
-> diff --git a/tests/xfs/423 b/tests/xfs/423
-> index 8d51a9a60585..183c9cf5eded 100755
-> --- a/tests/xfs/423
-> +++ b/tests/xfs/423
-> @@ -35,6 +35,7 @@ _cleanup()
->  _supported_fs xfs
->  _require_test_program "punch-alternating"
->  _require_xfs_io_command "scrub"
-> +_require_xfs_io_command "falloc"
->  _require_scratch
->  
->  echo "Format and populate"
-> -- 
-> 2.30.0
-> 
+On 03/03/2021 06:59, Naohiro Aota wrote:=0A=
+> Is this series intended to also Cc'ed to fstests@vger.kernel.org?=0A=
+=0A=
+I'm stupid, yes it should...=0A=
