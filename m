@@ -2,73 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FF932C504
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA50132C51E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376852AbhCDAS4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:56 -0500
-Received: from verein.lst.de ([213.95.11.211]:36063 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1842937AbhCCKWo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:22:44 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4F89968CFE; Wed,  3 Mar 2021 10:44:54 +0100 (CET)
-Date:   Wed, 3 Mar 2021 10:44:54 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH v2 05/10] fsdax: Replace mmap entry in case of CoW
-Message-ID: <20210303094454.GA15967@lst.de>
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com> <OSBPR01MB2920FB5AD1C9ADC64100238AF4989@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OSBPR01MB2920FB5AD1C9ADC64100238AF4989@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1383097AbhCDATO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Mar 2021 19:19:14 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:58887 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1356728AbhCCKsO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:48:14 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UQELT1u_1614764730;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UQELT1u_1614764730)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Mar 2021 17:45:37 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] btrfs: Assign boolean values to a bool variable
+Date:   Wed,  3 Mar 2021 17:45:28 +0800
+Message-Id: <1614764728-14857-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 09:41:54AM +0000, ruansy.fnst@fujitsu.com wrote:
-> 
-> > >
-> > >       if (dirty)
-> > >               __mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
-> > 
-> > I still think the __mark_inode_dirty should just be moved into the one
-> > caller that needs it.
-> 
-> I found that the dirty flag will be used in the next few lines, so I keep
-> this function inside. If I move it outside, the drity flag should be passed
-> in as well. 
-> 
-> @@ -774,6 +780,9 @@ static void *dax_insert_entry(struct xa_state *xas,
->          if (dirty)
->                  xas_set_mark(xas, PAGECACHE_TAG_DIRTY);
->  
-> +       if (cow)
-> +               xas_set_mark(xas, PAGECACHE_TAG_TOWRITE);
-> +
->          xas_unlock_irq(xas);
->          return entry;
-> }
-> 
-> 
-> So, may I ask what's your purpose for doing in that way?
+Fix the following coccicheck warnings:
 
-Oh, true.  We can't just move that out as the xas needs to stay
-locked.
+./fs/btrfs/volumes.c:1462:10-11: WARNING: return of 0/1 in function
+'dev_extent_hole_check_zoned' with return type bool.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/btrfs/volumes.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index bc3b33e..995920f 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1458,8 +1458,8 @@ static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
+ 		/* Given hole range was invalid (outside of device) */
+ 		if (ret == -ERANGE) {
+ 			*hole_start += *hole_size;
+-			*hole_size = 0;
+-			return 1;
++			*hole_size = false;
++			return true;
+ 		}
+ 
+ 		*hole_start += zone_size;
+-- 
+1.8.3.1
+
