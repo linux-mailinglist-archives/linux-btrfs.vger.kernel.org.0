@@ -2,56 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9057F32C53C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A21E32C53B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447287AbhCDATu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1447346AbhCDATu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 3 Mar 2021 19:19:50 -0500
-Received: from verein.lst.de ([213.95.11.211]:36473 "EHLO verein.lst.de"
+Received: from mx2.suse.de ([195.135.220.15]:55902 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358241AbhCCL5l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Mar 2021 06:57:41 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5C59368B02; Wed,  3 Mar 2021 11:43:37 +0100 (CET)
-Date:   Wed, 3 Mar 2021 11:43:36 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "rgoldwyn@suse.de" <rgoldwyn@suse.de>
-Subject: Re: [PATCH v2 09/10] fs/xfs: Handle CoW for fsdax write() path
-Message-ID: <20210303104336.GA20371@lst.de>
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com> <OSBPR01MB2920500BEA2DF0D47885A8FDF4989@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+        id S239780AbhCCMzR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Mar 2021 07:55:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0C58FADDC;
+        Wed,  3 Mar 2021 12:54:25 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 06:54:40 -0600
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Johannes.Thumshirn@wdc.com, dsterba@suse.cz
+Subject: [PATCH] btrfs: fix nocow sequence in btrfs_run_delalloc_range()
+Message-ID: <20210303125440.lub5c4qymhxo7mgh@fiona>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OSBPR01MB2920500BEA2DF0D47885A8FDF4989@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 09:57:48AM +0000, ruansy.fnst@fujitsu.com wrote:
-> > What is the advantage of the ioemap_end handler here?  It adds another
-> > indirect funtion call to the fast path, so if we can avoid it, I'd
-> > rather do that.
-> 
-> These code were in xfs_file_dax_write().  I moved them into the iomap_end
-> because the mmaped CoW need this.
-> 
-> I know this is not so good, but I could not find another better way. Do you
-> have any ideas? 
+need_force_cow will evaluate to false if both BTRFS_INODE_NODATACOW and
+BTRFS_INODE_PREALLOC are not set. Change the function to should_cow()
+instead and correct the conditions so should_nocow() returns true if
+either BTRFS_INODE_NODATACOW or BTRFS_INODE_PREALLOC, but it is not a
+defrag extent.
 
-mmaped copy is the copy_edge case?  Maybe just use different iomap_ops for
-that case vs plain write?
+Fixes: 7e33213f8ccc btrfs: remove force argument from run_delalloc_nocow()
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+---
+ fs/btrfs/inode.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0b133fda4f5d..ceb6ca7c571d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1864,23 +1864,16 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	return ret;
+ }
+ 
+-static inline int need_force_cow(struct btrfs_inode *inode, u64 start, u64 end)
++static inline bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
+ {
+-
+-	if (!(inode->flags & BTRFS_INODE_NODATACOW) &&
+-	    !(inode->flags & BTRFS_INODE_PREALLOC))
+-		return 0;
+-
+-	/*
+-	 * @defrag_bytes is a hint value, no spinlock held here,
+-	 * if is not zero, it means the file is defragging.
+-	 * Force cow if given extent needs to be defragged.
+-	 */
+-	if (inode->defrag_bytes &&
+-	    test_range_bit(&inode->io_tree, start, end, EXTENT_DEFRAG, 0, NULL))
+-		return 1;
+-
+-	return 0;
++	if (inode->flags & (BTRFS_INODE_NODATACOW | BTRFS_INODE_PREALLOC)) {
++		if (inode->defrag_bytes &&
++		    test_range_bit(&inode->io_tree, start, end, EXTENT_DEFRAG,
++				   0, NULL))
++			return false;
++		return true;
++	}
++	return false;
+ }
+ 
+ /*
+@@ -1894,7 +1887,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+ 	int ret;
+ 	const bool zoned = btrfs_is_zoned(inode->root->fs_info);
+ 
+-	if (!need_force_cow(inode, start, end)) {
++	if (should_nocow(inode, start, end)) {
+ 		ASSERT(!zoned);
+ 		ret = run_delalloc_nocow(inode, locked_page, start, end,
+ 					 page_started, nr_written);
+-- 
+2.30.1
+
+
+-- 
+Goldwyn
