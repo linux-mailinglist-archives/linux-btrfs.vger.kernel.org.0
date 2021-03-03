@@ -2,231 +2,285 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA66832C54A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439A032C54B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1450694AbhCDAT6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1450680AbhCDAT6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 3 Mar 2021 19:19:58 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:52004 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839068AbhCCTCn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Mar 2021 14:02:43 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123I8xxI183036;
-        Wed, 3 Mar 2021 18:10:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=sb0eqPcq7THpSiTmE02zpypTZ6+zwW40UmjFbCBzqfE=;
- b=qzEwE68/GrhE7RYVBmDbwTfz7V0csKxoX8AIMEKUBxKRc8Z2kUuM08KcyteoaLAAJg/D
- SpX8kSA7cN+WDqbWixEA8B9sGnldRwg+uY8OAtv3jmrvCULpu8B/j4KqWgoiiJmjDU9r
- g/1gGdLwQWPnoeEV6GDEI0wy2Ca8ShC3czLYXpEweJKgSE6ni6XhnfTnb7W87GYtueSj
- zR4Ld/Ogxx+chN/vS3+nQW1fCZTmGjv9dIpJudYVkQLvSY5GXRgXomCKoveB071Jwn5O
- eEjZBXnObCuiIfTy0q0m23mT4HPeXQGo6xHEH99skH7SVF0QwI9dMw2uF2xGkwDOM0hp CA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 36yeqn4cfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Mar 2021 18:10:52 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 123I16FG058486;
-        Wed, 3 Mar 2021 18:10:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 370001m8bk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Mar 2021 18:10:49 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 123IAmtO021306;
-        Wed, 3 Mar 2021 18:10:48 GMT
-Received: from localhost.localdomain (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 03 Mar 2021 10:10:48 -0800
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>, Su Yue <l@damenly.su>
-Subject: [PATCH v2] btrfs: fix lockdep warning while mounting sprout fs
-Date:   Thu,  4 Mar 2021 02:10:35 +0800
-Message-Id: <23a8830f3be500995e74b45f18862e67c0634c3d.1614793362.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.29.2
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347868AbhCCSmy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Mar 2021 13:42:54 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AAAC061756
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Mar 2021 10:42:03 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id l132so23859756qke.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Mar 2021 10:42:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cUWmFkMTZu8A1Aucxx7EXcJEkKBwzDQkUSGWChWHxp4=;
+        b=SP0PvhVE08v+Xil2kERmYhZB41N+krlz6ZA1X0GQ92ZkHhiuGz8RN7tigfbeC0FSyv
+         jXjllJMgUiWI+FQQVoQmKNEpHhfbvNX9f8RWr+yNDaDcdMACnMRCm3dpkcsv1zSB9MSH
+         RJhdThsBplWV44Ti1sgkeDUsrg9vcCsA8ezG8m6JuR95C5MBRDSy1iY20Mmqo/mpfAfJ
+         JaHPWcuuSWcQpgx7m3DDXqOV5yUp8Kn+Xwvcg2C6KkTVBtMvjU+XkaFnDLSMwVLzGEYi
+         o4bMXmb6dKjpskQpDCmOxZlC5GdyFGgNIXPrgFx3KotxhS1dy2xf94ojpOYCdhgCw3dA
+         LZNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cUWmFkMTZu8A1Aucxx7EXcJEkKBwzDQkUSGWChWHxp4=;
+        b=te+tTUeKrFNw2nv9Sdkw0jqQuewkvz2RRSMdeHDEvifbgR7+eu6GSPIpUmfQ3E4lzf
+         BB9OLEGazZpme0UuUkpFIA/4p+IHafL8XJ3qwfWhnWNfqybZ+Z0W+BWnB7Xi3II+d2RP
+         vIXmhxUdAuNE5yjKPmVfUc/YOM+gHgtkIiHfbvkzlKvz61idynzfxEX/vh0dEJNOBw/v
+         kMo2EvphqvtKZZyxMB67dMa1CVNlT4tXl1kcxZjRkt7w8UajVQR4L6II1e8zwtlo/UKT
+         P9Sa5JPXAjXmIV0WvVXpYGyH5awqHYnm+SguYypZcgKE1tlFwu9GMKUuxybjlCy5a3pb
+         dXbA==
+X-Gm-Message-State: AOAM531bJAR4uQmQk3eL8l5OwLjrVIjzHBhxkq6hUdLWUoWzQu0e6DOI
+        33wHZmEmy29G5iznxKibanFKHIkL+TUhT8Om
+X-Google-Smtp-Source: ABdhPJy7lQ3fIgozI1SFHeO1D6mESBpCeG75tDjDl3tJpU+kAoZw1MZRQxJAx+sZSjdcgwO4or86jg==
+X-Received: by 2002:a37:8145:: with SMTP id c66mr347710qkd.1.1614796922190;
+        Wed, 03 Mar 2021 10:42:02 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11c1::12a2? ([2620:10d:c091:480::1:9835])
+        by smtp.gmail.com with ESMTPSA id t71sm17889239qka.86.2021.03.03.10.42.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Mar 2021 10:42:01 -0800 (PST)
+Subject: Re: Recovering Btrfs from a freak failure of the disk controller
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
+ <74ca64e1-3933-c12b-644a-21745cf2d849@toxicpanda.com>
+ <CAEg-Je9FZhLMx0MuxhyhTDUsRzfbi2_VZsHa3Bs+46jY8F82ZA@mail.gmail.com>
+ <ab38ba5a-f684-0634-c5d8-d317541e37b9@toxicpanda.com>
+ <CAEg-Je-cxaM3SuoLfHL6cGv0-0r7s-hccS4ixs66oO6YYOtbwg@mail.gmail.com>
+ <56747283-fe34-51c5-9dbf-930bdafffaed@toxicpanda.com>
+ <CAEg-Je_=jUMJfAqwtuZwcPE4+HOAJB7JC5gKSw4EeZrutxk5kA@mail.gmail.com>
+ <58f4fe54-a462-b256-df60-17b1084235f6@toxicpanda.com>
+ <CAEg-Je-_r3_AsLHa_HDDOUwVs+Jtty5roFvEyF4K-T2D7oEayA@mail.gmail.com>
+ <58246f4c-4e26-c89c-a589-376cfe23d783@toxicpanda.com>
+ <CAEg-Je-yPqueyW3JqSWrAE_9ckc1KTyaNoFwjbozNLrvb7_tEg@mail.gmail.com>
+ <a9561d44-24a3-fa87-e292-98feb4846ab9@toxicpanda.com>
+ <CAEg-Je8o2GiAH2wC9DXiMdMSCFnAjeV6UH-qaobk_0qYLNsPsQ@mail.gmail.com>
+ <95e8db7d-eff3-e694-c315-f7984b5f49e0@toxicpanda.com>
+ <CAEg-Je_s6EAHwj2LWYRLdMHF_kRuY_JQoLfWMqDgcROZatnP+g@mail.gmail.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <ef2ec021-52d3-2da4-f59a-fa7016c95d90@toxicpanda.com>
+Date:   Wed, 3 Mar 2021 13:42:00 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9912 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- phishscore=0 bulkscore=0 mlxscore=0 spamscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030127
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9912 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 mlxlogscore=999 suspectscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030128
+In-Reply-To: <CAEg-Je_s6EAHwj2LWYRLdMHF_kRuY_JQoLfWMqDgcROZatnP+g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Following test case reproduces lockdep warning.
+On 2/24/21 10:47 PM, Neal Gompa wrote:
+> On Wed, Feb 24, 2021 at 10:44 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>
+>> On 2/24/21 9:23 AM, Neal Gompa wrote:
+>>> On Tue, Feb 23, 2021 at 10:05 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>
+>>>> On 2/22/21 11:03 PM, Neal Gompa wrote:
+>>>>> On Mon, Feb 22, 2021 at 2:34 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>>>
+>>>>>> On 2/21/21 1:27 PM, Neal Gompa wrote:
+>>>>>>> On Wed, Feb 17, 2021 at 11:44 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>>>>>
+>>>>>>>> On 2/17/21 11:29 AM, Neal Gompa wrote:
+>>>>>>>>> On Wed, Feb 17, 2021 at 9:59 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>>>>>>>
+>>>>>>>>>> On 2/17/21 9:50 AM, Neal Gompa wrote:
+>>>>>>>>>>> On Wed, Feb 17, 2021 at 9:36 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>> On 2/16/21 9:05 PM, Neal Gompa wrote:
+>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 4:24 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> On 2/16/21 3:29 PM, Neal Gompa wrote:
+>>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 1:11 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> On 2/16/21 11:27 AM, Neal Gompa wrote:
+>>>>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 10:19 AM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> On 2/14/21 3:25 PM, Neal Gompa wrote:
+>>>>>>>>>>>>>>>>>>> Hey all,
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> So one of my main computers recently had a disk controller failure
+>>>>>>>>>>>>>>>>>>> that caused my machine to freeze. After rebooting, Btrfs refuses to
+>>>>>>>>>>>>>>>>>>> mount. I tried to do a mount and the following errors show up in the
+>>>>>>>>>>>>>>>>>>> journal:
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): has skinny extents
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
+>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> I've tried to do -o recovery,ro mount and get the same issue. I can't
+>>>>>>>>>>>>>>>>>>> seem to find any reasonably good information on how to do recovery in
+>>>>>>>>>>>>>>>>>>> this scenario, even to just recover enough to copy data off.
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> I'm on Fedora 33, the system was on Linux kernel version 5.9.16 and
+>>>>>>>>>>>>>>>>>>> the Fedora 33 live ISO I'm using has Linux kernel version 5.10.14. I'm
+>>>>>>>>>>>>>>>>>>> using btrfs-progs v5.10.
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> Can anyone help?
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> Can you try
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> btrfs check --clear-space-cache v1 /dev/whatever
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> That should fix the inode generation thing so it's sane, and then the tree
+>>>>>>>>>>>>>>>>>> checker will allow the fs to be read, hopefully.  If not we can work out some
+>>>>>>>>>>>>>>>>>> other magic.  Thanks,
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> Josef
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> I got the same error as I did with btrfs-check --readonly...
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> Oh lovely, what does btrfs check --readonly --backup do?
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> No dice...
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> # btrfs check --readonly --backup /dev/sda3
+>>>>>>>>>>>>>>>> Opening filesystem to check...
+>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
+>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
+>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Hey look the block we're looking for, I wrote you some magic, just pull
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> https://github.com/josefbacik/btrfs-progs/tree/for-neal
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> build, and then run
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> btrfs-neal-magic /dev/sda3 791281664 888895
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> This will force us to point at the old root with (hopefully) the right bytenr
+>>>>>>>>>>>>>> and gen, and then hopefully you'll be able to recover from there.  This is kind
+>>>>>>>>>>>>>> of saucy, so yolo, but I can undo it if it makes things worse.  Thanks,
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> # btrfs check --readonly /dev/sda3
+>>>>>>>>>>>>>> Opening filesystem to check...
+>>>>>>>>>>>>>> ERROR: could not setup extent tree
+>>>>>>>>>>>>>> ERROR: cannot open file system
+>>>>>>>>>>>>> # btrfs check --clear-space-cache v1 /dev/sda3
+>>>>>>>>>>>>>> Opening filesystem to check...
+>>>>>>>>>>>>>> ERROR: could not setup extent tree
+>>>>>>>>>>>>>> ERROR: cannot open file system
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> It's better, but still no dice... :(
+>>>>>>>>>>>>>
+>>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Hmm it's not telling us what's wrong with the extent tree, which is annoying.
+>>>>>>>>>>>> Does mount -o rescue=all,ro work now that the root tree is normal?  Thanks,
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> Nope, I see this in the journal:
+>>>>>>>>>>>
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): enabling all of the rescue options
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): ignoring data csums
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): ignoring bad roots
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): disabling log replay at mount time
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): has skinny extents
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): tree level mismatch detected, bytenr=791281664 level expected=1 has=2
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): tree level mismatch detected, bytenr=791281664 level expected=1 has=2
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
+>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
+>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Ok git pull for-neal, rebuild, then run
+>>>>>>>>>>
+>>>>>>>>>> btrfs-neal-magic /dev/sda3 791281664 888895 2
+>>>>>>>>>>
+>>>>>>>>>> I thought of this yesterday but in my head was like "naaahhhh, whats the chances
+>>>>>>>>>> that the level doesn't match??".  Thanks,
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> Tried rescue mount again after running that and got a stack trace in
+>>>>>>>>> the kernel, detailed in the following attached log.
+>>>>>>>>
+>>>>>>>> Huh I wonder how I didn't hit this when testing, I must have only tested with
+>>>>>>>> zero'ing the extent root and the csum root.  You're going to have to build a
+>>>>>>>> kernel with a fix for this
+>>>>>>>>
+>>>>>>>> https://paste.centos.org/view/7b48aaea
+>>>>>>>>
+>>>>>>>> and see if that gets you further.  Thanks,
+>>>>>>>>
+>>>>>>>
+>>>>>>> I built a kernel build as an RPM with your patch[1] and tried it.
+>>>>>>>
+>>>>>>> [root@fedora ~]# mount -t btrfs -o rescue=all,ro /dev/sdb3 /mnt
+>>>>>>> Killed
+>>>>>>>
+>>>>>>> The log from the journal is attached.
+>>>>>>
+>>>>>>
+>>>>>> Ahh crud my bad, this should do it
+>>>>>>
+>>>>>> https://paste.centos.org/view/ac2e61ef
+>>>>>>
+>>>>>
+>>>>> Patch doesn't apply (note it is patch 667 below):
+>>>>
+>>>> Ah sorry, should have just sent you an iterative patch.  You can take the above
+>>>> patch and just delete the hunk from volumes.c as you already have that applied
+>>>> and then it'll work.  Thanks,
+>>>>
+>>>
+>>> Failed with a weird error...?
+>>>
+>>> [root@fedora ~]# mount -t btrfs -o rescue=all,ro /dev/sda3 /mnt
+>>> mount: /mnt: mount(2) system call failed: No such file or directory.
+>>>
+>>> Journal log with traceback attached.
+>>
+>> Last one maybe?
+>>
+>> https://paste.centos.org/view/80edd6fd
+>>
+> 
+> Similar weird failure:
+> 
+> [root@fedora ~]# mount -t btrfs -o rescue=all,ro /dev/sdb3 /mnt
+> mount: /mnt: mount(2) system call failed: No such file or directory.
+> 
+> No crash in the journal this time, though:
+> 
+>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): enabling all of the rescue options
+>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): ignoring data csums
+>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): ignoring bad roots
+>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): disabling log replay at mount time
+>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): disk space caching is enabled
+>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): has skinny extents
+>> Feb 24 22:43:19 fedora kernel: BTRFS warning (device sdb3): failed to read fs tree: -2
+>> Feb 24 22:43:19 fedora kernel: BTRFS error (device sdb3): open_ctree failed
+> 
+> 
 
-Test case:
-DEV1=/dev/vdb
-DEV2=/dev/vdc
-umount /btrfs
-run mkfs.btrfs -f $DEV1
-run btrfstune -S 1 $DEV1
-run mount $DEV1 /btrfs
-run btrfs device add $DEV2 /btrfs -f
-run umount /btrfs
-run mount $DEV2 /btrfs
-run umount /btrfs
+Sorry Neal, you replied when I was in the middle of something and promptly 
+forgot about it.  I figured the fs root was fine, can you do the following so I 
+can figure out from the error messages what might be wrong
 
-The warning claims a possible ABBA deadlock between the threads initiated by
-[#1] btrfs device add and [#0] the mount.
+btrfs check --readonly
+btrfs restore -D
+btrfs restore -l
 
-======================================================
-[ 540.743122] WARNING: possible circular locking dependency detected
-[ 540.743129] 5.11.0-rc7+ #5 Not tainted
-[ 540.743135] ------------------------------------------------------
-[ 540.743142] mount/2515 is trying to acquire lock:
-[ 540.743149] ffffa0c5544c2ce0 (&fs_devs->device_list_mutex){+.+.}-{4:4}, at: clone_fs_devices+0x6d/0x210 [btrfs]
-[ 540.743458] but task is already holding lock:
-[ 540.743461] ffffa0c54a7932b8 (btrfs-chunk-00){++++}-{4:4}, at: __btrfs_tree_read_lock+0x32/0x200 [btrfs]
-[ 540.743541] which lock already depends on the new lock.
-[ 540.743543] the existing dependency chain (in reverse order) is:
+Thanks,
 
-[ 540.743546] -> #1 (btrfs-chunk-00){++++}-{4:4}:
-[ 540.743566] down_read_nested+0x48/0x2b0
-[ 540.743585] __btrfs_tree_read_lock+0x32/0x200 [btrfs]
-[ 540.743650] btrfs_read_lock_root_node+0x70/0x200 [btrfs]
-[ 540.743733] btrfs_search_slot+0x6c6/0xe00 [btrfs]
-[ 540.743785] btrfs_update_device+0x83/0x260 [btrfs]
-[ 540.743849] btrfs_finish_chunk_alloc+0x13f/0x660 [btrfs] <--- device_list_mutex
-[ 540.743911] btrfs_create_pending_block_groups+0x18d/0x3f0 [btrfs]
-[ 540.743982] btrfs_commit_transaction+0x86/0x1260 [btrfs]
-[ 540.744037] btrfs_init_new_device+0x1600/0x1dd0 [btrfs]
-[ 540.744101] btrfs_ioctl+0x1c77/0x24c0 [btrfs]
-[ 540.744166] __x64_sys_ioctl+0xe4/0x140
-[ 540.744170] do_syscall_64+0x4b/0x80
-[ 540.744174] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-[ 540.744180] -> #0 (&fs_devs->device_list_mutex){+.+.}-{4:4}:
-[ 540.744184] __lock_acquire+0x155f/0x2360
-[ 540.744188] lock_acquire+0x10b/0x5c0
-[ 540.744190] __mutex_lock+0xb1/0xf80
-[ 540.744193] mutex_lock_nested+0x27/0x30
-[ 540.744196] clone_fs_devices+0x6d/0x210 [btrfs]
-[ 540.744270] btrfs_read_chunk_tree+0x3c7/0xbb0 [btrfs]
-[ 540.744336] open_ctree+0xf6e/0x2074 [btrfs]
-[ 540.744406] btrfs_mount_root.cold.72+0x16/0x127 [btrfs]
-[ 540.744472] legacy_get_tree+0x38/0x90
-[ 540.744475] vfs_get_tree+0x30/0x140
-[ 540.744478] fc_mount+0x16/0x60
-[ 540.744482] vfs_kern_mount+0x91/0x100
-[ 540.744484] btrfs_mount+0x1e6/0x670 [btrfs]
-[ 540.744536] legacy_get_tree+0x38/0x90
-[ 540.744537] vfs_get_tree+0x30/0x140
-[ 540.744539] path_mount+0x8d8/0x1070
-[ 540.744541] do_mount+0x8d/0xc0
-[ 540.744543] __x64_sys_mount+0x125/0x160
-[ 540.744545] do_syscall_64+0x4b/0x80
-[ 540.744547] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-[ 540.744551] other info that might help us debug this:
-[ 540.744552] Possible unsafe locking scenario:
-
-[ 540.744553] CPU0 				CPU1
-[ 540.744554] ---- 				----
-[ 540.744555] lock(btrfs-chunk-00);
-[ 540.744557] 					lock(&fs_devs->device_list_mutex);
-[ 540.744560] 					lock(btrfs-chunk-00);
-[ 540.744562] lock(&fs_devs->device_list_mutex);
-[ 540.744564]
- *** DEADLOCK ***
-
-[ 540.744565] 3 locks held by mount/2515:
-[ 540.744567] #0: ffffa0c56bf7a0e0 (&type->s_umount_key#42/1){+.+.}-{4:4}, at: alloc_super.isra.16+0xdf/0x450
-[ 540.744574] #1: ffffffffc05a9628 (uuid_mutex){+.+.}-{4:4}, at: btrfs_read_chunk_tree+0x63/0xbb0 [btrfs]
-[ 540.744640] #2: ffffa0c54a7932b8 (btrfs-chunk-00){++++}-{4:4}, at: __btrfs_tree_read_lock+0x32/0x200 [btrfs]
-[ 540.744708]
- stack backtrace:
-[ 540.744712] CPU: 2 PID: 2515 Comm: mount Not tainted 5.11.0-rc7+ #5
-
-
-But the device_list_mutex in clone_fs_devices() is redundant, as explained
-below.
-Two threads [1]  and [2] (below) could lead to clone_fs_device().
-
-[1]
-open_ctree <== mount sprout fs
- btrfs_read_chunk_tree()
-  mutex_lock(&uuid_mutex) <== global lock
-  read_one_dev()
-   open_seed_devices()
-    clone_fs_devices() <== seed fs_devices
-     mutex_lock(&orig->device_list_mutex) <== seed fs_devices
-
-[2]
-btrfs_init_new_device() <== sprouting
- mutex_lock(&uuid_mutex); <== global lock
- btrfs_prepare_sprout()
-   lockdep_assert_held(&uuid_mutex)
-   clone_fs_devices(seed_fs_device) <== seed fs_devices
-
-Both of these threads hold uuid_mutex which is sufficient to protect
-getting the seed device(s) freed while we are trying to clone it for
-sprouting [2] or mounting a sprout [1] (as above). A mounted seed
-device can not free/write/replace because it is read-only. An unmounted
-seed device can free by btrfs_free_stale_devices(), but it needs uuid_mutex.
-So this patch removes the unnecessary device_list_mutex in clone_fs_devices().
-And adds a lockdep_assert_held(&uuid_mutex) in clone_fs_devices().
-
-Reported-by: Su Yue <l@damenly.su>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v2: Remove Martin's Reported-by and Tested-by.
-    Add Su's Reported-by.
-    Add lockdep_assert_held check.
-    Update the changelog, make it relevant to the current misc-next
-
- fs/btrfs/volumes.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index bc3b33efddc5..4188edbad2ef 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -570,6 +570,8 @@ static int btrfs_free_stale_devices(const char *path,
- 	struct btrfs_device *device, *tmp_device;
- 	int ret = 0;
- 
-+	lockdep_assert_held(&uuid_mutex);
-+
- 	if (path)
- 		ret = -ENOENT;
- 
-@@ -1000,11 +1002,12 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
- 	struct btrfs_device *orig_dev;
- 	int ret = 0;
- 
-+	lockdep_assert_held(&uuid_mutex);
-+
- 	fs_devices = alloc_fs_devices(orig->fsid, NULL);
- 	if (IS_ERR(fs_devices))
- 		return fs_devices;
- 
--	mutex_lock(&orig->device_list_mutex);
- 	fs_devices->total_devices = orig->total_devices;
- 
- 	list_for_each_entry(orig_dev, &orig->devices, dev_list) {
-@@ -1036,10 +1039,8 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
- 		device->fs_devices = fs_devices;
- 		fs_devices->num_devices++;
- 	}
--	mutex_unlock(&orig->device_list_mutex);
- 	return fs_devices;
- error:
--	mutex_unlock(&orig->device_list_mutex);
- 	free_fs_devices(fs_devices);
- 	return ERR_PTR(ret);
- }
--- 
-2.27.0
-
+Josef
