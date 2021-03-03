@@ -2,154 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BA732C4F8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE5932C4FC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Mar 2021 01:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239480AbhCDASq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Mar 2021 19:18:46 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1842793AbhCCINR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:13:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614759149; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FIeRUC4Xz5nUe+cn2fSGODwwohV/zKhXXchpgESZLFg=;
-        b=f1Dy6JBwmyyoujNTD1U+88Z99EF8tQLvcfuPBx8Ywn8fguNsts7LkgNQp3MZqyeZWMKk61
-        gfoCJR6L3OM0qOWqEDdyJoC2YHt3aemqg4P8iG6sAky++QX9/ZRnmX8daE7m6SXirUexrH
-        7KgrpJrjJ7OMAyYyjv5rBJStGKjNBVw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 53602B030;
-        Wed,  3 Mar 2021 08:12:29 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>, David Sterba <dsterba@suse.cz>
-Subject: [PATCH 2/2] btrfs: fix qgroup data rsv leak caused by falloc failure
-Date:   Wed,  3 Mar 2021 16:12:20 +0800
-Message-Id: <20210303081220.80913-2-wqu@suse.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210303081220.80913-1-wqu@suse.com>
-References: <20210303081220.80913-1-wqu@suse.com>
+        id S1355095AbhCDASs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Mar 2021 19:18:48 -0500
+Received: from smtprelay0140.hostedemail.com ([216.40.44.140]:52526 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S241083AbhCCKT1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:19:27 -0500
+X-Greylist: delayed 7106 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Mar 2021 05:19:25 EST
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id 4CAE3181C8F29;
+        Wed,  3 Mar 2021 08:21:58 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3F59F180CE5FF;
+        Wed,  3 Mar 2021 08:20:18 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2736:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3871:3874:4321:4605:5007:6119:6742:7652:10004:10400:10848:11026:11232:11473:11658:11914:12043:12048:12296:12297:12438:12740:12895:13439:13894:14096:14097:14659:14721:21080:21451:21611:21627:21939:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: snake87_191524c276c3
+X-Filterd-Recvd-Size: 3585
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  3 Mar 2021 08:20:15 +0000 (UTC)
+Message-ID: <aed5d2b78c4ac121ca0cf46107334673a3c9a586.camel@perches.com>
+Subject: Re: [PATCH v2 08/10] fsdax: Dedup file range to use a compare
+ function
+From:   Joe Perches <joe@perches.com>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
+Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Date:   Wed, 03 Mar 2021 00:20:14 -0800
+In-Reply-To: <20210226002030.653855-9-ruansy.fnst@fujitsu.com>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+         <20210226002030.653855-9-ruansy.fnst@fujitsu.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When running fsstress with only falloc workload, and a very low qgroup
-limit set, we can get qgroup data rsv leak at unmount time.
+On Fri, 2021-02-26 at 08:20 +0800, Shiyang Ruan wrote:
+> With dax we cannot deal with readpage() etc. So, we create a dax
+> comparison funciton which is similar with
+> vfs_dedupe_file_range_compare().
+> And introduce dax_remap_file_range_prep() for filesystem use.
+[]
+> diff --git a/fs/dax.c b/fs/dax.c
+[]
+> @@ -1856,3 +1856,54 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,l
+>  	return dax_insert_pfn_mkwrite(vmf, pfn, order);
+>  }
+>  EXPORT_SYMBOL_GPL(dax_finish_sync_fault);
+> +
+> +static loff_t dax_range_compare_actor(struct inode *ino1, loff_t pos1,
+> +		struct inode *ino2, loff_t pos2, loff_t len, void *data,
+> +		struct iomap *smap, struct iomap *dmap)
+> +{
+> +	void *saddr, *daddr;
+> +	bool *same = data;
+> +	int ret;
+> +
+> +	while (len) {
+> +		if (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE)
+> +			goto next;
+> +
+> +		if (smap->type == IOMAP_HOLE || dmap->type == IOMAP_HOLE) {
+> +			*same = false;
+> +			break;
+> +		}
+> +
+> +		ret = dax_iomap_direct_access(smap, pos1,
+> +			ALIGN(pos1 + len, PAGE_SIZE), &saddr, NULL);
+> +		if (ret < 0)
+> +			return -EIO;
+> +
+> +		ret = dax_iomap_direct_access(dmap, pos2,
+> +			ALIGN(pos2 + len, PAGE_SIZE), &daddr, NULL);
+> +		if (ret < 0)
+> +			return -EIO;
+> +
+> +		*same = !memcmp(saddr, daddr, len);
+> +		if (!*same)
+> +			break;
+> +next:
+> +		len -= len;
+> +	}
+> +
+> +	return 0;
+> +}
 
- BTRFS warning (device dm-0): qgroup 0/5 has unreleased space, type 0 rsv 20480
- BTRFS error (device dm-0): qgroup reserved space leaked
+This code looks needlessly complex.
 
-The minimal reproducer looks like:
+len is never decremented inside the while loop so the while loop
+itself looks unnecessary.  Is there some missing decrement of len
+or some other reason to use a while loop?
 
-  #!/bin/bash
-  dev=/dev/test/test
-  mnt="/mnt/btrfs"
-  fsstress=~/xfstests-dev/ltp/fsstress
-  runtime=8
+Is dax_iomap_direct_access some ugly macro that modifies a hidden len?
 
-  workload()
-  {
-          umount $dev &> /dev/null
-          umount $mnt &> /dev/null
-          mkfs.btrfs -f $dev > /dev/null
-          mount $dev $mnt
+Why not remove the while loop and use straightforward code without
+unnecessary indentatation?
 
-          btrfs quota en $mnt
-          btrfs quota rescan -w $mnt
-          btrfs qgroup limit 16m 0/5 $mnt
+{
+	void *saddr;
+	void *daddr;
+	bool *same = data;
+	int ret;
 
-          $fsstress -w -z -f creat=10 -f fallocate=10 -p 2 -n 100 \
-  		-d $mnt -v > /tmp/fsstress
+	if (!len ||
+	    (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE))
+		return 0;
 
-          umount $mnt
-          if dmesg | grep leak ; then
-		echo "!!! FAILED !!!"
-  		exit 1
-          fi
-  }
+	if (smap->type == IOMAP_HOLE || dmap->type == IOMAP_HOLE) {
+		*same = false;
+		return 0;
+	}
 
-  for (( i=0; i < $runtime; i++)); do
-          echo "=== $i/$runtime==="
-          workload
-  done
+	ret = dax_iomap_direct_access(smap, pos1, ALIGN(pos1 + len, PAGE_SIZE),
+				      &saddr, NULL);
+	if (ret < 0)
+		return -EIO;
 
-Normally it would fail before round 4.
+	ret = dax_iomap_direct_access(dmap, pos2, ALIGN(pos2 + len, PAGE_SIZE),
+				      &daddr, NULL);
+	if (ret < 0)
+		return -EIO;
 
-[CAUSE]
-In function insert_prealloc_file_extent(), we first call
-btrfs_qgroup_release_data() to know how many bytes are reserved for
-qgroup data rsv.
+	*same = !memcmp(saddr, daddr, len);
 
-Then use that @qgroup_released number to continue our work.
+	return 0;
+}	
 
-But after we call btrfs_qgroup_release_data(), we should either queue
-@qgroup_released to delayed ref or free them manually in error path.
-
-Unfortunately, we lack the error handling to free the released bytes,
-leaking qgroup data rsv.
-
-All the error handling function outside won't help at all, as we have
-released the range, meaning in inode io tree, the EXTENT_QGROUP_RESERVED
-bit is already cleared, thus all btrfs_qgroup_free_data() call won't
-free any data rsv.
-
-[FIX]
-Add free_qgroup tag to manually free the released qgroup data rsv.
-
-Fixes: 9729f10a608f ("btrfs: inode: move qgroup reserved space release to the callers of insert_reserved_file_extent()")
-Reported-by: Nikolay Borisov <nborisov@suse.com>
-Reported-by: David Sterba <dsterba@suse.cz>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 4e9717c29451..9ffa1b1f3b82 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9910,17 +9910,30 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	extent_info.insertions = 0;
- 
- 	path = btrfs_alloc_path();
--	if (!path)
--		return ERR_PTR(-ENOMEM);
-+	if (!path) {
-+		ret = -ENOMEM;
-+		goto free_qgroup;
-+	}
- 
- 	ret = btrfs_replace_file_extents(&inode->vfs_inode, path, file_offset,
- 				     file_offset + len - 1, &extent_info,
- 				     &trans);
- 	btrfs_free_path(path);
- 	if (ret)
--		return ERR_PTR(ret);
--
-+		goto free_qgroup;
- 	return trans;
-+free_qgroup:
-+	/*
-+	 * We have released qgroup data range at the beginning of the function,
-+	 * and normally @qgroup_released bytes will be freed when committing
-+	 * transaction.
-+	 * But if we error out early, we have to free what we have released
-+	 * or we leak qgroup data rsv.
-+	 */
-+	btrfs_qgroup_free_refroot(inode->root->fs_info,
-+			inode->root->root_key.objectid, qgroup_released,
-+			BTRFS_QGROUP_RSV_DATA);
-+	return ERR_PTR(ret);
- }
- 
- static int __btrfs_prealloc_file_range(struct inode *inode, int mode,
--- 
-2.30.1
+I didn't look at the rest.
 
