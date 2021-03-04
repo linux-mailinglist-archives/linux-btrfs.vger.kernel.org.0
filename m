@@ -2,361 +2,403 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D651B32DDEB
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Mar 2021 00:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D58A532DE20
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Mar 2021 00:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhCDXkR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Mar 2021 18:40:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231959AbhCDXkQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Mar 2021 18:40:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3DD664F62;
-        Thu,  4 Mar 2021 23:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614901215;
-        bh=/0DW0uDIqgzkDXBs7LC+CDyXpa8iOTe6w8cw9abn6UI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AnWu6vola+FNdAFd0O0QSm5CrhcxhlC4xqH8nCAsjypIQxK7Nfk41NTf6Spr5n04q
-         k0c8hhgqr83fDz29/W3sfYKwGDITitYFhQFi4BE7nIQ6u6rpyzx/562jryvL8kGula
-         Y22Pir+9Uwh4bVQA1M2OVITjvU1n1h7MBf0EHluTmx7XN8H86bvZ4/qweshhjrbc7r
-         KJZY3ZHUYbqfUP+o6GOttYrxAxE9L+OA32k7AI9nwqEa3cYP0OqGucUUKr0DVCxdGi
-         vJO+RX7WZl/yiBGpCr/Z3SI5kRSIXruyntKWfATL5pDR2eJWQVBTGjmA5v8TFLd+yw
-         343jX08iumibA==
-Date:   Thu, 4 Mar 2021 15:40:14 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
-Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
-Message-ID: <20210304234014.GG3419940@magnolia>
-References: <20210226212748.GY4662@dread.disaster.area>
- <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
- <20210227223611.GZ4662@dread.disaster.area>
- <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
- <20210228223846.GA4662@dread.disaster.area>
- <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
- <20210302032805.GM7272@magnolia>
- <CAPcyv4jXH0F+aii6ZtYQ3=Rx-mOWM7NFHC9wVxacW-b1o_s20g@mail.gmail.com>
- <20210302075736.GJ4662@dread.disaster.area>
- <CAPcyv4iyTHVW51xocmLO7F6ATgq0rJtQ1nShB=rAmDfzx83EyA@mail.gmail.com>
+        id S231492AbhCDXzO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Mar 2021 18:55:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhCDXzN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Mar 2021 18:55:13 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D916DC061574
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 Mar 2021 15:55:11 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id f4so30471840ybk.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Mar 2021 15:55:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZAJOCdbG0FtOpwMCR7xkZHV2pza1W9H3HQwtFcHr7kU=;
+        b=VUFAaPB9Zrv4Yimc5xat1wM1+Z2io58ifWJWdWxJEObeH09m2rLP/v/LuMWKRjm4Vc
+         apZUDRiBR2TDJeqV14ScD4DxNHRWhAhIB+ATr+r/L5CaGDTSv9iiViblsUITSETnM2cg
+         arDaLgpPq8lYcW2plsjzpIafr7gf3ebK+6hrg83PNCPmKywADaqR2lAYGSzECLmUWCsQ
+         gUio4Ql3hjmwtUa++K1DZF/G/8ZvGPEFW2+4Pk2iXnvEYgRujwGO1VST0zLnHzSNFBFk
+         gOFaBL9CuE54lsP2tNO7QJVmb5ju2valbBlEJzpCSGnVpurPuDzOUEgCA1kqiwXhUd1I
+         rtmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZAJOCdbG0FtOpwMCR7xkZHV2pza1W9H3HQwtFcHr7kU=;
+        b=hjcbQlpDrKGeZRLwfRVIqEeAeVm/WmGrV3/6OYhYDWVpdSnt2P7Ersk5h/k7QeSId0
+         PnnxCZBJ9NFzhE3JU3JoLzEorKdrJ3IfegqVJYuIU85zayL6p5is0051JqfVepEfbEr3
+         b+K1HGo2KGt7hY4BwbfcjzhsYuTjcZD95VGmnil5r0Atn7pPyfaoP+tpkADp4oe4mR1F
+         M3O4rhlqZKjrAH5LRCREbGUvNK/sA8Rl9VbMJ4EUVp/vpfHf4cy8WqER+y8AWbKNBe0E
+         Y4M1bIM/1/Z+1wAr75Jsc6oLDMz2pL8s8TrT+dMa+Oxh0+e80cDN9ANrrOkx351eMJV3
+         6mRg==
+X-Gm-Message-State: AOAM530UHHqOyIK0rKS/DJGItMOweHryZjuastwnckrs4Wevuf2Gb1I6
+        WG8z08H4QrxXohanjt3wmjiTy0SKGCsXnatTqF5k+lbyRXpS5g==
+X-Google-Smtp-Source: ABdhPJyW54rBT2sHDcPQyhDnrR3S4rZJPXvusn0+Bv4fqlaoO8G2TZNdhgdi7/xw2lP5YlJ659/3oq4TmogerzTLnAg=
+X-Received: by 2002:a05:6902:1001:: with SMTP id w1mr10196496ybt.176.1614902111076;
+ Thu, 04 Mar 2021 15:55:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4iyTHVW51xocmLO7F6ATgq0rJtQ1nShB=rAmDfzx83EyA@mail.gmail.com>
+References: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
+ <ab38ba5a-f684-0634-c5d8-d317541e37b9@toxicpanda.com> <CAEg-Je-cxaM3SuoLfHL6cGv0-0r7s-hccS4ixs66oO6YYOtbwg@mail.gmail.com>
+ <56747283-fe34-51c5-9dbf-930bdafffaed@toxicpanda.com> <CAEg-Je_=jUMJfAqwtuZwcPE4+HOAJB7JC5gKSw4EeZrutxk5kA@mail.gmail.com>
+ <58f4fe54-a462-b256-df60-17b1084235f6@toxicpanda.com> <CAEg-Je-_r3_AsLHa_HDDOUwVs+Jtty5roFvEyF4K-T2D7oEayA@mail.gmail.com>
+ <58246f4c-4e26-c89c-a589-376cfe23d783@toxicpanda.com> <CAEg-Je-yPqueyW3JqSWrAE_9ckc1KTyaNoFwjbozNLrvb7_tEg@mail.gmail.com>
+ <a9561d44-24a3-fa87-e292-98feb4846ab9@toxicpanda.com> <CAEg-Je8o2GiAH2wC9DXiMdMSCFnAjeV6UH-qaobk_0qYLNsPsQ@mail.gmail.com>
+ <95e8db7d-eff3-e694-c315-f7984b5f49e0@toxicpanda.com> <CAEg-Je_s6EAHwj2LWYRLdMHF_kRuY_JQoLfWMqDgcROZatnP+g@mail.gmail.com>
+ <ef2ec021-52d3-2da4-f59a-fa7016c95d90@toxicpanda.com> <CAEg-Je_HKgGLnF6F_3dXd+9NFa9cTceWWtTUhSSjNovsze_wQg@mail.gmail.com>
+ <d2c7b501-f2f1-c471-4b1b-38e6731682ba@toxicpanda.com>
+In-Reply-To: <d2c7b501-f2f1-c471-4b1b-38e6731682ba@toxicpanda.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Thu, 4 Mar 2021 18:54:34 -0500
+Message-ID: <CAEg-Je_TN04fnE2Bg46Nysm2_fG7dcni-7c6wbfZQZqXhDhbnA@mail.gmail.com>
+Subject: Re: Recovering Btrfs from a freak failure of the disk controller
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 09:49:30AM -0800, Dan Williams wrote:
-> On Mon, Mar 1, 2021 at 11:57 PM Dave Chinner <david@fromorbit.com> wrote:
+On Thu, Mar 4, 2021 at 3:25 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On 3/3/21 2:38 PM, Neal Gompa wrote:
+> > On Wed, Mar 3, 2021 at 1:42 PM Josef Bacik <josef@toxicpanda.com> wrote=
+:
+> >>
+> >> On 2/24/21 10:47 PM, Neal Gompa wrote:
+> >>> On Wed, Feb 24, 2021 at 10:44 AM Josef Bacik <josef@toxicpanda.com> w=
+rote:
+> >>>>
+> >>>> On 2/24/21 9:23 AM, Neal Gompa wrote:
+> >>>>> On Tue, Feb 23, 2021 at 10:05 AM Josef Bacik <josef@toxicpanda.com>=
+ wrote:
+> >>>>>>
+> >>>>>> On 2/22/21 11:03 PM, Neal Gompa wrote:
+> >>>>>>> On Mon, Feb 22, 2021 at 2:34 PM Josef Bacik <josef@toxicpanda.com=
+> wrote:
+> >>>>>>>>
+> >>>>>>>> On 2/21/21 1:27 PM, Neal Gompa wrote:
+> >>>>>>>>> On Wed, Feb 17, 2021 at 11:44 AM Josef Bacik <josef@toxicpanda.=
+com> wrote:
+> >>>>>>>>>>
+> >>>>>>>>>> On 2/17/21 11:29 AM, Neal Gompa wrote:
+> >>>>>>>>>>> On Wed, Feb 17, 2021 at 9:59 AM Josef Bacik <josef@toxicpanda=
+.com> wrote:
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> On 2/17/21 9:50 AM, Neal Gompa wrote:
+> >>>>>>>>>>>>> On Wed, Feb 17, 2021 at 9:36 AM Josef Bacik <josef@toxicpan=
+da.com> wrote:
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> On 2/16/21 9:05 PM, Neal Gompa wrote:
+> >>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 4:24 PM Josef Bacik <josef@toxicp=
+anda.com> wrote:
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> On 2/16/21 3:29 PM, Neal Gompa wrote:
+> >>>>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 1:11 PM Josef Bacik <josef@toxi=
+cpanda.com> wrote:
+> >>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>> On 2/16/21 11:27 AM, Neal Gompa wrote:
+> >>>>>>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 10:19 AM Josef Bacik <josef@t=
+oxicpanda.com> wrote:
+> >>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>> On 2/14/21 3:25 PM, Neal Gompa wrote:
+> >>>>>>>>>>>>>>>>>>>>> Hey all,
+> >>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>> So one of my main computers recently had a disk con=
+troller failure
+> >>>>>>>>>>>>>>>>>>>>> that caused my machine to freeze. After rebooting, =
+Btrfs refuses to
+> >>>>>>>>>>>>>>>>>>>>> mount. I tried to do a mount and the following erro=
+rs show up in the
+> >>>>>>>>>>>>>>>>>>>>> journal:
+> >>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info =
+(device sda3): disk space caching is enabled
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info =
+(device sda3): has skinny extents
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS criti=
+cal (device sda3): corrupt leaf: root=3D401 block=3D796082176 slot=3D15 ino=
+=3D203657, invalid inode transid: has 888896 expect [0, 888895]
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error=
+ (device sda3): block=3D796082176 read time tree block corruption detected
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS criti=
+cal (device sda3): corrupt leaf: root=3D401 block=3D796082176 slot=3D15 ino=
+=3D203657, invalid inode transid: has 888896 expect [0, 888895]
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error=
+ (device sda3): block=3D796082176 read time tree block corruption detected
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS warni=
+ng (device sda3): couldn't read tree root
+> >>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error=
+ (device sda3): open_ctree failed
+> >>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>> I've tried to do -o recovery,ro mount and get the s=
+ame issue. I can't
+> >>>>>>>>>>>>>>>>>>>>> seem to find any reasonably good information on how=
+ to do recovery in
+> >>>>>>>>>>>>>>>>>>>>> this scenario, even to just recover enough to copy =
+data off.
+> >>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>> I'm on Fedora 33, the system was on Linux kernel ve=
+rsion 5.9.16 and
+> >>>>>>>>>>>>>>>>>>>>> the Fedora 33 live ISO I'm using has Linux kernel v=
+ersion 5.10.14. I'm
+> >>>>>>>>>>>>>>>>>>>>> using btrfs-progs v5.10.
+> >>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>> Can anyone help?
+> >>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>> Can you try
+> >>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>> btrfs check --clear-space-cache v1 /dev/whatever
+> >>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>> That should fix the inode generation thing so it's s=
+ane, and then the tree
+> >>>>>>>>>>>>>>>>>>>> checker will allow the fs to be read, hopefully.  If=
+ not we can work out some
+> >>>>>>>>>>>>>>>>>>>> other magic.  Thanks,
+> >>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>> Josef
+> >>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>> I got the same error as I did with btrfs-check --read=
+only...
+> >>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>> Oh lovely, what does btrfs check --readonly --backup d=
+o?
+> >>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>> No dice...
+> >>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>> # btrfs check --readonly --backup /dev/sda3
+> >>>>>>>>>>>>>>>>>> Opening filesystem to check...
+> >>>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 88889=
+3 found 888895
+> >>>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 88889=
+3 found 888895
+> >>>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 88889=
+3 found 888895
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> Hey look the block we're looking for, I wrote you some m=
+agic, just pull
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> https://github.com/josefbacik/btrfs-progs/tree/for-neal
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> build, and then run
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> btrfs-neal-magic /dev/sda3 791281664 888895
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> This will force us to point at the old root with (hopefu=
+lly) the right bytenr
+> >>>>>>>>>>>>>>>> and gen, and then hopefully you'll be able to recover fr=
+om there.  This is kind
+> >>>>>>>>>>>>>>>> of saucy, so yolo, but I can undo it if it makes things =
+worse.  Thanks,
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> # btrfs check --readonly /dev/sda3
+> >>>>>>>>>>>>>>>> Opening filesystem to check...
+> >>>>>>>>>>>>>>>> ERROR: could not setup extent tree
+> >>>>>>>>>>>>>>>> ERROR: cannot open file system
+> >>>>>>>>>>>>>>> # btrfs check --clear-space-cache v1 /dev/sda3
+> >>>>>>>>>>>>>>>> Opening filesystem to check...
+> >>>>>>>>>>>>>>>> ERROR: could not setup extent tree
+> >>>>>>>>>>>>>>>> ERROR: cannot open file system
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> It's better, but still no dice... :(
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> Hmm it's not telling us what's wrong with the extent tree,=
+ which is annoying.
+> >>>>>>>>>>>>>> Does mount -o rescue=3Dall,ro work now that the root tree =
+is normal?  Thanks,
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Nope, I see this in the journal:
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device =
+sda3): enabling all of the rescue options
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device =
+sda3): ignoring data csums
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device =
+sda3): ignoring bad roots
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device =
+sda3): disabling log replay at mount time
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device =
+sda3): disk space caching is enabled
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device =
+sda3): has skinny extents
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device=
+ sda3): tree level mismatch detected, bytenr=3D791281664 level expected=3D1=
+ has=3D2
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device=
+ sda3): tree level mismatch detected, bytenr=3D791281664 level expected=3D1=
+ has=3D2
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS warning (devi=
+ce sda3): couldn't read tree root
+> >>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device=
+ sda3): open_ctree failed
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Ok git pull for-neal, rebuild, then run
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> btrfs-neal-magic /dev/sda3 791281664 888895 2
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> I thought of this yesterday but in my head was like "naaahhh=
+h, whats the chances
+> >>>>>>>>>>>> that the level doesn't match??".  Thanks,
+> >>>>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> Tried rescue mount again after running that and got a stack t=
+race in
+> >>>>>>>>>>> the kernel, detailed in the following attached log.
+> >>>>>>>>>>
+> >>>>>>>>>> Huh I wonder how I didn't hit this when testing, I must have o=
+nly tested with
+> >>>>>>>>>> zero'ing the extent root and the csum root.  You're going to h=
+ave to build a
+> >>>>>>>>>> kernel with a fix for this
+> >>>>>>>>>>
+> >>>>>>>>>> https://paste.centos.org/view/7b48aaea
+> >>>>>>>>>>
+> >>>>>>>>>> and see if that gets you further.  Thanks,
+> >>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> I built a kernel build as an RPM with your patch[1] and tried i=
+t.
+> >>>>>>>>>
+> >>>>>>>>> [root@fedora ~]# mount -t btrfs -o rescue=3Dall,ro /dev/sdb3 /m=
+nt
+> >>>>>>>>> Killed
+> >>>>>>>>>
+> >>>>>>>>> The log from the journal is attached.
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>> Ahh crud my bad, this should do it
+> >>>>>>>>
+> >>>>>>>> https://paste.centos.org/view/ac2e61ef
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Patch doesn't apply (note it is patch 667 below):
+> >>>>>>
+> >>>>>> Ah sorry, should have just sent you an iterative patch.  You can t=
+ake the above
+> >>>>>> patch and just delete the hunk from volumes.c as you already have =
+that applied
+> >>>>>> and then it'll work.  Thanks,
+> >>>>>>
+> >>>>>
+> >>>>> Failed with a weird error...?
+> >>>>>
+> >>>>> [root@fedora ~]# mount -t btrfs -o rescue=3Dall,ro /dev/sda3 /mnt
+> >>>>> mount: /mnt: mount(2) system call failed: No such file or directory=
+.
+> >>>>>
+> >>>>> Journal log with traceback attached.
+> >>>>
+> >>>> Last one maybe?
+> >>>>
+> >>>> https://paste.centos.org/view/80edd6fd
+> >>>>
+> >>>
+> >>> Similar weird failure:
+> >>>
+> >>> [root@fedora ~]# mount -t btrfs -o rescue=3Dall,ro /dev/sdb3 /mnt
+> >>> mount: /mnt: mount(2) system call failed: No such file or directory.
+> >>>
+> >>> No crash in the journal this time, though:
+> >>>
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): enabling al=
+l of the rescue options
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): ignoring da=
+ta csums
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): ignoring ba=
+d roots
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): disabling l=
+og replay at mount time
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): disk space =
+caching is enabled
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): has skinny =
+extents
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS warning (device sdb3): failed t=
+o read fs tree: -2
+> >>>> Feb 24 22:43:19 fedora kernel: BTRFS error (device sdb3): open_ctree=
+ failed
+> >>>
+> >>>
+> >>
+> >> Sorry Neal, you replied when I was in the middle of something and prom=
+ptly
+> >> forgot about it.  I figured the fs root was fine, can you do the follo=
+wing so I
+> >> can figure out from the error messages what might be wrong
+> >>
+> >> btrfs check --readonly
+> >> btrfs restore -D
+> >> btrfs restore -l
+> >>
 > >
-> > On Mon, Mar 01, 2021 at 09:41:02PM -0800, Dan Williams wrote:
-> > > On Mon, Mar 1, 2021 at 7:28 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> > > > > > I really don't see you seem to be telling us that invalidation is an
-> > > > > > either/or choice. There's more ways to convert physical block
-> > > > > > address -> inode file offset and mapping index than brute force
-> > > > > > inode cache walks....
-> > > > >
-> > > > > Yes, but I was trying to map it to an existing mechanism and the
-> > > > > internals of drop_pagecache_sb() are, in coarse terms, close to what
-> > > > > needs to happen here.
-> > > >
-> > > > Yes.  XFS (with rmap enabled) can do all the iteration and walking in
-> > > > that function except for the invalidate_mapping_* call itself.  The goal
-> > > > of this series is first to wire up a callback within both the block and
-> > > > pmem subsystems so that they can take notifications and reverse-map them
-> > > > through the storage stack until they reach an fs superblock.
-> > >
-> > > I'm chuckling because this "reverse map all the way up the block
-> > > layer" is the opposite of what Dave said at the first reaction to my
-> > > proposal, "can't the mm map pfns to fs inode  address_spaces?".
+> > It didn't work.. Here's the output:
 > >
-> > Ah, no, I never said that the filesystem can't do reverse maps. I
-> > was asking if the mm could directly (brute-force) invalidate PTEs
-> > pointing at physical pmem ranges without needing walk the inode
-> > mappings. That would be far more efficient if it could be done....
-
-So, uh, /can/ the kernel brute-force invalidate PTEs when the pmem
-driver says that something died?  Part of what's keeping me from putting
-together a coherent vision for how this would work is my relative
-unfamiliarity with all things mm/.
-
-> > > Today whenever the pmem driver receives new corrupted range
-> > > notification from the lower level nvdimm
-> > > infrastructure(nd_pmem_notify) it updates the 'badblocks' instance
-> > > associated with the pmem gendisk and then notifies userspace that
-> > > there are new badblocks. This seems a perfect place to signal an upper
-> > > level stacked block device that may also be watching disk->bb. Then
-> > > each gendisk in a stacked topology is responsible for watching the
-> > > badblock notifications of the next level and storing a remapped
-> > > instance of those blocks until ultimately the filesystem mounted on
-> > > the top-level block device is responsible for registering for those
-> > > top-level disk->bb events.
-> > >
-> > > The device gone notification does not map cleanly onto 'struct badblocks'.
+> > [root@fedora ~]# btrfs check --readonly /dev/sdb3
+> > Opening filesystem to check...
+> > ERROR: could not setup extent tree
+> > ERROR: cannot open file system
+> > [root@fedora ~]# btrfs restore -D /dev/sdb3 /mnt
+> > WARNING: could not setup extent tree, skipping it
+> > Couldn't setup device tree
+> > Could not open root, trying backup super
+> > parent transid verify failed on 796082176 wanted 888894 found 888896
+> > parent transid verify failed on 796082176 wanted 888894 found 888896
+> > parent transid verify failed on 796082176 wanted 888894 found 888896
+> > Ignoring transid failure
+> > WARNING: could not setup extent tree, skipping it
+> > Couldn't setup device tree
+> > Could not open root, trying backup super
+> > ERROR: superblock bytenr 274877906944 is larger than device size 263132=
+807168
+> > Could not open root, trying backup super
+> > [root@fedora ~]# btrfs restore -l /dev/sdb3 /mnt
+> > WARNING: could not setup extent tree, skipping it
+> > Couldn't setup device tree
+> > Could not open root, trying backup super
+> > parent transid verify failed on 796082176 wanted 888894 found 888896
+> > parent transid verify failed on 796082176 wanted 888894 found 888896
+> > parent transid verify failed on 796082176 wanted 888894 found 888896
+> > Ignoring transid failure
+> > WARNING: could not setup extent tree, skipping it
+> > Couldn't setup device tree
+> > Could not open root, trying backup super
+> > ERROR: superblock bytenr 274877906944 is larger than device size 263132=
+807168
+> > Could not open root, trying backup super
 > >
-> > Filesystems are not allowed to interact with the gendisk
-> > infrastructure - that's for supporting the device side of a block
-> > device. It's a layering violation, and many a filesytem developer
-> > has been shouted at for trying to do this. At most we can peek
-> > through it to query functionality support from the request queue,
-> > but otherwise filesystems do not interact with anything under
-> > bdev->bd_disk.
-> 
-> So lets add an api that allows the querying of badblocks by bdev and
-> let the block core handle the bd_disk interaction. I see other block
-> functionality like blk-integrity reaching through gendisk. The fs need
-> not interact with the gendisk directly.
-
-(I thought it was ok for block code to fiddle with other block
-internals, and it's filesystems messing with block internals that was
-prohibited?)
-
-> > As it is, badblocks are used by devices to manage internal state.
-> > e.g. md for recording stripes that need recovery if the system
-> > crashes while they are being written out.
-> 
-> I know, I was there when it was invented which is why it was
-> top-of-mind when pmem had a need to communicate badblocks. Other block
-> drivers have threatened to use it for badblocks tracking, but none of
-> those have carried through on that initial interest.
-
-I hadn't realized that badblocks was bolted onto gendisk nowadays, I
-mistakenly thought it was still something internal to md.
-
-Looking over badblocks, I see a major drawback in that it can only
-remember a single page's worth of badblocks records.
-
-> > > If an upper level agent really cared about knowing about ->remove()
-> > > events before they happened it could maybe do something like:
-> > >
-> > > dev = disk_to_dev(bdev->bd_disk)->parent;
-> > > bus_register_notifier(dev->bus. &disk_host_device_notifier_block)
 > >
-> > Yeah, that's exactly the sort of thing that filesystems have been
-> > aggressively discouraged from doing for years.
-> 
-> Yup, it's a layering violation.
-> 
-> > Part of the reason for this is that gendisk based mechanisms are not
-> > very good for stacked device error reporting. Part of the problem
-> > here is that every layer of the stacked device has to hook the
-> > notifier of the block devices underneath it, then translate the
-> > event to match the upper block device map, then regenerate the
-> > notification for the next layer up. This isn't an efficient way to
-> > pass a notification through a series of stacked devices and it is
-> > messy and cumbersome to maintain.
-> 
-> It's been messy and cumbersome to route new infrastructure through DM
-> every time a new dax_operation arrives. The corrupted_range() routing
-> has the same burden. The advantage of badblocks over corrupted_range()
-> is that it solves the "what If I miss a notification" problem. Each
-> layer of the stack maintains its sector translation of the next level
-> errors.
+>
+> Hmm OK I think we want the neal magic for this one too, but before we go =
+doing
+> that can I get a
+>
+> btrfs inspect-internal -f /dev/whatever
+>
+> so I can make sure I'm not just blindly clobbering something.  Thanks,
+>
 
-Oh.  Hum.  This changes my interpretation of what you're advocating.
+Doesn't work, did you mean some other command?
 
-If I'm understanding you correctly, I think you want to handle pmem
-persistence errors (aka "I lost this cache line") by ... what?  The pmem
-driver marks the appropriate range in the block_device/dax_device's
-badblocks list, invalidates the page tables to force fs page faults, and
-the next time the fs tries to access that pmem (either via bios or by
-creating a direct map) the lower level storage driver will see the
-badblocks entry and fail the IO / decline the mapping?
+[root@fedora ~]#  btrfs inspect-internal -f /dev/sdb3
+btrfs inspect-internal: unknown token '-f'
 
-<shrug> I dunno, does that even make sense?  I thought it was pretty
-easy for the kernel to invalidate a mapping to force a page fault, since
-we (xfs) do that to the regular page cache all the time.
 
-Assuming I understood that part correctly, why is it objectionable to
-ask for the one extra step where pmem steps through the dax_device to
-call the filesystem ->memory_failure handler?  There's no pmem-mapper
-layer (yet) so making this piece happen should be relatively simple
-since it doesn't require translating through multiple layers of dm,
-right?
 
-Also, does your mental model of storage device error reporting center
-around lower layers setting badblocks ranges and then poking filesystems
-to call down into badblocks to find out what's bad?  Versus lower layers
-calling filesystems with the bad ranges directly?  Or are you trying to
-omit as much fs involvement as possible?
 
-(I'll address invalidating dax devices a little further down)
-
-> > It can be effective for getting notifications to userspace about
-> > something that happens to a specific block device.
-> 
-> No, it's not block device specific, it's stuck at the disk level. The
-> user notification aspect was added for pmem at the disk layer because
-> IIRC it was NAKd to add it to the block_device itself.
-> 
-> >
-> > But The userspace
-> > still ends up having to solve the "what does this error resolve to"
-> > problem. i.e. Userspace still needs to map that notification to a
-> > filesystem, and for data loss events map it to objects within the
-> > filesystem, which can be extremely expensive to do from userspace.
-> 
-> Expensive and vulnerable to TOCTOU, this has been the motivation for
-> filesystem native awareness of these errors from the beginning.
-> 
-> > This is exactly the sort of userspace error reporting mess that
-> > various projects have asked us to try to fix. Plumbing errors
-> > internally through the kernel up to the filesystem where the
-> > filesytem can point directly to the user data that is affected is a
-> > simple, effective solution to the problem. Especially if we then
-> > have a generic error notification mechanism for filesystems to emit
-> > errors to registered userspace watchers...
-> 
-> Agree, that's the dream worth pursuing.
-
-(Agree, the error reporting story is still a mess.)
-
-> >
-> > > I still don't think that solves the need for a separate mechanism for
-> > > global dax_device pte invalidation.
-> >
-> > It's just another type of media error because.....
-> >
-> > > I think that global dax_device invalidation needs new kernel
-> > > infrastructure to allow internal users, like dm-writecache and future
-> > > filesystems using dax for metadata, to take a fault when pmem is
-> > > offlined.
-> >
-> > .... if userspace has directly mapped into the cache, and the cache
-> > storage goes away, the userspace app has to be killed because we
-> > have no idea if the device going away has caused data loss or not.
-> > IOWs, if userspace writes direct to the cache device and it hasn't
-> > been written back to other storage when it gets yanked, we have just
-> > caused data corruption to occur.
-> 
-> If userspace has it direct mapped dirty in the cache when the remove
-> fires, there is no opportunity to flush the cache. Just as there is no
-> opportunity today with non-DAX and the page cache. The block-queue
-> will be invalidated and any dirty in page cache is stranded.
-
-So this is the "dax device invalidation" case that you also mention
-below.  How differently would you handle this case from the persistence
-error case I outlined above?  It sounds like in this case all the mm can
-really do is invalidate the active page table mappings and set some
-"totally offline" state in the dax/block_device badblocks so that all
-future io requests are declined?
-
-Do I understand that correctly?
-
-If so, then I guess my next question is about the coordinated
-pre-removal step that I think you mentioned in connection with something
-named "CXL"?  If someone /requests/ the removal of a chunk of pmem,
-would you propagate that request far enough up the storage chain so that
-a mounted filesystem could reject the removal attempt?
-
-> > At minimum, we now have to tell the filesystem that the dirty data
-> > in the cache is now bad, and direct map applications that map those
-> > dirty ranges need to be killed because their backing store is no
-> > longer valid nor does the backup copy contain the data they last
-> > wrote. Nor is it acessible by direct access, which is going to be
-> > interesting because dynamically changing dax to non-dax access can't
-> > be done without forcibly kicking the inode out of the cache. That
-> > requires all references to the inode to go away. And that means the
-> > event really has to go up to the filesystem.
-> >
-> > But I think the biggest piece of the puzzle that you haven't grokked
-> > here is that the dm cache device isn't a linear map - it's made up of
-> > random ranges from the underlying devices. Hence the "remove" of a dm
-> > cache device turns into a huge number of small, sparse corrupt
-> > ranges, not a single linear device remove event.
-> 
-> I am aware that DM is non-linear. The other non-linearity is sector-to-pfn.
-> 
-> > IOWs, device unplug/remove events are not just simple "pass it on"
-> > events in a stacked storage setup. There can be non-trivial mappings
-> > through the layers, and device disappearance may in fact manifest to
-> > the user as data corruption rather than causing data to be
-> > inaccessible.
-> 
-> Even MD does not rely on component device notifications for failure
-> notifications, it waits for write-errors, and yes losing a component
-> of a raid0 is more than a data offline event.
-> 
-> > Hence "remove" notifications just don't work in the storage stack.
-> > They need to be translated to block ranges going bad (i.e.  media
-> > errors), and reported to higher layers as bad ranges, not as device
-> > removal.
-> 
-> Yes, the generic top-level remove event is pretty much useless for
-> both the dax pte invalidation and lba range offline notification. I'm
-> distinguishing that from knock on events that fire in response to
-> ->remove() triggering on the disk driver which seems to be where you
-> are at as well with the idea to trigger ->corrupted_range(0, EOD) from
-> ->remove().
-> 
-> There's 2 ways to view the "filesystems have wanted proactive
-> notification of remove events from storage for a long time". There's
-> either enough pent up demand to convince all parties to come to the
-> table and get something done, or there's too much momentum with the
-> status quo to overcome.
-
-Don't forget my cynical product manager view: "Here's a good opportunity
-to get the basics of this revolutionary change plumbed in while upper
-management is still hot enough about pmem to spend engineer time". :P
-
-> I do not think it is fair to ask Ruan to solve a problem with brand
-> new plumbing that the Linux storage community has not seen fit to
-> address for a decade.
-
-Nevertheless, he's more or less built it now.  Honestly I'm pleased to
-see him pushing this forward exactly /because/ nobody has seen fit to
-address this for so long.
-
-The part where we plumb notifications upwards through the storage stack
-is indeed revolutionary.  However, I /do/ think it's fair to ask Ruan to
-make a revolutionary change as part of adapting to recent revolutionary
-changes in storage hardware.
-
-(At the very least I think it soul-crushing to toss out Ruan's work
-now that he's at least gotten the proof of concept running... but Ruan
-is in the best place to say that)
-
-> Not when disk->bb is already plumbed without anyone complaining about
-> it.
-
-...or noticing it was there, as was the case here. :/
-
-> > The same goes for DAX devices. The moment they can be placed in
-> > storage stacks in non-trivial configurations and/or used as cache
-> > devices that can be directly accessed over tranditional block
-> > devices, we end up with error conditions that can only be mapped as
-> > ranges of blocks that have gone bad.
-> 
-> I see plumbing corrupted_range() and using it to communicate removal
-> in addition to badblocks in addition to bad pfns as a revolutionary
-> change. A reuse of disk->bb for communicating poison sector discovery
-> events up the stack and a separate facility to invalidate dax devices
-> as evolutionary. The evolutionary change does not preclude the
-> eventual revolutionary change, but it has a better chance of making
-> forward progress in the near term.
-
-And I want both. :)
-
-But I'll end this email here to make sure I've understood what you're
-going for, Dan, before working on a reply.
-
-Hopefully it doesn't take 2 days to roundtrip a reply email like the
-last week of utter vger frustration. :(
-
---D
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
