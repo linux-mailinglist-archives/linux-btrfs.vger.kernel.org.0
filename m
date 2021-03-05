@@ -2,66 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA6132ED87
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Mar 2021 15:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36B032EF79
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Mar 2021 16:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbhCEO5b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Mar 2021 09:57:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhCEO5L (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Mar 2021 09:57:11 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1434C061574
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Mar 2021 06:57:10 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id 15so1071659qvp.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Mar 2021 06:57:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=GLrhKj3IELm4e6DYEKRCfG0zS2qTcw+GpjorTDNpoTo=;
-        b=NIUKBxi2YrBucFc0vsp2t+6lOk2nTpzk4md3QauAbUKXN3iU0lxsdVcgCvLIohSVC8
-         Qqa2XKtdJgiHjKsviXP5SbR8AVsSw6jr6c0Zs+pcsNozF5xjr9VhU+c5jbizvIdKjE/H
-         G19vJOkml+sbseTJsDExp1ihiYHpK/b0hVE/ImBVO0CdG4YLoXWBPYGhtrMcoJeHEOKc
-         +nOEwERaq2NiHg9qFMMhRenvBtZY7bWsTzhQPlorDa8cKjz5nIwK7kpYD2pPKq0M6ntP
-         QhiW2xqTaZQxlo7CDGfz6DRHU/1SoWTY6AfUMBkrQITeZIOLq7UaDYVuT665qJQODYSQ
-         wahQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=GLrhKj3IELm4e6DYEKRCfG0zS2qTcw+GpjorTDNpoTo=;
-        b=UUx2t3GWlzlMHeWE2jQ7CNqXoQEx3vBx0HwkPa+BDDuLy/mpPFb9drxgB7VQvhaP6C
-         6eB19Y0OLteyVtLua7KHihaV3Uvy9tQSSdkbOhlRUSeTlqwE5DN7Bqk60MNbyd4a5Izf
-         W7nedlesa1kXJBM8X1AFL1Ah3VMTJgqCSb7fk0S1o9NhVLAdYhbBpWaAIP/ze3g+oMLs
-         fz8iWnCd/93u1Ll4GWmb8X2e5LMl2yD3LMwzbSYWi1r7IanN/tZcs/Axl34WLX4qDgev
-         HoD4dLqMLIouuTyaWfLUPNK5i1GY5yiHjd/Sx5FePJEuXsFnn3IEIPIHGDMtbLQPAnCy
-         EAAw==
-X-Gm-Message-State: AOAM533E3QDh5vZvG0HLxcJj1qtPKh5gEICgKUh0j73iv3DcxeQi2GMl
-        7EziMsv9U5I9PiGDrGLcn56S0WhAu++lBQwIkJc=
-X-Google-Smtp-Source: ABdhPJytPR5pcU6nSdneYWBZ252mkxS3f1GHFACTCwKba6eaU6K/jvDVjVyYV79KuR6TnywJhPorZw//UeQTvL62Ehw=
-X-Received: by 2002:ad4:4471:: with SMTP id s17mr9099391qvt.51.1614956229825;
- Fri, 05 Mar 2021 06:57:09 -0800 (PST)
+        id S229666AbhCEP5m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Mar 2021 10:57:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229493AbhCEP5R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:57:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614959836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZAnSSRKge8CGgRvv2YLRiVtc08HTPhe6n18APsSGUbY=;
+        b=HX3Qksmzf2Q8srPPs0FLbpS/eVzupFGGhfvemMNEiqqTiFDavIbM9KW3C+gHbWninFS8wS
+        JeacavLDx9DgtgXYG42ZC17DvXpYm4ZcnXMJAbJCjEXsiMyFgAx1y5Y9C4nln5DQVjy30i
+        itbIrAVxluamBBpsubkYLKNIcRDCBoU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6572EACBF;
+        Fri,  5 Mar 2021 15:57:16 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E6DA7DA79B; Fri,  5 Mar 2021 16:55:19 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.12-rc1, part 2
+Date:   Fri,  5 Mar 2021 16:55:17 +0100
+Message-Id: <cover.1614954547.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Received: by 2002:aed:38a4:0:0:0:0:0 with HTTP; Fri, 5 Mar 2021 06:57:09 -0800 (PST)
-Reply-To: segpeacederek@gmail.com
-From:   "SGT. PEACE DEREK" <mrssoniaandre0@gmail.com>
-Date:   Fri, 5 Mar 2021 06:57:09 -0800
-Message-ID: <CAARUJyEnTaHBhJtTVUaCnKK+hfJo8_nxDxXn69iLfxGuK6A=ng@mail.gmail.com>
-Subject: DEAR FRIEND PLEASE QUICKLY GET BACK TO ME
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear  Love One
+From: David Sterba <dsterba@suse.cz>
 
-I am Sergeant Peace Derek, originally from Lake Jackson Texas. I have
-personally conducted a special research on the internet and came
-across your information. I am writing you this mail from US Military
-Base Kabul Afghanistan. I have a secured business proposal for you. If
-you are interested in my private email ( segpeacederek@gmail.com ),
-please contact me immediately for more information.
+Hi,
 
-Thank you.
+more regression fixes and stabilization. Please pull, thanks.
+
+Regressions:
+
+- zoned mode
+  - count zone sizes in wider int types
+  - fix space accounting for read-only block groups
+
+- subpage: fix page tail zeroing
+
+Fixes:
+
+- fix spurious warning when remounting with free space tree
+
+- fix warning when creating a directory with smack enabled
+
+- ioctl checks for qgroup inheritance when creating a snapshot
+
+- qgroup
+  - fix missing unlock on error path in zero range
+  - fix amount of released reservation on error
+  - fix flushing from unsafe context with open transaction, potentially
+    deadlocking
+
+- minor build warning fixes
+
+----------------------------------------------------------------
+The following changes since commit 6e37d245994189ba757df7dc2950a44d31421ac6:
+
+  btrfs: zoned: fix deadlock on log sync (2021-02-22 18:08:48 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc1-tag
+
+for you to fetch changes up to badae9c86979c459bd7d895d6d7ddc7a01131ff7:
+
+  btrfs: zoned: do not account freed region of read-only block group as zone_unusable (2021-03-04 16:16:58 +0100)
+
+----------------------------------------------------------------
+Boris Burkov (1):
+      btrfs: fix spurious free_space_tree remount warning
+
+Dan Carpenter (1):
+      btrfs: validate qgroup inherit for SNAP_CREATE_V2 ioctl
+
+Filipe Manana (1):
+      btrfs: fix warning when creating a directory with smack enabled
+
+Naohiro Aota (2):
+      btrfs: zoned: use sector_t for zone sectors
+      btrfs: zoned: do not account freed region of read-only block group as zone_unusable
+
+Nikolay Borisov (4):
+      btrfs: unlock extents in btrfs_zero_range in case of quota reservation errors
+      btrfs: free correct amount of space in btrfs_delayed_inode_reserve_metadata
+      btrfs: export and rename qgroup_reserve_meta
+      btrfs: don't flush from btrfs_delayed_inode_reserve_metadata
+
+Qu Wenruo (1):
+      btrfs: subpage: fix the false data csum mismatch error
+
+Randy Dunlap (1):
+      btrfs: ref-verify: use 'inline void' keyword ordering
+
+ fs/btrfs/delayed-inode.c    |  5 +++--
+ fs/btrfs/extent_io.c        | 21 ++++++++++++++++-----
+ fs/btrfs/file.c             |  5 ++++-
+ fs/btrfs/free-space-cache.c |  7 ++++++-
+ fs/btrfs/inode.c            |  2 +-
+ fs/btrfs/ioctl.c            | 19 ++++++++++++++++++-
+ fs/btrfs/qgroup.c           |  8 ++++----
+ fs/btrfs/qgroup.h           |  2 ++
+ fs/btrfs/ref-verify.c       |  4 ++--
+ fs/btrfs/super.c            |  4 ++--
+ fs/btrfs/xattr.c            | 31 +++++++++++++++++++++++++++----
+ fs/btrfs/zoned.c            |  4 ++--
+ 12 files changed, 87 insertions(+), 25 deletions(-)
