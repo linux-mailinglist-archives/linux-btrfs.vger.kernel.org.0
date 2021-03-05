@@ -2,252 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7321E32F3DC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Mar 2021 20:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1046C32F456
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Mar 2021 21:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhCET1U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Mar 2021 14:27:20 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:39867 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230051AbhCET0x (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:26:53 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 35D712A95;
-        Fri,  5 Mar 2021 14:26:53 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 05 Mar 2021 14:26:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:subject:date:message-id:in-reply-to:references:mime-version
-        :content-transfer-encoding; s=fm3; bh=6TlOBcObA+yxIcrdhnc569zFPd
-        xyS16skYzNGj1Wb3Q=; b=fzdJHWAKCnWf+yBoMIQbwlZEPbQhmoAIEcpAcCLil7
-        TPrjMVQUy36Q6JI7+GhffZ+Gabi/aEYlWLcWHKngQrZmkKmndqiknjwuhHF+TTkA
-        ny7KufikV6BCXYJ5/h3otscFM6G9EXuPPgh03xMAaIk34EBLe+72TfYb9VN/CdWt
-        XJxo+G1DZevsraitKjkEcHplLtkkUucxPua5mFR5NuSisV+wklI54rEELVu7o6Rj
-        QUjIM3js3CykX0xc6Y3EUiQpyDijaLsg041W5r9mAoIr7XF72ax42mNBGegZjME9
-        +QpSREzEyny7JHFdNTC/7sclK+2jWz94+mmYUjrUN1BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=6TlOBcObA+yxIcrdhnc569zFPdxyS16skYzNGj1Wb3Q=; b=dzhVPauR
-        XYl4r1k+x63scRAtcp+p0PziThg8v1IWZ0l3OSP3wZtuFZ+v1+X+k4IGPzTbOMJ+
-        JWhaIeZCYU+EIBAqYq/TUwjn7kpQ9EBZS4Ff3pZPnN3CrQqpLUSsC40zoLIA3eTH
-        Ux9+QpxJvrRAbsrrsGEqI8yqFuaks8j8LeK4aYlhihU/r1ZCM70DbG2bwWfTk9p8
-        HOA2cGA2rj+x3eyfS8ABCC/Ja+yJDths4HOToB9vISawzhuDFuTiRktINdplJUyv
-        KitjwWs+ajqPJmMvC/fVJjz4G7HJIazap3Ph99Z625gKtVKdZKKRwvw4JokHyOuf
-        xa6CqF13CjmUPQ==
-X-ME-Sender: <xms:_IVCYIWSk_giwHYiCzdo3C36DN9sz5XlP7EXS1FSIWg-AqFOIZRiwA>
-    <xme:_IVCYMn8Ch3G7hafswTze1TvRjqiEO5mM9hwnYk7RpTbqqfzxI-qcjdm2uc0JlAx-
-    3ysDuzuaZZLGgQJ5tU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedguddugecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    eiueffuedvieeujefhheeigfekvedujeejjeffvedvhedtudefiefhkeegueehleenucfk
-    phepudeifedruddugedrudefvddrheenucevlhhushhtvghrufhiiigvpeegnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:_IVCYMaPdoskbd36r3ytSGvghtxY2m7LdTfh2GhT0nnkjDOY7HSBNQ>
-    <xmx:_IVCYHWHEmrxKcbufV-CWzb8Sk85nFwNp6tPW8B76SB3JH8DRHQppQ>
-    <xmx:_IVCYCmPtmGG9wrIwJ2nO_9hxOqQ7oJfq1Xkyqx2pX03fbLa8bHBew>
-    <xmx:_IVCYGssxYgzNYuyk-qvIEpHD12-5Bt1CisqMpwVYDRlDvzVGdUHMg>
-Received: from localhost (unknown [163.114.132.5])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8676E240054;
-        Fri,  5 Mar 2021 14:26:51 -0500 (EST)
-From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fscrypt@vger.kernel.org,
-        'Eric Biggers ' <ebiggers@kernel.org>
-Subject: [PATCH v2 5/5] btrfs: verity metadata orphan items
-Date:   Fri,  5 Mar 2021 11:26:33 -0800
-Message-Id: <8c3aaea8cde506ff5d75a7dcc77263213a3659e6.1614971203.git.boris@bur.io>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1614971203.git.boris@bur.io>
-References: <cover.1614971203.git.boris@bur.io>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229669AbhCEUCn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 5 Mar 2021 15:02:43 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:33451 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhCEUC0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Mar 2021 15:02:26 -0500
+X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 15:02:26 EST
+Received: from [192.168.177.174] ([91.56.91.134]) by mrelayeu.kundenserver.de
+ (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id 1N17gw-1lkH4j05Jy-012bRG
+ for <linux-btrfs@vger.kernel.org>; Fri, 05 Mar 2021 20:57:23 +0100
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     linux-btrfs@vger.kernel.org
+Subject: Code: Bad RIP value.
+Date:   Fri, 05 Mar 2021 19:57:23 +0000
+Message-Id: <em7cd07db3-30ce-479c-8c6b-063af06a2e69@desktop-g0r648m>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/8.1.1054.0
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:75sW9EBDSoUAnR66Ok3K4QEsNSdIvhVoV27pfpZZMttmaQcKoos
+ ZmfbMP4DZHB6XqpuMs11XghVYfEojEEXcNJZIIsjn2gtgL2OgtS1mjdNf2mYbfBPJubWMnP
+ lrVw6/Ekr69CjdD+6n3QmNCzEQ2CW/sFK0+fqsi5LcE01o63V34k84XL4VaShlqXA8EhLnP
+ WtPi1V+R9OfspqDwqEsiQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kWrz0pGpeVc=:0yf+v4x+aZvcXHyhnyN3nG
+ 8yoEINFi/yeqm2U31RtJsHal+tEbn3ewrkARNvSrzKtIekPbEeduv9yRvVTTR7LabePzZ15nE
+ zDJQGWD6jzfvKaE3VgTB6ZwQCHVjPrSRF+eZGjRCPITQzelk0qFn/Wb3qZRLyIaGCiHQORRd6
+ xn4SImQllB6J8serlYrS+IeYe/0C0fQd6FAvLYGi7wWZWACHHIuEfja9AYCCGrgaNhX6snVsg
+ l2wioo/Wa28F3a5tesfNExCRTrwBFghYzXklQ+YPyLsv/7+7GKb/EWV2IBt74EXfp9gDLJkts
+ rkuF6AcGDhJi8OPnPI8YWp8MO6Vkhv8yME58rdw7z8Gbq+83F5lOJvNy+8rdIsAi7lUdCBC9c
+ lDLc3hJZlRmpc+/nrsSBBb5LDLdgbGtJXnrODLMk978HIaHOw+h1Jrm40gPniPpXEQXgxKlt4
+ iA9kguXM2w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we don't finish creating fsverity metadata for a file, or fail to
-clean up already created metadata after a failure, we could leak the
-verity items.
+Hello,
 
-To address this issue, we use the orphan mechanism. When we start
-enabling verity on a file, we also add an orphan item for that inode.
-When we are finished, we delete the orphan. However, if we are
-interrupted midway, the orphan will be present at mount and we can
-cleanup the half-formed verity state.
+I am using linux 5.9.1 and have experienced tracebacks in conjunction 
+with btrfs and several filesystems:
+btrfs fi show
+Label: 'Daten'  uuid: c217331c-cf0c-49ae-86c7-48a67d1c346b
+         Total devices 1 FS bytes used 54.69GiB
+         devid    1 size 81.79GiB used 57.02GiB path /dev/sde2
 
-One thing to note is that this is a resurrection of using orphans to
-signal orphaned metadata that isn't the inode itself. This makes the
-comment discussing deprecating that concept a bit messy in full context.
+Label: 'DockerImages'  uuid: 9b327a02-606e-4f2d-a137-27f53a5bcb03
+         Total devices 1 FS bytes used 19.36GiB
+         devid    1 size 29.62GiB used 19.52GiB path /dev/sdd2
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/inode.c  | 15 +++++++--
- fs/btrfs/verity.c | 80 +++++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 83 insertions(+), 12 deletions(-)
+Label: 'DataPool1'  uuid: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+         Total devices 2 FS bytes used 6.87TiB
+         devid    1 size 7.28TiB used 6.92TiB path /dev/sda1
+         devid    2 size 7.28TiB used 6.92TiB path /dev/sdi1
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9291f6633bc6..7c00863ba8a3 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3419,7 +3419,9 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 
- 		/*
- 		 * If we have an inode with links, there are a couple of
--		 * possibilities. Old kernels (before v3.12) used to create an
-+		 * possibilities:
-+		 *
-+		 * 1. Old kernels (before v3.12) used to create an
- 		 * orphan item for truncate indicating that there were possibly
- 		 * extent items past i_size that needed to be deleted. In v3.12,
- 		 * truncate was changed to update i_size in sync with the extent
-@@ -3432,13 +3434,22 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 		 * slim, and it's a pain to do the truncate now, so just delete
- 		 * the orphan item.
- 		 *
-+		 * 2. We were halfway through creating fsverity metadata for the
-+		 * file. In that case, the orphan item represents incomplete
-+		 * fsverity metadata which must be cleaned up with
-+		 * btrfs_drop_verity_items.
-+		 *
- 		 * It's also possible that this orphan item was supposed to be
- 		 * deleted but wasn't. The inode number may have been reused,
- 		 * but either way, we can delete the orphan item.
- 		 */
- 		if (ret == -ENOENT || inode->i_nlink) {
--			if (!ret)
-+			if (!ret) {
-+				ret = btrfs_drop_verity_items(BTRFS_I(inode));
- 				iput(inode);
-+				if (ret)
-+					goto out;
-+			}
- 			trans = btrfs_start_transaction(root, 1);
- 			if (IS_ERR(trans)) {
- 				ret = PTR_ERR(trans);
-diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-index 648bda5a3716..b677288db411 100644
---- a/fs/btrfs/verity.c
-+++ b/fs/btrfs/verity.c
-@@ -350,6 +350,60 @@ static ssize_t read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset
- 	return ret;
- }
- 
-+static int add_orphan(struct btrfs_inode *inode)
-+{
-+	struct btrfs_trans_handle *trans;
-+	struct btrfs_root *root = inode->root;
-+	int ret = 0;
-+
-+	trans = btrfs_start_transaction(root, 1);
-+	if (IS_ERR(trans)) {
-+		ret = PTR_ERR(trans);
-+		goto out;
-+	}
-+	ret = btrfs_orphan_add(trans, inode);
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
-+		goto out;
-+	}
-+	btrfs_end_transaction(trans);
-+
-+out:
-+	return ret;
-+}
-+
-+static int del_orphan(struct btrfs_inode *inode)
-+{
-+	struct btrfs_trans_handle *trans;
-+	struct btrfs_root *root = inode->root;
-+	int ret;
-+
-+	trans = btrfs_start_transaction(root, 1);
-+	if (IS_ERR(trans))
-+		return PTR_ERR(trans);
-+
-+	ret = btrfs_del_orphan_item(trans, root, btrfs_ino(inode));
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
-+		goto out;
-+	}
-+	btrfs_end_transaction(trans);
-+
-+out:
-+	return ret;
-+}
-+
-+int btrfs_drop_verity_items(struct btrfs_inode *inode)
-+{
-+	int ret;
-+
-+	ret = drop_verity_items(inode, BTRFS_VERITY_DESC_ITEM_KEY);
-+	if (ret)
-+		return ret;
-+
-+	return drop_verity_items(inode, BTRFS_VERITY_MERKLE_ITEM_KEY);
-+}
-+
- /*
-  * fsverity op that begins enabling verity.
-  * fsverity calls this to ask us to setup the inode for enabling.  We
-@@ -363,17 +417,13 @@ static int btrfs_begin_enable_verity(struct file *filp)
- 	if (test_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags))
- 		return -EBUSY;
- 
--	/*
--	 * ext4 adds the inode to the orphan list here, presumably because the
--	 * truncate done at orphan processing time will delete partial
--	 * measurements.  TODO: setup orphans
--	 */
- 	set_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
--	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
-+
-+	ret = btrfs_drop_verity_items(BTRFS_I(inode));
- 	if (ret)
- 		goto err;
- 
--	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
-+	ret = add_orphan(BTRFS_I(inode));
- 	if (ret)
- 		goto err;
- 
-@@ -400,6 +450,7 @@ static int btrfs_end_enable_verity(struct file *filp, const void *desc,
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
- 	struct btrfs_verity_descriptor_item item;
- 	int ret;
-+	int keep_orphan = 0;
- 
- 	if (desc != NULL) {
- 		/* write out the descriptor item */
-@@ -431,11 +482,20 @@ static int btrfs_end_enable_verity(struct file *filp, const void *desc,
- 
- out:
- 	if (desc == NULL || ret) {
--		/* If we failed, drop all the verity items */
--		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
--		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
-+		/*
-+		 * If verity failed (here or in the generic code), drop all the
-+		 * verity items.
-+		 */
-+		keep_orphan = btrfs_drop_verity_items(BTRFS_I(inode));
- 	} else
- 		btrfs_set_fs_compat_ro(root->fs_info, VERITY);
-+	/*
-+	 * If we are handling an error, but failed to drop the verity items,
-+	 * we still need the orphan.
-+	 */
-+	if (!keep_orphan)
-+		del_orphan(BTRFS_I(inode));
-+
- 	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
- 	return ret;
- }
--- 
-2.24.1
+I have this bug several times now:
+
+[So Feb 28 19:50:42 2021] Code: Bad RIP value.
+[So Feb 28 19:50:42 2021] RSP: 002b:00007f6080e7bb70 EFLAGS: 00000293 
+ORIG_RAX: 000000000000004a
+[So Feb 28 19:50:42 2021] RAX: ffffffffffffffda RBX: 0000000000000028 
+RCX: 00007f6087845a97
+[So Feb 28 19:50:42 2021] RDX: 0000000000000000 RSI: 00007f60876bc6b6 
+RDI: 0000000000000028
+[So Feb 28 19:50:42 2021] RBP: 00007f6080e7bbe0 R08: 0000000000000000 
+R09: 00000000ffffffff
+[So Feb 28 19:50:42 2021] R10: 00007f6080e7bbe0 R11: 0000000000000293 
+R12: 000055a70b3b9708
+[So Feb 28 19:50:42 2021] R13: 000055a70b4b6990 R14: 00007f60869a2c00 
+R15: 000055a70b3b96d0
+[So Feb 28 19:50:42 2021] INFO: task smbd:459696 blocked for more than 
+120 seconds.
+[So Feb 28 19:50:42 2021]       Tainted: G            E     5.9.1 #1
+[So Feb 28 19:50:42 2021] "echo 0 > 
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[So Feb 28 19:50:42 2021] task:smbd            state:D stack:    0 
+pid:459696 ppid:  8268 flags:0x00004004
+[So Feb 28 19:50:42 2021] Call Trace:
+[So Feb 28 19:50:42 2021]  __schedule+0x2b9/0x7c0
+[So Feb 28 19:50:42 2021]  schedule+0x40/0xb0
+[So Feb 28 19:50:42 2021]  wait_for_commit+0x58/0x80 [btrfs]
+[So Feb 28 19:50:42 2021]  ? finish_wait+0x80/0x80
+[So Feb 28 19:50:42 2021]  btrfs_commit_transaction+0x89c/0xa50 [btrfs]
+[So Feb 28 19:50:42 2021]  ? dput.part.37+0xb5/0x2d0
+[So Feb 28 19:50:42 2021]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
+[So Feb 28 19:50:42 2021]  btrfs_sync_file+0x3bd/0x400 [btrfs]
+[So Feb 28 19:50:42 2021]  do_fsync+0x38/0x70
+[So Feb 28 19:50:42 2021]  __x64_sys_fsync+0x10/0x20
+[So Feb 28 19:50:42 2021]  do_syscall_64+0x33/0x80
+[So Feb 28 19:50:42 2021]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[So Feb 28 19:50:42 2021] RIP: 0033:0x7f6087845a97
+[So Feb 28 19:50:42 2021] Code: Bad RIP value.
+
+
+[Mo Mär  1 14:16:19 2021] INFO: task btrfs:651814 blocked for more than 
+120 seconds.
+[Mo Mär  1 14:16:19 2021]       Tainted: G            E     5.9.1 #1
+[Mo Mär  1 14:16:19 2021] "echo 0 > 
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[Mo Mär  1 14:16:19 2021] task:btrfs           state:D stack:    0 
+pid:651814 ppid:     1 flags:0x00004000
+[Mo Mär  1 14:16:19 2021] Call Trace:
+[Mo Mär  1 14:16:19 2021]  __schedule+0x2b9/0x7c0
+[Mo Mär  1 14:16:19 2021]  schedule+0x40/0xb0
+[Mo Mär  1 14:16:19 2021]  wait_for_commit+0x58/0x80 [btrfs]
+[Mo Mär  1 14:16:19 2021]  ? finish_wait+0x80/0x80
+[Mo Mär  1 14:16:19 2021]  btrfs_wait_for_commit+0x96/0x190 [btrfs]
+[Mo Mär  1 14:16:19 2021]  btrfs_inc_block_group_ro+0x53/0x170 [btrfs]
+[Mo Mär  1 14:16:19 2021]  scrub_enumerate_chunks+0x1ed/0x560 [btrfs]
+[Mo Mär  1 14:16:19 2021]  ? finish_wait+0x80/0x80
+[Mo Mär  1 14:16:19 2021]  btrfs_scrub_dev+0x290/0x500 [btrfs]
+[Mo Mär  1 14:16:19 2021]  ? _cond_resched+0x15/0x30
+[Mo Mär  1 14:16:19 2021]  ? __kmalloc_track_caller+0x3fa/0x4a0
+[Mo Mär  1 14:16:19 2021]  ? btrfs_ioctl+0xd31/0x2e80 [btrfs]
+[Mo Mär  1 14:16:19 2021]  ? __check_object_size+0x162/0x173
+[Mo Mär  1 14:16:19 2021]  btrfs_ioctl+0xd7b/0x2e80 [btrfs]
+[Mo Mär  1 14:16:19 2021]  ? create_task_io_context+0x9b/0x100
+[Mo Mär  1 14:16:19 2021]  ? get_task_io_context+0x43/0x80
+[Mo Mär  1 14:16:19 2021]  ? __x64_sys_ioctl+0x84/0xc0
+[Mo Mär  1 14:16:19 2021]  __x64_sys_ioctl+0x84/0xc0
+[Mo Mär  1 14:16:19 2021]  do_syscall_64+0x33/0x80
+[Mo Mär  1 14:16:19 2021]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[Mo Mär  1 14:16:19 2021] RIP: 0033:0x7f90f2ba8427
+[Mo Mär  1 14:16:19 2021] Code: Bad RIP value.
+[Mo Mär  1 14:16:19 2021] RSP: 002b:00007f90f22b2d48 EFLAGS: 00000246 
+ORIG_RAX: 0000000000000010
+[Mo Mär  1 14:16:19 2021] RAX: ffffffffffffffda RBX: 0000557ef3bd6930 
+RCX: 00007f90f2ba8427
+[Mo Mär  1 14:16:19 2021] RDX: 0000557ef3bd6930 RSI: 00000000c400941b 
+RDI: 0000000000000003
+[Mo Mär  1 14:16:19 2021] RBP: 0000000000000000 R08: 00007f90f22b3700 
+R09: 0000000000000000
+[Mo Mär  1 14:16:19 2021] R10: 00007f90f22b3700 R11: 0000000000000246 
+R12: 00007ffe8308792e
+[Mo Mär  1 14:16:19 2021] R13: 00007ffe8308792f R14: 00007f90f22b3700 
+R15: 0000000000000000
+[Mo Mär  1 16:02:45 2021] BTRFS info (device sda1): scrub: finished on 
+devid 1 with status: 0
+
+Is this a known bug?
+
+
+I am happy to provide more information if needed.
+
+Best regards,
+Hendrik
 
