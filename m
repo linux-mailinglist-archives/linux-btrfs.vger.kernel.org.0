@@ -2,235 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5077330376
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Mar 2021 18:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2AD330531
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 00:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhCGRzC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 7 Mar 2021 12:55:02 -0500
-Received: from out20-3.mail.aliyun.com ([115.124.20.3]:41344 "EHLO
-        out20-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhCGRyf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Mar 2021 12:54:35 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07491462|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0450079-0.00103639-0.953956;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.JhfGnoO_1615139672;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.JhfGnoO_1615139672)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Mon, 08 Mar 2021 01:54:32 +0800
-Date:   Mon, 8 Mar 2021 01:54:32 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fstest: random read fio test for read policy
-Message-ID: <YEUTWFeU6yv5jfx9@desktop>
-References: <746eadd73fb847050f1dc3a6c47756259c73e73d.1614005115.git.anand.jain@oracle.com>
+        id S231681AbhCGX0r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 7 Mar 2021 18:26:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhCGX0e (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Mar 2021 18:26:34 -0500
+X-Greylist: delayed 2227 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 07 Mar 2021 15:26:31 PST
+Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED966C06174A
+        for <linux-btrfs@vger.kernel.org>; Sun,  7 Mar 2021 15:26:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=preining.info; s=201909; h=Content-Type:MIME-Version:Message-ID:Subject:To:
+        From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KsV2IRLZ6IiMSMV61CAybk2QRGWvgN0d6wpm3fCF0xY=; b=Zki8sH9p++OIsVzEh8XOzOUu5h
+        hB2Z0FNHQy3CQJoTC7okbK54wOHA2Y8U+HlC50J1Sf0At9g/busbnAsMNWGcMx23UUmIjXHzguzJX
+        L+eoyby1Je5DMxHsVb9Bn+eyIbJRh52nTqY+eLE4OrKL45T+1H+4FOMXEeyfvQFmj8pqx+X3iSC+W
+        gFdwjW15uO12Rxnu+pEYC+XDNVJJDUdnbftvrRsfFFEqpEjMYd+LlMH4yJY6cP2yJ8Bf5BPabzN1A
+        vHydRyRWwzkLLTchVX9spVSwjxevzQOTAPZorNTGkm65IRttkABTvJBoLkl+6itloeYJVeSm9wb2j
+        qVG+LxKA==;
+Received: from tvk213002.tvk.ne.jp ([180.94.213.2] helo=bulldog.preining.info)
+        by hz.preining.info with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <norbert@preining.info>)
+        id 1lJ2DA-0007Ms-SM
+        for linux-btrfs@vger.kernel.org; Sun, 07 Mar 2021 22:49:21 +0000
+Received: by bulldog.preining.info (Postfix, from userid 1000)
+        id 1CDFA14920177; Mon,  8 Mar 2021 07:49:16 +0900 (JST)
+Date:   Mon, 8 Mar 2021 07:49:16 +0900
+From:   Norbert Preining <norbert@preining.info>
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: btrfs fails to mount on kernel 5.11.4 but works on 5.10.19
+Message-ID: <YEVYbMdXdPzklSVc@bulldog.preining.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <746eadd73fb847050f1dc3a6c47756259c73e73d.1614005115.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 06:48:18AM -0800, Anand Jain wrote:
-> This test case runs fio for raid1/10/1c3/1c4 profiles and all the
-> available read policies in the system. At the end of the test case,
-> a comparative summary of the result is in the $seqresfull-file.
-> 
-> LOAD_FACTOR parameter controls the fio scalability. For the
-> LOAD_FACTOR = 1 (default), this runs fio for file size = 1G and num
-> of jobs = 1, which approximately takes 65s to finish.
-> 
-> There are two objectives of this test case. 1. by default, with
-> LOAD_FACTOR = 1, it sanity tests the read policies. And 2. Run the
-> test case individually with a larger LOAD_FACTOR. For example, 10
-> for the comparative study of the read policy performance.
-> 
-> I find tests/btrfs as the placeholder for this test case. As it
-> contains many things which are btrfs specific and didn't fit well
-> under perf.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Dear all
 
-I'd like to let btrfs folks to review as well, to see if this is a sane
-test for btrfs.
+(please cc)
 
-Thanks,
-Eryu
+not sure this is the right mailing list, but I cannot boot into 5.11.4 
+it gives me
+	devid 9 uui .....
+	failed to read the system array: -2
+	open_ctree failed
+(only partial, typed in from photo)
 
-> ---
->  tests/btrfs/231     | 145 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/231.out |   2 +
->  tests/btrfs/group   |   1 +
->  3 files changed, 148 insertions(+)
->  create mode 100755 tests/btrfs/231
->  create mode 100644 tests/btrfs/231.out
-> 
-> diff --git a/tests/btrfs/231 b/tests/btrfs/231
-> new file mode 100755
-> index 000000000000..c08b5826f60a
-> --- /dev/null
-> +++ b/tests/btrfs/231
-> @@ -0,0 +1,145 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Anand Jain.  All Rights Reserved.
-> +#
-> +# FS QA Test 231
-> +#
-> +# Random read fio test for raid1(10)(c3)(c4) with available
-> +# read policy.
-> +# 
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +fio_config=$tmp.fio
-> +fio_results=$tmp.fio_out
-> +
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_scratch_dev_pool 4
-> +
-> +njob=$LOAD_FACTOR
-> +size=$LOAD_FACTOR
-> +_require_scratch_size $(($size * 2 * 1024 * 1024))
-> +echo size=$size njob=$njob >> $seqres.full
-> +
-> +make_fio_config()
-> +{
-> +	#Set direct IO to true, help to avoid buffered IO so that read happens
-> +	#from the devices.
-> +	cat >$fio_config <<EOF
-> +[global]
-> +bs=64K
-> +iodepth=64
-> +direct=1
-> +invalidate=1
-> +allrandrepeat=1
-> +ioengine=libaio
-> +group_reporting
-> +size=${size}G
-> +rw=randread
-> +EOF
-> +}
-> +#time_based
-> +#runtime=5
-> +
-> +make_fio_config
-> +for job in $(seq 0 $njob); do
-> +	echo "[foo$job]" >> $fio_config
-> +	echo  "filename=$SCRATCH_MNT/$job/file" >> $fio_config
-> +done
-> +_require_fio $fio_config
-> +cat $fio_config >> $seqres.full
-> +
-> +work()
-> +{
-> + 	raid=$1
-> +
-> +	echo ------------- profile: $raid ---------- >> $seqres.full
-> +	echo >> $seqres.full
-> +	_scratch_pool_mkfs $raid >> $seqres.full 2>&1
-> +	_scratch_mount
-> +
-> +	fsid=$($BTRFS_UTIL_PROG filesystem show -m $SCRATCH_MNT | grep uuid: | \
-> +	     $AWK_PROG '{print $4}')
-> +	readpolicy_path="/sys/fs/btrfs/$fsid/read_policy"
-> +	policies=$(cat $readpolicy_path | sed 's/\[//g' | sed 's/\]//g')
-> +
-> +	for policy in $policies; do
-> +		echo $policy > $readpolicy_path || _fail "Fail to set readpolicy"
-> +		echo -n "activating readpolicy: " >> $seqres.full
-> +		cat $readpolicy_path >> $seqres.full
-> +		echo >> $seqres.full
-> +
-> +		> $fio_results
-> +		$FIO_PROG --output=$fio_results $fio_config
-> +		cat $fio_results >> $seqres.full
-> +	done
-> +
-> +	_scratch_unmount
-> +	_scratch_dev_pool_put
-> +}
-> +
-> +_scratch_dev_pool_get 2
-> +work "-m raid1 -d single"
-> +
-> +_scratch_dev_pool_get 2
-> +work "-m raid1 -d raid1"
-> +
-> +_scratch_dev_pool_get 4
-> +work "-m raid10 -d raid10"
-> +
-> +_scratch_dev_pool_get 3
-> +work "-m raid1c3 -d raid1c3"
-> +
-> +_scratch_dev_pool_get 4
-> +work "-m raid1c4 -d raid1c4"
-> +
-> +
-> +# Now benchmark the raw device performance
-> +> $fio_config
-> +make_fio_config
-> +_scratch_dev_pool_get 4
-> +for dev in $SCRATCH_DEV_POOL; do
-> +	echo "[$dev]" >> $fio_config
-> +	echo  "filename=$dev" >> $fio_config
-> +done
-> +_require_fio $fio_config
-> +cat $fio_config >> $seqres.full
-> +
-> +echo ------------- profile: raw disk ---------- >> $seqres.full
-> +echo >> $seqres.full
-> +> $fio_results
-> +$FIO_PROG --output=$fio_results $fio_config
-> +cat $fio_results >> $seqres.full
-> +
-> +echo >> $seqres.full
-> +echo ===== Summary ====== >> $seqres.full
-> +cat $seqres.full | egrep -A1 "Run status|Disk stats|profile:|readpolicy" >> $seqres.full
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/231.out b/tests/btrfs/231.out
-> new file mode 100644
-> index 000000000000..a31b87a289bf
-> --- /dev/null
-> +++ b/tests/btrfs/231.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 231
-> +Silence is golden
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index a7c6598326c4..7f449d1db99e 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -233,3 +233,4 @@
->  228 auto quick volume
->  229 auto quick send clone
->  230 auto quick qgroup limit
-> +231 other
-> -- 
-> 2.27.0
+OTOH, 5.10.19 boots without a hinch
+$ btrfs fi show /
+Label: none  uuid: 911600cb-bd76-4299-9445-666382e8ad20
+        Total devices 8 FS bytes used 3.28TiB
+        devid    1 size 899.01GiB used 670.00GiB path /dev/sdb3
+        devid    2 size 489.05GiB used 271.00GiB path /dev/sdd
+        devid    3 size 1.82TiB used 1.58TiB path /dev/sde1
+        devid    4 size 931.51GiB used 708.00GiB path /dev/sdf1
+        devid    5 size 1.82TiB used 1.58TiB path /dev/sdc1
+        devid    7 size 931.51GiB used 675.00GiB path /dev/nvme2n1p1
+        devid    8 size 931.51GiB used 680.03GiB path /dev/nvme1n1p1
+        devid    9 size 931.51GiB used 678.03GiB path /dev/nvme0n1p1
+
+That is a multi disk array with all data duplicated data/sys:
+
+$ btrfs fi us -T /
+Overall:
+    Device size:                   8.63TiB
+    Device allocated:              6.76TiB
+    Device unallocated:            1.87TiB
+    Device missing:                  0.00B
+    Used:                          6.57TiB
+    Free (estimated):              1.03TiB      (min: 1.03TiB)
+    Free (statfs, df):             1.01TiB
+    Data ratio:                       2.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+                  Data      Metadata System               
+Id Path           RAID1     RAID1    RAID1     Unallocated
+-- -------------- --------- -------- --------- -----------
+ 1 /dev/sdb3      662.00GiB  8.00GiB         -   229.01GiB
+ 2 /dev/sdd       271.00GiB        -         -     1.55TiB
+ 3 /dev/sde1        1.58TiB  7.00GiB         -   241.02GiB
+ 4 /dev/sdf1      701.00GiB  7.00GiB         -   223.51GiB
+ 5 /dev/sdc1        1.57TiB 10.00GiB         -   241.02GiB
+ 7 /dev/nvme2n1p1 675.00GiB        -         -   256.51GiB
+ 8 /dev/nvme1n1p1 673.00GiB  7.00GiB  32.00MiB   251.48GiB
+ 9 /dev/nvme0n1p1 671.00GiB  7.00GiB  32.00MiB   253.48GiB
+-- -------------- --------- -------- --------- -----------
+   Total            3.36TiB 23.00GiB  32.00MiB     3.21TiB
+   Used             3.27TiB 15.70GiB 528.00KiB            
+$
+
+Is there something wrong with the filesystem? Or the kernel?
+Any hint how to debug this?
+
+(Please cc)
+
+Thanks
+
+Norbert
+
+--
+PREINING Norbert                              https://www.preining.info
+Fujitsu Research Labs  +  IFMGA Guide + TU Wien + TeX Live + Debian Dev
+GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
