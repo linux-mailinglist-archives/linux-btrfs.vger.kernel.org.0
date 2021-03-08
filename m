@@ -2,156 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEC5330AC4
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 11:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D43B330ADD
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 11:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbhCHKCa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Mar 2021 05:02:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231523AbhCHKCP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Mar 2021 05:02:15 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE77BC06174A
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Mar 2021 02:02:14 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id 7so10791427wrz.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Mar 2021 02:02:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HAstQn014DtoPWA9PeEp+LJZ/sh/+qIa4zMBvLwAEvU=;
-        b=Ro//alRLwy+qWCA7/JNvnL/zLvoDXuQui9arelOSegH8BvG5rMHEvaMUFC4Ymvwe6U
-         cxeZ7iiS8M+xkhZXjPEmb18WQgF35RO6n6GsRm1TsPI17y3JPXbWEWgNe4Buj/omx9+b
-         pX/COT8J2+tA0BvfRDfcND9I/l8YIRvukmzsSsmM8x7Zp9Ap1mEgHyXz5m3Gh3pnoChb
-         hueO1WWZBlZp6eHeg7jHC9B2jWb8RUebPPr/p/jwiwgx7+0ui+iyM194cveZXLEvye60
-         O2vcIDwkuZHkcwEfpNiG82C7ati6pljjcnj578W1+7MTj4yRePAkiaNNLs2D1eEpi/uy
-         j6eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HAstQn014DtoPWA9PeEp+LJZ/sh/+qIa4zMBvLwAEvU=;
-        b=Bj7rFlTZ6o6aMKeoaZKutyjoJ/PxFTG0MJdTnDmZrZRKqlWzK5ROexi385jYCzQJlq
-         HZgroHVmvq1wKT0qXNtJ9E0pYOgdM3BU+PYnFRQYvVD62CYk/L2rCvPN2iyUPQgv4QBm
-         I9OqjBj8Ou4Z3+L1RzFYl8qzSO6cRBTkknRcoULuwvnHwzOy+ErfDGxnNepIt7bcplPh
-         XvX8KYX4fOTwrYzwFrhADUwk2vFp1HP9IviEsYQxVUWxt0X1bNa44+a4TUf4KkfIrQxp
-         vDub5bmWJkZMaOyy5+RHxk126rQzyeM+YQeUZ/he5bQFdIDMbMXFYaO3NwZlTd0SkW4s
-         37Iw==
-X-Gm-Message-State: AOAM5304odnrNPtXFpYZPnDlBeGa9VeDFUsE5TXVRuf6gF75w3BStfx2
-        7GBw36bzRw4jTrn5kcsZsTPkYv3VIbNIlPYTP4gu5dl5hvA=
-X-Google-Smtp-Source: ABdhPJwMSEapjJ/yL4kGJRcMxV7qWcqjXhBQsaiTqyzo76JnGt7djPCRTTo9oGoJtBU8Lx18cuLYQHUUiVUcTJH+FYM=
-X-Received: by 2002:a05:6000:2cf:: with SMTP id o15mr21559282wry.184.1615197733398;
- Mon, 08 Mar 2021 02:02:13 -0800 (PST)
-MIME-Version: 1.0
+        id S231812AbhCHKKd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Mar 2021 05:10:33 -0500
+Received: from mout.gmx.net ([212.227.17.21]:43127 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231760AbhCHKKG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:10:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615198202;
+        bh=xHscTZVm8B7PrX3FVrI1uBYVFnpneqYe1n3eF6rS5pA=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=XX9soANJvATKrDTRcArQ1GQz+ZNAXaTaPD9vQVHbvruAm0x0Ep3NKRNXkLWpsCWXY
+         emYNHP3MRgmT8AIczODqmPmb06Vr7f4l01CJruC0AngR6RnYukSiBmjsxGtRXPYhVW
+         xhcVm+YxbZY6USASlpfuxTjMQ/K6Ln5vsgi4KcgU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHXBp-1lW4rI1rtJ-00DVor; Mon, 08
+ Mar 2021 11:10:02 +0100
+To:     chil L1n <devchill1n@gmail.com>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <CABBhR_6Y=H6Eujw51xkt6_fjAQFjdcp5trVgjtbrNf9iMDxZ0g@mail.gmail.com>
  <PH0PR04MB74168E7E65BDF004A6C06BB39B939@PH0PR04MB7416.namprd04.prod.outlook.com>
  <CABBhR_6mO2e2Bu2TLGTCjY-xG3+Yu34visp9+uqdvKUvpVhG-g@mail.gmail.com>
- <100894a0-51c5-6ba9-7688-32203cb822c6@gmx.com> <6c73793c-e855-12c5-9214-7baddbc840c7@gmx.com>
-In-Reply-To: <6c73793c-e855-12c5-9214-7baddbc840c7@gmx.com>
-From:   chil L1n <devchill1n@gmail.com>
-Date:   Mon, 8 Mar 2021 11:02:02 +0100
-Message-ID: <CABBhR_7xkonR0AzhKqm4zeY6rKtr04hVn5u_2Nnr9XJ=-f1bOg@mail.gmail.com>
+ <100894a0-51c5-6ba9-7688-32203cb822c6@gmx.com>
+ <6c73793c-e855-12c5-9214-7baddbc840c7@gmx.com>
+ <CABBhR_7xkonR0AzhKqm4zeY6rKtr04hVn5u_2Nnr9XJ=-f1bOg@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Subject: Re: btrfs error: write time tree block corruption detected
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <d5f7427f-2579-e846-5c80-23b2a0e57539@gmx.com>
+Date:   Mon, 8 Mar 2021 18:09:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <CABBhR_7xkonR0AzhKqm4zeY6rKtr04hVn5u_2Nnr9XJ=-f1bOg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wMIEdlCXyP7UQDhW4Tvg86Z3LaR/0F66djf7gI7Uu1v/CHyiBXW
+ ChWHOpOMKQ3HHjkzqaq+1HkmSXAKYswaoeEdUbuu2iO32Bo03KqQF1wIWcdh7ow41Z67Knc
+ K3++GTT8yckgXZtf/LKTXExOzsLxM7usBCkK5GQYvD5NJuPS+tBDpts0meoHrCzeJQLW9EK
+ Sont68r7JIUpoTuAqR0xQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yM5Wd+kE9cs=:h1QxyCwxnjXbyAcP7kWcYC
+ tYdBBJPJe/90cJXAxdjlT3UyWdwzUZRg0XMTh1Xk7nJ3kqCTCTHpeywxPG7G+4mNuZ7uy1SEQ
+ 8HOlzfBzqr6F6RT3/Q3w9Fq87OCTuLEpSd2EpAyPHVtW2fMzZhkA41ZfKB65gGmZD6DeGeTEm
+ JbT1vKAdtYaFIP0a5zvjC/Cz/nIl0Pt/teKwMKarMm0KgiGirskLcWTVBt1TZpwomQCEKN4ey
+ aBKtXwntLAjcy+2oN4K4JpiPOt9T/I55tbyzuop+xcXmUUFsFe6I3bMsCkyO6TEiFD/y6QJI+
+ ftRqGZAAj5Cob5LDS8wxI8DC+bG8TGQx9b92C4VcMi7rG8hmqNAn7YtHA5ZmKifHUbw8+XwJU
+ SbHEcF9hA4A1h6+zvHySAWIoAPtY4765Lg/c1B+5zWWitgbMzVm1AaRfDzJHniUbg4AFDesZY
+ yMpu8Q1ZNzrlfjBM4xoAmhx+5U6aIntROicJ9RFdDrUcrI7cTR1dfhq0+LW4TvJTbmLjZ4ssO
+ hA6KKzyVw+yFuc5JmXsuLh/JmRx4BtZabzLnAO7UT7mtIscsncSkraFqlRlK3XjHaGzm/bQA/
+ 3p+tiF1DhgtUVZLslqMEQcUqqY+vkAdfME0tXR92by9vIrsNIpeYrWZf/elBOAxzsGaZDNgPq
+ kwYTodjKpM6/OXx209ZqW9dd2IF4onIl9F+6iZLer4gC7ft1AspeKKv1oZS91SQmA8ogPkS3O
+ AuXdNs+5uJmpiJmgKzvpu3t7AIJorc8BltxKXl+ruqmpV2GlXzR46fgPXHXZZoG6dfjTEvYj7
+ NxObYfQeGWU5mk6OjX7a94/3VjJRn37BEcWPPugTPeqMoukIuoTR+XwKn5Sk8UgXKM5Qco/Qt
+ ieChAiR7nyQ25EOswutQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
 
-Thanks for some explanation.
-Personally, I prefer binary to compare bit-level changes.
-Actually, I also miscounted. I count 3 bit flips. Isn't that extremely
-unlikely, assuming that each bit flip is independent?
-Nonetheless, I'm running another RAM test with memtester and 6GB RAM
-blocks.... still no errors.
-Will post an update later today.
 
---=20
-Cheers,
+On 2021/3/8 =E4=B8=8B=E5=8D=886:02, chil L1n wrote:
+> Hi Qu,
+>
+> Thanks for some explanation.
+> Personally, I prefer binary to compare bit-level changes.
+> Actually, I also miscounted. I count 3 bit flips.
 
-Chillin
+Yes, you're right, xor also returns 3 bits flips.
 
-On Mon, Mar 8, 2021 at 10:33 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/3/8 =E4=B8=8B=E5=8D=885:23, Qu Wenruo wrote:
-> >
-> >
-> > On 2021/3/8 =E4=B8=8B=E5=8D=884:56, chil L1n wrote:
-> >> Hi Johannes,
-> >>
-> >> Thanks for the advice. I'm running memtester now. This will take some
-> >> time as the machine has 32GB RAM.
-> >> Regarding your explanation, I count two bit position differences, not
-> >> 1. Can you explain your reasoning?
-> >
-> > It looks like Johannes missed one 0, and caused some confusion.
-> >
-> > With 0 padded correctly, the result is:
-> >
-> > 3276800 =3D 0b1100100000000000000000
-> > 1310720 =3D 0b0101000000000000000000
->
-> Oh, no, the value is correct.... It's my hex diff incorrect...
-> >
-> > That's why I prefer to use hex:
-> > 3276800 =3D 0x320000
-> > 1310720 =3D 0x140000
-> > diff    =3D 0x200000
->
-> The diff is 0x260000 (xor).
->
-> But that can still be an indication of bitflip, on that 0x200000 part.
->
-> As the current key should be larger than previous key, one bit flip at
-> 0x200000 can cause the problem and trigger the tree-checker.
->
-> Thanks,
-> Qu
-> >
-> > Definitely one bit flipped.
-> >
-> > Thanks,
-> > Qu
-> >
-> >>
-> >> Thanks,
-> >>
-> >> chill
-> >>
-> >>
-> >> On Mon, Mar 8, 2021 at 9:41 AM Johannes Thumshirn
-> >> <Johannes.Thumshirn@wdc.com> wrote:
-> >>>
-> >>> On 06/03/2021 10:11, chil L1n wrote:
-> >>>> [2555511.868642] BTRFS critical (device sda4): corrupt leaf: root=3D=
-258
-> >>>> block=3D250975895552 slot=3D78, bad key order, prev (256703 108 3276=
-800)
-> >>>> current (256703 108 1310720)
-> >>>> [2555511.868650] BTRFS error (device sda4): block=3D250975895552 wri=
-te
-> >>>> time tree block corruption detected
-> >>>
-> >>> This /might/ be a memory bitflip:
-> >>>
-> >>> 3276800 =3D 0b1100100000000000000000
-> >>> 1310720 =3D 0b101000000000000000000
-> >>>
-> >>> I guess the highest bit did flip so it should have been:
-> >>> 3407872 =3D 0b1101000000000000000000
-> >>>
-> >>> (3407872 - 3276800) / 4096.0
-> >>> 32.0
-> >>>
-> >>> Can you run a memtest on the machine to check if the RAM is ok?
-> >>>
-> >>> Byte,
-> >>>          Johannes
+But the point is not about directly comparing the two key offsets.
+
+The point is, the bit at 0x200000 can be flipped.
+
+If that's the case, the remaining bits are no longer important anymore,
+as that one bit flip just makes the current key to be smaller than the
+previous key, which will trigger the problem.
+
+> Isn't that extremely
+> unlikely, assuming that each bit flip is independent?
+> Nonetheless, I'm running another RAM test with memtester and 6GB RAM
+> blocks.... still no errors.
+> Will post an update later today.
+
+I'd recommend to run UEFI memtest86.
+
+This should really test the full system RAM, without anything else
+affecting the result.
+(This also means you are not able to use the computer obviously)
+
+ From my personal experience, especially for write time tree-checker,
+it's almost sure the system has something wrong.
+
+The RAM is the most common case, and personally I'm very proud that
+tree-checker has detected more than a dozen similar cases and quite a
+lot of them turns out to be hardware problems.
+
+Thanks,
+Qu
