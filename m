@@ -2,132 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA8C3316EF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 20:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1DA331705
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 20:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbhCHTDv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Mar 2021 14:03:51 -0500
-Received: from a4-15.smtp-out.eu-west-1.amazonses.com ([54.240.4.15]:54257
-        "EHLO a4-15.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230510AbhCHTDb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Mar 2021 14:03:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=pqvuhxtqt36lwjpmqkszlz7wxaih4qwj; d=urbackup.org; t=1615230210;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=lPhbjOHlM92E0MkykuScbNMwrY+lDu3fxNOoZQ54QEo=;
-        b=ZCxCY6E26PULTcy1DzFi/YGKIkCL8V8XFfk9/NdYadShDWHQ82kKjDUGWBhBOiAK
-        sVVDMmaOoAUo2fsWK+UmclRoI6zxMl/YOUWGjqy6y2VngLYZC8opRadzWJJoPH7bvRd
-        n/NxLy0b/0Y/iP+GwAJzbAm4mALZP77fb6ZImz9o=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=shh3fegwg5fppqsuzphvschd53n6ihuv; d=amazonses.com; t=1615230210;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=lPhbjOHlM92E0MkykuScbNMwrY+lDu3fxNOoZQ54QEo=;
-        b=qzzef09jUJv6DG25jxNe2ly7ZjtEcEg9D7W3TvrC+3sRdKD6SMPWgxlornhwDYyp
-        vbv9kqquchGBXkmFo8OrugGkl6AgTLqZpQyLkt0Zxi8GWcFULTiegdj5z3JDvmzEB+L
-        5rA8psCnqKnDpdKLTmkM6H1QZzTdlnRmHxCaStWA=
-Subject: Re: [PATCH] btrfs: Prevent nowait or async read from doing sync IO
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        io-uring@vger.kernel.org
-References: <01020176df4d86ba-658b4ef1-1b4a-464f-afe4-fb69ca60e04e-000000@eu-west-1.amazonses.com>
- <20210226170030.GN7604@twin.jikos.cz>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <0102017813390ff7-879ae32a-99ac-4c52-a01d-58c85686d2f8-000000@eu-west-1.amazonses.com>
-Date:   Mon, 8 Mar 2021 19:03:30 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231250AbhCHTMS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Mar 2021 14:12:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbhCHTMR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Mar 2021 14:12:17 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60E8C06174A
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Mar 2021 11:12:16 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id 18so22768746lff.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Mar 2021 11:12:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ZLlVXbB4x244t+69/t+s97bYaJQ3fd94DkB1oHwB15I=;
+        b=uRiUlEMb+hdKu1Lv7J0tKZIacR0QYTeWXx1jmi70L9JBj77N0sxBcweKuOQu4O7rA1
+         siFDMXrwwqas8G3yOcIaWxt1+kVpUom8wWj4gowpENUgu4Z1DBdLlNKPrIpBNfdxgQxN
+         BuLM4zcdQi7DZEpsn4ZqpselQS1kTLAjytAZDYZUxBhAsuYD1JDpKnN1j8IHJiLiDAOU
+         d/FKELO0vXBmTsTfowsnzzBlPV1JmK/E/fK7Cvq1rmSEZ+WCkHE/HaIWFo5MvB2IBM7j
+         qJxMgYufJHw0POvysTRJYcAR2+HwZX7HcTm6hzSp3tec7FuYvwJUk7jmEN5QsKFHdL2Y
+         cHCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ZLlVXbB4x244t+69/t+s97bYaJQ3fd94DkB1oHwB15I=;
+        b=lpNH0Vk65VRNL7frddX/BiecXUd2tuAgNI8EmjXa7YNePqivRNjAVZGZq7KLt9ANMQ
+         lwKKrKjCRgLqGusLXOrIOVsGJ6NLoLxzY89ds48Icgr58J+Tm/I2ozfR4CRXHxmGbUWU
+         4+xJgL8vDlWxUzksIApvkyLhCtBnO2eGdukwjEnCoCIgHB9DnDq0MkkxRIeNxEqPskA3
+         xmB2S0z//Woy0khUOvlL14NciFyCx9PX8VM42U0nw8gv6F2Wvq4iRkHgwZq6M3er+/yH
+         jqA122bmRhv59tcJsTWbYmXg4/7KV4N2dn9xtl8thno6TfH6ESoZxXvXfvxpO+LZDfCp
+         mDbA==
+X-Gm-Message-State: AOAM530egrbDKTL2ky97q+ahSPPkDOiwE3M4LHws19zjAdwHt0ijXJe9
+        PJGvBMz9+x+7Fr0DeTlDWQkK7LTuJlnZAeKMr1M=
+X-Google-Smtp-Source: ABdhPJzUWCWE+q+gp+boPJdkl62eAv7r7ZOmMWG6pbEW77D/WitQSUY5Z/3pp3cFLQEkPqVRf1mdLDENv8IiXJ8zmXY=
+X-Received: by 2002:a05:6512:36d8:: with SMTP id e24mr14708850lfs.188.1615230735293;
+ Mon, 08 Mar 2021 11:12:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210226170030.GN7604@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-SES-Outgoing: 2021.03.08-54.240.4.15
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+Received: by 2002:ab3:1115:0:0:0:0:0 with HTTP; Mon, 8 Mar 2021 11:12:14 -0800 (PST)
+Reply-To: gabrieledgal00@gmail.com
+From:   Gabriel Edgal <usacitynew1@gmail.com>
+Date:   Mon, 8 Mar 2021 11:12:14 -0800
+Message-ID: <CAG39kTPGCfAXD8AuuDEzPe-=ab=6ZczOzWJaPeNDQz3EQ=_jRg@mail.gmail.com>
+Subject: I sent
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 26.02.2021 18:00 David Sterba wrote:
-> On Fri, Jan 08, 2021 at 12:02:48AM +0000, Martin Raiber wrote:
->> When reading from btrfs file via io_uring I get following
->> call traces:
->>
->> [<0>] wait_on_page_bit+0x12b/0x270
->> [<0>] read_extent_buffer_pages+0x2ad/0x360
->> [<0>] btree_read_extent_buffer_pages+0x97/0x110
->> [<0>] read_tree_block+0x36/0x60
->> [<0>] read_block_for_search.isra.0+0x1a9/0x360
->> [<0>] btrfs_search_slot+0x23d/0x9f0
->> [<0>] btrfs_lookup_csum+0x75/0x170
->> [<0>] btrfs_lookup_bio_sums+0x23d/0x630
->> [<0>] btrfs_submit_data_bio+0x109/0x180
->> [<0>] submit_one_bio+0x44/0x70
->> [<0>] extent_readahead+0x37a/0x3a0
->> [<0>] read_pages+0x8e/0x1f0
->> [<0>] page_cache_ra_unbounded+0x1aa/0x1f0
->> [<0>] generic_file_buffered_read+0x3eb/0x830
->> [<0>] io_iter_do_read+0x1a/0x40
->> [<0>] io_read+0xde/0x350
->> [<0>] io_issue_sqe+0x5cd/0xed0
->> [<0>] __io_queue_sqe+0xf9/0x370
->> [<0>] io_submit_sqes+0x637/0x910
->> [<0>] __x64_sys_io_uring_enter+0x22e/0x390
->> [<0>] do_syscall_64+0x33/0x80
->> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>
->> Prevent those by setting IOCB_NOIO before calling
->> generic_file_buffered_read.
->>
->> Async read has the same problem. So disable that by removing
->> FMODE_BUF_RASYNC. This was added with commit
->> 8730f12b7962b21ea9ad2756abce1e205d22db84 ("btrfs: flag files as
->> supporting buffered async reads") with 5.9. Io_uring will read
->> the data via worker threads if it can't be read without sync IO
->> this way.
->>
->> Signed-off-by: Martin Raiber <martin@urbackup.org>
->> ---
->>  fs/btrfs/file.c | 15 +++++++++++++--
->>  1 file changed, 13 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
->> index 0e41459b8..8bb561f6d 100644
->> --- a/fs/btrfs/file.c
->> +++ b/fs/btrfs/file.c
->> @@ -3589,7 +3589,7 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
->>  
->>  static int btrfs_file_open(struct inode *inode, struct file *filp)
->>  {
->> -	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
->> +	filp->f_mode |= FMODE_NOWAIT;
->>  	return generic_file_open(inode, filp);
->>  }
->>  
->> @@ -3639,7 +3639,18 @@ static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->>  			return ret;
->>  	}
->>  
->> -	return generic_file_buffered_read(iocb, to, ret);
->> +	if (iocb->ki_flags & IOCB_NOWAIT)
->> +		iocb->ki_flags |= IOCB_NOIO;
->> +
->> +	ret = generic_file_buffered_read(iocb, to, ret);
->> +
->> +	if (iocb->ki_flags & IOCB_NOWAIT) {
->> +		iocb->ki_flags &= ~IOCB_NOIO;
->> +		if (ret == 0)
->> +			ret = -EAGAIN;
->> +	}
-> Christoph has some doubts about the code,
-> https://lore.kernel.org/lkml/20210226051626.GA2072@lst.de/
->
-> The patch has been in for-next but as I'm not sure it's correct and
-> don't have a reproducer, I'll remove it again. We do want to fix the
-> warning, maybe there's only something trivial missing but we need to be
-> sure, I don't have enough expertise here.
+-- 
+Dear Friend.
 
-The general gist of the critism is kind of correct. It is generic_file_buffered_read/filemap_read that handles the IOCB_NOIO, however. It is only used from gfs2 since 5.8 and IOCB_NOIO was added to 5.8 with 41da51bce36f44eefc1e3d0f47d18841cbd065ba ....
+I am  Mr .Gabriel Edgal , I'm Chief  internal auditor in Btci bank,I have
+an abandoned fund  $9.5 million Dollars to transfer to you ,which we are
+going to share 50:50 . You will only stand as the next of kin to my late
+client who bears the same surname as you , the fund was deposited in our
+ bank so many years back by my late client  who  died with his entire
+family in an Auto Accident in 2010  . I want to invite you as foreign
+partner to stand as the  next of kin to the deceased client  ,so that we
+will put a claim over the  deposited fund and share it between the two of
+us 50: 50 each  . I want you to reply me back  immediately for more details
 
-However, I cannot see how to find out if readahead was called with IOCB_NOWAIT from extent_readahead/btrfs_readahead/readahead_control. So add an additional parameter to address_space_operations.readahead ? As mentioned, not too relevant to btrfs (because of the CRC calculation), but making readahead async in all cases (incl. IOCB_WAITQ) would be the proper solution.
-
-W.r.t. testing: The most low-effort way I can think of is to add an io_uring switch to xfs_io, so that xfstests can be run using io_uring (where possible). Then check via tracing/perf that there aren't any call stacks with both io_uring_enter and wait_on_page_bit (or any other blocking call) in them.
-
+Best Regards,
+Mr .Gabriel Edgal
