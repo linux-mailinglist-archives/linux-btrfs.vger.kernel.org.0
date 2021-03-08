@@ -2,150 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864FA33054C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 01:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCA633057C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 01:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbhCHAZM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 7 Mar 2021 19:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
+        id S233452AbhCHA5L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 7 Mar 2021 19:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233345AbhCHAZM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Mar 2021 19:25:12 -0500
-Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C10DC06174A
-        for <linux-btrfs@vger.kernel.org>; Sun,  7 Mar 2021 16:25:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=preining.info; s=201909; h=In-Reply-To:Content-Type:MIME-Version:References
-        :Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-        :Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=NlasRRTLZNbLVpkcgojtjxSCYyB3iCKNtKUDToGsFyQ=; b=egCq2g8jy9sb0LROak4y6fK0xt
-        luOfEY3HleWV6nmOjmDSAXocTGd9+B0RyguN7feArHxBn4mzE2uei3smphtDY2sdDjcfR8GYt2iwO
-        ZpZZnPead+3GsFYrwhgNgY4R2L5+uHbvPdztmGVuAS+tjxRvQT+ANV2qljlbYGcEMkZ6fBr9Vq7nE
-        1SxcUh68iLlopzcCOBz9ULkCMrSfyx3Ze1EMqeRtBbXfDq/cwFw/1i8GQFMHcJhA6WcVC8h0knQLg
-        1m1sfQfKTCidRHa/BLZEQbm6MRVUFKPOU2ztDyMTlL0RRYJCbzNu+Et0Fgl6FP+o+/xcIJI3bFSxr
-        J05R20yA==;
-Received: from tvk213002.tvk.ne.jp ([180.94.213.2] helo=burischnitzel.preining.info)
-        by hz.preining.info with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <norbert@preining.info>)
-        id 1lJ3hr-0002S7-AM; Mon, 08 Mar 2021 00:25:07 +0000
-Received: by burischnitzel.preining.info (Postfix, from userid 1000)
-        id 63B3AB384531; Mon,  8 Mar 2021 09:25:03 +0900 (JST)
-Date:   Mon, 8 Mar 2021 09:25:03 +0900
-From:   Norbert Preining <norbert@preining.info>
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: btrfs fails to mount on kernel 5.11.4 but works on 5.10.19
-Message-ID: <YEVu36vR0QVWMcN6@burischnitzel.preining.info>
-References: <YEVYbMdXdPzklSVc@bulldog.preining.info>
- <20210308081640.3774.409509F4@e16-tech.com>
+        with ESMTP id S233453AbhCHA4t (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Mar 2021 19:56:49 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D799EC06174A
+        for <linux-btrfs@vger.kernel.org>; Sun,  7 Mar 2021 16:56:48 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id a25-20020a1cf0190000b029010b1cbe2dd0so2737254wmb.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 07 Mar 2021 16:56:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v3t/dWKZGOQWNxy3BuBV6qPdZN3kVYk1NYoL5h4J/aA=;
+        b=Xog6x9SFsl8KRVxZNxrXmSxKDE4lMLWSL2bFCaExMAzjYPMIHEcHEJ1G8mUkVpVoVN
+         HluS8tDziNi7XDfJFfJ5ALSWzVGTkFMvrA3/Ai++qdskCt0zG1BOw/rQWCdrivwlEk5P
+         wzNikiqdT7Rfcku45dRg1Lj0py1ussBSqpdAfVo50fOeUDpRVLMJaW7oCF77ycqGmoi7
+         lF6QhF6V9p12wz5IOZREwdun7Omk9uqnZBDFZO60nnV5RSXhiihoFI/SM4dLRPeQ6ATQ
+         2iO4Mf4J8LSgz2voBzaiugxZmI0u4rFb+9xUcKPLo9iBzmhm6RxpHGiv1eFseXGmu0hg
+         CXhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v3t/dWKZGOQWNxy3BuBV6qPdZN3kVYk1NYoL5h4J/aA=;
+        b=qXlBrArIqIwXh4mQTLfB44b5AzLGrE3PsEIOJLD6XxkwDz+QmVvbh4MctcC2EpgonU
+         k0BRqOaGkF399E4W2qhmuyiViCx6yOETGtsp0U+wLC+RJ9l9T2yZ3oKfX4qls6NYejKS
+         9OXS9PfUV4wYOnDLvFLN5rKunu8683o60WAbIseY1Iflpc2MXtoZ/jm6SmkNhTGhQBOu
+         Mi145aS6l4XYR1QUWvtTUWj0/DMoNm1Oc5QdrwDddaMBGPdZj35+YLHRyEhIywd4iV+y
+         p/nH2kFv+Q8/CNgD4IR9SfksH98vRrElbOCVnvQLjMbsO5c/18+Pv+FNw763HUGEU/IJ
+         QAOw==
+X-Gm-Message-State: AOAM532YbB661Xu5KaIpGYOOE8m2hd5FbhH/a40yJLb+u4jVS3LPCXdu
+        BK9CixO/WMTrUhvXW+34iNDa/D+Klqfszzef2JwWEg==
+X-Google-Smtp-Source: ABdhPJz7Nv4kT/dBmMBgrdXs7UbzbKEQc4Z2oYzdmkpPiCqjOJrllzFF11hzKDR2W3UEJCxo+6ukIFM2vWoAW0Bfo1k=
+X-Received: by 2002:a1c:bdc2:: with SMTP id n185mr19889915wmf.128.1615165006595;
+ Sun, 07 Mar 2021 16:56:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308081640.3774.409509F4@e16-tech.com>
+References: <CALS+qHMo-XVzXKEfd44E6BG7TPnWKT+r2m7p1wFtFs5XjQApEA@mail.gmail.com>
+ <CAJCQCtT38_0Uk7_V-EnfJ-qj4dheJnqVcWEZEKvVRsw6tY5VDg@mail.gmail.com>
+ <CAJCQCtRkPa7GSjqOBs95ZsJL04o-FBXhgB6xH5KwP+TgupjCnw@mail.gmail.com>
+ <CALS+qHOg89Qtd26NFC4WT+SCv_VxH_k3Erk4=a_pzEMdKZ1Kbw@mail.gmail.com>
+ <CAJCQCtRAdn5GsMOGW8VP9K5ysQLepdBT5nt+dtp5UBabQ5yh0A@mail.gmail.com>
+ <CALS+qHN8cL1sQt4kjP_n_TrzqO84qV5X-hP2zhnRLjigTq0g2g@mail.gmail.com>
+ <CAJCQCtR8pXnfVwrtBEvbvm8qrDwMyqyckZyNNgrSwO8++ShfdA@mail.gmail.com> <CALS+qHN7hyFzKZHrMj5_95pPTPR9sEgwqzgVqxFK70fs5FW4xA@mail.gmail.com>
+In-Reply-To: <CALS+qHN7hyFzKZHrMj5_95pPTPR9sEgwqzgVqxFK70fs5FW4xA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 7 Mar 2021 17:56:30 -0700
+Message-ID: <CAJCQCtRWRq-AR1+hF03W0q+bG3sO618p6GzTtN1EWCJijzKe9g@mail.gmail.com>
+Subject: Re: All files are damaged after btrfs restore
+To:     Sebastian Roller <sebastian.roller@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi
+On Sun, Mar 7, 2021 at 6:58 AM Sebastian Roller
+<sebastian.roller@gmail.com> wrote:
+>
+> Would it make sense to just try  restore -t on any root I got with
+> btrfs-find-root with all of the snapshots?
 
-(please cc)
+Yes but I think you've tried this and you only got corrupt files or
+files with holes, so that suggests very recent roots are just bad due
+to the corruption, and older ones are pointing to a mix of valid and
+stale blocks and it just ends up in confusion.
 
-thanks for your email. First some additional information. Since this
-happened I searched and realized that there seem to have been a problem
-with 5.12-rc1, which I tried for short time (checking whether AMD-GPU
-hangs are fixed). Now I read that -rc1 is a btrfs-killer. I have swap
-partition, not swap file, and 64G or RAM, so normally swap is not used,
-though.
+I think what you're after is 'btrfs restore -f'
 
-Then for your email:
+       -f <bytenr>
+           only restore files that are under specified subvolume root
+pointed by <bytenr>
 
-On Mon, 08 Mar 2021, Wang Yugui wrote:
-> If this is a boot btrfs filesystem, please try to mount it manually with
-> a live linux with the kernel 5.11.4?
+You can get this value from each 'tree root' a.k.a. the root of roots
+tree, what the super calls simply 'root'. That contains references for
+all the other trees' roots. For example:
 
-Hmmm, good idea, but how do I get a live system with that kernel? Not
-that I know any having this as default by now.
+    item 12 key (257 ROOT_ITEM 0) itemoff 12936 itemsize 439
+        generation 97406 root_dirid 256 bytenr 30752768 level 1 refs 1
+        lastsnap 93151 byte_limit 0 bytes_used 2818048 flags 0x0(none)
+        uuid 4a0fa0d3-783c-bc42-bee1-ffcbe7325753
+        ctransid 97406 otransid 7 stransid 0 rtransid 0
+        ctime 1615103595.233916841 (2021-03-07 00:53:15)
+        otime 1603562604.21506964 (2020-10-24 12:03:24)
+        drop key (0 UNKNOWN.0 0) level 0
+    item 13 key (257 ROOT_BACKREF 5) itemoff 12911 itemsize 25
+        root backref key dirid 256 sequence 2 name newpool
 
-I have booted systemrescue and run now
-	btrfsck --check-data-csum
-to see whether there are some other errors.
 
-> When a boot btrfs filesystem with multiple disks, I have a question for
-> a little long time.
 
-What kind of problems do you see?
+The name of this subvolume is newpool, the subvolid is 257, and its
+address is bytenr 30752768. That's the value to plug into btrfs
+restore -f
 
-> If some but not all of the disks are scaned, systemd will try to mount
-> it? and then btrfs mount will try to wait other disks to be scaned?
+The thing is, it needs an intact chunk tree, i.e. not damaged and not
+too old, in order to translate that logical address into a physical
+device and physical address.
 
-Hmm, but nothing has changed in the underlying boot configuration
-(Debian/sid). Same system only kernel changes.
 
-(Please cc)
 
-Thanks and all the best
 
-Norbert
 
-> > not sure this is the right mailing list, but I cannot boot into 5.11.4 
-> > it gives me
-> > 	devid 9 uui .....  
-> > 	failed to read the system array: -2
-> > 	open_ctree failed
-> > (only partial, typed in from photo)
-> > 
-> > OTOH, 5.10.19 boots without a hinch
-> > $ btrfs fi show /
-> > Label: none  uuid: 911600cb-bd76-4299-9445-666382e8ad20
-> >         Total devices 8 FS bytes used 3.28TiB
-> >         devid    1 size 899.01GiB used 670.00GiB path /dev/sdb3
-> >         devid    2 size 489.05GiB used 271.00GiB path /dev/sdd
-> >         devid    3 size 1.82TiB used 1.58TiB path /dev/sde1
-> >         devid    4 size 931.51GiB used 708.00GiB path /dev/sdf1
-> >         devid    5 size 1.82TiB used 1.58TiB path /dev/sdc1
-> >         devid    7 size 931.51GiB used 675.00GiB path /dev/nvme2n1p1
-> >         devid    8 size 931.51GiB used 680.03GiB path /dev/nvme1n1p1
-> >         devid    9 size 931.51GiB used 678.03GiB path /dev/nvme0n1p1
-> > 
-> > That is a multi disk array with all data duplicated data/sys:
-> > 
-> > $ btrfs fi us -T /
-> > Overall:
-> >     Device size:                   8.63TiB
-> >     Device allocated:              6.76TiB
-> >     Device unallocated:            1.87TiB
-> >     Device missing:                  0.00B
-> >     Used:                          6.57TiB
-> >     Free (estimated):              1.03TiB      (min: 1.03TiB)
-> >     Free (statfs, df):             1.01TiB
-> >     Data ratio:                       2.00
-> >     Metadata ratio:                   2.00
-> >     Global reserve:              512.00MiB      (used: 0.00B)
-> >     Multiple profiles:                  no
-> > 
-> >                   Data      Metadata System               
-> > Id Path           RAID1     RAID1    RAID1     Unallocated
-> > -- -------------- --------- -------- --------- -----------
-> >  1 /dev/sdb3      662.00GiB  8.00GiB         -   229.01GiB
-> >  2 /dev/sdd       271.00GiB        -         -     1.55TiB
-> >  3 /dev/sde1        1.58TiB  7.00GiB         -   241.02GiB
-> >  4 /dev/sdf1      701.00GiB  7.00GiB         -   223.51GiB
-> >  5 /dev/sdc1        1.57TiB 10.00GiB         -   241.02GiB
-> >  7 /dev/nvme2n1p1 675.00GiB        -         -   256.51GiB
-> >  8 /dev/nvme1n1p1 673.00GiB  7.00GiB  32.00MiB   251.48GiB
-> >  9 /dev/nvme0n1p1 671.00GiB  7.00GiB  32.00MiB   253.48GiB
-> > -- -------------- --------- -------- --------- -----------
-> >    Total            3.36TiB 23.00GiB  32.00MiB     3.21TiB
-> >    Used             3.27TiB 15.70GiB 528.00KiB            
-> > $
-> > 
-> > Is there something wrong with the filesystem? Or the kernel?
-> > Any hint how to debug this?
+>
+> > OK so you said there's an original and backup file system, are they
+> > both in equally bad shape, having been on the same controller? Are
+> > they both btrfs?
+>
+> The original / live file system was not btrfs but xfs. It is in a
+> different but equally bad state than the backup. We used bcache with a
+> write-back cache on a ssd which is now completely dead (does not get
+> recognized by any server anymore). To get the file system mounted I
+> ran xfs-repair. After that only 6% of the data was left and this is
+> nearly completely in lost+found. I'm now trying to sort these files by
+> type, since the data itself looks OK. Unfortunately the surviving
+> files seem to be the oldest ones.
 
---
-PREINING Norbert                              https://www.preining.info
-Fujitsu Research Labs  +  IFMGA Guide + TU Wien + TeX Live + Debian Dev
-GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
+Yeah writeback means the bcache device must survive and be healthy
+before any repair attempts should be made, even restore attempts. It
+also means you need hardware isolation, one SSD per HDD. Otherwise one
+SSD failing means the whole thing falls apart. The mode to use for
+read caching is writethrough.
+
+
+>         backup 0:
+>                 backup_tree_root:       122583415865344 gen: 825256     level: 2
+>                 backup_chunk_root:      141944043454464 gen: 825256     level: 2
+
+
+>         backup 1:
+>                 backup_tree_root:       122343302234112 gen: 825253     level: 2
+>                 backup_chunk_root:      141944034426880 gen: 825251     level: 2
+
+>         backup 2:
+>                 backup_tree_root:       122343762804736 gen: 825254     level: 2
+>                 backup_chunk_root:      141944034426880 gen: 825251     level: 2
+
+>         backup 3:
+>                 backup_tree_root:       122574011269120 gen: 825255     level: 2
+>                 backup_chunk_root:      141944034426880 gen: 825251     level: 2
+
+OK this is interesting. There's two chunk trees to choose from. So is
+the restore problem because older roots point to the older chunk tree
+which is already going stale, and just isn't assembling blocks
+correctly anymore? Or is it because the new chunk tree is bad?
+
+On 72 TB, the last thing I want to recommend is chunk-recover. That'll
+take forever but it'd be interesting to know which of these chunk
+trees is good. The chunk tree is in the system block group. It's
+pretty tiny so it's a small target for being overwritten...and it's
+cow. So there isn't a reason to immediately start overwriting it. I'm
+thinking maybe the new one got interrupted by the failure and the old
+one is intact.
+
+Ok so the next step is to find a snapshot you want to restore.
+
+btrfs insp dump-t -t 1 /dev/sdi1
+
+And you'll need to look for a snapshot name in there, find its bytenr,
+and let's first see if just using that works. If it doesn't then maybe
+combining it with the next most recent root tree will work.
+
+
+-- 
+Chris Murphy
