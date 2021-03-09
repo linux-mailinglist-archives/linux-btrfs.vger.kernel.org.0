@@ -2,387 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72DC3319F1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Mar 2021 23:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63C3331BFC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Mar 2021 02:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhCHWFD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Mar 2021 17:05:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43452 "EHLO
+        id S229582AbhCIBCY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Mar 2021 20:02:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbhCHWEx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Mar 2021 17:04:53 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3ED8C06174A
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Mar 2021 14:04:52 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id l7so299621qtq.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Mar 2021 14:04:52 -0800 (PST)
+        with ESMTP id S229475AbhCIBBn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Mar 2021 20:01:43 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE73AC06174A
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Mar 2021 17:01:42 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id 7so2614132vke.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Mar 2021 17:01:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RmA+Q2psIwnoRjIBpt2JThpH8QptFqnAP9c/VaQltNw=;
-        b=CDLWVTJ2jyuX4zqKtfXuXRnDYEF/T4HPTiVob/VpqmLLGgZWixc2Zw6u+Kn1gADkSC
-         sH9PO69Z38fKtvw6CNPaAkTSSGKn8/rQ2C/lFHRk0rftPt2FF7hgIzok/TXEWArD5pVV
-         U2mGYv+lMi8UY3y2fA2AiA37qddYss21E0AJdIjG4TTxvrFEOeUWeVj+TevWjxfDNWWr
-         mHWvkJemGm4HX/GLWlgwKMP4fjoyp1iZvsggpnIDeRWjLxjf1uPZAsQ/K+ulRSz1azCo
-         drLeWjLjPLoPwsnl+iFCyguV3MfR9s4K8AWRCBz+x36d1iIuLS1vBZgFW68mWWp+2N7A
-         0LUA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=R/Y0qgTWIYNAvsv5vtdM+rBGdhStk0nJNC/yqKzouB4=;
+        b=l3V6317NZz4DGGKd+PMrYXQ6KcT3WFMVk746v7LHG9ssP6mpH77nlUtU22LHcdvLEp
+         RqS6omTOGdl+/ManrNUrVAKZ2WfE1d1cPvpMvBSVJkb+l+Sf3UnjX0irNGVd6ztLiH65
+         v8bd6ofs/GbKXHfmZY81dNNNt/q/2KdtxNS1JCHrKLIL/jqqqP0/yhpQKuG7r2tk4JJz
+         4rQ6j4IVtPwH8lro8NBziutehcT3p2BuHxKxxEK22INHAR5B8T8x3tt2lD1NRfftMUmM
+         Sf/d+xriAbLrkYXiKIZSTD/1rkK7ceB7YZMctNHTUrsI2khnJLpj3kOMZQrMIghFhTdV
+         Gs9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RmA+Q2psIwnoRjIBpt2JThpH8QptFqnAP9c/VaQltNw=;
-        b=OWD5dWUJSfq8l2sizDmQNjU6/VboOJT8XKZD24nH1ILof2VZTaXZJAhJqeFa1ctrRm
-         JyLE1LaGtQWrwx2YfCuLJON2kQrM3JqwZDlYUgjT45l6LjPB0wn2eYM92Yc1aMkllCCM
-         JbB+O2QSHS7JteMnyRW6fY9/504ENYThKS9HDnqLKnUh/VNASSRQzfsAYFapMlDJfTGH
-         +ilP+eWN8008C7LY24gkHOVNvVaBxQ+8G7C4KOzr2iEg9W6ulT2qD9ejrtv07oIWcq+W
-         7YW/ECbNfOdl5FdXn1nmRysDN49+GlrFl7RP3ivW3B9a6gDW+9sEmSOb8zxPLD5avBmT
-         sYKg==
-X-Gm-Message-State: AOAM530JewggPWw7pf56U7EzdoqPtVsP2W2d/TDiA9Lp3fGPijj+kTU+
-        Vg+AB5/2am/ZKpFIJdinBW8k1/2mCRw9R35d
-X-Google-Smtp-Source: ABdhPJyR7mA8NHWyTisfoMDRG9EnfzAym29Gju/9+Kohdj9poPd5IbTTI13qszSKmyN9rEE5Nicmgg==
-X-Received: by 2002:ac8:584f:: with SMTP id h15mr22879179qth.347.1615241091374;
-        Mon, 08 Mar 2021 14:04:51 -0800 (PST)
-Received: from ?IPv6:2620:10d:c0a8:11e8::10a1? ([2620:10d:c091:480::1:8249])
-        by smtp.gmail.com with ESMTPSA id f9sm7229943qkk.115.2021.03.08.14.04.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Mar 2021 14:04:50 -0800 (PST)
-Subject: Re: Recovering Btrfs from a freak failure of the disk controller
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAEg-Je-DJW3saYKA2OBLwgyLU6j0JOF7NzXzECi0HJ5hft_5=A@mail.gmail.com>
- <a9561d44-24a3-fa87-e292-98feb4846ab9@toxicpanda.com>
- <CAEg-Je8o2GiAH2wC9DXiMdMSCFnAjeV6UH-qaobk_0qYLNsPsQ@mail.gmail.com>
- <95e8db7d-eff3-e694-c315-f7984b5f49e0@toxicpanda.com>
- <CAEg-Je_s6EAHwj2LWYRLdMHF_kRuY_JQoLfWMqDgcROZatnP+g@mail.gmail.com>
- <ef2ec021-52d3-2da4-f59a-fa7016c95d90@toxicpanda.com>
- <CAEg-Je_HKgGLnF6F_3dXd+9NFa9cTceWWtTUhSSjNovsze_wQg@mail.gmail.com>
- <d2c7b501-f2f1-c471-4b1b-38e6731682ba@toxicpanda.com>
- <CAEg-Je_TN04fnE2Bg46Nysm2_fG7dcni-7c6wbfZQZqXhDhbnA@mail.gmail.com>
- <e5b5409b-0e34-abd5-81c9-48ef59c3fa03@toxicpanda.com>
- <CAEg-Je-oOnnCd=Vc65yTam6-jxHr2rEr9yrzi_xv79ziys0TjA@mail.gmail.com>
- <346098b8-3d89-1497-ada3-e8317888ee61@toxicpanda.com>
- <CAEg-Je9-88GOrHqqwsvAhxR_1BB-6nFLVd3r-kidCP4APLEEFw@mail.gmail.com>
- <c71ba7e4-28d5-1307-c8d7-4e1bb398ef08@toxicpanda.com>
- <CAEg-Je9dvb5d7nh=pS=_uR5dWe1YBNJTyzzBX=H2_NY=L7DZ9Q@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <36af1204-bd8a-ebb6-ca21-a469780ed147@toxicpanda.com>
-Date:   Mon, 8 Mar 2021 17:04:49 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=R/Y0qgTWIYNAvsv5vtdM+rBGdhStk0nJNC/yqKzouB4=;
+        b=ADM0LLslxia0mzJe2vmh49E19isbz+bitISfplEsOlrCiz/ypgkjFy1ZA2IVXy2aGk
+         JA97nOHwpnicB5RAuyyGmDGT8C3h49XJDfebZTpoo/gHpa974HYfmnUPAzyE0V7n17tr
+         aMeV5xbpkcm90lgma3ak8oV/pqbbqxbDFwpNAv+/5WmEp0vP+LTvTh3KIQwJ/0gw09Ur
+         v8+KErXctnM2N4gICE7+AK7cjh518wSrFDi0RT2PeiyibabeLOoF1pGiGlNQecJS2D2K
+         hmx008RKIFiCwIWBlQcP4vZp90hFqy+P9fQH23So01hBoehZRxHfFE7+sAf9k8cXHN+C
+         8qdg==
+X-Gm-Message-State: AOAM531djJWSWU3+K7cUO2Imh4G1x2+u9gmAhJqGemuQDpI7yd4rR1j9
+        HMgjnyiPzMJ4oZ8WFlh0ugNT+uqk0jN5m/DVm6U7fe/FjO5j9cwP
+X-Google-Smtp-Source: ABdhPJy1cPfjOx6i7K9+HVID2+r2uQ379TiSlsRy3Ogb7s7DL/wydYQHawZFukaSIWFL+QGqOjnHSfhahAAZnhScv1M=
+X-Received: by 2002:a1f:9ed8:: with SMTP id h207mr15309924vke.13.1615251701731;
+ Mon, 08 Mar 2021 17:01:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAEg-Je9dvb5d7nh=pS=_uR5dWe1YBNJTyzzBX=H2_NY=L7DZ9Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200804072548.34001-1-wqu@suse.com> <20200804072548.34001-2-wqu@suse.com>
+In-Reply-To: <20200804072548.34001-2-wqu@suse.com>
+From:   Su Yue <damenly.su@gmail.com>
+Date:   Tue, 9 Mar 2021 09:02:02 +0800
+Message-ID: <CABnRu57qmjkmDd=iX76Rz8y1smmUgV+YnD4XvT4UKKk=Dmggew@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] btrfs: prevent NULL pointer dereference in
+ compress_file_range() when btrfs_compress_pages() hits default case
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/8/21 3:01 PM, Neal Gompa wrote:
-> On Mon, Mar 8, 2021 at 1:38 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>
->> On 3/5/21 8:03 PM, Neal Gompa wrote:
->>> On Fri, Mar 5, 2021 at 5:01 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>
->>>> On 3/5/21 9:41 AM, Neal Gompa wrote:
->>>>> On Fri, Mar 5, 2021 at 9:12 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>
->>>>>> On 3/4/21 6:54 PM, Neal Gompa wrote:
->>>>>>> On Thu, Mar 4, 2021 at 3:25 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>
->>>>>>>> On 3/3/21 2:38 PM, Neal Gompa wrote:
->>>>>>>>> On Wed, Mar 3, 2021 at 1:42 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>
->>>>>>>>>> On 2/24/21 10:47 PM, Neal Gompa wrote:
->>>>>>>>>>> On Wed, Feb 24, 2021 at 10:44 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>
->>>>>>>>>>>> On 2/24/21 9:23 AM, Neal Gompa wrote:
->>>>>>>>>>>>> On Tue, Feb 23, 2021 at 10:05 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> On 2/22/21 11:03 PM, Neal Gompa wrote:
->>>>>>>>>>>>>>> On Mon, Feb 22, 2021 at 2:34 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> On 2/21/21 1:27 PM, Neal Gompa wrote:
->>>>>>>>>>>>>>>>> On Wed, Feb 17, 2021 at 11:44 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> On 2/17/21 11:29 AM, Neal Gompa wrote:
->>>>>>>>>>>>>>>>>>> On Wed, Feb 17, 2021 at 9:59 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>> On 2/17/21 9:50 AM, Neal Gompa wrote:
->>>>>>>>>>>>>>>>>>>>> On Wed, Feb 17, 2021 at 9:36 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>> On 2/16/21 9:05 PM, Neal Gompa wrote:
->>>>>>>>>>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 4:24 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>> On 2/16/21 3:29 PM, Neal Gompa wrote:
->>>>>>>>>>>>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 1:11 PM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>> On 2/16/21 11:27 AM, Neal Gompa wrote:
->>>>>>>>>>>>>>>>>>>>>>>>>>> On Tue, Feb 16, 2021 at 10:19 AM Josef Bacik <josef@toxicpanda.com> wrote:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>> On 2/14/21 3:25 PM, Neal Gompa wrote:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> Hey all,
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> So one of my main computers recently had a disk controller failure
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> that caused my machine to freeze. After rebooting, Btrfs refuses to
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> mount. I tried to do a mount and the following errors show up in the
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> journal:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS info (device sda3): has skinny extents
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS critical (device sda3): corrupt leaf: root=401 block=796082176 slot=15 ino=203657, invalid inode transid: has 888896 expect [0, 888895]
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): block=796082176 read time tree block corruption detected
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Feb 14 15:20:49 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> I've tried to do -o recovery,ro mount and get the same issue. I can't
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> seem to find any reasonably good information on how to do recovery in
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> this scenario, even to just recover enough to copy data off.
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> I'm on Fedora 33, the system was on Linux kernel version 5.9.16 and
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> the Fedora 33 live ISO I'm using has Linux kernel version 5.10.14. I'm
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> using btrfs-progs v5.10.
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>>> Can anyone help?
->>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>> Can you try
->>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>> btrfs check --clear-space-cache v1 /dev/whatever
->>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>> That should fix the inode generation thing so it's sane, and then the tree
->>>>>>>>>>>>>>>>>>>>>>>>>>>> checker will allow the fs to be read, hopefully.  If not we can work out some
->>>>>>>>>>>>>>>>>>>>>>>>>>>> other magic.  Thanks,
->>>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>>> Josef
->>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>> I got the same error as I did with btrfs-check --readonly...
->>>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>> Oh lovely, what does btrfs check --readonly --backup do?
->>>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>> No dice...
->>>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>>> # btrfs check --readonly --backup /dev/sda3
->>>>>>>>>>>>>>>>>>>>>>>>>> Opening filesystem to check...
->>>>>>>>>>>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
->>>>>>>>>>>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
->>>>>>>>>>>>>>>>>>>>>>>>>> parent transid verify failed on 791281664 wanted 888893 found 888895
->>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>> Hey look the block we're looking for, I wrote you some magic, just pull
->>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>> https://github.com/josefbacik/btrfs-progs/tree/for-neal
->>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>> build, and then run
->>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>> btrfs-neal-magic /dev/sda3 791281664 888895
->>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>> This will force us to point at the old root with (hopefully) the right bytenr
->>>>>>>>>>>>>>>>>>>>>>>> and gen, and then hopefully you'll be able to recover from there.  This is kind
->>>>>>>>>>>>>>>>>>>>>>>> of saucy, so yolo, but I can undo it if it makes things worse.  Thanks,
->>>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>> # btrfs check --readonly /dev/sda3
->>>>>>>>>>>>>>>>>>>>>>>> Opening filesystem to check...
->>>>>>>>>>>>>>>>>>>>>>>> ERROR: could not setup extent tree
->>>>>>>>>>>>>>>>>>>>>>>> ERROR: cannot open file system
->>>>>>>>>>>>>>>>>>>>>>> # btrfs check --clear-space-cache v1 /dev/sda3
->>>>>>>>>>>>>>>>>>>>>>>> Opening filesystem to check...
->>>>>>>>>>>>>>>>>>>>>>>> ERROR: could not setup extent tree
->>>>>>>>>>>>>>>>>>>>>>>> ERROR: cannot open file system
->>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>> It's better, but still no dice... :(
->>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>> Hmm it's not telling us what's wrong with the extent tree, which is annoying.
->>>>>>>>>>>>>>>>>>>>>> Does mount -o rescue=all,ro work now that the root tree is normal?  Thanks,
->>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>> Nope, I see this in the journal:
->>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): enabling all of the rescue options
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): ignoring data csums
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): ignoring bad roots
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): disabling log replay at mount time
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): disk space caching is enabled
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS info (device sda3): has skinny extents
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): tree level mismatch detected, bytenr=791281664 level expected=1 has=2
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): tree level mismatch detected, bytenr=791281664 level expected=1 has=2
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS warning (device sda3): couldn't read tree root
->>>>>>>>>>>>>>>>>>>>>> Feb 17 09:49:40 localhost-live kernel: BTRFS error (device sda3): open_ctree failed
->>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>> Ok git pull for-neal, rebuild, then run
->>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>> btrfs-neal-magic /dev/sda3 791281664 888895 2
->>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>> I thought of this yesterday but in my head was like "naaahhhh, whats the chances
->>>>>>>>>>>>>>>>>>>> that the level doesn't match??".  Thanks,
->>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>> Tried rescue mount again after running that and got a stack trace in
->>>>>>>>>>>>>>>>>>> the kernel, detailed in the following attached log.
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> Huh I wonder how I didn't hit this when testing, I must have only tested with
->>>>>>>>>>>>>>>>>> zero'ing the extent root and the csum root.  You're going to have to build a
->>>>>>>>>>>>>>>>>> kernel with a fix for this
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> https://paste.centos.org/view/7b48aaea
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> and see if that gets you further.  Thanks,
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> I built a kernel build as an RPM with your patch[1] and tried it.
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> [root@fedora ~]# mount -t btrfs -o rescue=all,ro /dev/sdb3 /mnt
->>>>>>>>>>>>>>>>> Killed
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> The log from the journal is attached.
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Ahh crud my bad, this should do it
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> https://paste.centos.org/view/ac2e61ef
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Patch doesn't apply (note it is patch 667 below):
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Ah sorry, should have just sent you an iterative patch.  You can take the above
->>>>>>>>>>>>>> patch and just delete the hunk from volumes.c as you already have that applied
->>>>>>>>>>>>>> and then it'll work.  Thanks,
->>>>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> Failed with a weird error...?
->>>>>>>>>>>>>
->>>>>>>>>>>>> [root@fedora ~]# mount -t btrfs -o rescue=all,ro /dev/sda3 /mnt
->>>>>>>>>>>>> mount: /mnt: mount(2) system call failed: No such file or directory.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Journal log with traceback attached.
->>>>>>>>>>>>
->>>>>>>>>>>> Last one maybe?
->>>>>>>>>>>>
->>>>>>>>>>>> https://paste.centos.org/view/80edd6fd
->>>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> Similar weird failure:
->>>>>>>>>>>
->>>>>>>>>>> [root@fedora ~]# mount -t btrfs -o rescue=all,ro /dev/sdb3 /mnt
->>>>>>>>>>> mount: /mnt: mount(2) system call failed: No such file or directory.
->>>>>>>>>>>
->>>>>>>>>>> No crash in the journal this time, though:
->>>>>>>>>>>
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): enabling all of the rescue options
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): ignoring data csums
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): ignoring bad roots
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): disabling log replay at mount time
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): disk space caching is enabled
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS info (device sdb3): has skinny extents
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS warning (device sdb3): failed to read fs tree: -2
->>>>>>>>>>>> Feb 24 22:43:19 fedora kernel: BTRFS error (device sdb3): open_ctree failed
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> Sorry Neal, you replied when I was in the middle of something and promptly
->>>>>>>>>> forgot about it.  I figured the fs root was fine, can you do the following so I
->>>>>>>>>> can figure out from the error messages what might be wrong
->>>>>>>>>>
->>>>>>>>>> btrfs check --readonly
->>>>>>>>>> btrfs restore -D
->>>>>>>>>> btrfs restore -l
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> It didn't work.. Here's the output:
->>>>>>>>>
->>>>>>>>> [root@fedora ~]# btrfs check --readonly /dev/sdb3
->>>>>>>>> Opening filesystem to check...
->>>>>>>>> ERROR: could not setup extent tree
->>>>>>>>> ERROR: cannot open file system
->>>>>>>>> [root@fedora ~]# btrfs restore -D /dev/sdb3 /mnt
->>>>>>>>> WARNING: could not setup extent tree, skipping it
->>>>>>>>> Couldn't setup device tree
->>>>>>>>> Could not open root, trying backup super
->>>>>>>>> parent transid verify failed on 796082176 wanted 888894 found 888896
->>>>>>>>> parent transid verify failed on 796082176 wanted 888894 found 888896
->>>>>>>>> parent transid verify failed on 796082176 wanted 888894 found 888896
->>>>>>>>> Ignoring transid failure
->>>>>>>>> WARNING: could not setup extent tree, skipping it
->>>>>>>>> Couldn't setup device tree
->>>>>>>>> Could not open root, trying backup super
->>>>>>>>> ERROR: superblock bytenr 274877906944 is larger than device size 263132807168
->>>>>>>>> Could not open root, trying backup super
->>>>>>>>> [root@fedora ~]# btrfs restore -l /dev/sdb3 /mnt
->>>>>>>>> WARNING: could not setup extent tree, skipping it
->>>>>>>>> Couldn't setup device tree
->>>>>>>>> Could not open root, trying backup super
->>>>>>>>> parent transid verify failed on 796082176 wanted 888894 found 888896
->>>>>>>>> parent transid verify failed on 796082176 wanted 888894 found 888896
->>>>>>>>> parent transid verify failed on 796082176 wanted 888894 found 888896
->>>>>>>>> Ignoring transid failure
->>>>>>>>> WARNING: could not setup extent tree, skipping it
->>>>>>>>> Couldn't setup device tree
->>>>>>>>> Could not open root, trying backup super
->>>>>>>>> ERROR: superblock bytenr 274877906944 is larger than device size 263132807168
->>>>>>>>> Could not open root, trying backup super
->>>>>>>>>
->>>>>>>>>
->>>>>>>>
->>>>>>>> Hmm OK I think we want the neal magic for this one too, but before we go doing
->>>>>>>> that can I get a
->>>>>>>>
->>>>>>>> btrfs inspect-internal -f /dev/whatever
->>>>>>>>
->>>>>>>> so I can make sure I'm not just blindly clobbering something.  Thanks,
->>>>>>>>
->>>>>>>
->>>>>>> Doesn't work, did you mean some other command?
->>>>>>>
->>>>>>> [root@fedora ~]#  btrfs inspect-internal -f /dev/sdb3
->>>>>>> btrfs inspect-internal: unknown token '-f'
->>>>>>
->>>>>> Sigh, sorry, btrfs inspect-internal dump-super -f /dev/sdb3
->>>>>>
->>>>>
->>>>
->>>> Ok I've pushed to the for-neal branch in my btrfs-progs, can you pull and make
->>>> and then run
->>>>
->>>> ./btrfs-print-block /dev/sdb3 791281664
->>>>
->>>> and capture everything it prints out?  Thanks,
->>>>
->>>
->>> Here's the output from the command.
->>>
->>>
->>
->> Hmm looks like the fs is offset a bit, can you do
->>
->> ./btrfs-print-block /dev/sdb3 799670272
->>
-> 
-> This command caused my session to crash, but I do have a log of what
-> was captured before it crashed and attached it.
-> 
->> also while we're here can I get
->>
->> btrfs-find-root /dev/sdb3
->>
-> 
-> This ran successfully and I've attached the output.
-> 
+On Tue, Aug 4, 2020 at 3:29 PM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [BUG]
+> When running btrfs/071 with inode_need_compress() removed from
+> compress_file_range(), we got the following crash:
+>
+>   BUG: kernel NULL pointer dereference, address: 0000000000000018
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+>   RIP: 0010:compress_file_range+0x476/0x7b0 [btrfs]
+>   Call Trace:
+>    ? submit_compressed_extents+0x450/0x450 [btrfs]
+>    async_cow_start+0x16/0x40 [btrfs]
+>    btrfs_work_helper+0xf2/0x3e0 [btrfs]
+>    process_one_work+0x278/0x5e0
+>    worker_thread+0x55/0x400
+>    ? process_one_work+0x5e0/0x5e0
+>    kthread+0x168/0x190
+>    ? kthread_create_worker_on_cpu+0x70/0x70
+>    ret_from_fork+0x22/0x30
+>   ---[ end trace 65faf4eae941fa7d ]---
+>
+Ping=EF=BC=9F
+The bug occurred while running btrfs/074 days ago. And the fix
+looks reasonable.
 
-Ok we're going to try this again, and if it doesn't work it looks like your 
-chunk root is ok, so I'll rig something up to make the translation work right, 
-but for now lets do
-
-./btrfs-print-block /dev/sdb3 792395776
-
-Thanks,
-
-Josef
+--
+Su
+> This is already after the patch "btrfs: inode: fix NULL pointer
+> dereference if inode doesn't need compression."
+>
+> [CAUSE]
+> @pages is firstly created by kcalloc() in compress_file_extent():
+>                 pages =3D kcalloc(nr_pages, sizeof(struct page *), GFP_NO=
+FS);
+>
+> Then passed to btrfs_compress_pages() to be utilized there:
+>
+>                 ret =3D btrfs_compress_pages(...
+>                                            pages,
+>                                            &nr_pages,
+>                                            ...);
+>
+> btrfs_compress_pages() will initial each pages as output, in
+> zlib_compress_pages() we have:
+>
+>                         pages[nr_pages] =3D out_page;
+>                         nr_pages++;
+>
+> Normally this is completely fine, but there is a special case which
+> is in btrfs_compress_pages() itself:
+>         switch (type) {
+>         default:
+>                 return -E2BIG;
+>         }
+>
+> In this case, we didn't modify @pages nor @out_pages, leaving them
+> untouched, then when we cleanup pages, the we can hit NULL pointer
+> dereference again:
+>
+>         if (pages) {
+>                 for (i =3D 0; i < nr_pages; i++) {
+>                         WARN_ON(pages[i]->mapping);
+>                         put_page(pages[i]);
+>                 }
+>         ...
+>         }
+>
+> Since pages[i] are all initialized to zero, and btrfs_compress_pages()
+> doesn't change them at all, accessing pages[i]->mapping would lead to
+> NULL pointer dereference.
+>
+> This is not possible for current kernel, as we check
+> inode_need_compress() before doing pages allocation.
+> But if we're going to remove that inode_need_compress() in
+> compress_file_extent(), then it's going to be a problem.
+>
+> [FIX]
+> When btrfs_compress_pages() hits its default case, modify @out_pages to
+> 0 to prevent such problem from happening.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/compression.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 1ab56a734e70..17c27edd804b 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -115,10 +115,14 @@ static int compression_compress_pages(int type, str=
+uct list_head *ws,
+>         case BTRFS_COMPRESS_NONE:
+>         default:
+>                 /*
+> -                * This can't happen, the type is validated several times
+> -                * before we get here. As a sane fallback, return what th=
+e
+> -                * callers will understand as 'no compression happened'.
+> +                * This happens when compression races with remount to no
+> +                * compress, while caller doesn't call inode_need_compres=
+s()
+> +                * to check if we really need to compress.
+> +                *
+> +                * Not a big deal, just need to inform caller that we
+> +                * haven't allocated any pages yet.
+>                  */
+> +               *out_pages =3D 0;
+>                 return -E2BIG;
+>         }
+>  }
+> --
+> 2.28.0
+>
