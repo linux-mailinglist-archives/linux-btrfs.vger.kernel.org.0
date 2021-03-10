@@ -2,172 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABE8333864
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Mar 2021 10:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9D03338E0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Mar 2021 10:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbhCJJJ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Mar 2021 04:09:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34966 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232550AbhCJJJK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:09:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615367349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j+H+JMNH9DXGeIKEw7RyxJB7KzdUa15eKrB0b/K7gZA=;
-        b=VGpgPXTQ0no/Od5VUEoBesJU3gsUVwZEDu3aI4/+SSmF7ukhlYCgEZz9wBUs+pQzmgGkIG
-        6MBcykSYiToCkm1oqYnTGh5aCNdkGJlZjlCEn1i0V2zVIIGaFTqN8L5LsrF2OSeCsoVHhv
-        n/93ZPzY71hGTgj3y2CwnbYKlUgVM3U=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 20184AE1B
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Mar 2021 09:09:09 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S232583AbhCJJfa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Mar 2021 04:35:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231738AbhCJJfU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:35:20 -0500
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1B2C06174A
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Mar 2021 01:35:20 -0800 (PST)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 75DF89C1C4; Wed, 10 Mar 2021 09:35:16 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1615368916;
+        bh=bFKAvxzw9OeSfFmWlrdcucr/ewfk/i+JlFjKQN01Rs8=;
+        h=From:To:References:Subject:Date:In-Reply-To:From;
+        b=CrPME3t9hF4s9HeJ4TyVpMhIdcpyy7pXtniub7PGqpvFaKiT5Oqu2Q7Re0pCZFZ5v
+         8vS5o/RPrQHNL4D/9Ba0Er4h0HxxwFln2yMG7XLMUIWXVpWlRz1q+qnIwTjwnizgTu
+         AY+Wa6qr1Zg84S86fmI4xqk/YSelvKn/SwTCmZ7GJWxs5GVMM3Oo0BqN/RHQbcGdDU
+         6nNRUs4Cw7RbaZiRQA646uy1Uv3f8ENIsRz2/nW4vzkYYnhct5hm3+rvnDJY9TcDQH
+         AT4rdwnTIYVbLJYlL8NBWR6cZg9JJacbCHze3tX0hF+JwfhDxGMEAwExenQsBuPGqe
+         qtLhti2jN4I4Q==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-3.0 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 447479B966
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Mar 2021 09:35:11 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1615368911;
+        bh=bFKAvxzw9OeSfFmWlrdcucr/ewfk/i+JlFjKQN01Rs8=;
+        h=From:To:References:Subject:Date:In-Reply-To:From;
+        b=aaQ9+2Cg7s+jPLDgex9fxbi211c3fc7M9vBcsRfN5hKo61nw5ulXjemppXmAgLmM3
+         /Qd+HXjyDtOsvuROJQ1P/pc4d8hBLkU0kvKSn1F5hWHnZf6jTpbmIjsFxnOBalcDor
+         fWvtsl7gOHhOwQ82ZmCf9WKlfa5RJIYOv05J3xkUA8P/EsvAPCAhxjuwHU4C0AGQdd
+         cfiBg+k1BSAGBCi1pvnsLedf6SXyFOKxIQBAh9+Xz4k41zC7fytTiCbxBYD294ymwJ
+         sNpEe0dV9+6kL5Engc/wmhu5vVJKWkIEWcPGnIHK89NnnvbxntiozEaPilKWUG/fbB
+         7ImExeLXS0EAw==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+        by black.home.cobb.me.uk (Postfix) with ESMTP id BDE1620F7D6
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Mar 2021 09:35:10 +0000 (GMT)
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 15/15] btrfs: introduce submit_eb_subpage() to submit a subpage metadata page
-Date:   Wed, 10 Mar 2021 17:08:33 +0800
-Message-Id: <20210310090833.105015-16-wqu@suse.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210310090833.105015-1-wqu@suse.com>
-References: <20210310090833.105015-1-wqu@suse.com>
+References: <20210310074620.GA2158@tik.uni-stuttgart.de>
+ <20210310075957.GG22502@savella.carfax.org.uk>
+ <20210310080940.GB2158@tik.uni-stuttgart.de>
+Subject: Re: Re: nfs subvolume access?
+Message-ID: <5bded122-8adf-e5e7-dceb-37a3875f1a4b@cobb.uk.net>
+Date:   Wed, 10 Mar 2021 09:35:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210310080940.GB2158@tik.uni-stuttgart.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new function, submit_eb_subpage(), will submit all the dirty extent
-buffers in the page.
+On 10/03/2021 08:09, Ulli Horlacher wrote:
+> On Wed 2021-03-10 (07:59), Hugo Mills wrote:
+> 
+>>> On tsmsrvj I have in /etc/exports:
+>>>
+>>> /data/fex       tsmsrvi(rw,async,no_subtree_check,no_root_squash)
+>>>
+>>> This is a btrfs subvolume with snapshots:
+>>>
+>>> root@tsmsrvj:~# btrfs subvolume list /data
+>>> ID 257 gen 35 top level 5 path fex
+>>> ID 270 gen 36 top level 257 path fex/spool
+>>> ID 271 gen 21 top level 270 path fex/spool/.snapshot/2021-03-07_1453.test
+>>> ID 272 gen 23 top level 270 path fex/spool/.snapshot/2021-03-07_1531.test
+>>> ID 273 gen 25 top level 270 path fex/spool/.snapshot/2021-03-07_1532.test
+>>> ID 274 gen 27 top level 270 path fex/spool/.snapshot/2021-03-07_1718.test
+>>>
+>>> root@tsmsrvj:~# find /data/fex | wc -l
+>>> 489887
+> 
+>>    I can't remember if this is why, but I've had to put a distinct
+>> fsid field in each separate subvolume being exported:
+>>
+>> /srv/nfs/home     -rw,async,fsid=0x1730,no_subtree_check,no_root_squash
+> 
+> I must export EACH subvolume?!
 
-The major difference between submit_eb_page() and submit_eb_subpage()
-is:
-- How to grab extent buffer
-  Now we use find_extent_buffer_nospinlock() other than using
-  page::private.
+I have had similar problems. I *think* the current case is that modern
+NFS, using NFS V4, can cope with the whole disk being accessible without
+giving each subvolume its own FSID (which I have stopped doing).
 
-All other different handling is already done in functions like
-lock_extent_buffer_for_io() and write_one_eb().
+HOWEVER, I think that find (and anything else which uses fsids and inode
+numbers) will see subvolumes as having duplicated inodes.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 95 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
+> The snapshots are generated automatically (via cron)!
+> I cannot add them to /etc/exports
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 18730d3ab50f..7281ec72a86a 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4293,6 +4293,98 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
- 	return ret;
- }
- 
-+/*
-+ * Submit one subpage btree page.
-+ *
-+ * The main difference between submit_eb_page() is:
-+ * - Page locking
-+ *   For subpage, we don't rely on page locking at all.
-+ *
-+ * - Flush write bio
-+ *   We only flush bio if we may be unable to fit current extent buffers into
-+ *   current bio.
-+ *
-+ * Return >=0 for the number of submitted extent buffers.
-+ * Return <0 for fatal error.
-+ */
-+static int submit_eb_subpage(struct page *page,
-+			     struct writeback_control *wbc,
-+			     struct extent_page_data *epd)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
-+	int submitted = 0;
-+	u64 page_start = page_offset(page);
-+	int bit_start = 0;
-+	int nbits = BTRFS_SUBPAGE_BITMAP_SIZE;
-+	int sectors_per_node = fs_info->nodesize >> fs_info->sectorsize_bits;
-+	int ret;
-+
-+	/* Lock and write each dirty extent buffers in the range */
-+	while (bit_start < nbits) {
-+		struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+		struct extent_buffer *eb;
-+		unsigned long flags;
-+		u64 start;
-+
-+		/*
-+		 * Take private lock to ensure the subpage won't be detached
-+		 * halfway.
-+		 */
-+		spin_lock(&page->mapping->private_lock);
-+		if (!PagePrivate(page)) {
-+			spin_unlock(&page->mapping->private_lock);
-+			break;
-+		}
-+		spin_lock_irqsave(&subpage->lock, flags);
-+		if (!((1 << bit_start) & subpage->dirty_bitmap)) {
-+			spin_unlock_irqrestore(&subpage->lock, flags);
-+			spin_unlock(&page->mapping->private_lock);
-+			bit_start++;
-+			continue;
-+		}
-+
-+		start = page_start + bit_start * fs_info->sectorsize;
-+		bit_start += sectors_per_node;
-+
-+		/*
-+		 * Here we just want to grab the eb without touching extra
-+		 * spin locks. So here we call find_extent_buffer_nospinlock().
-+		 */
-+		eb = find_extent_buffer_nospinlock(fs_info, start);
-+		spin_unlock_irqrestore(&subpage->lock, flags);
-+		spin_unlock(&page->mapping->private_lock);
-+
-+		/*
-+		 * The eb has already reached 0 refs thus find_extent_buffer()
-+		 * doesn't return it. We don't need to write back such eb
-+		 * anyway.
-+		 */
-+		if (!eb)
-+			continue;
-+
-+		ret = lock_extent_buffer_for_io(eb, epd);
-+		if (ret == 0) {
-+			free_extent_buffer(eb);
-+			continue;
-+		}
-+		if (ret < 0) {
-+			free_extent_buffer(eb);
-+			goto cleanup;
-+		}
-+		ret = write_one_eb(eb, wbc, epd);
-+		free_extent_buffer(eb);
-+		if (ret < 0)
-+			goto cleanup;
-+		submitted++;
-+	}
-+	return submitted;
-+
-+cleanup:
-+	/* We hit error, end bio for the submitted extent buffers */
-+	end_write_bio(epd, ret);
-+	return ret;
-+}
-+
- /*
-  * Submit all page(s) of one extent buffer.
-  *
-@@ -4325,6 +4417,9 @@ static int submit_eb_page(struct page *page, struct writeback_control *wbc,
- 	if (!PagePrivate(page))
- 		return 0;
- 
-+	if (btrfs_sb(page->mapping->host->i_sb)->sectorsize < PAGE_SIZE)
-+		return submit_eb_subpage(page, wbc, epd);
-+
- 	spin_lock(&mapping->private_lock);
- 	if (!PagePrivate(page)) {
- 		spin_unlock(&mapping->private_lock);
--- 
-2.30.1
+Well, you could write some scripts... but I don't think it is necessary.
+I *think* it is only necessary if you want `find` to be able to cross
+between subvolumes on the NFS mounted disks.
 
+However, I am NOT an NFS expert, nor have I done a lot of work on this.
+I might be wrong. But I do NFS mount my snapshots disk remotely and use
+it. And I do see occasional complaints from find, but I live with it.
