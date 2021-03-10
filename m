@@ -2,68 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BB9333869
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Mar 2021 10:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E8233384F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Mar 2021 10:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhCJJKV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Mar 2021 04:10:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35566 "EHLO mx2.suse.de"
+        id S232520AbhCJJIp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Mar 2021 04:08:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34580 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232646AbhCJJKK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Mar 2021 04:10:10 -0500
+        id S231197AbhCJJIj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Mar 2021 04:08:39 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615367317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=00NbkdADRHZEG4x50rmSQa6D1CXCzlhZ6lN13FZfS0E=;
+        b=C5+pZTziCLxHyw/BI3kRQf4se0ZhNbOS53khOsDu6KdNkrOTGe2KqPjBDSEy5MVGBf8Gvr
+        kqIKWeimIz3pwc9Z7syNpl+i702HooQwf/o6u21OoHNSPMND0b1QvpOZ2x8ZkMdeXJd5b3
+        f6XR04Qn030Nvofn2HXORb9/vdCyQ+I=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 85CD8AE27;
-        Wed, 10 Mar 2021 09:10:09 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E3C60DA7D7; Wed, 10 Mar 2021 10:08:10 +0100 (CET)
-Date:   Wed, 10 Mar 2021 10:08:10 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: output sectorsize related warning message
- into stdout
-Message-ID: <20210310090810.GL7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210309073909.74043-1-wqu@suse.com>
- <20210309133325.GH7604@twin.jikos.cz>
- <49c16359-3ce0-c021-608d-b05c9d4c1fda@gmx.com>
+        by mx2.suse.de (Postfix) with ESMTP id BAAFCAE55
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Mar 2021 09:08:37 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/15] btrfs: support read-write for subpage metadata
+Date:   Wed, 10 Mar 2021 17:08:18 +0800
+Message-Id: <20210310090833.105015-1-wqu@suse.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <49c16359-3ce0-c021-608d-b05c9d4c1fda@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 08:18:16AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/3/9 下午9:33, David Sterba wrote:
-> > On Tue, Mar 09, 2021 at 03:39:09PM +0800, Qu Wenruo wrote:
-> >> Since commit 90020a760584 ("btrfs-progs: mkfs: refactor how we handle
-> >> sectorsize override") we have extra warning message if the sectorsize of
-> >> mkfs doesn't match page size.
-> >>
-> >> But this warning is show as stderr, which makes a lot of fstests cases
-> >> failure due to golden output mismatch.
-> >
-> > Well, no. Using message helpers in progs is what we want to do
-> > everywhere, working around fstests output matching design is fixing the
-> > problem in the wrong place. That this is fragile has been is known and
-> > I want to keep the liberty to adjust output in progs as users need, not
-> > as fstests require.
-> 
-> OK, then I guess the best way to fix the problem is to add sysfs
-> interface to export supported rw/ro sectorsize.
-> 
-> It shouldn't be that complex and would be small enough for next merge
-> window.
+This patchset can be fetched from the following github repo, along with
+the full subpage RW support:
+https://github.com/adam900710/linux/tree/subpage
 
-The subpage support should be advertised somewhere in sysfs so the range
-of supported sector sizes sounds like a good idea.
+This patchset is for metadata read write support.
+
+[FULL RW TEST]
+Since the data write path is not included in this patchset, we can't
+really test the patchset itself, but anyone can grab the patch from
+github repo and do fstests/generic tests.
+
+There are some known issues:
+- Very very rare random ASSERT() failure for data page::private
+  It looks like we can lock a data page without page::private set for
+  subpage.
+  This problem seems to be caused some set_page_extent_mapped() callers
+  are not holding the page locked, thus leaving a small window.
+  Investigating.
+
+- Defrag related test failure
+  Since current defrag is doing per-page defrag, to support subpage
+  defrag, we need some change in the loop.
+  Thus for now, defrag is disabled completely for subpage RW mount.
+
+- No compression support yet
+  There are at least 2 known bugs if forcing compression for subpage
+  * Some hard coded PAGE_SIZE screwing up space rsv
+  * Subpage ASSERT() triggered
+    This is because some compression code is unlocking locked_page by
+    calling extent_clear_unlock_delalloc() with locked_page == NULL.
+  So for now compression is also disabled.
+
+[DIFFERENCE AGAINST REGULAR SECTORSIZE]
+The metadata part in fact has more new code than data part, as it has
+some different behaviors compared to the regular sector size handling:
+
+- No more page locking
+  Now metadata read/write relies on extent io tree locking, other than
+  page locking.
+  This is to allow behaviors like read lock one eb while also try to
+  read lock another eb in the same page.
+  We can't rely on page lock as now we have multiple extent buffers in
+  the same page.
+
+- Page status update
+  Now we use subpage wrappers to handle page status update.
+
+- How to submit dirty extent buffers
+  Instead of just grabbing extent buffer from page::private, we need to
+  iterate all dirty extent buffers in the page and submit them.
+
+[CHANGELOG]
+v2:
+- Rebased to latest misc-next
+  No conflicts at all.
+
+- Add new sysfs interface to grab supported RO/RW sectorsize
+  This will allow mkfs.btrfs to detect unmountable fs better.
+
+- Use newer naming schema for each patch
+  No more "extent_io:" or "inode:" schema anymore.
+
+- Move two pure cleanups to the series
+  Patch 2~3, originally in RW part.
+
+- Fix one uninitialized variable
+  Patch 6.
+
+Qu Wenruo (15):
+  btrfs: add sysfs interface for supported sectorsize
+  btrfs: use min() to replace open-code in btrfs_invalidatepage()
+  btrfs: remove unnecessary variable shadowing in btrfs_invalidatepage()
+  btrfs: introduce helpers for subpage dirty status
+  btrfs: introduce helpers for subpage writeback status
+  btrfs: allow btree_set_page_dirty() to do more sanity check on subpage
+    metadata
+  btrfs: support subpage metadata csum calculation at write time
+  btrfs: make alloc_extent_buffer() check subpage dirty bitmap
+  btrfs: make the page uptodate assert to be subpage compatible
+  btrfs: make set/clear_extent_buffer_dirty() to be subpage compatible
+  btrfs: make set_btree_ioerr() accept extent buffer and to be subpage
+    compatible
+  btrfs: introduce end_bio_subpage_eb_writepage() function
+  btrfs: introduce write_one_subpage_eb() function
+  btrfs: make lock_extent_buffer_for_io() to be subpage compatible
+  btrfs: introduce submit_eb_subpage() to submit a subpage metadata page
+
+ fs/btrfs/disk-io.c   | 143 +++++++++++----
+ fs/btrfs/extent_io.c | 420 ++++++++++++++++++++++++++++++++++++-------
+ fs/btrfs/inode.c     |  14 +-
+ fs/btrfs/subpage.c   |  73 ++++++++
+ fs/btrfs/subpage.h   |  17 ++
+ fs/btrfs/sysfs.c     |  34 ++++
+ 6 files changed, 598 insertions(+), 103 deletions(-)
+
+-- 
+2.30.1
+
