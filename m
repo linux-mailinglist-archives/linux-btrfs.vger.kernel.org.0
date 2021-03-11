@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BE63375C2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 15:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7597F3375C4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 15:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhCKObz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Mar 2021 09:31:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
+        id S233910AbhCKOb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 09:31:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233913AbhCKObY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:31:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A98064FBA;
-        Thu, 11 Mar 2021 14:31:22 +0000 (UTC)
+        id S233671AbhCKObZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Mar 2021 09:31:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50D7764FE8;
+        Thu, 11 Mar 2021 14:31:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615473083;
-        bh=oOxzupoUsR6GeC5maNGG71BWQQOs+ZeWCTpE/a/qcFs=;
+        s=k20201202; t=1615473085;
+        bh=y1RZTQszhrd9706ZBPIDfFMuO+2g/xMo9Agaer091Vs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dyjFjQOfE8VMNNYqMFiVJi1vSMfGzc1y/iGuOPbJoEwEPvzLJIwRhXzf32fcbpXKM
-         ObKDptVGygrmDOAX8N5NlbFtne1O0C/98NRacnAwqNriRSk3GI0vDhix4GBCNBw86N
-         X/O28Rah9aF23aYgQZrG4KWatgk/NGVFpQdsvdJRtoE9it5hgpSVQvfUazBZ2u14p2
-         jl41cGkcXsUnvA9/XcDkZwyrFTJXh6wJeIve/KrBF++tMKvjquJoeDutoR7bbAlJZp
-         LAEFhNnRuU4YxRTsmm6tYck1SBbyvEza2m2C4MXcMZqAIXtMh8r+48yuRPVIWvlU/B
-         dirjX6qHkR5XQ==
+        b=Yn/ZoC3SkQUsFlyoDKWK3Kmpy6ZQIpfHoaGIfp5L2nty3yks++ON9tSMFhytGdLxv
+         40/+c3Paaod4lrRg/TdKKs+HV5iiW6Oj1jyb2DSmegQt6BiNZD5rFlyXSXkLdA+LLO
+         hYhP7BiD4oFhaMfFFKMw6d8Thhn0hMoaz/LSdpQEXsi/uj+8zlf4VgkTIlVGZlyb7Y
+         5fZSxuZ9PDtcmr5bmtIjKoz/ObFwMdcodj6LG83n6HkfOj4jGpZk4LsKcOvMvn+V+a
+         jJDFevBAXr/dqXOB0KEEH8K3GCxJvbxc41VeEephJ+ljsO/rjxnLucdYiFLBuZtL83
+         Z4dhr62Rg+mGg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
 Cc:     ce3g8jdj@umail.furryterror.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 1/9] btrfs: fix race when cloning extent buffer during rewind of an old root
-Date:   Thu, 11 Mar 2021 14:31:05 +0000
-Message-Id: <b02e668c0d735afd7557eb07fe88b6eee7f3eb6e.1615472583.git.fdmanana@suse.com>
+Subject: [PATCH 2/9] btrfs: always pin deleted leaves when there are active tree mod log users
+Date:   Thu, 11 Mar 2021 14:31:06 +0000
+Message-Id: <d9d8cda5b3ab2a262d4d66e9fe8abd75912f252f.1615472583.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1615472583.git.fdmanana@suse.com>
 References: <cover.1615472583.git.fdmanana@suse.com>
@@ -40,278 +40,91 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-While resolving backreferences, as part of a logical ino ioctl call or
-fiemap, we can end up hitting a BUG_ON() when replaying tree mod log
-operations of a root, triggering a stack trace like the following:
+When freeing a tree block we may end up adding its extent back to the
+free space cache/tree, as long as there are no more references for it,
+it was created in the current transaction and writeback for it never
+happened. This is generally fine, however when we have tree mod log
+operations it can result in inconsistent versions of a btree after
+unwinding extent buffers with the recorded tree mod log operations.
 
-  ------------[ cut here ]------------
-  kernel BUG at fs/btrfs/ctree.c:1210!
-  invalid opcode: 0000 [#1] SMP KASAN PTI
-  CPU: 1 PID: 19054 Comm: crawl_335 Tainted: G        W         5.11.0-2d11c0084b02-misc-next+ #89
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-  RIP: 0010:__tree_mod_log_rewind+0x3b1/0x3c0
-  Code: 05 48 8d 74 10 (...)
-  RSP: 0018:ffffc90001eb70b8 EFLAGS: 00010297
-  RAX: 0000000000000000 RBX: ffff88812344e400 RCX: ffffffffb28933b6
-  RDX: 0000000000000007 RSI: dffffc0000000000 RDI: ffff88812344e42c
-  RBP: ffffc90001eb7108 R08: 1ffff11020b60a20 R09: ffffed1020b60a20
-  R10: ffff888105b050f9 R11: ffffed1020b60a1f R12: 00000000000000ee
-  R13: ffff8880195520c0 R14: ffff8881bc958500 R15: ffff88812344e42c
-  FS:  00007fd1955e8700(0000) GS:ffff8881f5600000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007efdb7928718 CR3: 000000010103a006 CR4: 0000000000170ee0
-  Call Trace:
-   btrfs_search_old_slot+0x265/0x10d0
-   ? lock_acquired+0xbb/0x600
-   ? btrfs_search_slot+0x1090/0x1090
-   ? free_extent_buffer.part.61+0xd7/0x140
-   ? free_extent_buffer+0x13/0x20
-   resolve_indirect_refs+0x3e9/0xfc0
-   ? lock_downgrade+0x3d0/0x3d0
-   ? __kasan_check_read+0x11/0x20
-   ? add_prelim_ref.part.11+0x150/0x150
-   ? lock_downgrade+0x3d0/0x3d0
-   ? __kasan_check_read+0x11/0x20
-   ? lock_acquired+0xbb/0x600
-   ? __kasan_check_write+0x14/0x20
-   ? do_raw_spin_unlock+0xa8/0x140
-   ? rb_insert_color+0x30/0x360
-   ? prelim_ref_insert+0x12d/0x430
-   find_parent_nodes+0x5c3/0x1830
-   ? resolve_indirect_refs+0xfc0/0xfc0
-   ? lock_release+0xc8/0x620
-   ? fs_reclaim_acquire+0x67/0xf0
-   ? lock_acquire+0xc7/0x510
-   ? lock_downgrade+0x3d0/0x3d0
-   ? lockdep_hardirqs_on_prepare+0x160/0x210
-   ? lock_release+0xc8/0x620
-   ? fs_reclaim_acquire+0x67/0xf0
-   ? lock_acquire+0xc7/0x510
-   ? poison_range+0x38/0x40
-   ? unpoison_range+0x14/0x40
-   ? trace_hardirqs_on+0x55/0x120
-   btrfs_find_all_roots_safe+0x142/0x1e0
-   ? find_parent_nodes+0x1830/0x1830
-   ? btrfs_inode_flags_to_xflags+0x50/0x50
-   iterate_extent_inodes+0x20e/0x580
-   ? tree_backref_for_extent+0x230/0x230
-   ? lock_downgrade+0x3d0/0x3d0
-   ? read_extent_buffer+0xdd/0x110
-   ? lock_downgrade+0x3d0/0x3d0
-   ? __kasan_check_read+0x11/0x20
-   ? lock_acquired+0xbb/0x600
-   ? __kasan_check_write+0x14/0x20
-   ? _raw_spin_unlock+0x22/0x30
-   ? __kasan_check_write+0x14/0x20
-   iterate_inodes_from_logical+0x129/0x170
-   ? iterate_inodes_from_logical+0x129/0x170
-   ? btrfs_inode_flags_to_xflags+0x50/0x50
-   ? iterate_extent_inodes+0x580/0x580
-   ? __vmalloc_node+0x92/0xb0
-   ? init_data_container+0x34/0xb0
-   ? init_data_container+0x34/0xb0
-   ? kvmalloc_node+0x60/0x80
-   btrfs_ioctl_logical_to_ino+0x158/0x230
-   btrfs_ioctl+0x205e/0x4040
-   ? __might_sleep+0x71/0xe0
-   ? btrfs_ioctl_get_supported_features+0x30/0x30
-   ? getrusage+0x4b6/0x9c0
-   ? __kasan_check_read+0x11/0x20
-   ? lock_release+0xc8/0x620
-   ? __might_fault+0x64/0xd0
-   ? lock_acquire+0xc7/0x510
-   ? lock_downgrade+0x3d0/0x3d0
-   ? lockdep_hardirqs_on_prepare+0x210/0x210
-   ? lockdep_hardirqs_on_prepare+0x210/0x210
-   ? __kasan_check_read+0x11/0x20
-   ? do_vfs_ioctl+0xfc/0x9d0
-   ? ioctl_file_clone+0xe0/0xe0
-   ? lock_downgrade+0x3d0/0x3d0
-   ? lockdep_hardirqs_on_prepare+0x210/0x210
-   ? __kasan_check_read+0x11/0x20
-   ? lock_release+0xc8/0x620
-   ? __task_pid_nr_ns+0xd3/0x250
-   ? lock_acquire+0xc7/0x510
-   ? __fget_files+0x160/0x230
-   ? __fget_light+0xf2/0x110
-   __x64_sys_ioctl+0xc3/0x100
-   do_syscall_64+0x37/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  RIP: 0033:0x7fd1976e2427
-  Code: 00 00 90 48 8b 05 (...)
-  RSP: 002b:00007fd1955e5cf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-  RAX: ffffffffffffffda RBX: 00007fd1955e5f40 RCX: 00007fd1976e2427
-  RDX: 00007fd1955e5f48 RSI: 00000000c038943b RDI: 0000000000000004
-  RBP: 0000000001000000 R08: 0000000000000000 R09: 00007fd1955e6120
-  R10: 0000557835366b00 R11: 0000000000000246 R12: 0000000000000004
-  R13: 00007fd1955e5f48 R14: 00007fd1955e5f40 R15: 00007fd1955e5ef8
-  Modules linked in:
-  ---[ end trace ec8931a1c36e57be ]---
+This is because:
 
-  (gdb) l *(__tree_mod_log_rewind+0x3b1)
-  0xffffffff81893521 is in __tree_mod_log_rewind (fs/btrfs/ctree.c:1210).
-  1205                     * the modification. as we're going backwards, we do the
-  1206                     * opposite of each operation here.
-  1207                     */
-  1208                    switch (tm->op) {
-  1209                    case MOD_LOG_KEY_REMOVE_WHILE_FREEING:
-  1210                            BUG_ON(tm->slot < n);
-  1211                            fallthrough;
-  1212                    case MOD_LOG_KEY_REMOVE_WHILE_MOVING:
-  1213                    case MOD_LOG_KEY_REMOVE:
-  1214                            btrfs_set_node_key(eb, &tm->key, tm->slot);
+* We only log operations for nodes (adding and removing key/pointers),
+  for leaves we don't do anything;
 
-Here's what happens to hit that BUG_ON():
+* This means that we can log a MOD_LOG_KEY_REMOVE_WHILE_FREEING operation
+  for a node that points to a leaf that was deleted;
 
-1) We have one tree mod log user (through fiemap or the logical ino ioctl),
-   with a sequence number of 1, so we have fs_info->tree_mod_seq == 1;
+* Before we apply the logged operation to unwind a node, we can have
+  that leaf's extent allocated again, either as a node or as a leaf, and
+  possibly for another btree. This is possible if the leaf was created in
+  the current transaction and writeback for it never started, in which
+  case btrfs_free_tree_block() returns its extent back to the free space
+  cache/tree;
 
-2) Another task is at ctree.c:balance_level() and we have eb X currently as
-   the root of the tree, and we promote its single child, eb Y, as the new
-   root.
+* Then, before applying the tree mod log operation, some task allocates
+  the metadata extent just freed before, and uses it either as a leaf or
+  as a node for some btree (can be the same or another one, it does not
+  matter);
 
-   Then, at ctree.c:balance_level(), we call:
+* After applying the MOD_LOG_KEY_REMOVE_WHILE_FREEING operation we now
+  get the target node with an item pointing to the metadata extent that
+  now has content different from what it had before the leaf was deleted.
+  It might now belong to a different btree and be a node and not a leaf
+  anymore.
 
-      tree_mod_log_insert_root(eb X, eb Y, 1);
+  As a consequence, the results of searches after the unwinding can be
+  unpredictable and produce unexpected results.
 
-3) At tree_mod_log_insert_root() we create tree mod log elements for each
-   slot of eb X, of operation type MOD_LOG_KEY_REMOVE_WHILE_FREEING each
-   with a ->logical pointing to ebX->start. These are placed in an array
-   named tm_list.
-   Lets assume there are N elements (N pointers in eb X);
+So make sure we pin extent buffers corresponding to leaves when there
+are tree mod log users.
 
-4) Then, still at tree_mod_log_insert_root(), we create a tree mod log
-   element of operation type MOD_LOG_ROOT_REPLACE, ->logical set to
-   ebY->start, ->old_root.logical set to ebX->start, ->old_root.level set
-   to the level of eb X and ->generation set to the generation of eb X;
-
-5) Then tree_mod_log_insert_root() calls tree_mod_log_free_eb() with
-   tm_list as argument. After that, tree_mod_log_free_eb() calls
-   __tree_mod_log_insert() for each member of tm_list in reverse order,
-   from highest slot in eb X, slot N - 1, to slot 0 of eb X;
-
-6) __tree_mod_log_insert() sets the sequence number of each given tree mod
-   log operation - it increments fs_info->tree_mod_seq and sets
-   fs_info->tree_mod_seq as the sequence number of the given tree mod log
-   operation.
-
-   This means that for the tm_list created at tree_mod_log_insert_root(),
-   the element corresponding to slot 0 of eb X has the highest sequence
-   number (1 + N), and the element corresponding to the last slot has the
-   lowest sequence number (2);
-
-7) Then, after inserting tm_list's elements into the tree mod log rbtree,
-   the MOD_LOG_ROOT_REPLACE element is inserted, which gets the highest
-   sequence number, which is N + 2;
-
-8) Back to ctree.c:balance_level(), we free eb X by calling
-   btrfs_free_tree_block() on it. Because eb X was created in the current
-   transaction, has no other references and writeback did not happen for
-   it, we add it back to the free space cache/tree;
-
-9) Later some other task T allocates the metadata extent from eb X, since
-   it is marked as free space in the space cache/tree, and uses it as a
-   node for some other btree;
-
-10) The tree mod log user task calls btrfs_search_old_slot(), which calls
-    get_old_root(), and finally that calls __tree_mod_log_oldest_root()
-    with time_seq == 1 and eb_root == eb Y;
-
-11) First iteration of the while loop finds the tree mod log element with
-    sequence number N + 2, for the logical address of eb Y and of type
-    MOD_LOG_ROOT_REPLACE;
-
-12) Because the operation type is MOD_LOG_ROOT_REPLACE, we don't break out
-    of the loop, and set root_logical to point to tm->old_root.logical
-    which corresponds to the logical address of eb X;
-
-13) On the next iteration of the while loop, the call to
-    tree_mod_log_search_oldest() returns the smallest tree mod log element
-    for the logical address of eb X, which has a sequence number of 2, an
-    operation type of MOD_LOG_KEY_REMOVE_WHILE_FREEING and corresponds to
-    the old slot N - 1 of eb X (eb X had N items in it before being freed);
-
-14) We then break out of the while loop and return the tree mod log operation
-    of type MOD_LOG_ROOT_REPLACE (eb Y), and not the one for slot N - 1 of
-    eb X, to get_old_root();
-
-15) At get_old_root(), we process the MOD_LOG_ROOT_REPLACE operation
-    and set "logical" to the logical address of eb X, which was the old
-    root. We then call tree_mod_log_search() passing it the logical
-    address of eb X and time_seq == 1;
-
-16) Then before calling tree_mod_log_search(), task T adds a key to eb X,
-    which results in adding a tree mod log operation of type
-    MOD_LOG_KEY_ADD to the tree mod log - this is done at
-    ctree.c:insert_ptr() - but after adding the tree mod log operation
-    and before updating the number of items in eb X from 0 to 1...
-
-17) The task at get_old_root() calls tree_mod_log_search() and gets the
-    tree mod log operation of type MOD_LOG_KEY_ADD just added by task T.
-    Then it enters the following if branch:
-
-    if (old_root && tm && tm->op != MOD_LOG_KEY_REMOVE_WHILE_FREEING) {
-       (...)
-    } (...)
-
-    Calls read_tree_block() for eb X, which gets a reference on eb X but
-    does not lock it - task T has it locked.
-    Then it clones eb X while it has nritems set to 0 in its header, before
-    task T sets nritems to 1 in eb X's header. From hereupon we use the
-    clone of eb X which no other task has access to;
-
-18) Then we call __tree_mod_log_rewind(), passing it the MOD_LOG_KEY_ADD
-    mod log operation we just got from tree_mod_log_search() in the
-    previous step and the cloned version of eb X;
-
-19) At __tree_mod_log_rewind(), we set the local variable "n" to the number
-    of items set in eb X's clone, which is 0. Then we enter the while loop,
-    and in its first iteration we process the MOD_LOG_KEY_ADD operation,
-    which just decrements "n" from 0 to (u32)-1, since "n" is declared with
-    a type of u32. At the end of this iteration we call rb_next() to find the
-    next tree mod log operation for eb X, that gives us the mod log operation
-    of type MOD_LOG_KEY_REMOVE_WHILE_FREEING, for slot 0, with a sequence
-    number of N + 1 (steps 3 to 6);
-
-20) Then we go back to the top of the while loop and trigger the following
-    BUG_ON():
-
-        (...)
-        switch (tm->op) {
-        case MOD_LOG_KEY_REMOVE_WHILE_FREEING:
-                 BUG_ON(tm->slot < n);
-                 fallthrough;
-        (...)
-
-    Because "n" has a value of (u32)-1 (4294967295) and tm->slot is 0.
-
-Fix this by taking a read lock on the extent buffer before cloning it at
-ctree.c:get_old_root(). This should be done regardless of the extent
-buffer having been freed and reused, as a concurrent task might be
-modifying it (while holding a write lock on it).
-
-Fixes: 834328a8493079 ("Btrfs: tree mod log's old roots could still be part of the tree")
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Link: https://lore.kernel.org/linux-btrfs/20210227155037.GN28049@hungrycats.org/
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/extent-tree.c | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index f33e69f02230..19d7b81cee55 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1365,7 +1365,9 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
- 				   "failed to read tree block %llu from get_old_root",
- 				   logical);
- 		} else {
-+			btrfs_tree_read_lock(old);
- 			eb = btrfs_clone_extent_buffer(old);
-+			btrfs_tree_read_unlock(old);
- 			free_extent_buffer(old);
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 5e228d6ad63f..2482b26b1971 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -3310,6 +3310,7 @@ void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
+ 
+ 	if (last_ref && btrfs_header_generation(buf) == trans->transid) {
+ 		struct btrfs_block_group *cache;
++		bool must_pin = false;
+ 
+ 		if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID) {
+ 			ret = check_ref_cleanup(trans, buf->start);
+@@ -3327,7 +3328,27 @@ void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
+ 			goto out;
  		}
- 	} else if (old_root) {
+ 
+-		if (btrfs_is_zoned(fs_info)) {
++		/*
++		 * If this is a leaf and there are tree mod log users, we may
++		 * have recorded mod log operations that point to this leaf.
++		 * So we must make sure no one reuses this leaf's extent before
++		 * mod log operations are applied to a node, otherwise after
++		 * rewinding a node using the mod log operations we get an
++		 * inconsistent btree, as the leaf's extent may now be used as
++		 * a node or leaf for another different btree.
++		 * We are safe from races here because at this point no other
++		 * node or root points to this extent buffer, so if after this
++		 * check a new tree mod log user joins, it will not be able to
++		 * find a node pointing to this leaf and record operations that
++		 * point to this leaf.
++		 */
++		if (btrfs_header_level(buf) == 0) {
++			read_lock(&fs_info->tree_mod_log_lock);
++			must_pin = !list_empty(&fs_info->tree_mod_seq_list);
++			read_unlock(&fs_info->tree_mod_log_lock);
++		}
++
++		if (must_pin || btrfs_is_zoned(fs_info)) {
+ 			btrfs_redirty_list_add(trans->transaction, buf);
+ 			pin_down_extent(trans, cache, buf->start, buf->len, 1);
+ 			btrfs_put_block_group(cache);
 -- 
 2.28.0
 
