@@ -2,118 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87C433793C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 17:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAC33379E3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 17:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbhCKQXp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Mar 2021 11:23:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234527AbhCKQXZ (ORCPT
+        id S229677AbhCKQsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 11:48:15 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:49734 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhCKQsB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:23:25 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06433C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 08:23:25 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id i15so2806348qvr.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 08:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BGIY45p/s4D+aX/Z7SVLmuYErsSA/3rb9cNdveUclgc=;
-        b=EcMsJkVYkfRoweDGnWVj2pZo5xe8wY9VJgWClWnXulRIDfaFFoB8KJVurYcTbGNW0c
-         vU9PUSR7hyU/9QhTIpF8dTdexGQBDJ63DUeIwOtgw8ER/EU5tg4gti/p6HSoWcn5JniQ
-         GeL7f+UCp9T+pDmtVB/7RYSCHdxdpq8LQGFw5qo3bZYi3prl5xajrfJCsuwwv2ZInwwG
-         TLV9IF2EYQ/86k85uTrvLeIGQgYh4YQUnqUNfQ4uptuCdnJLwo2zCNjyuqz76Mkf2Iyh
-         DZlwhiR5jQ0TlgsyDHaMTArL3Ur20SZQRRXfbuRk1ftpizNZTBIU4fh90NoPzfUSVKro
-         l7Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BGIY45p/s4D+aX/Z7SVLmuYErsSA/3rb9cNdveUclgc=;
-        b=cf7XzhMSGCHvZc1UMBGJHWJ3FkL6mg2lKBk+CTRJEtVcTxIO/2146O4NvaRwLgE5to
-         9vjRdf9Z5k1GHv9dFKcbTYyvLEpG0tUGHS1ZaJ0tmUhNqsX9+1ofURamCQ1sVoC0+aJi
-         aZPsG3Gyq2cDiH3WthwRrmNzrRe1RYTyaHwCiabtMdsYHe90+xbm8mQODq6TtLgXvtmv
-         sSLUhHN5h/kfL+XzjR5a70o0FzKkUZseTlXQSCn6E7lZ4WSjVAaZTjq+kN9taRjMLQiP
-         GSeYtA+qM0FUqzdz2ZtZtCAuO4wLKt+JG3GXFE58E6YQNCsLmFR0Jzjgf1rGBPMFn3Cm
-         /XKA==
-X-Gm-Message-State: AOAM531yghYD5JLQCsOaBL+hjitueIjkVWpGLux+68Fy5GS7u90//LAv
-        dofcBCoc8j7TqQdzIROoOXx9bIzgwHNXUqFd
-X-Google-Smtp-Source: ABdhPJy/HfODkAz4rJeZxsvlzYW66AF3LwToNg4hUI8LC2stFkX5loQm63YPG95Iri/c3uznMfBjoA==
-X-Received: by 2002:a05:6214:20a1:: with SMTP id 1mr8442631qvd.30.1615479803811;
-        Thu, 11 Mar 2021 08:23:23 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d2sm2314251qkk.42.2021.03.11.08.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 08:23:23 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Neal Gompa <ngompa13@gmail.com>
-Subject: [PATCH 3/3] btrfs: don't init dev replace for bad dev root
-Date:   Thu, 11 Mar 2021 11:23:16 -0500
-Message-Id: <b6183586bd5d9dd6f26ff4aaf3bab0a6629c6018.1615479658.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1615479658.git.josef@toxicpanda.com>
-References: <cover.1615479658.git.josef@toxicpanda.com>
+        Thu, 11 Mar 2021 11:48:01 -0500
+Date:   Thu, 11 Mar 2021 16:47:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fomin.one;
+        s=protonmail3; t=1615481277;
+        bh=8z4oCF/Cxpc3mG5/bI3kpA/G+lREs3qwLwFBxtl2/kM=;
+        h=Date:To:From:Reply-To:Subject:In-Reply-To:References:From;
+        b=L+XQq6J4j5K8KbYF99sfbT/1MdN6gWFKlt23kT8yujVvoZw5oUiKxbHNy7LbPE7FD
+         kUFOjX4ZA0XhOJO65iIevEd6HEdYEhU2Id9gnATe+BNDcQQc2XlcwxV0MXmEE01TfA
+         NoB6P0IoXAXV8jwHYico5KEMMRsyOnmheKzKummCoArp7TSV67ApQYln4BZaU2Sa5b
+         yQ9au8zxLwHTD7xUz3rPWcDegTqJXQx6RoguWD/RZQ2XU9aZMcOt19ebWNnWYfSqHT
+         gCcjI/Dc5A2AgUGFCoUF9hNfWk3D6ngtvg4QoMvnthc5xODS9f9aJMC88RuUL4fqzk
+         FAp5RCoEOyCoA==
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Maksim Fomin <maxim@fomin.one>
+Reply-To: Maksim Fomin <maxim@fomin.one>
+Subject: Multiple files with the same name in one directory
+Message-ID: <gpmixArD-r8A5adzNpKZzMuEXbuhabkOg1kZECF3t4fL1PWIXuqKVfHKOEnkng0Geku1USZskpjNvrDdgce0y-96ADaSbTYPdbE-7HSKUX0=@fomin.one>
+In-Reply-To: <010201781d22d3e9-78ba2d74-fc45-4455-813d-367e789d3e9b-000000@eu-west-1.amazonses.com>
+References: <010201781d22d3e9-78ba2d74-fc45-4455-813d-367e789d3e9b-000000@eu-west-1.amazonses.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While helping Neal fix his broken file system I added a debug patch to
-catch if we were calling btrfs_search_slot with a NULL root, and this
-stack trace popped
+=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
+ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+On Wednesday, 10 March 2021 =D0=B3., 20:15, Martin Raiber <martin@urbackup.=
+org> wrote:
 
-we tried to search with a NULL root
-CPU: 0 PID: 1760 Comm: mount Not tainted 5.11.0-155.nealbtrfstest.1.fc34.x86_64 #1
-Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 07/22/2020
-Call Trace:
- dump_stack+0x6b/0x83
- btrfs_search_slot.cold+0x11/0x1b
- ? btrfs_init_dev_replace+0x36/0x450
- btrfs_init_dev_replace+0x71/0x450
- open_ctree+0x1054/0x1610
- btrfs_mount_root.cold+0x13/0xfa
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- vfs_kern_mount.part.0+0x71/0xb0
- btrfs_mount+0x131/0x3d0
- ? legacy_get_tree+0x27/0x40
- ? btrfs_show_options+0x640/0x640
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- path_mount+0x441/0xa80
- __x64_sys_mount+0xf4/0x130
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f644730352e
+> Hi,
+>
+> I have this in a btrfs directory. Linux kernel 5.10.16, no errors in dmes=
+g, no scrub errors:
+>
+> ls -lh
+> total 19G
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> -rwxr-x--- 1 root=C2=A0=C2=A0=C2=A0=C2=A0 root=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 783 Mar 10 14:56 disk_config.dat
+> ...
+>
+> disk_config.dat gets written to using fsync rename ( write new version to=
+ disk_config.dat.new, fsync disk_config.dat.new, then rename to disk_config=
+.dat -- it is missing the parent directory fsync).
+>
+> So far no negative consequences... (except that programs might get confus=
+ed).
+>
+> echo 3 > /proc/sys/vm/drop_caches doesn't help.
+>
+> Regards,
+> Martin Raiber
 
-Fix this by not starting the device replace stuff if we do not have a
-NULL dev root.
+I can say that approx 1 month ago I also was surprised by having several fi=
+les with duplicate names (listed by pcmanfm file manager and ls in console)=
+. In my case I had duplicates for several different files in one folder, no=
+t 10 copies of one file. I resolved the problem by renaming files and delet=
+ing duplicates. I decided not to report that issue because I thought I have=
+ unintentionally done something crazy. Btw, they likely occured also after =
+power loss.
 
-Reported-by: Neal Gompa <ngompa13@gmail.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/dev-replace.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
-index 3a9c1e046ebe..d05f73530af7 100644
---- a/fs/btrfs/dev-replace.c
-+++ b/fs/btrfs/dev-replace.c
-@@ -81,6 +81,9 @@ int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
- 	struct btrfs_dev_replace_item *ptr;
- 	u64 src_devid;
- 
-+	if (!dev_root)
-+		return 0;
-+
- 	path = btrfs_alloc_path();
- 	if (!path) {
- 		ret = -ENOMEM;
--- 
-2.26.2
-
+Regards,
+Maxim Fomin
