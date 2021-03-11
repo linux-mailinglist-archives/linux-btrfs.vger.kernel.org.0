@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9C53375C8
+	by mail.lfdr.de (Postfix) with ESMTP id D52453375CA
 	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 15:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233906AbhCKOcA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Mar 2021 09:32:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57018 "EHLO mail.kernel.org"
+        id S233934AbhCKOcB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 09:32:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233825AbhCKOba (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:31:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6709264FEC;
-        Thu, 11 Mar 2021 14:31:29 +0000 (UTC)
+        id S233925AbhCKObb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Mar 2021 09:31:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B9F264FE8;
+        Thu, 11 Mar 2021 14:31:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615473090;
-        bh=8CcoXdh4WpINBazOzmK5xDypaQ3NQpOm14zerdAGALg=;
+        s=k20201202; t=1615473091;
+        bh=xU6JgFTKD2WIWP3hEJz56Cszs6XlV1Zs6kx8WnSyN20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eDXG/K29yXVY0u+JZd7CzXE+ncXTAWJcdSb6upaWMV8/qwwQ3NO9lo6HM3gdK3t0L
-         N7qHOHv9QyIuT2aTNBUtWqv0asNgOlEV0brGt7Bmg4PUgF0t6AKHkww8pRCnSm49K/
-         HEKosQk31TdYeqjJtTZpMzPSnZzwpY9oIABOcouyNkxLVb8iomu7deUH4ZGEFkQgm4
-         9tpwxMV+DRWnXpoM8T946pfiB48i25AjBLO+qtiJgD8C76I70Twr2oXmOg/MFRFRTN
-         gtDSV9OgiilcnYV1hsvo9DGon4SVlgCCKdVh4XLwLmEkk9JJSREJdJ9sHID2I9Ijnd
-         3WF700EIs6nkA==
+        b=hG7kGRqDR7HYQSkH16tpsXAouKD5jZXWD1y6ojcjlxfTRY+l2C7v6+HtjJsGt9Woi
+         OGLhEg4m9WC9JcIuJeVIY5dLMUn0JeTNJJzWaUHAYlxjBOQSCDaGwE5iMy4iLg36UJ
+         kNDGHHrc+3BFarRirxtd9fOieys24ZvDX9Q+ZEcNermE9oxsRHach4gx0MCRnIfx0O
+         cIdt9e6SG5+ygRiYUcJb9dtJ62QUGvGg6Xp8aTl0SijHgBtrfGapR07xVBDAr5dPKo
+         q/nohbsjM9kpSMP7c7ncFamhrv0zOFC9p9P5AKcACmHiGmNDGDS0uC4KBh81xKnd7i
+         E4QIw+yP+IZIg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
 Cc:     ce3g8jdj@umail.furryterror.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 6/9] btrfs: use the new bit BTRFS_FS_TREE_MOD_LOG_USERS at btrfs_free_tree_block()
-Date:   Thu, 11 Mar 2021 14:31:10 +0000
-Message-Id: <8b318da95fb03892feeaeebc94b6efa11515bb56.1615472583.git.fdmanana@suse.com>
+Subject: [PATCH 7/9] btrfs: remove unnecessary leaf check at btrfs_tree_mod_log_free_eb()
+Date:   Thu, 11 Mar 2021 14:31:11 +0000
+Message-Id: <c28a8b5717b2ac49382067a6f0170220cb8d022b.1615472583.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1615472583.git.fdmanana@suse.com>
 References: <cover.1615472583.git.fdmanana@suse.com>
@@ -40,36 +40,35 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Instead of exposing implementation details of the tree mod log to check
-if there are active tree mod log users at btrfs_free_tree_block(), use
-the new bit BTRFS_FS_TREE_MOD_LOG_USERS for fs_info->flags instead. This
-way extent-tree.c does not need to known about any of the internals of
-the tree mod log and avoids taking a lock unnecessarily as well.
+At btrfs_tree_mod_log_free_eb() we check if we are dealing with a leaf,
+and if so, return immediately and do nothing. However this check can be
+removed, because after it we call tree_mod_need_log(), which returns
+false when given an extent buffer that corresponds to a leaf.
+
+So just remove the leaf check and pass the extent buffer to
+tree_mod_need_log().
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent-tree.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ fs/btrfs/tree-mod-log.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 2482b26b1971..7a28314189b4 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3342,11 +3342,9 @@ void btrfs_free_tree_block(struct btrfs_trans_handle *trans,
- 		 * find a node pointing to this leaf and record operations that
- 		 * point to this leaf.
- 		 */
--		if (btrfs_header_level(buf) == 0) {
--			read_lock(&fs_info->tree_mod_log_lock);
--			must_pin = !list_empty(&fs_info->tree_mod_seq_list);
--			read_unlock(&fs_info->tree_mod_log_lock);
--		}
-+		if (btrfs_header_level(buf) == 0 &&
-+		    test_bit(BTRFS_FS_TREE_MOD_LOG_USERS, &fs_info->flags))
-+			must_pin = true;
+diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
+index b912b82c36c9..c854cebf27f6 100644
+--- a/fs/btrfs/tree-mod-log.c
++++ b/fs/btrfs/tree-mod-log.c
+@@ -554,10 +554,7 @@ int btrfs_tree_mod_log_free_eb(struct extent_buffer *eb)
+ 	int i;
+ 	int ret = 0;
  
- 		if (must_pin || btrfs_is_zoned(fs_info)) {
- 			btrfs_redirty_list_add(trans->transaction, buf);
+-	if (btrfs_header_level(eb) == 0)
+-		return 0;
+-
+-	if (!tree_mod_need_log(eb->fs_info, NULL))
++	if (!tree_mod_need_log(eb->fs_info, eb))
+ 		return 0;
+ 
+ 	nritems = btrfs_header_nritems(eb);
 -- 
 2.28.0
 
