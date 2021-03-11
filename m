@@ -2,102 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C8B337D85
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 20:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF17337F29
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 21:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbhCKTTS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Mar 2021 14:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
+        id S230283AbhCKUj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 15:39:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhCKTTM (ORCPT
+        with ESMTP id S231211AbhCKUjb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Mar 2021 14:19:12 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DCCC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 11:19:12 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id n195so22829627ybg.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 11:19:12 -0800 (PST)
+        Thu, 11 Mar 2021 15:39:31 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5857EC061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 12:39:31 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id g4so14417784pgj.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 12:39:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=H9Y7Lbqfgr33wai0OtzDfyVvAmAQ9+GL/hqzSldrjPE=;
-        b=HcA4cWy3X3pIPyG6gb8CNnoiSohGy7oNRWUl5Hex66X+QuHUsPqYnpz3IN6hR5YIXi
-         FkzqRN2guY4J+eSeltG89+WKvdiWZi53/f4b4zNQZimaiPfcmVnSIsPpiqwb38lN76TW
-         miluGqKyxLLM2mqfBMLv9tAjr8F/xkKB2DjgXS290R8m/g+YhPvBQ7aqhGghFrMOz8Nt
-         g2N0qclNHHGk9VhlYAgMZ9LcM1JZ0GAeoLLIuiGNP4bhbBD3XOWNR+Lo3DTACyWVHBpD
-         3Aiv5+1zZ2lwWXU5RRYhCcFZZ3gwZm+6H1vyfXnWcJW1g+oxVwlgciYeO38zMb6q6kAE
-         cgdA==
+        d=tavianator.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=dRk3Kx9qktDh5zPUMLZuWPj/dwqREEOtFiOdbp0qHVo=;
+        b=hBaOQKQeZs366Bws/mFU4oCQozIinBKrVp/pl8v8fMvWSnMBQEQFFCyMGeM9pNWBgq
+         JpbftdzSKpCc7/EXO1kYkOiiwH7olXi7aqpW+BLtBkMj/dBz+YFJ5V0fN6+a1/6wk2vp
+         nHK2i4a4510b9/BaIwFTYBOLGKOCiLoC0uDBc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=H9Y7Lbqfgr33wai0OtzDfyVvAmAQ9+GL/hqzSldrjPE=;
-        b=hxN4RvLkMQCCYrJ5cBxmQPvoVMp3XxsNiXy05BASDj+OZxCY24koBkffEE2Tjb9GFn
-         2cEPLksQWnZYewjvQamlJsfJfTtzhy4WxFo7v7kPzjP+AW2PQPEQaYF26SzBhmcf9l48
-         bs1ZKbGs99r6JxaY9wDhS6EXJziK6hadRBYH+6D9n/0KEfzZK6NnhD/JBblY8Lya8yHd
-         M2HbJT4JNtVbg/QOrILgOywoCfhDAhYrQmj2BMNxuWIgtx2R0txPGmMebDCL9gFoFbKb
-         2VcqOG6eUsqcOIIwyU8aj0q4/LOyIYVpP+k8KKIBaJBNCX20h7Bvs464McTIl8QMZawg
-         1BfA==
-X-Gm-Message-State: AOAM53321vyW5N4+4JH9GJJtzAmNW+Sv9zYQTSchMQVrgeYmfQgNpYMT
-        5aVEP7hIJPjbf1Bo9vuGZlMZO2gra6h1aNxGr9g=
-X-Google-Smtp-Source: ABdhPJxMpgiD6/FJYuK+rAYAjW2FCQxNUWOGn0D2ZuZgAw/pJ8WVJAKRtIpdd5amkAZ6PZOfAjEgfx4g2xJwlQRmlws=
-X-Received: by 2002:a25:c60c:: with SMTP id k12mr13742054ybf.59.1615490351429;
- Thu, 11 Mar 2021 11:19:11 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=dRk3Kx9qktDh5zPUMLZuWPj/dwqREEOtFiOdbp0qHVo=;
+        b=JOpQD708JECt5Jyv5IwRFfyJOKZ9l08tqz5jBsJCGvU6z/pqsuLF788dnKuDafI8tj
+         Z1znyI5+RkEGseDwkUMW16ABCzl1Yslc/4LzJ+A/Noz8rBZkNxDmG3g4NZRmvDoGJIiA
+         a5BW/mK5oExd0YHhgkmefjQoIEbTLOf/sHjlJgp0MjTF9REYdDwc51rjzGhLWyPjr3WX
+         WeqSVV6V1IOW1nUou7vPk/icdJr7Q2WlQDRoSfbwObAfGfm1YlqQobtUH1EaFIpmKDpy
+         dT079QMG1BV7sSNP4v9/eLPqYQwb/TvXVBL/u9ccU3hRpN3DQ4EeD84Ze9PwYPZUL32Y
+         RfZg==
+X-Gm-Message-State: AOAM5317PxxTAW8Ll7JVZ/z+Utpi3LKzyafihjV9Bs0tmo2WydXdFP5O
+        wUn2XLipRcsZnH7jRO7/6yHTK++F7/G0Ox+ZJHVnaiHk6aRa6g==
+X-Google-Smtp-Source: ABdhPJw9bihQNEKiyIYrkmvXcypOyh+4hQauqjsbzT1TnD/jE4Zg1GNv+hDPoCLDhAzhWOQ3PNT5h13m1xfWr1I3KcM=
+X-Received: by 2002:aa7:8d8a:0:b029:1f8:aa27:7203 with SMTP id
+ i10-20020aa78d8a0000b02901f8aa277203mr9171115pfr.64.1615495170536; Thu, 11
+ Mar 2021 12:39:30 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1615479658.git.josef@toxicpanda.com>
-In-Reply-To: <cover.1615479658.git.josef@toxicpanda.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Thu, 11 Mar 2021 14:18:35 -0500
-Message-ID: <CAEg-Je-8nu2AJmaBy_FWEPVJku_D0qif3fQ2ZQJLbVjEmdGYXA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Handle bad dev_root properly with rescue=all
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+From:   Tavian Barnes <tavianator@tavianator.com>
+Date:   Thu, 11 Mar 2021 15:39:19 -0500
+Message-ID: <CABg4E-kT0x_uKf-j2fdjqh-8H==Op_xbraaf=jLvNKOoF2n--A@mail.gmail.com>
+Subject: balance convert to raid0 makes low-utilization block groups
+To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 11:25 AM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> Hello,
->
-> My recent debugging session with Neal's broken filesystem uncovered a gla=
-ring
-> hole in my rescue=3Dall patches, they don't deal with a NULL dev_root pro=
-perly.
-> In testing I only ever tested corrupting the extent tree or the csum tree=
-, since
-> those are the most problematic.  The following 3 fixes allowed Neal to ge=
-t
-> rescue=3Dall working without panicing the machine, and I verified everyth=
-ing by
-> using btrfs-corrupt-block to corrupt a dev root of a file system.  Thanks=
-,
->
-> Josef
->
-> Josef Bacik (3):
->   btrfs: init devices always
->   btrfs: do not init dev stats if we have no dev_root
->   btrfs: don't init dev replace for bad dev root
->
->  fs/btrfs/dev-replace.c | 3 +++
->  fs/btrfs/disk-io.c     | 2 +-
->  fs/btrfs/volumes.c     | 3 +++
->  3 files changed, 7 insertions(+), 1 deletion(-)
->
-> --
-> 2.26.2
->
+I'm in the process of converting my "single" data to "raid0" for the
+performance benefits of striping.  However, watching the output of
+btrfs fi usage, I'm seeing something odd.  Here's the current usage:
 
-I'm very happy that my freak disk controller issue yielded some good
-fixes for Btrfs rescue mode code. :)
+Data,single: Size:4.47TiB, Used:4.47TiB (99.98%)
+  /dev/mapper/neutrino3         300.00GiB
+  /dev/mapper/neutrino4         300.00GiB
+  /dev/mapper/neutrino5           1.29TiB
+  /dev/mapper/neutrino6           1.29TiB
+  /dev/mapper/neutrino7           1.29TiB
 
-Reviewed-by: Neal Gompa <ngompa13@gmail.com>
+Data,RAID0: Size:1.62TiB, Used:1.62TiB (99.78%)
+  /dev/mapper/neutrino3         332.00GiB
+  /dev/mapper/neutrino4         332.00GiB
+  /dev/mapper/neutrino5         332.00GiB
+  /dev/mapper/neutrino6         332.00GiB
+  /dev/mapper/neutrino7         332.00GiB
 
+Now I convert 50G of data from single to raid0 with btrfs balance
+start -dconvert=raid0,soft,devid=3,limit=50 /mnt/neutrino.  The usage
+now looks like this:
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Data,single: Size:4.42TiB, Used:4.42TiB (99.98%)
+  /dev/mapper/neutrino3         250.00GiB
+  /dev/mapper/neutrino4         300.00GiB
+  /dev/mapper/neutrino5           1.29TiB
+  /dev/mapper/neutrino6           1.29TiB
+  /dev/mapper/neutrino7           1.29TiB
+
+Data,RAID0: Size:1.87TiB, Used:1.67TiB (89.34%)
+  /dev/mapper/neutrino3         382.00GiB
+  /dev/mapper/neutrino4         382.00GiB
+  /dev/mapper/neutrino5         382.00GiB
+  /dev/mapper/neutrino6         382.00GiB
+  /dev/mapper/neutrino7         382.00GiB
+
+IOW it allocated 250G of raid0 block groups but only filled them with
+50G of data.  It's back to normal after I rebalance those block groups
+with btrfs balance start -dconvert=raid0,profiles=raid0,usage=80
+/mnt/neutrino:
+
+Data,RAID0: Size:1.67TiB, Used:1.67TiB (99.79%)
+  /dev/mapper/neutrino3         342.00GiB
+  /dev/mapper/neutrino4         342.00GiB
+  /dev/mapper/neutrino5         342.00GiB
+  /dev/mapper/neutrino6         342.00GiB
+  /dev/mapper/neutrino7         342.00GiB
+
+Any idea why?
+
+-- 
+Tavian Barnes
