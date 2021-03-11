@@ -2,110 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851BE337BB7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 19:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9042B337C02
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 19:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhCKSFj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Mar 2021 13:05:39 -0500
-Received: from a4-1.smtp-out.eu-west-1.amazonses.com ([54.240.4.1]:48889 "EHLO
-        a4-1.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230246AbhCKSFK (ORCPT
+        id S230228AbhCKSKb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 13:10:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhCKSKF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:05:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=pqvuhxtqt36lwjpmqkszlz7wxaih4qwj; d=urbackup.org; t=1615485907;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=rv1uGdL+iCl5EZuzka3APqYo29rsuaqd6RXkd6NzazU=;
-        b=ThaxJb+VB+Y68eY+R81iVOb3gNE96Ax3BKw7d2xT/oKndaqgU+nz+WnGj5086cbx
-        AVlnxYb5Dg/EbvL/uoHBqOfrshsyHjVWRIcG5fLDBXNCvOUh7NLSQEzXL3K4ydtLCfg
-        MSdiLZ5boTzPKHdgxDbRSw4TOdVhW4c2ni2mM9/0=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=shh3fegwg5fppqsuzphvschd53n6ihuv; d=amazonses.com; t=1615485907;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=rv1uGdL+iCl5EZuzka3APqYo29rsuaqd6RXkd6NzazU=;
-        b=TBZtc4kMICQYtk/QAJwixtix1L+KQDK1awi/As/jVm0+auu2blggUpasSX5ggSAa
-        xMbiSB8wmTsKFB0VFHxouUicRAPqSVXsD0jORZ6Qq1dHtosF29J3dFpc/XKYqHV3ANb
-        BLM7KwMaCrBhdjr+W8TiyddIOGnMDo9wt1FG6x1g=
-Subject: Re: Multiple files with the same name in one directory
-To:     fdmanana@gmail.com
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <010201781d22d3e9-78ba2d74-fc45-4455-813d-367e789d3e9b-000000@eu-west-1.amazonses.com>
- <CAL3q7H79BO0qgTUVmbW2kzcUqtp4vgRLK8vNT95+Sz7tgWDdMQ@mail.gmail.com>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <010201782276b01f-7930fadd-7b4b-4f45-bd66-6862adb594f4-000000@eu-west-1.amazonses.com>
-Date:   Thu, 11 Mar 2021 18:05:06 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 11 Mar 2021 13:10:05 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B6CC061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 10:10:05 -0800 (PST)
+Received: by mail-qv1-xf35.google.com with SMTP id l15so2975265qvl.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 10:10:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=+dlD9LVCQAekOaVIqriBxcF1ZQxQpG7TEikQltrDoTw=;
+        b=vGpHehLiPTaBkloDer4u06VRxh1WXD7ugAaCRiN7PRmjpv9SoTYPTAdcI/snes8Cq6
+         eq42N2C6oEPN3UY8stLJeQRKEwauIlKnA++aJHAPyPwAZqMeCASFXP5/ONmqrpdk8GT9
+         14k6BE8sHKVIvPGdutEzkhxqPDnzAWVkecZtn5QD/6B9G6ZpF6KN11t92Avtqb1jbbaE
+         DoZaVRmHhepfQb9TADibWiW53ofcNyE0EXoGPoM1Dh6C39bUzIrUuhNPCV8FtPinc42M
+         zpyTnzXo5ZeX34a4/inW2cRDc9uqKjYajBfOAvEKpEPbUjeWyibdH+B1EKa9963epjDn
+         pTtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+dlD9LVCQAekOaVIqriBxcF1ZQxQpG7TEikQltrDoTw=;
+        b=aeVvHiBqmpJ0B9ArzZKSgzUfV0Ae+8avdq/LBiJ6GmGVQfhR9jlNm4FvZAj9GhGWOF
+         Z/QSZBDtdV8iSGDl83LBBNBBn2xtMQviEQtmKMxzC25NNUTcoQPnFp6donJFOFj17rXc
+         s4iFbBs859KwoAwaI/Kb3pV1IpEE+GwltxkayelrFXHh9Zuvd9Rf1ozyyzWUJzmzfef0
+         NXn1toBAl5CtRMaUkXNxnALJOieHU+LZaCWKkMYVeFY4prx/jKvrzaSK7fKB0geEIQhT
+         zhFqq9N+WFJh7t8nMh5y0Ofy6IdCG4Ld4C6spABLt2G1DrbGXrBeWBVBgo9uxKw+Q1/X
+         WxgA==
+X-Gm-Message-State: AOAM530ywPnHAGLIJWmh0IzY8zHh6C2SsgXfQYC7jsvp9p4KpuDprl47
+        fEcajXZN9sl2os5l2ehBEL8OAQ==
+X-Google-Smtp-Source: ABdhPJy1trEdsocxglTvfqoYywaYt/84Ar7meBvpzKY6JvzGRjeUIsNIvCrTCqRmxZAN8MPEWECnAg==
+X-Received: by 2002:a05:6214:1c47:: with SMTP id if7mr8790619qvb.50.1615486204623;
+        Thu, 11 Mar 2021 10:10:04 -0800 (PST)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id b21sm2477134qkl.14.2021.03.11.10.10.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 10:10:04 -0800 (PST)
+Subject: Re: [PATCH v7 03/38] btrfs: handle errors from select_reloc_root()
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1608135849.git.josef@toxicpanda.com>
+ <aa44497f5c2b8c96ca1229daa4dfdb6503971f31.1608135849.git.josef@toxicpanda.com>
+ <20210226183059.GP7604@twin.jikos.cz>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <e0865e88-903c-e9b5-7ebb-daeca69fcac9@toxicpanda.com>
+Date:   Thu, 11 Mar 2021 13:10:03 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H79BO0qgTUVmbW2kzcUqtp4vgRLK8vNT95+Sz7tgWDdMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210226183059.GP7604@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SES-Outgoing: 2021.03.11-54.240.4.1
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11.03.2021 15:43 Filipe Manana wrote:
-> On Wed, Mar 10, 2021 at 5:18 PM Martin Raiber <martin@urbackup.org> wrote:
->> Hi,
+On 2/26/21 1:30 PM, David Sterba wrote:
+> On Wed, Dec 16, 2020 at 11:26:19AM -0500, Josef Bacik wrote:
+>> Currently select_reloc_root() doesn't return an error, but followup
+>> patches will make it possible for it to return an error.  We do have
+>> proper error recovery in do_relocation however, so handle the
+>> possibility of select_reloc_root() having an error properly instead of
+>> BUG_ON(!root).  I've also adjusted select_reloc_root() to return
+>> ERR_PTR(-ENOENT) if we don't find a root, instead of NULL, to make the
+>> error case easier to deal with.  I've replaced the BUG_ON(!root) with an
+>> ASSERT(0) for this case as it indicates we messed up the backref walking
+>> code, but it could also indicate corruption.
 >>
->> I have this in a btrfs directory. Linux kernel 5.10.16, no errors in dmesg, no scrub errors:
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/relocation.c | 15 ++++++++++++---
+>>   1 file changed, 12 insertions(+), 3 deletions(-)
 >>
->> ls -lh
->> total 19G
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> -rwxr-x--- 1 root     root      783 Mar 10 14:56 disk_config.dat
->> ...
->>
->> disk_config.dat gets written to using fsync rename ( write new version to disk_config.dat.new, fsync disk_config.dat.new, then rename to disk_config.dat -- it is missing the parent directory fsync).
-> That's interesting.
->
-> I've just tried something like the following on 5.10.15 (and 5.12-rc2):
->
-> create disk_config.dat
-> sync
-> for ((i = 0; i < 10; i++)); do
->     create disk_config.dat.new
->     write to disk_config.dat.new
->     fsync disk_config.dat.new
->     mv -f disk_config.dat.new disk_config.dat
-> done
-> <power fail>
-> mount fs
-> list directory
->
-> I only get one file with the name disk_config.dat and one file with
-> the name disk_config.dat.new.
-> File disk_config.dat has the data written at iteration 9 and
-> disk_config.dat.new has the data written at iteration 10 (expected).
->
-> You haven't mentioned, but I suppose you had a power failure / unclean
-> shutdown somewhere after an fsync, right?
-> Is this something you can reproduce at will?
+>> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+>> index 08ffaa93b78f..741068580455 100644
+>> --- a/fs/btrfs/relocation.c
+>> +++ b/fs/btrfs/relocation.c
+>> @@ -2024,8 +2024,14 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
+>>   		if (!next || next->level <= node->level)
+>>   			break;
+>>   	}
+>> -	if (!root)
+>> -		return NULL;
+>> +	if (!root) {
+>> +		/*
+>> +		 * This can happen if there's fs corruption or if there's a bug
+>> +		 * in the backref lookup code.
+>> +		 */
+>> +		ASSERT(0);
+> 
+> You've added these assert(0) to several patches and I think it's wrong.
+> The asserts are supposed to verify invariants, you can hardly say that
+> we're expecting 0 to be true, so the construct serves as "please crash
+> here", which is no better than BUG().  It's been spreading, there are
+> like 25 now.
 
-I think I rebooted via "echo b > /proc/sysrq-trigger". But at that point it probably didn't write to disk_config.dat anymore (for more than the commit interval). I'm also not sure about the delay of me noticing those multiple files (since it doesn't cause any problems) -- can't reproduce.
+They are much better than a BUG_ON(), as they won't trip in production, they'll 
+only trip for developers.  And we need them in many of these cases, and this 
+example you've called out is a clear example of where we absolutely want to 
+differentiate, because we have 3 different failure modes that will return 
+-EUCLEAN.  If I add a ASSERT(ret != -EUCLEAN) to all of the callers then when 
+the developer hits a logic bug they'll have to go and manually add in their own 
+assert to figure out which error condition failed.  Instead I've added 
+explanations in the comments for each assert and then have an assert for every 
+error condition so that it's clear where things went wrong.
 
-This is the same machine and file system with ENOSPC in btrfs_async_reclaim_metadata_space -> flush_space -> btrfs_run_delayed_refs. Could be that something went wrong with the error handling/remount-ro w.r.t. to the tree log?
+So these ASSERT()'s are staying.  I could be convinced to change them to match 
+their error condition, so in the above case instead I would be fine changing it to
 
->
->> So far no negative consequences... (except that programs might get confused).
->>
->> echo 3 > /proc/sys/vm/drop_caches doesn't help.
->>
->> Regards,
->> Martin Raiber
+if (!root) {
+	ASSERT(root);
+...
 
+If that's more acceptable let me know, I'll change them to match their error 
+condition.  Thanks,
 
+Josef
