@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D2C337939
+	by mail.lfdr.de (Postfix) with ESMTP id C52D033793B
 	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 17:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbhCKQXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Mar 2021 11:23:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
+        id S234571AbhCKQXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 11:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234573AbhCKQXW (ORCPT
+        with ESMTP id S234574AbhCKQXX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Mar 2021 11:23:22 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E53C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 08:23:21 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id n79so21179633qke.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 08:23:21 -0800 (PST)
+        Thu, 11 Mar 2021 11:23:23 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65878C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 08:23:23 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id 73so1545572qtg.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 08:23:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=er+wsfS6qV0Zg3iJwacHNWjig65MH3Ew83k/QSi9X0w=;
-        b=OHyPWWDZ5Vn7prNUBTH4mdqP8eUrnc0q1XAFdGdH1Gde0lscqkBVxtWZCyl26+eWMN
-         wSBtekoRTRAwQn3jgeLY1fb3sz8UiVpYRH7J2Dvy325dlm56bzDaXK/dF7L4dBjEjLeQ
-         ZqdUGdpqf0r/tMEFKgXxBvgg3CVelByOAlgLY+vwPg+llTKhwmBix0ShJ1WFEUDIsuFK
-         8kMWjPQpceTAKiCwrDgz/5NCEhtMVpNBWL/XMKXBZ4chGIKtoe2ogVowtT2ODFVE7fzJ
-         5mAc5IRNPMm5E2Vd33i3Qv0Av9RYOBcfOrUq0yyWM/VLxXbWPZ3KsWnwYAf5YicEVXFk
-         Th5w==
+        bh=7RAOXfmuc+D5cFIlkf6gfP+Yo/PsIgV1lGp5r/bDgUM=;
+        b=BsVHiZpLDBhPsJZ50Tmifc5jb9bgdH2o23b6eoRgjKtisSWkTO6xdohxQJToEMeW4B
+         5yUWGJy54S6scrlZe8eWMnVhDEWftKaL84psuYxLahWYZ8vlyzy3Y6n7hGK5hu3THyw5
+         qVD3Sbjs5+KTb9ZYbWl+1AS85QFy8D+dWvkWiXO8iQ9dLKiRtg2N6c1tDivnNtsoSHSY
+         EeXfUF3kmi/84tpz+ts8Rvb82FUUclz8QsPhuUbqpcffawNQrBIbaNYMdngpZpPR6QR2
+         OJUDixU4SLZHvxb+dUXoAwizLQQFWCNeA9ES1gB8JrfsAcFfe+C4ctYWeBCzJTbl+t42
+         h0vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=er+wsfS6qV0Zg3iJwacHNWjig65MH3Ew83k/QSi9X0w=;
-        b=qDUsaYSfewgWkQKPEt9GX0TRLOz0NAkMbaTiBnbClqNRahDtNMcsYKPnS8gt+oiDdT
-         qHL8hsWw2iix51RMHRUQvcPU/VV3R8eZwVhPMNBGwPa0I4W9LgCXhdM6O+44y2Oz5tsJ
-         mzLRrH7HYZ8w6UzUaOppEriUZaO60hPAxDMv3GtjZPw6ZCgewsKue9Kwxmbr5wn7NrWu
-         1PiHm0tgzRWuVsPvAZjbgNS7zOBLTcAzaGLm457g1RfMnUV3VACs6FNjrAS5CPNPxQVq
-         FByo0ujmlS6ZfIw9O9DUrqOwOpkQOoXkILG6ZgaXRt2VwBDx/QbeKg4/Gnlom6dItimP
-         8RjA==
-X-Gm-Message-State: AOAM531O1UYTXU1giRdI0CebdmUVG8eJlCSwXWjVzeK9eEiePDAnDoqx
-        VtlWY2na3gsk7oxV1BpTCVwhFD6C1b9tMoiF
-X-Google-Smtp-Source: ABdhPJy95RdWrG/3z5Q7ejEl4lgwDGlznZmEQsrES8C4nXrMZeCrMS7pM/sJEepcezbPSFNge7zD/A==
-X-Received: by 2002:a05:620a:5b3:: with SMTP id q19mr8518616qkq.98.1615479800730;
-        Thu, 11 Mar 2021 08:23:20 -0800 (PST)
+        bh=7RAOXfmuc+D5cFIlkf6gfP+Yo/PsIgV1lGp5r/bDgUM=;
+        b=bTYSiEMVx84J6lQFYB9jWc9KXhoPemUVbEYhXqBfi4qLeNbuxaBOKzwW8O52hpmuLY
+         No9QU5uG6H0VCn0bCzqZ26vogtt6jBfUM+NotdP3M2yK1v1gJjWjuq5z4NlTJmzjYIrh
+         Tv4Nrkz1RWISjN465NEaIX0zR2KFfGsbtQDgPKV0ZHn6yHrIyo9+bUH1Wh1tidJCiNR1
+         7swHGLFeISqpxBvOMUy8N70VfGCR4lwTxpRJdchwWZdWxCMtYfE9LPJGozH7sD89b/Rg
+         1Kje3I9b1s87zbW8x5mTWLXG7AbtbKGawuJm05eEc+rVWaaaoVHSOYwrNsnu6AOJvp05
+         MxCg==
+X-Gm-Message-State: AOAM533R+n+OdiyQ3xDj31BPEphP5oB+XfNob+nueir43iDm5pdhipj2
+        dUD/5v49TVwjY0EKSerwOMLLFsfl0lbLLUqB
+X-Google-Smtp-Source: ABdhPJz3sIH5O6cR44Bqobxo8/i2Vhm+HayGvOLM9wasjSaPM2C+kmK+JdqVm3NafjSwjTGAi9uCnw==
+X-Received: by 2002:ac8:4508:: with SMTP id q8mr7937677qtn.48.1615479802218;
+        Thu, 11 Mar 2021 08:23:22 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j24sm2210189qka.67.2021.03.11.08.23.19
+        by smtp.gmail.com with ESMTPSA id h16sm2008550qto.45.2021.03.11.08.23.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 08:23:20 -0800 (PST)
+        Thu, 11 Mar 2021 08:23:21 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Neal Gompa <ngompa13@gmail.com>
-Subject: [PATCH 1/3] btrfs: init devices always
-Date:   Thu, 11 Mar 2021 11:23:14 -0500
-Message-Id: <e5abaf864da01a3ee1cb8ef341ef1024c9e886f6.1615479658.git.josef@toxicpanda.com>
+Subject: [PATCH 2/3] btrfs: do not init dev stats if we have no dev_root
+Date:   Thu, 11 Mar 2021 11:23:15 -0500
+Message-Id: <af4642aa2c513f65cd41e17ac1be3ceca9cf4815.1615479658.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1615479658.git.josef@toxicpanda.com>
 References: <cover.1615479658.git.josef@toxicpanda.com>
@@ -67,64 +67,61 @@ Neal reported a panic trying to use -o rescue=all
 
 BUG: kernel NULL pointer dereference, address: 0000000000000030
 PGD 0 P4D 0
-Oops: 0000 [#1] SMP NOPTI
-CPU: 0 PID: 696 Comm: mount Tainted: G        W         5.12.0-rc2+ #296
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-RIP: 0010:btrfs_device_init_dev_stats+0x1d/0x200
-RSP: 0018:ffffafaec1483bb8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff9a5715bcb298 RCX: 0000000000000070
-RDX: ffff9a5703248000 RSI: ffff9a57052ea150 RDI: ffff9a5715bca400
-RBP: ffff9a57052ea150 R08: 0000000000000070 R09: ffff9a57052ea150
-R10: 000130faf0741c10 R11: 0000000000000000 R12: ffff9a5703700000
-R13: 0000000000000000 R14: ffff9a5715bcb278 R15: ffff9a57052ea150
-FS:  00007f600d122c40(0000) GS:ffff9a577bc00000(0000) knlGS:0000000000000000
+Oops: 0000 [#1] SMP PTI
+CPU: 0 PID: 4095 Comm: mount Not tainted 5.11.0-0.rc7.149.fc34.x86_64 #1
+RIP: 0010:btrfs_device_init_dev_stats+0x4c/0x1f0
+RSP: 0018:ffffa60285fbfb68 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff88b88f806498 RCX: ffff88b82e7a2a10
+RDX: ffffa60285fbfb97 RSI: ffff88b82e7a2a10 RDI: 0000000000000000
+RBP: ffff88b88f806b3c R08: 0000000000000000 R09: 0000000000000000
+R10: ffff88b82e7a2a10 R11: 0000000000000000 R12: ffff88b88f806a00
+R13: ffff88b88f806478 R14: ffff88b88f806a00 R15: ffff88b82e7a2a10
+FS:  00007f698be1ec40(0000) GS:ffff88b937e00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000030 CR3: 0000000112a46005 CR4: 0000000000370ef0
+CR2: 0000000000000030 CR3: 0000000092c9c006 CR4: 00000000003706f0
 Call Trace:
- ? btrfs_init_dev_stats+0x1f/0xf0
- ? kmem_cache_alloc+0xef/0x1f0
- btrfs_init_dev_stats+0x5f/0xf0
- open_ctree+0x10cb/0x1720
- btrfs_mount_root.cold+0x12/0xea
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- vfs_kern_mount.part.0+0x71/0xb0
- btrfs_mount+0x10d/0x380
- legacy_get_tree+0x27/0x40
- vfs_get_tree+0x25/0xb0
- path_mount+0x433/0xa00
- __x64_sys_mount+0xe3/0x120
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+? btrfs_init_dev_stats+0x1f/0xf0
+btrfs_init_dev_stats+0x62/0xf0
+open_ctree+0x1019/0x15ff
+btrfs_mount_root.cold+0x13/0xfa
+legacy_get_tree+0x27/0x40
+vfs_get_tree+0x25/0xb0
+vfs_kern_mount.part.0+0x71/0xb0
+btrfs_mount+0x131/0x3d0
+? legacy_get_tree+0x27/0x40
+? btrfs_show_options+0x640/0x640
+legacy_get_tree+0x27/0x40
+vfs_get_tree+0x25/0xb0
+path_mount+0x441/0xa80
+__x64_sys_mount+0xf4/0x130
+do_syscall_64+0x33/0x40
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7f698c04e52e
 
-This happens because when we call btrfs_init_dev_stats we do
-device->fs_info->dev_root.  However device->fs_info isn't init'ed
-because we were only calling btrfs_init_devices_late() if we properly
-read the device root.  However we don't actually need the device root to
-init the devices, this function simply assigns the devices their
-->fs_info pointer properly, so this needs to be done unconditionally
-always so that we can properly deref device->fs_info in rescue cases.
+This happens because we unconditionally attempt to init device stats on
+mount, but we may not have been able to read the device root.  Fix this
+by skipping init'ing the device stats if we do not have a device root.
 
 Reported-by: Neal Gompa <ngompa13@gmail.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/disk-io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/volumes.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 41b718cfea40..63656bf23ff2 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2387,8 +2387,8 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
- 	} else {
- 		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
- 		fs_info->dev_root = root;
--		btrfs_init_devices_late(fs_info);
- 	}
-+	btrfs_init_devices_late(fs_info);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 995920fcce9b..d4ca721c1d91 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7448,6 +7448,9 @@ static int btrfs_device_init_dev_stats(struct btrfs_device *device,
+ 	int item_size;
+ 	int i, ret, slot;
  
- 	/* If IGNOREDATACSUMS is set don't bother reading the csum root. */
- 	if (!btrfs_test_opt(fs_info, IGNOREDATACSUMS)) {
++	if (!device->fs_info->dev_root)
++		return 0;
++
+ 	key.objectid = BTRFS_DEV_STATS_OBJECTID;
+ 	key.type = BTRFS_PERSISTENT_ITEM_KEY;
+ 	key.offset = device->devid;
 -- 
 2.26.2
 
