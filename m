@@ -2,102 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D3133694B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 01:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4725B336D3F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 08:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbhCKAxz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Mar 2021 19:53:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhCKAx2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Mar 2021 19:53:28 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2A6C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Mar 2021 16:53:28 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id w18so248713edc.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Mar 2021 16:53:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q4/XB1NjVzkcassvGF9k8OOkOtHMefsYgpLIOhbHN44=;
-        b=VytBblI4nb9JtqHcpg5PYs38jajnTR0u0JS6jpl3x32VbN+1FmkpQKztC6QGh/owq5
-         OKZtrVWvRSAAgZSa52MpRCKaSLrn8M/wS7+lpN3thB2qy4x5ASseSLbpttO55PtkZRcg
-         Usu+VKGsxFUTs0UMAmVvtsOBETR54kARgVDHg+jieLrIMe5HoGU7jO+WFaXqB1/Shadj
-         acLiBoL+9rXMHYN4h5kBD34GepJ6XoGwLlBU74peSFTH4olLLWwe877BUouMrPF9vqxz
-         iTkHZTfI/P5BPtXD8Ih2GVWaZnwQK2AMiro/XIrqqU/ujd/Qp2vrSZYPEp61VpSaQc8f
-         2Qpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q4/XB1NjVzkcassvGF9k8OOkOtHMefsYgpLIOhbHN44=;
-        b=giLHrXudbuu3Mj6MZhhzPVm62FWzWKlte4EEzfXDEjO85U4LXLZaB2SE0WJsrnoLVs
-         j46Fr7gg76N/Hv5VEyRdW6//XHeLwvk6xEVsvn/kMwwy9MplOkkYGI4NhxHYQiPxiZGp
-         6lv1tPCTH4bBmMPYjpACZdZUmr1tZ+8wtBXtvRD/fAgaEvPJFg0cTpPOmOHBTJIXNDiz
-         +vw4hwtVsKMUZYUPOViZdc4+yZK+fkIwblMls586zKaBLl9euXNdWV/mQKWPMa0TtSzS
-         pbKZ9RsCBE6G5VNl5Ku6avmyzDukGd0gNwXp0HGXJIE0x1wwFhWwM13vaDlfhVk8XyHg
-         h6Rw==
-X-Gm-Message-State: AOAM533gg/3ifBTbRp7KSGuquPoKjodfcPGzwCJQPL6S2i7zFTXgYXdd
-        Y8fREWrbRErIUDYzCTJWsxDDIrEOBgZclVH7xxcT8Q==
-X-Google-Smtp-Source: ABdhPJypQ8GemOXeRAlB5nBwa/LaXTEzwLO62LM4I6+2OuCpeLVCa5nLj+566PgoZJjKJzgw0+xwotjje7pT9PlLG2A=
-X-Received: by 2002:aa7:dd05:: with SMTP id i5mr6011841edv.300.1615424006716;
- Wed, 10 Mar 2021 16:53:26 -0800 (PST)
+        id S231252AbhCKHrP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 02:47:15 -0500
+Received: from smtp02.belwue.de ([129.143.71.87]:62206 "EHLO smtp02.belwue.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229830AbhCKHqn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Mar 2021 02:46:43 -0500
+Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
+        by smtp02.belwue.de (Postfix) with SMTP id 12FA841D3
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 08:46:37 +0100 (MET)
+Date:   Thu, 11 Mar 2021 08:46:36 +0100
+From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: nfs subvolume access?
+Message-ID: <20210311074636.GA28705@tik.uni-stuttgart.de>
+Mail-Followup-To: linux-btrfs@vger.kernel.org
+References: <20210310074620.GA2158@tik.uni-stuttgart.de>
 MIME-Version: 1.0
-References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
- <CAEg-Je-OLidbfzHCJvY55x+-cOfiUxX8CJ1AeN8VxXAVuVyxKQ@mail.gmail.com>
- <20210310130227.GN3479805@casper.infradead.org> <20210310142159.kudk7q2ogp4yqn36@fiona>
- <20210310142643.GQ3479805@casper.infradead.org>
-In-Reply-To: <20210310142643.GQ3479805@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 10 Mar 2021 16:53:15 -0800
-Message-ID: <CAPcyv4i80GXjjoAD9G0AaRDWPbcTSLogJE9NokO4Eqpzt6UMkA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, david <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310074620.GA2158@tik.uni-stuttgart.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 6:27 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Mar 10, 2021 at 08:21:59AM -0600, Goldwyn Rodrigues wrote:
-> > On 13:02 10/03, Matthew Wilcox wrote:
-> > > On Wed, Mar 10, 2021 at 07:30:41AM -0500, Neal Gompa wrote:
-> > > > Forgive my ignorance, but is there a reason why this isn't wired up to
-> > > > Btrfs at the same time? It seems weird to me that adding a feature
-> > >
-> > > btrfs doesn't support DAX.  only ext2, ext4, XFS and FUSE have DAX support.
-> > >
-> > > If you think about it, btrfs and DAX are diametrically opposite things.
-> > > DAX is about giving raw access to the hardware.  btrfs is about offering
-> > > extra value (RAID, checksums, ...), none of which can be done if the
-> > > filesystem isn't in the read/write path.
-> > >
-> > > That's why there's no DAX support in btrfs.  If you want DAX, you have
-> > > to give up all the features you like in btrfs.  So you may as well use
-> > > a different filesystem.
-> >
-> > DAX on btrfs has been attempted[1]. Of course, we could not
->
-> But why?  A completeness fetish?  I don't understand why you decided
-> to do this work.
+On Wed 2021-03-10 (08:46), Ulli Horlacher wrote:
+> When I try to access a btrfs filesystem via nfs, I get the error:
+> 
+> root@tsmsrvi:~# mount tsmsrvj:/data/fex /nfs/tsmsrvj/fex
+> root@tsmsrvi:~# time find /nfs/tsmsrvj/fex | wc -l
+> find: File system loop detected; '/nfs/tsmsrvj/fex/spool' is part of the same file system loop as '/nfs/tsmsrvj/fex'.
 
-Isn't DAX useful for pagecache minimization on read even if it is
-awkward for a copy-on-write fs?
+It is even worse:
 
-Seems it would be a useful case to have COW'd VM images on BTRFS that
-don't need superfluous page cache allocations.
+root@tsmsrvj:# grep localhost /etc/exports
+/data/fex       localhost(rw,async,no_subtree_check,no_root_squash)
+
+root@tsmsrvj:# mount localhost:/data/fex /nfs/localhost/fex
+
+root@tsmsrvj:# du -s /data/fex
+64282240        /data/fex
+
+root@tsmsrvj:# du -s /nfs/localhost/fex
+du: WARNING: Circular directory structure.
+This almost certainly means that you have a corrupted file system.
+NOTIFY YOUR SYSTEM MANAGER.
+The following directory is part of the cycle:
+  /nfs/localhost/fex/spool
+
+0       /nfs/localhost/fex
+
+root@tsmsrvj:# btrfs subvolume list /data
+ID 257 gen 42 top level 5 path fex
+ID 270 gen 42 top level 257 path fex/spool
+ID 271 gen 21 top level 270 path fex/spool/.snapshot/2021-03-07_1453.test
+ID 272 gen 23 top level 270 path fex/spool/.snapshot/2021-03-07_1531.test
+ID 273 gen 25 top level 270 path fex/spool/.snapshot/2021-03-07_1532.test
+ID 274 gen 27 top level 270 path fex/spool/.snapshot/2021-03-07_1718.test
+
+root@tsmsrvj:# uname -a
+Linux tsmsrvj 5.4.0-66-generic #74-Ubuntu SMP Wed Jan 27 22:54:38 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+root@tsmsrvj:# btrfs version
+btrfs-progs v5.4.1
+
+root@tsmsrvj:# dpkg -l | grep nfs-
+ii  nfs-common                             1:1.3.4-2.5ubuntu3.3              amd64        NFS support files common to client and server
+ii  nfs-kernel-server                      1:1.3.4-2.5ubuntu3.3              amd64        support for NFS kernel server
+
+The same bug appears if nfs server and client are different hosts or the
+client is an older Ubuntu 18.04 system.
+
+
+-- 
+Ullrich Horlacher              Server und Virtualisierung
+Rechenzentrum TIK         
+Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
+Allmandring 30a                Tel:    ++49-711-68565868
+70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
+REF:<20210310074620.GA2158@tik.uni-stuttgart.de>
