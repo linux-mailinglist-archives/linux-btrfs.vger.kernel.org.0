@@ -2,104 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF17337F29
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 21:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE84338003
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Mar 2021 23:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhCKUj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Mar 2021 15:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhCKUjb (ORCPT
+        id S231138AbhCKWCe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Mar 2021 17:02:34 -0500
+Received: from smtp26.services.sfr.fr ([93.17.128.190]:48180 "EHLO
+        smtp26.services.sfr.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231309AbhCKWCF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Mar 2021 15:39:31 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5857EC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 12:39:31 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id g4so14417784pgj.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 12:39:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tavianator.com; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=dRk3Kx9qktDh5zPUMLZuWPj/dwqREEOtFiOdbp0qHVo=;
-        b=hBaOQKQeZs366Bws/mFU4oCQozIinBKrVp/pl8v8fMvWSnMBQEQFFCyMGeM9pNWBgq
-         JpbftdzSKpCc7/EXO1kYkOiiwH7olXi7aqpW+BLtBkMj/dBz+YFJ5V0fN6+a1/6wk2vp
-         nHK2i4a4510b9/BaIwFTYBOLGKOCiLoC0uDBc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=dRk3Kx9qktDh5zPUMLZuWPj/dwqREEOtFiOdbp0qHVo=;
-        b=JOpQD708JECt5Jyv5IwRFfyJOKZ9l08tqz5jBsJCGvU6z/pqsuLF788dnKuDafI8tj
-         Z1znyI5+RkEGseDwkUMW16ABCzl1Yslc/4LzJ+A/Noz8rBZkNxDmG3g4NZRmvDoGJIiA
-         a5BW/mK5oExd0YHhgkmefjQoIEbTLOf/sHjlJgp0MjTF9REYdDwc51rjzGhLWyPjr3WX
-         WeqSVV6V1IOW1nUou7vPk/icdJr7Q2WlQDRoSfbwObAfGfm1YlqQobtUH1EaFIpmKDpy
-         dT079QMG1BV7sSNP4v9/eLPqYQwb/TvXVBL/u9ccU3hRpN3DQ4EeD84Ze9PwYPZUL32Y
-         RfZg==
-X-Gm-Message-State: AOAM5317PxxTAW8Ll7JVZ/z+Utpi3LKzyafihjV9Bs0tmo2WydXdFP5O
-        wUn2XLipRcsZnH7jRO7/6yHTK++F7/G0Ox+ZJHVnaiHk6aRa6g==
-X-Google-Smtp-Source: ABdhPJw9bihQNEKiyIYrkmvXcypOyh+4hQauqjsbzT1TnD/jE4Zg1GNv+hDPoCLDhAzhWOQ3PNT5h13m1xfWr1I3KcM=
-X-Received: by 2002:aa7:8d8a:0:b029:1f8:aa27:7203 with SMTP id
- i10-20020aa78d8a0000b02901f8aa277203mr9171115pfr.64.1615495170536; Thu, 11
- Mar 2021 12:39:30 -0800 (PST)
-MIME-Version: 1.0
-From:   Tavian Barnes <tavianator@tavianator.com>
-Date:   Thu, 11 Mar 2021 15:39:19 -0500
-Message-ID: <CABg4E-kT0x_uKf-j2fdjqh-8H==Op_xbraaf=jLvNKOoF2n--A@mail.gmail.com>
-Subject: balance convert to raid0 makes low-utilization block groups
+        Thu, 11 Mar 2021 17:02:05 -0500
+X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Mar 2021 17:02:04 EST
+Received: from [192.168.1.11] (91-171-27-54.subs.proxad.net [91.171.27.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by msfrf2603.sfr.fr (SMTP Server) with ESMTPS id D80D71C000425
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 22:55:33 +0100 (CET)
+X-mail-filterd: 1.0.0
+X-sfr-mailing: LEGIT
+X-sfr-spamrating: 40
+X-sfr-spam: not-spam
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=neuf.fr; s=202006;
+ t=1615499733; h=Subject:From:To:Date; bh=/GDBXqkecjK0xkQHfVLBnxKswvEhN6twukL
+  SVhw0gfg=; b=iy7nn+3s/sZCh+RDQp1Pzbconpk/rbrKrGzGKFoHxmEa09kQR/1hDJrONht57L+
+  l1B2mArwfChIG6JWg2e91tj6a2IEU+CszRCKjWbtrxhDLDSpLZyoUvtlXJHXZ8RcRHQ7YiDhQdPi
+  d0KxZMCc4fgaJM8pD5F9cOroiSzQ4G/QnCLKuHDivxEDc8myQSnLFfoDQVjTv84I94H4yyJbHfs+
+  dLba82Jy3xgzFLvgHLCju7M8Vw9ya03A7X3LAVZJUZFihKSEiFv1q+dJnj81NjQOd4ADiL5ZVZhF
+  aQAYQ60AI8vrVJ9Ql24XhgbUtHKHRaYu69SiRYCWpwGatjTPPmg==;
+Received: from [192.168.1.11] (91-171-27-54.subs.proxad.net [91.171.27.54])
+        by msfrf2603.sfr.fr (SMTP Server) with ESMTP id BBC911C000408
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 22:55:33 +0100 (CET)
+Received: from [192.168.1.11] (91-171-27-54.subs.proxad.net [91.171.27.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pierre.labastie@neuf.fr)
+        by msfrf2603.sfr.fr (SMTP Server) with ESMTPSA
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Mar 2021 22:55:33 +0100 (CET)
+Authentication-Results: sfr.fr; auth=pass (LOGIN) smtp.auth=pierre.labastie@neuf.fr
+Message-ID: <d7b1445f25866bf5c8d5016b7cd7a94e68f67dd8.camel@neuf.fr>
+Subject: Subject: [PATCH] btrfs-progs: Fix the test for EXT4_EPOCH_MASK
+From:   Pierre Labastie <pierre.labastie@neuf.fr>
 To:     linux-btrfs@vger.kernel.org
+Date:   Thu, 11 Mar 2021 22:55:33 +0100
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm in the process of converting my "single" data to "raid0" for the
-performance benefits of striping.  However, watching the output of
-btrfs fi usage, I'm seeing something odd.  Here's the current usage:
+Commit b3df561fbf has introduced the ability to convert extended
+inode time precision on ext4, but this breaks builds on older distros,
+where ext4 does not have the nsec time precision.
 
-Data,single: Size:4.47TiB, Used:4.47TiB (99.98%)
-  /dev/mapper/neutrino3         300.00GiB
-  /dev/mapper/neutrino4         300.00GiB
-  /dev/mapper/neutrino5           1.29TiB
-  /dev/mapper/neutrino6           1.29TiB
-  /dev/mapper/neutrino7           1.29TiB
+Commit c615287cc tried to fix that by testing the availability of
+the EXT4_EPOCH_MASK macro, but the test is not complete.
 
-Data,RAID0: Size:1.62TiB, Used:1.62TiB (99.78%)
-  /dev/mapper/neutrino3         332.00GiB
-  /dev/mapper/neutrino4         332.00GiB
-  /dev/mapper/neutrino5         332.00GiB
-  /dev/mapper/neutrino6         332.00GiB
-  /dev/mapper/neutrino7         332.00GiB
+This patch aims at fixing the macro test, and changes the
+name of the associated HAVE_ macro, since the logic is reverted.
 
-Now I convert 50G of data from single to raid0 with btrfs balance
-start -dconvert=raid0,soft,devid=3,limit=50 /mnt/neutrino.  The usage
-now looks like this:
+This fixes #353 when ext4 has nsec time precision. Note that
+the test fails when ext4 does not have the nsec time precision.
+Maybe the test shouldn't be run in that case?
 
-Data,single: Size:4.42TiB, Used:4.42TiB (99.98%)
-  /dev/mapper/neutrino3         250.00GiB
-  /dev/mapper/neutrino4         300.00GiB
-  /dev/mapper/neutrino5           1.29TiB
-  /dev/mapper/neutrino6           1.29TiB
-  /dev/mapper/neutrino7           1.29TiB
+Issue: #353
+Signed-off-by: Pierre Labastie <pierre.labastie@neuf.fr>
+---
+ configure.ac          | 8 ++++----
+ convert/source-ext2.c | 6 +++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-Data,RAID0: Size:1.87TiB, Used:1.67TiB (89.34%)
-  /dev/mapper/neutrino3         382.00GiB
-  /dev/mapper/neutrino4         382.00GiB
-  /dev/mapper/neutrino5         382.00GiB
-  /dev/mapper/neutrino6         382.00GiB
-  /dev/mapper/neutrino7         382.00GiB
-
-IOW it allocated 250G of raid0 block groups but only filled them with
-50G of data.  It's back to normal after I rebalance those block groups
-with btrfs balance start -dconvert=raid0,profiles=raid0,usage=80
-/mnt/neutrino:
-
-Data,RAID0: Size:1.67TiB, Used:1.67TiB (99.79%)
-  /dev/mapper/neutrino3         342.00GiB
-  /dev/mapper/neutrino4         342.00GiB
-  /dev/mapper/neutrino5         342.00GiB
-  /dev/mapper/neutrino6         342.00GiB
-  /dev/mapper/neutrino7         342.00GiB
-
-Any idea why?
-
+diff --git a/configure.ac b/configure.ac
+index 612a3f87..dd6a5de7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -251,10 +251,10 @@ else
+ AC_DEFINE([HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE], [0], [We did not define
+FIEMAP_EXTENT_SHARED])
+ fi
+ 
+-HAVE_OWN_EXT4_EPOCH_MASK_DEFINE=0
+-AX_CHECK_DEFINE([ext2fs/ext2_fs.h], [EXT4_EPOCH_MASK], [],
+-		[HAVE_OWN_EXT4_EPOCH_MASK_DEFINE=1
+-		 AC_MSG_WARN([no definition of EXT4_EPOCH_MASK found, probably
+old e2fsprogs, will use own definition, no 64bit time precision of converted
+images])])
++AX_CHECK_DEFINE([ext2fs/ext2_fs.h], [EXT4_EPOCH_MASK],
++                [AC_DEFINE([HAVE_EXT4_EPOCH_MASK_DEFINE], [1],
++                   [Define to 1 if e2fsprogs defines EXT4_EPOCH_MASK])],
++		[AC_MSG_WARN([no definition of EXT4_EPOCH_MASK found, probably
+old e2fsprogs, will use own definition, no 64bit time precision of converted
+images])])
+ 
+ dnl Define <NAME>_LIBS= and <NAME>_CFLAGS= by pkg-config
+ dnl
+diff --git a/convert/source-ext2.c b/convert/source-ext2.c
+index bd872086..fb655ec0 100644
+--- a/convert/source-ext2.c
++++ b/convert/source-ext2.c
+@@ -698,7 +698,7 @@ static void ext2_copy_inode_item(struct btrfs_inode_item
+*dst,
+ 	memset(&dst->reserved, 0, sizeof(dst->reserved));
+ }
+ 
+-#if HAVE_OWN_EXT4_EPOCH_MASK_DEFINE
++#if HAVE_EXT4_EPOCH_MASK_DEFINE
+ 
+ /*
+  * Copied and modified from fs/ext4/ext4.h
+@@ -769,7 +769,7 @@ out:
+ 	return ret;
+ }
+ 
+-#else /* HAVE_OWN_EXT4_EPOCH_MASK_DEFINE */
++#else /* HAVE_EXT4_EPOCH_MASK_DEFINE */
+ 
+ static int ext4_copy_inode_timespec_extra(struct btrfs_inode_item *dst,
+ 				ext2_ino_t ext2_ino, u32 s_inode_size,
+@@ -786,7 +786,7 @@ static int ext4_copy_inode_timespec_extra(struct
+btrfs_inode_item *dst,
+ 	return 0;
+ }
+ 
+-#endif /* !HAVE_OWN_EXT4_EPOCH_MASK_DEFINE */
++#endif /* !HAVE_EXT4_EPOCH_MASK_DEFINE */
+ 
+ static int ext2_check_state(struct btrfs_convert_context *cctx)
+ {
 -- 
-Tavian Barnes
+2.30.1
+
+
+
