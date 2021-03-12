@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B8B33983C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Mar 2021 21:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D06633983D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Mar 2021 21:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhCLU0N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Mar 2021 15:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
+        id S234839AbhCLU0O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Mar 2021 15:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234800AbhCLUZv (ORCPT
+        with ESMTP id S234801AbhCLUZw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:25:51 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A47C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:51 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id u7so4831599qtq.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:51 -0800 (PST)
+        Fri, 12 Mar 2021 15:25:52 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CC2C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:52 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id l13so4848520qtu.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZJxOsvuh1x8H//YwmN29+j5aX5UXFh5/mvrYpeDOYSc=;
-        b=P8MiFZH4kLSOl9CdjYHE8IYw6ylZwvMTE5iGZciKjyu/NMUnRDIjc98D0AuuVpGi5k
-         qGwB0koFVGlAtgMd6TJhtq1y/3SWyGomdP2RaEMehRhv1CHcsTsr92JhoiKkIUQLBod/
-         UtrdcTNP+dXSr8aH5zXiM7myMt+fVU8ZIIeTAx50Yti5y9HVuiJST/1VVEiVIDOfcS8z
-         xYw00uocu4xkgELF+0JZ2VhdIoEiMh4EY9MQsqYOiW4Cl214j6x4fGojeLKTIY/aG8J6
-         aZjYxhFb6lHhVeQOZyQqV4I2E17jYHurZAzprIgRa5tAzlcFZvOLRxKXVSEDCz6sIL2y
-         45EA==
+        bh=U/aDohO5zMMuWf0AmUIAS+Kqci7E8TwpqYGGIn/pZEs=;
+        b=mpJo+7CxNY2yRLIKAUxAaka3qw5VBfI6kkACl3Nd/M31eOb/dU3364LevJlGyc06D1
+         2qWBv4mQDzV/VajtIpgz/9EmeYYUZVPkKe80MPNoSBCzP77J4PYc+iafkruSs/CdTeD7
+         xNeqSGTQfkmjKqPgq/5+dGFUrcjbCqEQsOgnifxEs2vAlsLwByjU/4NthPZYxJ/1MzPG
+         WmSWGUYRv+y26v9CBxNWB6yDP5po9blOxRpfi1X7ts67IYONSpni+YM656L3hNfiTdDp
+         fzUCIMGHB7FFVGn51POGnHp0UKiLbXRmKorQuqlcryVqkKab0jggpKMLpy5vS51ZqhUc
+         CzBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZJxOsvuh1x8H//YwmN29+j5aX5UXFh5/mvrYpeDOYSc=;
-        b=dn6vRZ0mP3jnT59aSCSLBSDeELRGB0wRfa6VrcigiSZPNbybK7MsBu6gtAXdDITplO
-         uZskqcvc7i6C03zs1ZqZiAOXsSXYipmiERfW9OBsDZ085rxqDneYNNMluLtCxVQdn2su
-         +MT7oQtto0DDcqG+JiYgDW+RK0TY43wM5rVKi+fAqF5+JayHMFldyl8feMpHEBGYZWLd
-         OMUEUrGOt2eBF/ZVu/15P55MsdK1cm3vVw9sYhmr+3GBpzuO57wxupA8XFvvuM/SguZj
-         iAx4jT+4uBy77mHmD4KLaPGAQeEOPeahuF3rU8+VvJXTuE2MbylfiMW6sQP7WQoekS/y
-         /q6Q==
-X-Gm-Message-State: AOAM530a5IHjrI935gb2tWuzcuELe8xzlz3JZU014D5PXD1/Tc5TTkeG
-        NZ7i/of6Qp2VgZGV8wrGaXxvNvWAq32rzqj5
-X-Google-Smtp-Source: ABdhPJwwNUNyVh/w78Hz9Cj6YTYHj6N8JyCUjjwmSQg9CqyrYM/KYrxYVPrroxrZR/WSaq0keF/6Ow==
-X-Received: by 2002:ac8:dc2:: with SMTP id t2mr13328600qti.234.1615580750052;
-        Fri, 12 Mar 2021 12:25:50 -0800 (PST)
+        bh=U/aDohO5zMMuWf0AmUIAS+Kqci7E8TwpqYGGIn/pZEs=;
+        b=j2rZ9vMflPoVmHTzal8VGaK+VzD3CzJMcJOpkBxZKFUAi5kjJsqxqpXAZoEdAAt8sb
+         PK8CJUxspkhT2L+50iUlhMo+QcKlP41qV8uaJgSE5mOtc056k5H54NJu+QpecdvQra4U
+         wHIWJ7nREXl0Mjv1aFlc/Ynj5gg+XGw/UwN825rm6TlLXtEFAVnqFgqn6zf+nGAqT8Oi
+         xmjC4bqVEWbSNoo5ZL5z1l4kiZgnMaxHWcrnN9CwrgjEr0DHDrvZS3CNTJAcVeancgxM
+         wy9rRMo0s8fPjK0JvF6oi0PPrq3qVUgbb/Tcs+QStXGq8H8faCfyRnOt3vorhd/PlxUS
+         PEIw==
+X-Gm-Message-State: AOAM532gyGIyI3sIUSZSI0v3u0AWnvUqBwONaEeCzpjif0Cm7ByfaKlj
+        auyJJwYbuzda4paVEKTrFHWjO9bV4fQQStHf
+X-Google-Smtp-Source: ABdhPJy6BddcAAOTNMhVDTosnyAm3o25p04ucrKXby/kqlfcuiBOcwuJdwrf0xmRleLYT/0l0fUwqA==
+X-Received: by 2002:ac8:5c82:: with SMTP id r2mr9990608qta.201.1615580751610;
+        Fri, 12 Mar 2021 12:25:51 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id e18sm4548549qtr.52.2021.03.12.12.25.49
+        by smtp.gmail.com with ESMTPSA id l4sm4632001qte.64.2021.03.12.12.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 12:25:49 -0800 (PST)
+        Fri, 12 Mar 2021 12:25:51 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v8 09/39] btrfs: handle btrfs_record_root_in_trans failure in btrfs_delete_subvolume
-Date:   Fri, 12 Mar 2021 15:25:04 -0500
-Message-Id: <0a799b56d387f1d9dfefb65c62236b03e8bcdaeb.1615580595.git.josef@toxicpanda.com>
+Subject: [PATCH v8 10/39] btrfs: handle btrfs_record_root_in_trans failure in btrfs_recover_log_trees
+Date:   Fri, 12 Mar 2021 15:25:05 -0500
+Message-Id: <f2d84dcb5b07246d69fd1701eb5f063b6b306f52.1615580595.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1615580595.git.josef@toxicpanda.com>
 References: <cover.1615580595.git.josef@toxicpanda.com>
@@ -64,31 +64,37 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 btrfs_record_root_in_trans will return errors in the future, so handle
-the error properly in btrfs_delete_subvolume.
+the error properly in btrfs_recover_log_trees.
+
+This appears tricky, however we have a reference count on the
+destination root, so if this fails we need to continue on in the loop to
+make sure the properly cleanup is done.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/btrfs/tree-log.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c64a5e3eca47..48c953d0dde7 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4317,7 +4317,11 @@ int btrfs_delete_subvolume(struct inode *dir, struct dentry *dentry)
- 		goto out_end_trans;
- 	}
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 2f1acc9aea9e..941b4dd96dd0 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6278,8 +6278,12 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 		}
  
--	btrfs_record_root_in_trans(trans, dest);
-+	ret = btrfs_record_root_in_trans(trans, dest);
-+	if (ret) {
-+		btrfs_abort_transaction(trans, ret);
-+		goto out_end_trans;
-+	}
+ 		wc.replay_dest->log_root = log;
+-		btrfs_record_root_in_trans(trans, wc.replay_dest);
+-		ret = walk_log_tree(trans, log, &wc);
++		ret = btrfs_record_root_in_trans(trans, wc.replay_dest);
++		if (ret)
++			btrfs_handle_fs_error(fs_info, ret,
++				"Couldn't record the root in the transaction.");
++		else
++			ret = walk_log_tree(trans, log, &wc);
  
- 	memset(&dest->root_item.drop_progress, 0,
- 		sizeof(dest->root_item.drop_progress));
+ 		if (!ret && wc.stage == LOG_WALK_REPLAY_ALL) {
+ 			ret = fixup_inode_link_counts(trans, wc.replay_dest,
 -- 
 2.26.2
 
