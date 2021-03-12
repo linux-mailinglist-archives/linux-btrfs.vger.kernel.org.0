@@ -2,58 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CB9339838
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Mar 2021 21:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D1B33983A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Mar 2021 21:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234821AbhCLU0J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Mar 2021 15:26:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
+        id S234831AbhCLU0M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Mar 2021 15:26:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234795AbhCLUZp (ORCPT
+        with ESMTP id S234796AbhCLUZr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:25:45 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7CFC061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:45 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id l132so25716024qke.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:45 -0800 (PST)
+        Fri, 12 Mar 2021 15:25:47 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313C2C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:47 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id i15so4896745qvr.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:25:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6ZShPBI7AjyNrxGZbKP3JEKbwG7ciYzPWmjgBbz8TLA=;
-        b=nWdoKbnuDFCHNtP1mGz5ZVyX41VF+1DeD9NM2WHeKV62FGsdcq8rHZwZ5oH7cwYFa4
-         vx4OQweCWy9H1sJgx9JSVwgBDUHp+9QVsOPEVdXhXe8HQQjYyF9UBYtkgV020OJH6bNI
-         uwp7w7YlFIg5bn+8h/bVwJWWNjnD4g4KS+Q1X2fyTGRR4nQxfiGzOahWPczboa+le8Bp
-         dd4bOdJ44rTuoYqjsLUS84z0ZIsgitCxtO+b8pcsi+kQebTglk0+W96SD+ryflOcGhQk
-         hoFhcUTRGRC65/FwKt+NV4pcQRwVIhD3VweNxslbAHfhPf86yh9innosT76FECw8gyeY
-         zufQ==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=i2amck6xZdrsQXUWDvpt+mTCzs5n8YBqBaTJc1sKZog=;
+        b=ktTsLulKa2+co7T8k7CWlu1IbnmBWwGVkw+zFhLyxSIi9wS/LHfZSiQKW/XenI8RWk
+         dve5W11Ly2em03yAEAXSbr3pgSgHrDXEAHO1nYV0ciHDfuxR3FFIkb68R/JTmU9YyD5d
+         eD0vO7Q1Kul91Ii3L/rTowavOwXMs8tG2/suYAvvxqKgXS9ejJAErLyyImVmJ4nUihae
+         Y955IDk2YE8f+5q+48D5nXHC8S280RgDUhJiC1iTKdq6AwqeuG32Kbya6L4NfnlcuiV6
+         wLFb3+vLed2pnBgr7ppbsixsjDj42tpWS0tSH97kLD9xiQa2EanE8S+E0j/CwD3GU9l9
+         X+1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6ZShPBI7AjyNrxGZbKP3JEKbwG7ciYzPWmjgBbz8TLA=;
-        b=j4gVFkzpBE3Kt8QYEyRD1Scv06yLwXEl++fLACkQWsk+wY5USb5BnZErqnG3HievwK
-         MUDjbGrMkc9OZSj0cZWJF4vps5Ib8wn4n1cAkfCDiAYmyqXyNU+rRB8uttDM/Cr000r6
-         Y5DdddPi47j+9VxBEC56lNYJOZfEU5Lst7382kU4/vIJboj6C4Q2H9bFLWgKuTenFsYB
-         a7ghn+t5XjHC+63vQDaFesI5kK2F9jdr32EqY3jzjazSMj27j0rWWgFJ2bPP/Cy3aD4L
-         HkYVVLbiPYrCRMlYF3h9iQmpFxVz5o3w/yMNAoT5psQnaAm2cyHlTJlsforzXavMjWI0
-         +FFQ==
-X-Gm-Message-State: AOAM530tyT4j6SQUkQII7x9D2jc8ZPj8tyowy1LgNoU0NPORYsuxpamL
-        TDqSUuvKsgi1/bEQ8HzkO5Wf2eyIToJdv1I2
-X-Google-Smtp-Source: ABdhPJzGmqiUWNuXONGRmxkYGGYKMq1G0qRbgJeZEo6h/Fd/RwQJcxYQwvTcd22kU4B8rbiSei1abQ==
-X-Received: by 2002:a37:4743:: with SMTP id u64mr14548286qka.350.1615580744193;
-        Fri, 12 Mar 2021 12:25:44 -0800 (PST)
+        bh=i2amck6xZdrsQXUWDvpt+mTCzs5n8YBqBaTJc1sKZog=;
+        b=Ch5P48mEqIsZTvwuJjA7dLB1aMC1I9nD9RZXwlNzzLuw8aBfKSvS1zYpbMw0hgND3e
+         M7I3H6Y7FbxhOKf/KAIjDYW1L9JXqjX/Q/0Z8430WncZP3lFipSQixYZ2vytkr/OdziW
+         5UEy587fM+2OVvYrx7ZMQtSQyPiRJeKkNp0tOBfyU7HqdL/unuIqQh12Y4MPilWdrNn0
+         j7q8V+mAE4vMS3yxZfQlq+YL8+oHQEHhgzUegjGR9CU/QlF+GMWNX2lOYyYX34BwqEmk
+         xahsnSHjn5mfF7A+f85U5WSrg+vC/iviiMCyRMbC8glPvZGiQ5oXWilx1R5/9OjIr7FB
+         FFfQ==
+X-Gm-Message-State: AOAM53386TyMMhUvVqI9/19P/WhCoKSiS+svY7MV1csSRW201lf0Lcxj
+        TqKf1kIftPAGArIRJr1jcVg45glaDYqSN/kR
+X-Google-Smtp-Source: ABdhPJwEcGuw19ba1RGsuYLLeBmHyqZtOw28hlnvVDGGWpwnRUb/XameIIazW+B2+N0Dw2v9vDdTOw==
+X-Received: by 2002:ad4:4cca:: with SMTP id i10mr14062298qvz.49.1615580745674;
+        Fri, 12 Mar 2021 12:25:45 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d24sm5176835qkl.49.2021.03.12.12.25.43
+        by smtp.gmail.com with ESMTPSA id d23sm5131220qka.125.2021.03.12.12.25.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 12:25:43 -0800 (PST)
+        Fri, 12 Mar 2021 12:25:45 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v8 05/39] btrfs: check record_root_in_trans related failures in select_reloc_root
-Date:   Fri, 12 Mar 2021 15:25:00 -0500
-Message-Id: <101e340fc079ffd729abf5913f9bda4cf0c61b05.1615580595.git.josef@toxicpanda.com>
+Subject: [PATCH v8 06/39] btrfs: do proper error handling in record_reloc_root_in_trans
+Date:   Fri, 12 Mar 2021 15:25:01 -0500
+Message-Id: <7ff494825bd0a0b4b67f00c761579c8b8d3c02c5.1615580595.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1615580595.git.josef@toxicpanda.com>
 References: <cover.1615580595.git.josef@toxicpanda.com>
@@ -63,46 +62,56 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We will record the fs root or the reloc root in the trans in
-select_reloc_root.  These will actually return errors in the following
-patches, so check their return value here and return it up the stack.
+Generally speaking this shouldn't ever fail, the corresponding fs root
+for the reloc root will already be in memory, so we won't get -ENOMEM
+here.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+However if there is no corresponding root for the reloc root then we
+could get -ENOMEM when we try to allocate it or we could get -ENOENT
+when we look it up and see that it doesn't exist.
+
+Convert these BUG_ON()'s into ASSERT()'s + proper error handling for the
+case of corruption.
+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/relocation.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ fs/btrfs/relocation.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 0f2ecf61696e..b70a666612a7 100644
+index b70a666612a7..28d49b14a23a 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -1988,6 +1988,7 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
- 	struct btrfs_backref_node *next;
- 	struct btrfs_root *root;
- 	int index = 0;
-+	int ret;
+@@ -1971,8 +1971,27 @@ static int record_reloc_root_in_trans(struct btrfs_trans_handle *trans,
+ 		return 0;
  
- 	next = node;
- 	while (1) {
-@@ -2023,11 +2024,15 @@ struct btrfs_root *select_reloc_root(struct btrfs_trans_handle *trans,
- 		}
+ 	root = btrfs_get_fs_root(fs_info, reloc_root->root_key.offset, false);
+-	BUG_ON(IS_ERR(root));
+-	BUG_ON(root->reloc_root != reloc_root);
++
++	/*
++	 * This should succeed, since we can't have a reloc root without having
++	 * already looked up the actual root and created the reloc root for this
++	 * root.
++	 *
++	 * However if there's some sort of corruption where we have a ref to a
++	 * reloc root without a corresponding root this could return -ENOENT.
++	 */
++	if (IS_ERR(root)) {
++		ASSERT(0);
++		return PTR_ERR(root);
++	}
++	if (root->reloc_root != reloc_root) {
++		ASSERT(0);
++		btrfs_err(fs_info,
++			  "root %llu has two reloc roots associated with it",
++			  reloc_root->root_key.offset);
++		btrfs_put_root(root);
++		return -EUCLEAN;
++	}
+ 	ret = btrfs_record_root_in_trans(trans, root);
+ 	btrfs_put_root(root);
  
- 		if (root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) {
--			record_reloc_root_in_trans(trans, root);
-+			ret = record_reloc_root_in_trans(trans, root);
-+			if (ret)
-+				return ERR_PTR(ret);
- 			break;
- 		}
- 
--		btrfs_record_root_in_trans(trans, root);
-+		ret = btrfs_record_root_in_trans(trans, root);
-+		if (ret)
-+			return ERR_PTR(ret);
- 		root = root->reloc_root;
- 
- 		if (next->new_bytenr != root->node->start) {
 -- 
 2.26.2
 
