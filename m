@@ -2,112 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8955339861
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Mar 2021 21:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC18339C7D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Mar 2021 08:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234949AbhCLU1I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Mar 2021 15:27:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S231280AbhCMHAI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 13 Mar 2021 02:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234859AbhCLU0l (ORCPT
+        with ESMTP id S230309AbhCMG7e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:26:41 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029BAC061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:26:37 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id s2so4835414qtx.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 12:26:36 -0800 (PST)
+        Sat, 13 Mar 2021 01:59:34 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4497FC061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 22:59:34 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id a18so5946594wrc.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Mar 2021 22:59:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y8oSBZRXUVWprsp/bA50/MihqamlhtVrIp1ItWvS1fk=;
-        b=G7t3/oHaNfTbufVLXFfP1zuSj7cz6nQFVkx/enbdk4YtzDxoibyogeSws8I9e+mQPZ
-         dv2GA4fSKjX0/xEVJT10gCmTvmOkhA4IQGoeFkSF3yYdzZ15TybYCQ0BWkMdBG3XnOd+
-         SwskFd4wAZCuQIH8ezu31XsXK28vn5361aG/QB0fHJA4/jTJOQv67CTZ6A9VM42B5hEN
-         2LKJDvCfIeCWC2I5bp1Oog+lhP4lcZQPX/i93I44oxpsOZJU780vqucV+9nHUJaklnKV
-         g9T0i20Ob2gFGL2ChWH+bOZ03KJUhZbfk0Je1utGXv2eGNPBFVYZiZ78/VwyCDRoIskJ
-         IMIg==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B0OONeLcLFUs0on6bSK33cR2DqAPXKa+si5CAVf/bOo=;
+        b=qWTsEUbLW7soeQPmy4GseP4SaufMIk0fbKK31vBCKgWmi/zyQAcPbhpIcpkI3cQQ0X
+         RFg18xtmm4LOPRp16JMyDxQA4z8Cw883XT0hguDFW9ix3O6X/ju0c40dS6pra/+7Zps6
+         mMDTVTUfvFhVoMimMFnA+KuYUzZdG/g+CAiQXzGjFXCScg5ySae7jsEVW2MoNsBavYWT
+         CtFuQynhdNhtIeG4+Y+VJghtkxx32vsLEFvRIQqZBKEqiekFhqR1cWCe/waa/eIPM5r+
+         2KbIS0DDl9Al5MVVVJ7QSdaHCfPsB1GsEk2XaxmHrL7VEsx9LKf1V/KTG5LdV71XI8He
+         J1Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y8oSBZRXUVWprsp/bA50/MihqamlhtVrIp1ItWvS1fk=;
-        b=DdZBOUJ4AqjbWwi5ZlPpD8U2eHzDTrNF+GnyO78EdtNM5XhQXWAQfQ6NmW2Qh0ThlS
-         C9M2UWirw/ZR0AzWr3Gz/ugXCjL0piCF6Rg01mq8PgFNieEnmumT566I/bPhCaV9Y0pq
-         vOyi743CFLPY0vUDLSc64gMqI5PTdd5UwtXBzidk6Z7inRcUvfhMzy7MFvxYj0G0zvjy
-         hOqGvn0VsUZ6oO+6Tq2t9cvEICr7yuimR9F0MLr5CVLLx9QHW97PERwttowZ3pbad88A
-         zpzk6gvGWLvVOMg6Pv4bhwjMuMci6fH4hvjE4mYX0MTeVTK53CyJ+Z34uZh0QdUcBg7G
-         vfrw==
-X-Gm-Message-State: AOAM5327IiMrZJbDXJVXTZuhsOEdD1Rz61fHtQDQV68wCpui65Wnd+E6
-        148VOqxTDyXwLDCfBd234Xk2nQrpfT8AfQOn
-X-Google-Smtp-Source: ABdhPJzPmxnrYW637p0lkPf7PsrMZCeKT0rbj5qpAhDzh8LoJRNQjZb0Rv/KXxO3OxC8M90dkVViqA==
-X-Received: by 2002:ac8:4a90:: with SMTP id l16mr13335835qtq.33.1615580796002;
-        Fri, 12 Mar 2021 12:26:36 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 77sm5295344qko.48.2021.03.12.12.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 12:26:35 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v8 39/39] btrfs: check return value of btrfs_commit_transaction in relocation
-Date:   Fri, 12 Mar 2021 15:25:34 -0500
-Message-Id: <4598afc28636ae8d935a64cafcd73d82f76196f9.1615580595.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1615580595.git.josef@toxicpanda.com>
-References: <cover.1615580595.git.josef@toxicpanda.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B0OONeLcLFUs0on6bSK33cR2DqAPXKa+si5CAVf/bOo=;
+        b=iTOFv16xKcc8hmA4K6PW1QOTGPpoXVnVTAr1vwU9LxI3gr9gz+ZOwEOtJbo4wj5oYG
+         vYW0VQ9dKNjbBpko2+jT0CC2IJ+eLSzz1a9XeGXqAOV61BOnkngS9SQG9BXyIdNYBIMV
+         6lTPCqbv4reBoSne/GNH9SVuLJmH/4rhfY4t4qum15bgLvML07AhedPFN4IfbmjflKyX
+         0Pd78Q+TEKJ/PGECV/sbxy4YWXueVouNi6xXV0RRF5PiU2VS867Lam5ScJ0nWosiDD2V
+         +Jq3COvWcBKYRFbkocXQ2wwJn64W0d5qTZdlDL/IKhtLwyMVLcyADd4oBxMXHIJkQGuf
+         A2hQ==
+X-Gm-Message-State: AOAM533mpmyX0Q+uFALCjN//LPIRTiiku1abpPsgHZB12YCN7ROc6KwJ
+        VB+xJ/qgkw3qgyeHu0vBTrTvxGWBdiAbAgAj1OI49HZPLjsyXg/I
+X-Google-Smtp-Source: ABdhPJx/bl+qZZmu9sK1gKwKx87cndLvl/ur+fEbD0ti1uuP9ky/9wplK3ChqvBHcdZvqxSbCy+BvZOhzb2+gGRqLxw=
+X-Received: by 2002:a05:6000:114e:: with SMTP id d14mr17621532wrx.236.1615618772858;
+ Fri, 12 Mar 2021 22:59:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <ef3da480-d00d-877e-2349-6d7b2ebda05e@gmail.com>
+In-Reply-To: <ef3da480-d00d-877e-2349-6d7b2ebda05e@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 12 Mar 2021 23:59:16 -0700
+Message-ID: <CAJCQCtStWN30akGRByjA2y=AaTLRXeeEmc4MiNaLgVEPRp=J7g@mail.gmail.com>
+Subject: Re: BTRFS error (device sda1): bdev /dev/sdb1 errs: wr 2702175, rd
+ 2719033, flush 0, corrupt 6, gen 0
+To:     Thomas <74cmonty@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's a few places where we don't check the return value of
-btrfs_commit_transaction in relocation.c.  Thankfully all these places
-have straightforward error handling, so simply change all of the sites
-at once.
+[    4.365859] usb 8-1: device not accepting address 5, error -71
+[    4.365920] usb usb8-port1: unable to enumerate USB device
+[    4.433539] BTRFS info (device sda1): bdev /dev/sdb1 errs: wr
+2701995, rd 2718862, flush 0, corrupt 6, gen 0
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/relocation.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+/dev/sdb is dropping a lot of reads and writes. Is /dev/sdb in a
+SATA-USB enclosure of some kind?
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 557d4f09ce7f..371cd4476daf 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1915,7 +1915,7 @@ int prepare_to_merge(struct reloc_control *rc, int err)
- 	list_splice(&reloc_roots, &rc->reloc_roots);
- 
- 	if (!err)
--		btrfs_commit_transaction(trans);
-+		err = btrfs_commit_transaction(trans);
- 	else
- 		btrfs_end_transaction(trans);
- 	return err;
-@@ -3487,8 +3487,7 @@ int prepare_to_relocate(struct reloc_control *rc)
- 		 */
- 		return PTR_ERR(trans);
- 	}
--	btrfs_commit_transaction(trans);
--	return 0;
-+	return btrfs_commit_transaction(trans);
- }
- 
- static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
-@@ -3647,7 +3646,9 @@ static noinline_for_stack int relocate_block_group(struct reloc_control *rc)
- 		err = PTR_ERR(trans);
- 		goto out_free;
- 	}
--	btrfs_commit_transaction(trans);
-+	ret = btrfs_commit_transaction(trans);
-+	if (ret && !err)
-+		err = ret;
- out_free:
- 	ret = clean_dirty_subvols(rc);
- 	if (ret < 0 && !err)
--- 
-2.26.2
 
+[   16.914959] blk_update_request: I/O error, dev fd0, sector 0 op
+0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[   16.914963] floppy: error 10 while reading block 0
+
+Curious but I don't think it's related.
+
+
+[   20.685589] attempt to access beyond end of device
+               sdb1: rw=524288, want=496544128, limit=496091703
+[   20.685798] attempt to access beyond end of device
+               sdb1: rw=2049, want=496544128, limit=496091703
+[   20.685804] BTRFS error (device sda1): bdev /dev/sdb1 errs: wr
+2701996, rd 2718862, flush 0, corrupt 6, gen 0
+
+Something is definitely confused but I'm not sure what or why.
+
+$ sudo btrfs insp dump-s /dev/sdb1 | grep dev_item.total_bytes
+
+Compare that value with (Sectors * 512) from:
+
+$ sudo fdisk -l /dev/sdb
+
+The fdisk number of bytes should be the same as or more than the btrfs bytes.
+
+$ sudo smartctl -x /dev/sdb
+
+That might require installing the smartmontools package.
+
+--
+Chris Murphy
+
+
+--
+Chris Murphy
