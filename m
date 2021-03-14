@@ -2,111 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101CF339FBC
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Mar 2021 19:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F779339FE2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Mar 2021 19:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhCMSDW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Mar 2021 13:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234165AbhCMSDL (ORCPT
+        id S234275AbhCMSfE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 13 Mar 2021 13:35:04 -0500
+Received: from smtp.econet.co.zw ([77.246.51.158]:62181 "EHLO
+        ironportDMZ.econet.co.zw" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233635AbhCMSfD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Mar 2021 13:03:11 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA79C061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Mar 2021 10:03:10 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id e10so6508934wro.12
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Mar 2021 10:03:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5WONQpAzFjvW+952/Mm3Aoj94g8YP2FHLW5RZLyUnWo=;
-        b=wgqDliaqd2dSJ+76MKwQneg4dbLTtXsqiIvk8X5VbmbDwfih+9xfTGahytnscjPqjE
-         KYEeNaTH7SD8klAWyiYQemazuRGt1jOyvjaIyMXvswwaLL/zxIq7EHbLoHipG/JfsRit
-         D7NQAQv4hy4D1MgDH36uNyVdqTHEcyw3tSU1n2yWGCHFmPNUSbLPcwJnZfaI81hl6z0N
-         mtG9Zs4bTlJSgE4LST0QGNNa4EzM0pfkwBp/mc0Z2M1NllPps+IINKwhOTrUjR2tmtk+
-         OYvLV1kQ4sbNLaAQs/c/i5ePF4R4oXyxMbyMp60K+WXlJmRY+TY0nUTgVp/ZmGC9LCLe
-         fKSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5WONQpAzFjvW+952/Mm3Aoj94g8YP2FHLW5RZLyUnWo=;
-        b=uJUiefScdIrHpLWbJThI/x/7Z1M0HOjzVEezn6ztPn1z/pTOHt2jEmfX5yTDVdT8wL
-         CRAEi4BGKNT+N/boVu90eQ8axllm/oDagGfBeD928bqeNoYXYR6Y6/HYA4fA8Nig7X6G
-         48k0iiAxSLHUJKNLKTEfxxNEcp5aYt38s89QE7SZ5xNB9plSPDh21iWSiLQ/S/ZIyw1R
-         yNS+agCkQtZg6qBKE1zrdGqjWC6bNWNOADgmXyU1koRhqcdh2XBCPtebuWPRUuNE8qh/
-         +a+IogBSgaP/hmY46xujUeukBWqNtkpkkPIuXS40PtfntMP1PYok6JHRUZlme5Lss2yW
-         DjNQ==
-X-Gm-Message-State: AOAM5328M84n7rjMOP4vZixuEU4KZF/887yqQ6rUHIZ8dtLasGLLPlUu
-        MBtGeQcQXimxFnUZQRo8sb3VtZfsDomQP2mmZKzYHA==
-X-Google-Smtp-Source: ABdhPJws0+xNnV928hsIBfmtQ3k1ONj7bTQGZTjWSW3JYzwjq4MQjaYgc7k7/HLHgUFeQOyJBVeBy+0IE3r2/U/P4Gs=
-X-Received: by 2002:a5d:42ca:: with SMTP id t10mr19754194wrr.274.1615658589685;
- Sat, 13 Mar 2021 10:03:09 -0800 (PST)
+        Sat, 13 Mar 2021 13:35:03 -0500
+X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Mar 2021 13:34:59 EST
+IronPort-SDR: mDSsjbKcaVdFG5GqQFMTeVc4aoZLRWVLGK1vUixCIY/uKtiD+m/7fNEhsBwBepPPMn5tEcgkXN
+ 0kf+g54xDaGQWLxdgNKWkT/NUYMdqLmEqGlbInNSaPrs7yIG9pllVbsvofgOvAiBfF2rtkOKdd
+ 7jDcRkn+QnPB1cMXsh3WrHO408qEXiGC2s0ldR4usP1gFSqmQD3lDKIoO1zSIRS7akrX1fM7+K
+ c3Wh8mzoculYKqvYE5rOQJx27JaaDEmpetBPJ1QOhwlDUj3Q04CLzUjG78czQ4P1gDppi3dbk+
+ HVc=
+IronPort-HdrOrdr: A9a23:hlvA3aN5TRyAvsBcTmGjsMiAIKoaSvp033AA0UdtRRtJNvGCn8
+ e1k/gBkTPygjAdWHYv8OrwWpWoa3Xa6JJz/M0tLa6vNTOW21eAAYl+4eLZogHINDb58odmup
+ tIV4hbJJnOAUNhjcD8iTPZL/8FzMOc+K6lwcfypk0dND1CUK1r4wdnBgvzKCQfL2MqObMDGI
+ OY9o57oVObFUg/VcinGmIDG9HKutyjruOcXTc9GxUl5AOS5AnH1JfGFXGjr28jegIK5Y0H+W
+ jB1zXj5qO5s+yqoyWss1P73tBzkNvlxsArPr3qtuElbhHtjgqPQagJYczlgBkF5Ni16FAwkM
+ Tdyi1QWvhO1w==
+X-IronPort-AV: E=Sophos;i="5.81,245,1610402400"; 
+   d="scan'208";a="3444427"
+Received: from unknown (HELO wvale-jmb-svr-1.econetzw.local) ([192.168.101.35])
+  by ironportLAN.econet.co.zw with ESMTP; 13 Mar 2021 20:27:44 +0200
+Received: from PKTS-MB-SVR-03.econetzw.local (192.168.81.9) by
+ wvale-jmb-svr-1.econetzw.local (192.168.101.35) with Microsoft SMTP Server
+ (TLS) id 15.0.1473.3; Sat, 13 Mar 2021 20:27:43 +0200
+Received: from WVALE-CAS-SVR-9.econetzw.local (192.168.101.60) by
+ pkts-mb-svr-03.econetzw.local (192.168.81.9) with Microsoft SMTP Server (TLS)
+ id 15.0.1473.3; Sat, 13 Mar 2021 20:27:41 +0200
+Received: from User (165.231.148.189) by WVALE-CAS-SVR-9.econetzw.local
+ (10.10.11.230) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Sat, 13 Mar 2021 20:27:55 +0200
+Reply-To: <r19772744@daum.net>
+From:   "Reem E. A" <chawora@econet.co.zw>
+Subject: Re:
+Date:   Sat, 13 Mar 2021 18:27:40 -0800
 MIME-Version: 1.0
-References: <ef3da480-d00d-877e-2349-6d7b2ebda05e@gmail.com>
- <20210313152146.1D7D.409509F4@e16-tech.com> <cefa397a-c39a-78c3-5e85-f6a9951de7d8@gmail.com>
-In-Reply-To: <cefa397a-c39a-78c3-5e85-f6a9951de7d8@gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 13 Mar 2021 11:02:53 -0700
-Message-ID: <CAJCQCtR5zeC=jNRf0iSHpqQXDOBExfFzfGj+PzMTxs_S1JVmVg@mail.gmail.com>
-Subject: Re: BTRFS error (device sda1): bdev /dev/sdb1 errs: wr 2702175, rd
- 2719033, flush 0, corrupt 6, gen 0
-To:     Thomas <74cmonty@gmail.com>
-Cc:     Wang Yugui <wangyugui@e16-tech.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="Windows-1251"
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <a0187928693a4e759d4094abaf71afbe@WVALE-CAS-SVR-9.econetzw.local>
+To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 5:22 AM Thomas <74cmonty@gmail.com> wrote:
+Hello,
 
-> Ger=C3=A4t      Boot Anfang      Ende  Sektoren  Gr=C3=B6=C3=9Fe Kn Typ
-> /dev/sdb1         2048 496093750 496091703 236,6G 83 Linux
+My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
+and Petroleum" also "Minister of State for International Cooperation"
+in UAE. I write to you on behalf of my other "three (2) colleagues"
+who has approved me to solicit for your "partnership in claiming of
+{us$47=Million}" from a Financial Home on their behalf and
+for our "Mutual Benefits".
 
-> However the output of btrfs insp dump-s <device> is different:
-> thomas@pc1-desktop:~
-> $ sudo btrfs insp dump-s /dev/sdb1 | grep dev_item.total_bytes
-> dev_item.total_bytes    256059465728
+The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
+deal with Turkish Government within 2013/2014, however, we
+don't want our government to know about the fund. If this proposal
+interests you, let me know, by sending me an email and I will send to
+you detailed information on how this business would be successfully
+transacted. Be informed that nobody knows about the secret of this
+fund except us, and we know how to carry out the entire transaction.
+So I am compelled to ask, that you will stand on our behalf and
+receive this fund into any account that is solely controlled by you.
 
-sdb1 has 253998951936 bytes which is *less* than the btrfs super block
-is saying it should be. 1.919 GiB less. I'm going to guess that the
-sdb1 partition was reduced without first shrinking the file system.
-The most common way this happens is not realizing that each member
-device of a btrfs file system must be separately shrunk. If you do not
-specify a devid, then devid 1 is assumed.
+We will compensate you with 15% of the total amount involved as
+gratification for being our partner in this transaction. Reply to:
+reem.alhashimi@yandex.com
 
-man btrfs filesystem
-"The devid can be found in the output of btrfs filesystem show and
-defaults to 1 if not specified."
+Regards,
+Ms. Reem.
+This mail was sent through Econet Wireless, a Global telecoms leader.
 
-I bet that the file system was shunk one time, this shrunk only devid
-1 which is also /dev/sda1. But then both partitions were shrunk
-thereby truncating sdb1, resulting in these errors.
+DISCLAIMER
 
-If that's correct, you need to change the sdb1 partition back to its
-original size (matching the size of the sdb1 btrfs superblock). Scrub
-the file system so sdb1 can be repaired from any prior damage from the
-mistake. Shrink this devid to match the size of the other devid, and
-then change the partition.
-
-
-
-> Ger=C3=A4t      Boot    Anfang      Ende  Sektoren  Gr=C3=B6=C3=9Fe Kn Ty=
-p
-> /dev/sda1  *         2048 496093750 496091703 236,6G 83 Linux
->
-> thomas@pc1-desktop:~
-> $ sudo btrfs insp dump-s /dev/sda1 | grep dev_item.total_bytes
-> dev_item.total_bytes    253998948352
-
-This is fine. The file system is 3584 bytes less than the partition.
-I'm not sure why it doesn't end on a 4KiB block boundary or why
-there's a gap before the start of sda2...but at least it's benign.
+The information in this message is confidential and is legally privileged. It is intended solely for the addressee. Access to this message by anyone else is unauthorized. If received in error please accept our apologies and notify the sender immediately. You must also delete the original message from your machine. If you are not the intended recipient, any use, disclosure, copying, distribution or action taken in reliance of it, is prohibited and may be unlawful. The information, attachments, opinions or advice contained in this email are not the views or opinions of Econet Wireless, its subsidiaries or affiliates. Econet Wireless therefore accepts no liability for claims, losses, or damages arising from the inaccuracy, incorrectness, or lack of integrity of such information.
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/AgileBanner.png]
+WORK ISN'T A PLACE
+IT'S WHAT WE DO
+________________________________
 
 
---=20
-Chris Murphy
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/telephone.png]
+
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/email.png]
+
+<mailto:>
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/location.png]
+
+
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/website.png]
+
+www.econet.co.zw<https://www.econet.co.zw>
+
+
+[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/inspired.jpg]
