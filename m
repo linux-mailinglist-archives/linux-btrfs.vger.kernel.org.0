@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CF933AB2F
+	by mail.lfdr.de (Postfix) with ESMTP id 953EF33AB30
 	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Mar 2021 06:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhCOFjq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Mar 2021 01:39:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42542 "EHLO mx2.suse.de"
+        id S230025AbhCOFjr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Mar 2021 01:39:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42552 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhCOFjX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Mar 2021 01:39:23 -0400
+        id S230192AbhCOFjZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Mar 2021 01:39:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615786762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1615786764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1ujy+78ijjCSl5DpABhz4ECGFiIk+SEVKo2p78Isn8o=;
-        b=sM44jxUE8grNFwUQHDx+dn0jNA2gR1ELeYEPefskCN7Iu0OQbc/vpRRM8qgKb7OmZeNWsz
-        yjqBNREmjUIVoMDBKHtRdo2ToeApKAmhOTZyPBBce6oR9O/L08lRYh9FcDKtmSFr98OZwe
-        /VVRzq2MaY8ZM8WKDNipIbynycabsGI=
+        bh=uzinRdYuk+08nWVTRNigO39FXprmIxCl1Vym8205MfU=;
+        b=iDccJ4p3PMclAxSReVHsRIem5pFy4vXbZ4tgcYZP4gpKkpDlSyuO1oAJYFLR0wnUvMzDyT
+        wQqxTXHfUMfRtyky5SehqJ5KuLguf9SUXoVWfkge/IP5LFmVPHMLzHzcKCM5wv64GJh9Wq
+        94lsEgXZgDqqAmM3ea6j2a9hgW/N4R4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9868CAD73
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Mar 2021 05:39:22 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 45CD8ABD7
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Mar 2021 05:39:24 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: fix wild pointer access during metadata read failure for subpage
-Date:   Mon, 15 Mar 2021 13:39:14 +0800
-Message-Id: <20210315053915.62420-2-wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: make reada to be subpage compatible
+Date:   Mon, 15 Mar 2021 13:39:15 +0800
+Message-Id: <20210315053915.62420-3-wqu@suse.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210315053915.62420-1-wqu@suse.com>
 References: <20210315053915.62420-1-wqu@suse.com>
@@ -38,105 +38,167 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When running fstests for btrfs subpage read-write test, it has a very
-high chance to crash at generic/475 with the following crash:
+In readahead infrastructure, we are using a lot of hard coded PAGE_SHIFT
+while we're not doing anything specific to PAGE_SIZE.
 
- BTRFS warning (device dm-8): direct IO failed ino 510 rw 1,34817 sector 0xcdf0 len 94208 err no 10
- Unable to handle kernel paging request at virtual address ffff80001157e7c0
- CPU: 2 PID: 687125 Comm: kworker/u12:4 Tainted: G        WC        5.12.0-rc2-custom+ #5
- Hardware name: Khadas VIM3 (DT)
- Workqueue: btrfs-endio-meta btrfs_work_helper [btrfs]
- pc : queued_spin_lock_slowpath+0x1a0/0x390
- lr : do_raw_spin_lock+0xc4/0x11c
- Call trace:
-  queued_spin_lock_slowpath+0x1a0/0x390
-  _raw_spin_lock+0x68/0x84
-  btree_readahead_hook+0x38/0xc0 [btrfs]
-  end_bio_extent_readpage+0x504/0x5f4 [btrfs]
-  bio_endio+0x170/0x1a4
-  end_workqueue_fn+0x3c/0x60 [btrfs]
-  btrfs_work_helper+0x1b0/0x1b4 [btrfs]
-  process_one_work+0x22c/0x430
-  worker_thread+0x70/0x3a0
-  kthread+0x13c/0x140
-  ret_from_fork+0x10/0x30
- Code: 910020e0 8b0200c2 f861d884 aa0203e1 (f8246827)
+One of the most affected part is the radix tree operation of
+btrfs_fs_info::reada_tree.
 
-[CAUSE]
-In end_bio_extent_readpage(), if we hit an error during read, we will
-handle the error differently for data and metadata.
-For data we queue a repair, while for metadata, we record the error and
-let the caller to choose what to do.
+If using PAGE_SHIFT, subpage metadata readahead is almost broken and do
+no help in reading ahead metadata.
 
-But the code is still using page->private to grab extent buffer, which
-no longer points to extent buffer for subpage metadata pages.
-
-Thus this wild pointer access leads to above crash.
-
-[FIX]
-Introduce a helper, find_extent_buffer_readpage(), to grab extent
-buffer.
-
-The difference against find_extent_buffer_nospinlock() is:
-- Also handles regular sectorsize == PAGE_SIZE case
-- No extent buffer refs increase/decrease
-  As extent buffer under IO must has non-zero refs.
+Fix the problem by using btrfs_fs_info::sectorsize_bits so that
+readahead could work for subpage.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+ fs/btrfs/reada.c | 35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e38041ba9011..a008dc6d0216 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2918,6 +2918,35 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
- 		btrfs_subpage_end_reader(fs_info, page, start, len);
+diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
+index 20fd4aa48a8c..06713a8fe26b 100644
+--- a/fs/btrfs/reada.c
++++ b/fs/btrfs/reada.c
+@@ -209,7 +209,7 @@ int btree_readahead_hook(struct extent_buffer *eb, int err)
+ 	/* find extent */
+ 	spin_lock(&fs_info->reada_lock);
+ 	re = radix_tree_lookup(&fs_info->reada_tree,
+-			       eb->start >> PAGE_SHIFT);
++			       eb->start >> fs_info->sectorsize_bits);
+ 	if (re)
+ 		re->refcnt++;
+ 	spin_unlock(&fs_info->reada_lock);
+@@ -240,7 +240,7 @@ static struct reada_zone *reada_find_zone(struct btrfs_device *dev, u64 logical,
+ 	zone = NULL;
+ 	spin_lock(&fs_info->reada_lock);
+ 	ret = radix_tree_gang_lookup(&dev->reada_zones, (void **)&zone,
+-				     logical >> PAGE_SHIFT, 1);
++				     logical >> fs_info->sectorsize_bits, 1);
+ 	if (ret == 1 && logical >= zone->start && logical <= zone->end) {
+ 		kref_get(&zone->refcnt);
+ 		spin_unlock(&fs_info->reada_lock);
+@@ -283,13 +283,13 @@ static struct reada_zone *reada_find_zone(struct btrfs_device *dev, u64 logical,
+ 
+ 	spin_lock(&fs_info->reada_lock);
+ 	ret = radix_tree_insert(&dev->reada_zones,
+-				(unsigned long)(zone->end >> PAGE_SHIFT),
+-				zone);
++			(unsigned long)(zone->end >> fs_info->sectorsize_bits),
++			zone);
+ 
+ 	if (ret == -EEXIST) {
+ 		kfree(zone);
+ 		ret = radix_tree_gang_lookup(&dev->reada_zones, (void **)&zone,
+-					     logical >> PAGE_SHIFT, 1);
++					logical >> fs_info->sectorsize_bits, 1);
+ 		if (ret == 1 && logical >= zone->start && logical <= zone->end)
+ 			kref_get(&zone->refcnt);
+ 		else
+@@ -315,7 +315,7 @@ static struct reada_extent *reada_find_extent(struct btrfs_fs_info *fs_info,
+ 	u64 length;
+ 	int real_stripes;
+ 	int nzones = 0;
+-	unsigned long index = logical >> PAGE_SHIFT;
++	unsigned long index = logical >> fs_info->sectorsize_bits;
+ 	int dev_replace_is_ongoing;
+ 	int have_zone = 0;
+ 
+@@ -497,7 +497,7 @@ static void reada_extent_put(struct btrfs_fs_info *fs_info,
+ 			     struct reada_extent *re)
+ {
+ 	int i;
+-	unsigned long index = re->logical >> PAGE_SHIFT;
++	unsigned long index = re->logical >> fs_info->sectorsize_bits;
+ 
+ 	spin_lock(&fs_info->reada_lock);
+ 	if (--re->refcnt) {
+@@ -538,11 +538,12 @@ static void reada_extent_put(struct btrfs_fs_info *fs_info,
+ static void reada_zone_release(struct kref *kref)
+ {
+ 	struct reada_zone *zone = container_of(kref, struct reada_zone, refcnt);
++	struct btrfs_fs_info *fs_info = zone->device->fs_info;
+ 
+-	lockdep_assert_held(&zone->device->fs_info->reada_lock);
++	lockdep_assert_held(&fs_info->reada_lock);
+ 
+ 	radix_tree_delete(&zone->device->reada_zones,
+-			  zone->end >> PAGE_SHIFT);
++			  zone->end >> fs_info->sectorsize_bits);
+ 
+ 	kfree(zone);
  }
+@@ -593,7 +594,7 @@ static int reada_add_block(struct reada_control *rc, u64 logical,
+ static void reada_peer_zones_set_lock(struct reada_zone *zone, int lock)
+ {
+ 	int i;
+-	unsigned long index = zone->end >> PAGE_SHIFT;
++	unsigned long index = zone->end >> zone->device->fs_info->sectorsize_bits;
  
-+/*
-+ * Helper to find the extent buffer.
-+ *
-+ * This helper is for end_bio_extent_readpage(), thus we can't do any
-+ * unsafe spinlock in endio context.
-+ */
-+static struct extent_buffer *find_extent_buffer_readpage(
-+		struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
-+{
-+	struct extent_buffer *ret;
-+
-+	/*
-+	 * For regular sectorsize, we can use page->private to grab extent
-+	 * buffer.
-+	 */
-+	if (fs_info->sectorsize == PAGE_SIZE) {
-+		ASSERT(PagePrivate(page) && page->private);
-+		return (struct extent_buffer *)page->private;
-+	}
-+
-+	/* For subpage case, we need to lookup buffer radix tree. */
-+	rcu_read_lock();
-+	ret = radix_tree_lookup(&fs_info->buffer_radix,
-+			       bytenr >> fs_info->sectorsize_bits);
-+	rcu_read_unlock();
-+	ASSERT(ret);
-+	return ret;
-+}
-+
- /*
-  * after a readpage IO is done, we need to:
-  * clear the uptodate bits on error
-@@ -3028,7 +3057,7 @@ static void end_bio_extent_readpage(struct bio *bio)
- 		} else {
- 			struct extent_buffer *eb;
- 
--			eb = (struct extent_buffer *)page->private;
-+			eb = find_extent_buffer_readpage(fs_info, page, start);
- 			set_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
- 			eb->read_mirror = mirror;
- 			atomic_dec(&eb->io_pages);
+ 	for (i = 0; i < zone->ndevs; ++i) {
+ 		struct reada_zone *peer;
+@@ -628,7 +629,7 @@ static int reada_pick_zone(struct btrfs_device *dev)
+ 					     (void **)&zone, index, 1);
+ 		if (ret == 0)
+ 			break;
+-		index = (zone->end >> PAGE_SHIFT) + 1;
++		index = (zone->end >> dev->fs_info->sectorsize_bits) + 1;
+ 		if (zone->locked) {
+ 			if (zone->elems > top_locked_elems) {
+ 				top_locked_elems = zone->elems;
+@@ -709,7 +710,7 @@ static int reada_start_machine_dev(struct btrfs_device *dev)
+ 	 * plugging to speed things up
+ 	 */
+ 	ret = radix_tree_gang_lookup(&dev->reada_extents, (void **)&re,
+-				     dev->reada_next >> PAGE_SHIFT, 1);
++				dev->reada_next >> fs_info->sectorsize_bits, 1);
+ 	if (ret == 0 || re->logical > dev->reada_curr_zone->end) {
+ 		ret = reada_pick_zone(dev);
+ 		if (!ret) {
+@@ -718,7 +719,7 @@ static int reada_start_machine_dev(struct btrfs_device *dev)
+ 		}
+ 		re = NULL;
+ 		ret = radix_tree_gang_lookup(&dev->reada_extents, (void **)&re,
+-					dev->reada_next >> PAGE_SHIFT, 1);
++				dev->reada_next >> fs_info->sectorsize_bits, 1);
+ 	}
+ 	if (ret == 0) {
+ 		spin_unlock(&fs_info->reada_lock);
+@@ -885,7 +886,7 @@ static void dump_devs(struct btrfs_fs_info *fs_info, int all)
+ 				pr_cont(" curr off %llu",
+ 					device->reada_next - zone->start);
+ 			pr_cont("\n");
+-			index = (zone->end >> PAGE_SHIFT) + 1;
++			index = (zone->end >> fs_info->sectorsize_bits) + 1;
+ 		}
+ 		cnt = 0;
+ 		index = 0;
+@@ -910,7 +911,7 @@ static void dump_devs(struct btrfs_fs_info *fs_info, int all)
+ 				}
+ 			}
+ 			pr_cont("\n");
+-			index = (re->logical >> PAGE_SHIFT) + 1;
++			index = (re->logical >> fs_info->sectorsize_bits) + 1;
+ 			if (++cnt > 15)
+ 				break;
+ 		}
+@@ -926,7 +927,7 @@ static void dump_devs(struct btrfs_fs_info *fs_info, int all)
+ 		if (ret == 0)
+ 			break;
+ 		if (!re->scheduled) {
+-			index = (re->logical >> PAGE_SHIFT) + 1;
++			index = (re->logical >> fs_info->sectorsize_bits) + 1;
+ 			continue;
+ 		}
+ 		pr_debug("re: logical %llu size %u list empty %d scheduled %d",
+@@ -942,7 +943,7 @@ static void dump_devs(struct btrfs_fs_info *fs_info, int all)
+ 			}
+ 		}
+ 		pr_cont("\n");
+-		index = (re->logical >> PAGE_SHIFT) + 1;
++		index = (re->logical >> fs_info->sectorsize_bits) + 1;
+ 	}
+ 	spin_unlock(&fs_info->reada_lock);
+ }
 -- 
 2.30.1
 
