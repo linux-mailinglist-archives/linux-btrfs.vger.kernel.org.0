@@ -2,95 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4DF33C9D8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 00:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D78733C9E3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 00:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhCOXUf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Mar 2021 19:20:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43822 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231245AbhCOXUZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:20:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 07CE9AC1D;
-        Mon, 15 Mar 2021 23:20:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B0DFEDA6E2; Tue, 16 Mar 2021 00:18:22 +0100 (CET)
-Date:   Tue, 16 Mar 2021 00:18:22 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Pierre Labastie <pierre.labastie@neuf.fr>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: build system: Fix the test for
- EXT4_EPOCH_MASK
-Message-ID: <20210315231822.GC7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Pierre Labastie <pierre.labastie@neuf.fr>,
-        linux-btrfs@vger.kernel.org
-References: <d7b1445f25866bf5c8d5016b7cd7a94e68f67dd8.camel@neuf.fr>
- <20210314184913.5689-1-pierre.labastie@neuf.fr>
- <20210315145324.GU7604@twin.jikos.cz>
- <26cdac5a09c1f51f04bdea9ca59f1be9fdbb5406.camel@neuf.fr>
+        id S230154AbhCOX3l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Mar 2021 19:29:41 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56001 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229748AbhCOX3l (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Mar 2021 19:29:41 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 44327274E;
+        Mon, 15 Mar 2021 19:29:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 15 Mar 2021 19:29:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=gtMU2ckSEJiEpIL2ztF/wl21X3j
+        gBeF6hQz6ReSaJ5I=; b=frQpSHnEL3QwJkkPnHlfU/xjsej+vgG+yjON2LT+qm8
+        ZVJ9GGyKAxjLf0utZg7FJPGP7sPnRvx/RoVxFZ1QUgrSPW2L6lJi98atucJcfBpG
+        1L4ppnLChlOY+PSFIF1NBCJcAOybvSqScQOFgreYsrcgK5wqT9FQtN3Xm8pLdAkN
+        NemA+hp9PcxdZREdA5tiYTy9xH2+2qRaEVIF3N8evfAxggUjTmjSjGU/RZA+TqhC
+        TNKO+qsLFTZRpl0wE9N8ixHtXBwdtvMCfjKZd7c3CYf/UQi/H65S6lxHDbVhneZm
+        +CrUAFXQYa0iUl7EiMCJVs9WGda75z5D7UUF6svbPzQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=gtMU2c
+        kSEJiEpIL2ztF/wl21X3jgBeF6hQz6ReSaJ5I=; b=GS1vSSUGDYKhKIVgGylwHs
+        RA8b5JEVyNKUPO4kmrSTnkN1qcPINZv+rcWoJ/C9G7wLpRbaZpkSrQzRMd/NOHqH
+        9iMNSnnEYu2mSJKq+dmFsLPB1fjca3yYMCgkd5XIyGxmh6RzRYqB5s08FxQn2aLK
+        XG9UQfLzNkPQV74tywt0EQ265RJx3p5b9Rl4k/LDW1vkGCLVRT84K593/dZ6mNTD
+        C7vnISeC7Ps6a/5Z1FzxtI5yZBmc5ev2UDiMVsvU8CCEwjfksZc2BM+F3OC4WAr6
+        B7ePTKkxFXSP4+E41VB8R6NTJBiFHtc4FvV47A4Cv4prUdq0Ei3pwnCYOa3oHujg
+        ==
+X-ME-Sender: <xms:4-1PYG9f8ks1uhrSETH_dza1veAp51PZEHexxYJgDPA-RRvpkmTyIg>
+    <xme:4-1PYGt4OpxPisACTHoFqDUwgs-p2ynNvx7mQVv3sC39vaCw5oNC4S3qSHJpO2Td4
+    Sh1h28fgeviOlpLQd0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefuddgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjfgesthdtredttdervdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    dvhffghfetueeggfdtgeduvedugeekgeeuvddvhfdugeduhfetkeevtdeitdegueenucfk
+    phepudeifedruddugedrudefvddrudenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:4-1PYMC_GdH7XO5JlKaWG8QBvYwwNNO04BStAQCj6ikcYi9eTPmdDg>
+    <xmx:4-1PYOeQILTWJ-Pz2yDxRued327W3WKU3w7pE2ibGWa_AhVDNaybBQ>
+    <xmx:4-1PYLMARReyeJ9G5a-EB6R_M5mECsZDpWcgkmpqO5QIA3Exxt8bCA>
+    <xmx:4-1PYB0y7PckFER5EPGmYHoYcpBues0pnniwK9R180g0d5_e_foBTQ>
+Received: from localhost (unknown [163.114.132.1])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5938D24005A;
+        Mon, 15 Mar 2021 19:29:39 -0400 (EDT)
+Date:   Mon, 15 Mar 2021 16:29:36 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] btrfs: add compat_flags to btrfs_inode_item
+Message-ID: <20210315232936.GA3610049@devbig008.ftw2.facebook.com>
+References: <cover.1614971203.git.boris@bur.io>
+ <f47aa729e2c15b9e3f913c4347bf24562a631772.1614971203.git.boris@bur.io>
+ <YE/orPeVtRAON9II@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <26cdac5a09c1f51f04bdea9ca59f1be9fdbb5406.camel@neuf.fr>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <YE/orPeVtRAON9II@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 11:19:47PM +0100, Pierre Labastie wrote:
-> On Mon, 2021-03-15 at 15:53 +0100, David Sterba wrote:
-> > On Sun, Mar 14, 2021 at 07:49:13PM +0100, Pierre Labastie wrote:
-> > > +AX_CHECK_DEFINE([ext2fs/ext2_fs.h], [EXT4_EPOCH_MASK],
-> > > +                [AC_DEFINE([HAVE_EXT4_EPOCH_MASK_DEFINE], [1],
-> > > +                   [Define to 1 if e2fsprogs defines EXT4_EPOCH_MASK])],
-> > > +               [AC_MSG_WARN([no definition of EXT4_EPOCH_MASK found,
-> > > probably old e2fsprogs, will use own definition, no 64bit time precision of
-> > > converted images])])
+On Mon, Mar 15, 2021 at 04:07:24PM -0700, Eric Biggers wrote:
+> On Fri, Mar 05, 2021 at 11:26:29AM -0800, Boris Burkov wrote:
+> > The tree checker currently rejects unrecognized flags when it reads
+> > btrfs_inode_item. Practically, this means that adding a new flag makes
+> > the change backwards incompatible if the flag is ever set on a file.
 > > 
-> > Inlining the AC_DEFINE to the check will skip defining the macro in case
-> > the EXT4_EPOCH_MASK does not exist and then the C #if won't work.
+> > Take up one of the 4 reserved u64 fields in the btrfs_inode_item as a
+> > new "compat_flags". These flags are zero on inode creation in btrfs and
+> > mkfs and are ignored by an older kernel, so it should be safe to use
+> > them in this way.
 > > 
-> >         HAVE_EXT4_EPOCH_MASK_DEFINE=0
-> >         AX_CHECK_DEFINE(...
-> >                 HAVE_EXT4_EPOCH_MASK_DEFINE=1,...)
-> > 
-> >         if x"$HAVE_EXT4_EPOCH_MASK_DEFINE"; then
-> >                 AC_DEFINE([HAVE_EXT4_EPOCH_MASK_DEFINE], [1])
-> >         else
-> >                 AC_DEFINE([HAVE_EXT4_EPOCH_MASK_DEFINE], [0])
-> >         fi
+> > Signed-off-by: Boris Burkov <boris@bur.io>
 > 
-> Since autoheader is used, and autoheader uses AC_DEFINE macros to generate
-> config.h.in, there is a risk that having two AC_DEFINE macros for the same 
-> identifier generates a conflict. I've not been able to find what it does in
-> that case in the autoconf doc.
+> How does this interact with the RO_COMPAT filesystem flag which is also being
+> added?
 > 
-> OTOH, an undefined identifier is replaced by a zero when expanding a #if in the
-> C preprocessor (this is in all the norms I have access to: C89 and C99), that
-> is:
-> 
-> #if UNDEFINED_IDENTIFIER
-> is equivalent to
-> #if 0
-> 
-> Except if a compiler does not respect the norm, what I have proposed works (I
-> have only tested with gcc, and it does what it is supposed to do).
+> - Eric
 
-I'll change it back to what you did as it sounds safer. The "#if
-undefined" works for all compilers we currently care about (gcc, clang)
-and would avoid potential problems with autoheader.
+This allows us to mount at all -- without it, when mounting on an older
+system, the logic in fs/btrfs/tree-checker.c would see an unexpected
+inode flag value and reject the filesystem entirely.
 
-> > This should work, maybe it's not the shortest way to write that but I
-> > can't find anything better.
-> 
-> Now, I've tested your version, and it works too. So, up to you...
+The RO_COMPAT flag represents the decision to mount RO rather than RW
+when a verity file is present (though it suffers from the fact that it
+gets set on verity enable, but not unset when the last verity file is
+deleted)
 
-I take yours, thanks. Feel free to send a fix to AC_DEFINE of
-HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE that does the double definition.
-There were no problems reported so far but for consistency it would be
-better to unify them.
+I'm now thinking that ro_compat inode flags might be an interesting
+option where the tree-checker could indicate we have to mount read only
+if it sees an unrecognized value.
