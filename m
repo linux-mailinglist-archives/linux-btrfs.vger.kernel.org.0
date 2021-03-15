@@ -2,195 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D8A33AB4B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Mar 2021 06:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E1F33ACDB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Mar 2021 08:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhCOFyw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Mar 2021 01:54:52 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:23258 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbhCOFyu (ORCPT
+        id S230285AbhCOHzV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Mar 2021 03:55:21 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:51444 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229876AbhCOHzN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Mar 2021 01:54:50 -0400
+        Mon, 15 Mar 2021 03:55:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1615787689; x=1647323689;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YBiHwKYdCZwUugI48jTeMKshfcHKsnEt/GiGHHD72LM=;
-  b=C+cgwMvBkM8Tp4dKK0exgOjzZWiQHEHoLljzcdy4tlNuD2JmueRygQLb
-   v1hvNrN/lJFhdOhq8g+RSrU6yWCb7095EIEqwaU9I99UMrNv8S22puaSW
-   g7ahYNpZtInmvqK4oCI8tdayhCBUsRD7w7obb5yu7VSzXkIuGyYrXUMKv
-   OIR0pA6CamR/jRiLX9Cz2jFG7AeF100k3bemRQ4o0loX4Q1fQGmbe91da
-   41E7vAzZvsfPHhq2chp+zRkKELFgxjgMeO5lyJdS7mPW/bX/MXkeBae7E
-   QXcpGOn/qGaoNDJHc6wuGtjaWVpfCYsmSwG7wH8vjVcKI8xdRytda3ZJ1
-   g==;
-IronPort-SDR: uvhxIWdbZ5x+ZHyax8ULz9+t6Cu3AIbr2EPwkpYE19LcC/wnJyxSjijtN4ptH2oKM3evdCtpSS
- zc8xABfAGX2Gc8TiY5DOV1vNmlVtRIwv0NxFbzWsrfNvQc02Ydy5z1JPn2DZIWsIceso0cCrPD
- 0h3KQGmIU1dgyC2+vUUle6NflNjRySEcfgS+Aag7FQ3PbmwWeFHIh931IjuPwROQXN0JoxSLlm
- GNVMVSxSaC+k2OOrXFEWNNbawqUb9ND985LTu2XIo0BDMjmlAjydfu5LMfqBc5+c687rzN0DnA
- WjE=
+  t=1615794915; x=1647330915;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=3pLftOWZYZ/fBNUjavBkPYKZcTZCCP/INaH02tbqjFY=;
+  b=jqVCN7OqFCJLtTLgoLJDCXu+TNuKGI44+CmCJFqKGPPr5MoDjWHMMjwj
+   k8M8RxE7J5dYZWQbPyMx1kMJpNVkMIWpUvjDXq+yYhYhd5B68N0MNG12t
+   g7h+ZKXx1QNsK54S4WjzX2wEEz5ElkjaM7kvUioQEuT+LVunZ4gGt+dUQ
+   N7SLhyyXBUVShDm0BXP1DkgMEZQZqHweYijNM+5tB87dPx26tOkwkRiOT
+   AFLUYDiOY2A99web+Kx4gu3KT3nnZGKZjcr5H1s49VBxREmQT2AZq0zGV
+   GbQfdMMourMIKmVtY4qrE6t24/1BKZQuwWt0GkvUj7zKuCMXdjhjKNerg
+   Q==;
+IronPort-SDR: KslfwkqPV9EDxAIsVQX5xnfDqbBgHjGScrMaaUBiw1SsFYlzSNWBF0oFeRWdjgWeW0mKjg2EUo
+ knoPvLBMfA3Hsl1KFIoabgPPZO4KRRQe5n2PclXmP3FKGp8JCKRVkgn9AFbgmk6eb1ej10D1Oq
+ jJM+IWWa4npkFky5oqMZ3zU2KQZwdbLCHV55N2xvWKs557IOOzkssn/PccUhF7+pc2E71qCe4H
+ rDxO7LPwlWO+XBTNp9et/BbbWamvYKCBMdNRqAZRXdEFcfA6Jj4qfLrxOlZCb7WRKX9HtFAvor
+ Gs0=
 X-IronPort-AV: E=Sophos;i="5.81,249,1610380800"; 
-   d="scan'208";a="272850829"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Mar 2021 13:54:47 +0800
-IronPort-SDR: +uF4anNtPvby4OLp1LBfMgbp0tGH4xlBCf43wLdAqulXdlkZlfOKmSk0JGFqMcc184+7LA8O2f
- QDlz/1YPKGDwTZlDRyM16qILN058oTvPhrSq/1wrhHe3smgdMmSXmMpUqzeMg/tlUHi/Tp5nIO
- rQlEiXYlr/YEvVS9Frj2brWgNs/sTiSb7Shu4arSuQF7eIwvK7mVQ5gk9Q+Qp7XKaoWozQ5lsY
- bPstYEPaIbwJUIKCXjUU3OmIYWXp9bo6pgWXXGZ5dGWCqtpveTorKmedCMHBqkCe84JTTIXBYf
- 7Q5SzDrSZtDiB6I0+aPc10s1
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2021 22:37:16 -0700
-IronPort-SDR: vevqda7f/c4wU72qeAmR9cMNgSII7h3k3D2wau5smc+gL85iIaUmxD/TQUI/0WWqALGuo5Ad/D
- +BbCg+fP2tClSfALbYAw+94Jmyzzrf+Urr4EuerpZ9wJmsP1mRwYv9Z+CRrf7/qQnpD7+8rnYK
- sjf7CamWhbVvaU1J+LQjnBEQpUmxzxsZ89YJ97+138dchBilI72pFx87JuCIQY7eEd0xpzQIFZ
- YQRZvbJqSUaX72djLb7GHWdPoAr8dURUoqtm02Ymq1rg3JpvW9o0sLRexZKJNuOzAWsMgKPG2D
- ieY=
-WDCIronportException: Internal
-Received: from ind007401.ad.shared (HELO naota-xeon.wdc.com) ([10.225.51.60])
-  by uls-op-cesaip02.wdc.com with ESMTP; 14 Mar 2021 22:54:46 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: move superblock logging zone location
-Date:   Mon, 15 Mar 2021 14:53:03 +0900
-Message-Id: <931d8d8a1eb757a1109ffcb36e592d2c0889d304.1615787415.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1615773143.git.naohiro.aota@wdc.com>
-References: <cover.1615773143.git.naohiro.aota@wdc.com>
+   d="scan'208";a="266525922"
+Received: from mail-co1nam04lp2053.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.53])
+  by ob1.hgst.iphmx.com with ESMTP; 15 Mar 2021 15:55:14 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pk9cWwQwcCb16A6+ABAGXfXvfdBEHtyYZtBbDfkFKUw77rVYagVu/ukwExXixHkh5L1YfeF0iA5BNrV/jXqkqnrVbx0hrJRBBgqGnM5/bI44KrhwnfSH05A1tsM1BdpFGpa+eBAKJ5ziH4wlbOQzXQKBHe/vLD1Ey5QoX++KEdgMQqxqMH5bM7cCr6P+Ej/E4DSqCHpWZUB1yhcP/sUQyk3cEw0DgUAtNaYdSDQrRuTnY5TNXZwlWhCruEvHQPWR0WpcnTl2JCHSJ6jVjK8l3K6OmhSQvFN8gViRgFa+ObfNhYu/cfq7pBDqcZff3WqUR88h5vBdmflKelwK2Zn3LA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+Jk9Yv7xFbWUzqSCBsHeoE9ZPaDrYmgUD6uMHXy946U=;
+ b=Dhqcfj1/vkRP7kaGyW+A80UgbQTDe8NUf2vJFJoUR0bKIsxqDUQmiggsg5AfHIiWhZ33NYSD0Hkybkg9LfqGPRyexp08rg8x2eN5XDgdwZihXLNmf/FL//RNrpy6JumkMDetcNs8qYhoYGJCf7GGE1KOIQpyvrTDklMLujp7vaUQxTLMl1LEYSiPHiNdhDjg/wbPhAV04Y8JCzovkiYPjzg1gj23hP9Br6BaAR19oakL3iOQeX1QrmKT5UCccu7+NfIbMzO97t3C3XEb3yh+9T778gTgfkDXvhgXUD5K5obVzjCEXqkjksQV1IIiu/yBZGaSomr4oMjvgGJp7APZzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+Jk9Yv7xFbWUzqSCBsHeoE9ZPaDrYmgUD6uMHXy946U=;
+ b=mELBnfQs7mAenHP7MPV+mQEENxGmSTnlUfeGIbmE1wKTardkIGW2thd8VC2TJbJaIJnsZoOPEyEl1XIZ4d2sfCrVkW0zePDaGTU+NBHH+wyPILmI7PpmJc8sypFafG21+u/KRyqrG+PUAnZugnC6Yfm9f7RtVhJc2k4xnUr+kP4=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7463.namprd04.prod.outlook.com (2603:10b6:510:15::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
+ 2021 07:55:11 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3c7d:5381:1232:e725]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3c7d:5381:1232:e725%7]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
+ 07:55:11 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: fix wild pointer access during metadata read
+ failure for subpage
+Thread-Topic: [PATCH 1/2] btrfs: fix wild pointer access during metadata read
+ failure for subpage
+Thread-Index: AQHXGV22BZjeaMc1wUCUvWo0YnJERw==
+Date:   Mon, 15 Mar 2021 07:55:11 +0000
+Message-ID: <PH0PR04MB741641D5C56FD335C864FD0B9B6C9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20210315053915.62420-1-wqu@suse.com>
+ <20210315053915.62420-2-wqu@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1542:e101:6d29:9a36:82c2:4644]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7a4b091d-9325-40b5-a5e6-08d8e787a934
+x-ms-traffictypediagnostic: PH0PR04MB7463:
+x-microsoft-antispam-prvs: <PH0PR04MB7463ED6129117B97C5E016A09B6C9@PH0PR04MB7463.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0zr1XOq3OICIbshGx6Te67WBafe1dxYLuKfd0pu7UaXQrOluex7LGNB7Cf8InZAF/R0UMHuFvq5OYOw7iv/K+ySlZvfXfiYrNf5s3oxXiPtIhGR8SYhfLr31NVW2WpYTziZ0Bb2Bd9Ht70DONX/8jSusRTsnC7oSnjcc8DJLwiNiCxFRpUTW9nBHKjw3BSt3XKveKBaZKwmYpryz2neJykGBFT58EKG09nkOjNKEQttkD0eoG6bbcFJso6dz99XtnaiZSmM95+Arhqnk4D2rpkRTByJqVuRb+4CJFUdWSj1DKDf/4/nS5R89U7It7OttLMTMb1Xoi1XEhW1Uk0opWCpnoPXUxbszSeyTAzRLUKtgvXg4sdRPiWJu7xaL34F9+gNING5731dqM1PDTZmxC7CJEj9yeu4HDeuF4U/Z5aIbiMLIkXVt34ipBu+ydlR6J/j+DpNBB19mzYY0Tpk0VamKUSnaLmEOhWpNfpMRFDYam9I4wIBmfwRWue5bmi/NMoJnZ7L+AlFPKnTlAzimhxpBtbiYxhO++LyWIYb8+IcHPhn3wb3uFvi4nU90RGKDL7lgp2409pUwjO3o6zUHkc/BW3WBOfCn3t3kWYyRji1Bojda/3WYzWXgvRa07nGg
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(396003)(376002)(39860400002)(110136005)(478600001)(53546011)(8936002)(71200400001)(9686003)(316002)(966005)(2906002)(7696005)(186003)(4744005)(55016002)(6506007)(5660300002)(8676002)(66446008)(83380400001)(66476007)(86362001)(76116006)(52536014)(33656002)(66946007)(91956017)(64756008)(66556008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?zrvlWQNY3XZgXktrdhfd3vi+o62r+xcM9PuboEaYBRnmi9iTq/CDUW9QEIux?=
+ =?us-ascii?Q?OwGMWdrPqicqdU+T+0DZZ5psq4zv/qpmNkUaFlLnLns/eOl3VSi5FUsesYV8?=
+ =?us-ascii?Q?6vOeuKOPFg/ndHwxjzLVmNyKHcrYDR16kUUt/m1ZIPqSNo2waVzRc3W6P5H9?=
+ =?us-ascii?Q?AuSnD69SK1n/kqB+xVFw4IttgvOYla4YY05Omuzwl53FKYlKSx5bsG3UiklD?=
+ =?us-ascii?Q?svGj0j8V+xmePdEgh6zVOysmkuN5sVgDmB0vGWuCW3B91h+MQdEghmm7DEQE?=
+ =?us-ascii?Q?Qh38piAhki+BCA/0PJOynL67+pmi0bp9zzX6UbZL4f9rhaVinOR/P1Eii2V/?=
+ =?us-ascii?Q?CEbnOhYvxjm964KoQL/HFOnmeofotyAC4V7vhshwbCOuGtTY8U/Ppfo71DMc?=
+ =?us-ascii?Q?q8rhTnMDgEuY6fyKrUo2/PeU9asGV72sL1nhp3dQp7IxUckLqUzgUpCKEJbg?=
+ =?us-ascii?Q?M7VS0YZCMnL5lEPYltJy491N1MeHTcajkKYJIuxdDTkWTN8rSZYC/yvlVf/l?=
+ =?us-ascii?Q?3gmSU/bJGZZQ5Bt1aL57ZN+VV4tmuWCtwq3vSwB6R6wjo8tleb18KepOtVT7?=
+ =?us-ascii?Q?flxF0+6f2CbrAKilIL7zUIOSRIyf24BYGiWOsZOq7NyCkULGV8X386Grd7Js?=
+ =?us-ascii?Q?Ta55Droe1FPz4hEoWeFkaQ4ptK0tEkhKfYKCkh7SGKh0Nr0hDINIShuudyUF?=
+ =?us-ascii?Q?GaMAU8pG3Lo9dB0FYVbwqal4V+4cWMt8kXdLbf9pf0pkDed2ECLQlJ6iIaZW?=
+ =?us-ascii?Q?OExwwrcmiXubIFY34EW9L48cEfTHIarStBuAQHU4ExJN2IMVnj+RoYAa6bNs?=
+ =?us-ascii?Q?pzQju1urAeSH2/8cIFVE5eV2umfZWchqQIM27/eshEtgzuW8eFkwpWYk26t5?=
+ =?us-ascii?Q?cTOrordeV2iI95GVt7K78Qq3ve++cgS8vuTVdq2uXqZ8idwWcKVCqwoSPwig?=
+ =?us-ascii?Q?vJUcKkQZ1MtmYr0rNml5vp/rgtEe3yBvQ5ZDn3QM1NlIKtyw8N2+yfHrf/mI?=
+ =?us-ascii?Q?ohEoQpHSAg7ydSDYGFDiGh6pCxTvTzuWs32pLrL6Qq+H0wRCHMusLcOroNkL?=
+ =?us-ascii?Q?9yGQYdEMCTyJsNVpfp1TvJZxTq+m2V/EAGVaQZ7sL9+LLogc+wfVqFGM40HC?=
+ =?us-ascii?Q?06kYuI3Xl7BBDszfA2RAWSynpcr2/HM9w2uD1HbvCN5Sp0NjDBCPNrx4Ejzl?=
+ =?us-ascii?Q?wSnlAfhgiCH09KYaiZumeC8VjGZ6LmIW4WDc+Gkx/20PqXF6q6oWIr4o1m4/?=
+ =?us-ascii?Q?f6dDIabYvyfHjjtEIo0gptk5vYB/vbjo63ypqY+uTkuG9LcpE2FVZC56U1WU?=
+ =?us-ascii?Q?/U7wVJoIQ/XiAbCJwZ1EPtgV419u4XzXRSIfCQ/snAhxExHw7ZSvI5+P5Kkn?=
+ =?us-ascii?Q?RTXY+7C4aTb9LO1CyvQ7aYDc3fOpFjJw+rBm8tzGwDrayWP3yg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a4b091d-9325-40b5-a5e6-08d8e787a934
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2021 07:55:11.6464
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9LBv6FRoAo6iieicVy582S1txIcm20GeBV5Hcc4ZedXUXCEXxMJxSH7ZVJoxtzJ3zF8t+OkzWMC8yHZJyziKff7zbmymNnEcwxUEBSyalGU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7463
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This commit moves the location of superblock logging zones. The location of
-the logging zones are determined based on fixed block addresses instead of
-on fixed zone numbers.
-
-By locating the superblock zones using fixed addresses, we can scan a
-dumped file system image without the zone information. And, no drawbacks
-exist.
-
-We use the following three pairs of zones containing fixed offset
-locations, regardless of the device zone size.
-
-  - Primary superblock: zone starting at offset 0 and the following zone
-  - First copy: zone containing offset 64GB and the following zone
-  - Second copy: zone containing offset 256GB and the following zone
-
-If the location of the zones are outside of disk, we don't record the
-superblock copy.
-
-These addresses are arbitrary, but using addresses that are too large
-reduces superblock reliability for smaller devices, so we do not want to
-exceed 1T to cover all case nicely.
-
-Also, LBAs are generally distributed initially across one head (platter
-side) up to one or more zones, then go on the next head backward (the other
-side of the same platter), and on to the following head/platter. Thus using
-non sequential fixed addresses for superblock logging, such as 0/64G/256G,
-likely result in each superblock copy being on a different head/platter
-which improves chances of recovery in case of superblock read error.
-
-These zones are reserved for superblock logging and never used for data or
-metadata blocks. Zones containing the offsets used to store superblocks in
-a regular btrfs volume (no zoned case) are also reserved to avoid
-confusion.
-
-Note that we only reserve the 2 zones per primary/copy actually used for
-superblock logging. We don't reserve the ranges possibly containing
-superblock with the largest supported zone size (0-16GB, 64G-80GB,
-256G-272GB).
-
-The first copy position is much larger than for a regular btrfs volume
-(64M).  This increase is to avoid overlapping with the log zones for the
-primary superblock. This higher location is arbitrary but allows supporting
-devices with very large zone size, up to 32GB. But we only allow zone sizes
-up to 8GB for now.
-
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/zoned.c | 39 +++++++++++++++++++++++++++++++--------
- 1 file changed, 31 insertions(+), 8 deletions(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 43948bd40e02..6a72ca1f7988 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -21,9 +21,24 @@
- /* Pseudo write pointer value for conventional zone */
- #define WP_CONVENTIONAL ((u64)-2)
- 
-+/*
-+ * Location of the first zone of superblock logging zone pairs.
-+ * - Primary superblock: the zone containing offset 0 (zone 0)
-+ * - First superblock copy: the zone containing offset 64G
-+ * - Second superblock copy: the zone containing offset 256G
-+ */
-+#define BTRFS_PRIMARY_SB_LOG_ZONE 0ULL
-+#define BTRFS_FIRST_SB_LOG_ZONE (64ULL * SZ_1G)
-+#define BTRFS_SECOND_SB_LOG_ZONE (256ULL * SZ_1G)
-+#define BTRFS_FIRST_SB_LOG_ZONE_SHIFT const_ilog2(BTRFS_FIRST_SB_LOG_ZONE)
-+#define BTRFS_SECOND_SB_LOG_ZONE_SHIFT const_ilog2(BTRFS_SECOND_SB_LOG_ZONE)
-+
- /* Number of superblock log zones */
- #define BTRFS_NR_SB_LOG_ZONES 2
- 
-+/* Max size of supported zone size */
-+#define BTRFS_MAX_ZONE_SIZE SZ_8G
-+
- static int copy_zone_info_cb(struct blk_zone *zone, unsigned int idx, void *data)
- {
- 	struct blk_zone *zones = data;
-@@ -111,11 +126,8 @@ static int sb_write_pointer(struct block_device *bdev, struct blk_zone *zones,
- }
- 
- /*
-- * The following zones are reserved as the circular buffer on ZONED btrfs.
-- *  - The primary superblock: zones 0 and 1
-- *  - The first copy: zones 16 and 17
-- *  - The second copy: zones 1024 or zone at 256GB which is minimum, and
-- *                     the following one
-+ * Get the zone number of the first zone of a pair of contiguous zones used
-+ * for superblock logging.
-  */
- static inline u32 sb_zone_number(int shift, int mirror)
- {
-@@ -123,8 +135,8 @@ static inline u32 sb_zone_number(int shift, int mirror)
- 
- 	switch (mirror) {
- 	case 0: return 0;
--	case 1: return 16;
--	case 2: return min_t(u64, btrfs_sb_offset(mirror) >> shift, 1024);
-+	case 1: return 1 << (BTRFS_FIRST_SB_LOG_ZONE_SHIFT - shift);
-+	case 2: return 1 << (BTRFS_SECOND_SB_LOG_ZONE_SHIFT - shift);
- 	}
- 
- 	return 0;
-@@ -300,10 +312,21 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
- 		zone_sectors = bdev_zone_sectors(bdev);
- 	}
- 
--	nr_sectors = bdev_nr_sectors(bdev);
- 	/* Check if it's power of 2 (see is_power_of_2) */
- 	ASSERT(zone_sectors != 0 && (zone_sectors & (zone_sectors - 1)) == 0);
- 	zone_info->zone_size = zone_sectors << SECTOR_SHIFT;
-+
-+	/* We reject devices with a zone size larger than 8GB. */
-+	if (zone_info->zone_size > BTRFS_MAX_ZONE_SIZE) {
-+		btrfs_err_in_rcu(fs_info,
-+				 "zoned: %s: zone size %llu is too large",
-+				 rcu_str_deref(device->name),
-+				 zone_info->zone_size);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	nr_sectors = bdev_nr_sectors(bdev);
- 	zone_info->zone_size_shift = ilog2(zone_info->zone_size);
- 	zone_info->max_zone_append_size =
- 		(u64)queue_max_zone_append_sectors(queue) << SECTOR_SHIFT;
--- 
-2.30.2
-
+On 15/03/2021 06:40, Qu Wenruo wrote:=0A=
+> The difference against find_extent_buffer_nospinlock() is:=0A=
+> - Also handles regular sectorsize =3D=3D PAGE_SIZE case=0A=
+> - No extent buffer refs increase/decrease=0A=
+>   As extent buffer under IO must has non-zero refs.=0A=
+=0A=
+Can these be merged into a single function? The sectorsie =3D=3D PAGE_SIZE =
+case=0A=
+won't do anything for find_extent_buffer_nospinlock() and the =0A=
+atomic_inc_not_zero(&eb->refs) can be hidden behind a 'if (write)' check.=
+=0A=
+=0A=
+Note, I was looking at this version:=0A=
+https://www.spinics.net/lists/linux-btrfs/msg111188.html=0A=
+=0A=
