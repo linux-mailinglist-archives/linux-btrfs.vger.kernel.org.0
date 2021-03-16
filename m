@@ -2,687 +2,353 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D8F33CE10
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 07:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C2733D0EB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 10:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233321AbhCPGo5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 02:44:57 -0400
-Received: from mail.synology.com ([211.23.38.101]:51110 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230385AbhCPGon (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:44:43 -0400
-Subject: Re: [PATCH 2/5] btrfs: fix transaction leak and crash after cleaning
- up orphans on RO mount
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1615877080; bh=FRbtd0Z2w/hgJM8z9JI0GGN6Aqjcrf03eXWlolgdeAU=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=JjL48xiwP+L7MPoJ6gZsoqQGJP/f5wcpcjjlyIeZVOb2whY0uut8jnfNAc/wTfIWy
-         lNAgAoQCZ8MTUg4opsBkPMp3sc74GO9v8yS3ogCVjN/YNS541+f36E2UCpyBjmchdN
-         GHrCv3bt+VfG91bs9qfQ5ds/AkZQfi2fu9z2PXVw=
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1607940240.git.fdmanana@suse.com>
- <d18713e258daa60e986e6ee7c22b4479e0d396c4.1607940240.git.fdmanana@suse.com>
-From:   robbieko <robbieko@synology.com>
-Message-ID: <b19f4310-35e0-606e-1eea-2dd84d28c5da@synology.com>
-Date:   Tue, 16 Mar 2021 14:44:39 +0800
+        id S234041AbhCPJgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 05:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233890AbhCPJf6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Mar 2021 05:35:58 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE0FC06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 02:35:58 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id k2so36444260ioh.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 02:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gPihnxSkWQWHZsy5TVVheo4uIjPXiEfjhOb6VUGD6rI=;
+        b=BxSisfMjJ/AXN1xIb6Hq8FtiX2maDYu9/QL1cx3yh1HHK74u5VeSHFmdahMsSGOXHP
+         a6PrkRB21oeIQFY45ywGzATtS1v1AzmbijJg9G0jnftD8c0d4I8VLI9wVEGnExpuytOF
+         96aSBbTUiP1kilKIphgG8wgChWXMSBSeC4jJkt+S2+71a+VP8Zw5lnY+p5CjqsjCHlCb
+         aXkAcIeXIoRVlg1Tk8vdkVGw37v7lRFyWGQL20lZnVakXURpn2H1O5/vuFWMdXz6p0uc
+         qMVGdZjoYIzopB9qKsBhm07m9aY+d73eBiiWIa4+CVimxiVQ9HM2+HGBKxINLKc1Rm0B
+         i12A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gPihnxSkWQWHZsy5TVVheo4uIjPXiEfjhOb6VUGD6rI=;
+        b=QG1OUhpN6pnxiXfroZZNYsfwFWELv31lO5V7i+jgNKcaG3mR96zPWJ5jZs2H9XPuOe
+         rTWpjHSZPAoko+dKvxlSRj+y5g6K0ohUVFa92VzyEpt7LfEVb9UFj2h5oGAkWneoQ8fT
+         d/2hSRHh3TcGtEhbjfLY8dOiRcWiYVZQWJT590kL5Z9CbW8OFsRVERQd8ixZ1YdaEv6u
+         ihFaXhsjPN30rMAWQxJPDgtMtAAHB4EPGt156GPAJ8TsmA7rdETkDz9HXBGrHs0sf+yI
+         qrK2UXmJUQo3NyIlgzpgaR1ntfm6P0nvS46Ey05IhpicYVcyVBeN5SbqbLRy7Y7lppK8
+         Kmgw==
+X-Gm-Message-State: AOAM532ohBHMZgtOR9dr8VCyzQ3kLremNgf76bR3QcoKiPH9KDJ9Pkyu
+        ygvoRFKwgTONEb5TPCWzen4aOOqzYEmWOxRhV2M=
+X-Google-Smtp-Source: ABdhPJxmAsaGUM2VqEc/GglC83QobT7ZGLO/Pj+PDlBofZmo5D1ar7mT9wcIOZ/hiRT01okLoP8l3mVuyF/STjIQERY=
+X-Received: by 2002:a05:6638:1508:: with SMTP id b8mr13217520jat.134.1615887357952;
+ Tue, 16 Mar 2021 02:35:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d18713e258daa60e986e6ee7c22b4479e0d396c4.1607940240.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+References: <CALS+qHMo-XVzXKEfd44E6BG7TPnWKT+r2m7p1wFtFs5XjQApEA@mail.gmail.com>
+ <CAJCQCtT38_0Uk7_V-EnfJ-qj4dheJnqVcWEZEKvVRsw6tY5VDg@mail.gmail.com>
+ <CAJCQCtRkPa7GSjqOBs95ZsJL04o-FBXhgB6xH5KwP+TgupjCnw@mail.gmail.com>
+ <CALS+qHOg89Qtd26NFC4WT+SCv_VxH_k3Erk4=a_pzEMdKZ1Kbw@mail.gmail.com>
+ <CAJCQCtRAdn5GsMOGW8VP9K5ysQLepdBT5nt+dtp5UBabQ5yh0A@mail.gmail.com>
+ <CALS+qHN8cL1sQt4kjP_n_TrzqO84qV5X-hP2zhnRLjigTq0g2g@mail.gmail.com>
+ <CAJCQCtR8pXnfVwrtBEvbvm8qrDwMyqyckZyNNgrSwO8++ShfdA@mail.gmail.com>
+ <CALS+qHN7hyFzKZHrMj5_95pPTPR9sEgwqzgVqxFK70fs5FW4xA@mail.gmail.com>
+ <CAJCQCtRWRq-AR1+hF03W0q+bG3sO618p6GzTtN1EWCJijzKe9g@mail.gmail.com>
+ <CALS+qHPDYFU2mrzudR8w057Vo33NZ=YsRWJUYmAFUih1pWbz-w@mail.gmail.com> <CAJCQCtSDsVgrMnunviuAbgC_QFfOTDKdyRD1S=-5-Fbnv3EzBA@mail.gmail.com>
+In-Reply-To: <CAJCQCtSDsVgrMnunviuAbgC_QFfOTDKdyRD1S=-5-Fbnv3EzBA@mail.gmail.com>
+From:   Sebastian Roller <sebastian.roller@gmail.com>
+Date:   Tue, 16 Mar 2021 10:35:21 +0100
+Message-ID: <CALS+qHNfxPZqmYsWWqZZqPsyGLfWV5+-vrrqUMD84nRU6V_3VQ@mail.gmail.com>
+Subject: Re: All files are damaged after btrfs restore
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi All,
+Hi again.
 
-The patch delayed find orphan roots.
-Move to after orphan cleanup with tree_root.
-I think this will cause all orphan items to be deleted
-when orphan cleanup with tree_root.
-Afterwards, find orphan roots cannot find
-the subvolume being deleted.
+> Looks like the answer is no. The chunk tree really has to be correct
+> first before anything else because it's central to doing all the
+> logical to physical address translation. And if it's busted and can't
+> be repaired then nothing else is likely to work or be repairable. It's
+> that critical.
+>
+> > I already ran chunk-recover. It needs two days to finish. But I used
+> > btrfs-tools version 4.14 and it failed.
+>
+> I'd have to go dig in git history to even know if there's been
+> improvements in chunk recover since then. But I pretty much consider
+> any file system's tool obsolete within a year. I think it's total
+> nonsense that distributions are intentionally using old tools.
+> >
+> > root@hikitty:/mnt$ btrfs rescue chunk-recover /dev/sdf1
+> > Scanning: DONE in dev0
+> > checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
+> > checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
+> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
+0
+> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
+0
+> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
+0
+> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
+0
+> > bytenr mismatch, want=3D124762809384960, have=3D0
+> > open with broken chunk error
+> > Chunk tree recovery failed
+> >
+> > I could try again with a newer version. (?) Because with version 4.14
+> > also btrfs restore failed.
+>
+> It is entirely possible that 5.11 fails exactly the same way because
+> it's just too badly damaged for the current state of the recovery
+> tools to deal with damage of this kind. But it's also possible it'll
+> work. It's a coin toss unless someone else a lot more familiar with
+> the restore code speaks up. But looking at just the summary change
+> log, it looks like no work has happened in chunk recover for a while.
+>
+> https://btrfs.wiki.kernel.org/index.php/Changelog
 
-Is my suspicion correct?
+So I ran another chunk-recover with btrfs-progs version 5.11. This is
+part of the output. (The list doesn't allow me attach the whole output
+to this mail (5 mb zipped). But if you let me know what's important I
+can send that.)
 
-Thanks.
+root@hikitty:~$ nohup /root/install/btrfs-progs-5.11/btrfs -v rescue
+chunk-recover /dev/sdi1 >
+/transfer/sebroll/btrfs-rescue-chunk-recover.out.txt 2>&1 &
+nohup: ignoring input
+All Devices:
+        Device: id =3D 2, name =3D /dev/sdi1
+Scanning: DONE in dev0
 
-Robbie Ko
+DEVICE SCAN RESULT:
+Filesystem Information:
+        sectorsize: 4096
+        nodesize: 16384
+        tree root generation: 825256
+        chunk root generation: 825256
+
+All Devices:
+        Device: id =3D 2, name =3D /dev/sdi1
+
+All Block Groups:
+        Block Group: start =3D 49477515739136, len =3D 1073741824, flag =3D=
+ 1
+        Block Group: start =3D 49478589480960, len =3D 1073741824, flag =3D=
+ 1
+(=E2=80=A6)
+       Block Group: start =3D 141942960685056, len =3D 1073741824, flag =3D=
+ 1
+       Block Group: start =3D 141944034426880, len =3D 33554432, flag =3D 2=
+2
+
+All Chunks:
+        Chunk: start =3D 49477515739136, len =3D 1073741824, type =3D 1,
+num_stripes =3D 1
+            Stripes list:
+            [ 0] Stripe: devid =3D 2, offset =3D 1048576
+        Chunk: start =3D 49478589480960, len =3D 1073741824, type =3D 1,
+num_stripes =3D 1
+            Stripes list:
+            [ 0] Stripe: devid =3D 2, offset =3D 1074790400
+(=E2=80=A6)
+        Chunk: start =3D 141942960685056, len =3D 1073741824, type =3D 1,
+num_stripes =3D 1
+            Stripes list:
+            [ 0] Stripe: devid =3D 2, offset =3D 75414325166080
+        Chunk: start =3D 141944034426880, len =3D 33554432, type =3D 22,
+num_stripes =3D 2
+            Stripes list:
+            [ 0] Stripe: devid =3D 2, offset =3D 2034741805056
+            [ 1] Stripe: devid =3D 2, offset =3D 2034775359488
+
+All Device Extents:
+        Device extent: devid =3D 2, start =3D 1048576, len =3D 1073741824,
+chunk offset =3D 49477515739136
+        Device extent: devid =3D 2, start =3D 1074790400, len =3D
+1073741824, chunk offset =3D 49478589480960
+        Device extent: devid =3D 2, start =3D 2148532224, len =3D
+1073741824, chunk offset =3D 49479663222784
+(=E2=80=A6)
+        Device extent: devid =3D 2, start =3D 75412177682432, len =3D
+1073741824, chunk offset =3D 141940813201408
+        Device extent: devid =3D 2, start =3D 75413251424256, len =3D
+1073741824, chunk offset =3D 141941886943232
+        Device extent: devid =3D 2, start =3D 75414325166080, len =3D
+1073741824, chunk offset =3D 141942960685056
+
+CHECK RESULT:
+Recoverable Chunks:
+  Chunk: start =3D 49477515739136, len =3D 1073741824, type =3D 1, num_stri=
+pes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 1048576
+      Block Group: start =3D 49477515739136, len =3D 1073741824, flag =3D 1
+      Device extent list:
+          [ 0]Device extent: devid =3D 2, start =3D 1048576, len =3D
+1073741824, chunk offset =3D 49477515739136
+  Chunk: start =3D 49478589480960, len =3D 1073741824, type =3D 1, num_stri=
+pes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 1074790400
+      Block Group: start =3D 49478589480960, len =3D 1073741824, flag =3D 1
+      Device extent list:
+          [ 0]Device extent: devid =3D 2, start =3D 1074790400, len =3D
+1073741824, chunk offset =3D 49478589480960
+  Chunk: start =3D 49479663222784, len =3D 1073741824, type =3D 1, num_stri=
+pes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 2148532224
+      Block Group: start =3D 49479663222784, len =3D 1073741824, flag =3D 1
+      Device extent list:
+          [ 0]Device extent: devid =3D 2, start =3D 2148532224, len =3D
+1073741824, chunk offset =3D 49479663222784
+(=E2=80=A6)
+  Chunk: start =3D 141085812719616, len =3D 1073741824, type =3D 1, num_str=
+ipes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 74690623176704
+      No block group.
+      Device extent list:
+          [ 0]Device extent: devid =3D 2, start =3D 74690623176704, len =3D
+1073741824, chunk offset =3D 141085812719616
+  Chunk: start =3D 141403740962816, len =3D 1073741824, type =3D 1, num_str=
+ipes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 73223891845120
+      No block group.
+      Device extent list:
+          [ 0]Device extent: devid =3D 2, start =3D 73223891845120, len =3D
+1073741824, chunk offset =3D 141403740962816
+Unrecoverable Chunks:
+  Chunk: start =3D 73953460617216, len =3D 1073741824, type =3D 1, num_stri=
+pes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 23810225995776
+      No block group.
+      No device extent.
+  Chunk: start =3D 75698291081216, len =3D 1073741824, type =3D 1, num_stri=
+pes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 25555056459776
+      No block group.
+      No device extent.
+(=E2=80=A6)
+  Chunk: start =3D 139435974852608, len =3D 1073741824, type =3D 1, num_str=
+ipes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 49594055524352
+      Block Group: start =3D 139435974852608, len =3D 1073741824, flag =3D =
+1
+      No device extent.
+  Chunk: start =3D 140101996773376checksum verify failed on
+99593231630336 found 000000B6 wanted 00000000
+checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
+bad tree block 124762809384960, bytenr mismatch, want=3D124762809384960, ha=
+ve=3D0
+ERROR: failed to read block groups: Input/output error
+open with broken chunk error
+, len =3D 1073741824, type =3D 1, num_stripes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 58501817696256
+      Block Group: start =3D 140101996773376, len =3D 1073741824, flag =3D =
+1
+      No device extent.
+  Chunk: start =3D 140221215670272, len =3D 1073741824, type =3D 1, num_str=
+ipes =3D 1
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 58416992092160
+      Block Group: start =3D 140221215670272, len =3D 1073741824, flag =3D =
+1
+      No device extent.
+(=E2=80=A6)
+  Chunk: start =3D 141836593135616, len =3D 33554432, type =3D 22, num_stri=
+pes =3D 2
+      Stripes list:
+      [ 0] Stripe: devid =3D 2, offset =3D 2034741805056
+      [ 1] Stripe: devid =3D 2, offset =3D 2034775359488
+      No block group.
+      No device extent.
+  Chunk: start =3D 141269456125952, len =3D 33554432, type =3D 22, num_stri=
+pes =3D 0
+      Stripes list:
+      Block Group: start =3D 141269456125952, len =3D 33554432, flag =3D 22
+      No device extent.
+
+Total Chunks:           72859
+  Recoverable:          68784
+  Unrecoverable:        4075
+
+Orphan Block Groups:
+
+Orphan Device Extents:
+
+Chunk tree recovery failed
 
 
-fdmanana@kernel.org 於 2020/12/14 下午6:10 寫道:
-> From: Filipe Manana <fdmanana@suse.com>
+
+So. Is this good or bad? First, there are a lot of unrecoverable
+chunks. And some of them are system chunks.
+But my biggest issue seems to be that "bad tree block" error that is
+showing up and which I'm getting any time I try to access the
+file-system. This error also seems to prevent mounting and btrfs
+check. Can I use the position given there to look up the corresponding
+chunk? If so:
+
+Block Group and Chunks around bad tree block 124762809384960:
+
+        Block Group: start =3D 124760809799680, len =3D 1073741824, flag =
+=3D 1
+        Block Group: start =3D 124761883541504, len =3D 1073741824, flag =
+=3D 24
+        Block Group: start =3D 124798390763520, len =3D 1073741824, flag =
+=3D
+1
+
+        Chunk: start =3D 124760809799680, len =3D 1073741824, type =3D 1,
+num_stripes =3D 1
+            Stripes list:
+            [ 0] Stripe: devid =3D 2, offset =3D 67164766732288
+        Chunk: start =3D 124761883541504, len =3D 1073741824, type =3D 24,
+num_stripes =3D 2
+            Stripes list:
+            [ 0] Stripe: devid =3D 2, offset =3D 67165840474112
+            [ 1] Stripe: devid =3D 2, offset =3D 67166914215936
+        Chunk: start =3D 124777989668864, len =3D 1073741824, type =3D 1,
+num_stripes =3D 1
+            Stripes list:
+            [ 0] Stripe: devid =3D 2, offset =3D 67183020343296
+
+The bad tree block seems to contain meta data. Can I somehow recover
+this? It seems to be DUP (2 Stripes)=E2=80=A6
+
+> > > And you'll need to look for a snapshot name in there, find its bytenr=
+,
+> > > and let's first see if just using that works. If it doesn't then mayb=
+e
+> > > combining it with the next most recent root tree will work.
+> >
+> > I am working backwards right now using btrfs restore -f in combination
+> > with -t. So far no success.
 >
-> When we delete a root (subvolume or snapshot), at the very end of the
-> operation, we attempt to remove the root's orphan item from the root tree,
-> at btrfs_drop_snapshot(), by calling btrfs_del_orphan_item(). We ignore any
-> error from btrfs_del_orphan_item() since it is not a serious problem and
-> the next time the filesystem is mounted we remove such stray orphan items
-> at btrfs_find_orphan_roots().
->
-> However if the filesystem is mounted RO and we have stray orphan items for
-> any previously deleted root, we can end up leaking a transaction and other
-> data structures when unmounting the filesystem, as well as crashing if we
-> do not have hardware acceleration for crc32c available.
->
-> The steps that lead to the transaction leak are the following:
->
-> 1) The filesystem is mounted in RW mode;
->
-> 2) A subvolume is deleted;
->
-> 3) When the cleaner kthread runs btrfs_drop_snapshot() to delete the root,
->     it gets a failure at btrfs_del_orphan_item(), which is ignored, due to
->     a -ENOMEM when allocating a path for example. So the orphan item for
->     the root remains in the root tree;
->
-> 4) The filesystem is unmounted;
->
-> 5) The filesystem is mounted RO (-o ro). During the mount path we call
->     btrfs_find_orphan_roots(), which iterates the root tree searching for
->     orphan items. It finds the orphan item for our deleted root, and since
->     it can not find the root, it starts a transaction to delete the orphan
->     item (by calling btrfs_del_orphan_item());
->
-> 6) The RO mount completes;
->
-> 7) Before the transaction kthread commits the transaction created for
->     deleting the orphan item (i.e. less than 30 seconds elapsed since the
->     mount, the default commit interval), a filesystem unmount operation is
->     started;
->
-> 8) At close_ctree(), we stop the transaction kthread, but we still have a
->     transaction open with at least one dirty extent buffer, a leaf for the
->     tree root which was COWed when deleting the orphan item;
->
-> 9) We then proceed to destroy the work queues, free the roots and block
->     groups, etc. After that we drop the last reference on the btree inode by
->     calling iput() on it. Since there are dirty pages for the btree inode,
->     corresponding to the COWed extent buffer, btree_write_cache_pages() is
->     invoked to flush those dirty pages. This results in creating a bio and
->     submitting it, which makes us end up at btrfs_submit_metadata_bio();
->
-> 10) At btrfs_submit_metadata_bio() we end up at the if-then-else branch
->      that calls btrfs_wq_submit_bio(), because check_async_write() returned
->      a value of 1. This value of 1 is because we did not have hardware
->      acceleration available for crc32c, so BTRFS_FS_CSUM_IMPL_FAST was not
->      set in fs_info->flags;
->
-> 11) Then at btrfs_wq_submit_bio() we call btrfs_queue_work() against the
->      workqueue at fs_info->workers, which was already freed before by the
->      call to btrfs_stop_all_workers() at close_ctree(). This results in an
->      invalid memory access due to a use-after-free, leading to a crash.
->
-> When this happens, before the crash there are several warnings triggered,
-> since we have reserved metadata space in a block group, the delayed refs
-> reservation, etc:
->
->   ------------[ cut here ]------------
->   WARNING: CPU: 4 PID: 1729896 at fs/btrfs/block-group.c:125 btrfs_put_block_group+0x63/0xa0 [btrfs]
->   Modules linked in: btrfs dm_snapshot dm_thin_pool (...)
->   CPU: 4 PID: 1729896 Comm: umount Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   RIP: 0010:btrfs_put_block_group+0x63/0xa0 [btrfs]
->   Code: f0 01 00 00 48 39 c2 75 (...)
->   RSP: 0018:ffffb270826bbdd8 EFLAGS: 00010206
->   RAX: 0000000000000001 RBX: ffff947ed73e4000 RCX: ffff947ebc8b29c8
->   RDX: 0000000000000001 RSI: ffffffffc0b150a0 RDI: ffff947ebc8b2800
->   RBP: ffff947ebc8b2800 R08: 0000000000000000 R09: 0000000000000000
->   R10: 0000000000000000 R11: 0000000000000001 R12: ffff947ed73e4110
->   R13: ffff947ed73e4160 R14: ffff947ebc8b2988 R15: dead000000000100
->   FS:  00007f15edfea840(0000) GS:ffff9481ad600000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 00007f37e2893320 CR3: 0000000138f68001 CR4: 00000000003706e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    btrfs_free_block_groups+0x17f/0x2f0 [btrfs]
->    close_ctree+0x2ba/0x2fa [btrfs]
->    generic_shutdown_super+0x6c/0x100
->    kill_anon_super+0x14/0x30
->    btrfs_kill_super+0x12/0x20 [btrfs]
->    deactivate_locked_super+0x31/0x70
->    cleanup_mnt+0x100/0x160
->    task_work_run+0x68/0xb0
->    exit_to_user_mode_prepare+0x1bb/0x1c0
->    syscall_exit_to_user_mode+0x4b/0x260
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f15ee221ee7
->   Code: ff 0b 00 f7 d8 64 89 01 48 (...)
->   RSP: 002b:00007ffe9470f0f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
->   RAX: 0000000000000000 RBX: 00007f15ee347264 RCX: 00007f15ee221ee7
->   RDX: ffffffffffffff78 RSI: 0000000000000000 RDI: 000056169701d000
->   RBP: 0000561697018a30 R08: 0000000000000000 R09: 00007f15ee2e2be0
->   R10: 000056169701efe0 R11: 0000000000000246 R12: 0000000000000000
->   R13: 000056169701d000 R14: 0000561697018b40 R15: 0000561697018c60
->   irq event stamp: 0
->   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
->   hardirqs last disabled at (0): [<ffffffff8bcae560>] copy_process+0x8a0/0x1d70
->   softirqs last  enabled at (0): [<ffffffff8bcae560>] copy_process+0x8a0/0x1d70
->   softirqs last disabled at (0): [<0000000000000000>] 0x0
->   ---[ end trace dd74718fef1ed5c6 ]---
->   ------------[ cut here ]------------
->   WARNING: CPU: 2 PID: 1729896 at fs/btrfs/block-rsv.c:459 btrfs_release_global_block_rsv+0x70/0xc0 [btrfs]
->   Modules linked in: btrfs dm_snapshot dm_thin_pool (...)
->   CPU: 2 PID: 1729896 Comm: umount Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   RIP: 0010:btrfs_release_global_block_rsv+0x70/0xc0 [btrfs]
->   Code: 48 83 bb b0 03 00 00 00 (...)
->   RSP: 0018:ffffb270826bbdd8 EFLAGS: 00010206
->   RAX: 000000000033c000 RBX: ffff947ed73e4000 RCX: 0000000000000000
->   RDX: 0000000000000001 RSI: ffffffffc0b0d8c1 RDI: 00000000ffffffff
->   RBP: ffff947ebc8b7000 R08: 0000000000000001 R09: 0000000000000000
->   R10: 0000000000000000 R11: 0000000000000001 R12: ffff947ed73e4110
->   R13: ffff947ed73e5278 R14: dead000000000122 R15: dead000000000100
->   FS:  00007f15edfea840(0000) GS:ffff9481aca00000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 0000561a79f76e20 CR3: 0000000138f68006 CR4: 00000000003706e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    btrfs_free_block_groups+0x24c/0x2f0 [btrfs]
->    close_ctree+0x2ba/0x2fa [btrfs]
->    generic_shutdown_super+0x6c/0x100
->    kill_anon_super+0x14/0x30
->    btrfs_kill_super+0x12/0x20 [btrfs]
->    deactivate_locked_super+0x31/0x70
->    cleanup_mnt+0x100/0x160
->    task_work_run+0x68/0xb0
->    exit_to_user_mode_prepare+0x1bb/0x1c0
->    syscall_exit_to_user_mode+0x4b/0x260
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f15ee221ee7
->   Code: ff 0b 00 f7 d8 64 89 01 (...)
->   RSP: 002b:00007ffe9470f0f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
->   RAX: 0000000000000000 RBX: 00007f15ee347264 RCX: 00007f15ee221ee7
->   RDX: ffffffffffffff78 RSI: 0000000000000000 RDI: 000056169701d000
->   RBP: 0000561697018a30 R08: 0000000000000000 R09: 00007f15ee2e2be0
->   R10: 000056169701efe0 R11: 0000000000000246 R12: 0000000000000000
->   R13: 000056169701d000 R14: 0000561697018b40 R15: 0000561697018c60
->   irq event stamp: 0
->   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
->   hardirqs last disabled at (0): [<ffffffff8bcae560>] copy_process+0x8a0/0x1d70
->   softirqs last  enabled at (0): [<ffffffff8bcae560>] copy_process+0x8a0/0x1d70
->   softirqs last disabled at (0): [<0000000000000000>] 0x0
->   ---[ end trace dd74718fef1ed5c7 ]---
->   ------------[ cut here ]------------
->   WARNING: CPU: 2 PID: 1729896 at fs/btrfs/block-group.c:3377 btrfs_free_block_groups+0x25d/0x2f0 [btrfs]
->   Modules linked in: btrfs dm_snapshot dm_thin_pool (...)
->   CPU: 5 PID: 1729896 Comm: umount Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   RIP: 0010:btrfs_free_block_groups+0x25d/0x2f0 [btrfs]
->   Code: ad de 49 be 22 01 00 (...)
->   RSP: 0018:ffffb270826bbde8 EFLAGS: 00010206
->   RAX: ffff947ebeae1d08 RBX: ffff947ed73e4000 RCX: 0000000000000000
->   RDX: 0000000000000001 RSI: ffff947e9d823ae8 RDI: 0000000000000246
->   RBP: ffff947ebeae1d08 R08: 0000000000000000 R09: 0000000000000000
->   R10: 0000000000000000 R11: 0000000000000001 R12: ffff947ebeae1c00
->   R13: ffff947ed73e5278 R14: dead000000000122 R15: dead000000000100
->   FS:  00007f15edfea840(0000) GS:ffff9481ad200000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 00007f1475d98ea8 CR3: 0000000138f68005 CR4: 00000000003706e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    close_ctree+0x2ba/0x2fa [btrfs]
->    generic_shutdown_super+0x6c/0x100
->    kill_anon_super+0x14/0x30
->    btrfs_kill_super+0x12/0x20 [btrfs]
->    deactivate_locked_super+0x31/0x70
->    cleanup_mnt+0x100/0x160
->    task_work_run+0x68/0xb0
->    exit_to_user_mode_prepare+0x1bb/0x1c0
->    syscall_exit_to_user_mode+0x4b/0x260
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f15ee221ee7
->   Code: ff 0b 00 f7 d8 64 89 (...)
->   RSP: 002b:00007ffe9470f0f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
->   RAX: 0000000000000000 RBX: 00007f15ee347264 RCX: 00007f15ee221ee7
->   RDX: ffffffffffffff78 RSI: 0000000000000000 RDI: 000056169701d000
->   RBP: 0000561697018a30 R08: 0000000000000000 R09: 00007f15ee2e2be0
->   R10: 000056169701efe0 R11: 0000000000000246 R12: 0000000000000000
->   R13: 000056169701d000 R14: 0000561697018b40 R15: 0000561697018c60
->   irq event stamp: 0
->   hardirqs last  enabled at (0): [<0000000000000000>] 0x0
->   hardirqs last disabled at (0): [<ffffffff8bcae560>] copy_process+0x8a0/0x1d70
->   softirqs last  enabled at (0): [<ffffffff8bcae560>] copy_process+0x8a0/0x1d70
->   softirqs last disabled at (0): [<0000000000000000>] 0x0
->   ---[ end trace dd74718fef1ed5c8 ]---
->   BTRFS info (device sdc): space_info 4 has 268238848 free, is not full
->   BTRFS info (device sdc): space_info total=268435456, used=114688, pinned=0, reserved=16384, may_use=0, readonly=65536
->   BTRFS info (device sdc): global_block_rsv: size 0 reserved 0
->   BTRFS info (device sdc): trans_block_rsv: size 0 reserved 0
->   BTRFS info (device sdc): chunk_block_rsv: size 0 reserved 0
->   BTRFS info (device sdc): delayed_block_rsv: size 0 reserved 0
->   BTRFS info (device sdc): delayed_refs_rsv: size 524288 reserved 0
->
-> And the crash, which only happens when we do not have crc32c hardware
-> acceleration, produces the following trace immediately after those
-> warnings:
->
->   stack segment: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
->   CPU: 2 PID: 1749129 Comm: umount Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   RIP: 0010:btrfs_queue_work+0x36/0x190 [btrfs]
->   Code: 54 55 53 48 89 f3 (...)
->   RSP: 0018:ffffb27082443ae8 EFLAGS: 00010282
->   RAX: 0000000000000004 RBX: ffff94810ee9ad90 RCX: 0000000000000000
->   RDX: 0000000000000001 RSI: ffff94810ee9ad90 RDI: ffff947ed8ee75a0
->   RBP: a56b6b6b6b6b6b6b R08: 0000000000000000 R09: 0000000000000000
->   R10: 0000000000000007 R11: 0000000000000001 R12: ffff947fa9b435a8
->   R13: ffff94810ee9ad90 R14: 0000000000000000 R15: ffff947e93dc0000
->   FS:  00007f3cfe974840(0000) GS:ffff9481ac600000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 00007f1b42995a70 CR3: 0000000127638003 CR4: 00000000003706e0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    btrfs_wq_submit_bio+0xb3/0xd0 [btrfs]
->    btrfs_submit_metadata_bio+0x44/0xc0 [btrfs]
->    submit_one_bio+0x61/0x70 [btrfs]
->    btree_write_cache_pages+0x414/0x450 [btrfs]
->    ? kobject_put+0x9a/0x1d0
->    ? trace_hardirqs_on+0x1b/0xf0
->    ? _raw_spin_unlock_irqrestore+0x3c/0x60
->    ? free_debug_processing+0x1e1/0x2b0
->    do_writepages+0x43/0xe0
->    ? lock_acquired+0x199/0x490
->    __writeback_single_inode+0x59/0x650
->    writeback_single_inode+0xaf/0x120
->    write_inode_now+0x94/0xd0
->    iput+0x187/0x2b0
->    close_ctree+0x2c6/0x2fa [btrfs]
->    generic_shutdown_super+0x6c/0x100
->    kill_anon_super+0x14/0x30
->    btrfs_kill_super+0x12/0x20 [btrfs]
->    deactivate_locked_super+0x31/0x70
->    cleanup_mnt+0x100/0x160
->    task_work_run+0x68/0xb0
->    exit_to_user_mode_prepare+0x1bb/0x1c0
->    syscall_exit_to_user_mode+0x4b/0x260
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f3cfebabee7
->   Code: ff 0b 00 f7 d8 64 89 01 (...)
->   RSP: 002b:00007ffc9c9a05f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
->   RAX: 0000000000000000 RBX: 00007f3cfecd1264 RCX: 00007f3cfebabee7
->   RDX: ffffffffffffff78 RSI: 0000000000000000 RDI: 0000562b6b478000
->   RBP: 0000562b6b473a30 R08: 0000000000000000 R09: 00007f3cfec6cbe0
->   R10: 0000562b6b479fe0 R11: 0000000000000246 R12: 0000000000000000
->   R13: 0000562b6b478000 R14: 0000562b6b473b40 R15: 0000562b6b473c60
->   Modules linked in: btrfs dm_snapshot dm_thin_pool (...)
->   ---[ end trace dd74718fef1ed5cc ]---
->
-> Finally when we remove the btrfs module (rmmod btrfs), there are several
-> warnings about objects that were allocated from our slabs but were never
-> freed, consequence of the transaction that was never committed and got
-> leaked:
->   =============================================================================
->   BUG btrfs_delayed_ref_head (Tainted: G    B   W        ): Objects remaining in btrfs_delayed_ref_head on __kmem_cache_shutdown()
->   -----------------------------------------------------------------------------
->
->   INFO: Slab 0x0000000094c2ae56 objects=24 used=2 fp=0x000000002bfa2521 flags=0x17fffc000010200
->   CPU: 5 PID: 1729921 Comm: rmmod Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   Call Trace:
->    dump_stack+0x8d/0xb5
->    slab_err+0xb7/0xdc
->    ? lock_acquired+0x199/0x490
->    __kmem_cache_shutdown+0x1ac/0x3c0
->    ? lock_release+0x20e/0x4c0
->    kmem_cache_destroy+0x55/0x120
->    btrfs_delayed_ref_exit+0x11/0x35 [btrfs]
->    exit_btrfs_fs+0xa/0x59 [btrfs]
->    __x64_sys_delete_module+0x194/0x260
->    ? fpregs_assert_state_consistent+0x1e/0x40
->    ? exit_to_user_mode_prepare+0x55/0x1c0
->    ? trace_hardirqs_on+0x1b/0xf0
->    do_syscall_64+0x33/0x80
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f693e305897
->   Code: 73 01 c3 48 8b 0d f9 f5 (...)
->   RSP: 002b:00007ffcf73eb508 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
->   RAX: ffffffffffffffda RBX: 0000559df504f760 RCX: 00007f693e305897
->   RDX: 000000000000000a RSI: 0000000000000800 RDI: 0000559df504f7c8
->   RBP: 00007ffcf73eb568 R08: 0000000000000000 R09: 0000000000000000
->   R10: 00007f693e378ac0 R11: 0000000000000206 R12: 00007ffcf73eb740
->   R13: 00007ffcf73ec5a6 R14: 0000559df504f2a0 R15: 0000559df504f760
->   INFO: Object 0x0000000050cbdd61 @offset=12104
->   INFO: Allocated in btrfs_add_delayed_tree_ref+0xbb/0x480 [btrfs] age=1894 cpu=6 pid=1729873
->          __slab_alloc.isra.0+0x109/0x1c0
->          kmem_cache_alloc+0x7bb/0x830
->          btrfs_add_delayed_tree_ref+0xbb/0x480 [btrfs]
->          btrfs_free_tree_block+0x128/0x360 [btrfs]
->          __btrfs_cow_block+0x489/0x5f0 [btrfs]
->          btrfs_cow_block+0xf7/0x220 [btrfs]
->          btrfs_search_slot+0x62a/0xc40 [btrfs]
->          btrfs_del_orphan_item+0x65/0xd0 [btrfs]
->          btrfs_find_orphan_roots+0x1bf/0x200 [btrfs]
->          open_ctree+0x125a/0x18a0 [btrfs]
->          btrfs_mount_root.cold+0x13/0xed [btrfs]
->          legacy_get_tree+0x30/0x60
->          vfs_get_tree+0x28/0xe0
->          fc_mount+0xe/0x40
->          vfs_kern_mount.part.0+0x71/0x90
->          btrfs_mount+0x13b/0x3e0 [btrfs]
->   INFO: Freed in __btrfs_run_delayed_refs+0x1117/0x1290 [btrfs] age=4292 cpu=2 pid=1729526
->          kmem_cache_free+0x34c/0x3c0
->          __btrfs_run_delayed_refs+0x1117/0x1290 [btrfs]
->          btrfs_run_delayed_refs+0x81/0x210 [btrfs]
->          commit_cowonly_roots+0xfb/0x300 [btrfs]
->          btrfs_commit_transaction+0x367/0xc40 [btrfs]
->          sync_filesystem+0x74/0x90
->          generic_shutdown_super+0x22/0x100
->          kill_anon_super+0x14/0x30
->          btrfs_kill_super+0x12/0x20 [btrfs]
->          deactivate_locked_super+0x31/0x70
->          cleanup_mnt+0x100/0x160
->          task_work_run+0x68/0xb0
->          exit_to_user_mode_prepare+0x1bb/0x1c0
->          syscall_exit_to_user_mode+0x4b/0x260
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   INFO: Object 0x0000000086e9b0ff @offset=12776
->   INFO: Allocated in btrfs_add_delayed_tree_ref+0xbb/0x480 [btrfs] age=1900 cpu=6 pid=1729873
->          __slab_alloc.isra.0+0x109/0x1c0
->          kmem_cache_alloc+0x7bb/0x830
->          btrfs_add_delayed_tree_ref+0xbb/0x480 [btrfs]
->          btrfs_alloc_tree_block+0x2bf/0x360 [btrfs]
->          alloc_tree_block_no_bg_flush+0x4f/0x60 [btrfs]
->          __btrfs_cow_block+0x12d/0x5f0 [btrfs]
->          btrfs_cow_block+0xf7/0x220 [btrfs]
->          btrfs_search_slot+0x62a/0xc40 [btrfs]
->          btrfs_del_orphan_item+0x65/0xd0 [btrfs]
->          btrfs_find_orphan_roots+0x1bf/0x200 [btrfs]
->          open_ctree+0x125a/0x18a0 [btrfs]
->          btrfs_mount_root.cold+0x13/0xed [btrfs]
->          legacy_get_tree+0x30/0x60
->          vfs_get_tree+0x28/0xe0
->          fc_mount+0xe/0x40
->          vfs_kern_mount.part.0+0x71/0x90
->   INFO: Freed in __btrfs_run_delayed_refs+0x1117/0x1290 [btrfs] age=3141 cpu=6 pid=1729803
->          kmem_cache_free+0x34c/0x3c0
->          __btrfs_run_delayed_refs+0x1117/0x1290 [btrfs]
->          btrfs_run_delayed_refs+0x81/0x210 [btrfs]
->          btrfs_write_dirty_block_groups+0x17d/0x3d0 [btrfs]
->          commit_cowonly_roots+0x248/0x300 [btrfs]
->          btrfs_commit_transaction+0x367/0xc40 [btrfs]
->          close_ctree+0x113/0x2fa [btrfs]
->          generic_shutdown_super+0x6c/0x100
->          kill_anon_super+0x14/0x30
->          btrfs_kill_super+0x12/0x20 [btrfs]
->          deactivate_locked_super+0x31/0x70
->          cleanup_mnt+0x100/0x160
->          task_work_run+0x68/0xb0
->          exit_to_user_mode_prepare+0x1bb/0x1c0
->          syscall_exit_to_user_mode+0x4b/0x260
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   kmem_cache_destroy btrfs_delayed_ref_head: Slab cache still has objects
->   CPU: 5 PID: 1729921 Comm: rmmod Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   Call Trace:
->    dump_stack+0x8d/0xb5
->    kmem_cache_destroy+0x119/0x120
->    btrfs_delayed_ref_exit+0x11/0x35 [btrfs]
->    exit_btrfs_fs+0xa/0x59 [btrfs]
->    __x64_sys_delete_module+0x194/0x260
->    ? fpregs_assert_state_consistent+0x1e/0x40
->    ? exit_to_user_mode_prepare+0x55/0x1c0
->    ? trace_hardirqs_on+0x1b/0xf0
->    do_syscall_64+0x33/0x80
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f693e305897
->   Code: 73 01 c3 48 8b 0d f9 f5 0b (...)
->   RSP: 002b:00007ffcf73eb508 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
->   RAX: ffffffffffffffda RBX: 0000559df504f760 RCX: 00007f693e305897
->   RDX: 000000000000000a RSI: 0000000000000800 RDI: 0000559df504f7c8
->   RBP: 00007ffcf73eb568 R08: 0000000000000000 R09: 0000000000000000
->   R10: 00007f693e378ac0 R11: 0000000000000206 R12: 00007ffcf73eb740
->   R13: 00007ffcf73ec5a6 R14: 0000559df504f2a0 R15: 0000559df504f760
->   =============================================================================
->   BUG btrfs_delayed_tree_ref (Tainted: G    B   W        ): Objects remaining in btrfs_delayed_tree_ref on __kmem_cache_shutdown()
->   -----------------------------------------------------------------------------
->
->   INFO: Slab 0x0000000011f78dc0 objects=37 used=2 fp=0x0000000032d55d91 flags=0x17fffc000010200
->   CPU: 3 PID: 1729921 Comm: rmmod Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   Call Trace:
->    dump_stack+0x8d/0xb5
->    slab_err+0xb7/0xdc
->    ? lock_acquired+0x199/0x490
->    __kmem_cache_shutdown+0x1ac/0x3c0
->    ? lock_release+0x20e/0x4c0
->    kmem_cache_destroy+0x55/0x120
->    btrfs_delayed_ref_exit+0x1d/0x35 [btrfs]
->    exit_btrfs_fs+0xa/0x59 [btrfs]
->    __x64_sys_delete_module+0x194/0x260
->    ? fpregs_assert_state_consistent+0x1e/0x40
->    ? exit_to_user_mode_prepare+0x55/0x1c0
->    ? trace_hardirqs_on+0x1b/0xf0
->    do_syscall_64+0x33/0x80
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f693e305897
->   Code: 73 01 c3 48 8b 0d f9 f5 (...)
->   RSP: 002b:00007ffcf73eb508 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
->   RAX: ffffffffffffffda RBX: 0000559df504f760 RCX: 00007f693e305897
->   RDX: 000000000000000a RSI: 0000000000000800 RDI: 0000559df504f7c8
->   RBP: 00007ffcf73eb568 R08: 0000000000000000 R09: 0000000000000000
->   R10: 00007f693e378ac0 R11: 0000000000000206 R12: 00007ffcf73eb740
->   R13: 00007ffcf73ec5a6 R14: 0000559df504f2a0 R15: 0000559df504f760
->   INFO: Object 0x000000001a340018 @offset=4408
->   INFO: Allocated in btrfs_add_delayed_tree_ref+0x9e/0x480 [btrfs] age=1917 cpu=6 pid=1729873
->          __slab_alloc.isra.0+0x109/0x1c0
->          kmem_cache_alloc+0x7bb/0x830
->          btrfs_add_delayed_tree_ref+0x9e/0x480 [btrfs]
->          btrfs_free_tree_block+0x128/0x360 [btrfs]
->          __btrfs_cow_block+0x489/0x5f0 [btrfs]
->          btrfs_cow_block+0xf7/0x220 [btrfs]
->          btrfs_search_slot+0x62a/0xc40 [btrfs]
->          btrfs_del_orphan_item+0x65/0xd0 [btrfs]
->          btrfs_find_orphan_roots+0x1bf/0x200 [btrfs]
->          open_ctree+0x125a/0x18a0 [btrfs]
->          btrfs_mount_root.cold+0x13/0xed [btrfs]
->          legacy_get_tree+0x30/0x60
->          vfs_get_tree+0x28/0xe0
->          fc_mount+0xe/0x40
->          vfs_kern_mount.part.0+0x71/0x90
->          btrfs_mount+0x13b/0x3e0 [btrfs]
->   INFO: Freed in __btrfs_run_delayed_refs+0x63d/0x1290 [btrfs] age=4167 cpu=4 pid=1729795
->          kmem_cache_free+0x34c/0x3c0
->          __btrfs_run_delayed_refs+0x63d/0x1290 [btrfs]
->          btrfs_run_delayed_refs+0x81/0x210 [btrfs]
->          btrfs_commit_transaction+0x60/0xc40 [btrfs]
->          create_subvol+0x56a/0x990 [btrfs]
->          btrfs_mksubvol+0x3fb/0x4a0 [btrfs]
->          __btrfs_ioctl_snap_create+0x119/0x1a0 [btrfs]
->          btrfs_ioctl_snap_create+0x58/0x80 [btrfs]
->          btrfs_ioctl+0x1a92/0x36f0 [btrfs]
->          __x64_sys_ioctl+0x83/0xb0
->          do_syscall_64+0x33/0x80
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   INFO: Object 0x000000002b46292a @offset=13648
->   INFO: Allocated in btrfs_add_delayed_tree_ref+0x9e/0x480 [btrfs] age=1923 cpu=6 pid=1729873
->          __slab_alloc.isra.0+0x109/0x1c0
->          kmem_cache_alloc+0x7bb/0x830
->          btrfs_add_delayed_tree_ref+0x9e/0x480 [btrfs]
->          btrfs_alloc_tree_block+0x2bf/0x360 [btrfs]
->          alloc_tree_block_no_bg_flush+0x4f/0x60 [btrfs]
->          __btrfs_cow_block+0x12d/0x5f0 [btrfs]
->          btrfs_cow_block+0xf7/0x220 [btrfs]
->          btrfs_search_slot+0x62a/0xc40 [btrfs]
->          btrfs_del_orphan_item+0x65/0xd0 [btrfs]
->          btrfs_find_orphan_roots+0x1bf/0x200 [btrfs]
->          open_ctree+0x125a/0x18a0 [btrfs]
->          btrfs_mount_root.cold+0x13/0xed [btrfs]
->          legacy_get_tree+0x30/0x60
->          vfs_get_tree+0x28/0xe0
->          fc_mount+0xe/0x40
->          vfs_kern_mount.part.0+0x71/0x90
->   INFO: Freed in __btrfs_run_delayed_refs+0x63d/0x1290 [btrfs] age=3164 cpu=6 pid=1729803
->          kmem_cache_free+0x34c/0x3c0
->          __btrfs_run_delayed_refs+0x63d/0x1290 [btrfs]
->          btrfs_run_delayed_refs+0x81/0x210 [btrfs]
->          commit_cowonly_roots+0xfb/0x300 [btrfs]
->          btrfs_commit_transaction+0x367/0xc40 [btrfs]
->          close_ctree+0x113/0x2fa [btrfs]
->          generic_shutdown_super+0x6c/0x100
->          kill_anon_super+0x14/0x30
->          btrfs_kill_super+0x12/0x20 [btrfs]
->          deactivate_locked_super+0x31/0x70
->          cleanup_mnt+0x100/0x160
->          task_work_run+0x68/0xb0
->          exit_to_user_mode_prepare+0x1bb/0x1c0
->          syscall_exit_to_user_mode+0x4b/0x260
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   kmem_cache_destroy btrfs_delayed_tree_ref: Slab cache still has objects
->   CPU: 5 PID: 1729921 Comm: rmmod Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   Call Trace:
->    dump_stack+0x8d/0xb5
->    kmem_cache_destroy+0x119/0x120
->    btrfs_delayed_ref_exit+0x1d/0x35 [btrfs]
->    exit_btrfs_fs+0xa/0x59 [btrfs]
->    __x64_sys_delete_module+0x194/0x260
->    ? fpregs_assert_state_consistent+0x1e/0x40
->    ? exit_to_user_mode_prepare+0x55/0x1c0
->    ? trace_hardirqs_on+0x1b/0xf0
->    do_syscall_64+0x33/0x80
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f693e305897
->   Code: 73 01 c3 48 8b 0d f9 f5 (...)
->   RSP: 002b:00007ffcf73eb508 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
->   RAX: ffffffffffffffda RBX: 0000559df504f760 RCX: 00007f693e305897
->   RDX: 000000000000000a RSI: 0000000000000800 RDI: 0000559df504f7c8
->   RBP: 00007ffcf73eb568 R08: 0000000000000000 R09: 0000000000000000
->   R10: 00007f693e378ac0 R11: 0000000000000206 R12: 00007ffcf73eb740
->   R13: 00007ffcf73ec5a6 R14: 0000559df504f2a0 R15: 0000559df504f760
->   =============================================================================
->   BUG btrfs_delayed_extent_op (Tainted: G    B   W        ): Objects remaining in btrfs_delayed_extent_op on __kmem_cache_shutdown()
->   -----------------------------------------------------------------------------
->
->   INFO: Slab 0x00000000f145ce2f objects=22 used=1 fp=0x00000000af0f92cf flags=0x17fffc000010200
->   CPU: 5 PID: 1729921 Comm: rmmod Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   Call Trace:
->    dump_stack+0x8d/0xb5
->    slab_err+0xb7/0xdc
->    ? lock_acquired+0x199/0x490
->    __kmem_cache_shutdown+0x1ac/0x3c0
->    ? __mutex_unlock_slowpath+0x45/0x2a0
->    kmem_cache_destroy+0x55/0x120
->    exit_btrfs_fs+0xa/0x59 [btrfs]
->    __x64_sys_delete_module+0x194/0x260
->    ? fpregs_assert_state_consistent+0x1e/0x40
->    ? exit_to_user_mode_prepare+0x55/0x1c0
->    ? trace_hardirqs_on+0x1b/0xf0
->    do_syscall_64+0x33/0x80
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f693e305897
->   Code: 73 01 c3 48 8b 0d f9 f5 (...)
->   RSP: 002b:00007ffcf73eb508 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
->   RAX: ffffffffffffffda RBX: 0000559df504f760 RCX: 00007f693e305897
->   RDX: 000000000000000a RSI: 0000000000000800 RDI: 0000559df504f7c8
->   RBP: 00007ffcf73eb568 R08: 0000000000000000 R09: 0000000000000000
->   R10: 00007f693e378ac0 R11: 0000000000000206 R12: 00007ffcf73eb740
->   R13: 00007ffcf73ec5a6 R14: 0000559df504f2a0 R15: 0000559df504f760
->   INFO: Object 0x000000004cf95ea8 @offset=6264
->   INFO: Allocated in btrfs_alloc_tree_block+0x1e0/0x360 [btrfs] age=1931 cpu=6 pid=1729873
->          __slab_alloc.isra.0+0x109/0x1c0
->          kmem_cache_alloc+0x7bb/0x830
->          btrfs_alloc_tree_block+0x1e0/0x360 [btrfs]
->          alloc_tree_block_no_bg_flush+0x4f/0x60 [btrfs]
->          __btrfs_cow_block+0x12d/0x5f0 [btrfs]
->          btrfs_cow_block+0xf7/0x220 [btrfs]
->          btrfs_search_slot+0x62a/0xc40 [btrfs]
->          btrfs_del_orphan_item+0x65/0xd0 [btrfs]
->          btrfs_find_orphan_roots+0x1bf/0x200 [btrfs]
->          open_ctree+0x125a/0x18a0 [btrfs]
->          btrfs_mount_root.cold+0x13/0xed [btrfs]
->          legacy_get_tree+0x30/0x60
->          vfs_get_tree+0x28/0xe0
->          fc_mount+0xe/0x40
->          vfs_kern_mount.part.0+0x71/0x90
->          btrfs_mount+0x13b/0x3e0 [btrfs]
->   INFO: Freed in __btrfs_run_delayed_refs+0xabd/0x1290 [btrfs] age=3173 cpu=6 pid=1729803
->          kmem_cache_free+0x34c/0x3c0
->          __btrfs_run_delayed_refs+0xabd/0x1290 [btrfs]
->          btrfs_run_delayed_refs+0x81/0x210 [btrfs]
->          commit_cowonly_roots+0xfb/0x300 [btrfs]
->          btrfs_commit_transaction+0x367/0xc40 [btrfs]
->          close_ctree+0x113/0x2fa [btrfs]
->          generic_shutdown_super+0x6c/0x100
->          kill_anon_super+0x14/0x30
->          btrfs_kill_super+0x12/0x20 [btrfs]
->          deactivate_locked_super+0x31/0x70
->          cleanup_mnt+0x100/0x160
->          task_work_run+0x68/0xb0
->          exit_to_user_mode_prepare+0x1bb/0x1c0
->          syscall_exit_to_user_mode+0x4b/0x260
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   kmem_cache_destroy btrfs_delayed_extent_op: Slab cache still has objects
->   CPU: 3 PID: 1729921 Comm: rmmod Tainted: G    B   W         5.10.0-rc4-btrfs-next-73 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   Call Trace:
->    dump_stack+0x8d/0xb5
->    kmem_cache_destroy+0x119/0x120
->    exit_btrfs_fs+0xa/0x59 [btrfs]
->    __x64_sys_delete_module+0x194/0x260
->    ? fpregs_assert_state_consistent+0x1e/0x40
->    ? exit_to_user_mode_prepare+0x55/0x1c0
->    ? trace_hardirqs_on+0x1b/0xf0
->    do_syscall_64+0x33/0x80
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->   RIP: 0033:0x7f693e305897
->   Code: 73 01 c3 48 8b 0d f9 (...)
->   RSP: 002b:00007ffcf73eb508 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
->   RAX: ffffffffffffffda RBX: 0000559df504f760 RCX: 00007f693e305897
->   RDX: 000000000000000a RSI: 0000000000000800 RDI: 0000559df504f7c8
->   RBP: 00007ffcf73eb568 R08: 0000000000000000 R09: 0000000000000000
->   R10: 00007f693e378ac0 R11: 0000000000000206 R12: 00007ffcf73eb740
->   R13: 00007ffcf73ec5a6 R14: 0000559df504f2a0 R15: 0000559df504f760
->   BTRFS: state leak: start 30408704 end 30425087 state 1 in tree 1 refs 1
->
-> So fix this by calling btrfs_find_orphan_roots() in the mount path only if
-> we are mounting the filesystem in RW mode. It's pointless to have it called
-> for RO mounts anyway, since despite adding any deleted roots to the list of
-> dead roots, we will never have the roots deleted until the filesystem is
-> remounted in RW mode, as the cleaner kthread does nothing when we are
-> mounted in RO - btrfs_need_cleaner_sleep() always returns true and the
-> cleaner spends all time sleeping, never cleaning dead roots.
->
-> This is accomplished by moving the call to btrfs_find_orphan_roots() from
-> open_ctree() to btrfs_start_pre_rw_mount(), which also guarantees that
-> if later the filesystem is remounted RW, we populate the list of dead
-> roots and have the cleaner task delete the dead roots.
->
-> Tested-by: Fabian Vogt <fvogt@suse.com>
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/disk-io.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 765deefda92b..e941cbae3991 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2969,6 +2969,7 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
->   		}
->   	}
->   
-> +	ret = btrfs_find_orphan_roots(fs_info);
->   out:
->   	return ret;
->   }
-> @@ -3383,10 +3384,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->   		}
->   	}
->   
-> -	ret = btrfs_find_orphan_roots(fs_info);
-> -	if (ret)
-> -		goto fail_qgroup;
-> -
->   	fs_info->fs_root = btrfs_get_fs_root(fs_info, BTRFS_FS_TREE_OBJECTID, true);
->   	if (IS_ERR(fs_info->fs_root)) {
->   		err = PTR_ERR(fs_info->fs_root);
+> Yep. I think it comes down to the chunk tree needing to be reasonable
+> first, before anything else is possible.
+
+Now I tried every possible combination with btrfs restore.
+Unfortunately I found no working solution to restore the data
+undamaged. As mentioned before the files contain "holes" of 0x00.
+These holes are exactly 4 MiB in size. Does this tell anything?
+Any ideas how to proceed from here on? Accept the data loss and try to
+repair the files as good as possible -- putting them together from
+different saves (if available) is a real grind. Or professional data
+recovery -- but wouldn't they face the same issue regarding the
+chunk-tree?
+
+Kind regards,
+Sebastian
