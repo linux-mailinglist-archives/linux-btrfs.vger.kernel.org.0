@@ -2,353 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C2733D0EB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 10:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4504333D159
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 11:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234041AbhCPJgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 05:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233890AbhCPJf6 (ORCPT
+        id S236229AbhCPKEn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 06:04:43 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:60572 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236179AbhCPKEM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 05:35:58 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE0FC06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 02:35:58 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id k2so36444260ioh.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 02:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gPihnxSkWQWHZsy5TVVheo4uIjPXiEfjhOb6VUGD6rI=;
-        b=BxSisfMjJ/AXN1xIb6Hq8FtiX2maDYu9/QL1cx3yh1HHK74u5VeSHFmdahMsSGOXHP
-         a6PrkRB21oeIQFY45ywGzATtS1v1AzmbijJg9G0jnftD8c0d4I8VLI9wVEGnExpuytOF
-         96aSBbTUiP1kilKIphgG8wgChWXMSBSeC4jJkt+S2+71a+VP8Zw5lnY+p5CjqsjCHlCb
-         aXkAcIeXIoRVlg1Tk8vdkVGw37v7lRFyWGQL20lZnVakXURpn2H1O5/vuFWMdXz6p0uc
-         qMVGdZjoYIzopB9qKsBhm07m9aY+d73eBiiWIa4+CVimxiVQ9HM2+HGBKxINLKc1Rm0B
-         i12A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gPihnxSkWQWHZsy5TVVheo4uIjPXiEfjhOb6VUGD6rI=;
-        b=QG1OUhpN6pnxiXfroZZNYsfwFWELv31lO5V7i+jgNKcaG3mR96zPWJ5jZs2H9XPuOe
-         rTWpjHSZPAoko+dKvxlSRj+y5g6K0ohUVFa92VzyEpt7LfEVb9UFj2h5oGAkWneoQ8fT
-         d/2hSRHh3TcGtEhbjfLY8dOiRcWiYVZQWJT590kL5Z9CbW8OFsRVERQd8ixZ1YdaEv6u
-         ihFaXhsjPN30rMAWQxJPDgtMtAAHB4EPGt156GPAJ8TsmA7rdETkDz9HXBGrHs0sf+yI
-         qrK2UXmJUQo3NyIlgzpgaR1ntfm6P0nvS46Ey05IhpicYVcyVBeN5SbqbLRy7Y7lppK8
-         Kmgw==
-X-Gm-Message-State: AOAM532ohBHMZgtOR9dr8VCyzQ3kLremNgf76bR3QcoKiPH9KDJ9Pkyu
-        ygvoRFKwgTONEb5TPCWzen4aOOqzYEmWOxRhV2M=
-X-Google-Smtp-Source: ABdhPJxmAsaGUM2VqEc/GglC83QobT7ZGLO/Pj+PDlBofZmo5D1ar7mT9wcIOZ/hiRT01okLoP8l3mVuyF/STjIQERY=
-X-Received: by 2002:a05:6638:1508:: with SMTP id b8mr13217520jat.134.1615887357952;
- Tue, 16 Mar 2021 02:35:57 -0700 (PDT)
+        Tue, 16 Mar 2021 06:04:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1615889052; x=1647425052;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vdbsyGiXPqhjSxFdtpvZO761lKw+QkHDEp1ksv4sTwM=;
+  b=Us0A6PSl3DrdH4yEQFqGMX2CMB4QGokkAYliUny5Y3Z0MWrn868nnRcW
+   M4AbXT7h1sbO3otDJryX1zKyvJGIDcfJx59t/QOCM2Gq9EL7IcOGul4cq
+   T5Jj5zNk5/8YHyHynKIbpD51iebmQi2chrVR8ifcQnLoGApsVyq58JQ8d
+   ldLmtlW8JD7FRaVB9IYQdJ7A95S0kxnW++ZgaW5CZ8Ji5g1BxiEazycVt
+   zp3Ik0VmhEYoF6Oi2kEyKdOEWL6dMm/G0tr3/JV2zFV5Cqxbfm2kVizcL
+   G1USzlI6v8J81eH0miV6iLtNq6e/OVX4y1BepU1C+m95AJ1MEurEULCJK
+   g==;
+IronPort-SDR: oAK4naotvJm6uIAMnYbQtkZoY225GZABQvqO6P+RwLZCj3VHH1ub5Nk/CjIFYkjz/Y5qz63csI
+ CBqLHOscpcfsw9pNPoVUc/2SMQ4smiUIXj9u231SF9IhTFMkdw3IjGlF8NXBGpX1v0axMrNBJw
+ WbTd9zBmobVycRXN1RRuzhPVcfsH8PyropMZ1eyYVioLvOnH+6oOSqaiWbopHCYjseugWkYN6z
+ u2dDuAPtc/QI7ahs/OTn2AKvb8apkaHMuhXKrkNtnjY/SxzzzoUY7xnPB437V+mSOZlX0Xuyyj
+ C64=
+X-IronPort-AV: E=Sophos;i="5.81,251,1610380800"; 
+   d="scan'208";a="166737533"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Mar 2021 18:04:11 +0800
+IronPort-SDR: vWyn9Cx2DNyDYX3s2hXnIEiQ5G8UP7tdxFyLBTaRXpeReVAWP3k6zi+3ICkFChlR+/XWZZXhX5
+ Ewtgb8m9uuFJBMUsRM4CY/GDQxA2jbvbH1r+qD+osewYILKNWaZWSrWZOu8zE9ej4x/5UwY+wc
+ xso/9N85CLbA7APOMXu2VJuosGPZTZdRILNWu//iAT+M//RJ4yg619aRdV56fZaoJMvuQ1NSGb
+ ZQ9fC5ZjAZn2KvLKQeNvAkl/d9P4iKUJp2386QR3SrybUzj0NOXynvs8uKp550WNVQIawCSeYx
+ /AVt4nOK0bLMjWpDmHC4OLVH
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2021 02:44:47 -0700
+IronPort-SDR: oa4QNJRexsrIOdNvt+FczEnkLPFdfIsHUpDPKhbHLF/mPInhRZaL243uHfc6VU9CiuRp/Ejzij
+ jdL0/Vn/2dd3zAbL9ehmd/nJMDUxJB8NRPI+y1jYOv9YrVSSXuB+ccyXpPFySvlX+Lrqu5b6kz
+ uP0n4x62Pd5f0hibS86hx6cXLMVXcBAw/h+nMX4vVhSZShtdlfuNaE+Vppt7bF5D6azOTEl2Kl
+ /5CQzU+d/FSQESDypAc1Zm2XeLMxQgOldJCON7GUAitubAFEt0KZHbdLKQoGOoZH0KNresMWIn
+ SpA=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip02.wdc.com with ESMTP; 16 Mar 2021 03:04:11 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: remove duplicated in_range() macro
+Date:   Tue, 16 Mar 2021 19:04:01 +0900
+Message-Id: <dd5dbd8b1a0bb0046c76b4b9ee3e21b33ebfe801.1615889023.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <CALS+qHMo-XVzXKEfd44E6BG7TPnWKT+r2m7p1wFtFs5XjQApEA@mail.gmail.com>
- <CAJCQCtT38_0Uk7_V-EnfJ-qj4dheJnqVcWEZEKvVRsw6tY5VDg@mail.gmail.com>
- <CAJCQCtRkPa7GSjqOBs95ZsJL04o-FBXhgB6xH5KwP+TgupjCnw@mail.gmail.com>
- <CALS+qHOg89Qtd26NFC4WT+SCv_VxH_k3Erk4=a_pzEMdKZ1Kbw@mail.gmail.com>
- <CAJCQCtRAdn5GsMOGW8VP9K5ysQLepdBT5nt+dtp5UBabQ5yh0A@mail.gmail.com>
- <CALS+qHN8cL1sQt4kjP_n_TrzqO84qV5X-hP2zhnRLjigTq0g2g@mail.gmail.com>
- <CAJCQCtR8pXnfVwrtBEvbvm8qrDwMyqyckZyNNgrSwO8++ShfdA@mail.gmail.com>
- <CALS+qHN7hyFzKZHrMj5_95pPTPR9sEgwqzgVqxFK70fs5FW4xA@mail.gmail.com>
- <CAJCQCtRWRq-AR1+hF03W0q+bG3sO618p6GzTtN1EWCJijzKe9g@mail.gmail.com>
- <CALS+qHPDYFU2mrzudR8w057Vo33NZ=YsRWJUYmAFUih1pWbz-w@mail.gmail.com> <CAJCQCtSDsVgrMnunviuAbgC_QFfOTDKdyRD1S=-5-Fbnv3EzBA@mail.gmail.com>
-In-Reply-To: <CAJCQCtSDsVgrMnunviuAbgC_QFfOTDKdyRD1S=-5-Fbnv3EzBA@mail.gmail.com>
-From:   Sebastian Roller <sebastian.roller@gmail.com>
-Date:   Tue, 16 Mar 2021 10:35:21 +0100
-Message-ID: <CALS+qHNfxPZqmYsWWqZZqPsyGLfWV5+-vrrqUMD84nRU6V_3VQ@mail.gmail.com>
-Subject: Re: All files are damaged after btrfs restore
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi again.
+The in_range() macro is defined twice in btrfs' source, once in ctree.h
+and once in misc.h.
 
-> Looks like the answer is no. The chunk tree really has to be correct
-> first before anything else because it's central to doing all the
-> logical to physical address translation. And if it's busted and can't
-> be repaired then nothing else is likely to work or be repairable. It's
-> that critical.
->
-> > I already ran chunk-recover. It needs two days to finish. But I used
-> > btrfs-tools version 4.14 and it failed.
->
-> I'd have to go dig in git history to even know if there's been
-> improvements in chunk recover since then. But I pretty much consider
-> any file system's tool obsolete within a year. I think it's total
-> nonsense that distributions are intentionally using old tools.
-> >
-> > root@hikitty:/mnt$ btrfs rescue chunk-recover /dev/sdf1
-> > Scanning: DONE in dev0
-> > checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
-> > checksum verify failed on 99593231630336 found E4E3BDB6 wanted 00000000
-> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
-0
-> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
-0
-> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
-0
-> > checksum verify failed on 124762809384960 found E4E3BDB6 wanted 0000000=
-0
-> > bytenr mismatch, want=3D124762809384960, have=3D0
-> > open with broken chunk error
-> > Chunk tree recovery failed
-> >
-> > I could try again with a newer version. (?) Because with version 4.14
-> > also btrfs restore failed.
->
-> It is entirely possible that 5.11 fails exactly the same way because
-> it's just too badly damaged for the current state of the recovery
-> tools to deal with damage of this kind. But it's also possible it'll
-> work. It's a coin toss unless someone else a lot more familiar with
-> the restore code speaks up. But looking at just the summary change
-> log, it looks like no work has happened in chunk recover for a while.
->
-> https://btrfs.wiki.kernel.org/index.php/Changelog
+Remove the definition in ctree.h and include misc.h in the files depending
+on it.
 
-So I ran another chunk-recover with btrfs-progs version 5.11. This is
-part of the output. (The list doesn't allow me attach the whole output
-to this mail (5 mb zipped). But if you let me know what's important I
-can send that.)
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/ctree.h     | 2 --
+ fs/btrfs/extent_io.c | 1 +
+ fs/btrfs/file-item.c | 1 +
+ fs/btrfs/raid56.c    | 1 +
+ 4 files changed, 3 insertions(+), 2 deletions(-)
 
-root@hikitty:~$ nohup /root/install/btrfs-progs-5.11/btrfs -v rescue
-chunk-recover /dev/sdi1 >
-/transfer/sebroll/btrfs-rescue-chunk-recover.out.txt 2>&1 &
-nohup: ignoring input
-All Devices:
-        Device: id =3D 2, name =3D /dev/sdi1
-Scanning: DONE in dev0
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 751ab9f80e4c..1c18b4360df9 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3733,8 +3733,6 @@ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
+ 	return signal_pending(current);
+ }
+ 
+-#define in_range(b, first, len) ((b) >= (first) && (b) < (first) + (len))
+-
+ /* Sanity test specific functions */
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ void btrfs_test_destroy_inode(struct inode *inode);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index c18c2be57678..4b2579ebf42a 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -27,6 +27,7 @@
+ #include "subpage.h"
+ #include "zoned.h"
+ #include "block-group.h"
++#include "misc.h"
+ 
+ static struct kmem_cache *extent_state_cache;
+ static struct kmem_cache *extent_buffer_cache;
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 47cd3a6dc635..1b2e2291939e 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -15,6 +15,7 @@
+ #include "volumes.h"
+ #include "print-tree.h"
+ #include "compression.h"
++#include "misc.h"
+ 
+ #define __MAX_CSUM_ITEMS(r, size) ((unsigned long)(((BTRFS_LEAF_DATA_SIZE(r) - \
+ 				   sizeof(struct btrfs_item) * 2) / \
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index 8c31357f08ed..f60215b5d154 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -18,6 +18,7 @@
+ #include "volumes.h"
+ #include "raid56.h"
+ #include "async-thread.h"
++#include "misc.h"
+ 
+ /* set when additional merges to this rbio are not allowed */
+ #define RBIO_RMW_LOCKED_BIT	1
+-- 
+2.30.0
 
-DEVICE SCAN RESULT:
-Filesystem Information:
-        sectorsize: 4096
-        nodesize: 16384
-        tree root generation: 825256
-        chunk root generation: 825256
-
-All Devices:
-        Device: id =3D 2, name =3D /dev/sdi1
-
-All Block Groups:
-        Block Group: start =3D 49477515739136, len =3D 1073741824, flag =3D=
- 1
-        Block Group: start =3D 49478589480960, len =3D 1073741824, flag =3D=
- 1
-(=E2=80=A6)
-       Block Group: start =3D 141942960685056, len =3D 1073741824, flag =3D=
- 1
-       Block Group: start =3D 141944034426880, len =3D 33554432, flag =3D 2=
-2
-
-All Chunks:
-        Chunk: start =3D 49477515739136, len =3D 1073741824, type =3D 1,
-num_stripes =3D 1
-            Stripes list:
-            [ 0] Stripe: devid =3D 2, offset =3D 1048576
-        Chunk: start =3D 49478589480960, len =3D 1073741824, type =3D 1,
-num_stripes =3D 1
-            Stripes list:
-            [ 0] Stripe: devid =3D 2, offset =3D 1074790400
-(=E2=80=A6)
-        Chunk: start =3D 141942960685056, len =3D 1073741824, type =3D 1,
-num_stripes =3D 1
-            Stripes list:
-            [ 0] Stripe: devid =3D 2, offset =3D 75414325166080
-        Chunk: start =3D 141944034426880, len =3D 33554432, type =3D 22,
-num_stripes =3D 2
-            Stripes list:
-            [ 0] Stripe: devid =3D 2, offset =3D 2034741805056
-            [ 1] Stripe: devid =3D 2, offset =3D 2034775359488
-
-All Device Extents:
-        Device extent: devid =3D 2, start =3D 1048576, len =3D 1073741824,
-chunk offset =3D 49477515739136
-        Device extent: devid =3D 2, start =3D 1074790400, len =3D
-1073741824, chunk offset =3D 49478589480960
-        Device extent: devid =3D 2, start =3D 2148532224, len =3D
-1073741824, chunk offset =3D 49479663222784
-(=E2=80=A6)
-        Device extent: devid =3D 2, start =3D 75412177682432, len =3D
-1073741824, chunk offset =3D 141940813201408
-        Device extent: devid =3D 2, start =3D 75413251424256, len =3D
-1073741824, chunk offset =3D 141941886943232
-        Device extent: devid =3D 2, start =3D 75414325166080, len =3D
-1073741824, chunk offset =3D 141942960685056
-
-CHECK RESULT:
-Recoverable Chunks:
-  Chunk: start =3D 49477515739136, len =3D 1073741824, type =3D 1, num_stri=
-pes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 1048576
-      Block Group: start =3D 49477515739136, len =3D 1073741824, flag =3D 1
-      Device extent list:
-          [ 0]Device extent: devid =3D 2, start =3D 1048576, len =3D
-1073741824, chunk offset =3D 49477515739136
-  Chunk: start =3D 49478589480960, len =3D 1073741824, type =3D 1, num_stri=
-pes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 1074790400
-      Block Group: start =3D 49478589480960, len =3D 1073741824, flag =3D 1
-      Device extent list:
-          [ 0]Device extent: devid =3D 2, start =3D 1074790400, len =3D
-1073741824, chunk offset =3D 49478589480960
-  Chunk: start =3D 49479663222784, len =3D 1073741824, type =3D 1, num_stri=
-pes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 2148532224
-      Block Group: start =3D 49479663222784, len =3D 1073741824, flag =3D 1
-      Device extent list:
-          [ 0]Device extent: devid =3D 2, start =3D 2148532224, len =3D
-1073741824, chunk offset =3D 49479663222784
-(=E2=80=A6)
-  Chunk: start =3D 141085812719616, len =3D 1073741824, type =3D 1, num_str=
-ipes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 74690623176704
-      No block group.
-      Device extent list:
-          [ 0]Device extent: devid =3D 2, start =3D 74690623176704, len =3D
-1073741824, chunk offset =3D 141085812719616
-  Chunk: start =3D 141403740962816, len =3D 1073741824, type =3D 1, num_str=
-ipes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 73223891845120
-      No block group.
-      Device extent list:
-          [ 0]Device extent: devid =3D 2, start =3D 73223891845120, len =3D
-1073741824, chunk offset =3D 141403740962816
-Unrecoverable Chunks:
-  Chunk: start =3D 73953460617216, len =3D 1073741824, type =3D 1, num_stri=
-pes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 23810225995776
-      No block group.
-      No device extent.
-  Chunk: start =3D 75698291081216, len =3D 1073741824, type =3D 1, num_stri=
-pes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 25555056459776
-      No block group.
-      No device extent.
-(=E2=80=A6)
-  Chunk: start =3D 139435974852608, len =3D 1073741824, type =3D 1, num_str=
-ipes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 49594055524352
-      Block Group: start =3D 139435974852608, len =3D 1073741824, flag =3D =
-1
-      No device extent.
-  Chunk: start =3D 140101996773376checksum verify failed on
-99593231630336 found 000000B6 wanted 00000000
-checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
-checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
-checksum verify failed on 124762809384960 found 000000B6 wanted 00000000
-bad tree block 124762809384960, bytenr mismatch, want=3D124762809384960, ha=
-ve=3D0
-ERROR: failed to read block groups: Input/output error
-open with broken chunk error
-, len =3D 1073741824, type =3D 1, num_stripes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 58501817696256
-      Block Group: start =3D 140101996773376, len =3D 1073741824, flag =3D =
-1
-      No device extent.
-  Chunk: start =3D 140221215670272, len =3D 1073741824, type =3D 1, num_str=
-ipes =3D 1
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 58416992092160
-      Block Group: start =3D 140221215670272, len =3D 1073741824, flag =3D =
-1
-      No device extent.
-(=E2=80=A6)
-  Chunk: start =3D 141836593135616, len =3D 33554432, type =3D 22, num_stri=
-pes =3D 2
-      Stripes list:
-      [ 0] Stripe: devid =3D 2, offset =3D 2034741805056
-      [ 1] Stripe: devid =3D 2, offset =3D 2034775359488
-      No block group.
-      No device extent.
-  Chunk: start =3D 141269456125952, len =3D 33554432, type =3D 22, num_stri=
-pes =3D 0
-      Stripes list:
-      Block Group: start =3D 141269456125952, len =3D 33554432, flag =3D 22
-      No device extent.
-
-Total Chunks:           72859
-  Recoverable:          68784
-  Unrecoverable:        4075
-
-Orphan Block Groups:
-
-Orphan Device Extents:
-
-Chunk tree recovery failed
-
-
-
-So. Is this good or bad? First, there are a lot of unrecoverable
-chunks. And some of them are system chunks.
-But my biggest issue seems to be that "bad tree block" error that is
-showing up and which I'm getting any time I try to access the
-file-system. This error also seems to prevent mounting and btrfs
-check. Can I use the position given there to look up the corresponding
-chunk? If so:
-
-Block Group and Chunks around bad tree block 124762809384960:
-
-        Block Group: start =3D 124760809799680, len =3D 1073741824, flag =
-=3D 1
-        Block Group: start =3D 124761883541504, len =3D 1073741824, flag =
-=3D 24
-        Block Group: start =3D 124798390763520, len =3D 1073741824, flag =
-=3D
-1
-
-        Chunk: start =3D 124760809799680, len =3D 1073741824, type =3D 1,
-num_stripes =3D 1
-            Stripes list:
-            [ 0] Stripe: devid =3D 2, offset =3D 67164766732288
-        Chunk: start =3D 124761883541504, len =3D 1073741824, type =3D 24,
-num_stripes =3D 2
-            Stripes list:
-            [ 0] Stripe: devid =3D 2, offset =3D 67165840474112
-            [ 1] Stripe: devid =3D 2, offset =3D 67166914215936
-        Chunk: start =3D 124777989668864, len =3D 1073741824, type =3D 1,
-num_stripes =3D 1
-            Stripes list:
-            [ 0] Stripe: devid =3D 2, offset =3D 67183020343296
-
-The bad tree block seems to contain meta data. Can I somehow recover
-this? It seems to be DUP (2 Stripes)=E2=80=A6
-
-> > > And you'll need to look for a snapshot name in there, find its bytenr=
-,
-> > > and let's first see if just using that works. If it doesn't then mayb=
-e
-> > > combining it with the next most recent root tree will work.
-> >
-> > I am working backwards right now using btrfs restore -f in combination
-> > with -t. So far no success.
->
-> Yep. I think it comes down to the chunk tree needing to be reasonable
-> first, before anything else is possible.
-
-Now I tried every possible combination with btrfs restore.
-Unfortunately I found no working solution to restore the data
-undamaged. As mentioned before the files contain "holes" of 0x00.
-These holes are exactly 4 MiB in size. Does this tell anything?
-Any ideas how to proceed from here on? Accept the data loss and try to
-repair the files as good as possible -- putting them together from
-different saves (if available) is a real grind. Or professional data
-recovery -- but wouldn't they face the same issue regarding the
-chunk-tree?
-
-Kind regards,
-Sebastian
