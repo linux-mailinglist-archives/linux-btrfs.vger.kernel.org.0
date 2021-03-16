@@ -2,179 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E57F33D3C0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 13:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E0F33D479
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 13:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhCPMWm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 08:22:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230104AbhCPMWY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 08:22:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD8E65010;
-        Tue, 16 Mar 2021 12:22:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615897343;
-        bh=uwktJNovtA5sR4kSBtFhwHbnw/d5XVDrgl3DcjqiNcs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=PILWQJDFwGfl4iF+VwG/pLd9u684l6LQqVVfcyE85hmSCMWZ2FJ/LJ8NoVFdG/RGs
-         5kHlZ3DOIkTb679ckOrybbWerkXuIMmjyUhpneJyNmwai0ioKM0dIZ40Ek43gfV7s2
-         IVqaYJ1q2w3KgBeFgWXMOWwqHMg9ia8lcOK8RmoMRbTj3qSI7gTQGx1Q8dqgbgtCg2
-         DHiEPeRNVe6kN9IdvmBmCpBnYyFpZwyv3jvOVW2S+96BJI1Bez/oh1pgpXCQT4az2i
-         CJR6nF5yKgks//yXu7+hIxbZRr/pbk8rBlDoMWgrct+eEOZzILHi9GjGugI1PFVX73
-         unIycigca7mWg==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] btrfs: add test for cases when a dio write has to fallback to a buffered write
-Date:   Tue, 16 Mar 2021 12:22:15 +0000
-Message-Id: <eb23e76e03b0017715e449ff1021d758f0ad98ec.1615897006.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.28.0
+        id S233136AbhCPM6k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 08:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234417AbhCPM6O (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Mar 2021 08:58:14 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE11C06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 05:58:13 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so1306291pjq.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 05:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=J9wYsJvVkzTAZDnWOuDGhpmoH7MxMbtkPKqG0yOHSK8=;
+        b=J86eGQr7d0hW7vIUt71aQxK5dTpibAlKG5gXRgdiRPEvS/mkK56PP8t8b/XpsL9SKD
+         rlAxt3KCyK6psq8BXD6VoYq5hSCYNJtj0VTYfd3iR9VB4kuHHiWg9XfE/PoYs3+9/QRj
+         rHuvKFNjajdHaM8aA18Yz6tYAv2MmF0ICoOWygddRAo3UR00n3ixqFHqevmmWLdqlBS7
+         XOenQ4yb9Cfq9DGZmbn6l9jQQsjtSPrzuOMLVIWSZ40VUQjbm8oAhG727vI321Kuhn75
+         Xy3/x9YenqvdUNwbPasgInsZC5JrVm6Awu7ZC5d8V08Lm/inMIF60e0Z+RGLJp+e199d
+         Z5Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=J9wYsJvVkzTAZDnWOuDGhpmoH7MxMbtkPKqG0yOHSK8=;
+        b=DfEpNWAZvQ4IpeoqO8rPAnXLsBtPeKspYH4MwHZ2siVK/w0YlNtgL2q9rNVJxohXIN
+         qsT/UrOS8j4OPfOXPBxvn3BG75t66prCGu+IDtdodzsGI4AOp8Ma3yxkxASfhexB9Vm/
+         5OyTGPdLvEhYHG33VQTtD45vi7QCEotjeO2oTAxIuF69KnlREM4vM7v+lXOSuUl6Oihr
+         zcQ5bB1uuM4fMdBgSczGUJXMj8H2leqaGtQ7fd4YP4jIg5BD26yGDJFkoEPR2TvTcngb
+         bkZHC1iz4yQESddNJ1g7lcQpvRjVnhXcZpIj6I098STkw2OfliAxpEFwkqIjoVTga5vw
+         QPRA==
+X-Gm-Message-State: AOAM532f26W9oW5VScB8ZLnTYy4Kxp8nHFkdYlxQBoidL3pvBwCRW8Kd
+        NNgQIor41FJTkWOOcZLKJ/U=
+X-Google-Smtp-Source: ABdhPJw3fKsjkjXYwDzYhbUMIawLYU5zPLDFsqp4hbg54abe2p/58i9qCJE6fQ6xp2LEihyTXcms4A==
+X-Received: by 2002:a17:902:a58a:b029:e4:6db1:656 with SMTP id az10-20020a170902a58ab02900e46db10656mr16335626plb.84.1615899493495;
+        Tue, 16 Mar 2021 05:58:13 -0700 (PDT)
+Received: from realwakka ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id 38sm7505119pgk.30.2021.03.16.05.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 05:58:13 -0700 (PDT)
+Date:   Tue, 16 Mar 2021 12:58:05 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
+Subject: Re: [PATCH] btrfs-progs: common: make sure that qgroup id is in range
+Message-ID: <20210316125805.GA19669@realwakka>
+References: <20210315155638.18861-1-realwakka@gmail.com>
+ <2c58bf6a-d13c-2628-bfa5-c122b7ad73a6@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2c58bf6a-d13c-2628-bfa5-c122b7ad73a6@gmx.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Mar 16, 2021 at 01:44:33PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2021/3/15 下午11:56, Sidong Yang wrote:
+> > When user assign qgroup with qgroup id that is too big to exceeds
+> > range and invade level value, and it works without any error. but
+> > this action would be make undefined error. this code make sure that
+> > qgroup id doesn't exceed range(0 ~ 2^48-1).
+> > 
+> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> 
+> Shouldn't the check also happen inside the ioctl?
 
-Test cases where a direct IO write, with O_DSYNC, can not be done and has
-to fallback to a buffered write.
+Yes, I checked the ioctl code in kernel. but there is only the code that
+check if it is zero like !sa->qgroupid. and it just assign to
+key.offset. Also it should be checked in ioctl?
 
-This is motivated by the fact we don't have existing tests for these cases
-and in fact we had a regression for one case in the 5.10 kernel. This was
-the case when doing a direct IO write, with O_DSYNC, against a file offset
-that is not aligned to the filesystem's block size, which resulted in
-triggering an assertion failure when btrfs is built with assertions enabled
-(CONFIG_BTRFS_ASSERT=y). One openSUSE Tumbleweed user hit this frequently
-when using Docker and DB2.
-
-The kernel commit in 5.10 that introduced the regression was commit
-0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")). In kernel 5.11 the
-regression fixed, by pure chance, by commit ecfdc08b8cc65d ("btrfs: remove
-dio iomap DSYNC workaround"). Since the commit that fixed the bug in 5.11
-was dependent on a large patchset, a special and simple fix was added to
-the stable kernel 5.10.18 by commit a6703c71153438 ("btrfs: fix crash after
-non-aligned direct IO write with O_DSYNC").
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-V2: Resend and updated changelog.
-
- tests/btrfs/234     | 64 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/234.out | 21 +++++++++++++++
- tests/btrfs/group   |  1 +
- 3 files changed, 86 insertions(+)
- create mode 100755 tests/btrfs/234
- create mode 100644 tests/btrfs/234.out
-
-diff --git a/tests/btrfs/234 b/tests/btrfs/234
-new file mode 100755
-index 00000000..df64e54e
---- /dev/null
-+++ b/tests/btrfs/234
-@@ -0,0 +1,64 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test No. btrfs/234
-+#
-+# Test cases where a direct IO write, with O_DSYNC, can not be done and has to
-+# fallback to a buffered write.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/attr
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+_require_scratch
-+_require_odirect
-+_require_chattr c
-+
-+rm -f $seqres.full
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_scratch_mount
-+
-+# Create a test file with compression enabled (chattr +c).
-+touch $SCRATCH_MNT/foo
-+$CHATTR_PROG +c $SCRATCH_MNT/foo
-+
-+# Now do a buffered write to create compressed extents.
-+$XFS_IO_PROG -s -c "pwrite -S 0xab -b 1M 0 1M" $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Now do the direct IO write with O_DSYNC into a file range that contains
-+# compressed extents. It should fallback to buffered IO and succeed.
-+$XFS_IO_PROG -d -s -c "pwrite -S 0xcd 512K 512K" $SCRATCH_MNT/foo | _filter_xfs_io
-+
-+# Now try doing a direct IO write, with O_DSYNC, for a range that starts with
-+# non-aligned offset. It should also fallback to buffered IO and succeed.
-+$XFS_IO_PROG -f -d -s -c "pwrite -S 0xef 1111 512K" $SCRATCH_MNT/bar | _filter_xfs_io
-+
-+# Unmount, mount again, and verify we have the expected data.
-+_scratch_cycle_mount
-+
-+echo "File foo data:"
-+od -A d -t x1 $SCRATCH_MNT/foo
-+echo "File bar data:"
-+od -A d -t x1 $SCRATCH_MNT/bar
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/234.out b/tests/btrfs/234.out
-new file mode 100644
-index 00000000..4504a193
---- /dev/null
-+++ b/tests/btrfs/234.out
-@@ -0,0 +1,21 @@
-+QA output created by 234
-+wrote 1048576/1048576 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 524288/524288 bytes at offset 524288
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+wrote 524288/524288 bytes at offset 1111
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File foo data:
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-+*
-+0524288 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
-+*
-+1048576
-+File bar data:
-+0000000 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+0001104 00 00 00 00 00 00 00 ef ef ef ef ef ef ef ef ef
-+0001120 ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef ef
-+*
-+0525392 ef ef ef ef ef ef ef
-+0525399
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 5214dbdb..6d0c70c0 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -236,3 +236,4 @@
- 231 auto quick clone log replay
- 232 auto quick qgroup limit
- 233 auto quick subvolume
-+234 auto quick compress rw
--- 
-2.28.0
-
+> 
+> Thanks,
+> Qu
+> > ---
+> >   common/utils.c | 5 +++++
+> >   1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/common/utils.c b/common/utils.c
+> > index 57e41432..a2f72550 100644
+> > --- a/common/utils.c
+> > +++ b/common/utils.c
+> > @@ -727,6 +727,8 @@ u64 parse_qgroupid(const char *p)
+> >   		id = strtoull(p, &ptr_parse_end, 10);
+> >   		if (ptr_parse_end != ptr_src_end)
+> >   			goto path;
+> > +		if (id >> BTRFS_QGROUP_LEVEL_SHIFT)
+> > +			goto err;
+> >   		return id;
+> >   	}
+> >   	level = strtoull(p, &ptr_parse_end, 10);
+> > @@ -734,6 +736,9 @@ u64 parse_qgroupid(const char *p)
+> >   		goto path;
+> > 
+> >   	id = strtoull(s + 1, &ptr_parse_end, 10);
+> > +	if (id >> BTRFS_QGROUP_LEVEL_SHIFT)
+> > +		goto err;
+> > +
+> >   	if (ptr_parse_end != ptr_src_end)
+> >   		goto  path;
+> > 
+> > 
