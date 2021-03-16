@@ -2,172 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D0833D61B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 15:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C88133D9DD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 17:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237481AbhCPOtF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 10:49:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50340 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237500AbhCPOs3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 10:48:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615906109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=18bJ2oP6ut9ntIweB+G7KlMqarDABiP1n988fIKNPr4=;
-        b=gqSoihg6/2Gh0LTi8X7uiC8HIRqqkDPHtY5C8JDfmJi1oZ9J+8TsVEcZz1sV/uFMPp188b
-        VDKSIWOclQ2UhzwnWgHp4LRPXUFfvBlWDIT8jBzZThscwL0EcGMuEkjzr2iiGtRkkPILor
-        TcjkoMUAxaD9VRzQgvK4Rqa/y5JZY9w=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-8LHpoA1xNneEl5lZUN0XSw-1; Tue, 16 Mar 2021 10:48:27 -0400
-X-MC-Unique: 8LHpoA1xNneEl5lZUN0XSw-1
-Received: by mail-ej1-f72.google.com with SMTP id fy8so13692365ejb.19
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 07:48:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=18bJ2oP6ut9ntIweB+G7KlMqarDABiP1n988fIKNPr4=;
-        b=Ok4azzDGBQUki70vYLpKPKk43sQWKMG8GiReliKGWk5tLrZcMc2glWTtiiFutxBd//
-         eSrb1A22/1oFwVXDW1Rd0pm5cseTM+YGjGbawbQ4bKVoMnHAWllPbIe9qkaUcatz4jul
-         o6xQYB6368ypxb3ueZtud6HxLBCD/7Em1INfCe6LfB/ykD6GRrlSPj8j9lBMooqvdwsb
-         7Lnw2Hh74ZABKQg+ovRK89jWu+sJsLIMuyuXn1nWAG/v30vvrncP/DkmDvTgneWQzqU+
-         FVq61zM/Sa7uLJgXcznV4GBoMsoz6hV2SWbzf/riFKj7IsY72cyZSePkU+f1mVThnjst
-         iJgQ==
-X-Gm-Message-State: AOAM533SRWjZlP7I0hdRU9hysT3zEaK1mskzR4zwV8aVbFfy1UhUYGAu
-        E3s6Dyh/ho47Z+JumWzypRycfwKxTwcLAixbfPqfUDrmPFOng1wZ4gs4CKU/8o0DUOOjEIaQnEF
-        2XTHM0Y+n5lkK/P1HgCd3JhQ=
-X-Received: by 2002:a17:906:fcc7:: with SMTP id qx7mr30132323ejb.486.1615906105817;
-        Tue, 16 Mar 2021 07:48:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRxyi2aGWQMGTMwIg2cBuc0d3dZ9KGQ0zkgK50cJaZtP8nB4RkXgvNv/OVQnLFh7+3jBPTIw==
-X-Received: by 2002:a17:906:fcc7:: with SMTP id qx7mr30132303ejb.486.1615906105639;
-        Tue, 16 Mar 2021 07:48:25 -0700 (PDT)
-Received: from omos.redhat.com ([2a02:8308:b105:dd00:277b:6436:24db:9466])
-        by smtp.gmail.com with ESMTPSA id q16sm3342227edv.61.2021.03.16.07.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 07:48:25 -0700 (PDT)
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Richard Haines <richard_c_haines@btinternet.com>
-Subject: [PATCH v2] vfs: fix fsconfig(2) LSM mount option handling for btrfs
-Date:   Tue, 16 Mar 2021 15:48:23 +0100
-Message-Id: <20210316144823.2188946-1-omosnace@redhat.com>
-X-Mailer: git-send-email 2.30.2
+        id S234800AbhCPQyB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 12:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234521AbhCPQxt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:53:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF346510D
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 16:53:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615913629;
+        bh=20V9sXdtWvFIRGVNJ4jIMvwmvg+wuJ8XYpwkDwp6mHE=;
+        h=From:To:Subject:Date:From;
+        b=XUNhI2nMmiSsEzgZ4ujHGba1n/S4mtlSyrbBZN6PjqAXN73QjIWJ7nTDUnOVIKlSL
+         FCGWdvAprSikuc4f+TpV8YmabaNboAcKmm1psHyPKc4OgiiEFnOCvox5IZQiPB08CF
+         dmNjBhODccvVZt05A9eOcKVFrSXq4W8M3xWdWTkkmB2pdoorXdIW07AGZB8c0UxU/z
+         vTFHHclC8Talw6wIMhdbDRn/UINrL1aDAdKKOBp0DdvsrL+KtJANkTzcgrxlLsDuAa
+         wjw0W7Ml8KczL+zqMWbXcvq3TxXTy8R3d+f7ve+Xt8H6OKWJxyjkzUsAl7zX6uoQkr
+         SC+TR7pAIMxrg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix subvolume/snapshot deletion not triggered on mount
+Date:   Tue, 16 Mar 2021 16:53:46 +0000
+Message-Id: <5975ac44ce65830fd685896ed66b09eb16c4c4d8.1615912470.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When SELinux security options are passed to btrfs via fsconfig(2) rather
-than via mount(2), the operation aborts with an error. What happens is
-roughly this sequence:
+From: Filipe Manana <fdmanana@suse.com>
 
-1. vfs_parse_fs_param() eats away the LSM options and parses them into
-   fc->security.
-2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
-   nothing to btrfs.
-[here btrfs calls another layer of vfs_kern_mount(), but let's ignore
- that for simplicity]
-3. btrfs calls security_sb_set_mnt_opts() with empty options.
-4. vfs_get_tree() then calls its own security_sb_set_mnt_opts() with the
-   options stashed in fc->security.
-5. SELinux doesn't like that different options were used for the same
-   superblock and returns -EINVAL.
+During the mount procedure we are calling btrfs_orphan_cleanup() against
+the root tree, which will find all orphans items in this tree. When an
+orphan item corresponds to a deleted subvolume/snapshot (instead of an
+inode space cache), it must not delete the orphan item, because that will
+cause btrfs_find_orphan_roots() to not find the orphan item and therefore
+not add the corresponding subvolume root to the list of dead roots, which
+results in the subvolume's tree never being deleted by the cleanup thread.
 
-In the case of mount(2), the options are parsed by
-legacy_parse_monolithic(), which skips the eating away of security
-opts because of the FS_BINARY_MOUNTDATA flag, so they are passed to the
-FS via ctx->legacy_data. The second call to security_sb_set_mnt_opts()
-(from vfs_get_tree()) now passes empty opts, but the non-empty -> empty
-sequence is allowed by SELinux for the FS_BINARY_MOUNTDATA case.
+The same applies to the remount from RO to RW path.
 
-It is a total mess, but the only sane fix for now seems to be to skip
-processing the security opts in vfs_parse_fs_param() if the fc has
-legacy opts set AND the fs specfies the FS_BINARY_MOUNTDATA flag. This
-combination currently matches only btrfs and coda. For btrfs this fixes
-the fsconfig(2) behavior, and for coda it makes setting security opts
-via fsconfig(2) fail the same way as it would with mount(2) (because
-FS_BINARY_MOUNTDATA filesystems are expected to call the mount opts LSM
-hooks themselves, but coda never cared enough to do that). I believe
-that is an acceptable state until both filesystems (or at least btrfs)
-are converted to the new mount API (at which point btrfs won't need to
-pretend it takes binary mount data any more and also won't need to call
-the LSM hooks itself, assuming it will pass the fc->security information
-properly).
+Fix this by making btrfs_find_orphan_roots() run before calling
+btrfs_orphan_cleanup() against the root tree.
 
-Note that we can't skip LSM opts handling in vfs_parse_fs_param() solely
-based on FS_BINARY_MOUNTDATA because that would break NFS.
+A test case for fstests will follow soon.
 
-See here for the original report and reproducer:
-https://lore.kernel.org/selinux/c02674c970fa292610402aa866c4068772d9ad4e.camel@btinternet.com/
-
-Reported-by: Richard Haines <richard_c_haines@btinternet.com>
-Tested-by: Richard Haines <richard_c_haines@btinternet.com>
-Fixes: 3e1aeb00e6d1 ("vfs: Implement a filesystem superblock creation/configuration context")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Reported-by: Robbie Ko <robbieko@synology.com>
+Link: https://lore.kernel.org/linux-btrfs/b19f4310-35e0-606e-1eea-2dd84d28c5da@synology.com/
+Fixes: 638331fa56caea ("btrfs: fix transaction leak and crash after cleaning up orphans on RO mount")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
+ fs/btrfs/disk-io.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-Trying to revive this patch... Sending v2 with style tweaks as suggested
-by David Sterba.
-
-v2:
-- split the if condition over two lines (David Sterba)
-- fix comment style in the comment being reindented (David Sterba)
-
- fs/fs_context.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
-
-diff --git a/fs/fs_context.c b/fs/fs_context.c
-index 2834d1afa6e8..e6575102bbbd 100644
---- a/fs/fs_context.c
-+++ b/fs/fs_context.c
-@@ -106,12 +106,30 @@ int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
- 	if (ret != -ENOPARAM)
- 		return ret;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 41b718cfea40..7f50b3f65f3a 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3009,6 +3009,21 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
+ 		}
+ 	}
  
--	ret = security_fs_context_parse_param(fc, param);
--	if (ret != -ENOPARAM)
--		/* Param belongs to the LSM or is disallowed by the LSM; so
--		 * don't pass to the FS.
--		 */
--		return ret;
 +	/*
-+	 * In the legacy+binary mode, skip the security_fs_context_parse_param()
-+	 * call and let the legacy handler process also the security options.
-+	 * It will format them into the monolithic string, where the FS can
-+	 * process them (with FS_BINARY_MOUNTDATA it is expected to do it).
-+	 *
-+	 * Currently, this matches only btrfs and coda. Coda is broken with
-+	 * fsconfig(2) anyway, because it does actually take binary data. Btrfs
-+	 * only *pretends* to take binary data to work around the SELinux's
-+	 * no-remount-with-different-options check, so this allows it to work
-+	 * with fsconfig(2) properly.
-+	 *
-+	 * Once btrfs is ported to the new mount API, this hack can be reverted.
++	 * btrfs_find_orphan_roots() is responsible for finding all the dead
++	 * roots (with 0 refs), flag them with BTRFS_ROOT_DEAD_TREE and load
++	 * them into the fs_info->fs_roots_radix tree. This must be done before
++	 * calling btrfs_orphan_cleanup() on the tree root. If we don't do it
++	 * first, then btrfs_orphan_cleanup() will delete a dead root's orphan
++	 * item before the root's tree is deleted - this means that if we unmount
++	 * or crash before the deletion completes, on the next mount we will not
++	 * delete what remains of the tree because the orphan item does not
++	 * exists anymore, which is what tells us we have a pending deletion.
 +	 */
-+	if (fc->ops != &legacy_fs_context_ops ||
-+	    !(fc->fs_type->fs_flags & FS_BINARY_MOUNTDATA)) {
-+		ret = security_fs_context_parse_param(fc, param);
-+		if (ret != -ENOPARAM)
-+			/*
-+			 * Param belongs to the LSM or is disallowed by the LSM;
-+			 * so don't pass to the FS.
-+			 */
-+			return ret;
-+	}
++	ret = btrfs_find_orphan_roots(fs_info);
++	if (ret)
++		goto out;
++
+ 	ret = btrfs_cleanup_fs_roots(fs_info);
+ 	if (ret)
+ 		goto out;
+@@ -3068,7 +3083,6 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
+ 		}
+ 	}
  
- 	if (fc->ops->parse_param) {
- 		ret = fc->ops->parse_param(fc, param);
+-	ret = btrfs_find_orphan_roots(fs_info);
+ out:
+ 	return ret;
+ }
 -- 
-2.30.2
+2.28.0
 
