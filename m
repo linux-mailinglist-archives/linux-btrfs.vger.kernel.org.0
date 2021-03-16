@@ -2,105 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B534733DCC1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 19:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F3833DD69
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 20:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbhCPSpL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 14:45:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229818AbhCPSoh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:44:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 868F565118;
-        Tue, 16 Mar 2021 18:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615920276;
-        bh=gqgWe/snPz3cPzLiE4nMX2O8k/NQVN+I3y8NE9h6q8E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c5EwcF6aGyPf8SvXXDPparf+jfwY/El4DQi/oASmyHp6ME0BZSSLYEF8McP8eqnLv
-         /tmOiUhfWkBMsL0pQCj9yBuVcx5nquC+BLXzeOZG5muVR/j/s1fZjeBpIpEnMUUgaz
-         syH/njykCwSZ80f7OQNJr2cctG7xq2ODTY7xe7ch42HS9G5HI99+ehXNcLA4ruodv4
-         EmsqDLfm6puVy4iij963VfMiDoPbV2GdvsAXKoCr6Revkz+bqoKFloGCB7WemX98aC
-         Ye2fg1pmOgAGZf8IUbJX6/x/zSZjEwS1rLUjih2nDvW/6SklukBUBI57xI9mrhhDW9
-         7GUll8apa/g4A==
-Date:   Tue, 16 Mar 2021 11:44:34 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Boris Burkov <boris@bur.io>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] btrfs: initial fsverity support
-Message-ID: <YFD8kq1j5ZqN6Wgl@gmail.com>
-References: <cover.1614971203.git.boris@bur.io>
- <71249018efc661fdd3c43bda5d7cea271904ae1a.1614971203.git.boris@bur.io>
+        id S240409AbhCPTZa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 15:25:30 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:41432 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240388AbhCPTZD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Mar 2021 15:25:03 -0400
+X-Greylist: delayed 1531 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Mar 2021 15:25:02 EDT
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lMEud-006adU-VV; Tue, 16 Mar 2021 18:59:28 +0000
+Date:   Tue, 16 Mar 2021 18:59:27 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Richard Haines <richard_c_haines@btinternet.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH v2] vfs: fix fsconfig(2) LSM mount option handling for
+ btrfs
+Message-ID: <YFEAD9UClhwxErgj@zeniv-ca.linux.org.uk>
+References: <20210316144823.2188946-1-omosnace@redhat.com>
+ <CAHC9VhRoTjimpKrrQ5f04SE7AOcGv6p5iBgSnoSRgtiUP47rRg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <71249018efc661fdd3c43bda5d7cea271904ae1a.1614971203.git.boris@bur.io>
+In-Reply-To: <CAHC9VhRoTjimpKrrQ5f04SE7AOcGv6p5iBgSnoSRgtiUP47rRg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 11:26:30AM -0800, Boris Burkov wrote:
-> +/*
-> + * fsverity op that ends enabling verity.
-> + * fsverity calls this when it's done with all of the pages in the file
-> + * and all of the merkle items have been inserted.  We write the
-> + * descriptor and update the inode in the btree to reflect its new life
-> + * as a verity file.
-> + */
-> +static int btrfs_end_enable_verity(struct file *filp, const void *desc,
-> +				  size_t desc_size, u64 merkle_tree_size)
-> +{
-> +	struct btrfs_trans_handle *trans;
-> +	struct inode *inode = file_inode(filp);
-> +	struct btrfs_root *root = BTRFS_I(inode)->root;
-> +	struct btrfs_verity_descriptor_item item;
-> +	int ret;
-> +
-> +	if (desc != NULL) {
-> +		/* write out the descriptor item */
-> +		memset(&item, 0, sizeof(item));
-> +		btrfs_set_stack_verity_descriptor_size(&item, desc_size);
-> +		ret = write_key_bytes(BTRFS_I(inode),
-> +				      BTRFS_VERITY_DESC_ITEM_KEY, 0,
-> +				      (const char *)&item, sizeof(item));
-> +		if (ret)
-> +			goto out;
-> +		/* write out the descriptor itself */
-> +		ret = write_key_bytes(BTRFS_I(inode),
-> +				      BTRFS_VERITY_DESC_ITEM_KEY, 1,
-> +				      desc, desc_size);
-> +		if (ret)
-> +			goto out;
-> +
-> +		/* update our inode flags to include fs verity */
-> +		trans = btrfs_start_transaction(root, 1);
-> +		if (IS_ERR(trans)) {
-> +			ret = PTR_ERR(trans);
-> +			goto out;
-> +		}
-> +		BTRFS_I(inode)->compat_flags |= BTRFS_INODE_VERITY;
-> +		btrfs_sync_inode_flags_to_i_flags(inode);
-> +		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
-> +		btrfs_end_transaction(trans);
-> +	}
-> +
-> +out:
-> +	if (desc == NULL || ret) {
-> +		/* If we failed, drop all the verity items */
-> +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
-> +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
-> +	} else
-> +		btrfs_set_fs_compat_ro(root->fs_info, VERITY);
-> +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
-> +	return ret;
-> +}
+On Tue, Mar 16, 2021 at 02:21:45PM -0400, Paul Moore wrote:
+> On Tue, Mar 16, 2021 at 10:48 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> >
+> > When SELinux security options are passed to btrfs via fsconfig(2) rather
+> > than via mount(2), the operation aborts with an error. What happens is
+> > roughly this sequence:
+> >
+> > 1. vfs_parse_fs_param() eats away the LSM options and parses them into
+> >    fc->security.
+> > 2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
+> >    nothing to btrfs.
+> > [here btrfs calls another layer of vfs_kern_mount(), but let's ignore
+> >  that for simplicity]
 
-If enabling verity failed, I think you also need to call
-truncate_inode_pages(inode->i_mapping, inode->i_size)
-to remove the cached Merkle tree pages from the page cache.  Otherwise they can
-be exposed to userspace if the file is later extended.  I recently fixed this
-same problem for ext4 and f2fs:
-https://lkml.kernel.org/linux-f2fs-devel/20210302200420.137977-1-ebiggers@kernel.org/T/#u
+Let's not.  This is where the root of the problem actually lies.  Take a look
+at that sucker:
 
-- Eric
+        struct fs_context *fc;
+        struct vfsmount *mnt;
+        int ret = 0;
+
+        if (!type)
+                return ERR_PTR(-EINVAL);
+
+        fc = fs_context_for_mount(type, flags);
+        if (IS_ERR(fc))
+                return ERR_CAST(fc);
+
+        if (name)
+                ret = vfs_parse_fs_string(fc, "source",
+                                          name, strlen(name));
+        if (!ret)
+                ret = parse_monolithic_mount_data(fc, data);  
+        if (!ret)
+                mnt = fc_mount(fc);
+        else   
+                mnt = ERR_PTR(ret);
+
+        put_fs_context(fc);
+        return mnt;
+
+That's where the problem comes - you've lost the original context's ->security.
+Note that there's such thing as security_fs_context_dup(), so you can bloody
+well either
+	* provide a variant of vfs_kern_mount() that would take 'base' fc to
+pick security options from or
+	* do all options parsing on btrfs fc and then do fs_context_for_mount +
+security_fs_context_dup + copy (parsed) options to whatever private data you
+use for btrfs_root context + fc_mount + put_fs_context yourself. 
+
+My preference would be the latter, but I have *not* looked at btrfs mount options
+handling in any details.
+
+> VFS folks, can we get a verdict/feedback on this patch?  The v1 draft
+> of this patch was posted almost four months ago with no serious
+> comments/feedback.  It's a bit ugly, but it does appear to work and at
+> the very least SELinux needs this to handle btrfs properly, other LSMs
+> may need this too.
+
+It's more than a bit ugly; it perpetuates the use of FS_BINARY_MOUNTDATA,
+and the semantics it gets is quite counterintuitive at that.
