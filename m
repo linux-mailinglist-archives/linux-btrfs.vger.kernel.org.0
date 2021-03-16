@@ -2,177 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF6F33DC7F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 19:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B534733DCC1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 19:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239954AbhCPSWP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 14:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239979AbhCPSWA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 14:22:00 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CECC061762
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 11:21:58 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id e19so73867555ejt.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 11:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ATABy9zC/tpLcxYv7za8wFx5cG2fi4BhjQqu6fqauiE=;
-        b=WOvMvJ1w4n0kwkZkiSBl+DIH+994/5gt2UqnTHqURDX1c/7qeYwKaPxxig788s704v
-         Fgy88286V76RbS20ulEx9KrYgyKPqAlGoAlAY+CvVxipGnvExtDxgpSgxcTHS2BTNT85
-         LC6zNyJsfbKczUmSaLJQ6Fo+z94JOQsYPmX9zZXyN8BXCdYsNy3lDElEBKBstCQFHGcE
-         3AUXlu+WakebXWpjomCzCx5TIYpo4VBYX+aCaGnKVBcYJe8R3J+gh4HIcfM95X6FMySi
-         jElbrnixG4bxtVKqDSeN6sBv5SAm4FK0/HlMMMf1AzXMCCp2+8KgbCLbqHRDF89fft8o
-         eIPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ATABy9zC/tpLcxYv7za8wFx5cG2fi4BhjQqu6fqauiE=;
-        b=Jkshcqnh6Z1ln0vQFDRkkfYx24ZGSYwy+EsXgHdoshtJSd0c+ZgH6zhizpbSNmcOqS
-         xH7awjTPMHs8IGOm4oTC7l6tyKh+U1qSV28zC4uIf5nfM7n5RaIr7E8u3n4tA1wvWu7w
-         5xnt0IpaX4VTq6G+cVry4yGq8jBHfMy+olHHj6eEP6I3AcNGy2IJ3v8KR/aanmBxS2F0
-         37RaJ8OSziRvl7M7PWfTief7zn4+ULl/X7h16KBhX4MTRznwMWzZb2aDmeUbi0milCqf
-         PMwaW1lBZzqFXcAzanI6qN17SAj/QeRwi+mdJXUOU+dSeGqjDUawIkE2a3GT7w1TCC3m
-         jKng==
-X-Gm-Message-State: AOAM532npCj8L5MdX2RnZCdIzS4E4lcLakfBlwKfFB3wZRIs/LgECf7q
-        C+4Pa09OwjzpA0jm3WREnglQ7/lawfC1z3ND/gg78ySER+QH
-X-Google-Smtp-Source: ABdhPJytMntTpbhMGOMIpQmZ7H1iaR8dMCR2XbneRFjMaW2Nb4vDQR2cNklasjGICk7QZmWfC9NBqS17BujPWyf99o0=
-X-Received: by 2002:a17:906:edca:: with SMTP id sb10mr14495392ejb.398.1615918916813;
- Tue, 16 Mar 2021 11:21:56 -0700 (PDT)
+        id S234540AbhCPSpL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 14:45:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229818AbhCPSoh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Mar 2021 14:44:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 868F565118;
+        Tue, 16 Mar 2021 18:44:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615920276;
+        bh=gqgWe/snPz3cPzLiE4nMX2O8k/NQVN+I3y8NE9h6q8E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c5EwcF6aGyPf8SvXXDPparf+jfwY/El4DQi/oASmyHp6ME0BZSSLYEF8McP8eqnLv
+         /tmOiUhfWkBMsL0pQCj9yBuVcx5nquC+BLXzeOZG5muVR/j/s1fZjeBpIpEnMUUgaz
+         syH/njykCwSZ80f7OQNJr2cctG7xq2ODTY7xe7ch42HS9G5HI99+ehXNcLA4ruodv4
+         EmsqDLfm6puVy4iij963VfMiDoPbV2GdvsAXKoCr6Revkz+bqoKFloGCB7WemX98aC
+         Ye2fg1pmOgAGZf8IUbJX6/x/zSZjEwS1rLUjih2nDvW/6SklukBUBI57xI9mrhhDW9
+         7GUll8apa/g4A==
+Date:   Tue, 16 Mar 2021 11:44:34 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] btrfs: initial fsverity support
+Message-ID: <YFD8kq1j5ZqN6Wgl@gmail.com>
+References: <cover.1614971203.git.boris@bur.io>
+ <71249018efc661fdd3c43bda5d7cea271904ae1a.1614971203.git.boris@bur.io>
 MIME-Version: 1.0
-References: <20210316144823.2188946-1-omosnace@redhat.com>
-In-Reply-To: <20210316144823.2188946-1-omosnace@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 16 Mar 2021 14:21:45 -0400
-Message-ID: <CAHC9VhRoTjimpKrrQ5f04SE7AOcGv6p5iBgSnoSRgtiUP47rRg@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: fix fsconfig(2) LSM mount option handling for btrfs
-To:     linux-btrfs@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Richard Haines <richard_c_haines@btinternet.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71249018efc661fdd3c43bda5d7cea271904ae1a.1614971203.git.boris@bur.io>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:48 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->
-> When SELinux security options are passed to btrfs via fsconfig(2) rather
-> than via mount(2), the operation aborts with an error. What happens is
-> roughly this sequence:
->
-> 1. vfs_parse_fs_param() eats away the LSM options and parses them into
->    fc->security.
-> 2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
->    nothing to btrfs.
-> [here btrfs calls another layer of vfs_kern_mount(), but let's ignore
->  that for simplicity]
-> 3. btrfs calls security_sb_set_mnt_opts() with empty options.
-> 4. vfs_get_tree() then calls its own security_sb_set_mnt_opts() with the
->    options stashed in fc->security.
-> 5. SELinux doesn't like that different options were used for the same
->    superblock and returns -EINVAL.
->
-> In the case of mount(2), the options are parsed by
-> legacy_parse_monolithic(), which skips the eating away of security
-> opts because of the FS_BINARY_MOUNTDATA flag, so they are passed to the
-> FS via ctx->legacy_data. The second call to security_sb_set_mnt_opts()
-> (from vfs_get_tree()) now passes empty opts, but the non-empty -> empty
-> sequence is allowed by SELinux for the FS_BINARY_MOUNTDATA case.
->
-> It is a total mess, but the only sane fix for now seems to be to skip
-> processing the security opts in vfs_parse_fs_param() if the fc has
-> legacy opts set AND the fs specfies the FS_BINARY_MOUNTDATA flag. This
-> combination currently matches only btrfs and coda. For btrfs this fixes
-> the fsconfig(2) behavior, and for coda it makes setting security opts
-> via fsconfig(2) fail the same way as it would with mount(2) (because
-> FS_BINARY_MOUNTDATA filesystems are expected to call the mount opts LSM
-> hooks themselves, but coda never cared enough to do that). I believe
-> that is an acceptable state until both filesystems (or at least btrfs)
-> are converted to the new mount API (at which point btrfs won't need to
-> pretend it takes binary mount data any more and also won't need to call
-> the LSM hooks itself, assuming it will pass the fc->security information
-> properly).
->
-> Note that we can't skip LSM opts handling in vfs_parse_fs_param() solely
-> based on FS_BINARY_MOUNTDATA because that would break NFS.
->
-> See here for the original report and reproducer:
-> https://lore.kernel.org/selinux/c02674c970fa292610402aa866c4068772d9ad4e.camel@btinternet.com/
->
-> Reported-by: Richard Haines <richard_c_haines@btinternet.com>
-> Tested-by: Richard Haines <richard_c_haines@btinternet.com>
-> Fixes: 3e1aeb00e6d1 ("vfs: Implement a filesystem superblock creation/configuration context")
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> ---
->
-> Trying to revive this patch... Sending v2 with style tweaks as suggested
-> by David Sterba.
->
-> v2:
-> - split the if condition over two lines (David Sterba)
-> - fix comment style in the comment being reindented (David Sterba)
->
->  fs/fs_context.c | 30 ++++++++++++++++++++++++------
->  1 file changed, 24 insertions(+), 6 deletions(-)
+On Fri, Mar 05, 2021 at 11:26:30AM -0800, Boris Burkov wrote:
+> +/*
+> + * fsverity op that ends enabling verity.
+> + * fsverity calls this when it's done with all of the pages in the file
+> + * and all of the merkle items have been inserted.  We write the
+> + * descriptor and update the inode in the btree to reflect its new life
+> + * as a verity file.
+> + */
+> +static int btrfs_end_enable_verity(struct file *filp, const void *desc,
+> +				  size_t desc_size, u64 merkle_tree_size)
+> +{
+> +	struct btrfs_trans_handle *trans;
+> +	struct inode *inode = file_inode(filp);
+> +	struct btrfs_root *root = BTRFS_I(inode)->root;
+> +	struct btrfs_verity_descriptor_item item;
+> +	int ret;
+> +
+> +	if (desc != NULL) {
+> +		/* write out the descriptor item */
+> +		memset(&item, 0, sizeof(item));
+> +		btrfs_set_stack_verity_descriptor_size(&item, desc_size);
+> +		ret = write_key_bytes(BTRFS_I(inode),
+> +				      BTRFS_VERITY_DESC_ITEM_KEY, 0,
+> +				      (const char *)&item, sizeof(item));
+> +		if (ret)
+> +			goto out;
+> +		/* write out the descriptor itself */
+> +		ret = write_key_bytes(BTRFS_I(inode),
+> +				      BTRFS_VERITY_DESC_ITEM_KEY, 1,
+> +				      desc, desc_size);
+> +		if (ret)
+> +			goto out;
+> +
+> +		/* update our inode flags to include fs verity */
+> +		trans = btrfs_start_transaction(root, 1);
+> +		if (IS_ERR(trans)) {
+> +			ret = PTR_ERR(trans);
+> +			goto out;
+> +		}
+> +		BTRFS_I(inode)->compat_flags |= BTRFS_INODE_VERITY;
+> +		btrfs_sync_inode_flags_to_i_flags(inode);
+> +		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
+> +		btrfs_end_transaction(trans);
+> +	}
+> +
+> +out:
+> +	if (desc == NULL || ret) {
+> +		/* If we failed, drop all the verity items */
+> +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
+> +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
+> +	} else
+> +		btrfs_set_fs_compat_ro(root->fs_info, VERITY);
+> +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
+> +	return ret;
+> +}
 
-VFS folks, can we get a verdict/feedback on this patch?  The v1 draft
-of this patch was posted almost four months ago with no serious
-comments/feedback.  It's a bit ugly, but it does appear to work and at
-the very least SELinux needs this to handle btrfs properly, other LSMs
-may need this too.
+If enabling verity failed, I think you also need to call
+truncate_inode_pages(inode->i_mapping, inode->i_size)
+to remove the cached Merkle tree pages from the page cache.  Otherwise they can
+be exposed to userspace if the file is later extended.  I recently fixed this
+same problem for ext4 and f2fs:
+https://lkml.kernel.org/linux-f2fs-devel/20210302200420.137977-1-ebiggers@kernel.org/T/#u
 
-> diff --git a/fs/fs_context.c b/fs/fs_context.c
-> index 2834d1afa6e8..e6575102bbbd 100644
-> --- a/fs/fs_context.c
-> +++ b/fs/fs_context.c
-> @@ -106,12 +106,30 @@ int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
->         if (ret != -ENOPARAM)
->                 return ret;
->
-> -       ret = security_fs_context_parse_param(fc, param);
-> -       if (ret != -ENOPARAM)
-> -               /* Param belongs to the LSM or is disallowed by the LSM; so
-> -                * don't pass to the FS.
-> -                */
-> -               return ret;
-> +       /*
-> +        * In the legacy+binary mode, skip the security_fs_context_parse_param()
-> +        * call and let the legacy handler process also the security options.
-> +        * It will format them into the monolithic string, where the FS can
-> +        * process them (with FS_BINARY_MOUNTDATA it is expected to do it).
-> +        *
-> +        * Currently, this matches only btrfs and coda. Coda is broken with
-> +        * fsconfig(2) anyway, because it does actually take binary data. Btrfs
-> +        * only *pretends* to take binary data to work around the SELinux's
-> +        * no-remount-with-different-options check, so this allows it to work
-> +        * with fsconfig(2) properly.
-> +        *
-> +        * Once btrfs is ported to the new mount API, this hack can be reverted.
-> +        */
-> +       if (fc->ops != &legacy_fs_context_ops ||
-> +           !(fc->fs_type->fs_flags & FS_BINARY_MOUNTDATA)) {
-> +               ret = security_fs_context_parse_param(fc, param);
-> +               if (ret != -ENOPARAM)
-> +                       /*
-> +                        * Param belongs to the LSM or is disallowed by the LSM;
-> +                        * so don't pass to the FS.
-> +                        */
-> +                       return ret;
-> +       }
->
->         if (fc->ops->parse_param) {
->                 ret = fc->ops->parse_param(fc, param);
-> --
-> 2.30.2
-
--- 
-paul moore
-www.paul-moore.com
+- Eric
