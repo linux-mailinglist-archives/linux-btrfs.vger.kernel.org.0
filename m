@@ -2,102 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF71D33D4D8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 14:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D0833D61B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 15:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhCPN2F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 09:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhCPN15 (ORCPT
+        id S237481AbhCPOtF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 10:49:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50340 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237500AbhCPOs3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 09:27:57 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC27C06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 06:27:57 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id s21so10626523pjq.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 06:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y24lpCPKuUxxHav6y0dIpr2Q6089pBKRGgNtX2ltHPw=;
-        b=JeCYrk0CmUl+rnQxheMPOakldWqoktuTilzua4DWwIo3TaNLddOtIBcSf+wYQWjY2Z
-         FUiVfgYG0RmP5ophOT7KueXfPrBXG6hfhdWDD95yg3A/repHMEyUkrStn0V5Logt/Fof
-         TqjE5ihWpx0DR/oGKpVlzJqjbZhzWGyASflsc5nBC6BPtDx1GT/5CoqzxaHnAdaaMgPX
-         qJVvwn0psAt7XrdBCM63APggaQgxPoAbUQFacNLnc060r4YdkxNmjq0R/muz+NR1QpnE
-         t8uwo5BAhcUsyYO7eqtUrxE+qp3Ss4HH230F04teybw/0H8BibULunRUD5t+YqUB2UTd
-         D4LQ==
+        Tue, 16 Mar 2021 10:48:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615906109;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=18bJ2oP6ut9ntIweB+G7KlMqarDABiP1n988fIKNPr4=;
+        b=gqSoihg6/2Gh0LTi8X7uiC8HIRqqkDPHtY5C8JDfmJi1oZ9J+8TsVEcZz1sV/uFMPp188b
+        VDKSIWOclQ2UhzwnWgHp4LRPXUFfvBlWDIT8jBzZThscwL0EcGMuEkjzr2iiGtRkkPILor
+        TcjkoMUAxaD9VRzQgvK4Rqa/y5JZY9w=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-8LHpoA1xNneEl5lZUN0XSw-1; Tue, 16 Mar 2021 10:48:27 -0400
+X-MC-Unique: 8LHpoA1xNneEl5lZUN0XSw-1
+Received: by mail-ej1-f72.google.com with SMTP id fy8so13692365ejb.19
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 07:48:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=y24lpCPKuUxxHav6y0dIpr2Q6089pBKRGgNtX2ltHPw=;
-        b=A7LqQey7Rpz1xfeyJY8HsQ8Ku8SBvdiZFcDGzNQeUljHJ1yUM1sVgEeCWHn061atOG
-         ES9En4/V1K1FPeY1U9BuIUhMgzG74S0hZ9JmMSLjZH/bnvrEoKnPZhosjaME4It8wizE
-         z3UNya/slNstlQVJ0IJhXlUjmkBaCv1aPoLqPFlP3pAWuQsxYGdJz8cg4eo+GTHtcA6B
-         qJttxsp5EW4sE4nGkyAzSOD0FchsRz0TUgbHakxMRxLkPruB/5sjUlO14AsI0P0Xns+3
-         aF2OxnhAVY+XDu6YtUGE8nzQrtBsw6XEL04vaPNoKq5bKdhBCbXCYYe3SRZNhNXzx6Dq
-         N6Mw==
-X-Gm-Message-State: AOAM532RL7ZfuuyYRBY/q5L98DBOavqldOtHsYIJgqVudxutluX/StCk
-        9o4D4yy9D2s8opdCQ+LihVQy9crlFQPLyw==
-X-Google-Smtp-Source: ABdhPJz81mdnlIvSznhjmLmoH6mP2Uu6Szz/QuHDzExi4YHI/BD2Z5iqBxwZ3pnli2Gw1DMytWyr+A==
-X-Received: by 2002:a17:902:b908:b029:e6:3e0a:b3cc with SMTP id bf8-20020a170902b908b02900e63e0ab3ccmr17160335plb.68.1615901277013;
-        Tue, 16 Mar 2021 06:27:57 -0700 (PDT)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id gm9sm2961267pjb.13.2021.03.16.06.27.55
+        bh=18bJ2oP6ut9ntIweB+G7KlMqarDABiP1n988fIKNPr4=;
+        b=Ok4azzDGBQUki70vYLpKPKk43sQWKMG8GiReliKGWk5tLrZcMc2glWTtiiFutxBd//
+         eSrb1A22/1oFwVXDW1Rd0pm5cseTM+YGjGbawbQ4bKVoMnHAWllPbIe9qkaUcatz4jul
+         o6xQYB6368ypxb3ueZtud6HxLBCD/7Em1INfCe6LfB/ykD6GRrlSPj8j9lBMooqvdwsb
+         7Lnw2Hh74ZABKQg+ovRK89jWu+sJsLIMuyuXn1nWAG/v30vvrncP/DkmDvTgneWQzqU+
+         FVq61zM/Sa7uLJgXcznV4GBoMsoz6hV2SWbzf/riFKj7IsY72cyZSePkU+f1mVThnjst
+         iJgQ==
+X-Gm-Message-State: AOAM533SRWjZlP7I0hdRU9hysT3zEaK1mskzR4zwV8aVbFfy1UhUYGAu
+        E3s6Dyh/ho47Z+JumWzypRycfwKxTwcLAixbfPqfUDrmPFOng1wZ4gs4CKU/8o0DUOOjEIaQnEF
+        2XTHM0Y+n5lkK/P1HgCd3JhQ=
+X-Received: by 2002:a17:906:fcc7:: with SMTP id qx7mr30132323ejb.486.1615906105817;
+        Tue, 16 Mar 2021 07:48:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRxyi2aGWQMGTMwIg2cBuc0d3dZ9KGQ0zkgK50cJaZtP8nB4RkXgvNv/OVQnLFh7+3jBPTIw==
+X-Received: by 2002:a17:906:fcc7:: with SMTP id qx7mr30132303ejb.486.1615906105639;
+        Tue, 16 Mar 2021 07:48:25 -0700 (PDT)
+Received: from omos.redhat.com ([2a02:8308:b105:dd00:277b:6436:24db:9466])
+        by smtp.gmail.com with ESMTPSA id q16sm3342227edv.61.2021.03.16.07.48.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 06:27:56 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.cz,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH v2] btrfs-progs: common: make sure that qgroup id is in range
-Date:   Tue, 16 Mar 2021 13:27:46 +0000
-Message-Id: <20210316132746.19979-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 16 Mar 2021 07:48:25 -0700 (PDT)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Richard Haines <richard_c_haines@btinternet.com>
+Subject: [PATCH v2] vfs: fix fsconfig(2) LSM mount option handling for btrfs
+Date:   Tue, 16 Mar 2021 15:48:23 +0100
+Message-Id: <20210316144823.2188946-1-omosnace@redhat.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When user assign qgroup with qgroup id that is too big to exceeds
-range and invade level value, and it works without any error. but
-this action would be make undefined error. this code make sure that
-qgroup id doesn't exceed range(0 ~ 2^48-1).
+When SELinux security options are passed to btrfs via fsconfig(2) rather
+than via mount(2), the operation aborts with an error. What happens is
+roughly this sequence:
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
+1. vfs_parse_fs_param() eats away the LSM options and parses them into
+   fc->security.
+2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
+   nothing to btrfs.
+[here btrfs calls another layer of vfs_kern_mount(), but let's ignore
+ that for simplicity]
+3. btrfs calls security_sb_set_mnt_opts() with empty options.
+4. vfs_get_tree() then calls its own security_sb_set_mnt_opts() with the
+   options stashed in fc->security.
+5. SELinux doesn't like that different options were used for the same
+   superblock and returns -EINVAL.
+
+In the case of mount(2), the options are parsed by
+legacy_parse_monolithic(), which skips the eating away of security
+opts because of the FS_BINARY_MOUNTDATA flag, so they are passed to the
+FS via ctx->legacy_data. The second call to security_sb_set_mnt_opts()
+(from vfs_get_tree()) now passes empty opts, but the non-empty -> empty
+sequence is allowed by SELinux for the FS_BINARY_MOUNTDATA case.
+
+It is a total mess, but the only sane fix for now seems to be to skip
+processing the security opts in vfs_parse_fs_param() if the fc has
+legacy opts set AND the fs specfies the FS_BINARY_MOUNTDATA flag. This
+combination currently matches only btrfs and coda. For btrfs this fixes
+the fsconfig(2) behavior, and for coda it makes setting security opts
+via fsconfig(2) fail the same way as it would with mount(2) (because
+FS_BINARY_MOUNTDATA filesystems are expected to call the mount opts LSM
+hooks themselves, but coda never cared enough to do that). I believe
+that is an acceptable state until both filesystems (or at least btrfs)
+are converted to the new mount API (at which point btrfs won't need to
+pretend it takes binary mount data any more and also won't need to call
+the LSM hooks itself, assuming it will pass the fc->security information
+properly).
+
+Note that we can't skip LSM opts handling in vfs_parse_fs_param() solely
+based on FS_BINARY_MOUNTDATA because that would break NFS.
+
+See here for the original report and reproducer:
+https://lore.kernel.org/selinux/c02674c970fa292610402aa866c4068772d9ad4e.camel@btinternet.com/
+
+Reported-by: Richard Haines <richard_c_haines@btinternet.com>
+Tested-by: Richard Haines <richard_c_haines@btinternet.com>
+Fixes: 3e1aeb00e6d1 ("vfs: Implement a filesystem superblock creation/configuration context")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
 ---
+
+Trying to revive this patch... Sending v2 with style tweaks as suggested
+by David Sterba.
+
 v2:
-  Use btrfs_qgroup_level() for checking
----
- common/utils.c | 5 +++++
- 1 file changed, 5 insertions(+)
+- split the if condition over two lines (David Sterba)
+- fix comment style in the comment being reindented (David Sterba)
 
-diff --git a/common/utils.c b/common/utils.c
-index 57e41432..ba0bcb24 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -727,6 +727,8 @@ u64 parse_qgroupid(const char *p)
- 		id = strtoull(p, &ptr_parse_end, 10);
- 		if (ptr_parse_end != ptr_src_end)
- 			goto path;
-+		if (btrfs_qgroup_level(id))
-+			goto err;
- 		return id;
- 	}
- 	level = strtoull(p, &ptr_parse_end, 10);
-@@ -734,6 +736,9 @@ u64 parse_qgroupid(const char *p)
- 		goto path;
+ fs/fs_context.c | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
+
+diff --git a/fs/fs_context.c b/fs/fs_context.c
+index 2834d1afa6e8..e6575102bbbd 100644
+--- a/fs/fs_context.c
++++ b/fs/fs_context.c
+@@ -106,12 +106,30 @@ int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
+ 	if (ret != -ENOPARAM)
+ 		return ret;
  
- 	id = strtoull(s + 1, &ptr_parse_end, 10);
-+	if (btrfs_qgroup_level(id))
-+		goto err;
-+
- 	if (ptr_parse_end != ptr_src_end)
- 		goto  path;
+-	ret = security_fs_context_parse_param(fc, param);
+-	if (ret != -ENOPARAM)
+-		/* Param belongs to the LSM or is disallowed by the LSM; so
+-		 * don't pass to the FS.
+-		 */
+-		return ret;
++	/*
++	 * In the legacy+binary mode, skip the security_fs_context_parse_param()
++	 * call and let the legacy handler process also the security options.
++	 * It will format them into the monolithic string, where the FS can
++	 * process them (with FS_BINARY_MOUNTDATA it is expected to do it).
++	 *
++	 * Currently, this matches only btrfs and coda. Coda is broken with
++	 * fsconfig(2) anyway, because it does actually take binary data. Btrfs
++	 * only *pretends* to take binary data to work around the SELinux's
++	 * no-remount-with-different-options check, so this allows it to work
++	 * with fsconfig(2) properly.
++	 *
++	 * Once btrfs is ported to the new mount API, this hack can be reverted.
++	 */
++	if (fc->ops != &legacy_fs_context_ops ||
++	    !(fc->fs_type->fs_flags & FS_BINARY_MOUNTDATA)) {
++		ret = security_fs_context_parse_param(fc, param);
++		if (ret != -ENOPARAM)
++			/*
++			 * Param belongs to the LSM or is disallowed by the LSM;
++			 * so don't pass to the FS.
++			 */
++			return ret;
++	}
  
+ 	if (fc->ops->parse_param) {
+ 		ret = fc->ops->parse_param(fc, param);
 -- 
-2.25.1
+2.30.2
 
