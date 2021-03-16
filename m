@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C88133D9DD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 17:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AFE33D9E0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 17:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234800AbhCPQyB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 12:54:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47886 "EHLO mail.kernel.org"
+        id S230219AbhCPQyd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 12:54:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234521AbhCPQxt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 12:53:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF346510D
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 16:53:49 +0000 (UTC)
+        id S234702AbhCPQyP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Mar 2021 12:54:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C950765090
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 16:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615913629;
-        bh=20V9sXdtWvFIRGVNJ4jIMvwmvg+wuJ8XYpwkDwp6mHE=;
+        s=k20201202; t=1615913655;
+        bh=wGsLN4jbqvML2U9zaNYjW8aifQI71xSOP66LVRNgv2U=;
         h=From:To:Subject:Date:From;
-        b=XUNhI2nMmiSsEzgZ4ujHGba1n/S4mtlSyrbBZN6PjqAXN73QjIWJ7nTDUnOVIKlSL
-         FCGWdvAprSikuc4f+TpV8YmabaNboAcKmm1psHyPKc4OgiiEFnOCvox5IZQiPB08CF
-         dmNjBhODccvVZt05A9eOcKVFrSXq4W8M3xWdWTkkmB2pdoorXdIW07AGZB8c0UxU/z
-         vTFHHclC8Talw6wIMhdbDRn/UINrL1aDAdKKOBp0DdvsrL+KtJANkTzcgrxlLsDuAa
-         wjw0W7Ml8KczL+zqMWbXcvq3TxXTy8R3d+f7ve+Xt8H6OKWJxyjkzUsAl7zX6uoQkr
-         SC+TR7pAIMxrg==
+        b=rCDoNMJ7L077wT08oWTwzVRhM37M1oJxUZCuJem6UYc7BS39tdG3Vwdn0ku1HY7o2
+         qQS6UwoJgnNwhT/zp/TXDPDmlvh59FTVlfbSo5eV8dglhe+byKE2qZrHqDzsU6iCMV
+         mhAZh5P/XuEB5WBqVYklWwKO9g85qB4KTAC6qHIb7zgs9dpw2NjICBVNa09+f4xBja
+         D8Ix80R/+C1FW0Bpa2qxw3whp5a9durZ+KlNV11IZbI2dRgL6D+E5IIPg1lrOycUYC
+         zJtOjvV8YZp07lCro5UB7+sMz0Ek9lMruD0jyMf2lTiP4o6PAZ1oGE/lQ8HdIXXUt8
+         b0Ke9SX5AHalA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix subvolume/snapshot deletion not triggered on mount
-Date:   Tue, 16 Mar 2021 16:53:46 +0000
-Message-Id: <5975ac44ce65830fd685896ed66b09eb16c4c4d8.1615912470.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: update outdated comment at btrfs_orphan_cleanup()
+Date:   Tue, 16 Mar 2021 16:54:13 +0000
+Message-Id: <deaf0ddafcd9327079b0af3130d398e8ec421e5a.1615912483.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -37,63 +37,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During the mount procedure we are calling btrfs_orphan_cleanup() against
-the root tree, which will find all orphans items in this tree. When an
-orphan item corresponds to a deleted subvolume/snapshot (instead of an
-inode space cache), it must not delete the orphan item, because that will
-cause btrfs_find_orphan_roots() to not find the orphan item and therefore
-not add the corresponding subvolume root to the list of dead roots, which
-results in the subvolume's tree never being deleted by the cleanup thread.
+btrfs_orphan_cleanup() has a comment referring to find_dead_roots, but
+function does not exists since commit cb517eabba4f10 ("Btrfs: cleanup the
+similar code of the fs root read"). What we use now to find and load dead
+roots is btrfs_find_orphan_roots(). So update the comment and make it a
+bit more detailed about why we can not delete an orphan item for a root.
 
-The same applies to the remount from RO to RW path.
-
-Fix this by making btrfs_find_orphan_roots() run before calling
-btrfs_orphan_cleanup() against the root tree.
-
-A test case for fstests will follow soon.
-
-Reported-by: Robbie Ko <robbieko@synology.com>
-Link: https://lore.kernel.org/linux-btrfs/b19f4310-35e0-606e-1eea-2dd84d28c5da@synology.com/
-Fixes: 638331fa56caea ("btrfs: fix transaction leak and crash after cleaning up orphans on RO mount")
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 41b718cfea40..7f50b3f65f3a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3009,6 +3009,21 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
- 		}
- 	}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index ddbac78c4abe..31717ef76a90 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3383,15 +3383,19 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
+ 			int is_dead_root = 0;
  
-+	/*
-+	 * btrfs_find_orphan_roots() is responsible for finding all the dead
-+	 * roots (with 0 refs), flag them with BTRFS_ROOT_DEAD_TREE and load
-+	 * them into the fs_info->fs_roots_radix tree. This must be done before
-+	 * calling btrfs_orphan_cleanup() on the tree root. If we don't do it
-+	 * first, then btrfs_orphan_cleanup() will delete a dead root's orphan
-+	 * item before the root's tree is deleted - this means that if we unmount
-+	 * or crash before the deletion completes, on the next mount we will not
-+	 * delete what remains of the tree because the orphan item does not
-+	 * exists anymore, which is what tells us we have a pending deletion.
-+	 */
-+	ret = btrfs_find_orphan_roots(fs_info);
-+	if (ret)
-+		goto out;
-+
- 	ret = btrfs_cleanup_fs_roots(fs_info);
- 	if (ret)
- 		goto out;
-@@ -3068,7 +3083,6 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
- 		}
- 	}
+ 			/*
+-			 * this is an orphan in the tree root. Currently these
++			 * This is an orphan in the tree root. Currently these
+ 			 * could come from 2 sources:
+-			 *  a) a snapshot deletion in progress
++			 *  a) a root (snapshot/subvolume) deletion in progress
+ 			 *  b) a free space cache inode
+-			 * We need to distinguish those two, as the snapshot
+-			 * orphan must not get deleted.
+-			 * find_dead_roots already ran before us, so if this
+-			 * is a snapshot deletion, we should find the root
+-			 * in the fs_roots radix tree.
++			 * We need to distinguish those two, as the orphan item
++			 * for a root must not get deleted before the deletion
++			 * of the snapshot/subvolume's tree completes.
++			 *
++			 * btrfs_find_orphan_roots() ran before us, which has
++			 * found all deleted roots and loaded them into
++			 * fs_info->fs_roots_radix. So here we can find if an
++			 * orphan item corresponds to a deleted root by looking
++			 * up the root from that radix tree.
+ 			 */
  
--	ret = btrfs_find_orphan_roots(fs_info);
- out:
- 	return ret;
- }
+ 			spin_lock(&fs_info->fs_roots_radix_lock);
 -- 
 2.28.0
 
