@@ -2,49 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC85333DDBB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 20:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5237A33DDC0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 20:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240505AbhCPTnT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 15:43:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45200 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240515AbhCPTnF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:43:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A461BAD3B;
-        Tue, 16 Mar 2021 19:43:04 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E8C2FDA6E2; Tue, 16 Mar 2021 20:41:02 +0100 (CET)
-Date:   Tue, 16 Mar 2021 20:41:02 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: update outdated comment at btrfs_orphan_cleanup()
-Message-ID: <20210316194102.GL7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <deaf0ddafcd9327079b0af3130d398e8ec421e5a.1615912483.git.fdmanana@suse.com>
+        id S240555AbhCPTnv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 15:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240506AbhCPTnZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Mar 2021 15:43:25 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B82AC06174A
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 12:43:24 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 205so6335615pgh.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 12:43:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sVJsM+Gl67VwVBKkXBGqvTHNWKKznbPf3akr+SSNrps=;
+        b=TYnR2E2za3Y3x/uH72LmIyMZmQBQBp5SeWVE9Cbex8i3e3VWilIxZenbNV8wB+mUk1
+         UbzKf6APk5kT5URbLN/qm5tYQcycKp5TUrCYzoP4JkLNtqPgzMz8pWVgFXfRe57rhXxE
+         tels/4rcgcUErUXjQud50sMt8vPr3m/WH1s0rOxp5fOmBbdzrvRC544qOOWJUlMW5RWf
+         PMuXejvwXtrMT3VDPT/xKy9kjSi8gh420Ywv3DpzoyT+YZE5z4gTGtM+qnkyHjncOryP
+         7SwKHh73RnxrX4wQgIEsYerFBe97IaYGOMy7vXZAe7PCnxVAmbDICRkiy7tMBz+PP3sB
+         u2Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sVJsM+Gl67VwVBKkXBGqvTHNWKKznbPf3akr+SSNrps=;
+        b=dZl5u+gtdo9j3Zq2FoBeknOSQUUJzeyXqvVu6CWFN81wSJitP568kH14A8gTBJ71e8
+         7ckZ46uXUyqtPhZy9Ojd7495PcFNcIKPki60lbK6bAYkDcAtsD/83OVAQjNzgvN+EM4G
+         4YT9BXr/x8WHwiaOYM0WEsERDDgGe4d3OJoO8TIQwQfez2dHuLD/C+h1YqoRzBZp/jIX
+         riXhVl/o0bZcYo6F7f87bdAJp8yLNZ/362Qt8anLK+GElf8awmvPE6RRlJYpQepApjSj
+         AUYyWab7mpPJ6aOYLYTC1mXi2ll7svHU+ehj3N56zkSmx/QRtVe6cMIBliBQ5GBnFHpP
+         WRJg==
+X-Gm-Message-State: AOAM533eCTy1UJvgCU3fr69eaHPTa7c+zuixA6gQ9gQ1EwlQgD6ZKBJF
+        3ZX+yZj9kVhyANiQC2RuXHJf0A==
+X-Google-Smtp-Source: ABdhPJxApnRDl1NIu9E52/otSkzoKgzsLkVlo2U9LejBoMfDpKkzLHrNxCzKrdCuU+KNbMEfsoffMg==
+X-Received: by 2002:a63:d704:: with SMTP id d4mr1094500pgg.221.1615923803957;
+        Tue, 16 Mar 2021 12:43:23 -0700 (PDT)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:532])
+        by smtp.gmail.com with ESMTPSA id gm10sm217264pjb.4.2021.03.16.12.43.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Mar 2021 12:43:22 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v8 00/10] fs: interface for directly reading/writing compressed data
+Date:   Tue, 16 Mar 2021 12:42:55 -0700
+Message-Id: <cover.1615922644.git.osandov@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <deaf0ddafcd9327079b0af3130d398e8ec421e5a.1615912483.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:54:13PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> btrfs_orphan_cleanup() has a comment referring to find_dead_roots, but
-> function does not exists since commit cb517eabba4f10 ("Btrfs: cleanup the
-> similar code of the fs root read"). What we use now to find and load dead
-> roots is btrfs_find_orphan_roots(). So update the comment and make it a
-> bit more detailed about why we can not delete an orphan item for a root.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+From: Omar Sandoval <osandov@fb.com>
 
-Added to misc-next, thanks.
+This series adds an API for reading compressed data on a filesystem
+without decompressing it as well as support for writing compressed data
+directly to the filesystem. As with the previous submissions, I've
+included a man page patch describing the API. I have test cases
+(including fsstress support) and example programs which I'll send up
+[1].
+
+The main use-case is Btrfs send/receive: currently, when sending data
+from one compressed filesystem to another, the sending side decompresses
+the data and the receiving side recompresses it before writing it out.
+This is wasteful and can be avoided if we can just send and write
+compressed extents. The patches implementing the send/receive support
+will be sent shortly.
+
+Patches 1-3 add the VFS support and UAPI. Patch 4 is a fix that this
+series depends on; it can be merged independently. Patches 5-8 are Btrfs
+prep patches. Patch 9 adds Btrfs encoded read support and patch 10 adds
+Btrfs encoded write support.
+
+These patches are based on Dave Sterba's Btrfs misc-next branch [2],
+which is in turn currently based on v5.12-rc3.
+
+Changes since v7 [3]:
+
+- Rebased on current kdave/misc-next (v5.12-rc3).
+
+Omar Sandoval (10):
+  iov_iter: add copy_struct_from_iter()
+  fs: add O_ALLOW_ENCODED open flag
+  fs: add RWF_ENCODED for reading/writing compressed data
+  btrfs: fix check_data_csum() error message for direct I/O
+  btrfs: don't advance offset for compressed bios in
+    btrfs_csum_one_bio()
+  btrfs: add ram_bytes and offset to btrfs_ordered_extent
+  btrfs: support different disk extent size for delalloc
+  btrfs: optionally extend i_size in cow_file_range_inline()
+  btrfs: implement RWF_ENCODED reads
+  btrfs: implement RWF_ENCODED writes
+
+1: https://github.com/osandov/xfstests/tree/rwf-encoded
+2: https://github.com/kdave/btrfs-devel/tree/misc-next
+3: https://lore.kernel.org/linux-btrfs/cover.1611346706.git.osandov@fb.com/
+
+ Documentation/filesystems/encoded_io.rst |  74 ++
+ Documentation/filesystems/index.rst      |   1 +
+ arch/alpha/include/uapi/asm/fcntl.h      |   1 +
+ arch/parisc/include/uapi/asm/fcntl.h     |   1 +
+ arch/sparc/include/uapi/asm/fcntl.h      |   1 +
+ fs/btrfs/compression.c                   |  12 +-
+ fs/btrfs/compression.h                   |   6 +-
+ fs/btrfs/ctree.h                         |   9 +-
+ fs/btrfs/delalloc-space.c                |  18 +-
+ fs/btrfs/file-item.c                     |  35 +-
+ fs/btrfs/file.c                          |  46 +-
+ fs/btrfs/inode.c                         | 936 ++++++++++++++++++++---
+ fs/btrfs/ordered-data.c                  |  80 +-
+ fs/btrfs/ordered-data.h                  |  18 +-
+ fs/btrfs/relocation.c                    |   4 +-
+ fs/fcntl.c                               |  10 +-
+ fs/namei.c                               |   4 +
+ fs/read_write.c                          | 168 +++-
+ include/linux/encoded_io.h               |  17 +
+ include/linux/fcntl.h                    |   2 +-
+ include/linux/fs.h                       |  13 +
+ include/linux/uio.h                      |   2 +
+ include/uapi/asm-generic/fcntl.h         |   4 +
+ include/uapi/linux/encoded_io.h          |  30 +
+ include/uapi/linux/fs.h                  |   5 +-
+ lib/iov_iter.c                           |  82 ++
+ 26 files changed, 1378 insertions(+), 201 deletions(-)
+ create mode 100644 Documentation/filesystems/encoded_io.rst
+ create mode 100644 include/linux/encoded_io.h
+ create mode 100644 include/uapi/linux/encoded_io.h
+
+-- 
+2.30.2
+
