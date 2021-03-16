@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF82033DDF6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 20:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D201133DDFF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Mar 2021 20:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240656AbhCPTpw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Mar 2021 15:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
+        id S240669AbhCPTqG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Mar 2021 15:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240614AbhCPTpB (ORCPT
+        with ESMTP id S240616AbhCPTpC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Mar 2021 15:45:01 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87439C0613DB
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 12:44:37 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so1923491pjc.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 12:44:37 -0700 (PDT)
+        Tue, 16 Mar 2021 15:45:02 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E7CC0613DD
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 12:44:39 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so64211pjb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Mar 2021 12:44:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6OsUA50+8xoVcD2c3qd1aIdeBQH0nioyEP52OneAmPE=;
-        b=KWBn17b9Obf/nBjJaUYsB3u1wpQIzCkKRQwXTYjxHnPCk0lt55ESCAoj5xqGNkZvVt
-         +CqzYX/lucXshzWS4nmcnAUwmwrzkdgzoyZ5Jgk1a4TcEsuYMSZS/cBCKn6mbjPWYTn0
-         +txMTFpXbhNOTjNvilIc3iWbBbzqNQ6QR4GHn4/NUnNGsVCb4aMEnF3ZXoWbA8bzwS6P
-         jpkE4OfFr6vHy3I+WQxSKyBcrajSvfJU3WDarg6xcbc+PkOvSa/ycDRObPS3IR7OU3R6
-         RjLgOwE0eD/zRvyC32FsW2vI/qoRrJZveR6jr6D0/49/5wZnqYDeAc5UlreDs8ydOjdt
-         o+gw==
+        bh=fuAw0ppT0ABvcb7CD6nxV0FbeYlL2sIG10J+yY2raCU=;
+        b=ztqOvQUthnoojW1c4C5JqRJk0YckO3BPtl5/hMvtBD3/GNsDPIwfazyld3BbiRGdwC
+         E0loKHEIiJ6N31sXfk+LxGOxDdgXnRM0l3r0hpklJ6P/d8fMc2Ox9tsb0Z1O11sDKUqn
+         juMFavGAu9dONm/5NPSUJW1SBJwIslofq3lLpW2T66UTF+Dx4SkBg0iGQ0en9NfINIDa
+         /aiGC54mei1nF/hDK1giqhpfTpXSgtN2I04hkx3hFMI5/FMexuD1gi1QQI7ku7JrlYju
+         vI2yKnN+YYqk4WgnUZtTJBqAE1NO0xeIBMRMgJty4ze27g49WLiH5qI/wCw9xwB7EPAq
+         aqeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6OsUA50+8xoVcD2c3qd1aIdeBQH0nioyEP52OneAmPE=;
-        b=ri/7Y0NX/aoZDZdI5QsvST8KMMi/2Q0H9vmPOoZ2QDTtJpr3eWPaIJwB0wyn4kMA1K
-         wNT46dH0g2TcANE6Mqt03moQgcpijRfMN6lLbqdhHXOVOSLY0hvcRrrw3N2VOQfV25Ba
-         tSRrurIdZgrQtKPU1kYAUbOMm7onGblmlz6uWT5rYr46GkIU/V9ft2E2PnjwX/tstEBW
-         wQ28e4lXM0VTnbXxQ40Ccc8HRSSE4sFNMl9TpM3vweC331c5IpmX8fIzu77HSAGKmsWP
-         3Ae4z1m4q+ydEZiwcKoBILg2m6HvtuZdSVdjD3CNfXX7MQtWPasOvQPHNvz9+cfL6ktc
-         IFGg==
-X-Gm-Message-State: AOAM531IIgBKuBWPcYk1jMCDiHvvt92qWvo40aejO/P3iDknONBWAM5L
-        UQNrqrVy8Tm5qjCzlMaFeoUtIKTFqqM97A==
-X-Google-Smtp-Source: ABdhPJxKk0KhlNgwdEaDwDUGXPI/3mRTybXij/0/kfz1YkKBsJKqFbxT91wmEQ3EFLCvadSY6/asLA==
-X-Received: by 2002:a17:902:7682:b029:e6:2bc5:f005 with SMTP id m2-20020a1709027682b02900e62bc5f005mr851951pll.32.1615923876233;
-        Tue, 16 Mar 2021 12:44:36 -0700 (PDT)
+        bh=fuAw0ppT0ABvcb7CD6nxV0FbeYlL2sIG10J+yY2raCU=;
+        b=UBQig6OJ+G8YttIp/zeSze4tW12NPo4joo/RJPqfZ76VI3jqXVoZVFiw0zj2y455LV
+         mrfVFIvkJ2TNR9myOqYaD5h7acOlHX1Qb9SoQIXcNAHKH0FvHNGjmZT6oY3hguX04oLU
+         c0iV+ntIJIRux8JYPpT24z+naCwHJMO7pdbZyox7ML/VBMaw9HAiG8GgA88OG57EyVQM
+         AdXppiRLCFY8tw+kEzjpxmWyyDh16r5MzLyA8yKiPjFiSJ/wugWQkMkGtdZu2xZUJt9k
+         cDJ+er2eyplcdBlWyO3oamvPtiGgq2y1b6WROApreH9fGZLcnzxdMsE1QzQzAmUOkqpw
+         dUwg==
+X-Gm-Message-State: AOAM531MTsfm7UY2gnchngx+O3Uoub5L1HG955fHpaNp0q2rDzyT+Olt
+        5pWDIwk8quizsc0loGvRz7NBfghM4EsDMw==
+X-Google-Smtp-Source: ABdhPJzwOvxll0bc3dCRKvFwG94j5cEcrVnjYBlSnyRXrEmITN+aTln6aLaxs/NBjTH1aekjVGqX6g==
+X-Received: by 2002:a17:90a:d907:: with SMTP id c7mr611393pjv.45.1615923878427;
+        Tue, 16 Mar 2021 12:44:38 -0700 (PDT)
 Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:532])
-        by smtp.gmail.com with ESMTPSA id w22sm16919104pfi.133.2021.03.16.12.44.34
+        by smtp.gmail.com with ESMTPSA id w22sm16919104pfi.133.2021.03.16.12.44.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Mar 2021 12:44:35 -0700 (PDT)
+        Tue, 16 Mar 2021 12:44:37 -0700 (PDT)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     linux-fsdevel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 4/5] btrfs: send: send compressed extents with encoded writes
-Date:   Tue, 16 Mar 2021 12:43:57 -0700
-Message-Id: <d2dd30f428d8d8a39882a57a4f5f610ad64a91be.1615922753.git.osandov@fb.com>
+Subject: [PATCH v4 05/11] btrfs-progs: receive: add stub implementation for pwritev2
+Date:   Tue, 16 Mar 2021 12:43:58 -0700
+Message-Id: <e6817cbd8ba926eb5b4e0d19e10ac6a2af6ad05b.1615922859.git.osandov@osandov.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1615922753.git.osandov@fb.com>
 References: <cover.1615922753.git.osandov@fb.com>
@@ -63,361 +63,103 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+From: Boris Burkov <borisb@fb.com>
 
-Now that all of the pieces are in place, we can use the ENCODED_WRITE
-command to send compressed extents when appropriate.
+Encoded writes in receive will use pwritev2. It is possible that the
+system libc does not export this function, so we stub it out and detect
+whether to build the stub code with autoconf.
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
+This syscall has special semantics in x32 (no hi lo, just takes loff_t)
+so we have to detect that case and use the appropriate arguments.
+
+Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/ctree.h |   4 +
- fs/btrfs/inode.c |   6 +-
- fs/btrfs/send.c  | 230 +++++++++++++++++++++++++++++++++++++++++++----
- 3 files changed, 220 insertions(+), 20 deletions(-)
+ Makefile     |  4 ++--
+ configure.ac |  1 +
+ stubs.c      | 24 ++++++++++++++++++++++++
+ stubs.h      | 11 +++++++++++
+ 4 files changed, 38 insertions(+), 2 deletions(-)
+ create mode 100644 stubs.c
+ create mode 100644 stubs.h
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 33a08ab5cb0e..402ffdce81ac 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3157,6 +3157,10 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
- int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
- void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
- 					  u64 end, int uptodate);
-+int encoded_iov_compression_from_btrfs(unsigned int compress_type);
-+int btrfs_encoded_read_regular_fill_pages(struct inode *inode, u64 offset,
-+					  u64 disk_io_size,
-+					  struct page **pages);
- ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter);
- ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
- 			       struct encoded_iov *encoded);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index c2fe76f57bf5..3c1c8879a9e1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9984,7 +9984,7 @@ void btrfs_set_range_writeback(struct extent_io_tree *tree, u64 start, u64 end)
- 	}
- }
+diff --git a/Makefile b/Makefile
+index 498588cd..b91daeb6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -173,12 +173,12 @@ libbtrfs_objects = common/send-stream.o common/send-utils.o kernel-lib/rbtree.o
+ 		   kernel-lib/raid56.o kernel-lib/tables.o \
+ 		   common/device-scan.o common/path-utils.o \
+ 		   common/utils.o libbtrfsutil/subvolume.o libbtrfsutil/stubs.o \
+-		   crypto/hash.o crypto/xxhash.o $(CRYPTO_OBJECTS)
++		   crypto/hash.o crypto/xxhash.o $(CRYPTO_OBJECTS) stubs.o
+ libbtrfs_headers = common/send-stream.h common/send-utils.h send.h kernel-lib/rbtree.h btrfs-list.h \
+ 	       crypto/crc32c.h kernel-lib/list.h kerncompat.h \
+ 	       kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
+ 	       common/extent-cache.h kernel-shared/extent_io.h ioctl.h \
+-	       kernel-shared/ctree.h btrfsck.h version.h
++	       kernel-shared/ctree.h btrfsck.h version.h stubs.h
+ libbtrfsutil_major := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_MAJOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+ libbtrfsutil_minor := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_MINOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+ libbtrfsutil_patch := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_PATCH ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+diff --git a/configure.ac b/configure.ac
+index aa3f7824..4e85436f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -57,6 +57,7 @@ AC_CHECK_FUNCS([openat], [],
+ 	[AC_MSG_ERROR([cannot find openat() function])])
  
--static int encoded_iov_compression_from_btrfs(unsigned int compress_type)
-+int encoded_iov_compression_from_btrfs(unsigned int compress_type)
- {
- 	switch (compress_type) {
- 	case BTRFS_COMPRESS_NONE:
-@@ -10190,8 +10190,8 @@ static void btrfs_encoded_read_endio(struct bio *bio)
- 	bio_put(bio);
- }
+ AC_CHECK_FUNCS([reallocarray])
++AC_CHECK_FUNCS([pwritev2])
  
--static int btrfs_encoded_read_regular_fill_pages(struct inode *inode, u64 offset,
--						 u64 disk_io_size, struct page **pages)
-+int btrfs_encoded_read_regular_fill_pages(struct inode *inode, u64 offset,
-+					  u64 disk_io_size, struct page **pages)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_encoded_read_private priv = {
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 25b1a60a568c..7516eba701af 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -595,6 +595,7 @@ static int tlv_put(struct send_ctx *sctx, u16 attr, const void *data, int len)
- 		return tlv_put(sctx, attr, &__tmp, sizeof(__tmp));	\
- 	}
- 
-+TLV_PUT_DEFINE_INT(32)
- TLV_PUT_DEFINE_INT(64)
- 
- static int tlv_put_string(struct send_ctx *sctx, u16 attr,
-@@ -5213,16 +5214,211 @@ static int send_hole(struct send_ctx *sctx, u64 end)
- 	return ret;
- }
- 
--static int send_extent_data(struct send_ctx *sctx,
--			    const u64 offset,
--			    const u64 len)
-+static int send_encoded_inline_extent(struct send_ctx *sctx,
-+				      struct btrfs_path *path, u64 offset,
-+				      u64 len)
- {
-+	struct btrfs_root *root = sctx->send_root;
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct inode *inode;
-+	struct fs_path *p;
-+	struct extent_buffer *leaf = path->nodes[0];
-+	struct btrfs_key key;
-+	struct btrfs_file_extent_item *ei;
-+	u64 ram_bytes;
-+	size_t inline_size;
-+	int ret;
+ m4_ifndef([PKG_PROG_PKG_CONFIG],
+   [m4_fatal([Could not locate the pkg-config autoconf
+diff --git a/stubs.c b/stubs.c
+new file mode 100644
+index 00000000..ab68a411
+--- /dev/null
++++ b/stubs.c
+@@ -0,0 +1,24 @@
++#if HAVE_PWRITEV2 != 1
 +
-+	inode = btrfs_iget(fs_info->sb, sctx->cur_ino, root);
-+	if (IS_ERR(inode))
-+		return PTR_ERR(inode);
++#include "stubs.h"
 +
-+	p = fs_path_alloc();
-+	if (!p) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
++#include "kerncompat.h"
 +
-+	ret = begin_cmd(sctx, BTRFS_SEND_C_ENCODED_WRITE);
-+	if (ret < 0)
-+		goto out;
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <sys/uio.h>
 +
-+	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, p);
-+	if (ret < 0)
-+		goto out;
-+
-+	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+	ei = btrfs_item_ptr(leaf, path->slots[0],
-+			    struct btrfs_file_extent_item);
-+	ram_bytes = btrfs_file_extent_ram_bytes(leaf, ei);
-+	inline_size = btrfs_file_extent_inline_item_len(leaf,
-+						btrfs_item_nr(path->slots[0]));
-+
-+	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, p);
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_FILE_LEN,
-+		    min(key.offset + ram_bytes - offset, len));
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_LEN, ram_bytes);
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_OFFSET, offset - key.offset);
-+	ret = encoded_iov_compression_from_btrfs(
-+				btrfs_file_extent_compression(leaf, ei));
-+	if (ret < 0)
-+		goto out;
-+	TLV_PUT_U32(sctx, BTRFS_SEND_A_COMPRESSION, ret);
-+	TLV_PUT_U32(sctx, BTRFS_SEND_A_ENCRYPTION, 0);
-+
-+	ret = put_data_header(sctx, inline_size);
-+	if (ret < 0)
-+		goto out;
-+	read_extent_buffer(leaf, sctx->send_buf + sctx->send_size,
-+			   btrfs_file_extent_inline_start(ei), inline_size);
-+	sctx->send_size += inline_size;
-+
-+	ret = send_cmd(sctx);
-+
-+tlv_put_failure:
-+out:
-+	fs_path_free(p);
-+	iput(inode);
-+	return ret;
-+}
-+
-+static int send_encoded_extent(struct send_ctx *sctx, struct btrfs_path *path,
-+			       u64 offset, u64 len)
++ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
++		 int flags)
 +{
-+	struct btrfs_root *root = sctx->send_root;
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct inode *inode;
-+	struct fs_path *p;
-+	struct extent_buffer *leaf = path->nodes[0];
-+	struct btrfs_key key;
-+	struct btrfs_file_extent_item *ei;
-+	u64 block_start;
-+	u64 block_len;
-+	u32 data_offset;
-+	struct btrfs_cmd_header *hdr;
-+	u32 crc;
-+	int ret;
++/* these conditions indicate an x32 system, which has a different pwritev2 */
++#if defined(__x86_64__) && defined(__ILP32__)
++	return syscall(SYS_pwritev2, fd, iov, iovcnt, offset, flags);
++#else
++	unsigned long hi = offset >> (BITS_PER_LONG / 2) >> (BITS_PER_LONG / 2);
++	unsigned long lo = offset;
 +
-+	inode = btrfs_iget(fs_info->sb, sctx->cur_ino, root);
-+	if (IS_ERR(inode))
-+		return PTR_ERR(inode);
-+
-+	p = fs_path_alloc();
-+	if (!p) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = begin_cmd(sctx, BTRFS_SEND_C_ENCODED_WRITE);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, p);
-+	if (ret < 0)
-+		goto out;
-+
-+	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-+	ei = btrfs_item_ptr(leaf, path->slots[0],
-+			    struct btrfs_file_extent_item);
-+	block_start = btrfs_file_extent_disk_bytenr(leaf, ei);
-+	block_len = btrfs_file_extent_disk_num_bytes(leaf, ei);
-+
-+	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, p);
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_FILE_LEN,
-+		    min(key.offset + btrfs_file_extent_num_bytes(leaf, ei) - offset,
-+			len));
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_LEN,
-+		    btrfs_file_extent_ram_bytes(leaf, ei));
-+	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_OFFSET,
-+		    offset - key.offset + btrfs_file_extent_offset(leaf, ei));
-+	ret = encoded_iov_compression_from_btrfs(
-+				btrfs_file_extent_compression(leaf, ei));
-+	if (ret < 0)
-+		goto out;
-+	TLV_PUT_U32(sctx, BTRFS_SEND_A_COMPRESSION, ret);
-+	TLV_PUT_U32(sctx, BTRFS_SEND_A_ENCRYPTION, 0);
-+
-+	ret = put_data_header(sctx, block_len);
-+	if (ret < 0)
-+		goto out;
-+
-+	data_offset = ALIGN(sctx->send_size, PAGE_SIZE);
-+	if (data_offset > sctx->send_max_size ||
-+	    sctx->send_max_size - data_offset < block_len) {
-+		ret = -EOVERFLOW;
-+		goto out;
-+	}
-+
-+	ret = btrfs_encoded_read_regular_fill_pages(inode, block_start,
-+						    block_len,
-+						    sctx->send_buf_pages +
-+						    (data_offset >> PAGE_SHIFT));
-+	if (ret)
-+		goto out;
-+
-+	hdr = (struct btrfs_cmd_header *)sctx->send_buf;
-+	hdr->len = cpu_to_le32(sctx->send_size + block_len - sizeof(*hdr));
-+	hdr->crc = 0;
-+	crc = btrfs_crc32c(0, sctx->send_buf, sctx->send_size);
-+	crc = btrfs_crc32c(crc, sctx->send_buf + data_offset, block_len);
-+	hdr->crc = cpu_to_le32(crc);
-+
-+	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
-+			&sctx->send_off);
-+	if (!ret) {
-+		ret = write_buf(sctx->send_filp, sctx->send_buf + data_offset,
-+				block_len, &sctx->send_off);
-+	}
-+	sctx->total_send_size += sctx->send_size + block_len;
-+	sctx->cmd_send_size[le16_to_cpu(hdr->cmd)] +=
-+		sctx->send_size + block_len;
-+	sctx->send_size = 0;
-+
-+tlv_put_failure:
-+out:
-+	fs_path_free(p);
-+	iput(inode);
-+	return ret;
++	return syscall(SYS_pwritev2, fd, iov, iovcnt, lo, hi, flags);
++#endif // X32
 +}
++#endif /* HAVE_PWRIVEV2 */
+diff --git a/stubs.h b/stubs.h
+new file mode 100644
+index 00000000..b39f8a69
+--- /dev/null
++++ b/stubs.h
+@@ -0,0 +1,11 @@
++#ifndef _BTRFS_STUBS_H
++#define _BTRFS_STUBS_H
 +
-+static int send_extent_data(struct send_ctx *sctx, struct btrfs_path *path,
-+			    const u64 offset, const u64 len)
-+{
-+	struct extent_buffer *leaf = path->nodes[0];
-+	struct btrfs_file_extent_item *ei;
- 	u64 read_size = max_send_read_size(sctx);
- 	u64 sent = 0;
- 
- 	if (sctx->flags & BTRFS_SEND_FLAG_NO_FILE_DATA)
- 		return send_update_extent(sctx, offset, len);
- 
-+	ei = btrfs_item_ptr(leaf, path->slots[0],
-+			    struct btrfs_file_extent_item);
-+	if ((sctx->flags & BTRFS_SEND_FLAG_COMPRESSED) &&
-+	    btrfs_file_extent_compression(leaf, ei) != BTRFS_COMPRESS_NONE) {
-+		bool is_inline = (btrfs_file_extent_type(leaf, ei) ==
-+				  BTRFS_FILE_EXTENT_INLINE);
++#include <sys/types.h>
 +
-+		/*
-+		 * Send the compressed extent unless the compressed data is
-+		 * larger than the decompressed data. This can happen if we're
-+		 * not sending the entire extent, either because it has been
-+		 * partially overwritten/truncated or because this is a part of
-+		 * the extent that we couldn't clone in clone_range().
-+		 */
-+		if (is_inline &&
-+		    btrfs_file_extent_inline_item_len(leaf,
-+					btrfs_item_nr(path->slots[0])) <= len) {
-+			return send_encoded_inline_extent(sctx, path, offset,
-+							  len);
-+		} else if (!is_inline &&
-+			   btrfs_file_extent_disk_num_bytes(leaf, ei) <= len) {
-+			return send_encoded_extent(sctx, path, offset, len);
-+		}
-+	}
++struct iovec;
 +
- 	while (sent < len) {
- 		u64 size = min(len - sent, read_size);
- 		int ret;
-@@ -5293,12 +5489,9 @@ static int send_capabilities(struct send_ctx *sctx)
- 	return ret;
- }
- 
--static int clone_range(struct send_ctx *sctx,
--		       struct clone_root *clone_root,
--		       const u64 disk_byte,
--		       u64 data_offset,
--		       u64 offset,
--		       u64 len)
-+static int clone_range(struct send_ctx *sctx, struct btrfs_path *dst_path,
-+		       struct clone_root *clone_root, const u64 disk_byte,
-+		       u64 data_offset, u64 offset, u64 len)
- {
- 	struct btrfs_path *path;
- 	struct btrfs_key key;
-@@ -5322,7 +5515,7 @@ static int clone_range(struct send_ctx *sctx,
- 	 */
- 	if (clone_root->offset == 0 &&
- 	    len == sctx->send_root->fs_info->sectorsize)
--		return send_extent_data(sctx, offset, len);
-+		return send_extent_data(sctx, dst_path, offset, len);
- 
- 	path = alloc_path_for_send();
- 	if (!path)
-@@ -5419,7 +5612,8 @@ static int clone_range(struct send_ctx *sctx,
- 
- 			if (hole_len > len)
- 				hole_len = len;
--			ret = send_extent_data(sctx, offset, hole_len);
-+			ret = send_extent_data(sctx, dst_path, offset,
-+					       hole_len);
- 			if (ret < 0)
- 				goto out;
- 
-@@ -5492,14 +5686,16 @@ static int clone_range(struct send_ctx *sctx,
- 					if (ret < 0)
- 						goto out;
- 				}
--				ret = send_extent_data(sctx, offset + slen,
-+				ret = send_extent_data(sctx, dst_path,
-+						       offset + slen,
- 						       clone_len - slen);
- 			} else {
- 				ret = send_clone(sctx, offset, clone_len,
- 						 clone_root);
- 			}
- 		} else {
--			ret = send_extent_data(sctx, offset, clone_len);
-+			ret = send_extent_data(sctx, dst_path, offset,
-+					       clone_len);
- 		}
- 
- 		if (ret < 0)
-@@ -5531,7 +5727,7 @@ static int clone_range(struct send_ctx *sctx,
- 	}
- 
- 	if (len > 0)
--		ret = send_extent_data(sctx, offset, len);
-+		ret = send_extent_data(sctx, dst_path, offset, len);
- 	else
- 		ret = 0;
- out:
-@@ -5562,10 +5758,10 @@ static int send_write_or_clone(struct send_ctx *sctx,
- 				    struct btrfs_file_extent_item);
- 		disk_byte = btrfs_file_extent_disk_bytenr(path->nodes[0], ei);
- 		data_offset = btrfs_file_extent_offset(path->nodes[0], ei);
--		ret = clone_range(sctx, clone_root, disk_byte, data_offset,
--				  offset, end - offset);
-+		ret = clone_range(sctx, path, clone_root, disk_byte,
-+				  data_offset, offset, end - offset);
- 	} else {
--		ret = send_extent_data(sctx, offset, end - offset);
-+		ret = send_extent_data(sctx, path, offset, end - offset);
- 	}
- 	sctx->cur_inode_next_write_offset = end;
- 	return ret;
++ssize_t pwritev2(int fd, const struct iovec *iov, int iovcnt, off_t offset,
++		 int flags);
++
++#endif
 -- 
 2.30.2
 
