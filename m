@@ -2,74 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BEA33F645
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Mar 2021 18:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B55E33F7A3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Mar 2021 18:57:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhCQRHv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Mar 2021 13:07:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59406 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhCQRHf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Mar 2021 13:07:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BD68CAE27;
-        Wed, 17 Mar 2021 17:07:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 99686DA6E2; Wed, 17 Mar 2021 18:05:31 +0100 (CET)
-Date:   Wed, 17 Mar 2021 18:05:31 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Victor Erminpour <victor.erminpour@oracle.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: Use immediate assignment when referencing
- cc-option
-Message-ID: <20210317170531.GU7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Victor Erminpour <victor.erminpour@oracle.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1615997328-24677-1-git-send-email-victor.erminpour@oracle.com>
+        id S232817AbhCQR4s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Mar 2021 13:56:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37674 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232901AbhCQR4P (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Mar 2021 13:56:15 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1lMaOy-0001My-QQ; Wed, 17 Mar 2021 17:56:12 +0000
+Date:   Wed, 17 Mar 2021 18:56:11 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v8 01/10] iov_iter: add copy_struct_from_iter()
+Message-ID: <20210317175611.adntftl6w3avptvk@wittgenstein>
+References: <cover.1615922644.git.osandov@fb.com>
+ <e71e712d27b2e2c19efc5b1454bd8581ad98d900.1615922644.git.osandov@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1615997328-24677-1-git-send-email-victor.erminpour@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <e71e712d27b2e2c19efc5b1454bd8581ad98d900.1615922644.git.osandov@fb.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 09:08:48AM -0700, Victor Erminpour wrote:
-> Calling cc-option will use KBUILD_CFLAGS, which when lazy setting
-> subdir-ccflags-y produces the following build error:
+On Tue, Mar 16, 2021 at 12:42:57PM -0700, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> scripts/Makefile.lib:10: *** Recursive variable `KBUILD_CFLAGS' \
-> 	references itself (eventually).  Stop.
+> This is essentially copy_struct_from_user() but for an iov_iter.
 > 
-> Use single := assignment for subdir-ccflags-y. The cc-option calls
-> are done right away and we don't end up with KBUILD_CFLAGS
-> referencing itself.
-> 
-> Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
+> Suggested-by: Aleksa Sarai <cyphar@cyphar.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 > ---
->  fs/btrfs/Makefile | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  include/linux/uio.h |  2 ++
+>  lib/iov_iter.c      | 82 +++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 84 insertions(+)
 > 
-> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-> index b634c42115ea..583ca2028e08 100644
-> --- a/fs/btrfs/Makefile
-> +++ b/fs/btrfs/Makefile
-> @@ -1,16 +1,16 @@
->  # SPDX-License-Identifier: GPL-2.0
+> diff --git a/include/linux/uio.h b/include/linux/uio.h
+> index 72d88566694e..f4e6ea85a269 100644
+> --- a/include/linux/uio.h
+> +++ b/include/linux/uio.h
+> @@ -121,6 +121,8 @@ size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
+>  			 struct iov_iter *i);
+>  size_t copy_page_from_iter(struct page *page, size_t offset, size_t bytes,
+>  			 struct iov_iter *i);
+> +int copy_struct_from_iter(void *dst, size_t ksize, struct iov_iter *i,
+> +			  size_t usize);
 >  
->  # Subset of W=1 warnings
-> +subdir-ccflags-y := $(call cc-option, -Wunused-but-set-variable) \
-> +	$(call cc-option, -Wunused-const-variable) \
-> +	$(call cc-option, -Wpacked-not-aligned) \
-> +	$(call cc-option, -Wstringop-truncation)
+>  size_t _copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i);
+>  size_t _copy_from_iter(void *addr, size_t bytes, struct iov_iter *i);
+> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> index a21e6a5792c5..f45826ed7528 100644
+> --- a/lib/iov_iter.c
+> +++ b/lib/iov_iter.c
+> @@ -948,6 +948,88 @@ size_t copy_page_from_iter(struct page *page, size_t offset, size_t bytes,
+>  }
+>  EXPORT_SYMBOL(copy_page_from_iter);
+>  
+> +/**
+> + * copy_struct_from_iter - copy a struct from an iov_iter
+> + * @dst: Destination buffer.
+> + * @ksize: Size of @dst struct.
+> + * @i: Source iterator.
+> + * @usize: (Alleged) size of struct in @i.
+> + *
+> + * Copies a struct from an iov_iter in a way that guarantees
+> + * backwards-compatibility for struct arguments in an iovec (as long as the
+> + * rules for copy_struct_from_user() are followed).
+> + *
+> + * The recommended usage is that @usize be taken from the current segment:
+> + *
+> + *   int do_foo(struct iov_iter *i)
+> + *   {
+> + *     size_t usize = iov_iter_single_seg_count(i);
+> + *     struct foo karg;
+> + *     int err;
+> + *
+> + *     if (usize > PAGE_SIZE)
+> + *       return -E2BIG;
+> + *     if (usize < FOO_SIZE_VER0)
+> + *       return -EINVAL;
+> + *     err = copy_struct_from_iter(&karg, sizeof(karg), i, usize);
+> + *     if (err)
+> + *       return err;
+> + *
+> + *     // ...
+> + *   }
+> + *
+> + * Return: 0 on success, -errno on error (see copy_struct_from_user()).
+> + *
+> + * On success, the iterator is advanced @usize bytes. On error, the iterator is
+> + * not advanced.
+> + */
+> +int copy_struct_from_iter(void *dst, size_t ksize, struct iov_iter *i,
+> +			  size_t usize)
+> +{
+> +	if (usize <= ksize) {
+> +		if (!copy_from_iter_full(dst, usize, i))
+> +			return -EFAULT;
+> +		memset(dst + usize, 0, ksize - usize);
+> +	} else {
+> +		size_t copied = 0, copy;
+> +		int ret;
+> +
+> +		if (WARN_ON(iov_iter_is_pipe(i)) || unlikely(i->count < usize))
+> +			return -EFAULT;
+> +		if (iter_is_iovec(i))
+> +			might_fault();
+> +		iterate_all_kinds(i, usize, v, ({
+> +			copy = min(ksize - copied, v.iov_len);
+> +			if (copy && copyin(dst + copied, v.iov_base, copy))
+> +				return -EFAULT;
+> +			copied += copy;
+> +			ret = check_zeroed_user(v.iov_base + copy,
+> +						v.iov_len - copy);
+> +			if (ret <= 0)
+> +				return ret ?: -E2BIG;
+> +			0;}), ({
+> +			char *addr = kmap_atomic(v.bv_page);
+> +			copy = min_t(size_t, ksize - copied, v.bv_len);
+> +			memcpy(dst + copied, addr + v.bv_offset, copy);
+> +			copied += copy;
+> +			ret = memchr_inv(addr + v.bv_offset + copy, 0,
+> +					 v.bv_len - copy) ? -E2BIG : 0;
+> +			kunmap_atomic(addr);
+> +			if (ret)
+> +				return ret;
+> +			}), ({
+> +			copy = min(ksize - copied, v.iov_len);
+> +			memcpy(dst + copied, v.iov_base, copy);
+> +			if (memchr_inv(v.iov_base, 0, v.iov_len))
+> +				return -E2BIG;
+> +			})
+> +		)
 
-That's still overwriting the value unconditionally, the idea was a
-separate variable
 
-https://lore.kernel.org/linux-btrfs/20210317104313.17028-1-dsterba@suse.com
+Following the semantics of copy_struct_from_user() is certainly a good
+idea but can this in any way be rewritten to not look like this; at
+least not as crammed. It's a bit painful to follow here what's going.
