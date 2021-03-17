@@ -2,127 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B023E33F9C1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Mar 2021 21:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AD433FA43
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Mar 2021 22:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbhCQUHS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Mar 2021 16:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+        id S233472AbhCQVEI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Mar 2021 17:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbhCQUGp (ORCPT
+        with ESMTP id S233416AbhCQVDm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Mar 2021 16:06:45 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404F6C06174A
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Mar 2021 13:06:44 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id c131so204714ybf.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Mar 2021 13:06:44 -0700 (PDT)
+        Wed, 17 Mar 2021 17:03:42 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5217FC06174A;
+        Wed, 17 Mar 2021 14:03:42 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id a11so2532694qto.2;
+        Wed, 17 Mar 2021 14:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=pgZJm2mwust/lWYp28t0kU5O7mKQUtNWjwu7HmjoeOI=;
-        b=KgmOcZcwacr+9BSuGePZkg5wOBNPil5yfFpCj8qgst4Fjd/3R5Gq+t4DJIFFToHr0Q
-         trwQJ6uHTZTW7DNzI71h/8HLBRZjEbfnvQMhCfP+CkIxJl0qhymeKuiiY4Ig3Xc0lQ/+
-         RPnAucwDffsSKbdCYoTZRP3cwvv9cQ8JBK3Fka+vUuuodHJrt0Bi6lLklp6aeJk2a8/W
-         ck+t/XTgrX6Y+LHQNptTOSG6AHcfcX5NVpYvebCAgSRd8sKfqme99U3ADGYBgVCXxHiE
-         LrnU8E3x871J/ZPJZpv9Wla8d7HVwsDj0fHm5+E0G5R/HzgEX5QzsKphLPXPOoJ+LlaD
-         FEGg==
+         :cc:content-transfer-encoding;
+        bh=tTumWXKPeirhih82vHznyEMQk5Ce5y7T8VwAjdW2rck=;
+        b=ULJSbzvSp3lAK8KFEC2FYoyxm69IHXmIJw7sepUgvC9EJcKa08CasMwgmLxHTtRpe8
+         9dgklWrWwxQHY/bhVE3zMDHxls23888cxRZtsgn785MKaS3Jude6twOPs0cxvqo6MKsh
+         IWiUa9DLfc0zv22dBhexoNvpquxvtoXM7GSdDMdPqZbxbAdBoyjlid+aZC9S7bwOFSrW
+         sdaIaQdxBH+mH3KTqReqbPkqOlBdVi2Fo9oxnNoXK90wwKV/RJbzZKX/tuWBDpYLAKxJ
+         2AEeB/LoamYa9KCb8+r1twE1DaAkGicMds+d25eixoRM6DwoB4nMiuLwOH7sShpxiyJT
+         wj2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=pgZJm2mwust/lWYp28t0kU5O7mKQUtNWjwu7HmjoeOI=;
-        b=ClW8IkITGz7jCsTn/c0/1/y7zqLoWryD/pSJHRfyRmRek237EEIq5SuTlt27C4DDom
-         PaYSbkwwx4Nm2b9vnB61+VTOa4E9zqLxQa9sJYWq5B94CxQf+FNFCWJ8Iq6h+Ksu2KJI
-         hPomX3n8vnPflgtRn0Y1t3D/BEVLqar2uabLDITIz+A5HHXsDhd1PsRzsUzxKeuKG9lL
-         e5htWuSs8lCqPtZKZ/sbWhShhJ1ZCHW9rqf+vMNWdJQvP0PZUlQjFgx/3c/z0L91GSrj
-         WLDBG1TAiblQYlCw9JQd9dsRgp/Bgxn/SCyPoMwO1Si8pVuu4/YQhMVl5Onjt2JCoUTh
-         aL+g==
-X-Gm-Message-State: AOAM5337WiYvU37ZHf6jjC6rhZBMGogElVVltuX340+6fwm0aDsM6Vnh
-        zJqkEGUSClu5GxUplxIXuom5lX4JTOL9m3pncV0=
-X-Google-Smtp-Source: ABdhPJz0hXssI9zo5SI2/0FhrZ9qh+Xi3unHs70act/vGrIFbsqr65rTKQmPQThpg4C3qIij/TJrQ6+SLTy12/fp+MM=
-X-Received: by 2002:a25:7bc7:: with SMTP id w190mr7354474ybc.184.1616011603609;
- Wed, 17 Mar 2021 13:06:43 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tTumWXKPeirhih82vHznyEMQk5Ce5y7T8VwAjdW2rck=;
+        b=ptAjExRH6wmCVRMaDBFUZtvol3Nxv+FgsA1mQbK2DUS5GFVua4Qctt9g+e2DmgcR6H
+         pp4Fq4hDsWkbav/2tEk4dcGFuwZNCgRfv+EbHFgmoYoD0qyIDJ8SGornODGKggEqLXhM
+         KcEg7W9wwQ6ifcLQVIt1jeSDsCtCAV/9pTa5+L3GFGIXxrKWlIzufQnnhlpvvN/KXKpV
+         8Y/mCbx60UO2qpl+7dofH0VQn9prpUR4KzrZOrHNCtC8sR3atz9qYxXU8JlNZjN/nN/p
+         ZphjRPu/GwBR38mZqkKmtARE3BxU9uhoj4XAc5mqUAOpE4sYrpoDxq1bS6DR8tKvOHDQ
+         gohw==
+X-Gm-Message-State: AOAM533Cvoud3Vb9QaqkUwuQahdI6pG7u3lLV8qo9CwcUCy0AIevUxBs
+        v9dqmHkMXXnx4wds0K/P/5I6kKTZSh5/7bLAwwg=
+X-Google-Smtp-Source: ABdhPJwm4YvE1JcC4KfXSPzAnKJUBMfzQq22eckkZK6VJ1P9qKUWPqTKUDP/DQPj9k0Z66fn2QxQbFjcAfG5alIeZL0=
+X-Received: by 2002:ac8:66d6:: with SMTP id m22mr926873qtp.56.1616015021448;
+ Wed, 17 Mar 2021 14:03:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <YFHtnGvRH+QlwRN6@angband.pl> <20210317141733.GR7604@twin.jikos.cz>
-In-Reply-To: <20210317141733.GR7604@twin.jikos.cz>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 17 Mar 2021 16:06:07 -0400
-Message-ID: <CAEg-Je93K1d3U0Gvaff4cESReTexw3X4U_t3wQ5_tO5+DMfOYQ@mail.gmail.com>
-Subject: Re: Fwd: btrfs-progs: libbtrfsutil is under LGPL-3.0 and statically
- liked into btrfs
-To:     dsterba@suse.cz, Adam Borowski <kilobyte@angband.pl>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Stefano Babic <sbabic@denx.de>,
-        King InuYasha <ngompa13@gmail.com>,
-        Claudius Heine <ch@denx.de>,
-        Omar Sandoval <osandov@osandov.com>
+References: <20210317012054.238334-1-davispuh@gmail.com> <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
+ <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com>
+In-Reply-To: <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com>
+From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Date:   Wed, 17 Mar 2021 23:03:30 +0200
+Message-ID: <CAOE4rSyX-qTWKS_MTS5dLpfuVnqS=LwfqThyCTP=iBEH5x2bOQ@mail.gmail.com>
+Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:19 AM David Sterba <dsterba@suse.cz> wrote:
+tre=C5=A1d., 2021. g. 17. marts, plkst. 12:28 =E2=80=94 lietot=C4=81js Qu W=
+enruo
+(<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
 >
-> On Wed, Mar 17, 2021 at 12:53:00PM +0100, Adam Borowski wrote:
-> > This is https://bugs.debian.org/985400
-> >
-> > ----- Forwarded message from Claudius Heine <ch@denx.de> -----
-> >
-> > Dear Maintainer,
-> >
-> > I looked into the licenses of the btrfs-progs project and found that th=
-e
-> > libbtrfsutils library is licensed under LGPL-3.0-or-later [1]
-> >
-> > The `copyright` file does not show this this.
-> >
-> > IANAL, but I think since `btrfs` (under GPL-2.0-only [2]) links to `lib=
-btrfsutil`
-> > statically this might cause a license conflict. See [3]. This would be =
-the part
-> > that might require upstream fixing.
 >
-> Thanks for bringing it up.
 >
-> > [1] https://github.com/kdave/btrfs-progs/blob/master/libbtrfsutil/btrfs=
-util.h
-> > [2] https://github.com/kdave/btrfs-progs/blob/master/btrfs.c
-> > [3] http://gplv3.fsf.org/dd3-faq#gpl-compat-matrix
+> On 2021/3/17 =E4=B8=8A=E5=8D=889:29, D=C4=81vis Mos=C4=81ns wrote:
+> > tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=81js =
+D=C4=81vis Mos=C4=81ns
+> > (<davispuh@gmail.com>) rakst=C4=ABja:
+> >>
+> >> Currently if there's any corruption at all in extent tree
+> >> (eg. even single bit) then mounting will fail with:
+> >> "failed to read block groups: -5" (-EIO)
+> >> It happens because we immediately abort on first error when
+> >> searching in extent tree for block groups.
+> >>
+> >> Now with this patch if `ignorebadroots` option is specified
+> >> then we handle such case and continue by removing already
+> >> created block groups and creating dummy block groups.
+> >>
+> >> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
+> >> ---
+> >>   fs/btrfs/block-group.c | 14 ++++++++++++++
+> >>   fs/btrfs/disk-io.c     |  4 ++--
+> >>   fs/btrfs/disk-io.h     |  2 ++
+> >>   3 files changed, 18 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> >> index 48ebc106a606..827a977614b3 100644
+> >> --- a/fs/btrfs/block-group.c
+> >> +++ b/fs/btrfs/block-group.c
+> >> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_inf=
+o *info)
+> >>          ret =3D check_chunk_block_group_mappings(info);
+> >>   error:
+> >>          btrfs_free_path(path);
+> >> +
+> >> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
+> >> +               btrfs_put_block_group_cache(info);
+> >> +               btrfs_stop_all_workers(info);
+> >> +               btrfs_free_block_groups(info);
+> >> +               ret =3D btrfs_init_workqueues(info, NULL);
+> >> +               if (ret)
+> >> +                       return ret;
+> >> +               ret =3D btrfs_init_space_info(info);
+> >> +               if (ret)
+> >> +                       return ret;
+> >> +               return fill_dummy_bgs(info);
 >
-> As explained in that link
+> When we hit bad things in extent tree, we should ensure we're mounting
+> the fs RO, or we can't continue.
 >
->  "Use a library" means that you're not copying any source directly, but
->  instead interacting with it through linking, importing, or other
->  typical mechanisms that bind the sources together when you compile or
->  run the code.
+> And we should also refuse to mount back to RW if we hit such case, so
+> that we don't need anything complex, just ignore the whole extent tree
+> and create the dummy block groups.
 >
-> the static link applies and the licenses do not allow that. So what are
-> the options:
->
-> - relicense libbtrfsutil to LGPL v2.1 or later
-> - relicense libbtrfsutil to LGPL v2.1 only
->
-> There was another request to relicense it
-> https://lore.kernel.org/linux-btrfs/b927ca28-e280-4d79-184f-b72867dbdaa8@=
-denx.de/
->
-> I'm not aware of any objections to relicensing, it hasn't happend in
-> 5.11 due to time reasons but I think 5.12 is feasible.
->
-> If there's anybody willing to drive the process please let me know. The
-> mpv project did relicensing as well and we can draw some inspiration
-> from there https://github.com/mpv-player/mpv/issues/2033 . It took them
-> like 5 years but the number of contributors we'd need to ask is small and
-> most of them are known so it should not take more than a month.
 
-Relicensing request has been sent to the mailing list:
-https://lore.kernel.org/linux-btrfs/20210317200144.1067314-1-ngompa@fedorap=
-roject.org/T/
+That's what we're doing here, `ignorebadroots` implies RO mount and
+without specifying it doesn't mount at all.
 
+> >
+> > This isn't that nice, but I don't really know how to properly clean up
+> > everything related to already created block groups so this was easiest
+> > way. It seems to work fine.
+> > But looks like need to do something about replay log aswell because if
+> > it's not disabled then it fails with:
+> >
+> > [ 1397.246869] BTRFS info (device sde): start tree-log replay
+> > [ 1398.218685] BTRFS warning (device sde): sde checksum verify failed
+> > on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
+> > [ 1398.218803] BTRFS warning (device sde): sde checksum verify failed
+> > on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
+> > [ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3054:
+> > errno=3D-5 IO failure
+> > [ 1398.218828] BTRFS: error (device sde) in
+> > btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
+> > [ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254:
+> > errno=3D-5 IO failure (Failed to recover log tree)
+> > [ 1398.229048] BTRFS error (device sde): open_ctree failed
+>
+> This is because we shouldn't allow to do anything write to the fs if we
+> have anything wrong in extent tree.
+>
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+This is happening when mounting read-only. My assumption is that it
+only tries to replay in memory without writing anything to disk.
