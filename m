@@ -2,280 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9783C33ED7B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Mar 2021 10:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF57533EE4C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Mar 2021 11:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhCQJyx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Mar 2021 05:54:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49570 "EHLO mx2.suse.de"
+        id S229865AbhCQK3a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Mar 2021 06:29:30 -0400
+Received: from mout.gmx.net ([212.227.17.20]:58209 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229585AbhCQJyc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:54:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615974871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=vRrkK08OqWMXmOyzro6ahwlfHrE5mCmYM+44Ft+UKAc=;
-        b=at7GQ7HSOrjPK3rxQ10YjSoM+59euMNsEOFyFep0Z9kjS87Ff8+LpYLG3fu7yumWdNkTip
-        3PlloQd8bm9hBVjEtil1Ur9wCPsB2/+Uit2F2yGTKjYCVhtv4Ofiusr/WG8jxbKYM3iI8o
-        7HFvTum4bPh5rn2E50Y26VB1W8rPak8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27E17AC1F;
-        Wed, 17 Mar 2021 09:54:31 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2852BDA6E2; Wed, 17 Mar 2021 10:52:29 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     stable@vger.kernel.org
-Cc:     fdmanana@suse.com, linux-btrfs@vger.kernel.org, wqu@suse.com,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4] btrfs: scrub: Don't check free space before marking a block group RO
-Date:   Wed, 17 Mar 2021 10:51:51 +0100
-Message-Id: <20210317095151.19777-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S229811AbhCQK3F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Mar 2021 06:29:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1615976936;
+        bh=ESw9LlR3qSYW6UltSNCieXZtuzO579BktbQf27g6RKQ=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=cCqz6x4kMBz2/T0jFhtpzs4cByOxv46zo0nO6lU/5uGinyJ00EXV5tdXJp2liZ2Lx
+         de3GhzuqNLM1r25D3E+DzOWH0TEHOPHI/2jD0KtytfiRWcPfr3bjxltjmW8BPE57Pj
+         Mjuaipadk7n7qQUcwFy4m7UnM0i+rdkPgsAJKj1o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzQkK-1lZRrz1fHM-00vPas; Wed, 17
+ Mar 2021 11:28:56 +0100
+Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
+To:     =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <20210317012054.238334-1-davispuh@gmail.com>
+ <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com>
+Date:   Wed, 17 Mar 2021 18:28:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LCN+xGUWfoSOSEjoWNcx10tO+H4nL47zMgiZSPoxNcJ5b7ORYK6
+ dczjrAJ7X9JlKEhDaS7UxKnpHOp8O+NXKnFnNx6C6YeH58tZYPEHtjTM4UGFU40qgaM3wEC
+ 52q6HNGazecr1a5bD1xRKrIDpG5HCzHmGUB9eQkCAEbaC23OTtZco4YzdWfer3I+sstyFkD
+ YWn77l1R4zgqMxiS/FQ3w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Fl4wdWFfAjI=:YJ1sCgTXEsnBHER4hT1EsM
+ /HZHdUtm0SdqJ6dMRqv1ESYbXswN6DgFbFJbBGFRR6DYvu1EoCTm/VX/1a0MPrDrUwdzqNaww
+ M+/qFwL5HLogq2cHWaEjDQOyVVAyKEnkk4oPDK87LCLy29P4WiUIWsAE6OflTIshOd1feFpWZ
+ EPlaavCvQB2apzLhjb01Uh1UfRWAw0mdRLlGQJ1rNyK2g1q+EcPmdBLHJJIY0n3ynboeLVehX
+ AXxAaDjniPGhUTEPcwdhMSuxeilBOLWwATjKhPqVJ/uxjroxIw4L9xczyfCuvinLw+zlGLGg8
+ dQVeCvaJr3qnbYgnWXYLkk9TwRO1ftxYgb8HO7n602aSZztZA3Gckrg2n9neNar3Pud+PavfX
+ qImvq1Gg73DCEIPiwnd/lgpTFj+arnyUL9Dm0SsMN8wS6UBXQjBn5pd6kbYbJrz20T7QDJjZP
+ hYlbN0T2OvUQiTBRSMqtawVhOmg1knF7R7c7dO0/L+L9AWLprzMkH8qWxv1yxxNhS7Y3/k4ve
+ 9kvu5CY4hYLKvUDopqxKOcDEnBkPQyPKaOFVdkiWOiQR/JTOydT6LYsi1EG1Ck9e3uYrBi374
+ z1XYcBD5Nzyp7Z3HdaLb8tL0oUV8/1IBiIjt0FOCTf896ebPDVK01wFcqlZjAtcXHKoezYCpr
+ tQOSxpNCNS6RXLSiRRdnCFmRvozDlUwfdyJ05bJBJ0uRcCmiTpRBVoGfHn6lga+W9bl/iQuc9
+ KrD24SmFzfnGDhQnM2vHsABd/MpI87VKJXtM32yL6VK8dVZsOKJ9WiWtDjL06yNOE1+N1l8gJ
+ WMT9kfPK/QuQb0wuf1/M+TW9ejwLEleQG6HHZF0AJQ+mv7/Pcmiy962dPIHytwG7vlNUkQ3yw
+ VbJ08QLTh/8Cq9JlkWuQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit b12de52896c0e8213f70e3a168fde9e6eee95909 ]
 
-[BUG]
-When running btrfs/072 with only one online CPU, it has a pretty high
-chance to fail:
+On 2021/3/17 =E4=B8=8A=E5=8D=889:29, D=C4=81vis Mos=C4=81ns wrote:
+> tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=81js D=
+=C4=81vis Mos=C4=81ns
+> (<davispuh@gmail.com>) rakst=C4=ABja:
+>>
+>> Currently if there's any corruption at all in extent tree
+>> (eg. even single bit) then mounting will fail with:
+>> "failed to read block groups: -5" (-EIO)
+>> It happens because we immediately abort on first error when
+>> searching in extent tree for block groups.
+>>
+>> Now with this patch if `ignorebadroots` option is specified
+>> then we handle such case and continue by removing already
+>> created block groups and creating dummy block groups.
+>>
+>> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
+>> ---
+>>   fs/btrfs/block-group.c | 14 ++++++++++++++
+>>   fs/btrfs/disk-io.c     |  4 ++--
+>>   fs/btrfs/disk-io.h     |  2 ++
+>>   3 files changed, 18 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index 48ebc106a606..827a977614b3 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_info=
+ *info)
+>>          ret =3D check_chunk_block_group_mappings(info);
+>>   error:
+>>          btrfs_free_path(path);
+>> +
+>> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
+>> +               btrfs_put_block_group_cache(info);
+>> +               btrfs_stop_all_workers(info);
+>> +               btrfs_free_block_groups(info);
+>> +               ret =3D btrfs_init_workqueues(info, NULL);
+>> +               if (ret)
+>> +                       return ret;
+>> +               ret =3D btrfs_init_space_info(info);
+>> +               if (ret)
+>> +                       return ret;
+>> +               return fill_dummy_bgs(info);
 
-  btrfs/072 12s ... _check_dmesg: something found in dmesg (see xfstests-dev/results//btrfs/072.dmesg)
-  - output mismatch (see xfstests-dev/results//btrfs/072.out.bad)
-      --- tests/btrfs/072.out     2019-10-22 15:18:14.008965340 +0800
-      +++ /xfstests-dev/results//btrfs/072.out.bad      2019-11-14 15:56:45.877152240 +0800
-      @@ -1,2 +1,3 @@
-       QA output created by 072
-       Silence is golden
-      +Scrub find errors in "-m dup -d single" test
-      ...
+When we hit bad things in extent tree, we should ensure we're mounting
+the fs RO, or we can't continue.
 
-And with the following call trace:
+And we should also refuse to mount back to RW if we hit such case, so
+that we don't need anything complex, just ignore the whole extent tree
+and create the dummy block groups.
 
-  BTRFS info (device dm-5): scrub: started on devid 1
-  ------------[ cut here ]------------
-  BTRFS: Transaction aborted (error -27)
-  WARNING: CPU: 0 PID: 55087 at fs/btrfs/block-group.c:1890 btrfs_create_pending_block_groups+0x3e6/0x470 [btrfs]
-  CPU: 0 PID: 55087 Comm: btrfs Tainted: G        W  O      5.4.0-rc1-custom+ #13
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-  RIP: 0010:btrfs_create_pending_block_groups+0x3e6/0x470 [btrfs]
-  Call Trace:
-   __btrfs_end_transaction+0xdb/0x310 [btrfs]
-   btrfs_end_transaction+0x10/0x20 [btrfs]
-   btrfs_inc_block_group_ro+0x1c9/0x210 [btrfs]
-   scrub_enumerate_chunks+0x264/0x940 [btrfs]
-   btrfs_scrub_dev+0x45c/0x8f0 [btrfs]
-   btrfs_ioctl+0x31a1/0x3fb0 [btrfs]
-   do_vfs_ioctl+0x636/0xaa0
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x43/0x50
-   do_syscall_64+0x79/0xe0
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-  ---[ end trace 166c865cec7688e7 ]---
+>
+> This isn't that nice, but I don't really know how to properly clean up
+> everything related to already created block groups so this was easiest
+> way. It seems to work fine.
+> But looks like need to do something about replay log aswell because if
+> it's not disabled then it fails with:
+>
+> [ 1397.246869] BTRFS info (device sde): start tree-log replay
+> [ 1398.218685] BTRFS warning (device sde): sde checksum verify failed
+> on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
+> [ 1398.218803] BTRFS warning (device sde): sde checksum verify failed
+> on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
+> [ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3054:
+> errno=3D-5 IO failure
+> [ 1398.218828] BTRFS: error (device sde) in
+> btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
+> [ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254:
+> errno=3D-5 IO failure (Failed to recover log tree)
+> [ 1398.229048] BTRFS error (device sde): open_ctree failed
 
-[CAUSE]
-The error number -27 is -EFBIG, returned from the following call chain:
-btrfs_end_transaction()
-|- __btrfs_end_transaction()
-   |- btrfs_create_pending_block_groups()
-      |- btrfs_finish_chunk_alloc()
-         |- btrfs_add_system_chunk()
+This is because we shouldn't allow to do anything write to the fs if we
+have anything wrong in extent tree.
 
-This happens because we have used up all space of
-btrfs_super_block::sys_chunk_array.
-
-The root cause is, we have the following bad loop of creating tons of
-system chunks:
-
-1. The only SYSTEM chunk is being scrubbed
-   It's very common to have only one SYSTEM chunk.
-2. New SYSTEM bg will be allocated
-   As btrfs_inc_block_group_ro() will check if we have enough space
-   after marking current bg RO. If not, then allocate a new chunk.
-3. New SYSTEM bg is still empty, will be reclaimed
-   During the reclaim, we will mark it RO again.
-4. That newly allocated empty SYSTEM bg get scrubbed
-   We go back to step 2, as the bg is already mark RO but still not
-   cleaned up yet.
-
-If the cleaner kthread doesn't get executed fast enough (e.g. only one
-CPU), then we will get more and more empty SYSTEM chunks, using up all
-the space of btrfs_super_block::sys_chunk_array.
-
-[FIX]
-Since scrub/dev-replace doesn't always need to allocate new extent,
-especially chunk tree extent, so we don't really need to do chunk
-pre-allocation.
-
-To break above spiral, here we introduce a new parameter to
-btrfs_inc_block_group(), @do_chunk_alloc, which indicates whether we
-need extra chunk pre-allocation.
-
-For relocation, we pass @do_chunk_alloc=true, while for scrub, we pass
-@do_chunk_alloc=false.
-This should keep unnecessary empty chunks from popping up for scrub.
-
-Also, since there are two parameters for btrfs_inc_block_group_ro(),
-add more comment for it.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
----
-
-There's a report for 5.4 and the patch applies with a minor fixup
-without dependencies.
-
-https://bugzilla.kernel.org/show_bug.cgi?id=210447
-
- fs/btrfs/block-group.c | 48 +++++++++++++++++++++++++++---------------
- fs/btrfs/block-group.h |  3 ++-
- fs/btrfs/relocation.c  |  2 +-
- fs/btrfs/scrub.c       | 21 +++++++++++++++++-
- 4 files changed, 54 insertions(+), 20 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 08ca9441270d..a352c1704042 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2048,8 +2048,17 @@ static u64 update_block_group_flags(struct btrfs_fs_info *fs_info, u64 flags)
- 	return flags;
- }
- 
--int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache)
--
-+/*
-+ * Mark one block group RO, can be called several times for the same block
-+ * group.
-+ *
-+ * @cache:		the destination block group
-+ * @do_chunk_alloc:	whether need to do chunk pre-allocation, this is to
-+ * 			ensure we still have some free space after marking this
-+ * 			block group RO.
-+ */
-+int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache,
-+			     bool do_chunk_alloc)
- {
- 	struct btrfs_fs_info *fs_info = cache->fs_info;
- 	struct btrfs_trans_handle *trans;
-@@ -2079,25 +2088,29 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache)
- 		goto again;
- 	}
- 
--	/*
--	 * if we are changing raid levels, try to allocate a corresponding
--	 * block group with the new raid level.
--	 */
--	alloc_flags = update_block_group_flags(fs_info, cache->flags);
--	if (alloc_flags != cache->flags) {
--		ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
-+	if (do_chunk_alloc) {
- 		/*
--		 * ENOSPC is allowed here, we may have enough space
--		 * already allocated at the new raid level to
--		 * carry on
-+		 * If we are changing raid levels, try to allocate a
-+		 * corresponding block group with the new raid level.
- 		 */
--		if (ret == -ENOSPC)
--			ret = 0;
--		if (ret < 0)
--			goto out;
-+		alloc_flags = update_block_group_flags(fs_info, cache->flags);
-+		if (alloc_flags != cache->flags) {
-+			ret = btrfs_chunk_alloc(trans, alloc_flags,
-+						CHUNK_ALLOC_FORCE);
-+			/*
-+			 * ENOSPC is allowed here, we may have enough space
-+			 * already allocated at the new raid level to carry on
-+			 */
-+			if (ret == -ENOSPC)
-+				ret = 0;
-+			if (ret < 0)
-+				goto out;
-+		}
- 	}
- 
--	ret = inc_block_group_ro(cache, 0);
-+	ret = inc_block_group_ro(cache, !do_chunk_alloc);
-+	if (!do_chunk_alloc)
-+		goto unlock_out;
- 	if (!ret)
- 		goto out;
- 	alloc_flags = btrfs_get_alloc_profile(fs_info, cache->space_info->flags);
-@@ -2112,6 +2125,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache)
- 		check_system_chunk(trans, alloc_flags);
- 		mutex_unlock(&fs_info->chunk_mutex);
- 	}
-+unlock_out:
- 	mutex_unlock(&fs_info->ro_block_group_mutex);
- 
- 	btrfs_end_transaction(trans);
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index c391800388dd..0758e6d52acb 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -205,7 +205,8 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info);
- int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
- 			   u64 type, u64 chunk_offset, u64 size);
- void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans);
--int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache);
-+int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache,
-+			     bool do_chunk_alloc);
- void btrfs_dec_block_group_ro(struct btrfs_block_group_cache *cache);
- int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans);
- int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans);
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 05b3e27b21d4..68b5d7c4aa49 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4428,7 +4428,7 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
- 	rc->extent_root = extent_root;
- 	rc->block_group = bg;
- 
--	ret = btrfs_inc_block_group_ro(rc->block_group);
-+	ret = btrfs_inc_block_group_ro(rc->block_group, true);
- 	if (ret) {
- 		err = ret;
- 		goto out;
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 93d7cb56e44b..e5db948daa12 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3560,7 +3560,26 @@ int scrub_enumerate_chunks(struct scrub_ctx *sctx,
- 		 * -> btrfs_scrub_pause()
- 		 */
- 		scrub_pause_on(fs_info);
--		ret = btrfs_inc_block_group_ro(cache);
-+
-+		/*
-+		 * Don't do chunk preallocation for scrub.
-+		 *
-+		 * This is especially important for SYSTEM bgs, or we can hit
-+		 * -EFBIG from btrfs_finish_chunk_alloc() like:
-+		 * 1. The only SYSTEM bg is marked RO.
-+		 *    Since SYSTEM bg is small, that's pretty common.
-+		 * 2. New SYSTEM bg will be allocated
-+		 *    Due to regular version will allocate new chunk.
-+		 * 3. New SYSTEM bg is empty and will get cleaned up
-+		 *    Before cleanup really happens, it's marked RO again.
-+		 * 4. Empty SYSTEM bg get scrubbed
-+		 *    We go back to 2.
-+		 *
-+		 * This can easily boost the amount of SYSTEM chunks if cleaner
-+		 * thread can't be triggered fast enough, and use up all space
-+		 * of btrfs_super_block::sys_chunk_array
-+		 */
-+		ret = btrfs_inc_block_group_ro(cache, false);
- 		if (!ret && sctx->is_dev_replace) {
- 			/*
- 			 * If we are doing a device replace wait for any tasks
--- 
-2.29.2
-
+Thanks,
+Qu
+>
+> Ideally it should replay everything except extent refs. >
+>
+> I also noticed that after unmount there is:
+>
+> [11000.562504] BTRFS warning (device sde): page private not zero on
+> page 21057098481664
+> [11000.562510] BTRFS warning (device sde): page private not zero on
+> page 21057098485760
+>
+> not sure what it means.
+>
+>
+> Best regards,
+> D=C4=81vis
+>
