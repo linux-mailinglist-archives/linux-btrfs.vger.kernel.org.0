@@ -2,93 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4609133FD49
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 03:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8314733FD50
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 03:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhCRCf6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Mar 2021 22:35:58 -0400
-Received: from mout.gmx.net ([212.227.15.15]:50153 "EHLO mout.gmx.net"
+        id S230431AbhCRCjP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Mar 2021 22:39:15 -0400
+Received: from mga18.intel.com ([134.134.136.126]:42913 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230085AbhCRCfY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:35:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616034921;
-        bh=GYuVd+UfLFAkjGWxaJRMh8t6LVAgNsZqx/S/5F/dH74=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=BvE9v9jJ0TzVLw6sBQVXRbVOxsynkij7Og01UmZvYA7NbDcZH5UUl4JZm4pRt+9i4
-         j//wRMHYLDCS94Dc3NhKYLvJvukigJ4tUHLnMTza/pVC+6w6nznyYT+Q8TfjKp3auT
-         5YTWW5nv2H2cI4Qyi8Ej0qfEjz2LVT1VQkFkuhNY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6Db0-1lKUW903Oy-006fL1; Thu, 18
- Mar 2021 03:35:21 +0100
-Subject: Re: [PATCH v2] btrfs-progs: common: make sure that qgroup id is in
- range
-To:     Sidong Yang <realwakka@gmail.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
-References: <20210316132746.19979-1-realwakka@gmail.com>
- <20210317183647.GW7604@twin.jikos.cz> <20210318022208.GA34562@realwakka>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <b934da96-46f3-ce2a-e9a3-939f40fd4d16@gmx.com>
-Date:   Thu, 18 Mar 2021 10:35:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230341AbhCRCiw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Mar 2021 22:38:52 -0400
+IronPort-SDR: M+/tCsqj12SFvB0pGqrmDLuIyztMbiwz0rGwT8VelPRbkxTX50sdfpx6P7KBqMcf3RQ+pe1KF4
+ mB7tg2HaE+TA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="177180910"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="177180910"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:38:52 -0700
+IronPort-SDR: sekA4qS1NWWjh9+u9VP2O4uKHjKSpobxFH/1mS4Lnfzy9ayOm2R/OK7nCZfsTJ9cOaX8PpEw8V
+ utKjXGD/rLOw==
+X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
+   d="scan'208";a="450315247"
+Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:38:50 -0700
+Date:   Thu, 18 Mar 2021 10:37:03 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, linux-btrfs@vger.kernel.org
+Subject: Re: [btrfs] 5297199a8b: xfstests.btrfs.220.fail
+Message-ID: <20210318023703.GB10304@xsang-OptiPlex-9020>
+References: <20210309084953.GD12057@xsang-OptiPlex-9020>
+ <5e0b9f39-9c4d-5b56-68ba-7a6283dc560d@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210318022208.GA34562@realwakka>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EdE1Bd5yfBlNkOXJSCMowv7fB3Oj4MHtKpeJsjuTCfN2hf5/pB7
- lGiwxPgtpMqnwp6b89galsaELkcCIKnXQfCn9AZpbKcb83UEWu+XeWXzvAeCoQhw23a7S9v
- 0ImSQIoMRy88BARSjGvCZMAhaMYlUpTHCFzfr8bua7b8VO5oIMGk5o0h/yCCkRT1JSXaPJB
- AOE/mseeVdNy7WZ0EcYPA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:suLpvrCIuoM=:UvMzz3kfVVg2pbk4Y0ssJg
- 6DO4Q2G2VdMj3Vm1nrRD2CeNGpoOXWUB9c0p6t1NR+qpdQPT5bgZeE/oQk0UfsIaLs5K4LF+n
- vhi01AgJBcnBlW0kxx2WdVcm8P8/IbkNxcpcozMnUmfvPqD6YFBEyzRDl6QYYHsljZw9SRGaz
- HCriDbErzchfNZCP4BBgv/Kcd4ZHcC0ZXeShEdcshONUEEcL7Dq9PJG5OTYVkw4lXrE6IvEx2
- BvRW0DtDqidxFhD2zGuZagHReqf8pwaAPJmkiWLs0JTKyjcYhKjxsLK2G1vZeG8SIGJ1dEYlI
- uCDukFrmvVsJiwngEFYOaKdSte9sTXr6iz4tnrBfGbQNcxUtTwyh5j9d/RCsTxgi9wNqGTQ2b
- a4B9PJQ5kcZgXCTk3cUTUOArFmXqHhrJ645XyNNTBaU6qUqqP5Stf9blk76ZGRIj1BCYQH+zm
- O0TSzW6HK3L3lXug5iecOTvBLJsVcK8sB/Xa6i6WmQNlLSTSbuY0KaMcyL/Z7G3h5gRdxLFUf
- domXQ/YoPrnWW/6Wzbnjv78UYW6tSRNJ6rqYxd/IHtWfUKOeo40TSUgwkQcOdIjuHq/crGR7K
- PXoNBrsmlmA2tQVkWXm804g8qUuIWtSAc4px0WfnFYGyhZNbCAYeGUdb4MDHl/WM0fqVv69IV
- Hmgncu1K/PP1kok4WqZ3l/LBRzfFOHCQQRHef7GQ6r3N8q9v/1Z62sAwDsVG7ECj56JgA0jaM
- /nIUg1lArUeXU4kuViZ/k/p3NJ52GgZ7VjKCG5ntGgAhg1OWBVpv9FNg2uwRYdkE3KX0Pp+wq
- ruPNHPAkO9ICsFB6ZXz8Yp1akwP//hNvUOWJ83FuXVEemWXbv7U3i694DPZDYZNY33i8wuww8
- rteKRVJKYUy+AArdmq7Q==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5e0b9f39-9c4d-5b56-68ba-7a6283dc560d@suse.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Nikolay,
 
+On Tue, Mar 09, 2021 at 10:36:52AM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 9.03.21 г. 10:49 ч., kernel test robot wrote:
+> > 
+> > 
+> > Greeting,
+> > 
+> > FYI, we noticed the following commit (built with gcc-9):
+> > 
+> > commit: 5297199a8bca12b8b96afcbf2341605efb6005de ("btrfs: remove inode number cache feature")
+> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > 
+> > in testcase: xfstests
+> > version: xfstests-x86_64-d41dcbd-1_20201218
+> > with following parameters:
+> > 
+> > 	disk: 6HDD
+> > 	fs: btrfs
+> > 	test: btrfs-group-22
+> > 	ucode: 0x28
+> > 
+> > test-description: xfstests is a regression test suite for xfs and other files ystems.
+> > test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
+> > 
+> > 
+> > on test machine: 8 threads Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz with 8G memory
+> > 
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > 
+> > 
+> > 
+> > 
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > 
+> > 2021-03-09 04:13:26 export TEST_DIR=/fs/sdb1
+> > 2021-03-09 04:13:26 export TEST_DEV=/dev/sdb1
+> > 2021-03-09 04:13:26 export FSTYP=btrfs
+> > 2021-03-09 04:13:26 export SCRATCH_MNT=/fs/scratch
+> > 2021-03-09 04:13:26 mkdir /fs/scratch -p
+> > 2021-03-09 04:13:26 export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4 /dev/sdb5 /dev/sdb6"
+> > 2021-03-09 04:13:26 sed "s:^:btrfs/:" //lkp/benchmarks/xfstests/tests/btrfs-group-22
+> > 2021-03-09 04:13:26 ./check btrfs/220 btrfs/221 btrfs/222 btrfs/223 btrfs/224 btrfs/225 btrfs/226 btrfs/227
+> > FSTYP         -- btrfs
+> > PLATFORM      -- Linux/x86_64 lkp-hsw-d01 5.10.0-rc7-00162-g5297199a8bca #1 SMP Sat Feb 27 21:06:26 CST 2021
+> > MKFS_OPTIONS  -- /dev/sdb2
+> > MOUNT_OPTIONS -- /dev/sdb2 /fs/scratch
+> > 
+> > btrfs/220	- output mismatch (see /lkp/benchmarks/xfstests/results//btrfs/220.out.bad)
+> >     --- tests/btrfs/220.out	2021-01-14 07:40:58.000000000 +0000
+> >     +++ /lkp/benchmarks/xfstests/results//btrfs/220.out.bad	2021-03-09 04:13:32.880794446 +0000
+> >     @@ -1,2 +1,3 @@
+> >      QA output created by 220
+> >     +Unexepcted mount options, checking for 'inode_cache,relatime,space_cache,subvol=/,subvolid=5' in 'rw,relatime,space_cache,subvolid=5,subvol=/' using 'inode_cache'
+> 
+> 
+> Given that the commit removes the inode_cache feature that's expected, I
+> assume you need to adjust your fstests configuration to not use
+> inode_cache.
 
-On 2021/3/18 =E4=B8=8A=E5=8D=8810:22, Sidong Yang wrote:
-> On Wed, Mar 17, 2021 at 07:36:47PM +0100, David Sterba wrote:
->> On Tue, Mar 16, 2021 at 01:27:46PM +0000, Sidong Yang wrote:
->>> When user assign qgroup with qgroup id that is too big to exceeds
->>> range and invade level value, and it works without any error. but
->>> this action would be make undefined error. this code make sure that
->>> qgroup id doesn't exceed range(0 ~ 2^48-1).
->>
->> Should the level be also validate? The function parse_qgroupid does not
->> do full validation, so eg 0//0 would be parsed as a path and not as a
->> typo, level larger than 64K will be silently clamped.
->
-> I agree. 0//0 would be parsed as path but it failed in
-> btrfs_util_is_subvolume() and goes to err. I understand that upper 16
-> bits of qgroupid is for level. so, The valid llevel range is [0~2^16-1].
-> But I can't get it that level larger than 64K will be clampled.
->
-> one more question about that, I see that the ioctl calls just store the
-> qgroupid without any opeartion with level. is the level meaningless in
-> kernel?
->
-No, kernel uses the qgroup level, but it's deep in qgroup code.
+Thanks for information, we will change test options accordingly.
 
-In fact, kernel treats qgroupid just as an u64, and sometimes checks the
-qgroup level for relationship, but under most cases, it's just a u64,
-level/id doesn't really matter that much.
-
-Thanks,
-Qu
