@@ -2,111 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8314733FD50
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 03:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742E7340249
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 10:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhCRCjP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Mar 2021 22:39:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:42913 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230341AbhCRCiw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Mar 2021 22:38:52 -0400
-IronPort-SDR: M+/tCsqj12SFvB0pGqrmDLuIyztMbiwz0rGwT8VelPRbkxTX50sdfpx6P7KBqMcf3RQ+pe1KF4
- mB7tg2HaE+TA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="177180910"
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="177180910"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:38:52 -0700
-IronPort-SDR: sekA4qS1NWWjh9+u9VP2O4uKHjKSpobxFH/1mS4Lnfzy9ayOm2R/OK7nCZfsTJ9cOaX8PpEw8V
- utKjXGD/rLOw==
-X-IronPort-AV: E=Sophos;i="5.81,257,1610438400"; 
-   d="scan'208";a="450315247"
-Received: from xsang-optiplex-9020.sh.intel.com (HELO xsang-OptiPlex-9020) ([10.239.159.140])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2021 19:38:50 -0700
-Date:   Thu, 18 Mar 2021 10:37:03 +0800
-From:   Oliver Sang <oliver.sang@intel.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, linux-btrfs@vger.kernel.org
-Subject: Re: [btrfs] 5297199a8b: xfstests.btrfs.220.fail
-Message-ID: <20210318023703.GB10304@xsang-OptiPlex-9020>
-References: <20210309084953.GD12057@xsang-OptiPlex-9020>
- <5e0b9f39-9c4d-5b56-68ba-7a6283dc560d@suse.com>
+        id S229820AbhCRJng (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Mar 2021 05:43:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229810AbhCRJnO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Mar 2021 05:43:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616060593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vR/zt2s7jmFTmNYSYREs6HOTCms/TVsSgO4RcvUd91E=;
+        b=eHmlWUwi8h2lFL7esIjK3qjocSw0tvKmAf2U8XF9kdvxRfTcu17gpz2epE5X12URja35Ml
+        9rOvHkoJFGqrueJc8VhpZHZFfIZO5fKan0Zj7+RLJD9iyJamB4Wu/o1Jgokue4C+Trzmoa
+        Ux4sE1G8swpNM6+4c79pbj7StKNXCuU=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-Q8-eGq3lOZOIIFnWqnV89w-1; Thu, 18 Mar 2021 05:43:09 -0400
+X-MC-Unique: Q8-eGq3lOZOIIFnWqnV89w-1
+Received: by mail-yb1-f197.google.com with SMTP id j4so47667792ybt.23
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Mar 2021 02:43:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vR/zt2s7jmFTmNYSYREs6HOTCms/TVsSgO4RcvUd91E=;
+        b=a4gdYeBl0tpPRThAne3HQdUHjhnS6Fq7yamDLqxpmg6f8kcexxlw+MCTR6ojDmKRX7
+         QIpDB3XiF0JoeRq9AeQRK8n0A/4kpVK9ed8lokPyOhYfwvWdz6fJ5mZTAt2OclexCWxr
+         d0TTh8i3PUDrRClPoUvf0Z7Oa5J5b4GtT5rFicl1Q1uOEUGwzBA4F5dQX0JjdnM4yGXW
+         3VuY7Ap7UajiyfmlC/nx7w5SQ2g8D65eXKG6R/Imp74cLyCrmadUQjdtubw1XInzVkSr
+         IoWCBwLGsxAfZoB5XKMrpuzGHwlUJjDdNRT5StvkohuhzqYNV5gtQcy9hCRtEf8ylcEA
+         u4GQ==
+X-Gm-Message-State: AOAM533uWnMHiQrg/hRTv8gvrpOJ+MtRLSB49R95ukbwR9aTgmMEa+SS
+        jjqCK+6C9hqvcQuLt5M3xC3sjCRZQYNmb0F4k7wAPRovmgvIHokLYKjiFUaaN0Im6xrQqMjX4Vj
+        y1SQqRsADtaL+B7uwFD5aO0iSLjMqAHsOgml9CS8=
+X-Received: by 2002:a5b:4a:: with SMTP id e10mr10655647ybp.436.1616060589340;
+        Thu, 18 Mar 2021 02:43:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw7teWrEEwVymwJ1Z9H+EJZJa3vqMjyeSJinwGp6eJiV+YryR1PGYF1CfUr33dHWjIUEYwiFVCq1qKIL0SqkwE=
+X-Received: by 2002:a5b:4a:: with SMTP id e10mr10655630ybp.436.1616060589138;
+ Thu, 18 Mar 2021 02:43:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5e0b9f39-9c4d-5b56-68ba-7a6283dc560d@suse.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210316144823.2188946-1-omosnace@redhat.com> <CAHC9VhRoTjimpKrrQ5f04SE7AOcGv6p5iBgSnoSRgtiUP47rRg@mail.gmail.com>
+ <YFEAD9UClhwxErgj@zeniv-ca.linux.org.uk>
+In-Reply-To: <YFEAD9UClhwxErgj@zeniv-ca.linux.org.uk>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Thu, 18 Mar 2021 10:42:57 +0100
+Message-ID: <CAFqZXNukusUPp+kO7vxPZBt5ehkpH6EUZ5e8XwUq9adOQHdMkQ@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: fix fsconfig(2) LSM mount option handling for btrfs
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Paul Moore <paul@paul-moore.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Richard Haines <richard_c_haines@btinternet.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Nikolay,
+On Tue, Mar 16, 2021 at 8:25 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Tue, Mar 16, 2021 at 02:21:45PM -0400, Paul Moore wrote:
+> > On Tue, Mar 16, 2021 at 10:48 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > >
+> > > When SELinux security options are passed to btrfs via fsconfig(2) rather
+> > > than via mount(2), the operation aborts with an error. What happens is
+> > > roughly this sequence:
+> > >
+> > > 1. vfs_parse_fs_param() eats away the LSM options and parses them into
+> > >    fc->security.
+> > > 2. legacy_get_tree() finds nothing in ctx->legacy_data, passes this
+> > >    nothing to btrfs.
+> > > [here btrfs calls another layer of vfs_kern_mount(), but let's ignore
+> > >  that for simplicity]
+>
+> Let's not.  This is where the root of the problem actually lies.  Take a look
+> at that sucker:
+>
+>         struct fs_context *fc;
+>         struct vfsmount *mnt;
+>         int ret = 0;
+>
+>         if (!type)
+>                 return ERR_PTR(-EINVAL);
+>
+>         fc = fs_context_for_mount(type, flags);
+>         if (IS_ERR(fc))
+>                 return ERR_CAST(fc);
+>
+>         if (name)
+>                 ret = vfs_parse_fs_string(fc, "source",
+>                                           name, strlen(name));
+>         if (!ret)
+>                 ret = parse_monolithic_mount_data(fc, data);
+>         if (!ret)
+>                 mnt = fc_mount(fc);
+>         else
+>                 mnt = ERR_PTR(ret);
+>
+>         put_fs_context(fc);
+>         return mnt;
+>
+> That's where the problem comes - you've lost the original context's ->security.
+> Note that there's such thing as security_fs_context_dup(), so you can bloody
+> well either
+>         * provide a variant of vfs_kern_mount() that would take 'base' fc to
+> pick security options from or
+>         * do all options parsing on btrfs fc and then do fs_context_for_mount +
+> security_fs_context_dup + copy (parsed) options to whatever private data you
+> use for btrfs_root context + fc_mount + put_fs_context yourself.
+>
+> My preference would be the latter, but I have *not* looked at btrfs mount options
+> handling in any details.
 
-On Tue, Mar 09, 2021 at 10:36:52AM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 9.03.21 г. 10:49 ч., kernel test robot wrote:
-> > 
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed the following commit (built with gcc-9):
-> > 
-> > commit: 5297199a8bca12b8b96afcbf2341605efb6005de ("btrfs: remove inode number cache feature")
-> > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > 
-> > 
-> > in testcase: xfstests
-> > version: xfstests-x86_64-d41dcbd-1_20201218
-> > with following parameters:
-> > 
-> > 	disk: 6HDD
-> > 	fs: btrfs
-> > 	test: btrfs-group-22
-> > 	ucode: 0x28
-> > 
-> > test-description: xfstests is a regression test suite for xfs and other files ystems.
-> > test-url: git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git
-> > 
-> > 
-> > on test machine: 8 threads Intel(R) Core(TM) i7-4770 CPU @ 3.40GHz with 8G memory
-> > 
-> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > 
-> > 
-> > 
-> > 
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > 
-> > 2021-03-09 04:13:26 export TEST_DIR=/fs/sdb1
-> > 2021-03-09 04:13:26 export TEST_DEV=/dev/sdb1
-> > 2021-03-09 04:13:26 export FSTYP=btrfs
-> > 2021-03-09 04:13:26 export SCRATCH_MNT=/fs/scratch
-> > 2021-03-09 04:13:26 mkdir /fs/scratch -p
-> > 2021-03-09 04:13:26 export SCRATCH_DEV_POOL="/dev/sdb2 /dev/sdb3 /dev/sdb4 /dev/sdb5 /dev/sdb6"
-> > 2021-03-09 04:13:26 sed "s:^:btrfs/:" //lkp/benchmarks/xfstests/tests/btrfs-group-22
-> > 2021-03-09 04:13:26 ./check btrfs/220 btrfs/221 btrfs/222 btrfs/223 btrfs/224 btrfs/225 btrfs/226 btrfs/227
-> > FSTYP         -- btrfs
-> > PLATFORM      -- Linux/x86_64 lkp-hsw-d01 5.10.0-rc7-00162-g5297199a8bca #1 SMP Sat Feb 27 21:06:26 CST 2021
-> > MKFS_OPTIONS  -- /dev/sdb2
-> > MOUNT_OPTIONS -- /dev/sdb2 /fs/scratch
-> > 
-> > btrfs/220	- output mismatch (see /lkp/benchmarks/xfstests/results//btrfs/220.out.bad)
-> >     --- tests/btrfs/220.out	2021-01-14 07:40:58.000000000 +0000
-> >     +++ /lkp/benchmarks/xfstests/results//btrfs/220.out.bad	2021-03-09 04:13:32.880794446 +0000
-> >     @@ -1,2 +1,3 @@
-> >      QA output created by 220
-> >     +Unexepcted mount options, checking for 'inode_cache,relatime,space_cache,subvol=/,subvolid=5' in 'rw,relatime,space_cache,subvolid=5,subvol=/' using 'inode_cache'
-> 
-> 
-> Given that the commit removes the inode_cache feature that's expected, I
-> assume you need to adjust your fstests configuration to not use
-> inode_cache.
+Ack, I'll look into that. I didn't dare to try to touch btrfs mount
+handling (if it was straightforward, someone would've already done it,
+right? :), but it sounds like converting just this one
+vfs_kern_mount() could be relatively easy, would fix the bug, and
+would be an incremental improvement.
 
-Thanks for information, we will change test options accordingly.
+>
+> > VFS folks, can we get a verdict/feedback on this patch?  The v1 draft
+> > of this patch was posted almost four months ago with no serious
+> > comments/feedback.  It's a bit ugly, but it does appear to work and at
+> > the very least SELinux needs this to handle btrfs properly, other LSMs
+> > may need this too.
+>
+> It's more than a bit ugly; it perpetuates the use of FS_BINARY_MOUNTDATA,
+> and the semantics it gets is quite counterintuitive at that.
+
+Fair enough.
+
+Thank you for the feedback and hints!
+
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
