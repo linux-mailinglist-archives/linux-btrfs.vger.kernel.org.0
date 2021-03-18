@@ -2,70 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8729534099A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 17:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C27340CDB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 19:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhCRQFt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Mar 2021 12:05:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57410 "EHLO mail.kernel.org"
+        id S232292AbhCRSYV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Mar 2021 14:24:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231225AbhCRQFq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:05:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3B4964DCE;
-        Thu, 18 Mar 2021 16:05:45 +0000 (UTC)
+        id S232336AbhCRSYL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:24:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4EA4B64E2E;
+        Thu, 18 Mar 2021 18:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616083545;
-        bh=sbaxlwQT2TIpNdemJxeA20XDIaIb1kgC++pGvNYbDVQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GkUnhjqIhO5huIa4lX/HHbHt63j/+LKQ3AjXR9G0nwmqA4EDjGTQjuRp7w+qfICRt
-         0dP3VIszX39ryrII0HN8txcTjTAXnR2sesgTYBhJ6j+iErnytge+vddHdYdnru+aal
-         v/5UlTmMqVyOaRTmlV9AdpsmDVixWwvl6bbWHXYWon9EYktixfPyAIpMMIM7GXO8l0
-         2iNGSZY6zr0b6MCSjLsKQ0R4WntyL2d0RvGfFR7/rCZzx8z2DL3/UaqvcHVPHeAvJx
-         8+uqb9/3QCQgbG6SOWN82kVbOkdld70w5KNb5s0UHEaB4RquKOZfsnDrW3p4L4AQAt
-         BinXv2bRubcvQ==
-Date:   Thu, 18 Mar 2021 09:05:45 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        s=k20201202; t=1616091851;
+        bh=RDhFZjLNet2EdmO3I9YsHaj5bym3mRlsIzr4283Ahws=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=RmtDNbH0qb6cnSwQ9fuxFKauWa2fcYK1OrPUYW3lj1LFdSAsXS9m1WdHZyY+3E5k2
+         RW8nfL+yQ5ouyq8Doe+p4OaPuWkuuINdPioNMv2j5pamW4PKaagmVipDNSRJ0PEYNh
+         8r/5y2Sigwd6foRmtY+5IJUj8m35MXo/BUYOQ+gbW/8ZWkvvBIT2aqrktBmZiJsMm9
+         CpKl9e4M+XR2MYIfxfaUfFoC61INejd0dAPjzPiOWXXvi/PPWUWav79ZJ5Ej2Dysip
+         bNQwcGq8BZKu3G62mJ2kChm4ewTGAdsvTgWAR4AQzl6A9+5Y/fTKetPJF8VcoZ+LFK
+         D4krdNHlngg1A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3E50D600E8;
+        Thu, 18 Mar 2021 18:24:11 +0000 (UTC)
+Subject: Re: [GIT PULL] iomap: fixes for 5.12-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210318160545.GK22100@magnolia>
+References: <20210318160545.GK22100@magnolia>
+X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210318160545.GK22100@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git iomap-5.12-fixes
+X-PR-Tracked-Commit-Id: 5808fecc572391867fcd929662b29c12e6d08d81
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8ff0f3bf5d6513dfb7462246d9c656da7c02b37e
+Message-Id: <161609185119.1841.14290945236600692021.pr-tracker-bot@kernel.org>
+Date:   Thu, 18 Mar 2021 18:24:11 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
         david@fromorbit.com, linux-kernel@vger.kernel.org,
         sandeen@sandeen.net, hch@lst.de, linux-btrfs@vger.kernel.org,
         naohiro.aota@wdc.com, riteshh@linux.ibm.com
-Subject: [GIT PULL] iomap: fixes for 5.12-rc4
-Message-ID: <20210318160545.GK22100@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Thu, 18 Mar 2021 09:05:45 -0700:
 
-Please pull this single fix to the iomap code for 5.12-rc4, which fixes
-some drama when someone gives us a {de,ma}liciously fragmented swap
-file.
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git iomap-5.12-fixes
 
-The branch merges cleanly with upstream as of a few minutes ago and has
-been soaking in for-next for a week without complaints.  Please let me
-know if there are any strange problems.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8ff0f3bf5d6513dfb7462246d9c656da7c02b37e
 
---D
+Thank you!
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git iomap-5.12-fixes
-
-for you to fetch changes up to 5808fecc572391867fcd929662b29c12e6d08d81:
-
-  iomap: Fix negative assignment to unsigned sis->pages in iomap_swapfile_activate (2021-03-09 09:29:11 -0800)
-
-----------------------------------------------------------------
-Ritesh Harjani (1):
-      iomap: Fix negative assignment to unsigned sis->pages in iomap_swapfile_activate
-
- fs/iomap/swapfile.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
