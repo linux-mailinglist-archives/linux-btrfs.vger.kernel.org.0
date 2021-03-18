@@ -2,173 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBF933FBFF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 00:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CD133FC39
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 01:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhCQXuO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Mar 2021 19:50:14 -0400
-Received: from mout.gmx.net ([212.227.15.18]:46219 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhCQXtx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:49:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616024975;
-        bh=uQy2IJrGeO8wIQItIx+2y0cV60IFwhc9/SJwP1eDCcg=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=W34pltpX5QRvgFlfI2zqVPVQ5TgTUYmwt9wvPXp4FNh7pXcQqhJs5QxTS2hClgXOH
-         vd1eGmAKcJN77Qgq02zmLKXMDdILX6LegnvhYU0lg/mNLYZtqUGzC/LcmP4tk7V01e
-         kflv/hjGwlutWZLDcXt++aBUsjYF+ZmEgiBbhmT0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N2V0H-1lq4LB2NZf-013vtk; Thu, 18
- Mar 2021 00:49:35 +0100
-Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
-To:     =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-References: <20210317012054.238334-1-davispuh@gmail.com>
- <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
- <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com>
- <CAOE4rSyX-qTWKS_MTS5dLpfuVnqS=LwfqThyCTP=iBEH5x2bOQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <01129192-1b93-2a93-2edd-f29f544fe340@gmx.com>
-Date:   Thu, 18 Mar 2021 07:49:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAOE4rSyX-qTWKS_MTS5dLpfuVnqS=LwfqThyCTP=iBEH5x2bOQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S229721AbhCRA1y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Mar 2021 20:27:54 -0400
+Received: from esa1.fujitsucc.c3s2.iphmx.com ([68.232.152.245]:9030 "EHLO
+        esa1.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229472AbhCRA1q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Mar 2021 20:27:46 -0400
+X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Mar 2021 20:27:45 EDT
+IronPort-SDR: C2h+k8a/SGAfCzWeG0Bv4N+B1xv8tjQNW8jMl2KeVp5uaLuBuDQk67HdGWs4eNjouq7p9XJpNg
+ IuM1/HgeSUGG1a2CAen9TMpp5NlNDzHNtGPnGjvNFGXJOzKriDB0LAPPI0cdOH6F9dI4xY/O6R
+ 7L+1wkaZ7SrsADDkjgFmbA0+AGTz4MNRo1nZDRbb5EtuYNaS8YjGeD/aKVkO7Dym58CgctwZ4L
+ gRLuVQRv/XwDJbcsT7njo2xPIfhb/KeCQYr3iPtf7B592PLN4S/h3PZTEHOnchZfHRt5mzM+s0
+ BpI=
+X-IronPort-AV: E=McAfee;i="6000,8403,9926"; a="36232486"
+X-IronPort-AV: E=Sophos;i="5.81,257,1610377200"; 
+   d="scan'208";a="36232486"
+Received: from mail-os2jpn01lp2054.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.54])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2021 09:20:36 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gccyXwFaAk/se2wV5vZf5321PK5JO2MH7Kk/KpJj4DSVSJ6xolxx4DZ48h+SXb/kRTjNeHfNwGPf+PaIk6GfqY6tgr0mbqbyVb/hgUviFlmBoZuNbllbEQFHu5mit3KHNYajMwGY9sO0tEXV5BbXFuvjLj0PNlYdXZat9NcJxATIorOL3vBxKpcoNe0cJPBVVUuHS0Gxi3OPf5AEIsCRtlTel+wZUg3mr8mrtOJMJylA0wX9K6BLL/zaWdp/YkCse3OXXCye4/yl/B3bCilTOAT0zFJUNMohalgSWuJe0fZxoJUlKkQQXxNdxDoWD102BamvJ45yrYabmrh4/qx+tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ga2fWaOaxUBgimHjzYOVIGAQ9HNMudOjdRoX4yMUCP4=;
+ b=InLXZK6EyKNUo4hE1W7lxvxdpKaYxWV7HY1TPD/L//DP67tdfFgx7p06fxKxhB9CxCKcRl/ZtN1dyijY5SinTqV/SBuhBZ2Q1SDBdq3TC0d+l42kWuCO+JHJF3WLjiyWFF2KoKLMkF2jVCw3FcpTSoo97Z+zA1BnMZEMC4QUoiLCs83apw1Dv15We8dlN2Fa87Qp6N4Mqcop9tiYVC6aBFpeEM++zowjYs55rQ7P57ePxXWvFJsoerJpFKAeFthb+eM8vIgK3Sjc52Au8kVmUPhC3leEyF7lTyzl+x+0JQLWH5rluzPNjyRWlpiSZqRQ03BFNqlvvIMaGHq3pEXjRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ga2fWaOaxUBgimHjzYOVIGAQ9HNMudOjdRoX4yMUCP4=;
+ b=L2XbRJncFmCDmS3z6/f/ormqXvWjWtwdnvnMM1sBc11n68xf+TkeUZZ6FkvD85uEqNty782m1psvNIcjnDo5JY82/3bIXBpK7vrDC/mG9NACeogGVLXf1gJuO4ZTuDUI3LX176KbH9wFqQyP64OZ3VXULC1WYO/7FW3SGkNzdyk=
+Received: from OSBPR01MB4582.jpnprd01.prod.outlook.com (2603:1096:604:74::21)
+ by OSAPR01MB2658.jpnprd01.prod.outlook.com (2603:1096:604:3::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 18 Mar
+ 2021 00:20:33 +0000
+Received: from OSBPR01MB4582.jpnprd01.prod.outlook.com
+ ([fe80::e8ec:399a:e6ab:7056]) by OSBPR01MB4582.jpnprd01.prod.outlook.com
+ ([fe80::e8ec:399a:e6ab:7056%6]) with mapi id 15.20.3955.018; Thu, 18 Mar 2021
+ 00:20:33 +0000
+From:   "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>
+To:     'Neal Gompa' <ngompa@fedoraproject.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+CC:     Omar Sandoval <osandov@fb.com>, David Sterba <dsterba@suse.com>,
+        Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: RE: [PATCH 0/1] btrfs-progs: libbtrfsutil: Relicense to LGPLv2.1+
+Thread-Topic: [PATCH 0/1] btrfs-progs: libbtrfsutil: Relicense to LGPLv2.1+
+Thread-Index: AQHXG2h50VPqg6+wXE2GKRCWpYgZr6qI4EIQ
+Date:   Thu, 18 Mar 2021 00:19:17 +0000
+Deferred-Delivery: Thu, 18 Mar 2021 00:20:16 +0000
+Message-ID: <OSBPR01MB45823F4E685ADDFD8B8161DCE5699@OSBPR01MB4582.jpnprd01.prod.outlook.com>
+References: <20210317200144.1067314-1-ngompa@fedoraproject.org>
+In-Reply-To: <20210317200144.1067314-1-ngompa@fedoraproject.org>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-shieldmailcheckermailid: 142d69b1ae704469a0ce0950222fb323
+x-securitypolicycheck: OK by SHieldMailChecker v2.6.3
+authentication-results: fedoraproject.org; dkim=none (message not signed)
+ header.d=none;fedoraproject.org; dmarc=none action=none
+ header.from=fujitsu.com;
+x-originating-ip: [218.44.52.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fc28876b-b1b7-43c2-0586-08d8e9a3a533
+x-ms-traffictypediagnostic: OSAPR01MB2658:
+x-microsoft-antispam-prvs: <OSAPR01MB2658D2AEA2888D64AA9C97DEE5699@OSAPR01MB2658.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1079;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: OZhieZmVpHSTEtUif5upNKzIIK6jXq85MjjJD0CUs6Xhdlak4GMxOYEqRp/0WGQDpbXDWam4QQ/s/R0xFSnvQEPXNffTgsGdyHL4Ov2rwMtiwWumxV9saWx6+NTnX7fuqHJLPaoDynhGjA0yB9+rfA1Nw246YS9e2axX4xq577OUxUOhsL6GeKu9dU5eMdkBRJ1Z8Hv3oAV6rpD59UNW4q/BEb8ezJDLb6ZkNbg304Px8Hd/ZUeuyO7pziQlkrcYMXH0ClB6/e6CVAebMXy11ge/yDZhoDgc5w/eOTAKE041YKoU/6FEA3gEmZfMeBk7H/VH6RVRt+AieppXj3pQkXUJzqrX22MWR6VApYgoD1dFSGAyczRjCsJAuGIynQgrSAJYs+N0vhwhPkA0Ob8v0T4WiVz1vA1PNQK6cN0rFSPmMB+NhAIdNWmS5/cR2Q4JZdUU7DGSzcpzpPXjOm+EPLfg+no7WZdCLWtg9X9TL/TY7e3jyoaYrxufExPZyucN+X/7HjO2UEmU+HugoDj1XU/J3KyHyNCKo8G0Rv8X/xBOHl94GhmEEeR89JeJykbnOkpr23fyPgxf2FxdIdafmOo3IClZqWM5VT4blT3O5rtIEKjGV/zCfUKJ6+UwNPiH
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4582.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(346002)(396003)(376002)(66446008)(33656002)(2906002)(54906003)(7696005)(8676002)(85182001)(55016002)(86362001)(8936002)(186003)(64756008)(83380400001)(6666004)(316002)(9686003)(71200400001)(66556008)(52536014)(4326008)(66946007)(76116006)(66476007)(26005)(478600001)(110136005)(5660300002)(38100700001)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?d0doN2toUEhlRVVCclNpNjA1S2ZoYTlMK1E4dU1HM0E0c2JIK1Q1MEg3?=
+ =?iso-2022-jp?B?WG5OTWVMZnVsS1RlY0ZRNG83VHdmaUdRMHpwZkhtVlNsUHNsUzFoQVFt?=
+ =?iso-2022-jp?B?ZWRtSEYzc1NKM0lpT1c0TVpjQkE1cCt2aDB4cjFQdzlPNXhMRjJTVXd2?=
+ =?iso-2022-jp?B?dUIyWXB0N2o2ZCtQZGhBRlRpRVZpZTBDbFFIUm8wNGRHYjNidytNa2lk?=
+ =?iso-2022-jp?B?Tk0rZnpMZndrUnVjZ0ZiNzkySWZlVm9XYys0VDF3UTMwaEVXSlJ6cUlD?=
+ =?iso-2022-jp?B?Tmxma3QzcmVCRXNIQk5Yc0FrL1dlZ0ZwNzJ6VnZlbmJxRXVVVHgreTZL?=
+ =?iso-2022-jp?B?QlN4M29IWUNJWGRQMjlsbDZRQy9ickZnRCs3bnBQRjFJNmlLUHBFWGl6?=
+ =?iso-2022-jp?B?eWpJTFhGZGZmNzMrZHhpSFpiaWZxcVZDL2Y2b3VRSlc0aDRmN1lmR1lK?=
+ =?iso-2022-jp?B?OUZzd2t0WDBCM240Kzl3WFMrZ3plcWVaQWU1V1RvZk84V2NDREdQVC91?=
+ =?iso-2022-jp?B?R1RKT0hhdzZ6MlUzUmk2Ynp6clNFRGEyTnVqd0hEb2NKdGNVMlFBTFps?=
+ =?iso-2022-jp?B?a2Z6NHV1TCtGN252Y21wTFJMdVlLangybTFwb2MvUWozKzF4NGhQWnFx?=
+ =?iso-2022-jp?B?S29NMnV5VzZyZFQvUnNQOVhsUzMvS1pzUzk5a3BqTzNKNHpicWMrSXF1?=
+ =?iso-2022-jp?B?R2RvZWNWOURZbGFvYlIxbE85RTdrR2E0TkFWT1c1OG5zMTlPTTJZZy9k?=
+ =?iso-2022-jp?B?L21qRUo3b0Erdk54QjV4bEQ2RU14WnM0ZXdTR2NvQW5DL3hjY04wNWUz?=
+ =?iso-2022-jp?B?czRVOTUrTCt3Y3ZnMDR3UjRjTE1DdmN0UnV3WWNvc25XdjM1ZThKaHBZ?=
+ =?iso-2022-jp?B?SUxKcjFIM3dTdUU0K2hYdlc0bHk1cHJ2aW1UV0g5YXVJYXRqcEM0VGw3?=
+ =?iso-2022-jp?B?eGcwQzU1eXFCVVhmMEtOWEx4VGo2MDVpektKN3pCWCtnZmJBek54N2lF?=
+ =?iso-2022-jp?B?VElrVktNdnBzM0NZUDRBV0xQS1l5VU10bHY1NGI2RXVwS2lxRkJ2L0NB?=
+ =?iso-2022-jp?B?WmY1Q0hrQXF5bksyYUREZjdNbEFoc1FCN3VGTGpubzJKNmNROCthS2Zq?=
+ =?iso-2022-jp?B?cTlZU0RhbHY5RUVIVk85RXJad1dSQktHMTcxLytyWnQ0ZlVhZzBWNXMy?=
+ =?iso-2022-jp?B?ZlFFa2QvTzJKUlI3aVl5ZXR6R1F6WXlYcTFXdktvWjdEOGVaOTdhd2Fr?=
+ =?iso-2022-jp?B?OTZ0a0FMU29UV0lzSDV3Qk9HVXZ6dVdKU0xNbkFCbHl5WEZjWUNDOG9S?=
+ =?iso-2022-jp?B?bEZFUnJnWTB4ZVJIZnhtYUx5WEE0Ry9vVHYwaWwzU3c1MGtTQ2hxR1dG?=
+ =?iso-2022-jp?B?OUVUb3IrU1o0TzBKbURxUEdVVXV6M3VaUGRDc2huY2lxcWhrdklZT24w?=
+ =?iso-2022-jp?B?NGlkdno3TUVKdkhrcmsrSWNGVUtUL0toblRHYmQ3emM0WGE0OWdEb0tR?=
+ =?iso-2022-jp?B?Z3J1Y1dZNzZPQWFxeUN1dW0vdGJkdUxkV0MxWHpMVVM1U3F1cmhoUUxa?=
+ =?iso-2022-jp?B?SGRRQjNQZXZiQkVQbkkwajJ1OGVMMXJLVTFhNXpHWlA4YlZWeFg2emky?=
+ =?iso-2022-jp?B?aWlsd2dJUFVrMDBBQTdnSnVTS2owa3paSW94eW1ab2JqdzV6UFQxME9i?=
+ =?iso-2022-jp?B?Y0gxUFh1Q25pN3ExTjcyT1lzM2tiemluREJYV2JLTDc5aUVUWVBlZGFY?=
+ =?iso-2022-jp?B?YlMvbVZwdDc2MUlLU0h2ZkExa2wyZkNibkpWaUt4b1dqNncyZ1RqcG03?=
+ =?iso-2022-jp?B?dGxSb0Z2R1FmZGNHWENJelVacFFtdG1mSFpGRDhRNHFIYlZYNzF3RG8z?=
+ =?iso-2022-jp?B?MjhzeUo2VW9iZkd6Wi9RZ0xTenI0TGlQMG1TbnNsNmxRaHgxdFNTM1ps?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cDEum2fnhp1094X7TyNDbCZKiOUpYAfBlfqYkKoVifF3GFQchOx
- uPIZzYj/BGDIv4HKjwnkxomz/mpQIPkTjS4AYtQZHeiIIIs84GKkBrYeICMEceGsGAjkPHy
- ysFCxzegVXbHU11EkGVrGeh+Ru8sr5vGqNP+C95VVJgsoquaKRCS19YhoddFFJDo6mkv0mb
- j1ygW7gH6gs2g/mtb/q8A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RxC0gFOoub0=:LOoa0KPWouP4XZdXSth1wo
- Ahg3jyG0DAAJHQp9/PPJ8ckQLPpjXkZFpgOuENqJeB3t/u2HPIpddb1I1PINr+s8zyNHs9qho
- YyvtVpeWAUCO/ddMkk8eqiodu5KBrHYxf9JOahKcI2O61OGCMatnxAs+6F84CQF6yAQyWewZr
- tq0xBiHrlRz5HyVsW8hLOwxI3fBKcEoTrH8XVJkMh4iut77cLuvkr3JPpyBcx7q4IGB3cOpAF
- sQD1SVaP1yOG3Lm4W/GashTMJ+ojXAxUB1q8HYhsZ36jVyKtDpU1gSs60cxKYjIeaiWAe0BuO
- jFUiqods1xKQNVB4iod1xEYrHqW8+Ex7a6uIGHNi6PJYibRugH8MT0591umfFwafiw+1FEyae
- F+8IeY26MdpTzxA9g0SQuqijM4xbFY4+hrUOTzPNHVm1x9qmyHBvEXPBZS+oBCfYWydB7q/qj
- AAkcoIWi3U4vysfTIl1hb902WxPWQdIZZZwrl9+rsjLG9q969YXOXXNy32KC6cwlW+gp7w34W
- DiGjFMezqZYfYluFYaHwPj5PlqDbofDteoLSjIh0wHiIBwnYBoxivJanKYED58uzs0cDamshl
- SBUUMknxFvXpBoRRfnafJyBL267X8w5YG23UEOP7sxI1dK8/HPKCAd8SnFsB5jbhUmKCuihV9
- yD6Dqi8xCPr8g2InlN/xpJrpVD4rGQGGlm0EN8zRzR27p4v3CvS/BuxAnkLF1mVt+pa7UHs4h
- 4OG27WTXYAdUxCT7yJ2IGonWqJWVQ2wLFMh5GQ111CZM+Ox/JI+emWDTyQtFWTUxQyAW04HM8
- UFPfNLaEbldNFsIy7N+Liwcb+y43gp7tkaPMH5dWICZwcbGUN/iBreItN8X3iFQo8haNo33x+
- Pxm6UiMXCUjE7LPUjI1jmzmbvkNACzCeyrXT4AewER1I6jwD1wt3xvB43RGlDfmPoIRmQinAZ
- v1K+TMCd8Qoj0OpxdcnGDD+qs8sp7etS4yNdTaWJHni2/EX4nut+1ndF1Dak51oAgejUPsPOr
- tgE9hU/uTiV2CMc5EJVISUZMITFrXwCYRvqeQs1keBi4uSTmCqXwdggD/YofwYXKzdHW8ayOZ
- iuP1fSX1yYTBtlakoxg/7JMr3KKfOLAVfOYT89iwhr+XOluKkmkLXGnusCn2ncSRIlEFz4NFg
- HfVYs/4bbkDJnZyNd+dfE0cGxlhpkbPhzeTxbjrCn49LQ32t5hJk5UHMfP3YhmM5Sk2WlnLAm
- XB3Ty924kV8bOYaQp
+MIME-Version: 1.0
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4582.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc28876b-b1b7-43c2-0586-08d8e9a3a533
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2021 00:20:33.2621
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: J3TdUDBKd2gDjcntT0kh5q8u0Yc8P+PMw1B8XRCY+WW4GPbQW6vvn+x09iAbgLDN8y5N2y1TaXvsgyxxqp9XavjtHaADNElDc8UAKWiTG4A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB2658
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+> Subject: [PATCH 0/1] btrfs-progs: libbtrfsutil: Relicense to LGPLv2.1+
+>=20
+> This is a patch requesting all substantial copyright owners to sign off
+> on changing the license of the libbtrfsutil code to LGPLv2.1+ in order
+> to resolve various concerns around the mixture of code in btrfs-progs
+> with libbtrfsutil.
+>=20
+> Each significant (i.e. non-trivial) commit author has been CC'd to
+> request their sign-off on this. Please reply to this to acknowledge
+> whether or not this is acceptable for your code.
 
+Hello,
 
-On 2021/3/18 =E4=B8=8A=E5=8D=885:03, D=C4=81vis Mos=C4=81ns wrote:
-> tre=C5=A1d., 2021. g. 17. marts, plkst. 12:28 =E2=80=94 lietot=C4=81js Q=
-u Wenruo
-> (<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
->>
->>
->>
->> On 2021/3/17 =E4=B8=8A=E5=8D=889:29, D=C4=81vis Mos=C4=81ns wrote:
->>> tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=81js=
- D=C4=81vis Mos=C4=81ns
->>> (<davispuh@gmail.com>) rakst=C4=ABja:
->>>>
->>>> Currently if there's any corruption at all in extent tree
->>>> (eg. even single bit) then mounting will fail with:
->>>> "failed to read block groups: -5" (-EIO)
->>>> It happens because we immediately abort on first error when
->>>> searching in extent tree for block groups.
->>>>
->>>> Now with this patch if `ignorebadroots` option is specified
->>>> then we handle such case and continue by removing already
->>>> created block groups and creating dummy block groups.
->>>>
->>>> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
->>>> ---
->>>>    fs/btrfs/block-group.c | 14 ++++++++++++++
->>>>    fs/btrfs/disk-io.c     |  4 ++--
->>>>    fs/btrfs/disk-io.h     |  2 ++
->>>>    3 files changed, 18 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->>>> index 48ebc106a606..827a977614b3 100644
->>>> --- a/fs/btrfs/block-group.c
->>>> +++ b/fs/btrfs/block-group.c
->>>> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_fs_in=
-fo *info)
->>>>           ret =3D check_chunk_block_group_mappings(info);
->>>>    error:
->>>>           btrfs_free_path(path);
->>>> +
->>>> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) =
-{
->>>> +               btrfs_put_block_group_cache(info);
->>>> +               btrfs_stop_all_workers(info);
->>>> +               btrfs_free_block_groups(info);
->>>> +               ret =3D btrfs_init_workqueues(info, NULL);
->>>> +               if (ret)
->>>> +                       return ret;
->>>> +               ret =3D btrfs_init_space_info(info);
->>>> +               if (ret)
->>>> +                       return ret;
->>>> +               return fill_dummy_bgs(info);
->>
->> When we hit bad things in extent tree, we should ensure we're mounting
->> the fs RO, or we can't continue.
->>
->> And we should also refuse to mount back to RW if we hit such case, so
->> that we don't need anything complex, just ignore the whole extent tree
->> and create the dummy block groups.
->>
->
-> That's what we're doing here, `ignorebadroots` implies RO mount and
-> without specifying it doesn't mount at all.
->
->>>
->>> This isn't that nice, but I don't really know how to properly clean up
->>> everything related to already created block groups so this was easiest
->>> way. It seems to work fine.
->>> But looks like need to do something about replay log aswell because if
->>> it's not disabled then it fails with:
->>>
->>> [ 1397.246869] BTRFS info (device sde): start tree-log replay
->>> [ 1398.218685] BTRFS warning (device sde): sde checksum verify failed
->>> on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
->>> [ 1398.218803] BTRFS warning (device sde): sde checksum verify failed
->>> on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
->>> [ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3054:
->>> errno=3D-5 IO failure
->>> [ 1398.218828] BTRFS: error (device sde) in
->>> btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
->>> [ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254:
->>> errno=3D-5 IO failure (Failed to recover log tree)
->>> [ 1398.229048] BTRFS error (device sde): open_ctree failed
->>
->> This is because we shouldn't allow to do anything write to the fs if we
->> have anything wrong in extent tree.
->>
->
-> This is happening when mounting read-only. My assumption is that it
-> only tries to replay in memory without writing anything to disk.
->
-
-We lacks the check on log tree.
-
-Normally for such forced RO mount, log replay is not allowed.
-
-We should output a warning to prompt user to use nologreplay, and reject
-the mount.
+No objections from me.=20
+ Acked-by: Misono Tomhiro <misono.tomohiro@jp.fujitsu.com>
 
 Thanks,
-Qu
+Misono
+
+>=20
+> Neal Gompa (1):
+>   btrfs-progs: libbtrfsutil: Relicense to LGPLv2.1+
+>=20
+>  libbtrfsutil/COPYING              | 1130 ++++++++++++-----------------
+>  libbtrfsutil/COPYING.LESSER       |  165 -----
+>  libbtrfsutil/btrfsutil.h          |    2 +-
+>  libbtrfsutil/btrfsutil_internal.h |    2 +-
+>  libbtrfsutil/errors.c             |    2 +-
+>  libbtrfsutil/filesystem.c         |    2 +-
+>  libbtrfsutil/python/btrfsutilpy.h |    2 +-
+>  libbtrfsutil/python/error.c       |    2 +-
+>  libbtrfsutil/python/filesystem.c  |    2 +-
+>  libbtrfsutil/python/module.c      |    2 +-
+>  libbtrfsutil/python/qgroup.c      |    2 +-
+>  libbtrfsutil/python/setup.py      |    4 +-
+>  libbtrfsutil/python/subvolume.c   |    2 +-
+>  libbtrfsutil/qgroup.c             |    2 +-
+>  libbtrfsutil/stubs.c              |    2 +-
+>  libbtrfsutil/stubs.h              |    2 +-
+>  libbtrfsutil/subvolume.c          |    2 +-
+>  17 files changed, 495 insertions(+), 832 deletions(-)
+>  delete mode 100644 libbtrfsutil/COPYING.LESSER
+>=20
+> --
+> 2.30.2
+
