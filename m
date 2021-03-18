@@ -2,107 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD3A340F5D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 21:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A59340F80
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Mar 2021 22:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhCRUpV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Mar 2021 16:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhCRUpD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Mar 2021 16:45:03 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCFDC06174A
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Mar 2021 13:45:03 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id v70so674939qkb.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Mar 2021 13:45:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=zt6FXE2GUaSt25ghGaLjXOkSk6250xWlf4px6lxFTjs=;
-        b=BEt2TMMtFX2zfoHXZuY9o5x8paN9YiLOqRpeuS5vG7WFXhIHSeHfv3TCdt0r9D7rVX
-         aHpwgWsb41qpU2YKOQ+g87zO/pk0hRn7SeretKyNOsMtWPmPAJ1mRGLKW9GpfSF0xH2l
-         qX0AdEEIIXrqIPLH+SN9iCOATCQrhRzVflXwt1CiJ6qbspifK6tItBNznKgrwSD2sfB4
-         FKDuJvedogzr8kqvKXS5c0XMvFhtJviOeTZB3bXvFYy2PJ2mlOdIvIqqUHs8egMy5iHv
-         /CL3aFDYj6a+ZdKkc6fOxSXALv7+HjP8rzuS0a3R2QBqX8daK8EhG85ofQdyyziBYQGu
-         tjsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zt6FXE2GUaSt25ghGaLjXOkSk6250xWlf4px6lxFTjs=;
-        b=La2XUg90snDhJCDmb/dweSu6ToWmSWWPh0UBZ/2vTLDXFfYGwN8f0QknEUPK8617Af
-         Ns21dB+VIaodl49fy47RiIQOXUc8Y2S13ubjQEun98kwS6cb6qxbWRjPmGaPxmiD9P7d
-         oTD5kv22Zfp3awVFiqKanqR/ATgNevDgK6T5x3Io2rabeUG1SywO1stLfuGeHtEu7Azc
-         KJTbSMW+XLVA+1HbQmxv88nsGD4Q4WyWlJJQ7Gc3xiE89ZTmbYtB0xdenrwerWipYSik
-         1jlolcRhVaxQjeiEvWrkUktNVL+Tzjy/uRjzqY+gOdElJzBDLRseg0jPrS3Wb6yN16dC
-         1D6Q==
-X-Gm-Message-State: AOAM530tMjZs7MFWkg1DFMmoUe6MLjcpv0d+16DfgShvmQya91Z8BxWH
-        E1sDFl/sW8gI7c6lud1sGLyydQ==
-X-Google-Smtp-Source: ABdhPJyS6vbHGfvi/YUfHc0Z1GvINpLYLAfrkYQw9ehKZu8JeL7EUXZijuDdVSgPdDXChlUVTpzAfw==
-X-Received: by 2002:a37:6887:: with SMTP id d129mr6310565qkc.252.1616100302819;
-        Thu, 18 Mar 2021 13:45:02 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x36sm2314272qte.1.2021.03.18.13.45.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Mar 2021 13:45:02 -0700 (PDT)
-Subject: Re: [PATCH 0/3] Handle bad dev_root properly with rescue=all
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1615479658.git.josef@toxicpanda.com>
- <20210318154351.GX7604@twin.jikos.cz>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <80e729e7-8fc5-d083-0640-7eedc7b96b6b@toxicpanda.com>
-Date:   Thu, 18 Mar 2021 16:45:01 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210318154351.GX7604@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233156AbhCRVBf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Mar 2021 17:01:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233084AbhCRVBO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 18 Mar 2021 17:01:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A5DEB64EFD;
+        Thu, 18 Mar 2021 21:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616101273;
+        bh=DBbLvA4WdkItlvbvWpkSOrxXy1Bz+ZsumyThRKk+jTg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Xv98zdqeFcJ4qxamDBlcUJEnWvhbULt6rYPSpV0vD7DRHlX9Pt2TKxvUhXD5DF7X+
+         QiLJ510ByBLhA5l+2OiXg9c1Ss8Zb7T3rlS1c7tGxG+QNMtTBsRSQyW9v2tPFOAdTd
+         moXyLDXCBmuVOxgga7NtsLC76qekj0lxu5jptHA1ZvkASUfH5ZiuMR3hDyYhYz4xfs
+         FWggPXzeYv+SmbXjxOePczIIUM+h/VkoMZ72+pPsjmAIpByr36O3MDOjZ5+GDo1Xjt
+         lGfQ0ZvjszaWr5tlFZJWzB0uwMWYkn4C02HptMxrImMJhHrJXKY9mmMT69JwHPb6h6
+         MlHeviRP16k/g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9407C600DF;
+        Thu, 18 Mar 2021 21:01:13 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.12-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1616083082.git.dsterba@suse.com>
+References: <cover.1616083082.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1616083082.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc3-tag
+X-PR-Tracked-Commit-Id: 485df75554257e883d0ce39bb886e8212349748e
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 81aa0968b7ea6dbabcdcda37dc8434dca6e1565b
+Message-Id: <161610127354.4581.9390555913775423642.pr-tracker-bot@kernel.org>
+Date:   Thu, 18 Mar 2021 21:01:13 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.cz>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 3/18/21 11:43 AM, David Sterba wrote:
-> On Thu, Mar 11, 2021 at 11:23:13AM -0500, Josef Bacik wrote:
-> [...]
-> 
->> rescue=all working without panicing the machine,
->> and I verified everything by
->> using btrfs-corrupt-block to corrupt a dev root of a file system.  Thanks,
-> 
-> We need to have such testing part of some suite but it depends on the
-> utilities that we don't want to ship by default. Last time we discussed
-> how to make btrfs-corrupt-block or similar available in source form in
-> fstests it was not pretty, like having half of the btrfs-progs sources
-> providing code to read and modify the data structures.
-> 
-> So, what if: we have such tests in the btrfs-progs testsuite. As they're
-> potentially dangerous, not run by default, but available for easy setup
-> and test in a VM. The testsuite can be exported into a tarball, with the
-> binaries included. Or simply run it built from git, that works too just
-> needs more dependencies installed.
-> 
-> I was thinking about collecting all the stress tests into one place,
-> fstests already has some but my idea is to provide stress testing of
-> btrfs-specific features, more at once. Or require some 3rd party tools
-> and data sources to provide the load.
-> 
-> It would be some infrastructure duplication with fstests, but lots of
-> that is already done in btrfs-progs and I'd rather go with some
-> duplication instead of development-time-only testing.
-> 
+The pull request you sent on Thu, 18 Mar 2021 21:14:11 +0100:
 
-I actually had Boris working on this, basically allow us to set 
-BTRFS_CORRUPT_PROG inside our fstests config, and then allow us to write these 
-tests for fstests.  I'd prefer to keep this inside xfstests for mostly selfish 
-reasons, it's easier for me to adapt the existing continual testing to take 
-advantage of this and automatically run the xfstests stuff and post the results. 
-  If we keep it in btrfs-progs I have to write a bunch of code to run those to 
-post the results to our continual testing stuff.  Thanks,
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc3-tag
 
-Josef
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/81aa0968b7ea6dbabcdcda37dc8434dca6e1565b
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
