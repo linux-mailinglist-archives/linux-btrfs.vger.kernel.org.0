@@ -2,133 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB8C34173C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Mar 2021 09:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600BF34187F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Mar 2021 10:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbhCSIUG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Mar 2021 04:20:06 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:15730 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234249AbhCSITy (ORCPT
+        id S229648AbhCSJgP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Mar 2021 05:36:15 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:54267 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229618AbhCSJfx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Mar 2021 04:19:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1616141994; x=1647677994;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=JMBOgyElhgnqlZHt06KHa2XyNtuwyVcS2IBnsHxEf9Cdd74MJckwBQU0
-   kzhQzxRXoZPPoklSqI4xZHagCBsUuQBfB4VCo6Ys3LWiSI4Fd2ys8WmWv
-   0rIXF3QrOQGW1BGtE3IMpNkCZ+dlWnQjnRfOsI23lqokpRGOYaWdwXAxa
-   IBWCwFJJeUBbtMPRhHaJUibRewyA5ec6Mtvu/cYcFEaLoYHBSfFcfu3YT
-   jXGC0zhk2m5pPIMgzxqju69lSaej107vfdyUckl2InicDAH7qzAZ5QcOy
-   fxByPw0uyYT9Oi2Z83veM/8acMnILsGQw4Tf85K7aClLh2wNCiD/SaJhX
-   A==;
-IronPort-SDR: 0ml0FKVV6rgnUF1HN+F302w8i4tE7zAQzHJJ+MTy1VtjD4KbmR8uAkBzEJgyjdjswi5nbu08dS
- cwTWjyhWPkF0Mgc/sgOCjhkHV4yYCX7F8rbf2NfbYfroPXDbl8ZgOFDJglFSDOW7JpQUEPs8uE
- xnCwqK2AyusGu82Bdp/shn00Y65yD4Jytg1ussVuRhqyuQQYZK1uktSCmy93DABTS8nrjnnknA
- GMq0xol7WmJIWqm0Nt7e7xitaMkarOMfbQDvYywBNm6keFaPSiIRPmYt8NHJMlvgKNKAZNxQdR
- j58=
-X-IronPort-AV: E=Sophos;i="5.81,261,1610380800"; 
-   d="scan'208";a="162504505"
-Received: from mail-dm6nam12lp2170.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.170])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Mar 2021 16:19:53 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=byuVEAzCnCVw3F724upKaEtxiWED9shuKe8uH/3az+TE5nUETX+OWX8Kh+R09ZIivA7wM4HXKIIWGk4YY5/ypcnrqn+T/D/zmxyfP/HQCH2GzFx0OUKlSNG0IVjx68/9QGYxL7chhxzhW+Us1kol6pL7UZlahltXhLtdMRpyXidMB7I5ra2kEcV6SyQzYtwwAPJp9NFcvV0zortdjMGmQfa9ErccsHKlzBMOfeA2bJJAf30GXVh9eYmqD44ZOmrtoFZ5EeDmVIImvauFVANP3Pqs3846qfVtoS5oukmIok2bxIPW5lUAXSvAcBFEipRq+NDqSAWJoo6VlZYNQK70oA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=AwNX9iCzuu4fbWEdS/ILQLX9KF/ifbnnOf6hLzXIgbB95BagBy2Fykc73Bo9wMRMpQECq5f9odhg0+pFWSODQqpMU/7EKvc6A3ovOp/L82ZKnNgopbW9dzP02pe0S/Zn05Virw8EHFvzOzFPD1kq/XX7/BgaZsscSLFejfII6Aptdg4JGPHE5nWso4cmK/olsK/yLIyM4NGum+X4uk86AlHzZ+h17QEXjkTg0RHUAHzDS8CYcWK1rgtyg9Yj9UTyiYowlbXFPcwRblsB15aoPlVS4TbbcNnhiwi1JmHDv/cgHN9aZ5OnBAMvFxglBDCfP8R8ExA75GB8mP4QrSZhDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=eHO1kfkoBXc2OUSoTOmBpDk749Wf2GqqcHnJrAunBzXsXxrt89B78UduvRgT9IHNk/tIw1TFbfgpXYKI/+YVVsiKEshKLFJdDj87D53440KozxB4z+/pAGEP7WPk49R3+yZomTSnhQauwgB93E8vGyryKPtp74MLgYX5qEIz434=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7205.namprd04.prod.outlook.com (2603:10b6:510:13::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
- 2021 08:19:49 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::3c7d:5381:1232:e725]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::3c7d:5381:1232:e725%7]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 08:19:49 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-Subject: Re: [PATCH] btrfs: zoned: move superblock logging zone location
-Thread-Topic: [PATCH] btrfs: zoned: move superblock logging zone location
-Thread-Index: AQHXGV/Q9cRb+mZCUkOVzV9kTIcRjg==
-Date:   Fri, 19 Mar 2021 08:19:49 +0000
-Message-ID: <PH0PR04MB7416AE81C869555B9A3DDDEE9B689@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <cover.1615773143.git.naohiro.aota@wdc.com>
- <931d8d8a1eb757a1109ffcb36e592d2c0889d304.1615787415.git.naohiro.aota@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1542:e101:e193:b3c8:606b:24d7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a38ecba3-eec8-46b9-75b3-08d8eaafc3a7
-x-ms-traffictypediagnostic: PH0PR04MB7205:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB7205858C0802EA9349A74C2B9B689@PH0PR04MB7205.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lscLkOFQQ2vlhf05C/+QPGpvKfdq1lofEP+5mZ3cBfVjTBb3RYhKX5PG2flv0+ogBUIHrmw23e+DD9uGneMbZid/P1M0H1RS372qcb4w+efAJKM1Vd3hDib7c4kpYOqTnOhevbRDy54pE1jZNMimOCMgN++ZijRSEmiOMmrLmkJSV+5vXhE6UeQ4XG2CkWIOLz5pL5YgWBvwx0T6IPI7lRv5KeGXxuy5IZzt3vC/he7G7KtSchuT+Ip60IJgaEcUSzd5/0u6glC5qfZQjOBVKyuo44WtQL9EFovzhqokpdxEsA3+2VBpmYLxDF8y5AlIxoTwNQMGW37ZMz/QQAt7d04jKP/EktEeFM5tsTXS0DBM9oZ+8nRIO8ijz39fL7Ws8KG2KCnZfTUMuKI1u0r5zfRygGEn/hOagBOZVCaay20gcwje7q3B4q6ZAt8OHjcW480Ptc0fDGWG2MbHLrjAQC/QcsHjA/RIjR4IAkjKi9JXOhAbntBpVl+D5Smi+7GaSSXBZKvc2Wq0OeN1LCJZ8B0GAfera5zJFSlyf3kr/Lwm7dM+UxvSGGXFc22SZT91ktyKRJi1+YipdpvuLJTrCOw2yidv/I86mOy6KTN56kn2laWQJftpu5PHXM3DwWPfW/pAyrsUyUYs0pnR/t6Cx/e2l39MPdtU6mSjMBhmmrY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(4270600006)(8936002)(558084003)(186003)(8676002)(9686003)(91956017)(66556008)(64756008)(7696005)(66476007)(6506007)(52536014)(110136005)(316002)(478600001)(66446008)(66946007)(5660300002)(76116006)(38100700001)(33656002)(71200400001)(55016002)(2906002)(19618925003)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?481xvsVMT9f7dVp/OULYVEOU6CTJyLQh47BuXIMUVvxsMaAHAmtgdAOSNHu2?=
- =?us-ascii?Q?FX3/2Dxht5EWcM1HWbOJlcpKLRQWdjZvex7XsP+z5OIcJg/FqoY/ZYMcsqVA?=
- =?us-ascii?Q?BNrP+eK0U4y4LXoiQ9/eauNGVxwRTfVJaF4ssVpWTffPV0CuIF+FfWcMtLNo?=
- =?us-ascii?Q?aN9k0BovXojR1E7IAsZgTE48MqBGsP4Wsd53iot+VdUNVpQmSXHqejqkacZk?=
- =?us-ascii?Q?ggSAlZb4TVP52PHayZsomIcwuI/NRKWdR/mMMS522ugDQhDhF1t9QAskC8Na?=
- =?us-ascii?Q?UC8poLyfeBsbJ/Nu7cb93PCUZIP8IDp3kUlkVWYG810ZIvpbdzrhuL9JMAGP?=
- =?us-ascii?Q?wUR9sPhel3piukLPxeru4dzx/cgqhqEOoAQhuDT1fafoeQGbGlZarJyKHmaW?=
- =?us-ascii?Q?mFYAkCJpN6c/akUSfQIa8C2WDPt9O2iej/2q/AYRKmo0gwM59nmfu2qnVzTc?=
- =?us-ascii?Q?ymriaOXzkdLPOek4gv0Uq8r1N5xm8Sh20+BKl3r0x0MmsLuu/AQO2WcNpt9K?=
- =?us-ascii?Q?SI9r7fl3TdVNewsIjUKfELOGUD9ik9JTBAom+Bax/KTy6Lyh5+UgGgUbq/Bv?=
- =?us-ascii?Q?9MWll2Or699WGLcXwyw2HkomrevCdKS1Vnw48EbkyDhGB9Ddke7z4xShG6bD?=
- =?us-ascii?Q?obeANsrIh40wPqx5Qnasgz+9+radd9EBsIZam4OljRYkD5++OwxMJcJICNAN?=
- =?us-ascii?Q?CzXMa8uR8podBMDY5fZR3kgU6gs1E2l3ZfLrBj+nfnWdYJ9AHKBEsC9AtLBP?=
- =?us-ascii?Q?aAD/cVtpEaL5N/iiGebcTBHbubcJOUzM/VUU4BfVcvHMf22Mv6OrZ5mow0PJ?=
- =?us-ascii?Q?zVoznlBLgBva7UBu/8v12ay2ILK3h2y0c/2M/i9BdzCmHuphDYiyFo4Pop/2?=
- =?us-ascii?Q?5R6qc7tGGEodfgVlas3YhxWeDJn8/t2OFHG3ZcDkc5vvmh58jIczDc/DGBD6?=
- =?us-ascii?Q?DdMkVj1v43wLUI78B8HqpadAHSrLPcFog8a0FR4ZQByEZ9Jcn3thIPSJGtGj?=
- =?us-ascii?Q?t6yR7/k7hLGN0HJN3xr5wy4z7wHinmKC3z7ozAKziQOemgBLahpIOXd4Edzt?=
- =?us-ascii?Q?gbzQMl8hkNHVdAeOZoeJkcN3u71LjkK/dLZx52yCnrBX+6rOdSsIjfWjVriQ?=
- =?us-ascii?Q?kYEvU4p2GKMgBZPg0cM+4CaZaN3DBM+KPgRwmQXdFwTcSAhntZaxBKR7Y3iM?=
- =?us-ascii?Q?IqM7CmN1tIDTcvXtbai5NTeMSPGPopLk3MLO1NOk9mgHqiWAvr8fLeNodRIg?=
- =?us-ascii?Q?vH7FusFVF+Yw/stNVfDVsgElxKao5kQmyG/wEhtoO10GYUkqj+f3LzQc7uEA?=
- =?us-ascii?Q?HKrYuJzUTrxMlwLd3a19MnOHL927WvUe+coEDNuPoCG7BiURlMO/013wmg5w?=
- =?us-ascii?Q?IREycAPUZXfBjgcrVU6PWW/UCTEDW0pJR5pMiEvBrT28vEQLBA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 19 Mar 2021 05:35:53 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 75B3D15B3;
+        Fri, 19 Mar 2021 05:35:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 19 Mar 2021 05:35:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=RCfuueNAjMgqPIWlOXQoNKx2Gwo
+        Tp8S7Mwap+HYgGFk=; b=OcOPM1QWm2flpFI1DefepVAYFAZokBOEdeuYaE6uqm6
+        SP2jM6eEypRk0b95seXl+QeHNa8RZXh8PckZ03l/YFAsL1Q845vtpG47BeeANOYO
+        xjwdvX0QF5lv2vKOAhnSDfKQF2fyVzu8qXiJgQCYxxTryXEmlhflImGXCvH6Okjz
+        BBNYL1tbaYyU1fLuj7I8ovw4oo/BFvZrDVl0ATPa+I1OSua0gDseb1AF864yWa6r
+        6y9bE69CFW3ZPxnTWV5q6w4u7D56C62S9GqFQHdeS2q4NqdG+1JexNPOwC8SOvvJ
+        HMbPXZe/WPLOJqj+hkJ0EZAA2YIWQ3RaSwS0yBoan1A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=RCfuue
+        NAjMgqPIWlOXQoNKx2GwoTp8S7Mwap+HYgGFk=; b=Ic2lRIeUJAWuNnVkIJ/vKR
+        G4gHqUHl6G78jOkUy0qjXji+P42OpcafTWKblyPXO+oalTI5kefx4SdjsqFrXHlz
+        XOENrTz+qf/mYSAAnHtccXOD031tcRZ1utzMTfW6aMMF5rrX32L4WYojMFtgPKWh
+        pLx/gk2xpXqkyX7bzWe8IdnCdM/sIyh00vJpbRWcOrZvM3jCpVL+cRKOTVQSIUL6
+        mGl+4mx2Y1UW4TaAq2NRPifXT4qZEncLS859laWudbioUduTadZXJSyVRAwnJN46
+        8OGOXspXDLFGSLaAAoa60AygsqksMt9pXHZbkEyxqTU7aQU1Axo1CuZVDWYY4xHg
+        ==
+X-ME-Sender: <xms:d3BUYLYfEeWKrcZr0LDXa8C6pfvGXcyOdp_t21kZSOlS90HIIWQg7g>
+    <xme:d3BUYKYghkLgP9xlk8d1nnwdDE9hcdguztJr2X3N2Mc3NUGeRxdIrjguT9gBVZxCE
+    RG3qodxH-zpCA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefkedgtdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:d3BUYN9i2dhed42bJFJzX63ZX9i3FxtzgHDAH3TJJYPYDQwj2WfjyQ>
+    <xmx:d3BUYBrf2m9QE00xjInwtU9K7Kn8y-N9oC0eaxatCzR_jwNXy58vYg>
+    <xmx:d3BUYGoe3rgdTSpD5nW2s9wByEZ2p-Mbuy75BS06uIW_bIC6kFeFkA>
+    <xmx:eHBUYN3OosG7fV6Ca0XLx41IBJVr4RUouy8ej0xSYCgv3psK2Ya0Ew>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 94E9F24005B;
+        Fri, 19 Mar 2021 05:35:51 -0400 (EDT)
+Date:   Fri, 19 Mar 2021 10:35:49 +0100
+From:   Greg KH <greg@kroah.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     stable@vger.kernel.org, fdmanana@suse.com,
+        linux-btrfs@vger.kernel.org, wqu@suse.com
+Subject: Re: [PATCH 5.4] btrfs: scrub: Don't check free space before marking
+ a block group RO
+Message-ID: <YFRwdX42UDBdIaDh@kroah.com>
+References: <20210317095151.19777-1-dsterba@suse.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a38ecba3-eec8-46b9-75b3-08d8eaafc3a7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2021 08:19:49.4279
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U2laHqthZzIj3GyrNACbIHje2k8NdCqa4dwpuS9n/LUYecFJe9l7V8LtSSspSOCKqUGU1naQs1DDpLPr6SPZZRSh9MtsYLWD6WG1059j9y4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7205
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317095151.19777-1-dsterba@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On Wed, Mar 17, 2021 at 10:51:51AM +0100, David Sterba wrote:
+> From: Qu Wenruo <wqu@suse.com>
+> 
+> [ Upstream commit b12de52896c0e8213f70e3a168fde9e6eee95909 ]
+> 
+> [BUG]
+> When running btrfs/072 with only one online CPU, it has a pretty high
+> chance to fail:
+> 
+>   btrfs/072 12s ... _check_dmesg: something found in dmesg (see xfstests-dev/results//btrfs/072.dmesg)
+>   - output mismatch (see xfstests-dev/results//btrfs/072.out.bad)
+>       --- tests/btrfs/072.out     2019-10-22 15:18:14.008965340 +0800
+>       +++ /xfstests-dev/results//btrfs/072.out.bad      2019-11-14 15:56:45.877152240 +0800
+>       @@ -1,2 +1,3 @@
+>        QA output created by 072
+>        Silence is golden
+>       +Scrub find errors in "-m dup -d single" test
+>       ...
+> 
+> And with the following call trace:
+> 
+>   BTRFS info (device dm-5): scrub: started on devid 1
+>   ------------[ cut here ]------------
+>   BTRFS: Transaction aborted (error -27)
+>   WARNING: CPU: 0 PID: 55087 at fs/btrfs/block-group.c:1890 btrfs_create_pending_block_groups+0x3e6/0x470 [btrfs]
+>   CPU: 0 PID: 55087 Comm: btrfs Tainted: G        W  O      5.4.0-rc1-custom+ #13
+>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+>   RIP: 0010:btrfs_create_pending_block_groups+0x3e6/0x470 [btrfs]
+>   Call Trace:
+>    __btrfs_end_transaction+0xdb/0x310 [btrfs]
+>    btrfs_end_transaction+0x10/0x20 [btrfs]
+>    btrfs_inc_block_group_ro+0x1c9/0x210 [btrfs]
+>    scrub_enumerate_chunks+0x264/0x940 [btrfs]
+>    btrfs_scrub_dev+0x45c/0x8f0 [btrfs]
+>    btrfs_ioctl+0x31a1/0x3fb0 [btrfs]
+>    do_vfs_ioctl+0x636/0xaa0
+>    ksys_ioctl+0x67/0x90
+>    __x64_sys_ioctl+0x43/0x50
+>    do_syscall_64+0x79/0xe0
+>    entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>   ---[ end trace 166c865cec7688e7 ]---
+> 
+> [CAUSE]
+> The error number -27 is -EFBIG, returned from the following call chain:
+> btrfs_end_transaction()
+> |- __btrfs_end_transaction()
+>    |- btrfs_create_pending_block_groups()
+>       |- btrfs_finish_chunk_alloc()
+>          |- btrfs_add_system_chunk()
+> 
+> This happens because we have used up all space of
+> btrfs_super_block::sys_chunk_array.
+> 
+> The root cause is, we have the following bad loop of creating tons of
+> system chunks:
+> 
+> 1. The only SYSTEM chunk is being scrubbed
+>    It's very common to have only one SYSTEM chunk.
+> 2. New SYSTEM bg will be allocated
+>    As btrfs_inc_block_group_ro() will check if we have enough space
+>    after marking current bg RO. If not, then allocate a new chunk.
+> 3. New SYSTEM bg is still empty, will be reclaimed
+>    During the reclaim, we will mark it RO again.
+> 4. That newly allocated empty SYSTEM bg get scrubbed
+>    We go back to step 2, as the bg is already mark RO but still not
+>    cleaned up yet.
+> 
+> If the cleaner kthread doesn't get executed fast enough (e.g. only one
+> CPU), then we will get more and more empty SYSTEM chunks, using up all
+> the space of btrfs_super_block::sys_chunk_array.
+> 
+> [FIX]
+> Since scrub/dev-replace doesn't always need to allocate new extent,
+> especially chunk tree extent, so we don't really need to do chunk
+> pre-allocation.
+> 
+> To break above spiral, here we introduce a new parameter to
+> btrfs_inc_block_group(), @do_chunk_alloc, which indicates whether we
+> need extra chunk pre-allocation.
+> 
+> For relocation, we pass @do_chunk_alloc=true, while for scrub, we pass
+> @do_chunk_alloc=false.
+> This should keep unnecessary empty chunks from popping up for scrub.
+> 
+> Also, since there are two parameters for btrfs_inc_block_group_ro(),
+> add more comment for it.
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+> 
+> There's a report for 5.4 and the patch applies with a minor fixup
+> without dependencies.
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=210447
+
+Thanks, now queued up.
+
+greg k-h
