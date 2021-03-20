@@ -2,102 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9779A342CAD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Mar 2021 13:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED74342D9F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Mar 2021 16:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhCTMCc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 Mar 2021 08:02:32 -0400
-Received: from smtp26.services.sfr.fr ([93.17.128.192]:3877 "EHLO
-        smtp26.services.sfr.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhCTMCP (ORCPT
+        id S229780AbhCTPWy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 Mar 2021 11:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229756AbhCTPWV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 Mar 2021 08:02:15 -0400
-Received: from neuf.fr (91-171-27-54.subs.proxad.net [91.171.27.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by msfrf2606.sfr.fr (SMTP Server) with ESMTPS id 90ED81C003141
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 10:27:28 +0100 (CET)
-X-mail-filterd: 1.0.0
-X-sfr-mailing: LEGIT
-X-sfr-spamrating: 40
-X-sfr-spam: not-spam
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=neuf.fr; s=202006;
- t=1616232448; h=From:To:Subject:Date:In-Reply-To:References; bh=Pe0uuzTO8HLH
-  wwyDm3wSDd8j/unr9DzefX/dQBcqtYg=; b=Q/XkLOTHVc8tDrg9DUQuFMPSTIvAhGvQ3DdPZZPv
-  IehzZfJ1pdhoSVFEii83jv9ImIQZBYmTpESfFB/5YLonInP0pCgj3FFyRDWmtTYufKSnln3cxnyY
-  CaXKlUngOJgzjPuQ1a6WdTnHUszHV9i7b55HsjOJX4sJwVVbBzWiVN6UdhE1n+hnHEE6PFJUbsjJ
-  A47qjruFMjFazntnwG+jgB7NgMmWwEDkv5+TqUWh4nqx2PvQ8kqHTuFLwVZa8Pn1CmUd7z0QLlgf
-  fTUKJ/DOcwYj8GNojaAQmu9GjMuciVHueZkPeMyKMWj51epoJxRKnoMlUYsb0SHTGghHPVvqpw==
-  ;
-Received: from neuf.fr (91-171-27-54.subs.proxad.net [91.171.27.54])
-        by msfrf2606.sfr.fr (SMTP Server) with ESMTP id 775131C00203B
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 10:27:28 +0100 (CET)
-Received: from neuf.fr (91-171-27-54.subs.proxad.net [91.171.27.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pierre.labastie@neuf.fr)
-        by msfrf2606.sfr.fr (SMTP Server) with ESMTPSA
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 10:27:28 +0100 (CET)
-Authentication-Results: sfr.fr; auth=pass (PLAIN) smtp.auth=pierre.labastie@neuf.fr
-Received: from pierre by neuf.fr with local (Exim 4.94)
-        (envelope-from <pierre@neuf.fr>)
-        id 1lNXtI-0006Qk-41
-        for linux-btrfs@vger.kernel.org; Sat, 20 Mar 2021 10:27:28 +0100
-From:   pierre.labastie@neuf.fr
+        Sat, 20 Mar 2021 11:22:21 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BD5C061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 08:22:21 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id 94so9209678qtc.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 08:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=PDZUudERkc0edi5fP/GUTNJvF7sCLvFD7qQ3pN46poM=;
+        b=Vi2ewDyZNTyOlkhaq+4+BW3sSePJe1zpD9ZZOpWBkZikpw2UJvMcoQK02/gaUVVFFE
+         8jjHgG1imTZ5XSpcswJ2Q7kqiM06e/+mk2D6d297gyQNlLK4OMpYB78Jfx/clBsIaStC
+         77/KePIBN1sFKsZCCnQ1O5HAdJPfjgIkmR23Qy0dwqURHWEIuOynGQGKlGtaa88cg/xk
+         167LpOZPYeX37Aei75YK8uT0Cxa5qTuWQfMlU6JTYyprfaTEQE9H0Z67B13rHeRPzrJf
+         LB1ugoYXAiXK9WfhsLBC0ma/LIItxKERRzyS0Q6ziU2mPmI48tDFQ3FqMVJOUHafQLg6
+         tj2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=PDZUudERkc0edi5fP/GUTNJvF7sCLvFD7qQ3pN46poM=;
+        b=a23N1Vf6ivP9OYtL8V+Zl0Nvjx+JgF0wRprNf15af9QiL/K+3Me7FCb48B4VOCa5mb
+         JdH0irvthwMIPFVsGpnICTN+nRhYupWvRdJyf16/nFcldOl76Ke+Ng2qKLpauk61AoUr
+         5af+i1C+CDTaEiG2EBQsNCp6RT0lR0n29wIU+QQKJfBQ3nPyOWwiMlxdvXIrdK4PZP9J
+         LSX3v042R/Y1CtPSBbIR0s6P25SJjcO0xt9ZZBtQBrFSy/jehWk3qjgpf2dXKmmd2Bf8
+         3htdEuLIUnhT69zjXUPEM7a7VGcZvGb0EUT3jcz5iO2zrNs5pmBZrR1jpuzeO2MICdiI
+         H7og==
+X-Gm-Message-State: AOAM531qrSvxVnERsCb1ogzmlZhIwjDbJlJw+Rk81pDbFFLQ63/hel2G
+        UYrsUMXBEcXGuRmP2i6wWk15h5phDU4=
+X-Google-Smtp-Source: ABdhPJwhsLLovKS7qIfphsSHfPHfEwQFuEigMxEz0VsqBAi7VnMPG2UMLBtFpZfoulmycXb9FsuWtg==
+X-Received: by 2002:ac8:6f02:: with SMTP id g2mr3276573qtv.385.1616253740693;
+        Sat, 20 Mar 2021 08:22:20 -0700 (PDT)
+Received: from MacbookPro.local (c-73-249-174-88.hsd1.nh.comcast.net. [73.249.174.88])
+        by smtp.gmail.com with ESMTPSA id j12sm6027883qtn.36.2021.03.20.08.22.20
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Mar 2021 08:22:20 -0700 (PDT)
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/1] btrfs-progs: build system - do not use AC_DEFINE twice
-Date:   Sat, 20 Mar 2021 10:27:28 +0100
-Message-Id: <20210320092728.24673-2-pierre.labastie@neuf.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210320092728.24673-1-pierre.labastie@neuf.fr>
-References: <20210320092728.24673-1-pierre.labastie@neuf.fr>
+From:   Forrest Aldrich <forrie@gmail.com>
+Subject: APFS and BTRFS
+Message-ID: <7ead4392-f4c2-2a5b-c104-ae8be585d49e@gmail.com>
+Date:   Sat, 20 Mar 2021 11:22:18 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Sender: Pierre Labastie <pierre.labastie@neuf.fr>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Pierre Labastie <pierre.labastie@neuf.fr>
+I have a really large (3+ TB) volume I am copying to a BTRFS volume 
+(both over USB) which is painfully slow.  In fact, it will probably take 
+days to complete.   My goal is to use BTRFS on that larger USB volume 
+(it's an 18TB drive)....
 
-Autoheader uses the AC_DEFINE macros (and a few others) to populate
-the config.h.in file. The autotools documentation does not tell
-what happens if AC_DEFINE is used twice for the same identifier.
+I don't suppose there is a way to convert APFS to BTRFS :)   I know, but 
+I thought I would ask as it seems like others may have a similar query.
 
-This patch prevents using AC_DEFINE twice for
-HAVE_OWN_FIEMAP_EXTENT_DEFINE, preserving the logic (using the
-fact that an undefined identifier in a preprocessor directive is
-taken as zero).
 
-Signed-off-by: Pierre Labastie <pierre.labastie@neuf.fr>
----
- configure.ac | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Thx...
 
-diff --git a/configure.ac b/configure.ac
-index aa3f7824..6ea29e0a 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -240,17 +240,11 @@ fi
- AC_SUBST([CRYPTOPROVIDER_BUILTIN])
- AC_DEFINE_UNQUOTED([CRYPTOPROVIDER],["$cryptoprovider"],[Crypto implementation source name])
- 
--HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE=0
- AX_CHECK_DEFINE([linux/fiemap.h], [FIEMAP_EXTENT_SHARED], [],
--		[HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE=1
-+		[AC_DEFINE([HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE], [1],
-+                           [Define to 1 if kernel headers do not define FIEMAP_EXTENT_SHARED])
- 		 AC_MSG_WARN([no definition of FIEMAP_EXTENT_SHARED found, probably old kernel, will use own definition, 'btrfs fi du' might report wrong numbers])])
- 
--if test "x$HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE" == "x1"; then
--AC_DEFINE([HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE], [1], [We defined FIEMAP_EXTENT_SHARED])
--else
--AC_DEFINE([HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE], [0], [We did not define FIEMAP_EXTENT_SHARED])
--fi
--
- AX_CHECK_DEFINE([ext2fs/ext2_fs.h], [EXT4_EPOCH_MASK],
- 		[AC_DEFINE([HAVE_EXT4_EPOCH_MASK_DEFINE], [1],
- 			   [Define to 1 if e2fsprogs defines EXT4_EPOCH_MASK])],
--- 
-2.30.2
 
