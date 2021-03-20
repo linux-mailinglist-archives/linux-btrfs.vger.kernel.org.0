@@ -2,167 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6A4342B94
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Mar 2021 11:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F92E342BE5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Mar 2021 12:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhCTKvZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 Mar 2021 06:51:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46712 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhCTKvT (ORCPT
+        id S230107AbhCTLPJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 Mar 2021 07:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231293AbhCTLOn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 Mar 2021 06:51:19 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lNYTP-0004Ud-8g; Sat, 20 Mar 2021 10:04:47 +0000
-Date:   Sat, 20 Mar 2021 11:04:46 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v8 01/10] iov_iter: add copy_struct_from_iter()
-Message-ID: <20210320100446.g5jysruamqklzzb5@wittgenstein>
-References: <cover.1615922644.git.osandov@fb.com>
- <e71e712d27b2e2c19efc5b1454bd8581ad98d900.1615922644.git.osandov@fb.com>
- <20210317175611.adntftl6w3avptvk@wittgenstein>
- <YFJOLlm3GuZgoVSi@relinquished.localdomain>
+        Sat, 20 Mar 2021 07:14:43 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338E2C0613BC
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 03:49:31 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id m132so1013541ybf.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 03:49:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=BVX4kh6RjgvHZy07dkmCMs7oyZs3T1ItnVX4dgH/vDU=;
+        b=NjqkdNmKkzxE2VtANBOHS0rflxVqvueFRgYdwGYhqE7LeYeL59Eo2LEDZPG+XyXzhz
+         oI0Wfn3PLG2F0Iewgpw82txzZgisgf2BctGmeX01oHt4P7ovNASZVbbAuMxv/BImBHHp
+         4JwhsJV2z49Z6uzOad9t36qIXhT45kY5gs35ctRGpCsOIAzu+47oPFnaXjmKGZfI20aA
+         TNc8PEoU4TMLbpOqjwxoW9VVdXLmHXywJiDe6FdY/oCkUpayeRSRhbv/zAhvJqAI57Ny
+         W3Vmz5vP6YCM99ZsPonAYuSVuwV8XN/uR1kIcxJ4juQE0PCBMiycXoyWGgPoGysmWKBj
+         5BdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=BVX4kh6RjgvHZy07dkmCMs7oyZs3T1ItnVX4dgH/vDU=;
+        b=jxrdne/PBY6J3cUXjMJZO8edCjyQpPLQ7JVPEMeO/1R4F4D6ab0GPxsBIW4BXYER8/
+         W7jP4vXu7/mKSdiwJtXeyEfLjxpGVurMDvmIQeaH6sbkUe7XX8PETRFN/w2T4N6zb1Eb
+         7hfuUX/HcF+Znb85+0p9KE1xTakPyPDscQT59PrpF1eej5BLJmoqjwZsRXQNS9iIJlC3
+         VfS82v25qK24Qqv8hQgIanulS1pXA83hNV5AGsbHB6HHoohkRgZ3oJ7c0pk4SkcGg4MR
+         8Zw3pwtGbQ8tPjNa5PjovEI9nkkDGLpUaqeXOH4BJ2OIwzvaNDVelzKUhmNhQHeNWCIy
+         5Eyg==
+X-Gm-Message-State: AOAM5307YPq4UkXkqSJiUQ/Y6V15GFCsrQhuXXLosrhgwK9RGQTQMNIx
+        gJG8OGEgOPtl9q6ZHX/Bzlo2pqnRKgoiJkqozlsMbtsZ8L4gjQ==
+X-Google-Smtp-Source: ABdhPJwpYungTW6n31MpI45ixa+x61Xlx0A8pQ5EU/NjpQ7+fiL7foORRXtz7av/s2gqGjHbFkYpyuT/GB93sqE4eIE=
+X-Received: by 2002:a9d:68d7:: with SMTP id i23mr4009470oto.133.1616222050885;
+ Fri, 19 Mar 2021 23:34:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YFJOLlm3GuZgoVSi@relinquished.localdomain>
+From:   Dave T <davestechshop@gmail.com>
+Date:   Sat, 20 Mar 2021 02:33:59 -0400
+Message-ID: <CAGdWbB6JtU54uEOotj=H-DG_7oeUT5KZQG5uM-ibiC2YDbV5Nw@mail.gmail.com>
+Subject: parent transid verify failed / ERROR: could not setup extent tree
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:45:02AM -0700, Omar Sandoval wrote:
-> On Wed, Mar 17, 2021 at 06:56:11PM +0100, Christian Brauner wrote:
-> > On Tue, Mar 16, 2021 at 12:42:57PM -0700, Omar Sandoval wrote:
-> > > From: Omar Sandoval <osandov@fb.com>
-> > > 
-> > > This is essentially copy_struct_from_user() but for an iov_iter.
-> > > 
-> > > Suggested-by: Aleksa Sarai <cyphar@cyphar.com>
-> > > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> > > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > > ---
-> > >  include/linux/uio.h |  2 ++
-> > >  lib/iov_iter.c      | 82 +++++++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 84 insertions(+)
-> > > 
-> > > diff --git a/include/linux/uio.h b/include/linux/uio.h
-> > > index 72d88566694e..f4e6ea85a269 100644
-> > > --- a/include/linux/uio.h
-> > > +++ b/include/linux/uio.h
-> > > @@ -121,6 +121,8 @@ size_t copy_page_to_iter(struct page *page, size_t offset, size_t bytes,
-> > >  			 struct iov_iter *i);
-> > >  size_t copy_page_from_iter(struct page *page, size_t offset, size_t bytes,
-> > >  			 struct iov_iter *i);
-> > > +int copy_struct_from_iter(void *dst, size_t ksize, struct iov_iter *i,
-> > > +			  size_t usize);
-> > >  
-> > >  size_t _copy_to_iter(const void *addr, size_t bytes, struct iov_iter *i);
-> > >  size_t _copy_from_iter(void *addr, size_t bytes, struct iov_iter *i);
-> > > diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> > > index a21e6a5792c5..f45826ed7528 100644
-> > > --- a/lib/iov_iter.c
-> > > +++ b/lib/iov_iter.c
-> > > @@ -948,6 +948,88 @@ size_t copy_page_from_iter(struct page *page, size_t offset, size_t bytes,
-> > >  }
-> > >  EXPORT_SYMBOL(copy_page_from_iter);
-> > >  
-> > > +/**
-> > > + * copy_struct_from_iter - copy a struct from an iov_iter
-> > > + * @dst: Destination buffer.
-> > > + * @ksize: Size of @dst struct.
-> > > + * @i: Source iterator.
-> > > + * @usize: (Alleged) size of struct in @i.
-> > > + *
-> > > + * Copies a struct from an iov_iter in a way that guarantees
-> > > + * backwards-compatibility for struct arguments in an iovec (as long as the
-> > > + * rules for copy_struct_from_user() are followed).
-> > > + *
-> > > + * The recommended usage is that @usize be taken from the current segment:
-> > > + *
-> > > + *   int do_foo(struct iov_iter *i)
-> > > + *   {
-> > > + *     size_t usize = iov_iter_single_seg_count(i);
-> > > + *     struct foo karg;
-> > > + *     int err;
-> > > + *
-> > > + *     if (usize > PAGE_SIZE)
-> > > + *       return -E2BIG;
-> > > + *     if (usize < FOO_SIZE_VER0)
-> > > + *       return -EINVAL;
-> > > + *     err = copy_struct_from_iter(&karg, sizeof(karg), i, usize);
-> > > + *     if (err)
-> > > + *       return err;
-> > > + *
-> > > + *     // ...
-> > > + *   }
-> > > + *
-> > > + * Return: 0 on success, -errno on error (see copy_struct_from_user()).
-> > > + *
-> > > + * On success, the iterator is advanced @usize bytes. On error, the iterator is
-> > > + * not advanced.
-> > > + */
-> > > +int copy_struct_from_iter(void *dst, size_t ksize, struct iov_iter *i,
-> > > +			  size_t usize)
-> > > +{
-> > > +	if (usize <= ksize) {
-> > > +		if (!copy_from_iter_full(dst, usize, i))
-> > > +			return -EFAULT;
-> > > +		memset(dst + usize, 0, ksize - usize);
-> > > +	} else {
-> > > +		size_t copied = 0, copy;
-> > > +		int ret;
-> > > +
-> > > +		if (WARN_ON(iov_iter_is_pipe(i)) || unlikely(i->count < usize))
-> > > +			return -EFAULT;
-> > > +		if (iter_is_iovec(i))
-> > > +			might_fault();
-> > > +		iterate_all_kinds(i, usize, v, ({
-> > > +			copy = min(ksize - copied, v.iov_len);
-> > > +			if (copy && copyin(dst + copied, v.iov_base, copy))
-> > > +				return -EFAULT;
-> > > +			copied += copy;
-> > > +			ret = check_zeroed_user(v.iov_base + copy,
-> > > +						v.iov_len - copy);
-> > > +			if (ret <= 0)
-> > > +				return ret ?: -E2BIG;
-> > > +			0;}), ({
-> > > +			char *addr = kmap_atomic(v.bv_page);
-> > > +			copy = min_t(size_t, ksize - copied, v.bv_len);
-> > > +			memcpy(dst + copied, addr + v.bv_offset, copy);
-> > > +			copied += copy;
-> > > +			ret = memchr_inv(addr + v.bv_offset + copy, 0,
-> > > +					 v.bv_len - copy) ? -E2BIG : 0;
-> > > +			kunmap_atomic(addr);
-> > > +			if (ret)
-> > > +				return ret;
-> > > +			}), ({
-> > > +			copy = min(ksize - copied, v.iov_len);
-> > > +			memcpy(dst + copied, v.iov_base, copy);
-> > > +			if (memchr_inv(v.iov_base, 0, v.iov_len))
-> > > +				return -E2BIG;
-> > > +			})
-> > > +		)
-> > 
-> > 
-> > Following the semantics of copy_struct_from_user() is certainly a good
-> > idea but can this in any way be rewritten to not look like this; at
-> > least not as crammed. It's a bit painful to follow here what's going.
-> 
-> I think that's just the nature of the iov_iter code :) I'm just
-> following the rest of this file, which uses some mind-expanding macros.
-> Do you have any suggestions for how to clean this function up?
+I hope to get  some expert advice before I proceed. I don't want to
+make things worse. Here's my situation now:
 
-I think the follow-up discussion this triggered caused an improvement now. :)
-Christian
+This problem is with an external USB drive and it is encrypted.
+cryptsetup open succeeds. But mount fails.k
+
+    mount /backup
+    mount: /backup: wrong fs type, bad option, bad superblock on
+/dev/mapper/xusbluks, missing codepage or helper program, or other
+error.
+
+ Next the following command succeeds:
+
+    mount -o ro,recovery /dev/mapper/xusbluks /backup
+
+This is my backup disk (5TB), and I don't have another 5TB disk to
+copy all the data to. I hope I can fix the issue without losing my
+backups.
+
+Next step I did:
+
+        # btrfs check /dev/mapper/xyz
+        Opening filesystem to check...
+        parent transid verify failed on 2853827608576 wanted 29436 found 29433
+        parent transid verify failed on 2853827608576 wanted 29436 found 29433
+        parent transid verify failed on 2853827608576 wanted 29436 found 29433
+        Ignoring transid failure
+        leaf parent key incorrect 2853827608576
+        ERROR: could not setup extent tree
+        ERROR: cannot open file system
+
+BTW, this command returns no result:
+
+    which btrfs-zero-log
+
+I don't have that script/application installed. I'm running Arch Linux. I have
+
+core/btrfs-progs 5.11-1
+llinux 5.11.7-arch1-1
