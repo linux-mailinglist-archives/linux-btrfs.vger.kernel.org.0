@@ -2,55 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3703428E0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Mar 2021 23:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98090342975
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Mar 2021 01:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhCSWqw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Mar 2021 18:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        id S229512AbhCTAcH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Mar 2021 20:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhCSWqY (ORCPT
+        with ESMTP id S229519AbhCTAbi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Mar 2021 18:46:24 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5AFC061762
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Mar 2021 15:46:24 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t20so3610134plr.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Mar 2021 15:46:24 -0700 (PDT)
+        Fri, 19 Mar 2021 20:31:38 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A45C061761
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Mar 2021 17:31:38 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x28so12627688lfu.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Mar 2021 17:31:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=33cXKf+qPGNNAeOkK0D8X3mSCgu3W5Iucj/z4eZqBa0=;
-        b=tLp5VtDVmmXP1up9uhw+PTnAD50SpZ6QAF5SvhjJaWAz7lsEKqI1v85BGGn8uJe6hA
-         QBt5fFhRl4OpLOpus7+NTGOVjh1B5NfQJlqDh4iz+ESx5IU1nizzJSOMjtV/Io9gSiZU
-         IIYBx5FNpjpBGaHY5AcaOzxX3OQiovv8SLnrEko9LdZmnOnb/4zOPcp2pjD3SdsKDD1I
-         Q9yTLC945y9zWjdTmnPk42qydmBAttcF02c543Sx9igwZg/4Ts+W06O58NfY9aYPLmYb
-         KBmP51Ve3o4cTZNF55g/8Ib4KZ+VTE5GfHT1bbOefIZ+klkYIG4pAipPOQW2iQSpzPwy
-         QMHQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=61j+NwfICNWJWz0XMgFUBwrGhoQDi0J8u1n1is81ZYM=;
+        b=CpbSVYpb9YM1T9z1e1UZGf7HmWEG3ed4KwVewC9begrECftVwGF0pqxn4xXjZL6kO3
+         A9HqtpleUFq3FaYakT6UFgrfqOt7d3YRtgmx1JZdEDBxycA0My59WwVuumIknimBFEkM
+         fCqs/yzGnaUnaQYMf0T5oTP5vCgohxkIx1HUg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=33cXKf+qPGNNAeOkK0D8X3mSCgu3W5Iucj/z4eZqBa0=;
-        b=ORhEQKfbZP3fcrZq02k4uMbIk29AqE6EA8HBWiqYnd5FbKlGh5xcjZZHvfOPN2iesi
-         4JWDFqRQRfX4zkA5A3bN3bs0HM+RCQEPIX0/Bs5rPCwe2aDtS2Wqc/p9G3kwCQV5xyOs
-         FECWWSpG5QoQ7V9CfBlrgfJYQu3lv7KSWsHWNfHF+StHnHK9bDo0z3QphgBsnwOfIbPY
-         dbCIS/HXWPZjaZR8qi9Y3OdrfIZeSCB0NOeUL25zE97nZzBJPZd11QTvL0qcItYmgkSK
-         TLbi9RpEErFGB5gHCX+GDLeoBT2G0Nau6Ue/XdeG7mbIg9hkgNV8p8kLmhBAMzp2ZOZR
-         4fnQ==
-X-Gm-Message-State: AOAM533RKjpXMXbuEXCFgFnXTAGV0reHMJu9T7uNdtMsk7FFqCAxlR4R
-        0TFe999fpf2vbFB3ieETAIwOuw==
-X-Google-Smtp-Source: ABdhPJy6e8AxMXKrcjt+I8qVqpYJmL6GK3lZsKaqck1E/jAM3+eeM1w2x2AC0KNTm9JzwSoCrxf5CQ==
-X-Received: by 2002:a17:90b:46d0:: with SMTP id jx16mr741470pjb.3.1616193983676;
-        Fri, 19 Mar 2021 15:46:23 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:9ec6])
-        by smtp.gmail.com with ESMTPSA id g26sm6491517pge.67.2021.03.19.15.46.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 15:46:22 -0700 (PDT)
-Date:   Fri, 19 Mar 2021 15:46:20 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=61j+NwfICNWJWz0XMgFUBwrGhoQDi0J8u1n1is81ZYM=;
+        b=eyY6lCo14JYgmMguMyqh6fiPrS2rIZKKGuIQpBDOmQJ+AdZOvTvd0M2FISyBye/6v9
+         CDXvhSRG1KoYMm2RgKPmBcuF9U/opx/wlZFm3oXDZze+yUggUNj0XNEQitfbJvLuLatY
+         uU5U04OtK6yMW7AeS2tPpPxPZj1xSIkQN/hFLsnigLwLlji/2eFmav/epxUT2Ju0DwYS
+         so9av5neijg/fIE8Mq+77VTzEnzYzv2sRnE/gbL5xsyeq1B7pI7bwrm4Wr4DyFSL5Bgo
+         gMYf18e+MdEQseQzVdceLDQpMtIccy0mYQDNfQRtHeANWczc3pojxF/PvVDwWU+ZEwcU
+         38wA==
+X-Gm-Message-State: AOAM530QtvmbWoKdnT8nXGm8Qpf01FpqwUkIp2RK81JO+ryc46z6u800
+        g9YkjvjQnJRrkOngk0xTUoOQ2+9mnMhPXQ==
+X-Google-Smtp-Source: ABdhPJzCqabQGpKM2ruU4VVmtq5V36Qi1wklVkinan+Xacg1QQ/jPnXJjwQmLrEvVWPyHmyHTT7nwQ==
+X-Received: by 2002:a05:6512:c5:: with SMTP id c5mr2301700lfp.158.1616200296431;
+        Fri, 19 Mar 2021 17:31:36 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id b30sm779618lfj.101.2021.03.19.17.31.34
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Mar 2021 17:31:35 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id g8so5503582lfv.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Mar 2021 17:31:34 -0700 (PDT)
+X-Received: by 2002:ac2:58fc:: with SMTP id v28mr2189309lfo.201.1616200294775;
+ Fri, 19 Mar 2021 17:31:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1615922644.git.osandov@fb.com> <8f741746-fd7f-c81a-3cdf-fb81aeea34b5@toxicpanda.com>
+ <CAHk-=wj6MjPt+V7VrQ=muspc0DZ-7bg5bvmE2ZF-1Ea_AQh8Xg@mail.gmail.com>
+ <YFUJLUnXnsv9X/vN@relinquished.localdomain> <CAHk-=whGEM0YX4eavgGuoOqhGU1g=bhdOK=vUiP1Qeb5ZxK56Q@mail.gmail.com>
+ <YFUTnDaCdjWHHht5@relinquished.localdomain> <CAHk-=wjhSP88EcBnqVZQhGa4M6Tp5Zii4GCBoNBBdcAc3PUYbg@mail.gmail.com>
+ <YFUpvFyXD0WoUHFu@relinquished.localdomain>
+In-Reply-To: <YFUpvFyXD0WoUHFu@relinquished.localdomain>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 19 Mar 2021 17:31:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whrT6C-fsUex1csb4OSi06LwaCNGVJYnnitaA80w9Ua7g@mail.gmail.com>
+Message-ID: <CAHk-=whrT6C-fsUex1csb4OSi06LwaCNGVJYnnitaA80w9Ua7g@mail.gmail.com>
+Subject: Re: [PATCH v8 00/10] fs: interface for directly reading/writing
+ compressed data
+To:     Omar Sandoval <osandov@osandov.com>
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
@@ -62,146 +75,36 @@ Cc:     Josef Bacik <josef@toxicpanda.com>,
         Aleksa Sarai <cyphar@cyphar.com>,
         Linux API <linux-api@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v8 00/10] fs: interface for directly reading/writing
- compressed data
-Message-ID: <YFUpvFyXD0WoUHFu@relinquished.localdomain>
-References: <cover.1615922644.git.osandov@fb.com>
- <8f741746-fd7f-c81a-3cdf-fb81aeea34b5@toxicpanda.com>
- <CAHk-=wj6MjPt+V7VrQ=muspc0DZ-7bg5bvmE2ZF-1Ea_AQh8Xg@mail.gmail.com>
- <YFUJLUnXnsv9X/vN@relinquished.localdomain>
- <CAHk-=whGEM0YX4eavgGuoOqhGU1g=bhdOK=vUiP1Qeb5ZxK56Q@mail.gmail.com>
- <YFUTnDaCdjWHHht5@relinquished.localdomain>
- <CAHk-=wjhSP88EcBnqVZQhGa4M6Tp5Zii4GCBoNBBdcAc3PUYbg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjhSP88EcBnqVZQhGa4M6Tp5Zii4GCBoNBBdcAc3PUYbg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 02:47:03PM -0700, Linus Torvalds wrote:
-> On Fri, Mar 19, 2021 at 2:12 PM Omar Sandoval <osandov@osandov.com> wrote:
-> >
-> > After spending a few minutes trying to simplify copy_struct_from_iter(),
-> > it's honestly easier to just use the iterate_all_kinds() craziness than
-> > open coding it to only operate on iov[0]. But that's an implementation
-> > detail, and we can trivially make the interface stricter:
-> 
-> This is an improvement, but talking about the iterate_all_kinds()
-> craziness, I think your existing code is broken.
-> 
-> That third case (kernel pointer source):
-> 
-> +    copy = min(ksize - copied, v.iov_len);
-> +    memcpy(dst + copied, v.iov_base, copy);
-> +    if (memchr_inv(v.iov_base, 0, v.iov_len))
-> +        return -E2BIG;
-> 
-> can't be right. Aren't you checking that it's *all* zero, even the
-> part you copied?
+On Fri, Mar 19, 2021 at 3:46 PM Omar Sandoval <osandov@osandov.com> wrote:
+>
+> Not much shorter, but it is easier to follow.
 
-Oops, that should of course be
+Yeah, that looks about right to me.
 
-	if (memchr_inv(v.iov_base + copy, 0, v.iov_len - copy))
-		return -E2BIG;
+You should probably use kmap_local_page() rather than kmap_atomic()
+these days, but other than that this looks fairly straightforward, and
+I much prefer the model where we very much force that "must be the
+first iovec entry".
 
-like the other cases. Point taken, though.
+As you say, maybe not shorter, but a lot more straightforward.
 
-> Our iov_iter stuff is really complicated already, this is part of why
-> I'm not a huge fan of using it.
-> 
-> I still suspect you'd be better off not using the iterate_all_kinds()
-> thing at all, and just explicitly checking ITER_BVEC/ITER_KVEC
-> manually.
-> 
-> Because you can play games like fooling your "copy_struct_from_iter()"
-> to not copy anything at all with ITER_DISCARD, can't you?
-> 
-> Which then sounds like it might end up being useful as a kernel data
-> leak, because it will use some random uninitialized kernel memory for
-> the structure.
-> 
-> Now, I don't think you can actually get that ITER_DISCARD case, so
-> this is not *really* a problem, but it's another example of how that
-> iterate_all_kinds() thing has these subtle cases embedded into it.
+That said, looking through the patch series, I see at least one other
+issue. Look at parisc:
 
-Right, that would probably be better off returning EFAULT or something
-for ITER_DISCARD.
+    +#define O_ALLOW_ENCODED 100000000
 
-> The whole point of copy_struct_from_iter() is presumably to be the
-> same kind of "obviously safe" interface as copy_struct_from_user() is
-> meant to be, so these subtle cases just then make me go "Hmm".
-> 
-> I think just open-coding this when  you know there is no actual
-> looping going on, and the data has to be at the *beginning*, should be
-> fairly simple. What makes iterate_all_kinds() complicated is that
-> iteration, the fact that there can be empty entries in there, but it's
-> also that "iov_offset" thing etc.
-> 
-> For the case where you just (a) require that iov_offset is zero, and
-> (b) everything has to fit into the very first iov entry (regardless of
-> what type that iov entry is), I think you actually end up with a much
-> simpler model.
-> 
-> I do realize that I am perhaps concentrating a bit too much on this
-> one part of the patch series, but the iov_iter thing has bitten us
-> before. And it has bitten really core developers and then Al has had
-> to fix up mistakes.
-> 
-> In fact, it wasn't that long ago that I asked Al to verify code I
-> wrote, because I was worried about having missed something subtle. So
-> now when I see these iov_iter users, it just makes me go all nervous.
+yeah, that's completely wrong. I see how it happened, but that's _really_ wrong.
 
-So here's what it looks like with these restrictions (chances are
-there's a bug or two in here):
+I would want others to take a look in case there's something else. I'm
+not qualified to comment about (nor do I deeply care) about the btrfs
+parts, but the generic interface parts should most definitely get more
+attention.
 
-int copy_struct_from_iter(void *dst, size_t ksize, struct iov_iter *i)
-{
-	size_t usize;
-	int ret;
+By Al, if possible, but other fs people too..
 
-	if (i->iov_offset != 0)
-		return -EINVAL;
-	if (iter_is_iovec(i)) {
-		usize = i->iov->iov_len;
-		might_fault();
-		if (copyin(dst, i->iov->iov_base, min(ksize, usize)))
-			return -EFAULT;
-		if (usize > ksize) {
-			ret = check_zeroed_user(i->iov->iov_base + ksize,
-						usize - ksize);
-			if (ret < 0)
-				return ret;
-			else if (ret == 0)
-				return -E2BIG;
-		}
-	} else if (iov_iter_is_kvec(i)) {
-		usize = i->kvec->iov_len;
-		memcpy(dst, i->kvec->iov_base, min(ksize, usize));
-		if (usize > ksize &&
-		    memchr_inv(i->kvec->iov_base + ksize, 0, usize - ksize))
-			return -E2BIG;
-	} else if (iov_iter_is_bvec(i)) {
-		char *p;
-
-		usize = i->bvec->bv_len;
-		p = kmap_atomic(i->bvec->bv_page);
-		memcpy(dst, p + i->bvec->bv_offset, min(ksize, usize));
-		if (usize > ksize &&
-		    memchr_inv(p + i->bvec->bv_offset + ksize, 0,
-			       usize - ksize)) {
-			kunmap_atomic(p);
-			return -E2BIG;
-		}
-		kunmap_atomic(p);
-	} else {
-		return -EFAULT;
-	}
-	if (usize < ksize)
-		memset(dst + usize, 0, ksize - usize);
-	iov_iter_advance(i, usize);
-	return 0;
-}
-
-Not much shorter, but it is easier to follow.
+           Linus
