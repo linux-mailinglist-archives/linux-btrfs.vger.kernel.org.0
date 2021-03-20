@@ -2,267 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938C8342BC8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Mar 2021 12:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89780342BDF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Mar 2021 12:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhCTLMf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 Mar 2021 07:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
+        id S231233AbhCTLOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 Mar 2021 07:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhCTLML (ORCPT
+        with ESMTP id S231288AbhCTLOd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 Mar 2021 07:12:11 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F41DC05BD40
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 04:03:47 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so11028683ota.9
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 04:03:47 -0700 (PDT)
+        Sat, 20 Mar 2021 07:14:33 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399F5C0613BA
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 03:48:58 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id y1so14959605ljm.10
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Mar 2021 03:48:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=vwlfen1PlEcRPhw1oOJnYCO6muzCZdyQOAMVQZcoYTo=;
-        b=RsLyECZM8xIEFml2cQ/tfYM7DPB3/iogGCWbSLCKG/c3n7QiCZAKuW4K/6q+iUHKYE
-         fnDhq1FsKDExhIGsCFD0iqzScnNwQ+CH79testqdwsaqRWrFKz3ny/BxvO91tmIMHgbb
-         Zx3owDjw4SBjpGekl8UVGzvH6Q73LgsNwP0sIotmClNN65enOR8FBlo7Xike4rZOQnX+
-         bAubClylIk8h8gZPhlKCs7C47d8++6dznCHbi++bVrSCH2EJ0SJr4Szlxi4J1tfXHAXc
-         NF6Gu3lonCGaeL9j9p0UUFGMAEv2WxU9DTzWPN1xHZ1I+bDEyg1+fntwhzsSWxt2czL2
-         ISQA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=9JKZ3ZpKP/jzajSttwIR2wTO37ERNWhSPBHIr/0lRLk=;
+        b=YHSQNEOOd0/5IzaAh53lgxWU+cVjbtU5HAKKq1OfFqETjF+D6DNkSuV5O5u1OVWovO
+         QAPNSckSg9XasgoygYhZSlR11uQhXEWDdz9lv6FSLQA4ZY0TkWK5nNXRcvvju/xz4JR8
+         0xEsxI+jM/qQ3kngLWxFoH1egbX6g4he1JJbDqpb30NhLnN3no5/xdQmgaBZh/+OKFzq
+         bnHekh7xEIwSSRuQAmUE5gLwWjvozuD6HHADCtJM0t7aAXIAItTRnwNqINrjqm9HiUk/
+         2cEWy+zHGvoX0asak1/SKweBxXP1uJhGe35dbhXfdOuoHHoDDdGoG+nwKHbw3qXcRLgD
+         554A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=vwlfen1PlEcRPhw1oOJnYCO6muzCZdyQOAMVQZcoYTo=;
-        b=mly00LsiL5cbfiLqO1NqkzDF8sDZttpx/GnHN6R78npYpBzvREKbiy3lKGJTH3oNKo
-         01cr+4ZJ5J8PWwDDbRXS7Mz3uUdoumgrO5v9pze+0xbgFu49qPjhDVKOhu+SgqeeOv2q
-         QWIteYQFrfb6L6GmRWD/chl9ej9gBVQtGf+D8aRi5asU6zcrk/vWh6BBUhXalcA8VJTo
-         v3sWmiRHLRRCTPzyOAsZg4oSUHS9WNdRTICsRLzIx3Vcm4bt8Rm9K5AYHV6Tac6n3ypi
-         +Y8+iqQefeoiiDBTI8OIU8EHmXy+dzANQpoaSkAwZnwEQqNyQcE3ruGOK12xjaLdHjaG
-         9esQ==
-X-Gm-Message-State: AOAM5305r5c7DnSFcYlQw3OPJzgwgQtCHYUL2N+YhaI8/1fw/RygyT98
-        379Swhf8kkS37w2arxPX4mwkkcwziD/uoyJH4aS9vE1AW2pLjg==
-X-Google-Smtp-Source: ABdhPJzwLm6L+VqY4bRsDGsV1i+tgu2d13K0Ej38vHg4M3M+7IWXfc/qxz5A5TRrTceOcFLjtEMbdUU0jQwjj9Xrv2k=
-X-Received: by 2002:a05:6830:15c5:: with SMTP id j5mr3930811otr.274.1616223101384;
- Fri, 19 Mar 2021 23:51:41 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=9JKZ3ZpKP/jzajSttwIR2wTO37ERNWhSPBHIr/0lRLk=;
+        b=JyxyotZrUsHcvP1ibdUcbRds9gB2Yp19ftoNvkK1vXkj3dxUWDHoFgGSB6TNZzCEVe
+         HYfWHhOFGWLXUS+VEumUIdrYESMF5d+SHvbtCA191qakvj8IpiULkxUcVm1upajUe6gz
+         RWfvZUyeDZI/z1ygu3WrVHFim4raG1Ru9xYFG6A4bSNpMkyS+1urEeuDrQeOqw4okAJf
+         xO6ihOOMxnSYLsDPu9aXDRlOBM+1ZD8SpQxEKlv1NKYe8T6BHho02dcv5AbhBfqbasJn
+         9aASLFUfjLZ4xDo5jl0901zkyHKfh6IDKy6J8unPBM4+gryKG1wMz3FAwZ8+yQrFjtpQ
+         vUrA==
+X-Gm-Message-State: AOAM5315lTWowCLo5ZBVWzb8Tzh24q+QsKFRscCyIytn84LYKYmJgOB+
+        L5qOiAu7VazlVB39iXgSAIJZBFmBTWxtEg==
+X-Google-Smtp-Source: ABdhPJx4kbr/bDi7lUX6QzM8QPS7YOBgdUNMWeT0gbNFTjbeum4vBVuw1Xw8AhSvRXeDoWZiMBSFcg==
+X-Received: by 2002:a17:906:aad5:: with SMTP id kt21mr8886334ejb.160.1616234005939;
+        Sat, 20 Mar 2021 02:53:25 -0700 (PDT)
+Received: from [10.98.241.150] ([193.16.224.6])
+        by smtp.gmail.com with ESMTPSA id gj13sm5104521ejb.118.2021.03.20.02.53.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Mar 2021 02:53:25 -0700 (PDT)
+Subject: Re: BTRFS error (device sda1): bdev /dev/sdb1 errs: wr 2702175, rd
+ 2719033, flush 0, corrupt 6, gen 0
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Wang Yugui <wangyugui@e16-tech.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <ef3da480-d00d-877e-2349-6d7b2ebda05e@gmail.com>
+ <20210313152146.1D7D.409509F4@e16-tech.com>
+ <cefa397a-c39a-78c3-5e85-f6a9951de7d8@gmail.com>
+ <CAJCQCtR5zeC=jNRf0iSHpqQXDOBExfFzfGj+PzMTxs_S1JVmVg@mail.gmail.com>
+From:   Thomas Schneider <74cmonty@gmail.com>
+Message-ID: <359864d4-6f40-b7e2-bf40-a44ffd053f4b@gmail.com>
+Date:   Sat, 20 Mar 2021 10:53:23 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <CAGdWbB6JtU54uEOotj=H-DG_7oeUT5KZQG5uM-ibiC2YDbV5Nw@mail.gmail.com>
-In-Reply-To: <CAGdWbB6JtU54uEOotj=H-DG_7oeUT5KZQG5uM-ibiC2YDbV5Nw@mail.gmail.com>
-From:   Dave T <davestechshop@gmail.com>
-Date:   Sat, 20 Mar 2021 02:51:30 -0400
-Message-ID: <CAGdWbB6+1fqjWzAKvC8WV--FF8_2r9psLix_YeRBo=UVh33Ocw@mail.gmail.com>
-Subject: Re: parent transid verify failed / ERROR: could not setup extent tree
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJCQCtR5zeC=jNRf0iSHpqQXDOBExfFzfGj+PzMTxs_S1JVmVg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 2:33 AM Dave T <davestechshop@gmail.com> wrote:
->
-> I hope to get  some expert advice before I proceed. I don't want to
-> make things worse. Here's my situation now:
->
-> This problem is with an external USB drive and it is encrypted.
-> cryptsetup open succeeds. But mount fails.k
->
->     mount /backup
->     mount: /backup: wrong fs type, bad option, bad superblock on
-> /dev/mapper/xusbluks, missing codepage or helper program, or other
-> error.
->
->  Next the following command succeeds:
->
->     mount -o ro,recovery /dev/mapper/xusbluks /backup
->
-> This is my backup disk (5TB), and I don't have another 5TB disk to
-> copy all the data to. I hope I can fix the issue without losing my
-> backups.
->
-> Next step I did:
->
->         # btrfs check /dev/mapper/xyz
->         Opening filesystem to check...
->         parent transid verify failed on 2853827608576 wanted 29436 found 29433
->         parent transid verify failed on 2853827608576 wanted 29436 found 29433
->         parent transid verify failed on 2853827608576 wanted 29436 found 29433
->         Ignoring transid failure
->         leaf parent key incorrect 2853827608576
->         ERROR: could not setup extent tree
->         ERROR: cannot open file system
->
-> BTW, this command returns no result:
->
->     which btrfs-zero-log
->
-> I don't have that script/application installed. I'm running Arch Linux. I have
->
-> core/btrfs-progs 5.11-1
-> llinux 5.11.7-arch1-1
+Hello Chris,
 
-I'm following up my own post with additional data. I read some other
-threads that requested this, so I thought I could proactively include
-it.
+many thanks for your analysis.
 
-# btrfs insp dump-s /dev/mapper/xzy
-superblock: bytenr=65536, device=/dev/mapper/xzy
----------------------------------------------------------
-csum_type               0 (crc32c)
-csum_size               4
-csum                    0x44b6abfd [match]
-bytenr                  65536
-flags                   0x1
-                        ( WRITTEN )
-magic                   _BHRfS_M [match]
-fsid                    e23b0b43-0c36-4c7d-b9e1-e821acb259be
-metadata_uuid           e23b0b43-0c36-4c7d-b9e1-e821acb259be
-label                   usb_backup
-generation              29436
-root                    2853792677888
-sys_array_size          129
-chunk_root_generation   29396
-root_level              1
-chunk_root              22052864
-chunk_root_level        1
-log_root                0
-log_root_transid        0
-log_root_level          0
-total_bytes             5000928428032
-bytes_used              2822988496896
-sectorsize              4096
-nodesize                16384
-leafsize (deprecated)   16384
-stripesize              4096
-root_dir                6
-num_devices             1
-compat_flags            0x0
-compat_ro_flags         0x0
-incompat_flags          0x169
-                        ( MIXED_BACKREF |
-                          COMPRESS_LZO |
-                          BIG_METADATA |
-                          EXTENDED_IREF |
-                          SKINNY_METADATA )
-cache_generation        29436
-uuid_tree_generation    29436
-dev_item.uuid           b98c68ff-2e12-41c4-97d3-81d488175dcd
-dev_item.fsid           e23b0b43-0c36-4c7d-b9e1-e821acb259be [match]
-dev_item.type           0
-dev_item.total_bytes    5000928428032
-dev_item.bytes_used     2848662224896
-dev_item.io_align       4096
-dev_item.io_width       4096
-dev_item.sector_size    4096
-dev_item.devid          1
-dev_item.dev_group      0
-dev_item.seek_speed     0
-dev_item.bandwidth      0
-dev_item.generation     0
+I'm not sure how to proceed in order to fix this error.
+Obviously both devices, sda and sdb, are not partitioned 100% 
+correct/optimal.
+
+Therefore I consider to restart from scratch, means
+- creating a file backup of OS
+- deleting any partion on sda and sdb
+- create 2 partitions on sda, part #1 for OS + part #2 for swap 
+(swapfile is not working with BTRFS on multiple drives)
+- restoring the (file) backup
+
+Question:
+Would you recommend to create a swap partition on sdb, too?
+
+Regards
+Thomas
 
 
+Am 13.03.2021 um 19:02 schrieb Chris Murphy:
+> On Sat, Mar 13, 2021 at 5:22 AM Thomas <74cmonty@gmail.com> wrote:
+>
+>> Gerät      Boot Anfang      Ende  Sektoren  Größe Kn Typ
+>> /dev/sdb1         2048 496093750 496091703 236,6G 83 Linux
+>> However the output of btrfs insp dump-s <device> is different:
+>> thomas@pc1-desktop:~
+>> $ sudo btrfs insp dump-s /dev/sdb1 | grep dev_item.total_bytes
+>> dev_item.total_bytes    256059465728
+> sdb1 has 253998951936 bytes which is *less* than the btrfs super block
+> is saying it should be. 1.919 GiB less. I'm going to guess that the
+> sdb1 partition was reduced without first shrinking the file system.
+> The most common way this happens is not realizing that each member
+> device of a btrfs file system must be separately shrunk. If you do not
+> specify a devid, then devid 1 is assumed.
+>
+> man btrfs filesystem
+> "The devid can be found in the output of btrfs filesystem show and
+> defaults to 1 if not specified."
+>
+> I bet that the file system was shunk one time, this shrunk only devid
+> 1 which is also /dev/sda1. But then both partitions were shrunk
+> thereby truncating sdb1, resulting in these errors.
+>
+> If that's correct, you need to change the sdb1 partition back to its
+> original size (matching the size of the sdb1 btrfs superblock). Scrub
+> the file system so sdb1 can be repaired from any prior damage from the
+> mistake. Shrink this devid to match the size of the other devid, and
+> then change the partition.
+>
+>
+>
+>> Gerät      Boot    Anfang      Ende  Sektoren  Größe Kn Typ
+>> /dev/sda1  *         2048 496093750 496091703 236,6G 83 Linux
+>>
+>> thomas@pc1-desktop:~
+>> $ sudo btrfs insp dump-s /dev/sda1 | grep dev_item.total_bytes
+>> dev_item.total_bytes    253998948352
+> This is fine. The file system is 3584 bytes less than the partition.
+> I'm not sure why it doesn't end on a 4KiB block boundary or why
+> there's a gap before the start of sda2...but at least it's benign.
+>
+>
 
-# btrfs inspect-internal dump-super --full /dev/mapper/xzy
-superblock: bytenr=65536, device=/dev/mapper/xzy
----------------------------------------------------------
-csum_type               0 (crc32c)
-csum_size               4
-csum                    0x44b6abfd [match]
-bytenr                  65536
-flags                   0x1
-                        ( WRITTEN )
-magic                   _BHRfS_M [match]
-fsid                    e23b0b43-0c36-4c7d-b9e1-e821acb259be
-metadata_uuid           e23b0b43-0c36-4c7d-b9e1-e821acb259be
-label                   usb_backup
-generation              29436
-root                    2853792677888
-sys_array_size          129
-chunk_root_generation   29396
-root_level              1
-chunk_root              22052864
-chunk_root_level        1
-log_root                0
-log_root_transid        0
-log_root_level          0
-total_bytes             5000928428032
-bytes_used              2822988496896
-sectorsize              4096
-nodesize                16384
-leafsize (deprecated)   16384
-stripesize              4096
-root_dir                6
-num_devices             1
-compat_flags            0x0
-compat_ro_flags         0x0
-incompat_flags          0x169
-                        ( MIXED_BACKREF |
-                          COMPRESS_LZO |
-                          BIG_METADATA |
-                          EXTENDED_IREF |
-                          SKINNY_METADATA )
-cache_generation        29436
-uuid_tree_generation    29436
-dev_item.uuid           b98c68ff-2e12-41c4-97d3-81d488175dcd
-dev_item.fsid           e23b0b43-0c36-4c7d-b9e1-e821acb259be [match]
-dev_item.type           0
-dev_item.total_bytes    5000928428032
-dev_item.bytes_used     2848662224896
-dev_item.io_align       4096
-dev_item.io_width       4096
-dev_item.sector_size    4096
-dev_item.devid          1
-dev_item.dev_group      0
-dev_item.seek_speed     0
-dev_item.bandwidth      0
-dev_item.generation     0
-sys_chunk_array[2048]:
-        item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
-                length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
-                io_align 65536 io_width 65536 sector_size 4096
-                num_stripes 2 sub_stripes 1
-                        stripe 0 devid 1 offset 22020096
-                        dev_uuid b98c68ff-2e12-41c4-97d3-81d488175dcd
-                        stripe 1 devid 1 offset 30408704
-                        dev_uuid b98c68ff-2e12-41c4-97d3-81d488175dcd
-backup_roots[4]:
-        backup 0:
-                backup_tree_root:       2853865455616   gen: 29435      level: 1
-                backup_chunk_root:      22052864        gen: 29396      level: 1
-                backup_extent_root:     2853827903488   gen: 29435      level: 2
-                backup_fs_root:         31408128        gen: 24 level: 0
-                backup_dev_root:        2593527267328   gen: 29423      level: 1
-                backup_csum_root:       2853819629568   gen: 29435      level: 3
-                backup_total_bytes:     5000928428032
-                backup_bytes_used:      2822988496896
-                backup_num_devices:     1
-
-        backup 1:
-                backup_tree_root:       2853792677888   gen: 29436      level: 1
-                backup_chunk_root:      22052864        gen: 29396      level: 1
-                backup_extent_root:     2853792727040   gen: 29436      level: 2
-                backup_fs_root:         31408128        gen: 24 level: 0
-                backup_dev_root:        2593527267328   gen: 29423      level: 1
-                backup_csum_root:       2853816270848   gen: 29436      level: 3
-                backup_total_bytes:     5000928428032
-                backup_bytes_used:      2822988496896
-                backup_num_devices:     1
-
-        backup 2:
-                backup_tree_root:       2853787942912   gen: 29433      level: 1
-                backup_chunk_root:      22052864        gen: 29396      level: 1
-                backup_extent_root:     2853788942336   gen: 29433      level: 2
-                backup_fs_root:         31408128        gen: 24 level: 0
-                backup_dev_root:        2593527267328   gen: 29423      level: 1
-                backup_csum_root:       2853806047232   gen: 29433      level: 3
-                backup_total_bytes:     5000928428032
-                backup_bytes_used:      2822957436928
-                backup_num_devices:     1
-
-        backup 3:
-                backup_tree_root:       2853792727040   gen: 29434      level: 1
-                backup_chunk_root:      22052864        gen: 29396      level: 1
-                backup_extent_root:     2853796118528   gen: 29434      level: 2
-                backup_fs_root:         31408128        gen: 24 level: 0
-                backup_dev_root:        2593527267328   gen: 29423      level: 1
-                backup_csum_root:       2853832540160   gen: 29434      level: 3
-                backup_total_bytes:     5000928428032
-                backup_bytes_used:      2822957436928
-                backup_num_devices:     1
