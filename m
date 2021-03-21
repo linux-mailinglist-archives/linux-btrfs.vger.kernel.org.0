@@ -2,109 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153113433FC
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Mar 2021 19:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117CB3434F3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Mar 2021 22:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhCUSEQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 21 Mar 2021 14:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
+        id S230289AbhCUVEF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 21 Mar 2021 17:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhCUSDw (ORCPT
+        with ESMTP id S229955AbhCUVDm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 21 Mar 2021 14:03:52 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13C5C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 11:03:51 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id c8so1418584wrq.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 11:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=34my5uGmzHOI0JnurbTHPkpYWOjsiN0HqHHFPcX0qJM=;
-        b=F+K0pZjGa9+fLJog6efVwIh66WVsSJd7RV8cjU2gnw2rS+ABkOW8U5wCQ5Z4YuhNUI
-         Kszk1jqi+WRoSz3WyQwVzuzM7LzTmTMx/b2605+dO3Ww86X3lRN2TFyqLGpQHrsDUL+m
-         azk023moOOpcjYKQ0yKg5lqztYZbydj+NkpDAgQEAWiUabhxjAvszLe+Ee52IWKKMcuA
-         EQn2oMFVpYqtjc2gnjOScqNZhHF7FBb+H4hXoYS6Co+Mj/ChMF398vE2PuouNm1zXOqR
-         K+3nXd9yC/nOMT8X2dN+tiGEVLWQJCC+MTesJERoNWH+rHJptI5tIUq9PxKMg6orW3+2
-         c30Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=34my5uGmzHOI0JnurbTHPkpYWOjsiN0HqHHFPcX0qJM=;
-        b=QP4qmx7zk8/8XME0kyP91KSWhEbMuESZ+l/bh90LJoFjsq4zgCmoiuCXx6qgyJn3GS
-         hZY22RN6wEW2jbNegidJEbHg+NzJ7cwm2Nc9hAObrAOVon60/kJGBuO+sMDn6xLEHyBO
-         L80wZ9oZ7zDe1kn/QOGxB1+UYe52o971t/tFs4WIYeNl33xQJnaXbxQpES8nju2AqnZZ
-         e5nnp4EyiUHDDxaJKYSQWFLOCORICPKxORZ/+3IQG4CsXcw+fCobJkBQQYqHtiGruLzl
-         Hg0SW+aE9oix74aS5Nk0usOwxbCBmq5EKC1b1bHBOm3H81iBZDTwABH3U6iTcVxlZvDI
-         KnRw==
-X-Gm-Message-State: AOAM530bCGKrvVq+XTGmGxI4w6TU//pBY6533Q+rxYaSQ0UCVJPR+VgQ
-        HhdkBXssgCQJpmsCGG52VIDD2tfxJY11AIq7v47Pbw==
-X-Google-Smtp-Source: ABdhPJwmck9MNEs8beL+RcQPUi+ece3S/1CIOwagM3+s4DBuR+8+ZfbClIpkX7hY6XhXJR+Gvomi53STjheVZDRXR+c=
-X-Received: by 2002:a5d:42ca:: with SMTP id t10mr14430578wrr.274.1616349830576;
- Sun, 21 Mar 2021 11:03:50 -0700 (PDT)
+        Sun, 21 Mar 2021 17:03:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B1FC061574;
+        Sun, 21 Mar 2021 14:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=8wfvQ4hFHLmLc+ykZLh0i4O/agaX7udT/HQCqpYqs5I=; b=b8Rm4pISqPpovUmHfX0518bszh
+        CtVQ/A8g6KR4OrKwqeDTiYjY+4Y+4WJ+dK5rZeXDa4MFRRDRZMGdWDeX+bGCJFMDO1BWUfIrmVvUk
+        HhLGsPdd8ldbWU9J29EliJsceQ4br6IyDS4cca48N3pfp+16In2etijmA65A6XkfQj8/rhh3m997h
+        y5bzv/qwAqEbV2q90M/C0teTJIH05UZ+qROjXVqiVD7UdhSzCxyFLY0bkuRlayjeiH8AwQNomifHw
+        gEJaC4xvxEcJCohlGTb6g/7bwcsfnjPlbDId/a2YWlygQM0j63V6u+jkbUxUuLlKqANBtOubzQqhZ
+        +r5+oHPQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lO5E8-007ZMB-VO; Sun, 21 Mar 2021 21:03:21 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH] btrfs: Use readahead_batch_length
+Date:   Sun, 21 Mar 2021 21:03:11 +0000
+Message-Id: <20210321210311.1803954-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <CAGdWbB6JtU54uEOotj=H-DG_7oeUT5KZQG5uM-ibiC2YDbV5Nw@mail.gmail.com>
- <CAJCQCtSBc-Dmks2jdgr-Bcpdh_iLvVevtGOa4LdYgHc2eZE6Hg@mail.gmail.com>
- <CAGdWbB4dN45=4T_WbF7tXmm2UsmF0bh=Lb_z-H=QVQWaW=C=Bw@mail.gmail.com> <CAGdWbB61y3CXTbSxe9Rc7ijs9vsLg7qcX4JZ_WpW-73m_1-6_g@mail.gmail.com>
-In-Reply-To: <CAGdWbB61y3CXTbSxe9Rc7ijs9vsLg7qcX4JZ_WpW-73m_1-6_g@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 21 Mar 2021 12:03:34 -0600
-Message-ID: <CAJCQCtRyhh6AY25+RwikJKk_HUW1xveVxYzGvPpFDdWq618KUg@mail.gmail.com>
-Subject: Re: parent transid verify failed / ERROR: could not setup extent tree
-To:     Dave T <davestechshop@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 11:54 PM Dave T <davestechshop@gmail.com> wrote:
->
-> # btrfs check -r 2853787942912 /dev/mapper/xyz
-> Opening filesystem to check...
-> parent transid verify failed on 2853787942912 wanted 29436 found 29433
-> parent transid verify failed on 2853787942912 wanted 29436 found 29433
-> parent transid verify failed on 2853787942912 wanted 29436 found 29433
-> Ignoring transid failure
-> parent transid verify failed on 2853827723264 wanted 29433 found 29435
-> parent transid verify failed on 2853827723264 wanted 29433 found 29435
-> parent transid verify failed on 2853827723264 wanted 29433 found 29435
-> Ignoring transid failure
-> leaf parent key incorrect 2853827723264
-> ERROR: could not setup extent tree
-> ERROR: cannot open file system
+Implement readahead_batch_length() to determine the number of bytes in
+the current batch of readahead pages and use it in btrfs.
 
-btrfs insp dump-t -t 2853827723264 /dev/
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/btrfs/extent_io.c    | 6 ++----
+ include/linux/pagemap.h | 9 +++++++++
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
-> It appears the backup root is already stale.
-
-I'm not sure. If you can post the contents of that leaf (I don't think
-it will contain filenames but double check) Qu might have an idea if
-it's safe to try a read-write mount with -o usebackuproot without
-causing problems later.
-
-> > What you eventually need to look at is what precipitated the transid
-> > failures, and avoid it.
->
-> The USB drive was disconnected by the user (an accident). I have other
-> devices with the same hardware that have never experienced this issue.
->
-> Do you have further ideas or suggestions I can try? Thank you for your
-> time and for sharing your expertise.
-
-The drive could be getting write ordering wrong all the time, and it
-only turns into a problem with a crash, power fail, or accidental
-disconnect.  More common is the write ordering is only sometimes
-wrong, and a crash or powerfail is usually survivable, but leads to a
-false sense of security about the drive.
-
-The simple theory of write order is data->metadata->sync->super->sync.
-It shouldn't ever be the case that a newer superblock generation is on
-stable media before the metadata it points to.
-
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index e9837562f7d6..97ac4ddb2857 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4875,10 +4875,8 @@ void extent_readahead(struct readahead_control *rac)
+ 	int nr;
+ 
+ 	while ((nr = readahead_page_batch(rac, pagepool))) {
+-		u64 contig_start = page_offset(pagepool[0]);
+-		u64 contig_end = page_offset(pagepool[nr - 1]) + PAGE_SIZE - 1;
+-
+-		ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
++		u64 contig_start = readahead_pos(rac);
++		u64 contig_end = contig_start + readahead_batch_length(rac) - 1;
+ 
+ 		contiguous_readpages(pagepool, nr, contig_start, contig_end,
+ 				&em_cached, &bio, &bio_flags, &prev_em_start);
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 2cbfd4c36026..92939afd4944 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -1174,6 +1174,15 @@ static inline unsigned int readahead_count(struct readahead_control *rac)
+ 	return rac->_nr_pages;
+ }
+ 
++/**
++ * readahead_batch_length - The number of bytes in the current batch.
++ * @rac: The readahead request.
++ */
++static inline loff_t readahead_batch_length(struct readahead_control *rac)
++{
++	return rac->_batch_count * PAGE_SIZE;
++}
++
+ static inline unsigned long dir_pages(struct inode *inode)
+ {
+ 	return (unsigned long)(inode->i_size + PAGE_SIZE - 1) >>
 -- 
-Chris Murphy
+2.30.2
+
