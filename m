@@ -2,101 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7C3343627
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Mar 2021 02:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F145E3436B5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Mar 2021 03:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhCVBPC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 21 Mar 2021 21:15:02 -0400
-Received: from mout.gmx.net ([212.227.15.18]:45133 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229613AbhCVBOX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:14:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616375661;
-        bh=1QSL3RHgLMoxHbDklI9X1FO2n68PZvmZKb97iVJlwTA=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=eFOO4ASCNGZepTsSL4mkEPET+jDokpD4fQGK3SDqtUFBKfPXRWpfyJH3Z5rN1Juoa
-         +CwATFA7tE0qitpA71FJNv+cIdS5VJ581q/1YZsSDB75E5k3YFieYdVxAOBKFdYb+P
-         fjWztWCGJDERm3CuPkYSN6sKLgH8ErinRcctYR4g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N1Obh-1lpfRX2eM7-012qFq; Mon, 22
- Mar 2021 02:14:21 +0100
-Subject: Re: Simple question for comment in btrfs-progs qgroup code
-To:     Sidong Yang <realwakka@gmail.com>, linux-btrfs@vger.kernel.org
-References: <20210321113342.GA3319@realwakka>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <9c8d9a67-e4fa-93b9-ba8a-d045156153ff@gmx.com>
-Date:   Mon, 22 Mar 2021 09:14:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229870AbhCVCkI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 21 Mar 2021 22:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhCVCjj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 21 Mar 2021 22:39:39 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88583C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 19:39:39 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id e18so15069545wrt.6
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 19:39:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GCa2wTspF3XYYM9R8FbcUv0lgkwdxY3wirB8OMzuSRE=;
+        b=ISQbuAWkrTavlTtoYe39Ms/cfly/KS+XZh+DLtMqmkYcBoSuFCruzsPHlD7DMV0ijO
+         1+nvN7o3dZ3ZXg5jshWFCH0d4fMjlPCZR+xEtrE4te2mX90jBYZ3h8j7q0BYJo1QXDzW
+         Iv4YTLFQaWZbYilme8D1nuoLTTBdmjA4OxecGpKoRZ06ts1wXt9nK8cs9osW7tFaQ1Ye
+         8dspmOeWJZDvlosAMOJX8GPn2EJZHMzhRe65PXuELwLVOCA0YCU+PRqXS+FEcM1Apm5+
+         UySQXCj4rRASNrYcCV3q3mCscOvkHl9bIFe2vr4mnyxxjrYnaxE+1vxqQvDXSrDo3SXc
+         Q+5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GCa2wTspF3XYYM9R8FbcUv0lgkwdxY3wirB8OMzuSRE=;
+        b=TnEfBzpxfQe96VVVIH7r8+dfbkYfZoLVGiwJ7rMdMCGdtQQBSlxrcwTBRdctiZ05m5
+         9EuIrWBO+7UquGp0daPJ1EzGlL+l1v8+CWMH80mtXPnVG1z7HWhI/F/H6ogF04D57NTg
+         rTTNi2dF4OGUyMIYBk9zXdczF16VVIHKNepvWmJBiVFguQ0twkJmPl95gydUgDAjqmyP
+         9mm6HBYGZLWglMcxOPKcfSrNHBYUXjeEsqJfKFFV2x0qWHr6Y/dXBKLiFC/Qphu+4yR9
+         KH9VLqU8wiRL8kOvrZE2YmRK1Zg9GURg0w2YCVgAdAXYEwL1QCNUyuMPLWFbYDO7wYEC
+         DjYw==
+X-Gm-Message-State: AOAM530BY0ud14Uej61Rr2rEXwpdq60LMs8mjJjCeeGngoGnSjBahvnh
+        L9zCCTn68b+LDgr07KMCJtQRvjnrb+mc7F7e
+X-Google-Smtp-Source: ABdhPJyM0kXGZJYcZrdaihLXrLaye+gILfpQbDvUhthywCTL0sb4RmZKm0796QmHPp1/KqqMkf1rfA==
+X-Received: by 2002:adf:82af:: with SMTP id 44mr15165234wrc.279.1616380777918;
+        Sun, 21 Mar 2021 19:39:37 -0700 (PDT)
+Received: from localhost.localdomain ([46.109.162.86])
+        by smtp.gmail.com with ESMTPSA id z25sm16854353wmi.23.2021.03.21.19.39.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 19:39:37 -0700 (PDT)
+From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.cz>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+Subject: [PATCH] btrfs-progs: btrfs-map-logical fix case when extent isn't found
+Date:   Mon, 22 Mar 2021 04:42:42 +0200
+Message-Id: <20210322024242.32045-1-davispuh@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210321113342.GA3319@realwakka>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HtXFSxaEvN1APSJlKPS+5MmgBzHZn4UcT6IxIsmFV3K5zet860t
- Qc3V/rhfVgvvk2KnPjJCt50jhOwTazJOGzyGcMyPTwW9baYjIE2zIWpQaTg3Lu8CnpdtMYy
- Mgud6DDPGK1ujX0ekFcJ93w5TRvHdb76gHR9eCH9MH8h+JVWmWhsAmr6ALx2BiYoX2OoPWo
- SDBvYkwNIwe3fW8g2VE+Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5FhJZi/wEag=:GvtH2giWkLN6uMi4VxwUCi
- cr02u5KkMMh1ZqlJbcD33xwnkxql9j8RIBcEoeR+k2IGYL62Nos0g0A7402wA9LMU4/PvOX6s
- vgUIjgz9cTzosqbM8V2/fWRblOw7QIkHvDwfjDwyvid+AuASzjov2CZgf6qAYJyyoy5bdQqJg
- S1DxF+oxdQ7Yz6Om1mtmVGolO2D6rWhEnkx6QlWkG21XZphOu1ImfKct31SgzY5ztLChhlRC6
- YO/yJjHERAuNm885Xy9IyNKL62+GJtZIZ7IAO2nzW3Tp3Zf+SOKg7p3rcEYsu9kkCg6dpvjp7
- 0Lqz6qcEmz4j5gMonackkcTPRlRbKudagsm73BZyBZs2O39Qc5ukgdjLz4m39Drt4E/NLFujE
- OilDlIA3Yr9fpPKOfM+tRAG4W9O4ZUIY+JBgkN7Ig0y038CH4/Tob5L1ZK6EgUR7MY21OgNmP
- 2AJyoqps5o+N1a9ERsLFdLYxpiNSQdVwwN0B1VOsg8Khm0sBr6W+m1ZOhtJOfVdVGRYS3199U
- frTB3Afu0YO3W10D4evlF7ZdCaNrX0jaQPqh9RFa9l+Ubt3elnYt5nQRG68zdP9Cs0NE8ad2i
- Wn1CwA5C5LzpfVvKS8OMVW+iISyCEH2NwTLfLoW+Xe7R5CxG/i+K/M0SAvbRqwOc3Z0FmlIj+
- BkbE340ndECRq05lz/wRoW6BI7kR8g8EdBSRnMuX5EV0fJYj8HVMAt9b9cW0iURs4NE6AGZ/O
- rfRyx70WWClu539sz9UBM5+OlhSiqBfK++DzGjM3QzMe64yawLqIjnddyS1iVl9qFv+NfoCPf
- sR6x1sxI+hvFOhHKRPOtCAGJPUcMIRMrs+6TZzppGrI3OMMiXqorkYxzanjycE6uNHFfXWn/4
- nsNLCpa9Bm3NX32nd/sLpMy5PjXveOluur2xepzSgidDCc+By4ExhcwO3JUaiTMHGhlKVkJvR
- RXa77qDgv0ewY7w/PNkLkKzVoQpPBa3Z8Jz5io0ORQiIGsy65B9ehRbm0G3Aq25sGUranrR3o
- 4/oSHT15UHV1aB3K4uF/IGQXBCsif6k405rljwiZAeNQpsnqvP7rLwqZLLPAA+IEvNyCyHcZP
- 6aoj9n+CZuT+s/60YcMv3ANcgtt0fkZO0Rsgh7QMcmJksoHemGOryl9V8I20pUlkVNDwbKhwN
- tw2uuT89LfOYpgB0jmZ2aaCmCS0Sutnl5xsuW91VusDyZS0vFRQeBEkbAqYUcdC0iIsuaq2Ve
- PkMtQvXCtaEDj3Wf3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Given extents:
+[21057146519552,21057146535936)
+[21057146552320,21057146568704)
 
+and trying to map 21057146535936 we would find 21057146519552
+which would give us extent with length of 0 because
 
-On 2021/3/21 =E4=B8=8B=E5=8D=887:33, Sidong Yang wrote:
-> Hello!
->
-> I see an comment in qgroup cmds below.
->
-> diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-> index 2da83ffd..a71089e9 100644
-> --- a/cmds/qgroup.c
-> +++ b/cmds/qgroup.c
-> @@ -84,6 +84,7 @@ static int _cmd_qgroup_assign(const struct cmd_struct
-> *cmd, int assign,
-> 	/*
-> 	* FIXME src should accept subvol path
-> 	*/
->
-> This comment is little confusing for me. src was parsed with
-> parse_qgroupid() and it also accepts subvol path. is it outdated
-> comment? or src should accept only lowest level of qgroup?
+> real_logical = max(logical, cur_logical); // logical (21057146535936)
+> real_len = min(logical + bytes, cur_logical + cur_len) -
+> real_logical;
+// cur_logical (21057146519552) + cur_len (16384) -
+// real_logical (21057146535936) = 0
 
-It's outdated and confusing.
+So we need to break before this
 
-For the assign ioctl, it only accepts 3 u64 parameters,
-assign:bool to indicate if it's adding or deleting qgroup relationship.
-src/dst to specify the qgroupid (u64).
+Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
+---
+ btrfs-map-logical.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-There is no room for path at all.
+diff --git a/btrfs-map-logical.c b/btrfs-map-logical.c
+index 24c81b8d..a2030f96 100644
+--- a/btrfs-map-logical.c
++++ b/btrfs-map-logical.c
+@@ -327,17 +327,18 @@ int main(int argc, char **argv)
+ 		u64 real_logical;
+ 		u64 real_len;
+ 
+-		found = 1;
+ 		ret = map_one_extent(root->fs_info, &cur_logical, &cur_len, 1);
+ 		if (ret < 0)
+ 			goto out_close_fd;
+ 		if (ret > 0)
+ 			break;
+ 		/* check again if there is overlap. */
+-		if (cur_logical + cur_len < logical ||
++		if (cur_logical + cur_len <= logical ||
+ 		    cur_logical >= logical + bytes)
+ 			break;
+ 
++		found = 1;
++
+ 		real_logical = max(logical, cur_logical);
+ 		real_len = min(logical + bytes, cur_logical + cur_len) -
+ 			   real_logical;
+-- 
+2.30.2
 
-The qgroupid resolve is done completely in user space.
-
-Feel free to delete the comment.
-
->
-> Thanks,
-> Sidong
->
