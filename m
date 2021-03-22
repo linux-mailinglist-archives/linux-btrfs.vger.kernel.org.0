@@ -2,109 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFF43436E9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Mar 2021 03:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D08A343728
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Mar 2021 04:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhCVC6w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 21 Mar 2021 22:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
+        id S229613AbhCVDOA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 21 Mar 2021 23:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhCVC6n (ORCPT
+        with ESMTP id S229865AbhCVDNZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 21 Mar 2021 22:58:43 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81856C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 19:58:42 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id o16so15090529wrn.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 19:58:42 -0700 (PDT)
+        Sun, 21 Mar 2021 23:13:25 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFF2C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 20:13:25 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id x16so8026180qvk.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Mar 2021 20:13:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zIowy3iK6c5dODdqV7FzL5lTygPgHIthJY8xldBe6F8=;
-        b=VS+r++qato0R6FFoIH2M3/zoL+pNp7V0R7OK78FUfkA5Op/Wozfwx7DRoEgqjgKt69
-         ngatHMiOTH6ofibuhcZKtgiQV7HYpDsa6avF+rnSgQ9tGEyTc5pbjrwIcJnmc6yv4mRg
-         ITVc7xamAzPkofbOlbGRvYsYJni3muBWlDZnmkQCWM40pcRRmKVJ3zWQhx9qvqf8h/MG
-         8RZN3AChSgygLdc7GpjvmyIfIYL/RwyWrDcb6ZE5zVRcqahmCX1Zgc3VnS97mV4SGesv
-         g589a4jaCAG8k6QAM+0utVodNFLSSn8JWpyERTptggKZRb6N5hXKiMcyA0GtOFx6CDNY
-         9Qfw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BhMRC18s+X6rAfh3tD+Uc3d5M3rLDXyPbfW2VVktxvg=;
+        b=ookW0j9yLek1SDCfi7TbPrYpyKu47LMGUVyDSeYLd9TyhwrtQJNRhNivzBvmZq2eCJ
+         z4EiqVUQJqyjvv5/ZPJAcTfsMf7Y0Z4rLz+GC1h9zlIPHfLjJZPaPmioeSwqHMKaQ/Yf
+         2M8eYUM8aho8EkmRk+w5MKA8G1OMNREdugIW23g54wDyqlIE0RRo4IcBP4tiRdw8jsG4
+         oNXTp8FesghdYlOSgGsJE4PJHOOB9yPP+T3gdhCT1WRQdrmNwRSd1nGK5vmuM7YCuDbH
+         cFQoge0+sTy61+btyQLRf+I1e31MVX8Czea46uOL34R5pqO5SWJzk4MwmmZWefqIO+Bw
+         9YNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zIowy3iK6c5dODdqV7FzL5lTygPgHIthJY8xldBe6F8=;
-        b=k3XmhJJa3u6ia0wpHSccCYI4RPXRKpVrnwE5+rszdI3NxoJaHii0E5K/oRqp+cqXD5
-         zOSATb1+VWXR8xhK+sp0c+ofLLYmmIF9gijaqlHI3KGdqrW3uuRsfLJFL/90cIyXMd1P
-         YackcPmZotZnHKpyncwmfzX2T8+JF4O1HRMg9/IQ3yORXb2DWZf19SVCAY2zDjyw9nTB
-         ae5Fc/Yzjd07NKH5pydw3xHM9volfvKt6KShG6EeKPyWm+cGzLjAyhs/fHa4L3vhEDr+
-         BYU8VTiMyZmOqGsjLVXks+PzUlG1dgsoAMeuz3YQX8vN6IFOQtZKIsq53ed7ozI0umZX
-         6peg==
-X-Gm-Message-State: AOAM530Xd3qtU6tZ549EYJBp7oCwxc8uPOg/wmBEC2ONabx/MG8gIk36
-        3QUFzkACXLTtd1uyVspXRcMZRAAoSI9h6Plx
-X-Google-Smtp-Source: ABdhPJz9hOOQGOE4aH03xHpgTY5TU5KtZHPtJTEbFdzaguV3t5tNwDNx+7ZQ1XCalpc58aCbc9IDZg==
-X-Received: by 2002:a5d:64af:: with SMTP id m15mr9297638wrp.231.1616381920798;
-        Sun, 21 Mar 2021 19:58:40 -0700 (PDT)
-Received: from localhost.localdomain ([95.68.85.155])
-        by smtp.gmail.com with ESMTPSA id m11sm17032258wrz.40.2021.03.21.19.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 19:58:40 -0700 (PDT)
-From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.cz>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
-Subject: [PATCH] btrfs-progs: For btrfs-map-logical proceed even with some extent corruption
-Date:   Mon, 22 Mar 2021 05:02:07 +0200
-Message-Id: <20210322030207.34335-1-davispuh@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BhMRC18s+X6rAfh3tD+Uc3d5M3rLDXyPbfW2VVktxvg=;
+        b=dncwcMes2/rj3UFf4njjT/+nRWsww+IjSPVq6f1yMEU7uK+yg+Gh3JNTdj/fUfQMHm
+         Tv0PItYLKYyBh7vqba6yUdHDuLpEUOMU1ZRWHMJutp/NtLAHW6mytHAm4REf6SGuhjAO
+         +Igx/jloP0uuDoILihJVZWToDNTxrYdCs/VqESHtPbtulMmpdHf9nSDv6oC/XmA+i3Fc
+         RQCaUDVbbAka/ng51p4WbNacZ9X+11NVEoXJermkSL8TMALe6tPCcrOC51i3GhzKgRp4
+         e7jKB+5RqK1Ufa6GJHIbbnG3B7IJ7jCflvrTWjPgjGsFQdrxcDty4xnG84pXmZn49PyS
+         0Kow==
+X-Gm-Message-State: AOAM533Z9JrvABqqzEbpawJLdvv7d+rIQobL93TP/gAlxb4HQ+8Z9MYj
+        aFr7qo/djJdenFxIQnmTnljZnk2gljoaaj8gQ9IFu0gEQg1+DpRS
+X-Google-Smtp-Source: ABdhPJw3YgirrNAv6XZ57dJKuobFSR4Uxg0BgiOTFvzk7pD5cFqR+f05I19TItvao2obJ6403AD3IM1Fde8jlj/Inos=
+X-Received: by 2002:a05:6214:1051:: with SMTP id l17mr19563263qvr.49.1616382804603;
+ Sun, 21 Mar 2021 20:13:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210317012054.238334-1-davispuh@gmail.com> <CAOE4rSwj9_DMWLszPE5adiTsQeK+G_Hqya_HkDR=uEC7L4Fj3A@mail.gmail.com>
+ <20a5d997-740a-ca57-8cbc-b88c1e34c8fc@gmx.com> <CAOE4rSyX-qTWKS_MTS5dLpfuVnqS=LwfqThyCTP=iBEH5x2bOQ@mail.gmail.com>
+ <01129192-1b93-2a93-2edd-f29f544fe340@gmx.com> <CAOE4rSwOLQY1JWr-Mdq06Y9nwU_WcQBnfXZx3VWhRQGnBThHUQ@mail.gmail.com>
+ <f48c758a-39a3-c73e-fc50-5ab37d2280f9@gmx.com> <CAOE4rSzF3g4nA3sXkzEi9MJxFGZ+Sp+POAQHVsXV531y4CJTiA@mail.gmail.com>
+ <7db8f3ca-785b-e985-99eb-474aba82281f@gmx.com>
+In-Reply-To: <7db8f3ca-785b-e985-99eb-474aba82281f@gmx.com>
+From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Date:   Mon, 22 Mar 2021 05:13:13 +0200
+Message-ID: <CAOE4rSzy645eDZZEsdDrdTGtfePPrPgnU3XrW+xBToU3fUzr8g@mail.gmail.com>
+Subject: Re: [RFC] btrfs: Allow read-only mount with corrupted extent tree
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, clm@fb.com,
+        Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If extent tree is corrupted then open_ctree without OPEN_CTREE_NO_BLOCK_GROUPS
-does fail preventing use of btrfs-map-logical at all.
-Also even if we can't find extent it still can be useful to get physical
-offset which could be correct.
+pirmd., 2021. g. 22. marts, plkst. 02:25 =E2=80=94 lietot=C4=81js Qu Wenruo
+(<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
+>
+>
+>
+> On 2021/3/22 =E4=B8=8A=E5=8D=885:54, D=C4=81vis Mos=C4=81ns wrote:
+> > sestd., 2021. g. 20. marts, plkst. 02:34 =E2=80=94 lietot=C4=81js Qu We=
+nruo
+> > (<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
+> >>
+> >>
+> >>
+> >> On 2021/3/19 =E4=B8=8B=E5=8D=8811:34, D=C4=81vis Mos=C4=81ns wrote:
+> >>> ceturtd., 2021. g. 18. marts, plkst. 01:49 =E2=80=94 lietot=C4=81js Q=
+u Wenruo
+> >>> (<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2021/3/18 =E4=B8=8A=E5=8D=885:03, D=C4=81vis Mos=C4=81ns wrote:
+> >>>>> tre=C5=A1d., 2021. g. 17. marts, plkst. 12:28 =E2=80=94 lietot=C4=
+=81js Qu Wenruo
+> >>>>> (<quwenruo.btrfs@gmx.com>) rakst=C4=ABja:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 2021/3/17 =E4=B8=8A=E5=8D=889:29, D=C4=81vis Mos=C4=81ns wrote:
+> >>>>>>> tre=C5=A1d., 2021. g. 17. marts, plkst. 03:18 =E2=80=94 lietot=C4=
+=81js D=C4=81vis Mos=C4=81ns
+> >>>>>>> (<davispuh@gmail.com>) rakst=C4=ABja:
+> >>>>>>>>
+> >>>>>>>> Currently if there's any corruption at all in extent tree
+> >>>>>>>> (eg. even single bit) then mounting will fail with:
+> >>>>>>>> "failed to read block groups: -5" (-EIO)
+> >>>>>>>> It happens because we immediately abort on first error when
+> >>>>>>>> searching in extent tree for block groups.
+> >>>>>>>>
+> >>>>>>>> Now with this patch if `ignorebadroots` option is specified
+> >>>>>>>> then we handle such case and continue by removing already
+> >>>>>>>> created block groups and creating dummy block groups.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
+> >>>>>>>> ---
+> >>>>>>>>      fs/btrfs/block-group.c | 14 ++++++++++++++
+> >>>>>>>>      fs/btrfs/disk-io.c     |  4 ++--
+> >>>>>>>>      fs/btrfs/disk-io.h     |  2 ++
+> >>>>>>>>      3 files changed, 18 insertions(+), 2 deletions(-)
+> >>>>>>>>
+> >>>>>>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> >>>>>>>> index 48ebc106a606..827a977614b3 100644
+> >>>>>>>> --- a/fs/btrfs/block-group.c
+> >>>>>>>> +++ b/fs/btrfs/block-group.c
+> >>>>>>>> @@ -2048,6 +2048,20 @@ int btrfs_read_block_groups(struct btrfs_=
+fs_info *info)
+> >>>>>>>>             ret =3D check_chunk_block_group_mappings(info);
+> >>>>>>>>      error:
+> >>>>>>>>             btrfs_free_path(path);
+> >>>>>>>> +
+> >>>>>>>> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROO=
+TS)) {
+> >>>>>>>> +               btrfs_put_block_group_cache(info);
+> >>>>>>>> +               btrfs_stop_all_workers(info);
+> >>>>>>>> +               btrfs_free_block_groups(info);
+> >>>>>>>> +               ret =3D btrfs_init_workqueues(info, NULL);
+> >>>>>>>> +               if (ret)
+> >>>>>>>> +                       return ret;
+> >>>>>>>> +               ret =3D btrfs_init_space_info(info);
+> >>>>>>>> +               if (ret)
+> >>>>>>>> +                       return ret;
+> >>>>>>>> +               return fill_dummy_bgs(info);
+> >>>>>>
+> >>>>>> When we hit bad things in extent tree, we should ensure we're moun=
+ting
+> >>>>>> the fs RO, or we can't continue.
+> >>>>>>
+> >>>>>> And we should also refuse to mount back to RW if we hit such case,=
+ so
+> >>>>>> that we don't need anything complex, just ignore the whole extent =
+tree
+> >>>>>> and create the dummy block groups.
+> >>>>>>
+> >>>>>
+> >>>>> That's what we're doing here, `ignorebadroots` implies RO mount and
+> >>>>> without specifying it doesn't mount at all.
+> >>>>>
+> >>>>>>>
+> >>>>>>> This isn't that nice, but I don't really know how to properly cle=
+an up
+> >>>>>>> everything related to already created block groups so this was ea=
+siest
+> >>>>>>> way. It seems to work fine.
+> >>>>>>> But looks like need to do something about replay log aswell becau=
+se if
+> >>>>>>> it's not disabled then it fails with:
+> >>>>>>>
+> >>>>>>> [ 1397.246869] BTRFS info (device sde): start tree-log replay
+> >>>>>>> [ 1398.218685] BTRFS warning (device sde): sde checksum verify fa=
+iled
+> >>>>>>> on 21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
+> >>>>>>> [ 1398.218803] BTRFS warning (device sde): sde checksum verify fa=
+iled
+> >>>>>>> on 21057127661568 wanted 0xd1506ed9 found 0x7dd54bb9 level 0
+> >>>>>>> [ 1398.218813] BTRFS: error (device sde) in __btrfs_free_extent:3=
+054:
+> >>>>>>> errno=3D-5 IO failure
+> >>>>>>> [ 1398.218828] BTRFS: error (device sde) in
+> >>>>>>> btrfs_run_delayed_refs:2124: errno=3D-5 IO failure
+> >>>>>>> [ 1398.219002] BTRFS: error (device sde) in btrfs_replay_log:2254=
+:
+> >>>>>>> errno=3D-5 IO failure (Failed to recover log tree)
+> >>>>>>> [ 1398.229048] BTRFS error (device sde): open_ctree failed
+> >>>>>>
+> >>>>>> This is because we shouldn't allow to do anything write to the fs =
+if we
+> >>>>>> have anything wrong in extent tree.
+> >>>>>>
+> >>>>>
+> >>>>> This is happening when mounting read-only. My assumption is that it
+> >>>>> only tries to replay in memory without writing anything to disk.
+> >>>>>
+> >>>>
+> >>>> We lacks the check on log tree.
+> >>>>
+> >>>> Normally for such forced RO mount, log replay is not allowed.
+> >>>>
+> >>>> We should output a warning to prompt user to use nologreplay, and re=
+ject
+> >>>> the mount.
+> >>>>
+> >>>
+> >>> I'm not familiar with log replay but couldn't there be something
+> >>> useful (ignoring ref counts) that would still be worth replaying in
+> >>> memory?
+> >>>
+> >> Log replay means metadata write.
+> >>
+> >> Any write needs a valid extent tree to find out free space for new
+> >> metadata/data.
+> >>
+> >> So no, we can't do anything but completely ignoring the log.
+> >>
+> >
+> > I see, updated patch. But even then it seems it could be possible to
+> > add new ramdisk and make allocations there (eg. create new extent tree
+> > there) thus allowing replay.
+>
+> The problem here is, since the extent tree is corrupted, we won't know
+> which range has metadata already.
+> While metadata CoW, just like its name, needs to CoW, which means it
+> can't writeback (even just in memory) to anywhere we have metadata.
+>
+> The worst case is, we choose a bytenr for the new metadata to be (in
+> memory), but it turns out later read needs to read metadata from the
+> exactly same location.
+>
 
-Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
----
- btrfs-map-logical.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+The idea is if we add new disk then we would put it after last bytenr
+(which isn't mapped to any existing disks) thus there wouldn't be any
+overlap.
 
-diff --git a/btrfs-map-logical.c b/btrfs-map-logical.c
-index 24c81b8d..d121a8c4 100644
---- a/btrfs-map-logical.c
-+++ b/btrfs-map-logical.c
-@@ -261,7 +261,7 @@ int main(int argc, char **argv)
- 	radix_tree_init();
- 	cache_tree_init(&root_cache);
- 
--	root = open_ctree(dev, 0, 0);
-+	root = open_ctree(dev, 0, OPEN_CTREE_NO_BLOCK_GROUPS);
- 	if (!root) {
- 		fprintf(stderr, "Open ctree failed\n");
- 		free(output_file);
-@@ -298,6 +298,9 @@ int main(int argc, char **argv)
- 		errno = -ret;
- 		fprintf(stderr, "Failed to find extent at [%llu,%llu): %m\n",
- 			cur_logical, cur_logical + cur_len);
-+		fprintf(stderr, "Trying a guess!\n");
-+		print_mapping_info(root->fs_info, logical, bytes);
-+
- 		goto out_close_fd;
- 	}
- 	/*
-@@ -358,6 +361,8 @@ int main(int argc, char **argv)
- 	if (!found) {
- 		fprintf(stderr, "No extent found at range [%llu,%llu)\n",
- 			logical, logical + bytes);
-+		fprintf(stderr, "Trying a guess!\n");
-+		print_mapping_info(root->fs_info, logical, bytes);
- 	}
- out_close_fd:
- 	if (output_file && out_fd != 1)
--- 
-2.30.2
+>
+> BTW, I'm curious what's your test cases? As it seems you're using
+> log-replay but if we hit anything wrong for the replayed data, it means
+> btrfs kernel module has something wrong.
+> Did you add extra corruption for the replayed data, or it's some bug
+> unexposed?
 
+Basically I've a corrupted btrfs due to HBA card fault and before I
+nuke it I want to copy as much usable data as possible. So I was
+thinking if whatever is in replay log could be restored. The replay
+tree log itself is perfectly fine with valid checksum and there isn't
+any issues regarding that. I looked at it with `btrfs inspect
+dump-tree` and saw that there isn't anything important so it's fine
+ignoring it.
