@@ -2,96 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7803452A8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Mar 2021 23:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864813452EF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Mar 2021 00:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhCVW5x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Mar 2021 18:57:53 -0400
-Received: from mout.gmx.net ([212.227.17.20]:58753 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhCVW5X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Mar 2021 18:57:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616453839;
-        bh=S0K00jKu7y2uzoscj68X5OaopkLnGqlchz+DnQB/lD8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=b2+WI7uBo9rhaqmaflLdJlAuDsT9le1repHw67GozyxoezbIyCTQJR477lKBaKsdQ
-         8jrlK38UX2YfRMRbPCQkQe6Z89lNJpGQp1D7m08LIlytA5o0EXgmCMFYRbia7F59Ym
-         QtmHbesRC4wM/aZOb8bRt1KozH0yh3b5o6QADYjo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M59C8-1lPZwg0joq-001EGB; Mon, 22
- Mar 2021 23:57:19 +0100
-Subject: Re: [PATCH] btrfs-progs: qgroup: remove outdated comment
-To:     Sidong Yang <realwakka@gmail.com>, linux-btrfs@vger.kernel.org
-References: <20210322140316.384012-1-realwakka@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <4736ee1f-2749-87df-e357-ff785b511087@gmx.com>
-Date:   Tue, 23 Mar 2021 06:57:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230354AbhCVXUB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Mar 2021 19:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230274AbhCVXT4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Mar 2021 19:19:56 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5F9C061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Mar 2021 16:19:55 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id cx5so9553753qvb.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Mar 2021 16:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=gKBIEADjwH2LxNdhHjPfZp2WKJpruzkKtlxaqq52NiI=;
+        b=BVVxQ6WWOiTT2feKmeyNjZP/mATnytjPRJzizgpcS0ZSuDYQCD5Zui775KZicDJ/n9
+         AFqMLRgTe3mX+MKu6UDd0Bc3ZxSL9d1hQ/v+iGm1s9mjpiwWzaiG6V7PjPc21AuQg4mE
+         AtuidK03jDpgslmvdVSvgs4Rs79QM4cax1qqtuv/yU2126Gto55i9Po7uY+zYsWQUzQg
+         NG2bcj+pxlqq6Ow2LJLkEzKjzpeupLxmLw6vH822xXRGL9HOHmjkEdwjLhNp4W1JHZ0P
+         y8B/fiXfW4XPrIWxRBw/c27xfYIp99UzwTvR/2gRAAKQ1I1DCGFulzFvCYpLlB9e3L5c
+         +EHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=gKBIEADjwH2LxNdhHjPfZp2WKJpruzkKtlxaqq52NiI=;
+        b=mKkj2g7VGfUXLo2pW9Mqw0z4qoFiiRjRudWnb1l+Ktnwf6tSAwiDgebZZ+R3VIJLKw
+         2uajhaNsTdK4TWvyiYYjmjo3+Zp0qirq3Vn63syqsJSdWAr2NSf14aDdSKul7hA4HCkT
+         dO9tgh9eeUIIrLmK7qpsi2Fevu6GKcwfWTkyJhuLdQoVsvxbDPX19cL1vF9W6xftibFn
+         eDo+RzYWRfJ7U9bCpI4eMQtLpwJzLzn2eyrNyux9Atwy7ScCfa5S6Zq9oq87JJPg/SpC
+         Ah4fTsieZno0suBxum8K3izCwWc1i0QL3lKuGTxalLd5lGs15/nUnn5T+0HSSaWoM7Ss
+         uy8g==
+X-Gm-Message-State: AOAM531pHwekUBVTgeYO3UJffme1kqbfQ1YHTjqIADhBssa5+GcLyGbs
+        Fg8/hL0hjGHD+EpfjS3yElVgivOn4bo=
+X-Google-Smtp-Source: ABdhPJwj/lxdNFhRkXOJ2Cz59sDz3pBKIar9/mb2j8+Bwmvze33UCD1KhpEeZeYS+4dtN09F8v5wyg==
+X-Received: by 2002:a05:6214:268c:: with SMTP id gm12mr2162925qvb.36.1616455194816;
+        Mon, 22 Mar 2021 16:19:54 -0700 (PDT)
+Received: from MacbookPro.local (c-73-249-174-88.hsd1.nh.comcast.net. [73.249.174.88])
+        by smtp.gmail.com with ESMTPSA id y19sm12199392qky.111.2021.03.22.16.19.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Mar 2021 16:19:54 -0700 (PDT)
+Subject: Re: APFS and BTRFS
+To:     "Eu, acc" <accensi@gmail.com>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org
+References: <7ead4392-f4c2-2a5b-c104-ae8be585d49e@gmail.com>
+ <20210322222257.GC7604@twin.jikos.cz>
+ <CAA+gEba91br_M6qERcwL5no=DdMSw3QA7iNwf8OGwskX=9Z6_g@mail.gmail.com>
+From:   Forrest Aldrich <forrie@gmail.com>
+Message-ID: <8aaa32e2-c9bf-ef48-b6ac-1b04b26ab415@gmail.com>
+Date:   Mon, 22 Mar 2021 19:19:52 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210322140316.384012-1-realwakka@gmail.com>
+In-Reply-To: <CAA+gEba91br_M6qERcwL5no=DdMSw3QA7iNwf8OGwskX=9Z6_g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3EXZ+SuLXx9FSQB+gP230xkdHIR/c1wAMpPviPHtbBesBAqqsqO
- AOKGONYiyfW+DAP9gIjMIbqdP3okqs3nD4uH2I9aqBAkTQHyK0NONq1apRf7xE4h8T5epPl
- K0BPyzJhA4MQWOexXtzRCT+fpGKXWYiREDMcLpCRc8dxOrJwbPYVDZt+vlM2kr4frGvwh78
- bWFfvNQYb+GQUbE0+tyOA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6AcOFkbkxhM=:Kv3gFy603fg6i8c6r+fIYP
- Ej7loBbJg0gLWRDqGXsAJiHu2z469kQZRHvbYyqPMtkYnzDJNFmq0azgms8ZDY7eTQL1SnGq0
- uTX9JplWsV4CgK6giaGKKSoAAD4sh/ek7UM/sTt39U/GGVEWkfCjkJk0EqClkFBnsUGjnHYP4
- oJnvngOW2be7NFtZT8bkH3eyBhWYfydDpOsCXPfItMi5cW3MYU8o+utwZ3B1zc9cTtpFbbn85
- t4kqABhQH/v6dbBLfoMju/vZnvQQ8T7uEvPH6rGpMLItbMVa0L3mYQPjb90RL2j0HgD4vKeIu
- 9okszfuy1nweRP+NkGXBdjJ90PJF97kqQsOlrEkww0I8aIKECY6iN2rOrqZboUOhxmnfj0O10
- +8LYw7kqFyv5llR2qiYK9CWLhCOWo6/jVfPNH4EYB/L99w9CRPgG59tHgqrdhINvvhMYujJWj
- w8+lxnJsdDXqRk4QO6MWVk0u1ci5FDAdEE9ZBTDkPQVcx4Qg/jxKxz0XQT5eoS2vxLdQUeKaf
- E5UnBs6rrbtHVgn1ZgdPAoIqqkSfbPlkJ1dIm5OCCcjwNBwu4I55J6CLNVvO8ey/TZLqYfguZ
- xAR+KnYWbfddc5RJ0lNpfo24M35j9ANCidxsjsR5ottPTSdaA4332uKExm69DzrzotS2En8YJ
- Mg0RSlc04NCRSRC3G/gDZsJeDmv58pVUlnIZZIo24i6OMS4uaWXpGsZzYRx4VhJHVdMJfPlIW
- ADLS9wxF+M4pFaqhMqQzn9cY44mVUWZ7BRCd88upd09oREIqGNkSOMDr8gT2eVWJKM8KBHg+V
- ewvTKMQ8lYcTn+TBiMro9CMcRnfrS0QXQcB5HxnpN+5m2inITcHrbSbJlfjhGY01U50n2C6zY
- P3Y1B+8sMAW6i+mDt4bWw7PsgNC6vtdh8Sub2w+jeAKY96iL3C2crDQ+07XfSAetYXamY81Il
- nC93tNvu5hJt0r8SX6du0D+P5GVxAKKvKGrwbIWdulJ6tyYDbaPQRCoxQBUaxjIdc5jElL/ih
- LxzO7K+Gc/OadD2/NsABdTScNbvtjTa9zBF08gylc01LjZv+E4k8J4K3aRP3Kw6p4Q00e2cTG
- 9kLUbg4kQOqfnEdqaJZ07WDGZimn0gaLG1RSZpoWoNCCVAJHngLmGRPFySF7mjkwoiPCNLTUg
- NUDg2ZPQgzwFprN9qmgtoCwwuBlwvAE6LUXrtf45vHM6zKxCZTBkA/bQiphQTIVrV42agdnzs
- lw8Kw5mIFH4+ox6dX
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I have apfs-fuse running, but it is read-only.
+
+I wanted to avoid the pain of replicating a large disk from USB3 to USB3 
+by converting the filesystem, which I expected wouldn't be possible.  So 
+now I am just replicating it, which will take days to accomplish.
 
 
-On 2021/3/22 =E4=B8=8B=E5=8D=8810:03, Sidong Yang wrote:
-> This comment is outdated and this patch remove
-> it to avoid confusion.
->
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+Thanks.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Thanks,
-Qu
-> ---
->   cmds/qgroup.c | 3 ---
->   1 file changed, 3 deletions(-)
+
+On 3/22/21 7:13 PM, Eu, acc wrote:
+> Read-only;
+> - linux-apfs read-only version, linux-apfs-oot 
+> https://github.com/linux-apfs/linux-apfs-oot 
+> <https://github.com/linux-apfs/linux-apfs-oot>
+> - apfs-fuse https://github.com/sgan81/apfs-fuse 
+> <https://github.com/sgan81/apfs-fuse>
+> - Linux-Reader, from DiskInternals, a Windows(!) freeware
 >
-> diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-> index 2da83ffd..b33f77fa 100644
-> --- a/cmds/qgroup.c
-> +++ b/cmds/qgroup.c
-> @@ -81,9 +81,6 @@ static int _cmd_qgroup_assign(const struct cmd_struct =
-*cmd, int assign,
->
->   	path =3D argv[optind + 2];
->
-> -	/*
-> -	 * FIXME src should accept subvol path
-> -	 */
->   	if (btrfs_qgroup_level(args.src) >=3D btrfs_qgroup_level(args.dst)) {
->   		error("bad relation requested: %s", path);
->   		return 1;
->
+> ACC
+
