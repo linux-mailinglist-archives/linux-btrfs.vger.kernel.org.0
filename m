@@ -2,76 +2,369 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FC1346336
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Mar 2021 16:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 391B3346425
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Mar 2021 16:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhCWPn6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Mar 2021 11:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232956AbhCWPnn (ORCPT
+        id S233007AbhCWP66 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Mar 2021 11:58:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36754 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233013AbhCWP6s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Mar 2021 11:43:43 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CC5C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Mar 2021 08:43:42 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so10090606pjb.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Mar 2021 08:43:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=csNaPeK69Mldh17cXgEvQIP+wSOJR6sOOCrD3Sif/Go=;
-        b=A0IPH5nMVYQwU6P3FyMEXWToTbCB63VrOJEzuSaPwjhOFCtGLWZy8QiL7CH97+RRWm
-         gZSICwwlWaDPLekqu9s0cK388Rb/fOQM5zFw1GX/55ClsQsTxwrjtAJtFBWqs9TQt3XX
-         8k3j5liv5cyzkuDi1WV4UBeotkDx6q0TqAiMGIrJfYTue0lKVn3HnUsXtE6HZ3M2GrcE
-         RTL9gHSnR05zXLompI7xRA0fkjw94MQhV9Nc2kgPiWSrlK2M1C7DIO3x7VEZ4cVA1Kvr
-         qneXBAwTUxrMXva6bmgQmSLwOwuZeO9StkTt5YxsDWiAR98JrMyi+WAQCIS0nFfw5lhC
-         62Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=csNaPeK69Mldh17cXgEvQIP+wSOJR6sOOCrD3Sif/Go=;
-        b=FBSYmyCbfQk+1SeBn/hC9HUB2Drru/Iqw1pVx+RRnuES41mghJOq2pJphAKvaqk2Yz
-         ObfmDVxMJMiT3fvowrye28mprkEPtv8pz8G4PDt/Dt/h9qIYQeG+bAllyFEK0avYgAsQ
-         hnB907lbWtcGzYWAIU2hEq/DYlL3/MewiIgCqeXI8idKNKeKQ5jJ5Ki+3FOBdHf4DckR
-         hjmoNKrivfZSY0JAIuWkL1t3G77NeMflx/L8926eRdMX/ocwwGhgGAr/Pxp5EtSJZD8F
-         B81LO2POgZFJebtZohmP3AD11xy6JH1mLyDideStKvFDeijKJBEsg4ER2G2FlzgfLSvU
-         0p/A==
-X-Gm-Message-State: AOAM530/H8FQc7csNG3zGRLWdy1ukcdiIQE7rBOXph4CNfJmr/tP+qJT
-        hGquHCRIW7IJU5OUS379DxuIc5PaR4J70A==
-X-Google-Smtp-Source: ABdhPJzLBhvJjyvQFVUv3SxvmSmFa0zBx6k90No7B2pMyfO50HzLeCWCd4W3rsFBcpqoo0uPCvbP2g==
-X-Received: by 2002:a17:90b:f15:: with SMTP id br21mr5170839pjb.234.1616514222075;
-        Tue, 23 Mar 2021 08:43:42 -0700 (PDT)
-Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id l22sm3474414pjl.14.2021.03.23.08.43.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 08:43:41 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 15:43:34 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: qgroup: remove outdated comment
-Message-ID: <20210323154334.GA2652@realwakka>
-References: <20210322140316.384012-1-realwakka@gmail.com>
- <20210323144816.GG7604@twin.jikos.cz>
+        Tue, 23 Mar 2021 11:58:48 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NFnq9s031728;
+        Tue, 23 Mar 2021 11:58:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=tUdgVFz/tGFNR3TIne9ID84MTJJp8572nuJPTQSVvno=;
+ b=U+Q0QiUe6YTsmVp1e+3bF2aORR0CTl0r1FOxjuCWvleXCs/3/URFqRQf9LuA8CrxBOG7
+ APUAY03dLsbaadAgIZErPX4ZG6ZcYFwz8vDHVmUEwBalj1aY5cJJ0KWA1hG+YXz/pfJV
+ 65OLpej9RzzHhNJPQCGFCqh8i7LHiGGdASKSwBXXhTVscSvde9TcjAosT/MnaHCcKO7B
+ ZhpV0y/qeNW0BOvCnJQfNvvlCQrupmIez1xCKu4qFjgG3DniNDPGnnBXOqX5eARk4/FJ
+ yoHi8jSlCuzctoU2Gm4KGwcatwfGJBNrPY/otgdNOa8wxxocrVdiEb+hN0FvYktzLIRn yQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37fkafrcd2-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 11:58:31 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NFkrYQ030831;
+        Tue, 23 Mar 2021 15:48:19 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 37d99rbggh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 15:48:19 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NFlxMV36569572
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 15:47:59 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7216DAE04D;
+        Tue, 23 Mar 2021 15:48:17 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C44B0AE045;
+        Tue, 23 Mar 2021 15:48:14 +0000 (GMT)
+Received: from [9.199.34.65] (unknown [9.199.34.65])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Mar 2021 15:48:14 +0000 (GMT)
+Subject: Re: [PATCH v3 02/10] fsdax: Factor helper: dax_fault_actor()
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
+Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
+References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
+ <20210319015237.993880-3-ruansy.fnst@fujitsu.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Message-ID: <d4daf840-f407-d746-b3e4-35753eb511b3@linux.ibm.com>
+Date:   Tue, 23 Mar 2021 21:18:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323144816.GG7604@twin.jikos.cz>
+In-Reply-To: <20210319015237.993880-3-ruansy.fnst@fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_07:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 clxscore=1015 malwarescore=0 suspectscore=0
+ phishscore=0 impostorscore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103230114
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 03:48:16PM +0100, David Sterba wrote:
-> On Mon, Mar 22, 2021 at 02:03:16PM +0000, Sidong Yang wrote:
-> > This comment is outdated and this patch remove
-> > it to avoid confusion.
+
+
+On 3/19/21 7:22 AM, Shiyang Ruan wrote:
+> The core logic in the two dax page fault functions is similar. So, move
+> the logic into a common helper function. Also, to facilitate the
+> addition of new features, such as CoW, switch-case is no longer used to
+> handle different iomap types.
 > 
-> Even if it's just a comment removal, changelog should say why it's
-> outated, I have no idea and would have to do the research myself.
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>   fs/dax.c | 291 +++++++++++++++++++++++++++----------------------------
+>   1 file changed, 145 insertions(+), 146 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 7031e4302b13..33ddad0f3091 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -1053,6 +1053,66 @@ static vm_fault_t dax_load_hole(struct xa_state *xas,
+>   	return ret;
+>   }
+>   
+> +#ifdef CONFIG_FS_DAX_PMD
+> +static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
+> +		struct iomap *iomap, void **entry)
+> +{
+> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+> +	unsigned long pmd_addr = vmf->address & PMD_MASK;
+> +	struct vm_area_struct *vma = vmf->vma;
+> +	struct inode *inode = mapping->host;
+> +	pgtable_t pgtable = NULL;
+> +	struct page *zero_page;
+> +	spinlock_t *ptl;
+> +	pmd_t pmd_entry;
+> +	pfn_t pfn;
+> +
+> +	zero_page = mm_get_huge_zero_page(vmf->vma->vm_mm);
+> +
+> +	if (unlikely(!zero_page))
+> +		goto fallback;
+> +
+> +	pfn = page_to_pfn_t(zero_page);
+> +	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
+> +			DAX_PMD | DAX_ZERO_PAGE, false);
+> +
+> +	if (arch_needs_pgtable_deposit()) {
+> +		pgtable = pte_alloc_one(vma->vm_mm);
+> +		if (!pgtable)
+> +			return VM_FAULT_OOM;
+> +	}
+> +
+> +	ptl = pmd_lock(vmf->vma->vm_mm, vmf->pmd);
+> +	if (!pmd_none(*(vmf->pmd))) {
+> +		spin_unlock(ptl);
+> +		goto fallback;
+> +	}
+> +
+> +	if (pgtable) {
+> +		pgtable_trans_huge_deposit(vma->vm_mm, vmf->pmd, pgtable);
+> +		mm_inc_nr_ptes(vma->vm_mm);
+> +	}
+> +	pmd_entry = mk_pmd(zero_page, vmf->vma->vm_page_prot);
+> +	pmd_entry = pmd_mkhuge(pmd_entry);
+> +	set_pmd_at(vmf->vma->vm_mm, pmd_addr, vmf->pmd, pmd_entry);
+> +	spin_unlock(ptl);
+> +	trace_dax_pmd_load_hole(inode, vmf, zero_page, *entry);
+> +	return VM_FAULT_NOPAGE;
+> +
+> +fallback:
+> +	if (pgtable)
+> +		pte_free(vma->vm_mm, pgtable);
+> +	trace_dax_pmd_load_hole_fallback(inode, vmf, zero_page, *entry);
+> +	return VM_FAULT_FALLBACK;
+> +}
+> +#else
+> +static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
+> +		struct iomap *iomap, void **entry)
+> +{
+> +	return VM_FAULT_FALLBACK;
+> +}
+> +#endif /* CONFIG_FS_DAX_PMD */
+> +
+>   s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
+>   {
+>   	sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
+> @@ -1289,6 +1349,61 @@ static int dax_fault_cow_page(struct vm_fault *vmf, struct iomap *iomap,
+>   	return 0;
+>   }
+>   
+> +/**
+> + * dax_fault_actor - Common actor to handle pfn insertion in PTE/PMD fault.
+> + * @vmf:	vm fault instance
+> + * @pfnp:	pfn to be returned
+> + * @xas:	the dax mapping tree of a file
+> + * @entry:	an unlocked dax entry to be inserted
+> + * @pmd:	distinguish whether it is a pmd fault
+> + * @flags:	iomap flags
+> + * @iomap:	from iomap_begin()
+> + * @srcmap:	from iomap_begin(), not equal to iomap if it is a CoW
+> + */
+> +static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
+> +		struct xa_state *xas, void *entry, bool pmd, unsigned int flags,
+> +		struct iomap *iomap, struct iomap *srcmap)
+> +{
+> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+> +	size_t size = pmd ? PMD_SIZE : PAGE_SIZE;
+> +	loff_t pos = (loff_t)xas->xa_offset << PAGE_SHIFT;
 
-Understood, Thanks for advice. I'll fix changelog for patch v2.
+shouldn't we use xa_index here for pos ?
+(loff_t)xas->xa_index << PAGE_SHIFT;
 
-Thanks,
-Sidong
+> +	bool write = vmf->flags & FAULT_FLAG_WRITE;
+> +	bool sync = dax_fault_is_synchronous(flags, vmf->vma, iomap);
+> +	int err = 0;
+> +	pfn_t pfn;
+> +
+> +	/* if we are reading UNWRITTEN and HOLE, return a hole. */
+> +	if (!write &&
+> +	    (iomap->type == IOMAP_UNWRITTEN || iomap->type == IOMAP_HOLE)) {
+> +		if (!pmd)
+> +			return dax_load_hole(xas, mapping, &entry, vmf);
+> +		else
+> +			return dax_pmd_load_hole(xas, vmf, iomap, &entry);
+> +	}
+> +
+> +	if (iomap->type != IOMAP_MAPPED) {
+> +		WARN_ON_ONCE(1);
+> +		return VM_FAULT_SIGBUS;
+> +	}
+
+So now in case if mapping is not mapped, we always cause
+VM_FAULT_SIGBUG. But earlier we were only doing WARN_ON_ONCE(1).
+Can you pls help answer why the change in behavior?
+
+
+
+
+> +
+> +	err = dax_iomap_pfn(iomap, pos, size, &pfn);
+> +	if (err)
+> +		return dax_fault_return(err);
+
+Same case here as well. This could return SIGBUS while earlier I am not 
+sure why were we only returning FALLBACK?
+
+
+> +
+> +	entry = dax_insert_entry(xas, mapping, vmf, entry, pfn, 0,
+> +				 write && !sync);
+
+In dax_insert_entry() we are passing 0 as flags.
+We should be passing DAX_PMD/DAX_PTE no?
+
+
+> +
+> +	if (sync)
+> +		return dax_fault_synchronous_pfnp(pfnp, pfn);
+> +
+
+
+/* handle PMD case here */
+> +	if (pmd)
+> +		return vmf_insert_pfn_pmd(vmf, pfn, write);
+
+/* handle PTE case here */
+> +	if (write)
+> +		return vmf_insert_mixed_mkwrite(vmf->vma, vmf->address, pfn);
+> +	else
+> +		return vmf_insert_mixed(vmf->vma, vmf->address, pfn);
+> +}
+
+It is easy to miss the return from if(pmd) case while reading.
+A comment like above could be helpful for code review.
+
+
+> +
+>   static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>   			       int *iomap_errp, const struct iomap_ops *ops)
+>   {
+> @@ -1296,17 +1411,14 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>   	struct address_space *mapping = vma->vm_file->f_mapping;
+>   	XA_STATE(xas, &mapping->i_pages, vmf->pgoff);
+>   	struct inode *inode = mapping->host;
+> -	unsigned long vaddr = vmf->address;
+>   	loff_t pos = (loff_t)vmf->pgoff << PAGE_SHIFT;
+>   	struct iomap iomap = { .type = IOMAP_HOLE };
+>   	struct iomap srcmap = { .type = IOMAP_HOLE };
+>   	unsigned flags = IOMAP_FAULT;
+>   	int error, major = 0;
+>   	bool write = vmf->flags & FAULT_FLAG_WRITE;
+> -	bool sync;
+>   	vm_fault_t ret = 0;
+>   	void *entry;
+> -	pfn_t pfn;
+>   
+>   	trace_dax_pte_fault(inode, vmf, ret);
+>   	/*
+> @@ -1352,8 +1464,8 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>   		goto unlock_entry;
+>   	}
+>   	if (WARN_ON_ONCE(iomap.offset + iomap.length < pos + PAGE_SIZE)) {
+> -		error = -EIO;	/* fs corruption? */
+> -		goto error_finish_iomap;
+> +		ret = VM_FAULT_SIGBUS;	/* fs corruption? */
+> +		goto finish_iomap;
+>   	}
+>   
+>   	if (vmf->cow_page) {
+> @@ -1363,49 +1475,19 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>   		goto finish_iomap;
+>   	}
+>   
+> -	sync = dax_fault_is_synchronous(flags, vma, &iomap);
+> -
+> -	switch (iomap.type) {
+> -	case IOMAP_MAPPED:
+> -		if (iomap.flags & IOMAP_F_NEW) {
+> -			count_vm_event(PGMAJFAULT);
+> -			count_memcg_event_mm(vma->vm_mm, PGMAJFAULT);
+> -			major = VM_FAULT_MAJOR;
+> -		}
+> -		error = dax_iomap_pfn(&iomap, pos, PAGE_SIZE, &pfn);
+> -		if (error < 0)
+> -			goto error_finish_iomap;
+> -
+> -		entry = dax_insert_entry(&xas, mapping, vmf, entry, pfn,
+> -						 0, write && !sync);
+> -
+> -		if (sync) {
+> -			ret = dax_fault_synchronous_pfnp(pfnp, pfn);
+> -			goto finish_iomap;
+> -		}
+> -		trace_dax_insert_mapping(inode, vmf, entry);
+> -		if (write)
+> -			ret = vmf_insert_mixed_mkwrite(vma, vaddr, pfn);
+> -		else
+> -			ret = vmf_insert_mixed(vma, vaddr, pfn);
+> -
+> +	ret = dax_fault_actor(vmf, pfnp, &xas, entry, false, flags,
+> +			      &iomap, &srcmap);
+> +	if (ret == VM_FAULT_SIGBUS)
+>   		goto finish_iomap;
+> -	case IOMAP_UNWRITTEN:
+> -	case IOMAP_HOLE:
+> -		if (!write) {
+> -			ret = dax_load_hole(&xas, mapping, &entry, vmf);
+> -			goto finish_iomap;
+> -		}
+> -		fallthrough;
+> -	default:
+> -		WARN_ON_ONCE(1);
+> -		error = -EIO;
+> -		break;
+> +
+> +	/* read/write MAPPED, CoW UNWRITTEN */
+> +	if (iomap.flags & IOMAP_F_NEW) {
+> +		count_vm_event(PGMAJFAULT);
+> +		count_memcg_event_mm(vma->vm_mm, PGMAJFAULT);
+> +		major = VM_FAULT_MAJOR;
+>   	}
+
+It is much better if above accounting is also done in dax_fault_actor()
+function itself. Then at the end of this function we need to just do
+"return ret"  instead of "return ret | major"
+
+
+>   
+> - error_finish_iomap:
+> -	ret = dax_fault_return(error);
+> - finish_iomap:
+> +finish_iomap:
+>   	if (ops->iomap_end) {
+>   		int copied = PAGE_SIZE;
+>   
+> @@ -1419,66 +1501,14 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>   		 */
+>   		ops->iomap_end(inode, pos, PAGE_SIZE, copied, flags, &iomap);
+>   	}
+> - unlock_entry:
+> +unlock_entry:
+>   	dax_unlock_entry(&xas, entry);
+> - out:
+> +out:
+>   	trace_dax_pte_fault_done(inode, vmf, ret);
+>   	return ret | major;
+>   }
+
+
+-ritesh
