@@ -2,199 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EE4345802
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Mar 2021 07:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AA934585A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Mar 2021 08:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229464AbhCWGvH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Mar 2021 02:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbhCWGuk (ORCPT
+        id S229972AbhCWHLS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Mar 2021 03:11:18 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:13213 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhCWHLL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:50:40 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54CEC061574
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Mar 2021 23:50:37 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id s11-20020a056830124bb029021bb3524ebeso1741232otp.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Mar 2021 23:50:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GHDp3C6n5j6KG7ySW+9gHJdCYJbK58TXVoubnd9SXFw=;
-        b=M9Zot30ArKm07pt8A25NdKiJM1jx5iYUs7rnbXwbz79aV3eJNiEJCOCoXGnIvsfuHL
-         1izYFeeJ6EkUuGAO7V6qxuL1wjXML5zbOa/v7w1mXr+jA96waKpJYGd3RNuXBP5+uFmQ
-         3phnTuD6hoJ513+R3OafuqLudiRPzEUGPqAWztUXh/GR6y7/aOobacw/KZ+nGK5JfwNh
-         tuy5v+QcKqGIBhprHexxUegKaPG1yex8FvhaRiOWhAn+SPaBupR4zmC3baIbLADgW02J
-         Ndhaa/srOJzobcdUxDlu54vqgnwvlZ2zohGWu/rWwVo0OdL57518FGi8K7DFYh+4PP7O
-         S77A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GHDp3C6n5j6KG7ySW+9gHJdCYJbK58TXVoubnd9SXFw=;
-        b=hjhFci+0jGB9mdjnJi6bWuuy2NKK47qqCI/mbBFMIXe/khLnwKavccJRatrSvecQ5Q
-         lLwLo3OOF1iNrPiqYdSWfpb4FvLQZQ2dS3R0sb/dQ973pMbMMnBNwCFWAo66gaRYGbMG
-         yqWBz8hqZk7bOWSKcAV4utE9XxKY/O8/jJqAiZXEIbYFWd2jkGRNER0v4+Y5hW0iFww8
-         /y773gNwHO6dX6zeG3WJwaBmBMt6mLR//us1U872kuk1s8U/S2TOvnC+mAa+4Fr95GqI
-         kFVgoHRJb7zTKj9PUj7Ej3dlzUuE9wmPb0Voe7yokL4LkJlaRKmKw+QsOiauahEESRID
-         vDCQ==
-X-Gm-Message-State: AOAM532WUO02glEhEZ0WXDUKZYRNNC2sOHfrHcTbS+wdBactGYHBSZTB
-        aaokxsMKGLhivDJ4FQv4kwowGsKXhYeZr+LQHi0=
-X-Google-Smtp-Source: ABdhPJwkofaHS4ojjYpoN+jdFw0Mq51HogN0HYZfBYTyzbfXjrD1Cm3ajaszYfMehkW0x35t4FQv3McZ4e5JCgvkA4Q=
-X-Received: by 2002:a05:6830:15c5:: with SMTP id j5mr3160527otr.274.1616482237161;
- Mon, 22 Mar 2021 23:50:37 -0700 (PDT)
+        Tue, 23 Mar 2021 03:11:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1616483470; x=1648019470;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7/O405QzoA/a4odZjLMPmNSngqpFxwtzpI9AdJ0Emqw=;
+  b=n6iOadLZA2VZczHq7+DBHbB6G89yypFxUKGGNk/Cno9d10aRXHEZ/wh2
+   auppd9Wim6Ww7wN9cbLmM/FoPKpo53YsTwDuRgTGF+ml0/M0gX+eT/OEk
+   gLzYkM8PAuOHCDcA9OKt7wutkNs5vytdvO0fNk+7r0IcHFj01gym6GkMM
+   NXvA1ahbL/spYi24KbV2a1x3exRXXLk4edxu/wxO01s24mWkWED8OleJA
+   LR04CKlQsEqYhsyH/ireqXnIBIYHs5/4xTsU0G/VwIdkQAi5Ka4YWJxlg
+   HB4Ts0KGM0jyDSqbH/h3r5vvU/Oxaye56StbOB/JpSINXK+eM/ceFaVbW
+   g==;
+IronPort-SDR: 2Xt38Py6/ncr22jSyTvFEghGs2yVpxe1CJmIPXkDX7dqJVb87xV+GB2VfU3kzIXlJsWQ0u6XX4
+ TTroLDteYjizSa2rAex9ECaxtRxtrP0vvn9yprSprgXBJSHBlovX6tZauGDDV9o8Sv7TSWfkoL
+ KC1+nAHgYRamqbZYUy6uoAJSLFaWoATtwqyeKLBS/G93bQ2q5ZOc4Vsx0zSWenB1aLv/ZCVTlz
+ y3J/MPnMqE5vty/5EDJlNmLhNnWPWHLOqedUd99LuhH85q+aD6vju7RczvB4vcUI93Xgt73gXe
+ Wo0=
+X-IronPort-AV: E=Sophos;i="5.81,271,1610380800"; 
+   d="scan'208";a="273532003"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Mar 2021 15:11:10 +0800
+IronPort-SDR: 7+vPvczHQDwDa13jbX0vL59fGYKriI5UfItCQ5MLjPVH8PJylDcGQWqYrNaXLNrOkJODfac7Sh
+ VVKr+CrjaC+mj+pVAKw2wG+UFhh6+cbYLfvLHjTWiSX5Gz8diHrt6GrphM1Xj91t8vJU0bwZMX
+ x8jeLnFIyNluxMtOJNluTk/+oPA+VpS2BcMLsgkcJlt8wKn7QVnR6qEkJlUFbNRM9Y0rmlc8uK
+ RrWzwLk0N53445jBIzQkjaDBbRB8HOR4TiT2/XmFIZDIXtvqRCI1EmnX+LjfaHlL6xjQgP9/t9
+ 25Q7v2JnRm5ZhlBwo5o57ath
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 23:53:17 -0700
+IronPort-SDR: /s1FtpXWU0WpAQiEj4JyqyD5weacqpif1/yI2uRy5IWSZ/yyE6HustN2TNqYzzzHfYbdfc9dKN
+ LQyCbnCmSKo/OQqvqCtRERcNrrXUnlVzaTaccLB/CBqf6EPzqB5KvWvUn5YmJaQ09jdV4peK94
+ vM60ni5SMGWGvlkGHrowdVJNITJxsMEU7MNTGKzJRhITdIRccqlwrmGEJ+7IWFqtTh9usVWQLI
+ qCPXZxdkP/JXH4SNqqNIBT4sVKzfnFQaDUTucKTkqf8BYlS5K5ftWj1W5dKo6eucDicmQBypUo
+ YsU=
+WDCIronportException: Internal
+Received: from wdmnc1396.ad.shared (HELO naota-xeon) ([10.225.48.248])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 00:11:10 -0700
+Date:   Tue, 23 Mar 2021 16:11:08 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs @ vger . kernel . org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v2 2/2] btrfs: zoned: automatically reclaim zones
+Message-ID: <20210323071108.w433eusa2jqdgc5e@naota-xeon>
+References: <cover.1616149060.git.johannes.thumshirn@wdc.com>
+ <58648eb48c6cb2b35d201518c8dc430b7797bcaa.1616149060.git.johannes.thumshirn@wdc.com>
+ <6611a836-72be-eada-1f2d-33454ce5fa04@toxicpanda.com>
 MIME-Version: 1.0
-References: <CAGdWbB6JtU54uEOotj=H-DG_7oeUT5KZQG5uM-ibiC2YDbV5Nw@mail.gmail.com>
- <CAJCQCtSBc-Dmks2jdgr-Bcpdh_iLvVevtGOa4LdYgHc2eZE6Hg@mail.gmail.com>
- <CAGdWbB4dN45=4T_WbF7tXmm2UsmF0bh=Lb_z-H=QVQWaW=C=Bw@mail.gmail.com>
- <CAGdWbB61y3CXTbSxe9Rc7ijs9vsLg7qcX4JZ_WpW-73m_1-6_g@mail.gmail.com>
- <CAJCQCtRyhh6AY25+RwikJKk_HUW1xveVxYzGvPpFDdWq618KUg@mail.gmail.com>
- <CAGdWbB7kCM8DzbS5TzZg=DhsdjTE5nij1SuEnibi3B=OqPBRow@mail.gmail.com> <CAJCQCtSNsVkTaZb4Zbz7AeTVUNgxca5hOfaQGHQTUf8DsY-Nrg@mail.gmail.com>
-In-Reply-To: <CAJCQCtSNsVkTaZb4Zbz7AeTVUNgxca5hOfaQGHQTUf8DsY-Nrg@mail.gmail.com>
-From:   Dave T <davestechshop@gmail.com>
-Date:   Tue, 23 Mar 2021 02:50:26 -0400
-Message-ID: <CAGdWbB7K4d0xhKGTLni_stKStG-gTarWd08BUN9Mt-rpQktp8g@mail.gmail.com>
-Subject: Re: parent transid verify failed / ERROR: could not setup extent tree
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6611a836-72be-eada-1f2d-33454ce5fa04@toxicpanda.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 3:49 PM Chris Murphy <lists@colorremedies.com> wrote:
->
-> On Mon, Mar 22, 2021 at 12:32 AM Dave T <davestechshop@gmail.com> wrote:
-> >
-> > On Sun, Mar 21, 2021 at 2:03 PM Chris Murphy <lists@colorremedies.com> wrote:
-> > >
-> > > On Sat, Mar 20, 2021 at 11:54 PM Dave T <davestechshop@gmail.com> wrote:
-> > > >
-> > > > # btrfs check -r 2853787942912 /dev/mapper/xyz
-> > > > Opening filesystem to check...
-> > > > parent transid verify failed on 2853787942912 wanted 29436 found 29433
-> > > > parent transid verify failed on 2853787942912 wanted 29436 found 29433
-> > > > parent transid verify failed on 2853787942912 wanted 29436 found 29433
-> > > > Ignoring transid failure
-> > > > parent transid verify failed on 2853827723264 wanted 29433 found 29435
-> > > > parent transid verify failed on 2853827723264 wanted 29433 found 29435
-> > > > parent transid verify failed on 2853827723264 wanted 29433 found 29435
-> > > > Ignoring transid failure
-> > > > leaf parent key incorrect 2853827723264
-> > > > ERROR: could not setup extent tree
-> > > > ERROR: cannot open file system
-> > >
-> > > btrfs insp dump-t -t 2853827723264 /dev/
-> >
-> > # btrfs insp dump-t -t 2853827723264 /dev/mapper/xzy
-> > btrfs-progs v5.11
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > Ignoring transid failure
-> > leaf parent key incorrect 2853827608576
-> > WARNING: could not setup extent tree, skipping it
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > Ignoring transid failure
-> > leaf parent key incorrect 2853827608576
-> > Couldn't setup device tree
-> > ERROR: unable to open /dev/mapper/xzy
-> >
-> > # btrfs insp dump-t -t 2853787942912 /dev/mapper/xzy
-> > btrfs-progs v5.11
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > Ignoring transid failure
-> > leaf parent key incorrect 2853827608576
-> > WARNING: could not setup extent tree, skipping it
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > Ignoring transid failure
-> > leaf parent key incorrect 2853827608576
-> > Couldn't setup device tree
-> > ERROR: unable to open /dev/mapper/xzy
-> >
-> > # btrfs insp dump-t -t 2853827608576 /dev/mapper/xzy
-> > btrfs-progs v5.11
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > Ignoring transid failure
-> > leaf parent key incorrect 2853827608576
-> > WARNING: could not setup extent tree, skipping it
-> > parent transid verify failed on 2853827608576 wanted 29436 found 29433
-> > Ignoring transid failure
-> > leaf parent key incorrect 2853827608576
-> > Couldn't setup device tree
-> > ERROR: unable to open /dev/mapper/xzy
->
-> That does not look promising. I don't know whether a read-write mount
-> with usebackuproot will recover, or end up with problems.
->
-> Options:
->
-> a. btrfs check --repair
-> This probably fails on the same problem, it can't setup the extent tree.
->
-> b. btrfs check --init-extent-tree
-> This is a heavy hammer, it might succeed, but takes a long time. On 5T
-> it might take double digit hours or even single digit days. It's
-> generally faster to just wipe the drive and restore from backups than
-> use init-extent-tree (I understand this *is* your backup).
->
-> c. Setup an overlay file on device mapper, to redirect the writes from
-> a read-write mount with usebackup root. I think it's sufficient to
-> just mount, optionally write some files (empty or not), and umount.
-> Then do a btrfs check to see if the current tree is healthy.
-> https://raid.wiki.kernel.org/index.php/Recovering_a_failed_software_RAID#Making_the_harddisks_read-only_using_an_overlay_file
->
-> That guide is a bit complex to deal with many drives with mdadm raid,
-> so you can simplify it for just one drive. The gist is no writes go to
-> the drive itself, it's treated as read-only by device-mapper (in fact
-> you can optionally add a pre-step with the blockdev command and
-> --setro to make sure the entire drive is read-only; just make sure to
-> make it rw once you're done testing). All the writes with this overlay
-> go into a loop mounted file which you intentionally just throw away
-> after testing.
->
-> d. Just skip the testing and try usebackuproot with a read-write
-> mount. It might make things worse, but at least it's fast to test. If
-> it messes things up, you'll have to recreate this backup from scratch.
+On Fri, Mar 19, 2021 at 01:59:02PM -0400, Josef Bacik wrote:
+> On 3/19/21 6:48 AM, Johannes Thumshirn wrote:
+> > When a file gets deleted on a zoned file system, the space freed is not
+> > returned back into the block group's free space, but is migrated to
+> > zone_unusable.
+> > 
+> > As this zone_unusable space is behind the current write pointer it is not
+> > possible to use it for new allocations. In the current implementation a
+> > zone is reset once all of the block group's space is accounted as zone
+> > unusable.
+> > 
+> > This behaviour can lead to premature ENOSPC errors on a busy file system.
+> > 
+> > Instead of only reclaiming the zone once it is completely unusable,
+> > kick off a reclaim job once the amount of unusable bytes exceeds a user
+> > configurable threshold between 51% and 100%. It can be set per mounted
+> > filesystem via the sysfs tunable bg_reclaim_threshold which is set to 75%
+> > per default.
+> > 
+> > Similar to reclaiming unused block groups, these dirty block groups are
+> > added to a to_reclaim list and then on a transaction commit, the reclaim
+> > process is triggered but after we deleted unused block groups, which will
+> > free space for the relocation process.
+> > 
+> > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> > ---
+> > 
+> > AFAICT sysfs_create_files() does not have the ability to provide a is_visible
+> > callback, so the bg_reclaim_threshold sysfs file is visible for non zoned
+> > filesystems as well, even though only for zoned filesystems we're adding block
+> > groups to the reclaim list. I'm all ears for a approach that is sensible in
+> > this regard.
+> > 
+> > 
+> >   fs/btrfs/block-group.c       | 84 ++++++++++++++++++++++++++++++++++++
+> >   fs/btrfs/block-group.h       |  2 +
+> >   fs/btrfs/ctree.h             |  3 ++
+> >   fs/btrfs/disk-io.c           | 11 +++++
+> >   fs/btrfs/free-space-cache.c  |  9 +++-
+> >   fs/btrfs/sysfs.c             | 35 +++++++++++++++
+> >   fs/btrfs/volumes.c           |  2 +-
+> >   fs/btrfs/volumes.h           |  1 +
+> >   include/trace/events/btrfs.h | 12 ++++++
+> >   9 files changed, 157 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> > index 9ae3ac96a521..af9026795ddd 100644
+> > --- a/fs/btrfs/block-group.c
+> > +++ b/fs/btrfs/block-group.c
+> > @@ -1485,6 +1485,80 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
+> >   	spin_unlock(&fs_info->unused_bgs_lock);
+> >   }
+> > +void btrfs_reclaim_bgs(struct btrfs_fs_info *fs_info)
+> > +{
+> > +	struct btrfs_block_group *bg;
+> > +	struct btrfs_space_info *space_info;
+> > +	int ret = 0;
+> > +
+> > +	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
+> > +		return;
+> > +
+> > +	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE))
+> > +		return;
+> > +
+> > +	mutex_lock(&fs_info->reclaim_bgs_lock);
+> > +	while (!list_empty(&fs_info->reclaim_bgs)) {
+> > +		bg = list_first_entry(&fs_info->reclaim_bgs,
+> > +				      struct btrfs_block_group,
+> > +				      bg_list);
+> > +		list_del_init(&bg->bg_list);
+> > +
+> > +		space_info = bg->space_info;
+> > +		mutex_unlock(&fs_info->reclaim_bgs_lock);
+> > +
+> > +		/* Don't want to race with allocators so take the groups_sem */
+> > +		down_write(&space_info->groups_sem);
+> > +
+> > +		spin_lock(&bg->lock);
+> > +		if (bg->reserved || bg->pinned || bg->ro) {
+> 
+> How do we deal with backup supers in zoned again?  Will they show up as
+> readonly?  If so we may not want the bg->ro check, but I may be insane.
 
-I took this approach. My command was simply:
-
-    mount -o usebackuproot /dev/mapper/xzy /backup
-
-It appears to have succeeded because it mounted without errors. I
-completed a new incremental backup (with btrbk) and it finished
-without errors.
-I'll be pleased if my backup history is preserved, as appears to be the case.
-
-I will run some checks on those backup subvolumes tomorrow. Are there
-specific checks you would recommend?
-
->
-> As for how to prevent this? I'm not sure. About the best we can do is
-> disable the drive write cache with a udev rule,
-
-That sounds like a suitable solution for me.
-
-Thank you for this information. BTW, I have been using BTRFS for many
-years. This is the first serious issue I have had, and as you said
-there is a large element of user error and bad luck involved in this
-case.
-
-> and/or raid1 with
-> another make/model drive, and let Btrfs detect occasional corruption
-> and self heal from the good copy. Another obvious way to avoid the
-> problem is, stop having power failures, crashes, and accidental USB
-> cable disconnections :)
->
-> It's not any one thing that's the problem. It's a sequence of problems
-> happening in just the right (or wrong) order that causes the problem.
-> Bugs + mistake + bad luck = problem.
->
-> --
-> Chris Murphy
+No superblock/backups are placed into a zone composing a block group,
+because, if placed, it becomes a hole blocking sequential writes. The
+zones containing superblock/backups are reserved and no device extents
+are allocated there. So, bg->ro == 0, if the block group is read-write.
