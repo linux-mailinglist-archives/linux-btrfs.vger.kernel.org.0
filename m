@@ -2,94 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7FE346484
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Mar 2021 17:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CAF3464A1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Mar 2021 17:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhCWQKl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Mar 2021 12:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhCWQKM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:10:12 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978D5C061763
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Mar 2021 09:10:11 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id 11so14790085pfn.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Mar 2021 09:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jLloRUDzgtbIO8MnHQ24DXE/sLEID0DVdZ6/soZCkCI=;
-        b=m9uNvCVgsXexdNTUA7qoqvlDCR1sikLK92ZkPRFOpFAxOX1RP6N0Ne4GEoZ9/Jy6pw
-         Md1OjtVbFvUngd78jMeNwnQG2xDotib7RqLQjZOB3ZhPdCMz/s41V5xAfs12+hgmsR+r
-         6Y9ibM8Y903jXnObJiIHqim2qVm5cQeUq/FPD+sQMzh00xoq2vmjfVvnTM7CIx5K4LdV
-         3f0JMNUKpXog6nHn365PnyiJYye9J7fbsz5yD20c+HuE9W25SC1s/eFVoo2daOKPx35B
-         LdvIasncIg4wW5EDBK4+IZxXIGIB3A0cdtnu4sEWftbCPxb8dsst7IKY8JRnRQiORMXJ
-         sGRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jLloRUDzgtbIO8MnHQ24DXE/sLEID0DVdZ6/soZCkCI=;
-        b=B9iv3mE1PTadFD67y6Yt4kvDgq9Pr3CzMxbuDytBVYFOujWN93NbNnubvsyCzV7e+S
-         tS5rVasUrB17zr532I09k/6mDF+8oAmZeGSWFq7TP042carTesr56bE7mz/377CCr8Zh
-         RAChkyjhR0I5RSdyTEzTcf4Z6dXWvLhIX4b+NxU3VqrbxpxMsGrN8bFy7qDxmfxdi7iU
-         aNz8CMfWBV5Oka3/u3EDsCBcRVZaOeVdz9mrM9lGFNW6gooSo96sExe+XOU8W/CTAoCq
-         U9y54S7lYMtKrzpW5lqfXGwOgaChOglfhdPdVuAw8HAz/nBZtomFJIg4Ip3MvF/pCm8W
-         g8Bg==
-X-Gm-Message-State: AOAM533kid98dX/w3nBovrilytyZy8lbE7kkk4IUOsXtJjrPZR/rSe4V
-        DcHnaqbJQyXJ8udJkbEXxiVry3DOrBg6YA==
-X-Google-Smtp-Source: ABdhPJyeU0JTZIZcvr0PV7t7l7g6HjuTCV3AeYxS3+ycW6T8Wj04/vhnfZkDG+xqGW8nrQN4YBbMww==
-X-Received: by 2002:a63:74c:: with SMTP id 73mr4654092pgh.200.1616515811181;
-        Tue, 23 Mar 2021 09:10:11 -0700 (PDT)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id w17sm15932961pfu.29.2021.03.23.09.10.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 09:10:10 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        id S233030AbhCWQN4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Mar 2021 12:13:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36624 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233017AbhCWQNj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Mar 2021 12:13:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B6EE5ACBF;
+        Tue, 23 Mar 2021 16:13:38 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BFE6DDA7AE; Tue, 23 Mar 2021 17:11:33 +0100 (CET)
+Date:   Tue, 23 Mar 2021 17:11:33 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     pierre.labastie@neuf.fr
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/1] btrfs-progs: build system - do not use AC_DEFINE
+ twice
+Message-ID: <20210323161133.GJ7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, pierre.labastie@neuf.fr,
         linux-btrfs@vger.kernel.org
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH v2] btrfs-progs: qgroup: remove outdated comment
-Date:   Tue, 23 Mar 2021 16:09:57 +0000
-Message-Id: <20210323160957.2831-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+References: <20210320092728.24673-1-pierre.labastie@neuf.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210320092728.24673-1-pierre.labastie@neuf.fr>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This comment was written in fb124ee4. In this version, parse_group_id()
-didn't support to parse path. but this function already can parse path.
-So, this comment is outdated and it makes confusing now.
+On Sat, Mar 20, 2021 at 10:27:27AM +0100, pierre.labastie@neuf.fr wrote:
+> Note that I doubt this check is needed in configure:
+> HAVE_OWN_FIEMAP_EXTENT_DEFINE is used only once in cmds/filesystem-du.c
+> in:
+> #if !defined(FIEMAP_EXTENT_SHARED) && (HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE == 1)
+> but HAVE_OWN_FIEMAP_EXTENT_SHARED_DEFINE is set to 1 by configure only if
+> FIEMAP_EXTENT_SHARED is not defined in the kernel headers.
+> 
+> If you agree, I'll send a patch to completely remove this check.
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
----
-v2:
-  Add detailed changelog
----
- cmds/qgroup.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-index 2da83ffd..b33f77fa 100644
---- a/cmds/qgroup.c
-+++ b/cmds/qgroup.c
-@@ -81,9 +81,6 @@ static int _cmd_qgroup_assign(const struct cmd_struct *cmd, int assign,
- 
- 	path = argv[optind + 2];
- 
--	/*
--	 * FIXME src should accept subvol path
--	 */
- 	if (btrfs_qgroup_level(args.src) >= btrfs_qgroup_level(args.dst)) {
- 		error("bad relation requested: %s", path);
- 		return 1;
--- 
-2.25.1
-
+The explanation why we want the configure-time check is in
+https://github.com/kdave/btrfs-progs/commit/cf8fd1a70884db0b31e312d07806
+ie. to support old distros. There's a runtime check for version in case
+the fiemap flag is not supported in cmd_filesystem_du.
