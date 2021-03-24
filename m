@@ -2,118 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FD2347A9E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Mar 2021 15:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB1F347ABF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Mar 2021 15:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbhCXOXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Mar 2021 10:23:44 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:52181 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236125AbhCXOXV (ORCPT
+        id S236125AbhCXOcU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Mar 2021 10:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236340AbhCXOcJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:23:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1616595801; x=1648131801;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MSwEuRKj8KR/TKUM4pyPK8/5zvA9g5RtLAxBO+68Dog=;
-  b=EvP9OtS0obttbFO1IbyGYoR7JSgWPwDQL7YTJBNOA+khQ1vgNl3iqeKD
-   Kf4kyPyqImo1Ze66ASWqJUaGaIuTEijeNHUwIRIg+aOCt2KRQhITOd/TZ
-   UHyXu3nvz80ohPPiBqtfR7aA43Nx0iwltS48kcv7sqkni6RXs71ky52Ch
-   hz8f0lsyeDJRMsvc0OWtFxapwDsexbo8VI1y9WWF66RNEH4MkJQk+E4UG
-   j0WOx3ZvuP3cLlqhFYLbrXD4pEth4ys9cEWOL9fBDvL9uu611ntgE23G5
-   XKibZhlZ5BdIXVfETVMqhpYsHXFrRkgUFd5Uir1si7cqH2CUVIP/S/z60
-   g==;
-IronPort-SDR: YvVTBBmv2emUt+uYYOaDbeLG+bmZJvU6t8gvavQdqRPj3TPU82bprB1PySp33pw1mjak4dOAyF
- exYwZev5FnFP/+3KNoAlSUWxEwZhkhRIa8gw5DhfDG/vjMtsld8BF+EsvdnqBRtEoNx9WakEhL
- oYSRP9ksYYRiPdEEM7coKfZxP14djhHsYwGuvCRTgTGOWyK/7Rtr9xBDDYRqzcTrHugVUFuIsL
- sGO87VVUAu0d7e9HlDN9c5VRoFJX4Gt2xpiydzZh6MflKxB/wh6IYPL3ItpWiVu+WSKWR8jWwX
- 9rw=
-X-IronPort-AV: E=Sophos;i="5.81,274,1610380800"; 
-   d="scan'208";a="167379126"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 24 Mar 2021 22:23:21 +0800
-IronPort-SDR: nz1ssueNzXBBBVRrJ/lqDLvgNUybQir0T/k4bEkuGxQ9Qyii3jsc0Ho81kDcNtYAyvZix3AvDY
- Kl/JiEySClwMHZnmgehMm9jG1JnW+MigaQBODzUOwij0z97hdiwkqF/7fMKtiycP/vj/i+yLVG
- LHxzh+ME5gqftE/nlTflwjHFho7722u43U/zIad4xnjYPxnc5asKX+ajMFM9+DazTGhs1K2yIR
- fmU1N57w0caCws0oNzUGjJ8qlvj/EJgNy010QHVgPSiQ2a+rhoBLwYtpVN99fWT65J5iyBY6Yp
- Qfy2HXY1fyFRRBxjigbo/Zp2
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:05:25 -0700
-IronPort-SDR: 5zoM2uv+VUI9k00eOKcIVTvGr42dgqfSx9pIkMmvbOMIdip0hgfJpJhBpkpbHL82wt7nOkmrhM
- HV4E6/WalgTJo6HcTOVqZ5TLOK/HYKucGg2mr4BnoWFUAiYOxLrJEUm4KGmaNwUsbt1m5Mxh4l
- d1+9Q2UXnctKS+rWKUA1VMAyke7INB3oj0UQ8twbNLZVn7AqiLrDAJGj44L5VgRDzRzn78xEot
- Z83UF6WkXpLyGdtREFylJ7nqBbZHL69wlPcfvdo96Ljoal+fQYBz7O43hyizRvTYWa5vIZG52i
- M3U=
-WDCIronportException: Internal
-Received: from fbvx1z2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.48.15])
-  by uls-op-cesaip02.wdc.com with ESMTP; 24 Mar 2021 07:23:20 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>,
+        Wed, 24 Mar 2021 10:32:09 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266E0C0613DE
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Mar 2021 07:32:09 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id u8so1516391qtq.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Mar 2021 07:32:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=kRIuEnFSmW4/NSfJPfZK6DdTyd/LM3V5gXRWk4UNCwQ=;
+        b=CQck2nSOwZ5AxgGwKCWdjHZnLmzLeAHaULISM/4xhwvgKWHeaYe2DWKVQI84iWN2As
+         tJrDfRrS6i3tV/U308eOpVmPZ9ixkp3L2cm7PXuZ5t+qqJTJ/NULO76dxfqdGNeFkEYD
+         fY5t0qZ4cUMCejENrJupil0PC2HOIwH8FVWNgLvTPJrdrtQO9s4sb4/lyZ1DslFSAUy4
+         1EO0dfxmDpEtXjCmYDTmnHG2PXdUVqnAdbeYWkmzjE0sHz4JBZqROOWQlKBHuAhwaZrC
+         amQ4L4QKI1vqD1R57Yc/2TOt2qrd6U+tljF2MSPRRdgG328cyHIW55+U/808WvCBNJqe
+         6eyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=kRIuEnFSmW4/NSfJPfZK6DdTyd/LM3V5gXRWk4UNCwQ=;
+        b=IOg49V/TOfN1M0kpg7NGCaSn5xfq1QEa89jZazd1HLPmY1h3O3NUSXO6JI1vOPTv7R
+         0tYSZVtP3TKWSB+TvLBn6SIrk1OF5NK+E+IwImCmKZ5pDINkxXDC8jQnxI9fUQkufJQ/
+         UgXSbqnfHuyDOBhI27fUZfvsg6uEwpeykmUMoT9mBx0GvPWK2T3ew6Qwt70/TydgdUj0
+         ALtRox159HN1PbvAFnTIZLoBHNUZi84qDRZRCyeZloOxcw6poI8Bl2wVTo4f0aP+VGvk
+         27YQwPb5RGuyxWiSf3R/3iiCA+cLdTVkPYkU1s1EOkcO/Z5FYl3v+kuVZpQtftr9VGCi
+         ooDg==
+X-Gm-Message-State: AOAM530OGmFNa70qI7pqs2qQOkVaX9w/P04/Gr7Ofr181qMMvNyE+ja3
+        VfkVZ1Z4tvkROO1UL0UR/PO6QwtGa3+/UUBd5iU=
+X-Google-Smtp-Source: ABdhPJwGqIXfjX5k1eoic5wxRiiy8/ERT0Zvw/zNdD59xcKSE37xz9Gxs2CfDOBibK49NzDoog+9I+QaaKi/b7FPahE=
+X-Received: by 2002:ac8:5347:: with SMTP id d7mr3197210qto.259.1616596328366;
+ Wed, 24 Mar 2021 07:32:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <984c070461f31182e87d1b4f27c4565088a31b40.1616595693.git.naohiro.aota@wdc.com>
+In-Reply-To: <984c070461f31182e87d1b4f27c4565088a31b40.1616595693.git.naohiro.aota@wdc.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 24 Mar 2021 14:31:57 +0000
+Message-ID: <CAL3q7H5jEMUCE+Mfwg=uyhpxQAL1pYXmMD1aK0nBExkDDPsi8w@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: zoned: move log tree node allocation out of log_root_tree->log_mutex
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>,
         Filipe Manana <fdmanana@suse.com>,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH] btrfs: zoned: move log tree node allocation out of log_root_tree->log_mutex
-Date:   Wed, 24 Mar 2021 23:23:11 +0900
-Message-Id: <984c070461f31182e87d1b4f27c4565088a31b40.1616595693.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.31.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 6e37d2459941 ("btrfs: zoned: fix deadlock on log sync") pointed out
-a deadlock warning and removed
-mutex_{lock,unlock}(&fs_info->tree_root->log_mutex). While it looks like it
-always cause a deadlock, we didn't see actual deadlock in fstests runs. The
-reason is log_root_tree->log_mutex != fs_info->tree_root->log_mutex, not
-taking the same lock. So, the warning was actually a false-positive.
+On Wed, Mar 24, 2021 at 2:26 PM Naohiro Aota <naohiro.aota@wdc.com> wrote:
+>
+> Commit 6e37d2459941 ("btrfs: zoned: fix deadlock on log sync") pointed ou=
+t
+> a deadlock warning and removed
+> mutex_{lock,unlock}(&fs_info->tree_root->log_mutex). While it looks like =
+it
+> always cause a deadlock, we didn't see actual deadlock in fstests runs. T=
+he
+> reason is log_root_tree->log_mutex !=3D fs_info->tree_root->log_mutex, no=
+t
+> taking the same lock. So, the warning was actually a false-positive.
+>
+> Since btrfs_alloc_log_tree_node() is protected only by
+> fs_info->tree_root->log_mutex, we can (and should) move the code out of t=
+he
+> lock scope of log_root_tree->log_mutex and silence the warning.
+>
+> Cc: Filipe Manana <fdmanana@suse.com>
+> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Since btrfs_alloc_log_tree_node() is protected only by
-fs_info->tree_root->log_mutex, we can (and should) move the code out of the
-lock scope of log_root_tree->log_mutex and silence the warning.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Cc: Filipe Manana <fdmanana@suse.com>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/tree-log.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Looks good, thanks.
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 92a368627791..72c4b66ed516 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3165,20 +3165,22 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
- 	 */
- 	mutex_unlock(&root->log_mutex);
- 
--	btrfs_init_log_ctx(&root_log_ctx, NULL);
--
--	mutex_lock(&log_root_tree->log_mutex);
--
- 	if (btrfs_is_zoned(fs_info)) {
-+		mutex_lock(&fs_info->tree_root->log_mutex);
- 		if (!log_root_tree->node) {
- 			ret = btrfs_alloc_log_tree_node(trans, log_root_tree);
- 			if (ret) {
--				mutex_unlock(&log_root_tree->log_mutex);
-+				mutex_unlock(&fs_info->tree_log_mutex);
- 				goto out;
- 			}
- 		}
-+		mutex_unlock(&fs_info->tree_root->log_mutex);
- 	}
- 
-+	btrfs_init_log_ctx(&root_log_ctx, NULL);
-+
-+	mutex_lock(&log_root_tree->log_mutex);
-+
- 	index2 = log_root_tree->log_transid % 2;
- 	list_add_tail(&root_log_ctx.list, &log_root_tree->log_ctxs[index2]);
- 	root_log_ctx.log_transid = log_root_tree->log_transid;
--- 
-2.31.0
+> ---
+>  fs/btrfs/tree-log.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 92a368627791..72c4b66ed516 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -3165,20 +3165,22 @@ int btrfs_sync_log(struct btrfs_trans_handle *tra=
+ns,
+>          */
+>         mutex_unlock(&root->log_mutex);
+>
+> -       btrfs_init_log_ctx(&root_log_ctx, NULL);
+> -
+> -       mutex_lock(&log_root_tree->log_mutex);
+> -
+>         if (btrfs_is_zoned(fs_info)) {
+> +               mutex_lock(&fs_info->tree_root->log_mutex);
+>                 if (!log_root_tree->node) {
+>                         ret =3D btrfs_alloc_log_tree_node(trans, log_root=
+_tree);
+>                         if (ret) {
+> -                               mutex_unlock(&log_root_tree->log_mutex);
+> +                               mutex_unlock(&fs_info->tree_log_mutex);
+>                                 goto out;
+>                         }
+>                 }
+> +               mutex_unlock(&fs_info->tree_root->log_mutex);
+>         }
+>
+> +       btrfs_init_log_ctx(&root_log_ctx, NULL);
+> +
+> +       mutex_lock(&log_root_tree->log_mutex);
+> +
+>         index2 =3D log_root_tree->log_transid % 2;
+>         list_add_tail(&root_log_ctx.list, &log_root_tree->log_ctxs[index2=
+]);
+>         root_log_ctx.log_transid =3D log_root_tree->log_transid;
+> --
+> 2.31.0
+>
 
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
