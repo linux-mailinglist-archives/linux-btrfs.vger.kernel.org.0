@@ -2,120 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E07348F1F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 12:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DD134917B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 13:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhCYL0H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Mar 2021 07:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230223AbhCYLZe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:25:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 229F561A24;
-        Thu, 25 Mar 2021 11:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616671533;
-        bh=L9K+An1mAexKxxJjd9SicPaNHcs34iGZOFdaZ2GdXc8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lvzabexfpky+aaaTW2+H+TcQlvSjR6QZR/HbWPMjhoRUWo3QobFHnCwRpO6+xq8Dt
-         YbZ90uCiMt7D+qbKVTpFdjAgz3t2cd1CfOdfV3NG9+3uR0faceL3X8A5SYX6y/JTv2
-         i6aSPRD1o3gELMGuFNe3G9v4QN/OljatRhITKjb78rp+iVY4IFkSz4doONYWlMneXW
-         jD7xKB9WK+W+5vtrmA8isYleG8XH2SeDkgPNI59s0D5BTteodv5B1YZ6GoN9s4ORco
-         FVnciDJeNT6/uYhPZCxV1LyQqvEBTjMle6cqgiCNy90aTJjquzNo8ZM9Ern9uqgwz3
-         WWGnsvMg+TpBg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 26/44] btrfs: track qgroup released data in own variable in insert_prealloc_file_extent
-Date:   Thu, 25 Mar 2021 07:24:41 -0400
-Message-Id: <20210325112459.1926846-26-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210325112459.1926846-1-sashal@kernel.org>
-References: <20210325112459.1926846-1-sashal@kernel.org>
+        id S229995AbhCYMDq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Mar 2021 08:03:46 -0400
+Received: from mail-pf1-f178.google.com ([209.85.210.178]:37696 "EHLO
+        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231179AbhCYMDd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:03:33 -0400
+Received: by mail-pf1-f178.google.com with SMTP id c204so1832110pfc.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 05:03:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=DB39sjzlRvGGLDL1XZNi5iVlY2JoR9dCdsBIAZXjgtQ=;
+        b=rmRhZaY/zD52BpO60/7RMEf/piyEiAX4FDWt5/JcEw9KpZco5YcnJbT7WbZVoyP4CR
+         kMoFZ6f+YbfnozLdkwuNZWe+2Oooi4fq0aHebrQXxf7iFUWd40zjJJyd43cp8HZ3MPcy
+         eyZiOyYQtRj3ugPZ4bwSKXKtyOC+EsGkfVkRbu/aioFYVRtbGQw6IkKjOSCi4Mubr2R/
+         DkSbQCTlub1DcN1XxUJQIGkL4Tn6MPHaKLGt0Idbfkq7mSuIN/UkO+Wfr6JbulCMeS32
+         hsyTjzz5gX6c8KnJSuBAWPeS/Yz9bhfl0Alu1eERf/uTxjkmXoTE7GFnxbfLgRjqCNdE
+         X5fQ==
+X-Gm-Message-State: AOAM530XqvmLRZp6RTrOj4fo/0QGcGg/09iJdRkbu1gwZ+FmEk5YXWCb
+        65yY6S0jbPo2pxG1FgpQijz5+rLcPpsJGp+kVmvQGNZZ8TNfkg==
+X-Google-Smtp-Source: ABdhPJz1eSSky950k9wL/tp69ls6czwzkW4osCjVouu98uQJ1I/y/NjblqoREapsH39PMD3c6llkf1IWDXjE06VgEVE=
+X-Received: by 2002:a63:2262:: with SMTP id t34mr7466890pgm.303.1616673813194;
+ Thu, 25 Mar 2021 05:03:33 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+From:   James Freiwirth <james@perfectshuffle.co.uk>
+Date:   Thu, 25 Mar 2021 12:03:22 +0000
+Message-ID: <CAGaxVV9q-uOYkDxg6_sU6Z8ZShgg3dpoQYHtfZ-Bra9=vo79EQ@mail.gmail.com>
+Subject: btrfs incremental send failing. chmod - no such file or directory
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+I'm trying to perform an incremental backup as I usually do but I'm
+getting an error:
 
-[ Upstream commit fbf48bb0b197e6894a04c714728c952af7153bf3 ]
+sudo btrfs send -p /vault_pool/.snapshots/2020-12-31
+/vault_pool/.snapshots/2021-03-20 | sudo btrfs receive
+/mnt/WDElements/vault
+At subvol /vault_pool/.snapshots/2021-03-20
+At snapshot 2021-03-20
+ERROR: chmod documents/Personal/Accounts/ms.txt failed: No such file
+or directory
 
-There is a piece of weird code in insert_prealloc_file_extent(), which
-looks like:
+Kernel details:
+Linux office-server 5.11.8-051108-generic #202103200636 SMP Sat Mar 20
+11:17:32 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 
-	ret = btrfs_qgroup_release_data(inode, file_offset, len);
-	if (ret < 0)
-		return ERR_PTR(ret);
-	if (trans) {
-		ret = insert_reserved_file_extent(trans, inode,
-						  file_offset, &stack_fi,
-						  true, ret);
-	...
-	}
-	extent_info.is_new_extent = true;
-	extent_info.qgroup_reserved = ret;
-	...
-
-Note how the variable @ret is abused here, and if anyone is adding code
-just after btrfs_qgroup_release_data() call, it's super easy to
-overwrite the @ret and cause tons of qgroup related bugs.
-
-Fix such abuse by introducing new variable @qgroup_released, so that we
-won't reuse the existing variable @ret.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/inode.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9b4f75568261..8f36071769fa 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9674,6 +9674,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	struct btrfs_path *path;
- 	u64 start = ins->objectid;
- 	u64 len = ins->offset;
-+	int qgroup_released;
- 	int ret;
- 
- 	memset(&stack_fi, 0, sizeof(stack_fi));
-@@ -9686,14 +9687,14 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	btrfs_set_stack_file_extent_compression(&stack_fi, BTRFS_COMPRESS_NONE);
- 	/* Encryption and other encoding is reserved and all 0 */
- 
--	ret = btrfs_qgroup_release_data(inode, file_offset, len);
--	if (ret < 0)
--		return ERR_PTR(ret);
-+	qgroup_released = btrfs_qgroup_release_data(inode, file_offset, len);
-+	if (qgroup_released < 0)
-+		return ERR_PTR(qgroup_released);
- 
- 	if (trans) {
- 		ret = insert_reserved_file_extent(trans, inode,
- 						  file_offset, &stack_fi,
--						  true, ret);
-+						  true, qgroup_released);
- 		if (ret)
- 			return ERR_PTR(ret);
- 		return trans;
-@@ -9706,7 +9707,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
- 	extent_info.file_offset = file_offset;
- 	extent_info.extent_buf = (char *)&stack_fi;
- 	extent_info.is_new_extent = true;
--	extent_info.qgroup_reserved = ret;
-+	extent_info.qgroup_reserved = qgroup_released;
- 	extent_info.insertions = 0;
- 
- 	path = btrfs_alloc_path();
--- 
-2.30.1
-
+Any ideas?
