@@ -2,93 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DF8348EDC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 12:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E07348F1F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 12:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbhCYLY3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Mar 2021 07:24:29 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:44123 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhCYLX7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:23:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1616671440; x=1648207440;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KPQJaHzBlbP9xiIfDqBWXWGsGK0lqSpcHkN2QmqkQbo=;
-  b=PD9EduBi7mOcCqpPSTznZPZXE3W7xipx40SFAM94ANPXc/gkXHBaOGWt
-   OyvjYdbiJr7COANzTX1iWAqYVPwgKeVH6A5eSdvaacQ4oBNFE6DyzbWB9
-   1JV2WUIRMJYStQeRKV8prqwE0UFzmF0eI8exsVXDbxcdVP9LclkqxBUYV
-   NUhK/AGeFDV+xJ1eebLThf/rBohf+AVdsfrLxTyIuErJmptidWLKNu6Nh
-   PCNN4Qi9U9YKUMJdgdhITMIubcNLFBjr/MKpRvrIQlsOMtJpM70Z1EvBE
-   JamrXIoZBg2yNqkENeJ1+25lebX+KNj3mKF7ViJ+yPnYMsOJlnRto4pG1
-   w==;
-IronPort-SDR: h0cfbzEwcTUN/nyDLhsrY3FBpZ5CS2VGx2kiaf3kau3I0gsoaqBvBnKEkq0BdbiIHmeAb7Q4V+
- yWXpnihxTwOkq2KRNG+Ybfx5/IIMbQeyuYuNiYwKzWoq33b/8bbEgZqS9EkbFHrglShD0CvEoz
- Zpq/7UjzRkH9+c3v04bEvcJDCNcYy5kLJ6p81FgXAgQbXzuKiwcGNZYKAoheJy1/WIJLKCpbg6
- 033ZiAyCN654hInZ/ea3MvhOk1qW+jFYbBz6RLIkx7+gpbhZIteRvE9Spo7ra6KDHrc4mBoPGX
- 9U8=
-X-IronPort-AV: E=Sophos;i="5.81,277,1610380800"; 
-   d="scan'208";a="164096787"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 25 Mar 2021 19:23:54 +0800
-IronPort-SDR: 4OhH3hZwcSyCjtD+eO/meKrCEobKgJhPgqDkL/5ZKYn9k7eUrmzVG/7ca+JpUFjs89SbPKnyvZ
- 4FnGx+7fXzMMNkJuovwjFDgqs4GeZDoy4mEZhrrc7tVFRnnuToHwT+gdIu7J7a8BgttwWGqDtE
- Vi8O7l4NnkS0ogqJW+XXAAK/4ZwlL/Ud6ekkLYmVlF36BFmGz3pqrETqtNkHedk40smfkt/V0j
- ugOd6BN2KvSvnuRKdXWISOrjrY5TtemPZeqCa3sLPT7EkrTgH1H0OYkNPUEydT3LVMiel/aUhf
- viF+MyAavDDQ9tCiGX+fL3Hb
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 04:05:53 -0700
-IronPort-SDR: KQHe4Pqc/qZSVZPZomxvoz+36Wb6CItdxPfSC5WRmV12nehepQrZ6r1qi635wU2QID5yY0v82u
- p7QI7LuRF7qIN4WX8CT42uRF4DfXiXFPD9tdCdymnnRPDi197tiV1k+dnsPV//4RdUw5Uvmvvr
- sMrhqLq7PgOi7SfdqEagsFLEosGXbuOExDCu9gPq9IQxPek7c6wiwa0S6gtLwmv+5DbT4oVUue
- Zjfc24m5L/h6SbbxAyA7kaSYd9BF5Aweh/yLKNru8OhU86z6pQDN1noMp8uQq3qe4reB9gpoTX
- T+4=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 25 Mar 2021 04:23:49 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] fstests: don't relay on /proc/partitions for device size
-Date:   Thu, 25 Mar 2021 20:23:37 +0900
-Message-Id: <20210325112337.35102-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.30.0
+        id S230440AbhCYL0H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Mar 2021 07:26:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230223AbhCYLZe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:25:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 229F561A24;
+        Thu, 25 Mar 2021 11:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616671533;
+        bh=L9K+An1mAexKxxJjd9SicPaNHcs34iGZOFdaZ2GdXc8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Lvzabexfpky+aaaTW2+H+TcQlvSjR6QZR/HbWPMjhoRUWo3QobFHnCwRpO6+xq8Dt
+         YbZ90uCiMt7D+qbKVTpFdjAgz3t2cd1CfOdfV3NG9+3uR0faceL3X8A5SYX6y/JTv2
+         i6aSPRD1o3gELMGuFNe3G9v4QN/OljatRhITKjb78rp+iVY4IFkSz4doONYWlMneXW
+         jD7xKB9WK+W+5vtrmA8isYleG8XH2SeDkgPNI59s0D5BTteodv5B1YZ6GoN9s4ORco
+         FVnciDJeNT6/uYhPZCxV1LyQqvEBTjMle6cqgiCNy90aTJjquzNo8ZM9Ern9uqgwz3
+         WWGnsvMg+TpBg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 26/44] btrfs: track qgroup released data in own variable in insert_prealloc_file_extent
+Date:   Thu, 25 Mar 2021 07:24:41 -0400
+Message-Id: <20210325112459.1926846-26-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210325112459.1926846-1-sashal@kernel.org>
+References: <20210325112459.1926846-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Non-partitionable devices, like zoned block devices, aren't showing up in in
-/proc/partitions and therefore we cannot relay on it to get a device's
-size.
+From: Qu Wenruo <wqu@suse.com>
 
-Use sysfs' size attribute to get the block device size.
+[ Upstream commit fbf48bb0b197e6894a04c714728c952af7153bf3 ]
 
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+There is a piece of weird code in insert_prealloc_file_extent(), which
+looks like:
+
+	ret = btrfs_qgroup_release_data(inode, file_offset, len);
+	if (ret < 0)
+		return ERR_PTR(ret);
+	if (trans) {
+		ret = insert_reserved_file_extent(trans, inode,
+						  file_offset, &stack_fi,
+						  true, ret);
+	...
+	}
+	extent_info.is_new_extent = true;
+	extent_info.qgroup_reserved = ret;
+	...
+
+Note how the variable @ret is abused here, and if anyone is adding code
+just after btrfs_qgroup_release_data() call, it's super easy to
+overwrite the @ret and cause tons of qgroup related bugs.
+
+Fix such abuse by introducing new variable @qgroup_released, so that we
+won't reuse the existing variable @ret.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- common/rc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/inode.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/common/rc b/common/rc
-index 1c814b9aabf1..c99fff824087 100644
---- a/common/rc
-+++ b/common/rc
-@@ -3778,7 +3778,7 @@ _get_available_space()
- # return device size in kb
- _get_device_size()
- {
--	grep -w `_short_dev $1` /proc/partitions | awk '{print $3}'
-+	echo $(($(cat /sys/block/`_short_dev $1`/size) >> 1))
- }
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 9b4f75568261..8f36071769fa 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -9674,6 +9674,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 	struct btrfs_path *path;
+ 	u64 start = ins->objectid;
+ 	u64 len = ins->offset;
++	int qgroup_released;
+ 	int ret;
  
- # Make sure we actually have dmesg checking set up.
+ 	memset(&stack_fi, 0, sizeof(stack_fi));
+@@ -9686,14 +9687,14 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 	btrfs_set_stack_file_extent_compression(&stack_fi, BTRFS_COMPRESS_NONE);
+ 	/* Encryption and other encoding is reserved and all 0 */
+ 
+-	ret = btrfs_qgroup_release_data(inode, file_offset, len);
+-	if (ret < 0)
+-		return ERR_PTR(ret);
++	qgroup_released = btrfs_qgroup_release_data(inode, file_offset, len);
++	if (qgroup_released < 0)
++		return ERR_PTR(qgroup_released);
+ 
+ 	if (trans) {
+ 		ret = insert_reserved_file_extent(trans, inode,
+ 						  file_offset, &stack_fi,
+-						  true, ret);
++						  true, qgroup_released);
+ 		if (ret)
+ 			return ERR_PTR(ret);
+ 		return trans;
+@@ -9706,7 +9707,7 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 	extent_info.file_offset = file_offset;
+ 	extent_info.extent_buf = (char *)&stack_fi;
+ 	extent_info.is_new_extent = true;
+-	extent_info.qgroup_reserved = ret;
++	extent_info.qgroup_reserved = qgroup_released;
+ 	extent_info.insertions = 0;
+ 
+ 	path = btrfs_alloc_path();
 -- 
-2.30.0
+2.30.1
 
