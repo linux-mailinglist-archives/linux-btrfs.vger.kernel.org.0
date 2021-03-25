@@ -2,188 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239773491CA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 13:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EFE349206
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 13:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhCYMVb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Mar 2021 08:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        id S231220AbhCYMaG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Mar 2021 08:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhCYMVA (ORCPT
+        with ESMTP id S230220AbhCYM37 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:21:00 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC28C06174A
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 05:21:00 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id g38so2004642ybi.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 05:21:00 -0700 (PDT)
+        Thu, 25 Mar 2021 08:29:59 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E53C06174A
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 05:29:58 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id f12so1459870qtq.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 05:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ghlhLLVI3GPZKy2RF/xOUdFFZrma1fX9PYCULRSfVQo=;
-        b=uCrzoNiFN1TPFK0MiNLVmcEn5Am/s+FzehhCQNoVrVQCFW8fUQBXn6Nf1v1Hb+7kSB
-         4XT4FsIoS3FEiZpg5CGXX4omoxv3OY7ttl+b2k/NuJ85IHw5fPd1d1AvFRkbsjeqZMT8
-         rVnh+3ivmbU7bfOz/uvRqkZjpajmDxKiWNHf9jHKmnrOfCPIlfDossJwAKzggicljAY9
-         h6adqWw13ZqNsUj6ul+bDrZvFyVRf//EglUE+1Y8JLoCx23HuLxFfkQP6+tDV5tW2Hup
-         vHP6xu+DVOwciC97lLdCZ6+VzTJS6STR/IYZHHJ+qeqOB+Yf6I7j8xLkgpxvww/JmtKv
-         Mi4w==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=ZoAi1rW79O1hKnEwlsr29FiP2YMRRJdAq7Mbpf/Cpz8=;
+        b=pLc0NKTFYCGTZFS3p/G92D5G8xbfcQaez9aoYH8JY2TDgPHPRDUL41f1P6FM7uOTHU
+         s7Rg00c10Zflae53L882wGz00U+daVwIYzEIyc8DiUWX3LBDDUMbG8Y/0EfD8rjLh/AF
+         /s6r3Lf98bVRVIAuNJ0h+dD+tiIZOjRT5IRVBTSkbq1FP8iIgrQl2ilal3CDAABm5VQz
+         ZCUk1qdMCQYtz6ZgtlCvCMkCL2az2p6vcLBgnEaaEkI2trmlMBBX2JqR/tS7oLVLI4Il
+         wWXkQjmzESMREVV4sVxaVRzEwtYMIS/uF1HN+9jYugp4lnYmiW0YKOqkOue7wr2GWbqI
+         u22Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ghlhLLVI3GPZKy2RF/xOUdFFZrma1fX9PYCULRSfVQo=;
-        b=gH8OPqbRQhnR8pgV6uP32tCqJaIGweM91Oyq5CmFQX3HO1m5OCDyOkk3aeaHRTBWsa
-         0qJG/pfMVPU7Tas/LF0XMeWZjug7jqHC9IBDKoCaPWFgSbIrD6ZfKZpu9FHLfhogaDuf
-         FXQ2eTQBFiSeWPYxwTy4P835jzPPWa02mN0RI4NQZLaZHSGorZqSZhr0imucfpkvf8Wq
-         rFAFguspcEgFNyQzeUZzIEggV04fLDbfI8L6l1Qi2JGv/bjKrzY7AVW5oZSii844gPP7
-         fba/oA10y8U9Uu245MTxdkcBxlB02/Tzc8Bh/J4HXF51BFE4W9YrbjtIqiZtv07Cpq0d
-         oJ+Q==
-X-Gm-Message-State: AOAM5331+2eqSEBFRDOoK25Ye3MegGrDBvBu6uBvyhNrsMlUuc+MN7C3
-        nqJ/dzEb/a9NpD0olsrk882UOI3uPn6PHmc+M9Y=
-X-Google-Smtp-Source: ABdhPJyCj/csd++r6cZiqrEb65ksT/MY1cfTEyW+HrZQh0F+5JDqWWDMu/vDpjESOrrebqaI69yVCs17owFpIzF3XrA=
-X-Received: by 2002:a25:d10b:: with SMTP id i11mr3680968ybg.0.1616674859523;
- Thu, 25 Mar 2021 05:20:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZoAi1rW79O1hKnEwlsr29FiP2YMRRJdAq7Mbpf/Cpz8=;
+        b=O03vz2x3+QrxYWnbUfE9YJmp0CViSfQAEidQFa/zO10T4AchzBBES4nSu6rzJFN3r2
+         0pgG4Mc0XZsUW3MO+HpZFrnKG0ZTlII5LIZ8tdxL2ZJYU0s8ukhMS77mIYZ6M/KxFbY0
+         9pZ0ME8dV7fdQuNiX92n6FWF+kHH2m/hlm3cBifzlpxCaH44Q61OrOsJOgw3+qVFuRhZ
+         h37/muZXM8jx+e0NKyMtG6UOBkQb6xCf4zACHJKzGeCEF1XpdEPNpmzNz6rcQDSSbqjX
+         ICmSOCn5VwqacsShpHwLxPuPw8ezgT/etml3Y0VDcOKFq75HvKgU2Qc9GAYvGPVu1c6/
+         ss8A==
+X-Gm-Message-State: AOAM530tJ6HlwYlTYuwEkDXl9tq5kQh3/yKFtTVL4C71CpiL7cYDRo4s
+        FV4zEQTxLSy5v2j26jhQ97rzbc93U33BcY0ySh34MTMD
+X-Google-Smtp-Source: ABdhPJxysx44gAeY78v1nPfWfn6MC5k5OIG/R94op1kD4G5Bo/w/o+6KEV9xfWaJZdmJ02tJimzmpbQfYkdGc3c+a2Q=
+X-Received: by 2002:a05:622a:48d:: with SMTP id p13mr7372689qtx.21.1616675397729;
+ Thu, 25 Mar 2021 05:29:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325071445.90896-1-wqu@suse.com>
-In-Reply-To: <20210325071445.90896-1-wqu@suse.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Thu, 25 Mar 2021 08:20:23 -0400
-Message-ID: <CAEg-Je_Bx6Yu6JHB0XXjBt0+0Ox_=kAUAVWWZan1DsiqvybYrQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAGaxVV9q-uOYkDxg6_sU6Z8ZShgg3dpoQYHtfZ-Bra9=vo79EQ@mail.gmail.com>
+In-Reply-To: <CAGaxVV9q-uOYkDxg6_sU6Z8ZShgg3dpoQYHtfZ-Bra9=vo79EQ@mail.gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 25 Mar 2021 12:29:46 +0000
+Message-ID: <CAL3q7H6zUDeqtxR+5fWxGrV9+SQxyVjEdX2eX-+BV3-xsmP7wQ@mail.gmail.com>
+Subject: Re: btrfs incremental send failing. chmod - no such file or directory
+To:     James Freiwirth <james@perfectshuffle.co.uk>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 3:17 AM Qu Wenruo <wqu@suse.com> wrote:
+On Thu, Mar 25, 2021 at 12:07 PM James Freiwirth
+<james@perfectshuffle.co.uk> wrote:
 >
-> This patchset can be fetched from the following github repo, along with
-> the full subpage RW support:
-> https://github.com/adam900710/linux/tree/subpage
+> I'm trying to perform an incremental backup as I usually do but I'm
+> getting an error:
 >
-> This patchset is for metadata read write support.
+> sudo btrfs send -p /vault_pool/.snapshots/2020-12-31
+> /vault_pool/.snapshots/2021-03-20 | sudo btrfs receive
+> /mnt/WDElements/vault
+> At subvol /vault_pool/.snapshots/2021-03-20
+> At snapshot 2021-03-20
+> ERROR: chmod documents/Personal/Accounts/ms.txt failed: No such file
+> or directory
 >
-> [FULL RW TEST]
-> Since the data write path is not included in this patchset, we can't
-> really test the patchset itself, but anyone can grab the patch from
-> github repo and do fstests/generic tests.
+> Kernel details:
+> Linux office-server 5.11.8-051108-generic #202103200636 SMP Sat Mar 20
+> 11:17:32 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 >
-> But at least the full RW patchset can pass -g generic/quick -x defrag
-> for now.
->
-> There are some known issues:
->
-> - Defrag behavior change
->   Since current defrag is doing per-page defrag, to support subpage
->   defrag, we need some change in the loop.
->   E.g. if a page has both hole and regular extents in it, then defrag
->   will rewrite the full 64K page.
->
->   Thus for now, defrag related failure is expected.
->   But this should only cause behavior difference, no crash nor hang is
->   expected.
->
-> - No compression support yet
->   There are at least 2 known bugs if forcing compression for subpage
->   * Some hard coded PAGE_SIZE screwing up space rsv
->   * Subpage ASSERT() triggered
->     This is because some compression code is unlocking locked_page by
->     calling extent_clear_unlock_delalloc() with locked_page =3D=3D NULL.
->   So for now compression is also disabled.
->
-> - Inode nbytes mismatch
->   Still debugging.
->   The fastest way to trigger is fsx using the following parameters:
->
->     fsx -l 262144 -o 65536 -S 30073 -N 256 -R -W $mnt/file > /tmp/fsx
->
->   Which would cause inode nbytes differs from expected value and
->   triggers btrfs check error.
->
-> [DIFFERENCE AGAINST REGULAR SECTORSIZE]
-> The metadata part in fact has more new code than data part, as it has
-> some different behaviors compared to the regular sector size handling:
->
-> - No more page locking
->   Now metadata read/write relies on extent io tree locking, other than
->   page locking.
->   This is to allow behaviors like read lock one eb while also try to
->   read lock another eb in the same page.
->   We can't rely on page lock as now we have multiple extent buffers in
->   the same page.
->
-> - Page status update
->   Now we use subpage wrappers to handle page status update.
->
-> - How to submit dirty extent buffers
->   Instead of just grabbing extent buffer from page::private, we need to
->   iterate all dirty extent buffers in the page and submit them.
->
-> [CHANGELOG]
-> v2:
-> - Rebased to latest misc-next
->   No conflicts at all.
->
-> - Add new sysfs interface to grab supported RO/RW sectorsize
->   This will allow mkfs.btrfs to detect unmountable fs better.
->
-> - Use newer naming schema for each patch
->   No more "extent_io:" or "inode:" schema anymore.
->
-> - Move two pure cleanups to the series
->   Patch 2~3, originally in RW part.
->
-> - Fix one uninitialized variable
->   Patch 6.
->
-> v3:
-> - Rename the sysfs to supported_sectorsizes
->
-> - Rebased to latest misc-next branch
->   This removes 2 cleanup patches.
->
-> - Add new overview comment for subpage metadata
->
-> Qu Wenruo (13):
->   btrfs: add sysfs interface for supported sectorsize
->   btrfs: use min() to replace open-code in btrfs_invalidatepage()
->   btrfs: remove unnecessary variable shadowing in btrfs_invalidatepage()
->   btrfs: refactor how we iterate ordered extent in
->     btrfs_invalidatepage()
->   btrfs: introduce helpers for subpage dirty status
->   btrfs: introduce helpers for subpage writeback status
->   btrfs: allow btree_set_page_dirty() to do more sanity check on subpage
->     metadata
->   btrfs: support subpage metadata csum calculation at write time
->   btrfs: make alloc_extent_buffer() check subpage dirty bitmap
->   btrfs: make the page uptodate assert to be subpage compatible
->   btrfs: make set/clear_extent_buffer_dirty() to be subpage compatible
->   btrfs: make set_btree_ioerr() accept extent buffer and to be subpage
->     compatible
->   btrfs: add subpage overview comments
->
->  fs/btrfs/disk-io.c   | 143 ++++++++++++++++++++++++++++++++++---------
->  fs/btrfs/extent_io.c | 127 ++++++++++++++++++++++++++++----------
->  fs/btrfs/inode.c     | 128 ++++++++++++++++++++++----------------
->  fs/btrfs/subpage.c   | 127 ++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/subpage.h   |  17 +++++
->  fs/btrfs/sysfs.c     |  15 +++++
->  6 files changed, 441 insertions(+), 116 deletions(-)
->
-> --
-> 2.30.1
->
+> Any ideas?
 
-Why wouldn't we just integrate full read-write support with the
-caveats as described now? It seems to be relatively reasonable to do
-that, and this patch set is essentially unusable without the rest of
-it that does enable full read-write support.
+Pass -vvv to btrfs receive and paste the full output.
+
+Thanks.
+
 
 
 --=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
