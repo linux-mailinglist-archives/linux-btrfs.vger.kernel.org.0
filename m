@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DEC3489F3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 08:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677C83489F5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 08:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhCYHPr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Mar 2021 03:15:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37126 "EHLO mx2.suse.de"
+        id S229847AbhCYHPs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Mar 2021 03:15:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37158 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhCYHPY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:15:24 -0400
+        id S229733AbhCYHP0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:15:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616656523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1616656525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KcKcn6lT10xpe/artok4RQBVTpeCfv0NItQhwPwie6U=;
-        b=X0JhmsY6cG2xe6FE6CXa4bq8vzzqnMrnnoGEkaacayj+alqF3IMpSJMlSgPOa0lr2puLSY
-        LiB4dnjsjyiBLMY4unsvkg5czFjXX5CaFrP6G6fpZsc12qLL/Bfc6pe6fWyty/YStSRwV2
-        MGuPR0eO/xDDJGWxV+Daard6Gy7BqvM=
+        bh=/Oooa8vclbzVAq1az0XFOyb+rSSQGFzmtjqYPGdN2Ug=;
+        b=uLYozO6Cti0hvjmIVrjX+KvSkKVlAiJXIGUWerN51HnGUQf/d/Xi7PvR9261F59WpUiyp5
+        DK7DX1cBAGow8COyt1lsx3FS1mHQ5NXszpnEragHgw6mjYLuS2H55o3+Eo1Gpw0UXLxYdp
+        25ZZnslFXp4hLIwgqCL1Vqcou4QQL6E=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 59E46AD4A
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 07:15:23 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 43D04AA55
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 07:15:25 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 12/13] btrfs: make set_btree_ioerr() accept extent buffer and to be subpage compatible
-Date:   Thu, 25 Mar 2021 15:14:44 +0800
-Message-Id: <20210325071445.90896-13-wqu@suse.com>
+Subject: [PATCH v3 13/13] btrfs: add subpage overview comments
+Date:   Thu, 25 Mar 2021 15:14:45 +0800
+Message-Id: <20210325071445.90896-14-wqu@suse.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210325071445.90896-1-wqu@suse.com>
 References: <20210325071445.90896-1-wqu@suse.com>
@@ -38,86 +38,82 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Current set_btree_ioerr() only accepts @page parameter and grabs extent
-buffer from page::private.
+This patch will add an overview for how btrfs subpage support,
+including:
 
-This works fine for sector size == PAGE_SIZE case, but not for subpage
-case.
-
-Adds an extra parameter, @eb, for callers to pass extent buffer to this
-function, so that subpage code can reuse this function.
-
-And also add subpage special handling to update
-btrfs_subpage::error_bitmap.
+- Limitations
+- Behaviors
+- Basic implementation points
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ fs/btrfs/subpage.c | 54 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 6844d951f2c1..9c0c6f1d7710 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4012,12 +4012,11 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
- 	return ret;
- }
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 2a326d6385ed..c35db695886b 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -1,5 +1,59 @@
+ // SPDX-License-Identifier: GPL-2.0
  
--static void set_btree_ioerr(struct page *page)
-+static void set_btree_ioerr(struct page *page, struct extent_buffer *eb)
- {
--	struct extent_buffer *eb = (struct extent_buffer *)page->private;
--	struct btrfs_fs_info *fs_info;
-+	struct btrfs_fs_info *fs_info = eb->fs_info;
- 
--	SetPageError(page);
-+	btrfs_page_set_error(fs_info, page, eb->start, eb->len);
- 	if (test_and_set_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags))
- 		return;
- 
-@@ -4025,7 +4024,6 @@ static void set_btree_ioerr(struct page *page)
- 	 * If we error out, we should add back the dirty_metadata_bytes
- 	 * to make it consistent.
- 	 */
--	fs_info = eb->fs_info;
- 	percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
- 				 eb->len, fs_info->dirty_metadata_batch);
- 
-@@ -4069,13 +4067,13 @@ static void set_btree_ioerr(struct page *page)
- 	 */
- 	switch (eb->log_index) {
- 	case -1:
--		set_bit(BTRFS_FS_BTREE_ERR, &eb->fs_info->flags);
-+		set_bit(BTRFS_FS_BTREE_ERR, &fs_info->flags);
- 		break;
- 	case 0:
--		set_bit(BTRFS_FS_LOG1_ERR, &eb->fs_info->flags);
-+		set_bit(BTRFS_FS_LOG1_ERR, &fs_info->flags);
- 		break;
- 	case 1:
--		set_bit(BTRFS_FS_LOG2_ERR, &eb->fs_info->flags);
-+		set_bit(BTRFS_FS_LOG2_ERR, &fs_info->flags);
- 		break;
- 	default:
- 		BUG(); /* unexpected, logic error */
-@@ -4100,7 +4098,7 @@ static void end_bio_extent_buffer_writepage(struct bio *bio)
- 		if (bio->bi_status ||
- 		    test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)) {
- 			ClearPageUptodate(page);
--			set_btree_ioerr(page);
-+			set_btree_ioerr(page, eb);
- 		}
- 
- 		end_page_writeback(page);
-@@ -4156,7 +4154,7 @@ static noinline_for_stack int write_one_eb(struct extent_buffer *eb,
- 					 end_bio_extent_buffer_writepage,
- 					 0, 0, 0, false);
- 		if (ret) {
--			set_btree_ioerr(p);
-+			set_btree_ioerr(p, eb);
- 			if (PageWriteback(p))
- 				end_page_writeback(p);
- 			if (atomic_sub_and_test(num_pages - i, &eb->io_pages))
++/*
++ * Subpage (sectorsize < PAGE_SIZE) support for btrfs overview:
++ *
++ * Limitation:
++ * - Only support 64K page size yet
++ *   This is to make metadata handling easier, as 64K page would ensure
++ *   all nodesize would fit inside one page, thus we don't need to handle
++ *   cases where a tree block crosses several pages.
++ *
++ * - Only metadata read-write yet
++ *   The data read-write part is under heavy tests, while still have several
++ *   bugs remaining.
++ *
++ * - Metadata can't cross 64K page boundary
++ *   btrfs-progs and kernel has done such behavior for a while, thus only
++ *   ancient btrfs could have such problem.
++ *   For such case, btrfs will do a graceful rejection.
++ *
++ * Special behaviors:
++ * - Metadata
++ *   Metadata read is fully subpage.
++ *   Meaning when reading one tree block will only trigger the read for the
++ *   needed range, other unrelated range in the same page will not be touched.
++ *
++ *   Metadata write is partial subpage.
++ *   The writeback is still for the full page, but btrfs will only submit
++ *   the dirty extent buffers in the page.
++ *
++ *   This means, if we have a metadata page like this:
++ *   Page offset
++ *   0         16K         32K         48K        64K
++ *   |/////////|           |///////////|
++ *        \- Tree block A        \- Tree block B
++ *
++ *   Even if we just want to writeback tree block A, we will also writeback
++ *   tree block B if it's also dirty.
++ *
++ *   This may cause extra metadata writeback which results more COW.
++ *
++ * Implementation:
++ * - Common
++ *   Both metadata and data will use an new structure, btrfs_subpage, to
++ *   record the status of each sector inside a page.
++ *   This provides the extra granularity needed.
++ *
++ * - Metadata
++ *   Since we have multiple tree blocks inside one page, we can't rely on page
++ *   locking anymore, or we will have greatly reduced concurrency or even
++ *   deadlock (hold one tree lock while try to lock another tree lock in the
++ *   same page).
++ *
++ *   Thus for metadata locking, subpage support relies on io_tree locking only.
++ *   This means a slightly more tree locking latency.
++ */
+ #include <linux/slab.h>
+ #include "ctree.h"
+ #include "subpage.h"
 -- 
 2.30.1
 
