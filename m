@@ -2,94 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6643481FA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Mar 2021 20:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38450348621
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 01:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237887AbhCXTbd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Mar 2021 15:31:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33604 "EHLO mx2.suse.de"
+        id S232865AbhCYA6n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Mar 2021 20:58:43 -0400
+Received: from mout.gmx.net ([212.227.15.15]:39209 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237661AbhCXTbF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:31:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616614263; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=lP8NGhqEaai+6aYPvCkVl2K2vLbfGgrx+i52+vWs1uk=;
-        b=VHI8QB3XQz340sRZBQfNmARJpm0vNat24LZ6dZD4IoO+1hx2dmnHgFsawt7vNNjVMtmP5A
-        1c+wdeN513RZFoub73MBlQ2SgMMlhZ5VVHnVdi0HwJA3IkDVyN0zCDUo04ryolYOPdP2qX
-        ZgSX/R4H2dw3x+zY8DcjjAvfE4cy8Os=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D7E65AD4A
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Mar 2021 19:31:03 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6AEBDDA732; Wed, 24 Mar 2021 20:28:58 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs release 5.11.1
-Date:   Wed, 24 Mar 2021 20:28:58 +0100
-Message-Id: <20210324192858.19011-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S232750AbhCYA61 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Mar 2021 20:58:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616633905;
+        bh=hO8e5A8B/Vut48ZPBZ9NvEDZzB1dwaiyt/BIUcDUVq0=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=jXVjC20uU67yOsmdgKT1ttAsJfYzVC21mRF2KQ9NBT9MnrwBYm6jbc2GXYemBojdA
+         IvtGSw0E3LOMY7R85OGkok5EPVamd6eWQ6udBa217AbSTVUlouVy6AKU7yl7LbGZvF
+         4ujT4IpPfe5V9XYIaaBsIJkqz4lrvs3Z1k14f280=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MC30Z-1lWdNV2ykf-00CUMl; Thu, 25
+ Mar 2021 01:58:25 +0100
+To:     Jim Geo <dim.geo@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAD9MmSd+Nt3OWA-A2TWZ3hBmDOo0D8YMSk4HWwnJpEhpUVzYjw@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: thread_pool
+Message-ID: <e50036a4-cc39-5555-3f09-395446a1ae05@gmx.com>
+Date:   Thu, 25 Mar 2021 08:58:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD9MmSd+Nt3OWA-A2TWZ3hBmDOo0D8YMSk4HWwnJpEhpUVzYjw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WXIbo5G3pW0321tVn6X6SVo+4t55vCqaAdGOsTlNGgpO7A0UDFy
+ c+nTlCN0mXfE0c+et9KX0WqBhUaS+FMuryaatSw+biHy8kJPxG81x4hfAQkDv3cnfT7SnTY
+ py3ig9v0l/lL54vWgridUSYjYBswZ6Vh83f5dyl5i55gzmfKLLDFqC1s2h7z+ekCGccfXcN
+ 9dO8QXWYPBD/DQiHrrcZA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:X+8SnW+vlOI=:bkkSvcByN4krBthCt6Ksgw
+ cIRtqVfTWJ71XxF+ncFw8DwSg9ytyF3G2TEv5CGZT0uT87eoorD0ETgL3Dw8VulwFKHtJxjj+
+ rfPcBSbscxK0JvzK97ndBa7C7BJ4H7wRsuLq52923lW4LjzTMIis/TygbMzio9nk+IyINifU+
+ XRP0ETjhRbgxHKbt718GbIt22pYKEYU9dbbru6pjVimlLq3KplMip6R6eapEKNNyaGOPHRIb5
+ l0bbaOBAHeSmKq4uCY8HEQ3fg9KpXZSo0yzhPduneQKsZ4OnioMjFy4JS+bO3Kg4Rk2a/L4aX
+ n+eag7Sg78sPL9/yMBrT1uswn+UkzZy0zNHlyanrVAsSFsZGGuaL5MseDs6y/CjcKa8U+9EJE
+ f0L10SnHYizC6uIB3BorLCED1mikpHraQCF3jkAqZaVPrioSB1MtD0ufjV98YYMIo7XJx3TPj
+ oc02xtvQvjFONPjncp1nBcxtBBtg5sKJ2AWUPikPlMkJCGAlyb7LQfvClhfuy6tW+dNf8MSs/
+ iFonzcVIVXfmc19G4YR/h+CEV+vxyjVoF8p8rUx+mUan8ljOnwp32uIH3YO3839+1FLdQfFH+
+ boGzR62v5ZKTqG3o97PPuVbsSvoSQbZQG+p9pIiG/Y2jBQbfagFA5VUxdr77O5HqDLvb7uGU5
+ JBr7yrnxrjbXGtPtq2wIVJ6tgh6u9Mtez09NIKm55zYMGQ+vb7syAS/vcdJLPiml56oSyIrVQ
+ y4/+RTPOAzqrjooPpXTWdpuGQ3D3+jNGUczuJJuJBG09zuTcvLB69g+TNRs9+WbfPz15uceHm
+ vXgna2IpO08rsZiRpNccmaM4Et2qfpyUhcfcXpY5ILz5h91N5ILzX0Xe0Low4uyiW/e65e4BG
+ AA/84XPmbuR/YqI1482Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-btrfs-progs version 5.11.1 have been released. This is a bugfix release.
 
-Changelog:
+On 2021/3/25 =E4=B8=8A=E5=8D=882:09, Jim Geo wrote:
+> Hello,
+>
+> Could you please elaborate on the relation between thread_pool and
+> physical devices?
+>
+> By default thread_pool is scaling with the number of CPUs. Does the
+> default value make sense in cases where the physical devices are fewer
+> than the CPUs? For HDD? For SSD?
 
-  * properly format checksums when a mismatch is reported
-  * check: fix false alert on tree block crossing 64K page boundary
-  * convert:
-    * refuse to convert filesystem with 'needs_recovery'
-    * update documentation to require fsck before conversion
-  * balance convert: fix raid56 warning when converting other profiles
-  * fi resize: improved summary
-  * other
-    * build: fix checks and autoconf defines
-    * fix symlink paths for CI support scripts
-    * updated tests
+Btrfs is using kernel workqueue, while the thread_pool is just a soft
+cap on how many works can be queued to workqueue, while how each man
+works kernel workqueue will really spawn is a different thing.
 
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+Furthermore, the thread_pool value only makes a difference for csum
+calculation and compression.
 
-Shortlog:
+For most x86_64, the CRC32 used by btrfs is already pretty fast thus the
+thread_pool shouldn't cause too much difference anyway.
 
-David Sterba (10):
-      btrfs-progs: ci: fix symlink paths of helper scripts
-      btrfs-progs: tests: extend mkfs/001 to look for warnings after mkfs
-      btrfs-progs: mkfs: enumerate all supported checksum algorithms in help text
-      btrfs-progs: convert: refuse to convert filesystem with 'needs_recovery' set
-      btrfs-progs: tests: add crafted image to test needs_recovery
-      btrfs-progs: docs: change wording about required fsck
-      btrfs-progs: balance: fix raid56 warning for other profiles
-      btrfs-progs: tests: verify that ext4 supports extra_isize
-      btrfs-progs: update CHANGES for 5.11.1
-      Btrfs progs v5.11.1
+And for now you should be aware that, the thread_pool is not really
+bound to the number of devices.
 
-Dāvis Mosāns (1):
-      btrfs-progs: fix checksum output for "checksum verify failed"
-
-Heiko Becker (1):
-      btrfs-progs: build: Use PKG_CONFIG instead of pkg-config
-
-Jaak Ristioja (1):
-      btrfs-progs: check: fix typos in code comment and 1 typo in warning
-
-Pierre Labastie (3):
-      btrfs-progs: tests: fix quoting of sudo helper in misc/046-seed-multi-mount
-      btrfs-progs: build: fix the test for EXT4_EPOCH_MASK
-      btrfs-progs: build: do not use AC_DEFINE twice for a FIEMAP define
-
-Qu Wenruo (1):
-      btrfs-progs: fix false alert on tree block crossing 64K page boundary
-
-Sidong Yang (1):
-      btrfs-progs: fi resize: make output more readable
-
+Thanks,
+Qu
+>
+> What is the relation between user processes-> thread_pool-> io
+> scheduler -> physical devices?
+>
+> Does it make sense to try to optimize thread_pool value?
+> Man page is very vague on the effect of this parameter.
+>
+> Best Regards,
+> Jim
+>
