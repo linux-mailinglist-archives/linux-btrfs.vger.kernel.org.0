@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCD73489ED
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 08:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EA93489EC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Mar 2021 08:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhCYHPm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Mar 2021 03:15:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36450 "EHLO mx2.suse.de"
+        id S229728AbhCYHPn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Mar 2021 03:15:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36464 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhCYHPJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:15:09 -0400
+        id S229659AbhCYHPL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:15:11 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616656508; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1616656510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/l97Nl0GztO8SVDESN5IlgIyMNxWJuMno2c2VIMPq1c=;
-        b=vGc9/XHBPcp16fa1oB0W4w0OO7QAdsh2HHz1bi7g/YJnQpbJE+Y2++lfu+h2dLlrkXs+18
-        753hnVpZDfLHUzZL3SX4Nm24XvwVrsz720RqBj9pY9QR1ENnhJ9CAGfyD2us2VU0zrijhG
-        5tmOG/5J9KSVXv1z7LzEg2/cAwd3juo=
+        bh=eUmlLACjPZRfmfGAttrIRfclTqYGN9oP/leQd0P3xDw=;
+        b=W4atJid9jW0kLEL1Ztx6NkZ4rRlBqEe33A8+tVuZS5FEkFsi0QpPUcg/HzvxUqH5WJIeNK
+        KRic8D306RkhbL9TXjYNZwUKLP9VfPrHW9uadKDAos99/Nmi0sMxcoHxIJvXocZLgylybE
+        5kZk5Rw4BnCMBvLCQkLRkxajNdh0QkM=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0A1DCAA55
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 07:15:08 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id F1CAAAA55
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Mar 2021 07:15:09 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 04/13] btrfs: refactor how we iterate ordered extent in btrfs_invalidatepage()
-Date:   Thu, 25 Mar 2021 15:14:36 +0800
-Message-Id: <20210325071445.90896-5-wqu@suse.com>
+Subject: [PATCH v3 05/13] btrfs: introduce helpers for subpage dirty status
+Date:   Thu, 25 Mar 2021 15:14:37 +0800
+Message-Id: <20210325071445.90896-6-wqu@suse.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210325071445.90896-1-wqu@suse.com>
 References: <20210325071445.90896-1-wqu@suse.com>
@@ -38,184 +38,129 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs_invalidatepage(), we need to iterate through all ordered
-extents and finish them.
+This patch introduce the following functions to handle btrfs subpage
+dirty status:
+- btrfs_subpage_set_dirty()
+- btrfs_subpage_clear_dirty()
+- btrfs_subpage_test_dirty()
+  Those helpers can only be called when the range is ensured to be
+  inside the page.
 
-This involved a loop to exhaust all ordered extents, but that loop is
-implemented using again: label and goto.
+- btrfs_page_set_dirty()
+- btrfs_page_clear_dirty()
+- btrfs_page_test_dirty()
+  Those helpers can handle both regular sector size and subpage without
+  problem.
+  Thus those would be used to replace PageDirty() related calls in
+  later commits.
 
-Refactor the code by:
-- Use a while() loop
-- Extract the code to finish/dec an ordered extent into its own function
-  The new function, invalidate_ordered_extent(), will handle the
-  extent locking, extent bit update, and to finish/dec ordered extent.
-
-In fact, for regular sectorsize == PAGE_SIZE case, there can only be at
-most one ordered extent for one page, thus the code is from ancient
-subpage preparation patchset.
-
-But there is a bug hidden inside the ordered extent finish/dec part.
-
-This patch will remove the ability to handle multiple ordered extent,
-and add extra ASSERT() to make sure for regular sectorsize we won't have
-anything wrong.
-
-For the proper subpage support, it will be added in later patches.
+There is one special point to note here, just like set_page_dirty() and
+clear_page_dirty_for_io(), btrfs_*page_set_dirty() and
+btrfs_*page_clear_dirty() must be called with page locked.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 122 +++++++++++++++++++++++++++++------------------
- 1 file changed, 75 insertions(+), 47 deletions(-)
+ fs/btrfs/subpage.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/subpage.h | 15 +++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index d777f67d366b..99dcadd31870 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8355,17 +8355,72 @@ static int btrfs_migratepage(struct address_space *mapping,
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index c69049e7daa9..183925902031 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -220,6 +220,46 @@ void btrfs_subpage_clear_error(const struct btrfs_fs_info *fs_info,
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
  }
- #endif
  
-+/*
-+ * Helper to finish/dec one ordered extent for btrfs_invalidatepage().
-+ *
-+ * Return true if the ordered extent is finished.
-+ * Return false otherwise
-+ */
-+static bool invalidate_ordered_extent(struct btrfs_inode *inode,
-+				      struct btrfs_ordered_extent *ordered,
-+				      struct page *page,
-+				      struct extent_state **cached_state,
-+				      bool inode_evicting)
++void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len)
 +{
-+	u64 start = page_offset(page);
-+	u64 end = page_offset(page) + PAGE_SIZE - 1;
-+	u32 len = PAGE_SIZE;
-+	bool completed_ordered = false;
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
++	unsigned long flags;
 +
-+	/*
-+	 * For regular sectorsize == PAGE_SIZE, if the ordered extent covers
-+	 * the page, then it must cover the full page.
-+	 */
-+	ASSERT(ordered->file_offset <= start &&
-+	       ordered->file_offset + ordered->num_bytes > end);
-+	/*
-+	 * IO on this page will never be started, so we need to account
-+	 * for any ordered extents now. Don't clear EXTENT_DELALLOC_NEW
-+	 * here, must leave that up for the ordered extent completion.
-+	 */
-+	if (!inode_evicting)
-+		clear_extent_bit(&inode->io_tree, start, end,
-+				 EXTENT_DELALLOC | EXTENT_LOCKED |
-+				 EXTENT_DO_ACCOUNTING | EXTENT_DEFRAG, 1, 0,
-+				 cached_state);
-+	/*
-+	 * Whoever cleared the private bit is responsible for the
-+	 * finish_ordered_io
-+	 */
-+	if (TestClearPagePrivate2(page)) {
-+		spin_lock_irq(&inode->ordered_tree.lock);
-+		set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
-+		ordered->truncated_len = min(ordered->truncated_len,
-+					     start - ordered->file_offset);
-+		spin_unlock_irq(&inode->ordered_tree.lock);
-+
-+		if (btrfs_dec_test_ordered_pending(inode, &ordered, start, len, 1)) {
-+			btrfs_finish_ordered_io(ordered);
-+			completed_ordered = true;
-+		}
-+	}
-+	btrfs_put_ordered_extent(ordered);
-+	if (!inode_evicting) {
-+		*cached_state = NULL;
-+		lock_extent_bits(&inode->io_tree, start, end, cached_state);
-+	}
-+	return completed_ordered;
++	spin_lock_irqsave(&subpage->lock, flags);
++	subpage->dirty_bitmap |= tmp;
++	spin_unlock_irqrestore(&subpage->lock, flags);
++	set_page_dirty(page);
 +}
 +
- static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 				 unsigned int length)
- {
- 	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
- 	struct extent_io_tree *tree = &inode->io_tree;
--	struct btrfs_ordered_extent *ordered;
- 	struct extent_state *cached_state = NULL;
- 	u64 page_start = page_offset(page);
- 	u64 page_end = page_start + PAGE_SIZE - 1;
--	u64 start;
--	u64 end;
-+	u64 cur;
- 	int inode_evicting = inode->vfs_inode.i_state & I_FREEING;
- 	bool found_ordered = false;
- 	bool completed_ordered = false;
-@@ -8387,51 +8442,24 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 	if (!inode_evicting)
- 		lock_extent_bits(tree, page_start, page_end, &cached_state);
- 
--	start = page_start;
--again:
--	ordered = btrfs_lookup_ordered_range(inode, start, page_end - start + 1);
--	if (ordered) {
--		found_ordered = true;
--		end = min(page_end,
--			  ordered->file_offset + ordered->num_bytes - 1);
--		/*
--		 * IO on this page will never be started, so we need to account
--		 * for any ordered extents now. Don't clear EXTENT_DELALLOC_NEW
--		 * here, must leave that up for the ordered extent completion.
--		 */
--		if (!inode_evicting)
--			clear_extent_bit(tree, start, end,
--					 EXTENT_DELALLOC |
--					 EXTENT_LOCKED | EXTENT_DO_ACCOUNTING |
--					 EXTENT_DEFRAG, 1, 0, &cached_state);
--		/*
--		 * whoever cleared the private bit is responsible
--		 * for the finish_ordered_io
--		 */
--		if (TestClearPagePrivate2(page)) {
--			spin_lock_irq(&inode->ordered_tree.lock);
--			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
--			ordered->truncated_len = min(ordered->truncated_len,
--					start - ordered->file_offset);
--			spin_unlock_irq(&inode->ordered_tree.lock);
--
--			if (btrfs_dec_test_ordered_pending(inode, &ordered,
--							   start,
--							   end - start + 1, 1)) {
--				btrfs_finish_ordered_io(ordered);
--				completed_ordered = true;
--			}
--		}
--		btrfs_put_ordered_extent(ordered);
--		if (!inode_evicting) {
--			cached_state = NULL;
--			lock_extent_bits(tree, start, end,
--					 &cached_state);
--		}
-+	cur = page_start;
-+	/* Iterate through all the ordered extents covering the page */
-+	while (cur < page_end) {
-+		struct btrfs_ordered_extent *ordered;
- 
--		start = end + 1;
--		if (start < page_end)
--			goto again;
-+		ordered = btrfs_lookup_ordered_range(inode, cur,
-+				page_end - cur + 1);
-+		if (ordered) {
-+			cur = ordered->file_offset + ordered->num_bytes;
++bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
++	unsigned long flags;
++	bool last = false;
 +
-+			found_ordered = true;
-+			completed_ordered = invalidate_ordered_extent(inode,
-+					ordered, page, &cached_state,
-+					inode_evicting);
-+		} else {
-+			/* Exhausted all ordered extents */
-+			break;
-+		}
- 	}
++
++	spin_lock_irqsave(&subpage->lock, flags);
++	subpage->dirty_bitmap &= ~tmp;
++	if (subpage->dirty_bitmap == 0)
++		last = true;
++	spin_unlock_irqrestore(&subpage->lock, flags);
++	return last;
++}
++
++void btrfs_subpage_clear_dirty(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len)
++{
++	bool last;
++
++	last = btrfs_subpage_clear_and_test_dirty(fs_info, page, start, len);
++	if (last)
++		clear_page_dirty_for_io(page);
++}
++
+ /*
+  * Unlike set/clear which is dependent on each page status, for test all bits
+  * are tested in the same way.
+@@ -240,6 +280,7 @@ bool btrfs_subpage_test_##name(const struct btrfs_fs_info *fs_info,	\
+ }
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(uptodate);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(error);
++IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(dirty);
  
- 	/*
+ /*
+  * Note that, in selftests (extent-io-tests), we can have empty fs_info passed
+@@ -276,3 +317,5 @@ bool btrfs_page_test_##name(const struct btrfs_fs_info *fs_info,	\
+ IMPLEMENT_BTRFS_PAGE_OPS(uptodate, SetPageUptodate, ClearPageUptodate,
+ 			 PageUptodate);
+ IMPLEMENT_BTRFS_PAGE_OPS(error, SetPageError, ClearPageError, PageError);
++IMPLEMENT_BTRFS_PAGE_OPS(dirty, set_page_dirty, clear_page_dirty_for_io,
++			 PageDirty);
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index b86a4881475d..adaece5ce294 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -20,6 +20,7 @@ struct btrfs_subpage {
+ 	spinlock_t lock;
+ 	u16 uptodate_bitmap;
+ 	u16 error_bitmap;
++	u16 dirty_bitmap;
+ 	union {
+ 		/*
+ 		 * Structures only used by metadata
+@@ -87,5 +88,19 @@ bool btrfs_page_test_##name(const struct btrfs_fs_info *fs_info,	\
+ 
+ DECLARE_BTRFS_SUBPAGE_OPS(uptodate);
+ DECLARE_BTRFS_SUBPAGE_OPS(error);
++DECLARE_BTRFS_SUBPAGE_OPS(dirty);
++
++/*
++ * Extra clear_and_test function for subpage dirty bitmap.
++ *
++ * Return true if we're the last bits in the dirty_bitmap and clear the
++ * dirty_bitmap.
++ * Return false otherwise.
++ *
++ * NOTE: Callers should manually clear page dirty for true case, as we have
++ * extra handling for tree blocks.
++ */
++bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len);
+ 
+ #endif
 -- 
 2.30.1
 
