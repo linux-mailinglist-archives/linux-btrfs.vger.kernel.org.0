@@ -2,129 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E661349D0E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 00:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 659E9349E57
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 02:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhCYXzy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Mar 2021 19:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        id S230109AbhCZBBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Mar 2021 21:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhCYXzu (ORCPT
+        with ESMTP id S230104AbhCZBBq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:55:50 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFFEC06174A;
-        Thu, 25 Mar 2021 16:55:50 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id g8so2140554qvx.1;
-        Thu, 25 Mar 2021 16:55:50 -0700 (PDT)
+        Thu, 25 Mar 2021 21:01:46 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C34C06174A;
+        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id g15so3783705qkl.4;
+        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5MP2PxgWADvsrOSFuhaJ2os8rXXykLrd3KRlQltq1ac=;
-        b=EJpGYQqtkzRc7/ZE31DqfVIOvVZo+9Shgs87OK2lo3dYCjM4WuGA50NaUFsYweAgiQ
-         Ip3xa9ZiJTccaXMsjtfwil5haZKLMWCb4mKPuKI9Fn9kgRmaSpgccrpB6BU/4xS5nn7a
-         W3nad+6zL556grdY3wKbEnvhcRkStPI5YnT5mcmKhlHQRll6V3A8xmErT1Y/FKIPou+j
-         6CdP6jkUiyLlBZ0b2kbH4iQpYTulog7WbwhlBBTdpJ5wUKuQY/baGtr5Sb5zvdSRjUzq
-         YYgjsWZl1rbMDuWwFFPOtoMO/NVsMq5UW97cC2Ly+fwJYzcY0MUJ/33zqndeMyQVv5RC
-         QR5A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j3v8k48IeCcus0saI/jVFEZrQSGBnWbV6wgOy5GPt20=;
+        b=CGkkGBUjxhHpwAeWwidcEzKAr05bxggAaj/rd2vXYCx+WpJwH9fXH0cjssEGmFO8PP
+         oxI4oyD6P06v1EHighDaeeLduczaUgH5Zh+/C9QBslMtBOMyx4Tx89kTqV/uCFNGKeFN
+         MrNzQoLLko1QxBWkTEgomRxeqI0vKUwZcAyBa/5kFMVAnhnWsl1zj4nldf0AZKnnsL6b
+         icF/ud86aOLlPwuxF3or0+cbTZdS627/b4mIQSZLM5td5qiUClL0+Mg9uyBE83a3HzYj
+         6E0UuQkWormOfq+Mhf4U70Hp3vPiLzQhnf80BYPyipk/6r6E7ou/88Ek5SwEgiyT8gM1
+         vW+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5MP2PxgWADvsrOSFuhaJ2os8rXXykLrd3KRlQltq1ac=;
-        b=M/Dvqs4nv+14xAkl6PhfIWdAROmEHDi9PXjkVVVJmFQHpezMBE8WeXLE43wn3dBPhZ
-         62piFHY1yd+8WWbc9C8GE+elUnDN5KWwuVsq1aPlYX6XVr6GhqAn1nwq49vJEgnkECa9
-         550m70uCfgdyaMeOkkKzA5wDoCofNeTV6Tt/JjZw/vDIKjx+yWuxSgBLIeWLfOjJXWFW
-         88zwDpOJ6dsgzdQaXQth/NtIiyviyMDxkFQ42GNjOOGf8M7q6RCM1yg1syoxk1TjKZkc
-         IeyDRdZF4nkbqT2L8oRsOD8Ngtugbbsk7AVe+MPBrKMRU4A6oKscFNyu/Q0e4eo8jgwX
-         gl9A==
-X-Gm-Message-State: AOAM532qtzxXgXKoeSQVKrwELJas0LoTShMJx/urbBlfgJfyRYu3Rg1i
-        s+LC4fsb+Mizs/lTUrKbwes=
-X-Google-Smtp-Source: ABdhPJzHSKL2A1TZdO599D/nZqn+iirp77Riai+iU1fQFlmpVHptvk5ER85WcWh8BwlraLKaLDK5DA==
-X-Received: by 2002:ad4:510d:: with SMTP id g13mr11104362qvp.3.1616716549388;
-        Thu, 25 Mar 2021 16:55:49 -0700 (PDT)
-Received: from Gentoo ([37.19.198.107])
-        by smtp.gmail.com with ESMTPSA id n77sm5463757qkn.128.2021.03.25.16.55.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j3v8k48IeCcus0saI/jVFEZrQSGBnWbV6wgOy5GPt20=;
+        b=aDaFHyGOVuPynRtPC/3yKZmKuAPWpluoqofra1agI4LfIrsDtuKeWcKQnpVXkRckJh
+         glvvP7BoLcift+ingutWl17MpvQBmxc9ivXQXCvyqk3R7IDiUD6zDAwi8nq2K7ANa2QS
+         JpUmGDOIuiqY3xcit2t3boverlm62dJgys5CMu0XOmntU2p1RlaiKys7kJhtJt4GO/GX
+         qILHcylwAFGbFP461xWWEyKrcIy1vr5tR3lMBJGVutfM8VSRNBM53pyYa2UOeMQE4dqR
+         VxpeM4IhjFMU4YPgf0HxgDURR8PSPLwWEwvmDnamIAmTxX+TS14HhxnOCNL7vfdmvIsU
+         xIIw==
+X-Gm-Message-State: AOAM533GsMnunyFRAzpoGnuM6j0IWxlOSOkCMyC/K0GmO29gWJFmXThL
+        ZjvHI6y29MyffODIC/tDyLhT6jK5UfQhInhw
+X-Google-Smtp-Source: ABdhPJwKZFW/K1uf0/IrICUIF0d9wONxtMf2Xbdbdo2mo7MS2AQU17I1P6LMzF24jym0AJdLk4S4jA==
+X-Received: by 2002:a05:620a:714:: with SMTP id 20mr10904457qkc.192.1616720505274;
+        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id o7sm5611975qki.63.2021.03.25.18.01.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 16:55:48 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 05:25:39 +0530
+        Thu, 25 Mar 2021 18:01:44 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] btrfs: fixed rudimentary typos
-Message-ID: <YF0i+2N7NSyHkTYB@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-References: <20210325042113.12484-1-unixbhaskar@gmail.com>
- <20210325124954.GL7604@twin.jikos.cz>
- <YFzR/E+GFlrYyxdm@Gentoo>
- <20210325214704.GM7604@twin.jikos.cz>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] btrfs: Fix a typo
+Date:   Fri, 26 Mar 2021 06:29:32 +0530
+Message-Id: <20210326005932.8238-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="M5A017CyFTkYggv5"
-Content-Disposition: inline
-In-Reply-To: <20210325214704.GM7604@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---M5A017CyFTkYggv5
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+s/reponsible/responsible/
 
-On 22:47 Thu 25 Mar 2021, David Sterba wrote:
->On Thu, Mar 25, 2021 at 11:40:04PM +0530, Bhaskar Chowdhury wrote:
->> On 13:49 Thu 25 Mar 2021, David Sterba wrote:
->> >On Thu, Mar 25, 2021 at 09:51:13AM +0530, Bhaskar Chowdhury wrote:
->> >>
->> >> s/contaning/containing
->> >> s/clearning/clearing/
->> >
->> >Have hou scanned the whole subdirectory for typos? We do typo fixing
->> >about once a year in one big patch and won't fix them one by one.
->>
->> Once a year???? You must be kidding! that is not good whatever the workflow
->> you have .
->
->No kidding. It's even worse, we get that every two years.
->
->* 2016 0132761017e012ab4dc8584d679503f2ba26ca86
->  33 files changed, 106 insertions(+), 105 deletions(-)
->
->* 2018 52042d8e82ff50d40e76a275ac0b97aa663328b0
->  25 files changed, 70 insertions(+), 69 deletions(-)
->
->You can see the diffstat touches nearly all the files, almost hundred of
->fixed typos per patch. Now compare that to sending 70-100 individual
->patches. Time spent on any patch is not zero and for such trivial
->changes it's not justified so the workflow is to do that in batches.
->If you care about fixing typos in fs/btrfs/, please fix them all. I've
->found about 50.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/btrfs/scrub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I certainly do , not only for btrfs but for the whole kernel, it might sound
-ridiculous , but someone has to bell the cat , right?
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 3d9088eab2fc..14de898967bf 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -2426,7 +2426,7 @@ static void drop_csum_range(struct scrub_ctx *sctx, struct btrfs_ordered_sum *su
+  * the csum into @csum.
+  *
+  * The search source is sctx->csum_list, which is a pre-populated list
+- * storing bytenr ordered csum ranges.  We're reponsible to cleanup any range
++ * storing bytenr ordered csum ranges.  We're responsible to cleanup any range
+  * that is before @logical.
+  *
+  * Return 0 if there is no csum for the range.
+--
+2.26.2
 
-If I get little cooperation from everyone , we can pull it through, it would
-be good for the future generation.
-
---M5A017CyFTkYggv5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBdIvgACgkQsjqdtxFL
-KRVLHgf9FL2CWA78IL6FlhJRhO3nGm4RlSegdJCW63FUhBlECEXeHc2GosYi52FU
-DnIHElBn1Mt5uM4eeP6zgg2/i7i3qe/3lTJZjXo55mRulS/zZC3W5bX99rgcCW92
-dfinWgqBAjURS7qrBZFX6ScyU6oFTusIvZA03khmS/qZnEdyObmilJm3Ik1vKV1E
-P/YF3Fpb6d9kKVPoIdXE3aKWEKP5yB6DGOErWjwZ+/vdou9uVnW3DXdozJ0Z/JeP
-yodc+87BJa+X0u8xfk2FOw7/9dX5BEmIhLMvz/VNcf0wLr4+ShvxyrO5PDojCg3L
-0hqqntTNzBUTcDCql+beISSRoIpDKw==
-=ABQC
------END PGP SIGNATURE-----
-
---M5A017CyFTkYggv5--
