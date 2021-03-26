@@ -2,34 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB9234A78D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 13:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E619134A78F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 13:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhCZMvY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Mar 2021 08:51:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58034 "EHLO mx2.suse.de"
+        id S229935AbhCZMvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Mar 2021 08:51:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58046 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229871AbhCZMvQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:51:16 -0400
+        id S230056AbhCZMvT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:51:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616763074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1616763078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UXbjUIo7SEFm3CUKQyETQFEwHPt5pdFFcZa3bL/JdHI=;
-        b=pgOa+bblo7bUoe2yCIEwZZxFBwYGho/xEuuS3SHHaM2rYtIT37bBsK3N5loUOxoo5bO+/l
-        d9mosW8SsCpcJpUkQd5RLwkcEy0b7K+LCXVPHQj63N9GsJlzggXHoNSm2glhhmbhiehqmZ
-        MTq5x5egHofECcRf2VJRF1im9b6hKUM=
+        bh=WALWdtIhALQa0NWVcsOe1ZU6qqwN4c0ANGNGUpO/vYY=;
+        b=i14CL8OkaqXZ2rjorXgeJUuzQdmo+97lv7rJLCqmOGxypbBZl5VcXYbpjMPgipzCikKWrs
+        wvruAZQwCa+oyd3OOCTqRNDVKYNhp2Rx479TRxdKFaetDbXvUmVycKUqlaG0zLEOpaxlnO
+        nED5plDx3cCEHdQdxoe4EmZfyIsgKoU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CC976AD8D;
-        Fri, 26 Mar 2021 12:51:14 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D3FBDAD8D
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Mar 2021 12:51:18 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 2/3] btrfs-progs: image: enlarge the output file if no tree modification is needed for restore
-Date:   Fri, 26 Mar 2021 20:50:46 +0800
-Message-Id: <20210326125047.123694-3-wqu@suse.com>
+Subject: [PATCH 3/3] btrfs-progs: misc-tests: add test to ensure the restored image can be mounted
+Date:   Fri, 26 Mar 2021 20:50:47 +0800
+Message-Id: <20210326125047.123694-4-wqu@suse.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210326125047.123694-1-wqu@suse.com>
 References: <20210326125047.123694-1-wqu@suse.com>
@@ -39,103 +38,40 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-If restoring dumpped image into a new file, under most cases kernel will
-reject it:
+This new test case is to make sure the restored image file has been
+properly enlarged so that newer kernel won't complain.
 
- # mkfs.btrfs -f /dev/test/test
- # btrfs-image /dev/test/test /tmp/dump
- # btrfs-image -r /tmp/dump ~/test.img
- # mount ~/test.img /mnt/btrfs
- mount: /mnt/btrfs: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
- # dmesg -t | tail -n 7
- loop0: detected capacity change from 10592 to 0
- BTRFS info (device loop0): disk space caching is enabled
- BTRFS info (device loop0): has skinny extents
- BTRFS info (device loop0): flagging fs with big metadata feature
- BTRFS error (device loop0): device total_bytes should be at most 5423104 but found 10737418240
- BTRFS error (device loop0): failed to read chunk tree: -22
- BTRFS error (device loop0): open_ctree failed
-
-[CAUSE]
-When btrfs-image restores an image into a file, and the source image
-contains only single device, then we don't need to modify the
-chunk/device tree, as we can reuse the existing chunk/dev tree without
-any problem.
-
-This also means, for such restore, we also won't do any target file
-enlarge. This behavior itself is fine, as at that time, kernel won't
-check if the device is smaller than the device size recorded in device
-tree.
-
-But later kernel commit 3a160a933111 ("btrfs: drop never met disk total
-bytes check in verify_one_dev_extent") introduces new check on device
-size at mount time, rejecting any loop file which is smaller than the
-original device size.
-
-[FIX]
-Do extra file enlarge for single device restore.
-
-Reported-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c | 43 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ .../047-image-restore-mount/test.sh           | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100755 tests/misc-tests/047-image-restore-mount/test.sh
 
-diff --git a/image/main.c b/image/main.c
-index 24393188e5e3..9933f69d0fdb 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -2706,6 +2706,49 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
- 		close_ctree(info->chunk_root);
- 		if (ret)
- 			goto out;
-+	} else {
-+		struct btrfs_root *root;
-+		struct stat st;
-+		u64 dev_size;
+diff --git a/tests/misc-tests/047-image-restore-mount/test.sh b/tests/misc-tests/047-image-restore-mount/test.sh
+new file mode 100755
+index 000000000000..7f12afa2bab6
+--- /dev/null
++++ b/tests/misc-tests/047-image-restore-mount/test.sh
+@@ -0,0 +1,19 @@
++#!/bin/bash
++# Verify that the restored image of an empty btrfs can still be mounted
 +
-+		if (!info) {
-+			root = open_ctree_fd(fileno(out), target, 0, 0);
-+			if (!root) {
-+				error("open ctree failed in %s", target);
-+				ret = -EIO;
-+				goto out;
-+			}
++source "$TEST_TOP/common"
 +
-+			info = root->fs_info;
++check_prereq btrfs-image
++check_prereq mkfs.btrfs
++check_prereq btrfs
 +
-+			dev_size = btrfs_stack_device_total_bytes(
-+					&info->super_copy->dev_item);
-+			close_ctree(root);
-+			info = NULL;
-+		} else {
-+			dev_size = btrfs_stack_device_total_bytes(
-+					&info->super_copy->dev_item);
-+		}
++tmp=$(mktemp -d --tmpdir btrfs-progs-image.XXXXXXXX)
++prepare_test_dev
 +
-+		/*
-+		 * We don't need extra tree modification, but if the output is
-+		 * a file, we need to enlarge the output file so that
-+		 * newer kernel won't report error.
-+		 */
-+		ret = fstat(fileno(out), &st);
-+		if (ret < 0) {
-+			error("failed to stat result image: %m");
-+			ret = -errno;
-+			goto out;
-+		}
-+		if (S_ISREG(st.st_mode)) {
-+			ret = ftruncate64(fileno(out), dev_size);
-+			if (ret < 0) {
-+				error("failed to enlarge result image: %m");
-+				ret = -errno;
-+				goto out;
-+			}
-+		}
- 	}
- out:
- 	mdrestore_destroy(&mdrestore, num_threads);
++run_check_mkfs_test_dev
++run_check "$TOP/btrfs-image" "$TEST_DEV" "$tmp/dump"
++run_check "$TOP/btrfs-image" -r "$tmp/dump" "$tmp/restored"
++
++run_check $SUDO_HELPER mount -t btrfs -o loop "$tmp/restored" "$TEST_MNT"
++umount "$TEST_MNT" &> /dev/null
++rm -rf -- "$tmp"
 -- 
 2.30.1
 
