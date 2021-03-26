@@ -2,130 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32CC34AF1F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 20:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D117534AFC2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 21:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhCZTOf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Mar 2021 15:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        id S230139AbhCZUEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Mar 2021 16:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhCZTOU (ORCPT
+        with ESMTP id S230003AbhCZUEA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:14:20 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5DBC0613AA;
-        Fri, 26 Mar 2021 12:14:20 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id v23so1380348ple.9;
-        Fri, 26 Mar 2021 12:14:20 -0700 (PDT)
+        Fri, 26 Mar 2021 16:04:00 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F15C0613AA;
+        Fri, 26 Mar 2021 13:04:00 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id o5so6546296qkb.0;
+        Fri, 26 Mar 2021 13:04:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3eZ1XyrRmWI9aSyLAK6XW+5gukvn2M+SvfUE70SUpDQ=;
-        b=Jl6NIyEEkokUTYkrd5gDZszVhtnDTLPQZnzzowtNmfnfe/k/eDnmFmtOdCwNtQEfOz
-         ASHjeC7TO3Q6WqVBlLuahcUDTayqS70gvIV1DQOL5ssz59nP3pdzSS2Rq7m8WT4COuAn
-         2n6QEwqMIRdrxW4edFPe6EauqlbjPA5VPxjCGu/fWdHzslSe02Ec1LcwC48GuOQEbzyk
-         /xLbpj93pniQTBqj9RXjL2mZ9l9mgvLQ5yXYbWd53pQn+sPlLBbjxN2mdskdKBj8kd2H
-         PfNwnOSplZ8gAjjwfqFNDhzvHLjypauL9hXKgGKRKoJfhf8JK1JuulpxNJjDV62GH/NA
-         nXfQ==
+        h=date:from:to:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YtjDErUVkDl+bV3TbtSZEkUyABM9izmWrCvJOp/BLCY=;
+        b=B4uI4dgAG4uTFxs8tejlf5xv9EY33Hix90ae5C11SwKMpw7Z8x0L4XIMJYQNvwGgQi
+         jRWD8POuCeWwSp342IBMzMOOMJlFU7NyFFJrOXWxNyPPR+DZqi7nNLUnRIoI14VqQ2qd
+         sw29BLajVRrk7qidLnbM3NNCmnUxXtMS+9mhv+t/1T411ZRxtcB5QYI6hxr6kWaMA4tj
+         jPBv2R23mRiA3740fLLCB6UJZwI0KBt1ODMYreas2kq39L6DXCdadSfW2bRWevQq+3m5
+         bksOKnREAAMwMuxkci963ucpMA2FzT6kYY88OKLaucpbhioDBEmTQ5mikVx97vHR/glQ
+         fdlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3eZ1XyrRmWI9aSyLAK6XW+5gukvn2M+SvfUE70SUpDQ=;
-        b=b8LBo6USgz9uv3Q0kxxeJrGr5v60fzH5pW37dykm7juU6R9X4C+yAtGz3bBfGnLSVi
-         RLo9T0H/VgvmH57E+rLluzg7b0lh6rRJWwMb7lOHT4LdejjwLKhgWemsTzFwC4+zNBpg
-         hPaoKa0JEQJSTYLWKet/Gv5JrhBnqfqay4eynmwgNf84kNoSdvtui3OQCMLuC2Qu5ZpI
-         hmaR51dPU8BcM8eaF9E0aUuLnZfIl8pVQ+Bi6bCPPPs1aQRA8NL9jZCXp9ULnD7BbRAw
-         +k5atovo2IHYwDuPgnHxkYX3kEiEbFgqHL/PxeKRcSWsCdqxsSei6T4w+/kKF+CmMptZ
-         HPtA==
-X-Gm-Message-State: AOAM530T9nnZOXIPIr+V6NdAO8Y9QgjtxKYvhUJpCCOxs8s3FydhpnyK
-        Atp5j0eRID7Mx44g4zmB/48=
-X-Google-Smtp-Source: ABdhPJwC5GQ5QiIvjxNM+oEQ5vB0p6D7E7m6FIhXTLkEZ1knmX0LiYX6gLmUXgQ0AlQ2xFoFn/C5eA==
-X-Received: by 2002:a17:902:ead2:b029:e5:ba7a:a232 with SMTP id p18-20020a170902ead2b02900e5ba7aa232mr16732246pld.19.1616786059579;
-        Fri, 26 Mar 2021 12:14:19 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id j20sm13113765pji.3.2021.03.26.12.14.18
+        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=YtjDErUVkDl+bV3TbtSZEkUyABM9izmWrCvJOp/BLCY=;
+        b=cpZ9m3y+KbNiBXzE/kQnYTX8OAbRidLQohEJG3X9Aj4Ehsvw3lQrN7FpC3GquomoRH
+         RytZvZ/QLPFNUY3uZsjNER/JVncOAKXLuhwUyVaQIjO+IeytLNQfOm1qCXvwQa6YqyOI
+         H+Kg2Xjl/TsIdmxj20bgRz33Ly3UWyPhMdbgJ7pDx+OjCDuGmPgHlXZldvjXMY8gbqCV
+         5nL+/sduYZBeel8prMenY83yxeyHdkd63k8x43aBasb3CXeyQYBI7E5Rg62vKypr4XCF
+         jUicGVtEfmrpwst4Q0b2FjYnMl9XZRhEAwxHcgIioFAg3QF9PN0/uwgD0vK3coPpZ37K
+         SgcQ==
+X-Gm-Message-State: AOAM5318Pu/ACRSgdIv6xSYOAe38l5EU9ADY7SgWgySXdABXL3fqbOQO
+        Zuy3hO1ssM8tqEpO/7VkajI=
+X-Google-Smtp-Source: ABdhPJwoL029RnHLd9K5b8v546luBiVUqoZQP8dymvdcPS/2l0spEEefsVjsrU5ehsP54s7MbSWWSA==
+X-Received: by 2002:a37:7b41:: with SMTP id w62mr14618737qkc.256.1616789039541;
+        Fri, 26 Mar 2021 13:03:59 -0700 (PDT)
+Received: from Gentoo ([156.146.58.30])
+        by smtp.gmail.com with ESMTPSA id x7sm567804qtp.10.2021.03.26.13.03.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 12:14:19 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>
-Subject: [PATCH v8 2/3] lib: zstd: Add decompress_sources.h for decompress_unzstd
-Date:   Fri, 26 Mar 2021 12:18:58 -0700
-Message-Id: <20210326191859.1542272-3-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210326191859.1542272-1-nickrterrell@gmail.com>
-References: <20210326191859.1542272-1-nickrterrell@gmail.com>
+        Fri, 26 Mar 2021 13:03:58 -0700 (PDT)
+Date:   Sat, 27 Mar 2021 01:33:48 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] btrfs: Fix a typo
+Message-ID: <YF4+JMxVIEzR+wZd@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210326005932.8238-1-unixbhaskar@gmail.com>
+ <20210326134732.GN7604@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xLctaF9xbflfJ32r"
+Content-Disposition: inline
+In-Reply-To: <20210326134732.GN7604@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Nick Terrell <terrelln@fb.com>
 
-Adds decompress_sources.h which includes every .c file necessary for
-zstd decompression. This is used in decompress_unzstd.c so the internal
-structure of the library isn't exposed.
+--xLctaF9xbflfJ32r
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-This allows us to upgrade the zstd library version without modifying any
-callers. Instead we just need to update decompress_sources.h.
+On 14:47 Fri 26 Mar 2021, David Sterba wrote:
+>On Fri, Mar 26, 2021 at 06:29:32AM +0530, Bhaskar Chowdhury wrote:
+>>
+>> s/reponsible/responsible/
+>
+>So this is exactly what I don't want to see happen - one patch per typo.
+>I tried to explain it in the previous patch, please either fix all typos
+>under fs/btrfs or don't bother.
 
-Signed-off-by: Nick Terrell <terrelln@fb.com>
----
- lib/decompress_unzstd.c       |  6 +-----
- lib/zstd/decompress_sources.h | 14 ++++++++++++++
- 2 files changed, 15 insertions(+), 5 deletions(-)
- create mode 100644 lib/zstd/decompress_sources.h
+As I mentioned in my previous correspondence to , I have my way of doing thing
+. The problem is , you are getting accustomed with some specific method and
+you are thinking that is the "only way" of doing the "right thing" . Please ,
+think others are also think in different way too.
 
-diff --git a/lib/decompress_unzstd.c b/lib/decompress_unzstd.c
-index dab2d55cf08d..e6897a5063a7 100644
---- a/lib/decompress_unzstd.c
-+++ b/lib/decompress_unzstd.c
-@@ -68,11 +68,7 @@
- #ifdef STATIC
- # define UNZSTD_PREBOOT
- # include "xxhash.c"
--# include "zstd/entropy_common.c"
--# include "zstd/fse_decompress.c"
--# include "zstd/huf_decompress.c"
--# include "zstd/zstd_common.c"
--# include "zstd/decompress.c"
-+# include "zstd/decompress_sources.h"
- #endif
- 
- #include <linux/decompress/mm.h>
-diff --git a/lib/zstd/decompress_sources.h b/lib/zstd/decompress_sources.h
-new file mode 100644
-index 000000000000..d2fe10af0043
---- /dev/null
-+++ b/lib/zstd/decompress_sources.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+/*
-+ * This file includes every .c file needed for decompression.
-+ * It is used by lib/decompress_unzstd.c to include the decompression
-+ * source into the translation-unit, so it can be used for kernel
-+ * decompression.
-+ */
-+
-+#include "entropy_common.c"
-+#include "fse_decompress.c"
-+#include "huf_decompress.c"
-+#include "zstd_common.c"
-+#include "decompress.c"
--- 
-2.31.0
+The goal to make it looks good and productive...don't you think so???
 
+..and I said I do bother ,it's just not about this specific segment but about
+the whole kernel.
+
+Or is it some sort of special flow brtfs subsystem are following , which I am
+not aware off??
+
+Please do let me.
+
+--xLctaF9xbflfJ32r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBePiEACgkQsjqdtxFL
+KRVdVAf/ad+EA/8ylvI3jm+Z36L0iJOfuBfl3ODx2DaSqb3hSqwV8jVvbp14jefr
+/VwJ8yl9ggMEJRq/xHqcnz0CMTRzHUeZQK5SpYYA+B5UeWkEV98I/GthJxC4V4vZ
+U8DVlErh6DAqOqoIaL8YysGAOL+AEYq0NrC5MSAuCFXvYJbNWS2Up1wv6e3vgCXo
+BQhV4FtvhxGlaptqoCFZzh1t8EbNkC24w2LXJLif3sDxloOlYfSzv8avhHFgEgCo
+ajE1S0c/jSRWIwamwY6QwcUGnFXCvy2MrjAVSIrOi81zXOTtoudidRslRDSMcwwX
+FXRmhsAE0k1yfNqd/bRg0RmLS6lveA==
+=q5x3
+-----END PGP SIGNATURE-----
+
+--xLctaF9xbflfJ32r--
