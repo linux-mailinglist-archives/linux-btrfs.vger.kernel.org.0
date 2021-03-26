@@ -2,76 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E619134A78F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 13:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182AA34A7E7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 14:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhCZMvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Mar 2021 08:51:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58046 "EHLO mx2.suse.de"
+        id S230003AbhCZNPN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Mar 2021 09:15:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhCZMvT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:51:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616763078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WALWdtIhALQa0NWVcsOe1ZU6qqwN4c0ANGNGUpO/vYY=;
-        b=i14CL8OkaqXZ2rjorXgeJUuzQdmo+97lv7rJLCqmOGxypbBZl5VcXYbpjMPgipzCikKWrs
-        wvruAZQwCa+oyd3OOCTqRNDVKYNhp2Rx479TRxdKFaetDbXvUmVycKUqlaG0zLEOpaxlnO
-        nED5plDx3cCEHdQdxoe4EmZfyIsgKoU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D3FBDAD8D
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Mar 2021 12:51:18 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S230196AbhCZNOp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:14:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7834E619FB
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Mar 2021 13:14:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616764484;
+        bh=gXkWABGyjdr4u4xNHqVfU2p46wI1+XvDH1GINPahrws=;
+        h=From:To:Subject:Date:From;
+        b=VBsrUhdHthGaP/Y5WzNTnhTNLAfPfoAaMnb9mVfWJSSwAe32e/1lgwqYi5M5WoVzc
+         NHdBSA5OarhFuA7h0iIgiY7wN0+/RuHhMSjR/qmQUPgAh4eI4dKUifEbSd3SQtE3FT
+         NkzoC/9O/2yXAfhGyMzYbw7R55pgC9GT7tN7VDIaHeW0Pm3yv3idpbwalGVEJjSyhE
+         DcZ6mwCNTYvt2i1E7e5Vk1yGpWP5yX8jRo7HTjQuG+foJHybIElzkeBJm/gteJuQOh
+         vaXN0mXaGDRgT74rR+Ix+bsEIZWdr8WwkCbK7ETB9hE2T18dFPnZkI1JMfY2p79bOO
+         FC6iyDsmyq3IQ==
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs-progs: misc-tests: add test to ensure the restored image can be mounted
-Date:   Fri, 26 Mar 2021 20:50:47 +0800
-Message-Id: <20210326125047.123694-4-wqu@suse.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210326125047.123694-1-wqu@suse.com>
-References: <20210326125047.123694-1-wqu@suse.com>
+Subject: [PATCH] btrfs: update outdated comment at btrfs_replace_file_extents()
+Date:   Fri, 26 Mar 2021 13:14:41 +0000
+Message-Id: <32f9e43d999fcfaa2927513d7563790a5292fd7b.1616764397.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This new test case is to make sure the restored image file has been
-properly enlarged so that newer kernel won't complain.
+From: Filipe Manana <fdmanana@suse.com>
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+There is a comment at btrfs_replace_file_extents() that mentions that we
+set the full sync flag on an inode when cloning into a file with a size
+greater than or equals to 16MiB, through try_release_extent_mapping() when
+we truncate the page cache after replacing file extents during a clone
+operation.
+
+That is not true anymore since commit 5e548b32018d96 ("btrfs: do not set
+the full sync flag on the inode during page release"), so update the
+comment to remove that part and rephrase it slightly to make it more
+clear why the full sync flag is set at btrfs_replace_file_extents().
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- .../047-image-restore-mount/test.sh           | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
- create mode 100755 tests/misc-tests/047-image-restore-mount/test.sh
+ fs/btrfs/file.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/tests/misc-tests/047-image-restore-mount/test.sh b/tests/misc-tests/047-image-restore-mount/test.sh
-new file mode 100755
-index 000000000000..7f12afa2bab6
---- /dev/null
-+++ b/tests/misc-tests/047-image-restore-mount/test.sh
-@@ -0,0 +1,19 @@
-+#!/bin/bash
-+# Verify that the restored image of an empty btrfs can still be mounted
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq btrfs-image
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+
-+tmp=$(mktemp -d --tmpdir btrfs-progs-image.XXXXXXXX)
-+prepare_test_dev
-+
-+run_check_mkfs_test_dev
-+run_check "$TOP/btrfs-image" "$TEST_DEV" "$tmp/dump"
-+run_check "$TOP/btrfs-image" -r "$tmp/dump" "$tmp/restored"
-+
-+run_check $SUDO_HELPER mount -t btrfs -o loop "$tmp/restored" "$TEST_MNT"
-+umount "$TEST_MNT" &> /dev/null
-+rm -rf -- "$tmp"
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index c666d20370c1..42634658815f 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2765,10 +2765,8 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
+ 	/*
+ 	 * If we were cloning, force the next fsync to be a full one since we
+ 	 * we replaced (or just dropped in the case of cloning holes when
+-	 * NO_HOLES is enabled) extents and extent maps.
+-	 * This is for the sake of simplicity, and cloning into files larger
+-	 * than 16Mb would force the full fsync any way (when
+-	 * try_release_extent_mapping() is invoked during page cache truncation.
++	 * NO_HOLES is enabled) file extent items and did not setup new extent
++	 * maps for the replacement extents (or holes).
+ 	 */
+ 	if (extent_info && !extent_info->is_new_extent)
+ 		set_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags);
 -- 
-2.30.1
+2.28.0
 
