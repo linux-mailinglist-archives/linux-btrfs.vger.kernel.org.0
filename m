@@ -2,172 +2,326 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264B534A2B3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 08:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5E034A30B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Mar 2021 09:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhCZHtu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Mar 2021 03:49:50 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:22998 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCZHts (ORCPT
+        id S229604AbhCZIPg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Mar 2021 04:15:36 -0400
+Received: from mx-relay77-hz1.antispameurope.com ([94.100.132.239]:50495 "EHLO
+        mx-relay77-hz1.antispameurope.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230046AbhCZIPG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Mar 2021 03:49:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1616744988; x=1648280988;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=gZQLozvvB6ZtEcZWbbOnQzjFv+fOa4QPu79vvbpSSrU=;
-  b=WGY9sEnakrMhuCHfQrbg6L0YwxjE5DVaQ7HLqdRJS2oYiy7RlES9CCbb
-   9BnO/SzbkqR9kANBRwa5etJUP2GekxTw5evzlsl5MG070uKMc3gX2MInw
-   SVCe8WkZThJt/rPw9pHxvCl20YySwhPwrY8iJ48lO6Z5raXpdKrLaBpTL
-   ky9Qk/up5Z0LY+ppcUhRLdOYWLCTlrJVcc2LtMDbTSux2km76hK0g1KXt
-   LE3By6GmGx5Cn+Jc2cSuwrszb3JRhprJlGpQAyiGTe5ElMWT0m/pBNsBa
-   JUzkis+QIIe18o8rdN2AvCbDagRCcDPHLtqSu9hWJWUeJPA/QC75MXEmI
-   g==;
-IronPort-SDR: y8Qx08scW4HBHTOBYpaNdt+12DyIksvc3YFiJcMJYQGMkTUDZgEaKwaO+f/VdCR6LHtV6HVNz5
- WUPWoaf8rGVhoA6JWepN7kT/KwkKHZT2PHa/Q1X4xL08DZtIHAfXi821RPO58DBQYZQwjraune
- S1q+cg4baybkjXZ+HVVDl3/e5O1CCjGOf50VYkYn7tY/UyL2gHTEnULfYT3IYXHpp3d0wTZ7R9
- 2pTaNb5KVTatqkqc5pCKlaaDZt5aPix8CB7tj5xVj5ZoUOc2Bi/AExeREQ5N//IQFIulH9JYyC
- IJE=
-X-IronPort-AV: E=Sophos;i="5.81,279,1610380800"; 
-   d="scan'208";a="167547928"
-Received: from mail-mw2nam10lp2106.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.106])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Mar 2021 15:49:47 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O2BGF6uOlZvBBQ9E7ma+211LT2A1lW7zCQlgPUhTgQiVIh/Nz/Y0nOqB3tbZ2QzLcNv6AlodHDIB6UJH4hBhwdy0eFKc2jVkC/BGttwe43KMz+IHZVlM4mtTNo5/+4ilSIqEc3qJKJSaYM2/uQn/KJUs3NjFFUwC7a9kB6z628daRUc04m1A4oE7Dr3UL6Kf8ofOF0zB4uCozQeNsEBQi2pb9KTvunmTVVfC/ZTt8bV/ggiyDajNNM6NSgjaihjrYyo9QC+qOjgr3r/s4emASOiiH/qpYqMx/DKRrsYwJAchVJI+S9F4oWux9HJXepAg0Jax2ng7NCBJxnBKad/TFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLDW9lTxPYLkCqDJkP2Ys85wlQgsHvWlRAx6ZNNBeCg=;
- b=QxYY1H+NMU119krXcCSa5XH2i06ppcABXwLe9uCHYa2j4czdB5LIVZ2HoN1wkcLp/WY8+THtUXykaDB1kJ3HWuOcezIbTWJHZqGMqIj2yz69sTKNKx2aWOQ3h0fiAFfioYUkDHFuGGPi3G17QFd742ADFHIPxfj7rG1TYXk/MyZDNWJ7BB1YNyF1gwkPiykgvp7HqMX9uYBNmHcrcSeq/iAwk3xi7/c6qJtkyc+AppWo+uTR3ZILr1PwEWlHTDAmtdNvjz5b3Z3fPf/f3IpxMJOWxby6pCrdUAOkBSLsoB+GFajhKL0IB5809UM9pHJZzC+o2359isFq+jZeSxQ56A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLDW9lTxPYLkCqDJkP2Ys85wlQgsHvWlRAx6ZNNBeCg=;
- b=lei0omFnKP6KknZzssAgxxdJxt7mRlGti3q0ZIEkdEyrCzmy1ZzFkou7bvSH5OuVZqgifOSavsD/cbXJNB035rBFP78nVbihqR+BdEuBpkvAP14WFAzzywO1sIkDuTMTVS1Zu89PH/hB1f3tOxfKruuj5HJAfr4QiGNA0nIBOJk=
-Received: from SA0PR04MB7418.namprd04.prod.outlook.com (2603:10b6:806:e7::18)
- by SN6PR04MB4862.namprd04.prod.outlook.com (2603:10b6:805:90::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Fri, 26 Mar
- 2021 07:49:46 +0000
-Received: from SA0PR04MB7418.namprd04.prod.outlook.com
- ([fe80::d5c:2f7d:eadc:f630]) by SA0PR04MB7418.namprd04.prod.outlook.com
- ([fe80::d5c:2f7d:eadc:f630%6]) with mapi id 15.20.3955.027; Fri, 26 Mar 2021
- 07:49:46 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>, Eryu Guan <guan@eryu.me>
-CC:     "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH v2] fstests: don't relay on /proc/partitions for device
- size
-Thread-Topic: [PATCH v2] fstests: don't relay on /proc/partitions for device
- size
-Thread-Index: AQHXIhMX2Ho0O08Zh0mhKzwEa6WkCg==
-Date:   Fri, 26 Mar 2021 07:49:46 +0000
-Message-ID: <SA0PR04MB74184F99AD645228FA26B85B9B619@SA0PR04MB7418.namprd04.prod.outlook.com>
-References: <20210326073846.14520-1-johannes.thumshirn@wdc.com>
- <CH2PR04MB6522F59F0B14B2E7A2410F13E7619@CH2PR04MB6522.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
+        Fri, 26 Mar 2021 04:15:06 -0400
+X-Greylist: delayed 307 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Mar 2021 04:15:05 EDT
+Received: from unknown ([91.239.177.110]) by mx-relay77-hz1.antispameurope.com;
+ Fri, 26 Mar 2021 09:09:56 +0100
+Received: from dehwlwmsx02.claas.local (10.1.34.82) by dehwlwmsx08.claas.local
+ (10.1.34.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 26 Mar
+ 2021 09:09:51 +0100
+Received: from dehwlwmsx02.claas.local ([fe80::61e8:27a9:8d68:938]) by
+ dehwlwmsx02.claas.local ([fe80::61e8:27a9:8d68:938%4]) with mapi id
+ 15.01.2176.009; Fri, 26 Mar 2021 09:09:51 +0100
+From:   "Wulfhorst, Heiner" <Heiner.Wulfhorst@claas.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: AW: Why doesn't btrfs find additional space after (VMware) disk
+ extension?
+Thread-Topic: Why doesn't btrfs find additional space after (VMware) disk
+ extension?
+Thread-Index: AdchjfubWkhUqWyOSe+KO47leh9ppP//8suA//7vGDA=
+Date:   Fri, 26 Mar 2021 08:09:50 +0000
+Message-ID: <f50ee91d04c94feda3a6ce413332e83d@claas.com>
+References: <8a4b55eb42bd42d181abe9d7c208607c@claas.com>
+ <20210325205857.412ab914@natsu>
+In-Reply-To: <20210325205857.412ab914@natsu>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: yes
 X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1542:e101:145b:e21f:c2d8:5e40]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1519ab1f-b3ba-4584-92cd-08d8f02bb9db
-x-ms-traffictypediagnostic: SN6PR04MB4862:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR04MB4862F1C99FFDE69D2C318BE99B619@SN6PR04MB4862.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A+SL8c0xbNXcZiG5jZ5ktBPbtoHjoQUjRxTU+lymA78o8U4hwX8BAQGe+4MBtjTQnh5pQoaY1cON74wn9T/6QQaxbr8Xu3ZoMas8bIXVueAOP+9Q5oiZY+E/IBxeryv+PB//PsB7tEI+li7vnzaUk6u2mgcPi3xUJGaGFcqguAC604ACisIR/nw8hA+fjfHLDsycsR06xIPseRSefoWGzBVYKquRNdNS++mLpYhPoa6pAqqwizLGKqE/3SYorWJw1/dBqVYPe/sQkbpaunPDbDT9/EYowqsSxg3FCz8nrDYtTgEwfMWGCIGmKRzeQk+SHcNOqe6mPzc0KxkJQtbjJsdHozqbuEaJWv3JdsDnX2T0jz2qgsEChry1kv1Yvfj2TNLIVyWQvvpMzRHTZviEs+G8NaFocYSxVkr/uUQHDZi9yl26nJ6hXH+oj7X2G/bqIv3mqdqvPX0eupNjC2LHeweWC9P8K8+Cd8e68qT41/kCuTFiY+ER1EeFJ084PpeqJcZr1LL17cf7HZJCBaJeXbwBWuN9lCjsdWX2KDGYfz9qCD4CEg74fnKo++BC4dM71OfIDj1UYin9glyUKWNKgoeeg6FxujBftIwSo0yU+M8WHUadWllvCZ6k6EozilgjO5pi+P8BFl4rJVe2XQEJ2jnjg3mUPijXAsLMxfg93GE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR04MB7418.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(66476007)(91956017)(66556008)(52536014)(2906002)(64756008)(53546011)(86362001)(76116006)(54906003)(6506007)(4744005)(110136005)(66946007)(9686003)(66446008)(316002)(4326008)(478600001)(33656002)(186003)(55016002)(5660300002)(7696005)(71200400001)(83380400001)(8676002)(8936002)(38100700001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?u7L2ngsK2b/7wD44s9a0OwZHujfbTtlDI8ww1lThWHeF1qnRJfheI543gVvE?=
- =?us-ascii?Q?hUNZ7jEVIppwolbng0YhD1DqtU5dsD0RPjLlV/FJcjD7WYdJwvusgiD8X+e+?=
- =?us-ascii?Q?ZI5fBVPQeTrIyhUVUZproDzRoHunqeltqxyKVrvq+RjSBnpB2eXCi0qtKE7A?=
- =?us-ascii?Q?4Lz6sGPb+IKdSUk1sfM8NAV0iFglbZqnhdBvJdwsAK1xyKtJ4wj7cCcilUKV?=
- =?us-ascii?Q?jhBxafLqS5SNuh4/Mb5hCswb6LP6WfAsOwjZ4n3ncArtSIfJRo5yp5dr5gaj?=
- =?us-ascii?Q?IrhCxKTyyJEA6IBWN1ZqWS4QdIK5suypHEpimVa45vS45V/KwDwXxYY6Truk?=
- =?us-ascii?Q?8631LxrWJ6t+kJsqS1l1HjShb96Vcsqm+F4DvcM+64J0Zr7XPmM1ecfjvfaE?=
- =?us-ascii?Q?AOVgrk2NuPPUBJt9bCNmUWuQzXB9b/W0/VM1K3m0GLPqCWQLTX//wZ/RYT1r?=
- =?us-ascii?Q?qnzHB/A5V2GIiE5DRQW8CVfi2dsNhDTmDXuSYAzk44nE8f7Lq5646kTby2Kn?=
- =?us-ascii?Q?6Jt4cqSRmi+Zr0z/IgL6vUWS+epQu+7ZY2WE/Bpo/TF3uwiWp2FLhIqENhg5?=
- =?us-ascii?Q?Q7Dl1OvOCr94xHbc5m9PH/9imQtoBxpq0uZ1ul1mUY+8V4GX1bU4VKC8MVz2?=
- =?us-ascii?Q?+wm35N1Ir026Isw0wUmQF0RYjY5mFV953Vexhcwc1xB4R+n2isde6DUnogel?=
- =?us-ascii?Q?GXMpt8XwzF2e3uoinER7LTyeUG7KBOh5lTHYr8ox2yh3N2R5y173xB+6BX7D?=
- =?us-ascii?Q?ejb27Blq3AGgBw08gzYhhBN0e4PqDJlQJ82XQ8M/zs+yZIDJDboUcsRcJ4K2?=
- =?us-ascii?Q?jFQvUfIOMPwtr0z/fhgAP07D+e9+7hFqoDUh0ucA/ivqt5kMUcZu+Lo2n+mL?=
- =?us-ascii?Q?YfguDc/hGk5+hsEwIKiq9GRBSjHtnER+40XtkpU2N/JE7xJC0JQoa8e5yiiP?=
- =?us-ascii?Q?6zX5hGGRMvtlhg52Un1jxRrs73u2XK/GqZc03SUHhUeQBHC1KkpJ9gRxKGnZ?=
- =?us-ascii?Q?4vjyh/wLkuRuSq0QsFb3bxSyHUMa9ybwei0kxZLtRLV2zSEDABmAqm15TB7A?=
- =?us-ascii?Q?9VTFmiYJu9gR3uALXK/h/BASW76qOhfTNdBZxaclf1fUNqweevF2Vx9hgdRv?=
- =?us-ascii?Q?67MUzJwbP829a4VP53Nv2hg5fJ+/OpupOdq7SDQyf8nCOws3rVkWa2IceyQ9?=
- =?us-ascii?Q?h5LfzdunlBGhgzJuZYnRR6ht01eS1tUXPOtbmAWR453R4lNQyZvkWUVjH+N6?=
- =?us-ascii?Q?606E1lxadu74ZBZB2Em0SM733mZnPnlPd+6cHE05m6a2zsQd6fEYs5SPdrVz?=
- =?us-ascii?Q?uFtOEtHBiQFif3khjiVHDm+qCtnqEfmm3/lXmdU2IbN27DeS3RfA7k72N4yX?=
- =?us-ascii?Q?ZXL3o7azMzNohhRtmfhw35NzwyBm1+9AfYto1zfU7iH+beFlvw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+x-originating-ip: [172.23.11.186]
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+        micalg=SHA1; boundary="----=_NextPart_000_004E_01D7221F.C62F7B10"
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR04MB7418.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1519ab1f-b3ba-4584-92cd-08d8f02bb9db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2021 07:49:46.3787
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qeq1cZR56K+phyzpQcdc+FaHH9mmKQ8n7gEJXOAsMWMrDUHiIpuK4nOl/XjNB1nVThmAAMfpCKqOs7kZNU8l4DI85SpfhaU8ttnMgRA4+Yg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4862
+X-cloud-security-sender: heiner.wulfhorst@claas.com
+X-cloud-security-recipient: linux-btrfs@vger.kernel.org
+X-cloud-security-crypt: load encryption module
+X-cloud-security-Virusscan: CLEAN
+X-cloud-security-disclaimer: This E-Mail was scanned by E-Mailservice on mx-relay77-hz1.antispameurope.com with 1C3D761DBA4
+X-cloud-security-connect: unknown[91.239.177.110], TLS=1, IP=91.239.177.110
+X-cloud-security-Digest: 673b59c01e863f332eeda3b224813039
+X-cloud-security: scantime:1.834
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 26/03/2021 08:46, Damien Le Moal wrote:=0A=
-> On 2021/03/26 16:39, Johannes Thumshirn wrote:=0A=
->> Non-partitionable devices, like zoned block devices, aren't showing up i=
-n in=0A=
->> /proc/partitions and therefore we cannot relay on it to get a device's=
-=0A=
->> size.=0A=
->>=0A=
->> Use blockdev --getsz to get the block device size.=0A=
->>=0A=
->> Cc: Naohiro Aota <naohiro.aota@wdc.com>=0A=
->> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
->>=0A=
->> ---=0A=
->> Changes to v1:=0A=
->> - Use blockdev --getsz instead of sysfs (Nikolay/Damien)=0A=
->> ---=0A=
->>  common/rc | 2 +-=0A=
->>  1 file changed, 1 insertion(+), 1 deletion(-)=0A=
->>=0A=
->> diff --git a/common/rc b/common/rc=0A=
->> index 1c814b9aabf1..40a9bfac31da 100644=0A=
->> --- a/common/rc=0A=
->> +++ b/common/rc=0A=
->> @@ -3778,7 +3778,7 @@ _get_available_space()=0A=
->>  # return device size in kb=0A=
->>  _get_device_size()=0A=
->>  {=0A=
->> -	grep -w `_short_dev $1` /proc/partitions | awk '{print $3}'=0A=
->> +	blockdev --getsz $1=0A=
-> =0A=
-> That is 512B sectors unit... This should be KB, no ?=0A=
->=0A=
-=0A=
-Right...=0A=
-=0A=
-Should be 'echo $(($(blockdev --getsz $1) >> 1))'=0A=
+------=_NextPart_000_004E_01D7221F.C62F7B10
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+> You got the right lead there, but I believe it's 
+> 
+> btrfs filesystem resize 3:max /
+> 
+> -- 
+> With respect,
+> Roman
+
+Thanks a lot, you got me one step further (but directly stuck again).
+Unfortunately it now just shows that new space as Unallocated, together with
+those 52gb i mentioned in my first mail.
+
+Commands I tried to use them:
+# btrfs filesystem sync /  # (no output)
+# btrfs subvolume sync /   # (no output)
+# btrfs balance /          # please find output below
+
+I also tried to add a new subvol hoping that one would be able to profit
+from that new space (it didn't).
+
+I assume I must add that unallocated space to any subvol, but have no clue
+how to do so.
+Again - no documentation found was helping.
+Any Idea what I am missing?
+
+
+Here's my command output:
+
+# btrfs filesystem resize 3:max /
+Resize '/' of '3:max' 
+
+# btrfs filesystem show
+Label: none  uuid: 26c2b9c2-7ef7-476c-825d-9931b6344c37
+        Total devices 3 FS bytes used 125.09GiB
+        devid    1 size 47.51GiB used 47.51GiB path /dev/sdb2
+        devid    2 size 32.00GiB used 32.00GiB path /dev/sdc
+        devid    3 size 500.00GiB used 47.52GiB path /dev/sdd
+
+
+# btrfs filesystem usage /
+Overall:
+    Device size:                 579.51GiB
+    Device allocated:            127.02GiB
+    Device unallocated:          452.49GiB
+    Device missing:                  0.00B
+    Used:                        125.42GiB
+    Free (estimated):            452.73GiB      (min: 226.49GiB)
+    Data ratio:                       1.00
+    Metadata ratio:                   2.00
+    Global reserve:               24.00MiB      (used: 0.00B)
+
+Data,RAID0: Size:125.01GiB, Used:124.76GiB
+   /dev/sdb2      46.51GiB
+   /dev/sdc       31.99GiB
+   /dev/sdd       46.51GiB
+
+Metadata,RAID1: Size:1.00GiB, Used:333.56MiB
+   /dev/sdb2       1.00GiB
+   /dev/sdd        1.00GiB
+
+System,RAID1: Size:8.00MiB, Used:16.00KiB
+   /dev/sdc        8.00MiB
+   /dev/sdd        8.00MiB
+
+Unallocated:
+   /dev/sdb2       1.00MiB
+   /dev/sdc        1.00MiB
+   /dev/sdd      452.48GiB
+
+# btrfs balance /
+WARNING:
+
+        Full balance without filters requested. This operation is very
+        intense and takes potentially very long. It is recommended to
+        use the balance filters to narrow down the scope of balance.
+        Use 'btrfs balance start --full-balance' option to skip this
+        warning. The operation will start in 10 seconds.
+        Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting balance without any filters.
+ERROR: error during balancing '/': No space left on device
+There may be more info in syslog - try dmesg | tail
+
+#  dmesg | tail
+[ 6746.086714] BTRFS info (device sdb2): new size for /dev/sdb2 is
+51013222400
+[63115.423998] BTRFS info (device sdb2): resizing devid 3
+[63115.424001] BTRFS info (device sdb2): new size for /dev/sdd is
+536870912000
+[64096.971566]  sda: sda1
+[64473.204054] BTRFS info (device sdb2): balance: start -d -m -s
+[64473.204145] BTRFS info (device sdb2): relocating block group 135289372672
+flags data|raid0
+[64473.449111] BTRFS info (device sdb2): found 6 extents
+[64473.514132] BTRFS info (device sdb2): found 6 extents
+[64473.563164] BTRFS info (device sdb2): 49 enospc errors during balance
+[64473.563167] BTRFS info (device sdb2): balance: ended with status: -28
+
+# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        3.9G  8.0K  3.9G   1% /dev
+tmpfs           3.9G     0  3.9G   0% /dev/shm
+tmpfs           3.9G   17M  3.9G   1% /run
+tmpfs           3.9G     0  3.9G   0% /sys/fs/cgroup
+/dev/sdb2       580G  126G  251M 100% /
+/dev/sdb2       580G  126G  251M 100% /.snapshots
+/dev/sdb2       580G  126G  251M 100% /usr/local
+/dev/sdb2       580G  126G  251M 100% /opt
+/dev/sdb2       580G  126G  251M 100% /root
+/dev/sdb2       580G  126G  251M 100% /boot/grub2/i386-pc
+/dev/sdb2       580G  126G  251M 100% /boot/grub2/x86_64-efi
+/dev/sdb2       580G  126G  251M 100% /srv
+/dev/sdb2       580G  126G  251M 100% /var
+/dev/sdb2       580G  126G  251M 100% /tmp
+/dev/sdb2       580G  126G  251M 100% /home
+/dev/sdb2       580G  126G  251M 100% /var/cache
+/dev/sdb1       500M  5.3M  495M   2% /boot/efi
+tmpfs           796M     0  796M   0% /run/user/0
+
+
+Any help appreciated!
+
+Thanks,
+Heiner
+
+------=_NextPart_000_004E_01D7221F.C62F7B10
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+
+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
+Wa8PwnlBNZD5yC9YYoO4E4fIDByGIE9cAh1TMPjFniRkcDM7VQIDAQABo4ICuDCCArQwPAYJKwYB
+BAGCNxUHBC8wLQYlKwYBBAGCNxUIhfDJI5/9S4HdkRuHx/VJh53qd1uD/q9Gh+v0QgIBZAIBCzAT
+BgNVHSUEDDAKBggrBgEFBQcDBDAOBgNVHQ8BAf8EBAMCBSAwDAYDVR0TAQH/BAIwADBABgNVHSAE
+OTA3MDUGDSsGAQQBgtFAg31kCgEwJDAiBggrBgEFBQcCARYWaHR0cDovL3BraS5jbGFhcy5jb20v
+ADAbBgkrBgEEAYI3FQoEDjAMMAoGCCsGAQUFBwMEMIGUBgkqhkiG9w0BCQ8EgYYwgYMwCwYJYIZI
+AWUDBAEqMAsGCWCGSAFlAwQBLTALBglghkgBZQMEARYwCwYJYIZIAWUDBAEZMAsGCWCGSAFlAwQB
+AjALBglghkgBZQMEAQUwCgYIKoZIhvcNAwcwBwYFKw4DAgcwDgYIKoZIhvcNAwICAgCAMA4GCCqG
+SIb3DQMEAgICADAdBgNVHQ4EFgQUq0NeFfmAnEjQje/tS91EoRj0zK8wHwYDVR0jBBgwFoAUyT+H
+ZqfPCniFjAmTLNo/OlnfKIQwQwYDVR0fBDwwOjA4oDagNIYyaHR0cDovL3BraS5jbGFhcy5jb20v
+Y2RwL0NMQUFTJTIwU3ViJTIwQ0ElMjAwMi5jcmwwegYIKwYBBQUHAQEEbjBsMD4GCCsGAQUFBzAC
+hjJodHRwOi8vcGtpLmNsYWFzLmNvbS9haWEvQ0xBQVMlMjBTdWIlMjBDQSUyMDAyLmNydDAqBggr
+BgEFBQcwAYYeaHR0cDovL29jc3AucGtpLmNsYWFzLmNvbS9vY3NwMEoGA1UdEQRDMEGgIwYKKwYB
+BAGCNxQCA6AVDBNJMDEyOTExQGNsYWFzLmxvY2FsgRpoZWluZXIud3VsZmhvcnN0QGNsYWFzLmNv
+bTANBgkqhkiG9w0BAQUFAAOCAgEANOYyJ2eveRhO/vQpwg2ZavXf30vanHU9Rcd+b5ivHo1cVmCs
+6X/Ssftc2fRimJsA8TTI+Bqa9FIcF3aee14fwEiDDDxm6hIXiHuuIKi697SvZFgQxTXFon8yWe3Y
+3zp2Yya2ceNVSDASEdi9bPuv1lGLvAZfQuJM0F1uhc0norlISqiT6PuALP4ErbSZyFnI0bFI4eRK
+9GyC9Jn7Poo5dcahv29yqODImn3ISSLOEiPLemLXeFk0i96loDDhorbur6OkL9heczPBLIUjkIOo
+l2DAWH5cELF28rCbwwbrU01nwSf62oXPdg0PQ1+I7FZo2e7VJecUtbrXjT/kQdeDuW79IXYSrNc/
+4ZIbSTBM1j4X2+gCpeQPrIqnQ085CQs7hyDd9/GbwY3AeoewVpf/5rQJL65Jz83MQ9qfrFnS79Tz
+KlqqB55AHEv1N1iWKDgKTKIMCtA+/O1pmnlkiucV6KfNmsE4RzyLQ3BZE1D4COlMxWRdqvBj2lsE
+7WiXkBGSRsuFjsxSpGd2npitSAkBxarkhbF9ARAUwyTnowbUeIibL964UdlkQ9+jHxkOv5ZPXcFc
+eaPHdmy29PszzpSS3USeWy1h8sPwWUFEGJyqEivPk9bakUr9yklyHS5sl1F/f/bOygeIlfczYQUo
+JjHJffIcOSyecGZvj+OU+nyHIX8wggbwMIIE2KADAgECAhNDAAAAA2+gGgq8aZO3AAAAAAADMA0G
+CSqGSIb3DQEBBQUAMD4xCzAJBgNVBAYTAkRFMRQwEgYDVQQKDAtDTEFBUyBHcm91cDEZMBcGA1UE
+AwwQQ0xBQVMgUm9vdCBDQSAwMTAeFw0xNTA3MDIxMTIzNDdaFw0yNTA3MDIxMTMzNDdaMD0xCzAJ
+BgNVBAYTAkRFMRQwEgYDVQQKDAtDTEFBUyBHcm91cDEYMBYGA1UEAwwPQ0xBQVMgU3ViIENBIDAy
+MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuYWxNMo7fvGR2bEpracOoen3OOi/1O2w
+P7fMBNbAGJX9RnsavDNrtlNTEtaMRD97Ypv+np9ZJFAqA+MnYPWFsgkdJny358kJqr/UZI+EEmS9
+I6wHs9FSEOh8rB7rtoc7W6fca4AXmh4LjYbr1vZXTTN8QBjOklwoK9dYpifw2RXYRz1KFLrujvJ6
+2KTVkKu+2OoxyN6rw/3Se59GEKqMSrpM0mbBs7owGrEmhhtxYu5Voh3p6QY+6teKrYvgeR1szbjd
+n6v9sxhpLLnurgTAP583p29ruY9xls0mJOdgGtw8voOzZyxGKluErkJvbXZT8Iw8TRmOB6DOMGlg
++SuPp3kKfuApTTC7englWlpDtQBz+STNGeQcsUptsp5Ej8M2fu8tgfVrmKXHAKYDclk2gzAE3oFE
+PDy9fS6E3NDaQXXyTOgnaCIM3m6U/dl1E7ApRucj0pTlOqlc3wzeK9LTbAq4H4dIYOY0mb/LTRJV
+I+kksdQxcYM8vikBSTVQQODiydBfV/ASCbw5hz/YhpYKxko4T03O3yRqGepKo4/aNfxn/A6t0kis
+mW7E82imrjgGe8+n/IbfnCcJ+cr4K0wJlqDTnI9+Oh0UyQRDwKmxsc5yQQSwC94eYovYkhNUUWFp
+QB7x/msmYCu2ymzkyzBYNi21l4FRX+pw4NZobRyIotMCAwEAAaOCAeYwggHiMA4GA1UdDwEB/wQE
+AwIBBjAdBgNVHQ4EFgQUyT+HZqfPCniFjAmTLNo/OlnfKIQwgeQGA1UdIASB3DCB2TCB1gYNKwYB
+BAGC0UCDfWQKATCBxDAhBggrBgEFBQcCARYVaHR0cDovL3BraS5jbGFhcy5jb20AMIGeBggrBgEF
+BQcCAjCBkR6BjgBDAGUAcgB0AGkAZgBpAGMAYQB0AGUAIABQAG8AbABpAGMAeQAgAGEAbgBkACAA
+QwBlAHIAdABpAGYAaQBjAGEAdABpAG8AbgAgAFAAcgBhAGMAdABpAGMAZQAgAFMAdABhAHQAZQBt
+AGUAbgB0ACAAbwBmACAAQwBMAEEAQQBTACAARwByAG8AdQBwAC4wEgYDVR0TAQH/BAgwBgEB/wIB
+ADAfBgNVHSMEGDAWgBQRn1tLL1IbHAdFyuHemosYxnjMDzBEBgNVHR8EPTA7MDmgN6A1hjNodHRw
+Oi8vcGtpLmNsYWFzLmNvbS9jZHAvQ0xBQVMlMjBSb290JTIwQ0ElMjAwMS5jcmwwTwYIKwYBBQUH
+AQEEQzBBMD8GCCsGAQUFBzAChjNodHRwOi8vcGtpLmNsYWFzLmNvbS9haWEvQ0xBQVMlMjBSb290
+JTIwQ0ElMjAwMS5jcnQwDQYJKoZIhvcNAQEFBQADggIBAAuP/mmNItTaIx3rAFjAHN8r8djT3zhI
+qDeTXYCa9a7gICZ62DivNBcSW0aU44Pr7KKHkFg22ZvPwC1QmJS9SYIcLd2wK2dIWHfezhVGQJQY
+/8b2LTZXfweN9l9uIbMcrv9iyICbs8xHNjsGoDZosyGqE7/AljKUtd4fwrfUs/BZtf3XkcXnJziv
+QMyXxr98DlAPif3hSeYJJu7ofzBWXLei6xX4VOTtAgbXobLHr2dm21IRCg2oXkbcvzwdmLa6x0xU
+tWl84DshERZH5HNbbDLPw6VnVGc9sg2zclO1v3qf0T8W8RNd5C4PLkr5jqfWBbAQcwTarP2G6bKu
+2hRI+uDYBPhfGlmY7AQvTTDwUNNKAjf1tGJvW/fqMriouRbtg0sdMe67OnCmJVBJ46noYwQQpJkb
+a1jwTYoCKQKo6bKi48ziHRU5zOc4wXAJSyQogHiMnEwNEoS60ME2JW2GRPGGqMKO0SIco9Iezq/R
+jkbefjqdHUCMaO71BuqW5SQY78/q/lH9eYcyafOc1WkCTf08jvSFpjRKAN/UE/X+2W5Nw2Eu5yKn
+8dUuaoynOodeVxLDnMbWecytzNE7XLL8wFX0QVUwhmro1K14MPxGlnUKNbQinLS6ybEHN7dhYMST
+ErrKTKZUeR5skJJwsyaTQbyNQpRej4E60vPMQ9y9piMhMYIDPjCCAzoCAQEwVDA9MQswCQYDVQQG
+EwJERTEUMBIGA1UECgwLQ0xBQVMgR3JvdXAxGDAWBgNVBAMMD0NMQUFTIFN1YiBDQSAwMgITMwAC
+iHpj86Kdk86bNgAAAAKIejAJBgUrDgMCGgUAoIIBvzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMTAzMjYwODA5NDlaMCMGCSqGSIb3DQEJBDEWBBSSbV7oWoADEkLQ
+GmDyo13aAR+c0TBjBgkrBgEEAYI3EAQxVjBUMD0xCzAJBgNVBAYTAkRFMRQwEgYDVQQKDAtDTEFB
+UyBHcm91cDEYMBYGA1UEAwwPQ0xBQVMgU3ViIENBIDAyAhMzAAKIea1OsmcGg8nAAAAAAoh5MGUG
+CyqGSIb3DQEJEAILMVagVDA9MQswCQYDVQQGEwJERTEUMBIGA1UECgwLQ0xBQVMgR3JvdXAxGDAW
+BgNVBAMMD0NMQUFTIFN1YiBDQSAwMgITMwACiHmtTrJnBoPJwAAAAAKIeTCBkwYJKoZIhvcNAQkP
+MYGFMIGCMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCgYIKoZIhvcNAwcwCwYJYIZIAWUDBAEC
+MA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCGjALBglghkgBZQMEAgMwCwYJ
+YIZIAWUDBAICMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQC4cT7g6n+u6i80xyvxLYJO
+mLsZKFdofK8TWcEIRkXiGzX+LO4/Kzxfk7S4He0t4CFrX9Q4wP4ZizdUc+H/WepSVwmR5f7czqmY
+S5uBfjzjhhVQQlpur9TlwMoHpIfyTUhQK/wZTAMP1BI94ZobxBVkaojsErp8r4grmxACLbm7WnFJ
+sAKBXtWr62ZAHgxF7Kq+OYKVlt6rex+DqU40HaGYo/0TJ4qJWKBeiRxI44k3MeLk0ugWqhD04CZu
+K5EK4yYe7jQfDaBLnB6qqiM8Yr94wC5NwaL4qATlZlbhb69/mxyD3Rf1U8NssQGP5Zf0ZRdIQmNZ
+qJ2tNIoy+jqkhsv/AAAAAAAA
+
+------=_NextPart_000_004E_01D7221F.C62F7B10--
