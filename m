@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A709B34BAAD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Mar 2021 06:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EF634BAAE
+	for <lists+linux-btrfs@lfdr.de>; Sun, 28 Mar 2021 06:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhC1EWE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 Mar 2021 00:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        id S231355AbhC1EWF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 28 Mar 2021 00:22:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbhC1EVe (ORCPT
+        with ESMTP id S229525AbhC1EVj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 Mar 2021 00:21:34 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A202AC061762;
-        Sat, 27 Mar 2021 21:21:34 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 7so9356895qka.7;
-        Sat, 27 Mar 2021 21:21:34 -0700 (PDT)
+        Sun, 28 Mar 2021 00:21:39 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36967C061762;
+        Sat, 27 Mar 2021 21:21:39 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id o5so9402957qkb.0;
+        Sat, 27 Mar 2021 21:21:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jOOp0h2yVPN/f0Eod/KKvQYmCFRRcb0rcd4xmykcQJs=;
-        b=Vsoi6NNETbFsZ6eFciLqoimy4OcE5kjqBhejIN4frrqM+XYxjW7lEuFfglq5eXZU3S
-         Ay8shb+zO7DO8yQY9uz7irke6ckBsin6e73Fi5EidCFWFcos10m9yhzejzqsY7dbT711
-         ej3M8cnYOOdqEPW+GzZGtJdtd/Oaz3Ulo/XbWKEnzyJPeCqrrHZriJ4MjvepXPYwkSxY
-         CegRhwYMyT+sKm0hYEWNamm3mlOKHoRlWzs2biFHNInAaxCLhPQB7x4F1V9xgbnz7KWk
-         Hw7UAci/YQ2XI/A5aEZs1DJpObqVRbccJYsrpU0wVd8LawuytfvuYf3WWAkrn7JDhjkR
-         FquQ==
+        bh=JDfitwPdxYx+qIzQbCzCLcoHH8gP8izKHpQ9g3YygP8=;
+        b=JaCxghRwGh5HZJor/vTKk+BTwfgwgM2Imbm4x9s+ckJWl5as4luSompmng6zpAmHE6
+         g2eNIaqPJSMTzbHN/rjrQ3ZtN8QTNWzHNtbREUh9dGBiGVNM1k6hBKCuq3NIaYKtoZyX
+         reOwCUzjBoppvsKq+iSTncMrOay/HencOdBIXpKtABvTl8XtZzvnz+L802cCi61YDvCF
+         tzt1BUYSE3vndZzO+i6T+ztpK3J7MAywiuZunixkrnj1clfbgngnrL4PAvI0dMWTZYxX
+         b111w1q/XIeOZyZNGZIKt1meoj+Ibrzcv44YAjarwJGeFuST+dbk2+OCtk3NHf5KZoZR
+         Qzyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jOOp0h2yVPN/f0Eod/KKvQYmCFRRcb0rcd4xmykcQJs=;
-        b=LcSqQ98gUiBM9cxWvXQTRRYuhXp83pJuF7kEI5AHwgCopRx2ulx/nN1K+VHkdGypT4
-         LrtNzlouBtS4c/imTkub1JPQBzJ2xLfG4E456JA1Rk4haLM9eYZ+g8NISVkJA0nQjzG/
-         3nHDis5HlktvZ6gHCpUdcCqflfvlI5Hs1B6AJMYUEk2343TuF/9G9XRoFJnt1mWtak9y
-         rGexpfNM5A4RhUpIRFWxHO/4ru0ad9ptHF3KdQ0z4mwxt/ARnJSBgNqaJwGte7iAsFM4
-         VUyZtFt3zns1N3HRL2X3+grc7CqhvIy+V7f4VjtoCjFdhN9+lCC/s4eX5mXKXWXv33Sy
-         PoSA==
-X-Gm-Message-State: AOAM530ZUrYmwZQqpQQrhwzfadvwSXsScHRv+Fjuw52DBC8jwFhaM6Sr
-        kikSY157pHvVWsXpxrQu7d0=
-X-Google-Smtp-Source: ABdhPJzh97Po64m6fSxl5LvpcheBVIWr4k4YFBHHztS8K9cXM232RAd1CmnvQBlUwOjiImLZxDaemg==
-X-Received: by 2002:a37:a183:: with SMTP id k125mr20157241qke.332.1616905293946;
-        Sat, 27 Mar 2021 21:21:33 -0700 (PDT)
+        bh=JDfitwPdxYx+qIzQbCzCLcoHH8gP8izKHpQ9g3YygP8=;
+        b=J2p95OkW0q3oxrgi9dr23XKwRa+RMOqZksEJQIJYXz8pWPSadPiGFY8FcdyQc1SjF9
+         xiEYe18RjUzemN05r/lB3D102zj1c+TV6SgM87B4gHO2zk4CcAQLmk/AB2tuBZfQqN9h
+         Ri99c3Rx9v4vsaRNvqW/IwXv7mgPA4fLx5u7cy+Foprvv2xnzPzdx2A1mVCv7uHBi9Yr
+         AUmWvAncXyIW+41hcsUcNnJggjsaIbv4kzDVmMh+dOBw3FkwEvT/AS/H2LvjWl5FCiCS
+         f80c708S914sugfBmoxyRDTXZLAWnyWdBDOwnDCMmxf2+aKN3X+HUjrk5i0FiI0Y3+Ba
+         OLPQ==
+X-Gm-Message-State: AOAM5330hsreIjrh6qPrWqxz5uCI/F5VRkMKBXwyUEi4rxNBod0UqWmG
+        weEZvNJG3gLkiSuQ/QHWJ64=
+X-Google-Smtp-Source: ABdhPJyJ0CQjWnR7HXJhxHH/eE1ReOl5E0XnX4TaARYZlMw/bfY3y8EUGaMq+dDdZLpY1nfVaYgQrA==
+X-Received: by 2002:a37:6c1:: with SMTP id 184mr19580934qkg.462.1616905298508;
+        Sat, 27 Mar 2021 21:21:38 -0700 (PDT)
 Received: from localhost.localdomain ([156.146.55.118])
-        by smtp.gmail.com with ESMTPSA id i6sm10092237qkf.96.2021.03.27.21.21.30
+        by smtp.gmail.com with ESMTPSA id i6sm10092237qkf.96.2021.03.27.21.21.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 21:21:33 -0700 (PDT)
+        Sat, 27 Mar 2021 21:21:37 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
 To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
         linux-btrfs@vger.kernel.org
 Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rdunlap@infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 06/10] scrub.c: Fix a typo
-Date:   Sun, 28 Mar 2021 09:48:30 +0530
-Message-Id: <d9da818223f9e4a82d6a4260347915d2407d822a.1616904353.git.unixbhaskar@gmail.com>
+Subject: [PATCH 07/10] locking.c: Fix same typo in couple of places
+Date:   Sun, 28 Mar 2021 09:48:31 +0530
+Message-Id: <175684259886b4c2f7c3ca8df93b589b91c888a8.1616904353.git.unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1616904353.git.unixbhaskar@gmail.com>
 References: <cover.1616904353.git.unixbhaskar@gmail.com>
@@ -65,26 +65,35 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-s/reponsible/responsible/
+s/Retrun/Return/ ..... two different places.
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- fs/btrfs/scrub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/locking.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 3d9088eab2fc..14de898967bf 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -2426,7 +2426,7 @@ static void drop_csum_range(struct scrub_ctx *sctx, struct btrfs_ordered_sum *su
-  * the csum into @csum.
+diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+index 5fafc5e89bb7..313d9d685adb 100644
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -57,7 +57,7 @@ void btrfs_tree_read_lock(struct extent_buffer *eb)
+ /*
+  * Try-lock for read.
   *
-  * The search source is sctx->csum_list, which is a pre-populated list
-- * storing bytenr ordered csum ranges.  We're reponsible to cleanup any range
-+ * storing bytenr ordered csum ranges.  We're responsible to cleanup any range
-  * that is before @logical.
+- * Retrun 1 if the rwlock has been taken, 0 otherwise
++ * Return 1 if the rwlock has been taken, 0 otherwise
+  */
+ int btrfs_try_tree_read_lock(struct extent_buffer *eb)
+ {
+@@ -72,7 +72,7 @@ int btrfs_try_tree_read_lock(struct extent_buffer *eb)
+ /*
+  * Try-lock for write.
   *
-  * Return 0 if there is no csum for the range.
+- * Retrun 1 if the rwlock has been taken, 0 otherwise
++ * Return 1 if the rwlock has been taken, 0 otherwise
+  */
+ int btrfs_try_tree_write_lock(struct extent_buffer *eb)
+ {
 --
 2.26.2
 
