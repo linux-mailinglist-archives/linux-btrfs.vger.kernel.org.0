@@ -2,157 +2,215 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C71234D67B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Mar 2021 20:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB8834D69C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Mar 2021 20:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhC2SAm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Mar 2021 14:00:42 -0400
-Received: from a4-3.smtp-out.eu-west-1.amazonses.com ([54.240.4.3]:56721 "EHLO
-        a4-3.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231235AbhC2SAR (ORCPT
+        id S229630AbhC2SHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Mar 2021 14:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhC2SHX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:00:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=pqvuhxtqt36lwjpmqkszlz7wxaih4qwj; d=urbackup.org; t=1617040813;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=KYXSTGfwZtfrXEqv13y1BLMGHhZdqcCqalOhv6fNTJg=;
-        b=OGGOLlZVgta3vTsyg5KDgO6NEZRO/KRJFHnuA7UgqkR1I0dz++UsThXvkxIKbFAy
-        vCHzz1qEaU2Qn0T/Fq0Eq+q7FnR40PrpUesf7VB7M2+7jRluq5337VEiGRO1e1rxigN
-        E4mYapxOvNff64jhMJA5G7uiMivv+G7dZiWhjtQ4=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=uku4taia5b5tsbglxyj6zym32efj7xqv; d=amazonses.com; t=1617040813;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=KYXSTGfwZtfrXEqv13y1BLMGHhZdqcCqalOhv6fNTJg=;
-        b=UbGQQh8VGbRJIHLD4sh8v5xnNyB6kKr9rZDppO5c0RobFfzDxxZjAWjLj+FPZCMJ
-        1/evITPy29QlAfMcjEqBsKywkmok5nDJZ2G2fNNkTcAnng7Z0qOIRMwCkk73H7hhPUR
-        FBs/kgp2bOjLujX85L0ai8+w0GgK7zwbg1U7Jg2Q=
-Subject: Re: btrfs-send format that contains binary diffs
-To:     Henning Schild <henning.schild@siemens.com>,
-        Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     Claudius Heine <ch@denx.de>, linux-btrfs@vger.kernel.org
-References: <f3306b7c-a97a-21f2-0f66-dc94dc2c0272@denx.de>
- <db6fae67-6348-1de3-c953-a4c75c459b65@gmail.com>
- <20210329192506.52f352aa@md1za8fc.ad001.siemens.net>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <010201787f24acd2-f4efde2d-c9f3-4911-90a9-3c366cb8c045-000000@eu-west-1.amazonses.com>
-Date:   Mon, 29 Mar 2021 18:00:13 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 29 Mar 2021 14:07:23 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE4FC061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 11:07:23 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id l15so4222658uao.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 11:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xx5F8UiXii1Ii4Bn0O2P50759DT52EiTVxb0w41s/u0=;
+        b=zPUjEhD/LTKd0YXE4V84onho+naCdjmSVaLqCBMhfe92PmokhwfwMmtmvVnbF0c7T9
+         bsiImYvRzryy+zOPft1wTelm9Hv0j8u8w1wDOCbHx5wQQGUXs8hxSqVhHeNH7m0fWoBb
+         CgzVVTpYjLbvAUTGuvU7LWSi6OPeURLHsBGlv62ScM+1lepm6uNpnU+B0qOp/0oBuNFO
+         RUQDwoYe5k9qbuCZedDrZlls2fpkLxEXEOveoPaF8GVKvLsoQlcYspfverbbyTWxEKKb
+         4/DVUxknIqKkmCIrtB1+J0jEWPSG8AoXFuFIKOa5BKCpH27yqW1YNfZGtWPBPA4eKA7N
+         MfnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xx5F8UiXii1Ii4Bn0O2P50759DT52EiTVxb0w41s/u0=;
+        b=VrBwKkVUkKrl2+pdCSXa8YcOQ5pOFEEKpB/BgT+dUWIp1PAPWohzqMBs/MdHgDGwLF
+         YI6+fburhRVWViphDUZKfjTW9Dpqak0HnxfoYLUiWCDpWml8DNvuakEQVk7JBKz9JKXx
+         HxmXuTogJCSpVXdmQ/sosO1qYLzD9nU0p4/UPBwoOsJnYIdmy4SliyxH9mV9ZNRUmFDz
+         /jzAHVjv1cN/Xn0v3M3qsV/4+89jlGjLOtZlWg6dc8XmbhXGEtuoN0ZIXM2bXhUW3ljU
+         aJrpio9/JL4jip1tmoV9C7XCJo3IHCaoCr9l46dVv4V2Lmm2HnNxKg3ffAhnb8SgfhIv
+         IEQA==
+X-Gm-Message-State: AOAM530j3MgGFXpisqGbwHoJDHdiXyUvOZTiDOnXtDzN6bXY4akdu65f
+        2EkOLmvqFv0moy/K0s5JtAjFlXKszecGsA1kKy07hEiLoectlA==
+X-Google-Smtp-Source: ABdhPJx+HET0ae9dREMAilLay1XWKAmwXTKNpmi3480njO6qYxK8aSv7WTfmnHBrgsRNdXmAlxcSXgMRA2/PtSM4zf0=
+X-Received: by 2002:ab0:36b6:: with SMTP id v22mr14127361uat.123.1617041242542;
+ Mon, 29 Mar 2021 11:07:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210329192506.52f352aa@md1za8fc.ad001.siemens.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-SES-Outgoing: 2021.03.29-54.240.4.3
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+References: <emfd92f28c-2171-4c40-951d-08f5c35ae5a0@desktop-g0r648m>
+In-Reply-To: <emfd92f28c-2171-4c40-951d-08f5c35ae5a0@desktop-g0r648m>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 29 Mar 2021 12:07:05 -0600
+Message-ID: <CAJCQCtQt83dXev6Ngo_tDPZFqD60eD3W3h-1ZT8KLc5hMcB_HA@mail.gmail.com>
+Subject: Re: Filesystem sometimes Hangs
+To:     Hendrik Friedel <hendrik@friedels.name>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29.03.2021 19:25 Henning Schild wrote:
-> Am Mon, 29 Mar 2021 19:30:34 +0300
-> schrieb Andrei Borzenkov <arvidjaar@gmail.com>:
+On Mon, Mar 29, 2021 at 5:12 AM Hendrik Friedel <hendrik@friedels.name> wro=
+te:
 >
->> On 29.03.2021 16:16, Claudius Heine wrote:
->>> Hi,
->>>
->>> I am currently investigating the possibility to use `btrfs-stream`
->>> files (generated by `btrfs send`) for deploying a image based
->>> update to systems (probably embedded ones).
->>>
->>> One of the issues I encountered here is that btrfs-send does not
->>> use any diff algorithm on files that have changed from one snapshot
->>> to the next. 
->> btrfs send works on block level. It sends blocks that differ between
->> two snapshots.
->>
->>> One way to implement this would be to add some sort of 'patch'
->>> command to the `btrfs-stream` format.
->>>   
->> This would require reading complete content of both snapshots instead
->> if just computing block diff using metadata. Unless I misunderstand
->> what you mean.
-> On embedded systems it is common to update complete "firmware" images
-> as opposed to package based partial updates. You often have two root
-> filesystems to be able to always fall back to a working state in case
-> of any sort or error.
+> Hello,
 >
-> Take the picture from
-> https://sbabic.github.io/swupdate/overview.html#double-copy
+> I have a filesystem which is sometimes very slow, or even currently
+> hangs deleting a file (plain and simple rm in bash).
 >
-> and assume that "Application software" is a full blown OS with
-> everything that makes your device.
+> Label: 'DataPool1'  uuid: c4a6a2c9-5cf0-49b8-812a-0784953f9ba3
+>          Total devices 2 FS bytes used 5.65TiB
+>          devid    1 size 7.28TiB used 6.71TiB path /dev/sda1
+>          devid    2 size 7.28TiB used 6.71TiB path /dev/sdh1
 >
-> That approach offers great "control" but unfortunately can also lead to
-> great downloads required for an update. The basic idea is to download
-> the binary-diff between the future and the current rootfs only.
-> Given a filesystem supports snapshots, it would be great to
-> "send/receive" them as diffs.
+> I did run a scrub without errors.
 >
-> Today most people that do such things with other fss script around with
-> xdelta etc. But btrfs is more "integrated", so when considering it for
-> such embedded usecases native support would most likely be better than
-> hacks on top.
+> Checking the logs, I find:
+> dmesg -T |grep -i btrfs
+> [Mo M=C3=A4r 29 09:29:16 2021] Btrfs loaded, crc32c=3Dcrc32c-intel
+> [Mo M=C3=A4r 29 09:29:16 2021] BTRFS: device label DataPool1 devid 2 tran=
+sid
+> 649014 /dev/sdh1 scanned by btrfs (213)
+> [Mo M=C3=A4r 29 09:29:16 2021] BTRFS: device label DataPool1 devid 1 tran=
+sid
+> 649014 /dev/sda1 scanned by btrfs (213)
+> [Mo M=C3=A4r 29 09:29:16 2021] BTRFS: device label Daten devid 1 transid
+> 254377 /dev/sdd2 scanned by btrfs (213)
+> [Mo M=C3=A4r 29 09:29:16 2021] BTRFS: device label DockerImages devid 1
+> transid 209067 /dev/sdc2 scanned by btrfs (213)
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sda1): disk space cachi=
+ng
+> is enabled
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sda1): has skinny exten=
+ts
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdd2): enabling ssd
+> optimizations
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdd2): disk space cachi=
+ng
+> is enabled
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdd2): has skinny exten=
+ts
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdc2): turning on sync
+> discard
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdc2): enabling ssd
+> optimizations
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdc2): disk space cachi=
+ng
+> is enabled
+> [Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdc2): has skinny exten=
+ts
+> [Mo M=C3=A4r 29 09:29:22 2021] BTRFS info (device sda1): bdev /dev/sda1 e=
+rrs:
+> wr 133, rd 133, flush 0, corrupt 0, gen 1
 >
-> We have several use-cases in mind with btrfs.
->  - ro-base with rw overlays
->  - binary diff updates against such a ro-base
->  - backup/restore with snapshots of certain subvolumes
->  - factory reset with wiping certain submodules
+> Maybe, the last line is concerning?
+
+Yes. Do a 'btrfs scrub' and check dmesg for detailed errors. Next
+'btrfs check --readonly' (must be done offline ie booted from usb
+stick). And if it all comes up without errors or problems, you can
+zero the statistics with 'btrfs dev stats -z'. But otherwise we need
+to see the errors to know what's going wrong. It's not normal to have
+either read or write errors. It could be related to the problem, or an
+additional problem.
+
+
 >
-> regards,
-> Henning
+>
+> Syslog tells me:
+> Mar 28 20:22:19 homeserver kernel: [1297978.357508] task:btrfs-cleaner
+> state:D stack:    0 pid:20078 ppid:     2 flags:0x00004000
+> Mar 28 20:22:19 homeserver kernel: [1297978.357547]
+> wait_current_trans+0xc2/0x120 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.357564]
+> start_transaction+0x46d/0x540 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.357577]
+> btrfs_drop_snapshot+0x90/0x7f0 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.357594]  ?
+> btrfs_delete_unused_bgs+0x3e/0x850 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.357609]
+> btrfs_clean_one_deleted_snapshot+0xd7/0x130 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.357622]
+> cleaner_kthread+0xfa/0x120 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.357636]  ?
+> btrfs_alloc_root+0x3d0/0x3d0 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.360473]
+> wait_current_trans+0xc2/0x120 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.360488]
+> start_transaction+0x46d/0x540 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.360503]
+> btrfs_create+0x58/0x1f0 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.363057]
+> wait_current_trans+0xc2/0x120 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.363072]
+> start_transaction+0x46d/0x540 [btrfs]
+> Mar 28 20:22:19 homeserver kernel: [1297978.363086]
+> btrfs_rmdir+0x5c/0x180 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.024321] task:btrfs-cleaner
+> state:D stack:    0 pid:20078 ppid:     2 flags:0x00004000
+> Mar 28 20:26:20 homeserver kernel: [1298220.024382]
+> wait_current_trans+0xc2/0x120 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.024419]
+> start_transaction+0x46d/0x540 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.024442]
+> btrfs_drop_snapshot+0x90/0x7f0 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.024476]  ?
+> btrfs_delete_unused_bgs+0x3e/0x850 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.024504]
+> btrfs_clean_one_deleted_snapshot+0xd7/0x130 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.024531]
+> cleaner_kthread+0xfa/0x120 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.024558]  ?
+> btrfs_alloc_root+0x3d0/0x3d0 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.030300]
+> wait_current_trans+0xc2/0x120 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.030331]
+> start_transaction+0x46d/0x540 [btrfs]
+> Mar 28 20:26:20 homeserver kernel: [1298220.030361]
+> btrfs_create+0x58/0x1f0 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.854109] task:btrfs-cleaner
+> state:D stack:    0 pid:20078 ppid:     2 flags:0x00004000
+> Mar 28 20:28:21 homeserver kernel: [1298340.854151]
+> wait_current_trans+0xc2/0x120 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.854169]
+> start_transaction+0x46d/0x540 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.854183]
+> btrfs_drop_snapshot+0x90/0x7f0 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.854202]  ?
+> btrfs_delete_unused_bgs+0x3e/0x850 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.854218]
+> btrfs_clean_one_deleted_snapshot+0xd7/0x130 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.854232]
+> cleaner_kthread+0xfa/0x120 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.854247]  ?
+> btrfs_alloc_root+0x3d0/0x3d0 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.857610]
+> wait_current_trans+0xc2/0x120 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.857627]
+> start_transaction+0x46d/0x540 [btrfs]
+> Mar 28 20:28:21 homeserver kernel: [1298340.857643]
+> btrfs_create+0x58/0x1f0 [btrfs]
+> Mar 28 20:58:34 homeserver kernel: [1300153.336160] task:btrfs-transacti
+> state:D stack:    0 pid:20080 ppid:     2 flags:0x00004000
+> Mar 28 20:58:34 homeserver kernel: [1300153.336215]
+> btrfs_commit_transaction+0x92b/0xa50 [btrfs]
+> Mar 28 20:58:34 homeserver kernel: [1300153.336246]
+> transaction_kthread+0x15d/0x180 [btrfs]
+> Mar 28 20:58:34 homeserver kernel: [1300153.336273]  ?
+> btrfs_cleanup_transaction+0x590/0x590 [btrfs]
+>
+>
+> What could I do to find the cause?
 
-I think I know what you want to accomplish and I've been doing it for a while now. But I don't know what the problem with btrfs send is? Do you want to have non-block based diff to make updates smaller? Have you overwritten files completely and need to dedupe or reflink them before sending them? Theoretically the btrfs send format would be able to support something like bsdiff (non-block based diff -- it is just a set of e.g. write commands with offset and binary data or using reflink to copy data from one file to another), but there currently isn't a tool to create this.
+What kernel version?
 
-How I've done it is:
-
- - Create a btrfs image with a rw sys_root_current subvol
- - E.g. debootstrap a Linux system into it
- - Create sys_root_v1 as ro snapshot of sys_root_current
-
-Use that system image on different systems.
-
-On update on the original image:
-
- - Modify sys_root_current
- - Create ro snapshot sys_root_v2 of sys_root_current
- - Create an btrfs send update that modifies sys_root_v1 to sys_root_v2: btrfs send -p sys_root_v1 sys_root_v2 | xz -c > update_v1.btrfs.xz
- - Publish update_v1.btrfs.xz
-
-On the systems:
-
- - Download update_v1.btrfs.xz (verify signature)
- - Create sys_root_v2 by applying differences to sys_root_v1: cat update_v1.btrfs.xz | xz -d -c | btrfs receive /rootfs
- - Rename (exchange) sys_root_current to sys_root_last
- - Create rw snapshot of sys_root_v2 as sys_root_current
- - Reboot into new system
-
->>> Is this something upstream would be interested in?
->>>
->>> Lets say we introduce a new `btrfs-send` format, lets call it
->>> `btrfs-delta-stream`, which could can be created from a
->>> `btrfs-stream`:
->>>
->>> 1. For all `write` commands, check the requirements:
->>>    - Does the file already exists in the old snapshot?
->>>    - Is the file smaller than xMiB (this depends on the diff-algo
->>> and the available resources)
->>> 2. If the file fulfills those requirements, replace 'write' command
->>> with 'patch' command, and calculate the binary delta.  Also check
->>> if the delta is actually smaller than the data of the new file.
->>> Possible add the used binary diff algo as well as a checksum of the
->>> 'old' file to the command as well.
->>>
->>> This file format can of course be converted back to `btrfs-stream`
->>> and then applied with `btrfs-receive`.
->>>
->>> I would probably start with `bsdiff` for the diff algorithm, but
->>> maybe we want to be flexible here.
->>>
->>> Of course if `btrfs-delta-stream` is implemented in `btrfs-progs`
->>> then, we can create and apply this format directly.
->>>
->>> regards,
->>> Claudius  
-
-
+--=20
+Chris Murphy
