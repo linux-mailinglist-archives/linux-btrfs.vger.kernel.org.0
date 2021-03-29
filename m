@@ -2,325 +2,282 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0836234C1D9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Mar 2021 04:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA1934C23B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Mar 2021 05:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhC2CCT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 28 Mar 2021 22:02:19 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44841 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231426AbhC2CCF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:02:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616983322;
-        bh=jOKaL+BO90LTfEZNYFE/1g8YYdm5JnCNRQxKTQLxRM4=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=JbQXK/ZYfrJiLDyoFNcn+HXHEessMDRBE1EhxKdS8Xm7g94RW+twIg9LvxCGh/UWb
-         3xhT73aaO4xEuoNF2RDbdgddf/6FIQrILw4O9XHBcNnrV9nNDInVkqgVAmgfK5CZBZ
-         WBC94uRt5bO9aIXRrJxZ0gxDJYPDC4+DPuRpEHOI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M5fMe-1lXq5r0itO-007FX1; Mon, 29
- Mar 2021 04:02:02 +0200
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-Cc:     Neal Gompa <ngompa13@gmail.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <20210325071445.90896-1-wqu@suse.com>
- <CAEg-Je_Bx6Yu6JHB0XXjBt0+0Ox_=kAUAVWWZan1DsiqvybYrQ@mail.gmail.com>
- <bc0306b6-da2c-b8c1-a88d-f19004331765@gmx.com>
- <20210328200246.xz23dz5iba2qet7v@riteshh-domain>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
-Message-ID: <12dca606-1895-90e0-8b48-6f4ccf8a8a27@gmx.com>
-Date:   Mon, 29 Mar 2021 10:01:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210328200246.xz23dz5iba2qet7v@riteshh-domain>
+        id S230247AbhC2Ddy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 28 Mar 2021 23:33:54 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60696 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230210AbhC2DdU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 28 Mar 2021 23:33:20 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T3Ob9U097721;
+        Mon, 29 Mar 2021 03:33:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Rkrta8jLQRFROFkxHDIp7trk86ALkAWTZ5YdeBtzvtA=;
+ b=u+y+9YL8BxzE/2UP/96ioU/I94Xpr3sZORvo07NaHKlzxasmZ2lziRVGV8KnnUmRPMhj
+ HMLrCo6sxYsSKMF/LP0xBtYr4xxInfjjcCBgdBDw5i05vmHU7FDK0DRUrA6jeL23ZhvO
+ a/1uERLawrIkMHYjcnIdt27F0zfcgqumUwoFiKchQUCrf+/Wvq/ZzTI3vSqB4DvuEnWe
+ nC1JmQKYsipA63f+CGdSkyIWBtrGxSYKxxKBJU6+BNIpOAYb8ECYVprKR+ZOZhD2Np+i
+ VA3k8aP/6/pb1bI984XqomukmqWA838aBPyykhwM+lphCTtef0LlOnwutm4zTOJDSlfh 3g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 37hwbna3sj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 03:33:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12T3OgJf023331;
+        Mon, 29 Mar 2021 03:33:15 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
+        by aserp3020.oracle.com with ESMTP id 37jekwmdvs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 03:33:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iIE178uJhMDxciqpxBPVAQPGIP7h751z9nY5P0qy1FGAZ2ISXPR2g99XrsBtEK3TEVQv3WI0Fi8SE9/dInRs1UmayiSUYhP/bYwdhHs2OcfS+OnQc/Z9EayIB6Dq2aQYSrNaGF21POryJcn2bV9j24dKsfm+bzdYUx9hqDATAb5sqQExoWffs0nbd8F1S47WRBISF8GfVth6iXA1hEuX99tjHCJGsK6xjM7tQPcD3wSzoSt4xoauBEysMGoqNW5xLJvcXt/36QAdXp0oeDEyUjXQs6b+TW3ONo7oGvQUaKGD8PEGFQrA/itL1RfHA8+Un2OKAotLVuAAGuV+SqpNHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rkrta8jLQRFROFkxHDIp7trk86ALkAWTZ5YdeBtzvtA=;
+ b=LH4PBN8IXvsyH1Ca/12OajmOIh/B4nBCnNHfQHDOdNHAnDEIU7B++J+pjdHzOE3tI24e/YyaVxRfqEImyPl8WuCFW0Og9KIppruxCO5wvE9hzcpIbTqCon1XDlLhg6BJa7f9Y2FbS0Pz6xvP+3CAweep3G2qqAWp2TtFCn6NNUqaUyIF1uMxgepHKrk39K558TfIT9HSEZRiUQwdTOn+4jTxi7iQNivXGLbFInbQ3ZeGlRjQiWjZnYiC+4jEdwFVvKzdGc1ZKf7EFbBCJpou3MhfPS2JLDCL4sdwWkIaVe1pzxHLOywmzWXPhssl8/pvrLY16D/LBllrF1P2tCd6UQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rkrta8jLQRFROFkxHDIp7trk86ALkAWTZ5YdeBtzvtA=;
+ b=UkW5veZiiaWxM82hspxxxHzOf5qVR9SliezRRgIOnvor3tbuHUOfUtv04ZG3d1XOpMdc5BuOs4okPGEJ7KA7ftA81557OOfv6Un3QKZYgYmBghpa4DDKn8DuF9ONxY/kuIXBhYtrS8IAl51opUkvZUWUU+XJ5hIuZFAISpROh+E=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB4095.namprd10.prod.outlook.com (2603:10b6:208:11b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Mon, 29 Mar
+ 2021 03:33:13 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::9aa:6ac:8d40:c076]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::9aa:6ac:8d40:c076%6]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
+ 03:33:13 +0000
+Subject: Re: [PATCH 0/1] zoned: moving superblock logging zones
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+References: <cover.1615773143.git.naohiro.aota@wdc.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <814c44b8-b700-7878-a881-f89cd99982e8@oracle.com>
+Date:   Mon, 29 Mar 2021 11:33:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <cover.1615773143.git.naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:o7xoAPVej/93OqzNkvlkrvzHf3Sw/5dZNi9NYPukul84wbDTOBw
- xO2HNDTad6aBIGppndITfWqQH+2pdQhLeauncQiN5bh71TBJ2N8OdV1cdaRKJFcY4NEMBVF
- 2iw4hMTLFy0/fk81NgNb3GtfXdMRmpXCTitAH7SG87/IDYxMgsO3AJ+wDM3LHKRS5r+IvzG
- qqF+kISUpC1UN2Mv8K0hA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TVp4jVAoUkg=:E3Hf+49GycRl+eyOXPDHvL
- 5O388U3dgolrwAE9wBDGSg3A6ikzwWX87FOjReuegnHsHJT8qRGWocVoXjuQ0R4dfiGThqLh6
- asS6GG/Md0CbcwC7BuP80SlO9vF2lkgp9CFLDh4hQ/MpoUl815OJBX2ZwwzrGWdKfeG+7+jAw
- tXI4xxlBjPrEvqKCp65I1bQqsw7gex1dq4MPXYNfu+p+AUNfXJye06kffAjndzwx20lEP0sL7
- oppUvQkK0LdiW7/MIOfw0Wgoec6H7jJSkiGq8p3ckqMYGpk7GPpWIlzPnZwgncJR71KsMzSNA
- dqPH3xkZaW2UBMUlBCwM4huYYzv8KDm1f/cMAGvJ10PVU3Th6dOv2VRrVdeHtu1rLIOmfWbxd
- 0VfnhRLkE+hz8Ls4UvF77vJpy0MTQtrwRcQGYhS7GxEkqRt5Tr1szkTJ/bbubh4PFBzRJhE+1
- RU+LPMfxePikO3BybAB+EJzv5WW2R4GmgU9Ytc7pF5RByvVfJMPYzGYWp0/WEhEwvFfDLfwic
- wL/TooAthu9c3cMfYF0517KOmvyH2kCL9fdG2rPS75vVZDX0gqLEdDVNiJWE3MS7o1fHH+mvU
- m+5Efyb283aH+aCQ836lArTWVg+ZeV/dHD373ysM0GFrh3VJ+gkMcOtAq6PCNMyYzUBX6HbE2
- 6iuCB4Ojtq39fbGk6LeWWzVPM3+m4fIi2evprUvOgmbKseR0kVAokOA3tIgTVoMoGmYIuy6Ab
- vO101MXBDJ7xVbRW7NHCHEEBkOQnfwEjJuI3P2WW8DIg3u+7GBPdwS6HePEWSMXX0LgTtpp7G
- BPMDxOeNl3nU3+gDPPCNA4z5l4YJlt6OgiJKN8lNbRNPEvplD+zpzgTr9fW4Mqp4kghQVvx3b
- QU0c9p4PtaJfV4VRb3K/q9OLWTP7e5a8gwFM9DRdMwmFsHLwpppuLPjRYDEgiJC5t8CH+1pRt
- 5Q1Fra7PfjAD+/F7SsmW0V2LJVyjzFm8Wd4W2bzHY4oYxl5eKxiDdtwswOvnxNvb8+Nh7n1Ai
- 7230pdHLrq3D47ZF0IL39CmC9KU4Hwpu1YXlNgJf78hWzhTWUwmBwpMKC2l3OM7N1IAcaO+qC
- 2PN9555iJBuGMVJ9+yGeVt8vgt6sncCp4QZrMhcX3xnvfAZpQIM0eyDIx7UaG2ifvyug4ZQFJ
- alq7lfi9BqvIPWTXRGLrp0L7gQBHRAtN4rq9VGLeUWXFiwmVAX8eLpcevoeTtR+7MDsPvxfO8
- mWAQYMXATH4gYP44P
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2406:3003:2006:2288:d853:d2aa:de3d:de6c]
+X-ClientProxiedBy: SG2PR03CA0163.apcprd03.prod.outlook.com
+ (2603:1096:4:c9::18) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2406:3003:2006:2288:d853:d2aa:de3d:de6c] (2406:3003:2006:2288:d853:d2aa:de3d:de6c) by SG2PR03CA0163.apcprd03.prod.outlook.com (2603:1096:4:c9::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend Transport; Mon, 29 Mar 2021 03:33:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 88843004-81ef-4af3-f148-08d8f2636197
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4095:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4095858CEDBBDB310BB50B54E57E9@MN2PR10MB4095.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MBesma+j/IadIEr0nft7dAHf5YwqtENl2VuDu8WAycmSk+Qwcz9kpntRHPssYFoPNcIRCWR2yzMMy6FBxSAt61olxdLtsAEPySKQorINcPEKeuHEHO6p1XXhNLdr+iWxnTtIsc+IbL+ojnYmvdkpj8S8HivzXL+Bzy0LtwAvEe/PWn9vKFf9jqKmISN1btpvW+fakrZoS463DaLp32XCeM2ZqOB7SmVQbFfNYwerG8O2Zp+We15E4iC6FBchuRvVcsSSkIYE7JVaVqmqTfyr01pZYxF9HUbGx26K6qMaV7b6ep2j53VuVQpY3ZCS6lG3Q2QauxrsIOcocnGWv9QGrMAyCgJTHtO/BxFALllmjh75GA1dOWx3sQ6pVz0BLMGO/Vm8W4euCDVVIImRwiDa6qaUBhxZu4SavWlFEZl+GvA2zplWudkogVUNoeE58q97KH0WXErXPqAFsiQuCB0GjTzp2jBiH/S3ztpT5K1Y6LoWPGEJJpo+tT0ZoTY04LR4B9yLq2QI41YjSW+4/UuivKpY9uq7mYDOlXVQPSTTaP7yWppZPSs4e05r5qgi/BDoSXQTAA0ETK3WkbJ/VyWaUxOSe7kAYbp7VSa9yAUUegsconHmfLGFBTjkKmy/eXadvptkCNBVopMCRVOnovLk3I98MsCLG6Bx1W0IbvzVD+j+5ppwZaeTeoaoluFlSSKNm7uCwfVj/iow5ltgq+2oUQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(366004)(39860400002)(136003)(5660300002)(66946007)(86362001)(66476007)(186003)(16526019)(66556008)(8676002)(2616005)(478600001)(36756003)(53546011)(83380400001)(38100700001)(44832011)(31686004)(6486002)(2906002)(316002)(31696002)(6666004)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VE5FUzlYVDBqSjF6Wmp5WmpsdExqcUdXUXpxOVo2SWRDR2Rza1JGbExBNE1U?=
+ =?utf-8?B?dENGUDczeG1JUktDam5PeUdaVnlra2M0Q0pVOU5YOGZ1YVFVZUpIYmlyRmln?=
+ =?utf-8?B?cVlrVTlTVmtidGFnWVF4MG5tdU9wMTQzRTdVNEVhSU1KS0MyYXhOVS9BdTZm?=
+ =?utf-8?B?UVhXcXRNOFoxYWRueitWSnVIcW8rVzNVaEtjUFkzTXdwRmovNk85VHFiMzFx?=
+ =?utf-8?B?dHVmWFJSZUhPK2o5cTQzYmRjYWtyc3dyUzVVTWV5T3RlbDlNWmNPZDBWR01C?=
+ =?utf-8?B?enBSb1dsUVVkdDZ5SThQU1JkVTNNdU5hUUVrcG55aEkyWmFQNjBxQmNIMDFV?=
+ =?utf-8?B?VE9ubDQzQkRseFgrWEJnZmpZNUpSK0lUZDZYWW5mS2RsM3N3R0wrU0srQ0xF?=
+ =?utf-8?B?cndCZ2pPTTVLVU9rRFVBSnFVUFNrQ1luUnFxNXVHSndON1JmYnpzWUlpWTUv?=
+ =?utf-8?B?Z1ZhU1UzSEs3N1lzRFppUWN4L3U1cXcrZGt0K1hiRHZXSnNZekNRNm00ZTkx?=
+ =?utf-8?B?V28yUEhObFdodUxGSkxXeU4wZExVaTdIbEFEUjdwSjZRVkVpaFBVMjFtbWVq?=
+ =?utf-8?B?bCtIUUZvZFFQUFFablk1VE1iMzFaMmpoSTBhbDNpUkJqeDVLblBXOFQ1dDFT?=
+ =?utf-8?B?WDUwaE9Gd0I5SFVVR0k1bWFIOUdMeThLM3V3OHpTdTJTNEl4NjVVUTNRYnk4?=
+ =?utf-8?B?Y2VZazBhNmdHN0FsRURGSHJQekJqc2JPcDlRVVhlQjIvdjdkQkIvVWJUcFVo?=
+ =?utf-8?B?MHRqWmVOM0lrNUlzYU4xY3dScEV2TFk5d3ljNVU4QTZiaHoyckM2Lyt4a25u?=
+ =?utf-8?B?SDU5YWFsMWFGY29kdVZWL052aTdseE14M0p4QWtTYVFIaGZKcFl5RUVFK3ZH?=
+ =?utf-8?B?VWY0V3l4a1NqekdwcXRUSHFTcTJQTUNVM2RSSE1VRkVQbEczR0NrRkxuUW9B?=
+ =?utf-8?B?Q1NXVXl0RkMvUHIybElFK0JrRTUrSEpGOWZZVGRJVGhNNW02eWdKNzFHbXlU?=
+ =?utf-8?B?ay9vQlpnaXltYlpyNTlZRkwrVUdOSWxleWNqY01VN3RnWGNWYzd2akJLNm5K?=
+ =?utf-8?B?NWJjd2RVL0pFZ2NOYXJ4TlRrMkRvc3NBZFprTXNzem8vMzIyZWhPVmVJcjZ0?=
+ =?utf-8?B?ay9yQzRMTDEvQndKaXMvbkw4SWgyK1FxZ09NRytIZmY2aDBqQmpwTWRwdDZo?=
+ =?utf-8?B?am9vSmlFaW5wTTk1TTlteUE2WXdmT1JLcVZwNmV2VWpjT2lvUGZFS0NIN3hY?=
+ =?utf-8?B?d0hyUDZjRFBIditJeUtqOTA2bUhTRXA1SjVvaFB2NTBTVHMzM1d6aW4xT0hY?=
+ =?utf-8?B?U2NtNTZEeXN1WUdOdGRBQ0gyTWs3NzVjclQwQ3JrZUZMdlNRSjZOcldHL21x?=
+ =?utf-8?B?eUVadkFDWElHVXp4NE5HMEcxU2tuRmJSZ3MvZ1hMbFFvYU9wWG51VzVsM3RW?=
+ =?utf-8?B?ZWhBNi94dVNKOHZ3Z1lDa0JRS2xrV2U2TW9PVWNCQTFmSjgzd29PVEVzd1dE?=
+ =?utf-8?B?ZURXb0g4RVpkMCtiUVZQdjkrOG00Nm5UTW45aThtaUtlaUI0R052K3BhSVNH?=
+ =?utf-8?B?S2ZqUzNqODlwTzd6cjhHaDkrRzk0RHVtYVNjK0RBT3lVYnlkVUZDQjhIV1hK?=
+ =?utf-8?B?empVNEZxSjFVaEMyVTZEZTUxdVJGSEYreTloQTJDUzk3N3NXenM0M29Vcnh2?=
+ =?utf-8?B?eXRBZmhYS3RDV1QwUjRXNGtRTkdTck1NNXdPUmI5ZmJKcWxUamFxM1d1ZENv?=
+ =?utf-8?B?djRhMmRYdVFyc2JLQUVaT0xabXdKb2hxOHpwamxwdU5KdzNIOWYrY0tRU3FD?=
+ =?utf-8?B?bDRRYmVrMXJROWRhM1d5YlhXTUs5bTA3UXBpT1hiOWZWQVQraVFCQUJwMW5B?=
+ =?utf-8?Q?yB8KyJ1SjxqMA?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88843004-81ef-4af3-f148-08d8f2636197
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 03:33:12.9282
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +Ev46n7bCS4Fvp7dQONvIGrRN2qKmh0C3JomS/dbDmKZWkCvZ39gfeHtqjEm3kgYQXE5gciPKcNStxV4bT0Jgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4095
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290025
+X-Proofpoint-GUID: 4WNIU0HwJFCw8Pu2rfbIX3UhwvTTxVj9
+X-Proofpoint-ORIG-GUID: 4WNIU0HwJFCw8Pu2rfbIX3UhwvTTxVj9
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 clxscore=1015
+ phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290025
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 15/03/2021 13:53, Naohiro Aota wrote:
+> The following patch will change the superblock logging zones' location from
+> fixed zone number to fixed LBAs.
+> 
+> Here is a background of how the superblock is working on zoned btrfs.
+> 
+> This document will be promoted to btrfs-dev-docs in the future.
+> 
+> # Superblock logging for zoned btrfs
+> 
+> The superblock and its copies are the only data structures in btrfs with a
+> fixed location on a device. Since we cannot overwrite these blocks if they
+> are placed in sequential write required zones, we cannot use the regular
+> method of updating superblocks with zoned btrfs.
 
+  Looks like a ZBC which does the write pointer reset and write could 
+have helped here.
 
-On 2021/3/29 =E4=B8=8A=E5=8D=884:02, Ritesh Harjani wrote:
-> On 21/03/25 09:16PM, Qu Wenruo wrote:
->>
->>
->> On 2021/3/25 =E4=B8=8B=E5=8D=888:20, Neal Gompa wrote:
->>> On Thu, Mar 25, 2021 at 3:17 AM Qu Wenruo <wqu@suse.com> wrote:
->>>>
->>>> This patchset can be fetched from the following github repo, along wi=
-th
->>>> the full subpage RW support:
->>>> https://github.com/adam900710/linux/tree/subpage
->>>>
->>>> This patchset is for metadata read write support.
->>>>
->>>> [FULL RW TEST]
->>>> Since the data write path is not included in this patchset, we can't
->>>> really test the patchset itself, but anyone can grab the patch from
->>>> github repo and do fstests/generic tests.
->>>>
->>>> But at least the full RW patchset can pass -g generic/quick -x defrag
->>>> for now.
->>>>
->>>> There are some known issues:
->>>>
->>>> - Defrag behavior change
->>>>     Since current defrag is doing per-page defrag, to support subpage
->>>>     defrag, we need some change in the loop.
->>>>     E.g. if a page has both hole and regular extents in it, then defr=
-ag
->>>>     will rewrite the full 64K page.
->>>>
->>>>     Thus for now, defrag related failure is expected.
->>>>     But this should only cause behavior difference, no crash nor hang=
- is
->>>>     expected.
->>>>
->>>> - No compression support yet
->>>>     There are at least 2 known bugs if forcing compression for subpag=
-e
->>>>     * Some hard coded PAGE_SIZE screwing up space rsv
->>>>     * Subpage ASSERT() triggered
->>>>       This is because some compression code is unlocking locked_page =
-by
->>>>       calling extent_clear_unlock_delalloc() with locked_page =3D=3D =
-NULL.
->>>>     So for now compression is also disabled.
->>>>
->>>> - Inode nbytes mismatch
->>>>     Still debugging.
->>>>     The fastest way to trigger is fsx using the following parameters:
->>>>
->>>>       fsx -l 262144 -o 65536 -S 30073 -N 256 -R -W $mnt/file > /tmp/f=
-sx
->>>>
->>>>     Which would cause inode nbytes differs from expected value and
->>>>     triggers btrfs check error.
->>>>
->>>> [DIFFERENCE AGAINST REGULAR SECTORSIZE]
->>>> The metadata part in fact has more new code than data part, as it has
->>>> some different behaviors compared to the regular sector size handling=
-:
->>>>
->>>> - No more page locking
->>>>     Now metadata read/write relies on extent io tree locking, other t=
-han
->>>>     page locking.
->>>>     This is to allow behaviors like read lock one eb while also try t=
-o
->>>>     read lock another eb in the same page.
->>>>     We can't rely on page lock as now we have multiple extent buffers=
- in
->>>>     the same page.
->>>>
->>>> - Page status update
->>>>     Now we use subpage wrappers to handle page status update.
->>>>
->>>> - How to submit dirty extent buffers
->>>>     Instead of just grabbing extent buffer from page::private, we nee=
-d to
->>>>     iterate all dirty extent buffers in the page and submit them.
->>>>
->>>> [CHANGELOG]
->>>> v2:
->>>> - Rebased to latest misc-next
->>>>     No conflicts at all.
->>>>
->>>> - Add new sysfs interface to grab supported RO/RW sectorsize
->>>>     This will allow mkfs.btrfs to detect unmountable fs better.
->>>>
->>>> - Use newer naming schema for each patch
->>>>     No more "extent_io:" or "inode:" schema anymore.
->>>>
->>>> - Move two pure cleanups to the series
->>>>     Patch 2~3, originally in RW part.
->>>>
->>>> - Fix one uninitialized variable
->>>>     Patch 6.
->>>>
->>>> v3:
->>>> - Rename the sysfs to supported_sectorsizes
->>>>
->>>> - Rebased to latest misc-next branch
->>>>     This removes 2 cleanup patches.
->>>>
->>>> - Add new overview comment for subpage metadata
->>>>
->>>> Qu Wenruo (13):
->>>>     btrfs: add sysfs interface for supported sectorsize
->>>>     btrfs: use min() to replace open-code in btrfs_invalidatepage()
->>>>     btrfs: remove unnecessary variable shadowing in btrfs_invalidatep=
-age()
->>>>     btrfs: refactor how we iterate ordered extent in
->>>>       btrfs_invalidatepage()
->>>>     btrfs: introduce helpers for subpage dirty status
->>>>     btrfs: introduce helpers for subpage writeback status
->>>>     btrfs: allow btree_set_page_dirty() to do more sanity check on su=
-bpage
->>>>       metadata
->>>>     btrfs: support subpage metadata csum calculation at write time
->>>>     btrfs: make alloc_extent_buffer() check subpage dirty bitmap
->>>>     btrfs: make the page uptodate assert to be subpage compatible
->>>>     btrfs: make set/clear_extent_buffer_dirty() to be subpage compati=
-ble
->>>>     btrfs: make set_btree_ioerr() accept extent buffer and to be subp=
-age
->>>>       compatible
->>>>     btrfs: add subpage overview comments
->>>>
->>>>    fs/btrfs/disk-io.c   | 143 ++++++++++++++++++++++++++++++++++-----=
-----
->>>>    fs/btrfs/extent_io.c | 127 ++++++++++++++++++++++++++++----------
->>>>    fs/btrfs/inode.c     | 128 ++++++++++++++++++++++----------------
->>>>    fs/btrfs/subpage.c   | 127 ++++++++++++++++++++++++++++++++++++++
->>>>    fs/btrfs/subpage.h   |  17 +++++
->>>>    fs/btrfs/sysfs.c     |  15 +++++
->>>>    6 files changed, 441 insertions(+), 116 deletions(-)
->>>>
->>>> --
->>>> 2.30.1
->>>>
->>>
->>> Why wouldn't we just integrate full read-write support with the
->>> caveats as described now? It seems to be relatively reasonable to do
->>> that, and this patch set is essentially unusable without the rest of
->>> it that does enable full read-write support.
->>
->> The metadata part is much more stable than data path (almost not touche=
-d
->> for several months), and the metadata part already has some difference
->> in its behavior, which needs review.
->>
->> You point makes some sense, but I still don't believe pushing a super
->> large patchset does any help for the review.
->>
->> If you want to test, you can grab the branch from the github repo.
->> If you want to review, the mails are all here for review.
->>
->> In fact, we used to have subpage support sent as a big patchset from IB=
-M
->> guys, but the result is only some preparation patches get merged, and
->> nothing more.
->>
->> Using this multi-series method, we're already doing better work and
->> received more testing (to ensure regular sectorsize is not affected at
->> least).
->
-> Hi Qu Wenruo,
->
-> Sorry about chiming in late on this. I don't have any strong objection o=
-n either
-> approach. Although sometime back when I tested your RW support git tree =
-on
-> Power, the unmount patch itself was crashing. I didn't debug it that tim=
-e
-> (this was a month back or so), so I also didn't bother testing xfstests =
-on Power.
->
-> But we do have an interest in making sure this patch series work on bs <=
- ps
-> on Power platform. I can try helping with testing, reviewing (to best of=
- my
-> knowledge) and fixing anything is possible :)
+> We also cannot limit the
+> position of superblocks to conventional zones as that would prevent using
+> zoned block devices that do not have this zone type (e.g. NVMe ZNS SSDs).
+> 
+> To solve this problem, we use superblock log writing. This method uses two
+> sequential write required zones as a circular buffer to write updated
+> superblocks. Once the first zone is filled up, start writing into the
+> second zone. When both zones are filled up and before start writing to the
+> first zone again, the first zone is reset and writing continues in the
+> first zone. Once the first zone is full, reset the second zone, and write
+> the latest superblock in the second zone. With this logging, we can always
+> determine the position of the latest superblock by inspecting the zones'
+> write pointer information provided by the device. One corner case is when
+> both zones are full. For this situation, we read out the last superblock of
+> each zone and compare them to determine which copy is the latest one.
+> 
+> ## Placement of superblock logging zones
+> 
+> We use the following three pairs of zones containing fixed offset
+> locations, regardless of the device zone size.
+> 
+>    - Primary superblock: zone starting at offset 0 and the following zone
+>    - First copy: zone containing offset 64GB and the following zone
+>    - Second copy: zone containing offset 256GB and the following zone
+> 
+> These zones are reserved for superblock logging and never used for data or
+> metadata blocks. Zones containing the offsets used to store superblocks in
+> a regular btrfs volume (no zoned case) are also reserved to avoid
+> confusion.
+> 
+> The first copy position is much larger than for a regular btrfs volume
+> (64M).  This increase is to avoid overlapping with the log zones for the
+> primary superblock. This higher location is arbitrary but allows supporting
+> devices with very large zone size, up to 32GB. But we only allow zone sizes
+> up to 8GB for now.
+> 
+> ## Writing superblock in conventional zones
+> 
+> Conventional zones do not have a write pointer. This zone type thus cannot
+> be used with superblock logging since determining the position of the
+> latest copy of the superblock in a zone pair would be impossible.
+> 
+> To address this problem, if either of the zones containing the fixed offset
+> locations for zone logging is a conventional zone, superblock updates are
+> done in-place using the first block of the conventional zone.
+> 
+> ## Reading zoned btrfs dump image without zone information
+> 
+> Reading a zoned btrfs image without zone information is challenging but
+> possible.
+> 
+> We can always find a superblock copy at or after the fixed offset locations
+> determining the logging zones position. With such copy, the superblock
+> incompatible flags indicates if the volume is zoned or not. With a chunk
+> item in the sys_chunk_array, we can determine the zone size from the size
+> of a device extent, itself determined from the chunk length, num_stripes,
+> and sub_stripes.  With this information, all blocks within the 2 logging
+> zones containing the fixed locations can be inspected to find the newest
+> superblock copy.
+> 
+> The first zone of a log pair may be empty and have no superblock copy. This
+> can happen if a system crashes after resetting the first zone of a pair and
+> before writing out a new superblock. In this case, a superblock copy can be
+> found in the second zone of a log pair. The start of this second zone can
+> be found by inspecting the blocks located at the fixed offset of the log
+> pair plus the possible zone size (4M [1], 8M, 16M, 32M, 64M, 128M, 256M,
+> 512M, 1G, 2G, 4G, 8G [2])[3]. Once we find a superblock, we can follow the
+> same instruction above to find the latest superblock copy within the zone
+> log pair.
+> 
+> [1] 4M = BTRFS_MKFS_SYSTEM_GROUP_SIZE. We cannot mkfs on a device with a
+> zone size less than 4MB because we cannot create the initial temporary
+> system chunk with the size.
+> [2] The maximum size we support for now.
+> [3] The zone size is limited to these 11 cases, as it must be a power of 2.
+> 
+> Once we find the latest superblock, it is no different than reading a
+> regular btrfs image. You can further confirm the determined zone size by
+> comparing it with the size of a device extent because it is the same as the
+> zone size.
+> 
+> Actually, since the writing offset within the logging buffer is different
+> from the primary to copies [4], the timing when resetting the former zone
+> will become different. So, we can also try reading the head of the buffer
+> of a copy in case of missing superblock at offset 0.
+> 
+> [4] Because mkfs update the primary in the initial process, advancing only
+> the write pointer of the primary log buffer
+> 
+> ## Superblock writing on an emulated zoned device
+> 
+> By mounting a regular device in zoned mode, btrfs emulates conventional
+> zones by slicing the device with a fixed size. In this case, however, we do
+> not follow the above rule of writing superblocks at the head of the logging
+> zones if they are conventional. Doing so would introduce a chicken-and-egg
+> problem. To know the given btrfs is zoned btrfs, we need to read a
+> superblock to see the incompatible flags. But, to read a superblock
+> properly from a zoned position, we need to know the file-system is zoned a
+> priori (e.g. resided in a zoned device), leading to a recursive dependency.
+> 
+> We can use the regular super block update method on an emulated zoned
+> device to break the recursion. Since the zones containing the regular
+> locations are always reserved, it is safe to do so. Then, we can naturally
+> read a regular superblock on a regular device and determine the file-system
+> is zoned or not.
+> 
+> Naohiro Aota (1):
+>    btrfs: zoned: move superblock logging zone location
+> 
+>   fs/btrfs/zoned.c | 40 ++++++++++++++++++++++++++++++----------
+>   1 file changed, 30 insertions(+), 10 deletions(-)
+> 
 
-That's great!
-
-One of my biggest problem here is, I don't have good enough testing
-environment.
-
-Although SUSE has internal clouds for ARM64/PPC64, but due to the
-f**king Great Firewall, it's super slow to access, no to mention doing
-proper debugging.
-
-Currently I'm using two ARM SBCs, RK3399 and A311D based, to do the test.
-But their computing power is far from ideal, only generic/quick can
-finish in hours.
-
-Thus real world Power could definitely help.
->
-> Let me try and pull your tree and test it on Power. Please let me know i=
-f there
-> is anything needs to be taken care apart from your github tree and btrfs=
--progs
-> branch with bs < ps support.
-
-If you're going to test the branch, here are some small notes:
-
-- Need to use latest btrfs-progs
-   As it fixes a false alert on crossing 64K page boundary.
-
-- Need to slightly modify btrfs-progs to avoid false alerts
-   For subpage case, mkfs.btrfs will output a warning, but that warning
-   is outputted into stderr, which will screw up generic test groups.
-   It's recommended to apply the following diff:
-
-diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-index 569208a9..21976554 100644
-=2D-- a/common/fsfeatures.c
-+++ b/common/fsfeatures.c
-@@ -341,8 +341,8 @@ int btrfs_check_sectorsize(u32 sectorsize)
-                 return -EINVAL;
-         }
-         if (page_size !=3D sectorsize)
--               warning(
--"the filesystem may not be mountable, sectorsize %u doesn't match page
-size %u",
-+               printf(
-+"the filesystem may not be mountable, sectorsize %u doesn't match page
-size %u\n",
-                         sectorsize, page_size);
-         return 0;
-  }
-
-- Xfstest/btrfs group will crash at btrfs/143
-   Still investigating, but you can ignore btrfs group for now.
-
-- Very rare hang
-   There is a very low change to hang, with "bad ordered accounting"
-   dmesg.
-   If you can hit, please let me know.
-   I had something idea to fix it, but not yet in the branch.
-
-- btrfs inode nbytes mismatch
-   Investigating, as it will make btrfs-check to report error.
-
-The last two bugs are the final show blocker, I'll give you extra
-updates when those are fixed.
-
-Thanks,
-Qu
-
->
-> -ritesh
->
->
