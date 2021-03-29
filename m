@@ -2,117 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1CE34D523
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Mar 2021 18:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A212634D5FE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Mar 2021 19:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhC2Qa4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Mar 2021 12:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhC2Qah (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:30:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA875C061574
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 09:30:36 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id b4so19358096lfi.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 09:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OveakfaPSwj1h/ZjQEhKdHkBYn6cJsHlr0lkPNGIhoQ=;
-        b=GOyhmBvNXAyRJ/4/V2gSk9YSC/eREwA6WNJGKBe+Eg1ieUVDzKJ1Ls4JGtev960zRR
-         +NBjuOrGyKzKhpUOIeg/JguCQTrWoPVko52RBQGpN2mIr+T14ZL5XL3DQgnvfh9UzMHL
-         caBOuUQP4MsLZTf5NKQXkId3YTdqUglMENP3s8IJIrGt0OaHm7Ebhlblim4hwiuCBQQC
-         45FdscykyAIdgcq85oiyAtDsf7ZUhk/r1LN84A0c4PwGyfTWVcykVp+1pZB706a49kQg
-         pq8yjoQVnalBUXRaBx3lBxWi+6pkR+nPUeoatd6OrwGyfqWWi0SnsrwM7kXf+ctjrZNm
-         PcwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OveakfaPSwj1h/ZjQEhKdHkBYn6cJsHlr0lkPNGIhoQ=;
-        b=fDe7jb3p9W/rPTUvqKtygGwHRX9KUrLh04S2x4cd3XInKJPYyhqthpWFSBAh+0QtTE
-         Gcu71SsrQ8dVrmbXL1XD8lcwgN0y+2+vNUc2+kQCxYEjdanF8l1FPv/X+zXphvRYmBGY
-         RgB2CuhiYVN2biOdPATEkyR2c15mb5qkQ95olPNnKBCGeXAiUN0R57nRO66PfhX6FIB0
-         /+rytJZQ1rpMHYWYcIPbP8v+Fiy0s+RG/F/VjJZyqqgaOrkGbRZp3aGep6UuOoraiA6n
-         adK+L5x7SN9uoFqwlQffSiGdOaARAuAdLA1h+jNuJ2kLjXTTlQGjKm4a73Tirijnk9E2
-         yOPQ==
-X-Gm-Message-State: AOAM53080XMdg5J1yNbQyCQK+LD/7QNiHwCyNNS0qto6uHhLm7Vp0wnE
-        1mfUphyKE1u4HD4fBr9cmng=
-X-Google-Smtp-Source: ABdhPJzg3Onm3kcmzdyoEwPkfyWgxoozJSUsKUIBC++iV9RJepWO87EgIVQEpJrX45daYcqGg0o+AQ==
-X-Received: by 2002:a19:690f:: with SMTP id e15mr17061879lfc.662.1617035435330;
-        Mon, 29 Mar 2021 09:30:35 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:812d:f67d:23b0:24c5:db70:4d19? ([2a00:1370:812d:f67d:23b0:24c5:db70:4d19])
-        by smtp.gmail.com with ESMTPSA id t5sm2446978ljc.78.2021.03.29.09.30.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 09:30:34 -0700 (PDT)
+        id S230180AbhC2RZo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 29 Mar 2021 13:25:44 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:47185 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230509AbhC2RZP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Mar 2021 13:25:15 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 12THPBIC022444
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 19:25:11 +0200
+Received: from md1za8fc.ad001.siemens.net ([167.87.41.127])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12THPBoR022133;
+        Mon, 29 Mar 2021 19:25:11 +0200
+Date:   Mon, 29 Mar 2021 19:25:06 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Claudius Heine <ch@denx.de>, linux-btrfs@vger.kernel.org
 Subject: Re: btrfs-send format that contains binary diffs
-To:     Claudius Heine <ch@denx.de>, linux-btrfs@vger.kernel.org
-Cc:     Henning Schild <henning.schild@siemens.com>
+Message-ID: <20210329192506.52f352aa@md1za8fc.ad001.siemens.net>
+In-Reply-To: <db6fae67-6348-1de3-c953-a4c75c459b65@gmail.com>
 References: <f3306b7c-a97a-21f2-0f66-dc94dc2c0272@denx.de>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <db6fae67-6348-1de3-c953-a4c75c459b65@gmail.com>
-Date:   Mon, 29 Mar 2021 19:30:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        <db6fae67-6348-1de3-c953-a4c75c459b65@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <f3306b7c-a97a-21f2-0f66-dc94dc2c0272@denx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29.03.2021 16:16, Claudius Heine wrote:
-> Hi,
-> 
-> I am currently investigating the possibility to use `btrfs-stream` files
-> (generated by `btrfs send`) for deploying a image based update to
-> systems (probably embedded ones).
-> 
-> One of the issues I encountered here is that btrfs-send does not use any
-> diff algorithm on files that have changed from one snapshot to the next.
-> 
+Am Mon, 29 Mar 2021 19:30:34 +0300
+schrieb Andrei Borzenkov <arvidjaar@gmail.com>:
 
-btrfs send works on block level. It sends blocks that differ between two
-snapshots.
+> On 29.03.2021 16:16, Claudius Heine wrote:
+> > Hi,
+> > 
+> > I am currently investigating the possibility to use `btrfs-stream`
+> > files (generated by `btrfs send`) for deploying a image based
+> > update to systems (probably embedded ones).
+> > 
+> > One of the issues I encountered here is that btrfs-send does not
+> > use any diff algorithm on files that have changed from one snapshot
+> > to the next. 
+> 
+> btrfs send works on block level. It sends blocks that differ between
+> two snapshots.
+> 
+> > One way to implement this would be to add some sort of 'patch'
+> > command to the `btrfs-stream` format.
+> >   
+> 
+> This would require reading complete content of both snapshots instead
+> if just computing block diff using metadata. Unless I misunderstand
+> what you mean.
 
-> One way to implement this would be to add some sort of 'patch' command
-> to the `btrfs-stream` format.
-> 
+On embedded systems it is common to update complete "firmware" images
+as opposed to package based partial updates. You often have two root
+filesystems to be able to always fall back to a working state in case
+of any sort or error.
 
-This would require reading complete content of both snapshots instead if
-just computing block diff using metadata. Unless I misunderstand what
-you mean.
+Take the picture from
+https://sbabic.github.io/swupdate/overview.html#double-copy
 
-> Is this something upstream would be interested in?
+and assume that "Application software" is a full blown OS with
+everything that makes your device.
+
+That approach offers great "control" but unfortunately can also lead to
+great downloads required for an update. The basic idea is to download
+the binary-diff between the future and the current rootfs only.
+Given a filesystem supports snapshots, it would be great to
+"send/receive" them as diffs.
+
+Today most people that do such things with other fss script around with
+xdelta etc. But btrfs is more "integrated", so when considering it for
+such embedded usecases native support would most likely be better than
+hacks on top.
+
+We have several use-cases in mind with btrfs.
+ - ro-base with rw overlays
+ - binary diff updates against such a ro-base
+ - backup/restore with snapshots of certain subvolumes
+ - factory reset with wiping certain submodules
+
+regards,
+Henning
+
+> > Is this something upstream would be interested in?
+> > 
+> > Lets say we introduce a new `btrfs-send` format, lets call it
+> > `btrfs-delta-stream`, which could can be created from a
+> > `btrfs-stream`:
+> > 
+> > 1. For all `write` commands, check the requirements:
+> >    - Does the file already exists in the old snapshot?
+> >    - Is the file smaller than xMiB (this depends on the diff-algo
+> > and the available resources)
+> > 2. If the file fulfills those requirements, replace 'write' command
+> > with 'patch' command, and calculate the binary delta.  Also check
+> > if the delta is actually smaller than the data of the new file.
+> > Possible add the used binary diff algo as well as a checksum of the
+> > 'old' file to the command as well.
+> > 
+> > This file format can of course be converted back to `btrfs-stream`
+> > and then applied with `btrfs-receive`.
+> > 
+> > I would probably start with `bsdiff` for the diff algorithm, but
+> > maybe we want to be flexible here.
+> > 
+> > Of course if `btrfs-delta-stream` is implemented in `btrfs-progs`
+> > then, we can create and apply this format directly.
+> > 
+> > regards,
+> > Claudius  
 > 
-> Lets say we introduce a new `btrfs-send` format, lets call it
-> `btrfs-delta-stream`, which could can be created from a `btrfs-stream`:
-> 
-> 1. For all `write` commands, check the requirements:
->    - Does the file already exists in the old snapshot?
->    - Is the file smaller than xMiB (this depends on the diff-algo and
-> the available resources)
-> 2. If the file fulfills those requirements, replace 'write' command with
-> 'patch' command, and calculate the binary delta.  Also check if the
-> delta is actually smaller than the data of the new file.  Possible add
-> the used binary diff algo as well as a checksum of the 'old' file to the
-> command as well.
-> 
-> This file format can of course be converted back to `btrfs-stream` and
-> then applied with `btrfs-receive`.
-> 
-> I would probably start with `bsdiff` for the diff algorithm, but maybe
-> we want to be flexible here.
-> 
-> Of course if `btrfs-delta-stream` is implemented in `btrfs-progs` then,
-> we can create and apply this format directly.
-> 
-> regards,
-> Claudius
 
