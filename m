@@ -2,76 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8900334E545
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 12:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9085634E7E6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhC3KUk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Mar 2021 06:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbhC3KU3 (ORCPT
+        id S232031AbhC3MvQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 30 Mar 2021 08:51:16 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:55627 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232049AbhC3MvA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Mar 2021 06:20:29 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA931C061764
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Mar 2021 03:20:28 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id q29so22892468lfb.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Mar 2021 03:20:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ULoUzB+Ud3ZGoN2ZQnI8hPejIIlsU/1fAlNzc2mCPvU=;
-        b=oCtbC04aZlA2dzffhvrZ31VbbDMNAplujw+WFQqPTw08q3031ZirETqfEPOSkttHer
-         vnca+8CweQjiO/bcXq6vs5I0LiKnyusz9LEaLcXHL3/jNIzwhdkbmQNWsjC6hU0AI+41
-         tfN39YvXulp8nDF3Hoil7JLCR2P35/CYEa87w5aWKY9uhwPxK/Hivp3XdD6FO2xa3N1a
-         C2Ow3wO2LthqFZFoPhfPBvVTYeTbvSiVU+DNUPSsdoY+DhyTmrBYZ3LyzEjoV6crZtGx
-         Gqw+YjjcHUt0Nauu/qw19+nHJh8gzdsYros9tJV1Nn8SHCFvJdMPYL9hndqG3eUOrVcs
-         TTsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ULoUzB+Ud3ZGoN2ZQnI8hPejIIlsU/1fAlNzc2mCPvU=;
-        b=HrSlu7vU7qb9ZcWeu/gXALjJd+WS3L95tfgYIOFDyFypUOq5MnbB7iUbCVNbnaNZbM
-         02OIZL0lZYBnvFomqFwNA9UlD19iQSLHrqQkUyP5Gl2MBuE/R2So9a67I5do78Zssu79
-         TXU1FMjJgtKcaRQBQePkefqx+Bh35vfg9uU9mgaRyZ3ttlVSD9wuQH3qZe/hbcAvZmPJ
-         jv4D57/IggcgfgsK4lRso8hNssoWFbiw1aFAZT9SU1tQ1QsqhKFvn5U6I+AEWJE/mIUd
-         9McCW4Z4ops+32hSQVKNkJi/cwriovcCU86zOxyTnB+jd1kSvmGHmgJAEzvs25LHnl03
-         1CAQ==
-X-Gm-Message-State: AOAM533W6FDIj2Idj/zG7gdFiG2AL/Ph0PKdcYI5+Lagg3V4AtLh76Bk
-        8T5GeJ9gyKaJ4J/7OsN72O647EFXoVPdbcG92fw=
-X-Google-Smtp-Source: ABdhPJwYWGMbclmwDPrzhIdtYuAsHL0pBriCjWfc2hCTs0HV6XFMbr9gLGyVz5hxtMKOnzK9eqg9Ik2Y2dsSseaHi6s=
-X-Received: by 2002:a05:6512:1191:: with SMTP id g17mr19069368lfr.87.1617099626974;
- Tue, 30 Mar 2021 03:20:26 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:aa6:c110:0:b029:c5:4d7c:6f12 with HTTP; Tue, 30 Mar 2021
- 03:20:26 -0700 (PDT)
-Reply-To: kath.rafael2020@yahoo.com
-From:   Katherine Rafael <vickyomenka@gmail.com>
-Date:   Tue, 30 Mar 2021 11:20:26 +0100
-Message-ID: <CAC1_g=a0=xdFEraXL8fCyMxFBBXzpA8giosm5kzyOTw4vUCzGw@mail.gmail.com>
-Subject: Halo anak-anak Tuhan
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 30 Mar 2021 08:51:00 -0400
+Received: from [192.168.177.84] ([91.56.89.170]) by mrelayeu.kundenserver.de
+ (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis) id
+ 1N1Oft-1lbcvs3BFr-012muW; Tue, 30 Mar 2021 14:50:55 +0200
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Chris Murphy" <lists@colorremedies.com>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: Re[2]: Filesystem sometimes Hangs
+Date:   Tue, 30 Mar 2021 12:50:56 +0000
+Message-Id: <em7b647410-6346-4e95-b97a-f45ee2de0037@desktop-g0r648m>
+In-Reply-To: <CAJCQCtQt83dXev6Ngo_tDPZFqD60eD3W3h-1ZT8KLc5hMcB_HA@mail.gmail.com>
+References: <emfd92f28c-2171-4c40-951d-08f5c35ae5a0@desktop-g0r648m>
+ <CAJCQCtQt83dXev6Ngo_tDPZFqD60eD3W3h-1ZT8KLc5hMcB_HA@mail.gmail.com>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/8.1.1060.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:4CtthETag1BEMcbScnClp17AuOQ01tDX/u/XBse4BJJf5ItU328
+ aoAB4guzmAWkWzitcyrYSzu6Pqdzz232y/Sp/LjdxcXh3GCF7iz933n/eCgcSJn77iyso7B
+ 4znyAPcz9QmUAJuC8rFCtYudDIUUi6nKDKfb+/PLUFl7nXApiyzlkbGRLDUCsf31tVEpxW4
+ kBQYulmZBSNZhB6fbWGVw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AHSyIdLeHus=:1V2m19fsrOFht40bMgY1k9
+ L+twLB2+VPoCI9Ex9dxZshhVPh/9vPawGoA09JN+nFrC6JIZzVV7UE5AZ+g121i5QIajeMhIj
+ i4jUeBjZsIpMkz+0a3zo83EuB2pZRHrJVPoh1uTHxK01YIHDL91m3paEB2U8Jn9PeHVMdZ0PU
+ 4q9z3sFDbD8pYHFQc8Ps0arqRRtH6U7RxwksusobGSBezVkKd196GE/4+zfs0y9d68tVb4keY
+ 5TivONFvJ2zeFg51QrBVxdIGRFEq+gSDBYGlz1gv3fWu0a4gTLJuy9RR7Biw0lv8EBFuFw30O
+ OYdJAde1wI7FXcNMcQvsT0EFCde4+kKm7UkmRs6pQFQViGgS2sTG9kK0TnITqzNlOpk06nXNi
+ luizJ+H+2geUSvSMZGMxCq0DXkyaJjLT1+TFQdmhLa7NX6vp4wnFbi4rxyJNmn1GAvS5Ruz/Y
+ +ryd7wHYyV73Jy5CJMR1oEzf4qI6Q2JhPLKRepv3F6nmTkjbfY0l
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Halo anak-anak Tuhan
+Hello,
+
+  thanks for your reply, Chris.
+>>  [Mo Mär 29 09:29:22 2021] BTRFS info (device sda1): bdev /dev/sda1 errs:
+>>  wr 133, rd 133, flush 0, corrupt 0, gen 1
+>>
+>>  Maybe, the last line is concerning?
+>
+>Yes. Do a 'btrfs scrub' and check dmesg for detailed errors.
+[Mo Mär 29 09:29:22 2021] BTRFS info (device sda1): bdev /dev/sda1 errs: wr 133, rd 133, flush 0, corrupt 0, gen 1
+[Mo Mär 29 13:10:39 2021] BTRFS info (device sda1): scrub: started on devid 1
+[Mo Mär 29 13:10:39 2021] BTRFS info (device sda1): scrub: started on devid 2
+[Mo Mär 29 23:30:49 2021] BTRFS info (device sda1): scrub: not finished on devid 2 with status: -125
+[Mo Mär 29 23:30:50 2021] BTRFS info (device sda1): scrub: not finished on devid 1 with status: -125
+[Di Mär 30 00:04:07 2021] BTRFS info (device sda1): scrub: started on devid 1
+[Di Mär 30 00:04:07 2021] BTRFS info (device sda1): scrub: started on devid 2
+[Di Mär 30 02:50:09 2021] BTRFS info (device sda1): scrub: finished on devid 1 with status: 0
+[Di Mär 30 04:36:59 2021] BTRFS info (device sda1): scrub: finished on devid 2 with status: 0
+
+  There is nothing more, related to btrfs.
+
+What I find in syslog:
+Mar 28 20:28:21 homeserver kernel: [1298340.851140] INFO: task btrfs-cleaner:20078 blocked for more than 241 seconds.
+Mar 28 20:28:21 homeserver kernel: [1298340.854109] task:btrfs-cleaner   state:D stack:    0 pid:20078 ppid:     2 flags:0x00004000
+Mar 28 20:28:21 homeserver kernel: [1298340.854151]  wait_current_trans+0xc2/0x120 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.854169]  start_transaction+0x46d/0x540 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.854183]  btrfs_drop_snapshot+0x90/0x7f0 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.854202]  ? btrfs_delete_unused_bgs+0x3e/0x850 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.854218]  btrfs_clean_one_deleted_snapshot+0xd7/0x130 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.854232]  cleaner_kthread+0xfa/0x120 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.854247]  ? btrfs_alloc_root+0x3d0/0x3d0 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.857610]  wait_current_trans+0xc2/0x120 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.857627]  start_transaction+0x46d/0x540 [btrfs]
+Mar 28 20:28:21 homeserver kernel: [1298340.857643]  btrfs_create+0x58/0x1f0 [btrfs]
 
 
-Nama saya Ny. Katherine Rafael, seorang pengusaha wanita Warga Negara
-Pantai Gading dan lahir 7 Oktober 1959. Saya memiliki misi untuk Anda
-senilai US $ 2, 500, 000, 00 (Dua juta Lima ratus ribu dolar Amerika
-Serikat negara bagian) yang saya maksudkan gunakan untuk amal.
 
-Saya seorang wanita penderita kanker payudara dan telah diberitahu
-oleh dokter bahwa saya akan mati dalam waktu yang tidak lama lagi,
-sekarang dan ingin menyumbangkan uang ini untuk amal melalui Anda
-dengan mentransfer uang ini ke rekening Anda, agar orang-orang di
-daerah Anda mendapat manfaat darinya. Bisakah Anda menjadi orang yang
-akan saya gunakan dalam transaksi mulia ini sebelum saya pergi untuk
-operasi saya?
+>  Next
+>'btrfs check --readonly' (must be done offline ie booted from usb
+>stick). And if it all comes up without errors or problems, you can
+>zero the statistics with 'btrfs dev stats -z'.
+No error found. Neither in btrfs check, nor in scrub.
+So, shall I reset the stats then?
 
-Nyonya Katherine Rafael,
+>But otherwise we need
+>to see the errors to know what's going wrong. It's not normal to have
+>either read or write errors. It could be related to the problem, or an
+>additional problem.
+
+>
+>>  Mar 28 20:58:34 homeserver kernel: [1300153.336273]  ?
+>>  btrfs_cleanup_transaction+0x590/0x590 [btrfs]
+>>
+>>
+>>  What could I do to find the cause?
+>
+>What kernel version?
+
+5.10.0-0.bpo.3-amd64
+
+Best regards,
+Hendrik
+
