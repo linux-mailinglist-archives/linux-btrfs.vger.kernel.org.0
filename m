@@ -2,110 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC3F34E1F3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 09:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A1134E289
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 09:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhC3HQR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Mar 2021 03:16:17 -0400
-Received: from out20-110.mail.aliyun.com ([115.124.20.110]:60441 "EHLO
-        out20-110.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhC3HQC (ORCPT
+        id S231240AbhC3Hsb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Mar 2021 03:48:31 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:52019 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhC3HsN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Mar 2021 03:16:02 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.05020833|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0916714-0.00572171-0.902607;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.JsQIcxI_1617088559;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JsQIcxI_1617088559)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Tue, 30 Mar 2021 15:16:00 +0800
-Date:   Tue, 30 Mar 2021 15:16:02 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Subject: Re: xfstests generic/476 failed on btrfs(errno=-12 Out of memory, kernel 5.11.10)
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <8bcfb096-8de5-2176-0bf8-c2c9049aefe5@suse.com>
-References: <20210330142446.AB2E.409509F4@e16-tech.com> <8bcfb096-8de5-2176-0bf8-c2c9049aefe5@suse.com>
-Message-Id: <20210330151601.7E69.409509F4@e16-tech.com>
+        Tue, 30 Mar 2021 03:48:13 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F8hQ4067gz1qsk3;
+        Tue, 30 Mar 2021 09:48:11 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F8hQ3119Hz1r1Mv;
+        Tue, 30 Mar 2021 09:48:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id aNUKWl9I7bH5; Tue, 30 Mar 2021 09:48:09 +0200 (CEST)
+X-Auth-Info: y/ecgtJIqKRiA95jDY43XDk4om5HPTxKgBpP6XjRfCA=
+Received: from [10.88.0.186] (dslb-084-056-254-233.084.056.pools.vodafone-ip.de [84.56.254.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 30 Mar 2021 09:48:09 +0200 (CEST)
+Subject: Re: btrfs-send format that contains binary diffs
+To:     Lionel Bouton <lionel-subscription@bouton.name>,
+        Andrei Borzenkov <arvidjaar@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     Henning Schild <henning.schild@siemens.com>
+References: <f3306b7c-a97a-21f2-0f66-dc94dc2c0272@denx.de>
+ <db6fae67-6348-1de3-c953-a4c75c459b65@gmail.com>
+ <5ba46b04-f3ba-03ef-6ad5-38fd44f8c67e@denx.de>
+ <04d8b3c2-a5a7-abc2-b157-b6a39f6d435c@bouton.name>
+From:   Claudius Heine <ch@denx.de>
+Organization: Denx Software Engineering
+Message-ID: <04a3a921-783c-9227-79a4-7855d46eb31c@denx.de>
+Date:   Tue, 30 Mar 2021 09:48:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="GB2312"
+In-Reply-To: <04d8b3c2-a5a7-abc2-b157-b6a39f6d435c@bouton.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-H,
+Hi Lionel,
 
-> On 30.03.21 §Ô. 9:24, Wang Yugui wrote:
-> > Hi, Nikolay Borisov
-> > 
-> > With a lot of dump_stack()/printk inserted around ENOMEM in btrfs code,
-> > we find out the call stack for ENOMEM.
-> > see the file 0000-btrfs-dump_stack-when-ENOMEM.patch
-> > 
-> > 
-> > #cat /usr/hpc-bio/xfstests/results//generic/476.dmesg
-> > ...
-> > [ 5759.102929] ENOMEM btrfs_drew_lock_init
-> > [ 5759.102943] ENOMEM btrfs_init_fs_root
-> > [ 5759.102947] ------------[ cut here ]------------
-> > [ 5759.102950] BTRFS: Transaction aborted (error -12)
-> > [ 5759.103052] WARNING: CPU: 14 PID: 2741468 at /ssd/hpc-bio/linux-5.10.27/fs/btrfs/transaction.c:1705 create_pending_snapshot+0xb8c/0xd50 [btrfs]
-> > ...
-> > 
-> > 
-> > btrfs_drew_lock_init() return -ENOMEM, 
-> > this is the source:
-> > 
-> >     /*
-> >      * We might be called under a transaction (e.g. indirect backref
-> >      * resolution) which could deadlock if it triggers memory reclaim
-> >      */
-> >     nofs_flag = memalloc_nofs_save();
-> >     ret = btrfs_drew_lock_init(&root->snapshot_lock);
-> >     memalloc_nofs_restore(nofs_flag);
-> >     if (ret == -ENOMEM) printk("ENOMEM btrfs_drew_lock_init\n");
-> >     if (ret)
-> >         goto fail;
-> > 
-> > And the souce come from:
-> > 
-> > commit dcc3eb9638c3c927f1597075e851d0a16300a876
-> > Author: Nikolay Borisov <nborisov@suse.com>
-> > Date:   Thu Jan 30 14:59:45 2020 +0200
-> > 
-> >     btrfs: convert snapshot/nocow exlcusion to drew lock
-> > 
-> > 
-> > Any advice to fix this ENOMEM problem?
+On 2021-03-29 21:53, Lionel Bouton wrote:
+> Hi Claudius,
 > 
-> This is likely coming from changed behavior in MM, doesn't seem related
-> to btrfs. We have multiple places where nofs_save() is called. By the
-> same token the failure might have occurred in any other place, in any
-> other piece of code which uses memalloc_nofs_save, there is no
-> indication that this is directly related to btrfs.
+> Le 29/03/2021 Ã  21:14, Claudius Heine a Ã©critÂ :
+>> [...]
+>> Are you sure?
+>>
+>> I did a test with a 32MiB random file. I created one snapshot, then
+>> changed (not deleted or added) one byte in that file and then created
+>> a snapshot again. `btrfs send` created a >32MiB `btrfs-stream` file.
+>> If it would be only block based, then I would have expected that it
+>> would just contain the changed block, not the whole file.
 > 
-> > 
-> > top command show that this server have engough memory.
-> > 
-> > The hardware of this server:
-> > CPU:  Xeon(R) CPU E5-2660 v2(10 core)  *2
-> > memory:  192G, no swap
+> I suspect there is another possible explanations : the tool you used to
+> change one byte actually rewrote the whole file.
 > 
-> You are showing that the server has 192G of installed memory, you have
-> not shown any stats which prove at the time of failure what is the state
-> of the MM subsystem. At the very least at the time of failure inspect
-> the output of :
+> You can test this by appending data to your file (for example with "cat
+> otherfile >> originalfile" or "dd if=/dev/urandom of=originalfile bs=1M
+> count=4 conv=notrunc oflag=append") and checking the size of `btrfs
+> send`'s output.
 > 
-> cat /proc/meminfo
+> When I append data with dd as described above to a 32M file originally
+> created with "dd if=/dev/urandom of=originalfile bs=1M count=32" I get a
+> file with 1 extent only in each snapshot both marked shared and a little
+> other 4M in `btrfs send`'s output.
+> filefrag -v should tell you if the extents in your file are shared.
 > 
-> and "free -m" commands.
+> Note that if you use compression and your files compress well they will
+> use small extents (128kB from memory), this can be bad when you try to
+> avoid fragmentation but could help COW find more data to share if I
+> understand how COW works in respect to extents correctly.
 > 
-> <snip>
+> Finally, using "dd if=/dev/urandom of=originalfile bs=1M count=1
+> conv=notrunc seek=12M" to write in the middle of my now 36M file results
+> in a little over 1M with `btrfs send` using -p <previous snapshot>
+> And filefrag -v shows 3 extents for this file. 2 of them share the same
+> logical offsets than the file in the previous snapshot, the last use a
+> new range, confirming the allocation of a new extent and reuse of the
+> previous ones.
+> This seems to confirm my hypothesis that the tool you used did rewrite
+> the whole file.
 
-Only one xfstest job is running in this server.
+Yes, I think you are right here. I will have to experiment with this a 
+bit further. Thanks!
 
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/03/30
-
-
+regards,
+Claudius
