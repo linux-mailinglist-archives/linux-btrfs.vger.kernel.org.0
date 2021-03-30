@@ -2,70 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA8E34DCCF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 02:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6023334DE6B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 04:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhC3AIV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Mar 2021 20:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhC3AIC (ORCPT
+        id S230482AbhC3C3P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Mar 2021 22:29:15 -0400
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:36946 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230437AbhC3C2r (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Mar 2021 20:08:02 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E3BC061762
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 17:08:01 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id g25so7450220wmh.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 17:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7KumQicIAk27yZFcxgNYxecdr+JYYtdjM2b/QYpDqHI=;
-        b=kxTez9frndeUVpBTTjDn1XyMq1V6vPAHHE5QGEzSXgIqlKxydDdwUpYi/pNsyMGPUn
-         blWsE8YrHh8MrbqbPp0TdObD5GwJwD14lHY0nIkHrsrZZuj8AEn/6eqgc4kKpX1N0oiL
-         R5VkDbtS22RI49f1+Y3E/nvnjz6ta51dh34B95tK2J/iGN5OssuegLmbGHfgtHZ4zsIp
-         KYff4ibX+EeUq7s/GfH4JoKTZHD/8rxhsnCIwP9Oe8WmdBPjHbzcqEvxT/gRLVj6V4Sp
-         EQLdDiatQUSX+BvUWzd6EqEYmD5JrdBJ+jwDdN8+/WGltVtVrWroc84TaqdKjMJc8Cfa
-         Lmnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7KumQicIAk27yZFcxgNYxecdr+JYYtdjM2b/QYpDqHI=;
-        b=m4/60OJRxhdOcrz9kEETe99UrHheIFdUu4YiUnXUMZrjAav084lwgJ+eahJbfdEeW9
-         nyFJk+SaQRrZWZ4ALFf20LnHug6tcGQDArIWL4StZGMIO6OXNpc8CVuJQnYQAYN+A+Bn
-         Xc2kvLlu4KMl+hrcEBgAv4P4jzyu6T7NstlWGQkAW/vl/x8vJxASpsDE/26Z85MaSqvw
-         WivpX5dma2CwGWR8FynvO/IR5T06+mQ8BJY+J385mdkgpMs7Uwu9+rTdBbhVRGTaotLE
-         89HygTetUgjJL1eB8AGKdh9rLYs2EQpKEFZJAWcNKgc/sRlBhmj+OlyerLq4W4+5xmPF
-         GkMQ==
-X-Gm-Message-State: AOAM531IsCBt/XNeiXp+8kkjkp8mEUnolua3u4nzNZ0fUpnd6755tLRw
-        XL0TrC19KXLMyhpn8muM+mndT4T3L4lD6amhJbcbRw==
-X-Google-Smtp-Source: ABdhPJz9uqPoVFb2NQIJBue+RVbxMc5upDIl7bQnR5cJNdHnh6PhoqylsgL/54dd6SztxRhefcArKemxwaxCzOWmY6E=
-X-Received: by 2002:a1c:7d4e:: with SMTP id y75mr1260129wmc.168.1617062880675;
- Mon, 29 Mar 2021 17:08:00 -0700 (PDT)
+        Mon, 29 Mar 2021 22:28:47 -0400
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 892D06C01AAB;
+        Tue, 30 Mar 2021 05:28:45 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1617071325; bh=+zdoXbHmpxterW9MZWV+iI18Z1PRmTGHRV+FdElzSCU=;
+        h=From:To:Cc:Subject:Date;
+        b=AzAi7TKB90mBYGTGlOm+j50IhIjT7xPF72/mPP0TE1huX5M1OOR4qQNfBLvtdFidl
+         S2+Wv5E0PV2GIewErBVGyvK07QvZBXeArvgKbDZVZoVaypKvwx9ABpkk/VlF6Ht3Ul
+         7/uEJnH36mI8TalLK8BY8f2kK3MWBqjs8aBpNvDM=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 79C806C01AAA;
+        Tue, 30 Mar 2021 05:28:45 +0300 (EEST)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id ETImCL2cuwnU; Tue, 30 Mar 2021 05:28:45 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id E98286C01AA6;
+        Tue, 30 Mar 2021 05:28:44 +0300 (EEST)
+Received: from localhost.localdomain (unknown [45.87.95.48])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id D58801BE00C8;
+        Tue, 30 Mar 2021 05:28:42 +0300 (EEST)
+From:   Su Yue <l@damenly.su>
+To:     linux-btrfs@vger.kernel.org
+Cc:     l@damenly.su, Boris Burkov <boris@bur.io>
+Subject: [PATCH v2] btrfs-progs: check: continue to check space cache if sb cache_generation is 0
+Date:   Tue, 30 Mar 2021 10:28:30 +0800
+Message-Id: <20210330022830.491831-1-l@damenly.su>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <trinity-ed62f670-6e98-4395-85c0-2a7ea4415ee4-1616946036541@3c-app-webde-bs48>
-In-Reply-To: <trinity-ed62f670-6e98-4395-85c0-2a7ea4415ee4-1616946036541@3c-app-webde-bs48>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 29 Mar 2021 18:07:44 -0600
-Message-ID: <CAJCQCtQWtnjyN88gif-tmA_cxcs+6HPgVxB5XwNmAVj3qMKmfw@mail.gmail.com>
-Subject: Re: Help needed with filesystem errors: parent transid verify failed
-To:     B A <chris.std@web.de>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: OK
+X-ESPOL: 885mkI9QEjm6g1u/R3PCZ3U6rDY6L+Cfm/vJrhAZwzvmU1qJf04NURK/nm1yS2A=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 9:41 AM B A <chris.std@web.de> wrote:
->
-> * Samsung 840 series SSD (SMART data looks fine)
+User reported that test fsck-tests/037-freespacetree-repair fails:
+ # TEST=037\* ./fsck-tests.sh
+    [TEST/fsck]   037-freespacetree-repair
+btrfs check should have detected corruption
+test failed for case 037-freespacetree-repair
 
-EVO or PRO? And what does its /proc/mounts line look like?
+The test tries to corrupt FST, call btrfs check readonly then repair FST
+using btrfs check. Above case failed at the second readonly check step.
+Test log said "cache and super generation don't match, space cache will
+be invalidated" which is printed by validate_free_space_cache().
+If cache_generation of the superblock is not -1ULL,
+validate_free_space_cache() requires that cache_generation must equal
+to the superblock's generation. Otherwise, it skips the check of space
+cache(v1, v2) like the above case where the sb cache_generation is 0.
 
-Total_LBAs_Written?
+Since kernel commit 948462294577 ("btrfs: keep sb cache_generation
+consistent with space_cache"), sb cache_generation will be set to be 0
+once space cache v1 is disabled(nospace_cache/space_cache=v2). But
+progs check was forgotten to be added the 0 case support.
 
+Fix it by adding the condition if sb cache_generation is 0 in
+validate_free_space_cache() as the 0 case is valid now since the
+kernel commit mentioned above.
 
+Link: https://github.com/kdave/btrfs-progs/issues/338
+Signed-off-by: Su Yue <l@damenly.su>
+Reviewed-by: Boris Burkov <boris@bur.io>
+---
+Changelog:
+  v2:
+    Change the commit description little.
+    Add the reviewed-by.
+    Remove 'RFC' from subject.
+---
+ check/main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/check/main.c b/check/main.c
+index a5d2e4ee2dd6..15aa29335240 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -9953,7 +9953,12 @@ static int validate_free_space_cache(struct btrfs_root *root)
+ {
+ 	int ret;
+ 
++	/*
++	 * If cache generation is between 0 and -1ULL, sb generation must equal to
++	 *   sb cache generation or the v1 space caches are outdated.
++	 */
+ 	if (btrfs_super_cache_generation(gfs_info->super_copy) != -1ULL &&
++	    btrfs_super_cache_generation(gfs_info->super_copy) != 0 &&
+ 	    btrfs_super_generation(gfs_info->super_copy) !=
+ 	    btrfs_super_cache_generation(gfs_info->super_copy)) {
+ 		printf(
 -- 
-Chris Murphy
+2.30.1
+
