@@ -2,107 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6023334DE6B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 04:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA8634E0B3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 07:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhC3C3P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Mar 2021 22:29:15 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:36946 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhC3C2r (ORCPT
+        id S229655AbhC3Fdn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Mar 2021 01:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230224AbhC3Fdj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:28:47 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 892D06C01AAB;
-        Tue, 30 Mar 2021 05:28:45 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1617071325; bh=+zdoXbHmpxterW9MZWV+iI18Z1PRmTGHRV+FdElzSCU=;
-        h=From:To:Cc:Subject:Date;
-        b=AzAi7TKB90mBYGTGlOm+j50IhIjT7xPF72/mPP0TE1huX5M1OOR4qQNfBLvtdFidl
-         S2+Wv5E0PV2GIewErBVGyvK07QvZBXeArvgKbDZVZoVaypKvwx9ABpkk/VlF6Ht3Ul
-         7/uEJnH36mI8TalLK8BY8f2kK3MWBqjs8aBpNvDM=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 79C806C01AAA;
-        Tue, 30 Mar 2021 05:28:45 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id ETImCL2cuwnU; Tue, 30 Mar 2021 05:28:45 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id E98286C01AA6;
-        Tue, 30 Mar 2021 05:28:44 +0300 (EEST)
-Received: from localhost.localdomain (unknown [45.87.95.48])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id D58801BE00C8;
-        Tue, 30 Mar 2021 05:28:42 +0300 (EEST)
-From:   Su Yue <l@damenly.su>
-To:     linux-btrfs@vger.kernel.org
-Cc:     l@damenly.su, Boris Burkov <boris@bur.io>
-Subject: [PATCH v2] btrfs-progs: check: continue to check space cache if sb cache_generation is 0
-Date:   Tue, 30 Mar 2021 10:28:30 +0800
-Message-Id: <20210330022830.491831-1-l@damenly.su>
-X-Mailer: git-send-email 2.30.1
+        Tue, 30 Mar 2021 01:33:39 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F35C061762
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 22:33:39 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u10so18513292lju.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 22:33:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N8IO2/ZHX5GfJHEr/oWzkTd5TjJiCoY1QeaydnJK7QQ=;
+        b=ISU4UR7aaS6UVwnpiVJY1vvSVqdrDK63tr8dYnrqS7nC2ekqLYt9MyafGtRqa4N8nm
+         4BS4nbGzx7VATf7vOD9as8Idzi/3W/uUbM3jiaM2lxUWGTtrEp9urYGR+U5PUn6SwOBP
+         j2G+ENqXWnBiZLsvI/mptSw6r+KhA9f47/mXx6hDNpAOSIMUkxPgqYvdB8YM/RbMlwq2
+         0baG8xvRyOjbnrD6C+eE4RFhv3FaxmYWze1w5RCAh5OUiwgeJrPE8QbhuTxsUh9EiOLH
+         aGbCYZHjHND+si/v/l+uN4626qp9Hq3kkArYB1yaVaXhzgvxI/qUZSeAdVyjWIhkw52G
+         VL1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N8IO2/ZHX5GfJHEr/oWzkTd5TjJiCoY1QeaydnJK7QQ=;
+        b=RiwDg8p1OpK5DNUphqNLfsxvQabBvavbZj+NM81WjL4aGQWodK5WIkZ9yEIGzQdGXI
+         iELq9VTjUbRwCp5aJonDZWjDneoMs/6l7qBu8DgF4bhyTC/P9yGL7xIRM9pjUB+4JHnk
+         1QF91JTF/adTjqcGhSxcKWc/xXvXoBtrAD2V7Y5ue3wk1xan+D4Qv1iyW4xh19oIrtlj
+         PXcvm29YnaL0SRxFM3kriLJrB97rJ8i0G2G0iQLFscmPkyVTRurrvPBe54QOMtrtY7r6
+         bAF90FAchf/YIdngJOcN37yHMQIUgrKnKEdq1pig23tDZ86O2oAnmdJ7NQta52ZPl520
+         oN9Q==
+X-Gm-Message-State: AOAM532aaMRkYYd6JXH4xJcKVkzS3Sgv8/aW9SUCWm/J6i+pSQ0pyLfi
+        sW30PUUaBA5BxrhWp9z/aKI=
+X-Google-Smtp-Source: ABdhPJwfHhNMK0oQYuKRLVvZaxI0JR9R+HMk9RPNH/QcofH949AcKz9XWSVLU7qs5K/cNbS4kjFdrA==
+X-Received: by 2002:a2e:9b95:: with SMTP id z21mr20233901lji.112.1617082417706;
+        Mon, 29 Mar 2021 22:33:37 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:f67d:23b0:24c5:db70:4d19? ([2a00:1370:812d:f67d:23b0:24c5:db70:4d19])
+        by smtp.gmail.com with ESMTPSA id 192sm2657060ljj.95.2021.03.29.22.33.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 22:33:37 -0700 (PDT)
+Subject: Re: btrfs-send format that contains binary diffs
+To:     Claudius Heine <ch@denx.de>, linux-btrfs@vger.kernel.org
+Cc:     Henning Schild <henning.schild@siemens.com>
+References: <f3306b7c-a97a-21f2-0f66-dc94dc2c0272@denx.de>
+ <db6fae67-6348-1de3-c953-a4c75c459b65@gmail.com>
+ <5ba46b04-f3ba-03ef-6ad5-38fd44f8c67e@denx.de>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <535709bb-0bde-6193-2cef-0c1d037ba211@gmail.com>
+Date:   Tue, 30 Mar 2021 08:33:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: OK
-X-ESPOL: 885mkI9QEjm6g1u/R3PCZ3U6rDY6L+Cfm/vJrhAZwzvmU1qJf04NURK/nm1yS2A=
+In-Reply-To: <5ba46b04-f3ba-03ef-6ad5-38fd44f8c67e@denx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-User reported that test fsck-tests/037-freespacetree-repair fails:
- # TEST=037\* ./fsck-tests.sh
-    [TEST/fsck]   037-freespacetree-repair
-btrfs check should have detected corruption
-test failed for case 037-freespacetree-repair
+On 29.03.2021 22:14, Claudius Heine wrote:
+> Hi Andrei,
+> 
+> On 2021-03-29 18:30, Andrei Borzenkov wrote:
+>> On 29.03.2021 16:16, Claudius Heine wrote:
+>>> Hi,
+>>>
+>>> I am currently investigating the possibility to use `btrfs-stream` files
+>>> (generated by `btrfs send`) for deploying a image based update to
+>>> systems (probably embedded ones).
+>>>
+>>> One of the issues I encountered here is that btrfs-send does not use any
+>>> diff algorithm on files that have changed from one snapshot to the next.
+>>>
+>>
+>> btrfs send works on block level. It sends blocks that differ between two
+>> snapshots.
+> 
+> Are you sure?
+> 
 
-The test tries to corrupt FST, call btrfs check readonly then repair FST
-using btrfs check. Above case failed at the second readonly check step.
-Test log said "cache and super generation don't match, space cache will
-be invalidated" which is printed by validate_free_space_cache().
-If cache_generation of the superblock is not -1ULL,
-validate_free_space_cache() requires that cache_generation must equal
-to the superblock's generation. Otherwise, it skips the check of space
-cache(v1, v2) like the above case where the sb cache_generation is 0.
+Yes.
 
-Since kernel commit 948462294577 ("btrfs: keep sb cache_generation
-consistent with space_cache"), sb cache_generation will be set to be 0
-once space cache v1 is disabled(nospace_cache/space_cache=v2). But
-progs check was forgotten to be added the 0 case support.
+> I did a test with a 32MiB random file. I created one snapshot, then
+> changed (not deleted or added) one byte in that file and then created a
+> snapshot again. `btrfs send` created a >32MiB `btrfs-stream` file. If it
+> would be only block based, then I would have expected that it would just
+> contain the changed block, not the whole file. And if I use a smaller
+> file on the same file system, then the `btrfs-stream` is smaller as well.
+> 
+> I looked into those `btrfs-stream` files using [1] and also [2] as well
+> as the code. While I haven't understood everything there yet, it
+> currently looks to me like it is file based.
+> 
 
-Fix it by adding the condition if sb cache_generation is 0 in
-validate_free_space_cache() as the 0 case is valid now since the
-kernel commit mentioned above.
+btrfs send is not pure block based image, because it would require two
+absolutely identical filesystems. It needs to replicate filesystem
+structure so it of course needs to know which files are created/deleted.
+But for each file it only sends changed parts since previous snapshot.
+This only works if both snapshots refer to the *same* file.
 
-Link: https://github.com/kdave/btrfs-progs/issues/338
-Signed-off-by: Su Yue <l@damenly.su>
-Reviewed-by: Boris Burkov <boris@bur.io>
----
-Changelog:
-  v2:
-    Change the commit description little.
-    Add the reviewed-by.
-    Remove 'RFC' from subject.
----
- check/main.c | 5 +++++
- 1 file changed, 5 insertions(+)
+As was already mentioned, you need to understand how your files are
+changed. In particular, standard tools for software update do not
+rewrite files in place - they create new files with new content. From
+btrfs perspective they are completely different; two files with the same
+name in two snapshots do not share a single byte. When you compute delta
+between two snapshots you get instructions to delete old file and create
+new file with new content (that will be renamed to the same name as
+deleted old file). This also by necessity sends full new content.
 
-diff --git a/check/main.c b/check/main.c
-index a5d2e4ee2dd6..15aa29335240 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -9953,7 +9953,12 @@ static int validate_free_space_cache(struct btrfs_root *root)
- {
- 	int ret;
- 
-+	/*
-+	 * If cache generation is between 0 and -1ULL, sb generation must equal to
-+	 *   sb cache generation or the v1 space caches are outdated.
-+	 */
- 	if (btrfs_super_cache_generation(gfs_info->super_copy) != -1ULL &&
-+	    btrfs_super_cache_generation(gfs_info->super_copy) != 0 &&
- 	    btrfs_super_generation(gfs_info->super_copy) !=
- 	    btrfs_super_cache_generation(gfs_info->super_copy)) {
- 		printf(
--- 
-2.30.1
+So yes, btrfs replication is block based; similarity is determined by
+how much physical data is shared between two files. And you expect file
+based replication where file names determine whether files should be
+considered the same and changes are computed for two files with the same
+name.
+
+>>
+>>> One way to implement this would be to add some sort of 'patch' command
+>>> to the `btrfs-stream` format.
+>>>
+>>
+>> This would require reading complete content of both snapshots instead if
+>> just computing block diff using metadata. Unless I misunderstand what
+>> you mean.
+> I think I should only need access to the old snapshot as well as the
+> `btrfs-stream` file. But I currently don't have a complete PoC of this
+> ready.
+> 
+> regards,
+> Claudius
+> 
+> [1] https://github.com/sysnux/btrfs-snapshots-diff
+> [2] https://btrfs.wiki.kernel.org/index.php/Design_notes_on_Send/Receive
 
