@@ -2,66 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA8634E0B3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 07:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B639034E0B9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Mar 2021 07:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbhC3Fdn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Mar 2021 01:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42346 "EHLO
+        id S229675AbhC3Fis (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Mar 2021 01:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhC3Fdj (ORCPT
+        with ESMTP id S229479AbhC3Fi2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Mar 2021 01:33:39 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F35C061762
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 22:33:39 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u10so18513292lju.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 22:33:39 -0700 (PDT)
+        Tue, 30 Mar 2021 01:38:28 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B621AC061762
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 22:38:27 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id v15so21908494lfq.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Mar 2021 22:38:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N8IO2/ZHX5GfJHEr/oWzkTd5TjJiCoY1QeaydnJK7QQ=;
-        b=ISU4UR7aaS6UVwnpiVJY1vvSVqdrDK63tr8dYnrqS7nC2ekqLYt9MyafGtRqa4N8nm
-         4BS4nbGzx7VATf7vOD9as8Idzi/3W/uUbM3jiaM2lxUWGTtrEp9urYGR+U5PUn6SwOBP
-         j2G+ENqXWnBiZLsvI/mptSw6r+KhA9f47/mXx6hDNpAOSIMUkxPgqYvdB8YM/RbMlwq2
-         0baG8xvRyOjbnrD6C+eE4RFhv3FaxmYWze1w5RCAh5OUiwgeJrPE8QbhuTxsUh9EiOLH
-         aGbCYZHjHND+si/v/l+uN4626qp9Hq3kkArYB1yaVaXhzgvxI/qUZSeAdVyjWIhkw52G
-         VL1w==
+        bh=hmjGXddVi87DUaOcjGBApoP51UasDRVFxIHB231i0mU=;
+        b=M4yTjKQwJDvc5XlLWgCb146N91DLgPyxw+NE1//+IjtA0qRs+e8g5iaw7H0YB0FUMw
+         mOKiFLvVYXy/xQbwzLRfKsZeK0mafLqYfl59xoBS3kr3sC6QqCzeEurMfZRb/gbDPjJm
+         YNeuFHl+eu22rgF5JxZdcv+X0crgPGTKfS0EUSHYv8XMRkBcuQHxOo2FJoRfKLKFTvnl
+         CGWOP2K4E/svo5Jmi1HuEPJJzOI1SfirUC9Z1yhus8m2DmVS24aTEQtp1SV5ytWUB5GG
+         RWG63iMyCQpswMeNej0Ibf8fJuN+q1gp2S4iXEFb7plDZQ96aTyT/UGcf/8dWbh2VIEV
+         r/Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=N8IO2/ZHX5GfJHEr/oWzkTd5TjJiCoY1QeaydnJK7QQ=;
-        b=RiwDg8p1OpK5DNUphqNLfsxvQabBvavbZj+NM81WjL4aGQWodK5WIkZ9yEIGzQdGXI
-         iELq9VTjUbRwCp5aJonDZWjDneoMs/6l7qBu8DgF4bhyTC/P9yGL7xIRM9pjUB+4JHnk
-         1QF91JTF/adTjqcGhSxcKWc/xXvXoBtrAD2V7Y5ue3wk1xan+D4Qv1iyW4xh19oIrtlj
-         PXcvm29YnaL0SRxFM3kriLJrB97rJ8i0G2G0iQLFscmPkyVTRurrvPBe54QOMtrtY7r6
-         bAF90FAchf/YIdngJOcN37yHMQIUgrKnKEdq1pig23tDZ86O2oAnmdJ7NQta52ZPl520
-         oN9Q==
-X-Gm-Message-State: AOAM532aaMRkYYd6JXH4xJcKVkzS3Sgv8/aW9SUCWm/J6i+pSQ0pyLfi
-        sW30PUUaBA5BxrhWp9z/aKI=
-X-Google-Smtp-Source: ABdhPJwfHhNMK0oQYuKRLVvZaxI0JR9R+HMk9RPNH/QcofH949AcKz9XWSVLU7qs5K/cNbS4kjFdrA==
-X-Received: by 2002:a2e:9b95:: with SMTP id z21mr20233901lji.112.1617082417706;
-        Mon, 29 Mar 2021 22:33:37 -0700 (PDT)
+        bh=hmjGXddVi87DUaOcjGBApoP51UasDRVFxIHB231i0mU=;
+        b=NEQxZ0Qvkdd+QwHER310OOIOh257bg2VYMgLLCnwOxAdqUFtZETXLaRvXYkeGnbpz6
+         4RPkHKbN+o83SV31p/1tLo8OG7zA7g29jrdPteRSTzmQyW4rkHpIYdEtjEtz2+XpSGDr
+         KXZVbu39jVzLDggivhKEQ2MDyhQdQyDsV6iuCgOJ4yNJb24n8CLo7zJgpLJP52xS+6bD
+         i/BLfJTbp9DqrIEuuF/cTuhqXVyWxj613sy04TJlFDCbc/uYMkNbswRq3Xj/qwbrGg5i
+         p/+NC6ZJXjff1DnaZrGXJBSlUYnx16oinb2e0vhZqKl//v1bAGNYD4hF70wfs5v+Cf4k
+         M7Gg==
+X-Gm-Message-State: AOAM532RM5zeO57bj2GGTuwpyD8qpEJJQcF6uyLA0O73471XkyD56zzA
+        KoCzGYyWI2AevcWHgo7PuTW1eJhQj/XrOg==
+X-Google-Smtp-Source: ABdhPJyzcyS1FGCz2Os7OYP2jLVf+paV6VQGm1VOv4sTPIDHEuvztAsAK2mqzxnZjZ1A7BexLjxPwA==
+X-Received: by 2002:a05:6512:c2a:: with SMTP id z42mr17727587lfu.630.1617082705517;
+        Mon, 29 Mar 2021 22:38:25 -0700 (PDT)
 Received: from ?IPv6:2a00:1370:812d:f67d:23b0:24c5:db70:4d19? ([2a00:1370:812d:f67d:23b0:24c5:db70:4d19])
-        by smtp.gmail.com with ESMTPSA id 192sm2657060ljj.95.2021.03.29.22.33.37
+        by smtp.gmail.com with ESMTPSA id w24sm2666793ljh.19.2021.03.29.22.38.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 22:33:37 -0700 (PDT)
+        Mon, 29 Mar 2021 22:38:25 -0700 (PDT)
 Subject: Re: btrfs-send format that contains binary diffs
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
 To:     Claudius Heine <ch@denx.de>, linux-btrfs@vger.kernel.org
 Cc:     Henning Schild <henning.schild@siemens.com>
 References: <f3306b7c-a97a-21f2-0f66-dc94dc2c0272@denx.de>
  <db6fae67-6348-1de3-c953-a4c75c459b65@gmail.com>
  <5ba46b04-f3ba-03ef-6ad5-38fd44f8c67e@denx.de>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <535709bb-0bde-6193-2cef-0c1d037ba211@gmail.com>
-Date:   Tue, 30 Mar 2021 08:33:36 +0300
+ <535709bb-0bde-6193-2cef-0c1d037ba211@gmail.com>
+Message-ID: <3cfc2421-4683-9439-1301-09d013a670ec@gmail.com>
+Date:   Tue, 30 Mar 2021 08:38:24 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <5ba46b04-f3ba-03ef-6ad5-38fd44f8c67e@denx.de>
+In-Reply-To: <535709bb-0bde-6193-2cef-0c1d037ba211@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,77 +70,86 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29.03.2021 22:14, Claudius Heine wrote:
-> Hi Andrei,
-> 
-> On 2021-03-29 18:30, Andrei Borzenkov wrote:
->> On 29.03.2021 16:16, Claudius Heine wrote:
->>> Hi,
->>>
->>> I am currently investigating the possibility to use `btrfs-stream` files
->>> (generated by `btrfs send`) for deploying a image based update to
->>> systems (probably embedded ones).
->>>
->>> One of the issues I encountered here is that btrfs-send does not use any
->>> diff algorithm on files that have changed from one snapshot to the next.
->>>
+On 30.03.2021 08:33, Andrei Borzenkov wrote:
+> On 29.03.2021 22:14, Claudius Heine wrote:
+>> Hi Andrei,
 >>
->> btrfs send works on block level. It sends blocks that differ between two
->> snapshots.
-> 
-> Are you sure?
-> 
-
-Yes.
-
-> I did a test with a 32MiB random file. I created one snapshot, then
-> changed (not deleted or added) one byte in that file and then created a
-> snapshot again. `btrfs send` created a >32MiB `btrfs-stream` file. If it
-> would be only block based, then I would have expected that it would just
-> contain the changed block, not the whole file. And if I use a smaller
-> file on the same file system, then the `btrfs-stream` is smaller as well.
-> 
-> I looked into those `btrfs-stream` files using [1] and also [2] as well
-> as the code. While I haven't understood everything there yet, it
-> currently looks to me like it is file based.
-> 
-
-btrfs send is not pure block based image, because it would require two
-absolutely identical filesystems. It needs to replicate filesystem
-structure so it of course needs to know which files are created/deleted.
-But for each file it only sends changed parts since previous snapshot.
-This only works if both snapshots refer to the *same* file.
-
-As was already mentioned, you need to understand how your files are
-changed. In particular, standard tools for software update do not
-rewrite files in place - they create new files with new content. From
-btrfs perspective they are completely different; two files with the same
-name in two snapshots do not share a single byte. When you compute delta
-between two snapshots you get instructions to delete old file and create
-new file with new content (that will be renamed to the same name as
-deleted old file). This also by necessity sends full new content.
-
-So yes, btrfs replication is block based; similarity is determined by
-how much physical data is shared between two files. And you expect file
-based replication where file names determine whether files should be
-considered the same and changes are computed for two files with the same
-name.
-
->>
->>> One way to implement this would be to add some sort of 'patch' command
->>> to the `btrfs-stream` format.
+>> On 2021-03-29 18:30, Andrei Borzenkov wrote:
+>>> On 29.03.2021 16:16, Claudius Heine wrote:
+>>>> Hi,
+>>>>
+>>>> I am currently investigating the possibility to use `btrfs-stream` files
+>>>> (generated by `btrfs send`) for deploying a image based update to
+>>>> systems (probably embedded ones).
+>>>>
+>>>> One of the issues I encountered here is that btrfs-send does not use any
+>>>> diff algorithm on files that have changed from one snapshot to the next.
+>>>>
 >>>
+>>> btrfs send works on block level. It sends blocks that differ between two
+>>> snapshots.
 >>
->> This would require reading complete content of both snapshots instead if
->> just computing block diff using metadata. Unless I misunderstand what
->> you mean.
-> I think I should only need access to the old snapshot as well as the
-> `btrfs-stream` file. But I currently don't have a complete PoC of this
-> ready.
+>> Are you sure?
+>>
 > 
-> regards,
-> Claudius
+> Yes.
 > 
-> [1] https://github.com/sysnux/btrfs-snapshots-diff
-> [2] https://btrfs.wiki.kernel.org/index.php/Design_notes_on_Send/Receive
+>> I did a test with a 32MiB random file. I created one snapshot, then
+>> changed (not deleted or added) one byte in that file and then created a
+>> snapshot again. `btrfs send` created a >32MiB `btrfs-stream` file. If it
+>> would be only block based, then I would have expected that it would just
+>> contain the changed block, not the whole file. And if I use a smaller
+>> file on the same file system, then the `btrfs-stream` is smaller as well.
+>>
+>> I looked into those `btrfs-stream` files using [1] and also [2] as well
+>> as the code. While I haven't understood everything there yet, it
+>> currently looks to me like it is file based.
+>>
+> 
+> btrfs send is not pure block based image, because it would require two
+> absolutely identical filesystems. It needs to replicate filesystem
+> structure so it of course needs to know which files are created/deleted.
+> But for each file it only sends changed parts since previous snapshot.
+> This only works if both snapshots refer to the *same* file.
+> 
+
+Or more precisely - btrfs send knows which filesystem content was part
+of previous snapshot and so is already present on destination and it
+will not send this content again. It is actually more or less irrelevant
+which files this content belongs to.
+
+
+> As was already mentioned, you need to understand how your files are
+> changed. In particular, standard tools for software update do not
+> rewrite files in place - they create new files with new content. From
+> btrfs perspective they are completely different; two files with the same
+> name in two snapshots do not share a single byte. When you compute delta
+> between two snapshots you get instructions to delete old file and create
+> new file with new content (that will be renamed to the same name as
+> deleted old file). This also by necessity sends full new content.
+> 
+> So yes, btrfs replication is block based; similarity is determined by
+> how much physical data is shared between two files. And you expect file
+> based replication where file names determine whether files should be
+> considered the same and changes are computed for two files with the same
+> name.
+> 
+>>>
+>>>> One way to implement this would be to add some sort of 'patch' command
+>>>> to the `btrfs-stream` format.
+>>>>
+>>>
+>>> This would require reading complete content of both snapshots instead if
+>>> just computing block diff using metadata. Unless I misunderstand what
+>>> you mean.
+>> I think I should only need access to the old snapshot as well as the
+>> `btrfs-stream` file. But I currently don't have a complete PoC of this
+>> ready.
+>>
+>> regards,
+>> Claudius
+>>
+>> [1] https://github.com/sysnux/btrfs-snapshots-diff
+>> [2] https://btrfs.wiki.kernel.org/index.php/Design_notes_on_Send/Receive
+> 
 
