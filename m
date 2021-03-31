@@ -2,140 +2,348 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CE934FE1A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Mar 2021 12:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD3734FE58
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Mar 2021 12:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbhCaKcw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 Mar 2021 06:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234997AbhCaKcr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:32:47 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69337C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Mar 2021 03:32:47 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id b9so19103982wrt.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Mar 2021 03:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=SDE/QVAjz2lXM28QEBU3KqpzNstzi43fp88ygq90hjs=;
-        b=k1+Skzxlabp78kErUP4l0PR0vaentrM3CvxXQY6VEfMRScINDLjTkpIDrfixpkw5p+
-         cb2iDVPzvwS1lxDiMOfpgzJ2G10oSMqeMiV13D5pSf+r5GJGdMjzK253aiCRXp9wyOzP
-         K93LmmOtg9thFV8K/taifha3cpEPPGON983oE0pLq/rzA0ymYHqfyjd4yu5RsLbieSBP
-         8aigsY3Z6+kJyCPgtIVyM5+dVqeAaLhwr+PtamCnseBAJQ5ycoPOw8UzSJD5y4K31v3N
-         KQjnNQHCcThP6vw9YCU0RMjHNHTLBkmIoQdNChDKYyWp6BGRz+srqxJyaxtEMuDd1YXr
-         iQAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SDE/QVAjz2lXM28QEBU3KqpzNstzi43fp88ygq90hjs=;
-        b=Em1kDakdAF/p9M7vzoufqeEgeHeoy2BDZb5oIdke/w4u9Ib/rWx581dhNUX+LTdF67
-         yFyAOaSppKg3jeGR+gOOyYwXWDtu1pzA7U3D39i3m7146eRxIx1USWUwTFazRPyspKK8
-         9WLxIX281FnCeS+vEtHPiWwE7H71VNXmUvb8TMtDorcngdLZ+f4MqQpPLrd8ysuCxS0y
-         OblIYgpagUf2GunuoLDznolnZnJm36Zrz3WCWBN8Nd0YehukEEGpmhXxaFmZ6tMMFnbs
-         s7Pp+GJJjaQnkxmYkWZWqYCpsrZO+MoRU1uFfC+E3oSegy+Wb5AQ6UMg+4UV1jFSpVAZ
-         7M4g==
-X-Gm-Message-State: AOAM531f/8XCJF9vXiAnpOKSOwkn3R9NX+M5fOLyybpL+4RU5X8g77Iq
-        tpy2MCTLEUsEjLl7uZiEM4u7b+GmMYDCpw==
-X-Google-Smtp-Source: ABdhPJyIy4gmfQs6hVp2tJSRj4u15IfjyBW/nfrHTTRo/GAOBQirRI6qE0bQDoG79G1FDY0aO+nr9Q==
-X-Received: by 2002:a05:6000:1819:: with SMTP id m25mr2823268wrh.169.1617186766065;
-        Wed, 31 Mar 2021 03:32:46 -0700 (PDT)
-Received: from yuna.elaboris.de (dslb-002-202-189-052.002.202.pools.vodafone-ip.de. [2.202.189.52])
-        by smtp.gmail.com with ESMTPSA id p16sm4867897wrt.54.2021.03.31.03.32.45
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Mar 2021 03:32:45 -0700 (PDT)
-Subject: Re: Any ideas what this warnings are about?
+        id S235076AbhCaK4T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 Mar 2021 06:56:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234862AbhCaKzx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:55:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C40C661952
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 Mar 2021 10:55:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617188153;
+        bh=q8p1IIoFl7f0R0B2VagzgkvjvcT9A9nfqwu145uCL8c=;
+        h=From:To:Subject:Date:From;
+        b=lsPtv8xThViV9x6X8DTvc+wZx2PyeLBeUC1zgszUUy8Ue0wpVhOIW6318nZxC5OYa
+         mQO+qbZjeqXbXzo+RqE0H7BGnKKCIFWcaCmNFx9CGsGVwjrkJUEA2/GGPUR3FVNvSa
+         z1DOekF2382xwnXS1Z2tkMnlpnjbFKli9kVvu1zVVa+w4/tOgcFbEkaTkLUX420VZ4
+         Qbx5bY/E4htrilcJ4rTlrQk7NoqN5R3zKZ6qw9DkbH7xX2weMZhP2JnHt7BMZUkjtS
+         Hzp4UoAui3aQKHrdAlAmRWlYsgmY3FYIP9MTOliNg2YDbssxKsjNIOFIpvg41iJFKL
+         qugJGXKid0fFg==
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-References: <43acc426-d683-d1b6-729d-c6bc4a2fff4d@gmail.com>
- <20210331015827.GV32440@hungrycats.org>
-From:   Markus Schaaf <markuschaaf@gmail.com>
-Message-ID: <adbc670b-b85e-a44d-3089-089c4564f57f@gmail.com>
-Date:   Wed, 31 Mar 2021 12:32:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+Subject: [PATCH] btrfs: fix exhaustion of the system chunk array due to concurrent allocations
+Date:   Wed, 31 Mar 2021 11:55:50 +0100
+Message-Id: <beffbc19524a06910b0c59daa97570b8e94c4efc.1617188005.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210331015827.GV32440@hungrycats.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am 31.03.21 um 03:58 schrieb Zygo Blaxell:
+From: Filipe Manana <fdmanana@suse.com>
 
->> ------------[ cut here ]------------
->> WARNING: CPU: 1 PID: 314 at fs/fs-writeback.c:2472 __writeback_inodes_sb_nr+0xb8/0xd0
->> Modules linked in: iTCO_wdt wireguard curve25519_x86_64 libchacha20poly1305 intel_pmc_bxt iTCO_vendor_support chacha_x86_64 poly1305_x86_64 libblake2s blake2s_x86_64 ip6_udp_tunnel udp_tunnel libcurve25519_generic libchacha libblake2s_generic psmouse joydev mousedev pcspkr i2c_i801 i2c_smbus lpc_ich iptable_filter xt_nat xt_tcpudp intel_agp intel_gtt iptable_nat nf_nat qemu_fw_cfg nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 mac_hid vfat fat auth_rpcgss sunrpc fuse ip_tables x_tables btrfs blake2b_generic libcrc32c crc32c_generic xor raid6_pq dm_crypt cbc encrypted_keys trusted tpm usbhid dm_mod virtio_gpu virtio_dma_buf drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec drm virtio_scsi virtio_balloon virtio_net virtio_console net_failover agpgart failover crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd glue_helper serio_raw sr_mod cdrom xhci_pci virtio_pci virtio_rng rng_core
->> CPU: 1 PID: 314 Comm: btrfs-transacti Tainted: G        W         5.10.26-1-MANJARO #1
->> Hardware name: Hetzner vServer, BIOS 20171111 11/11/2017
->> RIP: 0010:__writeback_inodes_sb_nr+0xb8/0xd0
->> Code: 0f b6 d1 48 8d 74 24 10 e8 35 fc ff ff 48 89 e7 e8 7d fb ff ff 48 8b 44 24 48 65 48 2b 04 25 28 00 00 00 75 09 48 83 c4 50 c3 <0f> 0b eb cf e8 df 8c 75 00 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
->> RSP: 0018:ffffb1f5448f7d98 EFLAGS: 00010246
->> RAX: 0000000000000000 RBX: ffff961185aa5488 RCX: 0000000000000000
->> RDX: 0000000000000002 RSI: 0000000000004b45 RDI: ffff9611b7220000
->> RBP: ffff9611b64d3958 R08: ffff961184efc800 R09: 0000000000000140
->> R10: ffff9611859e6400 R11: ffff961192af3c10 R12: ffff9611838f7c00
->> R13: ffff961185aa5000 R14: ffff961185aa5460 R15: 0000000000011a0f
->> FS:  0000000000000000(0000) GS:ffff9611fad00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f654bc76b58 CR3: 0000000002c60000 CR4: 00000000003506e0
->> Call Trace:
->>   btrfs_commit_transaction+0x448/0xbc0 [btrfs]
->>   ? start_transaction+0xcc/0x5b0 [btrfs]
->>   transaction_kthread+0x143/0x170 [btrfs]
->>   ? btrfs_cleanup_transaction.isra.0+0x560/0x560 [btrfs]
->>   kthread+0x133/0x150
->>   ? __kthread_bind_mask+0x60/0x60
->>   ret_from_fork+0x22/0x30
->> ---[ end trace 3cefecf5d9d20b50 ]---
->>
->> ------------[ cut here ]------------
->> WARNING: CPU: 0 PID: 758 at fs/fs-writeback.c:2472 __writeback_inodes_sb_nr+0xb8/0xd0
-> 
-> That bug was introduced in 4.15 as part of a fix for a deadlock bug.
-> It's still there today.  Not very high on anyone's TODO list as it's
-> mostly harmless--btrfs can't be umounted during a transaction as the
-> umount itself uses a transaction.  The warning doesn't come from btrfs
-> code, so we can't just turn it off.
+When we are running out of space for updating the chunk tree, that is,
+when we are low on available space in the system space info, if we have
+many task concurrently allocating block groups, via fallocate for example,
+many of them can end up all allocating new system chunks when only one is
+needed. In extreme cases this can lead to exhaustion of the system chunk
+array, which has a size limit of 2048 bytes, and results in a transaction
+abort with errno -EFBIG, producing a trace in dmesg like the following,
+which was triggered on a PowerPC machine with a node/leaf size of 64K:
 
-That warning spams my logs every 1-5 minutes. There is no unmounting 
-happening.
+[ 1359.518899] ------------[ cut here ]------------
+[ 1359.518980] BTRFS: Transaction aborted (error -27)
+[ 1359.519135] WARNING: CPU: 3 PID: 16463 at ../fs/btrfs/block-group.c:1968 btrfs_create_pending_block_groups+0x340/0x3c0 [btrfs]
+[ 1359.519152] Modules linked in: (...)
+[ 1359.519239] Supported: Yes, External
+[ 1359.519252] CPU: 3 PID: 16463 Comm: stress-ng Tainted: G               X    5.3.18-47-default #1 SLE15-SP3
+[ 1359.519274] NIP:  c008000000e36fe8 LR: c008000000e36fe4 CTR: 00000000006de8e8
+[ 1359.519293] REGS: c00000056890b700 TRAP: 0700   Tainted: G               X     (5.3.18-47-default)
+[ 1359.519317] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 48008222  XER: 00000007
+[ 1359.519356] CFAR: c00000000013e170 IRQMASK: 0
+[ 1359.519356] GPR00: c008000000e36fe4 c00000056890b990 c008000000e83200 0000000000000026
+[ 1359.519356] GPR04: 0000000000000000 0000000000000000 0000d52a3b027651 0000000000000007
+[ 1359.519356] GPR08: 0000000000000003 0000000000000001 0000000000000007 0000000000000000
+[ 1359.519356] GPR12: 0000000000008000 c00000063fe44600 000000001015e028 000000001015dfd0
+[ 1359.519356] GPR16: 000000000000404f 0000000000000001 0000000000010000 0000dd1e287affff
+[ 1359.519356] GPR20: 0000000000000001 c000000637c9a000 ffffffffffffffe5 0000000000000000
+[ 1359.519356] GPR24: 0000000000000004 0000000000000000 0000000000000100 ffffffffffffffc0
+[ 1359.519356] GPR28: c000000637c9a000 c000000630e09230 c000000630e091d8 c000000562188b08
+[ 1359.519561] NIP [c008000000e36fe8] btrfs_create_pending_block_groups+0x340/0x3c0 [btrfs]
+[ 1359.519613] LR [c008000000e36fe4] btrfs_create_pending_block_groups+0x33c/0x3c0 [btrfs]
+[ 1359.519626] Call Trace:
+[ 1359.519671] [c00000056890b990] [c008000000e36fe4] btrfs_create_pending_block_groups+0x33c/0x3c0 [btrfs] (unreliable)
+[ 1359.519729] [c00000056890ba90] [c008000000d68d44] __btrfs_end_transaction+0xbc/0x2f0 [btrfs]
+[ 1359.519782] [c00000056890bae0] [c008000000e309ac] btrfs_alloc_data_chunk_ondemand+0x154/0x610 [btrfs]
+[ 1359.519844] [c00000056890bba0] [c008000000d8a0fc] btrfs_fallocate+0xe4/0x10e0 [btrfs]
+[ 1359.519891] [c00000056890bd00] [c0000000004a23b4] vfs_fallocate+0x174/0x350
+[ 1359.519929] [c00000056890bd50] [c0000000004a3cf8] ksys_fallocate+0x68/0xf0
+[ 1359.519957] [c00000056890bda0] [c0000000004a3da8] sys_fallocate+0x28/0x40
+[ 1359.519988] [c00000056890bdc0] [c000000000038968] system_call_exception+0xe8/0x170
+[ 1359.520021] [c00000056890be20] [c00000000000cb70] system_call_common+0xf0/0x278
+[ 1359.520037] Instruction dump:
+[ 1359.520049] 7d0049ad 40c2fff4 7c0004ac 71490004 40820024 2f83fffb 419e0048 3c620000
+[ 1359.520082] e863bcb8 7ec4b378 48010d91 e8410018 <0fe00000> 3c820000 e884bcc8 7ec6b378
+[ 1359.520122] ---[ end trace d6c186e151022e20 ]---
 
-> 
->> Modules linked in: iTCO_wdt wireguard curve25519_x86_64 libchacha20poly1305 intel_pmc_bxt iTCO_vendor_support chacha_x86_64 poly1305_x86_64 libblake2s blake2s_x86_>
->> CPU: 0 PID: 758 Comm: journal-offline Tainted: G        W         5.10.26-1-MANJARO #1
->> Hardware name: Hetzner vServer, BIOS 20171111 11/11/2017
->> RIP: 0010:__writeback_inodes_sb_nr+0xb8/0xd0
->> Code: 0f b6 d1 48 8d 74 24 10 e8 35 fc ff ff 48 89 e7 e8 7d fb ff ff 48 8b 44 24 48 65 48 2b 04 25 28 00 00 00 75 09 48 83 c4 50 c3 <0f> 0b eb cf e8 df 8c 75 00 66>
->> RSP: 0018:ffffb1f540d7fd40 EFLAGS: 00010246
->> RAX: 0000000000000000 RBX: ffff961185aa5488 RCX: 0000000000000000
->> RDX: 0000000000000002 RSI: 0000000000004be5 RDI: ffff9611b7220000
->> RBP: ffff961182209208 R08: ffff961184efc800 R09: 0000000000000140
->> R10: ffff9611859e6400 R11: ffff961192af3c10 R12: ffff961183891200
->> R13: ffff961185aa5000 R14: ffff961185aa5460 R15: ffff9611b65d5e10
->> FS:  00007f654b80e640(0000) GS:ffff9611fac00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f654cf39010 CR3: 0000000003884000 CR4: 00000000003506f0
->> Call Trace:
->>   btrfs_commit_transaction+0x448/0xbc0 [btrfs]
->>   ? btrfs_wait_ordered_range+0x1b8/0x210 [btrfs]
->>   ? btrfs_sync_file+0x2b8/0x4e0 [btrfs]
->>   btrfs_sync_file+0x343/0x4e0 [btrfs]
->>   __x64_sys_fsync+0x34/0x60
->>   do_syscall_64+0x33/0x40
-> 
-> Normally you need to mount -o flushoncommit to trigger this warning.
-> Maybe sync is triggering it too?
+The following steps explain how we can end up in this situation:
 
-I've looked again and yes, this "special" filesystem is mounted 
-flushoncommit and discard=async. Would it be better to not set these 
-options, for now?
+1) Task A is at check_system_chunk(), either because it is allocating a
+   new data or metadata block group, at btrfs_chunk_alloc(), or because
+   it is removing a block group or turning a block group RO. It does not
+   matter why;
 
-BR
+2) Task A sees that there is not enough free space in the system
+   space_info object, that is 'left' is < 'thresh'. And at this point
+   the system space_info has a value of 0 for its 'bytes_may_use'
+   counter;
+
+3) As a consequence task A calls btrfs_alloc_chunk() in order to allocate
+   a new system block group (chunk) and then reserves 'thresh' bytes in
+   the chunk block reserve with the call to btrfs_block_rsv_add(). This
+   changes the chunk block reserve's 'reserved' and 'size' counters by an
+   amount of 'thresh', and changes the 'bytes_may_use' counter of the
+   system space_info object from 0 to 'thresh'.
+
+   Also during its call to btrfs_alloc_chunk(), we end up increasing the
+   value of the 'total_bytes' counter of the system space_info object by
+   8MiB (the size of a system chunk stripe). This happens through the
+   call chain:
+
+   btrfs_alloc_chunk()
+       create_chunk()
+           btrfs_make_block_group()
+               btrfs_update_space_info()
+
+4) After it finishes the first phase of the block group allocation, at
+   btrfs_chunk_alloc(), task A unlocks the chunk mutex;
+
+5) At this point the new system block group was added to the transaction
+   handle's list of new block groups, but its block group item, device
+   items and chunk item were not yet inserted in the extent, device and
+   chunk trees, respectively. That only happens later when we call
+   btrfs_finish_chunk_alloc() through a call to
+   btrfs_create_pending_block_groups();
+
+   Note that only when we update the chunk tree, through the call to
+   btrfs_finish_chunk_alloc(), we decrement the 'reserved' counter
+   of the chunk block reserve as we COW/allocate extent buffers,
+   through:
+
+   btrfs_alloc_tree_block()
+      btrfs_use_block_rsv()
+         btrfs_block_rsv_use_bytes()
+
+   And the system space_info's 'bytes_may_use' is decremented everytime
+   we allocate an extent buffer for COW operations on the chunk tree,
+   through:
+
+   btrfs_alloc_tree_block()
+      btrfs_reserve_extent()
+         find_free_extent()
+            btrfs_add_reserved_bytes()
+
+   If we end up COWing less chunk btree nodes/leaves than expected, which
+   is the typical case since the amount of space we reserve is always
+   pessimistic to account for the worst possible case, we release the
+   unused space through:
+
+   btrfs_create_pending_block_groups()
+      btrfs_trans_release_chunk_metadata()
+         btrfs_block_rsv_release()
+            block_rsv_release_bytes()
+                btrfs_space_info_free_bytes_may_use()
+
+   But before task A gets into btrfs_create_pending_block_groups()...
+
+6) Many other tasks start allocating new block groups through fallocate,
+   each one does the first phase of block group allocation in a
+   serialized way, since btrfs_chunk_alloc() takes the chunk mutex
+   before calling check_system_chunk() and btrfs_alloc_chunk().
+
+   However before everyone enters the final phase of the block group
+   allocation, that is, before calling btrfs_create_pending_block_groups(),
+   new tasks keep coming to allocate new block groups and while at
+   check_system_chunk(), the system space_info's 'bytes_may_use' keeps
+   increasing each time a task reserves space in the chunk block reserve.
+   This means that eventually some other task can end up not seeing enough
+   free space in the system space_info and decide to allocate yet another
+   system chunk.
+
+   This may repeat several times if yet more new tasks keep allocating
+   new block groups before task A, and all the other tasks, finish the
+   creation of the pending block groups, which is when reserved space
+   in excess is released. Eventually this can result in exhaustion of
+   system chunk array in the superblock, with btrfs_add_system_chunk()
+   returning -EFBIG, resulting later in a transaction abort.
+
+   Even when we don't reach the extreme case of exhausting the system
+   array, most, if not all, unnecessarily created system block groups
+   end up being unused since when finishing creation of the first
+   pending system block group, the creation of the following ones end
+   up not needing to COW nodes/leaves of the chunk tree, so we never
+   allocate and deallocate from them, resulting in them never being
+   added to the list of unused block groups - as a consequence they
+   don't get deleted by the cleaner kthread - the only exceptions are
+   if we unmount and mount the filesystem again, which adds any unused
+   block groups to the list of unused block groups, if a scrub is
+   run, which also adds unused block groups to the unused list, and
+   under some circumstances when using a zoned filesystem or async
+   discard, which may also add unused block groups to the unused list.
+
+So fix this by:
+
+*) Tracking the number of reserved bytes for the chunk tree per
+   transaction, which is the sum of reserved chunk bytes by each
+   transaction handle currently being used;
+
+*) When there is not enough free space in the system space_info,
+   if there are other transaction handles which reserved chunk space,
+   wait for some of them to complete in order to have enough excess
+   reserved space released, and then try again. Otherwise proceed with
+   the creation of a new system chunk.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/block-group.c | 58 +++++++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/transaction.c |  5 ++++
+ fs/btrfs/transaction.h |  7 +++++
+ 3 files changed, 69 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 85077c95b4f7..293f3169be80 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3273,6 +3273,7 @@ static u64 get_profile_num_devs(struct btrfs_fs_info *fs_info, u64 type)
+  */
+ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+ {
++	struct btrfs_transaction *cur_trans = trans->transaction;
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_space_info *info;
+ 	u64 left;
+@@ -3287,6 +3288,7 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+ 	lockdep_assert_held(&fs_info->chunk_mutex);
+ 
+ 	info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_SYSTEM);
++again:
+ 	spin_lock(&info->lock);
+ 	left = info->total_bytes - btrfs_space_info_used(info, true);
+ 	spin_unlock(&info->lock);
+@@ -3305,6 +3307,58 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+ 
+ 	if (left < thresh) {
+ 		u64 flags = btrfs_system_alloc_profile(fs_info);
++		u64 reserved = atomic64_read(&cur_trans->chunk_bytes_reserved);
++
++		/*
++		 * If there's not available space for the chunk tree (system
++		 * space) and there are other tasks that reserved space for
++		 * creating a new system block group, wait for them to complete
++		 * the creation of their system block group and release excess
++		 * reserved space. We do this because:
++		 *
++		 * *) We can end up allocating more system chunks than necessary
++		 *    when there are multiple tasks that are concurrently
++		 *    allocating block groups, which can lead to exhaustion of
++		 *    the system array in the superblock;
++		 *
++		 * *) If we allocate extra and unnecessary system block groups,
++		 *    despite being empty for a long time, and possibly forever,
++		 *    they end not being added to the list of unused block groups
++		 *    because that typically happens only when deallocating the
++		 *    last extent from a block group - which never happens since
++		 *    we never allocate from them in the first place. The few
++		 *    exceptions are when mounting a filesystem or running scrub,
++		 *    which add unused block groups to the list of unused block
++		 *    groups, to be deleted by the cleaner kthread.
++		 *    And even when they are added to the list of unused block
++		 *    groups, it can take a long time until they get deleted,
++		 *    since the cleaner kthread might be sleeping or busy with
++		 *    other work (deleting subvolumes, running delayed iputs,
++		 *    defrag scheduling, etc);
++		 *
++		 * This is rare in practice, but can happen when too many tasks
++		 * are allocating blocks groups in parallel (via fallocate())
++		 * and before the one that reserved space for a new system block
++		 * group finishes the block group creation and releases the space
++		 * reserved in excess (at btrfs_create_pending_block_groups()),
++		 * other tasks end up here and see free system space temporarily
++		 * not enough for updating the chunk tree.
++		 *
++		 * We unlock the chunk mutex before waiting for such tasks and
++		 * lock it again after the wait, otherwise we would deadlock.
++		 * It is safe to do so because allocating a system chunk is the
++		 * first thing done while allocating a new block group.
++		 */
++		if (reserved > trans->chunk_bytes_reserved) {
++			const u64 min_needed = reserved - thresh;
++
++			mutex_unlock(&fs_info->chunk_mutex);
++			wait_event(cur_trans->chunk_reserve_wait,
++			   atomic64_read(&cur_trans->chunk_bytes_reserved) <=
++			   min_needed);
++			mutex_lock(&fs_info->chunk_mutex);
++			goto again;
++		}
+ 
+ 		/*
+ 		 * Ignore failure to create system chunk. We might end up not
+@@ -3319,8 +3373,10 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+ 		ret = btrfs_block_rsv_add(fs_info->chunk_root,
+ 					  &fs_info->chunk_block_rsv,
+ 					  thresh, BTRFS_RESERVE_NO_FLUSH);
+-		if (!ret)
++		if (!ret) {
++			atomic64_add(thresh, &cur_trans->chunk_bytes_reserved);
+ 			trans->chunk_bytes_reserved += thresh;
++		}
+ 	}
+ }
+ 
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index acff6bb49a97..97c5e7396bce 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -260,6 +260,7 @@ static inline int extwriter_counter_read(struct btrfs_transaction *trans)
+ void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_transaction *cur_trans = trans->transaction;
+ 
+ 	if (!trans->chunk_bytes_reserved)
+ 		return;
+@@ -268,6 +269,8 @@ void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans)
+ 
+ 	btrfs_block_rsv_release(fs_info, &fs_info->chunk_block_rsv,
+ 				trans->chunk_bytes_reserved, NULL);
++	atomic64_sub(trans->chunk_bytes_reserved, &cur_trans->chunk_bytes_reserved);
++	cond_wake_up(&cur_trans->chunk_reserve_wait);
+ 	trans->chunk_bytes_reserved = 0;
+ }
+ 
+@@ -383,6 +386,8 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+ 	spin_lock_init(&cur_trans->dropped_roots_lock);
+ 	INIT_LIST_HEAD(&cur_trans->releasing_ebs);
+ 	spin_lock_init(&cur_trans->releasing_ebs_lock);
++	atomic64_set(&cur_trans->chunk_bytes_reserved, 0);
++	init_waitqueue_head(&cur_trans->chunk_reserve_wait);
+ 	list_add_tail(&cur_trans->list, &fs_info->trans_list);
+ 	extent_io_tree_init(fs_info, &cur_trans->dirty_pages,
+ 			IO_TREE_TRANS_DIRTY_PAGES, fs_info->btree_inode);
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index dd7c3eea08ad..364cfbb4c5c5 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -96,6 +96,13 @@ struct btrfs_transaction {
+ 
+ 	spinlock_t releasing_ebs_lock;
+ 	struct list_head releasing_ebs;
++
++	/*
++	 * The number of bytes currently reserved, by all transaction handles
++	 * attached to this transaction, for metadata extents of the chunk tree.
++	 */
++	atomic64_t chunk_bytes_reserved;
++	wait_queue_head_t chunk_reserve_wait;
+ };
+ 
+ #define __TRANS_FREEZABLE	(1U << 0)
+-- 
+2.28.0
+
