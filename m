@@ -2,163 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FEA34F890
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Mar 2021 08:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CF934F8C2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Mar 2021 08:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbhCaGOh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 Mar 2021 02:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
+        id S233788AbhCaG2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 Mar 2021 02:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbhCaGOQ (ORCPT
+        with ESMTP id S233812AbhCaG2J (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 Mar 2021 02:14:16 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165C7C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Mar 2021 23:14:14 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id e18so18393132wrt.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Mar 2021 23:14:14 -0700 (PDT)
+        Wed, 31 Mar 2021 02:28:09 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A44BC061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Mar 2021 23:28:09 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id c8so18408607wrq.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Mar 2021 23:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VunFfdenocrHVJKnlewYGRbjLxyx4WlauhwRsxFATBA=;
-        b=AOKSDX2ULUXOtcGju1Iem9ipbyFDFhpGmdjl1Pi99PnmxJg4RK3HWsebjiz4e8O/cU
-         H0l9b+0kg/x1rB+BJBDZei983kwb3wCyfpoSNiTQgTRI8XDEPgSHg+lHUCM1qSnLf9Cb
-         YBPbbl0Qr7JLCqQkcymPS6JXMgBNqyJauG1mz8WOmCgHb5S7nioOy1G0R9IR7KeLq8wz
-         qbP6vJPe8u6MnNW5hUD9i/cXe1cq7dwq/fICowveFRRntKcB1eLCGBp98QhklYjGy35D
-         45Q5JfIPjtpbIeL4mlIq4bQsWboDtLqFDseqY8jILitrhUw7K4gT9vINYCqioBKJuuwY
-         vI5g==
+         :cc:content-transfer-encoding;
+        bh=gibSjFL6O4lCYN53qC3xaBSu58gAaUodble8H/gMY1k=;
+        b=enn4QUzcBobFfLIZMmPvX1iLKPpALCJ82DQrBUbihAjgtWm5sUJhBc7Z2bxWZfZPj4
+         eECbgcAHnznhdiXzvF6OYMy2Hv9Wo9mjEPvvT6clT63ZUXKIX5N0MkxYZBXGWJDWakv9
+         Bn5v2XrBMNkROhrtXbZPbim24y4Ead/0GDiXpB7W8rwLzLwyv7kdvybcY3aFMtV2SnCi
+         xplBwQ/iu5vkCdXmgqt++DPlOXVMWhwbfPG+Pkwx6FT9vk+m5Vf37BptvMndwKThT0vK
+         36/odcCXCg1AlQPvSgTR+UODmA548n/1SUK8C9RSOj4F5EvVHy9VioEYhOnLSG48eXEt
+         Hbbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VunFfdenocrHVJKnlewYGRbjLxyx4WlauhwRsxFATBA=;
-        b=GdSZObM4cSd4u7sFzXSxb9k3Ht16EEpT/mq5or1rOYdh9W/C7VracaqxuM3YNH6V1C
-         BoxFFzDBS46E7XNnORMvIzXg83WV/L94ANmiNk8lPobolf3HtRJP3W5EJM2Ix4Xl2RZC
-         858oBOBBywjEL1IudJSNJGwbqDXaMyz4sIZsnKeLXASjwALnlKPHwSD0rk9of7o6XCmm
-         GzYiVK6ARi99NPHgxG+iNNTQh36kUmn+WBkpdRHRRWHCxZTV3es5xGvPY7fON6Wva8sL
-         l2d4RDOwk6GoACksM89m2rqMBPE0AcpkyTThVVlR79NAIzsNN0gMunQgGPI90vCI1Gut
-         6MYg==
-X-Gm-Message-State: AOAM531jfxv9Zno5PiivrhaDsphhcLx85NYocKSqP3CI0mjrTcGg7D2u
-        qVatnrJzp1qTquXCMVooV/6dlHiUUQaViUZ91zTZc3b5vncZRA==
-X-Google-Smtp-Source: ABdhPJxvDw5q7fiR7o2IsV1wB8wW6Ve0xhtKMDy+49/tFc+/eLZ94KoPnFEX7p3sskiTjdHtBFJ0e1uwK7lPkRmrN2Y=
-X-Received: by 2002:a5d:6c6a:: with SMTP id r10mr1681910wrz.42.1617171252876;
- Tue, 30 Mar 2021 23:14:12 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gibSjFL6O4lCYN53qC3xaBSu58gAaUodble8H/gMY1k=;
+        b=VC8BJygXih6O9EysPhLGNdEr5JLl0wjitH+9LS5YFLWJCreyRKAXZP2BvRY/sgAkr8
+         dK+eVVjJrVMXg1YNeCy11MoAhag/KuWC85et6H88ZLfG58SozJl+3XTHf2Ra+/xONRah
+         2v2uqz2gjpHaapHKiHeoFENKbbybZ9jaUiiHpTwMl9dzGpKu8xZQL/IRALn077+8mz1L
+         q3rWzBdsxwTC5dqppkMw/PACCNBcgGQ7zC+PZhW4y5KjUTra0B16+oH8lkspQjlEFkLC
+         zqIPj332v1E04hyCA1DkHJttmJZx9AjoEJhHoGnp48CGhQyBtn+u5hhZV4KXy95lIbHH
+         3JHQ==
+X-Gm-Message-State: AOAM531zagcfShXssP88I2pF260GWaM+IZB0aBCKdPNzu5wDFl3uesaJ
+        t9ZK0FEunHdZZRXHl6rhbiqRYyjFDed82aYaCpt1/vu16mQwhTwf
+X-Google-Smtp-Source: ABdhPJxjAzORhiF7lEQhPq/GnPESOr0sKefAnj63vf7ivFyibvokD/33qdazzXUZ4f0kz0lI198/idN72h3Wkn8rSIg=
+X-Received: by 2002:a5d:6c6a:: with SMTP id r10mr1743471wrz.42.1617172087989;
+ Tue, 30 Mar 2021 23:28:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <CABDFzMi0AXwBaiL-aFW1G5-UMwgTffza5hbr-9MNHWyGfmyDAQ@mail.gmail.com>
-In-Reply-To: <CABDFzMi0AXwBaiL-aFW1G5-UMwgTffza5hbr-9MNHWyGfmyDAQ@mail.gmail.com>
+References: <emfd92f28c-2171-4c40-951d-08f5c35ae5a0@desktop-g0r648m>
+ <CAJCQCtQt83dXev6Ngo_tDPZFqD60eD3W3h-1ZT8KLc5hMcB_HA@mail.gmail.com> <em7b647410-6346-4e95-b97a-f45ee2de0037@desktop-g0r648m>
+In-Reply-To: <em7b647410-6346-4e95-b97a-f45ee2de0037@desktop-g0r648m>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 31 Mar 2021 00:13:56 -0600
-Message-ID: <CAJCQCtRM-MUPTBSmXa=PE-MBWBrLFta2Gx1+AY1Hox5AZBSfxQ@mail.gmail.com>
-Subject: Re: Support demand on Btrfs crashed fs.
-To:     Thierry Testeur <thierry.testeur@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Wed, 31 Mar 2021 00:27:51 -0600
+Message-ID: <CAJCQCtQH=k_h7CyRLysea0NgqadPnOVtVTGzdU9pG69RRhqL+g@mail.gmail.com>
+Subject: Re: Re[2]: Filesystem sometimes Hangs
+To:     Hendrik Friedel <hendrik@friedels.name>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm going to fill in some details from the multiday conversation with
-IRC regulars. We couldn't figure out a way forward.
+On Tue, Mar 30, 2021 at 6:50 AM Hendrik Friedel <hendrik@friedels.name> wro=
+te:
 
-* WDC Red with Firmware Version: 80.00A80, which is highly suspected
-to deal with power fail and write caching incorrectly, and at least on
-Btrfs apparently pretty much always drops writes for critical
-metadata.
-* A power fail / reset happened
-* No snapshots
-* --repair and --init-extent-tree  may not have done anything because
-they didn't complete
-* Less than 10% needs to be recovered and it's accepted that it can't
-be repaired. The focus is just on a limited restore, but we can't get
-past the transid failures.
+> >  Next
+> >'btrfs check --readonly' (must be done offline ie booted from usb
+> >stick). And if it all comes up without errors or problems, you can
+> >zero the statistics with 'btrfs dev stats -z'.
+> No error found. Neither in btrfs check, nor in scrub.
+> So, shall I reset the stats then?
+
+Up to you. It's probably better to zero them because it's obvious if
+the numbers change from 0, there's a problem.
 
 
-zapan@UBUNTU-SERVER:~$ sudo btrfs check --readonly /dev/md0
-Opening filesystem to check...
-parent transid verify failed on 23079040831488 wanted 524940 found 524941
-parent transid verify failed on 23079040831488 wanted 524940 found 524941
-Ignoring transid failure
-parent transid verify failed on 23079040319488 wanted 524931 found 524939
-Ignoring transid failure
-Checking filesystem on /dev/md0
-UUID: f4f04e16-ce38-4a57-8434-67562a0790bd
-[1/7] checking root items
-parent transid verify failed on 23079042863104 wanted 423153 found 524931
-parent transid verify failed on 23079042863104 wanted 423153 found 524931
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=23079040999424 item=11 parent
-level=2 child bytenr=23079042863104 child level=0
-ERROR: failed to repair root items: Input/output error
-[2/7] checking extents
-parent transid verify failed on 23079042863104 wanted 423153 found 524931
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=23079040999424 item=11 parent
-level=2 child bytenr=23079042863104 child level=0
-ERROR: errors found in extent allocation tree or chunk allocation
-[3/7] checking free space cache
-cache and super generation don't match, space cache will be invalidated
-[4/7] checking fs roots
-root 5 root dir 256 not found
-parent transid verify failed on 23079042863104 wanted 423153 found 524931
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=23079040999424 item=11 parent
-level=2 child bytenr=23079042863104 child level=0
-ERROR: errors found in fs roots
-found 0 bytes used, error(s) found
-total csum bytes: 0
-total tree bytes: 0
-total fs tree bytes: 0
-total extent tree bytes: 0
-btree space waste bytes: 0
-file data blocks allocated: 0
-referenced 0
+> 5.10.0-0.bpo.3-amd64
 
-btrfs-find-root doesn't find many options to work with, and all of
-them fail with 'btrfs restore -t'
+It's probably OK. I'm not sure what upstream stable version this
+translates into, but current stable are 5.10.27 and 5.11.11. There
+have been multiple btrfs bug fixes since 5.10.0 was released.
 
+I missed in your first email this line:
 
-zapan@UBUNTU-SERVER:~$ sudo btrfs-find-root /dev/md0
-parent transid verify failed on 23079040831488 wanted 524940 found 524941
-parent transid verify failed on 23079040831488 wanted 524940 found 524941
-Ignoring transid failure
-parent transid verify failed on 23079040319488 wanted 524931 found 524939
-Ignoring transid failure
-Superblock thinks the generation is 524941
-Superblock thinks the level is 2
-Found tree root at 23079040999424 gen 524941 level 2
-Well block 23079040327680(gen: 524940 level: 2) seems good, but
-generation/level doesn't match, want gen: 524941 level: 2
-Well block 23079040389120(gen: 524939 level: 2) seems good, but
-generation/level doesn't match, want gen: 524941 level: 2
-zapan@UBUNTU-SERVER:~$ sudo btrfs restore -viD -t 23079040389120
-/dev/md0 /mnt/raid1/restore/
-parent transid verify failed on 23079040389120 wanted 524941 found 524939
-parent transid verify failed on 23079040389120 wanted 524941 found 524939
-Ignoring transid failure
-parent transid verify failed on 23079040323584 wanted 524939 found 524941
-parent transid verify failed on 23079040323584 wanted 524939 found 524941
-Ignoring transid failure
-parent transid verify failed on 23079040319488 wanted 524931 found 524939
-Ignoring transid failure
-This is a dry-run, no files are going to be restored
-Reached the end of the tree searching the directory
-zapan@UBUNTU-SERVER:~$ sudo btrfs restore -viD -t 23079040327680
-/dev/md0 /mnt/raid1/restore/
-parent transid verify failed on 23079040327680 wanted 524941 found 524940
-parent transid verify failed on 23079040327680 wanted 524941 found 524940
-Ignoring transid failure
-parent transid verify failed on 23079040831488 wanted 524940 found 524941
-parent transid verify failed on 23079040831488 wanted 524940 found 524941
-Ignoring transid failure
-parent transid verify failed on 23079040319488 wanted 524931 found 524939
-Ignoring transid failure
-This is a dry-run, no files are going to be restored
-Reached the end of the tree searching the directory
+>[Mo M=C3=A4r 29 09:29:21 2021] BTRFS info (device sdc2): turning on sync d=
+iscard
+
+Remove the discard mount option for this file system and see if that
+fixes the problem. Run it for a week or two, or until you're certain
+the problem is still happening (or certain it's gone). Some drives
+just can't handle sync discards, they become really slow and hang,
+just like you're reporting. It's probably adequate to just enable the
+fstrim.timer, part of util-linux, which runs once per week. If you
+have really heavy write and delete workloads, you might benefit from
+discard=3Dasync mount option (async instead of sync). But first you
+should just not do any discards at all for a while to see if that's
+the problem and then deliberately re-introduce just that one single
+change so you can monitor it for problems.
 
 
 
-
-
--- 
+--=20
 Chris Murphy
