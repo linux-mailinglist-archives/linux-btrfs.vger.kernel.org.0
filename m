@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD3734FE58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Mar 2021 12:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C85D34FE5D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Mar 2021 12:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbhCaK4T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 Mar 2021 06:56:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43942 "EHLO mail.kernel.org"
+        id S235095AbhCaK4y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 31 Mar 2021 06:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234862AbhCaKzx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 Mar 2021 06:55:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C40C661952
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Mar 2021 10:55:52 +0000 (UTC)
+        id S234995AbhCaK4Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 31 Mar 2021 06:56:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C0F61952
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 Mar 2021 10:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617188153;
-        bh=q8p1IIoFl7f0R0B2VagzgkvjvcT9A9nfqwu145uCL8c=;
+        s=k20201202; t=1617188184;
+        bh=3mZ5kaYgygjNfuv3Z/Aix/PueH394XwLJMCFeLzRtQc=;
         h=From:To:Subject:Date:From;
-        b=lsPtv8xThViV9x6X8DTvc+wZx2PyeLBeUC1zgszUUy8Ue0wpVhOIW6318nZxC5OYa
-         mQO+qbZjeqXbXzo+RqE0H7BGnKKCIFWcaCmNFx9CGsGVwjrkJUEA2/GGPUR3FVNvSa
-         z1DOekF2382xwnXS1Z2tkMnlpnjbFKli9kVvu1zVVa+w4/tOgcFbEkaTkLUX420VZ4
-         Qbx5bY/E4htrilcJ4rTlrQk7NoqN5R3zKZ6qw9DkbH7xX2weMZhP2JnHt7BMZUkjtS
-         Hzp4UoAui3aQKHrdAlAmRWlYsgmY3FYIP9MTOliNg2YDbssxKsjNIOFIpvg41iJFKL
-         qugJGXKid0fFg==
+        b=kC5gygak65OgdzIU7M5NXyELmlJSRfCJEtEndYYyW2fWhNCsTVPWJcX48SURs+AXA
+         xrUVnUUtbol0mPnDzZnpCo06N1+T/7k+rN7d6LcADrsA7SIqZsU4KFg3T0Uw66nPHZ
+         Tt4cmdN+1nyswdS+rOQ8I+v3SlwH1Vh5hMl8j911TGAPhxl1Fo97WFgIBnZBoKqP9f
+         RmUzPD5dYA70xoyEAZJiYrikoNkw0hd+GyGw6mXksMyinHD9ND+eyTuAilStE/5S7I
+         bBuL7sxEVh+IAMFy1xum+0DpjVLNl+n/p2rCshXrpjLaKKRg8PrPsqoN7SGTw4uc1g
+         cvsJESAJhMF3w==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix exhaustion of the system chunk array due to concurrent allocations
-Date:   Wed, 31 Mar 2021 11:55:50 +0100
-Message-Id: <beffbc19524a06910b0c59daa97570b8e94c4efc.1617188005.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: improve btree readahead for full send operations
+Date:   Wed, 31 Mar 2021 11:56:21 +0100
+Message-Id: <ec7b0d5e27fc3f54c888fb7b71510f3a6d793cd7.1617188079.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -37,313 +37,252 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When we are running out of space for updating the chunk tree, that is,
-when we are low on available space in the system space info, if we have
-many task concurrently allocating block groups, via fallocate for example,
-many of them can end up all allocating new system chunks when only one is
-needed. In extreme cases this can lead to exhaustion of the system chunk
-array, which has a size limit of 2048 bytes, and results in a transaction
-abort with errno -EFBIG, producing a trace in dmesg like the following,
-which was triggered on a PowerPC machine with a node/leaf size of 64K:
+Currently a full send operation uses the standard btree readahead when
+iterating over the subvolume/snapshot btree, which despite bringing good
+performance benefits, it could be improved in a few aspects for use cases
+such as full send operations, which are guaranteed to visit every node
+and leaf of a btree, in ascending and sequential order. The limitations
+of that standard btree readahead implementation are the following:
 
-[ 1359.518899] ------------[ cut here ]------------
-[ 1359.518980] BTRFS: Transaction aborted (error -27)
-[ 1359.519135] WARNING: CPU: 3 PID: 16463 at ../fs/btrfs/block-group.c:1968 btrfs_create_pending_block_groups+0x340/0x3c0 [btrfs]
-[ 1359.519152] Modules linked in: (...)
-[ 1359.519239] Supported: Yes, External
-[ 1359.519252] CPU: 3 PID: 16463 Comm: stress-ng Tainted: G               X    5.3.18-47-default #1 SLE15-SP3
-[ 1359.519274] NIP:  c008000000e36fe8 LR: c008000000e36fe4 CTR: 00000000006de8e8
-[ 1359.519293] REGS: c00000056890b700 TRAP: 0700   Tainted: G               X     (5.3.18-47-default)
-[ 1359.519317] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 48008222  XER: 00000007
-[ 1359.519356] CFAR: c00000000013e170 IRQMASK: 0
-[ 1359.519356] GPR00: c008000000e36fe4 c00000056890b990 c008000000e83200 0000000000000026
-[ 1359.519356] GPR04: 0000000000000000 0000000000000000 0000d52a3b027651 0000000000000007
-[ 1359.519356] GPR08: 0000000000000003 0000000000000001 0000000000000007 0000000000000000
-[ 1359.519356] GPR12: 0000000000008000 c00000063fe44600 000000001015e028 000000001015dfd0
-[ 1359.519356] GPR16: 000000000000404f 0000000000000001 0000000000010000 0000dd1e287affff
-[ 1359.519356] GPR20: 0000000000000001 c000000637c9a000 ffffffffffffffe5 0000000000000000
-[ 1359.519356] GPR24: 0000000000000004 0000000000000000 0000000000000100 ffffffffffffffc0
-[ 1359.519356] GPR28: c000000637c9a000 c000000630e09230 c000000630e091d8 c000000562188b08
-[ 1359.519561] NIP [c008000000e36fe8] btrfs_create_pending_block_groups+0x340/0x3c0 [btrfs]
-[ 1359.519613] LR [c008000000e36fe4] btrfs_create_pending_block_groups+0x33c/0x3c0 [btrfs]
-[ 1359.519626] Call Trace:
-[ 1359.519671] [c00000056890b990] [c008000000e36fe4] btrfs_create_pending_block_groups+0x33c/0x3c0 [btrfs] (unreliable)
-[ 1359.519729] [c00000056890ba90] [c008000000d68d44] __btrfs_end_transaction+0xbc/0x2f0 [btrfs]
-[ 1359.519782] [c00000056890bae0] [c008000000e309ac] btrfs_alloc_data_chunk_ondemand+0x154/0x610 [btrfs]
-[ 1359.519844] [c00000056890bba0] [c008000000d8a0fc] btrfs_fallocate+0xe4/0x10e0 [btrfs]
-[ 1359.519891] [c00000056890bd00] [c0000000004a23b4] vfs_fallocate+0x174/0x350
-[ 1359.519929] [c00000056890bd50] [c0000000004a3cf8] ksys_fallocate+0x68/0xf0
-[ 1359.519957] [c00000056890bda0] [c0000000004a3da8] sys_fallocate+0x28/0x40
-[ 1359.519988] [c00000056890bdc0] [c000000000038968] system_call_exception+0xe8/0x170
-[ 1359.520021] [c00000056890be20] [c00000000000cb70] system_call_common+0xf0/0x278
-[ 1359.520037] Instruction dump:
-[ 1359.520049] 7d0049ad 40c2fff4 7c0004ac 71490004 40820024 2f83fffb 419e0048 3c620000
-[ 1359.520082] e863bcb8 7ec4b378 48010d91 e8410018 <0fe00000> 3c820000 e884bcc8 7ec6b378
-[ 1359.520122] ---[ end trace d6c186e151022e20 ]---
+1) It only triggers readahead for for leaves that are physically close
+   to the leaf being read, within a 64K range;
 
-The following steps explain how we can end up in this situation:
+2) It only triggers readahead for the next or previous leaves if the
+   leaf being read is not currently in memory;
 
-1) Task A is at check_system_chunk(), either because it is allocating a
-   new data or metadata block group, at btrfs_chunk_alloc(), or because
-   it is removing a block group or turning a block group RO. It does not
-   matter why;
+3) It never triggers readahead for nodes.
 
-2) Task A sees that there is not enough free space in the system
-   space_info object, that is 'left' is < 'thresh'. And at this point
-   the system space_info has a value of 0 for its 'bytes_may_use'
-   counter;
+So add a new readahead mode that addresses all these points and use it
+for full send operations.
 
-3) As a consequence task A calls btrfs_alloc_chunk() in order to allocate
-   a new system block group (chunk) and then reserves 'thresh' bytes in
-   the chunk block reserve with the call to btrfs_block_rsv_add(). This
-   changes the chunk block reserve's 'reserved' and 'size' counters by an
-   amount of 'thresh', and changes the 'bytes_may_use' counter of the
-   system space_info object from 0 to 'thresh'.
+The following test script was used to measure the improvement on a box
+using an average, consumer grade, spinning disk and with 16Gb of ram:
 
-   Also during its call to btrfs_alloc_chunk(), we end up increasing the
-   value of the 'total_bytes' counter of the system space_info object by
-   8MiB (the size of a system chunk stripe). This happens through the
-   call chain:
+  $ cat test.sh
+  #!/bin/bash
 
-   btrfs_alloc_chunk()
-       create_chunk()
-           btrfs_make_block_group()
-               btrfs_update_space_info()
+  DEV=/dev/sdj
+  MNT=/mnt/sdj
+  MKFS_OPTIONS="--nodesize 16384"     # default, just to be explicit
+  MOUNT_OPTIONS="-o max_inline=2048"  # default, just to be explicit
 
-4) After it finishes the first phase of the block group allocation, at
-   btrfs_chunk_alloc(), task A unlocks the chunk mutex;
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV > /dev/null
+  mount $MOUNT_OPTIONS $DEV $MNT
 
-5) At this point the new system block group was added to the transaction
-   handle's list of new block groups, but its block group item, device
-   items and chunk item were not yet inserted in the extent, device and
-   chunk trees, respectively. That only happens later when we call
-   btrfs_finish_chunk_alloc() through a call to
-   btrfs_create_pending_block_groups();
+  # Create files with inline data to make it easier and faster to create
+  # large btrees.
+  add_files()
+  {
+      local total=$1
+      local start_offset=$2
+      local number_jobs=$3
+      local total_per_job=$(($total / $number_jobs))
 
-   Note that only when we update the chunk tree, through the call to
-   btrfs_finish_chunk_alloc(), we decrement the 'reserved' counter
-   of the chunk block reserve as we COW/allocate extent buffers,
-   through:
+      echo "Creating $total new files using $number_jobs jobs"
+      for ((n = 0; n < $number_jobs; n++)); do
+          (
+              local start_num=$(($start_offset + $n * $total_per_job))
+              for ((i = 1; i <= $total_per_job; i++)); do
+                  local file_num=$((start_num + $i))
+                  local file_path="$MNT/file_${file_num}"
+                  xfs_io -f -c "pwrite -S 0xab 0 2000" $file_path > /dev/null
+                  if [ $? -ne 0 ]; then
+                      echo "Failed creating file $file_path"
+                      break
+                  fi
+              done
+          ) &
+          worker_pids[$n]=$!
+      done
 
-   btrfs_alloc_tree_block()
-      btrfs_use_block_rsv()
-         btrfs_block_rsv_use_bytes()
+      wait ${worker_pids[@]}
 
-   And the system space_info's 'bytes_may_use' is decremented everytime
-   we allocate an extent buffer for COW operations on the chunk tree,
-   through:
+      sync
+      echo
+      echo "btree node/leaf count: $(btrfs inspect-internal dump-tree -t 5 $DEV | egrep '^(node|leaf) ' | wc -l)"
+  }
 
-   btrfs_alloc_tree_block()
-      btrfs_reserve_extent()
-         find_free_extent()
-            btrfs_add_reserved_bytes()
+  initial_file_count=500000
+  add_files $initial_file_count 0 4
 
-   If we end up COWing less chunk btree nodes/leaves than expected, which
-   is the typical case since the amount of space we reserve is always
-   pessimistic to account for the worst possible case, we release the
-   unused space through:
+  echo
+  echo "Creating first snapshot..."
+  btrfs subvolume snapshot -r $MNT $MNT/snap1
 
-   btrfs_create_pending_block_groups()
-      btrfs_trans_release_chunk_metadata()
-         btrfs_block_rsv_release()
-            block_rsv_release_bytes()
-                btrfs_space_info_free_bytes_may_use()
+  echo
+  echo "Adding more files..."
+  add_files $((initial_file_count / 4)) $initial_file_count 4
 
-   But before task A gets into btrfs_create_pending_block_groups()...
+  echo
+  echo "Updating 1/50th of the initial files..."
+  for ((i = 1; i < $initial_file_count; i += 50)); do
+      xfs_io -c "pwrite -S 0xcd 0 20" $MNT/file_$i > /dev/null
+  done
 
-6) Many other tasks start allocating new block groups through fallocate,
-   each one does the first phase of block group allocation in a
-   serialized way, since btrfs_chunk_alloc() takes the chunk mutex
-   before calling check_system_chunk() and btrfs_alloc_chunk().
+  echo
+  echo "Creating second snapshot..."
+  btrfs subvolume snapshot -r $MNT $MNT/snap2
 
-   However before everyone enters the final phase of the block group
-   allocation, that is, before calling btrfs_create_pending_block_groups(),
-   new tasks keep coming to allocate new block groups and while at
-   check_system_chunk(), the system space_info's 'bytes_may_use' keeps
-   increasing each time a task reserves space in the chunk block reserve.
-   This means that eventually some other task can end up not seeing enough
-   free space in the system space_info and decide to allocate yet another
-   system chunk.
+  umount $MNT
 
-   This may repeat several times if yet more new tasks keep allocating
-   new block groups before task A, and all the other tasks, finish the
-   creation of the pending block groups, which is when reserved space
-   in excess is released. Eventually this can result in exhaustion of
-   system chunk array in the superblock, with btrfs_add_system_chunk()
-   returning -EFBIG, resulting later in a transaction abort.
+  echo 3 > /proc/sys/vm/drop_caches
+  blockdev --flushbufs $DEV &> /dev/null
+  hdparm -F $DEV &> /dev/null
 
-   Even when we don't reach the extreme case of exhausting the system
-   array, most, if not all, unnecessarily created system block groups
-   end up being unused since when finishing creation of the first
-   pending system block group, the creation of the following ones end
-   up not needing to COW nodes/leaves of the chunk tree, so we never
-   allocate and deallocate from them, resulting in them never being
-   added to the list of unused block groups - as a consequence they
-   don't get deleted by the cleaner kthread - the only exceptions are
-   if we unmount and mount the filesystem again, which adds any unused
-   block groups to the list of unused block groups, if a scrub is
-   run, which also adds unused block groups to the unused list, and
-   under some circumstances when using a zoned filesystem or async
-   discard, which may also add unused block groups to the unused list.
+  mount $MOUNT_OPTIONS $DEV $MNT
 
-So fix this by:
+  echo
+  echo "Testing full send..."
+  start=$(date +%s)
+  btrfs send $MNT/snap1 > /dev/null
+  end=$(date +%s)
+  echo
+  echo "Full send took $((end - start)) seconds"
 
-*) Tracking the number of reserved bytes for the chunk tree per
-   transaction, which is the sum of reserved chunk bytes by each
-   transaction handle currently being used;
+  umount $MNT
 
-*) When there is not enough free space in the system space_info,
-   if there are other transaction handles which reserved chunk space,
-   wait for some of them to complete in order to have enough excess
-   reserved space released, and then try again. Otherwise proceed with
-   the creation of a new system chunk.
+The durations of the full send operation in seconds were the following:
+
+Before this change:  217 seconds
+After this change:   205 seconds (-5.7%)
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/block-group.c | 58 +++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/transaction.c |  5 ++++
- fs/btrfs/transaction.h |  7 +++++
- 3 files changed, 69 insertions(+), 1 deletion(-)
+ fs/btrfs/ctree.c | 28 ++++++++++++++++++++++++----
+ fs/btrfs/ctree.h | 22 +++++++++++++++++++++-
+ fs/btrfs/send.c  |  2 +-
+ 3 files changed, 46 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 85077c95b4f7..293f3169be80 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3273,6 +3273,7 @@ static u64 get_profile_num_devs(struct btrfs_fs_info *fs_info, u64 type)
-  */
- void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
- {
-+	struct btrfs_transaction *cur_trans = trans->transaction;
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_space_info *info;
- 	u64 left;
-@@ -3287,6 +3288,7 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
- 	lockdep_assert_held(&fs_info->chunk_mutex);
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 26c2d50ea2db..a484fb72a01f 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1279,12 +1279,13 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+ 	u64 search;
+ 	u64 target;
+ 	u64 nread = 0;
++	u64 nread_max;
+ 	struct extent_buffer *eb;
+ 	u32 nr;
+ 	u32 blocksize;
+ 	u32 nscan = 0;
  
- 	info = btrfs_find_space_info(fs_info, BTRFS_BLOCK_GROUP_SYSTEM);
-+again:
- 	spin_lock(&info->lock);
- 	left = info->total_bytes - btrfs_space_info_used(info, true);
- 	spin_unlock(&info->lock);
-@@ -3305,6 +3307,58 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+-	if (level != 1)
++	if (level != 1 && path->reada != READA_FORWARD_ALWAYS)
+ 		return;
  
- 	if (left < thresh) {
- 		u64 flags = btrfs_system_alloc_profile(fs_info);
-+		u64 reserved = atomic64_read(&cur_trans->chunk_bytes_reserved);
+ 	if (!path->nodes[level])
+@@ -1292,6 +1293,20 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+ 
+ 	node = path->nodes[level];
+ 
++	/*
++	 * Since the time between visiting leaves is much shorter than the time
++	 * between visiting nodes, limit read ahead of nodes to 1, to avoid too
++	 * much IO at once (possibly random).
++	 */
++	if (path->reada == READA_FORWARD_ALWAYS) {
++		if (level > 1)
++			nread_max = node->fs_info->nodesize;
++		else
++			nread_max = SZ_128K;
++	} else {
++		nread_max = SZ_64K;
++	}
 +
-+		/*
-+		 * If there's not available space for the chunk tree (system
-+		 * space) and there are other tasks that reserved space for
-+		 * creating a new system block group, wait for them to complete
-+		 * the creation of their system block group and release excess
-+		 * reserved space. We do this because:
-+		 *
-+		 * *) We can end up allocating more system chunks than necessary
-+		 *    when there are multiple tasks that are concurrently
-+		 *    allocating block groups, which can lead to exhaustion of
-+		 *    the system array in the superblock;
-+		 *
-+		 * *) If we allocate extra and unnecessary system block groups,
-+		 *    despite being empty for a long time, and possibly forever,
-+		 *    they end not being added to the list of unused block groups
-+		 *    because that typically happens only when deallocating the
-+		 *    last extent from a block group - which never happens since
-+		 *    we never allocate from them in the first place. The few
-+		 *    exceptions are when mounting a filesystem or running scrub,
-+		 *    which add unused block groups to the list of unused block
-+		 *    groups, to be deleted by the cleaner kthread.
-+		 *    And even when they are added to the list of unused block
-+		 *    groups, it can take a long time until they get deleted,
-+		 *    since the cleaner kthread might be sleeping or busy with
-+		 *    other work (deleting subvolumes, running delayed iputs,
-+		 *    defrag scheduling, etc);
-+		 *
-+		 * This is rare in practice, but can happen when too many tasks
-+		 * are allocating blocks groups in parallel (via fallocate())
-+		 * and before the one that reserved space for a new system block
-+		 * group finishes the block group creation and releases the space
-+		 * reserved in excess (at btrfs_create_pending_block_groups()),
-+		 * other tasks end up here and see free system space temporarily
-+		 * not enough for updating the chunk tree.
-+		 *
-+		 * We unlock the chunk mutex before waiting for such tasks and
-+		 * lock it again after the wait, otherwise we would deadlock.
-+		 * It is safe to do so because allocating a system chunk is the
-+		 * first thing done while allocating a new block group.
-+		 */
-+		if (reserved > trans->chunk_bytes_reserved) {
-+			const u64 min_needed = reserved - thresh;
-+
-+			mutex_unlock(&fs_info->chunk_mutex);
-+			wait_event(cur_trans->chunk_reserve_wait,
-+			   atomic64_read(&cur_trans->chunk_bytes_reserved) <=
-+			   min_needed);
-+			mutex_lock(&fs_info->chunk_mutex);
-+			goto again;
-+		}
- 
- 		/*
- 		 * Ignore failure to create system chunk. We might end up not
-@@ -3319,8 +3373,10 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
- 		ret = btrfs_block_rsv_add(fs_info->chunk_root,
- 					  &fs_info->chunk_block_rsv,
- 					  thresh, BTRFS_RESERVE_NO_FLUSH);
--		if (!ret)
-+		if (!ret) {
-+			atomic64_add(thresh, &cur_trans->chunk_bytes_reserved);
- 			trans->chunk_bytes_reserved += thresh;
-+		}
+ 	search = btrfs_node_blockptr(node, slot);
+ 	blocksize = fs_info->nodesize;
+ 	eb = find_extent_buffer(fs_info, search);
+@@ -1310,7 +1325,8 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+ 			if (nr == 0)
+ 				break;
+ 			nr--;
+-		} else if (path->reada == READA_FORWARD) {
++		} else if (path->reada == READA_FORWARD ||
++			   path->reada == READA_FORWARD_ALWAYS) {
+ 			nr++;
+ 			if (nr >= nritems)
+ 				break;
+@@ -1321,13 +1337,14 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+ 				break;
+ 		}
+ 		search = btrfs_node_blockptr(node, nr);
+-		if ((search <= target && target - search <= 65536) ||
++		if (path->reada == READA_FORWARD_ALWAYS ||
++		    (search <= target && target - search <= 65536) ||
+ 		    (search > target && search - target <= 65536)) {
+ 			btrfs_readahead_node_child(node, nr);
+ 			nread += blocksize;
+ 		}
+ 		nscan++;
+-		if ((nread > 65536 || nscan > 32))
++		if (nread > nread_max || nscan > 32)
+ 			break;
  	}
  }
+@@ -1436,6 +1453,9 @@ read_block_for_search(struct btrfs_root *root, struct btrfs_path *p,
  
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index acff6bb49a97..97c5e7396bce 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -260,6 +260,7 @@ static inline int extwriter_counter_read(struct btrfs_transaction *trans)
- void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans)
- {
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_transaction *cur_trans = trans->transaction;
- 
- 	if (!trans->chunk_bytes_reserved)
- 		return;
-@@ -268,6 +269,8 @@ void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans)
- 
- 	btrfs_block_rsv_release(fs_info, &fs_info->chunk_block_rsv,
- 				trans->chunk_bytes_reserved, NULL);
-+	atomic64_sub(trans->chunk_bytes_reserved, &cur_trans->chunk_bytes_reserved);
-+	cond_wake_up(&cur_trans->chunk_reserve_wait);
- 	trans->chunk_bytes_reserved = 0;
- }
- 
-@@ -383,6 +386,8 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
- 	spin_lock_init(&cur_trans->dropped_roots_lock);
- 	INIT_LIST_HEAD(&cur_trans->releasing_ebs);
- 	spin_lock_init(&cur_trans->releasing_ebs_lock);
-+	atomic64_set(&cur_trans->chunk_bytes_reserved, 0);
-+	init_waitqueue_head(&cur_trans->chunk_reserve_wait);
- 	list_add_tail(&cur_trans->list, &fs_info->trans_list);
- 	extent_io_tree_init(fs_info, &cur_trans->dirty_pages,
- 			IO_TREE_TRANS_DIRTY_PAGES, fs_info->btree_inode);
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index dd7c3eea08ad..364cfbb4c5c5 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -96,6 +96,13 @@ struct btrfs_transaction {
- 
- 	spinlock_t releasing_ebs_lock;
- 	struct list_head releasing_ebs;
+ 	tmp = find_extent_buffer(fs_info, blocknr);
+ 	if (tmp) {
++		if (p->reada == READA_FORWARD_ALWAYS)
++			reada_for_search(fs_info, p, level, slot, key->objectid);
 +
-+	/*
-+	 * The number of bytes currently reserved, by all transaction handles
-+	 * attached to this transaction, for metadata extents of the chunk tree.
-+	 */
-+	atomic64_t chunk_bytes_reserved;
-+	wait_queue_head_t chunk_reserve_wait;
- };
+ 		/* first we do an atomic uptodate check */
+ 		if (btrfs_buffer_uptodate(tmp, gen, 1) > 0) {
+ 			/*
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index f2fd73e58ee6..2c858d5349c8 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -342,6 +342,27 @@ struct btrfs_node {
+ 	struct btrfs_key_ptr ptrs[];
+ } __attribute__ ((__packed__));
  
- #define __TRANS_FREEZABLE	(1U << 0)
++/* Read ahead values for struct btrfs_path.reada */
++enum {
++	READA_NONE,
++	READA_BACK,
++	READA_FORWARD,
++	/*
++	 * Similar to READA_FORWARD but unlike it:
++	 *
++	 * 1) It will trigger readahead even for leaves that are not close to
++	 *    each other on disk;
++	 * 2) It also triggers readahead for nodes;
++	 * 3) During a search, even when a node or leaf is already in memory, it
++	 *    will still trigger readahead for other nodes and leaves that follow
++	 *    it.
++	 *
++	 * This is meant to be used only when we know we are iterating over the
++	 * entire tree or a very large part of it.
++	 */
++	READA_FORWARD_ALWAYS,
++};
++
+ /*
+  * btrfs_paths remember the path taken from the root down to the leaf.
+  * level 0 is always the leaf, and nodes[1...BTRFS_MAX_LEVEL] will point
+@@ -350,7 +371,6 @@ struct btrfs_node {
+  * The slots array records the index of the item or block pointer
+  * used while walking the tree.
+  */
+-enum { READA_NONE, READA_BACK, READA_FORWARD };
+ struct btrfs_path {
+ 	struct extent_buffer *nodes[BTRFS_MAX_LEVEL];
+ 	int slots[BTRFS_MAX_LEVEL];
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 3cc306397261..55741adf9071 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -6650,7 +6650,7 @@ static int full_send_tree(struct send_ctx *sctx)
+ 	path = alloc_path_for_send();
+ 	if (!path)
+ 		return -ENOMEM;
+-	path->reada = READA_FORWARD;
++	path->reada = READA_FORWARD_ALWAYS;
+ 
+ 	key.objectid = BTRFS_FIRST_FREE_OBJECTID;
+ 	key.type = BTRFS_INODE_ITEM_KEY;
 -- 
 2.28.0
 
