@@ -2,259 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649F3351110
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 10:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF4B35116B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 11:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233383AbhDAIpV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Apr 2021 04:45:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52222 "EHLO mx2.suse.de"
+        id S233650AbhDAJEa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Apr 2021 05:04:30 -0400
+Received: from mout.web.de ([217.72.192.78]:39843 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhDAIow (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Apr 2021 04:44:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617266665; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=4MeJJ+p6s8QnUktoUjxRFKA6kdQxweogSBJI/jlu8lg=;
-        b=BaJEDqgWIDw6/X7ed6rhaH6TjOn3t24Kk8URnQlVoytLHaIvia/EojIcUfdBxzM30PfJbt
-        MO9WsZghWEWZGU3EGBxoHcLsfZub/kfG4TjHqrzIB+Ssln+xfY0GBwf2Cf32mcXfEcyG9/
-        k0EaZoJ8e+s71udXI5NmzF1+qDWb/WY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B19C0AE86
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Apr 2021 08:44:25 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: use u32 for length related members of btrfs_ordered_extent
-Date:   Thu,  1 Apr 2021 16:44:21 +0800
-Message-Id: <20210401084421.96162-1-wqu@suse.com>
-X-Mailer: git-send-email 2.30.1
+        id S233604AbhDAJE3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Apr 2021 05:04:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1617267868;
+        bh=/HHcEsm3CeIx/At1y2ssuRD24E/z+3s0gvlAXHXZAv0=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=XupWMnSbidK5lJM4WUw25kmb2R2cdKKyIfs81slW0P0/bD2cQZHIptTHvW0+hzmu8
+         4KcamOKtNvILTD04psPEzZNBm2BzysfoCaVuY3FQQWZ83UMvYpiTWadecdwddg9udw
+         Bb2UbojsPbi8OzpKcVk4vZ5Y54ImH01V1LDjMOPg=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from gecko.fritz.box ([88.130.61.26]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LzK61-1lenXO483t-014Vvi; Thu, 01
+ Apr 2021 11:04:28 +0200
+Date:   Thu, 1 Apr 2021 11:04:19 +0200
+From:   Lukas Straub <lukasstraub2@web.de>
+To:     Thierry Testeur <thierry.testeur@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Support demand on Btrfs crashed fs.
+Message-ID: <20210401110419.53c8bfbc@gecko.fritz.box>
+In-Reply-To: <CABDFzMiR=b6N+1mp_F4W1awig+kC2Qb3w18C6ev_S3jcQSKchQ@mail.gmail.com>
+References: <CABDFzMi0AXwBaiL-aFW1G5-UMwgTffza5hbr-9MNHWyGfmyDAQ@mail.gmail.com>
+        <CABDFzMg1J_CDkNJ8JSvu2CkQT_ARHPw4_72C5BozbmYRxLKO6w@mail.gmail.com>
+        <20210331142327.09af250d@gecko.fritz.box>
+        <CABDFzMiR=b6N+1mp_F4W1awig+kC2Qb3w18C6ev_S3jcQSKchQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/Z8Xb+ZMW=IYKQNSh=UG+1Zb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Provags-ID: V03:K1:u1NizcqY8uIDpazHNqvDI409lws5og0jGQ/cmMXZTWgw8UdOLJt
+ KhMIKFeTcKUeaUShp1vTWx/qCJv304pmEC+aY1ZbXKFHgDZh6L5mZJdBBcX+NMhK35JkaWn
+ grghZlao/NCaAbssK4WHL9GfjV0ftFEmtHjVkRiRgHRYgTEg9TEUMzYDDWEr9Dueu+IwEp7
+ 7CyQJBntNUnmWsrvkXXxw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZCUyc/k4UmA=:SKCotBilaZt9K/1xh8/3fm
+ gh5j6VhyA31euurdSFI7a/gBh5cyeQwaPON778gp2kmtEFkY5d6Fz+SOuz4O8WjAEEwwUmR1J
+ f+fM0cjBVGbJV0Z6qHw/jgt0qzlFaMoXduN06K9OawIHwuE80hdUgLgAx1sjs+pBJj04GReTj
+ lI5MQKDLKZDh20ZRW3DgvztdbpCy2PMXwY0TGeNiOva558I4+5rRaYu/QoY4Tgx0TBFZeMpEc
+ N+ieUsB5rS5VkkscSzm+e9gEbFMVs73ion2pj7+GhXGIV7/AdnENj0t3HNbcPvd1CeG9SUi/0
+ rvN0xcqqsl011hf3IiUWLRHLZ2vesmyS4x6sB5HrvBvlsNb06df+ISBU+e5SdnCg927Sd8kTs
+ 840tHU3dguxHMQ3O9pI3miz8HK6UOkvpdDkW930/6YWrm4l8Q0Br13uOysSSlvNXATz/z5yfq
+ EIykuqTRXT3Qdv+r8S0iWb/Lo7sq3xTJ46ErqvkTqsj9wmPexB3GsEMoZTNLHLfnhcks0aNCR
+ IeZFphdziXu8PElv/GSbu03NTk9/ShtEp5puUsT0seAvQgK+9wJjLRzlRryCtn/ZZt8sBadPk
+ QONNZeqHwFc32xRFMO1+aFdmZD3gHt53Q36mDiOT8+613WS/RoZuinlA6RET5j7Aj0uF/1MHn
+ 4CpqFalZQYwxGxcMibuF4q4rnKxTqaruxl7rQVLw4Lj6PTIoydtB7toz6tCWgZ5ZN6zL/b7cU
+ iNwOvoZ4Al8/Nhq0FxoINpjjhc6+DG9CjeXY04RDxy5jcnS7l2O53Hf0FfabJHTwW1t5t6XRT
+ OMSBj7t2LTk6zm72tYMr700/1yFPi5eTD8C/JojQh9Qgh4iWHwRx2yfhcsB1BNAQ7Ktbzf28f
+ Ps/x1RrWMaxS/EQa7G6wC27GT+eI0aCR66dMtiAOR100qQoEQDqyN+mMI7PiJmz8fiydj7e0L
+ N+hPGMSBgFA50f1b9e1unr2k5Z5tknJha5zJPsWc4e6KlZ7+mdEP8500MilY7VJvtOSJESkxd
+ qbk6QSwiMjeq2leKO5e4gUX6qN/ip78LY+sJuYIBnRXBKtXPpJbSaxAWSPKwJpzj/8gw3pAti
+ G5fYQsduSAK1Wr6vvrYsokbdXbHtDSHy16003PZ60Zz/B7f7qR7Fv/punsJV3anKm7TxQNQGp
+ /RIjKd4qMQoaCtnsTJfi9tPpn7uSzOPY7gf/olywX9QeI9aPydoPCHf09SNYEwq6f9kk9ZSEb
+ +13GF2DEGgoCVlH+1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Unlike btrfs_file_extent_item, btrfs_ordered_extent has its length
-limit (BTRFS_MAX_EXTENT_SIZE), which is far smaller than U32_MAX.
+--Sig_/Z8Xb+ZMW=IYKQNSh=UG+1Zb
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Using u64 for those length related members are just a waste of memory.
+On Wed, 31 Mar 2021 23:44:28 +0200
+Thierry Testeur <thierry.testeur@gmail.com> wrote:
 
-This patch will make the following members u32:
-- num_bytes
-- disk_num_bytes
-- bytes_left
-- truncated_len
+> Yep, compression enabled (original fstab before having tried restore
+> options): compress=3Dlzo
 
-This will save 16 bytes for btrfs_ordered_extent structure.
+Okay, that explains why photorec couldn't recover a lot. If you want to
+get your hands dirty, I guess you could write a program that does the
+following:
+For every 4k block/address on the filesystem, attempt to decompress it
+using the btrfs lzo implementation (see fs/btrfs/lzo.c and
+lib/lzo/lzo1x_decompress_safe.c in the kernel).
+Do some sanity checks:
 
-For btrfs_add_ordered_extent*() call sites, they are mostly deeply
-inside other functions passing u64.
-Thus this patch will keep those u64, but do internal ASSERT() to ensure
-the correct length values are passed in.
+Like, check that the length of the compressed data is reasonable. The
+decompressed size of an compressed extend can be a maximum of 128k, so
+considering the case that data which doesn't compress well may take up
+more space in compressed from, the maximum length of the compressed
+data should be a bit larger than 128k. I'd say like 256k.
 
-For btrfs_dec_test_.*_ordered_extent() call sites, length related
-parameters are converted to u32, with extra ASSERT() added to ensure we
-get correct values passed in.
+Also check that the length of the segments is reasonable, etc.
 
-There is special convert needed in btrfs_remove_ordered_extent(), which
-needs s64, using "-entry->num_bytes" from u32 directly will cause
-underflow.
+If all sanity checks passed and decompression worked, look at the
+decompressed size:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Fix a underflow caused by incorrect convert from u32 to s64
-  This would cause error messages like
-  "BTRFS info (device dm-3): at unmount dio bytes count 14478334754816"
-  However this error message doesn't trigger any kernel calltrace, thus
-  not exposed by previous fstests run.
----
- fs/btrfs/inode.c        |  8 ++++++--
- fs/btrfs/ordered-data.c | 21 ++++++++++++++-------
- fs/btrfs/ordered-data.h | 25 ++++++++++++++-----------
- 3 files changed, 34 insertions(+), 20 deletions(-)
+If it is exactly 128k, it is likely part of a bigger file. Append all
+such data to a output file.
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9b87c3e4fa7b..0113598e6ba1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3070,6 +3070,7 @@ void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
- 	struct btrfs_ordered_extent *ordered_extent = NULL;
- 	struct btrfs_workqueue *wq;
- 
-+	ASSERT(end + 1 - start < U32_MAX);
- 	trace_btrfs_writepage_end_io_hook(page, start, end, uptodate);
- 
- 	ClearPagePrivate2(page);
-@@ -7969,6 +7970,7 @@ static void __endio_write_update_ordered(struct btrfs_inode *inode,
- 	else
- 		wq = fs_info->endio_write_workers;
- 
-+	ASSERT(bytes < U32_MAX);
- 	while (ordered_offset < offset + bytes) {
- 		last_offset = ordered_offset;
- 		if (btrfs_dec_test_first_ordered_pending(inode, &ordered,
-@@ -8415,10 +8417,12 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
- 		if (TestClearPagePrivate2(page)) {
- 			spin_lock_irq(&inode->ordered_tree.lock);
- 			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
--			ordered->truncated_len = min(ordered->truncated_len,
-+			ASSERT(start - ordered->file_offset < U32_MAX);
-+			ordered->truncated_len = min_t(u32, ordered->truncated_len,
- 					start - ordered->file_offset);
- 			spin_unlock_irq(&inode->ordered_tree.lock);
- 
-+			ASSERT(end - start + 1 < U32_MAX);
- 			if (btrfs_dec_test_ordered_pending(inode, &ordered,
- 							   start,
- 							   end - start + 1, 1)) {
-@@ -8937,7 +8941,7 @@ void btrfs_destroy_inode(struct inode *vfs_inode)
- 			break;
- 		else {
- 			btrfs_err(root->fs_info,
--				  "found ordered extent %llu %llu on inode cleanup",
-+				  "found ordered extent %llu %u on inode cleanup",
- 				  ordered->file_offset, ordered->num_bytes);
- 			btrfs_remove_ordered_extent(inode, ordered);
- 			btrfs_put_ordered_extent(ordered);
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 07b0b4218791..8e6d9d906bdd 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -160,6 +160,12 @@ static int __btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset
- 	struct btrfs_ordered_extent *entry;
- 	int ret;
- 
-+	/*
-+	 * Basic size check, all length related members should be smaller
-+	 * than U32_MAX.
-+	 */
-+	ASSERT(num_bytes < U32_MAX && disk_num_bytes < U32_MAX);
-+
- 	if (type == BTRFS_ORDERED_NOCOW || type == BTRFS_ORDERED_PREALLOC) {
- 		/* For nocow write, we can release the qgroup rsv right now */
- 		ret = btrfs_qgroup_free_data(inode, NULL, file_offset, num_bytes);
-@@ -186,7 +192,7 @@ static int __btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset
- 	entry->bytes_left = num_bytes;
- 	entry->inode = igrab(&inode->vfs_inode);
- 	entry->compress_type = compress_type;
--	entry->truncated_len = (u64)-1;
-+	entry->truncated_len = (u32)-1;
- 	entry->qgroup_rsv = ret;
- 	entry->physical = (u64)-1;
- 	entry->disk = NULL;
-@@ -320,7 +326,7 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
-  */
- bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 				   struct btrfs_ordered_extent **finished_ret,
--				   u64 *file_offset, u64 io_size, int uptodate)
-+				   u64 *file_offset, u32 io_size, int uptodate)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
-@@ -330,7 +336,7 @@ bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 	unsigned long flags;
- 	u64 dec_end;
- 	u64 dec_start;
--	u64 to_dec;
-+	u32 to_dec;
- 
- 	spin_lock_irqsave(&tree->lock, flags);
- 	node = tree_search(tree, *file_offset);
-@@ -352,7 +358,7 @@ bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 	to_dec = dec_end - dec_start;
- 	if (to_dec > entry->bytes_left) {
- 		btrfs_crit(fs_info,
--			   "bad ordered accounting left %llu size %llu",
-+			   "bad ordered accounting left %u size %u",
- 			   entry->bytes_left, to_dec);
- 	}
- 	entry->bytes_left -= to_dec;
-@@ -397,7 +403,7 @@ bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
-  */
- bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 				    struct btrfs_ordered_extent **cached,
--				    u64 file_offset, u64 io_size, int uptodate)
-+				    u64 file_offset, u32 io_size, int uptodate)
- {
- 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
- 	struct rb_node *node;
-@@ -422,7 +428,7 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 
- 	if (io_size > entry->bytes_left)
- 		btrfs_crit(inode->root->fs_info,
--			   "bad ordered accounting left %llu size %llu",
-+			   "bad ordered accounting left %u size %u",
- 		       entry->bytes_left, io_size);
- 
- 	entry->bytes_left -= io_size;
-@@ -495,7 +501,8 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 		btrfs_delalloc_release_metadata(btrfs_inode, entry->num_bytes,
- 						false);
- 
--	percpu_counter_add_batch(&fs_info->ordered_bytes, -entry->num_bytes,
-+	percpu_counter_add_batch(&fs_info->ordered_bytes,
-+				 -(s64)entry->num_bytes,
- 				 fs_info->delalloc_batch);
- 
- 	tree = &btrfs_inode->ordered_tree;
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index e60c07f36427..6906df0c946c 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -83,13 +83,22 @@ struct btrfs_ordered_extent {
- 	/*
- 	 * These fields directly correspond to the same fields in
- 	 * btrfs_file_extent_item.
-+	 *
-+	 * But since ordered extents can't be larger than BTRFS_MAX_EXTENT_SIZE,
-+	 * for length related members, they can use u32.
- 	 */
- 	u64 disk_bytenr;
--	u64 num_bytes;
--	u64 disk_num_bytes;
-+	u32 num_bytes;
-+	u32 disk_num_bytes;
- 
- 	/* number of bytes that still need writing */
--	u64 bytes_left;
-+	u32 bytes_left;
-+
-+	/*
-+	 * If we get truncated we need to adjust the file extent we enter for
-+	 * this ordered extent so that we do not expose stale data.
-+	 */
-+	u32 truncated_len;
- 
- 	/*
- 	 * the end of the ordered extent which is behind it but
-@@ -98,12 +107,6 @@ struct btrfs_ordered_extent {
- 	 */
- 	u64 outstanding_isize;
- 
--	/*
--	 * If we get truncated we need to adjust the file extent we enter for
--	 * this ordered extent so that we do not expose stale data.
--	 */
--	u64 truncated_len;
--
- 	/* flags (described above) */
- 	unsigned long flags;
- 
-@@ -174,10 +177,10 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 				struct btrfs_ordered_extent *entry);
- bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 				    struct btrfs_ordered_extent **cached,
--				    u64 file_offset, u64 io_size, int uptodate);
-+				    u64 file_offset, u32 io_size, int uptodate);
- bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
- 				   struct btrfs_ordered_extent **finished_ret,
--				   u64 *file_offset, u64 io_size,
-+				   u64 *file_offset, u32 io_size,
- 				   int uptodate);
- int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
- 			     u64 disk_bytenr, u64 num_bytes, u64 disk_num_bytes,
--- 
-2.30.1
+If it is below 128k, chances are pretty good you just recovered a small
+file, save it directly somewhere. You can use the file(1) utility later
+to figure out the file-format.
+Or it could be the last part of a large file, so always append it to
+the output file as well and fill up with zeroes so the end is aligned
+to 4k.
 
+Finally, you can run photorec on the output file that you appended
+everything to, to rescue files that are larger than 128k.
+
+I wish you luck.
+
+Regards,
+Lukas Straub
+
+> Best regards,
+> Thierry
+>=20
+> Le mer. 31 mars 2021 =C3=A0 14:23, Lukas Straub <lukasstraub2@web.de> a
+> =C3=A9crit :
+> >
+> > On Wed, 31 Mar 2021 02:17:48 +0200
+> > Thierry Testeur <thierry.testeur@gmail.com> wrote:
+> > =20
+> > > Hello,
+> > >
+> > > if anyone can help me with the problem above?
+> > > Have tried a Photorec (even if i know the chance are really
+> > > poor), and have got some non-sens files, lkie pdf of 2Gb, ....
+> > > most of them are unusable, except smal size file, like jpg pic...
+> > >
+> > > thanks for any help.
+> > > Thierry =20
+> >
+> > Weird, I would have expected photorec to recover more. Did you have
+> > compression enabled?
+> >
+> > Regards,
+> > Lukas Straub
+> >
+> > --
+> > =20
+
+
+
+--=20
+
+
+--Sig_/Z8Xb+ZMW=IYKQNSh=UG+1Zb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAmBljJMACgkQNasLKJxd
+sljlSg//b3PMmNHvoZwxvs4N14ePI/5shJHb8ETadDaiZPI+5TqrL/UCCjVx/6eB
+6LClxcLsVdQNqqa+8gKq1Y+64ZM5e816lsImxQVgg6tevpZe+b+1kEQ7nFvZw0yY
+9ZVPIQleqr7Vwqf0BDYJeBVxwlVUFQ2w7mui44vM7lzXAswNcSXjiecXLlOWwvIf
+3nURTq+TktYdx15pYD3RdnAFKPvmI3K7BEODLgTbsPTMZSxmeEuLGthf0jWnMbb2
+PrRBnajeLexNWfCju1EnP4vWoMrDnhrOpXE7NfD5LMhSHrNLECYIGHFnpUGXZwfp
+R2SM8z8Dn9VuSgGovsvcifh/xKZ3uLoq6wSNiDlNgXejz6DRdUCJvnvuAU1PmNIw
+9sQXclupMD3JEFv27vackDx1dF2oYrcsgZ6/hP5a1evJ/HMEniaN1z4dTM+56nWy
+qJTe14upb21gbpVPNzzLc6Mke1vlLLHVdJi53bFsQjRr9AXWcYCGkBRUVqgUr0pB
+YTHtRhkP4aKFv0iMWknteaTxyIFRcQigxnROHDDni02lsuje5Lql9IlA5BzBnPpR
+FcWb4XS0m5Kq8mIEDUxG85xjNs4avFw/eCkE4vpyZtvBQdy83Ph88pPNslenh04q
+hUEYlalZQRy5AcYQjeU3gK7p8yjy/3bvOo4csKDVyHdDQsRe8CM=
+=Ry8i
+-----END PGP SIGNATURE-----
+
+--Sig_/Z8Xb+ZMW=IYKQNSh=UG+1Zb--
