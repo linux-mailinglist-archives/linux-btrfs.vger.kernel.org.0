@@ -2,337 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C8235144F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 13:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C916B35189A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 19:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234342AbhDALLw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Apr 2021 07:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
+        id S236658AbhDARqI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Apr 2021 13:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234273AbhDALLX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Apr 2021 07:11:23 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279D5C0613E6;
-        Thu,  1 Apr 2021 04:11:23 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id h8so842644plt.7;
-        Thu, 01 Apr 2021 04:11:23 -0700 (PDT)
+        with ESMTP id S234780AbhDARkE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Apr 2021 13:40:04 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B8E3C08ECB9
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Apr 2021 07:00:06 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id c8so1921795wrq.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Apr 2021 07:00:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f3T62p65u2S83DXPwAJqrEpWMg9bqfngCOlwnISjfa0=;
-        b=eqtNX+K/AXfThYAWzIPSF04zWuglu7DegIYqhI4iy34Pgv9XdqKgK3Ip6LFcfzQPuI
-         94U33DHmHTnhkRSXD+k8BHy1RmpBIXCGvZPvnYI3Wv9wgIIv/Abo6TOmEbKpcdr2rCtM
-         ipMaDHz7nt/xPuHi30tEAgbmOVpKA+F8IV8j9EL/TOBXKT4pwgEThKLzoIEIm2NFAbmA
-         FBfRfgZLE3X6O9hKvkARuSg3inrBlAYTrp/U/qIOTh2crZMRKyDW2/adyv4JEuhx4nAe
-         y7xHqJ+vbdyGP8n1vYnbswnY0bfP/FJdEdJHUvRlr8p8/ylVZsGdTG+Cc+Eoeg2DP6Uu
-         NMrQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FPFA61vKfECcdI9cRIN30iC5eaHjX7gQxGzxBtGA5Bs=;
+        b=eUa+e5iTkKSN1H6ln4Nb0Pi/yg/SaJWctgFhOG2kogvvcEPoM1ifaZ3LzAdfZ0sFuz
+         FP4LNe+ORIb5uHVoS4nQp3KJhROjMJTy6j4NRC/vbBSZik83b1VIQccSVK1iiv+Et8mU
+         I8PZDh7vCcH7b/w30Fi6kIf3MhUJ1EYRdfH30Wx5a8kWE4hnsvCAO+Jd+D8PcWmSnfUm
+         rWdqZt2EPnttJ3bJ7GcHRrlc6EWkFLeZcXzMeZIHqd2uwR/rEJYCKj1K9KdwRL+5LKwK
+         pV9W33PN22AZQGlkYIyuInrSPd+Vt6wDFkvxuc/KUyjmnc9eSvKzWs/RZ9oci6loD4xQ
+         u+SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f3T62p65u2S83DXPwAJqrEpWMg9bqfngCOlwnISjfa0=;
-        b=DkB/wDjRlXuD93iZymQDfQ7uNa/qkRwlX9W38qHIVXk80Zmb08WgHTzIzvBFFuJiUg
-         jzipePlZpYDqNndexAC4e97SaD4YAY56Hl4ET5/NXI954fOxBDJThaHCtBKf8SJmzLTw
-         ++Mzj7iqRQ17pqt1yVS6mCjel0DRVm7bZaq3rA2NMRnDVFsIBKE4Pst+1I90m2Ay9tga
-         WBQHzNgFwFVEDLiq58wppyXRVOwuf9A07hFkcSwiO2t4pg1jkIqKNxJJ3qGQw/gwY2lI
-         /sXIRzr89nLCWyWYlvGK9vo18hlj18+B9HjES2L29i+C65+7D+m9Hpn8tI14OitRMntR
-         edjw==
-X-Gm-Message-State: AOAM533isdPHGFNyWWwhRFiRoGTVV9Zvxxb0r8qsA3jlPnR1/+xTroE1
-        NvkSa1+nZpxqBb9QDVpN3Yw=
-X-Google-Smtp-Source: ABdhPJwd87RNzh+BfrCBf8eX/5dIR9xk4EAMKPeLjoBbOazcoZ79gljc2I3DoR3sYnn2r/fomTvxIg==
-X-Received: by 2002:a17:90b:38f:: with SMTP id ga15mr8213179pjb.149.1617275482546;
-        Thu, 01 Apr 2021 04:11:22 -0700 (PDT)
-Received: from localhost ([122.182.250.63])
-        by smtp.gmail.com with ESMTPSA id y15sm6499629pgi.31.2021.04.01.04.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 04:11:22 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 16:41:20 +0530
-From:   Ritesh Harjani <ritesh.list@gmail.com>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>
-Subject: Re: [PATCH v3 08/10] fsdax: Dedup file range to use a compare
- function
-Message-ID: <20210401111120.2ukog26aoyvyysyz@riteshh-domain>
-References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
- <20210319015237.993880-9-ruansy.fnst@fujitsu.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FPFA61vKfECcdI9cRIN30iC5eaHjX7gQxGzxBtGA5Bs=;
+        b=OR+pJQG2Vh1GeDwBD7ijrt9+Peq012ALHmYSVyI0BWXBNSNCew5474yXresU+hPeWx
+         fbVl1k2xT+xGkOVG8HTElW9kzQNQDShpnLYAhev6jrYv9LGtGtEtxaddtIfLlkp+bTG5
+         a9Dx3mGlgcBnQfnp8sbxCd3FlPT8QwHdubksKvJotrBImPNPQfbxjbTMIdjZuHdWibUD
+         0DS82gQwlxZV9MqekSjmfD127EeAIFfVu0/52tbbN/g4ANYhmpZnh8WY1P3AnrFsWNVJ
+         xYkQ/v+n4akNdgBGNdMN2YG1eYGFHculvRF1cS9f2I/s2OZ4TmYQDkMCQk6o6GxD483j
+         TqhQ==
+X-Gm-Message-State: AOAM5324nqYnsPkW2Ej7L7O0Bfe0+PPxD9tw1d/n8YCByYIFhaNTWVx9
+        Qr2ZuAiOVZqkqQL8ISdWY3FVMweHP4YtSrxcIKf3oFDohng=
+X-Google-Smtp-Source: ABdhPJxDQ2wuNZ84DoK0Daaf5xcOP55PXAcxJkqNgI85d++ugrLiy67VNR6aQ0KfB+af79j1BeUKWT2XzhTq856Br6I=
+X-Received: by 2002:a5d:518c:: with SMTP id k12mr9944500wrv.15.1617285604918;
+ Thu, 01 Apr 2021 07:00:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319015237.993880-9-ruansy.fnst@fujitsu.com>
+References: <CABDFzMi0AXwBaiL-aFW1G5-UMwgTffza5hbr-9MNHWyGfmyDAQ@mail.gmail.com>
+ <CABDFzMg1J_CDkNJ8JSvu2CkQT_ARHPw4_72C5BozbmYRxLKO6w@mail.gmail.com>
+ <20210331142327.09af250d@gecko.fritz.box> <CABDFzMiR=b6N+1mp_F4W1awig+kC2Qb3w18C6ev_S3jcQSKchQ@mail.gmail.com>
+ <20210401110419.53c8bfbc@gecko.fritz.box>
+In-Reply-To: <20210401110419.53c8bfbc@gecko.fritz.box>
+From:   Thierry Testeur <thierry.testeur@gmail.com>
+Date:   Thu, 1 Apr 2021 15:59:52 +0200
+Message-ID: <CABDFzMhAQVTe101PysBAqzN3iisd-thg947FXHH74pYHWmpT_w@mail.gmail.com>
+Subject: Re: Support demand on Btrfs crashed fs.
+To:     Lukas Straub <lukasstraub2@web.de>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/03/19 09:52AM, Shiyang Ruan wrote:
-> With dax we cannot deal with readpage() etc. So, we create a dax
-> comparison funciton which is similar with
-> vfs_dedupe_file_range_compare().
-> And introduce dax_remap_file_range_prep() for filesystem use.
->
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/dax.c             | 56 ++++++++++++++++++++++++++++++++++++++++++++
->  fs/remap_range.c     | 45 ++++++++++++++++++++++++++++-------
->  fs/xfs/xfs_reflink.c |  9 +++++--
->  include/linux/dax.h  |  4 ++++
->  include/linux/fs.h   | 15 ++++++++----
->  5 files changed, 115 insertions(+), 14 deletions(-)
->
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 348297b38f76..76f81f1d76ec 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1833,3 +1833,59 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
->  	return dax_insert_pfn_mkwrite(vmf, pfn, order);
->  }
->  EXPORT_SYMBOL_GPL(dax_finish_sync_fault);
-> +
-> +static loff_t dax_range_compare_actor(struct inode *ino1, loff_t pos1,
-> +		struct inode *ino2, loff_t pos2, loff_t len, void *data,
-> +		struct iomap *smap, struct iomap *dmap)
-> +{
-> +	void *saddr, *daddr;
-> +	bool *same = data;
-> +	int ret;
-> +
-> +	if (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE) {
-> +		*same = true;
-> +		return len;
-> +	}
-> +
-> +	if (smap->type == IOMAP_HOLE || dmap->type == IOMAP_HOLE) {
-> +		*same = false;
-> +		return 0;
-> +	}
-> +
-> +	ret = dax_iomap_direct_access(smap, pos1, ALIGN(pos1 + len, PAGE_SIZE),
-> +				      &saddr, NULL);
+Thanks for your return, but i think the writing of this type of
+programs is far away for me. Haven't really coded since the amiga 68k
+assembly time, so... :/
 
-shouldn't it take len as the second argument?
+I have appreciated your efforts to trying to help me, but i can't
+handle this type of solution.
 
-> +	if (ret < 0)
-> +		return -EIO;
-> +
-> +	ret = dax_iomap_direct_access(dmap, pos2, ALIGN(pos2 + len, PAGE_SIZE),
-> +				      &daddr, NULL);
+I will let this raid RIP until i will find a solution, maybe with
+futur evolutions of Btrfs-Tools.
 
-ditto.
-> +	if (ret < 0)
-> +		return -EIO;
-> +
-> +	*same = !memcmp(saddr, daddr, len);
-> +	return len;
-> +}
-> +
-> +int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> +		struct inode *dest, loff_t destoff, loff_t len, bool *is_same,
-> +		const struct iomap_ops *ops)
-> +{
-> +	int id, ret = 0;
-> +
-> +	id = dax_read_lock();
-> +	while (len) {
-> +		ret = iomap_apply2(src, srcoff, dest, destoff, len, 0, ops,
-> +				   is_same, dax_range_compare_actor);
-> +		if (ret < 0 || !*is_same)
-> +			goto out;
-> +
-> +		len -= ret;
-> +		srcoff += ret;
-> +		destoff += ret;
-> +	}
-> +	ret = 0;
-> +out:
-> +	dax_read_unlock(id);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(dax_dedupe_file_range_compare);
-> diff --git a/fs/remap_range.c b/fs/remap_range.c
-> index 77dba3a49e65..9079390edaf3 100644
-> --- a/fs/remap_range.c
-> +++ b/fs/remap_range.c
-> @@ -14,6 +14,7 @@
->  #include <linux/compat.h>
->  #include <linux/mount.h>
->  #include <linux/fs.h>
-> +#include <linux/dax.h>
->  #include "internal.h"
->
->  #include <linux/uaccess.h>
-> @@ -199,9 +200,9 @@ static void vfs_unlock_two_pages(struct page *page1, struct page *page2)
->   * Compare extents of two files to see if they are the same.
->   * Caller must have locked both inodes to prevent write races.
->   */
-> -static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> -					 struct inode *dest, loff_t destoff,
-> -					 loff_t len, bool *is_same)
-> +int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> +				  struct inode *dest, loff_t destoff,
-> +				  loff_t len, bool *is_same)
->  {
->  	loff_t src_poff;
->  	loff_t dest_poff;
-> @@ -280,6 +281,7 @@ static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
->  out_error:
->  	return error;
->  }
-> +EXPORT_SYMBOL(vfs_dedupe_file_range_compare);
->
->  /*
->   * Check that the two inodes are eligible for cloning, the ranges make
-> @@ -289,9 +291,11 @@ static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
->   * If there's an error, then the usual negative error code is returned.
->   * Otherwise returns 0 with *len set to the request length.
->   */
-> -int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> -				  struct file *file_out, loff_t pos_out,
-> -				  loff_t *len, unsigned int remap_flags)
-> +static int
-> +__generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +				struct file *file_out, loff_t pos_out,
-> +				loff_t *len, unsigned int remap_flags,
-> +				const struct iomap_ops *ops)
->  {
->  	struct inode *inode_in = file_inode(file_in);
->  	struct inode *inode_out = file_inode(file_out);
-> @@ -351,8 +355,15 @@ int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
->  	if (remap_flags & REMAP_FILE_DEDUP) {
->  		bool		is_same = false;
->
-> -		ret = vfs_dedupe_file_range_compare(inode_in, pos_in,
-> -				inode_out, pos_out, *len, &is_same);
-> +		if (!IS_DAX(inode_in) && !IS_DAX(inode_out))
-> +			ret = vfs_dedupe_file_range_compare(inode_in, pos_in,
-> +					inode_out, pos_out, *len, &is_same);
-> +		else if (IS_DAX(inode_in) && IS_DAX(inode_out) && ops)
-> +			ret = dax_dedupe_file_range_compare(inode_in, pos_in,
-> +					inode_out, pos_out, *len, &is_same,
-> +					ops);
-> +		else
-> +			return -EINVAL;
->  		if (ret)
->  			return ret;
->  		if (!is_same)
+I wish you a nice day,
+Thierry
 
-should we consider to check !is_same check b4?
-you should maybe relook at this error handling side of code.
-we still return len from actor function but is_same is set to false.
-So we are essentially returning ret (positive value), instead should be
-returning -EBADE because of !memcmp
-
-> @@ -370,6 +381,24 @@ int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+Le jeu. 1 avr. 2021 =C3=A0 11:04, Lukas Straub <lukasstraub2@web.de> a =C3=
+=A9crit :
 >
->  	return ret;
->  }
-> +
-> +int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +			      struct file *file_out, loff_t pos_out,
-> +			      loff_t *len, unsigned int remap_flags,
-> +			      const struct iomap_ops *ops)
-> +{
-> +	return __generic_remap_file_range_prep(file_in, pos_in, file_out,
-> +					       pos_out, len, remap_flags, ops);
-> +}
-> +EXPORT_SYMBOL(dax_remap_file_range_prep);
-> +
-> +int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +				  struct file *file_out, loff_t pos_out,
-> +				  loff_t *len, unsigned int remap_flags)
-> +{
-> +	return __generic_remap_file_range_prep(file_in, pos_in, file_out,
-> +					       pos_out, len, remap_flags, NULL);
-> +}
->  EXPORT_SYMBOL(generic_remap_file_range_prep);
+> On Wed, 31 Mar 2021 23:44:28 +0200
+> Thierry Testeur <thierry.testeur@gmail.com> wrote:
 >
->  loff_t do_clone_file_range(struct file *file_in, loff_t pos_in,
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index 6fa05fb78189..f5b3a3da36b7 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -1308,8 +1308,13 @@ xfs_reflink_remap_prep(
->  	if (IS_DAX(inode_in) || IS_DAX(inode_out))
->  		goto out_unlock;
+> > Yep, compression enabled (original fstab before having tried restore
+> > options): compress=3Dlzo
 >
-> -	ret = generic_remap_file_range_prep(file_in, pos_in, file_out, pos_out,
-> -			len, remap_flags);
-> +	if (IS_DAX(inode_in))
-
-if (!IS_DAX(inode_in)) no?
-
-> +		ret = generic_remap_file_range_prep(file_in, pos_in, file_out,
-> +						    pos_out, len, remap_flags);
-> +	else
-> +		ret = dax_remap_file_range_prep(file_in, pos_in, file_out,
-> +						pos_out, len, remap_flags,
-> +						&xfs_read_iomap_ops);
->  	if (ret || *len == 0)
->  		goto out_unlock;
+> Okay, that explains why photorec couldn't recover a lot. If you want to
+> get your hands dirty, I guess you could write a program that does the
+> following:
+> For every 4k block/address on the filesystem, attempt to decompress it
+> using the btrfs lzo implementation (see fs/btrfs/lzo.c and
+> lib/lzo/lzo1x_decompress_safe.c in the kernel).
+> Do some sanity checks:
 >
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index 3275e01ed33d..32e1c34349f2 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -239,6 +239,10 @@ int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
->  				      pgoff_t index);
->  s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
->  		struct iomap *srcmap);
-> +int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-> +				  struct inode *dest, loff_t destoff,
-> +				  loff_t len, bool *is_same,
-> +				  const struct iomap_ops *ops);
->  static inline bool dax_mapping(struct address_space *mapping)
->  {
->  	return mapping->host && IS_DAX(mapping->host);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index fd47deea7c17..2e6ec5bdf82a 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -68,6 +68,7 @@ struct fsverity_info;
->  struct fsverity_operations;
->  struct fs_context;
->  struct fs_parameter_spec;
-> +struct iomap_ops;
+> Like, check that the length of the compressed data is reasonable. The
+> decompressed size of an compressed extend can be a maximum of 128k, so
+> considering the case that data which doesn't compress well may take up
+> more space in compressed from, the maximum length of the compressed
+> data should be a bit larger than 128k. I'd say like 256k.
 >
->  extern void __init inode_init(void);
->  extern void __init inode_init_early(void);
-> @@ -1910,13 +1911,19 @@ extern ssize_t vfs_read(struct file *, char __user *, size_t, loff_t *);
->  extern ssize_t vfs_write(struct file *, const char __user *, size_t, loff_t *);
->  extern ssize_t vfs_copy_file_range(struct file *, loff_t , struct file *,
->  				   loff_t, size_t, unsigned int);
-> +typedef int (*compare_range_t)(struct inode *src, loff_t srcpos,
-> +			       struct inode *dest, loff_t destpos,
-> +			       loff_t len, bool *is_same);
-
-Is this used anywhere?
-
->  extern ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
->  				       struct file *file_out, loff_t pos_out,
->  				       size_t len, unsigned int flags);
-> -extern int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> -					 struct file *file_out, loff_t pos_out,
-> -					 loff_t *count,
-> -					 unsigned int remap_flags);
-> +int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +				  struct file *file_out, loff_t pos_out,
-> +				  loff_t *count, unsigned int remap_flags);
-> +int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-> +			      struct file *file_out, loff_t pos_out,
-> +			      loff_t *len, unsigned int remap_flags,
-> +			      const struct iomap_ops *ops);
->  extern loff_t do_clone_file_range(struct file *file_in, loff_t pos_in,
->  				  struct file *file_out, loff_t pos_out,
->  				  loff_t len, unsigned int remap_flags);
+> Also check that the length of the segments is reasonable, etc.
+>
+> If all sanity checks passed and decompression worked, look at the
+> decompressed size:
+>
+> If it is exactly 128k, it is likely part of a bigger file. Append all
+> such data to a output file.
+>
+> If it is below 128k, chances are pretty good you just recovered a small
+> file, save it directly somewhere. You can use the file(1) utility later
+> to figure out the file-format.
+> Or it could be the last part of a large file, so always append it to
+> the output file as well and fill up with zeroes so the end is aligned
+> to 4k.
+>
+> Finally, you can run photorec on the output file that you appended
+> everything to, to rescue files that are larger than 128k.
+>
+> I wish you luck.
+>
+> Regards,
+> Lukas Straub
+>
+> > Best regards,
+> > Thierry
+> >
+> > Le mer. 31 mars 2021 =C3=A0 14:23, Lukas Straub <lukasstraub2@web.de> a
+> > =C3=A9crit :
+> > >
+> > > On Wed, 31 Mar 2021 02:17:48 +0200
+> > > Thierry Testeur <thierry.testeur@gmail.com> wrote:
+> > >
+> > > > Hello,
+> > > >
+> > > > if anyone can help me with the problem above?
+> > > > Have tried a Photorec (even if i know the chance are really
+> > > > poor), and have got some non-sens files, lkie pdf of 2Gb, ....
+> > > > most of them are unusable, except smal size file, like jpg pic...
+> > > >
+> > > > thanks for any help.
+> > > > Thierry
+> > >
+> > > Weird, I would have expected photorec to recover more. Did you have
+> > > compression enabled?
+> > >
+> > > Regards,
+> > > Lukas Straub
+> > >
+> > > --
+> > >
+>
+>
+>
 > --
-> 2.30.1
->
->
 >
