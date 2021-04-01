@@ -2,92 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7813509B3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Mar 2021 23:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C5C350E7A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 07:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhCaVoq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 31 Mar 2021 17:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbhCaVom (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:44:42 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F016DC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Mar 2021 14:44:41 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id g25so64725wmh.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Mar 2021 14:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=z5wcsJ9yilkN+iHwRG+1ymtqNUa3QRy+MgTGIClWb7I=;
-        b=oR089d0xCscp61BjcZo2VTC7ILwokbP89Q4HOI2YsPju+bJJKPIy3KiLLejqi4KTE0
-         l/V+2KDJ/WzVBelPreLanIq1ParodVSxtWtt4OSZw7gDdfzOCiO1dBgnQMrFsWwc9WYH
-         hmitB9dU9ashue+bgvFokwSRU7obNFGWOIcA5SRFmReEH5wxpYrh+9d+tJgokxGpPAeJ
-         OcZPDgoC6+7vqPs1DSeJzdpKIASWHZAD6yTpmfDtlEazo6mi3+P6Owo6X/wyiAB8L2QD
-         HkAIbyKcNszEYv/kdxL9yqjPxbZansNlR2EroTSAIBb6FKNI+u7kCrzwWywV/3uaxMV5
-         UZcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=z5wcsJ9yilkN+iHwRG+1ymtqNUa3QRy+MgTGIClWb7I=;
-        b=f3nXkdlDiSAcvQbKgt9yv5El50i79OoviCfJfFsPO1YwlD2eDiuzJHpJJ+10vKB7Ef
-         yLERrDIFIjfbmMHrvGXnVYIWaKX9VyYOo9OgaV8aowQvNzZGDZkeDPFITb9tTJ/dBKQj
-         3dMeYrR4zBLnzC2Mby2JEl98zOp4j8hEPhWnkfOxrIFfiFknO7vTzmZOBhyVqfHNV/HO
-         6yM4o1aIxHu+npuKL/+W2Pl2wRS9jgydB06anw2/EMlXbznGJVQKHFDSUEdxjw7a/GV7
-         5yzHEvkHzwG0lE/3FTHcaGY8NWl3WMZAOrV8QDDvOhYprdtPIXYqUXoG0Bno8ndjTvKw
-         LVzA==
-X-Gm-Message-State: AOAM531KwRpTDXyFRnZ3apEt2+t+RBVgCe/c230NtmGnvQkdtvQG4pE6
-        XgCOdM+PVyKqGZBIiFghgQTglfW8qY2KhRiLGnaNsEO82VbkTw==
-X-Google-Smtp-Source: ABdhPJxXq+UFjTUr9VyIPXdl03kOI/veuXWULpYnzP32if8Hw7TDshWYdQAr+RhaDk3uWHl9Z3X//Z+1gluhoe73rjQ=
-X-Received: by 2002:a1c:b006:: with SMTP id z6mr4732861wme.19.1617227080655;
- Wed, 31 Mar 2021 14:44:40 -0700 (PDT)
+        id S229514AbhDAFhL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Apr 2021 01:37:11 -0400
+Received: from mout.gmx.net ([212.227.17.21]:43413 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhDAFhD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Apr 2021 01:37:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617255420;
+        bh=GikQ9N/dtuGOaDe7mZQJrXN6q1NMiwBPiz+N1SkZQsU=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=aZyX1uZ17na7uLQ49rP0AEc8rW1STcpfoY5kVmZBGLVbQyC1ryK5jTGPEMogxliX6
+         zdhLJtCzo70KsYpkeMHyS++NPcQL9cZwKsaEuLeTAQmH/1fUwRnlUf+uITQp6YR7Gu
+         TQlpNQxHzW5iHN2fIi3DKH9VzOBnh77lcYHQYc+E=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDQeU-1lIWbd2cNC-00AXs1; Thu, 01
+ Apr 2021 07:37:00 +0200
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210325071445.90896-1-wqu@suse.com>
+ <20210329185338.GV7604@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
+Message-ID: <dc64f94d-52ad-9c36-534e-5a84bf449448@gmx.com>
+Date:   Thu, 1 Apr 2021 13:36:56 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <CABDFzMi0AXwBaiL-aFW1G5-UMwgTffza5hbr-9MNHWyGfmyDAQ@mail.gmail.com>
- <CABDFzMg1J_CDkNJ8JSvu2CkQT_ARHPw4_72C5BozbmYRxLKO6w@mail.gmail.com> <20210331142327.09af250d@gecko.fritz.box>
-In-Reply-To: <20210331142327.09af250d@gecko.fritz.box>
-From:   Thierry Testeur <thierry.testeur@gmail.com>
-Date:   Wed, 31 Mar 2021 23:44:28 +0200
-Message-ID: <CABDFzMiR=b6N+1mp_F4W1awig+kC2Qb3w18C6ev_S3jcQSKchQ@mail.gmail.com>
-Subject: Re: Support demand on Btrfs crashed fs.
-To:     Lukas Straub <lukasstraub2@web.de>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210329185338.GV7604@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:AWIDfBNrWoiIpVNBdaeg86WfQF5GRH4h57wZN4x5u/PAX/69dzR
+ vEiX68mvDXpmXPNS+tj7vXT7fOXz+Ob/mhFS8vPSe9xsTVVATOmLAzBGjJ07VHNkXJhRToW
+ 8hj6PWoOjXMe8P/tgxTOlkL1/ODU/KzTLVE4j16zz8tkT+wminTbCSowqyMxiwC3+3h0Kg0
+ +498qE3TdLzuWK4lMcKlw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:erluoA3UAj0=:K8pW9S/rFpfg1OJkiefMW5
+ 9IXqk6rMuejKDw8Ojwv2T5Fg6XV1O4eIPed/lM8zxyw9/HMKG8M6yASiPhomCHrA06DYuvc07
+ zJo0vPdE5QktuZXylEEbobIBIah+NsBz02T35tpvFiwip8YQVnFw5Mq8HAdamnfceor632zLR
+ er3h2ntroznEgUps/FzJ6VIPThkROBS6ns6EiNjppB0cS2BKaE0xUC0duJ8oyGbLT1gGf/7Y+
+ u+S7oh1xh5qJvTqVO2L5eyDPDSWWVoWGK5Tnw8kEBBW+FFIuGmxNM57OP4QKqCms6zS9cnAy2
+ Jq82i4uDwjcsIf04haJWgVFsuZ62zTbDAIrUbiEW3cLzidBv7z7i8zBdsEol4HBpPJ4tuO672
+ z5ARzYUbuYG/dD7t1zzAJsR6UQPlwHMc1pdKDtx0G2rEJWQsNqufdG8/HqT8Gj6gj7zaeKLg8
+ 77oPFtCdGGPsLP2GjEQFwn9j7rbbC2GhhwmMapmVj6sX4RDj8gPqtljgcJF8bD9lVnzfpkNGn
+ iIMbVBQnTFeD5JGQ5CLyZ7zQgHA6upTvT56H56BsOLa2I4SW0FIoNB/Y3RvtF3UzJUvZeG2lO
+ 4Fh1HvLRDK6+1QUnEPHvG1E8kx0ybAWVojRY1Spx+JSS8yhGATZuMSsMU6Ige67qJ+P6GpM0y
+ lHmYiMetR7FAqd487YCtWYg1DkFy+TIssZm3098z0yMD9BSx9xyUHoaR7IOoPskmvBwbnMqnz
+ /C0ZxJp1uUpxugj9/njV5KqvvScDurbOPj623DJqZ/ClnCxASffK8lDMRjgAQ8xIfFmzJt80J
+ m9gBUIfGsUUJrlAAOp+Yuf2D5RmyYRbU2ObtsFcWu/1pVHlVWTbXo94Ss7V2Wd/bZyJnV6JB6
+ P4z2DjzKDDQ//4q9a/ugsRYg7It5KM/BBGd6cNkYskBC/vtfGlpQMZ13FbAonxJgeovg9W2GZ
+ a7s2wd1kLDdJjQ4L8ZWsrhcpX84Bb+dax52Hwde5ACTrpj2xg6suvp1tN9tzXOTU+3vVY2oqX
+ cgP9TrsrKKDgf7CeOXW3fVIJpIw7KXq6cetpt836OgfiJgecGr91FdJOlgJuRJr6/H5PXS5jL
+ q3alwusGpL6l9XkGsik/rnzdPxwpBaopQF0t3zz682BRQzDgVN0RIBP55Wz6cnjmZYOyc6tzk
+ MwXyiaWnN9IDQ4E2U5oeIVor5aoSGCEO1nluD0IVweLlWuxGiK2oEf4k1+z+ipj2CN269y7cv
+ aeUf7o3je+JrELNUU
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Yep, compression enabled (original fstab before having tried restore option=
-s):
-compress=3Dlzo
 
-Best regards,
-Thierry
 
-Le mer. 31 mars 2021 =C3=A0 14:23, Lukas Straub <lukasstraub2@web.de> a =C3=
-=A9crit :
+On 2021/3/30 =E4=B8=8A=E5=8D=882:53, David Sterba wrote:
+> On Thu, Mar 25, 2021 at 03:14:32PM +0800, Qu Wenruo wrote:
+>> v3:
+>> - Rename the sysfs to supported_sectorsizes
+>>
+>> - Rebased to latest misc-next branch
+>>    This removes 2 cleanup patches.
+>>
+>> - Add new overview comment for subpage metadata
 >
-> On Wed, 31 Mar 2021 02:17:48 +0200
-> Thierry Testeur <thierry.testeur@gmail.com> wrote:
+> V3 is now in for-next, targeting merge for 5.13. Please post any fixups
+> as replies to the individual patches, I'll fold them in, rather a full
+> series resend. Thanks.
 >
-> > Hello,
-> >
-> > if anyone can help me with the problem above?
-> > Have tried a Photorec (even if i know the chance are really poor), and
-> > have got some non-sens files, lkie pdf of 2Gb, .... most of them are
-> > unusable, except smal size file, like jpg pic...
-> >
-> > thanks for any help.
-> > Thierry
->
-> Weird, I would have expected photorec to recover more. Did you have compr=
-ession enabled?
->
-> Regards,
-> Lukas Straub
->
-> --
->
+Is it possible to drop patch "[PATCH v3 04/13] btrfs: refactor how we
+iterate ordered extent in btrfs_invalidatepage()"?
+
+Since in the series, there are no other patches touching it, dropping it
+should not involve too much hassle.
+
+The problem here is, how we handle ordered extent really belongs to the
+data write path.
+
+Furthermore, after all the data RW related testing, it turns out that
+the ordered extent code has several problems:
+
+- Separate indicators for ordered extent
+   We use PagePriavte2 to indicate whether we have pending ordered extent
+   io.
+   But it is not properly integrated into ordered extent code, nor really
+   properly documented.
+
+- Complex call sites requirement
+   For endio we don't care whether we finished the ordered extent, while
+   for invalidatepage, we don't really need to bother if we finished all
+   the ordered extents in the range.
+
+   Thus we really don't need to bother who finished the ordered extents,
+   but just want to mark the io finished for the range.
+
+- Lack subpage compatibility
+   That's why I'm here complaining, especially due to the PagePrivate2
+   usage.
+   It needs to be converted to a new bitmap.
+
+There will be a refactor on the btrfs_dec_test_*_ordered_pending()
+functions soon, and obvious the existing call sites will all be gone.
+
+Thus that fourth patch makes no sense.
+
+If needed, I can resend the patchset without that patch.
+
+Thanks,
+Qu
