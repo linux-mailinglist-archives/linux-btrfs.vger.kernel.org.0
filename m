@@ -2,125 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876ED351F46
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 21:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394D4352083
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 22:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236859AbhDATEu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Apr 2021 15:04:50 -0400
-Received: from mout.web.de ([212.227.15.3]:34639 "EHLO mout.web.de"
+        id S235545AbhDAUSK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Apr 2021 16:18:10 -0400
+Received: from mout.web.de ([212.227.15.14]:51537 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234238AbhDAS5l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:57:41 -0400
+        id S234834AbhDAUSJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Apr 2021 16:18:09 -0400
+X-Greylist: delayed 9430 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Apr 2021 16:18:09 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1617303460;
-        bh=lVg0vBbUQd7acNMgRKbrzaJ+GlS/XxikrXcPbLEA3EU=;
+        s=dbaedf251592; t=1617308289;
+        bh=wst3OU2HI77ezHVkNcAfXv1GqX7QM8QJzGoCMp5FTcA=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=hVi+a4w9+dIS2fGASGa1cD2wM9oFPhzh7E4rIVDldx9YHtnVQ38xvOJesEgo6HZs7
-         wHYnkJl1//OdgO0Zzf5ZXPx70266J9vEnu4aa/nSseiwYBvyZRg65WoXdrlE5XmPlH
-         mAC0QP39XRDaXMEhDC5Aj37iesxLAQm3LuoB+UUg=
+        b=tAvkWnrRvs5+7ylMQALiULz5PEPcIWwR5I5TvLOTyZ+EIVsfgOWzuvUztiP/wR+jn
+         bpeuKYf8UBqvbgdiV+KaS79cDnnYkELgQPDYB1GVge7qxT8hszE0bTAS0L6z6otNuB
+         FVplRG0T7t8dBiLbKf9h768x8XZs5WgM2I5HVWnM=
 X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
 Received: from [62.216.205.36] ([62.216.205.36]) by web-mail.web.de
  (3c-app-webde-bs39.server.lan [172.19.170.39]) (via HTTP); Thu, 1 Apr 2021
- 14:42:06 +0200
+ 14:36:43 +0200
 MIME-Version: 1.0
-Message-ID: <trinity-ccc8c959-c9de-4327-aa3e-dab2ffd0b7e5-1617280926216@3c-app-webde-bs39>
+Message-ID: <trinity-1259f92e-a84a-46a2-8524-330103dff745-1617280603213@3c-app-webde-bs39>
 From:   B A <chris.std@web.de>
-To:     btrfs kernel mailing list <linux-btrfs@vger.kernel.org>
-Cc:     Chris Murphy <lists@colorremedies.com>
-Subject: Aw: Re: Re: Help needed with filesystem errors: parent transid
+To:     Josef Bacik <josef@toxicpanda.com>,
+        btrfs kernel mailing list <linux-btrfs@vger.kernel.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Aw: Re:  Re: Re: Help needed with filesystem errors: parent transid
  verify failed
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 1 Apr 2021 14:42:06 +0200
+Date:   Thu, 1 Apr 2021 14:36:43 +0200
 Importance: normal
 Sensitivity: Normal
-In-Reply-To: <CAJCQCtQ7qtNU4tjWKf8VcmjZiij5nHd0cUAbh4rRO+NWWnQ=BA@mail.gmail.com>
+In-Reply-To: <0fd32582-2e87-c446-c312-9c1d9f4a3fdd@toxicpanda.com>
 References: <trinity-ed62f670-6e98-4395-85c0-2a7ea4415ee4-1616946036541@3c-app-webde-bs48>
- <CAJCQCtQWtnjyN88gif-tmA_cxcs+6HPgVxB5XwNmAVj3qMKmfw@mail.gmail.com>
- <trinity-6258eac7-550c-402f-9280-6f529e372d32-1617093845116@3c-app-webde-bs38>
- <CAJCQCtQ7qtNU4tjWKf8VcmjZiij5nHd0cUAbh4rRO+NWWnQ=BA@mail.gmail.com>
+ <CAJCQCtQZOywtL+sz1XBC54ew=JJaLsx=UkgmeZi3q-ob39vgjw@mail.gmail.com>
+ <trinity-10b6732b-bd13-45e0-b795-66e3c9a869c4-1617003257785@3c-app-webde-bap09>
+ <CAJCQCtSp1cmA6iVmRfRXrxzo7pUA8eSUGwzuifbZkS=p0deO0Q@mail.gmail.com>
+ <trinity-a06881cd-b3d5-4055-b151-f8ad46e425e1-1617007367803@3c-app-webde-bap09>
+ <0fd32582-2e87-c446-c312-9c1d9f4a3fdd@toxicpanda.com>
 Content-Transfer-Encoding: quoted-printable
 X-UI-Message-Type: mail
 X-Priority: 3
-X-Provags-ID: V03:K1:m+r1d12JW4Fi9DKuaB2AI/R+kNC39Lj4q9TBwIEyiJpXplocsdI1OwO5Z8MU7dZFJaj94
- kvTkVPhYiDLt0wdGMrFEZXTvMcCPMSedZWfkVhcZkJRdafbuy1BjmwnkeXzw/ZEnz3uZNe7AC2Es
- CrIyQQFlKQ2NuZT3QI4LyUKDpPf9Oq/M/w1G3tutLKv3D6T7t3/3EOy2Hm6ODnyMs2epKeRAAGOw
- y8XjkIf8CWjTKaZ7rFBwUIApX58MS+QONkBpki0+S0fjJRDZBnV5CsDuVmrxc+h8JuWwKrl1dLnV
- iw=
+X-Provags-ID: V03:K1:OgxB7C267OfKXiom7wZfg9F9wjpsUIFUy0z9UIYfs0eDm4ts5lBb4DPp+2jA5HFSG3n4v
+ I4WB45km3M9a4LmgZIOn6MJTUx5pKOOcq/SzhBJr4pkDyVimnpxm7+pPU9wtfTkd0plOhWEwHvXY
+ 3A68zSrj7m6kLkIBZsA3wLOcuMxO9ploI/eCqj/k/VGetn0WncKWmMsT1APK4eAAz+Rcxr+HOYiE
+ 0JkAZFJHo4KZu/6hKzrodpjWUF5Czg74yFZ4BU2wCPHWnvhhIF5euXqFhrfUxZrIUg/EJTPgeugh
+ VE=
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tgpp64ZM0+Y=:BEGlVi9qLPLqYZZv7YhrgY
- EKJnaRmVu15fjyeZgoYF5gUdYPD5S89HXjZGh6dkrIjZutMkfUuPxuOjumYxI8IelevJ2hVXi
- 9aOkFKOHhbQER55+zWEI4e3hVk2XLHLFPmaCWf+4nEdIaD6ZLeiuxYyub0Y0wVimFYEuXgqz9
- CgyJDILpxFAFwAeIrnKqpAmlQi3BpFJMxkU45hmHHiRT16JvrPqWtaYLAVHT6zVFD9wu3gdfV
- ODn02mXteI7JoffgNk5AltJxbZJE44k0tw0cv8EYAWCKHVkYPojQRfgTPWFv80cc8vhFUTzr9
- Pguu5A+GV9eB4cdC5NjoBsP8QKTUur71mrEB1Ax4iECJbzdwCHvNMy6EpLUAdE3Yup+/1Npjp
- pthKY2126HG/Ds0mtmUQQ/NwrpruxZ139O0Jz8/lXTcUuSFojDbX73j28/OaUtqud00tVfegJ
- 5v6c/Scn+3zpEpMLg1Kjf1svwry1Cvtk0p5nItBN6i0ofW0nAM98bejz1wXCyNWYrLU38a0MH
- lwOZx8PdScEf+7OOqNGefAAAHOR7Q39b7y63LGDtw7eQuLSyPaxac44JbmKq5Cl/6TwcQSIRX
- gkJkRHrfJvViitlu1rnBSPE7750Gb0GG7/Jk+dfr+Nr27cFSYxZ7spmMFjO66GgYuJehEWyhY
- qD7AJ1E/0rcfYnFrEOV0XP5MaL+aND1G3mqA+h/aOmOlaycGxLFh9BM8wXFGn1jYdWlUQ1w/C
- 6AkXsKZKdifIXQF/E0zIeH5sMf5Nu4ILSiH5/k5cYtHnOuMuSfpjGT8UMm0lYNPDBv990pMDc
- sAldeJ+xBwt2S0G/qV41HU6r7g+UAOu2pxz+6Gmgwxya5adgyFCVQ4kg5eaQ5c4GZGTDyocCD
- csTQNaK2CM1O+6xGBhsN2n64DFHrdD/PBlgML1UDd5it8ztpzUwXr561xUvfuA
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KXuYEGr9hEs=:cXvoRAb/SRd8AcuAv2vaOg
+ ReuWvamy1aj6683Y3HIZV15yx6VibJuEdlj1QO19pjE8fUbE3P0dXYD0pjwpMlJRqMcKCYYwK
+ f3wJwOYMFTxFkVZ0C4XyFLOxcGATsOKJAkNMD+Z/0DieDk5sB2WO7q1strkIAVJ9AD5HguA41
+ CuD0cFTKRm7awkrbJv71QHcQ1asHjUYcncQ+zWqNY+TcD9tVkdKKLc5mNS7KkyUAVOgCC5ys/
+ lxiFjDmQkSdoAMneFjXDFTi9QAcGYPeEintgxsl0r1dg33tmOnmQm5xCudSrbGDHrgR/CzwSt
+ eBWT7qULswBFpvVxEb5nkvpLZ5YavZEjvmbjGlNon5kvzECsS2Gy/oRDDQ+6HBhAL/IWGjHf0
+ lxkx24V+cN/kAK/57kyFd+0l4yzUJbyGK6M7EFfMZBYo9AOG8WmKUVPLD3OsQEABtZcqaReEf
+ P/su1rFZvrUorQjpIGbNvAE1kKBwUxWOXESaWCcieSLZk60recW8N5rFLGbGoiAbzR8T6fRP2
+ udegQnKmvLRS0bXQ0iAjLhe/aIcb0VIQJJg93L3UOJEwaYvJcKpgZapLATQaiYp09JuIIs9K1
+ kCJTGxjKhFuy/lRnEZqaxhpW9kqdaAsmhV0C+rJDXxDcep+IfflitLMphIv6eut3F85imRcGj
+ RlOXhBd1td6SBYOvNOzozXkPyfTrqWY0uRq70i+dLu2gGczqQQnqRhsTmYBD8Vom4Y3pdnihR
+ Ik1emFkmr025xJ6mytXRO3NpohYf24aG2Nl9Xe1NgAA/Pr2OF564xNEU5bk8BPgxnfsv6Osdj
+ D2YhEObhBzb1zbe4pAjvpoN4k2nvG9fMRrbGbVL5qyJweOPs2SjH+I1xJXhYfZe3+edrEXQNG
+ eYCF6qAleS1IWR1BaUeKGYg0PszxDbeXtuZMm8VmbpcnFLpFq6JyEmcqbiym14
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Chris,
 
-> Gesendet: Dienstag, 30=2E M=C3=A4rz 2021 um 20:17 Uhr
-> Von: "Chris Murphy" <lists@colorremedies=2Ecom>
->
-> On Tue, Mar 30, 2021 at 2:44 AM B A <chris=2Estd@web=2Ede> wrote:
-> >
-> > > Gesendet: Dienstag, 30=2E M=C3=A4rz 2021 um 00:07 Uhr
-> > > Von: "Chris Murphy" <lists@colorremedies=2Ecom>
-> > > [=E2=80=A6]
-> > > EVO or PRO? And what does its /proc/mounts line look like?
-> >
-> > Model is MZ-7TD500, which seems to be an EVO=2E Firmware is DXT08B0Q=
-=2E
->=20
-> For me smartctl reports
-> Device Model:     Samsung SSD 840 EVO 250GB
-> Firmware Version: EXT0DB6Q
->=20
-> Yours might be a PRO or it could just be a different era EVO=2E Last I
-> checked, Samsung had no firmware updates on their website for the 840
-> EVO=2E While I'm aware of some minor firmware bugs related to smartctl
-> testing, so far I've done well over 100 pull the power cord tests
-> while doing heavy writes (with Btrfs), and have never had a problem=2E
-> So I'd say there's probably not a "per se" problem with this model=2E
-> Best guess is that since the leaves pass checksum, it's not
-> corruption, but some SSD equivalent of a misdirected write (?) if
-> that's possible=2E It just looks like these two leaves are in the wrong
-> place=2E
 
-I'd rather go with the theory you (indirectly) raised a few days ago that =
-my RAM may misbehave (when you suggested I run memtest)=2E This is rather p=
-ossible because I had difficulties understanding my BIOS and at some point =
-I have accidentally enabled some overclocking=2E As I know this may cause t=
-he RAM to misbehave (and I don't have ECC RAM), this may as well be the rea=
-son=2E
-
+> Gesendet: Montag, 29=2E M=C3=A4rz 2021 um 13:36 Uhr
+> Von: "Josef Bacik" <josef@toxicpanda=2Ecom>
+> An: "B A" <chris=2Estd@web=2Ede>, "Chris Murphy" <lists@colorremedies=2E=
+com>, "btrfs kernel mailing list" <linux-btrfs@vger=2Ekernel=2Eorg>
+> Cc: "Qu Wenruo" <quwenruo=2Ebtrfs@gmx=2Ecom>
+> Betreff: Re: Aw: Re: Re: Help needed with filesystem errors: parent tran=
+sid verify failed
 >=20
-> > > Total_LBAs_Written?
-> >
-> > Raw value:
-> 92857573119
->=20
-> OK I'm at 33063832698
->=20
-> Well hopefully --repair will fix it (let us know either way) and if
-> not, then we'll see what Josef can come up with, or alternatively you
-> can just mkfs and restore from backups which will surely be faster=2E
+> I'm on PTO this week so I'll be a little less responsive, but thankfully=
+ this is=20
+> just the extent tree=2E  First thing is to make sure you've backed every=
+thing up,=20
+> and then you should be able to just do btrfs check --repair and it shoul=
+d fix it=20
+> for you=2E
 
-Sadly it didn't (see other e-mail) but I think I'll go for the latter (mkf=
-s and restore from backups) as I *think* my backups are fine and I don't wa=
-nt to waste more of your time (unless Josef wants to get his changes tested=
-)=2E
+Sadly, it does not:
 
-Thanks very much so far for the support and thanks for maintaining BTRFS :=
--)
+# btrfs check --repair --progress
+enabling repair mode
+[usage warning]
+Starting repair=2E
+Opening filesystem to check=2E=2E=2E
+Checking filesystem on /dev/mapper/luks-ff6e174f-4cd3-42a7-8ee5-47005dd077=
+dc
+UUID: 1a149bda-057d-4775-ba66-1bf259fce9a5
+repair mode will force to clear out log tree, are you sure? [y/N]: [1/7] c=
+hecking root items                      (0:0parent transid verify failed on=
+ 1144783093760 wanted 2734307 found 2734305
+parent transid verify failed on 1144783093760 wanted 2734307 found 2734305
+parent transid verify failed on 1144783093760 wanted 2734307 found 2734305
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=3D1145025249280 item=3D14 parent =
+level=3D1 child level=3D2
+ERROR: [1/7] checking root items                      (0:00:00 elapsed, 26=
+57 items checked)
+failed to repair root items: Input/output error
+
+> However I've noticed some failure cases where it won't fix transid error=
+s=20
+> sometimes because it errors out trying to read the things=2E  If that ha=
+ppens just=20
+> let me know, I have a private branch with fsck changes to address this c=
+lass of=20
+> problems and I can point you at that=2E  I'd rather wait to make sure th=
+e normal=20
+> fsck won't work first tho, just in case=2E
+
+Since I do have plenty of backups and it seems like the filesystem is stil=
+l readable, I think I'd rather delete the filesystem and create a fresh one=
+=2E I don't want to take more of your time here, unless you do want to know=
+ more details for testing your changes=2E Thanks for all the hints so far!
+
+Many thanks altogether!
 
 Kind regards,
 Chris
