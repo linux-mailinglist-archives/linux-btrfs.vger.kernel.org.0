@@ -2,72 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6401F351BC7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 20:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82CF351ADE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 20:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236257AbhDASLC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Apr 2021 14:11:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42004 "EHLO mx2.suse.de"
+        id S236912AbhDASDN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Apr 2021 14:03:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39068 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237275AbhDASDi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:03:38 -0400
+        id S235737AbhDAR5f (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:57:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7C359B178;
-        Thu,  1 Apr 2021 15:34:28 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 347D9B23F;
+        Thu,  1 Apr 2021 17:57:35 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 21897DA790; Thu,  1 Apr 2021 17:32:19 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 17:32:19 +0200
+        id C975CDA790; Thu,  1 Apr 2021 19:55:25 +0200 (CEST)
+Date:   Thu, 1 Apr 2021 19:55:25 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: make reflinks respect O_SYNC O_DSYNC and S_SYNC
- flags
-Message-ID: <20210401153218.GX7604@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
+Message-ID: <20210401175525.GA7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <dd702a279373c3b6babdf0d7a69c929e9924bb33.1616523672.git.fdmanana@suse.com>
- <20210329184651.GU7604@twin.jikos.cz>
- <CAL3q7H4fxAsmY9a0QtWGRu1Si6oUgnazctSn=HzjmBvxr0R2zw@mail.gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210325071445.90896-1-wqu@suse.com>
+ <20210329185338.GV7604@twin.jikos.cz>
+ <dc64f94d-52ad-9c36-534e-5a84bf449448@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H4fxAsmY9a0QtWGRu1Si6oUgnazctSn=HzjmBvxr0R2zw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dc64f94d-52ad-9c36-534e-5a84bf449448@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 11:07:26AM +0000, Filipe Manana wrote:
-> On Mon, Mar 29, 2021 at 7:49 PM David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Tue, Mar 23, 2021 at 06:39:49PM +0000, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > If we reflink to or from a file opened with O_SYNC/O_DSYNC or to/from a
-> > > file that has the S_SYNC attribute set, we totally ignore that and do not
-> > > durably persist the reflink changes. Since a reflink can change the data
-> > > readable from a file (and mtime/ctime, or a file size), it makes sense to
-> > > durably persist (fsync) the source and destination files/ranges.
-> > >
-> > > This was previously discussed at:
-> > >
-> > > https://lore.kernel.org/linux-btrfs/20200903035225.GJ6090@magnolia/
-> > >
-> > > The recently introduced test case generic/628, from fstests, exercises
-> > > these scenarios and currently fails without this change.
-> > >
-> > > So make sure we fsync the source and destination files/ranges when either
-> > > of them was opened with O_SYNC/O_DSYNC or has the S_SYNC attribute set,
-> > > just like XFS already does.
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> >
-> > Added to misc-next, thanks.
+On Thu, Apr 01, 2021 at 01:36:56PM +0800, Qu Wenruo wrote:
 > 
-> Can you squash the following diff into it?
 > 
-> https://pastebin.com/raw/ARSSDDxd
+> On 2021/3/30 上午2:53, David Sterba wrote:
+> > On Thu, Mar 25, 2021 at 03:14:32PM +0800, Qu Wenruo wrote:
+> >> v3:
+> >> - Rename the sysfs to supported_sectorsizes
+> >>
+> >> - Rebased to latest misc-next branch
+> >>    This removes 2 cleanup patches.
+> >>
+> >> - Add new overview comment for subpage metadata
+> >
+> > V3 is now in for-next, targeting merge for 5.13. Please post any fixups
+> > as replies to the individual patches, I'll fold them in, rather a full
+> > series resend. Thanks.
+> >
+> Is it possible to drop patch "[PATCH v3 04/13] btrfs: refactor how we
+> iterate ordered extent in btrfs_invalidatepage()"?
 
-Squashed in, thanks.
+Dropped, there were no conflicts in the followup patches.
+
+> Since in the series, there are no other patches touching it, dropping it
+> should not involve too much hassle.
+> 
+> The problem here is, how we handle ordered extent really belongs to the
+> data write path.
+> 
+> Furthermore, after all the data RW related testing, it turns out that
+> the ordered extent code has several problems:
+> 
+> - Separate indicators for ordered extent
+>    We use PagePriavte2 to indicate whether we have pending ordered extent
+>    io.
+>    But it is not properly integrated into ordered extent code, nor really
+>    properly documented.
+> 
+> - Complex call sites requirement
+>    For endio we don't care whether we finished the ordered extent, while
+>    for invalidatepage, we don't really need to bother if we finished all
+>    the ordered extents in the range.
+> 
+>    Thus we really don't need to bother who finished the ordered extents,
+>    but just want to mark the io finished for the range.
+> 
+> - Lack subpage compatibility
+>    That's why I'm here complaining, especially due to the PagePrivate2
+>    usage.
+>    It needs to be converted to a new bitmap.
+> 
+> There will be a refactor on the btrfs_dec_test_*_ordered_pending()
+> functions soon, and obvious the existing call sites will all be gone.
+> 
+> Thus that fourth patch makes no sense.
+
+Ok, thanks for the explanation.
