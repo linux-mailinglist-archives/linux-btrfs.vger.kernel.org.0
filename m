@@ -2,72 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC4835108C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 10:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF678351104
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Apr 2021 10:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhDAIEW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Apr 2021 04:04:22 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:8488 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhDAIDz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Apr 2021 04:03:55 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 1193D9804D8;
-        Thu,  1 Apr 2021 16:03:52 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] fs: btrfs: Remove repeated struct declaration
-Date:   Thu,  1 Apr 2021 16:03:39 +0800
-Message-Id: <20210401080339.999529-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S233588AbhDAIlx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Apr 2021 04:41:53 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:61168 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhDAIlT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Apr 2021 04:41:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1617266479; x=1648802479;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GqhbWB4d/kDcPe9vW/4f2RJ3iqpHL/p7YDT71wgb7M8=;
+  b=i9SURz0syGZlCV4miRB2w7I01BL0Dnmeyir+JKgd0xu/tC+Q3BUp9Cxn
+   eZG/TYxmjO91jelMI32QQtFsryqZNdiCIAD89J4OjxNVJb/VxZBx8orDf
+   wPU3/zlqsKIeesyBg179ssdXrVB7PhcBYfeB/L5fwMpeKWnx6cOx699f6
+   U0KPi4QHSCxG5jqfqrVm6CbrJgTleFsShOY7r+fp3Fhq42ngIxka71BQm
+   2DCJqOm3FxG1lSYgbRZK/jyglngypLubi27RotYZ6jTgnfVpsup9LwyhZ
+   UXdrXHB9hZQcAaUaOjYdReICPtIv3JKecfbQjtvFdKNGiVAhenInLFw9w
+   A==;
+IronPort-SDR: ILZsgMM0zHE44lGS3/F990o+W12d7VxK25HSQWYrORvyvKy6Tlz6GMcv15b8UtrMXtaotw8Iew
+ 2sPEEZ1gZHxkjFq0AB/LRy2QFFDsws/0R8bEWtgu/U8eZMQhUqvIWXxQi+1WaqJ4dRxDkQfUxe
+ IPAojCa8MIo/nFL2NrVuXI96og0Rn7TiKY8CzF6lKcdOBfJafyonw6rY6CCi413zz443j1VOby
+ 5KESZ6jTSSo8O0nNvLh+i+7AFsJL0Qj9cBCyVxBBzpr4wIoEjNKBG2RdkQ3JJ7J2fYsFbHzf0Z
+ HNQ=
+X-IronPort-AV: E=Sophos;i="5.81,296,1610380800"; 
+   d="scan'208";a="164565871"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Apr 2021 16:41:15 +0800
+IronPort-SDR: r+erz59zPpqrtZtw8sAEJCTaZPvuxKU1trMdp+DxHfPrH/49VvZiHkuYOAsOuXz7OCjlwn7t2h
+ A3PiWbdVkY84mWmrlDtzGcIk7otYaH0FH5uTa6Sq/7aNXqruS6F/yFqsBTTu5vQu2feej7B0eN
+ 6hWUa9r+4M0b4OAjFduzYMt3N1G2idgaF1fGsAElulmH1bxo2H7mzsrZXgLorLHe6kDn9pwMnm
+ d6CTFFNkAApSJb8BsbaH/qeCrODKD8tgNSluZ8dx7n/N6LR8wAX7cbpqJuhgLunLxQQCGtBJtF
+ vZgstntjBecQJmoRlGTvAVrS
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2021 01:21:17 -0700
+IronPort-SDR: cYn4VA3kyUeBKTtzeDeg/Gej72eGZ9tJ4PlS8WKUpZI7pNy4mhBk/+fRUl0gStCbG5Fw2p2erk
+ V2xYpm+sAtPoeBuAT56hJ+E//KocZmsl/20Dyz4OUj097uGnO0uHHE/Buy9lPh23Yt1OTqbKFA
+ ae6YU5zP39V+laNCWg3FWjpHqW+LEj+1Hzk0qn3V0bdTKOIy5twwuYnwdK3iQzhjLaxjs+YCiF
+ 9l7VKoEvbp2rZyhIb+Q+gCMEVCxrMagdz8FO/I6TYEfvXaqA77oNPes5ZCQZq07i6VMKcm8Tl6
+ rNU=
+WDCIronportException: Internal
+Received: from ph5fb5j12.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.60])
+  by uls-op-cesaip02.wdc.com with ESMTP; 01 Apr 2021 01:41:09 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs-progs: mark BUG() as unreachable
+Date:   Thu,  1 Apr 2021 17:41:00 +0900
+Message-Id: <5c7b703beca572514a28677df0caaafab28bfff8.1617265419.git.naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTx5DSEMfSUwYGUtLVkpNSkxJTU9JSElISkpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ME06Axw6HD8UPCsrDEo3OR06
-        Li5PCUpVSlVKTUpMSU1PSUhJTUlDVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJS01LNwY+
-X-HM-Tid: 0a788c75c728d992kuws1193d9804d8
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-struct btrfs_inode is declared twice. One is declared at 67th line.
-The blew declaration is not needed. Remove the duplicate.
-struct btrfs_fs_info should be declared in the forward declarations.
-Move it to the forward declarations.
+Marking BUG() unreachable helps us silence unnecessary warnings e.g.
+"warning: control reaches end of non-void function [-Wreturn-type]" like
+the code below.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+   int foo()
+   {
+   ...
+   	if (XXX)
+   		return 0;
+	else if (YYY)
+		return 1;
+   	else
+   		BUG();
+   }
+
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/extent_io.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kerncompat.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 824640cb0ace..227215a5722c 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -66,6 +66,7 @@ enum {
- struct btrfs_root;
- struct btrfs_inode;
- struct btrfs_io_bio;
-+struct btrfs_fs_info;
- struct io_failure_record;
- struct extent_io_tree;
+diff --git a/kerncompat.h b/kerncompat.h
+index 01fd93a7b540..7060326fe4f4 100644
+--- a/kerncompat.h
++++ b/kerncompat.h
+@@ -333,7 +333,11 @@ static inline void assert_trace(const char *assertion, const char *filename,
+ #endif
  
-@@ -270,9 +271,6 @@ struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs);
- struct bio *btrfs_bio_clone(struct bio *bio);
- struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int size);
+ #define BUG_ON(c) bugon_trace(#c, __FILE__, __func__, __LINE__, (long)(c))
+-#define BUG() BUG_ON(1)
++#define BUG()				\
++do {					\
++	BUG_ON(1);			\
++	__builtin_unreachable();	\
++} while (0)
+ #define WARN_ON(c) warning_trace(#c, __FILE__, __func__, __LINE__, (long)(c))
  
--struct btrfs_fs_info;
--struct btrfs_inode;
--
- int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
- 		      u64 length, u64 logical, struct page *page,
- 		      unsigned int pg_offset, int mirror_num);
+ #define container_of(ptr, type, member) ({                      \
 -- 
-2.25.1
+2.31.1
 
