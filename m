@@ -2,356 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD63352503
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Apr 2021 03:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DE935251E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Apr 2021 03:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhDBBQH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Apr 2021 21:16:07 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:36290 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbhDBBQG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Apr 2021 21:16:06 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13219xR3174301;
-        Fri, 2 Apr 2021 01:16:02 GMT
+        id S233677AbhDBB2P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Apr 2021 21:28:15 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48656 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231179AbhDBB2O (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Apr 2021 21:28:14 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1321OuC0023221;
+        Fri, 2 Apr 2021 01:28:06 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=jTrWhhd4smOJYHpiKVzBzZqgh5GVphP3qaKcnre/w4I=;
- b=mutvuX+uBnWI2+5RPgqpfPKGGq9NgD/xKoKW7NQ7vXTBJ3GwfNPFWz9oJ3lIGXUDiL3A
- 7gKzGFS9sQvkmhBnSAAccB6WqUxdYLSkGCwZzaIVSzDPVK3ncstEYSlG19VBGCYe0WqZ
- Atsf/ssULyO4Ue6k+B6mXtT/JbWvm4kXyLFrVHd+kfdJFOKP086hbHqrFnkpQbIos74S
- xCyXcvfxhe3tJFxgOh4rGSwp6ke87balggoMAPXJ1xJrvUCWuEnLZVk8V6Pb+4ivYgpN
- QKbFspHHCyARQDheqtoApV/1DvZ1fYp5f2k5OisqYkt6u7bDKH0E/rwrPi6yE3iKNUIt yQ== 
+ bh=ZGfu63O64li9vvzxDllQxpwIq53Pf5+nBYghKIeQMJ0=;
+ b=r9ycaNj6soYDSohhUEOPtqVzJGjhG+tTnrh/tdP30JgqWAdOBRWDJase8PAhqrqGBp0K
+ sifcFVdVXM83Drfvudvqp9jK3s3iCI3cw3f5+NPKx6WIeRJDKfgrEaAedorSKfGX6hpf
+ yFSYMw2DJQwBkNcuWHS3JhHZzEgoqbkh4gi6gNEWgL4HhaEobE6jFpcRXGLGc/ZlHhw9
+ BA6dAh2eI0IJOek5zYEM6tLB5cVG1H0Z2CfbrazkmvHSwqyWKLNPKYQaMHSXUxE1+x7I
+ p8ORSe19gE4BcGmp//6Csl22o4qAs6Vd/B6a09mWyzUF0lL0fs+eA3TDWyyoQffWDboW iw== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 37n30sbfju-1
+        by userp2120.oracle.com with ESMTP id 37n2a03hua-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 01:16:02 +0000
+        Fri, 02 Apr 2021 01:28:06 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13219cuN083832;
-        Fri, 2 Apr 2021 01:16:02 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by userp3030.oracle.com with ESMTP id 37n2athc3w-1
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1321PcAJ135615;
+        Fri, 2 Apr 2021 01:28:06 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
+        by userp3030.oracle.com with ESMTP id 37n2athpsp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Apr 2021 01:16:02 +0000
+        Fri, 02 Apr 2021 01:28:06 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FhcgTVPpdiqYCvYnVgwOFlZBlBM7BY9MWDqwK9KSZvjMqAAMfgdInl6xjtUyPQR0QDBIPoFSG6SFyNCK1IlQclI+uS9ckTPiHO3BYdDRcj4w27T4xVsP2NdoWyAF4gE3y8zNnHv/njEBw3tfShCrXz8AEfD+vGS7k01rmcm4JEHYZejp8EioC63DNPOb9B4/r3FfRoLLUMnPG5dY3zZS9+kHaIlc1kyueNigxfCiL1b92NcfWNC3Lhsfb0ppbV6mOw/64bvBOY/HEfGTk9/dCGcLObA36APU/1qMt+9ZHu6rf7AssE4lkDPlHFWgJ22YyhKyYPbe5DwhwURtLRhFZQ==
+ b=dz6QuIiab2HVGOHgToH6Ay/uEOG8qNiR+Ll1e4ghtZgcaKXTXsPCAKnUAGReAHk7eQ40GVLwGQ3jvoXJWNxt2s9eezXepgW033CWOUriD5xSloF2yomWPKmF/GMzwT+Bexzyq9+alu51OSE1Qx9l1YG+9eRTbiG+0yD0PlaVAW07tYE9psz+sIKhViqDjax7K/wcFBX086v1Seqy51sKxNP77Z3IPL0yV4y7dRShhZCWMcCCfsQBk6A5QrguaO0C0pedMaEg4uEssYUvMhuPq9Lrm6bhOcqU2qxzjtk6afm+5csiUICxAKB0UgUf+X5t9fuYFTLQagoL/kIEa/D6xQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jTrWhhd4smOJYHpiKVzBzZqgh5GVphP3qaKcnre/w4I=;
- b=gyqaxrV3b/+YKaU88tbhGQ/hb9FQ3rOuEZ96442//ifCeLkBqZ0na7Ynpx1vGV6coFlkYWDuJhufJVjGkA4wg7H4ReCy7AXhu9B9sQm1w6qVpwW9cF7SZhd3kDCClU4XoyhZjazwWI+i5UtRTEFdiyi/7wNGpVjiC9ZAo0gqO2TT36sgCeseutVPVweu8BrJbdK9zACk4YlkfKCRZ/d2CTL5NfWPLiDTNoBu67j7lhNNKxLuouLgJBqN5nBMay1p5g0/13KBrioq3CodTkqjqFtQmbbJflOidomh64w+qBFHZ/yrZrW5MlegGln/HInZuKDqkVIfVIE9r6JjklXswQ==
+ bh=ZGfu63O64li9vvzxDllQxpwIq53Pf5+nBYghKIeQMJ0=;
+ b=MB/mGC69F1llE8o2A5Oxjp74R3S1ORviE0cPoqaalzsjZWc1J6aMMh3IOaN1kD0Ix6sTzLRCnzBedpPFHcFUO2MYDQA7GCg/5pqG1y+5FR4vIv5ikF/HKxQEukmbBFUnScnjUw1sAPFHfERoAc/pcTZyrI2QnjG+n+TI+b+5Fwqqi71C5YOQAHkqYEbfSU67ZXnXBaweGql97oeCeMfT4nNDQ17vPbeSzJdOTCZpm2d4zOR90nUUtKHjiBxzMfjevsVu+ki8pTxJBHoKsiGsLwaRVVfxZrFJNNxhZDRPVv1hu/qwzvMFk7kuTklVlao1xvlITIiCwj6IkAvqu2Rqwg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jTrWhhd4smOJYHpiKVzBzZqgh5GVphP3qaKcnre/w4I=;
- b=MI5sg/POAd+KgoZWIhssEhP738X88znuQDcA/oeBy7gQMOaRDvB/6+1/ZbHAL+kPRLgWELdOsikO646tofdpjw5LL2CkaZ8symBjEv1hK4srMIv/6IETapPV8XaScpFzDL24zvpZovrZU30m3qU6U3eTv4OeDSOLVgbQYl49ojo=
+ bh=ZGfu63O64li9vvzxDllQxpwIq53Pf5+nBYghKIeQMJ0=;
+ b=fVKauG8SGNMj4XNLshaHemqMuSdHErP1AgpCaGsZUguq7pZcK9lTOHnj3kjR6xSjs1y3YPJTYYq9Isr5zHqSIaw9UMuo84m9l6vFlanzAW0rHE1yuA/l1XpF5C2AuxxKDRRoPCBlmJO6WXV4SOaN3DbmdTAFfiQ42Pc5rW452FU=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4366.namprd10.prod.outlook.com (2603:10b6:208:1dd::10) with
+ by BLAPR10MB5171.namprd10.prod.outlook.com (2603:10b6:208:325::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Fri, 2 Apr
- 2021 01:16:00 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Fri, 2 Apr
+ 2021 01:28:04 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::9aa:6ac:8d40:c076]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::9aa:6ac:8d40:c076%6]) with mapi id 15.20.3977.033; Fri, 2 Apr 2021
- 01:16:00 +0000
-Subject: Re: [PATCH v3 04/13] btrfs: refactor how we iterate ordered extent in
- btrfs_invalidatepage()
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+ 01:28:04 +0000
+Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210325071445.90896-1-wqu@suse.com>
- <20210325071445.90896-5-wqu@suse.com>
+ <20210329185338.GV7604@twin.jikos.cz>
+ <dc64f94d-52ad-9c36-534e-5a84bf449448@gmx.com>
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <09d9c11c-02ff-8109-5244-021fac5c3626@oracle.com>
-Date:   Fri, 2 Apr 2021 09:15:50 +0800
+Message-ID: <4832f3ad-e48e-ce5d-36f8-5c6e132eaa3f@oracle.com>
+Date:   Fri, 2 Apr 2021 09:27:53 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
-In-Reply-To: <20210325071445.90896-5-wqu@suse.com>
+In-Reply-To: <dc64f94d-52ad-9c36-534e-5a84bf449448@gmx.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [2406:3003:2006:2288:d47a:f48:c77a:6201]
-X-ClientProxiedBy: SG2PR01CA0151.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::31) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
+X-ClientProxiedBy: SG2PR04CA0174.apcprd04.prod.outlook.com (2603:1096:4::36)
+ To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2406:3003:2006:2288:d47a:f48:c77a:6201] (2406:3003:2006:2288:d47a:f48:c77a:6201) by SG2PR01CA0151.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Fri, 2 Apr 2021 01:15:58 +0000
+Received: from [IPv6:2406:3003:2006:2288:d47a:f48:c77a:6201] (2406:3003:2006:2288:d47a:f48:c77a:6201) by SG2PR04CA0174.apcprd04.prod.outlook.com (2603:1096:4::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Fri, 2 Apr 2021 01:28:02 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a5dec549-4e62-4602-c60f-08d8f574dff7
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4366:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4366D75220006A885A60587EE57A9@MN2PR10MB4366.namprd10.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: e6002b87-afe2-4f04-a9ac-08d8f5768fd8
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5171:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB517121139FA45D4137E4E85FE57A9@BLAPR10MB5171.namprd10.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o1lc/mDa6+0hAkGjnMoLg3x29GiePBy1/t9VVeFGAhxUvceSpfmTBejorntnN/goA4zqUuG7m+yaKneQSJw/7SNT4nA+rEt4rgaCucOL30ahmGmNtv/58K6ZldMKq/Nz2dmi/PRyiWRWbi97K8mVKCVRw+fDrSdhTa/6mRJ4MwLvJb7x1BxhNxqRWbEnrvnVgOnim9fVhaHzhSIleu9CB1Q61MeqkagAZKJWV/4f/C31Hy98cr7+SXwfoz6Z9gprQEAwkF4NNXogOtQz010mPVG6v1Tc2IjFjGjHLMNrEDlQv/kFOv27M112j2/OOMKw0lGoD+kMnWRtE4Nr2YTK8J746KIKPDVYMgHeXWcczqxVKb///RCf4jyCS1II8Wq7sLjBIgmApJM0rEMWzgrNYV1CqguxKfpxUOtrXUBN2WQIE3R3yFEAHsjktju3u9UpZotlJAa87lm+19Ab0tWctgsih2/qQM2l8nL3k8vf07zRZc0/qhy52BSdg1YUJbySOs5cdgXoXwj9aXBOtSaBOSsgv1i44NjzhKpmR4jRSVD6f+4zh1ARHH4KeksskLK9GCNWeFrVCwc0XKxIIkvdDegZFnADI9/KFv8zwS8HaYiPuS4PtKxHjOp1D0oWi/cP20PvWAmaj5H1u2n6GmOufe/tP8d3JDE3eiWH/2dMFOHX4jfWY4e7/PzOnn3QURvn
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(366004)(346002)(396003)(36756003)(53546011)(316002)(478600001)(66476007)(66946007)(6666004)(2906002)(5660300002)(38100700001)(31696002)(8676002)(8936002)(86362001)(44832011)(66556008)(186003)(6486002)(16526019)(2616005)(83380400001)(31686004)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WUMzTzBzdmRNczB6VFRDVEw4RXBDMi9wbENPUVBQSFFHdzlwVS8xcnBKK0o3?=
- =?utf-8?B?YkZ5UXoyOGJPdHhzZVRzUlBrRDhwejFsL1NkL09rcWw0ZWdQVTFjZFJnc3VX?=
- =?utf-8?B?U1FYYTgxUEhCQ3ZZN0dtNDVMY0JCQXlxMFIya05JVVNRMlpSazNSRDcrZnJ4?=
- =?utf-8?B?bGtabnZkaE0rWDNKbytSMkQrSUlyYVZJUW1wTE1MTDM5Uy82bWwrK2pNdjNZ?=
- =?utf-8?B?NmxqaWtGdnoydWxvUVZGcy8rMDNPSVlML0ZPdXRNT2tGV0Z6UTgxMnRnTjJE?=
- =?utf-8?B?ajdqZURySHNwM1diT0N0SUprcmJ0aVdkVFFKV01acklYYmtqT29qa3JTQjNa?=
- =?utf-8?B?WlZHaXZWNG9OdEVqTlhrb29YamxoLzc0cWdVWWlzekxzZENzRXNycDdlb0dt?=
- =?utf-8?B?RWE2RGZZVTNQV3NJdXUySExpLzZpK2taamtxN0o0Rk52RlErTjAyZGFNdmNP?=
- =?utf-8?B?Q0lFelpwUGR4TytLbHpjRFdoa2NIeGplS0Y2S1A4RkppMGRNcHNqWGNLNkZj?=
- =?utf-8?B?MjB5eGhLNWtGcXM2c01YOW1FOVdMMkpBd2t6dXhHcXduZnV0cXhObjJYR29j?=
- =?utf-8?B?MUExM3RUaTJZMG12cFVIWkZFTkhRSVhmRlFXcHJWb2QwTlpYT284Vkpsc1RL?=
- =?utf-8?B?WDNwbUtFOHVMRFdielU2aDl6Sk5ISTdFdFZ0a2t6WnQzcWtuZDQwekoreTly?=
- =?utf-8?B?allmVjg5THpCenlwN3N2UVJGYm9GT25HSUlNdFp0NHZaWGRPYnhTY2RVWm1P?=
- =?utf-8?B?Y1dGclVkbDc0SDA2NWpQU3BFaEprZDVDRC9oQVVZNVROOUtrR1M4TjFydnow?=
- =?utf-8?B?UmlZenYvbVRlbFVmMHNXL0R3aCt3U1FkTjZHWXZWdnFHZGNKdDhjaEVKVm5a?=
- =?utf-8?B?bHFlVGdJdVJkMFcwYXh5UWo3RzdsNEdvQzhmVm9PRTA5RjBnT0xOQ2Rkb29W?=
- =?utf-8?B?bW8weHROUTZZQUVBUk9ra1lhZ3FKQzg2MlNuVS9XT2JBSmczT01lVTJyaU9G?=
- =?utf-8?B?aklISktmMkdYUWgrcncxWnRPcldjMDA1NDNMSXkvVytBQ1hMQlhiNnlZTzBW?=
- =?utf-8?B?c2tWdW9hR2tad1IxZm0wN28rZ0RrdkFqeG4waGFnSVZ3RStvNVRSbVhrb0RX?=
- =?utf-8?B?U2FzVHFuUE1JdTNXZ0p1dmJGMFpVZmlqVGNXeGtRWjZJd2g2YXFPeEVYR2t3?=
- =?utf-8?B?OVRsVS94cVZvbEdQR2FSQ1hCZjhnRUtkOFpENGh0Rzc2UVNQOXBDQkw4a2ZD?=
- =?utf-8?B?cmh1WXRpMDBjVmFZSGcvNklDZmpzSW5ESkZLNWNFTm13QWVFUFlhNUhYWEJ5?=
- =?utf-8?B?cDQ2TXlWbkdsa3hWOEdSNURVcG54amVGOVR4MTBQUVRrTEJZaDFyTmlwV0dv?=
- =?utf-8?B?Sk1zK253VUFLSXFwWXJIaUFZalVrc3l0dTFDdTk1d1R6YWs1UWFWbVNJMHli?=
- =?utf-8?B?N2Uya1BSOWRKYW5kWXpmRXRNV1RiZUJjcS9rK0VpdERZR0NvNTI2eHVSQita?=
- =?utf-8?B?azVxTWtVNDNXbjZibkFmM3g0TWttaDdZSVErNkQ3WG9USVpKVStDV2RiNjFF?=
- =?utf-8?B?SmlYNzRYT25NL1E1NCsxN2YwMFJ1UFpublFkMHVzMlFhVjhXUkVMQ2Y3bmF3?=
- =?utf-8?B?Z3RVQzQ3bktib0ZDSUorTHVCWXlacW5zRHdLeG54WmFiM01MeEZ2R1pTWDJC?=
- =?utf-8?B?cmhaMVZKKzgxd0U1TDFpK0xzUDhUVis5OU9Lc3UxbFYyeEo0djZqVGxDbXZF?=
- =?utf-8?B?TFBGRHVoZzhtblV5Qko2cVYrTDdZVURLL0F3c1FzbFRENkxxUGtRbUJBekJh?=
- =?utf-8?B?RlN2T3dSVGhXcnJ5UWNvVUt4NEZ4dS9Ld21qN2VDR0NSMXpkOXErRUkxbUNT?=
- =?utf-8?Q?9VMauhRbYSRJC?=
+X-Microsoft-Antispam-Message-Info: JBE7tRN3C1rvNvAQAumSnuLlA5nP94osmAfIC5wp5pUTDvOAXloRmG4jt91ZStSpQcF3bq+bk1eSLSdoyejTICdEVBbbBDo4kXqy9niVO3uVtzO5BGYvsq8tMb285Ls2f3L6N73TFYFgn9h7QN2pPkMSEWGq7gzA5q8qUHVeu4/VPUod2EVCPs3/Jzq4P1a9LBi6vbjF9x9PbuRS0UwPpHkXmGFqk21tbqE3iyJn3jvMUM6izYhj7LyqMlFuQGx49H4NJlm8gxSa2KXWDzpfGKMrh2UUhFjqwWnFkai92lmgGZjxpJ9vcjaE8XYeI5EDjNKTfd05Ko9zkEH1FT8ZXs+qHzrfH7ug8u11xLnZB8/QPD1x1+Vs4gfl/FsErThdsqWOWOAY3Vi2uNRKfgu5oqrkeiQC9kCsIGA4KCVx1a8DSkt9Pv3K2QPb9Lg6WfNRMgyK5ZME2b3ptYm21bm4MSD7BdWpufp7XoZZiePRDMepoZf/VLCmSadJB7wbwpEMopjNa67ZAnGiT5ACjpOwEbxj+TWZictAVCaf74kdXcCV8mCBggUS4Jg+PU7sGbz3Q9TdZeMNZY79a/+3rwhlf1RxRfIgDYtDXS8kGFYco7f2+vgtBZAJo60NCXX0z16ySZL7RYysQR32aPBGrtJXGu/FF6GhHziI+7dXc2wWfdtexJxHraR6VxsultngggAzJLn/6WnAUNTW96vVHnGmHp6I4O4copXp5Up9lndeXns=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39860400002)(346002)(366004)(376002)(186003)(16526019)(5660300002)(2906002)(44832011)(53546011)(66556008)(38100700001)(8936002)(6486002)(316002)(8676002)(478600001)(31696002)(2616005)(36756003)(66476007)(31686004)(110136005)(6666004)(66946007)(83380400001)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a3RQdml0aE9Ia0xlcXFmemdXUzBpTzNNa3NHeUJwLzhWVjFIK013VUt1ZDQx?=
+ =?utf-8?B?NTBFbkgzOU5LaWswZWkwaUt4SlNHL21JRU9oaDFmUThzc3pmTDNzTHlkVDRV?=
+ =?utf-8?B?SUIxZnVMZW94YWovdTZ3L21PK0l6RGZHVUVaU1U5M3dPanY5V1lMY2JCY1hN?=
+ =?utf-8?B?bDhaYUV4MlAwRGZ6b1BPSjA5NXhXamJNWGliNUhuRENmRXlEZENZaGl6aEVv?=
+ =?utf-8?B?elhUVG92aVBEbm5mMkI2Y2pYL0xiS210RURQa1JTYXRuU1hQSEdOdENWVys1?=
+ =?utf-8?B?Tk9JWEtiTDluWkxpWGI5c21vTlAzdW85SjlMZGpkalEwWitMTlpicXFDWVgw?=
+ =?utf-8?B?Wmk5K1ZqaFNUdzc0VVBBYkxkTGFQMytiZTM5ckpGWDNtb0x6UUc2OHFHZW9w?=
+ =?utf-8?B?YnVsalR3NHFoVUUwRXFnNDR0OHBwNmRBbHovU1dpcThjMlFHSHVJM3dvV2kv?=
+ =?utf-8?B?S0hjWjU0amxubVZRRW50UWxlVnd5cTlwYnZSZ2x0emVrNFhXdE9sVHo2Rk1H?=
+ =?utf-8?B?ZCtTSThaV08wcndCbnVLRTBSUit0SG45anpRYzAyNlJ3TzB1eVFZcndJQTl4?=
+ =?utf-8?B?ZDlheldPelgyRUEzeEhhWjFTUDRYNVY2M1IrOGt4VXZCRE9KTE9kU2JiU1NR?=
+ =?utf-8?B?ZXR6WG9TS2RxdFZKK0xSQW5ja2pJSkkxVkNYNTZlbGJwb0RsUHJPRXNtTlVn?=
+ =?utf-8?B?enhqekp6R09iaW9oV3RDb0FiRGVld3piSXlwNDlEOFFrWVhpQU94VkpGVFpp?=
+ =?utf-8?B?T3p6b2E5ZExEeDAzQ3EvT0dSczlkaVhTeVMwbklEYjUyNUliYmlwN2hzNjFE?=
+ =?utf-8?B?aDR5cjFQejlOcmJpZUY0LzBNeUI0Um5NRnZuWHdxYm5ScGxDNG5iL21tTUVP?=
+ =?utf-8?B?WEp0SmVnVUZZa2ExSjdveE04RkFvVkYwY3ZRajl1NDIyU3V3a0pRZU1Nb2hn?=
+ =?utf-8?B?QzdCRU1pa3daOW1udFVTVm9rWXNQYlJydUVybHU1RnMzTFg5V0VVNW9FeWU5?=
+ =?utf-8?B?SjB5dzRTdXcybloyQjROQnkycGRzSUJPbXBqSGdNaWYrdVJaVHZBdnpXell6?=
+ =?utf-8?B?dFE1VFdnc29OMnlDOW9FRE9TdWJxa1dpV3RSY2tFZnpTT29ZWXZieHdQVzNq?=
+ =?utf-8?B?Y05YbXR1bTJwUlZvS3J2L1IvVG9MNlVsWVhlZE9ZeGM3REJPNllNMmVkMjIx?=
+ =?utf-8?B?MHJaQnBadnRsZ2FhZDYzanFhNWdaZnFiQklkRGpZYVNma1BlT2xRMTJYd2Fm?=
+ =?utf-8?B?bzRyTzBoNkprS2d4d3BjOU13Y05xWHZweDBMZ09oN1o1RXNjU2pvSUlPcC9D?=
+ =?utf-8?B?MEV2dUh1V2JtMHlUdE1pVEtheTZGT29UcEl6dGlYam1tRVVPaC9tREhGbllu?=
+ =?utf-8?B?ZGMvRi94ZzlNRlJnYnJ4Q0JjaldEam10TTM3czdnMWJsbm5NVTdMU0NINEtE?=
+ =?utf-8?B?dGYrTEJqQnN1WWtSTng4WFlEVXVBbGt3MEFZeFI1alJTZjR2Y3FSd2ZOQW9x?=
+ =?utf-8?B?SHJBa1lhcTRybTZIUmJuQzVOQnhaT2ZqQThOWnRVQXpSSU0rZ0VQRVMxb0lj?=
+ =?utf-8?B?OFVGY2hYa1VkQ2p6UXp1Zm5UUFI2K1BESm1teHduaDJQT3lFSmx1NzdlNkV5?=
+ =?utf-8?B?THNEVVBvbmxZZ0ZPaXUyOWkyOURXZ3o3bWhGT0JTT3JrMXFFQUM3V0hoVkZr?=
+ =?utf-8?B?OEZJSE43ME5aNlZCSnVuOGJ1V1FuMnNKVGgyeXlyYU8rSUtrWlBHUmU5M2tV?=
+ =?utf-8?B?ZFNaNnZFL3V1bW9oSzhnOWRYZDlzZlo0UTZlSmpYSGZ3cnhibDhoRVdzOFNx?=
+ =?utf-8?B?K3VyYjlEY28vMGNNWVRvRUt4VVBzSkNQbGtZQzBzNCtHM1E1b29kSCsyTkVG?=
+ =?utf-8?Q?M5YCr/Hh7img9?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5dec549-4e62-4602-c60f-08d8f574dff7
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6002b87-afe2-4f04-a9ac-08d8f5768fd8
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 01:15:59.9635
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 01:28:04.2576
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hJfFFS4t43oqkFYlnSpOj5AqZBpIm9UqSzQ2jPrQ1475c5O6VXACoVKYpU/P+TcYKFwdhSZcYUvp+a8xosq4JQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4366
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zju50Evw2zq312V/sh4flzpQmn2Jz03MyJ+enPqA4Hqpn07AnhddYxruZydmnNDqo4fF45R4M71rZnCLOoxABw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5171
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 spamscore=0
  mlxscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104020005
-X-Proofpoint-GUID: CF-MzpRRbcgxivfC4OToeaJVgvbGU-Om
-X-Proofpoint-ORIG-GUID: CF-MzpRRbcgxivfC4OToeaJVgvbGU-Om
+ definitions=main-2104020007
+X-Proofpoint-GUID: p4oDHylTZEfXvmPQCyrP_cQ-8W8hmiUd
+X-Proofpoint-ORIG-GUID: p4oDHylTZEfXvmPQCyrP_cQ-8W8hmiUd
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9941 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
- clxscore=1015 mlxlogscore=999 malwarescore=0 adultscore=0 phishscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 adultscore=0
+ clxscore=1015 mlxlogscore=999 phishscore=0 bulkscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104020005
+ definitions=main-2104020007
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 25/03/2021 15:14, Qu Wenruo wrote:
-> In btrfs_invalidatepage(), we need to iterate through all ordered
-> extents and finish them.
+On 01/04/2021 13:36, Qu Wenruo wrote:
 > 
-> This involved a loop to exhaust all ordered extents, but that loop is
-> implemented using again: label and goto.
 > 
-> Refactor the code by:
-> - Use a while() loop
-
-Just an observation.
-At a minimum, while loop does 2 iterations before breaking. Whereas
-label and goto could do it without reaching goto at all for the same
-value of %length. So the label and goto approach is still faster.
-
-A question below.
-
-> - Extract the code to finish/dec an ordered extent into its own function
->    The new function, invalidate_ordered_extent(), will handle the
->    extent locking, extent bit update, and to finish/dec ordered extent.
+> On 2021/3/30 上午2:53, David Sterba wrote:
+>> On Thu, Mar 25, 2021 at 03:14:32PM +0800, Qu Wenruo wrote:
+>>> v3:
+>>> - Rename the sysfs to supported_sectorsizes
+>>>
+>>> - Rebased to latest misc-next branch
+>>>    This removes 2 cleanup patches.
+>>>
+>>> - Add new overview comment for subpage metadata
+>>
+>> V3 is now in for-next, targeting merge for 5.13. Please post any fixups
+>> as replies to the individual patches, I'll fold them in, rather a full
+>> series resend. Thanks.
+>>
+> Is it possible to drop patch "[PATCH v3 04/13] btrfs: refactor how we
+> iterate ordered extent in btrfs_invalidatepage()"?
 > 
-> In fact, for regular sectorsize == PAGE_SIZE case, there can only be at
-> most one ordered extent for one page, thus the code is from ancient
-> subpage preparation patchset.
-> 
-> But there is a bug hidden inside the ordered extent finish/dec part.
-> 
-> This patch will remove the ability to handle multiple ordered extent,
-> and add extra ASSERT() to make sure for regular sectorsize we won't have
-> anything wrong.
-> 
-> For the proper subpage support, it will be added in later patches.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/inode.c | 122 +++++++++++++++++++++++++++++------------------
->   1 file changed, 75 insertions(+), 47 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index d777f67d366b..99dcadd31870 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -8355,17 +8355,72 @@ static int btrfs_migratepage(struct address_space *mapping,
->   }
->   #endif
->   
-> +/*
-> + * Helper to finish/dec one ordered extent for btrfs_invalidatepage().
-> + *
-> + * Return true if the ordered extent is finished.
-> + * Return false otherwise
-> + */
-> +static bool invalidate_ordered_extent(struct btrfs_inode *inode,
-> +				      struct btrfs_ordered_extent *ordered,
-> +				      struct page *page,
-> +				      struct extent_state **cached_state,
-> +				      bool inode_evicting)
-> +{
-> +	u64 start = page_offset(page);
-> +	u64 end = page_offset(page) + PAGE_SIZE - 1;
-> +	u32 len = PAGE_SIZE;
-> +	bool completed_ordered = false;
-> +
-> +	/*
-> +	 * For regular sectorsize == PAGE_SIZE, if the ordered extent covers
-> +	 * the page, then it must cover the full page.
-> +	 */
-> +	ASSERT(ordered->file_offset <= start &&
-> +	       ordered->file_offset + ordered->num_bytes > end);
-> +	/*
-> +	 * IO on this page will never be started, so we need to account
-> +	 * for any ordered extents now. Don't clear EXTENT_DELALLOC_NEW
-> +	 * here, must leave that up for the ordered extent completion.
-> +	 */
-> +	if (!inode_evicting)
-> +		clear_extent_bit(&inode->io_tree, start, end,
-> +				 EXTENT_DELALLOC | EXTENT_LOCKED |
-> +				 EXTENT_DO_ACCOUNTING | EXTENT_DEFRAG, 1, 0,
-> +				 cached_state);
-> +	/*
-> +	 * Whoever cleared the private bit is responsible for the
-> +	 * finish_ordered_io
-> +	 */
-> +	if (TestClearPagePrivate2(page)) {
-> +		spin_lock_irq(&inode->ordered_tree.lock);
-> +		set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
-> +		ordered->truncated_len = min(ordered->truncated_len,
-> +					     start - ordered->file_offset);
-> +		spin_unlock_irq(&inode->ordered_tree.lock);
-> +
-> +		if (btrfs_dec_test_ordered_pending(inode, &ordered, start, len, 1)) {
-> +			btrfs_finish_ordered_io(ordered);
-> +			completed_ordered = true;
-> +		}
-> +	}
-> +	btrfs_put_ordered_extent(ordered);
-> +	if (!inode_evicting) {
-> +		*cached_state = NULL;
-> +		lock_extent_bits(&inode->io_tree, start, end, cached_state);
-> +	}
-> +	return completed_ordered;
-> +}
-> +
->   static void btrfs_invalidatepage(struct page *page, unsigned int offset,
->   				 unsigned int length)
->   {
->   	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
->   	struct extent_io_tree *tree = &inode->io_tree;
-> -	struct btrfs_ordered_extent *ordered;
->   	struct extent_state *cached_state = NULL;
->   	u64 page_start = page_offset(page);
->   	u64 page_end = page_start + PAGE_SIZE - 1;
-> -	u64 start;
-> -	u64 end;
-> +	u64 cur;
->   	int inode_evicting = inode->vfs_inode.i_state & I_FREEING;
->   	bool found_ordered = false;
->   	bool completed_ordered = false;
-> @@ -8387,51 +8442,24 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
->   	if (!inode_evicting)
->   		lock_extent_bits(tree, page_start, page_end, &cached_state);
->   
-> -	start = page_start;
-> -again:
-> -	ordered = btrfs_lookup_ordered_range(inode, start, page_end - start + 1);
-> -	if (ordered) {
-> -		found_ordered = true;
-> -		end = min(page_end,
-> -			  ordered->file_offset + ordered->num_bytes - 1);
-> -		/*
-> -		 * IO on this page will never be started, so we need to account
-> -		 * for any ordered extents now. Don't clear EXTENT_DELALLOC_NEW
-> -		 * here, must leave that up for the ordered extent completion.
-> -		 */
-> -		if (!inode_evicting)
-> -			clear_extent_bit(tree, start, end,
-> -					 EXTENT_DELALLOC |
-> -					 EXTENT_LOCKED | EXTENT_DO_ACCOUNTING |
-> -					 EXTENT_DEFRAG, 1, 0, &cached_state);
-> -		/*
-> -		 * whoever cleared the private bit is responsible
-> -		 * for the finish_ordered_io
-> -		 */
-> -		if (TestClearPagePrivate2(page)) {
-> -			spin_lock_irq(&inode->ordered_tree.lock);
-> -			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
-> -			ordered->truncated_len = min(ordered->truncated_len,
-> -					start - ordered->file_offset);
-> -			spin_unlock_irq(&inode->ordered_tree.lock);
-> -
-> -			if (btrfs_dec_test_ordered_pending(inode, &ordered,
-> -							   start,
-> -							   end - start + 1, 1)) {
-> -				btrfs_finish_ordered_io(ordered);
-> -				completed_ordered = true;
-> -			}
-> -		}
-> -		btrfs_put_ordered_extent(ordered);
-> -		if (!inode_evicting) {
-> -			cached_state = NULL;
-> -			lock_extent_bits(tree, start, end,
-> -					 &cached_state);
-> -		}
-> +	cur = page_start;
-> +	/* Iterate through all the ordered extents covering the page */
-> +	while (cur < page_end) {
-> +		struct btrfs_ordered_extent *ordered;
->   
-> -		start = end + 1;
-> -		if (start < page_end)
-> -			goto again;
-
-> +		ordered = btrfs_lookup_ordered_range(inode, cur,
-> +				page_end - cur + 1);
 
 
-  This part is confusing to me. I hope you can clarify.
-  btrfs_lookup_ordered_range() also does
-
-                node = tree_search(tree, file_offset + len);
-
-  Essentially the 2nd argument ends up being %page_end + 1 here.
-
-  So wouldn't that end up calling invalidate_ordered_extent()
-  beyond %offset + %length?
+  Oh. Just saw this. You may ignore my questions there.
 
 Thanks, Anand
 
 
-> +		if (ordered) {
-> +			cur = ordered->file_offset + ordered->num_bytes;
-> +
-> +			found_ordered = true;
-> +			completed_ordered = invalidate_ordered_extent(inode,
-> +					ordered, page, &cached_state,
-> +					inode_evicting);
-> +		} else {
-> +			/* Exhausted all ordered extents */
-> +			break;
-> +		}
->   	}
->   
->   	/*
+> Since in the series, there are no other patches touching it, dropping it
+> should not involve too much hassle.
 > 
+> The problem here is, how we handle ordered extent really belongs to the
+> data write path.
+> 
+> Furthermore, after all the data RW related testing, it turns out that
+> the ordered extent code has several problems:
+> 
+> - Separate indicators for ordered extent
+>   We use PagePriavte2 to indicate whether we have pending ordered extent
+>   io.
+>   But it is not properly integrated into ordered extent code, nor really
+>   properly documented.
+> 
+> - Complex call sites requirement
+>   For endio we don't care whether we finished the ordered extent, while
+>   for invalidatepage, we don't really need to bother if we finished all
+>   the ordered extents in the range.
+> 
+>   Thus we really don't need to bother who finished the ordered extents,
+>   but just want to mark the io finished for the range.
+> 
+> - Lack subpage compatibility
+>   That's why I'm here complaining, especially due to the PagePrivate2
+>   usage.
+>   It needs to be converted to a new bitmap.
+> 
+> There will be a refactor on the btrfs_dec_test_*_ordered_pending()
+> functions soon, and obvious the existing call sites will all be gone.
+> 
+> Thus that fourth patch makes no sense.
+> 
+> If needed, I can resend the patchset without that patch.
+> 
+> Thanks,
+> Qu
 
