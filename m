@@ -2,58 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4421353100
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Apr 2021 00:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DD335312E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Apr 2021 00:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234821AbhDBWTY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Apr 2021 18:19:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231406AbhDBWTX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Apr 2021 18:19:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C311A61178;
-        Fri,  2 Apr 2021 22:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617401961;
-        bh=+P3BB/M2Uz+uF8TVRvntTLY5K9BYSVWDtARx8GT6QvM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fvJ4WezfJrDdOyJQhSoQPS9IMLQWfcRKDiLPjq+ggxSoz8xrrjFenx/0U3lj64rAp
-         c4Q+rb3U45H9ga5FABrFq+sgZResytJelhl1eDK0hdfZ2MWn+MqnLMY4h+HDhYs/++
-         HO6UyLjXbE+iNfApB4pqhVZlTS1ugkSALgb2CW8ojtW38C39OUNb/h9vnOux4AnLgu
-         C/StkA9VqRaxycglhWK+gPzSOzEMQTa/rU/sTp6LQZmIHj3g5O4fO5A+U3qao0nhiv
-         r6dgXNrEbeuKYDXLzYaWwyNhXRwf38GfWk+qo51CU2Ld5gETtQd3UZ+LTC3yS0ySCi
-         UQZZkQnBW+wmg==
-Received: by mail-qk1-f177.google.com with SMTP id q3so6389864qkq.12;
-        Fri, 02 Apr 2021 15:19:21 -0700 (PDT)
-X-Gm-Message-State: AOAM533Rjx+e7caowkx/ARcOi0JKv5xbwAl8Sy0qb81XiB8zhqDowjGc
-        v14pSerheIZveC/wWDrxcbHlleCbdblRqRvcUEQ=
-X-Google-Smtp-Source: ABdhPJxkKzKmz3eKjoILxitpl/STJhRa6LLD1KXUCdSTcCMB50+iFkwLEIob8SpJMIqlR2lNHuJI+6KtdKhET+WznuE=
-X-Received: by 2002:a37:d202:: with SMTP id f2mr15235336qkj.273.1617401961030;
- Fri, 02 Apr 2021 15:19:21 -0700 (PDT)
+        id S236364AbhDBWa3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Apr 2021 18:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236056AbhDBWa2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Apr 2021 18:30:28 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D14C0613E6
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Apr 2021 15:30:25 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id g25so3078429wmh.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Apr 2021 15:30:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jse.io; s=google;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=3xtgF7c6jPfxcsfdmS1pt2sfprHlw/T+3E9AGPZR9j8=;
+        b=PjXfIXdOEH+neidA6xfeZaQxMRebbszv9ubwxEYoodkt83wP+p4T7umQUcXRQSgIKd
+         PXEkL3z8pAVCkNxdqhDkszhC6cTmlZ2/nYge/g69wnnhcQ6dMbWok+mVbWKg37D/gMUq
+         R9aXeflMvKHjD2ELKR9CMn9a2vHiPwcTRXgQnuS7p4uCzeUGFzwjgnuag8HEpnK6+j+T
+         qZXSHiTnGa5hqMe6SJSNrhGxATn/7NmCtJD1A1Ay0swUIZYteT18P/bHCm1/Cmm2KlRf
+         znrpklnzc1QdvBNIf9XateJekG2pyGFKO4AqL4lTnAd3IphXXD6qFOgLS6NgG0pDJKUw
+         mtKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=3xtgF7c6jPfxcsfdmS1pt2sfprHlw/T+3E9AGPZR9j8=;
+        b=ViqE0hOP6Kezm/8O5Rg/x3so00T0d0tXPsDIzsZAsVOOvMgWzmEhRnY/6Q5KWw2wmW
+         E0yh7bsQO7kigJ+sgiYqS7ZCk+KaSeWV4wnJ6xBMag+hP/CVQmlnq8XWgzTMq8MQpj/l
+         2dhV+oSA4ImNL+1M/APzQX611AgwJXvNDjk4xRmBYtBTsQApkz+ShPlASOaH3SPTzCKl
+         VR4Rka7tEWKUOmgT9U+jnm+VaX0xvuXtKcLoD8mXDBeMsHLpyAU64s88KRxWPmyqVCrQ
+         g5yq4h1jEFQmNZim7yXGTIFvs9G0Dbef85jaiinVgYUXB2nz5LKgzM/b+beLBfVHE4eJ
+         +Ing==
+X-Gm-Message-State: AOAM5334KkC6vFGUir07ec2pDGSnZ+wTeNUxXjvtyQu5Dqp7xrAaKOhc
+        CpEd2ohbAIL5+NFDPE9etR4Pd+NVLFxmsNC34NZ4K6MBOZI=
+X-Google-Smtp-Source: ABdhPJzOOjmZ4JGM4If3otcPJpSY2eSG4vpi02PidcrJO1i6y6LFtB5ZSKMPPXR1idQIXKXZ7oxWdRvpc/8rwCYKHKk=
+X-Received: by 2002:a1c:e341:: with SMTP id a62mr15093425wmh.152.1617402624288;
+ Fri, 02 Apr 2021 15:30:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200813163749.GV4332@42.do-not-panic.com> <0b1621bf-fc82-1a56-c11f-c5c46677e59e@tuxforce.de>
- <20200813221348.GB4332@42.do-not-panic.com> <fc887e06-874c-79d8-0607-4e27ae788446@tuxforce.de>
- <20200814163723.GC4332@42.do-not-panic.com> <a79f1a0c-012d-bebe-c9c7-b505f59079c2@tuxforce.de>
- <20200817152056.GD4332@42.do-not-panic.com> <9e5c716e-1736-9890-54be-75739ea5462f@tuxforce.de>
- <20200818143715.GF4332@42.do-not-panic.com> <6b61e549-42b8-8e71-ff57-43b7c5b4291f@tuxforce.de>
- <20210402180253.GS4332@42.do-not-panic.com>
-In-Reply-To: <20210402180253.GS4332@42.do-not-panic.com>
-From:   Luis Chamberlain <mcgrof@kernel.org>
-Date:   Fri, 2 Apr 2021 15:19:08 -0700
-X-Gmail-Original-Message-ID: <CAB=NE6WVnR197DnH+EgHDoyy98x15D0fVdoGjZcHW9W5P7Jipg@mail.gmail.com>
-Message-ID: <CAB=NE6WVnR197DnH+EgHDoyy98x15D0fVdoGjZcHW9W5P7Jipg@mail.gmail.com>
-Subject: Re: Is request_firmware() really safe to call in resume callback when
- /usr/lib/firmware is on btrfs?
-To:     Lukas Middendorf <kernel@tuxforce.de>
-Cc:     linux-btrfs@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
+Reply-To: me@jse.io
+From:   Jonah Sabean <me@jse.io>
+Date:   Fri, 2 Apr 2021 19:29:45 -0300
+Message-ID: <CAFMvigfJMYJVm0jTM9NTosF=FA6B4WsJ5VwJrGtuL7RGqKBycA@mail.gmail.com>
+Subject: Autodefrag with nocow Attribute
+To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Lukas, can you share your /etc/fstab ? Also, how long do you stay in
-the boot before you try to suspend?
+My understanding is btrfs will perform poorly with use cases such as
+large databases that have a large amount of random reads/writes. As
+such, the nocow attribute is usually suggested to allow overwriting to
+help reduce fragmentation that would otherwise occur (bearing in mind
+the downsides of using the nowcow attribute).
 
- Luis
+The autodefrag mount option however, helps mitigate this problem
+somewhat with smaller databases that may have lower traffic and are
+smaller in size, but can be a problem for large files. I assume
+because it results in some sort of write amplification?
+
+So my main question is in regards to a filesystem where you may want
+to have autodefrag enabled, but also plan to use a large database as
+well that may warrant using nocow for the reasons above. Is it okay to
+set the nocow attribute while also having autodefrag turned on, or
+will autodefrag still be an issue? If so, is it possible to disable
+autodefrag on a particular subvolume or to set an attribute to disable
+(or enable?) it, or if not, is this planned?  Am I misunderstanding
+something here?
+
+Thanks!
+-Jonah
