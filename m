@@ -2,88 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F363534A5
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Apr 2021 18:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B746A3534AD
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Apr 2021 18:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236808AbhDCQHO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 3 Apr 2021 12:07:14 -0400
-Received: from mail.tuxforce.de ([84.38.66.179]:40226 "EHLO mail.tuxforce.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230266AbhDCQHO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 3 Apr 2021 12:07:14 -0400
-X-Greylist: delayed 20582 seconds by postgrey-1.27 at vger.kernel.org; Sat, 03 Apr 2021 12:07:13 EDT
-Received: from [IPv6:2001:4dd5:b099:0:19b2:6b8c:f4bb:b22d] (2001-4dd5-b099-0-19b2-6b8c-f4bb-b22d.ipv6dyn.netcologne.de [IPv6:2001:4dd5:b099:0:19b2:6b8c:f4bb:b22d])
-        by mail.tuxforce.de (Postfix) with ESMTPSA id 8AA2D520021;
-        Sat,  3 Apr 2021 18:07:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.tuxforce.de 8AA2D520021
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tuxforce.de;
-        s=202009; t=1617466029;
-        bh=F9D8Fz6r0vFJ7T8IlWCjkWshdami/ReunTBZlMPl54k=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=uLEeQNAa4+DwA5cBI1RGMA9kVr70gDDxlt5WbKwvoaJVcHPrVh156x4AA3N5QEC96
-         9UNEAmdd0ijuYTR36Iugy0E9O3lwDmFfoL1Kfgxd6777N/3duFNmk36aWFA9at49Cz
-         5iVV7Fx/KBofpOVzfVyg5YLln0zRfr074XTq5U/wsR4DKPyEAs5wU8NyopfT/6i/Fa
-         YeYlv5rFySzpPlqACTL0HUW1QC1WBfxXhPLKL8dyazoVpCXWCUA3b1DVmFLSE1tHzf
-         UBuJHRWLvzelaiiERtT3NHQujlo3qhPX7JdjKVBwpXa1OtxtiNnIa1GbaRZDbjqK/9
-         fvWolb2XckgZg==
-Subject: Re: Is request_firmware() really safe to call in resume callback when
- /usr/lib/firmware is on btrfs?
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, Lukas Middendorf <kernel@tuxforce.de>
-References: <20200813163749.GV4332@42.do-not-panic.com>
- <0b1621bf-fc82-1a56-c11f-c5c46677e59e@tuxforce.de>
- <20200813221348.GB4332@42.do-not-panic.com>
- <fc887e06-874c-79d8-0607-4e27ae788446@tuxforce.de>
- <20200814163723.GC4332@42.do-not-panic.com>
- <a79f1a0c-012d-bebe-c9c7-b505f59079c2@tuxforce.de>
- <20200817152056.GD4332@42.do-not-panic.com>
- <9e5c716e-1736-9890-54be-75739ea5462f@tuxforce.de>
- <20200818143715.GF4332@42.do-not-panic.com>
- <6b61e549-42b8-8e71-ff57-43b7c5b4291f@tuxforce.de>
- <20210402180253.GS4332@42.do-not-panic.com>
- <CAB=NE6WVnR197DnH+EgHDoyy98x15D0fVdoGjZcHW9W5P7Jipg@mail.gmail.com>
- <CAB=NE6X8bXUoTuTxhy-DDqO8ByaFiJqbjzCSmmGwTbbLY95FhA@mail.gmail.com>
- <679f1f74-1304-9e79-1d83-0810361b4503@tuxforce.de>
-From:   Lukas Middendorf <kernel@tuxforce.de>
-Message-ID: <63de0271-5222-efb0-b7ba-1ccf3d2401fa@tuxforce.de>
-Date:   Sat, 3 Apr 2021 18:07:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <679f1f74-1304-9e79-1d83-0810361b4503@tuxforce.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S236832AbhDCQMy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 3 Apr 2021 12:12:54 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:36997 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230450AbhDCQMx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 3 Apr 2021 12:12:53 -0400
+Received: from [192.168.177.174] ([91.56.95.140]) by mrelayeu.kundenserver.de
+ (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mv2tE-1lkFo837JY-00r35Q; Sat, 03 Apr 2021 18:12:48 +0200
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Chris Murphy" <lists@colorremedies.com>
+Subject: Re[6]: Filesystem sometimes Hangs
+Cc:     "Chris Murphy" <lists@colorremedies.com>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Date:   Sat, 03 Apr 2021 16:12:51 +0000
+Message-Id: <em52a23210-b2ff-41aa-a44c-ad3f5cfba009@desktop-g0r648m>
+In-Reply-To: <CAJCQCtTTo+fTJ8nfRqWovSeRJEF72C0RQmydGq=ju86HAMMECw@mail.gmail.com>
+References: <emfd92f28c-2171-4c40-951d-08f5c35ae5a0@desktop-g0r648m>
+ <CAJCQCtQt83dXev6Ngo_tDPZFqD60eD3W3h-1ZT8KLc5hMcB_HA@mail.gmail.com>
+ <em7b647410-6346-4e95-b97a-f45ee2de0037@desktop-g0r648m>
+ <CAJCQCtQH=k_h7CyRLysea0NgqadPnOVtVTGzdU9pG69RRhqL+g@mail.gmail.com>
+ <emf567b17e-42d3-4c32-b254-a19d06ed87c5@desktop-g0r648m>
+ <CAJCQCtTTo+fTJ8nfRqWovSeRJEF72C0RQmydGq=ju86HAMMECw@mail.gmail.com>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/8.1.1060.0
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:0LHYQ9ODnIyeIV2Xuz5wj16XVUWsBecN5I4ESe6I/4Op/KGKr6x
+ KRhlfb8Kmd6iDNTe4GUM2psa/yCCLeyLLurJqSuYrw2J0A4UATxoLFBYJ+vGt1NhovBFq7m
+ jcFt2AFqg8tuo2UxXvVgLTo09dKanTD4sWc0m28EnuPmm1MzfUahjXzEfwNjXGHvzG+LgW/
+ uue2AAVFu1QeDMEVKHxQg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DEVGSq0ZjPY=:8QNyvsnKNx7KIqvBIiYADt
+ G3Q6rj2hTZvVC2nLtxaG9/50/9u6gyijyMw2SOQwSQbUiFNaZ42+hAmymNfGnkWvYxJDRiRWs
+ 0Z6eqQzFlPvPv14ADB7fXsAJU74D9L/iQy48PY31oHJmCNlFinIxhvDwaI7NYHRrzl7ybUqOt
+ QzEqTE5vJIFkQ6UyYe2wBiVBBhVV6bdbjsrJ16RsgvWEZx5bAzm0/ZMJiHz9WFWmlyoxvC4Ea
+ vTh73Ghv9BO+wdcHNvzFbgigktPwCrzhpCGKwHDXmvhxTvgwuS5QFidV2vn++Q25q47C4e2Ih
+ dIUtLfqWfzh7ul+vUjPn8lM7wf4ZrxnNON0UrOPuO5FOp6eCHzUax2RcR7XYaNhry1L+qkZE1
+ 4IQB5P92UYPY7FvCbRJ5sAno9tTcrkXTyGMkki5u7VYn7AEVtUitP88IxhggBwLZAwFl08GAT
+ gHS1sQ/lLsYv93oze0RtntwveyeeDP3KVzi2jVq/FFiR17spOr2+
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Luis,
+Hello Chris,
 
-I now succeeded in reproducing this in VirtualBox running a F34 minimal 
-installation with / on btrfs (with default firmware files).
-I can send you the virtual disk file if you want it. With the kernel 
-sourcecode and the compiled and installed kernel it currently is 21.8GiB.
+thanks for your reply.
+
+>>  >Remove the discard mount option for this file system and see if that
+>>  >fixes the problem. Run it for a week or two, or until you're certain
+>>  >the problem is still happening (or certain it's gone). Some drives
+>>  >just can't handle sync discards, they become really slow and hang,
+>>  >just like you're reporting.
+>>
+>>  In fstab, this option is not set:
+>>  /dev/disk/by-label/DataPool1            /srv/dev-disk-by-label-DataPool1
+>>          btrfs   noatime,defaults,nofail 0 2
+>
+>You have more than one btrfs file system.
+Indeed:
+grep btrfs
+/dev/sdc2 on /srv/dev-disk-by-label-DockerImages type btrfs 
+(rw,noatime,ssd,discard,space_cache,subvolid=5,subvol=/)
+/dev/sdd2 on /srv/dev-disk-by-label-Daten type btrfs 
+(rw,relatime,ssd,space_cache,subvolid=5,subvol=/)
+/dev/sda1 on /srv/dev-disk-by-label-DataPool1 type btrfs 
+(rw,noatime,space_cache,subvolid=5,subvol=/)
+
+You can see, that for sdc2 and sdd2, "ssd" is in the mount options. For 
+sdc2 discard is present. I have not added this myelf. But it is in 
+fstab.
+In fact, I got confused in my previous mail:
+sdc is an ssd and not the drive that I was experiencing problems with 
+(well: The system was slow when accessing sda1. I cannot exclude, that 
+this was caused by sdc2.
 
 
-On 03/04/2021 12:24, Lukas Middendorf wrote:
-> On 03/04/2021 00:58, Luis Chamberlain wrote:
->> Can you provide kernel logs for where you are seeing things get stuck at? 
+>I'm suggesting not using
+>discard on any of them to try and narrow down the problem.  Something
+>is turning on discards for sdc2, find it and don't use it for a while.
+Will do.
+>
+>>  How do I deactivate discard then?
+>>  These drives are spinning disks. I thought that discard is only relevant
+>>  for SSDs?
+>
+>It's relevant for thin provisioning and sparse files too. But if sdc2
+>is a HDD then the sync discard message isn't related to the problem,
+>but also makes me wonder why something is enabling sync discards on a
+>HDD?
+See above. It was my mistake, thinking it sdc2 was the spinning disc.
 
-I have dumped the output of the serial console with all outputs cranked 
-to the max.
-In [1] is the output with test_firmware loaded and suspend test running. 
-This leads to a freeze. However it is not completely dead. While it does 
-not visually react, at least from time to time there still are some 
-messages from the kernel and the cursor is still blinking.
+>Anway I think you're on the right track to try 5.11.11 and if you
+>experience a hang again, use sysrq+w and that will dump the blocked
+>task trace into dmesg. Also include a description of the workload at
+>the time of the hang, and recent commands issued.
+Ok, will do.
 
+Thanks,
+Hendrik
+>
+>
+>
+>
+>--
+>Chris Murphy
 
-In [2] is a (successful) suspend and resume cycle with test_firmware not 
-loaded.
-
-Lukas
-
-[1] https://gist.github.com/midluk/05716f714f778d26dc02771245df0ac9
-[2] https://gist.github.com/midluk/a03eb953b6cf097688b8be2e0cd387fd
