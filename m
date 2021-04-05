@@ -2,181 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF32354188
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Apr 2021 13:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF0B354262
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Apr 2021 15:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234742AbhDELcZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Apr 2021 07:32:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233431AbhDELcZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 5 Apr 2021 07:32:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8CA961396
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Apr 2021 11:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617622339;
-        bh=32WEG/FsYiG/5fV9K+3y5eaIRDHVE/caxqYjNiQwa64=;
-        h=From:To:Subject:Date:From;
-        b=kI1fpNK/73iErvWOfZt2eocxbCnN2Tpw4S/kcknhQ86M55EFTghrRJWcofgZaibWT
-         GzsXp6dJb/CspshByK9YXwXWqJUadVl/+ubYLDveXVx4z/gjQxTvh1w3H+m0Wlry/w
-         TPQtrgU1s2Y43dgmhqZOO7vFMhPNRfOcAant736imYQSw7T+7r02Ebb8JnMJb4gGuX
-         5vjZfJwOz3q4df1eh67aCyByyEESZR2sNQtjXI0eiNV+Xp+97PWPUs8sJBd1tEn8U2
-         wUcn4WVAFbkCIPDkdXS9+Hk/5U56S8jjDP2igILQ3fFTNioMFT8BOr5skvadb294UJ
-         g0uZWL1Gy3pcQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix race between transaction aborts and fsyncs leading to use-after-free
-Date:   Mon,  5 Apr 2021 12:32:16 +0100
-Message-Id: <8e712682d53a4d6b0f983dd5569f2d78e5f12863.1617622240.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S237320AbhDENij (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Apr 2021 09:38:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232694AbhDENii (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Apr 2021 09:38:38 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB8DC061756
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Apr 2021 06:38:31 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id c3so2012378ils.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Apr 2021 06:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=pYbNpjnnqjc+Xi/bRrpptmfJ508WVQ/5TiSYG5equZ4=;
+        b=MwuX8Mc8GRrWuD0zjdGsadVxRgB9bktzLgs4JkzVaUuKjR9DKwUE3buRt26+l70kkE
+         3IMjVU0Mdqee0XYNgDNuq8pno1cVeJ1lKD/kSU1z8obZJOR6pZcCg/3OeDoo9FojXkm6
+         9ftguUR2mHEv6nvBsEEBm3ZpnBFHgrKyrAJ4uocsq8YETxM90xj/6qypVcQLpoDM21xU
+         6Fq3Rs8tVvhm2IQkwDG2XtBpREovRZa+DT7HPMxsjazJAe6cRjfauLxa7ByUtCl9tmmt
+         D85cphVoehR4vepfjzEDIh80gJ9QhAcl1/mi98/jsJPy2I0TVwA+TzrpYoB7lNyL04vL
+         fXfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=pYbNpjnnqjc+Xi/bRrpptmfJ508WVQ/5TiSYG5equZ4=;
+        b=q5wgajM1kwl9W9Ht22vc5PqLCz7ulHs9BS/yhc0ayzY7c7zbmd6PvKbyQTyu3LAvIy
+         0E10bEQNlQDW1ev5WuuBZyu92eb2UuomUjf1vfn/sAj5z1WC+z1ovRih/Ad4iV2CzNt1
+         l2UiynRBJgsp1ErUfc8yIkxvYnriY2z7xAY0B+pHIVCXGXDcJWTzbC45CQTna7F0OEq1
+         OUzPGAXfGOFndfsF5D+1F/7o2MSvlQBMTj1m7oV6Wr79au++GljpMB3BusSXUDklxC9v
+         FrnwkLTMPHcF46uv3v7E/XVHoTy6AkHhXNNnht3oyGilrZA1hFXIc09DejHJI/lip6tI
+         B8MA==
+X-Gm-Message-State: AOAM533BRc02K0fTnJyBkJr6gnjLFZxjX2luPrKa1moab1ulOiDicjZt
+        HxxR8nPm8ksKuDGklsWDwpSAOxF/msV+p8EKzY8=
+X-Google-Smtp-Source: ABdhPJzgJtJXSHMYGRYIfFggSGXX8q7Y2C4ZB9Kk42Y7i3NTHQ6LJFvF1EZtC4fr8xW5SuGIXbn5H7+BVBoLFTP8D38=
+X-Received: by 2002:a05:6e02:965:: with SMTP id q5mr925769ilt.304.1617629910590;
+ Mon, 05 Apr 2021 06:38:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: drwwgosh@gmail.com
+Received: by 2002:a92:d9c8:0:0:0:0:0 with HTTP; Mon, 5 Apr 2021 06:38:29 -0700 (PDT)
+From:   "Mr. Dabire Basole" <mrdabirebsole@gmail.com>
+Date:   Mon, 5 Apr 2021 13:38:29 +0000
+X-Google-Sender-Auth: TjEViJIqmhMLPF5Vq-kLGk4q2c4
+Message-ID: <CACC9pSdWwW=zQhrpn7cGx6redTYgkGfvAdgemWRqyfsLs=tAig@mail.gmail.com>
+Subject: PERSONAL TREAT AS URGENT.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+FROM MR. DABIRE BASOLE
+AUDIT & ACCOUNT MANAGER
+BANK OF AFRICA (B.O.A)
+OUAGADOUGOU BURKINA FASO
+WEST AFRICA.
 
-There is a race between a task aborting a transaction during a commit,
-a task doing an fsync and the transaction kthread, which leads to an
-use-after-free of the log root tree. When this happens, it results in a
-stack trace like the following:
+Dear Friend,
 
-[99678.547335] BTRFS info (device dm-0): forced readonly
-[99678.547340] BTRFS warning (device dm-0): Skipping commit of aborted transaction.
-[99678.547341] BTRFS: error (device dm-0) in cleanup_transaction:1958: errno=-5 IO failure
-[99678.547373] BTRFS warning (device dm-0): lost page write due to IO error on /dev/mapper/error-test (-5)
-[99678.547533] BTRFS warning (device dm-0): Skipping commit of aborted transaction.
-[99678.548743] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0xa4e8 len 4096 err no 10
-[99678.549188] BTRFS error (device dm-0): error writing primary super block to device 1
-[99678.551100] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0x12e000 len 4096 err no 10
-[99678.551149] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0x12e008 len 4096 err no 10
-[99678.551205] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0x12e010 len 4096 err no 10
-[99678.551401] BTRFS: error (device dm-0) in write_all_supers:4110: errno=-5 IO failure (1 errors while writing supers)
-[99678.565169] BTRFS: error (device dm-0) in btrfs_sync_log:3308: errno=-5 IO failure
-[99678.566132] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6b68: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
-[99678.567526] CPU: 2 PID: 2458471 Comm: fsstress Not tainted 5.12.0-rc5-btrfs-next-84 #1
-[99678.568531] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-[99678.569980] RIP: 0010:__mutex_lock+0x139/0xa40
-[99678.570556] Code: c0 74 19 (...)
-[99678.573752] RSP: 0018:ffff9f18830d7b00 EFLAGS: 00010202
-[99678.574723] RAX: 6b6b6b6b6b6b6b68 RBX: 0000000000000001 RCX: 0000000000000002
-[99678.576027] RDX: ffffffffb9c54d13 RSI: 0000000000000000 RDI: 0000000000000000
-[99678.577314] RBP: ffff9f18830d7bc0 R08: 0000000000000000 R09: 0000000000000000
-[99678.578601] R10: ffff9f18830d7be0 R11: 0000000000000001 R12: ffff8c6cd199c040
-[99678.579890] R13: ffff8c6c95821358 R14: 00000000fffffffb R15: ffff8c6cbcf01358
-[99678.581282] FS:  00007fa9140c2b80(0000) GS:ffff8c6fac600000(0000) knlGS:0000000000000000
-[99678.582818] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[99678.583771] CR2: 00007fa913d52000 CR3: 000000013d2b4003 CR4: 0000000000370ee0
-[99678.584600] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[99678.585425] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[99678.586247] Call Trace:
-[99678.586542]  ? __btrfs_handle_fs_error+0xde/0x146 [btrfs]
-[99678.587260]  ? btrfs_sync_log+0x7c1/0xf20 [btrfs]
-[99678.587930]  ? btrfs_sync_log+0x7c1/0xf20 [btrfs]
-[99678.588573]  btrfs_sync_log+0x7c1/0xf20 [btrfs]
-[99678.589222]  btrfs_sync_file+0x40c/0x580 [btrfs]
-[99678.589947]  do_fsync+0x38/0x70
-[99678.590514]  __x64_sys_fsync+0x10/0x20
-[99678.591196]  do_syscall_64+0x33/0x80
-[99678.591829]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[99678.592744] RIP: 0033:0x7fa9142a55c3
-[99678.593403] Code: 8b 15 09 (...)
-[99678.596777] RSP: 002b:00007fff26278d48 EFLAGS: 00000246 ORIG_RAX: 000000000000004a
-[99678.598143] RAX: ffffffffffffffda RBX: 0000563c83cb4560 RCX: 00007fa9142a55c3
-[99678.599450] RDX: 00007fff26278cb0 RSI: 00007fff26278cb0 RDI: 0000000000000005
-[99678.600770] RBP: 0000000000000005 R08: 0000000000000001 R09: 00007fff26278d5c
-[99678.602067] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000340
-[99678.603380] R13: 00007fff26278de0 R14: 00007fff26278d96 R15: 0000563c83ca57c0
-[99678.604714] Modules linked in: btrfs dm_zero dm_snapshot dm_thin_pool (...)
-[99678.616646] ---[ end trace ee2f1b19327d791d ]---
+With due respect, I have decided to contact you on a business
+transaction that will be beneficial to both of us. At the bank last
+account and auditing evaluation, my staffs came across an old account
+which was being maintained by a foreign client who we learn was among
+the deceased passengers of motor accident on November.2003, the
+deceased was unable to run this account since his death. The account
+has remained dormant without the knowledge of his family since it was
+put in a safe deposit account in the bank for future investment by the
+client.
 
-The steps that lead to this crash are the following:
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until I discovered that it cannot be claimed since our client is a
+foreign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be done.
+I decided to seek ways through which to transfer this money out of the
+bank and out of the country too.
 
-1) We are at transaction N;
+The total amount in the account is USD$18.6 ( Eighteen Million Six Hundred
+Thousand United Stated Dollars) with my positions as
+staffs of the bank, I am handicapped because I cannot operate foreign
+accounts and cannot lay bonafide claim over this money. The client was
+a foreign national and you will only be asked to act as his next of
+kin and I will supply you with all the necessary information and bank
+data to assist you in being able to transfer this money to any bank of
+your choice where this money could be transferred into.
 
-2) We have two tasks with a transaction handle attached to transaction N.
-   Task A and Task B. Task B is doing an fsync;
+The total sum will be shared as follows: 50% for me, 50% for you,
+while 10% will map aside for any expenses incidental occur during the
+transfering of this fund into your bank account. and the expenses
+should be the first thing to be remove before sharing of this fund
+according to our percentages . The transfer is risk free on both sides
+hence you are going to follow my instruction till the fund transfer to
+your account. Since I work in this bank that is why you should be
+confident in the success of this transaction because you will be
+updated with information as at when desired.
 
-3) Task B is at btrfs_sync_log(), and has saved fs_info->log_root_tree
-   into a local variable named 'log_root_tree' at the top of
-   btrfs_sync_log(). Task B is about to call write_all_supers(), but
-   before that...
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of
+transaction which will be when this money is safety in your account. I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May God help you to help me to a restive retirement, Amen,
 
-4) Task A calls btrfs_commit_transaction(), and after it sets the
-   transaction state to TRANS_STATE_COMMIT_START, an error happens before
-   it waits for the transaction's 'num_writers' counter to reach a value
-   of 1 (no one else attached to the transaction), so it jumps to the
-   label "cleanup_transaction";
+Please for further information and inquires feel free to contact me
+back immediately for more explanation and better understanding I want
+you to assure me your capability of handling this project with trust
+by providing me your following information details such as:
 
-5) Task A then calls cleanup_transaction(), where it aborts the
-   transaction, setting BTRFS_FS_STATE_TRANS_ABORTED on fs_info->fs_state,
-   setting the ->aborted field of the transaction and the handle to an
-   errno value and also setting BTRFS_FS_STATE_ERROR on fs_info->fs_state.
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:................ .....
+(6)YOUR COUNTRY:.....................
 
-   After that, at cleanup_transaction(), it deletes the transaction from
-   the list of transactions (fs_info->trans_list), sets the transaction
-   to the state TRANS_STATE_COMMIT_DOING and then waits for the number
-   of writers to go down to 1, as it's currently 2 (1 for task A and 1
-   for task B);
+Yours sincerely,
 
-6) The transaction kthread is running and sees that BTRFS_FS_STATE_ERROR
-   is set in fs_info->fs_state, so it calls btrfs_cleanup_transaction().
-
-   There it sees the list fs_info->trans_list is empty, and then proceeds
-   into calling btrfs_drop_all_logs(), which frees the log root tree with
-   a call to btrfs_free_log_root_tree();
-
-7) Task B calls write_all_supers() and, shortly after, under the label
-   'out_wake_log_root', it deferences the pointer stored in
-   'log_root_tree', which was already freed in the previous step by the
-   transaction kthread. This results in a use-after-free leading to a
-   crash.
-
-Fix this by deleting the transaction from the list of transactions at
-cleanup_transaction() only after setting the transaction state to
-TRANS_STATE_COMMIT_DOING and waiting for all existing tasks that are
-attached to the transaction to release their transaction handles.
-This makes the transaction kthread wait for all the tasks attached to
-the transaction to be done with the transaction before dropping the
-log roots and doing other cleanups.
-
-Fixes: ef67963dac255b ("btrfs: drop logs when we've aborted a transaction")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/transaction.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 97c5e7396bce..d56d3e7ca324 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1966,7 +1966,6 @@ static void cleanup_transaction(struct btrfs_trans_handle *trans, int err)
- 	 */
- 	BUG_ON(list_empty(&cur_trans->list));
- 
--	list_del_init(&cur_trans->list);
- 	if (cur_trans == fs_info->running_transaction) {
- 		cur_trans->state = TRANS_STATE_COMMIT_DOING;
- 		spin_unlock(&fs_info->trans_lock);
-@@ -1975,6 +1974,17 @@ static void cleanup_transaction(struct btrfs_trans_handle *trans, int err)
- 
- 		spin_lock(&fs_info->trans_lock);
- 	}
-+
-+	/*
-+	 * Now that we know no one else is still using the transaction we can
-+	 * remove the transaction from the list of transactions. This avoids
-+	 * the transaction kthread from cleaning up the transaction while some
-+	 * other task is still using it, which could result in a use-after-free
-+	 * on things like log trees, as it forces the transaction kthread to
-+	 * wait for this transaction to be cleaned up by us.
-+	 */
-+	list_del_init(&cur_trans->list);
-+
- 	spin_unlock(&fs_info->trans_lock);
- 
- 	btrfs_cleanup_one_transaction(trans->transaction, fs_info);
--- 
-2.28.0
-
+Mr. Dabire Basole.
