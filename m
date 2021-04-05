@@ -2,244 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BDA35417C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Apr 2021 13:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF32354188
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Apr 2021 13:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234605AbhDELUF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Apr 2021 07:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbhDELUE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Apr 2021 07:20:04 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99657C061756
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Apr 2021 04:19:58 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id x9so8172433qto.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Apr 2021 04:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=LPoc+iMv01IonGAnR5ynlbWsKHZ+aEzMFYORfKF5cYE=;
-        b=TClpgRAUkUkzaMNhtJiB3hfj+vnZ384wfu38GTzdtFXXSVoVUtKnMnKacWdBZIDRhW
-         00z8ZcKNEitSV5AaIi0aLbxVJk3avT6m4/+Nz4DIhZFKSaR+v7Fz6rGtDpTg+q2W1xxy
-         8JtcHj4sNKlZccSgZAxAQVmD0nVll/45YKs9q+QRSPcrC9kjORsVyWgFa5+EcAcTx/h/
-         qXlrSKarpipqcJDc/GPvbQRR4KDI7uIqmSIk66ZifKGGESwj4gOA1DvNLhgbFEYALJS4
-         E0sU2WYaEcrekAWSy3ygg7IcF+tMYDSRKx55Mf9Xbjb+9LOheTgSuRZJ3QnCh8h+6Vix
-         rgyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=LPoc+iMv01IonGAnR5ynlbWsKHZ+aEzMFYORfKF5cYE=;
-        b=aNOdNWnk4oXRR+AMKObsUeIdh75pu7nNDIF6K6eUDAYXMmgh+9QQ1+09yXkkExq6SE
-         hRVz2ehjYKbMLX5xdwdhMIyXUk3SiR7yMQGfMS7SyUjt/UPqYdu797XTRwjIfoe5Uh7m
-         Ogirb7XjDZ86N3wkHGCm2yQhsTBKOYb9r7hxQyzP4tfDmKQrQ0inLekjl/FtuoNPkYig
-         D1CqZ/lHhfoPrAHPAk44fXtxA9mXvrLubE+LTWCun4McgarQojew78trb+GDhw9imeUF
-         WL4uCaDY3USMD8Sb0VJTECmwa0Ymfk5xS1HcWF7Svr1f5br/+az0rUVQsHNGu+g0HkpF
-         RFYg==
-X-Gm-Message-State: AOAM533Ylb2RpDOK8YfWptwBFOsFXoJS2yNXVZseJzaOUaVWwLMhZw+k
-        j/cD4yG9f0YEcFftAYWCaiN2SjXv2YHmVkEDYygom/uvAZmNfw==
-X-Google-Smtp-Source: ABdhPJz3/HLpt1AB61Ti24qw91rSpFUAJXdgurhROyrvtLuJUv8u40wMbDjDEWf1/5ptXxkUOiS6ViZAW24HLEe/HMc=
-X-Received: by 2002:ac8:a04:: with SMTP id b4mr22014336qti.376.1617621597512;
- Mon, 05 Apr 2021 04:19:57 -0700 (PDT)
+        id S234742AbhDELcZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Apr 2021 07:32:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233431AbhDELcZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Apr 2021 07:32:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8CA961396
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Apr 2021 11:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617622339;
+        bh=32WEG/FsYiG/5fV9K+3y5eaIRDHVE/caxqYjNiQwa64=;
+        h=From:To:Subject:Date:From;
+        b=kI1fpNK/73iErvWOfZt2eocxbCnN2Tpw4S/kcknhQ86M55EFTghrRJWcofgZaibWT
+         GzsXp6dJb/CspshByK9YXwXWqJUadVl/+ubYLDveXVx4z/gjQxTvh1w3H+m0Wlry/w
+         TPQtrgU1s2Y43dgmhqZOO7vFMhPNRfOcAant736imYQSw7T+7r02Ebb8JnMJb4gGuX
+         5vjZfJwOz3q4df1eh67aCyByyEESZR2sNQtjXI0eiNV+Xp+97PWPUs8sJBd1tEn8U2
+         wUcn4WVAFbkCIPDkdXS9+Hk/5U56S8jjDP2igILQ3fFTNioMFT8BOr5skvadb294UJ
+         g0uZWL1Gy3pcQ==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix race between transaction aborts and fsyncs leading to use-after-free
+Date:   Mon,  5 Apr 2021 12:32:16 +0100
+Message-Id: <8e712682d53a4d6b0f983dd5569f2d78e5f12863.1617622240.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210404040732.GZ32440@hungrycats.org>
-In-Reply-To: <20210404040732.GZ32440@hungrycats.org>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 5 Apr 2021 12:19:46 +0100
-Message-ID: <CAL3q7H4FjR6PCpjYYBcMQUP6DDS9jpLtQUrBf=jf+fkEF49cKw@mail.gmail.com>
-Subject: Re: kernel BUG at fs/btrfs/tree-mod-log.c:675 - misc-next
- 9228ad80f849 (Mar 29 2021)
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Apr 4, 2021 at 5:16 AM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> Base kernel is 9228ad80f849 "btrfs: zoned: move log tree node allocation
-> out of log_root_tree->log_mutex" from misc-next on 2021-03-29.
->
-> The BUG() moved, but we are still hitting it:
->
->         [145427.426011][ T5492] BTRFS info (device dm-0): balance: cancel=
-ed
->         [145427.689964][ T4811] ------------[ cut here ]------------
->         [145427.692498][ T4811] kernel BUG at fs/btrfs/tree-mod-log.c:675=
-!
->         [145427.694668][ T4811] invalid opcode: 0000 [#1] SMP KASAN PTI
->         [145427.696379][ T4811] CPU: 3 PID: 4811 Comm: crawl_1215 Tainted=
-: G        W         5.12.0-7d1efdf501f8-misc-next+ #99
->         [145427.700221][ T4811] Hardware name: QEMU Standard PC (i440FX +=
- PIIX, 1996), BIOS 1.12.0-1 04/01/2014
->         [145427.703623][ T4811] RIP: 0010:tree_mod_log_rewind+0x3b1/0x3c0
->         [145427.706135][ T4811] Code: 05 48 8d 74 10 65 ba 19 00 00 00 e8=
- 49 5e f2 ff e9 a7 fd ff ff 4c 8d 7b 2c 4c 89 ff e8 28 23 b4 ff 48 63 43 2c=
- e9 a2 fe ff ff <0f> 0b 0f 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 =
-00 55 48
->         [145427.713034][ T4811] RSP: 0018:ffffc90001027090 EFLAGS: 000102=
-93
->         [145427.714996][ T4811] RAX: 0000000000000000 RBX: ffff8880a85146=
-00 RCX: ffffffffaa9e59b6
->         [145427.717158][ T4811] RDX: 0000000000000007 RSI: dffffc00000000=
-00 RDI: ffff8880a851462c
->         [145427.720422][ T4811] RBP: ffffc900010270e0 R08: 00000000000000=
-c0 R09: ffffed1004333417
->         [145427.723835][ T4811] R10: ffff88802199a0b7 R11: ffffed10043334=
-16 R12: 000000000000000e
->         [145427.727695][ T4811] R13: ffff888135af8748 R14: ffff88818766ff=
-00 R15: ffff8880a851462c
->         [145427.731636][ T4811] FS:  00007f29acf62700(0000) GS:ffff8881f2=
-200000(0000) knlGS:0000000000000000
->         [145427.736305][ T4811] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000=
-80050033
->         [145427.739587][ T4811] CR2: 00007f0e6013f718 CR3: 000000010d42e0=
-03 CR4: 0000000000170ee0
->         [145427.743573][ T4811] Call Trace:
->         [145427.745117][ T4811]  btrfs_get_old_root+0x16a/0x5c0
->         [145427.747686][ T4811]  ? lock_downgrade+0x400/0x400
->         [145427.754189][ T4811]  btrfs_search_old_slot+0x192/0x520
->         [145427.758023][ T4811]  ? btrfs_search_slot+0x1090/0x1090
->         [145427.761014][ T4811]  ? free_extent_buffer.part.61+0xd7/0x140
->         [145427.765208][ T4811]  ? free_extent_buffer+0x13/0x20
->         [145427.770042][ T4811]  resolve_indirect_refs+0x3e9/0xfc0
->         [145427.773633][ T4811]  ? lock_downgrade+0x400/0x400
->         [145427.777323][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.780539][ T4811]  ? add_prelim_ref.part.11+0x150/0x150
->         [145427.785722][ T4811]  ? lock_downgrade+0x400/0x400
->         [145427.791086][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.796266][ T4811]  ? lock_acquired+0xbb/0x620
->         [145427.798764][ T4811]  ? __kasan_check_write+0x14/0x20
->         [145427.801118][ T4811]  ? do_raw_spin_unlock+0xa8/0x140
->         [145427.804491][ T4811]  ? rb_insert_color+0x340/0x360
->         [145427.808066][ T4811]  ? prelim_ref_insert+0x12d/0x430
->         [145427.811889][ T4811]  find_parent_nodes+0x5c3/0x1830
->         [145427.815498][ T4811]  ? stack_trace_save+0x87/0xb0
->         [145427.819210][ T4811]  ? resolve_indirect_refs+0xfc0/0xfc0
->         [145427.823254][ T4811]  ? fs_reclaim_acquire+0x67/0xf0
->         [145427.827220][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.829080][ T4811]  ? lockdep_hardirqs_on_prepare+0x210/0x21=
-0
->         [145427.831237][ T4811]  ? fs_reclaim_acquire+0x67/0xf0
->         [145427.835061][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.836508][ T4811]  ? ___might_sleep+0x10f/0x1e0
->         [145427.841389][ T4811]  ? __kasan_kmalloc+0x9d/0xd0
->         [145427.843054][ T4811]  ? trace_hardirqs_on+0x55/0x120
->         [145427.845533][ T4811]  btrfs_find_all_roots_safe+0x142/0x1e0
->         [145427.847325][ T4811]  ? find_parent_nodes+0x1830/0x1830
->         [145427.849318][ T4811]  ? trace_hardirqs_on+0x55/0x120
->         [145427.851210][ T4811]  ? ulist_free+0x1f/0x30
->         [145427.852809][ T4811]  ? btrfs_inode_flags_to_xflags+0x50/0x50
->         [145427.854654][ T4811]  iterate_extent_inodes+0x20e/0x580
->         [145427.856429][ T4811]  ? tree_backref_for_extent+0x230/0x230
->         [145427.858552][ T4811]  ? release_extent_buffer+0x225/0x280
->         [145427.862789][ T4811]  ? read_extent_buffer+0xdd/0x110
->         [145427.865092][ T4811]  ? lock_downgrade+0x400/0x400
->         [145427.867069][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.868585][ T4811]  ? lock_acquired+0xbb/0x620
->         [145427.872309][ T4811]  ? __kasan_check_write+0x14/0x20
->         [145427.873641][ T4811]  ? do_raw_spin_unlock+0xa8/0x140
->         [145427.878150][ T4811]  ? _raw_spin_unlock+0x22/0x30
->         [145427.879355][ T4811]  ? release_extent_buffer+0x225/0x280
->         [145427.881424][ T4811]  iterate_inodes_from_logical+0x129/0x170
->         [145427.884711][ T4811]  ? iterate_inodes_from_logical+0x129/0x17=
-0
->         [145427.888124][ T4811]  ? btrfs_inode_flags_to_xflags+0x50/0x50
->         [145427.891553][ T4811]  ? iterate_extent_inodes+0x580/0x580
->         [145427.894531][ T4811]  ? __vmalloc_node+0x92/0xb0
->         [145427.897439][ T4811]  ? init_data_container+0x34/0xb0
->         [145427.900518][ T4811]  ? init_data_container+0x34/0xb0
->         [145427.903705][ T4811]  ? kvmalloc_node+0x60/0x80
->         [145427.906538][ T4811]  btrfs_ioctl_logical_to_ino+0x158/0x230
->         [145427.910125][ T4811]  btrfs_ioctl+0x2038/0x4360
->         [145427.912430][ T4811]  ? __kasan_check_write+0x14/0x20
->         [145427.914061][ T4811]  ? mmput+0x3b/0x220
->         [145427.915380][ T4811]  ? btrfs_ioctl_get_supported_features+0x3=
-0/0x30
->         [145427.917512][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.919110][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.920845][ T4811]  ? lock_release+0xc8/0x650
->         [145427.922227][ T4811]  ? __might_fault+0x64/0xd0
->         [145427.923687][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.925222][ T4811]  ? lock_downgrade+0x400/0x400
->         [145427.926729][ T4811]  ? lockdep_hardirqs_on_prepare+0x210/0x21=
-0
->         [145427.928496][ T4811]  ? lockdep_hardirqs_on_prepare+0x13/0x210
->         [145427.930396][ T4811]  ? _raw_spin_unlock_irqrestore+0x51/0x63
->         [145427.932123][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.933910][ T4811]  ? do_vfs_ioctl+0xfc/0x9d0
->         [145427.935664][ T4811]  ? ioctl_file_clone+0xe0/0xe0
->         [145427.938147][ T4811]  ? lock_downgrade+0x400/0x400
->         [145427.940717][ T4811]  ? lockdep_hardirqs_on_prepare+0x210/0x21=
-0
->         [145427.943673][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.946249][ T4811]  ? lock_release+0xc8/0x650
->         [145427.948509][ T4811]  ? __task_pid_nr_ns+0xd3/0x250
->         [145427.950946][ T4811]  ? __kasan_check_read+0x11/0x20
->         [145427.953415][ T4811]  ? __fget_files+0x160/0x230
->         [145427.955693][ T4811]  ? __fget_light+0xf2/0x110
->         [145427.957951][ T4811]  __x64_sys_ioctl+0xc3/0x100
->         [145427.961647][ T4811]  do_syscall_64+0x37/0x80
->         [145427.963112][ T4811]  entry_SYSCALL_64_after_hwframe+0x44/0xae
->         [145427.971975][ T4811] RIP: 0033:0x7f29ae85b427
->         [145427.974101][ T4811] Code: 00 00 90 48 8b 05 69 aa 0c 00 64 c7=
- 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10=
- 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 39 aa 0c 00 f7 d8 64 =
-89 01 48
->         [145427.980483][ T4811] RSP: 002b:00007f29acf5fcf8 EFLAGS: 000002=
-46 ORIG_RAX: 0000000000000010
->         [145427.983314][ T4811] RAX: ffffffffffffffda RBX: 00007f29acf5ff=
-40 RCX: 00007f29ae85b427
->         [145427.985963][ T4811] RDX: 00007f29acf5ff48 RSI: 00000000c03894=
-3b RDI: 0000000000000003
->         [145427.988504][ T4811] RBP: 0000000001000000 R08: 00000000000000=
-00 R09: 00007f29acf60120
->         [145427.991085][ T4811] R10: 00005640d5fc7b00 R11: 00000000000002=
-46 R12: 0000000000000003
->         [145427.993662][ T4811] R13: 00007f29acf5ff48 R14: 00007f29acf5ff=
-40 R15: 00007f29acf5fef8
->         [145427.996289][ T4811] Modules linked in:
->         [145427.997661][ T4811] ---[ end trace 85e5fce078dfbe04 ]---
->
->         (gdb) l *(tree_mod_log_rewind+0x3b1)
->         0xffffffff819e5b21 is in tree_mod_log_rewind (fs/btrfs/tree-mod-l=
-og.c:675).
->         670                      * the modification. As we're going backw=
-ards, we do the
->         671                      * opposite of each operation here.
->         672                      */
->         673                     switch (tm->op) {
->         674                     case BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEI=
-NG:
->         675                             BUG_ON(tm->slot < n);
->         676                             fallthrough;
->         677                     case BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVIN=
-G:
->         678                     case BTRFS_MOD_LOG_KEY_REMOVE:
->         679                             btrfs_set_node_key(eb, &tm->key, =
-tm->slot);
->         (gdb) quit
+From: Filipe Manana <fdmanana@suse.com>
 
-Ok, there's another similar race to the one previously fixed (missing
-read lock), that I previously missed.
-Can you try the following patch, against misc-next:
+There is a race between a task aborting a transaction during a commit,
+a task doing an fsync and the transaction kthread, which leads to an
+use-after-free of the log root tree. When this happens, it results in a
+stack trace like the following:
 
-https://pastebin.com/raw/MQCCFwhf
+[99678.547335] BTRFS info (device dm-0): forced readonly
+[99678.547340] BTRFS warning (device dm-0): Skipping commit of aborted transaction.
+[99678.547341] BTRFS: error (device dm-0) in cleanup_transaction:1958: errno=-5 IO failure
+[99678.547373] BTRFS warning (device dm-0): lost page write due to IO error on /dev/mapper/error-test (-5)
+[99678.547533] BTRFS warning (device dm-0): Skipping commit of aborted transaction.
+[99678.548743] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0xa4e8 len 4096 err no 10
+[99678.549188] BTRFS error (device dm-0): error writing primary super block to device 1
+[99678.551100] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0x12e000 len 4096 err no 10
+[99678.551149] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0x12e008 len 4096 err no 10
+[99678.551205] BTRFS warning (device dm-0): direct IO failed ino 261 rw 0,0 sector 0x12e010 len 4096 err no 10
+[99678.551401] BTRFS: error (device dm-0) in write_all_supers:4110: errno=-5 IO failure (1 errors while writing supers)
+[99678.565169] BTRFS: error (device dm-0) in btrfs_sync_log:3308: errno=-5 IO failure
+[99678.566132] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6b68: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC PTI
+[99678.567526] CPU: 2 PID: 2458471 Comm: fsstress Not tainted 5.12.0-rc5-btrfs-next-84 #1
+[99678.568531] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[99678.569980] RIP: 0010:__mutex_lock+0x139/0xa40
+[99678.570556] Code: c0 74 19 (...)
+[99678.573752] RSP: 0018:ffff9f18830d7b00 EFLAGS: 00010202
+[99678.574723] RAX: 6b6b6b6b6b6b6b68 RBX: 0000000000000001 RCX: 0000000000000002
+[99678.576027] RDX: ffffffffb9c54d13 RSI: 0000000000000000 RDI: 0000000000000000
+[99678.577314] RBP: ffff9f18830d7bc0 R08: 0000000000000000 R09: 0000000000000000
+[99678.578601] R10: ffff9f18830d7be0 R11: 0000000000000001 R12: ffff8c6cd199c040
+[99678.579890] R13: ffff8c6c95821358 R14: 00000000fffffffb R15: ffff8c6cbcf01358
+[99678.581282] FS:  00007fa9140c2b80(0000) GS:ffff8c6fac600000(0000) knlGS:0000000000000000
+[99678.582818] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[99678.583771] CR2: 00007fa913d52000 CR3: 000000013d2b4003 CR4: 0000000000370ee0
+[99678.584600] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[99678.585425] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[99678.586247] Call Trace:
+[99678.586542]  ? __btrfs_handle_fs_error+0xde/0x146 [btrfs]
+[99678.587260]  ? btrfs_sync_log+0x7c1/0xf20 [btrfs]
+[99678.587930]  ? btrfs_sync_log+0x7c1/0xf20 [btrfs]
+[99678.588573]  btrfs_sync_log+0x7c1/0xf20 [btrfs]
+[99678.589222]  btrfs_sync_file+0x40c/0x580 [btrfs]
+[99678.589947]  do_fsync+0x38/0x70
+[99678.590514]  __x64_sys_fsync+0x10/0x20
+[99678.591196]  do_syscall_64+0x33/0x80
+[99678.591829]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[99678.592744] RIP: 0033:0x7fa9142a55c3
+[99678.593403] Code: 8b 15 09 (...)
+[99678.596777] RSP: 002b:00007fff26278d48 EFLAGS: 00000246 ORIG_RAX: 000000000000004a
+[99678.598143] RAX: ffffffffffffffda RBX: 0000563c83cb4560 RCX: 00007fa9142a55c3
+[99678.599450] RDX: 00007fff26278cb0 RSI: 00007fff26278cb0 RDI: 0000000000000005
+[99678.600770] RBP: 0000000000000005 R08: 0000000000000001 R09: 00007fff26278d5c
+[99678.602067] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000340
+[99678.603380] R13: 00007fff26278de0 R14: 00007fff26278d96 R15: 0000563c83ca57c0
+[99678.604714] Modules linked in: btrfs dm_zero dm_snapshot dm_thin_pool (...)
+[99678.616646] ---[ end trace ee2f1b19327d791d ]---
 
-Let me know how it goes after that.
-Thanks.
+The steps that lead to this crash are the following:
 
+1) We are at transaction N;
 
+2) We have two tasks with a transaction handle attached to transaction N.
+   Task A and Task B. Task B is doing an fsync;
 
---=20
-Filipe David Manana,
+3) Task B is at btrfs_sync_log(), and has saved fs_info->log_root_tree
+   into a local variable named 'log_root_tree' at the top of
+   btrfs_sync_log(). Task B is about to call write_all_supers(), but
+   before that...
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+4) Task A calls btrfs_commit_transaction(), and after it sets the
+   transaction state to TRANS_STATE_COMMIT_START, an error happens before
+   it waits for the transaction's 'num_writers' counter to reach a value
+   of 1 (no one else attached to the transaction), so it jumps to the
+   label "cleanup_transaction";
+
+5) Task A then calls cleanup_transaction(), where it aborts the
+   transaction, setting BTRFS_FS_STATE_TRANS_ABORTED on fs_info->fs_state,
+   setting the ->aborted field of the transaction and the handle to an
+   errno value and also setting BTRFS_FS_STATE_ERROR on fs_info->fs_state.
+
+   After that, at cleanup_transaction(), it deletes the transaction from
+   the list of transactions (fs_info->trans_list), sets the transaction
+   to the state TRANS_STATE_COMMIT_DOING and then waits for the number
+   of writers to go down to 1, as it's currently 2 (1 for task A and 1
+   for task B);
+
+6) The transaction kthread is running and sees that BTRFS_FS_STATE_ERROR
+   is set in fs_info->fs_state, so it calls btrfs_cleanup_transaction().
+
+   There it sees the list fs_info->trans_list is empty, and then proceeds
+   into calling btrfs_drop_all_logs(), which frees the log root tree with
+   a call to btrfs_free_log_root_tree();
+
+7) Task B calls write_all_supers() and, shortly after, under the label
+   'out_wake_log_root', it deferences the pointer stored in
+   'log_root_tree', which was already freed in the previous step by the
+   transaction kthread. This results in a use-after-free leading to a
+   crash.
+
+Fix this by deleting the transaction from the list of transactions at
+cleanup_transaction() only after setting the transaction state to
+TRANS_STATE_COMMIT_DOING and waiting for all existing tasks that are
+attached to the transaction to release their transaction handles.
+This makes the transaction kthread wait for all the tasks attached to
+the transaction to be done with the transaction before dropping the
+log roots and doing other cleanups.
+
+Fixes: ef67963dac255b ("btrfs: drop logs when we've aborted a transaction")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/transaction.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 97c5e7396bce..d56d3e7ca324 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1966,7 +1966,6 @@ static void cleanup_transaction(struct btrfs_trans_handle *trans, int err)
+ 	 */
+ 	BUG_ON(list_empty(&cur_trans->list));
+ 
+-	list_del_init(&cur_trans->list);
+ 	if (cur_trans == fs_info->running_transaction) {
+ 		cur_trans->state = TRANS_STATE_COMMIT_DOING;
+ 		spin_unlock(&fs_info->trans_lock);
+@@ -1975,6 +1974,17 @@ static void cleanup_transaction(struct btrfs_trans_handle *trans, int err)
+ 
+ 		spin_lock(&fs_info->trans_lock);
+ 	}
++
++	/*
++	 * Now that we know no one else is still using the transaction we can
++	 * remove the transaction from the list of transactions. This avoids
++	 * the transaction kthread from cleaning up the transaction while some
++	 * other task is still using it, which could result in a use-after-free
++	 * on things like log trees, as it forces the transaction kthread to
++	 * wait for this transaction to be cleaned up by us.
++	 */
++	list_del_init(&cur_trans->list);
++
+ 	spin_unlock(&fs_info->trans_lock);
+ 
+ 	btrfs_cleanup_one_transaction(trans->transaction, fs_info);
+-- 
+2.28.0
+
