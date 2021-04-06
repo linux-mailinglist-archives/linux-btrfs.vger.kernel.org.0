@@ -2,175 +2,211 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E367355FCF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 01:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983AB355FD1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 01:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245309AbhDFX7e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Apr 2021 19:59:34 -0400
-Received: from mout.gmx.net ([212.227.15.19]:34575 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235884AbhDFX7d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Apr 2021 19:59:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617753554;
-        bh=3Q6Vy08Ffm+YDMhrEmMpU7ZKFO5t1qsBM3DelBKEsgQ=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=A1uRrbCJ6Rcd9A48pz0ksHiv+KrW2RqK4x1+ElnpmlXCIMnYKT9VDfSHNpqaIZPqx
-         bYPr9AaukI2ECu8IjL9Z/HkOUXPiKLjNkTwJdW8AWBRE26gXVYzOxqVtaULk8ToXDx
-         XPvCgAQZl+rs/hyNICrPKylA2IpdFZF2T49o1n4A=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3lc9-1lUkoU2yXb-000r7X; Wed, 07
- Apr 2021 01:59:14 +0200
-Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
-To:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210325071445.90896-1-wqu@suse.com>
- <20210403110853.GD7604@twin.jikos.cz>
- <aa1c1709-a29b-1c64-1174-b395dd5cd5de@gmx.com>
- <10c3098d-94e3-7cdd-030e-bd4ef5061163@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <edd99fcf-8821-cc76-7b20-077e2f38869e@gmx.com>
-Date:   Wed, 7 Apr 2021 07:59:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S1344865AbhDGAAB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Apr 2021 20:00:01 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51508 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235884AbhDGAAB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Apr 2021 20:00:01 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136Nt4Sk135803;
+        Tue, 6 Apr 2021 23:59:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=KvlfS84dMfmo61NcqPbsxPA/0wa6imfjhhmGXLpNAts=;
+ b=TpjPA8r3B9I6z2fzwuNIWAScvRM9yi5nRGc4pbyU74Pv9jDu8L6VcTo7aFmdxGewLzVm
+ Lw1ji2f64dZLyVEJ78spqYno1fMOd4w4pFVqHvx1IB059HPC2sOyHRdgW+Lwurksz3KP
+ 4vc/LX4CsnyI+lgDkyns7altIkeLyLwjBcCmq9ZYNQu4ambAokGQjk5Hs+XMQJFG7fJl
+ JXeJuaI3ApM+HxWxzsNR5w0OH5DhSLK47PMtJZuHhheo6axgVxSiLlYUXayCfxycezBT
+ InLjNENL0NN5ie4gANH31qbGBxWWTPpTHj67CVIbdcu8ehWksClnMMyI4heuSAlJQx9W 7g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 37rva60st1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Apr 2021 23:59:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 136NtGBI029531;
+        Tue, 6 Apr 2021 23:59:40 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2053.outbound.protection.outlook.com [104.47.46.53])
+        by aserp3020.oracle.com with ESMTP id 37rvb3238d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 06 Apr 2021 23:59:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fn/jqu2QQScp/fG24SHciLP23LfXO/myYhfzMojsfWVCBDnXZ70GFiVZ1hhb2Gyr2TQRBbvxQAEZoFJ62nAZTY9e2qUr6XW2KFJLMH2n8ZZdQjjgBDC60SqXGSVOor8WBBVb+K3FqMFVUP5tqfgS/o8mVVjiKwLo9YFBApF3Vp+UiKsQfKMXF4KWFrbKsMr9/tO1qEhQIvI3x75iNFxD9cO2bintrj3xG1fY0ry21sNT3eiF+Xu2lR05Jwn6TdYSHGkHmlCKyOfp78SobVo87vZj1VG6lWGe639N6VIk0+ZvoEpIeLc5x0wdvdlIIMftY0V5FHvR0KtVai+KKrOkJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KvlfS84dMfmo61NcqPbsxPA/0wa6imfjhhmGXLpNAts=;
+ b=gEiX/GzNVkieEU2FKi+c+A85SwMRu4dRqyqPpUZl7B6nJsTCG/1CC2JrAMmX1svNYyfusPC0OslHlpccxspIAtaU1fj8KknaNIgz6qyTQqqe5R90znx95WbhMKsOOu9RvB8lX9o84NZnoOHmp7VDIZ+nc0RGo4+jl8z5c2+7vYAFtq++d4/9Nz95p4TfGmrVbpFf0vTThWL+kxp7F0zZAHEUDk7BNMEoTZBXDDE7JYEfZ6dUGRElRF2lpik55OM3ErfFc+VdtNTYCJGvcA8DvEw7wiEbck2VV2k7orOhuUvDHYQUD4l+oMHjAsnySVHJsUlHFaj2TVf7NL8HwT887A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KvlfS84dMfmo61NcqPbsxPA/0wa6imfjhhmGXLpNAts=;
+ b=A5N76JpJ/MZ7L5udSwMhYSVc1JhWXlWqiqvmpqJnPeoiNm8lz5wCWPb2Desz076vsGbSAZYBMLUGX5VclPxl/rua2ej1sQK4MbXTwoPk2TIjipLePwrWjSXCC9h7FVe3z9p98a1CPADtTFVUIqzNTPHLNtx+yo7OpJpKCoojaUM=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BL0PR10MB2994.namprd10.prod.outlook.com (2603:10b6:208:72::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Tue, 6 Apr
+ 2021 23:59:38 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::9aa:6ac:8d40:c076]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::9aa:6ac:8d40:c076%6]) with mapi id 15.20.3977.033; Tue, 6 Apr 2021
+ 23:59:38 +0000
+Subject: Re: [PATCH 1/2] btrfs: Remove unused function btrfs_reada_detach()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20210406162404.11746-1-rgoldwyn@suse.de>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <2bce898b-bb2b-cedb-1b09-cecd48b5e73d@oracle.com>
+Date:   Wed, 7 Apr 2021 07:59:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <10c3098d-94e3-7cdd-030e-bd4ef5061163@oracle.com>
+In-Reply-To: <20210406162404.11746-1-rgoldwyn@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lQYymsmOhwwVYeAxhmtsEXiiL2qyyNvyKKDcNXbO2d0QkRbNQIz
- JCHr+2JCDJwC9m61a7AW3q2EfNdMXj+egOl1seIPj8PorCYuvdL4t06+u/7ZIP+B/uuSHJk
- caKCaDa174pYpgzmsskHNbobWqG/fhNvlHQTJH5mZYhWUVlaZS8TdBbwixbJG0JhjIq4ayV
- LZuTp/NKdZGXgYYd2R8NQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CPyPSVn+Mkg=:ULaQC+56EMZjhl+O/OqKVN
- dln0N/U85bSdbHNccgz9DGSxElIZATYopxSjfii0BHZdfjDlSxX5ycmA05EOe2NS6Gz1PweJw
- B2ijWvh11258KUsWcVB9/Ae0+eTb5uQUkr/IdQMPJaqMNEKEmoi8FtIZpNrhdk71/BHHk5Za0
- qZVIDZk5YwKCYpUjdrZx91Mb2qFrKW/qJR4K3waX3fIAyisTBjo2tP4hZYBxTvEoLF/x3j8pZ
- frb8lTMBNOlmgYwaKOaE0Bwqn2XBe6iEo2rOKtB105Rs93idKftsefubAHne/3hjydO9aVH7f
- RrrPX/bdpGpwD8u9B6uzPSew3mIYAS0GFyVF6P5j5lNhIjg+PDQsUZ7B5z0nhDkVd8ws9YbWT
- 6yukhEOCazp1ZlTnpOCmQOqw0QYXsWZfMt8i098P4aVnEPhi9chSUVJbySPCskfq0OCAaMxKv
- 2vfGiwVyXaaWl8N7XbJCdl/oavlg4WwiAXgsgH2OkntmDcO/RCaRMZghrgi335FOdmjdOt30h
- bSGY45pwa6Ec6ru23JgRbNn//5l5T5GOXj3qLa15xLAzQntArLlfCKJEA8vaM5XsPDXEVv9zI
- mE86Ww6VdqQc7pf22bTyB8QDaEc1brMMqjSkkoeovVojp4Qni4URbYn3jNhB7Gx4VBCq7buxv
- ti4TLp2Fe9JVRXDlvzXptWJXoZ9UZ8PZEU8c3n4C2pEux6L1LzcjTf5gWuOKTNX1EfQgAVxfq
- VtRNhQrmNeyW322IdWcTXZjDXD2JYhh8wH+2ylRwX940tnMXbHma5AwpWV5hjIqVqEtyZoorm
- ybJWmkaD3GqlsVBPkM3P5kDc0VvAwJsbfX55KGRMsvu8DCqjY10EhZ/IRCSfDDyjnnKdxmga5
- 1lHFco1Mqqc8zvN58NxQIVEcf9a21K82UwEq3ij8pyfYVIwNP3l3pwHmrsbcRTv1XJUYE42Vk
- ovwizGV4raT738ruZjkTTsPIrtQGDkEuP8ysxeJ93+q8VdchKP72cn6mjmveHc0uOOgpYSrDF
- IknrF5j48lj4sm5J/woaiHpcFwdhFrAlzLndr+hQYsSmbOMrlz+v0b/FLgdcApYoIEU2C8gQv
- 1EY4N37wcP4zGfusUKUIeWG1JU2qxoQEy56MwXXDCPmnacitCtplsE8nXHNis255M9QYcLG9p
- YgFAASgtR9l/H9TLV0m/v5PDx02pTTQoetldRhOCAka1qdHAW0VCWrbIn/uoSvcica6/D2jwY
- CERTt9xqQDbWsiU/J
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2406:3003:2006:2288:e825:e63d:5d8c:fbe6]
+X-ClientProxiedBy: SG2P153CA0009.APCP153.PROD.OUTLOOK.COM (2603:1096::19) To
+ MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2406:3003:2006:2288:e825:e63d:5d8c:fbe6] (2406:3003:2006:2288:e825:e63d:5d8c:fbe6) by SG2P153CA0009.APCP153.PROD.OUTLOOK.COM (2603:1096::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.3 via Frontend Transport; Tue, 6 Apr 2021 23:59:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2e9a17b4-6009-4126-7d5d-08d8f9580957
+X-MS-TrafficTypeDiagnostic: BL0PR10MB2994:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB29946FD2DFE21114BA7DB288E5769@BL0PR10MB2994.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3aqaeLabE65YMDGWxNYxDFDFQn7OwkJMBN0srq/KIUlVQj38L6URlO7sBfe+0jJH1oeguW50B+0KGU04sI30GYhEHuXsnc0kMfmuXEMHbMu+TfSGkv/2xYq8X9GgoQurX1xVzd7YI6lzzA8vd8G14IvftSxUCr3VoVN7l54quNhGMUJzWC+unK7l/G+yLNz3m33O1Nd1nYriBhrPTIGAnhIp5JHDyNK1XenRHtUMYoAg0oaNt3WJ+uCRYw5WGKeCcLQXnFLXahtgJG5tzi1GO0oNuJPaE2fjRcW1LxxK/zMefglJJv3iLTrmjesTTXEycpz7UAqYFfI3lrEorNHHclzbMfOtjLod5+SJFaBIP98MYVVOiCcREd8h8uqUnaAnovqFD4lns9kK6tkqEmosmWxOoO1BYbx8CoKHwjhFrrON0Qux2XgFqB9YwaISJmy0Pa7fs9qnP+TK1NlMXnBZ5IIZZBfNzly/aSsm8ArFK6b4GnD0/nXCPtSn4YW6vvxN0eYjEUoQRZY/lY5oS0U134Xwspyt2+Xsrgkhec7YXeHb1NVsEKO5H/ps7XxkdjULla5AMfMeupY3lEark/D4DIdlELn/KloznNiGoWHWdpjfYkQ4/rPLDITyuJuVambApO+pmm/Sfcb6jNsJeVOc565dwMECU96EFPe+WvUNRS18fqFpD5KiqKiBJM41Cq7ZD6SAawKkTdxDw1XFzGc8RA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(366004)(39860400002)(376002)(136003)(86362001)(31696002)(53546011)(316002)(83380400001)(38100700001)(6666004)(16526019)(36756003)(186003)(44832011)(4326008)(2906002)(5660300002)(31686004)(478600001)(8936002)(66556008)(66476007)(8676002)(2616005)(66946007)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WjRwcVBDR1JYSE5IVnppaDFkYWcxTkFMNGM5NGdRMExiYXZ5REZBaFVGY0pQ?=
+ =?utf-8?B?ZTlKVlhiMjVKSC93Y3d3UlBaaW9NUU9SMVFGYWF3VmVuNVdzUnBFRlVRdWEy?=
+ =?utf-8?B?TXcvTkpyVGgxaytWT3hEUzNuQXZjVGY2Y2hWYUpRUXJyNi9iQnBoMENMSnd1?=
+ =?utf-8?B?M21IZTRyaXo2Sjd1Z3VXTGpTTXc5cFd3RCtvRFI2WjVKd1FsZHUwN0J4MTZm?=
+ =?utf-8?B?eXloL2NsMW0vcVhua3loMWVrdkI3WElIUEQvZWMrRVh6czAvY1UveGoxRzNB?=
+ =?utf-8?B?YmczMVB5Y3VFQ1hiNEFxeCtGWTNoLzNUV2cwQ2s2QndLM2J6eUVxNUlhdDRP?=
+ =?utf-8?B?MldncXRFWGoxVTJLUVFQaG40YWsrWnBiSGlXZFh5VG85MlNNejBJdXY3NVpP?=
+ =?utf-8?B?M1lEZXFlbWgwbzRra2hZVHdvNlR0WDEzRHNqL3dqYUdKV2JkL3dDQU1jUGR6?=
+ =?utf-8?B?bER4dnp0Rnc1MGpNUEF1d01MZWtPRUo1cGVPd0haZTlqbFdXOWdmWlg0SVRa?=
+ =?utf-8?B?SEtBZUV2T0F6Ui9uUXVsWithd0QyZUdYVWhzVkhFRjZiK0JPaWFQK3UralRV?=
+ =?utf-8?B?dnY3T2MrSnlZaW5ZNUNpKzdYUjQxRjYzbHhHeDZTMHpXay9XbFk5ZkVOdmxK?=
+ =?utf-8?B?a2NjZlZXc3dDNDZqZ2x1L296SGx2SFVrVHVrTUNXZWx5aGFJcUg2VXNuRU4v?=
+ =?utf-8?B?bTl5aDYvYkNseXIvY2QybGx2UXdhZTREcHN5S3V4azI5SHBXTGxzaEo2RDFR?=
+ =?utf-8?B?NzlDL3ZvTzRlTS9rKzhSanE3WkM0czBBa1NQTTJ6UnlDVkkrS2JTYWZIS3hy?=
+ =?utf-8?B?azF3VUVnOWdVY1U5QW41bVk5aDlSdVg1cEM2UGVHTTd4L3NNUytDN0dFWmhr?=
+ =?utf-8?B?YVFJOTlrSUpieEE2M0s4eDJ2QlpqMlNPQVJXQlpNVTY2WHMrMENJNE0yZzg1?=
+ =?utf-8?B?M2VVUUZSbUd3RFZTbEQyRDA3VUFJK3lYZUxFeVdiOWI5SHJjeVc1MjBkS0xH?=
+ =?utf-8?B?MjJlRk1nZEJnRStmTlFCMTI5TktSamxzVnI3V2ZiVit2SzFBaUZVWWZiaGdQ?=
+ =?utf-8?B?R3lPbjNxRVhHbWRyeGFSdS80cEhNelp3MEp2cWtzL0dHQllJVi9MMTkvVmlT?=
+ =?utf-8?B?MFRVRHlaZjVWSmcvZ0Q3cWxaaDhlcWFKa01JQWtRdi8wQ3ZWTHRDT0o0SHhx?=
+ =?utf-8?B?eXE0ZGhQVmJzZEJHbDJ3R3pxOUE3RFBQMDRiK2hiRnpBM2tqQXN1K28vWTBy?=
+ =?utf-8?B?YjF5VFlFcFJUWXppUlo5WTUvSWtNeEJHL29BZEpKdnEyamZsL1dYVGYxWlFH?=
+ =?utf-8?B?U21zYmt4enRzRnM4NUxKZ2FEaDZ0MnF0MW11ZGprRVF2WS91MjBnWkJmMTNV?=
+ =?utf-8?B?L2pQamdTM05sZUtvOERQOFZvdnQxNDBFRFQvOUZQUTArMmNxMjYraEQvWUQr?=
+ =?utf-8?B?L1RCeWdlZ1lBc1QzK3VPb3dQdzhTSWFJVnZRSHZRdEhmWnRUR0VDa2IyRHJI?=
+ =?utf-8?B?M0hiOVNZendNL3lxbEJlS1dOa3hPUlVpWWh1QUI4NEZNYUgyZVhIc2FiSDdk?=
+ =?utf-8?B?ajc0azhORXZVZTVBMzhMdEZBQkdmbFpPcjlBQ2s0R2xFMzVvRVIzd1ZOempE?=
+ =?utf-8?B?dkthWEtybjVuVEtWTnk3MldJc3Y2SGtmUmNoVER0SUYzajVNaW9GY1g3OUxs?=
+ =?utf-8?B?Zk5ZYUJwOHorUjI4VFNVVUs2YVBKTUZVZUVLUUNJcmVpYW5SdDkwWXRRVWpu?=
+ =?utf-8?B?YXBpTzdreDNQci9kSkduUitoTFk0T3F1VFdPYndLMVpuL09vSlFCcVpVbXlH?=
+ =?utf-8?B?Q3I0ajFCK1NjMmRjWGtKbXZ5elU1c0VQZmVoS1ZEYnM1Y1lVU3FIcU9SUC9W?=
+ =?utf-8?Q?5eGbsM9oAIptp?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e9a17b4-6009-4126-7d5d-08d8f9580957
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2021 23:59:38.6711
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TC2U+IY3leTJ/aCTktRZJAynYtgipI0SnLPF65odn6dED0BhncPNf3+bAHQcrgiYR2+lTBF/ecZWauNXdelLyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2994
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 suspectscore=0 adultscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104060165
+X-Proofpoint-GUID: wdv3fomBq6A4LiNMbtNruKuGG3RxBrDm
+X-Proofpoint-ORIG-GUID: wdv3fomBq6A4LiNMbtNruKuGG3RxBrDm
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9946 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 clxscore=1011
+ lowpriorityscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104060165
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 07/04/2021 00:24, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> btrfs_reada_detach() is not called by any function. Remove.
+> 
 
+  btrfs_reada_detach() was never used.
 
-On 2021/4/6 =E4=B8=8A=E5=8D=8810:31, Anand Jain wrote:
-> On 05/04/2021 14:14, Qu Wenruo wrote:
->>
->>
->> On 2021/4/3 =E4=B8=8B=E5=8D=887:08, David Sterba wrote:
->>> On Thu, Mar 25, 2021 at 03:14:32PM +0800, Qu Wenruo wrote:
->>>> This patchset can be fetched from the following github repo, along wi=
-th
->>>> the full subpage RW support:
->>>> https://github.com/adam900710/linux/tree/subpage
->>>>
->>>> This patchset is for metadata read write support.
->>>
->>>> Qu Wenruo (13):
->>>> =C2=A0=C2=A0 btrfs: add sysfs interface for supported sectorsize
->>>> =C2=A0=C2=A0 btrfs: use min() to replace open-code in btrfs_invalidat=
-epage()
->>>> =C2=A0=C2=A0 btrfs: remove unnecessary variable shadowing in
->>>> btrfs_invalidatepage()
->>>> =C2=A0=C2=A0 btrfs: refactor how we iterate ordered extent in
->>>> =C2=A0=C2=A0=C2=A0=C2=A0 btrfs_invalidatepage()
->>>> =C2=A0=C2=A0 btrfs: introduce helpers for subpage dirty status
->>>> =C2=A0=C2=A0 btrfs: introduce helpers for subpage writeback status
->>>> =C2=A0=C2=A0 btrfs: allow btree_set_page_dirty() to do more sanity ch=
-eck on
->>>> subpage
->>>> =C2=A0=C2=A0=C2=A0=C2=A0 metadata
->>>> =C2=A0=C2=A0 btrfs: support subpage metadata csum calculation at writ=
-e time
->>>> =C2=A0=C2=A0 btrfs: make alloc_extent_buffer() check subpage dirty bi=
-tmap
->>>> =C2=A0=C2=A0 btrfs: make the page uptodate assert to be subpage compa=
-tible
->>>> =C2=A0=C2=A0 btrfs: make set/clear_extent_buffer_dirty() to be subpag=
-e compatible
->>>> =C2=A0=C2=A0 btrfs: make set_btree_ioerr() accept extent buffer and t=
-o be subpage
->>>> =C2=A0=C2=A0=C2=A0=C2=A0 compatible
->>>> =C2=A0=C2=A0 btrfs: add subpage overview comments
->>>
->>> Moved from topic branch to misc-next.
->>>
->>
->> Note sure if it's too late, but I inserted the last comment patch into
->> the wrong location.
->>
->> In fact, there are 4 more patches to make
->
->
->> subpage metadata RW really work:
->
-> I took some time to go through these patches, which are lined up for
-> integration.
->
-> With this set of patches that are being integrated, we don't yet
-> support RW mount of filesystem if PAGESIZE > sectorsize as a whole.
-> Subpage metadata RW support, how is it to be used in the production?
+  commit 48a3b6366f69 (btrfs: make static code static & remove dead code)
+  spared it.
 
-I'd say, without the ability to write subpage metadata, how would
-subpage even be utilized in production environment?
+  IMO ok to remove btrfs_reada_detach().
 
-> OR How is this supposed to be tested?
+  Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-There are two ways:
-- Craft some scripts to only do metadata operations without any data
-   writes
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> ---
+>   fs/btrfs/ctree.h | 1 -
+>   fs/btrfs/reada.c | 9 +--------
+>   2 files changed, 1 insertion(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index f2fd73e58ee6..2acbd8919611 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3700,7 +3700,6 @@ struct reada_control {
+>   struct reada_control *btrfs_reada_add(struct btrfs_root *root,
+>   			      struct btrfs_key *start, struct btrfs_key *end);
+>   int btrfs_reada_wait(void *handle);
+> -void btrfs_reada_detach(void *handle);
+>   int btree_readahead_hook(struct extent_buffer *eb, int err);
+>   void btrfs_reada_remove_dev(struct btrfs_device *dev);
+>   void btrfs_reada_undo_remove_dev(struct btrfs_device *dev);
+> diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
+> index 06713a8fe26b..0d357f8b65bc 100644
+> --- a/fs/btrfs/reada.c
+> +++ b/fs/btrfs/reada.c
+> @@ -24,7 +24,7 @@
+>    * To trigger a readahead, btrfs_reada_add must be called. It will start
+>    * a read ahead for the given range [start, end) on tree root. The returned
+>    * handle can either be used to wait on the readahead to finish
+> - * (btrfs_reada_wait), or to send it to the background (btrfs_reada_detach).
+> + * (btrfs_reada_wait).
+>    *
+>    * The read ahead works as follows:
+>    * On btrfs_reada_add, the root of the tree is inserted into a radix_tree.
+> @@ -1036,13 +1036,6 @@ int btrfs_reada_wait(void *handle)
+>   }
+>   #endif
+>   
+> -void btrfs_reada_detach(void *handle)
+> -{
+> -	struct reada_control *rc = handle;
+> -
+> -	kref_put(&rc->refcnt, reada_control_release);
+> -}
+> -
+>   /*
+>    * Before removing a device (device replace or device remove ioctls), call this
+>    * function to wait for all existing readahead requests on the device and to
+> 
 
-- Wait for my data write support then run regular full test suites
-
-I used to go method 1, but since in my local branch it's already full
-subpage RW support, I'm doing method 2.
-
-Although it exposes quite some bugs in data write path, it has been
-quite a long time after last metadata related bug.
-
->
-> OR should you just cleanup the title as preparatory patches to support
-> subpage RW? It is confusing.
-
-Well, considering this is the last patchset before full subpage RW, such
-"preparatory" mention would be saved for next big function add.
-(Thankfully, there is no such plan yet)
-
-Thanks,
-Qu
-
->
-> Thanks, Anand
->
->
->> btrfs: make lock_extent_buffer_for_io() to be subpage compatible
->> btrfs: introduce submit_eb_subpage() to submit a subpage metadata page
->> btrfs: introduce end_bio_subpage_eb_writepage() function
->> btrfs: introduce write_one_subpage_eb() function
->>
->> Those 4 patches should be before the final comment patch.
->>
->> Should I just send the 4 patches in a separate series?
->>
->> Sorry for the bad split, it looks like multi-series patches indeed has
->> such problem...
->>
->> Thanks,
->> Qu
->
