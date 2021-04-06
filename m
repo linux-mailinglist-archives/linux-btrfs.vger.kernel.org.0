@@ -2,63 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E29355ED1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 00:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A96355EF1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 00:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235963AbhDFWbd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Apr 2021 18:31:33 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:42131 "EHLO
+        id S1344102AbhDFWrm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Apr 2021 18:47:42 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:46379 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230160AbhDFWba (ORCPT
+        by vger.kernel.org with ESMTP id S244004AbhDFWrm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Apr 2021 18:31:30 -0400
+        Tue, 6 Apr 2021 18:47:42 -0400
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id A50151320;
-        Tue,  6 Apr 2021 18:31:20 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 661F210E3;
+        Tue,  6 Apr 2021 18:47:33 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 06 Apr 2021 18:31:20 -0400
+  by compute2.internal (MEProxy); Tue, 06 Apr 2021 18:47:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
         :to:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=Z1BgTJZdeL7+BOo1IbSHhddddP
-        gPms2c+hNoRKLpc44=; b=qoLq60tw44LBNpErchzBr0mmz0Rd+d5TpX2aZaNTa2
-        WR0j5lMdIYeVuR5a6ABy/aY4C15NDPeV48nlOvvnwkvkV+VZ+JWiJFrE1m5uxZEd
-        pxkRstfk9bS6w+2bT5GpGm+OT3rnGEOPpDFvw7SPtI/LbvJfsNSP5SSvUAzSsz67
-        YmhOW5ghOw7opNXtL7NbnAgcQ67sUxjWbePAePxQB4GzQ5WVteaSrHWicRiyNf5j
-        Z6wJcdtP+/Z3U4tIUSk5wlYAqtx/5TaNS9gYhVUpvOcceQ3K0arUnXcLW1HQlQ5m
-        mXPrGTyLTg2YFIdJbY3ZP7F1FQ9MXlHTiZMHppz97NQA==
+        :content-transfer-encoding; s=fm3; bh=koOpnUI4zoASW6tmircG99CZu6
+        PhNp7RuzkNLmJubaY=; b=tSnwfnFAKyZl9wFaT9oM5DWNSTn57E9vPlrGc6A96C
+        aDb+oMOw6SxcmrELreVhnloDs+b79zEQHgw/7EkGNk2zvMuEYm02hx26F/YE5CoC
+        S1DPiaKAri2ENFCNsWKBextVRrUnoEGphM5J/r7xAs/o7i3AunLMWBO/2PmVCM/j
+        SdxL3dJbd+jcsIqv3VK/8JM6s8W5KoT5tJoJ/L0rAMpGi0RB3uDm9MJvc8SjYdUf
+        n5jundL9z8JRK1cOreje7kh7JKwFsUEpr/sYpCIHTTcH7N7PL1otdk832bnXyz2W
+        L6uMztDlKdAeFjCYqhrzLNi3MgMTooXJVf8FWKrvYn7g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=content-transfer-encoding:date:from
         :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Z1BgTJZdeL7+BOo1I
-        bSHhddddPgPms2c+hNoRKLpc44=; b=j73DXepwQH+Tu7q/iRcFy+sFXD9jUHcy/
-        QXtCi1J70548vysrS9/0Gm8haUJxXBJJF2It9jbLzBIV9cQWJVd0b9FmCQX6mGrB
-        o8bFiZGzNzyiL4KTLPVrUhwLRNMPc+jDS7r3galY46NrI7PFcQDlRWtSAcS5dDXp
-        AhiiG9SmsmIk6XbQWrzUuYwcpSxiDJpIGLtS8XfhfbeoSGxe1qvMjcG9HbpvKZjM
-        JU37TOl6btf9ajWtUNySAedVou/HCB+8Vz1H93dajq77ahPvu26emB/wnz6/JNp4
-        t2rFmDykzAlRTwLTsW5vo+n8hpSSWWiR8KU3TaFQ3mU4eiUs8cK7w==
-X-ME-Sender: <xms:N-FsYJWjS4blsdm7Y_wNX4SSVWRBJ0ldA9Ddk7NpwfZ1OoHDcf_9Ow>
-    <xme:N-FsYDM3HQKLNPy5BnrZS3zXelK4WTttS_fTPZVCO3RTaah3DtsA7k4ay1POeDDMY
-    PSPgwJvui6b0vPAsuw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejiedgudduucetufdoteggodetrfdotf
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=koOpnUI4zoASW6tmi
+        rcG99CZu6PhNp7RuzkNLmJubaY=; b=VUHNXAdDTDkiW4XwZ/Y8JQ2up99XXhg7G
+        3klX26LSKaM5eVp0mNL+OxWYnMpx8l9RWbkhGEuFsksuHuFqvVZGC1yJe4dvtzCA
+        5mjhsaz9/reK5idDcB7kFRdkXf/st7z7yHDF99aEh/1BhCRgQuT25HD5WL9bAqgU
+        uv4jVPLqWXZMfIuJy7Y1yoWSfMCXw83hN7DX7t15t3gHp4LJSlS0FK2cJNG6aSzH
+        fpGaguwUKS95/fov3j1roJKQmvyQGPZredfkEywCr/tfjSBCUq9t/VbKtwvRwGr8
+        yKL11EF+Pd0+h2j0j2tznwCsSDEPRdBXYAyGioPaMnWkIhuhMnnUA==
+X-ME-Sender: <xms:BOVsYA666009W0mObxkBcImjFvj1jI_azzb4__LszaWLuJ3WSB4JfQ>
+    <xme:BOVsYB7oZOfRfrWjHZsp7xl0_bYocz0n1iJWk_5ajtGGnOOpO4vQGAckqN3erLcY5
+    cuDqKwlu1Np3yEq4jE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejiedgudegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
     dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
-    etfeekffeftefhvdejveenucfkphepvddtjedrheefrddvheefrdejnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurhdrih
-    ho
-X-ME-Proxy: <xmx:N-FsYFZK3vT7vU17PyUi13_AB1yNUAHylqldd9LI1a3uHYv7iZm7gw>
-    <xmx:N-FsYPryNEkOBWWRcAx04JSg346NUXu5vhcbyDnIMeqEWmzDP0boag>
-    <xmx:N-FsYBaUGnFFUCsQ2zaHVkSxvsFjiw2DVvm4H5eQmXJFYAjWpgQu2w>
-    <xmx:OOFsYDUmfi4EUenjmUnVnbLBlQP5E6M6xlzL4uAJq785vcgKdn6pdw>
+    qeenucggtffrrghtthgvrhhnpeeiledtfffhhfdvtdefgedvieetleeijeejiedthfefge
+    ekheevheekjeelkeegkeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedv
+    tdejrdehfedrvdehfedrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:BOVsYPcgiiXlTJ0Lv3ApAM59Z1WM9H0u1Z5lgnvzOZgO_bHv3Czhrg>
+    <xmx:BOVsYFJfBfCv23kE4Rz83H9X3JNP0NMoy5GV3grf57mx2NPthE5IhA>
+    <xmx:BOVsYEIGyT1bgZPEzqRGHtXjwYAj6TY3pkWGVzTUi1h9wOd_aDBT5A>
+    <xmx:BeVsYOzFR_bN7e1g23wVDcs9TcS6N4IqFBUtcYjAXscnoDNMQI_ClQ>
 Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9A58D240057;
-        Tue,  6 Apr 2021 18:31:19 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 97AC3240065;
+        Tue,  6 Apr 2021 18:47:32 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: return whole extents in fiemap
-Date:   Tue,  6 Apr 2021 15:31:18 -0700
-Message-Id: <274e5bcebdb05a8969fc300b4802f33da2fbf218.1617746680.git.boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fstests@vger.kernel.org
+Subject: [PATCH] generic: test fiemap offsets and < 512 byte ranges
+Date:   Tue,  6 Apr 2021 15:47:31 -0700
+Message-Id: <4098b7c2a597f2f6d624ce1b3f2741a381c588b7.1617749158.git.boris@bur.io>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,63 +67,147 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-`xfs_io -c 'fiemap <off> <len>' <file>`
-can give surprising results on btrfs that differ from xfs.
+btrfs trims fiemap extents to the inputted offset, which leads to
+inconsistent results for most inputs, and downright bizarre outputs like
+[7..6] when the trimmed extent is at the end of an extent and shorter
+than 512 bytes.
 
-btrfs spits out extents trimmed to fit the user input. If the user's
-fiemap request has an offset, then rather than returning each whole
-extent which intersects that range, we also trim the start extent to not
-have start < off.
+This test covers a bunch of cases like that and ensures that file
+systems always return the full extent without trimming it.
 
-Documentation in filesystems/fiemap.txt and the xfs_io man page suggests
-that returning the whole extent is expected.
+I also ran it under ext2, ext3, ext4, f2fs, and xfs successfully, but I
+suppose it's no guarantee that every file system will store a 4k synced
+write in a single extent. For that reason, this might be a bit fragile.
 
-Some cases which all yield the same fiemap in xfs, but not btrfs:
-dd if=/dev/zero of=$f bs=4k count=1
-sudo xfs_io -c 'fiemap 0 1024' $f
-  0: [0..7]: 26624..26631
-sudo xfs_io -c 'fiemap 2048 1024' $f
-  0: [4..7]: 26628..26631
-sudo xfs_io -c 'fiemap 2048 4096' $f
-  0: [4..7]: 26628..26631
-sudo xfs_io -c 'fiemap 3584 512' $f
-  0: [7..7]: 26631..26631
-sudo xfs_io -c 'fiemap 4091 5' $f
-  0: [7..6]: 26631..26630
-
-I believe this is a consequence of the logic for merging contiguous
-extents represented by separate extent items. That logic needs to track
-the last offset as it loops through the extent items, which happens to
-pick up the start offset on the first iteration, and trim off the
-beginning of the full extent. To fix it, start `off` at 0 rather than
-`start` so that we keep the iteration/merging intact without cutting off
-the start of the extent.
-
-after the fix, all the above commands give:
-0: [0..7]: 26624..26631
-
-The merging logic is exercised by xfstest generic/483, and I have
-written a new xfstest for checking we don't have backwards or
-zero-length fiemaps for cases like those above.
+This test is fixed for btrfs by:
+btrfs: return whole extents in fiemap
+(https://lore.kernel.org/linux-btrfs/274e5bcebdb05a8969fc300b4802f33da2fbf218.1617746680.git.boris@bur.io/)
 
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/extent_io.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tests/generic/623     | 93 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/623.out |  2 +
+ tests/generic/group   |  1 +
+ 3 files changed, 96 insertions(+)
+ create mode 100755 tests/generic/623
+ create mode 100644 tests/generic/623.out
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7ad2169e7487..5b2a8a314adf 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4975,7 +4975,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
- 		  u64 start, u64 len)
- {
- 	int ret = 0;
--	u64 off = start;
-+	u64 off = 0;
- 	u64 max = start + len;
- 	u32 flags = 0;
- 	u32 found_type;
+diff --git a/tests/generic/623 b/tests/generic/623
+new file mode 100755
+index 00000000..d399c9f0
+--- /dev/null
++++ b/tests/generic/623
+@@ -0,0 +1,93 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 YOUR NAME HERE.  All Rights Reserved.
++#
++# FS QA Test 623
++#
++# what am I here for?
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_require_test
++_require_scratch
++_require_xfs_io_command "fiemap"
++
++rm -f $seqres.full
++
++_do_fiemap() {
++	off=$1
++	len=$2
++	$XFS_IO_PROG -c "fiemap $off $len" $SCRATCH_MNT/foo
++}
++
++_check_fiemap() {
++	off=$1
++	len=$2
++	actual=$(_do_fiemap $off $len | tee -a $seqres.full)
++	[ "$actual" == "$expected" ] || _fail "unexpected fiemap on $off $len"
++}
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++# write a file with one extent
++$XFS_IO_PROG -f -s -c "pwrite -S 0xcf 0 4K" $SCRATCH_MNT/foo >/dev/null
++
++# since the exact extent location is unpredictable especially when
++# varying file systems, just test that they are all equal, which is
++# what we really expect.
++expected=$(_do_fiemap)
++
++# start to mid-extent
++_check_fiemap 0 2048
++# start to end
++_check_fiemap 0 4096
++# start to past-end
++_check_fiemap 0 4097
++# mid-extent to mid-extent
++_check_fiemap 1024 2048
++# mid-extent to end
++_check_fiemap 2048 4096
++# mid-extent to past-end
++_check_fiemap 2048 4097
++
++# to end; len < 512
++_check_fiemap 4091 5
++# to end; len == 512
++_check_fiemap 3584 512
++# past end; len < 512
++_check_fiemap 4091 500
++# past end; len == 512
++_check_fiemap 4091 512
++
++_scratch_unmount
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/623.out b/tests/generic/623.out
+new file mode 100644
+index 00000000..6f774f19
+--- /dev/null
++++ b/tests/generic/623.out
+@@ -0,0 +1,2 @@
++QA output created by 623
++Silence is golden
+diff --git a/tests/generic/group b/tests/generic/group
+index b10fdea4..39e02383 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -625,3 +625,4 @@
+ 620 auto mount quick
+ 621 auto quick encrypt
+ 622 auto shutdown metadata atime
++623 auto quick
 -- 
 2.30.2
 
