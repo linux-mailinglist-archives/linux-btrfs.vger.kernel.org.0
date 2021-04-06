@@ -2,65 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A96355EF1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 00:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB99355F1D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 00:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344102AbhDFWrm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Apr 2021 18:47:42 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:46379 "EHLO
+        id S233167AbhDFWyp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Apr 2021 18:54:45 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:38885 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244004AbhDFWrm (ORCPT
+        by vger.kernel.org with ESMTP id S232452AbhDFWyl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Apr 2021 18:47:42 -0400
+        Tue, 6 Apr 2021 18:54:41 -0400
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 661F210E3;
-        Tue,  6 Apr 2021 18:47:33 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 06 Apr 2021 18:47:33 -0400
+        by mailout.west.internal (Postfix) with ESMTP id 25DDA12A7;
+        Tue,  6 Apr 2021 18:54:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 06 Apr 2021 18:54:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=koOpnUI4zoASW6tmircG99CZu6
-        PhNp7RuzkNLmJubaY=; b=tSnwfnFAKyZl9wFaT9oM5DWNSTn57E9vPlrGc6A96C
-        aDb+oMOw6SxcmrELreVhnloDs+b79zEQHgw/7EkGNk2zvMuEYm02hx26F/YE5CoC
-        S1DPiaKAri2ENFCNsWKBextVRrUnoEGphM5J/r7xAs/o7i3AunLMWBO/2PmVCM/j
-        SdxL3dJbd+jcsIqv3VK/8JM6s8W5KoT5tJoJ/L0rAMpGi0RB3uDm9MJvc8SjYdUf
-        n5jundL9z8JRK1cOreje7kh7JKwFsUEpr/sYpCIHTTcH7N7PL1otdk832bnXyz2W
-        L6uMztDlKdAeFjCYqhrzLNi3MgMTooXJVf8FWKrvYn7g==
+        :to:subject:date:message-id:in-reply-to:references:mime-version
+        :content-transfer-encoding; s=fm3; bh=NFz6EKopRKTB1f3i19S6aRXcWo
+        d1iIZOhWJTcdjzUII=; b=TFOAnPh0y7n8MzRr6H20L4uscosb0Jbk3nBCXx7vOd
+        tGHQ9aVo4Qpr6gdd3prnXwCUgBV1MugRTQiHH7uE9tPjk8CBcCga5lXmNPc5FfVe
+        /MzrHJiWzDHudl2BL/HbVn8JgRIcCuECBQ5COYtyFYCypR2aR7NQNNUelsW/qFrP
+        auo9Ldc6DVy7acUbbJlspo1zIOH5OOaO89MbsTlZO7owUS8OyRfMTqLhhK6kXWZL
+        4w8hDYxI+H2wfsCqKioq3EBsYpsV5eUq4EzMgHY+cyG+jJSJ8SyNBKOiptioSuRI
+        WyqDX7V0GtjrVnXJf8l+9Cu9/5qIVLTQsS10XNh7mx1Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=koOpnUI4zoASW6tmi
-        rcG99CZu6PhNp7RuzkNLmJubaY=; b=VUHNXAdDTDkiW4XwZ/Y8JQ2up99XXhg7G
-        3klX26LSKaM5eVp0mNL+OxWYnMpx8l9RWbkhGEuFsksuHuFqvVZGC1yJe4dvtzCA
-        5mjhsaz9/reK5idDcB7kFRdkXf/st7z7yHDF99aEh/1BhCRgQuT25HD5WL9bAqgU
-        uv4jVPLqWXZMfIuJy7Y1yoWSfMCXw83hN7DX7t15t3gHp4LJSlS0FK2cJNG6aSzH
-        fpGaguwUKS95/fov3j1roJKQmvyQGPZredfkEywCr/tfjSBCUq9t/VbKtwvRwGr8
-        yKL11EF+Pd0+h2j0j2tznwCsSDEPRdBXYAyGioPaMnWkIhuhMnnUA==
-X-ME-Sender: <xms:BOVsYA666009W0mObxkBcImjFvj1jI_azzb4__LszaWLuJ3WSB4JfQ>
-    <xme:BOVsYB7oZOfRfrWjHZsp7xl0_bYocz0n1iJWk_5ajtGGnOOpO4vQGAckqN3erLcY5
-    cuDqKwlu1Np3yEq4jE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejiedgudegucetufdoteggodetrfdotf
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=NFz6EKopRKTB1f3i19S6aRXcWod1iIZOhWJTcdjzUII=; b=J7nigOMT
+        UviPSoi0BrTknoPiezuDyuaBTbtPCwlTkBA1xSEjhD1uVl2cHk767VOeDKrHzHjK
+        TfzmCRHxxfYklnNfvqHK8qAjrr/dc8F3EEQfBoRZG4kDhUJt8Y90hi/R/vnYbQVg
+        DFnTX1iuAJ1j+0btHYpemTHRQC8AQ0UkgAMPwz1suKXyqHOFJVua7Iq2dGgyg0qn
+        NUr5oDZ/+D3wWwfPrBo1p5EPeZlIJM37cknFRXzG6od6wNchP+grEkiqUoLuGB+s
+        388VAiWGxyc2rqkLRBlNe4ewWOhKGHEMnaJ8ke/p9wA9dwimxfvK6WU8b4aboT2r
+        SU75KKwzuu4wNA==
+X-ME-Sender: <xms:p-ZsYCSlDmDVxq9t-dI4wQ5m8bjctnCsm4K1QYuwB5Pl2bRxgJ7y5g>
+    <xme:p-ZsYHzEwMtnfgvxabbDzmH6Iy_3An_aQPBcT28hiXFhtEAgdOOtmnZLe6Zdl-RiN
+    XDXD4MoE4WWctbdq4M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejiedgudehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
-    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeeiledtfffhhfdvtdefgedvieetleeijeejiedthfefge
-    ekheevheekjeelkeegkeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedv
-    tdejrdehfedrvdehfedrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:BOVsYPcgiiXlTJ0Lv3ApAM59Z1WM9H0u1Z5lgnvzOZgO_bHv3Czhrg>
-    <xmx:BOVsYFJfBfCv23kE4Rz83H9X3JNP0NMoy5GV3grf57mx2NPthE5IhA>
-    <xmx:BOVsYEIGyT1bgZPEzqRGHtXjwYAj6TY3pkWGVzTUi1h9wOd_aDBT5A>
-    <xmx:BeVsYOzFR_bN7e1g23wVDcs9TcS6N4IqFBUtcYjAXscnoDNMQI_ClQ>
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpeffgffgkeekveevgeduffeuvdevtdekvedtledvfe
+    duleelgeevteelkedvhfeikeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhp
+    pedvtdejrdehfedrvdehfedrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:p-ZsYP1oS5PBiSai0vO9oO9NwKNxBT3-53rV2oby0tJNshNaNou02A>
+    <xmx:p-ZsYOBtjut8i0s-4bCGC2ZAxUSdVe9MqixwyjTpoCCTeO368KHeHA>
+    <xmx:p-ZsYLjMHwnK_R40tYoHLITWZ6W6j3YzdNiBzajjck8BDTot5ugZQQ>
+    <xmx:p-ZsYLLIy0rlmBohqxcet4akwLMXA1EnS-LaN8M4W85hm3D5m3je2Q>
 Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 97AC3240065;
-        Tue,  6 Apr 2021 18:47:32 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 58D0B108005F;
+        Tue,  6 Apr 2021 18:54:31 -0400 (EDT)
 From:   Boris Burkov <boris@bur.io>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         fstests@vger.kernel.org
-Subject: [PATCH] generic: test fiemap offsets and < 512 byte ranges
-Date:   Tue,  6 Apr 2021 15:47:31 -0700
-Message-Id: <4098b7c2a597f2f6d624ce1b3f2741a381c588b7.1617749158.git.boris@bur.io>
+Subject: [PATCH v2] generic: test fiemap offsets and < 512 byte ranges
+Date:   Tue,  6 Apr 2021 15:54:29 -0700
+Message-Id: <189e96b6dfccc54ec44879456488977c95b3efda.1617749523.git.boris@bur.io>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <4098b7c2a597f2f6d624ce1b3f2741a381c588b7.1617749158.git.boris@bur.io>
+References: <4098b7c2a597f2f6d624ce1b3f2741a381c588b7.1617749158.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -84,27 +87,32 @@ btrfs: return whole extents in fiemap
 (https://lore.kernel.org/linux-btrfs/274e5bcebdb05a8969fc300b4802f33da2fbf218.1617746680.git.boris@bur.io/)
 
 Signed-off-by: Boris Burkov <boris@bur.io>
+
+--
+v2: fill out copyright and test description
+
 ---
- tests/generic/623     | 93 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/623     | 94 +++++++++++++++++++++++++++++++++++++++++++
  tests/generic/623.out |  2 +
  tests/generic/group   |  1 +
- 3 files changed, 96 insertions(+)
+ 3 files changed, 97 insertions(+)
  create mode 100755 tests/generic/623
  create mode 100644 tests/generic/623.out
 
 diff --git a/tests/generic/623 b/tests/generic/623
 new file mode 100755
-index 00000000..d399c9f0
+index 00000000..85ef68f6
 --- /dev/null
 +++ b/tests/generic/623
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,94 @@
 +#! /bin/bash
 +# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 YOUR NAME HERE.  All Rights Reserved.
++# Copyright (c) 2021 Facebook.  All Rights Reserved.
 +#
 +# FS QA Test 623
 +#
-+# what am I here for?
++# Test fiemaps with offsets into small parts of extents.
++# Expect to get the whole extent, anyway.
 +#
 +seq=`basename $0`
 +seqres=$RESULT_DIR/$seq
