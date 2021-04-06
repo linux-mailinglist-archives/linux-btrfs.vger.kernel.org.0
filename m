@@ -2,85 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8E5355BFE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Apr 2021 21:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCEE355C13
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Apr 2021 21:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237688AbhDFTIt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Apr 2021 15:08:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44440 "EHLO mx2.suse.de"
+        id S240748AbhDFTPh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Apr 2021 15:15:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48022 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237663AbhDFTIs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:08:48 -0400
+        id S231701AbhDFTPg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Apr 2021 15:15:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E7F47B301;
-        Tue,  6 Apr 2021 19:08:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 66F35B474;
+        Tue,  6 Apr 2021 19:15:27 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EF9BEDA732; Tue,  6 Apr 2021 21:06:26 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 21:06:26 +0200
+        id 7CCF6DA732; Tue,  6 Apr 2021 21:13:15 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 21:13:15 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH v8 28/39] btrfs: handle btrfs_search_slot failure in
- replace_path
-Message-ID: <20210406190626.GL7604@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
+Message-ID: <20210406191315.GM7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Qu Wenruo <wqu@suse.com>
-References: <cover.1615580595.git.josef@toxicpanda.com>
- <1c88a3767122bd97acc2f6370cbd046bee05ff2c.1615580595.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210325071445.90896-1-wqu@suse.com>
+ <20210403110853.GD7604@twin.jikos.cz>
+ <aa1c1709-a29b-1c64-1174-b395dd5cd5de@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1c88a3767122bd97acc2f6370cbd046bee05ff2c.1615580595.git.josef@toxicpanda.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aa1c1709-a29b-1c64-1174-b395dd5cd5de@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 03:25:23PM -0500, Josef Bacik wrote:
-> This can fail for any number of reasons, why bring the whole box down
-> with it?
-
-I've written something more relevant for the code change.
-
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/relocation.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+On Mon, Apr 05, 2021 at 02:14:34PM +0800, Qu Wenruo wrote:
 > 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 592b2d156626..6e8d89e4733a 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -1322,7 +1322,8 @@ int replace_path(struct btrfs_trans_handle *trans, struct reloc_control *rc,
->  		path->lowest_level = level;
->  		ret = btrfs_search_slot(trans, src, &key, path, 0, 1);
->  		path->lowest_level = 0;
-> -		BUG_ON(ret);
-> +		if (ret)
-> +			break;
+> 
+> On 2021/4/3 下午7:08, David Sterba wrote:
+> > On Thu, Mar 25, 2021 at 03:14:32PM +0800, Qu Wenruo wrote:
+> >> This patchset can be fetched from the following github repo, along with
+> >> the full subpage RW support:
+> >> https://github.com/adam900710/linux/tree/subpage
+> >>
+> >> This patchset is for metadata read write support.
+> >
+> >> Qu Wenruo (13):
+> >>    btrfs: add sysfs interface for supported sectorsize
+> >>    btrfs: use min() to replace open-code in btrfs_invalidatepage()
+> >>    btrfs: remove unnecessary variable shadowing in btrfs_invalidatepage()
+> >>    btrfs: refactor how we iterate ordered extent in
+> >>      btrfs_invalidatepage()
+> >>    btrfs: introduce helpers for subpage dirty status
+> >>    btrfs: introduce helpers for subpage writeback status
+> >>    btrfs: allow btree_set_page_dirty() to do more sanity check on subpage
+> >>      metadata
+> >>    btrfs: support subpage metadata csum calculation at write time
+> >>    btrfs: make alloc_extent_buffer() check subpage dirty bitmap
+> >>    btrfs: make the page uptodate assert to be subpage compatible
+> >>    btrfs: make set/clear_extent_buffer_dirty() to be subpage compatible
+> >>    btrfs: make set_btree_ioerr() accept extent buffer and to be subpage
+> >>      compatible
+> >>    btrfs: add subpage overview comments
+> >
+> > Moved from topic branch to misc-next.
+> >
+> 
+> Note sure if it's too late, but I inserted the last comment patch into
+> the wrong location.
 
-As replace_path returns positive values, ie. the level, search failing
-to find the key could return 1 which would be wrongly interpreted if
-returned as-is. The usual pattern is to switch that to -ENOENT, like
+Not late yet but getting very close to the pre-merge window code freeze.
 
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1323,8 +1323,11 @@ int replace_path(struct btrfs_trans_handle *trans, struct reloc_control *rc,
-                path->lowest_level = level;
-                ret = btrfs_search_slot(trans, src, &key, path, 0, 1);
-                path->lowest_level = 0;
--               if (ret < 0)
-+               if (ret) {
-+                       if (ret > 0)
-+                               ret = -ENOENT;
-                        break;
-+               }
- 
-                /*
-                 * Info qgroup to trace both subtrees.
----
+> In fact, there are 4 more patches to make subpage metadata RW really work:
+>   btrfs: make lock_extent_buffer_for_io() to be subpage compatible
+>   btrfs: introduce submit_eb_subpage() to submit a subpage metadata page
+>   btrfs: introduce end_bio_subpage_eb_writepage() function
+>   btrfs: introduce write_one_subpage_eb() function
+> 
+> Those 4 patches should be before the final comment patch.
+> 
+> Should I just send the 4 patches in a separate series?
+
+As they've been posted now, I'll add them to for-next and reorder before
+the last patch with comment, after some testing.
+
+> Sorry for the bad split, it looks like multi-series patches indeed has
+> such problem...
+
+Yeah, but so far it's been all fixable given the scope of the whole
+subpage support.
