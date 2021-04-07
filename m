@@ -2,157 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE243574AD
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 20:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20183575A1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 22:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355481AbhDGS5r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Apr 2021 14:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355483AbhDGS5C (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Apr 2021 14:57:02 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99AEC06175F
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Apr 2021 11:56:51 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id x11so19805349qkp.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Apr 2021 11:56:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=m/Ig1l6vAGlDzT7jp+r6qbC0b7t7mcI5QTcLxDYlb7U=;
-        b=Gz6P/Fy8HtW4O4JInog9vYNCt+7LlOd1h4FRTzcoTGgK9ZQMKtXlzWT7RYh/01QHJ0
-         GVE0/URlvpAHY7Qy4R56q6GpnsbO+j7n7q0FtBjIZFJkyBmiwDYW2TzNV1yRLn0MPKuo
-         vv+auge+vWoJEjGYxb7kEZKjdzNqdhob8egdzboCIEBkG8TLp7KU8L7vhC0xSwlaMiRC
-         f7hS9dqISfshi7aLlAKs44P90mFA92oXmJPWuVuQqRXcnw4gSv+DLCxmBNkuEVyf5rKK
-         WWBxk6PjZXloGKW6xVoVy/6YxZZsy69ozwazggQgXSNjOyZ5wJqqamHMyrCKSFwSQg1m
-         VIYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m/Ig1l6vAGlDzT7jp+r6qbC0b7t7mcI5QTcLxDYlb7U=;
-        b=sMDgyB8BBfNA1s6OtKYbJvLoYbIfqdPFDAkdcWc4AeCdW/XMLGrDgi6BOmbAalncV/
-         6I5FOwQOtrWUyJFs8Cs04EVdzqBYmPFNTJwHRCnhz9bqrtiWkTSCwMdR+kustU2HzG78
-         QSoZGM3iyAO37PD8hhNZaP2RA3sRKus+3ErU/qnK0p4sMz5+i5DVgA9Vi/En/kxC5WiE
-         jrA8xBhlQNWuVz2/Nw+qp0wDcm1RtUO9p8sGhkvQx030dHyGD3Iio9aTiWZBL1jSgZQq
-         6qGFIIyTloqRTPBxS/qdBvZXcwYu+eA6ZyvNP6HTda7sO54RCUkWUhKwWteMf2OfU5Gp
-         VOLw==
-X-Gm-Message-State: AOAM533WqvpuEhF/xCKJZjPXYPsN4XhM6+zO9KM67Qg5DZ13a7zqTasq
-        UonQqrEL5BPn5RK8eRWmtZGMrw==
-X-Google-Smtp-Source: ABdhPJxKUjRSg2vn3NyxS2cf4zF66ObZaNF5VL0CheozVBn6DtF6k/bb+H0N0LEVBNAV6F8+BSbC4g==
-X-Received: by 2002:a37:9a07:: with SMTP id c7mr4692663qke.352.1617821810979;
-        Wed, 07 Apr 2021 11:56:50 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11d1::12f6? ([2620:10d:c091:480::1:4c92])
-        by smtp.gmail.com with ESMTPSA id i6sm18715784qkk.31.2021.04.07.11.56.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Apr 2021 11:56:50 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: zoned: move superblock logging zone location
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "dsterba@suse.com" <dsterba@suse.com>
-References: <cover.1615773143.git.naohiro.aota@wdc.com>
- <931d8d8a1eb757a1109ffcb36e592d2c0889d304.1615787415.git.naohiro.aota@wdc.com>
- <4fb00423-af48-49b7-c39b-3dde90289064@toxicpanda.com>
- <SA0PR04MB74188C3D3453ECFCB504BAE99B759@SA0PR04MB7418.namprd04.prod.outlook.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <61b7d77e-8d6f-24ad-59a9-259b3850f1b7@toxicpanda.com>
-Date:   Wed, 7 Apr 2021 14:56:49 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        id S1349253AbhDGUNo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Apr 2021 16:13:44 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:38727 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349014AbhDGUNk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Apr 2021 16:13:40 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 5B7EB13DA;
+        Wed,  7 Apr 2021 16:13:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 07 Apr 2021 16:13:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:subject:date:message-id:in-reply-to:references:mime-version
+        :content-transfer-encoding; s=fm3; bh=dgSlF3Se2yLQI5q0Esm5yNoWWP
+        4S3D7Vjj9HQO0hVTc=; b=CyZcPkaPeK8YhEEtb1mcmJzK44G8PBCvco+14fa+h7
+        stUYM6V+Cz9Zv0JItUOptc4reFmUAj/HovOuENIRjyqV8tQhAmyw13jeoROKYxqI
+        t0nfuz8LBLrNQn9PwrR+JWqtr+LEqBP2ZRQg9JLMtxD9S1KSOvsBCS46gbjcKub/
+        AAzjamLqaXAX0O3sCTuaXhZMCmzNsOKw7clgHVyYpnTvUCH5BCcNvorDuymjpXUh
+        jEwX6rEDT5oh/HOrnut2WzF+H5GxK9QxRLQaqpLEH3meuOlv9JqI9RmakgMWVkeR
+        P+MDP1wFQhIrdsr2m9RBCR7C2POC6Ywujgl+VAh2j+yQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=dgSlF3Se2yLQI5q0Esm5yNoWWP4S3D7Vjj9HQO0hVTc=; b=BYp4vbuT
+        thF8H3gR08lYO51gHE7N40Il7T1UGtpvZpgvGFAxj4iqP2hDG934Cd3GNr9MOS36
+        I+p8g/0bvKK3yFmgNj077kprzh8e8ZpJyxU8u5TqQAYAzGP3GYbY6DZDlllrdKPB
+        qa7uqSSStr2aUoFHmtz6kpUdD+bFHMWUEiXi0yK+0bZdI4nUFixoEm/IsOgLMcer
+        eF8wcxDIofHhTWLsRlCcRBY8RNWASIz53qbZRkWKfyqS5FkQrVCVecsqTb9yjZ/P
+        oHxWV/vgMVJhS88oHMdJ2n4Ks0DSVPL7qDsqk3r7D/MKf+lTixTtuxOg77Lq0V+h
+        OrBsx66wOgNiyw==
+X-ME-Sender: <xms:aBJuYLXo4zAG6wQabjHthpOdIWgBhr1_uC7yeC34qZ2ZG44av9FKcA>
+    <xme:aBJuYDs0ihvRGDxgy0UDHqlXcQmH905I8cZ7ER7frN8OF-ZNnwZz-5jmNtaZIbaqy
+    3XfAKCAth8t_uke59I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejjedgudegkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ffgffgkeekveevgeduffeuvdevtdekvedtledvfeduleelgeevteelkedvhfeikeenucff
+    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedvtdejrdehfedrvdehfedrjeenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhs
+    segsuhhrrdhioh
+X-ME-Proxy: <xmx:aBJuYPVI_KL13oXnqSN3H4hCMaQYxaM_cKK8tj5zv4HR516m3bcweA>
+    <xmx:aBJuYOnuASrWUmeIOPeRB5yspEaALrYjKdag3tMdAARphfgvmD_LFw>
+    <xmx:aBJuYAYdLlqPgr5vAtzm0NIP-hg6gULWsOvS4TzKJr5Q3RRek3uC1g>
+    <xmx:aBJuYIl30NY3Y99CAyvY-uHp7B0ARNs5xdvKFLtTiKEY2nxQcQ6-WA>
+Received: from localhost (unknown [207.53.253.7])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1755924005A;
+        Wed,  7 Apr 2021 16:13:28 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     "Darrick J. Wong" <djwong@kernel.org>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, fstests@vger.kernel.org
+Subject: [PATCH v3] generic: test fiemap offsets and < 512 byte ranges
+Date:   Wed,  7 Apr 2021 13:13:26 -0700
+Message-Id: <c2f49fdead29fd7eb979b83028eb9fcf56d2457c.1617826068.git.boris@bur.io>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210407161046.GY1670408@magnolia>
+References: <20210407161046.GY1670408@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <SA0PR04MB74188C3D3453ECFCB504BAE99B759@SA0PR04MB7418.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/7/21 2:31 PM, Johannes Thumshirn wrote:
-> On 07/04/2021 19:54, Josef Bacik wrote:
->> On 3/15/21 1:53 AM, Naohiro Aota wrote:
->>> This commit moves the location of superblock logging zones. The location of
->>> the logging zones are determined based on fixed block addresses instead of
->>> on fixed zone numbers.
->>>
->>> By locating the superblock zones using fixed addresses, we can scan a
->>> dumped file system image without the zone information. And, no drawbacks
->>> exist.
->>>
->>> We use the following three pairs of zones containing fixed offset
->>> locations, regardless of the device zone size.
->>>
->>>     - Primary superblock: zone starting at offset 0 and the following zone
->>>     - First copy: zone containing offset 64GB and the following zone
->>>     - Second copy: zone containing offset 256GB and the following zone
->>>
->>> If the location of the zones are outside of disk, we don't record the
->>> superblock copy.
->>>
->>> These addresses are arbitrary, but using addresses that are too large
->>> reduces superblock reliability for smaller devices, so we do not want to
->>> exceed 1T to cover all case nicely.
->>>
->>> Also, LBAs are generally distributed initially across one head (platter
->>> side) up to one or more zones, then go on the next head backward (the other
->>> side of the same platter), and on to the following head/platter. Thus using
->>> non sequential fixed addresses for superblock logging, such as 0/64G/256G,
->>> likely result in each superblock copy being on a different head/platter
->>> which improves chances of recovery in case of superblock read error.
->>>
->>> These zones are reserved for superblock logging and never used for data or
->>> metadata blocks. Zones containing the offsets used to store superblocks in
->>> a regular btrfs volume (no zoned case) are also reserved to avoid
->>> confusion.
->>>
->>> Note that we only reserve the 2 zones per primary/copy actually used for
->>> superblock logging. We don't reserve the ranges possibly containing
->>> superblock with the largest supported zone size (0-16GB, 64G-80GB,
->>> 256G-272GB).
->>>
->>> The first copy position is much larger than for a regular btrfs volume
->>> (64M).  This increase is to avoid overlapping with the log zones for the
->>> primary superblock. This higher location is arbitrary but allows supporting
->>> devices with very large zone size, up to 32GB. But we only allow zone sizes
->>> up to 8GB for now.
->>>
->>
->> Ok it took me a few reads to figure out what's going on.
->>
->> The problem is that with large zone sizes, our current choices put the back up
->> super blocks waaaayyyyyy out on the disk, correct?  So instead you've picked
->> arbitrary byte offsets, hoping that they'll be closer to the front of the disk
->> and thus actually be useful.
->>
->> And then you've introduced the 8gib zone size as a way to avoid problems where
->> we get the same zone for the backup supers.
->>
->> Are these statements correct?  If so the changelog should be updated to make
->> this clear up front, because it took me a while to work that out.
-> 
-> No the problem is, we're placing superblocks into specific zones, regardless of
-> the zone size. This creates a problem when you need to inspect a file system,
-> but don't have the block device available, because you can't look at the zone
-> size to calculate where the superblocks are on the device.
-> 
-> With this change we're placing the superblocks not into specific zone numbers,
-> but into the zones starting at specific offsets. We're taking 8G zone size as
-> a maximum expected zone size, to make sure we're not overlapping superblock
-> zones. Currently SMR disks have a zone size of 256MB and we're expecting ZNS
-> drives to be in the 1-2GB range, so this 8GB gives us room to breath.
-> 
-> Hope this helps clearing up any confusion.
-> 
+btrfs trims fiemap extents to the inputted offset, which leads to
+inconsistent results for most inputs, and downright bizarre outputs like
+[7..6] when the trimmed extent is at the end of an extent and shorter
+than 512 bytes.
 
-Ok this makes a lot more sense, and should be the first thing in the changelog, 
-because I still got it wrong after reading the thing a few times.
+The test writes out one extent of the file system's block size and tries
+fiemaps at various offsets. It expects that all the fiemaps return the
+full single extent.
 
-And I think it's worth pointing out in the comments that 8gib represents a zone 
-size that doesn't exist currently and is likely to never exist.
+I ran it under the following fs, block size combinations:
+ext2: 1024, 2048, 4096
+ext3: 1024, 2048, 4096
+ext4: 1024, 2048, 4096
+xfs: 512, 1024, 2048, 4096
+f2fs: 4096
+btrfs: 4096
 
-That will make this much easier to grok and understand in the future.  Thanks,
+This test is fixed for btrfs by:
+btrfs: return whole extents in fiemap
+(https://lore.kernel.org/linux-btrfs/274e5bcebdb05a8969fc300b4802f33da2fbf218.1617746680.git.boris@bur.io/)
 
-Josef
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+v3: make the block size more generic, use test dev instead of scratch,
+cleanup style issues.
+v2: fill out copyright and test description
+---
+ tests/generic/623     | 94 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/623.out |  2 +
+ tests/generic/group   |  1 +
+ 3 files changed, 97 insertions(+)
+ create mode 100755 tests/generic/623
+ create mode 100644 tests/generic/623.out
+
+diff --git a/tests/generic/623 b/tests/generic/623
+new file mode 100755
+index 00000000..a5ef369a
+--- /dev/null
++++ b/tests/generic/623
+@@ -0,0 +1,94 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 Facebook.  All Rights Reserved.
++#
++# FS QA Test 623
++#
++# Test fiemaps with offsets into small parts of extents.
++# Expect to get the whole extent, anyway.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++	rm -f $fiemap_file
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_require_test
++_require_xfs_io_command "fiemap"
++
++rm -f $seqres.full
++
++fiemap_file=$TEST_DIR/foo.$$
++
++do_fiemap() {
++	off=$1
++	len=$2
++	echo $off $len >> $seqres.full
++	$XFS_IO_PROG -c "fiemap $off $len" $fiemap_file | tee -a $seqres.full
++}
++
++check_fiemap() {
++	off=$1
++	len=$2
++	actual=$(do_fiemap $off $len)
++	[ "$actual" == "$expected" ] || _fail "unexpected fiemap on $off $len"
++}
++
++# write a file with one extent
++block_size=$(_get_block_size $TEST_DIR)
++$XFS_IO_PROG -f -s -c "pwrite -S 0xcf 0 $block_size" $fiemap_file >/dev/null
++
++# since the exact extent location is unpredictable especially when
++# varying file systems, just test that they are all equal, which is
++# what we really expect.
++expected=$(do_fiemap)
++
++mid=$((block_size / 2))
++almost=$((block_size - 5))
++past=$((block_size + 1))
++
++check_fiemap 0 $mid
++check_fiemap 0 $block_size
++check_fiemap 0 $past
++check_fiemap $mid $almost
++check_fiemap $mid $block_size
++check_fiemap $mid $past
++check_fiemap $almost 5
++check_fiemap $almost 6
++
++# fiemap output explicitly deals in 512 byte increments,
++# so exercise some cases where len is 512.
++# Naturally, some of these can't work if block size is 512.
++one_short=$((block_size - 512))
++check_fiemap 0 512
++check_fiemap $one_short 512
++check_fiemap $almost 512
++
++_test_unmount
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/623.out b/tests/generic/623.out
+new file mode 100644
+index 00000000..6f774f19
+--- /dev/null
++++ b/tests/generic/623.out
+@@ -0,0 +1,2 @@
++QA output created by 623
++Silence is golden
+diff --git a/tests/generic/group b/tests/generic/group
+index b10fdea4..39e02383 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -625,3 +625,4 @@
+ 620 auto mount quick
+ 621 auto quick encrypt
+ 622 auto shutdown metadata atime
++623 auto quick
+-- 
+2.30.2
+
