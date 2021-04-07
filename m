@@ -2,82 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523193566B9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 10:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E132535692D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Apr 2021 12:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234400AbhDGIYe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Apr 2021 04:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232650AbhDGIYb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Apr 2021 04:24:31 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492A3C06174A
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Apr 2021 01:24:21 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id v29so9221350vsi.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Apr 2021 01:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=VKh7tv1EE483d/3cNWsv0nX9oYdJxM3VIkDiF1nTZTc=;
-        b=UvKtTY79OJ9Kuib0WrIvhX8rxoq1AjeSiG1uTMeyLTB0JmiG2l2RcpcW0l7WjLQ14H
-         EW0toZdsKIutP5DPFWr253bLaiQINmIobVU8QGTOm52/6zoT1dtrmtLHeQggSaPDi3y4
-         Gum3jyl7jA8OStWmUJ/ApScuesnScNQrBZGXXmn/6MMDpr6nokX71xEEYrqUa0jFjBAU
-         dvLVs6hjdrcyKZIa5N55E1gT/e18yPUZZOp+qMVsskyVMoMW+8p92xV0znwAnxqCT4Ki
-         ENrXctK5OnEXBb0g9jbp8SjgKEKJzSbrO0D/+tiE5WkzGErzd0ec8veX1UVBUToXRd2B
-         tHaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=VKh7tv1EE483d/3cNWsv0nX9oYdJxM3VIkDiF1nTZTc=;
-        b=b+SEMZ3I78nZVuJMXW/uhdZGbyBgkIxyqNQTPfUD8prrhDLRbBOKhIFjTEIitHGEHH
-         tNl7IoOfDbcB+hC8FhNqbHRwPIC6uvQ5Eq1C5BDDIjBTs6t71dFeqzvL4fb9O0XSAXCs
-         zlIsSQRAVuOE4woY2YQuE9af1d+S/yoMZ4+L6MgEbpPmwUjEoMNnln2lAkQlADyqoXaU
-         AJCUDJvqyV0RR6rV/Q268sQuoR1gB25yw1MvM1XbdJqqrjsGw8sN2xPFrF531Z1f9D88
-         XiEemyQHyrFI1gX19aEYZOYnnLHR0R/RsgwWHRvfSXmwRHBpuVikYnB9KNXTfJt2ys4Q
-         arwA==
-X-Gm-Message-State: AOAM530+Q5/AgdjsQwqR8J/XnGEwh0AVvrU2p3IJS2V0/KMe9ht0aVuR
-        odY1E9HjloaGBBKZ9Ul/OGNyLGJm1dIaX/JGgELwvQ0DX7A=
-X-Google-Smtp-Source: ABdhPJwTBtEpCHvPeS6v08r79dZ/icQ2F4b0OBzPhRa6BE8qqVu94htJ0ipQGui147B+xlP7Z4rsjU1k7khLr3e2nM4=
-X-Received: by 2002:a67:e982:: with SMTP id b2mr1127527vso.57.1617783860586;
- Wed, 07 Apr 2021 01:24:20 -0700 (PDT)
+        id S1350786AbhDGKPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Apr 2021 06:15:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27222 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1350755AbhDGKPc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Apr 2021 06:15:32 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137A3b4f058603;
+        Wed, 7 Apr 2021 06:14:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=qyvICg5bOR724dHN0jiYk0GhBKxcKHxFxhx+efkfdP0=;
+ b=gm4eY4fO8pB91ulNkCctgOVnU/mtR5c4og1a5cvGrhbR1Cm9pHAedvD8d1FO5zA9UuT5
+ I7J8dz4TYgOsqFxxQ1rIRCmGXYi5okj9JLNMXs1O7P0Sr4hl6V1KB/q+X0Xfk/U60jEq
+ 12rvuECWUyveozwWKcGxHM7aT5NmcqJVkVz+0okjBzXibYd17x9dGVcXPJY+HXkqCpOP
+ fNTz7RBbQf0qV0mKT/GH1Zk/CO9dTOkiMGyytP27gNriFohtzwFjEcdf5fS3cKmjocfr
+ m/t6lREXynRZUWlsZtr/+PyDg7LrnLen0c3ar+9j9sr363qZvKTOPAjCduJp3hw+0mXS tQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rw07bttq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 06:14:24 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 137A3wjB060848;
+        Wed, 7 Apr 2021 06:14:23 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rw07btt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 06:14:23 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 137A3BvM010573;
+        Wed, 7 Apr 2021 10:14:21 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 37rvbw8knx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 07 Apr 2021 10:14:21 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 137AEJ1o40239448
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 7 Apr 2021 10:14:19 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B1014C04A;
+        Wed,  7 Apr 2021 10:14:19 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C7DAF4C044;
+        Wed,  7 Apr 2021 10:14:18 +0000 (GMT)
+Received: from localhost (unknown [9.85.69.78])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  7 Apr 2021 10:14:18 +0000 (GMT)
+Date:   Wed, 7 Apr 2021 15:44:17 +0530
+From:   riteshh <riteshh@linux.ibm.com>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, willy@infradead.org, jack@suse.cz,
+        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
+        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de,
+        Ritesh Harjani <riteshh@gmail.com>
+Subject: Re: [PATCH 1/3] fsdax: Factor helpers to simplify dax fault code
+Message-ID: <20210407101417.45mu2m35hfduizpn@riteshh-domain>
+References: <20210407063207.676753-1-ruansy.fnst@fujitsu.com>
+ <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-References: <23a8830f3be500995e74b45f18862e67c0634c3d.1614793362.git.anand.jain@oracle.com>
- <b0caf058-3bb5-2ceb-d1d4-d352deee636e@oracle.com> <83ecd955-560f-14e5-ab97-33e0c0a3d3d0@oracle.com>
- <a6qdw0jr.fsf@damenly.su> <20210406164816.GK7604@suse.cz>
-In-Reply-To: <20210406164816.GK7604@suse.cz>
-From:   Su Yue <damenly.su@gmail.com>
-Date:   Wed, 7 Apr 2021 16:24:16 +0800
-Message-ID: <CABnRu55cYnn3=doLyObDRJByzDxOLNmuAdmToxoDnBMYFP1GOg@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: fix lockdep warning while mounting sprout fs
-To:     dsterba@suse.cz, Su Yue <l@damenly.su>,
-        Anand Jain <anand.jain@oracle.com>,
-        "dsterba@suse.com" <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407063207.676753-2-ruansy.fnst@fujitsu.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5kC7Gni9-yvd5Wl2UkGLEjQYyu3MvqY_
+X-Proofpoint-GUID: QQcIOBDcl5-T6SjKoKh9acNasKx7P6Z1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-07_07:2021-04-06,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ bulkscore=0 malwarescore=0 clxscore=1011 impostorscore=0 mlxlogscore=999
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070070
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 3:24 PM David Sterba <dsterba@suse.cz> wrote:
+On 21/04/07 02:32PM, Shiyang Ruan wrote:
+> The dax page fault code is too long and a bit difficult to read. And it
+> is hard to understand when we trying to add new features. Some of the
+> PTE/PMD codes have similar logic. So, factor them as helper functions to
+> simplify the code.
 >
-> On Mon, Apr 05, 2021 at 05:18:32PM +0800, Su Yue wrote:
-> >
-> > On Mon 05 Apr 2021 at 16:38, Anand Jain <anand.jain@oracle.com>
-> > wrote:
-> >
-> > > Ping again.
-> > >
-> > It's already queued in misc-next.
->
-> > commit 441737bb30f83914bb8517f52088c0130138d74b (misc-next)
-> > Author: Anand Jain <anand.jain@oracle.com>
-> > Date:   Fri Jul 17 18:05:25 2020 +0800
->
-> No it's not, you must have checked some very old snapshot of misc-next,
-> I don't even have 441737bb30f83914bb8517f52088c0130138d74b in my stale
-> commit objects so it's been 'git gc'ed already.
-Indeed. Sorry for the wrong info.
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Ritesh Harjani <riteshh@gmail.com>
 
---
-Su
+Sorry, but above email address is wrong. Either of below is ok.
+
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+OR
+Reviewed-by: Ritesh Harjani <ritesh.list@gmail.com>
+
+>
+>
+> ---
+>  fs/dax.c | 152 ++++++++++++++++++++++++++++++-------------------------
+>  1 file changed, 84 insertions(+), 68 deletions(-)
+
+
