@@ -2,179 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBE635901E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 01:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF71359029
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 01:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhDHXFE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Apr 2021 19:05:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
+        id S232697AbhDHXLq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Apr 2021 19:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232265AbhDHXFD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:05:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D384561008;
-        Thu,  8 Apr 2021 23:04:51 +0000 (UTC)
+        id S232265AbhDHXLp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 8 Apr 2021 19:11:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94668610CF;
+        Thu,  8 Apr 2021 23:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617923092;
-        bh=gAipAkTN6AtEe1gij2s1vx61dm91467A68DAZyZCvVg=;
+        s=k20201202; t=1617923493;
+        bh=wdDCFqctavX1Z+bcng4n66iKuYteZhIwI+3qTqzMgAw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HH3UphuNtw6xsYLk53E2CzGC2Ceth2lPveEwnvqFfhH9LYH2BSOCMC5OD1RMf1ppm
-         mFSpAS/E1KLUZCqjtA/XahEgOhaA+kxpzj7rUcUQ99v8W0p+2vy8UOjCbI4nkOMeWi
-         +qR0w3hNA4Qa36M9JtPKk6tR6Ck0d2EngNGdI9QGMf3qpYfbK68ocMvycqW3nsbcbt
-         FaFno7zh1qsAf9m7dKdhSaZ1lNzE3G8BmnpRtL+SL6RXWgEs59HQJxLXgk8yFy0NBl
-         VJHC1U4l0xsM0NMG0tNaN0bqQ8GTGZ8RE+FNe2szPXkt/eFqqNFWuFOVeCX9i8KhMz
-         CV3M5lwPJ7jAQ==
-Date:   Thu, 8 Apr 2021 16:04:51 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de
-Subject: Re: [PATCH v4 7/7] fs/xfs: Add dedupe support for fsdax
-Message-ID: <20210408230451.GD3957620@magnolia>
-References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
- <20210408120432.1063608-8-ruansy.fnst@fujitsu.com>
+        b=YZRI06xOe4HWEF9WlYfN4IhKPQtph0DNTC8FbjN6jFM8Dp1cNedR4cc9UdTKjpCoZ
+         HMaETvSI15NXBCizFKEcXknMYU2STs2VYSavW1jc73z3nR6o+/DC4lA4/Kr/W9UZ70
+         Dpy4MUmaqh1jlFbgoWR+e93vZUfJH6BVVetgOLma2JyT3fdbL2JRZKsL4lTU7AKk9F
+         fDN2DYdXsa69aWaDEYnCV1JbZPHqX7Bb/HCfq6vzSitjYdhhyLAVGkPuBSMo7YSQtI
+         3w8rZuqPOsY9UJB0uBHUJZ2GmZaEZbqmK1un3EQKl1T9jnji4mcxoB4ltLf2XHaB8H
+         gl6KaPKIX8Uag==
+Date:   Thu, 8 Apr 2021 16:11:32 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v3 1/3] btrfs: test btrfs specific fsverity corruption
+Message-ID: <YG+NpE9rDWLTvy5G@sol.localdomain>
+References: <cover.1617908086.git.boris@bur.io>
+ <6e3759825cd0134186b0d6eb8825a4ba3ed62b70.1617908086.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408120432.1063608-8-ruansy.fnst@fujitsu.com>
+In-Reply-To: <6e3759825cd0134186b0d6eb8825a4ba3ed62b70.1617908086.git.boris@bur.io>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:04:32PM +0800, Shiyang Ruan wrote:
-> Add xfs_break_two_dax_layouts() to break layout for tow dax files.  Then
-> call compare range function only when files are both DAX or not.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/xfs/xfs_file.c    | 20 ++++++++++++++++++++
->  fs/xfs/xfs_inode.c   |  8 +++++++-
->  fs/xfs/xfs_inode.h   |  1 +
->  fs/xfs/xfs_reflink.c |  5 +++--
->  4 files changed, 31 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 5795d5d6f869..1fd457167c12 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -842,6 +842,26 @@ xfs_break_dax_layouts(
->  			0, 0, xfs_wait_dax_page(inode));
->  }
->  
-> +int
-> +xfs_break_two_dax_layouts(
-> +	struct inode		*src,
-> +	struct inode		*dest)
-> +{
-> +	int			error;
-> +	bool			retry = false;
-> +
-> +retry:
-> +	error = xfs_break_dax_layouts(src, &retry);
-> +	if (error || retry)
-> +		goto retry;
-> +
-> +	error = xfs_break_dax_layouts(dest, &retry);
-> +	if (error || retry)
-> +		goto retry;
-> +
-> +	return error;
+On Thu, Apr 08, 2021 at 11:57:49AM -0700, Boris Burkov wrote:
+> +get_ino() {
+> +	file=$1
+> +	ls -i $file | awk '{print $1}'
 > +}
-> +
->  int
->  xfs_break_layouts(
->  	struct inode		*inode,
-> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> index f93370bd7b1e..c01786917eef 100644
-> --- a/fs/xfs/xfs_inode.c
-> +++ b/fs/xfs/xfs_inode.c
-> @@ -3713,8 +3713,10 @@ xfs_ilock2_io_mmap(
->  	struct xfs_inode	*ip2)
->  {
->  	int			ret;
-> +	struct inode		*inode1 = VFS_I(ip1);
-> +	struct inode		*inode2 = VFS_I(ip2);
->  
-> -	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
-> +	ret = xfs_iolock_two_inodes_and_break_layout(inode1, inode2);
->  	if (ret)
->  		return ret;
->  	if (ip1 == ip2)
-> @@ -3722,6 +3724,10 @@ xfs_ilock2_io_mmap(
->  	else
->  		xfs_lock_two_inodes(ip1, XFS_MMAPLOCK_EXCL,
->  				    ip2, XFS_MMAPLOCK_EXCL);
-> +
-> +	if (IS_DAX(inode1) && IS_DAX(inode2))
-> +		ret = xfs_break_two_dax_layouts(inode1, inode2);
 
-This is wrong on many levels.
+Please use 'local' when declaring variables in shell functions.
 
-The first problem is that xfs_break_two_dax_layouts calls
-xfs_break_dax_layouts twice even if inode1 == inode2, which is
-unnecessary.
+> +# corrupt the data portion of an inline extent
+> +corrupt_inline() {
+> +	f=$SCRATCH_MNT/inl
+> +	head -c 42 /dev/zero | tr '\0' X > $f
+> +	ino=$(get_ino $f)
+> +	_fsv_enable $f
+> +	$XFS_IO_PROG -c sync $SCRATCH_MNT
+> +	_scratch_unmount
 
-The second problem is that xfs_break_dax_layouts can cycle the MMAPLOCK
-on the inode that it's processing.  Since there are two inodes in play
-here, you must be /very/ careful about maintaining correct locking order,
-which for the MMAPLOCK is increasing order of xfs_inode.i_ino.  If you
-drop the MMAPLOCK for the lower-numbered inode for any reason, you have
-to drop both MMAPLOCKs and try again.
+Isn't the sync unnecessary because the filesystem is unmounted anyway?
 
-In other words, you have to replace all that nice MMAPLOCK code with a
-new xfs_mmaplock_two_inodes_and_break_dax_layouts function that is
-structured similarly to what xfs_iolock_two_inodes_and_break_layout
-does for the IOLOCK and PNFS layouts.
+Likewise for all the other corrupt_* functions.
 
-> +
->  	return 0;
->  }
->  
-> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> index 88ee4c3930ae..5ef21924dddc 100644
-> --- a/fs/xfs/xfs_inode.h
-> +++ b/fs/xfs/xfs_inode.h
-> @@ -435,6 +435,7 @@ enum xfs_prealloc_flags {
->  
->  int	xfs_update_prealloc_flags(struct xfs_inode *ip,
->  				  enum xfs_prealloc_flags flags);
-> +int	xfs_break_two_dax_layouts(struct inode *inode1, struct inode *inode2);
->  int	xfs_break_layouts(struct inode *inode, uint *iolock,
->  		enum layout_break_reason reason);
->  
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index a4cd6e8a7aa0..4426bcc8a985 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -29,6 +29,7 @@
->  #include "xfs_iomap.h"
->  #include "xfs_sb.h"
->  #include "xfs_ag_resv.h"
-> +#include <linux/dax.h>
+Otherwise, at a high level this test looks good -- thanks for writing it!
 
-Why is this necessary?
-
---D
-
->  
->  /*
->   * Copy on Write of Shared Blocks
-> @@ -1324,8 +1325,8 @@ xfs_reflink_remap_prep(
->  	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
->  		goto out_unlock;
->  
-> -	/* Don't share DAX file data for now. */
-> -	if (IS_DAX(inode_in) || IS_DAX(inode_out))
-> +	/* Don't share DAX file data with non-DAX file. */
-> +	if (IS_DAX(inode_in) != IS_DAX(inode_out))
->  		goto out_unlock;
->  
->  	if (!IS_DAX(inode_in))
-> -- 
-> 2.31.0
-> 
-> 
-> 
+- Eric
