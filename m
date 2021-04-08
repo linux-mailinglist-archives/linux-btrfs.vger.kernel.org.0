@@ -2,185 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9444A3581C0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Apr 2021 13:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF913582B1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Apr 2021 14:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhDHL3X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Apr 2021 07:29:23 -0400
-Received: from mout.gmx.net ([212.227.15.15]:41087 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230411AbhDHL3X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:29:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617881348;
-        bh=P6ZRuYOCOhQKChKxlMM25/b3r7o/R+S4dqRR4485goE=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=LTRldk68BQSq7oqOmR/B5acrdmts2OABtNT1uZYEIZ4cXiY5jMO/sAcSLdOLE5oOk
-         aMTnEBMG4V4U+kQNZHuGizCkiShkzEk0+Uuc0D9rFnt0QFER82J5TYsuOZaanMPlgz
-         8hAMyqnrjzW2EYSIQ+htiUyJwp3bcHjT3ZBz2B08=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M42nS-1lUSqR2xCy-0004ai; Thu, 08
- Apr 2021 13:29:08 +0200
-To:     riteshh <riteshh@linux.ibm.com>
-Cc:     Joe Hermaszewski <joe@monoid.al>, linux-btrfs@vger.kernel.org
-References: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
- <1f5cf01f-0f5e-8691-541d-efb763919577@gmx.com>
- <CA+4cVr8XEJwyccvAhfgJUZyTcjubkava_1h+9+3BggN6XpH3iA@mail.gmail.com>
- <c8e82fcd-de9d-d46f-e455-1d0542fda706@gmx.com>
- <CA+4cVr-gg89KovFG+Yso0iYjhPjnx3eMNK8qG6W1SLY2WkozdA@mail.gmail.com>
- <8315aaf6-26e9-ad0a-cc49-1a1269266485@gmx.com>
- <CA+4cVr9nWjnNbWNctd4vZaoeyqFTyG1DCSTYbrbC4A27XtDG2Q@mail.gmail.com>
- <f8a63ef3-9eaa-f5ea-e403-be81ffcf7c85@gmx.com>
- <CA+4cVr82ujZrdsmjpUPBg3W2xL4gQJwjGwvA2LTy-yj73BhGfg@mail.gmail.com>
- <d7b26dfa-d40b-43e5-07e3-67d5377f84c2@gmx.com>
- <20210408111552.tyevdsqlxhsmnt3g@riteshh-domain>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: btrfs crash on armv7
-Message-ID: <425e3531-3dd2-fb53-0b19-7e4be90b4fc3@gmx.com>
-Date:   Thu, 8 Apr 2021 19:29:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S231293AbhDHMEx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Apr 2021 08:04:53 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:24811 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229964AbhDHMEw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Apr 2021 08:04:52 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A4NSyVKlPuH4vkzq6pEU2/XbVTQ3pDfLM3DAb?=
+ =?us-ascii?q?vn1ZSRFFG/GwvcaogfgdyFvImC8cMUtQ/eyoFYuhZTfn9ZBz6ZQMJrvKZmTbkU?=
+ =?us-ascii?q?ahMY0K1+Xf6hLtFyD0/uRekYdMGpIVNPTeFl5/5Pya3CCdM/INhOaK67qpg+C2?=
+ =?us-ascii?q?9QYJcShPZ7t75wl0Tia3e3cGJzVuPpYyGJqC6scvnVPJFkg/VNixBXUOQoH41r?=
+ =?us-ascii?q?/2va/hCCRnOzcXrCGKjR6NrIXxCgWk2H4lOA9n8PMP9nfknmXCipmejw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,206,1613404800"; 
+   d="scan'208";a="106797245"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 08 Apr 2021 20:04:39 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id BF9744CEA876;
+        Thu,  8 Apr 2021 20:04:35 +0800 (CST)
+Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 8 Apr 2021 20:04:36 +0800
+Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
+ G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 8 Apr 2021 20:04:35 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Thu, 8 Apr 2021 20:04:34 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
+        <linux-btrfs@vger.kernel.org>, <david@fromorbit.com>, <hch@lst.de>,
+        <rgoldwyn@suse.de>
+Subject: [PATCH v4 0/7] fsdax,xfs: Add reflink&dedupe support for fsdax
+Date:   Thu, 8 Apr 2021 20:04:25 +0800
+Message-ID: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210408111552.tyevdsqlxhsmnt3g@riteshh-domain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DerqhyBBQoth65qhgSteckwM0SAR5a4ObdS1hMfbafdzM92XX3S
- ipC7lpsvTB5pVrc4yTA/yxa5Fpy1RoVXKDXE2CQ7lcvcFkFtGJsWPOvuxKn9aMJcJy0oORF
- WD8TFNGz/BORIB366Cp+DJ2UBjb72X4I+krDRP88Mcs4liWfKBBti2S7L9tvz456e2ykcd+
- 6ObwoZaafv9IyWBUnwPvw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rCChCQsscQ8=:UGNGERJIhUcKZ4mI7EC8mn
- ST6szA2FRZGcFq8jk7lG0+015OI/MGHZlkSgOOhLzYPKlwlRyYuOjNMsr+TCQJqCFo+olnVh3
- lCobOzvErugQhd7pallvbMTUmbBVFdyDtAhHMxg1KirG7zUb7jcaRvP8W9f6Ycu84iZnuIn9f
- e/3BA6gzjHGX89ZgwgGYM/qN0eUp4RY1s8lLPvTX0tOwRKV9txTQVoTqeA2KCt66/r4+MsFh0
- m7woHckDzwWjNsPBJD7WmiGuJu1MkzOG/LEMoDGlNYGQruOWf65HAFTcc6/owdEB7fHILQyqD
- edFaPrvuVVeYEiOUrWNU72xR2ZDqsKDNOe74g/gTtQHgbQqCv1U3CWfv8GgGOlxisnws5eg/Y
- +wa4WGx1pzMvcl234LkhhrbySDEr0MfUA2XS8CTM3Vu0q8EKY/eIwurpKZse/dlyYeu1GqoPb
- mXT4OOpMDI6wvd2pa/kkCidjBLP3GnDcZTq3FQlMekro/a/EcIJmtOiYnCJo5zrcudNzC+Su2
- UC8+/j3xTcG9Cjs2VhatrsqmrNTeFMsU6ODAMFyyOY/ADQOlykyh/nLxl/MH3ZagGxcRmFTu7
- ZVQJtwRfzkd/8AbdcPbgGQ0/62Exm38amBqhM/ybvOXeifSbn5KsG3ZLQk+0ytADbjKmcab5s
- KT3Sv+EVSEvtKSi1PFlSfMqSGCa5G+qHGbRiO7T/H23IWACYh3q6Nkt4kJtMgPRUgoiVLFvbD
- Gq2lVeUM86YA4WbWcoCrzYEcNlR8sK7Bwa8ShuEn987FI79AUhAje5PBW9g32IXAZoe54Hia2
- hVgyfWQkC2Hn4PaHZG6CMADA0ccNc3gwXRCYc9frHI6BOeg7pr8PdPhyYl3ETM4PXqSEW5b1Y
- fMGUZ0mf1KMxRuOV6bp8qLPCsl2zOQKWF2P+97ZKOn+UJK7e3xkyV53gtkvuRXh4XIhVsSYhx
- aPhRVhbgOWgEkm9EAhRiVoWZykn7HkNV2Wh5GeMI4gk0MxZ0SlQvVCawcLj75MfpjHGYqQNss
- Bw6FLLBKbSQiychCIo0zv3/C7xziW56797KawQKDiBDH1nXhx0qTHWhT+MTb1m7VG4RBs4amO
- dn7R/wqFw5eH+RQthG9WavqK0/UgP60mgpbrVd27eGlSTaUDkt5quAJAJxxfGpU5rhCdinkLC
- 48Nd9v8YmHPicJbqLehxJ7uevEs2bN6bn/zJikXbE17Pd4rY5rD8tTvaTzsyU6sSgezWQb9SP
- WxJqIWz0w2oiN6CJH
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: BF9744CEA876.A4371
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This patchset is attempt to add CoW support for fsdax, and take XFS,
+which has both reflink and fsdax feature, as an example.
+
+Changes from V3:
+ - Take out the first 3 patches as a cleanup patchset[1], which has been
+    sent yesterday.
+ - Fix usage of code in dax_iomap_cow_copy()
+ - Add comments for macro definitions
+ - Fix other code style problems and mistakes
+
+Changes from V2:
+ - Fix the mistake in iomap_apply2() and dax_dedupe_file_range_compare()
+ - Add CoW judgement in dax_iomap_zero()
+ - Fix other code style problems and mistakes
+
+Changes from V1:
+ - Factor some helper functions to simplify dax fault code
+ - Introduce iomap_apply2() for dax_dedupe_file_range_compare()
+ - Fix mistakes and other problems
+ - Rebased on v5.11
+
+One of the key mechanism need to be implemented in fsdax is CoW.  Copy
+the data from srcmap before we actually write data to the destance
+iomap.  And we just copy range in which data won't be changed.
+
+Another mechanism is range comparison.  In page cache case, readpage()
+is used to load data on disk to page cache in order to be able to
+compare data.  In fsdax case, readpage() does not work.  So, we need
+another compare data with direct access support.
+
+With the two mechanism implemented in fsdax, we are able to make reflink
+and fsdax work together in XFS.
+
+Some of the patches are picked up from Goldwyn's patchset.  I made some
+changes to adapt to this patchset.
 
 
-On 2021/4/8 =E4=B8=8B=E5=8D=887:15, riteshh wrote:
->
-> Please excuse my silly queries here.
->
-> On 21/04/08 04:38PM, Qu Wenruo wrote:
->>
->>
->> On 2021/4/8 =E4=B8=8B=E5=8D=884:16, Joe Hermaszewski wrote:
->>> It took a while but I managed to get hold of another one of these
->>> arm32 boards. Very disappointingly this exact "bitflip" is still
->>> present (log enclosed).
->>
->> Yeah, we got to the conclusion it's not bitflip, but completely 32bit
->> limit on armv7.
->>
->> For ARMv7, it's a 32bit system, where unsigned long is only 32bit.
->>
->> This means, things like page->index is only 32bit long, and for 4K page
->> size, it also means all filesystems (not only btrfs) can only utilize a=
-t
->> most 16T bytes.
->>
->> But there is pitfall for btrfs, btrfs uses its internal address space
->> for its meatadata, and the address space is U64.
->
-> Can you pls point me to the code you are referring here?
-> So IIUC, you mean since page->index can hold a value which can be upto 3=
-2bit in
-> size so the maximum FS address range which can be accessed is 16T.
-> This should be true in general for any FS no?
+(Rebased on v5.12-rc5 and patchset[1])
+
+[1]: https://lore.kernel.org/linux-xfs/20210407133823.828176-1-ruansy.fnst@fujitsu.com/
+==
+
+Shiyang Ruan (7):
+  fsdax: Introduce dax_iomap_cow_copy()
+  fsdax: Replace mmap entry in case of CoW
+  fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+  iomap: Introduce iomap_apply2() for operations on two files
+  fsdax: Dedup file range to use a compare function
+  fs/xfs: Handle CoW for fsdax write() path
+  fs/xfs: Add dedupe support for fsdax
+
+ fs/dax.c               | 202 +++++++++++++++++++++++++++++++++++------
+ fs/iomap/apply.c       |  52 +++++++++++
+ fs/iomap/buffered-io.c |   2 +-
+ fs/remap_range.c       |  45 +++++++--
+ fs/xfs/xfs_bmap_util.c |   3 +-
+ fs/xfs/xfs_file.c      |  29 ++++--
+ fs/xfs/xfs_inode.c     |   8 +-
+ fs/xfs/xfs_inode.h     |   1 +
+ fs/xfs/xfs_iomap.c     |  58 +++++++++++-
+ fs/xfs/xfs_iomap.h     |   4 +
+ fs/xfs/xfs_iops.c      |   7 +-
+ fs/xfs/xfs_reflink.c   |  17 ++--
+ include/linux/dax.h    |   7 +-
+ include/linux/fs.h     |  12 ++-
+ include/linux/iomap.h  |   7 +-
+ 15 files changed, 393 insertions(+), 61 deletions(-)
+
+-- 
+2.31.0
 
 
-The code is in definition of "struct page",from "include/linux/mm_types.h"
 
-Yes, for all fs.
-
-But no other fs has another internal address space, unlike btrfs.
-
-Btrfs uses its internal space to implement multi-device support.
-
->
->>
->> And furthermore, for btrfs it can have metadata at bytenr way larger
->> than the total device size.
->
-> Is this because of multi-device support?
-
-Yes.
-
->
->> This is possible because btrfs maps part of its address space to real
->> disks, thus it can have bytenr way larger than device size.
->
-> Please a code pointing to that will help me understand this better.
-> Thanks.
-
-You need to understand btrfs chunk tree first.
-
-Each btrfs chunk item is a mapping from btrfs logical address to each
-real device.
-
-The easiest way to understand it is not code, but "btrfs ins dump-tree
--t chunk <device>" to experience it by yourself.
-
->
->>
->> But this brings to a problem, 32bit Linux can only handle 16T, but in
->> your case, some of your metadata is already beyond 16T in btrfs address
->> space.
->
-> Sorry I am not much aware of the history. Was this disk mkfs on 64-bit s=
-ystem
-> and then connected to a 32bit board?
-
-Possible.
-
-But there are other cases to go beyond that limit, especially with balance=
-.
-
-So I'm not confident enough to say what's the exact event to make the fs
-cross the line.
-
->
-> This also brings me to check with you about other filesystems.
-> See the capacity section from below wiki[1]. Depending upon the host OS
-> limitation on the max size of the filesystem may vary right?
->
-> [1] https://en.wikipedia.org/wiki/XFS
-
-The last time Dave Chineer said, for xfs larger than 16T, 32bit kernel
-will just refuse to mount.
-
-Thanks,
-Qu
-
->
-> -ritesh
->
->>
->> Then a lot of things are going to be wrong.
->>
->> I have submitted a patch to do extra check, at least allowing user to
->> know this is the limit of 32bit:
->> https://patchwork.kernel.org/project/linux-btrfs/patch/20210225011814.2=
-4009-1-wqu@suse.com/
->>
->> Unfortunately, this will not help existing fs though.
->>
