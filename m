@@ -2,65 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED54F358179
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Apr 2021 13:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9444A3581C0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Apr 2021 13:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhDHLQM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Apr 2021 07:16:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34092 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230322AbhDHLQL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Apr 2021 07:16:11 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138B4JkJ080101;
-        Thu, 8 Apr 2021 07:15:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=x/9irr/XndPno8Kd/qXxbVNeDaWo+EKVrZIHwb7msZ0=;
- b=AzYW8RXS3C5KaZMCC6Vwf3ORhB62tThP5h/pYP14pNsHIY4bQYgwjDqbd4eR7iZb8iDt
- Q56/GDrhTJ9qoyudn8VrmiJD+LMDA59Nog3+eWZrHjfKHmYkKIwget1rMP/YZ0AXDP7H
- FV9D6T0SuZa/qxBF1WYacgoNPDS2xzm9of0HKbqbvl3Dd8MArbxLDUYzQsJL3npgSupM
- 2kP/R4buwcvYXgt8xWRrTWDQJInWqtX9+jHswIemakFTAMwEvRlcrZ6eTHMHIsAY1/Zv
- jX1cI06ayI4WZq4tSG6oRGE2C1JrhHzrwuy1vz0snUcIVd1V587IuHIWO//IVMOt4lmz aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37rvy84qfh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 07:15:58 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 138B4JEX080146;
-        Thu, 8 Apr 2021 07:15:58 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37rvy84qet-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 07:15:57 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 138BBPuq012613;
-        Thu, 8 Apr 2021 11:15:56 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 37rvbu9h4g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 11:15:56 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 138BFrOc39911920
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Apr 2021 11:15:54 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7D6DA405F;
-        Thu,  8 Apr 2021 11:15:53 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 856FCA405B;
-        Thu,  8 Apr 2021 11:15:53 +0000 (GMT)
-Received: from localhost (unknown [9.85.70.102])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  8 Apr 2021 11:15:53 +0000 (GMT)
-Date:   Thu, 8 Apr 2021 16:45:52 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S230434AbhDHL3X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Apr 2021 07:29:23 -0400
+Received: from mout.gmx.net ([212.227.15.15]:41087 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230411AbhDHL3X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 8 Apr 2021 07:29:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617881348;
+        bh=P6ZRuYOCOhQKChKxlMM25/b3r7o/R+S4dqRR4485goE=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=LTRldk68BQSq7oqOmR/B5acrdmts2OABtNT1uZYEIZ4cXiY5jMO/sAcSLdOLE5oOk
+         aMTnEBMG4V4U+kQNZHuGizCkiShkzEk0+Uuc0D9rFnt0QFER82J5TYsuOZaanMPlgz
+         8hAMyqnrjzW2EYSIQ+htiUyJwp3bcHjT3ZBz2B08=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M42nS-1lUSqR2xCy-0004ai; Thu, 08
+ Apr 2021 13:29:08 +0200
+To:     riteshh <riteshh@linux.ibm.com>
 Cc:     Joe Hermaszewski <joe@monoid.al>, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs crash on armv7
-Message-ID: <20210408111552.tyevdsqlxhsmnt3g@riteshh-domain>
 References: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
  <1f5cf01f-0f5e-8691-541d-efb763919577@gmx.com>
  <CA+4cVr8XEJwyccvAhfgJUZyTcjubkava_1h+9+3BggN6XpH3iA@mail.gmail.com>
@@ -71,88 +34,153 @@ References: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
  <f8a63ef3-9eaa-f5ea-e403-be81ffcf7c85@gmx.com>
  <CA+4cVr82ujZrdsmjpUPBg3W2xL4gQJwjGwvA2LTy-yj73BhGfg@mail.gmail.com>
  <d7b26dfa-d40b-43e5-07e3-67d5377f84c2@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d7b26dfa-d40b-43e5-07e3-67d5377f84c2@gmx.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Ddv6BQMqlBZ216OHlibYVcH0Ovw5XGSQ
-X-Proofpoint-ORIG-GUID: Tq_Bg5RPEmGPTcoNxtPLJtMqWdbry9Qc
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ <20210408111552.tyevdsqlxhsmnt3g@riteshh-domain>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: btrfs crash on armv7
+Message-ID: <425e3531-3dd2-fb53-0b19-7e4be90b4fc3@gmx.com>
+Date:   Thu, 8 Apr 2021 19:29:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-08_02:2021-04-08,2021-04-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 clxscore=1011 adultscore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104080075
+In-Reply-To: <20210408111552.tyevdsqlxhsmnt3g@riteshh-domain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DerqhyBBQoth65qhgSteckwM0SAR5a4ObdS1hMfbafdzM92XX3S
+ ipC7lpsvTB5pVrc4yTA/yxa5Fpy1RoVXKDXE2CQ7lcvcFkFtGJsWPOvuxKn9aMJcJy0oORF
+ WD8TFNGz/BORIB366Cp+DJ2UBjb72X4I+krDRP88Mcs4liWfKBBti2S7L9tvz456e2ykcd+
+ 6ObwoZaafv9IyWBUnwPvw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rCChCQsscQ8=:UGNGERJIhUcKZ4mI7EC8mn
+ ST6szA2FRZGcFq8jk7lG0+015OI/MGHZlkSgOOhLzYPKlwlRyYuOjNMsr+TCQJqCFo+olnVh3
+ lCobOzvErugQhd7pallvbMTUmbBVFdyDtAhHMxg1KirG7zUb7jcaRvP8W9f6Ycu84iZnuIn9f
+ e/3BA6gzjHGX89ZgwgGYM/qN0eUp4RY1s8lLPvTX0tOwRKV9txTQVoTqeA2KCt66/r4+MsFh0
+ m7woHckDzwWjNsPBJD7WmiGuJu1MkzOG/LEMoDGlNYGQruOWf65HAFTcc6/owdEB7fHILQyqD
+ edFaPrvuVVeYEiOUrWNU72xR2ZDqsKDNOe74g/gTtQHgbQqCv1U3CWfv8GgGOlxisnws5eg/Y
+ +wa4WGx1pzMvcl234LkhhrbySDEr0MfUA2XS8CTM3Vu0q8EKY/eIwurpKZse/dlyYeu1GqoPb
+ mXT4OOpMDI6wvd2pa/kkCidjBLP3GnDcZTq3FQlMekro/a/EcIJmtOiYnCJo5zrcudNzC+Su2
+ UC8+/j3xTcG9Cjs2VhatrsqmrNTeFMsU6ODAMFyyOY/ADQOlykyh/nLxl/MH3ZagGxcRmFTu7
+ ZVQJtwRfzkd/8AbdcPbgGQ0/62Exm38amBqhM/ybvOXeifSbn5KsG3ZLQk+0ytADbjKmcab5s
+ KT3Sv+EVSEvtKSi1PFlSfMqSGCa5G+qHGbRiO7T/H23IWACYh3q6Nkt4kJtMgPRUgoiVLFvbD
+ Gq2lVeUM86YA4WbWcoCrzYEcNlR8sK7Bwa8ShuEn987FI79AUhAje5PBW9g32IXAZoe54Hia2
+ hVgyfWQkC2Hn4PaHZG6CMADA0ccNc3gwXRCYc9frHI6BOeg7pr8PdPhyYl3ETM4PXqSEW5b1Y
+ fMGUZ0mf1KMxRuOV6bp8qLPCsl2zOQKWF2P+97ZKOn+UJK7e3xkyV53gtkvuRXh4XIhVsSYhx
+ aPhRVhbgOWgEkm9EAhRiVoWZykn7HkNV2Wh5GeMI4gk0MxZ0SlQvVCawcLj75MfpjHGYqQNss
+ Bw6FLLBKbSQiychCIo0zv3/C7xziW56797KawQKDiBDH1nXhx0qTHWhT+MTb1m7VG4RBs4amO
+ dn7R/wqFw5eH+RQthG9WavqK0/UgP60mgpbrVd27eGlSTaUDkt5quAJAJxxfGpU5rhCdinkLC
+ 48Nd9v8YmHPicJbqLehxJ7uevEs2bN6bn/zJikXbE17Pd4rY5rD8tTvaTzsyU6sSgezWQb9SP
+ WxJqIWz0w2oiN6CJH
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-Please excuse my silly queries here.
 
-On 21/04/08 04:38PM, Qu Wenruo wrote:
+On 2021/4/8 =E4=B8=8B=E5=8D=887:15, riteshh wrote:
 >
+> Please excuse my silly queries here.
 >
-> On 2021/4/8 下午4:16, Joe Hermaszewski wrote:
-> > It took a while but I managed to get hold of another one of these
-> > arm32 boards. Very disappointingly this exact "bitflip" is still
-> > present (log enclosed).
+> On 21/04/08 04:38PM, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/4/8 =E4=B8=8B=E5=8D=884:16, Joe Hermaszewski wrote:
+>>> It took a while but I managed to get hold of another one of these
+>>> arm32 boards. Very disappointingly this exact "bitflip" is still
+>>> present (log enclosed).
+>>
+>> Yeah, we got to the conclusion it's not bitflip, but completely 32bit
+>> limit on armv7.
+>>
+>> For ARMv7, it's a 32bit system, where unsigned long is only 32bit.
+>>
+>> This means, things like page->index is only 32bit long, and for 4K page
+>> size, it also means all filesystems (not only btrfs) can only utilize a=
+t
+>> most 16T bytes.
+>>
+>> But there is pitfall for btrfs, btrfs uses its internal address space
+>> for its meatadata, and the address space is U64.
 >
-> Yeah, we got to the conclusion it's not bitflip, but completely 32bit
-> limit on armv7.
->
-> For ARMv7, it's a 32bit system, where unsigned long is only 32bit.
->
-> This means, things like page->index is only 32bit long, and for 4K page
-> size, it also means all filesystems (not only btrfs) can only utilize at
-> most 16T bytes.
->
-> But there is pitfall for btrfs, btrfs uses its internal address space
-> for its meatadata, and the address space is U64.
+> Can you pls point me to the code you are referring here?
+> So IIUC, you mean since page->index can hold a value which can be upto 3=
+2bit in
+> size so the maximum FS address range which can be accessed is 16T.
+> This should be true in general for any FS no?
 
-Can you pls point me to the code you are referring here?
-So IIUC, you mean since page->index can hold a value which can be upto 32bit in
-size so the maximum FS address range which can be accessed is 16T.
-This should be true in general for any FS no?
 
->
-> And furthermore, for btrfs it can have metadata at bytenr way larger
-> than the total device size.
+The code is in definition of "struct page",from "include/linux/mm_types.h"
 
-Is this because of multi-device support?
+Yes, for all fs.
 
-> This is possible because btrfs maps part of its address space to real
-> disks, thus it can have bytenr way larger than device size.
+But no other fs has another internal address space, unlike btrfs.
 
-Please a code pointing to that will help me understand this better.
-Thanks.
-
->
-> But this brings to a problem, 32bit Linux can only handle 16T, but in
-> your case, some of your metadata is already beyond 16T in btrfs address
-> space.
-
-Sorry I am not much aware of the history. Was this disk mkfs on 64-bit system
-and then connected to a 32bit board?
-
-This also brings me to check with you about other filesystems.
-See the capacity section from below wiki[1]. Depending upon the host OS
-limitation on the max size of the filesystem may vary right?
-
-[1] https://en.wikipedia.org/wiki/XFS
-
--ritesh
+Btrfs uses its internal space to implement multi-device support.
 
 >
-> Then a lot of things are going to be wrong.
+>>
+>> And furthermore, for btrfs it can have metadata at bytenr way larger
+>> than the total device size.
 >
-> I have submitted a patch to do extra check, at least allowing user to
-> know this is the limit of 32bit:
-> https://patchwork.kernel.org/project/linux-btrfs/patch/20210225011814.24009-1-wqu@suse.com/
+> Is this because of multi-device support?
+
+Yes.
+
 >
-> Unfortunately, this will not help existing fs though.
+>> This is possible because btrfs maps part of its address space to real
+>> disks, thus it can have bytenr way larger than device size.
 >
+> Please a code pointing to that will help me understand this better.
+> Thanks.
+
+You need to understand btrfs chunk tree first.
+
+Each btrfs chunk item is a mapping from btrfs logical address to each
+real device.
+
+The easiest way to understand it is not code, but "btrfs ins dump-tree
+-t chunk <device>" to experience it by yourself.
+
+>
+>>
+>> But this brings to a problem, 32bit Linux can only handle 16T, but in
+>> your case, some of your metadata is already beyond 16T in btrfs address
+>> space.
+>
+> Sorry I am not much aware of the history. Was this disk mkfs on 64-bit s=
+ystem
+> and then connected to a 32bit board?
+
+Possible.
+
+But there are other cases to go beyond that limit, especially with balance=
+.
+
+So I'm not confident enough to say what's the exact event to make the fs
+cross the line.
+
+>
+> This also brings me to check with you about other filesystems.
+> See the capacity section from below wiki[1]. Depending upon the host OS
+> limitation on the max size of the filesystem may vary right?
+>
+> [1] https://en.wikipedia.org/wiki/XFS
+
+The last time Dave Chineer said, for xfs larger than 16T, 32bit kernel
+will just refuse to mount.
+
+Thanks,
+Qu
+
+>
+> -ritesh
+>
+>>
+>> Then a lot of things are going to be wrong.
+>>
+>> I have submitted a patch to do extra check, at least allowing user to
+>> know this is the limit of 32bit:
+>> https://patchwork.kernel.org/project/linux-btrfs/patch/20210225011814.2=
+4009-1-wqu@suse.com/
+>>
+>> Unfortunately, this will not help existing fs though.
+>>
