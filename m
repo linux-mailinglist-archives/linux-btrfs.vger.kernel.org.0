@@ -2,330 +2,883 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE637357AB4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Apr 2021 05:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62BB357DF7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Apr 2021 10:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhDHDWO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Apr 2021 23:22:14 -0400
-Received: from esa19.fujitsucc.c3s2.iphmx.com ([216.71.158.62]:1441 "EHLO
-        esa19.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229510AbhDHDWN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 7 Apr 2021 23:22:13 -0400
-IronPort-SDR: caNgbh3nz0oLKZ66KdNyNoDbHvwNAgJ0NlabsM7fb3BQkDXR1PS9aadInfWLSBp8Vm/xOK23Ub
- uCv7XxG6raOkDqBm29mrxIRmwzrslLXLrXKValE79vmcDCEljyfEY/iri6NwPSoXqTJCRgg3DW
- w3FqZHhB+bvSuQM3OTvo/IATm+nSjvCpAF0VRW6C75WIcPAPQfC+N7QCa5Im2ADPzrTEcT9R5Q
- FpJu9I6K2od5962qalQKq+IucXi5Qv+AMbog/lTE5M+Ll+EeFIK/3eG8/KkyeyKL7MPp7uUxHH
- HGg=
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="29046577"
-X-IronPort-AV: E=Sophos;i="5.82,205,1613401200"; 
-   d="scan'208";a="29046577"
-Received: from mail-ty1jpn01lp2053.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.53])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 12:21:56 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ioz7fTclyMv8BabgaIs/Su60CsD6oDIvxIQdHroVv5pdYUA+/4N0MeyOrX2Ug7Zj2R/NXw3l4aGQaDlsNjbShbP6PfhUVPlspRvaq0zsPE8b1dEzZ4U7j4GF5EtrP5HW7TpzuwA4ijWe+3JbMOg++8j5IbswliU/FjGoLcNTqdKrzPJG6t9FSP3kGDLh9EuxDkYQfW0KErNCTRGRMww1NHDwV50O7gq8zZ0U8t4SUQG2tcJLTEKCKF+qH4VbAyyscVVoxZrSvblUs7lCwxu/S7OLPBCIo+jSQo9U72oWTCVxX8qqbkj5P9P9tjQkaHJ/pLzNSrS0oecHIqttJNzFww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2G4U9sk4VEpOveNCXolTsaOBVCwO0F/AdzrJAxbyFDg=;
- b=ZSL/yHhhWd2VK/S8uV1LntVMyP1Ic/Y5M9xZ9JFyeCQvmRBg6K7rBeoy/u67rfD1jQjyWzDcJd/NF28fkPosf1ErU0AJNWyUJcF9XlEBAD1t3DlNV9LWdM0/Pt58+CDNK/bFrc7EoSNb9S4w9JS4kHrRWd89hn/WzbIdshNNISsoVKnJBjq1QZ8jj3YRX2yzQOe1S2gLxzO2vIbUcyiThyAHZ/q/726AatIJDnDcux95iKLmZAGzQkpBhuzyi3tzzOGkN9RVk+UaF/jS0ssyxepQFZ9DI+z0y14f3xw17nwIqpIH/TTbfrf+OAJWcMI4KBbC9BcnnH28y6A6c0MDIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2G4U9sk4VEpOveNCXolTsaOBVCwO0F/AdzrJAxbyFDg=;
- b=TRhsc7o4UB45FQZNC2yM78cjuoCIja0GdT6sIiUSU8326blWJo3Havx7XXS5HbX0PpoN9apn6Ubehl2ycNcwZHHZ3q4QOoLthSfhDphIwhTwuSPg9VsYRDwF8K/+husj7SJ9eY6tm6M7airSyj5xJYxA1zGOeywWafBPRfBkt3A=
-Received: from TY2PR01MB2921.jpnprd01.prod.outlook.com (2603:1096:404:75::14)
- by TYCPR01MB6557.jpnprd01.prod.outlook.com (2603:1096:400:ab::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Thu, 8 Apr
- 2021 03:21:53 +0000
-Received: from TY2PR01MB2921.jpnprd01.prod.outlook.com
- ([fe80::e4ef:b5e8:6e7c:ee89]) by TY2PR01MB2921.jpnprd01.prod.outlook.com
- ([fe80::e4ef:b5e8:6e7c:ee89%6]) with mapi id 15.20.3999.034; Thu, 8 Apr 2021
- 03:21:53 +0000
-From:   "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-To:     Ritesh Harjani <ritesh.list@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: RE: [PATCH v3 08/10] fsdax: Dedup file range to use a compare
- function
-Thread-Topic: [PATCH v3 08/10] fsdax: Dedup file range to use a compare
- function
-Thread-Index: AQHXHGLCkg6dUIPK4kKi6Usidu8iSKqflrYAgAp3LYA=
-Date:   Thu, 8 Apr 2021 03:21:53 +0000
-Message-ID: <TY2PR01MB2921EBF98C2AC2900799FB85F4749@TY2PR01MB2921.jpnprd01.prod.outlook.com>
-References: <20210319015237.993880-1-ruansy.fnst@fujitsu.com>
- <20210319015237.993880-9-ruansy.fnst@fujitsu.com>
- <20210401111120.2ukog26aoyvyysyz@riteshh-domain>
-In-Reply-To: <20210401111120.2ukog26aoyvyysyz@riteshh-domain>
-Accept-Language: en-US, zh-CN
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fujitsu.com;
-x-originating-ip: [180.96.28.100]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fe7e6042-e563-44a6-711e-08d8fa3d7527
-x-ms-traffictypediagnostic: TYCPR01MB6557:
-x-microsoft-antispam-prvs: <TYCPR01MB6557E59B32D8D0350178C29AF4749@TYCPR01MB6557.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jIHY3kfk21NG6iYaK/vNJm7XR27M46EOAfzJ+dLIwg6pYs5m7FWu2vxEaYB5KknTA1ham+FM27iW/3PhOMNT/NCoRTLne5bbriGeBYaEARUP7Mi7ezer2wBC6MZXkaGzNmPW+1qhH//NktDStR05rHolN4NDPHP5RP53T7ypofG3kfZydhT9e/enGXvc/Rr510tx6AF2vBN2YyDmOnLVyWAeBKZYDVlv1TTf49husJp3X9pI8eJNzNdD8tHdebLPCXsbezGnEwPQwe8eVS4EPuFnF/P7uEqnQ/GT9iQnQT8oHMmMZKJFjDOLQqkPo6tgFXf5U6qDjt4HuN+rZLVOxo0aY7gqtRuUk+hK0u+T32shfh6Okwk5nLKyi0Trbh0BPeH/EBXL8rTm/tPpMZgBkAdW+9H8yTtTw7ximzK0mF6cPfqCqxrgBXhEmdcwzA53St3tImp5ySdbeeQ7rN+M76avWtD+v5Nj7pL+m8bWrnJTR1Y4EoXko5rilj9OmFZsj9//M3sPE7BusibmIKTqava0CCENWKhcgICzUZOtzFpYSEZLXgNRTM7qVkMJTJGRR8THApCxLW04cd95g9QyHuNNO2TMZMw35Ekckkei8zkpUFyo9M5fLEhw6nfX5fee1uU1iNjhnYXtovavDQL56EtLQurKmieooeVTQmxMNVw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB2921.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(39860400002)(346002)(396003)(86362001)(66446008)(66476007)(9686003)(66946007)(6916009)(64756008)(4326008)(26005)(66556008)(76116006)(38100700001)(55016002)(316002)(54906003)(5660300002)(71200400001)(85182001)(8936002)(33656002)(52536014)(186003)(7416002)(7696005)(2906002)(83380400001)(6506007)(478600001)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?cGxMWFVkSkdET05Oemh1TnZZWjVmNW04aWxSbWFKN3pVS3hmQWdEUnc0Z3BV?=
- =?gb2312?B?NkdYWjl0cEQ0OWVJNWpEdldlakpEU1JqU042SXF5NllvRzMvcmM2azBXN0Jk?=
- =?gb2312?B?WXhHWGxGNTMzQnpidFBIdE5zdTVMSHYzZmw5bnAzS2Q2WHR0Nm91T2xtb2hD?=
- =?gb2312?B?c3dpUlJ1ZGlQem9SQmZaVFRnNnlvc0cvcTJCOEMxQUplWDcxRlVmV0NhdHNq?=
- =?gb2312?B?TzlxMm12QzZ0UEp3ai94REh6Z3NQVGVFMi93QjBIdVVNNmNYclg5SzgveUM5?=
- =?gb2312?B?YXJwLzJHYVhyZ2JDSXZPOHdYektySDkvL3RSUDBOUVB5ZDBzRzF2am9WYmFL?=
- =?gb2312?B?VDlJdUtwNFBMMjRKeDJhNWxFTjg5Ny9ibVlYUkorc0gvVE85QmNpemFtMEx1?=
- =?gb2312?B?ZDk1Y0FhS080SmQvTTZQNXV2NUxWWGRaMTlVR09xRFVoUjZ5Q1o2V1NUWDQy?=
- =?gb2312?B?VkVsZnkrblJZbUpUTG5TSE1xR3cydUw0SFBrdmNIWi95cUN6V2NaWXpkS056?=
- =?gb2312?B?MythSFZWdG1zS29sdzFMWDJBckVPMmk1THNxSFdNSkZOUTlsbXpTVnFTemIx?=
- =?gb2312?B?WWVzOFRKNi91QWJrejZ5OWVKNE9EWHFYNGt4NFFLWDVCNEJYbVFNL1dPY3FB?=
- =?gb2312?B?R3BjOWMwT215WXk4R1FVRFVXeTRqKys3Qjg5bEZsYTNSQVRHMWJON1NoMkx2?=
- =?gb2312?B?KzRFV1E2NXdnRzlyQ25mNmFPc2hGeCtEWHIrYUk4NzhHOTFKdmJ5OVR0MEUy?=
- =?gb2312?B?R1pacEFJWUFYVFcyM3ZjcUtJNDNQSXl5Q2JuT2NMUHlWb01aMDhKOXNTRnBm?=
- =?gb2312?B?SEh4MnhRUmNpTGQ0Q20rMzdTdk5MSmFtb0oycnlEbzhpbWpOQzhNQkR1TVBD?=
- =?gb2312?B?RExVRmUyZWJPUEpoQ01qTTFaSjVETlU1TitwSU9tTnVvc0QzMTd1eTU3Zmxj?=
- =?gb2312?B?M0d4a0JpL041UzExNTkrWDBkdWVhUi9uR015MXg4OENZTzIvUjU5Qmd4QWk5?=
- =?gb2312?B?MkJ0SHNLN1h3cEgvejUvQm52Y2E0TVR5TnBaV0tab3A4TkJpRHlRQWIwanpp?=
- =?gb2312?B?c3pObFZPWmR0aVEybTVKdVc3YTFEbGZBd0YzdFJESXo1SGd3aTRYSFpyWVFW?=
- =?gb2312?B?R3Y1c3F5eW50U1VKQzlYSzdjUWVwajR3VzZnUXRlUGxNUy9DQ1BCOThHSnJM?=
- =?gb2312?B?S2VxdmRQa1REVWdZbWl6WE5ab1ZsRzZrRWc5YjdPK0dycm9hRCs4anNnK2Rs?=
- =?gb2312?B?SjFHNGg4Rk5FK2F5YnMvMnhaKzJPTGlueG5UcXdmMnpveG1vTFlYK3FoK1JZ?=
- =?gb2312?B?Z1IvdnJmQVZYSEFRaURYQ0wyaDZ2bHJ5NS9RRzVWb3pLVURYci9md2RBNWhz?=
- =?gb2312?B?MVZzaGdoVHZMV2xUS2ZGTlZLaExqTkRQdWxveXg4b0tteWRiTEhXL00xbGR1?=
- =?gb2312?B?Q2FINkd5bkZLVWowcWxVVjdTOUFYbjBzMTFzbURPZ1pzN2pLUEtzN0dsbUM3?=
- =?gb2312?B?SWxIS0t3OFRrVTBzczRpQXpHSDZiRHE0b01uMDZzbzQza21UZmNxV3BDeTVt?=
- =?gb2312?B?aEQxdjQ1T1pLbGJ3WUlLV2NqdEV0cUZvZmxpUC96V3d2NjluRGI2dncxK0E4?=
- =?gb2312?B?YnRDdThZUGNzSHNJaU9rU05XOHpEa0U4eVNjc01HWXIrVVRhdnJPL0FXaCtW?=
- =?gb2312?B?WVdjcE5nOE5IWjIwMHhLZWpxY25YcGZwT1ZoLzQ0cnhlQmVSeEVTQ2N6MzVH?=
- =?gb2312?Q?f8AaHyEtqoaU8G9C/cXouR0l0eDxwOp2cwQa+mr?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S229689AbhDHIWI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Apr 2021 04:22:08 -0400
+Received: from so254-5.mailgun.net ([198.61.254.5]:33937 "EHLO
+        so254-5.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhDHIWE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Apr 2021 04:22:04 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Apr 2021 04:22:04 EDT
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=monoid.al; q=dns/txt; s=mx;
+ t=1617870111; h=Content-Transfer-Encoding: Content-Type: Cc: To:
+ Subject: Message-ID: Date: From: In-Reply-To: References: MIME-Version:
+ Sender; bh=am5yb5gTNw9zBwjM4Z6xs7HSVDuEhAoXPcOI1pb6b28=; b=BLvQnrAZoDQpui5ftItDqwv6ip+Vos99QZSQvmasNwHkCVI7HcDk8xtZsyD+iAul96vcOo5a
+ xkuNFeqB4dp0/oGmxKQRk0HfCZxpzS6Dxv3OQocREyITI27AKhp/8mSVISv7CXzgTnvojWnw
+ jqScqs7BAoYtKRjfRhvF73wdCd8=
+X-Mailgun-Sending-Ip: 198.61.254.5
+X-Mailgun-Sid: WyJiMGVhZCIsICJsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmciLCAiNmViNjQ4Il0=
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com
+ [209.85.214.180]) by smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 606ebbf287ce1fbb56b8ed3b (version=TLS1.3, cipher=TLS_AES_128_GCM_SHA256);
+ Thu, 08 Apr 2021 08:16:50 GMT
+Sender: joe@monoid.al
+Received: by mail-pl1-f180.google.com with SMTP id h20so631113plr.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Apr 2021 01:16:50 -0700 (PDT)
+X-Gm-Message-State: AOAM531KNr/48eHsBxvq7HrqAJKDbxowRexxxEQSTDZ8g/X5M/sQebdt
+        Z/Dlh3sTMGMuWfHwCZ+/12+zcjx+YxtZDFB5MQk=
+X-Google-Smtp-Source: ABdhPJydQge25eB+bbmOI78q6Xqy71A/eW7PgUsBIv8LgY6vt0jNA2Yq4kwMivRgm1OHxNfpqvGXLIWkN+hsniv0rgA=
+X-Received: by 2002:a17:90a:1049:: with SMTP id y9mr7097096pjd.173.1617869809262;
+ Thu, 08 Apr 2021 01:16:49 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB2921.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe7e6042-e563-44a6-711e-08d8fa3d7527
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 03:21:53.7134
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /2AdHb+qutiKz/mU1neNKx5bjPe1CAp2VkbekY25IFinU0KQlZHxhhT5ZvHgN7OR3/ecWuDwMSypaScPscXMkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6557
+References: <CA+4cVr95GJvSPuMDmACe6kiZEBvArWcBFkLL8Q1HsOV8DRkUHQ@mail.gmail.com>
+ <1f5cf01f-0f5e-8691-541d-efb763919577@gmx.com> <CA+4cVr8XEJwyccvAhfgJUZyTcjubkava_1h+9+3BggN6XpH3iA@mail.gmail.com>
+ <c8e82fcd-de9d-d46f-e455-1d0542fda706@gmx.com> <CA+4cVr-gg89KovFG+Yso0iYjhPjnx3eMNK8qG6W1SLY2WkozdA@mail.gmail.com>
+ <8315aaf6-26e9-ad0a-cc49-1a1269266485@gmx.com> <CA+4cVr9nWjnNbWNctd4vZaoeyqFTyG1DCSTYbrbC4A27XtDG2Q@mail.gmail.com>
+ <f8a63ef3-9eaa-f5ea-e403-be81ffcf7c85@gmx.com>
+In-Reply-To: <f8a63ef3-9eaa-f5ea-e403-be81ffcf7c85@gmx.com>
+From:   Joe Hermaszewski <joe@monoid.al>
+Date:   Thu, 8 Apr 2021 16:16:37 +0800
+X-Gmail-Original-Message-ID: <CA+4cVr82ujZrdsmjpUPBg3W2xL4gQJwjGwvA2LTy-yj73BhGfg@mail.gmail.com>
+Message-ID: <CA+4cVr82ujZrdsmjpUPBg3W2xL4gQJwjGwvA2LTy-yj73BhGfg@mail.gmail.com>
+Subject: Re: btrfs crash on armv7
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJpdGVzaCBIYXJqYW5pIDxy
-aXRlc2gubGlzdEBnbWFpbC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjMgMDgvMTBdIGZz
-ZGF4OiBEZWR1cCBmaWxlIHJhbmdlIHRvIHVzZSBhIGNvbXBhcmUgZnVuY3Rpb24NCj4gDQo+IE9u
-IDIxLzAzLzE5IDA5OjUyQU0sIFNoaXlhbmcgUnVhbiB3cm90ZToNCj4gPiBXaXRoIGRheCB3ZSBj
-YW5ub3QgZGVhbCB3aXRoIHJlYWRwYWdlKCkgZXRjLiBTbywgd2UgY3JlYXRlIGEgZGF4DQo+ID4g
-Y29tcGFyaXNvbiBmdW5jaXRvbiB3aGljaCBpcyBzaW1pbGFyIHdpdGgNCj4gPiB2ZnNfZGVkdXBl
-X2ZpbGVfcmFuZ2VfY29tcGFyZSgpLg0KPiA+IEFuZCBpbnRyb2R1Y2UgZGF4X3JlbWFwX2ZpbGVf
-cmFuZ2VfcHJlcCgpIGZvciBmaWxlc3lzdGVtIHVzZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
-IEdvbGR3eW4gUm9kcmlndWVzIDxyZ29sZHd5bkBzdXNlLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBTaGl5YW5nIFJ1YW4gPHJ1YW5zeS5mbnN0QGZ1aml0c3UuY29tPg0KPiA+IC0tLQ0KPiA+ICBm
-cy9kYXguYyAgICAgICAgICAgICB8IDU2DQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrDQo+ID4gIGZzL3JlbWFwX3JhbmdlLmMgICAgIHwgNDUgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKy0tLS0tLS0NCj4gPiAgZnMveGZzL3hmc19yZWZsaW5rLmMgfCAg
-OSArKysrKy0tDQo+ID4gIGluY2x1ZGUvbGludXgvZGF4LmggIHwgIDQgKysrKw0KPiA+ICBpbmNs
-dWRlL2xpbnV4L2ZzLmggICB8IDE1ICsrKysrKysrLS0tLQ0KPiA+ICA1IGZpbGVzIGNoYW5nZWQs
-IDExNSBpbnNlcnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQg
-YS9mcy9kYXguYyBiL2ZzL2RheC5jDQo+ID4gaW5kZXggMzQ4Mjk3YjM4Zjc2Li43NmY4MWYxZDc2
-ZWMgMTAwNjQ0DQo+ID4gLS0tIGEvZnMvZGF4LmMNCj4gPiArKysgYi9mcy9kYXguYw0KPiA+IEBA
-IC0xODMzLDMgKzE4MzMsNTkgQEAgdm1fZmF1bHRfdCBkYXhfZmluaXNoX3N5bmNfZmF1bHQoc3Ry
-dWN0IHZtX2ZhdWx0DQo+ICp2bWYsDQo+ID4gIAlyZXR1cm4gZGF4X2luc2VydF9wZm5fbWt3cml0
-ZSh2bWYsIHBmbiwgb3JkZXIpOyAgfQ0KPiA+IEVYUE9SVF9TWU1CT0xfR1BMKGRheF9maW5pc2hf
-c3luY19mYXVsdCk7DQo+ID4gKw0KPiA+ICtzdGF0aWMgbG9mZl90IGRheF9yYW5nZV9jb21wYXJl
-X2FjdG9yKHN0cnVjdCBpbm9kZSAqaW5vMSwgbG9mZl90IHBvczEsDQo+ID4gKwkJc3RydWN0IGlu
-b2RlICppbm8yLCBsb2ZmX3QgcG9zMiwgbG9mZl90IGxlbiwgdm9pZCAqZGF0YSwNCj4gPiArCQlz
-dHJ1Y3QgaW9tYXAgKnNtYXAsIHN0cnVjdCBpb21hcCAqZG1hcCkgew0KPiA+ICsJdm9pZCAqc2Fk
-ZHIsICpkYWRkcjsNCj4gPiArCWJvb2wgKnNhbWUgPSBkYXRhOw0KPiA+ICsJaW50IHJldDsNCj4g
-PiArDQo+ID4gKwlpZiAoc21hcC0+dHlwZSA9PSBJT01BUF9IT0xFICYmIGRtYXAtPnR5cGUgPT0g
-SU9NQVBfSE9MRSkgew0KPiA+ICsJCSpzYW1lID0gdHJ1ZTsNCj4gPiArCQlyZXR1cm4gbGVuOw0K
-PiA+ICsJfQ0KPiA+ICsNCj4gPiArCWlmIChzbWFwLT50eXBlID09IElPTUFQX0hPTEUgfHwgZG1h
-cC0+dHlwZSA9PSBJT01BUF9IT0xFKSB7DQo+ID4gKwkJKnNhbWUgPSBmYWxzZTsNCj4gPiArCQly
-ZXR1cm4gMDsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlyZXQgPSBkYXhfaW9tYXBfZGlyZWN0X2Fj
-Y2VzcyhzbWFwLCBwb3MxLCBBTElHTihwb3MxICsgbGVuLCBQQUdFX1NJWkUpLA0KPiA+ICsJCQkJ
-ICAgICAgJnNhZGRyLCBOVUxMKTsNCj4gDQo+IHNob3VsZG4ndCBpdCB0YWtlIGxlbiBhcyB0aGUg
-c2Vjb25kIGFyZ3VtZW50Pw0KDQpUaGUgc2Vjb25kIGFyZ3VtZW50IG9mIGRheF9pb21hcF9kaXJl
-Y3RfYWNjZXNzKCkgbWVhbnMgb2Zmc2V0LCBhbmQgdGhlIHRoaXJkIG9uZSBtZWFucyBsZW5ndGgu
-ICBTbywgSSB0aGluayB0aGlzIGlzIHJpZ2h0Lg0KDQo+IA0KPiA+ICsJaWYgKHJldCA8IDApDQo+
-ID4gKwkJcmV0dXJuIC1FSU87DQo+ID4gKw0KPiA+ICsJcmV0ID0gZGF4X2lvbWFwX2RpcmVjdF9h
-Y2Nlc3MoZG1hcCwgcG9zMiwgQUxJR04ocG9zMiArIGxlbiwgUEFHRV9TSVpFKSwNCj4gPiArCQkJ
-CSAgICAgICZkYWRkciwgTlVMTCk7DQo+IA0KPiBkaXR0by4NCj4gPiArCWlmIChyZXQgPCAwKQ0K
-PiA+ICsJCXJldHVybiAtRUlPOw0KPiA+ICsNCj4gPiArCSpzYW1lID0gIW1lbWNtcChzYWRkciwg
-ZGFkZHIsIGxlbik7DQo+ID4gKwlyZXR1cm4gbGVuOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtpbnQg
-ZGF4X2RlZHVwZV9maWxlX3JhbmdlX2NvbXBhcmUoc3RydWN0IGlub2RlICpzcmMsIGxvZmZfdCBz
-cmNvZmYsDQo+ID4gKwkJc3RydWN0IGlub2RlICpkZXN0LCBsb2ZmX3QgZGVzdG9mZiwgbG9mZl90
-IGxlbiwgYm9vbCAqaXNfc2FtZSwNCj4gPiArCQljb25zdCBzdHJ1Y3QgaW9tYXBfb3BzICpvcHMp
-DQo+ID4gK3sNCj4gPiArCWludCBpZCwgcmV0ID0gMDsNCj4gPiArDQo+ID4gKwlpZCA9IGRheF9y
-ZWFkX2xvY2soKTsNCj4gPiArCXdoaWxlIChsZW4pIHsNCj4gPiArCQlyZXQgPSBpb21hcF9hcHBs
-eTIoc3JjLCBzcmNvZmYsIGRlc3QsIGRlc3RvZmYsIGxlbiwgMCwgb3BzLA0KPiA+ICsJCQkJICAg
-aXNfc2FtZSwgZGF4X3JhbmdlX2NvbXBhcmVfYWN0b3IpOw0KPiA+ICsJCWlmIChyZXQgPCAwIHx8
-ICEqaXNfc2FtZSkNCj4gPiArCQkJZ290byBvdXQ7DQo+ID4gKw0KPiA+ICsJCWxlbiAtPSByZXQ7
-DQo+ID4gKwkJc3Jjb2ZmICs9IHJldDsNCj4gPiArCQlkZXN0b2ZmICs9IHJldDsNCj4gPiArCX0N
-Cj4gPiArCXJldCA9IDA7DQo+ID4gK291dDoNCj4gPiArCWRheF9yZWFkX3VubG9jayhpZCk7DQo+
-ID4gKwlyZXR1cm4gcmV0Ow0KPiA+ICt9DQo+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKGRheF9kZWR1
-cGVfZmlsZV9yYW5nZV9jb21wYXJlKTsNCj4gPiBkaWZmIC0tZ2l0IGEvZnMvcmVtYXBfcmFuZ2Uu
-YyBiL2ZzL3JlbWFwX3JhbmdlLmMgaW5kZXgNCj4gPiA3N2RiYTNhNDllNjUuLjkwNzkzOTBlZGFm
-MyAxMDA2NDQNCj4gPiAtLS0gYS9mcy9yZW1hcF9yYW5nZS5jDQo+ID4gKysrIGIvZnMvcmVtYXBf
-cmFuZ2UuYw0KPiA+IEBAIC0xNCw2ICsxNCw3IEBADQo+ID4gICNpbmNsdWRlIDxsaW51eC9jb21w
-YXQuaD4NCj4gPiAgI2luY2x1ZGUgPGxpbnV4L21vdW50Lmg+DQo+ID4gICNpbmNsdWRlIDxsaW51
-eC9mcy5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvZGF4Lmg+DQo+ID4gICNpbmNsdWRlICJpbnRl
-cm5hbC5oIg0KPiA+DQo+ID4gICNpbmNsdWRlIDxsaW51eC91YWNjZXNzLmg+DQo+ID4gQEAgLTE5
-OSw5ICsyMDAsOSBAQCBzdGF0aWMgdm9pZCB2ZnNfdW5sb2NrX3R3b19wYWdlcyhzdHJ1Y3QgcGFn
-ZSAqcGFnZTEsDQo+IHN0cnVjdCBwYWdlICpwYWdlMikNCj4gPiAgICogQ29tcGFyZSBleHRlbnRz
-IG9mIHR3byBmaWxlcyB0byBzZWUgaWYgdGhleSBhcmUgdGhlIHNhbWUuDQo+ID4gICAqIENhbGxl
-ciBtdXN0IGhhdmUgbG9ja2VkIGJvdGggaW5vZGVzIHRvIHByZXZlbnQgd3JpdGUgcmFjZXMuDQo+
-ID4gICAqLw0KPiA+IC1zdGF0aWMgaW50IHZmc19kZWR1cGVfZmlsZV9yYW5nZV9jb21wYXJlKHN0
-cnVjdCBpbm9kZSAqc3JjLCBsb2ZmX3Qgc3Jjb2ZmLA0KPiA+IC0JCQkJCSBzdHJ1Y3QgaW5vZGUg
-KmRlc3QsIGxvZmZfdCBkZXN0b2ZmLA0KPiA+IC0JCQkJCSBsb2ZmX3QgbGVuLCBib29sICppc19z
-YW1lKQ0KPiA+ICtpbnQgdmZzX2RlZHVwZV9maWxlX3JhbmdlX2NvbXBhcmUoc3RydWN0IGlub2Rl
-ICpzcmMsIGxvZmZfdCBzcmNvZmYsDQo+ID4gKwkJCQkgIHN0cnVjdCBpbm9kZSAqZGVzdCwgbG9m
-Zl90IGRlc3RvZmYsDQo+ID4gKwkJCQkgIGxvZmZfdCBsZW4sIGJvb2wgKmlzX3NhbWUpDQo+ID4g
-IHsNCj4gPiAgCWxvZmZfdCBzcmNfcG9mZjsNCj4gPiAgCWxvZmZfdCBkZXN0X3BvZmY7DQo+ID4g
-QEAgLTI4MCw2ICsyODEsNyBAQCBzdGF0aWMgaW50IHZmc19kZWR1cGVfZmlsZV9yYW5nZV9jb21w
-YXJlKHN0cnVjdA0KPiA+IGlub2RlICpzcmMsIGxvZmZfdCBzcmNvZmYsDQo+ID4gIG91dF9lcnJv
-cjoNCj4gPiAgCXJldHVybiBlcnJvcjsNCj4gPiAgfQ0KPiA+ICtFWFBPUlRfU1lNQk9MKHZmc19k
-ZWR1cGVfZmlsZV9yYW5nZV9jb21wYXJlKTsNCj4gPg0KPiA+ICAvKg0KPiA+ICAgKiBDaGVjayB0
-aGF0IHRoZSB0d28gaW5vZGVzIGFyZSBlbGlnaWJsZSBmb3IgY2xvbmluZywgdGhlIHJhbmdlcw0K
-PiA+IG1ha2UgQEAgLTI4OSw5ICsyOTEsMTEgQEAgc3RhdGljIGludA0KPiB2ZnNfZGVkdXBlX2Zp
-bGVfcmFuZ2VfY29tcGFyZShzdHJ1Y3QgaW5vZGUgKnNyYywgbG9mZl90IHNyY29mZiwNCj4gPiAg
-ICogSWYgdGhlcmUncyBhbiBlcnJvciwgdGhlbiB0aGUgdXN1YWwgbmVnYXRpdmUgZXJyb3IgY29k
-ZSBpcyByZXR1cm5lZC4NCj4gPiAgICogT3RoZXJ3aXNlIHJldHVybnMgMCB3aXRoICpsZW4gc2V0
-IHRvIHRoZSByZXF1ZXN0IGxlbmd0aC4NCj4gPiAgICovDQo+ID4gLWludCBnZW5lcmljX3JlbWFw
-X2ZpbGVfcmFuZ2VfcHJlcChzdHJ1Y3QgZmlsZSAqZmlsZV9pbiwgbG9mZl90IHBvc19pbiwNCj4g
-PiAtCQkJCSAgc3RydWN0IGZpbGUgKmZpbGVfb3V0LCBsb2ZmX3QgcG9zX291dCwNCj4gPiAtCQkJ
-CSAgbG9mZl90ICpsZW4sIHVuc2lnbmVkIGludCByZW1hcF9mbGFncykNCj4gPiArc3RhdGljIGlu
-dA0KPiA+ICtfX2dlbmVyaWNfcmVtYXBfZmlsZV9yYW5nZV9wcmVwKHN0cnVjdCBmaWxlICpmaWxl
-X2luLCBsb2ZmX3QgcG9zX2luLA0KPiA+ICsJCQkJc3RydWN0IGZpbGUgKmZpbGVfb3V0LCBsb2Zm
-X3QgcG9zX291dCwNCj4gPiArCQkJCWxvZmZfdCAqbGVuLCB1bnNpZ25lZCBpbnQgcmVtYXBfZmxh
-Z3MsDQo+ID4gKwkJCQljb25zdCBzdHJ1Y3QgaW9tYXBfb3BzICpvcHMpDQo+ID4gIHsNCj4gPiAg
-CXN0cnVjdCBpbm9kZSAqaW5vZGVfaW4gPSBmaWxlX2lub2RlKGZpbGVfaW4pOw0KPiA+ICAJc3Ry
-dWN0IGlub2RlICppbm9kZV9vdXQgPSBmaWxlX2lub2RlKGZpbGVfb3V0KTsgQEAgLTM1MSw4ICsz
-NTUsMTUgQEANCj4gPiBpbnQgZ2VuZXJpY19yZW1hcF9maWxlX3JhbmdlX3ByZXAoc3RydWN0IGZp
-bGUgKmZpbGVfaW4sIGxvZmZfdCBwb3NfaW4sDQo+ID4gIAlpZiAocmVtYXBfZmxhZ3MgJiBSRU1B
-UF9GSUxFX0RFRFVQKSB7DQo+ID4gIAkJYm9vbAkJaXNfc2FtZSA9IGZhbHNlOw0KPiA+DQo+ID4g
-LQkJcmV0ID0gdmZzX2RlZHVwZV9maWxlX3JhbmdlX2NvbXBhcmUoaW5vZGVfaW4sIHBvc19pbiwN
-Cj4gPiAtCQkJCWlub2RlX291dCwgcG9zX291dCwgKmxlbiwgJmlzX3NhbWUpOw0KPiA+ICsJCWlm
-ICghSVNfREFYKGlub2RlX2luKSAmJiAhSVNfREFYKGlub2RlX291dCkpDQo+ID4gKwkJCXJldCA9
-IHZmc19kZWR1cGVfZmlsZV9yYW5nZV9jb21wYXJlKGlub2RlX2luLCBwb3NfaW4sDQo+ID4gKwkJ
-CQkJaW5vZGVfb3V0LCBwb3Nfb3V0LCAqbGVuLCAmaXNfc2FtZSk7DQo+ID4gKwkJZWxzZSBpZiAo
-SVNfREFYKGlub2RlX2luKSAmJiBJU19EQVgoaW5vZGVfb3V0KSAmJiBvcHMpDQo+ID4gKwkJCXJl
-dCA9IGRheF9kZWR1cGVfZmlsZV9yYW5nZV9jb21wYXJlKGlub2RlX2luLCBwb3NfaW4sDQo+ID4g
-KwkJCQkJaW5vZGVfb3V0LCBwb3Nfb3V0LCAqbGVuLCAmaXNfc2FtZSwNCj4gPiArCQkJCQlvcHMp
-Ow0KPiA+ICsJCWVsc2UNCj4gPiArCQkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gIAkJaWYgKHJldCkN
-Cj4gPiAgCQkJcmV0dXJuIHJldDsNCj4gPiAgCQlpZiAoIWlzX3NhbWUpDQo+IA0KPiBzaG91bGQg
-d2UgY29uc2lkZXIgdG8gY2hlY2sgIWlzX3NhbWUgY2hlY2sgYjQ/DQo+IHlvdSBzaG91bGQgbWF5
-YmUgcmVsb29rIGF0IHRoaXMgZXJyb3IgaGFuZGxpbmcgc2lkZSBvZiBjb2RlLg0KPiB3ZSBzdGls
-bCByZXR1cm4gbGVuIGZyb20gYWN0b3IgZnVuY3Rpb24gYnV0IGlzX3NhbWUgaXMgc2V0IHRvIGZh
-bHNlLg0KPiBTbyB3ZSBhcmUgZXNzZW50aWFsbHkgcmV0dXJuaW5nIHJldCAocG9zaXRpdmUgdmFs
-dWUpLCBpbnN0ZWFkIHNob3VsZCBiZSByZXR1cm5pbmcNCj4gLUVCQURFIGJlY2F1c2Ugb2YgIW1l
-bWNtcA0KDQpUaGUgcmV0IGZyb20gY29tcGFyZSBmdW5jdGlvbiB3aWxsIG5vdCBiZSBwb3NpdGl2
-ZSwgaXQgd2lsbCBhbHdheXMgYmUgMCBvciBuZWdhdGl2ZS4gIA0KSW4gYWRkaXRpb24sIGlmIHNv
-bWV0aGluZyB3cm9uZyBoYXBwZW5zLCBpc19zYW1lIHdpbGwgYWx3YXlzIGJlIGZhbHNlLiAgVGhl
-IGNhbGxlciBjb3VsZCBub3QgZ2V0IGNvcnJlY3QgZXJybm8gaWYgY2hlY2sgIWlzX3NhbWUgZmly
-c3RseS4NCg0KPiANCj4gPiBAQCAtMzcwLDYgKzM4MSwyNCBAQCBpbnQgZ2VuZXJpY19yZW1hcF9m
-aWxlX3JhbmdlX3ByZXAoc3RydWN0IGZpbGUNCj4gPiAqZmlsZV9pbiwgbG9mZl90IHBvc19pbiwN
-Cj4gPg0KPiA+ICAJcmV0dXJuIHJldDsNCj4gPiAgfQ0KPiA+ICsNCj4gPiAraW50IGRheF9yZW1h
-cF9maWxlX3JhbmdlX3ByZXAoc3RydWN0IGZpbGUgKmZpbGVfaW4sIGxvZmZfdCBwb3NfaW4sDQo+
-ID4gKwkJCSAgICAgIHN0cnVjdCBmaWxlICpmaWxlX291dCwgbG9mZl90IHBvc19vdXQsDQo+ID4g
-KwkJCSAgICAgIGxvZmZfdCAqbGVuLCB1bnNpZ25lZCBpbnQgcmVtYXBfZmxhZ3MsDQo+ID4gKwkJ
-CSAgICAgIGNvbnN0IHN0cnVjdCBpb21hcF9vcHMgKm9wcykgew0KPiA+ICsJcmV0dXJuIF9fZ2Vu
-ZXJpY19yZW1hcF9maWxlX3JhbmdlX3ByZXAoZmlsZV9pbiwgcG9zX2luLCBmaWxlX291dCwNCj4g
-PiArCQkJCQkgICAgICAgcG9zX291dCwgbGVuLCByZW1hcF9mbGFncywgb3BzKTsgfQ0KPiA+ICtF
-WFBPUlRfU1lNQk9MKGRheF9yZW1hcF9maWxlX3JhbmdlX3ByZXApOw0KPiA+ICsNCj4gPiAraW50
-IGdlbmVyaWNfcmVtYXBfZmlsZV9yYW5nZV9wcmVwKHN0cnVjdCBmaWxlICpmaWxlX2luLCBsb2Zm
-X3QgcG9zX2luLA0KPiA+ICsJCQkJICBzdHJ1Y3QgZmlsZSAqZmlsZV9vdXQsIGxvZmZfdCBwb3Nf
-b3V0LA0KPiA+ICsJCQkJICBsb2ZmX3QgKmxlbiwgdW5zaWduZWQgaW50IHJlbWFwX2ZsYWdzKSB7
-DQo+ID4gKwlyZXR1cm4gX19nZW5lcmljX3JlbWFwX2ZpbGVfcmFuZ2VfcHJlcChmaWxlX2luLCBw
-b3NfaW4sIGZpbGVfb3V0LA0KPiA+ICsJCQkJCSAgICAgICBwb3Nfb3V0LCBsZW4sIHJlbWFwX2Zs
-YWdzLCBOVUxMKTsgfQ0KPiA+ICBFWFBPUlRfU1lNQk9MKGdlbmVyaWNfcmVtYXBfZmlsZV9yYW5n
-ZV9wcmVwKTsNCj4gPg0KPiA+ICBsb2ZmX3QgZG9fY2xvbmVfZmlsZV9yYW5nZShzdHJ1Y3QgZmls
-ZSAqZmlsZV9pbiwgbG9mZl90IHBvc19pbiwgZGlmZg0KPiA+IC0tZ2l0IGEvZnMveGZzL3hmc19y
-ZWZsaW5rLmMgYi9mcy94ZnMveGZzX3JlZmxpbmsuYyBpbmRleA0KPiA+IDZmYTA1ZmI3ODE4OS4u
-ZjViM2EzZGEzNmI3IDEwMDY0NA0KPiA+IC0tLSBhL2ZzL3hmcy94ZnNfcmVmbGluay5jDQo+ID4g
-KysrIGIvZnMveGZzL3hmc19yZWZsaW5rLmMNCj4gPiBAQCAtMTMwOCw4ICsxMzA4LDEzIEBAIHhm
-c19yZWZsaW5rX3JlbWFwX3ByZXAoDQo+ID4gIAlpZiAoSVNfREFYKGlub2RlX2luKSB8fCBJU19E
-QVgoaW5vZGVfb3V0KSkNCj4gPiAgCQlnb3RvIG91dF91bmxvY2s7DQo+ID4NCj4gPiAtCXJldCA9
-IGdlbmVyaWNfcmVtYXBfZmlsZV9yYW5nZV9wcmVwKGZpbGVfaW4sIHBvc19pbiwgZmlsZV9vdXQs
-IHBvc19vdXQsDQo+ID4gLQkJCWxlbiwgcmVtYXBfZmxhZ3MpOw0KPiA+ICsJaWYgKElTX0RBWChp
-bm9kZV9pbikpDQo+IA0KPiBpZiAoIUlTX0RBWChpbm9kZV9pbikpIG5vPw0KTXkgbWlzdGFrZS4u
-Lg0KPiANCj4gPiArCQlyZXQgPSBnZW5lcmljX3JlbWFwX2ZpbGVfcmFuZ2VfcHJlcChmaWxlX2lu
-LCBwb3NfaW4sIGZpbGVfb3V0LA0KPiA+ICsJCQkJCQkgICAgcG9zX291dCwgbGVuLCByZW1hcF9m
-bGFncyk7DQo+ID4gKwllbHNlDQo+ID4gKwkJcmV0ID0gZGF4X3JlbWFwX2ZpbGVfcmFuZ2VfcHJl
-cChmaWxlX2luLCBwb3NfaW4sIGZpbGVfb3V0LA0KPiA+ICsJCQkJCQlwb3Nfb3V0LCBsZW4sIHJl
-bWFwX2ZsYWdzLA0KPiA+ICsJCQkJCQkmeGZzX3JlYWRfaW9tYXBfb3BzKTsNCj4gPiAgCWlmIChy
-ZXQgfHwgKmxlbiA9PSAwKQ0KPiA+ICAJCWdvdG8gb3V0X3VubG9jazsNCj4gPg0KPiA+IGRpZmYg
-LS1naXQgYS9pbmNsdWRlL2xpbnV4L2RheC5oIGIvaW5jbHVkZS9saW51eC9kYXguaCBpbmRleA0K
-PiA+IDMyNzVlMDFlZDMzZC4uMzJlMWMzNDM0OWYyIDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUv
-bGludXgvZGF4LmgNCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L2RheC5oDQo+ID4gQEAgLTIzOSw2
-ICsyMzksMTAgQEAgaW50IGRheF9pbnZhbGlkYXRlX21hcHBpbmdfZW50cnlfc3luYyhzdHJ1Y3QN
-Cj4gYWRkcmVzc19zcGFjZSAqbWFwcGluZywNCj4gPiAgCQkJCSAgICAgIHBnb2ZmX3QgaW5kZXgp
-Ow0KPiA+ICBzNjQgZGF4X2lvbWFwX3plcm8obG9mZl90IHBvcywgdTY0IGxlbmd0aCwgc3RydWN0
-IGlvbWFwICppb21hcCwNCj4gPiAgCQlzdHJ1Y3QgaW9tYXAgKnNyY21hcCk7DQo+ID4gK2ludCBk
-YXhfZGVkdXBlX2ZpbGVfcmFuZ2VfY29tcGFyZShzdHJ1Y3QgaW5vZGUgKnNyYywgbG9mZl90IHNy
-Y29mZiwNCj4gPiArCQkJCSAgc3RydWN0IGlub2RlICpkZXN0LCBsb2ZmX3QgZGVzdG9mZiwNCj4g
-PiArCQkJCSAgbG9mZl90IGxlbiwgYm9vbCAqaXNfc2FtZSwNCj4gPiArCQkJCSAgY29uc3Qgc3Ry
-dWN0IGlvbWFwX29wcyAqb3BzKTsNCj4gPiAgc3RhdGljIGlubGluZSBib29sIGRheF9tYXBwaW5n
-KHN0cnVjdCBhZGRyZXNzX3NwYWNlICptYXBwaW5nKSAgew0KPiA+ICAJcmV0dXJuIG1hcHBpbmct
-Pmhvc3QgJiYgSVNfREFYKG1hcHBpbmctPmhvc3QpOyBkaWZmIC0tZ2l0DQo+ID4gYS9pbmNsdWRl
-L2xpbnV4L2ZzLmggYi9pbmNsdWRlL2xpbnV4L2ZzLmggaW5kZXgNCj4gPiBmZDQ3ZGVlYTdjMTcu
-LjJlNmVjNWJkZjgyYSAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2ZzLmgNCj4gPiAr
-KysgYi9pbmNsdWRlL2xpbnV4L2ZzLmgNCj4gPiBAQCAtNjgsNiArNjgsNyBAQCBzdHJ1Y3QgZnN2
-ZXJpdHlfaW5mbzsgIHN0cnVjdCBmc3Zlcml0eV9vcGVyYXRpb25zOw0KPiA+IHN0cnVjdCBmc19j
-b250ZXh0OyAgc3RydWN0IGZzX3BhcmFtZXRlcl9zcGVjOw0KPiA+ICtzdHJ1Y3QgaW9tYXBfb3Bz
-Ow0KPiA+DQo+ID4gIGV4dGVybiB2b2lkIF9faW5pdCBpbm9kZV9pbml0KHZvaWQpOw0KPiA+ICBl
-eHRlcm4gdm9pZCBfX2luaXQgaW5vZGVfaW5pdF9lYXJseSh2b2lkKTsgQEAgLTE5MTAsMTMgKzE5
-MTEsMTkgQEANCj4gPiBleHRlcm4gc3NpemVfdCB2ZnNfcmVhZChzdHJ1Y3QgZmlsZSAqLCBjaGFy
-IF9fdXNlciAqLCBzaXplX3QsIGxvZmZfdA0KPiA+ICopOyAgZXh0ZXJuIHNzaXplX3QgdmZzX3dy
-aXRlKHN0cnVjdCBmaWxlICosIGNvbnN0IGNoYXIgX191c2VyICosDQo+ID4gc2l6ZV90LCBsb2Zm
-X3QgKik7ICBleHRlcm4gc3NpemVfdCB2ZnNfY29weV9maWxlX3JhbmdlKHN0cnVjdCBmaWxlICos
-IGxvZmZfdCAsIHN0cnVjdA0KPiBmaWxlICosDQo+ID4gIAkJCQkgICBsb2ZmX3QsIHNpemVfdCwg
-dW5zaWduZWQgaW50KTsNCj4gPiArdHlwZWRlZiBpbnQgKCpjb21wYXJlX3JhbmdlX3QpKHN0cnVj
-dCBpbm9kZSAqc3JjLCBsb2ZmX3Qgc3JjcG9zLA0KPiA+ICsJCQkgICAgICAgc3RydWN0IGlub2Rl
-ICpkZXN0LCBsb2ZmX3QgZGVzdHBvcywNCj4gPiArCQkJICAgICAgIGxvZmZfdCBsZW4sIGJvb2wg
-KmlzX3NhbWUpOw0KPiANCj4gSXMgdGhpcyB1c2VkIGFueXdoZXJlPw0KDQpObywgSSBmb3Jnb3Qg
-dG8gcmVtb3ZlIGl0Li4uDQoNCg0KLS0NClRoYW5rcywNClJ1YW4gU2hpeWFuZy4NCj4gDQo+ID4g
-IGV4dGVybiBzc2l6ZV90IGdlbmVyaWNfY29weV9maWxlX3JhbmdlKHN0cnVjdCBmaWxlICpmaWxl
-X2luLCBsb2ZmX3QgcG9zX2luLA0KPiA+ICAJCQkJICAgICAgIHN0cnVjdCBmaWxlICpmaWxlX291
-dCwgbG9mZl90IHBvc19vdXQsDQo+ID4gIAkJCQkgICAgICAgc2l6ZV90IGxlbiwgdW5zaWduZWQg
-aW50IGZsYWdzKTsgLWV4dGVybiBpbnQNCj4gPiBnZW5lcmljX3JlbWFwX2ZpbGVfcmFuZ2VfcHJl
-cChzdHJ1Y3QgZmlsZSAqZmlsZV9pbiwgbG9mZl90IHBvc19pbiwNCj4gPiAtCQkJCQkgc3RydWN0
-IGZpbGUgKmZpbGVfb3V0LCBsb2ZmX3QgcG9zX291dCwNCj4gPiAtCQkJCQkgbG9mZl90ICpjb3Vu
-dCwNCj4gPiAtCQkJCQkgdW5zaWduZWQgaW50IHJlbWFwX2ZsYWdzKTsNCj4gPiAraW50IGdlbmVy
-aWNfcmVtYXBfZmlsZV9yYW5nZV9wcmVwKHN0cnVjdCBmaWxlICpmaWxlX2luLCBsb2ZmX3QgcG9z
-X2luLA0KPiA+ICsJCQkJICBzdHJ1Y3QgZmlsZSAqZmlsZV9vdXQsIGxvZmZfdCBwb3Nfb3V0LA0K
-PiA+ICsJCQkJICBsb2ZmX3QgKmNvdW50LCB1bnNpZ25lZCBpbnQgcmVtYXBfZmxhZ3MpOyBpbnQN
-Cj4gPiArZGF4X3JlbWFwX2ZpbGVfcmFuZ2VfcHJlcChzdHJ1Y3QgZmlsZSAqZmlsZV9pbiwgbG9m
-Zl90IHBvc19pbiwNCj4gPiArCQkJICAgICAgc3RydWN0IGZpbGUgKmZpbGVfb3V0LCBsb2ZmX3Qg
-cG9zX291dCwNCj4gPiArCQkJICAgICAgbG9mZl90ICpsZW4sIHVuc2lnbmVkIGludCByZW1hcF9m
-bGFncywNCj4gPiArCQkJICAgICAgY29uc3Qgc3RydWN0IGlvbWFwX29wcyAqb3BzKTsNCj4gPiAg
-ZXh0ZXJuIGxvZmZfdCBkb19jbG9uZV9maWxlX3JhbmdlKHN0cnVjdCBmaWxlICpmaWxlX2luLCBs
-b2ZmX3QgcG9zX2luLA0KPiA+ICAJCQkJICBzdHJ1Y3QgZmlsZSAqZmlsZV9vdXQsIGxvZmZfdCBw
-b3Nfb3V0LA0KPiA+ICAJCQkJICBsb2ZmX3QgbGVuLCB1bnNpZ25lZCBpbnQgcmVtYXBfZmxhZ3Mp
-Ow0KPiA+IC0tDQo+ID4gMi4zMC4xDQo+ID4NCj4gPg0KPiA+DQo=
+It took a while but I managed to get hold of another one of these
+arm32 boards. Very disappointingly this exact "bitflip" is still
+present (log enclosed).
+
+To summarise, as it's been a while:
+
+- When running scrub, a "page_start" and "eb_start" mismatch is
+detected (off by a single bit).
+- `btrfs check` reports no significant errors on aarch64 or arm32.
+- `btrfs scrub` completes successfully on aarch64!
+- Now, I can confirm that `btrfs scrub` fails in the same manner on
+two arm32 machines.
+
+Not really sure where to go from here. The only things I can think of are:
+
+- Bug in `btrfs scrub` on arm32 (seems unlikely given the single-bit
+error here).
+- A bitflip on the original machine wrote bad data to the disk, and
+somehow only the arm32 implementation catches this...
+
+I can give a newer kernel a try (I'm on 5.4.80 at the moment) I suppose
+
+Best,
+Joe
+
+```
+$ dmesg
+[  258.791966] BTRFS info (device sda1): scrub: started on devid 4
+[  258.792030] BTRFS info (device sda1): scrub: started on devid 1
+
+ the magic generation gap you mention is
+15, I'm more suspicious about me
+
+[  258.792062] BTRFS info (device sda1): scrub: started on devid 2
+[  411.849669] ------------[ cut here ]------------
+[  411.849786] WARNING: CPU: 0 PID: 218 at fs/btrfs/disk-io.c:531
+btree_csum_one_bio+0x22c/0x278 [btrfs]
+[  411.849789] Modules linked in: cfg80211 rfkill 8021q ip6table_nat
+iptable_nat nf_nat xt_conntrack nf_conntrack nf_defrag_ipv6
+nf_defrag_ipv4 ip6t_rpfilter ipt_rpfilter ip6table_raw iptable_raw
+xt_pkttype nf_log_ipv6 nf_log_ipv4 nf_log_common xt_LOG xt_tcpudp
+ip6table_filter ip6_tables iptable_filter phy_generic uio_pdrv_genirq
+uio sch_fq_codel loop tun tap macvlan bridge stp llc lm75 ip_tables
+x_tables autofs4 dm_mod dax btrfs libcrc32c xor raid6_pq
+[  411.849836] CPU: 0 PID: 218 Comm: btrfs-transacti Not tainted 5.4.80 #1-=
+NixOS
+[  411.849838] Hardware name: Marvell Armada 380/385 (Device Tree)
+[  411.849840] Backtrace:
+[  411.849850] [<c010f698>] (dump_backtrace) from [<c010f938>]
+(show_stack+0x20/0x24)
+[  411.849855]  r7:00000213 r6:600f0013 r5:00000000 r4:c0f8c0c4
+[  411.849861] [<c010f918>] (show_stack) from [<c0a1bb28>]
+(dump_stack+0x98/0xac)
+[  411.849866] [<c0a1ba90>] (dump_stack) from [<c012a998>] (__warn+0xe0/0x1=
+08)
+[  411.849870]  r7:00000213 r6:bf058f4c r5:00000009 r4:bf120990
+[  411.849875] [<c012a8b8>] (__warn) from [<c012ad24>]
+(warn_slowpath_fmt+0x74/0xc4)
+[  411.849878]  r7:00000213 r6:bf120990 r5:00000000 r4:e1c1c000
+[  411.849936] [<c012acb4>] (warn_slowpath_fmt) from [<bf058f4c>]
+(btree_csum_one_bio+0x22c/0x278 [btrfs])
+[  411.849941]  r9:00000001 r8:e6afec78 r7:e1c1c000 r6:ed7f7000
+r5:00001000 r4:8fd00000
+[  411.850044] [<bf058d20>] (btree_csum_one_bio [btrfs]) from
+[<bf059f84>] (btree_submit_bio_hook+0xe8/0x100 [btrfs])
+[  411.850049]  r10:e6afe4c0 r9:ecc57fc0 r8:ecc57f70 r7:ed7f7000
+r6:00000000 r5:c1660370
+[  411.850051]  r4:bf059e9c
+[  411.850154] [<bf059e9c>] (btree_submit_bio_hook [btrfs]) from
+[<bf08b1ac>] (submit_one_bio+0x44/0x5c [btrfs])
+[  411.850158]  r7:ef2d58ec r6:e1c1dcac r5:00000000 r4:bf059e9c
+[  411.850260] [<bf08b168>] (submit_one_bio [btrfs]) from [<bf096664>]
+(btree_write_cache_pages+0x380/0x408 [btrfs])
+[  411.850263]  r5:00000000 r4:00000000
+[  411.850366] [<bf0962e4>] (btree_write_cache_pages [btrfs]) from
+[<bf0590b8>] (btree_writepages+0x7c/0x84 [btrfs])
+[  411.850371]  r10:00000001 r9:8fd00000 r8:c0280bcc r7:e1c1c000
+r6:e1c1dd80 r5:ecc57f70
+[  411.850373]  r4:e1c1dd80
+[  411.850428] [<bf05903c>] (btree_writepages [btrfs]) from
+[<c0284680>] (do_writepages+0x58/0xf4)
+[  411.850431]  r5:ecc57f70 r4:ecc57e68
+[  411.850439] [<c0284628>] (do_writepages) from [<c0278b68>]
+(__filemap_fdatawrite_range+0xf8/0x130)
+[  411.850442]  r8:ecc57f70 r7:00001000 r6:8fd0bfff r5:e1c1c000 r4:ecc57e68
+[  411.850448] [<c0278a70>] (__filemap_fdatawrite_range) from
+[<c0278cf0>] (filemap_fdatawrite_range+0x2c/0x34)
+[  411.850452]  r10:ecc57f70 r9:00001000 r8:8fd0bfff r7:e1c1de4c
+r6:e0202428 r5:00001000
+[  411.850454]  r4:8fd0bfff
+[  411.850509] [<c0278cc4>] (filemap_fdatawrite_range) from
+[<bf060544>] (btrfs_write_marked_extents+0x9c/0x1b0 [btrfs])
+[  411.850512]  r5:00000001 r4:00000000
+[  411.850615] [<bf0604a8>] (btrfs_write_marked_extents [btrfs]) from
+[<bf0606f0>] (btrfs_write_and_wait_transaction+0x54/0xa4 [btrfs])
+[  411.850620]  r10:e1c1c000 r9:ed7f7010 r8:ed7f7000 r7:e0202428
+r6:ed7f7000 r5:e1c1c000
+[  411.850621]  r4:e56433f0
+[  411.850724] [<bf06069c>] (btrfs_write_and_wait_transaction [btrfs])
+from [<bf062428>] (btrfs_commit_transaction+0x75c/0xc94 [btrfs])
+[  411.850728]  r8:ed7f7418 r7:e0202400 r6:ed7f7000 r5:e56433f0 r4:00000000
+[  411.850831] [<bf061ccc>] (btrfs_commit_transaction [btrfs]) from
+[<bf05cd98>] (transaction_kthread+0x19c/0x1e0 [btrfs])
+[  411.850836]  r10:ed7f728c r9:00000000 r8:001abf6a r7:00000064
+r6:ed7f7414 r5:00000bb8
+[  411.850838]  r4:ed7f7000
+[  411.850893] [<bf05cbfc>] (transaction_kthread [btrfs]) from
+[<c014fab4>] (kthread+0x170/0x174)
+[  411.850898]  r10:ecbddbfc r9:bf05cbfc r8:ed669800 r7:e1c1c000
+r6:00000000 r5:ed560d40
+[  411.850899]  r4:ed54eb00
+[  411.850904] [<c014f944>] (kthread) from [<c01010e8>]
+(ret_from_fork+0x14/0x2c)
+[  411.850907] Exception stack(0xe1c1dfb0 to 0xe1c1dff8)
+[  411.850911] dfa0:                                     00000000
+00000000 00000000 00000000
+[  411.850915] dfc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[  411.850919] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[  411.850923]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+r6:00000000 r5:c014f944
+[  411.850925]  r4:ed560d40
+[  411.850976] ---[ end trace 1bbf4c394bd7fb26 ]---
+[  411.850986] BTRFS warning (device sda1): page_start and eb_start
+mismatch, eb_start=3D17594598817792 page_start=3D2412773376
+[  411.857914] BTRFS: error (device sda1) in
+btrfs_commit_transaction:2279: errno=3D-5 IO failure (Error while
+writing out transaction)
+[  411.869764] BTRFS info (device sda1): forced readonly
+[  411.869772] BTRFS warning (device sda1): Skipping commit of aborted
+transaction.
+[  411.869778] BTRFS: error (device sda1) in cleanup_transaction:1832:
+errno=3D-5 IO failure
+[  411.877843] BTRFS info (device sda1): delayed_refs has NO entry
+[  411.878076] BTRFS warning (device sda1): Skipping commit of aborted
+transaction.
+[  411.882940] BTRFS warning (device sda1): failed setting block group ro: =
+-30
+[  411.882956] BTRFS info (device sda1): scrub: not finished on devid
+3 with status: -30
+[  411.883030] BTRFS warning (device sda1): failed setting block group ro: =
+-30
+[  411.883039] BTRFS info (device sda1): scrub: not finished on devid
+4 with status: -30
+[  411.883104] BTRFS warning (device sda1): failed setting block group ro: =
+-30
+[  411.883116] BTRFS info (device sda1): scrub: not finished on devid
+1 with status: -30
+[  411.883191] BTRFS warning (device sda1): failed setting block group ro: =
+-30
+[  411.883200] BTRFS info (device sda1): scrub: not finished on devid
+2 with status: -30
+[  411.953186] BTRFS info (device sda1): delayed_refs has NO entry
+[  576.361548] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  576.369639] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  576.378477] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  576.386936] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  576.395093] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  576.396830] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  576.403153] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  576.450091] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  576.462821] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  576.474987] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  576.486882] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  576.497905] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  576.824673] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  576.838414] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  577.324362] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  577.337736] BTRFS error (device sda1): parent transid verify failed
+on 12756293910528 wanted 1752939 found 1752922
+[  578.462271] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  578.470347] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  578.479476] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  578.488099] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  578.496793] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  578.505280] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  580.539117] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  580.547207] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  580.556371] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  580.564922] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  580.573356] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  580.581573] BTRFS critical (device sda1): unable to find logical
+2412789760 length 4096
+[  581.427776] verify_parent_transid: 28 callbacks suppressed
+... many more of these
+```
+
+On Sun, Dec 20, 2020 at 8:30 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2020/12/19 =E4=B8=8B=E5=8D=886:35, Joe Hermaszewski wrote:
+> > Ok, so I managed to get hold of a 64bit machine on which to run btrfs
+> > check. `btrfs check` returns exactly the same output as the armv7 box
+> > (no serious problems) which I suppose is good. `btrfs scrub` also
+> > finds no problems. Boring Logs below.
+> >
+> > What I don't quite understand is how the scrub problem on armv7l is so
+> > reliable when it's not persisted on the disks, is the same physical
+> > memory location being used for this breaking value, or is it perhaps a
+> > specific pattern of data on the bus which causes this?
+>
+> If it's so reliably reproducible, then I guess that would be the case,
+> either a specific memory range has the problem, or a specific pattern on
+> the bus causing the problem.
+>
+> >
+> > If it's the former, how easy would it be to find this broken location
+> > and blacklist it? If it's the latter then I guess there's no hope but
+> > to try replacing the psu/machine.
+> >
+> > The machine survived a couple of days of memtester (on about 95% of
+> > the RAM) and `7z b` with no problems, *shrug*
+>
+> The memtester should rule out the former case, the latter case may be
+> resolved by newer kernel if it's not a hardware problem but a software on=
+e.
+>
+> Thanks,
+> Qu
+>
+> >
+> > Best wishes and thanks for the generous help so far.
+> > Joe
+> >
+> > btrfs scrub aarch64:
+> > ```
+> > [j@nixos:~]$ sudo btrfs scrub status -d /mnt
+> > UUID:             b8f4ad49-29c8-4d19-a886-cef9c487f124
+> > scrub device /dev/sda1 (id 1) history
+> > Scrub started:    Fri Dec 18 14:24:30 2020
+> > Status:           finished
+> > Duration:         7:36:31
+> > Total to scrub:   2.40TiB
+> > Rate:             91.95MiB/s
+> > Error summary:    no errors found
+> > scrub device /dev/sdb1 (id 2) history
+> > Scrub started:    Fri Dec 18 14:24:30 2020
+> > Status:           finished
+> > Duration:         7:12:51
+> > Total to scrub:   2.40TiB
+> > Rate:             96.90MiB/s
+> > Error summary:    no errors found
+> > scrub device /dev/sdd1 (id 3) history
+> > Scrub started:    Fri Dec 18 14:24:30 2020
+> > Status:           finished
+> > Duration:         19:47:01
+> > Total to scrub:   7.86TiB
+> > Rate:             115.70MiB/s
+> > Error summary:    no errors found
+> > scrub device /dev/sdc1 (id 4) history
+> > Scrub started:    Fri Dec 18 14:24:30 2020
+> > Status:           finished
+> > Duration:         19:46:38
+> > Total to scrub:   7.86TiB
+> > Rate:             115.74MiB/s
+> > Error summary:    no errors found
+> > ```
+> >
+> > btrfs check aarch64:
+> > ```
+> > [nixos@nixos:/]$ sudo btrfs check --readonly /dev/sda1
+> > Opening filesystem to check...
+> > Checking filesystem on /dev/sda1
+> > UUID: b8f4ad49-29c8-4d19-a886-cef9c487f124
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > [3/7] checking free space cache
+> > [4/7] checking fs roots
+> > root 294 inode 24665 errors 100, file extent discount
+> > Found file extent holes:
+> >          start: 3709534208, len: 163840
+> > root 294 inode 406548 errors 100, file extent discount
+> > Found file extent holes:
+> >          start: 98729984, len: 720896
+> > ERROR: errors found in fs roots
+> > found 11280701063168 bytes used, error(s) found
+> > total csum bytes: 10937464120
+> > total tree bytes: 18538053632
+> > total fs tree bytes: 5877579776
+> > total extent tree bytes: 534052864
+> > btree space waste bytes: 2316660292
+> > file data blocks allocated: 17244587220992
+> >   referenced 14211684794368%
+> > ```
+> >
+> >
+> > On Sat, Nov 28, 2020 at 8:46 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
+e:
+> >>
+> >>
+> >>
+> >> On 2020/11/27 =E4=B8=8B=E5=8D=8811:15, Joe Hermaszewski wrote:
+> >>> Hi Qu,
+> >>>
+> >>> Thanks for the patch. I recompiled the kernel ran the scrub and your
+> >>> patch worked as expected, here is the log:
+> >>>
+> >>> ```
+> >>> [  337.365239] BTRFS info (device sda1): scrub: started on devid 2
+> >>> [  337.366283] BTRFS info (device sda1): scrub: started on devid 1
+> >>> [  337.402822] BTRFS info (device sda1): scrub: started on devid 3
+> >>> [  337.411944] BTRFS info (device sda1): scrub: started on devid 4
+> >>> [  471.997496] ------------[ cut here ]------------
+> >>> [  471.997614] WARNING: CPU: 0 PID: 218 at fs/btrfs/disk-io.c:531
+> >>> btree_csum_one_bio+0x22c/0x278 [btrfs]
+> >>> [  471.997616] Modules linked in: cfg80211 rfkill 8021q ip6table_nat
+> >>> iptable_nat nf_nat ftdi_sio phy_generic usbserial xt_conntrack
+> >>> nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip6t_rpfilter ipt_rpfilter
+> >>> ip6table_raw uio_pdrv_genirq iptable_raw uio xt_pkttype nf_log_ipv6
+> >>> nf_log_ipv4 nf_log_common xt_LOG xt_tcpudp ip6table_filter ip6_tables
+> >>> iptable_filter sch_fq_codel loop tun tap macvlan bridge stp llc lm75
+> >>> ip_tables x_tables autofs4 dm_mod dax btrfs libcrc32c xor raid6_pq
+> >>> [  471.997666] CPU: 0 PID: 218 Comm: btrfs-transacti Not tainted 5.4.=
+78 #1-NixOS
+> >>> [  471.997668] Hardware name: Marvell Armada 380/385 (Device Tree)
+> >>> [  471.997669] Backtrace:
+> >>> [  471.997680] [<c010f698>] (dump_backtrace) from [<c010f938>]
+> >>> (show_stack+0x20/0x24)
+> >>> [  471.997684]  r7:00000213 r6:600c0013 r5:00000000 r4:c0f8c044
+> >>> [  471.997691] [<c010f918>] (show_stack) from [<c0a1b848>]
+> >>> (dump_stack+0x98/0xac)
+> >>> [  471.997696] [<c0a1b7b0>] (dump_stack) from [<c012a998>] (__warn+0x=
+e0/0x108)
+> >>> [  471.997700]  r7:00000213 r6:bf058f4c r5:00000009 r4:bf120990
+> >>> [  471.997704] [<c012a8b8>] (__warn) from [<c012ad24>]
+> >>> (warn_slowpath_fmt+0x74/0xc4)
+> >>> [  471.997707]  r7:00000213 r6:bf120990 r5:00000000 r4:e1822000
+> >>> [  471.997765] [<c012acb4>] (warn_slowpath_fmt) from [<bf058f4c>]
+> >>> (btree_csum_one_bio+0x22c/0x278 [btrfs])
+> >>> [  471.997770]  r9:00000001 r8:c10decb8 r7:e1822000 r6:ed66b000
+> >>> r5:00001000 r4:4fd00000
+> >>> [  471.997872] [<bf058d20>] (btree_csum_one_bio [btrfs]) from
+> >>> [<bf059f84>] (btree_submit_bio_hook+0xe8/0x100 [btrfs])
+> >>> [  471.997877]  r10:e2197b48 r9:ec845fc0 r8:ec845f70 r7:ed66b000
+> >>> r6:00000000 r5:e2b74af0
+> >>> [  471.997879]  r4:bf059e9c
+> >>> [  471.997981] [<bf059e9c>] (btree_submit_bio_hook [btrfs]) from
+> >>> [<bf08b1ac>] (submit_one_bio+0x44/0x5c [btrfs])
+> >>> [  471.997985]  r7:ef3724d4 r6:e1823cac r5:00000000 r4:bf059e9c
+> >>> [  471.998087] [<bf08b168>] (submit_one_bio [btrfs]) from [<bf096664>=
+]
+> >>> (btree_write_cache_pages+0x380/0x408 [btrfs])
+> >>> [  471.998090]  r5:00000000 r4:00000000
+> >>> [  471.998193] [<bf0962e4>] (btree_write_cache_pages [btrfs]) from
+> >>> [<bf0590b8>] (btree_writepages+0x7c/0x84 [btrfs])
+> >>> [  471.998197]  r10:00000001 r9:4fd00000 r8:c0280d14 r7:e1822000
+> >>> r6:e1823d80 r5:ec845f70
+> >>> [  471.998199]  r4:e1823d80
+> >>> [  471.998255] [<bf05903c>] (btree_writepages [btrfs]) from
+> >>> [<c02847c8>] (do_writepages+0x58/0xf4)
+> >>> [  471.998258]  r5:ec845f70 r4:ec845e68
+> >>> [  471.998266] [<c0284770>] (do_writepages) from [<c0278cb0>]
+> >>> (__filemap_fdatawrite_range+0xf8/0x130)
+> >>> [  471.998270]  r8:ec845f70 r7:00001000 r6:4fd0bfff r5:e1822000 r4:ec=
+845e68
+> >>> [  471.998275] [<c0278bb8>] (__filemap_fdatawrite_range) from
+> >>> [<c0278e38>] (filemap_fdatawrite_range+0x2c/0x34)
+> >>> [  471.998279]  r10:ec845f70 r9:00001000 r8:4fd0bfff r7:e1823e4c
+> >>> r6:c1955e28 r5:00001000
+> >>> [  471.998281]  r4:4fd0bfff
+> >>> [  471.998335] [<c0278e0c>] (filemap_fdatawrite_range) from
+> >>> [<bf060544>] (btrfs_write_marked_extents+0x9c/0x1b0 [btrfs])
+> >>> [  471.998338]  r5:00000001 r4:00000000
+> >>> [  471.998441] [<bf0604a8>] (btrfs_write_marked_extents [btrfs]) from
+> >>> [<bf0606f0>] (btrfs_write_and_wait_transaction+0x54/0xa4 [btrfs])
+> >>> [  471.998446]  r10:e1822000 r9:ed66b010 r8:ed66b000 r7:c1955e28
+> >>> r6:ed66b000 r5:e1822000
+> >>> [  471.998447]  r4:eddc4f30
+> >>> [  471.998551] [<bf06069c>] (btrfs_write_and_wait_transaction [btrfs]=
+)
+> >>> from [<bf062428>] (btrfs_commit_transaction+0x75c/0xc94 [btrfs])
+> >>> [  471.998555]  r8:ed66b418 r7:c1955e00 r6:ed66b000 r5:eddc4f30 r4:00=
+000000
+> >>> [  471.998658] [<bf061ccc>] (btrfs_commit_transaction [btrfs]) from
+> >>> [<bf05cd98>] (transaction_kthread+0x19c/0x1e0 [btrfs])
+> >>> [  471.998663]  r10:ed66b28c r9:00000000 r8:001aab57 r7:00000064
+> >>> r6:ed66b414 r5:00000bb8
+> >>> [  471.998664]  r4:ed66b000
+> >>> [  471.998719] [<bf05cbfc>] (transaction_kthread [btrfs]) from
+> >>> [<c014facc>] (kthread+0x170/0x174)
+> >>> [  471.998724]  r10:ed765bfc r9:bf05cbfc r8:ed56a000 r7:e1822000
+> >>> r6:00000000 r5:ed5c8600
+> >>> [  471.998726]  r4:ed5c8740
+> >>> [  471.998731] [<c014f95c>] (kthread) from [<c01010e8>]
+> >>> (ret_from_fork+0x14/0x2c)
+> >>> [  471.998733] Exception stack(0xe1823fb0 to 0xe1823ff8)
+> >>> [  471.998737] 3fa0:                                     00000000
+> >>> 00000000 00000000 00000000
+> >>> [  471.998741] 3fc0: 00000000 00000000 00000000 00000000 00000000
+> >>> 00000000 00000000 00000000
+> >>> [  471.998745] 3fe0: 00000000 00000000 00000000 00000000 00000013 000=
+00000
+> >>> [  471.998749]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+> >>> r6:00000000 r5:c014f95c
+> >>> [  471.998751]  r4:ed5c8600
+> >>> [  471.998820] ---[ end trace 6a9fb9f547659a4d ]---
+> >>> [  471.998855] BTRFS warning (device sda1): page_start and eb_start
+> >>> mismatch, eb_start=3D17593525075968 page_start=3D1339031552
+> >>> [  472.015514] BTRFS: error (device sda1) in
+> >>> btrfs_commit_transaction:2279: errno=3D-5 IO failure (Error while
+> >>> writing out transaction)
+> >>> [  472.027321] BTRFS info (device sda1): forced readonly
+> >>> [  472.027326] BTRFS warning (device sda1): Skipping commit of aborte=
+d
+> >>> transaction.
+> >>> [  472.027330] BTRFS: error (device sda1) in cleanup_transaction:1832=
+:
+> >>> errno=3D-5 IO failure
+> >>> [  472.035378] BTRFS info (device sda1): delayed_refs has NO entry
+> >>> [  472.039102] BTRFS warning (device sda1): failed setting block grou=
+p ro: -30
+> >>> [  472.039107] BTRFS info (device sda1): scrub: not finished on devid
+> >>> 3 with status: -30
+> >>> [  472.039114] BTRFS info (device sda1): scrub: not finished on devid
+> >>> 4 with status: -30
+> >>> [  472.039227] BTRFS warning (device sda1): failed setting block grou=
+p ro: -30
+> >>> [  472.039230] BTRFS warning (device sda1): failed setting block grou=
+p ro: -30
+> >>> [  472.039237] BTRFS info (device sda1): scrub: not finished on devid
+> >>> 2 with status: -30
+> >>> [  472.039243] BTRFS info (device sda1): scrub: not finished on devid
+> >>> 1 with status: -30
+> >>> ```
+> >>>
+> >>> To rob you of the suspense:
+> >>>
+> >>> printf "0x%016x\n" (17593525075968 - 1339031552)
+> >>> 0x0000100000000000
+> >>>
+> >>> Very surprising considering that this machine has ECC ram!
+> >>
+> >> ARMv7 with ECC, and we still had such bitflip!?
+> >>
+> >> I guess everything is possible in 2020.
+> >>
+> >>>
+> >>> What would you recommend as a fix?
+> >>
+> >> It's a hardware problem, I really don't have any recommendation at all=
+.
+> >>
+> >> I guess you may want to request an RMA?
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>>
+> >>> Best,
+> >>> Joe
+> >>>
+> >>> On Thu, Nov 26, 2020 at 7:05 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wr=
+ote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2020/11/26 =E4=B8=8B=E5=8D=886:53, Joe Hermaszewski wrote:
+> >>>>> Hi Qu,
+> >>>>>
+> >>>>> This is the output of btrfs check with the device unmounted:
+> >>>>>
+> >>>>> ```
+> >>>>> [root@nixos:~]# btrfs check --readonly /dev/sda1
+> >>>>> Opening filesystem to check...
+> >>>>> Checking filesystem on /dev/sda1
+> >>>>> UUID: b8f4ad49-29c8-4d19-a886-cef9c487f124
+> >>>>> [1/7] checking root items
+> >>>>> [2/7] checking extents
+> >>>>> [3/7] checking free space cache
+> >>>>> [4/7] checking fs roots
+> >>>>> root 294 inode 24665 errors 100, file extent discount
+> >>>>> Found file extent holes:
+> >>>>>          start: 3709534208, len: 163840
+> >>>>> root 294 inode 406548 errors 100, file extent discount
+> >>>>> Found file extent holes:
+> >>>>>          start: 0, len: 99450880
+> >>>>> ERROR: errors found in fs roots
+> >>>>> found 11279251902464 bytes used, error(s) found
+> >>>>> total csum bytes: 10935906504
+> >>>>> total tree bytes: 18455740416
+> >>>>> total fs tree bytes: 5798936576
+> >>>>> total extent tree bytes: 532250624
+> >>>>> btree space waste bytes: 2308849707
+> >>>>> file data blocks allocated: 17243418611712
+> >>>>>   referenced 14210256932864
+> >>>>> ```
+> >>>>>
+> >>>>> Looks the same as before...
+> >>>>
+> >>>> Then it means, at least your metadata is pretty safe. Nothing really
+> >>>> needs to be worried (so far).
+> >>>>
+> >>>> This also means, the problem only happens at runtime, not something =
+on-disk.
+> >>>>
+> >>>> If you are OK to re-compile the kernel, and the warning message is
+> >>>> always the same at line number 531 of disk-io.c, then I recommend th=
+e
+> >>>> attached debug diff
+> >>>>
+> >>>> The diff will output the found_start (from eb) and page_start (from =
+page).
+> >>>> If it's memory bitflip, we should have a pretty signature diff at th=
+e
+> >>>> output.
+> >>>> If not memory bitflip, then we really have a bug to dig.
+> >>>>
+> >>>>
+> >>>>>
+> >>>>> I'm afraid I don't have the precise details of the transid error
+> >>>>> saved. I think I meant to write earlier that the message that comes=
+ up
+> >>>>> now and then is the "errno=3D-5 IO failure (Error while writing out
+> >>>>> transaction)". I've not seen the transid mismatch one since the fir=
+st
+> >>>>> incident, sorry for that slip-up.
+> >>>>>
+> >>>>> I'll try and attach to a known good system, will I have to attach t=
+he
+> >>>>> whole array because I don't think I have that many enclosures for t=
+he
+> >>>>> drives.
+> >>>>
+> >>>> You only need to mount the fs you're seeing the problem.
+> >>>> But if that fs is on multiple devices, then I guess you need to moun=
+t
+> >>>> them all.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>>
+> >>>>> I'll also run a memtest on this box.
+> >>>>>
+> >>>>> Thank you for the helpful response.
+> >>>>>
+> >>>>> Best,
+> >>>>> Joe
+> >>>>>
+> >>>>> On Thu, Nov 26, 2020 at 2:15 PM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 2020/11/25 =E4=B8=8B=E5=8D=8811:28, Joe Hermaszewski wrote:
+> >>>>>>> Hi,
+> >>>>>>>
+> >>>>>>> I have a arm32 machine with four drives with a btrfs fs spanning =
+then in RAID1.
+> >>>>>>> The filesystem has started behaving badly recently and I'm writin=
+g to:
+> >>>>>>>
+> >>>>>>> - Solicit advice on how best to get the system back to a stable s=
+tate
+> >>>>>>> - Report a potential bug
+> >>>>>>>
+> >>>>>>> ## What happened:
+> >>>>>>>
+> >>>>>>> A couple of days ago I could no longer ssh into it, and on the se=
+rial
+> >>>>>>> connection there were heaps of messages (and new ones appearing w=
+ith great
+> >>>>>>> frequency) along the lines of: `parent transid verify failed on b=
+lah... wanted
+> >>>>>>> x got y`.
+> >>>>>>>
+> >>>>>>> Although I don't have a record of the precise messages I do remem=
+ber that there
+> >>>>>>> was a difference of `15` between x and y.
+> >>>>>>
+> >>>>>> This normally can be a sign of unreliable HDD, which lies on FLUSH=
+,
+> >>>>>> killing metadata COW.
+> >>>>>>
+> >>>>>> But, your btrfs check doesn't report the same problem, thus I'm co=
+nfused.
+> >>>>>>
+> >>>>>> Would you please try to run a "btrfs check --readonly /dev/sda1" w=
+ith
+> >>>>>> the fs unmounted?
+> >>>>>>
+> >>>>>> And, would you provide the full dmesg of that mismatch?
+> >>>>>> The reason for the exact number is, I'm suspecting hardware memory
+> >>>>>> corruption.
+> >>>>>>
+> >>>>>>>
+> >>>>>>> I power-cycled system and started a scrub after it rebooted, this=
+ was
+> >>>>>>> interrupted quite promptly by several more errors in btrfs, and t=
+he disk
+> >>>>>>> remounted RO.
+> >>>>>>>
+> >>>>>>> Every now and then in the kernel log I get messages like:
+> >>>>>>>
+> >>>>>>> `parent transid verify failed on blah... wanted x got y`
+> >>>>>>
+> >>>>>> Not showing up in the gist dmesg though.
+> >>>>>>
+> >>>>>>>
+> >>>>>>> ## Important info
+> >>>>>>>
+> >>>>>>> The dev stats are all zero.
+> >>>>>>>
+> >>>>>>> Here are the outputs of some btrfs commands, dmesg and the kernel=
+ log from the
+> >>>>>>> previous two boots: https://gist.github.com/b1beab134403c5047e2ef=
+bceb98985f9
+> >>>>>>>
+> >>>>>>> The "cut here" portion of the kernel log is as follows
+> >>>>>>>
+> >>>>>>> ```
+> >>>>>>> [  409.158097] ------------[ cut here ]------------
+> >>>>>>> [  409.158205] WARNING: CPU: 1 PID: 217 at fs/btrfs/disk-io.c:531
+> >>>>>>> btree_csum_one_bio+0x208/0x248 [btrfs]
+> >>>>>>
+> >>>>>> The line number shows, the tree bytenr doesn't match with the one =
+in memory.
+> >>>>>> This is really too rare to be seen, especially when we have no oth=
+er
+> >>>>>> error reported from btrfs (at least in the gist)
+> >>>>>>
+> >>>>>> Since there is no other problems showing up in the gist, it means =
+it
+> >>>>>> could be a bit flip, considering the magic generation gap you ment=
+ion is
+> >>>>>> 15, I'm more suspicious about memory bit flip.
+> >>>>>>
+> >>>>>> If you can provide the full parent transid mismatch error message,=
+ it
+> >>>>>> may help to determine the possibility of hardware memory corruptio=
+n.
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>> Qu
+> >>>>>>
+> >>>>>>> [  409.158208] Modules linked in: cfg80211 rfkill 8021q ip6table_=
+nat
+> >>>>>>> iptable_nat nf_nat xt_conntrack nf_conntrack nf_defrag_ipv6
+> >>>>>>> nf_defrag_ipv4 ip6t_rpfilter ipt_rpfilter ip6table_raw iptable_ra=
+w
+> >>>>>>> xt_pkttype nf_log_ipv6 nf_log_ipv4 nf_log_common xt_LOG xt_tcpudp
+> >>>>>>> ftdi_sio usbserial phy_generic uio_pdrv_genirq uio ip6table_filte=
+r
+> >>>>>>> ip6_tables iptable_filter sch_fq_codel loop tun tap macvlan bridg=
+e stp
+> >>>>>>> llc lm75 ip_tables x_tables autofs4 dm_mod dax btrfs libcrc32c xo=
+r
+> >>>>>>> raid6_pq
+> >>>>>>> [  409.158258] CPU: 1 PID: 217 Comm: btrfs-transacti Not tainted =
+5.4.77 #1-NixOS
+> >>>>>>> [  409.158260] Hardware name: Marvell Armada 380/385 (Device Tree=
+)
+> >>>>>>> [  409.158261] Backtrace:
+> >>>>>>> [  409.158272] [<c010f698>] (dump_backtrace) from [<c010f938>]
+> >>>>>>> (show_stack+0x20/0x24)
+> >>>>>>> [  409.158277]  r7:00000213 r6:600f0013 r5:00000000 r4:c0f8c044
+> >>>>>>> [  409.158283] [<c010f918>] (show_stack) from [<c0a1b388>]
+> >>>>>>> (dump_stack+0x98/0xac)
+> >>>>>>> [  409.158288] [<c0a1b2f0>] (dump_stack) from [<c012a998>] (__war=
+n+0xe0/0x108)
+> >>>>>>> [  409.158292]  r7:00000213 r6:bf058ec8 r5:00000009 r4:bf120990
+> >>>>>>> [  409.158296] [<c012a8b8>] (__warn) from [<c012ad24>]
+> >>>>>>> (warn_slowpath_fmt+0x74/0xc4)
+> >>>>>>> [  409.158300]  r7:00000213 r6:bf120990 r5:00000000 r4:e2392000
+> >>>>>>> [  409.158358] [<c012acb4>] (warn_slowpath_fmt) from [<bf058ec8>]
+> >>>>>>> (btree_csum_one_bio+0x208/0x248 [btrfs])
+> >>>>>>> [  409.158363]  r9:e277abe0 r8:00000001 r7:e2392000 r6:ea3d17f0
+> >>>>>>> r5:00000000 r4:eefd2d3c
+> >>>>>>> [  409.158465] [<bf058cc0>] (btree_csum_one_bio [btrfs]) from
+> >>>>>>> [<bf059ef4>] (btree_submit_bio_hook+0xe8/0x100 [btrfs])
+> >>>>>>> [  409.158470]  r10:e32ce170 r9:ecc45fc0 r8:ecc45f70 r7:ec82b000
+> >>>>>>> r6:00000000 r5:ea3d17f0
+> >>>>>>> [  409.158472]  r4:bf059e0c
+> >>>>>>> [  409.158575] [<bf059e0c>] (btree_submit_bio_hook [btrfs]) from
+> >>>>>>> [<bf08b11c>] (submit_one_bio+0x44/0x5c [btrfs])
+> >>>>>>> [  409.158578]  r7:ef36c048 r6:e2393cac r5:00000000 r4:bf059e0c
+> >>>>>>> [  409.158683] [<bf08b0d8>] (submit_one_bio [btrfs]) from [<bf096=
+5d4>]
+> >>>>>>> (btree_write_cache_pages+0x380/0x408 [btrfs])
+> >>>>>>> [  409.158686]  r5:00000000 r4:00000000
+> >>>>>>> [  409.158788] [<bf096254>] (btree_write_cache_pages [btrfs]) fro=
+m
+> >>>>>>> [<bf059028>] (btree_writepages+0x7c/0x84 [btrfs])
+> >>>>>>> [  409.158793]  r10:00000001 r9:4fd00000 r8:c0280c94 r7:e2392000
+> >>>>>>> r6:e2393d80 r5:ecc45f70
+> >>>>>>> [  409.158794]  r4:e2393d80
+> >>>>>>> [  409.158850] [<bf058fac>] (btree_writepages [btrfs]) from
+> >>>>>>> [<c0284748>] (do_writepages+0x58/0xf4)
+> >>>>>>> [  409.158852]  r5:ecc45f70 r4:ecc45e68
+> >>>>>>> [  409.158860] [<c02846f0>] (do_writepages) from [<c0278c30>]
+> >>>>>>> (__filemap_fdatawrite_range+0xf8/0x130)
+> >>>>>>> [  409.158864]  r8:ecc45f70 r7:00001000 r6:4fd0bfff r5:e2392000 r=
+4:ecc45e68
+> >>>>>>> [  409.158869] [<c0278b38>] (__filemap_fdatawrite_range) from
+> >>>>>>> [<c0278db8>] (filemap_fdatawrite_range+0x2c/0x34)
+> >>>>>>> [  409.158874]  r10:ecc45f70 r9:00001000 r8:4fd0bfff r7:e2393e4c
+> >>>>>>> r6:c73bc628 r5:00001000
+> >>>>>>> [  409.158875]  r4:4fd0bfff
+> >>>>>>> [  409.158929] [<c0278d8c>] (filemap_fdatawrite_range) from
+> >>>>>>> [<bf0604b4>] (btrfs_write_marked_extents+0x9c/0x1b0 [btrfs])
+> >>>>>>> [  409.158931]  r5:00000001 r4:00000000
+> >>>>>>> [  409.159033] [<bf060418>] (btrfs_write_marked_extents [btrfs]) =
+from
+> >>>>>>> [<bf060660>] (btrfs_write_and_wait_transaction+0x54/0xa4 [btrfs])
+> >>>>>>> [  409.159038]  r10:e2392000 r9:ec82b010 r8:ec82b000 r7:c73bc628
+> >>>>>>> r6:ec82b000 r5:e2392000
+> >>>>>>> [  409.159040]  r4:c8b81ca8
+> >>>>>>> [  409.159141] [<bf06060c>] (btrfs_write_and_wait_transaction [bt=
+rfs])
+> >>>>>>> from [<bf062398>] (btrfs_commit_transaction+0x75c/0xc94 [btrfs])
+> >>>>>>> [  409.159145]  r8:ec82b418 r7:c73bc600 r6:ec82b000 r5:c8b81ca8 r=
+4:00000000
+> >>>>>>> [  409.159248] [<bf061c3c>] (btrfs_commit_transaction [btrfs]) fr=
+om
+> >>>>>>> [<bf05cd08>] (transaction_kthread+0x19c/0x1e0 [btrfs])
+> >>>>>>> [  409.159253]  r10:ec82b28c r9:00000000 r8:001aaafa r7:00000064
+> >>>>>>> r6:ec82b414 r5:00000bb8
+> >>>>>>> [  409.159254]  r4:ec82b000
+> >>>>>>> [  409.159309] [<bf05cb6c>] (transaction_kthread [btrfs]) from
+> >>>>>>> [<c014fabc>] (kthread+0x170/0x174)
+> >>>>>>> [  409.159313]  r10:eca87bfc r9:bf05cb6c r8:ed619000 r7:e2392000
+> >>>>>>> r6:00000000 r5:ed5ee700
+> >>>>>>> [  409.159315]  r4:ed5ee1c0
+> >>>>>>> [  409.159320] [<c014f94c>] (kthread) from [<c01010e8>]
+> >>>>>>> (ret_from_fork+0x14/0x2c)
+> >>>>>>> [  409.159322] Exception stack(0xe2393fb0 to 0xe2393ff8)
+> >>>>>>> [  409.159326] 3fa0:                                     00000000
+> >>>>>>> 00000000 00000000 00000000
+> >>>>>>> [  409.159331] 3fc0: 00000000 00000000 00000000 00000000 00000000
+> >>>>>>> 00000000 00000000 00000000
+> >>>>>>> [  409.159334] 3fe0: 00000000 00000000 00000000 00000000 00000013=
+ 00000000
+> >>>>>>> [  409.159338]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
+> >>>>>>> r6:00000000 r5:c014f94c
+> >>>>>>> [  409.159340]  r4:ed5ee700
+> >>>>>>> [  409.159342] ---[ end trace eea59ced12fa7859 ]---
+> >>>>>>> [  409.165084] BTRFS: error (device sda1) in
+> >>>>>>> btrfs_commit_transaction:2279: errno=3D-5 IO failure (Error while
+> >>>>>>> writing out transaction)
+> >>>>>>> [  409.176920] BTRFS info (device sda1): forced readonly
+> >>>>>>> [  409.176947] BTRFS warning (device sda1): Skipping commit of ab=
+orted
+> >>>>>>> transaction.
+> >>>>>>> [  409.176952] BTRFS: error (device sda1) in cleanup_transaction:=
+1832:
+> >>>>>>> errno=3D-5 IO failure
+> >>>>>>> [  409.185049] BTRFS info (device sda1): delayed_refs has NO entr=
+y
+> >>>>>>> [  409.310199] BTRFS info (device sda1): scrub: not finished on d=
+evid
+> >>>>>>> 3 with status: -125
+> >>>>>>> [  409.664880] BTRFS info (device sda1): scrub: not finished on d=
+evid
+> >>>>>>> 4 with status: -125
+> >>>>>>> [  410.106791] BTRFS info (device sda1): scrub: not finished on d=
+evid
+> >>>>>>> 1 with status: -125
+> >>>>>>> [  411.268585] BTRFS warning (device sda1): failed setting block =
+group ro: -30
+> >>>>>>> [  411.268594] BTRFS info (device sda1): scrub: not finished on d=
+evid
+> >>>>>>> 2 with status: -30
+> >>>>>>> [  411.268605] BTRFS info (device sda1): delayed_refs has NO entr=
+y
+> >>>>>>> ```
+> >>>>>>>
+> >>>>>>> Information requested here
+> >>>>>>> (https://btrfs.wiki.kernel.org/index.php/Btrfs_mailing_list):
+> >>>>>>>
+> >>>>>>> ```
+> >>>>>>>   $ uname -a
+> >>>>>>> Linux thanos 5.4.77 #1-NixOS SMP Tue Nov 10 20:13:20 UTC 2020 arm=
+v7l GNU/Linux
+> >>>>>>>
+> >>>>>>>   $ btrfs --version
+> >>>>>>> btrfs-progs v5.7
+> >>>>>>>
+> >>>>>>>   $ sudo btrfs fi show
+> >>>>>>> Label: none  uuid: b8f4ad49-29c8-4d19-a886-cef9c487f124
+> >>>>>>>          Total devices 4 FS bytes used 10.26TiB
+> >>>>>>>          devid    1 size 3.64TiB used 2.40TiB path /dev/sda1
+> >>>>>>>          devid    2 size 3.64TiB used 2.40TiB path /dev/sdc1
+> >>>>>>>          devid    3 size 9.09TiB used 7.86TiB path /dev/sdd1
+> >>>>>>>          devid    4 size 9.09TiB used 7.86TiB path /dev/sdb1
+> >>>>>>>
+> >>>>>>> Label: none  uuid: d02a3067-0a23-4c1f-96ac-80dbc26622f2
+> >>>>>>>          Total devices 1 FS bytes used 116.35MiB
+> >>>>>>>          devid    1 size 399.82MiB used 224.00MiB path /dev/sda2
+> >>>>>>>
+> >>>>>>>   $ sudo btrfs fi df /
+> >>>>>>> Data, RAID1: total=3D10.25TiB, used=3D10.24TiB
+> >>>>>>> System, RAID1: total=3D64.00MiB, used=3D1.45MiB
+> >>>>>>> Metadata, RAID1: total=3D18.00GiB, used=3D17.19GiB
+> >>>>>>> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+> >>>>>>> ```
+> >>>>>>>
+> >>>>>>> Thanks to demfloro and multicore on #btrfs for prompting this ema=
+il.
+> >>>>>>>
+> >>>>>>> Best wishes,
+> >>>>>>> Joe
+> >>>>>>>
+> >>>>>>
+> >>
