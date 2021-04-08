@@ -2,28 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA77E358FA6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 00:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1BB358FC9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 00:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhDHWLr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Apr 2021 18:11:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40174 "EHLO mail.kernel.org"
+        id S232795AbhDHW05 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Apr 2021 18:26:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232265AbhDHWLp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:11:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C668361107;
-        Thu,  8 Apr 2021 22:11:33 +0000 (UTC)
+        id S232265AbhDHW04 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 8 Apr 2021 18:26:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56B10610F7;
+        Thu,  8 Apr 2021 22:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617919893;
-        bh=JHtxDsKdHaTfSByGIt0LBvw1nnygzJIyZWR4wvxXFYU=;
+        s=k20201202; t=1617920804;
+        bh=0aS821BgGrwNDh6ecXyzgYTlL3k88Djp+rVvaNME4BQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aDiatDdZBUiYkGFU31JmrQVsKVFW+mN8umpeZ/t6bTNxSRnI5VgIPtNZ0MqMtEDqS
-         vilyR6P1dNLbbfLdTouNeKeSrC2k04mpG8ByCKDq/o+Ygtyj/AKYpYSD6Fbnz5oe7y
-         pkn3Xw+QZS8m0zNkxyRlaIeSJa5zWPvsxTYUxeExxOugb3cD79zY4yodH+5lpUWA56
-         s+G4R/UyRUko2Lw4YPpOwRyprb3A5jk4wbKXMlSAQ+dtkvuCalCzujDGYGQUy0I+DF
-         S2h8jZiMahtkDhjLIK7CDFpWe7FLBYBDXAItu5WnWcA93WgFhkFAr6NpuD/ZebOjsA
-         kNL51WVseojZQ==
-Date:   Thu, 8 Apr 2021 15:11:31 -0700
+        b=H9La33FljbUwnmdkKj5jf638xxBAXTcHtSzenNjnGrO7ykJBf8dr4YW6nlu49SXxP
+         KZ69pOfYcbg2KEEYPDjLlHhNjJli8GseaqyCskOlg/D078E6iE23ozhq/owWp8EXvp
+         xPTuRGJ7ofhN9i8BwP5ukG5LJehy7VQc8HuY6+ePSxoaQcwmc6VZPmdkrjPl+LMvFd
+         r5iD7PfBfsjP0Ucc74KfmA942ZEXxW7NBSFKk9WL7l2S1e4QHVFFd8LfWE0T3mydBj
+         vlJJd4NtxhRCDM4AFjpkw6CwP/Go3F2SvRmnIvioQb6gayA/X9m4QgbGIgGyPCblmS
+         W5L/9x/natMmA==
+Date:   Thu, 8 Apr 2021 15:26:43 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
 Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
@@ -31,151 +31,121 @@ Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
         darrick.wong@oracle.com, dan.j.williams@intel.com,
         willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
         linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de, Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCH v4 2/7] fsdax: Replace mmap entry in case of CoW
-Message-ID: <20210408221131.GZ3957620@magnolia>
+        rgoldwyn@suse.de
+Subject: Re: [PATCH v4 4/7] iomap: Introduce iomap_apply2() for operations on
+ two files
+Message-ID: <20210408222643.GA3957620@magnolia>
 References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
- <20210408120432.1063608-3-ruansy.fnst@fujitsu.com>
+ <20210408120432.1063608-5-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408120432.1063608-3-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210408120432.1063608-5-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:04:27PM +0800, Shiyang Ruan wrote:
-> We replace the existing entry to the newly allocated one in case of CoW.
-> Also, we mark the entry as PAGECACHE_TAG_TOWRITE so writeback marks this
-> entry as writeprotected.  This helps us snapshots so new write
-> pagefaults after snapshots trigger a CoW.
+On Thu, Apr 08, 2021 at 08:04:29PM +0800, Shiyang Ruan wrote:
+> Some operations, such as comparing a range of data in two files under
+> fsdax mode, requires nested iomap_open()/iomap_end() on two file.  Thus,
+> we introduce iomap_apply2() to accept arguments from two files and
+> iomap_actor2_t for actions on two files.
 > 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/dax.c | 39 ++++++++++++++++++++++++++++-----------
->  1 file changed, 28 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index b4fd3813457a..e6c1354b27a8 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -722,6 +722,10 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->  	return 0;
->  }
->  
-> +/* DAX Insert Flag for the entry we insert */
 
-Might be worth mentioning that these are xarray marks for the inserted
-entry, since this comment didn't help much.
+Kinda wish we weren't propagating even more indirect call usage, but oh
+well.
 
-> +#define DAX_IF_DIRTY		(1 << 0)
-> +#define DAX_IF_COW		(1 << 1)
-> +
->  /*
->   * By this point grab_mapping_entry() has ensured that we have a locked entry
->   * of the appropriate size so we don't have to worry about downgrading PMDs to
-> @@ -729,16 +733,19 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->   * already in the tree, we will skip the insertion and just dirty the PMD as
->   * appropriate.
->   */
-> -static void *dax_insert_entry(struct xa_state *xas,
-> -		struct address_space *mapping, struct vm_fault *vmf,
-> -		void *entry, pfn_t pfn, unsigned long flags, bool dirty)
-> +static void *dax_insert_entry(struct xa_state *xas, struct vm_fault *vmf,
-> +		void *entry, pfn_t pfn, unsigned long flags,
-> +		unsigned int insert_flags)
-
-Urk, two flags arguments.  Oh, I see.  We insert (shifted) pfn_t values
-into the mapping as xarray values, so @flags determines the state flags
-of the new entry value, whereas @insert_flags determines what xarray
-mark we're going to attach (if any) to the inserted value.
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
 --D
 
->  {
-> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
->  	void *new_entry = dax_make_entry(pfn, flags);
-> +	bool dirty = insert_flags & DAX_IF_DIRTY;
-> +	bool cow = insert_flags & DAX_IF_COW;
+> ---
+>  fs/iomap/apply.c      | 52 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/iomap.h |  7 +++++-
+>  2 files changed, 58 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/iomap/apply.c b/fs/iomap/apply.c
+> index 26ab6563181f..0493da5286ad 100644
+> --- a/fs/iomap/apply.c
+> +++ b/fs/iomap/apply.c
+> @@ -97,3 +97,55 @@ iomap_apply(struct inode *inode, loff_t pos, loff_t length, unsigned flags,
 >  
->  	if (dirty)
->  		__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
->  
-> -	if (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE)) {
-> +	if (cow || (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE))) {
->  		unsigned long index = xas->xa_index;
->  		/* we are replacing a zero page with block mapping */
->  		if (dax_is_pmd_entry(entry))
-> @@ -750,7 +757,7 @@ static void *dax_insert_entry(struct xa_state *xas,
->  
->  	xas_reset(xas);
->  	xas_lock_irq(xas);
-> -	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
-> +	if (cow || dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
->  		void *old;
->  
->  		dax_disassociate_entry(entry, mapping, false);
-> @@ -774,6 +781,9 @@ static void *dax_insert_entry(struct xa_state *xas,
->  	if (dirty)
->  		xas_set_mark(xas, PAGECACHE_TAG_DIRTY);
->  
-> +	if (cow)
-> +		xas_set_mark(xas, PAGECACHE_TAG_TOWRITE);
-> +
->  	xas_unlock_irq(xas);
->  	return entry;
+>  	return written ? written : ret;
 >  }
-> @@ -1109,8 +1119,7 @@ static vm_fault_t dax_load_hole(struct xa_state *xas,
->  	pfn_t pfn = pfn_to_pfn_t(my_zero_pfn(vaddr));
->  	vm_fault_t ret;
->  
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
-> -			DAX_ZERO_PAGE, false);
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn, DAX_ZERO_PAGE, 0);
->  
->  	ret = vmf_insert_mixed(vmf->vma, vaddr, pfn);
->  	trace_dax_load_hole(inode, vmf, ret);
-> @@ -1137,8 +1146,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->  		goto fallback;
->  
->  	pfn = page_to_pfn_t(zero_page);
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn,
-> -			DAX_PMD | DAX_ZERO_PAGE, false);
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn,
-> +				  DAX_PMD | DAX_ZERO_PAGE, 0);
->  
->  	if (arch_needs_pgtable_deposit()) {
->  		pgtable = pte_alloc_one(vma->vm_mm);
-> @@ -1444,6 +1453,7 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
->  	bool write = vmf->flags & FAULT_FLAG_WRITE;
->  	bool sync = dax_fault_is_synchronous(flags, vmf->vma, iomap);
->  	unsigned long entry_flags = pmd ? DAX_PMD : 0;
-> +	unsigned int insert_flags = 0;
->  	int err = 0;
->  	pfn_t pfn;
->  	void *kaddr;
-> @@ -1466,8 +1476,15 @@ static vm_fault_t dax_fault_actor(struct vm_fault *vmf, pfn_t *pfnp,
->  	if (err)
->  		return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
->  
-> -	*entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn, entry_flags,
-> -				  write && !sync);
-> +	if (write) {
-> +		if (!sync)
-> +			insert_flags |= DAX_IF_DIRTY;
-> +		if (iomap->flags & IOMAP_F_SHARED)
-> +			insert_flags |= DAX_IF_COW;
-> +	}
 > +
-> +	*entry = dax_insert_entry(xas, vmf, *entry, pfn, entry_flags,
-> +				  insert_flags);
+> +loff_t
+> +iomap_apply2(struct inode *ino1, loff_t pos1, struct inode *ino2, loff_t pos2,
+> +		loff_t length, unsigned int flags, const struct iomap_ops *ops,
+> +		void *data, iomap_actor2_t actor)
+> +{
+> +	struct iomap smap = { .type = IOMAP_HOLE };
+> +	struct iomap dmap = { .type = IOMAP_HOLE };
+> +	loff_t written = 0, ret, ret2 = 0;
+> +	loff_t len1 = length, len2, min_len;
+> +
+> +	ret = ops->iomap_begin(ino1, pos1, len1, flags, &smap, NULL);
+> +	if (ret)
+> +		goto out;
+> +	if (WARN_ON(smap.offset > pos1)) {
+> +		written = -EIO;
+> +		goto out_src;
+> +	}
+> +	if (WARN_ON(smap.length == 0)) {
+> +		written = -EIO;
+> +		goto out_src;
+> +	}
+> +	len2 = min_t(loff_t, len1, smap.length);
+> +
+> +	ret = ops->iomap_begin(ino2, pos2, len2, flags, &dmap, NULL);
+> +	if (ret)
+> +		goto out_src;
+> +	if (WARN_ON(dmap.offset > pos2)) {
+> +		written = -EIO;
+> +		goto out_dest;
+> +	}
+> +	if (WARN_ON(dmap.length == 0)) {
+> +		written = -EIO;
+> +		goto out_dest;
+> +	}
+> +	min_len = min_t(loff_t, len2, dmap.length);
+> +
+> +	written = actor(ino1, pos1, ino2, pos2, min_len, data, &smap, &dmap);
+> +
+> +out_dest:
+> +	if (ops->iomap_end)
+> +		ret2 = ops->iomap_end(ino2, pos2, len2,
+> +				      written > 0 ? written : 0, flags, &dmap);
+> +out_src:
+> +	if (ops->iomap_end)
+> +		ret = ops->iomap_end(ino1, pos1, len1,
+> +				     written > 0 ? written : 0, flags, &smap);
+> +out:
+> +	if (written)
+> +		return written;
+> +	return ret ?: ret2;
+> +}
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index d202fd2d0f91..9493c48bcc9c 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -150,10 +150,15 @@ struct iomap_ops {
+>   */
+>  typedef loff_t (*iomap_actor_t)(struct inode *inode, loff_t pos, loff_t len,
+>  		void *data, struct iomap *iomap, struct iomap *srcmap);
+> -
+> +typedef loff_t (*iomap_actor2_t)(struct inode *ino1, loff_t pos1,
+> +		struct inode *ino2, loff_t pos2, loff_t len, void *data,
+> +		struct iomap *smap, struct iomap *dmap);
+>  loff_t iomap_apply(struct inode *inode, loff_t pos, loff_t length,
+>  		unsigned flags, const struct iomap_ops *ops, void *data,
+>  		iomap_actor_t actor);
+> +loff_t iomap_apply2(struct inode *ino1, loff_t pos1, struct inode *ino2,
+> +		loff_t pos2, loff_t length, unsigned int flags,
+> +		const struct iomap_ops *ops, void *data, iomap_actor2_t actor);
 >  
->  	if (write &&
->  	    srcmap->addr != IOMAP_HOLE && srcmap->addr != iomap->addr) {
+>  ssize_t iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *from,
+>  		const struct iomap_ops *ops);
 > -- 
 > 2.31.0
 > 
