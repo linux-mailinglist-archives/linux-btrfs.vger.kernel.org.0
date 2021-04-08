@@ -2,264 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA57358FE6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 00:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF43359001
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 00:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhDHWkR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Apr 2021 18:40:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48520 "EHLO mail.kernel.org"
+        id S232804AbhDHWuW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Apr 2021 18:50:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232915AbhDHWkR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:40:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8384B61159;
-        Thu,  8 Apr 2021 22:40:05 +0000 (UTC)
+        id S232632AbhDHWuW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 8 Apr 2021 18:50:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 471F161106;
+        Thu,  8 Apr 2021 22:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617921605;
-        bh=K2jD0akbYdLKdPVjxAi9o8SNykZ+szmTFeSEaBQvdAs=;
+        s=k20201202; t=1617922210;
+        bh=LtzCTx1RUdTu2D2LUpGfjHRssVKWpttdFiKctyfo6SM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WrCiUDzFMVQIkHOkYS3MG06pbKBK/bbzYf/4K8GIVKhJT75yUCKPt96COtV2NsKLF
-         SJi23FEsbZp9zBWmaA9MtxaVxUszXe+0JejeHHYrgboPLEiKi3noeW0g4x2+2jW5Zq
-         gfqw9b+/5/2k/jGe2AHoPa/iS6fU6C0V/LByEVpLrHGEPNU6m6ijKKU2KLzXDXetRh
-         t/LqBwK8aJ5mUGOF8vcuHrw1rfO5rIbIC6zh4pAQcYgNrulUQ86wFCBRFJlIfbjgKj
-         9xTRcK5vL/OpkXoKKImAntaD+xFRaYcRmr/yR9rgIaacZmEQENbXWMpvztIYKkpCiA
-         LxzqwV8hjxIpg==
-Date:   Thu, 8 Apr 2021 15:40:04 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
-        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
-        rgoldwyn@suse.de
-Subject: Re: [PATCH v4 6/7] fs/xfs: Handle CoW for fsdax write() path
-Message-ID: <20210408224004.GC3957620@magnolia>
-References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
- <20210408120432.1063608-7-ruansy.fnst@fujitsu.com>
+        b=K2hPJpSyXNk+uyXWsaUPh1CCAUQMSRUwkLpz350G3ZyaepC9moAeocIlHx4NHgk9N
+         JlTWuCPt9FTm38+P/DtUzHLie2fWdSCgEAdvSkJG4mvAq7+6MBYsEjRGrYIKEo+6Q2
+         2sIDtMRqztUjo3i84VDNc62VzRk4MdNJWw+G35nP3UV6aMPc/Dn4vmHM7IFTmjCV/m
+         H6Eft9DIKVIZlwt58rEJ4U6mQcxvn+J9nfzqoQzJPLbTdTqj5x1q5Fz6Tl2mZ1ZlsD
+         kB1TBwwJL5UP63Eu3oBEVTut9kAOehjuTmcm1kqunESTq0DtoYb72NeZzcK4jnrfRc
+         haHmNpJuPZ9KA==
+Date:   Thu, 8 Apr 2021 15:50:08 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] btrfs: initial fsverity support
+Message-ID: <YG+IoOqvDNtkwWQf@sol.localdomain>
+References: <cover.1617900170.git.boris@bur.io>
+ <c9335d862ee4ddc1f7193bbb06ca7313d9ff1b30.1617900170.git.boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408120432.1063608-7-ruansy.fnst@fujitsu.com>
+In-Reply-To: <c9335d862ee4ddc1f7193bbb06ca7313d9ff1b30.1617900170.git.boris@bur.io>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:04:31PM +0800, Shiyang Ruan wrote:
-> In fsdax mode, WRITE and ZERO on a shared extent need CoW performed. After
-> CoW, new allocated extents needs to be remapped to the file.  So, add an
-> iomap_end for dax write ops to do the remapping work.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/xfs/xfs_bmap_util.c |  3 +--
->  fs/xfs/xfs_file.c      |  9 +++----
->  fs/xfs/xfs_iomap.c     | 58 +++++++++++++++++++++++++++++++++++++++++-
->  fs/xfs/xfs_iomap.h     |  4 +++
->  fs/xfs/xfs_iops.c      |  7 +++--
->  fs/xfs/xfs_reflink.c   |  3 +--
->  6 files changed, 69 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-> index e7d68318e6a5..9fcea33dd2c9 100644
-> --- a/fs/xfs/xfs_bmap_util.c
-> +++ b/fs/xfs/xfs_bmap_util.c
-> @@ -954,8 +954,7 @@ xfs_free_file_space(
->  		return 0;
->  	if (offset + len > XFS_ISIZE(ip))
->  		len = XFS_ISIZE(ip) - offset;
-> -	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	error = xfs_iomap_zero_range(VFS_I(ip), offset, len, NULL);
->  	if (error)
->  		return error;
->  
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index a007ca0711d9..5795d5d6f869 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -684,11 +684,8 @@ xfs_file_dax_write(
->  	pos = iocb->ki_pos;
->  
->  	trace_xfs_file_dax_write(iocb, from);
-> -	ret = dax_iomap_rw(iocb, from, &xfs_direct_write_iomap_ops);
-> -	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
-> -		i_size_write(inode, iocb->ki_pos);
-> -		error = xfs_setfilesize(ip, pos, ret);
-> -	}
-> +	ret = dax_iomap_rw(iocb, from, &xfs_dax_write_iomap_ops);
-> +
->  out:
->  	if (iolock)
->  		xfs_iunlock(ip, iolock);
-> @@ -1309,7 +1306,7 @@ __xfs_filemap_fault(
->  
->  		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
->  				(write_fault && !vmf->cow_page) ?
-> -				 &xfs_direct_write_iomap_ops :
-> +				 &xfs_dax_write_iomap_ops :
->  				 &xfs_read_iomap_ops);
->  		if (ret & VM_FAULT_NEEDDSYNC)
->  			ret = dax_finish_sync_fault(vmf, pe_size, pfn);
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index e17ab7f42928..f818f989687b 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -760,7 +760,8 @@ xfs_direct_write_iomap_begin(
->  
->  		/* may drop and re-acquire the ilock */
->  		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-> -				&lockmode, flags & IOMAP_DIRECT);
-> +				&lockmode,
-> +				flags & IOMAP_DIRECT || IS_DAX(inode));
+On Thu, Apr 08, 2021 at 11:33:53AM -0700, Boris Burkov wrote:
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index f7a4ad86adee..e5282a8f566a 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1339,6 +1339,7 @@ static int btrfs_fill_super(struct super_block *sb,
+>  	sb->s_op = &btrfs_super_ops;
+>  	sb->s_d_op = &btrfs_dentry_operations;
+>  	sb->s_export_op = &btrfs_export_ops;
+> +	sb->s_vop = &btrfs_verityops;
+>  	sb->s_xattr = btrfs_xattr_handlers;
+>  	sb->s_time_gran = 1;
 
-Parentheses, please:
-				(flags & IOMAP_DIRECT) || IS_DAX(inode));
+As the kernel test robot has hinted at, this line needs to be conditional on
+CONFIG_FS_VERITY.
 
->  		if (error)
->  			goto out_unlock;
->  		if (shared)
-> @@ -853,6 +854,38 @@ const struct iomap_ops xfs_direct_write_iomap_ops = {
->  	.iomap_begin		= xfs_direct_write_iomap_begin,
->  };
->  
-> +static int
-> +xfs_dax_write_iomap_end(
-> +	struct inode		*inode,
-> +	loff_t			pos,
-> +	loff_t			length,
-> +	ssize_t			written,
-> +	unsigned int		flags,
-> +	struct iomap		*iomap)
+> +/*
+> + * Helper function for computing cache index for Merkle tree pages
+> + * @inode: verity file whose Merkle items we want.
+> + * @merkle_index: index of the page in the Merkle tree (as in
+> + *                read_merkle_tree_page).
+> + * @ret_index: returned index in the inode's mapping
+> + *
+> + * Returns: 0 on success, -EFBIG if the location in the file would be beyond
+> + * sb->s_maxbytes.
+> + */
+> +static int get_verity_mapping_index(struct inode *inode,
+> +				    pgoff_t merkle_index,
+> +				    pgoff_t *ret_index)
 > +{
-> +	int			error = 0;
-> +	xfs_inode_t		*ip = XFS_I(inode);
+> +	/*
+> +	 * the file is readonly, so i_size can't change here.  We jump
+> +	 * some pages past the last page to cache our merkles.  The goal
+> +	 * is just to jump past any hugepages that might be mapped in.
+> +	 */
+> +	pgoff_t merkle_offset = 2048;
+> +	u64 index = (i_size_read(inode) >> PAGE_SHIFT) + merkle_offset + merkle_index;
 
-Please don't use typedefs:
+Would it make more sense to align the page index to 2048, rather than adding
+2048?  Or are huge pages not necessarily aligned in the page cache?
 
-	struct xfs_inode	*ip = XFS_I(inode);
-
-> +	bool			cow = xfs_is_cow_inode(ip);
 > +
-> +	if (pos + written > i_size_read(inode)) {
+> +	if (index > inode->i_sb->s_maxbytes >> PAGE_SHIFT)
+> +		return -EFBIG;
 
-What if we wrote zero bytes?  Usually that means error, right?
+There's an off-by-one error here; it's considering the beginning of the page
+rather than the end of the page.
 
-> +		i_size_write(inode, pos + written);
-> +		error = xfs_setfilesize(ip, pos, written);
-> +		if (error && cow) {
-> +			xfs_reflink_cancel_cow_range(ip, pos, written, true);
-> +			return error;
+> +/*
+> + * Insert and write inode items with a given key type and offset.
+> + * @inode: The inode to insert for.
+> + * @key_type: The key type to insert.
+> + * @offset: The item offset to insert at.
+> + * @src: Source data to write.
+> + * @len: Length of source data to write.
+> + *
+> + * Write len bytes from src into items of up to 1k length.
+> + * The inserted items will have key <ino, key_type, offset + off> where
+> + * off is consecutively increasing from 0 up to the last item ending at
+> + * offset + len.
+> + *
+> + * Returns 0 on success and a negative error code on failure.
+> + */
+> +static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> +			   const char *src, u64 len)
+> +{
+> +	struct btrfs_trans_handle *trans;
+> +	struct btrfs_path *path;
+> +	struct btrfs_root *root = inode->root;
+> +	struct extent_buffer *leaf;
+> +	struct btrfs_key key;
+> +	u64 orig_len = len;
+> +	u64 copied = 0;
+> +	unsigned long copy_bytes;
+> +	unsigned long src_offset = 0;
+> +	void *data;
+> +	int ret;
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	while (len > 0) {
+> +		trans = btrfs_start_transaction(root, 1);
+> +		if (IS_ERR(trans)) {
+> +			ret = PTR_ERR(trans);
+> +			break;
 > +		}
+> +
+> +		key.objectid = btrfs_ino(inode);
+> +		key.offset = offset;
+> +		key.type = key_type;
+> +
+> +		/*
+> +		 * insert 1K at a time mostly to be friendly for smaller
+> +		 * leaf size filesystems
+> +		 */
+> +		copy_bytes = min_t(u64, len, 1024);
+> +
+> +		ret = btrfs_insert_empty_item(trans, root, path, &key, copy_bytes);
+> +		if (ret) {
+> +			btrfs_end_transaction(trans);
+> +			break;
+> +		}
+> +
+> +		leaf = path->nodes[0];
+> +
+> +		data = btrfs_item_ptr(leaf, path->slots[0], void);
+> +		write_extent_buffer(leaf, src + src_offset,
+> +				    (unsigned long)data, copy_bytes);
+> +		offset += copy_bytes;
+> +		src_offset += copy_bytes;
+> +		len -= copy_bytes;
+> +		copied += copy_bytes;
+> +
+> +		btrfs_release_path(path);
+> +		btrfs_end_transaction(trans);
 > +	}
-> +	if (cow)
-> +		error = xfs_reflink_end_cow(ip, pos, written);
 > +
-> +	return error;
-> +}
+> +	btrfs_free_path(path);
 > +
-> +const struct iomap_ops xfs_dax_write_iomap_ops = {
-> +	.iomap_begin		= xfs_direct_write_iomap_begin,
-> +	.iomap_end		= xfs_dax_write_iomap_end,
-> +};
-> +
->  static int
->  xfs_buffered_write_iomap_begin(
->  	struct inode		*inode,
-> @@ -1314,3 +1347,26 @@ xfs_xattr_iomap_begin(
->  const struct iomap_ops xfs_xattr_iomap_ops = {
->  	.iomap_begin		= xfs_xattr_iomap_begin,
->  };
-> +
-> +int
-> +xfs_iomap_zero_range(
-> +	struct inode		*inode,
+> +	if (!ret && copied != orig_len)
+> +		ret = -EIO;
 
-Might as well pass the xfs_inode pointers directly into these two functions.
+The condition '!ret && copied != orig_len' at the end appears to be unnecessary,
+since this function doesn't do short writes.
 
---D
-
-> +	loff_t			offset,
-> +	loff_t			len,
-> +	bool			*did_zero)
+> +/*
+> + * fsverity op that gets the struct fsverity_descriptor.
+> + * fsverity does a two pass setup for reading the descriptor, in the first pass
+> + * it calls with buf_size = 0 to query the size of the descriptor,
+> + * and then in the second pass it actually reads the descriptor off
+> + * disk.
+> + */
+> +static int btrfs_get_verity_descriptor(struct inode *inode, void *buf,
+> +				       size_t buf_size)
 > +{
-> +	return iomap_zero_range(inode, offset, len, did_zero,
-> +			IS_DAX(inode) ? &xfs_dax_write_iomap_ops :
-> +					&xfs_buffered_write_iomap_ops);
-> +}
+> +	size_t true_size;
+> +	ssize_t ret = 0;
+> +	struct btrfs_verity_descriptor_item item;
 > +
-> +int
-> +xfs_iomap_truncate_page(
-> +	struct inode		*inode,
-> +	loff_t			pos,
-> +	bool			*did_zero)
-> +{
-> +	return iomap_truncate_page(inode, pos, did_zero,
-> +			IS_DAX(inode) ? &xfs_dax_write_iomap_ops :
-> +					&xfs_buffered_write_iomap_ops);
-> +}
-> diff --git a/fs/xfs/xfs_iomap.h b/fs/xfs/xfs_iomap.h
-> index 7d3703556d0e..8adb2bf78a5a 100644
-> --- a/fs/xfs/xfs_iomap.h
-> +++ b/fs/xfs/xfs_iomap.h
-> @@ -14,6 +14,9 @@ struct xfs_bmbt_irec;
->  int xfs_iomap_write_direct(struct xfs_inode *ip, xfs_fileoff_t offset_fsb,
->  		xfs_fileoff_t count_fsb, struct xfs_bmbt_irec *imap);
->  int xfs_iomap_write_unwritten(struct xfs_inode *, xfs_off_t, xfs_off_t, bool);
-> +int xfs_iomap_zero_range(struct inode *inode, loff_t offset, loff_t len,
-> +		bool *did_zero);
-> +int xfs_iomap_truncate_page(struct inode *inode, loff_t pos, bool *did_zero);
->  xfs_fileoff_t xfs_iomap_eof_align_last_fsb(struct xfs_inode *ip,
->  		xfs_fileoff_t end_fsb);
->  
-> @@ -42,6 +45,7 @@ xfs_aligned_fsb_count(
->  
->  extern const struct iomap_ops xfs_buffered_write_iomap_ops;
->  extern const struct iomap_ops xfs_direct_write_iomap_ops;
-> +extern const struct iomap_ops xfs_dax_write_iomap_ops;
->  extern const struct iomap_ops xfs_read_iomap_ops;
->  extern const struct iomap_ops xfs_seek_iomap_ops;
->  extern const struct iomap_ops xfs_xattr_iomap_ops;
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index 66ebccb5a6ff..db8eeaa8a773 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -879,8 +879,8 @@ xfs_setattr_size(
->  	 */
->  	if (newsize > oldsize) {
->  		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
-> -		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
-> -				&did_zeroing, &xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_zero_range(inode, oldsize, newsize - oldsize,
-> +				&did_zeroing);
->  	} else {
->  		/*
->  		 * iomap won't detect a dirty page over an unwritten block (or a
-> @@ -892,8 +892,7 @@ xfs_setattr_size(
->  						     newsize);
->  		if (error)
->  			return error;
-> -		error = iomap_truncate_page(inode, newsize, &did_zeroing,
-> -				&xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_truncate_page(inode, newsize, &did_zeroing);
->  	}
->  
->  	if (error)
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index 9ef9f98725a2..a4cd6e8a7aa0 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -1266,8 +1266,7 @@ xfs_reflink_zero_posteof(
->  		return 0;
->  
->  	trace_xfs_zero_eof(ip, isize, pos - isize);
-> -	return iomap_zero_range(VFS_I(ip), isize, pos - isize, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	return xfs_iomap_zero_range(VFS_I(ip), isize, pos - isize, NULL);
->  }
->  
->  /*
-> -- 
-> 2.31.0
-> 
-> 
-> 
+> +	memset(&item, 0, sizeof(item));
+> +	ret = read_key_bytes(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY,
+> +			     0, (char *)&item, sizeof(item), NULL);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	true_size = btrfs_stack_verity_descriptor_size(&item);
+> +	if (true_size > INT_MAX)
+
+true_size is a __le64 on-disk, so it technically should be __u64 here; otherwise
+its high 32 bits might be ignored.
+
+> +struct btrfs_verity_descriptor_item {
+> +	/* size of the verity descriptor in bytes */
+> +	__le64 size;
+> +	__le64 reserved[2];
+> +	__u8 encryption;
+> +} __attribute__ ((__packed__));
+
+The 'reserved' field still isn't validated to be 0 before going ahead and using
+the descriptor.  Is that still intentional?  If so, it might be clearer to call
+this field 'unused'.
+
+- Eric
