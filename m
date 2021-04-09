@@ -2,277 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE92359481
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 07:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFB235967A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 09:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhDIFYt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Apr 2021 01:24:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42784 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233245AbhDIFYi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:24:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617945865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=GxAvtejjlWNt3/sLY+0rrI3dx+9ff5LqOxu9OdmpBdw=;
-        b=a+Wi3YSg1hFiFQPw8WW4Bjl0fXx71FEyqL8ASqjyHXth7geUVsX0yoG1wcZFQq1/7V8p3y
-        16BTC93rw0cPJW2uD2csv88NQIcmcDhD8fM4EnEeZVP5aRgmwhotZsenHKrvpyk8ZDS4Cm
-        UoIPyvff0syVZEjEbpeoYEjPV3AScR0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0FDC3B01C;
-        Fri,  9 Apr 2021 05:24:25 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Erik Jensen <erikjensen@rkjnsn.net>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v2] btrfs: do more graceful error/warning for 32bit kernel
-Date:   Fri,  9 Apr 2021 13:24:20 +0800
-Message-Id: <20210409052420.65096-1-wqu@suse.com>
-X-Mailer: git-send-email 2.31.1
+        id S231699AbhDIHgs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Apr 2021 03:36:48 -0400
+Received: from out20-99.mail.aliyun.com ([115.124.20.99]:54380 "EHLO
+        out20-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhDIHgq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Apr 2021 03:36:46 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04104832|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.149414-0.00545288-0.845133;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.JxKNou3_1617953791;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JxKNou3_1617953791)
+          by smtp.aliyun-inc.com(10.147.42.253);
+          Fri, 09 Apr 2021 15:36:31 +0800
+Date:   Fri, 09 Apr 2021 15:36:39 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Subject: Re: unexpected -ENOMEM from percpu_counter_init()
+Cc:     Dennis Zhou <dennis@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm@kvack.org, linux-btrfs@vger.kernel.org
+In-Reply-To: <20210409120214.7BB6.409509F4@e16-tech.com>
+References: <YG+4fS7W+Ii4IxO6@google.com> <20210409120214.7BB6.409509F4@e16-tech.com>
+Message-Id: <20210409153636.C53D.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Due to the pagecache limit of 32bit systems, btrfs can't access metadata
-at or beyond (ULONG_MAX + 1) << PAGE_SHIFT.
-This is 16T for 4K page size while 256T for 64K page size.
+Hi,
 
-And unlike other fses, btrfs uses internally mapped u64 address space for
-all of its metadata, this is more tricky than other fses.
+some question about workqueue for percpu.
 
-Users can have a fs which doesn't have metadata beyond the boundary at
-mount time, but later balance can cause btrfs to create metadata beyond
-the boundary.
+> > > 
+> > > And a question about this,
+> > > > > > > upper caller:
+> > > > > > >     nofs_flag = memalloc_nofs_save();
+> > > > > > >     ret = btrfs_drew_lock_init(&root->snapshot_lock);
+> > > > > > >     memalloc_nofs_restore(nofs_flag);
+> > > > 
+> > > > The issue is here. nofs is set which means percpu attempts an atomic
+> > > > allocation. If it cannot find anything already allocated it isn't happy.
+> > > > This was done before memalloc_nofs_{save/restore}() were pervasive.
+> > > > 
+> > > > Percpu should probably try to allocate some pages if possible even if
+> > > > nofs is set.
+> > > 
+> > > Should we check and pre-alloc memory inside memalloc_nofs_restore()?
+> > > another memalloc_nofs_save() may come soon.
+> > > 
+> > > something like this in memalloc_nofs_save()?
+> > > 	if (pcpu_nr_empty_pop_pages[type] < PCPU_EMPTY_POP_PAGES_LOW)
+> > >  		pcpu_schedule_balance_work();
+> > > 
+> > 
+> > Percpu does do this via a workqueue item. The issue is in v5.9 we
+> > introduced 2 types of chunks. However, the free float page number was
+> > for the total. So even if 1 chunk type dropped below, the other chunk
+> > type might have enough pages. I'm queuing this for 5.12 and will send it
+> > out assuming it does fix your problem.
 
-And modification to MM layer is unrealistic just for such minor use
-case.
+workqueue for percpu maybe not strong enough( not scheduled?) when high
+CPU load?
 
-To address such problem, this patch will introduce the following checks,
-much like how XFS handles such problem:
+this is our application pipeline.
+	file_pre_process |
+	bwa.nipt xx |
+	samtools.nipt sort xx |
+	file_post_process
 
-- Mount time rejection
-  This will reject any fs which has metadata chunk at or beyond the
-  boundary.
+file_pre_process/file_post_process is fast, so often are blocked by
+pipe input/output.
 
-- Mount time early warning
-  If there is any metadata chunk beyond 5/8 of the boundary, we do an
-  early warning and hope the end user will see it.
+'bwa.nipt xx' is a high-cpu-load, almost all of CPU cores.
 
-- Runtime extent buffer rejection
-  If we're going to allocate an extent buffer at or beyond the boundary,
-  reject such request with -EOVERFLOW.
-  This is definitely going to cause problems like transaction abort, but
-  we have no better ways.
+'samtools.nipt sort xx' is a high-mem-load, it keep the input in memory.
+if the memory is not enough, it will save all the buffer to temp file,
+so it is sometimes high-IO-load too(write 60G or more to file).
 
-- Runtime extent buffer early warning
-  If an extent buffer beyond 5/8 of the max file size is allocated, do
-  an early warning.
 
-Above error/warning message will only be outputted once for each fs to
-reduce dmesg flood.
+xfstests(generic/476) is just high-IO-load, cpu/memory load is NOT high.
+so xfstests(generic/476) maybe easy than our application pipeline.
 
-Reported-by: Erik Jensen <erikjensen@rkjnsn.net>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
-Changelog:
-v2:
-- Rebased to latest misc-next and add reviewed-by tag
----
- fs/btrfs/ctree.h     | 18 +++++++++++++++
- fs/btrfs/extent_io.c | 12 ++++++++++
- fs/btrfs/super.c     | 26 ++++++++++++++++++++++
- fs/btrfs/volumes.c   | 53 ++++++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 107 insertions(+), 2 deletions(-)
+Although there is yet not a simple reproducer for another problem
+happend here, but there is a little high chance that something is wrong
+in btrfs/mm/fs-buffer.
+> but another problem(os freezed without call trace, PANIC without OOPS?,
+> the reason is yet unkown) still happen.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index f2fd73e58ee6..f679e02f65a9 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -565,6 +565,12 @@ enum {
- 
- 	/* Indicate whether there are any tree modification log users */
- 	BTRFS_FS_TREE_MOD_LOG_USERS,
-+
-+#if BITS_PER_LONG == 32
-+	/* Indicate if we have error/warn message outputted for 32bit system */
-+	BTRFS_FS_32BIT_ERROR,
-+	BTRFS_FS_32BIT_WARN,
-+#endif
- };
- 
- /*
-@@ -3392,6 +3398,18 @@ static inline void assertfail(const char *expr, const char* file, int line) { }
- #define ASSERT(expr)	(void)(expr)
- #endif
- 
-+#if BITS_PER_LONG == 32
-+#define BTRFS_32BIT_MAX_FILE_SIZE (((u64)ULONG_MAX + 1) << PAGE_SHIFT)
-+/*
-+ * The warning threshold is 5/8 of the max file size.
-+ *
-+ * For 4K page size it should be 10T, for 64K it would 160T.
-+ */
-+#define BTRFS_32BIT_EARLY_WARN_THRESHOLD (BTRFS_32BIT_MAX_FILE_SIZE * 5 / 8)
-+void btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info);
-+void btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info);
-+#endif
-+
- /*
-  * Get the correct offset inside the page of extent buffer.
-  *
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7ad2169e7487..a5f5c092c90f 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5594,6 +5594,18 @@ struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-+#if BITS_PER_LONG == 32
-+	if (start >= MAX_LFS_FILESIZE) {
-+		btrfs_err(fs_info,
-+		"extent buffer %llu is beyond 32bit page cache limit",
-+			  start);
-+		btrfs_err_32bit_limit(fs_info);
-+		return ERR_PTR(-EOVERFLOW);
-+	}
-+	if (start >= BTRFS_32BIT_EARLY_WARN_THRESHOLD)
-+		btrfs_warn_32bit_limit(fs_info);
-+#endif
-+
- 	if (fs_info->sectorsize < PAGE_SIZE &&
- 	    offset_in_page(start) + len > PAGE_SIZE) {
- 		btrfs_err(fs_info,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index f7a4ad86adee..1a36be6bced2 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -252,6 +252,32 @@ void __cold btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, .
- }
- #endif
- 
-+#if BITS_PER_LONG == 32
-+void __cold btrfs_warn_32bit_limit(struct btrfs_fs_info *fs_info)
-+{
-+	if (!test_and_set_bit(BTRFS_FS_32BIT_WARN, &fs_info->flags)) {
-+		btrfs_warn(fs_info, "btrfs is reaching 32bit kernel limit.");
-+		btrfs_warn(fs_info,
-+"due to 32bit page cache limit, btrfs can't access metadata at or beyond %lluT.",
-+			   BTRFS_32BIT_MAX_FILE_SIZE >> 40);
-+		btrfs_warn(fs_info,
-+			   "please consider upgrade to 64bit kernel/hardware.");
-+	}
-+}
-+
-+void __cold btrfs_err_32bit_limit(struct btrfs_fs_info *fs_info)
-+{
-+	if (!test_and_set_bit(BTRFS_FS_32BIT_ERROR, &fs_info->flags)) {
-+		btrfs_err(fs_info, "btrfs reached 32bit kernel limit.");
-+		btrfs_err(fs_info,
-+"due to 32bit page cache limit, btrfs can't access metadata at or beyond %lluT.",
-+			  BTRFS_32BIT_MAX_FILE_SIZE >> 40);
-+		btrfs_err(fs_info,
-+			   "please consider upgrade to 64bit kernel/hardware.");
-+	}
-+}
-+#endif
-+
- /*
-  * We only mark the transaction aborted and then set the file system read-only.
-  * This will prevent new transactions from starting or trying to join this
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index d4ca721c1d91..96497b428dc3 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6787,6 +6787,46 @@ static u64 calc_stripe_length(u64 type, u64 chunk_len, int num_stripes)
- 	return div_u64(chunk_len, data_stripes);
- }
- 
-+#if BITS_PER_LONG == 32
-+/*
-+ * Due to page cache limit, btrfs can't access metadata at or beyond
-+ * BTRFS_32BIT_MAX_FILE_SIZE on 32bit systemts.
-+ *
-+ * This function do mount time check to reject the fs if it already has
-+ * metadata chunk beyond that limit.
-+ */
-+static int check_32bit_meta_chunk(struct btrfs_fs_info *fs_info,
-+				  u64 logical, u64 length, u64 type)
-+{
-+	if (!(type & BTRFS_BLOCK_GROUP_METADATA))
-+		return 0;
-+
-+	if (logical + length < MAX_LFS_FILESIZE)
-+		return 0;
-+
-+	btrfs_err_32bit_limit(fs_info);
-+	return -EOVERFLOW;
-+}
-+
-+/*
-+ * This is to give early warning for any metadata chunk reaching
-+ * BTRFS_32BIT_EARLY_WARN_THRESHOLD.
-+ * Although we can still access the metadata, it's a timed bomb thus an early
-+ * warning is definitely needed.
-+ */
-+static void warn_32bit_meta_chunk(struct btrfs_fs_info *fs_info,
-+				  u64 logical, u64 length, u64 type)
-+{
-+	if (!(type & BTRFS_BLOCK_GROUP_METADATA))
-+		return;
-+
-+	if (logical + length < BTRFS_32BIT_EARLY_WARN_THRESHOLD)
-+		return;
-+
-+	btrfs_warn_32bit_limit(fs_info);
-+}
-+#endif
-+
- static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 			  struct btrfs_chunk *chunk)
- {
-@@ -6797,6 +6837,7 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 	u64 logical;
- 	u64 length;
- 	u64 devid;
-+	u64 type;
- 	u8 uuid[BTRFS_UUID_SIZE];
- 	int num_stripes;
- 	int ret;
-@@ -6804,8 +6845,16 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 
- 	logical = key->offset;
- 	length = btrfs_chunk_length(leaf, chunk);
-+	type = btrfs_chunk_type(leaf, chunk);
- 	num_stripes = btrfs_chunk_num_stripes(leaf, chunk);
- 
-+#if BITS_PER_LONG == 32
-+	ret = check_32bit_meta_chunk(fs_info, logical, length, type);
-+	if (ret < 0)
-+		return ret;
-+	warn_32bit_meta_chunk(fs_info, logical, length, type);
-+#endif
-+
- 	/*
- 	 * Only need to verify chunk item if we're reading from sys chunk array,
- 	 * as chunk item in tree block is already verified by tree-checker.
-@@ -6849,10 +6898,10 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
- 	map->io_width = btrfs_chunk_io_width(leaf, chunk);
- 	map->io_align = btrfs_chunk_io_align(leaf, chunk);
- 	map->stripe_len = btrfs_chunk_stripe_len(leaf, chunk);
--	map->type = btrfs_chunk_type(leaf, chunk);
-+	map->type = type;
- 	map->sub_stripes = btrfs_chunk_sub_stripes(leaf, chunk);
- 	map->verified_stripes = 0;
--	em->orig_block_len = calc_stripe_length(map->type, em->len,
-+	em->orig_block_len = calc_stripe_length(type, em->len,
- 						map->num_stripes);
- 	for (i = 0; i < num_stripes; i++) {
- 		map->stripes[i].physical =
--- 
-2.31.1
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/04/09
+
 
