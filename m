@@ -2,111 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630223599DA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 11:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29714359C55
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Apr 2021 12:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhDIJwu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Apr 2021 05:52:50 -0400
-Received: from out20-49.mail.aliyun.com ([115.124.20.49]:35466 "EHLO
-        out20-49.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhDIJwu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Apr 2021 05:52:50 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04458401|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0133605-0.000248439-0.986391;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.JxOoXU6_1617961955;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JxOoXU6_1617961955)
-          by smtp.aliyun-inc.com(10.147.41.121);
-          Fri, 09 Apr 2021 17:52:35 +0800
-Date:   Fri, 09 Apr 2021 17:52:43 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: unexpected -ENOMEM from percpu_counter_init()
-Cc:     linux-mm@kvack.org, linux-btrfs@vger.kernel.org
-In-Reply-To: <60e9b994-e37c-d059-4af5-0cb7860ca4f3@suse.cz>
-References: <20210401185158.3275.409509F4@e16-tech.com> <60e9b994-e37c-d059-4af5-0cb7860ca4f3@suse.cz>
-Message-Id: <20210409175242.C545.409509F4@e16-tech.com>
+        id S233362AbhDIKuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Apr 2021 06:50:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57186 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231127AbhDIKus (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:50:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35651AF95;
+        Fri,  9 Apr 2021 10:50:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0B2F5DA732; Fri,  9 Apr 2021 12:48:21 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 12:48:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+Subject: Re: [PATCH v2] btrfs: zoned: move superblock logging zone location
+Message-ID: <20210409104820.GQ7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+References: <2f58edb74695825632c77349b000d31f16cb3226.1617870145.git.naohiro.aota@wdc.com>
+ <d22f8dfc-5ca4-4dab-2733-61563475a4a5@toxicpanda.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.03 [en]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d22f8dfc-5ca4-4dab-2733-61563475a4a5@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi, Dennis Zhou, Vlastimil Babka, Filipe Manana
-
-The root reason of this problem maybe the design of
-'memalloc_nofs_restore()/memalloc_nofs_save()'.
-
-When some job such as memory pre-alloc and reclaim is needed,  that is
-done in a workqueue now.
-
-This is a problem for high-load and over-load. In that case, we need to
-do these job in current task/process, so that current task/process will
-be blocked until necessary job is done.
-
-If we let these job in done in a workqueue, and current task/process is
-not blocked, that means failure is very near, and then we can not work
-stable in high-load and over-load.
-
-For high-load and over-load, failure is not expected,  we expect some
-job be blocked well.
-
-> > Percpu does do this via a workqueue item. The issue is in v5.9 we
-> > introduced 2 types of chunks. However, the free float page number was
-> > for the total. So even if 1 chunk type dropped below, the other chunk
-> > type might have enough pages. I'm queuing this for 5.12 and will send it
-> > out assuming it does fix your problem.
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/04/09
-
-> +CC btrfs
+On Thu, Apr 08, 2021 at 10:57:32AM -0400, Josef Bacik wrote:
+> On 4/8/21 4:25 AM, Naohiro Aota wrote:
+> > confusion.
+> > 
+> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > 
-> On 4/1/21 12:51 PM, Wang Yugui wrote:
-> > Hi,
-> > 
-> > an unexpected -ENOMEM from percpu_counter_init() happened when xfstest 
-> > with kernel 5.11.10 and 5.10.27
+> Thanks Naohiro, this makes it much easier to understand,
 > 
-> Is there a dmesg log showing allocation failure or something?
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 > 
-> > direct caller:
-> > int btrfs_drew_lock_init(struct btrfs_drew_lock *lock)
-> > {
-> >     int ret;
-> > 
-> >     ret = percpu_counter_init(&lock->writers, 0, GFP_KERNEL);
-> >     if (ret)
-> >         return ret;
-> > 
-> >     atomic_set(&lock->readers, 0);
-> >     init_waitqueue_head(&lock->pending_readers);
-> >     init_waitqueue_head(&lock->pending_writers);
-> > 
-> >     return 0;
-> > }
-> > 
-> > upper caller:
-> >     nofs_flag = memalloc_nofs_save();
-> >     ret = btrfs_drew_lock_init(&root->snapshot_lock);
-> >     memalloc_nofs_restore(nofs_flag);
-> >     if (ret == -ENOMEM) printk("ENOMEM btrfs_drew_lock_init\n");
-> >     if (ret)
-> >         goto fail;
-> > 
-> > The hardware of this server:
-> > CPU:  Xeon(R) CPU E5-2660 v2(10 core)  *2
-> > memory:  192G, no swap
-> > 
-> > Only one xfstests job is running in this server, and about 7% of memory
-> > is used.
-> > 
-> > Any advice please.
-> > 
-> > Best Regards
-> > Wang Yugui (wangyugui@e16-tech.com)
-> > 2021/04/01
-> > 
-> > 
+> Dave, I know you're on vacation, this needs to go to Linus for this cycle so we 
+> don't have two different SB slots for two different kernels.  I don't want to 
+> disturb your vacation, so I'll put this in a pull request tomorrow to Linus.  If 
+> you already had plans to do this let me know and I'll hold off.  Thanks,
 
+We don't even have mkfs support for zoned filesystem merged so that the
+format is not final was not an issue and that's why I did not hurry
+pushing it in that cycle and I still rather not do that.
 
+The design-level problem is the backup copy offset, that's been
+discussed in some previous iteration - whether it's right to place all
+copies under the first 1T or if we should spread them. For me this is
+still not settled, I haven't read through all the replies and given it
+enough thought.
+
+That could lead to another change of the offsets that I'm sure we want
+to avoid.
