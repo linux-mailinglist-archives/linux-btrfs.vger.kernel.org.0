@@ -2,157 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC0635AEFD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Apr 2021 18:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4BA35AF53
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Apr 2021 19:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhDJQIz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 10 Apr 2021 12:08:55 -0400
-Received: from out20-111.mail.aliyun.com ([115.124.20.111]:45703 "EHLO
-        out20-111.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbhDJQIy (ORCPT
+        id S234886AbhDJRgj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 10 Apr 2021 13:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234851AbhDJRgi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 10 Apr 2021 12:08:54 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436823|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0591265-5.19353e-05-0.940822;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.Jy-DVw9_1618070917;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Jy-DVw9_1618070917)
-          by smtp.aliyun-inc.com(10.147.40.233);
-          Sun, 11 Apr 2021 00:08:38 +0800
-Date:   Sun, 11 Apr 2021 00:08:48 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Dennis Zhou <dennis@kernel.org>
-Subject: Re: unexpected -ENOMEM from percpu_counter_init()
-Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org
-In-Reply-To: <YHHJpCVpS8sQg7Go@google.com>
-References: <20210410232913.6F82.409509F4@e16-tech.com> <YHHJpCVpS8sQg7Go@google.com>
-Message-Id: <20210411000846.9CC6.409509F4@e16-tech.com>
+        Sat, 10 Apr 2021 13:36:38 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15805C06138B
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Apr 2021 10:36:22 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x7so8678708wrw.10
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Apr 2021 10:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jhm4jac+LlkZkHJhaVWxMaO7C1pE7y6tVLm9Nc9lhFY=;
+        b=gpnAiUHxqYfHsGJmiaPN7S4EzPbpEkoE6BevcViiKvluGcXRLtV1i7TxfUcEDSHQvK
+         RNQ+DIXkiOF6tbvznS1jvC50VNW3qK9MbgvJkXSNPZkAohTpG0aQB737lKsQI+GPjtDL
+         Vva0lRco526X/4f8a6pTyxTMXUS5VB/C+Ik1aS2dN2Ud0r39KO9dKtrPrt35n+/vJVDL
+         lUI0TN9+cC9sxe8Yv+n00oPp+Ew7e8nObbSVgL+Jwim7eTw/Q2p+C4gB4n6vNlfCNzzt
+         n0tbgypSD+I8OFb4k8eDbUs/1hwK4/+Qfmy4ROzMtbpEuanW+J3zj0D8l05Id7fyHe/0
+         iYoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jhm4jac+LlkZkHJhaVWxMaO7C1pE7y6tVLm9Nc9lhFY=;
+        b=WHL1JZN9PCF1GC1FYjQkAHCM8CZIVfGF3RZdu3KcvWuLe0sATyCpLyuhihBgC0ggcD
+         5lUjAulrvLjEJZkv8rzbGbG+XG2ZydInD5hOkHD4MAxByXqMYITqPo3v13uuVNywPuTx
+         sBvuvCPqZgfL+K95iWKjAmpiXzfB/vswuBupCALpLZ/eOVU0b5SIlYmMP91nkUbNfSPP
+         DKUz8pfqTXVL8LsFf2dpznzMJ1imbscaMHmDXGWdzPFJp2f7R+WejFNLXljgB371gtfs
+         7rr+Ihc9LFvqk2JmNZCr9J3AkCmne5Kb1j8oI/N2k8uwzkAet31ijvAi3UXllznw3P0/
+         /kpw==
+X-Gm-Message-State: AOAM5319byG1Yl1AfnR9e5C1Ui+uUYA6fM8W8kT3C8eofDXoTC29pxIP
+        E5X+JeaoYO+MD8My94GPd3LNWr3IE3loJbd8zhRCvOd0TCxcTqKN
+X-Google-Smtp-Source: ABdhPJyp/VO1W1jqT56vtB3cYwFUtcBwHEY+Np+VvxWBpIwHCtHx/mWPDNS2xqmJXcqvZitj+G9Hidug3UREygl1Ijg=
+X-Received: by 2002:adf:d84d:: with SMTP id k13mr23357716wrl.65.1618076180517;
+ Sat, 10 Apr 2021 10:36:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.03 [en]
+References: <CAJCQCtTp0aXBssEr4ZXGX=DS_+RyGghmoANCKDdxG59QWu8LVA@mail.gmail.com>
+ <CAOQ4uxht70nODhNHNwGFMSqDyOKLXOKrY0H6g849os4BQ7cokA@mail.gmail.com>
+In-Reply-To: <CAOQ4uxht70nODhNHNwGFMSqDyOKLXOKrY0H6g849os4BQ7cokA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 10 Apr 2021 11:36:04 -0600
+Message-ID: <CAJCQCtRGdBzyskifrYLbBGAAm0g7VeC6GeD7xBN-hRqE3GAWYA@mail.gmail.com>
+Subject: Re: btrfs+overlayfs: upper fs does not support xattr, falling back to
+ index=off and metacopy=off.
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+I can reproduce the bolt testcase problem in a podman container, with
+overlay driver, using ext4, xfs, and btrfs. So I think I can drop
+linux-btrfs@ from this thread.
 
-> On Sat, Apr 10, 2021 at 11:29:17PM +0800, Wang Yugui wrote:
-> > Hi, Dennis Zhou 
-> > 
-> > Thanks for your ncie answer.
-> > but still a few questions.
-> > 
-> > > Percpu is not really cheap memory to allocate because it has a
-> > > amplification factor of NR_CPUS. As a result, percpu on the critical
-> > > path is really not something that is expected to be high throughput.
-> > 
-> > > Ideally things like btrfs snapshots should preallocate a number of these
-> > > and not try to do atomic allocations because that in theory could fail
-> > > because even after we go to the page allocator in the future we can't
-> > > get enough pages due to needing to go into reclaim.
-> > 
-> > pre-allocate in module such as mempool_t is just used in a few place in
-> > linux/fs.  so most people like system wide pre-allocate, because it is
-> > more easy to use?
-> > 
-> > can we add more chance to management the system wide pre-alloc
-> > just like this?
-> > 
-> > diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> > index dc1f4dc..eb3f592 100644
-> > --- a/include/linux/sched/mm.h
-> > +++ b/include/linux/sched/mm.h
-> > @@ -226,6 +226,11 @@ static inline void memalloc_noio_restore(unsigned int flags)
-> >  static inline unsigned int memalloc_nofs_save(void)
-> >  {
-> >  	unsigned int flags = current->flags & PF_MEMALLOC_NOFS;
-> > +
-> > +	// just like slab_pre_alloc_hook
-> > +	fs_reclaim_acquire(current->flags & gfp_allowed_mask);
-> > +	fs_reclaim_release(current->flags & gfp_allowed_mask);
-> > +
-> >  	current->flags |= PF_MEMALLOC_NOFS;
-> >  	return flags;
-> >  }
-> > 
-> > 
-> > > The workqueue approach has been good enough so far. Technically there is
-> > > a higher priority workqueue that this work could be scheduled on, but
-> > > save for this miss on my part, the system workqueue has worked out fine.
-> > 
-> > > In the future as I mentioned above. It would be good to support actually
-> > > getting pages, but it's work that needs to be tackled with a bit of
-> > > care. I might target the work for v5.14.
-> > > 
-> > > > this is our application pipeline.
-> > > > 	file_pre_process |
-> > > > 	bwa.nipt xx |
-> > > > 	samtools.nipt sort xx |
-> > > > 	file_post_process
-> > > > 
-> > > > file_pre_process/file_post_process is fast, so often are blocked by
-> > > > pipe input/output.
-> > > > 
-> > > > 'bwa.nipt xx' is a high-cpu-load, almost all of CPU cores.
-> > > > 
-> > > > 'samtools.nipt sort xx' is a high-mem-load, it keep the input in memory.
-> > > > if the memory is not enough, it will save all the buffer to temp file,
-> > > > so it is sometimes high-IO-load too(write 60G or more to file).
-> > > > 
-> > > > 
-> > > > xfstests(generic/476) is just high-IO-load, cpu/memory load is NOT high.
-> > > > so xfstests(generic/476) maybe easy than our application pipeline.
-> > > > 
-> > > > Although there is yet not a simple reproducer for another problem
-> > > > happend here, but there is a little high chance that something is wrong
-> > > > in btrfs/mm/fs-buffer.
-> > > > > but another problem(os freezed without call trace, PANIC without OOPS?,
-> > > > > the reason is yet unkown) still happen.
-> > > 
-> > > I do not have an answer for this. I would recommend looking into kdump.
-> > 
-> > percpu ENOMEM problem blocked many heavy load test a little long time?
-> > I still guess this problem of system freeze is a mm/btrfs problem.
-> > OOM not work, OOPS not work too.
-> > 
-> 
-> I don't follow. Is this still a problem after the patch?
+Also I can reproduce the title of this thread simply by 'podman system
+reset' and see the kernel messages before doing the actual reset. I
+have a strace here of what it's doing:
+
+https://drive.google.com/file/d/1L9lEm5n4-d9qemgCq3ijqoBstM-PP1By/view?usp=sharing
+
+It may be something intentional. The failing testcase,
+:../tests/test-common.c:1413:test_io_dir_is_empty also has more
+instances of this line, but I don't know they are related. So I'll
+keep looking into that.
 
 
-After the patch for percpu ENOMEM,  the problem of system freeze have a high
-frequecy (>75%) to be triggered by our user-space application.
+On Sat, Apr 10, 2021 at 2:04 AM Amir Goldstein <amir73il@gmail.com> wrote:
 
-The problem of system freeze maybe not caused by the percpu ENOMEM patch.
+> As the first step, can you try the suggested fix to ovl_dentry_version_inc()
+> and/or adding the missing pr_debug() and including those prints in
+> your report?
 
-percpu ENOMEM problem maybe more easy to happen than the problem of
-system freeze.
+I'll work with bolt upstream and try to further narrow down when it is
+and isn't happening.
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/04/10
+> > I can reproduce this with 5.12.0-0.rc6.184.fc35.x86_64+debug and at
+> > approximately the same time I see one, sometimes more, kernel
+> > messages:
+> >
+> > [ 6295.379283] overlayfs: upper fs does not support xattr, falling
+> > back to index=off and metacopy=off.
+> >
+>
+> Can you say why there is no xattr support?
 
+I'm not sure. It could be podman specific or fuse-overlayfs related.
+Maybe something is using /tmp in one case and not another for some
+reason?
 
+> Is the overlayfs mount executed without privileges to create trusted.* xattrs?
+> The answer to that may be the key to understanding the bug.
 
-> > I try to reproduce it with some simple script. I noticed the value of
-> > 'free' is a little low, although 'available' is big.
-> > 
-> > # free -h
-> >               total        used        free      shared  buff/cache   available
-> > Mem:          188Gi       1.4Gi       5.5Gi        17Mi       181Gi       175Gi
-> > Swap:            0B          0B          0B
-> > 
-> > vm.min_free_kbytes is auto configed to 4Gi(4194304)
-> > 
-> > # write files with the size >= memory size *3
-> > #for((i=0;i<10;++i));do dd if=/dev/zero bs=1M count=64K of=/nodetmp/${i}.txt; free -h; done
-> > 
-> > any advice or patch to let the value of 'free' a little bigger?
-> > 
-> > 
-> > Best Regards
-> > Wang Yugui (wangyugui@e16-tech.com)
-> > 2021/04/10
-> > 
-> > 
-> > 
+Yep. I think tmpfs supports xattr but not user xattr? And this example
+is rootless podman, so it's all unprivileged.
 
 
+> My guess is it has to do with changes related to mounting overlayfs
+> inside userns, but I couldn't find any immediate suspects.
+>
+> Do you have any idea since when the regression appeared?
+> A bisect would have been helpful here.
+
+Yep. All good ideas. Thanks for the fast reply. I'll report back once
+this has been narrowed down futher.
+
+
+-- 
+Chris Murphy
