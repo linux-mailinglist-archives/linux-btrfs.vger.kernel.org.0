@@ -2,204 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2241635B58F
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Apr 2021 16:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6725735B5DE
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Apr 2021 17:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbhDKOES (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 11 Apr 2021 10:04:18 -0400
-Received: from out20-3.mail.aliyun.com ([115.124.20.3]:52468 "EHLO
-        out20-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbhDKOES (ORCPT
+        id S236028AbhDKPUU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 11 Apr 2021 11:20:20 -0400
+Received: from out20-98.mail.aliyun.com ([115.124.20.98]:44473 "EHLO
+        out20-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235503AbhDKPUU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 11 Apr 2021 10:04:18 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0786061|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.293083-0.00783672-0.69908;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.JyKNO5e_1618149839;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.JyKNO5e_1618149839)
-          by smtp.aliyun-inc.com(10.147.41.138);
-          Sun, 11 Apr 2021 22:03:59 +0800
-Date:   Sun, 11 Apr 2021 22:03:59 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Boris Burkov <boris@bur.io>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, fstests@vger.kernel.org
-Subject: Re: [PATCH v3] generic: test fiemap offsets and < 512 byte ranges
-Message-ID: <YHMBzw/9tUVMS66G@desktop>
-References: <20210407161046.GY1670408@magnolia>
- <c2f49fdead29fd7eb979b83028eb9fcf56d2457c.1617826068.git.boris@bur.io>
+        Sun, 11 Apr 2021 11:20:20 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436413|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0615919-5.09365e-05-0.938357;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.JyLkfKm_1618154399;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.JyLkfKm_1618154399)
+          by smtp.aliyun-inc.com(10.147.40.26);
+          Sun, 11 Apr 2021 23:19:59 +0800
+Date:   Sun, 11 Apr 2021 23:20:00 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Dennis Zhou <dennis@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm@kvack.org, linux-btrfs@vger.kernel.org
+Subject: Re: unexpected -ENOMEM from percpu_counter_init()
+In-Reply-To: <20210411000846.9CC6.409509F4@e16-tech.com>
+References: <YHHJpCVpS8sQg7Go@google.com> <20210411000846.9CC6.409509F4@e16-tech.com>
+Message-Id: <20210411232000.BF15.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2f49fdead29fd7eb979b83028eb9fcf56d2457c.1617826068.git.boris@bur.io>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:13:26PM -0700, Boris Burkov wrote:
-> btrfs trims fiemap extents to the inputted offset, which leads to
-> inconsistent results for most inputs, and downright bizarre outputs like
-> [7..6] when the trimmed extent is at the end of an extent and shorter
-> than 512 bytes.
+Hi, Dennis Zhou
+
+> Hi,
 > 
-> The test writes out one extent of the file system's block size and tries
-> fiemaps at various offsets. It expects that all the fiemaps return the
-> full single extent.
+> > On Sat, Apr 10, 2021 at 11:29:17PM +0800, Wang Yugui wrote:
+> > > Hi, Dennis Zhou 
+> > > 
+> > > Thanks for your ncie answer.
+> > > but still a few questions.
+> > > 
+> > > > Percpu is not really cheap memory to allocate because it has a
+> > > > amplification factor of NR_CPUS. As a result, percpu on the critical
+> > > > path is really not something that is expected to be high throughput.
+> > > 
+> > > > Ideally things like btrfs snapshots should preallocate a number of these
+> > > > and not try to do atomic allocations because that in theory could fail
+> > > > because even after we go to the page allocator in the future we can't
+> > > > get enough pages due to needing to go into reclaim.
+> > > 
+> > > pre-allocate in module such as mempool_t is just used in a few place in
+> > > linux/fs.  so most people like system wide pre-allocate, because it is
+> > > more easy to use?
+> > > 
+> > > can we add more chance to management the system wide pre-alloc
+> > > just like this?
+> > > 
+> > > diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+> > > index dc1f4dc..eb3f592 100644
+> > > --- a/include/linux/sched/mm.h
+> > > +++ b/include/linux/sched/mm.h
+> > > @@ -226,6 +226,11 @@ static inline void memalloc_noio_restore(unsigned int flags)
+> > >  static inline unsigned int memalloc_nofs_save(void)
+> > >  {
+> > >  	unsigned int flags = current->flags & PF_MEMALLOC_NOFS;
+> > > +
+> > > +	// just like slab_pre_alloc_hook
+> > > +	fs_reclaim_acquire(current->flags & gfp_allowed_mask);
+> > > +	fs_reclaim_release(current->flags & gfp_allowed_mask);
+> > > +
+> > >  	current->flags |= PF_MEMALLOC_NOFS;
+> > >  	return flags;
+> > >  }
+> > > 
+> > > 
+> > > > The workqueue approach has been good enough so far. Technically there is
+> > > > a higher priority workqueue that this work could be scheduled on, but
+> > > > save for this miss on my part, the system workqueue has worked out fine.
+> > > 
+> > > > In the future as I mentioned above. It would be good to support actually
+> > > > getting pages, but it's work that needs to be tackled with a bit of
+> > > > care. I might target the work for v5.14.
+> > > > 
+> > > > > this is our application pipeline.
+> > > > > 	file_pre_process |
+> > > > > 	bwa.nipt xx |
+> > > > > 	samtools.nipt sort xx |
+> > > > > 	file_post_process
+> > > > > 
+> > > > > file_pre_process/file_post_process is fast, so often are blocked by
+> > > > > pipe input/output.
+> > > > > 
+> > > > > 'bwa.nipt xx' is a high-cpu-load, almost all of CPU cores.
+> > > > > 
+> > > > > 'samtools.nipt sort xx' is a high-mem-load, it keep the input in memory.
+> > > > > if the memory is not enough, it will save all the buffer to temp file,
+> > > > > so it is sometimes high-IO-load too(write 60G or more to file).
+> > > > > 
+> > > > > 
+> > > > > xfstests(generic/476) is just high-IO-load, cpu/memory load is NOT high.
+> > > > > so xfstests(generic/476) maybe easy than our application pipeline.
+> > > > > 
+> > > > > Although there is yet not a simple reproducer for another problem
+> > > > > happend here, but there is a little high chance that something is wrong
+> > > > > in btrfs/mm/fs-buffer.
+> > > > > > but another problem(os freezed without call trace, PANIC without OOPS?,
+> > > > > > the reason is yet unkown) still happen.
+> > > > 
+> > > > I do not have an answer for this. I would recommend looking into kdump.
+> > > 
+> > > percpu ENOMEM problem blocked many heavy load test a little long time?
+> > > I still guess this problem of system freeze is a mm/btrfs problem.
+> > > OOM not work, OOPS not work too.
+> > > 
+> > 
+> > I don't follow. Is this still a problem after the patch?
 > 
-> I ran it under the following fs, block size combinations:
-> ext2: 1024, 2048, 4096
-> ext3: 1024, 2048, 4096
-> ext4: 1024, 2048, 4096
-> xfs: 512, 1024, 2048, 4096
-> f2fs: 4096
-> btrfs: 4096
 > 
-> This test is fixed for btrfs by:
-> btrfs: return whole extents in fiemap
-> (https://lore.kernel.org/linux-btrfs/274e5bcebdb05a8969fc300b4802f33da2fbf218.1617746680.git.boris@bur.io/)
+> After the patch for percpu ENOMEM,  the problem of system freeze have a high
+> frequecy (>75%) to be triggered by our user-space application.
 > 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-
-generic/473, which tests fiemap, has been marked as broken, as fiemap
-behavior is not consistent across filesystems, and the specific behavior
-tested by generic/473 is not defined and filesystems could have
-different implementations.
-
-I'm not sure if this test fits into the undefined-behavior fiemap
-categary. I think it's fine if it tests a well-defined & consistent
-behavior.
-
-> ---
-> v3: make the block size more generic, use test dev instead of scratch,
-> cleanup style issues.
-> v2: fill out copyright and test description
-> ---
->  tests/generic/623     | 94 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/623.out |  2 +
->  tests/generic/group   |  1 +
->  3 files changed, 97 insertions(+)
->  create mode 100755 tests/generic/623
->  create mode 100644 tests/generic/623.out
+> The problem of system freeze maybe not caused by the percpu ENOMEM patch.
 > 
-> diff --git a/tests/generic/623 b/tests/generic/623
-> new file mode 100755
-> index 00000000..a5ef369a
-> --- /dev/null
-> +++ b/tests/generic/623
-> @@ -0,0 +1,94 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Facebook.  All Rights Reserved.
-> +#
-> +# FS QA Test 623
-> +#
-> +# Test fiemaps with offsets into small parts of extents.
-> +# Expect to get the whole extent, anyway.
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +	rm -f $fiemap_file
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs generic
-> +_require_test
-> +_require_xfs_io_command "fiemap"
-> +
-> +rm -f $seqres.full
-> +
-> +fiemap_file=$TEST_DIR/foo.$$
-> +
-> +do_fiemap() {
-> +	off=$1
-> +	len=$2
-> +	echo $off $len >> $seqres.full
-> +	$XFS_IO_PROG -c "fiemap $off $len" $fiemap_file | tee -a $seqres.full
-> +}
-> +
-> +check_fiemap() {
-> +	off=$1
-> +	len=$2
-> +	actual=$(do_fiemap $off $len)
-> +	[ "$actual" == "$expected" ] || _fail "unexpected fiemap on $off $len"
-> +}
-> +
-> +# write a file with one extent
-> +block_size=$(_get_block_size $TEST_DIR)
-> +$XFS_IO_PROG -f -s -c "pwrite -S 0xcf 0 $block_size" $fiemap_file >/dev/null
-> +
-> +# since the exact extent location is unpredictable especially when
-> +# varying file systems, just test that they are all equal, which is
-> +# what we really expect.
-> +expected=$(do_fiemap)
-> +
-> +mid=$((block_size / 2))
-> +almost=$((block_size - 5))
-> +past=$((block_size + 1))
-> +
-> +check_fiemap 0 $mid
-> +check_fiemap 0 $block_size
-> +check_fiemap 0 $past
-> +check_fiemap $mid $almost
-> +check_fiemap $mid $block_size
-> +check_fiemap $mid $past
-> +check_fiemap $almost 5
-> +check_fiemap $almost 6
-> +
-> +# fiemap output explicitly deals in 512 byte increments,
-> +# so exercise some cases where len is 512.
-> +# Naturally, some of these can't work if block size is 512.
-> +one_short=$((block_size - 512))
-> +check_fiemap 0 512
-> +check_fiemap $one_short 512
-> +check_fiemap $almost 512
-> +
-> +_test_unmount
+> percpu ENOMEM problem maybe more easy to happen than the problem of
+> system freeze.
 
-Any reason to umount TEST_DEV?
+After highmem zone +80% / otherzone +40% of WMARK_MIN/ WMARK_LOW/
+WMARK_HIGH, we walked around or reduced the reproduce frequency of the
+problem of system freeze.
 
-Thanks,
-Eryu
+so this is a problem of linux-mm.
 
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/623.out b/tests/generic/623.out
-> new file mode 100644
-> index 00000000..6f774f19
-> --- /dev/null
-> +++ b/tests/generic/623.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 623
-> +Silence is golden
-> diff --git a/tests/generic/group b/tests/generic/group
-> index b10fdea4..39e02383 100644
-> --- a/tests/generic/group
-> +++ b/tests/generic/group
-> @@ -625,3 +625,4 @@
->  620 auto mount quick
->  621 auto quick encrypt
->  622 auto shutdown metadata atime
-> +623 auto quick
-> -- 
-> 2.30.2
+the user case of our user-space application.
+1)  write the files with the total size > 3 * memory size.
+     the memory size > 128G
+2)  btrfs with SSD/SAS, SSD/SATA, or btrfs RAID6 hdd
+    SSD/NVMe maybe too fast, so difficult to reproduce.
+3) some CPU load, and some memory load.
+
+btrfs and other fs seem not like mempool_t wiht pre-alloc, so difficult
+job is left to the system-wide reclaim/pre-alloc of linux-mm.
+
+maye memalloc_nofs_save() or memalloc_nofs_restore() is a good place to
+ add some sync/aysnc memory reclaim/pre-alloc operations for WMARK_MIN/
+WMARK_LOW/WMARK_HIGH and percpu PCPU_EMPTY_POP_PAGES_LOW.
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/04/11
+
+
+> > > I try to reproduce it with some simple script. I noticed the value of
+> > > 'free' is a little low, although 'available' is big.
+> > > 
+> > > # free -h
+> > >               total        used        free      shared  buff/cache   available
+> > > Mem:          188Gi       1.4Gi       5.5Gi        17Mi       181Gi       175Gi
+> > > Swap:            0B          0B          0B
+> > > 
+> > > vm.min_free_kbytes is auto configed to 4Gi(4194304)
+> > > 
+> > > # write files with the size >= memory size *3
+> > > #for((i=0;i<10;++i));do dd if=/dev/zero bs=1M count=64K of=/nodetmp/${i}.txt; free -h; done
+> > > 
+> > > any advice or patch to let the value of 'free' a little bigger?
+> > > 
+> > > 
+> > > Best Regards
+> > > Wang Yugui (wangyugui@e16-tech.com)
+> > > 2021/04/10
+> > > 
+> > > 
+> > > 
+> 
+
+
