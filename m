@@ -2,59 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B2B35B6A7
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Apr 2021 20:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434CA35B6E7
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Apr 2021 22:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236101AbhDKS4v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 11 Apr 2021 14:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231405AbhDKS4v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 11 Apr 2021 14:56:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 866EA6109F;
-        Sun, 11 Apr 2021 18:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618167394;
-        bh=Y0ltobkvGUp/igU5oBlFbRTk8w3B/r96GgbR95UUdpg=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GDx0VXq47Mq4jj2zEBpB2ArhJrei49qBhJt1HXMhpETjz+1hpMAEBSOGKlsDBv9/U
-         HuNgr9ktDg6DoUjiKipMPMdDQlMHctP2dxqciHNNpyFkulnRqrBx9jPaawbM7Pidk0
-         VgQXx731sW0U8IMtCcZ0ZtVtYUyFDfAfwL+w5C1+Gv4sR9adK8rZ7v8zoGsVN8IWIK
-         jomqj+XSoGf6wk3XUNYC2n5v6u3NcI5QmCfwT3HjQFk3LsP6pZXI244uoOS9cE4YO6
-         tDkcnnuhbYK5bYKvXnWY2xkDO0dFKWpLqir75rBDIPGaMKBkY11qDBvh5D33ZEHSVV
-         CW+Td9BfHUg7A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 72464609B4;
-        Sun, 11 Apr 2021 18:56:34 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 5.12-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1618147058.git.dsterba@suse.com>
-References: <cover.1618147058.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1618147058.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc6-tag
-X-PR-Tracked-Commit-Id: 53b74fa990bf76f290aa5930abfcf37424a1a865
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7d900724913cb293620a05c5a3134710db95d0d9
-Message-Id: <161816739440.6502.16136232391633341798.pr-tracker-bot@kernel.org>
-Date:   Sun, 11 Apr 2021 18:56:34 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.cz>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S236553AbhDKUsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 11 Apr 2021 16:48:09 -0400
+Received: from tartarus.angband.pl ([51.83.246.204]:50758 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233822AbhDKUsI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 11 Apr 2021 16:48:08 -0400
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.94)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1lVgvY-006wGA-Ru; Sun, 11 Apr 2021 22:43:28 +0200
+Date:   Sun, 11 Apr 2021 22:43:28 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     Roman Mamedov <rm@romanrm.net>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Paul Leiber <paul@onlineschubla.de>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Parent transid verify failed (and more): BTRFS for data storage
+ in Xen VM setup
+Message-ID: <YHNfcB9Au/yYh9Au@angband.pl>
+References: <FRYP281MB058285E8F1BD4B521817F6CFB0729@FRYP281MB0582.DEUP281.PROD.OUTLOOK.COM>
+ <20210410194842.71f49059@natsu>
+ <CAJCQCtRqaxE6k9JGK+xSF-onTcVTjageC4dWoPdD+RARMK652w@mail.gmail.com>
+ <20210411121034.373468ac@natsu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210411121034.373468ac@natsu>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sun, 11 Apr 2021 15:55:41 +0200:
+On Sun, Apr 11, 2021 at 12:10:34PM +0500, Roman Mamedov wrote:
+> On Sat, 10 Apr 2021 17:06:22 -0600
+> Chris Murphy <lists@colorremedies.com> wrote:
+> 
+> > Right. The block device (partition containing the Btrfs file system)
+> > must be exclusively used by one kernel, host or guest. Dom0 or DomU.
+> > Can't be both.
+> > 
+> > The only exception I'm aware of is virtiofs or virtio-9p, but I
+> > haven't messed with that stuff yet.
+> 
+> If you want an FS that allows a block device to be mounted by multiple machines
+> at the same time, there are a few:
+> https://en.wikipedia.org/wiki/Clustered_file_system#Shared-disk_file_system
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc6-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7d900724913cb293620a05c5a3134710db95d0d9
-
-Thank you!
+All of those use some kind of lock manager, though.
+So in no case you just mount the same device twice.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+⢀⣴⠾⠻⢶⣦⠀ .--[ Makefile ]
+⣾⠁⢠⠒⠀⣿⡁ # beware of races
+⢿⡄⠘⠷⠚⠋⠀ all: pillage burn
+⠈⠳⣄⠀⠀⠀⠀ `----
