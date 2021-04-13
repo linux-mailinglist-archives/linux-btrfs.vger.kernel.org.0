@@ -2,122 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D1B35E8A2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Apr 2021 23:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB1635E8D8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Apr 2021 00:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346879AbhDMV6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Apr 2021 17:58:05 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:38651 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232532AbhDMV6E (ORCPT
+        id S1348609AbhDMWLp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Apr 2021 18:11:45 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:61117 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236846AbhDMWLm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:58:04 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1F69A5C0189;
-        Tue, 13 Apr 2021 17:57:43 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 13 Apr 2021 17:57:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=GUd/ZS6nofxSPI/Y6ar1moERlZy
-        XV9C28b9a4xMgmtM=; b=g8SQ1H8SSvaplm3kwsVwrRbDxZOCpl9aD+3ONohZHxu
-        EfR4becRH8Jo6qYW+XnbzA+Pc/9clnM08tiP2FHolhddvpGJlcE5vZOkRnge/3ml
-        wcWExycE2BI+rMX4ZKQjDMvAAqDzVpLuNTAMAP/wAZ9Jk7crmfBnY4hXfulUSMzX
-        gs8WW85OecF9w371zlom6uzjwKtMQBxRO2o6vT5D+O+dlOIxVD5AAUFDsHlOev/V
-        kLBlRdDvHeGpCo+XbdReNg6goPfK+wtV6Z7S2D5iCiTO6w8JTki21WzTlJas8yCf
-        7fTxciYi0Ffe8qcJQHsb6GFOuqUcDcBIfb0qCMaFOeg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=GUd/ZS
-        6nofxSPI/Y6ar1moERlZyXV9C28b9a4xMgmtM=; b=lZS7580fRIs5VjLd0G78Ns
-        qtuEiyxzOQvVh3w/HEClKa5gDQn0eY7xloorGKT+ZblpJ1P2v09GyQBVa53i+03O
-        BOxqoBijV73//0Rhmp7Dmcrr46af5XinjfTy0GbrnD7PAODwdaMJ6iTU8jxUWzrt
-        KsAepoHmPzv3thjp9dNxTDLlmepeR5jPpXa4vSbDD/TmvqE47odKjtEiRsbd087k
-        9DIez0LJmXgAurQZnLQmyFSrFVRR7rf5ET52ddG+szPwIQTSuVwWOzyZWuRxxVIS
-        WoF4gYGfcsSVLghZn48Gc+QdPKc0hikupRsPtpqUdYjyOYFD9AHwsWQg+wpp77xA
-        ==
-X-ME-Sender: <xms:1hN2YHInLlfujuu1rL3sdS7GA6yEmH_Swj85G5D58J7CXiOCH_b0Tg>
-    <xme:1hN2YLJTJRfgi9uWRxZKuyzHu4KXxrSZCH0ReKkzx1t5WF-GQUkU4MC3En34p1gPR
-    HziZpm_7kU2VVbU1wE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudeltddgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecukfhp
-    pedvtdejrdehfedrvdehfedrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
-X-ME-Proxy: <xmx:1hN2YPvmjt9DYUEJCOWyhW11t4gJcKEo2tTJDXBR4AEfBl5TeSTRnw>
-    <xmx:1hN2YAZHpXG6TtJ5FyAjOtSTZuLWgxsxd3GBtCjyyp7jigpyNUciQg>
-    <xmx:1hN2YOZl-sqBxPwz1VJM72IOYW-rXaZeCcm2QKAU8vr0bZ0ZI5nHPQ>
-    <xmx:1xN2YM2KSUEkGPqHDkuU2RRZ-qEIE4EMF1uKTmmdjwRDGyGtHFTrjg>
-Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B43DD240054;
-        Tue, 13 Apr 2021 17:57:42 -0400 (EDT)
-Date:   Tue, 13 Apr 2021 14:57:41 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Annotate unlocked accesses to transaction state
-Message-ID: <YHYT1TUka52Wya8C@zen>
-References: <20201124144413.3168075-1-nborisov@suse.com>
+        Tue, 13 Apr 2021 18:11:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618351882; x=1649887882;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0hE7/Kl+QIZYZ5kypr/FWojB38Oj+PUM9iVW4sj9xbg=;
+  b=mUwG8sErpcAYiPl6/+wg0hU+VRE0rhqEiKe/0uYio5elfYv9d2oQhzR5
+   A8bnbLM+VTBUVkB8feotn7XOIlG9Lm/BMoH2w7rg3k/qvVs6ftYY8Nge3
+   GSkI8zQX5EgYeX6cKbVsWWXWlRlzi493o5P+Zm1jVVyMDUtgtLNSakPBg
+   X0/tx8/BnRl8WKW5Sndx5DsM4p6ANVVuq0foSxGR0CzvviMpU2RNvDlbS
+   kGVocuTAIN8yeMVONl6Pbx4ao39JCE4P37CkPJCYvpakARnw136gRhXkI
+   bzd7LoCEWkjnsIbfWLtN0qOBRbLwoTags5DaYSyTgMSel1L1iZW6InWIB
+   w==;
+IronPort-SDR: ZWUaJ3JIX5XkUj+579qm0KNyhbIWrSYb4DdlxtRIW/9xPahPplc7+B7K8BWLWXNYvKq8pJcAbM
+ JbHZaVrawRkcBdLEhEU64P4/C83SBvdD0xNpFDbEjImj1+smknNARipzN5iAhcE8uNZVd2xMbG
+ C6DsCLXd1dRSNaxFGHzMKpvvkMEs+Tgv9BF80LEx9EGLuVX4f52ggEtltACQhgj2QnauWEZPbo
+ ksnTZLtrCBBifZxt+NJgfxoa8lLl7iz1gPTSu6tNOEGiUhqOBvtMowZdkE5V2pKh9S9JZMsiDa
+ 6wI=
+X-IronPort-AV: E=Sophos;i="5.82,220,1613404800"; 
+   d="scan'208";a="164254956"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Apr 2021 06:11:02 +0800
+IronPort-SDR: q+UcltWfB5+3uoHMjJEfYYZyLdjnp3qmiYioMvO+XJ2O4MCFN6sn9o0qNduagfSgLGkPtH4//o
+ 9F41O9WevJNcB1xxzc5mRBQmlSjSIN72Ib7Ieqr+NXAYbgOeWuMOXHG7cEAPE54jDgDhX2+g/v
+ vA2bgXtNAFGv8Mh9FC26Q50QAHFE1aynicYRqwOYm00X6csf7cHbkC+PvtHwhO9pBz+uQ7pawQ
+ hKFVq5iPa2jJcBFTa464ogjRzSfPLbimWoPWWm2pdkQ2amzvgF7gaHlR102HbsqXb88/ttaLxP
+ 6k/fyDw6jL3WqOch0iInfGp+
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 14:51:59 -0700
+IronPort-SDR: 6d5jGTMXi9fvfUPGviLl5Bn/9rBQTmHQWJUsll8VpwyPpvLGd6a+zuOXmQQ/IDXQUwaQKPY4K5
+ 98beR1T1klWQ+S1eD0R4PSv9x8896zo1wTyPLVDg1THSx0Zd9ZKtqhnJ8eqe7I2Vz8EKppmDKf
+ bVyFS28VwOp0FrrgoNXflpgTg1OS8+2WgxkJiIGapudcl9ALDjBriN1VkYYLqLinJYmSA1HOwt
+ 9KoWQa/oxsrRvXqLq9w7Wz1H15rb/7mXctuqooAvyVw6t+PgqQdF/ZzUXN3oKX2fHs6wsB59Mb
+ NtY=
+WDCIronportException: Internal
+Received: from 39xlxy2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.53.108])
+  by uls-op-cesaip01.wdc.com with ESMTP; 13 Apr 2021 15:10:55 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Karel Zak <kzak@redhat.com>
+Cc:     util-linux@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/3] implement zone-aware probing/wiping for zoned btrfs
+Date:   Wed, 14 Apr 2021 07:10:48 +0900
+Message-Id: <20210413221051.2600455-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124144413.3168075-1-nborisov@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 04:44:13PM +0200, Nikolay Borisov wrote:
-> btrfs_transaction::state is protected by btrfs_fs_info::trans_lock and
-> all accesses to this variable should be synchornized by it. However,
-> there are 2 exceptions, namely checking if currently running transaction
-> has entered its commit phase in start_transaction and in
-> btrfs_should_end_transaction.
-> 
-> Annotate those 2, unlocked accesses with READ_ONCE respectively. Also
-> remove the full memory barrier in start_transaction as it provides no
-> ordering guarantees due to being unpaired. All other accsess  to
-> transaction state happen under trans_lock being held.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  fs/btrfs/transaction.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index df5687a92798..e5a5c3604a9b 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -695,8 +695,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
->  	h->can_flush_pending_bgs = true;
->  	INIT_LIST_HEAD(&h->new_bgs);
-> 
-> -	smp_mb();
-> -	if (cur_trans->state >= TRANS_STATE_COMMIT_START &&
-> +	if (READ_ONCE(cur_trans->state) >= TRANS_STATE_COMMIT_START &&
->  	    may_wait_transaction(fs_info, type)) {
->  		current->journal_info = h;
->  		btrfs_commit_transaction(h);
-> @@ -912,7 +911,7 @@ int btrfs_should_end_transaction(struct btrfs_trans_handle *trans)
->  {
->  	struct btrfs_transaction *cur_trans = trans->transaction;
-> 
-> -	if (cur_trans->state >= TRANS_STATE_COMMIT_START ||
-> +	if (READ_ONCE(cur_trans->state) >= TRANS_STATE_COMMIT_START ||
->  	    test_bit(BTRFS_DELAYED_REFS_FLUSHING,
->  		     &cur_trans->delayed_refs.flags))
->  		return 1;
-> --
-> 2.25.1
-> 
+This series implements probing and wiping of the superblock of zoned btrfs.
 
-I think some parts of this have already gone in and the conditional has
-been lightly refactored, so this patch no longer applies to
-kdave/misc-next.
+Zoned btrfs is merged with this series:
+https://lore.kernel.org/linux-btrfs/20210222160049.GR1993@twin.jikos.cz/T/
 
-Assuming this is a change for adherence to best practices rather than a
-fix for a specific issue (in which case it would be nice to have the
-issue described in the message), the patch looks good to me otherwise.
+And, superblock locations are finalized with this patch:
+https://lore.kernel.org/linux-btrfs/BL0PR04MB651442E6ACBF48342BD00FEBE7719@BL0PR04MB6514.namprd04.prod.outlook.com/T/
+
+A zoned block device consists of a number of zones. Zones are either
+conventional and accepting random writes or sequential and requiring that
+writes be issued in LBA order from each zone write pointer position.
+
+Superblock (and its copies) is the only data structure in btrfs with a
+fixed location on a device. Since we cannot overwrite in a sequential write
+required zone, we cannot place superblock in the zone.
+
+Thus, zoned btrfs use superblock log writing to update superblock on
+sequential write required zones. It uses two zones as a circular buffer to
+write updated superblocks. Once the first zone is filled up, start writing
+into the second buffer. When both zones are filled up and before start
+writing to the first zone again, it reset the first zone.
+
+This series first implements zone based detection of the magic location.
+Then, it adds magics for zoned btrfs and implements a probing function to
+detect the latest superblock. Finally, this series also implements
+zone-aware wiping by zone resetting.
+
+
+Naohiro Aota (3):
+  blkid: implement zone-aware probing
+  blkid: add magic and probing for zoned btrfs
+  blkid: support zone reset for wipefs
+
+ configure.ac                     |   1 +
+ libblkid/src/blkidP.h            |   5 +
+ libblkid/src/probe.c             |  91 ++++++++++++++--
+ libblkid/src/superblocks/btrfs.c | 178 ++++++++++++++++++++++++++++++-
+ 4 files changed, 266 insertions(+), 9 deletions(-)
+
+-- 
+2.31.1
+
