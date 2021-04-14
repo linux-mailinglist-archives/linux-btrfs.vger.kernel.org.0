@@ -2,133 +2,236 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3428635F1D0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Apr 2021 13:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6069A35F20C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Apr 2021 13:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235326AbhDNK7j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Apr 2021 06:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44530 "EHLO
+        id S237604AbhDNLRG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Apr 2021 07:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346548AbhDNK7f (ORCPT
+        with ESMTP id S229886AbhDNLRF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:59:35 -0400
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FE1C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Apr 2021 03:59:13 -0700 (PDT)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 5C47C9C271; Wed, 14 Apr 2021 11:59:08 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1618397948;
-        bh=mzNP65eSu4IMIDEP6D5o0Fd2MAFwbvBUr0kSCo9ZESM=;
-        h=To:From:Subject:Date:From;
-        b=tD4DS4tkXl/NVsZIt5wUBprWlEaP5DAtuIi8e9hrRnYsSEfcxqsDWJ03KqzL9Jkd0
-         Sch5TRDhATMfs+hBQQ1jqJUBrH0WK3uOu2G2KDTGr8Cz2DFVcrITBQYxPlZdmCUATE
-         IrrBXhQc3bQ5Jwey4W7V/cgN2+6pjqLk9/yeANvCtqSbDMfbSuX8S5+ftOo72jSKiK
-         GtbImAoo6x9rlMM3NUq9VzzC/cJydH0526hIkqm2iJtEw0QM0Jd+bWLzdYAUc3KQgd
-         9BclJHSdIqhsmRf2blsq8BYQZxRjlbE1WTNXFI6L+cRGCTucm+uNZxb4EQLQTlnzac
-         rTRK6hnH9Z9/w==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-3.0 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id A7C359BBE6
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Apr 2021 11:59:04 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1618397944;
-        bh=mzNP65eSu4IMIDEP6D5o0Fd2MAFwbvBUr0kSCo9ZESM=;
-        h=To:From:Subject:Date:From;
-        b=qoSGaGVQkRsrbTDDhpt211/30Y50w4aeXLolonjpp5UGID9RP+Mb0l0v1CcJQRhrW
-         cbgWdywKAvxDFcWA6ct/lgeYVCp12V5C9DkD2X61qPN3mKSFkFYsRduCtMBGPzoFzE
-         xi4CEiGVGaFSxr2mMk8v1AvvXTX8D+NDBOtsoYHRDuOTRwlS6NrLPpMk3SRWMq6PmB
-         dw65TgXIzdKu/GxDhCW36BLmfl1fdNO2huBqMRKNdiYhJ82BghwiMiZi7uroQZr92C
-         2pz9hRuWuCkdwh1lHTJjtcAWzYIexBp8rWaigzJ415cdQ+2AHdjWFzFHRxuneknjxE
-         Vt8M2erosSb3Q==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id 3529122844B
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Apr 2021 11:59:04 +0100 (BST)
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: btrfs-progs top-level options man pages and usage
-Message-ID: <704ae072-1b0e-c146-f92e-4e58d53bcc1e@cobb.uk.net>
-Date:   Wed, 14 Apr 2021 11:59:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 14 Apr 2021 07:17:05 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA268C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Apr 2021 04:16:43 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id f19so3268618qka.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Apr 2021 04:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=PJm6jNppXla7x5V70xDxXhtw8j2BG4CxNrr+LIWe8R4=;
+        b=XX6VnaCZDUj0Uce6/dxnh2G4kf8uwycepeRDX1vWRJUJdOVwUc/+tKwFeXa+2kt4x0
+         OCsnabYKu6b7ZQpChxURdHbgOEYYv4DHXigG5bDGl2kYiRSljLiXiR+3Ri6OldeC8J16
+         ndRr1lJ52QbOUzwatH5YGU0UNKw/QgTBjAh1GJ58namZCyZHb4DhIQcVRJm5Ztt3p5vj
+         5K1GT6CUsKovi0fw9qcN6tDrebXkz9Thsf8b25SGMi2BNT0XVwu4zaj5fa/8BuCbgLVL
+         b29HsQVEIY9SFBNbDJnqbv61xdEqlYlJXL7nUl9jeVTTTx+cnLrZC6GA1M1zh1ZxinxZ
+         WQrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=PJm6jNppXla7x5V70xDxXhtw8j2BG4CxNrr+LIWe8R4=;
+        b=BM7FbFHZ6UUhALMi3LE6cVAfONui7mGTzocOzhosW3tiCaLTnQF+ey+tyvY/qHZv8b
+         aAPR/36ODUF7m51Q2o8z4XDiBVeEyAoFa1TnnSAq9imH6btzNMDqiMGuN3mXErZd9MRL
+         /IsuKGFLhtQkGpFO/yBpJ12AMYPsMzy9G56Qxpx8DwgqSQ59nvrdea981aBytBcKUKSJ
+         ZQplEOErJbCb5Ef+U1GKqfSEpc+ohaEZ6/ZKph7FON1fEmf8s3Vssr7enI3ICtJtaqVz
+         UNrTU//PcPxYkDG1VrUpr/vtp3IjYnsG9mzWDgfIFLy+9E//piabpMlGtkGEKl4nUs61
+         4BNQ==
+X-Gm-Message-State: AOAM533i9Ybe6lDG6hdvD+vgWcU9HZphrPqrOM/Nuk6haLZ5iRneiL4B
+        D66K17h1RWUTPsfxMug9o8f1crVhc4oFUMLk/UfeTcJxHXbnjg==
+X-Google-Smtp-Source: ABdhPJyU4Kuhnzehtwwm9govsoVX4xhs5gZnCydTbvAQq/hnrQDOIYnYvPWqiDKYCYJ1wQIkYXAc2A1NmAnVUM1qk98=
+X-Received: by 2002:a37:6290:: with SMTP id w138mr27664886qkb.479.1618399002919;
+ Wed, 14 Apr 2021 04:16:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1617962110.git.johannes.thumshirn@wdc.com>
+ <459e2932c48e12e883dcfd3dda828d9da251d5b5.1617962110.git.johannes.thumshirn@wdc.com>
+ <CAL3q7H4SjS_d5rBepfTMhU8Th3bJzdmyYd0g4Z60yUgC_rC_ZA@mail.gmail.com>
+ <PH0PR04MB741605A3689AA581ABC6CF3E9B709@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <CAL3q7H55vudYBNFGHWWuWCaeMLuVm8HjbBsmTYD7KQP_dKEKOQ@mail.gmail.com>
+ <PH0PR04MB7416DD1B232F797944ADD6EC9B709@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <PH0PR04MB7416807F6FA29B03EF6A4A7A9B4F9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <CAL3q7H5xZLhHrBPJb5jwe8ZxAv=XfFC05kcw5-WqBySQP4uTBg@mail.gmail.com> <PH0PR04MB74167FB19522DBEB1F70E80D9B4F9@PH0PR04MB7416.namprd04.prod.outlook.com>
+In-Reply-To: <PH0PR04MB74167FB19522DBEB1F70E80D9B4F9@PH0PR04MB7416.namprd04.prod.outlook.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 14 Apr 2021 12:16:31 +0100
+Message-ID: <CAL3q7H6Bgqkdf8Z+xRBH8C=XxtrGzXyNUf6BHaLw54LZb3Agsg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] btrfs: discard relocated block groups
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 6:48 PM Johannes Thumshirn
+<Johannes.Thumshirn@wdc.com> wrote:
+>
+> On 13/04/2021 14:57, Filipe Manana wrote:
+> > And what about the other mechanism that triggers discards on pinned
+> > extents, after the transaction commits the super blocks?
+> > Why isn't that happening (with -o discard=3Dsync)? We create the delaye=
+d
+> > references to drop extents from the relocated block group, which
+> > results in pinning extents.
+> > This is the case that surprised me that it isn't working for you.
+>
+> I think this is the case. I would have expected to end up in this
+> part of btrfs_finish_extent_commit():
+>
+>
+>         /*
+>          * Transaction is finished.  We don't need the lock anymore.  We
+>          * do need to clean up the block groups in case of a transaction
+>          * abort.
+>          */
+>         deleted_bgs =3D &trans->transaction->deleted_bgs;
+>         list_for_each_entry_safe(block_group, tmp, deleted_bgs, bg_list) =
+{
+>                 u64 trimmed =3D 0;
+>
+>                 ret =3D -EROFS;
+>                 if (!TRANS_ABORTED(trans))
+>                         ret =3D btrfs_discard_extent(fs_info,
+>                                                    block_group->start,
+>                                                    block_group->length,
+>                                                    &trimmed);
+>
+>                 list_del_init(&block_group->bg_list);
+>                 btrfs_unfreeze_block_group(block_group);
+>                 btrfs_put_block_group(block_group);
+>
+>                 if (ret) {
+>                         const char *errstr =3D btrfs_decode_error(ret);
+>                         btrfs_warn(fs_info,
+>                            "discard failed while removing blockgroup: err=
+no=3D%d %s",
+>                                    ret, errstr);
+>                 }
+>         }
+>
+> and the btrfs_discard_extent() over the whole block group would then trig=
+ger a
+> REQ_OP_ZONE_RESET operation, resetting the device's zone.
+>
+> But as btrfs_delete_unused_bgs() doesn't add the block group to the
+> ->deleted_bgs list, we're not reaching above code. I /think/ (i.e. verifi=
+cation
+> pending) the -o discard=3Dsync case works for regular block devices, as e=
+ach extent
+> is discarded on it's own, by this (also in btrfs_finish_extent_commit()):
+>
+>         while (!TRANS_ABORTED(trans)) {
+>                 struct extent_state *cached_state =3D NULL;
+>
+>                 mutex_lock(&fs_info->unused_bg_unpin_mutex);
+>                 ret =3D find_first_extent_bit(unpin, 0, &start, &end,
+>                                             EXTENT_DIRTY, &cached_state);
+>                 if (ret) {
+>                         mutex_unlock(&fs_info->unused_bg_unpin_mutex);
+>                         break;
+>                 }
+>
+>                 if (btrfs_test_opt(fs_info, DISCARD_SYNC))
+>                         ret =3D btrfs_discard_extent(fs_info, start,
+>                                                    end + 1 - start, NULL)=
+;
+>
+>                 clear_extent_dirty(unpin, start, end, &cached_state);
+>                 unpin_extent_range(fs_info, start, end, true);
+>                 mutex_unlock(&fs_info->unused_bg_unpin_mutex);
+>                 free_extent_state(cached_state);
+>                 cond_resched();
+>         }
+>
+> If this is the case, my patch will essentially discard the data twice, fo=
+r a
+> non-zoned block device, which is certainly not ideal.
 
-I have a cron job which frequently deletes a subvolume and I decided I
-wanted to silence the output. I remembered there was a -q option and
-thought I would just quickly glance at the documentation for it to check
-there wasn't some reason I had not put that in the script when I first
-wrote it some time ago.
+Yep, that's what puzzled me, why the need to do it for non-zoned file
+systems when using -o discard=3Dsync.
+I assumed you ran into a case where discard was not happening due to
+some bug bug in the extent pinning/unpinning mechanism.
 
-That opened up an Alice-in-Wonderland rabbit hole... the documentation
-for the common command options in btrfs-progs is not just awful, I ended
-up very confused about what I was seeing...
+> So the correct fix would
+> be to get the block group into the 'trans->transaction->deleted_bgs' list
+> after relocation, which would work if we wouldn't check for block_group->=
+ro in
+> btrfs_delete_unused_bgs(), but I suppose this check is there for a reason=
+.
 
-There are several issues:
+Actually the check for ->ro does not make sense anymore since I
+introduced the delete_unused_bgs_mutex in commit
+67c5e7d464bc466471b05e027abe8a6b29687ebd.
 
-1) The man pages do not describe the top-level btrfs command options, or
-their equivalents at subcommand level.
+When the ->ro check was added
+(47ab2a6c689913db23ccae38349714edf8365e0a), it was meant to prevent
+the cleaner kthread and relocation tasks from calling
+btrfs_remove_chunk() concurrently, but checking for ->ro only was
+buggy, hence the addition of delete_unused_bgs_mutex later.
 
-1a) btrfs.asciidoc makes no mention of -q, --quiet, -v, --verbose or
-even of the concept of top-level btrfs command options. It just explains
-how the subcommand structure works.
+>
+> How about changing the patch to the following:
 
-1b) btrfs-subvolume.asciidoc makes no mention of -q or --quiet. However,
-it *does* mention -v and --verbose but with the completely cryptic (if
-you are not a btrfs-progs developer) description "(deprecated) alias for
-global '-v' option". What global '-v' option is that then as it is not
-documented in btrfs.asciidoc? And what about '-q'?
+Looks good.
+However would just removing the ->ro check by enough as well?
 
-I haven't looked at the other subcommand pages.
+Thanks Johannes.
 
-2) The built-in help in btrfs and btrfs-subvolume do not describe the
-top level command options.
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 6d9b2369f17a..ba13b2ea3c6f 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -3103,6 +3103,9 @@ static int btrfs_relocate_chunk(struct btrfs_fs_inf=
+o *fs_info, u64 chunk_offset)
+>         struct btrfs_root *root =3D fs_info->chunk_root;
+>         struct btrfs_trans_handle *trans;
+>         struct btrfs_block_group *block_group;
+> +       u64 length;
+>         int ret;
+>
+>         /*
+> @@ -3130,8 +3133,16 @@ static int btrfs_relocate_chunk(struct btrfs_fs_in=
+fo *fs_info, u64 chunk_offset)
+>         if (!block_group)
+>                 return -ENOENT;
+>         btrfs_discard_cancel_work(&fs_info->discard_ctl, block_group);
+> +       length =3D block_group->length;
+>         btrfs_put_block_group(block_group);
+>
+> +       /*
+> +        * For a zoned filesystem we need to discard/zone-reset here, as =
+the
+> +        * discard code won't discard the whole block-group, but only sin=
+gle
+> +        * extents.
+> +        */
+> +       if (btrfs_is_zoned(fs_info)) {
+> +               ret =3D btrfs_discard_extent(fs_info, chunk_offset, lengt=
+h, NULL);
+> +               if (ret) /* Non working discard is not fatal */
+> +                       btrfs_warn(fs_info, "discarding chunk %llu failed=
+",
+> +                                  chunk_offset);
+> +       }
+> +
+>         trans =3D btrfs_start_trans_remove_block_group(root->fs_info,
+>                                                      chunk_offset);
+>         if (IS_ERR(trans)) {
 
-2a) 'btrfs' shows a usage message that shows the -q, --quiet, -v and
---verbose options but with no information on them. 'btrfs --help'
-provides no further information. 'btrfs --help --full' does, but it is
-almost 800 lines long.
 
-2b) 'btrfs subvolume' doesn't even mention these options in its usage
-message. Nor does it mention the --help option or the --help --full
-option as global options or as subcommand options. 'btrfs subvolume
---help' provides exactly the same output. 'btrfs subvolume --help
---full' does at least mention the options - if anyone can ever guess
-that it exists.
 
-Again, I haven't looked at the other subcommands.
+--=20
+Filipe David Manana,
 
-3) The difference between global options and subcommand options is very
-unfortunate, and very confusing. I *hate* the concept of global options
-(as implemented) -- in my mental model the 'btrfs' command is really
-just a prefix to group together various btrfs-related commands and I
-don't even *think* about ever inserting an option between btrfs and the
-subcommand. In my mental model, the command is 'btrfs subvolume'. In my
-mind, if the command was 'btrfs' then the syntax would more naturally be
-'btrfs create subvolume' (like 'Siri, call David') instead of 'btrfs
-subvolume create'.
-
-3a) One particularly unfortunate effect is that 'btrfs subv del -v XXX'
-works but 'btrfs subv del -q XXX' does not. I consider myself very
-experienced with btrfs but even after drafting the first version of this
-email I changed my script to do this and was surprised when it didn't work.
-
-3b) Another confusing effect is that both 'btrfs -v subv del XXX' and
-'btrfs subv del -v XXX' work but 'btrfs subv -v del XXX' does not.
-
-I think fixing the man page to document the global options is important
-and I am happy to try to create a suitable patch. Does anyone else feel
-the other issues should be fixed?
-
-Graham
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
