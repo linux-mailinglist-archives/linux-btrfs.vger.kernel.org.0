@@ -2,91 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B123610BB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 19:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8A9361118
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 19:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhDORHN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 13:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        id S233606AbhDOR2F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 13:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhDORHM (ORCPT
+        with ESMTP id S233343AbhDOR2E (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:07:12 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851D5C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 10:06:49 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id q123-20020a1c43810000b029012c7d852459so4304916wma.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 10:06:49 -0700 (PDT)
+        Thu, 15 Apr 2021 13:28:04 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22293C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 10:27:41 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id j5so23124821wrn.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 10:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y1i8OC59tBn4WqecKiHjRNfIP082GsyMG+fgG0IIXus=;
-        b=LKyArfOJ3XzCBNH12znn7rDYAIYAU0vW/QG5ZbWEA5UGgXtSwy80m7GDmes2sOTZw7
-         HWxFN8QYD149SyQ/hdz9voiGGhZCeNtCpIh+AvzDCYaPbKzAUFwRwKls6cuNgpcAB0MA
-         HBlf8RFZ0IWUMgFycZWAtlQemeJ/eaRJEhRiZcpx9tuXTSBD8yWifbs055zCUp+4GxEC
-         eFKO7y5T1eiItHdnYr5u1PX/RW3RjrfhNPjDWNxOE/lJrTIEYm+GO3FiQxm+QQf7fBJJ
-         nOkcSI/GsXiQL2P4EebvkCchgIJwlUCJoiLlfy9QSurB/ZjYYDebcsFmWmUI9JEvBG9f
-         F+OA==
+         :cc:content-transfer-encoding;
+        bh=fIyGxytkckxPWJD/qCVcn3gQIRdbg8VVKM3AtEG5KZc=;
+        b=u8WYWo8Eq507PfKhZmzaoWb2D6CtVuc4DWwoXjH1viVhnJnpZjmKTBBsakg+fxXRvw
+         GXPTKShGwqMA9prcaiu2HmPO5y27lXZXwG+6xEb4RDVSLwBkvife8HCNprTz6AhyzM8H
+         8VZexguJXuMof7GnJloRaqeWtby1ziLoP4aV7USdjjVlRphuxrcSnabPSgv2abJ44LAS
+         dfdcMB93FDW46SATNDqzRxCbAYk46c82oDXr6Fl3/In8pMvmhTIM2rLU2hbVIXB3PmAP
+         fFmBGWxia4zU/1uKqJAcjD1qYo9WqB8JFdul1qDhnqRyYrX7CIS2UcsmVZQnXu/OwJYG
+         FJBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y1i8OC59tBn4WqecKiHjRNfIP082GsyMG+fgG0IIXus=;
-        b=TaVpJBji8De4rPnRaROP4cRZG/QiUMRlOvymqFCXABRYG4JJPCIKpuMZVb1t0i0Sz2
-         ivxrkatnj3cn3eSRAjLYYboOwyLjBWn2UcpCuCkwECJbKFewRhje38Ceg6/TGHugF3vL
-         7F+V1k+rtP0uErmqqSyDh8G+U1S5vQOB0S0H47c1JGfJnaTTRs9lztlwA4uEQd5U4bqV
-         yGRfBn2lyUCIbFcKD3rFqFXYHcIeujqtGpUG2N+JIRIWT2xXozIsx5yIoccDPwcBNfVu
-         8DtynHu56GTyMBcka7a1odFsLgrITBU3VWF+NPyqyiXrCsJ8nVJuQK/ty/o0kmeKQI2X
-         eBbg==
-X-Gm-Message-State: AOAM530NqbtiaQPt5Pb6C/6GbQZhu14maXaGw154mVm0wQM2NAOXF5V0
-        IMyjYF9yp1elTcrceGn/K5x2KD76+5hpq3svR5TdM0H/xHhgtJn6
-X-Google-Smtp-Source: ABdhPJx6IyyXTXy7VFS/K+IMpDgBWCKS4k1QFqsgl3mVFkCAEt5PLJ6PvzSaYEejbl23KeXYzE7aJZOMNIm/6OTWwUk=
-X-Received: by 2002:a7b:c769:: with SMTP id x9mr4187964wmk.124.1618506408315;
- Thu, 15 Apr 2021 10:06:48 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fIyGxytkckxPWJD/qCVcn3gQIRdbg8VVKM3AtEG5KZc=;
+        b=cwt9mggLl1LpzXNFqtkySqeRSLAeVYMiqBJ1N9EkfFOaNo+wzcdCFeTKpGlCktZBy/
+         Jq3fmJGs1wT8ZFLCnLCS6/PJ32H6YWkxhGkxqms84P6p/NvbhC7B/xFBl5bPC00bTjoQ
+         cOjhOZIxPOEA3mrynrOsDbxhwgJTU5TX3gk/y97snASYGKLoqFUB5f37ptwYl+3w5N88
+         HF0fCUqi+MDzKF0ABLqAJyMObNjrSU86Nw3ixSvgMP4r1RWuUblo3oqIx/Ifs4h8ef+b
+         yBWywCqeRUmhRGps3aLTHSQu7UgB/wfTFsyjh3EuuO6HlBeZ4S3O1LgWkTadKOGD7gjL
+         Py6Q==
+X-Gm-Message-State: AOAM533zh8YJA+2aOR3dcqZ4JzVqgmaL7VC+Sb8TxlOBQ83dJCzkJB+y
+        +ahpmyVhDLHD5SSfN97VUBL9VRwpJ/RHxwm8nHZZqQ7rgNp5n481
+X-Google-Smtp-Source: ABdhPJz+0BMmtAmdze4IFTfIntW7+KETNQJwnwX2YB7GXYyNafswl09pTyAxVXwG19Xu7IBU5RKNPBaY5McbtbnsixI=
+X-Received: by 2002:a5d:47ce:: with SMTP id o14mr3396365wrc.236.1618507659897;
+ Thu, 15 Apr 2021 10:27:39 -0700 (PDT)
 MIME-Version: 1.0
 References: <d97168fe4c9e7560fb6229fb4f971bfd@linuxsystems.it>
 In-Reply-To: <d97168fe4c9e7560fb6229fb4f971bfd@linuxsystems.it>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 15 Apr 2021 11:06:32 -0600
-Message-ID: <CAJCQCtQ_B6b2vrntaXLO5bWdi_1X7p09F84S1pbpEVXX9_g_1w@mail.gmail.com>
+Date:   Thu, 15 Apr 2021 11:27:23 -0600
+Message-ID: <CAJCQCtTRcp3a-jHA_i9Tira0erdAkaw9V3Yfg_ZhAvK9PW_M3w@mail.gmail.com>
 Subject: Re: Dead fs on 2 Fedora systems: block=57084067840 write time tree
  block corruption detected
-To:     =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Josef Bacik <josef@toxicpanda.com>
+To:     =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-First computer/file system:
+On Thu, Apr 15, 2021 at 2:04 AM Niccol=C3=B2 Belli <darkbasic@linuxsystems.=
+it> wrote:
+>
+> Full dmesg: https://pastebin.com/pNBhAPS5
 
-(from the photo):
+This is at initial ro mount time during boot:
+[ 4.035226] BTRFS info (device nvme0n1p8): bdev /dev/nvme0n1p8 errs:
+wr 0, rd 0, flush 0, corrupt 41, gen 0
 
-[   136.259984] BTRFS critical (device nvme0n1p8): corrupt leaf: root=257
-block=31259951104 slot=9 ino=3244515, name hash mismatch with key, have
-0x00000000F22F547D expect 0x0000000092294C62
+There are previously detected corruption events. This is just a simple
+counter. It could be the same corruption encountered 41 times, or it
+could be 41 separate corrupt blocks. In other words, older logs might
+have a clue about what first started going wrong.
 
-This is not obviously a bit flip. I'm not sure what's going on here.
 
-Second computer/file system:
+> I have another laptop with Arch Linux and btrfs, should I be worried
+> about it? Maybe it's a Fedora thing?
 
-[30177.298027] BTRFS critical (device nvme0n1p8): corrupt leaf: root=791
-block=57084067840 slot=64 ino=1537855, name hash mismatch with key, have
-0x00000000a461adfd expect 0x00000000a461adf5
+Both are using upstream stable Btrfs code. I think the focus at this
+point is on tracking down a hardware cause for the two problems,
+however unusually bad luck that is; but also there could be a bug
+(e.g. repair shouldn't crash).
 
-This is clearly a bit flip. It's likely some kind of hardware related
-problem, despite the memory checking already done, it just is rare
-enough to evade detection with a typical memory tester like
-memtest86(+). You could try 'memtester' or  '7z b 100' and see if you
-can trigger it. It's a catch-22 with such a straightforward problem
-like a bit flip, that it's risky to attempt a repair which can end up
-causing worse corruption.
+The correct reaction to corruption on Btrfs is to update backups while
+you still can, while it's still mounted or can be mounted. Then try
+repair once the underlying problem has been rectified.
 
-What about the mount options for both file systems? (cat /proc/mounts
-or /etc/fstab)
 
---
+--=20
 Chris Murphy
