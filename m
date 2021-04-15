@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20800360157
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE4F360158
 	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 07:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhDOFFd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S230058AbhDOFFd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 15 Apr 2021 01:05:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37074 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:37122 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230047AbhDOFFb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:05:31 -0400
+        id S230054AbhDOFFd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Apr 2021 01:05:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618463107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1618463109; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cTHwlJEYneWhgrYjf1yUpmitfQemkE2ABZY2HzPY950=;
-        b=ofJngOqEmlqR0ukrX+l15bGmBUfpgSTzBSZZF7oXu5DMiJKQPSyE1wuYX+OqhRmz412ggg
-        o4hHZkP4E1bAPtKv7wuPtisfmF3tWA72uxVUOVO2NOs6xGrjR1rsdDNJY9Y/5WVEs5k6Vf
-        JekZFpmRgGk93JGqm0Zk9dli4XMoFPw=
+        bh=5Jh5KYaDVs/UMuklHgJ01fW0rzme04KUKKs8OX90qUY=;
+        b=L23lmSOLEeaKU1oijXR+mP2itnhX4+VxyLSbBQY8CgVhHwi7p8IkLFmW9+M7UT8iRRL2RE
+        I+L0BoGJmCuRXNVAYwkyFSNgQGuw7STJvgSYZz65emZxdgS1KRj5PIXwv8gNMZZF5XQCm4
+        RxMXOON/yMc9fRVvKyhbYCrMcxnt6q8=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE0DEAFC9
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 05:05:07 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 8B55AAF39
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 05:05:09 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 08/42] btrfs: pass btrfs_inode into btrfs_writepage_endio_finish_ordered()
-Date:   Thu, 15 Apr 2021 13:04:14 +0800
-Message-Id: <20210415050448.267306-9-wqu@suse.com>
+Subject: [PATCH 09/42] btrfs: refactor how we finish ordered extent io for endio functions
+Date:   Thu, 15 Apr 2021 13:04:15 +0800
+Message-Id: <20210415050448.267306-10-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415050448.267306-1-wqu@suse.com>
 References: <20210415050448.267306-1-wqu@suse.com>
@@ -38,196 +38,378 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a pretty bad abuse of btrfs_writepage_endio_finish_ordered() in
-end_compressed_bio_write().
+Btrfs has two endio functions to mark certain io range finished for
+ordered extents:
+- __endio_write_update_ordered()
+  This is for direct IO
 
-It passes compressed pages to btrfs_writepage_endio_finish_ordered(),
-which is only supposed to accept inode pages.
+- btrfs_writepage_endio_finish_ordered()
+  This for buffered IO.
 
-Thankfully the important info here is the inode, so let's pass
-btrfs_inode directly into btrfs_writepage_endio_finish_ordered(), and
-make @page parameter optional.
+However they go different routines to handle ordered extent io:
+- Whether to iterate through all ordered extents
+  __endio_write_update_ordered() will but
+  btrfs_writepage_endio_finish_ordered() will not.
 
-By this, end_compressed_bio_write() can happily pass page=NULL while
-still get everything done properly.
+  In fact, iterating through all ordered extents will benefit later
+  subpage support, while for current PAGE_SIZE == sectorsize requirement
+  those behavior makes no difference.
 
-Also, to cooperate with such modification, replace @page parameter for
-trace_btrfs_writepage_end_io_hook() with btrfs_inode.
-Although this removes page_index info, the existing start/len should be
-enough for most usage.
+- Whether to update page Private2 flag
+  __endio_write_update_ordered() will no update page Private2 flag as
+  for iomap direct IO, the page can be not even mapped.
+  While btrfs_writepage_endio_finish_ordered() will clear Private2 to
+  prevent double accounting against btrfs_invalidatepage().
+
+Those differences are pretty small, and the ordered extent iterations
+codes in callers makes code much harder to read.
+
+So this patch will introduce a new function,
+btrfs_mark_ordered_io_finished(), to do the heavy lifting work:
+- Iterate through all ordered extents in the range
+- Do the ordered extent accounting
+- Queue the work for finished ordered extent
+
+This function has two new feature:
+- Proper underflow detection and recover
+  The old underflow detection will only detect the problem, then
+  continue.
+  No proper info like root/inode/ordered extent info, nor noisy enough
+  to be caught by fstests.
+
+  Furthermore when underflow happens, the ordered extent will never
+  finish.
+
+  New error detection will reset the bytes_left to 0, do proper
+  kernel warning, and output extra info including root, ino, ordered
+  extent range, the underflow value.
+
+- Prevent double accounting based on Private2 flag
+  Now if we find a range without Private2 flag, we will skip to next
+  range.
+  As that means someone else has already finished the accounting of
+  ordered extent.
+  This makes no difference for current code, but will be a critical part
+  for incoming subpage support.
+
+Now both endio functions only need to call that new function.
+
+And since the only caller of btrfs_dec_test_first_ordered_pending() is
+removed, also remove btrfs_dec_test_first_ordered_pending() completely.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c       |  4 +---
- fs/btrfs/ctree.h             |  3 ++-
- fs/btrfs/extent_io.c         | 16 ++++++++++------
- fs/btrfs/inode.c             |  9 +++++----
- include/trace/events/btrfs.h | 19 ++++++++-----------
- 5 files changed, 26 insertions(+), 25 deletions(-)
+ fs/btrfs/inode.c        |  55 +-----------
+ fs/btrfs/ordered-data.c | 179 +++++++++++++++++++++++++++-------------
+ fs/btrfs/ordered-data.h |   8 +-
+ 3 files changed, 129 insertions(+), 113 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 2600703fab83..4fbe3e12be71 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -343,11 +343,9 @@ static void end_compressed_bio_write(struct bio *bio)
- 	 * call back into the FS and do all the end_io operations
- 	 */
- 	inode = cb->inode;
--	cb->compressed_pages[0]->mapping = cb->inode->i_mapping;
--	btrfs_writepage_endio_finish_ordered(cb->compressed_pages[0],
-+	btrfs_writepage_endio_finish_ordered(BTRFS_I(inode), NULL,
- 			cb->start, cb->start + cb->len - 1,
- 			bio->bi_status == BLK_STS_OK);
--	cb->compressed_pages[0]->mapping = NULL;
- 
- 	end_compressed_writeback(inode, cb);
- 	/* note, our inode could be gone now */
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2c858d5349c8..505bc6674bcc 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3175,7 +3175,8 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
- 		u64 start, u64 end, int *page_started, unsigned long *nr_written,
- 		struct writeback_control *wbc);
- int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
--void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
-+void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
-+					  struct page *page, u64 start,
- 					  u64 end, int uptodate);
- extern const struct dentry_operations btrfs_dentry_operations;
- extern const struct iomap_ops btrfs_dio_iomap_ops;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 7d1fca9b87f0..6d712418b67b 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2711,10 +2711,13 @@ blk_status_t btrfs_submit_read_repair(struct inode *inode,
- 
- void end_extent_writepage(struct page *page, int err, u64 start, u64 end)
- {
-+	struct btrfs_inode *inode;
- 	int uptodate = (err == 0);
- 	int ret = 0;
- 
--	btrfs_writepage_endio_finish_ordered(page, start, end, uptodate);
-+	ASSERT(page && page->mapping);
-+	inode = BTRFS_I(page->mapping->host);
-+	btrfs_writepage_endio_finish_ordered(inode, page, start, end, uptodate);
- 
- 	if (!uptodate) {
- 		ClearPageUptodate(page);
-@@ -3739,7 +3742,8 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 		u32 iosize;
- 
- 		if (cur >= i_size) {
--			btrfs_writepage_endio_finish_ordered(page, cur, end, 1);
-+			btrfs_writepage_endio_finish_ordered(inode, page, cur,
-+							     end, 1);
- 			break;
- 		}
- 		em = btrfs_get_extent(inode, NULL, 0, cur, end - cur + 1);
-@@ -3777,8 +3781,8 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 			if (compressed)
- 				nr++;
- 			else
--				btrfs_writepage_endio_finish_ordered(page, cur,
--							cur + iosize - 1, 1);
-+				btrfs_writepage_endio_finish_ordered(inode,
-+						page, cur, cur + iosize - 1, 1);
- 			cur += iosize;
- 			continue;
- 		}
-@@ -4842,8 +4846,8 @@ int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
- 		if (clear_page_dirty_for_io(page))
- 			ret = __extent_writepage(page, &wbc_writepages, &epd);
- 		else {
--			btrfs_writepage_endio_finish_ordered(page, start,
--						    start + PAGE_SIZE - 1, 1);
-+			btrfs_writepage_endio_finish_ordered(BTRFS_I(inode),
-+					page, start, start + PAGE_SIZE - 1, 1);
- 			unlock_page(page);
- 		}
- 		put_page(page);
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 554effbf307e..752f0c78e1df 100644
+index 752f0c78e1df..645097bff5a0 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -951,7 +951,8 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
- 			const u64 end = start + async_extent->ram_size - 1;
- 
- 			p->mapping = inode->vfs_inode.i_mapping;
--			btrfs_writepage_endio_finish_ordered(p, start, end, 0);
-+			btrfs_writepage_endio_finish_ordered(inode, p, start,
-+							     end, 0);
- 
- 			p->mapping = NULL;
- 			extent_clear_unlock_delalloc(inode, start, end, NULL, 0,
-@@ -3058,16 +3059,16 @@ static void finish_ordered_fn(struct btrfs_work *work)
- 	btrfs_finish_ordered_io(ordered_extent);
- }
- 
--void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
-+void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
-+					  struct page *page, u64 start,
+@@ -3063,25 +3063,11 @@ void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+ 					  struct page *page, u64 start,
  					  u64 end, int uptodate)
  {
--	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_ordered_extent *ordered_extent = NULL;
- 	struct btrfs_workqueue *wq;
- 
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct btrfs_ordered_extent *ordered_extent = NULL;
+-	struct btrfs_workqueue *wq;
+-
  	ASSERT(end + 1 - start < U32_MAX);
--	trace_btrfs_writepage_end_io_hook(page, start, end, uptodate);
-+	trace_btrfs_writepage_end_io_hook(inode, start, end, uptodate);
+ 	trace_btrfs_writepage_end_io_hook(inode, start, end, uptodate);
  
- 	ClearPagePrivate2(page);
- 	if (!btrfs_dec_test_ordered_pending(inode, &ordered_extent, start,
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 0551ea65374f..556967cb9688 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -654,34 +654,31 @@ DEFINE_EVENT(btrfs__writepage, __extent_writepage,
+-	ClearPagePrivate2(page);
+-	if (!btrfs_dec_test_ordered_pending(inode, &ordered_extent, start,
+-					    end - start + 1, uptodate))
+-		return;
+-
+-	if (btrfs_is_free_space_inode(inode))
+-		wq = fs_info->endio_freespace_worker;
+-	else
+-		wq = fs_info->endio_write_workers;
+-
+-	btrfs_init_work(&ordered_extent->work, finish_ordered_fn, NULL, NULL);
+-	btrfs_queue_work(wq, &ordered_extent->work);
++	btrfs_mark_ordered_io_finished(inode, page, start, end + 1 - start,
++				       finish_ordered_fn, uptodate);
+ }
  
- TRACE_EVENT(btrfs_writepage_end_io_hook,
+ /*
+@@ -7959,42 +7945,9 @@ static void __endio_write_update_ordered(struct btrfs_inode *inode,
+ 					 const u64 offset, const u64 bytes,
+ 					 const bool uptodate)
+ {
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct btrfs_ordered_extent *ordered = NULL;
+-	struct btrfs_workqueue *wq;
+-	u64 ordered_offset = offset;
+-	u64 ordered_bytes = bytes;
+-	u64 last_offset;
+-
+-	if (btrfs_is_free_space_inode(inode))
+-		wq = fs_info->endio_freespace_worker;
+-	else
+-		wq = fs_info->endio_write_workers;
+-
+ 	ASSERT(bytes < U32_MAX);
+-	while (ordered_offset < offset + bytes) {
+-		last_offset = ordered_offset;
+-		if (btrfs_dec_test_first_ordered_pending(inode, &ordered,
+-							 &ordered_offset,
+-							 ordered_bytes,
+-							 uptodate)) {
+-			btrfs_init_work(&ordered->work, finish_ordered_fn, NULL,
+-					NULL);
+-			btrfs_queue_work(wq, &ordered->work);
+-		}
+-
+-		/* No ordered extent found in the range, exit */
+-		if (ordered_offset == last_offset)
+-			return;
+-		/*
+-		 * Our bio might span multiple ordered extents. In this case
+-		 * we keep going until we have accounted the whole dio.
+-		 */
+-		if (ordered_offset < offset + bytes) {
+-			ordered_bytes = offset + bytes - ordered_offset;
+-			ordered = NULL;
+-		}
+-	}
++	btrfs_mark_ordered_io_finished(inode, NULL, offset, bytes,
++				       finish_ordered_fn, uptodate);
+ }
  
--	TP_PROTO(const struct page *page, u64 start, u64 end, int uptodate),
-+	TP_PROTO(const struct btrfs_inode *inode, u64 start, u64 end,
-+		 int uptodate),
+ static blk_status_t btrfs_submit_bio_start_direct_io(struct inode *inode,
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 8e6d9d906bdd..a0b625422f55 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -306,81 +306,144 @@ void btrfs_add_ordered_sum(struct btrfs_ordered_extent *entry,
+ }
  
--	TP_ARGS(page, start, end, uptodate),
-+	TP_ARGS(inode, start, end, uptodate),
+ /*
+- * Finish IO for one ordered extent across a given range.  The range can
+- * contain several ordered extents.
++ * Mark all ordered extent io inside the specified range finished.
+  *
+- * @found_ret:	 Return the finished ordered extent
+- * @file_offset: File offset for the finished IO
+- * 		 Will also be updated to one byte past the range that is
+- * 		 recordered as finished. This allows caller to walk forward.
+- * @io_size:	 Length of the finish IO range
+- * @uptodate:	 If the IO finished without problem
+- *
+- * Return true if any ordered extent is finished in the range, and update
+- * @found_ret and @file_offset.
+- * Return false otherwise.
++ * @page:	 The invovled page for the opeartion.
++ *		 For uncompressed buffered IO, the page status also needs to be
++ *		 updated to indicate whether the pending ordered io is
++ *		 finished.
++ *		 Can be NULL for direct IO and compressed write.
++ *		 In those cases, callers are ensured they won't execute
++ *		 the endio function twice.
++ * @finish_func: The function to be executed when all the IO of an ordered
++ *		 extent is finished.
+  *
+- * NOTE: Although The range can cross multiple ordered extents, only one
+- * ordered extent will be updated during one call. The caller is responsible to
+- * iterate all ordered extents in the range.
++ * This function is called for endio, thus the range must have ordered
++ * extent(s) covering it.
+  */
+-bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
+-				   struct btrfs_ordered_extent **finished_ret,
+-				   u64 *file_offset, u32 io_size, int uptodate)
++void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
++				struct page *page, u64 file_offset,
++				u32 num_bytes, btrfs_func_t finish_func,
++				bool uptodate)
+ {
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++	struct btrfs_workqueue *wq;
+ 	struct rb_node *node;
+ 	struct btrfs_ordered_extent *entry = NULL;
+-	bool finished = false;
+ 	unsigned long flags;
+-	u64 dec_end;
+-	u64 dec_start;
+-	u32 to_dec;
++	u64 cur = file_offset;
++
++	if (btrfs_is_free_space_inode(inode))
++		wq = fs_info->endio_freespace_worker;
++	else
++		wq = fs_info->endio_write_workers;
++
++	if (page)
++		ASSERT(page->mapping && page_offset(page) <= file_offset &&
++			file_offset + num_bytes <= page_offset(page) + PAGE_SIZE);
  
- 	TP_STRUCT__entry_btrfs(
- 		__field(	u64,	 ino		)
--		__field(	unsigned long, index	)
- 		__field(	u64,	 start		)
- 		__field(	u64,	 end		)
- 		__field(	int,	 uptodate	)
- 		__field(	u64,    root_objectid	)
- 	),
+ 	spin_lock_irqsave(&tree->lock, flags);
+-	node = tree_search(tree, *file_offset);
+-	if (!node)
+-		goto out;
++	while (cur < file_offset + num_bytes) {
++		u64 entry_end;
++		u64 end;
++		u32 len;
  
--	TP_fast_assign_btrfs(btrfs_sb(page->mapping->host->i_sb),
--		__entry->ino	= btrfs_ino(BTRFS_I(page->mapping->host));
--		__entry->index	= page->index;
-+	TP_fast_assign_btrfs(inode->root->fs_info,
-+		__entry->ino	= btrfs_ino(inode);
- 		__entry->start	= start;
- 		__entry->end	= end;
- 		__entry->uptodate = uptodate;
--		__entry->root_objectid	=
--			 BTRFS_I(page->mapping->host)->root->root_key.objectid;
-+		__entry->root_objectid = inode->root->root_key.objectid;
- 	),
+-	entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
+-	if (!in_range(*file_offset, entry->file_offset, entry->num_bytes))
+-		goto out;
++		node = tree_search(tree, cur);
++		/* No ordered extent at all */
++		if (!node)
++			break;
  
--	TP_printk_btrfs("root=%llu(%s) ino=%llu page_index=%lu start=%llu "
-+	TP_printk_btrfs("root=%llu(%s) ino=%llu start=%llu "
- 		  "end=%llu uptodate=%d",
- 		  show_root_type(__entry->root_objectid),
--		  __entry->ino, __entry->index,
--		  __entry->start,
-+		  __entry->ino, __entry->start,
- 		  __entry->end, __entry->uptodate)
- );
+-	dec_start = max(*file_offset, entry->file_offset);
+-	dec_end = min(*file_offset + io_size,
+-		      entry->file_offset + entry->num_bytes);
+-	*file_offset = dec_end;
+-	if (dec_start > dec_end) {
+-		btrfs_crit(fs_info, "bad ordering dec_start %llu end %llu",
+-			   dec_start, dec_end);
+-	}
+-	to_dec = dec_end - dec_start;
+-	if (to_dec > entry->bytes_left) {
+-		btrfs_crit(fs_info,
+-			   "bad ordered accounting left %u size %u",
+-			   entry->bytes_left, to_dec);
+-	}
+-	entry->bytes_left -= to_dec;
+-	if (!uptodate)
+-		set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
++		entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
++		entry_end = entry->file_offset + entry->num_bytes;
++		/*
++		 * |<-- OE --->|  |
++		 *		  cur
++		 * Go to next OE.
++		 */
++		if (cur >= entry_end) {
++			node = rb_next(node);
++			/* No more ordered extents, exit*/
++			if (!node)
++				break;
++			entry = rb_entry(node, struct btrfs_ordered_extent,
++					 rb_node);
++
++			/* Go next ordered extent and continue */
++			cur = entry->file_offset;
++			continue;
++		}
++		/*
++		 * |	|<--- OE --->|
++		 * cur
++		 * Go to the start of OE.
++		 */
++		if (cur < entry->file_offset) {
++			cur = entry->file_offset;
++			continue;
++		}
  
+-	if (entry->bytes_left == 0) {
+ 		/*
+-		 * Ensure only one caller can set the flag and finished_ret
+-		 * accordingly
++		 * Now we are definitely inside one ordered extent.
++		 *
++		 * |<--- OE --->|
++		 *	|
++		 *	cur
+ 		 */
+-		finished = !test_and_set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
+-		/* test_and_set_bit implies a barrier */
+-		cond_wake_up_nomb(&entry->wait);
+-	}
+-out:
+-	if (finished && finished_ret && entry) {
+-		*finished_ret = entry;
+-		refcount_inc(&entry->refs);
++		end = min(entry->file_offset + entry->num_bytes,
++			  file_offset + num_bytes) - 1;
++		ASSERT(end + 1 - cur < U32_MAX);
++		len = end + 1 - cur;
++
++		if (page) {
++			/*
++			 * Private2 bit indicates whether we still have pending
++			 * io unfinished for the ordered extent.
++			 *
++			 * If no such bit, we need to skip to next range.
++			 */
++			if (!PagePrivate2(page)) {
++				cur += len;
++				continue;
++			}
++			ClearPagePrivate2(page);
++		}
++
++		/* Now we're fine to update the accounting */
++		if (unlikely(len > entry->bytes_left)) {
++			WARN_ON(1);
++			btrfs_crit(fs_info,
++"bad ordered extent accounting, root=%llu ino=%llu OE offset=%llu OE len=%u to_dec=%u left=%u",
++				   inode->root->root_key.objectid,
++				   btrfs_ino(inode),
++				   entry->file_offset,
++				   entry->num_bytes,
++				   len, entry->bytes_left);
++			entry->bytes_left = 0;
++		} else {
++			entry->bytes_left -= len;
++		}
++
++		if (!uptodate)
++			set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
++
++		/*
++		 * All the IO of the ordered extent is finished, we need to queue
++		 * the finish_func to be executed.
++		 */
++		if (entry->bytes_left == 0) {
++			set_bit(BTRFS_ORDERED_IO_DONE, &entry->flags);
++			/* set_bit implies a barrier */
++			cond_wake_up_nomb(&entry->wait);
++			refcount_inc(&entry->refs);
++			spin_unlock_irqrestore(&tree->lock, flags);
++			btrfs_init_work(&entry->work, finish_func, NULL, NULL);
++			btrfs_queue_work(wq, &entry->work);
++			spin_lock_irqsave(&tree->lock, flags);
++		}
++		cur += len;
+ 	}
+ 	spin_unlock_irqrestore(&tree->lock, flags);
+-	return finished;
+ }
+ 
+ /*
+diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+index 6906df0c946c..ccf0a81a566f 100644
+--- a/fs/btrfs/ordered-data.h
++++ b/fs/btrfs/ordered-data.h
+@@ -175,13 +175,13 @@ btrfs_ordered_inode_tree_init(struct btrfs_ordered_inode_tree *t)
+ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry);
+ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
+ 				struct btrfs_ordered_extent *entry);
++void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
++				struct page *page, u64 file_offset,
++				u32 num_bytes, btrfs_func_t finish_func,
++				bool uptodate);
+ bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
+ 				    struct btrfs_ordered_extent **cached,
+ 				    u64 file_offset, u32 io_size, int uptodate);
+-bool btrfs_dec_test_first_ordered_pending(struct btrfs_inode *inode,
+-				   struct btrfs_ordered_extent **finished_ret,
+-				   u64 *file_offset, u32 io_size,
+-				   int uptodate);
+ int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offset,
+ 			     u64 disk_bytenr, u64 num_bytes, u64 disk_num_bytes,
+ 			     int type);
 -- 
 2.31.1
 
