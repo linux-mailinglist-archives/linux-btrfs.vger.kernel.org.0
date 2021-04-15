@@ -2,167 +2,248 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B1136160D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 01:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14753361622
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 01:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237096AbhDOXVt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 19:21:49 -0400
-Received: from mout.gmx.net ([212.227.15.15]:39191 "EHLO mout.gmx.net"
+        id S237702AbhDOX0C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 19:26:02 -0400
+Received: from mout.gmx.net ([212.227.15.18]:44763 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235290AbhDOXVs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:21:48 -0400
+        id S236674AbhDOX0C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:26:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618528882;
-        bh=odpk21YHKh6yQAMk5QNvmWBjIJv0VVLh0wt36NunWbI=;
+        s=badeba3b8450; t=1618529135;
+        bh=GdCH1djGJFL4LSi+Q14K+fBZ3DV6kan3W4jIXFIfF+s=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=jWGjmF/IiB+Bbm0oixzJAk8ND093XWVw9NfZK2Iu5MYats7X5d5+imel9xur9qPM6
-         /nd5KN3oGr8tg+8etVyUFLBBiTZVTHxThaAeCAN9bcI3hFaQArzvWzYZByiMWMA5zE
-         tOlb98PKfbLqDq2eVVwVRWskbw5pTpEuSj8tQCso=
+        b=LrYqOc6z+m6uCfkySstpMV1XoAMEnvkl82Hfdm4rv9PQ+vnqFQaCD4m3FFoGhoZZZ
+         bY+qfwf3hOBD54LzXZcK+LEG66ajWoUNQsA95PxeZ0X9QQVa59z86s+fhfdTMjwsoy
+         g6bZQoDAqf0l5Fpsc4y1CDSWOxo3mCZh0YRWQ1QM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUXtS-1l6kRm0Mro-00QOxc; Fri, 16
- Apr 2021 01:21:22 +0200
-Subject: Re: [PATCH 01/42] btrfs: introduce end_bio_subpage_eb_writepage()
- function
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgesQ-1m0kxH0Loi-00hABu; Fri, 16
+ Apr 2021 01:25:35 +0200
+Subject: Re: [PATCH 02/42] btrfs: introduce write_one_subpage_eb() function
 To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20210415050448.267306-1-wqu@suse.com>
- <20210415050448.267306-2-wqu@suse.com>
- <5af1169e-1558-c1f5-14a5-08bde9c5cf15@toxicpanda.com>
+ <20210415050448.267306-3-wqu@suse.com>
+ <7cff2211-b74a-647e-12f5-fb5994d9f3f0@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <0fe86c83-3ede-bd6f-5b34-57d016b7abe0@gmx.com>
-Date:   Fri, 16 Apr 2021 07:21:18 +0800
+Message-ID: <a442f0df-d4d7-50ca-e4c3-224200ef9a70@gmx.com>
+Date:   Fri, 16 Apr 2021 07:25:32 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <5af1169e-1558-c1f5-14a5-08bde9c5cf15@toxicpanda.com>
+In-Reply-To: <7cff2211-b74a-647e-12f5-fb5994d9f3f0@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:VoVlwon6x1ZKyw+rwoh2rCP4kyFeJfv43VwWImUE5dmLCMWB7zK
- BJ9K5EpmPemYb7R2pJC4f1nQq3p7zz63aAhNOUMMVMjg9kt6Hl6SvcFbiSWS4t0YwYXQupP
- mMRTm4sVJCvwsx4rvfK/DIhiYzXsxvPKa/EoWAjJwrGSD/dh9xNtiTIYp8DPgjpUXz+Q3O4
- NRVHxPBYXHleH08BQeLQA==
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uRJVd9FIweO7NhZEAOyPjoNEvxmONcCKDOvMjQZki/u/mrE+lzo
+ 7+BsPmiwAWAA+Kywc5kT624ERXMrNp61uMMZ1COO24P/ZgQruFTdaAj+D5Ss51KfSc/P0C2
+ O2oK5SOjfyJK3fAg8LGFT9vTwTTIfWWM2FAWHT9NDnpJuI8GoB2EIzZVFZP0j4Yh/AqMcMQ
+ NulgsTHqvIuPN5xrmSjaA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zIf6sxIWzQc=:QyFNuqkZDA+yjHQzvZAVBF
- qDAto2tWgV1F5jYure4NBZ6giXUS2TanD1PCLr4XZWbwBGUgYel3/1NCznsyYJvQScChr0Z6e
- 87d9HDbPAZs7Phrngaltv2GsgDUR1dNCkxFDyTaA40unJjw7xo0ND4s7ZUKh8EZKyhdjuQglv
- /RCXCtCdCbQt6jI3PbPDpGmMIApZjXXDEULnFsIL6Ywq2MjL1VmehVcld/e0UjoYRKLHntMvx
- TG60euOi6d1Xk9M5uA4Yq2UXA5Xng0diCGcdIVTFJCian91YmlJIx8IT02joj+8tN4Eq174nS
- f0eAf5ER2yKFoy2Lh6h5F2TZnJ9IpMHAKHnT/bIR+rf9cKH84r/+wk9dtjtDYZQvVqDbpVZgR
- c2uVb09MxhMSQdD2ijfyqt5GUzB16BW8FopZworlAKWyqWBWrFTLH0Y4c3ld1IMYXXBUdPXjH
- n3e0LKnYcMDhckaj6cilbjezu/Sbv04Ce30XODnJtcD/EY7Ob6MulfAAhs4ZeIVD7TENVNIDi
- BeFm/9ULqbnfKrCl3FvYKhacSsm+78VWRh7O7+jqAECXzD7q7i7yyUb/QkEASORF2Dfb39QOP
- VxkTGVwaEAh4V0D46YH2TcLu8iODoHMqDPJg0AtqaILpELXJbIxG5ZMOi7/1F9cOnPabEI/qk
- 31ZrgoPwz1hrP+YzZEhaoRfWCUrX6M2pk4igZPTs/YVKkrnLMBtGaoo/K5oQs961nFMOp80A8
- l1fB20Q9S+ilOiuULf2Fxzl/wKi2mgjYzLjUQd7bzR2kahaGwCUtIdacnlZtjeRVNZhR6tBta
- ycB2jF+obRLbmc2mTLEuSygevJ0AiMeUbgQjmFM6Diy7TZoLIzZOogJiH8MLF2RA2/0lcpuK9
- nTx1qxHyu8jxq7W+fYhYafK5MMi2eLskNOcEd/xRZecgKLqdRjj5mES9KGcaLyE5z+91g1LbE
- iIe3AFj5aONOUf3dsJ5eXBIDL1pYa8QW8xc8VhM861MYBNdnRT61de45POpWtoXbnZygn0Ofj
- RHT6cV9PiwxL1vlwO0WM/XnPvO/dO5S7Eyz7QDZdsH8tf8/uj+BE5ivhfjO5L3eZ/48qoYpvi
- FUx16ogSgOyQA7bw9S7j3SMqOGn9GhFMlYqphdCKgdbd/y+D+3wQ4cdnPKykB/RDNvzzQCRz1
- JdVXlbOgU9Kj4cibbQLq4C84n9qQLNAP9qKEVwoqeVbyrIWaZ9Bwt09a+LY4sOZHN1HyLd9NW
- fiOojzK2LauOppaFq
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yQAi/X4zoWA=:KMks1MN/TYAtUuMX0hsLH8
+ wblNUrPceua/DqRvMNRDn7twoMCyozBxfOzj/XtOo73cTlCsDjoavww6HbQRCkiMY/2B5wzRj
+ kkjlhtGGXKWiJJDTsZHfb9AoJX1jTcUl3at5okmHlk7OlEOlRGObzTB0eyvQ3P5ytT/QAfDYj
+ 87GxmyovUSS4B/k+euqEDRJO/VdSDVKnhy6D6r13xHwOLrihrl8hbohH54Jh3tC/pKrS6wIiW
+ 2Qc6plh7Xt8b04Hk4YKIoL9SG5jzAObVQ/V9BhCcH/xlXwYagPqYOwGME+IJAFbT/KwFXEoKB
+ 8Vb9uKrVqxamWsa3VsKi47otgJC2SI+Z8mlya1rW/1PJTFQZ0gjli8D+cc6wOBBpRMo6xfU+I
+ x4eVUqa2cpQSIMJn7rp3ePzWsZjai3py0oRqdcPpUa5GHichFlMCz2kjF4nU9mjw3BDkYbpSc
+ rXK+VvbEvQyynpfwzJC3q9oTy8r3sDoK1Z74pcRrrAT9IAzs+4mGU352D2atCZkEoP4Yfnr2V
+ LbO+XEcffUUl0DfQnIK7kRIg//+ryIhlqkFJzE9vvQqrmPFXHSagdE+tUnkEkGRP2btYkDV7H
+ vY90ZaumzVoHC/Twvsj8ZimRl8MA1muFLqdMFymdCrA938YM3HgbWUEsRCrWOVqYI0Ymp5jlj
+ HpDcM7ca31zaJh3dScxC+d8B7UhjQr6BdPZgkWGGESXBu7I0kb7CfbeXAnCiwYYDXFkxidd9G
+ OlEh4eUssFCf2Ckff/Rfm08Nt4JKb3cBuc3KQbTr1CkpxEEjud3wkviOW0TC2IXaITK78dPWr
+ jJWXTLOKgBMh9TBVUtswBToIkstyaBapJb4suRVMgnEszBkD4cZILgFofgY8nHabUtFXohVaM
+ uYAERZugqhVQ4piEtH3LTYR5hjnn6uJVspRBgRWF4ca34UUD+ekUxyIKIgHylydHDp4sD6ior
+ fhxPOcp7C/zaT8tHYdbvYyvbezQRCqhP4dC4W027C3A9A+zI5p5NftA0nI1o5wDwzcHt42jny
+ +wLHZ96++DPNhSOiPgqHIEahq35LWWRwQ6k5uMv8F9QRzMK5AgQI7c4uS+6s2DT4An6Ecv27P
+ XiLxbOeAOG1/fkcS4kB9V960o1Qw8DGsGrUT0iGnYB9zox1EynWPowtD0/6YY6R/N44+PiLSE
+ b0LkpfON+GuB9P6EahJkA4gLLf2VsDiqIe5kz7jfT09HrrALmF/D9JY26CWeARtuc3kisxaEU
+ z+tCt2Q8h4uIPxv5T
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMjEvNC8xNiDkuIrljYgyOjUwLCBKb3NlZiBCYWNpayB3cm90ZToNCj4gT24gNC8x
-NS8yMSAxOjA0IEFNLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBUaGUgbmV3IGZ1bmN0aW9uLCBlbmRf
-YmlvX3N1YnBhZ2VfZWJfd3JpdGVwYWdlKCksIHdpbGwgaGFuZGxlIHRoZQ0KPj4gbWV0YWRhdGEg
-d3JpdGViYWNrIGVuZGlvLg0KPj4NCj4+IFRoZSBtYWpvciBkaWZmZXJlbmNlcyBpbnZvbHZlZCBh
-cmU6DQo+PiAtIEhvdyB0byBncmFiIGV4dGVudCBidWZmZXINCj4+IMKgwqAgTm93IHBhZ2U6OnBy
-aXZhdGUgaXMgYSBwb2ludGVyIHRvIGJ0cmZzX3N1YnBhZ2UsIHdlIGNhbiBubyBsb25nZXIgZ3Jh
-Yg0KPj4gwqDCoCBleHRlbnQgYnVmZmVyIGRpcmVjdGx5Lg0KPj4gwqDCoCBUaHVzIHdlIG5lZWQg
-dG8gdXNlIHRoZSBidl9vZmZzZXQgdG8gbG9jYXRlIHRoZSBleHRlbnQgYnVmZmVyIG1hbnVhbGx5
-DQo+PiDCoMKgIGFuZCBpdGVyYXRlIHRocm91Z2ggdGhlIHdob2xlIHJhbmdlLg0KPj4NCj4+IC0g
-VXNlIGJ0cmZzX3N1YnBhZ2VfZW5kX3dyaXRlYmFjaygpIGNhbGxlcg0KPj4gwqDCoCBUaGlzIGhl
-bHBlciB3aWxsIGhhbmRsZSB0aGUgc3VicGFnZSB3cml0ZWJhY2sgZm9yIHVzLg0KPj4NCj4+IFNp
-bmNlIHRoaXMgZnVuY3Rpb24gaXMgZXhlY3V0ZWQgdW5kZXIgZW5kaW8gY29udGV4dCwgd2hlbiBn
-cmFiYmluZw0KPj4gZXh0ZW50IGJ1ZmZlcnMgaXQgY2FuJ3QgZ3JhYiBlYi0+cmVmc19sb2NrIGFz
-IHRoYXQgbG9jayBpcyBub3QgZGVzaWduZWQNCj4+IHRvIGJlIGdyYWJiZWQgdW5kZXIgaGFyZGly
-cSBjb250ZXh0Lg0KPj4NCj4+IFNvIGhlcmUgaW50cm9kdWNlIGEgaGVscGVyLCBmaW5kX2V4dGVu
-dF9idWZmZXJfbm9zcGlubG9jaygpLCBmb3Igc3VjaA0KPj4gc2l0dWF0aW9uLCBhbmQgY29udmVy
-dCBmaW5kX2V4dGVudF9idWZmZXIoKSB0byB1c2UgdGhhdCBoZWxwZXIuDQo+Pg0KPj4gU2lnbmVk
-LW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+PiAtLS0NCj4+IMKgIGZzL2J0cmZz
-L2V4dGVudF9pby5jIHwgMTM1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
-LS0tLS0NCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxMDYgaW5zZXJ0aW9ucygrKSwgMjkgZGVsZXRp
-b25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2V4dGVudF9pby5jIGIvZnMvYnRy
-ZnMvZXh0ZW50X2lvLmMNCj4+IGluZGV4IGE1MGFkYmQ4ODA4ZC4uMjFhMTRiMWNiMDY1IDEwMDY0
-NA0KPj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2V4dGVu
-dF9pby5jDQo+PiBAQCAtNDA4MCwxMyArNDA4MCw5NyBAQCBzdGF0aWMgdm9pZCBzZXRfYnRyZWVf
-aW9lcnIoc3RydWN0IHBhZ2UgKnBhZ2UsIA0KPj4gc3RydWN0IGV4dGVudF9idWZmZXIgKmViKQ0K
-Pj4gwqDCoMKgwqDCoCB9DQo+PiDCoCB9DQo+PiArLyoNCj4+ICsgKiBUaGlzIGlzIHRoZSBlbmRp
-byBzcGVjaWZpYyB2ZXJzaW9uIHdoaWNoIHdvbid0IHRvdWNoIGFueSB1bnNhZmUgDQo+PiBzcGlu
-bG9jaw0KPj4gKyAqIGluIGVuZGlvIGNvbnRleHQuDQo+PiArICovDQo+PiArc3RhdGljIHN0cnVj
-dCBleHRlbnRfYnVmZmVyICpmaW5kX2V4dGVudF9idWZmZXJfbm9zcGlubG9jaygNCj4+ICvCoMKg
-wqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbywgdTY0IHN0YXJ0KQ0KPj4g
-K3sNCj4+ICvCoMKgwqAgc3RydWN0IGV4dGVudF9idWZmZXIgKmViOw0KPj4gKw0KPj4gK8KgwqDC
-oCByY3VfcmVhZF9sb2NrKCk7DQo+PiArwqDCoMKgIGViID0gcmFkaXhfdHJlZV9sb29rdXAoJmZz
-X2luZm8tPmJ1ZmZlcl9yYWRpeCwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgc3RhcnQgPj4gZnNfaW5mby0+c2VjdG9yc2l6ZV9iaXRzKTsNCj4+ICvCoMKgwqAgaWYg
-KGViICYmIGF0b21pY19pbmNfbm90X3plcm8oJmViLT5yZWZzKSkgew0KPj4gK8KgwqDCoMKgwqDC
-oMKgIHJjdV9yZWFkX3VubG9jaygpOw0KPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiBlYjsNCj4+
-ICvCoMKgwqAgfQ0KPj4gK8KgwqDCoCByY3VfcmVhZF91bmxvY2soKTsNCj4+ICvCoMKgwqAgcmV0
-dXJuIE5VTEw7DQo+PiArfQ0KPj4gKy8qDQo+PiArICogVGhlIGVuZGlvIGZ1bmN0aW9uIGZvciBz
-dWJwYWdlIGV4dGVudCBidWZmZXIgd3JpdGUuDQo+PiArICoNCj4+ICsgKiBVbmxpa2UgZW5kX2Jp
-b19leHRlbnRfYnVmZmVyX3dyaXRlcGFnZSgpLCB3ZSBvbmx5IGNhbGwgDQo+PiBlbmRfcGFnZV93
-cml0ZWJhY2soKQ0KPj4gKyAqIGFmdGVyIGFsbCBleHRlbnQgYnVmZmVycyBpbiB0aGUgcGFnZSBo
-YXMgZmluaXNoZWQgdGhlaXIgd3JpdGViYWNrLg0KPj4gKyAqLw0KPj4gK3N0YXRpYyB2b2lkIGVu
-ZF9iaW9fc3VicGFnZV9lYl93cml0ZXBhZ2Uoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8s
-DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYmlv
-ICpiaW8pDQo+PiArew0KPj4gK8KgwqDCoCBzdHJ1Y3QgYmlvX3ZlYyAqYnZlYzsNCj4+ICvCoMKg
-wqAgc3RydWN0IGJ2ZWNfaXRlcl9hbGwgaXRlcl9hbGw7DQo+PiArDQo+PiArwqDCoMKgIEFTU0VS
-VCghYmlvX2ZsYWdnZWQoYmlvLCBCSU9fQ0xPTkVEKSk7DQo+PiArwqDCoMKgIGJpb19mb3JfZWFj
-aF9zZWdtZW50X2FsbChidmVjLCBiaW8sIGl0ZXJfYWxsKSB7DQo+PiArwqDCoMKgwqDCoMKgwqAg
-c3RydWN0IHBhZ2UgKnBhZ2UgPSBidmVjLT5idl9wYWdlOw0KPj4gK8KgwqDCoMKgwqDCoMKgIHU2
-NCBidmVjX3N0YXJ0ID0gcGFnZV9vZmZzZXQocGFnZSkgKyBidmVjLT5idl9vZmZzZXQ7DQo+PiAr
-wqDCoMKgwqDCoMKgwqAgdTY0IGJ2ZWNfZW5kID0gYnZlY19zdGFydCArIGJ2ZWMtPmJ2X2xlbiAt
-IDE7DQo+PiArwqDCoMKgwqDCoMKgwqAgdTY0IGN1cl9ieXRlbnIgPSBidmVjX3N0YXJ0Ow0KPj4g
-Kw0KPj4gK8KgwqDCoMKgwqDCoMKgIEFTU0VSVChJU19BTElHTkVEKGJ2ZWMtPmJ2X2xlbiwgZnNf
-aW5mby0+bm9kZXNpemUpKTsNCj4+ICsNCj4+ICvCoMKgwqDCoMKgwqDCoCAvKiBJdGVyYXRlIHRo
-cm91Z2ggYWxsIGV4dGVudCBidWZmZXJzIGluIHRoZSByYW5nZSAqLw0KPj4gK8KgwqDCoMKgwqDC
-oMKgIHdoaWxlIChjdXJfYnl0ZW5yIDw9IGJ2ZWNfZW5kKSB7DQo+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWI7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBpbnQgZG9uZTsNCj4+ICsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qDQo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogSGVyZSB3ZSBjYW4ndCB1c2UgZmluZF9leHRlbnRf
-YnVmZmVyKCksIGFzIGl0IG1heQ0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIHRyeSB0
-byBsb2NrIGViLT5yZWZzX2xvY2ssIHdoaWNoIGlzIG5vdCBzYWZlIGluIGVuZGlvDQo+PiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgICogY29udGV4dC4NCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgKi8NCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGViID0gZmluZF9leHRlbnRfYnVm
-ZmVyX25vc3BpbmxvY2soZnNfaW5mbywgY3VyX2J5dGVucik7DQo+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBBU1NFUlQoZWIpOw0KPj4gKw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY3Vy
-X2J5dGVuciA9IGViLT5zdGFydCArIGViLT5sZW47DQo+PiArDQo+PiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBBU1NFUlQodGVzdF9iaXQoRVhURU5UX0JVRkZFUl9XUklURUJBQ0ssICZlYi0+YmZs
-YWdzKSk7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkb25lID0gYXRvbWljX2RlY19hbmRf
-dGVzdCgmZWItPmlvX3BhZ2VzKTsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEFTU0VSVChk
-b25lKTsNCj4+ICsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChiaW8tPmJpX3N0YXR1
-cyB8fA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0ZXN0X2JpdChFWFRFTlRf
-QlVGRkVSX1dSSVRFX0VSUiwgJmViLT5iZmxhZ3MpKSB7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIENsZWFyUGFnZVVwdG9kYXRlKHBhZ2UpOw0KPj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBzZXRfYnRyZWVfaW9lcnIocGFnZSwgZWIpOw0KPj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfQ0KPj4gKw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNf
-c3VicGFnZV9jbGVhcl93cml0ZWJhY2soZnNfaW5mbywgcGFnZSwgZWItPnN0YXJ0LA0KPj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-ZWItPmxlbik7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlbmRfZXh0ZW50X2J1ZmZlcl93
-cml0ZWJhY2soZWIpOw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyoNCj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgKiBmcmVlX2V4dGVudF9idWZmZXIoKSB3aWxsIGdyYWIgc3Bpbmxv
-Y2sgd2hpY2ggaXMgbm90DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogc2FmZSBpbiBl
-bmRpbyBjb250ZXh0LiBUaHVzIGhlcmUgd2UgbWFudWFsbHkgZGVjDQo+PiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgICogdGhlIHJlZi4NCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8N
-Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGF0b21pY19kZWMoJmViLT5yZWZzKTsNCj4+ICvC
-oMKgwqDCoMKgwqDCoCB9DQo+PiArwqDCoMKgIH0NCj4+ICvCoMKgwqAgYmlvX3B1dChiaW8pOw0K
-Pj4gK30NCj4+ICsNCj4+IMKgIHN0YXRpYyB2b2lkIGVuZF9iaW9fZXh0ZW50X2J1ZmZlcl93cml0
-ZXBhZ2Uoc3RydWN0IGJpbyAqYmlvKQ0KPj4gwqAgew0KPj4gK8KgwqDCoCBzdHJ1Y3QgYnRyZnNf
-ZnNfaW5mbyAqZnNfaW5mbzsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGJpb192ZWMgKmJ2ZWM7DQo+
-PiDCoMKgwqDCoMKgIHN0cnVjdCBleHRlbnRfYnVmZmVyICplYjsNCj4+IMKgwqDCoMKgwqAgaW50
-IGRvbmU7DQo+PiDCoMKgwqDCoMKgIHN0cnVjdCBidmVjX2l0ZXJfYWxsIGl0ZXJfYWxsOw0KPj4g
-K8KgwqDCoCBmc19pbmZvID0gYnRyZnNfc2IoYmlvX2ZpcnN0X3BhZ2VfYWxsKGJpbyktPm1hcHBp
-bmctPmhvc3QtPmlfc2IpOw0KPj4gK8KgwqDCoCBpZiAoZnNfaW5mby0+c2VjdG9yc2l6ZSA8IFBB
-R0VfU0laRSkNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gZW5kX2Jpb19zdWJwYWdlX2ViX3dy
-aXRlcGFnZShmc19pbmZvLCBiaW8pOw0KPj4gKw0KPiANCj4gWW91IHJlcGxhY2UgdGhlIHdyaXRl
-X29uZV9lYigpIGNhbGwgd2l0aCBvbmUgc3BlY2lmaWNhbGx5IGZvciBzdWJwYWdlLCANCj4gd2h5
-IG5vdCBqdXN0IHVzZSB5b3VyIHNwZWNpYWwgZW5kaW8gZnJvbSB0aGVyZSB3aXRob3V0IHBvbGx1
-dGluZyB0aGUgDQo+IG5vcm1hbCB3cml0ZXBhZ2UgaGVscGVyP8KgIFRoYW5rcywNCg0KVGhhdCBt
-YWtlcyBzZW5zZSwgSSdkIGdvIHRoYXQgZGlyZWN0aW9uLg0KDQpUaGFua3MsDQpRdQ0KDQo+IA0K
-PiBKb3NlZg0K
+
+
+On 2021/4/16 =E4=B8=8A=E5=8D=883:03, Josef Bacik wrote:
+> On 4/15/21 1:04 AM, Qu Wenruo wrote:
+>> The new function, write_one_subpage_eb(), as a subroutine for subpage
+>> metadata write, will handle the extent buffer bio submission.
+>>
+>> The major differences between the new write_one_subpage_eb() and
+>> write_one_eb() is:
+>> - No page locking
+>> =C2=A0=C2=A0 When entering write_one_subpage_eb() the page is no longer=
+ locked.
+>> =C2=A0=C2=A0 We only lock the page for its status update, and unlock im=
+mediately.
+>> =C2=A0=C2=A0 Now we completely rely on extent io tree locking.
+>>
+>> - Extra bitmap update along with page status update
+>> =C2=A0=C2=A0 Now page dirty and writeback is controlled by
+>> =C2=A0=C2=A0 btrfs_subpage::dirty_bitmap and btrfs_subpage::writeback_b=
+itmap.
+>> =C2=A0=C2=A0 They both follow the schema that any sector is dirty/write=
+back, then
+>> =C2=A0=C2=A0 the full page get dirty/writeback.
+>>
+>> - When to update the nr_written number
+>> =C2=A0=C2=A0 Now we take a short cut, if we have cleared the last dirty=
+ bit of the
+>> =C2=A0=C2=A0 page, we update nr_written.
+>> =C2=A0=C2=A0 This is not completely perfect, but should emulate the old=
+ behavior
+>> =C2=A0=C2=A0 good enough.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> =C2=A0 fs/btrfs/extent_io.c | 55 ++++++++++++++++++++++++++++++++++++++=
+++++++
+>> =C2=A0 1 file changed, 55 insertions(+)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 21a14b1cb065..f32163a465ec 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -4196,6 +4196,58 @@ static void
+>> end_bio_extent_buffer_writepage(struct bio *bio)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bio_put(bio);
+>> =C2=A0 }
+>> +/*
+>> + * Unlike the work in write_one_eb(), we rely completely on extent
+>> locking.
+>> + * Page locking is only utizlied at minimal to keep the VM code happy.
+>> + *
+>> + * Caller should still call write_one_eb() other than this function
+>> directly.
+>> + * As write_one_eb() has extra prepration before submitting the
+>> extent buffer.
+>> + */
+>> +static int write_one_subpage_eb(struct extent_buffer *eb,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 struct writeback_control *wbc,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 struct extent_page_data *epd)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *fs_info =3D eb->fs_info;
+>> +=C2=A0=C2=A0=C2=A0 struct page *page =3D eb->pages[0];
+>> +=C2=A0=C2=A0=C2=A0 unsigned int write_flags =3D wbc_to_write_flags(wbc=
+) | REQ_META;
+>> +=C2=A0=C2=A0=C2=A0 bool no_dirty_ebs =3D false;
+>> +=C2=A0=C2=A0=C2=A0 int ret;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /* clear_page_dirty_for_io() in subpage helper need=
+ page locked. */
+>> +=C2=A0=C2=A0=C2=A0 lock_page(page);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_subpage_set_writeback(fs_info, page, eb->star=
+t, eb->len);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /* If we're the last dirty bit to update nr_written=
+ */
+>> +=C2=A0=C2=A0=C2=A0 no_dirty_ebs =3D btrfs_subpage_clear_and_test_dirty=
+(fs_info, page,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 eb->start, eb->len);
+>> +=C2=A0=C2=A0=C2=A0 if (no_dirty_ebs)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clear_page_dirty_for_io(pag=
+e);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 ret =3D submit_extent_page(REQ_OP_WRITE | write_fla=
+gs, wbc, page,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 eb-=
+>start, eb->len, eb->start - page_offset(page),
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &ep=
+d->bio, end_bio_extent_buffer_writepage, 0, 0, 0,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fal=
+se);
+>> +=C2=A0=C2=A0=C2=A0 if (ret) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_subpage_clear_writeba=
+ck(fs_info, page, eb->start,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 eb->len);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_btree_ioerr(page, eb);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unlock_page(page);
+>> +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (atomic_dec_and_test(&eb=
+->io_pages))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 end=
+_extent_buffer_writeback(eb);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EIO;
+>> +=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 unlock_page(page);
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Submission finishes without problem, if no =
+range of the page is
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * dirty anymore, we have submitted a page.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Update the nr_written in wbc.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 if (no_dirty_ebs)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 update_nr_written(wbc, 1);
+>> +=C2=A0=C2=A0=C2=A0 return ret;
+>> +}
+>> +
+>> =C2=A0 static noinline_for_stack int write_one_eb(struct extent_buffer =
+*eb,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 struct writeback_control *wbc,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 struct extent_page_data *epd)
+>> @@ -4227,6 +4279,9 @@ static noinline_for_stack int
+>> write_one_eb(struct extent_buffer *eb,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memzero_extent_b=
+uffer(eb, start, end - start);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 if (eb->fs_info->sectorsize < PAGE_SIZE)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return write_one_subpage_eb=
+(eb, wbc, epd);
+>> +
+>
+> Same comment here, again you're calling write_one_eb() which expects to
+> do the eb thing, but then later have an entirely different path for the
+> subpage stuff, and thus could just call your write_one_subpage_eb()
+> helper from there instead of stuffing it into write_one_eb().
+
+But there are some common code before calling the subpage routine.
+
+I don't think it's a good idea to have duplicated code between subpage
+and regular routine.
+
+>
+> Also, I generally don't care about ordering of patches as long as they
+> make sense generally.
+>
+> However in this case if you were to bisect to just this patch you would
+> be completely screwed, as the normal write path would just fail to write
+> the other eb's on the page.=C2=A0 You really need to have the patches th=
+at do
+> the write_cache_pages part done first, and then have this patch.
+
+No way one can bisect to this patch.
+Without the last patch to enable subpage write, bisect will never point
+to this one.
+
+And how could it be possible to implement data write before metadata?
+Without metadata write ability, data write won't even be possible.
+
+But without data write ability, metadata write can still be possible,
+just doing basic touch/inode creation or even inline extent creation.
+
+So I'm afraid metadata write patches must be before data write patches.
+
+Thanks,
+Qu
+
+>
+> Or alternatively, leave the order as it is, and simply don't wire the
+> helper up until you implement the subpage writepages further down.=C2=A0=
+ That
+> may be better, you won't have to re-order anything and you can maintain
+> these smaller chunks for review, which may not be possible if you
+> re-order them.=C2=A0 Thanks,
+>
+> Josef
