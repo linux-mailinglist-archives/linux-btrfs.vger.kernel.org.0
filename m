@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D6E36016A
+	by mail.lfdr.de (Postfix) with ESMTP id A13F336016B
 	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 07:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhDOFGI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 01:06:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38016 "EHLO mx2.suse.de"
+        id S230208AbhDOFGK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 01:06:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38046 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhDOFGH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:06:07 -0400
+        id S230163AbhDOFGJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Apr 2021 01:06:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618463144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1618463146; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oWUl4Na2ncPNMFyPl0zCf+V3ch9P0cnHowwK25iGeps=;
-        b=k+KPMXmuMBgsAYUaL3ko2FKKgU+Rdnz3tt7ztNmONfqXi1/c+zkC/j/jn5JI3tNhQtweVN
-        mUg1yDazP03FXyZGom/N7MzdFn3jM5O7IdpJY2i1t3pn7C1bWTOmgTvs+GT7NgH7TigA7x
-        SS1MtzR4gkJGFpHdu7t4KVBY2YD+BbE=
+        bh=kKovzE/xL65ScMiWjdS3QtGzrHlspugPr+Bblv33Lgs=;
+        b=oAmlhp1s42+NcZr47t9Ulp51v0+6iWgDOShMLuzdSUekZX2v2ev1N73qeikeirjAnyUb1d
+        6XaXeN51zl0uqoQMg1zo1Z+RgD/qIa3teqTfrxgyxzVClQiW6MseKuP3r2O00AEni753Zc
+        /TkZ5GLqhBZPXY1UdI0e5WjzUjg7Bvk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F1F26AF03
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 05:05:43 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id EF30CAF03
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 05:05:45 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 27/42] btrfs: make __extent_writepage_io() only submit dirty range for subpage
-Date:   Thu, 15 Apr 2021 13:04:33 +0800
-Message-Id: <20210415050448.267306-28-wqu@suse.com>
+Subject: [PATCH 28/42] btrfs: add extra assert for submit_extent_page()
+Date:   Thu, 15 Apr 2021 13:04:34 +0800
+Message-Id: <20210415050448.267306-29-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415050448.267306-1-wqu@suse.com>
 References: <20210415050448.267306-1-wqu@suse.com>
@@ -38,182 +38,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-__extent_writepage_io() function originally just iterate through all the
-extent maps of a page, and submit any regular extents.
+There are already bugs exposed in __extent_writepage_io() where due to
+wrong alignment and lack of support for subpage, we can pass insane
+pg_offset into submit_extent_page().
 
-This is fine for sectorsize == PAGE_SIZE case, as if a page is dirty, we
-need to submit the only sector contained in the page.
-
-But for subpage case, one dirty page can contain several clean sectors
-with at least one dirty sector.
-
-If __extent_writepage_io() still submit all regular extent maps, it can
-submit data which is already written to disk.
-And since such already written data won't have corresponding ordered
-extents, it will trigger a BUG_ON() in btrfs_csum_one_bio().
-
-Change the behavior of __extent_writepage_io() by finding the first
-dirty byte in the page, and only submit the dirty range other than the
-full extent.
-
-Since we're also here, also modify the following calls to be subpage
-compatible:
-- SetPageError()
-- end_page_writeback()
+Add basic size check to ensure the combination of @size and @pg_offset
+is sane.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 100 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 95 insertions(+), 5 deletions(-)
+ fs/btrfs/extent_io.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c593071fa8c1..be825b73ee43 100644
+index be825b73ee43..ae6357a6749e 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3728,6 +3728,74 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 	return 0;
- }
+@@ -3261,6 +3261,8 @@ static int submit_extent_page(unsigned int opf,
  
-+/*
-+ * To find the first byte we need to write.
-+ *
-+ * For subpage, one page can contain several sectors, and
-+ * __extent_writepage_io() will just grab all extent maps in the page
-+ * range and try to submit all non-inline/non-compressed extents.
-+ *
-+ * This is a big problem for subpage, we shouldn't re-submit already written
-+ * data at all.
-+ * This function will lookup subpage dirty bit to find which range we really
-+ * need to submit.
-+ *
-+ * Return the next dirty range in [@start, @end).
-+ * If no dirty range is found, @start will be page_offset(page) + PAGE_SIZE.
-+ */
-+static void find_next_dirty_byte(struct btrfs_fs_info *fs_info,
-+				 struct page *page, u64 *start, u64 *end)
-+{
-+	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+	u64 orig_start = *start;
-+	u16 dirty_bitmap;
-+	unsigned long flags;
-+	int nbits = (orig_start - page_offset(page)) >> fs_info->sectorsize;
-+	int first_bit_set;
-+	int first_bit_zero;
-+
-+	/*
-+	 * For regular sector size == page size case, since one page only
-+	 * contains one sector, we return the page offset directly.
-+	 */
-+	if (fs_info->sectorsize == PAGE_SIZE) {
-+		*start = page_offset(page);
-+		*end = page_offset(page) + PAGE_SIZE;
-+		return;
-+	}
-+
-+	/* We should have the page locked, but just in case */
-+	spin_lock_irqsave(&subpage->lock, flags);
-+	dirty_bitmap = subpage->dirty_bitmap;
-+	spin_unlock_irqrestore(&subpage->lock, flags);
-+
-+	/* Set bits lower than @nbits with 0 */
-+	dirty_bitmap &= ~((1 << nbits) - 1);
-+
-+	first_bit_set = ffs(dirty_bitmap);
-+	/* No dirty range found */
-+	if (first_bit_set == 0) {
-+		*start = page_offset(page) + PAGE_SIZE;
-+		return;
-+	}
-+
-+	ASSERT(first_bit_set > 0 && first_bit_set <= BTRFS_SUBPAGE_BITMAP_SIZE);
-+	*start = page_offset(page) + (first_bit_set - 1) * fs_info->sectorsize;
-+
-+	/* Set all bits lower than @nbits to 1 for ffz() */
-+	dirty_bitmap |= ((1 << nbits) - 1);
-+
-+	first_bit_zero = ffz(dirty_bitmap);
-+	if (first_bit_zero == 0 || first_bit_zero > BTRFS_SUBPAGE_BITMAP_SIZE) {
-+		*end = page_offset(page) + PAGE_SIZE;
-+		return;
-+	}
-+	ASSERT(first_bit_zero > 0 &&
-+	       first_bit_zero <= BTRFS_SUBPAGE_BITMAP_SIZE);
-+	*end = page_offset(page) + first_bit_zero * fs_info->sectorsize;
-+	ASSERT(*end > *start);
-+}
-+
- /*
-  * helper for __extent_writepage.  This calls the writepage start hooks,
-  * and does the loop to map the page into extents and bios.
-@@ -3775,6 +3843,8 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 	while (cur <= end) {
- 		u64 disk_bytenr;
- 		u64 em_end;
-+		u64 dirty_range_start = cur;
-+		u64 dirty_range_end;
- 		u32 iosize;
+ 	ASSERT(bio_ret);
  
- 		if (cur >= i_size) {
-@@ -3782,9 +3852,17 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 							     end, 1);
- 			break;
- 		}
-+
-+		find_next_dirty_byte(fs_info, page, &dirty_range_start,
-+				     &dirty_range_end);
-+		if (cur < dirty_range_start) {
-+			cur = dirty_range_start;
-+			continue;
-+		}
-+
- 		em = btrfs_get_extent(inode, NULL, 0, cur, end - cur + 1);
- 		if (IS_ERR_OR_NULL(em)) {
--			SetPageError(page);
-+			btrfs_page_set_error(fs_info, page, cur, end - cur + 1);
- 			ret = PTR_ERR_OR_ZERO(em);
- 			break;
- 		}
-@@ -3799,8 +3877,11 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 		compressed = test_bit(EXTENT_FLAG_COMPRESSED, &em->flags);
- 		disk_bytenr = em->block_start + extent_offset;
- 
--		/* Note that em_end from extent_map_end() is exclusive */
--		iosize = min(em_end, end + 1) - cur;
-+		/*
-+		 * Note that em_end from extent_map_end() and dirty_range_end from
-+		 * find_next_dirty_byte() are all exclusive
-+		 */
-+		iosize = min(min(em_end, end + 1), dirty_range_end) - cur;
- 
- 		if (btrfs_use_zone_append(inode, em))
- 			opf = REQ_OP_ZONE_APPEND;
-@@ -3830,15 +3911,24 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 			       page->index, cur, end);
- 		}
- 
-+		/*
-+		 * Although the PageDirty bit is cleared before entering this
-+		 * function, subpage dirty bit is not cleared.
-+		 * So clear subpage dirty bit here so next time we won't
-+		 * submit page for range already written to disk.
-+		 */
-+		btrfs_page_clear_dirty(fs_info, page, cur, iosize);
-+
- 		ret = submit_extent_page(opf | write_flags, wbc, page,
- 					 disk_bytenr, iosize,
- 					 cur - page_offset(page), &epd->bio,
- 					 end_bio_extent_writepage,
- 					 0, 0, 0, false);
- 		if (ret) {
--			SetPageError(page);
-+			btrfs_page_set_error(fs_info, page, cur, iosize);
- 			if (PageWriteback(page))
--				end_page_writeback(page);
-+				btrfs_page_clear_writeback(fs_info, page, cur,
-+							   iosize);
- 		}
- 
- 		cur += iosize;
++	ASSERT(pg_offset < PAGE_SIZE && size <= PAGE_SIZE &&
++	       pg_offset + size <= PAGE_SIZE);
+ 	if (*bio_ret) {
+ 		bio = *bio_ret;
+ 		if (force_bio_submit ||
 -- 
 2.31.1
 
