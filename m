@@ -2,61 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF563612F4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 21:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5FA3613B0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 22:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhDOThN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 15:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S234887AbhDOUr5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 16:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234735AbhDOThN (ORCPT
+        with ESMTP id S234668AbhDOUrx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:37:13 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FD0C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 12:36:49 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id k25so25403812iob.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 12:36:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=I36x7Mml0wcr45Cy7LlPer7Xgx6ETeLHeujpnqApbfQ=;
-        b=TNYNoq/22TWClFbV60nzub8ZNYA4WGPylYT1yn7oi9S1mPLh4KLjCiy9GXveGvtrdU
-         u+E22beKPmRI4Kh+lcVkMw7TcVgHl/SdsHmj3gAXuq0t1/qMVqypYteKD+324raKKXJ5
-         +4Ut3jnlaLSHHli8lgGwK5lpNBKtFmsgg25qgRwmLD95vQcdMDMr/bKJVTywYl6SDjrO
-         KcZNMJAOH1ncU4Ie7iDJ3ugAcLnjlWoHWVBrb+SZKJ1IucurK2+ntuLrL4iU/S2pFuuW
-         ASZ+v+66rI/NnT9WF+UXFikD7grROdcFgMZEqg3KR1l6+w2K5IAtKRLuNHVysHlWZmg2
-         iCMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=I36x7Mml0wcr45Cy7LlPer7Xgx6ETeLHeujpnqApbfQ=;
-        b=KXkDXGDySxRsSEjY4ZYvOcahsbXnR88nDVr1Y5YDYlqtjNoYxKVUbnvqJKAl3HRevt
-         PnwI8OAaolyKSw8eq+oGEEN0HPXjeaWakSISSyAOD90eLODfbDr71tZsRND+vpOI8wHB
-         aw7e0aCgqD4FPQ/+g5LEADtuyWUD+9XrCi+cylADhrYJhaIscmudfL/YgnkmV7T5C8BL
-         091sExlDlwE1MgdUQ65rXR0AgVTOR2OBloiJHBty2xv7r2VnFbrQpaaIV0REDRnacT+Z
-         H0nWfQR+yGXK2iKMIUNiuLciBeKETAn9+dy49msA0yw9DzJhFm1rblCyJchFE86u+23A
-         gUrg==
-X-Gm-Message-State: AOAM531DbiNJyqokjLX5kn0A/uLZzwodZ3HK/1J4DfPzH8sXifhpzrKb
-        c/pA66Eyk/KsFq3/ub9YQ5S224FqkTk13UVXwCHtID7xadILfQ==
-X-Google-Smtp-Source: ABdhPJwA/2Hp48Ds00NuvGHuX/BOB8iMBuiTaLV4QYYG8pqeG1ZmCVAVwWVTBL4xPqnmONz1qzQDbEPbY0CJ2+5H6Kg=
-X-Received: by 2002:a6b:6308:: with SMTP id p8mr676883iog.172.1618515409107;
- Thu, 15 Apr 2021 12:36:49 -0700 (PDT)
+        Thu, 15 Apr 2021 16:47:53 -0400
+X-Greylist: delayed 2631 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Apr 2021 13:47:30 PDT
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56821C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 13:47:30 -0700 (PDT)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1lX8DA-0004TA-3I; Thu, 15 Apr 2021 21:03:36 +0100
+Date:   Thu, 15 Apr 2021 21:03:36 +0100
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     Charles Zeitler <cfzeitler@gmail.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: moving disks to new case
+Message-ID: <20210415200336.GA28465@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        Charles Zeitler <cfzeitler@gmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <CAB9fVVG=8qLX2g=p04Oc0dPqr4EgOf_a3oSHFgCDc_jHgeTtHQ@mail.gmail.com>
 MIME-Version: 1.0
-From:   Charles Zeitler <cfzeitler@gmail.com>
-Date:   Thu, 15 Apr 2021 14:36:37 -0500
-Message-ID: <CAB9fVVG=8qLX2g=p04Oc0dPqr4EgOf_a3oSHFgCDc_jHgeTtHQ@mail.gmail.com>
-Subject: moving disks to new case
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAB9fVVG=8qLX2g=p04Oc0dPqr4EgOf_a3oSHFgCDc_jHgeTtHQ@mail.gmail.com>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-disks are raid5, i don't know which are /dev/sdb /dev/sdc etc.
-is this going to be an issue?
+On Thu, Apr 15, 2021 at 02:36:37PM -0500, Charles Zeitler wrote:
+> disks are raid5, i don't know which are /dev/sdb /dev/sdc etc.
+> is this going to be an issue?
 
-charles zeitler
+   Nope.
+
+   Hugo.
+
+
+
+
+
+
+
+
+
+
+   Oh, all right, I'll explain...
+
+   The superblock on each device contains the UUID of the filesystem
+and a device ID (you can see both of these in the output of btrfs fi
+show). When btrfs dev scan is run (for example, by udev as it
+enumerates the devices), it attempts to read the superblock on each
+device. Any superblocks that are found are read, and the UUID and
+devid of that device node are passed to the kernel. The kernel holds a
+lookup table of information for every device known of every
+filesystem, and uses that table to work out which device nodes it
+needs to use for any given FS.
+
+   Hugo.
+
 -- 
- The Perfect Is The Enemy Of
- The Good Enough
+Hugo Mills             | Guards! Help! We're being rescued!
+hugo@... carfax.org.uk |
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |                       The Stainless Steel Rat Forever
