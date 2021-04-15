@@ -2,191 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4246D361603
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 01:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B1136160D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 01:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235584AbhDOXTg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 19:19:36 -0400
-Received: from mout.gmx.net ([212.227.15.18]:37667 "EHLO mout.gmx.net"
+        id S237096AbhDOXVt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 19:21:49 -0400
+Received: from mout.gmx.net ([212.227.15.15]:39191 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234735AbhDOXTg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:19:36 -0400
+        id S235290AbhDOXVs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:21:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618528745;
-        bh=4GqjWLhgiRRLHApp79wCojDhranRbdYnsGgWQC7voMk=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=XGvKvGk7qLYB1jJZgpBAhetc2XxaFEtUJ7dNTO+5+NmKBdte2Wn5P373czhppbTf4
-         xA/gRm+uHyz3Zx7Q0jxnZLqLR/CiHuduilbzVWPBzJqF7j9QQkFpHwwluSX2hPIqdF
-         cKOkddCM6/yeUfWSMj1yASecy+VTzTkVV1nrPbF8=
+        s=badeba3b8450; t=1618528882;
+        bh=odpk21YHKh6yQAMk5QNvmWBjIJv0VVLh0wt36NunWbI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=jWGjmF/IiB+Bbm0oixzJAk8ND093XWVw9NfZK2Iu5MYats7X5d5+imel9xur9qPM6
+         /nd5KN3oGr8tg+8etVyUFLBBiTZVTHxThaAeCAN9bcI3hFaQArzvWzYZByiMWMA5zE
+         tOlb98PKfbLqDq2eVVwVRWskbw5pTpEuSj8tQCso=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvbFs-1lqEFa20SE-00scR7; Fri, 16
- Apr 2021 01:19:05 +0200
-To:     riteshh <riteshh@linux.ibm.com>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
-        Neal Gompa <ngompa13@gmail.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAEg-Je_Bx6Yu6JHB0XXjBt0+0Ox_=kAUAVWWZan1DsiqvybYrQ@mail.gmail.com>
- <bc0306b6-da2c-b8c1-a88d-f19004331765@gmx.com>
- <20210328200246.xz23dz5iba2qet7v@riteshh-domain>
- <12dca606-1895-90e0-8b48-6f4ccf8a8a27@gmx.com>
- <20210402083323.u6o3laynn4qcxlq2@riteshh-domain>
- <f1acd25b-c0b6-31b4-f40b-32b44ba9ce4c@gmx.com>
- <20210402084652.b7a4mj2mntxu2xi5@riteshh-domain>
- <a58abc5a-ea2c-3936-4bb1-9b1c5d4e0f77@gmx.com>
- <ef2bab00-32ec-9228-9920-c44c2d166654@gmx.com>
- <20210415034444.3fg5j337ee6rvdps@riteshh-domain>
- <20210415145207.y4n3km5a2pawdeb4@riteshh-domain>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUXtS-1l6kRm0Mro-00QOxc; Fri, 16
+ Apr 2021 01:21:22 +0200
+Subject: Re: [PATCH 01/42] btrfs: introduce end_bio_subpage_eb_writepage()
+ function
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210415050448.267306-1-wqu@suse.com>
+ <20210415050448.267306-2-wqu@suse.com>
+ <5af1169e-1558-c1f5-14a5-08bde9c5cf15@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
-Message-ID: <8bdb27e4-af63-653c-98e5-e6ffa4eee667@gmx.com>
-Date:   Fri, 16 Apr 2021 07:19:00 +0800
+Message-ID: <0fe86c83-3ede-bd6f-5b34-57d016b7abe0@gmx.com>
+Date:   Fri, 16 Apr 2021 07:21:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210415145207.y4n3km5a2pawdeb4@riteshh-domain>
+In-Reply-To: <5af1169e-1558-c1f5-14a5-08bde9c5cf15@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:s6vHQ5rFTpomdE3dVWNLoeCV788GHZ8JhfJQPue+kJf1JOHH1YZ
- G0FbptyXQLycJOruwQeV0yCGK+iQ0TF7iAx6KmJ1jXZh5XRiyqcds+Ed8ipxD2fLy6PzzMi
- enVDnm33dlhM6Z/Qvxv676vq/Ga9GsVe7M9TlSMOTukwxMczrvhMFJ0mSbjBjAm9EOX+uu7
- k+OleqJjOFsKuR2TnDKNQ==
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:VoVlwon6x1ZKyw+rwoh2rCP4kyFeJfv43VwWImUE5dmLCMWB7zK
+ BJ9K5EpmPemYb7R2pJC4f1nQq3p7zz63aAhNOUMMVMjg9kt6Hl6SvcFbiSWS4t0YwYXQupP
+ mMRTm4sVJCvwsx4rvfK/DIhiYzXsxvPKa/EoWAjJwrGSD/dh9xNtiTIYp8DPgjpUXz+Q3O4
+ NRVHxPBYXHleH08BQeLQA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YDZTHPQHyOw=:93bnY6FNejnKhnLS9Yvd4u
- zjgJywPKg//6gxu1mm/OLs6wR5u3N7SjJEO6EKWI3YDvmUi45i3N+DS1CNt+EzQzYADwqxFmK
- 1LHHXVv/es3mmlqF950OC/D4EfyQKZW9h+hcWA1xO3xkE/i+dw/CXldogYknsA47pv5b41Oqr
- ZrNjzAiXDWM6ChbTUksUDYqUVNXPmMv8wxCF8AhxDxgeEjys441tkf/VU0eQGVLVgkio7lA4f
- YHI86Ud6Kqd+6b5vY2oxQSJvw2/simmWGLIeb9fK/LoC+Bu/smMngxIZfRvs/1vYya2buF7Kv
- 9rxfgCPf45dL0F3RlbYMl+W9QpW3RNgL0LcUdyvAerYwftajH3yMeATmUyFROU/danLIeVf/4
- A5BA2zmdUtSbcfL3sMwqiI9B2e/T8BSO3n/rrJY5aS7zR11WwyrEVbuA5FRs3YTtCYZJyi9uA
- qwchSBpqSi3eGGSdSep5HGqxTJzd2gfuFb5hpQou9iFN08JCmltjRTaMMCVqEeWRdORiM59RQ
- xvvtoZPldAWoFZv1fBENTBlrYwnJ66CDr5Rk+4WIjS3vONyt6/2TwdhvrPMs5nJKDIteWOuNP
- iyoo08LRTGO3+lilm/Htk0b4GWFrH/RdDUGqjMshWdnqwKomnUBcLS47wdVTWbDGHqLs0pMzF
- EXbsGT/oNCMgulz+Zxes/bCMr/ObTbIiSg1qEWfB+yUryTG9JCEaXjmyW7/9CafhKUU3FkTA6
- rstVAwjhiAe4xO4hzwGc+djXvHqDBODFVRxd9b8cMV+zAj1tWiAm6XdnusNv7DCGn8SGycKYv
- x950GKyp0yI8ZzWP3Ox0Mi/TktgLq24+9KG+5YodlTKu8vpRp+FER2vuH17RLX9nVOcg9si9x
- v+n/QBEppKCy3+pb+ZeIhxekLebGED1do+Jm7kUMcTL90PiofP3n4eBpAA9DmvuwR2L7U2CM/
- TUkLxD4Va40pdFY5aNn+1F+MyPIhOsrzaFHg3NBSaOj3c8UES5fkioJk9/jrgg/9PLFLFScKe
- J6DlfcHY+KO8Qv9hjshPHynu6a1XRBruJrUviV7x3I+tmpY8MjSPfj+ijlF9/D+H/va5vn7B9
- G2UWbShUdwsZYLlw9PpIGlYkh1IjL/2N3ODofmUaXO+FQxTZXVbUNcHa92iAXkOzQUJNKG1BL
- 4lmNoZH2uHagCYLNld2+gQaVoLaeSaIkMpL3v6PUqh33ejNQlBRMQMv/qED09xr5KZG2ku2xy
- ddF1tfCecJWPQyCml
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zIf6sxIWzQc=:QyFNuqkZDA+yjHQzvZAVBF
+ qDAto2tWgV1F5jYure4NBZ6giXUS2TanD1PCLr4XZWbwBGUgYel3/1NCznsyYJvQScChr0Z6e
+ 87d9HDbPAZs7Phrngaltv2GsgDUR1dNCkxFDyTaA40unJjw7xo0ND4s7ZUKh8EZKyhdjuQglv
+ /RCXCtCdCbQt6jI3PbPDpGmMIApZjXXDEULnFsIL6Ywq2MjL1VmehVcld/e0UjoYRKLHntMvx
+ TG60euOi6d1Xk9M5uA4Yq2UXA5Xng0diCGcdIVTFJCian91YmlJIx8IT02joj+8tN4Eq174nS
+ f0eAf5ER2yKFoy2Lh6h5F2TZnJ9IpMHAKHnT/bIR+rf9cKH84r/+wk9dtjtDYZQvVqDbpVZgR
+ c2uVb09MxhMSQdD2ijfyqt5GUzB16BW8FopZworlAKWyqWBWrFTLH0Y4c3ld1IMYXXBUdPXjH
+ n3e0LKnYcMDhckaj6cilbjezu/Sbv04Ce30XODnJtcD/EY7Ob6MulfAAhs4ZeIVD7TENVNIDi
+ BeFm/9ULqbnfKrCl3FvYKhacSsm+78VWRh7O7+jqAECXzD7q7i7yyUb/QkEASORF2Dfb39QOP
+ VxkTGVwaEAh4V0D46YH2TcLu8iODoHMqDPJg0AtqaILpELXJbIxG5ZMOi7/1F9cOnPabEI/qk
+ 31ZrgoPwz1hrP+YzZEhaoRfWCUrX6M2pk4igZPTs/YVKkrnLMBtGaoo/K5oQs961nFMOp80A8
+ l1fB20Q9S+ilOiuULf2Fxzl/wKi2mgjYzLjUQd7bzR2kahaGwCUtIdacnlZtjeRVNZhR6tBta
+ ycB2jF+obRLbmc2mTLEuSygevJ0AiMeUbgQjmFM6Diy7TZoLIzZOogJiH8MLF2RA2/0lcpuK9
+ nTx1qxHyu8jxq7W+fYhYafK5MMi2eLskNOcEd/xRZecgKLqdRjj5mES9KGcaLyE5z+91g1LbE
+ iIe3AFj5aONOUf3dsJ5eXBIDL1pYa8QW8xc8VhM861MYBNdnRT61de45POpWtoXbnZygn0Ofj
+ RHT6cV9PiwxL1vlwO0WM/XnPvO/dO5S7Eyz7QDZdsH8tf8/uj+BE5ivhfjO5L3eZ/48qoYpvi
+ FUx16ogSgOyQA7bw9S7j3SMqOGn9GhFMlYqphdCKgdbd/y+D+3wQ4cdnPKykB/RDNvzzQCRz1
+ JdVXlbOgU9Kj4cibbQLq4C84n9qQLNAP9qKEVwoqeVbyrIWaZ9Bwt09a+LY4sOZHN1HyLd9NW
+ fiOojzK2LauOppaFq
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/4/15 =E4=B8=8B=E5=8D=8810:52, riteshh wrote:
-> On 21/04/15 09:14AM, riteshh wrote:
->> On 21/04/12 07:33PM, Qu Wenruo wrote:
->>> Good news, you can fetch the subpage branch for better test results.
->>>
->>> Now the branch should pass all generic tests, except defrag and known
->>> failures.
->>> And no more random crash during the tests.
->>
->> Thanks, let me test it on PPC64 box.
->
-> I do see some failures remaining with the patch series.
-> However the one which is blocking my testing is the tests/generic/095
-> I see kernel BUG hitting with below signature.
-
-That's pretty different from my tests.
-
-As I haven't seen such BUG_ON() for a while.
-
-
->
-> Please let me know if this a known failure?
->
-> <xfstests config>
-> #:~/work-tools/xfstests$ sudo ./check -g auto
-> SECTION       -- btrfs_4k
-> FSTYP         -- btrfs
-> PLATFORM      -- Linux/ppc64le qemu 5.12.0-rc7-02316-g3490dae50c0 #73 SM=
-P Thu Apr 15 07:29:23 CDT 2021
-> MKFS_OPTIONS  -- -f -s 4096 -n 4096 /dev/loop3
-
-I see you're using -n 4096, not the default -n 16K, let me see if I can
-reproduce that.
-
-But from the backtrace, it doesn't look like the case,
-as it happens for data path, which means it's only related to sectorsize.
-
-> MOUNT_OPTIONS -- /dev/loop3 /mnt1/scratch
->
->
-> <kernel logs>
-> [ 6057.560580] BTRFS warning (device loop3): read-write for sector size =
-4096 with page size 65536 is experimental
-> [ 6057.861383] run fstests generic/095 at 2021-04-15 14:12:10
-> [ 6058.345127] BTRFS info (device loop2): disk space caching is enabled
-> [ 6058.348910] BTRFS info (device loop2): has skinny extents
-> [ 6058.351930] BTRFS warning (device loop2): read-write for sector size =
-4096 with page size 65536 is experimental
-> [ 6059.896382] BTRFS: device fsid 43ec9cdf-c124-4460-ad93-933bfd5ddbbd d=
-evid 1 transid 5 /dev/loop3 scanned by mkfs.btrfs (739641)
-> [ 6060.225107] BTRFS info (device loop3): disk space caching is enabled
-> [ 6060.226213] BTRFS info (device loop3): has skinny extents
-> [ 6060.227084] BTRFS warning (device loop3): read-write for sector size =
-4096 with page size 65536 is experimental
-> [ 6060.234537] BTRFS info (device loop3): checking UUID tree
-> [ 6061.375902] assertion failed: PagePrivate(page) && page->private, in =
-fs/btrfs/subpage.c:171
-> [ 6061.378296] ------------[ cut here ]------------
-> [ 6061.379422] kernel BUG at fs/btrfs/ctree.h:3403!
-> cpu 0x5: Vector: 700 (Program Check) at [c0000000260d7490]
->      pc: c000000000a9370c: assertfail.constprop.11+0x34/0x48
->      lr: c000000000a93708: assertfail.constprop.11+0x30/0x48
->      sp: c0000000260d7730
->     msr: 800000000282b033
->    current =3D 0xc0000000260c0080
->    paca    =3D 0xc00000003fff8a00   irqmask: 0x03   irq_happened: 0x01
->      pid   =3D 739712, comm =3D fio
-> kernel BUG at fs/btrfs/ctree.h:3403!
-> Linux version 5.12.0-rc7-02316-g3490dae50c0 (riteshh@xxxx) (gcc (Ubuntu =
-8.4.0-1ubuntu1~18.04) 8.4.0, GNU ld (GNU Binutils for Ubuntu) 2.30) #73 SM=
-P Thu Apr 15 07:29:23 CDT 2021
-> enter ? for help
-> [c0000000260d7790] c000000000a90280 btrfs_subpage_assert.isra.9+0x70/0x1=
-10
-> [c0000000260d77b0] c000000000a91064 btrfs_subpage_set_uptodate+0x54/0x11=
-0
-> [c0000000260d7800] c0000000009c6d0c btrfs_dirty_pages+0x1bc/0x2c0
-
-This is very strange.
-As in btrfs_dirty_pages(), the pages passed in are already prepared by
-prepare_pages(), which means all of them should have Private set.
-
-Can you reproduce the bug reliable?
-
-BTW, are using running the latest branch, with this commit at top?
-
-commit 3490dae50c01cec04364e5288f43ae9ac9eca2c9
-Author: Qu Wenruo <wqu@suse.com>
-Date:   Mon Feb 22 14:19:38 2021 +0800
-
-     btrfs: allow read-write for 4K sectorsize on 64K page size systems
-
-As I was updating the patchset until the last minute.
-
-Thanks,
-Qu
-
-> [c0000000260d7880] c0000000009c7298 btrfs_buffered_write+0x488/0x7f0
-> [c0000000260d79d0] c0000000009cbeb4 btrfs_file_write_iter+0x314/0x520
-> [c0000000260d7a50] c00000000055fd84 do_iter_readv_writev+0x1b4/0x260
-> [c0000000260d7ac0] c00000000056114c do_iter_write+0xdc/0x2c0
-> [c0000000260d7b10] c0000000005c2d2c iter_file_splice_write+0x2ec/0x510
-> [c0000000260d7c30] c0000000005c1ba0 do_splice_from+0x50/0x70
-> [c0000000260d7c50] c0000000005c37e8 do_splice+0x5a8/0x910
-> [c0000000260d7cd0] c0000000005c3ce0 sys_splice+0x190/0x300
-> [c0000000260d7d60] c000000000039ba4 system_call_exception+0x384/0x3d0
-> [c0000000260d7e10] c00000000000d45c system_call_common+0xec/0x278
-> --- Exception: c00 (System Call) at 00007ffff72ef170
->
->
-> -ritesh
->
+DQoNCk9uIDIwMjEvNC8xNiDkuIrljYgyOjUwLCBKb3NlZiBCYWNpayB3cm90ZToNCj4gT24gNC8x
+NS8yMSAxOjA0IEFNLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBUaGUgbmV3IGZ1bmN0aW9uLCBlbmRf
+YmlvX3N1YnBhZ2VfZWJfd3JpdGVwYWdlKCksIHdpbGwgaGFuZGxlIHRoZQ0KPj4gbWV0YWRhdGEg
+d3JpdGViYWNrIGVuZGlvLg0KPj4NCj4+IFRoZSBtYWpvciBkaWZmZXJlbmNlcyBpbnZvbHZlZCBh
+cmU6DQo+PiAtIEhvdyB0byBncmFiIGV4dGVudCBidWZmZXINCj4+IMKgwqAgTm93IHBhZ2U6OnBy
+aXZhdGUgaXMgYSBwb2ludGVyIHRvIGJ0cmZzX3N1YnBhZ2UsIHdlIGNhbiBubyBsb25nZXIgZ3Jh
+Yg0KPj4gwqDCoCBleHRlbnQgYnVmZmVyIGRpcmVjdGx5Lg0KPj4gwqDCoCBUaHVzIHdlIG5lZWQg
+dG8gdXNlIHRoZSBidl9vZmZzZXQgdG8gbG9jYXRlIHRoZSBleHRlbnQgYnVmZmVyIG1hbnVhbGx5
+DQo+PiDCoMKgIGFuZCBpdGVyYXRlIHRocm91Z2ggdGhlIHdob2xlIHJhbmdlLg0KPj4NCj4+IC0g
+VXNlIGJ0cmZzX3N1YnBhZ2VfZW5kX3dyaXRlYmFjaygpIGNhbGxlcg0KPj4gwqDCoCBUaGlzIGhl
+bHBlciB3aWxsIGhhbmRsZSB0aGUgc3VicGFnZSB3cml0ZWJhY2sgZm9yIHVzLg0KPj4NCj4+IFNp
+bmNlIHRoaXMgZnVuY3Rpb24gaXMgZXhlY3V0ZWQgdW5kZXIgZW5kaW8gY29udGV4dCwgd2hlbiBn
+cmFiYmluZw0KPj4gZXh0ZW50IGJ1ZmZlcnMgaXQgY2FuJ3QgZ3JhYiBlYi0+cmVmc19sb2NrIGFz
+IHRoYXQgbG9jayBpcyBub3QgZGVzaWduZWQNCj4+IHRvIGJlIGdyYWJiZWQgdW5kZXIgaGFyZGly
+cSBjb250ZXh0Lg0KPj4NCj4+IFNvIGhlcmUgaW50cm9kdWNlIGEgaGVscGVyLCBmaW5kX2V4dGVu
+dF9idWZmZXJfbm9zcGlubG9jaygpLCBmb3Igc3VjaA0KPj4gc2l0dWF0aW9uLCBhbmQgY29udmVy
+dCBmaW5kX2V4dGVudF9idWZmZXIoKSB0byB1c2UgdGhhdCBoZWxwZXIuDQo+Pg0KPj4gU2lnbmVk
+LW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+PiAtLS0NCj4+IMKgIGZzL2J0cmZz
+L2V4dGVudF9pby5jIHwgMTM1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
+LS0tLS0NCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxMDYgaW5zZXJ0aW9ucygrKSwgMjkgZGVsZXRp
+b25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2V4dGVudF9pby5jIGIvZnMvYnRy
+ZnMvZXh0ZW50X2lvLmMNCj4+IGluZGV4IGE1MGFkYmQ4ODA4ZC4uMjFhMTRiMWNiMDY1IDEwMDY0
+NA0KPj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2V4dGVu
+dF9pby5jDQo+PiBAQCAtNDA4MCwxMyArNDA4MCw5NyBAQCBzdGF0aWMgdm9pZCBzZXRfYnRyZWVf
+aW9lcnIoc3RydWN0IHBhZ2UgKnBhZ2UsIA0KPj4gc3RydWN0IGV4dGVudF9idWZmZXIgKmViKQ0K
+Pj4gwqDCoMKgwqDCoCB9DQo+PiDCoCB9DQo+PiArLyoNCj4+ICsgKiBUaGlzIGlzIHRoZSBlbmRp
+byBzcGVjaWZpYyB2ZXJzaW9uIHdoaWNoIHdvbid0IHRvdWNoIGFueSB1bnNhZmUgDQo+PiBzcGlu
+bG9jaw0KPj4gKyAqIGluIGVuZGlvIGNvbnRleHQuDQo+PiArICovDQo+PiArc3RhdGljIHN0cnVj
+dCBleHRlbnRfYnVmZmVyICpmaW5kX2V4dGVudF9idWZmZXJfbm9zcGlubG9jaygNCj4+ICvCoMKg
+wqDCoMKgwqDCoCBzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbywgdTY0IHN0YXJ0KQ0KPj4g
+K3sNCj4+ICvCoMKgwqAgc3RydWN0IGV4dGVudF9idWZmZXIgKmViOw0KPj4gKw0KPj4gK8KgwqDC
+oCByY3VfcmVhZF9sb2NrKCk7DQo+PiArwqDCoMKgIGViID0gcmFkaXhfdHJlZV9sb29rdXAoJmZz
+X2luZm8tPmJ1ZmZlcl9yYWRpeCwNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgc3RhcnQgPj4gZnNfaW5mby0+c2VjdG9yc2l6ZV9iaXRzKTsNCj4+ICvCoMKgwqAgaWYg
+KGViICYmIGF0b21pY19pbmNfbm90X3plcm8oJmViLT5yZWZzKSkgew0KPj4gK8KgwqDCoMKgwqDC
+oMKgIHJjdV9yZWFkX3VubG9jaygpOw0KPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiBlYjsNCj4+
+ICvCoMKgwqAgfQ0KPj4gK8KgwqDCoCByY3VfcmVhZF91bmxvY2soKTsNCj4+ICvCoMKgwqAgcmV0
+dXJuIE5VTEw7DQo+PiArfQ0KPj4gKy8qDQo+PiArICogVGhlIGVuZGlvIGZ1bmN0aW9uIGZvciBz
+dWJwYWdlIGV4dGVudCBidWZmZXIgd3JpdGUuDQo+PiArICoNCj4+ICsgKiBVbmxpa2UgZW5kX2Jp
+b19leHRlbnRfYnVmZmVyX3dyaXRlcGFnZSgpLCB3ZSBvbmx5IGNhbGwgDQo+PiBlbmRfcGFnZV93
+cml0ZWJhY2soKQ0KPj4gKyAqIGFmdGVyIGFsbCBleHRlbnQgYnVmZmVycyBpbiB0aGUgcGFnZSBo
+YXMgZmluaXNoZWQgdGhlaXIgd3JpdGViYWNrLg0KPj4gKyAqLw0KPj4gK3N0YXRpYyB2b2lkIGVu
+ZF9iaW9fc3VicGFnZV9lYl93cml0ZXBhZ2Uoc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8s
+DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYmlv
+ICpiaW8pDQo+PiArew0KPj4gK8KgwqDCoCBzdHJ1Y3QgYmlvX3ZlYyAqYnZlYzsNCj4+ICvCoMKg
+wqAgc3RydWN0IGJ2ZWNfaXRlcl9hbGwgaXRlcl9hbGw7DQo+PiArDQo+PiArwqDCoMKgIEFTU0VS
+VCghYmlvX2ZsYWdnZWQoYmlvLCBCSU9fQ0xPTkVEKSk7DQo+PiArwqDCoMKgIGJpb19mb3JfZWFj
+aF9zZWdtZW50X2FsbChidmVjLCBiaW8sIGl0ZXJfYWxsKSB7DQo+PiArwqDCoMKgwqDCoMKgwqAg
+c3RydWN0IHBhZ2UgKnBhZ2UgPSBidmVjLT5idl9wYWdlOw0KPj4gK8KgwqDCoMKgwqDCoMKgIHU2
+NCBidmVjX3N0YXJ0ID0gcGFnZV9vZmZzZXQocGFnZSkgKyBidmVjLT5idl9vZmZzZXQ7DQo+PiAr
+wqDCoMKgwqDCoMKgwqAgdTY0IGJ2ZWNfZW5kID0gYnZlY19zdGFydCArIGJ2ZWMtPmJ2X2xlbiAt
+IDE7DQo+PiArwqDCoMKgwqDCoMKgwqAgdTY0IGN1cl9ieXRlbnIgPSBidmVjX3N0YXJ0Ow0KPj4g
+Kw0KPj4gK8KgwqDCoMKgwqDCoMKgIEFTU0VSVChJU19BTElHTkVEKGJ2ZWMtPmJ2X2xlbiwgZnNf
+aW5mby0+bm9kZXNpemUpKTsNCj4+ICsNCj4+ICvCoMKgwqDCoMKgwqDCoCAvKiBJdGVyYXRlIHRo
+cm91Z2ggYWxsIGV4dGVudCBidWZmZXJzIGluIHRoZSByYW5nZSAqLw0KPj4gK8KgwqDCoMKgwqDC
+oMKgIHdoaWxlIChjdXJfYnl0ZW5yIDw9IGJ2ZWNfZW5kKSB7DQo+PiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBzdHJ1Y3QgZXh0ZW50X2J1ZmZlciAqZWI7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBpbnQgZG9uZTsNCj4+ICsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qDQo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogSGVyZSB3ZSBjYW4ndCB1c2UgZmluZF9leHRlbnRf
+YnVmZmVyKCksIGFzIGl0IG1heQ0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIHRyeSB0
+byBsb2NrIGViLT5yZWZzX2xvY2ssIHdoaWNoIGlzIG5vdCBzYWZlIGluIGVuZGlvDQo+PiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgICogY29udGV4dC4NCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgKi8NCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGViID0gZmluZF9leHRlbnRfYnVm
+ZmVyX25vc3BpbmxvY2soZnNfaW5mbywgY3VyX2J5dGVucik7DQo+PiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBBU1NFUlQoZWIpOw0KPj4gKw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY3Vy
+X2J5dGVuciA9IGViLT5zdGFydCArIGViLT5sZW47DQo+PiArDQo+PiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBBU1NFUlQodGVzdF9iaXQoRVhURU5UX0JVRkZFUl9XUklURUJBQ0ssICZlYi0+YmZs
+YWdzKSk7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkb25lID0gYXRvbWljX2RlY19hbmRf
+dGVzdCgmZWItPmlvX3BhZ2VzKTsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEFTU0VSVChk
+b25lKTsNCj4+ICsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChiaW8tPmJpX3N0YXR1
+cyB8fA0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0ZXN0X2JpdChFWFRFTlRf
+QlVGRkVSX1dSSVRFX0VSUiwgJmViLT5iZmxhZ3MpKSB7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIENsZWFyUGFnZVVwdG9kYXRlKHBhZ2UpOw0KPj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBzZXRfYnRyZWVfaW9lcnIocGFnZSwgZWIpOw0KPj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgfQ0KPj4gKw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYnRyZnNf
+c3VicGFnZV9jbGVhcl93cml0ZWJhY2soZnNfaW5mbywgcGFnZSwgZWItPnN0YXJ0LA0KPj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+ZWItPmxlbik7DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBlbmRfZXh0ZW50X2J1ZmZlcl93
+cml0ZWJhY2soZWIpOw0KPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyoNCj4+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgKiBmcmVlX2V4dGVudF9idWZmZXIoKSB3aWxsIGdyYWIgc3Bpbmxv
+Y2sgd2hpY2ggaXMgbm90DQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogc2FmZSBpbiBl
+bmRpbyBjb250ZXh0LiBUaHVzIGhlcmUgd2UgbWFudWFsbHkgZGVjDQo+PiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgICogdGhlIHJlZi4NCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8N
+Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGF0b21pY19kZWMoJmViLT5yZWZzKTsNCj4+ICvC
+oMKgwqDCoMKgwqDCoCB9DQo+PiArwqDCoMKgIH0NCj4+ICvCoMKgwqAgYmlvX3B1dChiaW8pOw0K
+Pj4gK30NCj4+ICsNCj4+IMKgIHN0YXRpYyB2b2lkIGVuZF9iaW9fZXh0ZW50X2J1ZmZlcl93cml0
+ZXBhZ2Uoc3RydWN0IGJpbyAqYmlvKQ0KPj4gwqAgew0KPj4gK8KgwqDCoCBzdHJ1Y3QgYnRyZnNf
+ZnNfaW5mbyAqZnNfaW5mbzsNCj4+IMKgwqDCoMKgwqAgc3RydWN0IGJpb192ZWMgKmJ2ZWM7DQo+
+PiDCoMKgwqDCoMKgIHN0cnVjdCBleHRlbnRfYnVmZmVyICplYjsNCj4+IMKgwqDCoMKgwqAgaW50
+IGRvbmU7DQo+PiDCoMKgwqDCoMKgIHN0cnVjdCBidmVjX2l0ZXJfYWxsIGl0ZXJfYWxsOw0KPj4g
+K8KgwqDCoCBmc19pbmZvID0gYnRyZnNfc2IoYmlvX2ZpcnN0X3BhZ2VfYWxsKGJpbyktPm1hcHBp
+bmctPmhvc3QtPmlfc2IpOw0KPj4gK8KgwqDCoCBpZiAoZnNfaW5mby0+c2VjdG9yc2l6ZSA8IFBB
+R0VfU0laRSkNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gZW5kX2Jpb19zdWJwYWdlX2ViX3dy
+aXRlcGFnZShmc19pbmZvLCBiaW8pOw0KPj4gKw0KPiANCj4gWW91IHJlcGxhY2UgdGhlIHdyaXRl
+X29uZV9lYigpIGNhbGwgd2l0aCBvbmUgc3BlY2lmaWNhbGx5IGZvciBzdWJwYWdlLCANCj4gd2h5
+IG5vdCBqdXN0IHVzZSB5b3VyIHNwZWNpYWwgZW5kaW8gZnJvbSB0aGVyZSB3aXRob3V0IHBvbGx1
+dGluZyB0aGUgDQo+IG5vcm1hbCB3cml0ZXBhZ2UgaGVscGVyP8KgIFRoYW5rcywNCg0KVGhhdCBt
+YWtlcyBzZW5zZSwgSSdkIGdvIHRoYXQgZGlyZWN0aW9uLg0KDQpUaGFua3MsDQpRdQ0KDQo+IA0K
+PiBKb3NlZg0K
