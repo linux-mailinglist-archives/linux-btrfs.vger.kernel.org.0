@@ -2,68 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD010361231
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 20:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9D736127E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 20:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233955AbhDOSgu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 14:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        id S234204AbhDOSuv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 14:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbhDOSgu (ORCPT
+        with ESMTP id S234101AbhDOSuu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:36:50 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435E9C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:36:27 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id s5so17501993qkj.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:36:27 -0700 (PDT)
+        Thu, 15 Apr 2021 14:50:50 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F35C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:50:23 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id dp18so7589829qvb.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:50:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=82fNxRz5/qQxwCXbi9UEH58iG2sL5m2BoQ9nehVkC40=;
-        b=DseGZxV/VVRwL7a4ni2BlER0x1Y4NGCD/8gfziaFPV1SHN4CHnPK8zSgQFB+fnDPIJ
-         U4v2AtLkWr4TlYwaoBI4nysZ3jtulkAyJggmiHLYJCiIZSFnheoHSBOzOfB7Mog1l41F
-         scI45jcQYtzzWuL34SFfzsnR7ygJivqK7H/ux+VsMJEvFq7nZL9i4IIewfzHDeOYS+ex
-         zDA8QgVzwB5z32tONH611NlZW7/dYHdeFlS6iGp0Br8cT+NH0ava+A0M4h+8pslBw1KV
-         hH+ROQp/4xbDekFOOxMXPWCIDPJx/SJSTfYbrbqQRr/jjSB3xfJOdz0kyng5HO4fDjA6
-         tBlw==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=+vru5Z9XQq0ENbsuJrPvWEpYPOiq+p+L0itm826R8Vo=;
+        b=uzn+Ztib4F+aAmXBSUMCc2yi9aD/80UoRY6yseRSSh7Z6ngZ/JG+Sqxo30LGYIie0Z
+         xdtLK0ew0h4tqXKPMHT3x+FrJ6tRYlr/CP6JY4er9L2N8/8XYRBNKHds93yJ7uoAgRMP
+         TgoZYjwdNy5JZPIjHygwe7uo9/GLvABzbp7shGarPPfxrPJMqVjBLdJ5DJ/X+H000QZk
+         h9PAEz0tPtrDN1fdIJciMcViF7dug7GCKQwUdO6Lax+Cp4pQ90F/YEBSlEZ1eErlWx2R
+         HiPD9cSHhABnEzoZZqJTan629G8tzYfOkVHEy99gt/QbCWS6T31YioSomhkJRtyIjlyh
+         nvbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=82fNxRz5/qQxwCXbi9UEH58iG2sL5m2BoQ9nehVkC40=;
-        b=H2xDcFz4rpNo2jVGRK5LCHbieJbfXnN5+WzSVp8KyigQbwlDFcOaj/qg66+Rcrrfu+
-         47VM8lap8olDT57Sk3JkqAg/1Q07muOy5YuPa1eXQPGl/E4VT4+Eq2eKg7g+39NndIWQ
-         b6jLfmPWOju6nu0xFpYF9N5b2E6PBldvFWhZ0n8fm1VVTMHSt6CLcwXJqUMtNdYS4lYF
-         xQJGB6JPUS75OZadcSIp/lxGH5xZtXVGIk+WK6BInP9/HqJ94tM95WJXmQccispi1P81
-         N94Uj+KoD4fnuEGnsrFlzaktdyJpclyuRn+41eoxwGNOUzP37evKqvk1N8catKEu7nYx
-         C3/A==
-X-Gm-Message-State: AOAM533MGXpd6OniAx4145NKvUi+wY3xV5unM2jDlzjIv1qlcMo/ALSE
-        re3KFLzLQv5kPIRnO7iH6JGy2w==
-X-Google-Smtp-Source: ABdhPJw+z1SXD32l8jZ4/l71TVJcdoPsYPP6nG3Gz3pJoS48IxcvMNZlC8MBm/BadhREYB+GvKh8bQ==
-X-Received: by 2002:a37:614e:: with SMTP id v75mr4977129qkb.170.1618511786458;
-        Thu, 15 Apr 2021 11:36:26 -0700 (PDT)
+        bh=+vru5Z9XQq0ENbsuJrPvWEpYPOiq+p+L0itm826R8Vo=;
+        b=cd/IYdRF9L42ZZTEeT7j7sR23mt6l5mCENFOYVlFQrXVyLH7LcO/LxILwmwQMfW/tG
+         6pGL1it99N2ZhAz0ACgLWOfHwzdkFucF2TsbVuw2SMTycHlrz2TEDrEV/xhDmxYH0jKM
+         calSHyPI5ZZ99S1SukjHlSsaLkwCpZDTdIAAr8UnbudPcH4fxKs8vdlEm3I7S/QAFkoP
+         JhR15nsJkhHEB8q2F3pwGpOajqXi8qU6lOwmJhZyWvA2lpOuy8lzRNXAfb9TSus3jZaG
+         xpwz5UW3ExB1Zj/l+qzyh9Wdy4AFfxrrBZAUwLhZj+VePWl9bS8jenVVE8ZAfhwWqk1R
+         ZN9A==
+X-Gm-Message-State: AOAM533eX43vBFuNHKihnKUL8DbRcat4W01l//lzOUg72oy7cNZLHyTi
+        tHo9NJ4wSzeg5vIT+xsTniaFSAESxcuF3g==
+X-Google-Smtp-Source: ABdhPJxgXD13ZgI9yQM9PcQBOzSI6g2F1DlQHEWLMQ7eTC71Xd96yK1WhQmvEXOFRNqqIwPUvzKbhQ==
+X-Received: by 2002:a0c:f247:: with SMTP id z7mr4892287qvl.24.1618512622764;
+        Thu, 15 Apr 2021 11:50:22 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c0a8:11c9::1288? ([2620:10d:c091:480::1:2677])
-        by smtp.gmail.com with ESMTPSA id 8sm2561326qkb.32.2021.04.15.11.36.25
+        by smtp.gmail.com with ESMTPSA id c145sm2603467qkg.48.2021.04.15.11.50.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 11:36:26 -0700 (PDT)
-Subject: Re: [PATCH v4 3/3] btrfs: zoned: automatically reclaim zones
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Anand Jain <anand.jain@oracle.com>
-References: <cover.1618494550.git.johannes.thumshirn@wdc.com>
- <920701be19f36b4f7ed84efd53a3d0550700f047.1618494550.git.johannes.thumshirn@wdc.com>
+        Thu, 15 Apr 2021 11:50:22 -0700 (PDT)
+Subject: Re: [PATCH 01/42] btrfs: introduce end_bio_subpage_eb_writepage()
+ function
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210415050448.267306-1-wqu@suse.com>
+ <20210415050448.267306-2-wqu@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <63c82817-751c-b200-abfc-b7e669affa93@toxicpanda.com>
-Date:   Thu, 15 Apr 2021 14:36:24 -0400
+Message-ID: <5af1169e-1558-c1f5-14a5-08bde9c5cf15@toxicpanda.com>
+Date:   Thu, 15 Apr 2021 14:50:21 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <920701be19f36b4f7ed84efd53a3d0550700f047.1618494550.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <20210415050448.267306-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,98 +68,134 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/15/21 9:58 AM, Johannes Thumshirn wrote:
-> When a file gets deleted on a zoned file system, the space freed is not
-> returned back into the block group's free space, but is migrated to
-> zone_unusable.
+On 4/15/21 1:04 AM, Qu Wenruo wrote:
+> The new function, end_bio_subpage_eb_writepage(), will handle the
+> metadata writeback endio.
 > 
-> As this zone_unusable space is behind the current write pointer it is not
-> possible to use it for new allocations. In the current implementation a
-> zone is reset once all of the block group's space is accounted as zone
-> unusable.
+> The major differences involved are:
+> - How to grab extent buffer
+>    Now page::private is a pointer to btrfs_subpage, we can no longer grab
+>    extent buffer directly.
+>    Thus we need to use the bv_offset to locate the extent buffer manually
+>    and iterate through the whole range.
 > 
-> This behaviour can lead to premature ENOSPC errors on a busy file system.
+> - Use btrfs_subpage_end_writeback() caller
+>    This helper will handle the subpage writeback for us.
 > 
-> Instead of only reclaiming the zone once it is completely unusable,
-> kick off a reclaim job once the amount of unusable bytes exceeds a user
-> configurable threshold between 51% and 100%. It can be set per mounted
-> filesystem via the sysfs tunable bg_reclaim_threshold which is set to 75%
-> per default.
+> Since this function is executed under endio context, when grabbing
+> extent buffers it can't grab eb->refs_lock as that lock is not designed
+> to be grabbed under hardirq context.
 > 
-> Similar to reclaiming unused block groups, these dirty block groups are
-> added to a to_reclaim list and then on a transaction commit, the reclaim
-> process is triggered but after we deleted unused block groups, which will
-> free space for the relocation process.
+> So here introduce a helper, find_extent_buffer_nospinlock(), for such
+> situation, and convert find_extent_buffer() to use that helper.
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->   fs/btrfs/block-group.c       | 96 ++++++++++++++++++++++++++++++++++++
->   fs/btrfs/block-group.h       |  3 ++
->   fs/btrfs/ctree.h             |  6 +++
->   fs/btrfs/disk-io.c           | 13 +++++
->   fs/btrfs/free-space-cache.c  |  9 +++-
->   fs/btrfs/sysfs.c             | 35 +++++++++++++
->   fs/btrfs/volumes.c           |  2 +-
->   fs/btrfs/volumes.h           |  1 +
->   include/trace/events/btrfs.h | 12 +++++
->   9 files changed, 175 insertions(+), 2 deletions(-)
+>   fs/btrfs/extent_io.c | 135 +++++++++++++++++++++++++++++++++----------
+>   1 file changed, 106 insertions(+), 29 deletions(-)
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index bbb5a6e170c7..3f06ea42c013 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1485,6 +1485,92 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
->   	spin_unlock(&fs_info->unused_bgs_lock);
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index a50adbd8808d..21a14b1cb065 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4080,13 +4080,97 @@ static void set_btree_ioerr(struct page *page, struct extent_buffer *eb)
+>   	}
 >   }
 >   
-> +void btrfs_reclaim_bgs_work(struct work_struct *work)
+> +/*
+> + * This is the endio specific version which won't touch any unsafe spinlock
+> + * in endio context.
+> + */
+> +static struct extent_buffer *find_extent_buffer_nospinlock(
+> +		struct btrfs_fs_info *fs_info, u64 start)
 > +{
-> +	struct btrfs_fs_info *fs_info =
-> +		container_of(work, struct btrfs_fs_info, reclaim_bgs_work);
-> +	struct btrfs_block_group *bg;
-> +	struct btrfs_space_info *space_info;
-> +	int ret = 0;
+> +	struct extent_buffer *eb;
 > +
-> +	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
-> +		return;
+> +	rcu_read_lock();
+> +	eb = radix_tree_lookup(&fs_info->buffer_radix,
+> +			       start >> fs_info->sectorsize_bits);
+> +	if (eb && atomic_inc_not_zero(&eb->refs)) {
+> +		rcu_read_unlock();
+> +		return eb;
+> +	}
+> +	rcu_read_unlock();
+> +	return NULL;
+> +}
+> +/*
+> + * The endio function for subpage extent buffer write.
+> + *
+> + * Unlike end_bio_extent_buffer_writepage(), we only call end_page_writeback()
+> + * after all extent buffers in the page has finished their writeback.
+> + */
+> +static void end_bio_subpage_eb_writepage(struct btrfs_fs_info *fs_info,
+> +					 struct bio *bio)
+> +{
+> +	struct bio_vec *bvec;
+> +	struct bvec_iter_all iter_all;
 > +
-> +	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE))
-> +		return;
+> +	ASSERT(!bio_flagged(bio, BIO_CLONED));
+> +	bio_for_each_segment_all(bvec, bio, iter_all) {
+> +		struct page *page = bvec->bv_page;
+> +		u64 bvec_start = page_offset(page) + bvec->bv_offset;
+> +		u64 bvec_end = bvec_start + bvec->bv_len - 1;
+> +		u64 cur_bytenr = bvec_start;
 > +
-> +	mutex_lock(&fs_info->reclaim_bgs_lock);
-> +	spin_lock(&fs_info->unused_bgs_lock);
-> +	while (!list_empty(&fs_info->reclaim_bgs)) {
-> +		bg = list_first_entry(&fs_info->reclaim_bgs,
-> +				      struct btrfs_block_group,
-> +				      bg_list);
-> +		list_del_init(&bg->bg_list);
+> +		ASSERT(IS_ALIGNED(bvec->bv_len, fs_info->nodesize));
 > +
-> +		space_info = bg->space_info;
-> +		spin_unlock(&fs_info->unused_bgs_lock);
+> +		/* Iterate through all extent buffers in the range */
+> +		while (cur_bytenr <= bvec_end) {
+> +			struct extent_buffer *eb;
+> +			int done;
 > +
-> +		/* Don't want to race with allocators so take the groups_sem */
-> +		down_write(&space_info->groups_sem);
-> +
-> +		spin_lock(&bg->lock);
-> +		if (bg->reserved || bg->pinned || bg->ro) {
 > +			/*
-> +			 * We want to bail if we made new allocations or have
-> +			 * outstanding allocations in this block group.  We do
-> +			 * the ro check in case balance is currently acting on
-> +			 * this block group.
+> +			 * Here we can't use find_extent_buffer(), as it may
+> +			 * try to lock eb->refs_lock, which is not safe in endio
+> +			 * context.
 > +			 */
-> +			spin_unlock(&bg->lock);
-> +			up_write(&space_info->groups_sem);
-> +			goto next;
+> +			eb = find_extent_buffer_nospinlock(fs_info, cur_bytenr);
+> +			ASSERT(eb);
+> +
+> +			cur_bytenr = eb->start + eb->len;
+> +
+> +			ASSERT(test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags));
+> +			done = atomic_dec_and_test(&eb->io_pages);
+> +			ASSERT(done);
+> +
+> +			if (bio->bi_status ||
+> +			    test_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags)) {
+> +				ClearPageUptodate(page);
+> +				set_btree_ioerr(page, eb);
+> +			}
+> +
+> +			btrfs_subpage_clear_writeback(fs_info, page, eb->start,
+> +						      eb->len);
+> +			end_extent_buffer_writeback(eb);
+> +			/*
+> +			 * free_extent_buffer() will grab spinlock which is not
+> +			 * safe in endio context. Thus here we manually dec
+> +			 * the ref.
+> +			 */
+> +			atomic_dec(&eb->refs);
 > +		}
-> +		spin_unlock(&bg->lock);
+> +	}
+> +	bio_put(bio);
+> +}
+> +
+>   static void end_bio_extent_buffer_writepage(struct bio *bio)
+>   {
+> +	struct btrfs_fs_info *fs_info;
+>   	struct bio_vec *bvec;
+>   	struct extent_buffer *eb;
+>   	int done;
+>   	struct bvec_iter_all iter_all;
+>   
+> +	fs_info = btrfs_sb(bio_first_page_all(bio)->mapping->host->i_sb);
+> +	if (fs_info->sectorsize < PAGE_SIZE)
+> +		return end_bio_subpage_eb_writepage(fs_info, bio);
 > +
 
-Here I think we want a
-
-if (btrfs_fs_closing())
-	goto next;
-
-so we don't block out a umount for all eternity.  Thanks,
+You replace the write_one_eb() call with one specifically for subpage, why not 
+just use your special endio from there without polluting the normal writepage 
+helper?  Thanks,
 
 Josef
