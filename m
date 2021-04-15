@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539A3360165
+	by mail.lfdr.de (Postfix) with ESMTP id C40D6360166
 	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 07:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhDOFF6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 01:05:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37704 "EHLO mx2.suse.de"
+        id S230172AbhDOFGA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 01:06:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37766 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230134AbhDOFF5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:05:57 -0400
+        id S230163AbhDOFF7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Apr 2021 01:05:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618463134; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1618463136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/jDZNzYWShW9j00mlx9oXKduq7q4H0gGx0qOMVf/rEo=;
-        b=RH/uQbu8eSOgbyMqZOsKqQQshipBlp8fqb1NCLdDk1sEtltB8+NXPerJPGM9AEdrtlzenZ
-        XnbS/SHFzwXLvF1/JN+bDMJ58v4XJXc9/tG6ATiUK1pef9sA4wAmMADBeROez0V178Nk3Q
-        XhEk1rR1WJz6azmxkhFREynXDUYOCIA=
+        bh=A9BfZxSmc23Zn8Pomzblhlp/cnp7NEoJdfabvB0jGvU=;
+        b=q1ZehjBmcvI0PEXyiru20OTl1g9IL7GxSi/s9Yp7hW+dWfTqtA+KtK0bCZeIsrRr2BwpzF
+        lw4Fm2F4VRDWLNMuXLQXOSnPYjDyLGJ1DSvI7xnR3vLOBmISesyLb4lfxZ26eoaW3MVkRd
+        4Q8aoGUEPdgQpI3kdDZkjzi7EUTeyHc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5D874AF39
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 05:05:34 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1EFDCAF03
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 05:05:36 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 22/42] btrfs: introduce helpers for subpage ordered status
-Date:   Thu, 15 Apr 2021 13:04:28 +0800
-Message-Id: <20210415050448.267306-23-wqu@suse.com>
+Subject: [PATCH 23/42] btrfs: make page Ordered bit to be subpage compatible
+Date:   Thu, 15 Apr 2021 13:04:29 +0800
+Message-Id: <20210415050448.267306-24-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415050448.267306-1-wqu@suse.com>
 References: <20210415050448.267306-1-wqu@suse.com>
@@ -38,103 +38,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch introduces the following functions to handle btrfs subpage
-ordered (private2) status:
-- btrfs_subpage_set_ordered()
-- btrfs_subpage_clear_ordered()
-- btrfs_subpage_test_ordered()
-  Those helpers can only be called when the range is ensured to be
-  inside the page.
+This involves the following modication:
+- Ordered extent creation
+  This is done in process_one_page(), now PAGE_SET_ORDERED will call
+  subpage helper to do the work.
 
-- btrfs_page_set_ordered()
-- btrfs_page_clear_ordered()
-- btrfs_page_test_ordered()
-  Those helpers can handle both regular sector size and subpage without
-  problem.
+- endio functions
+  This is done in btrfs_mark_ordered_io_finished().
 
-Those functions are here to co-ordinate btrfs_invalidatepage() with
-btrfs_writepage_endio_finish_ordered(), to make sure only one of those
-functions can finish the ordered extent.
+- btrfs_invalidatepage()
+
+Now the usage of page Ordered flag for ordered extent accounting is fully
+subpage compatible.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/subpage.c | 29 +++++++++++++++++++++++++++++
- fs/btrfs/subpage.h |  4 ++++
- 2 files changed, 33 insertions(+)
+ fs/btrfs/extent_io.c    |  2 +-
+ fs/btrfs/inode.c        | 14 ++++++++++----
+ fs/btrfs/ordered-data.c |  5 +++--
+ 3 files changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index f728e5009487..516e0b3f2ed9 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -429,6 +429,32 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 876b7f655df7..cc73fd3c840c 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1824,7 +1824,7 @@ static int process_one_page(struct btrfs_fs_info *fs_info,
+ 	len = end + 1 - start;
  
-+void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&subpage->lock, flags);
-+	subpage->ordered_bitmap |= tmp;
-+	SetPageOrdered(page);
-+	spin_unlock_irqrestore(&subpage->lock, flags);
-+}
-+
-+void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&subpage->lock, flags);
-+	subpage->ordered_bitmap &= ~tmp;
-+	if (subpage->ordered_bitmap == 0)
-+		ClearPageOrdered(page);
-+	spin_unlock_irqrestore(&subpage->lock, flags);
-+}
- /*
-  * Unlike set/clear which is dependent on each page status, for test all bits
-  * are tested in the same way.
-@@ -451,6 +477,7 @@ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(uptodate);
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(error);
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(dirty);
- IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(writeback);
-+IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(ordered);
+ 	if (page_ops & PAGE_SET_ORDERED)
+-		SetPageOrdered(page);
++		btrfs_page_clamp_set_ordered(fs_info, page, start, len);
  
- /*
-  * Note that, in selftests (extent-io-tests), we can have empty fs_info passed
-@@ -519,3 +546,5 @@ IMPLEMENT_BTRFS_PAGE_OPS(dirty, set_page_dirty, clear_page_dirty_for_io,
- 			 PageDirty);
- IMPLEMENT_BTRFS_PAGE_OPS(writeback, set_page_writeback, end_page_writeback,
- 			 PageWriteback);
-+IMPLEMENT_BTRFS_PAGE_OPS(ordered, SetPageOrdered, ClearPageOrdered,
-+			 PageOrdered);
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 9d087ab3244e..3419b152c00f 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -34,6 +34,9 @@ struct btrfs_subpage {
- 		struct {
- 			atomic_t readers;
- 			atomic_t writers;
-+
-+			/* If a sector has pending ordered extent */
-+			u16 ordered_bitmap;
- 		};
- 	};
- };
-@@ -111,6 +114,7 @@ DECLARE_BTRFS_SUBPAGE_OPS(uptodate);
- DECLARE_BTRFS_SUBPAGE_OPS(error);
- DECLARE_BTRFS_SUBPAGE_OPS(dirty);
- DECLARE_BTRFS_SUBPAGE_OPS(writeback);
-+DECLARE_BTRFS_SUBPAGE_OPS(ordered);
+ 	if (page == locked_page)
+ 		return 1;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 03f9139b391a..f366dc2fb1ff 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -51,6 +51,7 @@
+ #include "block-group.h"
+ #include "space-info.h"
+ #include "zoned.h"
++#include "subpage.h"
  
- bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len);
+ struct btrfs_iget_args {
+ 	u64 ino;
+@@ -170,7 +171,8 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
+ 		index++;
+ 		if (!page)
+ 			continue;
+-		ClearPageOrdered(page);
++		btrfs_page_clear_ordered(inode->root->fs_info, page,
++					 page_offset(page), PAGE_SIZE);
+ 		put_page(page);
+ 	}
+ 
+@@ -8320,12 +8322,13 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 				 unsigned int length)
+ {
+ 	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct extent_io_tree *tree = &inode->io_tree;
+ 	struct extent_state *cached_state = NULL;
+ 	u64 page_start = page_offset(page);
+ 	u64 page_end = page_start + PAGE_SIZE - 1;
+ 	u64 cur;
+-	u32 sectorsize = inode->root->fs_info->sectorsize;
++	u32 sectorsize = fs_info->sectorsize;
+ 	int inode_evicting = inode->vfs_inode.i_state & I_FREEING;
+ 
+ 	/*
+@@ -8356,6 +8359,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 		struct btrfs_ordered_extent *ordered;
+ 		bool delete_states = false;
+ 		u64 range_end;
++		u32 range_len;
+ 
+ 		/*
+ 		 * Here we can't pass "file_offset = cur" and
+@@ -8382,7 +8386,9 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 
+ 		range_end = min(ordered->file_offset + ordered->num_bytes - 1,
+ 				page_end);
+-		if (!PageOrdered(page)) {
++		ASSERT(range_end + 1 - cur < U32_MAX);
++		range_len = range_end + 1 - cur;
++		if (!btrfs_page_test_ordered(fs_info, page, cur, range_len)) {
+ 			/*
+ 			 * If Ordered (Private2) is cleared, it means endio has
+ 			 * already been executed for the range.
+@@ -8392,7 +8398,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 			delete_states = false;
+ 			goto next;
+ 		}
+-		ClearPageOrdered(page);
++		btrfs_page_clear_ordered(fs_info, page, cur, range_len);
+ 
+ 		/*
+ 		 * IO on this page will never be started, so we need to account
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 3e782145247e..03853e7494f7 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -16,6 +16,7 @@
+ #include "compression.h"
+ #include "delalloc-space.h"
+ #include "qgroup.h"
++#include "subpage.h"
+ 
+ static struct kmem_cache *btrfs_ordered_extent_cache;
+ 
+@@ -402,11 +403,11 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
+ 			 *
+ 			 * If no such bit, we need to skip to next range.
+ 			 */
+-			if (!PageOrdered(page)) {
++			if (!btrfs_page_test_ordered(fs_info, page, cur, len)) {
+ 				cur += len;
+ 				continue;
+ 			}
+-			ClearPageOrdered(page);
++			btrfs_page_clear_ordered(fs_info, page, cur, len);
+ 		}
+ 
+ 		/* Now we're fine to update the accounting */
 -- 
 2.31.1
 
