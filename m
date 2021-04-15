@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A038A360B32
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 15:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725F3360B34
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 15:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhDON7X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 09:59:23 -0400
+        id S233259AbhDON7Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 09:59:24 -0400
 Received: from esa6.hgst.iphmx.com ([216.71.154.45]:46699 "EHLO
         esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhDON7W (ORCPT
+        with ESMTP id S233216AbhDON7X (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:59:22 -0400
+        Thu, 15 Apr 2021 09:59:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1618495141; x=1650031141;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=C6/FDqMyGl40IYim4yyiNGSRWup4AQYL05hEA5GTOAo=;
-  b=bKalQZM8WIpNyY+aVto5hoCUGLIqWVUL880i/erUzZX9kT/OmPNcgjro
-   pBCLlNYZ4zxLde4v2pNTHXvAHK+E5r4qq/FeqQnzyUUkRDh6P/bD7jnZq
-   Q/EM39kzWgbSzqbxg4+SsizsjVxeESnUax7fb6x3Deo1tCDqR1cupKWn4
-   p2z439HW8eJu0zl1pHtAQe51znshSHuVxerR/4696mTzjfISVr82Z60v+
-   FRyANCTqMxfxoqEfqi68wsJYmhtyviCVc9fcUmkwgJQRB9ubzBGikHbDb
-   2c2C4toGzHDJUjou53Qy16qxjXqFCVdzTKekEa5vDVCENiA5loTrJ4rWF
-   w==;
-IronPort-SDR: 5un+j3HXyH70cn5ZaQSK3+PEmqzrdtAaJNSCo5j7gU0+eiOCg7nV8j8b3vtXT7B/+esO03lTtQ
- owGoRmFvGpGRUcOix73Kc8a48DHeBDiTw5W6/a+IVO/LB5eoRb14RWMCAo6cabszTb50y+c4mb
- 7JpfAkiwbtfn9t1dAuKe/jdfcq8CjWts1jlfm5QEgOA/t+CdYv53tyEnZH/g3VvQBkaHScS/yW
- +Uz/9wbyPgbLjB2nPpQvjJD+lXCDkWqCJheKmnWXjGShyHkyuq4u2702jXC8jvPBaQrPGBdSOn
- MqM=
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=MoCcl/0HATB1DrxZlF860oBJ5o00QB6mhbpEGDWyuUo=;
+  b=UdXkZt3bKQ+Le8oFjZbKuABbCedqO+XlqUZsuU0QezGVv0DnjCqR7XQm
+   WPisk5TBU/53tvFD4jVmbe6FYg5l8//eaX0GZkQhXrmWebJfRlK3i2hX2
+   XdJ6w7yhmcdOzC/GpFISpyTK6VsoXIH/RA2kR8D/2q0Oe/JlxyYqmUqb6
+   OdVrxBBOsKiJZyq2GjOgE/V4ag7kloc15KxRIl1uVGSZFQmtbubWp9+WQ
+   uh8ITC08PWbFT9yWA9/TPkCaSdhIWiW8NAKx2D8XAQayl5r1tmKpImXNq
+   RqJoGuASs44ezM24Y+NketmcB76+qUpx/SfvfiOwxeG/MhN5/u1nQOaR6
+   g==;
+IronPort-SDR: GKMqBSrHXt4FaTuzLVSxeOcmu0gmkgDV+9Zhx6vEzDLUPTjUh56uWVcmW3kVVESp+c2X4eAjR3
+ M5reLx9ehcg7tjCnx/WwaXltFuR+LmwPKOMtgm95lKUZJgNbbYeEOmoPJQpx1O3xUF6QvvONFp
+ ifbTbUloD4+pXvlr+kNixUrCn0CwpGVz8wrHbfUvYDfHFStyp5QGB8VTOlHJJcJEMtfMcqay2a
+ MzMakFLS8tocd8/IsL9+epuFOrzLGYaagVTR9FldXBMdp5W+hWyu6SflW8itMHSbfKvlXBVeqx
+ KwM=
 X-IronPort-AV: E=Sophos;i="5.82,225,1613404800"; 
-   d="scan'208";a="165555186"
+   d="scan'208";a="165555188"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Apr 2021 21:58:54 +0800
-IronPort-SDR: iTkpcccGO8AFhaJkr5ewKnFSbN6lTX/Vsnsd4hDPqloYtmvgE9tWncqUWgir8NtslLD4iV9RaV
- KhtKAH08EHa+QM1BFyfHIeMgDGbVh7ip9r3ouCzVuqTQUSrtlzblrKeAxuIEwD2zAnmXfI5rlI
- BPejwt3a2+fxa+E3kL0DoNklWfdSG09DdYiqnelgdFwiz+XEmFv19QlF0FpeMwT/KEYLniEY2r
- wok2nbDVaUE0Pis7Iq1ocn/bzakAPUl0EogSscVBc0i11GDajjuDjQgHjRGEoEcEMK+ThCBadL
- BqrJVJ2qdRZ5f1rL3X/yGNJp
+  by ob1.hgst.iphmx.com with ESMTP; 15 Apr 2021 21:58:55 +0800
+IronPort-SDR: rR9lLBhCTzRnuIdqZNqeYmV7/Zb1/WGdE4W5frHYHLUVqKF5OqMMoFoAHztMKQvdMR/YCY3Q+x
+ YF63a8qWXbFHSeJn3MjYghmlRHGDLzH9KLzz9MRsISd5cyqIIXTZqtdws09BRUhHI4Oa4myPwK
+ Ito1CnSqqpQx0VhUwjNoDi0jV3QaFpkwb2wtfONvm0DfVzYBrc011try8gMr7jUgIbtaPCOXMh
+ PBmJlc5uWm/eJImwhaU+SSGsiH/exIjZjzroVJEgJF8xKDOWrW1+Bag+zkqz9Y1K6PYozZjWxK
+ FO3xGcdG/OSxhG/guRseGhp8
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 06:38:06 -0700
-IronPort-SDR: BHVjcflK9onP7k7RzqW+IhHcHwK3zQQIk7xoYDOdTq2/1sQp8Bdvrl8z4CqDNiERdKUmrPUcNR
- IJQMezjgPk1WZqS0lXI2zjqqQMvfnbt0An47urB616FCgbY2X5nJITvQnFB/L88VlLiCrqnsly
- c2k3elnE7vVxZMKnwlN7Mv40Z8Z7D8gyP24FNsAQFh8UN2WBz9ybaQPaNFIvKC7tTbySLnm5wG
- E67NKxpAgzY+J05lyjfKRHR2PuptM+Qp/3qfGeCPNM5scE2lI9mYEbV88q0jPUB/hmHB/eCRkT
- uwk=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 06:38:07 -0700
+IronPort-SDR: ZJEoaSfy0XeC05Nn+Hi/cDLCILrdLg+U+vj0YKBYZ+ii6Fwt2OS85j6UlMWh292CeWmgXvpOC9
+ a/X0TsusfXqEfMeq9mSH+DdwVmqxYSZspX43c1CNsrGuNr6YhSHWWMs5WkT6u8RncQNpjtjY28
+ sCAcdLXP6CNz4R09KvtFGAM1akttGB87rA5HOnpriybhH+y5svZfxnZLt2LeWCNfp4erNgSF/6
+ NahGJD9WkvLMalNVHEBlEQT0B5mZQFcoLMyEfB78r99H+jQ4g0plfcAN9INSEarZ7YwWntZc3z
+ MMg=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 15 Apr 2021 06:58:46 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 15 Apr 2021 06:58:48 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
@@ -56,75 +56,79 @@ Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Naohiro Aota <Naohiro.Aota@wdc.com>,
         Filipe Manana <fdmanana@suse.com>,
         Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH v4 0/3] btrfs: zoned: automatic BG reclaim
-Date:   Thu, 15 Apr 2021 22:58:32 +0900
-Message-Id: <cover.1618494550.git.johannes.thumshirn@wdc.com>
+Subject: [PATCH v4 1/3] btrfs: zoned: reset zones of relocated block groups
+Date:   Thu, 15 Apr 2021 22:58:33 +0900
+Message-Id: <d3aec3e168a547dcc39a764f242d1df9d3489928.1618494550.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <cover.1618494550.git.johannes.thumshirn@wdc.com>
+References: <cover.1618494550.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When a file gets deleted on a zoned file system, the space freed is not
-returned back into the block group's free space, but is migrated to
-zone_unusable.
+When relocating a block group the freed up space is not discarded in one
+big block, but each extent is discarded on it's own with -odisard=sync.
 
-As this zone_unusable space is behind the current write pointer it is not
-possible to use it for new allocations. In the current implementation a
-zone is reset once all of the block group's space is accounted as zone
-unusable.
+For a zoned filesystem we need to discard the whole block group at once,
+so btrfs_discard_extent() will translate the discard into a
+REQ_OP_ZONE_RESET operation, which then resets the device's zone.
 
-This behaviour can lead to premature ENOSPC errors on a busy file system.
+Link: https://lore.kernel.org/linux-btrfs/459e2932c48e12e883dcfd3dda828d9da251d5b5.1617962110.git.johannes.thumshirn@wdc.com
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/volumes.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-Instead of only reclaiming the zone once it is completely unusable,
-kick off a reclaim job once the amount of unusable bytes exceeds a user
-configurable threshold between 51% and 100%. It can be set per mounted
-filesystem via the sysfs tunable bg_reclaim_threshold which is set to 75%
-per default.
-
-Similar to reclaiming unused block groups, these dirty block groups are
-added to a to_reclaim list and then on a transaction commit, the reclaim
-process is triggered but after we deleted unused block groups, which will
-free space for the relocation process.
-
-Zones that are 100% full and zone unusable already get reclaimed atomatically
-on transaction commit. Another improvement on the garbage collection side of
-zoned btrfs would be no to reclaim block groups that have used, pinned and
-reserved = 0 but zone_unusable > 0. This is not yet included as it needs
-further reaserch and testing.
-
-Changes to v3:
-- Special case "discarding" after relocation (Filipe)
-
-Changes to v2:
-- Fix locking in multiple ways (Filipe)
-- Offload reclaim into workqueue (Josef)
-- Add patch discarding/zone-resetting after successfull relocation (Anand)
-
-Changes to v1:
-- Document sysfs parameter (David)
-- Add info print for reclaim (Josef)
-- Rename delete_unused_bgs_mutex to reclaim_bgs_lock (Filipe)
-- Remove list_is_singular check (Filipe)
-- Document of space_info->groups_sem use (Filipe)
-
-Johannes Thumshirn (3):
-  btrfs: zoned: reset zones of relocated block groups
-  btrfs: rename delete_unused_bgs_mutex
-  btrfs: zoned: automatically reclaim zones
-
- fs/btrfs/block-group.c       | 102 +++++++++++++++++++++++++++++++++--
- fs/btrfs/block-group.h       |   3 ++
- fs/btrfs/ctree.h             |   8 ++-
- fs/btrfs/disk-io.c           |  19 +++++--
- fs/btrfs/free-space-cache.c  |   9 +++-
- fs/btrfs/sysfs.c             |  35 ++++++++++++
- fs/btrfs/volumes.c           |  69 ++++++++++++++----------
- fs/btrfs/volumes.h           |   1 +
- include/trace/events/btrfs.h |  12 +++++
- 9 files changed, 222 insertions(+), 36 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 6d9b2369f17a..b1bab75ec12a 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3103,6 +3103,7 @@ static int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
+ 	struct btrfs_root *root = fs_info->chunk_root;
+ 	struct btrfs_trans_handle *trans;
+ 	struct btrfs_block_group *block_group;
++	u64 length;
+ 	int ret;
+ 
+ 	/*
+@@ -3130,8 +3131,24 @@ static int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
+ 	if (!block_group)
+ 		return -ENOENT;
+ 	btrfs_discard_cancel_work(&fs_info->discard_ctl, block_group);
++	length = block_group->length;
+ 	btrfs_put_block_group(block_group);
+ 
++	/*
++	 * Step two, delete the device extents and the chunk tree entries.
++	 *
++	 * On a zoned file system, discard the whole block group, this will
++	 * trigger a REQ_OP_ZONE_RESET operation on the device zone. If
++	 * resetting the zone fails, don't treat it as a fatal problem from the
++	 * filesystem's point of view.
++	 */
++	if (btrfs_is_zoned(fs_info)) {
++		ret = btrfs_discard_extent(fs_info, chunk_offset, length, NULL);
++		if (ret)
++			btrfs_info(fs_info, "failed to reset zone %llu",
++				   chunk_offset);
++	}
++
+ 	trans = btrfs_start_trans_remove_block_group(root->fs_info,
+ 						     chunk_offset);
+ 	if (IS_ERR(trans)) {
+@@ -3140,10 +3157,6 @@ static int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
+ 		return ret;
+ 	}
+ 
+-	/*
+-	 * step two, delete the device extents and the
+-	 * chunk tree entries
+-	 */
+ 	ret = btrfs_remove_chunk(trans, chunk_offset);
+ 	btrfs_end_transaction(trans);
+ 	return ret;
 -- 
 2.30.0
 
