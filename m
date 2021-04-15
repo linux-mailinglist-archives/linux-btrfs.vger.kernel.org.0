@@ -2,75 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202663611F1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 20:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52FD361214
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Apr 2021 20:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhDOSS2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 14:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        id S233995AbhDOS0l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 14:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233551AbhDOSS1 (ORCPT
+        with ESMTP id S233052AbhDOS0i (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:18:27 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925E3C06175F
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:18:02 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id d23so14141566qko.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:18:02 -0700 (PDT)
+        Thu, 15 Apr 2021 14:26:38 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE89C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:26:15 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id c123so21387493qke.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Apr 2021 11:26:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FboUBx+M7wiC2Vc9ohnMu1xFLntMIR1IX9IeLkEPHjI=;
-        b=B03mrf5IAbFUf4B8lNYRNg/BJbtQSZsQEhMlkF6ndvHEbOuxkenRmydetxWF7gzpTT
-         7MzBb6QgYldj531EgGVSDSQd9RbXexAh6ZHvjRDAl1NRm1h5hegzEDhHs0jhhuApYQH7
-         IU+E0i23QU0wmN4wVKSSca4bg5UiAN/V4aiTxZYShFGltfRKGGKhJJg/0ul3dd4kIgxo
-         mlHcMDQ5EbzfpLv3IgD4GIjWXNU/TFZc+xUSiocQPBIs9Sy+f6oMvzUF2moGCU5obTD+
-         qZGpYJV6qGdDRdNM3Hetv6PABFnZCYNhNEOepzKhn7agw+tDxs8lglyebVISVoy2k/1v
-         Q3aA==
+        bh=jNZe9dHUbvgqrp3bxF9JEvXCgkm+t0yET6QPylUGziA=;
+        b=W35AuKGyFHgTgnLwf0u8AndjEQXeP+YJJEsGSpzK7l1uOnNBoqlSxpyu/T+ORKUkSU
+         5vWSpf0J3IxqlIDSHQZVlk7T5fsQgqmsjK5Rn6oGnf4I23eeYzM5WRqXmr6dOobzqYKp
+         VKC/fvUkpbcG0I/FXEWrL4I6XLfcztKw9QboCnzLXCf33+bBXcSp5MucaFe3OGr4bD8u
+         p3+4Q3p1cshYoU71vAaXnJgLHfIAuVb4nN5WBr53EX/kKUlMe8J5CSeTFKKtCIdbJQQp
+         kujDXEwWhp7tOx76jyAhW7k0t/emflfJEieWnw+Ba/0fkxTSoCr9jzcMge+wyie2gciM
+         aX4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=FboUBx+M7wiC2Vc9ohnMu1xFLntMIR1IX9IeLkEPHjI=;
-        b=emEHmUhBlGN/+JVay+CT5jWZ5aDosGruXoxqtipN3h8zK+TDzHO/Nwm9jrj5Wmph7Z
-         NIvmdFu8VAogbcOn36jGTPbWLFfYaahsJCIgSGqVo9LvKcZ6cIUi+JDHut0F4ldR4gg+
-         d0/IfaoYodpAOz49aBixEFSppCJJgRDupPMRPN1AKLCek0FTieBOl+mAo/y2WCLF+Loq
-         BDCR8+QAsGRTpl9tOZATiA0kEu2c+68FHm745sY4L4s1cdXirfEZgvJ/O68wspyZ/zWv
-         ojPtOUJI73yKQuHi2bOJdakK1BQ9nLi5I8vTRj/lwrBjO53edEEb2PzCLGzHmhOUXR6X
-         u1hA==
-X-Gm-Message-State: AOAM532aVrwhcM4kUN33fur+E4gZQ4jCRC9a2N6Edos3v4Aa2gA1Lrrq
-        La9vtF47vn6QBzTktilpmUAgmg==
-X-Google-Smtp-Source: ABdhPJzwmJZmG/p+pl3buOTcZzktD3WLTreTOFcX4K4JsmD+TrNZ3sJfvua3mjs+PVPFIecVlojLpA==
-X-Received: by 2002:ae9:d61c:: with SMTP id r28mr4721507qkk.462.1618510681561;
-        Thu, 15 Apr 2021 11:18:01 -0700 (PDT)
+        bh=jNZe9dHUbvgqrp3bxF9JEvXCgkm+t0yET6QPylUGziA=;
+        b=CVRi9AcR8ophFJNAj5uTemsiP4C9Zd+RYP+ZAYtIEEjn+M4sBbyKkoV4ghane4xZLO
+         Iu8Qq5SfMIN7BWrcjsZnkeVoDLMlQemJlif+OwbMSzQaZDr7P1ro7xmGkMeJcueggbM5
+         j7h1GPagbDP35q+gpLNtvXWUubKnJlDa11YTlVV3aKdOMKb5Nubxf0D8dQY8qHaafVg+
+         dWRxljXoEBUjEqUZiDn+r0+AUlVbLr3l9WDA0VfWpre+N1tPsN7J8O2P8nhcex+aRFwZ
+         vX1kGHYMC89f1d99PdIIb/LTFoI5suBIDSJDop2TUsDfLRqAnnWdb2PXbfNHuf9COobZ
+         aWvw==
+X-Gm-Message-State: AOAM5339Yy8p/OF6KplYPiFt2sm4NOuIx49X1dzRom7KMYKVZBp3igLk
+        xjIZl79ELMEBrDONFgCy2HsfO7wjs9PU2g==
+X-Google-Smtp-Source: ABdhPJxiVb0c1kUdHekxtuCinQSCftad00N1EXtWZhpdd6/cINzuDTaB7JYjJPHQXdO5dqJ8ZuJ5+Q==
+X-Received: by 2002:a37:70c6:: with SMTP id l189mr4840613qkc.277.1618511174645;
+        Thu, 15 Apr 2021 11:26:14 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c0a8:11c9::1288? ([2620:10d:c091:480::1:2677])
-        by smtp.gmail.com with ESMTPSA id d62sm2569722qkg.55.2021.04.15.11.18.00
+        by smtp.gmail.com with ESMTPSA id g128sm2569908qke.1.2021.04.15.11.26.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 11:18:00 -0700 (PDT)
-Subject: Re: [RFC v3 0/2] vfs / btrfs: add support for ustat()
-To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Thu, 15 Apr 2021 11:26:13 -0700 (PDT)
+Subject: Re: [PATCH v4 1/3] btrfs: zoned: reset zones of relocated block
+ groups
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <Naohiro.Aota@wdc.com>,
         Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.cz>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
-        Josef Bacik <jbacik@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jeff Mahoney <jeffm@suse.com>
-References: <1408071538-14354-1-git-send-email-mcgrof@do-not-panic.com>
- <20140815092950.GZ18016@ZenIV.linux.org.uk>
- <c3b0feac-327c-15db-02c1-4a25639540e4@suse.com>
- <CAB=NE6X2-mbZwVFnKUwjRmTGp3auZFHQXJ1h_YTJ2driUeoR+A@mail.gmail.com>
+        Anand Jain <anand.jain@oracle.com>
+References: <cover.1618494550.git.johannes.thumshirn@wdc.com>
+ <d3aec3e168a547dcc39a764f242d1df9d3489928.1618494550.git.johannes.thumshirn@wdc.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <e7e867b8-b57a-7eb2-2432-1627bd3a88fb@toxicpanda.com>
-Date:   Thu, 15 Apr 2021 14:17:58 -0400
+Message-ID: <deda311b-3ab1-fa89-9700-73b2cf049be1@toxicpanda.com>
+Date:   Thu, 15 Apr 2021 14:26:12 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAB=NE6X2-mbZwVFnKUwjRmTGp3auZFHQXJ1h_YTJ2driUeoR+A@mail.gmail.com>
+In-Reply-To: <d3aec3e168a547dcc39a764f242d1df9d3489928.1618494550.git.johannes.thumshirn@wdc.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,68 +72,24 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/15/21 1:53 PM, Luis Chamberlain wrote:
-> On Wed, Aug 23, 2017 at 3:31 PM Jeff Mahoney <jeffm@suse.com> wrote:
->>
->> On 8/15/14 5:29 AM, Al Viro wrote:
->>> On Thu, Aug 14, 2014 at 07:58:56PM -0700, Luis R. Rodriguez wrote:
->>>
->>>> Christoph had noted that this seemed associated to the problem
->>>> that the btrfs uses different assignments for st_dev than s_dev,
->>>> but much as I'd like to see that changed based on discussions so
->>>> far its unclear if this is going to be possible unless strong
->>>> commitment is reached.
->>
->> Resurrecting a dead thread since we've been carrying this patch anyway
->> since then.
->>
->>> Explain, please.  Whose commitment and commitment to what, exactly?
->>> Having different ->st_dev values for different files on the same
->>> fs is a bloody bad idea; why does btrfs do that at all?  If nothing else,
->>> it breaks the usual "are those two files on the same fs?" tests...
->>
->> It's because btrfs snapshots would have inode number collisions.
->> Changing the inode numbers for snapshots would negate a big benefit of
->> btrfs snapshots: the quick creation and lightweight on-disk
->> representation due to metadata sharing.
->>
->> The thing is that ustat() used to work.  Your commit 0ee5dc676a5f8
->> (btrfs: kill magical embedded struct superblock) had a regression:
->> Since it replaced the superblock with a simple dev_t, it rendered the
->> device no longer discoverable by user_get_super.  We need a list_head to
->> attach for searching.
->>
->> There's an argument that this is hacky.  It's valid.  The only other
->> feedback I've heard is to use a real superblock for subvolumes to do
->> this instead.  That doesn't work either, due to things like freeze/thaw
->> and inode writeback.  Ultimately, what we need is a single file system
->> with multiple namespaces.  Years ago we just needed different inode
->> namespaces, but as people have started adopting btrfs for containers, we
->> need more than that.  I've heard requests for per-subvolume security
->> contexts.  I'd imagine user namespaces are on someone's wish list.  A
->> working df can be done with ->d_automount, but the way btrfs handles
->> having a "canonical" subvolume location has always been a way to avoid
->> directory loops.  I'd like to just automount subvolumes everywhere
->> they're referenced.  One solution, for which I have no code yet, is to
->> have something like a superblock-light that we can hang things like a
->> security context, a user namespace, and an anonymous dev.  Most file
->> systems would have just one.  Btrfs would have one per subvolume.
->>
->> That's a big project with a bunch of discussion.
+On 4/15/21 9:58 AM, Johannes Thumshirn wrote:
+> When relocating a block group the freed up space is not discarded in one
+> big block, but each extent is discarded on it's own with -odisard=sync.
 > 
-> 4 years have gone by and this patch is still being carried around for
-> btrfs. Other than resolving this ustat() issue for btrfs are there new
-> reasons to support this effort done to be done properly? Are there
-> other filesystems that would benefit? I'd like to get an idea of the
-> stakeholder here before considering taking this on or not.
+> For a zoned filesystem we need to discard the whole block group at once,
+> so btrfs_discard_extent() will translate the discard into a
+> REQ_OP_ZONE_RESET operation, which then resets the device's zone.
 > 
+> Link: https://lore.kernel.org/linux-btrfs/459e2932c48e12e883dcfd3dda828d9da251d5b5.1617962110.git.johannes.thumshirn@wdc.com
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-Not really sure why this needs to be addressed, we have statfs(), and what we 
-have has worked forever now.  There's a lot of larger things that need to be 
-addressed in general to support the volume approach inside file systems that is 
-going to require a lot of work inside of VFS.  If you feel like tackling that 
-work and then wiring up btrfs by all means have at it, but I'm not seeing a 
-urgent need to address this.  Thanks,
+What would be cool is if we could disable discard per bg so we don't discard at 
+all during the relocation, and then discard the whole block group no matter if 
+we have zoned or not.  However not really something you need to do, just 
+thinking out loud
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
-
