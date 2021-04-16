@@ -2,167 +2,330 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB5D361978
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE25361977
 	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 07:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238687AbhDPFva (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 01:51:30 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:35339 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhDPFv3 (ORCPT
+        id S238671AbhDPFvK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 01:51:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23626 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhDPFvJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:51:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1618552266; x=1650088266;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=JCmHcoGn6zjUfEotlhtHtZhegGpRc+zqcMV6zXWSxNg=;
-  b=MXWAh6vprZvrMK2Vv9csWikpU+ASzS2/R9gW8P5vFlhXhrszxs5fB5P9
-   IyubugZzMjXXtXt6NlC4Nb797X/AjRou/6i3pteLXoIrcPPCEgqkhgC/u
-   wjH6BcQZjiFknC/f4L/LO3elJvju0Et7sd6ZuGV9eBrMzgsjBWzpZxWqN
-   tiPNHZz6GLHnNYBjTemTBYyucKSg5cL4IFM6yL0GTDnensbHObUW861qk
-   r9ZvYPag07TaR65LQ3rfBld9ii0ns3zH2/tTWKgnkRTmL+S4/84Ij9u33
-   8eRel6Hbi6xWCK2kY7MDtQw1//8TB65JGhRVZMPoddJo+8OHW5RuCX+UV
-   A==;
-IronPort-SDR: XjlyRyReJ0f73XjEHYXD1Rh26x34ovo6CiXK51EJYzw+lX6No2IdG8S9ms4oPQF0MTfrS0sTyF
- LvHPJEQqJ625tIqKZWzhgQxRRX4epjuN1Iv6e34U1XaISUr2vLpPyrLUmYbTj3bSLNEPhUOirP
- Gbbw6D42C+hDmb5TQ0ZhUcjP8dLJxpEntC7Ya+NSja9tLy1lG2h7dUd33gYjSw0dT7IxPqNuQp
- IEUFWihhNRUJ+rtkz95zFJcte7dBVCnNLBsOvPR3BNh6zuEl+z56Fk3/OQaPst21QF8ZT022eh
- FSI=
-X-IronPort-AV: E=Sophos;i="5.82,226,1613404800"; 
-   d="scan'208";a="165613672"
-Received: from mail-dm6nam12lp2177.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.177])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2021 13:50:17 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LlP4OMNpVPQlb1xSNc+YDe0BeEI4NM1B/EUdXY4cPHMH4BW9gud9O3+ERwYFNRrK+4SnxoDKwA3Ed9esHDV5ln65ZT6wtueVN0uSGCmgIGls0C3yBP+urMwsjtxGgZ/bb7YE/pDQBcmYBkklPtJw8HKUMWg5dClXBea3sAqvHbLFH1jcNSKXSz5zTBFkQXcaiah7+/TAClyzJ7213qLgWBbKQev7SvXF3DDDPM29jaxsU8uieisN/sswITu5F6G95hCp2QaIhalElSKsaahb4VSopThHc6luAmsq1DgjEN6kUfXmXiv9twSQsGn3IfdSJVjT3Blje5gOfEFWwEEgQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mGY4HciLTyZc3CcSXVXJqfh8O7xTMNTgsjP90/FyLYw=;
- b=QSyldet4/uVlUr/qPhiuJ6XSwU8UJS+Msr+8oW8shSiwzva4HtS3TQFcfcsx8Tu8pgq+KTzXw3PQB4rxvtAJFIwxrOETYCALMMaW6u915Q0t3DZPSLkHvy9Gta0R2K2kFSmPsBb72dJ5CQI1yz2Rf2mlTvAvYF4S0ZEvr6wFAgFy+gsYhsBET1nKG6SHmoqyMMYb7+WHOrLY727I/HRtlejxItgod1VjULYEyMyyRXGRAZBK+S5qsZcrl1upX49shZEeOqLLY84MeQc4Z3sjoRKU9ijqkHkC60gRsDM1Fyq2C5gZpikLdfph7Wb+MYneBmIdIp8nJAEFs6yu3N6YAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mGY4HciLTyZc3CcSXVXJqfh8O7xTMNTgsjP90/FyLYw=;
- b=c6Ilzt6WqpsHWeH8u86x2GphJ7CjM40m5um1hPU37il5dau6OA2ub6Rnf5UW3MXTdmw2vOTV+WLBfgDnGlIimMS83piFHTFzngoodG9biSB0guPUPdDpEvlclOcPqVrPE2RCFlbivqbk2KVK4wJrMFeooLxl3GNuT9jpGy/2R+g=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7286.namprd04.prod.outlook.com (2603:10b6:510:1d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 16 Apr
- 2021 05:50:05 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4042.018; Fri, 16 Apr 2021
- 05:50:05 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        Anand Jain <anand.jain@oracle.com>
-Subject: Re: [PATCH v4 1/3] btrfs: zoned: reset zones of relocated block
- groups
-Thread-Topic: [PATCH v4 1/3] btrfs: zoned: reset zones of relocated block
- groups
-Thread-Index: AQHXMf93GJooZ3c0CU+2cn3hwVcHMQ==
-Date:   Fri, 16 Apr 2021 05:50:05 +0000
-Message-ID: <PH0PR04MB7416771017592BE6E743DA499B4C9@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <cover.1618494550.git.johannes.thumshirn@wdc.com>
- <d3aec3e168a547dcc39a764f242d1df9d3489928.1618494550.git.johannes.thumshirn@wdc.com>
- <deda311b-3ab1-fa89-9700-73b2cf049be1@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: toxicpanda.com; dkim=none (message not signed)
- header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:15ab:1:e10b:72a5:d443:5e5c]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a4639cf1-33d7-476d-5905-08d9009b7c62
-x-ms-traffictypediagnostic: PH0PR04MB7286:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB7286D901C5BF67A64EB25E0F9B4C9@PH0PR04MB7286.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AGs1oECXjQITfv48YABSBLplVwo29GTWeGc9yZkm/4pN0JK7em3YM3iWc+Ea3ON447KnvyGKaLXpyGONB3S5SJpg+PG8c0Pu7yk0kjn5HQlC/H4Xa7s4odtY30X/N35CLKR2Hzr713a1x9rl3quWdU5/stJZ4fn5i+F1gYt44zjRaUga2Y8/+7UvQUmjsRuxVzPc2L1j0TAyvJS0PnOKmUTCitCHzziIUrJi2Rm8fkuUm3Yp4NTtCxdd75nTnq76wRxlOnFbj+3RUAOR6xcy5X49TmAZsyn5X8XkK4ZVLmfqDPriJ0VS/vQVIyAZvey2W5Lw5ShAqe/Dhw0Fx2r8aelvFSEVJQ8ETclJYHy/oQXj3SkJ+/SkuvuL0i/hBKQprVtB5ZGAsiEhwV5AOxIT6ySfnWOlr7pvwZHPlo/THxmJ7LeCIx3u8qRsBBZ+0tRfiQ9K9ezy5XyWUKRfDmkOL1TXgeV72a508bFtAhWQRzZ6P/+7KE77PIw6KyEnwYeOmfAGS696fFGSbpg1HUKlPig/KOSalaS4mnzJ1orr+P4jiyloNmtkGYRMgW3NGUxbyvt0l84hMBvAk5LLNxoFb4C3q4Lrhw/8IxLQH9gwU88abNZBTCDiJ1IpfZV5Wr73vzw2eV/sff4/PFV0hZqXNFLBsBwzDCgOB1qUnZYrZ9dEJa0hi0eT88dxD2Jz3X+g
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(366004)(376002)(33656002)(7696005)(2906002)(71200400001)(38100700002)(5660300002)(122000001)(478600001)(966005)(4326008)(54906003)(8936002)(8676002)(86362001)(52536014)(83380400001)(76116006)(66446008)(64756008)(186003)(66946007)(66556008)(66476007)(55016002)(316002)(53546011)(110136005)(9686003)(91956017)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FkMpNj5C+Q/4lw7HWy2COmgjv4H6Fg4a0wIVn9dI1fQXf46Ks3VGbXGuVHQY?=
- =?us-ascii?Q?EOe2KR0z3U2/upNi4Vpc+hYpcSwO8URfIg/zABBBeCb+0J0BCJ9ls/yWEK3b?=
- =?us-ascii?Q?mGzHvkoTquv9nbcbqc5B043XPmk8GB6WXvlIiwHQ36AQdXgYUZcsf1Gn7eCS?=
- =?us-ascii?Q?wXGsDSsPMo15Sl6EWLDzLdX8wcaoS4FD8Y84fmkvqjc0X85C5cjRcQGhr5bn?=
- =?us-ascii?Q?a9K7upq5tzEDnXgNp3PtX5GUPLytkGujoxwoe/wuLyALHx/AMUeCpo4UBuYf?=
- =?us-ascii?Q?x9lERv+x6M4TonL7ywBDfKMmsn9lM/kODUwBleM7R70PFflmREs6z0CGe+ZN?=
- =?us-ascii?Q?NxAv8ahHKKWY5sc8RW7c+KLYzcXvoR+iRIfNSdAemkoiWOur/BGIHFIWf2Gt?=
- =?us-ascii?Q?QbaIKbrXAg0fENjM9ytgt1PfPEiKXpwZdVavJ1tsAvbsfI6fsYSSVFXuBb55?=
- =?us-ascii?Q?5wc/kPzq29UwboEq+lG1L/73Dynrc3Yh79kOEEAEx8dBXsp6Q9f0S2g3eO7f?=
- =?us-ascii?Q?LLqY7ofWV22Cmvxv1Ps/MSHXSUBA6zNN35JpYHhOwcFm3GF0biIkDSYOHIpD?=
- =?us-ascii?Q?7K40JFcBQZPAbBMSgXeQMzMu61qSXDeBBftvqZiIHYTfobBVBrglMieQDs4C?=
- =?us-ascii?Q?J2DPvaeJKGb+NCuLiBQ0RB9AQCGVKcldSjPZRsd13CDbzXH+BaoBFDTzrsG6?=
- =?us-ascii?Q?B5uPe/mBqzVl1jlNDIe2OWTMnIDCMLZfRy9yXGUgTIEpiRP73rrPeaCUekwL?=
- =?us-ascii?Q?2MXnHXd0TBtL+qNdT7pS+dpCUadajX60gyk9MLn6F28NvieYkNXfoOR8Fs0N?=
- =?us-ascii?Q?uynJobuqVawsb1P3hbWNzNJXJ7PJJYpnudEs11tAbq11RU8wiWmMSFVG9oVX?=
- =?us-ascii?Q?r/fc4YubwD/Cfi+AuaCknS0M7BDPyFm76OQIjiZ5ZQLRJCMcv1Yv+nbcqzFA?=
- =?us-ascii?Q?imA7c6C+TJ/O+vUoBCsrQJWMdyW4197ulxgcVmN244Mm2gYvqECtqmTpqeA2?=
- =?us-ascii?Q?CLrG+5kFF2iau1eqqcDboi4ml4vv1XX6DspA06ESZvrmaXC2SXElBSMrvD1/?=
- =?us-ascii?Q?KnnvLIgG7yE1xJg+miO4Xp0jJcJov36dArjqIRXmB0hMh8b9cFpvEsFvZvXL?=
- =?us-ascii?Q?XnW+IdhRNylb25lwh8C61WS7gxq0bpghbHWSOmId87d3otlg/PaphQvvPNiy?=
- =?us-ascii?Q?/K921gEP7M/y3WgtkIkZipAk3/SO+B8iDJdITnkANxnOM1n2RGP6+wFlnLOb?=
- =?us-ascii?Q?+KuEj/811m2C/HIErbm8pwMJoCPpH/LvoQohMbd3MK6m7hSiYeJ+/JXVqMHZ?=
- =?us-ascii?Q?4hQc/t8EbzULfvJYGRYEONzq/rNR5QLApDh2ua+0+alAD3/ptJZokN6C5PgV?=
- =?us-ascii?Q?2q5n23PYzrQzXntzZcfm+RvMUKUd?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 16 Apr 2021 01:51:09 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G5YOm7181680;
+        Fri, 16 Apr 2021 01:50:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=UmhzIPBaaz9LFnhb7FLsBD3OMGz7bXirrR3ZAOV9v54=;
+ b=GwRe7FXJDvrILjbsmdMbmXUe07JZj3G99YnDmsvuqwyewV7yTg2QFfT7F9BJPbIiE8fN
+ W6aAc7cE6HFWV3XG27UEObkg0vIF6UdM4z72HRzUbTp+4RnNOYmYb/SzhWeDVllTbTpi
+ VN/gkyjyua7cxU+JhRsVQEi7x41/s0ZAsT9xLYV1v0eSGHg4mz5FwzCOxbkaWr5Or8Ou
+ qp0uz5ojCgSsokUeT0847VvCca4Eikmck9pESHfPhKn4ad34MFNQzu/JeLqOcxOED1ap
+ 7lPfdxUxxlo/tahFOXC5gLla7Hti0lhlUk1K/BVM2txFrXO9SaLkKWd83q76VntEC7qm Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88ju6w1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 01:50:42 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13G5YhcL185801;
+        Fri, 16 Apr 2021 01:50:42 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88ju6vp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 01:50:41 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G5mPAh008328;
+        Fri, 16 Apr 2021 05:50:40 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 37u3n8j9p7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 05:50:40 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G5obuJ61014388
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 05:50:37 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2CA5A405C;
+        Fri, 16 Apr 2021 05:50:37 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 82355A4054;
+        Fri, 16 Apr 2021 05:50:37 +0000 (GMT)
+Received: from localhost (unknown [9.85.70.169])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Apr 2021 05:50:37 +0000 (GMT)
+Date:   Fri, 16 Apr 2021 11:20:36 +0530
+From:   riteshh <riteshh@linux.ibm.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
+        Neal Gompa <ngompa13@gmail.com>, Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
+Message-ID: <20210416055036.v4siyzsnmf32bx4y@riteshh-domain>
+References: <20210402083323.u6o3laynn4qcxlq2@riteshh-domain>
+ <f1acd25b-c0b6-31b4-f40b-32b44ba9ce4c@gmx.com>
+ <20210402084652.b7a4mj2mntxu2xi5@riteshh-domain>
+ <a58abc5a-ea2c-3936-4bb1-9b1c5d4e0f77@gmx.com>
+ <ef2bab00-32ec-9228-9920-c44c2d166654@gmx.com>
+ <20210415034444.3fg5j337ee6rvdps@riteshh-domain>
+ <20210415145207.y4n3km5a2pawdeb4@riteshh-domain>
+ <8bdb27e4-af63-653c-98e5-e6ffa4eee667@gmx.com>
+ <08954bca-98c1-1c9c-54a8-74ba95426d7e@gmx.com>
+ <c06a013e-0f7d-21f5-0bd1-9c6c22024fd8@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c06a013e-0f7d-21f5-0bd1-9c6c22024fd8@gmx.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: hcoUMK5SDpiqbd2GcuKeCgout7LJKJGr
+X-Proofpoint-ORIG-GUID: Pv5sDh0wohWa8ZbSq4nqo8GmvCygJWsj
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4639cf1-33d7-476d-5905-08d9009b7c62
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2021 05:50:05.5032
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6RFE3432syUA3feM2L3hBKpW57Ev7X5W51Xgv6cTFevBfi5ZaN9cpnVhUVyvrFFpRmxzt8B7UpYw6Z1ZauSV2g0itjpGHasDUBhyU35U2f0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7286
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104160042
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/04/2021 20:26, Josef Bacik wrote:=0A=
-> On 4/15/21 9:58 AM, Johannes Thumshirn wrote:=0A=
->> When relocating a block group the freed up space is not discarded in one=
-=0A=
->> big block, but each extent is discarded on it's own with -odisard=3Dsync=
-.=0A=
->>=0A=
->> For a zoned filesystem we need to discard the whole block group at once,=
-=0A=
->> so btrfs_discard_extent() will translate the discard into a=0A=
->> REQ_OP_ZONE_RESET operation, which then resets the device's zone.=0A=
->>=0A=
->> Link: https://lore.kernel.org/linux-btrfs/459e2932c48e12e883dcfd3dda828d=
-9da251d5b5.1617962110.git.johannes.thumshirn@wdc.com=0A=
->> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-> =0A=
-> What would be cool is if we could disable discard per bg so we don't disc=
-ard at =0A=
-> all during the relocation, and then discard the whole block group no matt=
-er if =0A=
-> we have zoned or not.  However not really something you need to do, just =
-=0A=
-> thinking out loud=0A=
-=0A=
-I could say I'll add it to my queue, but that's already so long, I have no=
-=0A=
-idea when that's gonna happen.=0A=
-=0A=
-=0A=
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>=0A=
-=0A=
-Thanks=0A=
+On 21/04/16 09:34AM, Qu Wenruo wrote:
+>
+>
+> On 2021/4/16 上午7:34, Qu Wenruo wrote:
+> >
+> >
+> > On 2021/4/16 上午7:19, Qu Wenruo wrote:
+> > >
+> > >
+> > > On 2021/4/15 下午10:52, riteshh wrote:
+> > > > On 21/04/15 09:14AM, riteshh wrote:
+> > > > > On 21/04/12 07:33PM, Qu Wenruo wrote:
+> > > > > > Good news, you can fetch the subpage branch for better test results.
+> > > > > >
+> > > > > > Now the branch should pass all generic tests, except defrag and known
+> > > > > > failures.
+> > > > > > And no more random crash during the tests.
+> > > > >
+> > > > > Thanks, let me test it on PPC64 box.
+> > > >
+> > > > I do see some failures remaining with the patch series.
+> > > > However the one which is blocking my testing is the tests/generic/095
+> > > > I see kernel BUG hitting with below signature.
+> > >
+> > > That's pretty different from my tests.
+> > >
+> > > As I haven't seen such BUG_ON() for a while.
+> > >
+> > >
+> > > >
+> > > > Please let me know if this a known failure?
+> > > >
+> > > > <xfstests config>
+> > > > #:~/work-tools/xfstests$ sudo ./check -g auto
+> > > > SECTION       -- btrfs_4k
+> > > > FSTYP         -- btrfs
+> > > > PLATFORM      -- Linux/ppc64le qemu 5.12.0-rc7-02316-g3490dae50c0 #73
+> > > > SMP Thu Apr 15 07:29:23 CDT 2021
+> > > > MKFS_OPTIONS  -- -f -s 4096 -n 4096 /dev/loop3
+> > >
+> > > I see you're using -n 4096, not the default -n 16K, let me see if I can
+> > > reproduce that.
+> > >
+> > > But from the backtrace, it doesn't look like the case,
+> > > as it happens for data path, which means it's only related to sectorsize.
+> > >
+> > > > MOUNT_OPTIONS -- /dev/loop3 /mnt1/scratch
+> > > >
+> > > >
+> > > > <kernel logs>
+> > > > [ 6057.560580] BTRFS warning (device loop3): read-write for sector
+> > > > size 4096 with page size 65536 is experimental
+> > > > [ 6057.861383] run fstests generic/095 at 2021-04-15 14:12:10
+> > > > [ 6058.345127] BTRFS info (device loop2): disk space caching is enabled
+> > > > [ 6058.348910] BTRFS info (device loop2): has skinny extents
+> > > > [ 6058.351930] BTRFS warning (device loop2): read-write for sector
+> > > > size 4096 with page size 65536 is experimental
+> > > > [ 6059.896382] BTRFS: device fsid 43ec9cdf-c124-4460-ad93-933bfd5ddbbd
+> > > > devid 1 transid 5 /dev/loop3 scanned by mkfs.btrfs (739641)
+> > > > [ 6060.225107] BTRFS info (device loop3): disk space caching is enabled
+> > > > [ 6060.226213] BTRFS info (device loop3): has skinny extents
+> > > > [ 6060.227084] BTRFS warning (device loop3): read-write for sector
+> > > > size 4096 with page size 65536 is experimental
+> > > > [ 6060.234537] BTRFS info (device loop3): checking UUID tree
+> > > > [ 6061.375902] assertion failed: PagePrivate(page) && page->private,
+> > > > in fs/btrfs/subpage.c:171
+> > > > [ 6061.378296] ------------[ cut here ]------------
+> > > > [ 6061.379422] kernel BUG at fs/btrfs/ctree.h:3403!
+> > > > cpu 0x5: Vector: 700 (Program Check) at [c0000000260d7490]
+> > > >      pc: c000000000a9370c: assertfail.constprop.11+0x34/0x48
+> > > >      lr: c000000000a93708: assertfail.constprop.11+0x30/0x48
+> > > >      sp: c0000000260d7730
+> > > >     msr: 800000000282b033
+> > > >    current = 0xc0000000260c0080
+> > > >    paca    = 0xc00000003fff8a00   irqmask: 0x03   irq_happened: 0x01
+> > > >      pid   = 739712, comm = fio
+> > > > kernel BUG at fs/btrfs/ctree.h:3403!
+> > > > Linux version 5.12.0-rc7-02316-g3490dae50c0 (riteshh@xxxx) (gcc
+> > > > (Ubuntu 8.4.0-1ubuntu1~18.04) 8.4.0, GNU ld (GNU Binutils for Ubuntu)
+> > > > 2.30) #73 SMP Thu Apr 15 07:29:23 CDT 2021
+> > > > enter ? for help
+> > > > [c0000000260d7790] c000000000a90280
+> > > > btrfs_subpage_assert.isra.9+0x70/0x110
+> > > > [c0000000260d77b0] c000000000a91064
+> > > > btrfs_subpage_set_uptodate+0x54/0x110
+> > > > [c0000000260d7800] c0000000009c6d0c btrfs_dirty_pages+0x1bc/0x2c0
+> > >
+> > > This is very strange.
+> > > As in btrfs_dirty_pages(), the pages passed in are already prepared by
+> > > prepare_pages(), which means all of them should have Private set.
+> > >
+> > > Can you reproduce the bug reliable?
+
+Yes. almost reliably on my PPC box.
+
+> >
+> > OK, I got it reproduced.
+> >
+> > It's not a reliable BUG_ON(), but can be reproduced.
+> > The test get skipped for all my boards as it requires fio tool, thus I
+> > didn't get it triggered for all previous runs.
+> >
+> > I'll take a look into the case.
+>
+> This exposed an interesting race window in btrfs_buffered_write():
+>         Writer                    |             fadvice
+> ----------------------------------+-------------------------------
+> btrfs_buffered_write()            |
+> |- prepare_pages()                |
+> |  |- Now all pages involved get  |
+> |     Private set                 |
+> |                                 | btrfs_release_page()
+> |                                 | |- Clear page Private
+> |- lock_extent()                  |
+> |  |- This would prevent          |
+> |     btrfs_release_page() to     |
+> |     clear the page Private      |
+> |
+> |- btrfs_dirty_page()
+>    |- Will trigger the BUG_ON()
+
+
+Sorry about the silly query. But help me understand how is above race possible?
+Won't prepare_pages() will lock all the pages first. The same requirement
+of locked page should be with btrfs_releasepage() too no?
+
+I see only two paths which could result into btrfs_releasepage()
+1. one via try_to_release_pages -> releasepage()
+2. writeback path calling btrfs_writepage or btrfs_writepages
+	which may result into calling of btrfs_invalidatepage()
+
+Although I am not sure which one this is racing with.
+
+>
+> This only happens for subpage, because subpage introduces new ASSERT()
+> to do extra check.
+>
+> If we want to speak strictly, regular sector size should also report
+> this problem.
+> But regular sector size case doesn't really care about page Private, as
+> it just set page->private to a constant value, unlike subpage case which
+> stores important value.
+>
+> The fix will just re-set page Private and needed structures in
+> btrfs_dirty_page(), under extent locked so no btrfs_releasepage() is
+> able to release it anymore.
+
+With above fix I see a different issue with below signature.
+
+[  130.272410] BTRFS warning (device loop2): read-write for sector size 4096 with page size 65536 is experimental
+[  130.387470] run fstests generic/095 at 2021-04-16 05:04:09
+[  132.042532] BTRFS: device fsid 642daee0-165a-4271-b6f3-728f215c5348 devid 1 transid 5 /dev/loop3 scanned by mkfs.btrfs (5226)
+[  132.146892] BTRFS info (device loop3): disk space caching is enabled
+[  132.147831] BTRFS info (device loop3): has skinny extents
+[  132.148491] BTRFS warning (device loop3): read-write for sector size 4096 with page size 65536 is experimental
+[  132.158228] BTRFS info (device loop3): checking UUID tree
+[  133.931695] BUG: spinlock bad magic on CPU#4, swapper/4/0
+[  133.932874] BUG: Unable to handle kernel data access on write at 0x6b6b6b6b6b6b725b
+[  133.934432] Faulting instruction address: 0xc000000000283654
+cpu 0x4: Vector: 380 (Data SLB Access) at [c000000007937160]
+    pc: c000000000283654: spin_dump+0x70/0xbc
+    lr: c000000000283638: spin_dump+0x54/0xbc
+    sp: c000000007937400
+   msr: 8000000000001033
+   dar: 6b6b6b6b6b6b725b
+  current = 0xc000000007913300
+  paca    = 0xc00000003fff9c00   irqmask: 0x03   irq_happened: 0x05
+    pid   = 0, comm = swapper/4
+Linux version 5.12.0-rc7-02317-g61d9ec0f765 (riteshh@ltctulc6a-p1) (gcc (Ubuntu 8.4.0-1ubuntu1~18.04) 8.4.0, GNU ld (GNU Binutils for Ubuntu) 2.30) #74 SMP Thu Apr 15 23:52:56 CDT 2021
+enter ? for help
+[c000000007937470] c000000000283078 do_raw_spin_unlock+0x88/0x230
+[c0000000079374a0] c0000000012b1e14 _raw_spin_unlock_irqrestore+0x44/0x90
+[c0000000079374d0] c000000000a918dc btrfs_subpage_clear_writeback+0xac/0xe0
+[c000000007937530] c0000000009e0458 end_bio_extent_writepage+0x158/0x270
+[c0000000079375f0] c000000000b6fd14 bio_endio+0x254/0x270
+[c000000007937630] c0000000009fc0f0 btrfs_end_bio+0x1a0/0x200
+[c000000007937670] c000000000b6fd14 bio_endio+0x254/0x270
+[c0000000079376b0] c000000000b781fc blk_update_request+0x46c/0x670
+[c000000007937760] c000000000b8b394 blk_mq_end_request+0x34/0x1d0
+[c0000000079377a0] c000000000d82d1c lo_complete_rq+0x11c/0x140
+[c0000000079377d0] c000000000b880a4 blk_complete_reqs+0x84/0xb0
+[c000000007937800] c0000000012b2ca4 __do_softirq+0x334/0x680
+[c000000007937910] c0000000001dd878 irq_exit+0x148/0x1d0
+[c000000007937940] c000000000016f4c do_IRQ+0x20c/0x240
+[c0000000079379d0] c000000000009240 hardware_interrupt_common_virt+0x1b0/0x1c0
+
+
+
+
+>
+> The fix is already added to the github branch.
+> Now it has the fix as the HEAD.
+>
+> I hope this won't damage your confidence on the patchset.
+>
+> Thanks for the report!
+> Qu
+>
+> >
+> > Thanks for the report,
+> > Qu
+> > >
+> > > BTW, are using running the latest branch, with this commit at top?
+
+Yes. Below branch.
+https://github.com/adam900710/linux/commits/subpage
+
+-ritesh
+
+> > >
+> > > commit 3490dae50c01cec04364e5288f43ae9ac9eca2c9
+> > > Author: Qu Wenruo <wqu@suse.com>
+> > > Date:   Mon Feb 22 14:19:38 2021 +0800
+> > >
+> > >     btrfs: allow read-write for 4K sectorsize on 64K page sizesystems
+> > >
+> > > As I was updating the patchset until the last minute.
+> > >
+> > > Thanks,
+> > > Qu
+> > >
+> > > > [c0000000260d7880] c0000000009c7298 btrfs_buffered_write+0x488/0x7f0
+> > > > [c0000000260d79d0] c0000000009cbeb4 btrfs_file_write_iter+0x314/0x520
+> > > > [c0000000260d7a50] c00000000055fd84 do_iter_readv_writev+0x1b4/0x260
+> > > > [c0000000260d7ac0] c00000000056114c do_iter_write+0xdc/0x2c0
+> > > > [c0000000260d7b10] c0000000005c2d2c iter_file_splice_write+0x2ec/0x510
+> > > > [c0000000260d7c30] c0000000005c1ba0 do_splice_from+0x50/0x70
+> > > > [c0000000260d7c50] c0000000005c37e8 do_splice+0x5a8/0x910
+> > > > [c0000000260d7cd0] c0000000005c3ce0 sys_splice+0x190/0x300
+> > > > [c0000000260d7d60] c000000000039ba4 system_call_exception+0x384/0x3d0
+> > > > [c0000000260d7e10] c00000000000d45c system_call_common+0xec/0x278
+> > > > --- Exception: c00 (System Call) at 00007ffff72ef170
+> > > >
+> > > >
+> > > > -ritesh
+> > > >
