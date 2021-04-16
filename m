@@ -2,69 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4871B36218C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 15:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2470362162
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 15:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbhDPN6I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 09:58:08 -0400
-Received: from mbox.abcom.al ([217.73.143.249]:33052 "EHLO mbox.abcom.al"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhDPN6I (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:58:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id 3C2D959D8C39;
-        Fri, 16 Apr 2021 15:38:56 +0200 (CEST)
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Qmlm58_OdS5Y; Fri, 16 Apr 2021 15:38:56 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mbox.abcom.al (Postfix) with ESMTP id CE1B95BBC755;
-        Fri, 16 Apr 2021 15:38:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mbox.abcom.al CE1B95BBC755
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=abcom.al;
-        s=0F3BA0EE-D5D4-11E8-9596-F9115129F2F4; t=1618580336;
-        bh=VCOKpjxaLoatOvx+LSaT3i7u3saMYZrSANTtqEwi9j4=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=aI0wgTIEcSPdXKZ4wf00C1FMrFytPpA6TTX/9PeE3MxRzwzUhk7eMDYSNJExWNZ6r
-         0l7dJ4PPIjieMhTxgASXyoo2x6Be7/u47Tr8UYVt/0q3DLX1ChcLQYy/arXIsgyw6U
-         hLafgI5VwpdKTDxVnMFtrnLJ1w2t3v6jrc786Okzke1TSG4i/rBQRVsT1rv5/ffPxy
-         X5/9n5RS6KtTDHpt3InLQOzvK91DYy9jn8yphFpDmfAyOIIBO8G0eIjk+xRDTx7WdM
-         U+N3fIn3IooVNFe+s+FAg4Y/MJnZysdn9K+I8WgPTMAhXRgFrdK259Pnb/jiQxKOyU
-         WnYGIeBvAH2IQ==
-X-Virus-Scanned: amavisd-new at mbox.abcom.al
-Received: from mbox.abcom.al ([127.0.0.1])
-        by localhost (mbox.abcom.al [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id HO8HQaD54CkP; Fri, 16 Apr 2021 15:38:55 +0200 (CEST)
-Received: from [10.41.190.186] (unknown [105.4.1.205])
-        by mbox.abcom.al (Postfix) with ESMTPSA id E748359D8C39;
-        Fri, 16 Apr 2021 15:38:47 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
+        id S244177AbhDPNr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 09:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244243AbhDPNr0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:47:26 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7EDC061760
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 06:47:01 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id u8so20735622qtq.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 06:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=oDMzGOipI5U82SUD/XWrWPbebCcIruYwdLgTVBpGm0M=;
+        b=zHCQk6e97s39RVKWYfxmHsOUXMNGXXuMncSwXbe0IqgpektdtUukt41gnPgfxmZFsy
+         hs4MrhEen+DdA3EroVuAOqDAUpqpdOzgcUNGxDDMOBcO+MADoDlsRhpSAcyUG18fdf0c
+         mVpZVRU9xXTb9WUQMA55DixpQhub6GkFif+YZ9ArwU0S0c3ispqGQ2dtZkHCLj6hU4hb
+         CwsaGrt7BIoryo9EWtebwgFK3CsPZabEaZLde2EQYMmj7Z+FhIgU4Z/dDrYvTByLlKRr
+         3OeM9mk/MFun+eFvdlgudEnUmMOHVzWBYa9eP6k+8jHxvYhjzgTp6ZXzhW1SLyeutquk
+         1ydQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oDMzGOipI5U82SUD/XWrWPbebCcIruYwdLgTVBpGm0M=;
+        b=LEkB6tBBuELlW3U1c0p3gUZJZ3ltZiKAArh4d8QeGFKtOt1ONNeUEIoU1ISaS/96vV
+         aW5d3+5d/m1y/x1wXVXwscukiDKjKTR3I4K6cpqHaQfF34C8Ykfc2hmLyMtP3PNeF1rz
+         2tXQU3kuAnBrEFQ6lp8+fdQzZsrUOV3/NoW3njY/kYWW9Xu8tTYAsmeJq4ZLyVBv5dhZ
+         03lSO4dSZrXqIVwPRZ+sTdeOjm8Fgcxf/ebM5asosgbyQ4nomSNPPYbCGor4RM+tA49I
+         r//2+RFHQGetfZAb53IaYVFXT/IX/fIbpkq3ac9K6jMllnzM9hOWpI6lEHaRxVo9aPn7
+         q59Q==
+X-Gm-Message-State: AOAM533MDduco0tzR50FfcuBnXxsxuLzkh49pA9r/iikrrfE9W6nR/Mw
+        J76sDhRF/Kt8r2j5Q2WhHHNRPbp/FSApuw==
+X-Google-Smtp-Source: ABdhPJz79R+A4GyzgMaTCCL/TY5me4H/KXzQ47Lq7dD9bfWErjJs55Hc+j2lTEfwxgTOOymnX6zBTg==
+X-Received: by 2002:ac8:7253:: with SMTP id l19mr7818311qtp.129.1618580820224;
+        Fri, 16 Apr 2021 06:47:00 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id w15sm3733647qtn.12.2021.04.16.06.46.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 06:46:59 -0700 (PDT)
+Subject: Re: [PATCH 05/42] btrfs: remove the unused parameter @len for
+ btrfs_bio_fits_in_stripe()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210415050448.267306-1-wqu@suse.com>
+ <20210415050448.267306-6-wqu@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <a241d0fe-2c1b-d9cf-55a1-473d257cbe37@toxicpanda.com>
+Date:   Fri, 16 Apr 2021 09:46:58 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     Recipients <mtodo@abcom.al>
-From:   "William Kruger" <mtodo@abcom.al>
-Date:   Fri, 16 Apr 2021 06:38:26 -0700
-Reply-To: robadamengineeringltd@gmail.com
-Message-Id: <20210416133847.E748359D8C39@mbox.abcom.al>
+In-Reply-To: <20210415050448.267306-6-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hallo Liebes, ich bin William Kruger aus Lantana im Palm Beach County, USA.=
- Ich habe einen $ 168 Millionen Jackpot gewonnen, der einer der gr=C3=B6=C3=
-=9Ften Lotterie-Jackpots ist. Im Namen meiner Familie und aus gutem Willen =
-spenden wir Ihnen und Ihrer Familie einen Betrag von (=E2=82=AC 850,000.00 =
-EUR). Ich versuche, die gemeinn=C3=BCtzigen Waisenh=C3=A4user zu erreichen =
-und zur Armutsbek=C3=A4mpfung beizutragen und eine angemessene Gesundheitsv=
-ersorgung f=C3=BCr Einzelpersonen zu gew=C3=A4hrleisten, insbesondere w=C3=
-=A4hrend dieser Welt Pandemic Covid 19. Ich m=C3=B6chte auch, dass Sie eine=
-n Teil dieser Spende in die =C3=B6ffentliche Infrastruktur investieren, um =
-Arbeitslosen in Ihrem Land Arbeitspl=C3=A4tze zu bieten . Ich habe dich gew=
-=C3=A4hlt, weil ich an dich glaube. Ich brauche Ihre uneingeschr=C3=A4nkte =
-Mitarbeit in Bezug auf diese Spende. Hier ist Ihr ausgew=C3=A4hlter Geheimc=
-ode: [W5900Q2172021] und bitte teilen Sie den Code niemandem mit, wenn Sie =
-interessiert und bereit sind, mit mir zu arbeiten. Bitte kontaktieren Sie m=
-ich mit Ihrem Spenden- / Geheimcode [W5900Q2172021] und Ihren vollst=C3=A4n=
-digen Namen hier bei meiner privaten E-Mail: krugerwilliamhome@gmail.com
+On 4/15/21 1:04 AM, Qu Wenruo wrote:
+> The parameter @len is not really used in btrfs_bio_fits_in_stripe(),
+> just remove it.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
