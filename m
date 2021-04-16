@@ -2,64 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA74D36272A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 19:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A677836275D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 20:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243707AbhDPRtM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 13:49:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46590 "EHLO mx2.suse.de"
+        id S244079AbhDPSBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 14:01:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50426 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235563AbhDPRtM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:49:12 -0400
+        id S243844AbhDPSBq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Apr 2021 14:01:46 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CC189AE57;
-        Fri, 16 Apr 2021 17:48:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 12687AE57;
+        Fri, 16 Apr 2021 18:01:21 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0CE8FDA790; Fri, 16 Apr 2021 19:46:29 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 19:46:29 +0200
+        id 0DC10DA790; Fri, 16 Apr 2021 19:59:03 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 19:59:03 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs-progs: misc-tests: add test to ensure the
- restored image can be mounted
-Message-ID: <20210416174629.GH7604@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs-progs: mkfs: only output the warning if the
+ sectorsize is not supported
+Message-ID: <20210416175903.GI7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20210326125047.123694-1-wqu@suse.com>
- <20210326125047.123694-4-wqu@suse.com>
+References: <20210415053011.275099-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210326125047.123694-4-wqu@suse.com>
+In-Reply-To: <20210415053011.275099-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 08:50:47PM +0800, Qu Wenruo wrote:
-> This new test case is to make sure the restored image file has been
-> properly enlarged so that newer kernel won't complain.
+On Thu, Apr 15, 2021 at 01:30:11PM +0800, Qu Wenruo wrote:
+> Currently mkfs.btrfs will output a warning message if the sectorsize is
+> not the same as page size:
+>   WARNING: the filesystem may not be mountable, sectorsize 4096 doesn't match page size 65536
+> 
+> But since btrfs subpage support for 64K page size is comming, this
+> output is populating the golden output of fstests, causing tons of false
+> alerts.
+> 
+> This patch will make teach mkfs.btrfs to check
+> /sys/fs/btrfs/features/supported_sectorsizes, and compare if the sector
+> size is supported.
+> 
+> Then only output above warning message if the sector size is not
+> supported.
 > 
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  .../047-image-restore-mount/test.sh           | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->  create mode 100755 tests/misc-tests/047-image-restore-mount/test.sh
+>  common/fsfeatures.c | 36 +++++++++++++++++++++++++++++++++++-
+>  1 file changed, 35 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tests/misc-tests/047-image-restore-mount/test.sh b/tests/misc-tests/047-image-restore-mount/test.sh
-> new file mode 100755
-> index 000000000000..7f12afa2bab6
-> --- /dev/null
-> +++ b/tests/misc-tests/047-image-restore-mount/test.sh
-> @@ -0,0 +1,19 @@
-> +#!/bin/bash
-> +# Verify that the restored image of an empty btrfs can still be mounted
-                                                ^^^^^
+> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+> index 569208a9e5b1..13b775da9c72 100644
+> --- a/common/fsfeatures.c
+> +++ b/common/fsfeatures.c
+> @@ -16,6 +16,8 @@
+>  
+>  #include "kerncompat.h"
+>  #include <sys/utsname.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+>  #include <linux/version.h>
+>  #include <unistd.h>
+>  #include "common/fsfeatures.h"
+> @@ -327,8 +329,15 @@ u32 get_running_kernel_version(void)
+>  
+>  	return version;
+>  }
+> +
+> +/*
+> + * The buffer size if strlen("4096 8192 16384 32768 65536"),
+> + * which is 28, then round up to 32.
+> + */
+> +#define SUPPORTED_SECTORSIZE_BUF_SIZE	32
+>  int btrfs_check_sectorsize(u32 sectorsize)
+>  {
+> +	bool sectorsize_checked = false;
+>  	u32 page_size = (u32)sysconf(_SC_PAGESIZE);
+>  
+>  	if (!is_power_of_2(sectorsize)) {
+> @@ -340,7 +349,32 @@ int btrfs_check_sectorsize(u32 sectorsize)
+>  		      sectorsize);
+>  		return -EINVAL;
+>  	}
+> -	if (page_size != sectorsize)
+> +	if (page_size == sectorsize) {
+> +		sectorsize_checked = true;
+> +	} else {
+> +		/*
+> +		 * Check if the sector size is supported
+> +		 */
+> +		char supported_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] = { 0 };
+> +		char sectorsize_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] = { 0 };
+> +		int fd;
+> +		int ret;
+> +
+> +		fd = open("/sys/fs/btrfs/features/supported_sectorsizes",
+> +			  O_RDONLY);
+> +		if (fd < 0)
+> +			goto out;
+> +		ret = read(fd, supported_buf, sizeof(supported_buf));
+> +		close(fd);
 
-I've seen that in patches and comments, the use of word 'btrfs' instead
-of 'filesystem' sounds a bit inappropriate to me, so I change it
-whenever I see it. It's perhaps matter of taste and style, one can write
-it also as 'btrfs filesystem' but that may belong to some more polished
-documentation, so you can go with just 'filesystem'.
+There are some sysfs helpers, like sysfs_read_file and
+sysfs_open_fsid_file that would avoid the boilerplate code. We don't
+have a helper for the toplevel sysfs directory so that would need to be
+added first.
+
+Now that I look at it, the sysfs_read_file could actually do that in one
+go, including open and close. I'll probably do that as a cleanup later
+and apply your patch as it's a fix. Thanks.
