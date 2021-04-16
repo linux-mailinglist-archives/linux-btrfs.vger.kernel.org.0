@@ -2,258 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ED9361735
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 03:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D883617FB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 05:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237900AbhDPBf1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Apr 2021 21:35:27 -0400
-Received: from mout.gmx.net ([212.227.15.19]:50527 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236309AbhDPBf0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:35:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618536898;
-        bh=ZiDlvjzQ0cGNdUtNjQEbnVFEw5zxHe4mq7cks6mgcoU=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=ju/6jimtpQ3UP/hRX7ZmBPXtQPej9TiDcp5WqEE44jdYC6ltuMJfCqEXt6ZLj5Y5S
-         lTfJgxx4BW7N0JZ/yUaPTuz6rN1t0OyVpBN/333R+c1e0aSID1V0LmhAs5YoRlPBCU
-         nTR7XwG0aUrmfeiR33AQ1HHjBA1uIgB4K7qRDDRk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmUHj-1lxiNc0jar-00iUHO; Fri, 16
- Apr 2021 03:34:57 +0200
-To:     riteshh <riteshh@linux.ibm.com>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>,
-        Neal Gompa <ngompa13@gmail.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAEg-Je_Bx6Yu6JHB0XXjBt0+0Ox_=kAUAVWWZan1DsiqvybYrQ@mail.gmail.com>
- <bc0306b6-da2c-b8c1-a88d-f19004331765@gmx.com>
- <20210328200246.xz23dz5iba2qet7v@riteshh-domain>
- <12dca606-1895-90e0-8b48-6f4ccf8a8a27@gmx.com>
- <20210402083323.u6o3laynn4qcxlq2@riteshh-domain>
- <f1acd25b-c0b6-31b4-f40b-32b44ba9ce4c@gmx.com>
- <20210402084652.b7a4mj2mntxu2xi5@riteshh-domain>
- <a58abc5a-ea2c-3936-4bb1-9b1c5d4e0f77@gmx.com>
- <ef2bab00-32ec-9228-9920-c44c2d166654@gmx.com>
- <20210415034444.3fg5j337ee6rvdps@riteshh-domain>
- <20210415145207.y4n3km5a2pawdeb4@riteshh-domain>
- <8bdb27e4-af63-653c-98e5-e6ffa4eee667@gmx.com>
- <08954bca-98c1-1c9c-54a8-74ba95426d7e@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v3 00/13] btrfs: support read-write for subpage metadata
-Message-ID: <c06a013e-0f7d-21f5-0bd1-9c6c22024fd8@gmx.com>
-Date:   Fri, 16 Apr 2021 09:34:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S237292AbhDPDF4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Apr 2021 23:05:56 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:63371 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234751AbhDPDFz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Apr 2021 23:05:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618542330; x=1650078330;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vUztHQeoC7q+dlfBS4+pbWv7aImp+UXJRbacb2BFxI8=;
+  b=DqNG00SIyRf5dUHR46SUfQZXuQVOwuY2+kATozprSlGw0ax3NRa8hKjW
+   ZRUdEfTJqQ65qDsNxTZPqyaofawIHXYEfnWmNnTfD6ruXF1x4r9pHmKl6
+   GdZx2EtJDWeuzj1k85SAs6KbzqjKWwINPeqdBVJhAtvNN4+NMozSlSNfK
+   kY86hGSah7Hld25qLt91ra56Wl8X63TKXHcRj8Aa8Pien8eEmXx+4KGa6
+   S+G5gxOuRu8fRi7sRoju2thqd/04+NCb1nGn/fCeJmldlHxJHtssqYb8e
+   kzPACSSOvFZsiUYscIVeILz9YMzGOOypZPlHQjq+M/UirrCj0YkamcVmR
+   g==;
+IronPort-SDR: BlLgXTtMDWfeVwZUUPg2+J3v5fhkcbdHXJ5N017M7Ar9ucFN1ynHUyTFGxF6OhodK5gZCcT204
+ 9UOd37heNlCeFiF67xDuj6dxAMCv2HpL+gRh28thl27Qdry2pcs+bQ3zulBb5t2uBLv5c7pYuz
+ trkhFAd/KGuo6bf2g+99YsF4YnhavvmKOI8VB6yPqK8+69LhLajDr76Wvn3s1qgBrf2kST6yIv
+ iJyHR6jiKtzKGEpwLEqzWQvrnkxt6/QM/Kb3pSUyNB9uvGOqwwCdRSZVCDNwJbom7ls3J9qLwm
+ 9rc=
+X-IronPort-AV: E=Sophos;i="5.82,226,1613404800"; 
+   d="scan'208";a="169567850"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2021 11:05:29 +0800
+IronPort-SDR: 4hIfWk7dqM1i6o8CppCZiRBg+JyZk0DZ0y9DXTzSl4da20/Doi1EWrYf6F03TfFRyHr/Wc7v9u
+ X1KRPm9Tkk2+2sVUrjQn+vmcgDOFttHK1qCsXjS836YFLnUwO9NKeU7w6N/VN33bbqH2EUJGZG
+ 4bWwQ+6smbMegX2hQQjyehB/t+hyKorOpX5JUO3Szs1aNP3fllqhbF8n/j2UHgbzz/m1Z4B1rM
+ YI/11ukia/3ylImRsA2APdOomTYbuWfc7M2zT8Zpjp9Icld7NYhSsnfXt27O9EvEC5S8WERpN8
+ DauQ5ZxEYMjfkWkoJ8qfY6oH
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 19:44:48 -0700
+IronPort-SDR: 5uaHx0ME4yfxIf/TiutCrTMnLjb2kBOpJtRTKSLg4tH5AbhRWHekMEEGKLa3AXqEYy3a31snCo
+ ElUXAQxKJQa6aOhWFDCPzlc/IpBsAx5KR6EDXe2ZmlnAA88cCbpAMSRLACPaVf/fHSYLQd8IgO
+ DxavW3RSuugPmrGUFvYDSFHbIBbCHilMvHw4PQpzJEgqusd0uGMzfwXRxK2a2urB4I+6r1cg8f
+ s/TX9LXikk5YOZaAYTcUE+pTyB5gwDGLNtSP+JbbsKm5Z1xjY+x4TV2Bu/ZpK3jUK5XA0aSsC7
+ IoM=
+WDCIronportException: Internal
+Received: from washi.fujisawa.hgst.com ([10.149.53.254])
+  by uls-op-cesaip02.wdc.com with ESMTP; 15 Apr 2021 20:05:29 -0700
+From:   Damien Le Moal <damien.lemoal@wdc.com>
+To:     dm-devel@redhat.com, Mike Snitzer <snitzer@redhat.com>,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-nvme@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
+        linux-scsi@vger.kernel.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/4] Fix dm-crypt zoned block device support
+Date:   Fri, 16 Apr 2021 12:05:24 +0900
+Message-Id: <20210416030528.757513-1-damien.lemoal@wdc.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <08954bca-98c1-1c9c-54a8-74ba95426d7e@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Q5Ocp9m1znlpCc5HaoXT38IjezngEO8EYNKhWSEiaDNOLup2f1M
- n1/TtLtps29Nf1AXEUuW9cce508bm0Gbb4eU8Ix9C7KSfd7/ywAlxckwAkvDkBa1AEkXFEP
- NRWN3ZIj4CB1CjIWWRzJn5xX+cyvzFf+SB9twlf+tmzzf5Ihu5OIL9sQrp1n5Z9Nb+9tw0p
- a1cF56Pib74rS737SazAQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:C+gB1PJ8Mp0=:NSVmWoYOvxKPRQDAedkH4K
- t39fJri/cOrX+n+P1lpa1gPU+r92KNepOaja8ePJ+A19r0Q+86E4i2bb1khdbYm6O1vvmYmnt
- ruQaBCk4EQzqYbnmGMyVNiGwbVebaE6+pz8tVVcZXJKev1+p2rqzcDrr4fuTInyn/yuuSS/hW
- pu4N9uL6MttCZiCeKSNHUjhpaj5UhVBUWRcHsxew4duhzBwiTGg8xvtJiRS2QVAu8rsxGiV6P
- w9YbhIgY7FNLdZfaLv1rRbSTkxQt2vwsBxPOJE2p8RUK534czlFf8j1n3MESVTaqWsPBNAr3q
- hUPgdKceJKI97srPDfpBtz2DrvtoGAmG9jYf2bCdtVtfUmBq8op26d5hsKAtTc7IbuzKPDIVi
- FKeH+38YDZ4IkwnHrRs1DkXQ8yOAMmvLBt8f5L+zjZSlIJSDLkzYQ7+1hMkRU4NdAzXeytS7Y
- I+TlNi/lpCpoPFCHgNVljOlNKwTTbB5ebUfBZl1+Gtx7MKxdbTxSz/F4TlClLkTsKazWS7UU+
- Di4nXpVFY+RmSmLmWtnftd6B/T6MGqLGOG3fzEXjlgaIkjQCnrLE1ksuqG5wASshkmVsDTM2Q
- HNis047BM2wbbM8eBJ5v9fsfb9x2rEESj0R2I4TZ2tyIweOXSuyW3VeQPsWfMpTk7+fCkogVb
- OhebjYsRASitKr9O3rVwolX/lL7Ly7uE7SAr9OjFo7e6qIFpHO8xIm9exGh1eCK6/ifEuNh1i
- YJErjuR3XsYFMX8K9725SsSmBdN9xLH36j/hrGPTgEUHJctEtgq60JPkZeBQyQY5QvdEFJIwQ
- KUsq5dQUlXnivxhh5wAk3WO/KhtY+2pQlHPPGjrsQ5VERsc2xDC8qA01yf3xHxIBkCRUJPUEo
- XExXNnPz9xYNfmxQdjN+B0lYLAncdnlbRN9Z0WOgCs0zU3FJQXwv4OB34E2oHVcLHMFdeDQud
- ItlhfljKjOYDWmzGZq/jsaBINrgh/UfwjIp/0DhTrP9m15M6h2i2mTBp+2I2/4X3FEFdBOd8e
- lpjVOzJoLStsd/IEPeyJEmqBO1avpfGdg34zgV+VDku1Rj89gIVaHdw/qcUVGk0ONzHs4I7gi
- CLuzdVx9oHkqyYHkWSN7DQVkw7LZq2qsNjezwwpbZcMSZZzzCvD4La+6YLsGLjd3CdBvcE9J4
- UOgzCUIpS1H6yKO2wif9tBG7zymrupLJNVA1r5QyNvlOCeFw5l3iu0C9Yty2PCyPyqUiJkC6A
- AVVpqZl/PdA7iJcrC
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Mike,
 
+Zone append BIOs (REQ_OP_ZONE_APPEND) always specify the start sector
+of the zone to be written instead of the actual location sector to
+write. The write location is determined by the device and returned to
+the host upon completion of the operation.
 
-On 2021/4/16 =E4=B8=8A=E5=8D=887:34, Qu Wenruo wrote:
->
->
-> On 2021/4/16 =E4=B8=8A=E5=8D=887:19, Qu Wenruo wrote:
->>
->>
->> On 2021/4/15 =E4=B8=8B=E5=8D=8810:52, riteshh wrote:
->>> On 21/04/15 09:14AM, riteshh wrote:
->>>> On 21/04/12 07:33PM, Qu Wenruo wrote:
->>>>> Good news, you can fetch the subpage branch for better test results.
->>>>>
->>>>> Now the branch should pass all generic tests, except defrag and know=
-n
->>>>> failures.
->>>>> And no more random crash during the tests.
->>>>
->>>> Thanks, let me test it on PPC64 box.
->>>
->>> I do see some failures remaining with the patch series.
->>> However the one which is blocking my testing is the tests/generic/095
->>> I see kernel BUG hitting with below signature.
->>
->> That's pretty different from my tests.
->>
->> As I haven't seen such BUG_ON() for a while.
->>
->>
->>>
->>> Please let me know if this a known failure?
->>>
->>> <xfstests config>
->>> #:~/work-tools/xfstests$ sudo ./check -g auto
->>> SECTION=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -- btrfs_4k
->>> FSTYP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -- btrfs
->>> PLATFORM=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -- Linux/ppc64le qemu 5.12.0-rc=
-7-02316-g3490dae50c0 #73
->>> SMP Thu Apr 15 07:29:23 CDT 2021
->>> MKFS_OPTIONS=C2=A0 -- -f -s 4096 -n 4096 /dev/loop3
->>
->> I see you're using -n 4096, not the default -n 16K, let me see if I can
->> reproduce that.
->>
->> But from the backtrace, it doesn't look like the case,
->> as it happens for data path, which means it's only related to sectorsiz=
-e.
->>
->>> MOUNT_OPTIONS -- /dev/loop3 /mnt1/scratch
->>>
->>>
->>> <kernel logs>
->>> [ 6057.560580] BTRFS warning (device loop3): read-write for sector
->>> size 4096 with page size 65536 is experimental
->>> [ 6057.861383] run fstests generic/095 at 2021-04-15 14:12:10
->>> [ 6058.345127] BTRFS info (device loop2): disk space caching is enable=
-d
->>> [ 6058.348910] BTRFS info (device loop2): has skinny extents
->>> [ 6058.351930] BTRFS warning (device loop2): read-write for sector
->>> size 4096 with page size 65536 is experimental
->>> [ 6059.896382] BTRFS: device fsid 43ec9cdf-c124-4460-ad93-933bfd5ddbbd
->>> devid 1 transid 5 /dev/loop3 scanned by mkfs.btrfs (739641)
->>> [ 6060.225107] BTRFS info (device loop3): disk space caching is enable=
-d
->>> [ 6060.226213] BTRFS info (device loop3): has skinny extents
->>> [ 6060.227084] BTRFS warning (device loop3): read-write for sector
->>> size 4096 with page size 65536 is experimental
->>> [ 6060.234537] BTRFS info (device loop3): checking UUID tree
->>> [ 6061.375902] assertion failed: PagePrivate(page) && page->private,
->>> in fs/btrfs/subpage.c:171
->>> [ 6061.378296] ------------[ cut here ]------------
->>> [ 6061.379422] kernel BUG at fs/btrfs/ctree.h:3403!
->>> cpu 0x5: Vector: 700 (Program Check) at [c0000000260d7490]
->>> =C2=A0=C2=A0=C2=A0=C2=A0 pc: c000000000a9370c: assertfail.constprop.11=
-+0x34/0x48
->>> =C2=A0=C2=A0=C2=A0=C2=A0 lr: c000000000a93708: assertfail.constprop.11=
-+0x30/0x48
->>> =C2=A0=C2=A0=C2=A0=C2=A0 sp: c0000000260d7730
->>> =C2=A0=C2=A0=C2=A0 msr: 800000000282b033
->>> =C2=A0=C2=A0 current =3D 0xc0000000260c0080
->>> =C2=A0=C2=A0 paca=C2=A0=C2=A0=C2=A0 =3D 0xc00000003fff8a00=C2=A0=C2=A0=
- irqmask: 0x03=C2=A0=C2=A0 irq_happened: 0x01
->>> =C2=A0=C2=A0=C2=A0=C2=A0 pid=C2=A0=C2=A0 =3D 739712, comm =3D fio
->>> kernel BUG at fs/btrfs/ctree.h:3403!
->>> Linux version 5.12.0-rc7-02316-g3490dae50c0 (riteshh@xxxx) (gcc
->>> (Ubuntu 8.4.0-1ubuntu1~18.04) 8.4.0, GNU ld (GNU Binutils for Ubuntu)
->>> 2.30) #73 SMP Thu Apr 15 07:29:23 CDT 2021
->>> enter ? for help
->>> [c0000000260d7790] c000000000a90280
->>> btrfs_subpage_assert.isra.9+0x70/0x110
->>> [c0000000260d77b0] c000000000a91064
->>> btrfs_subpage_set_uptodate+0x54/0x110
->>> [c0000000260d7800] c0000000009c6d0c btrfs_dirty_pages+0x1bc/0x2c0
->>
->> This is very strange.
->> As in btrfs_dirty_pages(), the pages passed in are already prepared by
->> prepare_pages(), which means all of them should have Private set.
->>
->> Can you reproduce the bug reliable?
->
-> OK, I got it reproduced.
->
-> It's not a reliable BUG_ON(), but can be reproduced.
-> The test get skipped for all my boards as it requires fio tool, thus I
-> didn't get it triggered for all previous runs.
->
-> I'll take a look into the case.
+This interface, while simple and efficient for writing into sequential
+zones of a zoned block device, is incompatible with the use of sector
+values to calculate a cypher block IV. All data written in a zone is
+encrypted using an IV calculated from the first sectors of the zone,
+but read operation will specify any sector within the zone, resulting
+in an IV mismatch between encryption and decryption. Reads fail in that
+case.
 
-This exposed an interesting race window in btrfs_buffered_write():
-         Writer                    |             fadvice
-=2D---------------------------------+-------------------------------
-btrfs_buffered_write()            |
-|- prepare_pages()                |
-|  |- Now all pages involved get  |
-|     Private set                 |
-|                                 | btrfs_release_page()
-|                                 | |- Clear page Private
-|- lock_extent()                  |
-|  |- This would prevent          |
-|     btrfs_release_page() to     |
-|     clear the page Private      |
-|
-|- btrfs_dirty_page()
-    |- Will trigger the BUG_ON()
+Using a single sector value (e.g. the zone start sector) for all read
+and writes into a zone can solve this problem, but at the cost of
+weakening the cypher chosen by the user. Emulating zone append using
+regular writes would be another potential solution, but it is complex
+and would add a lot of overhead.
 
-This only happens for subpage, because subpage introduces new ASSERT()
-to do extra check.
+Instead, to solve this problem, explicitly disable support for zone
+append operations in dm-crypt if the target was setup using a cypher IV
+mode using sector values. The null and random IV modes can still be used
+with zone append operations. This lack of support for zone append is
+exposed to the user by setting the dm-crypt target queue limit
+max_zone_append_sectors to 0. This change is done in patch 1 and 2.
 
-If we want to speak strictly, regular sector size should also report
-this problem.
-But regular sector size case doesn't really care about page Private, as
-it just set page->private to a constant value, unlike subpage case which
-stores important value.
+Patch 3 addresses btrfs-zoned case. Zone append write are used for all
+file data blocks write. The change introduced fails mounting a zoned
+btrfs volume if the underlying device max_zone_append_sectors limit is
+0.
 
-The fix will just re-set page Private and needed structures in
-btrfs_dirty_page(), under extent locked so no btrfs_releasepage() is
-able to release it anymore.
+Patch 4 fixes zonefs to fall back to using regular write when
+max_zone_append_sectors is 0.
 
-The fix is already added to the github branch.
-Now it has the fix as the HEAD.
+Overall, these changes do not break user space:
+1) There is no interface allowing a user to use zone append write
+without a file system. So applications using directly a raw dm-crypt
+device will continue working using regular write operations.
+2) btrfs zoned support was added in 5.12. Anybody trying btrfs-zoned on
+top of dm-crypt would have faced the read failures already. So there
+are no existing deployments to preserve. Same for zonefs.
 
-I hope this won't damage your confidence on the patchset.
+For file systems, using zone append with encryption will need to be
+supported within the file system (e.g. fscrypt). In this case, cypher IV
+calculation can rely for instance on file block offsets as these are
+known before a zone append operation write these blocks to disk at
+unknown locations.
 
-Thanks for the report!
-Qu
+Reviews and comments are very much welcome.
 
->
-> Thanks for the report,
-> Qu
->>
->> BTW, are using running the latest branch, with this commit at top?
->>
->> commit 3490dae50c01cec04364e5288f43ae9ac9eca2c9
->> Author: Qu Wenruo <wqu@suse.com>
->> Date:=C2=A0=C2=A0 Mon Feb 22 14:19:38 2021 +0800
->>
->> =C2=A0=C2=A0=C2=A0 btrfs: allow read-write for 4K sectorsize on 64K pag=
-e sizesystems
->>
->> As I was updating the patchset until the last minute.
->>
->> Thanks,
->> Qu
->>
->>> [c0000000260d7880] c0000000009c7298 btrfs_buffered_write+0x488/0x7f0
->>> [c0000000260d79d0] c0000000009cbeb4 btrfs_file_write_iter+0x314/0x520
->>> [c0000000260d7a50] c00000000055fd84 do_iter_readv_writev+0x1b4/0x260
->>> [c0000000260d7ac0] c00000000056114c do_iter_write+0xdc/0x2c0
->>> [c0000000260d7b10] c0000000005c2d2c iter_file_splice_write+0x2ec/0x510
->>> [c0000000260d7c30] c0000000005c1ba0 do_splice_from+0x50/0x70
->>> [c0000000260d7c50] c0000000005c37e8 do_splice+0x5a8/0x910
->>> [c0000000260d7cd0] c0000000005c3ce0 sys_splice+0x190/0x300
->>> [c0000000260d7d60] c000000000039ba4 system_call_exception+0x384/0x3d0
->>> [c0000000260d7e10] c00000000000d45c system_call_common+0xec/0x278
->>> --- Exception: c00 (System Call) at 00007ffff72ef170
->>>
->>>
->>> -ritesh
->>>
+Damien Le Moal (3):
+  dm: Introduce zone append support control
+  dm crypt: Fix zoned block device support
+  zonefs: fix synchronous write to sequential zone files
+
+Johannes Thumshirn (1):
+  btrfs: zoned: fail mount if the device does not support zone append
+
+ drivers/md/dm-crypt.c         | 48 ++++++++++++++++++++++++++++-------
+ drivers/md/dm-table.c         | 41 ++++++++++++++++++++++++++++++
+ fs/btrfs/zoned.c              |  7 +++++
+ fs/zonefs/super.c             | 16 +++++++++---
+ fs/zonefs/zonefs.h            |  2 ++
+ include/linux/device-mapper.h |  6 +++++
+ 6 files changed, 107 insertions(+), 13 deletions(-)
+
+-- 
+2.30.2
+
