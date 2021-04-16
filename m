@@ -2,37 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A677836275D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 20:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768EA362789
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 20:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244079AbhDPSBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 14:01:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50426 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243844AbhDPSBq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:01:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 12687AE57;
-        Fri, 16 Apr 2021 18:01:21 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0DC10DA790; Fri, 16 Apr 2021 19:59:03 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 19:59:03 +0200
-From:   David Sterba <dsterba@suse.cz>
+        id S244438AbhDPSOg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 14:14:36 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:36187 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239524AbhDPSOg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Apr 2021 14:14:36 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id BEBD3152A;
+        Fri, 16 Apr 2021 14:14:10 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 16 Apr 2021 14:14:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=J+R0xNCwpB7E1ePd3MvZDwBpEpW
+        FeFxL9oidPWFo0tQ=; b=LLtMf67YQjqmXsOxrhQBs/WpvGVzhvAZ+9Ny4mFio4h
+        q6wUOFUxfkXfwLL5ZpVVGXRqL07PT/R6FNobjyKPZJcaSY7xV1a/F5BYsLJUDuiD
+        6j6aRMTSIo1Octai2L/VT5rk78fA5Z6YYooQ6LS2PbWmN6Hp6Q9QUMOKICCyud9q
+        hCw4SRlHTqZxlAUVUD3JeJzdliWCRC4P/VkPPBt7KDoOL1ctuDO9poF+3MkCNHK2
+        qhGujqV9TpUb9SbDRQDaJUD8OnlBs0BemS08/uKKKK42k8l1S/dWcH1RyKEbBGB6
+        dbXjZaH9AKgd4OWRq6MdFbJYDQJYe5AGhBlJXH2NaqQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=J+R0xN
+        CwpB7E1ePd3MvZDwBpEpWFeFxL9oidPWFo0tQ=; b=oRmgmBtJNqObB1lmxRpLNE
+        x9+HeDJVwIyTJST+9uq4uvU5qjM+kkl0IweaGdia/GlMhAGL+NOEBClEIZkG+6So
+        dtKCCVo7Yo7Ct4FVyYHBTiVVxL+mvqGkfRnY3If4/t8qEXf0AKb4kAx3N4z6wr6X
+        e8Q/1niJ8dgLyxEbJMC85p/7J1iD8zSbOYxcGKWFl7gOloDOXQGMvFfzJTvMOQFZ
+        mag5z/XL6Qoj6grXcG5AXouIrxRiN2LIqxnepKzpDXdx7wFLTZ85YiEV4mQug28D
+        2P4NO9pVzv92USMXuCizIYDBYNuVPY25O8arVqBmG4MhamI+PJJwpqD9qldt5IQQ
+        ==
+X-ME-Sender: <xms:8tN5YDjU5U7iVbn4H9y-D8-7b4dJFOK2v5XwcauSdDZiMPx1aHdgdA>
+    <xme:8tN5YAOibnxj_tDpR4w4seRXc0FTTacwt5szGg8f3mVnFyg2xVdME0orBM1eJBVkN
+    Y9jW7Sxz0hp2NnPBtY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelhedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucfk
+    phepvddtjedrheefrddvheefrdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:8tN5YE72R33G23qiRADSTCtELiVuBlVQJXrOcJ5cJZXTWuoULY4sTQ>
+    <xmx:8tN5YO1wnJwjQNfoPx7IW6v2SUHk7s2BkNvTdy0moIX9LWKc0z0i6g>
+    <xmx:8tN5YFbuJHrZiEv_eVvz8ZM7diKJS3Ws8UYktxX6OZOxt3Xo23qClw>
+    <xmx:8tN5YPHcltCYPVWbW1p6whwF5L9Pbws_DPWE3e0HUQ6qiAWWSYYeqA>
+Received: from localhost (unknown [207.53.253.7])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DDFDC240066;
+        Fri, 16 Apr 2021 14:14:09 -0400 (EDT)
+Date:   Fri, 16 Apr 2021 11:14:08 -0700
+From:   Boris Burkov <boris@bur.io>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH] btrfs-progs: mkfs: only output the warning if the
  sectorsize is not supported
-Message-ID: <20210416175903.GI7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+Message-ID: <YHnT8Dwobux2J9Pt@zen>
 References: <20210415053011.275099-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20210415053011.275099-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -79,6 +113,9 @@ On Thu, Apr 15, 2021 at 01:30:11PM +0800, Qu Wenruo wrote:
 > +/*
 > + * The buffer size if strlen("4096 8192 16384 32768 65536"),
 > + * which is 28, then round up to 32.
+
+I think there is a typo in this comment, because it doesn't quite parse.
+
 > + */
 > +#define SUPPORTED_SECTORSIZE_BUF_SIZE	32
 >  int btrfs_check_sectorsize(u32 sectorsize)
@@ -109,12 +146,31 @@ On Thu, Apr 15, 2021 at 01:30:11PM +0800, Qu Wenruo wrote:
 > +			goto out;
 > +		ret = read(fd, supported_buf, sizeof(supported_buf));
 > +		close(fd);
+> +		if (ret < 0)
+> +			goto out;
+> +		snprintf(sectorsize_buf, SUPPORTED_SECTORSIZE_BUF_SIZE,
+> +			 "%u", page_size);
+> +		if (strstr(supported_buf, sectorsize_buf))
+> +			sectorsize_checked = true;
 
-There are some sysfs helpers, like sysfs_read_file and
-sysfs_open_fsid_file that would avoid the boilerplate code. We don't
-have a helper for the toplevel sysfs directory so that would need to be
-added first.
+Two comments here.
+1: I think we should be checking sectorsize against the file rather than
+page_size.
+2: strstr seems too permissive, since it doesn't have a notion of
+tokens. If not for the power_of_2 check above, we would admit all kinds
+of silly things like 409. But even with it, we would permit "4" now and
+with your example from the comment, "8", "16", and "32".
 
-Now that I look at it, the sysfs_read_file could actually do that in one
-go, including open and close. I'll probably do that as a cleanup later
-and apply your patch as it's a fix. Thanks.
+> +	}
+> +out:
+> +	if (!sectorsize_checked)
+>  		warning(
+>  "the filesystem may not be mountable, sectorsize %u doesn't match page size %u",
+>  			sectorsize, page_size);
+
+Do you have plans to change the contents of this string to match the new
+meaning of the check, or is that too harmful to testing/automation?
+
+> -- 
+> 2.31.1
+> 
