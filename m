@@ -2,61 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C792362522
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 18:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60ADA36258D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Apr 2021 18:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239268AbhDPQHI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 12:07:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47520 "EHLO mx2.suse.de"
+        id S235029AbhDPQUF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 12:20:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39590 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235629AbhDPQHI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:07:08 -0400
+        id S229706AbhDPQUE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:20:04 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AA6BCB137;
-        Fri, 16 Apr 2021 16:06:42 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1C135B1E8;
+        Fri, 16 Apr 2021 16:19:38 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B9799DA790; Fri, 16 Apr 2021 18:04:25 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 18:04:25 +0200
+        id 22C74DA790; Fri, 16 Apr 2021 18:17:21 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 18:17:21 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Karel Zak <kzak@redhat.com>
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>, util-linux@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v2 3/3] blkid: support zone reset for wipefs
-Message-ID: <20210416160425.GZ7604@twin.jikos.cz>
+To:     Damien Le Moal <damien.lemoal@wdc.com>
+Cc:     dm-devel@redhat.com, Mike Snitzer <snitzer@redhat.com>,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-nvme@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
+        linux-scsi@vger.kernel.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: [PATCH 3/4] btrfs: zoned: fail mount if the device does not
+ support zone append
+Message-ID: <20210416161720.GA7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Karel Zak <kzak@redhat.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>, util-linux@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20210414013339.2936229-1-naohiro.aota@wdc.com>
- <20210414013339.2936229-4-naohiro.aota@wdc.com>
- <20210414135742.qayizmwjck5dx377@ws.net.home>
+Mail-Followup-To: dsterba@suse.cz, Damien Le Moal <damien.lemoal@wdc.com>,
+        dm-devel@redhat.com, Mike Snitzer <snitzer@redhat.com>,
+        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-nvme@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
+        linux-scsi@vger.kernel.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+References: <20210416030528.757513-1-damien.lemoal@wdc.com>
+ <20210416030528.757513-4-damien.lemoal@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414135742.qayizmwjck5dx377@ws.net.home>
+In-Reply-To: <20210416030528.757513-4-damien.lemoal@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 03:57:42PM +0200, Karel Zak wrote:
-> On Wed, Apr 14, 2021 at 10:33:39AM +0900, Naohiro Aota wrote:
-> >  /**
-> >   * blkid_do_wipe:
-> >   * @pr: prober
-> > @@ -1267,6 +1310,7 @@ int blkid_do_wipe(blkid_probe pr, int dryrun)
-> >  	const char *off = NULL;
-> >  	size_t len = 0;
-> >  	uint64_t offset, magoff;
-> > +	bool conventional;
+On Fri, Apr 16, 2021 at 12:05:27PM +0900, Damien Le Moal wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > 
-> BTW, nowhere in libblkid we use "bool". It would be probably better to include
-> <stdbool.h> to blkidP.h.
+> For zoned btrfs, zone append is mandatory to write to a sequential write
+> only zone, otherwise parallel writes to the same zone could result in
+> unaligned write errors.
+> 
+> If a zoned block device does not support zone append (e.g. a dm-crypt
+> zoned device using a non-NULL IV cypher), fail to mount.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
 
-Pulling a whole new header just for one local variable that can be int
-seems too much.
+Added to misc-next, thanks. I'll queue it for 5.13, it's not an urgent
+fix for 5.12 release but i'll tag it as stable so it'll apear in 5.12.x
+later.
