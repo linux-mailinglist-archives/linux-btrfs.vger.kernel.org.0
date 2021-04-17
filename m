@@ -2,80 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17291362FB2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 13:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3303362FEE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 15:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236172AbhDQLvB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Apr 2021 07:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235901AbhDQLvB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Apr 2021 07:51:01 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C44FC061574;
-        Sat, 17 Apr 2021 04:50:33 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id r7so17144565wrm.1;
-        Sat, 17 Apr 2021 04:50:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hWQTtezj5e7iWCHlJMc/HElbpfX2XhqmE3A4fxS1/zs=;
-        b=TOJN98Y5AJgvwqWBXb3oN1sktUtOgOjayiLIailIKN8OfZ01K1WDZ5IGsZHu3ewnbD
-         Kv0usVyqiCN/c+rwornOm/CUkJ9/W7k6XKYKD+8PabWrZn1Pjr/VePU1tzD+aTXe9HHJ
-         OSqyA55TTs44hD2HqL4h9bCpe/I0Aki80XxisRJWtBOSys/UDGa8vA+DVtn9Xv1reIrg
-         dEIBVuPoo/ZV0nLbIgb57QuOtfeR6x0SEheM8944eYb+ipKKwlPDTUxLh4EQV09KFGu7
-         GKdaXUHjmLtoFgSLHX83A9mcRO0oH/V7odhveorl38U9L5JqGfZXNucM0SGFhKpUKk0+
-         mnTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hWQTtezj5e7iWCHlJMc/HElbpfX2XhqmE3A4fxS1/zs=;
-        b=a/OtErxW+ICY7KYnHmYrmttsNs771kf/GHHTciOAdgc/nNpw2ATXYb8JSgUv+Y9A4l
-         kDiZW/xc/Z1PXuFAviFoZoK2Bofk2j7vOKz3f4sp1o+q5UQSKAkjArw68qykom1Q8qAt
-         bD2Ovz8r4YVU/8xK8+gERg9AglF4vkxKjBT9jeuDBkqQlApKopoIb76OjncKqkDlT/9O
-         4aeZZOTQYzTW5V3Sd6aD1BiGRn7Z3zy4irHKd2U+e8twewPZv7v/mXHGLiKuw9HUXRnJ
-         ayUxkRfjLHok96GCnE00JVostGQZrTPJeZpi5SbrLzhmUfUulRjgvpbMwGhzggXCwE22
-         fRaQ==
-X-Gm-Message-State: AOAM530emJVYk6zf8IK1tKl0uQNcvkJ8sUBOD4N8IrD63OjDQeWtjzio
-        moEKYwIK8ifpDD81VV3OcfQ=
-X-Google-Smtp-Source: ABdhPJwiI2uq4gmoZdg/8UpZ9CopW+Q7D2WGRFhJRA9IyInoGGc9jonEe7oBzmSJJrYZaHt55uxEcA==
-X-Received: by 2002:a5d:65d2:: with SMTP id e18mr4059418wrw.31.1618660232167;
-        Sat, 17 Apr 2021 04:50:32 -0700 (PDT)
-Received: from ard0534 ([41.62.188.221])
-        by smtp.gmail.com with ESMTPSA id u4sm13790693wml.0.2021.04.17.04.50.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 17 Apr 2021 04:50:31 -0700 (PDT)
-Date:   Sat, 17 Apr 2021 12:50:28 +0100
-From:   Khaled Romdhani <khaledromdhani216@gmail.com>
-To:     David Sterba <dsterba@suse.cz>, clm@fb.com, josef@toxicpanda.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, khaledromdhani216@gmail.com
-Subject: Re: [PATCH-next] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210417115028.GA21778@ard0534>
-References: <20210413130604.11487-1-khaledromdhani216@gmail.com>
- <20210416173203.GE7604@twin.jikos.cz>
+        id S236344AbhDQMlh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Apr 2021 08:41:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40058 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235901AbhDQMlg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 17 Apr 2021 08:41:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618663269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=0OQNnVmlmwYL4em/eLQlA92yIUDtg54XPxExSTOFeSc=;
+        b=Ri0Mroowt+6twEt1dxU2RnIJVeaXXzkGaXUpH5LnEhvsQgkd6/c98tcfsABDC540yPUC02
+        OTUWYcNZkGaaYZQ+P+3z+cbVcsPlz42Xge2SvrAgeZMK852mnpl0+grlXxILu6Fi0UmN4L
+        NjhCQhaRKYUGYWj/J5AUK5OotuzrSYA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 60A11AE42;
+        Sat, 17 Apr 2021 12:41:09 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     u-boot@lists.denx.de
+Cc:     linux-btrfs@vger.kernel.org,
+        Matwey Kornilov <matwey.kornilov@gmail.com>
+Subject: [PATCH UBoot] fs: btrfs: fix the false alert of decompression failure
+Date:   Sat, 17 Apr 2021 20:40:59 +0800
+Message-Id: <20210417124059.127418-1-wqu@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416173203.GE7604@twin.jikos.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 07:32:03PM +0200, David Sterba wrote:
-> On Tue, Apr 13, 2021 at 02:06:04PM +0100, Khaled ROMDHANI wrote:
-> > The variable zone is not initialized. It
-> > may causes a failed assertion.
-> 
-> Failed assertion means the 2nd one checking that the result still fits
-> to 32bit type. That would mean that none of the cases were hit, but all
-> callers pass valid values.
-> 
-> It would be better to add a default: case to catch that explicitly,
-> though hitting that is considered 'will not happen'.
+There are some cases where decompressed sectors can have padding zeros.
 
-Yes. I will send a V2.
+In kernel code, we have lines to address such situation:
+
+        /*
+         * btrfs_getblock is doing a zero on the tail of the page too,
+         * but this will cover anything missing from the decompressed
+         * data.
+         */
+        if (bytes < destlen)
+                memset(kaddr+bytes, 0, destlen-bytes);
+        kunmap_local(kaddr);
+
+But not in U-boot code, thus we have some reports of U-boot failed to
+read compressed files in btrfs.
+
+Fix it by doing the same thing of the kernel.
+
+Reported-by: Matwey Kornilov <matwey.kornilov@gmail.com>
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1183717
+Fixes: a26a6bedafcf ("fs: btrfs: Introduce btrfs_read_extent_inline() and btrfs_read_extent_reg()")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/inode.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 019d532a1a4b..f780c53d5250 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -390,10 +390,16 @@ int btrfs_read_extent_inline(struct btrfs_path *path,
+ 			   csize);
+ 	ret = btrfs_decompress(btrfs_file_extent_compression(leaf, fi),
+ 			       cbuf, csize, dbuf, dsize);
+-	if (ret < 0 || ret != dsize) {
++	if (ret == (u32)-1) {
+ 		ret = -EIO;
+ 		goto out;
+ 	}
++	/*
++	 * The compressed part ends before sector boundary, the remaining needs
++	 * to be zeroed out.
++	 */
++	if (ret < dsize)
++		memset(dbuf + ret, 0, dsize - ret);
+ 	memcpy(dest, dbuf, dsize);
+ 	ret = dsize;
+ out:
+-- 
+2.31.1
+
