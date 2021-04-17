@@ -2,105 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A72F362C5F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 02:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DF4362C68
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 02:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234852AbhDQASn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 20:18:43 -0400
-Received: from mout.gmx.net ([212.227.17.22]:52773 "EHLO mout.gmx.net"
+        id S235054AbhDQAYB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 20:24:01 -0400
+Received: from mout.gmx.net ([212.227.15.19]:34045 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231997AbhDQASm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 20:18:42 -0400
+        id S229719AbhDQAYA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Apr 2021 20:24:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618618695;
-        bh=1eYXClsEpS0nlB/2E0LYRjUMaKEXCql3nQV/hyw0f6U=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=fz+y7RPRMGyaXrBuwd+txY35lPvbS2fe4EZa4kMIs6PNY/Tem0y8iEJgWKWp7vnCC
-         eGCGe1dN6NxFTrczEQNvkwSiOIDwOni8uQ57NgFfo0RJlNoUQzuoQqEqSWK/8IzKM9
-         PN8DBtqdlSXUYXlFZQ6g/j3YBcr7kNyeb0xLT+Pk=
+        s=badeba3b8450; t=1618619010;
+        bh=HiG9mD7tt8jUL12ybc6yTvgh2W4W1L4EOTpp04j4U3s=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=TkG7QYf+gqcC1jOyFyXNokL3GZMZL/15j2gub+8JAbN+oFe7mHDManWh6r75Bqfwd
+         rhQm0Em2lbH1aKoZe7V5SWe/3mK444FuorkDrzWm/jgLsngixADQ1DhdWq9mUxUN9Y
+         gncq6WHOrKJT6T1FWaMJJxC++5PxrnXCBN2xGVFc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7b6b-1lSLTH0hUj-0080kR; Sat, 17
- Apr 2021 02:18:14 +0200
-Subject: Re: [PATCH 3/3] btrfs-progs: misc-tests: add test to ensure the
- restored image can be mounted
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210326125047.123694-1-wqu@suse.com>
- <20210326125047.123694-4-wqu@suse.com> <20210416174629.GH7604@twin.jikos.cz>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgNcz-1m18D037N9-00hz8L; Sat, 17
+ Apr 2021 02:23:30 +0200
+Subject: Re: [PATCH] btrfs-progs: mkfs: only output the warning if the
+ sectorsize is not supported
+To:     Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20210415053011.275099-1-wqu@suse.com> <YHnT8Dwobux2J9Pt@zen>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <31b7aadb-70bf-6498-2be5-6f74fe978d0f@gmx.com>
-Date:   Sat, 17 Apr 2021 08:18:11 +0800
+Message-ID: <8d764e02-9f6e-e068-f470-f4503ca23ca8@gmx.com>
+Date:   Sat, 17 Apr 2021 08:23:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210416174629.GH7604@twin.jikos.cz>
+In-Reply-To: <YHnT8Dwobux2J9Pt@zen>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:cG1hm1MzyhIELWNg4KJq+jGQAJcZVGbS/dUmA2/d7qfA9SxfQTE
- Ft/moQvp2TG9MandlUgk7bgzwvN6ovrBEAgDIoqOCgvqaYROlMcCEdzF1BlSruVVK0gX5YO
- 2Ml5u8m9BI1rmfPfJFpyF2MKJPIBvMf4wTub4SIIVAkInFbK15s3QMABK8AORiEzSmFJdbt
- v7YL8sqcipenw3IsLu/lQ==
+X-Provags-ID: V03:K1:mj4zxgrZamibazSNRoyFhl8NQcUTWbFMeApBIF2+zN0RPNhg0/d
+ GSSQ8rwFL3UtmhnrUnC1w4qTLqnsNgFJ8J5DYR8bELV8ZFs67tPMn7eicl8wsymBU54JpTv
+ S9Pd6kE8dNpGW9Nkr76oNYGkRWESisifL+FEWk09c2ObzM9UoC/V5G3BujePgB5wQOWLyC9
+ fCEw7AF3keCrHVs+fA6hQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rp6S8oxn3/I=:9U2AFVKEy9WVZJJO7E7YTt
- dJDENyevNMnw8viyMAymr0xWUQRG8T/LKHG8+MXCZYLLHyj6icZ3QK3bm1ey0QenX2SEdxqTr
- JahgXIVq4brUIq28BJ5s21sHKjB1mHSeQlh70a7bfsxn1BP6BWsc1MUY6kVUfH3Exd5XO9d+j
- xU0kqhxAyVDmGDeOShe7xCzs2yMr005JEVWp2cmxyZLX6rJ+xKu+hojeqfEFTqWt67dnDUlAA
- F9eBBe+1z0+g1dSnSF1sRId/53Af+IGkeA2EcpxFBJCpTGfMzYMAd6paZ1gklrCHCdDBY6QuG
- aq0DK1Yvmg1D8657LfJfvD8fs1zDCGllv6BOV9C7eMWjBtIJ5Wh8LQ8AnXjVbsqJuJE/Y5XKE
- udAXdBmy9E9Kjur2VSgSy56jHN843v/rhm6R037WHLqYYaPgo04U12TSaylIOrjHE1qyOYb1I
- JfxOIY9FumXp3W6Yg+ZeLhrulXgrG4JT1nZnh8hR4e9MBZi8X5YpOvMBufd2S4U1Qs+irK191
- wAVN6gG718+7uVKXG5HijjYDIglrs0PIPQY71lj++pii/3MisWwWgbXXnTIplphtpNHCRfjzD
- sSCYzIgYbmWRvVWOXUcyfWb6ZanVUCjdvoRh354ftNgKlNFXpg12RguNSuj/nah/Gn3dcNxCu
- n+ufcc88H3EzrxdfjqtaNASxh5GGvS12oYpEmMD9dXJhL9MvIhyvYhqYy4jOHCoWP+TImaE/V
- jvYJ77YR9cADJwIVxM0jyPWsKeF9fF1zbmuT7Pfr79mHrYkgVpB2jqNwMevIzU2staxtXcVQK
- 6bz4iqNIyKrOS2cKwoMZP3+2Sh9QutuNIFAF4KAZps7kCH8mhA9wEYI9EFhc5/wOG+9re4Eev
- l+uTW7jvn6C1R9AmuPGrAoLMfGeZ+NIUm2M60Br4c4w1ZfTph1/NF35uv59Gq5BLZfhi1P7sG
- HMyJTtm2n9JLM88533aiVDU/H0MvvnAvs4lbupJonhCmOMWh3FWLa7nG8qRs262VezTDPZZbI
- xkmodj9SCvc37Jbn7yDuHgdL8kYviu/eDCFsOCRgx2eVdpEQ8u7ZitiEijSPRuKFL3KPNaLP1
- iBqHDQUfnQNhB8czFAMhvr77z4xJ+WsM2ys2qgaQUNLXgrOJ2imgijSjyUirhL0GoF1rBuYUG
- amREO7uzDDK4dDNZN/tHSc/11GbU6jGRsUcbK8sjjHqrV9pEqMCUN8RFwf2RZdFhVe9TzaFgL
- Hzer8EB4DPHFoVpsa
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Sr5g0P0dFw0=:HpFh0n8RGpaJnDXkWhGLP9
+ ZvOKzuEPTSqRKljA9hhrd8gs6EPYPF1w3yBqyHEGE3hD0vqcvLujw6+fd/EjYZp5reUl8U0p5
+ EJUxlloan4YhunA0FNGACPxfqf8YwoLvDmTRLUSC5ERXFP/+jsl6/ev0rL9of931whANo/SlJ
+ RHxXizPn1cMJu9ktTJzByXMadmvRQKgorOa63WwvvEf56ZUEK/ORFVWagBgCJiOpbllblLfK3
+ wGeGeMUt9o/pq+m7fCJLzDMfsCioYMGvP/nlCApOx1YyUhJaQI06z3Qf0hM/6NvQw1tbneVhF
+ ZIek507itdyGQrXtnl56YXNY0v63qn2ZvS1+dn3IDbC6z/xXZt0ZlIPiExTeVq5BciZbSpuVV
+ V8rRZ/MYB5+x9PBlb9OLBuy2wRhfDnh4Dd/rILarLHZ8pBXfXArmnAic8hoSVpQB3717TlBF7
+ +Uyg9xk1GVs+Qv9qJ46JSztTzdDaEUD3WMGDWIW+51aXf/VA3Xdn2PgFkaKpiKv6TXPNT5LYm
+ QWE/4hhQPFcK4X8Wc5npiE75/X731DaDjiaVunc/saEteYFMIa92aQKoJF7RWaZSk7Xw2+et0
+ FkAYwz4mrMuQKVTkO9OhI1Ou7uXaUjgjpabydthZH/NWWUWpWWnGzgdHT8XYkWw8ZkgGmrZiK
+ /wt09JCB5lKzRCBU7VhCV+mGYWcUho+nogiVvR+L0JTzt3rVStRi53QXLsFCCAppVih2xd4pP
+ a+dpYWUmEJer9fgdk0uF3yHhb0qMbVos55DP+mJ8oNFPrvHa3ObtJUq8KZWo7ssrrqTpjwk3v
+ EZkwFmczz6PPvz1HZW9cCPWszMLPIyJwscxzYbyGM8VpOQoIYT2lvEc+aAQVYLCth7xwIRYb2
+ OpnSvFErOm7/vJYoTA3IZ9r1tuGlJgvA6baAvLB1kXuSmgy9VvxMyl2/K5QFW12lajCtz+CuR
+ xfW/Ic15GDXsBZMy0H7PuLfUU6h/e+sQCL9tDvF6W/6Hn/aHPIQw1MFIzmgsNsk+kipJiiUwJ
+ DqdWV4Mf2GnJS/nh2jfuL0TUydAXbzKeLO6nAvEAKAqrsQqmAfBDhOfKT0dyqB9ppxhtDu2oG
+ Y+TBPGGRxAWh5wqznYwl89y0JDzgTfQemH96eKc4FZ2I/NjwQiwSFKCKGn4otrDbsfM/mEtPl
+ WrucFyxCvx8CPZcxGfKnms/0LEpajqqlfdMDJzjqf9h4w4W6xr5FqSp4wex+cssKpbckREKca
+ CmPSMT+DgsIhZK5hk
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/4/17 =E4=B8=8A=E5=8D=881:46, David Sterba wrote:
-> On Fri, Mar 26, 2021 at 08:50:47PM +0800, Qu Wenruo wrote:
->> This new test case is to make sure the restored image file has been
->> properly enlarged so that newer kernel won't complain.
+On 2021/4/17 =E4=B8=8A=E5=8D=882:14, Boris Burkov wrote:
+> On Thu, Apr 15, 2021 at 01:30:11PM +0800, Qu Wenruo wrote:
+>> Currently mkfs.btrfs will output a warning message if the sectorsize is
+>> not the same as page size:
+>>    WARNING: the filesystem may not be mountable, sectorsize 4096 doesn'=
+t match page size 65536
+>>
+>> But since btrfs subpage support for 64K page size is comming, this
+>> output is populating the golden output of fstests, causing tons of fals=
+e
+>> alerts.
+>>
+>> This patch will make teach mkfs.btrfs to check
+>> /sys/fs/btrfs/features/supported_sectorsizes, and compare if the sector
+>> size is supported.
+>>
+>> Then only output above warning message if the sector size is not
+>> supported.
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->>   .../047-image-restore-mount/test.sh           | 19 ++++++++++++++++++=
-+
->>   1 file changed, 19 insertions(+)
->>   create mode 100755 tests/misc-tests/047-image-restore-mount/test.sh
+>>   common/fsfeatures.c | 36 +++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 35 insertions(+), 1 deletion(-)
 >>
->> diff --git a/tests/misc-tests/047-image-restore-mount/test.sh b/tests/m=
-isc-tests/047-image-restore-mount/test.sh
->> new file mode 100755
->> index 000000000000..7f12afa2bab6
->> --- /dev/null
->> +++ b/tests/misc-tests/047-image-restore-mount/test.sh
->> @@ -0,0 +1,19 @@
->> +#!/bin/bash
->> +# Verify that the restored image of an empty btrfs can still be mounte=
-d
->                                                  ^^^^^
+>> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+>> index 569208a9e5b1..13b775da9c72 100644
+>> --- a/common/fsfeatures.c
+>> +++ b/common/fsfeatures.c
+>> @@ -16,6 +16,8 @@
+>>
+>>   #include "kerncompat.h"
+>>   #include <sys/utsname.h>
+>> +#include <sys/stat.h>
+>> +#include <fcntl.h>
+>>   #include <linux/version.h>
+>>   #include <unistd.h>
+>>   #include "common/fsfeatures.h"
+>> @@ -327,8 +329,15 @@ u32 get_running_kernel_version(void)
+>>
+>>   	return version;
+>>   }
+>> +
+>> +/*
+>> + * The buffer size if strlen("4096 8192 16384 32768 65536"),
+>> + * which is 28, then round up to 32.
 >
-> I've seen that in patches and comments, the use of word 'btrfs' instead
-> of 'filesystem' sounds a bit inappropriate to me, so I change it
-> whenever I see it. It's perhaps matter of taste and style, one can write
-> it also as 'btrfs filesystem' but that may belong to some more polished
-> documentation, so you can go with just 'filesystem'.
->
-Thanks for pointing this out.
+> I think there is a typo in this comment, because it doesn't quite parse.
 
-I'll use 'filesystem' from now on.
+I mean the strlen() =3D=3D 28, then round the value to 32.
+
+Any better alternative?
+
+
+>
+>> + */
+>> +#define SUPPORTED_SECTORSIZE_BUF_SIZE	32
+>>   int btrfs_check_sectorsize(u32 sectorsize)
+>>   {
+>> +	bool sectorsize_checked =3D false;
+>>   	u32 page_size =3D (u32)sysconf(_SC_PAGESIZE);
+>>
+>>   	if (!is_power_of_2(sectorsize)) {
+>> @@ -340,7 +349,32 @@ int btrfs_check_sectorsize(u32 sectorsize)
+>>   		      sectorsize);
+>>   		return -EINVAL;
+>>   	}
+>> -	if (page_size !=3D sectorsize)
+>> +	if (page_size =3D=3D sectorsize) {
+>> +		sectorsize_checked =3D true;
+>> +	} else {
+>> +		/*
+>> +		 * Check if the sector size is supported
+>> +		 */
+>> +		char supported_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] =3D { 0 };
+>> +		char sectorsize_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] =3D { 0 };
+>> +		int fd;
+>> +		int ret;
+>> +
+>> +		fd =3D open("/sys/fs/btrfs/features/supported_sectorsizes",
+>> +			  O_RDONLY);
+>> +		if (fd < 0)
+>> +			goto out;
+>> +		ret =3D read(fd, supported_buf, sizeof(supported_buf));
+>> +		close(fd);
+>> +		if (ret < 0)
+>> +			goto out;
+>> +		snprintf(sectorsize_buf, SUPPORTED_SECTORSIZE_BUF_SIZE,
+>> +			 "%u", page_size);
+>> +		if (strstr(supported_buf, sectorsize_buf))
+>> +			sectorsize_checked =3D true;
+>
+> Two comments here.
+> 1: I think we should be checking sectorsize against the file rather than
+> page_size.
+
+Damn it, all my bad.
+
+> 2: strstr seems too permissive, since it doesn't have a notion of
+> tokens. If not for the power_of_2 check above, we would admit all kinds
+> of silly things like 409. But even with it, we would permit "4" now and
+> with your example from the comment, "8", "16", and "32".
+
+Indeed I took a shortcut here.
+
+It's indeed not elegant, I'll change it to use " " as token to analyse
+each value and compare to sector size.
 
 Thanks,
 Qu
+>
+>> +	}
+>> +out:
+>> +	if (!sectorsize_checked)
+>>   		warning(
+>>   "the filesystem may not be mountable, sectorsize %u doesn't match pag=
+e size %u",
+>>   			sectorsize, page_size);
+>
+> Do you have plans to change the contents of this string to match the new
+> meaning of the check, or is that too harmful to testing/automation?
+>
+>> --
+>> 2.31.1
+>>
