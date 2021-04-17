@@ -2,192 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DF4362C68
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 02:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8CF362C8E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 03:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235054AbhDQAYB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 20:24:01 -0400
-Received: from mout.gmx.net ([212.227.15.19]:34045 "EHLO mout.gmx.net"
+        id S235263AbhDQBBk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 21:01:40 -0400
+Received: from mout.gmx.net ([212.227.17.20]:52333 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhDQAYA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 20:24:00 -0400
+        id S235046AbhDQBBi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Apr 2021 21:01:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618619010;
-        bh=HiG9mD7tt8jUL12ybc6yTvgh2W4W1L4EOTpp04j4U3s=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=TkG7QYf+gqcC1jOyFyXNokL3GZMZL/15j2gub+8JAbN+oFe7mHDManWh6r75Bqfwd
-         rhQm0Em2lbH1aKoZe7V5SWe/3mK444FuorkDrzWm/jgLsngixADQ1DhdWq9mUxUN9Y
-         gncq6WHOrKJT6T1FWaMJJxC++5PxrnXCBN2xGVFc=
+        s=badeba3b8450; t=1618621268;
+        bh=lf0S65L624wrpbfWhPn8O+NFUVsYzB4amKHETV5POck=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=CfpAU/kHf+roP9ctzXzljDZ8z4q+Wp0IxBnSyb8NvL3/0d3T5jqutft9vWNMrm/0x
+         UtlRKh9Ns4Jb9FunqOqFVdwFpmJR/S9TRn3N+CG8Ca+w1d2hgexW+pUapFMwQ9OG2+
+         GM68i2dgR/UCyCFKXrc64OloHHWBBRRNBPGR02nU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgNcz-1m18D037N9-00hz8L; Sat, 17
- Apr 2021 02:23:30 +0200
-Subject: Re: [PATCH] btrfs-progs: mkfs: only output the warning if the
- sectorsize is not supported
-To:     Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20210415053011.275099-1-wqu@suse.com> <YHnT8Dwobux2J9Pt@zen>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHoNC-1lKs1V2XNm-00EyNs; Sat, 17
+ Apr 2021 03:01:08 +0200
+Subject: Re: read time tree block corruption detected
+To:     "Gervais, Francois" <FGervais@distech-controls.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <DM6PR01MB4265447B51C4FD9CE1C89A3DF34C9@DM6PR01MB4265.prod.exchangelabs.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <8d764e02-9f6e-e068-f470-f4503ca23ca8@gmx.com>
-Date:   Sat, 17 Apr 2021 08:23:26 +0800
+Message-ID: <666c6ea6-9015-1e50-e8a7-dc5b45cdac3c@gmx.com>
+Date:   Sat, 17 Apr 2021 09:01:03 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <YHnT8Dwobux2J9Pt@zen>
+In-Reply-To: <DM6PR01MB4265447B51C4FD9CE1C89A3DF34C9@DM6PR01MB4265.prod.exchangelabs.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mj4zxgrZamibazSNRoyFhl8NQcUTWbFMeApBIF2+zN0RPNhg0/d
- GSSQ8rwFL3UtmhnrUnC1w4qTLqnsNgFJ8J5DYR8bELV8ZFs67tPMn7eicl8wsymBU54JpTv
- S9Pd6kE8dNpGW9Nkr76oNYGkRWESisifL+FEWk09c2ObzM9UoC/V5G3BujePgB5wQOWLyC9
- fCEw7AF3keCrHVs+fA6hQ==
+X-Provags-ID: V03:K1:EDG08VQJg23sU6VzUcf90VaYO/1e6YeuCf6EHkSB616Q9hD+Ula
+ TjR+LS6+8qgbpepDKV/hPd/nRSeQbZJUroOX1nloqCwMpVwe7+vRhONOnhxwhVP6yuzMZrN
+ XUER2Np3aSjj9YTD/7VOdw0i5g2HcCcCnZA3h78Q+RN8N2nqXi0gktj2ShObbpaVYNGbpQc
+ 07Jg64WFrfPbjTr+ESFFg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Sr5g0P0dFw0=:HpFh0n8RGpaJnDXkWhGLP9
- ZvOKzuEPTSqRKljA9hhrd8gs6EPYPF1w3yBqyHEGE3hD0vqcvLujw6+fd/EjYZp5reUl8U0p5
- EJUxlloan4YhunA0FNGACPxfqf8YwoLvDmTRLUSC5ERXFP/+jsl6/ev0rL9of931whANo/SlJ
- RHxXizPn1cMJu9ktTJzByXMadmvRQKgorOa63WwvvEf56ZUEK/ORFVWagBgCJiOpbllblLfK3
- wGeGeMUt9o/pq+m7fCJLzDMfsCioYMGvP/nlCApOx1YyUhJaQI06z3Qf0hM/6NvQw1tbneVhF
- ZIek507itdyGQrXtnl56YXNY0v63qn2ZvS1+dn3IDbC6z/xXZt0ZlIPiExTeVq5BciZbSpuVV
- V8rRZ/MYB5+x9PBlb9OLBuy2wRhfDnh4Dd/rILarLHZ8pBXfXArmnAic8hoSVpQB3717TlBF7
- +Uyg9xk1GVs+Qv9qJ46JSztTzdDaEUD3WMGDWIW+51aXf/VA3Xdn2PgFkaKpiKv6TXPNT5LYm
- QWE/4hhQPFcK4X8Wc5npiE75/X731DaDjiaVunc/saEteYFMIa92aQKoJF7RWaZSk7Xw2+et0
- FkAYwz4mrMuQKVTkO9OhI1Ou7uXaUjgjpabydthZH/NWWUWpWWnGzgdHT8XYkWw8ZkgGmrZiK
- /wt09JCB5lKzRCBU7VhCV+mGYWcUho+nogiVvR+L0JTzt3rVStRi53QXLsFCCAppVih2xd4pP
- a+dpYWUmEJer9fgdk0uF3yHhb0qMbVos55DP+mJ8oNFPrvHa3ObtJUq8KZWo7ssrrqTpjwk3v
- EZkwFmczz6PPvz1HZW9cCPWszMLPIyJwscxzYbyGM8VpOQoIYT2lvEc+aAQVYLCth7xwIRYb2
- OpnSvFErOm7/vJYoTA3IZ9r1tuGlJgvA6baAvLB1kXuSmgy9VvxMyl2/K5QFW12lajCtz+CuR
- xfW/Ic15GDXsBZMy0H7PuLfUU6h/e+sQCL9tDvF6W/6Hn/aHPIQw1MFIzmgsNsk+kipJiiUwJ
- DqdWV4Mf2GnJS/nh2jfuL0TUydAXbzKeLO6nAvEAKAqrsQqmAfBDhOfKT0dyqB9ppxhtDu2oG
- Y+TBPGGRxAWh5wqznYwl89y0JDzgTfQemH96eKc4FZ2I/NjwQiwSFKCKGn4otrDbsfM/mEtPl
- WrucFyxCvx8CPZcxGfKnms/0LEpajqqlfdMDJzjqf9h4w4W6xr5FqSp4wex+cssKpbckREKca
- CmPSMT+DgsIhZK5hk
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HubKvN2gEe8=:WT562xXhZ0BeSt/z4lOs+y
+ kv66FRYVuRZfevvN95pOFH7cdy0gcFZHnyZ4IeWhIs6vs3l3khsCxwq3fD/WemVPkDCtrYl1O
+ /ohLH3ooRMqwQGsqBHTj3/iWSlMVYx6XPgvJ8QaOsDH3wWyu/IRYzG0INQOS3ZLkLkGy3NsTQ
+ V1j+O7dtoHK6LOKrbJCV7QINeStTPtL39Qj/3kVdqxC6OeG7UL4+LDkF+vMZjDsuusdYFhMCK
+ lh3SSZhzSYynxemUYaofhvEi/15BzmoRMmWHZn1lzIbgJ6gykqEFr5jDk9oPePHUfOUh8fcT4
+ 4puLW3E1cwW9jGrHtaIpM7GJVq2AzaaDnoXvgDSSHcVEgALDIH6jYlb43mYIVFSQKv9y9vApz
+ 812XYtXaEZXftbRrwCsUKIccYOdCTP5yKrNZ9EQUAXfHVBbaOdKuBBeMdyb0OcADtfq7Xx3HT
+ tIRmKcJqR16bCZs696cIOYmlE0JuXQIcXWKjeFa7LNjjefWACuetS9WTrrq54tbanTpPpHpVE
+ 16ZFBaivsRwwn4/PLyDO8MtTIzdhUuMgj5e+BoJ7t0Fi/q7s3mFXUJ3crqAnLSTQKyBXYgWeC
+ gVrwQCVDFoSaPQMidrAQekgE9u9sjGDrinF1bLc7RabTjV3W5c55A7A6P5QZPqnU1OzkoTlDo
+ Wd+k1MIctP+Q5Qf0vDCBsRk/WjkTTA06PETbL3PJrnkwa71zJcd/o/83KThr7wYKfz0xweN49
+ LGukCuFjv1hXa6Pxs4YlxLarNDmajMsT9SGrKM4v3gjODNcdeGxDMJt9PwdUSNGsXpnke4yFy
+ AJCOWkIf9gMKktBnV8ICOwgWXOeowuUv8ch5Qg4q/0OMnrI2aYYpcAtg8ieRWYajzmzZdn9GG
+ 2Rnf8cNV4+d2oKnzq7C9utUn/9AjupDGkHYvs/y4z0tpppCuTF0oKOI7HG3yHedOKT2eyVbHo
+ RfVWBzmHYpndRj6OfwSwQWognJP3qLPI7PiMeoJtzTKlUXaZTQDPTkbS4nxTQqX+WijUHHQBG
+ YRQlc4LUv75XOZDrhIzXMU6s6Zl+4bVQZJVJGvRFAmmUXpJWgtesqfMCsSZmHdb9nfUaUinqj
+ ifKUO0rtZkhJxL13pZBv+KPzYQkG9LOZBao2Y1Bjcf00bdGJunvirgZ7erHm3mPQEGiszIBZS
+ fSP8TbGhI1qqxenOY4Bh/Jsf+Fkl3xZdaBj/dQjFXWz1ZncDlCUrP+drCFVnaSUm7o/NJ8tmi
+ tCeqmZOLTM1ADAyP7
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/4/17 =E4=B8=8A=E5=8D=882:14, Boris Burkov wrote:
-> On Thu, Apr 15, 2021 at 01:30:11PM +0800, Qu Wenruo wrote:
->> Currently mkfs.btrfs will output a warning message if the sectorsize is
->> not the same as page size:
->>    WARNING: the filesystem may not be mountable, sectorsize 4096 doesn'=
-t match page size 65536
->>
->> But since btrfs subpage support for 64K page size is comming, this
->> output is populating the golden output of fstests, causing tons of fals=
-e
->> alerts.
->>
->> This patch will make teach mkfs.btrfs to check
->> /sys/fs/btrfs/features/supported_sectorsizes, and compare if the sector
->> size is supported.
->>
->> Then only output above warning message if the sector size is not
->> supported.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   common/fsfeatures.c | 36 +++++++++++++++++++++++++++++++++++-
->>   1 file changed, 35 insertions(+), 1 deletion(-)
->>
->> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
->> index 569208a9e5b1..13b775da9c72 100644
->> --- a/common/fsfeatures.c
->> +++ b/common/fsfeatures.c
->> @@ -16,6 +16,8 @@
->>
->>   #include "kerncompat.h"
->>   #include <sys/utsname.h>
->> +#include <sys/stat.h>
->> +#include <fcntl.h>
->>   #include <linux/version.h>
->>   #include <unistd.h>
->>   #include "common/fsfeatures.h"
->> @@ -327,8 +329,15 @@ u32 get_running_kernel_version(void)
->>
->>   	return version;
->>   }
->> +
->> +/*
->> + * The buffer size if strlen("4096 8192 16384 32768 65536"),
->> + * which is 28, then round up to 32.
+On 2021/4/17 =E4=B8=8A=E5=8D=883:35, Gervais, Francois wrote:
+> We are using btrfs on one of our embedded devices and we got filesystem =
+corruption on one of them.
 >
-> I think there is a typo in this comment, because it doesn't quite parse.
-
-I mean the strlen() =3D=3D 28, then round the value to 32.
-
-Any better alternative?
-
-
+> This product=C2=A0undergo a lot of tests on our side and apparently it's=
+ the first it happened so it seems to be a pretty rare occurrence. However=
+ we still want to get to the bottom of this to ensure it doesn't happen in=
+ the future.
 >
->> + */
->> +#define SUPPORTED_SECTORSIZE_BUF_SIZE	32
->>   int btrfs_check_sectorsize(u32 sectorsize)
->>   {
->> +	bool sectorsize_checked =3D false;
->>   	u32 page_size =3D (u32)sysconf(_SC_PAGESIZE);
->>
->>   	if (!is_power_of_2(sectorsize)) {
->> @@ -340,7 +349,32 @@ int btrfs_check_sectorsize(u32 sectorsize)
->>   		      sectorsize);
->>   		return -EINVAL;
->>   	}
->> -	if (page_size !=3D sectorsize)
->> +	if (page_size =3D=3D sectorsize) {
->> +		sectorsize_checked =3D true;
->> +	} else {
->> +		/*
->> +		 * Check if the sector size is supported
->> +		 */
->> +		char supported_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] =3D { 0 };
->> +		char sectorsize_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] =3D { 0 };
->> +		int fd;
->> +		int ret;
->> +
->> +		fd =3D open("/sys/fs/btrfs/features/supported_sectorsizes",
->> +			  O_RDONLY);
->> +		if (fd < 0)
->> +			goto out;
->> +		ret =3D read(fd, supported_buf, sizeof(supported_buf));
->> +		close(fd);
->> +		if (ret < 0)
->> +			goto out;
->> +		snprintf(sectorsize_buf, SUPPORTED_SECTORSIZE_BUF_SIZE,
->> +			 "%u", page_size);
->> +		if (strstr(supported_buf, sectorsize_buf))
->> +			sectorsize_checked =3D true;
+> Some background:
+> - The corruption happened on kernel v5.4.72.
+> - On the debug device I'm on master (v5.12.0-rc7) hoping it might help t=
+o have all the latest patches.
 >
-> Two comments here.
-> 1: I think we should be checking sectorsize against the file rather than
-> page_size.
+> Here what kernel v5.12.0-rc7 tells me when trying to mount the partition=
+:
+>
+> Apr 16 19:31:45 buildroot kernel: BTRFS info (device loop0p3): disk spac=
+e caching is enabled
+> Apr 16 19:31:45 buildroot kernel: BTRFS info (device loop0p3): has skinn=
+y extents
+> Apr 16 19:31:45 buildroot kernel: BTRFS info (device loop0p3): start tre=
+e-log replay
+> Apr 16 19:31:45 buildroot kernel: BTRFS critical (device loop0p3): corru=
+pt leaf: root=3D18446744073709551610 block=3D790151168 slot=3D5 ino=3D5007=
+, inode ref overflow, ptr 15853 end 15861 namelen 294
 
-Damn it, all my bad.
+Please provide the following dump:
+  #btrfs ins dump-tree -b 18446744073709551610 /dev/loop0p3
 
-> 2: strstr seems too permissive, since it doesn't have a notion of
-> tokens. If not for the power_of_2 check above, we would admit all kinds
-> of silly things like 409. But even with it, we would permit "4" now and
-> with your example from the comment, "8", "16", and "32".
-
-Indeed I took a shortcut here.
-
-It's indeed not elegant, I'll change it to use " " as token to analyse
-each value and compare to sector size.
+I'm wondering why write-time tree-check didn't catch it.
 
 Thanks,
 Qu
+> Apr 16 19:31:45 buildroot kernel: BTRFS error (device loop0p3): block=3D=
+790151168 read time tree block corruption detected
+> Apr 16 19:31:45 buildroot kernel: BTRFS critical (device loop0p3): corru=
+pt leaf: root=3D18446744073709551610 block=3D790151168 slot=3D5 ino=3D5007=
+, inode ref overflow, ptr 15853 end 15861 namelen 294
+> Apr 16 19:31:45 buildroot kernel: BTRFS error (device loop0p3): block=3D=
+790151168 read time tree block corruption detected
+> Apr 16 19:31:45 buildroot kernel: BTRFS: error (device loop0p3) in btrfs=
+_recover_log_trees:6246: errno=3D-5 IO failure (Couldn't read tree log roo=
+t.)
+> Apr 16 19:31:45 buildroot kernel: BTRFS: error (device loop0p3) in btrfs=
+_replay_log:2341: errno=3D-5 IO failure (Failed to recover log tree)
+> Apr 16 19:31:45 buildroot e512c123daaa[468]: mount: /root/mnt: can't rea=
+d superblock on /dev/loop0p3.
+> Apr 16 19:31:45 buildroot kernel: BTRFS error (device loop0p3): open_ctr=
+ee failed: -5
 >
->> +	}
->> +out:
->> +	if (!sectorsize_checked)
->>   		warning(
->>   "the filesystem may not be mountable, sectorsize %u doesn't match pag=
-e size %u",
->>   			sectorsize, page_size);
+> Any suggestions?
 >
-> Do you have plans to change the contents of this string to match the new
-> meaning of the check, or is that too harmful to testing/automation?
->
->> --
->> 2.31.1
->>
