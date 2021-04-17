@@ -2,87 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8B1362DD9
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 07:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17291362FB2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 13:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhDQFTj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Apr 2021 01:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
+        id S236172AbhDQLvB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Apr 2021 07:51:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhDQFTi (ORCPT
+        with ESMTP id S235901AbhDQLvB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Apr 2021 01:19:38 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC46C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 22:19:11 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id g8so48027577lfv.12
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 22:19:11 -0700 (PDT)
+        Sat, 17 Apr 2021 07:51:01 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C44FC061574;
+        Sat, 17 Apr 2021 04:50:33 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id r7so17144565wrm.1;
+        Sat, 17 Apr 2021 04:50:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wwwkAb5rNqv8paIW4jdkMxuchTrhRlc4eRl0nXP/J/A=;
-        b=Nwq5Ue59InK0/ucaTBsFjvwLiWqm3+Cx+NY/pztd/R1VPg1Y2fyKXr167BE7KOTpfz
-         vAh0m/XhC8Wf7TeA2uyF4bez4QRWUh8VgN11/qWSHVnw+6546COxtUQaeAJ4A9IpXaK3
-         jl2EFkom1as+REZ4K+cbfgo3VsOtu4525qkENVKE99F8aUqbeCqI3HwJINcZRvEdBKJz
-         8MjV8LQ/buIc0UzV+uJ1RUzN/2W3XlV5VZrkRFqbhCILjjrXwgZS/AGZUc2XBFma/+Z0
-         bSTf/eg1xUt5zFR/YUeWkO6YpjbXFkQdMd/kqahfWTMa8qFDnU8bUzRTta3jtiMq2Ml7
-         pR+A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hWQTtezj5e7iWCHlJMc/HElbpfX2XhqmE3A4fxS1/zs=;
+        b=TOJN98Y5AJgvwqWBXb3oN1sktUtOgOjayiLIailIKN8OfZ01K1WDZ5IGsZHu3ewnbD
+         Kv0usVyqiCN/c+rwornOm/CUkJ9/W7k6XKYKD+8PabWrZn1Pjr/VePU1tzD+aTXe9HHJ
+         OSqyA55TTs44hD2HqL4h9bCpe/I0Aki80XxisRJWtBOSys/UDGa8vA+DVtn9Xv1reIrg
+         dEIBVuPoo/ZV0nLbIgb57QuOtfeR6x0SEheM8944eYb+ipKKwlPDTUxLh4EQV09KFGu7
+         GKdaXUHjmLtoFgSLHX83A9mcRO0oH/V7odhveorl38U9L5JqGfZXNucM0SGFhKpUKk0+
+         mnTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wwwkAb5rNqv8paIW4jdkMxuchTrhRlc4eRl0nXP/J/A=;
-        b=CYAWqRPKP38n3EiUDB2tLaBql8dfMG6Me8dK84JQFF81Yyuxqn2jqYFv05X8jHdxOS
-         MfchHiO67hbO+sdWK4NKn9lEQR0TyDTwHGuaHbGvqOGH/+OHvKhRdqnEIYm36S2dRvyK
-         TVygqzObs67jxJmdGk0xzWN6IjHeJkzVBxuUSBWD+flVWUiyH8mdTYF1ne9kqFK8nlm0
-         Q8bmiERWzJ4u8wRYo/8sWDR0VxrHl0sGYSnYj+JIWYHxRNC/NoHm+9yixX0wuJCdg0tr
-         sCSmcFl4VPcZXc1Ar+8V9IArTErLihC5rid4Ne8PTjzIDA73FL+JwZQQiM3vLstso9Me
-         ddaA==
-X-Gm-Message-State: AOAM531KZShwKUP5iVRbLrzklrcX8z3DOA+2di4MKQLEEiskQjRTlfKV
-        CTgC4LOwAxK1f06So6SUxrPOjK3c4xhQRQ==
-X-Google-Smtp-Source: ABdhPJz21X7pcJPHSJx8n+n6ZI+t3JmCVbiSiUgO7jEG0fTQfcgubJs6cBoFO7E6OCNInR4UB7tGfg==
-X-Received: by 2002:a19:ee04:: with SMTP id g4mr5083774lfb.395.1618636749706;
-        Fri, 16 Apr 2021 22:19:09 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:812d:be19:6dbd:a91:f761:1766? ([2a00:1370:812d:be19:6dbd:a91:f761:1766])
-        by smtp.gmail.com with ESMTPSA id y11sm1131950ljy.27.2021.04.16.22.19.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 22:19:09 -0700 (PDT)
-Subject: Re: Design strangeness of incremental btrfs send/recieve
-To:     Chris Murphy <lists@colorremedies.com>,
-        Alexandru Stan <alex@hypertriangle.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAE9tQ0dr1+TTrALYUGfgx7tViU1tVU00OyAxkP1qsUUkyVsXPQ@mail.gmail.com>
- <CAJCQCtTD+XKZOfOi8dS13qbp7L_MUsSVt1eF6raFjsTEE3-NBg@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <99fb1a43-9874-0053-b826-716675093f98@gmail.com>
-Date:   Sat, 17 Apr 2021 08:19:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hWQTtezj5e7iWCHlJMc/HElbpfX2XhqmE3A4fxS1/zs=;
+        b=a/OtErxW+ICY7KYnHmYrmttsNs771kf/GHHTciOAdgc/nNpw2ATXYb8JSgUv+Y9A4l
+         kDiZW/xc/Z1PXuFAviFoZoK2Bofk2j7vOKz3f4sp1o+q5UQSKAkjArw68qykom1Q8qAt
+         bD2Ovz8r4YVU/8xK8+gERg9AglF4vkxKjBT9jeuDBkqQlApKopoIb76OjncKqkDlT/9O
+         4aeZZOTQYzTW5V3Sd6aD1BiGRn7Z3zy4irHKd2U+e8twewPZv7v/mXHGLiKuw9HUXRnJ
+         ayUxkRfjLHok96GCnE00JVostGQZrTPJeZpi5SbrLzhmUfUulRjgvpbMwGhzggXCwE22
+         fRaQ==
+X-Gm-Message-State: AOAM530emJVYk6zf8IK1tKl0uQNcvkJ8sUBOD4N8IrD63OjDQeWtjzio
+        moEKYwIK8ifpDD81VV3OcfQ=
+X-Google-Smtp-Source: ABdhPJwiI2uq4gmoZdg/8UpZ9CopW+Q7D2WGRFhJRA9IyInoGGc9jonEe7oBzmSJJrYZaHt55uxEcA==
+X-Received: by 2002:a5d:65d2:: with SMTP id e18mr4059418wrw.31.1618660232167;
+        Sat, 17 Apr 2021 04:50:32 -0700 (PDT)
+Received: from ard0534 ([41.62.188.221])
+        by smtp.gmail.com with ESMTPSA id u4sm13790693wml.0.2021.04.17.04.50.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 17 Apr 2021 04:50:31 -0700 (PDT)
+Date:   Sat, 17 Apr 2021 12:50:28 +0100
+From:   Khaled Romdhani <khaledromdhani216@gmail.com>
+To:     David Sterba <dsterba@suse.cz>, clm@fb.com, josef@toxicpanda.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, khaledromdhani216@gmail.com
+Subject: Re: [PATCH-next] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210417115028.GA21778@ard0534>
+References: <20210413130604.11487-1-khaledromdhani216@gmail.com>
+ <20210416173203.GE7604@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTD+XKZOfOi8dS13qbp7L_MUsSVt1eF6raFjsTEE3-NBg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416173203.GE7604@twin.jikos.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 17.04.2021 06:29, Chris Murphy wrote:
-> On Fri, Apr 16, 2021 at 9:03 PM Alexandru Stan <alex@hypertriangle.com> wrote:
->>
->> # sending back incrementally (eg: without sending back file-0) fails
->>     alex@alex-desktop:/mnt% sudo btrfs send bigfs/myvolume-1 -p
->> bigfs/myvolume-3|sudo btrfs receive ssdfs/
->>     At subvol bigfs/myvolume-1
->>     At snapshot myvolume-1
->>     ERROR: cannot find parent subvolume
+On Fri, Apr 16, 2021 at 07:32:03PM +0200, David Sterba wrote:
+> On Tue, Apr 13, 2021 at 02:06:04PM +0100, Khaled ROMDHANI wrote:
+> > The variable zone is not initialized. It
+> > may causes a failed assertion.
 > 
-> What about using -c instead of -p?
+> Failed assertion means the 2nd one checking that the result still fits
+> to 32bit type. That would mean that none of the cases were hit, but all
+> callers pass valid values.
 > 
-> 
-> 
- Incremental send requires parent subvolume. If "-p" is omitted, it
-tries to chose the most suitable as parent from those in "-c". Single
-"-c" is absolutely equivalent to "-p".
+> It would be better to add a default: case to catch that explicitly,
+> though hitting that is considered 'will not happen'.
+
+Yes. I will send a V2.
