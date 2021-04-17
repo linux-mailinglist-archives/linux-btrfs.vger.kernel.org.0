@@ -2,120 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8CF362C8E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 03:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627F9362D0C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 05:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbhDQBBk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 21:01:40 -0400
-Received: from mout.gmx.net ([212.227.17.20]:52333 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235046AbhDQBBi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 21:01:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618621268;
-        bh=lf0S65L624wrpbfWhPn8O+NFUVsYzB4amKHETV5POck=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=CfpAU/kHf+roP9ctzXzljDZ8z4q+Wp0IxBnSyb8NvL3/0d3T5jqutft9vWNMrm/0x
-         UtlRKh9Ns4Jb9FunqOqFVdwFpmJR/S9TRn3N+CG8Ca+w1d2hgexW+pUapFMwQ9OG2+
-         GM68i2dgR/UCyCFKXrc64OloHHWBBRRNBPGR02nU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHoNC-1lKs1V2XNm-00EyNs; Sat, 17
- Apr 2021 03:01:08 +0200
-Subject: Re: read time tree block corruption detected
-To:     "Gervais, Francois" <FGervais@distech-controls.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <DM6PR01MB4265447B51C4FD9CE1C89A3DF34C9@DM6PR01MB4265.prod.exchangelabs.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <666c6ea6-9015-1e50-e8a7-dc5b45cdac3c@gmx.com>
-Date:   Sat, 17 Apr 2021 09:01:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233847AbhDQDEF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Apr 2021 23:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhDQDEE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Apr 2021 23:04:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623AFC061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 20:03:37 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id z13so30690092lfd.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 20:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hypertriangle-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=FTvgS8M4t6XkOUoS5DaTHk2OQ8VXB3eox+huVwMLyB0=;
+        b=dYS+LoyizSCOSUKW3dae7pSbn3qgofBPHLBxyBKplkwIlbBydXBRBN1ZPdQAvb2q74
+         MkZwYxi0CsRXrsAn250wwP819zuYzuZIn6126eraZu3yy+caXDqhcBC1WBNQrfKpUqKY
+         d8wuRCPhw0E3YtNOU5os9jX79dMu065etWiBrK5QBCNzgjNL9vC2TtiUqZH4NKaCLS5f
+         TA8p1Sea0Bc2sGct+deQ7jMBf9wBU4Lti3gPZrBA8iyizc8m7KcVVh4tFauVkfe0p/9J
+         p94Ohyc2sMhocc1gAcYPaxJ0ZYdCEqamUQCD2ncVe9Jv7Qc7ylElh1KWTaRrzFa627Kv
+         Lw0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=FTvgS8M4t6XkOUoS5DaTHk2OQ8VXB3eox+huVwMLyB0=;
+        b=kvOyS2v1dsLu321xcrZWA8+fpL9J5fGprMb4kkFGhrBM+UxUGFp3Jt4gqdvCDIKgY/
+         O2DOFq18s7gfFXNCdyJmJ65iI6N4JW8XY2PVz8uL8UbanBAcOV8TRJmAvlsWfHCKXzzu
+         NiJk9lgtJgniVvRQJNwa9UgWeTjmoAPr5IkuHTjFNZD4e+g0obroAyliuLKu8WnsJL0B
+         oNiHYPcbI3zLdGwPtGV98e2o0t8WuAPMwtZEoa4tIz5YqApFP0k6+JI+6l6H6sF6Loaz
+         OsrmeI3R9L3Z/Isd/Yjvcbb9b7pYMl+E4Y/qKnK2lQl4QLxwP4cD7eAZY3blStKrHUKE
+         hFEA==
+X-Gm-Message-State: AOAM530ZTMsojoKogVxzvjTVItSEd5Wx3/nG9wJgR3POZ8P/fuWCwLA+
+        6UWOkZDpXILcA7NjRSo/1IrkZw8F7RyBOH0fSK8ljfUWKIuLjn4q
+X-Google-Smtp-Source: ABdhPJyASzamyKJm/1ScN2ZFt/XA8X4xXAEx8TQGP3ecHXqbPIQ4Vqx+/66AZJCEPLAigrwCTm3DKxpsubF5EH2LLPk=
+X-Received: by 2002:a05:6512:38aa:: with SMTP id o10mr4984491lft.261.1618628615363;
+ Fri, 16 Apr 2021 20:03:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <DM6PR01MB4265447B51C4FD9CE1C89A3DF34C9@DM6PR01MB4265.prod.exchangelabs.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:EDG08VQJg23sU6VzUcf90VaYO/1e6YeuCf6EHkSB616Q9hD+Ula
- TjR+LS6+8qgbpepDKV/hPd/nRSeQbZJUroOX1nloqCwMpVwe7+vRhONOnhxwhVP6yuzMZrN
- XUER2Np3aSjj9YTD/7VOdw0i5g2HcCcCnZA3h78Q+RN8N2nqXi0gktj2ShObbpaVYNGbpQc
- 07Jg64WFrfPbjTr+ESFFg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HubKvN2gEe8=:WT562xXhZ0BeSt/z4lOs+y
- kv66FRYVuRZfevvN95pOFH7cdy0gcFZHnyZ4IeWhIs6vs3l3khsCxwq3fD/WemVPkDCtrYl1O
- /ohLH3ooRMqwQGsqBHTj3/iWSlMVYx6XPgvJ8QaOsDH3wWyu/IRYzG0INQOS3ZLkLkGy3NsTQ
- V1j+O7dtoHK6LOKrbJCV7QINeStTPtL39Qj/3kVdqxC6OeG7UL4+LDkF+vMZjDsuusdYFhMCK
- lh3SSZhzSYynxemUYaofhvEi/15BzmoRMmWHZn1lzIbgJ6gykqEFr5jDk9oPePHUfOUh8fcT4
- 4puLW3E1cwW9jGrHtaIpM7GJVq2AzaaDnoXvgDSSHcVEgALDIH6jYlb43mYIVFSQKv9y9vApz
- 812XYtXaEZXftbRrwCsUKIccYOdCTP5yKrNZ9EQUAXfHVBbaOdKuBBeMdyb0OcADtfq7Xx3HT
- tIRmKcJqR16bCZs696cIOYmlE0JuXQIcXWKjeFa7LNjjefWACuetS9WTrrq54tbanTpPpHpVE
- 16ZFBaivsRwwn4/PLyDO8MtTIzdhUuMgj5e+BoJ7t0Fi/q7s3mFXUJ3crqAnLSTQKyBXYgWeC
- gVrwQCVDFoSaPQMidrAQekgE9u9sjGDrinF1bLc7RabTjV3W5c55A7A6P5QZPqnU1OzkoTlDo
- Wd+k1MIctP+Q5Qf0vDCBsRk/WjkTTA06PETbL3PJrnkwa71zJcd/o/83KThr7wYKfz0xweN49
- LGukCuFjv1hXa6Pxs4YlxLarNDmajMsT9SGrKM4v3gjODNcdeGxDMJt9PwdUSNGsXpnke4yFy
- AJCOWkIf9gMKktBnV8ICOwgWXOeowuUv8ch5Qg4q/0OMnrI2aYYpcAtg8ieRWYajzmzZdn9GG
- 2Rnf8cNV4+d2oKnzq7C9utUn/9AjupDGkHYvs/y4z0tpppCuTF0oKOI7HG3yHedOKT2eyVbHo
- RfVWBzmHYpndRj6OfwSwQWognJP3qLPI7PiMeoJtzTKlUXaZTQDPTkbS4nxTQqX+WijUHHQBG
- YRQlc4LUv75XOZDrhIzXMU6s6Zl+4bVQZJVJGvRFAmmUXpJWgtesqfMCsSZmHdb9nfUaUinqj
- ifKUO0rtZkhJxL13pZBv+KPzYQkG9LOZBao2Y1Bjcf00bdGJunvirgZ7erHm3mPQEGiszIBZS
- fSP8TbGhI1qqxenOY4Bh/Jsf+Fkl3xZdaBj/dQjFXWz1ZncDlCUrP+drCFVnaSUm7o/NJ8tmi
- tCeqmZOLTM1ADAyP7
+From:   Alexandru Stan <alex@hypertriangle.com>
+Date:   Fri, 16 Apr 2021 20:02:58 -0700
+Message-ID: <CAE9tQ0dr1+TTrALYUGfgx7tViU1tVU00OyAxkP1qsUUkyVsXPQ@mail.gmail.com>
+Subject: Design strangeness of incremental btrfs send/recieve
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
+I have a system that btrfs sends daily its rootfs to another system
+far away. Incrementally (this is important to saving bandwidth since
+we're talking about half a TB).
 
-On 2021/4/17 =E4=B8=8A=E5=8D=883:35, Gervais, Francois wrote:
-> We are using btrfs on one of our embedded devices and we got filesystem =
-corruption on one of them.
->
-> This product=C2=A0undergo a lot of tests on our side and apparently it's=
- the first it happened so it seems to be a pretty rare occurrence. However=
- we still want to get to the bottom of this to ensure it doesn't happen in=
- the future.
->
-> Some background:
-> - The corruption happened on kernel v5.4.72.
-> - On the debug device I'm on master (v5.12.0-rc7) hoping it might help t=
-o have all the latest patches.
->
-> Here what kernel v5.12.0-rc7 tells me when trying to mount the partition=
-:
->
-> Apr 16 19:31:45 buildroot kernel: BTRFS info (device loop0p3): disk spac=
-e caching is enabled
-> Apr 16 19:31:45 buildroot kernel: BTRFS info (device loop0p3): has skinn=
-y extents
-> Apr 16 19:31:45 buildroot kernel: BTRFS info (device loop0p3): start tre=
-e-log replay
-> Apr 16 19:31:45 buildroot kernel: BTRFS critical (device loop0p3): corru=
-pt leaf: root=3D18446744073709551610 block=3D790151168 slot=3D5 ino=3D5007=
-, inode ref overflow, ptr 15853 end 15861 namelen 294
+For a while my first system's hardware was out of commission, so I
+spun it up (systemd-nspawn) on the second system since I had all the
+files there. Now it's time to get back my services on the first
+system, so i want to merge my changes I made on the second system.
+Turns out to do this incrementally is a bit of a problem.
 
-Please provide the following dump:
-  #btrfs ins dump-tree -b 18446744073709551610 /dev/loop0p3
+From what I understand this might be impossible since the received
+UUID will never match. I just wanted to send this out just in case I'm
+missing anything, and perhaps express my frustration that maybe this
+should work (what would it take to fix it?).
 
-I'm wondering why write-time tree-check didn't catch it.
+Here's a boiled down example of what i'm trying to do (assume ssdfs
+and bigfs are my first and second systems respectively):
 
-Thanks,
-Qu
-> Apr 16 19:31:45 buildroot kernel: BTRFS error (device loop0p3): block=3D=
-790151168 read time tree block corruption detected
-> Apr 16 19:31:45 buildroot kernel: BTRFS critical (device loop0p3): corru=
-pt leaf: root=3D18446744073709551610 block=3D790151168 slot=3D5 ino=3D5007=
-, inode ref overflow, ptr 15853 end 15861 namelen 294
-> Apr 16 19:31:45 buildroot kernel: BTRFS error (device loop0p3): block=3D=
-790151168 read time tree block corruption detected
-> Apr 16 19:31:45 buildroot kernel: BTRFS: error (device loop0p3) in btrfs=
-_recover_log_trees:6246: errno=3D-5 IO failure (Couldn't read tree log roo=
-t.)
-> Apr 16 19:31:45 buildroot kernel: BTRFS: error (device loop0p3) in btrfs=
-_replay_log:2341: errno=3D-5 IO failure (Failed to recover log tree)
-> Apr 16 19:31:45 buildroot e512c123daaa[468]: mount: /root/mnt: can't rea=
-d superblock on /dev/loop0p3.
-> Apr 16 19:31:45 buildroot kernel: BTRFS error (device loop0p3): open_ctr=
-ee failed: -5
->
-> Any suggestions?
->
+# create a subvolume (in ssdfs) and a few test files
+    alex@alex-desktop:/mnt% sudo btrfs subvolume create ssdfs/myvolume-0
+    Create subvolume 'ssdfs/myvolume-0'
+    alex@alex-desktop:/mnt% sudo touch ssdfs/myvolume-0/file-0
+
+# create a RO snapshot so we can send it somewhere else (bigfs)
+    alex@alex-desktop:/mnt% sudo btrfs subvolume snapshot
+ssdfs/myvolume-0 -r ssdfs/myvolume-1
+    Create a readonly snapshot of 'ssdfs/myvolume-0' in 'ssdfs/myvolume-1'
+    alex@alex-desktop:/mnt% sudo btrfs send ssdfs/myvolume-1|sudo
+btrfs receive bigfs/
+    At subvol ssdfs/myvolume-1
+
+# make an rw snashot at the destination and start modifying it
+    alex@alex-desktop:/mnt% sudo btrfs subvolume snapshot
+bigfs/myvolume-1 bigfs/myvolume-2
+    Create a snapshot of 'bigfs/myvolume-1' in 'bigfs/myvolume-2'
+    alex@alex-desktop:/mnt% ls bigfs/myvolume-2/
+    file-0
+    alex@alex-desktop:/mnt% sudo touch bigfs/myvolume-2/file-1
+
+# create an RO snapshot in preparation to send it back to ssdfs
+    alex@alex-desktop:/mnt% sudo btrfs subvolume snapshot
+bigfs/myvolume-2 -r bigfs/myvolume-3
+    Create a readonly snapshot of 'bigfs/myvolume-2' in 'bigfs/myvolume-3'
+
+# sending back incrementally (eg: without sending back file-0) fails
+    alex@alex-desktop:/mnt% sudo btrfs send bigfs/myvolume-1 -p
+bigfs/myvolume-3|sudo btrfs receive ssdfs/
+    At subvol bigfs/myvolume-1
+    At snapshot myvolume-1
+    ERROR: cannot find parent subvolume
+#### Cry
+
+# some debug info
+    alex@alex-desktop:/mnt% ls *fs/myvolume*
+    ssdfs/myvolume-0:
+    file-0
+
+    ssdfs/myvolume-1: # ro
+    file-0
+
+    bigfs/myvolume-1: # ro
+    file-0
+
+    bigfs/myvolume-2:
+    file-0  file-1
+
+    bigfs/myvolume-3: # ro
+    file-0  file-1
+
+    alex@alex-desktop:/mnt% sudo btrfs subvolume show ssdfs/myvolume-1
+    myvolume-1
+        Name:                   myvolume-1
+        UUID:                   1fcff3a8-c53f-1543-9b61-8108e486eecc
+        Parent UUID:            1b0a6fac-4139-1840-b654-f21833b6cd12
+        Received UUID:          -
+        Creation time:          2021-04-16 19:32:46 -0700
+        Subvolume ID:           1650
+        Generation:             2198818
+        Gen at creation:        2198818
+        Parent ID:              5
+        Top level ID:           5
+        Flags:                  readonly
+        Snapshot(s):
+
+    alex@alex-desktop:/mnt% sudo btrfs subvolume show bigfs/myvolume-1
+    myvolume-1
+        Name:                   myvolume-1
+        UUID:                   25301f81-10d5-e34e-8283-51656137ffc8
+        Parent UUID:            -
+        Received UUID:          1fcff3a8-c53f-1543-9b61-8108e486eecc
+        Creation time:          2021-04-16 19:33:22 -0700
+        Subvolume ID:           6344
+        Generation:             63939
+        Gen at creation:        63935
+        Parent ID:              5
+        Top level ID:           5
+        Flags:                  readonly
+        Snapshot(s):
+                                myvolume-2
+
+    alex@alex-desktop:/mnt% sudo btrfs subvolume show bigfs/myvolume-2
+    myvolume-2
+        Name:                   myvolume-2
+        UUID:                   a437c7cf-5f14-9d4d-adb6-3c35ed9d0546
+        Parent UUID:            25301f81-10d5-e34e-8283-51656137ffc8
+        Received UUID:          -
+        Creation time:          2021-04-16 19:34:13 -0700
+        Subvolume ID:           6345
+        Generation:             63945
+        Gen at creation:        63939
+        Parent ID:              5
+        Top level ID:           5
+        Flags:                  -
+        Snapshot(s):
+                                myvolume-3
+
+Alexandru Stan
