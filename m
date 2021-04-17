@@ -2,111 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E718C363014
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 15:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E8B3630E8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 17:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236409AbhDQMwq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Apr 2021 08:52:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42250 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236313AbhDQMwq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:52:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618663939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=LoPnGGDJhIUbPCGZP8qp9jNUM/LxybXNFtbfJ3/eBdI=;
-        b=qCgxy7Ak8/47IJ6gN+tAnmagv7/AR2ZVEB7lkeUrIhWeY4juIO+g7o68hdvvKvXkMJYI9h
-        w1iE1Vv7OlyOUXXaqo3JURDIydwCGlTjjLCuHkDjzHiCLClzDGMH2BeoGKTtatGJL4s3Zi
-        cPUgXmSbWF7Oe0/TJoiySuKvohx0J1A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F2A9CB2F1;
-        Sat, 17 Apr 2021 12:52:18 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     u-boot@lists.denx.de
-Cc:     linux-btrfs@vger.kernel.org,
-        Matwey Kornilov <matwey.kornilov@gmail.com>
-Subject: [PATCH U-boot v2] fs: btrfs: fix the false alert of decompression failure
-Date:   Sat, 17 Apr 2021 20:52:13 +0800
-Message-Id: <20210417125213.132066-1-wqu@suse.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S236607AbhDQPhF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Apr 2021 11:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236287AbhDQPhE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 17 Apr 2021 11:37:04 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3838AC061574;
+        Sat, 17 Apr 2021 08:36:38 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id e5so842350wrg.7;
+        Sat, 17 Apr 2021 08:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=c+F4d/dEml33345nfDC4G3PoJm5Qmt0bDGgusF3hVAA=;
+        b=pg3G1wezwp+QSAiQWTByKGg8AxHR1ktpMxQFkRs8iKwJ8Y86bRwAnhU0dHuiTjAEpQ
+         TyDYn+vxSWyq/HQIU5CfpRHGoWQIZgAbLt3lVI+6zNCCiNJsb1d1wowfC9dcz2PY1XnT
+         5vutlOnMLEMS1Xuh06PY3Y/XMjIlvlJyGq1+komGHJII8ZyNNI2HSkLZZ49pBcjUUx5j
+         G3kLNVPGvLduOUeYY/00R+yb9XBmO5yKbzgvvcE79xH+UTooUK4BRnPYmXmAqlamiuR9
+         DIphQNl7Q0/vgHpqmFMWUWscqhNwFNxArnmFdEsdB0Py89Ju2wR6yY0A75x7o+XDBg4Y
+         Znvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c+F4d/dEml33345nfDC4G3PoJm5Qmt0bDGgusF3hVAA=;
+        b=pjkuZAq7I25ado+3XuqAm54pqK4OFjFUIlyOUY592BwjsuXJ5Hrdq4thrVJ95m1B3S
+         Yn845VysOmV74QPr5emXbbXSqLGG8gK+bxBCR62Sfb+if7iPdq/RHNdWG3Tq0yz+Om5m
+         QQePkw1ok1NEfgGV9ZS8jvpK4llBAC8EdDaRlRPYNjBYOYzWRBxRVnwPqnDA//yMZVeV
+         +uMotZ8Ungt/9MhaQdpSDGXCmUECMgtnaMuCRLBAJ7WhgZBoZXdS7BUsHvhIaRwIgtGh
+         4SuABiP1HbnXHVa4ChqhhN0cDnUccMmpi0B3vJZMEW5ybdmB+lmRzpQZ1WEhOsNOXRIZ
+         ElMw==
+X-Gm-Message-State: AOAM531+eGZruhe+M6QDhdak2QycK576Ku0mAwZR64oKXndJOZ0Hb2H9
+        2lOiic3Lqo/BBOkQe94GNmY=
+X-Google-Smtp-Source: ABdhPJwj+dRgPK3Xpn2TLtvCocLIWT4HlgdYcvvZlC2n/PDqXhJK10s2yzmiUISQcxzyUPIf4bwJBA==
+X-Received: by 2002:adf:e650:: with SMTP id b16mr4760567wrn.273.1618673796958;
+        Sat, 17 Apr 2021 08:36:36 -0700 (PDT)
+Received: from localhost.localdomain ([41.62.188.221])
+        by smtp.gmail.com with ESMTPSA id a15sm14773926wrr.53.2021.04.17.08.36.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Apr 2021 08:36:36 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] fs/btrfs: Fix uninitialized variable
+Date:   Sat, 17 Apr 2021 16:36:16 +0100
+Message-Id: <20210417153616.25056-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are some cases where decompressed sectors can have padding zeros.
+As reported by the Coverity static analysis.
+The variable zone is not initialized which
+may causes a failed assertion.
 
-In kernel code, we have lines to address such situation:
-
-        /*
-         * btrfs_getblock is doing a zero on the tail of the page too,
-         * but this will cover anything missing from the decompressed
-         * data.
-         */
-        if (bytes < destlen)
-                memset(kaddr+bytes, 0, destlen-bytes);
-        kunmap_local(kaddr);
-
-But not in U-boot code, thus we have some reports of U-boot failed to
-read compressed files in btrfs.
-
-Fix it by doing the same thing of the kernel, for both inline and
-regular compressed extents.
-
-Reported-by: Matwey Kornilov <matwey.kornilov@gmail.com>
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1183717
-Fixes: a26a6bedafcf ("fs: btrfs: Introduce btrfs_read_extent_inline() and btrfs_read_extent_reg()")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Addresses-Coverity: ("Uninitialized variables")
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
 ---
-Changelog:
-v2:
-- Fix the bug for regular and inline compressed extents
+v2: add a default case as proposed by David Sterba
 ---
- fs/btrfs/inode.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ fs/btrfs/zoned.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 019d532a1a4b..2c2379303d74 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -390,10 +390,16 @@ int btrfs_read_extent_inline(struct btrfs_path *path,
- 			   csize);
- 	ret = btrfs_decompress(btrfs_file_extent_compression(leaf, fi),
- 			       cbuf, csize, dbuf, dsize);
--	if (ret < 0 || ret != dsize) {
-+	if (ret == (u32)-1) {
- 		ret = -EIO;
- 		goto out;
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index eeb3ebe11d7a..82527308d165 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
+ 	case 0: zone = 0; break;
+ 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+ 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
++	default:
++		zone = 0;
++	break;
  	}
-+	/*
-+	 * The compressed part ends before sector boundary, the remaining needs
-+	 * to be zeroed out.
-+	 */
-+	if (ret < dsize)
-+		memset(dbuf + ret, 0, dsize - ret);
- 	memcpy(dest, dbuf, dsize);
- 	ret = dsize;
- out:
-@@ -494,10 +500,16 @@ int btrfs_read_extent_reg(struct btrfs_path *path,
  
- 	ret = btrfs_decompress(btrfs_file_extent_compression(leaf, fi), cbuf,
- 			       csize, dbuf, dsize);
--	if (ret != dsize) {
-+	if (ret == (u32)-1) {
- 		ret = -EIO;
- 		goto out;
- 	}
-+	/*
-+	 * The compressed part ends before sector boundary, the remaining needs
-+	 * to be zeroed out.
-+	 */
-+	if (ret < dsize)
-+		memset(dbuf + ret, 0, dsize - ret);
- 	/* Then copy the needed part */
- 	memcpy(dest, dbuf + btrfs_file_extent_offset(leaf, fi), len);
- 	ret = len;
+ 	ASSERT(zone <= U32_MAX);
 -- 
-2.31.1
+2.17.1
 
