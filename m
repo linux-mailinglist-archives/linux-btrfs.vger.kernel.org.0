@@ -2,89 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E8B3630E8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 17:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A911D363172
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 19:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbhDQPhF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Apr 2021 11:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDQPhE (ORCPT
+        id S236829AbhDQR2P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Apr 2021 13:28:15 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]:37448 "EHLO
+        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236730AbhDQR2O (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Apr 2021 11:37:04 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3838AC061574;
-        Sat, 17 Apr 2021 08:36:38 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id e5so842350wrg.7;
-        Sat, 17 Apr 2021 08:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=c+F4d/dEml33345nfDC4G3PoJm5Qmt0bDGgusF3hVAA=;
-        b=pg3G1wezwp+QSAiQWTByKGg8AxHR1ktpMxQFkRs8iKwJ8Y86bRwAnhU0dHuiTjAEpQ
-         TyDYn+vxSWyq/HQIU5CfpRHGoWQIZgAbLt3lVI+6zNCCiNJsb1d1wowfC9dcz2PY1XnT
-         5vutlOnMLEMS1Xuh06PY3Y/XMjIlvlJyGq1+komGHJII8ZyNNI2HSkLZZ49pBcjUUx5j
-         G3kLNVPGvLduOUeYY/00R+yb9XBmO5yKbzgvvcE79xH+UTooUK4BRnPYmXmAqlamiuR9
-         DIphQNl7Q0/vgHpqmFMWUWscqhNwFNxArnmFdEsdB0Py89Ju2wR6yY0A75x7o+XDBg4Y
-         Znvg==
+        Sat, 17 Apr 2021 13:28:14 -0400
+Received: by mail-qt1-f181.google.com with SMTP id o2so9780557qtr.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Apr 2021 10:27:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=c+F4d/dEml33345nfDC4G3PoJm5Qmt0bDGgusF3hVAA=;
-        b=pjkuZAq7I25ado+3XuqAm54pqK4OFjFUIlyOUY592BwjsuXJ5Hrdq4thrVJ95m1B3S
-         Yn845VysOmV74QPr5emXbbXSqLGG8gK+bxBCR62Sfb+if7iPdq/RHNdWG3Tq0yz+Om5m
-         QQePkw1ok1NEfgGV9ZS8jvpK4llBAC8EdDaRlRPYNjBYOYzWRBxRVnwPqnDA//yMZVeV
-         +uMotZ8Ungt/9MhaQdpSDGXCmUECMgtnaMuCRLBAJ7WhgZBoZXdS7BUsHvhIaRwIgtGh
-         4SuABiP1HbnXHVa4ChqhhN0cDnUccMmpi0B3vJZMEW5ybdmB+lmRzpQZ1WEhOsNOXRIZ
-         ElMw==
-X-Gm-Message-State: AOAM531+eGZruhe+M6QDhdak2QycK576Ku0mAwZR64oKXndJOZ0Hb2H9
-        2lOiic3Lqo/BBOkQe94GNmY=
-X-Google-Smtp-Source: ABdhPJwj+dRgPK3Xpn2TLtvCocLIWT4HlgdYcvvZlC2n/PDqXhJK10s2yzmiUISQcxzyUPIf4bwJBA==
-X-Received: by 2002:adf:e650:: with SMTP id b16mr4760567wrn.273.1618673796958;
-        Sat, 17 Apr 2021 08:36:36 -0700 (PDT)
-Received: from localhost.localdomain ([41.62.188.221])
-        by smtp.gmail.com with ESMTPSA id a15sm14773926wrr.53.2021.04.17.08.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 08:36:36 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] fs/btrfs: Fix uninitialized variable
-Date:   Sat, 17 Apr 2021 16:36:16 +0100
-Message-Id: <20210417153616.25056-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=6UhICrEqPgvyce0QgtrIkYPOQPRuUITd4w+HSDeIzmQ=;
+        b=fcU8O/LnOt0aFKxIQ/W5eAaDDj2Fqft0S5UpyVku2T443Q2PGvaMRC9+4QZZUaObJo
+         cqXn5yccc4eSEC+n1YK0DxiYCypMC+VgtYO5c6HBWnlQPSlsHTv90HTjBt6h3HGxvVtH
+         3aAa7VETT/GUviQGdln7V6ZgV9iAtEFhC8S9/fU8flgf8A0PcK7dwt0MUoew1Q2es6yz
+         UeEKRronD+9QQmmwdnbEWtkGqoyzmOpWRubHz75C3MHJVKWI8rIffLTlS1Kh5GDH77a+
+         VX6EcV0f//Ovec9BDBFNaxIQitf2Tdjj5wqxeZPMSnFlXyoYvkYlgBBDdEqhJBWROqqf
+         3xPg==
+X-Gm-Message-State: AOAM532B9llluYfO/GcZDev71U6y+kt96b3gvVKQ4vhbVCOkYKVGwCn3
+        MDhUFL689BAszQISqFZ94ZXwiGn9ptvIpgOUYN7LvsEvX5s=
+X-Google-Smtp-Source: ABdhPJxHVq3wMRTBU7RIjksZhCnrDoOIw23iUMTtPdsBIlNpe85VCeVj4TgJKdRkOiB4brWItHCakA/cLipuWXDlBG0=
+X-Received: by 2002:ac8:53ce:: with SMTP id c14mr426167qtq.325.1618680467213;
+ Sat, 17 Apr 2021 10:27:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAK3NTRCPDJSCnOiKSUK+j6wi3yLSH1JG6fcjaSuQwyjA7VESww@mail.gmail.com>
+In-Reply-To: <CAK3NTRCPDJSCnOiKSUK+j6wi3yLSH1JG6fcjaSuQwyjA7VESww@mail.gmail.com>
+From:   Ross Boylan <rossboylan@stanfordalumni.org>
+Date:   Sat, 17 Apr 2021 10:27:36 -0700
+Message-ID: <CAK3NTRDhRAC4b9NXTwPARAQirt9z4ZNrwxLNQ+7mL1dehMB24Q@mail.gmail.com>
+Subject: Fwd: Interaction of nodatacow and snapshots
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As reported by the Coverity static analysis.
-The variable zone is not initialized which
-may causes a failed assertion.
+Suppose some files or directories on a subvolume are set nodatacow.
+And then one creates a snapshot of that subvolume.
+And then does a send based on that snapshot.
 
-Addresses-Coverity: ("Uninitialized variables")
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
-v2: add a default case as proposed by David Sterba
----
- fs/btrfs/zoned.c | 3 +++
- 1 file changed, 3 insertions(+)
+What happens?  I've looked through the documentation and can not tell.
+It doesn't sound
+as if nodatacow is consistent with the whole snapshot mechanism, but I
+don't see any
+explicit statements that any of the above won't work.
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index eeb3ebe11d7a..82527308d165 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
- 	case 0: zone = 0; break;
- 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
- 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-+	default:
-+		zone = 0;
-+	break;
- 	}
- 
- 	ASSERT(zone <= U32_MAX);
--- 
-2.17.1
+For example, I could imagine any of
+1. the snapshot or send command refuses to run.
+2. the snapshot completely omits anything that is nodatacow.  That
+would probably be tricky since the
+   directory with datacow above the object that is not datacow would
+need to be altered to
+   omit the reference.
+3. the snapshot does an explicit copy (i.e., duplicates all the bits)
+of all things nodatacow.
+4. the snapshot always shows the current (on the original subvolume)
+version of the nodatacow files.
+5. results are unpredictable and unreliable.
+6. the snapshot removes the nodatacow attribute from everything on the
+original subvolume.
+7. everything works fine (this one requires lots of imagination).
 
+I would appreciate cc's on the reply.
+
+Thanks.
+Ross Boylan
