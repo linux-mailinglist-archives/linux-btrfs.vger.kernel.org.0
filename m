@@ -2,101 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2620C362D5E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 05:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8B1362DD9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Apr 2021 07:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235786AbhDQDpY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Apr 2021 23:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
+        id S229629AbhDQFTj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Apr 2021 01:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235608AbhDQDpX (ORCPT
+        with ESMTP id S229614AbhDQFTi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Apr 2021 23:45:23 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B264EC061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 20:44:57 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 12so47634941lfq.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 20:44:57 -0700 (PDT)
+        Sat, 17 Apr 2021 01:19:38 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC46C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 22:19:11 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id g8so48027577lfv.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Apr 2021 22:19:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hypertriangle-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OuxMdiKx2mJUgqNCJdGpN/eyTNHxcmmmpwQ+Iw5/uDo=;
-        b=nk7M9eThP68mqEHgUSAiEI3VVMSX+pwPAcxwMyMoX8fEJZHP7tfqTgFe7aaBXIWA6p
-         H1My9uERtYWUE0sxzXZ6kSRTuusJG7aSvyZHygmZZGCFhGdQJBB6ynEwbFDXu4+3Lr6H
-         rFSUWLet54XcmDR8xz6HheMsh1UJbjWRaUPX6p16xOKQhnEqNslLoFm1gQO+BilLUk6q
-         Iw3+AWqR/nyNT1lFsIchU4CeFY9igC5qQCMpxynCOpMyuThzmiFby4Ox7JfxoFpG7iwy
-         5nuMhjPwcatI3gsp3PEebClENwkhORRBmomJTIwEtTXCaFyR2vEMtCQYb5U+pdUK2Hby
-         a2oA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wwwkAb5rNqv8paIW4jdkMxuchTrhRlc4eRl0nXP/J/A=;
+        b=Nwq5Ue59InK0/ucaTBsFjvwLiWqm3+Cx+NY/pztd/R1VPg1Y2fyKXr167BE7KOTpfz
+         vAh0m/XhC8Wf7TeA2uyF4bez4QRWUh8VgN11/qWSHVnw+6546COxtUQaeAJ4A9IpXaK3
+         jl2EFkom1as+REZ4K+cbfgo3VsOtu4525qkENVKE99F8aUqbeCqI3HwJINcZRvEdBKJz
+         8MjV8LQ/buIc0UzV+uJ1RUzN/2W3XlV5VZrkRFqbhCILjjrXwgZS/AGZUc2XBFma/+Z0
+         bSTf/eg1xUt5zFR/YUeWkO6YpjbXFkQdMd/kqahfWTMa8qFDnU8bUzRTta3jtiMq2Ml7
+         pR+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OuxMdiKx2mJUgqNCJdGpN/eyTNHxcmmmpwQ+Iw5/uDo=;
-        b=WzaJ8mjYtIKtGzhS0WLT6DjI5aiQdP9tiskiasBfLjfmPBxlbQOVAHl32ULVCFiMcD
-         20IhDjy8GSuT9iuNFnRJdmhwhknd5iodtGDFbz56B/MZN8lJOGJKY+1DEqbhBg1cA8wp
-         xy6Fn2qsvuWbZ+WSornrHwTpJH7whNNZXLa7GCh6TXQCDaueAKyJCHbUSjjrj3PAX1if
-         rNnjnDTaGNC5yISDEB3Ez2Uv8ob7ZjUsCYZcbXerYJWXgMOzEp01SL+e+k/8UcLw2h1P
-         nm8gQ1sV+DxTgj1dhj4NsFYO91Ic98z0Y/yiFeHbNXXSskpBgI3S6JaYooDLI0IXgriy
-         grcg==
-X-Gm-Message-State: AOAM533Y+YChXsKArQjMZc0w6jjVQM67E2nTvO6LQbI7D8vwMRHQcAuI
-        deMl/CrkRWxtR0cvQjM6lbxVYCd6cl0eosasYiCiP/tKLSbQPR69
-X-Google-Smtp-Source: ABdhPJzAD77Mr1ze3zS1Za0PH4sE+44cUCeS9YNxuTL8Uo93SxX+YhHCGIGQGPzScjQG6FGHyN9Z0zu5sjh8mpzd6u4=
-X-Received: by 2002:a05:6512:38aa:: with SMTP id o10mr5074425lft.261.1618631096181;
- Fri, 16 Apr 2021 20:44:56 -0700 (PDT)
-MIME-Version: 1.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wwwkAb5rNqv8paIW4jdkMxuchTrhRlc4eRl0nXP/J/A=;
+        b=CYAWqRPKP38n3EiUDB2tLaBql8dfMG6Me8dK84JQFF81Yyuxqn2jqYFv05X8jHdxOS
+         MfchHiO67hbO+sdWK4NKn9lEQR0TyDTwHGuaHbGvqOGH/+OHvKhRdqnEIYm36S2dRvyK
+         TVygqzObs67jxJmdGk0xzWN6IjHeJkzVBxuUSBWD+flVWUiyH8mdTYF1ne9kqFK8nlm0
+         Q8bmiERWzJ4u8wRYo/8sWDR0VxrHl0sGYSnYj+JIWYHxRNC/NoHm+9yixX0wuJCdg0tr
+         sCSmcFl4VPcZXc1Ar+8V9IArTErLihC5rid4Ne8PTjzIDA73FL+JwZQQiM3vLstso9Me
+         ddaA==
+X-Gm-Message-State: AOAM531KZShwKUP5iVRbLrzklrcX8z3DOA+2di4MKQLEEiskQjRTlfKV
+        CTgC4LOwAxK1f06So6SUxrPOjK3c4xhQRQ==
+X-Google-Smtp-Source: ABdhPJz21X7pcJPHSJx8n+n6ZI+t3JmCVbiSiUgO7jEG0fTQfcgubJs6cBoFO7E6OCNInR4UB7tGfg==
+X-Received: by 2002:a19:ee04:: with SMTP id g4mr5083774lfb.395.1618636749706;
+        Fri, 16 Apr 2021 22:19:09 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:be19:6dbd:a91:f761:1766? ([2a00:1370:812d:be19:6dbd:a91:f761:1766])
+        by smtp.gmail.com with ESMTPSA id y11sm1131950ljy.27.2021.04.16.22.19.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 22:19:09 -0700 (PDT)
+Subject: Re: Design strangeness of incremental btrfs send/recieve
+To:     Chris Murphy <lists@colorremedies.com>,
+        Alexandru Stan <alex@hypertriangle.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <CAE9tQ0dr1+TTrALYUGfgx7tViU1tVU00OyAxkP1qsUUkyVsXPQ@mail.gmail.com>
  <CAJCQCtTD+XKZOfOi8dS13qbp7L_MUsSVt1eF6raFjsTEE3-NBg@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <99fb1a43-9874-0053-b826-716675093f98@gmail.com>
+Date:   Sat, 17 Apr 2021 08:19:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
 In-Reply-To: <CAJCQCtTD+XKZOfOi8dS13qbp7L_MUsSVt1eF6raFjsTEE3-NBg@mail.gmail.com>
-From:   Alexandru Stan <alex@hypertriangle.com>
-Date:   Fri, 16 Apr 2021 20:44:19 -0700
-Message-ID: <CAE9tQ0d9Mm+1sBJej6cTzdRiqYeAEMGG41yxEj=qNz23CO=G6w@mail.gmail.com>
-Subject: Re: Design strangeness of incremental btrfs send/recieve
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 16 Apr 2021 at 20:29, Chris Murphy <lists@colorremedies.com> wrote:
->
+On 17.04.2021 06:29, Chris Murphy wrote:
 > On Fri, Apr 16, 2021 at 9:03 PM Alexandru Stan <alex@hypertriangle.com> wrote:
-> >
-> > # sending back incrementally (eg: without sending back file-0) fails
-> >     alex@alex-desktop:/mnt% sudo btrfs send bigfs/myvolume-1 -p
-> > bigfs/myvolume-3|sudo btrfs receive ssdfs/
-> >     At subvol bigfs/myvolume-1
-> >     At snapshot myvolume-1
-> >     ERROR: cannot find parent subvolume
->
+>>
+>> # sending back incrementally (eg: without sending back file-0) fails
+>>     alex@alex-desktop:/mnt% sudo btrfs send bigfs/myvolume-1 -p
+>> bigfs/myvolume-3|sudo btrfs receive ssdfs/
+>>     At subvol bigfs/myvolume-1
+>>     At snapshot myvolume-1
+>>     ERROR: cannot find parent subvolume
+> 
 > What about using -c instead of -p?
->
->
->
-> --
-> Chris Murphy
-
-Hey Chris,
-Thank you for replying and challenging my setup.
-
-I am a total idiot (you can quote me on that in the future).
-
-It would really help if I provided the -p option in front of the right
-subvolume:
-- sudo btrfs send bigfs/myvolume-1 -p bigfs/myvolume-3
-+ sudo btrfs send -p bigfs/myvolume-1 bigfs/myvolume-3
-
-To be fair my whole command looks more like:
-sudo -n btrfs send -p
-/mnt/bigfs/snapshots/somefolder/root.some_date_earlier
-/mnt/bigfs/snapshots/somefolder/root.$now | zstd -c -15 -T4 --long=27
-| mbuffer -v 1 -m 256m | ssh -o compression=no alex@first-server 'zstd
--d -c -T4 --long=27 | sudo -n btrfs receive /mnt/fs/snapshots/'
-
-My rootfs changes are now being transferred back happily! And... done
-in 2 minutes, amazing.
-
-Alright, </thread>
-
-Alexandru Stan
+> 
+> 
+> 
+ Incremental send requires parent subvolume. If "-p" is omitted, it
+tries to chose the most suitable as parent from those in "-c". Single
+"-c" is absolutely equivalent to "-p".
