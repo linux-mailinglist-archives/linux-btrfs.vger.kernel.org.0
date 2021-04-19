@@ -2,193 +2,220 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE96364705
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Apr 2021 17:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AE436483E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Apr 2021 18:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239712AbhDSPYE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Apr 2021 11:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhDSPYD (ORCPT
+        id S238844AbhDSQbo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Apr 2021 12:31:44 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:42077 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229666AbhDSQbm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:24:03 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D52C06174A
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Apr 2021 08:23:33 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id s7so34384552wru.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Apr 2021 08:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jse.io; s=google;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=zMUXBk6Ipc0YjIWEo2ircseaNtNJ4hE3Lrtv5CCHfs0=;
-        b=jzjY4FuTSZrYyx7XeMyWjK1pVI8pRXXJlCAkK6xAwdd2lxlUHNhXgPOZ3MnTyji66o
-         LQUS9JQFwfCyuW4Rgl1gBY22dzjlIQ+iVXsb+PfRRk4R7b7VwhqNbX0CJkYBSaHSNAjl
-         7rXgRFe1+yIgS/+R4YzwBXnvZcGYNxnSU734HhCe2s3gvrf7mZeeViVNf2W8Js7KVfQ8
-         rc5NW8P+owUkKdbZHYt717gKKtZ8Cgp5KBgnj6QQoWU+82aWn/9Npa0WlmvMJjq6IVvd
-         4W9I+45PFkqXSbxHIT0fQeWMZLYPLug4d2/oJvsT8VQlflNk4tW1X86prZ+tflb1LfCv
-         6NeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=zMUXBk6Ipc0YjIWEo2ircseaNtNJ4hE3Lrtv5CCHfs0=;
-        b=aEumcf+GK45iGBVULSCO5Vfx7wn5lMvUu7UAwmP9f3hTh2YglxVLl0F8aQcGavyOlJ
-         bT1oE6A0kBOwqNCB24c5NtH0F99R7m+gOaTLVeN/0pE765QF7W2AUbHIgFOL9d8IeN8W
-         YcCalTVpT5E4SBFe1pmO5HH2EQVXw08vDTlc+ImT/uI1d5alj6FsdHvRTxJb2AMA9nTO
-         1l4l3NRWjWXg1/f8SJ/6uJjpNWMQ8/ewh6SeLEcR7eE+oTVe+35PZTcouZSmIwEkOswP
-         PsW6cMGEeHFR2M92qtZih62AMc1Mj+6Ug/9AWqWuXoP7Si0+dilxcQXsl9Rm72tFfogj
-         C4Mw==
-X-Gm-Message-State: AOAM531D9KCtiuwzKjZc66CRTrtFfkWYX89ymp/bwOCcMoZpkSQGXwgO
-        spdIbYYVCqLPv6QKDL5MR1+2OhWEnRiwgnf5yne+2aVfNVqHYwWu
-X-Google-Smtp-Source: ABdhPJyvFlFO5nTsKQ+jeSJIjWDthqAzMbSJKxs++9BGB3ywsZO6cmjdYe1KwnknsPuX/0msLntPECP/ltiE+KMCbQE=
-X-Received: by 2002:adf:a40c:: with SMTP id d12mr14869838wra.91.1618845812131;
- Mon, 19 Apr 2021 08:23:32 -0700 (PDT)
+        Mon, 19 Apr 2021 12:31:42 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 754805C014E;
+        Mon, 19 Apr 2021 12:31:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 19 Apr 2021 12:31:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=v4QheYH05tEAhwvmUp4wBXgPZ/3
+        DplB9W7Hkdb6chSc=; b=qatwvuQKTYqbVfXcBmXcHemDvxfpIlfLlGMgj/9QMjN
+        IZJcbEJKJzYd16K/pKPORV+SXBYx+F3FcWd1mnS0d6DUiWOzFDhqBamds3o3POE9
+        Gml16wgfYt4eWAvef9J3G/1GyhJ3Gf7w9d3FLjhIz4q4TrJMBNsTEY+zg50GKjRC
+        jpkHoPQ/wgyqPEXP3JynmNJwz2zeSgkOqTPj2abMbq8RR9GR8otpAm0354oYpj3K
+        Td+HGut/LgdxqRQehTHTmhaCX5w0emQTSg5wybnyr6mf9iMliPMgWfxy6RyMc8Qd
+        0G0GOCDwQQT7DWCkuk1Rauwv+KK7Dksjl0IgqOnndGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=v4QheY
+        H05tEAhwvmUp4wBXgPZ/3DplB9W7Hkdb6chSc=; b=Vbon58MKIf/wEf250nqWrC
+        EAO2Aupjnmkdl1Dz9sQwf+7UL2fWBP24a2WF8yqa8jK/UfaS5bbqkRSaIBKC81p5
+        RwelRZOQu0DzeKGCTjROqXGrhlof5daLbsWOLmOknmzHfX8BcFE+yuQNZ0t/0VXM
+        aQUrLomPK2Vk84xyXdeYOBZ5uDT/kl8F2mYACFSR3p+JWl2CVA6HykGz7kPhuS7D
+        EaA+IghVwKHl/WYup6X+wSPtP3XDTPDF9Vb1YWsPg/CQ6UkbddPPwpgopbltS+B5
+        i0qO4qEpUCoRuYd91VQj7RLBsvAQZX6CTAUeTC4ozj0xseEJPPGG70OTKb1GyO9g
+        ==
+X-ME-Sender: <xms:ULB9YKRONoAr-UDLieXGPvHeBN4MnZDpqpU-dFaPdrUWD2v3LGFnew>
+    <xme:ULB9YCW0qkvUiLjQd1RBixvO74l6W6BHzSZVSOqbfGFMJxWiH5ivWMFQtH0NHf-Je
+    cKOgtJLf2TEiPZuWa8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtgedguddtfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
+    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
+    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucfk
+    phepvddtjedrheefrddvheefrdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:ULB9YLfGwUQoxaBc3L4OkMDDxv2kpTq8ZJzYHNQzS_C5XHc8_KNHXQ>
+    <xmx:ULB9YGK7Sk9dFeCEptKC7GM3VYPfOOY5Rd9YSl_eXAfmln4XwVcvCA>
+    <xmx:ULB9YIwEBCPfPKijwickrKLHjTQKEjBbfhS7oLNRbmDBd66hlZJF-Q>
+    <xmx:ULB9YEkMNXqNHtUSuY5k6lLTErW4P-SgDpf673RDJ2jvkCnGEXOZ3A>
+Received: from localhost (unknown [207.53.253.7])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EBD7B24005D;
+        Mon, 19 Apr 2021 12:31:11 -0400 (EDT)
+Date:   Mon, 19 Apr 2021 09:31:10 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs-progs: mkfs: only output the warning if the
+ sectorsize is not supported
+Message-ID: <YH2wTkX/coo94uTF@zen>
+References: <20210419064512.92213-1-wqu@suse.com>
 MIME-Version: 1.0
-Reply-To: me@jse.io
-From:   Jonah Sabean <me@jse.io>
-Date:   Mon, 19 Apr 2021 12:22:55 -0300
-Message-ID: <CAFMvigdvAjY60Tc0_bMB-QMQhrSJFxdv2iJ6jXbju+b5_kPKrA@mail.gmail.com>
-Subject: Replacing disk strange (buggy?) behaviour - RAID1
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419064512.92213-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm running Ubuntu 21.04 (technically not a stable "release" yet, but
-it will be in a few days, so if this is an ubuntu specific issue I'd
-like to report it before it is!).
+On Mon, Apr 19, 2021 at 02:45:12PM +0800, Qu Wenruo wrote:
+> Currently mkfs.btrfs will output a warning message if the sectorsize is
+> not the same as page size:
+>   WARNING: the filesystem may not be mountable, sectorsize 4096 doesn't match page size 65536
+> 
+> But since btrfs subpage support for 64K page size is comming, this
+> output is populating the golden output of fstests, causing tons of false
+> alerts.
+> 
+> This patch will make teach mkfs.btrfs to check
+> /sys/fs/btrfs/features/supported_sectorsizes, and compare if the sector
+> size is supported.
+> 
+> Then only output above warning message if the sector size is not
+> supported.
+> 
+> This patch will also introduce a new helper,
+> sysfs_open_global_feature_file() to make it more obvious which global
+> feature file we're opening.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> changelog:
+> v2:
+> - Introduce new helper to open global feature file
+> - Extra the supported sectorsize check into its own function
+> - Do proper token check other than strstr()
+> - Fix the bug that we're passing @page_size to check
+> ---
+>  common/fsfeatures.c | 49 ++++++++++++++++++++++++++++++++++++++++++++-
+>  common/utils.c      | 15 ++++++++++++++
+>  common/utils.h      |  1 +
+>  3 files changed, 64 insertions(+), 1 deletion(-)
+> 
+> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+> index 569208a9e5b1..6641c44dfa45 100644
+> --- a/common/fsfeatures.c
+> +++ b/common/fsfeatures.c
+> @@ -327,8 +327,50 @@ u32 get_running_kernel_version(void)
+>  
+>  	return version;
+>  }
+> +
+> +/*
+> + * The buffer size should be strlen("4096 8192 16384 32768 65536"),
+> + * which is 28, then we just round it up to 32.
+> + */
+> +#define SUPPORTED_SECTORSIZE_BUF_SIZE	32
+> +
+> +/*
+> + * Check if the current kernel supports given sectorsize.
+> + *
+> + * Return true if the sectorsize is supported.
+> + * Return false otherwise.
+> + */
+> +static bool check_supported_sectorsize(u32 sectorsize)
+> +{
+> +	char supported_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] = { 0 };
+> +	char sectorsize_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] = { 0 };
+> +	char *this_char;
+> +	char *save_ptr = NULL;
+> +	int fd;
+> +	int ret;
+> +
+> +	fd = sysfs_open_global_feature_file("supported_sectorsizes");
+> +	if (fd < 0)
+> +		return false;
+> +	ret = sysfs_read_file(fd, supported_buf, SUPPORTED_SECTORSIZE_BUF_SIZE);
+> +	close(fd);
+> +	if (ret < 0)
+> +		return false;
+> +	snprintf(sectorsize_buf, SUPPORTED_SECTORSIZE_BUF_SIZE,
+> +		 "%u", sectorsize);
+> +
+> +	for (this_char = strtok_r(supported_buf, " ", &save_ptr);
+> +	     this_char != NULL;
+> +	     this_char = strtok_r(NULL, ",", &save_ptr)) {
 
-The btrfs volume in question is two 8TB hard disks that were in RAID1
-at the time the filesystem was created. Kernel version is Ubuntu's
-5.11.0-14-generic with btrfs-progs version 5.10.1-1build1 in the
-hirsute repos currently. This array is mostly non-changing archived
-data, if that even matters.
+Based on the example file contents in the comment, I would expect " " as
+the delimeter for looping through the supported sizes, not ",".
 
-I replaced a missing disk (sda is the replacement disk) last night
-while in a degraded mount (left it all night to complete) with `btrfs
-replace start 1 /dev/sda1 /mnt/btrfs` (1 was the missing disk in btrfs
-fi show) and it appears to have worked fine. However, when I ran
-`btrfs fi usage` it returned:
-
-Overall:
-    Device size:                  14.55TiB
-    Device allocated:              2.41TiB
-    Device unallocated:           12.14TiB
-    Device missing:                  0.00B
-    Used:                          1.60TiB
-    Free (estimated):              8.63TiB      (min: 6.61TiB)
-    Free (statfs, df):            12.14TiB
-    Data ratio:                       1.50
-    Metadata ratio:                   1.43
-    Global reserve:              512.00MiB      (used: 0.00B)
-    Multiple profiles:                 yes      (data, metadata, system)
-
-Data,single: Size:820.00GiB, Used:3.25MiB (0.00%)
-   /dev/sdb1     820.00GiB
-
-Data,RAID1: Size:819.00GiB, Used:818.64GiB (99.96%)
-   /dev/sda1     819.00GiB
-   /dev/sdb1     819.00GiB
-
-Metadata,single: Size:4.00GiB, Used:864.00KiB (0.02%)
-   /dev/sdb1       4.00GiB
-
-Metadata,RAID1: Size:3.00GiB, Used:1.69GiB (56.23%)
-   /dev/sda1       3.00GiB
-   /dev/sdb1       3.00GiB
-
-System,single: Size:32.00MiB, Used:144.00KiB (0.44%)
-   /dev/sdb1      32.00MiB
-
-System,RAID1: Size:8.00MiB, Used:80.00KiB (0.98%)
-   /dev/sda1       8.00MiB
-   /dev/sdb1       8.00MiB
-
-Unallocated:
-   /dev/sda1       6.47TiB
-   /dev/sdb1       5.67TiB
-
-So a small amount of actual data and metadata was still single on the
-disk I was rebuilding from (sdb), but it had massively allocated
-"single" chunks in the process (relatively equal to what I had in
-actual data), and to a lesser extent, metadata too. Why didn't it free
-those up as it replaced the missing disk and duplicated the data in
-RAID1? Shouldn't it all be RAID1 once it's complete, why even have
-such small amounts remain single? Easy fix I thought, as at first
-glance I didn't realize 800GiB was allocated single, only paying
-attention to the small amounts used, so I did a soft convert to fix
-this.
-sudo btrfs balance start -dconvert=raid1,soft -mconvert=raid1,soft /mnt/btrfs
-
-Convert was pretty quick... took just a few minutes, but of course now
-it's all allocated just as raid1 now (with presumably 0 actual data in
-most of them):
-sudo btrfs fi usage /mnt/btrfs/
-Overall:
-    Device size:                  14.55TiB
-    Device allocated:              3.21TiB
-    Device unallocated:           11.34TiB
-    Device missing:                  0.00B
-    Used:                          1.60TiB
-    Free (estimated):              6.47TiB      (min: 6.47TiB)
-    Free (statfs, df):             6.47TiB
-    Data ratio:                       2.00
-    Metadata ratio:                   2.00
-    Global reserve:              512.00MiB      (used: 0.00B)
-    Multiple profiles:                  no
-
-Data,RAID1: Size:1.60TiB, Used:818.64GiB (49.95%)
-   /dev/sda1       1.60TiB
-   /dev/sdb1       1.60TiB
-
-Metadata,RAID1: Size:7.00GiB, Used:1.69GiB (24.11%)
-   /dev/sda1       7.00GiB
-   /dev/sdb1       7.00GiB
-
-System,RAID1: Size:40.00MiB, Used:240.00KiB (0.59%)
-   /dev/sda1      40.00MiB
-   /dev/sdb1      40.00MiB
-
-Unallocated:
-   /dev/sda1       5.67TiB
-   /dev/sdb1       5.67TiB
-
-Ratios are 2 now, which is exactly what I wanted, and how it was
-beforehand. However I obviously didn't want all those chunks allocated
-with nothing in them for no reason, even if they are relatively
-harmless.
-
-My questions are:
-1. Why did it have so much 'single' allocated chunks to begin with?
-Everything was RAID1 all up until the disk replacement, so it clearly
-did this during the `btrfs replace` process.  Did I do this wrong, or
-is there a bug?
-2. Would the btrfs replace have failed if the filesystem was more full
-and those chunks were not possible to allocate (it basically allocated
-double the amount of data I have after all, so if the fs was 50%+
-full...)?
-3. How do I prevent this from happening in the future, should I need
-to replace a disk? Is this possibly an Ubuntu related issue (perhaps
-how the btrfs progs is older relative to the kernel?).
-
-The 7GiB metadata isn't so bad, however I did proceed to run
-btrfs balance start -dusage=0 /mnt/btrfs
-
-Is it possible to run balance with `-dusage=0` along with the convert
-to do that all in one balance? Obviously, that doesn't solve the
-actual issue to begin with, I'm just curious as I did it in two steps.
-
-FWIW: The `dusage=0` filter freed up pretty much everything as I
-expected it to, and it looks pretty much identical to how it did
-before the disk replacement:
-Data,RAID1: Size:819.00GiB, Used:818.64GiB (99.96%)
-  /dev/sda1     819.00GiB
-  /dev/sdb1     819.00GiB
-
-I'm willing to do the process all over again as all this data is on
-another system, I just would like assurance I don't run into this same
-issue twice.
-
-Thanks,
--Jonah
+> +		if (!strncmp(this_char, sectorsize_buf, strlen(sectorsize_buf)))
+> +			return true;
+> +	}
+> +	return false;
+> +}
+> +
+>  int btrfs_check_sectorsize(u32 sectorsize)
+>  {
+> +	bool sectorsize_checked = false;
+>  	u32 page_size = (u32)sysconf(_SC_PAGESIZE);
+>  
+>  	if (!is_power_of_2(sectorsize)) {
+> @@ -340,7 +382,12 @@ int btrfs_check_sectorsize(u32 sectorsize)
+>  		      sectorsize);
+>  		return -EINVAL;
+>  	}
+> -	if (page_size != sectorsize)
+> +	if (page_size == sectorsize)
+> +		sectorsize_checked = true;
+> +	else
+> +		sectorsize_checked = check_supported_sectorsize(sectorsize);
+> +
+> +	if (!sectorsize_checked)
+>  		warning(
+>  "the filesystem may not be mountable, sectorsize %u doesn't match page size %u",
+>  			sectorsize, page_size);
+> diff --git a/common/utils.c b/common/utils.c
+> index 57e41432c8fb..e8b35879f19f 100644
+> --- a/common/utils.c
+> +++ b/common/utils.c
+> @@ -2205,6 +2205,21 @@ int sysfs_open_fsid_file(int fd, const char *filename)
+>  	return open(sysfs_file, O_RDONLY);
+>  }
+>  
+> +/*
+> + * Open a file in global btrfs features directory and return the file
+> + * descriptor or error.
+> + */
+> +int sysfs_open_global_feature_file(const char *feature_name)
+> +{
+> +	char path[PATH_MAX];
+> +	int ret;
+> +
+> +	ret = path_cat_out(path, "/sys/fs/btrfs/features", feature_name);
+> +	if (ret < 0)
+> +		return ret;
+> +	return open(path, O_RDONLY);
+> +}
+> +
+>  /*
+>   * Read up to @size bytes to @buf from @fd
+>   */
+> diff --git a/common/utils.h b/common/utils.h
+> index c38bdb08077c..d2f6416a9b5a 100644
+> --- a/common/utils.h
+> +++ b/common/utils.h
+> @@ -169,6 +169,7 @@ char *btrfs_test_for_multiple_profiles(int fd);
+>  int btrfs_warn_multiple_profiles(int fd);
+>  
+>  int sysfs_open_fsid_file(int fd, const char *filename);
+> +int sysfs_open_global_feature_file(const char *feature_name);
+>  int sysfs_read_file(int fd, char *buf, size_t size);
+>  
+>  #endif
+> -- 
+> 2.31.1
+> 
