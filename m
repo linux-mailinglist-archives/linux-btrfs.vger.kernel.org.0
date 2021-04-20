@@ -2,225 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A2F365F1D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 20:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F2D365F2B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 20:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhDTSU0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Apr 2021 14:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232879AbhDTSUZ (ORCPT
+        id S233225AbhDTS2F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Apr 2021 14:28:05 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:54900 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232759AbhDTS2C (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:20:25 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC80C06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Apr 2021 11:19:52 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id l22so37308033ljc.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Apr 2021 11:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=ZfYwKyceb1ZRYGZ+Qb1gcmZyjQyqMAPuxxN5kv/F21E=;
-        b=rFDCtmPxzf/icM0xfVJo02sTAoIvnoTH/XnfrWCiSHO0x/CLa0Q0t6kanl4MYFUJO1
-         5VlUJky0V7obrj0KcDnMM2/pxolalssv7NgYQjV3iq1Bh5xMjdSIOAK+S6V7/b02Quy3
-         SBuQKnJz8KIyR4Uhp6xNclxlfPmjPwA3IVSQT4d9MY7VrRmfo64RD8DP+kbm/0PE2DK6
-         pTwIkR4bqFBVbW8+PBhLf3VqU56TqFcB0T7x1GlG8369B1YpO+laMawYII46TovJEBrb
-         8gUbPgYzdjcuh3ArgRauUVTIOeqf/Y9+LKvyodviSwFRxKefhLAZCMdAJOzdMiw6TU31
-         Yndw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZfYwKyceb1ZRYGZ+Qb1gcmZyjQyqMAPuxxN5kv/F21E=;
-        b=E7mcfL8bwx6a4ktoZxwSe9WmGv6qlygDGkVEYMZe76Mkb+xAjgzFLM4lHZdgAVv6WL
-         6ujZlwGHf+F5qcmdHrjE+ZelMTBJgfki+JmpV4/LuahwcuOGto5WNAJTbqZNrE6ClUqe
-         FiyUGqut/bwFfoLZ03WExPFPr6TqTUQ+FJsZKwoqAKk+zEu0a6Z6BZVX6Opj3DacXyNg
-         kmbNot7PzsXyHIW8LdD7Cmzup3z0yF90xLMT6FjYNdIqkq3x0HRgTvdoGnmXDipouTpz
-         9lf4SW0z+NOqG2gYbUaiUK2P1nkCQcdeBZTRsGVfUVXG1CWRtjbDPTu8ok7g8Chym21z
-         gnPw==
-X-Gm-Message-State: AOAM532+XwMQ2PNfBidMs5Rlvqmf9ur7jeoT2XBqW8iPgxxwoj6N8AM2
-        9kSKNlZZKkbiGAjqzkht6tieWYn/QxaWa64J
-X-Google-Smtp-Source: ABdhPJwQJd7HLn24uc/7CQWlMCpxYAuQTS9ZHWP+g795MK7AaTV/OaA/PTYIUkvbVeqy0uU0aOuhyg==
-X-Received: by 2002:a2e:8095:: with SMTP id i21mr11512992ljg.395.1618942790720;
-        Tue, 20 Apr 2021 11:19:50 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:812d:be19:6dbd:a91:f761:1766? ([2a00:1370:812d:be19:6dbd:a91:f761:1766])
-        by smtp.gmail.com with ESMTPSA id e11sm2268235ljk.128.2021.04.20.11.19.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 11:19:50 -0700 (PDT)
-Subject: Re: Replacing disk strange (buggy?) behaviour - RAID1
-To:     me@jse.io, linux-btrfs@vger.kernel.org
-References: <CAFMvigdvAjY60Tc0_bMB-QMQhrSJFxdv2iJ6jXbju+b5_kPKrA@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <9bdb8872-3394-534f-a9e3-11dcc5ea2819@gmail.com>
-Date:   Tue, 20 Apr 2021 21:19:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 20 Apr 2021 14:28:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618943265; x=1650479265;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oJoo45cY0Eb88Mi1DxB8Gkixz58luCJ5r6URPg+yYiE=;
+  b=Q58nGE9s8DLY4lzmbaHp4S/fT/U2vpYa3zplZ/KIO1g2Ap6t+yjNvukF
+   5UNMSnxcbD/prcNy5seav0veDfOGoqIfwyHTUXn6OZyunCOZ4/H5vBHdv
+   Z6ThBNt4SSkBiVoXTf/qV7bEV4jn1QR3AWHfSG4hj8Rtw4MV/CCLowOpv
+   SuBEc+RgBpl7t0q/ZZkQ6iiZj9absRrHXwEo0bWA4M9TvV1elciISkEPs
+   YbOqhY/wEkHygiqrApP9vYQOmx5WvVQrASAChrUkL0jU3adSSF780DLOm
+   tCmx4L2m3MccmyfF+80AZQ2F5l0oMkTH+DEUeWXoDDsD96kk0Lg3ytaTq
+   A==;
+IronPort-SDR: xGf9d6II3DSfhQ4tFvPuyxT91PwyP94QMp/W8ZI1IfTI3PET4zVeWShawp4yIL3EAVmtjX/s9k
+ spGuZPy4N4nF/D3TetuV7lvRMR9AAnBajKmY3amZTFEphpld3l3qUGD6Cafhyck9MwzRbnp9iZ
+ 3p0Sx9sgZSdONZ1yqIFnZLhu4w1gSf20FeRfnxUUUHFgZg5qSYCtOqbddraqyHZlyHJK6Xa6Wj
+ hMCYXMtIheUdDRrQkThLWgYlkzdvhgVA0ZUDEBxChsc9MsDrR4O/KlI+85NvG6Wrpf6lgO8sPI
+ Y90=
+X-IronPort-AV: E=Sophos;i="5.82,237,1613404800"; 
+   d="scan'208";a="269507068"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 21 Apr 2021 02:27:44 +0800
+IronPort-SDR: 9trxvMoEru+m3ze3TFNvLZF7Vlazd99C+zcNzQXyAWzry10zRI9nmaSnxauSqUDK/y7veXVx2k
+ 3dZ5Mg4TfjF7WGVvpDr0pgKGtIp+c+TFcV8RnQVmlOEuVrvjzCX8ww6dKmCjPexfsPd+Z9zuJ9
+ eKmKCXOnjhk3Dl9tzir/KWDfTBnoKt6/j1bS03z/58Xkat1E+Iudu2QJy4f7/67NV0+qMtZJSI
+ 7pZxZHZkQCeBHu8o9893+OijDCoyTXD5flG8TDSUjTu51sg5s9jDm4D0EMWa91z1R6rm8AvJ9N
+ C3Yq+ts1Cv/G55GFJ/THELrx
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 11:08:09 -0700
+IronPort-SDR: IRgbNamSYSV3oqsgZ/l5UQog7mxAltXa8XbTWwnPR28vTGRbPkApUnQQB0HoqM/ykCh+6J8IHr
+ pUPegw7r0jEeYGBdxLq2YQYLmx4Tvwq1fsnIoUjNfqTxGooNtjm2JWc9iRrAnmkKoBq1bb4iVT
+ G7WGzLfZ7XUf7bRp1/28bBGIySQKlZMsUzZntWCmK4BC0ZqgsBQsxYqGjeGZswHsAo5yM/JgMv
+ w0qpzKVMuTxehneBoeXn3zY9Giqk89TLkSfTT4oFStJaQGS0N5tt4mxUmYQA7Q11LuORmXDFZW
+ J5A=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 20 Apr 2021 11:27:30 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH v6 0/3] btrfs: zoned: automatic BG reclaim
+Date:   Wed, 21 Apr 2021 03:27:22 +0900
+Message-Id: <cover.1618943115.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAFMvigdvAjY60Tc0_bMB-QMQhrSJFxdv2iJ6jXbju+b5_kPKrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 19.04.2021 18:22, Jonah Sabean wrote:
-> I'm running Ubuntu 21.04 (technically not a stable "release" yet, but
-> it will be in a few days, so if this is an ubuntu specific issue I'd
-> like to report it before it is!).
-> 
-> The btrfs volume in question is two 8TB hard disks that were in RAID1
-> at the time the filesystem was created. Kernel version is Ubuntu's
-> 5.11.0-14-generic with btrfs-progs version 5.10.1-1build1 in the
-> hirsute repos currently. This array is mostly non-changing archived
-> data, if that even matters.
-> 
-> I replaced a missing disk (sda is the replacement disk) last night
-> while in a degraded mount (left it all night to complete) with `btrfs
-> replace start 1 /dev/sda1 /mnt/btrfs` (1 was the missing disk in btrfs
-> fi show) and it appears to have worked fine. However, when I ran
-> `btrfs fi usage` it returned:
-> 
-> Overall:
->     Device size:                  14.55TiB
->     Device allocated:              2.41TiB
->     Device unallocated:           12.14TiB
->     Device missing:                  0.00B
->     Used:                          1.60TiB
->     Free (estimated):              8.63TiB      (min: 6.61TiB)
->     Free (statfs, df):            12.14TiB
->     Data ratio:                       1.50
->     Metadata ratio:                   1.43
->     Global reserve:              512.00MiB      (used: 0.00B)
->     Multiple profiles:                 yes      (data, metadata, system)
-> 
-> Data,single: Size:820.00GiB, Used:3.25MiB (0.00%)
->    /dev/sdb1     820.00GiB
-> 
-> Data,RAID1: Size:819.00GiB, Used:818.64GiB (99.96%)
->    /dev/sda1     819.00GiB
->    /dev/sdb1     819.00GiB
-> 
-> Metadata,single: Size:4.00GiB, Used:864.00KiB (0.02%)
->    /dev/sdb1       4.00GiB
-> 
-> Metadata,RAID1: Size:3.00GiB, Used:1.69GiB (56.23%)
->    /dev/sda1       3.00GiB
->    /dev/sdb1       3.00GiB
-> 
-> System,single: Size:32.00MiB, Used:144.00KiB (0.44%)
->    /dev/sdb1      32.00MiB
-> 
-> System,RAID1: Size:8.00MiB, Used:80.00KiB (0.98%)
->    /dev/sda1       8.00MiB
->    /dev/sdb1       8.00MiB
-> 
-> Unallocated:
->    /dev/sda1       6.47TiB
->    /dev/sdb1       5.67TiB
-> 
-> So a small amount of actual data and metadata was still single on the
-> disk I was rebuilding from (sdb), but it had massively allocated
-> "single" chunks in the process (relatively equal to what I had in
-> actual data), and to a lesser extent, metadata too. 
+When a file gets deleted on a zoned file system, the space freed is not
+returned back into the block group's free space, but is migrated to
+zone_unusable.
 
-Mounting raid1 btrfs writable in degraded mode creates chunks with
-single profile. This is long standing issue. What is rather surprising
-that you apparently have chunk size 819GiB which is suspiciously close
-to 10% of 8TiB. btrfs indeed limits chunk size to 10% of total space,
-but it should not exceed 10GiB. Could it be specific Ubuntu issue?
+As this zone_unusable space is behind the current write pointer it is not
+possible to use it for new allocations. In the current implementation a
+zone is reset once all of the block group's space is accounted as zone
+unusable.
 
-So when you wrote data in degraded mode it had to allocate new chunk
-with "single" profile.
+This behaviour can lead to premature ENOSPC errors on a busy file system.
 
-> Why didn't it free
-> those up as it replaced the missing disk and duplicated the data in
-> RAID1? 
+Instead of only reclaiming the zone once it is completely unusable,
+kick off a reclaim job once the amount of unusable bytes exceeds a user
+configurable threshold between 51% and 100%. It can be set per mounted
+filesystem via the sysfs tunable bg_reclaim_threshold which is set to 75%
+per default.
 
-Device replacement restored mirrored data (chunks with "raid1" profile)
-on the new device. It had no reasons to touch chunks with "single"
-profile because from btrfs point of view these chunks never had any data
-on replaced device so there is nothing to write there.
+Similar to reclaiming unused block groups, these dirty block groups are
+added to a to_reclaim list and then on a transaction commit, the reclaim
+process is triggered but after we deleted unused block groups, which will
+free space for the relocation process.
 
-> Shouldn't it all be RAID1 once it's complete,
+Zones that are 100% full and zone unusable already get reclaimed atomatically
+on transaction commit. Another improvement on the garbage collection side of
+zoned btrfs would be no to reclaim block groups that have used, pinned and
+reserved = 0 but zone_unusable > 0. This is not yet included as it needs
+further reaserch and testing.
 
-No. btrfs replace restores content of missing device. It is not
-replacement for profile conversion.
+Changes to v5:
+- Prefix define (David)
+- Print bg usage percentage in reclaim info (David)
 
-> why even have
-> such small amounts remain single? Easy fix I thought, as at first
-> glance I didn't realize 800GiB was allocated single, only paying
-> attention to the small amounts used, so I did a soft convert to fix
-> this.
-> sudo btrfs balance start -dconvert=raid1,soft -mconvert=raid1,soft /mnt/btrfs
-> 
-> Convert was pretty quick... took just a few minutes, but of course now
-> it's all allocated just as raid1 now (with presumably 0 actual data in
-> most of them):
+Changes to v4:
+- Bail out on unmount (Josef)
+- Fix delete extents comment (Filipe)
+- Use constant for default threashold (David)
+- document reclaim_bgs_mutex (David)
 
-Correct. To convert profile btrfs must allocate new chunks in new
-profile and copy data over.
-...
-> 
-> My questions are:
-> 1. Why did it have so much 'single' allocated chunks to begin with?
+Changes to v3:
+- Special case "discarding" after relocation (Filipe)
 
-It does not look like "chunks", rather it really looks like "chunk".
-Output of
+Changes to v2:
+- Fix locking in multiple ways (Filipe)
+- Offload reclaim into workqueue (Josef)
+- Add patch discarding/zone-resetting after successfull relocation (Anand)
 
-btrfs inspect-internal dump-tree -d /dev/xxx
+Changes to v1:
+- Document sysfs parameter (David)
+- Add info print for reclaim (Josef)
+- Rename delete_unused_bgs_mutex to reclaim_bgs_lock (Filipe)
+- Remove list_is_singular check (Filipe)
+- Document of space_info->groups_sem use (Filipe)
 
-may be interesting.
+Johannes Thumshirn (3):
+  btrfs: zoned: reset zones of relocated block groups
+  btrfs: rename delete_unused_bgs_mutex
+  btrfs: zoned: automatically reclaim zones
 
-> Everything was RAID1 all up until the disk replacement, so it clearly
-> did this during the `btrfs replace` process. 
+ fs/btrfs/block-group.c       | 107 ++++++++++++++++++++++++++++++++++-
+ fs/btrfs/block-group.h       |   3 +
+ fs/btrfs/ctree.h             |   8 ++-
+ fs/btrfs/disk-io.c           |  19 ++++++-
+ fs/btrfs/free-space-cache.c  |   9 ++-
+ fs/btrfs/sysfs.c             |  35 ++++++++++++
+ fs/btrfs/volumes.c           |  63 +++++++++++++--------
+ fs/btrfs/volumes.h           |   1 +
+ fs/btrfs/zoned.h             |   6 ++
+ include/trace/events/btrfs.h |  12 ++++
+ 10 files changed, 231 insertions(+), 32 deletions(-)
 
-No, it did it during degraded writable mount.
-
-> Did I do this wrong, or
-> is there a bug?
-
-There is misfeature that btrfs creates "single" chunks during degraded
-mount. Ideally it should create degraded raid1 chunks.
-
-> 2. Would the btrfs replace have failed if the filesystem was more full
-> and those chunks were not possible to allocate (it basically allocated
-> double the amount of data I have after all, so if the fs was 50%+
-> full...)?
-
-btrfs replace duplicates data that was on missing device. If you were
-able to write this data while device was present, btrfs replace cannot
-fail due to missing space (of course if device is at least as large).
-
-> 3. How do I prevent this from happening in the future, should I need
-> to replace a disk?
-
-Do not write anything in degraded mode.
-
-> Is this possibly an Ubuntu related issue (perhaps
-> how the btrfs progs is older relative to the kernel?).
-> 
-> The 7GiB metadata isn't so bad, however I did proceed to run
-> btrfs balance start -dusage=0 /mnt/btrfs
-> 
-> Is it possible to run balance with `-dusage=0` along with the convert
-> to do that all in one balance? Obviously, that doesn't solve the
-> actual issue to begin with, I'm just curious as I did it in two steps.
-> 
-> FWIW: The `dusage=0` filter freed up pretty much everything as I
-> expected it to, and it looks pretty much identical to how it did
-> before the disk replacement:
-> Data,RAID1: Size:819.00GiB, Used:818.64GiB (99.96%)
->   /dev/sda1     819.00GiB
->   /dev/sdb1     819.00GiB
-> 
-> I'm willing to do the process all over again as all this data is on
-> another system, I just would like assurance I don't run into this same
-> issue twice.
-> 
-> Thanks,
-> -Jonah
-> 
+-- 
+2.30.0
 
