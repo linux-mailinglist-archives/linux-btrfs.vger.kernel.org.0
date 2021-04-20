@@ -2,82 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857F2365CA3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 17:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5B4365E62
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 19:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbhDTPue (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Apr 2021 11:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbhDTPue (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:50:34 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0110BC06174A
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Apr 2021 08:50:03 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id v7so11717287qkj.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Apr 2021 08:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=7iRSA2SNOTLWpdtc+381g0/NltSsoGB+e3jAIMLmTg8=;
-        b=JwRqmnPFZIt54PIO012rPlGktSiOOGYp1aDOtLtI7R1TMfG6CNwBNQ9tgzIRc8caX5
-         zX2xvFRbYA14PjpaHBWnxOZVIsV5v97hxLkRqOlbEoIIrmIPeoHe4QLDCxNdy2zCM961
-         UD3vFoE43ZrrrnT3+6/wwNcQBTqmjmOCu/jqIVPnKvsSp1TpVAW/bqkWPJSy+VkNRNwr
-         Xnx3xTp0oZVFqGtpjTdj+6B2lzYdWZ7fsVWSau5qAxlMhpEZ1ZseyL9Ld51ikUK8JYeb
-         H9bt9+FAYt6B3bqJqhB3Tp8UthQ3+sg90mrePIUngixwE8OJs2tEgNa1tL6lwzVASLBe
-         fmNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=7iRSA2SNOTLWpdtc+381g0/NltSsoGB+e3jAIMLmTg8=;
-        b=F93myiPpCQGmtBDlACgWAV9uP5eFsk2tu/WnaYXoyddmqllxNewSifvGlvaoAeOt3W
-         1nelOrJvnZV6IEokLVIj7pTm5eN+4Y8j6Z6Ml/4OUJc/+MFAkBkmrISwqWwJ3jICq2a/
-         dkwQtoOfJ1eF1CUYPkaqhUehhA1+EcO9oL6KrYyL93YLRLTkJ/umIzw634Ol/5DA7sCo
-         8BbRvAepeXZFN7ROEPoZ0kTC3SamalRyX8K1Zi4EFbPeRkfRWBDKulXBLHA/SJ1Q8BbE
-         70Y/sHltdvsVsLGzmgJq9H8zUEc9fpJTf/P0g04gh8utcUWcHQb+48+kAQWGNUAwYB1T
-         xCpA==
-X-Gm-Message-State: AOAM532YU7bbCkK7wcjrMzpb2EznOFRP1Nov+O/W5sPLneuNgFavqsOO
-        0jdDhE0jZ/aU4wC11zxdU4391R11k3g=
-X-Google-Smtp-Source: ABdhPJwN1j0pGGBRukPWIrgTOVMpKiNJGyxLZALTL+Id6w3XSQxj8Nf6DACLZ846MiLcvPzPKG8J7A==
-X-Received: by 2002:a37:e10d:: with SMTP id c13mr18486375qkm.322.1618933801886;
-        Tue, 20 Apr 2021 08:50:01 -0700 (PDT)
-Received: from [192.168.1.9] (c-73-249-174-88.hsd1.nh.comcast.net. [73.249.174.88])
-        by smtp.gmail.com with ESMTPSA id q125sm12377153qkf.68.2021.04.20.08.50.00
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 08:50:01 -0700 (PDT)
-To:     linux-btrfs@vger.kernel.org
-From:   Forrest Aldrich <forrie@gmail.com>
-Subject: Converting EXT4
-Message-ID: <be7a946f-c5c6-c95b-4715-a7132bedd7ee@gmail.com>
-Date:   Tue, 20 Apr 2021 11:49:59 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        id S232879AbhDTRTX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Apr 2021 13:19:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57242 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231549AbhDTRTX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:19:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B1C78ABED;
+        Tue, 20 Apr 2021 17:18:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C9CD8DA83A; Tue, 20 Apr 2021 19:16:31 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 19:16:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix metadata extent leak after failure to create
+ subvolume
+Message-ID: <20210420171631.GW7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <e94fda2a13e93bbeae458d9815a1610d6438ba33.1618912341.git.fdmanana@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e94fda2a13e93bbeae458d9815a1610d6438ba33.1618912341.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I have been experimenting with both BTRFS and EXT4 on hacked up, 
-external RAID5 array made of USB disks.  Yes, I know, crazy -- but 
-they're laying around, so I figured why not use them for long-term storage?
+On Tue, Apr 20, 2021 at 10:55:12AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When creating a subvolume we allocate an extent buffer for its root node
+> after starting a transaction. We setup a root item for the subvolume that
+> points to that extent buffer and then attempt to insert the root item into
+> the root tree - however if that fails, due to -ENOMEM for example, we do
+> not free the extent buffer previously allocated and we do not abort the
+> transaction (as at that point we did nothing that can not be undone).
+> 
+> This means that we effectively do not return the metadata extent back to
+> the free space cache/tree and we leave a delayed reference for it which
+> causes a metadata extent item to be added to the extent tree, in the next
+> transaction commit, without having backreferences. When this happens
+> 'btrfs check' reports the following:
+> 
+>   $ btrfs check /dev/sdi
+>   Opening filesystem to check...
+>   Checking filesystem on /dev/sdi
+>   UUID: dce2cb9d-025f-4b05-a4bf-cee0ad3785eb
+>   [1/7] checking root items
+>   [2/7] checking extents
+>   ref mismatch on [30425088 16384] extent item 1, found 0
+>   backref 30425088 root 256 not referenced back 0x564a91c23d70
+>   incorrect global backref count on 30425088 found 1 wanted 0
+>   backpointer mismatch on [30425088 16384]
+>   owner ref check failed [30425088 16384]
+>   ERROR: errors found in extent allocation tree or chunk allocation
+>   [3/7] checking free space cache
+>   [4/7] checking fs roots
+>   [5/7] checking only csums items (without verifying data)
+>   [6/7] checking root refs
+>   [7/7] checking quota groups skipped (not enabled on this FS)
+>   found 212992 bytes used, error(s) found
+>   total csum bytes: 0
+>   total tree bytes: 131072
+>   total fs tree bytes: 32768
+>   total extent tree bytes: 16384
+>   btree space waste bytes: 124669
+>   file data blocks allocated: 65536
+>    referenced 65536
+> 
+> So fix this by freeing the metadata extent if btrfs_insert_root() returns
+> an error.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Anyway, in my latest transfer of multiple terabytes of data, to an EXT4 
-filesystem (it was BTRFS before), I used the open-source tool "rclone" 
-which was pretty fast.   I ended up with (for example) images files that 
-are now of file type "data" and others that appear to not be what 
-they're supposed to be.   There are checksumming operations that go on, 
-I repeated the process a couple of times to ensure all data were copied.
-
-My question here is if I convert this to BTRFS might that correct some 
-of these issues or did I run into another issue?
-
-
-_F
-
+Added to misc-next, thanks.
