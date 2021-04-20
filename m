@@ -2,352 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012123655CE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 11:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D0F365614
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 12:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhDTJ4Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Apr 2021 05:56:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230264AbhDTJ4Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:56:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28534601FF;
-        Tue, 20 Apr 2021 09:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618912553;
-        bh=0y4NNKZdy98Cuahh8oFp33cktarDnzqyeJMMInzYyb0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=I2/GU5FkAhmcx4ds0MVKfoM+asZwKia/V9HQ63mV7+dfxXdT5poV4NacGA3tIYgdW
-         eHYKzYwRUZSIj+GlxwJVQ9uP2y7/6guYxENvm8vmVZNbc6Pfod5YfmDi7Oxj2GkXGy
-         5pKJ8NArJjK9Gz2fbIod5XY/AohZYIdqLkL6fIRovUbww1UV1iOq2zDv/ilsMAw9QU
-         S3nfba37ief+55S3qxWkVB+k8JofW1TTQoEGKoToMXR/hy6QIlbnW5EBzNoY7p3keY
-         1syhKjJrcU4z0R01wxpGLuJhfryQ20pceYrrbleoRjqwJKNHUoLC121nD1rjdEzj5h
-         kuChUdf38/vyQ==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Cc:     ce3g8jdj@umail.furryterror.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: fix race when picking most recent mod log operation for an old root
-Date:   Tue, 20 Apr 2021 10:55:44 +0100
-Message-Id: <16bef575e4dcd7c80ce0e05bee6711f1c7b787c0.1618912326.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S231558AbhDTKXD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Apr 2021 06:23:03 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33774 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231536AbhDTKXC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:23:02 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13KAK9h8058776;
+        Tue, 20 Apr 2021 10:22:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=bPuzElpjiOo1zRjSEnYwkdbLNwWPB/1sGrCY1L0+/nk=;
+ b=SK2yp54Mm5hj2vNEO49W79IuvChvxXimdFLZNUAZotP5gRPO/oBaVGdbMQo+1bcmhin6
+ 1xp0K8AH2//Q0Kmcxl90woLQ34FEqIwCfMx1loyveBMLcOjGiZYZVeUbB0J8mB7EJAgx
+ 42To4eMxdLW9hQFwMO68k32g88pZNaFYM0bgTaocjT8krFc4/R6jb40ojrqEnuRggZ+s
+ CSTOdkQRsakWK8qHU8oqzf2aTZkLhUL88Yu+NuRThnQ/+HzviHk2TpsMjwMmqKYUBFmp
+ jq9gK9nnrbcqOW7lwqBGSqPj5IDakFgpzNmoL69op9HyV+0NZWO3kpnKZgQzJjmcvWUJ lA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 37yveaea4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:22:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13KAKmrr022570;
+        Tue, 20 Apr 2021 10:22:23 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3809kxskwy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:22:23 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13KAMN7r027505;
+        Tue, 20 Apr 2021 10:22:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3809kxskwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Apr 2021 10:22:23 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13KAMLKX021192;
+        Tue, 20 Apr 2021 10:22:21 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 20 Apr 2021 03:22:21 -0700
+Date:   Tue, 20 Apr 2021 13:22:14 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210420102214.GA1981@kadam>
+References: <20210417153616.25056-1-khaledromdhani216@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417153616.25056-1-khaledromdhani216@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: apFXcdx82eJ5clMeWqsNsBlKtdoJAoHu
+X-Proofpoint-ORIG-GUID: apFXcdx82eJ5clMeWqsNsBlKtdoJAoHu
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9959 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104200079
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Sat, Apr 17, 2021 at 04:36:16PM +0100, Khaled ROMDHANI wrote:
+> As reported by the Coverity static analysis.
+> The variable zone is not initialized which
+> may causes a failed assertion.
+> 
+> Addresses-Coverity: ("Uninitialized variables")
+> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+> ---
+> v2: add a default case as proposed by David Sterba
+> ---
+>  fs/btrfs/zoned.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index eeb3ebe11d7a..82527308d165 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
+>  	case 0: zone = 0; break;
+>  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+>  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
 
-Commit dbcc7d57bffc0c ("btrfs: fix race when cloning extent buffer during
-rewind of an old root"), fixed a race when we need to rewind the extent
-buffer of an old root. It was caused by picking a new mod log operation
-for the extent buffer while getting a cloned extent buffer with an outdated
-number of items (off by -1), because we cloned the extent buffer without
-locking it first.
+It took me a while to spot these break statements.
 
-However there is still another similar race, but in the opposite direction.
-The cloned extent buffer has a number of items that does not match the
-number of tree mod log operations that are going to be replayed. This is
-because right after we got the last (most recent) tree mod log operation to
-replay and before locking and cloning the extent buffer, another task adds
-a new pointer to the extent buffer, which results in adding a new tree mod
-log operation and incrementing the number of items in the extent buffer.
-So after cloning we have mismatch between the number of items in the extent
-buffer and the number of mod log operations we are going to apply to it.
-This results in hitting a BUG_ON() that produces the following stack trace:
+> +	default:
+> +		zone = 0;
+> +	break;
 
-  [145427.689964][ T4811] ------------[ cut here ]------------
-  [145427.692498][ T4811] kernel BUG at fs/btrfs/tree-mod-log.c:675!
-  [145427.694668][ T4811] invalid opcode: 0000 [#1] SMP KASAN PTI
-  [145427.696379][ T4811] CPU: 3 PID: 4811 Comm: crawl_1215 Tainted: G        W         5.12.0-7d1efdf501f8-misc-next+ #99
-  [145427.700221][ T4811] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-  [145427.703623][ T4811] RIP: 0010:tree_mod_log_rewind+0x3b1/0x3c0
-  [145427.706135][ T4811] Code: 05 48 8d 74 10 (...)
-  [145427.713034][ T4811] RSP: 0018:ffffc90001027090 EFLAGS: 00010293
-  [145427.714996][ T4811] RAX: 0000000000000000 RBX: ffff8880a8514600 RCX: ffffffffaa9e59b6
-  [145427.717158][ T4811] RDX: 0000000000000007 RSI: dffffc0000000000 RDI: ffff8880a851462c
-  [145427.720422][ T4811] RBP: ffffc900010270e0 R08: 00000000000000c0 R09: ffffed1004333417
-  [145427.723835][ T4811] R10: ffff88802199a0b7 R11: ffffed1004333416 R12: 000000000000000e
-  [145427.727695][ T4811] R13: ffff888135af8748 R14: ffff88818766ff00 R15: ffff8880a851462c
-  [145427.731636][ T4811] FS:  00007f29acf62700(0000) GS:ffff8881f2200000(0000) knlGS:0000000000000000
-  [145427.736305][ T4811] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [145427.739587][ T4811] CR2: 00007f0e6013f718 CR3: 000000010d42e003 CR4: 0000000000170ee0
-  [145427.743573][ T4811] Call Trace:
-  [145427.745117][ T4811]  btrfs_get_old_root+0x16a/0x5c0
-  [145427.747686][ T4811]  ? lock_downgrade+0x400/0x400
-  [145427.754189][ T4811]  btrfs_search_old_slot+0x192/0x520
-  [145427.758023][ T4811]  ? btrfs_search_slot+0x1090/0x1090
-  [145427.761014][ T4811]  ? free_extent_buffer.part.61+0xd7/0x140
-  [145427.765208][ T4811]  ? free_extent_buffer+0x13/0x20
-  [145427.770042][ T4811]  resolve_indirect_refs+0x3e9/0xfc0
-  [145427.773633][ T4811]  ? lock_downgrade+0x400/0x400
-  [145427.777323][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.780539][ T4811]  ? add_prelim_ref.part.11+0x150/0x150
-  [145427.785722][ T4811]  ? lock_downgrade+0x400/0x400
-  [145427.791086][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.796266][ T4811]  ? lock_acquired+0xbb/0x620
-  [145427.798764][ T4811]  ? __kasan_check_write+0x14/0x20
-  [145427.801118][ T4811]  ? do_raw_spin_unlock+0xa8/0x140
-  [145427.804491][ T4811]  ? rb_insert_color+0x340/0x360
-  [145427.808066][ T4811]  ? prelim_ref_insert+0x12d/0x430
-  [145427.811889][ T4811]  find_parent_nodes+0x5c3/0x1830
-  [145427.815498][ T4811]  ? stack_trace_save+0x87/0xb0
-  [145427.819210][ T4811]  ? resolve_indirect_refs+0xfc0/0xfc0
-  [145427.823254][ T4811]  ? fs_reclaim_acquire+0x67/0xf0
-  [145427.827220][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.829080][ T4811]  ? lockdep_hardirqs_on_prepare+0x210/0x210
-  [145427.831237][ T4811]  ? fs_reclaim_acquire+0x67/0xf0
-  [145427.835061][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.836508][ T4811]  ? ___might_sleep+0x10f/0x1e0
-  [145427.841389][ T4811]  ? __kasan_kmalloc+0x9d/0xd0
-  [145427.843054][ T4811]  ? trace_hardirqs_on+0x55/0x120
-  [145427.845533][ T4811]  btrfs_find_all_roots_safe+0x142/0x1e0
-  [145427.847325][ T4811]  ? find_parent_nodes+0x1830/0x1830
-  [145427.849318][ T4811]  ? trace_hardirqs_on+0x55/0x120
-  [145427.851210][ T4811]  ? ulist_free+0x1f/0x30
-  [145427.852809][ T4811]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-  [145427.854654][ T4811]  iterate_extent_inodes+0x20e/0x580
-  [145427.856429][ T4811]  ? tree_backref_for_extent+0x230/0x230
-  [145427.858552][ T4811]  ? release_extent_buffer+0x225/0x280
-  [145427.862789][ T4811]  ? read_extent_buffer+0xdd/0x110
-  [145427.865092][ T4811]  ? lock_downgrade+0x400/0x400
-  [145427.867069][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.868585][ T4811]  ? lock_acquired+0xbb/0x620
-  [145427.872309][ T4811]  ? __kasan_check_write+0x14/0x20
-  [145427.873641][ T4811]  ? do_raw_spin_unlock+0xa8/0x140
-  [145427.878150][ T4811]  ? _raw_spin_unlock+0x22/0x30
-  [145427.879355][ T4811]  ? release_extent_buffer+0x225/0x280
-  [145427.881424][ T4811]  iterate_inodes_from_logical+0x129/0x170
-  [145427.884711][ T4811]  ? iterate_inodes_from_logical+0x129/0x170
-  [145427.888124][ T4811]  ? btrfs_inode_flags_to_xflags+0x50/0x50
-  [145427.891553][ T4811]  ? iterate_extent_inodes+0x580/0x580
-  [145427.894531][ T4811]  ? __vmalloc_node+0x92/0xb0
-  [145427.897439][ T4811]  ? init_data_container+0x34/0xb0
-  [145427.900518][ T4811]  ? init_data_container+0x34/0xb0
-  [145427.903705][ T4811]  ? kvmalloc_node+0x60/0x80
-  [145427.906538][ T4811]  btrfs_ioctl_logical_to_ino+0x158/0x230
-  [145427.910125][ T4811]  btrfs_ioctl+0x2038/0x4360
-  [145427.912430][ T4811]  ? __kasan_check_write+0x14/0x20
-  [145427.914061][ T4811]  ? mmput+0x3b/0x220
-  [145427.915380][ T4811]  ? btrfs_ioctl_get_supported_features+0x30/0x30
-  [145427.917512][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.919110][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.920845][ T4811]  ? lock_release+0xc8/0x650
-  [145427.922227][ T4811]  ? __might_fault+0x64/0xd0
-  [145427.923687][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.925222][ T4811]  ? lock_downgrade+0x400/0x400
-  [145427.926729][ T4811]  ? lockdep_hardirqs_on_prepare+0x210/0x210
-  [145427.928496][ T4811]  ? lockdep_hardirqs_on_prepare+0x13/0x210
-  [145427.930396][ T4811]  ? _raw_spin_unlock_irqrestore+0x51/0x63
-  [145427.932123][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.933910][ T4811]  ? do_vfs_ioctl+0xfc/0x9d0
-  [145427.935664][ T4811]  ? ioctl_file_clone+0xe0/0xe0
-  [145427.938147][ T4811]  ? lock_downgrade+0x400/0x400
-  [145427.940717][ T4811]  ? lockdep_hardirqs_on_prepare+0x210/0x210
-  [145427.943673][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.946249][ T4811]  ? lock_release+0xc8/0x650
-  [145427.948509][ T4811]  ? __task_pid_nr_ns+0xd3/0x250
-  [145427.950946][ T4811]  ? __kasan_check_read+0x11/0x20
-  [145427.953415][ T4811]  ? __fget_files+0x160/0x230
-  [145427.955693][ T4811]  ? __fget_light+0xf2/0x110
-  [145427.957951][ T4811]  __x64_sys_ioctl+0xc3/0x100
-  [145427.961647][ T4811]  do_syscall_64+0x37/0x80
-  [145427.963112][ T4811]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [145427.971975][ T4811] RIP: 0033:0x7f29ae85b427
-  [145427.974101][ T4811] Code: 00 00 90 48 8b (...)
-  [145427.980483][ T4811] RSP: 002b:00007f29acf5fcf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-  [145427.983314][ T4811] RAX: ffffffffffffffda RBX: 00007f29acf5ff40 RCX: 00007f29ae85b427
-  [145427.985963][ T4811] RDX: 00007f29acf5ff48 RSI: 00000000c038943b RDI: 0000000000000003
-  [145427.988504][ T4811] RBP: 0000000001000000 R08: 0000000000000000 R09: 00007f29acf60120
-  [145427.991085][ T4811] R10: 00005640d5fc7b00 R11: 0000000000000246 R12: 0000000000000003
-  [145427.993662][ T4811] R13: 00007f29acf5ff48 R14: 00007f29acf5ff40 R15: 00007f29acf5fef8
-  [145427.996289][ T4811] Modules linked in:
-  [145427.997661][ T4811] ---[ end trace 85e5fce078dfbe04 ]---
+This break needs to be indented one more tab.
 
-  (gdb) l *(tree_mod_log_rewind+0x3b1)
-  0xffffffff819e5b21 is in tree_mod_log_rewind (fs/btrfs/tree-mod-log.c:675).
-  670                      * the modification. As we're going backwards, we do the
-  671                      * opposite of each operation here.
-  672                      */
-  673                     switch (tm->op) {
-  674                     case BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING:
-  675                             BUG_ON(tm->slot < n);
-  676                             fallthrough;
-  677                     case BTRFS_MOD_LOG_KEY_REMOVE_WHILE_MOVING:
-  678                     case BTRFS_MOD_LOG_KEY_REMOVE:
-  679                             btrfs_set_node_key(eb, &tm->key, tm->slot);
-  (gdb) quit
+>  	}
+>  
+>  	ASSERT(zone <= U32_MAX);
 
-The following steps explain in more detail how it happens:
-
-1) We have one tree mod log user (through fiemap or the logical ino ioctl),
-   with a sequence number of 1, so we have fs_info->tree_mod_seq == 1.
-   This is task A;
-
-2) Another task is at ctree.c:balance_level() and we have eb X currently as
-   the root of the tree, and we promote its single child, eb Y, as the new
-   root.
-
-   Then, at ctree.c:balance_level(), we call:
-
-      ret = btrfs_tree_mod_log_insert_root(root->node, child, true);
-
-3) At btrfs_tree_mod_log_insert_root() we create a tree mod log operation
-   of type BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING, with a ->logical field
-   pointing to ebX->start. We only have one item in eb X, so we create
-   only one tree mod log operation, and store in the "tm_list" array;
-
-4) Then, still at btrfs_tree_mod_log_insert_root(), we create a tree mod
-   log element of operation type BTRFS_MOD_LOG_ROOT_REPLACE, ->logical set
-   to ebY->start, ->old_root.logical set to ebX->start, ->old_root.level
-   set to the level of eb X and ->generation set to the generation of eb X;
-
-5) Then btrfs_tree_mod_log_insert_root() calls tree_mod_log_free_eb() with
-   "tm_list" as argument. After that, tree_mod_log_free_eb() calls
-   tree_mod_log_insert(). This inserts the mod log operation of type
-   BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING from step 3 into the rbtree
-   with a sequence number of 2 (and fs_info->tree_mod_seq set to 2);
-
-6) Then, after inserting the "tm_list" single element into the tree mod
-   log rbtree, the BTRFS_MOD_LOG_ROOT_REPLACE element is inserted, which
-   gets the sequence number 3 (and fs_info->tree_mod_seq set to 3);
-
-7) Back to ctree.c:balance_level(), we free eb X by calling
-   btrfs_free_tree_block() on it. Because eb X was created in the current
-   transaction, has no other references and writeback did not happen for
-   it, we add it back to the free space cache/tree;
-
-8) Later some other task B allocates the metadata extent from eb X, since
-   it is marked as free space in the space cache/tree, and uses it as a
-   node for some other btree;
-
-9) The tree mod log user task calls btrfs_search_old_slot(), which calls
-   btrfs_get_old_root(), and finally that calls tree_mod_log_oldest_root()
-   with time_seq == 1 and eb_root == eb Y;
-
-10) The first iteration of the while loop finds the tree mod log element
-    with sequence number 3, for the logical address of eb Y and of type
-    BTRFS_MOD_LOG_ROOT_REPLACE;
-
-11) Because the operation type is BTRFS_MOD_LOG_ROOT_REPLACE, we don't
-    break out of the loop, and set root_logical to point to
-    tm->old_root.logical, which corresponds to the logical address of
-    eb X;
-
-12) On the next iteration of the while loop, the call to
-    tree_mod_log_search_oldest() returns the smallest tree mod log element
-    for the logical address of eb X, which has a sequence number of 2, an
-    operation type of BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING and
-    corresponds to the old slot 0 of eb X (eb X had only 1 item in it
-    before being freed at step 7);
-
-13) We then break out of the while loop and return the tree mod log
-    operation of type BTRFS_MOD_LOG_ROOT_REPLACE (eb Y), and not the one
-    for slot 0 of eb X, to btrfs_get_old_root();
-
-14) At btrfs_get_old_root(), we process the BTRFS_MOD_LOG_ROOT_REPLACE
-    operation and set "logical" to the logical address of eb X, which was
-    the old root. We then call tree_mod_log_search() passing it the logical
-    address of eb X and time_seq == 1;
-
-15) But before calling tree_mod_log_search(), task B locks eb X, adds a
-    key to eb X, which results in adding a tree mod log operation of type
-    BTRFS_MOD_LOG_KEY_ADD, with a sequence number of 4, to the tree mod
-    log, and increments the number of items in eb X from 0 to 1.
-    Now fs_info->tree_mod_seq has a value of 4;
-
-16) Task A then calls tree_mod_log_search(), which returns the most recent
-    tree mod log operation for eb X, which is the one just added by task B
-    at the previous step, with a sequence number of 4, a type of
-    BTRFS_MOD_LOG_KEY_ADD and for slot 0;
-
-17) Before task A locks and clones eb X, task A adds another key to eb X,
-    which results in adding a new BTRFS_MOD_LOG_KEY_ADD mod log operation,
-    with a sequence number of 5, for slot 1 of eb X, increments the
-    number of items in eb X from 1 to 2, and unlocks eb X.
-    Now fs_info->tree_mod_seq has a value of 5;
-
-18) Task A then locks eb X and clones it. The clone has a value of 2 for
-    the number of items and the pointer "tm" points to the tree mod log
-    operation with sequence number 4, not the most recent one with a
-    sequence number of 5, so there is mismatch between the number of
-    mod log operations that are going to be applied to the cloned version
-    of eb X and the number of items in the clone;
-
-19) Task A then calls tree_mod_log_rewind() with the clone of eb X, the
-    tree mod log operation with sequence number 4 and a type of
-    BTRFS_MOD_LOG_KEY_ADD, and time_seq == 1;
-
-20) At tree_mod_log_rewind(), we set the local varibale "n" with a value
-    of 2, which is the number of items in the clone of eb X.
-
-    Then in the first iteration of the while loop, we process the mod log
-    operation with sequence number 4, which is targeted at slot 0 and has
-    a type of BTRFS_MOD_LOG_KEY_ADD. This results in decrementing "n" from
-    2 to 1.
-
-    Then we pick the next tree mod log operation for eb X, which is the
-    tree mod log operation with a sequence number of 2, a type of
-    BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING and for slot 0, it is the one
-    added in step 5 to the tree mod log tree.
-
-    We go back to the top of the loop to process this mod log operation,
-    and because its slot is 0 and "n" has a value of 1, we hit the BUG_ON:
-
-        (...)
-        switch (tm->op) {
-        case BTRFS_MOD_LOG_KEY_REMOVE_WHILE_FREEING:
-                BUG_ON(tm->slot < n);
-                fallthrough;
-	(...)
-
-Fix this by checking for a more recent tree mod log operation after locking
-and cloning the extent buffer of the old root node, and use it as the first
-operation to apply to the cloned extent buffer when rewinding it.
-
-Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Link: https://lore.kernel.org/linux-btrfs/20210404040732.GZ32440@hungrycats.org/
-Fixes: 834328a8493079 ("Btrfs: tree mod log's old roots could still be part of the tree")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/tree-mod-log.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/fs/btrfs/tree-mod-log.c b/fs/btrfs/tree-mod-log.c
-index 1e52584f3fa5..8a3a14686d3e 100644
---- a/fs/btrfs/tree-mod-log.c
-+++ b/fs/btrfs/tree-mod-log.c
-@@ -830,10 +830,30 @@ struct extent_buffer *btrfs_get_old_root(struct btrfs_root *root, u64 time_seq)
- 				   "failed to read tree block %llu from get_old_root",
- 				   logical);
- 		} else {
-+			struct tree_mod_elem *tm2;
-+
- 			btrfs_tree_read_lock(old);
- 			eb = btrfs_clone_extent_buffer(old);
-+			/*
-+			 * After the lookup for the most recent tree mod operation
-+			 * above and before we locked and cloned the extent buffer
-+			 * 'old', a new tree mod log operation may have been added.
-+			 * So lookup for a more recent one to make sure the number
-+			 * of mod log operations we replay is consistent with the
-+			 * number of items we have in the cloned extent buffer,
-+			 * otherwise we can hit a BUG_ON when rewinding the extent
-+			 * buffer.
-+			 */
-+			tm2 = tree_mod_log_search(fs_info, logical, time_seq);
- 			btrfs_tree_read_unlock(old);
- 			free_extent_buffer(old);
-+			ASSERT(tm2);
-+			ASSERT(tm2 == tm || tm2->seq > tm->seq);
-+			if (!tm2 || tm2->seq < tm->seq) {
-+				free_extent_buffer(eb);
-+				return NULL;
-+			}
-+			tm = tm2;
- 		}
- 	} else if (old_root) {
- 		eb_root_owner = btrfs_header_owner(eb_root);
--- 
-2.28.0
-
+regards,
+dan carpenter
