@@ -2,228 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C58364FC0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 03:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E548364FE1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Apr 2021 03:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbhDTBQW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Apr 2021 21:16:22 -0400
-Received: from mout.gmx.net ([212.227.17.22]:60529 "EHLO mout.gmx.net"
+        id S229528AbhDTBez (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Apr 2021 21:34:55 -0400
+Received: from mout.gmx.net ([212.227.15.15]:49999 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhDTBQV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Apr 2021 21:16:21 -0400
+        id S229492AbhDTBey (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Apr 2021 21:34:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618881346;
-        bh=2bBlqc3QhWvCGGJYovevdH1IeB1n0khKAxDawJVRS4o=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=So2KoLLdlswEA/o42eEqAaTuGRIs7pMEehBBUK7/2X87F8fUT1QKwjuEdlNkrNnAe
-         m+Slg5gbC9L6/U3CZgiQH6UYYnlSbOBdj/8+fQ/Tk8PsD2/gSGdH98nIR7QxBxJV0w
-         +a4AFU7VwgysN0imyCu+UPWpsCk3192sw1Kjt1Io=
+        s=badeba3b8450; t=1618882458;
+        bh=YTd29X+pRerdjwDALYh3J62MPJ1YbNr7x+yPCWgASQQ=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=k1v+jCsBatA+yLUZW4MISB7wMj4A8KAamE/BM1hLRo1HQlS6VEbO44rIy1OzbJvJ4
+         X+J7IBVV7+nRvWAu4T1fqMLoCFeuKI1bjatKlEK1HQ1ciZgEFBTstwAy50GGfx/tAX
+         ze5G8Bxh6cbXA3wOXXv15xH7I4auJDW8menP71Hs=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MyKDU-1limMP36WS-00yjtn; Tue, 20
- Apr 2021 03:15:46 +0200
-Subject: Re: [PATCH v2] btrfs-progs: mkfs: only output the warning if the
- sectorsize is not supported
-To:     Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20210419064512.92213-1-wqu@suse.com> <YH2wTkX/coo94uTF@zen>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbAcs-1m5n6X41Zg-00bdBA; Tue, 20
+ Apr 2021 03:34:18 +0200
+To:     "Gervais, Francois" <FGervais@distech-controls.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <FdManana@suse.com>
+References: <DM6PR01MB4265447B51C4FD9CE1C89A3DF34C9@DM6PR01MB4265.prod.exchangelabs.com>
+ <666c6ea6-9015-1e50-e8a7-dc5b45cdac3c@gmx.com>
+ <SN6PR01MB42690A51D0752719B9F1C6ACF3499@SN6PR01MB4269.prod.exchangelabs.com>
+ <41e13913-398a-96b8-0f6f-00cfc83c6304@gmx.com>
+ <SN6PR01MB4269861CA9BA4D5E61DF1030F3499@SN6PR01MB4269.prod.exchangelabs.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <2a07368b-8185-a268-2ed6-7cb73583f066@gmx.com>
-Date:   Tue, 20 Apr 2021 09:15:42 +0800
+Subject: Re: read time tree block corruption detected
+Message-ID: <709d1a70-e52a-0ff3-8425-f86f18ac0641@gmx.com>
+Date:   Tue, 20 Apr 2021 09:34:14 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <YH2wTkX/coo94uTF@zen>
+In-Reply-To: <SN6PR01MB4269861CA9BA4D5E61DF1030F3499@SN6PR01MB4269.prod.exchangelabs.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:lFtwNkgPknnp5o6bx+dtAqQO1tz4GGAoOPWQXLzWpIhyxDZLw0d
- BMwWNoIRQVy2JUxwSWAyFOYuDTBNwZdn/82YB8b5hneu0smuyovMJEtI0664eS6Rv2NizxX
- 730zXCq043fIOz4Duyvxl1s0UiYWtBLQWhf/enTiMSO2QJwjIEFRHTBA1mOenqY3OCfFPz8
- gg6aGWiCPmWeGZ2IxhYrg==
+X-Provags-ID: V03:K1:h6OVra1yMdO3dVwiINXLdZw4PiOs/YTKrrxPsEZ/uukhAKqm5G+
+ c4tcnr2xUhHrUR10QOS1ai/4PjyJ2Hpecy7OfXHyaC5jbQbtJNY/UFNi1sEruo01AWvISnL
+ HtJriLjS/lXSRGB9WVntRmlIp2PridJvGyh0PlxmJ2syuzgj8az03ioRcWbsz8Yx7Zl+bZH
+ sxgx0d3uJMDUInvm5+A8g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nvu9rm7rPKc=:eF7SAmo3DaY8tAg5RAtgh+
- LjcSsaT32nl9KdC4znYxqVBwtG/eDPMSYGa95plbLS3dAAuIqAcf+CV0wG+6JmUfXHfjjuKsY
- HMA6VSQbusKwCM+Umoti9UqFVaBsHFc0TKV3kpngcwVcfqJF9KOVN/6bKGMhVM1F6EQy0t8LN
- 5EahZvQhP8SkbLPHlXz8XgaoYOw2rReMRwfKsvwjQZlVigv+5laD2TdWeS6K0JFj6eC4ylfH3
- TJsqPrd30hTfKmY1IFmVVdB71Wwk2qzLrtUQxtSRFI+NHrq4roWIDzlgwQXv29vJOlo9AvZgd
- gfsxo9MRXIb2ihdzm40cV+hy0Az7zH8X3kKfNcN6EhkuI1C1VM1ircTh4uZvGqLhrc/B+OTxb
- df44cfKZMq7cnMDgrbydASLz6tM1Hp77XA/YLoRL/pgXnO8p2LhFezskpeq74q5vJpgltw3XF
- iYdrVqOxkCXit0ff/CJo7dQh0FKHbjX0y2wDY9DK0lS7p5/BXanqo8zBtG8Xvcc+wfSTDdeLg
- 0DE6n62gXH9u2tMsd7zzcqI0cAncmh0t606kY1jM7ZEu0GfXF/qSPy7oW46B/kPhr/ocV/qBA
- 6c/jNDPxdaKeZnuc6wZtrjSX3HIglttSNycx6dD3gzya//LdWhUTILTDNiWLpg8M/nnJqmheY
- yFNEd34G1N20gPUxjJN8sRFpzEAMCWdO98OSviwkRrp1BcYmtRuVfeqCOFdqKq9qbDlJqv1U3
- zPP3PYHqIOedDylcH8Z3TiQ79XGORsWi3uwL4DUusUHWbC0td/FcXEHhnGhXKKXZuL4j7nOCz
- H/u1Cb0/U3gp2l4bJLcaxAMLAe/ybWiAPiJPMSam7T1ypBG8vJrgIROxnMwN1RMjMoUDb8jKu
- Po0LTL1bWZNtg7kdDI+h3+s3SAZjTiLZjcCzXZnTaW4dHj2TBL0EmUC0uEfC4C0VyPN9JFhsL
- F5GWa5TYAlZw7FysXGEpQjE4jxH1dKs4MU08Av7iTm8MDi6si6Dc9qX2e0Jas5rsggAdv5Zia
- UTaLW5FXEvdHeUxN8F+cMTE3lRq7yjGy+gzm/XZEm5iQETFCCnVZ3QoR88DfWCPPISOTs3mZc
- 8NWF1npinbmzFTwsND9nKZY5sZhBafUJfmdW2V2ojfpvg93kJlCkY233kmpjJCawJxCFMuvzD
- kAr1DBQvCvDcvgxVQb65utkVsqibx/i0YPjXYv6KgFau3nG66iKaKaavwLzVhEv6HZCM9/mjn
- IN1yVn3SzMhYELV9a
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kv8qHUZcYzU=:XO4STS7iC2UIwpOEqiH0Yo
+ 8AEOAJ/c7LybIABkFaNsoeypqIEo3PEeTSvxC3gbt30Mvt+gRC8VgvTQR3csuQGEl87OwRUdK
+ QIYLfo/LRME+drf3uJLlsSL5z27mHab1asJHLU6tBA2XOEt8DWz2I7QrMky3ARZiYEweagEds
+ 97YyDZSBCiNudjNoB8v+51x8gU1HxsT3uD9A7lwaGVJ8dTeqnloQ4wEx6/To4iSZ2240cFRnj
+ hTrfk/ekxehpP9c0UC9JfTIVhxGbU0ibwwAZ0tLNQ9kYtT15RNHdb3IbBhmMYAIeB7+OjgVnS
+ v5i7ugVuKHK13HjGIaccH9Qkya5g+G93Z0VVqQ+uUArR44K3UCFJh/39WUA+TduzcIw4K8oMP
+ L2JPARj4lOz/gAmd/z++84GwY30T8WXPUhJC3ctZ5WMxLN1V1UpP9wnuF1atoEnHjefjvWGzr
+ 1rIZo5JOcqzNbdBJKztZNrtblF+cse2iEFsKNscMN3K3a6c5icHwaSJwIGKuXpOu5zg1/GAjE
+ LKB2sDgU2G+D7Pp0UG9vtu9JnQiTI2boVYBj1436EMOZRqaK0O6evLicH3c4qVUwffHiv3S53
+ x1tH00kLm6rhNVeVhWPJ4+BhMBf6wOPO59SNp13jhEUqgwpne6mPutSCYlcNtLw+MyfiLjWDJ
+ KVdBtQao9M0VagOTkWoHmFzOda6u29HRkuFnSBXfgf8tpAHqMwlgrN7MjtUjN3At1yiyvQ55f
+ eXVhe0xt++IPh6mDTz/TDN4o6NQE+ejjaIwc2YJvdDSmuSjigUP8tthVo9TjsGBkogn6UkcuS
+ n9v6MZ+hPMoq5ZV6KVyiJ/r4uZYxKK9HhyXJneF0u0vbzO+6bO7jbJLMJlT6nQXVM1VHtnKDf
+ xDnpKFXqslJFnpfnip65Z0IL3rjfBXyXw03UmEbFGhisqkK38NVBaA07SZS7MTkvkdZqZA+Bl
+ S25rfzNkWT/pj/ZUo1RFVky/qI5IeMsA/J68gpJiAplnI/kZI711Gyp7oxx/L3LeIxSUulQ6P
+ fTsSOLj7lSqd8qPJs4eHQCE+6ewsefgZmwYy5VWX4DKAW964dKnCkImBVxcSPOMaj8nYVzbHO
+ x5PnsdtSitSzYOZ7pT1zp4DdUzUhFp4NKBXCWx063bHGK2zvCGQpEv3kRLIbjnuKRayUmVLMI
+ 1AnzmBMhvx3RMswLWZxwfETkl1OlzZaTRPhAGSROEsIhxTg5q/uJb3CVP8cjgrxBX0cN/qR06
+ 32P48UGml5QJilfaO
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/4/20 =E4=B8=8A=E5=8D=8812:31, Boris Burkov wrote:
-> On Mon, Apr 19, 2021 at 02:45:12PM +0800, Qu Wenruo wrote:
->> Currently mkfs.btrfs will output a warning message if the sectorsize is
->> not the same as page size:
->>    WARNING: the filesystem may not be mountable, sectorsize 4096 doesn'=
-t match page size 65536
+On 2021/4/19 =E4=B8=8B=E5=8D=8810:56, Gervais, Francois wrote:
+>> My bad, wrong number.
 >>
->> But since btrfs subpage support for 64K page size is comming, this
->> output is populating the golden output of fstests, causing tons of fals=
-e
->> alerts.
->>
->> This patch will make teach mkfs.btrfs to check
->> /sys/fs/btrfs/features/supported_sectorsizes, and compare if the sector
->> size is supported.
->>
->> Then only output above warning message if the sector size is not
->> supported.
->>
->> This patch will also introduce a new helper,
->> sysfs_open_global_feature_file() to make it more obvious which global
->> feature file we're opening.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> changelog:
->> v2:
->> - Introduce new helper to open global feature file
->> - Extra the supported sectorsize check into its own function
->> - Do proper token check other than strstr()
->> - Fix the bug that we're passing @page_size to check
->> ---
->>   common/fsfeatures.c | 49 ++++++++++++++++++++++++++++++++++++++++++++=
--
->>   common/utils.c      | 15 ++++++++++++++
->>   common/utils.h      |  1 +
->>   3 files changed, 64 insertions(+), 1 deletion(-)
->>
->> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
->> index 569208a9e5b1..6641c44dfa45 100644
->> --- a/common/fsfeatures.c
->> +++ b/common/fsfeatures.c
->> @@ -327,8 +327,50 @@ u32 get_running_kernel_version(void)
->>
->>   	return version;
->>   }
->> +
->> +/*
->> + * The buffer size should be strlen("4096 8192 16384 32768 65536"),
->> + * which is 28, then we just round it up to 32.
->> + */
->> +#define SUPPORTED_SECTORSIZE_BUF_SIZE	32
->> +
->> +/*
->> + * Check if the current kernel supports given sectorsize.
->> + *
->> + * Return true if the sectorsize is supported.
->> + * Return false otherwise.
->> + */
->> +static bool check_supported_sectorsize(u32 sectorsize)
->> +{
->> +	char supported_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] =3D { 0 };
->> +	char sectorsize_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] =3D { 0 };
->> +	char *this_char;
->> +	char *save_ptr =3D NULL;
->> +	int fd;
->> +	int ret;
->> +
->> +	fd =3D sysfs_open_global_feature_file("supported_sectorsizes");
->> +	if (fd < 0)
->> +		return false;
->> +	ret =3D sysfs_read_file(fd, supported_buf, SUPPORTED_SECTORSIZE_BUF_S=
-IZE);
->> +	close(fd);
->> +	if (ret < 0)
->> +		return false;
->> +	snprintf(sectorsize_buf, SUPPORTED_SECTORSIZE_BUF_SIZE,
->> +		 "%u", sectorsize);
->> +
->> +	for (this_char =3D strtok_r(supported_buf, " ", &save_ptr);
->> +	     this_char !=3D NULL;
->> +	     this_char =3D strtok_r(NULL, ",", &save_ptr)) {
+>> The correct number command is:
+>> # btrfs ins dump-tree -b 790151168 /dev/loop0p3
 >
-> Based on the example file contents in the comment, I would expect " " as
-> the delimeter for looping through the supported sizes, not ",".
+>
+> root@debug:~# btrfs ins dump-tree -b 790151168 /dev/loop0p3
+> btrfs-progs v5.7
+[...]
+> 	item 4 key (5007 INODE_ITEM 0) itemoff 15760 itemsize 160
+> 		generation 294 transid 219603 size 0 nbytes 18446462598731726987
 
-What am I doing, (facepalm...
+The nbytes looks very strange.
 
-Thanks for pointing this out,
+It's 0x0xfffeffffffef008b, which definitely looks aweful for an empty inod=
+e.
+
+> 		block group 0 mode 100600 links 1 uid 1000 gid 1000 rdev 0
+> 		sequence 476091 flags 0x0(none)
+> 		atime 1610373772.750632843 (2021-01-11 14:02:52)
+> 		ctime 1617477826.205928110 (2021-04-03 19:23:46)
+> 		mtime 1617477826.205928110 (2021-04-03 19:23:46)
+> 		otime 0.0 (1970-01-01 00:00:00)
+> 	item 5 key (5007 INODE_REF 4727) itemoff 15732 itemsize 28
+> 		index 0 namelen 0 name:
+> 		index 0 namelen 0 name:
+> 		index 0 namelen 294 name:
+
+Definitely corrupted. I'm afraid tree-checker is correct.
+
+The log tree is corrupted.
+And the check to detect such corrupted inode ref is only introduced in
+v5.5 kernel, no wonder v5.4 kernel didn't catch it at runtime.
+
+I don't have any idea why this could happen, as it doesn't look like an
+obvious memory flip.
+
+Maybe Filipe could have some clue on this?
+
+Thanks,
 Qu
+
+> 	item 6 key (5041 INODE_ITEM 0) itemoff 15572 itemsize 160
+> 		generation 295 transid 219603 size 4096 nbytes 4096
+> 		block group 0 mode 100600 links 1 uid 1000 gid 1000 rdev 0
+> 		sequence 321954 flags 0x0(none)
+> 		atime 1610373832.763235044 (2021-01-11 14:03:52)
+> 		ctime 1617477815.541863825 (2021-04-03 19:23:35)
+> 		mtime 1617477815.541863825 (2021-04-03 19:23:35)
+> 		otime 0.0 (1970-01-01 00:00:00)
+> 	item 7 key (5041 INODE_REF 4727) itemoff 15544 itemsize 28
+> 		index 12 namelen 18 name: health_metrics.txt
+> 	item 8 key (5041 EXTENT_DATA 0) itemoff 15491 itemsize 53
+> 		generation 219603 type 1 (regular)
+> 		extent data disk byte 12746752 nr 4096
+> 		extent data offset 0 nr 4096 ram 4096
+> 		extent compression 0 (none)
+> 	item 9 key (EXTENT_CSUM EXTENT_CSUM 12746752) itemoff 15487 itemsize 4
+> 		range start 12746752 end 12750848 length 4096
 >
->> +		if (!strncmp(this_char, sectorsize_buf, strlen(sectorsize_buf)))
->> +			return true;
->> +	}
->> +	return false;
->> +}
->> +
->>   int btrfs_check_sectorsize(u32 sectorsize)
->>   {
->> +	bool sectorsize_checked =3D false;
->>   	u32 page_size =3D (u32)sysconf(_SC_PAGESIZE);
->>
->>   	if (!is_power_of_2(sectorsize)) {
->> @@ -340,7 +382,12 @@ int btrfs_check_sectorsize(u32 sectorsize)
->>   		      sectorsize);
->>   		return -EINVAL;
->>   	}
->> -	if (page_size !=3D sectorsize)
->> +	if (page_size =3D=3D sectorsize)
->> +		sectorsize_checked =3D true;
->> +	else
->> +		sectorsize_checked =3D check_supported_sectorsize(sectorsize);
->> +
->> +	if (!sectorsize_checked)
->>   		warning(
->>   "the filesystem may not be mountable, sectorsize %u doesn't match pag=
-e size %u",
->>   			sectorsize, page_size);
->> diff --git a/common/utils.c b/common/utils.c
->> index 57e41432c8fb..e8b35879f19f 100644
->> --- a/common/utils.c
->> +++ b/common/utils.c
->> @@ -2205,6 +2205,21 @@ int sysfs_open_fsid_file(int fd, const char *fil=
-ename)
->>   	return open(sysfs_file, O_RDONLY);
->>   }
->>
->> +/*
->> + * Open a file in global btrfs features directory and return the file
->> + * descriptor or error.
->> + */
->> +int sysfs_open_global_feature_file(const char *feature_name)
->> +{
->> +	char path[PATH_MAX];
->> +	int ret;
->> +
->> +	ret =3D path_cat_out(path, "/sys/fs/btrfs/features", feature_name);
->> +	if (ret < 0)
->> +		return ret;
->> +	return open(path, O_RDONLY);
->> +}
->> +
->>   /*
->>    * Read up to @size bytes to @buf from @fd
->>    */
->> diff --git a/common/utils.h b/common/utils.h
->> index c38bdb08077c..d2f6416a9b5a 100644
->> --- a/common/utils.h
->> +++ b/common/utils.h
->> @@ -169,6 +169,7 @@ char *btrfs_test_for_multiple_profiles(int fd);
->>   int btrfs_warn_multiple_profiles(int fd);
->>
->>   int sysfs_open_fsid_file(int fd, const char *filename);
->> +int sysfs_open_global_feature_file(const char *feature_name);
->>   int sysfs_read_file(int fd, char *buf, size_t size);
->>
->>   #endif
->> --
->> 2.31.1
->>
