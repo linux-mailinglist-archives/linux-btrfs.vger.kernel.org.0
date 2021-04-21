@@ -2,269 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825BB36733E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Apr 2021 21:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2DE367574
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 01:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245424AbhDUTOR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Apr 2021 15:14:17 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:54329 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240378AbhDUTOJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:14:09 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 774985C00E5;
-        Wed, 21 Apr 2021 15:13:35 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 21 Apr 2021 15:13:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=HaNcDj2Dy45Ew1bbGSpgh9uPCI8
-        reXGG9hVynycGfqU=; b=WPEd/NT3TYSeVIpbA2tQVA1k3Av2XE9hNyfjnt6TMW2
-        wdD7Gf0SRqnZlpe47CkhEHnEW4Q4azcEKUTljD2Rt7p5gki2gNH87gcCmM6kiUHC
-        RwvCRNPwk2/Yh+nIIQ9fL1kkVigAcV4kEoS/HvcpZ9Unv2kmdf9N0LulFmiNQyk3
-        Jyvo/tnXss6RoLLNxM8y7aD4VAAwgEAz37V/sFYMeK9sqTPf69+y4gsU5SSg3SXu
-        rqXgng3mft4u4+osTr9pZZy1v5DQFjBGRNxE3NIM1yD+Ep+KpL1K3MqnMLk1gFdC
-        731f6lBGAVPYKrrVko7Z7NkomTpRBvw/GdQae/rp6Gw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=HaNcDj
-        2Dy45Ew1bbGSpgh9uPCI8reXGG9hVynycGfqU=; b=PfyK0eaVETPxuAZkOzx5hc
-        /JEatK72zBJ1tuX957+xz/CB5YmGAN63JO3S5uGSShG2uudAFutogksCuX7NvLDK
-        acUFFA3gaMeo48r5fzIXwf0Epcu3wLt6RN9ZvlpKcf7BWHwEw7/cS3w1Z+Fg9jd/
-        WqOukwxYw5djAUnTGZpjUB/8Zjp4Ddy0PqzNw96EKEU15pQjsxCUp+rpfkqYt8hi
-        huvoS6OVc089++Pb4z7SSCiNIAEVtHCHfqm/0co6HAhNAinCFTcsSpPGpGvLYZrl
-        hDOUQdnBKBwDH7VPiJwisKZsf3pk1p/yHoL4sV63u6G8S4GrwVz19eWVTC1zC92Q
-        ==
-X-ME-Sender: <xms:X3mAYM3Usm0lXfy6j3tR_gGUuioK7KZTiZR3_cFfOSMZ8nBs7XMrFA>
-    <xme:X3mAYDHHCDS4lkTgTKSyOP08iDVu4C5YVUaLAcMwevIYZjCmH9evchlUdbg8ov4p2
-    SMJO82ASM-2UH-lmJ0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtkedgudefiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    dtvdfftddvveduieejtedufeeuudefueefhfdujedutdegtddtffffiefgtefgtdenucff
-    ohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedvtdejrdehfedrvdehfedrjeenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhs
-    segsuhhrrdhioh
-X-ME-Proxy: <xmx:X3mAYHEmoqxhDhD136Q6huNTXjV_soASbZQVU99H3IVVsJjpCySoCw>
-    <xmx:X3mAYG7Ec9BCnbWePtE962cOZuu3qWjzENT33sDguWW3u6TNMz0e8w>
-    <xmx:X3mAYMxLS8S7ivRGOvqZEwsmB6voMOEGmIc9ESRxEhP_hvxxoFN5rA>
-    <xmx:X3mAYMjbdND41xEfcLvIvRVqhDByJXPNC25JyJsvuFcCJBe8zvkWJw>
-Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0D9BE240067;
-        Wed, 21 Apr 2021 15:13:34 -0400 (EDT)
-Date:   Wed, 21 Apr 2021 12:13:33 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Eryu Guan <guan@eryu.me>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, fstests@vger.kernel.org
-Subject: Re: [PATCH v3] generic: test fiemap offsets and < 512 byte ranges
-Message-ID: <YIB5XbY2PX4J5dlN@zen>
-References: <20210407161046.GY1670408@magnolia>
- <c2f49fdead29fd7eb979b83028eb9fcf56d2457c.1617826068.git.boris@bur.io>
- <YHMBzw/9tUVMS66G@desktop>
+        id S240636AbhDUXBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Apr 2021 19:01:47 -0400
+Received: from mout.gmx.net ([212.227.17.22]:58527 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232642AbhDUXBp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Apr 2021 19:01:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1619046065;
+        bh=/DdaYP+GXm7gvfnp9Fg+xyyDF4zfNDQu5o+YYIoGS8o=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=C9Gk73FdQdAbE0ngBW1VIyRX2xU+lCcpb5+kxrUUKIRpV0JOnM/Uw0TmCfn1ZRfwi
+         eXuo9MS75y2n1aFU1P96mAMS9/fxaBR4sXuNsa+G/s3kU7/5CQvaG1316fwt8lC3JX
+         X+sE6PpyNifzXxHzYXqzTtdCHgadcwY+7yVMNl2I=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKKYx-1lv87b3JPD-00LmEC; Thu, 22
+ Apr 2021 01:01:05 +0200
+Subject: Re: read time tree block corruption detected
+To:     "Gervais, Francois" <FGervais@distech-controls.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <FdManana@suse.com>
+References: <DM6PR01MB4265447B51C4FD9CE1C89A3DF34C9@DM6PR01MB4265.prod.exchangelabs.com>
+ <666c6ea6-9015-1e50-e8a7-dc5b45cdac3c@gmx.com>
+ <SN6PR01MB42690A51D0752719B9F1C6ACF3499@SN6PR01MB4269.prod.exchangelabs.com>
+ <41e13913-398a-96b8-0f6f-00cfc83c6304@gmx.com>
+ <SN6PR01MB4269861CA9BA4D5E61DF1030F3499@SN6PR01MB4269.prod.exchangelabs.com>
+ <709d1a70-e52a-0ff3-8425-f86f18ac0641@gmx.com>
+ <BYAPR01MB42641653D21CE9381EDB7CD6F3489@BYAPR01MB4264.prod.exchangelabs.com>
+ <f88a4913-87d7-830a-04f8-9af860abd747@gmx.com>
+ <SN6PR01MB42695BAC2335150797F758C8F3479@SN6PR01MB4269.prod.exchangelabs.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <86123bb4-08d4-5de4-b8cb-b23677062468@gmx.com>
+Date:   Thu, 22 Apr 2021 07:01:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHMBzw/9tUVMS66G@desktop>
+In-Reply-To: <SN6PR01MB42695BAC2335150797F758C8F3479@SN6PR01MB4269.prod.exchangelabs.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:M7g6IdIvRanPsyzUPjF3X/eRdoH6o5hVgBNUrhrkfpDhLthgS6Y
+ zImSqbSmz1GX3OFDNkTJU+HWj07u2hwbbBpUCduvA24wzVRXVLRKtxRe/dqYWNOjYuexAXf
+ R6mZE+HXMqxJ8uSTt1bk/oSPBrER7ROnUV4RruTEMM2h0YyufBX/lLSikK/h9bV5iyXWOX5
+ /SatWt+NUB9ZiINHJIUUA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Swuy7QkQmLc=:s7YzgHWKJrB9OX7x2Jj062
+ BXdEWnqJKUc/lJW/vVadu/S/7SpdJ26a/1K6QQr7QJ0rubEWo4QPiFbnKI09Ic3YYzlyihwy1
+ DHrrHb6ocQWsjFHu4svq3uIuSJiaM4E3YQE6gGvpppjdjywP3Nbbk7GN6ZMc7S8yBR5vRWjPT
+ NhfogjSYVrn0qII4dGZiXk9G8Zsb/i9y/XCkbff8mtNTRWPqTTQZro4wrZ6np/aRlYi15zSXM
+ DjrrvpQ2kPuMdulfX25sXX7dGH4kOuE5evHM1/pn6pehBp3TiHX1XZRHNBOo5rpc/bOW+y+77
+ Y1aWKjth8qNzLDbhO3399GviiV+ygo9lGIqk5nfMGNuQWRUy4kGNmxTjiPHuFr5bmbXwIyzoy
+ COr1MujtZ72xmbQgL+h6wGFWAP201zqfIGytR67A1BI2IwAwgIesZdyN2S5Or4w/u+7PJUhu3
+ SKESXaEfbFYGHZEdVGMz8VW0AXlKBXjhQek/xRKsreOZnIIihGj08TLoxKoS41auJ8RH5jL7L
+ UDulnUmPhRWIOTiMLghvt+UQuywa957F9Ne2Ahfwv3olhbdLYbCg21gAXb1qxt9TT41nYxAYa
+ L5P5aFZxT/gkWrHixdfQPxXMREw/j2heEhK9ZO3M7LG1TMK5yk2+N9AExCr3A3jDUn1FIxQDp
+ BqKMqPI/e99vuAtJXoczi/CJ4rYKPgEgs3FyTfU+jkkvIkmW8P4ay9XtrcR2X4fKJm7oaPMcH
+ AjBe6XBWnuy0K5V2I4gTDfMIalI5pYGMKY3MR/OUiasrpsi7bwLaPHPwJ+ladklBFtS1aPew+
+ vEa4w6iKd4uqQh+bE5zsMrhpi3plGaOmMKJje3UKJyiEP+JYyBCJyM/mQmxxpjTnj5nRAin0o
+ uc4/13WEWtrRI3vjprNb1/e2dzFNtmzwekM6PRAHsoPvc0tcGR25s9St+0J2muP7EVyfGWGZf
+ bYhY5mceQr2VUVUAQKpprBoyJ388+WtV8UWue95qWLBks9J/Ff9v7P3JuGWQ3RQMF2EdBLU/2
+ y2rAbtAfwEKNjdDxBXJuBSPG6J+M1PmUScB/4YJdepNU1iO0ulkcc/W1Hx3GrLUf0dFoK8veY
+ mja9EP3U4dbjglmmAiF3BIiOzbX47YCiSpZRCq7TGk2BLBz0SVx7XY5dIw4LPBmpnCUq28/fm
+ peAHjmy4YpqCVRqivjoiNwBqlt4oDjpHaLWGTYYorjx4RKT3k9yCeP4qq5yEJp/bcxK7+uoYW
+ oUibNu1MSkugwENw/
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 10:03:59PM +0800, Eryu Guan wrote:
-> On Wed, Apr 07, 2021 at 01:13:26PM -0700, Boris Burkov wrote:
-> > btrfs trims fiemap extents to the inputted offset, which leads to
-> > inconsistent results for most inputs, and downright bizarre outputs like
-> > [7..6] when the trimmed extent is at the end of an extent and shorter
-> > than 512 bytes.
-> > 
-> > The test writes out one extent of the file system's block size and tries
-> > fiemaps at various offsets. It expects that all the fiemaps return the
-> > full single extent.
-> > 
-> > I ran it under the following fs, block size combinations:
-> > ext2: 1024, 2048, 4096
-> > ext3: 1024, 2048, 4096
-> > ext4: 1024, 2048, 4096
-> > xfs: 512, 1024, 2048, 4096
-> > f2fs: 4096
-> > btrfs: 4096
-> > 
-> > This test is fixed for btrfs by:
-> > btrfs: return whole extents in fiemap
-> > (https://lore.kernel.org/linux-btrfs/274e5bcebdb05a8969fc300b4802f33da2fbf218.1617746680.git.boris@bur.io/)
-> > 
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> 
-> generic/473, which tests fiemap, has been marked as broken, as fiemap
-> behavior is not consistent across filesystems, and the specific behavior
-> tested by generic/473 is not defined and filesystems could have
-> different implementations.
-> 
-> I'm not sure if this test fits into the undefined-behavior fiemap
-> categary. I think it's fine if it tests a well-defined & consistent
-> behavior.
-> 
 
-Interesting, I didn't know about that test being marked as broken.
 
-I was worried about this problem to some extent and attempted to
-mitigate it by only requiring that all the output be the same, rather
-than matching some specific standard.
+On 2021/4/21 =E4=B8=8B=E5=8D=8810:17, Gervais, Francois wrote:
+>>> Would detecting it at runtime with a newer kernel have helped in any w=
+ay with
+>>> the corruption?
+>>
+>> Yes, newer kernel will reject the write, so such damaged metadata won't
+>> reach disk.
+>>
+>> But that's just more graceful than corrupted fs.
+>> It will still cause error like transaction aborted.
+>>
+>> [...]
+>>
+>>> Could power loss be the cause of this issue?
+>>
+>> It shouldn't.
+>> The log tree can only be exposed by power loss, but it's not designed t=
+o
+>> have such corrupted data on-disk.
+>>
+>> This normally means some code is wrong when generating log tree.
+>
+> Alright, for the next step, I feel the best is that we try to reproduce =
+and
+> get more information as of the events that caused state.
+>
+> A few questions ,if you want, before we start.
+>
+> - Anything you would recommend as of configuration of the device?
 
-Thinking about it further, I think this test is portable only so long as
-the step where it writes a file with one extent is portable.
+You can test using dm-logwrites, which really logs every writes and
+replay it.
+By using dm-logwrites, you can emulate powerloss for each write operation.
 
-If "pwrite 0 block-size" ends up as a file with multiple extents, then
-it is possible one of the partial fiemaps will only intersect with a
-subset of the extents and rightly return those. In fact, that was broken
-in the original version of the test which explicitly used 4096 instead of
-being detecting the block size.
+>    - Should we run a newer kernel than our current v5.4?
 
-I do think it is nice to have this as a regression test for btrfs, since
-we have pretty complicated logic for fiemap and it was so broken in this
-case. If you prefer, I can make this a btrfs specific test.
+Definitely. In fact my fuzzy memory points me to some fix, but I can't
+remember exactly which fix.
 
-Thanks for the review,
-Boris
+>    - Any debug you think would be useful to enable or add?
+>
 
-> > ---
-> > v3: make the block size more generic, use test dev instead of scratch,
-> > cleanup style issues.
-> > v2: fill out copyright and test description
-> > ---
-> >  tests/generic/623     | 94 +++++++++++++++++++++++++++++++++++++++++++
-> >  tests/generic/623.out |  2 +
-> >  tests/generic/group   |  1 +
-> >  3 files changed, 97 insertions(+)
-> >  create mode 100755 tests/generic/623
-> >  create mode 100644 tests/generic/623.out
-> > 
-> > diff --git a/tests/generic/623 b/tests/generic/623
-> > new file mode 100755
-> > index 00000000..a5ef369a
-> > --- /dev/null
-> > +++ b/tests/generic/623
-> > @@ -0,0 +1,94 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2021 Facebook.  All Rights Reserved.
-> > +#
-> > +# FS QA Test 623
-> > +#
-> > +# Test fiemaps with offsets into small parts of extents.
-> > +# Expect to get the whole extent, anyway.
-> > +#
-> > +seq=`basename $0`
-> > +seqres=$RESULT_DIR/$seq
-> > +echo "QA output created by $seq"
-> > +
-> > +here=`pwd`
-> > +tmp=/tmp/$$
-> > +status=1	# failure is the default!
-> > +trap "_cleanup; exit \$status" 0 1 2 3 15
-> > +
-> > +_cleanup()
-> > +{
-> > +	cd /
-> > +	rm -f $tmp.*
-> > +	rm -f $fiemap_file
-> > +}
-> > +
-> > +# get standard environment, filters and checks
-> > +. ./common/rc
-> > +. ./common/filter
-> > +
-> > +# remove previous $seqres.full before test
-> > +rm -f $seqres.full
-> > +
-> > +# real QA test starts here
-> > +
-> > +# Modify as appropriate.
-> > +_supported_fs generic
-> > +_require_test
-> > +_require_xfs_io_command "fiemap"
-> > +
-> > +rm -f $seqres.full
-> > +
-> > +fiemap_file=$TEST_DIR/foo.$$
-> > +
-> > +do_fiemap() {
-> > +	off=$1
-> > +	len=$2
-> > +	echo $off $len >> $seqres.full
-> > +	$XFS_IO_PROG -c "fiemap $off $len" $fiemap_file | tee -a $seqres.full
-> > +}
-> > +
-> > +check_fiemap() {
-> > +	off=$1
-> > +	len=$2
-> > +	actual=$(do_fiemap $off $len)
-> > +	[ "$actual" == "$expected" ] || _fail "unexpected fiemap on $off $len"
-> > +}
-> > +
-> > +# write a file with one extent
-> > +block_size=$(_get_block_size $TEST_DIR)
-> > +$XFS_IO_PROG -f -s -c "pwrite -S 0xcf 0 $block_size" $fiemap_file >/dev/null
-> > +
-> > +# since the exact extent location is unpredictable especially when
-> > +# varying file systems, just test that they are all equal, which is
-> > +# what we really expect.
-> > +expected=$(do_fiemap)
-> > +
-> > +mid=$((block_size / 2))
-> > +almost=$((block_size - 5))
-> > +past=$((block_size + 1))
-> > +
-> > +check_fiemap 0 $mid
-> > +check_fiemap 0 $block_size
-> > +check_fiemap 0 $past
-> > +check_fiemap $mid $almost
-> > +check_fiemap $mid $block_size
-> > +check_fiemap $mid $past
-> > +check_fiemap $almost 5
-> > +check_fiemap $almost 6
-> > +
-> > +# fiemap output explicitly deals in 512 byte increments,
-> > +# so exercise some cases where len is 512.
-> > +# Naturally, some of these can't work if block size is 512.
-> > +one_short=$((block_size - 512))
-> > +check_fiemap 0 512
-> > +check_fiemap $one_short 512
-> > +check_fiemap $almost 512
-> > +
-> > +_test_unmount
-> 
-> Any reason to umount TEST_DEV?
-> 
-> Thanks,
-> Eryu
-> 
-> > +
-> > +echo "Silence is golden"
-> > +
-> > +# success, all done
-> > +status=0
-> > +exit
-> > diff --git a/tests/generic/623.out b/tests/generic/623.out
-> > new file mode 100644
-> > index 00000000..6f774f19
-> > --- /dev/null
-> > +++ b/tests/generic/623.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 623
-> > +Silence is golden
-> > diff --git a/tests/generic/group b/tests/generic/group
-> > index b10fdea4..39e02383 100644
-> > --- a/tests/generic/group
-> > +++ b/tests/generic/group
-> > @@ -625,3 +625,4 @@
-> >  620 auto mount quick
-> >  621 auto quick encrypt
-> >  622 auto shutdown metadata atime
-> > +623 auto quick
-> > -- 
-> > 2.30.2
+Tree-checker, which is already enabled by default (in fact no way to
+disable) in newer kernels.
+
+Thanks,
+Qu
