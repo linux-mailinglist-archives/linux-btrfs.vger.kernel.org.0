@@ -2,123 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2DE367574
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 01:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EAA3675A8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 01:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240636AbhDUXBr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Apr 2021 19:01:47 -0400
-Received: from mout.gmx.net ([212.227.17.22]:58527 "EHLO mout.gmx.net"
+        id S243503AbhDUXU0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Apr 2021 19:20:26 -0400
+Received: from mout.gmx.net ([212.227.15.15]:56653 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232642AbhDUXBp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:01:45 -0400
+        id S234867AbhDUXU0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Apr 2021 19:20:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619046065;
-        bh=/DdaYP+GXm7gvfnp9Fg+xyyDF4zfNDQu5o+YYIoGS8o=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=C9Gk73FdQdAbE0ngBW1VIyRX2xU+lCcpb5+kxrUUKIRpV0JOnM/Uw0TmCfn1ZRfwi
-         eXuo9MS75y2n1aFU1P96mAMS9/fxaBR4sXuNsa+G/s3kU7/5CQvaG1316fwt8lC3JX
-         X+sE6PpyNifzXxHzYXqzTtdCHgadcwY+7yVMNl2I=
+        s=badeba3b8450; t=1619047186;
+        bh=T6n2WTiFX0+N/g4Ec4NiWq/j8mjtpSm25z7IdEhthdw=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=CRGrAsvaNKli3D6xQa5ZMc3ouRoMnbKhNlmwvGrI+ygfxkVTeprYqjEW3Rf6RO6oP
+         0f0nuNzTy5WizaLrz1Dk+kGVxIjPn35ZqCBcuWtZIxgzTdkjK/l6D+B3HroONlLjbB
+         ybA6eaeaHnKDMJxonmjSmdp32pYuu4ZD7lKcxB7s=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKKYx-1lv87b3JPD-00LmEC; Thu, 22
- Apr 2021 01:01:05 +0200
-Subject: Re: read time tree block corruption detected
-To:     "Gervais, Francois" <FGervais@distech-controls.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <FdManana@suse.com>
-References: <DM6PR01MB4265447B51C4FD9CE1C89A3DF34C9@DM6PR01MB4265.prod.exchangelabs.com>
- <666c6ea6-9015-1e50-e8a7-dc5b45cdac3c@gmx.com>
- <SN6PR01MB42690A51D0752719B9F1C6ACF3499@SN6PR01MB4269.prod.exchangelabs.com>
- <41e13913-398a-96b8-0f6f-00cfc83c6304@gmx.com>
- <SN6PR01MB4269861CA9BA4D5E61DF1030F3499@SN6PR01MB4269.prod.exchangelabs.com>
- <709d1a70-e52a-0ff3-8425-f86f18ac0641@gmx.com>
- <BYAPR01MB42641653D21CE9381EDB7CD6F3489@BYAPR01MB4264.prod.exchangelabs.com>
- <f88a4913-87d7-830a-04f8-9af860abd747@gmx.com>
- <SN6PR01MB42695BAC2335150797F758C8F3479@SN6PR01MB4269.prod.exchangelabs.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mzhj9-1lMLU82ojp-00vfFK; Thu, 22
+ Apr 2021 01:19:46 +0200
+To:     fdmanana@gmail.com, Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20210421201725.577C.409509F4@e16-tech.com>
+ <CAL3q7H6V+x_Pu=bxTFGsuZLHf2mh_DOcthJx7HCSYCL79rjzxw@mail.gmail.com>
+ <20210421235733.9C11.409509F4@e16-tech.com>
+ <CAL3q7H7j7eZ0r1xYJiQGr3+yuwnqkpbRoA3HxY=e8Ut8VDRCRA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <86123bb4-08d4-5de4-b8cb-b23677062468@gmx.com>
-Date:   Thu, 22 Apr 2021 07:01:00 +0800
+Subject: Re: 'ls /mnt/scratch/' freeze(deadlock?) when run xfstest(btrfs/232)
+Message-ID: <9b4400ca-d0a3-621d-591c-dc377d0bed58@gmx.com>
+Date:   Thu, 22 Apr 2021 07:19:42 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <SN6PR01MB42695BAC2335150797F758C8F3479@SN6PR01MB4269.prod.exchangelabs.com>
+In-Reply-To: <CAL3q7H7j7eZ0r1xYJiQGr3+yuwnqkpbRoA3HxY=e8Ut8VDRCRA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:M7g6IdIvRanPsyzUPjF3X/eRdoH6o5hVgBNUrhrkfpDhLthgS6Y
- zImSqbSmz1GX3OFDNkTJU+HWj07u2hwbbBpUCduvA24wzVRXVLRKtxRe/dqYWNOjYuexAXf
- R6mZE+HXMqxJ8uSTt1bk/oSPBrER7ROnUV4RruTEMM2h0YyufBX/lLSikK/h9bV5iyXWOX5
- /SatWt+NUB9ZiINHJIUUA==
+X-Provags-ID: V03:K1:eM9I+Qr4bFzIKS/q0tNAgpVvdIygjvoEaovJ3PceSrrtllnZg5X
+ Xj4QheQUPHCi4ZPRgZzg+LeIbOFWrLYrl1JFtYVn5hP7FdvuDkdUr6d5vKE/s5Ypll07pkg
+ qNyzdq4YxNyEhe23hNmJ5P+9/isw2M5GvRsOTt7JTdDnoFmU7i8oB35j4ibcDKTlC3oiTzK
+ Xys6fB6+ba/dXtq3zpWcA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Swuy7QkQmLc=:s7YzgHWKJrB9OX7x2Jj062
- BXdEWnqJKUc/lJW/vVadu/S/7SpdJ26a/1K6QQr7QJ0rubEWo4QPiFbnKI09Ic3YYzlyihwy1
- DHrrHb6ocQWsjFHu4svq3uIuSJiaM4E3YQE6gGvpppjdjywP3Nbbk7GN6ZMc7S8yBR5vRWjPT
- NhfogjSYVrn0qII4dGZiXk9G8Zsb/i9y/XCkbff8mtNTRWPqTTQZro4wrZ6np/aRlYi15zSXM
- DjrrvpQ2kPuMdulfX25sXX7dGH4kOuE5evHM1/pn6pehBp3TiHX1XZRHNBOo5rpc/bOW+y+77
- Y1aWKjth8qNzLDbhO3399GviiV+ygo9lGIqk5nfMGNuQWRUy4kGNmxTjiPHuFr5bmbXwIyzoy
- COr1MujtZ72xmbQgL+h6wGFWAP201zqfIGytR67A1BI2IwAwgIesZdyN2S5Or4w/u+7PJUhu3
- SKESXaEfbFYGHZEdVGMz8VW0AXlKBXjhQek/xRKsreOZnIIihGj08TLoxKoS41auJ8RH5jL7L
- UDulnUmPhRWIOTiMLghvt+UQuywa957F9Ne2Ahfwv3olhbdLYbCg21gAXb1qxt9TT41nYxAYa
- L5P5aFZxT/gkWrHixdfQPxXMREw/j2heEhK9ZO3M7LG1TMK5yk2+N9AExCr3A3jDUn1FIxQDp
- BqKMqPI/e99vuAtJXoczi/CJ4rYKPgEgs3FyTfU+jkkvIkmW8P4ay9XtrcR2X4fKJm7oaPMcH
- AjBe6XBWnuy0K5V2I4gTDfMIalI5pYGMKY3MR/OUiasrpsi7bwLaPHPwJ+ladklBFtS1aPew+
- vEa4w6iKd4uqQh+bE5zsMrhpi3plGaOmMKJje3UKJyiEP+JYyBCJyM/mQmxxpjTnj5nRAin0o
- uc4/13WEWtrRI3vjprNb1/e2dzFNtmzwekM6PRAHsoPvc0tcGR25s9St+0J2muP7EVyfGWGZf
- bYhY5mceQr2VUVUAQKpprBoyJ388+WtV8UWue95qWLBks9J/Ff9v7P3JuGWQ3RQMF2EdBLU/2
- y2rAbtAfwEKNjdDxBXJuBSPG6J+M1PmUScB/4YJdepNU1iO0ulkcc/W1Hx3GrLUf0dFoK8veY
- mja9EP3U4dbjglmmAiF3BIiOzbX47YCiSpZRCq7TGk2BLBz0SVx7XY5dIw4LPBmpnCUq28/fm
- peAHjmy4YpqCVRqivjoiNwBqlt4oDjpHaLWGTYYorjx4RKT3k9yCeP4qq5yEJp/bcxK7+uoYW
- oUibNu1MSkugwENw/
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cPeW/CFg6LI=:S8H4/nkFQUpiD3xMTTitZQ
+ J+27zNvt8zbNuBdTNkwMvQ1JNUE/MNWBPvfVngp01EzgHiTnIiGz0H6Ig2VOk8J03P7Gr+Pww
+ BwCZw16XWdRBZsg8iX3+aLuewTdPU99hQ7Pna4vGsCM0eUw3nT9ysM6iDwA8TkzrOzJhBADNj
+ 4pTPqbuwDJVC8LFh+pj4T3v6XUVp5BkOCm8OF1g0W3gFlGBUdgYhs+k1cTZ10i7KyegIzVofy
+ envJMxrlzSWaLAzmVhE2k5yABTvsnkkpT9lXDXWCgEdP2zmf132NlaWKeX0G0T5LaBteJEJBP
+ MBJtqjO2A+QPndn4OJjjTvYKeqyjciBGwGC2F0HrxGVRpI4Hk15TjpRBqx08NsP947nIBdj2Q
+ KeCvhg70saNeDO0GVORF+4gsBslUIfaJi76iwv573D9FX7dDbVfGAdNt26c3VWcHdg6tWwKri
+ l6ntEq9CuowLiSoKSz8AZQVdS+L4vcjMo2XGzWm7LQdDwaBurerX+Q7ARb533FAg4BldPPtQF
+ u4OuCNYWR2Njw7YRPK1wi+43oKQ+pJ0UHwkBjeyOugEQFWB8cMiyQNoT9AF2NXh/Gdh9yQV57
+ u+GLgI/9Sdi2Xn+ENJTC5U9FT+vj5p4XcY7094fgoclo++uRFRud/549yAa9nxDGh/d1QyNiX
+ hrwL38M25RvkcBhEw4+PW18ltAW8l9BCb+aoEgzSPADMzVUWKo7cMtS++CAKomXtIyTwWLsZn
+ Fy7YcTYCqQ71Pb8821Z6fr69VuG1AWUQY8Ot2sXALuTWEM47P9rnzyLoShZC/wSr8rvBrTZv2
+ u5NbajOOnAzjkxTrr1yiY+POVuEuc3lPclRBqFRF3ZC2uGkRfNCGbQJ6a4Tml1pdUypgCg5nv
+ w9ft+UBZ8BWAwmlRIe9o0Y12ZCkVB9rl0jFCyZxPzV2Yj2B1T2/w6vllsziLwQg0vJX8q0rGz
+ mlWegW9UhXsLCj+ULKtytfkRrXLDQu3f8WIsJXzKkPdYyNUfwvQeO4loivifNk5b+afKeJw0w
+ DQ6eerhsS4ttFULdm1C2jW5nP7fIdZERXTNIl7x11d5BC7Q9kwCFgf+a0B2icjN4KV8ftS3Hl
+ ffiWfdcg6JCUnKF9fF9ooHdI4HUkb9xPBBEYusU+Kl9sk5utpxhMTjNoWV9uyHX9rki7qx5t2
+ 7hv3ArtWgOVCHNxs7mVuzC49aVsx17bBA8evZvzCYlMt0YBO8ZNFtcVjos+gaML5d2aOVznv1
+ 6BFOgbAtoc4ElJ32f
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/4/21 =E4=B8=8B=E5=8D=8810:17, Gervais, Francois wrote:
->>> Would detecting it at runtime with a newer kernel have helped in any w=
-ay with
->>> the corruption?
+On 2021/4/22 =E4=B8=8A=E5=8D=8812:03, Filipe Manana wrote:
+> On Wed, Apr 21, 2021 at 4:57 PM Wang Yugui <wangyugui@e16-tech.com> wrot=
+e:
 >>
->> Yes, newer kernel will reject the write, so such damaged metadata won't
->> reach disk.
+>> Hi,
 >>
->> But that's just more graceful than corrupted fs.
->> It will still cause error like transaction aborted.
+>>> That's the problem, qgroup flushing triggers writeback for an inode
+>>> for which we have a page dirtied and locked.
+>>> This should fix it:  https://pastebin.com/raw/U9GUZiEf
+>>>
+>>> Try it out and I'll write a changelog later.
+>>> Thanks.
 >>
->> [...]
+>> we run xfstest on two server with this patch.
+>> one passed the tests.
+>> but one got a btrfs/232 error.
 >>
->>> Could power loss be the cause of this issue?
->>
->> It shouldn't.
->> The log tree can only be exposed by power loss, but it's not designed t=
-o
->> have such corrupted data on-disk.
->>
->> This normally means some code is wrong when generating log tree.
+>> btrfs/232 32s ... _check_btrfs_filesystem: filesystem on /dev/nvme0n1p1=
+ is inconsistent
+>> (see /usr/hpc-bio/xfstests/results//btrfs/232.full for details)
+>> ...
+>> [4/7] checking fs roots
+>> root 5 inode 337 errors 400, nbytes wrong
+>> ERROR: errors found in fs roots
 >
-> Alright, for the next step, I feel the best is that we try to reproduce =
-and
-> get more information as of the events that caused state.
->
-> A few questions ,if you want, before we start.
->
-> - Anything you would recommend as of configuration of the device?
+> Ok, that's a different problem caused by something else.
+> It's possible to be due to the recent refactorings for preparation to
+> subpage block size.
 
-You can test using dm-logwrites, which really logs every writes and
-replay it.
-By using dm-logwrites, you can emulate powerloss for each write operation.
+This error looks exactly what I have seen during subpage development.
+The subpage bug is caused by incorrect btrfs_invalidatepage() though,
+and not yet merged into misc-next anyway.
 
->    - Should we run a newer kernel than our current v5.4?
+I guess it's some error path not clearing extent states correctly, thus
+leaving the inode nbytes accounting wrong.
 
-Definitely. In fact my fuzzy memory points me to some fix, but I can't
-remember exactly which fix.
+BTW, the new @in_reclaim_context parameter for start_delalloc_inodes()
+is already in misc-next:
+commit 3d45f221ce627d13e2e6ef3274f06750c84a6542
+Author: Filipe Manana <fdmanana@suse.com>
+Date:   Wed Dec 2 11:55:58 2020 +0000
 
->    - Any debug you think would be useful to enable or add?
->
+     btrfs: fix deadlock when cloning inline extent and low on free
+metadata space
 
-Tree-checker, which is already enabled by default (in fact no way to
-disable) in newer kernels.
+We only need to make btrfs_start_delalloc_snapshot() to accept the new
+parameter and pass in_reclaim_context =3D true for qgroup.
 
 Thanks,
 Qu
+>
+> Will try to look into that later.
+>
+> Thanks.
+>
+>> ...
+>>
+>> Best Regards
+>> Wang Yugui (wangyugui@e16-tech.com)
+>> 2021/04/21
+>>
+>
+>
