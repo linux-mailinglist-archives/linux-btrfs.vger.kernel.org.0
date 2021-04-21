@@ -2,136 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CE0366F90
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Apr 2021 17:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A7A366FA3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Apr 2021 18:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237429AbhDUP6H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Apr 2021 11:58:07 -0400
-Received: from out20-111.mail.aliyun.com ([115.124.20.111]:57558 "EHLO
-        out20-111.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235524AbhDUP6G (ORCPT
+        id S244166AbhDUQBh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Apr 2021 12:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244164AbhDUQBh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:58:06 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1221766|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.013079-7.70474e-05-0.986844;FP=0|0|0|0|0|0|0|0;HT=ay29a033018047187;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.K1lWGjP_1619020651;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.K1lWGjP_1619020651)
-          by smtp.aliyun-inc.com(10.147.42.22);
-          Wed, 21 Apr 2021 23:57:31 +0800
-Date:   Wed, 21 Apr 2021 23:57:34 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     fdmanana@gmail.com
-Subject: Re: 'ls /mnt/scratch/' freeze(deadlock?) when run xfstest(btrfs/232)
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-In-Reply-To: <CAL3q7H6V+x_Pu=bxTFGsuZLHf2mh_DOcthJx7HCSYCL79rjzxw@mail.gmail.com>
-References: <20210421201725.577C.409509F4@e16-tech.com> <CAL3q7H6V+x_Pu=bxTFGsuZLHf2mh_DOcthJx7HCSYCL79rjzxw@mail.gmail.com>
-Message-Id: <20210421235733.9C11.409509F4@e16-tech.com>
+        Wed, 21 Apr 2021 12:01:37 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD002C06174A;
+        Wed, 21 Apr 2021 09:01:03 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id m16so30942292qtx.9;
+        Wed, 21 Apr 2021 09:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IZX0f4l29NX/01aOrqPfZSbd0Re69bnUWgeaZTOG6n8=;
+        b=o6ZStsWKClgUKYeiAudSs0S4iegwa10djaCsrD0H1i/sVg3CH37ojWeJGWsaqjBNix
+         fg4qq8UtjTiyYBHRHdhfzGVBeu60+ANyg0e6zfv/f2eEEkVCWegv312mtIfGQSMAUa1Y
+         rGr8+H9yh/E5oO3CAH6rPqeuF8S75Rn1nLeoF7reuqGBG8ZNbRub8J8Ql97IYlVcSSrj
+         JuVNOjy5o3PrdHKLn9Ix1yKaUEZX39wcmQwGOf63y8jmIedlt0vUieq9KFBgvfYfnEJz
+         ddz6Ikj7ARk+gjuBYBN4auAphwkWWndTidZuF2IfdF7ok9j+y210jKxZMNDbiZ8IykVw
+         g8xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IZX0f4l29NX/01aOrqPfZSbd0Re69bnUWgeaZTOG6n8=;
+        b=m8GfmeCGEZErVcaz8jSKJ4IOazyaavQv6YIAcZqa76ccgr4MkGG8x1SF1OvUw+nEWX
+         CkPiELVZCO9cAdmlmgce8eKEiZ2ecdBvaj1HWIUztbm9foCq9ubJ0vgx16vYo33s4OFK
+         ZJ78Cu0dmkaMmERIiVwh8nnngZx10L8le4zc62fuNA6csH2Z4QBJN1tQ4nGgEko2xHAj
+         M68bxmo3/uHlAdmLGiFKpJ0sZY2WX3Jy1NEaz3cAUwaRvLGf9lZ4rhxoVY6vZt/aXb+k
+         m6GJ12zpCP7caCdCOnYkM20QPIzT3Yl576FS1XNTVh8noudrDB0u4wfhPgUxT8A8OwKh
+         3Dwg==
+X-Gm-Message-State: AOAM532k9GlvLwPpREX3JYOz9Fy5ZZEmrIkL64QCdx/SXBq2RLLlJ8qT
+        ECnj606bADHSZfVrLP9/pou4WbRUYUkfs+3EeOYG7H/BYdw=
+X-Google-Smtp-Source: ABdhPJz/AkuXc+OhH2STai27k2AjCowcdJgOGN5BmBlmK48LFuPiREhp3bYkoIvSCb/7p7c7gembzxKuDg2BBH4ejx0=
+X-Received: by 2002:ac8:b45:: with SMTP id m5mr22366004qti.56.1619020862693;
+ Wed, 21 Apr 2021 09:01:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------_60804ACE000000009C0D_MULTIPART_MIXED_"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.03 [en]
+References: <20210317012054.238334-1-davispuh@gmail.com> <20210321214939.6984-1-davispuh@gmail.com>
+In-Reply-To: <20210321214939.6984-1-davispuh@gmail.com>
+From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
+Date:   Wed, 21 Apr 2021 19:00:51 +0300
+Message-ID: <CAOE4rSySx3fcRkvSMHEwpGVMFTOCeirw9owCu+9YDcLPzhsV9A@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Allow read-only mount with corrupted extent tree
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     clm@fb.com, Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---------_60804ACE000000009C0D_MULTIPART_MIXED_
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
+sv=C4=93td., 2021. g. 21. marts, plkst. 23:46 =E2=80=94 lietot=C4=81js D=C4=
+=81vis Mos=C4=81ns
+(<davispuh@gmail.com>) rakst=C4=ABja:
+>
+> Currently if there's any corruption at all in extent tree
+> (eg. even single bit) then mounting will fail with:
+> "failed to read block groups: -5" (-EIO)
+> It happens because we immediately abort on first error when
+> searching in extent tree for block groups.
+>
+> Now with this patch if `ignorebadroots` option is specified
+> then we handle such case and continue by removing already
+> created block groups and creating dummy block groups.
+>
+> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
+> ---
+>  fs/btrfs/block-group.c | 20 ++++++++++++++++++++
+>  fs/btrfs/disk-io.c     |  4 ++--
+>  fs/btrfs/disk-io.h     |  2 ++
+>  3 files changed, 24 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 48ebc106a606..f485cf14c2f8 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -2048,6 +2048,26 @@ int btrfs_read_block_groups(struct btrfs_fs_info *=
+info)
+>         ret =3D check_chunk_block_group_mappings(info);
+>  error:
+>         btrfs_free_path(path);
+> +
+> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
+> +
+> +               if (btrfs_super_log_root(info->super_copy) !=3D 0) {
+> +                       btrfs_warn(info, "Ignoring tree-log replay due to=
+ extent tree corruption!");
+> +                       btrfs_set_super_log_root(info->super_copy, 0);
+> +               }
+> +
+> +               btrfs_put_block_group_cache(info);
+> +               btrfs_stop_all_workers(info);
+> +               btrfs_free_block_groups(info);
+> +               ret =3D btrfs_init_workqueues(info, NULL);
+> +               if (ret)
+> +                       return ret;
+> +               ret =3D btrfs_init_space_info(info);
+> +               if (ret)
+> +                       return ret;
+> +               return fill_dummy_bgs(info);
+> +       }
+> +
+>         return ret;
+>  }
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 07a2b4f69b10..dc744f76d075 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1955,7 +1955,7 @@ static int read_backup_root(struct btrfs_fs_info *f=
+s_info, u8 priority)
+>  }
+>
+>  /* helper to cleanup workers */
+> -static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+> +void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+>  {
+>         btrfs_destroy_workqueue(fs_info->fixup_workers);
+>         btrfs_destroy_workqueue(fs_info->delalloc_workers);
+> @@ -2122,7 +2122,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info =
+*fs_info)
+>         mutex_init(&fs_info->qgroup_rescan_lock);
+>  }
+>
+> -static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+> +int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+>                 struct btrfs_fs_devices *fs_devices)
+>  {
+>         u32 max_active =3D fs_info->thread_pool_size;
+> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+> index e45057c0c016..f9bfcba86a04 100644
+> --- a/fs/btrfs/disk-io.h
+> +++ b/fs/btrfs/disk-io.h
+> @@ -137,6 +137,8 @@ int btrfs_find_free_objectid(struct btrfs_root *root,=
+ u64 *objectid);
+>  int btrfs_find_highest_objectid(struct btrfs_root *root, u64 *objectid);
+>  int __init btrfs_end_io_wq_init(void);
+>  void __cold btrfs_end_io_wq_exit(void);
+> +void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info);
+> +int btrfs_init_workqueues(struct btrfs_fs_info *fs_info, struct btrfs_fs=
+_devices *fs_devices);
+>
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  void btrfs_set_buffer_lockdep_class(u64 objectid,
+> --
+> 2.30.2
+>
 
-Hi,
-
-> That's the problem, qgroup flushing triggers writeback for an inode
-> for which we have a page dirtied and locked.
-> This should fix it:  https://pastebin.com/raw/U9GUZiEf
->=20
-> Try it out and I'll write a changelog later.
-> Thanks.
-
-we run xfstest on two server with this patch.
-one passed the tests.
-but one got a btrfs/232 error.
-
-btrfs/232 32s ... _check_btrfs_filesystem: filesystem on /dev/nvme0n1p1 is =
-inconsistent
-(see /usr/hpc-bio/xfstests/results//btrfs/232.full for details)
-=2E..
-[4/7] checking fs roots
-root 5 inode 337 errors 400, nbytes wrong
-ERROR: errors found in fs roots
-=2E..
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/04/21
-
-
---------_60804ACE000000009C0D_MULTIPART_MIXED_
-Content-Type: application/octet-stream;
- name="232.full"
-Content-Disposition: attachment;
- filename="232.full"
-Content-Transfer-Encoding: base64
-
-d3JvdGUgOTQzNzE4NDAwLzk0MzcxODQwMCBieXRlcyBhdCBvZmZzZXQgMAo5MDAgTWlCLCAyMzA0
-MDAgb3BzOyAwLjU3NTggc2VjICgxLjUyNiBHaUIvc2VjIGFuZCA0MDAwNzYuNDAzNSBvcHMvc2Vj
-KQpxdW90YSByZXNjYW4gc3RhcnRlZApfY2hlY2tfYnRyZnNfZmlsZXN5c3RlbTogZmlsZXN5c3Rl
-bSBvbiAvZGV2L252bWUwbjFwMSBpcyBpbmNvbnNpc3RlbnQKKioqIGZzY2suYnRyZnMgb3V0cHV0
-ICoqKgpbMS83XSBjaGVja2luZyByb290IGl0ZW1zClsyLzddIGNoZWNraW5nIGV4dGVudHMKWzMv
-N10gY2hlY2tpbmcgZnJlZSBzcGFjZSB0cmVlCls0LzddIGNoZWNraW5nIGZzIHJvb3RzCnJvb3Qg
-NSBpbm9kZSAzMzcgZXJyb3JzIDQwMCwgbmJ5dGVzIHdyb25nCkVSUk9SOiBlcnJvcnMgZm91bmQg
-aW4gZnMgcm9vdHMKT3BlbmluZyBmaWxlc3lzdGVtIHRvIGNoZWNrLi4uCkNoZWNraW5nIGZpbGVz
-eXN0ZW0gb24gL2Rldi9udm1lMG4xcDEKVVVJRDogN2QwYzEwNWMtYTcwOS00ZDMxLWI1ZTktMmY1
-MjBhNWUyZjEzCmZvdW5kIDEzMjUwODA1NzYgYnl0ZXMgdXNlZCwgZXJyb3IocykgZm91bmQKdG90
-YWwgY3N1bSBieXRlczogMTA5MTY2MAp0b3RhbCB0cmVlIGJ5dGVzOiA5OTEyMzIwCnRvdGFsIGZz
-IHRyZWUgYnl0ZXM6IDc3MzMyNDgKdG90YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDQ1ODc1MgpidHJl
-ZSBzcGFjZSB3YXN0ZSBieXRlczogNTM5NDk4NwpmaWxlIGRhdGEgYmxvY2tzIGFsbG9jYXRlZDog
-MjAzMzk5NTc3NgogcmVmZXJlbmNlZCAxMzczNDY2NjI0CioqKiBlbmQgZnNjay5idHJmcyBvdXRw
-dXQKKioqIG1vdW50IG91dHB1dCAqKioKc3lzZnMgb24gL3N5cyB0eXBlIHN5c2ZzIChydyxub3N1
-aWQsbm9kZXYsbm9leGVjLHJlbGF0aW1lKQpwcm9jIG9uIC9wcm9jIHR5cGUgcHJvYyAocncsbm9z
-dWlkLG5vZGV2LG5vZXhlYyxyZWxhdGltZSkKZGV2dG1wZnMgb24gL2RldiB0eXBlIGRldnRtcGZz
-IChydyxub3N1aWQsc2l6ZT05ODk2Mzc1NmssbnJfaW5vZGVzPTI0NzQwOTM5LG1vZGU9NzU1LGlu
-b2RlNjQpCnNlY3VyaXR5ZnMgb24gL3N5cy9rZXJuZWwvc2VjdXJpdHkgdHlwZSBzZWN1cml0eWZz
-IChydyxub3N1aWQsbm9kZXYsbm9leGVjLHJlbGF0aW1lKQp0bXBmcyBvbiAvZGV2L3NobSB0eXBl
-IHRtcGZzIChydyxub3N1aWQsbm9kZXYsaW5vZGU2NCkKZGV2cHRzIG9uIC9kZXYvcHRzIHR5cGUg
-ZGV2cHRzIChydyxub3N1aWQsbm9leGVjLHJlbGF0aW1lLGdpZD01LG1vZGU9NjIwLHB0bXhtb2Rl
-PTAwMCkKdG1wZnMgb24gL3J1biB0eXBlIHRtcGZzIChydyxub3N1aWQsbm9kZXYsbW9kZT03NTUs
-aW5vZGU2NCkKdG1wZnMgb24gL3N5cy9mcy9jZ3JvdXAgdHlwZSB0bXBmcyAocm8sbm9zdWlkLG5v
-ZGV2LG5vZXhlYyxtb2RlPTc1NSxpbm9kZTY0KQpjZ3JvdXAgb24gL3N5cy9mcy9jZ3JvdXAvc3lz
-dGVtZCB0eXBlIGNncm91cCAocncsbm9zdWlkLG5vZGV2LG5vZXhlYyxyZWxhdGltZSx4YXR0cixy
-ZWxlYXNlX2FnZW50PS91c3IvbGliL3N5c3RlbWQvc3lzdGVtZC1jZ3JvdXBzLWFnZW50LG5hbWU9
-c3lzdGVtZCkKcHN0b3JlIG9uIC9zeXMvZnMvcHN0b3JlIHR5cGUgcHN0b3JlIChydyxub3N1aWQs
-bm9kZXYsbm9leGVjLHJlbGF0aW1lKQpub25lIG9uIC9zeXMvZnMvYnBmIHR5cGUgYnBmIChydyxu
-b3N1aWQsbm9kZXYsbm9leGVjLHJlbGF0aW1lLG1vZGU9NzAwKQpjZ3JvdXAgb24gL3N5cy9mcy9j
-Z3JvdXAvZnJlZXplciB0eXBlIGNncm91cCAocncsbm9zdWlkLG5vZGV2LG5vZXhlYyxyZWxhdGlt
-ZSxmcmVlemVyKQpjZ3JvdXAgb24gL3N5cy9mcy9jZ3JvdXAvcGVyZl9ldmVudCB0eXBlIGNncm91
-cCAocncsbm9zdWlkLG5vZGV2LG5vZXhlYyxyZWxhdGltZSxwZXJmX2V2ZW50KQpjZ3JvdXAgb24g
-L3N5cy9mcy9jZ3JvdXAvbmV0X2NscyxuZXRfcHJpbyB0eXBlIGNncm91cCAocncsbm9zdWlkLG5v
-ZGV2LG5vZXhlYyxyZWxhdGltZSxuZXRfY2xzLG5ldF9wcmlvKQpjZ3JvdXAgb24gL3N5cy9mcy9j
-Z3JvdXAvY3B1LGNwdWFjY3QgdHlwZSBjZ3JvdXAgKHJ3LG5vc3VpZCxub2Rldixub2V4ZWMscmVs
-YXRpbWUsY3B1LGNwdWFjY3QpCmNncm91cCBvbiAvc3lzL2ZzL2Nncm91cC9waWRzIHR5cGUgY2dy
-b3VwIChydyxub3N1aWQsbm9kZXYsbm9leGVjLHJlbGF0aW1lLHBpZHMpCmNncm91cCBvbiAvc3lz
-L2ZzL2Nncm91cC9jcHVzZXQgdHlwZSBjZ3JvdXAgKHJ3LG5vc3VpZCxub2Rldixub2V4ZWMscmVs
-YXRpbWUsY3B1c2V0KQpjZ3JvdXAgb24gL3N5cy9mcy9jZ3JvdXAvZGV2aWNlcyB0eXBlIGNncm91
-cCAocncsbm9zdWlkLG5vZGV2LG5vZXhlYyxyZWxhdGltZSxkZXZpY2VzKQpjZ3JvdXAgb24gL3N5
-cy9mcy9jZ3JvdXAvYmxraW8gdHlwZSBjZ3JvdXAgKHJ3LG5vc3VpZCxub2Rldixub2V4ZWMscmVs
-YXRpbWUsYmxraW8pCmNncm91cCBvbiAvc3lzL2ZzL2Nncm91cC9yZG1hIHR5cGUgY2dyb3VwIChy
-dyxub3N1aWQsbm9kZXYsbm9leGVjLHJlbGF0aW1lLHJkbWEpCmNncm91cCBvbiAvc3lzL2ZzL2Nn
-cm91cC9tZW1vcnkgdHlwZSBjZ3JvdXAgKHJ3LG5vc3VpZCxub2Rldixub2V4ZWMscmVsYXRpbWUs
-bWVtb3J5KQpjZ3JvdXAgb24gL3N5cy9mcy9jZ3JvdXAvaHVnZXRsYiB0eXBlIGNncm91cCAocncs
-bm9zdWlkLG5vZGV2LG5vZXhlYyxyZWxhdGltZSxodWdldGxiKQpub25lIG9uIC9zeXMva2VybmVs
-L3RyYWNpbmcgdHlwZSB0cmFjZWZzIChydyxyZWxhdGltZSkKY29uZmlnZnMgb24gL3N5cy9rZXJu
-ZWwvY29uZmlnIHR5cGUgY29uZmlnZnMgKHJ3LHJlbGF0aW1lKQovZGV2L3NkYTEgb24gLyB0eXBl
-IHhmcyAocncscmVsYXRpbWUsYXR0cjIsaW5vZGU2NCxsb2didWZzPTgsbG9nYnNpemU9MzJrLG5v
-cXVvdGEpCnJwY19waXBlZnMgb24gL3Zhci9saWIvbmZzL3JwY19waXBlZnMgdHlwZSBycGNfcGlw
-ZWZzIChydyxyZWxhdGltZSkKc3lzdGVtZC0xIG9uIC9wcm9jL3N5cy9mcy9iaW5mbXRfbWlzYyB0
-eXBlIGF1dG9mcyAocncscmVsYXRpbWUsZmQ9MzcscGdycD0xLHRpbWVvdXQ9MCxtaW5wcm90bz01
-LG1heHByb3RvPTUsZGlyZWN0LHBpcGVfaW5vPTUwNjUyKQptcXVldWUgb24gL2Rldi9tcXVldWUg
-dHlwZSBtcXVldWUgKHJ3LHJlbGF0aW1lKQpkZWJ1Z2ZzIG9uIC9zeXMva2VybmVsL2RlYnVnIHR5
-cGUgZGVidWdmcyAocncscmVsYXRpbWUpCmh1Z2V0bGJmcyBvbiAvZGV2L2h1Z2VwYWdlcyB0eXBl
-IGh1Z2V0bGJmcyAocncscmVsYXRpbWUscGFnZXNpemU9Mk0pCm5mc2Qgb24gL3Byb2MvZnMvbmZz
-ZCB0eXBlIG5mc2QgKHJ3LHJlbGF0aW1lKQovZGV2L3NkZzEgb24gL2FyY2hpdmUgdHlwZSBidHJm
-cyAocncsbm9hdGltZSxzcGFjZV9jYWNoZT12MixzdWJ2b2xpZD01LHN1YnZvbD0vKQovZGV2L3Nk
-ZzEgb24gL25vZGV0bXAgdHlwZSBidHJmcyAocncsbm9hdGltZSxzcGFjZV9jYWNoZT12MixzdWJ2
-b2xpZD0yNTcsc3Vidm9sPS9ub2RldG1wKQp0bXBmcyBvbiAvcnVuL3VzZXIvMCB0eXBlIHRtcGZz
-IChydyxub3N1aWQsbm9kZXYscmVsYXRpbWUsc2l6ZT0xOTgwMTk5NmssbW9kZT03MDAsaW5vZGU2
-NCkKKioqIGVuZCBtb3VudCBvdXRwdXQK
---------_60804ACE000000009C0D_MULTIPART_MIXED_--
-
+Ping? Could anyone take a look?
