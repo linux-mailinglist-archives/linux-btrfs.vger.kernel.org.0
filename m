@@ -2,160 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A7A366FA3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Apr 2021 18:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED619366FA8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Apr 2021 18:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244166AbhDUQBh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Apr 2021 12:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        id S243794AbhDUQDq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Apr 2021 12:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244164AbhDUQBh (ORCPT
+        with ESMTP id S240106AbhDUQDq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Apr 2021 12:01:37 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD002C06174A;
-        Wed, 21 Apr 2021 09:01:03 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id m16so30942292qtx.9;
-        Wed, 21 Apr 2021 09:01:03 -0700 (PDT)
+        Wed, 21 Apr 2021 12:03:46 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4806AC06174A
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Apr 2021 09:03:12 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id i11so15040969qvu.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Apr 2021 09:03:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IZX0f4l29NX/01aOrqPfZSbd0Re69bnUWgeaZTOG6n8=;
-        b=o6ZStsWKClgUKYeiAudSs0S4iegwa10djaCsrD0H1i/sVg3CH37ojWeJGWsaqjBNix
-         fg4qq8UtjTiyYBHRHdhfzGVBeu60+ANyg0e6zfv/f2eEEkVCWegv312mtIfGQSMAUa1Y
-         rGr8+H9yh/E5oO3CAH6rPqeuF8S75Rn1nLeoF7reuqGBG8ZNbRub8J8Ql97IYlVcSSrj
-         JuVNOjy5o3PrdHKLn9Ix1yKaUEZX39wcmQwGOf63y8jmIedlt0vUieq9KFBgvfYfnEJz
-         ddz6Ikj7ARk+gjuBYBN4auAphwkWWndTidZuF2IfdF7ok9j+y210jKxZMNDbiZ8IykVw
-         g8xg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=x7LBdMzCV7k07Evmbqqqj2On2MhjiEoegZzBFISuFn4=;
+        b=WMt9C5765X2iZ8QdWmZtMflbOrlyPevkxDb/SbeZU2HSQN1Lv69DmYknPPQXQmX6HH
+         +WHDTioFpVF5EFemw1oAmyDEYhe2zxhF/2linzUGTjnYFThfhDhRlyt5cIuaZA7Y57Rs
+         bfl2SSEuqa5KoLiAe98yHhfEIz60UgaCotNOn2lBmJg/5mYosyuU0eK4P80W8bIT/c6c
+         pOYKMMu3LojBkN3w3qXA2bTx/5nVXxqtZRT1oJHjyyIUbR1UZKmBoNZgsBO0UPgdkJUh
+         vRcuPoVw7a8M3HL/j3PbybDrsN7Vodn9/jkeKpZw3mlSV67zclnMnRtBSP8u9Kpr6wAb
+         x/hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IZX0f4l29NX/01aOrqPfZSbd0Re69bnUWgeaZTOG6n8=;
-        b=m8GfmeCGEZErVcaz8jSKJ4IOazyaavQv6YIAcZqa76ccgr4MkGG8x1SF1OvUw+nEWX
-         CkPiELVZCO9cAdmlmgce8eKEiZ2ecdBvaj1HWIUztbm9foCq9ubJ0vgx16vYo33s4OFK
-         ZJ78Cu0dmkaMmERIiVwh8nnngZx10L8le4zc62fuNA6csH2Z4QBJN1tQ4nGgEko2xHAj
-         M68bxmo3/uHlAdmLGiFKpJ0sZY2WX3Jy1NEaz3cAUwaRvLGf9lZ4rhxoVY6vZt/aXb+k
-         m6GJ12zpCP7caCdCOnYkM20QPIzT3Yl576FS1XNTVh8noudrDB0u4wfhPgUxT8A8OwKh
-         3Dwg==
-X-Gm-Message-State: AOAM532k9GlvLwPpREX3JYOz9Fy5ZZEmrIkL64QCdx/SXBq2RLLlJ8qT
-        ECnj606bADHSZfVrLP9/pou4WbRUYUkfs+3EeOYG7H/BYdw=
-X-Google-Smtp-Source: ABdhPJz/AkuXc+OhH2STai27k2AjCowcdJgOGN5BmBlmK48LFuPiREhp3bYkoIvSCb/7p7c7gembzxKuDg2BBH4ejx0=
-X-Received: by 2002:ac8:b45:: with SMTP id m5mr22366004qti.56.1619020862693;
- Wed, 21 Apr 2021 09:01:02 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=x7LBdMzCV7k07Evmbqqqj2On2MhjiEoegZzBFISuFn4=;
+        b=eFc4ImgsIiDxkQIffXp5cwgg0520NOei+58CCLFfe8ZRRIR17z/1oXE0leFqrc2zej
+         h8HKoyEoWWNfz/OzPSWPvAh2hFtyfMJqxKIMhMVhjxCOdc4araFNeQtv9e5/PpcvAPdn
+         cA8FRcu4uNhR9GjLvJG1nvk7M07VMtiUQ92zEqPoOLtoczDGnMfLt+/3jBcS2OLxLsd5
+         7PHDxHSSdG3TBh9xTUtJkCsi9kKR1uoQEKqdmqJ8gETXWICq3D35H7YWxb3WUhJKl2n5
+         ut8+ZIlQ7A7xwxB/opsiY3hl1ADA4eGRZ48BYCtShu2epNUx9V98lAZRAaAimuV6dhJU
+         H3WQ==
+X-Gm-Message-State: AOAM530VM9xdot4V4Zk0Oak5iHQNF6NWlY+L9V0OyeCkBDLH4ERsn0Cl
+        Yma3M6oinyp+RLDsVb8ox9KstUpwJlS+4i8pC5OtLLOLVDp4mw==
+X-Google-Smtp-Source: ABdhPJwBNeMPLDJsq5xNv1SS8UPZgoJssTSpYOpBvDKumlJ2hD/C0jyuzV+L1lqTPmu3DpSLvszYlUnpgOv7/eipKow=
+X-Received: by 2002:a05:6214:a8d:: with SMTP id ev13mr32665705qvb.28.1619020991470;
+ Wed, 21 Apr 2021 09:03:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210317012054.238334-1-davispuh@gmail.com> <20210321214939.6984-1-davispuh@gmail.com>
-In-Reply-To: <20210321214939.6984-1-davispuh@gmail.com>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Wed, 21 Apr 2021 19:00:51 +0300
-Message-ID: <CAOE4rSySx3fcRkvSMHEwpGVMFTOCeirw9owCu+9YDcLPzhsV9A@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Allow read-only mount with corrupted extent tree
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     clm@fb.com, Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <20210421201725.577C.409509F4@e16-tech.com> <CAL3q7H6V+x_Pu=bxTFGsuZLHf2mh_DOcthJx7HCSYCL79rjzxw@mail.gmail.com>
+ <20210421235733.9C11.409509F4@e16-tech.com>
+In-Reply-To: <20210421235733.9C11.409509F4@e16-tech.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 21 Apr 2021 17:03:00 +0100
+Message-ID: <CAL3q7H7j7eZ0r1xYJiQGr3+yuwnqkpbRoA3HxY=e8Ut8VDRCRA@mail.gmail.com>
+Subject: Re: 'ls /mnt/scratch/' freeze(deadlock?) when run xfstest(btrfs/232)
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-sv=C4=93td., 2021. g. 21. marts, plkst. 23:46 =E2=80=94 lietot=C4=81js D=C4=
-=81vis Mos=C4=81ns
-(<davispuh@gmail.com>) rakst=C4=ABja:
+On Wed, Apr 21, 2021 at 4:57 PM Wang Yugui <wangyugui@e16-tech.com> wrote:
 >
-> Currently if there's any corruption at all in extent tree
-> (eg. even single bit) then mounting will fail with:
-> "failed to read block groups: -5" (-EIO)
-> It happens because we immediately abort on first error when
-> searching in extent tree for block groups.
+> Hi,
 >
-> Now with this patch if `ignorebadroots` option is specified
-> then we handle such case and continue by removing already
-> created block groups and creating dummy block groups.
+> > That's the problem, qgroup flushing triggers writeback for an inode
+> > for which we have a page dirtied and locked.
+> > This should fix it:  https://pastebin.com/raw/U9GUZiEf
+> >
+> > Try it out and I'll write a changelog later.
+> > Thanks.
 >
-> Signed-off-by: D=C4=81vis Mos=C4=81ns <davispuh@gmail.com>
-> ---
->  fs/btrfs/block-group.c | 20 ++++++++++++++++++++
->  fs/btrfs/disk-io.c     |  4 ++--
->  fs/btrfs/disk-io.h     |  2 ++
->  3 files changed, 24 insertions(+), 2 deletions(-)
+> we run xfstest on two server with this patch.
+> one passed the tests.
+> but one got a btrfs/232 error.
 >
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 48ebc106a606..f485cf14c2f8 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2048,6 +2048,26 @@ int btrfs_read_block_groups(struct btrfs_fs_info *=
-info)
->         ret =3D check_chunk_block_group_mappings(info);
->  error:
->         btrfs_free_path(path);
-> +
-> +       if (ret =3D=3D -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
-> +
-> +               if (btrfs_super_log_root(info->super_copy) !=3D 0) {
-> +                       btrfs_warn(info, "Ignoring tree-log replay due to=
- extent tree corruption!");
-> +                       btrfs_set_super_log_root(info->super_copy, 0);
-> +               }
-> +
-> +               btrfs_put_block_group_cache(info);
-> +               btrfs_stop_all_workers(info);
-> +               btrfs_free_block_groups(info);
-> +               ret =3D btrfs_init_workqueues(info, NULL);
-> +               if (ret)
-> +                       return ret;
-> +               ret =3D btrfs_init_space_info(info);
-> +               if (ret)
-> +                       return ret;
-> +               return fill_dummy_bgs(info);
-> +       }
-> +
->         return ret;
->  }
+> btrfs/232 32s ... _check_btrfs_filesystem: filesystem on /dev/nvme0n1p1 i=
+s inconsistent
+> (see /usr/hpc-bio/xfstests/results//btrfs/232.full for details)
+> ...
+> [4/7] checking fs roots
+> root 5 inode 337 errors 400, nbytes wrong
+> ERROR: errors found in fs roots
+
+Ok, that's a different problem caused by something else.
+It's possible to be due to the recent refactorings for preparation to
+subpage block size.
+
+Will try to look into that later.
+
+Thanks.
+
+> ...
 >
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 07a2b4f69b10..dc744f76d075 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1955,7 +1955,7 @@ static int read_backup_root(struct btrfs_fs_info *f=
-s_info, u8 priority)
->  }
->
->  /* helper to cleanup workers */
-> -static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
-> +void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
->  {
->         btrfs_destroy_workqueue(fs_info->fixup_workers);
->         btrfs_destroy_workqueue(fs_info->delalloc_workers);
-> @@ -2122,7 +2122,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info =
-*fs_info)
->         mutex_init(&fs_info->qgroup_rescan_lock);
->  }
->
-> -static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
-> +int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
->                 struct btrfs_fs_devices *fs_devices)
->  {
->         u32 max_active =3D fs_info->thread_pool_size;
-> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-> index e45057c0c016..f9bfcba86a04 100644
-> --- a/fs/btrfs/disk-io.h
-> +++ b/fs/btrfs/disk-io.h
-> @@ -137,6 +137,8 @@ int btrfs_find_free_objectid(struct btrfs_root *root,=
- u64 *objectid);
->  int btrfs_find_highest_objectid(struct btrfs_root *root, u64 *objectid);
->  int __init btrfs_end_io_wq_init(void);
->  void __cold btrfs_end_io_wq_exit(void);
-> +void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info);
-> +int btrfs_init_workqueues(struct btrfs_fs_info *fs_info, struct btrfs_fs=
-_devices *fs_devices);
->
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  void btrfs_set_buffer_lockdep_class(u64 objectid,
-> --
-> 2.30.2
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2021/04/21
 >
 
-Ping? Could anyone take a look?
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
