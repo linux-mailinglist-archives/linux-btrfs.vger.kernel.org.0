@@ -2,240 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0213677E1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 05:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DD4367868
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 06:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhDVDYu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Apr 2021 23:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhDVDYu (ORCPT
+        id S229568AbhDVEQo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Apr 2021 00:16:44 -0400
+Received: from out20-98.mail.aliyun.com ([115.124.20.98]:40251 "EHLO
+        out20-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhDVEQn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Apr 2021 23:24:50 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E22C06174A
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Apr 2021 20:24:16 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso192817pjs.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Apr 2021 20:24:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=Wk/vkV7r0i5x4zZupkFrXQPRIRz77cX7E+bEchocKGo=;
-        b=ET4Ne5iPlfASon95huFnK7hhsiJZ9zB8es1iAex0feNH1vWPEee2HuNzossgpJVgaV
-         KvQCuzjwI+yhZXmFnk4FS0xTPgqtQ2jnp1iYcg/4K1o7+Jrqu98ar7UpFc1T9CAWN/Fq
-         X3vVT9Ai6J522vnGrc2h7kFLXtxSkBvNxV1UNZ7OYE5hYUHET9JYCKz78ZMG13UnsD33
-         m/+Ul3mQRv0cHe53wD32RewlxAfr3YCyhXSvNy9LpSGBFGZy2lpM6Ec8+U3T/6ACULeg
-         HPkn1PEnnVRBnfyxnHSXPg7WCqLkmL4tToAaWySOS2uZu99iWvIbHVsTb/si8U7+8/2Z
-         rq1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=Wk/vkV7r0i5x4zZupkFrXQPRIRz77cX7E+bEchocKGo=;
-        b=BxfE/YW74HMlHXDlUbohHcLy70KVc4WOdzCweL+vwAsIcJBNHQ0h93C9XWON7F93Lf
-         ohAetk4PzFzErTCohxDz0bLwtDDob1kGgEv8vxn++xzRYgoFmaiLNLJE9JIyJ7GjedAn
-         TlO+5BqV9V8nhmcdMpKbwEI95rsT11V3bzyyJRIwxOPs/WjOfkpiHdlWWQM2V5zBG/Xy
-         wqXdJ0tezzZL+wustZykUULzhJBhes75qpjTuJv7oERZ+EeiNcZ9lExxoiCP1t0nkv0h
-         +t9DyS9AFduGssuaD70oFscKRCqEvxbgJ7BR40bIH0qAEhqMML3XsXBJnVS4sJsOfV6m
-         41wA==
-X-Gm-Message-State: AOAM532KOHf/6Vbwmr2bTcdXmMW+7Ensn2klVPPGpw6Ke6QqwI/9EJrC
-        Paapl4dN4AQulLx+NFHTjg8=
-X-Google-Smtp-Source: ABdhPJwJt24mDrvTfdLf0lhqt2y0oEiO2nAoyCZ7FwgD0x4roJBHevhGKNnUCTyoGAHPuikFPt1Nlw==
-X-Received: by 2002:a17:902:ed42:b029:ec:a711:25c7 with SMTP id y2-20020a170902ed42b02900eca71125c7mr1228930plb.58.1619061854656;
-        Wed, 21 Apr 2021 20:24:14 -0700 (PDT)
-Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
-        by smtp.gmail.com with ESMTPSA id l132sm667639pga.39.2021.04.21.20.24.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Apr 2021 20:24:13 -0700 (PDT)
-To:     linux-btrfs@vger.kernel.org
-From:   Konstantin Svist <fry.kun@gmail.com>
-Subject: Restoring a file from damaged btrfs raid1 shard
-Message-ID: <9ca589ec-26b1-1b92-fe4a-af9006e516c6@gmail.com>
-Date:   Wed, 21 Apr 2021 20:24:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 22 Apr 2021 00:16:43 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04438075|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0175027-0.000231544-0.982266;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.K22R4bX_1619064967;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.K22R4bX_1619064967)
+          by smtp.aliyun-inc.com(10.147.42.22);
+          Thu, 22 Apr 2021 12:16:08 +0800
+Date:   Thu, 22 Apr 2021 12:16:11 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: 'ls /mnt/scratch/' freeze(deadlock?) when run xfstest(btrfs/232)
+Cc:     fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <aa9ffab6-02cb-16a0-794c-80a990c4f999@gmx.com>
+References: <20210422083231.755B.409509F4@e16-tech.com> <aa9ffab6-02cb-16a0-794c-80a990c4f999@gmx.com>
+Message-Id: <20210422121608.BBAC.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi,
 
-I have a drive which I replaced from a raid1 pair (caused a lot of
-command timeouts).
+> On 2021/4/22 ����8:32, Wang Yugui wrote:
+> > Hi,
+> >
+> >>>>> we run xfstest on two server with this patch.
+> >>>>> one passed the tests.
+> >>>>> but one got a btrfs/232 error.
+> >>>>>
+> >>>>> btrfs/232 32s ... _check_btrfs_filesystem: filesystem on
+> >>>>> /dev/nvme0n1p1is inconsistent
+> >>>>> (see /usr/hpc-bio/xfstests/results//btrfs/232.full for details)
+> >>>>> ...
+> >>>>> [4/7] checking fs roots
+> >>>>> root 5 inode 337 errors 400, nbytes wrong
+> >>>>> ERROR: errors found in fs roots
+> >>>>
+> >>>> Ok, that's a different problem caused by something else.
+> >>>> It's possible to be due to the recent refactorings for preparation to
+> >>>> subpage block size.
+> >>>
+> >>> This error looks exactly what I have seen during subpage development.
+> >>> The subpage bug is caused by incorrect btrfs_invalidatepage() though,
+> >>> and not yet merged into misc-next anyway.
+> >>>
+> >>> I guess it's some error path not clearing extent states correctly, thus
+> >>> leaving the inode nbytes accounting wrong.
+> >>>
+> >>> BTW, the new @in_reclaim_context parameter for start_delalloc_inodes()
+> >>> is already in misc-next:
+> >>> commit 3d45f221ce627d13e2e6ef3274f06750c84a6542
+> >>> Author: Filipe Manana <fdmanana@suse.com>
+> >>> Date:?? Wed Dec 2 11:55:58 2020 +0000
+> >>>
+> >>>   ?? btrfs: fix deadlock when cloning inline extent and low on free
+> >>> metadata space
+> >>>
+> >>> We only need to make btrfs_start_delalloc_snapshot() to accept the new
+> >>> parameter and pass in_reclaim_context = true for qgroup.
+> >>
+> >> Strangely, on my subpage branch, with new @in_reclaim_context parameter
+> >> added to btrfs_start_delalloc_snapshot(), I can't reproduce the nbytes
+> >> mismatch error in 32 runs loop.
+> >> I guess one of the refactor around ordered extents and invalidatepage
+> >> may fix the problem by accident.
+> >>
+> >> Mind to test my subpage branch
+> >> (https://github.com/adam900710/linux/tree/subpage) with the attached diff?
+> >
+> > The attached diff( more in_reclaim_context) seems a replacement for
+> > https://pastebin.com/raw/U9GUZiEf (less in_reclaim_context).
+> 
+> The attached diff is for subpage branch, as misc-next already has the
+> parameter introduced for another bug.
+> Thus only a small part is needed for subpage branch.
 
-Before I pulled it, I forgot to check if there are any files not
-properly stored in the other copy.
-
-The file is quite old, so the recent changes on the partition don't matter
+nothing is found when 'grep in_reclaim_context' in 112 patch of misc-next
+since 5.12-rc8.
 
 
-#uname -a
+> > so I  will firstly test with the attached diff but drop
+> > https://pastebin.com/raw/U9GUZiEf.
 
-Linux xx 5.11.12-200.fc33.x86_64 #1 SMP Thu Apr 8 02:34:17 UTC 2021
-x86_64 x86_64 x86_64 GNU/Linux
+test result:
+	it passed xfstests in 2 server * 1 loop.  no error is deteced.
 
-# btrfs --version
-btrfs-progs v5.10
-
-# mount -oro,degraded /dev/sdb3  /mnt/
-mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdb3,
-missing codepage or helper program, or other error.
-
-Apr 21 20:21:11 xx kernel: BTRFS info (device sdb3): allowing degraded
-mounts
-Apr 21 20:21:11 xx kernel: BTRFS info (device sdb3): disk space caching
-is enabled
-Apr 21 20:21:11 xx kernel: BTRFS info (device sdb3): has skinny extents
-Apr 21 20:21:11 xx kernel: BTRFS warning (device sdb3): devid 3 uuid
-8c5ca74b-83fd-4625-92f0-ec14ef64b0a8 is missing
-Apr 21 20:21:11 xx kernel: BTRFS warning (device sdb3): devid 4 uuid
-ff2c7128-b213-402f-a487-fb070ab8e902 is missing
-Apr 21 20:21:11 xx kernel: BTRFS info (device sdb3): bdev /dev/sdb3
-errs: wr 189563, rd 4799, flush 0, corrupt 2389, gen 0
-Apr 21 20:21:11 xx kernel: BTRFS info (device sdb3): bdev (efault) errs:
-wr 0, rd 0, flush 0, corrupt 35, gen 0
-Apr 21 20:21:11 xx kernel: BTRFS info (device sdb3): bdev (efault) errs:
-wr 348, rd 0, flush 0, corrupt 0, gen 0
-Apr 21 20:21:11 xx kernel: BTRFS error (device sdb3): parent transid
-verify failed on 4883446087680 wanted 5857871 found 5852153
-Apr 21 20:21:11 xx kernel: BTRFS error (device sdb3): failed to read
-block groups: -5
-Apr 21 20:21:11 xx kernel: BTRFS error (device sdb3): open_ctree failed
-
-# btrfs fi show /dev/sdb3
-warning, device 3 is missing
-warning, device 3 is missing
-parent transid verify failed on 4883446087680 wanted 5857871 found 5852153
-parent transid verify failed on 4883446087680 wanted 5857871 found 5852153
-Ignoring transid failure
-leaf parent key incorrect 4883446087680
-ERROR: failed to read block groups: Operation not permitted
-Label: none  uuid: fef6d003-b7a5-4e9e-9875-5774052ce2ed
-    Total devices 3 FS bytes used 614.46GiB
-    devid    1 size 929.51GiB used 666.03GiB path /dev/sdb3
-    *** Some devices missing
+Although the reproduce frequecy of these two problems is yet not clear,
+the patch from Qu could be considered as current fix ?
 
 
-# btrfs-find-root /dev/sdb3
-warning, device 3 is missing
-warning, device 3 is missing
-parent transid verify failed on 4883446087680 wanted 5857871 found 5852153
-parent transid verify failed on 4883446087680 wanted 5857871 found 5852153
-Ignoring transid failure
-leaf parent key incorrect 4883446087680
-ERROR: failed to read block groups: Operation not permitted
-Superblock thinks the generation is 5857883
-Superblock thinks the level is 1
-Found tree root at 4883439714304 gen 5857883 level 1
-Well block 4883437158400(gen: 5857882 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883434635264(gen: 5857881 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883426295808(gen: 5857880 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883417972736(gen: 5857879 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883409846272(gen: 5857878 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883352633344(gen: 5857877 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883347685376(gen: 5857876 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883343622144(gen: 5857875 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883438944256(gen: 5857870 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883439239168(gen: 5857869 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883377176576(gen: 5857824 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883357188096(gen: 5857788 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883340165120(gen: 5857732 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883371884544(gen: 5857731 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883361087488(gen: 5857730 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883380404224(gen: 5857729 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883374358528(gen: 5857727 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883342721024(gen: 5857718 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883398656000(gen: 5857713 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883346784256(gen: 5857706 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883409584128(gen: 5857704 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883436666880(gen: 5857439 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883436650496(gen: 5857439 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883436290048(gen: 5857439 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883436126208(gen: 5857439 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883387858944(gen: 5857438 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883371753472(gen: 5857437 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883428802560(gen: 5855304 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883428786176(gen: 5855304 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883411075072(gen: 5855303 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883411042304(gen: 5855299 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883388497920(gen: 5855299 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883428999168(gen: 5855293 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883431686144(gen: 5855262 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883417563136(gen: 5855256 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883416678400(gen: 5855256 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883408601088(gen: 5855254 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883394183168(gen: 5855253 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883394166784(gen: 5855253 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883388792832(gen: 5855253 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883431817216(gen: 5852142 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883373441024(gen: 5852073 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883366723584(gen: 5852070 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883363430400(gen: 5778963 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883363758080(gen: 5778927 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883363627008(gen: 5775596 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883363594240(gen: 5775596 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883361841152(gen: 5775596 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883362332672(gen: 5772011 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883362217984(gen: 5772011 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883362168832(gen: 5772011 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883357614080(gen: 5742160 level: 0) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
-Well block 4883344556032(gen: 5701778 level: 1) seems good, but
-generation/level doesn't match, want gen: 5857883 level: 1
+> > The test of whole subpage branch will be done later.
+> 
+> So far, I also tested the older misc-next branch, and unable to
+> reproduce the problem.
+> I guess some patch in misc-next has already solved the problem.
+> 
+> If possible it would be better to provide the branch you're on so that
+> we could do more tests to pin down the bug.
+
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/04/22
 
