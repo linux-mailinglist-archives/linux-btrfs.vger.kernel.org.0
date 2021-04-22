@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE12367F81
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 13:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4148367F98
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 13:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhDVLXH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Apr 2021 07:23:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39766 "EHLO mx2.suse.de"
+        id S236001AbhDVLfF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Apr 2021 07:35:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53970 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236028AbhDVLXG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Apr 2021 07:23:06 -0400
+        id S230510AbhDVLfE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Apr 2021 07:35:04 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619090550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1619091269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=fOvJZKVrthlZjT1h5jXNAkxDKlX0vSOthkFXc6ZCmq8=;
-        b=WZB7sylz9WPQw/r1lgDqdHNRYq4Sczef4Mz6apYmfw7tq2ovclB5qTxZsOkD7FqccdnoVz
-        8ElsrsjNQwMV1VKX0W2WNs/1pTJ0zoEA5wy3wBEqE33xX0n7DUj3DyIsBGJnOiem25McIX
-        wyjZfm3mbhYHmGTV5tHba0aLIVsUoA8=
+        bh=AQCzBr32qDgJ8223ttzJLORtZlJI+2K6ngBBYnwsXWE=;
+        b=YlEdzzmdBx2/GH5abr60/qSt+QOEiOVu3fEB5BJyGuhHsn8uL7QcPo/VOOupkOkMWGjDT2
+        CKiJjClIwfwhpjQnllc+tnhpdn9eHsVx3M/8UZ/haHTsQPSsxP4kCMeFPXjnH/UbPvAQrQ
+        NYos60r4fcFjx2zF4+wyASRyLUiCZr0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C6187B13D
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Apr 2021 11:22:30 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id E3DE9AECB
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Apr 2021 11:34:28 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: scrub: remove the hardcoded PAGE_SIZE usage except for RAID5/6
-Date:   Thu, 22 Apr 2021 19:22:26 +0800
-Message-Id: <20210422112226.239776-1-wqu@suse.com>
+Subject: [PATCH v2] btrfs: scrub: remove the hardcoded PAGE_SIZE usage except for RAID5/6
+Date:   Thu, 22 Apr 2021 19:34:23 +0800
+Message-Id: <20210422113423.247005-1-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -79,14 +79,34 @@ RAID56 code is excluded intentionally.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/scrub.c | 78 +++++++++++++++++++++++++-----------------------
- 1 file changed, 41 insertions(+), 37 deletions(-)
+Changelog:
+v2:
+- Remove the unused @isize variable in scrub_print_warning_inode()
+---
+ fs/btrfs/scrub.c | 80 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 41 insertions(+), 39 deletions(-)
 
 diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 17e49caad1f9..aafec925592d 100644
+index 17e49caad1f9..2beeabf71d69 100644
 --- a/fs/btrfs/scrub.c
 +++ b/fs/btrfs/scrub.c
-@@ -691,12 +691,12 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
+@@ -626,7 +626,6 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
+ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
+ 				     void *warn_ctx)
+ {
+-	u64 isize;
+ 	u32 nlink;
+ 	int ret;
+ 	int i;
+@@ -662,7 +661,6 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
+ 	eb = swarn->path->nodes[0];
+ 	inode_item = btrfs_item_ptr(eb, swarn->path->slots[0],
+ 					struct btrfs_inode_item);
+-	isize = btrfs_inode_size(eb, inode_item);
+ 	nlink = btrfs_inode_nlink(eb, inode_item);
+ 	btrfs_release_path(swarn->path);
+ 
+@@ -691,12 +689,12 @@ static int scrub_print_warning_inode(u64 inum, u64 offset, u64 root,
  	 */
  	for (i = 0; i < ipath->fspath->elem_cnt; ++i)
  		btrfs_warn_in_rcu(fs_info,
@@ -101,7 +121,7 @@ index 17e49caad1f9..aafec925592d 100644
  				  (char *)(unsigned long)ipath->fspath->val[i]);
  
  	btrfs_put_root(local_root);
-@@ -885,25 +885,25 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+@@ -885,25 +883,25 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
  	 * read all mirrors one after the other. This includes to
  	 * re-read the extent or metadata block that failed (that was
  	 * the cause that this fixup code is called) another time,
@@ -139,7 +159,7 @@ index 17e49caad1f9..aafec925592d 100644
  	 * mirrors with I/O errors without considering the checksum.
  	 * If the latter is the case, at the end, the checksum of the
  	 * repaired area is verified in order to correctly maintain
-@@ -1060,26 +1060,26 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
+@@ -1060,26 +1058,26 @@ static int scrub_handle_errored_block(struct scrub_block *sblock_to_check)
  
  	/*
  	 * In case of I/O errors in the area that is supposed to be
@@ -173,7 +193,7 @@ index 17e49caad1f9..aafec925592d 100644
  	 * area are unreadable.
  	 */
  	success = 1;
-@@ -1260,7 +1260,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+@@ -1260,7 +1258,7 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
  {
  	struct scrub_ctx *sctx = original_sblock->sctx;
  	struct btrfs_fs_info *fs_info = sctx->fs_info;
@@ -182,7 +202,7 @@ index 17e49caad1f9..aafec925592d 100644
  	u64 logical = original_sblock->pagev[0]->logical;
  	u64 generation = original_sblock->pagev[0]->generation;
  	u64 flags = original_sblock->pagev[0]->flags;
-@@ -1283,12 +1283,12 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
+@@ -1283,12 +1281,12 @@ static int scrub_setup_recheck_block(struct scrub_block *original_sblock,
  	 */
  
  	while (length > 0) {
@@ -197,7 +217,7 @@ index 17e49caad1f9..aafec925592d 100644
  		 * represents one mirror
  		 */
  		btrfs_bio_counter_inc_blocked(fs_info);
-@@ -1480,7 +1480,7 @@ static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
+@@ -1480,7 +1478,7 @@ static void scrub_recheck_block(struct btrfs_fs_info *fs_info,
  		bio = btrfs_io_bio_alloc(1);
  		bio_set_dev(bio, spage->dev->bdev);
  
@@ -206,7 +226,7 @@ index 17e49caad1f9..aafec925592d 100644
  		bio->bi_iter.bi_sector = spage->physical >> 9;
  		bio->bi_opf = REQ_OP_READ;
  
-@@ -1544,6 +1544,7 @@ static int scrub_repair_page_from_good_copy(struct scrub_block *sblock_bad,
+@@ -1544,6 +1542,7 @@ static int scrub_repair_page_from_good_copy(struct scrub_block *sblock_bad,
  	struct scrub_page *spage_bad = sblock_bad->pagev[page_num];
  	struct scrub_page *spage_good = sblock_good->pagev[page_num];
  	struct btrfs_fs_info *fs_info = sblock_bad->sctx->fs_info;
@@ -214,7 +234,7 @@ index 17e49caad1f9..aafec925592d 100644
  
  	BUG_ON(spage_bad->page == NULL);
  	BUG_ON(spage_good->page == NULL);
-@@ -1563,8 +1564,8 @@ static int scrub_repair_page_from_good_copy(struct scrub_block *sblock_bad,
+@@ -1563,8 +1562,8 @@ static int scrub_repair_page_from_good_copy(struct scrub_block *sblock_bad,
  		bio->bi_iter.bi_sector = spage_bad->physical >> 9;
  		bio->bi_opf = REQ_OP_WRITE;
  
@@ -225,7 +245,7 @@ index 17e49caad1f9..aafec925592d 100644
  			bio_put(bio);
  			return -EIO;
  		}
-@@ -1642,6 +1643,7 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+@@ -1642,6 +1641,7 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
  {
  	struct scrub_bio *sbio;
  	int ret;
@@ -233,7 +253,7 @@ index 17e49caad1f9..aafec925592d 100644
  
  	mutex_lock(&sctx->wr_lock);
  again:
-@@ -1681,16 +1683,16 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
+@@ -1681,16 +1681,16 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
  		bio->bi_iter.bi_sector = sbio->physical >> 9;
  		bio->bi_opf = REQ_OP_WRITE;
  		sbio->status = 0;
@@ -254,7 +274,7 @@ index 17e49caad1f9..aafec925592d 100644
  		if (sbio->page_count < 1) {
  			bio_put(sbio->bio);
  			sbio->bio = NULL;
-@@ -1729,7 +1731,8 @@ static void scrub_wr_submit(struct scrub_ctx *sctx)
+@@ -1729,7 +1729,8 @@ static void scrub_wr_submit(struct scrub_ctx *sctx)
  	btrfsic_submit_bio(sbio->bio);
  
  	if (btrfs_is_zoned(sctx->fs_info))
@@ -264,7 +284,7 @@ index 17e49caad1f9..aafec925592d 100644
  }
  
  static void scrub_wr_bio_end_io(struct bio *bio)
-@@ -2006,6 +2009,7 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+@@ -2006,6 +2007,7 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
  {
  	struct scrub_block *sblock = spage->sblock;
  	struct scrub_bio *sbio;
@@ -272,7 +292,7 @@ index 17e49caad1f9..aafec925592d 100644
  	int ret;
  
  again:
-@@ -2044,9 +2048,9 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+@@ -2044,9 +2046,9 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
  		bio->bi_iter.bi_sector = sbio->physical >> 9;
  		bio->bi_opf = REQ_OP_READ;
  		sbio->status = 0;
@@ -284,7 +304,7 @@ index 17e49caad1f9..aafec925592d 100644
  		   spage->logical ||
  		   sbio->dev != spage->dev) {
  		scrub_submit(sctx);
-@@ -2054,8 +2058,8 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
+@@ -2054,8 +2056,8 @@ static int scrub_add_page_to_rd_bio(struct scrub_ctx *sctx,
  	}
  
  	sbio->pagev[sbio->page_count] = spage;
@@ -295,7 +315,7 @@ index 17e49caad1f9..aafec925592d 100644
  		if (sbio->page_count < 1) {
  			bio_put(sbio->bio);
  			sbio->bio = NULL;
-@@ -2398,7 +2402,7 @@ static void scrub_block_complete(struct scrub_block *sblock)
+@@ -2398,7 +2400,7 @@ static void scrub_block_complete(struct scrub_block *sblock)
  	if (sblock->sparity && corrupted && !sblock->data_corrected) {
  		u64 start = sblock->pagev[0]->logical;
  		u64 end = sblock->pagev[sblock->page_count - 1]->logical +
