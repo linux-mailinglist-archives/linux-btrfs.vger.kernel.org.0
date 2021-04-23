@@ -2,60 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A40336910B
+	by mail.lfdr.de (Postfix) with ESMTP id 560C636910C
 	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Apr 2021 13:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhDWL1R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Apr 2021 07:27:17 -0400
+        id S230521AbhDWL1S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Apr 2021 07:27:18 -0400
 Received: from esa4.hgst.iphmx.com ([216.71.154.42]:21581 "EHLO
         esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhDWL1R (ORCPT
+        with ESMTP id S230072AbhDWL1S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:27:17 -0400
+        Fri, 23 Apr 2021 07:27:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1619177201; x=1650713201;
+  t=1619177202; x=1650713202;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=bVK+caetvJJtwehTs2HyCVjZz9IBwItr31BdpSGpynQ=;
-  b=oCkF4TE1J+5xR4pHCpslM9IYljTIICAwV6YdLobmsusiJ/8L9urtbooq
-   Oxgqa7y3kMfLCNea+QCwItEWLf9lgHIhtf9tGNY2aHlbogWZi8goAJQOV
-   VRqQMjZZ4LSrF8csdmkuZHeRRWWUlEKxZ2L/w23HOAnc4hVpbRv2B4Ojv
-   TD9f29yTpgk3Yalr67AHS/BVlCzxgYc715qZ/jcZ14+y9yrEj8hDB4BUU
-   lAMe7g8F3qJqMQ978YUrkyV1iuhqgFC/ntipShXzHTQjFbUKnlA5IkFum
-   Ji0WnsQB5w97MFlTT1U8wpiWueTfdIHUShmKq1hTWdAOJnIjanC1niM4E
-   w==;
-IronPort-SDR: nZ6UL0H9LwRXZveAAKmiDgw1+V9vyaSXjh6I6haI26+Jo2g7PwH7WV/XcY4vbxs8vTAw6hAFdI
- AMN69602B8i+ivUNw3aUlzOvEke5AfmurEu9+DXuQ7+lSWfby16ycnyl4JqA3Pps7O3s463EGZ
- QJsFObDqEcTV1hS5EwZxjVih5FGSryChDZxVsD95PkWZKhgKBYUwE9j65iC3Hhrxfg0Eijodbo
- XmLeudTSU6SZH6AvJpmMA75MTBLIFoIDxx//y2OxEMPsSv3EbKK3kQ1340jXNS/Bv/TyrU5Inf
- 3HE=
+  bh=z60KLyNq2AWMe9YzqvZt4u/Lx64f02p6j1PomXmYUGs=;
+  b=SqgABVnGPxPSDT+YQa8llyIatWqMVuCMuzFCmftg21PR/bjKZ6TVDQWz
+   8SW3kmKBoH0R6gOVLO/IaSrBZ3S70moCa8LWLyoGDo5KTq3i8iVVjJfS1
+   6KLmAgVfsPqSQtEJFh2ScrMFk3n2uc8uxxT7WUNWO0O/OY1F/yNsr9Te0
+   qLPvWk9pWxi3l8Lu8Sp5c14NM0sEvSJCo7LLKr9s9KVNycskwErNdTvAf
+   /dNCttBeSCJrLiAy6cYMak0JhPgF/hcDY1il+KkPbIJ56qxu/X8hN7CiS
+   Bwmhb3ZWknKCu37h8BerpFQstFyHuEsfzBvDswMeTtT1+7oRRporatJPZ
+   g==;
+IronPort-SDR: cIy/vm5R9dUW6NfHqWCUUZVPSwRZaBD0ehxlFibpuscET9WsVTpThxiypeK+W0uL2xsUYHAq37
+ C4Ce3XMxlGjgIYpDwH+PYnWjPHAfEia53a35VhGqodFGHexnPAbFPLGlxofW97HLx5MZEYSHFZ
+ GrCfNuZSUcZVgNku0USzzKCE1DZ0Y7O6g8GS8JEK+57SG/mS0kHak7s926ETSbj/9ZeF7e62oO
+ /+3KcbL1Ubb3Xplzo/nIgXKGUg5QqMn4kdUQDJX8jSSxh/K40BdlDApQ8FwoSYPSmZK3qzYWiT
+ Aag=
 X-IronPort-AV: E=Sophos;i="5.82,245,1613404800"; 
-   d="scan'208";a="165365023"
+   d="scan'208";a="165365026"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Apr 2021 19:26:41 +0800
-IronPort-SDR: 5I/2PFd+qdBVxH/sR0C1GXkWOMloPFCZqrYmLj3siqE4Hx2Q4l3NrImMuYeK7dUHXm1uTTNvdm
- sNy2vZkgcHEcEa4XuIjogBlUz5y3KOVsAiKEH5dOMWF94YzMc94tITGDN3O4Gr+IYg6msaBt7C
- y9aMQeR98kRpI4sQKeh1ohK+AryuMvhbDJ7ORRKBA8GLKqp6n5utuNyxXO8SKpqmgGolvyTLGI
- Mpu/9GMLZTgkKX33S+aBVYBnqh7FL1+ESABoagI58186oxJVBiCY/R636oQPbppiibbvVO78yQ
- r6tp4H+p8yWfPCi27OYvyrpW
+  by ob1.hgst.iphmx.com with ESMTP; 23 Apr 2021 19:26:42 +0800
+IronPort-SDR: 23mLjuL/p6XRqKDS9qqu/5Wx/dLhQ8J6VYRHabKVAxe7ctyUQXLxKVeFOb1xOmVRIwN2UQlKfX
+ xdpqicR2gk1E+eVVJpRKpR7ulsK+qujbMnjtGLMbUIXqZMCm95XJ1r85vmD9oknGW3oSuF6ech
+ LaaNL2KLpu26R33VUbwX/MLQIDMTsPewBn6buTv0eos5r3iJC9UJguxYBgH0eW1xe+VNWtBex4
+ d5Pomisuh2BdmX5KyG96qv9TC2bRkQ+2iSez/llHxIxvanE+4SZUWBTXWk6Ze1vUNOHBEQHfx5
+ mEAgIeBgAp0AjJ7fx4S2wm9x
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 04:07:15 -0700
-IronPort-SDR: K7Dv7fqpZHAkQEuKOWsf86RNmRJ58aZb9b/jZDPEAF1Jfl39W/9nTxhKSB7JsLVo3aKwswuqZg
- yuWyebv7uRrL1TNiMhA7NeKX0whAiUkG2gaSJQA8C4fGTL0OzC4I809GL/hND7Cxi+0mPyUVPm
- 2Cb6Q/wGn56QvWtIyUz94kYUf744qSEsv0y7t6DgztyTsmQojChuyHmxhuRFPi1D3RsVi+AkhU
- 92KTQFjHq1F2wFYtSmTBR/j6vzt/oWkEVXUOce4qRD6OlvMXJ/hUKkROP/Jek8U8Owg2IMiPww
- wb8=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 04:07:16 -0700
+IronPort-SDR: z6NFRIOzId/X6P4Q9cKU9tYVVZkcKpcw7sss4wAgIerFaiKKRqaiZMnxtIZt+TLd/coRBNU87p
+ 0pypJUXW7Yivt0qEPadP1VH4/TqyW482FaveyKT9Y+rJK/q5rfzt+BeB7iMDj6WU/a9pufECmL
+ 9H+gLxDnbpW9pNPvBJefjIdAv41STNPz44fleO1zStlZhxqTRvBLmPf1hNKUZ8Cr5AZ+uvvBKp
+ LGHf5qpfph1nXJiiELNwAC+CWEHRFHdH3GkX89oxCVZNmxHebFstJ9BC9T7J1rdiIms+SLj6aS
+ 0Xg=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 23 Apr 2021 04:26:40 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 23 Apr 2021 04:26:41 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     Eryu Guan <guan@eryu.me>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/4] fstests: add missing checks of fallocate feature
-Date:   Fri, 23 Apr 2021 20:26:31 +0900
-Message-Id: <20210423112634.6067-2-johannes.thumshirn@wdc.com>
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 2/4] btrfs: require discard functionality from scratch device
+Date:   Fri, 23 Apr 2021 20:26:32 +0900
+Message-Id: <20210423112634.6067-3-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210423112634.6067-1-johannes.thumshirn@wdc.com>
 References: <20210423112634.6067-1-johannes.thumshirn@wdc.com>
@@ -65,246 +66,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Naohiro Aota <naohiro.aota@wdc.com>
+Some test cases for btrfs require the scratch device to support discard.
+Check if the scratch device does support discard before trying to execute
+the test.
 
-Many test cases use xfs_io -c 'falloc' but forgot to add
-_require_xfs_io_command "falloc". This will fail the test case if we run
-the test case on a file system without fallcoate support e.g. F2FS.
-
-While we believe that normal fallocate(mode = 0) is always supported on
-Linux, it is not true. Fallocate is disabled in several implementations of
-zoned block support for file systems because the pre-allocated region will
-break the sequential writing rule.
-
-Currently, several test cases unconditionally call fallocate(). Let's add
-_require_xfs_io_command "falloc" to properly check the feature is supported
-by a testing file system.
-
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- tests/btrfs/013   | 1 +
- tests/btrfs/016   | 1 +
- tests/btrfs/025   | 1 +
- tests/btrfs/034   | 1 +
- tests/btrfs/037   | 1 +
- tests/btrfs/046   | 1 +
- tests/btrfs/107   | 1 +
- tests/ext4/001    | 1 +
- tests/f2fs/001    | 1 +
- tests/generic/456 | 1 +
- tests/xfs/042     | 1 +
- tests/xfs/114     | 1 +
- tests/xfs/118     | 1 +
- tests/xfs/331     | 1 +
- tests/xfs/341     | 1 +
- tests/xfs/342     | 1 +
- tests/xfs/423     | 1 +
- 17 files changed, 17 insertions(+)
+ common/rc       | 8 ++++++++
+ tests/btrfs/116 | 1 +
+ tests/btrfs/156 | 1 +
+ 3 files changed, 10 insertions(+)
 
-diff --git a/tests/btrfs/013 b/tests/btrfs/013
-index 9252c82a2076..5e03ed4a4b4b 100755
---- a/tests/btrfs/013
-+++ b/tests/btrfs/013
-@@ -33,6 +33,7 @@ trap "_cleanup ; exit \$status" 0 1 2 3 15
+diff --git a/common/rc b/common/rc
+index 11ff7635700b..76a7265e23ba 100644
+--- a/common/rc
++++ b/common/rc
+@@ -3587,6 +3587,14 @@ _require_batched_discard()
+ 	$FSTRIM_PROG $1 > /dev/null 2>&1 || _notrun "FITRIM not supported on $1"
+ }
+ 
++_require_scratch_discard()
++{
++	local sdev="$(_short_dev $SCRATCH_DEV)"
++	local discard=$(cat /sys/block/$sdev/queue/discard_granularity)
++
++	[ $discard -gt 0 ] || _notrun "discard not supported"
++}
++
+ _require_dumpe2fs()
+ {
+ 	if [ -z "$DUMPE2FS_PROG" ]; then
+diff --git a/tests/btrfs/116 b/tests/btrfs/116
+index 3ed097eccf03..f4db439caef8 100755
+--- a/tests/btrfs/116
++++ b/tests/btrfs/116
+@@ -29,6 +29,7 @@ _cleanup()
  # real QA test starts here
  _supported_fs btrfs
  _require_scratch
-+_require_xfs_io_command "falloc"
++_require_scratch_discard
  
  rm -f $seqres.full
  
-diff --git a/tests/btrfs/016 b/tests/btrfs/016
-index 8fd237cbdb64..015ec17f93d6 100755
---- a/tests/btrfs/016
-+++ b/tests/btrfs/016
-@@ -35,6 +35,7 @@ _supported_fs btrfs
- _require_test
- _require_scratch
- _require_fssum
-+_require_xfs_io_command "falloc"
- 
- _scratch_mkfs > /dev/null 2>&1
- 
-diff --git a/tests/btrfs/025 b/tests/btrfs/025
-index 42cd7cefe825..5c8140552bfb 100755
---- a/tests/btrfs/025
-+++ b/tests/btrfs/025
-@@ -31,6 +31,7 @@ _cleanup()
- # real QA test starts here
+diff --git a/tests/btrfs/156 b/tests/btrfs/156
+index 89c80e7161e2..56206d99c801 100755
+--- a/tests/btrfs/156
++++ b/tests/btrfs/156
+@@ -42,6 +42,7 @@ rm -f $seqres.full
  _supported_fs btrfs
  _require_scratch
-+_require_xfs_io_command "falloc"
+ _require_fstrim
++_require_scratch_discard
  
- rm -f $seqres.full
- 
-diff --git a/tests/btrfs/034 b/tests/btrfs/034
-index bc7a4aae3886..07c84c347d3b 100755
---- a/tests/btrfs/034
-+++ b/tests/btrfs/034
-@@ -28,6 +28,7 @@ _cleanup()
- # real QA test starts here
- _supported_fs btrfs
- _require_scratch
-+_require_xfs_io_command "falloc"
- 
- rm -f $seqres.full
- 
-diff --git a/tests/btrfs/037 b/tests/btrfs/037
-index 1cfaf5be58c8..9ef199a93413 100755
---- a/tests/btrfs/037
-+++ b/tests/btrfs/037
-@@ -35,6 +35,7 @@ _cleanup()
- # real QA test starts here
- _supported_fs btrfs
- _require_scratch
-+_require_xfs_io_command "falloc"
- 
- rm -f $seqres.full
- 
-diff --git a/tests/btrfs/046 b/tests/btrfs/046
-index 882db8eacc4e..a1d82e1cdd54 100755
---- a/tests/btrfs/046
-+++ b/tests/btrfs/046
-@@ -37,6 +37,7 @@ _cleanup()
- _supported_fs btrfs
- _require_test
- _require_scratch
-+_require_xfs_io_command "falloc"
- _require_fssum
- 
- rm -f $seqres.full
-diff --git a/tests/btrfs/107 b/tests/btrfs/107
-index e57c9dead499..80db5ab9822d 100755
---- a/tests/btrfs/107
-+++ b/tests/btrfs/107
-@@ -34,6 +34,7 @@ rm -f $seqres.full
- 
- _supported_fs btrfs
- _require_scratch
-+_require_xfs_io_command "falloc"
- 
- # Use 64K file size to match any sectorsize
- # And with a unaligned tailing range to ensure it will be at least 2 pages
-diff --git a/tests/ext4/001 b/tests/ext4/001
-index bbb74f1ea5bc..9650303d15b5 100755
---- a/tests/ext4/001
-+++ b/tests/ext4/001
-@@ -29,6 +29,7 @@ trap "_cleanup ; exit \$status" 0 1 2 3 15
- 
- # real QA test starts here
- _supported_fs ext4
-+_require_xfs_io_command "falloc"
- _require_xfs_io_command "fzero"
- _require_test
- 
-diff --git a/tests/f2fs/001 b/tests/f2fs/001
-index 98bd2682d60f..0753a09b5576 100755
---- a/tests/f2fs/001
-+++ b/tests/f2fs/001
-@@ -36,6 +36,7 @@ _cleanup()
- 
- _supported_fs f2fs
- _require_scratch
-+_require_xfs_io_command "falloc"
- 
- testfile=$SCRATCH_MNT/testfile
- dummyfile=$SCRATCH_MNT/dummyfile
-diff --git a/tests/generic/456 b/tests/generic/456
-index 2f9df5e5edc4..65667d449dd3 100755
---- a/tests/generic/456
-+++ b/tests/generic/456
-@@ -38,6 +38,7 @@ trap "_cleanup; exit \$status" 0 1 2 3 15
- # real QA test starts here
- _supported_fs generic
- _require_scratch
-+_require_xfs_io_command "falloc"
- _require_dm_target flakey
- _require_xfs_io_command "falloc" "-k"
- _require_xfs_io_command "fzero"
-diff --git a/tests/xfs/042 b/tests/xfs/042
-index b55d642c5170..fcd5181cf590 100755
---- a/tests/xfs/042
-+++ b/tests/xfs/042
-@@ -31,6 +31,7 @@ trap "_cleanup ; exit \$status" 0 1 2 3 15
- 
- # real QA test starts here
- _supported_fs xfs
-+_require_xfs_io_command "falloc"
- 
- _require_scratch
- 
-diff --git a/tests/xfs/114 b/tests/xfs/114
-index b936452461c6..3f5575a61dfb 100755
---- a/tests/xfs/114
-+++ b/tests/xfs/114
-@@ -32,6 +32,7 @@ _cleanup()
- _supported_fs xfs
- _require_test_program "punch-alternating"
- _require_xfs_scratch_rmapbt
-+_require_xfs_io_command "falloc"
- _require_xfs_io_command "fcollapse"
- _require_xfs_io_command "finsert"
- 
-diff --git a/tests/xfs/118 b/tests/xfs/118
-index 5e23617b39dd..9a431821aa62 100755
---- a/tests/xfs/118
-+++ b/tests/xfs/118
-@@ -41,6 +41,7 @@ _supported_fs xfs
- 
- _require_scratch
- _require_command "$XFS_FSR_PROG" "xfs_fsr"
-+_require_xfs_io_command "falloc"
- 
- # 50M
- _scratch_mkfs_sized $((50 * 1024 * 1024)) >> $seqres.full 2>&1
-diff --git a/tests/xfs/331 b/tests/xfs/331
-index 4ea54e2a534b..8e92b2e36a8d 100755
---- a/tests/xfs/331
-+++ b/tests/xfs/331
-@@ -33,6 +33,7 @@ _require_xfs_scratch_rmapbt
- _require_scratch_reflink
- _require_xfs_io_command "falloc"
- _require_test_program "punch-alternating"
-+_require_xfs_io_command "falloc"
- 
- rm -f "$seqres.full"
- 
-diff --git a/tests/xfs/341 b/tests/xfs/341
-index e1fbe588d9eb..8bf05087e1ba 100755
---- a/tests/xfs/341
-+++ b/tests/xfs/341
-@@ -31,6 +31,7 @@ _require_realtime
- _require_xfs_scratch_rmapbt
- _require_test_program "punch-alternating"
- _disable_dmesg_check
-+_require_xfs_io_command "falloc"
- 
- rm -f "$seqres.full"
- 
-diff --git a/tests/xfs/342 b/tests/xfs/342
-index 2be5f7698f01..4db222d65fb2 100755
---- a/tests/xfs/342
-+++ b/tests/xfs/342
-@@ -30,6 +30,7 @@ _supported_fs xfs
- _require_realtime
- _require_xfs_scratch_rmapbt
- _require_test_program "punch-alternating"
-+_require_xfs_io_command "falloc"
- 
- rm -f "$seqres.full"
- 
-diff --git a/tests/xfs/423 b/tests/xfs/423
-index 8d51a9a60585..183c9cf5eded 100755
---- a/tests/xfs/423
-+++ b/tests/xfs/423
-@@ -35,6 +35,7 @@ _cleanup()
- _supported_fs xfs
- _require_test_program "punch-alternating"
- _require_xfs_io_command "scrub"
-+_require_xfs_io_command "falloc"
- _require_scratch
- 
- echo "Format and populate"
+ # 1024fs size
+ fs_size=$((1024 * 1024 * 1024))
 -- 
 2.30.0
 
