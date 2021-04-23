@@ -2,73 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A936736886F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Apr 2021 23:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D706E369072
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Apr 2021 12:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237012AbhDVVLK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Apr 2021 17:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236851AbhDVVLK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Apr 2021 17:11:10 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDF3C06174A
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Apr 2021 14:10:33 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id u16so29870456oiu.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Apr 2021 14:10:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fTFWwMjCpocca3MO7P1jty1ObtUAP01oxLMOZnGcpik=;
-        b=U6zKIt2MFQqO5hYscggnWdWjG7N3MgRHOgJf8eA1Pc7Yq2dALppCUdJ4dM0YyB+bVK
-         +BBh+O0G2YuS5yDHx9TnqlB9pzzbrU7Bix0WqMZLqx5lspNNgjzK6QDYqT9o+eeyWtZw
-         QwIM0n+sxKFMo5pYCPe29V8458EoM3VKzSbWq0CvhW/UM6YjRj/deHox+ANZRbSYmxFZ
-         w1D1r/PKBN2bB0zf0+ORe1L9TvOQ5uC1KfyZd63A8qGTyHeiUnJecGMpqBL2m/8YjrEe
-         GKXEpg3sOmjXrU25bJqvvAhjnkhwYxLbatNRRojtxxMpGxqL/c7mvpON6mgI0WMQtE4v
-         YHzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fTFWwMjCpocca3MO7P1jty1ObtUAP01oxLMOZnGcpik=;
-        b=j9oE924KX2V/wU0ekqKPAPdO8SVZNnGCW0cpvZU6QLErBi7e8+xMIBkyj+M/nfaqVX
-         fBLwOD41QL65BV2rg8lXJ7CuZyVGzT4EKJkd2aczI20rq0kJ2LlFX731Ert+mJvsy1Dd
-         WwM25JfVmsKlE/pJD46fDKOhVB17NW/PTTAfzci6QOAibRyIJ0dBp9JW5pPZHNz3/wzq
-         d0KqsNf2L4IbSEcsjTTzsLTYJOsDZlkTOY0+KLIcqnX7mXaABtvfbyiRjJrM2G2RbQ14
-         sbyyVbMUedyI5KVqoKUwYKLlm13i5zkgnQ3rMLldxFY1Kj0hNLFmxriqzHI7KHUb0crm
-         rjmw==
-X-Gm-Message-State: AOAM531tQHpBEQ6gJjKgZ791r5vvgaVujTxyB3j5Izuy5JhHnuk48oZZ
-        sDoJ+zlKKhIQPUmchasglump9Z9st1NXubsBCbg=
-X-Google-Smtp-Source: ABdhPJwf1vSem/I9sjLK+h37VjCQJ0JYgWEm9OaSFLosSbkAEwD2V5umVNI+QuQypaoStbRA+elObdN/aBsPXupa3XA=
-X-Received: by 2002:a54:4804:: with SMTP id j4mr1364371oij.175.1619125832752;
- Thu, 22 Apr 2021 14:10:32 -0700 (PDT)
+        id S241755AbhDWKgH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Apr 2021 06:36:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37272 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229772AbhDWKgH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Apr 2021 06:36:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8F31AD4A;
+        Fri, 23 Apr 2021 10:35:29 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6C0FEDA7FE; Fri, 23 Apr 2021 12:33:09 +0200 (CEST)
+Date:   Fri, 23 Apr 2021 12:33:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH v6 0/3] btrfs: zoned: automatic BG reclaim
+Message-ID: <20210423103309.GC7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Anand Jain <anand.jain@oracle.com>
+References: <cover.1618943115.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Received: by 2002:a4a:7616:0:0:0:0:0 with HTTP; Thu, 22 Apr 2021 14:10:31
- -0700 (PDT)
-Reply-To: mrs.chantal166@gmail.com
-From:   mrs chantal <misschantal1004@gmail.com>
-Date:   Thu, 22 Apr 2021 21:10:31 +0000
-Message-ID: <CAAUzMkC3xWvnvPkx5y-mXpWP0aLcxeQe=Nn0qy9Xj09tEn5JNQ@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618943115.git.johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 4.3 million dollars in this
-united nation the payment will be issue into atm visa card and send to
-you from the santander bank we need your address and your whatsapp
-number
+On Wed, Apr 21, 2021 at 03:27:22AM +0900, Johannes Thumshirn wrote:
+> When a file gets deleted on a zoned file system, the space freed is not
+> returned back into the block group's free space, but is migrated to
+> zone_unusable.
+> 
+> As this zone_unusable space is behind the current write pointer it is not
+> possible to use it for new allocations. In the current implementation a
+> zone is reset once all of the block group's space is accounted as zone
+> unusable.
+> 
+> This behaviour can lead to premature ENOSPC errors on a busy file system.
+> 
+> Instead of only reclaiming the zone once it is completely unusable,
+> kick off a reclaim job once the amount of unusable bytes exceeds a user
+> configurable threshold between 51% and 100%. It can be set per mounted
+> filesystem via the sysfs tunable bg_reclaim_threshold which is set to 75%
+> per default.
+> 
+> Similar to reclaiming unused block groups, these dirty block groups are
+> added to a to_reclaim list and then on a transaction commit, the reclaim
+> process is triggered but after we deleted unused block groups, which will
+> free space for the relocation process.
+> 
+> Zones that are 100% full and zone unusable already get reclaimed atomatically
+> on transaction commit. Another improvement on the garbage collection side of
+> zoned btrfs would be no to reclaim block groups that have used, pinned and
+> reserved = 0 but zone_unusable > 0. This is not yet included as it needs
+> further reaserch and testing.
+> 
+> Changes to v5:
+> - Prefix define (David)
+> - Print bg usage percentage in reclaim info (David)
 
-Fill the followings with your details;
-
-1. Your Name:
-2. Country :
-3. Age and Sex:
-4. Occupation :
-5. Mobile Telephone:
-6. Delivery Address:
-7. Id Card Identification
+V6 added to misc-next and queued for 5.13, thanks.
