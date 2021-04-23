@@ -2,114 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7C9369CD1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Apr 2021 00:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3C0369D79
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Apr 2021 01:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244194AbhDWWfU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Apr 2021 18:35:20 -0400
-Received: from mout.gmx.net ([212.227.17.21]:45269 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231218AbhDWWfD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Apr 2021 18:35:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619217256;
-        bh=AWV/AjNKUOgREnTChBRKdOOlMr3JXLpYfu98o0X7SsY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=G8i21ZNIEJLheuMJKk0UhzCIuPDmuW5fVAsw+erkm+J3CSej44f6iA8nlz3xTnnRX
-         aUJVwnVSnKXUtH/uQ0kE+DsrNnNMhyDALV1r64YLBXPNkco/sk0UqYxTOByASTFS1B
-         jWWKEKmeYS47qrFXRs77ZCfpfxaSwkVaueyl6eQ0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvsJ5-1lIodr0V5L-00sv6m; Sat, 24
- Apr 2021 00:34:16 +0200
-Subject: Re: [PATCH 0/4] btrfs: the missing 4 patches to implement metadata
- write path
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210406003603.64381-1-wqu@suse.com>
- <20210423112938.GG7604@twin.jikos.cz>
- <af78885d-b9a3-7629-d659-812121696bab@gmx.com>
- <20210423203103.GH7604@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <1d6a373f-2c76-4650-44f0-245375c0d0f2@gmx.com>
-Date:   Sat, 24 Apr 2021 06:34:13 +0800
+        id S244206AbhDWXi3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Apr 2021 19:38:29 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:38417 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244212AbhDWXg6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Apr 2021 19:36:58 -0400
+X-Originating-IP: 87.154.223.3
+Received: from [192.168.3.4] (p579adf03.dip0.t-ipconnect.de [87.154.223.3])
+        (Authenticated sender: chainofflowers@neuromante.net)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id AA11E1C0006;
+        Fri, 23 Apr 2021 23:36:17 +0000 (UTC)
+Subject: Re: Access Beyond End of Device & Input/Output Errors
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Forza <forza@tnonline.net>,
+        linux-btrfs@vger.kernel.org, Justin.Brown@fandingo.org
+References: <5975832.dRgAyDc8OP@luna>
+ <09596ccd-56b4-d55e-ad06-26d5c84b9ab6@gmx.com>
+ <83f3d990-dc07-8070-aa07-303a6b8507be@neuromante.net>
+ <5494566e-ff98-9aa9-efa3-95db37509b88@neuromante.net>
+ <3a374bca-2c0b-7c95-d471-3d88fc805b57@gmx.com>
+ <7a02dd5a-f7c0-69b0-0f07-92590e1cd65f@neuromante.net>
+ <e179094e-8926-beee-92b7-0885f1665f89@tnonline.net>
+ <76971f62-d050-fac2-1694-71d3115e1bf7@neuromante.net>
+ <704ad3ea-f795-93c1-3487-c644ea5456d9@gmx.com>
+From:   chainofflowers <chainofflowers@neuromante.net>
+Message-ID: <dea68577-4f60-afd2-753b-1fec3c13494d@neuromante.net>
+Date:   Sat, 24 Apr 2021 01:36:16 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210423203103.GH7604@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <704ad3ea-f795-93c1-3487-c644ea5456d9@gmx.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IxBLEY4XnqZAvxcYBYiwXehDGrJN2jPrSx5c8/IdaX7Le6w93bl
- VXUwlPRodD1oysej8nxpKYgnabB06mWT31j/RInF1uklA29AaVBURkBBwmM9QG6wwJ0Xvox
- 4176gS2k1ZhfWs5nFkHFMeZ33stGRyvnLjP+ChQhIWkfCVozJpOzp7C4Zw9iUgsQdmDlYic
- VosVjCmxYAFBShq31GAlw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:u4a9Oy7QP3o=:peMRUumnOM8CeHRGOz59pQ
- O5fo4RJOPFN+FijGD1gD0HQLx9PXETLdkuW9DBMR4LKXvGPkZSNG3zf0S/WV75Blmd7sSACe5
- g7oiz8ItLITaOgeV8ZBuNCh7VFlxXaG+mhBIKaF5pJxz4FoPGTYzqzvSxG+xoti9/deJGQQ/O
- 6ABLFivYdk8R8PQ4dXeaXUJsffu6LvVXI6hyjLngX16b12CLZtVY1AEDTD1Yp4/GdjTbhwKCT
- GuMQ3Cpmeao8dp7rwZJP0vCPgxKe5QjDEEC1Vn/BkUoN5yfDm89TNVjrf8i3IH6yYSH1mcNU+
- c/CCH+nWwMki78Bcr136+zBjZVPpWkrLozYIerm7nWdU8zuxR9xRJFps8cQDbrDD1SUgWgGSv
- KARMqilXKjucKKuz/Zgl52CpqLxJG6r7TbvMJ8WPaSq2E3c8WsDIBwg/kPM4jvwPxgKGQ6Tz0
- BWiSLUtqeR/mVarLHcLpnsID4mK4LuLt4Qs+xRScj6wHGSvoId9HXpqoX8LdueQ2GisW7NB7w
- a5q6t7nco5R7wl2xHNej+L2hinMPGwPFQiqAGWDl+Gyq6S739qqj+CSmvmITo5iP5MosVY5L0
- VCkMp+suSzWq+FxdnXN95H4NgoR6Vrq+S00LB2pGzgHu1B3D5OJwj8bnij5/JV6x/fkvtGkkv
- xZki1Xp4NH1dFLj0GSrC/Vy4f0NySWnlP7tMknzMD4KQEPiz1v2fMK9cIpIGlmxwA/lWPXRBz
- MRXsRn7d3HUYoV92tQ0rQotMuKt/PzceuUbaKV6BF6t43OaFTAApcmm+c/Bl5TPg/SAYx61Al
- NJ99OqL25YmBZaMavi8ZUcQE1TWcvqKZgtRn8EWbK3JvvA71EbAAUycgAOHJaQ+va45FwcbP1
- 5f9jtqAd9BtcixaRhQU1uoteVO+Ek+kj+dRrusiP9GJvTpLKjR6LD2+GiPGjWgI8cx1Tj6sPN
- k6OY5BNhloRFloWMJEQVdJtva8iJcyy+bdgRlUL+I38r5NSKOFalsAlyhNeEmoFgwviEjsFYs
- iRqoEh1bIcCj3eLVv70ROcbtJTCuThf/F2YyO28LQwDXSDT7GGrlrpXbTDhZUBD4CQbLIOBVD
- zZHcYyZZZR8FTQ/wG7vy1Uv7pKWlcQRBQQvzKL1AVazxbPlTMiinI6g7rcv4HVpc1PCQfZ1XD
- P59V59y4qXeuYZMMl7D3TJnwk5nnQcstfqyP61RS4oxL7csSD5Dy7JaeoIrKB/8n3pcQLIjCB
- Gt60lpI9O+zp2Dve9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Qu!
+
+So far, I am not experiencing the access-beyond-end-of-device issue
+anymore since some weeks.
+
+The new thing I did was:
+1. Booted from an external disk
+2. Ran:
+       btrfs check --clear-space-cache v1
+       btrfs check --clear-ino-cache
+   on all my volumes.
+
+I had somehow missed this (from man btrfs-check):
+> --clear-space-cache v1|v2
+>     completely wipe all free space cache of given type
+>
+>     For free space cache v1, the clear_cache kernel mount option only
+>     rebuilds the free space cache for block groups that are modified
+>     while the filesystem is mounted with that option. Thus, using this
+>     option with v1 makes it possible to actually clear the entire free
+>     space cache.
+
+I think, in all of this I had missed that I needed to "clear-space-cache
+v1" on the non-mounted volume, as I have always done it while the volume
+was mounted.
+
+Maybe this info could help Justin too.
 
 
-On 2021/4/24 =E4=B8=8A=E5=8D=884:31, David Sterba wrote:
-> On Fri, Apr 23, 2021 at 07:36:29PM +0800, Qu Wenruo wrote:
+BTW: Could "--clear-ino-cache" have also made any difference? Or was it
+just about cleaning unused left-overs?
+
+
+Thanks a lot for your help, Qu! :-)
+
+Have a nice weekend,
+
+(c)
+
+
+
+On 20.02.21 13:13, Qu Wenruo wrote:
+> 
+> 
+> On 2021/2/20 下午8:07, chainofflowers wrote:
+>> On 20.02.21 12:46, Forza wrote:
 >>
->>
->> On 2021/4/23 =E4=B8=8B=E5=8D=887:29, David Sterba wrote:
->>> On Tue, Apr 06, 2021 at 08:35:59AM +0800, Qu Wenruo wrote:
->>>> When adding the comments for subpage metadata code, I inserted the
->>>> comment patch into the wrong position, and then use that patch as a
->>>> separator between data and metadata write path.
->>>>
->>>> Thus the submitted metadata write path patchset lacks the real functi=
-ons
->>>> to submit subpage metadata write bio.
->>>>
->>>> Qu Wenruo (4):
->>>>     btrfs: introduce end_bio_subpage_eb_writepage() function
->>>>     btrfs: introduce write_one_subpage_eb() function
->>>>     btrfs: make lock_extent_buffer_for_io() to be subpage compatible
->>>>     btrfs: introduce submit_eb_subpage() to submit a subpage metadata=
- page
+>>> Are you using fstrim by any chance? Could the problem be related to
+>>> https://patchwork.kernel.org/project/fstests/patch/20200730121735.55389-1-wqu@suse.com/
 >>>
->>> For the record, the patches have been added to 5.13 queue a few days
->>> ago.
->>>
 >>
->> Josef had some comments on them, most of them are just related to
->> introducing a new subpage specific endio function other than reusing th=
-e
->> existing one.
->
-> I haven't seen any comments for that patchset.
+>> Yes, that's what I mentioned in my first post.
+>> Actually, it all started with the bug with dm, but some similar
+>> behaviour persists even after that bug was fixed:
+>> https://lore.kernel.org/linux-btrfs/20190521190023.GA68070@glet/T/
+>>
+>> The only "maybe unusual" thing in my setup is that I use btrfs on the
+>> top of dmcrypt directly, without lvm in-between, but I am not the only
+>> one...
+>>
+>> @Qu:
+>> My RAM looks OK so far, I also thought of that, and I actually ran
+>> memtest for 12+ hours and more than once. I would exclude that case.
+>>
+>> I will do a "btrfs check --check-data-csum" and let you know.
+>>
+>> In the meantime, I thought of a related question:
+>> -> When a data-csum is corrupted (for whatever reason), is there a
+>> chance that the corruption persists when I copy the whole file system
+>> over to a new one?
+> 
+> You can rule out the possibility that some data checksum itself is
+> corrupted.
+> Data checksum is stored in btrfs trees, and all tree blocks have their
+> own checksum.
+> 
+>>
+>> As I said previously, I copied the whole fs to new, virgin SSDs more
+>> than once with "rsync -avAHX", and I couldn't spot any issue related to
+>> the copy itself...
+> 
+> Then you can rule out the checksum problem.
+> 
+> Thanks,
+> Qu
 
-It's for the big subpage RW patchset, which includes the four missing
-patches.
-
-Thanks,
-Qu
->
->> So I guess if I go that direction, I should just add new patches as a
->> refactor?
->
-> Yes please.
->
