@@ -2,86 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C4B36A45D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Apr 2021 05:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F056836A4E7
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Apr 2021 07:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbhDYDSr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 24 Apr 2021 23:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhDYDSq (ORCPT
+        id S229514AbhDYFOt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 25 Apr 2021 01:14:49 -0400
+Received: from out20-86.mail.aliyun.com ([115.124.20.86]:43079 "EHLO
+        out20-86.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhDYFOt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 24 Apr 2021 23:18:46 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903AAC061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 24 Apr 2021 20:18:07 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id e5so23641803wrg.7
-        for <linux-btrfs@vger.kernel.org>; Sat, 24 Apr 2021 20:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OUyN9VmNuazzv/UoaJLUX0pGnWeFpsavKukj2v5145s=;
-        b=1MCY8YIbhE0JqUG3AbMEDpb5yBhRXWQMRaxmL8+q1TYj4xFRf5cS7YQtCcttRVFX50
-         MbB5793y9MOCefWtAEcys1tgeq4sUvgQ9NuNgslAGyrdqKMtTxcmt1cxQySxnHNf/spT
-         B2skZ7AenRvVY/lzHN3qSEY62SwRikBby5G6+VrxIICwj9gMr2+y0ZAaRDiP3YVgV7yk
-         xDfhVkhbawGPQO9RR/WZ4oImJoVfzHyuc2tidZ+Moo3tyAOC5I9+ODnm5mvge6Dw2d8X
-         RDwe6uYNnPWvgH9kg+HV64fi1UGUmastds8lTeAaSaBiWaED+K000VsB3E9M6ODmnTQI
-         i7HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OUyN9VmNuazzv/UoaJLUX0pGnWeFpsavKukj2v5145s=;
-        b=ZgyD4iqiwRFMfwN1GvT5yLSgbdNk4G0duc+Xq4j33tau3Yo7lGThpDPJlyTjUch8N+
-         PU+YEmaeMOm/Yj14UohCUTnUYIak+Hz/t7A0W5FuqP5BPkibcGDM9i448KeIYPFw3WGM
-         X/wV/v22dufF4knlEBAZDYcVeQZcpakJMEKrT2FQt/7H+VBC2gla7wgjOv9sHxwcovLI
-         MYfkbN4pRZxg6NhJUEbPR/M4H48BMPqXTYDEZwm9Vl9x8aILrfEpVu7d3AnQRZh0qYez
-         qagGV70j8Hcgprriy8Ox40sAEbKcbVXuULnlK0qDYW9VC8kh/yplDFq8XbAS1DzS9XcZ
-         Whig==
-X-Gm-Message-State: AOAM530mA7OFhGEGQZbVIW+EDjcvm4gJdTRZXirIS+stpHLT0PxOmC1r
-        tfhVe1hzOMtD9ja4PvgTu/TyemlSncDFiSj8lAS844MdyfRh0DJd
-X-Google-Smtp-Source: ABdhPJxRzSyt/Y8sIzjFD7EarSzoUWoVuVCYNRyUmJ5rHtztmtp5l/rG03pfdydD3ty32NE5slDsc1XtYLHXQ/qQuWA=
-X-Received: by 2002:a5d:47ce:: with SMTP id o14mr14297280wrc.236.1619320686271;
- Sat, 24 Apr 2021 20:18:06 -0700 (PDT)
+        Sun, 25 Apr 2021 01:14:49 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07534295|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.109334-0.0016002-0.889066;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.K3grzdV_1619327647;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.K3grzdV_1619327647)
+          by smtp.aliyun-inc.com(10.147.42.16);
+          Sun, 25 Apr 2021 13:14:08 +0800
+Date:   Sun, 25 Apr 2021 13:14:07 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     Boris Burkov <boris@bur.io>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, fstests@vger.kernel.org
+Subject: Re: [PATCH v3] generic: test fiemap offsets and < 512 byte ranges
+Message-ID: <YIT6n8Y2pmQb5Y5t@desktop>
+References: <20210407161046.GY1670408@magnolia>
+ <c2f49fdead29fd7eb979b83028eb9fcf56d2457c.1617826068.git.boris@bur.io>
+ <YHMBzw/9tUVMS66G@desktop>
+ <YIB5XbY2PX4J5dlN@zen>
 MIME-Version: 1.0
-References: <CAJCQCtQzVWt8CBTgkjBDWE-ZP1HN6gdLd6_7HD5rhxrPypjHYg@mail.gmail.com>
-In-Reply-To: <CAJCQCtQzVWt8CBTgkjBDWE-ZP1HN6gdLd6_7HD5rhxrPypjHYg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sat, 24 Apr 2021 21:17:50 -0600
-Message-ID: <CAJCQCtQW3KsuGSSJvKJdv_9m4y=f64zthv3eS0_t0U6jBuRnuA@mail.gmail.com>
-Subject: Re: fstrim bug with seed+sprout
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YIB5XbY2PX4J5dlN@zen>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Seems pretty bad...
+On Wed, Apr 21, 2021 at 12:13:33PM -0700, Boris Burkov wrote:
+> On Sun, Apr 11, 2021 at 10:03:59PM +0800, Eryu Guan wrote:
+> > On Wed, Apr 07, 2021 at 01:13:26PM -0700, Boris Burkov wrote:
+> > > btrfs trims fiemap extents to the inputted offset, which leads to
+> > > inconsistent results for most inputs, and downright bizarre outputs like
+> > > [7..6] when the trimmed extent is at the end of an extent and shorter
+> > > than 512 bytes.
+> > > 
+> > > The test writes out one extent of the file system's block size and tries
+> > > fiemaps at various offsets. It expects that all the fiemaps return the
+> > > full single extent.
+> > > 
+> > > I ran it under the following fs, block size combinations:
+> > > ext2: 1024, 2048, 4096
+> > > ext3: 1024, 2048, 4096
+> > > ext4: 1024, 2048, 4096
+> > > xfs: 512, 1024, 2048, 4096
+> > > f2fs: 4096
+> > > btrfs: 4096
+> > > 
+> > > This test is fixed for btrfs by:
+> > > btrfs: return whole extents in fiemap
+> > > (https://lore.kernel.org/linux-btrfs/274e5bcebdb05a8969fc300b4802f33da2fbf218.1617746680.git.boris@bur.io/)
+> > > 
+> > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > 
+> > generic/473, which tests fiemap, has been marked as broken, as fiemap
+> > behavior is not consistent across filesystems, and the specific behavior
+> > tested by generic/473 is not defined and filesystems could have
+> > different implementations.
+> > 
+> > I'm not sure if this test fits into the undefined-behavior fiemap
+> > categary. I think it's fine if it tests a well-defined & consistent
+> > behavior.
+> > 
+> 
+> Interesting, I didn't know about that test being marked as broken.
+> 
+> I was worried about this problem to some extent and attempted to
+> mitigate it by only requiring that all the output be the same, rather
+> than matching some specific standard.
+> 
+> Thinking about it further, I think this test is portable only so long as
+> the step where it writes a file with one extent is portable.
+> 
+> If "pwrite 0 block-size" ends up as a file with multiple extents, then
+> it is possible one of the partial fiemaps will only intersect with a
+> subset of the extents and rightly return those. In fact, that was broken
+> in the original version of the test which explicitly used 4096 instead of
+> being detecting the block size.
+> 
+> I do think it is nice to have this as a regression test for btrfs, since
+> we have pretty complicated logic for fiemap and it was so broken in this
+> case. If you prefer, I can make this a btrfs specific test.
 
-[  100.274795] BTRFS warning (device vda3): 'usebackuproot' is
-deprecated, use 'rescue=usebackuproot' instead
-[  100.274812] BTRFS info (device vda3): trying to use backup root at mount time
-[  100.274818] BTRFS info (device vda3): using free space tree
-[  100.274823] BTRFS info (device vda3): has skinny extents
-[  100.281661] BTRFS error (device vda3): bad tree block start, want
-5373952 have 0
-[  100.281774] BTRFS warning (device vda3): couldn't read tree root
-[  100.284534] BTRFS error (device vda3): bad tree block start, want
-5685248 have 0
-[  100.284661] BTRFS warning (device vda3): couldn't read tree root
-[  100.285318] BTRFS error (device vda3): bad tree block start, want
-1343455232 have 0
-[  100.285386] BTRFS warning (device vda3): couldn't read tree root
-[  100.285657] BTRFS error (device vda3): bad tree block start, want
-5373952 have 0
-[  100.285680] BTRFS warning (device vda3): couldn't read tree root
-[  100.287529] BTRFS error (device vda3): open_ctree failed
-#
+Yeah, a btrfs specific test seems safer, and we could move it to generic
+later if the behavior is well defined.
 
-This is happening in a qemu-kvm on a raw image. I guess there could be
-some additional complicating factors.
-
---
-Chris Murphy
+Thanks,
+Eryu
