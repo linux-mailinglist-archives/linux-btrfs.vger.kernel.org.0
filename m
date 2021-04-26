@@ -2,50 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4002836BBCE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 00:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C9A36BC22
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 01:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235656AbhDZWst (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Apr 2021 18:48:49 -0400
-Received: from mga03.intel.com ([134.134.136.65]:7682 "EHLO mga03.intel.com"
+        id S237728AbhDZXjI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Apr 2021 19:39:08 -0400
+Received: from mga07.intel.com ([134.134.136.100]:59761 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhDZWss (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Apr 2021 18:48:48 -0400
-IronPort-SDR: /SvtknyNJ0WwgJtvjU9yAzNhgns13nJMVYrl9vKGFFZj3ngk6Urtd1ENYIvkX2N1tuGLbSLS3C
- 7D/l3ut8VOpA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="196475940"
+        id S237677AbhDZXjH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:39:07 -0400
+IronPort-SDR: hi2N/OYRUK1SBv3ZwQs2BLJPjHixmabKB7m3mnbHv5CZ/iBvGBdm5Vmcp2oSGjp2g9YL3hd5tk
+ q89L9+9KkYoA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="260374755"
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="196475940"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 15:48:04 -0700
-IronPort-SDR: 0OoBkbV+1Ox6DgCJsz3p8pRg6Qh4Z7QgEJFLV0iN/+erqAfcNG7xRSGc7htjfewXeCRxv2MdCY
- 48Pnrx+6JMhw==
+   d="scan'208";a="260374755"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 16:38:23 -0700
+IronPort-SDR: A50+Fd5pn/qjEoSorYMDPYKihZpodieBazBUiERfxoqvGxei7QgZ5XYQMXGBr7+xxjtAB4Hi42
+ 7J1D/c4nsVXg==
 X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; 
-   d="scan'208";a="429568748"
+   d="scan'208";a="618771565"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 15:48:03 -0700
-Date:   Mon, 26 Apr 2021 15:48:03 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2021 16:38:23 -0700
+Date:   Mon, 26 Apr 2021 16:38:23 -0700
 From:   Ira Weiny <ira.weiny@intel.com>
 To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
 Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, willy@infradead.org, jack@suse.cz,
-        viro@zeniv.linux.org.uk, linux-btrfs@vger.kernel.org,
-        david@fromorbit.com, hch@lst.de, rgoldwyn@suse.de
-Subject: Re: [PATCH v2 1/3] fsdax: Factor helpers to simplify dax fault code
-Message-ID: <20210426224803.GR1904484@iweiny-DESK2.sc.intel.com>
-References: <20210407133823.828176-1-ruansy.fnst@fujitsu.com>
- <20210407133823.828176-2-ruansy.fnst@fujitsu.com>
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        rgoldwyn@suse.de, Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v3 1/3] fsdax: Factor helpers to simplify dax fault code
+Message-ID: <20210426233823.GT1904484@iweiny-DESK2.sc.intel.com>
+References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
+ <20210422134501.1596266-2-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407133823.828176-2-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210422134501.1596266-2-ruansy.fnst@fujitsu.com>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 09:38:21PM +0800, Shiyang Ruan wrote:
+On Thu, Apr 22, 2021 at 09:44:59PM +0800, Shiyang Ruan wrote:
 > The dax page fault code is too long and a bit difficult to read. And it
 > is hard to understand when we trying to add new features. Some of the
 > PTE/PMD codes have similar logic. So, factor them as helper functions to
@@ -84,7 +85,9 @@ On Wed, Apr 07, 2021 at 09:38:21PM +0800, Shiyang Ruan wrote:
 > -			ret = VM_FAULT_NEEDDSYNC | major;
 > +			ret = dax_fault_synchronous_pfnp(pfnp, pfn);
 
-Is there a reason VM_FAULT_MAJOR should be left out here?
+I commented on the previous version...  So I'll ask here too.
+
+Why is it ok to drop 'major' here?
 
 Ira
 
