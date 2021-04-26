@@ -2,578 +2,304 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401A336B9C6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Apr 2021 21:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2933036BA85
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Apr 2021 22:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240122AbhDZTHh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Apr 2021 15:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240075AbhDZTH0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Apr 2021 15:07:26 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B754FC06138B
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Apr 2021 12:06:43 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id p12so40673393pgj.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Apr 2021 12:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sU9KJZbJYDg28V9cGuoB7UTQJ6cKqrTrC2zuSxyoxlI=;
-        b=U9RFiuVDOyCKNiRMB7rtaYrVfWJx9GzLVXH254YMIp8e0LHsZvtI7NJarqbndIxNAv
-         jkS3Gp4MB5pEMBNOb7KgH+dP6at5ZqfcbWZELqWT1QLbF+9hodUB92vxTcUhbuUSdXTy
-         C2JEWMAzTe17GwhmeaqXtuKs3zb3Oa2Maas8NqzuUmpGzgFJUIhCwMy8yjmaoGt69z/T
-         HhBOorwSx/kAH4VMoxW2Tbv46qqvpaXsNIavXxqIipGtN67fged680qyRi6s5tNR//5P
-         7g+vg841gNUj3nRfaH3dYpo1pXeLue28I1HQ2nkGvSaNl48YdLsqxMEqUY3Db0gopf6T
-         2RaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sU9KJZbJYDg28V9cGuoB7UTQJ6cKqrTrC2zuSxyoxlI=;
-        b=lwnMGcJSgLaJfRaeLPRLs+ch+Se6JJqH97ffwfW6b0XK1XpGaKBqEhNaShwJBVGcO6
-         s/nkBwlGbbDS46P9PywuQesB0er/K6IJTseu3eEHHXzjdYeE581yXBvBfgb73mX+lVRR
-         rl9CY1mRyPapzeWNgABCqjgc+Rjz/+EvCtGslZqZS/HEPq/1AA/emN4JqZRILcZyeU32
-         3rwrjX8zhFUk/KrjM/y79JKBKjoXVpngl9RyfOPwUbL1+RV+8ARDpzTQBwAjiseuzNxs
-         GPW0nx70XlNmm0082I1qlNDdEucwiDll9DXmARh6Wk08dDpFondtFtCGJcskwf8rwXN4
-         MwBQ==
-X-Gm-Message-State: AOAM533/LIoWJ4rRKcPnnFr2JniHowI3udmdkBkQkYqp1aVbX8i53q+i
-        ptVjA6a8D+O5acz9WnmK2NvGgw==
-X-Google-Smtp-Source: ABdhPJzW6b0pFyFUs7AxSmpDRWr0NkdzV3CsE5td9iso9wX6e2l7IUZybGEvKZmt/2XbzJWbbF5xKg==
-X-Received: by 2002:a65:4c8e:: with SMTP id m14mr17690731pgt.377.1619464003107;
-        Mon, 26 Apr 2021 12:06:43 -0700 (PDT)
-Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:f06a])
-        by smtp.gmail.com with ESMTPSA id lx11sm331745pjb.27.2021.04.26.12.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 12:06:42 -0700 (PDT)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH RESEND v9 9/9] btrfs: implement RWF_ENCODED writes
-Date:   Mon, 26 Apr 2021 12:06:12 -0700
-Message-Id: <d1ed2d1a1add04353db43daeec9f3ef47460a961.1619463858.git.osandov@fb.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1619463858.git.osandov@fb.com>
-References: <cover.1619463858.git.osandov@fb.com>
+        id S241751AbhDZUCU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Apr 2021 16:02:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44580 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241785AbhDZUCM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Apr 2021 16:02:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1619467289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hhmMue4wFDzUcfHHTz2GRC6I6Q4mpO4N5AXEH3ko3V8=;
+        b=mswcfgGyTnEmWPjM9oA1XeC8NME+PqAGJN8PCiOtGuZIW7WYKRiBZU9BCJ4/P+z6mo+35Z
+        Mzwtl0s2Xort0UBZnBuRSaTBEbAueyq2rqdYzc+sbNCD6eYmClHxH1GP1gOTqdM3E2xnN1
+        fQj16YNw0il/+1IGx34vvuY9qqNr/Xo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6A078AE72;
+        Mon, 26 Apr 2021 20:01:29 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8755DDA7F9; Mon, 26 Apr 2021 21:59:07 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 5.13
+Date:   Mon, 26 Apr 2021 21:59:06 +0200
+Message-Id: <cover.1619466460.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+From: David Sterba <dsterba@suse.cz>
 
-The implementation resembles direct I/O: we have to flush any ordered
-extents, invalidate the page cache, and do the io tree/delalloc/extent
-map/ordered extent dance. From there, we can reuse the compression code
-with a minor modification to distinguish the write from writeback. This
-also creates inline extents when possible.
+Hi,
 
-Now that read and write are implemented, this also sets the
-FMODE_ENCODED_IO flag in btrfs_file_open().
+the updates this time are mostly stabilization, preparation and minor
+improvements.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- fs/btrfs/compression.c  |   7 +-
- fs/btrfs/compression.h  |   6 +-
- fs/btrfs/ctree.h        |   2 +
- fs/btrfs/file.c         |  38 +++++-
- fs/btrfs/inode.c        | 259 +++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/ordered-data.c |  12 +-
- fs/btrfs/ordered-data.h |   5 +-
- 7 files changed, 316 insertions(+), 13 deletions(-)
+Please pull, thanks.
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 4584e37f1710..52cb1d651651 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -354,7 +354,8 @@ static void end_compressed_bio_write(struct bio *bio)
- 			bio->bi_status == BLK_STS_OK);
- 	cb->compressed_pages[0]->mapping = NULL;
- 
--	end_compressed_writeback(inode, cb);
-+	if (cb->writeback)
-+		end_compressed_writeback(inode, cb);
- 	/* note, our inode could be gone now */
- 
- 	/*
-@@ -390,7 +391,8 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 				 struct page **compressed_pages,
- 				 unsigned long nr_pages,
- 				 unsigned int write_flags,
--				 struct cgroup_subsys_state *blkcg_css)
-+				 struct cgroup_subsys_state *blkcg_css,
-+				 bool writeback)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct bio *bio = NULL;
-@@ -414,6 +416,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	cb->mirror_num = 0;
- 	cb->compressed_pages = compressed_pages;
- 	cb->compressed_len = compressed_len;
-+	cb->writeback = writeback;
- 	cb->orig_bio = NULL;
- 	cb->nr_pages = nr_pages;
- 
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 8001b700ea3a..f95cdc16f503 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -49,6 +49,9 @@ struct compressed_bio {
- 	/* the compression algorithm for this bio */
- 	int compress_type;
- 
-+	/* Whether this is a write for writeback. */
-+	bool writeback;
-+
- 	/* number of compressed pages in the array */
- 	unsigned long nr_pages;
- 
-@@ -96,7 +99,8 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 				  struct page **compressed_pages,
- 				  unsigned long nr_pages,
- 				  unsigned int write_flags,
--				  struct cgroup_subsys_state *blkcg_css);
-+				  struct cgroup_subsys_state *blkcg_css,
-+				  bool writeback);
- blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 				 int mirror_num, unsigned long bio_flags);
- 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 08414d06b3f4..b6547dbb15a5 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3191,6 +3191,8 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
- void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
- 					  u64 end, int uptodate);
- ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter);
-+ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-+			       struct encoded_iov *encoded);
- 
- extern const struct dentry_operations btrfs_dentry_operations;
- extern const struct iomap_ops btrfs_dio_iomap_ops;
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index b784d63f2a8a..722ae2c880c1 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2007 Oracle.  All rights reserved.
-  */
- 
-+#include <linux/encoded_io.h>
- #include <linux/fs.h>
- #include <linux/pagemap.h>
- #include <linux/time.h>
-@@ -1987,6 +1988,32 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	return written ? written : err;
- }
- 
-+static ssize_t btrfs_encoded_write(struct kiocb *iocb, struct iov_iter *from)
-+{
-+	struct file *file = iocb->ki_filp;
-+	struct inode *inode = file_inode(file);
-+	struct encoded_iov encoded;
-+	ssize_t ret;
-+
-+	ret = copy_encoded_iov_from_iter(&encoded, from);
-+	if (ret)
-+		return ret;
-+
-+	btrfs_inode_lock(inode, 0);
-+	ret = generic_encoded_write_checks(iocb, &encoded);
-+	if (ret || encoded.len == 0)
-+		goto out;
-+
-+	ret = btrfs_write_check(iocb, from, encoded.len);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = btrfs_do_encoded_write(iocb, from, &encoded);
-+out:
-+	btrfs_inode_unlock(inode, 0);
-+	return ret;
-+}
-+
- static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 				    struct iov_iter *from)
- {
-@@ -2003,14 +2030,17 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	if (test_bit(BTRFS_FS_STATE_ERROR, &inode->root->fs_info->fs_state))
- 		return -EROFS;
- 
--	if (!(iocb->ki_flags & IOCB_DIRECT) &&
--	    (iocb->ki_flags & IOCB_NOWAIT))
-+	if ((iocb->ki_flags & IOCB_NOWAIT) &&
-+	    (!(iocb->ki_flags & IOCB_DIRECT) ||
-+	     (iocb->ki_flags & IOCB_ENCODED)))
- 		return -EOPNOTSUPP;
- 
- 	if (sync)
- 		atomic_inc(&inode->sync_writers);
- 
--	if (iocb->ki_flags & IOCB_DIRECT)
-+	if (iocb->ki_flags & IOCB_ENCODED)
-+		num_written = btrfs_encoded_write(iocb, from);
-+	else if (iocb->ki_flags & IOCB_DIRECT)
- 		num_written = btrfs_direct_write(iocb, from);
- 	else
- 		num_written = btrfs_buffered_write(iocb, from);
-@@ -3579,7 +3609,7 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
- 
- static int btrfs_file_open(struct inode *inode, struct file *filp)
- {
--	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
-+	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC | FMODE_ENCODED_IO;
- 	return generic_file_open(inode, filp);
- }
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index cf43f32cdf7c..f35414af1059 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -939,7 +939,7 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
- 				    ins.offset, async_extent->pages,
- 				    async_extent->nr_pages,
- 				    async_chunk->write_flags,
--				    async_chunk->blkcg_css)) {
-+				    async_chunk->blkcg_css, true)) {
- 			struct page *p = async_extent->pages[0];
- 			const u64 start = async_extent->start;
- 			const u64 end = start + async_extent->ram_size - 1;
-@@ -2855,6 +2855,7 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
- 	 * except if the ordered extent was truncated.
- 	 */
- 	update_inode_bytes = test_bit(BTRFS_ORDERED_DIRECT, &oe->flags) ||
-+			     test_bit(BTRFS_ORDERED_ENCODED, &oe->flags) ||
- 			     test_bit(BTRFS_ORDERED_TRUNCATED, &oe->flags);
- 
- 	return insert_reserved_file_extent(trans, BTRFS_I(oe->inode),
-@@ -2889,7 +2890,8 @@ static int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered_extent)
- 
- 	if (!test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags) &&
- 	    !test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags) &&
--	    !test_bit(BTRFS_ORDERED_DIRECT, &ordered_extent->flags))
-+	    !test_bit(BTRFS_ORDERED_DIRECT, &ordered_extent->flags) &&
-+	    !test_bit(BTRFS_ORDERED_ENCODED, &ordered_extent->flags))
- 		clear_bits |= EXTENT_DELALLOC_NEW;
- 
- 	freespace_inode = btrfs_is_free_space_inode(inode);
-@@ -10718,6 +10720,259 @@ ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter)
- 	return ret;
- }
- 
-+ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-+			       struct encoded_iov *encoded)
-+{
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_root *root = BTRFS_I(inode)->root;
-+	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
-+	struct extent_changeset *data_reserved = NULL;
-+	struct extent_state *cached_state = NULL;
-+	int compression;
-+	size_t orig_count;
-+	u64 start, end;
-+	u64 num_bytes, ram_bytes, disk_num_bytes;
-+	unsigned long nr_pages, i;
-+	struct page **pages;
-+	struct btrfs_key ins;
-+	bool extent_reserved = false;
-+	struct extent_map *em;
-+	ssize_t ret;
-+
-+	switch (encoded->compression) {
-+	case ENCODED_IOV_COMPRESSION_BTRFS_ZLIB:
-+		compression = BTRFS_COMPRESS_ZLIB;
-+		break;
-+	case ENCODED_IOV_COMPRESSION_BTRFS_ZSTD:
-+		compression = BTRFS_COMPRESS_ZSTD;
-+		break;
-+	case ENCODED_IOV_COMPRESSION_BTRFS_LZO_4K:
-+	case ENCODED_IOV_COMPRESSION_BTRFS_LZO_8K:
-+	case ENCODED_IOV_COMPRESSION_BTRFS_LZO_16K:
-+	case ENCODED_IOV_COMPRESSION_BTRFS_LZO_32K:
-+	case ENCODED_IOV_COMPRESSION_BTRFS_LZO_64K:
-+		/* The page size must match for LZO. */
-+		if (encoded->compression -
-+		    ENCODED_IOV_COMPRESSION_BTRFS_LZO_4K + 12 != PAGE_SHIFT)
-+			return -EINVAL;
-+		compression = BTRFS_COMPRESS_LZO;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	if (encoded->encryption != ENCODED_IOV_ENCRYPTION_NONE)
-+		return -EINVAL;
-+
-+	orig_count = iov_iter_count(from);
-+
-+	/* The extent size must be sane. */
-+	if (encoded->unencoded_len > BTRFS_MAX_UNCOMPRESSED ||
-+	    orig_count > BTRFS_MAX_COMPRESSED || orig_count == 0)
-+		return -EINVAL;
-+
-+	/*
-+	 * The compressed data must be smaller than the decompressed data.
-+	 *
-+	 * It's of course possible for data to compress to larger or the same
-+	 * size, but the buffered I/O path falls back to no compression for such
-+	 * data, and we don't want to break any assumptions by creating these
-+	 * extents.
-+	 *
-+	 * Note that this is less strict than the current check we have that the
-+	 * compressed data must be at least one sector smaller than the
-+	 * decompressed data. We only want to enforce the weaker requirement
-+	 * from old kernels that it is at least one byte smaller.
-+	 */
-+	if (orig_count >= encoded->unencoded_len)
-+		return -EINVAL;
-+
-+	/* The extent must start on a sector boundary. */
-+	start = iocb->ki_pos;
-+	if (!IS_ALIGNED(start, fs_info->sectorsize))
-+		return -EINVAL;
-+
-+	/*
-+	 * The extent must end on a sector boundary. However, we allow a write
-+	 * which ends at or extends i_size to have an unaligned length; we round
-+	 * up the extent size and set i_size to the unaligned end.
-+	 */
-+	if (start + encoded->len < inode->i_size &&
-+	    !IS_ALIGNED(start + encoded->len, fs_info->sectorsize))
-+		return -EINVAL;
-+
-+	/* Finally, the offset in the unencoded data must be sector-aligned. */
-+	if (!IS_ALIGNED(encoded->unencoded_offset, fs_info->sectorsize))
-+		return -EINVAL;
-+
-+	num_bytes = ALIGN(encoded->len, fs_info->sectorsize);
-+	ram_bytes = ALIGN(encoded->unencoded_len, fs_info->sectorsize);
-+	end = start + num_bytes - 1;
-+
-+	/*
-+	 * If the extent cannot be inline, the compressed data on disk must be
-+	 * sector-aligned. For convenience, we extend it with zeroes if it
-+	 * isn't.
-+	 */
-+	disk_num_bytes = ALIGN(orig_count, fs_info->sectorsize);
-+	nr_pages = DIV_ROUND_UP(disk_num_bytes, PAGE_SIZE);
-+	pages = kvcalloc(nr_pages, sizeof(struct page *), GFP_KERNEL_ACCOUNT);
-+	if (!pages)
-+		return -ENOMEM;
-+	for (i = 0; i < nr_pages; i++) {
-+		size_t bytes = min_t(size_t, PAGE_SIZE, iov_iter_count(from));
-+		char *kaddr;
-+
-+		pages[i] = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_HIGHMEM);
-+		if (!pages[i]) {
-+			ret = -ENOMEM;
-+			goto out_pages;
-+		}
-+		kaddr = kmap(pages[i]);
-+		if (copy_from_iter(kaddr, bytes, from) != bytes) {
-+			kunmap(pages[i]);
-+			ret = -EFAULT;
-+			goto out_pages;
-+		}
-+		if (bytes < PAGE_SIZE)
-+			memset(kaddr + bytes, 0, PAGE_SIZE - bytes);
-+		kunmap(pages[i]);
-+	}
-+
-+	for (;;) {
-+		struct btrfs_ordered_extent *ordered;
-+
-+		ret = btrfs_wait_ordered_range(inode, start, num_bytes);
-+		if (ret)
-+			goto out_pages;
-+		ret = invalidate_inode_pages2_range(inode->i_mapping,
-+						    start >> PAGE_SHIFT,
-+						    end >> PAGE_SHIFT);
-+		if (ret)
-+			goto out_pages;
-+		lock_extent_bits(io_tree, start, end, &cached_state);
-+		ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), start,
-+						     num_bytes);
-+		if (!ordered &&
-+		    !filemap_range_has_page(inode->i_mapping, start, end))
-+			break;
-+		if (ordered)
-+			btrfs_put_ordered_extent(ordered);
-+		unlock_extent_cached(io_tree, start, end, &cached_state);
-+		cond_resched();
-+	}
-+
-+	/*
-+	 * We don't use the higher-level delalloc space functions because our
-+	 * num_bytes and disk_num_bytes are different.
-+	 */
-+	ret = btrfs_alloc_data_chunk_ondemand(BTRFS_I(inode), disk_num_bytes);
-+	if (ret)
-+		goto out_unlock;
-+	ret = btrfs_qgroup_reserve_data(BTRFS_I(inode), &data_reserved, start,
-+					num_bytes);
-+	if (ret)
-+		goto out_free_data_space;
-+	ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode), num_bytes,
-+					      disk_num_bytes);
-+	if (ret)
-+		goto out_qgroup_free_data;
-+
-+	/* Try an inline extent first. */
-+	if (start == 0 && encoded->unencoded_len == encoded->len &&
-+	    encoded->unencoded_offset == 0) {
-+		ret = cow_file_range_inline(BTRFS_I(inode), encoded->len,
-+					    orig_count, compression, pages,
-+					    true);
-+		if (ret <= 0) {
-+			if (ret == 0)
-+				ret = orig_count;
-+			goto out_delalloc_release;
-+		}
-+	}
-+
-+	ret = btrfs_reserve_extent(root, disk_num_bytes, disk_num_bytes,
-+				   disk_num_bytes, 0, 0, &ins, 1, 1);
-+	if (ret)
-+		goto out_delalloc_release;
-+	extent_reserved = true;
-+
-+	em = create_io_em(BTRFS_I(inode), start, num_bytes,
-+			  start - encoded->unencoded_offset, ins.objectid,
-+			  ins.offset, ins.offset, ram_bytes, compression,
-+			  BTRFS_ORDERED_COMPRESSED);
-+	if (IS_ERR(em)) {
-+		ret = PTR_ERR(em);
-+		goto out_free_reserved;
-+	}
-+	free_extent_map(em);
-+
-+	ret = btrfs_add_ordered_extent(BTRFS_I(inode), start, num_bytes,
-+				       ram_bytes, ins.objectid, ins.offset,
-+				       encoded->unencoded_offset,
-+				       (1 << BTRFS_ORDERED_ENCODED) |
-+				       (1 << BTRFS_ORDERED_COMPRESSED),
-+				       compression);
-+	if (ret) {
-+		btrfs_drop_extent_cache(BTRFS_I(inode), start, end, 0);
-+		goto out_free_reserved;
-+	}
-+	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
-+
-+	if (start + encoded->len > inode->i_size)
-+		i_size_write(inode, start + encoded->len);
-+
-+	unlock_extent_cached(io_tree, start, end, &cached_state);
-+
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), num_bytes);
-+
-+	if (btrfs_submit_compressed_write(BTRFS_I(inode), start, num_bytes,
-+					  ins.objectid, ins.offset, pages,
-+					  nr_pages, 0, NULL, false)) {
-+		struct page *page = pages[0];
-+
-+		page->mapping = inode->i_mapping;
-+		btrfs_writepage_endio_finish_ordered(page, start, end, 0);
-+		page->mapping = NULL;
-+		ret = -EIO;
-+		goto out_pages;
-+	}
-+	ret = orig_count;
-+	goto out;
-+
-+out_free_reserved:
-+	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
-+	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
-+out_delalloc_release:
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), num_bytes);
-+	btrfs_delalloc_release_metadata(BTRFS_I(inode), disk_num_bytes,
-+					ret < 0);
-+out_qgroup_free_data:
-+	if (ret < 0) {
-+		btrfs_qgroup_free_data(BTRFS_I(inode), data_reserved, start,
-+				       num_bytes);
-+	}
-+out_free_data_space:
-+	/*
-+	 * If btrfs_reserve_extent() succeeded, then we already decremented
-+	 * bytes_may_use.
-+	 */
-+	if (!extent_reserved)
-+		btrfs_free_reserved_data_space_noquota(fs_info, disk_num_bytes);
-+out_unlock:
-+	unlock_extent_cached(io_tree, start, end, &cached_state);
-+out_pages:
-+	for (i = 0; i < nr_pages; i++) {
-+		if (pages[i])
-+			__free_page(pages[i]);
-+	}
-+	kvfree(pages);
-+out:
-+	if (ret >= 0)
-+		iocb->ki_pos += encoded->len;
-+	return ret;
-+}
-+
- #ifdef CONFIG_SWAP
- /*
-  * Add an entry indicating a block group or device which is pinned by a
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 4d41b604196b..81c22abdaa25 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -464,9 +464,15 @@ void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
- 	spin_lock(&btrfs_inode->lock);
- 	btrfs_mod_outstanding_extents(btrfs_inode, -1);
- 	spin_unlock(&btrfs_inode->lock);
--	if (root != fs_info->tree_root)
--		btrfs_delalloc_release_metadata(btrfs_inode, entry->num_bytes,
--						false);
-+	if (root != fs_info->tree_root) {
-+		u64 release;
-+
-+		if (test_bit(BTRFS_ORDERED_ENCODED, &entry->flags))
-+			release = entry->disk_num_bytes;
-+		else
-+			release = entry->num_bytes;
-+		btrfs_delalloc_release_metadata(btrfs_inode, release, false);
-+	}
- 
- 	percpu_counter_add_batch(&fs_info->ordered_bytes, -entry->num_bytes,
- 				 fs_info->delalloc_batch);
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index fe1c50da373c..abed13023094 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -74,6 +74,8 @@ enum {
- 	BTRFS_ORDERED_LOGGED_CSUM,
- 	/* We wait for this extent to complete in the current transaction */
- 	BTRFS_ORDERED_PENDING,
-+	/* RWF_ENCODED I/O */
-+	BTRFS_ORDERED_ENCODED,
- };
- 
- /* BTRFS_ORDERED_* flags that specify the type of the extent. */
-@@ -81,7 +83,8 @@ enum {
- 				  (1UL << BTRFS_ORDERED_NOCOW) |	\
- 				  (1UL << BTRFS_ORDERED_PREALLOC) |	\
- 				  (1UL << BTRFS_ORDERED_COMPRESSED) |	\
--				  (1UL << BTRFS_ORDERED_DIRECT))
-+				  (1UL << BTRFS_ORDERED_DIRECT) |	\
-+				  (1UL << BTRFS_ORDERED_ENCODED))
- 
- struct btrfs_ordered_extent {
- 	/* logical offset in the file */
--- 
-2.31.1
+User visible improvements:
 
+- readahead for send, improving run time of full send by 10% and for
+  incremental by 25%
+
+- make reflinks respect O_SYNC, O_DSYNC and S_SYNC flags
+
+- export supported sectorsize values in sysfs (currently only page size,
+  more once full subpage support lands)
+
+- more graceful errors and warnings on 32bit systems when logical
+  addresses for metadata reach the limit posed by unsigned long in
+  page::index
+  - error: fail mount if there's a metadata block beyond the limit
+  - error: new metadata block would be at unreachable address
+  - warn when 5/8th of the limit is reached, for 4K page systems it's
+    10T, for 64K page it's 160T
+
+- zoned mode
+  - relocated zones get reset at the end instead of discard
+  - automatic background reclaim of zones that have 75%+ of unusable
+    space, the threshold is tunable in sysfs
+
+Fixes:
+
+- fsync and tree mod log fixes
+
+- fix inefficient preemptive reclaim calculations
+
+- fix exhaustion of the system chunk array due to concurrent allocations
+
+- fix fallback to no compression when racing with remount
+
+- preemptive fix for dm-crypt on zoned device that does not properly
+  advertise zoned support
+
+Core changes:
+
+- add inode lock to synchronize mmap and other block updates (eg.
+  deduplication, fallocate, fsync)
+
+- kmap conversions to new kmap_local API
+
+- subpage support (continued)
+  - new helpers for page state/extent buffer tracking
+  - metadata changes now support read and write
+
+- error handling through out relocation call paths
+
+- many other cleanups and code simplifications
+
+----------------------------------------------------------------
+The following changes since commit bf05bf16c76bb44ab5156223e1e58e26dfe30a88:
+
+  Linux 5.12-rc8 (2021-04-18 14:45:32 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-tag
+
+for you to fetch changes up to 18bb8bbf13c1839b43c9e09e76d397b753989af2:
+
+  btrfs: zoned: automatically reclaim zones (2021-04-20 20:46:31 +0200)
+
+----------------------------------------------------------------
+Anand Jain (3):
+      btrfs: unexport btrfs_extent_readonly() and make it static
+      btrfs: change return type to bool in btrfs_extent_readonly
+      btrfs: scrub: drop a few function declarations
+
+Arnd Bergmann (1):
+      btrfs: zoned: bail out in btrfs_alloc_chunk for bad input
+
+BingJing Chang (1):
+      btrfs: fix a potential hole punching failure
+
+Filipe Manana (21):
+      btrfs: add btree read ahead for full send operations
+      btrfs: add btree read ahead for incremental send operations
+      btrfs: fix race between memory mapped writes and fsync
+      btrfs: fix race between marking inode needs to be logged and log syncing
+      btrfs: remove stale comment and logic from btrfs_inode_in_log()
+      btrfs: move the tree mod log code into its own file
+      btrfs: use booleans where appropriate for the tree mod log functions
+      btrfs: use a bit to track the existence of tree mod log users
+      btrfs: use the new bit BTRFS_FS_TREE_MOD_LOG_USERS at btrfs_free_tree_block()
+      btrfs: remove unnecessary leaf check at btrfs_tree_mod_log_free_eb()
+      btrfs: add and use helper to get lowest sequence number for the tree mod log
+      btrfs: update debug message when checking seq number of a delayed ref
+      btrfs: update outdated comment at btrfs_orphan_cleanup()
+      btrfs: update outdated comment at btrfs_replace_file_extents()
+      btrfs: make reflinks respect O_SYNC O_DSYNC and S_SYNC flags
+      btrfs: fix exhaustion of the system chunk array due to concurrent allocations
+      btrfs: improve btree readahead for full send operations
+      btrfs: fix race between transaction aborts and fsyncs leading to use-after-free
+      btrfs: fix metadata extent leak after failure to create subvolume
+      btrfs: fix race when picking most recent mod log operation for an old root
+      btrfs: zoned: fix unpaired block group unfreeze during device replace
+
+Goldwyn Rodrigues (2):
+      btrfs: remove force argument from run_delalloc_nocow()
+      btrfs: remove mirror argument from btrfs_csum_verify_data()
+
+Ira Weiny (4):
+      btrfs: convert kmap to kmap_local_page, simple cases
+      btrfs: raid56: convert kmaps to kmap_local_page
+      btrfs: integrity-checker: use kmap_local_page in __btrfsic_submit_bio
+      btrfs: integrity-checker: convert block context kmap's to kmap_local_page
+
+Jiapeng Chong (1):
+      btrfs: assign proper values to a bool variable in dev_extent_hole_check_zoned
+
+Johannes Thumshirn (5):
+      btrfs: remove duplicated in_range() macro
+      btrfs: zoned: fail mount if the device does not support zone append
+      btrfs: zoned: reset zones of relocated block groups
+      btrfs: rename delete_unused_bgs_mutex to reclaim_bgs_lock
+      btrfs: zoned: automatically reclaim zones
+
+Josef Bacik (44):
+      btrfs: add a i_mmap_lock to our inode
+      btrfs: use btrfs_inode_lock/btrfs_inode_unlock inode lock helpers
+      btrfs: exclude mmaps while doing remap
+      btrfs: exclude mmap from happening during all fallocate operations
+      btrfs: use percpu_read_positive instead of sum_positive for need_preempt
+      btrfs: convert some BUG_ON()'s to ASSERT()'s in do_relocation
+      btrfs: convert BUG_ON()'s in relocate_tree_block
+      btrfs: handle errors from select_reloc_root()
+      btrfs: convert BUG_ON()'s in select_reloc_root() to proper errors
+      btrfs: check record_root_in_trans related failures in select_reloc_root
+      btrfs: do proper error handling in record_reloc_root_in_trans
+      btrfs: handle btrfs_record_root_in_trans failure in btrfs_rename_exchange
+      btrfs: handle btrfs_record_root_in_trans failure in btrfs_rename
+      btrfs: handle btrfs_record_root_in_trans failure in btrfs_delete_subvolume
+      btrfs: handle btrfs_record_root_in_trans failure in btrfs_recover_log_trees
+      btrfs: handle btrfs_record_root_in_trans failure in create_subvol
+      btrfs: handle btrfs_record_root_in_trans failure in relocate_tree_block
+      btrfs: handle btrfs_record_root_in_trans failure in start_transaction
+      btrfs: handle record_root_in_trans failure in qgroup_account_snapshot
+      btrfs: handle record_root_in_trans failure in btrfs_record_root_in_trans
+      btrfs: handle record_root_in_trans failure in create_pending_snapshot
+      btrfs: return an error from btrfs_record_root_in_trans
+      btrfs: have proper error handling in btrfs_init_reloc_root
+      btrfs: do proper error handling in create_reloc_root
+      btrfs: validate root::reloc_root after recording root in trans
+      btrfs: handle btrfs_update_reloc_root failure in commit_fs_roots
+      btrfs: change insert_dirty_subvol to return errors
+      btrfs: handle btrfs_update_reloc_root failure in insert_dirty_subvol
+      btrfs: handle btrfs_update_reloc_root failure in prepare_to_merge
+      btrfs: do proper error handling in btrfs_update_reloc_root
+      btrfs: convert logic BUG_ON()'s in replace_path to ASSERT()'s
+      btrfs: handle btrfs_cow_block errors in replace_path
+      btrfs: handle btrfs_search_slot failure in replace_path
+      btrfs: handle errors in reference count manipulation in replace_path
+      btrfs: handle extent reference errors in do_relocation
+      btrfs: tree-checker: check for BTRFS_BLOCK_FLAG_FULL_BACKREF being set improperly
+      btrfs: remove the extent item sanity checks in relocate_block_group
+      btrfs: do proper error handling in create_reloc_inode
+      btrfs: handle __add_reloc_root failures in btrfs_recover_relocation
+      btrfs: do not panic in __add_reloc_root
+      btrfs: cleanup error handling in prepare_to_merge
+      btrfs: handle extent corruption with select_one_root properly
+      btrfs: do proper error handling in merge_reloc_roots
+      btrfs: check return value of btrfs_commit_transaction in relocation
+
+Matthew Wilcox (Oracle) (1):
+      btrfs: add and use readahead_batch_length
+
+Naohiro Aota (1):
+      btrfs: zoned: move log tree node allocation out of log_root_tree->log_mutex
+
+Nikolay Borisov (8):
+      btrfs: make btrfs_replace_file_extents take btrfs_inode
+      btrfs: make find_desired_extent take btrfs_inode
+      btrfs: replace offset_in_entry with in_range
+      btrfs: replace open coded while loop with proper construct
+      btrfs: simplify commit logic in try_flush_qgroup
+      btrfs: remove btrfs_inode parameter from btrfs_delayed_inode_reserve_metadata
+      btrfs: simplify code flow in btrfs_delayed_inode_reserve_metadata
+      btrfs: don't opencode extent_changeset_free
+
+Qu Wenruo (19):
+      btrfs: fix comment for btrfs ordered extent flag bits
+      btrfs: add sysfs interface for supported sectorsize
+      btrfs: use min() to replace open-code in btrfs_invalidatepage()
+      btrfs: remove unnecessary variable shadowing in btrfs_invalidatepage()
+      btrfs: subpage: introduce helpers for dirty status
+      btrfs: subpage: introduce helpers for writeback status
+      btrfs: subpage: do more sanity checks on metadata page dirtying
+      btrfs: subpage: support metadata checksum calculation at write time
+      btrfs: make alloc_extent_buffer() check subpage dirty bitmap
+      btrfs: support page uptodate assertions in subpage mode
+      btrfs: make set/clear_extent_buffer_dirty() subpage compatible
+      btrfs: make set_btree_ioerr accept extent buffer and be subpage compatible
+      btrfs: subpage: add overview comments
+      btrfs: introduce end_bio_subpage_eb_writepage() function
+      btrfs: introduce write_one_subpage_eb() function
+      btrfs: make lock_extent_buffer_for_io() to be subpage compatible
+      btrfs: introduce submit_eb_subpage() to submit a subpage metadata page
+      btrfs: handle remount to no compress during compression
+      btrfs: more graceful errors/warnings on 32bit systems when reaching limits
+
+Wan Jiabing (1):
+      btrfs: move forward declarations to the beginning of extent_io.h
+
+ fs/btrfs/Makefile            |   2 +-
+ fs/btrfs/backref.c           |  33 +-
+ fs/btrfs/block-group.c       | 207 ++++++++-
+ fs/btrfs/block-group.h       |   3 +
+ fs/btrfs/btrfs_inode.h       |  33 +-
+ fs/btrfs/check-integrity.c   |  14 +-
+ fs/btrfs/compression.c       |  15 +-
+ fs/btrfs/ctree.c             | 984 +++----------------------------------------
+ fs/btrfs/ctree.h             |  80 ++--
+ fs/btrfs/delayed-inode.c     |  35 +-
+ fs/btrfs/delayed-ref.c       |  31 +-
+ fs/btrfs/disk-io.c           | 162 +++++--
+ fs/btrfs/extent-tree.c       |  21 +-
+ fs/btrfs/extent_io.c         | 439 ++++++++++++++++---
+ fs/btrfs/extent_io.h         |   4 +-
+ fs/btrfs/file-item.c         |   1 +
+ fs/btrfs/file.c              | 118 +++---
+ fs/btrfs/free-space-cache.c  |   9 +-
+ fs/btrfs/inode.c             | 125 +++---
+ fs/btrfs/ioctl.c             |  51 ++-
+ fs/btrfs/lzo.c               |   9 +-
+ fs/btrfs/ordered-data.c      |  19 +-
+ fs/btrfs/ordered-data.h      |   4 +-
+ fs/btrfs/qgroup.c            |  47 +--
+ fs/btrfs/raid56.c            |  70 +--
+ fs/btrfs/reflink.c           |  65 ++-
+ fs/btrfs/relocation.c        | 448 +++++++++++++++-----
+ fs/btrfs/scrub.c             |  13 +-
+ fs/btrfs/send.c              |  43 +-
+ fs/btrfs/space-info.c        |   4 +-
+ fs/btrfs/subpage.c           | 140 ++++++
+ fs/btrfs/subpage.h           |   7 +
+ fs/btrfs/super.c             |  26 ++
+ fs/btrfs/sysfs.c             |  50 +++
+ fs/btrfs/transaction.c       |  59 ++-
+ fs/btrfs/transaction.h       |   9 +-
+ fs/btrfs/tree-checker.c      |   5 +
+ fs/btrfs/tree-log.c          |  21 +-
+ fs/btrfs/tree-mod-log.c      | 929 ++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/tree-mod-log.h      |  53 +++
+ fs/btrfs/volumes.c           | 123 ++++--
+ fs/btrfs/volumes.h           |   1 +
+ fs/btrfs/zoned.c             |   7 +
+ fs/btrfs/zoned.h             |   6 +
+ include/linux/pagemap.h      |   9 +
+ include/trace/events/btrfs.h |  12 +
+ 46 files changed, 2964 insertions(+), 1582 deletions(-)
+ create mode 100644 fs/btrfs/tree-mod-log.c
+ create mode 100644 fs/btrfs/tree-mod-log.h
