@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DA936BC3D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 01:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1838A36BC46
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 01:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237641AbhDZXmd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Apr 2021 19:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
+        id S237762AbhDZXnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Apr 2021 19:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237368AbhDZXmb (ORCPT
+        with ESMTP id S237660AbhDZXnD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:42:31 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C577BC061574;
-        Mon, 26 Apr 2021 16:41:49 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id p12so41088102pgj.10;
-        Mon, 26 Apr 2021 16:41:49 -0700 (PDT)
+        Mon, 26 Apr 2021 19:43:03 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8851BC061760;
+        Mon, 26 Apr 2021 16:42:21 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id y62so7455610pfg.4;
+        Mon, 26 Apr 2021 16:42:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zdyCdL1O6MHAZHMO3v3t2Hk2heeS+Nt7HrJ8IUq+ohk=;
-        b=qG3AVIVOlh+jJAOJ/ofL/jF064Kdo+t1ZiyY6bwAW3+1Lc7RHlrWp+TJUJsEiP/YMb
-         sX6Yq29euQNHsthnAyeGOC4Rorfs1B821jugW16rtBwkZi2FOVHInyRwY9p10HrNRuec
-         x8tIHvo57UGYouJ31Fymm9TgAEbKcoXmlPxTPMxTgtbXiijTTQe5QromLPe4BmYVVd7g
-         eNMMftuRueq/3z/ocASgs2oHugUz3eutvdih9+Ao2/IyBSi8nNY9ublhgFhzLFLH7r8h
-         buUS4nltPkoh7Op69X12o4ghAJhj/uv5d0vh4hwRNkzg8qA9O6o4v4D0I2jmkBAN/nV1
-         CzAw==
+        bh=VsQsmCAgJgJxoXWPONlyxJ9BGgILIRFdOhQAUEyo7tY=;
+        b=Xzd+Bu439mdjn8yl2z798jxgjLJIueP7r/oNdhZWpnH7fkdXHfiqEWPC3ud2fhIG3N
+         m0pkmEQiW1/MvVuNoZ/x++oXDuSSksOQO7p/hcRVEOJW2jOvXylXl0VkVX9ER5HyDNH5
+         vZ2UZS/griXQEZZ07FhXubjld5Y2CYmr7E2LEraJAYw/aAHTe2fbbANUnQhbNKnyZAzR
+         MSlYgq7wSLauROJmYGgt3dEQXoKqbQfr/CnqFwNw/SFx4JAOyIX/tPl/Z90pDJkMbKwI
+         1OP+FAnrRZR47uMu3B1J1CqCeL/1He7tP4S7cQOmus4c4Lvf/PlT31RhD6MHy/C4WpW7
+         e6pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zdyCdL1O6MHAZHMO3v3t2Hk2heeS+Nt7HrJ8IUq+ohk=;
-        b=tgCgBW22qj9D+X8dCPdpHNZulx2Pbei+1uqBLIqDcSO4A7YcKEBiRJ8kseVYv14aRL
-         m2/AHXUp3ITXDK4dhBKu7uSWhimEUt1N5Fzz9/zQaBl17Xn+lBp9wO2DPV8Ync7qltCL
-         xCtXR5VlyUekr0/aIM6lV+dfs7ri7UG3wTZU9brPL3UMMUpbqZsln/I/O54BYnG2smoC
-         1vi/gulL5DFVYG6JbAziSHWwJHG8HhlKFoiIdIv3mLzTozS3vAow2LAB/PHiUjo721Lp
-         SD1FqZZ/aPu+p6OShItYnxL4lyYPOL7E7UBckMGG0fNL/UqsdoUh9NY3hfMhe2U5lQsn
-         MRaw==
-X-Gm-Message-State: AOAM5325UYxCIduP2Mwg/nBC7KFEVEVWfQJp23zbYKgigsxFW62dbqj/
-        Uj3ZSwu4EdbnMKB8FCBWtPE=
-X-Google-Smtp-Source: ABdhPJwNMzveK5M3WOq6bGS5Dy35S6A+cXn6A21maNSg0rPzd/8N2wfhp/TFPPiKuoKq/hEF7DwaXQ==
-X-Received: by 2002:a05:6a00:1a4a:b029:261:d9ed:fd80 with SMTP id h10-20020a056a001a4ab0290261d9edfd80mr20213974pfv.20.1619480509313;
-        Mon, 26 Apr 2021 16:41:49 -0700 (PDT)
+        bh=VsQsmCAgJgJxoXWPONlyxJ9BGgILIRFdOhQAUEyo7tY=;
+        b=gZm5HGft/G+HCfW4cuJ7NusCFG9tq/rFe+Jj3uGxCAF8M6q6OreWtx3qZBhbucJ3c2
+         55njVbqP/qO2cKs1Byow8K9Jzp5grVsuAYi1JYwnKuhxoB29+Laii1k+CmlsvRJTb5Xf
+         WpuZ6vALh5/ErTh6OgI6VtMhevfTjC8fdEzoSndFssYU26Cp9sPOGqlz/1Sruc3bHHJQ
+         ETjwX0096HNbm7YHq3o+3MPIZXQVy4k5VRIk6TWGaY6dMvc7bpnVnN+NmTpKFnViS7sn
+         Jcolm6b0WIpFtCXD6+ClM4apIU8msJRZo6eKbhs06/kJ9gf1nipsBYd5EbI1u1RMGrxU
+         x2/A==
+X-Gm-Message-State: AOAM532kbL9RaLzTMmpBwNr93fLtMG5Asp8ZVl0KnXW4gb5zs2IB8iQp
+        nfidnoXt03ar/2JaZ8hBFo0=
+X-Google-Smtp-Source: ABdhPJygKGT7O/9kbsuo/ZEUwwEeZWZQv28qIldIprW6wlA3FY+XBIy2K9MxMTsdBqcdBIFAHcpJZQ==
+X-Received: by 2002:a65:43c9:: with SMTP id n9mr19035367pgp.19.1619480541011;
+        Mon, 26 Apr 2021 16:42:21 -0700 (PDT)
 Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id m7sm640828pfc.218.2021.04.26.16.41.47
+        by smtp.gmail.com with ESMTPSA id m7sm640828pfc.218.2021.04.26.16.42.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 16:41:48 -0700 (PDT)
+        Mon, 26 Apr 2021 16:42:20 -0700 (PDT)
 From:   Nick Terrell <nickrterrell@gmail.com>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
@@ -64,9 +64,9 @@ Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Oleksandr Natalenko <oleksandr@natalenko.name>,
         Felix Handte <felixh@fb.com>,
         Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH v10 2/4] lib: zstd: Add decompress_sources.h for decompress_unzstd
-Date:   Mon, 26 Apr 2021 16:46:19 -0700
-Message-Id: <20210426234621.870684-3-nickrterrell@gmail.com>
+Subject: [PATCH v10 4/4] MAINTAINERS: Add maintainer entry for zstd
+Date:   Mon, 26 Apr 2021 16:46:21 -0700
+Message-Id: <20210426234621.870684-5-nickrterrell@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210426234621.870684-1-nickrterrell@gmail.com>
 References: <20210426234621.870684-1-nickrterrell@gmail.com>
@@ -78,66 +78,38 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Nick Terrell <terrelln@fb.com>
 
-Adds decompress_sources.h which includes every .c file necessary for
-zstd decompression. This is used in decompress_unzstd.c so the internal
-structure of the library isn't exposed.
-
-This allows us to upgrade the zstd library version without modifying any
-callers. Instead we just need to update decompress_sources.h.
+Adds a maintainer entry for zstd listing myself as the maintainer for
+all zstd code, pointing to the upstream issues tracker for bugs, and
+listing my linux repo as the tree.
 
 Signed-off-by: Nick Terrell <terrelln@fb.com>
 ---
- lib/decompress_unzstd.c       |  6 +-----
- lib/zstd/decompress_sources.h | 23 +++++++++++++++++++++++
- 2 files changed, 24 insertions(+), 5 deletions(-)
- create mode 100644 lib/zstd/decompress_sources.h
+ MAINTAINERS | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/lib/decompress_unzstd.c b/lib/decompress_unzstd.c
-index c88aad49e996..6e5ecfba0a8d 100644
---- a/lib/decompress_unzstd.c
-+++ b/lib/decompress_unzstd.c
-@@ -68,11 +68,7 @@
- #ifdef STATIC
- # define UNZSTD_PREBOOT
- # include "xxhash.c"
--# include "zstd/entropy_common.c"
--# include "zstd/fse_decompress.c"
--# include "zstd/huf_decompress.c"
--# include "zstd/zstd_common.c"
--# include "zstd/decompress.c"
-+# include "zstd/decompress_sources.h"
- #endif
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fb2a3633b719..eb67c13ec36a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19890,6 +19890,18 @@ F:	Documentation/vm/zsmalloc.rst
+ F:	include/linux/zsmalloc.h
+ F:	mm/zsmalloc.c
  
- #include <linux/decompress/mm.h>
-diff --git a/lib/zstd/decompress_sources.h b/lib/zstd/decompress_sources.h
-new file mode 100644
-index 000000000000..d82cea4316f5
---- /dev/null
-+++ b/lib/zstd/decompress_sources.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) Facebook, Inc.
-+ * All rights reserved.
-+ *
-+ * This source code is licensed under both the BSD-style license (found in the
-+ * LICENSE file in the root directory of this source tree) and the GPLv2 (found
-+ * in the COPYING file in the root directory of this source tree).
-+ * You may select, at your option, one of the above-listed licenses.
-+ */
++ZSTD
++M:	Nick Terrell <terrelln@fb.com>
++S:	Maintained
++B:	https://github.com/facebook/zstd/issues
++T:	git git://github.com/terrelln/linux.git
++F:	include/linux/zstd*
++F:	lib/zstd/
++F:	lib/decompress_unzstd.c
++F:	crypto/zstd.c
++N:	zstd
++K:	zstd
 +
-+/*
-+ * This file includes every .c file needed for decompression.
-+ * It is used by lib/decompress_unzstd.c to include the decompression
-+ * source into the translation-unit, so it can be used for kernel
-+ * decompression.
-+ */
-+
-+#include "entropy_common.c"
-+#include "fse_decompress.c"
-+#include "huf_decompress.c"
-+#include "zstd_common.c"
-+#include "decompress.c"
+ ZSWAP COMPRESSED SWAP CACHING
+ M:	Seth Jennings <sjenning@redhat.com>
+ M:	Dan Streetman <ddstreet@ieee.org>
 -- 
 2.31.1
 
