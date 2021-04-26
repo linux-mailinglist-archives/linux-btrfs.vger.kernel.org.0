@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078E436AC35
+	by mail.lfdr.de (Postfix) with ESMTP id 530D636AC36
 	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Apr 2021 08:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhDZG3Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Apr 2021 02:29:16 -0400
+        id S232039AbhDZG3R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Apr 2021 02:29:17 -0400
 Received: from esa3.hgst.iphmx.com ([216.71.153.141]:41951 "EHLO
         esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232001AbhDZG3M (ORCPT
+        with ESMTP id S232017AbhDZG3N (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Apr 2021 02:29:12 -0400
+        Mon, 26 Apr 2021 02:29:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1619418510; x=1650954510;
+  t=1619418511; x=1650954511;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=OtamS0SME954htnKEKlGeGhi8XVokKaxWAHG+a7apzU=;
-  b=R2I5g95E9/9unmk+dRhNmzxl4WWEoCT5vNrZxoqZ5gdtkFVog4Ddrh5A
-   oF/yZq+fqqKasxw69Mwoske+9CswIVX/01CFTjazQy3L66s0AtAcYrMy0
-   FTY0Jlj+EWYBL+eLGkr26+Vl+OlzVvwo/UMp3vf8HJvHuxh2j5BeTvRPe
-   X5wgT4t25u+hbsSkeGy56Yk8ZKzw5UrSmzOmteoxhoLsdZB05ijbpbc95
-   qFKPmj2jlTrgOdbk5A9Qf/9vjAxcUaVVrDHVrUu0RMF3GjJgm2gvTHJ2S
-   6DVvAQcPTf+qW02YjjMosrnh/fsX/eQIzmBaG9tDjYF7PzHkcmqA0yePV
-   Q==;
-IronPort-SDR: i9gajImBpTiLbKBlIr7IlZLeCrXU7G0nFbzwtWP3Sxsj6dj1nsQi5AyKX7sC8i2YE6+RDTcJ36
- RETPbT0k/Yk9BKKYLlB/EEZaoBYlXrYfS4i/Je27nWrM9YC7dKwDtnznlkjuq8MNygFPiTJ6nk
- 1kxi6CeuUvPfkiGthky2ZEl2A89rI0fnq5+3TQK4WvWBR6PqNlOF5Hb83q4xwM6drAkUQqIRDG
- zBD8lEDw8o2EmFk42F8uzDTo7m0TXfePap2bi6Yrbrt/CANt7ytVVoMqWErWkG9GZj099gzXqK
- SAA=
+  bh=FkTWq40rmGdCVEdnixL5+cbs5NMtmsI4916/9B1ciTc=;
+  b=ADPrGYzM4fVZW60AnzDovmE/spdF++wP/iGpk5xyYea8ERPO0mGZVfdm
+   fW/8S74fAcnYjkTrjRpSOJ/zMH4FAVPmcWBdkA0PzP0bbPa/OKNRMhw08
+   mxbTju/fONUvWvJZk9YQ/CHXGks9t63+PJ+OtJGgtWt1Wpsg4Nmr1c2Hn
+   KgPz+cguyZm/ifqckHBmUyetC93/ao/ylk8Y3uZtDjNVkfgH/VqxFSVwR
+   jx/HhzLFoeVfnnvJ8KKryrXAKJzlJ7+8FT0EKAN+JwIWTbv4xiFtj0dkR
+   EjgUX71F+qi5/dmavXEV0RXbZmbFwFZa2aEXkm3yKoqe8f/qnDoqrcAxL
+   w==;
+IronPort-SDR: SEhP6ZWH4ikwiFT/C+gMIWHruYM0p5AYiBrscMApKPOPHFt2gjMTJyhwXkz6zoUg3h4r6Rs+2E
+ 5X/8Rl5D7UwSGAmzHYYBOYDLwdfZMoilMV/jYzgC701LvAKTn4IF4bI/KFaRP1OqbHMzPImCyJ
+ Disd9ZfhkaHKcd9Ml0xrZFrqvhOTUfHsSCTQbvB6E9BHxhGOyGkFtPR1K9pQ2hoewhswGDV4X9
+ 42Xia7u4zDO+m7mfel66a22RxdOpkU/vmznUidYHHyTlMFwSVsQ9NfPhvIBHNZB7ZCWNXj8NmC
+ bls=
 X-IronPort-AV: E=Sophos;i="5.82,251,1613404800"; 
-   d="scan'208";a="170788137"
+   d="scan'208";a="170788140"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Apr 2021 14:28:29 +0800
-IronPort-SDR: HwbeA5++HHyuLCYTL5Eh/AgtJaUD6O2bza3JkUhAm3zp00dCuiMWJujNR++JWT+DS/y2nWR3kb
- +jDZtRScS9MC/vqs6OR8RzjEJZwM3uKA5KCcAPhAvcdlaBfdHi7vsYXuyIr0pZ1hxXY9uHOKnE
- TVdAZvgnu79vRpTASr3Gm9Ng1da5iUUVVOHhPF2ZnS2LmMO06iSJoCqalDpZOVV1AC+D+oUF6j
- qsaRfdST94LJm6JxgyOdwjrkc/R9+rkpPKNjkslW+7ffKE/pY32muWXJ+UqwIyJvpDSEVLF9uD
- W1N6BDk9tHr6aF9YEC8wNhaq
+  by ob1.hgst.iphmx.com with ESMTP; 26 Apr 2021 14:28:30 +0800
+IronPort-SDR: lZi/9NUlyNvRozttcyzgeVAZYzCvtNxVeDlkxppNrU415wn2XVKOoSG9Yj0tWgjUjdg5IvUE1w
+ Owz6YvNULsZqLBuhdY/keV2DbYJ/RIdm+QcpDirGHIfidIg/if1bsh3WD1b/Fymq662kwM2Nvq
+ Uji/UjFtzQjAANgNt0UXCjujiLLW70qq/f7F381vcdWxugnuilYBJDNzsse978DiEGq6gH3YW1
+ dSjglvwoQcsPc1mcKkXDySxJHqF+v9QVitrUXB/8G4u8idO9RVLKwDRPoiYonuO/vC92CX9MPn
+ 7EDi2ZL9B9g68xolcwRfednH
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 23:08:55 -0700
-IronPort-SDR: 7kBS1Va1IR8on4TsE/5bkPx7GOI/QFnnv7YRba2JPTnhR1Q7e/Ac9yldaYW7X6Qrxlb3Zk5Dfo
- xdwMSqqtMYHeSGiqIDNZJBy51T+UDjqxgV+NxHs+jPPyTeRqexVydTFg3d1wejJ+T8v10YR9+m
- dLu/ygzXngGyK/vFMEyQ5vXE+bMWthK53hxU2/hBZSBD6dw4Ayc4R0lcqj6H0vzly4KYVn5Df5
- TpNm0kaTUaPsr6oXAO7U7qahjJ4LLbo3kOkeYRtHJW7uqqKB/llMkiCsDLGcJ61/iF3xLmUAhQ
- K/c=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2021 23:08:56 -0700
+IronPort-SDR: OtCZLyauE2Jfxh/HCBdLTj8k2IqEaMej/JhqSP+7r0WCtrZsnME4X9vtk+gXBc5JFYnRAoUJp0
+ XquFOvfFqDPD9WT84qPzduzUuhAnZDPiEHWVja3qbSBUF0jhNGE9zXpki1Sijkx24O11KnQgXw
+ CPJ5Z2iscWJgNtvj9KOCbOXw0kcIwX1XYmMSmZW5ts8cHq2e7rrHnY6ZgZ8dK3vEq4DNlzDfVm
+ YYtyW8YB6a4jkm3dfMzS3F/CsNkT8YDXX9yRQPgi4YHdaKlejjYa1qPoh6Eqc8pkJznFFFaDE4
+ lWs=
 WDCIronportException: Internal
 Received: from bgy2573.ad.shared (HELO naota-xeon.wdc.com) ([10.225.48.58])
-  by uls-op-cesaip02.wdc.com with ESMTP; 25 Apr 2021 23:28:30 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 25 Apr 2021 23:28:31 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
         Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 20/26] btrfs-progs: mkfs: zoned: detect and enable zoned feature flag
-Date:   Mon, 26 Apr 2021 15:27:36 +0900
-Message-Id: <a59e2aa021d326107b5581f6a748700c7f7c5e8c.1619416549.git.naohiro.aota@wdc.com>
+Subject: [PATCH 21/26] btrfs-progs: mkfs: zoned: check incompatible features with zoned btrfs
+Date:   Mon, 26 Apr 2021 15:27:37 +0900
+Message-Id: <e5868bb9c387edd53b3863efcc366056998b28c8.1619416549.git.naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1619416549.git.naohiro.aota@wdc.com>
 References: <cover.1619416549.git.naohiro.aota@wdc.com>
@@ -65,118 +65,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This commit make mkfs.btrfs aware of the "zoned" feature flag and prepare
-the disks for mkfs.btrfs. It automatically detects host-managed zoned
-device and enable the future.
+This commit disables some features which are incompatible with zoned btrfs.
 
-It also add "zone_size" to struct btrfs_mkfs_config to track the zone size.
+RAID/DUP is disabled because we cannot handle two zone append writes to
+different zones in the kernel. MIXED_BG is disabled because the allocated
+metadata region will be write holes for data writes. Space-cache (v1)
+require in-place updatings.
+
+It also disables the "--rootdir" option for now. The copying from a
+directory needs some tweaks for zoned btrfs (e.g. zone size aware space
+calculation), and we do not implement them yet.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- mkfs/common.h |  1 +
- mkfs/main.c   | 28 ++++++++++++++++++++++++++--
- 2 files changed, 27 insertions(+), 2 deletions(-)
+ mkfs/common.c |  5 ++++-
+ mkfs/main.c   | 23 +++++++++++++++++++++++
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/mkfs/common.h b/mkfs/common.h
-index cc88db7183fb..4d86f5ef4ccc 100644
---- a/mkfs/common.h
-+++ b/mkfs/common.h
-@@ -65,6 +65,7 @@ struct btrfs_mkfs_config {
- 	u64 num_bytes;
- 	/* checksum algorithm to use */
- 	enum btrfs_csum_type csum_type;
-+	u64 zone_size;
- 
- 	/* Output fields, set during creation */
- 
+diff --git a/mkfs/common.c b/mkfs/common.c
+index 368f3b06f75e..6b0c434fbd6a 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -204,7 +204,10 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_super_stripesize(&super, cfg->stripesize);
+ 	btrfs_set_super_csum_type(&super, cfg->csum_type);
+ 	btrfs_set_super_chunk_root_generation(&super, 1);
+-	btrfs_set_super_cache_generation(&super, -1);
++	if (cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)
++		btrfs_set_super_cache_generation(&super, 0);
++	else
++		btrfs_set_super_cache_generation(&super, -1);
+ 	btrfs_set_super_incompat_flags(&super, cfg->features);
+ 	if (cfg->label)
+ 		__strncpy_null(super.label, cfg->label, BTRFS_LABEL_SIZE - 1);
 diff --git a/mkfs/main.c b/mkfs/main.c
-index a903896289fa..42e6e6b58b04 100644
+index 42e6e6b58b04..9407cdfa8fe7 100644
 --- a/mkfs/main.c
 +++ b/mkfs/main.c
-@@ -37,6 +37,7 @@
- #include "kernel-shared/free-space-tree.h"
- #include "kernel-shared/volumes.h"
- #include "kernel-shared/transaction.h"
-+#include "kernel-shared/zoned.h"
- #include "common/utils.h"
- #include "common/path-utils.h"
- #include "common/device-utils.h"
-@@ -900,6 +901,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	int metadata_profile_opt = 0;
- 	int discard = 1;
- 	int ssd = 0;
-+	int zoned = 0;
- 	int force_overwrite = 0;
- 	char *source_dir = NULL;
- 	bool source_dir_set = false;
-@@ -1069,6 +1071,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	if (dev_cnt == 0)
- 		print_usage(1);
+@@ -1191,6 +1191,23 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+ 		features |= BTRFS_FEATURE_INCOMPAT_RAID1C34;
+ 	}
  
-+	zoned = features & BTRFS_FEATURE_INCOMPAT_ZONED;
-+
- 	if (source_dir_set && dev_cnt > 1) {
- 		error("the option -r is limited to a single device");
- 		goto error;
-@@ -1109,6 +1113,19 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 
- 	file = argv[optind++];
- 	ssd = is_ssd(file);
 +	if (zoned) {
-+		if (!zone_size(file)) {
-+			error("zoned: %s: zone size undefined", file);
++		if (source_dir_set) {
++			error("the option -r and zoned feature are incompatible");
 +			exit(1);
 +		}
-+	} else if (zoned_model(file) == ZONED_HOST_MANAGED) {
-+		if (verbose)
-+			printf(
-+	"Zoned: %s: host-managed device detected, setting zoned feature\n",
-+			       file);
-+		zoned = 1;
-+		features |= BTRFS_FEATURE_INCOMPAT_ZONED;
++
++		if (features & BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS) {
++			error("cannot enable mixed-bg with zoned feature");
++			exit(1);
++		}
++
++		if (features & BTRFS_FEATURE_INCOMPAT_RAID56) {
++			error("cannot enable RAID5/6 with zoned feature");
++			exit(1);
++		}
 +	}
- 
- 	/*
- 	* Set default profiles according to number of added devices.
-@@ -1278,7 +1295,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	ret = btrfs_prepare_device(fd, file, &dev_block_count, block_count,
- 			(zero_end ? PREP_DEVICE_ZERO_END : 0) |
- 			(discard ? PREP_DEVICE_DISCARD : 0) |
--			(verbose ? PREP_DEVICE_VERBOSE : 0));
-+			(verbose ? PREP_DEVICE_VERBOSE : 0) |
-+			(zoned ? PREP_DEVICE_ZONED : 0));
++
+ 	if (btrfs_check_nodesize(nodesize, sectorsize,
+ 				 features))
+ 		goto error;
+@@ -1280,6 +1297,12 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
  	if (ret)
  		goto error;
- 	if (block_count && block_count > dev_block_count) {
-@@ -1309,6 +1327,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	mkfs_cfg.stripesize = stripesize;
- 	mkfs_cfg.features = features;
- 	mkfs_cfg.csum_type = csum_type;
-+	mkfs_cfg.zone_size = zone_size(file);
  
- 	ret = make_btrfs(fd, &mkfs_cfg);
- 	if (ret) {
-@@ -1391,7 +1410,8 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 				block_count,
- 				(verbose ? PREP_DEVICE_VERBOSE : 0) |
- 				(zero_end ? PREP_DEVICE_ZERO_END : 0) |
--				(discard ? PREP_DEVICE_DISCARD : 0));
-+				(discard ? PREP_DEVICE_DISCARD : 0) |
-+				(zoned ? PREP_DEVICE_ZONED : 0));
- 		if (ret) {
- 			goto error;
- 		}
-@@ -1502,6 +1522,10 @@ raid_groups:
- 			btrfs_group_profile_str(metadata_profile),
- 			pretty_size(allocation.system));
- 		printf("SSD detected:       %s\n", ssd ? "yes" : "no");
-+		printf("Zoned device:       %s\n", zoned ? "yes" : "no");
-+		if (zoned)
-+			printf("Zone size:          %s\n",
-+			       pretty_size(fs_info->zone_size));
- 		btrfs_parse_fs_features_to_string(features_buf, features);
- 		printf("Incompat features:  %s\n", features_buf);
- 		btrfs_parse_runtime_features_to_string(features_buf,
++	if (zoned && ((metadata_profile | data_profile) &
++			      BTRFS_BLOCK_GROUP_PROFILE_MASK)) {
++		error("cannot use RAID/DUP profile on zoned mode");
++		goto error;
++	}
++
+ 	dev_cnt--;
+ 
+ 	/*
 -- 
 2.31.1
 
