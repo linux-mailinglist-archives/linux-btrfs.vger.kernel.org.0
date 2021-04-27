@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166AB36CF22
+	by mail.lfdr.de (Postfix) with ESMTP id 90A4336CF23
 	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 01:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239392AbhD0XFS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Apr 2021 19:05:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37012 "EHLO mx2.suse.de"
+        id S239396AbhD0XFU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Apr 2021 19:05:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37022 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239185AbhD0XFR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:05:17 -0400
+        id S239185AbhD0XFT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:05:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619564673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1619564675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rYFhnmKqCb2iWU6QJhdS+JZXcv2hCGlkFMbYKLs0nig=;
-        b=LZFF7wVIrz0AvFidtMmh+29iHj7i3GzS2rhZ0/YSMe5vn5f/YQfvQ1cf+4AM9Id7kz9lJ0
-        0FTnmUPXI57W9tuSCr4Uuqz/QVv868QvXvWhE9Sk50aRbff92w0wRuNl7imyrppIs2Hcdz
-        u7FgwP3aFjR5WS8tUVZycY808yMum84=
+        bh=XWjTf70J6IBpwk4DXLBy8+tqlwvKkChQGbZeLg/9GIQ=;
+        b=rLs61Ueu59tHYphdU4YuEf7A1PJybOfnsGDg+nePUR1ewwQSYDuaaZ+zjY/k+5kjT/G17A
+        tdth1PCdbCTLXYDsHIyLOQpXOAGpgSNZ3QXWYc0VpPdAsE2XTKad0YJulnvgaRbhEpJU4W
+        2znuiLc736+oQ8splkxGjqg3t4DnawU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 07E61ABED
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Apr 2021 23:04:33 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5B92DABED;
+        Tue, 27 Apr 2021 23:04:35 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [Patch v2 17/42] btrfs: only require sector size alignment for end_bio_extent_writepage()
-Date:   Wed, 28 Apr 2021 07:03:24 +0800
-Message-Id: <20210427230349.369603-18-wqu@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>
+Subject: [Patch v2 18/42] btrfs: make btrfs_dirty_pages() to be subpage compatible
+Date:   Wed, 28 Apr 2021 07:03:25 +0800
+Message-Id: <20210427230349.369603-19-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210427230349.369603-1-wqu@suse.com>
 References: <20210427230349.369603-1-wqu@suse.com>
@@ -38,61 +39,49 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just like read page, for subpage support we only require sector size
-alignment.
-
-So change the error message condition to only require sector alignment.
-
-This should not affect existing code, as for regular sectorsize ==
-PAGE_SIZE case, we are still requiring page alignment.
+Since the extent io tree operations in btrfs_dirty_pages() are already
+subpage compatible, we only need to make the page status update to use
+subpage helpers.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+ fs/btrfs/file.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index e0cef1b1546c..a99b59504e72 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2782,25 +2782,20 @@ static void end_bio_extent_writepage(struct bio *bio)
- 		struct page *page = bvec->bv_page;
- 		struct inode *inode = page->mapping->host;
- 		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+		const u32 sectorsize = fs_info->sectorsize;
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 864c08d08a35..8f71699fdd18 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -28,6 +28,7 @@
+ #include "compression.h"
+ #include "delalloc-space.h"
+ #include "reflink.h"
++#include "subpage.h"
  
--		/* We always issue full-page reads, but if some block
--		 * in a page fails to read, blk_update_request() will
--		 * advance bv_offset and adjust bv_len to compensate.
--		 * Print a warning for nonzero offsets, and an error
--		 * if they don't add up to a full page.  */
--		if (bvec->bv_offset || bvec->bv_len != PAGE_SIZE) {
--			if (bvec->bv_offset + bvec->bv_len != PAGE_SIZE)
--				btrfs_err(fs_info,
--				   "partial page write in btrfs with offset %u and length %u",
--					bvec->bv_offset, bvec->bv_len);
--			else
--				btrfs_info(fs_info,
--				   "incomplete page write in btrfs with offset %u and length %u",
--					bvec->bv_offset, bvec->bv_len);
--		}
-+		/* Btrfs read write should always be sector aligned. */
-+		if (!IS_ALIGNED(bvec->bv_offset, sectorsize))
-+			btrfs_err(fs_info,
-+		"partial page write in btrfs with offset %u and length %u",
-+				  bvec->bv_offset, bvec->bv_len);
-+		else if (!IS_ALIGNED(bvec->bv_len, sectorsize))
-+			btrfs_info(fs_info,
-+		"incomplete page write with offset %u and length %u",
-+				   bvec->bv_offset, bvec->bv_len);
+ static struct kmem_cache *btrfs_inode_defrag_cachep;
+ /*
+@@ -482,6 +483,7 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
+ 	start_pos = round_down(pos, fs_info->sectorsize);
+ 	num_bytes = round_up(write_bytes + pos - start_pos,
+ 			     fs_info->sectorsize);
++	ASSERT(num_bytes <= U32_MAX);
  
--		start = page_offset(page);
--		end = start + bvec->bv_offset + bvec->bv_len - 1;
-+		start = page_offset(page) + bvec->bv_offset;
-+		end = start + bvec->bv_len - 1;
+ 	end_of_last_block = start_pos + num_bytes - 1;
  
- 		if (first_bvec) {
- 			btrfs_record_physical_zoned(inode, start, bio);
+@@ -500,9 +502,10 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
+ 
+ 	for (i = 0; i < num_pages; i++) {
+ 		struct page *p = pages[i];
+-		SetPageUptodate(p);
++
++		btrfs_page_clamp_set_uptodate(fs_info, p, start_pos, num_bytes);
+ 		ClearPageChecked(p);
+-		set_page_dirty(p);
++		btrfs_page_clamp_set_dirty(fs_info, p, start_pos, num_bytes);
+ 	}
+ 
+ 	/*
 -- 
 2.31.1
 
