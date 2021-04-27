@@ -2,123 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E1436C9B4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 18:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE0936CA33
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 19:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236405AbhD0Qqu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Apr 2021 12:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
+        id S236019AbhD0RRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Apr 2021 13:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236320AbhD0Qqt (ORCPT
+        with ESMTP id S230219AbhD0RRq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:46:49 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF883C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Apr 2021 09:46:05 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id o1so2978702qta.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Apr 2021 09:46:05 -0700 (PDT)
+        Tue, 27 Apr 2021 13:17:46 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35ED2C061574;
+        Tue, 27 Apr 2021 10:17:03 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id k14so10343497wrv.5;
+        Tue, 27 Apr 2021 10:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Bd2sVLsulUz/H6wMEcloj2GBKX9/LiSxzfvXHAlEIhc=;
-        b=LClO9lsbYcauU6S1A8KD9fKjqEI+PJ+L9xuIZLOAoufPQ7gGChNYyJ6cMFsqXIDFK7
-         /ygW6SnYGywtiOsEHsXvdqLnXo2e+MqnatyfWBRDmqhO6Z5rW9kRZKDkhxg01ZbfdduC
-         633A71uQ6K+YaaworRaPbFrrd28+q9KmJ4Esc=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JAwJWD2K/z4NOs4JYYmy89+KMQq66aqzk+TmY4WqcLE=;
+        b=LzfBipELGPmofL7v1VcLOuCmchjuoEP73ix5Ryj7QBqGAzKznB0YO0FH67waGAH3UY
+         1HWiajpCaB9Co015BJhMsPTBLLvOkj7X4E2TX1V3/F1NyCaDL648anYVAVPXEq5gfKPd
+         vp9jzqpsDf+8jGmGxwo/vJB2PGMOcH6Skg0aoXjPSM9XY6Z47E3Cx9g/InAFI68Gec5L
+         yGEmfJv9ermo8oVfeZmSYmEB+C7418GoEpYEE+88x9W2gf46yEdbZYTUQbzkneknpOc3
+         Yvm9ubPS1qhchxJ8DSucxxGskSJf3HHGpm6rVnSbqdglXe527Z/8AUO/57hqhVA9zThm
+         owQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Bd2sVLsulUz/H6wMEcloj2GBKX9/LiSxzfvXHAlEIhc=;
-        b=PeKz7NFwBB61bQhnIqE3xPZU+A3XceJwBNgIXakOyKC1aCkGfY3VIziPPwZ9KwjwhT
-         XIRmGPraejufiAr0RRTiCGgl5dvEtLoTbYPLsY5U2Re09P8Bs6m3zWxo0ncJQd8iY+wa
-         SQt1tBDF6Pvc/stvpLPRhxQzWRiAYldIbc3E/Wx9ANwbHsAX2K/GASdW664IjqHhCvYQ
-         YtkOb0F2lcKsS20PYaK5o9Feon1mzHzeVRmfu0XTvAJfAcFt6Vy30wk5ARFhoCKyxH2p
-         IvaLWdyGhSwktE6Cd+Kh0zaTByAxeIgQnW8fZNlEM7vpmI8nILNVNM1HIWINqxiCwgxN
-         zVWg==
-X-Gm-Message-State: AOAM531iWe8gHLKpjlaStoRtX+GyswjIFTo+IK5Jgxk2AdfRzVDYKBC7
-        rSDoEi3sc/4YM6sBPx1tW72aIw==
-X-Google-Smtp-Source: ABdhPJw/nA77my/mPW0b3y7nwMVVxfwgZ2nRHOUEJ5htgNo/28OdiIYCCxhn3tzxGBVUQNFm9GSz9Q==
-X-Received: by 2002:ac8:7947:: with SMTP id r7mr22015141qtt.104.1619541965039;
-        Tue, 27 Apr 2021 09:46:05 -0700 (PDT)
-Received: from bill-the-cat (cpe-65-184-140-239.ec.res.rr.com. [65.184.140.239])
-        by smtp.gmail.com with ESMTPSA id a29sm309344qtd.15.2021.04.27.09.46.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Apr 2021 09:46:04 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 12:46:02 -0400
-From:   Tom Rini <trini@konsulko.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     u-boot@lists.denx.de, linux-btrfs@vger.kernel.org,
-        Matwey Kornilov <matwey.kornilov@gmail.com>
-Subject: Re: [PATCH U-boot v2] fs: btrfs: fix the false alert of
- decompression failure
-Message-ID: <20210427164602.GS17669@bill-the-cat>
-References: <20210417125213.132066-1-wqu@suse.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="37cJpJlYZwAfNbm5"
-Content-Disposition: inline
-In-Reply-To: <20210417125213.132066-1-wqu@suse.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JAwJWD2K/z4NOs4JYYmy89+KMQq66aqzk+TmY4WqcLE=;
+        b=L2rlhkARqVhKUy4B5X6YSSBzHor0Q9swfPpMpw3lymnkYo4WEuoyQb9cGbtgNkC6zg
+         ll0oEAjYVu7OH6ULsXt2mHSoda4OuuPhZs9czyAQXpvJm/21DDqh8jWb5/6l5673XGt7
+         8iQb0P5P56q90kEslHp7P4JhbwqjgUiR/jM8iDRa0DM2DlxjZogQ9tGuA4DG7q7T8uxt
+         3zQEzxJjJV7BcMnIIR/ZPseaJjQtWa6JmD6J104yTYDP6QEjqqBINxEQE2+KWij1emPY
+         Hk3+KYXYYOwPun5Yt31ZwDdyQxOZt6BSz7wHy3s1uM/eHtCbumVNia97GwXbQp2nIqsf
+         prvQ==
+X-Gm-Message-State: AOAM5324bykkxnN+vspKCdXnz/QGDmJ38nOvb7h5XTFPeFwS41YfNVcN
+        0lmE/gGlVSsbc1YYW8WXYMI=
+X-Google-Smtp-Source: ABdhPJzacnrR9JNatuLHXu/ndsPFiFTeB+6UXuJTuEtETjLwu/N1OnOSM4j1dKoGJXEStz+FUxsvCA==
+X-Received: by 2002:adf:ed4b:: with SMTP id u11mr22030727wro.293.1619543821896;
+        Tue, 27 Apr 2021 10:17:01 -0700 (PDT)
+Received: from localhost.localdomain ([41.62.108.163])
+        by smtp.gmail.com with ESMTPSA id l25sm544998wmi.17.2021.04.27.10.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 10:17:01 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH-V2] fs/btrfs: Fix uninitialized variable
+Date:   Tue, 27 Apr 2021 18:16:27 +0100
+Message-Id: <20210427171627.32356-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The variable 'zone' is uninitialized which
+introduce some build warning.
 
---37cJpJlYZwAfNbm5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+---
+v2: catch the init as an assertion
+---
+ fs/btrfs/zoned.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Sat, Apr 17, 2021 at 08:52:13PM +0800, Qu Wenruo wrote:
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 432509f4b3ac..70c0b1b2ff04 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -144,7 +144,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
+ 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+ 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+ 	default:
+-		ASSERT(zone);
++		ASSERT(zone = 0);
+ 		break;
+ 	}
+ 
 
-> There are some cases where decompressed sectors can have padding zeros.
->=20
-> In kernel code, we have lines to address such situation:
->=20
->         /*
->          * btrfs_getblock is doing a zero on the tail of the page too,
->          * but this will cover anything missing from the decompressed
->          * data.
->          */
->         if (bytes < destlen)
->                 memset(kaddr+bytes, 0, destlen-bytes);
->         kunmap_local(kaddr);
->=20
-> But not in U-boot code, thus we have some reports of U-boot failed to
-> read compressed files in btrfs.
->=20
-> Fix it by doing the same thing of the kernel, for both inline and
-> regular compressed extents.
->=20
-> Reported-by: Matwey Kornilov <matwey.kornilov@gmail.com>
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1183717
-> Fixes: a26a6bedafcf ("fs: btrfs: Introduce btrfs_read_extent_inline() and=
- btrfs_read_extent_reg()")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+base-commit: c05b2a58c9ed11bd753f1e64695bd89da715fbaa
+-- 
+2.17.1
 
-Applied to u-boot/master, thanks!
-
---=20
-Tom
-
---37cJpJlYZwAfNbm5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmCIP8oACgkQFHw5/5Y0
-tyzu9Av/YvmzPOqQ88xAC9o+X1rQgdFPFHPQmfBnYYz/yIMhLoGhXu5dKYhj/+DI
-v6efBLj/aN/MleH6FSYdzFV3YWvbZHDv7uw3KeprqPS9kXvJs0n1LyIiUn5jm68Q
-U+YR461xHJ+83AIgmviqxoks3KsMKeRpAeF4zCvcZA3s6bDvZYKi2JPkwkcXv0NU
-a8ffIwvumCQRRQNuimpWXTzrOVgMwpj7MxuSvPTAOaOGW/btKiTm722MQIRV6XHy
-61XL0lRfDtCAJcd+bleTzdmXboY9JAUr1H6k/PIsgj8mvEbbX96R49uGWI2tieei
-RRb+G+F3yHnjY7BDYtJpVZPsbFNVjuNUGM5k+5sVv3U362KTij70q+9O/4Vt1pd8
-95SEEDU89Apl8KT/wbObgX2UTvUF3MXIjXRMASAQuuneOtCcfd5suIsCGLYKSMgR
-SVi3w68hVhb2iiXmzNYIhVixYtMB2y9pmWd1Iht5Zuh67fnGzBt5JQEplIpPFboD
-la64rOU9
-=pN2c
------END PGP SIGNATURE-----
-
---37cJpJlYZwAfNbm5--
