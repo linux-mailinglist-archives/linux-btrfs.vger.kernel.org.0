@@ -2,89 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE0936CA33
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 19:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEF436CA40
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 19:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236019AbhD0RRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Apr 2021 13:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhD0RRq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Apr 2021 13:17:46 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35ED2C061574;
-        Tue, 27 Apr 2021 10:17:03 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id k14so10343497wrv.5;
-        Tue, 27 Apr 2021 10:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JAwJWD2K/z4NOs4JYYmy89+KMQq66aqzk+TmY4WqcLE=;
-        b=LzfBipELGPmofL7v1VcLOuCmchjuoEP73ix5Ryj7QBqGAzKznB0YO0FH67waGAH3UY
-         1HWiajpCaB9Co015BJhMsPTBLLvOkj7X4E2TX1V3/F1NyCaDL648anYVAVPXEq5gfKPd
-         vp9jzqpsDf+8jGmGxwo/vJB2PGMOcH6Skg0aoXjPSM9XY6Z47E3Cx9g/InAFI68Gec5L
-         yGEmfJv9ermo8oVfeZmSYmEB+C7418GoEpYEE+88x9W2gf46yEdbZYTUQbzkneknpOc3
-         Yvm9ubPS1qhchxJ8DSucxxGskSJf3HHGpm6rVnSbqdglXe527Z/8AUO/57hqhVA9zThm
-         owQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JAwJWD2K/z4NOs4JYYmy89+KMQq66aqzk+TmY4WqcLE=;
-        b=L2rlhkARqVhKUy4B5X6YSSBzHor0Q9swfPpMpw3lymnkYo4WEuoyQb9cGbtgNkC6zg
-         ll0oEAjYVu7OH6ULsXt2mHSoda4OuuPhZs9czyAQXpvJm/21DDqh8jWb5/6l5673XGt7
-         8iQb0P5P56q90kEslHp7P4JhbwqjgUiR/jM8iDRa0DM2DlxjZogQ9tGuA4DG7q7T8uxt
-         3zQEzxJjJV7BcMnIIR/ZPseaJjQtWa6JmD6J104yTYDP6QEjqqBINxEQE2+KWij1emPY
-         Hk3+KYXYYOwPun5Yt31ZwDdyQxOZt6BSz7wHy3s1uM/eHtCbumVNia97GwXbQp2nIqsf
-         prvQ==
-X-Gm-Message-State: AOAM5324bykkxnN+vspKCdXnz/QGDmJ38nOvb7h5XTFPeFwS41YfNVcN
-        0lmE/gGlVSsbc1YYW8WXYMI=
-X-Google-Smtp-Source: ABdhPJzacnrR9JNatuLHXu/ndsPFiFTeB+6UXuJTuEtETjLwu/N1OnOSM4j1dKoGJXEStz+FUxsvCA==
-X-Received: by 2002:adf:ed4b:: with SMTP id u11mr22030727wro.293.1619543821896;
-        Tue, 27 Apr 2021 10:17:01 -0700 (PDT)
-Received: from localhost.localdomain ([41.62.108.163])
-        by smtp.gmail.com with ESMTPSA id l25sm544998wmi.17.2021.04.27.10.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 10:17:01 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH-V2] fs/btrfs: Fix uninitialized variable
-Date:   Tue, 27 Apr 2021 18:16:27 +0100
-Message-Id: <20210427171627.32356-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S236663AbhD0RWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Apr 2021 13:22:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60472 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236279AbhD0RWS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:22:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F3E13ACFD;
+        Tue, 27 Apr 2021 17:21:33 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 87F55DA732; Tue, 27 Apr 2021 19:19:11 +0200 (CEST)
+Date:   Tue, 27 Apr 2021 19:19:11 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 11/26] btrfs-progs: zoned: implement zoned chunk allocator
+Message-ID: <20210427171911.GM7604@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1619416549.git.naohiro.aota@wdc.com>
+ <b60a5f40ae0072ba9c7f1ba03036a703bb6b81ec.1619416549.git.naohiro.aota@wdc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b60a5f40ae0072ba9c7f1ba03036a703bb6b81ec.1619416549.git.naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The variable 'zone' is uninitialized which
-introduce some build warning.
+On Mon, Apr 26, 2021 at 03:27:27PM +0900, Naohiro Aota wrote:
+> Implement a zoned chunk and device extent allocator. One device zone
+> becomes a device extent so that a zone reset affects only this device
+> extent and does not change the state of blocks in the neighbor device
+> extents.
+> 
+> To implement the allocator, we need to extend the following functions for
+> a zoned filesystem.
+> 
+> - init_alloc_chunk_ctl
+> - dev_extent_search_start
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
-v2: catch the init as an assertion
----
- fs/btrfs/zoned.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This function is not present in current btrfs-progs codebase
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 432509f4b3ac..70c0b1b2ff04 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -144,7 +144,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
- 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
- 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
- 	default:
--		ASSERT(zone);
-+		ASSERT(zone = 0);
- 		break;
- 	}
- 
+>  static u64 dev_extent_search_start(struct btrfs_device *device, u64 start)
+>  {
+> +	u64 zone_size;
+> +
 
-base-commit: c05b2a58c9ed11bd753f1e64695bd89da715fbaa
--- 
-2.17.1
-
+So this does not apply. Looks like some intermediate patches are
+missing. There's more missing code and several other conflicts.
