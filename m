@@ -2,372 +2,305 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D7C36BF41
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 08:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC02A36C3BC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 12:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhD0G1Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Apr 2021 02:27:25 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:59362 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhD0G1Y (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Apr 2021 02:27:24 -0400
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 8F385A55425;
-        Tue, 27 Apr 2021 08:26:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1619504791;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SKe3r64Pg00WoeteGW7jXgLyIIBSj1vgWqsfSEE0/0A=;
-        b=aFEY/8weGUfvnZTkZVa93syeSAscOpHTQq+yciLSeKof/Ewde+2OujZF/TkTYQMwfH5klX
-        pxa9ZYQE2BiiSCHEdWSrxTn2SHppuKkzKz5FTSKbcENSS5100YXoWCz5VYV7qjdK+Vb9d1
-        PMY2gFWGfrVS5YveWSJZlAcpRiJD8HQ=
-Date:   Tue, 27 Apr 2021 08:26:29 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Nick Terrell <nickrterrell@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>, Felix Handte <felixh@fb.com>,
-        Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [GIT PULL][PATCH v10 0/4] Update to zstd-1.4.10
-Message-ID: <20210427062629.g5ob5bvcmx6z5rwm@spock.localdomain>
-References: <20210426234621.870684-1-nickrterrell@gmail.com>
+        id S238260AbhD0K32 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Apr 2021 06:29:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238178AbhD0K2u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Apr 2021 06:28:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 696B360FF3
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Apr 2021 10:27:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619519243;
+        bh=bIshq7yAaz2Kzj7QKvPR29G0/8rFFTO8NT+jvrASK5Q=;
+        h=From:To:Subject:Date:From;
+        b=Yw9eOVq2eADqUJ2VrM0xkIBsj5x2PpnZmyW6yYDY1q2fbqNiou6tnu/wxiE4KCslh
+         qvLvUisCehWgFO5PRUVLZDxSI8KMHKz+GgWh13qsKZXEC5Yw41cgubkp5mbLG/Q/my
+         1151GIOqGlYR2Y4R7FQ7fOmQ45KOZilcfWmEUNHAe9QfS/4ZAsfhkRr2+dPoFK8DR/
+         HnMQg4lh6qVcmCkw5wXFPrQpbbtlYNtYtYj8DwM/JjoXcZbkO+2PNfWoqhUinmzV5M
+         f97LykcPXsNb4jr19VoKLKj4KotdgtswENgLFvclWLglwW64oXn1Bn4mJv7SBadnFo
+         nGtKximu7YkVw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix race leading to unpersisted data and metadata on fsync
+Date:   Tue, 27 Apr 2021 11:27:20 +0100
+Message-Id: <3afbe2773f00218de9073277f9b56b4f08e7513a.1619518907.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426234621.870684-1-nickrterrell@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 04:46:17PM -0700, Nick Terrell wrote:
-> From: Nick Terrell <terrelln@fb.com>
-> 
-> Please pull from
-> 
->   git@github.com:terrelln/linux.git tags/v10-zstd-1.4.10
-> 
-> to get these changes. Alternatively the patchset is included.
-> 
-> This patchset lists me as the maintainer for zstd and upgrades the zstd library
-> to the latest upstream release. The current zstd version in the kernel is a
-> modified version of upstream zstd-1.3.1. At the time it was integrated, zstd
-> wasn't ready to be used in the kernel as-is. But, it is now possible to use
-> upstream zstd directly in the kernel.
-> 
-> I have not yet released zstd-1.4.10 upstream. I want the zstd version in the
-> kernel to match up with a known upstream release, so we know exactly what code
-> is running. Whenever this patchset is ready for merge, I will cut a release at
-> the upstream commit that gets merged. This should not be necessary for future
-> releases.
-> 
-> The kernel zstd library is automatically generated from upstream zstd. A script
-> makes the necessary changes and imports it into the kernel. The changes are:
-> 
-> 1. Replace all libc dependencies with kernel replacements and rewrite includes.
-> 2. Remove unncessary portability macros like: #if defined(_MSC_VER).
-> 3. Use the kernel xxhash instead of bundling it.
-> 
-> This automation gets tested every commit by upstream's continuous integration.
-> When we cut a new zstd release, we will submit a patch to the kernel to update
-> the zstd version in the kernel.
-> 
-> I've updated zstd to upstream with one big patch because every commit must build,
-> so that precludes partial updates. Since the commit is 100% generated, I hope the
-> review burden is lightened. I considered replaying upstream commits, but that is
-> not possible because there have been ~3500 upstream commits since the last zstd
-> import, and the commits don't all build individually. The bulk update preserves
-> bisectablity because bugs can be bisected to the zstd version update. At that
-> point the update can be reverted, and we can work with upstream to find and fix
-> the bug. After this big switch in how the kernel consumes zstd, future patches
-> will be smaller, because they will only have one upstream release worth of
-> changes each.
-> 
-> This patchset adds a new kernel-style wrapper around zstd. This wrapper API is
-> functionally equivalent to the subset of the current zstd API that is currently
-> used. The wrapper API changes to be kernel style so that the symbols don't
-> collide with zstd's symbols. The update to zstd-1.4.6 maintains the same API
-> and preserves the semantics, so that none of the callers need to be updated.
-> 
-> This patchset comes in 2 parts:
-> 1. The first 2 patches prepare for the zstd upgrade. The first patch adds the
->    new kernel style API so zstd can be upgraded without modifying any callers.
->    The second patch adds an indirection for the lib/decompress_unzstd.c
->    including of all decompression source files.
-> 2. Import zstd-1.4.10. This patch is completely generated from upstream using
->    automated tooling.
-> 
-> I tested every caller of zstd on x86_64. I tested both after the 1.4.10 upgrade
-> using the compatibility wrapper, and after the final patch in this series.
-> 
-> I tested kernel and initramfs decompression in i386 and arm.
-> 
-> I ran benchmarks to compare the current zstd in the kernel with zstd-1.4.6.
-> I benchmarked on x86_64 using QEMU with KVM enabled on an Intel i9-9900k.
-> I found:
-> * BtrFS zstd compression at levels 1 and 3 is 5% faster
-> * BtrFS zstd decompression+read is 15% faster
-> * SquashFS zstd decompression+read is 15% faster
-> * F2FS zstd compression+write at level 3 is 8% faster
-> * F2FS zstd decompression+read is 20% faster
-> * ZRAM decompression+read is 30% faster
-> * Kernel zstd decompression is 35% faster
-> * Initramfs zstd decompression+build is 5% faster
-> 
-> The latest zstd also offers bug fixes. For example the problem with large kernel
-> decompression has been fixed upstream for over 2 years
-> https://lkml.org/lkml/2020/9/29/27.
-> 
-> Please let me know if there is anything that I can do to ease the way for these
-> patches. I think it is important because it gets large performance improvements,
-> contains bug fixes, and is switching to a more maintainable model of consuming
-> upstream zstd directly, making it easy to keep up to date.
-> 
-> Best,
-> Nick Terrell
-> 
-> v1 -> v2:
-> * Successfully tested F2FS with help from Chao Yu to fix my test.
-> * (1/9) Fix ZSTD_initCStream() wrapper to handle pledged_src_size=0 means unknown.
->   This fixes F2FS with the zstd-1.4.6 compatibility wrapper, exposed by the test.
-> 
-> v2 -> v3:
-> * (3/9) Silence warnings by Kernel Test Robot:
->   https://github.com/facebook/zstd/pull/2324
->   Stack size warnings remain, but these aren't new, and the functions it warns on
->   are either unused or not in the maximum stack path. This patchset reduces zstd
->   compression stack usage by 1 KB overall. I've gotten the low hanging fruit, and
->   more stack reduction would require significant changes that have the potential
->   to introduce new bugs. However, I do hope to continue to reduce zstd stack
->   usage in future versions.
-> 
-> v3 -> v4:
-> * (3/9) Fix errors and warnings reported by Kernel Test Robot:
->   https://github.com/facebook/zstd/pull/2326
->   - Replace mem.h with a custom kernel implementation that matches the current
->     lib/zstd/mem.h in the kernel. This avoids calls to __builtin_bswap*() which
->     don't work on certain architectures, as exposed by the Kernel Test Robot.
->   - Remove ASAN/MSAN (un)poisoning code which doesn't work in the kernel, as
->     exposed by the Kernel Test Robot.
->   - I've fixed all of the valid cppcheck warnings reported, but there were many
->     false positives, where cppcheck was incorrectly analyzing the situation,
->     which I did not fix. I don't believe it is reasonable to expect that upstream
->     zstd silences all the static analyzer false positives. Upstream zstd uses
->     clang scan-build for its static analysis. We find that supporting multiple
->     static analysis tools multiplies the burden of silencing false positives,
->     without providing enough marginal value over running a single static analysis
->     tool.
-> 
-> v4 -> v5:
-> * Rebase onto v5.10-rc2
-> * (6/9) Merge with other F2FS changes (no functional change in patch).
-> 
-> v5 -> v6:
-> * Rebase onto v5.10-rc6.
-> * Switch to using a kernel style wrapper API as suggested by Cristoph.
-> 
-> v6 -> v7:
-> * Expose the upstream library header as `include/linux/zstd_lib.h`.
->   Instead of creating new structs mirroring the upstream zstd structs
->   use upstream's structs directly with a typedef to get a kernel style name.
->   This removes the memcpy cruft.
-> * (1/3) Undo ZSTD_WINDOWLOG_MAX and handle_zstd_error changes.
-> * (3/3) Expose zstd_errors.h as `include/linux/zstd_errors.h` because it
->   is needed by the kernel wrapper API.
-> 
-> v7 -> v8:
-> * (1/3) Fix typo in EXPORT_SYMBOL().
-> * (1/3) Fix typo in zstd.h comments.
-> * (3/3) Update to latest zstd release: 1.4.6 -> 1.4.10
->         This includes ~1KB of stack space reductions.
-> 
-> v8 -> v9:
-> * (1/3) Rebase onto v5.12-rc5
-> * (1/3) Add zstd_min_clevel() & zstd_max_clevel() and use in f2fs.
->         Thanks to Oleksandr Natalenko for spotting it!
-> * (1/3) Move lib/decompress_unzstd.c usage of ZSTD_getErrorCode()
->         to zstd_get_error_code().
-> * (1/3) Update modified zstd headers to yearless copyright.
-> * (2/3) Add copyright/license header to decompress_sources.h for consistency.
-> * (3/3) Update to yearless copyright for all zstd files. Thanks to
->         Mike Dolan for spotting it!
-> 
-> v9 -> v10:
-> * Add a 4th patch in the series which adds an entry for zstd to MAINTAINERS.
+From: Filipe Manana <fdmanana@suse.com>
 
-For the series:
+When doing a fast fsync on a file, there is a race which can result in the
+fsync returning success to user space without logging the inode and without
+durably persisting new data.
 
-Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+The following example shows one possible scenario for this:
 
-Thanks.
+   $ mkfs.btrfs -f /dev/sdc
+   $ mount /dev/sdc /mnt
 
-> 
-> Nick Terrell (4):
->   lib: zstd: Add kernel-specific API
->   lib: zstd: Add decompress_sources.h for decompress_unzstd
->   lib: zstd: Upgrade to latest upstream zstd version 1.4.10
->   MAINTAINERS: Add maintainer entry for zstd
-> 
->  MAINTAINERS                                   |   12 +
->  crypto/zstd.c                                 |   28 +-
->  fs/btrfs/zstd.c                               |   68 +-
->  fs/f2fs/compress.c                            |   56 +-
->  fs/f2fs/super.c                               |    2 +-
->  fs/pstore/platform.c                          |    2 +-
->  fs/squashfs/zstd_wrapper.c                    |   16 +-
->  include/linux/zstd.h                          | 1252 +---
->  include/linux/zstd_errors.h                   |   77 +
->  include/linux/zstd_lib.h                      | 2432 ++++++++
->  lib/decompress_unzstd.c                       |   48 +-
->  lib/zstd/Makefile                             |   44 +-
->  lib/zstd/bitstream.h                          |  380 --
->  lib/zstd/common/bitstream.h                   |  437 ++
->  lib/zstd/common/compiler.h                    |  151 +
->  lib/zstd/common/cpu.h                         |  194 +
->  lib/zstd/common/debug.c                       |   24 +
->  lib/zstd/common/debug.h                       |  101 +
->  lib/zstd/common/entropy_common.c              |  357 ++
->  lib/zstd/common/error_private.c               |   56 +
->  lib/zstd/common/error_private.h               |   66 +
->  lib/zstd/common/fse.h                         |  710 +++
->  lib/zstd/common/fse_decompress.c              |  390 ++
->  lib/zstd/common/huf.h                         |  356 ++
->  lib/zstd/common/mem.h                         |  259 +
->  lib/zstd/common/zstd_common.c                 |   83 +
->  lib/zstd/common/zstd_deps.h                   |  125 +
->  lib/zstd/common/zstd_internal.h               |  450 ++
->  lib/zstd/compress.c                           | 3485 -----------
->  lib/zstd/compress/fse_compress.c              |  625 ++
->  lib/zstd/compress/hist.c                      |  165 +
->  lib/zstd/compress/hist.h                      |   75 +
->  lib/zstd/compress/huf_compress.c              |  902 +++
->  lib/zstd/compress/zstd_compress.c             | 5105 +++++++++++++++++
->  lib/zstd/compress/zstd_compress_internal.h    | 1188 ++++
->  lib/zstd/compress/zstd_compress_literals.c    |  158 +
->  lib/zstd/compress/zstd_compress_literals.h    |   29 +
->  lib/zstd/compress/zstd_compress_sequences.c   |  439 ++
->  lib/zstd/compress/zstd_compress_sequences.h   |   54 +
->  lib/zstd/compress/zstd_compress_superblock.c  |  850 +++
->  lib/zstd/compress/zstd_compress_superblock.h  |   32 +
->  lib/zstd/compress/zstd_cwksp.h                |  482 ++
->  lib/zstd/compress/zstd_double_fast.c          |  521 ++
->  lib/zstd/compress/zstd_double_fast.h          |   32 +
->  lib/zstd/compress/zstd_fast.c                 |  496 ++
->  lib/zstd/compress/zstd_fast.h                 |   31 +
->  lib/zstd/compress/zstd_lazy.c                 | 1412 +++++
->  lib/zstd/compress/zstd_lazy.h                 |   81 +
->  lib/zstd/compress/zstd_ldm.c                  |  686 +++
->  lib/zstd/compress/zstd_ldm.h                  |  110 +
->  lib/zstd/compress/zstd_ldm_geartab.h          |  103 +
->  lib/zstd/compress/zstd_opt.c                  | 1345 +++++
->  lib/zstd/compress/zstd_opt.h                  |   50 +
->  lib/zstd/decompress.c                         | 2531 --------
->  lib/zstd/decompress/huf_decompress.c          | 1206 ++++
->  lib/zstd/decompress/zstd_ddict.c              |  241 +
->  lib/zstd/decompress/zstd_ddict.h              |   44 +
->  lib/zstd/decompress/zstd_decompress.c         | 2075 +++++++
->  lib/zstd/decompress/zstd_decompress_block.c   | 1540 +++++
->  lib/zstd/decompress/zstd_decompress_block.h   |   62 +
->  .../decompress/zstd_decompress_internal.h     |  202 +
->  lib/zstd/decompress_sources.h                 |   28 +
->  lib/zstd/entropy_common.c                     |  243 -
->  lib/zstd/error_private.h                      |   53 -
->  lib/zstd/fse.h                                |  575 --
->  lib/zstd/fse_compress.c                       |  795 ---
->  lib/zstd/fse_decompress.c                     |  325 --
->  lib/zstd/huf.h                                |  212 -
->  lib/zstd/huf_compress.c                       |  773 ---
->  lib/zstd/huf_decompress.c                     |  960 ----
->  lib/zstd/mem.h                                |  151 -
->  lib/zstd/zstd_common.c                        |   75 -
->  lib/zstd/zstd_compress_module.c               |  124 +
->  lib/zstd/zstd_decompress_module.c             |  105 +
->  lib/zstd/zstd_internal.h                      |  273 -
->  lib/zstd/zstd_opt.h                           | 1014 ----
->  76 files changed, 27299 insertions(+), 12940 deletions(-)
->  create mode 100644 include/linux/zstd_errors.h
->  create mode 100644 include/linux/zstd_lib.h
->  delete mode 100644 lib/zstd/bitstream.h
->  create mode 100644 lib/zstd/common/bitstream.h
->  create mode 100644 lib/zstd/common/compiler.h
->  create mode 100644 lib/zstd/common/cpu.h
->  create mode 100644 lib/zstd/common/debug.c
->  create mode 100644 lib/zstd/common/debug.h
->  create mode 100644 lib/zstd/common/entropy_common.c
->  create mode 100644 lib/zstd/common/error_private.c
->  create mode 100644 lib/zstd/common/error_private.h
->  create mode 100644 lib/zstd/common/fse.h
->  create mode 100644 lib/zstd/common/fse_decompress.c
->  create mode 100644 lib/zstd/common/huf.h
->  create mode 100644 lib/zstd/common/mem.h
->  create mode 100644 lib/zstd/common/zstd_common.c
->  create mode 100644 lib/zstd/common/zstd_deps.h
->  create mode 100644 lib/zstd/common/zstd_internal.h
->  delete mode 100644 lib/zstd/compress.c
->  create mode 100644 lib/zstd/compress/fse_compress.c
->  create mode 100644 lib/zstd/compress/hist.c
->  create mode 100644 lib/zstd/compress/hist.h
->  create mode 100644 lib/zstd/compress/huf_compress.c
->  create mode 100644 lib/zstd/compress/zstd_compress.c
->  create mode 100644 lib/zstd/compress/zstd_compress_internal.h
->  create mode 100644 lib/zstd/compress/zstd_compress_literals.c
->  create mode 100644 lib/zstd/compress/zstd_compress_literals.h
->  create mode 100644 lib/zstd/compress/zstd_compress_sequences.c
->  create mode 100644 lib/zstd/compress/zstd_compress_sequences.h
->  create mode 100644 lib/zstd/compress/zstd_compress_superblock.c
->  create mode 100644 lib/zstd/compress/zstd_compress_superblock.h
->  create mode 100644 lib/zstd/compress/zstd_cwksp.h
->  create mode 100644 lib/zstd/compress/zstd_double_fast.c
->  create mode 100644 lib/zstd/compress/zstd_double_fast.h
->  create mode 100644 lib/zstd/compress/zstd_fast.c
->  create mode 100644 lib/zstd/compress/zstd_fast.h
->  create mode 100644 lib/zstd/compress/zstd_lazy.c
->  create mode 100644 lib/zstd/compress/zstd_lazy.h
->  create mode 100644 lib/zstd/compress/zstd_ldm.c
->  create mode 100644 lib/zstd/compress/zstd_ldm.h
->  create mode 100644 lib/zstd/compress/zstd_ldm_geartab.h
->  create mode 100644 lib/zstd/compress/zstd_opt.c
->  create mode 100644 lib/zstd/compress/zstd_opt.h
->  delete mode 100644 lib/zstd/decompress.c
->  create mode 100644 lib/zstd/decompress/huf_decompress.c
->  create mode 100644 lib/zstd/decompress/zstd_ddict.c
->  create mode 100644 lib/zstd/decompress/zstd_ddict.h
->  create mode 100644 lib/zstd/decompress/zstd_decompress.c
->  create mode 100644 lib/zstd/decompress/zstd_decompress_block.c
->  create mode 100644 lib/zstd/decompress/zstd_decompress_block.h
->  create mode 100644 lib/zstd/decompress/zstd_decompress_internal.h
->  create mode 100644 lib/zstd/decompress_sources.h
->  delete mode 100644 lib/zstd/entropy_common.c
->  delete mode 100644 lib/zstd/error_private.h
->  delete mode 100644 lib/zstd/fse.h
->  delete mode 100644 lib/zstd/fse_compress.c
->  delete mode 100644 lib/zstd/fse_decompress.c
->  delete mode 100644 lib/zstd/huf.h
->  delete mode 100644 lib/zstd/huf_compress.c
->  delete mode 100644 lib/zstd/huf_decompress.c
->  delete mode 100644 lib/zstd/mem.h
->  delete mode 100644 lib/zstd/zstd_common.c
->  create mode 100644 lib/zstd/zstd_compress_module.c
->  create mode 100644 lib/zstd/zstd_decompress_module.c
->  delete mode 100644 lib/zstd/zstd_internal.h
->  delete mode 100644 lib/zstd/zstd_opt.h
-> 
-> --
-> 2.31.1
-> 
+   $ touch /mnt/bar
+   $ xfs_io -f -c "pwrite -S 0xab 0 1M" -c "fsync" /mnt/baz
 
+   # Now we have:
+   # file bar == inode 257
+   # file baz == inode 258
+
+   $ mv /mnt/baz /mnt/foo
+
+   # Now we have:
+   # file bar == inode 257
+   # file foo == inode 258
+
+   $ xfs_io -c "pwrite -S 0xcd 0 1M" /mnt/foo
+
+   # fsync bar before foo, it is important to trigger the race.
+   $ xfs_io -c "fsync" /mnt/bar
+   $ xfs_io -c "fsync" /mnt/foo
+
+   # After this:
+   # inode 257, file bar, is empty
+   # inode 258, file foo, has 1M filled with 0xcd
+
+   <power failure>
+
+   # Replay the log:
+   $ mount /dev/sdc /mnt
+
+   # After this point file foo should have 1M filled with 0xcd and not 0xab
+
+The following steps explain how the race happens:
+
+1) Before the first fsync of inode 258, when it has the "baz" name, its
+   ->logged_trans is 0, ->last_sub_trans is 0 and ->last_log_commit is -1.
+   The inode also has the full sync flag set;
+
+2) After the first fsync, we set inode 258 ->logged_trans to 6, which is
+   the generation of the current transaction, and set ->last_log_commit
+   to 0, which is the current value of ->last_sub_trans (done at
+   btrfs_log_inode()).
+
+   The full sync flag is cleared from the inode during the fsync.
+
+   The log sub transaction that was committed had an ID of 0 and when we
+   synced the log, at btrfs_sync_log(), we incremented root->log_transid
+   from 0 to 1;
+
+3) During the rename:
+
+   We update inode 258, through btrfs_update_inode(), and that causes its
+   ->last_sub_trans to be set to 1 (the current log transaction ID), and
+   ->last_log_commit remains with a value of 0.
+
+   After updating inode 258, because we have previously logged the inode
+   in the previous fsync, we log again the inode through the call to
+   btrfs_log_new_name(). This results in updating the inode's
+   ->last_log_commit from 0 to 1 (the current value of its
+   ->last_sub_trans).
+
+   The ->last_sub_trans of inode 257 is updated to 1, which is the ID of
+   the next log transaction;
+
+4) Then a buffered write against inode 258 is made. This leaves the value
+   of ->last_sub_trans as 1 (the ID of the current log transaction, stored
+   at root->log_transid);
+
+5) Then an fsync against inode 257 (or any other inode other than 258),
+   happens. This results in committing the log transaction with ID 1,
+   which results in updating root->last_log_commit to 1 and bumping
+   root->log_transid from 1 to 2;
+
+6) Then an fsync against inode 258 starts. We flush delalloc and wait only
+   for writeback to complete, since the full sync flag is not set in the
+   inode's runtime flags - we do not wait for ordered extents to complete.
+
+   Then, at btrfs_sync_file(), we call btrfs_inode_in_log() before the
+   ordered extent completes. The call returns true:
+
+     static inline bool btrfs_inode_in_log(...)
+     {
+         bool ret = false;
+
+         spin_lock(&inode->lock);
+         if (inode->logged_trans == generation &&
+             inode->last_sub_trans <= inode->last_log_commit &&
+             inode->last_sub_trans <= inode->root->last_log_commit)
+                 ret = true;
+         spin_unlock(&inode->lock);
+         return ret;
+     }
+
+   generation has a value of 6 (fs_info->generation), ->logged_trans also
+   has a value of 6 (set when we logged the inode during the first fsync
+   and when logging it during the rename), ->last_sub_trans has a value
+   of 1, set during the rename (step 3), ->last_log_commit also has a
+   value of 1 (set in step 3) and root->last_log_commit has a value of 1,
+   which was set in step 5 when fsyncing inode 257.
+
+   As a consequence we don't log the inode, any new extents and do not
+   sync the log, resulting in a data loss if a power failure happens
+   after the fsync and before the current transaction commits.
+   Also, because we do not log the inode, after a power failure the mtime
+   and ctime of the inode do not match those we had before.
+
+   When the ordered extent completes before we call btrfs_inode_in_log(),
+   then the call returns false and we log the inode and sync the log,
+   since at the end of ordered extent completion we update the inode and
+   set ->last_sub_trans to 2 (the value of root->log_transid) and
+   ->last_log_commit to 1.
+
+This problem is found after removing the check for the emptiness of the
+inode's list of modified extents in the recent commit 209ecbb8585bf6
+("btrfs: remove stale comment and logic from btrfs_inode_in_log()"),
+added in the 5.13 merge window. However checking the emptiness of the
+list is not really the way to solve this problem, and was never intended
+to, because while that solves the problem for COW writes, the problem
+persists for NOCOW writes because in that case the list is always empty.
+
+In the case of NOCOW writes, even though we wait for the writeback to
+complete before returning from btrfs_sync_file(), we end up not logging
+the inode, which has a new mtime/ctime, and because we don't sync the log,
+we never issue disk barriers (send REQ_PREFLUSH to the device) since that
+only happens when we sync the log (when we write super blocks at
+btrfs_sync_log()). So effectively, for a NOCOW case, when we return from
+btrfs_sync_file() to user space, we are not guaranteering that the data is
+durably persisted on disk.
+
+Also, while the example above uses a rename exchange to show how the
+problem happens, it is not the only way to trigger it. An alternative
+could be adding a new hard link to inode 258, since that also results
+in calling btrfs_log_new_name() and updating the inode in the log.
+An example reproducer using the addition of a hard link instead of a
+rename operation:
+
+  $ mkfs.btrfs -f /dev/sdc
+  $ mount /dev/sdc /mnt
+
+  $ touch /mnt/bar
+  $ xfs_io -f -c "pwrite -S 0xab 0 1M" -c "fsync" /mnt/foo
+
+  $ ln /mnt/foo /mnt/foo_link
+  $ xfs_io -c "pwrite -S 0xcd 0 1M" /mnt/foo
+
+  $ xfs_io -c "fsync" /mnt/bar
+  $ xfs_io -c "fsync" /mnt/foo
+
+  <power failure>
+
+  # Replay the log:
+  $ mount /dev/sdc /mnt
+
+  # After this point file foo often has 1M filled with 0xab and not 0xcd
+
+The reasons leading to the final fsync of file foo, inode 258, not
+persisting the new data are the same as for the previous example with
+a rename operation.
+
+So fix by never skipping logging and log syncing when there are still any
+ordered extents in flight. To avoid making the conditional if statement
+that checks if logging an inode is needed harder to read, place all the
+logic into an helper function with separate if statements to make it more
+manageable and easier to read.
+
+A test case for fstests will follow soon.
+
+For NOCOW writes, the problem existed before commit b5e6c3e170b770
+("btrfs: always wait on ordered extents at fsync time"), introduced in
+kernel 4.19, then it went away with that commit since we started to always
+wait for ordered extent completion before logging.
+
+The problem came back again once the fast fsync path was changed again to
+avoid waiting for ordered extent completion, in commit 487781796d3022
+("btrfs: make fast fsyncs wait only for writeback"), added in kernel 5.10.
+
+However, for COW writes, the race only happens after the recent
+commit 209ecbb8585bf6 ("btrfs: remove stale comment and logic from
+btrfs_inode_in_log()"), introduced in the 5.13 merge window. For NOCOW
+writes, the bug existed before that commit. So tag 5.10+ as the release
+for stable backports.
+
+CC: stable@vger.kernel.org # 5.10+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/file.c     | 35 +++++++++++++++++++++++++----------
+ fs/btrfs/tree-log.c |  3 ++-
+ 2 files changed, 27 insertions(+), 11 deletions(-)
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 864c08d08a35..3b10d98b4ebb 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2067,6 +2067,30 @@ static int start_ordered_ops(struct inode *inode, loff_t start, loff_t end)
+ 	return ret;
+ }
+ 
++static inline bool skip_inode_logging(const struct btrfs_log_ctx *ctx)
++{
++	struct btrfs_inode *inode = BTRFS_I(ctx->inode);
++	struct btrfs_fs_info *fs_info = inode->root->fs_info;
++
++	if (btrfs_inode_in_log(inode, fs_info->generation) &&
++	    list_empty(&ctx->ordered_extents))
++		return true;
++
++	/*
++	 * If we are doing a fast fsync we can not bail out if the inode's
++	 * last_trans is <= then the last committed transaction, because we only
++	 * update the last_trans of the inode during ordered extent completion,
++	 * and for a fast fsync we don't wait for that, we only wait for the
++	 * writeback to complete.
++	 */
++	if (inode->last_trans <= fs_info->last_trans_committed &&
++	    (test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) ||
++	     list_empty(&ctx->ordered_extents)))
++		return true;
++
++	return false;
++}
++
+ /*
+  * fsync call for both files and directories.  This logs the inode into
+  * the tree log instead of forcing full commits whenever possible.
+@@ -2185,17 +2209,8 @@ int btrfs_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+ 
+ 	atomic_inc(&root->log_batch);
+ 
+-	/*
+-	 * If we are doing a fast fsync we can not bail out if the inode's
+-	 * last_trans is <= then the last committed transaction, because we only
+-	 * update the last_trans of the inode during ordered extent completion,
+-	 * and for a fast fsync we don't wait for that, we only wait for the
+-	 * writeback to complete.
+-	 */
+ 	smp_mb();
+-	if (btrfs_inode_in_log(BTRFS_I(inode), fs_info->generation) ||
+-	    (BTRFS_I(inode)->last_trans <= fs_info->last_trans_committed &&
+-	     (full_sync || list_empty(&ctx.ordered_extents)))) {
++	if (skip_inode_logging(&ctx)) {
+ 		/*
+ 		 * We've had everything committed since the last time we were
+ 		 * modified so clear this flag in case it was set for whatever
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index c1353b84ae54..a0fc3a1390ab 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6060,7 +6060,8 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+ 	 * (since logging them is pointless, a link count of 0 means they
+ 	 * will never be accessible).
+ 	 */
+-	if (btrfs_inode_in_log(inode, trans->transid) ||
++	if ((btrfs_inode_in_log(inode, trans->transid) &&
++	     list_empty(&ctx->ordered_extents)) ||
+ 	    inode->vfs_inode.i_nlink == 0) {
+ 		ret = BTRFS_NO_LOG_SYNC;
+ 		goto end_no_trans;
 -- 
-  Oleksandr Natalenko (post-factum)
+2.28.0
+
