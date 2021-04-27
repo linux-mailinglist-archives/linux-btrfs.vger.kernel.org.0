@@ -2,34 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A4336CF23
+	by mail.lfdr.de (Postfix) with ESMTP id DBEDE36CF24
 	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 01:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239396AbhD0XFU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Apr 2021 19:05:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37022 "EHLO mx2.suse.de"
+        id S239406AbhD0XFX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Apr 2021 19:05:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37066 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239185AbhD0XFT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:05:19 -0400
+        id S238340AbhD0XFW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:05:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619564675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1619564677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XWjTf70J6IBpwk4DXLBy8+tqlwvKkChQGbZeLg/9GIQ=;
-        b=rLs61Ueu59tHYphdU4YuEf7A1PJybOfnsGDg+nePUR1ewwQSYDuaaZ+zjY/k+5kjT/G17A
-        tdth1PCdbCTLXYDsHIyLOQpXOAGpgSNZ3QXWYc0VpPdAsE2XTKad0YJulnvgaRbhEpJU4W
-        2znuiLc736+oQ8splkxGjqg3t4DnawU=
+        bh=cCisHDPUUQW8XN70l/emZNSRGYbm+d8WHyNM1+8d0o4=;
+        b=N3ZhjwCK5JL8H1S4WRSkBVq9E4DvBZlyRIw+5H9x8lSgD90yOjzrTf2pSa8DR7Kp52gYeZ
+        IPrwpI/9vS5tGUAAxpDMCwSDE809o/PYbixtX3lB8wsZx3Hth+4LZa3vV01oBG+0oslUqy
+        z0t9O5G18dUfOQ0mQYAhpubjq1JFMzo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B92DABED;
-        Tue, 27 Apr 2021 23:04:35 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BB853ABED;
+        Tue, 27 Apr 2021 23:04:37 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [Patch v2 18/42] btrfs: make btrfs_dirty_pages() to be subpage compatible
-Date:   Wed, 28 Apr 2021 07:03:25 +0800
-Message-Id: <20210427230349.369603-19-wqu@suse.com>
+Subject: [Patch v2 19/42] btrfs: make __process_pages_contig() to handle subpage dirty/error/writeback status
+Date:   Wed, 28 Apr 2021 07:03:26 +0800
+Message-Id: <20210427230349.369603-20-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210427230349.369603-1-wqu@suse.com>
 References: <20210427230349.369603-1-wqu@suse.com>
@@ -39,49 +39,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since the extent io tree operations in btrfs_dirty_pages() are already
-subpage compatible, we only need to make the page status update to use
-subpage helpers.
+For __process_pages_contig() and process_one_page(), to handle subpage
+we only need to pass bytenr in and call subpage helpers to handle
+dirty/error/writeback status.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/file.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 864c08d08a35..8f71699fdd18 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -28,6 +28,7 @@
- #include "compression.h"
- #include "delalloc-space.h"
- #include "reflink.h"
-+#include "subpage.h"
- 
- static struct kmem_cache *btrfs_inode_defrag_cachep;
- /*
-@@ -482,6 +483,7 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
- 	start_pos = round_down(pos, fs_info->sectorsize);
- 	num_bytes = round_up(write_bytes + pos - start_pos,
- 			     fs_info->sectorsize);
-+	ASSERT(num_bytes <= U32_MAX);
- 
- 	end_of_last_block = start_pos + num_bytes - 1;
- 
-@@ -500,9 +502,10 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
- 
- 	for (i = 0; i < num_pages; i++) {
- 		struct page *p = pages[i];
--		SetPageUptodate(p);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index a99b59504e72..850b3c3dc40c 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1816,10 +1816,16 @@ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
+  * Return -EGAIN if the we need to try again.
+  * (For PAGE_LOCK case but got dirty page or page not belong to mapping)
+  */
+-static int process_one_page(struct address_space *mapping,
++static int process_one_page(struct btrfs_fs_info *fs_info,
++			    struct address_space *mapping,
+ 			    struct page *page, struct page *locked_page,
+-			    unsigned long page_ops)
++			    unsigned long page_ops, u64 start, u64 end)
+ {
++	u32 len;
 +
-+		btrfs_page_clamp_set_uptodate(fs_info, p, start_pos, num_bytes);
- 		ClearPageChecked(p);
--		set_page_dirty(p);
-+		btrfs_page_clamp_set_dirty(fs_info, p, start_pos, num_bytes);
- 	}
++	ASSERT(end + 1 - start != 0 && end + 1 - start < U32_MAX);
++	len = end + 1 - start;
++
+ 	if (page_ops & PAGE_SET_ORDERED)
+ 		SetPageOrdered(page);
  
- 	/*
+@@ -1827,13 +1833,13 @@ static int process_one_page(struct address_space *mapping,
+ 		return 1;
+ 
+ 	if (page_ops & PAGE_SET_ERROR)
+-		SetPageError(page);
++		btrfs_page_clamp_set_error(fs_info, page, start, len);
+ 	if (page_ops & PAGE_START_WRITEBACK) {
+-		clear_page_dirty_for_io(page);
+-		set_page_writeback(page);
++		btrfs_page_clamp_clear_dirty(fs_info, page, start, len);
++		btrfs_page_clamp_set_writeback(fs_info, page, start, len);
+ 	}
+ 	if (page_ops & PAGE_END_WRITEBACK)
+-		end_page_writeback(page);
++		btrfs_page_clamp_clear_writeback(fs_info, page, start, len);
+ 	if (page_ops & PAGE_LOCK) {
+ 		lock_page(page);
+ 		if (!PageDirty(page) || page->mapping != mapping) {
+@@ -1851,6 +1857,7 @@ static int __process_pages_contig(struct address_space *mapping,
+ 				  u64 start, u64 end, unsigned long page_ops,
+ 				  u64 *processed_end)
+ {
++	struct btrfs_fs_info *fs_info = btrfs_sb(mapping->host->i_sb);
+ 	pgoff_t start_index = start >> PAGE_SHIFT;
+ 	pgoff_t end_index = end >> PAGE_SHIFT;
+ 	pgoff_t index = start_index;
+@@ -1887,8 +1894,9 @@ static int __process_pages_contig(struct address_space *mapping,
+ 		for (i = 0; i < found_pages; i++) {
+ 			int process_ret;
+ 
+-			process_ret = process_one_page(mapping, pages[i],
+-					locked_page, page_ops);
++			process_ret = process_one_page(fs_info, mapping,
++					pages[i], locked_page, page_ops,
++					start, end);
+ 			if (process_ret < 0) {
+ 				for (; i < found_pages; i++)
+ 					put_page(pages[i]);
 -- 
 2.31.1
 
