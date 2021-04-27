@@ -2,96 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9133D36C8E2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 17:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C4E36C985
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Apr 2021 18:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhD0Ptn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Apr 2021 11:49:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60440 "EHLO mx2.suse.de"
+        id S237040AbhD0QfL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Apr 2021 12:35:11 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7390 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhD0Ptn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:49:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0DC47B121;
-        Tue, 27 Apr 2021 15:48:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D2E8FDA732; Tue, 27 Apr 2021 17:46:36 +0200 (CEST)
-Date:   Tue, 27 Apr 2021 17:46:36 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH 04/26] btrfs-progs: zoned: add new ZONED feature flag
-Message-ID: <20210427154636.GK7604@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-References: <cover.1619416549.git.naohiro.aota@wdc.com>
- <c222a684214512e36fc721ee23ded5145bf9d89c.1619416549.git.naohiro.aota@wdc.com>
+        id S236572AbhD0QfK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Apr 2021 12:35:10 -0400
+IronPort-SDR: HYRBlxVa1vrEPy+SPu0HGOHo217i1v6Yl+w9Z2c+pbzQqNqfrYGNuYLQp2fZLNn0BS6irPJ2ld
+ RKb0la7tLlTQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="257849526"
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="257849526"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 09:34:26 -0700
+IronPort-SDR: 56D78GrkzT0gyka0rNNSqxAB64SKTQBfDo09R45Rx5juh+b57u47vkvt8mJ1A0sUvLEYL9+9Ep
+ DD9gzPzKoa8w==
+X-IronPort-AV: E=Sophos;i="5.82,254,1613462400"; 
+   d="scan'208";a="429877058"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 09:34:26 -0700
+Date:   Tue, 27 Apr 2021 09:34:26 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v3 1/3] fsdax: Factor helpers to simplify dax fault code
+Message-ID: <20210427163425.GW1904484@iweiny-DESK2.sc.intel.com>
+References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
+ <20210422134501.1596266-2-ruansy.fnst@fujitsu.com>
+ <20210426233823.GT1904484@iweiny-DESK2.sc.intel.com>
+ <OSBPR01MB292025E6E88319A902C980FEF4419@OSBPR01MB2920.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c222a684214512e36fc721ee23ded5145bf9d89c.1619416549.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <OSBPR01MB292025E6E88319A902C980FEF4419@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 03:27:20PM +0900, Naohiro Aota wrote:
-> With the zoned feature enabled, a zoned block device-aware btrfs allocates
-> block groups aligned to the device zones and always write in sequential
-> zones at the zone write pointer position.
+On Tue, Apr 27, 2021 at 02:44:33AM +0000, ruansy.fnst@fujitsu.com wrote:
+> > -----Original Message-----
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > Sent: Tuesday, April 27, 2021 7:38 AM
+> > Subject: Re: [PATCH v3 1/3] fsdax: Factor helpers to simplify dax fault code
+> > 
+> > On Thu, Apr 22, 2021 at 09:44:59PM +0800, Shiyang Ruan wrote:
+> > > The dax page fault code is too long and a bit difficult to read. And
+> > > it is hard to understand when we trying to add new features. Some of
+> > > the PTE/PMD codes have similar logic. So, factor them as helper
+> > > functions to simplify the code.
+> > >
+> > > Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> > > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > > Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > > ---
+> > >  fs/dax.c | 153
+> > > ++++++++++++++++++++++++++++++-------------------------
+> > >  1 file changed, 84 insertions(+), 69 deletions(-)
+> > >
+> > > diff --git a/fs/dax.c b/fs/dax.c
+> > > index b3d27fdc6775..f843fb8fbbf1 100644
+> > > --- a/fs/dax.c
+> > > +++ b/fs/dax.c
+> > 
+> > [snip]
+> > 
+> > > @@ -1355,19 +1379,8 @@ static vm_fault_t dax_iomap_pte_fault(struct
+> > vm_fault *vmf, pfn_t *pfnp,
+> > >  		entry = dax_insert_entry(&xas, mapping, vmf, entry, pfn,
+> > >  						 0, write && !sync);
+> > >
+> > > -		/*
+> > > -		 * If we are doing synchronous page fault and inode needs fsync,
+> > > -		 * we can insert PTE into page tables only after that happens.
+> > > -		 * Skip insertion for now and return the pfn so that caller can
+> > > -		 * insert it after fsync is done.
+> > > -		 */
+> > >  		if (sync) {
+> > > -			if (WARN_ON_ONCE(!pfnp)) {
+> > > -				error = -EIO;
+> > > -				goto error_finish_iomap;
+> > > -			}
+> > > -			*pfnp = pfn;
+> > > -			ret = VM_FAULT_NEEDDSYNC | major;
+> > > +			ret = dax_fault_synchronous_pfnp(pfnp, pfn);
+> > 
+> > I commented on the previous version...  So I'll ask here too.
+> > 
+> > Why is it ok to drop 'major' here?
 > 
-> It also supports "emulated" zoned mode on a non-zoned device. In the
-> emulated mode, btrfs emulates conventional zones by slicing the device with
-> a fixed size.
+> This dax_iomap_pte_fault () finally returns 'ret | major', so I think the major here is not dropped.  The origin code seems OR the return value and major twice.
 > 
-> We don't support conversion from the ext4 volume with the zoned feature
-> because we can't be sure all the converted block groups are aligned to zone
-> boundaries.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  common/fsfeatures.c        | 8 ++++++++
->  common/fsfeatures.h        | 3 ++-
->  kernel-shared/ctree.h      | 4 +++-
->  kernel-shared/print-tree.c | 1 +
->  4 files changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-> index 569208a9e5b1..c0793339b531 100644
-> --- a/common/fsfeatures.c
-> +++ b/common/fsfeatures.c
-> @@ -100,6 +100,14 @@ static const struct btrfs_feature mkfs_features[] = {
->  		NULL, 0,
->  		NULL, 0,
->  		"RAID1 with 3 or 4 copies" },
-> +#ifdef BTRFS_ZONED
-> +	{ "zoned", BTRFS_FEATURE_INCOMPAT_ZONED,
-> +		"zoned",
-> +		NULL, 0,
-> +		NULL, 0,
-> +		NULL, 0,
-> +		"support Zoned devices" },
-> +#endif
->  	/* Keep this one last */
->  	{ "list-all", BTRFS_FEATURE_LIST_ALL, NULL }
->  };
-> diff --git a/common/fsfeatures.h b/common/fsfeatures.h
-> index 74ec2a21caf6..1a7d7f62897f 100644
-> --- a/common/fsfeatures.h
-> +++ b/common/fsfeatures.h
-> @@ -25,7 +25,8 @@
->  		| BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
->  
->  /*
-> - * Avoid multi-device features (RAID56) and mixed block groups
-> + * Avoid multi-device features (RAID56), mixed block groups, and zoned
-> + * btrfs
->   */
->  #define BTRFS_CONVERT_ALLOWED_FEATURES				\
->  	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF			\
 
-Looks like BTRFS_FEATURE_INCOMPAT_ZONED should be here.
+Thanks I missed that!
+Ira
+
