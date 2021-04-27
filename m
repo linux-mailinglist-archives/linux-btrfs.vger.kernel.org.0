@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F74A36CF30
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 01:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B71B36CF31
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 01:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239468AbhD0XFt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Apr 2021 19:05:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37398 "EHLO mx2.suse.de"
+        id S239211AbhD0XFv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Apr 2021 19:05:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37416 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239462AbhD0XFs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:05:48 -0400
+        id S239462AbhD0XFu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:05:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619564703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1619564706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QBwbLoB+hjoE03XyY0Y8CbQunWyvkpEUrx+wx2Q32GI=;
-        b=llNZgfmUj/jvzxj7unGYUy0Z6sIalcjqyP8ldIBALOz1pUmM3pYh6WU9E4qr5qyT/XBAeC
-        qfl2gBx2ZvolYyqtq+ghOwaYVp6HVijOVNafckFuCY6eHypsMsmC6QJBRSoBYjym1bWegS
-        XVsqflaLnwRB6YkA35Lfh2BdWhWY7sI=
+        bh=lVoLPqh9YwCDlgVPtz6O4BFk+9ts5xRusDy+q7zsCrQ=;
+        b=VD/oStMU1afJvpHH8BsPb6g3xxML+IrUyqI3sZTH4N1fJJNZKSm3AFaSoRf2HlAjGPMrFd
+        KHY1TfyG2NNGSHjU5Vy3TS13zWEXZ4S9T1HSuig8VrJwdU6+LoaZstpqMovCaZqONeJekj
+        dliPWTF2MfIW4brDezWPo2gdiXeCVZg=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CAAA6B14D
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Apr 2021 23:05:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id ED597AC6A
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Apr 2021 23:05:05 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [Patch v2 31/42] btrfs: fix the filemap_range_has_page() call in btrfs_punch_hole_lock_range()
-Date:   Wed, 28 Apr 2021 07:03:38 +0800
-Message-Id: <20210427230349.369603-32-wqu@suse.com>
+Subject: [Patch v2 32/42] btrfs: don't clear page extent mapped if we're not invalidating the full page
+Date:   Wed, 28 Apr 2021 07:03:39 +0800
+Message-Id: <20210427230349.369603-33-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210427230349.369603-1-wqu@suse.com>
 References: <20210427230349.369603-1-wqu@suse.com>
@@ -39,88 +39,71 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-With current subpage RW support, the following script can hang the fs on
-with 64K page size.
+With current btrfs subpage rw support, the following script can lead to
+fs hang:
 
- # mkfs.btrfs -f -s 4k $dev
- # mount $dev -o nospace_cache $mnt
- # fsstress -w -n 50 -p 1 -s 1607749395 -d $mnt
+  mkfs.btrfs -f -s 4k $dev
+  mount $dev -o nospace_cache $mnt
 
-The kernel will do an infinite loop in btrfs_punch_hole_lock_range().
+  fsstress -w -n 100 -p 1 -s 1608140256 -v -d $mnt
+
+The fs will hang at btrfs_start_ordered_extent().
 
 [CAUSE]
-In btrfs_punch_hole_lock_range() we:
-- Truncate page cache range
-- Lock extent io tree
-- Wait any ordered extents in the range.
+In above test case, btrfs_invalidate() will be called with the following
+parameters:
+  offset = 0 length = 53248 page dirty = 1 subpage dirty bitmap = 0x2000
 
-We exit the loop until we meet all the following conditions:
-- No ordered extent in the lock range
-- No page is in the lock range
+Since @offset is 0, btrfs_invalidate() will try to invalidate the full
+page, and finally call clear_page_extent_mapped() which will detach
+btrfs subpage structure from the page.
 
-The latter condition has a pitfall, it only works for sector size ==
-PAGE_SIZE case.
-
-While can't handle the following subpage case:
-
-  0       32K     64K     96K     128K
-  |       |///////||//////|       ||
-
-lockstart=32K
-lockend=96K - 1
-
-In this case, although the range cross 2 pages,
-truncate_pagecache_range() will invalidate no page at all, but only zero
-the [32K, 96K) range of the two pages.
-
-Thus filemap_range_has_page(32K, 96K-1) will always return true, thus we
-will never meet the loop exit condition.
+And since the page no longer has btrfs subpage structure, the subpage
+dirty bitmap will be cleared, preventing the dirty range from
+written back, thus no way to wake up the ordered extent.
 
 [FIX]
-Fix the problem by doing page alignment for the lock range.
+Just follow other fses, only to invalidate the page if the range covers
+the full page.
 
-Function filemap_range_has_page() has already handled lend < lstart
-case, we only need to round up @lockstart, and round_down @lockend for
-truncate_pagecache_range().
+There are cases like truncate_setsize() which can call
+btrfs_invalidatepage() with offset == 0 and length != 0 for the last
+page of an inode.
 
-This modification should not change any thing for sector size ==
-PAGE_SIZE case, as in that case our range is already page aligned.
+Although the old code will still try to invalidate the full page, we are
+still safe to just wait for ordered extent to finish.
+So it shouldn't cause extra problems.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/file.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 8f71699fdd18..45ec3f5ef839 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2471,6 +2471,16 @@ static int btrfs_punch_hole_lock_range(struct inode *inode,
- 				       const u64 lockend,
- 				       struct extent_state **cached_state)
- {
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index b8cf9709b225..fd648f2c0242 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8330,7 +8330,19 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 	 */
+ 	wait_on_page_writeback(page);
+ 
+-	if (offset) {
 +	/*
-+	 * For subpage case, if the range is not at page boundary, we could
-+	 * have pages at the leading/tailing part of the range.
-+	 * This could lead to dead loop since filemap_range_has_page()
-+	 * will always return true.
-+	 * So here we need to do extra page alignment for
-+	 * filemap_range_has_page().
++	 * For subpage case, we have call sites like
++	 * btrfs_punch_hole_lock_range() which passes range not aligned to
++	 * sectorsize.
++	 * If the range doesn't cover the full page, we don't need to and
++	 * shouldn't clear page extent mapped, as page->private can still
++	 * record subpage dirty bits for other part of the range.
++	 *
++	 * For cases where can invalidate the full even the range doesn't
++	 * cover the full page, like invalidating the last page, we're
++	 * still safe to wait for ordered extent to finish.
 +	 */
-+	u64 page_lockstart = round_up(lockstart, PAGE_SIZE);
-+	u64 page_lockend = round_down(lockend + 1, PAGE_SIZE) - 1;
- 	while (1) {
- 		struct btrfs_ordered_extent *ordered;
- 		int ret;
-@@ -2491,7 +2501,7 @@ static int btrfs_punch_hole_lock_range(struct inode *inode,
- 		    (ordered->file_offset + ordered->num_bytes <= lockstart ||
- 		     ordered->file_offset > lockend)) &&
- 		     !filemap_range_has_page(inode->i_mapping,
--					     lockstart, lockend)) {
-+					     page_lockstart, page_lockend)) {
- 			if (ordered)
- 				btrfs_put_ordered_extent(ordered);
- 			break;
++	if (!(offset == 0 && length == PAGE_SIZE)) {
+ 		btrfs_releasepage(page, GFP_NOFS);
+ 		return;
+ 	}
 -- 
 2.31.1
 
