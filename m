@@ -2,236 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AE436DE88
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 19:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543E536DE81
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 19:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhD1RlI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Apr 2021 13:41:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60184 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242177AbhD1RkH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:40:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 24A53B165;
-        Wed, 28 Apr 2021 17:39:16 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 59143DA783; Wed, 28 Apr 2021 19:36:53 +0200 (CEST)
-Date:   Wed, 28 Apr 2021 19:36:53 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix race leading to unpersisted data and metadata
- on fsync
-Message-ID: <20210428173653.GR7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <3afbe2773f00218de9073277f9b56b4f08e7513a.1619518907.git.fdmanana@suse.com>
+        id S242573AbhD1Rkw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Apr 2021 13:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242684AbhD1Rjh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 28 Apr 2021 13:39:37 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486FEC061573
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 10:38:51 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id u20so32229794qku.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 10:38:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYLdHztH/9kJog5jjj/uRHWMj3GwPpeWVQ6oeN/1Rws=;
+        b=xZ1P7wao9Wa+JRxZ6dtoxjB71jvW9bHqpnsfb5UrvljOoJfCaPw+HicuSpBome27fh
+         gXP79fBNPnctM8UOk7zEcRwkPhXmvPFfjwa9L1BVbiET2Jxum/VZB4DnXSrzylTWKfVT
+         KjOMR2v71B6cIm+IUcgdBS4xEI+eyV030yoosJrjbeMS6rVueX1kSzHPZZ6XqaGTUYv5
+         IBya+Zas2gVolQAptsNwXXFOtn68NxFcJZ85vl29YTJx4LCgdHMRxEHb6FhR5LRNTsHm
+         7s+undBpy8Q/0B3e9k3Ze4cb5CjF0D6WBHbwOauN+b9C7+yn0FjHGnCPecNaZMGU6qlO
+         90yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NYLdHztH/9kJog5jjj/uRHWMj3GwPpeWVQ6oeN/1Rws=;
+        b=Vs50/euoE7bO3ulTXszqOlqurZCYrl2qzw1Q+kRG3na7JMA1Y7zKK6Wnu6tgLfvk9Y
+         NDiq1getAv4pLBQfHtOikQi4CgdMoHNrB+RTRwHP7bJYDf2/tNpHdPuUm7LYYq1kZKk5
+         qSad8NVCUkwCExJxQR8zlKbNy7xmTvvFmMbUpf9KpQEUAx5k+LE6JQy8UDDfOKG9bIW2
+         Qs4MGfVOrMMxNTvtM5zcB0BgyrKiqfAc16Q856CB0AuLxOhkxLZlov+s3R3tOaAsq6rN
+         5v0mHeD1+C0cNe+sG6WQ2QtZwLXhl+5RphmVYC4e67THReghK42GyChqhWSsI5Zsg6h/
+         SDcA==
+X-Gm-Message-State: AOAM532qrk0qnhHPnTx/VGMFWZaH9AmEOe6CTQJQ4RfDFXZDSf7mOxMa
+        aFcX265XOg8KDFwGm3ydlF9yJFKeaRI0lA==
+X-Google-Smtp-Source: ABdhPJx9h4yuSel2/2aCmv6+ZO5A5p/HnMhSz1b7fi4gYs1cJal0BggpewATLZNuDFM6vaqYXbdCXw==
+X-Received: by 2002:a37:4185:: with SMTP id o127mr30381765qka.247.1619631529794;
+        Wed, 28 Apr 2021 10:38:49 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id t3sm278464qke.72.2021.04.28.10.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 10:38:49 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/7] Preemptive flushing improvements
+Date:   Wed, 28 Apr 2021 13:38:41 -0400
+Message-Id: <cover.1619631053.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3afbe2773f00218de9073277f9b56b4f08e7513a.1619518907.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:27:20AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> When doing a fast fsync on a file, there is a race which can result in the
-> fsync returning success to user space without logging the inode and without
-> durably persisting new data.
-> 
-> The following example shows one possible scenario for this:
-> 
->    $ mkfs.btrfs -f /dev/sdc
->    $ mount /dev/sdc /mnt
-> 
->    $ touch /mnt/bar
->    $ xfs_io -f -c "pwrite -S 0xab 0 1M" -c "fsync" /mnt/baz
-> 
->    # Now we have:
->    # file bar == inode 257
->    # file baz == inode 258
-> 
->    $ mv /mnt/baz /mnt/foo
-> 
->    # Now we have:
->    # file bar == inode 257
->    # file foo == inode 258
-> 
->    $ xfs_io -c "pwrite -S 0xcd 0 1M" /mnt/foo
-> 
->    # fsync bar before foo, it is important to trigger the race.
->    $ xfs_io -c "fsync" /mnt/bar
->    $ xfs_io -c "fsync" /mnt/foo
-> 
->    # After this:
->    # inode 257, file bar, is empty
->    # inode 258, file foo, has 1M filled with 0xcd
-> 
->    <power failure>
-> 
->    # Replay the log:
->    $ mount /dev/sdc /mnt
-> 
->    # After this point file foo should have 1M filled with 0xcd and not 0xab
-> 
-> The following steps explain how the race happens:
-> 
-> 1) Before the first fsync of inode 258, when it has the "baz" name, its
->    ->logged_trans is 0, ->last_sub_trans is 0 and ->last_log_commit is -1.
->    The inode also has the full sync flag set;
-> 
-> 2) After the first fsync, we set inode 258 ->logged_trans to 6, which is
->    the generation of the current transaction, and set ->last_log_commit
->    to 0, which is the current value of ->last_sub_trans (done at
->    btrfs_log_inode()).
-> 
->    The full sync flag is cleared from the inode during the fsync.
-> 
->    The log sub transaction that was committed had an ID of 0 and when we
->    synced the log, at btrfs_sync_log(), we incremented root->log_transid
->    from 0 to 1;
-> 
-> 3) During the rename:
-> 
->    We update inode 258, through btrfs_update_inode(), and that causes its
->    ->last_sub_trans to be set to 1 (the current log transaction ID), and
->    ->last_log_commit remains with a value of 0.
-> 
->    After updating inode 258, because we have previously logged the inode
->    in the previous fsync, we log again the inode through the call to
->    btrfs_log_new_name(). This results in updating the inode's
->    ->last_log_commit from 0 to 1 (the current value of its
->    ->last_sub_trans).
-> 
->    The ->last_sub_trans of inode 257 is updated to 1, which is the ID of
->    the next log transaction;
-> 
-> 4) Then a buffered write against inode 258 is made. This leaves the value
->    of ->last_sub_trans as 1 (the ID of the current log transaction, stored
->    at root->log_transid);
-> 
-> 5) Then an fsync against inode 257 (or any other inode other than 258),
->    happens. This results in committing the log transaction with ID 1,
->    which results in updating root->last_log_commit to 1 and bumping
->    root->log_transid from 1 to 2;
-> 
-> 6) Then an fsync against inode 258 starts. We flush delalloc and wait only
->    for writeback to complete, since the full sync flag is not set in the
->    inode's runtime flags - we do not wait for ordered extents to complete.
-> 
->    Then, at btrfs_sync_file(), we call btrfs_inode_in_log() before the
->    ordered extent completes. The call returns true:
-> 
->      static inline bool btrfs_inode_in_log(...)
->      {
->          bool ret = false;
-> 
->          spin_lock(&inode->lock);
->          if (inode->logged_trans == generation &&
->              inode->last_sub_trans <= inode->last_log_commit &&
->              inode->last_sub_trans <= inode->root->last_log_commit)
->                  ret = true;
->          spin_unlock(&inode->lock);
->          return ret;
->      }
-> 
->    generation has a value of 6 (fs_info->generation), ->logged_trans also
->    has a value of 6 (set when we logged the inode during the first fsync
->    and when logging it during the rename), ->last_sub_trans has a value
->    of 1, set during the rename (step 3), ->last_log_commit also has a
->    value of 1 (set in step 3) and root->last_log_commit has a value of 1,
->    which was set in step 5 when fsyncing inode 257.
-> 
->    As a consequence we don't log the inode, any new extents and do not
->    sync the log, resulting in a data loss if a power failure happens
->    after the fsync and before the current transaction commits.
->    Also, because we do not log the inode, after a power failure the mtime
->    and ctime of the inode do not match those we had before.
-> 
->    When the ordered extent completes before we call btrfs_inode_in_log(),
->    then the call returns false and we log the inode and sync the log,
->    since at the end of ordered extent completion we update the inode and
->    set ->last_sub_trans to 2 (the value of root->log_transid) and
->    ->last_log_commit to 1.
-> 
-> This problem is found after removing the check for the emptiness of the
-> inode's list of modified extents in the recent commit 209ecbb8585bf6
-> ("btrfs: remove stale comment and logic from btrfs_inode_in_log()"),
-> added in the 5.13 merge window. However checking the emptiness of the
-> list is not really the way to solve this problem, and was never intended
-> to, because while that solves the problem for COW writes, the problem
-> persists for NOCOW writes because in that case the list is always empty.
-> 
-> In the case of NOCOW writes, even though we wait for the writeback to
-> complete before returning from btrfs_sync_file(), we end up not logging
-> the inode, which has a new mtime/ctime, and because we don't sync the log,
-> we never issue disk barriers (send REQ_PREFLUSH to the device) since that
-> only happens when we sync the log (when we write super blocks at
-> btrfs_sync_log()). So effectively, for a NOCOW case, when we return from
-> btrfs_sync_file() to user space, we are not guaranteering that the data is
-> durably persisted on disk.
-> 
-> Also, while the example above uses a rename exchange to show how the
-> problem happens, it is not the only way to trigger it. An alternative
-> could be adding a new hard link to inode 258, since that also results
-> in calling btrfs_log_new_name() and updating the inode in the log.
-> An example reproducer using the addition of a hard link instead of a
-> rename operation:
-> 
->   $ mkfs.btrfs -f /dev/sdc
->   $ mount /dev/sdc /mnt
-> 
->   $ touch /mnt/bar
->   $ xfs_io -f -c "pwrite -S 0xab 0 1M" -c "fsync" /mnt/foo
-> 
->   $ ln /mnt/foo /mnt/foo_link
->   $ xfs_io -c "pwrite -S 0xcd 0 1M" /mnt/foo
-> 
->   $ xfs_io -c "fsync" /mnt/bar
->   $ xfs_io -c "fsync" /mnt/foo
-> 
->   <power failure>
-> 
->   # Replay the log:
->   $ mount /dev/sdc /mnt
-> 
->   # After this point file foo often has 1M filled with 0xab and not 0xcd
-> 
-> The reasons leading to the final fsync of file foo, inode 258, not
-> persisting the new data are the same as for the previous example with
-> a rename operation.
-> 
-> So fix by never skipping logging and log syncing when there are still any
-> ordered extents in flight. To avoid making the conditional if statement
-> that checks if logging an inode is needed harder to read, place all the
-> logic into an helper function with separate if statements to make it more
-> manageable and easier to read.
-> 
-> A test case for fstests will follow soon.
-> 
-> For NOCOW writes, the problem existed before commit b5e6c3e170b770
-> ("btrfs: always wait on ordered extents at fsync time"), introduced in
-> kernel 4.19, then it went away with that commit since we started to always
-> wait for ordered extent completion before logging.
-> 
-> The problem came back again once the fast fsync path was changed again to
-> avoid waiting for ordered extent completion, in commit 487781796d3022
-> ("btrfs: make fast fsyncs wait only for writeback"), added in kernel 5.10.
-> 
-> However, for COW writes, the race only happens after the recent
-> commit 209ecbb8585bf6 ("btrfs: remove stale comment and logic from
-> btrfs_inode_in_log()"), introduced in the 5.13 merge window. For NOCOW
-> writes, the bug existed before that commit. So tag 5.10+ as the release
-> for stable backports.
+The following patch series is a set of improvements around our preemptive
+flushing infrastructure.  A user reported[1] a problem where the preemptive
+flushing was running non-stop on his full file system.  I was not able to
+reproduce this behavior, but noticed a few fundamental issues with how we
+decided to do preemptive flushing.  The main relevant thing is that we were not
+taking into account the global reserve when deciding if we needed to
+preemptively flush.  In cases such as the users file system where the majority
+of the free metadata space is taken up by the global reserve we could
+potentially always want to flush, which is annoying and not what we want.
 
-Thanks for the write up.
+Furthermore I noticed issues where we would clamp entirely too quickly, and
+where we made some poor decisions around delalloc.  None of these are ground
+breaking or huge improvements, but offer some better performance in some of the
+fsperf test cases.  This is the results of my recent run with the whole
+patchset.  You'll notice a "regression" in the 16g buffered write, this is
+mostly because of the test, if you look at the results on the nightly
+performance tests you'll see this test varies more than others.  Re-testing with
+just that test didn't show the same regression after multiple runs, so it's just
+noise.  I could have chosen to run all the tests multiple times to get an
+average over several runs, but that takes a fair bit of time.  Individual runs
+of the test showed no regression and often showed an improvement, so I feel
+comfortable calling it noise.  The full results are as follows
 
-> CC: stable@vger.kernel.org # 5.10+
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+dbench60 results
+  metric     baseline   current         diff
+==================================================
+qpathinfo       11.53     13.25    14.90%
+throughput     446.23    434.52    -2.62%
+flush         2502.92   1682.43   -32.78%
+qfileinfo        0.92      1.17    27.29%
+ntcreatex     1359.76    519.42   -61.80%
+qfsinfo          1.77      3.76   112.64%
+close            1.90      1.64   -13.91%å
+sfileinfo      209.76     76.43   -63.56%
+rename        1110.08    518.40   -53.30%
+find            13.84     13.13    -5.15%
+unlink        1192.89    521.53   -56.28%
+writex        1713.39   1321.39   -22.88%
+deltree        280.34    296.33     5.70%
+readx            3.16      2.91    -8.10%
+mkdir            0.03      0.02   -46.67%
+lockx            0.78      0.20   -73.89%
+unlockx          0.16      0.12   -23.81%
 
-Added to misc-next.
+emptyfiles500k results
+     metric         baseline   current         diff
+=========================================================
+write_io_kbytes       125000     125000    0.00%
+read_clat_ns_p99           0          0    0.00%
+write_bw_bytes      1.79e+08   1.85e+08    3.04%
+read_iops                  0          0    0.00%
+write_clat_ns_p50      17728      17280   -2.53%
+read_io_kbytes             0          0    0.00%
+read_io_bytes              0          0    0.00%
+write_clat_ns_p99      72704      68096   -6.34%
+read_bw_bytes              0          0    0.00%
+elapsed                    1          1    0.00%
+write_lat_ns_min           0          0    0.00%
+sys_cpu                91.23      89.16   -2.27%
+write_lat_ns_max           0          0    0.00%
+read_lat_ns_min            0          0    0.00%
+write_iops          43763.97   45093.80    3.04%
+read_lat_ns_max            0          0    0.00%
+read_clat_ns_p50           0          0    0.00%
+
+smallfiles100k results
+     metric         baseline   current         diff
+=========================================================
+write_io_kbytes     2.04e+08   2.04e+08    0.00%
+read_clat_ns_p99           0          0    0.00%
+write_bw_bytes      1.40e+08   1.40e+08    0.50%
+read_iops                  0          0    0.00%
+write_clat_ns_p50       6712       6944    3.46%
+read_io_kbytes             0          0    0.00%
+read_io_bytes              0          0    0.00%
+write_clat_ns_p99      16000      16512    3.20%
+read_bw_bytes              0          0    0.00%
+elapsed              1498.88       1491   -0.53%
+write_lat_ns_min     2858.38       2919    2.12%
+sys_cpu                 6.22       6.51    4.61%
+write_lat_ns_max    1.31e+08   1.27e+08   -2.77%
+read_lat_ns_min            0          0    0.00%
+write_iops          34081.44   34253.51    0.50%
+read_lat_ns_max            0          0    0.00%
+read_clat_ns_p50           0          0    0.00%
+
+dio4kbs16threads results
+     metric          baseline     current          diff
+=============================================================
+write_io_kbytes         4360879    5312908    21.83%
+read_clat_ns_p99              0          0     0.00%
+write_bw_bytes      74302497.38   90667585    22.02%
+read_iops                     0          0     0.00%
+write_clat_ns_p50        243968     238592    -2.20%
+read_io_kbytes                0          0     0.00%
+read_io_bytes                 0          0     0.00%
+write_clat_ns_p99      21094400   15007744   -28.85%
+read_bw_bytes                 0          0     0.00%
+elapsed                      61         61     0.00%
+write_lat_ns_min       38183.25      37949    -0.61%
+sys_cpu                    4.03       4.72    17.11%
+write_lat_ns_max       1.68e+09   8.46e+08   -49.55%
+read_lat_ns_min               0          0     0.00%
+write_iops             18140.26   22135.64    22.02%
+read_lat_ns_max               0          0     0.00%
+read_clat_ns_p50              0          0     0.00%
+
+randwrite2xram results
+     metric          baseline     current          diff
+=============================================================
+write_io_kbytes        27720434   36563300    31.90%
+read_clat_ns_p99              0          0     0.00%
+write_bw_bytes      93268100.75   1.16e+08    24.83%
+read_iops                     0          0     0.00%
+write_clat_ns_p50         13168      16512    25.39%
+read_io_kbytes                0          0     0.00%
+read_io_bytes                 0          0     0.00%
+write_clat_ns_p99         39360     125440   218.70%
+read_bw_bytes                 0          0     0.00%
+elapsed                  334.25        333    -0.37%
+write_lat_ns_min        5436.75       5682     4.51%
+sys_cpu                    8.22      12.57    52.96%
+write_lat_ns_max       4.05e+10   2.73e+10   -32.65%
+read_lat_ns_min               0          0     0.00%
+write_iops             22770.53   28425.17    24.83%
+read_lat_ns_max               0          0     0.00%
+read_clat_ns_p50              0          0     0.00%
+
+untarfirefox results
+metric    baseline   current        diff
+==============================================
+elapsed      47.23     46.82   -0.87%
+
+I'm still waiting on feedback from the user to make sure the patches fix the
+reported problem, but they're worthy on their own if they do not resolve the
+original reported issue.  Thanks,
+
+Josef
+
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=212185
+
+Josef Bacik (7):
+  btrfs: check worker before need_preemptive_reclaim
+  btrfs: only clamp the first time we have to start flushing
+  btrfs: take into account global rsv in need_preemptive_reclaim
+  btrfs: use the global rsv size in the preemptive thresh calculation
+  btrfs: don't include the global rsv size in the preemptive used amount
+  btrfs: only ignore delalloc if delalloc is much smaller than ordered
+  btrfs: handle preemptive delalloc flushing slightly differently
+
+ fs/btrfs/space-info.c | 56 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 38 insertions(+), 18 deletions(-)
+
+-- 
+2.26.3
+
