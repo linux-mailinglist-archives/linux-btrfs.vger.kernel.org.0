@@ -2,127 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EC836DE7C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 19:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D0F36DEC2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 20:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242935AbhD1RkT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Apr 2021 13:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242795AbhD1Rjq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Apr 2021 13:39:46 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE058C061573
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 10:39:00 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id n22so7700062qtk.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 10:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=7g6xGjOHYNHKhLW5t0Cgmu0S4h9xleWu943+SBo0kL8=;
-        b=A8q5xXGOVZXcIGwWvuuwDXuqCpPPENyKPZyfdOy3KN4hxuOawRSUPNrW+x0E2tY3gg
-         GNzhywqJTwAyKYJOXTOg5cIl5UWOIaKmBej33FX5yodcd8COzUmw0blFq+pFIV5Pe3Tm
-         fV7Kr7Ra2gIc7fdpJ9FzSnxTGWe7n9/mYpQjARZ9l/qFnLbwPkn8bcY51YSnKV647dk/
-         SE5+HF5TtZRChHTQjfrygXBNhFM/8H6aAC8G71RTeuhqeHm8BvPfA9Mei/7Yo+McdK2B
-         SJJTeONpddEJY8ng7aollBFEOVed8Zc9cAnLvB9xvl6b4B3O6P8tjUmLaKyDjlPyumID
-         vK4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7g6xGjOHYNHKhLW5t0Cgmu0S4h9xleWu943+SBo0kL8=;
-        b=T7QmW9ECEBRdph4h3efHx2QJprh+dzRvNlm5LlJiM1EphJmOiof7mLMzQrZ3dAz0Pg
-         lkMHLM4E99BnsihFw4BJb81wigYKqy2uMJ4zW3hGlM+TMYY5jCp3016wbRDDy24mM9vs
-         D4lR6sz5NToMGfpK1OjxffGvyky7gNzldbHpIyAEI4jqQqyc4iO3fLwJSN7d7jelM60Z
-         JXReZYHsGUE3rPkp/MLj8lCMOACjkFZCIgSTsXOfwOXeHQtePIxr4sM1T/5Oj/2kDHlY
-         5yspllGoVcUvsjT1lV+ApxeO+y5pob23srzDvoaCvHA43p7m+EY3yvObuKKErmOxOcQs
-         MoEA==
-X-Gm-Message-State: AOAM531GkfUfYET/p4BViE10WLXCUUUoXgsJuCM/f1od+9Wl+B3Ql6jD
-        jamtaldMzHDmT+mkdO2DSP6L85LYBRSnZw==
-X-Google-Smtp-Source: ABdhPJw+X3R31ueDdtX5+IgJkSJzo9H6ZZcQljDZIlRigipKDgWUadPt0fSnp09YhcwBAzYiMMkzeQ==
-X-Received: by 2002:a05:622a:253:: with SMTP id c19mr28125158qtx.53.1619631539799;
-        Wed, 28 Apr 2021 10:38:59 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y6sm271570qkd.106.2021.04.28.10.38.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 10:38:59 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 7/7] btrfs: handle preemptive delalloc flushing slightly differently
-Date:   Wed, 28 Apr 2021 13:38:48 -0400
-Message-Id: <63c38e3b1c4b1214859852dbc83dac9115a2f26a.1619631053.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1619631053.git.josef@toxicpanda.com>
-References: <cover.1619631053.git.josef@toxicpanda.com>
+        id S243423AbhD1SFw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Apr 2021 14:05:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41348 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243398AbhD1SFw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 28 Apr 2021 14:05:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2CD36ABE8;
+        Wed, 28 Apr 2021 18:05:06 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 55295DA783; Wed, 28 Apr 2021 20:02:43 +0200 (CEST)
+Date:   Wed, 28 Apr 2021 20:02:43 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: delete unneeded assignments in btrfs_defrag_file
+Message-ID: <20210428180243.GS7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Tian Tao <tiantao6@hisilicon.com>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+References: <1619488221-29490-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1619488221-29490-1-git-send-email-tiantao6@hisilicon.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we decide to flush delalloc from the preemptive flusher, we really do
-not want to wait on ordered extents, as it gains us nothing.  However
-there was logic to go ahead and wait on ordered extents if there was
-more ordered bytes than delalloc bytes.  We do not want this behavior,
-so pass through whether this flushing is for preemption, and do not wait
-for ordered extents if that's the case.  Also break out of the shrink
-loop after the first flushing, as we just want to one shot shrink
-delalloc.
+On Tue, Apr 27, 2021 at 09:50:21AM +0800, Tian Tao wrote:
+> ret is assigned -EAGAIN at line 1455 and then reassigned defrag_count
+> at line 1547 after exiting the while loop, but the btrfs_defrag_file
+> function returns a negative number indicating that the execution failed
+> because it does not make sense to reassign defrag_count to ret, so
+> delete it.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/space-info.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+The line references are fragile, so the 1455 is after defrag is
+cancelled.
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index cf09b23f3448..b2d834b92811 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -495,7 +495,8 @@ static inline u64 calc_reclaim_items_nr(struct btrfs_fs_info *fs_info,
-  */
- static void shrink_delalloc(struct btrfs_fs_info *fs_info,
- 			    struct btrfs_space_info *space_info,
--			    u64 to_reclaim, bool wait_ordered)
-+			    u64 to_reclaim, bool wait_ordered,
-+			    bool for_preempt)
- {
- 	struct btrfs_trans_handle *trans;
- 	u64 delalloc_bytes;
-@@ -532,7 +533,7 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
- 	 * ordered extents, otherwise we'll waste time trying to flush delalloc
- 	 * that likely won't give us the space back we need.
- 	 */
--	if (ordered_bytes > delalloc_bytes)
-+	if (ordered_bytes > delalloc_bytes && !for_preempt)
- 		wait_ordered = true;
- 
- 	loops = 0;
-@@ -551,6 +552,14 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
- 				break;
- 		}
- 
-+		/*
-+		 * If we are for preemption we just want a one-shot of delalloc
-+		 * flushing so we can stop flushing if we decide we don't need
-+		 * to anymore.
-+		 */
-+		if (for_preempt)
-+			break;
-+
- 		spin_lock(&space_info->lock);
- 		if (list_empty(&space_info->tickets) &&
- 		    list_empty(&space_info->priority_tickets)) {
-@@ -702,7 +711,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 	case FLUSH_DELALLOC:
- 	case FLUSH_DELALLOC_WAIT:
- 		shrink_delalloc(fs_info, space_info, num_bytes,
--				state == FLUSH_DELALLOC_WAIT);
-+				state == FLUSH_DELALLOC_WAIT, for_preempt);
- 		break;
- 	case FLUSH_DELAYED_REFS_NR:
- 	case FLUSH_DELAYED_REFS:
--- 
-2.26.3
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>  fs/btrfs/ioctl.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index ee1dbab..2b3b228 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -1544,8 +1544,6 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+>  		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
+>  	}
+>  
+> -	ret = defrag_count;
 
+But this would change semantics of the whole function, after deleting
+this line any stale value of 'ret' would be returned, it's used for some
+intermediate return values in the whole while loop.
+
+1597                 if (btrfs_defrag_cancelled(fs_info)) {
+1598                         btrfs_debug(fs_info, "defrag_file cancelled");
+1599                         ret = -EAGAIN;
+1600                         break;
+1601                 }
+
+Jumping to the 'out_ra' label looks like a candidate fix but that also
+jumps around all the incompat bit setting, so that could in some cases
+miss to set them properly. And actually this is a problem with all the
+other error cases.
+
+I'm not yet sure what's the proper fix, but the errors from within the
+while loop should be returned and incompat bits set.
