@@ -2,263 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6A736D4B2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 11:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A61936D602
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 12:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhD1JZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Apr 2021 05:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
+        id S238858AbhD1K5Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Apr 2021 06:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhD1JZI (ORCPT
+        with ESMTP id S238785AbhD1K5Q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Apr 2021 05:25:08 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F99C061574;
-        Wed, 28 Apr 2021 02:24:24 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id o5so62862985qkb.0;
-        Wed, 28 Apr 2021 02:24:24 -0700 (PDT)
+        Wed, 28 Apr 2021 06:57:16 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3993C061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 03:56:30 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id q4so17979428qtn.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 03:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=e4E23fo2uqkPZqy8jNheR4lbTC+Jlc+ewTDxu0GmTSM=;
-        b=BlEAY98lCkzFSiCpYCaSn3l8ykr7Su0b9hROF13loutsfllKMsX9jB1ckoplwZtPM2
-         IKSr/1BGXeHQZmfzPJ16X22qpaqudOnBLeeqNz6wG9hiGEZwS7hYRHJdobpSdRrLoTAy
-         PfApEgN2GbggCjWFIo5+hcKnpaNW/nZ7CXcotb4MtuBbkKXEow9XVHp9iV2IBI1vcWJu
-         6QNbygyxYIh4bS4e50piLnuemILIT6C/utzJnwb9ZZ+I1kBabqScZM8ZsKNhHCvrYeHR
-         AlnsyOEioS5nvm9xPvK5sOM3woX5eTFev7Ndu2VZ+1B7Mso21Ieams91t/huIxL/4BR+
-         1Hhg==
+        bh=OD6Hi4nLGg76PuWCpjxTWVENAfu0hGMuqrkJmSY6k1I=;
+        b=sn3UxI+MMm+mi8Yw4toWiz+EvMARHA6b5nnCF8ARpsvZmN5Ybbj1Jew4w2govg/kBu
+         t239TM2iIG4Q8cjvcyYw7Qz/OOe0+bfYUNZYLzyankSXHMekaWk6c8wjY+zcFhmfg0jR
+         I5Li1Z2AUOeYBwZ7DXzRPeYAIM10LgOUUUQa+kBSZyJhEbMbkQyP/1fvo2E5GffT0oum
+         zFxH8v0GkzpvotDtJ1NY54h1jlJkS6oXH0ZE6/TTuTdXPECHTwzpBtC+CBlkutTqPHVU
+         0jvl0IIUqVOn6c5N8I2O2aZLXIKYjKxeI1WggGRhAiZrlSH2X7WV11uJfy5D5oZiQAiB
+         klyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=e4E23fo2uqkPZqy8jNheR4lbTC+Jlc+ewTDxu0GmTSM=;
-        b=NiWOL+WZbUVXGxqRCmuYhwTLXpmJ4G3lAm8sBwkrcwkSrCMqsCvoGdMbH3Z+YWYaRV
-         xyF1IBP32tAsn2z2iMm+vhVZmsbalEYfqTnT3r5IOCZAL355jT0ABdiK9XDaR37bAK+I
-         lN1m2otWb8/shKWnx+uPsobVkn/kXlgD3po42wSD8sYKkq0ZmQf6da7S/QCsSPEY8m0A
-         rEZoWA8XAu7e4KqiX1Php8s5lda9RfvhwA2NflNHlOZrLRzLjsadLgL6UVkhL+5IFaZ9
-         nBcKhFzjj/CptexfCRxdKUz8KCfAd8HDPHocFD2F1BB7b4lR8M2mV0Zd97Xp3acpITZy
-         AdJQ==
-X-Gm-Message-State: AOAM530GePpEuFy3f8y6L04aCAY7RxU0DL05gTItCBO+Uvt1snPQdLII
-        l3rsYLUNahH8nQFc/BfsUiSLGkd9zsAIZdEr+7VKa6LH32da5A==
-X-Google-Smtp-Source: ABdhPJz5G6CVjVfRFGqdfjJ5avdbVSeJUOYH04EshpTiM8+FEaYQM6/u+QhKQwu2gOEDpWI9HBuuUyPB3nXWnl06qXg=
-X-Received: by 2002:a37:4017:: with SMTP id n23mr26213255qka.338.1619601863531;
- Wed, 28 Apr 2021 02:24:23 -0700 (PDT)
+        bh=OD6Hi4nLGg76PuWCpjxTWVENAfu0hGMuqrkJmSY6k1I=;
+        b=NMLn/fWtdbu1PLiuS/s1E1L+5q+guRqVXg0lXG5S6sxWdi2jTHwS553f1sEP2DhGwO
+         POosgR8rgqayIUA+EBtnzaX9UcKeU6FQE8e75E9d91+trKj8JxSpw7/1OHynBRGU+z8k
+         gypLs4DVwDtmoYpblLjGzYejR8oHTCzuwMBaPTnaM9XbO04oNkZx+eVX/F6eYqtZLli9
+         zZpIV8WeVHw1g8fXZIHVp/lV+FUxHa80dQVbUi/EPfU+5HSzjt8xg6opsIcf0mBH4OWj
+         1X29awrLml23O2mYw6ac18yc+U4y9rV6mux4O1foDRy3XVIJZoadWeVT0XK2XXCYJJ5a
+         3FZg==
+X-Gm-Message-State: AOAM531ddKDIddUFDrQDm5TnSCS/AvL7H7BPC5BJTiKRVgoG0t7MG4S2
+        RRdOzuflm1+HVxERh4nEWOhSveDC4U3tAYwKCAc=
+X-Google-Smtp-Source: ABdhPJwpNbiK8YYFpL1apX+O5647TzI76pc0o0oYE2P75RRYEXd+C5ij8tcmNH4xPiGbQQS9YeFXVpMe+T0r1Pwz9mE=
+X-Received: by 2002:ac8:5b81:: with SMTP id a1mr5524160qta.259.1619607389734;
+ Wed, 28 Apr 2021 03:56:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428084608.21213-1-johannes.thumshirn@wdc.com> <20210428084608.21213-3-johannes.thumshirn@wdc.com>
-In-Reply-To: <20210428084608.21213-3-johannes.thumshirn@wdc.com>
+References: <20210427230349.369603-1-wqu@suse.com> <20210427230349.369603-41-wqu@suse.com>
+In-Reply-To: <20210427230349.369603-41-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 28 Apr 2021 10:24:12 +0100
-Message-ID: <CAL3q7H4z=eePUYbOgOVZhMCp+u8m8bbvKfU5nNqq3rd_8YNm1g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] btrfs: add test for zone auto reclaim
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     Eryu Guan <guan@eryu.me>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        fstests <fstests@vger.kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>
+Date:   Wed, 28 Apr 2021 11:56:18 +0100
+Message-ID: <CAL3q7H5P79kEqWUnN2QKG92N3u7+G0uWbmeC0yT1LypV63MAYA@mail.gmail.com>
+Subject: Re: [Patch v2 40/42] btrfs: fix a crash caused by race between
+ prepare_pages() and btrfs_releasepage()
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 9:46 AM Johannes Thumshirn
-<johannes.thumshirn@wdc.com> wrote:
+On Wed, Apr 28, 2021 at 12:06 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> Add a test for the patch titled "btrfs: zoned: automatically reclaim
-> zones".
-
-Since this is already in Linus' tree, we could specify here the commit.
-
+> [BUG]
+> When running generic/095, there is a high chance to crash with subpage
+> data RW support:
+>  assertion failed: PagePrivate(page) && page->private, in fs/btrfs/subpag=
+e.c:171
+>  ------------[ cut here ]------------
+>  kernel BUG at fs/btrfs/ctree.h:3403!
+>  Internal error: Oops - BUG: 0 [#1] SMP
+>  CPU: 1 PID: 3567 Comm: fio Tainted: G         C O      5.12.0-rc7-custom=
++ #17
+>  Hardware name: Khadas VIM3 (DT)
+>  Call trace:
+>   assertfail.constprop.0+0x28/0x2c [btrfs]
+>   btrfs_subpage_assert+0x80/0xa0 [btrfs]
+>   btrfs_subpage_set_uptodate+0x34/0xec [btrfs]
+>   btrfs_page_clamp_set_uptodate+0x74/0xa4 [btrfs]
+>   btrfs_dirty_pages+0x160/0x270 [btrfs]
+>   btrfs_buffered_write+0x444/0x630 [btrfs]
+>   btrfs_direct_write+0x1cc/0x2d0 [btrfs]
+>   btrfs_file_write_iter+0xc0/0x160 [btrfs]
+>   new_sync_write+0xe8/0x180
+>   vfs_write+0x1b4/0x210
+>   ksys_pwrite64+0x7c/0xc0
+>   __arm64_sys_pwrite64+0x24/0x30
+>   el0_svc_common.constprop.0+0x70/0x140
+>   do_el0_svc+0x28/0x90
+>   el0_svc+0x2c/0x54
+>   el0_sync_handler+0x1a8/0x1ac
+>   el0_sync+0x170/0x180
+>  Code: f0000160 913be042 913c4000 955444bc (d4210000)
+>  ---[ end trace 3fdd39f4cccedd68 ]---
 >
-> This test creates a two file on a newly created FS in a way that when we
-> delete the first one, an auto reclaim process will be triggered by the FS=
-.
+> [CAUSE]
+> Although prepare_pages() calls find_or_create_page(), which returns the
+> page locked, but in later prepare_uptodate_page() calls, we may call
+> btrfs_readpage() which unlocked the page.
 >
-> After the reclaim process, it verifies that the data was moved to another
-> zone and old zone was successfully reset.
+> This leaves a window where btrfs_releasepage() can sneak in and release
+> the page.
 >
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> This can be proven by the dying ftrace dump:
+>  fio-3567 : prepare_pages: r/i=3D5/257 page_offset=3D262144 private=3D1 a=
+fter set extent map
+>  fio-3536 : __btrfs_releasepage.part.0: r/i=3D5/257 page_offset=3D262144 =
+private=3D1 clear extent map
+>  fio-3567 : prepare_uptodate_page.part.0: r/i=3D5/257 page_offset=3D26214=
+4 private=3D0 after readpage
+>  fio-3567 : btrfs_dirty_pages: r/i=3D5/257 page_offset=3D262144 private=
+=3D0  NOT PRIVATE
+>
+> [FIX]
+> In prepare_uptodate_page(), we should not only check page->mapping, but
+> also PagePrivate() to ensure we are still hold a correct page which has
+> proper fs context setup.
+>
+> Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Tested-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  common/config       |   1 +
->  tests/btrfs/236     | 103 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/236.out |   2 +
->  tests/btrfs/group   |   1 +
->  4 files changed, 107 insertions(+)
->  create mode 100755 tests/btrfs/236
->  create mode 100644 tests/btrfs/236.out
+>  fs/btrfs/file.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 >
-> diff --git a/common/config b/common/config
-> index a47e462c7792..1a26934985dd 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -226,6 +226,7 @@ export FSVERITY_PROG=3D"$(type -P fsverity)"
->  export OPENSSL_PROG=3D"$(type -P openssl)"
->  export ACCTON_PROG=3D"$(type -P accton)"
->  export E2IMAGE_PROG=3D"$(type -P e2image)"
-> +export BLKZONE_PROG=3D"$(type -P blkzone)"
->
->  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
->  # newer systems have udevadm command but older systems like RHEL5 don't.
-> diff --git a/tests/btrfs/236 b/tests/btrfs/236
-> new file mode 100755
-> index 000000000000..3be74196ec5d
-> --- /dev/null
-> +++ b/tests/btrfs/236
-> @@ -0,0 +1,103 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Western Digital Corporation.  All Rights Reserved.
-> +#
-> +# FS QA Test 236
-> +#
-> +# Test that zone autoreclaim works as expected, that is: if the dirty
-> +# threashold is exceeded the data gets relocated to new block group and =
-the
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 45ec3f5ef839..70a36852b680 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1341,7 +1341,17 @@ static int prepare_uptodate_page(struct inode *ino=
+de,
+>                         unlock_page(page);
+>                         return -EIO;
+>                 }
+> -               if (page->mapping !=3D inode->i_mapping) {
+> +
+> +               /*
+> +                * Since btrfs_readpage() will get the page unlocked, we =
+have
 
-threashold -> threshold
+I find the phrasing slightly confusing - saying btrfs_readpage() will
+get the page unlocked, gives the idea we pass it an unlocked page.
+Saying that btrfs_readpage() unlocks the page before it returns is more cle=
+ar.
 
-> +# old block group gets deleted. On block group deletion, the underlying =
-device
-> +# zone also needs to be reset.
-> +#
-> +seq=3D`basename $0`
-> +seqres=3D$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=3D`pwd`
-> +tmp=3D/tmp/$$
-> +status=3D1       # failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +_supported_fs btrfs
-> +_require_scratch
-> +_require_btrfs_command inspect-internal dump-tree
-> +_require_btrfs_command filesystem sync
-> +_require_command "$BLKZONE_PROG" blkzone
-> +_require_zoned_device "$SCRATCH_DEV"
-> +
-> +get_data_bg()
-> +{
-> +       $BTRFS_UTIL_PROG inspect-internal dump-tree -t CHUNK $SCRATCH_DEV=
- |\
-> +               grep -A 1 "CHUNK_ITEM" | grep -B 1 "type DATA" |\
-> +               grep -Eo "CHUNK_ITEM [[:digit:]]+" | cut -d ' ' -f 2
-> +}
-> +
-> +zonesize=3D$(cat /sys/block/$(_short_dev $SCRATCH_DEV)/queue/chunk_secto=
-rs)
-> +zonesize=3D$((zonesize << 9))
-> +
-> +_scratch_mkfs >/dev/null 2>&1
-> +_scratch_mount -o commit=3D5 # 5s commit time to speed up test
+> +                * a window where fadvice() can try to release the page.
 
-Why not 1s? Would even be faster.
+The race is far more generic and is related to another task calling
+btrfs_releasepage() before we are able to lock the page again.
+Can happen due to memory pressure, page migration, etc - certainly not
+specific to a concurrent fadvise() (and not fadvice) call.
 
-> +
-> +uuid=3D$(findmnt -n -o UUID "$SCRATCH_MNT")
-> +reclaim_threshold=3D75
-> +echo $reclaim_threshold > /sys/fs/btrfs/"$uuid"/bg_reclaim_threshold
-> +fill_percent=3D$((reclaim_threshold + 2))
-> +rest_percent=3D$((90 - fill_percent)) # make sure we're not creating a n=
-ew BG
-> +fill_size=3D$((zonesize * fill_percent / 100))
-> +rest=3D$((zonesize * rest_percent / 100))
-> +
-> +# step 1, fill FS over $fillsize
-> +$XFS_IO_PROG -fdc "pwrite -W 0 $fill_size" $SCRATCH_MNT/$seq.test1 >> $s=
-eqres.full
-> +$XFS_IO_PROG -fdc "pwrite -W 0 $rest" $SCRATCH_MNT/$seq.test2 >> $seqres=
-.full
-> +sleep 5 # need to make sure the transaction got committed
+So I would mention a concurrent btrfs_releasepage() call and not fadvise().
 
-I don't get this.
-Why not just call 'sync'? That commits the transaction too.
-Doing regular buffered writes followed by sync is more intuitive and faster=
-.
+> +                * Here we check both inode mapping and PagePrivate() to
+> +                * make sure the page is not released.
+> +                *
+> +                * The priavte flag check is essential for subpage as we =
+need
 
-If for some reason direct IO is really needed, it also misses a
-_require_odirect.
+priavte -> private
 
-> +
-> +zones_before=3D$($BLKZONE_PROG report $SCRATCH_DEV | grep -v -e em -e nw=
- | wc -l)
-> +echo "Before reclaim: $zones_before zones open" >> $seqres.full
-> +old_data_zone=3D$(get_data_bg)
-> +old_data_zone=3D$((old_data_zone >> 9))
-> +printf "Old data zone 0x%x\n" $old_data_zone >> $seqres.full
-> +
-> +# step 2, delete the 1st $fill_size sized file to trigger reclaim
-> +rm $SCRATCH_MNT/$seq.test1
-> +$BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-> +sleep 10 # 1 transaction commit for 'rm' and one for balance
-> +
-> +# check that we don't have more zones open than before
-> +zones_after=3D$($BLKZONE_PROG report $SCRATCH_DEV | grep -v -e em -e nw =
-| wc -l)
-> +echo "After reclaim: $zones_after zones open" >> $seqres.full
-> +
-> +# Check that old data zone was reset
-> +old_wptr=3D$($BLKZONE_PROG report -o $old_data_zone -c 1 $SCRATCH_DEV |\
-> +       grep -Eo "wptr 0x[[:xdigit:]]+" | cut -d ' ' -f 2)
-> +if [ "$old_wptr" !=3D "0x000000" ]; then
-> +       _fail "Old wptr still at $old_wptr"
-> +fi
-> +
-> +new_data_zone=3D$(get_data_bg)
-> +new_data_zone=3D$((new_data_zone >> 9))
-> +printf "New data zone 0x%x\n" $new_data_zone >> $seqres.full
-> +
-> +# Check that data was really relocated to a different zone
-> +if [ $old_data_zone -eq $new_data_zone ]; then
-> +       _fail "New zone same as old zone"
-
-The use of _fail is usually discouraged. A simple echo would suffice here.
-
-Other than that, it looks good, but I don't have an environment to
-test zoned devices, so it's just eyeballing.
-
+Other than that it looks good.
 Thanks.
 
-> +fi
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/236.out b/tests/btrfs/236.out
-> new file mode 100644
-> index 000000000000..b6b6e0cad9a7
-> --- /dev/null
-> +++ b/tests/btrfs/236.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 236
-> +Silence is golden
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index 331dd432fac3..62c9c761e974 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -238,3 +238,4 @@
->  233 auto quick subvolume
->  234 auto quick compress rw
->  235 auto quick send
-> +236 auto quick balance
+> +                * to store extra bitmap using page->private.
+> +                */
+> +               if (page->mapping !=3D inode->i_mapping || !PagePrivate(p=
+age)) {
+>                         unlock_page(page);
+>                         return -EAGAIN;
+>                 }
 > --
 > 2.31.1
 >
