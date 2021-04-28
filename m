@@ -2,78 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BF536D698
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 13:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC85836D981
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Apr 2021 16:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236887AbhD1LhU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Apr 2021 07:37:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29645 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232607AbhD1LhU (ORCPT
+        id S234721AbhD1OYI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Apr 2021 10:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234075AbhD1OYF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Apr 2021 07:37:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619609795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b7aKoQR+eie4eZGaFpJxqc5kuUv3lh07wOx/sg0Ymk8=;
-        b=RfkrTA1TclZN6Z2p7hRXZIxR12eDQ/BwqrJr1KQsPSrTQL2b5v08LGRBpjv7n9X67hmYcU
-        DT3Ug91s4FIxbmzhO4w5K0nmNyBE5LK6GfC3br52TgVV2lvG0RL/PUeUFTEkDsV9AgpXuN
-        aU5mwHzD/uQIi79XkZsUsiHkDvigD+k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-kil4ggLvPT-19GCcfTYulw-1; Wed, 28 Apr 2021 07:36:31 -0400
-X-MC-Unique: kil4ggLvPT-19GCcfTYulw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C5691936B83;
-        Wed, 28 Apr 2021 11:36:30 +0000 (UTC)
-Received: from ws.net.home (ovpn-115-34.ams2.redhat.com [10.36.115.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 134005DF26;
-        Wed, 28 Apr 2021 11:36:28 +0000 (UTC)
-Date:   Wed, 28 Apr 2021 13:36:26 +0200
-From:   Karel Zak <kzak@redhat.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     util-linux@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH v3 0/3] implement zone-aware probing/wiping for zoned
- btrfs
-Message-ID: <20210428113626.lq3hy5qci5bwnyru@ws.net.home>
-References: <20210426055036.2103620-1-naohiro.aota@wdc.com>
+        Wed, 28 Apr 2021 10:24:05 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2006EC061573
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 07:23:20 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id j84so4450508ybj.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Apr 2021 07:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=A1kDfbi8lY+rx92PDuX6gzpOkuWJoEPhRwo4qmLKzxQ=;
+        b=PliGppYaPkZgG2FhXiQPCeO5oikC+InYg2n5TRz/2xvRtv97gsp+Cu9Qd6JnK1B+8P
+         DXH0PDA9mItSjDD1lNJq6I8QeVQD2sgiMqOlXJiop/ibsSLoeqIrfQgcltqdcrSrTsKI
+         nCV9/p5CcJwS+iDJi2k/cHndfDrF5p7B1j81xn90xPzLyjaWWug0brSyMWk8AYC8KeSs
+         CmJ3yC/3G5pse7T8W3akpa2wUD+/pAfcN19v/SSTg+qam9zxst2NAze6/XESA1gHwCOA
+         TjVPvyVhkx9DoNl9qMHytkQAswUlKVgiG1zOldGyuZzcbrHCCDwMpQ44iM8XZIrgNNdb
+         aiuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=A1kDfbi8lY+rx92PDuX6gzpOkuWJoEPhRwo4qmLKzxQ=;
+        b=Xrtcg1+5tYulNTWinJiBIjfhOIGLm+pGXvMndbZSuBv9gsAFd4dsABtgETMNHharlf
+         P2l0r8tLfbhShjpVfYTbHCo1MWtF6b8u//7yE9jd151Sqpdh+GT2zGr9O364e/Wl+fOG
+         xR5p2La26eZEnsVpk+qovQvkS+dILonirXD1rcNPqKw4bq8mJ9vaa+7hoYwc78tDBwL+
+         Mt+MqI4cyedxDsRkzDML+nqEhYaGmfyny8YELSRYVqLrdfysjZ8maNjTzkiIxi/czebE
+         JFM7FGcQSyEzmE8mUnaxO3+ttcyHsvjFDKJgJrQgkYOCljYCjyHRBkxScFA7aI3Y4rGT
+         hauA==
+X-Gm-Message-State: AOAM532z9vAwWCB+45iixFr5nNFdZU+9UitjO6/1Nez0N7dtaYNCAoUY
+        qUjRe5IudCOTfmd+6lCsYnrZYRgj/TiaO0fiIsc/PEliWI4=
+X-Google-Smtp-Source: ABdhPJx1527bPYL54wOTU4wHxAhu5YYSNQlY1G7CCVg9X2Cyz6ZmIRmXomttX8oeUUnnL7bp/gu+jfLj5IjqGIpWoco=
+X-Received: by 2002:a25:32c6:: with SMTP id y189mr41378700yby.184.1619619799222;
+ Wed, 28 Apr 2021 07:23:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210426055036.2103620-1-naohiro.aota@wdc.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210427230349.369603-1-wqu@suse.com> <20210427230349.369603-40-wqu@suse.com>
+In-Reply-To: <20210427230349.369603-40-wqu@suse.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Wed, 28 Apr 2021 10:22:43 -0400
+Message-ID: <CAEg-Je-Q4FfbjipyxZnHVrhyzx9kp_gv=s3Cb1v3q0LkRevqvQ@mail.gmail.com>
+Subject: Re: [Patch v2 39/42] btrfs: reject raid5/6 fs for subpage
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 02:50:33PM +0900, Naohiro Aota wrote:
-> Naohiro Aota (3):
->   blkid: implement zone-aware probing
->   blkid: add magic and probing for zoned btrfs
->   blkid: support zone reset for wipefs
-> 
->  include/blkdev.h                 |   9 ++
->  lib/blkdev.c                     |  29 ++++++
->  libblkid/src/blkidP.h            |   5 +
->  libblkid/src/probe.c             |  99 +++++++++++++++++--
->  libblkid/src/superblocks/btrfs.c | 159 ++++++++++++++++++++++++++++++-
->  5 files changed, 292 insertions(+), 9 deletions(-)
+On Tue, Apr 27, 2021 at 7:06 PM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Raid5/6 is not only unsafe due to its write-hole problem, but also has
+> tons of hardcoded PAGE_SIZE.
+>
+> So disable it for subpage support for now.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/disk-io.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index c9a3036c23bf..e6b941932a2b 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3407,6 +3407,16 @@ int __cold open_ctree(struct super_block *sb, stru=
+ct btrfs_fs_devices *fs_device
+>                         goto fail_alloc;
+>                 }
+>         }
+> +       if (sectorsize !=3D PAGE_SIZE) {
+> +               if (btrfs_super_incompat_flags(fs_info->super_copy) &
+> +                       BTRFS_FEATURE_INCOMPAT_RAID56) {
+> +                       btrfs_err(fs_info,
+> +       "raid5/6 is not yet supported for sector size %u with page size %=
+lu",
+> +                               sectorsize, PAGE_SIZE);
+> +                       err =3D -EINVAL;
+> +                       goto fail_alloc;
+> +               }
+> +       }
+>
+>         ret =3D btrfs_init_workqueues(fs_info, fs_devices);
+>         if (ret) {
+> --
+> 2.31.1
+>
 
-Merged to the "next" branch (on github) and it will be merged to the
-"master" later after v2.37 release. 
+Couldn't this be restricted to ro-only safely?
 
-Thanks! (and extra thank for the examples :-)
 
-  Karel
-
--- 
- Karel Zak  <kzak@redhat.com>
- http://karelzak.blogspot.com
-
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
