@@ -2,88 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60E436E79B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 11:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2351336E79C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 11:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239730AbhD2JHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Apr 2021 05:07:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41326 "EHLO mx2.suse.de"
+        id S233500AbhD2JHx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Apr 2021 05:07:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41356 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232734AbhD2JHt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Apr 2021 05:07:49 -0400
+        id S232734AbhD2JHv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Apr 2021 05:07:51 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1619687222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=FzeLlbgLqxVGlbrUI6HgPIqz7rNJa+4jEFVFsqwzg7I=;
-        b=uX2Ak7P/GI74LSozzGowjmfc1HcjjxfmSOeKwEjYgaRHmkPAgGUEoleSDv3T1dQQL9EDR4
-        pmZQZVGt+i8MFzyzu5UMX5wvUwYp1ATIkhcggu3clqYq0qjaTaBo+2XMTjBSszaeC6b6o/
-        G1Ox5dh6hy6ZZcr/Q8QYgO8mWmx9jKI=
+        t=1619687224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/RoVjMJByJv/KChToVgXY+iQb7XvM269HatuufiwXlY=;
+        b=YktXvNBXRHFPPyt03iKe4k1ReQyIfuOYPZN1+T3wfzxFmvV+0r6c01j48HyFGDWRPIkH6i
+        BotCdnn4D9KOvTYy6Bhxv1mqpYazm1ZwKJze4sfz2fTW25qJblztdVoP0kyud01T3gMJpL
+        k00wZfvifjQdrNrMM4Zkf2EQ8Sfr37s=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6AD99AE58
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Apr 2021 09:07:02 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id C6BFCAF83;
+        Thu, 29 Apr 2021 09:07:04 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/3] btrfs-progs: image: make restored image file to be properly enlarged
-Date:   Thu, 29 Apr 2021 17:06:55 +0800
-Message-Id: <20210429090658.245238-1-wqu@suse.com>
+Cc:     Su Yue <l@damenly.su>
+Subject: [PATCH v2 1/3] btrfs-progs: image: remove the dead stat() call
+Date:   Thu, 29 Apr 2021 17:06:56 +0800
+Message-Id: <20210429090658.245238-2-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210429090658.245238-1-wqu@suse.com>
+References: <20210429090658.245238-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Recent kernel will refuse to mount restored image, even the source fs is
-empty:
- # mkfs.btrfs -f /dev/test/test
- # btrfs-image /dev/test/test /tmp/dump
- # btrfs-image -r /tmp/dump ~/test.img
- # mount ~/test.img /mnt/btrfs
- mount: /mnt/btrfs: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
- # dmesg -t | tail -n 7
- loop0: detected capacity change from 10592 to 0
- BTRFS info (device loop0): disk space caching is enabled
- BTRFS info (device loop0): has skinny extents
- BTRFS info (device loop0): flagging fs with big metadata feature
- BTRFS error (device loop0): device total_bytes should be at most 5423104 but found 10737418240
- BTRFS error (device loop0): failed to read chunk tree: -22
- BTRFS error (device loop0): open_ctree failed
+In restore_metadump(), we call stat() but never uses the result get.
 
-This is triggered by a recent kernel commit 3a160a933111 ("btrfs: drop never met disk total
-bytes check in verify_one_dev_extent").
+This call site is left by some code refactor, as the stat() call is now
+moved into fixup_device_size().
 
-But the root cause is, we didn't enlarge the output file if the source
-image only contains single device.
+So we can safely remove the call.
 
-This bug won't affect restore to block device, or the destination file
-is already large enough.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Su Yue <l@damenly.su>
+---
+ image/main.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-This patchset will fix the problem, and with new test case to detect
-such problem.
-
-Also remove one dead code exposed during the development.
-
-Changelog:
-v2:
-- Comments word change
-- Only enlarge the file when the target file is smaller than expected
-  device size
-- Change the prefix of the 1st patch
-  From "btrfs" to "btrfs-progs"
-
-Qu Wenruo (3):
-  btrfs-progs: image: remove the dead stat() call
-  btrfs-progs: image: enlarge the output file if no tree modification is
-    needed for restore
-  btrfs-progs: misc-tests: add test to ensure the restored image can be
-    mounted
-
- image/main.c                                  | 51 ++++++++++++++++---
- .../048-image-restore-mount/test.sh           | 20 ++++++++
- 2 files changed, 63 insertions(+), 8 deletions(-)
- create mode 100755 tests/misc-tests/048-image-restore-mount/test.sh
-
+diff --git a/image/main.c b/image/main.c
+index 48070e52c21f..24393188e5e3 100644
+--- a/image/main.c
++++ b/image/main.c
+@@ -2690,7 +2690,6 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
+ 	if (!ret && !multi_devices && !old_restore &&
+ 	    btrfs_super_num_devices(mdrestore.original_super) != 1) {
+ 		struct btrfs_root *root;
+-		struct stat st;
+ 
+ 		root = open_ctree_fd(fileno(out), target, 0,
+ 					  OPEN_CTREE_PARTIAL |
+@@ -2703,13 +2702,6 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
+ 		}
+ 		info = root->fs_info;
+ 
+-		if (stat(target, &st)) {
+-			error("stat %s failed: %m", target);
+-			close_ctree(info->chunk_root);
+-			free(cluster);
+-			return 1;
+-		}
+-
+ 		ret = fixup_chunks_and_devices(info, &mdrestore, fileno(out));
+ 		close_ctree(info->chunk_root);
+ 		if (ret)
 -- 
 2.31.1
 
