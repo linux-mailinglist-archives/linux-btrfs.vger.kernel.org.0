@@ -2,96 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FCD36ED46
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 17:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FDB36EDB6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 17:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237130AbhD2PUb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Apr 2021 11:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhD2PU2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Apr 2021 11:20:28 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C46C06138B
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Apr 2021 08:19:40 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id y12so49387486qtx.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Apr 2021 08:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Cjat2scVV8Z2CIXIhmnAzsEY2Z7gDapTVHP7Gq8CHCY=;
-        b=zZYA5pXuB0cdml/YJ6VDg0+scyQxyWPJrBYRbYp8Gq3QLQNdwM7fDLmx5hyupi1lZ7
-         VffkhPnt+Rhyv9HtHKVtNGeGZ9a7y7AvHiWvFncgryHehaIMLNJtOPmr1qGUpFPxfaVj
-         iC35G89GzUEg3kF8X04rS5wOUNHjk4o7LcmGdyFxx+v+lbrNOso28/zg0reLnDeXdn30
-         lT87435yBMKKk2+PWd1WJr+L1HNhy2/sGwqJ47myQenqGBw6jpwSnIE1kvkfshA4Fute
-         WrUbO231AUP6pDbwazauZP3oH3yEkRhiyhwiibqg8zKOxR4EnFS2sY6KetpkjSIo6ArH
-         cGRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cjat2scVV8Z2CIXIhmnAzsEY2Z7gDapTVHP7Gq8CHCY=;
-        b=UCLaGtcCOGDLUNoPx/rvsSU7GWFwFVERVHFGdAyl8aZ0Mljkn1Sn+eqfNX93q8Qc7y
-         tH0VYmWVnrXgzIqiMlVcdZMaXsZRQmglp9B0mzAcVHX5TQpCbhl/3Z+IKy/5q/pGSf9g
-         jlXu3/oZbDPcKMmFN1CvlKxsoPlE2qiKjDQ0e2R63Kvj5VCyUJTHLrunYudePyOcgHya
-         O+pQO1iWwohyJZHaF01mCyH8R7xRVvFDhUKfT50uJYuvRSU9TOHK7iLLFPcR5EohkhFV
-         fdTv1eNfkQh0Ppk2lrfgXD7xrJt5kaix3n3CXjJw7MLps1eGUAcIgnzxYpae8CMY2ptz
-         KoeA==
-X-Gm-Message-State: AOAM533wfK+NVjFvKza2SBFgIRquc2qp3dmJeXJbjiZ4dw6hBcwb5MvB
-        fi9N7+o+eKfJL8W5hAQEiq8Fww==
-X-Google-Smtp-Source: ABdhPJxa9/ufrwUZ8JH7a1NmFDj2yH7q/dXMHwjp9BfV1utEVXAn1MRC/d/KfH6XOZc2xpBLvCvzog==
-X-Received: by 2002:ac8:4e24:: with SMTP id d4mr31997253qtw.213.1619709579416;
-        Thu, 29 Apr 2021 08:19:39 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11d9::11c3? ([2620:10d:c091:480::1:a937])
-        by smtp.gmail.com with ESMTPSA id p187sm493701qkd.92.2021.04.29.08.19.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Apr 2021 08:19:36 -0700 (PDT)
-Subject: Re: [PATCH 4/7] btrfs: use the global rsv size in the preemptive
- thresh calculation
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-References: <cover.1619631053.git.josef@toxicpanda.com>
- <31114026fc63ffebcdc43197fded45da7731ef03.1619631053.git.josef@toxicpanda.com>
- <PH0PR04MB741630B03D3693142C46EF639B5F9@PH0PR04MB7416.namprd04.prod.outlook.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <4db7b3b0-ca7a-12a7-156e-153dbcf6e9fa@toxicpanda.com>
-Date:   Thu, 29 Apr 2021 11:19:35 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        id S233642AbhD2P4d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Apr 2021 11:56:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58972 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232004AbhD2P4d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Apr 2021 11:56:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C642BAFA9;
+        Thu, 29 Apr 2021 15:55:45 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7BC36DA7C3; Thu, 29 Apr 2021 17:53:22 +0200 (CEST)
+Date:   Thu, 29 Apr 2021 17:53:22 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 00/26] btrfs-progs: zoned: zoned block device support
+Message-ID: <20210429155322.GX7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+References: <cover.1619416549.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <PH0PR04MB741630B03D3693142C46EF639B5F9@PH0PR04MB7416.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619416549.git.naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 4/29/21 10:04 AM, Johannes Thumshirn wrote:
-> On 28/04/2021 19:40, Josef Bacik wrote:
->> -	thresh += (space_info->total_bytes - space_info->bytes_used -
->> -		   space_info->bytes_reserved - space_info->bytes_readonly);
->> +	used = space_info->bytes_used + space_info->bytes_reserved +
->> +		space_info->bytes_readonly + global_rsv_size;
->> +	if (used < space_info->total_bytes)
->> +		thresh += space_info->total_bytes - used;
->>   	thresh >>= space_info->clamp;
+On Mon, Apr 26, 2021 at 03:27:16PM +0900, Naohiro Aota wrote:
+> This series implements user-land side support for zoned btrfs.
 > 
-> 
-> I don't quite understand why you introduced the 'if' here. Now we're only
-> adding the new free space to the threshold if we're using less than our
-> total free space, which kinda makes sense that we're not going over our
-> total free space.
-> 
+> This series is based on misc-next + preparation series below.
+> https://lore.kernel.org/linux-btrfs/cover.1617694997.git.naohiro.aota@wdc.com/
 
-Because it's possible that the global_rsv_size + used is > total_bytes, because 
-sometimes the global reserve can end up being calculated as larger than the 
-available size (think stupid small fs'es where we only have the original 8mib 
-chunk of metadata).  It doesn't usually happen, but that sort of thinking gets 
-me into trouble, so this is safer.  Thanks,
+The prep patchset has been merged.
 
-Josef
+> Userland tool depends on patched util-linux (libblkid and wipefs) to handle
+> log-structured superblock. The patches are available in the util-linux list.
+> https://lore.kernel.org/util-linux/20210426055036.2103620-1-naohiro.aota@wdc.com/T/
+
+I was wondering if we should implement some workarounds in case the
+blkid utils don't have the zoned support. This will inevitably happen
+that not all the tools (progs/kernel/blkid) will have the support, at
+least temporarily.
+
+We'd need only the detection and eventually lookup of the most recent
+superblock.
+
+> Naohiro Aota (26):
+>   btrfs-progs: utils: Introduce queue_param helper function
+>   btrfs-progs: provide fs_info from btrfs_device
+>   btrfs-progs: build: zoned: Check zoned block device support
+>   btrfs-progs: zoned: add new ZONED feature flag
+>   btrfs-progs: zoned: get zone information of zoned block devices
+>   btrfs-progs: zoned: check and enable ZONED mode
+>   btrfs-progs: zoned: introduce max_zone_append_size
+>   btrfs-progs: zoned: disallow mixed-bg in ZONED mode
+>   btrfs-progs: zoned: allow zoned filesystems on non-zoned block devices
+>   btrfs-progs: zoned: implement log-structured superblock for ZONED mode
+>   btrfs-progs: zoned: implement zoned chunk allocator
+>   btrfs-progs: zoned: load zone's allocation offset
+>   btrfs-progs: zoned: implement sequential extent allocation
+>   btrfs-progs: zoned: calculate allocation offset for conventional zones
+>   btrfs-progs: zoned: redirty clean extent buffers in zoned btrfs
+>   btrfs-progs: zoned: reset zone of freed block group
+>   btrfs-progs: zoned: support resetting zoned device
+>   btrfs-progs: zoned: support zero out on zoned block device
+>   btrfs-progs: zoned: support wiping SB on sequential write zone
+>   btrfs-progs: mkfs: zoned: detect and enable zoned feature flag
+>   btrfs-progs: mkfs: zoned: check incompatible features with zoned btrfs
+>   btrfs-progs: mkfs: zoned: tweak initial system block group placement
+>   btrfs-progs: mkfs: zoned: use sbwrite to update superblock
+>   btrfs-progs: zoned: wipe temporary superblocks in superblock log zone
+>   btrfs-progs: zoned: device-add: support ZONED device
+>   btrfs-progs: zoned: introduce zoned support for device replace
+
+Now in devel. I did some fixups on the way but only minor ones. There
+are still cleanups needed that we'll do as followup patches. I'd like to
+also have some zoned tests inside progs testsuite so eg. mkfs can be
+verified to work.
+
+The kernel 5.12 is out so my plan for progs 5.12 release is sometime
+next week. I'll probably do an rc1 with current devel so we have some
+checkpoint before the full release.
