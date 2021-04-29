@@ -2,99 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5BE36EAA6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 14:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6F336EAA8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 14:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbhD2MkR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Apr 2021 08:40:17 -0400
+        id S237050AbhD2MkT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Apr 2021 08:40:19 -0400
 Received: from esa3.hgst.iphmx.com ([216.71.153.141]:45885 "EHLO
         esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhD2MkQ (ORCPT
+        with ESMTP id S236948AbhD2MkR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Apr 2021 08:40:16 -0400
+        Thu, 29 Apr 2021 08:40:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1619699969; x=1651235969;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Vojb/psOOhQn7UsrOtkRy7i2KwuZNP5uRFzT8+36NcI=;
-  b=DMTBcIpAZp4oUP8k8OKWaUfuEs/tXiK1wEa5ub3TSweW2MypWu/wl9UR
-   UZVLbhGxGrcW2jNzikec4CCqyvIEkJxAkScHQz8GJGS0ouQRJYUuFA48/
-   iVNptLskpUq2987vLf/w1NoZFef6L5MkqG0RXkrJ+k4sS2M8Xf1h8n/Bj
-   l40va4E82jy84ZiaOeGTpDmbeu9urp1xhVTOsXNcfEWmYUhn1Do9OHzEQ
-   RnmcwL3aRYEddKwTY+HvP4Sym/wSgkbCCs8NsZ2Y54eucEU1k+aFkAL5x
-   0kXqV6/mmSqu/3UObmXUJjan7d0Lnc/24tjn9koWO4RdVuCbtU6aj8QMW
-   A==;
-IronPort-SDR: nbKTl0drn5zLaI5dPjBLW6MK5EyxOKJ+Qa1eVn4yhPz8t2aBpCfeb654A3AZTcJIdjL6WwuoRn
- WHPfvsr6yFwoGQqxaejFldpfe1mDNuO3Tcplq5Sl0uI4Qy2bZVkxJ2T0D2t3rVQBVMxmBH7LqK
- n0rr3pZz0HJpFZhbM8bIpKaMUeRvnUcMD7XQuHp7S5BmWp76vequZAupxmc2+22+698XAhFql/
- oSaEWVNxZeO/a8IsGOYYzNScv6j/2BAWTijSClLV4h+XaNSRW5mtdRHU+s9LTi/+DkAjcC1q2m
- XP8=
+  t=1619699970; x=1651235970;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JybtB+du94uMbGiT9jVrseN456JK463aeuF9MvLWLec=;
+  b=ZBl207Rk6fpXaZwZiT1gjDGho7B7zqlp09LGZViYG7rPu/BZjUXnHXIV
+   sLg/7oIi+DQgQJUue02YnEkZBnla5jGNmdWFfQBd+gCu8LNB1wB0BROui
+   2E2KUcILPbOJOoCawQT0CVmiWkE9F2ag0+J0nC04r4BwCApM/6CbQY7zw
+   xJe/8QPu4bcMavLtIgGwm6IqRPeLlkrExFFO9ctzrcLkvX4+Ie98yBD0y
+   5NReCr8IEl6ln7O+pitIu8TwHGH74JjMnPRVZnb+K4DKUl8LIr4dEegx3
+   /wXct7eN81quwQuA0mSQU2y0XdOiBPZRS84I1DqPCCXvqt8+DJWggjUFf
+   g==;
+IronPort-SDR: rf8FpepkxSbwS59EsFQIJHVYgLmDUSCs93fG00rzQm2a0aIH9k+k2JY8HPMgtU+LEuOVQr33hB
+ YU6t1jSQvaC/hxEEHe0/ZHLPGN/ayRV78f6FZn1duOC2l9C9FAi0gYezG2JUFObJu/fkcQHl6M
+ 2A0w/nyqhqHPaDYGUV2Uy2b4T6gYr8RdbS14thAz0WrGhFPz0EpcIUT4FOi91y3OwfJgwEUAEp
+ 8PKqp+aDLR+WBtRY+E14QRgzMCyBUKVTADBwAU90Ci3PQakReLW8yXcKTX7A7TUYRRSS+gtd0A
+ FEw=
 X-IronPort-AV: E=Sophos;i="5.82,259,1613404800"; 
-   d="scan'208";a="171197735"
+   d="scan'208";a="171197736"
 Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Apr 2021 20:39:29 +0800
-IronPort-SDR: vKY+sxmhy0dTc5w7e9t0w+/9RD6lRhDFDv+SAh5lsXtdsBsJvkM0LPEFRw8nf18KqEFgwtAIum
- OWWvpDAMjutJDNVVuq/ybghBhRQ2kxA6HuTY3bHk9bsuXLmYpCxujzNkoSbIZ98iT70AyP4ltG
- +euZ3Cpt5Bd64zcIswANB4Mo+Dm+TSaDqM1Gr0S/Bs19jSr2BDsiiEL4fDRhoqSw5Nz/fF6bWS
- cy8Yb9Vn4x0sDLjIqYV5HcDu8WeUu4LyNR1avN4bCC/TNq1yyDipl0NQCv5QS5T4tOEh1GICGc
- 0kDfkpTghV5Jk6yj8G72ijGj
+  by ob1.hgst.iphmx.com with ESMTP; 29 Apr 2021 20:39:30 +0800
+IronPort-SDR: 132oXCQTAxZPB569DJLvvtmlAmd4RMsZHfIY16sL7Eo3Prc4GkRaq58tI6fGk8YnE+sCznrb+K
+ FanfGiRugRJhvypzSz3998BwQ1Xr3RzYQV2hdR+d1Q/aH7l7FXelDFSW8hEu7Duc/R7gOrgYqb
+ idTv/qMpIw8vNUPl/brpKp5POgNDSoCk3ttE77mBdxKX6TWLiRMtbwmGr488Z96kFIPLOXAgEV
+ auNXfMmaJl29maJ/522E19WE6716C2+Uw/4ubjICpf1AbZuNpXe2Bc7z7a546i1EMolJc0SBo9
+ CJOQUwFsACE2VbUgPZkRMj7C
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 05:19:48 -0700
-IronPort-SDR: pOOPXzpepgoRaO0jEjFi7TkhhuD/1z5Gy17CapWnwmpmVevAWC30r9fkF7W8Da4PlJ4mv08XMX
- N27hws8kAwNVNtpXhVLgbY/tL6NJUne1zCBNWKndmZzcyCf9ZPUdvnU/dZNTbSJd+V+wtDDX+W
- I09PQff67idieVAt8PJlVDIbeKNsJ8j7FRJRZ8rhcdo5961pi7KCPlT0vpGRxtR2Q+rv4Luk57
- XCgHcNq074xqTB9eggUMZgaMrP1oaL/BCy5hsy7znbeoTNBIDqVV2Kc795EkVMfXiiDWLETf3V
- Olg=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 05:19:49 -0700
+IronPort-SDR: eoyr2jAbPJxGYM4rIw+xi6UDytGs5/9aF5XFWXyClxcveuiBwiydqcG0cC85GnxyhIrpvOhJ4+
+ uyrUkPBHk0u2UV/1Xp/vq5MkhneK9v6pgDRXKyx0de0qCw6Rf1PBZaZ94bVwpJ39X+6/5k4v3e
+ Zaq7DqJDhLJtQtVw5Nke9CuWU+LSDdv952xI6ftZ1oDKC+ylbHALBqyAW04sIAw8yB8DZ1utGe
+ DB8NrbYwgSzOqOq/YX5uVQLdOH8c4fhiwyOTzLhOdLdOR554TNIyo8zBOqZne5dYwjWk5hAcQZ
+ 0qI=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 29 Apr 2021 05:39:30 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 29 Apr 2021 05:39:31 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     Eryu Guan <guan@eryu.me>, linux-btrfs@vger.kernel.org
-Cc:     fstests@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 0/2] fstests: first few support patches for zoned btrfs
-Date:   Thu, 29 Apr 2021 21:39:25 +0900
-Message-Id: <20210429123927.11778-1-johannes.thumshirn@wdc.com>
+Cc:     fstests@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v3 1/2] common/rc: introduce zone check commands
+Date:   Thu, 29 Apr 2021 21:39:26 +0900
+Message-Id: <20210429123927.11778-2-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210429123927.11778-1-johannes.thumshirn@wdc.com>
+References: <20210429123927.11778-1-johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This series adds preparations for xfstests for testing on zoned block
-devices and a first test for btrfs' zoned block device support.
+From: Naohiro Aota <naohiro.aota@wdc.com>
 
-General zoned block device support for btrfs was merged with v5.12 and the
-zone auto reclaim feature is staged to be merged with v5.13.
+Introduce some zone related helper functions: _zone_type(),
+_require_zoned_device(), and _require_non_zoned_device(). They all take a
+device path as an argument.
 
-Changes since v2:
-- reduce commit itme to 1s
-- reduce sleeps
-- don't use _fail for last print
-- don't use direct io
+_zone_type() return the zone type of the device according to the value
+returned from "/sys/block/<disk>/queue/zoned". See
+Documentation/ABI/testing/sysfs-block for a detail.
 
-Changes since v1:
-- rebased onto master
-- drop unnecessary patch
-- comment sleep and commit= mount option use
+_require_zoned_device() checks if the device is zoned. If not, it skips the
+current test. _require_non_zoned_device() does the opposite.
 
-Johannes Thumshirn (1):
-  btrfs: add test for zone auto reclaim
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ common/rc | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-Naohiro Aota (1):
-  common/rc: introduce zone check commands
-
- common/config       |   1 +
- common/rc           |  44 +++++++++++++++++++
- tests/btrfs/236     | 103 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/236.out |   2 +
- tests/btrfs/group   |   1 +
- 5 files changed, 151 insertions(+)
- create mode 100755 tests/btrfs/236
- create mode 100644 tests/btrfs/236.out
-
+diff --git a/common/rc b/common/rc
+index 2cf550ec6800..acc750e6586f 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1931,6 +1931,50 @@ _require_dm_target()
+ 	fi
+ }
+ 
++_zone_type()
++{
++	local target=$1
++	if [ -z $target ]; then
++		echo "Usage: _zone_type <device>"
++		exit 1
++	fi
++	local sdev=`_short_dev $target`
++
++	if [ -e /sys/block/${sdev}/queue/zoned ]; then
++		cat /sys/block/${sdev}/queue/zoned
++	else
++		echo none
++	fi
++}
++
++_require_zoned_device()
++{
++	local target=$1
++	if [ -z $target ]; then
++		echo "Usage: _require_zoned_device <device>"
++		exit 1
++	fi
++
++	local type=`_zone_type ${target}`
++	if [ "${type}" = "none" ]; then
++		_notrun "this test require zoned block device"
++	fi
++}
++
++_require_non_zoned_device()
++{
++	local target=$1
++	if [ -z $target ]; then
++		echo "Usage: _require_non_zoned_device <device>"
++		exit 1
++	fi
++
++	local type=`_zone_type ${target}`
++	if [ "${type}" != "none" ]; then
++		_notrun "this test require non-zoned block device"
++	fi
++}
++
+ # this test requires the ext4 kernel support crc feature on scratch device
+ #
+ _require_scratch_ext4_crc()
 -- 
 2.31.1
 
