@@ -2,83 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642EF36E87A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 12:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5BE36EAA6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Apr 2021 14:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239984AbhD2KQZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Apr 2021 06:16:25 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:38574 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232261AbhD2KQY (ORCPT
+        id S236900AbhD2MkR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Apr 2021 08:40:17 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:45885 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233731AbhD2MkQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:16:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UX9ofNw_1619691321;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UX9ofNw_1619691321)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 29 Apr 2021 18:15:36 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     clm@fb.com
-Cc:     josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] btrfs: Remove redundant assignment to ret
-Date:   Thu, 29 Apr 2021 18:15:20 +0800
-Message-Id: <1619691320-81639-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 29 Apr 2021 08:40:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1619699969; x=1651235969;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Vojb/psOOhQn7UsrOtkRy7i2KwuZNP5uRFzT8+36NcI=;
+  b=DMTBcIpAZp4oUP8k8OKWaUfuEs/tXiK1wEa5ub3TSweW2MypWu/wl9UR
+   UZVLbhGxGrcW2jNzikec4CCqyvIEkJxAkScHQz8GJGS0ouQRJYUuFA48/
+   iVNptLskpUq2987vLf/w1NoZFef6L5MkqG0RXkrJ+k4sS2M8Xf1h8n/Bj
+   l40va4E82jy84ZiaOeGTpDmbeu9urp1xhVTOsXNcfEWmYUhn1Do9OHzEQ
+   RnmcwL3aRYEddKwTY+HvP4Sym/wSgkbCCs8NsZ2Y54eucEU1k+aFkAL5x
+   0kXqV6/mmSqu/3UObmXUJjan7d0Lnc/24tjn9koWO4RdVuCbtU6aj8QMW
+   A==;
+IronPort-SDR: nbKTl0drn5zLaI5dPjBLW6MK5EyxOKJ+Qa1eVn4yhPz8t2aBpCfeb654A3AZTcJIdjL6WwuoRn
+ WHPfvsr6yFwoGQqxaejFldpfe1mDNuO3Tcplq5Sl0uI4Qy2bZVkxJ2T0D2t3rVQBVMxmBH7LqK
+ n0rr3pZz0HJpFZhbM8bIpKaMUeRvnUcMD7XQuHp7S5BmWp76vequZAupxmc2+22+698XAhFql/
+ oSaEWVNxZeO/a8IsGOYYzNScv6j/2BAWTijSClLV4h+XaNSRW5mtdRHU+s9LTi/+DkAjcC1q2m
+ XP8=
+X-IronPort-AV: E=Sophos;i="5.82,259,1613404800"; 
+   d="scan'208";a="171197735"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 29 Apr 2021 20:39:29 +0800
+IronPort-SDR: vKY+sxmhy0dTc5w7e9t0w+/9RD6lRhDFDv+SAh5lsXtdsBsJvkM0LPEFRw8nf18KqEFgwtAIum
+ OWWvpDAMjutJDNVVuq/ybghBhRQ2kxA6HuTY3bHk9bsuXLmYpCxujzNkoSbIZ98iT70AyP4ltG
+ +euZ3Cpt5Bd64zcIswANB4Mo+Dm+TSaDqM1Gr0S/Bs19jSr2BDsiiEL4fDRhoqSw5Nz/fF6bWS
+ cy8Yb9Vn4x0sDLjIqYV5HcDu8WeUu4LyNR1avN4bCC/TNq1yyDipl0NQCv5QS5T4tOEh1GICGc
+ 0kDfkpTghV5Jk6yj8G72ijGj
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2021 05:19:48 -0700
+IronPort-SDR: pOOPXzpepgoRaO0jEjFi7TkhhuD/1z5Gy17CapWnwmpmVevAWC30r9fkF7W8Da4PlJ4mv08XMX
+ N27hws8kAwNVNtpXhVLgbY/tL6NJUne1zCBNWKndmZzcyCf9ZPUdvnU/dZNTbSJd+V+wtDDX+W
+ I09PQff67idieVAt8PJlVDIbeKNsJ8j7FRJRZ8rhcdo5961pi7KCPlT0vpGRxtR2Q+rv4Luk57
+ XCgHcNq074xqTB9eggUMZgaMrP1oaL/BCy5hsy7znbeoTNBIDqVV2Kc795EkVMfXiiDWLETf3V
+ Olg=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 29 Apr 2021 05:39:30 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     Eryu Guan <guan@eryu.me>, linux-btrfs@vger.kernel.org
+Cc:     fstests@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 0/2] fstests: first few support patches for zoned btrfs
+Date:   Thu, 29 Apr 2021 21:39:25 +0900
+Message-Id: <20210429123927.11778-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Variable ret is set to zero but this value is never read as it
-is overwritten or not used later on, hence it is a redundant
-assignment and can be removed.
+This series adds preparations for xfstests for testing on zoned block
+devices and a first test for btrfs' zoned block device support.
 
-Cleans up the following clang-analyzer warning:
+General zoned block device support for btrfs was merged with v5.12 and the
+zone auto reclaim feature is staged to be merged with v5.13.
 
-fs/btrfs/volumes.c:8019:4: warning: Value stored to 'ret' is never read
-[clang-analyzer-deadcode.DeadStores].
+Changes since v2:
+- reduce commit itme to 1s
+- reduce sleeps
+- don't use _fail for last print
+- don't use direct io
 
-fs/btrfs/volumes.c:4757:4: warning: Value stored to 'ret' is never read
-[clang-analyzer-deadcode.DeadStores].
+Changes since v1:
+- rebased onto master
+- drop unnecessary patch
+- comment sleep and commit= mount option use
 
-fs/btrfs/volumes.c:7951:4: warning: Value stored to 'ret' is never read
-[clang-analyzer-deadcode.DeadStores].
+Johannes Thumshirn (1):
+  btrfs: add test for zone auto reclaim
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- fs/btrfs/volumes.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Naohiro Aota (1):
+  common/rc: introduce zone check commands
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 9a1ead0..30504fa 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4754,7 +4754,6 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
- 			mutex_unlock(&fs_info->reclaim_bgs_lock);
- 			if (ret < 0)
- 				goto done;
--			ret = 0;
- 			btrfs_release_path(path);
- 			break;
- 		}
-@@ -7939,7 +7938,7 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
- 	struct btrfs_key key;
- 	u64 prev_devid = 0;
- 	u64 prev_dev_ext_end = 0;
--	int ret = 0;
-+	int ret;
- 
- 	/*
- 	 * We don't have a dev_root because we mounted with ignorebadroots and
-@@ -8016,7 +8015,6 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
- 		if (ret < 0)
- 			goto out;
- 		if (ret > 0) {
--			ret = 0;
- 			break;
- 		}
- 	}
+ common/config       |   1 +
+ common/rc           |  44 +++++++++++++++++++
+ tests/btrfs/236     | 103 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/236.out |   2 +
+ tests/btrfs/group   |   1 +
+ 5 files changed, 151 insertions(+)
+ create mode 100755 tests/btrfs/236
+ create mode 100644 tests/btrfs/236.out
+
 -- 
-1.8.3.1
+2.31.1
 
