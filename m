@@ -2,111 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1772936FBD8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Apr 2021 16:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDA036FC9C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Apr 2021 16:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbhD3OCY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Apr 2021 10:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhD3OCX (ORCPT
+        id S232990AbhD3Oky (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Apr 2021 10:40:54 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44588 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhD3Oku (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:02:23 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1191C06174A;
-        Fri, 30 Apr 2021 07:01:33 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id q9so16564247wrs.6;
-        Fri, 30 Apr 2021 07:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5vc51MIOvLctgKvPzN3X1mUUyH1WiwVtt6VoY2lKmIg=;
-        b=VbA61w2htAGnFT9KN73WgAFCB0NLUfzr7aBiY3RofMEiKmASSUrz05sMXrgGDJFq8L
-         OuS1EmiR71yp2X68S/udpJIND6QFEVC32oxVQLMh9x+IAQmCKqitTCY+zX5yKLNOeN8/
-         STJ7IvvIRMdIbV7Bo9q6Uxc4YEF4NfSfwBd05pfini65Q3lb7Pt0tcNMfWbGRykh2cJ0
-         XnmNog+iMSOjAT4Bw7i1yqfHyk4ZQg+rYaV6uhcSlNlyW/W4mvhRWNwEBj4cRD7nlkzk
-         xElItMyaRz8/ncdZemYyjG0zhGswcQcdLYzGmIQxTaSGi3XV53cLyW4BNtGEGmNGmal6
-         F6QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5vc51MIOvLctgKvPzN3X1mUUyH1WiwVtt6VoY2lKmIg=;
-        b=A3xgVFUSacnkhaDeTbs/1Yf5o6jpMVfeLX7aoR1vKveU1MSPqZM6/rATi1V3biMJ44
-         fDSjWU5iEHh/T/tYTkRK35ndnEMZN+yFST+P/NgeNqcmh9zypXc0++Fl0YfHByzpGaBX
-         2VhLCOaNZJiYajd0ZZqbQWj0WQwugqJIBNcuJj4JiyEqO1iSA2PQtHh3YYr7vrcrvbtB
-         u7zCGPIGtMFFBecYnwPzDxOOlTs8NBcbX7TNxRQe+wVRN7HQEC4BJn+2fL4Y0jJL+S9t
-         cX/p6XEh7YxwQSRJNEOpSkJfc2f5nx/aZIDOCZaPb2i5AAmET/tpmN3zYrqCVq1fR5fy
-         v0+g==
-X-Gm-Message-State: AOAM531/1+FbhNybFSMjAmO1NdEDo2Um+g8N5lkVZCIMglXqpELFBP1B
-        vwxKXNRa52cTO7I9yPfdafs=
-X-Google-Smtp-Source: ABdhPJxBiL3VYmy7rnfOH+YPTPdCtgKm4MhTLXKy6bRxkgdetksAYcS3sMJPFtiBvKwjsq4htmddPA==
-X-Received: by 2002:adf:fd0b:: with SMTP id e11mr7067713wrr.402.1619791292411;
-        Fri, 30 Apr 2021 07:01:32 -0700 (PDT)
-Received: from ard0534 ([41.62.193.191])
-        by smtp.gmail.com with ESMTPSA id j13sm2318262wrw.93.2021.04.30.07.01.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 30 Apr 2021 07:01:31 -0700 (PDT)
-Date:   Fri, 30 Apr 2021 15:01:28 +0100
-From:   Khaled Romdhani <khaledromdhani216@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH-V2] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210430140128.GA2565@ard0534>
-References: <20210427171627.32356-1-khaledromdhani216@gmail.com>
- <20210429141200.GB1981@kadam>
+        Fri, 30 Apr 2021 10:40:50 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13UEEH53009539;
+        Fri, 30 Apr 2021 14:39:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=bKgANIXG14/eWkDe2ohT7wcb4dNM06EF/6W1V0BZEWo=;
+ b=ZdqT7XYR1nPJ1+UJWrjSSAmFmtOXdww9MghI/pro5g21x9op2/dWEDUgrxO4P9RI3xpI
+ xLEtpuu3NfkWm/iI0tHRNF9k52NQchhWhmVfo8ToX7se4RqhuTD946K3if4vfh+kSQMS
+ i9m3WjM/4pFDB/4nnS17sFeEkF+cXG1El+vlvh1Youvg5WCEFe+3sD5Mc0nwFD2YjUYg
+ aaT0lHEOwPO6VQXELqZWPummLtvIg+JUwCFVv3vLEGa/pPTn8/X2RJ4SchN5RcdQT4wN
+ 8zQaih3woO+CmkPqK8H2Cp3guEeo6q6dKtwqRvmRpu7o0chr6YVAR/vtA/EPFCNabR1b SA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 385aeq7xbt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 14:39:52 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13UEawf5102029;
+        Fri, 30 Apr 2021 14:39:52 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3848f2kfaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 14:39:51 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13UEdpvx031285;
+        Fri, 30 Apr 2021 14:39:51 GMT
+Received: from localhost.localdomain (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 30 Apr 2021 07:39:50 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add fstrim test case on the sprout device
+Date:   Fri, 30 Apr 2021 22:39:24 +0800
+Message-Id: <96fe1c0c8747d24ad6c45bc3f0a5551b8e1ebbde.1619793258.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <d6fcae756c5ce47da3527e5db4760d676420d950.1619783910.git.anand.jain@oracle.com>
+References: <d6fcae756c5ce47da3527e5db4760d676420d950.1619783910.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429141200.GB1981@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9970 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104300101
+X-Proofpoint-ORIG-GUID: XvZUbTdCDemPLSLWpl24WDY1bhAKfMdQ
+X-Proofpoint-GUID: XvZUbTdCDemPLSLWpl24WDY1bhAKfMdQ
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9970 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 suspectscore=0 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104300100
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:12:00PM +0300, Dan Carpenter wrote:
-> On Tue, Apr 27, 2021 at 06:16:27PM +0100, Khaled ROMDHANI wrote:
-> > The variable 'zone' is uninitialized which
-> > introduce some build warning.
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-> > ---
-> > v2: catch the init as an assertion
-> > ---
-> >  fs/btrfs/zoned.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> > index 432509f4b3ac..70c0b1b2ff04 100644
-> > --- a/fs/btrfs/zoned.c
-> > +++ b/fs/btrfs/zoned.c
-> > @@ -144,7 +144,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
-> >  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
-> >  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-> >  	default:
-> > -		ASSERT(zone);
-> > +		ASSERT(zone = 0);
-> 
-> I'm sorry but this doesn't make any kind of sense.
-> 
-> >  		break;
-> >  	}
-> 
-> regards,
-> dan carpenter
->
+Add fstrim test case on the sprout device, verify seed device
+integrity.
 
-The idea behind this is to force the assertion failure 
-in default when no valid 'mirror' value was entered.
-But as all caller pass valid mirror values, this case 
-will not happen. So, I just fix the warning of the uninitialized 
-variable 'zone' as reported by the kernel test robot. 
-Thus I guarantee the failure when 'mirror' was invalid.
+Needs kernel patch [1] to pass the test case.
+[1]
+  btrfs: fix unmountable seed device after fstrim
 
-If I am wrong, please clarify.
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ tests/btrfs/236     | 72 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/236.out |  5 ++++
+ tests/btrfs/group   |  1 +
+ 3 files changed, 78 insertions(+)
+ create mode 100755 tests/btrfs/236
+ create mode 100644 tests/btrfs/236.out
 
-Thanks.
+diff --git a/tests/btrfs/236 b/tests/btrfs/236
+new file mode 100755
+index 000000000000..599892bebf10
+--- /dev/null
++++ b/tests/btrfs/236
+@@ -0,0 +1,72 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 Oracle. All Rights Reserved.
++#
++# FS QA Test 236
++#
++# Check seed device integrity after fstrim on the sprout device.
++#
++#  Kernel bug is fixed by the commit:
++#    btrfs: fix unmountable seed device after fstrim
++
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_command "$BTRFS_TUNE_PROG" btrfstune
++_require_scratch_dev_pool 2
++_scratch_dev_pool_get 2
++
++seed=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
++sprout=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
++
++_mkfs_dev $seed
++_mount $seed $SCRATCH_MNT
++
++$XFS_IO_PROG -f -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
++_scratch_unmount
++$BTRFS_TUNE_PROG -S 1 $seed
++
++# Mount the seed device and add the rw device
++_mount $seed $SCRATCH_MNT 2>&1 | _filter_scratch
++md5sum $SCRATCH_MNT/foo | _filter_scratch
++
++$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
++_scratch_unmount
++
++# Now remount
++_mount $sprout $SCRATCH_MNT
++$XFS_IO_PROG -f -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
++
++fstrim $SCRATCH_MNT
++
++_scratch_unmount
++_mount $seed $SCRATCH_MNT 2>&1 | _filter_scratch
++md5sum $SCRATCH_MNT/foo | _filter_scratch
++_scratch_unmount
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/236.out b/tests/btrfs/236.out
+new file mode 100644
+index 000000000000..2929d39395a8
+--- /dev/null
++++ b/tests/btrfs/236.out
+@@ -0,0 +1,5 @@
++QA output created by 236
++mount: SCRATCH_MNT: WARNING: device write-protected, mounted read-only.
++096003817ad2638000a6836e55866697  SCRATCH_MNT/foo
++mount: SCRATCH_MNT: WARNING: device write-protected, mounted read-only.
++096003817ad2638000a6836e55866697  SCRATCH_MNT/foo
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 331dd432fac3..5032259244e0 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -238,3 +238,4 @@
+ 233 auto quick subvolume
+ 234 auto quick compress rw
+ 235 auto quick send
++236 auto quick seed trim
+-- 
+2.27.0
+
