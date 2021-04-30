@@ -2,115 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E8636F394
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Apr 2021 03:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA5736F799
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Apr 2021 11:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhD3B1i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Apr 2021 21:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhD3B1e (ORCPT
+        id S231181AbhD3JLl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Apr 2021 05:11:41 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:41618 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhD3JLl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Apr 2021 21:27:34 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D4FC06138B;
-        Thu, 29 Apr 2021 18:26:43 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id m11so4211262pfc.11;
-        Thu, 29 Apr 2021 18:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tjglHgCdOo9aNmUJ+U7eL0Rhds1mEanZ0rRyCnAz6WU=;
-        b=pj5P1pc1D/l2b4G37TELLspq5umpYDb7fJAakA5nU9s2OKvky8Gr2sOFZBsmSZcVzn
-         0dapmB3JMg75SErVUxSLYE3xSIWfTGQIWmLLfoweixXhjLGXckATDL3tG5ujCt3mp3wO
-         Kfk1VRKOmWkCqMqo2p9IfYiz25m9eSi5rdqKPTPluwhJcDkvHVhBLtmTtwdxUwtBLhRT
-         nNhz7eco5j0Sa+zXo9BPUAFFH1X0ZEHWo0icezreb17kzhPxQ8tXaqpD2EViZAAtx4DW
-         NBMKUKqg4YQiG7O3BE3OxzU+hTJvt58VO+KU0Rp9D/6CtWI7vCs1j/v3cM10D4HmUduI
-         c9EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tjglHgCdOo9aNmUJ+U7eL0Rhds1mEanZ0rRyCnAz6WU=;
-        b=fadz1KwbYtJ7AepB8PTe+La7SF2lWIexfjXGE3uDPpbrBxMgCtbr2Q2nujF1lzKahg
-         F7PNY0d/fts4NMTOFgvZfv/8+X+ISnu3qj0m6EAzYo4vzMU5JBkB0RHOpWe7inZyaeoi
-         EXCO9NLi7LCpnPtvAkKbK8KxVhVp+PTxZMjujB0RzjitgEK2cE+T3+8+GmhBxNTtNtzY
-         1Xr2YFnfgZiPNZ2oxsGwhjaUy3ZyXFnUPZnErx+lKhZzGNBDLZsnG7sIr0JlrfCBxO0g
-         wD6E3nIA2kLM0kjyZ/u85KKHGXiAipU46O6q7X/Ey33LXcW5Wa4HqOJqpSAkIk7czI94
-         x+sw==
-X-Gm-Message-State: AOAM532NXYPgFXjI0ng6u0AZa5esNoBj7FliioNZLtvOg+r/qAVZikzY
-        yS+JJIVq9zmBFsAZsBlYemI=
-X-Google-Smtp-Source: ABdhPJySKjyTMc6tGPbKhCO1pK7lKmK7mC+K3AwnlUS/dsZ1CseFwgiVdGcS+MV9xytaOCrYZFANbg==
-X-Received: by 2002:a63:a16:: with SMTP id 22mr2310271pgk.345.1619746002964;
-        Thu, 29 Apr 2021 18:26:42 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id b186sm311004pfb.27.2021.04.29.18.26.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 18:26:42 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Felix Handte <felixh@fb.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v11 4/4] MAINTAINERS: Add maintainer entry for zstd
-Date:   Thu, 29 Apr 2021 18:31:57 -0700
-Message-Id: <20210430013157.747152-5-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210430013157.747152-1-nickrterrell@gmail.com>
-References: <20210430013157.747152-1-nickrterrell@gmail.com>
+        Fri, 30 Apr 2021 05:11:41 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13U99sMJ148091;
+        Fri, 30 Apr 2021 09:10:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=x24y6zgKarQ2MFYB/3ge9q3Y0NMhl8K8rn2nWzUg+4g=;
+ b=mV5vSGDdq7IqUzyasab9idC+BO8wUk4tTAYUbLpyVMTtAWqSr7Idh7hqb/Yjy8jLT8Lx
+ BVBkAphjv74GswB8vo3ZO8y9IabCMP6N+Q4A7M5qFDHIvKXfyMuKQqNQAAIlTnmmn0AC
+ Ex3fqGeTTvOiaE6FFM/c5hfrPx1enGbfMFJDM0dyk6RXVV4Fn0nyCKIDUEwU18Z2+9YM
+ qUlpCoIaBjDDUPRsmXlK2PJMXGt0f2QnE4A8RFtxBsdKF6IAi2H49sUqvMqozChbB+ns
+ UHDr3j3rVFjoCtvKP6YHwF0KbRMpXu/WNxs4qJd8PjAjwbJ3CT2ldUiH6Ah9Wzr7NiMU vA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 385ahby3ud-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 09:10:52 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13U9A0pg077803;
+        Fri, 30 Apr 2021 09:10:51 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 384b5bqjnw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 09:10:51 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13U9AoOn081397;
+        Fri, 30 Apr 2021 09:10:51 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 384b5bqjnn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 30 Apr 2021 09:10:50 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13U9AnUV021010;
+        Fri, 30 Apr 2021 09:10:49 GMT
+Received: from localhost.localdomain (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 30 Apr 2021 09:10:48 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        Chris Murphy <lists@colorremedies.com>
+Subject: [PATCH] btrfs: fix unmountable seed device after fstrim
+Date:   Fri, 30 Apr 2021 17:10:28 +0800
+Message-Id: <c7715d09a67f212e0ecb5fea2d598513912092f4.1619443900.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: q-5mvvCE2Nq7mYVljCLH9lD6AX62PBev
+X-Proofpoint-ORIG-GUID: q-5mvvCE2Nq7mYVljCLH9lD6AX62PBev
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9969 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 adultscore=0 suspectscore=0 spamscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104300067
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Nick Terrell <terrelln@fb.com>
+The following test case reproduces an issue of wrongly freeing the in-use
+block on the readonly seed device when fstrim is called on the rw sprout
+device. As shown below.
 
-Adds a maintainer entry for zstd listing myself as the maintainer for
-all zstd code, pointing to the upstream issues tracker for bugs, and
-listing my linux repo as the tree.
+create a seed device and add a sprout device to it
+	mkfs.btrfs -fq -dsingle -msingle /dev/loop0
+	btrfstune -S 1 /dev/loop0
+	mount /dev/loop0 /btrfs
+	btrfs dev add -f /dev/loop1 /btrfs
 
-Signed-off-by: Nick Terrell <terrelln@fb.com>
+  BTRFS info (device loop0): relocating block group 290455552 flags system
+  BTRFS info (device loop0): relocating block group 1048576 flags system
+  BTRFS info (device loop0): disk added /dev/loop1
+
+	umount /btrfs
+mount the sprout device and run fstrim
+	mount /dev/loop1 /btrfs
+	fstrim /btrfs
+	umount /btrfs
+
+now try to mount the seed device, and it fails...
+	mount /dev/loop0 /btrfs
+
+  mount: /btrfs: wrong fs type, bad option, bad superblock on /dev/loop0, missing codepage or helper program, or other error.
+
+  BTRFS error (device loop0): bad tree block start, want 5292032 have 0
+  BTRFS warning (device loop0): couldn't read-tree root
+  BTRFS error (device loop0): open_ctree failed
+
+Block 5292032 is missing on the readonly seed device.
+
+From the dump-tree of the seed device taken before the fstrim. Block
+5292032 belonged to the block group starting at 5242880
+
+<snip>
+ item 3 key (5242880 BLOCK_GROUP_ITEM 8388608) itemoff 16169 itemsize 24
+	block group used 114688 chunk_objectid 256 flags METADATA
+<snip>
+
+From the dump-tree of the sprout device (taken before the fstrim).
+fstrim used the block-group 5242880 to find the free space to free.
+
+<snip>
+
+ item 1 key (5242880 BLOCK_GROUP_ITEM 8388608) itemoff 16226 itemsize 24
+	block group used 32768 chunk_objectid 256 flags METADATA
+<snip>
+
+
+bpf tracing the fstrim command finds the missing block 5292032 within the
+range of the discarded blocks...
+
+  kprobe:btrfs_discard_extent {
+    printf("free start %llu end %llu num_bytes %llu\n", arg1, arg1+arg2, arg2);
+  }
+
+btrfs_discard_extent(..., start, num_bytes, ...):
+
+ free start 5259264 end 5406720 num_bytes 147456
+<snip>
+
+Fix this by avoiding the discard command to the readonly seed device.
+
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reported-by: Chris Murphy <lists@colorremedies.com>
 ---
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9450e052f1b1..7025c67248f7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19912,6 +19912,18 @@ F:	Documentation/vm/zsmalloc.rst
- F:	include/linux/zsmalloc.h
- F:	mm/zsmalloc.c
+A xfstests case to follow.
+
+ fs/btrfs/extent-tree.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 7a28314189b4..0d19bd213715 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1340,12 +1340,19 @@ int btrfs_discard_extent(struct btrfs_fs_info *fs_info, u64 bytenr,
+ 		stripe = bbio->stripes;
+ 		for (i = 0; i < bbio->num_stripes; i++, stripe++) {
+ 			u64 bytes;
++			struct btrfs_device *device = stripe->dev;
  
-+ZSTD
-+M:	Nick Terrell <terrelln@fb.com>
-+S:	Maintained
-+B:	https://github.com/facebook/zstd/issues
-+T:	git git://github.com/terrelln/linux.git
-+F:	include/linux/zstd*
-+F:	lib/zstd/
-+F:	lib/decompress_unzstd.c
-+F:	crypto/zstd.c
-+N:	zstd
-+K:	zstd
+-			if (!stripe->dev->bdev) {
++			if (!device->bdev) {
+ 				ASSERT(btrfs_test_opt(fs_info, DEGRADED));
+ 				continue;
+ 			}
+ 
++			/*
++			 * Skip sending discard command to a non-writeable device.
++			 */
++			if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
++				continue;
 +
- ZSWAP COMPRESSED SWAP CACHING
- M:	Seth Jennings <sjenning@redhat.com>
- M:	Dan Streetman <ddstreet@ieee.org>
+ 			ret = do_discard_extent(stripe, &bytes);
+ 			if (!ret) {
+ 				discarded_bytes += bytes;
 -- 
-2.31.1
+2.29.2
 
