@@ -2,251 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61FB36F847
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Apr 2021 12:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8359936F84F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Apr 2021 12:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhD3KGZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Apr 2021 06:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhD3KGY (ORCPT
+        id S229598AbhD3KL0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Apr 2021 06:11:26 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:16103 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhD3KL0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Apr 2021 06:06:24 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D82C06174A;
-        Fri, 30 Apr 2021 03:05:35 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id dl3so1818197qvb.3;
-        Fri, 30 Apr 2021 03:05:35 -0700 (PDT)
+        Fri, 30 Apr 2021 06:11:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1619777438; x=1651313438;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=tBb2yKj1qhqVEH0Eo+f94cpaZZCIRJCrXzW89bFPUeM=;
+  b=PqP0GulKCp3MjmZrpGZIH08WpbK379pxLlKS0Ekcd4iUZ2TI0vqHlmhI
+   LzyCezO8IpeOTJLh8KS42SjHeDQdnRWpKsSsifisExCoAR5B9FEhid4Ji
+   Ie7+RC9B3i3HJfsHEZ8FboSemAw9bT6ezVrJRrhBdEMaIn0NaJXD/YaSB
+   dl4LUt5A5BgB8x2a845RQNPfu6S6MOSxwfsFJo5ihuhnhUsd4J2VpXco0
+   L50pWqh6KMaCv/B6r5U8PKrurvWJSOrJ8hMbxLMtPtCKwEVGqG2XSrg6Z
+   P7jsLmikKFkwye7GsjSbF1WfRlV/ZxZONxHD4M8e3KbhBVM0WZ6rAi/k/
+   A==;
+IronPort-SDR: 8eAsnVLx+WSDYhsiuX2775lcWo+1aihoslEDhPNlSo160Sne6id+v3xJ04hz/Mt0HpqfFH2VRN
+ kk00iPqXhJc8fuKBwqanJ1HLQA9StV5ISTWgEPfarTfc/HAeoyMG1SIdL7HBTe2dFhacwChVwU
+ um03TGumd8yF48nfVBMRwkqAIkwcfc3R22exz2ux3L7kSMDZkAwlZ6FxxvX/78+ig2dxsKl9hA
+ zbgjjwL29j9wW47EaGFPH4XFe12fSK6k9WxBn1qlXKXTY8n8yzTKvlf/59hwKW7xEuUhImnAAp
+ OK0=
+X-IronPort-AV: E=Sophos;i="5.82,262,1613404800"; 
+   d="scan'208";a="166116420"
+Received: from mail-bn8nam08lp2047.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.47])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Apr 2021 18:10:35 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BhQ0T+uabdM0HUkoK31l7Er/Tyfkz+1QQKIrmv0Gapmg0GUMLd6UZae3FjyzCFC+lzYqo4xG6OnKcezrzXak0AoeaAyjQevNphDJcXiG+1LNdYdP2EyjDct4xGJBiZ2xv6skgfEyqB/6lygowQQI/7K3be4KAfZn8TREXlIHKM9ObRPiPr2nzSi8E97YOf02/BAnX7pnJq6a8XxlgBdiS17Zgob9Z/ZLGtbkquD6X7IwjcCgFxk0R4ZMPfD3nr3hHRbi+a5okpL4iUTgab0Avs4USgW8+PuTZj1bniPqeK5VjQevd2CehG0BD+S7JoLxb6xGXspNBqn/HRwt/62q+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hoD1hEJ5c+HAvOUn9FUAUHfu9gbsteg/K2h/MIRDDJU=;
+ b=NFITvN2qvHWf4BDsBfk9IONZxtobsZYBOR2YwX+NgKe+KpoV6UDROHR9aI3ALUgqH2ktKVc+0dHankbtXnbG+cIOn4Yq6/z2P2V7Ox9iWWdXSNVffrvprQw9/YPdFtl1E2+fnlCeEbBFbwGcWBPtrWE+CIO4/wCXKdcK8kS0OhAsYkB4QFwMyvsrE8YEdzx3aQgmyBJYCrDB1P0FJPAfXltaQPzu1e1SDKWpPyxW6mLROhnTuO05kEryXJn6RCbU2DRV8DyKC31tZjepiIsOulQz68/ZZSiTwRHrg/iyn8bqrEWp4ufoKxcheBzUCR1ZtSGKdBLQQ4btrs8UWXy+8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=q1isEl/U1z9cfAW/A0rJnz7R0WyM8fau03/7cjZNjVw=;
-        b=ZAYaDeDIDBLywzscWUFDWeun76nGSMEHlxtGXzaTCRuGdMtX9w3XSVOsn39Syjaxu2
-         CCoDKwPod6Uwzu+jYhxuwqAh4j++bb56cOrg+nTkPqg3ESupqKPo9hQ9g/eROWcK9Dt0
-         qyvwT4zPegHlf4TcgA33ux1P5yIp1QbZnIa37h7wfmGsm1tMm1rKTLTCPqYZlpX2QwRz
-         k7af9nf+fxA9e36Yl0Or0U4LzuGTgsfdOjTIxOP+pQJ0yjPHa82PYh0wgPtdGsGI3vUE
-         Im1ZlYQ55Njclw2g5jdZOMDG1UlUC6hJ1EZd2UzdCPxAuxaHlA664TgorRnwiJLjYvYP
-         IR+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=q1isEl/U1z9cfAW/A0rJnz7R0WyM8fau03/7cjZNjVw=;
-        b=g0UYKDDb4D0XLLj0A49yppgxkYzUo3IA38Y0Z0OV0a1+nDtq9m4e5hiakEVv8zlcBz
-         Liad4caWYBQmJUjM3meheP/J/4DJSarr1O2Yp1gHnvcSBzMLTMET2wAC6qQ1V31TpMD4
-         gzmTLBeYoJ6pf+UBwZmRfoT2e9y38qV010aXj4WN2bcHl/r4uwc38xU1MUicimpJneFK
-         fOk6JmoZ/hMV7bZVHq6N6z9ueVRAQ1t+SvgKj0fDxPiLHEWN/3yWKMVPuJaXMXUGgf42
-         419JoegLsXz22Tkmy1zyeG9gHSgy61DoK4fe0GEtv6ylxIL4uorT5INSxs90tjBB4Vlr
-         WiPg==
-X-Gm-Message-State: AOAM533uVpX24n+KHJkT7DyohCBDjXGurO7/NY4Lu0JrBSZ/Kvgbf2ds
-        qjp5I6TSIC6m3fwe82Y2gN+xtC+PTXwLRS5FU7wJSVGsJHo=
-X-Google-Smtp-Source: ABdhPJw2FDNeZx4mjLE4wyAvcWXSFhbaNLVnN/D+g/MtmRblksd104mvfkr+vay6dlzTcHHgrfgYQI6UV2d+R0OFfu0=
-X-Received: by 2002:a05:6214:e82:: with SMTP id hf2mr4370059qvb.28.1619777134417;
- Fri, 30 Apr 2021 03:05:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210429123927.11778-1-johannes.thumshirn@wdc.com> <20210429123927.11778-3-johannes.thumshirn@wdc.com>
-In-Reply-To: <20210429123927.11778-3-johannes.thumshirn@wdc.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 30 Apr 2021 11:05:23 +0100
-Message-ID: <CAL3q7H7RpTjP+0fgcfiJP=w3o36e5Hz_twLHdE6j6rzN=+YbFw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] btrfs: add test for zone auto reclaim
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     Eryu Guan <guan@eryu.me>,
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hoD1hEJ5c+HAvOUn9FUAUHfu9gbsteg/K2h/MIRDDJU=;
+ b=RuQlUJhm4fDmd4o4tit5/yTc8gpzyF/cyCoCuC010nlnCPwCIJ96J5XVmxTlAq/ru8Bi3+cf8MiETUeB3l27Q8zeJHpH2EEn4v+pQNvhKWYGjXc/TUKaNp8gCm+GegNPKI2rmpdvpCqBp7jYrFyuSm0m06wxPB4Tm168jJ7/VHk=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7622.namprd04.prod.outlook.com (2603:10b6:510:4f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Fri, 30 Apr
+ 2021 10:10:33 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4065.027; Fri, 30 Apr 2021
+ 10:10:33 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "fdmanana@gmail.com" <fdmanana@gmail.com>
+CC:     Eryu Guan <guan@eryu.me>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
         fstests <fstests@vger.kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+        Naohiro Aota <Naohiro.Aota@wdc.com>
+Subject: Re: [PATCH v3 2/2] btrfs: add test for zone auto reclaim
+Thread-Topic: [PATCH v3 2/2] btrfs: add test for zone auto reclaim
+Thread-Index: AQHXPPS19yApBNr0/EKVohgj1zDWsw==
+Date:   Fri, 30 Apr 2021 10:10:33 +0000
+Message-ID: <PH0PR04MB741649C28FAC75EF0DD9FC7E9B5E9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20210429123927.11778-1-johannes.thumshirn@wdc.com>
+ <20210429123927.11778-3-johannes.thumshirn@wdc.com>
+ <CAL3q7H7RpTjP+0fgcfiJP=w3o36e5Hz_twLHdE6j6rzN=+YbFw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [62.216.205.239]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c6164a56-ed26-4602-d426-08d90bc03106
+x-ms-traffictypediagnostic: PH0PR04MB7622:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR04MB762273A5F95E8DD9434B7D669B5E9@PH0PR04MB7622.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0KJikUeq0lJA+3E86j9JJnOZ8QZPQ9jcZH9YuyMFzlOfzLFmxw3+0h8dPqFv3MMq9of+ZpKl+qf2k0LZo2zbSAqnDgHjzhGqg83pagOEBRoZdm6psaAq1Pe4n5vhr9ehf6JEOTTpuw6mCO/gewvjL5PCLEbQ+3+Y4s1WAnNqREK+xoKqA+ctSmKKWNgwSDYzw3ouvxhYEAWy/vWDCqA9UnBhhAMpISu2yLSpXR72B9YdunJiPIcHzGO7dIEL1yhOEv57ZsbDSiEHZutFaysr3O281F6hiKhtPFcfp83699/naIvKVGMXcF50gmJEOxm6Yeg+a0Cdhy5VRD9WS7MpoRS9VQyiqQZkD7V9sE0A/aij/Lvr4n5qQ45wn1Fp7XjEy/o52QjWJiniAd5dmb54meYSM6Gqvb/T0N5NLhYxiky05Ng5XNog37oF4+TSPOU+6pKuD3DzSgkams3Ie8tCluNYV+zEhpmuYTlar6nh2KL7fln267ZqMOSbCptJ4k5op7ZTwNgOP0gjZmB60Ovn3+8oEqT97x/nJ9AfdL/mbg9dwjv6tKE6pXugA3TO+QgaOFMKzpUus8sZNQXGgqlqaE67fx/4+tR7snP8LpEZuTw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(346002)(376002)(7696005)(6506007)(122000001)(83380400001)(38100700002)(76116006)(26005)(86362001)(4326008)(9686003)(2906002)(55016002)(53546011)(54906003)(8936002)(33656002)(5660300002)(478600001)(8676002)(52536014)(66446008)(66556008)(66476007)(316002)(186003)(6916009)(71200400001)(91956017)(64756008)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mZlKUNPBxteW+VFXWsDT/CRg9U/ShYMlzddzpwEuLU6sjihGFwEqKpseSsLs?=
+ =?us-ascii?Q?pkYlGxFlVZLU1sGGyhLILtJgAma6qS5CuAP+vw13jZr9W3k/+UtIznYuNoOh?=
+ =?us-ascii?Q?DNpVzBz4eo2YSo7bE/keVchDcS3PDHX2PjiABbQWU7Pm0NGmkpUu40+kXQ4C?=
+ =?us-ascii?Q?4KZlssJVf2b5vzu2Fb6IZQC6QY09bQ9sMo7nDI2XbBV8YN+yVTcOwN0cSNyK?=
+ =?us-ascii?Q?R9JM3oIqf0dFexzkm2/ZkkZLoSnOBajiSLt3h6bGbqh/NmtnaSLvW9Ny/6K/?=
+ =?us-ascii?Q?cN6PHXD3cxjd6dwJBGanMbckKZHM25Vr2cAtI2w5BHVJd7pjNFhAH/AgWp9p?=
+ =?us-ascii?Q?C/oP7CaEOSvpjcLe7Rq4KSYPYiGF+4QpsnfqYu97zKktVOQkeYIr6iLCDoHQ?=
+ =?us-ascii?Q?Hn7Tz5kR7fuFgOj81Z7ZtGmExxcei/zPvT5LvHj2Bl9tSYvIDXr8df5uIJob?=
+ =?us-ascii?Q?xLL8Q/QFlnLUtlhS3byO/9LenJ6POLpf3stsowsWqGjxE7r16ErKfty6oZsa?=
+ =?us-ascii?Q?43XabXB3bmo5yD2qL9diWOpLGpVa2ji4+dr2YVJFuImZvipeHRdQ7HJ/r7ZJ?=
+ =?us-ascii?Q?hlN5E41fVzUXtz8TulNgSTWV8uistzBsSFRdwYy8PFqJGcA0Z6uCk6KvuQAm?=
+ =?us-ascii?Q?V82HkNzagfoodGZwwSznzT6Eb3kLbrRXndWv8Bm07YaPRfn3/YBQrFPXdO/a?=
+ =?us-ascii?Q?ubIGxn9hwM7rEPrXQBw+RzhVzofKGwhtJqSNpSgGcLknx2dph0iDGCOIPCja?=
+ =?us-ascii?Q?PQjFO0+TiuLrAVYywArjut/w1g58gWuju26r1cc3J6YK3HF/hKrQ7JjpvYaF?=
+ =?us-ascii?Q?uGLRlOJcd0dX9RGUgptHxVbFRsli/DEZH1yl1Hh/eV8id2rxQcvH0Pb2+r9P?=
+ =?us-ascii?Q?z5U7vbCIGDGNYbic0efvgTS5KOPAFqcvy8pJj5UjhReckAprCxKEesRr9bjh?=
+ =?us-ascii?Q?3NQswcA2CYB1Vh0jW5eUvrE3QTNx+UcCu7A9do4dWi4O4wlqCnTtILEEoE74?=
+ =?us-ascii?Q?D1BmVh6owCWPSXjYyKknymOYy0asrhOsknM9D6l5CFOgP4jpNvXDNpY+bRs4?=
+ =?us-ascii?Q?9UkBZnmLHOPeXcervxil5VRmJ9RQAb36eR3qs7zIeFat/YrFAIIoQk6tyzlC?=
+ =?us-ascii?Q?DQTN7WR3dZaqbhv9Ki54u/cAF5IUsiCoLcEsGktQ+/vVEXeEt8q7qioA1pxT?=
+ =?us-ascii?Q?g+tgBEF76PFDdYyAdBX8Lr5NpYtc+8vCKS7pE7QQr9J+M7K8iRbTw0pEuVS7?=
+ =?us-ascii?Q?hw6TZshHEyXjQ36m3pAsdRaVDh9+JctxnM+DOcII48r1AH1sRBCgGp5XCvnk?=
+ =?us-ascii?Q?3NI8lolc/kWW20Q6XziwffC7+lFy8GOXvWc48Hyn32d7aQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6164a56-ed26-4602-d426-08d90bc03106
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2021 10:10:33.2349
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 33SJp46+vTaWfAGla1Xge+TB5AXDVGKY4Bc9+36sn/pXJFthcQOhDAvZe53OX/rTUx4nTELrBSx/mBR4ZDjtQ24TUuBosRWCZ//VgYj1/Lo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7622
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 1:40 PM Johannes Thumshirn
-<johannes.thumshirn@wdc.com> wrote:
->
-> Add a test for commit 18bb8bbf13c1 ("btrfs: zoned: automatically reclaim
-> zones").
->
-> This test creates a two file on a newly created FS in a way that when we
-> delete the first one, an auto reclaim process will be triggered by the FS=
-.
->
-> After the reclaim process, it verifies that the data was moved to another
-> zone and old zone was successfully reset.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-
-Looks good, however I don't have an environment for testing zoned
-mode, so this is just really eyeballing.
-Thanks.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-> ---
->  common/config       |   1 +
->  tests/btrfs/236     | 103 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/236.out |   2 +
->  tests/btrfs/group   |   1 +
->  4 files changed, 107 insertions(+)
->  create mode 100755 tests/btrfs/236
->  create mode 100644 tests/btrfs/236.out
->
-> diff --git a/common/config b/common/config
-> index a47e462c7792..1a26934985dd 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -226,6 +226,7 @@ export FSVERITY_PROG=3D"$(type -P fsverity)"
->  export OPENSSL_PROG=3D"$(type -P openssl)"
->  export ACCTON_PROG=3D"$(type -P accton)"
->  export E2IMAGE_PROG=3D"$(type -P e2image)"
-> +export BLKZONE_PROG=3D"$(type -P blkzone)"
->
->  # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
->  # newer systems have udevadm command but older systems like RHEL5 don't.
-> diff --git a/tests/btrfs/236 b/tests/btrfs/236
-> new file mode 100755
-> index 000000000000..a96665183a84
-> --- /dev/null
-> +++ b/tests/btrfs/236
-> @@ -0,0 +1,103 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Western Digital Corporation.  All Rights Reserved.
-> +#
-> +# FS QA Test 236
-> +#
-> +# Test that zone autoreclaim works as expected, that is: if the dirty
-> +# threshold is exceeded the data gets relocated to new block group and t=
-he
-> +# old block group gets deleted. On block group deletion, the underlying =
-device
-> +# zone also needs to be reset.
-> +#
-> +seq=3D`basename $0`
-> +seqres=3D$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=3D`pwd`
-> +tmp=3D/tmp/$$
-> +status=3D1       # failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +_supported_fs btrfs
-> +_require_scratch
-> +_require_btrfs_command inspect-internal dump-tree
-> +_require_btrfs_command filesystem sync
-> +_require_command "$BLKZONE_PROG" blkzone
-> +_require_zoned_device "$SCRATCH_DEV"
-> +
-> +get_data_bg()
-> +{
-> +       $BTRFS_UTIL_PROG inspect-internal dump-tree -t CHUNK $SCRATCH_DEV=
- |\
-> +               grep -A 1 "CHUNK_ITEM" | grep -B 1 "type DATA" |\
-> +               grep -Eo "CHUNK_ITEM [[:digit:]]+" | cut -d ' ' -f 2
-> +}
-> +
-> +zonesize=3D$(cat /sys/block/$(_short_dev $SCRATCH_DEV)/queue/chunk_secto=
-rs)
-> +zonesize=3D$((zonesize << 9))
-> +
-> +_scratch_mkfs >/dev/null 2>&1
-> +_scratch_mount -o commit=3D1 # 1s commit time to speed up test
-> +
-> +uuid=3D$(findmnt -n -o UUID "$SCRATCH_MNT")
-> +reclaim_threshold=3D75
-> +echo $reclaim_threshold > /sys/fs/btrfs/"$uuid"/bg_reclaim_threshold
-> +fill_percent=3D$((reclaim_threshold + 2))
-> +rest_percent=3D$((90 - fill_percent)) # make sure we're not creating a n=
-ew BG
-> +fill_size=3D$((zonesize * fill_percent / 100))
-> +rest=3D$((zonesize * rest_percent / 100))
-> +
-> +# step 1, fill FS over $fillsize
-> +$XFS_IO_PROG -fc "pwrite 0 $fill_size" $SCRATCH_MNT/$seq.test1 >> $seqre=
-s.full
-> +$XFS_IO_PROG -fc "pwrite 0 $rest" $SCRATCH_MNT/$seq.test2 >> $seqres.ful=
-l
-> +$BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-> +
-> +zones_before=3D$($BLKZONE_PROG report $SCRATCH_DEV | grep -v -e em -e nw=
- | wc -l)
-> +echo "Before reclaim: $zones_before zones open" >> $seqres.full
-> +old_data_zone=3D$(get_data_bg)
-> +old_data_zone=3D$((old_data_zone >> 9))
-> +printf "Old data zone 0x%x\n" $old_data_zone >> $seqres.full
-> +
-> +# step 2, delete the 1st $fill_size sized file to trigger reclaim
-> +rm $SCRATCH_MNT/$seq.test1
-> +$BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
-> +sleep 2 # 1 transaction commit for 'rm' and 1 for balance
-> +
-> +# check that we don't have more zones open than before
-> +zones_after=3D$($BLKZONE_PROG report $SCRATCH_DEV | grep -v -e em -e nw =
-| wc -l)
-> +echo "After reclaim: $zones_after zones open" >> $seqres.full
-> +
-> +# Check that old data zone was reset
-> +old_wptr=3D$($BLKZONE_PROG report -o $old_data_zone -c 1 $SCRATCH_DEV |\
-> +       grep -Eo "wptr 0x[[:xdigit:]]+" | cut -d ' ' -f 2)
-> +if [ "$old_wptr" !=3D "0x000000" ]; then
-> +       _fail "Old wptr still at $old_wptr"
-> +fi
-> +
-> +new_data_zone=3D$(get_data_bg)
-> +new_data_zone=3D$((new_data_zone >> 9))
-> +printf "New data zone 0x%x\n" $new_data_zone >> $seqres.full
-> +
-> +# Check that data was really relocated to a different zone
-> +if [ $old_data_zone -eq $new_data_zone ]; then
-> +       echo "New zone same as old zone"
-> +fi
-> +
-> +# success, all done
-> +echo "Silence is golden"
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/236.out b/tests/btrfs/236.out
-> new file mode 100644
-> index 000000000000..b6b6e0cad9a7
-> --- /dev/null
-> +++ b/tests/btrfs/236.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 236
-> +Silence is golden
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index 331dd432fac3..62c9c761e974 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -238,3 +238,4 @@
->  233 auto quick subvolume
->  234 auto quick compress rw
->  235 auto quick send
-> +236 auto quick balance
-> --
-> 2.31.1
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+On 30/04/2021 12:05, Filipe Manana wrote:=0A=
+> On Thu, Apr 29, 2021 at 1:40 PM Johannes Thumshirn=0A=
+> <johannes.thumshirn@wdc.com> wrote:=0A=
+>>=0A=
+>> Add a test for commit 18bb8bbf13c1 ("btrfs: zoned: automatically reclaim=
+=0A=
+>> zones").=0A=
+>>=0A=
+>> This test creates a two file on a newly created FS in a way that when we=
+=0A=
+>> delete the first one, an auto reclaim process will be triggered by the F=
+S.=0A=
+>>=0A=
+>> After the reclaim process, it verifies that the data was moved to anothe=
+r=0A=
+>> zone and old zone was successfully reset.=0A=
+>>=0A=
+>> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+> =0A=
+> Looks good, however I don't have an environment for testing zoned=0A=
+> mode, so this is just really eyeballing.=0A=
+=0A=
+This maybe is something I should document for the rest of us.=0A=
+=0A=
+=0A=
+In essence it's:=0A=
+=0A=
+create_zoned_null_blk()=0A=
+{=0A=
+	dev=3D"/sys/kernel/config/nullb/$1"=0A=
+	mkdir "$dev" || _fatal "cannot create nullb0 device"=0A=
+=0A=
+	size=3D12800 # MB=0A=
+	echo 2 > "$dev"/submit_queues=0A=
+	echo "${size}" > "${dev}"/size=0A=
+	echo 1 > "${dev}"/zoned=0A=
+	echo 4 > "${dev}"/zone_nr_conv=0A=
+	echo 1 > "${dev}"/memory_backed=0A=
+	echo 1 > "$dev"/power=0A=
+}=0A=
+=0A=
+for d in nullb0 nullb1; do=0A=
+	create_zoned_null_blk $d=0A=
+done=0A=
+=0A=
+for creating two zoned null_blk devices with 4 conventional zones and =0A=
+256MB zone size.=0A=
+=0A=
+> Thanks.=0A=
+> =0A=
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>=0A=
+Thanks=0A=
