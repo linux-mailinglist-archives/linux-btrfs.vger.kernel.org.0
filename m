@@ -2,205 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514673705B7
-	for <lists+linux-btrfs@lfdr.de>; Sat,  1 May 2021 07:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC38370918
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 May 2021 23:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhEAFSy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 May 2021 01:18:54 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39358 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhEAFSx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 May 2021 01:18:53 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1415FFXH066695;
-        Sat, 1 May 2021 05:18:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=CMaFeuOFuLe7LJe/gXcb0JnwS6iLS8ZE/YHLX22Gr2g=;
- b=XrqrY0OLJ5ClXro3kxpV3s5wIXkheEWOe3GaEuOrkk8IRzJvRJD0D5No626Iy4DqD10L
- GiZNhWKhqW0BcgIVHFs/ibIkX21da15UYA33TzYanl7niMDfoASdXosjsPTj2MS463qP
- IgGG8RrKkJ5vcUHvfkiFOM097M7z/BMY9vXUmg9+X7swZOTYlkPGt5cxBnGJxl78z3vs
- SqSNTeg7joG1eBK2fVr7mfpUxBhrK6lGGAX+IPqGpHOON2DTf0IsdhTXMioK7Nk9kYPo
- TcPWUMvTHi4x9v3ouMxjrvdB8O7oEBWwwMQjUSiTxy6NSRmUHXzuLbkFqJQMcGfX3mju oA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 388xxmr2dv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 01 May 2021 05:18:01 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1415B14b051746;
-        Sat, 1 May 2021 05:18:00 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 388w1amuey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 01 May 2021 05:18:00 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1415I0eQ072115;
-        Sat, 1 May 2021 05:18:00 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 388w1amueg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 01 May 2021 05:18:00 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1415Hwl0013357;
-        Sat, 1 May 2021 05:17:59 GMT
-Received: from localhost.localdomain (/39.109.186.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 30 Apr 2021 22:17:58 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     fstests@vger.kernel.org
-Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
-        fdmanana@suse.com
-Subject: [PATCH v2] btrfs: add fstrim test case on the sprout device
-Date:   Sat,  1 May 2021 13:17:26 +0800
-Message-Id: <7ff015576992de7e8d6ff554c27c420a9ffa1595.1619800208.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <96fe1c0c8747d24ad6c45bc3f0a5551b8e1ebbde.1619793258.git.anand.jain@oracle.com>
-References: <96fe1c0c8747d24ad6c45bc3f0a5551b8e1ebbde.1619793258.git.anand.jain@oracle.com>
+        id S231547AbhEAVkY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 May 2021 17:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhEAVkX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 May 2021 17:40:23 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711B9C06174A
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 May 2021 14:39:33 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id i14so1014380pgk.5
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 May 2021 14:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Asqu8kfZmishbP/O9JxAdB1n63+hrza3htwYcGCxU6c=;
+        b=AfKto/A3afdBlkNj48GNuoxepA0wmVf1zaZa1QSAe1HM6omnOncrZhYByYA3zc03UK
+         W1Zh0zCYTI1DCAd5a8+b7sLf1RCabi/DXO9uw/OCMR9CTqbbfYbI9xxirz8N0H6EouKh
+         3bmyN3LHBSf9MZmB2LNkFyZOZwVscuaGkWzjUmBguxzxt44O5FtToZaGXNSaj7S/qJAP
+         k70Ld8v4mMWobjqGL7ZOJGauHgsHp9an5f6/Q7HSX2/1FSR1AYmWK557IfrC58r2m3qt
+         IoJqHy20yyAxPd/LTE4PPMAm+UuDH5fiW0WPTiTGZ3jPRNeQsvguIj6ANeGEw0l1/iRV
+         sHkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Asqu8kfZmishbP/O9JxAdB1n63+hrza3htwYcGCxU6c=;
+        b=M3PCwmF2PRSLchmTMtJo9J6iTlsSSy8/BI5C+RLP9QlLgDdL6YV10u0/zvfE/LRKUK
+         qh2eRFatQ7PUx2zvnzGbcUD+leQGSPUnBMECsnjS7JPCnOBuIYRyN7Nl8sHoiUlc731r
+         zU202K7auW6Nn5KzTb6PFVNj4soFe+LnJ0oFXKlk7HXdYJE7tkVZDhIIX8U2FfQKfopr
+         fVdA330W2T1BKiWkV74xHsv2PEudUT+7FXb8kguDXXSU5WjBvC/PYpx6ahAMDsBOQKUf
+         INKtjBJ6ynkSZqHwnbWBMuf/AJcIV0P2G6iwtZ5mlA+Y2ykUbSEpqfxLrJrTeplMOyYc
+         utfw==
+X-Gm-Message-State: AOAM533831/4PnGtoqvINZPkV5g1iMQoMHdLNab7AlBdq00akeuJKaef
+        S9lhcAjDz1DjmKN6xg2qcGFSFajCon4pKMn4FowBILQ+NaaNxw==
+X-Google-Smtp-Source: ABdhPJywCrRA6tuTLo0L6BDI0AyLZLp4jTrQ9hWkOUSCEu3YTwAMq7cNwU+qIsXBKe1pFhlZSUjrAUcFe7B0dPRFBJE=
+X-Received: by 2002:a63:5a50:: with SMTP id k16mr10866817pgm.185.1619905172630;
+ Sat, 01 May 2021 14:39:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: m5PmAlcp5a6DZyr7Zj0ZusvaFaW2FvBK
-X-Proofpoint-ORIG-GUID: m5PmAlcp5a6DZyr7Zj0ZusvaFaW2FvBK
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9970 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- suspectscore=0 phishscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105010036
+From:   Yan Li <elliot.li.tech@gmail.com>
+Date:   Sat, 1 May 2021 14:39:21 -0700
+Message-ID: <CALc-jWxqFtRDGtdpPLeYw2+bb5rvB6pm=camqyAQ6nOjO5wE3A@mail.gmail.com>
+Subject: "btrfs replace" ERROR: checking status of targetdev
+To:     linux-btrfs@vger.kernel.org
+Cc:     Yan Li <elliot.li.tech@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add fstrim test case on the sprout device, verify seed device
-integrity.
+Hi!
 
- btrfs: fix unmountable seed device after fstrim
+I have a raid1 btrfs with one device missing:
+$ sudo mount -o compress-force=zstd:9,relatime,space_cache=v2,degraded
+/dev/mapper/open_offsite_bak1 /mnt/offsite_bak
+$ sudo btrfs fi show /mnt/offsite_bak
+Label: none  uuid: 99acc0da-127f-4034-8d53-07851cbbccba
+Total devices 4 FS bytes used 8.75TiB
+devid    1 size 4.55TiB used 3.53TiB path dm-11
+devid    2 size 12.73TiB used 8.76TiB path dm-12
+devid    4 size 3.64TiB used 2.62TiB path dm-14
+*** Some devices missing
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
-v2:
-  Add _require_fstrim and _require_batched_discard.
-  Use FSTRIM_PROG.
-  Use _filter_ro_mount to handle the difference in output in different
-     mount(8) version.
-  Call _scratch_dev_pool_put.
-  Add _check_btrfs_filesystem $seed to check the whole seed fs.
-  Update in-code comments.
+Now I'm trying to replace it with another drive according to the
+instructions on the wiki
+(https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices#Using_btrfs_replace):
 
- tests/btrfs/236     | 81 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/236.out |  5 +++
- tests/btrfs/group   |  1 +
- 3 files changed, 87 insertions(+)
- create mode 100755 tests/btrfs/236
- create mode 100644 tests/btrfs/236.out
+$ sudo btrfs replace start -r 3 /dev/mapper/open_offsite_bak5 /mnt/offsite_bak/
+ERROR: checking status of dm-13: No such file or directory
 
-diff --git a/tests/btrfs/236 b/tests/btrfs/236
-new file mode 100755
-index 000000000000..aac27fac06dd
---- /dev/null
-+++ b/tests/btrfs/236
-@@ -0,0 +1,81 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 Oracle. All Rights Reserved.
-+#
-+# FS QA Test 236
-+#
-+# Check seed device integrity after fstrim on the sprout device.
-+#
-+#  Kernel bug is fixed by the commit:
-+#    btrfs: fix unmountable seed device after fstrim
-+
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_command "$BTRFS_TUNE_PROG" btrfstune
-+_require_fstrim
-+_require_scratch_dev_pool 2
-+_scratch_dev_pool_get 2
-+
-+seed=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
-+sprout=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
-+
-+_mkfs_dev $seed
-+_mount $seed $SCRATCH_MNT
-+
-+$XFS_IO_PROG -f -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
-+_scratch_unmount
-+$BTRFS_TUNE_PROG -S 1 $seed
-+
-+# Mount the seed device and add the rw device
-+_mount $seed $SCRATCH_MNT 2>&1 | _filter_ro_mount | _filter_scratch
-+md5sum $SCRATCH_MNT/foo | _filter_scratch
-+
-+$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
-+_scratch_unmount
-+
-+# Now remount writeable sprout device, create some data and run fstrim
-+_mount $sprout $SCRATCH_MNT
-+_require_batched_discard $SCRATCH_MNT
-+
-+$XFS_IO_PROG -f -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
-+
-+$FSTRIM_PROG $SCRATCH_MNT
-+
-+_scratch_unmount
-+
-+# Verify seed device is all ok
-+_mount $seed $SCRATCH_MNT 2>&1 | _filter_ro_mount | _filter_scratch
-+md5sum $SCRATCH_MNT/foo | _filter_scratch
-+_scratch_unmount
-+
-+_check_btrfs_filesystem $seed
-+
-+_scratch_dev_pool_put
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/236.out b/tests/btrfs/236.out
-new file mode 100644
-index 000000000000..01699b8fc291
---- /dev/null
-+++ b/tests/btrfs/236.out
-@@ -0,0 +1,5 @@
-+QA output created by 236
-+mount: device write-protected, mounting read-only
-+096003817ad2638000a6836e55866697  SCRATCH_MNT/foo
-+mount: device write-protected, mounting read-only
-+096003817ad2638000a6836e55866697  SCRATCH_MNT/foo
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 331dd432fac3..5032259244e0 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -238,3 +238,4 @@
- 233 auto quick subvolume
- 234 auto quick compress rw
- 235 auto quick send
-+236 auto quick seed trim
--- 
-2.27.0
+/dev/mapper/open_offsite_bak5 indeed is a link to /dev/dm-13.
+$ sudo btrfs replace start -r 3 /dev/dm-13 /mnt/offsite_bak/
+shows exactly the same error.
 
+The device is fine if I try:
+sudo dd if=/dev/dm-13 of=/dev/null count=1
+
+There's no error message in dmesg.
+
+What could be the problem? I feel like it should be a stupid error on
+my part but I just can't figure out. "btrfs replace" doesn't support
+using a devicemapper device?
+
+Kernel: 5.11.0-16-generic
+btrfs-progs: 5.10.1-1build1
+Both from Ubuntu 21.04 with latest updates.
+
+Thanks!
+
+--
+Yan
