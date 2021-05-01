@@ -2,96 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FAE37002B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Apr 2021 20:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F653704A2
+	for <lists+linux-btrfs@lfdr.de>; Sat,  1 May 2021 03:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhD3SHv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Apr 2021 14:07:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42828 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229750AbhD3SHu (ORCPT
+        id S231255AbhEABMs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Apr 2021 21:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhEABMs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Apr 2021 14:07:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619806022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=D7miYpQHKUyjQ+9R5jWrbmacmh9BSN80I7pxXKphNsc=;
-        b=Y75OeA/nY5Mrlo2ykQfETuarKJwXxHBf8uoJYJdm6ElnbQ7XTmPVjoLLMtVuROHM/38Ach
-        2I6tDybH8fyV0u9mFjtPndrcUlRuKn626c19cF6c/lIP1zcy12FRZ4HP7rY+A24Ijgjdvu
-        X+igsG8k10naG9WLsBuO7BTE7hNi0ZQ=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-274-D8WHDCFgNoSMwvWY_Mt28Q-1; Fri, 30 Apr 2021 14:07:00 -0400
-X-MC-Unique: D8WHDCFgNoSMwvWY_Mt28Q-1
-Received: by mail-qk1-f200.google.com with SMTP id u126-20020a3792840000b02902e769005fe1so4151150qkd.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Apr 2021 11:07:00 -0700 (PDT)
+        Fri, 30 Apr 2021 21:12:48 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875D0C06174A;
+        Fri, 30 Apr 2021 18:11:58 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so2541461wmq.4;
+        Fri, 30 Apr 2021 18:11:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xPblVCEaArGgHbp1X7XGnW+D1CWWpswQPWTndCDP/GI=;
+        b=sHVQuBjXOSBuWh2JrfAgHReMokw8R2v3/fzfk5cpRU3KSpYV8w9vB/rxJUetPrzkYS
+         YiVVSrHqr5KnYnReQ1xLsRva9e98uzb+XwqYR4IguT20fBzvhVC/l3D7IED5NYH7eki8
+         oXcIshoTY6SZLNddkMPiocaP73Esc/hJk79NxsRKfCxan5C74PKXlWhKAubKZEqXtL9R
+         SbV2r2YLBiATpuccu7EFWEDcybLAVH1c7nKSQwT8qRrl5Gz5GorEzi7ElFG5AQfb9r+B
+         XNyp1+cAgjVHVwXoLOkgwmJ+t4/k6+jJGxVT2xVbj7GBlLVCGxFM8C+hNAwMtKwGnL5E
+         CEfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D7miYpQHKUyjQ+9R5jWrbmacmh9BSN80I7pxXKphNsc=;
-        b=LC4Pc0XhF1qAJSixgyg1vbpDtGrUYd9BJAA26Ja5rrFAb+y4frT6jBtCfkDdcuUVuo
-         HzLpJB8fgkKw/FkrIASxCUG2g887q9wNvrXTI7v2LLdTq8KDHQp4ozpYXi1vkDhnGlr0
-         3nyZgz0ynNKcPcUnZcl9bGPUDybbDBnMNgK92fQEpIDIRdMeuNzpVpZtz39GIw1b0viX
-         VOzK2/0h8bKXXMd9qO1m2Qu2pZ2DW8p5OG3n7on1xaT1bVu+VUASreY4qbPtk1hwGUjw
-         T/v383AFaMNlEoLpTDHe28nFQyv3M/QTM73ObYwbeR5Ci2GTaM4qLc01omaVlcN3+wAF
-         PocA==
-X-Gm-Message-State: AOAM531xXfJadaomsdk/b/YOZGA+xjeBFnKyDaNNPGhuKS+9nzeiLyd/
-        dFEM4o0Ft0SEsHNe2OdA76S8QJGOi/ILcE3q8z7u4GfuRudhrBs+lMGiAkwdJSCiorInpImIay7
-        m4Q3iEBuE/kCN8ZFgYgARVDc=
-X-Received: by 2002:a37:7a05:: with SMTP id v5mr6870612qkc.266.1619806019280;
-        Fri, 30 Apr 2021 11:06:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAlxc1hPUTwEYH0l2ED+glJWfPMlmvkcqtM/2BRdmPojLgUYqc00LlHS8YezDjVVdYYegf3Q==
-X-Received: by 2002:a37:7a05:: with SMTP id v5mr6870595qkc.266.1619806019138;
-        Fri, 30 Apr 2021 11:06:59 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x19sm1965052qkx.107.2021.04.30.11.06.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xPblVCEaArGgHbp1X7XGnW+D1CWWpswQPWTndCDP/GI=;
+        b=BHQazefE6UEKn2dRCg/RU/pxqjeCT9pAr8oT3ChyiAI++N5BwTmRb8aa00U6D8+vKJ
+         yCwqZr8G6c7sNC+m+eDDO/x3i+IQzW0CRpkoHSKb17NqFfs/9hrB69NtQwGiaUmLnLRY
+         vfSGw/dtAHEsB5e/9mhUpjDJyOQMYcJBWGXGIyt+rW9ibxmRJyFMoGDdt+bOUJJuAmdr
+         y4nZg0sMuEkj2T39I6N9/NVsbGNyqIGQWqe1G+Bi2lnSqJU/Q7EtYSqQDMUfkLIC4OMX
+         GdPjWXhmPY+uLN7+vUmQZ3niOly1hHbtH0V/xniCcE1evxhCZ9sjsARj6b53wZDGJE5g
+         S7KQ==
+X-Gm-Message-State: AOAM530Yk9FFmTVsme3e/UXDH2AC9HCXTrCZtNca26yCUstrmPm1oVH9
+        SazORtg9ERnbeSwQEuckzBY=
+X-Google-Smtp-Source: ABdhPJz3D8kChOC5NxvJr0DA1jCNSsf/HtSQbVWqTUdO9jRcj/nR8Of5KWBgCnraatZIpAeaS4AZBw==
+X-Received: by 2002:a05:600c:221a:: with SMTP id z26mr11748140wml.93.1619831517149;
+        Fri, 30 Apr 2021 18:11:57 -0700 (PDT)
+Received: from localhost.localdomain ([41.62.193.191])
+        by smtp.gmail.com with ESMTPSA id y5sm4081960wrm.61.2021.04.30.18.11.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Apr 2021 11:06:58 -0700 (PDT)
-From:   trix@redhat.com
+        Fri, 30 Apr 2021 18:11:56 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
 To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] btrfs: initialize return variable
-Date:   Fri, 30 Apr 2021 11:06:55 -0700
-Message-Id: <20210430180655.3328899-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH-V3] fs/btrfs: Fix uninitialized variable
+Date:   Sat,  1 May 2021 02:11:36 +0100
+Message-Id: <20210501011136.29240-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+The variable 'zone' is uninitialized which
+introduce some build warning when introduced
+within the switch.
 
-Static analysis reports this problem
-free-space-cache.c:3965:2: warning: Undefined or garbage value returned
-  return ret;
-  ^~~~~~~~~~
+Fix that by changing the passed condition:
+Catch explicitly any invalid 'mirror' value
+as an assertion failure.
 
-ret is set in the node handling loop.
-Treat doing nothing as a success and initialize ret to 0.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
 ---
- fs/btrfs/free-space-cache.c | 2 +-
+V3: catch explicitly invalid mirror value
+V2: force assertion failure by zeroing the zone variable
+V1: initialize the zone variable
+---
+ fs/btrfs/zoned.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index e54466fc101f..4806295116d8 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -3949,7 +3949,7 @@ static int cleanup_free_space_cache_v1(struct btrfs_fs_info *fs_info,
- {
- 	struct btrfs_block_group *block_group;
- 	struct rb_node *node;
--	int ret;
-+	int ret = 0;
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 432509f4b3ac..8250ab3f0868 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -144,7 +144,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
+ 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+ 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+ 	default:
+-		ASSERT(zone);
++		ASSERT((u32)mirror < 3);
+ 		break;
+ 	}
  
- 	btrfs_info(fs_info, "cleaning free space cache v1");
- 
+
+base-commit: c05b2a58c9ed11bd753f1e64695bd89da715fbaa
 -- 
-2.26.3
+2.17.1
 
