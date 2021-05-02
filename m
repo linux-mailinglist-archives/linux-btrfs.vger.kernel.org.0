@@ -2,130 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0CE370B14
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 May 2021 12:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3A4370B88
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 May 2021 14:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhEBKSt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 May 2021 06:18:49 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:57685 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhEBKSt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 May 2021 06:18:49 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d27 with ME
-        id zmHs2400F21Fzsu03mHtWf; Sun, 02 May 2021 12:17:54 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 02 May 2021 12:17:54 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <eba16312-9d50-9549-76c0-b0512a394669@wanadoo.fr>
-Date:   Sun, 2 May 2021 12:17:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231657AbhEBMdC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 2 May 2021 08:33:02 -0400
+Received: from out20-87.mail.aliyun.com ([115.124.20.87]:40037 "EHLO
+        out20-87.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230255AbhEBMdB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 2 May 2021 08:33:01 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04558269|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0345976-0.00176147-0.963641;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.K7VwjSb_1619958727;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.K7VwjSb_1619958727)
+          by smtp.aliyun-inc.com(10.147.40.44);
+          Sun, 02 May 2021 20:32:08 +0800
+Date:   Sun, 02 May 2021 20:32:13 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: 'umount /mnt/scratch' of xfstests generic/475 freeze
+In-Reply-To: <20210501100713.E2BB.409509F4@e16-tech.com>
+References: <20210501100713.E2BB.409509F4@e16-tech.com>
+Message-Id: <20210502203212.CF71.409509F4@e16-tech.com>
 MIME-Version: 1.0
-In-Reply-To: <20210501225046.9138-1-khaledromdhani216@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Becky! ver. 2.75.03 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Le 02/05/2021 à 00:50, Khaled ROMDHANI a écrit :
-> Fix the warning: variable 'zone' is used
-> uninitialized whenever '?:' condition is true.
-> 
-> Fix that by preventing the code to reach
-> the last assertion. If the variable 'mirror'
-> is invalid, the assertion fails and we return
-> immediately.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-> ---
->   fs/btrfs/zoned.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 8250ab3f0868..23da9d8dc184 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -145,7 +145,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
->   	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
->   	default:
->   		ASSERT((u32)mirror < 3);
-> -		break;
-> +		return 0;
->   	}
->   
->   	ASSERT(zone <= U32_MAX);
-> 
-> base-commit: b5c294aac8a6164ddf38bfbdd1776091b4a1eeba
-> 
 Hi,
 
-just a few comments.
+another 2 results of xfstests generic/475.
 
-If I understand correctly, what you try to do is to silence a compiler 
-warning if no case branch is taken.
+result 1:
+although some unexpecgted dmesg output, xfstests generic/475 finished.
 
-First, all your proposals are based on the previous one.
-I find it hard to follow because we don't easily see what are the 
-differences since the beginning.
-
-The "base-commit" at the bottom of your mail, is related to your own 
-local tree, I guess. It can't be used by any-one.
-
-My understanding it that a patch, should it be v2, v3..., must apply to 
-the current tree. (In my case, it is the latest linux-next)
-This is not the case here and you have to apply each step to see the 
-final result.
-
-Should this version be fine, a maintainer wouldn't be able to apply it 
-as-is.
-
-You also try to take into account previous comments to check for 
-incorrect negative values for minor and catch (the can't happen today) 
-cases, should BTRFS_SUPER_MIRROR_MAX change and this function remain the 
-same.
-
-So, why hard-coding '3'?
-The reason of magic numbers are hard to remember. You should avoid them 
-or add a comment about it.
-
-My own personal variation would be something like the code below (untested).
-
-Hope this helps.
-
-CJ
+[12749.787049] WARNING: CPU: 14 PID: 1280811 at fs/btrfs/extent_io.c:6409 extent_buffer_test_bit+0x44/0x70 [btrfs]
+...
+[12750.429079] watchdog: BUG: soft lockup - CPU#19 stuck for 22s! [migration/19:110]
+...
+[12807.346868] clocksource: timekeeping watchdog on CPU14: Marking clocksource 'tsc' as unstable because the skew is too large:
+...
+[12813.812473] BTRFS: error (device dm-0) in btrfs_run_delayed_refs:2163: errno=-5 IO failure
 
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 70b23a0d03b1..75fe5f001d8b 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -138,11 +138,14 @@ static inline u32 sb_zone_number(int shift, int 
-mirror)
-  {
-  	u64 zone;
+result 2:
+a panic happened, but we failed to gather the call trace.
 
--	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
-+	ASSERT(mirror >= 0 && mirror < BTRFS_SUPER_MIRROR_MAX);
-  	switch (mirror) {
-  	case 0: zone = 0; break;
-  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
-  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-+	default:
-+		ASSERT(! "mirror < BTRFS_SUPER_MIRROR_MAX but not handled above.");
-+		return 0;
-  	}
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/05/02
 
-  	ASSERT(zone <= U32_MAX);
+> Hi,
+> 
+> 'umount /mnt/scratch' of xfstests generic/475 freeze, the OS still
+> reponse.
+> 
+> the frequency is yet not clear, but not high.
+> 
+> By the way, We enable '-O no-holes -R free-space-tree' default for
+> mkfs.btrfs.
+> 
+> This is the dmesg output:
+> 
+> [ 4674.419567] ------------[ cut here ]------------
+> [ 4674.425349] WARNING: CPU: 11 PID: 2022633 at fs/btrfs/extent_io.c:6409 extent_buffer_test_bit+0x44/0x70 [btrfs]
+> [ 4674.437254] Modules linked in: dm_thin_pool dm_persistent_data dm_bio_prison dm_flakey loop rpcsec_gss_krb5 nfsv4 dns_resolver nfs fscache rfkill rpcrdma ib_isert iscsi_target_mod ib_iser libiscsi scsi_transport_iscsi ib_srpt target_core_mod ib_srp scsi_transport_srp ib_ipoib rdma_ucm ib_umad iTCO_wdt intel_pmc_bxt intel_rapl_msr iTCO_vendor_support dcdbas intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel ipmi_ssif kvm irqbypass rapl intel_cstate ipmi_si intel_uncore mei_me ipmi_devintf joydev mei lpc_ich ipmi_msghandler acpi_power_meter nvme_rdma nvme_fabrics rdma_cm iw_cm ib_cm rdmavt rdma_rxe nfsd ib_uverbs ip6_udp_tunnel udp_tunnel ib_core auth_rpcgss nfs_acl lockd grace nfs_ssc ip_tables xfs mgag200 drm_kms_helper crct10dif_pclmul crc32_pclmul cec crc32c_intel bnx2x nvme drm mpt3sas igb pcspkr ghash_clmulni_intel mdio megaraid_sas nvme_core dca raid_class i2c_algo_bit scsi_transport_sas wmi dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua btrfs xor
+> [ 4674.437303]  raid6_pq sunrpc i2c_dev [last unloaded: scsi_debug]
+> [ 4674.547845] CPU: 11 PID: 2022633 Comm: kworker/u96:7 Tainted: G        W         5.10.33-4.el7.x86_64 #1
+> [ 4674.559153] Hardware name: Dell Inc. PowerEdge T620/02CD1V, BIOS 2.9.0 12/06/2019
+> [ 4674.568280] Workqueue: btrfs-cache btrfs_work_helper [btrfs]
+> [ 4674.575343] RIP: 0010:extent_buffer_test_bit+0x44/0x70 [btrfs]
+> [ 4674.582554] Code: 49 89 f0 48 c1 ee 0c 48 8b 44 f7 70 41 81 e0 ff 0f 00 00 48 8b 70 08 48 8d 4e ff 83 e6 01 48 0f 44 c8 48 8b 09 83 e1 04 75 29 <0f> 0b 48 2b 05 e3 07 f2 d0 83 e2 07 48 c1 f8 06 89 d1 48 c1 e0 0c
+> [ 4674.604916] RSP: 0018:ffffa247a4c1fca8 EFLAGS: 00010246
+> [ 4674.611431] RAX: ffffea7584253b80 RBX: 0000000043e0b000 RCX: 0000000000000000
+> [ 4674.620097] RDX: 000000000000010b RSI: 0000000000000000 RDI: ffff8e920775a800
+> [ 4674.628785] RBP: ffff8e920775a800 R08: 0000000000000779 R09: ffff8e92522585a0
+> [ 4674.637387] R10: 0000000000000097 R11: 0000043e98db99be R12: 0000000043d00000
+> [ 4674.646031] R13: ffff8e9578e79400 R14: ffff8e9369847350 R15: ffff8e9369847310
+> [ 4674.654688] FS:  0000000000000000(0000) GS:ffff8ea1bf940000(0000) knlGS:0000000000000000
+> [ 4674.664371] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 4674.671463] CR2: 00005642b0efa208 CR3: 00000013f1a10003 CR4: 00000000001706e0
+> [ 4674.680080] Call Trace:
+> [ 4674.683526]  free_space_test_bit.isra.11+0xac/0xf0 [btrfs]
+> [ 4674.690325]  load_free_space_tree+0x1f7/0x3f0 [btrfs]
+> [ 4674.696671]  caching_thread+0x374/0x500 [btrfs]
+> [ 4674.702352]  ? newidle_balance+0x265/0x3e0
+> [ 4674.707622]  btrfs_work_helper+0xc2/0x300 [btrfs]
+> [ 4674.713487]  process_one_work+0x1aa/0x340
+> [ 4674.718591]  worker_thread+0x30/0x390
+> [ 4674.723301]  ? create_worker+0x1a0/0x1a0
+> [ 4674.728313]  kthread+0x116/0x130
+> [ 4674.732549]  ? kthread_park+0x80/0x80
+> [ 4674.737237]  ret_from_fork+0x1f/0x30
+> [ 4674.741855] ---[ end trace 037def07c1124c76 ]---
+> [ 4674.747602] ------------[ cut here ]------------
+> 
+> 
+> fs/btrfs/extent_io.c:6409
+> int extent_buffer_test_bit(const struct extent_buffer *eb, unsigned long start,
+>                unsigned long nr)
+> {
+>     u8 *kaddr;
+>     struct page *page;
+>     unsigned long i;
+>     size_t offset;
+> 
+>     eb_bitmap_offset(eb, start, nr, &i, &offset);
+>     page = eb->pages[i];
+> L6409:    WARN_ON(!PageUptodate(page));
+>     kaddr = page_address(page);
+>     return 1U & (kaddr[offset] >> (nr & (BITS_PER_BYTE - 1)));
+> }
+> 
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2021/05/01
+> 
+
 
