@@ -2,87 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E243709AC
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 May 2021 04:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2893709B6
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 May 2021 05:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbhEBC3M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 1 May 2021 22:29:12 -0400
-Received: from mout.gmx.net ([212.227.17.21]:36663 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhEBC3L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 1 May 2021 22:29:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1619922499;
-        bh=tKwa+b2InquzMdR3MX1ISQQ/1B+mwpjHOaiTss8Xigc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=k7M++Gqa82uWKpXnj+zgY1ozzcE+a7JFKbMjXuAQKhSrA28c//tsOYoIw9nw0P6Gq
-         EBUsMHNN6PgXwXy9ELH+HpE40L/Yk3FGxekbHr4OOfF9JWl/5DmuoSdH0QtWWWXPef
-         uq3Ap44NSiDFsHBy3NkZ2AlXWUOBQBr1fxIu81g4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M26vB-1lb62F2Fir-002b6R; Sun, 02
- May 2021 04:28:19 +0200
-Subject: Re: "btrfs replace" ERROR: checking status of targetdev
-To:     Yan Li <elliot.li.tech@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CALc-jWxqFtRDGtdpPLeYw2+bb5rvB6pm=camqyAQ6nOjO5wE3A@mail.gmail.com>
- <63953997-7b50-0daa-4a16-d78309136b81@gmx.com>
- <CALc-jWwuTDO9LdX6Rgu28pkmnVWbgHFuRDZb+16_Ebs--2h=CQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <8ea32dcb-cb6a-0988-150b-0858bf1374d3@gmx.com>
-Date:   Sun, 2 May 2021 10:28:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231408AbhEBDDm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 1 May 2021 23:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhEBDDm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 1 May 2021 23:03:42 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EE4C06174A
+        for <linux-btrfs@vger.kernel.org>; Sat,  1 May 2021 20:02:51 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id e186so1477433iof.7
+        for <linux-btrfs@vger.kernel.org>; Sat, 01 May 2021 20:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=P+I/CoSBKxaRXLSRV7Mw/64RIyHedQgUE8Ldw630pT4=;
+        b=XsSbpHnTOgIHS76BOIhxG74pYbxe5NH94KHs0XwdWQDaQZI6aRh1DvCw21Pcm62Mqr
+         fvSp3Sb024gsSfeFD0Kmb0NR7QftGqlMjoZaprT/ALMO/oFG1e8fNu/CEdT7E5F7GtDA
+         PaNZhfOKgReglxF7clATqqQnCITDQwtvnyzYAHOJ6BYyzIahiFStyq7i8FNPY3RJS2gX
+         4ZBqpWgar/z+RfFi7Gz3kBlLF2RaX9G1lfG+OX19AVccTPZpI/JEFTpYcWFbfi/Q08fE
+         p0umOc/b1NeJzefQ4YFuzAQHiMmPa5B8TsLjWqN16RT8s+lGE3sQiTVP86xovTqhXonQ
+         4idQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=P+I/CoSBKxaRXLSRV7Mw/64RIyHedQgUE8Ldw630pT4=;
+        b=B73bwi0hyg8mU9KJppLJ8JDr72wKmr5U0XDXEBG4NAiLiO/DS1tbeu/AA4oVVBzrWS
+         1waF0a7mpfyQLV4+NFCoSZPWESRZpvQ33HdiE7kcHuDmoTgUhEomOwf86AtdzDHFepCH
+         7CMQvKYCfmUOz9O/+mv6RP0TA0qQiQu3ZnfwVodSEAyHB+Ewp/s7uuL5ug0Ks50/im+Z
+         fYrFaXi/kBERhBW2ypU195WaDO43SrVbJAtinA5uAr6wgoIW11UKStBY2pjcxOz+EXdy
+         GacJg3Zk8W8t3Rq9h+oNnLIESkzkzfSrQTXY7RuXVXFzJVMcZsPtiajDZjMJHRA+7J+y
+         aoWA==
+X-Gm-Message-State: AOAM533Omh8/oCTngkTVBZJ6o3EkoPyzcdrf/XWNtA1pyfyUvxIq8xR1
+        4WSj0GjKe+gmMFJafefy6k8rWOxhnjJt6Wg5QOAoSdi6OBYvbw==
+X-Google-Smtp-Source: ABdhPJx71gT2qiQDGGtTtLwwaeh/qmGD7mAsYU+imqoxuHKBGQyWwQlBtmXNJwtx45e1z7j5zZSqOJl/OTodhl2FAeo=
+X-Received: by 2002:a5e:940f:: with SMTP id q15mr9314067ioj.197.1619924570249;
+ Sat, 01 May 2021 20:02:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALc-jWwuTDO9LdX6Rgu28pkmnVWbgHFuRDZb+16_Ebs--2h=CQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rRUFnXaOc0XADEFR89HNfeQmVgFVmEohfpjOowu9Lj8A8e51Uwl
- 42PBxUW5p3v1cbNFLR77riS3RT/RWA9kUFYGdiH2CPuoEB5uQTPMdE9+d+G+pxB8Nt5PZu0
- LvVrAA/jm3cRWTAjNvnrG2OTyP5PDh8d/+tW0ldT8e3nUJ8iOmWVTDo8SjQSNPfBWkjlMOZ
- 06TO/nyfqGmB1VIPwwIUQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aV6rzp+h6KY=:B3VMzvw2h7c551mgB8pnDa
- pk8J1FiJGU/OV11H+eGsSNIqjF7j6gVUHoJx9zGejc+LAXnmpFHt1nqqjfs/zBdV1f/4VJneV
- NZdjtiZLnWHErb82pcFwADlNSOY9s/g/tkCk9+f4YjCAYKRxVnteBwp4VJFpFN+MljeBkfapd
- huR6MjATdcZOnM0bDxBZdTl5OWB2D4K7BgxGO4DlJ+lb39NdnQ2mBnx9vzWZBRkgNDslMHHwE
- f52awYnRkTv+Q7WVicbzmkgOAnJVfnpL9YrwKRx54afiIbNqoSivSN6zkRKQoCZbrp7ISaiB3
- prHlCv1dQmBYvIC2tcIK4DHOFzlZXAngWYvTFRaiDUMs8KfYBzGr962jhrw1PTERaem7hmWH6
- 0iYuW84NMBsSXOt/hvv3GsLrY8NWXF61Yl4upKqJLldElcDU0smhn0IBcVmB2MaUJwQ4/6ahh
- B3RYETz5kJUojON/NuetBJqqXD78+wKGm6354O9KMGeACynhQOJcs8TYYVlNFk3GY5r8t+4rt
- sxLfP8A+jXQMBmcO+a64FOPwYw+W29GuoNHPcV3CXlLFRYsLCWNvo4XCbkZCThsZ7H0FjYN+B
- RKGT0AeeYR8sQCsOfBp4iSklOqT3v4jGUAjIeg0oinfxVRDd1sGBmtsk4FuvyMLHXFEtAprbv
- K/2ufR61graJrWvlIn/HfE0du1litMfK3oKtDfCvgMxkNr0XoCe3wckDw4dbADRSKwZZyMBpX
- Cvx2B1IIpLxN74/ujU8+dbx0KRP5vRRs1KU4Uc+dna801AmEc8Q7rtSxrpJaOhX4q2DO2Q75W
- B198jUzg/FCPaqVj5yyK7POgsuiXABlxwmrnZKRlw3MGMemAI1mezhOZR+crtP2cGQLtnik6j
- A+mUYsXBv2Lc3jCNrdvjqwP51+gLuJdgXFjFswVaVeoPO1ZUdnoP5XiCT1rH9xvfW8BuMEZfK
- WoWoezAl3uyc1NGb16GBIjCIHKynD9rWaDSoGuTy8QEuprnTXJXo65e4rZHxzontG5CLOJY/Y
- ojSBg41RfL1taZ+Rwc2k//uPnjm8lhr2HDzNhiEsd4yRGj7t/rQQD/507MP4ACreSMGRVKwEV
- eFXIoYvyc+RtxuvvlR/ZO9ds2roHqaioP7EFHai1QHfUJez8jf9mPUdTX2nvkmyjYkkIscNsi
- bkAT/1wAxz6huDkhp4inArsiv+EyBUIDs21XYX2GHxDRsFwvYf1KQl7fYxbj7UUq75JpbPcys
- 0LNORTx33vRmAPTSV
+From:   Abdulla Bubshait <darkstego@gmail.com>
+Date:   Sat, 1 May 2021 23:02:39 -0400
+Message-ID: <CADOXG6E7Oh8W6su-GknxmnJ_TKmyo5xAhO+tRURO1XBMeiPKLw@mail.gmail.com>
+Subject: btrfs balance convert always fails with EIO
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I had a 3 disk single data setup that I decided to switch to a 4 disk
+raid 5 setup.
+Of the 30 TB, around 1.5TB remain unconverted and the balance will not
+complete due to (-5) EIO error.
 
+Here is the dmesg output of my balance attempt:
+[Sat May  1 22:09:42 2021] BTRFS info (device sdd): scrub: started on devid 4
+[Sat May  1 22:11:51 2021] BTRFS info (device sdd): balance: start
+-dconvert=raid5,soft
+[Sat May  1 22:11:53 2021] BTRFS info (device sdd): relocating block
+group 4710535790592 flags data
+[Sat May  1 22:11:57 2021] BTRFS warning (device sdd): csum failed
+root -9 ino 257 off 460902400 csum 0x280ba365 expected csum 0x8c01678e
+mirror 1
+[Sat May  1 22:11:57 2021] BTRFS error (device sdd): bdev /dev/sdd
+errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
+[Sat May  1 22:11:57 2021] BTRFS warning (device sdd): csum failed
+root -9 ino 257 off 460902400 csum 0x280ba365 expected csum 0x8c01678e
+mirror 1
+[Sat May  1 22:11:57 2021] BTRFS error (device sdd): bdev /dev/sdd
+errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
+[Sat May  1 22:12:00 2021] BTRFS info (device sdd): balance: ended
+with status: -5
 
-On 2021/5/2 =E4=B8=8A=E5=8D=8810:08, Yan Li wrote:
-> On Sat, May 1, 2021 at 5:44 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->> It looks like a bug in btrfs-progs.
->>
->> Fixed in v5.11 btrfs-progs.
->>
->> Would you please try to use v5.11 btrfs-progs to see if it solves your
->> problem.
->
-> Indeed. This is fixed in 5.11. Thanks!
->
+I tried to check inode 257 with btrfs inspect-internal and it turns
+out to just be a folder
+/mnt/mntpoint//home
 
-Just a note for anyone maintaining btrfs-progs for various distros, the
-fix is commit 2347b34af4d8 ("btrfs-progs: fix device mapper path
-canonicalization").
+I am not sure why I keep getting EIO errors or how I can get the
+balance to complete.
 
-Thanks,
-Qu
+I ran a btrfs check on my drives and this is the result:
+
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+Opening filesystem to check...
+Checking filesystem on /dev/sdc
+UUID: 26debbc1-fdd0-4c3a-8581-8445b99c067c
+cache and super generation don't match, space cache will be invalidated
+found 29351480897536 bytes used, no error found
+total csum bytes: 28628238180
+total tree bytes: 32005619712
+total fs tree bytes: 354713600
+total extent tree bytes: 283623424
+btree space waste bytes: 2529336259
+file data blocks allocated: 29325539180544
+ referenced 29318180474880
+
+btrfs filesystem usage gives:
+Overall:
+   Device size:                  60.03TiB
+   Device allocated:             46.97TiB
+   Device unallocated:           13.05TiB
+   Device missing:                  0.00B
+   Used:                         46.77TiB
+   Free (estimated):              7.58TiB      (min: 4.46TiB)
+   Free (statfs, df):           310.86GiB
+   Data ratio:                       1.75
+   Metadata ratio:                   3.00
+   Global reserve:              512.00MiB      (used: 0.00B)
+   Multiple profiles:                 yes      (data)
+
+Data,single: Size:1.61TiB, Used:1.44TiB (89.78%)
+  /dev/sdd        1.61TiB
+
+Data,RAID5: Size:25.23TiB, Used:25.22TiB (99.96%)
+  /dev/sdd        1.97TiB
+  /dev/sdc       14.22TiB
+  /dev/sdf       12.70TiB
+  /dev/sde       16.36TiB
+
+Metadata,RAID1C3: Size:35.00GiB, Used:29.80GiB (85.16%)
+  /dev/sdd       34.00GiB
+  /dev/sdc       35.00GiB
+  /dev/sdf       30.00GiB
+  /dev/sde        6.00GiB
+
+System,RAID1C3: Size:32.00MiB, Used:3.22MiB (10.06%)
+  /dev/sdd       32.00MiB
+  /dev/sdc       32.00MiB
+  /dev/sde       32.00MiB
+
+Unallocated:
+  /dev/sdd       12.76TiB
+  /dev/sdc      299.99GiB
+  /dev/sdf        1.00MiB
+  /dev/sde        1.00MiB
