@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A9B370CF2
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 May 2021 16:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B172370D0E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  2 May 2021 16:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhEBOID (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 May 2021 10:08:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51352 "EHLO mail.kernel.org"
+        id S233639AbhEBOIb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 May 2021 10:08:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233178AbhEBOHT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 2 May 2021 10:07:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2AC2614A7;
-        Sun,  2 May 2021 14:06:04 +0000 (UTC)
+        id S233823AbhEBOH4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 2 May 2021 10:07:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6721C613B0;
+        Sun,  2 May 2021 14:06:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619964365;
-        bh=/4OKuc2h/XwrurRmvCYHqa216Pl+UMPBlgZzmVDIm0s=;
+        s=k20201202; t=1619964382;
+        bh=VRyj2C4fw0+764fRhWcRU66cC58F8EgHyHp56UeQyrE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lb+Fhk/XOIc5mDU6dYRHXlyNrofk0ojqt5bdiVuEYqujgmxonWxJIWqyrbkJAa/dF
-         c/M81eqULKJkKzRR83dlUksYDE0xEeQex3DGknwV27mc6+35HluEoXp0tDV4ose5eL
-         9n6vazgYzII5dTLlRCh7c4sGK+475EtZ8+SHZvHRP7S4NYLCW9TBATFGSL3HH/wwLw
-         HI7LKdFotlLM+X+HDFU2Kp+/a6gPTtCb9XyX+jzDVS0R+G36oA0LqGZ0fAVT5Kb4Cz
-         Rd+OEI7cN62gMQ9dXZqxa7AGtmD6RmlsczHliE/nupfjXOdGRWKhkW3wf3mQr/HNWO
-         1KgIOuFLTJHDg==
+        b=L1xrMxtCeJgnjzixYNzwk5BuSW1eQ/BJlV0Xip9SH6nd4R1a9DOiKz1X5oAAxKZUu
+         O1QdGaxbyd3uWuF592dYQypyrxYzbC4ugJ1GkpQg8zfcHLj07sFCS2XU9LBFuAtCuB
+         7ehiMpxrsVMVuAvngS05r3KAWxKAwAPMwRxfb905ns6cCQzpfruVYowkvvundW52/s
+         bxbLPZ210Dy1wE0kon1diB+IawSC5NlJ6AqCFi+wLii6qnNfT/TtOJJV5YSObn1edz
+         jakg3P9HqlaK3HZfyBUQbl8klXedhs6l7iwi6qRpqZp5tWuOavDujLrQTk8TDzB3M3
+         7RvHn01SZRunA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 16/16] btrfs: convert logic BUG_ON()'s in replace_path to ASSERT()'s
-Date:   Sun,  2 May 2021 10:05:44 -0400
-Message-Id: <20210502140544.2720138-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 12/12] btrfs: convert logic BUG_ON()'s in replace_path to ASSERT()'s
+Date:   Sun,  2 May 2021 10:06:06 -0400
+Message-Id: <20210502140606.2720323-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210502140544.2720138-1-sashal@kernel.org>
-References: <20210502140544.2720138-1-sashal@kernel.org>
+In-Reply-To: <20210502140606.2720323-1-sashal@kernel.org>
+References: <20210502140606.2720323-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -59,10 +59,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index c01239d1f1e6..313547442a6e 100644
+index cd5b86d80e7a..5caf4dbdd801 100644
 --- a/fs/btrfs/relocation.c
 +++ b/fs/btrfs/relocation.c
-@@ -1808,8 +1808,8 @@ int replace_path(struct btrfs_trans_handle *trans,
+@@ -1801,8 +1801,8 @@ int replace_path(struct btrfs_trans_handle *trans,
  	int ret;
  	int slot;
  
@@ -73,7 +73,7 @@ index c01239d1f1e6..313547442a6e 100644
  
  	last_snapshot = btrfs_root_last_snapshot(&src->root_item);
  again:
-@@ -1841,7 +1841,7 @@ int replace_path(struct btrfs_trans_handle *trans,
+@@ -1834,7 +1834,7 @@ int replace_path(struct btrfs_trans_handle *trans,
  	parent = eb;
  	while (1) {
  		level = btrfs_header_level(parent);
