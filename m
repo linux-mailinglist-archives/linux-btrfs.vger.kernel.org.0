@@ -2,97 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EB63711EE
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 09:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8A13712A5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 10:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhECHYa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 03:24:30 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50646 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhECHYa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 May 2021 03:24:30 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1437FECs124271;
-        Mon, 3 May 2021 07:23:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=PRTKyLHF7uB7hw/rNKqK5iaFT2wvuHgVDu9UJa42LW0=;
- b=KGpBy2aSTBDXoVNuL/opNj2f9Yd+7p11aE399zSP9/JC74BWSf8KKPenffN4FC/NLavA
- DORdDmGQAuBXsad8jIntu1jp4i+/bRnOTcnJ6lKgzFzRz2wmjB06mEjHqTXnzP0W7fqk
- +4B4K5tYpLmrPYXgk4m5s/39K/hzJDrmH0hT6srC8UE0VfokJ91eK/2kvB3ql9X9B07s
- F2OV7o2C+oK0rwbEkolIS/boZqwatH+Fq5EfUFPVc56m6Xd2QfuDrY2X45uC9s1vaNk0
- XZKcfMuEw0XVvz4yBb3TkO2n73oxVTyQrILAmjhHb63plr5qYbTog2xoF7XduAdlTDbf 2g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 388xxmtpxt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 07:23:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1437KAkq062499;
-        Mon, 3 May 2021 07:23:31 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 388xt1xuqj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 07:23:31 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1437NV9s078301;
-        Mon, 3 May 2021 07:23:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 388xt1xuq6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 03 May 2021 07:23:31 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1437NTGo012563;
-        Mon, 3 May 2021 07:23:29 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 May 2021 00:23:28 -0700
-Date:   Mon, 3 May 2021 10:23:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
+        id S232929AbhECIur (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 04:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhECIur (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 May 2021 04:50:47 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C76C06174A;
+        Mon,  3 May 2021 01:49:54 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso4559108wmh.0;
+        Mon, 03 May 2021 01:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=bBM0SwmyL24vSMDSlmeLgk7jvyP2F9RB4lw9rD7QFeU=;
+        b=bWCrvE2pBKu3m2yy7fF55dhqoSgM00fOlSZA7NF70UvmWNeeU3BjbUheFEPSnl5uDa
+         jKrLF1eQu8VO+oIRaITnVGdiyIK9UXpgoOZQVmonZqrdLrGfyZoJC+dAGoh50YwUpPBP
+         3WK1aF9IQ1Zkpq0gWENQ5wCaiPs/fORUG+aZ7PZuvZmk2rZ64GOIcLtAgic7G86tIVh+
+         pDxP5IXodJi02hV6RLaK2BA/Yx5O5BQM1LVa+3Wg29V1O2bugF6vr9koiMc1Ha8jTG5i
+         fMAIUyAv2gS+V1UQv8/AISeY2yCFGNPHsuTTy6RueOlo/+kY93ImL4F6myRV/INIq7J0
+         xB/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=bBM0SwmyL24vSMDSlmeLgk7jvyP2F9RB4lw9rD7QFeU=;
+        b=b7R0PF2VoSKHJkTbVyBGIGHBp9BIftiJSmQqSAZMF2Sd2Px8HeZsoBI5IBfJEuYadI
+         Qz2/b/IK38ZlSu0O8uso4Prxcli0UlFW0Bb4ipJZJV51CiigVC2VYXJcXNLruSozi6Ab
+         /7qpfs/ZwFqz0pGiZNaZVhmG2TiBSn0pnp6jG2q7dPzfYP8ryf+VgQcOv767isZTOFpw
+         S8uBbphaCTS1+Fq12Y1ecYPayLIVQJjhJIwyEMyi67DD2ZCPNsVueocEiWwafWt6M3Se
+         plufQSLag7AHL9vdjjY1B1tP3cdFvBIaA1Va5kMlIrO5Li4UBb7N8l/SvXCxXT4pdTWJ
+         o9BA==
+X-Gm-Message-State: AOAM532YA6qJlzK+4/gW/E5Lq08ZztXv4gNRTUnjOjxKs2WY5V6/LpRH
+        F4nPSgGPtPbBdswcpuaK6iQ=
+X-Google-Smtp-Source: ABdhPJwfRQ7GUGxWCLpcEoZUyT7MIR7VybsFY3NryyEKQXFPq6/jOwxWlvnCkSelnE1k5/1BHXBJHg==
+X-Received: by 2002:a1c:7e82:: with SMTP id z124mr31415402wmc.51.1620031792997;
+        Mon, 03 May 2021 01:49:52 -0700 (PDT)
+Received: from ard0534 ([41.62.186.65])
+        by smtp.gmail.com with ESMTPSA id r19sm19883771wmq.33.2021.05.03.01.49.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 03 May 2021 01:49:52 -0700 (PDT)
+Date:   Mon, 3 May 2021 09:49:49 +0100
+From:   Khaled Romdhani <khaledromdhani216@gmail.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org
 Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210503072322.GK1981@kadam>
+Message-ID: <20210503084949.GA27017@ard0534>
 References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
+ <eba16312-9d50-9549-76c0-b0512a394669@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210501225046.9138-1-khaledromdhani216@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <eba16312-9d50-9549-76c0-b0512a394669@wanadoo.fr>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: YsC9ZDBNHAigZu5GhynQq1XkYp9b4oEt
-X-Proofpoint-ORIG-GUID: YsC9ZDBNHAigZu5GhynQq1XkYp9b4oEt
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9972 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- suspectscore=0 phishscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105030048
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 01, 2021 at 11:50:46PM +0100, Khaled ROMDHANI wrote:
-> Fix the warning: variable 'zone' is used
-> uninitialized whenever '?:' condition is true.
+On Sun, May 02, 2021 at 12:17:51PM +0200, Christophe JAILLET wrote:
+> Le 02/05/2021 à 00:50, Khaled ROMDHANI a écrit :
+> > Fix the warning: variable 'zone' is used
+> > uninitialized whenever '?:' condition is true.
+> > 
+> > Fix that by preventing the code to reach
+> > the last assertion. If the variable 'mirror'
+> > is invalid, the assertion fails and we return
+> > immediately.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+> > ---
+> >   fs/btrfs/zoned.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> > index 8250ab3f0868..23da9d8dc184 100644
+> > --- a/fs/btrfs/zoned.c
+> > +++ b/fs/btrfs/zoned.c
+> > @@ -145,7 +145,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
+> >   	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+> >   	default:
+> >   		ASSERT((u32)mirror < 3);
+> > -		break;
+> > +		return 0;
+> >   	}
+> >   	ASSERT(zone <= U32_MAX);
+> > 
+> > base-commit: b5c294aac8a6164ddf38bfbdd1776091b4a1eeba
+> > 
+> Hi,
 > 
-> Fix that by preventing the code to reach
-> the last assertion. If the variable 'mirror'
-> is invalid, the assertion fails and we return
-> immediately.
+> just a few comments.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-> ---
+> If I understand correctly, what you try to do is to silence a compiler
+> warning if no case branch is taken.
+> 
+> First, all your proposals are based on the previous one.
+> I find it hard to follow because we don't easily see what are the
+> differences since the beginning.
+> 
+> The "base-commit" at the bottom of your mail, is related to your own local
+> tree, I guess. It can't be used by any-one.
+> 
+> My understanding it that a patch, should it be v2, v3..., must apply to the
+> current tree. (In my case, it is the latest linux-next)
+> This is not the case here and you have to apply each step to see the final
+> result.
+> 
+> Should this version be fine, a maintainer wouldn't be able to apply it
+> as-is.
+> 
+> You also try to take into account previous comments to check for incorrect
+> negative values for minor and catch (the can't happen today) cases, should
+> BTRFS_SUPER_MIRROR_MAX change and this function remain the same.
+> 
+> So, why hard-coding '3'?
+> The reason of magic numbers are hard to remember. You should avoid them or
+> add a comment about it.
+> 
+> My own personal variation would be something like the code below (untested).
+> 
+> Hope this helps.
+> 
+> CJ
+> 
+> 
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 70b23a0d03b1..75fe5f001d8b 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -138,11 +138,14 @@ static inline u32 sb_zone_number(int shift, int
+> mirror)
+>  {
+>  	u64 zone;
+> 
+> -	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
+> +	ASSERT(mirror >= 0 && mirror < BTRFS_SUPER_MIRROR_MAX);
+>  	switch (mirror) {
+>  	case 0: zone = 0; break;
+>  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+>  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+> +	default:
+> +		ASSERT(! "mirror < BTRFS_SUPER_MIRROR_MAX but not handled above.");
+> +		return 0;
+>  	}
+> 
+>  	ASSERT(zone <= U32_MAX);
+>
 
-This is not how you send a v4 patch...  v2 patches have to apply to the
-original code and not on top of the patched code.
-
-I sort of think you should find a different thing to work on.  This code
-works fine as-is.  Just leave it and try to find a real bug and fix that
-instead.
-
-regards,
-dan carpenter
-
+Thank you for all of your comments. Yes, of course, they will help me.
+I will try to handle that more properly.
+Thanks again.
