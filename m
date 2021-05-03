@@ -2,65 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00372371669
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 16:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758DB37169F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 16:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbhECOHP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 10:07:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57006 "EHLO mx2.suse.de"
+        id S229697AbhECO25 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 10:28:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45828 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232784AbhECOHP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 May 2021 10:07:15 -0400
+        id S229687AbhECO25 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 May 2021 10:28:57 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 82580B08C;
-        Mon,  3 May 2021 14:06:21 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 4699CAFCC;
+        Mon,  3 May 2021 14:28:03 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2910DDA783; Mon,  3 May 2021 16:03:56 +0200 (CEST)
-Date:   Mon, 3 May 2021 16:03:55 +0200
+        id 45C20DA7A1; Mon,  3 May 2021 16:25:36 +0200 (CEST)
+Date:   Mon, 3 May 2021 16:25:36 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Add error handling in btrfs_fileattr_set for
- transaction handle
-Message-ID: <20210503140355.GL7604@twin.jikos.cz>
+To:     "tiantao (H)" <tiantao6@huawei.com>
+Cc:     dsterba@suse.cz, Tian Tao <tiantao6@hisilicon.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: delete unneeded assignments in btrfs_defrag_file
+Message-ID: <20210503142536.GM7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-btrfs@vger.kernel.org
-References: <f24fb4c9f8613fe76f5a7201752152637647f8ba.1619797915.git.riteshh@linux.ibm.com>
+Mail-Followup-To: dsterba@suse.cz, "tiantao (H)" <tiantao6@huawei.com>,
+        Tian Tao <tiantao6@hisilicon.com>, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org
+References: <1619488221-29490-1-git-send-email-tiantao6@hisilicon.com>
+ <20210428180243.GS7604@twin.jikos.cz>
+ <0c116d82-3334-ed4e-fb69-76c1c6c8343a@huawei.com>
+ <20210429132233.GV7604@twin.jikos.cz>
+ <64eef0c6-4353-7738-124a-8ddfe4edda66@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f24fb4c9f8613fe76f5a7201752152637647f8ba.1619797915.git.riteshh@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <64eef0c6-4353-7738-124a-8ddfe4edda66@huawei.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 09:30:55PM +0530, Ritesh Harjani wrote:
-> Add error handling in btrfs_fileattr_set in case of an error while
-> starting a transaction. This fixes btrfs/232 which otherwise used to
-> fail with below signature on Power.
+On Fri, Apr 30, 2021 at 09:27:21AM +0800, tiantao (H) wrote:
 > 
-> btrfs/232 [ 1119.474650] run fstests btrfs/232 at 2021-04-21 02:21:22
-> <...>
-> [ 1366.638585] BUG: Unable to handle kernel data access on read at 0xffffffffffffff86
-> [ 1366.638768] Faulting instruction address: 0xc0000000009a5c88
-> cpu 0x0: Vector: 380 (Data SLB Access) at [c000000014f177b0]
->     pc: c0000000009a5c88: btrfs_update_root_times+0x58/0xc0
->     lr: c0000000009a5c84: btrfs_update_root_times+0x54/0xc0
->     <...>
->     pid   = 24881, comm = fsstress
-> 	 btrfs_update_inode+0xa0/0x140
-> 	 btrfs_fileattr_set+0x5d0/0x6f0
-> 	 vfs_fileattr_set+0x2a8/0x390
-> 	 do_vfs_ioctl+0x1290/0x1ac0
-> 	 sys_ioctl+0x6c/0x120
-> 	 system_call_exception+0x3d4/0x410
-> 	 system_call_common+0xec/0x278
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> 在 2021/4/29 21:22, David Sterba 写道:
+> > On Thu, Apr 29, 2021 at 09:16:53AM +0800, tiantao (H) wrote:
+> >> 在 2021/4/29 2:02, David Sterba 写道:
+> >>> On Tue, Apr 27, 2021 at 09:50:21AM +0800, Tian Tao wrote:
+> >>>> ret is assigned -EAGAIN at line 1455 and then reassigned defrag_count
+> >>>> at line 1547 after exiting the while loop, but the btrfs_defrag_file
+> >>>> function returns a negative number indicating that the execution failed
+> >>>> because it does not make sense to reassign defrag_count to ret, so
+> >>>> delete it.
+> >>> The line references are fragile, so the 1455 is after defrag is
+> >>> cancelled.
+> >>>
+> >>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> >>>> ---
+> >>>>    fs/btrfs/ioctl.c | 2 --
+> >>>>    1 file changed, 2 deletions(-)
+> >>>>
+> >>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> >>>> index ee1dbab..2b3b228 100644
+> >>>> --- a/fs/btrfs/ioctl.c
+> >>>> +++ b/fs/btrfs/ioctl.c
+> >>>> @@ -1544,8 +1544,6 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
+> >>>>    		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
+> >>>>    	}
+> >>>>    
+> >>>> -	ret = defrag_count;
+> >>> But this would change semantics of the whole function, after deleting
+> >>> this line any stale value of 'ret' would be returned, it's used for some
+> >>> intermediate return values in the whole while loop.
+> >>>
+> >>> 1597                 if (btrfs_defrag_cancelled(fs_info)) {
+> >>> 1598                         btrfs_debug(fs_info, "defrag_file cancelled");
+> >>> 1599                         ret = -EAGAIN;
+> >>> 1600                         break;
+> >>> 1601                 }
+> >>>
+> >>> Jumping to the 'out_ra' label looks like a candidate fix but that also
+> >>> jumps around all the incompat bit setting, so that could in some cases
+> >>> miss to set them properly. And actually this is a problem with all the
+> >>> other error cases.
+> >>>
+> >>> I'm not yet sure what's the proper fix, but the errors from within the
+> >>> while loop should be returned and incompat bits set.
+> >> How does the following change look?
+> >>
+> >> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> >> index ee1dbab..b8e496e 100644
+> >> --- a/fs/btrfs/ioctl.c
+> >> +++ b/fs/btrfs/ioctl.c
+> >> @@ -1453,7 +1453,7 @@ int btrfs_defrag_file(struct inode *inode, struct
+> >> file *file,
+> >>                   if (btrfs_defrag_cancelled(fs_info)) {
+> >>                           btrfs_debug(fs_info, "defrag_file cancelled");
+> >>                           ret = -EAGAIN;
+> >> -                       break;
+> >> +                      goto error;
+> >>                   }
+> >>
+> >>                   if (!should_defrag_range(inode, (u64)i << PAGE_SHIFT,
+> >> @@ -1531,6 +1531,9 @@ int btrfs_defrag_file(struct inode *inode, struct
+> >> file *file,
+> >>                   }
+> >>           }
+> >>
+> >> +       ret = defrag_count;
+> >> +
+> >> +error:
+> >>           if ((range->flags & BTRFS_DEFRAG_RANGE_START_IO)) {
+> >>                   filemap_flush(inode->i_mapping);
+> >>                   if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+> >> @@ -1544,8 +1547,6 @@ int btrfs_defrag_file(struct inode *inode, struct
+> >> file *file,
+> >>                   btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
+> >>           }
+> >>
+> >> -       ret = defrag_count;
+> >> -
+> >>    out_ra:
+> >>           if (do_compress) {
+> >>                   btrfs_inode_lock(inode, 0);
+> > Yes that looks like covering all the issues. One more thing is the change on
+> > the userspace where the cancelled defrag returns non-error, but now it would be
+> > EAGAIN. So far I haven't found anything that would go wrong, all errors
+> > are reported and the whole defrag loop continues. Pressing ctrl-c should
+> > cancel it completely.
+> > .
+> Would you give ack-by if v2 was sent according to this code above?
 
-Thanks.  Added to queue, once misc-next gets synced with master (post
-rc1) it'll be added there, until then it'll be in a separate branch
-merged to linux-next.
+Yes, thanks.
