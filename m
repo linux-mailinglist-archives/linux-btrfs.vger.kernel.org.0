@@ -2,86 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DCB370D26
-	for <lists+linux-btrfs@lfdr.de>; Sun,  2 May 2021 16:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C4037104E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 03:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233993AbhEBOIr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 May 2021 10:08:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52016 "EHLO mail.kernel.org"
+        id S232782AbhECB3z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 May 2021 21:29:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50780 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233887AbhEBOID (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 2 May 2021 10:08:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B538261026;
-        Sun,  2 May 2021 14:06:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619964396;
-        bh=JEspZCQbFc9GEpc4rxMQn3XyrWaUCAPVV5A9ykTBGTg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o5FKzBCFlBTQ4BKGY/CKspRCjYqBaTppX0Yjji2a+xKFb7o9mqJDp2vujaTv+SnCt
-         fFMWg2Dk/cSwEQ4q5xn+MM0LuBvLOb1ZBjG7XYDH5OmhAiqeUvolOTligaUuMTJvNx
-         vsm0LvYA+psgw+ZkQDEUU8dLdIwtTgOrM7Fe2jhvTPDq7Zpr46rjeu516LLYqvFVuN
-         iJg9Xyr12RHAsW9lGwGJTR8jfKRe7JRztJoWp+98hjnL1cniPCw2gKWojUB+OA8GdS
-         qMqpuUwOTcDu/mlaMY9Za2AY2B4yWd+aUPB957HF0YeuHE/hcCzdS86j7hZGdAOiFQ
-         hE9dY7YwqpjNw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 10/10] btrfs: convert logic BUG_ON()'s in replace_path to ASSERT()'s
-Date:   Sun,  2 May 2021 10:06:22 -0400
-Message-Id: <20210502140623.2720479-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210502140623.2720479-1-sashal@kernel.org>
-References: <20210502140623.2720479-1-sashal@kernel.org>
+        id S230368AbhECB3z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 2 May 2021 21:29:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620005342; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=dF1a94JiREd+3V33kQDluGnvjwuQ1heOC/3QuMw6jac=;
+        b=r1VvLNKLgYRNUR3eqtv5TfiyBbq0KcHPDqzfGRqJAgUYAnhgJ4LXaDGMVIBFakTWF7U5XE
+        wfatx6d05KQ3J/0IYNzavodCO8NGtbhQYliygzkAdmcQ3L5B3k40gzgs2dLiPstgC2Y3YW
+        EoVnblMD44J+uUUREfb+ouVl4Bca7oc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 20982ADCE
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 May 2021 01:29:02 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/4] btrfs: make read time repair to be only submitted for each corrupted sector
+Date:   Mon,  3 May 2021 09:28:53 +0800
+Message-Id: <20210503012858.77651-1-wqu@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+Btrfs read time repair has to handle two different cases when a corruption
+or read failure is hit:
+- The failed bio contains only one sector
+  Then it only need to find a good copy
 
-[ Upstream commit 7a9213a93546e7eaef90e6e153af6b8fc7553f10 ]
+- The failed bio contains several sectors
+  Then it needs to find which sectors really need to be repaired
 
-A few BUG_ON()'s in replace_path are purely to keep us from making
-logical mistakes, so replace them with ASSERT()'s.
+But this different behaviors are not really needed, as we can teach btrfs
+to only submit read repair for each corrupted sector.
+By this, we only need to handle the one-sector corruption case.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/relocation.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This not only makes the code smaller and simpler, but also benefits subpage,
+allow subpage case to use the same infrastructure.
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 5681fc3976ad..628b6a046093 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1785,8 +1785,8 @@ int replace_path(struct btrfs_trans_handle *trans,
- 	int ret;
- 	int slot;
- 
--	BUG_ON(src->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID);
--	BUG_ON(dest->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID);
-+	ASSERT(src->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID);
-+	ASSERT(dest->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID);
- 
- 	last_snapshot = btrfs_root_last_snapshot(&src->root_item);
- again:
-@@ -1818,7 +1818,7 @@ int replace_path(struct btrfs_trans_handle *trans,
- 	parent = eb;
- 	while (1) {
- 		level = btrfs_header_level(parent);
--		BUG_ON(level < lowest_level);
-+		ASSERT(level >= lowest_level);
- 
- 		ret = btrfs_bin_search(parent, &key, level, &slot);
- 		if (ret && slot > 0)
+For current subpage code, we hacked the read repair code to make full
+bvec read repair, which has less granularity compared to regular sector
+size.
+
+The code is still based on subpage branch, but can be forward ported to
+non-subpage code basis with minor conflicts.
+
+Changelog:
+v2:
+- Split the original patch
+  Now we have two preparation patches, then the core change.
+  And finally a cleanup.
+
+- Fix the uninitialize @error_bitmap when the bio read fails.
+
+Qu Wenruo (4):
+  btrfs: remove the dead branch in btrfs_io_needs_validation()
+  btrfs: make btrfs_verify_data_csum() to return a bitmap
+  btrfs: submit read time repair only for each corrupted sector
+  btrfs: remove io_failure_record::in_validation
+
+ fs/btrfs/ctree.h     |   4 +-
+ fs/btrfs/extent_io.c | 256 +++++++++++++++++++------------------------
+ fs/btrfs/extent_io.h |   4 +-
+ fs/btrfs/inode.c     |  19 +++-
+ 4 files changed, 131 insertions(+), 152 deletions(-)
+
 -- 
-2.30.2
+2.31.1
 
