@@ -2,45 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A32371E8D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 19:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02243371FDC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 20:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhECR16 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 13:27:58 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:49955 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231337AbhECR16 (ORCPT
+        id S229570AbhECSrN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 14:47:13 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:47821 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229520AbhECSrM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 May 2021 13:27:58 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id A97335C0165;
-        Mon,  3 May 2021 13:27:04 -0400 (EDT)
+        Mon, 3 May 2021 14:47:12 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 5AC4820D9;
+        Mon,  3 May 2021 14:46:18 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 03 May 2021 13:27:04 -0400
+  by compute1.internal (MEProxy); Mon, 03 May 2021 14:46:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
         :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=wRSLINPIf1aEYduPxyDZNlXhbhw
-        pR78qGVJgxGkYqbQ=; b=SvIHT/KLuiHl/UIpSIIrC6/7lzC/eU3BQoSthpOiJR+
-        fPy8BlCBBeiPX4TiebAyvM2T+VgkxGtexGqeDkjfKzxQS/Mea3DTCbRkNRZgRcPv
-        RGgU1sUEIAJyfgv3IhCMdrMO+KFy2Ks3p1oXy268eJx6SJFUVMrIdHFHjLmR3usH
-        +vxy1AHoa+xQIWIQ5jgoBKUY8CayCWEp9KVYXucWrRIWMXPgg/2zdNkGdoOoseDo
-        I1GArsjSlbfriKaD8Oh7Qep8LZ7BNbUWm9/64uWEhjo5lT1E8aBe2N6as/Vn1+xn
-        EzFpR8MwTqZf+bkW63X6ozIF9yxCh0fFIdCGjDK7Xtw==
+        :content-type:in-reply-to; s=fm3; bh=4Ses/utxDL3oIDwD2o1wOuufQ4w
+        zqGtxnXGhfxM/Qyo=; b=Sasn6jHsPsG+lm0yaRKJbmkOVViGUmOksF9AVyTTpt3
+        BBQIfLv5U7bi6TPeKDLMDozvHlJTvwYds3mCu3fSSaSvYRHujeF6On4napSBzFYC
+        gX5ET+pYrjyGhSPunM0y44LbdZE+2bFMRS/y2i7ccQQhDXDSMypIQRf6fWpdsCyY
+        K1MBJmFClaZQ7UXhGAtLw5HPfbUxHWDOFT4nVpot72sOAFcvwg7owXCO6MJJdyzX
+        wHqXu0+xWtQRAb2Iqp3uK5vyZCwJWbVkcwK9LSHM57GsVWgxqzicxliMLie/YeOp
+        1fF8Awcwy4cyEQgroywvvFdawx1FhMvXB+iiiu1Tqvg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wRSLIN
-        PIf1aEYduPxyDZNlXhbhwpR78qGVJgxGkYqbQ=; b=lySJXC7MtaqP2GOr0cLSQp
-        r93buss2ajovnhbGCuB11lOwE8x1WZuOStcQToXW4CGd4qESJE7Af0jOqBfONHQ2
-        x/eC+mZb3gKnuzKsxAZ7KiOZQgY+rbztPJKrL2YuFhBEkb1EjCXcQvYQ/Y5m8gwc
-        Gx6zoUta516k9D+auc8Tv7CHBWNxm6kGPiReslZnj0LvKwMT3vHPlOwJCuumyVJw
-        SDOlmXXUZNKu84eF5gM5Oln2qEQl9JyxHOs9C11UDcGC7v/a9YKe//JJPeW25PoW
-        juJ+U8sDbmOATYYRtJBQhjI7iy4pG1d2pzwZu4/Pe/VXwqRa6pdtfbzNnQ/OaTtw
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=4Ses/u
+        txDL3oIDwD2o1wOuufQ4wzqGtxnXGhfxM/Qyo=; b=JF46qZtECtaHapq6dOYGA2
+        S5eQTTDYst6zkttBncFTslZ5YZeeQ8pN6UQY9bmaOJPVLWhzN5Tg3NxFK8GBU32A
+        nkVjgzHPDTVchYGc/rG+VU5FdjuHabo2DAmky/49RbEqOA6gDD1ihKD0BhgBwg0c
+        2BQ+L2IlDqL/PVhy1HwGq8dF8t4hs7xMy2he7xvvbZNjmFVNEE2UM5zQ8b495wsi
+        HV+BWnoNyqL2vzEc0aGCH2jug0W3Jq0cgDMmAxDox1FYLbLu8/ly65A3yU1I+H6w
+        PcKnW9HAGMWaU+BomvtURt5hqM0mb5ijgitbH0G4P6leVq8+U6HVvzh3yAy5dGQQ
         ==
-X-ME-Sender: <xms:aDKQYIQG1dqmtvW_VSD4XXetvhwaUmJEg7r7WAZCLKwbIS4kK3CzvA>
-    <xme:aDKQYFx6NFL068YcBvCVrL7QIT0dAWMs-1NyE6jRuBMDLrri28IDHoX4YW8ylk2xb
-    NnS4DOkK6OdACSQVlc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgedgudduhecutefuodetggdotefrod
+X-ME-Sender: <xms:-USQYPV5x6Ge1J-UbUPGQ4TXG3wS-d1Z3u4J5HX3BIdxO7c6QKoAAw>
+    <xme:-USQYHknU0XXYYCd_3HpjBI65KQqtu6hvCoWQ5CLkL8vCBIWRlxPLlXPaVstqzbQ6
+    Ps_BGt2ILCn_QeWubQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgedgudefudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
@@ -48,184 +48,159 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgedgudduhecutefuodetgg
     ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucfk
     phepvddtjedrheefrddvheefrdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
     hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:aDKQYF0Zd7K3TZ3zpXcBmXt0pEvGxn1X5ToeCidM7_SEZrh08sY0Bg>
-    <xmx:aDKQYMDGHkp_v5xhiXqfejO2oLNFPcylGKU05FwqRSvUqActOAhHnQ>
-    <xmx:aDKQYBjk7ip_Pvmt5v4YI_jZuPknJ0e6Zr2WtBtcQj8bBNjl2LKndQ>
-    <xmx:aDKQYLcc03PjGDv4TlYSrgGJtYKxE_rPfDQ5YZ5WlvE-s8Tziaf-xg>
+X-ME-Proxy: <xmx:-USQYLbcyoITcLsS_3b_Lem4TPxhmn24Ia26hEIgkp5K2KVkUdne2w>
+    <xmx:-USQYKXpVoOES4yBlE6scCeqTv5oPDDC0iF322vBykrXsmesZpyJew>
+    <xmx:-USQYJl9S7jqvLjw0pWioX9y-ccWm9_1t-F8-ES7IF5-WyBao4QXZA>
+    <xmx:-kSQYJukgUTHKUHjtXDAIbc9oAW0QjXvxkvkgXZinN-Ac5XpqjBNXg>
 Received: from localhost (unknown [207.53.253.7])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon,  3 May 2021 13:27:04 -0400 (EDT)
-Date:   Mon, 3 May 2021 10:27:03 -0700
+        Mon,  3 May 2021 14:46:17 -0400 (EDT)
+Date:   Mon, 3 May 2021 11:46:15 -0700
 From:   Boris Burkov <boris@bur.io>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3] btrfs-progs: mkfs: only output the warning if the
- sectorsize is not supported
-Message-ID: <YJAyZ5GT+KPrEXB+@zen>
-References: <20210420073036.243715-1-wqu@suse.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] btrfs: initial fsverity support
+Message-ID: <YJBE9/hJgd7rf2sU@zen>
+References: <cover.1617900170.git.boris@bur.io>
+ <c9335d862ee4ddc1f7193bbb06ca7313d9ff1b30.1617900170.git.boris@bur.io>
+ <YG+IoOqvDNtkwWQf@sol.localdomain>
+ <YHDY/ekYdxHhvHRW@zen>
+ <YHDkK9W9N2UWEEyv@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420073036.243715-1-wqu@suse.com>
+In-Reply-To: <YHDkK9W9N2UWEEyv@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 03:30:36PM +0800, Qu Wenruo wrote:
-> Currently mkfs.btrfs will output a warning message if the sectorsize is
-> not the same as page size:
->   WARNING: the filesystem may not be mountable, sectorsize 4096 doesn't match page size 65536
+On Fri, Apr 09, 2021 at 04:32:59PM -0700, Eric Biggers wrote:
+> On Fri, Apr 09, 2021 at 03:45:17PM -0700, Boris Burkov wrote:
+> > On Thu, Apr 08, 2021 at 03:50:08PM -0700, Eric Biggers wrote:
+> > > On Thu, Apr 08, 2021 at 11:33:53AM -0700, Boris Burkov wrote:
+> > > > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> > > > index f7a4ad86adee..e5282a8f566a 100644
+> > > > --- a/fs/btrfs/super.c
+> > > > +++ b/fs/btrfs/super.c
+> > > > @@ -1339,6 +1339,7 @@ static int btrfs_fill_super(struct super_block *sb,
+> > > >  	sb->s_op = &btrfs_super_ops;
+> > > >  	sb->s_d_op = &btrfs_dentry_operations;
+> > > >  	sb->s_export_op = &btrfs_export_ops;
+> > > > +	sb->s_vop = &btrfs_verityops;
+> > > >  	sb->s_xattr = btrfs_xattr_handlers;
+> > > >  	sb->s_time_gran = 1;
+> > > 
+> > > As the kernel test robot has hinted at, this line needs to be conditional on
+> > > CONFIG_FS_VERITY.
+> > > 
+> > > > +/*
+> > > > + * Helper function for computing cache index for Merkle tree pages
+> > > > + * @inode: verity file whose Merkle items we want.
+> > > > + * @merkle_index: index of the page in the Merkle tree (as in
+> > > > + *                read_merkle_tree_page).
+> > > > + * @ret_index: returned index in the inode's mapping
+> > > > + *
+> > > > + * Returns: 0 on success, -EFBIG if the location in the file would be beyond
+> > > > + * sb->s_maxbytes.
+> > > > + */
+> > > > +static int get_verity_mapping_index(struct inode *inode,
+> > > > +				    pgoff_t merkle_index,
+> > > > +				    pgoff_t *ret_index)
+> > > > +{
+> > > > +	/*
+> > > > +	 * the file is readonly, so i_size can't change here.  We jump
+> > > > +	 * some pages past the last page to cache our merkles.  The goal
+> > > > +	 * is just to jump past any hugepages that might be mapped in.
+> > > > +	 */
+> > > > +	pgoff_t merkle_offset = 2048;
+> > > > +	u64 index = (i_size_read(inode) >> PAGE_SHIFT) + merkle_offset + merkle_index;
+> > > 
+> > > Would it make more sense to align the page index to 2048, rather than adding
+> > > 2048?  Or are huge pages not necessarily aligned in the page cache?
+> > > 
+> > 
+> > What advantages are there to aligning? I don't have any objection to
+> > doing it besides keeping things as simple as possible.
 > 
-> But since btrfs subpage support for 64K page size is comming, this
-> output is populating the golden output of fstests, causing tons of false
-> alerts.
+> It just seems like the logical thing to do, and it's what ext4 and f2fs do; they
+> align the start of the verity metadata to 65536 bytes so that it's page-aligned
+> on all architectures.
 > 
-> This patch will make teach mkfs.btrfs to check
-> /sys/fs/btrfs/features/supported_sectorsizes, and compare if the sector
-> size is supported.
+> Actually, you might want to choose a fixed value like that as well (rather than
+> some constant multiple of PAGE_SIZE) so that your maximum file size isn't
+> different on different architectures.
 > 
-> Then only output above warning message if the sector size is not
-> supported.
+> Can you elaborate on what sort of huge page scenario you have in mind here?
 > 
-> This patch will also introduce a new helper,
-> sysfs_open_global_feature_file() to make it more obvious which global
-> feature file we're opening.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+The concern was a transparent hugepage at the end of the file that would
+interact negatively with these false pages past the end of the file.
+Since the indexing was pretty arbitrary, we just wanted it to be past
+any final hugepage.
 
-> ---
-> changelog:
-> v2:
-> - Introduce new helper to open global feature file
-> - Extra the supported sectorsize check into its own function
-> - Do proper token check other than strstr()
-> - Fix the bug that we're passing @page_size to check
-> v3:
-> - Fix the wrong delim for the next runs of strtok_r()
-> - Also check the terminal '\0' to handle cases like "4096" and "40960"
->   This is not really needed, as the is_power_of_2() has already ruled
->   out such cases.
->   But just to be extra sure.
-> ---
->  common/fsfeatures.c | 54 ++++++++++++++++++++++++++++++++++++++++++++-
->  common/utils.c      | 15 +++++++++++++
->  common/utils.h      |  1 +
->  3 files changed, 69 insertions(+), 1 deletion(-)
+However, I looked into it more closely and it looks like khugepaged's
+collapse_file will not collapse pages that would leave a hugepage
+hanging out past EOF, so it wasn't a real issue. For consistency, when I
+send V4, it will use the same "round to 65536" logic.
+
+> > 
+> > > > +
+> > > > +	if (index > inode->i_sb->s_maxbytes >> PAGE_SHIFT)
+> > > > +		return -EFBIG;
+> > > 
+> > > There's an off-by-one error here; it's considering the beginning of the page
+> > > rather than the end of the page.
+> > > 
+> > 
+> > I can't see the error myself, yet..
+> > 
+> > read_merkle_tree_page is what interacts with the page cache and does it
+> > with read_key_bytes in PAGE_SIZE chunks. So if index == maxbytes >>
+> > PAGE_SHIFT, I take that to mean we match on the start of the last
+> > possible page, which seems fine to read in all of. The next index will
+> > fail.
 > 
-> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-> index 569208a9e5b1..0c638b3af15e 100644
-> --- a/common/fsfeatures.c
-> +++ b/common/fsfeatures.c
-> @@ -327,8 +327,55 @@ u32 get_running_kernel_version(void)
->  
->  	return version;
->  }
-> +
-> +/*
-> + * The buffer size should be strlen("4096 8192 16384 32768 65536"),
-> + * which is 28, then we just round it up to 32.
-> + */
-> +#define SUPPORTED_SECTORSIZE_BUF_SIZE	32
-> +
-> +/*
-> + * Check if the current kernel supports given sectorsize.
-> + *
-> + * Return true if the sectorsize is supported.
-> + * Return false otherwise.
-> + */
-> +static bool check_supported_sectorsize(u32 sectorsize)
-> +{
-> +	char supported_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] = { 0 };
-> +	char sectorsize_buf[SUPPORTED_SECTORSIZE_BUF_SIZE] = { 0 };
-> +	char *this_char;
-> +	char *save_ptr = NULL;
-> +	int fd;
-> +	int ret;
-> +
-> +	fd = sysfs_open_global_feature_file("supported_sectorsizes");
-> +	if (fd < 0)
-> +		return false;
-> +	ret = sysfs_read_file(fd, supported_buf, SUPPORTED_SECTORSIZE_BUF_SIZE);
-> +	close(fd);
-> +	if (ret < 0)
-> +		return false;
-> +	snprintf(sectorsize_buf, SUPPORTED_SECTORSIZE_BUF_SIZE,
-> +		 "%u", sectorsize);
-> +
-> +	for (this_char = strtok_r(supported_buf, " ", &save_ptr);
-> +	     this_char != NULL;
-> +	     this_char = strtok_r(NULL, " ", &save_ptr)) {
-> +		/*
-> +		 * Also check the terminal '\0' to handle cases like
-> +		 * "4096" and "40960".
-> +		 */
-> +		if (!strncmp(this_char, sectorsize_buf,
-> +			     strlen(sectorsize_buf) + 1))
-> +			return true;
-> +	}
-> +	return false;
-> +}
-> +
->  int btrfs_check_sectorsize(u32 sectorsize)
->  {
-> +	bool sectorsize_checked = false;
->  	u32 page_size = (u32)sysconf(_SC_PAGESIZE);
->  
->  	if (!is_power_of_2(sectorsize)) {
-> @@ -340,7 +387,12 @@ int btrfs_check_sectorsize(u32 sectorsize)
->  		      sectorsize);
->  		return -EINVAL;
->  	}
-> -	if (page_size != sectorsize)
-> +	if (page_size == sectorsize)
-> +		sectorsize_checked = true;
-> +	else
-> +		sectorsize_checked = check_supported_sectorsize(sectorsize);
-> +
-> +	if (!sectorsize_checked)
->  		warning(
->  "the filesystem may not be mountable, sectorsize %u doesn't match page size %u",
->  			sectorsize, page_size);
-> diff --git a/common/utils.c b/common/utils.c
-> index 57e41432c8fb..e8b35879f19f 100644
-> --- a/common/utils.c
-> +++ b/common/utils.c
-> @@ -2205,6 +2205,21 @@ int sysfs_open_fsid_file(int fd, const char *filename)
->  	return open(sysfs_file, O_RDONLY);
->  }
->  
-> +/*
-> + * Open a file in global btrfs features directory and return the file
-> + * descriptor or error.
-> + */
-> +int sysfs_open_global_feature_file(const char *feature_name)
-> +{
-> +	char path[PATH_MAX];
-> +	int ret;
-> +
-> +	ret = path_cat_out(path, "/sys/fs/btrfs/features", feature_name);
-> +	if (ret < 0)
-> +		return ret;
-> +	return open(path, O_RDONLY);
-> +}
-> +
->  /*
->   * Read up to @size bytes to @buf from @fd
->   */
-> diff --git a/common/utils.h b/common/utils.h
-> index c38bdb08077c..d2f6416a9b5a 100644
-> --- a/common/utils.h
-> +++ b/common/utils.h
-> @@ -169,6 +169,7 @@ char *btrfs_test_for_multiple_profiles(int fd);
->  int btrfs_warn_multiple_profiles(int fd);
->  
->  int sysfs_open_fsid_file(int fd, const char *filename);
-> +int sysfs_open_global_feature_file(const char *feature_name);
->  int sysfs_read_file(int fd, char *buf, size_t size);
->  
->  #endif
-> -- 
-> 2.31.1
+> The maximum number of pages is s_maxbytes >> PAGE_SHIFT, and you're allowing the
+> page with that index, which means you're allowing one too many pages.  Hence, an
+> off-by-one-error.
+
+Thinking on it further, I'm not convinced that this is wrong for the
+64 bit long case. s_maxbytes is at the end of the last page, and I don't
+see any reason you couldn't index it (i.e., xarray doesn't seem opposed
+to that index). My rough argument for this is:
+
+"What if maxbytes was 4095? Then maxbytes >> PAGE_SHIFT is 0, and 0 is
+the valid index of the last and only page."
+
+However, that logic falls apart for the 32 bit long case where max is
+ULONG_MAX << PAGE_SHIFT, which is at the beginning of a page, and that
+last index only works for exactly one byte. My code would wrongly
+try to read the whole page.
+
+To make the logic uniform for the two cases, I have found things work a
+lot nicer if I operate in "file position space" rather than "page index
+space" the way that ext4 does.
+
+Have I understood it correctly now, or am I still missing something?
+
+Thanks again for your help.
+
 > 
+> > 
+> > I think the weird thing is I called get_verity_merkle_index to
+> > write_merkle_tree_block. It doesn't do much there since we aren't
+> > affecting the page cache till we read.
+> > 
+> > As far as I can see, to make the btrfs implementation behave as
+> > similarly as possible to ext4, it should either interact with the page
+> > cache on the write path, or if that is undesirable (haven't thought it
+> > through carefully yet), it should accurately fail writes with EFBIG that
+> > would later fail as reads.
+> > 
+> 
+> Yes, you need to enforce the limit at write time, not just at read time.  But
+> make sure you're using the page index, not the block index (to be ready for
+> Merkle tree block size != PAGE_SIZE in the future).
+> 
+> - Eric
