@@ -2,167 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36687372393
-	for <lists+linux-btrfs@lfdr.de>; Tue,  4 May 2021 01:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BA13723A6
+	for <lists+linux-btrfs@lfdr.de>; Tue,  4 May 2021 01:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhECX0d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 19:26:33 -0400
-Received: from mout.gmx.net ([212.227.17.20]:49465 "EHLO mout.gmx.net"
+        id S229594AbhECXkg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 19:40:36 -0400
+Received: from mout.gmx.net ([212.227.17.21]:39617 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229595AbhECX0c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 May 2021 19:26:32 -0400
+        id S229570AbhECXkg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 May 2021 19:40:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620084327;
-        bh=KB0Oh6XPX8oJH+pi7jDCLfhvFyY1EB2+NrSHLWL/Sg8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=UC94bpyK/CcAf7s9nJuLYDYEZFZFGXRhx6hLcbn4l8FeOuv5yAyFWrGHHBYYhEvjy
-         z9PZjnHXF8exwe14Swb8oApKG2fICf5m3BYvrD6pFa/TR6ed6ptsXDismuFcPDK9kZ
-         kEtiQ0OTSDFJXoKXh8krB0oZbteC6F7AwomWViBg=
+        s=badeba3b8450; t=1620085179;
+        bh=U0yFUP000uwaJzhDmBiE7fWZL1e12L+R1/apQasJ6DE=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=XgwYjP0Oil9PlIdHCiHmRXBdaeRFTiRg1CTUlkrWVZLK1Deh6JQa75zXqw50APA/Z
+         9tFR4QkFJzxB6f7RHlrk8vDzAPhSVPxK/hCZLknra41Cy054vl8hkzqBYy1lsWTAx4
+         IFZ3xqYssRQ2bj9QlO7EoeZciiKuPGCfh+IXMQYA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MEUz4-1lkuo02ciA-00G19t; Tue, 04
- May 2021 01:25:27 +0200
-Subject: Re: [PATCH 04/49] btrfs: Use U-Boot API for decompression
-To:     Simon Glass <sjg@chromium.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>
-Cc:     Tom Rini <trini@konsulko.com>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Marek Behun <marek.behun@nic.cz>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210503231136.744283-1-sjg@chromium.org>
- <20210503171001.4.I7327e42043265556e3988928849ff2ebdc7b21e6@changeid>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M59C8-1leocp0EBY-001EDh; Tue, 04
+ May 2021 01:39:39 +0200
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Omar Sandoval <osandov@osandov.com>
+References: <20210503020856.93333-1-wqu@suse.com>
+ <20210503020856.93333-2-wqu@suse.com> <20210503170504.GN7604@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <42a9733a-75d2-07f8-4ee3-08946e015546@gmx.com>
-Date:   Tue, 4 May 2021 07:25:20 +0800
+Subject: Re: [PATCH v3 1/4] btrfs: remove the dead branch in
+ btrfs_io_needs_validation()
+Message-ID: <a5f864f1-c62e-07d4-0e09-ff86251b1665@gmx.com>
+Date:   Tue, 4 May 2021 07:39:35 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210503171001.4.I7327e42043265556e3988928849ff2ebdc7b21e6@changeid>
+In-Reply-To: <20210503170504.GN7604@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:k+vP6NTzJaQQh11U7mkFx3RNb4dySmrU3B1H6uE29QzCZlON38Y
- +M6V6e8rky51zho3AvXe6sE+cHOwSG1TOV1NrBnm0QYwRMtOWOv8mzEFoK8z8NCSj+eoRWQ
- DpAlyFVh4jDnqa25b1jxtYs2xoANZk08TUbQ8+D3kWDEovoLMmYVgVdOqhQ32pyWifNxF+A
- EfTVSWG6VVmZ+sFToCyTg==
+X-Provags-ID: V03:K1:Uqkytjhk/B7x+NUKddxW9lJxHOuWwJHI6NyC8VWDPQoGFUy7936
+ jbTnHLAnZln0avq1FZLh9imKSGU9YN9UEyStqUKoVJ7iv+h5s/uyb8IRjWtBj7JDEpqqk6f
+ 9YmIbDt4qUUk1iUZ0gpuUnLe6+9X6Svoh+5Kwr4zopL0d5vPMQtCIIZN7dLjKdIYJq+z2QJ
+ j7OAzahMIHa/DbPymBKEA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+TtxWNDjtFI=:aYv6MH2lsNGNuCVzjgVoV4
- HoF6LsQJSgmgybsEwHuOQOTrVf2rB9jhdmcn5PzqUgyvQcD0mnnePUr83/AX+ODM9Susylrsq
- MQkvGX9qQvjRB4/gjoJ30h8t9ooUc9hjx0EVrCjedP1MuRN6YoVxTCzaoX3XJ69mlvRqTrvCb
- bcZhH63rmLb/CwfPC6qaUaQpF872taKfk91NNql/+10+PZqSleH/x09tlLCe3TDn9jHcPETEv
- ZW5EaEX6y7vzM4jnS5tQEWMu4IuAhbs+HKtZBnQQOIzMplKBXz/l3kVql+tLsDFkcbPOBXPBE
- e+nqMD70gCKRb38DFMLrsAmMfDMGoBXpaxUWK8CFa8x7HiHsPzRPjWFcyeTcOI4zNz7DGyGxt
- mccPcIkfmuvuOPRAp/4iwiLE50l54s6O3HMS56W8u0afJUt/yGQtOm1T4Ui3A86CNnKLbGlJt
- dxL3/it19vCtwmBnre4PoJf3SOrDcZ+To3WjVSeVs5ngRD91XfDS21Ny0Z2p8Gtd72XsAQ6rk
- Su/RkriuUsaGHknZEMtr+YRxBo/N7MtMWRCpgiwDhNZesfjVDTgK2eJa911H3c1BNdNz/UxSK
- +Ytwgac+96um6OVRc5bJgKXv7UKfi0V+R5xOLnVhGK086VN1AamGqJxlU0Z0Fm+ZjTGvVmszS
- JgPI95s5+swB3zdd5mFZ9SIgsX5cl6zXwLH3MuRd94fMZ/CmNnMDoxr/whFii5zF38XIMPnpi
- sFiWEGq6GzbANM48ob1kV0j7zATuQO1iSFyO3UzX7Y+QV4BJpQy3YxS+WBOb05Uc7Go7o+MS2
- Bytg0ryTXzeWByrbAMZmD6ojR00xo0Fiqjk1yEjvs/DB4LiwDXh6VzbKKN4oKkRdwMAuNtJRY
- wUVo06V8GVMasic6ScOJFyMkt4OO/hcucHkb7aQa2jG/ktAUQYzMM3/YNKQoeME+wOpUB6Cve
- mDwx/ELzqRk7KeKcSzVzO6OI8D8OOkjTzghTfNNlU3iCG77gsrSR4mokWGQPv+regJOhRG9+/
- /l4NUiWqY1/IsGng5yKNPIMYCggbynosN1r3ILa1TRbPdpeTLkGLDEGt6FXNbletovU3RYzjH
- 0NTrBq3v4rnmIvg3lCgc5EeMIw8RenBj5tZ4gyxA1y5LoZCaO7cNw/ezEauV3UmUXPEBdLkm4
- 8sFVwQpx7wVybjA1OUwxHyZNF/3e8FjT3X8niAUPTpFv/5OXmyo7UUA5r4nWo0FsfuVk9WIgd
- vSA8zhGupSxJlvUcE
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yRDX7XUKtXs=:5DHVb+UYe7T43MtQUaV/dB
+ RQr9qrLLogmlVqQbW28q72OC5Y8MRKiyVszjS7ofP01hbyCb1INKgxOcKRseREOG9IviNC0Tc
+ mFTnbiCy5MnG1hPTw91D/wCvIM4iNXD3xJZ/PAcUfGd56PHVqK3RBOLBA+Zb+FTWGCCBeLD39
+ YwprwSCxxz07GZSH3IhW6Zx1NDSpwI+JkmO4ZW08nuefufNDtQl+gYkX6PW6kpx1+Ue/9BirE
+ YOJDYuaKG43pj7cg75sqz+EyrzdQXMx41LIZTwdXi32SATvPV1JCCmwKQmBEay+JdPjU/oTuX
+ pKTZVJmObV5isdyY1rypBiv03HLfwmpxsVRhRV/AQGVJb/DSNIx42xZh0eLEMqB2NNnapDVJW
+ 2aQ7EzLcw221WdO0Gr7Vm3oNEIKDovC2bLeBaXvgI9p+YydWH2CJIhfa35gXjqWq/TAoI9W77
+ G2g6oGRbvk83NSPNwh0CYevXopNRG1IHET3o/yACucapPhTUW0W83+HYGHZFLY3//TVO8z5qi
+ mv9wUBe/gA1Oy4jMqUAlALP9QjQ5Epg9T6xepbOyzxQ4CTmRePbX1uJjMtqz9awImHAzdgaW8
+ E8Wz5uZbn9UPv5p8pkr8lxt5YSOLEKIfxrrTSCISGlM2sfUhprqY7RBALzZ8R2F3Rlap7ybwm
+ 3Q2ky0XU2X4m6u32GJz2QUKnqjFAhg1FMKOIhDAfDWbaDmdYGR9MKKkwK9pCtdKFdKezzyPw4
+ AfvrDSW9ddB/sJMI9pb8b0YPavti7cdpefwS8SSrYNuwAuY+u37OSwZVMJestpAnzcDW2hNgu
+ soNSi1T0USaNn4frzoChMIcIh1zvlXHwgdEcUkxL+o7R9RGMPv0YEK30baFjknVQmN6TOOpU6
+ p/cy6rRqRYo4b/76UDIzjuqipHCm6bsJ0dwRYSTXRv7bMd4pnvP8bvAqC99YM3B8U66039XaK
+ Xud0OnVdFB3RSS54zYQkn19FHsGqzC8M6HHnGc2hrpMRqjbH93C1MaeN+ppnUuOyQTaEohVsI
+ aOLUrdZCt2zvnNZlju/lR7R1L+1vXr4iwIg0Gsqbn4J9Jl/4CS3tWe/+gcC4qaQRwMmLgp18u
+ 5741vtirjusqL410CQf3FV9cJPgJjzy7+q87bmJr8zB0FYEv8LDjqPAmoTk6WGlU1sG5WFm9T
+ 1dd5FEukZmKmeb7YGouisVXYjtt3G6rgagV4WvrdHNCoo11+XQnxwgjdBVS4ItJKk+ZFbGrxJ
+ Pzwo1cKLu9TLwzywj
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/5/4 =E4=B8=8A=E5=8D=887:10, Simon Glass wrote:
-> Use the common function to avoid code duplication.
+On 2021/5/4 =E4=B8=8A=E5=8D=881:05, David Sterba wrote:
+> On Mon, May 03, 2021 at 10:08:53AM +0800, Qu Wenruo wrote:
+>> In function btrfs_io_needs_validation() we are ensured to get a
+>> non-cloned bio.
+>> The only caller, end_bio_extent_readpage(), already has an ASSERT() to
+>> make sure we only get non-cloned bios.
+>>
+>> Thus the (bio_flagged(bio, BIO_CLONED)) branch will never get executed.
+>>
+>> Remove the dead branch and updated the comment.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/extent_io.c | 29 +++++++----------------------
+>>   1 file changed, 7 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 14ab11381d49..0787fae5f7f1 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -2644,8 +2644,10 @@ static bool btrfs_check_repairable(struct inode =
+*inode, bool needs_validation,
+>>
+>>   static bool btrfs_io_needs_validation(struct inode *inode, struct bio=
+ *bio)
+>>   {
+>> +	struct bio_vec *bvec;
+>>   	u64 len =3D 0;
+>>   	const u32 blocksize =3D inode->i_sb->s_blocksize;
+>> +	int i;
+>>
+>>   	/*
+>>   	 * If bi_status is BLK_STS_OK, then this was a checksum error, not a=
+n
+>> @@ -2669,30 +2671,13 @@ static bool btrfs_io_needs_validation(struct in=
+ode *inode, struct bio *bio)
+>>   	if (blocksize < PAGE_SIZE)
+>>   		return false;
+>>   	/*
+>> -	 * We need to validate each sector individually if the failed I/O was
+>> -	 * for multiple sectors.
+>> -	 *
+>> -	 * There are a few possible bios that can end up here:
+>> -	 * 1. A buffered read bio, which is not cloned.
+>> -	 * 2. A direct I/O read bio, which is cloned.
 >
-> Signed-off-by: Simon Glass <sjg@chromium.org>
+> Ok, so the cloned bio was expected only due to direct io but now it's
+> done via iomap so it makes sense to simplify it.
 
-Acked-by: Qu Wenruo <wqu@suse.com>
+I didn't dig into the history too deeply, but I don't think it's just
+the iomap refactor.
+
+As the ASSERT() in end_bio_extent_readpage() was added in c09abff87f90
+("btrfs: cloned bios must not be iterated by bio_for_each_segment_all"),
+which is from 2017, way before the iomap dio change.
+
+So the dead code is there for over 4 years at least.
+
+
+BTW, since you're mentioning iomap dio, the patchset is inspired by the
+commit 77d5d6893106 ("btrfs: unify buffered and direct I/O read
+repair"), kudos to Omar, which not only unify the code path, but also
+considered subpage from the very beginning.
 
 Thanks,
 Qu
-> ---
+
 >
-> (no changes since v1)
->
->   fs/btrfs/compression.c | 51 +++++-------------------------------------
->   1 file changed, 5 insertions(+), 46 deletions(-)
->
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 23efefa1997..7adfbb04a7c 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -6,6 +6,7 @@
->    */
->
->   #include "btrfs.h"
-> +#include <abuf.h>
->   #include <log.h>
->   #include <malloc.h>
->   #include <linux/lzo.h>
-> @@ -136,54 +137,12 @@ static u32 decompress_zlib(const u8 *_cbuf, u32 cl=
-en, u8 *dbuf, u32 dlen)
->
->   static u32 decompress_zstd(const u8 *cbuf, u32 clen, u8 *dbuf, u32 dle=
-n)
->   {
-> -	ZSTD_DStream *dstream;
-> -	ZSTD_inBuffer in_buf;
-> -	ZSTD_outBuffer out_buf;
-> -	void *workspace;
-> -	size_t wsize;
-> -	u32 res =3D -1;
-> -
-> -	wsize =3D ZSTD_DStreamWorkspaceBound(ZSTD_BTRFS_MAX_INPUT);
-> -	workspace =3D malloc(wsize);
-> -	if (!workspace) {
-> -		debug("%s: cannot allocate workspace of size %zu\n", __func__,
-> -		      wsize);
-> -		return -1;
-> -	}
-> -
-> -	dstream =3D ZSTD_initDStream(ZSTD_BTRFS_MAX_INPUT, workspace, wsize);
-> -	if (!dstream) {
-> -		printf("%s: ZSTD_initDStream failed\n", __func__);
-> -		goto err_free;
-> -	}
-> +	struct abuf in, out;
->
-> -	in_buf.src =3D cbuf;
-> -	in_buf.pos =3D 0;
-> -	in_buf.size =3D clen;
-> +	abuf_init_set(&in, (u8 *)cbuf, clen);
-> +	abuf_init_set(&out, dbuf, dlen);
->
-> -	out_buf.dst =3D dbuf;
-> -	out_buf.pos =3D 0;
-> -	out_buf.size =3D dlen;
-> -
-> -	while (1) {
-> -		size_t ret;
-> -
-> -		ret =3D ZSTD_decompressStream(dstream, &out_buf, &in_buf);
-> -		if (ZSTD_isError(ret)) {
-> -			printf("%s: ZSTD_decompressStream error %d\n", __func__,
-> -			       ZSTD_getErrorCode(ret));
-> -			goto err_free;
-> -		}
-> -
-> -		if (in_buf.pos >=3D clen || !ret)
-> -			break;
-> -	}
-> -
-> -	res =3D out_buf.pos;
-> -
-> -err_free:
-> -	free(workspace);
-> -	return res;
-> +	return zstd_decompress(&in, &out);
->   }
->
->   u32 btrfs_decompress(u8 type, const char *c, u32 clen, char *d, u32 dl=
-en)
->
+>> -	 * 3. A (buffered or direct) repair bio, which is not cloned.
+>> -	 *
+>> -	 * For cloned bios (case 2), we can get the size from
+>> -	 * btrfs_io_bio->iter; for non-cloned bios (cases 1 and 3), we can ge=
+t
+>> -	 * it from the bvecs.
+>> +	 * We're ensured we won't get cloned bio in end_bio_extent_readpage()=
+,
+>> +	 * thus we can get the length from the bvecs.
+>>   	 */
+>> -	if (bio_flagged(bio, BIO_CLONED)) {
+>> -		if (btrfs_io_bio(bio)->iter.bi_size > blocksize)
+>> +	bio_for_each_bvec_all(bvec, bio, i) {
+>> +		len +=3D bvec->bv_len;
+>> +		if (len > blocksize)
+>>   			return true;
+>> -	} else {
+>> -		struct bio_vec *bvec;
+>> -		int i;
+>> -
+>> -		bio_for_each_bvec_all(bvec, bio, i) {
+>> -			len +=3D bvec->bv_len;
+>> -			if (len > blocksize)
+>> -				return true;
+>> -		}
+>>   	}
+>>   	return false;
+>>   }
+>> --
+>> 2.31.1
