@@ -2,88 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5893714A0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 13:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C6B37160B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 15:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbhECL7V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 07:59:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57802 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhECL7V (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 May 2021 07:59:21 -0400
-Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=[192.168.0.209])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1ldXDW-0007KD-5g; Mon, 03 May 2021 11:58:26 +0000
-Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Khaled Romdhani <khaledromdhani216@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
- <20210503072322.GK1981@kadam> <20210503101312.GA27593@ard0534>
- <20210503115515.GJ21598@kadam>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <7b58f7c7-1586-0e0f-4166-d5132322fe58@canonical.com>
-Date:   Mon, 3 May 2021 12:58:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234328AbhECNiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 09:38:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36896 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233550AbhECNiH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 May 2021 09:38:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 34E1CB08C;
+        Mon,  3 May 2021 13:37:13 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C8051DA783; Mon,  3 May 2021 15:34:47 +0200 (CEST)
+Date:   Mon, 3 May 2021 15:34:47 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Chris Murphy <lists@colorremedies.com>
+Subject: Re: [PATCH] btrfs: fix unmountable seed device after fstrim
+Message-ID: <20210503133447.GH7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Chris Murphy <lists@colorremedies.com>
+References: <c7715d09a67f212e0ecb5fea2d598513912092f4.1619443900.git.anand.jain@oracle.com>
+ <d6fcae756c5ce47da3527e5db4760d676420d950.1619783910.git.anand.jain@oracle.com>
+ <CAL3q7H4Nt6Z5B5ZtqFgjR-=hDH+RhZe0XrWE27zvFpq90VNpMQ@mail.gmail.com>
+ <8a545d8d-0bdd-4cf5-1a65-fbdbeecb9b33@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210503115515.GJ21598@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8a545d8d-0bdd-4cf5-1a65-fbdbeecb9b33@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03/05/2021 12:55, Dan Carpenter wrote:
-> On Mon, May 03, 2021 at 11:13:12AM +0100, Khaled Romdhani wrote:
->> On Mon, May 03, 2021 at 10:23:22AM +0300, Dan Carpenter wrote:
->>> On Sat, May 01, 2021 at 11:50:46PM +0100, Khaled ROMDHANI wrote:
->>>> Fix the warning: variable 'zone' is used
->>>> uninitialized whenever '?:' condition is true.
->>>>
->>>> Fix that by preventing the code to reach
->>>> the last assertion. If the variable 'mirror'
->>>> is invalid, the assertion fails and we return
->>>> immediately.
->>>>
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
->>>> ---
->>>
->>> This is not how you send a v4 patch...  v2 patches have to apply to the
->>> original code and not on top of the patched code.
->>>
->>> I sort of think you should find a different thing to work on.  This code
->>> works fine as-is.  Just leave it and try to find a real bug and fix that
->>> instead.
->>>
->>> regards,
->>> dan carpenter
->>>
->>
->> Sorry, I was wrong and I shall send a proper V4.
->>
->> Yes, this code works fine just a warning caught by Coverity scan analysis. 
+On Fri, Apr 30, 2021 at 08:48:56PM +0800, Anand Jain wrote:
+> On 30/4/21 8:14 pm, Filipe Manana wrote:
+> > On Fri, Apr 30, 2021 at 1:03 PM Anand Jain <anand.jain@oracle.com> wrote:
+> > 
+> > The fix looks good. Don't feel forced to address the style comments
+> > above, consider them more a recommendation for the future.
+> > 
 > 
-> We're going to a lot of work to silence a static checker false positive.
-> As a rule, I tell people to ignore the static checker when it is wrong.
-> 
-> Btw, Smatch parses this code correctly and understands that the callers
-> only pass valid values for "mirror".
+> Yep. Thanks.
+>   Also, I have missed the re-roll count and its log here.
+>   I will just mention that here.
+>      v2:
+>         Fix commit changelog.
+>         Drop a code comment.
+> If David needs, I don't mind resending with these changes.
 
-..and Coverity does report a lot of false positives, so one needs to be
-really sure the issue is a genuine issue rather than a warning that can
-be ignore.
-
-Colin
-
-> 
-> regards,
-> dan carpenter
-> 
-
+Not needed, I'm often adjusting changelog formatting so I'd do the
+suggested fixups anyway. Patch added to misc-next, thanks.
