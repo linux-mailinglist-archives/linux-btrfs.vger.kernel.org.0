@@ -2,164 +2,212 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8A13712A5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 10:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB0C371341
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 11:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbhECIur (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 04:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S233119AbhECJzO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 05:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhECIur (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 May 2021 04:50:47 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C76C06174A;
-        Mon,  3 May 2021 01:49:54 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso4559108wmh.0;
-        Mon, 03 May 2021 01:49:54 -0700 (PDT)
+        with ESMTP id S232964AbhECJzO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 May 2021 05:55:14 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B734C06174A;
+        Mon,  3 May 2021 02:54:21 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id o5so4453128qkb.0;
+        Mon, 03 May 2021 02:54:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=bBM0SwmyL24vSMDSlmeLgk7jvyP2F9RB4lw9rD7QFeU=;
-        b=bWCrvE2pBKu3m2yy7fF55dhqoSgM00fOlSZA7NF70UvmWNeeU3BjbUheFEPSnl5uDa
-         jKrLF1eQu8VO+oIRaITnVGdiyIK9UXpgoOZQVmonZqrdLrGfyZoJC+dAGoh50YwUpPBP
-         3WK1aF9IQ1Zkpq0gWENQ5wCaiPs/fORUG+aZ7PZuvZmk2rZ64GOIcLtAgic7G86tIVh+
-         pDxP5IXodJi02hV6RLaK2BA/Yx5O5BQM1LVa+3Wg29V1O2bugF6vr9koiMc1Ha8jTG5i
-         fMAIUyAv2gS+V1UQv8/AISeY2yCFGNPHsuTTy6RueOlo/+kY93ImL4F6myRV/INIq7J0
-         xB/Q==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=9RpqQfQakx5sccBn/igrW39urW9z+0J3JA5W7+w7hEQ=;
+        b=f63wDXNpYH/vT+N+h88MSOz4O5MhUnIK5yXTmvgg09coOnwCik8Vt+6GagHpB2est0
+         6/wLEltn8Fvld6QzjnKgHuE382lbKZtYNo0s7j6w0VSjcAUigmY4nFXTpdSTiSRvwvpA
+         TE02+mEqnNC69oVKX4rdzhKsiafpsL0xL4spVd9QDxJO/DijJZKGJvFaqLHs3Fhs8YzL
+         rycU2z+M3AM8v2YxxEMyIUTHpipDjxUxDjapP4TsvLxwMNJuC1PHv4rohvmrPsaicnu7
+         z/nnYBqVbjhW6rgjepGhvbOJEFz7EnjXKlpmeh0KioTAvKl4x8QRu78mN2dMqozDeO3/
+         jBBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=bBM0SwmyL24vSMDSlmeLgk7jvyP2F9RB4lw9rD7QFeU=;
-        b=b7R0PF2VoSKHJkTbVyBGIGHBp9BIftiJSmQqSAZMF2Sd2Px8HeZsoBI5IBfJEuYadI
-         Qz2/b/IK38ZlSu0O8uso4Prxcli0UlFW0Bb4ipJZJV51CiigVC2VYXJcXNLruSozi6Ab
-         /7qpfs/ZwFqz0pGiZNaZVhmG2TiBSn0pnp6jG2q7dPzfYP8ryf+VgQcOv767isZTOFpw
-         S8uBbphaCTS1+Fq12Y1ecYPayLIVQJjhJIwyEMyi67DD2ZCPNsVueocEiWwafWt6M3Se
-         plufQSLag7AHL9vdjjY1B1tP3cdFvBIaA1Va5kMlIrO5Li4UBb7N8l/SvXCxXT4pdTWJ
-         o9BA==
-X-Gm-Message-State: AOAM532YA6qJlzK+4/gW/E5Lq08ZztXv4gNRTUnjOjxKs2WY5V6/LpRH
-        F4nPSgGPtPbBdswcpuaK6iQ=
-X-Google-Smtp-Source: ABdhPJwfRQ7GUGxWCLpcEoZUyT7MIR7VybsFY3NryyEKQXFPq6/jOwxWlvnCkSelnE1k5/1BHXBJHg==
-X-Received: by 2002:a1c:7e82:: with SMTP id z124mr31415402wmc.51.1620031792997;
-        Mon, 03 May 2021 01:49:52 -0700 (PDT)
-Received: from ard0534 ([41.62.186.65])
-        by smtp.gmail.com with ESMTPSA id r19sm19883771wmq.33.2021.05.03.01.49.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 03 May 2021 01:49:52 -0700 (PDT)
-Date:   Mon, 3 May 2021 09:49:49 +0100
-From:   Khaled Romdhani <khaledromdhani216@gmail.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210503084949.GA27017@ard0534>
-References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
- <eba16312-9d50-9549-76c0-b0512a394669@wanadoo.fr>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=9RpqQfQakx5sccBn/igrW39urW9z+0J3JA5W7+w7hEQ=;
+        b=Q/UQYzr+laZph1hwgzZfajbZfqzwQWfrOc7Gzo36ofMfIOLDVBp5TgoAvqHV08ZmOn
+         BJDnSSsCEfpr7OfKB3ztGaIX8GZ1FAqRsv4bp3kAmOMJi2fqx/Pt3NB5MDOK0Yg+uq9y
+         UCbmnlH1FbqtJhNvj0RZj+ahjOuOK8Bi3HmRZ1/5pswrlLctS/EHmGpkSlqdQv45AOBZ
+         ld+3+LsdskfTnVMrymbBpfGh9DJLZV1pjz8halJhRB28atbjncFRHWj4BYg8kDXJynFb
+         44/tHUn0dWMa0ybQcwBUtMuw258E/zVaL+d5fXSWB5WbeBbkkHHQMD8csz8i2eR0ZPLK
+         r+2Q==
+X-Gm-Message-State: AOAM532fJLUPQV/dmNYjgJQQazH2u1aMtWwo6QSWLtI7oRPX5rlz0CQa
+        GiBVDzMcuDeh76+hRcFm9TC4YBsum4kU4rAdC6Y=
+X-Google-Smtp-Source: ABdhPJyd16W8BtO8y6twUnQCWKI6AGS57F3JXGwLqGYBp0CEyiG4+UzvN4BCOQDWj7MiJTcvJT4lthYUd+4u5PxBuPk=
+X-Received: by 2002:a05:620a:1326:: with SMTP id p6mr9028183qkj.438.1620035660469;
+ Mon, 03 May 2021 02:54:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eba16312-9d50-9549-76c0-b0512a394669@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <96fe1c0c8747d24ad6c45bc3f0a5551b8e1ebbde.1619793258.git.anand.jain@oracle.com>
+ <7ff015576992de7e8d6ff554c27c420a9ffa1595.1619800208.git.anand.jain@oracle.com>
+In-Reply-To: <7ff015576992de7e8d6ff554c27c420a9ffa1595.1619800208.git.anand.jain@oracle.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 3 May 2021 10:54:09 +0100
+Message-ID: <CAL3q7H79zG9rm-kOu7rys=ev0Ja_fuTNoYvdz0q6hwgqyQrhkg@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: add fstrim test case on the sprout device
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe David Borba Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, May 02, 2021 at 12:17:51PM +0200, Christophe JAILLET wrote:
-> Le 02/05/2021 à 00:50, Khaled ROMDHANI a écrit :
-> > Fix the warning: variable 'zone' is used
-> > uninitialized whenever '?:' condition is true.
-> > 
-> > Fix that by preventing the code to reach
-> > the last assertion. If the variable 'mirror'
-> > is invalid, the assertion fails and we return
-> > immediately.
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-> > ---
-> >   fs/btrfs/zoned.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> > index 8250ab3f0868..23da9d8dc184 100644
-> > --- a/fs/btrfs/zoned.c
-> > +++ b/fs/btrfs/zoned.c
-> > @@ -145,7 +145,7 @@ static inline u32 sb_zone_number(int shift, int mirror)
-> >   	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-> >   	default:
-> >   		ASSERT((u32)mirror < 3);
-> > -		break;
-> > +		return 0;
-> >   	}
-> >   	ASSERT(zone <= U32_MAX);
-> > 
-> > base-commit: b5c294aac8a6164ddf38bfbdd1776091b4a1eeba
-> > 
-> Hi,
-> 
-> just a few comments.
-> 
-> If I understand correctly, what you try to do is to silence a compiler
-> warning if no case branch is taken.
-> 
-> First, all your proposals are based on the previous one.
-> I find it hard to follow because we don't easily see what are the
-> differences since the beginning.
-> 
-> The "base-commit" at the bottom of your mail, is related to your own local
-> tree, I guess. It can't be used by any-one.
-> 
-> My understanding it that a patch, should it be v2, v3..., must apply to the
-> current tree. (In my case, it is the latest linux-next)
-> This is not the case here and you have to apply each step to see the final
-> result.
-> 
-> Should this version be fine, a maintainer wouldn't be able to apply it
-> as-is.
-> 
-> You also try to take into account previous comments to check for incorrect
-> negative values for minor and catch (the can't happen today) cases, should
-> BTRFS_SUPER_MIRROR_MAX change and this function remain the same.
-> 
-> So, why hard-coding '3'?
-> The reason of magic numbers are hard to remember. You should avoid them or
-> add a comment about it.
-> 
-> My own personal variation would be something like the code below (untested).
-> 
-> Hope this helps.
-> 
-> CJ
-> 
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 70b23a0d03b1..75fe5f001d8b 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -138,11 +138,14 @@ static inline u32 sb_zone_number(int shift, int
-> mirror)
->  {
->  	u64 zone;
-> 
-> -	ASSERT(mirror < BTRFS_SUPER_MIRROR_MAX);
-> +	ASSERT(mirror >= 0 && mirror < BTRFS_SUPER_MIRROR_MAX);
->  	switch (mirror) {
->  	case 0: zone = 0; break;
->  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
->  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
-> +	default:
-> +		ASSERT(! "mirror < BTRFS_SUPER_MIRROR_MAX but not handled above.");
-> +		return 0;
->  	}
-> 
->  	ASSERT(zone <= U32_MAX);
+On Sat, May 1, 2021 at 6:24 AM Anand Jain <anand.jain@oracle.com> wrote:
+>
+> Add fstrim test case on the sprout device, verify seed device
+> integrity.
+>
+>  btrfs: fix unmountable seed device after fstrim
+>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2:
+>   Add _require_fstrim and _require_batched_discard.
+>   Use FSTRIM_PROG.
+>   Use _filter_ro_mount to handle the difference in output in different
+>      mount(8) version.
+>   Call _scratch_dev_pool_put.
+>   Add _check_btrfs_filesystem $seed to check the whole seed fs.
+>   Update in-code comments.
+>
+>  tests/btrfs/236     | 81 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/236.out |  5 +++
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 87 insertions(+)
+>  create mode 100755 tests/btrfs/236
+>  create mode 100644 tests/btrfs/236.out
+>
+> diff --git a/tests/btrfs/236 b/tests/btrfs/236
+> new file mode 100755
+> index 000000000000..aac27fac06dd
+> --- /dev/null
+> +++ b/tests/btrfs/236
+> @@ -0,0 +1,81 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2021 Oracle. All Rights Reserved.
+> +#
+> +# FS QA Test 236
+> +#
+> +# Check seed device integrity after fstrim on the sprout device.
+> +#
+> +#  Kernel bug is fixed by the commit:
+> +#    btrfs: fix unmountable seed device after fstrim
+> +
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_command "$BTRFS_TUNE_PROG" btrfstune
+> +_require_fstrim
+> +_require_scratch_dev_pool 2
+> +_scratch_dev_pool_get 2
+> +
+> +seed=3D$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $1}')
+> +sprout=3D$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{print $2}')
+> +
+> +_mkfs_dev $seed
+> +_mount $seed $SCRATCH_MNT
+> +
+> +$XFS_IO_PROG -f -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/foo > /dev/null
+> +_scratch_unmount
+> +$BTRFS_TUNE_PROG -S 1 $seed
+> +
+> +# Mount the seed device and add the rw device
+> +_mount $seed $SCRATCH_MNT 2>&1 | _filter_ro_mount | _filter_scratch
+> +md5sum $SCRATCH_MNT/foo | _filter_scratch
+> +
+> +$BTRFS_UTIL_PROG device add -f $sprout $SCRATCH_MNT
+> +_scratch_unmount
+> +
+> +# Now remount writeable sprout device, create some data and run fstrim
+> +_mount $sprout $SCRATCH_MNT
+> +_require_batched_discard $SCRATCH_MNT
+> +
+> +$XFS_IO_PROG -f -c "pwrite -S 0xcd 0 1M" $SCRATCH_MNT/bar > /dev/null
+
+We aren't doing anything with this file ("bar"). Just remove it.
+
+Otherwise it passes now with the filter.
+
+Thanks.
+
+> +
+> +$FSTRIM_PROG $SCRATCH_MNT
+> +
+> +_scratch_unmount
+> +
+> +# Verify seed device is all ok
+> +_mount $seed $SCRATCH_MNT 2>&1 | _filter_ro_mount | _filter_scratch
+> +md5sum $SCRATCH_MNT/foo | _filter_scratch
+> +_scratch_unmount
+> +
+> +_check_btrfs_filesystem $seed
+> +
+> +_scratch_dev_pool_put
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/236.out b/tests/btrfs/236.out
+> new file mode 100644
+> index 000000000000..01699b8fc291
+> --- /dev/null
+> +++ b/tests/btrfs/236.out
+> @@ -0,0 +1,5 @@
+> +QA output created by 236
+> +mount: device write-protected, mounting read-only
+> +096003817ad2638000a6836e55866697  SCRATCH_MNT/foo
+> +mount: device write-protected, mounting read-only
+> +096003817ad2638000a6836e55866697  SCRATCH_MNT/foo
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 331dd432fac3..5032259244e0 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -238,3 +238,4 @@
+>  233 auto quick subvolume
+>  234 auto quick compress rw
+>  235 auto quick send
+> +236 auto quick seed trim
+> --
+> 2.27.0
 >
 
-Thank you for all of your comments. Yes, of course, they will help me.
-I will try to handle that more properly.
-Thanks again.
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
