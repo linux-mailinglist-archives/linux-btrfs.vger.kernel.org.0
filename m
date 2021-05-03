@@ -2,111 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C77371E16
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 19:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7AF371E54
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 19:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhECRKS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 13:10:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53838 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234101AbhECRIY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 May 2021 13:08:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DB0DCAEEE;
-        Mon,  3 May 2021 17:07:29 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7BDD6DA7AA; Mon,  3 May 2021 19:05:04 +0200 (CEST)
-Date:   Mon, 3 May 2021 19:05:04 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] btrfs: remove the dead branch in
- btrfs_io_needs_validation()
-Message-ID: <20210503170504.GN7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210503020856.93333-1-wqu@suse.com>
- <20210503020856.93333-2-wqu@suse.com>
+        id S231869AbhECRU5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 13:20:57 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:60325 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232233AbhECRUz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 May 2021 13:20:55 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 91E2F5C0167;
+        Mon,  3 May 2021 13:19:57 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 03 May 2021 13:19:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=/UhmVzjDRf5RXFabl4kdUuqvEHF
+        TXdox8npLlzRHfxA=; b=QWeV+Q8Kmln+++DcbTOOT/zUfs5CZfZUmaD/rNnpmuT
+        nyr5Ld7fh5494DEihyicVIHaL6a7arc51SpfNFG/AB76aYM4i/4d8fecD4hndERJ
+        wx3CUIV8U2bSjrc0dXQqWo2+4Tpj0rUScCpM8ZcZWKUX7B1o9fYnR53ILWhN7382
+        IJSrJ2vsP4yg2fHtpapRK5i6jZonjSQiwn1cr06eGnBiCXeNb+DOj4/dA44qR38w
+        IANXEB9mZ5HEsSnFreGD+DfzZC4BkiBmhV9Cc7Zpdh7/EN6XwxJluwd32IwwXoNC
+        Zjy3S0nkKX/QK1ulwTMSt629MZtQAFS2hF+D43cG28w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=/UhmVz
+        jDRf5RXFabl4kdUuqvEHFTXdox8npLlzRHfxA=; b=pY5S61pjySQMAnG0tMa/9o
+        q1axAyguPMxV2Mx5CjZiAPOWCzWJxoxlISrp83Q4Vg0MumQXDyKhN/jAHwJwqjI5
+        uIJI10WVNPuBs43eyGYM4og20tYR3FL5WdLP8YDtlTMyMaB40MguisAhRkqgtC7o
+        yntEEcln3cebSLitIgmI08e3CgtMdfvRBgaaC3kN8+yjgOfctQgmHEp4QhY12xjy
+        Y9ukpsVhqD1Kkb5L2xjwhjsEDGxy/vaAyn6vAw3EMvR9A/v1JZhL+yWiEbzfG8wP
+        KKBQBZQao77L/PrppjlobyLgnanfEYbUFBcok6xp27WbeUGyy9t3+E+3OnnZD8Xw
+        ==
+X-ME-Sender: <xms:vTCQYBEGc16AgVgMqDhBRKlg2S_OlZqbBszhFe5U0d0sI2eaq_KwCg>
+    <xme:vTCQYGX3DiwHEAOFFurj7q3OKi4R69eHLsJo3F-KnEKFZhqHfoczPYqGMAB6lO8tb
+    CgkB8VBQcKh_zXHbgE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgedguddugecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
+    rdhioheqnecuggftrfgrthhtvghrnhepheduveelkeeiteelveeiuefhudehtdeigfehke
+    effeegledvueevgefgudeuveefnecukfhppedvtdejrdehfedrvdehfedrjeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhioh
+X-ME-Proxy: <xmx:vTCQYDJsINPxzVm2Ho6CGKLNnx0gCQDUYWfoDCw-ALgPDXqjVObpgA>
+    <xmx:vTCQYHFp_mRVVRYy-VzvepHaHEVbVzJIm2Cb4kAB_2WLIepD_hiosg>
+    <xmx:vTCQYHUvfgH_izQsgICnxzAh812RzCXF0KmljWfPccd1rf5uXFrTJw>
+    <xmx:vTCQYOfR9I-228C1Rk2KddtzG3NohZijMoG1vRXSAkV71OIl45UkFg>
+Received: from localhost (unknown [207.53.253.7])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Mon,  3 May 2021 13:19:56 -0400 (EDT)
+Date:   Mon, 3 May 2021 10:19:55 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     20210419124541.148269-1-l@damenly.su
+Cc:     linux-btrfs@vger.kernel.org, l@damenly.su,
+        Chris Murphy <lists@colorremedies.com>
+Subject: Re: [PATCH v3] btrfs-progs: fi resize: fix false 0.00B sized output
+Message-ID: <YJAwrUMlRK6dWXJv@zen>
+References: <20210420045827.150881-1-l@damenly.su>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210503020856.93333-2-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210420045827.150881-1-l@damenly.su>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 03, 2021 at 10:08:53AM +0800, Qu Wenruo wrote:
-> In function btrfs_io_needs_validation() we are ensured to get a
-> non-cloned bio.
-> The only caller, end_bio_extent_readpage(), already has an ASSERT() to
-> make sure we only get non-cloned bios.
+On Tue, Apr 20, 2021 at 12:58:27PM +0800, Su Yue wrote:
+> Resize to nums without sign prefix makes false output:
+>  btrfs fi resize 1:150g /srv/extra
+> Resize device id 1 (/dev/sdb1) from 298.09GiB to 0.00B
 > 
-> Thus the (bio_flagged(bio, BIO_CLONED)) branch will never get executed.
+> The resize operation would take effect though.
 > 
-> Remove the dead branch and updated the comment.
+> check_resize_args() does not handle the mod 0 case and new_size is 0.
+> Simply assigning @diff to @new_size to fix this.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Issue: #307
+> Reported-by: Chris Murphy <lists@colorremedies.com>
+> Signed-off-by: Su Yue <l@damenly.su>
+
+Reviewed-by: Boris Burkov <boris@bur.io>
+
 > ---
->  fs/btrfs/extent_io.c | 29 +++++++----------------------
->  1 file changed, 7 insertions(+), 22 deletions(-)
+> Changelog:
+> v3:
+>   Just assign @diff to @new_size. (Boris Burkov)
+> v2:
+>   Calculate u64 diff using max() and min().
+>   Calculate mod by comparing new and old size.
+> ---
+>  cmds/filesystem.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 14ab11381d49..0787fae5f7f1 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -2644,8 +2644,10 @@ static bool btrfs_check_repairable(struct inode *inode, bool needs_validation,
+> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+> index 9e3cce687d6e..b4c09768235c 100644
+> --- a/cmds/filesystem.c
+> +++ b/cmds/filesystem.c
+> @@ -1158,7 +1158,10 @@ static int check_resize_args(const char *amount, const char *path) {
+>  		}
+>  		old_size = di_args[dev_idx].total_bytes;
 >  
->  static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
->  {
-> +	struct bio_vec *bvec;
->  	u64 len = 0;
->  	const u32 blocksize = inode->i_sb->s_blocksize;
-> +	int i;
->  
->  	/*
->  	 * If bi_status is BLK_STS_OK, then this was a checksum error, not an
-> @@ -2669,30 +2671,13 @@ static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
->  	if (blocksize < PAGE_SIZE)
->  		return false;
->  	/*
-> -	 * We need to validate each sector individually if the failed I/O was
-> -	 * for multiple sectors.
-> -	 *
-> -	 * There are a few possible bios that can end up here:
-> -	 * 1. A buffered read bio, which is not cloned.
-> -	 * 2. A direct I/O read bio, which is cloned.
-
-Ok, so the cloned bio was expected only due to direct io but now it's
-done via iomap so it makes sense to simplify it.
-
-> -	 * 3. A (buffered or direct) repair bio, which is not cloned.
-> -	 *
-> -	 * For cloned bios (case 2), we can get the size from
-> -	 * btrfs_io_bio->iter; for non-cloned bios (cases 1 and 3), we can get
-> -	 * it from the bvecs.
-> +	 * We're ensured we won't get cloned bio in end_bio_extent_readpage(),
-> +	 * thus we can get the length from the bvecs.
->  	 */
-> -	if (bio_flagged(bio, BIO_CLONED)) {
-> -		if (btrfs_io_bio(bio)->iter.bi_size > blocksize)
-> +	bio_for_each_bvec_all(bvec, bio, i) {
-> +		len += bvec->bv_len;
-> +		if (len > blocksize)
->  			return true;
-> -	} else {
-> -		struct bio_vec *bvec;
-> -		int i;
-> -
-> -		bio_for_each_bvec_all(bvec, bio, i) {
-> -			len += bvec->bv_len;
-> -			if (len > blocksize)
-> -				return true;
-> -		}
->  	}
->  	return false;
->  }
+> -		if (mod < 0) {
+> +		/* For target sizes without '+'/'-' sign prefix(e.g. 1:150g) */
+> +		if (mod == 0) {
+> +			new_size = diff;
+> +		} else if (mod < 0) {
+>  			if (diff > old_size) {
+>  				error("current size is %s which is smaller than %s",
+>  				      pretty_size_mode(old_size, UNITS_DEFAULT),
 > -- 
-> 2.31.1
+> 2.30.1
+> 
