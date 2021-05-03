@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39374371050
+	by mail.lfdr.de (Postfix) with ESMTP id B4538371051
 	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 03:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhECBaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 May 2021 21:30:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50912 "EHLO mx2.suse.de"
+        id S232818AbhECBaY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 2 May 2021 21:30:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50922 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230368AbhECBaW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 2 May 2021 21:30:22 -0400
+        id S230368AbhECBaX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 2 May 2021 21:30:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620005369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1620005370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=u0lEOc6I/dtdUzKeJuLUFmx0BgvnobRORq6ajnxyBpw=;
-        b=HXBxxYT+WohWLFuSExJiqd+zyEJKe54KV/gwFJzW2EjwPo8mkJubMKPG1u/lY+PA3ybHU3
-        3pJ9HAlSOuS7sbJ8KG4KpM68MCwDR36UTQASx+5tiYrVEmk6VmMXB0wRr2YFWlcK2REdjC
-        o+tk16y3jGDZogBqOqPXT3Rp69bFljE=
+        bh=wL/HWuziAMcj5s7gFIOphsGiAkFtYVLOC3blHTczmxg=;
+        b=PLWCs5ivesBV1VqycyKfdZ0Wu6XhmMRlUxNKUh+JJoC7l5KFSPpI1rjwP9fpFYdXb6CUxW
+        tQl2UwCG+JTyAm69rBApP9fL484V2JpbDkgDB3LBVK1FTv2tqHQbjdek7m9NDg8ViSY3Td
+        Cs6ISBli5qm60hDYMgoMGNJcuIwIqNk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F24DBB05E
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 May 2021 01:29:28 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B242DB05E
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 May 2021 01:29:30 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 1/4] btrfs: remove the dead branch in btrfs_io_needs_validation()
-Date:   Mon,  3 May 2021 09:29:21 +0800
-Message-Id: <20210503012924.77865-2-wqu@suse.com>
+Subject: [PATCH v2 2/4] btrfs: make btrfs_verify_data_csum() to return a bitmap
+Date:   Mon,  3 May 2021 09:29:22 +0800
+Message-Id: <20210503012924.77865-3-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210503012924.77865-1-wqu@suse.com>
 References: <20210503012924.77865-1-wqu@suse.com>
@@ -38,71 +38,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In function btrfs_io_needs_validation() we are ensured to get a
-non-cloned bio.
-The only caller, end_bio_extent_readpage(), already has an ASSERT() to
-make sure we only get non-cloned bios.
+This will provide the basis for later per-sector repair for subpage,
+while still keep the existing code happy.
 
-Thus the (bio_flagged(bio, BIO_CLONED)) branch will never get executed.
+As if all csum matches, the return value is still 0.
+Only when csum mismatches, the return value is different.
 
-Remove the dead branch and updated the comment.
+The new return value will be a bitmap, for 4K sectorsize and 4K page
+size, it will be either 1, instead of the old -EIO.
+
+But for 4K sectorsize and 64K page size, aka subpage case, since the
+bvec can contain multiple sectors, knowing which sectors are corrupted
+will allow us to submit repair only for corrupted sectors.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 29 +++++++----------------------
- 1 file changed, 7 insertions(+), 22 deletions(-)
+ fs/btrfs/ctree.h |  4 ++--
+ fs/btrfs/inode.c | 17 ++++++++++++-----
+ 2 files changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 14ab11381d49..0787fae5f7f1 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2644,8 +2644,10 @@ static bool btrfs_check_repairable(struct inode *inode, bool needs_validation,
- 
- static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 80670a631714..7bb4212b90d3 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3100,8 +3100,8 @@ u64 btrfs_file_extent_end(const struct btrfs_path *path);
+ /* inode.c */
+ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+ 				   int mirror_num, unsigned long bio_flags);
+-int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
+-			   struct page *page, u64 start, u64 end);
++unsigned int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
++				    struct page *page, u64 start, u64 end);
+ struct extent_map *btrfs_get_extent_fiemap(struct btrfs_inode *inode,
+ 					   u64 start, u64 len);
+ noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 294d8d98280d..e9db33afcb5d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3135,15 +3135,19 @@ static int check_data_csum(struct inode *inode, struct btrfs_io_bio *io_bio,
+  * @bio_offset:	offset to the beginning of the bio (in bytes)
+  * @start:	file offset of the range start
+  * @end:	file offset of the range end (inclusive)
++ *
++ * Return a bitmap where bit set means a csum mismatch, and bit not set means
++ * csum match.
+  */
+-int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
+-			   struct page *page, u64 start, u64 end)
++unsigned int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
++				    struct page *page, u64 start, u64 end)
  {
-+	struct bio_vec *bvec;
- 	u64 len = 0;
- 	const u32 blocksize = inode->i_sb->s_blocksize;
-+	int i;
+ 	struct inode *inode = page->mapping->host;
+ 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 	const u32 sectorsize = root->fs_info->sectorsize;
+ 	u32 pg_off;
++	unsigned int result = 0;
  
- 	/*
- 	 * If bi_status is BLK_STS_OK, then this was a checksum error, not an
-@@ -2669,30 +2671,13 @@ static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
- 	if (blocksize < PAGE_SIZE)
- 		return false;
- 	/*
--	 * We need to validate each sector individually if the failed I/O was
--	 * for multiple sectors.
--	 *
--	 * There are a few possible bios that can end up here:
--	 * 1. A buffered read bio, which is not cloned.
--	 * 2. A direct I/O read bio, which is cloned.
--	 * 3. A (buffered or direct) repair bio, which is not cloned.
--	 *
--	 * For cloned bios (case 2), we can get the size from
--	 * btrfs_io_bio->iter; for non-cloned bios (cases 1 and 3), we can get
--	 * it from the bvecs.
-+	 * We're ensured we won't get cloned bio in end_bio_extent_readpage(),
-+	 * thus we can get the length from the bvecs.
- 	 */
--	if (bio_flagged(bio, BIO_CLONED)) {
--		if (btrfs_io_bio(bio)->iter.bi_size > blocksize)
-+	bio_for_each_bvec_all(bvec, bio, i) {
-+		len += bvec->bv_len;
-+		if (len > blocksize)
- 			return true;
--	} else {
--		struct bio_vec *bvec;
--		int i;
--
--		bio_for_each_bvec_all(bvec, bio, i) {
--			len += bvec->bv_len;
--			if (len > blocksize)
--				return true;
--		}
+ 	if (PageChecked(page)) {
+ 		ClearPageChecked(page);
+@@ -3171,10 +3175,13 @@ int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
+ 
+ 		ret = check_data_csum(inode, io_bio, bio_offset, page, pg_off,
+ 				      page_offset(page) + pg_off);
+-		if (ret < 0)
+-			return -EIO;
++		if (ret < 0) {
++			int nr_bit = (pg_off - offset_in_page(start)) /
++				     sectorsize;
++			result |= (1 << nr_bit);
++		}
  	}
- 	return false;
+-	return 0;
++	return result;
  }
+ 
+ /*
 -- 
 2.31.1
 
