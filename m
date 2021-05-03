@@ -2,135 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758DB37169F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 16:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C77371E16
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 19:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhECO25 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 May 2021 10:28:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45828 "EHLO mx2.suse.de"
+        id S233410AbhECRKS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 13:10:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53838 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229687AbhECO25 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 May 2021 10:28:57 -0400
+        id S234101AbhECRIY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 May 2021 13:08:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4699CAFCC;
-        Mon,  3 May 2021 14:28:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id DB0DCAEEE;
+        Mon,  3 May 2021 17:07:29 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 45C20DA7A1; Mon,  3 May 2021 16:25:36 +0200 (CEST)
-Date:   Mon, 3 May 2021 16:25:36 +0200
+        id 7BDD6DA7AA; Mon,  3 May 2021 19:05:04 +0200 (CEST)
+Date:   Mon, 3 May 2021 19:05:04 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     "tiantao (H)" <tiantao6@huawei.com>
-Cc:     dsterba@suse.cz, Tian Tao <tiantao6@hisilicon.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: delete unneeded assignments in btrfs_defrag_file
-Message-ID: <20210503142536.GM7604@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] btrfs: remove the dead branch in
+ btrfs_io_needs_validation()
+Message-ID: <20210503170504.GN7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, "tiantao (H)" <tiantao6@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org
-References: <1619488221-29490-1-git-send-email-tiantao6@hisilicon.com>
- <20210428180243.GS7604@twin.jikos.cz>
- <0c116d82-3334-ed4e-fb69-76c1c6c8343a@huawei.com>
- <20210429132233.GV7604@twin.jikos.cz>
- <64eef0c6-4353-7738-124a-8ddfe4edda66@huawei.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210503020856.93333-1-wqu@suse.com>
+ <20210503020856.93333-2-wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <64eef0c6-4353-7738-124a-8ddfe4edda66@huawei.com>
+In-Reply-To: <20210503020856.93333-2-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 09:27:21AM +0800, tiantao (H) wrote:
+On Mon, May 03, 2021 at 10:08:53AM +0800, Qu Wenruo wrote:
+> In function btrfs_io_needs_validation() we are ensured to get a
+> non-cloned bio.
+> The only caller, end_bio_extent_readpage(), already has an ASSERT() to
+> make sure we only get non-cloned bios.
 > 
-> 在 2021/4/29 21:22, David Sterba 写道:
-> > On Thu, Apr 29, 2021 at 09:16:53AM +0800, tiantao (H) wrote:
-> >> 在 2021/4/29 2:02, David Sterba 写道:
-> >>> On Tue, Apr 27, 2021 at 09:50:21AM +0800, Tian Tao wrote:
-> >>>> ret is assigned -EAGAIN at line 1455 and then reassigned defrag_count
-> >>>> at line 1547 after exiting the while loop, but the btrfs_defrag_file
-> >>>> function returns a negative number indicating that the execution failed
-> >>>> because it does not make sense to reassign defrag_count to ret, so
-> >>>> delete it.
-> >>> The line references are fragile, so the 1455 is after defrag is
-> >>> cancelled.
-> >>>
-> >>>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> >>>> ---
-> >>>>    fs/btrfs/ioctl.c | 2 --
-> >>>>    1 file changed, 2 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> >>>> index ee1dbab..2b3b228 100644
-> >>>> --- a/fs/btrfs/ioctl.c
-> >>>> +++ b/fs/btrfs/ioctl.c
-> >>>> @@ -1544,8 +1544,6 @@ int btrfs_defrag_file(struct inode *inode, struct file *file,
-> >>>>    		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
-> >>>>    	}
-> >>>>    
-> >>>> -	ret = defrag_count;
-> >>> But this would change semantics of the whole function, after deleting
-> >>> this line any stale value of 'ret' would be returned, it's used for some
-> >>> intermediate return values in the whole while loop.
-> >>>
-> >>> 1597                 if (btrfs_defrag_cancelled(fs_info)) {
-> >>> 1598                         btrfs_debug(fs_info, "defrag_file cancelled");
-> >>> 1599                         ret = -EAGAIN;
-> >>> 1600                         break;
-> >>> 1601                 }
-> >>>
-> >>> Jumping to the 'out_ra' label looks like a candidate fix but that also
-> >>> jumps around all the incompat bit setting, so that could in some cases
-> >>> miss to set them properly. And actually this is a problem with all the
-> >>> other error cases.
-> >>>
-> >>> I'm not yet sure what's the proper fix, but the errors from within the
-> >>> while loop should be returned and incompat bits set.
-> >> How does the following change look?
-> >>
-> >> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> >> index ee1dbab..b8e496e 100644
-> >> --- a/fs/btrfs/ioctl.c
-> >> +++ b/fs/btrfs/ioctl.c
-> >> @@ -1453,7 +1453,7 @@ int btrfs_defrag_file(struct inode *inode, struct
-> >> file *file,
-> >>                   if (btrfs_defrag_cancelled(fs_info)) {
-> >>                           btrfs_debug(fs_info, "defrag_file cancelled");
-> >>                           ret = -EAGAIN;
-> >> -                       break;
-> >> +                      goto error;
-> >>                   }
-> >>
-> >>                   if (!should_defrag_range(inode, (u64)i << PAGE_SHIFT,
-> >> @@ -1531,6 +1531,9 @@ int btrfs_defrag_file(struct inode *inode, struct
-> >> file *file,
-> >>                   }
-> >>           }
-> >>
-> >> +       ret = defrag_count;
-> >> +
-> >> +error:
-> >>           if ((range->flags & BTRFS_DEFRAG_RANGE_START_IO)) {
-> >>                   filemap_flush(inode->i_mapping);
-> >>                   if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
-> >> @@ -1544,8 +1547,6 @@ int btrfs_defrag_file(struct inode *inode, struct
-> >> file *file,
-> >>                   btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
-> >>           }
-> >>
-> >> -       ret = defrag_count;
-> >> -
-> >>    out_ra:
-> >>           if (do_compress) {
-> >>                   btrfs_inode_lock(inode, 0);
-> > Yes that looks like covering all the issues. One more thing is the change on
-> > the userspace where the cancelled defrag returns non-error, but now it would be
-> > EAGAIN. So far I haven't found anything that would go wrong, all errors
-> > are reported and the whole defrag loop continues. Pressing ctrl-c should
-> > cancel it completely.
-> > .
-> Would you give ack-by if v2 was sent according to this code above?
+> Thus the (bio_flagged(bio, BIO_CLONED)) branch will never get executed.
+> 
+> Remove the dead branch and updated the comment.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 29 +++++++----------------------
+>  1 file changed, 7 insertions(+), 22 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 14ab11381d49..0787fae5f7f1 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2644,8 +2644,10 @@ static bool btrfs_check_repairable(struct inode *inode, bool needs_validation,
+>  
+>  static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
+>  {
+> +	struct bio_vec *bvec;
+>  	u64 len = 0;
+>  	const u32 blocksize = inode->i_sb->s_blocksize;
+> +	int i;
+>  
+>  	/*
+>  	 * If bi_status is BLK_STS_OK, then this was a checksum error, not an
+> @@ -2669,30 +2671,13 @@ static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
+>  	if (blocksize < PAGE_SIZE)
+>  		return false;
+>  	/*
+> -	 * We need to validate each sector individually if the failed I/O was
+> -	 * for multiple sectors.
+> -	 *
+> -	 * There are a few possible bios that can end up here:
+> -	 * 1. A buffered read bio, which is not cloned.
+> -	 * 2. A direct I/O read bio, which is cloned.
 
-Yes, thanks.
+Ok, so the cloned bio was expected only due to direct io but now it's
+done via iomap so it makes sense to simplify it.
+
+> -	 * 3. A (buffered or direct) repair bio, which is not cloned.
+> -	 *
+> -	 * For cloned bios (case 2), we can get the size from
+> -	 * btrfs_io_bio->iter; for non-cloned bios (cases 1 and 3), we can get
+> -	 * it from the bvecs.
+> +	 * We're ensured we won't get cloned bio in end_bio_extent_readpage(),
+> +	 * thus we can get the length from the bvecs.
+>  	 */
+> -	if (bio_flagged(bio, BIO_CLONED)) {
+> -		if (btrfs_io_bio(bio)->iter.bi_size > blocksize)
+> +	bio_for_each_bvec_all(bvec, bio, i) {
+> +		len += bvec->bv_len;
+> +		if (len > blocksize)
+>  			return true;
+> -	} else {
+> -		struct bio_vec *bvec;
+> -		int i;
+> -
+> -		bio_for_each_bvec_all(bvec, bio, i) {
+> -			len += bvec->bv_len;
+> -			if (len > blocksize)
+> -				return true;
+> -		}
+>  	}
+>  	return false;
+>  }
+> -- 
+> 2.31.1
