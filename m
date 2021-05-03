@@ -2,271 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4F037107C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 04:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EB63711EE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 May 2021 09:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbhECCKB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 2 May 2021 22:10:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60100 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232770AbhECCKB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 2 May 2021 22:10:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620007747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bslJ8TmqbqIUfkpy3Qxz4YwBHQOVqLEYmoC1sQq+tV0=;
-        b=OfGZydqwDAcTZqxH3D4rINuu82Hx6wsuL4JPuWpyACRpWTLrZnj+Q0kvCvy5mPhi84E0v+
-        43YS6f42dah/zWA5zqZN7oHO6rU4sdzCaPFuiOEdcmAz3sF1FjRaNLrXRrIFseaEVOlYLv
-        8lVxgFPa9cQMg+mhNtdjefF+xS9BSXk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DABD6B18F
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 May 2021 02:09:07 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 4/4] btrfs: remove io_failure_record::in_validation
-Date:   Mon,  3 May 2021 10:08:56 +0800
-Message-Id: <20210503020856.93333-5-wqu@suse.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210503020856.93333-1-wqu@suse.com>
-References: <20210503020856.93333-1-wqu@suse.com>
+        id S231605AbhECHYa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 May 2021 03:24:30 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50646 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhECHYa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 May 2021 03:24:30 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1437FECs124271;
+        Mon, 3 May 2021 07:23:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=PRTKyLHF7uB7hw/rNKqK5iaFT2wvuHgVDu9UJa42LW0=;
+ b=KGpBy2aSTBDXoVNuL/opNj2f9Yd+7p11aE399zSP9/JC74BWSf8KKPenffN4FC/NLavA
+ DORdDmGQAuBXsad8jIntu1jp4i+/bRnOTcnJ6lKgzFzRz2wmjB06mEjHqTXnzP0W7fqk
+ +4B4K5tYpLmrPYXgk4m5s/39K/hzJDrmH0hT6srC8UE0VfokJ91eK/2kvB3ql9X9B07s
+ F2OV7o2C+oK0rwbEkolIS/boZqwatH+Fq5EfUFPVc56m6Xd2QfuDrY2X45uC9s1vaNk0
+ XZKcfMuEw0XVvz4yBb3TkO2n73oxVTyQrILAmjhHb63plr5qYbTog2xoF7XduAdlTDbf 2g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 388xxmtpxt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 07:23:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1437KAkq062499;
+        Mon, 3 May 2021 07:23:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 388xt1xuqj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 07:23:31 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1437NV9s078301;
+        Mon, 3 May 2021 07:23:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 388xt1xuq6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 03 May 2021 07:23:31 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1437NTGo012563;
+        Mon, 3 May 2021 07:23:29 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 03 May 2021 00:23:28 -0700
+Date:   Mon, 3 May 2021 10:23:22 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210503072322.GK1981@kadam>
+References: <20210501225046.9138-1-khaledromdhani216@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210501225046.9138-1-khaledromdhani216@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: YsC9ZDBNHAigZu5GhynQq1XkYp9b4oEt
+X-Proofpoint-ORIG-GUID: YsC9ZDBNHAigZu5GhynQq1XkYp9b4oEt
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9972 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 phishscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105030048
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The io_failure_record::in_validation was introduced to handle failed bio
-which cross several sectors.
-In such case, we still need to verify which sectors are corrupted.
+On Sat, May 01, 2021 at 11:50:46PM +0100, Khaled ROMDHANI wrote:
+> Fix the warning: variable 'zone' is used
+> uninitialized whenever '?:' condition is true.
+> 
+> Fix that by preventing the code to reach
+> the last assertion. If the variable 'mirror'
+> is invalid, the assertion fails and we return
+> immediately.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+> ---
 
-But since we're changed the way how we handle corrupted sectors, by only
-submitting repair for each corrupted sector, there is no need for extra
-validation any more.
+This is not how you send a v4 patch...  v2 patches have to apply to the
+original code and not on top of the patched code.
 
-This patch will cleanup all io_failure_record::in_validation related
-code.
+I sort of think you should find a different thing to work on.  This code
+works fine as-is.  Just leave it and try to find a real bug and fix that
+instead.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 113 ++++++++-----------------------------------
- fs/btrfs/extent_io.h |   3 +-
- 2 files changed, 21 insertions(+), 95 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index dca204730d17..11dae53525f6 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2426,13 +2426,6 @@ int clean_io_failure(struct btrfs_fs_info *fs_info,
- 
- 	BUG_ON(!failrec->this_mirror);
- 
--	if (failrec->in_validation) {
--		/* there was no real error, just free the record */
--		btrfs_debug(fs_info,
--			"clean_io_failure: freeing dummy error at %llu",
--			failrec->start);
--		goto out;
--	}
- 	if (sb_rdonly(fs_info->sb))
- 		goto out;
- 
-@@ -2509,9 +2502,8 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
- 	failrec = get_state_failrec(failure_tree, start);
- 	if (!IS_ERR(failrec)) {
- 		btrfs_debug(fs_info,
--			"Get IO Failure Record: (found) logical=%llu, start=%llu, len=%llu, validation=%d",
--			failrec->logical, failrec->start, failrec->len,
--			failrec->in_validation);
-+	"Get IO Failure Record: (found) logical=%llu, start=%llu, len=%llu",
-+			failrec->logical, failrec->start, failrec->len);
- 		/*
- 		 * when data can be on disk more than twice, add to failrec here
- 		 * (e.g. with a list for failed_mirror) to make
-@@ -2529,7 +2521,6 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
- 	failrec->len = sectorsize;
- 	failrec->this_mirror = 0;
- 	failrec->bio_flags = 0;
--	failrec->in_validation = 0;
- 
- 	read_lock(&em_tree->lock);
- 	em = lookup_extent_mapping(em_tree, start, failrec->len);
-@@ -2580,7 +2571,7 @@ static struct io_failure_record *btrfs_get_io_failure_record(struct inode *inode
- 	return failrec;
- }
- 
--static bool btrfs_check_repairable(struct inode *inode, bool needs_validation,
-+static bool btrfs_check_repairable(struct inode *inode,
- 				   struct io_failure_record *failrec,
- 				   int failed_mirror)
- {
-@@ -2600,39 +2591,22 @@ static bool btrfs_check_repairable(struct inode *inode, bool needs_validation,
- 		return false;
- 	}
- 
-+	/* The failure record should only contain one sector */
-+	ASSERT(failrec->len == fs_info->sectorsize);
-+
- 	/*
--	 * there are two premises:
--	 *	a) deliver good data to the caller
--	 *	b) correct the bad sectors on disk
-+	 * There are two premises:
-+	 * a) deliver good data to the caller
-+	 * b) correct the bad sectors on disk
-+	 *
-+	 * Since we're only doing repair for one sector, we only need to get
-+	 * a good copy of the failed sector and if we succeed, we have setup
-+	 * everything for repair_io_failure to do the rest for us.
- 	 */
--	if (needs_validation) {
--		/*
--		 * to fulfill b), we need to know the exact failing sectors, as
--		 * we don't want to rewrite any more than the failed ones. thus,
--		 * we need separate read requests for the failed bio
--		 *
--		 * if the following BUG_ON triggers, our validation request got
--		 * merged. we need separate requests for our algorithm to work.
--		 */
--		BUG_ON(failrec->in_validation);
--		failrec->in_validation = 1;
--		failrec->this_mirror = failed_mirror;
--	} else {
--		/*
--		 * we're ready to fulfill a) and b) alongside. get a good copy
--		 * of the failed sector and if we succeed, we have setup
--		 * everything for repair_io_failure to do the rest for us.
--		 */
--		if (failrec->in_validation) {
--			BUG_ON(failrec->this_mirror != failed_mirror);
--			failrec->in_validation = 0;
--			failrec->this_mirror = 0;
--		}
--		failrec->failed_mirror = failed_mirror;
-+	failrec->failed_mirror = failed_mirror;
-+	failrec->this_mirror++;
-+	if (failrec->this_mirror == failed_mirror)
- 		failrec->this_mirror++;
--		if (failrec->this_mirror == failed_mirror)
--			failrec->this_mirror++;
--	}
- 
- 	if (failrec->this_mirror > num_copies) {
- 		btrfs_debug(fs_info,
-@@ -2644,46 +2618,6 @@ static bool btrfs_check_repairable(struct inode *inode, bool needs_validation,
- 	return true;
- }
- 
--static bool btrfs_io_needs_validation(struct inode *inode, struct bio *bio)
--{
--	struct bio_vec *bvec;
--	u64 len = 0;
--	const u32 blocksize = inode->i_sb->s_blocksize;
--	int i;
--
--	/*
--	 * If bi_status is BLK_STS_OK, then this was a checksum error, not an
--	 * I/O error. In this case, we already know exactly which sector was
--	 * bad, so we don't need to validate.
--	 */
--	if (bio->bi_status == BLK_STS_OK)
--		return false;
--
--	/*
--	 * For subpage case, read bio are always submitted as multiple-sector
--	 * bio if the range is in the same page.
--	 * For now, let's just skip the validation, and do page sized repair.
--	 *
--	 * This reduce the granularity for repair, meaning if we have two
--	 * copies with different csum mismatch at different location, we're
--	 * unable to repair in subpage case.
--	 *
--	 * TODO: Make validation code to be fully subpage compatible
--	 */
--	if (blocksize < PAGE_SIZE)
--		return false;
--	/*
--	 * We're ensured we won't get cloned bio in end_bio_extent_readpage(),
--	 * thus we can get the length from the bvecs.
--	 */
--	bio_for_each_bvec_all(bvec, bio, i) {
--		len += bvec->bv_len;
--		if (len > blocksize)
--			return true;
--	}
--	return false;
--}
--
- static int repair_one_sector(struct inode *inode,
- 			     struct bio *failed_bio, u32 bio_offset,
- 			     struct page *page, unsigned int pgoff,
-@@ -2696,7 +2630,6 @@ static int repair_one_sector(struct inode *inode,
- 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
- 	struct btrfs_io_bio *failed_io_bio = btrfs_io_bio(failed_bio);
- 	const int icsum = bio_offset >> fs_info->sectorsize_bits;
--	bool need_validation;
- 	struct bio *repair_bio;
- 	struct btrfs_io_bio *repair_io_bio;
- 	blk_status_t status;
-@@ -2713,13 +2646,9 @@ static int repair_one_sector(struct inode *inode,
- 	/*
- 	 * We will only submit repair for one sector, thus we don't need
- 	 * extra validation anymore.
--	 *
--	 * TODO: All those extra validation related code will be cleaned up
--	 * later.
- 	 */
--	need_validation = false;
--	if (!btrfs_check_repairable(inode, need_validation, failrec,
--				    failed_mirror)) {
-+
-+	if (!btrfs_check_repairable(inode, failrec, failed_mirror)) {
- 		free_io_failure(failure_tree, tree, failrec);
- 		return -EIO;
- 	}
-@@ -2727,8 +2656,6 @@ static int repair_one_sector(struct inode *inode,
- 	repair_bio = btrfs_io_bio_alloc(1);
- 	repair_io_bio = btrfs_io_bio(repair_bio);
- 	repair_bio->bi_opf = REQ_OP_READ;
--	if (need_validation)
--		repair_bio->bi_opf |= REQ_FAILFAST_DEV;
- 	repair_bio->bi_end_io = failed_bio->bi_end_io;
- 	repair_bio->bi_iter.bi_sector = failrec->logical >> 9;
- 	repair_bio->bi_private = failed_bio->bi_private;
-@@ -2746,8 +2673,8 @@ static int repair_one_sector(struct inode *inode,
- 	repair_io_bio->iter = repair_bio->bi_iter;
- 
- 	btrfs_debug(btrfs_sb(inode->i_sb),
--"repair read error: submitting new read to mirror %d, in_validation=%d",
--		    failrec->this_mirror, failrec->in_validation);
-+		    "repair read error: submitting new read to mirror %d",
-+		    failrec->this_mirror);
- 
- 	status = submit_bio_hook(inode, repair_bio, failrec->this_mirror,
- 				 failrec->bio_flags);
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 89820028c4bc..95affaf2e503 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -292,7 +292,7 @@ int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num);
-  * When IO fails, either with EIO or csum verification fails, we
-  * try other mirrors that might have a good copy of the data.  This
-  * io_failure_record is used to record state as we go through all the
-- * mirrors.  If another mirror has good data, the page is set up to date
-+ * mirrors.  If another mirror has good data, the sector is set up to date
-  * and things continue.  If a good mirror can't be found, the original
-  * bio end_io callback is called to indicate things have failed.
-  */
-@@ -304,7 +304,6 @@ struct io_failure_record {
- 	unsigned long bio_flags;
- 	int this_mirror;
- 	int failed_mirror;
--	int in_validation;
- };
- 
- 
--- 
-2.31.1
+regards,
+dan carpenter
 
