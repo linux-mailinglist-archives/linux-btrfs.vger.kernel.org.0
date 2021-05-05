@@ -2,91 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC95373CD0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 May 2021 15:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D65373D98
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 May 2021 16:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233423AbhEEOAC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 May 2021 10:00:02 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:57313 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232923AbhEEOAC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 May 2021 10:00:02 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 69E565C0187;
-        Wed,  5 May 2021 09:59:05 -0400 (EDT)
-Received: from imap5 ([10.202.2.55])
-  by compute3.internal (MEProxy); Wed, 05 May 2021 09:59:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :subject:content-type; s=fm2; bh=1B/MDieHYAtaNQggohZ0z7I28qMBXpS
-        BHKSutPMqhKc=; b=KmuJeqvcQAcoa5yFwwX9YoK9IveSFAn3337l281GYHGcsp/
-        6mSg+Hr2sep5FDD17Rp+Z90q6a4IqEO2xSt2ggBB1Q22QbjblI91k2PblkMqIwu2
-        Wx84ZpVTmBXEHPgtsVGIczMLM/Y8e4/t3HaAsHdAMS2DZN0vLG+ix+W51V30PjK/
-        itUqsnkW7jczZ1N5977rAJNW9+vqH0C0pKq5j4MnxPMTAIRRrw1cx6+/urOyrrRm
-        TtujGLxkxzjpv2AmEJM+c8bWSC9isqasssTsND7cKmpXrxoNv5UeB9blFPebzfWw
-        TKd6s3s4VvhL/hVp/Q8H1XJMmKNJ0sEh9nurTtw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=1B/MDi
-        eHYAtaNQggohZ0z7I28qMBXpSBHKSutPMqhKc=; b=KCHI1SX4gYVUukYX+3zCjn
-        UhzRgDiIXL+vrSkdFspvNItsWA6cKXoF/Hv5EaAYrDV6M2hEEeNrY9DU7qo5mX+p
-        nQ2zs1whP+4N3/5ZMMKGFiYlS3ZZ+ufsiVRMujZSxjqlad+cdjOPT9SQGUf8vaR6
-        HN+TyO0VNXt0hUVbBZenu0IImN4SRVRKSStHn2jCrY6dlQRF/9bJi/OlDho+xbD9
-        QirkomIE7ILQtXma1a3RuDth7w4oGgFVrSW2J4vZoxbRvnNGvAiHpsK+aYICtiXH
-        7cgYZYIEAqKI3OCsW5K+8YiopdLPKbvZUfcdfKiMWsmo/ro4IQ3YzenkbjP9yRXQ
-        ==
-X-ME-Sender: <xms:qaSSYJVU-69TQcRDJfBJOReIR9KD5wTcIPxScD7Q4Jtd3G8iTsY3qQ>
-    <xme:qaSSYJn9UjMZuoqMzP_Tb6sF6xd_1aRvf9v0eub6ecrmi6CrVGu1HQ24rM-aKWKzm
-    giyqEVzN8_yJj8Djw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefkedgieejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtohhmnecuggft
-    rfgrthhtvghrnhepuefgfeevgfduffekudfhledvieeffeelgfekgeelffdvkeelvdekgf
-    dvudejffegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mheprhgvmhhisehgvghorhhgihgrnhhithdrtghomh
-X-ME-Proxy: <xmx:qaSSYFbImdiuAScIMtqNXecXecuWlY1naK4qvHXlAVtN_uQOpTtu3A>
-    <xmx:qaSSYMX8ouskS-f0jIiP1jwS3pBkdqHkpfyN4i_EYaKYrZKhIt5xIg>
-    <xmx:qaSSYDliXtslstgXL9bLabazLDlfvOyiRlx2oDtJ4uOwNrXjqdFCyw>
-    <xmx:qaSSYJTqFUepGPP1j8BnkM7-8EdsgdE3SMEarh9YHsQf67kokIh_Qw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3969BA0085; Wed,  5 May 2021 09:59:05 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-442-g5daca166b9-fm-20210428.001-g5daca166
-Mime-Version: 1.0
-Message-Id: <5b563f2f-9057-44cc-8ec8-5367548aef6f@www.fastmail.com>
-In-Reply-To: <CADOXG6Fj3zCzu46q-nLKOdszxQHPGLk6r5rDn80KNLKY5sn3iQ@mail.gmail.com>
+        id S233085AbhEEOYm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 May 2021 10:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233074AbhEEOYl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 May 2021 10:24:41 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79992C061574
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 May 2021 07:23:44 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id j12so1870212ils.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 05 May 2021 07:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bObMeSVRUGZmftnP52HT14RKpUY5SjqVEgmi/QuGXWk=;
+        b=diqAjy0bbH2AEUrUw8ch6f9pqTSmtsSeSIoTSNNBrP693HVXxrUexUKERXpKB0I9AH
+         sumigdSmHmzvkghWI0hgY7wvN6WTbsun5MDceG8JG5tCSa6iPklYtn6YDfNZoAYs/DWh
+         Ncp17MO2tPvJXAnIN2Ek1CxrLnQEvl/9IsP64MPMEPoYgnCrIVyhaXDCxlGsqbDMgafJ
+         uIlkyK45WXQAWI5ubM4LbgqfRfbmO5bc8d6w29GEM/BQtOxA9sRldGbqNvhkJ8Mhy4ID
+         cWGm6ei++Pl+Ew2G82R3t/6GbpE0aQxOm2UdnNB+CUJDkSWFgdG4OjDKldMrdsxkWMQw
+         vVqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bObMeSVRUGZmftnP52HT14RKpUY5SjqVEgmi/QuGXWk=;
+        b=eJCthZQD9iih1RK3HEpEmEZqEO4fciBeacltJhqQ/5ocLSXMHwzD4MSNwR3K5Z+FlV
+         zZB4LgN5K4ZQwAzlmhVHWnFA/4ozTWzicQN2itqJ0V5HQJZc/mlaYZ20yD83EdZoZn96
+         nrtxZtYmoPydKG4wlo4PiAwIgk+Sy0Yt2IViuNS11WYxqLmOn139Yvz2GMpg/fEvBFcj
+         OZrUIk8/tsaRviKPYBfoMqmi7/KrB1AsyuUG7Z5NG7Kbb1Yi8CDh0wX5lp1pTa6NH1VU
+         SFyTUg+YgKvCKTpxO5CfY++koGvSjr9CtBjruznXp/aUZuiIGLGxAcsIG8ch9YTsYIyf
+         FOeA==
+X-Gm-Message-State: AOAM531ZBEo8dWP9Bc3SPyBb9XYbSr86+cULzvGWgJbKxMc5s7bjcoCE
+        mWXBKBJOEIplBwwHPPTg4MSMTDPdkLmV0jzaADmKvE5z4fU=
+X-Google-Smtp-Source: ABdhPJz94vLiYEzjN63Z5GsORfDbWSQImw5YWBD4iS2s4AEWKSiVGz5r7TqmGl3m0t31EobqR1+AYlnHtfGuRxhHJWg=
+X-Received: by 2002:a92:b111:: with SMTP id t17mr26513133ilh.208.1620224623823;
+ Wed, 05 May 2021 07:23:43 -0700 (PDT)
+MIME-Version: 1.0
 References: <CADOXG6Fj3zCzu46q-nLKOdszxQHPGLk6r5rDn80KNLKY5sn3iQ@mail.gmail.com>
-Date:   Wed, 05 May 2021 09:58:03 -0400
-From:   remi@georgianit.com
-To:     "Abdulla Bubshait" <darkstego@gmail.com>,
-        linux-btrfs@vger.kernel.org
+ <5b563f2f-9057-44cc-8ec8-5367548aef6f@www.fastmail.com>
+In-Reply-To: <5b563f2f-9057-44cc-8ec8-5367548aef6f@www.fastmail.com>
+From:   Abdulla Bubshait <darkstego@gmail.com>
+Date:   Wed, 5 May 2021 10:23:33 -0400
+Message-ID: <CADOXG6FZBh-=P=JB5DMdPxH63sG2BspY6oWO9KA5yqUaqFrGAw@mail.gmail.com>
 Subject: Re: Array extremely unbalanced after convert to Raid5
-Content-Type: text/plain
+To:     remi@georgianit.com
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, May 5, 2021 at 9:59 AM <remi@georgianit.com> wrote:
 
+> Sorry, I don't have a solution for you, but I want to point out that the =
+situation is far more critical than you seem to have realized.. this filesy=
+stem is now completely wedged, and I would suggest adding another device, o=
+r replacing either /dev/sdf  or /dev/sde with something larger,, (though, i=
+f those are real disks, I see that might be a challenge.)
 
-On Wed, May 5, 2021, at 9:41 AM, Abdulla Bubshait wrote:
-> I ran a balance convert of my data single setup to raid 5. Once
-> complete the setup is extremely unbalanced and doesn't even make sense
-> as a raid 5. I tried to run a balance with dlimit of 1000, but it just
-> seems to make things worse.
+I don't think they make disks larger than sde.
 
-> 
-> Unallocated:
->   /dev/sdd       14.12TiB
->   /dev/sdc      404.99GiB
->   /dev/sdf        1.00MiB
->   /dev/sde        1.00MiB
-> 
-> 
+I can get some more space by offloading stuff from the array. But even
+if I offload a TB and give myself some breathing room on those disks,
+as soon as I run a balance the freespace on the disks will quickly
+fill up leaving me again without any unallocated space on 3 drives.
 
+Right now I am lucky enough to have some space on sdc, but typically
+after balancing I would have 3 disks with 1MB left and 1 disk with 14
+TB unallocated. And I can't seem to get the balance to start using up
+sdd and freeing up space from all the others.
 
-Sorry, I don't have a solution for you, but I want to point out that the situation is far more critical than you seem to have realized.. this filesystem is now completely wedged, and I would suggest adding another device, or replacing either /dev/sdf  or /dev/sde with something larger,, (though, if those are real disks, I see that might be a challenge.)
-
-Your metadata is Raid1C3, (meaning 3 copies,), but you only have 2 disks with free space.  And thanks to the recent balancing, there is very little free space in the already allocated metadata,, so effectively, the filesystem can no longer write any new metadata and will very quickly hit out of space errors.
+As things stand I don't know how sde ever got filled up. Since it is
+the largest of the disks it should have a portion that cannot be find
+a parity anywhere else, so part of it will remain unoccupied. At least
+that is what I could gather from the btrfs space allocator site.
