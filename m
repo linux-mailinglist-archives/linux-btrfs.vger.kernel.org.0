@@ -2,239 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B924D374C04
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 May 2021 01:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9F4374C0E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 May 2021 01:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhEEXje (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 May 2021 19:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbhEEXjd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 5 May 2021 19:39:33 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62839C061574
-        for <linux-btrfs@vger.kernel.org>; Wed,  5 May 2021 16:38:36 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id d21so3791747oic.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 05 May 2021 16:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bjV9OJUlYLNwDNlPBAwYauDS8eJWzNRTZGDi3/jyY1E=;
-        b=dzVlHSDefkpZRnwe/Dz2hUrwfrfduG+lF2phZ9b7118UOm3AnqE8cADGYVi8Fr8xWr
-         FwbCq6MRV1k444OSYt7wAuwpU0+5FK3npx30gCgOvqBgaGooamC7HaPP9Qpfo+cjkiR5
-         hzb7HpxsruCO2OuHwtuF69TdcUr9qTkwGfLlg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bjV9OJUlYLNwDNlPBAwYauDS8eJWzNRTZGDi3/jyY1E=;
-        b=jURAe8Z0WZ1nCbbFZTBvRMCKOey+j5WVrjpw7bZvcJbgFS4Y9DY8pVGuhR3t6kCOcZ
-         4PRKDwA29Cdg+OPY5bTpjvJx9Ws5NJA5TcZpyp4Vm8tq9AaIfWIuCAJT9bjw/0TX4zLQ
-         CEXLpstb3BvkH/JDOdxzCAxX4IGzUubvskqWoFVNJiFzi2TDI+Uxxb3XWTIq0KyVMZwt
-         AMokFb2EuB2gzSidR9MzUERF0UmiJvOEdJ4/LssN3Q6lvoAWU2fEQlNwT6vi5X4fkxWY
-         JRMdqkmcC7+waygaFTeWye5fZHxWmWzMlGssC53jyfOocOHDVtRwN97wVm9df2e1QT3K
-         4fKg==
-X-Gm-Message-State: AOAM532IIjjB7/I0EdxXr+88K9O1HZln1biYrvQBFalhY7/eBu3uXgQx
-        eUD7G+5Op3YaBq53atdDR4RKBigFAy/wSw/P68XSMw==
-X-Google-Smtp-Source: ABdhPJyNbU+llWp8tqH8FBppNguMPAU4zXBeLkoUahWUiLu1sOw7V464flFfl4eSF3xyF1VXVn5HVI/hk60zklkdmEY=
-X-Received: by 2002:aca:1718:: with SMTP id j24mr8465991oii.81.1620257915301;
- Wed, 05 May 2021 16:38:35 -0700 (PDT)
+        id S229946AbhEEXoi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 May 2021 19:44:38 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:44857 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229601AbhEEXoi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 May 2021 19:44:38 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 03FD45C0148;
+        Wed,  5 May 2021 19:43:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 05 May 2021 19:43:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=nHt1VmzYNgHhKVL92enzmuiy+ew
+        +WnqKaWaZixc8THg=; b=PWw9CKsTcn+fiJu3gMSqQpeKJSBUGnUIMIDS1C6exLf
+        DCljOd5EpFt6WtsnyuDCoU0IRyWVuoXd5zvkZQ74kEy45OhMSW0VO7OhCr2IfMVf
+        cmChc4XOw9d6ZCS+mZL2BSbNudwHzTfrcGe6MFZ8U8A/sdtMsuX0q4LA7ZpmSfil
+        I63RTIvMgBONEGeQEjlyD6PS2doDpnA25pihffkxZAxOuDiYqS1QyINLW/VtqK5i
+        xt68VAAQzPIlRVGtQ7N5KsSZ52hzyC6EhKPGw0IPsPBrSOIkTHqmBCgghmb+8SLP
+        +y1NTcPqZh+kCc/daLFWRHXh/oFeobNq7RaGr8k3yAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=nHt1Vm
+        zYNgHhKVL92enzmuiy+ew+WnqKaWaZixc8THg=; b=QwwVkYZFVoJNiO9xKAY6tq
+        mpkOUOKENg2MM7CKG65wedwY5EDbpRAP4RFLLtrK4Ggt2135lrqkvuff2jpMMfhW
+        AYr4g9bdOJu2sgJTGmowbxYiZ/sIjCjGky4/arL2ZV+rqv/vs4sEpHc1sXORv0zj
+        OL1t3jCNwOSIa3rLYWlNIiKzhzKbk/bk9pxWwHaUV3B6E83Y+vaY4rde/xNVgznm
+        01SnjTz8ETwpHq4voAlzv+jyLJnBIYdctJ6MeP9/6/nH2A9pLEj/n2FGLYEM30A0
+        U33FPLatspl17pcwKyQe/1CO1LRBG0vFDoWEV0KzSxNsQ9SmLX46E/gWg7wqyOQw
+        ==
+X-ME-Sender: <xms:rC2TYGfKcPPjI-OyGCqzB55K4GaVTz1pePckXP9iK2Jnubl_oamfSQ>
+    <xme:rC2TYAPUyC36QeTy_rCdPWo3UyjgtRGlVwZuOkmvlcQK_vbp_jffLwrbnIpr6Ui6Z
+    sRzq2sV89ckLjDNX4c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefledgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
+    eitedtieeuteeuleegieehgfduieejuefghedvhfdtffevuddvheehtefhueehnecuffho
+    mhgrihhnpehgnhhurdhorhhgnecukfhppedvtdejrdehfedrvdehfedrjeenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhr
+    rdhioh
+X-ME-Proxy: <xmx:rC2TYHhPIfHrWT5ernwARHsvKJU6hq_DBz8Mp_rNrh-Cuq_G--gHpw>
+    <xmx:rC2TYD8SGDDIM9wA95nR0WDfOOi0Vuhz80gMceHKpwZ9_uG5PrSYhQ>
+    <xmx:rC2TYCsj_Mq3QDyOMtGsb3suMkcnPlRYMYsdwVjSfOe1XStOElYyyQ>
+    <xmx:rC2TYHWG4QXtaFGd1DUiaJseqfZLgXjwXsC59T953ZHCwc-Cn45hoQ>
+Received: from localhost (unknown [207.53.253.7])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Wed,  5 May 2021 19:43:40 -0400 (EDT)
+Date:   Wed, 5 May 2021 16:43:38 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs/187: fix test failure when using bash 5.0+ with
+ debug enabled
+Message-ID: <YJMtqnzfx5eYCHUd@zen>
+References: <70ecc4413ac118ac95be3e76b0dabff237d70b8d.1619535331.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <20210503231136.744283-1-sjg@chromium.org> <20210504214016.GA17669@bill-the-cat>
-In-Reply-To: <20210504214016.GA17669@bill-the-cat>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Wed, 5 May 2021 17:38:24 -0600
-Message-ID: <CAPnjgZ3Gp4+rPmsuH3jfdwx0jx8ryqq8UnNrsE3ZA86hvUHe4Q@mail.gmail.com>
-Subject: Re: [PATCH 00/49] image: Reduce #ifdefs and ad-hoc defines in image code
-To:     Tom Rini <trini@konsulko.com>
-Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adam Ford <aford173@gmail.com>,
-        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
-        Alexey Brodkin <alexey.brodkin@synopsys.com>,
-        Andrii Anisov <andrii_anisov@epam.com>,
-        Asherah Connor <ashe@kivikakk.ee>,
-        Bastian Krause <bst@pengutronix.de>,
-        "Chan, Donald" <hoiho@lab126.com>,
-        Chee Hong Ang <chee.hong.ang@intel.com>,
-        Chin-Liang See <chin.liang.see@intel.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Dinh Nguyen <dinh.nguyen@intel.com>,
-        Etienne Carriere <etienne.carriere@linaro.org>,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBEYW5pcw==?= <frederic.danis@collabora.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Harald Seiler <hws@denx.de>, Heiko Schocher <hs@denx.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Hongwei Zhang <hongweiz@ami.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jan Luebbe <jlu@pengutronix.de>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Joe Hershberger <joe.hershberger@ni.com>,
-        Joel Peshkin <joel.peshkin@broadcom.com>,
-        Joel Stanley <joel@jms.id.au>, Jonathan Gray <jsg@jsg.id.au>,
-        Jorge Ramirez-Ortiz <jorge@foundries.io>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Klaus Heinrich Kiwi <klaus@linux.vnet.ibm.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Lukasz Majewski <lukma@denx.de>,
-        Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>,
-        Marek Behun <marek.behun@nic.cz>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marek Vasut <marex@denx.de>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Matthieu CASTET <castet.matthieu@free.fr>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Michal Simek <monstr@monstr.eu>,
-        "NXP i.MX U-Boot Team" <uboot-imx@nxp.com>,
-        Naoki Hayama <naoki.hayama@lineo.co.jp>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Patrick Delaunay <patrick.delaunay@foss.st.com>,
-        Patrick Oppenlander <patrick.oppenlander@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Philippe Reynes <philippe.reynes@softathome.com>,
-        Pragnesh Patel <pragnesh.patel@sifive.com>,
-        Qu Wenruo <wqu@suse.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Reuben Dowle <reubendowle0@gmail.com>,
-        Rick Chen <rick@andestech.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Sean Anderson <seanga2@gmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Siew Chin Lim <elly.siew.chin.lim@intel.com>,
-        Stefan Roese <sr@denx.de>, Stefano Babic <sbabic@denx.de>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        T Karthik Reddy <t.karthik.reddy@xilinx.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Thirupathaiah Annapureddy <thiruan@linux.microsoft.com>,
-        Trevor Woerner <twoerner@gmail.com>,
-        Wasim Khan <wasim.khan@nxp.com>, chenshuo <chenshuo@eswin.com>,
-        linux-btrfs@vger.kernel.org, uboot-snps-arc@synopsys.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70ecc4413ac118ac95be3e76b0dabff237d70b8d.1619535331.git.fdmanana@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Tom,
+On Tue, Apr 27, 2021 at 04:00:09PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When running btrfs/187 with a bash 5.0+ build that has debug enabled, the
+> test fails due to an unexpected warning message from bash:
+> 
+>   $ ./check btrfs/187
+>   FSTYP         -- btrfs
+>   PLATFORM      -- Linux/x86_64 debian9 5.12.0-rc8-btrfs-next-92 #1 SMP PREEMPT Wed Apr 21 10:36:03 WEST 2021
+>   MKFS_OPTIONS  -- /dev/sdc
+>   MOUNT_OPTIONS -- /dev/sdc /home/fdmanana/btrfs-tests/scratch_1
+> 
+>   btrfs/187 436s ... - output mismatch (see /xfstests/results//btrfs/187.out.bad)
+>       --- tests/btrfs/187.out	2020-10-16 23:13:46.550152492 +0100
+>       +++ /xfstests/results//btrfs/187.out.bad	2021-04-27 14:57:02.623941700 +0100
+>       @@ -1,3 +1,4 @@
+>        QA output created by 187
+>        Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap1'
+>        Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/snap2'
+>       +/xfstests/tests/btrfs/187: line 1: warning: wait_for: recursively setting old_sigint_handler to wait_sigint_handler: running_trap = 16
+>       ...
+>       (Run 'diff -u /xfstests/tests/btrfs/187.out /xfstests/results//btrfs/187.out.bad'  to see the entire diff)
+>   Ran: btrfs/187
+>   Failures: btrfs/187
+>   Failed 1 of 1 tests
+> 
+> This is because the process running dedupe_files_loop() executes the 'wait'
+> command in the trap it has setup and very often it receives the SIGTERM
+> signal while it is running the 'wait' command in the while loop of that
+> function - so executing the trap makes bash run 'wait' while it is already
+> running 'wait', triggering the warning message from bash.
+> 
+> That warning message was added in bash 5.0 by commit 36f89ff1d8b761
+> ("SIGINT trap handler SIGINT loop fix"):
+> 
+>   https://git.savannah.gnu.org/cgit/bash.git/commit/?id=36f89ff1d8b761c815d8993e9833e6357a57fc6b
+> 
+> So fix this by making the trap set a local variable named 'stop' to the
+> value 1 and have the loop exit when the local variable 'stop' is 1.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-On Tue, 4 May 2021 at 14:40, Tom Rini <trini@konsulko.com> wrote:
->
-> On Mon, May 03, 2021 at 05:10:47PM -0600, Simon Glass wrote:
->
-> > Much of the image-handling code predates the introduction of Kconfig and
-> > has quite a few #ifdefs in it. It also uses its own IMAGE_... defines to
-> > help reduce the #ifdefs, which is unnecessary now that we can use
-> > IS_ENABLED() et al.
-> >
-> > The image code is also where quite a bit of code is shared with the host
-> > tools. At present this uses a lot of checks of USE_HOSTCC.
-> >
-> > This series introduces 'host' Kconfig options and a way to use
-> > CONFIG_IS_ENABLED() to check them. This works in a similar way to SPL, so
-> >
-> >    CONFIG_IS_ENABLED(FIT)
-> >
-> > will evaluate to true on the host build (USE_HOSTCC) if CONFIG_HOST_FIT is
-> > enabled. This allows quite a bit of clean-up of the image.h header file
-> > and many of the image C files.
-> >
-> > The 'host' Kconfig options should help to solve a more general problem in
-> > that we mostly want the host tools to build with all features enabled, no
-> > matter which features the 'target' build actually uses. This is a pain to
-> > arrange at present, but with 'host' Kconfigs, we can just define them all
-> > to y.
-> >
-> > There are cases where the host tools do not have features which are
-> > present on the target, for example environment and physical addressing.
-> > To help with this, some of the core image code is split out into
-> > image-board.c and image-host.c files.
-> >
-> > Even with these changes, some #ifdefs remain (101 down to 42 in
-> > common/image*). But the code is somewhat easier to follow and there are
-> > fewer build paths.
-> >
-> > In service of the above, this series includes a patch to add an API function
-> > for zstd, so the code can be dropped from bootm.c
-> >
-> > It also introduces a function to handle manual relocation.
->
-> I like this idea overall.  The good news is this reduces the size in a
-> few places.  The bad news, but I can live with if we can't restructure
-> the changes more, is a few functions grow a bit.  This shows the good
-> and the bad (something like sama5d2_ptc_ek_mmc shows only growth, to be
-> clear):
->             px30-core-edimm2.2-px30: all -36 rodata -24 text -12
->                u-boot: add: 0/0, grow: 3/-4 bytes: 36/-48 (-12)
->                  function                                   old     new   delta
->                  boot_get_fdt                               896     924     +28
->                  image_decomp                               372     376      +4
->                  boot_get_ramdisk                           868     872      +4
->                  do_bootm_vxworks                           552     540     -12
->                  do_bootm_rtems                             124     112     -12
->                  do_bootm_plan9                             228     216     -12
->                  do_bootm_netbsd                            324     312     -12
->             odroid-c2      : all -105 bss +128 rodata -65 text -168
->                u-boot: add: 0/0, grow: 2/-3 bytes: 108/-172 (-64)
->                  function                                   old     new   delta
->                  images                                     504     608    +104
->                  image_decomp                               372     376      +4
->                  image_setup_linux                          108      96     -12
->                  boot_get_ramdisk                           620     580     -40
->                  boot_get_fdt                               660     540    -120
->             origen         : all +47 bss +96 rodata -57 text +8
->                u-boot: add: 0/0, grow: 15/-2 bytes: 180/-104 (76)
->                  function                                   old     new   delta
->                  images                                     288     340     +52
->                  do_bootm_states                           1304    1348     +44
->                  do_bootz                                   164     176     +12
->                  do_bootm_vxworks                           332     344     +12
->                  image_setup_libfdt                         168     176      +8
->                  image_decomp                               156     164      +8
->                  bootm_find_images                          212     220      +8
->                  boot_prep_linux                            276     284      +8
->                  image_setup_linux                           54      58      +4
->                  do_bootm_standalone                         60      64      +4
->                  do_bootm_plan9                             104     108      +4
->                  do_bootm_netbsd                            168     172      +4
->                  boot_prep_vxworks                           48      52      +4
->                  boot_jump_vxworks                            6      10      +4
->                  boot_jump_linux                            148     152      +4
->                  boot_get_ramdisk                           420     392     -28
->                  boot_get_fdt                               420     344     -76
->
-> And looking at ls1088ardb_sdcard_qspi_SECURE_BOOT I think there might be
-> something wrong as that looks to drop all crypto algos from SPL.  Other
-> layerscape SECURE_BOOT configs show this as well.  It does however seem
-> to clear up some other issues around unused code, so a deeper dive on
-> which patch is dropping stuff is needed.  I see a huge drop on
-> am65x_evm_a53 / j721e_evm_a72 SPL as well but I can test those and at
-> least the basic case is fine.  socfpga_agilex_atf is one I don't know
-> about being right or wrong.  socfpga_agilex_vab dropping hashing code
-> does look worrying however, but maybe it's a configuration issue in the
-> end?
+Reviewed-by: Boris Burkov <boris@bur.io>
 
-Yes it seems to be config. Thank you for all the pointers.
-
-The small increase is unavoidable with this approach - basically we
-add 16 bytes of rodata as part of making the switch cases into if()
-instead of #ifdef. I found that SPL hashing was dropped, which
-explained another problem that I had seen but not yet diagnosed.
-
-I will send v2.
-
-Regards,
-Simon
+> ---
+>  tests/btrfs/187 | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tests/btrfs/187 b/tests/btrfs/187
+> index b2d3e4f0..7da09abd 100755
+> --- a/tests/btrfs/187
+> +++ b/tests/btrfs/187
+> @@ -64,9 +64,19 @@ dedupe_two_files()
+>  
+>  dedupe_files_loop()
+>  {
+> -	trap "wait; exit" SIGTERM
+> -
+> -	while true; do
+> +	local stop=0
+> +
+> +	# Avoid executing 'wait' inside the trap, because when we receive
+> +	# SIGTERM we might be already executing the wait command in the while
+> +	# loop below. When that is the case, bash 5.0+ with debug enabled prints
+> +	# a warning message that makes the test fail due to a mismatch with the
+> +	# golden output. That warning message is the following:
+> +	#
+> +	# warning: wait_for: recursively setting old_sigint_handler to wait_sigint_handler: running_trap = 16
+> +	#
+> +	trap "stop=1" SIGTERM
+> +
+> +	while [ $stop -eq 0 ]; do
+>  		for ((i = 1; i <= 5; i++)); do
+>  			dedupe_two_files &
+>  		done
+> -- 
+> 2.28.0
+> 
