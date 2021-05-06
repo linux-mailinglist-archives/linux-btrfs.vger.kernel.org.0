@@ -2,130 +2,297 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDAC374E99
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 May 2021 06:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979AE374FBB
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 May 2021 09:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhEFEdz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 May 2021 00:33:55 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:45254 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhEFEdz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 May 2021 00:33:55 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 05D57A478EF; Thu,  6 May 2021 00:32:29 -0400 (EDT)
-Date:   Thu, 6 May 2021 00:32:29 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Abdulla Bubshait <darkstego@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Array extremely unbalanced after convert to Raid5
-Message-ID: <20210506043229.GD32440@hungrycats.org>
-References: <CADOXG6Fj3zCzu46q-nLKOdszxQHPGLk6r5rDn80KNLKY5sn3iQ@mail.gmail.com>
- <20210505144949.GB32440@hungrycats.org>
- <CADOXG6H7U7grsq0nmEgykYKMwSfOxKiwB0tSaz3_sJAVTGigCA@mail.gmail.com>
+        id S232700AbhEFHGB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 May 2021 03:06:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38858 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232433AbhEFHGA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 May 2021 03:06:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620284702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=7242YEiyoLAR3EgY6VjcqfKT3RN2Akd2cSByo+XwMW0=;
+        b=GFgfrNJYxivgHEMt/92q4NcdvSezPYrzD58Qbv7lbdwaE8SiFcWlRma2wt/56JUJBc2NIP
+        CazB32s7EHuMCErO1/pQO9ttuJQXsuJFWPQ29G4FwpFesme1CRkd0IXSr9tnpSpUxWK44n
+        ZyhEkQ08n5x1dEUhh8XQgDj/etzSFHQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 48F8FACF6
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 May 2021 07:05:02 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC] btrfs: temporary disable inline extent creation for fallocate and reflink
+Date:   Thu,  6 May 2021 15:04:58 +0800
+Message-Id: <20210506070458.168945-1-wqu@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADOXG6H7U7grsq0nmEgykYKMwSfOxKiwB0tSaz3_sJAVTGigCA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 05, 2021 at 11:35:23AM -0400, Abdulla Bubshait wrote:
-> On Wed, May 5, 2021 at 10:49 AM Zygo Blaxell
-> <ce3g8jdj@umail.furryterror.org> wrote:
-> >
-> > Balancing a full single array to raid5 requires a better device selection
-> > algorithm than the kernel provides, especially if the disks are of
-> > different sizes and were added to the array over a long period of time.
-> > The kernel will strictly relocate the newest block groups first, which
-> > may leave space occupied on some disks for most of the balance, and
-> > cause many chunks to be created with suboptimal stripe width.
-> >
-> Is this also true of running a full balance after conversion to raid5?
-> Is it able to optimize the stripe width or would a balance run into
-> the same issue due to
-> the disks being full?
+Previously we disable inline extent creation completely for subpage
+case, due to the fact that writeback for subpage still happens for full
+page.
 
-Balancing all the data block groups in a single command will simply
-restripe every chunk in reverse creation order, whether needed or not,
-and get whatever space is available at the time for each chunk--and
-possibly run out of space on filesystems with non-equal disk sizes.
-If you run it enough times, it might eventually settle into a good state,
-but it is not guaranteed.
+This makes btrfs_wait_ordered_range() trigger writeback for larger
+range, thus can writeback the first sector even we don't want.
 
-Generally you should never do a full balance because a full balance
-balances metadata, and you should never balance metadata because it
-will lead to low-metadata-space conditions like the one you are in now.
-The exceptions to the "never balance metadata" rule are when converting
-from one raid profile to a different profile, or when permanently removing
-a disk from the filesystem, and even then you should ensure there is a
-lot of unallocated space available before starting a metadata balance.
+But the truth is, even for regular sectorsize, we still have a race
+window there operations where fallocate and reflink can cause inline
+extent being created.
 
-> > Now use the stripes filter to get rid of all chunks that have fewer
-> > than the optimum number of stripes on each disk.  Cycle through these
-> > commands until they report 0 chunks relocated (you can just leave these
-> > running in a shell loop and check on it every few hours, when they get
-> > to 0 they will just become no-ops):
-> >
-> >         btrfs balance start -dlimit=100,convert=raid5,stripes=1..3,devid=3 /fs
-> >
-> >         btrfs balance start -dlimit=100,convert=raid5,stripes=1..2,devid=2 /fs
-> >
-> >         btrfs balance start -dlimit=100,convert=raid5,stripes=1..1,devid=1 /fs
-> >
-> >         btrfs balance start -dlimit=100,convert=raid5,stripes=1..1,devid=4 /fs
-> >
-> > The filters select chunks that have undesirable stripe counts and force
-> > them into raid5 profile.  Single chunks have stripe count 1 and will
-> > be converted to raid5.  RAID5 chunks have stripe count >1 and will be
-> > relocated (converted from raid5 to raid5, but in a different location
-> > with more disks in the chunk).  RAID5 chunks that already occupy the
-> > correct number of drives will not be touched.
-> 
-> That is what I was looking to do, I must have missed the stripes
-> filter. I think I can figure out a script that is able to spread the
-> data enough.
-> 
-> But here is a question. At what point does the fs stop striping onto a
-> disk? Does it stop at 1MB unallocated and if so does that cause issues
-> in practice if the need arises to allocate metadata chunks due to
-> raid1c3?
+For example, for the following operations:
 
-Allocators come in two groups:  those that fill the emptiest disks first
-(raid1*, single, dup) and those that fill all disks equally (raid0,
-raid5, raid6, raid10).  raid1c3 metadata has a 3-disk minimum, so it
-will allocate all its space on the 3 largest disks (or most free space
-if the array is unbalanced) and normally runs out of space when the 3rd
-largest disk in the array fills up.  raid5 data has a 2-disk minimum,
-but will try to fill all drives equally, and normally runs out of space
-when the 2nd largest disk in the array fills up.
+ # xfs_io -f -c "pwrite 0 2k" -c "falloc 4k 4k" $file
 
-raid5 fills up devid 3 first, then 2, then 1 and 4.  raid1c3 fills up
-devid 1, 4, and 2 first, then 3.  When raid5 fills up devid 2, raid1c3 is
-out of space, so you will have effectively 2TB unusable--there will not be
-enough metadata space to fill the last 2 TB on devid 1 and 4.  You will
-also have additional complications due to being out of metadata space
-without also being out of data space that can be hard to recover from.
+The first "pwrite 0 2k" dirtied the first sector, while inode size is
+updated to 2k.
+At this point, if the first sector is written back, it will be inlined.
 
-You can fix that in a few different ways:
+Then we enter "falloc 4k 4k" which will:
+a) call btrfs_cont_expand() to insert holes
+b) do the mainline to insert preallocated extents
+c) call btrfs_fallocate_update_isize() to enlarge the isize
 
-	- convert metadata to raid1 (2 disk minimum, 1 failure tolerated,
-	same as raid5, works with the 2 largest disks you have).
+Until c), the isize is still 2K, and during that window, if the first
+sector is written back due to whatever reasons (from memory pressure to
+fadvice to writeback the pages), since the isize is still 2K, we will
+write the first sector as inlined.
 
-	- resize the 2 largest disks to be equal in size to the 3rd
-	largest (will reduce filesystem capacity by 2 TB).  This ensures
-	the 3rd largest disk will fill up at the same time as the two
-	larger ones, so raid1c3 metadata can always be allocated until
-	the filesystem is completely full.
+Then we have a case where we get mixed inline and regular extents.
 
-	- replace a smaller disk with one matching the largest 2 disk
-	sizes.	This is another way to make the top 3 disks the same
-	size to satisfy the raid1c3 requirement.
+Fix the problem by introducing a new runtime inode flag,
+BTRFS_INODE_NOINLINE, to temporarily disable inline extent creation
+until the isize get enlarged.
 
-	- mount -o metadata_ratio=20 (preallocates a lot of metadata
-	space, equal in size to 5% of the data when normally <3% are
-	needed).  Remember to never balance metadata or you'll lose
-	this preallocation.  This enables maximum space usage and
-	3-disk metadata redundancy, but it has a risk of failure
-	if the metadata ratio turns out to be too low.
+So that we don't need to disable inline extent creation completely for
+subpage.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
+
+I'm not sure if this is the best solution, as the original race window
+for regular sector has existed for a long long time.
+
+I have also tried other solutions like switching the timing of
+btrfs_cont_expand() and btrfs_wait_ordered_range(), to make
+btrfs_wait_ordered_range() happens before btrfs_cont_expand().
+
+So that we will writeback the first sector for subpage as inline, then
+btrfs_cont_expand() will re-dirty the first sector.
+
+This would solve the problem for subpage, but not the race window.
+
+Another idea is to enlarge inode size first, but that would greatly
+change the error path, may cause new regressions.
+
+I'm all ears for advice on this problem.
+---
+ fs/btrfs/ctree.h         | 10 ++++++++++
+ fs/btrfs/delayed-inode.c |  3 ++-
+ fs/btrfs/file.c          | 19 +++++++++++++++++++
+ fs/btrfs/inode.c         | 21 ++++-----------------
+ fs/btrfs/reflink.c       | 14 ++++++++++++--
+ fs/btrfs/root-tree.c     |  3 ++-
+ fs/btrfs/tree-log.c      |  3 ++-
+ 7 files changed, 51 insertions(+), 22 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 7bb4212b90d3..7c74d57ad8fc 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1488,6 +1488,16 @@ do {                                                                   \
+ #define BTRFS_INODE_DIRSYNC		(1 << 10)
+ #define BTRFS_INODE_COMPRESS		(1 << 11)
+ 
++/*
++ * Runtime bit to temporary disable inline extent creation.
++ * To prevent the first sector get written back as inline before the isize
++ * get enlarged.
++ *
++ * This flag is for runtime only, won't reach disk, thus is not included
++ * in BTRFS_INODE_FLAG_MASK.
++ */
++#define BTRFS_INODE_NOINLINE		(1 << 30)
++
+ #define BTRFS_INODE_ROOT_ITEM_INIT	(1 << 31)
+ 
+ #define BTRFS_INODE_FLAG_MASK						\
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 1a88f6214ebc..64d931da083d 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1717,7 +1717,8 @@ static void fill_stack_inode_item(struct btrfs_trans_handle *trans,
+ 				       inode_peek_iversion(inode));
+ 	btrfs_set_stack_inode_transid(inode_item, trans->transid);
+ 	btrfs_set_stack_inode_rdev(inode_item, inode->i_rdev);
+-	btrfs_set_stack_inode_flags(inode_item, BTRFS_I(inode)->flags);
++	btrfs_set_stack_inode_flags(inode_item,
++			BTRFS_I(inode)->flags & BTRFS_INODE_FLAG_MASK);
+ 	btrfs_set_stack_inode_block_group(inode_item, 0);
+ 
+ 	btrfs_set_stack_timespec_sec(&inode_item->atime,
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 70a36852b680..a3559ce93780 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3357,6 +3357,24 @@ static long btrfs_fallocate(struct file *file, int mode,
+ 			goto out;
+ 	}
+ 
++	/*
++	 * Disable inline extent creation until we enlarged the inode size.
++	 *
++	 * Since the inode size is only increased after we allocated all
++	 * extents, there are several cases to writeback the first sector,
++	 * which can be inlined, leaving inline extent mixed with regular
++	 * extents:
++	 *
++	 * - btrfs_wait_ordered_range() call for subpage case
++	 *   The writeback happens for the full page, thus can writeback
++	 *   the first sector of an inode.
++	 *
++	 * - Memory pressure
++	 *
++	 * So here we temporarily disable inline extent creation for the inode.
++	 */
++	BTRFS_I(inode)->flags |= BTRFS_INODE_NOINLINE;
++
+ 	/*
+ 	 * TODO: Move these two operations after we have checked
+ 	 * accurate reserved space, or fallocate can still fail but
+@@ -3501,6 +3519,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+ 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, alloc_start, locked_end,
+ 			     &cached_state);
+ out:
++	BTRFS_I(inode)->flags &= ~BTRFS_INODE_NOINLINE;
+ 	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
+ 	/* Let go of our reservation. */
+ 	if (ret != 0 && !(mode & FALLOC_FL_ZERO_RANGE))
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 4fc6e6766234..59972cb2efce 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -666,11 +666,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+ 		}
+ 	}
+ cont:
+-	/*
+-	 * Check cow_file_range() for why we don't even try to create
+-	 * inline extent for subpage case.
+-	 */
+-	if (start == 0 && fs_info->sectorsize == PAGE_SIZE) {
++	if (start == 0 && !(BTRFS_I(inode)->flags & BTRFS_INODE_NOINLINE)) {
+ 		/* lets try to make an inline extent */
+ 		if (ret || total_in < actual_end) {
+ 			/* we didn't compress the entire range, try
+@@ -1068,17 +1064,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 
+ 	inode_should_defrag(inode, start, end, num_bytes, SZ_64K);
+ 
+-	/*
+-	 * Due to the page size limit, for subpage we can only trigger the
+-	 * writeback for the dirty sectors of page, that means data writeback
+-	 * is doing more writeback than what we want.
+-	 *
+-	 * This is especially unexpected for some call sites like fallocate,
+-	 * where we only increase isize after everything is done.
+-	 * This means we can trigger inline extent even we didn't want.
+-	 * So here we skip inline extent creation completely.
+-	 */
+-	if (start == 0 && fs_info->sectorsize == PAGE_SIZE) {
++	if (start == 0 && !(inode->flags & BTRFS_INODE_NOINLINE)) {
+ 		/* lets try to make an inline extent */
+ 		ret = cow_file_range_inline(inode, start, end, 0,
+ 					    BTRFS_COMPRESS_NONE, NULL);
+@@ -3789,7 +3775,8 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
+ 	btrfs_set_token_inode_sequence(&token, item, inode_peek_iversion(inode));
+ 	btrfs_set_token_inode_transid(&token, item, trans->transid);
+ 	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
+-	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags);
++	btrfs_set_token_inode_flags(&token, item,
++			BTRFS_I(inode)->flags & BTRFS_INODE_FLAG_MASK);
+ 	btrfs_set_token_inode_block_group(&token, item, 0);
+ }
+ 
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index e5680c03ead4..48f8bdd185de 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -701,12 +701,19 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
+ 	if (off + len == src->i_size)
+ 		len = ALIGN(src->i_size, bs) - off;
+ 
++	/*
++	 * Temporarily disable inline extent creation, check btrfs_fallocate()
++	 * for details
++	 */
++	BTRFS_I(inode)->flags |= BTRFS_INODE_NOINLINE;
+ 	if (destoff > inode->i_size) {
+ 		const u64 wb_start = ALIGN_DOWN(inode->i_size, bs);
+ 
+ 		ret = btrfs_cont_expand(BTRFS_I(inode), inode->i_size, destoff);
+-		if (ret)
++		if (ret) {
++			BTRFS_I(inode)->flags &= ~BTRFS_INODE_NOINLINE;
+ 			return ret;
++		}
+ 		/*
+ 		 * We may have truncated the last block if the inode's size is
+ 		 * not sector size aligned, so we need to wait for writeback to
+@@ -718,8 +725,10 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
+ 		 */
+ 		ret = btrfs_wait_ordered_range(inode, wb_start,
+ 					       destoff - wb_start);
+-		if (ret)
++		if (ret) {
++			BTRFS_I(inode)->flags &= ~BTRFS_INODE_NOINLINE;
+ 			return ret;
++		}
+ 	}
+ 
+ 	/*
+@@ -745,6 +754,7 @@ static noinline int btrfs_clone_files(struct file *file, struct file *file_src,
+ 				round_down(destoff, PAGE_SIZE),
+ 				round_up(destoff + len, PAGE_SIZE) - 1);
+ 
++	BTRFS_I(inode)->flags &= ~BTRFS_INODE_NOINLINE;
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index 702dc5441f03..5ce3a1dfaf3f 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -447,7 +447,8 @@ void btrfs_check_and_init_root_item(struct btrfs_root_item *root_item)
+ 
+ 	if (!(inode_flags & BTRFS_INODE_ROOT_ITEM_INIT)) {
+ 		inode_flags |= BTRFS_INODE_ROOT_ITEM_INIT;
+-		btrfs_set_stack_inode_flags(&root_item->inode, inode_flags);
++		btrfs_set_stack_inode_flags(&root_item->inode,
++				inode_flags & BTRFS_INODE_FLAG_MASK);
+ 		btrfs_set_root_flags(root_item, 0);
+ 		btrfs_set_root_limit(root_item, 0);
+ 	}
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index c1353b84ae54..f7e6abfc89c0 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3943,7 +3943,8 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
+ 	btrfs_set_token_inode_sequence(&token, item, inode_peek_iversion(inode));
+ 	btrfs_set_token_inode_transid(&token, item, trans->transid);
+ 	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
+-	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags);
++	btrfs_set_token_inode_flags(&token, item,
++			BTRFS_I(inode)->flags & BTRFS_INODE_FLAG_MASK);
+ 	btrfs_set_token_inode_block_group(&token, item, 0);
+ }
+ 
+-- 
+2.31.1
+
