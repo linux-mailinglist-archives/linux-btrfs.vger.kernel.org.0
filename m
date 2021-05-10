@@ -2,309 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53770377E57
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 May 2021 10:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A69377F7D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 May 2021 11:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhEJIjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 May 2021 04:39:24 -0400
-Received: from mout.gmx.net ([212.227.15.18]:35173 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230029AbhEJIjX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 May 2021 04:39:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620635894;
-        bh=j+hKTaUX8gxt25R8R/Uqnb3ocyVLSYKH3QydA76Rouo=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=kp9SQBjX4n3xdCtJjto53mtZ92oIXZUVgsQNnWnEv2bNzqUhgjO69DCc+1vrLdcSJ
-         9XOuL4CEkJgrAWCOlt3odphPrnJvrIN3FuAcJRUPpfhdkZFCsTZykghJWZvUOkGEs6
-         21tQ7NzbaAc7PGd6wklnu6VCMtkErS0/DtbPGs3Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWRRZ-1m0XLK1Gsl-00Xr1H; Mon, 10
- May 2021 10:38:14 +0200
-To:     Ritesh Harjani <riteshh@linux.ibm.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20210427230349.369603-1-wqu@suse.com>
- <20210427230349.369603-42-wqu@suse.com>
- <46a8cbb7-4c3a-024d-4ee3-cbeb4068e92e@suse.com>
- <20210507045735.jjtc76whburjmnvt@riteshh-domain>
- <5d406b40-23d9-8542-792a-2cd6a7d95afe@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
- subpage helper
-Message-ID: <e7e6ebdd-a220-e4ec-64e4-d031d7a9b181@gmx.com>
-Date:   Mon, 10 May 2021 16:38:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <5d406b40-23d9-8542-792a-2cd6a7d95afe@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S230238AbhEJJjG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 May 2021 05:39:06 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:16434 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhEJJjF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 May 2021 05:39:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1620639479; x=1652175479;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=cTL6UPDmuRGzkrR3saIotYZe+Zu+WCmqYcnqillezao=;
+  b=Fekg4ML+XiL/U/BqUr32O1ECbMu43SZUtTX2/SeJHZlIiNZqCxoXIr7P
+   JiqwdIJoU0qNxPK8Klwb8GmGbw6yCwf4QiIICOl7rwkvExTTbvPuTeX/N
+   dmChXGE1PcJdXLXLqczXx8BW54oBvHKkKiYX9uB6IbZ47DrIr1bX7OpV/
+   f/cagcRsBD4MXwSWgaGhAi+NOyynW7gv1EOie0INV3xe6WESqyDf6bPTd
+   oRiYVfKMZWiHLGXiNB9nhiDENxmqfdq+mAOXB7YJemeoP84TET1+VIeth
+   +2el23GnGX0VaAuVtexDJXiU1JqJsNXLX8oKFeQG4viGkCpNDfZEFUXvb
+   A==;
+IronPort-SDR: q2sC2mymTW5KRFMtbmwYS0BDSqGwxQEnAnja+iXUNXGSpb7lHXH1TCk293awHuLX6JzOcoT9qZ
+ piM72N1oWJ5/BCOxoUTTqeHugqqXXl/wmap0O/bQqnHyZpi40FYJpUneVNQZ3KkuUtR/lAO6lu
+ pIRWbL5I2BzkpwvfiCRj7zuDqlnvmW/LJQeNZx/kY2Xc+gr62pRQ8XKCRpRGhsLw5Dx2JqtSC8
+ sj6RpMHRZeZr7NPcObzfkO1XDi9FHZp28oPnWHdhc2cI+xuIaKly8xO880oROKXvU/ZaCQxNti
+ yUA=
+X-IronPort-AV: E=Sophos;i="5.82,287,1613404800"; 
+   d="scan'208";a="167620423"
+Received: from mail-dm6nam10lp2107.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.107])
+  by ob1.hgst.iphmx.com with ESMTP; 10 May 2021 17:37:57 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n3l2RtYJZTjZBEz0DTWC/MUNxuNZREtZ9P4ILnrhWQci+w+h24hsTF0JPqQQWMIPvEHXYcQ5cTwLtFKK6Jg8RRl81sO33AJmFAaR6+7wPQpOxuklRfmZAyJMd2hyz5Jy1CcgL1SdYvvbT6d8ziHedpWdOFWyjpAzzQlRAgutAXXcX0y0ZhyKpC5v5jVa3c3H8ZOhfjlW25aEMTzvK7WDCzCZ0d0zXX3p002O3wYtXgEKHMRD2AxBqSdYmgr1xAMDA9FiOTvs3Gg+NjUHP36GOBmWZCeyervTMZ3wF790M26+RzEpUjKoF8AvDKFHMGhfOutz3Gz8A+T83qVWDH2/fQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UfJkUumHVkXNrtlYH6ONdXjw8/Yy8o+gXFdgjS/h5JI=;
+ b=SyLv40mHijXyu1hq0jWRDRH46t8sBaIz8QncjBMheOQCrwGkXJu75ccwDhuDElYV5owKvrbC0FJFmS7qhHbTKjiClfaoMoHmtO/pPgqIF6zH4Q2V6WaB6yVNV88O/l8VPjE7NQi3K2qmTBBldpuVU3fECM9mU6VuFgB85DPQc/7EzCeKZ81bzpAU6YzYeG2NXS4XoqkhzGOxvAHErbo5HdViCsdUBC/zHBUCdfZb2oo0+c/K9r4zyX3E0WSv9G7lRcet4UippN4XESTkfvPo8G5JTOGHfteDBk/WFcdazO9AlyAYWU29u8JJSX1lHlbTNWsOvg0F1P11Yxp9AqFybQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UfJkUumHVkXNrtlYH6ONdXjw8/Yy8o+gXFdgjS/h5JI=;
+ b=Eh7gAoYSIFNZwG2jbif6MW9T59QO7gdQzmAv9rIhpD52KXh5HbFuwX9/nJ3P6FqpOH3OIqm/nexaRCWIAS6bg7bDOECUytUeW4p+FFCDwleB3I4TWB+SjGiFMRV2ByWDgV6VaDDBUnPZrueVtLob8bbJFLTkrhOMn5N/koqUz0Q=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7287.namprd04.prod.outlook.com (2603:10b6:510:1c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Mon, 10 May
+ 2021 09:37:58 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4108.031; Mon, 10 May 2021
+ 09:37:58 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        "clm@fb.com" <clm@fb.com>
+CC:     "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: Assign boolean values to a bool variable
+Thread-Topic: [PATCH] btrfs: Assign boolean values to a bool variable
+Thread-Index: AQHXEJjoiqW64Rl9Sk63MCR7+NNgEw==
+Date:   Mon, 10 May 2021 09:37:58 +0000
+Message-ID: <PH0PR04MB7416EC8C9020EAE3E074E21E9B549@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <1614764728-14857-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:152f:cc01:6045:d432:b6c2:34a5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9f23fa72-7e7f-4633-306a-08d913974bbd
+x-ms-traffictypediagnostic: PH0PR04MB7287:
+x-microsoft-antispam-prvs: <PH0PR04MB7287BE9AC98301AB9ECEA37F9B549@PH0PR04MB7287.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Qct5EveYch/qv7Ra4s6nl2KKNgZK5NmhOQsAGF8bwZvHX0KYz+rRhjRAAH4BF58cULeUw6ph2gE3kxcxQyQx4/Pq1+28hga5KoYU493A3ol7TxNKffgunjyr3J+VO8OCbDzseGcgm07Vlm9S6pl+lmOuQIkL61CWOa6yYWMghXcC8Vwcd+e63mVZEkJM4HFbTrcEH59SgJU6XJjXg9UcXRfCBKHg62FW6kKcQYHqkwhDkawE7K68yoo5onXE6G1kV8zHHZ/oxff4ORYxU09RHYW5JJ5GS0cG0Hvh52Sb2Lnf9Odu1icRAWyLbs6DPv0zJcxS3QTDCgghMTwwvNHs/7jY6C6xd77Ab5WbjrpNS8KnRviaslIa8TH3bjAi1pbVYQbd6EgAPSoM/FvKam2+5j91KsgCIn3YoNnHoeSxrQuflzscQnMifXe2U8ns4Y3rq8UohNOJutiCisr7GPoifoN0EcIy4EQ0oU/BhqEtSD8tU00NKdWD0wfMQXKOxf9BAscDHm8ru1r8YeKSrHLgzr3OL+1EmcDTIKv4+Mw7lxBv5wyKK15tWTO3KjhulMfrCUhYWQQ+W+5iiwyrTAT9li230VFCdwKy8sQfsBqi6Sg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(366004)(4326008)(122000001)(7696005)(55016002)(9686003)(86362001)(110136005)(54906003)(71200400001)(2906002)(316002)(478600001)(6506007)(5660300002)(83380400001)(8936002)(38100700002)(76116006)(66946007)(4744005)(91956017)(64756008)(66476007)(66556008)(53546011)(33656002)(186003)(52536014)(8676002)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?U21GPA42wyB9fN+EdxebNN5UkOrBgJn2ItgEuLodsM42r3pnPD2lR3JsiPgZ?=
+ =?us-ascii?Q?Rlb0qlbUs8P7k3u+oIVdcPOw/Z93d/msSGhuELFOtOo9YADLAWQw6/vBiNh4?=
+ =?us-ascii?Q?jXqN2BgwAZSfzxroBWhQyf2d/RYsYxBQgUmTgfr/oc9i0crDbA00TlXuIjDM?=
+ =?us-ascii?Q?n+19P/dSzy4BiYeEOrmMfjXC4UpP+ESnXJizIvlKLcWegq+LS5ZrQwToMYt5?=
+ =?us-ascii?Q?l5F/x9IyNsgytIrWKJ5J/rCTmQ63X3Y/7+dX4fyKkd3aGuYDBOkzOXg5VLLf?=
+ =?us-ascii?Q?sT75MB5P+ZKNKKx7xz1KWil0b9UiTwSAOYDatqlsq/ynTXLkTLlwXVfvRCLd?=
+ =?us-ascii?Q?Vv0n+xfwlZDUbWAWRDG13x5x+0sh6+7wk0ysXgLYSJIVC3MWe7GDMNsURrkl?=
+ =?us-ascii?Q?EExVC8kYy24KtOQ/0s69H1USMl7++oRcPQPrTeH4sOXTOitQeFRCqyOyflmW?=
+ =?us-ascii?Q?XLH/rveeRAhasBAXdignE/DfGNg9+r3D8+gDiW+Gopa1dq6W5OcnVZi+FoA4?=
+ =?us-ascii?Q?iofGep9Q/V/Ff4JmAs9CfhU8g0YILK1EyDhYUT2k7Mkxjlbr/EupcqbkS6b6?=
+ =?us-ascii?Q?vQuPBMmmJfSox3zetjWT1PKY+wHb9wbL7kj0elzNVzr2yFirqAs3vYEl6PC2?=
+ =?us-ascii?Q?bpoC/kVIq02/+m0Kn+sopvs1XFrywJ5KPWIrUMQBuBKMWEIPcLt+5fm+xWia?=
+ =?us-ascii?Q?8sHtP9OhgHp5RiPEVtt4wwSef9YaA8ncwOQBf4VTW7S1A9nbegodYbSM6qnZ?=
+ =?us-ascii?Q?Yx6fG1i7uXijFhOHh1iACobnABAAB3L1sbYx0Lql9lUFQxQsFH2Pt9cwd4k1?=
+ =?us-ascii?Q?8cYW4P6eU1FxIcz/1dtrBWhyLdDn6FddQ7V0kYTqLa3hUopZBENSCOuqT04z?=
+ =?us-ascii?Q?p+h0bEp8VNwVron/I4wkzdMfrft1/AxcHDchlOTStIFqKWuQUyXJf2OU4u5h?=
+ =?us-ascii?Q?959a5R6ovpd96HS2JLWo9k13V3pVbBwhDlXVQfqPgEpoPy4elGzSj+nCuXvb?=
+ =?us-ascii?Q?d7TrkxkU8msA0KLTSWZlSukOOw8DCHx2AFLe5wqdbHQq9iwDO6xK356AC7Js?=
+ =?us-ascii?Q?EH+C6zzpfM9JET6DU0SNR6fyhCxAVCn4Lx9CXvqn1NvqbztGhByiCAnj5w5f?=
+ =?us-ascii?Q?BtlCdU3bmo0RtWJMt2j926tYHnJTZyDUXf2f2cOfiClp0M2E6B+OFzkleDYt?=
+ =?us-ascii?Q?hJTNbqHuHjsr/t29XzGp2wclr+jRW5J+GgnnBSoEBWAOUBgK2wshVa5AheTm?=
+ =?us-ascii?Q?vL111ZThxCOBIMmdmy7DxGTxwujsqJgtub/T7LslsQANvfv0/e+xQxKKFTFL?=
+ =?us-ascii?Q?TrpCstNwoh0/ijghQ46Gcqks905W/TQZWSr476Hn0K+QZhkEo6w3ak/EBZK9?=
+ =?us-ascii?Q?ropO2EgLiviy1fQNjHwGJE4ThFoHYlZZKaqy29AMj1y+CVVsrw=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tS3xvb41RzHIl+uMoePYLPW8GKh4qxP6HwB+UX5F2de4+fFeh8l
- 6iDZVRFCZYfFxSwiGNCowvMtfgvo6FALYO/cMCXmCIl5gCZkuVzJLFGBEXjcjmILqdaWyUG
- IXg1DRacTkcfcpxfOlS+EQutPuWsmRHoijgR1ixUwUczZ0Np/GB37gEaM62sv8u3B8/Q+FS
- 9F8RiYCBs14S97LvoL2Sg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BO9pt/deods=:PZAvkk2yA5EOkNDwR7Qd5c
- rnH1LIH3CauiziZOvNeHB6DsaJPEJ/pHt4F+JWgNwNZYiLZSU8jv+lilQuIXXubDJI50R5fin
- SL/xm8y8aCWQcHBA47zA+jccj4jdZnNgh3ulGEungjYDZfiuqy4wTnahP+lrMuxsOJWth1pay
- oFFTO0RLyUdymRYv86NnQ33snP4BcTBUsk+3cZOPwUZXiv0aSxbJ6b+804dQAKoVwMLOsgi2O
- 9T7pK7MAuD7rIwWqfxKzBRGh/bxH4QXTf2ws1DYumrErow8kA988TUoJoqC3x2qgEfMmsA/Z1
- wRgknXYIeTWckx9U9kNfA/dgKa4W6puSkAALSqVJZtDJVYoHY7u1sXFXZQsKPWmdcrfydXL1Q
- XL18OwEMKQNXx/8yTt1JjB/HX2Uo+4c0yhAiddXut+PZCTEKKb+UsJeU4KgUOscL0zvxntX32
- aDBHMq4LccNBm/c5oEcoFlJs3v20IEEk/cG/cXIdQGNQGG5Qc0apKNXg+nxCXWObb/fqTryLF
- XVtAAb+Bn5rWhXf7eF2pQcby6fOQW7I+iVGts808v0ohgxdtFTqPwkQvClhKAIEkUEA+iCFOa
- V48DaskCaaLAunHeeIxN7CqJwDccIH+2a57PNpvOdNbDj9y3PBPfkeydw8+8GqR04PhKdb6PQ
- PSglH5kHJvbdnjrPyz9bPrGmwhEyGg/vMPI03nBUz7sreuKC7PXqWE98VR5z9sYYNfcfLylBP
- 49L1S9Y+k3EFRUfnqQvTD3NHuCJ9qtT8Vf1CbJQLtW06qiCSuc5xkRpPf/aa93PuT2DqFDza1
- Lr4w981UnviSjo1WwYkCVhdqFzbdqemDsVYZi8D6L3+TC/KPGQOA1yqMhI4G1g0gi7F6hylMw
- gmTo6ZvGkyzHpWOG9zn53rCRHAY9ogs/4TQoyUR2uOrUfmB8lH/4kJPAwYcFmIpkqWy9sUQKt
- Fzkk6VuQ9PMmhvs0+w+Eo3/+FKQrHu9rLwJphL1S1s5rcqSLw0n44zcj9yniwwQth6Dkjc1OG
- HbgOPOJDMR0rt727jdU86Ryry0bfAbIaCczo3pxRC4ev2l0ez6mtmRZncr4+uWNObG6q43hTQ
- HW6LYaf7dzN3TiK8pkc34saNLiaAmVvCH/JiR08lHlmrPK8cE+fOYNaLdvT7oBVXXWgWoabs6
- LWVZ7Zk3VD9YRKlx6zzcObH86amCTv8F/J+RFbp9FA6t5+LkLdExvy3GuGwmwKLePCYMIfTJr
- gwzdwJNvs+VMiC81S
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f23fa72-7e7f-4633-306a-08d913974bbd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2021 09:37:58.0130
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YXdHTCR/xPxekebmgHvK8rpROuZboNI1YTFNq6C1n6hirUBzqFX7LprU08RNNl33VtnlVzAZDGOgVK9dtesVTBHI++onlldl5f0HQTrBQJI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7287
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Ritesh,
-
-I guess no error report so far is a good thing?
-
-Just to report what my result is, I ran my latest github branch for the
-full weekend, over 50 hours, and around 20 runs of full generic/auto
-without defrag groups.
-
-And I see no crash at all.
-
-But there is a special note, there is a new patch, introduced just
-before the weekend (Fri May 7 09:31:43 2021 +0800), titled "btrfs: fix a
-possible use-after-free race in metadata read path", is a new fix for a
-bug I reproduced once locally.
-
-The bug should only happen when read is slow and only happens for
-metadata read path.
-
-The details can be found in the commit message, although it's rare to
-hit, I have hit such problem around 3 times in total.
-
-Hopes you didn't hit any crash during your test.
-
-Thanks,
-Qu
-
-
-On 2021/5/7 =E4=B8=8B=E5=8D=881:14, Qu Wenruo wrote:
->
->
-> On 2021/5/7 =E4=B8=8B=E5=8D=8812:57, Ritesh Harjani wrote:
->> On 21/05/07 07:46AM, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/4/28 =E4=B8=8A=E5=8D=887:03, Qu Wenruo wrote:
->>>> [BUG]
->>>> There is a possible use-after-free bug when running generic/095.
->>>>
->>>> =C2=A0=C2=A0 BUG: Unable to handle kernel data access on write at
->>>> 0x6b6b6b6b6b6b725b
->>>> =C2=A0=C2=A0 Faulting instruction address: 0xc000000000283654
->>>> =C2=A0=C2=A0 c000000000283078 do_raw_spin_unlock+0x88/0x230
->>>> =C2=A0=C2=A0 c0000000012b1e14 _raw_spin_unlock_irqrestore+0x44/0x90
->>>> =C2=A0=C2=A0 c000000000a918dc btrfs_subpage_clear_writeback+0xac/0xe0
->>>> =C2=A0=C2=A0 c0000000009e0458 end_bio_extent_writepage+0x158/0x270
->>>> =C2=A0=C2=A0 c000000000b6fd14 bio_endio+0x254/0x270
->>>> =C2=A0=C2=A0 c0000000009fc0f0 btrfs_end_bio+0x1a0/0x200
->>>> =C2=A0=C2=A0 c000000000b6fd14 bio_endio+0x254/0x270
->>>> =C2=A0=C2=A0 c000000000b781fc blk_update_request+0x46c/0x670
->>>> =C2=A0=C2=A0 c000000000b8b394 blk_mq_end_request+0x34/0x1d0
->>>> =C2=A0=C2=A0 c000000000d82d1c lo_complete_rq+0x11c/0x140
->>>> =C2=A0=C2=A0 c000000000b880a4 blk_complete_reqs+0x84/0xb0
->>>> =C2=A0=C2=A0 c0000000012b2ca4 __do_softirq+0x334/0x680
->>>> =C2=A0=C2=A0 c0000000001dd878 irq_exit+0x148/0x1d0
->>>> =C2=A0=C2=A0 c000000000016f4c do_IRQ+0x20c/0x240
->>>> =C2=A0=C2=A0 c000000000009240 hardware_interrupt_common_virt+0x1b0/0x=
-1c0
->>>>
->>>> [CAUSE]
->>>> There is very small race window like the following in generic/095.
->>>>
->>>> =C2=A0=C2=A0=C2=A0=C2=A0Thread 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Thread 2
->>>> --------------------------------+------------------------------------
->>>> =C2=A0=C2=A0=C2=A0 end_bio_extent_writepage()=C2=A0=C2=A0=C2=A0 | btr=
-fs_releasepage()
->>>> =C2=A0=C2=A0=C2=A0 |- spin_lock_irqsave()=C2=A0=C2=A0=C2=A0 | |
->>>> =C2=A0=C2=A0=C2=A0 |- end_page_writeback()=C2=A0=C2=A0=C2=A0 | |
->>>> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- if (PageWriteback() ||...)
->>>> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- clear_page_extent_mapped()
->>>> =C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 |- kfree(su=
-bpage);
->>>> =C2=A0=C2=A0=C2=A0 |- spin_unlock_irqrestore().
->>>>
->>>> The race can also happen between writeback and btrfs_invalidatepage()=
-,
->>>> although that would be much harder as btrfs_invalidatepage() has much
->>>> more work to do before the clear_page_extent_mapped() call.
->>>>
->>>> [FIX]
->>>> For btrfs_subpage_clear_writeback(), we don't really need to put
->>>> end_page_writepage() call into the spinlock critical section.
->>>>
->>>> By just checking the bitmap in the critical section and call
->>>> end_page_writeback() outside of the critical section, we can avoid su=
-ch
->>>> use-after-free bug.
->>>>
->>>> Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
->>>> Tested-by: Ritesh Harjani <riteshh@linux.ibm.com>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>> =C2=A0=C2=A0 fs/btrfs/subpage.c | 5 ++++-
->>>> =C2=A0=C2=A0 1 file changed, 4 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
->>>> index 696485ab68a2..c5abf9745c10 100644
->>>> --- a/fs/btrfs/subpage.c
->>>> +++ b/fs/btrfs/subpage.c
->>>
->>> Hi Ritesh,
->>>
->>> Unfortunately I have to bother you again for testing the latest subpag=
-e
->>> branch.
->>
->> Yes, this was anyway on my mind to test the latest subpage branch.
->> Sure, I will do the testing.
->>
->>>
->>> This particular fix seems to be incomplete, as I have hit several
->>> BUG_ON()s
->>> related to end_page_writeback() called on page without writeback flag.
->>
->> ok.
->>
->>>
->>>> @@ -420,13 +420,16 @@ void btrfs_subpage_clear_writeback(const
->>>> struct btrfs_fs_info *fs_info,
->>>> =C2=A0=C2=A0 {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_subpage *subpage =
-=3D (struct btrfs_subpage
->>>> *)page->private;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u16 tmp =3D btrfs_subpage_calc_b=
-itmap(fs_info, page, start, len);
->>>> +=C2=A0=C2=A0=C2=A0 bool finished =3D false;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long flags;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock_irqsave(&subpage->lock=
-, flags);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 subpage->writeback_bitmap &=3D ~=
-tmp;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (subpage->writeback_bitmap =
-=3D=3D 0)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 end_page_writeback(page);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 finished =3D true;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock_irqrestore(&subpage-=
->lock, flags);
->>>> +=C2=A0=C2=A0=C2=A0 if (finished)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 end_page_writeback(page);
->>>
->>> The race can happen like this:
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 T1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 T2
->>> ----------------------------------+----------------------------------
->>> __extent_writepage()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> |<< The 1st sector of the page >> |
->>> |- writepage_delalloc()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 |
->>> |=C2=A0 Now the subpage range has=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> |=C2=A0 Writeback flag=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> |- __extent_writepage_io()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> |=C2=A0 |- submit_extent_page()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 | << endio of the 1st sector >>
->>> |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | end_bio_extent_write=
-page()
->>> |<< The 2nd sector of the page >> | |- spin_lock_irqsave()
->>> |- writepage_delalloc()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 | |- finished =3D true
->>> |=C2=A0 |- spin_lock()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- spin_unlock_irqstore=
-()
->>> |=C2=A0 |- set_page_writeback();=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
- |
->>> |=C2=A0 |- spin_unlock()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- end_page_writeback()
->>> |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | << Now page has no w=
-riteback >>
->>> |- __extent_writepagE_io()=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
->>> =C2=A0=C2=A0=C2=A0 |- submit_extent_page()=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 | << endio of the 2nd sector >>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | end_bio_=
-extent_writepage()
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- finis=
-hed =3D true;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | |- end_p=
-age_writeback()
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !!! =
-BUG_ON() triggered !!!
->>>
->>> The reproducibility is pretty low, so far I have only hit 3 times such
->>> BUG_ON().
->>> No special test case number for it, all 3 BUG_ON() happens for differe=
-nt
->>> test cases.
->>>
->>> Thus newer fix will still keep the end_page_writeback() inside the
->>> spinlock,
->>> but btrfs_releasepage() and btrfs_invalidatepage() will "wait" for the
->>> spinlock to be released before detaching the subpage structure.
->>>
->>> Currently the fix runs fine, but extra test will always help.
->>
->> Sorry, just to be clear, do you mean the latest subpage branch still
->> has some issues where we can hit the BUG_ON() or have you identifed
->> and added
->> some patches to fix it?
->
-> Above race is how the old fix (with end_page_writeback() called outside
-> of the spinlock) could lead to a BUG_ON().
->
-> I believe the new fix, with the same title, can fix the problem.
->
->>
->> Let me clone below branch and re-test xfstests on Power.
->> https://github.com/adam900710/linux/commits/subpage
->>
->> Also if you would like me to test any extra mount option or mkfs
->> option testing
->> too, then pls do let me know. For now I will be testing with default
->> options.
->
-> Thanks, let's just focus on the default mount option first.
->
-> Thanks for your great help!
-> Qu
->
->>
->> -ritesh
->>
+On 04/03/2021 02:51, Jiapeng Chong wrote:=0A=
+> Fix the following coccicheck warnings:=0A=
+> =0A=
+> ./fs/btrfs/volumes.c:1462:10-11: WARNING: return of 0/1 in function=0A=
+> 'dev_extent_hole_check_zoned' with return type bool.=0A=
+> =0A=
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>=0A=
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>=0A=
+> ---=0A=
+>  fs/btrfs/volumes.c | 4 ++--=0A=
+>  1 file changed, 2 insertions(+), 2 deletions(-)=0A=
+> =0A=
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c=0A=
+> index bc3b33e..995920f 100644=0A=
+> --- a/fs/btrfs/volumes.c=0A=
+> +++ b/fs/btrfs/volumes.c=0A=
+> @@ -1458,8 +1458,8 @@ static bool dev_extent_hole_check_zoned(struct btrf=
+s_device *device,=0A=
+>  		/* Given hole range was invalid (outside of device) */=0A=
+>  		if (ret =3D=3D -ERANGE) {=0A=
+>  			*hole_start +=3D *hole_size;=0A=
+> -			*hole_size =3D 0;=0A=
+> -			return 1;=0A=
+> +			*hole_size =3D false;=0A=
+=0A=
+=0A=
+Erm, hole_size is u64 and not bool=0A=
