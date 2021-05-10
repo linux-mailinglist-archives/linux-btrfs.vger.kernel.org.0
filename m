@@ -2,69 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821EB378F9F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 May 2021 15:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E7C3791B6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 May 2021 16:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237505AbhEJNvJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 May 2021 09:51:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51552 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241357AbhEJNor (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 May 2021 09:44:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1CEF1AF33;
-        Mon, 10 May 2021 13:43:31 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 49BE9DB226; Mon, 10 May 2021 15:41:02 +0200 (CEST)
-Date:   Mon, 10 May 2021 15:41:02 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Remove redundant assignment to ret
-Message-ID: <20210510134102.GV7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1620470329-27792-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620470329-27792-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S234121AbhEJPAe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 May 2021 11:00:34 -0400
+Received: from flippiebeckerswealth.xyz ([62.173.147.206]:35074 "EHLO
+        host.flippiebeckerswealth.xyz" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235805AbhEJO6I (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 May 2021 10:58:08 -0400
+Received: from flippiebeckerswealth.xyz (ec2-3-142-218-249.us-east-2.compute.amazonaws.com [3.142.218.249])
+        by host.flippiebeckerswealth.xyz (Postfix) with ESMTPA id 537581E01D0
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 May 2021 17:06:49 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippiebeckerswealth.xyz 537581E01D0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flippiebeckerswealth.xyz; s=default; t=1620655609;
+        bh=Lxx5rGQCX/MQzrwE9epz1Mb5yPYRqDyEupWj6GReobo=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=mO3Rfe9T7eXtiUhvdB1kVtjqTP+34jumay9n7PloxuC53ovB+J+phD9dQKze3ZSQP
+         tNeqlqtUByK+Dv0NuiDX8jabn1BZP8iuUa03a64+xEo3oY4w4ERC3c+nk9US2Dlftz
+         5uBKENXw4uMyoMmpJRnlmBYe9E2Hlh8sjSu1Ikjw=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.flippiebeckerswealth.xyz 537581E01D0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=flippiebeckerswealth.xyz; s=default; t=1620655609;
+        bh=Lxx5rGQCX/MQzrwE9epz1Mb5yPYRqDyEupWj6GReobo=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=mO3Rfe9T7eXtiUhvdB1kVtjqTP+34jumay9n7PloxuC53ovB+J+phD9dQKze3ZSQP
+         tNeqlqtUByK+Dv0NuiDX8jabn1BZP8iuUa03a64+xEo3oY4w4ERC3c+nk9US2Dlftz
+         5uBKENXw4uMyoMmpJRnlmBYe9E2Hlh8sjSu1Ikjw=
+Reply-To: cpavlides@flippiebeckerwealthservices.com
+From:   Chris Pavlides <cpavlides@flippiebeckerswealth.xyz>
+To:     linux-btrfs@vger.kernel.org
+Subject: Personal
+Date:   10 May 2021 14:06:48 +0000
+Message-ID: <20210510140648.BDCBBE0580A44874@flippiebeckerswealth.xyz>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 08, 2021 at 06:38:49PM +0800, Jiapeng Chong wrote:
-> Variable ret is set to zero, but this value is never read as it is
-> overwritten or not used later on, hence it is a redundant assignment
-> and can be removed.
-> 
-> Clean up the following clang-analyzer warning:
-> 
-> fs/btrfs/extent_io.c:5357:4: warning: Value stored to 'ret' is never
-> read [clang-analyzer-deadcode.DeadStores].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  fs/btrfs/extent_io.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 074a78a..cea58be 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -5354,7 +5354,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
->  				goto out_free;
->  			if (ret)
->  				flags |= FIEMAP_EXTENT_SHARED;
-> -			ret = 0;
+Hello there,
 
-This leaves the scope where the value of 'ret' has been used for
-something and it's reset to 0 for clarity. This is a pattern that we use
-and will not change it just to silence clang analyzer.
+I hope this message finds you in good spirits especially during=20
+this challenging time of coronavirus pandemic. I hope you and=20
+your family are well and keeping safe. Anyway, I am Chris=20
+Pavlides, a broker working with Flippiebecker Wealth. I got your=20
+contact (along with few other contacts) through an online=20
+business directory and I thought I should contact you to see if=20
+you are interested in this opportunity. I am contacting you=20
+because one of my high profile clients is interested in investing=20
+abroad and has asked me to look for individuals and companies=20
+with interesting business ideas and projects that he can invest=20
+in. He wants to invest a substantial amount of asset abroad.
+
+Please kindly respond back to this email if you are interested in=20
+this opportunity. Once I receive your response, I will give you=20
+more details and we can plan a strategy that will be beneficial=20
+to all parties.
+
+Best regards
+
+C Pavlides
+Flippiebecker Wealth
