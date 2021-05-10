@@ -2,59 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876943798FE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 May 2021 23:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6657379A0E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 00:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhEJVQQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 May 2021 17:16:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53234 "EHLO mail.kernel.org"
+        id S231128AbhEJW3C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 May 2021 18:29:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230329AbhEJVQP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 May 2021 17:16:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D631A611BF;
-        Mon, 10 May 2021 21:15:09 +0000 (UTC)
+        id S230286AbhEJW3C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 May 2021 18:29:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7ADC61581;
+        Mon, 10 May 2021 22:27:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620681309;
-        bh=3Vj9bVU+GVAGugxZ47r7R2NOdGtWuc2M/1/A3jaXu4o=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KXaSuvSB2ZTzxASPWmwd3qZ+9pOWrTSS3UcUSY3RqUoEajCk0tx49eT+0yolpq/6E
-         Ejgn2Dc0oNddQJGiVOSQFJAmaR11qZtlGRNK/iCSIB0In3GAonBqyZu01DDLP7J4HW
-         eoLdmChAMwMkA4dG/Cowc1iAUsWOq4Dfi+Af6fFFx6kP/fNVtuIF9umITPL78+P3JY
-         JXegGGdvLLXkEUznJuVnm1AmpnxOZPaz9AoheSEtSUcnX4Jx6rr/Vawe6TAiH75geU
-         +/ZjByG6dj+6V7afnBusBoKJCmGJp8AeNb2LsrgLiMQQ/vhxUwutitQElHJZYi3lpn
-         rlRsTj9gp+W7Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C0C1060A27;
-        Mon, 10 May 2021 21:15:09 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 5.13-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1620679798.git.dsterba@suse.com>
-References: <cover.1620679798.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1620679798.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc1-tag
-X-PR-Tracked-Commit-Id: 77364faf21b4105ee5adbb4844fdfb461334d249
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 142b507f911c5a502dbb8f603216cb0ea8a79a48
-Message-Id: <162068130972.21764.17439713318608297507.pr-tracker-bot@kernel.org>
-Date:   Mon, 10 May 2021 21:15:09 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        s=k20201202; t=1620685677;
+        bh=ehJYH3TD8ERjQHzpZ5B4TU4ritKItlOc4gX/puyPiYU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nh89huUIIjieij8wReL/BCFHp+mbPvjMEH2Gjj5Ed44hDHUKaUxYpqhU5hFh8cKeO
+         voauboPxP8elC2E4m1kBwQzrHnOyx+zoTbHIuENHzlVUsWVX7XOqAfZ6CFttfZXVee
+         vTwIkXmHGTp5WsJ3ONqiouXTAqlWbJY4L1mmwZZ268aDIFwHfAs4HiJ3jxUX3JK9wG
+         MC6hyuYrJl85kPCXvn3qvgCcnOIUl2CYEAgaCChI4muom9s4DZZngLRpJtzJ4dzLjL
+         oyh+MoVTv95I7icIyUoVxketYfeITOfJlmVBX/4I+Nxvv1nUelGtpZ6gi6iRDZDAnE
+         8L+fPCiAs8aFg==
+Date:   Mon, 10 May 2021 15:27:56 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] mm/filemap: Fix readahead return types
+Message-ID: <20210510222756.GI8582@magnolia>
+References: <20210510201201.1558972-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510201201.1558972-1-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Mon, 10 May 2021 23:06:13 +0200:
+On Mon, May 10, 2021 at 09:12:01PM +0100, Matthew Wilcox (Oracle) wrote:
+> A readahead request will not allocate more memory than can be represented
+> by a size_t, even on systems that have HIGHMEM available.  Change the
+> length functions from returning an loff_t to a size_t.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc1-tag
+Looks reasonable to me; is this a 5.13 bugfix or just something that
+doesn't look right (i.e. save it for 5.14)?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/142b507f911c5a502dbb8f603216cb0ea8a79a48
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Thank you!
+--D
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> ---
+>  fs/iomap/buffered-io.c  | 4 ++--
+>  include/linux/pagemap.h | 6 +++---
+>  2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index f2cd2034a87b..9023717c5188 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -394,7 +394,7 @@ void iomap_readahead(struct readahead_control *rac, const struct iomap_ops *ops)
+>  {
+>  	struct inode *inode = rac->mapping->host;
+>  	loff_t pos = readahead_pos(rac);
+> -	loff_t length = readahead_length(rac);
+> +	size_t length = readahead_length(rac);
+>  	struct iomap_readpage_ctx ctx = {
+>  		.rac	= rac,
+>  	};
+> @@ -402,7 +402,7 @@ void iomap_readahead(struct readahead_control *rac, const struct iomap_ops *ops)
+>  	trace_iomap_readahead(inode, readahead_count(rac));
+>  
+>  	while (length > 0) {
+> -		loff_t ret = iomap_apply(inode, pos, length, 0, ops,
+> +		ssize_t ret = iomap_apply(inode, pos, length, 0, ops,
+>  				&ctx, iomap_readahead_actor);
+>  		if (ret <= 0) {
+>  			WARN_ON_ONCE(ret == 0);
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index a4bd41128bf3..e89df447fae3 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -997,9 +997,9 @@ static inline loff_t readahead_pos(struct readahead_control *rac)
+>   * readahead_length - The number of bytes in this readahead request.
+>   * @rac: The readahead request.
+>   */
+> -static inline loff_t readahead_length(struct readahead_control *rac)
+> +static inline size_t readahead_length(struct readahead_control *rac)
+>  {
+> -	return (loff_t)rac->_nr_pages * PAGE_SIZE;
+> +	return rac->_nr_pages * PAGE_SIZE;
+>  }
+>  
+>  /**
+> @@ -1024,7 +1024,7 @@ static inline unsigned int readahead_count(struct readahead_control *rac)
+>   * readahead_batch_length - The number of bytes in the current batch.
+>   * @rac: The readahead request.
+>   */
+> -static inline loff_t readahead_batch_length(struct readahead_control *rac)
+> +static inline size_t readahead_batch_length(struct readahead_control *rac)
+>  {
+>  	return rac->_batch_count * PAGE_SIZE;
+>  }
+> -- 
+> 2.30.2
+> 
