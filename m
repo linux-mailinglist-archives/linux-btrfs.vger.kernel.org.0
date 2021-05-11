@@ -2,134 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288DE379E8C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 06:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9B1379F06
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 07:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhEKE0R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 May 2021 00:26:17 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:33978 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhEKE0R (ORCPT
+        id S230143AbhEKFO1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 May 2021 01:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229885AbhEKFO0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 May 2021 00:26:17 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id D105C6C007A2;
-        Tue, 11 May 2021 07:25:09 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1620707109; bh=Sqjw/ftEptNm7AFtiZtxgqGWKP3n12qwdZS82cjyrz4=;
-        h=From:To:Cc:Subject:Date;
-        b=Gw8pYZqVwHsHcvQgilZuKiDENcKYq3dHrx8F/aWXLzyL+4OTXfQPOIA78zMGISJ+J
-         2+K0iMovAp5Hn967Cn1F9ZqRmrT5K2iJgcvm4D556u/qObOzYeBeNG+zQOwkhCV5T8
-         M/RGAWT7IwfDXxLDCAGH/+4tXsYaf6oQzkZ7y5lQ=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id C3BEC6C0079F;
-        Tue, 11 May 2021 07:25:09 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id OWZnlyFCg-ow; Tue, 11 May 2021 07:25:09 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 5E35B6C0077E;
-        Tue, 11 May 2021 07:25:09 +0300 (EEST)
-Received: from alarm.. (unknown [45.87.95.45])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 016471BE013A;
-        Tue, 11 May 2021 07:25:07 +0300 (EEST)
-From:   Su Yue <l@damenly.su>
-To:     linux-btrfs@vger.kernel.org
-Cc:     l@damenly.su
-Subject: [PATCH] btrfs-progs: do not BUG_ON if btrfs_add_to_fsid succeeded to write superblock
-Date:   Tue, 11 May 2021 12:25:01 +0800
-Message-Id: <20210511042501.900731-1-l@damenly.su>
-X-Mailer: git-send-email 2.31.1
+        Tue, 11 May 2021 01:14:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF0EC061574;
+        Mon, 10 May 2021 22:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=92vbIUnZWAAzNpY967Q6Gm7dIUmOdX6k9EiMXw1tTKg=; b=ttzagEansgjXWY/vsH58Pyp6AX
+        vg7t4xB5Pz58MVHJO2nA37pw13znKkgtP5SHXBW7etr7Eg7dWXMHkvdw9bSDgfyE+mhsRUiknwRcJ
+        nnL9D3p183JaQo94WBhc5LLgneKKSa4D05K6YposgJFQXjalzb3pSIh/54qty6MJLLXPTp2gl0jYm
+        oYv2+ShfIL1CVWMXM++3HWHgS0OxwDV/4p1gPG7n3SoaKVzQJG9mziPHEm6lfsXMi1baHgLiUU3bo
+        SQcJfSRxR1x4+jeQnzC5MBsr33K53HJBZj20206NSWzC0j37vZcg5MLCbMhL1tn15BJlLO2ntd9DN
+        7MFtF6VQ==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgKhr-009JM9-Eb; Tue, 11 May 2021 05:13:19 +0000
+Subject: Re: linux-next: Tree for May 11 (btrfs)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+References: <20210511133551.09bfd39c@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <56cef5d3-cfb4-abe2-1cbc-f146b720396c@infradead.org>
+Date:   Mon, 10 May 2021 22:13:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: OK
-X-ESPOL: 6N1mlpY9ZDPk1R69MAjTf2YrzV5EXevl+uWy0xxdmmeDUSOAe1YFVw6+mHJySGA=
+In-Reply-To: <20210511133551.09bfd39c@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 8ef9313cf298 ("btrfs-progs: zoned: implement log-structured
-superblock") changed to write BTRFS_SUPER_INFO_SIZE bytes to device.
-The before num of bytes to be written is sectorsize.
-It causes mkfs.btrfs failed on my 16k pagesize kvm:
+On 5/10/21 8:35 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20210510:
+> 
 
-  $ /usr/bin/mkfs.btrfs -s 16k -f -mraid0 /dev/vdb2 /dev/vdb3
-  btrfs-progs v5.12
-  See http://btrfs.wiki.kernel.org for more information.
+on i386:
 
-  ERROR: superblock magic doesn't match
-  ERROR: superblock magic doesn't match
-  common/device-scan.c:195: btrfs_add_to_fsid: BUG_ON `ret != sectorsize`
-  triggered, value 1
-  /usr/bin/mkfs.btrfs(btrfs_add_to_fsid+0x274)[0xaaab4fe8a5fc]
-  /usr/bin/mkfs.btrfs(main+0x1188)[0xaaab4fe4dc8c]
-  /usr/lib/libc.so.6(__libc_start_main+0xe8)[0xffff7223c538]
-  /usr/bin/mkfs.btrfs(+0xc558)[0xaaab4fe4c558]
+ld: fs/btrfs/extent_io.o: in function `btrfs_submit_read_repair':
+extent_io.c:(.text+0x624f): undefined reference to `__udivdi3'
 
-  [1]    225842 abort (core dumped)  /usr/bin/mkfs.btrfs -s 16k -f -mraid0
-  /dev/vdb2 /dev/vdb3
 
-btrfs_add_to_fsid() now always calls sbwrite() to write
-BTRFS_SUPER_INFO_SIZE bytes to device, so change condition of
-the BUG_ON().
-Also add comments for sbread() and sbwrite().
-
-Signed-off-by: Su Yue <l@damenly.su>
----
- common/device-scan.c  |  4 ++--
- kernel-shared/zoned.h | 18 ++++++++++++++++++
- 2 files changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/common/device-scan.c b/common/device-scan.c
-index 07cda0c9..6a3bd098 100644
---- a/common/device-scan.c
-+++ b/common/device-scan.c
-@@ -192,8 +192,8 @@ int btrfs_add_to_fsid(struct btrfs_trans_handle *trans,
- 	memcpy(&dev_item->uuid, device->uuid, BTRFS_UUID_SIZE);
- 
- 	ret = sbwrite(fd, buf, BTRFS_SUPER_INFO_OFFSET);
--	BUG_ON(ret != sectorsize);
--
-+	/* ensure super block was written to the device */
-+	BUG_ON(ret != BTRFS_SUPER_INFO_SIZE);
- 	free(buf);
- 	list_add(&device->dev_list, &fs_info->fs_devices->devices);
- 	device->fs_devices = fs_info->fs_devices;
-diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
-index a246e161..47129f92 100644
---- a/kernel-shared/zoned.h
-+++ b/kernel-shared/zoned.h
-@@ -51,11 +51,29 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info);
- #ifdef BTRFS_ZONED
- size_t btrfs_sb_io(int fd, void *buf, off_t offset, int rw);
- 
-+/*
-+ * sbread - read BTRFS_SUPER_INFO_SIZE bytes from fd to buf
-+ *
-+ * @fd		fd of the device to be read from
-+ * @buf:	buffer contains a super block
-+ * @offset:	offset of the superblock
-+ *
-+ * Return count of bytes successfully read.
-+ */
- static inline size_t sbread(int fd, void *buf, off_t offset)
- {
- 	return btrfs_sb_io(fd, buf, offset, READ);
- }
- 
-+/*
-+ * sbwrite - write BTRFS_SUPER_INFO_SIZE bytes from buf to fd
-+ *
-+ * @fd		fd of the device to be written to
-+ * @buf:	buffer contains a super block
-+ * @offset:	offset of the superblock
-+ *
-+ * Return count of bytes successfully written.
-+ */
- static inline size_t sbwrite(int fd, void *buf, off_t offset)
- {
- 	return btrfs_sb_io(fd, buf, offset, WRITE);
 -- 
-2.31.1
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
 
