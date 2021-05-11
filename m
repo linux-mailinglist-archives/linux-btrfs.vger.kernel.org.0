@@ -2,540 +2,1329 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE45737B05D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 22:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B32E37B112
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 23:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhEKUzl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 May 2021 16:55:41 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46480 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230019AbhEKUzj (ORCPT
+        id S229935AbhEKVx0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 May 2021 17:53:26 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:52829 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229637AbhEKVxZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 May 2021 16:55:39 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 14BKr5dZ025780;
-        Tue, 11 May 2021 13:53:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=r1afHE+rSybVI4a1iMl3QwY1998ehS9SU84r4YQaVfM=;
- b=TjLxprXXVE6vHFAGnwizBVZdz3+hZ0Uwzjh7KxcPpo9CSo2a4N9S3weKp8TyYjJrdMj2
- quZBdrL/RC2lafK970KyAHCe0PZLVnldtsXzC1xq8oIDmcn+E6LA2Tv6VOSFwlMpRQvG
- MCUEryAsHNDXrYoxbuaMoxO4+BKSiMTK7GM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 38faehf869-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 11 May 2021 13:53:44 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 11 May 2021 13:53:43 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JZ9pVrMLW9GiSJwV3Rboz1jgG1ZbVc5PTPyEdvFY18IWxz1aG8Gm+VOYdBmlQGJ3tiPr3wqF84uKSbJjnRKvS2F0o22tcBn+VYSddigAXvfc0uriIZYeg9Qg3wlsg0h+6NLXp/TVsPZpe8Czt0uoWJO9D5lV0MiW3a9jfMyhMaA+LLH8EC2AMonMr1XYgDfIfSAzNzeIulnLLTxzGeYTHlaJf/sjuGY3x6/aZzBiE7KJPslhphQ9r6hp8IHIGnL+31LnOOaGFWLNrhOx3jx6OlVXFfcGUNUmZ7ayV+N3+qhtHouQ5saBFbk+gl93grNgC/ku0ARokcSL3nOu/RXspw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+AZwjq7HqdUKGxQ2D37LAOGStv4nPPkqeewWIeqpz08=;
- b=UjEuhNjNDcmlv8ghwGwUK95JAW6Abbn3362dYJOoA8ZQs4TiNG7z7m4JXXRWozzDo3A3CkTwSIoH5q6zTTXKbGmiEJYv0so8msCdP++E0PSNIF09mv2IX2Dp8ZDbcntXLAg1Tx4qM6l5DVK8YQIcYDDoXoeIRxm8JZWbhEsIIfM+qRQeAgMG5c6WP9rS8lO6o3Ukc63dTGg6UBaac/mnoifDCVEenIRXANEP7N7sPVOlQLFzTPXXzXepbfngqZdVj7oVZ7TIRwztcm8hzc/958i/VwNQDfoHc3evQ/y/h7/NCDQGm1oqeZLXJBS/LL6aQJu7bqHK81YRhXgVmbrf2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com (2603:10b6:a03:1f9::18)
- by SJ0PR15MB4389.namprd15.prod.outlook.com (2603:10b6:a03:35a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Tue, 11 May
- 2021 20:53:41 +0000
-Received: from BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::8a:2386:5e51:e2e7]) by BY5PR15MB3667.namprd15.prod.outlook.com
- ([fe80::8a:2386:5e51:e2e7%6]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 20:53:41 +0000
-From:   Nick Terrell <terrelln@fb.com>
-To:     Nick Terrell <nickrterrell@gmail.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "squashfs-devel@lists.sourceforge.net" 
-        <squashfs-devel@lists.sourceforge.net>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>,
-        "Oleksandr Natalenko" <oleksandr@natalenko.name>,
-        Felix Handte <felixh@fb.com>,
-        "Eric Biggers" <ebiggers@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
-Thread-Topic: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
-Thread-Index: AQHXPV/R5TjBhDsVMEe8RPHHOgPOtKre1LEA
-Date:   Tue, 11 May 2021 20:53:41 +0000
-Message-ID: <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>
-References: <20210430013157.747152-1-nickrterrell@gmail.com>
-In-Reply-To: <20210430013157.747152-1-nickrterrell@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:bb0f]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 399cd467-5f1c-4984-5984-08d914bedbf1
-x-ms-traffictypediagnostic: SJ0PR15MB4389:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR15MB4389E198D0D52C5969CE5D3AAB539@SJ0PR15MB4389.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: J+4lll+re4feabIg71pajVjbq1Jbka1cSTS0b6mUQN98ebfRFLbzSG3SleMWoxwA/lV7HyLUFdn9AgNPv4BhL72Ao5p3R6092DDF3+B/Sl4QZO2dzGbn7OLsYh65wiKcSyqi3er5jbliV/rOHGddRfTcCC7tAmZnpR3BLtp20y/7iVrdHeiEy0FL5MS1ErhvLbu5pYK28ilwxE8pBTQi9FLXoCptJJlk1eFqj6H9pHsxQ0P/p3He1l2njNNyCVHeo/E4k5FE1+Bs/eSydZXKPIyofREn7QlwMyFhzHBbw/QdPRWcYUDN1MJpDfeMKiYKomp+D4yF3us/Qgu01aLaNckm72AddBdVTAGtPR2i8lCNY1CX2Jh5kvCqPh7eNEIDBu+1dN9ZWtWtn/NvLGJmcYcEeDdND7SQY1xDcTAIxjvoWBjP+aDfFI5bVqYjw+CXU7nS8byHa9oqoat4OE5Etm/OYyw0oitxDIYsRPRuZmJrM7GG2mFCBPpp1WwiCz1LoWC95m/ZRQW9PcLdZxpOb5u0sjMzRdzJtfpmC0jPBaqOefhEpDrpv6Pv/vv7WwnN4gu81u+751xXUCcIjwqicjKRzdmBgVasu4uquLZjAFlwneEkX3TKVjIOThdUn25Dpw4xFtUQCGbhRfnBJ/jP/zVnJYfG4G3yG+usrFA+IDjn7zWQW91Ue8k6RL0G2RA9kXULDA2JiVFBAtOiP3pHRe6di/x0enk5V+lInQu94IXb7YBNA6EqJDEJcmJJk6WfdWtO5fillYckXb4qJ/PwDQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3667.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(39860400002)(396003)(136003)(478600001)(6486002)(5660300002)(6916009)(53546011)(66946007)(6512007)(8676002)(8936002)(33656002)(91956017)(76116006)(2906002)(54906003)(66446008)(966005)(86362001)(4326008)(30864003)(66476007)(36756003)(2616005)(71200400001)(7416002)(83380400001)(64756008)(66556008)(316002)(38100700002)(15650500001)(6506007)(186003)(122000001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-2?Q?p0XPGWPEydc/RC+60OzSiZ9BUoFePkw2qjWdnQGuYIhgcdapsklRN43eWA?=
- =?iso-8859-2?Q?2knXVC+YcRz6/Y9LqjBGsKB4Gg9GpffkmtSQlvTC20vvakBWutE1YxIq00?=
- =?iso-8859-2?Q?CfH2asAmMtthXKG0SU/u7QGZpMvAfkHBpir8KCHIFei+RFMyavQaIHShbu?=
- =?iso-8859-2?Q?YEQC9xO8U34PeMLLKiAy3TFI0WYZXD4adQ7yKy5k3hFU3Yv8OGDZl2iVeZ?=
- =?iso-8859-2?Q?zq0/j2da5PMk5aUIZHIOx+gQ0NXuAJBtD5OtKnj835BO20RAnGi8V5MY4X?=
- =?iso-8859-2?Q?hGkxwTSGj6yvoaJlYZJT8L+AsY4GHI5eeHnWqEYFtJtTvu18NKmfBmvwP0?=
- =?iso-8859-2?Q?+MFBtv72wq+aThnCzAUh/aJHYuPO7bRn6Hsy0GE3enzdFg1lKy2oyGsdZu?=
- =?iso-8859-2?Q?FVEQhwUs9XiA1ZwzhqxNoX/hnR1dIeVDgmfiyJ7NDwrLfxF7nA6bJABTin?=
- =?iso-8859-2?Q?sJPvgx0uV5zmG5TrvnkbGL/YpGwEw2T3ylPPFboyn/QfMn424GIm9r+dCf?=
- =?iso-8859-2?Q?qdkV1UEugKEKEqg4M/HKty5ATl0CTYY3xAKHG5tjzt3Bwjgyduxr3VEmWM?=
- =?iso-8859-2?Q?OkM2NNx6dykhl9heu+ZBL9Ud/iQ56nn13qBnPvm6MXNFrrhdstqjV4tAZE?=
- =?iso-8859-2?Q?eEORaLOpJ/uAoZT2mWIP3qF/AfbYJhlukI7G1jxdwEk5wi6cipGzYwfu5u?=
- =?iso-8859-2?Q?6160NWT4XC3c7gKVqlIU6jEAMnu9vF6oWPzA+3AbU8jhW/MoZnfvWyxxpR?=
- =?iso-8859-2?Q?qDDwNSc2lhkfW1z+f6wzrZ1ucbakzxZabPXA7cZwRijBh+oYQ+ThLFVmzt?=
- =?iso-8859-2?Q?LziTAbaPd9l91glf0Ow0eVQsgoCg8pHqL9t10rPV21w6/IkwW8ZTejN2Rm?=
- =?iso-8859-2?Q?4Nr6VAshi6s61XvECUS9w49M0oGHmxIAHfIp7AFAQXQA3RVtiC30ifLb/f?=
- =?iso-8859-2?Q?iiUzJtaLUSNMWDqZ7ii0mmpNGgzdfmLfyZgk6D0gb+7xRqxahRsrlegeNu?=
- =?iso-8859-2?Q?iY6i5KQcAUW4fYppSr/B0ZuuaQ9qaCw8x5oEpjDi7NRjRsgYYudknZqWMI?=
- =?iso-8859-2?Q?NeoNcU0Em4JgviO+2FTr5Fq4gLWWgT7viWDIZqXbqOdaaXPcxrGsqts5x6?=
- =?iso-8859-2?Q?W7JubqXsy4l19Wc2olYTIXEweezqqCDRrp+qtXBFJPOjodDqvJNnIo8i/l?=
- =?iso-8859-2?Q?5bj2FeLuCh8yVTnC8fuGnZLTm9UJtvpeTmom6pvb5UUJDSb83P4wGyqPgu?=
- =?iso-8859-2?Q?wAEvO3qYyvva2zSx8LGXFB93uJfAqA8GbmTSjT+9HlRXRcsWMpfpU+dn11?=
- =?iso-8859-2?Q?kKcxZYzs/t/NGfnSEaG74JET0dSoyalRpcyjSjzY/PgZWYddAGGm4msVf4?=
- =?iso-8859-2?Q?XAe6FSzozs5Ir7C6FDzLFCD2++SjbmPk/VQ3bglTZCKPVVdcS1E+I=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-ID: <467C5C876DAA6446940CC5C2C6CF37AB@namprd15.prod.outlook.com>
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3667.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 399cd467-5f1c-4984-5984-08d914bedbf1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2021 20:53:41.4485
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tclX2mnxDvBJ8Bog2cM/WU4Apxi0ORJEAJbSVJ6Exw7ZJxhyiF3moknbAAzf3SS9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4389
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 90T5oovx7cGYiBdHWJnLZgDy48BLI9Pn
-X-Proofpoint-ORIG-GUID: 90T5oovx7cGYiBdHWJnLZgDy48BLI9Pn
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 11 May 2021 17:53:25 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id DA1865C00D4;
+        Tue, 11 May 2021 17:52:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 11 May 2021 17:52:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:subject:message-id:references:mime-version:content-type
+        :in-reply-to; s=fm3; bh=4F9IhBCXlBm3lNOKPN9+0FsQ5fXPDkV14yHIUMq9
+        fj0=; b=XbhgUl31Y2Q0rsuk/FA6unDD9kH9+LGZPQjAMltkmP+gV/Vcg/SAKBi4
+        bTJjVtREUaUxkl2ZZwG5Kw+P9gkmqyFanXWuuAQndNpBdc29F4wl8H9r+lDmUcj0
+        gwhr33zInSFiMqQ4ZFhK2TZs4/pzmzRVrwZHO6w2AkfRN04ssIUooG++ezQqbh5k
+        CQ7jCzDDuAwmhKrmW8y4ZgfP9Eh4s17ZbmQbNq4CgmQfSrc9e85LAm646GuagPoF
+        kLLGkNRNPj8YLuZ2UvGPG6YrKkH78iMtchswDFLoC4Z+Ry5FjhixI13XnzIA2y6s
+        e0L1PYut8pLYv1UGDahh67tU5MVxRw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=4F9IhB
+        CXlBm3lNOKPN9+0FsQ5fXPDkV14yHIUMq9fj0=; b=Tn04Ym1rA7QamDhNnyyw4T
+        3LhKDbVJxYUZMf/d/6Bp4Ce5VfWur/RZ6gwdsrv2TwJzMprgwHqurCLdc2V2h/40
+        sCFrCryCY7uCjw6sRB+DZtvfZcN2hCgtJ9+AmvE18XTOY9/cBqTANaumkdSk6VDV
+        hHU4rV1KR9pq5yshM/qIuHcYJFxYpm+NgO+NwaTTmZyLlpX3hit7qC1//4AXhtj7
+        L1s1f68uwf69Q69IEgu0n8ZByZ3wyfT5EV5vQpiXW2Cl/nyEBkCbUbZKhvfQBq6f
+        QbVj8B5G1EHJ2RkPEeOchgJrocShWKF0pqdV6ZJviKIDf30JyWr3J2YuxT4TZ9Lw
+        ==
+X-ME-Sender: <xms:kfyaYJjWQic3YqSde2ibwqcLtqt2jSEsPOkSgl8_J7tF0tWEGxejfw>
+    <xme:kfyaYOAKWLDGG-uk62uOQSnjd-kC0rYp2NNniCHztNjZWSY8Yo0uvR-uU2GeGy2P1
+    Uq-fA5JH4YH0PxjRX8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehuddgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpedtvdfftddvveduieejtedufeeuudefueefhfduje
+    dutdegtddtffffiefgtefgtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhp
+    pedvtdejrdehfedrvdehfedrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:kfyaYJE5Im1z0gA-y12xTiWMU40TkUSI4Plbh-BV30CLKgHe7Fyvag>
+    <xmx:kfyaYOQ02kvhbOOjUzZMeKVDkbwFg3I9Pk2NP5LK7TZMIZS0i_EJhw>
+    <xmx:kfyaYGwh4Q0Iit4ImrFurnBFLTOeZHyKz7MH-o03R1SuoEyL8jRjhA>
+    <xmx:kfyaYLp4RapS255ZbsUcWNdWjzjnBtRwDy7JkyimXZizfxckokq1ig>
+Received: from localhost (unknown [207.53.253.7])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue, 11 May 2021 17:52:17 -0400 (EDT)
+Date:   Tue, 11 May 2021 14:52:15 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 2/5] btrfs: initial fsverity support
+Message-ID: <YJr8j3Kd6d1yW5bc@zen>
+References: <cover.1620240133.git.boris@bur.io>
+ <dd0cfc38c6de927de63f34f96499dc8f80398754.1620241221.git.boris@bur.io>
+ <20210511203143.GN7604@twin.jikos.cz>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-11_04:2021-05-11,2021-05-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
- adultscore=0 suspectscore=0 mlxscore=0 spamscore=0 priorityscore=1501
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105110142
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511203143.GN7604@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, May 11, 2021 at 10:31:43PM +0200, David Sterba wrote:
+> On Wed, May 05, 2021 at 12:20:40PM -0700, Boris Burkov wrote:
+> > From: Chris Mason <clm@fb.com>
+> > 
+> > Add support for fsverity in btrfs. To support the generic interface in
+> > fs/verity, we add two new item types in the fs tree for inodes with
+> > verity enabled. One stores the per-file verity descriptor and the other
+> > stores the Merkle tree data itself.
+> > 
+> > Verity checking is done at the end of IOs to ensure each page is checked
+> > before it is marked uptodate.
+> > 
+> > Verity relies on PageChecked for the Merkle tree data itself to avoid
+> > re-walking up shared paths in the tree. For this reason, we need to
+> > cache the Merkle tree data.
+> 
+> What's the estimated size of the Merkle tree data? Does the whole tree
+> need to be kept cached or is it only for data that are in page cache?
 
+With the default of SHA256 and 4K blocks, we have 32 byte digests which
+which fits 128 digests per block, so the Merkle tree will be almost
+exactly 1/127 of the size of the file.
 
-> On Apr 29, 2021, at 6:31 PM, Nick Terrell <nickrterrell@gmail.com> wrote:
->=20
-> From: Nick Terrell <terrelln@fb.com>
->=20
-> Please pull from
->=20
->  git@github.com:terrelln/linux.git tags/v11-zstd-1.4.10
->=20
-> to get these changes. Alternatively the patchset is included.
+As far as I know, there is no special requirement that the Merkle tree
+data stays cached. If a Merkle tree block is evicted, then a data block
+is evicted and re-read, we would need to read the Merkle tree block
+again and possibly up the path to the root until a cached block with
+PageChecked.
 
-Hi all,
+> 
+> > Since the file is immutable after verity is
+> > turned on, we can cache it at an index past EOF.
+> > 
+> > Use the new inode compat_flags to store verity on the inode item, so
+> > that we can enable verity on a file, then rollback to an older kernel
+> > and still mount the file system and read the file. Since we can't safely
+> > write the file anymore without ruining the invariants of the Merkle
+> > tree, we mark a ro_compat flag on the file system when a file has verity
+> > enabled.
+> > 
+> > Signed-off-by: Chris Mason <clm@fb.com>
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  fs/btrfs/Makefile               |   1 +
+> >  fs/btrfs/btrfs_inode.h          |   1 +
+> >  fs/btrfs/ctree.h                |  30 +-
+> >  fs/btrfs/extent_io.c            |  27 +-
+> >  fs/btrfs/file.c                 |   6 +
+> >  fs/btrfs/inode.c                |   7 +
+> >  fs/btrfs/ioctl.c                |  14 +-
+> >  fs/btrfs/super.c                |   3 +
+> >  fs/btrfs/sysfs.c                |   6 +
+> >  fs/btrfs/verity.c               | 617 ++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/btrfs.h      |   2 +-
+> >  include/uapi/linux/btrfs_tree.h |  15 +
+> >  12 files changed, 718 insertions(+), 11 deletions(-)
+> >  create mode 100644 fs/btrfs/verity.c
+> > 
+> > diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> > index cec88a66bd6c..3dcf9bcc2326 100644
+> > --- a/fs/btrfs/Makefile
+> > +++ b/fs/btrfs/Makefile
+> > @@ -36,6 +36,7 @@ btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+> >  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
+> >  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
+> >  btrfs-$(CONFIG_BLK_DEV_ZONED) += zoned.o
+> > +btrfs-$(CONFIG_FS_VERITY) += verity.o
+> >  
+> >  btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
+> >  	tests/extent-buffer-tests.o tests/btrfs-tests.o \
+> > diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> > index e8dbc8e848ce..4536548b9e79 100644
+> > --- a/fs/btrfs/btrfs_inode.h
+> > +++ b/fs/btrfs/btrfs_inode.h
+> > @@ -51,6 +51,7 @@ enum {
+> >  	 * the file range, inode's io_tree).
+> >  	 */
+> >  	BTRFS_INODE_NO_DELALLOC_FLUSH,
+> > +	BTRFS_INODE_VERITY_IN_PROGRESS,
+> 
+> Please add a comment
+> 
+> >  };
+> >  
+> >  /* in memory btrfs inode */
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index 0546273a520b..c5aab6a639ef 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -279,9 +279,10 @@ struct btrfs_super_block {
+> >  #define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
+> >  #define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
+> >  
+> > -#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
+> > -	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
+> > -	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID)
+> > +#define BTRFS_FEATURE_COMPAT_RO_SUPP				\
+> > +	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |		\
+> > +	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |	\
+> > +	 BTRFS_FEATURE_COMPAT_RO_VERITY)
+> >  
+> >  #define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
+> >  #define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
+> > @@ -1505,6 +1506,11 @@ do {                                                                   \
+> >  	 BTRFS_INODE_COMPRESS |						\
+> >  	 BTRFS_INODE_ROOT_ITEM_INIT)
+> >  
+> > +/*
+> > + * Inode compat flags
+> > + */
+> > +#define BTRFS_INODE_VERITY		(1 << 0)
+> > +
+> >  struct btrfs_map_token {
+> >  	struct extent_buffer *eb;
+> >  	char *kaddr;
+> > @@ -3766,6 +3772,24 @@ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
+> >  	return signal_pending(current);
+> >  }
+> >  
+> > +/* verity.c */
+> > +#ifdef CONFIG_FS_VERITY
+> > +extern const struct fsverity_operations btrfs_verityops;
+> > +int btrfs_drop_verity_items(struct btrfs_inode *inode);
+> > +BTRFS_SETGET_FUNCS(verity_descriptor_encryption, struct btrfs_verity_descriptor_item,
+> > +		   encryption, 8);
+> > +BTRFS_SETGET_FUNCS(verity_descriptor_size, struct btrfs_verity_descriptor_item, size, 64);
+> > +BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_encryption, struct btrfs_verity_descriptor_item,
+> > +			 encryption, 8);
+> > +BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_size, struct btrfs_verity_descriptor_item,
+> > +			 size, 64);
+> > +#else
+> > +static inline int btrfs_drop_verity_items(struct btrfs_inode *inode)
+> > +{
+> > +	return 0;
+> > +}
+> > +#endif
+> > +
+> >  /* Sanity test specific functions */
+> >  #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+> >  void btrfs_test_destroy_inode(struct inode *inode);
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index 4fb33cadc41a..d1f57a4ad2fb 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/pagevec.h>
+> >  #include <linux/prefetch.h>
+> >  #include <linux/cleancache.h>
+> > +#include <linux/fsverity.h>
+> >  #include "misc.h"
+> >  #include "extent_io.h"
+> >  #include "extent-io-tree.h"
+> > @@ -2862,15 +2863,28 @@ static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
+> >  	btrfs_subpage_start_reader(fs_info, page, page_offset(page), PAGE_SIZE);
+> >  }
+> >  
+> > -static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+> > +static int end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+> >  {
+> > -	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
+> > +	int ret = 0;
+> > +	struct inode *inode = page->mapping->host;
+> > +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> >  
+> >  	ASSERT(page_offset(page) <= start &&
+> >  		start + len <= page_offset(page) + PAGE_SIZE);
+> >  
+> >  	if (uptodate) {
+> > -		btrfs_page_set_uptodate(fs_info, page, start, len);
+> > +		/*
+> > +		 * buffered reads of a file with page alignment will issue a
+> > +		 * 0 length read for one page past the end of file, so we must
+> > +		 * explicitly skip checking verity on that page of zeros.
+> > +		 */
+> > +		if (!PageError(page) && !PageUptodate(page) &&
+> > +		    start < i_size_read(inode) &&
+> > +		    fsverity_active(inode) &&
+> > +		    !fsverity_verify_page(page))
+> > +			ret = -EIO;
+> > +		else
+> > +			btrfs_page_set_uptodate(fs_info, page, start, len);
+> >  	} else {
+> >  		btrfs_page_clear_uptodate(fs_info, page, start, len);
+> >  		btrfs_page_set_error(fs_info, page, start, len);
+> > @@ -2878,12 +2892,13 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
+> >  
+> >  	if (fs_info->sectorsize == PAGE_SIZE)
+> >  		unlock_page(page);
+> > -	else if (is_data_inode(page->mapping->host))
+> > +	else if (is_data_inode(inode))
+> >  		/*
+> >  		 * For subpage data, unlock the page if we're the last reader.
+> >  		 * For subpage metadata, page lock is not utilized for read.
+> >  		 */
+> >  		btrfs_subpage_end_reader(fs_info, page, start, len);
+> > +	return ret;
+> >  }
+> >  
+> >  /*
+> > @@ -3059,7 +3074,9 @@ static void end_bio_extent_readpage(struct bio *bio)
+> >  		bio_offset += len;
+> >  
+> >  		/* Update page status and unlock */
+> > -		end_page_read(page, uptodate, start, len);
+> > +		ret = end_page_read(page, uptodate, start, len);
+> > +		if (ret)
+> > +			uptodate = 0;
+> >  		endio_readpage_release_extent(&processed, BTRFS_I(inode),
+> >  					      start, end, uptodate);
+> >  	}
+> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > index 3b10d98b4ebb..a99470303bd9 100644
+> > --- a/fs/btrfs/file.c
+> > +++ b/fs/btrfs/file.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/btrfs.h>
+> >  #include <linux/uio.h>
+> >  #include <linux/iversion.h>
+> > +#include <linux/fsverity.h>
+> >  #include "ctree.h"
+> >  #include "disk-io.h"
+> >  #include "transaction.h"
+> > @@ -3593,7 +3594,12 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
+> >  
+> >  static int btrfs_file_open(struct inode *inode, struct file *filp)
+> >  {
+> > +	int ret;
+> 
+> Missing newline
 
-Pinging this series. Is there anything I should do to help get this
-merged?
+Weird, I ran checkpatch so many times.. My bad.
 
-The use of zstd in the kernel is continuously increasing over time,
-both in terms of number of use cases, and number of users that
-actually enable zstd compression in production. E.g. Fedora is
-making btrfs with zstd compression enabled the default.
+> 
+> >  	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
+> > +
+> > +	ret = fsverity_file_open(inode, filp);
+> > +	if (ret)
+> > +		return ret;
+> >  	return generic_file_open(inode, filp);
+> >  }
+> >  
+> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > index d89000577f7f..1b1101369777 100644
+> > --- a/fs/btrfs/inode.c
+> > +++ b/fs/btrfs/inode.c
+> > @@ -32,6 +32,7 @@
+> >  #include <linux/sched/mm.h>
+> >  #include <linux/iomap.h>
+> >  #include <asm/unaligned.h>
+> > +#include <linux/fsverity.h>
+> >  #include "misc.h"
+> >  #include "ctree.h"
+> >  #include "disk-io.h"
+> > @@ -5405,7 +5406,9 @@ void btrfs_evict_inode(struct inode *inode)
+> >  
+> >  	trace_btrfs_inode_evict(inode);
+> >  
+> > +
+> 
+> Extra newline
+> 
+> >  	if (!root) {
+> > +		fsverity_cleanup_inode(inode);
+> >  		clear_inode(inode);
+> >  		return;
+> >  	}
+> > @@ -5488,6 +5491,7 @@ void btrfs_evict_inode(struct inode *inode)
+> >  	 * to retry these periodically in the future.
+> >  	 */
+> >  	btrfs_remove_delayed_node(BTRFS_I(inode));
+> > +	fsverity_cleanup_inode(inode);
+> >  	clear_inode(inode);
+> >  }
+> >  
+> > @@ -9041,6 +9045,7 @@ static int btrfs_getattr(struct user_namespace *mnt_userns,
+> >  	struct inode *inode = d_inode(path->dentry);
+> >  	u32 blocksize = inode->i_sb->s_blocksize;
+> >  	u32 bi_flags = BTRFS_I(inode)->flags;
+> > +	u32 bi_compat_flags = BTRFS_I(inode)->compat_flags;
+> >  
+> >  	stat->result_mask |= STATX_BTIME;
+> >  	stat->btime.tv_sec = BTRFS_I(inode)->i_otime.tv_sec;
+> > @@ -9053,6 +9058,8 @@ static int btrfs_getattr(struct user_namespace *mnt_userns,
+> >  		stat->attributes |= STATX_ATTR_IMMUTABLE;
+> >  	if (bi_flags & BTRFS_INODE_NODUMP)
+> >  		stat->attributes |= STATX_ATTR_NODUMP;
+> > +	if (bi_compat_flags & BTRFS_INODE_VERITY)
+> > +		stat->attributes |= STATX_ATTR_VERITY;
+> >  
+> >  	stat->attributes_mask |= (STATX_ATTR_APPEND |
+> >  				  STATX_ATTR_COMPRESSED |
+> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > index ff335c192170..4b8f38fe4226 100644
+> > --- a/fs/btrfs/ioctl.c
+> > +++ b/fs/btrfs/ioctl.c
+> > @@ -26,6 +26,7 @@
+> >  #include <linux/btrfs.h>
+> >  #include <linux/uaccess.h>
+> >  #include <linux/iversion.h>
+> > +#include <linux/fsverity.h>
+> >  #include "ctree.h"
+> >  #include "disk-io.h"
+> >  #include "export.h"
+> > @@ -105,6 +106,7 @@ static unsigned int btrfs_mask_fsflags_for_type(struct inode *inode,
+> >  static unsigned int btrfs_inode_flags_to_fsflags(struct btrfs_inode *binode)
+> >  {
+> >  	unsigned int flags = binode->flags;
+> > +	unsigned int compat_flags = binode->compat_flags;
+> >  	unsigned int iflags = 0;
+> >  
+> >  	if (flags & BTRFS_INODE_SYNC)
+> > @@ -121,6 +123,8 @@ static unsigned int btrfs_inode_flags_to_fsflags(struct btrfs_inode *binode)
+> >  		iflags |= FS_DIRSYNC_FL;
+> >  	if (flags & BTRFS_INODE_NODATACOW)
+> >  		iflags |= FS_NOCOW_FL;
+> > +	if (compat_flags & BTRFS_INODE_VERITY)
+> > +		iflags |= FS_VERITY_FL;
+> >  
+> >  	if (flags & BTRFS_INODE_NOCOMPRESS)
+> >  		iflags |= FS_NOCOMP_FL;
+> > @@ -148,10 +152,12 @@ void btrfs_sync_inode_flags_to_i_flags(struct inode *inode)
+> >  		new_fl |= S_NOATIME;
+> >  	if (binode->flags & BTRFS_INODE_DIRSYNC)
+> >  		new_fl |= S_DIRSYNC;
+> > +	if (binode->compat_flags & BTRFS_INODE_VERITY)
+> > +		new_fl |= S_VERITY;
+> >  
+> >  	set_mask_bits(&inode->i_flags,
+> > -		      S_SYNC | S_APPEND | S_IMMUTABLE | S_NOATIME | S_DIRSYNC,
+> > -		      new_fl);
+> > +		      S_SYNC | S_APPEND | S_IMMUTABLE | S_NOATIME | S_DIRSYNC |
+> > +		      S_VERITY, new_fl);
+> >  }
+> >  
+> >  static int btrfs_ioctl_getflags(struct file *file, void __user *arg)
+> > @@ -5072,6 +5078,10 @@ long btrfs_ioctl(struct file *file, unsigned int
+> >  		return btrfs_ioctl_get_subvol_rootref(file, argp);
+> >  	case BTRFS_IOC_INO_LOOKUP_USER:
+> >  		return btrfs_ioctl_ino_lookup_user(file, argp);
+> > +	case FS_IOC_ENABLE_VERITY:
+> > +		return fsverity_ioctl_enable(file, (const void __user *)argp);
+> > +	case FS_IOC_MEASURE_VERITY:
+> > +		return fsverity_ioctl_measure(file, argp);
+> >  	}
+> >  
+> >  	return -ENOTTY;
+> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> > index 4a396c1147f1..aa41ee30e3ca 100644
+> > --- a/fs/btrfs/super.c
+> > +++ b/fs/btrfs/super.c
+> > @@ -1365,6 +1365,9 @@ static int btrfs_fill_super(struct super_block *sb,
+> >  	sb->s_op = &btrfs_super_ops;
+> >  	sb->s_d_op = &btrfs_dentry_operations;
+> >  	sb->s_export_op = &btrfs_export_ops;
+> > +#ifdef CONFIG_FS_VERITY
+> > +	sb->s_vop = &btrfs_verityops;
+> > +#endif
+> >  	sb->s_xattr = btrfs_xattr_handlers;
+> >  	sb->s_time_gran = 1;
+> >  #ifdef CONFIG_BTRFS_FS_POSIX_ACL
+> > diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> > index 436ac7b4b334..331ea4febcb1 100644
+> > --- a/fs/btrfs/sysfs.c
+> > +++ b/fs/btrfs/sysfs.c
+> > @@ -267,6 +267,9 @@ BTRFS_FEAT_ATTR_INCOMPAT(raid1c34, RAID1C34);
+> >  #ifdef CONFIG_BTRFS_DEBUG
+> >  BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
+> >  #endif
+> > +#ifdef CONFIG_FS_VERITY
+> > +BTRFS_FEAT_ATTR_COMPAT_RO(verity, VERITY);
+> > +#endif
+> >  
+> >  static struct attribute *btrfs_supported_feature_attrs[] = {
+> >  	BTRFS_FEAT_ATTR_PTR(mixed_backref),
+> > @@ -284,6 +287,9 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
+> >  	BTRFS_FEAT_ATTR_PTR(raid1c34),
+> >  #ifdef CONFIG_BTRFS_DEBUG
+> >  	BTRFS_FEAT_ATTR_PTR(zoned),
+> > +#endif
+> > +#ifdef CONFIG_FS_VERITY
+> > +	BTRFS_FEAT_ATTR_PTR(verity),
+> >  #endif
+> >  	NULL
+> >  };
+> > diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
+> > new file mode 100644
+> > index 000000000000..feaf5908b3d3
+> > --- /dev/null
+> > +++ b/fs/btrfs/verity.c
+> > @@ -0,0 +1,617 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2020 Facebook.  All rights reserved.
+> > + */
+> 
+> This is not necessary since we have the SPDX tags,
+> https://btrfs.wiki.kernel.org/index.php/Developer%27s_FAQ#Copyright_notices_in_files.2C_SPDX
+> 
+> > +
+> > +#include <linux/init.h>
+> > +#include <linux/fs.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/rwsem.h>
+> > +#include <linux/xattr.h>
+> > +#include <linux/security.h>
+> > +#include <linux/posix_acl_xattr.h>
+> > +#include <linux/iversion.h>
+> > +#include <linux/fsverity.h>
+> > +#include <linux/sched/mm.h>
+> > +#include "ctree.h"
+> > +#include "btrfs_inode.h"
+> > +#include "transaction.h"
+> > +#include "disk-io.h"
+> > +#include "locking.h"
+> > +
+> > +/*
+> > + * Just like ext4, we cache the merkle tree in pages after EOF in the page
+> > + * cache.  Unlike ext4, we're storing these in dedicated btree items and
+> > + * not just shoving them after EOF in the file.  This means we'll need to
+> > + * do extra work to encrypt them once encryption is supported in btrfs,
+> > + * but btrfs has a lot of careful code around i_size and it seems better
+> > + * to make a new key type than try and adjust all of our expectations
+> > + * for i_size.
+> 
+> Can you please rephrase that so it does not start with what other
+> filesystems do but what is the actual design and put references to ext4
+> eventually?
+> 
+> > + *
+> > + * fs verity items are stored under two different key types on disk.
+> > + *
+> > + * The descriptor items:
+> > + * [ inode objectid, BTRFS_VERITY_DESC_ITEM_KEY, offset ]
+> 
+> Please put that to the key definitions
 
-I would love to see the zstd code updated to the latest upstream
-and be kept up to date. The latest upstream brings bug fixes, and
-significant performance improvements. Additionally, the latest
-upstream code is continuously fuzzed.
+Do you mean to move this whole comment to btrfs_tree.h?
 
-Thanks,
-Nick
+> 
+> > + *
+> > + * At offset 0, we store a btrfs_verity_descriptor_item which tracks the
+> > + * size of the descriptor item and some extra data for encryption.
+> > + * Starting at offset 1, these hold the generic fs verity descriptor.
+> > + * These are opaque to btrfs, we just read and write them as a blob for
+> > + * the higher level verity code.  The most common size for this is 256 bytes.
+> > + *
+> > + * The merkle tree items:
+> > + * [ inode objectid, BTRFS_VERITY_MERKLE_ITEM_KEY, offset ]
+> > + *
+> > + * These also start at offset 0, and correspond to the merkle tree bytes.
+> > + * So when fsverity asks for page 0 of the merkle tree, we pull up one page
+> > + * starting at offset 0 for this key type.  These are also opaque to btrfs,
+> > + * we're blindly storing whatever fsverity sends down.
+> > + */
+> > +
+> > +/*
+> > + * Compute the logical file offset where we cache the Merkle tree.
+> > + *
+> > + * @inode: the inode of the verity file
+> > + *
+> > + * For the purposes of caching the Merkle tree pages, as required by
+> > + * fs-verity, it is convenient to do size computations in terms of a file
+> > + * offset, rather than in terms of page indices.
+> > + *
+> > + * Returns the file offset on success, negative error code on failure.
+> > + */
+> > +static loff_t merkle_file_pos(const struct inode *inode)
+> > +{
+> > +	u64 sz = inode->i_size;
+> > +	u64 ret = round_up(sz, 65536);
+> 
+> What's the reason for the extra variable sz? If that is meant to make
+> the whole u64 is read consistently, then it needs protection and the
+> i_read_size if the status of inode lock and context of call is unknown.
+> Compiler will happily merge that to round_up(inode->i_size).
 
-> This patchset lists me as the maintainer for zstd and upgrades the zstd l=
-ibrary
-> to the latest upstream release. The current zstd version in the kernel is=
- a
-> modified version of upstream zstd-1.3.1. At the time it was integrated, z=
-std
-> wasn't ready to be used in the kernel as-is. But, it is now possible to u=
-se
-> upstream zstd directly in the kernel.
->=20
-> I have not yet released zstd-1.4.10 upstream. I want the zstd version in =
-the
-> kernel to match up with a known upstream release, so we know exactly what=
- code
-> is running. Whenever this patchset is ready for merge, I will cut a relea=
-se at
-> the upstream commit that gets merged. This should not be necessary for fu=
-ture
-> releases.
->=20
-> The kernel zstd library is automatically generated from upstream zstd. A =
-script
-> makes the necessary changes and imports it into the kernel. The changes a=
-re:
->=20
-> 1. Replace all libc dependencies with kernel replacements and rewrite inc=
-ludes.
-> 2. Remove unncessary portability macros like: #if defined(_MSC_VER).
-> 3. Use the kernel xxhash instead of bundling it.
->=20
-> This automation gets tested every commit by upstream's continuous integra=
-tion.
-> When we cut a new zstd release, we will submit a patch to the kernel to u=
-pdate
-> the zstd version in the kernel.
->=20
-> I've updated zstd to upstream with one big patch because every commit mus=
-t build,
-> so that precludes partial updates. Since the commit is 100% generated, I =
-hope the
-> review burden is lightened. I considered replaying upstream commits, but =
-that is
-> not possible because there have been ~3500 upstream commits since the las=
-t zstd
-> import, and the commits don't all build individually. The bulk update pre=
-serves
-> bisectablity because bugs can be bisected to the zstd version update. At =
-that
-> point the update can be reverted, and we can work with upstream to find a=
-nd fix
-> the bug. After this big switch in how the kernel consumes zstd, future pa=
-tches
-> will be smaller, because they will only have one upstream release worth of
-> changes each.
->=20
-> This patchset adds a new kernel-style wrapper around zstd. This wrapper A=
-PI is
-> functionally equivalent to the subset of the current zstd API that is cur=
-rently
-> used. The wrapper API changes to be kernel style so that the symbols don't
-> collide with zstd's symbols. The update to zstd-1.4.6 maintains the same =
-API
-> and preserves the semantics, so that none of the callers need to be updat=
-ed.
->=20
-> This patchset comes in 2 parts:
-> 1. The first 2 patches prepare for the zstd upgrade. The first patch adds=
- the
->   new kernel style API so zstd can be upgraded without modifying any call=
-ers.
->   The second patch adds an indirection for the lib/decompress_unzstd.c
->   including of all decompression source files.
-> 2. Import zstd-1.4.10. This patch is completely generated from upstream u=
-sing
->   automated tooling.
->=20
-> I tested every caller of zstd on x86_64. I tested both after the 1.4.10 u=
-pgrade
-> using the compatibility wrapper, and after the final patch in this series.
->=20
-> I tested kernel and initramfs decompression in i386 and arm.
->=20
-> I ran benchmarks to compare the current zstd in the kernel with zstd-1.4.=
-6.
-> I benchmarked on x86_64 using QEMU with KVM enabled on an Intel i9-9900k.
-> I found:
-> * BtrFS zstd compression at levels 1 and 3 is 5% faster
-> * BtrFS zstd decompression+read is 15% faster
-> * SquashFS zstd decompression+read is 15% faster
-> * F2FS zstd compression+write at level 3 is 8% faster
-> * F2FS zstd decompression+read is 20% faster
-> * ZRAM decompression+read is 30% faster
-> * Kernel zstd decompression is 35% faster
-> * Initramfs zstd decompression+build is 5% faster
->=20
-> The latest zstd also offers bug fixes. For example the problem with large=
- kernel
-> decompression has been fixed upstream for over 2 years
-> https://lkml.org/lkml/2020/9/29/27.
->=20
-> Please let me know if there is anything that I can do to ease the way for=
- these
-> patches. I think it is important because it gets large performance improv=
-ements,
-> contains bug fixes, and is switching to a more maintainable model of cons=
-uming
-> upstream zstd directly, making it easy to keep up to date.
->=20
-> Best,
-> Nick Terrell
->=20
-> v1 -> v2:
-> * Successfully tested F2FS with help from Chao Yu to fix my test.
-> * (1/9) Fix ZSTD_initCStream() wrapper to handle pledged_src_size=3D0 mea=
-ns unknown.
->  This fixes F2FS with the zstd-1.4.6 compatibility wrapper, exposed by th=
-e test.
->=20
-> v2 -> v3:
-> * (3/9) Silence warnings by Kernel Test Robot:
->  https://github.com/facebook/zstd/pull/2324
->  Stack size warnings remain, but these aren't new, and the functions it w=
-arns on
->  are either unused or not in the maximum stack path. This patchset reduce=
-s zstd
->  compression stack usage by 1 KB overall. I've gotten the low hanging fru=
-it, and
->  more stack reduction would require significant changes that have the pot=
-ential
->  to introduce new bugs. However, I do hope to continue to reduce zstd sta=
-ck
->  usage in future versions.
->=20
-> v3 -> v4:
-> * (3/9) Fix errors and warnings reported by Kernel Test Robot:
->  https://github.com/facebook/zstd/pull/2326
->  - Replace mem.h with a custom kernel implementation that matches the cur=
-rent
->    lib/zstd/mem.h in the kernel. This avoids calls to __builtin_bswap*() =
-which
->    don't work on certain architectures, as exposed by the Kernel Test Rob=
-ot.
->  - Remove ASAN/MSAN (un)poisoning code which doesn't work in the kernel, =
-as
->    exposed by the Kernel Test Robot.
->  - I've fixed all of the valid cppcheck warnings reported, but there were=
- many
->    false positives, where cppcheck was incorrectly analyzing the situatio=
-n,
->    which I did not fix. I don't believe it is reasonable to expect that u=
-pstream
->    zstd silences all the static analyzer false positives. Upstream zstd u=
-ses
->    clang scan-build for its static analysis. We find that supporting mult=
-iple
->    static analysis tools multiplies the burden of silencing false positiv=
-es,
->    without providing enough marginal value over running a single static a=
-nalysis
->    tool.
->=20
-> v4 -> v5:
-> * Rebase onto v5.10-rc2
-> * (6/9) Merge with other F2FS changes (no functional change in patch).
->=20
-> v5 -> v6:
-> * Rebase onto v5.10-rc6.
-> * Switch to using a kernel style wrapper API as suggested by Cristoph.
->=20
-> v6 -> v7:
-> * Expose the upstream library header as `include/linux/zstd_lib.h`.
->  Instead of creating new structs mirroring the upstream zstd structs
->  use upstream's structs directly with a typedef to get a kernel style nam=
-e.
->  This removes the memcpy cruft.
-> * (1/3) Undo ZSTD_WINDOWLOG_MAX and handle_zstd_error changes.
-> * (3/3) Expose zstd_errors.h as `include/linux/zstd_errors.h` because it
->  is needed by the kernel wrapper API.
->=20
-> v7 -> v8:
-> * (1/3) Fix typo in EXPORT_SYMBOL().
-> * (1/3) Fix typo in zstd.h comments.
-> * (3/3) Update to latest zstd release: 1.4.6 -> 1.4.10
->        This includes ~1KB of stack space reductions.
->=20
-> v8 -> v9:
-> * (1/3) Rebase onto v5.12-rc5
-> * (1/3) Add zstd_min_clevel() & zstd_max_clevel() and use in f2fs.
->        Thanks to Oleksandr Natalenko for spotting it!
-> * (1/3) Move lib/decompress_unzstd.c usage of ZSTD_getErrorCode()
->        to zstd_get_error_code().
-> * (1/3) Update modified zstd headers to yearless copyright.
-> * (2/3) Add copyright/license header to decompress_sources.h for consiste=
-ncy.
-> * (3/3) Update to yearless copyright for all zstd files. Thanks to
->        Mike Dolan for spotting it!
->=20
-> v9 -> v10:
-> * Add a 4th patch in the series which adds an entry for zstd to MAINTAINE=
-RS.
->=20
-> v10 -> v11:
-> * Rebase cleanly onto v5.12-rc8
-> * (3/4) Replace invalid kernel style comments in zstd with regular commen=
-ts.
->  Thanks to Randy Dunlap for the suggestion.
->=20
-> Nick Terrell (4):
->  lib: zstd: Add kernel-specific API
->  lib: zstd: Add decompress_sources.h for decompress_unzstd
->  lib: zstd: Upgrade to latest upstream zstd version 1.4.10
->  MAINTAINERS: Add maintainer entry for zstd
->=20
-> MAINTAINERS                                   |   12 +
-> crypto/zstd.c                                 |   28 +-
-> fs/btrfs/zstd.c                               |   68 +-
-> fs/f2fs/compress.c                            |   56 +-
-> fs/f2fs/super.c                               |    2 +-
-> fs/pstore/platform.c                          |    2 +-
-> fs/squashfs/zstd_wrapper.c                    |   16 +-
-> include/linux/zstd.h                          | 1252 +---
-> include/linux/zstd_errors.h                   |   77 +
-> include/linux/zstd_lib.h                      | 2432 ++++++++
-> lib/decompress_unzstd.c                       |   48 +-
-> lib/zstd/Makefile                             |   44 +-
-> lib/zstd/bitstream.h                          |  380 --
-> lib/zstd/common/bitstream.h                   |  437 ++
-> lib/zstd/common/compiler.h                    |  151 +
-> lib/zstd/common/cpu.h                         |  194 +
-> lib/zstd/common/debug.c                       |   24 +
-> lib/zstd/common/debug.h                       |  101 +
-> lib/zstd/common/entropy_common.c              |  357 ++
-> lib/zstd/common/error_private.c               |   56 +
-> lib/zstd/common/error_private.h               |   66 +
-> lib/zstd/common/fse.h                         |  710 +++
-> lib/zstd/common/fse_decompress.c              |  390 ++
-> lib/zstd/common/huf.h                         |  356 ++
-> lib/zstd/common/mem.h                         |  259 +
-> lib/zstd/common/zstd_common.c                 |   83 +
-> lib/zstd/common/zstd_deps.h                   |  125 +
-> lib/zstd/common/zstd_internal.h               |  450 ++
-> lib/zstd/compress.c                           | 3485 -----------
-> lib/zstd/compress/fse_compress.c              |  625 ++
-> lib/zstd/compress/hist.c                      |  165 +
-> lib/zstd/compress/hist.h                      |   75 +
-> lib/zstd/compress/huf_compress.c              |  902 +++
-> lib/zstd/compress/zstd_compress.c             | 5105 +++++++++++++++++
-> lib/zstd/compress/zstd_compress_internal.h    | 1188 ++++
-> lib/zstd/compress/zstd_compress_literals.c    |  158 +
-> lib/zstd/compress/zstd_compress_literals.h    |   29 +
-> lib/zstd/compress/zstd_compress_sequences.c   |  439 ++
-> lib/zstd/compress/zstd_compress_sequences.h   |   54 +
-> lib/zstd/compress/zstd_compress_superblock.c  |  850 +++
-> lib/zstd/compress/zstd_compress_superblock.h  |   32 +
-> lib/zstd/compress/zstd_cwksp.h                |  482 ++
-> lib/zstd/compress/zstd_double_fast.c          |  521 ++
-> lib/zstd/compress/zstd_double_fast.h          |   32 +
-> lib/zstd/compress/zstd_fast.c                 |  496 ++
-> lib/zstd/compress/zstd_fast.h                 |   31 +
-> lib/zstd/compress/zstd_lazy.c                 | 1412 +++++
-> lib/zstd/compress/zstd_lazy.h                 |   81 +
-> lib/zstd/compress/zstd_ldm.c                  |  686 +++
-> lib/zstd/compress/zstd_ldm.h                  |  110 +
-> lib/zstd/compress/zstd_ldm_geartab.h          |  103 +
-> lib/zstd/compress/zstd_opt.c                  | 1345 +++++
-> lib/zstd/compress/zstd_opt.h                  |   50 +
-> lib/zstd/decompress.c                         | 2531 --------
-> lib/zstd/decompress/huf_decompress.c          | 1206 ++++
-> lib/zstd/decompress/zstd_ddict.c              |  241 +
-> lib/zstd/decompress/zstd_ddict.h              |   44 +
-> lib/zstd/decompress/zstd_decompress.c         | 2075 +++++++
-> lib/zstd/decompress/zstd_decompress_block.c   | 1540 +++++
-> lib/zstd/decompress/zstd_decompress_block.h   |   62 +
-> .../decompress/zstd_decompress_internal.h     |  202 +
-> lib/zstd/decompress_sources.h                 |   28 +
-> lib/zstd/entropy_common.c                     |  243 -
-> lib/zstd/error_private.h                      |   53 -
-> lib/zstd/fse.h                                |  575 --
-> lib/zstd/fse_compress.c                       |  795 ---
-> lib/zstd/fse_decompress.c                     |  325 --
-> lib/zstd/huf.h                                |  212 -
-> lib/zstd/huf_compress.c                       |  773 ---
-> lib/zstd/huf_decompress.c                     |  960 ----
-> lib/zstd/mem.h                                |  151 -
-> lib/zstd/zstd_common.c                        |   75 -
-> lib/zstd/zstd_compress_module.c               |  124 +
-> lib/zstd/zstd_decompress_module.c             |  105 +
-> lib/zstd/zstd_internal.h                      |  273 -
-> lib/zstd/zstd_opt.h                           | 1014 ----
-> 76 files changed, 27299 insertions(+), 12940 deletions(-)
-> create mode 100644 include/linux/zstd_errors.h
-> create mode 100644 include/linux/zstd_lib.h
-> delete mode 100644 lib/zstd/bitstream.h
-> create mode 100644 lib/zstd/common/bitstream.h
-> create mode 100644 lib/zstd/common/compiler.h
-> create mode 100644 lib/zstd/common/cpu.h
-> create mode 100644 lib/zstd/common/debug.c
-> create mode 100644 lib/zstd/common/debug.h
-> create mode 100644 lib/zstd/common/entropy_common.c
-> create mode 100644 lib/zstd/common/error_private.c
-> create mode 100644 lib/zstd/common/error_private.h
-> create mode 100644 lib/zstd/common/fse.h
-> create mode 100644 lib/zstd/common/fse_decompress.c
-> create mode 100644 lib/zstd/common/huf.h
-> create mode 100644 lib/zstd/common/mem.h
-> create mode 100644 lib/zstd/common/zstd_common.c
-> create mode 100644 lib/zstd/common/zstd_deps.h
-> create mode 100644 lib/zstd/common/zstd_internal.h
-> delete mode 100644 lib/zstd/compress.c
-> create mode 100644 lib/zstd/compress/fse_compress.c
-> create mode 100644 lib/zstd/compress/hist.c
-> create mode 100644 lib/zstd/compress/hist.h
-> create mode 100644 lib/zstd/compress/huf_compress.c
-> create mode 100644 lib/zstd/compress/zstd_compress.c
-> create mode 100644 lib/zstd/compress/zstd_compress_internal.h
-> create mode 100644 lib/zstd/compress/zstd_compress_literals.c
-> create mode 100644 lib/zstd/compress/zstd_compress_literals.h
-> create mode 100644 lib/zstd/compress/zstd_compress_sequences.c
-> create mode 100644 lib/zstd/compress/zstd_compress_sequences.h
-> create mode 100644 lib/zstd/compress/zstd_compress_superblock.c
-> create mode 100644 lib/zstd/compress/zstd_compress_superblock.h
-> create mode 100644 lib/zstd/compress/zstd_cwksp.h
-> create mode 100644 lib/zstd/compress/zstd_double_fast.c
-> create mode 100644 lib/zstd/compress/zstd_double_fast.h
-> create mode 100644 lib/zstd/compress/zstd_fast.c
-> create mode 100644 lib/zstd/compress/zstd_fast.h
-> create mode 100644 lib/zstd/compress/zstd_lazy.c
-> create mode 100644 lib/zstd/compress/zstd_lazy.h
-> create mode 100644 lib/zstd/compress/zstd_ldm.c
-> create mode 100644 lib/zstd/compress/zstd_ldm.h
-> create mode 100644 lib/zstd/compress/zstd_ldm_geartab.h
-> create mode 100644 lib/zstd/compress/zstd_opt.c
-> create mode 100644 lib/zstd/compress/zstd_opt.h
-> delete mode 100644 lib/zstd/decompress.c
-> create mode 100644 lib/zstd/decompress/huf_decompress.c
-> create mode 100644 lib/zstd/decompress/zstd_ddict.c
-> create mode 100644 lib/zstd/decompress/zstd_ddict.h
-> create mode 100644 lib/zstd/decompress/zstd_decompress.c
-> create mode 100644 lib/zstd/decompress/zstd_decompress_block.c
-> create mode 100644 lib/zstd/decompress/zstd_decompress_block.h
-> create mode 100644 lib/zstd/decompress/zstd_decompress_internal.h
-> create mode 100644 lib/zstd/decompress_sources.h
-> delete mode 100644 lib/zstd/entropy_common.c
-> delete mode 100644 lib/zstd/error_private.h
-> delete mode 100644 lib/zstd/fse.h
-> delete mode 100644 lib/zstd/fse_compress.c
-> delete mode 100644 lib/zstd/fse_decompress.c
-> delete mode 100644 lib/zstd/huf.h
-> delete mode 100644 lib/zstd/huf_compress.c
-> delete mode 100644 lib/zstd/huf_decompress.c
-> delete mode 100644 lib/zstd/mem.h
-> delete mode 100644 lib/zstd/zstd_common.c
-> create mode 100644 lib/zstd/zstd_compress_module.c
-> create mode 100644 lib/zstd/zstd_decompress_module.c
-> delete mode 100644 lib/zstd/zstd_internal.h
-> delete mode 100644 lib/zstd/zstd_opt.h
->=20
-> --=20
-> 2.31.1
->=20
+This was the result of getting a bit lazy reading assembly. My intent
+was to ensure that we don't overflow the round_up, which is a macro that
+depends on the type of the input. I was messing around figuring out what
+effect casting had on it but gave up and just put it in a u64 before
+calling it.
 
+> 
+> Next, what's the meaning of the constant 65536?
+> 
+
+It's arbitrary, and copied from ext4. I _believe_ the idea behind it is
+that it should be a fixed constant to avoid making the page size change
+the maximum file size subtly, but should be big enough to be a fresh
+page truly past the end of the file pages on a 64K page size system.
+
+> > +
+> > +	if (ret > inode->i_sb->s_maxbytes)
+> > +		return -EFBIG;
+> > +	return ret;
+> 
+> ret is u64 so the function should also return u64
+
+This was intentional as we do want an loff_t (long long) returned, but
+use the u64 for the overflow checking above.
+
+> 
+> > +}
+> > +
+> > +/*
+> > + * Drop all the items for this inode with this key_type.
+> 
+> Newline
+> 
+> > + * @inode: The inode to drop items for
+> > + * @key_type: The type of items to drop (VERITY_DESC_ITEM or
+> > + *            VERITY_MERKLE_ITEM)
+> 
+> Please format the agrumgenst according to the description in
+> https://btrfs.wiki.kernel.org/index.php/Development_notes#Comments
+> 
+> > + *
+> > + * Before doing a verity enable we cleanup any existing verity items.
+> > + *
+> > + * This is also used to clean up if a verity enable failed half way
+> > + * through.
+> > + *
+> > + * Returns 0 on success, negative error code on failure.
+> > + */
+> > +static int drop_verity_items(struct btrfs_inode *inode, u8 key_type)
+> > +{
+> > +	struct btrfs_trans_handle *trans;
+> > +	struct btrfs_root *root = inode->root;
+> > +	struct btrfs_path *path;
+> > +	struct btrfs_key key;
+> > +	int ret;
+> > +
+> > +	path = btrfs_alloc_path();
+> > +	if (!path)
+> > +		return -ENOMEM;
+> > +
+> > +	while (1) {
+> > +		trans = btrfs_start_transaction(root, 1);
+> 
+> Transaction start should document what are the reserved items, ie. what
+> is the 1 related to.
+> 
+> > +		if (IS_ERR(trans)) {
+> > +			ret = PTR_ERR(trans);
+> > +			goto out;
+> > +		}
+> > +
+> > +		/*
+> > +		 * walk backwards through all the items until we find one
+> 
+> Comments should start with uppercase unless it's and identifier name.
+> This is in many other places so please update them as well.
+> 
+> > +		 * that isn't from our key type or objectid
+> > +		 */
+> > +		key.objectid = btrfs_ino(inode);
+> > +		key.offset = (u64)-1;
+> > +		key.type = key_type;
+> 
+> It's common to sort the members as they go in order so
+> objectid/type/offset, this helps to keep the idea of the key.
+> 
+> > +
+> > +		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+> > +		if (ret > 0) {
+> > +			ret = 0;
+> > +			/* no more keys of this type, we're done */
+> > +			if (path->slots[0] == 0)
+> > +				break;
+> > +			path->slots[0]--;
+> > +		} else if (ret < 0) {
+> > +			break;
+> > +		}
+> > +
+> > +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+> > +
+> > +		/* no more keys of this type, we're done */
+> > +		if (key.objectid != btrfs_ino(inode) || key.type != key_type)
+> > +			break;
+> > +
+> > +		/*
+> > +		 * this shouldn't be a performance sensitive function because
+> > +		 * it's not used as part of truncate.  If it ever becomes
+> > +		 * perf sensitive, change this to walk forward and bulk delete
+> > +		 * items
+> > +		 */
+> > +		ret = btrfs_del_items(trans, root, path,
+> > +				      path->slots[0], 1);
+> 
+> This will probably fit on one line, no need to split the parameters.
+> 
+> > +		btrfs_release_path(path);
+> > +		btrfs_end_transaction(trans);
+> > +
+> > +		if (ret)
+> > +			goto out;
+> > +	}
+> > +
+> > +	btrfs_end_transaction(trans);
+> > +out:
+> > +	btrfs_free_path(path);
+> > +	return ret;
+> > +
+> > +}
+> > +
+> > +/*
+> > + * Insert and write inode items with a given key type and offset.
+> > + * @inode: The inode to insert for.
+> > + * @key_type: The key type to insert.
+> > + * @offset: The item offset to insert at.
+> > + * @src: Source data to write.
+> > + * @len: Length of source data to write.
+> > + *
+> > + * Write len bytes from src into items of up to 1k length.
+> > + * The inserted items will have key <ino, key_type, offset + off> where
+> > + * off is consecutively increasing from 0 up to the last item ending at
+> > + * offset + len.
+> > + *
+> > + * Returns 0 on success and a negative error code on failure.
+> > + */
+> > +static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> > +			   const char *src, u64 len)
+> > +{
+> > +	struct btrfs_trans_handle *trans;
+> > +	struct btrfs_path *path;
+> > +	struct btrfs_root *root = inode->root;
+> > +	struct extent_buffer *leaf;
+> > +	struct btrfs_key key;
+> > +	u64 copied = 0;
+> > +	unsigned long copy_bytes;
+> > +	unsigned long src_offset = 0;
+> > +	void *data;
+> > +	int ret;
+> > +
+> > +	path = btrfs_alloc_path();
+> > +	if (!path)
+> > +		return -ENOMEM;
+> > +
+> > +	while (len > 0) {
+> > +		trans = btrfs_start_transaction(root, 1);
+> 
+> Same as before, please document what items are reserved
+> 
+> > +		if (IS_ERR(trans)) {
+> > +			ret = PTR_ERR(trans);
+> > +			break;
+> > +		}
+> > +
+> > +		key.objectid = btrfs_ino(inode);
+> > +		key.offset = offset;
+> > +		key.type = key_type;
+> 
+> objectid/type/offset
+> 
+> > +
+> > +		/*
+> > +		 * insert 1K at a time mostly to be friendly for smaller
+> > +		 * leaf size filesystems
+> > +		 */
+> > +		copy_bytes = min_t(u64, len, 1024);
+> > +
+> > +		ret = btrfs_insert_empty_item(trans, root, path, &key, copy_bytes);
+> > +		if (ret) {
+> > +			btrfs_end_transaction(trans);
+> > +			break;
+> > +		}
+> > +
+> > +		leaf = path->nodes[0];
+> > +
+> > +		data = btrfs_item_ptr(leaf, path->slots[0], void);
+> > +		write_extent_buffer(leaf, src + src_offset,
+> > +				    (unsigned long)data, copy_bytes);
+> > +		offset += copy_bytes;
+> > +		src_offset += copy_bytes;
+> > +		len -= copy_bytes;
+> > +		copied += copy_bytes;
+> > +
+> > +		btrfs_release_path(path);
+> > +		btrfs_end_transaction(trans);
+> > +	}
+> > +
+> > +	btrfs_free_path(path);
+> > +	return ret;
+> > +}
+> > +
+> > +/*
+> > + * Read inode items of the given key type and offset from the btree.
+> > + * @inode: The inode to read items of.
+> > + * @key_type: The key type to read.
+> > + * @offset: The item offset to read from.
+> > + * @dest: The buffer to read into. This parameter has slightly tricky
+> > + *        semantics.  If it is NULL, the function will not do any copying
+> > + *        and will just return the size of all the items up to len bytes.
+> > + *        If dest_page is passed, then the function will kmap_atomic the
+> > + *        page and ignore dest, but it must still be non-NULL to avoid the
+> > + *        counting-only behavior.
+> > + * @len: Length in bytes to read.
+> > + * @dest_page: Copy into this page instead of the dest buffer.
+> > + *
+> > + * Helper function to read items from the btree.  This returns the number
+> > + * of bytes read or < 0 for errors.  We can return short reads if the
+> > + * items don't exist on disk or aren't big enough to fill the desired length.
+> > + *
+> > + * Supports reading into a provided buffer (dest) or into the page cache
+> > + *
+> > + * Returns number of bytes read or a negative error code on failure.
+> > + */
+> > +static ssize_t read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
+> 
+> Why does this return ssize_t? The type is not utilized anywhere in the
+> function an 'int' should work.
+> 
+> > +			  char *dest, u64 len, struct page *dest_page)
+> > +{
+> > +	struct btrfs_path *path;
+> > +	struct btrfs_root *root = inode->root;
+> > +	struct extent_buffer *leaf;
+> > +	struct btrfs_key key;
+> > +	u64 item_end;
+> > +	u64 copy_end;
+> > +	u64 copied = 0;
+> 
+> Here copied is u64
+> 
+> > +	u32 copy_offset;
+> > +	unsigned long copy_bytes;
+> > +	unsigned long dest_offset = 0;
+> > +	void *data;
+> > +	char *kaddr = dest;
+> > +	int ret;
+> 
+> and ret is int
+> 
+> > +
+> > +	path = btrfs_alloc_path();
+> > +	if (!path)
+> > +		return -ENOMEM;
+> > +
+> > +	if (dest_page)
+> > +		path->reada = READA_FORWARD;
+> > +
+> > +	key.objectid = btrfs_ino(inode);
+> > +	key.offset = offset;
+> > +	key.type = key_type;
+> > +
+> > +	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+> > +	if (ret < 0) {
+> > +		goto out;
+> > +	} else if (ret > 0) {
+> > +		ret = 0;
+> > +		if (path->slots[0] == 0)
+> > +			goto out;
+> > +		path->slots[0]--;
+> > +	}
+> > +
+> > +	while (len > 0) {
+> > +		leaf = path->nodes[0];
+> > +		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+> > +
+> > +		if (key.objectid != btrfs_ino(inode) ||
+> > +		    key.type != key_type)
+> > +			break;
+> > +
+> > +		item_end = btrfs_item_size_nr(leaf, path->slots[0]) + key.offset;
+> > +
+> > +		if (copied > 0) {
+> > +			/*
+> > +			 * once we've copied something, we want all of the items
+> > +			 * to be sequential
+> > +			 */
+> > +			if (key.offset != offset)
+> > +				break;
+> > +		} else {
+> > +			/*
+> > +			 * our initial offset might be in the middle of an
+> > +			 * item.  Make sure it all makes sense
+> > +			 */
+> > +			if (key.offset > offset)
+> > +				break;
+> > +			if (item_end <= offset)
+> > +				break;
+> > +		}
+> > +
+> > +		/* desc = NULL to just sum all the item lengths */
+> > +		if (!dest)
+> > +			copy_end = item_end;
+> > +		else
+> > +			copy_end = min(offset + len, item_end);
+> > +
+> > +		/* number of bytes in this item we want to copy */
+> > +		copy_bytes = copy_end - offset;
+> > +
+> > +		/* offset from the start of item for copying */
+> > +		copy_offset = offset - key.offset;
+> > +
+> > +		if (dest) {
+> > +			if (dest_page)
+> > +				kaddr = kmap_atomic(dest_page);
+> 
+> I think the kmap_atomic should not be used, there was a patchset
+> cleaning it up and replacing by kmap_local so we should not introduce
+> new instances.
+> 
+> > +
+> > +			data = btrfs_item_ptr(leaf, path->slots[0], void);
+> > +			read_extent_buffer(leaf, kaddr + dest_offset,
+> > +					   (unsigned long)data + copy_offset,
+> > +					   copy_bytes);
+> > +
+> > +			if (dest_page)
+> > +				kunmap_atomic(kaddr);
+> > +		}
+> > +
+> > +		offset += copy_bytes;
+> > +		dest_offset += copy_bytes;
+> > +		len -= copy_bytes;
+> > +		copied += copy_bytes;
+> > +
+> > +		path->slots[0]++;
+> > +		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
+> > +			/*
+> > +			 * we've reached the last slot in this leaf and we need
+> > +			 * to go to the next leaf.
+> > +			 */
+> > +			ret = btrfs_next_leaf(root, path);
+> > +			if (ret < 0) {
+> > +				break;
+> > +			} else if (ret > 0) {
+> > +				ret = 0;
+> > +				break;
+> > +			}
+> > +		}
+> > +	}
+> > +out:
+> > +	btrfs_free_path(path);
+> > +	if (!ret)
+> > +		ret = copied;
+> > +	return ret;
+> 
+> In the end it's int and copied u64 is truncated to int.
+> 
+> > +}
+> > +
+> > +/*
+> > + * Drop verity items from the btree and from the page cache
+> > + *
+> > + * @inode: the inode to drop items for
+> > + *
+> > + * If we fail partway through enabling verity, enable verity and have some
+> > + * partial data extant, or cleanup orphaned verity data, we need to truncate it
+>                    extent
+> 
+> > + * from the cache and delete the items themselves from the btree.
+> > + *
+> > + * Returns 0 on success, negative error code on failure.
+> > + */
+> > +int btrfs_drop_verity_items(struct btrfs_inode *inode)
+> > +{
+> > +	int ret;
+> > +	struct inode *ino = &inode->vfs_inode;
+> 
+> 'ino' is usually used for inode number so this is a bit confusing,
+> 
+> > +
+> > +	truncate_inode_pages(ino->i_mapping, ino->i_size);
+> > +	ret = drop_verity_items(inode, BTRFS_VERITY_DESC_ITEM_KEY);
+> > +	if (ret)
+> > +		return ret;
+> > +	return drop_verity_items(inode, BTRFS_VERITY_MERKLE_ITEM_KEY);
+> > +}
+> > +
+> > +/*
+> > + * fsverity op that begins enabling verity.
+> > + * fsverity calls this to ask us to setup the inode for enabling.  We
+> > + * drop any existing verity items and set the in progress bit.
+> 
+> Please rephrase it so it says something like "Begin enabling verity on
+> and inode. We drop ... "
+> 
+> > + */
+> > +static int btrfs_begin_enable_verity(struct file *filp)
+> > +{
+> > +	struct inode *inode = file_inode(filp);
+> 
+> Please replace this with struct btrfs_inode * inode = ... and don't do
+> the BTRFS_I conversion in the rest of the function.
+> 
+> > +	int ret;
+> > +
+> > +	if (test_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags))
+> > +		return -EBUSY;
+> > +
+> > +	set_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
+> 
+> So the test and set are separate, can this race? No, as this is called
+> under the inode lock but this needs a trip to fsverity sources so be
+> sure. I'd suggest to put at least inode lock assertion, or a comment but
+> this is weaker than a runtime check.
+> 
+> > +	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
+> > +	if (ret)
+> > +		goto err;
+> > +
+> > +	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
+> > +	if (ret)
+> > +		goto err;
+> > +
+> > +	return 0;
+> > +
+> > +err:
+> > +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
+> > +	return ret;
+> > +
+> 
+> Extra newline
+> 
+> > +}
+> > +
+> > +/*
+> > + * fsverity op that ends enabling verity.
+> > + * fsverity calls this when it's done with all of the pages in the file
+> > + * and all of the merkle items have been inserted.  We write the
+> > + * descriptor and update the inode in the btree to reflect its new life
+> > + * as a verity file.
+> 
+> Please rephrase
+> 
+> > + */
+> > +static int btrfs_end_enable_verity(struct file *filp, const void *desc,
+> > +				  size_t desc_size, u64 merkle_tree_size)
+> > +{
+> > +	struct btrfs_trans_handle *trans;
+> > +	struct inode *inode = file_inode(filp);
+> 
+> Same as above, replace by btrfs inode and drop BTRFS_I below
+> 
+> > +	struct btrfs_root *root = BTRFS_I(inode)->root;
+> > +	struct btrfs_verity_descriptor_item item;
+> > +	int ret;
+> > +
+> > +	if (desc != NULL) {
+> > +		/* write out the descriptor item */
+> > +		memset(&item, 0, sizeof(item));
+> > +		btrfs_set_stack_verity_descriptor_size(&item, desc_size);
+> > +		ret = write_key_bytes(BTRFS_I(inode),
+> > +				      BTRFS_VERITY_DESC_ITEM_KEY, 0,
+> > +				      (const char *)&item, sizeof(item));
+> > +		if (ret)
+> > +			goto out;
+> > +		/* write out the descriptor itself */
+> > +		ret = write_key_bytes(BTRFS_I(inode),
+> > +				      BTRFS_VERITY_DESC_ITEM_KEY, 1,
+> > +				      desc, desc_size);
+> > +		if (ret)
+> > +			goto out;
+> > +
+> > +		/* update our inode flags to include fs verity */
+> > +		trans = btrfs_start_transaction(root, 1);
+> > +		if (IS_ERR(trans)) {
+> > +			ret = PTR_ERR(trans);
+> > +			goto out;
+> > +		}
+> > +		BTRFS_I(inode)->compat_flags |= BTRFS_INODE_VERITY;
+> > +		btrfs_sync_inode_flags_to_i_flags(inode);
+> > +		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
+> > +		btrfs_end_transaction(trans);
+> > +	}
+> > +
+> > +out:
+> > +	if (desc == NULL || ret) {
+> > +		/* If we failed, drop all the verity items */
+> > +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
+> > +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
+> > +	} else
+> 
+> 	} else {
+> 
+> > +		btrfs_set_fs_compat_ro(root->fs_info, VERITY);
+> 
+> 	}
+> 
+> > +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
+> > +	return ret;
+> > +}
+> > +
+> > +/*
+> > + * fsverity op that gets the struct fsverity_descriptor.
+> > + * fsverity does a two pass setup for reading the descriptor, in the first pass
+> > + * it calls with buf_size = 0 to query the size of the descriptor,
+> > + * and then in the second pass it actually reads the descriptor off
+> > + * disk.
+> > + */
+> > +static int btrfs_get_verity_descriptor(struct inode *inode, void *buf,
+> > +				       size_t buf_size)
+> > +{
+> > +	u64 true_size;
+> > +	ssize_t ret = 0;
+> > +	struct btrfs_verity_descriptor_item item;
+> > +
+> > +	memset(&item, 0, sizeof(item));
+> > +	ret = read_key_bytes(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY,
+> > +			     0, (char *)&item, sizeof(item), NULL);
+> 
+> Given that read_key_bytes does not need to return ssize_t, you can
+> switch ret to 0 here, so the function return type actually matches what
+> you return.
+
+I apologize, I don't think I understand this one. Do you mean to change
+ret (and read_key_bytes) from ssize_t to int? Or is there something else
+I should do here as well?
+
+> 
+> > +	if (ret < 0)
+> > +		return ret;
+> 
+> eg. here
+> 
+> > +
+> > +	if (item.reserved[0] != 0 || item.reserved[1] != 0)
+> > +		return -EUCLEAN;
+> > +
+> > +	true_size = btrfs_stack_verity_descriptor_size(&item);
+> > +	if (true_size > INT_MAX)
+> > +		return -EUCLEAN;
+> > +
+> > +	if (!buf_size)
+> > +		return true_size;
+> > +	if (buf_size < true_size)
+> > +		return -ERANGE;
+> > +
+> > +	ret = read_key_bytes(BTRFS_I(inode),
+> > +			     BTRFS_VERITY_DESC_ITEM_KEY, 1,
+> > +			     buf, buf_size, NULL);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +	if (ret != true_size)
+> > +		return -EIO;
+> > +
+> > +	return true_size;
+> > +}
+> > +
+> > +/*
+> > + * fsverity op that reads and caches a merkle tree page.  These are stored
+> > + * in the btree, but we cache them in the inode's address space after EOF.
+> > + */
+> > +static struct page *btrfs_read_merkle_tree_page(struct inode *inode,
+> > +					       pgoff_t index,
+> > +					       unsigned long num_ra_pages)
+> > +{
+> > +	struct page *p;
+> 
+> Please don't use single letter variables
+> 
+> > +	u64 off = index << PAGE_SHIFT;
+> 
+> pgoff_t is unsigned long, the shift will trim high bytes, you may want
+> to use the page_offset helper instead.
+
+Ah, my intent was that it should all fit in off, but yes this does seem
+like it could lose bytes (I thiiiink we might be safe because a write
+would fail first, but I would like this code to be correct). I'll look
+into the helper.
+
+> 
+> > +	loff_t merkle_pos = merkle_file_pos(inode);
+> 
+> u64, that should work with comparison to loff_t
+> 
+> > +	ssize_t ret;
+> > +	int err;
+> > +
+> > +	if (merkle_pos > inode->i_sb->s_maxbytes - off - PAGE_SIZE)
+> > +		return ERR_PTR(-EFBIG);
+> > +	index += merkle_pos >> PAGE_SHIFT;
+> > +again:
+> > +	p = find_get_page_flags(inode->i_mapping, index, FGP_ACCESSED);
+> > +	if (p) {
+> > +		if (PageUptodate(p))
+> > +			return p;
+> > +
+> > +		lock_page(p);
+> > +		/*
+> > +		 * we only insert uptodate pages, so !Uptodate has to be
+> > +		 * an error
+> > +		 */
+> > +		if (!PageUptodate(p)) {
+> > +			unlock_page(p);
+> > +			put_page(p);
+> > +			return ERR_PTR(-EIO);
+> > +		}
+> > +		unlock_page(p);
+> > +		return p;
+> > +	}
+> > +
+> > +	p = page_cache_alloc(inode->i_mapping);
+> 
+> So this performs an allocation with GFP flags from the inode mapping.
+> I'm not sure if this is safe, eg. in add_ra_bio_pages we do 
+> 
+> 548     page = __page_cache_alloc(mapping_gfp_constraint(mapping,                                                                                                
+> 549                                                      ~__GFP_FS));
+> 
+> to emulate GFP_NOFS. Either that or do the scoped nofs with
+> memalloc_nofs_save/_restore.
+> 
+> > +	if (!p)
+> > +		return ERR_PTR(-ENOMEM);
+> > +
+> > +	/*
+> > +	 * merkle item keys are indexed from byte 0 in the merkle tree.
+> > +	 * they have the form:
+> > +	 *
+> > +	 * [ inode objectid, BTRFS_MERKLE_ITEM_KEY, offset in bytes ]
+> > +	 */
+> > +	ret = read_key_bytes(BTRFS_I(inode),
+> > +			     BTRFS_VERITY_MERKLE_ITEM_KEY, off,
+> > +			     page_address(p), PAGE_SIZE, p);
+> > +	if (ret < 0) {
+> > +		put_page(p);
+> > +		return ERR_PTR(ret);
+> > +	}
+> > +
+> > +	/* zero fill any bytes we didn't write into the page */
+> > +	if (ret < PAGE_SIZE) {
+> > +		char *kaddr = kmap_atomic(p);
+> > +
+> > +		memset(kaddr + ret, 0, PAGE_SIZE - ret);
+> > +		kunmap_atomic(kaddr);
+> 
+> There's helper memzero_page wrapping the kmap
+> 
+> > +	}
+> > +	SetPageUptodate(p);
+> > +	err = add_to_page_cache_lru(p, inode->i_mapping, index,
+> 
+> Please drop err and use ret
+> 
+> > +				    mapping_gfp_mask(inode->i_mapping));
+> > +
+> > +	if (!err) {
+> > +		/* inserted and ready for fsverity */
+> > +		unlock_page(p);
+> > +	} else {
+> > +		put_page(p);
+> > +		/* did someone race us into inserting this page? */
+> > +		if (err == -EEXIST)
+> > +			goto again;
+> > +		p = ERR_PTR(err);
+> > +	}
+> > +	return p;
+> > +}
+> > +
+> > +/*
+> > + * fsverity op that writes a merkle tree block into the btree in 1k chunks.
+> 
+> Should it say "in 2^log_blocksize chunks" instead?
+
+I was trying to highlight that though we are writing a 4K merkle block,
+we will write it in 1k pieces (per write_key_bytes). Happy to change
+this comment to be more useful, though.
+
+> 
+> > + */
+> > +static int btrfs_write_merkle_tree_block(struct inode *inode, const void *buf,
+> > +					u64 index, int log_blocksize)
+> > +{
+> > +	u64 off = index << log_blocksize;
+> > +	u64 len = 1 << log_blocksize;
+> > +
+> > +	if (merkle_file_pos(inode) > inode->i_sb->s_maxbytes - off - len)
+> > +		return -EFBIG;
+> > +
+> > +	return write_key_bytes(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY,
+> > +			       off, buf, len);
+> > +}
+> > +
+> > +const struct fsverity_operations btrfs_verityops = {
+> > +	.begin_enable_verity	= btrfs_begin_enable_verity,
+> > +	.end_enable_verity	= btrfs_end_enable_verity,
+> > +	.get_verity_descriptor	= btrfs_get_verity_descriptor,
+> > +	.read_merkle_tree_page	= btrfs_read_merkle_tree_page,
+> > +	.write_merkle_tree_block = btrfs_write_merkle_tree_block,
+> > +};
+> > diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> > index 5df73001aad4..fa21c8aac78d 100644
+> > --- a/include/uapi/linux/btrfs.h
+> > +++ b/include/uapi/linux/btrfs.h
+> > @@ -288,6 +288,7 @@ struct btrfs_ioctl_fs_info_args {
+> >   * first mount when booting older kernel versions.
+> >   */
+> >  #define BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID	(1ULL << 1)
+> > +#define BTRFS_FEATURE_COMPAT_RO_VERITY		(1ULL << 2)
+> >  
+> >  #define BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF	(1ULL << 0)
+> >  #define BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL	(1ULL << 1)
+> > @@ -308,7 +309,6 @@ struct btrfs_ioctl_fs_info_args {
+> >  #define BTRFS_FEATURE_INCOMPAT_METADATA_UUID	(1ULL << 10)
+> >  #define BTRFS_FEATURE_INCOMPAT_RAID1C34		(1ULL << 11)
+> >  #define BTRFS_FEATURE_INCOMPAT_ZONED		(1ULL << 12)
+> > -
+> 
+> Keep the newline please
+> 
+> >  struct btrfs_ioctl_feature_flags {
+> >  	__u64 compat_flags;
+> >  	__u64 compat_ro_flags;
+> > diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> > index ae25280316bd..2be57416f886 100644
+> > --- a/include/uapi/linux/btrfs_tree.h
+> > +++ b/include/uapi/linux/btrfs_tree.h
+> > @@ -118,6 +118,14 @@
+> >  #define BTRFS_INODE_REF_KEY		12
+> >  #define BTRFS_INODE_EXTREF_KEY		13
+> >  #define BTRFS_XATTR_ITEM_KEY		24
+> > +
+> > +/*
+> > + * fsverity has a descriptor per file, and then
+> > + * a number of sha or csum items indexed by offset in to the file.
+> > + */
+> > +#define BTRFS_VERITY_DESC_ITEM_KEY	36
+> > +#define BTRFS_VERITY_MERKLE_ITEM_KEY	37
+> > +
+> >  #define BTRFS_ORPHAN_ITEM_KEY		48
+> >  /* reserve 2-15 close to the inode for later flexibility */
+> >  
+> > @@ -996,4 +1004,11 @@ struct btrfs_qgroup_limit_item {
+> >  	__le64 rsv_excl;
+> >  } __attribute__ ((__packed__));
+> >  
+> > +struct btrfs_verity_descriptor_item {
+> > +	/* size of the verity descriptor in bytes */
+> > +	__le64 size;
+> > +	__le64 reserved[2];
+> 
+> Is the reserved space "just in case" or are there plans to use it? For
+> items the extension and compatibility can be done by checking the item
+> size, without further flags or bits set to distinguish that.
+> 
+> If the extension happens rarely it's manageable to do the size check
+> instead of reserving the space.
+> 
+> The reserved space must be otherwise zero if not used, this serves as
+> the way to check the compatibility. It still may need additional code to
+> make sure old kernel does recognize unkown contents and eg. refuses to
+> work. I can imagine in the context of verity it could be significant.
+> 
+> > +	__u8 encryption;
+> > +} __attribute__ ((__packed__));
+> > +
+> >  #endif /* _BTRFS_CTREE_H_ */
+> 
+> 
+
+Thank you for the in-depth review, and sorry for the sloppy newline
+stuff. Everything I didn't explicitly respond to, I'll either fix or
+study further.
