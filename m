@@ -2,146 +2,229 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE8637A2B6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 10:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C157437A4EA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 12:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhEKI5v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 May 2021 04:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhEKI5u (ORCPT
+        id S230309AbhEKKtZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 May 2021 06:49:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25154 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229892AbhEKKtY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 May 2021 04:57:50 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9546EC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 May 2021 01:56:43 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id y12so14043995qtx.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 May 2021 01:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=pmQO5f1TuPaiGNc1DJcIXKur/6t2oIEFv1LEd2OJb7U=;
-        b=PBs1AGLVAaRG8HXHGzsxAjaoLJntPU/uUUkYKnob5DUxwM2rc/Ha9St0Tra5Rei/q0
-         V6JCjyp1TKemwz09f81hBHC8DU5Rfq+N6dTxO4KqQscJw7oxNbpA2DI/PhqRvlx77szh
-         6ob+DbMLy/JwIFE/uNWF9L6/vI3bS9DWlAkuoC+9TQWfuo1uSM4PccHcgFmiHKvALxYD
-         h/DwD9HRgTG31TVij5ApiBsSO2lWVjGQjv52Ho6/lvZPmZ3JEMkziYlkmGwFcKB4Aifb
-         Z3uw0IyBLpjlgqrRCPvo2+QK8VQDPcGskMnK0U00L+PCgJ/5s8eell7YQe8si1CMFDfp
-         GkeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=pmQO5f1TuPaiGNc1DJcIXKur/6t2oIEFv1LEd2OJb7U=;
-        b=X89eWBaxZ4nPdTgh5MGd/380VucoVWO9pqLXE0bAUjsXWwGRGljR+9Cjqrr+StBdk0
-         m1yXCxcsLI0dnjSzJLT0FI9jOMU/VOQqf33Mc+7fGpHFbztdWSMfHZoFOckZp4uXp5s9
-         RbaCqKRuSOL4ISWVaERDmLIdZJvzlbzS8NU0JAJDUpxuEG5Qv95vQm+Ml1lWnOfGc12T
-         XLykD6medYg9Xj4lb34HUR+m+xz1LeQSrx5JLgtjP1qNL7W23KsaobrZqJJ0DtNptbn5
-         W2l8qAVanCJl0nM0deF7Wi0wrTd5wSTX6wWzZaUUGTOdw2PDaZoHI4Gro4ZhwzwofRQE
-         RmHw==
-X-Gm-Message-State: AOAM532/tSy0J8uwY+akpdnq4YogKkwUusFR0rDN2/ZGfJZ7b+yYwgI0
-        67CH51C04ayQ3sPQJgzHJ5S8HGTcJEjjRsy+Vu6NnLLRHv4=
-X-Google-Smtp-Source: ABdhPJwyGvecsyp7EQW6Wi3mHaVbX6FUwcI1WTH6vZSItQYwm3RK+Wu+6LeJKV4nH9WbZ6ekx2/W2x9Szs3w8nTuors=
-X-Received: by 2002:ac8:d03:: with SMTP id q3mr26997995qti.183.1620723402880;
- Tue, 11 May 2021 01:56:42 -0700 (PDT)
+        Tue, 11 May 2021 06:49:24 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14BAX89S094454;
+        Tue, 11 May 2021 06:48:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=pXIXJPdDKei7M9kvwJmdoxin34cc2/11+8m7D0SUJEM=;
+ b=gXIm6/fAqKX67kvGcPTEq7dW5jfPN6qOKv4gF7Uv97aNYA124ro5xC7c8wS6xNjQLaNJ
+ dXtIveTRQHWe99/cpYrGvkqHPDpZt3P+XEBmXLEW4lKQHQpGE8aKt5f2r6YOx9ouhEO8
+ MOtoa+XvpJPmYmW1Q+ZXHNiKh61bE96ANsAOIK8ZDEpzYNXyTh92gMDAyjrN8GXZaiS+
+ R6UkF9l+DTgUXQmKAHDXMJhN44qK9pyDnnTF+mePiI8wFGE0119pK6mmkuTLb3BVZkWP
+ ZI3cgpVtDr7+K36t/Jh+XeNe9ZW8/175I94HJQm1J0tsmDbkH4XTlKfo8rpN1iNcZ3y1 FA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38fr70rhx1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 06:48:15 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14BAXBrX094870;
+        Tue, 11 May 2021 06:48:15 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38fr70rhwc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 06:48:15 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14BAfrtj015983;
+        Tue, 11 May 2021 10:48:13 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 38dj989m46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 11 May 2021 10:48:13 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14BAmAos31392160
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 May 2021 10:48:10 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF581AE055;
+        Tue, 11 May 2021 10:48:10 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 673F3AE051;
+        Tue, 11 May 2021 10:48:10 +0000 (GMT)
+Received: from localhost (unknown [9.85.107.233])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 11 May 2021 10:48:10 +0000 (GMT)
+Date:   Tue, 11 May 2021 16:18:09 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
+ subpage helper
+Message-ID: <20210511104809.evndsdckwhmonyyl@riteshh-domain>
+References: <20210427230349.369603-1-wqu@suse.com>
+ <20210427230349.369603-42-wqu@suse.com>
+ <46a8cbb7-4c3a-024d-4ee3-cbeb4068e92e@suse.com>
+ <20210507045735.jjtc76whburjmnvt@riteshh-domain>
+ <5d406b40-23d9-8542-792a-2cd6a7d95afe@gmx.com>
+ <e7e6ebdd-a220-e4ec-64e4-d031d7a9b181@gmx.com>
+ <20210510122933.mcg2sac2ugdennbs@riteshh-domain>
+ <95d7bc8a-5593-cc71-aee3-349dd6fd060d@gmx.com>
 MIME-Version: 1.0
-References: <93c4600e-5263-5cba-adf0-6f47526e7561@in.tum.de>
-In-Reply-To: <93c4600e-5263-5cba-adf0-6f47526e7561@in.tum.de>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 11 May 2021 09:56:31 +0100
-Message-ID: <CAL3q7H7mFmNhhCUTeYG_56gsz1p2G_sN=1GuPBjdbB=sC-EQyw@mail.gmail.com>
-Subject: Re: Leaf corruption due to csum range
-To:     Philipp Fent <fent@in.tum.de>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <95d7bc8a-5593-cc71-aee3-349dd6fd060d@gmx.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ZUIq7drPPchuEuQSPso3YDzlnq5aMm7c
+X-Proofpoint-ORIG-GUID: sOD34Ap9joSS2l6Ba7ukO9ZmHjoDfjuz
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-11_02:2021-05-11,2021-05-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 priorityscore=1501
+ clxscore=1015 adultscore=0 mlxscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105110080
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 10, 2021 at 10:01 PM Philipp Fent <fent@in.tum.de> wrote:
+On 21/05/10 09:10PM, Qu Wenruo wrote:
 >
-> I encountered a btrfs error on my system. I run Microsoft SQL Server in
-> a docker container on a btrfs filesystem on an SSD. When bulk-loading
-> some benchmark data, my system reproducibly enters in the following
-> failing state:
 >
-> [  366.665714] BTRFS critical (device sda): corrupt leaf:
-> root=3D18446744073709551610 block=3D507544305664 slot=3D0, csum end range
-> (308900515840) goes beyond the start range (308900384768) of the next
-> csum item
-> [  366.665723] BTRFS info (device sda): leaf 507544305664 gen 18292
-> total ptrs 4 free space 3 owner 18446744073709551610
-> [  366.665725]  item 0 key (18446744073709551606 128 308891275264)
-> itemoff 7259 itemsize 9024
-> [  366.665727]  item 1 key (18446744073709551606 128 308900384768)
-> itemoff 7067 itemsize 192
-> [  366.665728]  item 2 key (18446744073709551606 128 309036716032)
-> itemoff 2587 itemsize 4480
-> [  366.665730]  item 3 key (18446744073709551606 128 309041303552)
-> itemoff 103 itemsize 2484
-> [  366.665731] BTRFS error (device sda): block=3D507544305664 write time
-> tree block corruption detected
-> [  366.665821] BTRFS: error (device sda) in btrfs_sync_log:3136:
-> errno=3D-5 IO failure
-> [  366.665824] BTRFS info (device sda): forced readonly
+> On 2021/5/10 下午8:29, Ritesh Harjani wrote:
+> > On 21/05/10 04:38PM, Qu Wenruo wrote:
+> > > Hi Ritesh,
+> > >
+> > > I guess no error report so far is a good thing?
+> > Sorry about the delay in starting of my testing. Was not keeping well since
+> > Friday onwards, hence could not start the testing. (Feeling much better now).
+> >
+> > So -g quick passed w/o any fatal issues. But with -g auto I got a kernel bug
+> > with btrfs/28. Below is the report.
+> >
+> > >
+> > > Just to report what my result is, I ran my latest github branch for the
+> > > full weekend, over 50 hours, and around 20 runs of full generic/auto
+> > > without defrag groups.
+> > >
+> > > And I see no crash at all.
+> > >
+> > > But there is a special note, there is a new patch, introduced just
+> > > before the weekend (Fri May 7 09:31:43 2021 +0800), titled "btrfs: fix a
+> > > possible use-after-free race in metadata read path", is a new fix for a
+> > > bug I reproduced once locally.
+> >
+> > Yes,  I already have this in my tree. This is the latest patch in my tree which
+> > I am testing.
+> > "btrfs: remove io_failure_record::in_validation"
+> >
+> > >
+> > > The bug should only happen when read is slow and only happens for
+> > > metadata read path.
+> > >
+> > > The details can be found in the commit message, although it's rare to
+> > > hit, I have hit such problem around 3 times in total.
+> > >
+> > > Hopes you didn't hit any crash during your test.
+> >
+> > I am hitting below bug_on(). Since I saw your email just now, so I am directly
+> > reporting this failure, w/o analyzing. Please let me know if you need anything
+> > else from my end for this.
+> >
+> > I will halt the testing of "-g auto" for now. Once we have some conclusion on
+> > this one, then will resume the testing.
 >
-> Please note the erroring ranges:
-> csum end:   308900515840
-> Start next: 308900384768
-> which is a difference of (1 << 17) =3D=3D 0b100000000000000000 =3D=3D 128=
-KB
-> To me, this looks suspiciously like an off-by-one error, but I'm not too
-> versed in debugging btrfs.
-
-Most likely it's a race when adding checksums. In this case for the
-log tree (fsync).
-This has happened in the past and the most recent fix was:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
-id=3De289f03ea79bbc6574b78ac25682555423a91cbb
-
-There were cases too that affected the csum tree and not the log tree,
-but those are many years old now.
-
+> Thanks for the reporting, I was still just looping generic tests, thus
+> didn't yet start testing the btrfs tests.
 >
-> I reproduced this several times on my machine using the attached
-> scripts. The only obvious similarity between the crashes is this 128KB
-> csum end / start next. Sometimes a get one corrupt leaf, sometimes many.
-> I tried to reproduce it on another machine with an HDD, but didn't
-> encounter this error there.
-> Can you help me to debug this further?
-
-Try to see if there are reflink operations (clone and dedupe) done by
-sql server (or maybe docker), in case there aren't, that excludes
-shared extents being the cause of the problem.
-
-I'll have to look at the code and think what might go wrong to lead to
-that, so I can't say that I have exact steps on how to debug that.
-
-Thanks.
-
+> But considering no new crash in generic tests, I guess it's time to move
+> forward.
 >
-> # uname -a
-> Linux desk 5.12.2-arch1-1 #1 SMP PREEMPT Fri, 07 May 2021 15:36:06 +0000
-> x86_64 GNU/Linux
-> # btrfs --version
-> btrfs-progs v5.11.1
-> # btrfs fi show
-> Label: none  uuid: 6733acf5-be40-4fe2-9d6f-819d39e49720
->         Total devices 1 FS bytes used 187.11GiB
->         devid    1 size 931.51GiB used 208.03GiB path /dev/sda
-> # btrfs fi df /ssdSpace
-> Data, single: total=3D207.00GiB, used=3D186.67GiB
-> System, single: total=3D32.00MiB, used=3D48.00KiB
-> Metadata, single: total=3D1.00GiB, used=3D450.08MiB
-> GlobalReserve, single: total=3D215.41MiB, used=3D0.00B
+> >
+> > btrfs/028 32s ... 	[10:41:18][  780.104573] run fstests btrfs/028 at 2021-05-10 10:41:18
+> >
+> > [  780.732073] BTRFS: device fsid be9b827d-28ee-4a5e-80a0-e19971061a58 devid 1 transid 5 /dev/vdc scanned by mkfs.btrfs (21129)
+> > [  780.759754] BTRFS info (device vdc): disk space caching is enabled
+> > [  780.759848] BTRFS info (device vdc): has skinny extents
+> > [  780.759888] BTRFS warning (device vdc): read-write for sector size 4096 with page size 65536 is experimental
+> > <...>
+> > [  784.580404] BTRFS info (device vdc): found 21 extents, stage: move data extents
+> > [  784.878376] BTRFS info (device vdc): found 13 extents, stage: update data pointers
+> > [  785.175349] BTRFS info (device vdc): balance: ended with status: 0
+> > [  785.367729] BTRFS info (device vdc): balance: start -d
+> > [  785.400884] BTRFS info (device vdc): relocating block group 2446327808 flags data
+> > [  785.527858] btrfs_print_data_csum_error: 18 callbacks suppressed
+> > [  785.527865] BTRFS warning (device vdc): csum failed root -9 ino 262 off 393216 csum 0x8941f998 expected csum 0x9439dda4 mirror 1
+>
+> Checking the test case btrfs/028, it shouldn't have any error when
+> relocating the block groups, thus it's definitely something wrong in the
+> balance code.
+>
+> Thanks for the report, I'll give you an update after finishing the local
+> btrfs test groups.
+>
+> Thanks for your confirmation, really helps a lot!
+
+Hi Qu,
+
+FYI - I re-tested "-g auto" with btrfs/028 test excluded. I didn't find any
+other failure. Please let me know once you have a fix for btrfs/028, I can
+re-test the whole tree again.
+
+Thanks
+ritesh
 
 
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+> Qu
+>
+> > [  785.528406] btrfs_dev_stat_print_on_error: 18 callbacks suppressed
+> > [  785.528409] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+> > [  785.528857] BTRFS warning (device vdc): csum failed root -9 ino 262 off 397312 csum 0x8941f998 expected csum 0x9439dda4 mirror 1
+> > [  785.529166] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+> > [  785.529412] BTRFS warning (device vdc): csum failed root -9 ino 262 off 401408 csum 0x8941f998 expected csum 0x667b7e1e mirror 1
+> > [  785.529714] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
+> > [  785.530321] BTRFS warning (device vdc): csum failed root -9 ino 262 off 393216 csum 0x8941f998 expected csum 0x9439dda4 mirror 1
+> > [  785.530637] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
+> > [  785.530882] BTRFS warning (device vdc): csum failed root -9 ino 262 off 397312 csum 0x8941f998 expected csum 0x9439dda4 mirror 1
+> > [  785.531185] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
+> > [  785.531428] BTRFS warning (device vdc): csum failed root -9 ino 262 off 401408 csum 0x8941f998 expected csum 0x667b7e1e mirror 1
+> > [  785.531719] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
+> > <...>
+> > [  803.459877] BTRFS info (device vdc): relocating block group 10499391488 flags data
+> > [  803.776810] BTRFS info (device vdc): found 29 extents, stage: move data extents
+> > [  803.979572] BTRFS info (device vdc): found 18 extents, stage: update data pointers
+> > [  804.276370] BTRFS info (device vdc): balance: ended with status: 0
+> > [  804.427621] BTRFS info (device vdc): balance: start -d
+> > [  804.454527] BTRFS info (device vdc): relocating block group 11036262400 flags data
+> > [  804.623962] BTRFS warning (device vdc): csum failed root -9 ino 282 off 684032 csum 0x8941f998 expected csum 0x605aaa22 mirror 1
+> > [  804.624147] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 15, gen 0
+> > [  804.624277] BTRFS warning (device vdc): csum failed root -9 ino 282 off 688128 csum 0x8941f998 expected csum 0xe90a7889 mirror 1
+> > [  804.624435] BTRFS error (device vdc): bdev /dev/vdc errs: wr 0, rd 0, flush 0, corrupt 16, gen 0
+> > [  804.624682] assertion failed: atomic_read(&subpage->readers) >= nbits, in fs/btrfs/subpage.c:203
+> > [  804.624902] ------------[ cut here ]------------
+> > [  804.624989] kernel BUG at fs/btrfs/ctree.h:3415!
+> > cpu 0x1: Vector: 700 (Program Check) at [c000000007b47640]
+> >      pc: c000000000af297c: assertfail.constprop.11+0x34/0x38
+> >      lr: c000000000af2978: assertfail.constprop.11+0x30/0x38
+> >      sp: c000000007b478e0
+> >     msr: 800000000282b033
+> >    current = 0xc000000007999800
+> >    paca    = 0xc00000003fffee00	 irqmask: 0x03	 irq_happened: 0x01
+> >      pid   = 23, comm = kworker/u4:1
+> > kernel BUG at fs/btrfs/ctree.h:3415!
+> > Linux version 5.12.0-rc8-00160-gcd0da6627caa (root@ltctulc6a-p1) (gcc (Ubuntu 8.4.0-1ubuntu1~18.04) 8.4.0, GNU ld (GNU Binutils for Ubuntu) 2.30) #25 SMP Mon May 10 01:31:44 CDT 2021
+> > enter ? for help
+> > [c000000007b47940] c000000000aefdac btrfs_subpage_end_reader+0x5c/0xb0
+> > [c000000007b47980] c000000000a379f0 end_page_read+0x1d0/0x200
+> > [c000000007b479c0] c000000000a41554 end_bio_extent_readpage+0x784/0x9b0
+> > [c000000007b47b30] c000000000b4a234 bio_endio+0x254/0x270
+> > [c000000007b47b70] c0000000009f6178 end_workqueue_fn+0x48/0x80
+> > [c000000007b47ba0] c000000000a5c960 btrfs_work_helper+0x260/0x8e0
+> > [c000000007b47c40] c00000000020a7f4 process_one_work+0x434/0x7d0
+> > [c000000007b47d10] c00000000020ae94 worker_thread+0x304/0x570
+> > [c000000007b47da0] c0000000002173cc kthread+0x1bc/0x1d0
+> > [c000000007b47e10] c00000000000d6ec ret_from_kernel_thread+0x5c/0x70
+> >
+> > -ritesh
+> >
