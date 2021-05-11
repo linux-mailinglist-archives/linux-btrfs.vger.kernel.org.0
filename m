@@ -2,191 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4FB379BD6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 03:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D971379C32
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 May 2021 03:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhEKBIr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 May 2021 21:08:47 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:41754 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229980AbhEKBIq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 May 2021 21:08:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1620695260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SNynS9gezeld+ZFFgTRwM/R7x29vwlv+dNtw0DLwYlM=;
-        b=LzrqWZ41jv8v2M52GmDro9x36wGMynnTJg5gPDZZosVIt/qX1jwS/qkspaW2i7xMTfDbSl
-        FHxwTQMXjwGNx5odC3U2AKFuDmNU6RM+BGAfu0PlxVb+O7vcBzT9MgRLXJsq9sGg16+AxW
-        sZZzy8RZNGCQTrm20r64UOLSFOaEfwk=
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur01lp2051.outbound.protection.outlook.com [104.47.2.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-36-vfGLF4LgPAyXrpyK0J38Yg-1; Tue, 11 May 2021 03:07:39 +0200
-X-MC-Unique: vfGLF4LgPAyXrpyK0J38Yg-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C7XIHoQWpXmsPIzJgYnsIfVwxGdtjmgCRIkak/S25NY89pcC4KfI34OhD+aKFIjXAO/mCGTOQy5oDLvv4tomNbQxYdfmvz+DVomDB10HchWcB83nz2nYVNWvhq7nx6VuDsWSlPjU24PL0svwArn59uj7vgob2AbqH3RhA3hp0tNSn8g0NhhfoICAG+d05h6t1ZAP+fHsj/ZApPCgf/8IvLr961cbA+HRSBKy3vAxWehJl6Oa0f3m9+BnyNLRl6uxEk4OcRouMkGBKE3p4TeU/IteVt8mXE0Uw3QOvY/Wqar5WQ46sZtBm8SrMv0PnagxTxX5480GYtd2mYNT9hlD+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vl6BF3rdZGTa1uyhSdOn7ocZ7xIrFtyN0m6QFRDp6hs=;
- b=iJzr8COdT25wL51iI+mx4FSYHlkq71PbQiJnyn5XTgR+Yyzx0f9Aa3CA8OG/3KqUJkdOCYImFgIRKLlogNlDsHx3WFkDm2dfl0MXigve5cgI3L3SsXB0t6HjHgH0L1Vuyt7p/ymKpmMo5StMJwCxZStNd/ydn0Un5FQQ2d7rNjiwFmPcMHCh+kYDUUE7WFmYwx7rhxDnNTyBuUlLIMkL3hJl/FAHGrBwStwNrt02J1NeGtw7EQstcl3HXOrQGU42nnADEZw7KUi5+a9CJ4TgcD6x6xi41qJxYxAQRyHq//QNih+2XUayUmt4td5S1vxro5XpB7DkLSLbZKXfGlRDRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM5PR0402MB2898.eurprd04.prod.outlook.com (2603:10a6:203:9a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Tue, 11 May
- 2021 01:07:36 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::85d1:2535:1b6e:71d7]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::85d1:2535:1b6e:71d7%7]) with mapi id 15.20.4108.031; Tue, 11 May 2021
- 01:07:35 +0000
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+        id S230175AbhEKBnm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 May 2021 21:43:42 -0400
+Received: from mout.gmx.net ([212.227.15.15]:32947 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229736AbhEKBnl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 May 2021 21:43:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620697354;
+        bh=FuT/hLiZWvlW4ow+d4WHJ5lLf/7J+O4ZrasAaSCeB+o=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=fhibGPEsrJ1EE6nHWjdcbXFKlzyAAUYk5IRJpFioPEPUe0wrUOcZHfNX3CS49d7is
+         HAfam2FqL3O0Fo72QB20+bP14+szEN3Of/N0PPVYJQl7c0f/6Dzq1MAla7oXSzMv0a
+         xIHVjjQjZlb4rp1XLATQxPfEQeN3uBxdJ158BSjY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MjS9I-1lE4Tj16lu-00kxMV; Tue, 11
+ May 2021 03:42:33 +0200
+Subject: Re: [PATCH v3 3/4] btrfs: submit read time repair only for each
+ corrupted sector
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 References: <20210503020856.93333-1-wqu@suse.com>
- <20210510204141.GE7604@twin.jikos.cz>
-From:   Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH v3 0/4] btrfs: make read time repair to be only submitted
- for each corrupted sector
-Message-ID: <67f8a098-3e54-da13-129c-7dce08e1d310@suse.com>
-Date:   Tue, 11 May 2021 09:07:26 +0800
+ <20210503020856.93333-4-wqu@suse.com> <20210510203203.GD7604@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <751b7396-d0fd-d3b2-f14d-e730e6b08222@gmx.com>
+Date:   Tue, 11 May 2021 09:42:30 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
-In-Reply-To: <20210510204141.GE7604@twin.jikos.cz>
+MIME-Version: 1.0
+In-Reply-To: <20210510203203.GD7604@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: SJ0PR05CA0191.namprd05.prod.outlook.com
- (2603:10b6:a03:330::16) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by SJ0PR05CA0191.namprd05.prod.outlook.com (2603:10b6:a03:330::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.20 via Frontend Transport; Tue, 11 May 2021 01:07:34 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 16ef890f-00d8-4581-4e82-08d9141929ad
-X-MS-TrafficTypeDiagnostic: AM5PR0402MB2898:
-X-Microsoft-Antispam-PRVS: <AM5PR0402MB2898B6AD506E8D5D0D709F26D6539@AM5PR0402MB2898.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:389;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v4GgBT0YjmJHiiunOkEBF7ItScBi10KYzv55C7Gwa2uXlUbtAOl5OzrbIAOcl8JScg1HwaFGkjxCfL0cSdAER60x5m3OBgQiVLRXVTQOHZPaDj94GrWDF36pCkYUR7T5Rwu83sYSISEU0HeiAHZLBr8ZZyC03QVequuDY6EpFk3Lkx++Kh3BzmN0KMzud7qjbRp50u++pvE9PfArMivzlk4/Gy7tC7hklVWVUswgcqfcd8akcJqbAfQZaiuGVGv4cpSyQYSXH111rm1fT49+FzfnjPsDqn+yVbX1xLzS05P9aVfOLzo03nRri1GFfIGS8KU+wqRfr7ybYUo1EepHETSO30lPB9pws29E6u8Wabe7QWhPgtQHUu5gpFvrZuqF+PMnJeulMgyxLSDzMxDF17/fmP9CdXDjl+ohmgJyLOUqXYi51X1rOpPyHgKvWVxy06r2IIeX85QdAlFVcS9+12jsa45xrsEFRpKUfnKH+OIt+2Bfw5CDhjlq44Sfjf+GLqlL2S72DCRmuxc1rUNL5+tB8TEfiVdaxcnWaQr+1VBCfEOjMbr8TEZBQCKYkYuIPL33CciVv3jOuT8d4M7IfMUk7mEAvV/2hrCFKlPebUhJoToVqAXiIoNNahA6kzs28zyeqTJZML7di5tPvk4dByGIxgYrGWxw3KP9bjD0tt7H0oLvbCjX+KfKf2CWp9J5ogtdTMpZMFvFub5kFwfjEc2yyg20v6cxWJqJyIkzPweRc5ZXIUVWhdHll6QCs/VO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(376002)(39850400004)(136003)(31686004)(66946007)(26005)(16526019)(186003)(66556008)(6486002)(6706004)(16576012)(316002)(2616005)(956004)(83380400001)(31696002)(6666004)(38100700002)(66476007)(2906002)(38350700002)(52116002)(86362001)(478600001)(8936002)(5660300002)(8676002)(36756003)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?18MWPEv4jBYA1e2cPT0JqlVufpaZKemUqWazarXCo/hVQcLu0D0XefEScU29?=
- =?us-ascii?Q?SWGnNCNKX6AQRoxWov1Dxu6cSj4Glj7acXGhKa1tuOA1mlPAAMk3qdRcmP3q?=
- =?us-ascii?Q?duLUgMRhik27IumS3+ktMRQHFM5fvJA7VuO6HltPLLhnRWu+98lxmOsaaA1e?=
- =?us-ascii?Q?Kx1qSCHsUkHfukIqcITmDMz0vknqjOV2Z5J9j4dn59GmH4QSr2A5e45Y7hmG?=
- =?us-ascii?Q?FQJ3M260EYuzHYrq8ePnmiQz+yV+1tRUYUmild4v0g54fZoZ0BhXPsuSBLCj?=
- =?us-ascii?Q?4dUudmUrM9rGL6sQ6t2dSW5aD1V5CPdZKZQokss4XQyPvt9SXz3WhTz1bghu?=
- =?us-ascii?Q?PGeDEZKQGCQVyg5SpK72BFRfsz+GxMhncH6C+UdCCqcD8IXoGPIbxNp6lZGJ?=
- =?us-ascii?Q?cOt84iP8uhP/CfPq+itwBqckGd26QlYQsBIonkfb51NPMcXMMJOh/7T8Ufh8?=
- =?us-ascii?Q?qC2tzLeUeDX15vnihjDGU2fQ/QB+tELsVwIwd2BkKREcO2qk1Z2h9QmErLa7?=
- =?us-ascii?Q?q2SroRPE9dd8h6q4hJ47TrRAsigLs58AQdM14WCUHL437g+voBfR1FlCfoSa?=
- =?us-ascii?Q?Ep0BpcjYFfBzjKua1MgQgXKKL74teFTz3VqImFHh8koRPhev3le70Tl7G8Em?=
- =?us-ascii?Q?HI1pjhgOUvfrqKFJu8bLTjBryZxVaJT5OzjoFyXz/WCIf2k1a0waTJn+o6BT?=
- =?us-ascii?Q?tA3Ae9FnyMFOPGmzh1+RMkChHD0sz9vSpj0iobL0KTbdTqdz6oi2Ip7aGET9?=
- =?us-ascii?Q?v2us5CK1BOtw15zeekrVZ0tMFp14hvncW1FSDdqavcxtTI2Qf3JH4YidyHIQ?=
- =?us-ascii?Q?RdI0id1Yvq5hD40QC5MsaERTif1CSq5ZD17xptOmyRqxIicKbAnoSygv4jFK?=
- =?us-ascii?Q?qZdd/VhT6YeqWvBgnTeDM8XBNU4gL4zqcHvrCHZJUhwCxdz1XbjOfqHr81ie?=
- =?us-ascii?Q?/rA7R+9ftbPpswVj4YFjJlb9amiMT86uTT1rtsEu61jMmbZbQfKiePU87Ifu?=
- =?us-ascii?Q?MWd60UiQfzijWHTH8Hjney+QJfTG6beTAagss9AAwAOGSaygWakyHWijCaQY?=
- =?us-ascii?Q?EKR1JKO1IBNx0H+NuzhxwV0e9X7oEiCu/AZQsccqW2Ixo0EfmHDE1PjwxiJi?=
- =?us-ascii?Q?e7S5YfuMfvvJQV4EhQgEyBSjMZJvQhQ1X1PfdGl/RiDBTlCc57yYwcl+U8Wu?=
- =?us-ascii?Q?9kNdBJXoBW5jrKXBqeVHeujcTxmpj9csy71/TZcGE6igMZUTieOHL3mLDedf?=
- =?us-ascii?Q?crwkB2aXQY+GPimDvQcXeYOTyrGLNi0c4fk/mOzttV7S72yM0tF1Q10snzYa?=
- =?us-ascii?Q?vOHAIwO6AdhVBcMVXQ9CRndP?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16ef890f-00d8-4581-4e82-08d9141929ad
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2021 01:07:35.8514
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H5U+nhNzlehtNz6v4BankKgYgiEZkqfXnZgHhVrX0i5PgIfevMgA6TVvRz/4SAz0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0402MB2898
+X-Provags-ID: V03:K1:1A7f6MHrPHfqmNpGPdEYjn69rL/iR1ZFjslXJwvmf8L/h0U+uk4
+ Ehh4ki3aqFvYpIt/YRXb6KCmXpQDfs9IxfOqYmFpAxSCNFFvN3U23ooj1ih6GPV7CY95JnL
+ zfVerMp7EVKjrG2yBms2gt6CzwOMhodQPutYM6Z/ot+C64qmHTl43+aq03nFZXkARMjGnRT
+ y41r/+qJjVqjeSglhM1Qw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:t4ur+tNCTJQ=:qy+gl5GHxj1IX5YWzx+xAf
+ An+VUsW7LpOvCMb7DPmdgHPFNe+ZZxtBSf68rbYClR1tgLFxtPtEaCKDqQfIKSfTypvvAyQH7
+ GScK5TTC1mYJ13RZFZZPUFA8Nx70rYQorWt9yGB2baro0chzn2pf+51ZtRAiofLdDHhctIIrT
+ v4WO6py/ClbCvtQfQ8chRP2JM1PT8vMbXrtIqFfYwHzevVS3cOhu3FhsGhjknvSGznuZZ3cKl
+ rG6tOHB34/ghcGu41cFdWWpEIhe7ImMBXdTmFcxw7S8k0CJrk6mTOFvNy5XlcMVs5tQmCrRz2
+ XMy9NK0hRIHtKza4YelsjuYLxLy4veyPO4t6k7uX+DYD6ab4XKmYRin2b0uQEWcoYvGkvdwLe
+ t6HuEZfd25SR0NVSjZwOcGvayg62ZHI4GFcQ9CCWGyPyXE6YtZ4pttwozAt8o7jPKka6jFJts
+ 46S/euC78YLpl3M8ZDuRXufC9JAsLWUfyQSYiqX4Z2j8kEMmJINeH+zN3HeCo92hAEb5rhV1K
+ qlUu+unBdFjJKgPsfy9JaeoB6dRBiLAos8xgyRJUEIZA4LHmDLzWEJ6f70Cj0fnf8kl1umFQx
+ 1a9RN19qVzp/9STbi/HBsLaXNRNmmMs9js0WzOvlO6e0xNcimHr0btgCZHNWfLnPNrMF+fjGJ
+ PSpf9PDqzCUT+pI3ZzWp48j5LyphzBoFCawkk4MfrBKJdAY3OgcUgkFuLM8t5wN/tEtfAEEVv
+ Ls6hRBki058j39U+YMc8FxCef7w0dy0ss0ROleOtuBcXrpp0RQG/7MMVocX/PNdeCUAAPKInt
+ eFGOFoKwJ1IGe2ShYzgiGG/yJGS9D0uoQoq0MXztOWG+Z3o6G0ILdhtaA1kb1n59BFsXaBQpk
+ h81WToyWzLsBBaP/lGTpn6HBDUL+6OkL2tCRvfZ/EFBFOYkRsio1bIvTv4gcFxqryfqmpC+LP
+ uKUppGUXT5WPJmm3vaSXXKEJqDoP3FxofRMJswowSY16qLsdZyqd8RiBdBacxmtO+Vrdspdpy
+ 48vk1uVGpEClY174XKuusQn1e30Zbmnjl3YlnEwQuZngO1C1nDCS8N27AzbAsrE/az/XODtmF
+ IxQXwPFeumkSefwAfAUt0NLlbDQNnPKnZRVBCxAdr1dppVHws3eO9HFJeLfL+iTGVIZhPHAVD
+ R6dHwn3AGuqEiez5C9bgi/IOccPGV610Ppn4K1zmxUzKwxsNqMtX8y619vrCKEQc/tfXqgELQ
+ gBZXp+APv6K/HhlyZ
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/5/11 =E4=B8=8A=E5=8D=884:41, David Sterba wrote:
-> On Mon, May 03, 2021 at 10:08:52AM +0800, Qu Wenruo wrote:
->> Btrfs read time repair has to handle two different cases when a corrupti=
-on
->> or read failure is hit:
->> - The failed bio contains only one sector
->>    Then it only need to find a good copy
+On 2021/5/11 =E4=B8=8A=E5=8D=884:32, David Sterba wrote:
+> On Mon, May 03, 2021 at 10:08:55AM +0800, Qu Wenruo wrote:
+>> Currently btrfs_submit_read_repair() has some extra check on whether th=
+e
+>> failed bio needs extra validation for repair.
 >>
->> - The failed bio contains several sectors
->>    Then it needs to find which sectors really need to be repaired
+>> But we can avoid all these extra mechanism if we submit the repair for
+>> each sector.
 >>
->> But this different behaviors are not really needed, as we can teach btrf=
+>> By this, each read repair can be easily handled without the need to
+>> verify which sector is corrupted.
+>>
+>> This will also benefit subpage, as one subpage bvec can contain several
+>> sectors, making the extra verification more complex.
+>>
+>> So this patch will:
+>> - Introduce repair_one_sector()
+>>    The main code submitting repair, which is more or less the same as o=
+ld
+>>    btrfs_submit_read_repair().
+>>    But this time, it only repair one sector.
+>>
+>> - Make btrfs_submit_read_repair() to handle sectors differently
+>>    For sectors without csum error, just release them like what we did
+>>    in end_bio_extent_readpage().
+>>    Although in this context we don't have process_extent structure, thu=
 s
->> to only submit read repair for each corrupted sector.
->> By this, we only need to handle the one-sector corruption case.
+>>    we have to do extent tree operations sector by sector.
+>>    This is slower, but since it's only in csum mismatch path, it should
+>>    be fine.
 >>
->> This not only makes the code smaller and simpler, but also benefits subp=
-age,
->> allow subpage case to use the same infrastructure.
+>>    For sectors with csum error, we submit repair for each sector.
 >>
->> For current subpage code, we hacked the read repair code to make full
->> bvec read repair, which has less granularity compared to regular sector
->> size.
->>
->> The code is still based on subpage branch, but can be forward ported to
->> non-subpage code basis with minor conflicts.
->>
->> Changelog:
->> v2:
->> - Split the original patch
->>    Now we have two preparation patches, then the core change.
->>    And finally a cleanup.
->>
->> - Fix the uninitialize @error_bitmap when the bio read fails.
->>
->> v3:
->> - Fix the return value type mismatch in repair_one_sector()
->>    An error happens in v2 patch split, which can lead to hang when
->>    we can't repair the error.
->=20
-> Patchset added to for-next. The cleanups and simplifications look good
-> to me, thanks.
->=20
-I'm afraid there is a bug in the patchset.
+>> This patch will focus on the change on the repair path, the extra
+>> validation code is still kept as is, and will be cleaned up later.
+>
+> This leaves btrfs_io_needs_validation unused and compiler warns about
+> that but it gets removed in the next patch so that's ok.
+>
+> I did some minor style fixups
+>
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2706,7 +2706,7 @@ static void end_page_read(struct page *page, bool =
+uptodate, u64 start, u32 len)
+>          struct btrfs_fs_info *fs_info =3D btrfs_sb(page->mapping->host-=
+>i_sb);
+>
+>          ASSERT(page_offset(page) <=3D start &&
+> -               start + len <=3D page_offset(page) + PAGE_SIZE);
+> +              start + len <=3D page_offset(page) + PAGE_SIZE);
+>
+>          if (uptodate) {
+>                  btrfs_page_set_uptodate(fs_info, page, start, len);
+> @@ -2734,7 +2734,7 @@ blk_status_t btrfs_submit_read_repair(struct inode=
+ *inode,
+>   {
+>          struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
+>          const u32 sectorsize =3D fs_info->sectorsize;
+> -       int nr_bits =3D (end + 1 - start) / sectorsize;
+> +       const int nr_bits =3D (end + 1 - start) / fs_info->sectorsize_bi=
+ts;
 
-If we had a data read for 16 sectors in one page, one sector is bad and=20
-can't be repaired, we will under flow subage::readers number.
+It should be >> fs_info->sectorsize_bits;
 
-The cause is there are two call sites calling end_page_read().
-
-One in btrfs_submit_read_repair(), one in end_bio_extent_readpage().
-The former one is just calling end_page_read() for the good copy, while=20
-the latter one is calling end_page_read() for the full range.
-
-The direct fix is to make btrfs_submit_read_repair() to handle both=20
-cases, and skip the call in end_bio_extent_readpage().
-
-So I need to update the patchset to include a proper fix for it.
-
-But on the other hand, I'm also wondering should we use=20
-btrfs_subpage::readers as an atomic.
-For a more idiot proof way, we can also go 16bit map for reader/writer=20
-accounting, by that even we call end_page_read() twice for the same=20
-range, it won't cause anything.
-
-Any advice on btrfs_subpage::readers implementation?
-Should it be really idiot (me) proof, or just current atomic way to=20
-catch more idiots like me?
+Anyway, I'll submit a proper updated version, with your update and
+proper test.
 
 Thanks,
 Qu
 
+>          int i;
+>
+>          BUG_ON(bio_op(failed_bio) =3D=3D REQ_OP_WRITE);
+> @@ -2747,10 +2747,10 @@ blk_status_t btrfs_submit_read_repair(struct ino=
+de *inode,
+>                  int ret;
+>                  unsigned int offset =3D i * sectorsize;
+>
+> -               if (!(error_bitmap & (1 << i))) {
+> +               if (!(error_bitmap & (1U << i))) {
+>                          struct extent_state *cached =3D NULL;
+>
+> -                       /* This sector has no error, just finish the rea=
+d. */
+> +                       /* This sector has no error, just finish the rea=
+d */
+>                          end_page_read(page, true, start + offset, secto=
+rsize);
+>                          set_extent_uptodate(&BTRFS_I(inode)->io_tree,
+>                                          start + offset,
+> ---
+>
+> The division can be replaced by shift as we have it in fs_info and "1U"
+> in shifts is for clarity that it's performed on unsigned type.
+>
