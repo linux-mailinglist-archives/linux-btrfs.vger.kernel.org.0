@@ -2,137 +2,314 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F1837C087
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 May 2021 16:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7829E37C9B2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 May 2021 18:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhELOpy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 May 2021 10:45:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42730 "EHLO mx2.suse.de"
+        id S234511AbhELQUr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 May 2021 12:20:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230474AbhELOpw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 May 2021 10:45:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CEA28AECB;
-        Wed, 12 May 2021 14:44:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E7DFCDA818; Wed, 12 May 2021 16:42:13 +0200 (CEST)
-Date:   Wed, 12 May 2021 16:42:13 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: zoned: fix compressed writes
-Message-ID: <20210512144213.GS7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1620824721.git.johannes.thumshirn@wdc.com>
- <52c1251218441dfeec909b34069d654aa45311c1.1620824721.git.johannes.thumshirn@wdc.com>
+        id S234907AbhELPyB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 May 2021 11:54:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93201616E8
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 May 2021 15:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620833240;
+        bh=xQwzMKQbREwuzOhHLFWLEgLHz4jICMYLD46dwec2E8g=;
+        h=From:To:Subject:Date:From;
+        b=NYUjpFYyBiUklkDcFjkOpoAKUYae/GBHcfK8/8sIatjsihw5MorvdD2Ds4sYoxkA0
+         IGPGxjNhs7+RHB+YDqZBhIlFCW0DZy+eFQqk1EdssTMcQzjV1Ymvp8W8jzaIIeZ9KI
+         +8YDZUdv0w/ZeqUNSb5588WXCugXZS6zYODJeqfRRTc7UVfxUek/4jUoVXLrMZLKiE
+         4K3EBZlWN78Sv2VRFn/rZdEN0YWq4wlYR+ggM+XFXhx0KCDlalFWsFVl0mg0ET/z2A
+         +Ji2jnz0HmAQPt/iU7oZ07S9XmDSU3r6kYL3RBvKOijW0u6rEPMJcq3WRLe/1R8SFH
+         lHZS9H9kxyJFw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix removed dentries still existing after log is synced
+Date:   Wed, 12 May 2021 16:27:16 +0100
+Message-Id: <1a18d5aedaf709513285ccddb63577933a14d004.1620832863.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52c1251218441dfeec909b34069d654aa45311c1.1620824721.git.johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:01:40PM +0900, Johannes Thumshirn wrote:
-> When multiple processes write data to the same block group on a compressed
-> zoned filesystem, the underlying device could report I/O errors and data
-> corruption is possible.
-> 
-> This happens because on a zoned file system, compressed data writes where
-> sent to the device via a REQ_OP_WRITE instead of a REQ_OP_ZONE_APPEND
-> operation. But with REQ_OP_WRITE and parallel submission it cannot be
-> guaranteed that the data is always submitted aligned to the underlying
-> zone's write pointer.
-> 
-> The change to using REQ_OP_ZONE_APPEND instead of REQ_OP_WRITE on a zoned
-> filesystem is non intrusive on a regular file system or when submitting to
-> a conventional zone on a zoned filesystem, as it is guarded by
-> btrfs_use_zone_append.
-> 
-> Reported-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/compression.c | 44 ++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 40 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 2bea01d23a5b..d27205791483 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -28,6 +28,7 @@
->  #include "compression.h"
->  #include "extent_io.h"
->  #include "extent_map.h"
-> +#include "zoned.h"
->  
->  static const char* const btrfs_compress_types[] = { "", "zlib", "lzo", "zstd" };
->  
-> @@ -349,6 +350,7 @@ static void end_compressed_bio_write(struct bio *bio)
->  	 */
->  	inode = cb->inode;
->  	cb->compressed_pages[0]->mapping = cb->inode->i_mapping;
-> +	btrfs_record_physical_zoned(inode, cb->start, bio);
->  	btrfs_writepage_endio_finish_ordered(cb->compressed_pages[0],
->  			cb->start, cb->start + cb->len - 1,
->  			bio->bi_status == BLK_STS_OK);
-> @@ -401,6 +403,10 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  	u64 first_byte = disk_start;
->  	blk_status_t ret;
->  	int skip_sum = inode->flags & BTRFS_INODE_NODATASUM;
-> +	struct block_device *bdev;
-> +	const bool use_append = btrfs_use_zone_append(inode, disk_start);
-> +	const unsigned int bio_op =
-> +		use_append ? REQ_OP_ZONE_APPEND : REQ_OP_WRITE;
->  
->  	WARN_ON(!PAGE_ALIGNED(start));
->  	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
-> @@ -418,10 +424,31 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->  	cb->nr_pages = nr_pages;
->  
->  	bio = btrfs_bio_alloc(first_byte);
-> -	bio->bi_opf = REQ_OP_WRITE | write_flags;
-> +	bio->bi_opf = bio_op | write_flags;
->  	bio->bi_private = cb;
->  	bio->bi_end_io = end_compressed_bio_write;
->  
-> +	if (use_append) {
-> +		struct extent_map *em;
-> +		struct map_lookup *map;
-> +
-> +		em = btrfs_get_chunk_map(fs_info, disk_start, PAGE_SIZE);
+From: Filipe Manana <fdmanana@suse.com>
 
-The caller already does the em lookup, so this is duplicate, allocating
-memory, taking locks and doing a tree lookup. All happening on write out
-path so this seems heavy.
+When we move one inode from one directory to another and both the inode
+and its previous parent directory were logged before, we are not supposed
+to have the dentry for the old parent if we have a power failure after the
+log is synced. Only the new dentry is supposed to exist.
 
-> +		if (IS_ERR(em)) {
-> +			kfree(cb);
-> +			bio_put(bio);
-> +			return BLK_STS_NOTSUPP;
-> +		}
-> +
-> +		map = em->map_lookup;
-> +		/* We only support single profile for now */
-> +		ASSERT(map->num_stripes == 1);
-> +		bdev = map->stripes[0].dev->bdev;
-> +
-> +		free_extent_map(em);
-> +
-> +		bio_set_dev(bio, bdev);
+Generally this works correctly, however there is a scenario where this is
+not currently working, because the old parent of the file/directory that
+was moved is not authoritative for a range that includes the dir index and
+dir item keys of the old dentry. This case is better explained with the
+following example and reproducer:
 
-bdev seems to be used just to set it for the bio, so it does not need to
-be declared in the function scope (or for one-time use at all)
+  # The test requires a very specific layout of keys and items in the
+  # fs/subvolume btree to trigger the bug. So we want to make sure that
+  # on whatever platform we are, we have the same leaf/node size.
+  #
+  # Currently in btrfs the node/leaf size can not be smaller than the page
+  # size (but it can be greater than the page size). So use the largest
+  # supported node/leaf size (64K).
 
-The same sequence of calls is done in submit_extent_page so this should
-be in a helper.
+  $ mkfs.btrfs -f -n 65536 /dev/sdc
+  $ mount /dev/sdc /mnt
 
-> +	}
-> +
->  	if (blkcg_css) {
->  		bio->bi_opf |= REQ_CGROUP_PUNT;
->  		kthread_associate_blkcg(blkcg_css);
+  # "testdir" is inode 257.
+  $ mkdir /mnt/testdir
+  $ chmod 755 /mnt/testdir
+
+  # Create several empty files to have the directory "testdir" with its
+  # items spread over several leaves (7 in this case).
+  $ for ((i = 1; i <= 1200; i++)); do
+       echo -n > /mnt/testdir/file$i
+    done
+
+  # Create our test directory "dira", inode number 1458, which gets all
+  # its items in leaf 7.
+  #
+  # The BTRFS_DIR_ITEM_KEY item for inode 257 ("testdir") that points to
+  # the entry named "dira" is in leaf 2, while the BTRFS_DIR_INDEX_KEY
+  # item that points to that entry is in leaf 3.
+  #
+  # For this particular filesystem node size (64K), file count and file
+  # names, we endup with the directory entry items from inode 257 in
+  # leaves 2 and 3, as previously mentioned - what matters for triggering
+  # the bug exercised by this test case is that those items are not placed
+  # in leaf 1, they must be placed in a leaf different from the one
+  # containing the inode item for inode 257.
+  #
+  # The corresponding BTRFS_DIR_ITEM_KEY and BTRFS_DIR_INDEX_KEY items for
+  # the parent inode (257) are the following:
+  #
+  #    item 460 key (257 DIR_ITEM 3724298081) itemoff 48344 itemsize 34
+  #         location key (1458 INODE_ITEM 0) type DIR
+  #         transid 6 data_len 0 name_len 4
+  #         name: dira
+  #
+  # and:
+  #
+  #    item 771 key (257 DIR_INDEX 1202) itemoff 36673 itemsize 34
+  #         location key (1458 INODE_ITEM 0) type DIR
+  #         transid 6 data_len 0 name_len 4
+  #         name: dira
+
+  $ mkdir /mnt/testdir/dira
+
+  # Make sure everything done so far is durably persisted.
+  $ sync
+
+  # Now do a change to inode 257 ("testdir") that does not result in
+  # COWing leaves 2 and 3 - the leaves that contain the directory items
+  # pointing to inode 1458 (directory "dira").
+  #
+  # Changing permissions, the owner/group, updating or adding a xattr,
+  # etc, will not change (COW) leaves 2 and 3. So for the sake of
+  # simplicity change the permissions of inode 257, which results in
+  # updating its inode item and therefore change (COW) only leaf 1.
+
+  $ chmod 700 /mnt/testdir
+
+  # Now fsync directory inode 257.
+  #
+  # Since only the first leaf was changed/COWed, we log the inode item of
+  # inode 257 and only the dentries found in the first leaf, all have a
+  # key type of BTRFS_DIR_ITEM_KEY, and no keys of type
+  # BTRFS_DIR_INDEX_KEY, because they sort after the former type and none
+  # exist in the first leaf.
+  #
+  # We also log 3 items that represent ranges for dir items and dir
+  # indexes for which the log is authoritative:
+  #
+  # 1) a key of type BTRFS_DIR_LOG_ITEM_KEY, which indicates the log is
+  #    authoritative for all BTRFS_DIR_ITEM_KEY keys that have an offset
+  #    in the range [0, 2285968570] (the offset here is the crc32c of the
+  #    dentry's name). The value 2285968570 corresponds to the offset of
+  #    the first key of leaf 2 (which is of type BTRFS_DIR_ITEM_KEY);
+  #
+  # 2) a key of type BTRFS_DIR_LOG_ITEM_KEY, which indicates the log is
+  #    authoritative for all BTRFS_DIR_ITEM_KEY keys that have an offset
+  #    in the range [4293818216, (u64)-1] (the offset here is the crc32c
+  #    of the dentry's name). The value 4293818216 corresponds to the
+  #    offset of the highest key of type BTRFS_DIR_ITEM_KEY plus 1
+  #    (4293818215 + 1), which is located in leaf 2;
+  #
+  # 3) a key of type BTRFS_DIR_LOG_INDEX_KEY, with an offset of 1203,
+  #    which indicates the log is authoritative for all keys of type
+  #    BTRFS_DIR_INDEX_KEY that have an offset in the range
+  #    [1203, (u64)-1]. The value 1203 corresponds to the offset of the
+  #    last key of type BTRFS_DIR_INDEX_KEY plus 1 (1202 + 1), which is
+  #    located in leaf 3;
+  #
+  # Also, because "testdir" is a directory and inode 1458 ("dira") is a
+  # child directory, we log inode 1458 too.
+
+  $ xfs_io -c "fsync" /mnt/testdir
+
+  # Now move "dira", inode 1458, to be a child of the root directory
+  # (inode 256).
+  #
+  # Because this inode was previously logged, when "testdir" was fsynced,
+  # the log is updated so that the old inode reference, referring to inode
+  # 257 as the parent, is deleted and the new inode reference, referring
+  # to inode 256 as the parent, is added to the log.
+
+  $ mv /mnt/testdir/dira /mnt
+
+  # Now change some file and fsync it. This guarantees the log changes
+  # made by the previous move/rename operation are persisted. We do not
+  # need to do any special modification to the file, just any change to
+  # any file and sync the log.
+
+  $ xfs_io -c "pwrite -S 0xab 0 64K" -c "fsync" /mnt/testdir/file1
+
+  # Simulate a power failure and then mount again the filesystem to
+  # replay the log tree. We want to verify that we are able to mount the
+  # filesystem, meaning log replay was successful, and that directory
+  # inode 1458 ("dira") only has inode 256 (the filesystem's root) as
+  # its parent (and no longer a child of inode 257).
+  #
+  # It used to happen that during log replay we would end up having
+  # inode 1458 (directory "dira") with 2 hard links, being a child of
+  # inode 257 ("testdir") and inode 256 (the filesystem's root). This
+  # resulted in the tree checker detecting the issue and causing the
+  # mount operation to fail (with -EIO).
+  #
+  # This happened because in the log we have the new name/parent for
+  # inode 1458, which results in adding the new dentry with inode 256
+  # as the parent, but the previous dentry, under inode 257 was never
+  # removed - this is because the ranges for dir items and dir indexes
+  # of inode 257 for which the log is authoritative do not include the
+  # old dir item and dir index for the dentry of inode 257 referring to
+  # inode 1458:
+  #
+  # - for dir items, the log is authoritative for the ranges
+  #   [0, 2285968570] and [4293818216, (u64)-1]. The dir item at inode 257
+  #   pointing to inode 1458 has a key of (257 DIR_ITEM 3724298081), as
+  #   previously mentioned, so the dir item is not deleted when the log
+  #   replay procedure processes the authoritative ranges, as 3724298081
+  #   is outside both ranges;
+  #
+  # - for dir indexes, the log is authoritative for the range
+  #   [1203, (u64)-1], and the dir index item of inode 257 pointing to
+  #   inode 1458 has a key of (257 DIR_INDEX 1202), as previously
+  #   mentioned, so the dir index item is not deleted when the log
+  #   replay procedure processes the authoritative range.
+
+  <power failure>
+
+  $ mount /dev/sdc /mnt
+  mount: /mnt: can't read superblock on /dev/sdc.
+
+  $ dmesg
+  (...)
+  [87849.840509] BTRFS info (device sdc): start tree-log replay
+  [87849.875719] BTRFS critical (device sdc): corrupt leaf: root=5 block=30539776 slot=554 ino=1458, invalid nlink: has 2 expect no more than 1 for dir
+  [87849.878084] BTRFS info (device sdc): leaf 30539776 gen 7 total ptrs 557 free space 2092 owner 5
+  [87849.879516] BTRFS info (device sdc): refs 1 lock_owner 0 current 2099108
+  [87849.880613] 	item 0 key (1181 1 0) itemoff 65275 itemsize 160
+  [87849.881544] 		inode generation 6 size 0 mode 100644
+  [87849.882692] 	item 1 key (1181 12 257) itemoff 65258 itemsize 17
+  (...)
+  [87850.562549] 	item 556 key (1458 12 257) itemoff 16017 itemsize 14
+  [87850.563349] BTRFS error (device dm-0): block=30539776 write time tree block corruption detected
+  [87850.564386] ------------[ cut here ]------------
+  [87850.564920] WARNING: CPU: 3 PID: 2099108 at fs/btrfs/disk-io.c:465 csum_one_extent_buffer+0xed/0x100 [btrfs]
+  [87850.566129] Modules linked in: btrfs dm_zero dm_snapshot (...)
+  [87850.573789] CPU: 3 PID: 2099108 Comm: mount Not tainted 5.12.0-rc8-btrfs-next-86 #1
+  (...)
+  [87850.587481] Call Trace:
+  [87850.587768]  btree_csum_one_bio+0x244/0x2b0 [btrfs]
+  [87850.588354]  ? btrfs_bio_fits_in_stripe+0xd8/0x110 [btrfs]
+  [87850.589003]  btrfs_submit_metadata_bio+0xb7/0x100 [btrfs]
+  [87850.589654]  submit_one_bio+0x61/0x70 [btrfs]
+  [87850.590248]  submit_extent_page+0x91/0x2f0 [btrfs]
+  [87850.590842]  write_one_eb+0x175/0x440 [btrfs]
+  [87850.591370]  ? find_extent_buffer_nolock+0x1c0/0x1c0 [btrfs]
+  [87850.592036]  btree_write_cache_pages+0x1e6/0x610 [btrfs]
+  [87850.592665]  ? free_debug_processing+0x1d5/0x240
+  [87850.593209]  do_writepages+0x43/0xf0
+  [87850.593798]  ? __filemap_fdatawrite_range+0xa4/0x100
+  [87850.594391]  __filemap_fdatawrite_range+0xc5/0x100
+  [87850.595196]  btrfs_write_marked_extents+0x68/0x160 [btrfs]
+  [87850.596202]  btrfs_write_and_wait_transaction.isra.0+0x4d/0xd0 [btrfs]
+  [87850.597377]  btrfs_commit_transaction+0x794/0xca0 [btrfs]
+  [87850.598455]  ? _raw_spin_unlock_irqrestore+0x32/0x60
+  [87850.599305]  ? kmem_cache_free+0x15a/0x3d0
+  [87850.600029]  btrfs_recover_log_trees+0x346/0x380 [btrfs]
+  [87850.601021]  ? replay_one_extent+0x7d0/0x7d0 [btrfs]
+  [87850.601988]  open_ctree+0x13c9/0x1698 [btrfs]
+  [87850.602846]  btrfs_mount_root.cold+0x13/0xed [btrfs]
+  [87850.603771]  ? kmem_cache_alloc_trace+0x7c9/0x930
+  [87850.604576]  ? vfs_parse_fs_string+0x5d/0xb0
+  [87850.605293]  ? kfree+0x276/0x3f0
+  [87850.605857]  legacy_get_tree+0x30/0x50
+  [87850.606540]  vfs_get_tree+0x28/0xc0
+  [87850.607163]  fc_mount+0xe/0x40
+  [87850.607695]  vfs_kern_mount.part.0+0x71/0x90
+  [87850.608440]  btrfs_mount+0x13b/0x3e0 [btrfs]
+  (...)
+  [87850.629477] ---[ end trace 68802022b99a1ea0 ]---
+  [87850.630849] BTRFS: error (device sdc) in btrfs_commit_transaction:2381: errno=-5 IO failure (Error while writing out transaction)
+  [87850.632422] BTRFS warning (device sdc): Skipping commit of aborted transaction.
+  [87850.633416] BTRFS: error (device sdc) in cleanup_transaction:1978: errno=-5 IO failure
+  [87850.634553] BTRFS: error (device sdc) in btrfs_replay_log:2431: errno=-5 IO failure (Failed to recover log tree)
+  [87850.637529] BTRFS error (device sdc): open_ctree failed
+
+In this example the inode we moved was a directory, so it was easy to
+detect the problem because directories can only have one hard link and
+the tree checker immediately detects that. If the moved inode was a file,
+then the log replay would succeed and we would end up having both the
+new hard link (/mnt/foo) and the old hard link (/mnt/testdir/foo) present,
+but only the new one should be present.
+
+Fix this by forcing re-logging of the old parent directory when logging
+the new name during a rename operation. This ensures we end up with a log
+that is authoritative for a range covering the keys for the old dentry,
+therefore causing the old dentry do be deleted when replaying the log.
+
+A test case for fstests will follow up soon.
+
+Fixes: 64d6b281ba4db0 ("btrfs: remove unnecessary check_parent_dirs_for_sync()")
+CC: stable@vger.kernel.org # 5.12+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index a0fc3a1390ab..fd6b1f13112e 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6462,6 +6462,24 @@ void btrfs_log_new_name(struct btrfs_trans_handle *trans,
+ 	    (!old_dir || old_dir->logged_trans < trans->transid))
+ 		return;
+ 
++	/*
++	 * If we are doing a rename (old_dir is not NULL) from a directory that
++	 * was previously logged, make sure the next log attempt on the directory
++	 * is not skipped and logs the inode again. This is because the log may
++	 * not currently be authoritative for a range including the old
++	 * BTRFS_DIR_ITEM_KEY and BTRFS_DIR_INDEX_KEY keys, so we want to make
++	 * sure after a log replay we do not end up with both the new and old
++	 * dentries around (in case the inode is a directory we would have a
++	 * directory with two hard links and 2 inode references for different
++	 * parents). The next log attempt of old_dir will happen at
++	 * btrfs_log_all_parents(), called through btrfs_log_inode_parent()
++	 * below, because we have previously set inode->last_unlink_trans to the
++	 * current transaction ID, either here or at btrfs_record_unlink_dir() in
++	 * case inode is a directory.
++	 */
++	if (old_dir)
++		old_dir->logged_trans = 0;
++
+ 	btrfs_init_log_ctx(&ctx, &inode->vfs_inode);
+ 	ctx.logging_new_name = true;
+ 	/*
+-- 
+2.28.0
+
