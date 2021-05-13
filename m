@@ -2,1279 +2,541 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D26637FDF8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 21:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC1D37FE53
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 21:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhEMTUw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 May 2021 15:20:52 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:56425 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232014AbhEMTUv (ORCPT
+        id S231703AbhEMTjO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 May 2021 15:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231826AbhEMTjM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 May 2021 15:20:51 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id E5F6E27E3;
-        Thu, 13 May 2021 15:19:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 13 May 2021 15:19:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=fm3; bh=7+hB4PsOe4kZb4NJNPOhgSPYSCMFHQjhneuCSdsG
-        zSU=; b=LfegyR1dWu6+c9EAWQMNLpIg8wFNF/DpJ81al9SZQu63UQ6nX2WQJ6CT
-        Ci2E4j/+TE2T+EpmD9pQfjI+g2iWLnOYnKcmzYBJoHfqDArvUQ0KyKC+R0OE3MUL
-        JrpiWwe/5xOYmS8B3sOinfMbOvve4qLH+0EMoYMIdqRdeFZf2MntBfdDgPUgRAvW
-        Up3BKA9+dGpnfT7LLntXtyGADDqtjWcDMomo0DrCUGTMCTH+Y0raKRjIrm1ie2wV
-        +Q3iIcRvAO67DMXIxnoXB3Hq2nYzSSjACv9F7BCH0yyL1XjsK9gnmRmEu5cl4KOL
-        Rnqm8V2X+JMRLLGkIDap2hyfOPjKCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=7+hB4P
-        sOe4kZb4NJNPOhgSPYSCMFHQjhneuCSdsGzSU=; b=gOcE1ymEVBPEJIQrIhnkqo
-        XyYwtcdjzjrbrLDaWl/BiUr2e0FMU5Ry8uOvLoLky64phxK1LBx33usJ0Sckie8D
-        F64COFXAGTkftXjWum+3B1h7FT7dw+8RIx3WyPt6x8CUxV8AT7evAAJAGIVwM1Z2
-        QArR3OyXYCMfeeR4/nFJwEj3QntFgHtO9FTBeFNPyECCv9bE+ZTtEYUfgLQNRwwr
-        jqWHSbZzYgKgpOvgbo5PX8WgjbY7uCwzaCQLTo/KfxXk2A5opBFtkVGp4pXa5Tvq
-        BseOnINYakRteNACW1avDna5qZVs6k9EvY5tRNjiy+6igdj8fVP8wavUcDBTMHkA
-        ==
-X-ME-Sender: <xms:zHudYEQL5PMwpdMI0V96yN5rgCNVP6GLWGmIPUYPY3jTQg-tgB-Fiw>
-    <xme:zHudYBwA3lxr8799emyQnbJ4Z9zVJGR9Cs7yT1qmh_nyH-CQrWY0Wlez8errgJNa2
-    xMzBQ9Kcqu6ozBlUc0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehgedgudefhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
-    rdhioheqnecuggftrfgrthhtvghrnheptddvffdtvdevudeijeetudefuedufeeufefhud
-    ejuddtgedttdffffeigfetgfdtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfk
-    phepvddtjedrheefrddvheefrdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:zHudYB2Mz1eaA2-DMvIyy3hW-cNOfb2CXs6lL1r3fDFULGgpso_1-g>
-    <xmx:zHudYIAi4HB5zxe-g8uJzroeRPq3m-wQeAmaYvstWmazS6k33zdI2Q>
-    <xmx:zHudYNh0sXg43W3inlzn28sWY-IuYus5a5xQLnwmaLyMLd0p8t3BVQ>
-    <xmx:zHudYNb9KFrJaaRR_4jLgo4kig0wGd8zaSibdRJsrRpjkuec5R8e7Q>
-Received: from localhost (unknown [207.53.253.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 13 May 2021 15:19:39 -0400 (EDT)
-Date:   Thu, 13 May 2021 12:19:38 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 2/5] btrfs: initial fsverity support
-Message-ID: <YJ17yjaMwJTH+GtU@zen>
-References: <cover.1620240133.git.boris@bur.io>
- <dd0cfc38c6de927de63f34f96499dc8f80398754.1620241221.git.boris@bur.io>
- <20210511203143.GN7604@twin.jikos.cz>
+        Thu, 13 May 2021 15:39:12 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F785C06174A
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 May 2021 12:38:01 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id 1so20657493qtb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 May 2021 12:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TipYJuG3p4Pucg/InsTuYMIJteW1GjbagPgGClWnmy0=;
+        b=nxWdey+2Xf0DgKS17LJLSV/UkjRlIUxVYV2U2aVT6uIYSS8Osu90fRwkoiMiZsjiaa
+         qK3EMirUTBLbcBSb4vpjv/Ol24OJGkFwkAUernxOILNSZVU4gNlIeFFZlUg/ZvnoadzD
+         GC3rsrtti5JkcZHyVkY+qFLGN6i9e9X622f6OcV5guJ8olZ9Z1+xVhGSkWyJJgouDVK/
+         tgdR1OBFFnxtn3yt+a7Hnq3TmEigYMzP4ZS6M76GX5KOO8Fj85M6dqbmnvTQ8pfW48Zl
+         yOfLLYhD/QRDdKATcdV96Yc2lNKNqgv1BrrjPFW3uMKG9wQ1eUgxVTq0tadWL8xQzBBz
+         HEBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TipYJuG3p4Pucg/InsTuYMIJteW1GjbagPgGClWnmy0=;
+        b=O2PqsDz3Wjhj4KPj+LFB1581mV4rjCgCuXvRajsifPt+r9X74b8TRplZysSPsyDXN0
+         qV0s4geQl8p5gdvKeykKPa7YbAhUZI2tuZH0uzJHQhiPGbgTMYrhIAGRRkHG52d0uM+3
+         dRoN6z3gjCi53mse5nt1CvdVC37l4L9ZsbXWJxtXRQwfejXmAtBvzKBlqqUV88rW6FQ3
+         AEdGcIaJwDHLPittonv9ct78X8RWhFLshykAyFUUWL1lGVLq+89AsL+sQK7MU+bm6gvI
+         sZp+D+0eMXITkSotOLW5Cl5gLw6tzUO0FoSstOEpuOQaUF31xp8sZh1pkEdLvNmWNE94
+         WFNQ==
+X-Gm-Message-State: AOAM532r87RIOyFqD8eOD7n4DlqtFyh20LMwDElmYs/kK/ycrIruGXf4
+        B5sIXfaxvM4uTZ9v6kL7tFjENX2+Ms+O/g==
+X-Google-Smtp-Source: ABdhPJwOanNGSn7WSU5/EUWlZo+0CZjhbkY2IvMatsvjYiqMOn4AbqoCvV4N5MIFN2BpMWeLVD2+QQ==
+X-Received: by 2002:a05:622a:287:: with SMTP id z7mr35046954qtw.33.1620934680094;
+        Thu, 13 May 2021 12:38:00 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id c141sm3118287qke.12.2021.05.13.12.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 12:37:59 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fsdevel@vger.kernel.org, jack@suse.cz, amir73il@gmail.com,
+        viro@zeniv.linux.org.uk
+Subject: [PATCH v2] fsnotify: rework unlink/rmdir notify events
+Date:   Thu, 13 May 2021 15:37:55 -0400
+Message-Id: <1ff9dd79cd4938a28c3ff3045c0d639f412eb10b.1620934543.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511203143.GN7604@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 11, 2021 at 10:31:43PM +0200, David Sterba wrote:
-> On Wed, May 05, 2021 at 12:20:40PM -0700, Boris Burkov wrote:
-> > From: Chris Mason <clm@fb.com>
-> > 
-> > Add support for fsverity in btrfs. To support the generic interface in
-> > fs/verity, we add two new item types in the fs tree for inodes with
-> > verity enabled. One stores the per-file verity descriptor and the other
-> > stores the Merkle tree data itself.
-> > 
-> > Verity checking is done at the end of IOs to ensure each page is checked
-> > before it is marked uptodate.
-> > 
-> > Verity relies on PageChecked for the Merkle tree data itself to avoid
-> > re-walking up shared paths in the tree. For this reason, we need to
-> > cache the Merkle tree data.
-> 
-> What's the estimated size of the Merkle tree data? Does the whole tree
-> need to be kept cached or is it only for data that are in page cache?
-> 
-> > Since the file is immutable after verity is
-> > turned on, we can cache it at an index past EOF.
-> > 
-> > Use the new inode compat_flags to store verity on the inode item, so
-> > that we can enable verity on a file, then rollback to an older kernel
-> > and still mount the file system and read the file. Since we can't safely
-> > write the file anymore without ruining the invariants of the Merkle
-> > tree, we mark a ro_compat flag on the file system when a file has verity
-> > enabled.
-> > 
-> > Signed-off-by: Chris Mason <clm@fb.com>
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >  fs/btrfs/Makefile               |   1 +
-> >  fs/btrfs/btrfs_inode.h          |   1 +
-> >  fs/btrfs/ctree.h                |  30 +-
-> >  fs/btrfs/extent_io.c            |  27 +-
-> >  fs/btrfs/file.c                 |   6 +
-> >  fs/btrfs/inode.c                |   7 +
-> >  fs/btrfs/ioctl.c                |  14 +-
-> >  fs/btrfs/super.c                |   3 +
-> >  fs/btrfs/sysfs.c                |   6 +
-> >  fs/btrfs/verity.c               | 617 ++++++++++++++++++++++++++++++++
-> >  include/uapi/linux/btrfs.h      |   2 +-
-> >  include/uapi/linux/btrfs_tree.h |  15 +
-> >  12 files changed, 718 insertions(+), 11 deletions(-)
-> >  create mode 100644 fs/btrfs/verity.c
-> > 
-> > diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-> > index cec88a66bd6c..3dcf9bcc2326 100644
-> > --- a/fs/btrfs/Makefile
-> > +++ b/fs/btrfs/Makefile
-> > @@ -36,6 +36,7 @@ btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
-> >  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
-> >  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
-> >  btrfs-$(CONFIG_BLK_DEV_ZONED) += zoned.o
-> > +btrfs-$(CONFIG_FS_VERITY) += verity.o
-> >  
-> >  btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
-> >  	tests/extent-buffer-tests.o tests/btrfs-tests.o \
-> > diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> > index e8dbc8e848ce..4536548b9e79 100644
-> > --- a/fs/btrfs/btrfs_inode.h
-> > +++ b/fs/btrfs/btrfs_inode.h
-> > @@ -51,6 +51,7 @@ enum {
-> >  	 * the file range, inode's io_tree).
-> >  	 */
-> >  	BTRFS_INODE_NO_DELALLOC_FLUSH,
-> > +	BTRFS_INODE_VERITY_IN_PROGRESS,
-> 
-> Please add a comment
-> 
-> >  };
-> >  
-> >  /* in memory btrfs inode */
-> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > index 0546273a520b..c5aab6a639ef 100644
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > @@ -279,9 +279,10 @@ struct btrfs_super_block {
-> >  #define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
-> >  #define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
-> >  
-> > -#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
-> > -	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
-> > -	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID)
-> > +#define BTRFS_FEATURE_COMPAT_RO_SUPP				\
-> > +	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |		\
-> > +	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |	\
-> > +	 BTRFS_FEATURE_COMPAT_RO_VERITY)
-> >  
-> >  #define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
-> >  #define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
-> > @@ -1505,6 +1506,11 @@ do {                                                                   \
-> >  	 BTRFS_INODE_COMPRESS |						\
-> >  	 BTRFS_INODE_ROOT_ITEM_INIT)
-> >  
-> > +/*
-> > + * Inode compat flags
-> > + */
-> > +#define BTRFS_INODE_VERITY		(1 << 0)
-> > +
-> >  struct btrfs_map_token {
-> >  	struct extent_buffer *eb;
-> >  	char *kaddr;
-> > @@ -3766,6 +3772,24 @@ static inline int btrfs_defrag_cancelled(struct btrfs_fs_info *fs_info)
-> >  	return signal_pending(current);
-> >  }
-> >  
-> > +/* verity.c */
-> > +#ifdef CONFIG_FS_VERITY
-> > +extern const struct fsverity_operations btrfs_verityops;
-> > +int btrfs_drop_verity_items(struct btrfs_inode *inode);
-> > +BTRFS_SETGET_FUNCS(verity_descriptor_encryption, struct btrfs_verity_descriptor_item,
-> > +		   encryption, 8);
-> > +BTRFS_SETGET_FUNCS(verity_descriptor_size, struct btrfs_verity_descriptor_item, size, 64);
-> > +BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_encryption, struct btrfs_verity_descriptor_item,
-> > +			 encryption, 8);
-> > +BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_size, struct btrfs_verity_descriptor_item,
-> > +			 size, 64);
-> > +#else
-> > +static inline int btrfs_drop_verity_items(struct btrfs_inode *inode)
-> > +{
-> > +	return 0;
-> > +}
-> > +#endif
-> > +
-> >  /* Sanity test specific functions */
-> >  #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-> >  void btrfs_test_destroy_inode(struct inode *inode);
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index 4fb33cadc41a..d1f57a4ad2fb 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -13,6 +13,7 @@
-> >  #include <linux/pagevec.h>
-> >  #include <linux/prefetch.h>
-> >  #include <linux/cleancache.h>
-> > +#include <linux/fsverity.h>
-> >  #include "misc.h"
-> >  #include "extent_io.h"
-> >  #include "extent-io-tree.h"
-> > @@ -2862,15 +2863,28 @@ static void begin_page_read(struct btrfs_fs_info *fs_info, struct page *page)
-> >  	btrfs_subpage_start_reader(fs_info, page, page_offset(page), PAGE_SIZE);
-> >  }
-> >  
-> > -static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
-> > +static int end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
-> >  {
-> > -	struct btrfs_fs_info *fs_info = btrfs_sb(page->mapping->host->i_sb);
-> > +	int ret = 0;
-> > +	struct inode *inode = page->mapping->host;
-> > +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> >  
-> >  	ASSERT(page_offset(page) <= start &&
-> >  		start + len <= page_offset(page) + PAGE_SIZE);
-> >  
-> >  	if (uptodate) {
-> > -		btrfs_page_set_uptodate(fs_info, page, start, len);
-> > +		/*
-> > +		 * buffered reads of a file with page alignment will issue a
-> > +		 * 0 length read for one page past the end of file, so we must
-> > +		 * explicitly skip checking verity on that page of zeros.
-> > +		 */
-> > +		if (!PageError(page) && !PageUptodate(page) &&
-> > +		    start < i_size_read(inode) &&
-> > +		    fsverity_active(inode) &&
-> > +		    !fsverity_verify_page(page))
-> > +			ret = -EIO;
-> > +		else
-> > +			btrfs_page_set_uptodate(fs_info, page, start, len);
-> >  	} else {
-> >  		btrfs_page_clear_uptodate(fs_info, page, start, len);
-> >  		btrfs_page_set_error(fs_info, page, start, len);
-> > @@ -2878,12 +2892,13 @@ static void end_page_read(struct page *page, bool uptodate, u64 start, u32 len)
-> >  
-> >  	if (fs_info->sectorsize == PAGE_SIZE)
-> >  		unlock_page(page);
-> > -	else if (is_data_inode(page->mapping->host))
-> > +	else if (is_data_inode(inode))
-> >  		/*
-> >  		 * For subpage data, unlock the page if we're the last reader.
-> >  		 * For subpage metadata, page lock is not utilized for read.
-> >  		 */
-> >  		btrfs_subpage_end_reader(fs_info, page, start, len);
-> > +	return ret;
-> >  }
-> >  
-> >  /*
-> > @@ -3059,7 +3074,9 @@ static void end_bio_extent_readpage(struct bio *bio)
-> >  		bio_offset += len;
-> >  
-> >  		/* Update page status and unlock */
-> > -		end_page_read(page, uptodate, start, len);
-> > +		ret = end_page_read(page, uptodate, start, len);
-> > +		if (ret)
-> > +			uptodate = 0;
-> >  		endio_readpage_release_extent(&processed, BTRFS_I(inode),
-> >  					      start, end, uptodate);
-> >  	}
-> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > index 3b10d98b4ebb..a99470303bd9 100644
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@ -16,6 +16,7 @@
-> >  #include <linux/btrfs.h>
-> >  #include <linux/uio.h>
-> >  #include <linux/iversion.h>
-> > +#include <linux/fsverity.h>
-> >  #include "ctree.h"
-> >  #include "disk-io.h"
-> >  #include "transaction.h"
-> > @@ -3593,7 +3594,12 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
-> >  
-> >  static int btrfs_file_open(struct inode *inode, struct file *filp)
-> >  {
-> > +	int ret;
-> 
-> Missing newline
-> 
-> >  	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
-> > +
-> > +	ret = fsverity_file_open(inode, filp);
-> > +	if (ret)
-> > +		return ret;
-> >  	return generic_file_open(inode, filp);
-> >  }
-> >  
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index d89000577f7f..1b1101369777 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -32,6 +32,7 @@
-> >  #include <linux/sched/mm.h>
-> >  #include <linux/iomap.h>
-> >  #include <asm/unaligned.h>
-> > +#include <linux/fsverity.h>
-> >  #include "misc.h"
-> >  #include "ctree.h"
-> >  #include "disk-io.h"
-> > @@ -5405,7 +5406,9 @@ void btrfs_evict_inode(struct inode *inode)
-> >  
-> >  	trace_btrfs_inode_evict(inode);
-> >  
-> > +
-> 
-> Extra newline
-> 
-> >  	if (!root) {
-> > +		fsverity_cleanup_inode(inode);
-> >  		clear_inode(inode);
-> >  		return;
-> >  	}
-> > @@ -5488,6 +5491,7 @@ void btrfs_evict_inode(struct inode *inode)
-> >  	 * to retry these periodically in the future.
-> >  	 */
-> >  	btrfs_remove_delayed_node(BTRFS_I(inode));
-> > +	fsverity_cleanup_inode(inode);
-> >  	clear_inode(inode);
-> >  }
-> >  
-> > @@ -9041,6 +9045,7 @@ static int btrfs_getattr(struct user_namespace *mnt_userns,
-> >  	struct inode *inode = d_inode(path->dentry);
-> >  	u32 blocksize = inode->i_sb->s_blocksize;
-> >  	u32 bi_flags = BTRFS_I(inode)->flags;
-> > +	u32 bi_compat_flags = BTRFS_I(inode)->compat_flags;
-> >  
-> >  	stat->result_mask |= STATX_BTIME;
-> >  	stat->btime.tv_sec = BTRFS_I(inode)->i_otime.tv_sec;
-> > @@ -9053,6 +9058,8 @@ static int btrfs_getattr(struct user_namespace *mnt_userns,
-> >  		stat->attributes |= STATX_ATTR_IMMUTABLE;
-> >  	if (bi_flags & BTRFS_INODE_NODUMP)
-> >  		stat->attributes |= STATX_ATTR_NODUMP;
-> > +	if (bi_compat_flags & BTRFS_INODE_VERITY)
-> > +		stat->attributes |= STATX_ATTR_VERITY;
-> >  
-> >  	stat->attributes_mask |= (STATX_ATTR_APPEND |
-> >  				  STATX_ATTR_COMPRESSED |
-> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > index ff335c192170..4b8f38fe4226 100644
-> > --- a/fs/btrfs/ioctl.c
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -26,6 +26,7 @@
-> >  #include <linux/btrfs.h>
-> >  #include <linux/uaccess.h>
-> >  #include <linux/iversion.h>
-> > +#include <linux/fsverity.h>
-> >  #include "ctree.h"
-> >  #include "disk-io.h"
-> >  #include "export.h"
-> > @@ -105,6 +106,7 @@ static unsigned int btrfs_mask_fsflags_for_type(struct inode *inode,
-> >  static unsigned int btrfs_inode_flags_to_fsflags(struct btrfs_inode *binode)
-> >  {
-> >  	unsigned int flags = binode->flags;
-> > +	unsigned int compat_flags = binode->compat_flags;
-> >  	unsigned int iflags = 0;
-> >  
-> >  	if (flags & BTRFS_INODE_SYNC)
-> > @@ -121,6 +123,8 @@ static unsigned int btrfs_inode_flags_to_fsflags(struct btrfs_inode *binode)
-> >  		iflags |= FS_DIRSYNC_FL;
-> >  	if (flags & BTRFS_INODE_NODATACOW)
-> >  		iflags |= FS_NOCOW_FL;
-> > +	if (compat_flags & BTRFS_INODE_VERITY)
-> > +		iflags |= FS_VERITY_FL;
-> >  
-> >  	if (flags & BTRFS_INODE_NOCOMPRESS)
-> >  		iflags |= FS_NOCOMP_FL;
-> > @@ -148,10 +152,12 @@ void btrfs_sync_inode_flags_to_i_flags(struct inode *inode)
-> >  		new_fl |= S_NOATIME;
-> >  	if (binode->flags & BTRFS_INODE_DIRSYNC)
-> >  		new_fl |= S_DIRSYNC;
-> > +	if (binode->compat_flags & BTRFS_INODE_VERITY)
-> > +		new_fl |= S_VERITY;
-> >  
-> >  	set_mask_bits(&inode->i_flags,
-> > -		      S_SYNC | S_APPEND | S_IMMUTABLE | S_NOATIME | S_DIRSYNC,
-> > -		      new_fl);
-> > +		      S_SYNC | S_APPEND | S_IMMUTABLE | S_NOATIME | S_DIRSYNC |
-> > +		      S_VERITY, new_fl);
-> >  }
-> >  
-> >  static int btrfs_ioctl_getflags(struct file *file, void __user *arg)
-> > @@ -5072,6 +5078,10 @@ long btrfs_ioctl(struct file *file, unsigned int
-> >  		return btrfs_ioctl_get_subvol_rootref(file, argp);
-> >  	case BTRFS_IOC_INO_LOOKUP_USER:
-> >  		return btrfs_ioctl_ino_lookup_user(file, argp);
-> > +	case FS_IOC_ENABLE_VERITY:
-> > +		return fsverity_ioctl_enable(file, (const void __user *)argp);
-> > +	case FS_IOC_MEASURE_VERITY:
-> > +		return fsverity_ioctl_measure(file, argp);
-> >  	}
-> >  
-> >  	return -ENOTTY;
-> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> > index 4a396c1147f1..aa41ee30e3ca 100644
-> > --- a/fs/btrfs/super.c
-> > +++ b/fs/btrfs/super.c
-> > @@ -1365,6 +1365,9 @@ static int btrfs_fill_super(struct super_block *sb,
-> >  	sb->s_op = &btrfs_super_ops;
-> >  	sb->s_d_op = &btrfs_dentry_operations;
-> >  	sb->s_export_op = &btrfs_export_ops;
-> > +#ifdef CONFIG_FS_VERITY
-> > +	sb->s_vop = &btrfs_verityops;
-> > +#endif
-> >  	sb->s_xattr = btrfs_xattr_handlers;
-> >  	sb->s_time_gran = 1;
-> >  #ifdef CONFIG_BTRFS_FS_POSIX_ACL
-> > diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> > index 436ac7b4b334..331ea4febcb1 100644
-> > --- a/fs/btrfs/sysfs.c
-> > +++ b/fs/btrfs/sysfs.c
-> > @@ -267,6 +267,9 @@ BTRFS_FEAT_ATTR_INCOMPAT(raid1c34, RAID1C34);
-> >  #ifdef CONFIG_BTRFS_DEBUG
-> >  BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
-> >  #endif
-> > +#ifdef CONFIG_FS_VERITY
-> > +BTRFS_FEAT_ATTR_COMPAT_RO(verity, VERITY);
-> > +#endif
-> >  
-> >  static struct attribute *btrfs_supported_feature_attrs[] = {
-> >  	BTRFS_FEAT_ATTR_PTR(mixed_backref),
-> > @@ -284,6 +287,9 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
-> >  	BTRFS_FEAT_ATTR_PTR(raid1c34),
-> >  #ifdef CONFIG_BTRFS_DEBUG
-> >  	BTRFS_FEAT_ATTR_PTR(zoned),
-> > +#endif
-> > +#ifdef CONFIG_FS_VERITY
-> > +	BTRFS_FEAT_ATTR_PTR(verity),
-> >  #endif
-> >  	NULL
-> >  };
-> > diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-> > new file mode 100644
-> > index 000000000000..feaf5908b3d3
-> > --- /dev/null
-> > +++ b/fs/btrfs/verity.c
-> > @@ -0,0 +1,617 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2020 Facebook.  All rights reserved.
-> > + */
-> 
-> This is not necessary since we have the SPDX tags,
-> https://btrfs.wiki.kernel.org/index.php/Developer%27s_FAQ#Copyright_notices_in_files.2C_SPDX
-> 
-> > +
-> > +#include <linux/init.h>
-> > +#include <linux/fs.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/rwsem.h>
-> > +#include <linux/xattr.h>
-> > +#include <linux/security.h>
-> > +#include <linux/posix_acl_xattr.h>
-> > +#include <linux/iversion.h>
-> > +#include <linux/fsverity.h>
-> > +#include <linux/sched/mm.h>
-> > +#include "ctree.h"
-> > +#include "btrfs_inode.h"
-> > +#include "transaction.h"
-> > +#include "disk-io.h"
-> > +#include "locking.h"
-> > +
-> > +/*
-> > + * Just like ext4, we cache the merkle tree in pages after EOF in the page
-> > + * cache.  Unlike ext4, we're storing these in dedicated btree items and
-> > + * not just shoving them after EOF in the file.  This means we'll need to
-> > + * do extra work to encrypt them once encryption is supported in btrfs,
-> > + * but btrfs has a lot of careful code around i_size and it seems better
-> > + * to make a new key type than try and adjust all of our expectations
-> > + * for i_size.
-> 
-> Can you please rephrase that so it does not start with what other
-> filesystems do but what is the actual design and put references to ext4
-> eventually?
-> 
-> > + *
-> > + * fs verity items are stored under two different key types on disk.
-> > + *
-> > + * The descriptor items:
-> > + * [ inode objectid, BTRFS_VERITY_DESC_ITEM_KEY, offset ]
-> 
-> Please put that to the key definitions
-> 
-> > + *
-> > + * At offset 0, we store a btrfs_verity_descriptor_item which tracks the
-> > + * size of the descriptor item and some extra data for encryption.
-> > + * Starting at offset 1, these hold the generic fs verity descriptor.
-> > + * These are opaque to btrfs, we just read and write them as a blob for
-> > + * the higher level verity code.  The most common size for this is 256 bytes.
-> > + *
-> > + * The merkle tree items:
-> > + * [ inode objectid, BTRFS_VERITY_MERKLE_ITEM_KEY, offset ]
-> > + *
-> > + * These also start at offset 0, and correspond to the merkle tree bytes.
-> > + * So when fsverity asks for page 0 of the merkle tree, we pull up one page
-> > + * starting at offset 0 for this key type.  These are also opaque to btrfs,
-> > + * we're blindly storing whatever fsverity sends down.
-> > + */
-> > +
-> > +/*
-> > + * Compute the logical file offset where we cache the Merkle tree.
-> > + *
-> > + * @inode: the inode of the verity file
-> > + *
-> > + * For the purposes of caching the Merkle tree pages, as required by
-> > + * fs-verity, it is convenient to do size computations in terms of a file
-> > + * offset, rather than in terms of page indices.
-> > + *
-> > + * Returns the file offset on success, negative error code on failure.
-> > + */
-> > +static loff_t merkle_file_pos(const struct inode *inode)
-> > +{
-> > +	u64 sz = inode->i_size;
-> > +	u64 ret = round_up(sz, 65536);
-> 
-> What's the reason for the extra variable sz? If that is meant to make
-> the whole u64 is read consistently, then it needs protection and the
-> i_read_size if the status of inode lock and context of call is unknown.
-> Compiler will happily merge that to round_up(inode->i_size).
-> 
-> Next, what's the meaning of the constant 65536?
-> 
-> > +
-> > +	if (ret > inode->i_sb->s_maxbytes)
-> > +		return -EFBIG;
-> > +	return ret;
-> 
-> ret is u64 so the function should also return u64
-> 
-> > +}
-> > +
-> > +/*
-> > + * Drop all the items for this inode with this key_type.
-> 
-> Newline
-> 
-> > + * @inode: The inode to drop items for
-> > + * @key_type: The type of items to drop (VERITY_DESC_ITEM or
-> > + *            VERITY_MERKLE_ITEM)
-> 
-> Please format the agrumgenst according to the description in
-> https://btrfs.wiki.kernel.org/index.php/Development_notes#Comments
-> 
-> > + *
-> > + * Before doing a verity enable we cleanup any existing verity items.
-> > + *
-> > + * This is also used to clean up if a verity enable failed half way
-> > + * through.
-> > + *
-> > + * Returns 0 on success, negative error code on failure.
-> > + */
-> > +static int drop_verity_items(struct btrfs_inode *inode, u8 key_type)
-> > +{
-> > +	struct btrfs_trans_handle *trans;
-> > +	struct btrfs_root *root = inode->root;
-> > +	struct btrfs_path *path;
-> > +	struct btrfs_key key;
-> > +	int ret;
-> > +
-> > +	path = btrfs_alloc_path();
-> > +	if (!path)
-> > +		return -ENOMEM;
-> > +
-> > +	while (1) {
-> > +		trans = btrfs_start_transaction(root, 1);
-> 
-> Transaction start should document what are the reserved items, ie. what
-> is the 1 related to.
-> 
-> > +		if (IS_ERR(trans)) {
-> > +			ret = PTR_ERR(trans);
-> > +			goto out;
-> > +		}
-> > +
-> > +		/*
-> > +		 * walk backwards through all the items until we find one
-> 
-> Comments should start with uppercase unless it's and identifier name.
-> This is in many other places so please update them as well.
-> 
-> > +		 * that isn't from our key type or objectid
-> > +		 */
-> > +		key.objectid = btrfs_ino(inode);
-> > +		key.offset = (u64)-1;
-> > +		key.type = key_type;
-> 
-> It's common to sort the members as they go in order so
-> objectid/type/offset, this helps to keep the idea of the key.
-> 
-> > +
-> > +		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
-> > +		if (ret > 0) {
-> > +			ret = 0;
-> > +			/* no more keys of this type, we're done */
-> > +			if (path->slots[0] == 0)
-> > +				break;
-> > +			path->slots[0]--;
-> > +		} else if (ret < 0) {
-> > +			break;
-> > +		}
-> > +
-> > +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> > +
-> > +		/* no more keys of this type, we're done */
-> > +		if (key.objectid != btrfs_ino(inode) || key.type != key_type)
-> > +			break;
-> > +
-> > +		/*
-> > +		 * this shouldn't be a performance sensitive function because
-> > +		 * it's not used as part of truncate.  If it ever becomes
-> > +		 * perf sensitive, change this to walk forward and bulk delete
-> > +		 * items
-> > +		 */
-> > +		ret = btrfs_del_items(trans, root, path,
-> > +				      path->slots[0], 1);
-> 
-> This will probably fit on one line, no need to split the parameters.
-> 
-> > +		btrfs_release_path(path);
-> > +		btrfs_end_transaction(trans);
-> > +
-> > +		if (ret)
-> > +			goto out;
-> > +	}
-> > +
-> > +	btrfs_end_transaction(trans);
-> > +out:
-> > +	btrfs_free_path(path);
-> > +	return ret;
-> > +
-> > +}
-> > +
-> > +/*
-> > + * Insert and write inode items with a given key type and offset.
-> > + * @inode: The inode to insert for.
-> > + * @key_type: The key type to insert.
-> > + * @offset: The item offset to insert at.
-> > + * @src: Source data to write.
-> > + * @len: Length of source data to write.
-> > + *
-> > + * Write len bytes from src into items of up to 1k length.
-> > + * The inserted items will have key <ino, key_type, offset + off> where
-> > + * off is consecutively increasing from 0 up to the last item ending at
-> > + * offset + len.
-> > + *
-> > + * Returns 0 on success and a negative error code on failure.
-> > + */
-> > +static int write_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
-> > +			   const char *src, u64 len)
-> > +{
-> > +	struct btrfs_trans_handle *trans;
-> > +	struct btrfs_path *path;
-> > +	struct btrfs_root *root = inode->root;
-> > +	struct extent_buffer *leaf;
-> > +	struct btrfs_key key;
-> > +	u64 copied = 0;
-> > +	unsigned long copy_bytes;
-> > +	unsigned long src_offset = 0;
-> > +	void *data;
-> > +	int ret;
-> > +
-> > +	path = btrfs_alloc_path();
-> > +	if (!path)
-> > +		return -ENOMEM;
-> > +
-> > +	while (len > 0) {
-> > +		trans = btrfs_start_transaction(root, 1);
-> 
-> Same as before, please document what items are reserved
-> 
-> > +		if (IS_ERR(trans)) {
-> > +			ret = PTR_ERR(trans);
-> > +			break;
-> > +		}
-> > +
-> > +		key.objectid = btrfs_ino(inode);
-> > +		key.offset = offset;
-> > +		key.type = key_type;
-> 
-> objectid/type/offset
-> 
-> > +
-> > +		/*
-> > +		 * insert 1K at a time mostly to be friendly for smaller
-> > +		 * leaf size filesystems
-> > +		 */
-> > +		copy_bytes = min_t(u64, len, 1024);
-> > +
-> > +		ret = btrfs_insert_empty_item(trans, root, path, &key, copy_bytes);
-> > +		if (ret) {
-> > +			btrfs_end_transaction(trans);
-> > +			break;
-> > +		}
-> > +
-> > +		leaf = path->nodes[0];
-> > +
-> > +		data = btrfs_item_ptr(leaf, path->slots[0], void);
-> > +		write_extent_buffer(leaf, src + src_offset,
-> > +				    (unsigned long)data, copy_bytes);
-> > +		offset += copy_bytes;
-> > +		src_offset += copy_bytes;
-> > +		len -= copy_bytes;
-> > +		copied += copy_bytes;
-> > +
-> > +		btrfs_release_path(path);
-> > +		btrfs_end_transaction(trans);
-> > +	}
-> > +
-> > +	btrfs_free_path(path);
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * Read inode items of the given key type and offset from the btree.
-> > + * @inode: The inode to read items of.
-> > + * @key_type: The key type to read.
-> > + * @offset: The item offset to read from.
-> > + * @dest: The buffer to read into. This parameter has slightly tricky
-> > + *        semantics.  If it is NULL, the function will not do any copying
-> > + *        and will just return the size of all the items up to len bytes.
-> > + *        If dest_page is passed, then the function will kmap_atomic the
-> > + *        page and ignore dest, but it must still be non-NULL to avoid the
-> > + *        counting-only behavior.
-> > + * @len: Length in bytes to read.
-> > + * @dest_page: Copy into this page instead of the dest buffer.
-> > + *
-> > + * Helper function to read items from the btree.  This returns the number
-> > + * of bytes read or < 0 for errors.  We can return short reads if the
-> > + * items don't exist on disk or aren't big enough to fill the desired length.
-> > + *
-> > + * Supports reading into a provided buffer (dest) or into the page cache
-> > + *
-> > + * Returns number of bytes read or a negative error code on failure.
-> > + */
-> > +static ssize_t read_key_bytes(struct btrfs_inode *inode, u8 key_type, u64 offset,
-> 
-> Why does this return ssize_t? The type is not utilized anywhere in the
-> function an 'int' should work.
-> 
-> > +			  char *dest, u64 len, struct page *dest_page)
-> > +{
-> > +	struct btrfs_path *path;
-> > +	struct btrfs_root *root = inode->root;
-> > +	struct extent_buffer *leaf;
-> > +	struct btrfs_key key;
-> > +	u64 item_end;
-> > +	u64 copy_end;
-> > +	u64 copied = 0;
-> 
-> Here copied is u64
-> 
-> > +	u32 copy_offset;
-> > +	unsigned long copy_bytes;
-> > +	unsigned long dest_offset = 0;
-> > +	void *data;
-> > +	char *kaddr = dest;
-> > +	int ret;
-> 
-> and ret is int
-> 
-> > +
-> > +	path = btrfs_alloc_path();
-> > +	if (!path)
-> > +		return -ENOMEM;
-> > +
-> > +	if (dest_page)
-> > +		path->reada = READA_FORWARD;
-> > +
-> > +	key.objectid = btrfs_ino(inode);
-> > +	key.offset = offset;
-> > +	key.type = key_type;
-> > +
-> > +	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> > +	if (ret < 0) {
-> > +		goto out;
-> > +	} else if (ret > 0) {
-> > +		ret = 0;
-> > +		if (path->slots[0] == 0)
-> > +			goto out;
-> > +		path->slots[0]--;
-> > +	}
-> > +
-> > +	while (len > 0) {
-> > +		leaf = path->nodes[0];
-> > +		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> > +
-> > +		if (key.objectid != btrfs_ino(inode) ||
-> > +		    key.type != key_type)
-> > +			break;
-> > +
-> > +		item_end = btrfs_item_size_nr(leaf, path->slots[0]) + key.offset;
-> > +
-> > +		if (copied > 0) {
-> > +			/*
-> > +			 * once we've copied something, we want all of the items
-> > +			 * to be sequential
-> > +			 */
-> > +			if (key.offset != offset)
-> > +				break;
-> > +		} else {
-> > +			/*
-> > +			 * our initial offset might be in the middle of an
-> > +			 * item.  Make sure it all makes sense
-> > +			 */
-> > +			if (key.offset > offset)
-> > +				break;
-> > +			if (item_end <= offset)
-> > +				break;
-> > +		}
-> > +
-> > +		/* desc = NULL to just sum all the item lengths */
-> > +		if (!dest)
-> > +			copy_end = item_end;
-> > +		else
-> > +			copy_end = min(offset + len, item_end);
-> > +
-> > +		/* number of bytes in this item we want to copy */
-> > +		copy_bytes = copy_end - offset;
-> > +
-> > +		/* offset from the start of item for copying */
-> > +		copy_offset = offset - key.offset;
-> > +
-> > +		if (dest) {
-> > +			if (dest_page)
-> > +				kaddr = kmap_atomic(dest_page);
-> 
-> I think the kmap_atomic should not be used, there was a patchset
-> cleaning it up and replacing by kmap_local so we should not introduce
-> new instances.
-> 
-> > +
-> > +			data = btrfs_item_ptr(leaf, path->slots[0], void);
-> > +			read_extent_buffer(leaf, kaddr + dest_offset,
-> > +					   (unsigned long)data + copy_offset,
-> > +					   copy_bytes);
-> > +
-> > +			if (dest_page)
-> > +				kunmap_atomic(kaddr);
-> > +		}
-> > +
-> > +		offset += copy_bytes;
-> > +		dest_offset += copy_bytes;
-> > +		len -= copy_bytes;
-> > +		copied += copy_bytes;
-> > +
-> > +		path->slots[0]++;
-> > +		if (path->slots[0] >= btrfs_header_nritems(path->nodes[0])) {
-> > +			/*
-> > +			 * we've reached the last slot in this leaf and we need
-> > +			 * to go to the next leaf.
-> > +			 */
-> > +			ret = btrfs_next_leaf(root, path);
-> > +			if (ret < 0) {
-> > +				break;
-> > +			} else if (ret > 0) {
-> > +				ret = 0;
-> > +				break;
-> > +			}
-> > +		}
-> > +	}
-> > +out:
-> > +	btrfs_free_path(path);
-> > +	if (!ret)
-> > +		ret = copied;
-> > +	return ret;
-> 
-> In the end it's int and copied u64 is truncated to int.
-> 
-> > +}
-> > +
-> > +/*
-> > + * Drop verity items from the btree and from the page cache
-> > + *
-> > + * @inode: the inode to drop items for
-> > + *
-> > + * If we fail partway through enabling verity, enable verity and have some
-> > + * partial data extant, or cleanup orphaned verity data, we need to truncate it
->                    extent
-> 
-> > + * from the cache and delete the items themselves from the btree.
-> > + *
-> > + * Returns 0 on success, negative error code on failure.
-> > + */
-> > +int btrfs_drop_verity_items(struct btrfs_inode *inode)
-> > +{
-> > +	int ret;
-> > +	struct inode *ino = &inode->vfs_inode;
-> 
-> 'ino' is usually used for inode number so this is a bit confusing,
-> 
-> > +
-> > +	truncate_inode_pages(ino->i_mapping, ino->i_size);
-> > +	ret = drop_verity_items(inode, BTRFS_VERITY_DESC_ITEM_KEY);
-> > +	if (ret)
-> > +		return ret;
-> > +	return drop_verity_items(inode, BTRFS_VERITY_MERKLE_ITEM_KEY);
-> > +}
-> > +
-> > +/*
-> > + * fsverity op that begins enabling verity.
-> > + * fsverity calls this to ask us to setup the inode for enabling.  We
-> > + * drop any existing verity items and set the in progress bit.
-> 
-> Please rephrase it so it says something like "Begin enabling verity on
-> and inode. We drop ... "
-> 
-> > + */
-> > +static int btrfs_begin_enable_verity(struct file *filp)
-> > +{
-> > +	struct inode *inode = file_inode(filp);
-> 
-> Please replace this with struct btrfs_inode * inode = ... and don't do
-> the BTRFS_I conversion in the rest of the function.
-> 
-> > +	int ret;
-> > +
-> > +	if (test_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags))
-> > +		return -EBUSY;
-> > +
-> > +	set_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
-> 
-> So the test and set are separate, can this race? No, as this is called
-> under the inode lock but this needs a trip to fsverity sources so be
-> sure. I'd suggest to put at least inode lock assertion, or a comment but
-> this is weaker than a runtime check.
-> 
-> > +	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
-> > +	if (ret)
-> > +		goto err;
-> > +
-> > +	ret = drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
-> > +	if (ret)
-> > +		goto err;
-> > +
-> > +	return 0;
-> > +
-> > +err:
-> > +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
-> > +	return ret;
-> > +
-> 
-> Extra newline
-> 
-> > +}
-> > +
-> > +/*
-> > + * fsverity op that ends enabling verity.
-> > + * fsverity calls this when it's done with all of the pages in the file
-> > + * and all of the merkle items have been inserted.  We write the
-> > + * descriptor and update the inode in the btree to reflect its new life
-> > + * as a verity file.
-> 
-> Please rephrase
-> 
-> > + */
-> > +static int btrfs_end_enable_verity(struct file *filp, const void *desc,
-> > +				  size_t desc_size, u64 merkle_tree_size)
-> > +{
-> > +	struct btrfs_trans_handle *trans;
-> > +	struct inode *inode = file_inode(filp);
-> 
-> Same as above, replace by btrfs inode and drop BTRFS_I below
-> 
-> > +	struct btrfs_root *root = BTRFS_I(inode)->root;
-> > +	struct btrfs_verity_descriptor_item item;
-> > +	int ret;
-> > +
-> > +	if (desc != NULL) {
-> > +		/* write out the descriptor item */
-> > +		memset(&item, 0, sizeof(item));
-> > +		btrfs_set_stack_verity_descriptor_size(&item, desc_size);
-> > +		ret = write_key_bytes(BTRFS_I(inode),
-> > +				      BTRFS_VERITY_DESC_ITEM_KEY, 0,
-> > +				      (const char *)&item, sizeof(item));
-> > +		if (ret)
-> > +			goto out;
-> > +		/* write out the descriptor itself */
-> > +		ret = write_key_bytes(BTRFS_I(inode),
-> > +				      BTRFS_VERITY_DESC_ITEM_KEY, 1,
-> > +				      desc, desc_size);
-> > +		if (ret)
-> > +			goto out;
-> > +
-> > +		/* update our inode flags to include fs verity */
-> > +		trans = btrfs_start_transaction(root, 1);
-> > +		if (IS_ERR(trans)) {
-> > +			ret = PTR_ERR(trans);
-> > +			goto out;
-> > +		}
-> > +		BTRFS_I(inode)->compat_flags |= BTRFS_INODE_VERITY;
-> > +		btrfs_sync_inode_flags_to_i_flags(inode);
-> > +		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
-> > +		btrfs_end_transaction(trans);
-> > +	}
-> > +
-> > +out:
-> > +	if (desc == NULL || ret) {
-> > +		/* If we failed, drop all the verity items */
-> > +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY);
-> > +		drop_verity_items(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY);
-> > +	} else
-> 
-> 	} else {
-> 
-> > +		btrfs_set_fs_compat_ro(root->fs_info, VERITY);
-> 
-> 	}
-> 
-> > +	clear_bit(BTRFS_INODE_VERITY_IN_PROGRESS, &BTRFS_I(inode)->runtime_flags);
-> > +	return ret;
-> > +}
-> > +
-> > +/*
-> > + * fsverity op that gets the struct fsverity_descriptor.
-> > + * fsverity does a two pass setup for reading the descriptor, in the first pass
-> > + * it calls with buf_size = 0 to query the size of the descriptor,
-> > + * and then in the second pass it actually reads the descriptor off
-> > + * disk.
-> > + */
-> > +static int btrfs_get_verity_descriptor(struct inode *inode, void *buf,
-> > +				       size_t buf_size)
-> > +{
-> > +	u64 true_size;
-> > +	ssize_t ret = 0;
-> > +	struct btrfs_verity_descriptor_item item;
-> > +
-> > +	memset(&item, 0, sizeof(item));
-> > +	ret = read_key_bytes(BTRFS_I(inode), BTRFS_VERITY_DESC_ITEM_KEY,
-> > +			     0, (char *)&item, sizeof(item), NULL);
-> 
-> Given that read_key_bytes does not need to return ssize_t, you can
-> switch ret to 0 here, so the function return type actually matches what
-> you return.
-> 
-> > +	if (ret < 0)
-> > +		return ret;
-> 
-> eg. here
-> 
-> > +
-> > +	if (item.reserved[0] != 0 || item.reserved[1] != 0)
-> > +		return -EUCLEAN;
-> > +
-> > +	true_size = btrfs_stack_verity_descriptor_size(&item);
-> > +	if (true_size > INT_MAX)
-> > +		return -EUCLEAN;
-> > +
-> > +	if (!buf_size)
-> > +		return true_size;
-> > +	if (buf_size < true_size)
-> > +		return -ERANGE;
-> > +
-> > +	ret = read_key_bytes(BTRFS_I(inode),
-> > +			     BTRFS_VERITY_DESC_ITEM_KEY, 1,
-> > +			     buf, buf_size, NULL);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	if (ret != true_size)
-> > +		return -EIO;
-> > +
-> > +	return true_size;
-> > +}
-> > +
-> > +/*
-> > + * fsverity op that reads and caches a merkle tree page.  These are stored
-> > + * in the btree, but we cache them in the inode's address space after EOF.
-> > + */
-> > +static struct page *btrfs_read_merkle_tree_page(struct inode *inode,
-> > +					       pgoff_t index,
-> > +					       unsigned long num_ra_pages)
-> > +{
-> > +	struct page *p;
-> 
-> Please don't use single letter variables
-> 
-> > +	u64 off = index << PAGE_SHIFT;
-> 
-> pgoff_t is unsigned long, the shift will trim high bytes, you may want
-> to use the page_offset helper instead.
-> 
-> > +	loff_t merkle_pos = merkle_file_pos(inode);
-> 
-> u64, that should work with comparison to loff_t
-> 
-> > +	ssize_t ret;
-> > +	int err;
-> > +
-> > +	if (merkle_pos > inode->i_sb->s_maxbytes - off - PAGE_SIZE)
-> > +		return ERR_PTR(-EFBIG);
-> > +	index += merkle_pos >> PAGE_SHIFT;
-> > +again:
-> > +	p = find_get_page_flags(inode->i_mapping, index, FGP_ACCESSED);
-> > +	if (p) {
-> > +		if (PageUptodate(p))
-> > +			return p;
-> > +
-> > +		lock_page(p);
-> > +		/*
-> > +		 * we only insert uptodate pages, so !Uptodate has to be
-> > +		 * an error
-> > +		 */
-> > +		if (!PageUptodate(p)) {
-> > +			unlock_page(p);
-> > +			put_page(p);
-> > +			return ERR_PTR(-EIO);
-> > +		}
-> > +		unlock_page(p);
-> > +		return p;
-> > +	}
-> > +
-> > +	p = page_cache_alloc(inode->i_mapping);
-> 
-> So this performs an allocation with GFP flags from the inode mapping.
-> I'm not sure if this is safe, eg. in add_ra_bio_pages we do 
-> 
-> 548     page = __page_cache_alloc(mapping_gfp_constraint(mapping,                                                                                                
-> 549                                                      ~__GFP_FS));
-> 
-> to emulate GFP_NOFS. Either that or do the scoped nofs with
-> memalloc_nofs_save/_restore.
-> 
-> > +	if (!p)
-> > +		return ERR_PTR(-ENOMEM);
-> > +
-> > +	/*
-> > +	 * merkle item keys are indexed from byte 0 in the merkle tree.
-> > +	 * they have the form:
-> > +	 *
-> > +	 * [ inode objectid, BTRFS_MERKLE_ITEM_KEY, offset in bytes ]
-> > +	 */
-> > +	ret = read_key_bytes(BTRFS_I(inode),
-> > +			     BTRFS_VERITY_MERKLE_ITEM_KEY, off,
-> > +			     page_address(p), PAGE_SIZE, p);
-> > +	if (ret < 0) {
-> > +		put_page(p);
-> > +		return ERR_PTR(ret);
-> > +	}
-> > +
-> > +	/* zero fill any bytes we didn't write into the page */
-> > +	if (ret < PAGE_SIZE) {
-> > +		char *kaddr = kmap_atomic(p);
-> > +
-> > +		memset(kaddr + ret, 0, PAGE_SIZE - ret);
-> > +		kunmap_atomic(kaddr);
-> 
-> There's helper memzero_page wrapping the kmap
+A regression was introduced by 116b9731ad76 ("fsnotify: add empty
+fsnotify_{unlink,rmdir}() hooks"), which moved the fsnotify event for
+unlink and rmdir to before the d_delete.  This was noticed by a tool we
+have internally for validating a FUSE file system.  This tool watches
+for IN_DELETE events and then stat's the file to make sure the file was
+actually deleted.  This started failing on our newer kernels, and it was
+traced to this patch.
 
-FWIW, that helper uses kmap_atomic, not kmap_local_page. Would you
-prefer I use the helper or not introduce new uses of kmap_atomic?
+The problem is there's a slight window where we emit the event and
+we delete the dentry.  We can easily get the event before we've called
+d_delete, and then stat the file before we're able to remove it.  This
+is easily reproducible with the following reproducer
 
-> 
-> > +	}
-> > +	SetPageUptodate(p);
-> > +	err = add_to_page_cache_lru(p, inode->i_mapping, index,
-> 
-> Please drop err and use ret
-> 
-> > +				    mapping_gfp_mask(inode->i_mapping));
-> > +
-> > +	if (!err) {
-> > +		/* inserted and ready for fsverity */
-> > +		unlock_page(p);
-> > +	} else {
-> > +		put_page(p);
-> > +		/* did someone race us into inserting this page? */
-> > +		if (err == -EEXIST)
-> > +			goto again;
-> > +		p = ERR_PTR(err);
-> > +	}
-> > +	return p;
-> > +}
-> > +
-> > +/*
-> > + * fsverity op that writes a merkle tree block into the btree in 1k chunks.
-> 
-> Should it say "in 2^log_blocksize chunks" instead?
-> 
-> > + */
-> > +static int btrfs_write_merkle_tree_block(struct inode *inode, const void *buf,
-> > +					u64 index, int log_blocksize)
-> > +{
-> > +	u64 off = index << log_blocksize;
-> > +	u64 len = 1 << log_blocksize;
-> > +
-> > +	if (merkle_file_pos(inode) > inode->i_sb->s_maxbytes - off - len)
-> > +		return -EFBIG;
-> > +
-> > +	return write_key_bytes(BTRFS_I(inode), BTRFS_VERITY_MERKLE_ITEM_KEY,
-> > +			       off, buf, len);
-> > +}
-> > +
-> > +const struct fsverity_operations btrfs_verityops = {
-> > +	.begin_enable_verity	= btrfs_begin_enable_verity,
-> > +	.end_enable_verity	= btrfs_end_enable_verity,
-> > +	.get_verity_descriptor	= btrfs_get_verity_descriptor,
-> > +	.read_merkle_tree_page	= btrfs_read_merkle_tree_page,
-> > +	.write_merkle_tree_block = btrfs_write_merkle_tree_block,
-> > +};
-> > diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-> > index 5df73001aad4..fa21c8aac78d 100644
-> > --- a/include/uapi/linux/btrfs.h
-> > +++ b/include/uapi/linux/btrfs.h
-> > @@ -288,6 +288,7 @@ struct btrfs_ioctl_fs_info_args {
-> >   * first mount when booting older kernel versions.
-> >   */
-> >  #define BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID	(1ULL << 1)
-> > +#define BTRFS_FEATURE_COMPAT_RO_VERITY		(1ULL << 2)
-> >  
-> >  #define BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF	(1ULL << 0)
-> >  #define BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL	(1ULL << 1)
-> > @@ -308,7 +309,6 @@ struct btrfs_ioctl_fs_info_args {
-> >  #define BTRFS_FEATURE_INCOMPAT_METADATA_UUID	(1ULL << 10)
-> >  #define BTRFS_FEATURE_INCOMPAT_RAID1C34		(1ULL << 11)
-> >  #define BTRFS_FEATURE_INCOMPAT_ZONED		(1ULL << 12)
-> > -
-> 
-> Keep the newline please
-> 
-> >  struct btrfs_ioctl_feature_flags {
-> >  	__u64 compat_flags;
-> >  	__u64 compat_ro_flags;
-> > diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> > index ae25280316bd..2be57416f886 100644
-> > --- a/include/uapi/linux/btrfs_tree.h
-> > +++ b/include/uapi/linux/btrfs_tree.h
-> > @@ -118,6 +118,14 @@
-> >  #define BTRFS_INODE_REF_KEY		12
-> >  #define BTRFS_INODE_EXTREF_KEY		13
-> >  #define BTRFS_XATTR_ITEM_KEY		24
-> > +
-> > +/*
-> > + * fsverity has a descriptor per file, and then
-> > + * a number of sha or csum items indexed by offset in to the file.
-> > + */
-> > +#define BTRFS_VERITY_DESC_ITEM_KEY	36
-> > +#define BTRFS_VERITY_MERKLE_ITEM_KEY	37
-> > +
-> >  #define BTRFS_ORPHAN_ITEM_KEY		48
-> >  /* reserve 2-15 close to the inode for later flexibility */
-> >  
-> > @@ -996,4 +1004,11 @@ struct btrfs_qgroup_limit_item {
-> >  	__le64 rsv_excl;
-> >  } __attribute__ ((__packed__));
-> >  
-> > +struct btrfs_verity_descriptor_item {
-> > +	/* size of the verity descriptor in bytes */
-> > +	__le64 size;
-> > +	__le64 reserved[2];
-> 
-> Is the reserved space "just in case" or are there plans to use it? For
-> items the extension and compatibility can be done by checking the item
-> size, without further flags or bits set to distinguish that.
-> 
-> If the extension happens rarely it's manageable to do the size check
-> instead of reserving the space.
-> 
-> The reserved space must be otherwise zero if not used, this serves as
-> the way to check the compatibility. It still may need additional code to
-> make sure old kernel does recognize unkown contents and eg. refuses to
-> work. I can imagine in the context of verity it could be significant.
-> 
-> > +	__u8 encryption;
-> > +} __attribute__ ((__packed__));
-> > +
-> >  #endif /* _BTRFS_CTREE_H_ */
-> 
-> 
+static int failed = 0;
+
+static void *watch_inotify(void *arg)
+{
+	char name_buf[4096];
+	char *buf = malloc(EVENT_BUF_LEN);
+	char *directory = (char *)arg;
+	int fd;
+	int wd;
+
+	if (!buf) {
+		fprintf(stderr, "Failed to allocate inotify buf\n");
+		return NULL;
+	}
+
+	fd = inotify_init();
+	if (fd < 0) {
+		fprintf(stderr, "Failed to init inotify %d %s\n",
+				errno, strerror(errno));
+		return NULL;
+	}
+
+	wd = inotify_add_watch(fd, directory, IN_DELETE);
+	if (wd < 0) {
+		fprintf(stderr, "inotify watch failed %d %s\n", errno,
+				strerror(errno));
+		close(fd);
+		return NULL;
+	}
+
+	while (!failed) {
+		ssize_t len = read(fd, buf, EVENT_BUF_LEN);
+		size_t cur = 0;
+
+		if (len < 0) {
+			fprintf(stderr, "failed to read from inotify %d %s\n",
+					errno, strerror(errno));
+			break;
+		}
+
+		while (cur < len) {
+			struct inotify_event *event =
+				(struct inotify_event *)(buf + cur);
+			struct stat st;
+			int ret;
+
+			cur += EVENT_SIZE + event->len;
+			if (event->len == 0)
+				continue;
+			if (!(event->mask & IN_DELETE))
+				continue;
+			ret = snprintf(name_buf, 4096, "%s/%s", directory,
+					event->name);
+			if (ret < 0) {
+				fprintf(stderr, "Couldn't snprintf %d (%s)\n",
+						errno, strerror(errno));
+				break;
+			}
+			if (ret >= 4096) {
+				fprintf(stderr, "Name was truncated, pick a shorter dir name\n");
+				break;
+			}
+			ret = stat(name_buf, &st);
+			if (!ret) {
+				fprintf(stderr, "Found file %s after a delete event\n",
+						name_buf);
+				failed = 1;
+				break;
+			}
+		}
+	}
+	inotify_rm_watch( fd, wd );
+	close(fd);
+	return NULL;
+}
+
+int main(int argc, char **argv)
+{
+	char buf[4096];
+	char *dir;
+	pthread_t inotify_thread;
+	int ret, i;
+
+	if (argc != 2) {
+		fprintf(stderr, "Must specify a directory to use\n");
+		return 1;
+	}
+
+	dir = strdup(argv[1]);
+	if (!dir) {
+		fprintf(stderr, "Couldn't dup directory\n");
+		return 1;
+	}
+
+	printf("Creating files...\n");
+	for (i = 0; i < NR_FILES; i++) {
+		ret = snprintf(buf, 4096, "%s/file_%d", dir, i);
+		if (ret < 0) {
+			fprintf(stderr, "Couldn't snprintf %d (%s)\n",
+					errno, strerror(errno));
+			goto out;
+		}
+		if (ret >= 4096) {
+			fprintf(stderr, "Name was truncated, pick a shorter dir name\n");
+			goto out;
+		}
+		ret = creat(buf, 0600);
+		if (ret < 0) {
+			fprintf(stderr, "Failed to create %s %d %s\n",
+					buf, errno, strerror(errno));
+			goto out;
+		}
+		close(ret);
+	}
+
+	printf("Starting inotify thread\n");
+	ret = pthread_create(&inotify_thread, NULL, watch_inotify, dir);
+	if (ret) {
+		fprintf(stderr, "Couldn't create inotify thread %d (%s)\n",
+				errno, strerror(errno));
+		goto out;
+	}
+
+	printf("Sleeping for a second\n");
+	sleep(1);
+	printf("Starting delete\n");
+	for (i = 0; i < NR_FILES; i++) {
+		ret = snprintf(buf, 4096, "%s/file_%d", dir, i);
+		if (ret < 0) {
+			fprintf(stderr, "Couldn't snprintf %d (%s)\n",
+					errno, strerror(errno));
+			goto out_pthread;
+		}
+		if (ret >= 4096) {
+			fprintf(stderr, "Name was truncated, pick a shorter dir name\n");
+			goto out_pthread;
+		}
+		ret = unlink(buf);
+		if (ret)
+			goto out_pthread;
+	}
+out_pthread:
+	pthread_cancel(inotify_thread);
+	pthread_join(inotify_thread, NULL);
+out:
+	free(dir);
+	return ret ? 1 : failed;
+}
+
+Fix this by introducing a d_delete_notify() and a fsnotify_delete()
+helper.  d_delete_notify() will hold onto the dentry inode, do the
+d_delete, and then call fsnotify_delete() so that we avoid the race.
+Then fix up all callers of the fsnotify_unlink/fsnotify_rmdir helpers to
+either use d_delete_notify(), or use the fsnotify_delete() helper with
+the appropriate changes to protect the lifetime of the inode.  This
+patch makes the test no longer fail.
+
+Fixes: 116b9731ad76 ("fsnotify: add empty fsnotify_{unlink,rmdir}() hooks")
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- Took Amir's suggestion and wrapped all the weird work into a d_delete_notify()
+  helper and used that everywhere.
+- Removed fsnotify_unlink/fsnotify_rmdir, replaced it with a fsnotify_delete()
+  helper.
+
+ fs/btrfs/ioctl.c         |  6 ++----
+ fs/configfs/dir.c        |  6 ++----
+ fs/dcache.c              | 18 ++++++++++++++++++
+ fs/devpts/inode.c        |  7 ++++++-
+ fs/libfs.c               | 10 +++++-----
+ fs/namei.c               |  6 ++----
+ fs/nfsd/nfsctl.c         |  3 +--
+ include/linux/dcache.h   |  1 +
+ include/linux/fsnotify.h | 25 +++++++------------------
+ net/sunrpc/rpc_pipe.c    | 15 +++++++++++----
+ 10 files changed, 55 insertions(+), 42 deletions(-)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 5dc2fd843ae3..d9854db80e28 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2990,10 +2990,8 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 	btrfs_inode_lock(inode, 0);
+ 	err = btrfs_delete_subvolume(dir, dentry);
+ 	btrfs_inode_unlock(inode, 0);
+-	if (!err) {
+-		fsnotify_rmdir(dir, dentry);
+-		d_delete(dentry);
+-	}
++	if (!err)
++		d_delete_notify(dir, dentry);
+ 
+ out_dput:
+ 	dput(dentry);
+diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
+index ac5e0c0e9181..2f187766f2e2 100644
+--- a/fs/configfs/dir.c
++++ b/fs/configfs/dir.c
+@@ -1805,8 +1805,7 @@ void configfs_unregister_group(struct config_group *group)
+ 	configfs_detach_group(&group->cg_item);
+ 	d_inode(dentry)->i_flags |= S_DEAD;
+ 	dont_mount(dentry);
+-	fsnotify_rmdir(d_inode(parent), dentry);
+-	d_delete(dentry);
++	d_delete_notify(d_inode(parent), dentry);
+ 	inode_unlock(d_inode(parent));
+ 
+ 	dput(dentry);
+@@ -1947,10 +1946,9 @@ void configfs_unregister_subsystem(struct configfs_subsystem *subsys)
+ 	configfs_detach_group(&group->cg_item);
+ 	d_inode(dentry)->i_flags |= S_DEAD;
+ 	dont_mount(dentry);
+-	fsnotify_rmdir(d_inode(root), dentry);
+ 	inode_unlock(d_inode(dentry));
+ 
+-	d_delete(dentry);
++	d_delete_notify(d_inode(root), dentry);
+ 
+ 	inode_unlock(d_inode(root));
+ 
+diff --git a/fs/dcache.c b/fs/dcache.c
+index cf871a81f4fd..b342696c07f9 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -2511,6 +2511,24 @@ void d_delete(struct dentry * dentry)
+ }
+ EXPORT_SYMBOL(d_delete);
+ 
++/**
++ * d_delete_notify - delete a dentry and emit the fsnotify event
++ * @dir: The directory containing the dentry
++ * @dentry: The dentry to delete
++ *
++ * This operates exactly as d_delete, but also emits the fsnotify event for the
++ * deletion as well.
++ */
++void d_delete_notify(struct inode *dir, struct dentry *dentry)
++{
++	struct inode *inode = dentry->d_inode;
++
++	ihold(inode);
++	d_delete(dentry);
++	fsnotify_delete(dir, dentry, inode);
++	iput(inode);
++}
++
+ static void __d_rehash(struct dentry *entry)
+ {
+ 	struct hlist_bl_head *b = d_hash(entry->d_name.hash);
+diff --git a/fs/devpts/inode.c b/fs/devpts/inode.c
+index 42e5a766d33c..714e6f9b74f5 100644
+--- a/fs/devpts/inode.c
++++ b/fs/devpts/inode.c
+@@ -617,12 +617,17 @@ void *devpts_get_priv(struct dentry *dentry)
+  */
+ void devpts_pty_kill(struct dentry *dentry)
+ {
++	struct inode *dir = d_inode(dentry->d_parent);
++	struct inode *inode = d_inode(dentry);
++
+ 	WARN_ON_ONCE(dentry->d_sb->s_magic != DEVPTS_SUPER_MAGIC);
+ 
++	ihold(inode);
+ 	dentry->d_fsdata = NULL;
+ 	drop_nlink(dentry->d_inode);
+-	fsnotify_unlink(d_inode(dentry->d_parent), dentry);
+ 	d_drop(dentry);
++	fsnotify_delete(dir, dentry, inode);
++	iput(inode);
+ 	dput(dentry);	/* d_alloc_name() in devpts_pty_new() */
+ }
+ 
+diff --git a/fs/libfs.c b/fs/libfs.c
+index e9b29c6ffccb..189e12dc5d9b 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -271,7 +271,7 @@ void simple_recursive_removal(struct dentry *dentry,
+ 	struct dentry *this = dget(dentry);
+ 	while (true) {
+ 		struct dentry *victim = NULL, *child;
+-		struct inode *inode = this->d_inode;
++		struct inode *inode = this->d_inode, *victim_inode;
+ 
+ 		inode_lock(inode);
+ 		if (d_is_dir(this))
+@@ -283,19 +283,19 @@ void simple_recursive_removal(struct dentry *dentry,
+ 			clear_nlink(inode);
+ 			inode_unlock(inode);
+ 			victim = this;
++			victim_inode = d_inode(victim);
++			ihold(victim_inode);
+ 			this = this->d_parent;
+ 			inode = this->d_inode;
+ 			inode_lock(inode);
+ 			if (simple_positive(victim)) {
+ 				d_invalidate(victim);	// avoid lost mounts
+-				if (d_is_dir(victim))
+-					fsnotify_rmdir(inode, victim);
+-				else
+-					fsnotify_unlink(inode, victim);
++				fsnotify_delete(inode, victim, victim_inode);
+ 				if (callback)
+ 					callback(victim);
+ 				dput(victim);		// unpin it
+ 			}
++			iput(victim_inode);
+ 			if (victim == dentry) {
+ 				inode->i_ctime = inode->i_mtime =
+ 					current_time(inode);
+diff --git a/fs/namei.c b/fs/namei.c
+index 79b0ff9b151e..40c3ea4e5eae 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -3900,13 +3900,12 @@ int vfs_rmdir(struct user_namespace *mnt_userns, struct inode *dir,
+ 	dentry->d_inode->i_flags |= S_DEAD;
+ 	dont_mount(dentry);
+ 	detach_mounts(dentry);
+-	fsnotify_rmdir(dir, dentry);
+ 
+ out:
+ 	inode_unlock(dentry->d_inode);
+ 	dput(dentry);
+ 	if (!error)
+-		d_delete(dentry);
++		d_delete_notify(dir, dentry);
+ 	return error;
+ }
+ EXPORT_SYMBOL(vfs_rmdir);
+@@ -4026,7 +4025,6 @@ int vfs_unlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 			if (!error) {
+ 				dont_mount(dentry);
+ 				detach_mounts(dentry);
+-				fsnotify_unlink(dir, dentry);
+ 			}
+ 		}
+ 	}
+@@ -4036,7 +4034,7 @@ int vfs_unlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	/* We don't d_delete() NFS sillyrenamed files--they still exist. */
+ 	if (!error && !(dentry->d_flags & DCACHE_NFSFS_RENAMED)) {
+ 		fsnotify_link_count(target);
+-		d_delete(dentry);
++		d_delete_notify(dir, dentry);
+ 	}
+ 
+ 	return error;
+diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
+index c2c3d9077dc5..e95d122ef50d 100644
+--- a/fs/nfsd/nfsctl.c
++++ b/fs/nfsd/nfsctl.c
+@@ -1337,8 +1337,7 @@ void nfsd_client_rmdir(struct dentry *dentry)
+ 	dget(dentry);
+ 	ret = simple_rmdir(dir, dentry);
+ 	WARN_ON_ONCE(ret);
+-	fsnotify_rmdir(dir, dentry);
+-	d_delete(dentry);
++	d_delete_notify(dir, dentry);
+ 	dput(dentry);
+ 	inode_unlock(dir);
+ }
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+index 9e23d33bb6f1..86df9b269f0e 100644
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
+@@ -234,6 +234,7 @@ extern struct dentry * d_instantiate_anon(struct dentry *, struct inode *);
+ extern void __d_drop(struct dentry *dentry);
+ extern void d_drop(struct dentry *dentry);
+ extern void d_delete(struct dentry *);
++extern void d_delete_notify(struct inode *dir, struct dentry *dentry);
+ extern void d_set_d_op(struct dentry *dentry, const struct dentry_operations *op);
+ 
+ /* allocate/de-allocate */
+diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
+index f8acddcf54fb..7bb06324c6b3 100644
+--- a/include/linux/fsnotify.h
++++ b/include/linux/fsnotify.h
+@@ -204,16 +204,18 @@ static inline void fsnotify_link(struct inode *dir, struct inode *inode,
+ }
+ 
+ /*
+- * fsnotify_unlink - 'name' was unlinked
++ * fsnotify_delete - 'name' was unlinked
+  *
+  * Caller must make sure that dentry->d_name is stable.
+  */
+-static inline void fsnotify_unlink(struct inode *dir, struct dentry *dentry)
++static inline void fsnotify_delete(struct inode *dir, struct dentry *dentry,
++				   struct inode *inode)
+ {
+-	/* Expected to be called before d_delete() */
+-	WARN_ON_ONCE(d_is_negative(dentry));
++	__u32 mask = FS_DELETE;
+ 
+-	fsnotify_dirent(dir, dentry, FS_DELETE);
++	if (S_ISDIR(inode->i_mode))
++		mask |= FS_ISDIR;
++	fsnotify_name(dir, mask, inode, &dentry->d_name, 0);
+ }
+ 
+ /*
+@@ -226,19 +228,6 @@ static inline void fsnotify_mkdir(struct inode *inode, struct dentry *dentry)
+ 	fsnotify_dirent(inode, dentry, FS_CREATE | FS_ISDIR);
+ }
+ 
+-/*
+- * fsnotify_rmdir - directory 'name' was removed
+- *
+- * Caller must make sure that dentry->d_name is stable.
+- */
+-static inline void fsnotify_rmdir(struct inode *dir, struct dentry *dentry)
+-{
+-	/* Expected to be called before d_delete() */
+-	WARN_ON_ONCE(d_is_negative(dentry));
+-
+-	fsnotify_dirent(dir, dentry, FS_DELETE | FS_ISDIR);
+-}
+-
+ /*
+  * fsnotify_access - file was read
+  */
+diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
+index 09c000d490a1..5dca896a60ab 100644
+--- a/net/sunrpc/rpc_pipe.c
++++ b/net/sunrpc/rpc_pipe.c
+@@ -596,26 +596,33 @@ static int __rpc_mkpipe_dentry(struct inode *dir, struct dentry *dentry,
+ 
+ static int __rpc_rmdir(struct inode *dir, struct dentry *dentry)
+ {
++	struct inode *inode = d_inode(dentry);
+ 	int ret;
+ 
+ 	dget(dentry);
++	ihold(inode);
+ 	ret = simple_rmdir(dir, dentry);
+-	if (!ret)
+-		fsnotify_rmdir(dir, dentry);
+ 	d_delete(dentry);
++	if (!ret)
++		fsnotify_delete(dir, dentry, inode);
++	iput(inode);
+ 	dput(dentry);
+ 	return ret;
+ }
+ 
+ static int __rpc_unlink(struct inode *dir, struct dentry *dentry)
+ {
++	struct inode *inode;
+ 	int ret;
+ 
+ 	dget(dentry);
++	inode = d_inode(dentry);
++	ihold(inode);
+ 	ret = simple_unlink(dir, dentry);
+-	if (!ret)
+-		fsnotify_unlink(dir, dentry);
+ 	d_delete(dentry);
++	if (!ret)
++		fsnotify_delete(dir, dentry, inode);
++	iput(inode);
+ 	dput(dentry);
+ 	return ret;
+ }
+-- 
+2.26.3
+
