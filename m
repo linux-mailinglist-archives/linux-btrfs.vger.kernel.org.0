@@ -2,57 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2068637F680
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 13:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB0D37F94B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 16:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhEMLMu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 May 2021 07:12:50 -0400
-Received: from mail-out1.in.tum.de ([131.159.0.8]:45349 "EHLO
-        mail-out1.informatik.tu-muenchen.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231255AbhEMLMk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 May 2021 07:12:40 -0400
-Received: by mail.in.tum.de (Postfix, from userid 112)
-        id 90CEF4A0491; Thu, 13 May 2021 13:11:29 +0200 (CEST)
-Received: (Authenticated sender: fent)
-        by mail.in.tum.de (Postfix) with ESMTPSA id 50A0D4A009C;
-        Thu, 13 May 2021 13:11:29 +0200 (CEST)
-        (Extended-Queue-bit tech_stoeh@fff.in.tum.de)
-Subject: Re: Leaf corruption due to csum range
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <93c4600e-5263-5cba-adf0-6f47526e7561@in.tum.de>
- <CAL3q7H7mFmNhhCUTeYG_56gsz1p2G_sN=1GuPBjdbB=sC-EQyw@mail.gmail.com>
- <ad414944-2418-3728-ac1a-5d4d37e37ac1@in.tum.de>
- <CAL3q7H6WmvatgNpGA6pqPBfe6TjPViwwCJo=wrjBOZRN0q0LuQ@mail.gmail.com>
- <ef9ea56e-fb47-f719-137b-ffb545a09db7@in.tum.de>
- <CAL3q7H7xTSbyEBz9vqZc3tnqcccWTxLENLbvSX11LU7JcBXKuA@mail.gmail.com>
- <CAL3q7H4UrNS+3DMWTzo+hueNQ_PhyUQO5pZg34E+EhUXwukBew@mail.gmail.com>
-From:   Philipp Fent <fent@in.tum.de>
-Message-ID: <a38ea033-56d9-8325-9a7e-0ef630220a97@in.tum.de>
-Date:   Thu, 13 May 2021 13:11:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234284AbhEMOC6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 May 2021 10:02:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43824 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234170AbhEMOCz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 May 2021 10:02:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620914502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=1+YNp7qsM0h1DpDs/2LeI7ondYoan4e1g4S0oCGf75c=;
+        b=U45iDp1zFHJ5aLI6OXymNs56Usph5fQ6iOKMTDMb0/ngLtPW2QYx/Vcd2WpDGu3ptD10v6
+        0HvIutJJJn/EeOdd4n77MWNNBntddVC6k7rTABVGqTMRuYnefRjzRG1PS9VHTjqOHQHsCj
+        8cyP+MTaam3ib9Z65s9Oh5kZcPZiMPM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6835AB153
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 May 2021 14:01:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 21BB9DA8EB; Thu, 13 May 2021 15:59:12 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs release 5.12.1
+Date:   Thu, 13 May 2021 15:59:11 +0200
+Message-Id: <20210513135912.7330-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H4UrNS+3DMWTzo+hueNQ_PhyUQO5pZg34E+EhUXwukBew@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 13.05.21 12:50, Filipe Manana wrote:
-> Ok, never mind.
-> I changed the 'sleep 5' to 'sleep 15' in the script and it works now.
-> Seems like 5 seconds is too little on this vm for starting the server.
+Hi,
 
-Oh, that timing is unfortunate and sleeping is admittedly a not a good
-solution. You can try to add '-l 60' to the first sqlcmd to increase the
-login timeout, which should eliminate any unnecessary waiting time.
+btrfs-progs version 5.12.1 have been released. This is a bugfix release.
 
-> I can also trigger the bug. I'll see what causes the bug.
->
-> Thanks for providing the reliable reproducer, it's really helpful.
+This fixes namely missing symbols in libbtrfs that break snapper, sorry.
 
-I'm glad this worked! Thank you for taking the time.
+Changelog:
+
+  * build: fix missing symbols in libbtrfs
+  * mkfs: check for minimal number of zones
+  * check: fix warning about cache generation when free space tree is enabled
+  * fix superblock write in zoned mode on 16K pages
+
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+
+Shortlog:
+
+David Sterba (6):
+      btrfs-progs: fix libbtrfs build, missing symbols
+      btrfs-progs: build: remove duplicate library from libbtrfs-test
+      btrfs-progs: ci: list hosted CI requirements
+      btrfs-progs: build: note minimal version for zoned support
+      btrfs-progs: update CHANGES for 5.12.1
+      Btrfs progs v5.12.1
+
+Johannes Thumshirn (1):
+      btrfs-progs: mkfs: check for minimal needed number of zones
+
+Su Yue (2):
+      btrfs-progs: do not BUG_ON if btrfs_add_to_fsid succeeded to write superblock
+      btrfs-progs: check: continue to check space cache if sb cache_generation is 0
