@@ -2,289 +2,283 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AB837FB8D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 18:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7583337FBB4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 18:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235140AbhEMQek (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 May 2021 12:34:40 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46054 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233953AbhEMQeg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 May 2021 12:34:36 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DGXHd7044690;
-        Thu, 13 May 2021 12:33:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=UTB8HLORDQgsJd225NISmOta8RDH1+6T/j7eTMhV+Ok=;
- b=FvdgPhHFViYbZt/jW+6u9tSAluNfMlp3Dr385iQJHqigIxqxCFUZNa3FT9vu/HLmgtW0
- 4ECBeS+EbBb2HmNVQ3e77159ypnphALaUCgVt2z9UrMSWQBxdqz3u3c2PduLM8aqwmHh
- dfbkt32m+jeRwaBiIevxV6fE7OinGX3pmE2gQsCTws8oNNSOrntatuHTTxyygFF6AvD3
- datUfAXHynbYlmE2Y76IT1Xut8A5x9Q33++NhvcWq4ifmWHYuFwqosCrcwF5zTnh6tHD
- du40tYchbTKiFiowpTub15P9GZg9RTELEbTeI3w4geIz32OHspt5L7t94zhynbe+iUAc 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38h7nx82nm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 12:33:22 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14DGXLgR045107;
-        Thu, 13 May 2021 12:33:21 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38h7nx82m9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 12:33:21 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14DGXKsc020254;
-        Thu, 13 May 2021 16:33:20 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 38dj98at6s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 16:33:19 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14DGXH6P33685956
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 May 2021 16:33:17 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B747FA4054;
-        Thu, 13 May 2021 16:33:17 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64696A405B;
-        Thu, 13 May 2021 16:33:17 +0000 (GMT)
-Received: from localhost (unknown [9.77.196.130])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 13 May 2021 16:33:17 +0000 (GMT)
-Date:   Thu, 13 May 2021 22:03:16 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
- subpage helper
-Message-ID: <20210513163316.ypvh3ppsrmxg7dit@riteshh-domain>
-References: <46a8cbb7-4c3a-024d-4ee3-cbeb4068e92e@suse.com>
- <20210507045735.jjtc76whburjmnvt@riteshh-domain>
- <5d406b40-23d9-8542-792a-2cd6a7d95afe@gmx.com>
- <e7e6ebdd-a220-e4ec-64e4-d031d7a9b181@gmx.com>
- <20210510122933.mcg2sac2ugdennbs@riteshh-domain>
- <95d7bc8a-5593-cc71-aee3-349dd6fd060d@gmx.com>
- <20210511104809.evndsdckwhmonyyl@riteshh-domain>
- <334a5fdd-28ee-4163-456c-adc4b2276d08@gmx.com>
- <fae358ed-8d14-8e14-2dc3-173637ec5e87@gmx.com>
- <20210512070931.p5hipe3ov45vqzjt@riteshh-domain>
+        id S232650AbhEMQnJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 May 2021 12:43:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45858 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232140AbhEMQnI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 May 2021 12:43:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ABDD0B016;
+        Thu, 13 May 2021 16:41:57 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 524EEDAEB9; Thu, 13 May 2021 18:39:27 +0200 (CEST)
+Date:   Thu, 13 May 2021 18:39:27 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix removed dentries still existing after log is
+ synced
+Message-ID: <20210513163927.GH7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <1a18d5aedaf709513285ccddb63577933a14d004.1620832863.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512070931.p5hipe3ov45vqzjt@riteshh-domain>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZMrLPNR02lbNN4cTZZsyXQYxy0GiWFXF
-X-Proofpoint-GUID: _do_yy7I9VAG0VPtWjBPmo-f7D7jPmZD
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-13_10:2021-05-12,2021-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130115
+In-Reply-To: <1a18d5aedaf709513285ccddb63577933a14d004.1620832863.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/05/12 12:39PM, Ritesh Harjani wrote:
-> On 21/05/12 09:49AM, Qu Wenruo wrote:
-> > Hi Ritesh,
-> >
-> > The patchset gets updated, and I am already running the tests, so far so
-> > good.
-> Sure, I have started the testing. Will update the results for both
-> 4k, 64k configs with "-g quick", "-g auto" options on PPC64.
+On Wed, May 12, 2021 at 04:27:16PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When we move one inode from one directory to another and both the inode
+> and its previous parent directory were logged before, we are not supposed
+> to have the dentry for the old parent if we have a power failure after the
+> log is synced. Only the new dentry is supposed to exist.
+> 
+> Generally this works correctly, however there is a scenario where this is
+> not currently working, because the old parent of the file/directory that
+> was moved is not authoritative for a range that includes the dir index and
+> dir item keys of the old dentry. This case is better explained with the
+> following example and reproducer:
+> 
+>   # The test requires a very specific layout of keys and items in the
+>   # fs/subvolume btree to trigger the bug. So we want to make sure that
+>   # on whatever platform we are, we have the same leaf/node size.
+>   #
+>   # Currently in btrfs the node/leaf size can not be smaller than the page
+>   # size (but it can be greater than the page size). So use the largest
+>   # supported node/leaf size (64K).
+> 
+>   $ mkfs.btrfs -f -n 65536 /dev/sdc
+>   $ mount /dev/sdc /mnt
+> 
+>   # "testdir" is inode 257.
+>   $ mkdir /mnt/testdir
+>   $ chmod 755 /mnt/testdir
+> 
+>   # Create several empty files to have the directory "testdir" with its
+>   # items spread over several leaves (7 in this case).
+>   $ for ((i = 1; i <= 1200; i++)); do
+>        echo -n > /mnt/testdir/file$i
+>     done
+> 
+>   # Create our test directory "dira", inode number 1458, which gets all
+>   # its items in leaf 7.
+>   #
+>   # The BTRFS_DIR_ITEM_KEY item for inode 257 ("testdir") that points to
+>   # the entry named "dira" is in leaf 2, while the BTRFS_DIR_INDEX_KEY
+>   # item that points to that entry is in leaf 3.
+>   #
+>   # For this particular filesystem node size (64K), file count and file
+>   # names, we endup with the directory entry items from inode 257 in
+>   # leaves 2 and 3, as previously mentioned - what matters for triggering
+>   # the bug exercised by this test case is that those items are not placed
+>   # in leaf 1, they must be placed in a leaf different from the one
+>   # containing the inode item for inode 257.
+>   #
+>   # The corresponding BTRFS_DIR_ITEM_KEY and BTRFS_DIR_INDEX_KEY items for
+>   # the parent inode (257) are the following:
+>   #
+>   #    item 460 key (257 DIR_ITEM 3724298081) itemoff 48344 itemsize 34
+>   #         location key (1458 INODE_ITEM 0) type DIR
+>   #         transid 6 data_len 0 name_len 4
+>   #         name: dira
+>   #
+>   # and:
+>   #
+>   #    item 771 key (257 DIR_INDEX 1202) itemoff 36673 itemsize 34
+>   #         location key (1458 INODE_ITEM 0) type DIR
+>   #         transid 6 data_len 0 name_len 4
+>   #         name: dira
+> 
+>   $ mkdir /mnt/testdir/dira
+> 
+>   # Make sure everything done so far is durably persisted.
+>   $ sync
+> 
+>   # Now do a change to inode 257 ("testdir") that does not result in
+>   # COWing leaves 2 and 3 - the leaves that contain the directory items
+>   # pointing to inode 1458 (directory "dira").
+>   #
+>   # Changing permissions, the owner/group, updating or adding a xattr,
+>   # etc, will not change (COW) leaves 2 and 3. So for the sake of
+>   # simplicity change the permissions of inode 257, which results in
+>   # updating its inode item and therefore change (COW) only leaf 1.
+> 
+>   $ chmod 700 /mnt/testdir
+> 
+>   # Now fsync directory inode 257.
+>   #
+>   # Since only the first leaf was changed/COWed, we log the inode item of
+>   # inode 257 and only the dentries found in the first leaf, all have a
+>   # key type of BTRFS_DIR_ITEM_KEY, and no keys of type
+>   # BTRFS_DIR_INDEX_KEY, because they sort after the former type and none
+>   # exist in the first leaf.
+>   #
+>   # We also log 3 items that represent ranges for dir items and dir
+>   # indexes for which the log is authoritative:
+>   #
+>   # 1) a key of type BTRFS_DIR_LOG_ITEM_KEY, which indicates the log is
+>   #    authoritative for all BTRFS_DIR_ITEM_KEY keys that have an offset
+>   #    in the range [0, 2285968570] (the offset here is the crc32c of the
+>   #    dentry's name). The value 2285968570 corresponds to the offset of
+>   #    the first key of leaf 2 (which is of type BTRFS_DIR_ITEM_KEY);
+>   #
+>   # 2) a key of type BTRFS_DIR_LOG_ITEM_KEY, which indicates the log is
+>   #    authoritative for all BTRFS_DIR_ITEM_KEY keys that have an offset
+>   #    in the range [4293818216, (u64)-1] (the offset here is the crc32c
+>   #    of the dentry's name). The value 4293818216 corresponds to the
+>   #    offset of the highest key of type BTRFS_DIR_ITEM_KEY plus 1
+>   #    (4293818215 + 1), which is located in leaf 2;
+>   #
+>   # 3) a key of type BTRFS_DIR_LOG_INDEX_KEY, with an offset of 1203,
+>   #    which indicates the log is authoritative for all keys of type
+>   #    BTRFS_DIR_INDEX_KEY that have an offset in the range
+>   #    [1203, (u64)-1]. The value 1203 corresponds to the offset of the
+>   #    last key of type BTRFS_DIR_INDEX_KEY plus 1 (1202 + 1), which is
+>   #    located in leaf 3;
+>   #
+>   # Also, because "testdir" is a directory and inode 1458 ("dira") is a
+>   # child directory, we log inode 1458 too.
+> 
+>   $ xfs_io -c "fsync" /mnt/testdir
+> 
+>   # Now move "dira", inode 1458, to be a child of the root directory
+>   # (inode 256).
+>   #
+>   # Because this inode was previously logged, when "testdir" was fsynced,
+>   # the log is updated so that the old inode reference, referring to inode
+>   # 257 as the parent, is deleted and the new inode reference, referring
+>   # to inode 256 as the parent, is added to the log.
+> 
+>   $ mv /mnt/testdir/dira /mnt
+> 
+>   # Now change some file and fsync it. This guarantees the log changes
+>   # made by the previous move/rename operation are persisted. We do not
+>   # need to do any special modification to the file, just any change to
+>   # any file and sync the log.
+> 
+>   $ xfs_io -c "pwrite -S 0xab 0 64K" -c "fsync" /mnt/testdir/file1
+> 
+>   # Simulate a power failure and then mount again the filesystem to
+>   # replay the log tree. We want to verify that we are able to mount the
+>   # filesystem, meaning log replay was successful, and that directory
+>   # inode 1458 ("dira") only has inode 256 (the filesystem's root) as
+>   # its parent (and no longer a child of inode 257).
+>   #
+>   # It used to happen that during log replay we would end up having
+>   # inode 1458 (directory "dira") with 2 hard links, being a child of
+>   # inode 257 ("testdir") and inode 256 (the filesystem's root). This
+>   # resulted in the tree checker detecting the issue and causing the
+>   # mount operation to fail (with -EIO).
+>   #
+>   # This happened because in the log we have the new name/parent for
+>   # inode 1458, which results in adding the new dentry with inode 256
+>   # as the parent, but the previous dentry, under inode 257 was never
+>   # removed - this is because the ranges for dir items and dir indexes
+>   # of inode 257 for which the log is authoritative do not include the
+>   # old dir item and dir index for the dentry of inode 257 referring to
+>   # inode 1458:
+>   #
+>   # - for dir items, the log is authoritative for the ranges
+>   #   [0, 2285968570] and [4293818216, (u64)-1]. The dir item at inode 257
+>   #   pointing to inode 1458 has a key of (257 DIR_ITEM 3724298081), as
+>   #   previously mentioned, so the dir item is not deleted when the log
+>   #   replay procedure processes the authoritative ranges, as 3724298081
+>   #   is outside both ranges;
+>   #
+>   # - for dir indexes, the log is authoritative for the range
+>   #   [1203, (u64)-1], and the dir index item of inode 257 pointing to
+>   #   inode 1458 has a key of (257 DIR_INDEX 1202), as previously
+>   #   mentioned, so the dir index item is not deleted when the log
+>   #   replay procedure processes the authoritative range.
+> 
+>   <power failure>
+> 
+>   $ mount /dev/sdc /mnt
+>   mount: /mnt: can't read superblock on /dev/sdc.
+> 
+>   $ dmesg
+>   (...)
+>   [87849.840509] BTRFS info (device sdc): start tree-log replay
+>   [87849.875719] BTRFS critical (device sdc): corrupt leaf: root=5 block=30539776 slot=554 ino=1458, invalid nlink: has 2 expect no more than 1 for dir
+>   [87849.878084] BTRFS info (device sdc): leaf 30539776 gen 7 total ptrs 557 free space 2092 owner 5
+>   [87849.879516] BTRFS info (device sdc): refs 1 lock_owner 0 current 2099108
+>   [87849.880613] 	item 0 key (1181 1 0) itemoff 65275 itemsize 160
+>   [87849.881544] 		inode generation 6 size 0 mode 100644
+>   [87849.882692] 	item 1 key (1181 12 257) itemoff 65258 itemsize 17
+>   (...)
+>   [87850.562549] 	item 556 key (1458 12 257) itemoff 16017 itemsize 14
+>   [87850.563349] BTRFS error (device dm-0): block=30539776 write time tree block corruption detected
+>   [87850.564386] ------------[ cut here ]------------
+>   [87850.564920] WARNING: CPU: 3 PID: 2099108 at fs/btrfs/disk-io.c:465 csum_one_extent_buffer+0xed/0x100 [btrfs]
+>   [87850.566129] Modules linked in: btrfs dm_zero dm_snapshot (...)
+>   [87850.573789] CPU: 3 PID: 2099108 Comm: mount Not tainted 5.12.0-rc8-btrfs-next-86 #1
+>   (...)
+>   [87850.587481] Call Trace:
+>   [87850.587768]  btree_csum_one_bio+0x244/0x2b0 [btrfs]
+>   [87850.588354]  ? btrfs_bio_fits_in_stripe+0xd8/0x110 [btrfs]
+>   [87850.589003]  btrfs_submit_metadata_bio+0xb7/0x100 [btrfs]
+>   [87850.589654]  submit_one_bio+0x61/0x70 [btrfs]
+>   [87850.590248]  submit_extent_page+0x91/0x2f0 [btrfs]
+>   [87850.590842]  write_one_eb+0x175/0x440 [btrfs]
+>   [87850.591370]  ? find_extent_buffer_nolock+0x1c0/0x1c0 [btrfs]
+>   [87850.592036]  btree_write_cache_pages+0x1e6/0x610 [btrfs]
+>   [87850.592665]  ? free_debug_processing+0x1d5/0x240
+>   [87850.593209]  do_writepages+0x43/0xf0
+>   [87850.593798]  ? __filemap_fdatawrite_range+0xa4/0x100
+>   [87850.594391]  __filemap_fdatawrite_range+0xc5/0x100
+>   [87850.595196]  btrfs_write_marked_extents+0x68/0x160 [btrfs]
+>   [87850.596202]  btrfs_write_and_wait_transaction.isra.0+0x4d/0xd0 [btrfs]
+>   [87850.597377]  btrfs_commit_transaction+0x794/0xca0 [btrfs]
+>   [87850.598455]  ? _raw_spin_unlock_irqrestore+0x32/0x60
+>   [87850.599305]  ? kmem_cache_free+0x15a/0x3d0
+>   [87850.600029]  btrfs_recover_log_trees+0x346/0x380 [btrfs]
+>   [87850.601021]  ? replay_one_extent+0x7d0/0x7d0 [btrfs]
+>   [87850.601988]  open_ctree+0x13c9/0x1698 [btrfs]
+>   [87850.602846]  btrfs_mount_root.cold+0x13/0xed [btrfs]
+>   [87850.603771]  ? kmem_cache_alloc_trace+0x7c9/0x930
+>   [87850.604576]  ? vfs_parse_fs_string+0x5d/0xb0
+>   [87850.605293]  ? kfree+0x276/0x3f0
+>   [87850.605857]  legacy_get_tree+0x30/0x50
+>   [87850.606540]  vfs_get_tree+0x28/0xc0
+>   [87850.607163]  fc_mount+0xe/0x40
+>   [87850.607695]  vfs_kern_mount.part.0+0x71/0x90
+>   [87850.608440]  btrfs_mount+0x13b/0x3e0 [btrfs]
+>   (...)
+>   [87850.629477] ---[ end trace 68802022b99a1ea0 ]---
+>   [87850.630849] BTRFS: error (device sdc) in btrfs_commit_transaction:2381: errno=-5 IO failure (Error while writing out transaction)
+>   [87850.632422] BTRFS warning (device sdc): Skipping commit of aborted transaction.
+>   [87850.633416] BTRFS: error (device sdc) in cleanup_transaction:1978: errno=-5 IO failure
+>   [87850.634553] BTRFS: error (device sdc) in btrfs_replay_log:2431: errno=-5 IO failure (Failed to recover log tree)
+>   [87850.637529] BTRFS error (device sdc): open_ctree failed
+> 
+> In this example the inode we moved was a directory, so it was easy to
+> detect the problem because directories can only have one hard link and
+> the tree checker immediately detects that. If the moved inode was a file,
+> then the log replay would succeed and we would end up having both the
+> new hard link (/mnt/foo) and the old hard link (/mnt/testdir/foo) present,
+> but only the new one should be present.
+> 
+> Fix this by forcing re-logging of the old parent directory when logging
+> the new name during a rename operation. This ensures we end up with a log
+> that is authoritative for a range covering the keys for the old dentry,
+> therefore causing the old dentry do be deleted when replaying the log.
+> 
+> A test case for fstests will follow up soon.
+> 
+> Fixes: 64d6b281ba4db0 ("btrfs: remove unnecessary check_parent_dirs_for_sync()")
+> CC: stable@vger.kernel.org # 5.12+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Hi Qu,
-
-I completed the testing of "4k" and "64k" configs with "-g quick" and "-g auto"
-groups on ppc64 machine. There were no crashes nor any related failures with
-your latest patch series. Also thanks a lot for getting this patch series ready
-and fixing all the reported failures :)
-
-Let me also know if you would like to me to test anything else too, will be
-happy to help. Feel free below tag for your full patch series:-
-
-Tested-by: Ritesh Harjani <riteshh@linux.ibm.com> 	[ppc64]
-
-
-FYI, I found this below lockdep warning from btrfs/112 with 64k config.
-This may not be related to your patch series though. But I thought I will report
-it to here anyways.
-
-[  756.021743] run fstests btrfs/112 at 2021-05-13 03:27:39
-[  756.554974] BTRFS info (device vdd): disk space caching is enabled
-[  756.555223] BTRFS info (device vdd): has skinny extents
-[  757.062425] BTRFS: device fsid 453f3a16-65f2-4406-b666-1cb096966ad5 devid 1 transid 5 /dev/vdc scanned by mkfs.btrfs (29656)
-[  757.111042] BTRFS info (device vdc): disk space caching is enabled
-[  757.111309] BTRFS info (device vdc): has skinny extents
-[  757.121898] BTRFS info (device vdc): checking UUID tree
-
-[  757.373434] ======================================================
-[  757.373557] WARNING: possible circular locking dependency detected
-[  757.373670] 5.12.0-rc8-00161-g71a7ca634d59 #26 Not tainted
-[  757.373751] ------------------------------------------------------
-[  757.373851] cloner/29747 is trying to acquire lock:
-[  757.373931] c00000002de71638 (sb_internal#2){.+.+}-{0:0}, at: clone_copy_inline_extent+0xe4/0x5a0
-[  757.374130]
-               but task is already holding lock:
-[  757.374232] c000000036abc620 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
-[  757.374389]
-               which lock already depends on the new lock.
-
-[  757.374507]
-               the existing dependency chain (in reverse order) is:
-[  757.374627]
-               -> #1 (btrfs-tree-00){++++}-{3:3}:
-[  757.374735]        down_read_nested+0x68/0x200
-[  757.374827]        __btrfs_tree_read_lock+0x70/0x1d0
-[  757.374908]        btrfs_read_lock_root_node+0x88/0x200
-[  757.374988]        btrfs_search_slot+0x298/0xb70
-[  757.375078]        btrfs_set_inode_index+0xfc/0x260
-[  757.375156]        btrfs_new_inode+0x26c/0x950
-[  757.375243]        btrfs_create+0xf4/0x2b0
-[  757.375303]        lookup_open.isra.56+0x56c/0x690
-[  757.375393]        path_openat+0x418/0xd20
-[  757.375455]        do_filp_open+0x9c/0x130
-[  757.375518]        do_sys_openat2+0x2ec/0x430
-[  757.375596]        do_sys_open+0x90/0xc0
-[  757.375657]        system_call_exception+0x384/0x3d0
-[  757.375750]        system_call_common+0xec/0x278
-[  757.375832]
-               -> #0 (sb_internal#2){.+.+}-{0:0}:
-[  757.375936]        __lock_acquire+0x1e80/0x2c40
-[  757.376017]        lock_acquire+0x2b4/0x5b0
-[  757.376078]        start_transaction+0x3cc/0x950
-[  757.376158]        clone_copy_inline_extent+0xe4/0x5a0
-[  757.376239]        btrfs_clone+0x5fc/0x880
-[  757.376299]        btrfs_clone_files+0xd8/0x1c0
-[  757.376376]        btrfs_remap_file_range+0x3d8/0x590
-[  757.376455]        do_clone_file_range+0x10c/0x270
-[  757.376542]        vfs_clone_file_range+0x1b0/0x310
-[  757.376621]        ioctl_file_clone+0x90/0x130
-[  757.376700]        do_vfs_ioctl+0x984/0x1630
-[  757.376781]        sys_ioctl+0x6c/0x120
-[  757.376843]        system_call_exception+0x384/0x3d0
-[  757.376924]        system_call_common+0xec/0x278
-[  757.377003]
-               other info that might help us debug this:
-
-[  757.377119]  Possible unsafe locking scenario:
-
-[  757.377216]        CPU0                    CPU1
-[  757.377295]        ----                    ----
-[  757.377372]   lock(btrfs-tree-00);
-[  757.377432]                                lock(sb_internal#2);
-[  757.377530]                                lock(btrfs-tree-00);
-[  757.377627]   lock(sb_internal#2);
-[  757.377689]
-                *** DEADLOCK ***
-
-[  757.377783] 6 locks held by cloner/29747:
-[  757.377843]  #0: c00000002de71448 (sb_writers#12){.+.+}-{0:0}, at: ioctl_file_clone+0x90/0x130
-[  757.377990]  #1: c000000010b87ce8 (&sb->s_type->i_mutex_key#15){++++}-{3:3}, at: lock_two_nondirectories+0x58/0xc0
-[  757.378155]  #2: c000000010b8d610 (&sb->s_type->i_mutex_key#15/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x9c/0xc0
-[  757.378322]  #3: c000000010b8d4a0 (&ei->i_mmap_lock){++++}-{3:3}, at: btrfs_remap_file_range+0xd0/0x590
-[  757.378463]  #4: c000000010b87b78 (&ei->i_mmap_lock/1){+.+.}-{3:3}, at: btrfs_remap_file_range+0xe0/0x590
-[  757.378605]  #5: c000000036abc620 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
-[  757.378745]
-               stack backtrace:
-[  757.378823] CPU: 0 PID: 29747 Comm: cloner Not tainted 5.12.0-rc8-00161-g71a7ca634d59 #26
-[  757.378972] Call Trace:
-[  757.379013] [c00000002de07200] [c000000000c12ea8] dump_stack+0xec/0x144 (unreliable)
-[  757.379135] [c00000002de07240] [c0000000002775d8] print_circular_bug.isra.32+0x3a8/0x400
-[  757.379269] [c00000002de072e0] [c000000000277774] check_noncircular+0x144/0x190
-[  757.379389] [c00000002de073b0] [c00000000027c500] __lock_acquire+0x1e80/0x2c40
-[  757.379509] [c00000002de074f0] [c00000000027dfd4] lock_acquire+0x2b4/0x5b0
-[  757.379609] [c00000002de075e0] [c000000000a063cc] start_transaction+0x3cc/0x950
-[  757.379726] [c00000002de07690] [c000000000aede64] clone_copy_inline_extent+0xe4/0x5a0
-[  757.379842] [c00000002de077c0] [c000000000aee91c] btrfs_clone+0x5fc/0x880
-[  757.379940] [c00000002de07990] [c000000000aeed58] btrfs_clone_files+0xd8/0x1c0
-[  757.380056] [c00000002de07a00] [c000000000aef218] btrfs_remap_file_range+0x3d8/0x590
-[  757.380172] [c00000002de07ae0] [c0000000005d481c] do_clone_file_range+0x10c/0x270
-[  757.380289] [c00000002de07b40] [c0000000005d4b30] vfs_clone_file_range+0x1b0/0x310
-[  757.380405] [c00000002de07bb0] [c000000000588a10] ioctl_file_clone+0x90/0x130
-[  757.380523] [c00000002de07c10] [c000000000589434] do_vfs_ioctl+0x984/0x1630
-[  757.380621] [c00000002de07d10] [c00000000058a14c] sys_ioctl+0x6c/0x120
-[  757.380719] [c00000002de07d60] [c000000000039e64] system_call_exception+0x384/0x3d0
-[  757.380836] [c00000002de07e10] [c00000000000d45c] system_call_common+0xec/0x278
-[  757.380953] --- interrupt: c00 at 0x7ffff7e32990
-[  757.381042] NIP:  00007ffff7e32990 LR: 00000001000010ec CTR: 0000000000000000
-[  757.381157] REGS: c00000002de07e80 TRAP: 0c00   Not tainted  (5.12.0-rc8-00161-g71a7ca634d59)
-[  757.381289] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28000244  XER: 00000000
-[  757.381445] IRQMASK: 0
-               GPR00: 0000000000000036 00007fffffffdec0 00007ffff7f27100 0000000000000004
-               GPR04: 000000008020940d 00007fffffffdf40 0000000000000000 0000000000000000
-               GPR08: 0000000000000004 0000000000000000 0000000000000000 0000000000000000
-               GPR12: 0000000000000000 00007ffff7ffa940 0000000000000000 0000000000000000
-               GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-               GPR20: 0000000000000000 000000009123683e 00007fffffffdf40 0000000000000000
-               GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000004
-               GPR28: 0000000100030260 0000000100030280 0000000000000003 000000000000005f
-[  757.382382] NIP [00007ffff7e32990] 0x7ffff7e32990
-[  757.382460] LR [00000001000010ec] 0x1000010ec
-[  757.382537] --- interrupt: c00
-[  757.787411] BTRFS: device fsid fd5f535c-f163-4a14-b9a5-c423b470fdd7 devid 1 transid 5 /dev/vdc scanned by mkfs.btrfs (29753)
-[  757.829757] BTRFS info (device vdc): use zlib compression, level 3
-[  757.829948] BTRFS info (device vdc): disk space caching is enabled
-[  757.830051] BTRFS info (device vdc): has skinny extents
-[  757.837338] BTRFS info (device vdc): checking UUID tree
-[  758.421670] BTRFS: device fsid e2a0fa31-ad7e-47b9-879c-309e8e2b3583 devid 1 transid 5 /dev/vdc scanned by mkfs.btrfs (29850)
-[  758.456197] BTRFS info (device vdc): disk space caching is enabled
-[  758.456306] BTRFS info (device vdc): has skinny extents
-[  758.502055] BTRFS info (device vdc): checking UUID tree
-[  759.067243] BTRFS: device fsid b66a7909-8293-4467-9ec7-217007bc1023 devid 1 transid 5 /dev/vdc scanned by mkfs.btrfs (29947)
-[  759.099884] BTRFS info (device vdc): use zlib compression, level 3
-[  759.100112] BTRFS info (device vdc): disk space caching is enabled
-[  759.100222] BTRFS info (device vdc): has skinny extents
-[  759.108120] BTRFS info (device vdc): checking UUID tree
-
-
-
--ritesh
-
->
-> >
-> > The new head is:
-> > commit cb81da05e7899b8196c3c5e0b122798da3b94af0
-> > Author: Qu Wenruo <wqu@suse.com>
-> > Date:   Mon May 3 08:19:27 2021 +0800
-> >
-> >     btrfs: remove io_failure_record::in_validation
-> >
-> > I may have some minor change the to commit messages and comments
-> > preparing for the next submit, but the code shouldn't change any more.
-> >
-> >
-> > Just one note, thanks to your report on btrfs/028, I even find a data
-> > corruption bug in relocation code.
-> Nice :)
->
-> > Kudos (and of-course Reported-by tags) to you!
-> Thanks!
->
-> >
-> > New changes since v2 patchset:
-> >
-> > - Fix metadata read path ASSERT() when last eb is already dereferred
-> > - Fix read repair related bugs
-> >   * fix possible hang due to unreleased sectors after read error
-> >   * fix double accounting in btrfs_subpage::readers
-> >
-> > - Fix false alert when relocating data extent without csum
-> >   This is really a false alert, the expected csum is always 0x00
-> >
-> > - Fix a data corruption when relocating certain data extents layout
-> >   This is a real corruption, both relocation and scrub will report
-> >   error.
-> Thanks for the detailed info.
->
-> >
-> > Thanks and happy testing!
-> Thanks for the quick replies and all your work in supporting bs < ps.
-> This is definitely very useful for Power platform too!!
->
-> -ritesh
+Added to misc-next, thanks.
