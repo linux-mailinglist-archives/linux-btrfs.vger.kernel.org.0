@@ -2,105 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5198037F0A9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 02:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0213D37F140
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 May 2021 04:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243695AbhEMAsn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 May 2021 20:48:43 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:60132 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236364AbhEMArJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 May 2021 20:47:09 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 6719E6C008A1;
-        Thu, 13 May 2021 03:45:56 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1620866756; bh=F3iWBIqZ1qxP32AoJBl/dtV9TiOlAGHMzUKgv1Im6Qk=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=BkpU9rwyvo9rp8JEsimQ84H+uPCkmxqh0GX0O1Pe1htoH4qp46XG36bsbaUB8dKHG
-         OAmfJK6M8x4SmbQ+SbDHaj9/q7k+Zzefk5voqDwaXKcGm/GBR2QQo5NnENgDkYw9GW
-         wXT/YCxQnLOUdtK2N3RpWhaJE/P0g4EmgvpEHBzQ=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 590816C00896;
-        Thu, 13 May 2021 03:45:56 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id J1XVhm1-ufa4; Thu, 13 May 2021 03:45:56 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 12A926C00835;
-        Thu, 13 May 2021 03:45:56 +0300 (EEST)
-Received: from nas (unknown [211.106.132.202])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id C71F01BE0083;
-        Thu, 13 May 2021 03:45:54 +0300 (EEST)
-References: <20210511042501.900731-1-l@damenly.su>
- <20210512140135.GR7604@twin.jikos.cz>
-User-agent: mu4e 1.5.8; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: do not BUG_ON if btrfs_add_to_fsid
- succeeded to write superblock
-Date:   Thu, 13 May 2021 08:37:29 +0800
-Message-ID: <k0o3lb1d.fsf@damenly.su>
-In-reply-to: <20210512140135.GR7604@twin.jikos.cz>
+        id S230310AbhEMCWm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 May 2021 22:22:42 -0400
+Received: from mout.gmx.net ([212.227.17.21]:57961 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229630AbhEMCWl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 May 2021 22:22:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620872489;
+        bh=mPoPuaCVnQdagW3NzF8zq96WLiQReWdTC6V/WXAXQBU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=NMcGAhu57w4fuPefhy76uiRbGOxYDKiv5mQs5QzB1PS52BJYaWuwxfD+POdQQb+36
+         bGSwSSXrba5/bqdyMMiJwvHOSdizjBV/F3TNElAJYDsilQSmWtJnd2LVJvBHReQSEi
+         q/ljvXBCs+kL06yNiBcjwaN9eXm9Ya7+Vo1ZSZRA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2V0B-1lVh9L1Pu3-013uCx; Thu, 13
+ May 2021 04:21:29 +0200
+Subject: Re: [Patch v2 00/42] btrfs: add data write support for subpage
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210427230349.369603-1-wqu@suse.com>
+ <20210512221821.GB7604@twin.jikos.cz>
+ <de2c2a25-a8da-4d69-819e-847c4721b3f4@gmx.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <36e94393-d6cf-cc3d-d710-79c517de4ecc@gmx.com>
+Date:   Thu, 13 May 2021 10:21:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: +d1m7+hSeE2piELYI3bcBAcpripPQuzm+fm40B9F/g/3MCiEf0oFUxGzm3AFM3H44X8X
+In-Reply-To: <de2c2a25-a8da-4d69-819e-847c4721b3f4@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0lkHUIrZ7nXRSHT9qH/H2pHBP28fr2c0QGebH6SSGXi+KzoiY7k
+ A6hbZfzEnRR1zVUxzXJJP+rmQNSwOyu6C667xYZrOTXvqWJD0/fXAUMEk1gf6A7GT2uOZtC
+ s7ZGqcvWwmL3r6p7z+JrKjl2JKohtBoU/JJU3v4mzaMSddPdiBTdqn5DO76ketPvgTJYjPh
+ 6q6eIQfFL8ZhoNQxtGP/A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fqnB74KDK/w=:jycO3EDQIPdqxq5C5KYkDC
+ QqSiRCqPesgLtl3HEkauZJXug95maR5dglGfAU3SGzgt0YZM6642w4t/l2Jj4owttyxBtwjq3
+ bbYoooeZRkI8DbCAcp0ByOK34ak5FcfakONEQdthFe5gvuWgPCdU+2T6s+5d37DVAUNHfTJM9
+ gjRSKfGl/xjlBdVX2Tfi/nR0vCTHbjWwwqfB+bScl7qFZjlkEfa1PGH57F6M0gN/2h45lroI9
+ ocQdPPtwv0YqZ1+dZ8WwcUOCxCmU/S/93o2C+cXp2xxHsd22ByU89zPwk3BlK+bUVU2LH4T+c
+ Upa3PfB1K1oIj99eprhzlvjFQwU57ovVyFTiYfvJF44QvPafrom3NWqJ2+jcg2CFs/bCW6USG
+ vwkn7io3aD96vBpS3TyG8bI6eJ6SmwEeRSTat9zWyshHkn6vHXLbBAZwAZJksixz0EmUMOK6i
+ 1xytp1fX4wswEm/banVGbyerUyhbjBtDFaXeC08FAEFFFPZGh9ihO8mhgZumnnL7o5Kf2eqUY
+ JmQ9I+jS1g542Yo7ySPOP96CkKZFfn0qG3LvGMnbQwlIghGTVRUZrgei9/UXPXX8DJYNXleDw
+ +VZjiCkRgrI1rwKgR9flNVtErblsNk/MNnDUo8frIiuRSy2yLeX6HJxvRjqUAioSfak/keqzL
+ qGI3+2a7JfpOGkmUInFtkYuQDx5jqQnksDFO/a8S1BGNmCPzKw9teErhhOiqbbhwAE/6boGCs
+ f9kZn/9a8KXUOEHM97+S8/eXhelw2eaT17L8IN2QVNSReVfXibfOw5SVcK7ZZZ+2dr7IK5qKo
+ /snyO7mAvRtnYlnnbz6lw8aXkvAgam/MwGUNaCBgA5AsZJhe1x4ox1AIJmUj0tHXlVWWYFrty
+ z+QE4pD7SFyFMTk1Ww6yPz+fZYxWfaO/ZHB8HJi/mfWbye7deiSn9CqRuOEQa9x8p/EZVIais
+ dIW9NTVN9W5ijF5d0Eee4Gq9itvpmOMY86iyeV/EJOEBOwtq+tA2mibAIRAzBPiPldXQRTgTi
+ Ci5GGWyqP3U08iggBmkY4UeqyJn8nxS3hPSSOS8t+jFQpUMKk1OR1Q9NZl3JXoLZNmDrmZ+M9
+ dFIprv7cM/YqH7tDSsP5g7BcBxpoYhpCHlB/ocp/AXRRAs0cd6bzDVL1wjPiHrO5XanCi0kIc
+ BHzQaQiLvgBZ9YNKEReqPShn7jdzcgsNVJd5p9PcPw07H/BhiQjLpWal0iaoKefxr0dxZPHqZ
+ Xt6IhljTw9cWupLGW
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-On Wed 12 May 2021 at 22:01, David Sterba <dsterba@suse.cz> wrote:
 
-> On Tue, May 11, 2021 at 12:25:01PM +0800, Su Yue wrote:
->> Commit 8ef9313cf298 ("btrfs-progs: zoned: implement 
->> log-structured
->> superblock") changed to write BTRFS_SUPER_INFO_SIZE bytes to 
->> device.
->> The before num of bytes to be written is sectorsize.
->> It causes mkfs.btrfs failed on my 16k pagesize kvm:
+On 2021/5/13 =E4=B8=8A=E5=8D=887:48, Qu Wenruo wrote:
 >
-> What architecture is that?
 >
-The host chip is Apple m1 so it's arm64 but only supporting 16k 
-and 4k
-pagesize. Since btrfs subpage work cares 64k pagesize for now, I 
-usually
-run xfstests with 16k pagesize and 16k sectorsize. So far, so 
-good.
-
---
-Su
-
+> On 2021/5/13 =E4=B8=8A=E5=8D=886:18, David Sterba wrote:
+>> On Wed, Apr 28, 2021 at 07:03:07AM +0800, Qu Wenruo wrote:
+>>> =3D=3D=3D Patchset structure =3D=3D=3D
+>>>
+>>> Patch 01~02:=C2=A0=C2=A0=C2=A0 hardcoded PAGE_SIZE related fixes
+>>> Patch 03~05:=C2=A0=C2=A0=C2=A0 submit_extent_page() refactor which wil=
+l reduce overhead
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for write path.
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 This should benefit 4K page=
+ the most. Although the
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 primary objective is just t=
+o make the code easier to
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 read.
+>>> Patch 06:=C2=A0=C2=A0=C2=A0 Cleanup for metadata writepath, to reduce =
+the impact on
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regular sectorsize path.
+>>> Patch 07~13:=C2=A0=C2=A0=C2=A0 PagePrivate2 and ordered extent related=
+ refactor.
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Although it's still a refac=
+tor, the refactor is pretty
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 important for subpage data =
+write path, as for subpage we
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 could have btrfs_writepage_=
+endio_finish_ordered() call
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 across several sectors, whi=
+ch may or may not have
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ordered extent for those se=
+ctors.
+>>>
+>>> ^^^ Above patches are all subpage data write preparation ^^^
 >>
->>   $ /usr/bin/mkfs.btrfs -s 16k -f -mraid0 /dev/vdb2 /dev/vdb3
->>   btrfs-progs v5.12
->>   See http://btrfs.wiki.kernel.org for more information.
->>
->>   ERROR: superblock magic doesn't match
->>   ERROR: superblock magic doesn't match
->>   common/device-scan.c:195: btrfs_add_to_fsid: BUG_ON `ret != 
->>   sectorsize`
->>   triggered, value 1
->>   /usr/bin/mkfs.btrfs(btrfs_add_to_fsid+0x274)[0xaaab4fe8a5fc]
->>   /usr/bin/mkfs.btrfs(main+0x1188)[0xaaab4fe4dc8c]
->>   /usr/lib/libc.so.6(__libc_start_main+0xe8)[0xffff7223c538]
->>   /usr/bin/mkfs.btrfs(+0xc558)[0xaaab4fe4c558]
->>
->>   [1]    225842 abort (core dumped)  /usr/bin/mkfs.btrfs -s 16k 
->>   -f -mraid0
->>   /dev/vdb2 /dev/vdb3
->>
->> btrfs_add_to_fsid() now always calls sbwrite() to write
->> BTRFS_SUPER_INFO_SIZE bytes to device, so change condition of
->> the BUG_ON().
->> Also add comments for sbread() and sbwrite().
->>
->> Signed-off-by: Su Yue <l@damenly.su>
+>> Do you think the patches 1-13 are safe to be merged independently? I've
+>> paged through the whole patchset and some of the patches are obviously
+>> preparatory stuff so they can go in without much risk.
 >
-> Added to devel, thanks.
+> Yes. I believe they are OK for merge.
+>
+> I have run the full tests on x86 VM for the whole patchset, no new
+> regression.
+>
+> Especially patch 03~05 would benefit 4K page size the most, thus merging
+> them first would definitely help.
+>
+> Just let me to run the tests with patch 1~13 only, to see if there is
+> any special dependency missing.
 
+Yep, patch 1~13 with the v5 read time repair patches are safe for x86.
+
+So they should be fine for the next merge window.
+
+Thanks,
+Qu
+
+>
+>>
+>> I haven't looked at your git if there are updates from what was posted,
+>> but I don't expect any significant changes, but what I saw looked ok to
+>> me.
+>
+> I haven't touched those patches since v2 submission, thus there
+> shouldn't be any modification to them.
+> (At most some cosmetic change for the commit message/comments)
+>>
+>> If there are changes, please post 1-13 (ie. all the preparatory
+>> patches), I'll put them to misc-next so you can focus on the rest.
+>>
+>
+> Thanks a lot!
+> Qu
