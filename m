@@ -2,158 +2,319 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB4938087D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 May 2021 13:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C35B38089F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 May 2021 13:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhENLeY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 May 2021 07:34:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57818 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhENLeX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 May 2021 07:34:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C5CF5AFF4;
-        Fri, 14 May 2021 11:33:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 07FD4DA8EB; Fri, 14 May 2021 13:30:40 +0200 (CEST)
-Date:   Fri, 14 May 2021 13:30:40 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [Patch v2 00/42] btrfs: add data write support for subpage
-Message-ID: <20210514113040.GV7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210427230349.369603-1-wqu@suse.com>
- <20210512221821.GB7604@twin.jikos.cz>
- <de2c2a25-a8da-4d69-819e-847c4721b3f4@gmx.com>
- <36e94393-d6cf-cc3d-d710-79c517de4ecc@gmx.com>
+        id S232579AbhENLiH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 May 2021 07:38:07 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:42722 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231433AbhENLiG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 May 2021 07:38:06 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14EBZNoM098183;
+        Fri, 14 May 2021 11:36:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=MME3YlbYbyCDSYbbX1qbJqyvWXhDLLRA25bZ/Q/Vgd4=;
+ b=BVpBwLUwS7b0q4vImOywk7+15DmNFd2At6qbyBdbMhdlHhsc45iVEbt7pKU0RRVSNqMA
+ 4juAu+4PeaphpSOgUD0/d9ygNqcU2qNzR9lp+qDtcraAyGAyxV2Mhd17gMHeh/smB2Vz
+ jMDtrpThAS6pTqGCy5tmGBWCyC4cVLMTttyJ/KuHlCEGMWCh5e3Sko0/MLlk3jUY9bHG
+ CVhXoFlk6DmVpxIW/Exa9eG8hqqT5uJ//ceJszPcnE28eIzP4ll0ek/89zo+WkgIjlim
+ 11D6RkklM4HuSXju67oqoQW1CH52Zztqjm4Vo7Nj24aySeg+0hDA+WWr2PiauHcejYw6 3w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 38gpnem3me-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 11:36:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14EBZxUE002208;
+        Fri, 14 May 2021 11:36:53 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2171.outbound.protection.outlook.com [104.47.59.171])
+        by aserp3030.oracle.com with ESMTP id 38gppq13ue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 11:36:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ULaiENTJjZ7aile80EochjVnkmhl8vyArIUE52UMN3UYGWhpxVfGJwj6gvWWimrJ65y0Lj5nYQuAbeFpBxbL5GdfovxymKwWrvFLxXtYlw94rflRizbISmHqGCXa/Nhxc6TJF/1zxdXqk0YWcT5/c0d+31Gi3RML06ZUlBZ3WzQPOh1mZFRY8EHGpWvYZKh10pXksWD0d8Ubb+T6FLeJDTdpiaVqX4tO15Y9+mO0oEDVEfiyXshTrSUq+SaYBreXsQo+32rkwfCW8oQIktXNDp0fylhlwz8aS1YBtej9hLXR2uoxiNxk/DY6Xpo9tO1cVBzGiPWznt7KM/M0H6DA1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MME3YlbYbyCDSYbbX1qbJqyvWXhDLLRA25bZ/Q/Vgd4=;
+ b=B7Gtbdm7FwfhLR1YiLbYKFHrVx5TqEk/h0snQ9DNauNGYGRimyfYcjY48e3b+nGMNsX2Ln8dqhes2eiZhH/sDrDvM/5cd9ky73eyAYwsZaw0YfX9RpeMH/MDEDxkTAxX8JuUnIHD3FzXj+opaN1/FVGao9Mn5xESzlue1ntOI5SjVbKLw0j22857l3+Xtl1kblTQipvFxwCmkgK34xyjOKJwekJhgG/eXv0uxq8iYv3Ad2BC1K9AHVMch/EDPJLRm+3oznmH3c2bbL1R0/GM1YYkOEXmJnk/7ACd8KrQWNIbLqLZwWfR+KBFSOj+lJPr/aeKYASq7IAHtdLvXTQuRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MME3YlbYbyCDSYbbX1qbJqyvWXhDLLRA25bZ/Q/Vgd4=;
+ b=jWCAXXvz1nGAr9AypHxOJgEbPDdao2EGIo4/pfCuat0pnResDKLA15dEoGJGLNqUnxJLIJju8lBXVQ0SU8Q3I6e2IXtYOcirvo+7bU87xkuy23FZ02AJO5luXG4aQO58/Gp5MmOY5CqXKgLpB8Oq5OynB0INOMpBm2+XRTln+K0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BLAPR10MB5202.namprd10.prod.outlook.com (2603:10b6:208:306::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Fri, 14 May
+ 2021 11:36:51 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::992c:4b34:d95:def8]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::992c:4b34:d95:def8%9]) with mapi id 15.20.4129.026; Fri, 14 May 2021
+ 11:36:50 +0000
+Subject: Re: [PATCH] btrfs: release path before starting transaction when
+ cloning inline extent
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <3ec5746e834bba2593b9f109a335743ac321b345.1620982607.git.fdmanana@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <b2d4303b-83a6-3a1c-acd9-393f2c76f638@oracle.com>
+Date:   Fri, 14 May 2021 19:36:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+In-Reply-To: <3ec5746e834bba2593b9f109a335743ac321b345.1620982607.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2406:3003:2006:2288:a174:8492:d128:af21]
+X-ClientProxiedBy: SG2PR02CA0053.apcprd02.prod.outlook.com
+ (2603:1096:4:54::17) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <36e94393-d6cf-cc3d-d710-79c517de4ecc@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2406:3003:2006:2288:a174:8492:d128:af21] (2406:3003:2006:2288:a174:8492:d128:af21) by SG2PR02CA0053.apcprd02.prod.outlook.com (2603:1096:4:54::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 11:36:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d8465c06-61c3-413a-23f5-08d916cc90ae
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5202:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB520269942C5463ADF111AB9BE5509@BLAPR10MB5202.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +u/6TmMCUewZ3yKcFzy/wOoQgIu9w22cERy1lJLDfnIKvtKDppke5gJdTn16wPY0wcQgP9VWw+r7Qq8NOLH3ejA2EhUiHNs5zRBGwPht2GHfUdUYN8LFV/1xqhPGd+dnDxKDNwSwzY4iIbIB3H3G1TQKVyjjS18c+p25Br+/ybpO/aKBsCNpRKTa5s/dJCVvck3pB/A3QVbrOEIr34NUPz+ougb514m1ae+PXHktfchVuQusTmUHcfpBfzGwYYdDwic0VV96n6D6h0Yk1/jN6n30jua2FCvQ9+t99nmOPxdCwnrkvKs68spvz37E8k+Bg+DoEfeCJX330ggBgZTiWJ3R3SZ+Wq04zyL895dRgUldKqgM2AwSfObpyFY7NPg3RzeoWlzIJSLodJodi6o0kGtxheQJVT0mGk0l09EfRnb8CgxjVkSiEmb5D56mpsrlC4dQhktl3JZW+kCBN65ucVTS02jNjjjA6SzwTdZDsPELmQ3QOlxsG7IecDfBSIO7ciF8mhwE0rzZYlDUfmzdZyPw5yUTfqM2GUSld+iE3QTz29b5rzmklERrkDHh5R5KnA+TTSXrI9lM2y+pKoCbZNef661RRwZ0Ob3GHIEa54ZQ76YCDTYdvj2AdzAl/3gQXijTxfAV6Ao778aOTWJ8MYZk0KMHW+YTDFfhiGTuHYgDrQdB2cyMFWo1fcQVDW1daQCmaiVBjh9NsaGq7O1AnQF4W/Gv7fp5caYRSrARakX9G8hkC7EnC0EJy+VywXgr/tTvNKWOUmVTMAnBlYtMgw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(39860400002)(366004)(136003)(346002)(5660300002)(36756003)(86362001)(8676002)(316002)(31696002)(2616005)(83380400001)(8936002)(31686004)(478600001)(966005)(66476007)(6486002)(66556008)(44832011)(53546011)(66946007)(6666004)(38100700002)(2906002)(186003)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QWFOSkVxQzMrZzlyMkxOK3N0NUtJSXVBell1VUVrUk9mK2NKNHVLUWRSQWIv?=
+ =?utf-8?B?ZWlTVWVWOFdJbXlrUkN4YXlVQ2JLenQycnp3c0xzOUdRQlp5bzFubDFUZjJS?=
+ =?utf-8?B?SUNKVURwa1k1YWZjYVlOM1RRWUVEUFlQbDlIYmJyUThHc1VOVnZacVpSRTNO?=
+ =?utf-8?B?VVF0ZjUzaWJySUlWb05UT1JONUlpUmpybnRUSkR1azNYNG9iWTMzcHJBMlFr?=
+ =?utf-8?B?VG5ydGUyYXhYSE0wcDlzVGxFUW1iNHBpMlhBOC9xM0owdVZkY013alRidmts?=
+ =?utf-8?B?eDQ0NjhBb3VSYncyM3JVckYwSC9hNGRuci9qcnBkeTdlWTd5b0dVcldlOVk2?=
+ =?utf-8?B?eFpacStLOWlKOTNnRG40TmlmTW5CVjF3R3BHc2hBR1NGRFVyZVYrOVdWLzhz?=
+ =?utf-8?B?L29XSityc1ErZGNiOU0yeUhzUVM2VGs4SVRaVDR0cEhSUU1EODJVam54citT?=
+ =?utf-8?B?RmpMQ1NDZWw4U015aUZmVERFelV3WUo1UlV2QUhoanUrZWQ3MlkxdjJDTFlO?=
+ =?utf-8?B?YUQzVDJHUG5PcTNuRDBkajdDUFRPbUxzV1l6QXdkaEJVc1I0TkVRb0owbmkx?=
+ =?utf-8?B?cUhXZTZuYzhjckxzMHVwUExvMHZHOFFBdmtpZDRHSkx2U2ZKQ05oR2FMQnBR?=
+ =?utf-8?B?d3MwU2JXYUlqMHI1RWd6elJpOFpWdlI0dGdpWmNRUnp4RmVRejdVRHBsbFJX?=
+ =?utf-8?B?L1I3NFhTMS9OMjhGU3h5WHh2dEpGQWdkcm5XRVlmeWxzWkNDUHpONENqWkR6?=
+ =?utf-8?B?a2o4WVlodlBOQXA5M3VnUnY1ZStYcW5yQjFrOUxkZUdGOGhORG16cXlVR1dP?=
+ =?utf-8?B?ekttdXBaSWdtNmJFWUgzUXFNQWx1c0QvUG4vZCtaT2RJYmQ4SWJEMEZLVk96?=
+ =?utf-8?B?ejE3b3U4R3luaGwyOWJ2U29wSCt2L0xpbjIrd01mdG80ZUkzNWt5Q255MEVj?=
+ =?utf-8?B?cStzZlNTcnpaaEN0TjJDQTB5dVFHK1lVeEFJK24rRlYrZm5GdzhCd3JETzRG?=
+ =?utf-8?B?MktuSDJpTzgwK0xXd0M2TlRHam9kaUluNUNwMjRhOXRpQ0xjcWx0V2pDRVJa?=
+ =?utf-8?B?WVg4MzVESzE1ZVdYMGY4SFpVVW9XQXg5SjhBdkttczIzbXVjK3F4djNGNUk1?=
+ =?utf-8?B?NURhbWNlLy9RamVYRnl2bW1VZFNGUitjODlyOG9ETFlsdlFBSy9lRjVta0Z3?=
+ =?utf-8?B?VjF4QytNVFFnMTRMY2JjdE9kdm1ZN0dvaENGMEk4Y3E2YVBNN1pKTGhoY2hh?=
+ =?utf-8?B?SnE4YVB1MUFTTjViYjlzWU1JYlc2QnlWUFo1OVlqckgyNHMvb2Y4TmlGVVU5?=
+ =?utf-8?B?UmFOVlVxWmNXSlk0Z0NxMzNGcTZqSWhuMUtjY2xqNWJtdUNZYWhBNFFWRzJJ?=
+ =?utf-8?B?OCthOWpid2RlTUdBUjJOOGlLS3R2RS9PWlN1OGpPZ3ZMYnovMGQyNzQydmtM?=
+ =?utf-8?B?WExBQU1XWkdEalRyL2MrZGVlK0FkcG5FWlBGbzM3OHhORUtTY0NPT1RvMGFP?=
+ =?utf-8?B?RmlBRjZ3WG4yQkdFems4NXQxUmQ1Z1pOYS9DK0VnVVVZMWlSaFlkS0NCa3hq?=
+ =?utf-8?B?dDlDdzgrWVNqOW1FNFJVcWpObS9EZVRyakcvbGFOM1BUbHpCS3ZmQ3FtM2Zl?=
+ =?utf-8?B?UTQ4RW5FVVVIaVFoMUtieHR6R3lRK2ErMWZRSHFyTXhqenl5VFFnYk9GeDJh?=
+ =?utf-8?B?czAwa2liUTJjbDI3UVN2bXRuT2ZIZ25jMUJKQUJHcjJyTVRBaWxlaXhxY285?=
+ =?utf-8?B?WWxNUUsvVEFIbWh2eURjUUxpZ2ViYUFic2I4SHV2Sk9RUjBXcHVWd0NJYXhQ?=
+ =?utf-8?B?UWlIVHh6WkN0R3F4MEhuMk9OYm10a3FBWHhZWXlpYmVnTlg5QUNzZU5tWlc2?=
+ =?utf-8?Q?8ybutxzN75E1K?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8465c06-61c3-413a-23f5-08d916cc90ae
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 11:36:50.8924
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fqA1L9V7DAVJ8LmUJJb2G6Z7hEYBSCwgCIHq6AuJxaLSZcP3UxE7dNoCnh3n4FcVA3fjoNGP/Mr2iI8YivtJsQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5202
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140090
+X-Proofpoint-GUID: qdlgeVyb_W7QP1MGlyy6iz1XSYFwPgim
+X-Proofpoint-ORIG-GUID: qdlgeVyb_W7QP1MGlyy6iz1XSYFwPgim
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105140090
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 13, 2021 at 10:21:24AM +0800, Qu Wenruo wrote:
-> > On 2021/5/13 上午6:18, David Sterba wrote:
-> >> On Wed, Apr 28, 2021 at 07:03:07AM +0800, Qu Wenruo wrote:
-> >>> === Patchset structure ===
-> >>>
-> >>> Patch 01~02:    hardcoded PAGE_SIZE related fixes
-> >>> Patch 03~05:    submit_extent_page() refactor which will reduce overhead
-> >>>         for write path.
-> >>>         This should benefit 4K page the most. Although the
-> >>>         primary objective is just to make the code easier to
-> >>>         read.
-> >>> Patch 06:    Cleanup for metadata writepath, to reduce the impact on
-> >>>         regular sectorsize path.
-> >>> Patch 07~13:    PagePrivate2 and ordered extent related refactor.
-> >>>         Although it's still a refactor, the refactor is pretty
-> >>>         important for subpage data write path, as for subpage we
-> >>>         could have btrfs_writepage_endio_finish_ordered() call
-> >>>         across several sectors, which may or may not have
-> >>>         ordered extent for those sectors.
-> >>>
-> >>> ^^^ Above patches are all subpage data write preparation ^^^
-> >>
-> >> Do you think the patches 1-13 are safe to be merged independently? I've
-> >> paged through the whole patchset and some of the patches are obviously
-> >> preparatory stuff so they can go in without much risk.
-> >
-> > Yes. I believe they are OK for merge.
-> >
-> > I have run the full tests on x86 VM for the whole patchset, no new
-> > regression.
-> >
-> > Especially patch 03~05 would benefit 4K page size the most, thus merging
-> > them first would definitely help.
-> >
-> > Just let me to run the tests with patch 1~13 only, to see if there is
-> > any special dependency missing.
+On 14/05/2021 17:03, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Yep, patch 1~13 with the v5 read time repair patches are safe for x86.
+> When cloning an inline extent there are a few cases, such as when we have
+> an implicit hole at file offset 0, where we start a transaction while
+> holding a read lock on a leaf. Starting the transaction results in a call
+> to sb_start_intwrite(), which results in doing a read lock on a percpu
+> semaphore. Lockdep doesn't like this and complains about it:
+> 
+> [   46.580704] ======================================================
+> [   46.580752] WARNING: possible circular locking dependency detected
+> [   46.580799] 5.13.0-rc1 #28 Not tainted
+> [   46.580832] ------------------------------------------------------
+> [   46.580877] cloner/3835 is trying to acquire lock:
+> [   46.580918] c00000001301d638 (sb_internal#2){.+.+}-{0:0}, at: clone_copy_inline_extent+0xe4/0x5a0
+> [   46.581167]
+> [   46.581167] but task is already holding lock:
+> [   46.581217] c000000007fa2550 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
+> [   46.581293]
+> [   46.581293] which lock already depends on the new lock.
+> [   46.581293]
+> [   46.581351]
+> [   46.581351] the existing dependency chain (in reverse order) is:
+> [   46.581410]
+> [   46.581410] -> #1 (btrfs-tree-00){++++}-{3:3}:
+> [   46.581464]        down_read_nested+0x68/0x200
+> [   46.581536]        __btrfs_tree_read_lock+0x70/0x1d0
+> [   46.581577]        btrfs_read_lock_root_node+0x88/0x200
+> [   46.581623]        btrfs_search_slot+0x298/0xb70
+> [   46.581665]        btrfs_set_inode_index+0xfc/0x260
+> [   46.581708]        btrfs_new_inode+0x26c/0x950
+> [   46.581749]        btrfs_create+0xf4/0x2b0
+> [   46.581782]        lookup_open.isra.57+0x55c/0x6a0
+> [   46.581855]        path_openat+0x418/0xd20
+> [   46.581888]        do_filp_open+0x9c/0x130
+> [   46.581920]        do_sys_openat2+0x2ec/0x430
+> [   46.581961]        do_sys_open+0x90/0xc0
+> [   46.581993]        system_call_exception+0x3d4/0x410
+> [   46.582037]        system_call_common+0xec/0x278
+> [   46.582078]
+> [   46.582078] -> #0 (sb_internal#2){.+.+}-{0:0}:
+> [   46.582135]        __lock_acquire+0x1e90/0x2c50
+> [   46.582176]        lock_acquire+0x2b4/0x5b0
+> [   46.582263]        start_transaction+0x3cc/0x950
+> [   46.582308]        clone_copy_inline_extent+0xe4/0x5a0
+> [   46.582353]        btrfs_clone+0x5fc/0x880
+> [   46.582388]        btrfs_clone_files+0xd8/0x1c0
+> [   46.582434]        btrfs_remap_file_range+0x3d8/0x590
+> [   46.582481]        do_clone_file_range+0x10c/0x270
+> [   46.582558]        vfs_clone_file_range+0x1b0/0x310
+> [   46.582605]        ioctl_file_clone+0x90/0x130
+> [   46.582651]        do_vfs_ioctl+0x874/0x1ac0
+> [   46.582697]        sys_ioctl+0x6c/0x120
+> [   46.582733]        system_call_exception+0x3d4/0x410
+> [   46.582777]        system_call_common+0xec/0x278
+> [   46.582822]
+> [   46.582822] other info that might help us debug this:
+> [   46.582822]
+> [   46.582888]  Possible unsafe locking scenario:
+> [   46.582888]
+> [   46.582942]        CPU0                    CPU1
+> [   46.582984]        ----                    ----
+> [   46.583028]   lock(btrfs-tree-00);
+> [   46.583062]                                lock(sb_internal#2);
+> [   46.583119]                                lock(btrfs-tree-00);
+> [   46.583174]   lock(sb_internal#2);
+> [   46.583212]
+> [   46.583212]  *** DEADLOCK ***
+> [   46.583212]
+> [   46.583266] 6 locks held by cloner/3835:
+> [   46.583299]  #0: c00000001301d448 (sb_writers#12){.+.+}-{0:0}, at: ioctl_file_clone+0x90/0x130
+> [   46.583382]  #1: c00000000f6d3768 (&sb->s_type->i_mutex_key#15){+.+.}-{3:3}, at: lock_two_nondirectories+0x58/0xc0
+> [   46.583477]  #2: c00000000f6d72a8 (&sb->s_type->i_mutex_key#15/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x9c/0xc0
+> [   46.583574]  #3: c00000000f6d7138 (&ei->i_mmap_lock){+.+.}-{3:3}, at: btrfs_remap_file_range+0xd0/0x590
+> [   46.583657]  #4: c00000000f6d35f8 (&ei->i_mmap_lock/1){+.+.}-{3:3}, at: btrfs_remap_file_range+0xe0/0x590
+> [   46.583743]  #5: c000000007fa2550 (btrfs-tree-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x70/0x1d0
+> [   46.583828]
+> [   46.583828] stack backtrace:
+> [   46.583872] CPU: 1 PID: 3835 Comm: cloner Not tainted 5.13.0-rc1 #28
+> [   46.583931] Call Trace:
+> [   46.583955] [c0000000167c7200] [c000000000c1ee78] dump_stack+0xec/0x144 (unreliable)
+> [   46.584052] [c0000000167c7240] [c000000000274058] print_circular_bug.isra.32+0x3a8/0x400
+> [   46.584123] [c0000000167c72e0] [c0000000002741f4] check_noncircular+0x144/0x190
+> [   46.584191] [c0000000167c73b0] [c000000000278fc0] __lock_acquire+0x1e90/0x2c50
+> [   46.584259] [c0000000167c74f0] [c00000000027aa94] lock_acquire+0x2b4/0x5b0
+> [   46.584317] [c0000000167c75e0] [c000000000a0d6cc] start_transaction+0x3cc/0x950
+> [   46.584388] [c0000000167c7690] [c000000000af47a4] clone_copy_inline_extent+0xe4/0x5a0
+> [   46.584457] [c0000000167c77c0] [c000000000af525c] btrfs_clone+0x5fc/0x880
+> [   46.584514] [c0000000167c7990] [c000000000af5698] btrfs_clone_files+0xd8/0x1c0
+> [   46.584583] [c0000000167c7a00] [c000000000af5b58] btrfs_remap_file_range+0x3d8/0x590
+> [   46.584652] [c0000000167c7ae0] [c0000000005d81dc] do_clone_file_range+0x10c/0x270
+> [   46.584722] [c0000000167c7b40] [c0000000005d84f0] vfs_clone_file_range+0x1b0/0x310
+> [   46.584793] [c0000000167c7bb0] [c00000000058bf80] ioctl_file_clone+0x90/0x130
+> [   46.584861] [c0000000167c7c10] [c00000000058c894] do_vfs_ioctl+0x874/0x1ac0
+> [   46.584922] [c0000000167c7d10] [c00000000058db4c] sys_ioctl+0x6c/0x120
+> [   46.584978] [c0000000167c7d60] [c0000000000364a4] system_call_exception+0x3d4/0x410
+> [   46.585046] [c0000000167c7e10] [c00000000000d45c] system_call_common+0xec/0x278
+> [   46.585114] --- interrupt: c00 at 0x7ffff7e22990
+> [   46.585160] NIP:  00007ffff7e22990 LR: 00000001000010ec CTR: 0000000000000000
+> [   46.585224] REGS: c0000000167c7e80 TRAP: 0c00   Not tainted  (5.13.0-rc1)
+> [   46.585280] MSR:  800000000280f033 <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 28000244  XER: 00000000
+> [   46.585374] IRQMASK: 0
+> [   46.585374] GPR00: 0000000000000036 00007fffffffdec0 00007ffff7f17100 0000000000000004
+> [   46.585374] GPR04: 000000008020940d 00007fffffffdf40 0000000000000000 0000000000000000
+> [   46.585374] GPR08: 0000000000000004 0000000000000000 0000000000000000 0000000000000000
+> [   46.585374] GPR12: 0000000000000000 00007ffff7ffa940 0000000000000000 0000000000000000
+> [   46.585374] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> [   46.585374] GPR20: 0000000000000000 000000009123683e 00007fffffffdf40 0000000000000000
+> [   46.585374] GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000004
+> [   46.585374] GPR28: 0000000100030260 0000000100030280 0000000000000003 000000000000005f
+> [   46.585919] NIP [00007ffff7e22990] 0x7ffff7e22990
+> [   46.585964] LR [00000001000010ec] 0x1000010ec
+> [   46.586010] --- interrupt: c00
+> 
+> This should be a false positive, as both locks are acquired in read mode.
+> Nevertheless, we don't need to hold a leaf locked when we start the
+> transaction, so just release the leaf (path) before starting it.
+> 
+> Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Link: https://lore.kernel.org/linux-btrfs/20210513214404.xks77p566fglzgum@riteshh-domain/
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/reflink.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+> index f4ec06b53aa0..ae3fde71defb 100644
+> --- a/fs/btrfs/reflink.c
+> +++ b/fs/btrfs/reflink.c
+> @@ -291,6 +291,7 @@ static int clone_copy_inline_extent(struct inode *dst,
+>   		 *
+>   		 * 1 unit to update inode item
+>   		 */
+> +		btrfs_release_path(path);
+>   		trans = btrfs_start_transaction(root, 1);
+>   		if (IS_ERR(trans)) {
+>   			ret = PTR_ERR(trans);
+> 
 
-All fine up to generic/521 that got stuck. It looks like some use after
-free, check the 2nd line of the dump, there's the 0x6b6b signature
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-generic/521		[00:33:06][26901.358817] run fstests generic/521 at 2021-05-14 00:33:06
-[27273.028163] general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6a9b: 0000 [#1] PREEMPT SMP
-[27273.030710] CPU: 0 PID: 20046 Comm: fsx Not tainted 5.13.0-rc1-default+ #1463
-[27273.032295] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-[27273.034731] RIP: 0010:btrfs_lookup_first_ordered_range+0x46/0x140 [btrfs]
-[27273.040247] RSP: 0018:ffffb7ac06617b10 EFLAGS: 00010002
-[27273.041365] RAX: 6b6b6b6b6b6b6b6b RBX: 6b6b6b6b6b6b6b6b RCX: ffffffffffffffff
-[27273.042841] RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc01b3e09 RDI: ffff93c444e397d0
-[27273.044388] RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-[27273.045938] R10: ffffffffc01b3e09 R11: 0000000000000000 R12: 000000000002f000
-[27273.047409] R13: ffff93c48ae79368 R14: ffff93c444e397b8 R15: 000000000002f000
-[27273.048959] FS:  00007fb0f0a5e740(0000) GS:ffff93c4bd600000(0000) knlGS:0000000000000000
-[27273.050674] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[27273.051971] CR2: 00007fb0f0936000 CR3: 0000000028bf4001 CR4: 0000000000170eb0
-[27273.053548] Call Trace:
-[27273.054145]  btrfs_invalidatepage+0xd3/0x390 [btrfs]
-[27273.055276]  truncate_cleanup_page+0xda/0x170
-[27273.056243]  truncate_inode_pages_range+0x131/0x5a0
-[27273.057334]  ? trace_btrfs_space_reservation+0x33/0xf0 [btrfs]
-[27273.058642]  ? lock_acquire+0xa0/0x150
-[27273.059506]  ? unmap_mapping_pages+0x4d/0x130
-[27273.060491]  ? do_raw_spin_unlock+0x4b/0xa0
-[27273.061477]  ? unmap_mapping_pages+0x5e/0x130
-[27273.062482]  btrfs_punch_hole_lock_range+0xc5/0x130 [btrfs]
-[27273.063738]  btrfs_zero_range+0x1d7/0x4b0 [btrfs]
-[27273.064833]  btrfs_fallocate+0x6b4/0x890 [btrfs]
-[27273.065921]  ? __x64_sys_fallocate+0x3e/0x70
-[27273.066920]  ? __do_sys_newfstatat+0x40/0x70
-[27273.067875]  vfs_fallocate+0x12e/0x420
-[27273.068738]  __x64_sys_fallocate+0x3e/0x70
-[27273.069684]  do_syscall_64+0x3f/0xb0
-[27273.070539]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[27273.071641] RIP: 0033:0x7fb0f0b5716a
-[27273.076352] RSP: 002b:00007fff6503e0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
-[27273.078019] RAX: ffffffffffffffda RBX: 0000000000007909 RCX: 00007fb0f0b5716a
-[27273.079522] RDX: 000000000002956d RSI: 0000000000000010 RDI: 0000000000000003
-[27273.081020] RBP: 000000000002956d R08: 0000000000007909 R09: 000000000002956d
-[27273.082542] R10: 0000000000007909 R11: 0000000000000246 R12: 0000000000000000
-[27273.083984] R13: 0000000000030e76 R14: 0000000000000010 R15: 000000000002956d
-[27273.090924] ---[ end trace f729bc2baa232124 ]---
-[27273.092000] RIP: 0010:btrfs_lookup_first_ordered_range+0x46/0x140 [btrfs]
-[27273.097206] RSP: 0018:ffffb7ac06617b10 EFLAGS: 00010002
-[27273.098338] RAX: 6b6b6b6b6b6b6b6b RBX: 6b6b6b6b6b6b6b6b RCX: ffffffffffffffff
-[27273.099843] RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc01b3e09 RDI: ffff93c444e397d0
-[27273.101302] RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-[27273.102827] R10: ffffffffc01b3e09 R11: 0000000000000000 R12: 000000000002f000
-[27273.104328] R13: ffff93c48ae79368 R14: ffff93c444e397b8 R15: 000000000002f000
-[27273.105786] FS:  00007fb0f0a5e740(0000) GS:ffff93c4bd600000(0000) knlGS:0000000000000000
-[27273.107478] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[27273.108672] CR2: 00007fb0f0936000 CR3: 0000000028bf4001 CR4: 0000000000170eb0
-[27273.110157] note: fsx[20046] exited with preempt_count 1
-[27273.111323] BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
-[27273.113204] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 20046, name: fsx
-[27273.114784] INFO: lockdep is turned off.
-[27273.115614] irq event stamp: 0
-[27273.116355] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-[27273.117657] hardirqs last disabled at (0): [<ffffffff9c0675a3>] copy_process+0x3f3/0x1550
-[27273.119308] softirqs last  enabled at (0): [<ffffffff9c0675a3>] copy_process+0x3f3/0x1550
-[27273.129243] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[27273.130557] CPU: 0 PID: 20046 Comm: fsx Tainted: G      D           5.13.0-rc1-default+ #1463
-[27273.132460] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
-[27273.135049] Call Trace:
-[27273.135710]  dump_stack+0x6d/0x89
-[27273.136549]  ___might_sleep.cold+0xf2/0x132
-[27273.137575]  exit_signals+0x1d/0x350
-[27273.138451]  do_exit+0xa6/0x4a0
-[27273.139238]  rewind_stack_do_exit+0x17/0x17
-[27273.140270] RIP: 0033:0x7fb0f0b5716a
-[27273.144797] RSP: 002b:00007fff6503e0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
-[27273.146353] RAX: ffffffffffffffda RBX: 0000000000007909 RCX: 00007fb0f0b5716a
-[27273.147736] RDX: 000000000002956d RSI: 0000000000000010 RDI: 0000000000000003
-[27273.149157] RBP: 000000000002956d R08: 0000000000007909 R09: 000000000002956d
-[27273.150620] R10: 0000000000007909 R11: 0000000000000246 R12: 0000000000000000
-[27273.152094] R13: 0000000000030e76 R14: 0000000000000010 R15: 000000000002956d
+Nit.
+It is better call btrfs_release_path() before the comments which belongs 
+to the btrfs_start_transaction() as shown below.
+No need to send a reroll. Maybe David could tweak it during the integration.
+
+--------------
+@@ -281,13 +281,13 @@ static int clone_copy_inline_extent(struct inode *dst,
+         ret = btrfs_inode_set_file_extent_range(BTRFS_I(dst), 0, 
+aligned_end);
+  out:
+         if (!ret && !trans) {
++               btrfs_release_path(path);
+                 /*
+                  * No transaction here means we copied the inline 
+extent into a
+                  * page of the destination inode.
+                  *
+                  * 1 unit to update inode item
+                  */
+-               btrfs_release_path(path);
+                 trans = btrfs_start_transaction(root, 1);
+                 if (IS_ERR(trans)) {
+                         ret = PTR_ERR(trans);
+
+--------------
+
+Thanks, Anand
