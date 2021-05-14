@@ -2,65 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9061B38086B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 May 2021 13:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF4D380879
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 May 2021 13:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbhENL01 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 May 2021 07:26:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52310 "EHLO mx2.suse.de"
+        id S230213AbhENLcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 May 2021 07:32:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56176 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhENL00 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 May 2021 07:26:26 -0400
+        id S229445AbhENLcJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 May 2021 07:32:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B83EAAFF5;
-        Fri, 14 May 2021 11:25:14 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 489DBAFF5;
+        Fri, 14 May 2021 11:30:57 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D637DDA8EB; Fri, 14 May 2021 13:22:43 +0200 (CEST)
-Date:   Fri, 14 May 2021 13:22:43 +0200
+        id 2DF57DA8EB; Fri, 14 May 2021 13:28:26 +0200 (CEST)
+Date:   Fri, 14 May 2021 13:28:26 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Su Yue <l@damenly.su>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: do not BUG_ON if btrfs_add_to_fsid
- succeeded to write superblock
-Message-ID: <20210514112243.GT7604@suse.cz>
+To:     riteshh <riteshh@linux.ibm.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [Patch v2 00/42] btrfs: add data write support for subpage
+Message-ID: <20210514112825.GU7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Su Yue <l@damenly.su>,
+Mail-Followup-To: dsterba@suse.cz, riteshh <riteshh@linux.ibm.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20210511042501.900731-1-l@damenly.su>
- <20210512140135.GR7604@twin.jikos.cz>
- <k0o3lb1d.fsf@damenly.su>
+References: <20210427230349.369603-1-wqu@suse.com>
+ <20210512221821.GB7604@twin.jikos.cz>
+ <de2c2a25-a8da-4d69-819e-847c4721b3f4@gmx.com>
+ <36e94393-d6cf-cc3d-d710-79c517de4ecc@gmx.com>
+ <20210513225409.GL7604@twin.jikos.cz>
+ <2b05bb47-f16c-62dd-d234-8bffdd332081@gmx.com>
+ <20210514022609.lixjorvhu6mwsaoe@riteshh-domain>
+ <20210514102840.kifj3ryzrw5utwj4@riteshh-domain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <k0o3lb1d.fsf@damenly.su>
+In-Reply-To: <20210514102840.kifj3ryzrw5utwj4@riteshh-domain>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 13, 2021 at 08:37:29AM +0800, Su Yue wrote:
+On Fri, May 14, 2021 at 03:58:40PM +0530, riteshh wrote:
+> On 21/05/14 07:56AM, riteshh wrote:
+> > On 21/05/14 09:41AM, Qu Wenruo wrote:
+> > If it helps, I tested "-g quick" on PPC64 with 64k config for 1-13 patches of
+> > this patch series and didn't find any regression/crash with xfstests.
+> > I am running "-g auto" now, will let you know the results once it completes.
 > 
-> On Wed 12 May 2021 at 22:01, David Sterba <dsterba@suse.cz> wrote:
-> 
-> > On Tue, May 11, 2021 at 12:25:01PM +0800, Su Yue wrote:
-> >> Commit 8ef9313cf298 ("btrfs-progs: zoned: implement 
-> >> log-structured
-> >> superblock") changed to write BTRFS_SUPER_INFO_SIZE bytes to 
-> >> device.
-> >> The before num of bytes to be written is sectorsize.
-> >> It causes mkfs.btrfs failed on my 16k pagesize kvm:
-> >
-> > What architecture is that?
-> >
-> The host chip is Apple m1 so it's arm64 but only supporting 16k and 4k
-> pagesize. Since btrfs subpage work cares 64k pagesize for now, I
-> usually run xfstests with 16k pagesize and 16k sectorsize. So far, so
-> good.
+> I tested these patches (1-13) with "-g auto" config and I didn't see any
+> regression/crashes on PPC64 platform.
 
-Interesting, what's the distro? I haven't found one that would be
-pre-built with 16k pages so I assume it's built from scratch. Among all
-the page sizes we've seen so far 4k is almost everywhere, 64k is ppc and
-arm (both native), and sparc has 8k. 16k is a new one, though I don't
-think it would catch something we haven't seen so far it adds a bit to
-the CPU capabilities coverage.
+Yes it helps, thanks for testing. You could also let the fstests run in
+a loop or with different memory/cpu setup, this can catch some races.
