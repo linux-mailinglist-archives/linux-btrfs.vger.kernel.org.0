@@ -2,109 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17C8380BFC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 May 2021 16:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20863380C57
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 May 2021 16:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbhENOju (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 May 2021 10:39:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24144 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232520AbhENOjt (ORCPT
+        id S233178AbhENO5b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 May 2021 10:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230484AbhENO5a (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 May 2021 10:39:49 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EEY5Gw094246;
-        Fri, 14 May 2021 10:38:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=/ylH10U0WQkTGEe9NLcxbI6GRXp/+0hINXRx9z8ZYJQ=;
- b=oRK5re/hkgupgG/EDmyFGxueM0RvMgPhQJPlkqXa6TxYbKBDAsXRyLHggZ1T2lmWZp2m
- MnF0u+6BqAPO5gm3YTCr09PVwJVVEot//8ql2mhlBMPCcRtDZQXfOekgWLzui78+/07D
- OxT2MfnLiuzKaD/MwTCsDQurKld7ONCOGXpmlwj2PjEbqGW0m0JlshIzvyurtuFFPrtp
- jNic7KHGXOtT6eQtcOjwqLbu4avH8+s3t0+11ZCH2UY0lwhiecZjsle0Yh6fsVCezPsK
- Trvd+4O5FWcrCOctjSxKWinXgHQeRwIf5gYErpWV7QW5YlLmayn8ypY/Dq6B93h6Vvrh lA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38hrrbuu86-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 10:38:32 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14EEZ5Lx101292;
-        Fri, 14 May 2021 10:38:32 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38hrrbuu7d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 10:38:32 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14EEXw79024566;
-        Fri, 14 May 2021 14:38:30 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 38hc6pgb6p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 14:38:30 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14EEc0Ir33685898
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 14:38:00 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C79F44205E;
-        Fri, 14 May 2021 14:38:27 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 74B384204D;
-        Fri, 14 May 2021 14:38:27 +0000 (GMT)
-Received: from localhost (unknown [9.77.196.130])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 14 May 2021 14:38:27 +0000 (GMT)
-Date:   Fri, 14 May 2021 20:08:26 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [Patch v2 00/42] btrfs: add data write support for subpage
-Message-ID: <20210514143826.4g6kj23kymzijpgr@riteshh-domain>
-References: <20210427230349.369603-1-wqu@suse.com>
- <20210512221821.GB7604@twin.jikos.cz>
- <de2c2a25-a8da-4d69-819e-847c4721b3f4@gmx.com>
- <36e94393-d6cf-cc3d-d710-79c517de4ecc@gmx.com>
- <20210513225409.GL7604@twin.jikos.cz>
- <2b05bb47-f16c-62dd-d234-8bffdd332081@gmx.com>
- <20210514022609.lixjorvhu6mwsaoe@riteshh-domain>
- <20210514102840.kifj3ryzrw5utwj4@riteshh-domain>
- <20210514112825.GU7604@twin.jikos.cz>
+        Fri, 14 May 2021 10:57:30 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64517C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 May 2021 07:56:19 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id q6so15583037qvb.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 14 May 2021 07:56:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iWKjNG5+o2Wpm6A0J2+MKFBvE3M5kNo8AGN1s3alv2I=;
+        b=YGrcdL+zH0PQ5KqLWmMqJr/RjoQCbUfdluLuMau/KDNmdK7k192fSxpUoOb6MS3k8t
+         4K7C5HdQLE3qir+mC5mo+H5CwFlusoVoWL1mekVLGI8TS5Y/ecXcUY4QWYJ2x2ZtyDJy
+         lPm45A11W6XdJ/WUBWq+Oaiq0y9dI9Ckyb073FasnmXqlFkE9cnwyjc836AlBG9lz9U5
+         +Vgzch4wDs+fOqIIoMtW+8UaX6f4aMqWwPnWHFaArwtfkHm7Yn3b/wdWNZSeyrc38xwu
+         +rCE9RKaUhVENxFFsbjtyv67s2k2BnbSd3EACNFHv3+EFTJqrSlAFaSSPJBCHU1LZk2B
+         eZcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iWKjNG5+o2Wpm6A0J2+MKFBvE3M5kNo8AGN1s3alv2I=;
+        b=SSomEauJ+cGMxRf9UrAawcUSSlVgXdchGTRo7jrlOBUpLaiD01XIYI/WdjFMvBYYnu
+         V7rTLanDuzyUgzjtb/imme8lIc/oIYebhk/GaG6bkvC931Jx8zqyLrLjBlQD+y3c3D0k
+         /KOYclTXiT0FpNLeQu7SZjU0hciGWMgdpI9zrcRjL0gIgap2IAs30tJ31ugakOt0UVDf
+         OtFUt6jG9rWy6ofSkLU9HNbaj0ZysSBzCEo+QWOETttV8JshVS1ZUj2F3qnJpb67semv
+         W2zjd5eo9nO4IQ13Bxy7a6yg6yykWWp0G9ImZXNgOvpadIvBedqZhtLz6OJ/U88+5iPX
+         WCBA==
+X-Gm-Message-State: AOAM5336bpZlkAmpTqK2JDsMlDvH4SUZ1juW3drU+K7hsz/NBaUFOSgQ
+        UnaQFWOvYN3F/NWEo/k8yK/Tllf+XKgxfw==
+X-Google-Smtp-Source: ABdhPJxizJvNVJZIs86i+e0Q5L1wGS/gULJf2b9At8pxo/mMvCWgPjFkp/SK4MCSefQdtbW4TRt/IA==
+X-Received: by 2002:a05:6214:373:: with SMTP id t19mr13547858qvu.45.1621004178137;
+        Fri, 14 May 2021 07:56:18 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id x142sm4862157qkb.136.2021.05.14.07.56.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 07:56:17 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: do not BUG_ON(ret) in link_to_fixup_dir
+Date:   Fri, 14 May 2021 10:56:16 -0400
+Message-Id: <b181013f36147fa92801c0073fe307df44272f2f.1621004165.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514112825.GU7604@twin.jikos.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rlxmHy0Kagy_3qxQ5dvR0Yz3AGMwYtSt
-X-Proofpoint-ORIG-GUID: 9eJFEoRvhcfaOGxUZpP_RVhVmpyhBngn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-14_06:2021-05-12,2021-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0 suspectscore=0
- mlxscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105140118
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/05/14 01:28PM, David Sterba wrote:
-> On Fri, May 14, 2021 at 03:58:40PM +0530, riteshh wrote:
-> > On 21/05/14 07:56AM, riteshh wrote:
-> > > On 21/05/14 09:41AM, Qu Wenruo wrote:
-> > > If it helps, I tested "-g quick" on PPC64 with 64k config for 1-13 patches of
-> > > this patch series and didn't find any regression/crash with xfstests.
-> > > I am running "-g auto" now, will let you know the results once it completes.
-> >
-> > I tested these patches (1-13) with "-g auto" config and I didn't see any
-> > regression/crashes on PPC64 platform.
->
-> Yes it helps, thanks for testing. You could also let the fstests run in
-> a loop or with different memory/cpu setup, this can catch some races.
+While doing error injection testing I got the following panic
 
-Oh yes, sure. Earlier I wanted to complete one round of testing of this auto
-test, as auto tests take some good time to complete.
-Later I can keep your suggested method to tests in a loop for this full patch
-series from Qu.
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/tree-log.c:1862!
+invalid opcode: 0000 [#1] SMP NOPTI
+CPU: 1 PID: 7836 Comm: mount Not tainted 5.13.0-rc1+ #305
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+RIP: 0010:link_to_fixup_dir+0xd5/0xe0
+RSP: 0018:ffffb5800180fa30 EFLAGS: 00010216
+RAX: fffffffffffffffb RBX: 00000000fffffffb RCX: ffff8f595287faf0
+RDX: ffffb5800180fa37 RSI: ffff8f5954978800 RDI: 0000000000000000
+RBP: ffff8f5953af9450 R08: 0000000000000019 R09: 0000000000000001
+R10: 000151f408682970 R11: 0000000120021001 R12: ffff8f5954978800
+R13: ffff8f595287faf0 R14: ffff8f5953c77dd0 R15: 0000000000000065
+FS:  00007fc5284c8c40(0000) GS:ffff8f59bbd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc5287f47c0 CR3: 000000011275e002 CR4: 0000000000370ee0
+Call Trace:
+ replay_one_buffer+0x409/0x470
+ ? btree_read_extent_buffer_pages+0xd0/0x110
+ walk_up_log_tree+0x157/0x1e0
+ walk_log_tree+0xa6/0x1d0
+ btrfs_recover_log_trees+0x1da/0x360
+ ? replay_one_extent+0x7b0/0x7b0
+ open_ctree+0x1486/0x1720
+ btrfs_mount_root.cold+0x12/0xea
+ ? __kmalloc_track_caller+0x12f/0x240
+ legacy_get_tree+0x24/0x40
+ vfs_get_tree+0x22/0xb0
+ vfs_kern_mount.part.0+0x71/0xb0
+ btrfs_mount+0x10d/0x380
+ ? vfs_parse_fs_string+0x4d/0x90
+ legacy_get_tree+0x24/0x40
+ vfs_get_tree+0x22/0xb0
+ path_mount+0x433/0xa10
+ __x64_sys_mount+0xe3/0x120
+ do_syscall_64+0x3d/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Thanks
-ritesh
+We can get -EIO or any number of legitimate errors from
+btrfs_search_slot(), panicing here is not the appropriate response.  The
+error path for this code handles errors properly, simply return the
+error.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/tree-log.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 14ec61048483..326be57f2828 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1858,8 +1858,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
+ 	} else if (ret == -EEXIST) {
+ 		ret = 0;
+-	} else {
+-		BUG(); /* Logic Error */
+ 	}
+ 	iput(inode);
+ 
+-- 
+2.26.3
+
