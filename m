@@ -2,141 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B24381429
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 May 2021 01:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895113814F4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 May 2021 03:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234309AbhENXTJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 14 May 2021 19:19:09 -0400
-Received: from mout.gmx.net ([212.227.17.20]:52553 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230371AbhENXTJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 14 May 2021 19:19:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621034274;
-        bh=xww6Xhfv6L/RbbyZ4Rkwm9W6eYZR8fnsjQvElpC8p78=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=KmFkPtTcDNkZWGHqJ47gQCMQPh5vffs66OaXcklNqQ7J59HVDl6bsPJucSpr4sUcM
-         2mnmCjvP0ONspaglYASuSQEBFljD+tY6MHIJxR59BQCZPJFp3HmQetqJLYDPTO9x3V
-         GY4HiZlNvp94gLt3Xhl6I9OdK/MXwn5S3XdnpI5g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Md6R1-1l7oHa25lT-00aIO4; Sat, 15
- May 2021 01:17:54 +0200
-Subject: Re: [Patch v2 00/42] btrfs: add data write support for subpage
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210427230349.369603-1-wqu@suse.com>
- <20210512221821.GB7604@twin.jikos.cz>
- <de2c2a25-a8da-4d69-819e-847c4721b3f4@gmx.com>
- <36e94393-d6cf-cc3d-d710-79c517de4ecc@gmx.com>
- <20210514113040.GV7604@twin.jikos.cz>
- <b2490ac7-7bb8-238c-1602-043bfcb09c8f@gmx.com>
- <20210514230554.GB7604@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <2df5629d-cd3b-5da5-3917-ab66970cd8a0@gmx.com>
-Date:   Sat, 15 May 2021 07:17:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234791AbhEOBkR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 14 May 2021 21:40:17 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:43766 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232532AbhEOBkQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 14 May 2021 21:40:16 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 1EBF7A5E311; Fri, 14 May 2021 21:39:04 -0400 (EDT)
+Date:   Fri, 14 May 2021 21:39:04 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Christian =?iso-8859-1?Q?V=F6lker?= <cvoelker@knebb.de>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Removal of Device and Free Space
+Message-ID: <20210515013903.GE32440@hungrycats.org>
+References: <850c35a8-0322-c60e-b179-b07eb0e1de8c@knebb.de>
 MIME-Version: 1.0
-In-Reply-To: <20210514230554.GB7604@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ceel4W9rOhP5bXvJjPr+5mNPHaU1RTTk4x1n15RRuOQV2ei5aal
- GbtaQ6Sx/haGKnee0ld6K8nhHMzjHtjDhmYOWOWq4ztobUDZPcCR2WWKxdK5c31QRZ7kLuZ
- ey8hfP+jXdJfBI1AydP61WpYJtFsFZS3ocm75vB05wO5+WgwQ66U0+LNHWdbqzv9FJDWsZt
- /xDpaaq+cbPJo4ZOvWbMw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KiAw5g9A/xU=:/Jb5ukah3X+NGkP8wZgaUh
- mnKEnUHipN3h0oUzdY6+dRSfm453qaRNbS0i6qGBqCfcHsSEclSMiFPkKEhecXuqm10vpHCL2
- T7Cx5S7lsNAm10gHDCEwvVciX/9ar3UcIpn0f5tWZaLTNoUtiF0oOEnkwoTYvRdYf7OfOpoxH
- NnalfP/bI3Gq8kAyQa1oArTOAJBWi4AGKZwGNtBvda4K/C8FWaeIgWlAXZQ68gfOuJTz28yOz
- yPk0CpDHnHItuFewl9VmxdrIzbB8AGotaNkG1eRnrmfqCHeuKSBBvtcUcSg4Oe2+uY6aanKDy
- 2Bb1A19PE/UiZdsKmL8SAaXyuVCA2OEZkptJKs/YJcMKR8LYGMx0/RzxaY8KD099+wIZWa0PQ
- 3pbyIbK7ULRzSBLG7gJaL/23as4Kl4+D2us9swAEjH506qpwCjZmo3d+K4BHfwXanLNUXeJVf
- hvyXQ2STjy8Vm9egG69ByaIP7M6QyCRqlS9gGwIc1wJwvHMobpM65dqs2frDdK3sEgiOHswI7
- 5pQ3WfofltLEuyITeafOSBnHCRkL1leNUphVMjVNyWmL3W94OZSo680KWJ+jljvvMlPuNbDrk
- a86d14F2AWXP1J0eBskFZmiWQWXc89ZR3YWxnkPNCCxdWec+9wIurDW8Q+Ih6bVYvds9hWfE+
- dPLoSU7WoV/fcvCmrCyXkW1uPlq5X1h/FUxV65ZKehyZRRBx5edRpCOMkjY9ygK5GK7sDAuzj
- MKq0IiCI9CdXMgHdiebY3GiaCHIG8QEWIThYCv9CgN40U0Z7nYBVwj2neBe/1E2f+lEJCZd0R
- zUXvF7/bBSEy7oifb8rjdkm3GDz+BubUs1Kw1VGXoG1Wh8ZRtnriKdhki5nTSbJcPXgN6eame
- C9Yu6/OrNgNL+Fhn9TkHYFCiSGbfLmj39vH3UkgTXj1WHfmaatyV33eEHKvQp9mqWG9iEs/Od
- TISWrTseJ7Eyb+t+JUvPQ6Bf+ZFMvuppg/3t54xclG4IKL5zvJAXtAZEHGVwtNJi23ODz6nRd
- EsN6Vq9PN5VcDdOLMU18kH+jnEADESR3fab6qcfiT/XmoYcX7+MsOfNF0TOuAMqH1ICKt8DBm
- Ef8TRAr0Bk+zHEEDVqtBZKBgxlbDy1VYenYgSNgmRXwkjR0PGWBPcTlNWYr4MHqlnEy5KzAbc
- 52o5Hxhhw3KNijzyy8m6E2orVdbIPtDaGzh8QR4boXGbsF6HKEZbpVjKmOTBrdvjpZghLTFBO
- brr1Y2XkJs51NVwMe
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <850c35a8-0322-c60e-b179-b07eb0e1de8c@knebb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, May 14, 2021 at 10:54:16AM +0200, Christian Völker wrote:
+> 
+> Hi all,
+> 
+> I am running a three device DRBD setup (non-RAID!).
+> When I do "df -h" I see loads of free space:
+> 
+> root@backuppc:~# df -h
+> [...]
+> /dev/mapper/crypt_drbd2          2,8T    1,7T  1,1T   63% /var/lib/backuppc
+> 
+> As written, the fs consists of three devices:
+> 
+> root@backuppc:~# btrfs fi sh /var/lib/backuppc/
+> Label: 'backuppc'  uuid: 73b98c7b-832a-437a-a15b-6cb00734e5db
+>         Total devices 3 FS bytes used 1.70TiB
+>         devid    3 size 799.96GiB used 799.96GiB path dm-5
+>         devid    4 size 1.07TiB used 1.07TiB path dm-4
+>         devid    7 size 899.96GiB used 327.00GiB path dm-6
+> 
+> root@backuppc:~# btrfs fi usage /var/lib/backuppc/
+> Overall:
+>     Device size:                   2.73TiB
+>     Device allocated:              2.61TiB
+>     Device unallocated:          128.00GiB
+>     Device missing:                  0.00B
+>     Used:                          1.70TiB
+>     Free (estimated):              1.03TiB      (min: 1.03TiB)
+>     Free (statfs, df):             1.03TiB
+>     Data ratio:                       1.00
+>     Metadata ratio:                   1.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+>     Multiple profiles:                  no
+> 
+> Data,single: Size:2.60TiB, Used:1.69TiB (65.17%)
+>    /dev/mapper/crypt_drbd2       790.93GiB
+>    /dev/mapper/crypt_drbd1         1.07TiB
+>    /dev/mapper/crypt_drbd3       774.96GiB
+> 
+> Metadata,single: Size:9.00GiB, Used:3.95GiB (43.91%)
+>    /dev/mapper/crypt_drbd2         6.00GiB
+>    /dev/mapper/crypt_drbd1         3.00GiB
+> 
+> System,single: Size:32.00MiB, Used:320.00KiB (0.98%)
+>    /dev/mapper/crypt_drbd2        32.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/crypt_drbd2         3.00GiB
+>    /dev/mapper/crypt_drbd1         1.03MiB
+>    /dev/mapper/crypt_drbd3       125.00GiB
+> 
+> So it tells me there is an estimated of ~1TB free. As the crypt_drbd3 device
+> has a size of 899G I wanted to remove the device. I expected no issue as
+> "Free" shows 1.03TiB. There should still be 200GB of free space afterwards.
+> But the removal failed after two hours:
+> 
+> root@backuppc:~# btrfs dev remove /dev/mapper/crypt_drbd3 /var/lib/backuppc/
+> ERROR: error removing device '/dev/mapper/crypt_drbd3': No space left on
+> device
+> 
+> Now it looks like this:
+> root@backuppc:~# btrfs fi usage /var/lib/backuppc/
+> Overall:
+>     Device size:                   2.73TiB
+>     Device allocated:              2.17TiB
+>     Device unallocated:          572.96GiB
+>     Device missing:                  0.00B
+>     Used:                          1.70TiB
+>     Free (estimated):              1.03TiB      (min: 1.03TiB)
+>     Free (statfs, df):             1.03TiB
+>     Data ratio:                       1.00
+>     Metadata ratio:                   1.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+>     Multiple profiles:                  no
+> 
+> Data,single: Size:2.17TiB, Used:1.69TiB (78.24%)
+>    /dev/mapper/crypt_drbd2       793.93GiB
+>    /dev/mapper/crypt_drbd1         1.07TiB
+>    /dev/mapper/crypt_drbd3       327.00GiB
+> 
+> Metadata,single: Size:9.00GiB, Used:3.89GiB (43.23%)
+>    /dev/mapper/crypt_drbd2         6.00GiB
+>    /dev/mapper/crypt_drbd1         3.00GiB
+> 
+> System,single: Size:32.00MiB, Used:288.00KiB (0.88%)
+>    /dev/mapper/crypt_drbd2        32.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/crypt_drbd2         1.03MiB
+>    /dev/mapper/crypt_drbd1         1.03MiB
+>    /dev/mapper/crypt_drbd3       572.96GiB
+> 
+> 
+> So some questions arise:
+> 
+>     Why can btrfs device remove not check in advance if there is enough free
+> space available? Instead of working for hours and then failing...
 
+Relocation (balance and device remove) cannot change the size of any
+extent, so they cannot use free space regions that are too small.  It is
+not enough to have raw free space--it has to be contiguous free space.
 
-On 2021/5/15 =E4=B8=8A=E5=8D=887:05, David Sterba wrote:
-> On Sat, May 15, 2021 at 06:45:42AM +0800, Qu Wenruo wrote:
->>> [27273.028163] general protection fault, probably for non-canonical ad=
-dress 0x6b6b6b6b6b6b6a9b: 0000 [#1] PREEMPT SMP
->>> [27273.030710] CPU: 0 PID: 20046 Comm: fsx Not tainted 5.13.0-rc1-defa=
-ult+ #1463
->>> [27273.032295] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), =
-BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
->>> [27273.034731] RIP: 0010:btrfs_lookup_first_ordered_range+0x46/0x140 [=
-btrfs]
->>
->> It's in the new function introduced, and considering how few parametere=
-s
->> are passed in, I guess it's really something wrong in the function,
->> other than some conflicts with other patches.
->>
->> Any line number for it?
->
-> (gdb) l *(btrfs_lookup_first_ordered_range+0x46)
-> 0x2366 is in btrfs_lookup_first_ordered_range (fs/btrfs/ordered-data.c:9=
-60).
-> 955              * and screw up the search order.
-> 956              * And __tree_search() can't return the adjacent ordered=
- extents
-> 957              * either, thus here we do our own search.
-> 958              */
-> 959             while (node) {
-> 960                     entry =3D rb_entry(node, struct btrfs_ordered_ex=
-tent, rb_node);
-> 961
-> 962                     if (file_offset < entry->file_offset) {
-> 963                             node =3D node->rb_left;
-> 964                     } else if (file_offset >=3D entry_end(entry)) {
->
-> Line 960 and it's the rb_node.
->
-Since I can't reproduce it locally yet, but according to the line
-number, it seems to be something related to the node initialization,
-which happens out of the spinlock.
+This is not computed in advance because it is not trivial to compute--it
+is a significant chunk of the cost of device removal.
 
-Would you please try the following diff?
+>     Do I have to balance my fs after the failed removal now?
 
-Thanks,
-Qu
+Balancing before removal would coalesce the free space and make device remove
+more likely to succeed.  Something like:
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 4fa377da40e4..b1b377ad99a0 100644
-=2D-- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -943,13 +943,14 @@ struct btrfs_ordered_extent
-*btrfs_lookup_first_ordered_range(
-                         struct btrfs_inode *inode, u64 file_offset, u64
-len)
-  {
-         struct btrfs_ordered_inode_tree *tree =3D &inode->ordered_tree;
--       struct rb_node *node =3D tree->tree.rb_node;
-+       struct rb_node *node;
-         struct rb_node *cur;
-         struct rb_node *prev;
-         struct rb_node *next;
-         struct btrfs_ordered_extent *entry =3D NULL;
+	btrfs balance start -ddevid=3,limit=160 /var/lib/backuppc/
 
-         spin_lock_irq(&tree->lock);
-+       node =3D tree->tree.rb_node;
-         /*
-          * Here we don't want to use tree_search() which will use
-tree->last
-          * and screw up the search order.
+	btrfs balance start -ddevid=4,limit=160 /var/lib/backuppc/
+
+or use btrfs-balance-least-used from the python-btrfs package, which will
+start with chunks that have the most free space.
+
+>     Why is it not possible to remove the device when all information tell me
+> there is enough free space available?
+> 
+>     What is occupying so much disk space as the data only has 1.7TB which
+> should fit in 1.8TB (two) devices? (no snapshot, nothing special configured
+> on btrfs). Looks like there are ~400GB allocated which are not from data.
+
+Chunks are deallocated only when completely empty.  If you recently
+deleted a large number of files, then you'll have chunks with low data
+density and high free space fragmentation.  Normally this does not matter,
+as the free spaces in chunks would be filled in by new data allocations,
+and those allocations would split writes into smaller extents that exactly
+fit the free spaces.  Relocation can't do this--it can only occupy free
+spaces that are equal or larger, and will make free space fragmentation
+even worse.
+
+> Just for completeness:
+> 
+> Debian Buster
+> 
+> root@backuppc:~# btrfs --version
+> btrfs-progs v5.10.1
+> 
+> Thanks for letting me know.
+> 
+> 
+> Greetings
+> 
+> /CV
+> 
+> 
+> 
