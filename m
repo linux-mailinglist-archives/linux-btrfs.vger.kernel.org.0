@@ -2,65 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1201F381769
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 May 2021 11:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95435381785
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 May 2021 12:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhEOKA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 May 2021 06:00:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20502 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229524AbhEOKA2 (ORCPT
+        id S231302AbhEOKQa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 May 2021 06:16:30 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:42845 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231222AbhEOKQ3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 May 2021 06:00:28 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14F9X8bx029440;
-        Sat, 15 May 2021 05:59:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=mxoj47qlsj059XgLO1HShsB0sxQcLH/+c+0sWx9b3d8=;
- b=O58onRffur2PcN7RcYyoafVESgHXGF/BPH8Ci973q4Z11VOSlxR8pjDm5ChBvpGK9TZq
- ZqbWzowFu0CdvT4RvGJzfh8qMldbRN6ndFM4p1hg38FOiApM3z8W5jvcHNYiRJLmlEgq
- Gl8VSlDhfr8I+/tzzB1wc+HlYKt/ql7K8sbny26iycZ/hQgAEjDlFMjDiFULJiHUsqjP
- SShfqVIwJgVccWiFQJJZuwwWfGMFvR7cdQkOfkb5YhN2sbQeziyoBR5NVjqe7bRrOGKC
- ASQf7joDYuWiI0FKqSR6KhveA8cYQVJMs8vvYSSH3fno0UuQtUI8LGNfPWBY6JOZ+20t FA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38jakthb8q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 May 2021 05:59:12 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14F9X9vg029478;
-        Sat, 15 May 2021 05:59:12 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38jakthb8c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 May 2021 05:59:12 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14F9wZqK011037;
-        Sat, 15 May 2021 09:59:09 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 38j5x882r6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 May 2021 09:59:09 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14F9x7wx41026032
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 May 2021 09:59:07 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66E9D42041;
-        Sat, 15 May 2021 09:59:07 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 094564203F;
-        Sat, 15 May 2021 09:59:07 +0000 (GMT)
-Received: from localhost (unknown [9.77.193.23])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 15 May 2021 09:59:06 +0000 (GMT)
-Date:   Sat, 15 May 2021 15:29:06 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
- subpage helper
-Message-ID: <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
+        Sat, 15 May 2021 06:16:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1621073715;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Zj2ksN5Q7sQ3mgl7Cr5gHGyqV/hyuOl+DxaUTZyf6w=;
+        b=nImXIgEX7tgKQxrIU64QJSCV1UzqqfaXd0iP8hBg1k7a8+B2rWMxNOawZtA88IaiZjR3/C
+        iLMy/ZkfqspNu0A3XCZxYLFalXVvEe7yUcSAhkKwK+rQfaYGjQ+BKvmxtGVNqrm+jhLmnI
+        67wzneKSSOp0Pb+UDR38ypJcofvrw4g=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2169.outbound.protection.outlook.com [104.47.17.169])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-36-kDPI0P1uOoS5BcL8P_f4bw-1; Sat, 15 May 2021 12:15:14 +0200
+X-MC-Unique: kDPI0P1uOoS5BcL8P_f4bw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dC462ISJ6/hzlkWDW++Ci357exAvfuALs5DL7hMRg2MRP8PtnkUipv54IL4Ks2CZoG84bNOHyuGKQ0BEo+os+tSHaYy3GNsbRK9md5tHSEioLx3w8bDvPFoFVpJguMwv0/mu1O66AALJQvsym6mk2xYsjZkjgH7p+nBh7/U5j82zenEJr6VYi9SgKhTJto0EYXd+XVvUeqrv6LlOhNo2EkBc5WoQVzu+SX5n2tNbxTwfM5Du7gfZrC14ox9J64Xw9NVKDcBoHyl7z6O81jokHhVbH/A/vGYBYLQtuNc3Nvab3BMsQOMMv6M+H/eSoSPM+qerGYLpboWAX+EROomOhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8Zj2ksN5Q7sQ3mgl7Cr5gHGyqV/hyuOl+DxaUTZyf6w=;
+ b=hWMVqcp4ZP2VOHS9h9p/hTzMwThxxCnQ3FkGhy7se5TibVhA0648uWGrD5OhISsvCj/NnoikHFCcg2MTWaBBX66AUCuJqz3mgObfW4v8nrDsVeGCXGLsKg+EjKtjveT24cSRo5AWawxb2PE3JRmzeqOEjq7AkCqKWsMba5cNb9gt7uwcaiHBDPa4QK+SKLl05lso9PDyMjtURWTZIpanw3mpkUgkEk2P063E/+9NOAxkeNZQxuABIxagx9GSW8zjWvkFueupWIQsHi9wotKImeEjuacXPSM442P5q8CWlbhqKqpy5ZLex2WB23uZs1icJnGsM6E4aWcRJj3vWQmvDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM6PR0402MB3558.eurprd04.prod.outlook.com (2603:10a6:209:7::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Sat, 15 May
+ 2021 10:15:12 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b8b1:d726:a3c7:9cb]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b8b1:d726:a3c7:9cb%7]) with mapi id 15.20.4129.028; Sat, 15 May 2021
+ 10:15:12 +0000
+To:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
 References: <20210511104809.evndsdckwhmonyyl@riteshh-domain>
  <334a5fdd-28ee-4163-456c-adc4b2276d08@gmx.com>
  <fae358ed-8d14-8e14-2dc3-173637ec5e87@gmx.com>
@@ -71,155 +60,233 @@ References: <20210511104809.evndsdckwhmonyyl@riteshh-domain>
  <20210514150831.trfaihcy2ryp35uh@riteshh-domain>
  <20210514175343.v32k2rmsfl5l2qfa@riteshh-domain>
  <80735b91-ad23-1b49-20bb-fd3a09957793@gmx.com>
+ <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
+From:   Qu Wenruo <wqu@suse.com>
+Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
+ subpage helper
+Message-ID: <51186fd5-af02-2be6-3ba3-426082852665@suse.com>
+Date:   Sat, 15 May 2021 18:15:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+In-Reply-To: <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
+Content-Type: multipart/mixed;
+ boundary="------------D781700E7C5F19217569F4AA"
+Content-Language: en-US
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: BYAPR01CA0059.prod.exchangelabs.com (2603:10b6:a03:94::36)
+ To AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80735b91-ad23-1b49-20bb-fd3a09957793@gmx.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: H2or3XpL3u2vbdJ6SCy66NiciikW4bOf
-X-Proofpoint-ORIG-GUID: V27TJUhy-54kSuwq3ylzkXOXKnPLe1AI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-15_06:2021-05-12,2021-05-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 suspectscore=0 spamscore=0 clxscore=1015 phishscore=0
- mlxlogscore=875 mlxscore=0 adultscore=0 impostorscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105150067
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR01CA0059.prod.exchangelabs.com (2603:10b6:a03:94::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Sat, 15 May 2021 10:15:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 288d4f50-67f5-4e99-300d-08d9178a535c
+X-MS-TrafficTypeDiagnostic: AM6PR0402MB3558:
+X-Microsoft-Antispam-PRVS: <AM6PR0402MB3558F98C732B35DFC8D3D731D62F9@AM6PR0402MB3558.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 06j/u7tBmstwOS45IsMh+2hRgGHLWCRzOxmKExjd9jX1lrbbgDRSSWQP9VPAhC0UQcDnog0XVBUKh3tnnhBTpTQEoJ8AvQnpQHlnNo2IpChvqA7RH23MCeKiTYs3rLV7Xop6ZHy797NwYGq5IRlBogrtvR0otidOg9DsXtnxUj2KQ+LvDSTajxTeNldg7vs8r4rTplYAREXzg7AxrU+LRA/UdxeOoZKefn2iOmuB98x8w6ZW0mLrMeYAZq3wP3+qEiScwMHWAwAClQbiC0PvNPKNR8k+5qyFemCtFDKj66CQ8tLMwXXI8zuqAed88lJ9pkMW6cbGe/JkPggaMjtt631WRO2XCVZzkv/0j6+n9OPxkeDxWhf+fpQ4jJMPfu8jPQB8r6pq11X55WvRNGodAysIxucBCVT4PIeK4G68GJ+wQDGJW8cCJVKFIL0U9sXppmuu3lrACT1YKh4v7GOln3pUkUKU/AsrAZ6k+6n12xIrj8kMeCz9Aquvd6P/RxrG0+0qTeY88rLHbW3GaTN87Bz6P3ZbxfRqc7PIGWhSVwl8XGple87or0oqkR2GtXMxYjznOP89RwUre9lQBK1wk15DU2vOMGu2GH+SwemqQJeBu4yb5x+iqjAUmRwquwrHOdB4FXVpcfGlRCwF9Ikk8DU6k6hoJUlGFF6FD+N9/sB9tf05ttJr9idrbkIdAe2/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(376002)(396003)(346002)(366004)(136003)(16526019)(956004)(31696002)(5660300002)(6706004)(186003)(110136005)(316002)(235185007)(8936002)(4326008)(66946007)(86362001)(66616009)(2906002)(8676002)(38100700002)(66476007)(478600001)(66556008)(33964004)(83380400001)(26005)(6666004)(31686004)(36756003)(6486002)(2616005)(16576012)(21314003)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S3dKVnU4U2Y0TUk0elBQS2dsL0ZxeTBSMXg0V2RTNCtFaUJsLzdxQ2QrZFNj?=
+ =?utf-8?B?KzM4czRYaDNuaWRONDVDY1NUUTk1d1BJaGFGSVBUS29OemJOWHdnSnhHSDM5?=
+ =?utf-8?B?WFJuOHdvQXo2L3hEejFpOEFJcG4vZU9pMFZRRWNIUDJrRGUvcUZKaTdnNkk3?=
+ =?utf-8?B?em5XNTM5NFcxWFpUVFd4cUZZNU9hbVl5MDBJYjhOd1REdDA5djZpc0dUcVBz?=
+ =?utf-8?B?VUhxQzlQNnpja3hIRXZBYjI2UlRVLzRkMkhzS3dtZzczWUlqSUZJcDg5aE9v?=
+ =?utf-8?B?VmtXK2VoT0RUbUcrbnVHZjlWa24rb1JaN2REeU96aFVvbHc3RGFwclBCek5C?=
+ =?utf-8?B?V2toM1BubW1BYlF4VzZENGg3VmYxZ3RNb2NDYmtNVWZVckw3Q1RJNHNBeENH?=
+ =?utf-8?B?OUVzV1ZidFZkRE1PbWVTMFhIMmpsZmNMMjA0TlBRb1pHdGFsR0E0U3Y5ZUwy?=
+ =?utf-8?B?eFVnd29HN2FCOUxpWTdERGZVVnJSM2VjNGVoVWlJTXZobU45SUZlSEszMjN0?=
+ =?utf-8?B?RXJDM05YNTAxb2xHa3g3YlliY25wc0dSQzNpa1plcDNjS3pMeVJWbzliQnVF?=
+ =?utf-8?B?dXhUb0R6MmgyTk52N1NwMmtHUUU5QmI3MjM5eE5EbXBhNGQ4YW9MRFhaNmwr?=
+ =?utf-8?B?TUtMcW1lWnhzUHNMZDNoUGU1WEIzemJsbExvL3ZKR2w5NGN5N3JTVFI3bFhD?=
+ =?utf-8?B?c2pTaWJkdE1RSTZ2MGRnZkNIa2xCa2N5NlZVcFNTM2ZsL0ZzdDBRM2k2QlBl?=
+ =?utf-8?B?MVg1eWU5UGZlWU1WVXN1ODhreStINU0rQ0ljcVJqcGtGOGx0UG4yZGdsWDdP?=
+ =?utf-8?B?MzR6L1QxVUF6UEpiQWFjY2trL1lWYnVqcGpaaWlGejVXTDJ5d2RjRVFqNmxt?=
+ =?utf-8?B?emJ0K1llY0UxVGYyRGxIRE5VT05SbGZhaWVNWURsNGtKSzdSRm1WNzNKQkZm?=
+ =?utf-8?B?QnV1WDU4NEZyeEh0WVB6TnpKeHpUMWxSWHFHSHl6aW5WSEhXcEJ5RjRZbXBn?=
+ =?utf-8?B?NjBhZS9nTi9EVFJqUlhRNnA4ZTlXTGZNUHdqTXNVaFJ1RU1qSEtEVTNpbDJQ?=
+ =?utf-8?B?NjFzZFc4TVZmdjN4NlU4YktsSVNpQWJzSHZtTS9EVGtvNWdKL2EraHJKSDBa?=
+ =?utf-8?B?T2JBL3h5V3hzVWlUM1dUdDJJUnlJRkNMSXhVMUFQRVdQZTRGVFZadWl6dytw?=
+ =?utf-8?B?NWp1aTBmZUpKYmVVZzVtL0FmZXFhOU5wdXk1bEowUFRGWG4weVRhYjFYaC8w?=
+ =?utf-8?B?WmljRnFhcXNINmNQRmNrOVRDK3pZSDBDUlQ4MVhhMDZVZHpZc0xFbnVWdlI0?=
+ =?utf-8?B?czlTSlFVMUJXNFNudG5Ib25ScG41VFBmZ05TbXI0YkJPdmh2ZWc3RkFBQVNx?=
+ =?utf-8?B?eVJ2Q3hkQ3VrWVFSS0tsM05nOUZXa3dBTjR4dGhHeUFCL2MwYWJSNXMxS1dl?=
+ =?utf-8?B?NlN1WllnZE8zd05jc1UwTXlTdlcvTHdXSGFuTHVXUHRLQ0hKTkJ1ME9uUXB2?=
+ =?utf-8?B?K2RDYWgyY2krUnpuZkt2enl1MngwZk0xQit5Mm9sV3YvaGxacDdWN1EvS0ZI?=
+ =?utf-8?B?N2JUTTZCM1BLNXRYVVJ2enlQK3VaS0VXbkpZSUtnZ1lLc1hzSzNGMEtvdTQ3?=
+ =?utf-8?B?SDdKaUVZamZqVXNDY2xKa3JxY3M0R0lLcW9FQ2oxZlBBZ3R6aDEvNWs0RGs3?=
+ =?utf-8?B?bDB0Rmp5SXBMNGVtYUNNSVd5Sis1U1NjZGU5d1pvakxSM3pHaEhYNXcxVGRC?=
+ =?utf-8?Q?8nsqRguM3+kI9YTyLPc+VePoT4DOXNnmSEEyTpW?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 288d4f50-67f5-4e99-300d-08d9178a535c
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2021 10:15:12.2436
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /qtW7zzxzKGXAhxNBkG31bRUakX8RBgSzeP7qficuQ2uW3hi58I5fsH1ZTiiGNfh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3558
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/05/15 06:22AM, Qu Wenruo wrote:
->
->
-> >
-> > Hi Qu,
-> >
-> > Thanks for pointing this out. I could see that w/o your new fix I could
-> > reproduce the BUG_ON() crash. But with your patch the test btrfs/195 still
-> > fails.  I guess that is expected right, since
-> > "RAID5/6 is not supported yet for sectorsize 4096 with page size 65536"?
-> >
-> > Is my understanding correct?
->
-> Yep, the test is still going to fail, as we reject such convert.
->
-> There are tons of other btrfs tests that fails due to the same reason.
->
-> Some of them can be avoided using "BTRFS_PROFILE_CONFIGS" environment
-> variant to avoid raid5/6, but not all.
->
-> Thus I'm going to update those tests to use that variant to make it
-> easier to rule out certain profiles.
-
-Hello Qu,
-
-Sorry to bother you again. While running your latest full patch series, I found
-below two failures, no crashes though :)
-Could you please take a look at it.
-
-1. btrfs/141 failure.
-xfstests.global-btrfs/4k.btrfs/141
-Error Details
-- output mismatch (see /results/btrfs/results-4k/btrfs/141.out.bad)
-
-Standard Output
-step 1......mkfs.btrfs
-step 2......corrupt file extent
-Filesystem type is: 9123683e
-File size of /vdc/foobar is 131072 (32 blocks of 4096 bytes)
- ext:     logical_offset:        physical_offset: length:   expected: flags:
-   0:        0..      31:      33632..     33663:     32:             last,eof
-/vdc/foobar: 1 extent found
- corrupt stripe #1, devid 2 devpath /dev/vdi physical 116785152
-step 3......repair the bad copy
+--------------D781700E7C5F19217569F4AA
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-Standard Error
---- tests/btrfs/141.out	2021-04-24 07:27:39.000000000 +0000
-+++ /results/btrfs/results-4k/btrfs/141.out.bad	2021-05-14 18:46:23.720000000 +0000
-@@ -1,37 +1,37 @@
- QA output created by 141
- wrote 131072/131072 bytes
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
--XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
-+XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
- read 512/512 bytes
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
 
+On 2021/5/15 下午5:59, Ritesh Harjani wrote:
+> On 21/05/15 06:22AM, Qu Wenruo wrote:
+>>
+>>
+>>>
+>>> Hi Qu,
+>>>
+>>> Thanks for pointing this out. I could see that w/o your new fix I could
+>>> reproduce the BUG_ON() crash. But with your patch the test btrfs/195 still
+>>> fails.  I guess that is expected right, since
+>>> "RAID5/6 is not supported yet for sectorsize 4096 with page size 65536"?
+>>>
+>>> Is my understanding correct?
+>>
+>> Yep, the test is still going to fail, as we reject such convert.
+>>
+>> There are tons of other btrfs tests that fails due to the same reason.
+>>
+>> Some of them can be avoided using "BTRFS_PROFILE_CONFIGS" environment
+>> variant to avoid raid5/6, but not all.
+>>
+>> Thus I'm going to update those tests to use that variant to make it
+>> easier to rule out certain profiles.
+> 
+> Hello Qu,
+> 
+> Sorry to bother you again. While running your latest full patch series, I found
+> below two failures, no crashes though :)
+> Could you please take a look at it.
+> 
+> 1. btrfs/141 failure.
+> xfstests.global-btrfs/4k.btrfs/141
+> Error Details
+> - output mismatch (see /results/btrfs/results-4k/btrfs/141.out.bad)
 
-2. btrfs/124 failure.
+Strangely, it passes locally.
 
-I guess below could be due to small size of the device?
+> 
+> Standard Output
+> step 1......mkfs.btrfs
+> step 2......corrupt file extent
+> Filesystem type is: 9123683e
+> File size of /vdc/foobar is 131072 (32 blocks of 4096 bytes)
+>   ext:     logical_offset:        physical_offset: length:   expected: flags:
+>     0:        0..      31:      33632..     33663:     32:             last,eof
+> /vdc/foobar: 1 extent found
+>   corrupt stripe #1, devid 2 devpath /dev/vdi physical 116785152
+> step 3......repair the bad copy
+> 
+> 
+> Standard Error
+> --- tests/btrfs/141.out	2021-04-24 07:27:39.000000000 +0000
+> +++ /results/btrfs/results-4k/btrfs/141.out.bad	2021-05-14 18:46:23.720000000 +0000
+> @@ -1,37 +1,37 @@
+>   QA output created by 141
+>   wrote 131072/131072 bytes
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+>   read 512/512 bytes
+>   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
 
-xfstests.global-btrfs/4k.btrfs/124
-Error Details
-- output mismatch (see /results/btrfs/results-4k/btrfs/124.out.bad)
-Standard Output
-max_fs_sz=1200000000 count=1200
------Initialize -----
+The output means the bad copy is not repaired, which is pretty strange.
+Since my latest work is to make the read repair work in 4K size.
+
+Mind to test the attached script? (Of coures, you need to change the 
+$dev and $mnt according to your environment)
+
+It would do the same work as btrfs/141, but using scrub to make sure 
+every thing is correct.
+
+Locally, I haven't yet hit a failure for btrfs/141 yet.
+
+> 
+> 
+> 2. btrfs/124 failure.
+> 
+> I guess below could be due to small size of the device?
+> 
+> xfstests.global-btrfs/4k.btrfs/124
+> Error Details
+> - output mismatch (see /results/btrfs/results-4k/btrfs/124.out.bad)
+
+Again passes locally.
+
+But accroding to your fs, I notice several unbalanced disk usage:
+
 # /usr/local/bin/btrfs filesystem show
 Label: none  uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
 	Total devices 2 FS bytes used 32.00KiB
@@ -231,247 +298,50 @@ Label: none  uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
 	devid    1 size 5.00GiB used 8.00MiB path /dev/vdb
 	devid    3 size 20.00GiB used 264.00MiB path /dev/vde
 	devid    4 size 20.00GiB used 1.26GiB path /dev/vdf
-	*** Some devices missing
 
-Label: none  uuid: a05d487c-e808-456a-abb6-fc4c0b9bee35
-	Total devices 1 FS bytes used 232.00KiB
-	devid    1 size 5.00GiB used 1.02GiB path /dev/vdd
+We had reports about btrfs doing poor work when handling unbalanced disk 
+sizes.
+I had a purpose to fix it, with a little better calcuation, but still 
+not yet perfect.
 
-1+0 records in
-1+0 records out
-unmount
-clean btrfs ko
+Thus would you mind to check if the test pass when all the disks in 
+SCRATCH_DEV_POOL are in the same size?
 
------Write degraded mount fill upto 1200000000 bytes-----
-# /usr/local/bin/btrfs filesystem show
-Label: none  uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
-	Total devices 2 FS bytes used 1.16MiB
-	devid    1 size 5.00GiB used 622.38MiB path /dev/vdc
-	*** Some devices missing
+Of course we need to fix the problem of ENOSPC for unbalanced disks, but 
+that's a common problem and not exacly related to subpage.
+I should take some time to refresh the unbalanced disk usage patches soon.
 
-Label: none  uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
-	Total devices 4 FS bytes used 379.12MiB
-	devid    1 size 5.00GiB used 8.00MiB path /dev/vdb
-	devid    3 size 20.00GiB used 264.00MiB path /dev/vde
-	devid    4 size 20.00GiB used 1.26GiB path /dev/vdf
-	*** Some devices missing
+Thanksm
+Qu
 
-Label: none  uuid: a05d487c-e808-456a-abb6-fc4c0b9bee35
-	Total devices 1 FS bytes used 232.00KiB
-	devid    1 size 5.00GiB used 1.02GiB path /dev/vdd
+[...]
+> 
+> -ritesh
+> 
 
-1200+0 records in
-1200+0 records out
-8c2297c9abaf3b724f6192f65efe9a89 /vdc/tf2
-unmount
+--------------D781700E7C5F19217569F4AA
+Content-Type: application/x-shellscript;
+ name="repair.sh"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="repair.sh"
 
------Mount normal-----
-# /usr/local/bin/btrfs device scan
-Scanning for Btrfs filesystems
-# /usr/local/bin/btrfs filesystem show
-Label: none  uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
-	Total devices 2 FS bytes used 1.17GiB
-	devid    1 size 5.00GiB used 2.39GiB path /dev/vdc
-	devid    2 size 2.00GiB used 622.38MiB path /dev/vdi
+IyEvYmluL2Jhc2gKZGV2PSIvZGV2L2FybV9udm1lL3Rlc3QiCm1udD0iL21udC9idHJmcyIKZnN4
+PSIvaG9tZS9hZGFtL3hmc3Rlc3RzLWRldi9sdHAvZnN4IgoKbnJfbG9vcHM9MQp1bW91bnQgJGRl
+diAmPiAvZGV2L251bGwKdW1vdW50ICRtbnQgJj4gL2Rldi9udWxsCgojZWNobyAyNTYgPiAvc3lz
+L2tlcm5lbC9kZWJ1Zy90cmFjaW5nL2J1ZmZlcl9zaXplX2tiCiNlY2hvIHN0YWNrdHJhY2UgPiAv
+c3lzL2tlcm5lbC9kZWJ1Zy90cmFjaW5nL3RyYWNlX29wdGlvbnMKcm1tb2QgYnRyZnMKaW5zbW9k
+IC9ob21lL2FkYW0vbGludXgvZnMvYnRyZnMvYnRyZnMua28Kc3luYwoKX2ZhaWwoKQp7CgllY2hv
+ICIhISEgZmFpbGVkICEhISIKCWV4aXQgMQp9Cgp3b3JrbG9hZCgpCnsKCWRtZXNnIC1DCgl0cmFj
+ZS1jbWQgY2xlYXIKCW1rZnMuYnRyZnMgLWYgJGRldiAtZCBEVVAgLW0gRFVQIC1zIDRrCgltb3Vu
+dCAkZGV2IC1vIG5vc3BhY2VfY2FjaGUgJG1udAoJeGZzX2lvIC1mIC1jICJwd3JpdGUgLVMgMHhj
+ZCAwIDEySyIgJG1udC9maWxlCgl1bW91bnQgJG1udAoJeGZzX2lvIC1jICJwd3JpdGUgLVMgMHgw
+MCA1NzU2NjgyMjQgNGsiICRkZXYKCXhmc19pbyAtYyAicHdyaXRlIC1TIDB4MDAgMTY0OTQxNDE0
+NCA0ayIgJGRldgoJbW91bnQgJGRldiAtbyBub3NwYWNlX2NhY2hlICRtbnQKCWNhdCAkbW50L2Zp
+bGUgPiAvZGV2L251bGwKCWJ0cmZzIHNjcnViIHN0YXJ0IC1CICRtbnQKCSNidHJmcyBzY3J1YiBz
+dGFydCAtQiAkbW50Cgl1bW91bnQgJG1udAoJY3AgL3N5cy9rZXJuZWwvZGVidWcvdHJhY2luZy90
+cmFjZSAvdG1wCn0KCmZvciAoKCBpID0gMDsgaSA8ICRucl9sb29wczsgaSsrICkpCmRvCgllY2hv
+ICI9PT0gJGkgLyAkbnJfbG9vcHMgPT09IgoJd29ya2xvYWQKZG9uZQo=
 
-Label: none  uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
-	Total devices 4 FS bytes used 379.12MiB
-	devid    1 size 5.00GiB used 8.00MiB path /dev/vdb
-	devid    3 size 20.00GiB used 264.00MiB path /dev/vde
-	devid    4 size 20.00GiB used 1.26GiB path /dev/vdf
-	*** Some devices missing
+--------------D781700E7C5F19217569F4AA--
 
-Label: none  uuid: a05d487c-e808-456a-abb6-fc4c0b9bee35
-	Total devices 1 FS bytes used 232.00KiB
-	devid    1 size 5.00GiB used 1.02GiB path /dev/vdd
-
-
-8c2297c9abaf3b724f6192f65efe9a89 /vdc/tf2
-
------Mount degraded with the other dev -----
-# /usr/local/bin/btrfs filesystem show
-Label: none  uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
-	Total devices 2 FS bytes used 1.17GiB
-	devid    2 size 2.00GiB used 2.00GiB path /dev/vdi
-	*** Some devices missing
-
-Label: none  uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
-	Total devices 4 FS bytes used 379.12MiB
-	devid    1 size 5.00GiB used 8.00MiB path /dev/vdb
-	devid    3 size 20.00GiB used 264.00MiB path /dev/vde
-	devid    4 size 20.00GiB used 1.26GiB path /dev/vdf
-	*** Some devices missing
-
-Label: none  uuid: a05d487c-e808-456a-abb6-fc4c0b9bee35
-	Total devices 1 FS bytes used 232.00KiB
-	devid    1 size 5.00GiB used 1.02GiB path /dev/vdd
-
-8c2297c9abaf3b724f6192f65efe9a89 /vdc/tf2
-
-Standard Error
-[ 2511.357169] run fstests btrfs/124 at 2021-05-14 18:39:19
-[ 2511.961083] BTRFS info (device vdd): disk space caching is enabled
-[ 2511.961232] BTRFS info (device vdd): has skinny extents
-[ 2511.961270] BTRFS warning (device vdd): read-write for sector size 4096 with page size 65536 is experimental
-[ 2512.809266] BTRFS: device fsid fbb48eb6-25c7-4800-8656-503c1e502d85 devid 1 transid 5 /dev/vdc scanned by mkfs.btrfs (25193)
-[ 2512.814344] BTRFS: device fsid fbb48eb6-25c7-4800-8656-503c1e502d85 devid 2 transid 5 /dev/vdi scanned by mkfs.btrfs (25193)
-[ 2512.838098] BTRFS info (device vdc): disk space caching is enabled
-[ 2512.838201] BTRFS info (device vdc): has skinny extents
-[ 2512.838244] BTRFS warning (device vdc): read-write for sector size 4096 with page size 65536 is experimental
-[ 2512.844581] BTRFS info (device vdc): checking UUID tree
-[ 2513.015279] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 1 transid 145 /dev/vdb scanned by systemd-udevd (24701)
-[ 2513.034653] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 3 transid 145 /dev/vde scanned by systemd-udevd (24418)
-[ 2513.138265] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 4 transid 145 /dev/vdf scanned by systemd-udevd (25222)
-[ 2513.634205] BTRFS: device fsid fbb48eb6-25c7-4800-8656-503c1e502d85 devid 1 transid 7 /dev/vdc scanned by mount (25234)
-[ 2513.637110] BTRFS info (device vdc): allowing degraded mounts
-[ 2513.637241] BTRFS info (device vdc): disk space caching is enabled
-[ 2513.637360] BTRFS info (device vdc): has skinny extents
-[ 2513.637455] BTRFS warning (device vdc): read-write for sector size 4096 with page size 65536 is experimental
-[ 2513.640760] BTRFS warning (device vdc): devid 2 uuid a03f9ebb-81fd-45be-9a17-f048d6954f1c is missing
-[ 2513.644352] BTRFS warning (device vdc): devid 2 uuid a03f9ebb-81fd-45be-9a17-f048d6954f1c is missing
-[ 2529.907020] BTRFS: device fsid a05d487c-e808-456a-abb6-fc4c0b9bee35 devid 1 transid 219 /dev/vdd scanned by btrfs (25262)
-[ 2529.908870] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 4 transid 145 /dev/vdf scanned by btrfs (25262)
-[ 2529.909925] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 3 transid 145 /dev/vde scanned by btrfs (25262)
-[ 2529.910516] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 1 transid 145 /dev/vdb scanned by btrfs (25262)
-[ 2529.937367] BTRFS info (device vdc): disk space caching is enabled
-[ 2529.937523] BTRFS info (device vdc): has skinny extents
-[ 2529.937599] BTRFS warning (device vdc): read-write for sector size 4096 with page size 65536 is experimental
-[ 2530.185770] BTRFS info (device vdc): balance: start -d -m -s
-[ 2530.186594] BTRFS info (device vdc): relocating block group 2050359296 flags data
-[ 2535.649631] BTRFS info (device vdc): found 3 extents, stage: move data extents
-[ 2535.891378] BTRFS info (device vdc): found 3 extents, stage: update data pointers
-[ 2536.109722] BTRFS info (device vdc): relocating block group 1513488384 flags data
-[ 2549.819115] BTRFS info (device vdc): found 4 extents, stage: move data extents
-[ 2550.051966] BTRFS info (device vdc): found 4 extents, stage: update data pointers
-[ 2550.335411] BTRFS info (device vdc): relocating block group 976617472 flags data
-[ 2564.128269] BTRFS info (device vdc): found 6 extents, stage: move data extents
-[ 2564.370940] BTRFS info (device vdc): found 6 extents, stage: update data pointers
-[ 2564.630805] BTRFS info (device vdc): relocating block group 943063040 flags system
-[ 2564.897480] BTRFS info (device vdc): relocating block group 674627584 flags metadata
-[ 2565.152783] BTRFS info (device vdc): relocating block group 298844160 flags data|raid1
-[ 2575.202247] BTRFS info (device vdc): found 4 extents, stage: move data extents
-[ 2575.421479] BTRFS info (device vdc): found 3 extents, stage: update data pointers
-[ 2575.653141] BTRFS info (device vdc): relocating block group 30408704 flags metadata|raid1
-[ 2575.653340] ------------[ cut here ]------------
-[ 2575.653426] BTRFS: Transaction aborted (error -28)
-[ 2575.653575] WARNING: CPU: 6 PID: 25290 at fs/btrfs/extent-tree.c:3080 __btrfs_free_extent.isra.37+0x6c0/0x1210
-[ 2575.653776] Modules linked in:
-[ 2575.653837] CPU: 6 PID: 25290 Comm: btrfs Not tainted 5.12.0-rc8-00161-g2bf0f9c65743 #32
-[ 2575.653957] NIP:  c0000000009e66f0 LR: c0000000009e66ec CTR: c000000000e516a0
-[ 2575.654073] REGS: c00000000a407030 TRAP: 0700   Not tainted  (5.12.0-rc8-00161-g2bf0f9c65743)
-[ 2575.654206] MSR:  800000000282b033 &lt;SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE&gt;  CR: 48002222  XER: 20000000
-[ 2575.654364] CFAR: c0000000001d33c0 IRQMASK: 0
-               GPR00: c0000000009e66ec c00000000a4072d0 c000000001c4ae00 0000000000000026
-               GPR04: 0000000000000001 0000000000000000 0000000000000027 c0000000ff807e98
-               GPR08: 0000000000000023 0000000000000000 c000000011fa3300 c000000001a03d78
-               GPR12: 0000000000002200 c00000003ffe7800 c000000001c99158 5deadbeef0000122
-               GPR16: 0000000000000001 ffffffffffffffe4 c0000000c0110558 c0000000261b2148
-               GPR20: 0000000000000000 c00000000b844000 0000000000000000 c000000012594000
-               GPR24: 0000000000000001 0000000000000001 0000000000001000 c000000094db6c50
-               GPR28: 0000000000000003 0000000000000000 0000000001500000 0000000000000000
-[ 2575.655367] NIP [c0000000009e66f0] __btrfs_free_extent.isra.37+0x6c0/0x1210
-[ 2575.655469] LR [c0000000009e66ec] __btrfs_free_extent.isra.37+0x6bc/0x1210
-[ 2575.655562] Call Trace:
-[ 2575.655601] [c00000000a4072d0] [c0000000009e66ec] __btrfs_free_extent.isra.37+0x6bc/0x1210 (unreliable)
-[ 2575.655732] [c00000000a4073f0] [c0000000009e863c] __btrfs_run_delayed_refs+0x99c/0x16c0
-[ 2575.655845] [c00000000a4075a0] [c0000000009e940c] btrfs_run_delayed_refs+0xac/0x330
-[ 2575.655957] [c00000000a407660] [c000000000a04dc4] btrfs_commit_transaction+0xf4/0x1330
-[ 2575.656069] [c00000000a407750] [c000000000a8f9e4] prepare_to_relocate+0x104/0x140
-[ 2575.656190] [c00000000a407780] [c000000000a96074] relocate_block_group+0x74/0x5f0
-[ 2575.656305] [c00000000a407840] [c000000000a96820] btrfs_relocate_block_group+0x230/0x4a0
-[ 2575.656420] [c00000000a407900] [c000000000a4f180] btrfs_relocate_chunk+0x80/0x1c0
-[ 2575.656532] [c00000000a407980] [c000000000a5045c] btrfs_balance+0x103c/0x1560
-[ 2575.656644] [c00000000a407b10] [c000000000a632a8] btrfs_ioctl_balance+0x2d8/0x450
-[ 2575.656756] [c00000000a407b70] [c000000000a67520] btrfs_ioctl+0x1d30/0x3df0
-[ 2575.656849] [c00000000a407d10] [c00000000058a188] sys_ioctl+0xa8/0x120
-[ 2575.656953] [c00000000a407d60] [c000000000039e64] system_call_exception+0x384/0x3d0
-[ 2575.657074] [c00000000a407e10] [c00000000000d45c] system_call_common+0xec/0x278
-[ 2575.657186] --- interrupt: c00 at 0x7ffff7bf2990
-[ 2575.657268] NIP:  00007ffff7bf2990 LR: 000000010003d974 CTR: 0000000000000000
-[ 2575.657377] REGS: c00000000a407e80 TRAP: 0c00   Not tainted  (5.12.0-rc8-00161-g2bf0f9c65743)
-[ 2575.657504] MSR:  800000000000d033 &lt;SF,EE,PR,ME,IR,DR,RI,LE&gt;  CR: 24002824  XER: 00000000
-[ 2575.657626] IRQMASK: 0
-               GPR00: 0000000000000036 00007fffffffd430 00007ffff7ce7100 0000000000000003
-               GPR04: 00000000c4009420 00007fffffffd560 0000000000000000 0000000000000000
-               GPR08: 0000000000000003 0000000000000000 0000000000000000 0000000000000000
-               GPR12: 0000000000000000 00007ffff7ffc930 0000000000000000 0000000000000000
-               GPR16: 00000001000cdb48 00000001000cdb78 00000001000cdb98 0000000000000000
-               GPR20: 00000001000cdb20 00000001000cda58 00000001000cda68 00000001000cdaa8
-               GPR24: 0000000000000000 0000000000000000 00007fffffffd560 00007fffffffec7b
-               GPR28: 0000000000000002 0000000000000000 0000000000000000 0000000000000003
-[ 2575.658543] NIP [00007ffff7bf2990] 0x7ffff7bf2990
-[ 2575.658617] LR [000000010003d974] 0x10003d974
-[ 2575.658691] --- interrupt: c00
-[ 2575.658748] Instruction dump:
-[ 2575.658805] 7c0004ac 71490008 40820058 2f91fffb 419e0030 2f91ffe2 419e0028 3c62ff9f
-[ 2575.658924] 7e248b78 38633028 4b7ecc71 60000000 &lt;0fe00000&gt; 4800002c 60000000 60000000
-[ 2575.659043] irq event stamp: 0
-[ 2575.659099] hardirqs last  enabled at (0): [&lt;0000000000000000&gt;] 0x0
-[ 2575.659191] hardirqs last disabled at (0): [&lt;c0000000001cfb0c&gt;] copy_process+0x76c/0x1c00
-[ 2575.659303] softirqs last  enabled at (0): [&lt;c0000000001cfb0c&gt;] copy_process+0x76c/0x1c00
-[ 2575.659415] softirqs last disabled at (0): [&lt;0000000000000000&gt;] 0x0
-[ 2575.659512] ---[ end trace ab9bdd82f0a5e6a5 ]---
-[ 2575.659605] BTRFS: error (device vdc) in __btrfs_free_extent:3080: errno=-28 No space left
-[ 2575.659718] BTRFS info (device vdc): forced readonly
-[ 2575.659803] BTRFS: error (device vdc) in btrfs_run_delayed_refs:2159: errno=-28 No space left
-[ 2575.659995] BTRFS info (device vdc): 1 enospc errors during balance
-[ 2575.660092] BTRFS info (device vdc): balance: ended with status: -30
-[ 2584.166689] BTRFS: device fsid fbb48eb6-25c7-4800-8656-503c1e502d85 devid 2 transid 52 /dev/vdi scanned by mount (25301)
-[ 2584.168507] BTRFS info (device vdi): allowing degraded mounts
-[ 2584.168662] BTRFS info (device vdi): disk space caching is enabled
-[ 2584.168809] BTRFS info (device vdi): has skinny extents
-[ 2584.168929] BTRFS warning (device vdi): read-write for sector size 4096 with page size 65536 is experimental
-[ 2584.171231] BTRFS warning (device vdi): devid 1 uuid 20cac181-2412-406d-aaa1-a8c74aa3c3d9 is missing
-[ 2584.171788] BTRFS warning (device vdi): devid 1 uuid 20cac181-2412-406d-aaa1-a8c74aa3c3d9 is missing
-[ 2584.196998] BTRFS info (device vdi): checking UUID tree
-[ 2584.227833] BTRFS info (device vdi): balance: resume -dusage=90 -musage=90 -susage=90
-[ 2584.228687] BTRFS info (device vdi): relocating block group 3342204928 flags data|raid1
-[ 2584.295787] BTRFS info (device vdi): relocating block group 298844160 flags data|raid1
-[ 2584.335524] ------------[ cut here ]------------
-[ 2584.335571] BTRFS: Transaction aborted (error -28)
-[ 2584.335630] WARNING: CPU: 5 PID: 25320 at fs/btrfs/volumes.c:3067 btrfs_remove_chunk+0x534/0xb80
-[ 2584.335709] Modules linked in:
-[ 2584.335743] CPU: 5 PID: 25320 Comm: btrfs-balance Tainted: G        W         5.12.0-rc8-00161-g2bf0f9c65743 #32
-[ 2584.335822] NIP:  c000000000a4eab4 LR: c000000000a4eab0 CTR: c000000000e516a0
-[ 2584.335880] REGS: c00000000e2477a0 TRAP: 0700   Tainted: G        W          (5.12.0-rc8-00161-g2bf0f9c65743)
-[ 2584.335960] MSR:  800000000282b033 &lt;SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE&gt;  CR: 48002222  XER: 20000000
-[ 2584.336045] CFAR: c0000000001d33c0 IRQMASK: 0
-               GPR00: c000000000a4eab0 c00000000e247a40 c000000001c4ae00 0000000000000026
-               GPR04: 0000000000000001 0000000000000000 0000000000000027 c0000000ff707e98
-               GPR08: 0000000000000023 0000000000000000 c0000000092a3300 c000000001a04300
-               GPR12: 0000000000002200 c00000003ffe8a00 0000000000000001 c0000000261ce600
-               GPR16: 0000000011d00000 c0000000261c8c78 c000000028bd9248 c00000000d814150
-               GPR20: c00000000d814860 ffffffffffffffcc c00000000d814000 c00000000d814000
-               GPR24: c000000013117628 0000000000000000 c000000009537000 c000000094db6c50
-               GPR28: 0000000016660000 c000000027f41c00 ffffffffffffffe4 c000000029321888
-[ 2584.336561] NIP [c000000000a4eab4] btrfs_remove_chunk+0x534/0xb80
-[ 2584.336611] LR [c000000000a4eab0] btrfs_remove_chunk+0x530/0xb80
-[ 2584.336662] Call Trace:
-[ 2584.336684] [c00000000e247a40] [c000000000a4eab0] btrfs_remove_chunk+0x530/0xb80 (unreliable)
-[ 2584.336754] [c00000000e247b60] [c000000000a4f278] btrfs_relocate_chunk+0x178/0x1c0
-[ 2584.336815] [c00000000e247be0] [c000000000a5045c] btrfs_balance+0x103c/0x1560
-[ 2584.336878] [c00000000e247d70] [c000000000a509d4] balance_kthread+0x54/0x90
-[ 2584.336931] [c00000000e247da0] [c0000000002173cc] kthread+0x1bc/0x1d0
-[ 2584.336999] [c00000000e247e10] [c00000000000d6ec] ret_from_kernel_thread+0x5c/0x70
-[ 2584.337059] Instruction dump:
-[ 2584.337091] 7c0004ac 71490008 40820050 2f9efffb 419e0028 2f9effe2 419e0020 3c62ff9f
-[ 2584.337158] 7fc4f378 38633028 4b7848ad 60000000 &lt;0fe00000&gt; 48000024 60000000 4800001c
-[ 2584.337226] irq event stamp: 0
-[ 2584.337256] hardirqs last  enabled at (0): [&lt;0000000000000000&gt;] 0x0
-[ 2584.337306] hardirqs last disabled at (0): [&lt;c0000000001cfb0c&gt;] copy_process+0x76c/0x1c00
-[ 2584.337366] softirqs last  enabled at (0): [&lt;c0000000001cfb0c&gt;] copy_process+0x76c/0x1c00
-[ 2584.337426] softirqs last disabled at (0): [&lt;0000000000000000&gt;] 0x0
-[ 2584.337475] ---[ end trace ab9bdd82f0a5e6a6 ]---
-[ 2584.337516] BTRFS: error (device vdi) in btrfs_remove_chunk:3067: errno=-28 No space left
-[ 2584.337574] BTRFS info (device vdi): forced readonly
-[ 2584.337632] BTRFS info (device vdi): 2 enospc errors during balance
-[ 2584.337683] BTRFS info (device vdi): balance: ended with status: -30
-[ 2594.600530] BTRFS: device fsid a05d487c-e808-456a-abb6-fc4c0b9bee35 devid 1 transid 219 /dev/vdd scanned by btrfs (25326)
-[ 2594.601875] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 4 transid 145 /dev/vdf scanned by btrfs (25326)
-[ 2594.602354] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 3 transid 145 /dev/vde scanned by btrfs (25326)
-[ 2594.602841] BTRFS: device fsid d3c4fb09-eea2-4dea-8187-b13e97f4ad5c devid 1 transid 145 /dev/vdb scanned by btrfs (25326)
-[ 2594.623442] BTRFS info (device vdd): disk space caching is enabled
-[ 2594.623521] BTRFS info (device vdd): has skinny extents
-[ 2594.623567] BTRFS warning (device vdd): read-write for sector size 4096 with page size 65536 is experimental
-
--ritesh
