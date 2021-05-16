@@ -2,182 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A7D382013
-	for <lists+linux-btrfs@lfdr.de>; Sun, 16 May 2021 18:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E021382078
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 May 2021 20:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbhEPQsi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 16 May 2021 12:48:38 -0400
-Received: from out20-61.mail.aliyun.com ([115.124.20.61]:44968 "EHLO
-        out20-61.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbhEPQsi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 16 May 2021 12:48:38 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07488514|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0430146-0.000721126-0.956264;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.KEG3o1R_1621183641;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.KEG3o1R_1621183641)
-          by smtp.aliyun-inc.com(10.147.40.233);
-          Mon, 17 May 2021 00:47:21 +0800
-Date:   Mon, 17 May 2021 00:47:20 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Boris Burkov <boris@bur.io>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 4/4] generic: test fs-verity EFBIG scenarios
-Message-ID: <YKFMmGKS2C55wgwY@desktop>
-References: <cover.1620248200.git.boris@bur.io>
- <508058f805a45808764a477e9ad04353a841cf53.1620248200.git.boris@bur.io>
+        id S231400AbhEPSnP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 16 May 2021 14:43:15 -0400
+Received: from mail.knebb.de ([188.68.42.176]:53254 "EHLO mail.knebb.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhEPSnP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 16 May 2021 14:43:15 -0400
+Received: by mail.knebb.de (Postfix, from userid 121)
+        id BB961E18E8; Sun, 16 May 2021 20:41:58 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on netcup.knebb.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=1.7 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=unavailable autolearn_force=no version=3.4.2
+Received: from [192.168.9.194] (p508bf12b.dip0.t-ipconnect.de [80.139.241.43])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cvoelker)
+        by mail.knebb.de (Postfix) with ESMTPSA id 95F02E18DA;
+        Sun, 16 May 2021 20:41:56 +0200 (CEST)
+Subject: Re: Removal of Device and Free Space
+To:     Roman Mamedov <rm@romanrm.net>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <850c35a8-0322-c60e-b179-b07eb0e1de8c@knebb.de>
+ <20210515013903.GE32440@hungrycats.org> <20210515124803.41f88f70@natsu>
+From:   =?UTF-8?Q?Christian_V=c3=b6lker?= <cvoelker@knebb.de>
+Message-ID: <27e96a85-be12-c830-c916-b8fbcac8a535@knebb.de>
+Date:   Sun, 16 May 2021 20:41:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <508058f805a45808764a477e9ad04353a841cf53.1620248200.git.boris@bur.io>
+In-Reply-To: <20210515124803.41f88f70@natsu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:04:46PM -0700, Boris Burkov wrote:
-> btrfs, ext4, and f2fs cache the Merkle tree past EOF, which restricts
-> the maximum file size beneath the normal maximum. Test the logic in
-> those filesystems against files with sizes near the maximum.
-> 
-> To work properly, this does require some understanding of the practical
-> but not standardized layout of the Merkle tree. This is a bit unpleasant
-> and could make the test incorrect in the future, if the implementation
-> changes. On the other hand, it feels quite useful to test this tricky
-> edge case. It could perhaps be made more generic by adding some ioctls
-> to let the file system communicate the maximum file size for a verity
-> file or some information about the storage of the Merkle tree.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->  tests/generic/632     | 86 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/632.out |  7 ++++
->  tests/generic/group   |  1 +
->  3 files changed, 94 insertions(+)
->  create mode 100755 tests/generic/632
->  create mode 100644 tests/generic/632.out
-> 
-> diff --git a/tests/generic/632 b/tests/generic/632
-> new file mode 100755
-> index 00000000..5a5ed576
-> --- /dev/null
-> +++ b/tests/generic/632
-> @@ -0,0 +1,86 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Facebook, Inc.  All Rights Reserved.
-> +#
-> +# FS QA Test 632
-> +#
-> +# Test some EFBIG scenarios with very large files.
-> +# To create the files, use pwrite with an offset close to the
-> +# file system's max file size.
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +. ./common/verity
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs ext4 f2fs
+Hi all,
 
-A generic test should '_supported_fs generic', and use proper _require
-rules to filter unsupported filesystems.
+thanks for your suggestions. Even though I do not understand every 
+implication.
 
-> +_require_test
-> +_require_math
-> +_require_scratch_verity
-> +
-> +_scratch_mkfs_verity &>> $seqres.full
-> +_scratch_mount
-> +
-> +fsv_file=$SCRATCH_MNT/file.fsv
-> +
-> +max_sz=$(_get_max_file_size)
-> +_fsv_scratch_begin_subtest "way too big: fail on first merkle block"
-> +# have to go back by 4096 from max to not hit the fsverity MAX_DEPTH check.
-> +$XFS_IO_PROG -fc "pwrite -q $(($max_sz - 4096)) 1" $fsv_file
-> +_fsv_enable $fsv_file |& _filter_scratch
-> +
-> +# The goal of this second test is to make a big enough file that we trip the
-> +# EFBIG codepath, but not so big that we hit it immediately as soon as we try
-> +# to write a Merkle leaf. Because of the layout of the Merkle tree that
-> +# fs-verity uses, this is a bit complicated to compute dynamically.
-> +
-> +# The layout of the Merkle tree has the leaf nodes last, but writes them first.
-> +# To get an interesting overflow, we need the start of L0 to be < MAX but the
-> +# end of the merkle tree (EOM) to be past MAX. Ideally, the start of L0 is only
-> +# just smaller than MAX, so that we don't have to write many blocks to blow up.
-> +
-> +# 0                        EOF round-to-64k L7L6L5 L4   L3    L2    L1  L0 MAX  EOM
-> +# |-------------------------|               ||-|--|---|----|-----|------|--|!!!!!|
-> +
-> +# Given this structure, we can compute the size of the file that yields the
-> +# desired properties:
-> +# sz + 64k + sz/128^8 + sz/128^7 + ... + sz/128^2 < MAX
-> +# (128^8)sz + (128^8)64k + sz + (128)sz + (128^2)sz + ... + (128^6)sz < (128^8)MAX
-> +# sz(128^8 + 128^6 + 128^5 + 128^4 + 128^3 + 128^2 + 128 + 1) < (128^8)(MAX - 64k)
-> +# sz < (128^8/(128^8 + (128^6 + ... 1))(MAX - 64k)
-> +#
-> +# Do the actual caclulation with 'bc' and 20 digits of precision.
-> +set -f
-> +calc="scale=20; ($max_sz - 65536) * ((128^8) / (1 + 128 + 128^2 + 128^3 + 128^4 + 128^5 + 128^6 + 128^8))"
-> +sz=$(echo $calc | $BC -q | cut -d. -f1)
-> +set +f
+However, your suggestions in total allowed me to remove the device.
 
-Now sure why set -f is needed here, add some comments about it as well?
+root@backuppc42:/var/lib/backuppc# btrfs fi sh /var/lib/backuppc/
+Label: 'backuppc'  uuid: 73b98c7b-832a-437a-a15b-6cb00734e5db
+         Total devices 3 FS bytes used 1.68TiB
+         devid    3 size 799.96GiB used 798.96GiB path dm-5
+         devid    4 size 1.07TiB used 1.07TiB path dm-4
+         devid    7 size 899.96GiB used 327.00GiB path dm-6
 
-Thanks,
-Eryu
 
-> +
-> +
-> +_fsv_scratch_begin_subtest "still too big: fail on first invalid merkle block"
-> +$XFS_IO_PROG -fc "pwrite -q $sz 1" $fsv_file
-> +_fsv_enable $fsv_file |& _filter_scratch
-> +
-> +# success, all done
-> +status=0
-> +exit
-> diff --git a/tests/generic/632.out b/tests/generic/632.out
-> new file mode 100644
-> index 00000000..59602c24
-> --- /dev/null
-> +++ b/tests/generic/632.out
-> @@ -0,0 +1,7 @@
-> +QA output created by 632
-> +
-> +# way too big: fail on first merkle block
-> +ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': File too large
-> +
-> +# still too big: fail on first invalid merkle block
-> +ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': File too large
-> diff --git a/tests/generic/group b/tests/generic/group
-> index ab00cc04..76d46e86 100644
-> --- a/tests/generic/group
-> +++ b/tests/generic/group
-> @@ -634,3 +634,4 @@
->  629 auto quick rw copy_range
->  630 auto quick rw dedupe clone
->  631 auto rw overlay rename
-> +632 auto quick verity
-> -- 
-> 2.30.2
+root@backuppc42:/var/lib/backuppc# btrfs balance start -ddevid=3 
+/var/lib/backuppc/;btrfs balance start -ddevid=4 /var/lib/backuppc/
+
+
+Done, had to relocate 793 out of 2224 chunks
+Done, had to relocate 1094 out of 1726 chunks
+
+root@backuppc42:/var/lib/backuppc# btrfs fi df /var/lib/backuppc/
+Data, single: total=1.68TiB, used=1.67TiB
+System, single: total=32.00MiB, used=208.00KiB
+Metadata, single: total=9.00GiB, used=3.49GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+root@backuppc42:/var/lib/backuppc# btrfs fi us /var/lib/backuppc/
+Overall:
+     Device size:                   2.73TiB
+     Device allocated:              1.68TiB
+     Device unallocated:            1.05TiB
+     Device missing:                  0.00B
+     Used:                          1.68TiB
+     Free (estimated):              1.05TiB      (min: 1.05TiB)
+     Free (statfs, df):             1.05TiB
+     Data ratio:                       1.00
+     Metadata ratio:                   1.00
+     Global reserve:              512.00MiB      (used: 0.00B)
+     Multiple profiles:                  no
+
+Data,single: Size:1.68TiB, Used:1.67TiB (99.96%)
+    /dev/mapper/crypt_drbd2       436.00GiB
+    /dev/mapper/crypt_drbd1       737.00GiB
+    /dev/mapper/crypt_drbd3       543.00GiB
+
+Metadata,single: Size:9.00GiB, Used:3.49GiB (38.79%)
+    /dev/mapper/crypt_drbd2         6.00GiB
+    /dev/mapper/crypt_drbd1         3.00GiB
+
+System,single: Size:32.00MiB, Used:208.00KiB (0.63%)
+    /dev/mapper/crypt_drbd2        32.00MiB
+
+Unallocated:
+    /dev/mapper/crypt_drbd2       357.93GiB
+    /dev/mapper/crypt_drbd1       359.95GiB
+    /dev/mapper/crypt_drbd3       356.96GiB
+
+root@backuppc42:/var/lib/backuppc# btrfs dev remove 
+/dev/mapper/crypt_drbd3 /var/lib/backuppc/
+
+root@backuppc42:/var/lib/backuppc# btrfs fi us /var/lib/backuppc/
+Overall:
+     Device size:                   1.85TiB
+     Device allocated:              1.68TiB
+     Device unallocated:          174.88GiB
+     Device missing:                  0.00B
+     Used:                          1.68TiB
+     Free (estimated):            175.62GiB      (min: 175.62GiB)
+     Free (statfs, df):           175.62GiB
+     Data ratio:                       1.00
+     Metadata ratio:                   1.00
+     Global reserve:              512.00MiB      (used: 0.00B)
+     Multiple profiles:                  no
+
+Data,single: Size:1.68TiB, Used:1.67TiB (99.96%)
+    /dev/mapper/crypt_drbd2       706.00GiB
+    /dev/mapper/crypt_drbd1      1010.00GiB
+
+Metadata,single: Size:9.00GiB, Used:3.48GiB (38.62%)
+    /dev/mapper/crypt_drbd2         6.00GiB
+    /dev/mapper/crypt_drbd1         3.00GiB
+
+System,single: Size:32.00MiB, Used:224.00KiB (0.68%)
+    /dev/mapper/crypt_drbd2        32.00MiB
+
+Unallocated:
+    /dev/mapper/crypt_drbd2        87.93GiB
+    /dev/mapper/crypt_drbd1        86.95GiB
+
+root@backuppc42:/var/lib/backuppc# btrfs fi df /var/lib/backuppc/
+Data, single: total=1.68TiB, used=1.67TiB
+System, single: total=32.00MiB, used=224.00KiB
+Metadata, single: total=9.00GiB, used=3.48GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+
+I am still unsure why this did not work initially- I expect a fs doing 
+everything (ie reallocate, balance, whatever) to get the job (remove a 
+device) done.
+
+
+However, device is removed now.
+
+Thanks @all!
+
+Greetings
+
+/CV
