@@ -2,96 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0CC386C4B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 May 2021 23:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77181386C5F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 May 2021 23:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237636AbhEQVeY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 May 2021 17:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237583AbhEQVeY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 May 2021 17:34:24 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE3AC06175F
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 14:33:06 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id p20so9003607ljj.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 14:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QiJZ32oScv7m1zG+HAZWQ025LTPY+uZIZxxPrDNtO68=;
-        b=CX90tBycAt/a9ap0XhQ5a2CbhLjIYmXx/RbWktAmmGtyKUdNqMXIDLXg9tktJ93U/1
-         6e41uY2jKeGuZZYpoIZe5zo87ZhLQu9fL9tImW+3DGJmNzxHnwhQj+EXTY7UQ/5JFfG7
-         1VWuVB9RrkhYPVoJyq+rF8H0HM19LRTTPwqkk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QiJZ32oScv7m1zG+HAZWQ025LTPY+uZIZxxPrDNtO68=;
-        b=QpIgb4oCqwXamGZVno91rVuL9ML5NVVKgOc4fl5J96tDePlw/HOE0J4Spp2VN+P7MT
-         WqBDsCI1fv1708cCPDC999Lm8+HOy/J0B50arAcQWFpZDHU6+61T9XiZlrzQFaPDTude
-         w3hFJGgDlsKgImLZPWR8uvF5szYgBJZIT4ztea8T+lpSTTtgkb1BvEVs/q1JGOt1OWkb
-         rT/n1GsiIjDMLO4LDEiB4akz/ICkwSilKiHThsKG4yxNRmLWJShCV36NmhBy221sDDoi
-         HJcg+7T9D7l2FTSsyJftAYKkjkF9VgjVIXNHid7M6OijpXZSjnYWc8+Yx0InXsmxPUKe
-         vcWA==
-X-Gm-Message-State: AOAM531moDASxFkwLINekMb4W9ixz4Q3tA5i8jTbc5L6KtP89UIlSIwX
-        tYrl7g98nMcVjasAjqht/P+yBEz4gjzmzHbc
-X-Google-Smtp-Source: ABdhPJwW8EZizFnCmrj/SBrxrKzDDC9A+tG3+k+O13Q5nK9xhfTkm0J6nYi/5CC/P4oBne4MvKqM1g==
-X-Received: by 2002:a2e:8e67:: with SMTP id t7mr1090552ljk.264.1621287185169;
-        Mon, 17 May 2021 14:33:05 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id a25sm2067092lfl.38.2021.05.17.14.33.03
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 14:33:03 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id y9so9011322ljn.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 14:33:03 -0700 (PDT)
-X-Received: by 2002:a2e:968e:: with SMTP id q14mr1065866lji.507.1621287183341;
- Mon, 17 May 2021 14:33:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1621276134.git.osandov@fb.com>
-In-Reply-To: <cover.1621276134.git.osandov@fb.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 17 May 2021 14:32:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com>
-Message-ID: <CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com>
-Subject: Re: [PATCH RERESEND v9 0/9] fs: interface for directly
- reading/writing compressed data
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S237756AbhEQViV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 May 2021 17:38:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235836AbhEQViU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 May 2021 17:38:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6829B611CC;
+        Mon, 17 May 2021 21:37:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621287423;
+        bh=qBe5mhR7YpKZMe0+XXsws1WMqvqeobEECQyQH1bwcyg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=iVJK2HPHb0wbLPmnQTj+1NSY2IFBQDz9vAuPiIURqBtCk7F7/KmMVA/jLstPVNV5o
+         mFJ2jRXrpL8h41sf3ZIRFo0FRinIVYK8BOR2qigO4ra4HQ2EcEbem8uKjBaMjX2O9p
+         N4swM/f3IGipToDsGLlnnOJPHApTTLMT5AOxhLl2Ub0s54PJqgNnkDKF7w7umTwpa8
+         lEWE+k0GeON1DktPKU3wIXMEKnOJYIg29yk9hTQhenr7vJFg3awlxJzHfGkNPqMte0
+         +5n7LUXRIqVQyZfSQBG4/4y071EbehH+r2PqLU8Uy0nbzwCa3rb16lA27n9KUMkMHa
+         yhV44Kv3XXUzw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 580B160A35;
+        Mon, 17 May 2021 21:37:03 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.13-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1621258094.git.dsterba@suse.com>
+References: <cover.1621258094.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1621258094.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc2-tag
+X-PR-Tracked-Commit-Id: 54a40fc3a1da21b52dbf19f72fdc27a2ec740760
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 8ac91e6c6033ebc12c5c1e4aa171b81a662bd70f
+Message-Id: <162128742329.17425.3913250442730236677.pr-tracker-bot@kernel.org>
+Date:   Mon, 17 May 2021 21:37:03 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:35 AM Omar Sandoval <osandov@osandov.com> wrote:
->
-> Patches 1-3 add the VFS support, UAPI, and documentation. Patches 4-7
-> are Btrfs prep patches. Patch 8 adds Btrfs encoded read support and
-> patch 9 adds Btrfs encoded write support.
+The pull request you sent on Mon, 17 May 2021 15:47:35 +0200:
 
-I don't love the RWF_ENCODED flag, but if that's the way people think
-this should be done, as a model this looks reasonable to me.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc2-tag
 
-I'm not sure what the deal with the encryption metadata is. I realize
-there is currently only one encryption type ("none") in this series,
-but it's not clear how any other encryption type would actually ever
-be described. It's not like you can pass in the key (well, I guess
-passing in the key would be fine, but passing it back out certainly
-would not be).  A key ID from a keyring?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/8ac91e6c6033ebc12c5c1e4aa171b81a662bd70f
 
-So there's presumably some future plan for it, but it would be good to
-verify that that plan makes sense..
+Thank you!
 
-                            Linus
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
