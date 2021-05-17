@@ -2,246 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7A8386CA5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 May 2021 23:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FFF386CE9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 00:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238670AbhEQVwu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 May 2021 17:52:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57962 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230508AbhEQVwu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 May 2021 17:52:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2D953AC38;
-        Mon, 17 May 2021 21:51:32 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7DCDDDB228; Mon, 17 May 2021 23:48:59 +0200 (CEST)
-Date:   Mon, 17 May 2021 23:48:59 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v4 1/5] btrfs: add compat_flags to btrfs_inode_item
-Message-ID: <20210517214859.GS7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1620240133.git.boris@bur.io>
- <6ed83a27f88e18f295f7d661e9c87e7ec7d33428.1620241221.git.boris@bur.io>
- <20210511191108.GL7604@twin.jikos.cz>
+        id S243353AbhEQW3K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 May 2021 18:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245485AbhEQW3J (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 May 2021 18:29:09 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286D2C06175F
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 15:27:51 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x188so5955840pfd.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 15:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rp32pfq2apMKFD0ftnAk36tGqKQeEKqsfO9eY//kHYc=;
+        b=xns74opwRYa0qABV6xUZeE1bv2ry92IPk5pmjoweWSy+Mv14Ck6iWu2C3LxzOpI4F4
+         P8UzQnEK9lvjXYKntbotLorv7NgYMAa3KWvkbE88jCeRL5Ja/xUnttYkozCfVtKm12U9
+         9f7fMz+WCB29dtnmv59r9fcRaq52W5c41oPScFY1QL9JUlu7VRM/AxJ68k3gWCXhOhkN
+         mr5ElxOnEkwrsIX0hvtKdak0KfEpc3wZg0ZZFCGYiZh7nvIMhHDWWW6QXdWulEQGiFiK
+         L/ePwWBt4gHSlTMzhoJmx0m3Qe/PdAIWSrgB0tI62w9ak23bU4EwuvOItL3rfZTFErda
+         fOmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rp32pfq2apMKFD0ftnAk36tGqKQeEKqsfO9eY//kHYc=;
+        b=GWd/aaj7GvUjDzNJUECAj5Lla/KfAFd8Vk4+fsPIJxn3Raon7pZ60fTFACNgyf0TCj
+         wbvkB8S9hJxw4I71q9AGHt7bQNJMoEltBDtJtm5G1te/RSFXsJ1HmnV3VHOGRo0BLO57
+         6usop0u3HtBc70uubMtnwZL88MXgfIHjVClymJba2UGny8p0r+VQFvLb5f9Kkm6vP+p3
+         L5vbxVYup+QsBsoIo7i2uTACj0yy6jISOaZr3zIoNmAK/nSSVPKF5loEZSKWy/1t33oh
+         /PfrQrWQJWWV6KcECC2w8RxzrxS+ur6BYAU0s4NzQpzDA4JQDtkSB8nYHH6+zuENtm8C
+         P+qQ==
+X-Gm-Message-State: AOAM532r+ZwJH5f9JuamVFIIzr/OFDYRoC6MlkmHQVXS9r9MUR5AABnZ
+        Q04HHiCr5CzPNmDgmOCia0dSzg==
+X-Google-Smtp-Source: ABdhPJwOZsAr2depBcBQRACkwV3/LDqsgKuuVe+GhYd6PJVSRn7rMWArZoOkvFJopxNLE04qjlmIGw==
+X-Received: by 2002:a63:7158:: with SMTP id b24mr1708763pgn.310.1621290470509;
+        Mon, 17 May 2021 15:27:50 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:19a9])
+        by smtp.gmail.com with ESMTPSA id q18sm10915649pfj.131.2021.05.17.15.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 15:27:49 -0700 (PDT)
+Date:   Mon, 17 May 2021 15:27:48 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH RERESEND v9 0/9] fs: interface for directly
+ reading/writing compressed data
+Message-ID: <YKLt5GyznttizBjd@relinquished.localdomain>
+References: <cover.1621276134.git.osandov@fb.com>
+ <CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511191108.GL7604@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 11, 2021 at 09:11:08PM +0200, David Sterba wrote:
-> On Wed, May 05, 2021 at 12:20:39PM -0700, Boris Burkov wrote:
-> > --- a/fs/btrfs/btrfs_inode.h
-> > +++ b/fs/btrfs/btrfs_inode.h
-> > @@ -191,6 +191,7 @@ struct btrfs_inode {
-> >  
-> >  	/* flags field from the on disk inode */
-> >  	u32 flags;
-> > +	u64 compat_flags;
+On Mon, May 17, 2021 at 02:32:47PM -0700, Linus Torvalds wrote:
+> On Mon, May 17, 2021 at 11:35 AM Omar Sandoval <osandov@osandov.com> wrote:
+> >
+> > Patches 1-3 add the VFS support, UAPI, and documentation. Patches 4-7
+> > are Btrfs prep patches. Patch 8 adds Btrfs encoded read support and
+> > patch 9 adds Btrfs encoded write support.
 > 
-> This got me curious, u32 flags is for the in-memory inode, but the
-> on-disk inode_item::flags is u64
+> I don't love the RWF_ENCODED flag, but if that's the way people think
+> this should be done, as a model this looks reasonable to me.
 > 
-> >  BTRFS_SETGET_FUNCS(inode_flags, struct btrfs_inode_item, flags, 64);
->                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> I'm not sure what the deal with the encryption metadata is. I realize
+> there is currently only one encryption type ("none") in this series,
+> but it's not clear how any other encryption type would actually ever
+> be described. It's not like you can pass in the key (well, I guess
+> passing in the key would be fine, but passing it back out certainly
+> would not be).  A key ID from a keyring?
 > 
-> > +BTRFS_SETGET_FUNCS(inode_compat_flags, struct btrfs_inode_item, compat_flags, 64);
-> 
-> >  	btrfs_set_stack_inode_flags(inode_item, BTRFS_I(inode)->flags);
-> 
-> Which means we currently use only 32 bits and half of the on-disk
-> inode_item::flags is always zero. So the idea is to repurpose this for
-> the incompat bits (say upper 16 bits). With a minimal patch to tree
-> checker we can make old kernels accept a verity-enabled kernel.
-> 
-> It could be tricky, but for backport only additional bitmask would be
-> added to BTRFS_INODE_FLAG_MASK to ignore bits 48-63.
-> 
-> For proper support the inode_item::flags can be simply used as one space
-> where the split would be just logical, and IMO manageable.
+> So there's presumably some future plan for it, but it would be good to
+> verify that that plan makes sense..
 
-To demonstrate the idea, here's a compile-tested patch, based on
-current misc-next but the verity bits are easy to match to your
-patchset:
+What I'm imagining for fscrypt is:
 
-- btrfs_inode::ro_flags - in-memory representation of the ro flags
-- tree-checker verifies the flags separately
-  - errors if there are unkonwn flags (u32)
-  - errors if ro_flags don't match fs ro_compat bits
-- inode_item::flags gets synced with btrfs_inode::flags + ro_flags
-- the split of inode_item::flags is 32/32 for simplicity as it matches
-  the current type, we can make it 48/16 if that would work (maybe not)
+1. Add ENCODED_IOV_ENCRYPTION_* types for fscrypt. Consumers at least
+   need to be able to distinguish between encryption policy versions,
+   DIRECT_KEY policies, and IV_INO_LBLK_{64,32} policies, and maybe
+   other details.
+2. Use RWF_ENCODED only for the data itself.
+3. Add new fscrypt ioctls to get and set the encryption key.
 
----
+The interesting part is (3). If I'm reading the fscrypt documentation
+correctly, in the default mode, each file is encrypted with a per-file
+key that is a function of the master key for the directory tree and a
+per-file nonce.
 
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -189,8 +189,10 @@ struct btrfs_inode {
- 	 */
- 	u64 csum_bytes;
- 
--	/* flags field from the on disk inode */
-+	/* Flags field from the on disk inode, lower half of inode_item::flags  */
- 	u32 flags;
-+	/* Read-only compatibility flags, upper half of inode_item::flags */
-+	u32 ro_flags;
- 
- 	/*
- 	 * Counters to keep track of the number of extent item's we may use due
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -281,7 +281,8 @@ struct btrfs_super_block {
- 
- #define BTRFS_FEATURE_COMPAT_RO_SUPP			\
- 	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
--	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID)
-+	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
-+	 BTRFS_FEATURE_COMPAT_RO_VERITY)
- 
- #define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
- #define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
-@@ -1490,6 +1491,8 @@ do {                                                                   \
- 
- #define BTRFS_INODE_ROOT_ITEM_INIT	(1 << 31)
- 
-+#define BTRFS_INODE_RO_VERITY		(1ULL << 32)
-+
- #define BTRFS_INODE_FLAG_MASK						\
- 	(BTRFS_INODE_NODATASUM |					\
- 	 BTRFS_INODE_NODATACOW |					\
-@@ -1505,6 +1508,9 @@ do {                                                                   \
- 	 BTRFS_INODE_COMPRESS |						\
- 	 BTRFS_INODE_ROOT_ITEM_INIT)
- 
-+#define BTRFS_INODE_FLAG_INCOMPAT_MASK			(0x00000000FFFFFFFF)
-+#define BTRFS_INODE_FLAG_RO_COMPAT_MASK			(0xFFFFFFFF00000000)
-+
- struct btrfs_map_token {
- 	struct extent_buffer *eb;
- 	char *kaddr;
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1717,7 +1717,8 @@ static void fill_stack_inode_item(struct btrfs_trans_handle *trans,
- 				       inode_peek_iversion(inode));
- 	btrfs_set_stack_inode_transid(inode_item, trans->transid);
- 	btrfs_set_stack_inode_rdev(inode_item, inode->i_rdev);
--	btrfs_set_stack_inode_flags(inode_item, BTRFS_I(inode)->flags);
-+	btrfs_set_stack_inode_flags(inode_item, BTRFS_I(inode)->flags |
-+			((u64)BTRFS_I(inode)->ro_flags << 32));
- 	btrfs_set_stack_inode_block_group(inode_item, 0);
- 
- 	btrfs_set_stack_timespec_sec(&inode_item->atime,
-@@ -1775,7 +1776,8 @@ int btrfs_fill_inode(struct inode *inode, u32 *rdev)
- 				   btrfs_stack_inode_sequence(inode_item));
- 	inode->i_rdev = 0;
- 	*rdev = btrfs_stack_inode_rdev(inode_item);
--	BTRFS_I(inode)->flags = btrfs_stack_inode_flags(inode_item);
-+	BTRFS_I(inode)->flags = (u32)btrfs_stack_inode_flags(inode_item);
-+	BTRFS_I(inode)->ro_flags = (u32)(btrfs_stack_inode_flags(inode_item) >> 32);
- 
- 	inode->i_atime.tv_sec = btrfs_stack_timespec_sec(&inode_item->atime);
- 	inode->i_atime.tv_nsec = btrfs_stack_timespec_nsec(&inode_item->atime);
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3630,7 +3630,8 @@ static int btrfs_read_locked_inode(struct inode *inode,
- 	rdev = btrfs_inode_rdev(leaf, inode_item);
- 
- 	BTRFS_I(inode)->index_cnt = (u64)-1;
--	BTRFS_I(inode)->flags = btrfs_inode_flags(leaf, inode_item);
-+	BTRFS_I(inode)->flags = (u32)btrfs_inode_flags(leaf, inode_item);
-+	BTRFS_I(inode)->ro_flags = (u32)(btrfs_inode_flags(leaf, inode_item) >> 32);
- 
- cache_index:
- 	/*
-@@ -3796,7 +3797,8 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
- 	btrfs_set_token_inode_sequence(&token, item, inode_peek_iversion(inode));
- 	btrfs_set_token_inode_transid(&token, item, trans->transid);
- 	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
--	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags);
-+	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags |
-+			((u64)BTRFS_I(inode)->ro_flags << 32));
- 	btrfs_set_token_inode_block_group(&token, item, 0);
- }
- 
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -378,7 +378,7 @@ static int check_csum_item(struct extent_buffer *leaf, struct btrfs_key *key,
- 
- /* Inode item error output has the same format as dir_item_err() */
- #define inode_item_err(eb, slot, fmt, ...)			\
--	dir_item_err(eb, slot, fmt, __VA_ARGS__)
-+	dir_item_err(eb, slot, fmt, ## __VA_ARGS__)
- 
- static int check_inode_key(struct extent_buffer *leaf, struct btrfs_key *key,
- 			   int slot)
-@@ -999,6 +999,7 @@ static int check_inode_item(struct extent_buffer *leaf,
- 	u32 valid_mask = (S_IFMT | S_ISUID | S_ISGID | S_ISVTX | 0777);
- 	u32 mode;
- 	int ret;
-+	u64 inode_flags;
- 
- 	ret = check_inode_key(leaf, key, slot);
- 	if (unlikely(ret < 0))
-@@ -1054,13 +1055,22 @@ static int check_inode_item(struct extent_buffer *leaf,
- 			btrfs_inode_nlink(leaf, iitem));
- 		return -EUCLEAN;
- 	}
--	if (unlikely(btrfs_inode_flags(leaf, iitem) & ~BTRFS_INODE_FLAG_MASK)) {
-+	inode_flags = btrfs_inode_flags(leaf, iitem);
-+	if (unlikely(inode_flags & ~BTRFS_INODE_FLAG_INCOMPAT_MASK)) {
- 		inode_item_err(leaf, slot,
--			       "unknown flags detected: 0x%llx",
--			       btrfs_inode_flags(leaf, iitem) &
--			       ~BTRFS_INODE_FLAG_MASK);
-+			       "unknown incompat flags detected: 0x%llx",
-+			       inode_flags & ~BTRFS_INODE_FLAG_INCOMPAT_MASK);
- 		return -EUCLEAN;
- 	}
-+	if (unlikely(inode_flags & ~BTRFS_INODE_FLAG_RO_COMPAT_MASK)) {
-+		if (unlikely(inode_flags & BTRFS_INODE_RO_VERITY)) {
-+			if (btrfs_fs_compat_ro(fs_info, VERITY)) {
-+				inode_item_err(leaf, slot,
-+			"inode ro compat VERITY flag set but not on filesystem");
-+				return -EUCLEAN;
-+			}
-+		}
-+	}
- 	return 0;
- }
- 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3941,7 +3941,8 @@ static void fill_inode_item(struct btrfs_trans_handle *trans,
- 	btrfs_set_token_inode_sequence(&token, item, inode_peek_iversion(inode));
- 	btrfs_set_token_inode_transid(&token, item, trans->transid);
- 	btrfs_set_token_inode_rdev(&token, item, inode->i_rdev);
--	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags);
-+	btrfs_set_token_inode_flags(&token, item, BTRFS_I(inode)->flags |
-+			((u64)BTRFS_I(inode)->ro_flags << 32));
- 	btrfs_set_token_inode_block_group(&token, item, 0);
- }
- 
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -288,6 +288,7 @@ struct btrfs_ioctl_fs_info_args {
-  * first mount when booting older kernel versions.
-  */
- #define BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID	(1ULL << 1)
-+#define BTRFS_FEATURE_COMPAT_RO_VERITY			(1ULL << 2)
- 
- #define BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF	(1ULL << 0)
- #define BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL	(1ULL << 1)
--- 
-2.29.2
+Userspace manages the master key, we have a FS_IOC_GET_ENCRYPTION_NONCE
+ioctl, and the key derivation function is documented. So, userspace
+already has all of the pieces it needs to get the encryption key, and
+all of the information it needs to decrypt the data it gets from
+RWF_ENCODED if it so desires.
 
+On the set/write side, the user can set the same master key and policy
+with FS_IOC_SET_ENCRYPTION_POLICY, and we'd need something like an
+FS_IOC_SET_ENCRYPTION_NONCE ioctl (possibly with a requirement that it
+be set when the file is empty). I think that's it.
+
+The details will vary for the other fscrypt policies, but that's the
+gist of it. I added the fscrypt maintainers to correct me if I missed
+something.
+
+Thanks,
+Omar
