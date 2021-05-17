@@ -2,122 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6099A3828DC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 May 2021 11:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFF8382998
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 May 2021 12:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhEQJ4k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 May 2021 05:56:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57714 "EHLO mx2.suse.de"
+        id S236148AbhEQKP0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 May 2021 06:15:26 -0400
+Received: from mout.gmx.net ([212.227.15.15]:37943 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhEQJ4g (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 May 2021 05:56:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621245319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=36P8Td/oYD9l6NsxV+1GwLkTTSY5RuG1XIEtmclYXXc=;
-        b=LPcUdJsOo3AjzmS1xIWaLfK3jw+Ip5pHKZMRgpZmCyactDMJWmCmSLB80P81Sc1CrRNBNs
-        4AOZ8CP5IUmMaHdumHWsxkhVJKFXcW+6OkAUIcWo2eWuwu6q1y4LcvZaveWs+6/RkO325Q
-        yMQ/X+KJnZyJWbBuT3dtC89DpHEBX4w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C26A8AF70
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 09:55:19 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: mkfs: follow sectorsize for mixed mode
-Date:   Mon, 17 May 2021 17:55:16 +0800
-Message-Id: <20210517095516.129287-1-wqu@suse.com>
-X-Mailer: git-send-email 2.31.1
+        id S229474AbhEQKPZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 May 2021 06:15:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621246437;
+        bh=v94oBgU27MM+bPMwIq+5aXQmdE9Vdj1PZQAxw8h2u24=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=c/Pc4PFw4OplGruKpXYpfyLHMAmlItPh6lURIPdrPBMk1ZTJKSBBgQjTiaFegYQKr
+         RyMcABxzYgRnlUoooONbjkCk8YNzuzggtqXnClXSt1uBmHe4zhHrNcj8O1wNhtuFjz
+         nrEfxIpEQEj3i/z5lU/0WB7p9PaDFL7sVuSsi9Ow=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7zBR-1lMQlj0u8Z-014zCc; Mon, 17
+ May 2021 12:13:56 +0200
+To:     Yang Li <yang.lee@linux.alibaba.com>, clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com, nathan@kernel.org,
+        ndesaulniers@google.com, linux-btrfs@vger.kernel.org,
+        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <1621244810-38832-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v2] btrfs: Remove redundant initialization of 'to_add'
+Message-ID: <5938551d-a083-a62c-4ab3-bc29fc62b1df@gmx.com>
+Date:   Mon, 17 May 2021 18:13:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1621244810-38832-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0U/g3hMrG3o9fGlDnHRwXK68W/K/FH6/b8eQv0VDDz9dIoTuExD
+ xiqwfwDQjRUSbpsNx+V1gb4ixIk+Gbu8vRb48DLnUwvhlCqjKIizRtaHsZpe0hoW7KvFJyw
+ NKlCxDKqndQ3Bdx5RHdM/anE7VyaVFQpGiMtm5BBwqE4eSZaOTiIynYlx3a9sS6WhDItKGV
+ I79EuEnKM4vzA+F17vjEw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EPaV5kE0SOE=:ncrqL6P/aa5VszjRuabaVJ
+ v0NDRFGqT4o6+C9MIYC7tdXkezCnrPaKX9AQ5GKXGf7MSx2vRxowMoZ8aM4nUNGd0OyrhPPs5
+ lN/e26mL0DtMbaMvr2SxteBC889RsSy+vRoo4u9SVFtuAXC35t2CpZFxWGhM6Qq73vcbylXSF
+ 8Vnxi/goLea5bds1eDCTsqdcrMWFA4NiaxzGh+YaNrpWUJYThjnDx9+uT6ejO95IkU91ftHfc
+ V62Q59Qq2sLj4xjbw4Edqb86Vib3OeXGxvqWL8mC8wjooh0YGfPYEG6wNlzD1b4d5wrLqHZy5
+ Vrm20vkgElTZ5ztgOeNoatMxMKENNFoBXM6nt+RuVm/f9qexL90qh2iQE1I6E8pWYj5cWNpwo
+ +aphho6SZ0pjVjsLdgZhRZwvhA6pGIr/1Gpx9JaQ8N/yi6rpbZ8wAlWTYhtO5ZVIfWAlo+BFs
+ u2J4iStZPztdOJUnXSDzwxoHRiB4QwnQkqOX4UQkKPdLgzYeoFiMeUsugl+WMfjTibxlhxzwz
+ CDSCRddDCuhXIrUI0y0aJiLEd4kP8ri3fItabECW9Nit+bT/aJm+ggHz/ixUNEEuQjRjzbiVV
+ YfSF7Zpo22yPT56/e0hJGWAVEv1EMII5IDlMWFRVNKLfYAXh41yLsotWOMi0gnBmxEKu+OQre
+ dAk4yQtxMe5T0PCgT83ZbSCu0OCsuKdQvBRGSUNFM48oz46P0N74AvYeMtK7GrA8/bpq7rQYE
+ OJLRtVM0h/TVNNGo+FIXSKsV9+FPJt622p/LswSXuEJ/4joFh3xM14Vg1xqgmAq0CHSdDFBdc
+ f8rfEcEvIEnDxG7R/0xghEY1WsjKQVBw2T4yKTHWc/SOvwF0dHOg593EVnzim6ninde/Zvc9B
+ grKyMlFCIx3qQt/f9ZZvrvfKmBRN/0H80yLXfElckzsFk+FDzF+b6wbMSKCwDtCzsflfqB6sl
+ t4kFHkiu+vUxMdRw+musVAi1DQpXFYKabqX/HKu2gyJF9IYNIqt0n1GzA2dnaEiOCm+321OQz
+ 3aE1ckDLPWBDX1DlrTW+6dOrWKIpkbZzP2Ca9Mo2wnVJ6pTlW0PL488zRoJJOnonsU+wks9J1
+ 92VvhgivSrjCLLESNVBSdDJnk89YmTAKQlVhOSTo4C93nrNHDUkshMrxjeUD1wX3PfeSeorV8
+ O2JTWFXuUEXjiXRL3XAwY0PBfPvN9zufUtQGpWUDUDmfJhTLDNwSCfpTWWAqlumWwgMaO5LQ2
+ ogOYv3hOMnM8x6XXv
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When running fstests with 4K sectorsize and 64K page size (aka subpage
-support), the following tests failed:
 
-  $ sudo ./check generic/416 generic/619
-  FSTYP         -- btrfs
-  PLATFORM      -- Linux/aarch64 rockpi4 5.12.0-rc8-custom+ #9 SMP Tue Apr 27 12:49:52 CST 2021
-  MKFS_OPTIONS  -- -s 4k /dev/mapper/arm_nvme-scratch1
-  MOUNT_OPTIONS -- /dev/mapper/arm_nvme-scratch1 /mnt/scratch
 
-  generic/416     [failed, exit status 1]- output mismatch (see ~/xfstests-dev/results//generic/416.out.bad)
-     QA output created by 416
-    -wrote 16777216/16777216 bytes at offset 0
-    -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-    +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/arm_nvme-scratch1, missing codepage or helper program, or other error.
-    +mount failed
-    +(see ~/xfstests-dev/results//generic/416.full for details)
-    ...
-    (Run 'diff -u ~/xfstests-dev/tests/generic/416.out ~/xfstests-dev/results//generic/416.out.bad'  to see the entire diff)
-  generic/619     [failed, exit status 1]- output mismatch (see ~/xfstests-dev/results//generic/619.out.bad)
-     QA output created by 619
-    -Silence is golden
-    +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/arm_nvme-scratch1, missing codepage or helper program, or other error.
-    +mount failed
-    +(see ~/xfstests-dev/results//generic/619.full for details)
-    ...
-    (Run 'diff -u ~/xfstests-dev/tests/generic/619.out ~/xfstests-dev/results//generic/619.out.bad'  to see the entire diff)
-  Ran: generic/416 generic/619
-  Failures: generic/416 generic/619
-  Failed 2 of 2 tests
+On 2021/5/17 =E4=B8=8B=E5=8D=885:46, Yang Li wrote:
+> Variable 'to_add' is being initialized however this value is never
+> read as 'to_add' is assigned a new value in if statement. Remove the
+> redundant assignment. At the same time, move its declaration into the
+> if statement, because the variable is not used elsewhere.
+>
+> Clean up clang warning:
+>
+> fs/btrfs/extent-tree.c:2774:8: warning: Value stored to 'to_add' during
+> its initialization is never read [clang-analyzer-deadcode.DeadStores]
 
-[CAUSE]
-Those two tests call _scratch_mkfs_sized to create a small fs, all of them
-are smaller than the 256M.
+Personally speaking, compiler should be able to optimize out such
+problem, nothing really worthy bothering.
 
-Since the fs is small, fstests choose to pass -M to make a mixed btrfs.
-(Let's just ignore whether we should pass -M here).
+Especially considering these "fixes" just randomly pop up, distracting
+the reviewers' time.
 
-Then on 64K page size system, "mkfs.btrfs -s 4K -M -b 128M $dev" will fail
-with the following error message:
+If you really believe these "fixes" are really worthy (not to just
+fulfill the stupid KPI), please at least pack them into a larger
+patchset (but keep the separate patches), not just sending one when you
+find one.
 
-  btrfs-progs v5.11
-  See http://btrfs.wiki.kernel.org for more information.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 
-  ERROR: illegal nodesize 65536 (not equal to 4096 for mixed block group)
+I know some maintainers are already very upset about the bot, although
+in your case it reduces a lifespan of a variable, thus it's marginally
+acceptable, but under other cases, it doesn't really help much.
 
-This is caused by the nodesize selection, which always try to choose the
-larger value between pagesize and sectorsize.
+If such fixes come from indie developers, I'm pretty fine or even happy
+to help them to start more contribution.
 
-This hardcoded PAGESIZE usage in mkfs.btrfs makes us to choose 64K
-nodesize even we specified to use 4K sectorsize.
+But a sponsored bot just repeating clang static analyzer
 
-[FIX]
-Just use sectorsize as nodesize when -M is specified.
+Trust me, no maintainer will be happy with that, and you're destroying
+the reputation of your company (if the reputation hasn't been destoryed
+already).
 
-With this fix, above two tests now pass for btrfs subpage case.
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>
+> Change in v2:
+> --According to Lukas's suggestion, combine the declaration and assignmen=
+t of
+>    variable 'to_add' into one line, just as "u64 to_add =3D min(len, ...=
+);"
+>    https://lore.kernel.org/patchwork/patch/1428697/
+>
+>   fs/btrfs/extent-tree.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index f1d15b6..13ac978 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2774,11 +2774,9 @@ static int unpin_extent_range(struct btrfs_fs_inf=
+o *fs_info,
+>   		spin_unlock(&cache->lock);
+>   		if (!readonly && return_free_space &&
+>   		    global_rsv->space_info =3D=3D space_info) {
+> -			u64 to_add =3D len;
+> -
+>   			spin_lock(&global_rsv->lock);
+>   			if (!global_rsv->full) {
+> -				to_add =3D min(len, global_rsv->size -
+> +				u64 to_add =3D min(len, global_rsv->size -
+>   					     global_rsv->reserved);
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- mkfs/main.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Have you ever wondered why "global_rsv" is not indented by tab only, but
+with extra spaces?
 
-diff --git a/mkfs/main.c b/mkfs/main.c
-index c910369cbf94..81241054f6c8 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -1177,8 +1177,6 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			data_profile = tmp;
- 		}
- 	} else {
--		u32 best_nodesize = max_t(u32, sysconf(_SC_PAGESIZE), sectorsize);
--
- 		if (metadata_profile_opt || data_profile_opt) {
- 			if (metadata_profile != data_profile) {
- 				error(
-@@ -1188,7 +1186,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		}
- 
- 		if (!nodesize_forced)
--			nodesize = best_nodesize;
-+			nodesize = sectorsize;
- 	}
- 
- 	/*
--- 
-2.31.1
+It's supposed to be aligned with "len".
 
+Thanks,
+Qu
+>   				global_rsv->reserved +=3D to_add;
+>   				btrfs_space_info_update_bytes_may_use(fs_info,
+>
