@@ -2,191 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4908A383A10
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 May 2021 18:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B70383C5D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 May 2021 20:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241108AbhEQQhD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 May 2021 12:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        id S237255AbhEQShC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 May 2021 14:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239110AbhEQQg4 (ORCPT
+        with ESMTP id S237246AbhEQShB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 May 2021 12:36:56 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B831C080AA6
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 08:34:43 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id f29so6198591qka.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 08:34:43 -0700 (PDT)
+        Mon, 17 May 2021 14:37:01 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCBDC061756
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 11:35:44 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id g18so3908751pfr.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 May 2021 11:35:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7Zw++QkId+e6D+1uVpLw/2CXw+hq9cM4r3xuCv5kNqs=;
-        b=lO0kE/LATtan2o6+zU5GIhHSXtVww6EkjPIbvkpdi7uu06Lqq4IM9As+RjMedKbWce
-         W17FqfRp3HsbXa9rx+12WrmNSJU6f4knfKQvtwFHzMQuQ0NLT68CWwBKdOpMj7u44EP6
-         ziti2NoYYzNZ33QdABgD1hlIlrY7NxRNsj8bk+EAyNUJvAlbWYOKo6dCdtE8A1NVfajR
-         sOm+OwYo32yi+NAFVVnC10WqmpeiTW/VmSaaUVVuYsInjE9WA/xzBemG0TPXlfMQpdcs
-         s4xSvOEV6E9zWyjCrksBgAq3xvCwkwZeq+pOcjJGe2nHmn0vL0SjEpnTRjluMszDOFUD
-         btqQ==
+        bh=kb+bSgN9yADabRHy63xxJUT7vh6UiCpcnBuE5iUxb9U=;
+        b=A4+ttFLlksWJIAhRvNzfBmQreUOPvW4WKqg/aCHCHRD/zTX4gNX9pu1DaCFvsKmwoM
+         m4wzD8y1zi3O50Gvv8EafBRBHZf3lyyYfci0AJOqd7/FgDGc4FIE67g5V2oXmYKEYmND
+         d4rNLJy1Al/I/BcYXZ82sIbvZV0FBUczjxDUhQIyQRWoOwaUhqXky9qbrf+TDquuWtHP
+         tXaZy3S1o6ENteuq8RBr9hwN3XJplq37knNH/duxM4mFI/tPWqsmDJspMfCYj/YW2sfG
+         QI3MQT+eZuD/6S6Kw4WqqsavDQFcJ2JpFmMsv/UMElxOADdszoNQbH5Ih2vDTceiKkgI
+         3rZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7Zw++QkId+e6D+1uVpLw/2CXw+hq9cM4r3xuCv5kNqs=;
-        b=N4KzP3P2BzWETCV7SaItukwN3HRO5H08dzTXVf19R7b2EqTkxufzz+1w/SBELS4oUy
-         m7eH0E8epPowy8mSDZ/CcCbfJUtMqPPki8tw82RL8o3wuwAmX8O+F9fi8wWe/prHaBti
-         ILdOdbzhfA4ssxcbn2YwYFkP2KaxKIlMO95pycw/x/+i/pr/vPr8YjuwVIqBUNf3/GeN
-         OUdBbo2o3/tPOQKllUwjGpSMipHSA3L3P9iWMFKjtgOQTBv7OBAFBwo4PwzC0MScSp8J
-         xiItgUsjNyNvox8DtLFGA1hp1LxbKogGrZrTuUrZHBWrWwmzLUix7usGpCUZOQrGeA11
-         QKRw==
-X-Gm-Message-State: AOAM531858JQ+f144PkbIKmwe6Y9jFhmE9sCbftbCiSgEZzzaE6iQGSz
-        bXECQcNnYyL+bWsFk6mnYjkGjOIjoAY2cw==
-X-Google-Smtp-Source: ABdhPJzyaf6SQn1B7nn2oDfongS2873WAFHR5zkOybDmV8uF9wZAWxgHZmqMktNr3t61AQ5SMVC72g==
-X-Received: by 2002:a37:6249:: with SMTP id w70mr426285qkb.27.1621265682258;
-        Mon, 17 May 2021 08:34:42 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j9sm11189356qtl.15.2021.05.17.08.34.41
+        bh=kb+bSgN9yADabRHy63xxJUT7vh6UiCpcnBuE5iUxb9U=;
+        b=HyviVyLV0kVCreLIyi3fpVq+gXBOloeSJABmhMCjFP39XBFk2/fvJ9vd4kJsKvdz/1
+         2MliaxepMxfvWvOvVV2vsKLtqErMwAzmI5Fh4ot+ZJsruAEx47SMtJRCeLmaNwGWoFtz
+         cGUyDxJ/7zjBT83ZbaL4oRwujGcqaOfw26tX7hrjAcqMCNPcny2/vhOJb3nqYmDqp7Tx
+         M13tUNpGbf+anqKryy/pN6kBlJC79ZIpeiwfJq+yeQqy1jLIoEAHgpXwPZ5UNUXwL3HQ
+         pw+ZzH0Q0v9+n3qN9HIKRjWVKbbZB0Hy62ytEClppf/6wG88HGghcVzibiefdUFWkBaP
+         rOpQ==
+X-Gm-Message-State: AOAM533tnqgaglZ9MEw3fNSfudmV3aHDFDTStzC03WXrLv8ojXYWJi+n
+        V2CPqq/ByFrhSLcFjJHTy/3HBl+l5EwMmA==
+X-Google-Smtp-Source: ABdhPJz7C30B/YfGxIxPqigr5aagx53G9Qf93HwHNPZcdzRmG3OlezZVduDX0QNQ2ktJhjZkoo7TWg==
+X-Received: by 2002:a63:610b:: with SMTP id v11mr853482pgb.291.1621276543611;
+        Mon, 17 May 2021 11:35:43 -0700 (PDT)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:19a9])
+        by smtp.gmail.com with ESMTPSA id v15sm5498763pfm.187.2021.05.17.11.35.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 08:34:41 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: always abort the transaction if we abort a trans handle
-Date:   Mon, 17 May 2021 11:34:40 -0400
-Message-Id: <e106a478e2d238b7315a19f62fabeae8e9bbb51f.1621265669.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+        Mon, 17 May 2021 11:35:42 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH RERESEND v9 0/9] fs: interface for directly reading/writing compressed data
+Date:   Mon, 17 May 2021 11:35:18 -0700
+Message-Id: <cover.1621276134.git.osandov@fb.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While stress testing our error handling I noticed that sometimes we
-would still commit the transaction even though we had aborted the
-transaction.
+From: Omar Sandoval <osandov@fb.com>
 
-Currently we track if a trans handle has dirtied any metadata, and if it
-hasn't we mark the FS as having an error (so no new transactions can be
-started), but we will allow the current transaction to complete as we do
-not mark the transaction itself as having been aborted.
+This series adds an API for reading compressed data on a filesystem
+without decompressing it as well as support for writing compressed data
+directly to the filesystem. I have test cases (including fsstress
+support) and example programs which I'll send up once the dust settles
+[1].
 
-This sounds good in theory, but we were not properly tracking IO errors
-in btrfs_finish_ordered_io, and thus committing the transaction with
-bogus free space data.  This isn't necessarily a problem per-se with the
-free space cache, as the other guards in place would have kept us from
-accepting the free space cache as valid, but hi-lights a real world case
-where we had a bug and could have corrupted the filesystem because of
-it.
+The main use-case is Btrfs send/receive: currently, when sending data
+from one compressed filesystem to another, the sending side decompresses
+the data and the receiving side recompresses it before writing it out.
+This is wasteful and can be avoided if we can just send and write
+compressed extents. The patches implementing the send/receive support
+were sent with the last submission of this series [2].
 
-This "skip abort on empty trans handle" is nice in theory, but assumes
-we have perfect error handling everywhere, which we clearly do not.
-Also we do not allow further transactions to be started, so all this
-does is save the last transaction that was happening, which doesn't
-necessarily gain us anything other than the potential for real
-corruption.
+Patches 1-3 add the VFS support, UAPI, and documentation. Patches 4-7
+are Btrfs prep patches. Patch 8 adds Btrfs encoded read support and
+patch 9 adds Btrfs encoded write support.
 
-Remove this particular bit of code, if we decide we need to abort the
-transaction then abort the current one and keep us from doing real harm
-to the file system, regardless of whether this specific trans handle
-dirtied anything or not.
+These patches are based on Dave Sterba's Btrfs misc-next branch [3],
+which is in turn currently based on v5.13-rc2.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ctree.c       |  5 +----
- fs/btrfs/extent-tree.c |  1 -
- fs/btrfs/super.c       | 11 -----------
- fs/btrfs/transaction.c |  8 --------
- fs/btrfs/transaction.h |  1 -
- 5 files changed, 1 insertion(+), 25 deletions(-)
+This is a _resend of a resend_ of v9 [4], rebased on the latest
+kdave/misc-next branch.
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index a484fb72a01f..4bc3ca2cbd7d 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -596,7 +596,6 @@ noinline int btrfs_cow_block(struct btrfs_trans_handle *trans,
- 		       trans->transid, fs_info->generation);
- 
- 	if (!should_cow_block(trans, root, buf)) {
--		trans->dirty = true;
- 		*cow_ret = buf;
- 		return 0;
- 	}
-@@ -1788,10 +1787,8 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 			 * then we don't want to set the path blocking,
- 			 * so we test it here
- 			 */
--			if (!should_cow_block(trans, root, b)) {
--				trans->dirty = true;
-+			if (!should_cow_block(trans, root, b))
- 				goto cow_done;
--			}
- 
- 			/*
- 			 * must have write locks on this node and the
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index f1d15b68994a..b84bbc24ff57 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -4784,7 +4784,6 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		set_extent_dirty(&trans->transaction->dirty_pages, buf->start,
- 			 buf->start + buf->len - 1, GFP_NOFS);
- 	}
--	trans->dirty = true;
- 	/* this returns a buffer locked for blocking */
- 	return buf;
- }
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 4a396c1147f1..bc613218c8c5 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -299,17 +299,6 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 
- 	WRITE_ONCE(trans->aborted, errno);
--	/* Nothing used. The other threads that have joined this
--	 * transaction may be able to continue. */
--	if (!trans->dirty && list_empty(&trans->new_bgs)) {
--		const char *errstr;
--
--		errstr = btrfs_decode_error(errno);
--		btrfs_warn(fs_info,
--		           "%s:%d: Aborting unused transaction(%s).",
--		           function, line, errstr);
--		return;
--	}
- 	WRITE_ONCE(trans->transaction->aborted, errno);
- 	/* Wake up anybody who may be waiting on this transaction */
- 	wake_up(&fs_info->transaction_wait);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index f75de9f6c0ad..e0a82aa7da89 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -2074,14 +2074,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 
- 	ASSERT(refcount_read(&trans->use_count) == 1);
- 
--	/*
--	 * Some places just start a transaction to commit it.  We need to make
--	 * sure that if this commit fails that the abort code actually marks the
--	 * transaction as failed, so set trans->dirty to make the abort code do
--	 * the right thing.
--	 */
--	trans->dirty = true;
--
- 	/* Stop the commit early if ->aborted is set */
- 	if (TRANS_ABORTED(cur_trans)) {
- 		ret = cur_trans->aborted;
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 364cfbb4c5c5..c49e2266b28b 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -143,7 +143,6 @@ struct btrfs_trans_handle {
- 	bool allocating_chunk;
- 	bool can_flush_pending_bgs;
- 	bool reloc_reserved;
--	bool dirty;
- 	bool in_fsync;
- 	struct btrfs_root *root;
- 	struct btrfs_fs_info *fs_info;
+1: https://github.com/osandov/xfstests/tree/rwf-encoded
+2: https://lore.kernel.org/linux-btrfs/cover.1615922753.git.osandov@fb.com/
+3: https://github.com/kdave/btrfs-devel/tree/misc-next
+4: https://lore.kernel.org/linux-fsdevel/cover.1619463858.git.osandov@fb.com/
+
+Omar Sandoval (9):
+  iov_iter: add copy_struct_from_iter()
+  fs: add O_ALLOW_ENCODED open flag
+  fs: add RWF_ENCODED for reading/writing compressed data
+  btrfs: don't advance offset for compressed bios in
+    btrfs_csum_one_bio()
+  btrfs: add ram_bytes and offset to btrfs_ordered_extent
+  btrfs: support different disk extent size for delalloc
+  btrfs: optionally extend i_size in cow_file_range_inline()
+  btrfs: implement RWF_ENCODED reads
+  btrfs: implement RWF_ENCODED writes
+
+ Documentation/filesystems/encoded_io.rst | 240 ++++++
+ Documentation/filesystems/index.rst      |   1 +
+ arch/alpha/include/uapi/asm/fcntl.h      |   1 +
+ arch/parisc/include/uapi/asm/fcntl.h     |   1 +
+ arch/sparc/include/uapi/asm/fcntl.h      |   1 +
+ fs/btrfs/compression.c                   |  12 +-
+ fs/btrfs/compression.h                   |   6 +-
+ fs/btrfs/ctree.h                         |   9 +-
+ fs/btrfs/delalloc-space.c                |  18 +-
+ fs/btrfs/file-item.c                     |  35 +-
+ fs/btrfs/file.c                          |  46 +-
+ fs/btrfs/inode.c                         | 929 +++++++++++++++++++++--
+ fs/btrfs/ordered-data.c                  | 124 +--
+ fs/btrfs/ordered-data.h                  |  25 +-
+ fs/btrfs/relocation.c                    |   4 +-
+ fs/fcntl.c                               |  10 +-
+ fs/namei.c                               |   4 +
+ fs/read_write.c                          | 168 +++-
+ include/linux/encoded_io.h               |  17 +
+ include/linux/fcntl.h                    |   2 +-
+ include/linux/fs.h                       |  13 +
+ include/linux/uio.h                      |   1 +
+ include/uapi/asm-generic/fcntl.h         |   4 +
+ include/uapi/linux/encoded_io.h          |  30 +
+ include/uapi/linux/fs.h                  |   5 +-
+ lib/iov_iter.c                           |  91 +++
+ 26 files changed, 1563 insertions(+), 234 deletions(-)
+ create mode 100644 Documentation/filesystems/encoded_io.rst
+ create mode 100644 include/linux/encoded_io.h
+ create mode 100644 include/uapi/linux/encoded_io.h
+
 -- 
-2.26.3
+2.31.1
 
