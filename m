@@ -2,86 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F0D387349
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 09:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D9F38742C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 10:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347225AbhERHZ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 May 2021 03:25:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47974 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347234AbhERHZs (ORCPT
+        id S1347538AbhERIj3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 May 2021 04:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234924AbhERIj2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 May 2021 03:25:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621322670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+q3ue0u3mbf3SfQ1ffYfx+/ezLG+XqLYumob4lCWjRE=;
-        b=d5iuHsyKFcanPt2vKq/VlTIn6MwppsTDDa4tI6Ox/ro/3bPw8E3yn+CAIOFFtADstPZctu
-        eKS8713/+4ZraVZd5uBp4GfMs0380QQODSOCNR3D1evOG6ESbmIeqJm3MuF371nBplZc+M
-        09yrnAnjwQ3YaR42YAyef3Z1GY8cSvw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-5mGOzpbxNGqXJc1lPnz6qg-1; Tue, 18 May 2021 03:24:27 -0400
-X-MC-Unique: 5mGOzpbxNGqXJc1lPnz6qg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDA68107ACC7;
-        Tue, 18 May 2021 07:24:25 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-217.rdu2.redhat.com [10.10.112.217])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3548B59463;
-        Tue, 18 May 2021 07:24:20 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210517232237.GE2893@dread.disaster.area>
-References: <20210517232237.GE2893@dread.disaster.area> <206078.1621264018@warthog.procyon.org.uk>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     dhowells@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs directories?
+        Tue, 18 May 2021 04:39:28 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2016FC061756
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 01:38:11 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id e19so6886076pfv.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 01:38:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IsQfm8chUVW8ruU/zwByxDAGkqSQlL5HqkqOWaarZV8=;
+        b=ukKsxtmbByI4qezd83ECTisfNU/W3KX1341Kq8mn/bXYGJIQFF5FVFs6ml6etvOWnM
+         P4Y6opKG3OzR7KUZDDRCr8FgTcikK4OgoE/WdDTxu0dFJ9Kej3iPNHcBd3Bbn3sN/tkJ
+         /+Tv2uunokVukXMQePMGBC1+TrnTjgksMOu4eDzYQNZ1+v01YfTdNIOydFkNbEBBpE0H
+         GEctc769XK+UcZoMpylKZKlVI77NKgBjYH8nwpW5+ya0X1+oAWPvzlk0nZp91KR+4KVJ
+         P/IOGS6kSlB1J3h6rHZDrARrdUYXbA7byXCDPJGUwqXZ3dkTsxU5K0u64vxTK7VNvH7V
+         waLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IsQfm8chUVW8ruU/zwByxDAGkqSQlL5HqkqOWaarZV8=;
+        b=tjcFXMGTP3+AsXn3HgHwZAYglGtLCU8W1usg1fOeBDjn5dHxQmKoj84QIsDzHcZ7pa
+         J24esf68ebhxWjLqCnRnwLlek9CcG7d8FA0IdJzaQQHc97XSCXuptjSk3+LxfaHksQDv
+         ZgY+3LajDW4VKtGKpo1PDRHNNJIdgUSaNQhLUfpN1DR4nWJrMG6qTaPKZ3XETIEJHeN3
+         qpgJX8ZnPKpT7tWzcpigaOIFMzTrIXx5Knp0nHnxs4kDL5sFXJeOiwMu7N5Hw5+5kLe3
+         R7PM5lNMS/ZSV6dP0v2vSiOXM7Ee7rkWwLEihg0QXSycUBROINJUEa3S+Rjb4p90KgSN
+         7mQQ==
+X-Gm-Message-State: AOAM533POaX+FT6SZw8xyWekPu2ldBu4FAyTivTNLukKUCvWkMmU92Sa
+        ndO7Uotx1q8lNoozbdZKNp4ffg==
+X-Google-Smtp-Source: ABdhPJwq2DvEeYKKKsKEj0GvuM/V84fu3u6/yO05LFfNBw62ZDKXiiHqOcm4KC2CB68fvJt8JakOeQ==
+X-Received: by 2002:a63:f651:: with SMTP id u17mr3960422pgj.300.1621327090512;
+        Tue, 18 May 2021 01:38:10 -0700 (PDT)
+Received: from relinquished.localdomain ([2601:602:8b80:8e0::1e58])
+        by smtp.gmail.com with ESMTPSA id n21sm4279949pfu.99.2021.05.18.01.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 01:38:09 -0700 (PDT)
+Date:   Tue, 18 May 2021 01:38:08 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH RERESEND v9 0/9] fs: interface for directly
+ reading/writing compressed data
+Message-ID: <YKN88AbnmW73uRPw@relinquished.localdomain>
+References: <cover.1621276134.git.osandov@fb.com>
+ <CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com>
+ <YKLt5GyznttizBjd@relinquished.localdomain>
+ <YKLyvnb19QmayJaJ@gmail.com>
+ <YKL7W7QO7Wis2n8a@relinquished.localdomain>
+ <YKMsHMS4IfO8PhN1@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <272938.1621322659.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 18 May 2021 08:24:19 +0100
-Message-ID: <272939.1621322659@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKMsHMS4IfO8PhN1@mit.edu>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dave Chinner <david@fromorbit.com> wrote:
+On Mon, May 17, 2021 at 10:53:16PM -0400, Theodore Y. Ts'o wrote:
+> On Mon, May 17, 2021 at 04:25:15PM -0700, Omar Sandoval wrote:
+> > > Well, assuming we're talking about regular files only (so file contents
+> > > encryption, not filenames encryption),
+> > 
+> > Yes, I was thinking of regular files. File operations using encrypted
+> > names sounds... interesting, but I think out of scope for this.
+> 
+> So the question I have is why would you want to get the raw encrypted
+> data?  One possible reason (and this is what Michael Halwcrow and I
+> had tried designing years ago) was so you could backup a device that
+> had multiple users' files without having all of the users' keys ---
+> and then be able to restore them.  So for example, suppose you had a
+> tablet that is shared by multiple family members, and you want to be
+> backup all of the data on the shared device so that it could be
+> restored in case one of the kids drop the tablet in the swimming pool....
+> 
+> But in order to do that, you need to be able to restore the encrypted
+> files in the encrypted directories.  In practice, encrypted files
+> generally exist in encrypted directories.  That's because the typical
+> way fscrypt gets used is we set a policy on an empty directory, and
+> then all of the newly files created files have encrypted file names,
+> inherit the directory's encryption policy, and then have encrypted
+> file contents.
+> 
+> So do you have the encryption key, or not?  If you do have the
+> encryption key, then you can ignore the issue of the file name when
+> you open the file, but what's the reason why you would want to extract
+> out the raw encrypted data plus the raw encryption metadata?  You're
+> not going to be able to restore the encrypted file, in the encrypted
+> directory name.  Perhaps it's because you want to keep the data
+> encrypted while you're tranferring it --- but the filename needs to be
+> encrypted as well, and given modern CPU's, with or without
+> inline-crypto engines, the cost of decrypting the file data and then
+> re-encrypting it in the backup key isn't really that large.
+> 
+> If you don't have the encryption key, then you need to be able to open
+> the file using using the encrypted name (which fscrypt does support)
+> and then extract out the encrypted file name using another bundle of
+> encryption metadata.  So that's a bit more complicated, but it's
+> doable.
+> 
+> The *really* hard part is *restoring* an encrypted directory
+> hierarchy.  Michael and I did create a straw design proposal (which is
+> too small to fit in the margins of this e-mail :-), but suffice it to
+> say that the standard Posix system calls are not sufficient to be able
+> to create encrypted files and encrypted directories, and it would have
+> been messy as all hell.  Which is why we breathed a sign of relief
+> when the original product requirement of being able to do
+> backup/restore of shared devices went away.   :-)
+> 
+> The thing is, though, just being able to extract out regular files in
+> their raw encrypted on-disk form, along with their filename metadata,
+> seems to be a bit of a party trick without a compelling use case that
+> I can see.  But perhaps you have something in mind?
 
-> > What I'd like to do is remove the fanout directories, so that for each=
- logical
-> > "volume"[*] I have a single directory with all the files in it.  But t=
-hat
-> > means sticking massive amounts of entries into a single directory and =
-hoping
-> > it (a) isn't too slow and (b) doesn't hit the capacity limit.
-> =
+Thanks for the detailed response, Ted. I personally don't have a use
+case for reading and writing encrypted data. I only care about skipping
+compression/decompression, but early on it was pointed out that this API
+could potentially also be used for encrypted data. The question at this
+point is: if someone else comes along and solves the problems with
+restoring encrypted filenames, is this interface enough for them to
+restore the encrypted file data? It seems like the answer is yes, with a
+couple of additions to fscrypt. I should've been clearer that I don't
+have concrete plans to do this, I just wanted to leave the door open for
+it so that we don't need a second, very similar interface.
 
-> Note that if you use a single directory, you are effectively single
-> threading modifications to your file index. You still need to use
-> fanout directories if you want concurrency during modification for
-> the cachefiles index, but that's a different design criteria
-> compared to directory capacity and modification/lookup scalability.
-
-I knew there was something I was overlooking.  This might be a more import=
-ant
-criterion.  I should try benchmarking this, see what difference it makes
-eliminating the extra lookup step (which is probably cheap) versus the
-concurrency.
-
-David
-
+Thanks,
+Omar
