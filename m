@@ -2,201 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4926387CA2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 17:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB392387D12
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 18:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350280AbhERPmX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 May 2021 11:42:23 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:32432 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350274AbhERPmP (ORCPT
+        id S1350358AbhERQHv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 May 2021 12:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344604AbhERQHu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 May 2021 11:42:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1621352457; x=1652888457;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SQ2HviOEV+zSWnvccLMOeDEvNhPrdDSjyAsCKLw1EJI=;
-  b=MT0/pgohMvJywAuAcvnzoy32JXnmPO+uWzK3u97+xGbMEvfuhvOF7ho/
-   DcSnjG87E0hu92yWwqN484kOJmzTI1HX91l0sZhCt06dHe7LlbrPml5F3
-   utbW7ExUu0r6qYylIJhiYHynQqLk//zNKXBBwUSi4tM+b6mn4tfJpQNxZ
-   3Fb+aq7kPhYr+po9DvSC12FsRThbW3WsrykVAhN0F393KzbRLUNn9RxaE
-   QpJZ7KulQPQeiRcv1+QGEdTS8VY2IyoK8+uAWvdWDtIPzYAALBsZUOpHz
-   7UNbgUlC9RRkUSft4HmSaqsyU5azamk9UnNOW7KG8klZolAmERHclsOna
-   A==;
-IronPort-SDR: C8wld5qkR5EgtSEYBqQpMfAMoj9LRk5OEQLJDIZzMFmw4jqqLEZO609FVIbdFiPTu432kFk5wR
- od2uUAlE93uczEtMU7+2wcmlqadz4FDTkNtDsaSos60b4MqwFT40zyIkVZ/ZH1YoGDUE3G5JIP
- AMZ9Lo+IDJyA5ugGEA+DB8KRN5TQRlmuVC2ksrZ942U3pmZRF2XnpchBxwbCHtY1i8zuNwc8n4
- /EPI/8tySPzsZrUncdVxiEp1I2+EJA++MpkG/Rn4eBC5u/qfEwq63XGtfyw/ts6t1CMPoeAROj
- 0No=
-X-IronPort-AV: E=Sophos;i="5.82,310,1613404800"; 
-   d="scan'208";a="279802256"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 18 May 2021 23:40:57 +0800
-IronPort-SDR: O22FpmWe7nK3w3WCmrK/YOEZ3JMCgJZRXeTI0FEFHCu0O29KdErATKKf4hhCxnH49JknYPjMOg
- Aqd+n3/Nl3ok3bn8tJ+fRouPGJ+LXX/VH3y4cqGKuB7VaFqoZjd67enQROlYOTdWGNCtFbk/XZ
- rNTy8TpshZqPY3hSDh8PuNxkvHcoL7N/Ce6BGMV6CVYt02mpFV16/NW2tPkYkAejLyVHDMx4TP
- kVJGBuxGgVY/JkqORd39zXys656hveRRYYgCm1tPK5MsecZrsZHyoIlrgIX1uZsTMZXT9gLOxv
- DKhk8llWTFm5vbgqdJWErgU1
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:20:36 -0700
-IronPort-SDR: z342fczJLNZYWcNVFuaRQNB63TW1HRe0UDHCBZSQAabrLeUqI/OYJ3SETgRX0HxDEIgBifJhLu
- XvBmjU9ju64cZCWidsajM21KujK8Numwq5Rjhbt1GgGlOBVQ4a858IKm5M3sUbgYDLKSL/18m4
- 7/UV+qFo3KUJyXb1td9B+wtUN9VUcFvbnMxdrGuFMVfP35m4gQLj/7yWbVSShrnKkslQUkvsv4
- lNJfGv60HhRiWhNUwCN5LBfc2b4vD+iAcNUfIWWe0w9zQicWm0EHxhsqErA+u17oMg2xeGy7S0
- Koc=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 18 May 2021 08:40:56 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 3/3] btrfs: zoned: factor out zoned device lookup
-Date:   Wed, 19 May 2021 00:40:29 +0900
-Message-Id: <0177d54fd7d5d9e96ee0bcdc29facd1324149a0e.1621351444.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621351444.git.johannes.thumshirn@wdc.com>
-References: <cover.1621351444.git.johannes.thumshirn@wdc.com>
+        Tue, 18 May 2021 12:07:50 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE42FC061573
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 09:06:32 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id b13so3999139pfv.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 09:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EuPIOHm+1cWFBkPIAjVxQAum14ReBAV1lb0b6GLsfuU=;
+        b=sFmhNGupg2+eJA43jPonYhMmIcNhJxUCmgodjPoWN7ZvlCfKT4/4Q6dtE0c62Zumye
+         G4dgtwRsnZB0MK7pH+20JUebfTpBi8eW0ItAu/AADwNjIx48RnLYE4zJE7abOWhFR1Yt
+         WuCCkGol2rlBcnzY3CKuD3kRoWkXLmMRsQeOgvi2h1iqeEMJUxHiPK0LEj5deMOpcpdK
+         brTgWQJ1av5gxjlLutZlp3RprzNW7GE22eGNABJZiXdMgMiEOxI+hAF9E6C4nFdInP1+
+         JYKe/0RqQ7jCs6OipCcNyuLt6Zu7rl3sxdJTAx/fXUaZJkT6529WqLnCt9XFCIoRPI5C
+         n6pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EuPIOHm+1cWFBkPIAjVxQAum14ReBAV1lb0b6GLsfuU=;
+        b=JHBjI7EE6cDGliGyM/AKVAcu9TXQ8E3coQkmcfZV7FiNUuoN1GSjqDfaI5q1qOTm/p
+         7f/y8kVctWlE+7YC9ATeDjWvcxjjiVmSgfe7Cd3SrgRmoT44g6N/2syTw3BrmcP0g4hq
+         qU96QvLybRBIQ8EkYdxNi7L7OYTri0k7e+KgasBFD8Ckm0pISJwOB4c4Hlz4QEWl63mY
+         mwUN9219/gtOvHFV2pZxdMjF5S+Ijkbhm6zhBJb1pOFjf36ItSXWOj5JdrYKeEMVfkT5
+         XFiyLedBhdD1g89War7qc791XqzqSbAlS2rf0QLLKhWfJ9FNgsWmD9xzfey+kZvxUtBx
+         M59w==
+X-Gm-Message-State: AOAM532wGIqymFvZ9swpIjXXzEe6sJyGlseyuthU4DwnOy+PfUIQEVWK
+        K1bBJ1StJZcAqaSvi1xaDhY=
+X-Google-Smtp-Source: ABdhPJyFyQiiZnFVfb/BI0TRuj0syCilhbQpHY8gy2pA5pzzAf5L+baCdSysJu9iE8hU/Bzyzei1zQ==
+X-Received: by 2002:a05:6a00:8c7:b029:20f:1cf4:d02 with SMTP id s7-20020a056a0008c7b029020f1cf40d02mr5750699pfu.49.1621353992407;
+        Tue, 18 May 2021 09:06:32 -0700 (PDT)
+Received: from realwakka ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id l18sm2189141pjq.33.2021.05.18.09.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 09:06:32 -0700 (PDT)
+Date:   Tue, 18 May 2021 16:06:23 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: subvolume: destroy associated qgroup when
+ delete subvolume
+Message-ID: <20210518160623.GA38825@realwakka>
+References: <20210515023624.8065-1-realwakka@gmail.com>
+ <7702abe4-f150-44c0-8328-f62d68f5a56c@gmx.com>
+ <20210515133523.GC7604@twin.jikos.cz>
+ <f52f74ad-d0e9-babe-b555-455fc185dbd7@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <f52f74ad-d0e9-babe-b555-455fc185dbd7@gmx.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To be able to construct a zone append bio we need to look up the
-btrfs_device. The code doing the chunk map lookup to get the device is
-present in btrfs_submit_compressed_write and submit_extent_page.
+On Sun, May 16, 2021 at 07:55:25AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2021/5/15 下午9:35, David Sterba wrote:
+> > On Sat, May 15, 2021 at 10:42:15AM +0800, Qu Wenruo wrote:
+> > > On 2021/5/15 上午10:36, Sidong Yang wrote:
+> > > > This patch adds the options --delete-qgroup and --no-delete-qgroup. When
+> > > > the option is enabled, delete subvolume command destroies associated
+> > > > qgroup together. This patch make it as default option. Even though quota
+> > > > is disabled, it enables quota temporary and restore it after.
+> > > 
+> > > No, this is not a good idea at all.
+> > > 
+> > > First thing first, if quota is disabled, all qgroup info including the
+> > > level 0 qgroups will also be deleted, thus no need to enable in the
+> > > first place.
+> > > 
+> > > Secondly, there is already a patch in the past to delete level 0 qgroups
+> > > in kernel space, which should be a much better solution.
+> > 
+> > I've filed the issue to do it in the userspace because it gives user
+> > more control whether to do the deletion or not and to also cover all
+> > kernels that won't get the patch (ie. old stable kernels).
+> > 
+> > Changing the default behaviour is always risky and has a potential to
+> > break user scripts. IMO adding the option to progs and changing the
+> > default there is safer in this case.
+> > 
+> Then shouldn't it still go through ioctl options?
+> 
+> Doing it completely in user space doesn't seem correct to me.
 
-Factor out the lookup calls into a helper and use it in the submission
-paths.
+Yes, It still use ioctl calls for destroying qgroup.
+I think this code has pros and cons.
+IMHO, as david said, It also has some benefits when doing it in userspace for
+old kernel versions. and give a chance to change softly their codes
+which use btrfs-progs with options. 
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/compression.c | 16 ++++------------
- fs/btrfs/extent_io.c   | 16 +++++-----------
- fs/btrfs/zoned.c       | 21 +++++++++++++++++++++
- fs/btrfs/zoned.h       |  9 +++++++++
- 4 files changed, 39 insertions(+), 23 deletions(-)
+But when kernel supports this operation, maybe this code will always failed.
+because the qgroup was already destroyed with it's subvolume in kernel.
+and the code will be meaningless.
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index f224c35de5d8..b101bc483e40 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -428,24 +428,16 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	bio->bi_end_io = end_compressed_bio_write;
- 
- 	if (use_append) {
--		struct extent_map *em;
--		struct map_lookup *map;
--		struct block_device *bdev;
-+		struct btrfs_device *device;
- 
--		em = btrfs_get_chunk_map(fs_info, disk_start, PAGE_SIZE);
--		if (IS_ERR(em)) {
-+		device = btrfs_zoned_get_device(fs_info, disk_start, PAGE_SIZE);
-+		if (IS_ERR(device)) {
- 			kfree(cb);
- 			bio_put(bio);
- 			return BLK_STS_NOTSUPP;
- 		}
- 
--		map = em->map_lookup;
--		/* We only support single profile for now */
--		ASSERT(map->num_stripes == 1);
--		bdev = map->stripes[0].dev->bdev;
--
--		bio_set_dev(bio, bdev);
--		free_extent_map(em);
-+		bio_set_dev(bio, device->bdev);
- 	}
- 
- 	if (blkcg_css) {
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ce6364dd1517..2b250c610562 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3266,19 +3266,13 @@ static int submit_extent_page(unsigned int opf,
- 		wbc_account_cgroup_owner(wbc, page, io_size);
- 	}
- 	if (btrfs_is_zoned(fs_info) && bio_op(bio) == REQ_OP_ZONE_APPEND) {
--		struct extent_map *em;
--		struct map_lookup *map;
-+		struct btrfs_device *device;
- 
--		em = btrfs_get_chunk_map(fs_info, disk_bytenr, io_size);
--		if (IS_ERR(em))
--			return PTR_ERR(em);
-+		device = btrfs_zoned_get_device(fs_info, disk_bytenr, io_size);
-+		if (IS_ERR(device))
-+			return PTR_ERR(device);
- 
--		map = em->map_lookup;
--		/* We only support single profile for now */
--		ASSERT(map->num_stripes == 1);
--		btrfs_io_bio(bio)->device = map->stripes[0].dev;
--
--		free_extent_map(em);
-+		btrfs_io_bio(bio)->device = device;
- 	}
- 
- 	*bio_ret = bio;
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index b9d5579a578d..15843a858bf6 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1520,3 +1520,24 @@ int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev, u64 logical,
- 	length = wp - physical_pos;
- 	return btrfs_zoned_issue_zeroout(tgt_dev, physical_pos, length);
- }
-+
-+struct btrfs_device *btrfs_zoned_get_device(struct btrfs_fs_info *fs_info,
-+					    u64 logical, u64 length)
-+{
-+	struct btrfs_device *device;
-+	struct extent_map *em;
-+	struct map_lookup *map;
-+
-+	em = btrfs_get_chunk_map(fs_info, logical, length);
-+	if (IS_ERR(em))
-+		return ERR_CAST(em);
-+
-+	map = em->map_lookup;
-+	/* We only support single profile for now */
-+	ASSERT(map->num_stripes == 1);
-+	device = map->stripes[0].dev;
-+
-+	free_extent_map(em);
-+
-+	return device;
-+}
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index e55d32595c2c..b0ae2608cb6b 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -65,6 +65,8 @@ void btrfs_revert_meta_write_pointer(struct btrfs_block_group *cache,
- int btrfs_zoned_issue_zeroout(struct btrfs_device *device, u64 physical, u64 length);
- int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev, u64 logical,
- 				  u64 physical_start, u64 physical_pos);
-+struct btrfs_device *btrfs_zoned_get_device(struct btrfs_fs_info *fs_info,
-+					    u64 logical, u64 length);
- #else /* CONFIG_BLK_DEV_ZONED */
- static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
- 				     struct blk_zone *zone)
-@@ -191,6 +193,13 @@ static inline int btrfs_sync_zone_write_pointer(struct btrfs_device *tgt_dev,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline struct btrfs_device *btrfs_zoned_get_device(
-+						  struct btrfs_fs_info *fs_info,
-+						  u64 logical, u64 length)
-+{
-+	return ERR_PTR(-EOPNOTSUPP);
-+}
-+
- #endif
- 
- static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
--- 
-2.31.1
+So in long run, I think it's better way to doing this in kernel. 
 
+> 
+> Thanks,
+> Qu
