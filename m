@@ -2,151 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D9F38742C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 10:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6C1387BB2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 16:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347538AbhERIj3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 May 2021 04:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbhERIj2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 May 2021 04:39:28 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2016FC061756
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 01:38:11 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id e19so6886076pfv.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 01:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IsQfm8chUVW8ruU/zwByxDAGkqSQlL5HqkqOWaarZV8=;
-        b=ukKsxtmbByI4qezd83ECTisfNU/W3KX1341Kq8mn/bXYGJIQFF5FVFs6ml6etvOWnM
-         P4Y6opKG3OzR7KUZDDRCr8FgTcikK4OgoE/WdDTxu0dFJ9Kej3iPNHcBd3Bbn3sN/tkJ
-         /+Tv2uunokVukXMQePMGBC1+TrnTjgksMOu4eDzYQNZ1+v01YfTdNIOydFkNbEBBpE0H
-         GEctc769XK+UcZoMpylKZKlVI77NKgBjYH8nwpW5+ya0X1+oAWPvzlk0nZp91KR+4KVJ
-         P/IOGS6kSlB1J3h6rHZDrARrdUYXbA7byXCDPJGUwqXZ3dkTsxU5K0u64vxTK7VNvH7V
-         waLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IsQfm8chUVW8ruU/zwByxDAGkqSQlL5HqkqOWaarZV8=;
-        b=tjcFXMGTP3+AsXn3HgHwZAYglGtLCU8W1usg1fOeBDjn5dHxQmKoj84QIsDzHcZ7pa
-         J24esf68ebhxWjLqCnRnwLlek9CcG7d8FA0IdJzaQQHc97XSCXuptjSk3+LxfaHksQDv
-         ZgY+3LajDW4VKtGKpo1PDRHNNJIdgUSaNQhLUfpN1DR4nWJrMG6qTaPKZ3XETIEJHeN3
-         qpgJX8ZnPKpT7tWzcpigaOIFMzTrIXx5Knp0nHnxs4kDL5sFXJeOiwMu7N5Hw5+5kLe3
-         R7PM5lNMS/ZSV6dP0v2vSiOXM7Ee7rkWwLEihg0QXSycUBROINJUEa3S+Rjb4p90KgSN
-         7mQQ==
-X-Gm-Message-State: AOAM533POaX+FT6SZw8xyWekPu2ldBu4FAyTivTNLukKUCvWkMmU92Sa
-        ndO7Uotx1q8lNoozbdZKNp4ffg==
-X-Google-Smtp-Source: ABdhPJwq2DvEeYKKKsKEj0GvuM/V84fu3u6/yO05LFfNBw62ZDKXiiHqOcm4KC2CB68fvJt8JakOeQ==
-X-Received: by 2002:a63:f651:: with SMTP id u17mr3960422pgj.300.1621327090512;
-        Tue, 18 May 2021 01:38:10 -0700 (PDT)
-Received: from relinquished.localdomain ([2601:602:8b80:8e0::1e58])
-        by smtp.gmail.com with ESMTPSA id n21sm4279949pfu.99.2021.05.18.01.38.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 May 2021 01:38:09 -0700 (PDT)
-Date:   Tue, 18 May 2021 01:38:08 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH RERESEND v9 0/9] fs: interface for directly
- reading/writing compressed data
-Message-ID: <YKN88AbnmW73uRPw@relinquished.localdomain>
-References: <cover.1621276134.git.osandov@fb.com>
- <CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com>
- <YKLt5GyznttizBjd@relinquished.localdomain>
- <YKLyvnb19QmayJaJ@gmail.com>
- <YKL7W7QO7Wis2n8a@relinquished.localdomain>
- <YKMsHMS4IfO8PhN1@mit.edu>
+        id S238580AbhEROx3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 May 2021 10:53:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42690 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235888AbhEROx2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 May 2021 10:53:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621349529; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+slbQBDPglzZz1tknkGivHDuynjAzNNS9LsnLiAed8k=;
+        b=q8g7rEb6WqUChi10xeU43CmQLZc4tjVqNf5uptXCy6Q5Qj/eHHLXJab10E01Wq82y9zqZD
+        8tcNLfGt4RVTC4bzDoqQiEgRV1CbsJGwG4vcdxUNH6zcQA5OtU+AVsZYHRNfLvgBfBvhdH
+        0J2bFogdTjtpJxeoYP0wro6WdZCjsbU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A8519B153;
+        Tue, 18 May 2021 14:52:09 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B311BDB228; Tue, 18 May 2021 16:49:36 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: scrub: per-device bandwidth control
+Date:   Tue, 18 May 2021 16:49:35 +0200
+Message-Id: <20210518144935.15835-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKMsHMS4IfO8PhN1@mit.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:53:16PM -0400, Theodore Y. Ts'o wrote:
-> On Mon, May 17, 2021 at 04:25:15PM -0700, Omar Sandoval wrote:
-> > > Well, assuming we're talking about regular files only (so file contents
-> > > encryption, not filenames encryption),
-> > 
-> > Yes, I was thinking of regular files. File operations using encrypted
-> > names sounds... interesting, but I think out of scope for this.
-> 
-> So the question I have is why would you want to get the raw encrypted
-> data?  One possible reason (and this is what Michael Halwcrow and I
-> had tried designing years ago) was so you could backup a device that
-> had multiple users' files without having all of the users' keys ---
-> and then be able to restore them.  So for example, suppose you had a
-> tablet that is shared by multiple family members, and you want to be
-> backup all of the data on the shared device so that it could be
-> restored in case one of the kids drop the tablet in the swimming pool....
-> 
-> But in order to do that, you need to be able to restore the encrypted
-> files in the encrypted directories.  In practice, encrypted files
-> generally exist in encrypted directories.  That's because the typical
-> way fscrypt gets used is we set a policy on an empty directory, and
-> then all of the newly files created files have encrypted file names,
-> inherit the directory's encryption policy, and then have encrypted
-> file contents.
-> 
-> So do you have the encryption key, or not?  If you do have the
-> encryption key, then you can ignore the issue of the file name when
-> you open the file, but what's the reason why you would want to extract
-> out the raw encrypted data plus the raw encryption metadata?  You're
-> not going to be able to restore the encrypted file, in the encrypted
-> directory name.  Perhaps it's because you want to keep the data
-> encrypted while you're tranferring it --- but the filename needs to be
-> encrypted as well, and given modern CPU's, with or without
-> inline-crypto engines, the cost of decrypting the file data and then
-> re-encrypting it in the backup key isn't really that large.
-> 
-> If you don't have the encryption key, then you need to be able to open
-> the file using using the encrypted name (which fscrypt does support)
-> and then extract out the encrypted file name using another bundle of
-> encryption metadata.  So that's a bit more complicated, but it's
-> doable.
-> 
-> The *really* hard part is *restoring* an encrypted directory
-> hierarchy.  Michael and I did create a straw design proposal (which is
-> too small to fit in the margins of this e-mail :-), but suffice it to
-> say that the standard Posix system calls are not sufficient to be able
-> to create encrypted files and encrypted directories, and it would have
-> been messy as all hell.  Which is why we breathed a sign of relief
-> when the original product requirement of being able to do
-> backup/restore of shared devices went away.   :-)
-> 
-> The thing is, though, just being able to extract out regular files in
-> their raw encrypted on-disk form, along with their filename metadata,
-> seems to be a bit of a party trick without a compelling use case that
-> I can see.  But perhaps you have something in mind?
+Add sysfs interface to limit io during scrub. We relied on the ionice
+interface to do that, eg. the idle class let the system usable while
+scrub was running. This has changed when mq-deadline got widespread and
+did not implement the scheduling classes. That was a CFQ thing that got
+deleted. We've got numerous complaints from users about degraded
+performance.
 
-Thanks for the detailed response, Ted. I personally don't have a use
-case for reading and writing encrypted data. I only care about skipping
-compression/decompression, but early on it was pointed out that this API
-could potentially also be used for encrypted data. The question at this
-point is: if someone else comes along and solves the problems with
-restoring encrypted filenames, is this interface enough for them to
-restore the encrypted file data? It seems like the answer is yes, with a
-couple of additions to fscrypt. I should've been clearer that I don't
-have concrete plans to do this, I just wanted to leave the door open for
-it so that we don't need a second, very similar interface.
+Currently only BFQ supports that but it's not a common scheduler and we
+can't ask everybody to switch to it.
 
-Thanks,
-Omar
+Alternatively the cgroup io limiting can be used but that also a
+non-trivial setup (v2 required, the controller must be enabled on the
+system). This can still be used if desired.
+
+Other ideas that have been explored: piggy-back on ionice (that is set
+per-process and is accessible) and interpret the class and classdata as
+bandwidth limits, but this does not have enough flexibility as there are
+only 8 allowed and we'd have to map fixed limits to each value. Also
+adjusting the value would need to lookup the process that currently runs
+scrub on the given device, and the value is not sticky so would have to
+be adjusted each time scrub runs.
+
+Running out of options, sysfs does not look that bad:
+
+- it's accessible from scripts, or udev rules
+- the name is similar to what MD-RAID has
+  (/proc/sys/dev/raid/speed_limit_max or /sys/block/mdX/md/sync_speed_max)
+- the value is sticky at least for filesystem mount time
+- adjusting the value has immediate effect
+- sysfs is available in constrained environments (eg. system rescue)
+- the limit also applies to device replace
+
+Sysfs:
+
+- raw value is in bytes
+- values written to the file accept suffixes like K, M
+- file is in the per-device directory /sys/fs/btrfs/FSID/devinfo/DEVID/scrub_speed_max
+- 0 means use default priority of IO
+
+The scheduler is a simple deadline one and the accuracy is up to nearest
+128K.
+
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/scrub.c   | 61 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/sysfs.c   | 28 +++++++++++++++++++++
+ fs/btrfs/volumes.h |  3 +++
+ 3 files changed, 92 insertions(+)
+
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 485cda3eb8d7..83f3149253ea 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -165,6 +165,10 @@ struct scrub_ctx {
+ 	int			readonly;
+ 	int			pages_per_rd_bio;
+ 
++	/* State of IO submission throttling affecting the associated device */
++	ktime_t			throttle_deadline;
++	u64			throttle_sent;
++
+ 	int			is_dev_replace;
+ 	u64			write_pointer;
+ 
+@@ -605,6 +609,7 @@ static noinline_for_stack struct scrub_ctx *scrub_setup_ctx(
+ 	spin_lock_init(&sctx->list_lock);
+ 	spin_lock_init(&sctx->stat_lock);
+ 	init_waitqueue_head(&sctx->list_wait);
++	sctx->throttle_deadline = 0;
+ 
+ 	WARN_ON(sctx->wr_curr_bio != NULL);
+ 	mutex_init(&sctx->wr_lock);
+@@ -1988,6 +1993,60 @@ static void scrub_page_put(struct scrub_page *spage)
+ 	}
+ }
+ 
++/*
++ * Throttling of IO submission, bandwidth-limit based, the timeslice is 1
++ * second.  Limit can be set via /sys/fs/UUID/devinfo/devid/scrub_speed_max.
++ */
++static void scrub_throttle(struct scrub_ctx *sctx)
++{
++	const int time_slice = 1000;
++	struct scrub_bio *sbio;
++	struct btrfs_device *device;
++	s64 delta;
++	ktime_t now;
++	u32 div;
++	u64 bwlimit;
++
++	sbio = sctx->bios[sctx->curr];
++	device = sbio->dev;
++	bwlimit = READ_ONCE(device->scrub_speed_max);
++	if (bwlimit == 0)
++		return;
++
++	/*
++	 * Slice is divided into intervals when the IO is submitted, adjust by
++	 * bwlimit and maximum of 64 intervals.
++	 */
++	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
++	div = min_t(u32, 64, div);
++
++	/* Start new epoch, set deadline */
++	now = ktime_get();
++	if (sctx->throttle_deadline == 0) {
++		sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
++		sctx->throttle_sent = 0;
++	}
++
++	/* Still in the time to send? */
++	if (ktime_before(now, sctx->throttle_deadline)) {
++		/* If current bio is within the limit, send it */
++		sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
++		if (sctx->throttle_sent <= bwlimit / div)
++			return;
++
++		/* We're over the limit, sleep until the rest of the slice */
++		delta = ktime_ms_delta(sctx->throttle_deadline, now);
++	} else {
++		/* New request after deadline, start new epoch */
++		delta = 0;
++	}
++
++	if (delta)
++		schedule_timeout_interruptible(delta * HZ / 1000);
++	/* Next call will start the deadline period */
++	sctx->throttle_deadline = 0;
++}
++
+ static void scrub_submit(struct scrub_ctx *sctx)
+ {
+ 	struct scrub_bio *sbio;
+@@ -1995,6 +2054,8 @@ static void scrub_submit(struct scrub_ctx *sctx)
+ 	if (sctx->curr == -1)
+ 		return;
+ 
++	scrub_throttle(sctx);
++
+ 	sbio = sctx->bios[sctx->curr];
+ 	sctx->curr = -1;
+ 	scrub_pending_bio_inc(sctx);
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 436ac7b4b334..c45d9b6dfdb5 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1455,6 +1455,33 @@ static ssize_t btrfs_devinfo_replace_target_show(struct kobject *kobj,
+ }
+ BTRFS_ATTR(devid, replace_target, btrfs_devinfo_replace_target_show);
+ 
++static ssize_t btrfs_devinfo_scrub_speed_max_show(struct kobject *kobj,
++					     struct kobj_attribute *a,
++					     char *buf)
++{
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	return scnprintf(buf, PAGE_SIZE, "%llu\n",
++			 READ_ONCE(device->scrub_speed_max));
++}
++
++static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
++					      struct kobj_attribute *a,
++					      const char *buf, size_t len)
++{
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++	char *endptr;
++	unsigned long long limit;
++
++	limit = memparse(buf, &endptr);
++	WRITE_ONCE(device->scrub_speed_max, limit);
++	return len;
++}
++BTRFS_ATTR_RW(devid, scrub_speed_max, btrfs_devinfo_scrub_speed_max_show,
++	      btrfs_devinfo_scrub_speed_max_store);
++
+ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
+ 					    struct kobj_attribute *a, char *buf)
+ {
+@@ -1472,6 +1499,7 @@ static struct attribute *devid_attrs[] = {
+ 	BTRFS_ATTR_PTR(devid, in_fs_metadata),
+ 	BTRFS_ATTR_PTR(devid, missing),
+ 	BTRFS_ATTR_PTR(devid, replace_target),
++	BTRFS_ATTR_PTR(devid, scrub_speed_max),
+ 	BTRFS_ATTR_PTR(devid, writeable),
+ 	NULL
+ };
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 9c0d84e5ec06..063ce999b9d3 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -143,6 +143,9 @@ struct btrfs_device {
+ 	struct completion kobj_unregister;
+ 	/* For sysfs/FSID/devinfo/devid/ */
+ 	struct kobject devid_kobj;
++
++	/* Bandwidth limit for scrub, in bytes */
++	u64 scrub_speed_max;
+ };
+ 
+ /*
+-- 
+2.29.2
+
