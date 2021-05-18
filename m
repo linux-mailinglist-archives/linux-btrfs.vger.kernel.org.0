@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D764C387CA0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 17:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B499387CA1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 17:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350275AbhERPmQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 May 2021 11:42:16 -0400
+        id S1350277AbhERPmU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 May 2021 11:42:20 -0400
 Received: from esa1.hgst.iphmx.com ([68.232.141.245]:32432 "EHLO
         esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350269AbhERPmN (ORCPT
+        with ESMTP id S1350271AbhERPmO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 May 2021 11:42:13 -0400
+        Tue, 18 May 2021 11:42:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1621352455; x=1652888455;
+  t=1621352456; x=1652888456;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=UOEBSTAxSFEvV33A/+UP5iEQIspsEOnmos7f0/DqCJ0=;
-  b=OOTf6hNEj8N6rh7fOVIiNuWgnHPBw2HgmI4UnyL5foHohPkbTZyvgVt8
-   VUTbVylLuCDFxEVZkzuyKFe9JUU/Z8uWL6cRCn2/7+PhF+QwEUAhhDtrQ
-   xZhnQas9j562t70qID3oW+LqZZYj7tlxTa1iZ+ur8OnfT36D2/8KTLHDn
-   SCVvQTYfS9FMfkXkh8SBqQBcyivx54E/qIWflNROUH2CeBMHAB0ytXZIE
-   A44HYMXauXU3+jD247zY7pcR0Q3o222MpUhSEqbX49mNllE2NDuFvfBK3
-   oWVx1s+QfCZkdeQxzXSaermFeJ70ExFM/VAfMW06D3jhqcE+szqtNc1Dx
-   g==;
-IronPort-SDR: mCUZJ06UftFxEGPPwjjKJTy7GxpIbcI1X/FPMJTKosk9wpYApCj+YrJEY82fTsAFSy+AsDj/rR
- 3L66B1+pnqZ7qdsVBZdsDL7hD60ghYEt/kmDAERbblYYOTXR9wpYK3pEvQLbMRjiBq3foF8HuK
- pl+HUKB9A4GCCEwOG3sh9DATEKAWc2orftnNMUkNjnpi0IL1NEZzyt9L04jyeHTy1RC0PDf5I1
- eDeNpcfxXWmXJSU2ILzzp/alTfCPELGTrGr0rEbRG9Ln9fqZDyasIWEF7SilLzQBthOVkxuY8P
- 6dg=
+  bh=osnJmKP5sKenaayUwfORo7tKZeICjT50jUXSBX6mA9o=;
+  b=emkDiDJnsAYFi4jNlx6rUtSFbDlgvtR02C1+S4P8kRBqNRpdEqnUWqBy
+   bIpStumCQ5dxqLWZpg5Hpgy4WqG09efdjwX+YLRmoZGdT7C3d1GeMiF5+
+   u9ekC3Q1SozoiBhVuFmUCc418wrjT95uMy0TnRck0Lq9FIMkzS4UTesoR
+   swFjpPickpNpUg6MjQvSARubTDUn4Bwo0OJQSiJXHTTSIuf6MOyLwqc8n
+   t/Ok+f5ggsqo1/t6LXl0XTCguquqg+WllCuF4+2iU3QOyKfumoHoN9G0E
+   XOla71qIOim1rNmm34ETcIGFB8gCKl30wDNepweDWYM/6Q8YaQTyF8djv
+   Q==;
+IronPort-SDR: iDP8oq4r48gcEZr/h8sZvr8zcToLZy7W3anrnrAI7NRi22qXpz9F++DYw3OhqykjDti4h9iL41
+ Xqp0Lt/PzzkOYqdoOrOSKca8IVSiUvKjUp2JMFXN32WS4W+APFh67ZoJP0cZ0wTYRt2hGgKSM9
+ LvvZ6idFhWumwUzqfHruWTRTIU3K9kV0fWdGfrokE5bCyCDDVsXNkPWtTtsX888SK0VrFZMM+H
+ gH0tkr5319UtObrl5fCUEH2364j45Phsf4RNghsE3DgfEyCV5KglJ3Fg+CKgys/7QXLPgs1/tS
+ fHc=
 X-IronPort-AV: E=Sophos;i="5.82,310,1613404800"; 
-   d="scan'208";a="279802252"
+   d="scan'208";a="279802254"
 Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 18 May 2021 23:40:55 +0800
-IronPort-SDR: HDtbg7adogcA2kkj1WIIPsZ9AmCfUb0wtssJaOfwSF+90Fwrnz+u+47z/H9/j7k9lSTFIBk1bh
- wJwNIJ0+w1mU3XcQ4kn27AOzTkoJHq7xfKijIc3aWNuTI/pzypoewwe/TTHVOjlbokMbhhSh2L
- Ahf03YcGrkTR4PfxJBDqeATgTkP+FYcLWRFDn9s0LYIIzD4zY3xvsL6eX/37MjZ/nKt2EuizWk
- crpHugG7iNWWmprP0CoOuuVpTyR+0lcCfoP7zsr3D9J6348CpADqxzy6Nzrzkq+8sbLP2NXRvP
- ETOzTAFMyWQbplstOZpwsqoO
+  by ob1.hgst.iphmx.com with ESMTP; 18 May 2021 23:40:56 +0800
+IronPort-SDR: jaRc2Zvuy+KqqIRZ0uX4hxTGPFjBW+IMqUJaj8aJqH9ZlSjb4IQ+isW2CqyKpxkKwwRjA5mQHf
+ W+J1nsR1D5f+JndTBIOvZAvbdyekNAwiXVmcfCZa7bJqfwPVxmre9mlU/IMmR98bt1dHls4M3J
+ 6YH6oDLRjZNl04sjJqeVsC3KPkxUROZbQ51ZKrEB6eW3dWXOJkSF+/rsx4Xnb6EzXp+YzlKq3a
+ Lc+6mm3Gl7CmYve/2NA2NqhRNbneeAhFoDgAJjPUi3npKiBjCht4yl66gOgXGY1n1RujtmIh1X
+ 8gVn3RYYxVxA+zshvfyl6nEO
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
   by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 May 2021 08:20:35 -0700
-IronPort-SDR: gr6Q7Cqtsn+PZ4FWdLQj7tyYuhiT1zRJXFQc5lTfwE0worYWF/9qKCrP3RMdtCKt7NOwMvK2r1
- H7tWfb/1x32r2yUISNrTXnz8zfXhr/Ejtzh4QK/pNce0QwWK0sYG1nzS4N6acc5z0Kw4tdaUh3
- tfskmaaNvR+DdM6sU3lVzo0/kmW4MAtaUTeGxFlANnVgf9xqFnq60a3kvrnRJYdYy55tBZ8cvF
- kNwzfwznuaJ+f5+dpbYHcO4wHQD3FQ6/K9sCGS+WY3FgJQ1VEzlgNIh4AQwHdWqTKNqBJEdqHu
- s7E=
+IronPort-SDR: yIJxCe7BO8FuD3BnkCs0wTA+tSgW9Lj4VXUq/ifhfxkmbodSgzm+SZNWlhmZ0VXO50uB2VrYun
+ G83ReweSVKNfsg6r1RmqBN6hVSJSXcVbgt8DXuXi5XWWG461gYO2AcrpVzIVOc2+pc2iCX7q3w
+ JaF9FWMWm0GjqknwO3jUZRwH6ngYLwXSnDeQ+6A0MVcPhtCe7HOUrepkZ4OPpLv6oxPN5rUe0F
+ D1tWNHHVlOyDiELAf+HOad88c5yyhTeXv33WQFkktybK7le4bhbb7g7FOHKae2yKmK/MIv7PdS
+ zIs=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
   by uls-op-cesaip02.wdc.com with ESMTP; 18 May 2021 08:40:55 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 1/3] btrfs: zoned: pass start block to btrfs_use_zone_append
-Date:   Wed, 19 May 2021 00:40:27 +0900
-Message-Id: <737c912acd7fa3a603af3cd1ec1a582b91064b78.1621351444.git.johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 2/3] btrfs: zoned: fix compressed writes
+Date:   Wed, 19 May 2021 00:40:28 +0900
+Message-Id: <1220142568f5b5f0d06fbc3ee28a08060afc0a53.1621351444.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1621351444.git.johannes.thumshirn@wdc.com>
 References: <cover.1621351444.git.johannes.thumshirn@wdc.com>
@@ -64,91 +64,132 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_use_zone_append only needs the passed in extent_map's block_start
-member, so there's no need to pass in the full extent map.
+When multiple processes write data to the same block group on a compressed
+zoned filesystem, the underlying device could report I/O errors and data
+corruption is possible.
 
-This also enables the use of btrfs_use_zone_append in places where we only
-have a start byte but no extent_map.
+This happens because on a zoned file system, compressed data writes where
+sent to the device via a REQ_OP_WRITE instead of a REQ_OP_ZONE_APPEND
+operation. But with REQ_OP_WRITE and parallel submission it cannot be
+guaranteed that the data is always submitted aligned to the underlying
+zone's write pointer.
 
+The change to using REQ_OP_ZONE_APPEND instead of REQ_OP_WRITE on a zoned
+filesystem is non intrusive on a regular file system or when submitting to
+a conventional zone on a zoned filesystem, as it is guarded by
+btrfs_use_zone_append.
+
+Reported-by: David Sterba <dsterba@suse.com>
+Fixes: 9d294a685fbc ("btrfs: zoned: enable to mount ZONED incompat flag")
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/extent_io.c | 2 +-
- fs/btrfs/inode.c     | 2 +-
- fs/btrfs/zoned.c     | 4 ++--
- fs/btrfs/zoned.h     | 5 ++---
- 4 files changed, 6 insertions(+), 7 deletions(-)
+ fs/btrfs/compression.c | 43 ++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 78d3f2ec90e0..ce6364dd1517 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3765,7 +3765,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 		/* Note that em_end from extent_map_end() is exclusive */
- 		iosize = min(em_end, end + 1) - cur;
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 2bea01d23a5b..f224c35de5d8 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -28,6 +28,7 @@
+ #include "compression.h"
+ #include "extent_io.h"
+ #include "extent_map.h"
++#include "zoned.h"
  
--		if (btrfs_use_zone_append(inode, em))
-+		if (btrfs_use_zone_append(inode, em->block_start))
- 			opf = REQ_OP_ZONE_APPEND;
+ static const char* const btrfs_compress_types[] = { "", "zlib", "lzo", "zstd" };
  
- 		free_extent_map(em);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 955d0f5849e3..105deb6a300a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7794,7 +7794,7 @@ static int btrfs_dio_iomap_begin(struct inode *inode, loff_t start,
- 	iomap->bdev = fs_info->fs_devices->latest_bdev;
- 	iomap->length = len;
+@@ -349,6 +350,7 @@ static void end_compressed_bio_write(struct bio *bio)
+ 	 */
+ 	inode = cb->inode;
+ 	cb->compressed_pages[0]->mapping = cb->inode->i_mapping;
++	btrfs_record_physical_zoned(inode, cb->start, bio);
+ 	btrfs_writepage_endio_finish_ordered(cb->compressed_pages[0],
+ 			cb->start, cb->start + cb->len - 1,
+ 			bio->bi_status == BLK_STS_OK);
+@@ -401,6 +403,9 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	u64 first_byte = disk_start;
+ 	blk_status_t ret;
+ 	int skip_sum = inode->flags & BTRFS_INODE_NODATASUM;
++	const bool use_append = btrfs_use_zone_append(inode, disk_start);
++	const unsigned int bio_op =
++		use_append ? REQ_OP_ZONE_APPEND : REQ_OP_WRITE;
  
--	if (write && btrfs_use_zone_append(BTRFS_I(inode), em))
-+	if (write && btrfs_use_zone_append(BTRFS_I(inode), em->block_start))
- 		iomap->flags |= IOMAP_F_ZONE_APPEND;
+ 	WARN_ON(!PAGE_ALIGNED(start));
+ 	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
+@@ -418,10 +423,31 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	cb->nr_pages = nr_pages;
  
- 	free_extent_map(em);
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index c41373a92476..b9d5579a578d 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1296,7 +1296,7 @@ void btrfs_free_redirty_list(struct btrfs_transaction *trans)
- 	spin_unlock(&trans->releasing_ebs_lock);
- }
+ 	bio = btrfs_bio_alloc(first_byte);
+-	bio->bi_opf = REQ_OP_WRITE | write_flags;
++	bio->bi_opf = bio_op | write_flags;
+ 	bio->bi_private = cb;
+ 	bio->bi_end_io = end_compressed_bio_write;
  
--bool btrfs_use_zone_append(struct btrfs_inode *inode, struct extent_map *em)
-+bool btrfs_use_zone_append(struct btrfs_inode *inode, u64 start)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct btrfs_block_group *cache;
-@@ -1311,7 +1311,7 @@ bool btrfs_use_zone_append(struct btrfs_inode *inode, struct extent_map *em)
- 	if (!is_data_inode(&inode->vfs_inode))
- 		return false;
++	if (use_append) {
++		struct extent_map *em;
++		struct map_lookup *map;
++		struct block_device *bdev;
++
++		em = btrfs_get_chunk_map(fs_info, disk_start, PAGE_SIZE);
++		if (IS_ERR(em)) {
++			kfree(cb);
++			bio_put(bio);
++			return BLK_STS_NOTSUPP;
++		}
++
++		map = em->map_lookup;
++		/* We only support single profile for now */
++		ASSERT(map->num_stripes == 1);
++		bdev = map->stripes[0].dev->bdev;
++
++		bio_set_dev(bio, bdev);
++		free_extent_map(em);
++	}
++
+ 	if (blkcg_css) {
+ 		bio->bi_opf |= REQ_CGROUP_PUNT;
+ 		kthread_associate_blkcg(blkcg_css);
+@@ -432,6 +458,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	bytes_left = compressed_len;
+ 	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
+ 		int submit = 0;
++		int len;
  
--	cache = btrfs_lookup_block_group(fs_info, em->block_start);
-+	cache = btrfs_lookup_block_group(fs_info, start);
- 	ASSERT(cache);
- 	if (!cache)
- 		return false;
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 5e41a74a9cb2..e55d32595c2c 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -53,7 +53,7 @@ void btrfs_calc_zone_unusable(struct btrfs_block_group *cache);
- void btrfs_redirty_list_add(struct btrfs_transaction *trans,
- 			    struct extent_buffer *eb);
- void btrfs_free_redirty_list(struct btrfs_transaction *trans);
--bool btrfs_use_zone_append(struct btrfs_inode *inode, struct extent_map *em);
-+bool btrfs_use_zone_append(struct btrfs_inode *inode, u64 start);
- void btrfs_record_physical_zoned(struct inode *inode, u64 file_offset,
- 				 struct bio *bio);
- void btrfs_rewrite_logical_zoned(struct btrfs_ordered_extent *ordered);
-@@ -152,8 +152,7 @@ static inline void btrfs_redirty_list_add(struct btrfs_transaction *trans,
- 					  struct extent_buffer *eb) { }
- static inline void btrfs_free_redirty_list(struct btrfs_transaction *trans) { }
+ 		page = compressed_pages[pg_index];
+ 		page->mapping = inode->vfs_inode.i_mapping;
+@@ -439,9 +466,13 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 			submit = btrfs_bio_fits_in_stripe(page, PAGE_SIZE, bio,
+ 							  0);
  
--static inline bool btrfs_use_zone_append(struct btrfs_inode *inode,
--					 struct extent_map *em)
-+static inline bool btrfs_use_zone_append(struct btrfs_inode *inode, u64 start)
- {
- 	return false;
- }
++		if (pg_index == 0 && use_append)
++			len = bio_add_zone_append_page(bio, page, PAGE_SIZE, 0);
++		else
++			len = bio_add_page(bio, page, PAGE_SIZE, 0);
++
+ 		page->mapping = NULL;
+-		if (submit || bio_add_page(bio, page, PAGE_SIZE, 0) <
+-		    PAGE_SIZE) {
++		if (submit || len < PAGE_SIZE) {
+ 			/*
+ 			 * inc the count before we submit the bio so
+ 			 * we know the end IO handler won't happen before
+@@ -465,11 +496,15 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 			}
+ 
+ 			bio = btrfs_bio_alloc(first_byte);
+-			bio->bi_opf = REQ_OP_WRITE | write_flags;
++			bio->bi_opf = bio_op | write_flags;
+ 			bio->bi_private = cb;
+ 			bio->bi_end_io = end_compressed_bio_write;
+ 			if (blkcg_css)
+ 				bio->bi_opf |= REQ_CGROUP_PUNT;
++			/*
++			 * Use bio_add_page() to ensure the bio has at least one
++			 * page.
++			 */
+ 			bio_add_page(bio, page, PAGE_SIZE, 0);
+ 		}
+ 		if (bytes_left < PAGE_SIZE) {
 -- 
 2.31.1
 
