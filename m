@@ -2,113 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C715E3872E0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 09:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F0D387349
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 09:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243528AbhERHLJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 May 2021 03:11:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32912 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237714AbhERHLI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 May 2021 03:11:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621321790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
+        id S1347225AbhERHZ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 May 2021 03:25:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47974 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347234AbhERHZs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 May 2021 03:25:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621322670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=78XJyVjiRmi2+KXDSxClWyC0XS9FDFDxilBB9+CmI0g=;
-        b=TTdEuYi65HJ1tGRzBWj9DwsVpYtwAhIfB07MlHp7lxtQArcTHO5dCpcr+vtmeUQgwpwuIC
-        xm486i3t+KwcCSJGcfLPIlPdBkR6IejZvBJt+Ovx7O3AgGwBELQ2YIl+/bBbw+j51U80Lb
-        VfpdzJdl+bs0DMVNjevN+xIK1nqJ6hI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6071DB10B
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 07:09:50 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 2/2] btrfs: fix the unsafe access in btrfs_lookup_first_ordered_range()
-Date:   Tue, 18 May 2021 15:09:42 +0800
-Message-Id: <20210518070942.206846-3-wqu@suse.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210518070942.206846-1-wqu@suse.com>
-References: <20210518070942.206846-1-wqu@suse.com>
+        bh=+q3ue0u3mbf3SfQ1ffYfx+/ezLG+XqLYumob4lCWjRE=;
+        b=d5iuHsyKFcanPt2vKq/VlTIn6MwppsTDDa4tI6Ox/ro/3bPw8E3yn+CAIOFFtADstPZctu
+        eKS8713/+4ZraVZd5uBp4GfMs0380QQODSOCNR3D1evOG6ESbmIeqJm3MuF371nBplZc+M
+        09yrnAnjwQ3YaR42YAyef3Z1GY8cSvw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-5mGOzpbxNGqXJc1lPnz6qg-1; Tue, 18 May 2021 03:24:27 -0400
+X-MC-Unique: 5mGOzpbxNGqXJc1lPnz6qg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDA68107ACC7;
+        Tue, 18 May 2021 07:24:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-217.rdu2.redhat.com [10.10.112.217])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3548B59463;
+        Tue, 18 May 2021 07:24:20 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210517232237.GE2893@dread.disaster.area>
+References: <20210517232237.GE2893@dread.disaster.area> <206078.1621264018@warthog.procyon.org.uk>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     dhowells@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs directories?
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <272938.1621322659.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 18 May 2021 08:24:19 +0100
+Message-ID: <272939.1621322659@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Please fold this fix into patch "btrfs: introduce btrfs_lookup_first_ordered_range()".
+Dave Chinner <david@fromorbit.com> wrote:
 
-[BUG]
-David reported a failure in generic/521 which
-btrfs_lookup_first_ordered_range() got a poisoned pointer:
+> > What I'd like to do is remove the fanout directories, so that for each=
+ logical
+> > "volume"[*] I have a single directory with all the files in it.  But t=
+hat
+> > means sticking massive amounts of entries into a single directory and =
+hoping
+> > it (a) isn't too slow and (b) doesn't hit the capacity limit.
+> =
 
- run fstests generic/521 at 2021-05-14 00:33:06
- general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6a9b: 0000 [#1] PREEMPT SMP
- CPU: 0 PID: 20046 Comm: fsx Not tainted 5.13.0-rc1-default+ #1463
- RIP: 0010:btrfs_lookup_first_ordered_range+0x46/0x140 [btrfs]
- RAX: 6b6b6b6b6b6b6b6b RBX: 6b6b6b6b6b6b6b6b RCX: ffffffffffffffff
- RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc01b3e09 RDI: ffff93c444e397d0
- Call Trace:
-  btrfs_invalidatepage+0xd3/0x390 [btrfs]
-  truncate_cleanup_page+0xda/0x170
-  truncate_inode_pages_range+0x131/0x5a0
-  ? trace_btrfs_space_reservation+0x33/0xf0 [btrfs]
-  ? lock_acquire+0xa0/0x150
-  ? unmap_mapping_pages+0x4d/0x130
-  ? do_raw_spin_unlock+0x4b/0xa0
-  ? unmap_mapping_pages+0x5e/0x130
-  btrfs_punch_hole_lock_range+0xc5/0x130 [btrfs]
-  btrfs_zero_range+0x1d7/0x4b0 [btrfs]
-  btrfs_fallocate+0x6b4/0x890 [btrfs]
-  ? __x64_sys_fallocate+0x3e/0x70
-  ? __do_sys_newfstatat+0x40/0x70
-  vfs_fallocate+0x12e/0x420
-  __x64_sys_fallocate+0x3e/0x70
-  do_syscall_64+0x3f/0xb0
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> Note that if you use a single directory, you are effectively single
+> threading modifications to your file index. You still need to use
+> fanout directories if you want concurrency during modification for
+> the cachefiles index, but that's a different design criteria
+> compared to directory capacity and modification/lookup scalability.
 
-[CAUSE]
-Although I can't reproduce, according to the line number, it's in the btree
-search code, and just lines before that, I use some copied code from
-tree_search():
+I knew there was something I was overlooking.  This might be a more import=
+ant
+criterion.  I should try benchmarking this, see what difference it makes
+eliminating the extra lookup step (which is probably cheap) versus the
+concurrency.
 
-	struct rb_node *node = tree->tree.rb_node;
-
-But that assignment is out of spinlock, which is not safe to access,
-thus lead to above poisoned pointer.
-
-Unlike tree_search(), which callers have already hold the spinlock.
-
-[FIX]
-Fix it by only assign @node after we have hold the spinlock.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ordered-data.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 4fa377da40e4..b1b377ad99a0 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -943,13 +943,14 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
- 			struct btrfs_inode *inode, u64 file_offset, u64 len)
- {
- 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
--	struct rb_node *node = tree->tree.rb_node;
-+	struct rb_node *node;
- 	struct rb_node *cur;
- 	struct rb_node *prev;
- 	struct rb_node *next;
- 	struct btrfs_ordered_extent *entry = NULL;
- 
- 	spin_lock_irq(&tree->lock);
-+	node = tree->tree.rb_node;
- 	/*
- 	 * Here we don't want to use tree_search() which will use tree->last
- 	 * and screw up the search order.
--- 
-2.31.1
+David
 
