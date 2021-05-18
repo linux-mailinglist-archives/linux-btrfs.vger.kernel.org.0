@@ -2,84 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12C2386E11
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 02:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07D9386F7F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 03:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344786AbhERAI1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 May 2021 20:08:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39472 "EHLO mail.kernel.org"
+        id S1346077AbhERBnR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 May 2021 21:43:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51258 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241878AbhERAI0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 May 2021 20:08:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 567E761185;
-        Tue, 18 May 2021 00:07:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621296429;
-        bh=ScWD93vhmvE7/+az5cdwWZNoMFRvnv5xxJIi25HVOy0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hdc9f/UOXdv+qfglkWePf0sL5MOVzNA3ZHmgmEyP7w2ctS/o/cFc0cfZQDYOgPKLd
-         wlTYkfn/VyMpUGIWomuP/vw4/Ei4opEB9rpMWlZgvAuxV0imtnNJ54QZWHFuEkQIZW
-         gs1lWxnWA+2a6CxylE0hBoL2pu8P4wwFl4DunojZOU5irUOIe/tPWMzLVSTV3dB9iQ
-         Og9KGU50jWOhITsWIJtcrEbAoeiW9bSiDvkgJrgH03HUZIT9HTcEAd+jTfGmSaM8cN
-         mKNFmHX8NwxUBXl9KGQ1RjXjEtUdTSq3Sz6THLiMf4yjCrD83VaXqX3ufERUMp1mpS
-         ZIV2FDjYZSmHw==
-Date:   Mon, 17 May 2021 17:07:07 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH RERESEND v9 0/9] fs: interface for directly
- reading/writing compressed data
-Message-ID: <YKMFK3GtcWaRz4DA@gmail.com>
-References: <cover.1621276134.git.osandov@fb.com>
- <CAHk-=wh74eFxL0f_HSLUEsD1OQfFNH9ccYVgCXNoV1098VCV6Q@mail.gmail.com>
- <YKLt5GyznttizBjd@relinquished.localdomain>
- <YKLyvnb19QmayJaJ@gmail.com>
- <YKL7W7QO7Wis2n8a@relinquished.localdomain>
+        id S238427AbhERBnP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 May 2021 21:43:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621302116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=m99VCa/7iG4Qs/i3iU0C8BBz8g6nj+dVrncN49oqL40=;
+        b=g0tpKJmSWv7jf3Sy514sSjC6EbC3u6InSfdJhqZ73u8IfBVg7w9oS2npfZXbBZBEgNDZSH
+        f402qxlwEDQ/H7Q2iaS3v3g6cZk5LVLluABIQwCypF3MVvrR2HdW7k4Xr/JtTu393Jl0BX
+        BDy/6bx8Uk77Lfk6QpstQTMMnqNPr08=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8162B115
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 01:41:56 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs: fixes for the 13 subpage preparation patches
+Date:   Tue, 18 May 2021 09:41:50 +0800
+Message-Id: <20210518014152.77203-1-wqu@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKL7W7QO7Wis2n8a@relinquished.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 17, 2021 at 04:25:15PM -0700, Omar Sandoval wrote:
-> 
-> Okay, I think we're in agreement: RWF_ENCODED for the data and separate
-> ioctls for the encryption context. Since the fscrypt policy struct
-> includes all of the relevant information, RWF_ENCODED can probably just
-> have a single ENCODED_IOV_ENCRYPTION_FSCRYPT encryption type.
-> RWF_ENCODED can express data which is both compressed and encrypted, so
-> that should be fine as well.
-> 
-> The only other missing piece that I see (other than filesystem support)
-> is an FS_IOC_SET_ENCRYPTION_NONCE ioctl. Would such an interface be
-> reasonable?
+Although Ritesh and Goldwyn were both testing full subpage patches and
+got pretty good results, our awesome maintainer David still found some
+crashes:
 
-In theory, it will be possible to add FS_IOC_SET_ENCRYPTION_NONCE.  The
-implementation might be tricky.  It would have to take the inode lock, verify
-that the file is empty, replace the encryption xattr, and re-derive and replace
-the file's encryption key.  Replacing the key should be safe because the file is
-empty, but it's hard to be sure -- and what about directories?  Another concern
-is that userspace could misuse this ioctl and somehow end up reusing nonces,
-which would be bad; probably this should be a CAP_SYS_ADMIN thing only.
+- btrfs/125 hang on x86
+  This test case is not in auto group, and for subpage case we reject
+  RAID56 thus it doesn't trigger the crash.
+  It's a behavior change in page Ordered (private2) cleanup sequence.
+  We can no longer cleanup Private2 and then finish ordered extent.
+  We have to do them in the same run, or later
+  btrfs_mark_ordered_io_finished() will skip pages without Ordered bit,
+  and causing the hang.
 
-A larger question is whether the goal is to support users backing up and
-restoring encrypted files without their encryption key being available -- in
-which case things would become *much* harder.  First because of the filenames
-encryption, and second because we currently don't allow opening files without
-their encryption key.
+  This needs a dedicated fix, but it's still pretty small, and won't
+  affect normal routines.
 
-- Eric
+- generic/521 random crash on x86
+  Which I can't reproduce, but according to the dying message, it's not
+  hard to find the problem.
+  An assignment out of the protection of spinlock.
+  This small fix can be folded into patch "btrfs: introduce
+  btrfs_lookup_first_ordered_range()"
+
+Qu Wenruo (2):
+  btrfs: fix the never finishing ordered extent when it get cleaned up
+  btrfs: fix the unsafe access in btrfs_lookup_first_ordered_range()
+
+ fs/btrfs/inode.c        | 20 ++++++++++++++++++++
+ fs/btrfs/ordered-data.c |  3 ++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
+
+-- 
+2.31.1
+
