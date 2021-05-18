@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDF33872DF
+	by mail.lfdr.de (Postfix) with ESMTP id C715E3872E0
 	for <lists+linux-btrfs@lfdr.de>; Tue, 18 May 2021 09:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346956AbhERHLH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 May 2021 03:11:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32870 "EHLO mx2.suse.de"
+        id S243528AbhERHLJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 May 2021 03:11:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32912 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237714AbhERHLH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 May 2021 03:11:07 -0400
+        id S237714AbhERHLI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 May 2021 03:11:08 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621321788; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1621321790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GtkltulNSSPGu70dqFccTkzG++nB1ZlnDEtJmm9/X7w=;
-        b=acQ38PO4AF1yIKYtOOIrT3FGvKO9yVyCyEqGGiUyfyeEspA4P3myI5LdCtre4LL2XbqX+w
-        HSovYuOwL/51hH13Oq9xvarE8groYUfrV+bY3mm185TmS8PXwmqFsXbECGenIoeddvjeot
-        aWKetaoYZ8vxiLVAuaTYfqXnzvtODhw=
+        bh=78XJyVjiRmi2+KXDSxClWyC0XS9FDFDxilBB9+CmI0g=;
+        b=TTdEuYi65HJ1tGRzBWj9DwsVpYtwAhIfB07MlHp7lxtQArcTHO5dCpcr+vtmeUQgwpwuIC
+        xm486i3t+KwcCSJGcfLPIlPdBkR6IejZvBJt+Ovx7O3AgGwBELQ2YIl+/bBbw+j51U80Lb
+        VfpdzJdl+bs0DMVNjevN+xIK1nqJ6hI=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 92AF9B10B
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 07:09:48 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 6071DB10B
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 May 2021 07:09:50 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 1/2] btrfs: fix the fs hang when run_delalloc_range() failed
-Date:   Tue, 18 May 2021 15:09:41 +0800
-Message-Id: <20210518070942.206846-2-wqu@suse.com>
+Subject: [PATCH v3 2/2] btrfs: fix the unsafe access in btrfs_lookup_first_ordered_range()
+Date:   Tue, 18 May 2021 15:09:42 +0800
+Message-Id: <20210518070942.206846-3-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210518070942.206846-1-wqu@suse.com>
 References: <20210518070942.206846-1-wqu@suse.com>
@@ -38,95 +38,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Please fold this fix into patch "btrfs: introduce btrfs_lookup_first_ordered_range()".
+
 [BUG]
-When running subpage preparation patches on x86, btrfs/125 will hang
-forever with one ordered extent never finished.
+David reported a failure in generic/521 which
+btrfs_lookup_first_ordered_range() got a poisoned pointer:
+
+ run fstests generic/521 at 2021-05-14 00:33:06
+ general protection fault, probably for non-canonical address 0x6b6b6b6b6b6b6a9b: 0000 [#1] PREEMPT SMP
+ CPU: 0 PID: 20046 Comm: fsx Not tainted 5.13.0-rc1-default+ #1463
+ RIP: 0010:btrfs_lookup_first_ordered_range+0x46/0x140 [btrfs]
+ RAX: 6b6b6b6b6b6b6b6b RBX: 6b6b6b6b6b6b6b6b RCX: ffffffffffffffff
+ RDX: 6b6b6b6b6b6b6b6b RSI: ffffffffc01b3e09 RDI: ffff93c444e397d0
+ Call Trace:
+  btrfs_invalidatepage+0xd3/0x390 [btrfs]
+  truncate_cleanup_page+0xda/0x170
+  truncate_inode_pages_range+0x131/0x5a0
+  ? trace_btrfs_space_reservation+0x33/0xf0 [btrfs]
+  ? lock_acquire+0xa0/0x150
+  ? unmap_mapping_pages+0x4d/0x130
+  ? do_raw_spin_unlock+0x4b/0xa0
+  ? unmap_mapping_pages+0x5e/0x130
+  btrfs_punch_hole_lock_range+0xc5/0x130 [btrfs]
+  btrfs_zero_range+0x1d7/0x4b0 [btrfs]
+  btrfs_fallocate+0x6b4/0x890 [btrfs]
+  ? __x64_sys_fallocate+0x3e/0x70
+  ? __do_sys_newfstatat+0x40/0x70
+  vfs_fallocate+0x12e/0x420
+  __x64_sys_fallocate+0x3e/0x70
+  do_syscall_64+0x3f/0xb0
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
 [CAUSE]
-The test case btrfs/125 itself will always fail as the fix is never merged.
+Although I can't reproduce, according to the line number, it's in the btree
+search code, and just lines before that, I use some copied code from
+tree_search():
 
-When the test fails at balance, btrfs needs to cleanup the ordered
-extent in btrfs_cleanup_ordered_extents() for data reloc inode.
+	struct rb_node *node = tree->tree.rb_node;
 
-The problem is in the sequence how we cleanup the page Order bit.
+But that assignment is out of spinlock, which is not safe to access,
+thus lead to above poisoned pointer.
 
-Currently it works like:
-
-  btrfs_cleanup_ordered_extents()
-  |- find_get_page();
-  |- btrfs_page_clear_ordered(page);
-  |  Now the page doesn't have Ordered bit anymore.
-  |  !!! This also includes the first (locked) page !!!
-  |
-  |- offset += PAGE_SIZE
-  |  This is to skip the first page
-  |- __endio_write_update_ordered()
-     |- btrfs_mark_ordered_io_finished(NULL)
-        Except the first page, all ordered extent is finished.
-
-Then the locked page is cleaned up in __extent_writepage():
-
-  __extent_writepage()
-  |- If (PageError(page))
-  |- end_extent_writepage()
-     |- btrfs_mark_ordered_io_finished(page)
-        |- if (btrfs_test_page_ordered(page))
-        |-  !!! The page get skipped !!!
-            The ordered extent is not decreased as the page doesn't
-            have ordered bit anymore.
-
-This leaves the ordered extent with bytes_left == sectorsize, thus never
-finish.
+Unlike tree_search(), which callers have already hold the spinlock.
 
 [FIX]
-The fix is to ensure we never clear page Ordered bit without running the
-ordered extent accounting.
-
-Here we choose to skip the locked page in
-btrfs_cleanup_ordered_extents() so that later end_extent_writepage() can
-properly finish the ordered extent.
+Fix it by only assign @node after we have hold the spinlock.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ fs/btrfs/ordered-data.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 48bcb351aad6..83b014c40d42 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -166,10 +166,31 @@ static inline void btrfs_cleanup_ordered_extents(struct btrfs_inode *inode,
- 	struct page *page;
+diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+index 4fa377da40e4..b1b377ad99a0 100644
+--- a/fs/btrfs/ordered-data.c
++++ b/fs/btrfs/ordered-data.c
+@@ -943,13 +943,14 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+ 			struct btrfs_inode *inode, u64 file_offset, u64 len)
+ {
+ 	struct btrfs_ordered_inode_tree *tree = &inode->ordered_tree;
+-	struct rb_node *node = tree->tree.rb_node;
++	struct rb_node *node;
+ 	struct rb_node *cur;
+ 	struct rb_node *prev;
+ 	struct rb_node *next;
+ 	struct btrfs_ordered_extent *entry = NULL;
  
- 	while (index <= end_index) {
-+		/*
-+		 * For locked page, we will call end_extent_writepage() on it
-+		 * in run_delalloc_range() for the error handling.
-+		 * That end_extent_writepage() function will call
-+		 * btrfs_mark_ordered_io_finished() to clear page Ordered and
-+		 * run the ordered extent accounting.
-+		 *
-+		 * Here we can't just clear the Ordered bit, or
-+		 * btrfs_mark_ordered_io_finished() will skip the accounting
-+		 * for the page range, and the ordered extent will never finish.
-+		 */
-+		if (index == (page_offset(locked_page) >> PAGE_SHIFT)) {
-+			index++;
-+			continue;
-+		}
- 		page = find_get_page(inode->vfs_inode.i_mapping, index);
- 		index++;
- 		if (!page)
- 			continue;
-+
-+		/*
-+		 * Here we just clear all Ordered bit for every page in the
-+		 * range, then __endio_write_update_ordered() will handle
-+		 * the ordered extent accounting for the range.
-+		 */
- 		ClearPageOrdered(page);
- 		put_page(page);
- 	}
+ 	spin_lock_irq(&tree->lock);
++	node = tree->tree.rb_node;
+ 	/*
+ 	 * Here we don't want to use tree_search() which will use tree->last
+ 	 * and screw up the search order.
 -- 
 2.31.1
 
