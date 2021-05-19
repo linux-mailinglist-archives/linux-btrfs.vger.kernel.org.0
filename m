@@ -2,131 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D95038881E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 09:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0B03888E0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 10:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239339AbhESH1D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 03:27:03 -0400
-Received: from mout.gmx.net ([212.227.17.21]:38483 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230292AbhESH1D (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 03:27:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621409142;
-        bh=wMFGX6lSYx/XxcpiXpNSHHdGa8dStqpK1LhrTFgxzR0=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=FR5kJkiTFzjZaJmLu+DmG66l9HFcFnMLfJuyhqCCpkuBOs8S/87ZegpwxouK3Gjsv
-         mWbQLBO178HeJRNaITN5b4X8ei/36PAmaVPdfjYbAvthpcxM8CfWmkufGxoXWXDrX8
-         WpO9o4jb/ViXHresf9UgDiRjwUNVVo7BHvZcAMoE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlXK-1l0Xtj41FW-00joMt; Wed, 19
- May 2021 09:25:42 +0200
-Subject: Re: System freeze with BTRFS corruption on 4 systems with kernel 5.12
- (MANJARO)
-To:     =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <a924147d-1403-369b-85d5-a5ba5be662d8@petaramesh.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <31eea3fb-926e-ce69-95bc-5ade744100d3@gmx.com>
-Date:   Wed, 19 May 2021 15:25:39 +0800
+        id S236042AbhESIBh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 May 2021 04:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238985AbhESIB1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 May 2021 04:01:27 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA1BC061760
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 01:00:06 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so2896046wmk.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 01:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=scylladb-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=LQxYHlpQlKzbVy7Qs+DZ8b8cOO6vCYLqnE0OUJbqO1U=;
+        b=yzeGv/BUCDTAG4K7Xj6Q59o2Grqt+YdTNA3vK535i9ipWxVppRJnFemU2Dy1tO6K8/
+         +HzTFy63yLu1tcxorUcLVHwGNLbfEk+H82EDibPbw2XUkGIey3u+oUT409bXFJKuwvbk
+         O2e/ucFwvQ2xRlQGpfPBvt4MgXNf7jEbXb1UffNizZv32Al361n1MNn1O1aXWmD7dDKA
+         G95DPJNuV0cfJpW74NSPaXL7Venkqtp+Fr1GP9dDxe9ka+eQ1srRkcZ0R4tpUM0DQZ6o
+         MnfsUDwsZEe7JMRl1Tp8GcAwU5U/tZo49sbARRHga2J5DrMRY9ir/iURjcDMnZrw88hV
+         GX8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=LQxYHlpQlKzbVy7Qs+DZ8b8cOO6vCYLqnE0OUJbqO1U=;
+        b=f2xohpO/p7Xksa0CKDh3pLUmSpPVbakLrVvMPLYb0cHZoDnQ/xcEPACAGurgyUUG1l
+         SJ1ar2aOj5ZPz872LqBYvv+RB1dfVh27cW6RHVZW94W57qoCEBUPVpqjQrHk8OhKtf+F
+         mVe+YqWi3D4542PXNRO4tzJqXyWmLc6V1aC9iOkkgW7FOEWRYkmYAPpRcjnEF6ZIJQ5t
+         9h5feAwF4JH0imqCPbUPJBf6vV0CqHeEpDi6ISNKptOs5Bi2HUOyO3FuZ5ea/3Xc4YhO
+         fI5+gSpVLOFP1Pt6hd3dxfNR/4p5ZUP+++vvpkfaBvdLX9C4nd5LCPB4S4Sh4rp6DQG2
+         Q1PA==
+X-Gm-Message-State: AOAM530zSul0AUresCpfJikUhiln6Nz+haGnMynCuFEGskbv4qr38h6w
+        3ex75zAtXy1V8lT4WWCNtlaoUQ==
+X-Google-Smtp-Source: ABdhPJxnRUZ2yc4qyUeE2swRcrRWqusKm5GVl93f2H70honYjIvEhAbIfNuoGyJsqfwYmYwZjdX5vw==
+X-Received: by 2002:a1c:df04:: with SMTP id w4mr9976713wmg.158.1621411205505;
+        Wed, 19 May 2021 01:00:05 -0700 (PDT)
+Received: from avi.scylladb.com (system.cloudius-systems.com. [199.203.229.89])
+        by smtp.gmail.com with ESMTPSA id m9sm4485432wmq.40.2021.05.19.01.00.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 01:00:05 -0700 (PDT)
+Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs
+ directories?
+To:     Dave Chinner <david@fromorbit.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-fsdevel@vger.kernel.org
+References: <206078.1621264018@warthog.procyon.org.uk>
+ <20210517232237.GE2893@dread.disaster.area>
+From:   Avi Kivity <avi@scylladb.com>
+Organization: ScyllaDB
+Message-ID: <ad2e8757-41ce-41e3-a22e-0cf9e356e656@scylladb.com>
+Date:   Wed, 19 May 2021 11:00:03 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <a924147d-1403-369b-85d5-a5ba5be662d8@petaramesh.org>
+In-Reply-To: <20210517232237.GE2893@dread.disaster.area>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yBGYrmNkjYQZk5cTuWgr2ArEg7MERHCWQ852Cfo46oiUeAFLVHa
- YfTDvijoHidfX1Fn1lJFq1rIBo4il5S287rxMNXixWPO7VWt8gkUYS9kW0io60WABHLfhhs
- /zZD7mdQpHM5adc3jaTSvdOhU7E7p5TDkqq1UNbjOTSlhU881hxNsUS4VuzFdZXHGswoQfm
- apttR+0csuzCtcsUMxD0g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H45AZJWEgac=:zLpUk2ATtPqc5TQTSW7rpD
- YbFB+fBFdiobDg7MNPNyxv4QMmaWA5uAuflXBZhUKtBMSTJWIE8TI4ud/rWGz6RyWJR0AQo5b
- Q9W6zzweamkK0T/vbO1+5zIArhoI/04L6PkKIhi7iLWsud014MC+f+ruJy8iFzp4lwwn8b4pN
- bWsUv1sXzhjnl+ueK5sgK0tNRewRphygq0WUorNePTpl7LNftgUeiLXB9mqtnlTcYMqgmtN67
- wWMCDsvTza/NajQEnmwtmiySb8UeT7jIHWd8j4mJrxt0xkZ/1/muJu7WI9e5dmvVrZcOkhnl/
- jcLWkRrG0Ut0PdQIgmCOy2XKZb1it3tLmCUS+DqK5s1KPGla/I46V8X0OS50nwUXatkNsfGZY
- Zw5iuWRoSejA5P1JHe/Y9md45Px3WxeGSHRzMwYvxk4YvayhJ8FEvuaOiFIXm8ce3oOaNhAJK
- Yl0sZgevDr8wSCBUwq/fJvRXUOJIFx1Vr6dGG2PQks+P4Gwo/A2Au9YjB21HYLwpF1y9Z1fci
- a96sVEosGYFgxv6G05VZ/OIsqjHEmMlXMDrI0c7gInIxu7jMs9tDPPx+HzeEfIIzJ92Qb42A6
- K6PM+tzjJfJvdCrgRZ/Xp39kv57bR5tVoMakadqSdJphFZvqg08F24rJfbU+wPIseBIuZGknc
- PnTb3PVuMp1OgyLZhriVO/UvPY0eMFY6yujjrP7ZA8zzc1xP7L7/BIGzVvj/SssksJRjZe+Rj
- 0c+zvP5Cqk/0mjft1X18loB/NaGBx+FFGKwoDCbi8cxjxE5Xv5H1X/McgAj9jaJtEJD8IVHwq
- Apf/6GU/bbyUg5eAzEoC5dbXIDrbqosPXvNhtuh7Qm7G79bpUJW2/aMgVjHO/3HdxVCDv5Tby
- tkS8SjMf34X5bqv8PnjPgAd4k/7rP7Nzx6cgUgG8ev+vw7POlXd9zoQ64apAnp1KDs8VOKKna
- mm8jmY8itSn3xpnmkZ0TSJl6NLdXTZLZ56fx8f4RY9mAD2QJ9JJDuV2MAqHa7tOt7PnWkMuqz
- 2ytNETI/KmOm6Zy8rF+ckcdyq+YTMe1StZiNXGj35teXpFPxGwTefqFkLyjh//3VnvhssI1rS
- 6+WnO8UO0ryLhRMDwZO/ZSAeaYjmqwPNVPlFoSg8dxwgpQOsJdCOIrq/tdnTudY7glN2kab1d
- QZQrc60xcQnXWkl8xoR9xdryGmZ9VOyf+iq4e9GIqHSlsMUMQrC1vTp66kvy2rnXyg3shFGY9
- 32aPuGDvF6pSjiNj+
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On 18/05/2021 02.22, Dave Chinner wrote:
+>
+>> What I'd like to do is remove the fanout directories, so that for each logical
+>> "volume"[*] I have a single directory with all the files in it.  But that
+>> means sticking massive amounts of entries into a single directory and hoping
+>> it (a) isn't too slow and (b) doesn't hit the capacity limit.
+> Note that if you use a single directory, you are effectively single
+> threading modifications to your file index. You still need to use
+> fanout directories if you want concurrency during modification for
+> the cachefiles index, but that's a different design criteria
+> compared to directory capacity and modification/lookup scalability.
 
-On 2021/5/19 =E4=B8=8B=E5=8D=881:39, Sw=C3=A2mi Petaramesh wrote:
-> Hi list,
->
-> (Please CC: me on replies, I'm not currently susbscribed to the list)
->
-> This is to report a bug with Manjaro Linux 5.12.1-2 kernel that
-> immediately affected 4 different, usually stable machines after update
-> to kernel 5.12 from 5.11 or 5.10, and went away after reverting back to
-> either 5.10 or 5.11.
->
-> Kernel affected : Linux 5.12.1-2-MANJARO
-> (Not sure if I tried Manjaro Linux 5.12.1-1-MANJARO)
->
-> Kernel not affected : All previous versions up to 5.11.18-1-MANJARO
->
-> Symptoms : Under heavy disk usage (such as performing a system backup
-> onto external USB HD) the machine soon completely freezes and only a
-> hard power cycle can get it out of it.
 
-Any dying message?
+Something that hit us with single-large-directory and XFS is that XFS 
+will allocate all files in a directory using the same allocation group. 
+If your entire filesystem is just for that one directory, then that 
+allocation group will be contended. We saw spurious ENOSPC when that 
+happened, though that may have related to bad O_DIRECT management by us.
 
->
-> After reboot, systems on which BTRFS is built over bcache may show heavy
-> filesystem corruption.
 
-Which kind of corruption? Just data csum mismatch?
+We ended up creating files in a temporary directory and moving them to 
+the main directory, since for us the directory layout was mandated by 
+compatibility concerns.
 
-Does `btrfs check` reports other problems?
 
-Thanks,
-Qu
->
-> Happened on :
->
-> - HP Laptop 1 (Intel Atom) : BTRFS over LUKS on SSD : System freeze, no
-> BTRFS corruption after reboot.
->
-> - Dell Laptop 1 (Intel Core2 duo) : BTRFS over LUKS on SSD : System
-> freeze, no BTRFS corruption after reboot.
->
-> - HP Laptop 2 : One BTRFS FS over LUKS on SSD, and one BTRFS over bcache
-> over LUKS on HD+SSD : System freeze, SSD BTRFS was not corrupt but BTRFS
-> over bcache was severely corrupt, beyond repair and had to be rebuilt
-> and restored from backups.
->
-> - Asus old desktop with AMD Athlon 64 X2 : BTRFS RAID-1 over bcache over
-> LUKS on 2 HD + SSD : System freeze, heavy BTRFS corruption that could
-> however be fixed by simply running a =E2=80=9Cbtrfs scrub=E2=80=9D after=
- reverting back
-> to a 5.10 Manjaro kernel.
->
->
-> To be thorough, I also have to report an Arch Linux Intel Celeron
-> machine running 5.12.4-arch1-2 kernel, BTRFS over LUKS on SSD, that has
-> been running for a while without showing any such symptom.
->
->
-> Hope these reports can be useful.
->
-> Best regards.
->
-> =E0=A5=90
->
+We are now happy with XFS large-directory management, but are nowhere 
+close to a million files.
+
+
