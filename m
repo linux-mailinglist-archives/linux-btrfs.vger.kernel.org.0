@@ -2,202 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3483892E5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 17:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 904C6389353
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 18:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346806AbhESPqk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 11:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241503AbhESPqj (ORCPT
+        id S1355164AbhESQMs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 May 2021 12:12:48 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:23770 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355147AbhESQMo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 11:46:39 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B132AC06175F
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 08:45:19 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id v8so13187147qkv.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 08:45:19 -0700 (PDT)
+        Wed, 19 May 2021 12:12:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1621440684; x=1652976684;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=IGqKmX5QiS7n16hQGUsMJfQiCaDfMihvhntN33tsdC4=;
+  b=C8sl+beyPowNgbphDKmwp3T8lteTo7pHr0NGvq3ZpvsOZKDQ2+I+QpGB
+   e9VGA3J03q8vv2JZFKS1o/Nvi+0evdsKblPR2SAM5y04TNKi9uPkZ8+uD
+   qroJxqNpLVApPkSa3/OJjAsEgJAtZL4mfPbAFgdP6bSPTVz8hU5+KA66P
+   xKQNjh31WT0cz3nm53ukkDGGElH1FldsMxAFPWFuX9m7J0FcTXt1N1IAA
+   D1Q8V8pYOMRNwpGBvpmolcIP1DQitWe54/np0fgaBxRmFK9wlp/DTcf1t
+   SkAQyvAYOW8AQySQiBAcqVXlpofp4tjLrwjs+kNORfPK+fs5KJzMmJgZy
+   Q==;
+IronPort-SDR: qPieHd1Givt4RZAddGbmEJ4Q3E2aZZIbadL10dIzqzN54O0PViXHM/tnjvuMR3XaRKES+t3D++
+ juh0zETcPIVWJn0r00KV8gdUJS4dEoG4MsoeaW2yj623lVFbD9HqVE0ZL+w96M5ayfiBRpTUtV
+ hNcWjLk5IBpE+RIvBJDCZhKp3pdtc1wbuiN2B+dD1fzmZ4J/KlMWH0V4KyQhxwER3ROyi9RHW6
+ vLHcm28Tnh2L1+oGN4qQ9sQtTVIqZ7KLgUjw5qojcKMgZyM5N1qBEWqz8smY3/JY6cOaEShjLx
+ OJ4=
+X-IronPort-AV: E=Sophos;i="5.82,313,1613404800"; 
+   d="scan'208";a="168722057"
+Received: from mail-mw2nam12lp2040.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.40])
+  by ob1.hgst.iphmx.com with ESMTP; 20 May 2021 00:11:23 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YuWoZYciDJrWLEM8XjuJCf+pUJPSbRk2byh7/Pcs9cH0C10m2fWHGax5r7Cmd9D0tJbRqSnivPNmK/SLzeSC9XNrKKpHyqVzzbNVntYrcg0taSWFsrgeVzDfuSyx7oU51D2xz9AjiE2d1ftLQQDi/Sgdfa9hzhMLb3MN6swY/Id6apWkH9b68ECbhUPzrmTIcoXmqnvspJzr81EUW5dG54onK3vVq68TBT6abxvWlE0dQOq2rE4N8cftwrhmhcScZleuSb38HumjLe31oSAA83LrsKnAZ6vIzDcY2hwqhf76cgZhHoaWmO5gdBBHv88Mx1G1WYMjbUxnPtqrMhRnNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y2+sP0TySNk5iuRFe/Ux8nvDOTRklpzH4P2maMPKxqc=;
+ b=JLOdWpa3eFQxpJMQMo7tMEJoiriWy6ib0nSpKIcsJPq0/D2dYJpHLEykVZfpx1ssbNqUCNsJpOYJjtRISx/1bLV0a5cB6P3owzPMpbRsVG6j7j1KhLFiLQuyIE0RqKgOCqq7Mopn8eC64BK8oTKwkf1c6WX4wrt9SJXROzONhWmPm4U53T+CILSekXo8lDxIVgPkaRz6cPmns4UfK0MAEHkA+VhiUsgxjGzAxoaTkIyklHgkP1vaZXMJfpPbw20LeYgyyBWjF9Ft0MZrfo8VNYm51xlMiYofLx0uJGYcXNk8ruhj9ZLjkvu7pz9VTqZiJBSdnWIlO7emHGPwQlMwiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aKFsjkcL0AqtvI8tFD1v35rr0+/4ldCSI2fDjNsCUk8=;
-        b=d8Xniry5VDUoNJNp8wMb699z1jGxbiE18X+iamUX0SpzkMMgJ5QDrMQpjxY1mlQe7t
-         9VN7DNRivC4v65YtVBlLHYHmghM4Wp0Poq2prJQX70k2FAUvmCvSk6kOh49TKH7Pt+lG
-         e3MuO/WXTef4eB/U8DB3fxbih7RDOuzMkEP1oLOzZIu2v+PpM//dIA/fMAv5ZzyelU86
-         WvtTORaAK5qDLyVGKpQuzBXasoW4viGqlAfc2oeqkmtTM7NnIoGi2uFii+i9hrDJ/WGR
-         ukSEn9JwIlZAvV7gzb9w2UfZ3nuxWmI/6yHxjcSB3UzUZfkd6rG7G7/i27gq0HPEU2A5
-         WTrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aKFsjkcL0AqtvI8tFD1v35rr0+/4ldCSI2fDjNsCUk8=;
-        b=ZpRdhSbMU6mliDw16R0sCv8BMqLiL1c/InDmu2RIuEDaP0ZYGrwCI18XUq+Qmsp6FE
-         RxqsP9LEBdiWqara3M1vaWF/ThO4MklA+N1I2nXU+UY3LjexO9vxCFxiiJl8zTYzOHsh
-         X/OEELyme2Ku6PmrTTQI86g5ExXL0cHX8ejRJqVYJiqvEzPSjTMnGE0lBpzLxIZz+ARZ
-         Uy589mEv4ivfy2ypibiZv+/WRPtJhIqcIdujdUpm5kWGToMCKceRPbHTpIRh6Y3PlBio
-         pR3vJwwZKZWTUql5Xl296WfdoZ+sytZOtP2J6Aks1KChx0gyjuOg4zpvAVRfWdqOcMun
-         ctFw==
-X-Gm-Message-State: AOAM530PXFeuby6rT5tVK35aoRuooDPE1aGOtZsaPZMkWgb50GfBCKNW
-        PNEMojWX86Qk4WQGDFpgRlvDcJT/gty65A==
-X-Google-Smtp-Source: ABdhPJzf8pYtTGIcEHN+oiDTCX5kExBDwWRH6mVLbxPuWEqhY/484CEywDaUfLSDbXTPrzGFtmtFoQ==
-X-Received: by 2002:a37:de13:: with SMTP id h19mr12529878qkj.346.1621439118294;
-        Wed, 19 May 2021 08:45:18 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v8sm26137qkg.102.2021.05.19.08.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 08:45:17 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2] btrfs: do not infinite loop in data reclaim if we aborted
-Date:   Wed, 19 May 2021 11:45:16 -0400
-Message-Id: <33a744a9768b0a46b8993c1fc39bacebb43579a9.1621438991.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y2+sP0TySNk5iuRFe/Ux8nvDOTRklpzH4P2maMPKxqc=;
+ b=GTb5BSFv7krlQ2ux8SHlVWl+Sme2R3iD2sah1nY9hHHwr84B8hBmt1pt8JUEO4luPBkaaA9d6CDGo6n9M7Q0U2f6aieRzLR2Vhef9pmxMC6xRdlUXMlibUIrbacgVSE8aZwYQb1o+sTNhB5tPgRbi44JZSNG9DmDVIdUefVZuhA=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7493.namprd04.prod.outlook.com (2603:10b6:510:51::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Wed, 19 May
+ 2021 16:11:23 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4129.033; Wed, 19 May 2021
+ 16:11:23 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH v2] btrfs: do not infinite loop in data reclaim if we
+ aborted
+Thread-Topic: [PATCH v2] btrfs: do not infinite loop in data reclaim if we
+ aborted
+Thread-Index: AQHXTMX95t9nPxhSE0KdrpseOrIMqA==
+Date:   Wed, 19 May 2021 16:11:23 +0000
+Message-ID: <PH0PR04MB7416920AA5234C219180EC959B2B9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <33a744a9768b0a46b8993c1fc39bacebb43579a9.1621438991.git.josef@toxicpanda.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: toxicpanda.com; dkim=none (message not signed)
+ header.d=none;toxicpanda.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:152f:cc01:95b:718f:422f:1ec2]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 19044ebe-5585-4713-15a6-08d91ae0bf42
+x-ms-traffictypediagnostic: PH0PR04MB7493:
+x-microsoft-antispam-prvs: <PH0PR04MB7493AC246DC865679C6BED309B2B9@PH0PR04MB7493.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lQ49wNOgBU8Pq0OGwvWRvlOryJlAkYMVPFBiIoHFzjJuhm798fgLCqpTWiMul6rx6m/pJJ2WlCcPcc97+81J11LjkQQx8k+oVCQFElGLwXH/goOouICpiaIaWHEo6V4ShOZ3WApduC47p5jETLLyKTBrJROzhWxbT376XwXIobYtzYyo7RGq1Yqc/QJjq63Ea+xdapR6ux6qnL5jQeLVpurxBg6Dkbd5RRv9lbAjHDFkHRVjWZllgMFRkC4QLteTgAxZfHfxzkJNGv73iu1ljRbyeRfIxqfAw5Ueps12StTjtNG2lgcdZXP/DvrdpTYJG/h2XctXO19rWP2X+oklDGgZeNghRvEj54h43RC+5hk08u1eLWdmB6WfL1/TtZ/DBRNrOO8o331gM5TsfxILOniJ63i29yTeH1qH36BrYy0QMSSVVFSZ91dJ619Qil2ITX2+xJmcsWJxtVte3YmFZAkpK8NJ2TWtbcJI6cxaf1py0LvO9DLgv9hJoMEc3gi+vTVigYDwESPGpgcjGMP/EDacRO7ofKOsw21tp7jE/xpSXQEQ3zZrnDQiQbeWT8Dm2nmL4B2sXuKP0FNyhEP937kqoBhW2Ds+zUdBuAWJgSw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(376002)(39860400002)(71200400001)(83380400001)(66446008)(7696005)(33656002)(66946007)(66556008)(64756008)(110136005)(66476007)(76116006)(91956017)(38100700002)(8936002)(316002)(55016002)(9686003)(2906002)(53546011)(86362001)(6506007)(122000001)(52536014)(8676002)(5660300002)(478600001)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FzSFEq7J93UydOCEYA8S9cVaalozXSJP+fymIPtGDoxAxqWCOoK+DBvv08Zc?=
+ =?us-ascii?Q?OHAVd6NanWkhl14YwmYzhz0t0SA1/D4EPpaHm5Zp2i90azIq2LSioD5cl8kP?=
+ =?us-ascii?Q?I2hZUs0jagK9VvPGbe2/8ckBeRAbQkiv+6C2Jdyjo+YOga5gnFq1Xe/qRn4q?=
+ =?us-ascii?Q?as5btV8WNrLmFnLlkHK1X51L7t+NmZ5tZS/HEfceDNiBIW2/B+vYo3p8V9mk?=
+ =?us-ascii?Q?UNEH+bGkUoe4SsQ6H0ID2h+VLiMOBJgHq0KusGC08KcZshiEiPitCPbm1iEG?=
+ =?us-ascii?Q?2n8I/msP/5hX/atoDPF0Sycz/DixZAmI7x81seRgykE9TFQmW0Jvjow1UB0t?=
+ =?us-ascii?Q?53wEVD6FCuxwAoQjto7ToSUs/iq97v1X0Sg8I/n6SKHZtf5rAlyJjGyFzdCh?=
+ =?us-ascii?Q?oJPiTfRUuJCEE6Sxt47h5l9Z6r4ZSMQeo3lJSLNsjXOu5z07OZz3Z6jp/ObQ?=
+ =?us-ascii?Q?DzJugM6Kj+YlW8pAftxAySYVMOZSgkcgljcLj+ugtdIuztlWBPHmEskBHqme?=
+ =?us-ascii?Q?uXTrg7d9gSGctLpzYHTFA5QXsHtAkEPKuR5Yq2iHmXfgkfc5Va92AhcNDRck?=
+ =?us-ascii?Q?VUkO3rK762sCs6b1enZbkoXKaEYx4edQW2/RkmTFmQM4vzKbroocil3C75oN?=
+ =?us-ascii?Q?5GLDf4vLsA1haWdO6yTCw/47b1yBmJ7ldtHq4KaPkxjvZ27lBHvJHb/o907X?=
+ =?us-ascii?Q?XLLbemswVzAonjXGL6NMMyuUMTPca7d/AMY+6OfiSJ23YRZEXtno3o4mQlXz?=
+ =?us-ascii?Q?JRv7YVzWnGPIFgxlQgdALEW6uiyiw/aozB5FllYcdmxy1GFBG3U0TS7kvBWO?=
+ =?us-ascii?Q?f+AmQykSseEQ+Qyrmk7cJ7L8Jqd+InaEuo8gmitJBSRSigDhsd7jF09sBQem?=
+ =?us-ascii?Q?J2uBEr6qKv3KMPLmchmWhdr1htiDEnk+el6HCc2Qztr50hTg2J5ojnH4xJdf?=
+ =?us-ascii?Q?QglFpjekJXiESxlgMszWlOm0+vsuS7ELPpE/pnAu8uRdwwwGBi5/uNTNFlJO?=
+ =?us-ascii?Q?EIBRE1zyk6Ga3KLSQDfltbvQaGyKV8QvGaEqbTgngwEwQzL4689FrMPGT/M0?=
+ =?us-ascii?Q?9WpWqIHNbZcXm3zACe9EDh/9Y262gujV+F0mKB9KBehJzy1Nn80j2hFEM4gX?=
+ =?us-ascii?Q?3YA4cY2PZQPbYQclE4Zh+yzVdTknmsn6gUjM/g/dcrYcBX2RdUQh96ZRMZMr?=
+ =?us-ascii?Q?KgTAyHeDO49ptWPV0lRyfuGuE2oa6p9RLxGW70cBqtTAGQlFbI/mnXoWzMUX?=
+ =?us-ascii?Q?+RvtoisRVfiMET3xsPNlU2QbrICxq/Dn760lEZDnuEUkhLcozq9pHBvK7Gx6?=
+ =?us-ascii?Q?YuxraCwWp/mlHWuILztDsWa7Z8/yPEUTw+VecrGRfC0BV/HVXwvxUJYTvPvR?=
+ =?us-ascii?Q?11FFFLzqUwC5t6q98HjDqyH80j513hsMI+h292byakX6RoZRvA=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19044ebe-5585-4713-15a6-08d91ae0bf42
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2021 16:11:23.2047
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r/6E8ssLqQi8dE8pBPPEnl+3z94k1bmvpEuspagEebtXa+QgrScUGx56GWGSo4PLdvX22JKji2Ibd86f+ZIJlY2JfLx8vfUhuunGgXaB4+I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7493
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Error injection stressing uncovered a busy loop in our data reclaim
-loop.  There are two cases here, one where we loop creating block groups
-until space_info->full is set, or in the main loop we will skip erroring
-out any tickets if space_info->full == 0.  Unfortunately if we aborted
-the transaction then we will never allocate chunks or reclaim any space
-and thus never get ->full, and you'll see stack traces like this
-
-watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [kworker/u4:4:139]
-CPU: 0 PID: 139 Comm: kworker/u4:4 Tainted: G        W         5.13.0-rc1+ #328
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-Workqueue: events_unbound btrfs_async_reclaim_data_space
-RIP: 0010:btrfs_join_transaction+0x12/0x20
-RSP: 0018:ffffb2b780b77de0 EFLAGS: 00000246
-RAX: ffffb2b781863d58 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000801 RSI: ffff987952b57400 RDI: ffff987940aa3000
-RBP: ffff987954d55000 R08: 0000000000000001 R09: ffff98795539e8f0
-R10: 000000000000000f R11: 000000000000000f R12: ffffffffffffffff
-R13: ffff987952b574c8 R14: ffff987952b57400 R15: 0000000000000008
-FS:  0000000000000000(0000) GS:ffff9879bbc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0703da4000 CR3: 0000000113398004 CR4: 0000000000370ef0
-Call Trace:
- flush_space+0x4a8/0x660
- btrfs_async_reclaim_data_space+0x55/0x130
- process_one_work+0x1e9/0x380
- worker_thread+0x53/0x3e0
- ? process_one_work+0x380/0x380
- kthread+0x118/0x140
- ? __kthread_bind_mask+0x60/0x60
- ret_from_fork+0x1f/0x30
-
-Fix this by checking to see if we have BTRFS_FS_STATE_TRANS_ABORTED in
-either of the reclaim loops, and if so fail the tickets and bail.  In
-addition to this, fix maybe_fail_all_tickets() to not try to grant
-tickets if we've aborted, simply fail everything.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v1->v2:
-- The original fix would bail, but we'd hang because tickets wouldn't be worken
-  up properly, fix the error case to fail all pending tickets.
-- The original fix also didn't include the normal reclaim loop, which has a
-  similar problem in that it only fails if ->full is set.
-- Make maybe_fail_all_tickets() actually fail all tickets if we've aborted.
-  This is just nice to have, there's no problem per-se but it makes it less
-  likely that we'll allow tickets to be granted if there was a little bit of
-  available space.
-
- fs/btrfs/space-info.c | 35 ++++++++++++++++++++++++++++++-----
- 1 file changed, 30 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 42d0fa2092d4..0d36d684d552 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -941,6 +941,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 	struct reserve_ticket *ticket;
- 	u64 tickets_id = space_info->tickets_id;
- 	u64 first_ticket_bytes = 0;
-+	bool aborted = test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
-+				&fs_info->fs_state);
- 
- 	if (btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
- 		btrfs_info(fs_info, "cannot satisfy tickets, dumping space info");
-@@ -952,7 +954,7 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 		ticket = list_first_entry(&space_info->tickets,
- 					  struct reserve_ticket, list);
- 
--		if (ticket->steal &&
-+		if (!aborted && ticket->steal &&
- 		    steal_from_global_rsv(fs_info, space_info, ticket))
- 			return true;
- 
-@@ -968,15 +970,18 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 		 */
- 		if (first_ticket_bytes == 0)
- 			first_ticket_bytes = ticket->bytes;
--		else if (first_ticket_bytes > ticket->bytes)
-+		else if (!aborted && first_ticket_bytes > ticket->bytes)
- 			return true;
- 
--		if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
-+		if (!aborted && btrfs_test_opt(fs_info, ENOSPC_DEBUG))
- 			btrfs_info(fs_info, "failing ticket with %llu bytes",
- 				   ticket->bytes);
- 
- 		remove_ticket(space_info, ticket);
--		ticket->error = -ENOSPC;
-+		if (aborted)
-+			ticket->error = -EIO;
-+		else
-+			ticket->error = -ENOSPC;
- 		wake_up(&ticket->wait);
- 
- 		/*
-@@ -985,7 +990,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 		 * here to see if we can make progress with the next ticket in
- 		 * the list.
- 		 */
--		btrfs_try_granting_tickets(fs_info, space_info);
-+		if (!aborted)
-+			btrfs_try_granting_tickets(fs_info, space_info);
- 	}
- 	return (tickets_id != space_info->tickets_id);
- }
-@@ -1253,6 +1259,15 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 			spin_unlock(&space_info->lock);
- 			return;
- 		}
-+
-+		/* Something happened, fail everything and bail. */
-+		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
-+			     &fs_info->fs_state)) {
-+			maybe_fail_all_tickets(fs_info, space_info);
-+			space_info->flush = 0;
-+			spin_unlock(&space_info->lock);
-+			return;
-+		}
- 		last_tickets_id = space_info->tickets_id;
- 		spin_unlock(&space_info->lock);
- 	}
-@@ -1283,6 +1298,16 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 			} else {
- 				flush_state = 0;
- 			}
-+
-+			/* Something happened, fail everything and bail. */
-+			if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
-+				     &fs_info->fs_state)) {
-+				maybe_fail_all_tickets(fs_info, space_info);
-+				space_info->flush = 0;
-+				spin_unlock(&space_info->lock);
-+				return;
-+			}
-+
- 		}
- 		spin_unlock(&space_info->lock);
- 	}
--- 
-2.26.3
-
+On 19/05/2021 17:45, Josef Bacik wrote:=0A=
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c=0A=
+> index 42d0fa2092d4..0d36d684d552 100644=0A=
+> --- a/fs/btrfs/space-info.c=0A=
+> +++ b/fs/btrfs/space-info.c=0A=
+> @@ -941,6 +941,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_in=
+fo *fs_info,=0A=
+>  	struct reserve_ticket *ticket;=0A=
+>  	u64 tickets_id =3D space_info->tickets_id;=0A=
+>  	u64 first_ticket_bytes =3D 0;=0A=
+> +	bool aborted =3D test_bit(BTRFS_FS_STATE_TRANS_ABORTED,=0A=
+> +				&fs_info->fs_state);=0A=
+=0A=
+can't this be const bool aborted =3D ...?=0A=
+=0A=
+=0A=
+> @@ -1253,6 +1259,15 @@ static void btrfs_async_reclaim_data_space(struct =
+work_struct *work)>  			spin_unlock(&space_info->lock);=0A=
+>  			return;=0A=
+>  		}=0A=
+=0A=
+Although this pattern is only twice in btrfs_async_reclaim_data_space()=0A=
+=0A=
+	const bool aborted =3D test_bit(BTRFS_FS_STATE_TRANS_ABORTED,=0A=
+				      &fs_info->fs_state);=0A=
+=0A=
+here as well?=0A=
+=0A=
+> +=0A=
+> +		/* Something happened, fail everything and bail. */=0A=
+> +		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,=0A=
+> +			     &fs_info->fs_state)) {=0A=
+> +			maybe_fail_all_tickets(fs_info, space_info);=0A=
+> +			space_info->flush =3D 0;=0A=
+> +			spin_unlock(&space_info->lock);=0A=
+> +			return;=0A=
+> +		}=0A=
+=0A=
+maybe_fail_all_tickets()=0A=
+space_info->flush =3D 0=0A=
+spin_unlock()=0A=
+return=0A=
+=0A=
+is introduced twice in btrfs_async_reclaim_data_space, can you add a =0A=
+goto label to consolidate?=0A=
+=0A=
+>  		last_tickets_id =3D space_info->tickets_id;=0A=
+>  		spin_unlock(&space_info->lock);=0A=
+>  	}=0A=
+> @@ -1283,6 +1298,16 @@ static void btrfs_async_reclaim_data_space(struct =
+work_struct *work)=0A=
+>  			} else {=0A=
+>  				flush_state =3D 0;=0A=
+>  			}=0A=
+> +=0A=
+> +			/* Something happened, fail everything and bail. */=0A=
+> +			if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,=0A=
+> +				     &fs_info->fs_state)) {=0A=
+> +				maybe_fail_all_tickets(fs_info, space_info);=0A=
+> +				space_info->flush =3D 0;=0A=
+> +				spin_unlock(&space_info->lock);=0A=
+> +				return;=0A=
+> +			}=0A=
+> +=0A=
