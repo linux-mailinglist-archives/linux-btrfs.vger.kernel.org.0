@@ -2,83 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D971389204
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 16:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19AB389205
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 16:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348687AbhESOyM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 10:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        id S1354920AbhESOyN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 May 2021 10:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354875AbhESOyJ (ORCPT
+        with ESMTP id S1354917AbhESOyM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 10:54:09 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81E7C06175F
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 07:52:49 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id i67so12956001qkc.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 07:52:49 -0700 (PDT)
+        Wed, 19 May 2021 10:54:12 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91895C06175F
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 07:52:51 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id a7so2584978qvf.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 07:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=e4bD87Yf106hlcWc1kf5qZ5vmpAB29HPMzqXNZ9kuV4=;
-        b=N/V6GqnR3Esn/FE52ugOlb/qoxl4pnZWtOf4H9ytvHTl5JIJ7qLEMDwoGud7RJhOuf
-         UWxVmTJBsvRz9FuFTpdn3NqziyqX2d1OAP6XSVncPbkdoLC/nmoyDuyAV45gEp7PkugZ
-         9cAY/DYrYzPOxZKYSbloLnzq0IoArfh0MGhTWQG5t/n1crY1KJsTIBWxafo0v6ZJYDoH
-         FFJXZ1zfeRvSHuAJbHeQjasZqStsgoL0tv41Igr3J4TipiP6TmVeMqamF12IiPFLM5lZ
-         PEBxcHs+IX9CxsSrqdaFDzzf/zL3QJN/wP7JnsKLumZT/h8jKp9CKPQhTUQlH8VC5iv2
-         NJqg==
+        bh=hDdgOQyp2r+Z6D7W01B9hwZHAqTsTTLSPZJNqft+VpM=;
+        b=KLMYd33ZClKcnZycLTZtOsuNYurj2VN89onb/ly13J2AZHVAERjPujC//aCzS8bkbq
+         s/VGCB8OyNDyXB5TRv8Qd9GMsEkz+K40VfZVMtt6q8eu+kjBZL4WC4rTdpkafMpnomft
+         VONTBRRJ1X7JuRS10SOzmwwEJANa0/FFhtK8/y9GxzeQFPwta+J/UlLr7IXx1nI5RpOn
+         89PA/r4Du7GhMTcs1P+r7Fqbn5AwwDXLwWyZkq/0NKClyJBgPUI/XM3/FdDZNLR+fWA6
+         CzjP2z/48ooxF/2msQiHuDL7+0JIEqzDScCWnCsLhHP+WMALiYreYSJuWLgvB48sceXU
+         hh4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e4bD87Yf106hlcWc1kf5qZ5vmpAB29HPMzqXNZ9kuV4=;
-        b=SGevQhZxPysWLreITVh10PZW681vaHpI98wl6+T4jH7XI6hRaNr+h3EFxg3U6qcAiP
-         iFk/5hjp8z3QKfJQO18bsbQ1ZsuH5enNizOn09SIUSt0/+wapglMutzviiGuCmceSvtz
-         WFTIGZg4kac2CFeJz5m0OFL95PZcUJ+lIBtNdd7Tk53BzRjlJxKl84nz1FfPi3c94XZM
-         MUjxPShK/URAB5BaZCpjP5STzn2UpIxUXMapr2Lp3RYmyQzPknrcEcCGFsdeD5RjbRMS
-         xfKQqe0uBV5rCsX63mg/x19TLIAIW830rQCX22aUcTCU8r9lciaxGJUmfVk4f6aXenCi
-         TAfA==
-X-Gm-Message-State: AOAM5305culcdHKxa+NYJ34wU7nHaBOs16aSHVLHlfpjilNrOXWcQZNC
-        paC2bN/RLO/3ZzD8qzny6eQ7rwb0C4M03Q==
-X-Google-Smtp-Source: ABdhPJyi8/LhF65MLKXc79ieerq3TuFQYcvfH0lSxELda0GqXvItZB7uLZq6MKYk05Hb5EGlsBAgdw==
-X-Received: by 2002:a05:620a:2215:: with SMTP id m21mr12600539qkh.61.1621435968523;
-        Wed, 19 May 2021 07:52:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hDdgOQyp2r+Z6D7W01B9hwZHAqTsTTLSPZJNqft+VpM=;
+        b=CG3nE9PZu7jLPsZQQq8dc4KY+JLzahoinySh2bMIwk88PbW4PdJ++dZ3+5OUi115PD
+         2Ze69ogRji504pk/xUZX/Y0zAH+n5GpyuIUX1tjgxvwZ1/Svfjx7u/CYHvp4TIdD+VIa
+         t5ZRKn6cm5iGU9fuoHYXYEU1xKSG72nv6W70aHfLAUfpCHWOBhte2XaJ/+wLa1IkS7pD
+         +xynJzSZtA3kR0DFDuHWXXUY7g/+ivMbiUiNnSfJYjKm/oQT1SJQLiB46P6b46VmH6TO
+         6e0ZviHtCS2cGk3UAOuQ3aol91oDOKCDno6b3fr/OsycPd9KZpq+LqGqQVjf/Y0+KVKf
+         w8Kw==
+X-Gm-Message-State: AOAM532EFBYuIo5j4Xc26Jwrcr8Cn+cH6RAum+doJtZ97ThXp4uOMXIi
+        rpKpkNzr1WWTXIKt7LA5N706YOEvZ6AZSA==
+X-Google-Smtp-Source: ABdhPJxsnRucbWh0arficeZeM1W15K9lTeZnK5X8m2AsXmap2uy4BHxs/vGku8uGkRDVah6jJsVlsg==
+X-Received: by 2002:a05:6214:2486:: with SMTP id gi6mr13320939qvb.54.1621435970404;
+        Wed, 19 May 2021 07:52:50 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id t6sm3412995qkh.117.2021.05.19.07.52.47
+        by smtp.gmail.com with ESMTPSA id m21sm3892945qtu.11.2021.05.19.07.52.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:52:47 -0700 (PDT)
+        Wed, 19 May 2021 07:52:49 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/2] btrfs_del_csums error handling fixes
-Date:   Wed, 19 May 2021 10:52:44 -0400
-Message-Id: <cover.1621435862.git.josef@toxicpanda.com>
+Subject: [PATCH 1/2] btrfs: fix error handling in btrfs_del_csums
+Date:   Wed, 19 May 2021 10:52:45 -0400
+Message-Id: <dbb1747494ad6ea6e66fbe27c37ea3730a7ac615.1621435862.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1621435862.git.josef@toxicpanda.com>
+References: <cover.1621435862.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Error injection stress would sometimes fail with checksums on disk that
+did not have a corresponding extent.  This occurred because the pattern
+in btrfs_del_csums was
 
-Here are two fixes related to deleting csums.  Doing error injection stress
-testing I was consistently seeing cases where we had a corrupt file system with
-csums that existed without the corresponding extents being written.  This was
-occuring because we were losing the return value in two cases, both of which
-would result in this style of corruption.  With these two patches I'm no longer
-seeing these errors.  Thanks,
+	while (1) {
+		ret = btrfs_search_slot();
+		if (ret < 0)
+			break;
+	}
+	ret = 0;
+out:
+	btrfs_free_path(path);
+	return ret;
 
-Josef
+If we got an error from btrfs_search_slot we'd clear the error because
+we were breaking instead of goto out.  Instead of using goto out, simply
+handle the cases where we may leave a random value in ret, and get rid
+of the
 
-Josef Bacik (2):
-  btrfs: fix error handling in btrfs_del_csums
-  btrfs: return errors from btrfs_del_csums in cleanup_ref_head
+	ret = 0;
+out:
 
- fs/btrfs/extent-tree.c |  4 ++--
- fs/btrfs/file-item.c   | 10 +++++-----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+pattern and simply allow break to have the proper error reporting.  With
+this fix we properly abort the transaction and do not commit thinking we
+successfully deleted the csum.
 
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/file-item.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 294602f139ef..a5a8dac334e8 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -788,7 +788,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans,
+ 	u64 end_byte = bytenr + len;
+ 	u64 csum_end;
+ 	struct extent_buffer *leaf;
+-	int ret;
++	int ret = 0;
+ 	const u32 csum_size = fs_info->csum_size;
+ 	u32 blocksize_bits = fs_info->sectorsize_bits;
+ 
+@@ -806,6 +806,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans,
+ 
+ 		ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+ 		if (ret > 0) {
++			ret = 0;
+ 			if (path->slots[0] == 0)
+ 				break;
+ 			path->slots[0]--;
+@@ -862,7 +863,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans,
+ 			ret = btrfs_del_items(trans, root, path,
+ 					      path->slots[0], del_nr);
+ 			if (ret)
+-				goto out;
++				break;
+ 			if (key.offset == bytenr)
+ 				break;
+ 		} else if (key.offset < bytenr && csum_end > end_byte) {
+@@ -906,8 +907,9 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans,
+ 			ret = btrfs_split_item(trans, root, path, &key, offset);
+ 			if (ret && ret != -EAGAIN) {
+ 				btrfs_abort_transaction(trans, ret);
+-				goto out;
++				break;
+ 			}
++			ret = 0;
+ 
+ 			key.offset = end_byte - 1;
+ 		} else {
+@@ -917,8 +919,6 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans,
+ 		}
+ 		btrfs_release_path(path);
+ 	}
+-	ret = 0;
+-out:
+ 	btrfs_free_path(path);
+ 	return ret;
+ }
 -- 
 2.26.3
 
