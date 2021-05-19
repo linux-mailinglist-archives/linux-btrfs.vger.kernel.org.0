@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9850A389474
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 19:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F3238947E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 19:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355550AbhESRMa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 13:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        id S242729AbhESROk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 May 2021 13:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355490AbhESRMa (ORCPT
+        with ESMTP id S242386AbhESROj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 13:12:30 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874D6C06175F
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 10:11:09 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id v8so13474713qkv.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 10:11:09 -0700 (PDT)
+        Wed, 19 May 2021 13:14:39 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA382C06175F
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 10:13:17 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id o27so13424167qkj.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 10:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=2ncJHzBVU5TzNJ5ihpuFDeSv5N839gzzPKrEqFLZqZc=;
-        b=eY19TQ6yifVX0qo4q+y4eLV96SHTI/i3wrnOYOCFpchoUmm4m0tWt6sjby9L0kMqtq
-         ebE4PJq31peUHsm+yM6XkDI6njV3I3Nmk/6U7PixwWBxBvLNZ+Jof4H9uS6MCKQ24QW6
-         /xlihGkKcaco4wRWZ386k0RlhkQ3l0tIwAuoxL7aKi9fdBJIfjgVZA8ynfnUgB+3DW1H
-         p1jhUXarOms7B4BPJ7Phf7OBBdYtjKyk8qVUAdsS80untpr3IMoTytckzvU2k2y6TOc/
-         rYwDXKXcv6992bGwjE6fOlSTcMh6fZr+eG7rRIKL5bRQNEY6r/OvzyoUMx+KXjd2X9fl
-         hR2A==
+        bh=1/g6vwxbPWDNevkeajUbinjQOrBAUer1ObIW8M7SqF0=;
+        b=WoDI6Bc6muLDXJCDxq5EXUplXdCXXQMfDz8wsT6pa62Uhb7GPaU6iYyOnK0OQHCIZK
+         zFfnJfnLAB3b6/oanki16ofmSCozIEdR0QwWhKw4O0TQUWQjfgyGoIUXn9/rN0DFsWl6
+         LHmbpBFNly6lBfVnF/MfzNrn2biWiPab0QR2noSVhXDX125uKNLomVe4xaONG6G0cmTs
+         mk7VZH68p8do+RRjjWCPp2un6ENVsguyb38/nEe+ATR1VlxQhw6EGj3rm730pA5aIDAr
+         rE25o6xipmxIoFX8a6Ak/s3UT0llxWXzM9vZUHwSxbOIPDU16ev8rPbCbm4s0KZXDK55
+         Hl0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=2ncJHzBVU5TzNJ5ihpuFDeSv5N839gzzPKrEqFLZqZc=;
-        b=ZJWHabis0zoeLdA3miyYMBhaUx9XpbROZgNiW3Zl99ycc2kToVjaf02d/YOzhUfUKM
-         n0kcUMpHU88OmrYTd5lI7wQ3tBgEGLAgP+g6hfEhp2YA4gS+WgTSFkZSm6yEqxAEuqjT
-         SeeaPwVK8qmWPkYVIpBxS6d1WFqtA0WwbRZMj6y4xbHU+N3eQ1PQ7pL5qR6hlOjndyLC
-         p5SlcYhdDwDAlKl/+SJ9wuYr/OfOJaF3cZoio8ftYAVcnJFaNV1NBgwNEdGNY8gExSkK
-         ga3eHj7jiDFZ0KGgZxAbPH8meYPcdilnybr9GyzkjjfXwimzeCtb59GO6FOMQt8XoRng
-         sdwA==
-X-Gm-Message-State: AOAM531rjDW1ckS06UAAF8jjT/Iku89B4ZehWhftzeAL3sY8s0wIAz7+
-        hJnYHkLOuHicSa/DFV57YrZjHLkkQZ/tAA==
-X-Google-Smtp-Source: ABdhPJxl7bBrKnvgPADBMXRAr46trG2L6p2PXalZvEVhu/UmQXX+BuJsnoV3u/A9VM+0WJ9lRx1wsg==
-X-Received: by 2002:a37:45c3:: with SMTP id s186mr382339qka.318.1621444268131;
-        Wed, 19 May 2021 10:11:08 -0700 (PDT)
+        bh=1/g6vwxbPWDNevkeajUbinjQOrBAUer1ObIW8M7SqF0=;
+        b=jUDKKgX5CEjKdgeXXwDE/8R1VeAJSnWuNwGR/YsichDnLkX1hcNBSQ9qibWR4wrlsP
+         nfGvArUFp6VUMtATvnWkMI5Tyw3SDAdaRLOBJGewtLSnXZPia1UkRFX7Z52KgfKNU1D5
+         ujmhZIxN2DVIctjyXOf8Kp2nUlyLIw/pmecCBQiCp2nLY4LeppPLzWU3L1R+ILH5pdMR
+         3Hn4fBXFhysiqX2vr6weFdnEWDcq+KIgh7e1DVrpMau2IAprL+DVQmSgo7lpIi0dDWpT
+         7p1+mdVfYXZT1cQ/BDTWk3Gy+Bml1jZwvfC5uAtyGr77oldBGK+NhJJUMHriDYvGsNXz
+         +o8A==
+X-Gm-Message-State: AOAM530WZzn+higAWDcAZl6vE7tOraLsODyfJ2r/NY1Rns3uwQerv4pE
+        pg+1hb5z2ZTMDJWaqi1NcFD3PYqbp/uxUQ==
+X-Google-Smtp-Source: ABdhPJw2CGtNIKbDUYzsGonxKQgZ+DBz2nsBozetWwSafqa7AiE74hHseClNbH33FdEggSmu2KpDyg==
+X-Received: by 2002:a05:620a:574:: with SMTP id p20mr450018qkp.70.1621444396801;
+        Wed, 19 May 2021 10:13:16 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id b4sm18302qti.43.2021.05.19.10.11.07
+        by smtp.gmail.com with ESMTPSA id c14sm20009qtw.42.2021.05.19.10.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 10:11:07 -0700 (PDT)
+        Wed, 19 May 2021 10:13:16 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3] btrfs: do not infinite loop in data reclaim if we aborted
-Date:   Wed, 19 May 2021 13:11:06 -0400
-Message-Id: <dadfaef8dc4bd12e96759701d6da8bab1c3cb0a5.1621444159.git.josef@toxicpanda.com>
+Subject: [PATCH] btrfs: fixup error handling in fixup_inode_link_counts
+Date:   Wed, 19 May 2021 13:13:15 -0400
+Message-Id: <3490883fc4ea908bcefbf2507ba4c7235c2464e4.1621444381.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -60,148 +60,89 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Error injection stressing uncovered a busy loop in our data reclaim
-loop.  There are two cases here, one where we loop creating block groups
-until space_info->full is set, or in the main loop we will skip erroring
-out any tickets if space_info->full == 0.  Unfortunately if we aborted
-the transaction then we will never allocate chunks or reclaim any space
-and thus never get ->full, and you'll see stack traces like this
+This function has the following pattern
 
-watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [kworker/u4:4:139]
-CPU: 0 PID: 139 Comm: kworker/u4:4 Tainted: G        W         5.13.0-rc1+ #328
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-Workqueue: events_unbound btrfs_async_reclaim_data_space
-RIP: 0010:btrfs_join_transaction+0x12/0x20
-RSP: 0018:ffffb2b780b77de0 EFLAGS: 00000246
-RAX: ffffb2b781863d58 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000801 RSI: ffff987952b57400 RDI: ffff987940aa3000
-RBP: ffff987954d55000 R08: 0000000000000001 R09: ffff98795539e8f0
-R10: 000000000000000f R11: 000000000000000f R12: ffffffffffffffff
-R13: ffff987952b574c8 R14: ffff987952b57400 R15: 0000000000000008
-FS:  0000000000000000(0000) GS:ffff9879bbc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0703da4000 CR3: 0000000113398004 CR4: 0000000000370ef0
-Call Trace:
- flush_space+0x4a8/0x660
- btrfs_async_reclaim_data_space+0x55/0x130
- process_one_work+0x1e9/0x380
- worker_thread+0x53/0x3e0
- ? process_one_work+0x380/0x380
- kthread+0x118/0x140
- ? __kthread_bind_mask+0x60/0x60
- ret_from_fork+0x1f/0x30
+	while (1) {
+		ret = whatever();
+		if (ret)
+			goto out;
+	}
+	ret = 0
+out:
+	return ret;
 
-Fix this by checking to see if we have BTRFS_FS_STATE_TRANS_ABORTED in
-either of the reclaim loops, and if so fail the tickets and bail.  In
-addition to this, fix maybe_fail_all_tickets() to not try to grant
-tickets if we've aborted, simply fail everything.
+However several places in this while loop we simply break; when there's
+a problem, thus clearing the return value, and in one case we do a
+return -EIO, and leak the memory for the path.
+
+Fix this by re-arranging the loop to deal with ret == 1 coming from
+btrfs_search_slot, and then simply delete the
+
+	ret = 0;
+out:
+
+bit so everybody can break if there is an error, which will allow for
+proper error handling to occur.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
-v2->v3:
-- const bool aborted as per Johannes' comments.
-- consolidate the error handling into a label as per Johannes' comments.
+ fs/btrfs/tree-log.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-v1->v2:
-- The original fix would bail, but we'd hang because tickets wouldn't be worken
-  up properly, fix the error case to fail all pending tickets.
-- The original fix also didn't include the normal reclaim loop, which has a
-  similar problem in that it only fails if ->full is set.
-- Make maybe_fail_all_tickets() actually fail all tickets if we've aborted.
-  This is just nice to have, there's no problem per-se but it makes it less
-  likely that we'll allow tickets to be granted if there was a little bit of
-  available space.
-
- fs/btrfs/space-info.c | 32 +++++++++++++++++++++++++++-----
- 1 file changed, 27 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 42d0fa2092d4..12faee050639 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -941,6 +941,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 	struct reserve_ticket *ticket;
- 	u64 tickets_id = space_info->tickets_id;
- 	u64 first_ticket_bytes = 0;
-+	const bool aborted = test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
-+				      &fs_info->fs_state);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 18009095908b..f8f708c02462 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1778,7 +1778,7 @@ static noinline int fixup_inode_link_counts(struct btrfs_trans_handle *trans,
+ 					    struct btrfs_root *root,
+ 					    struct btrfs_path *path)
+ {
+-	int ret;
++	int ret = 0;
+ 	struct btrfs_key key;
+ 	struct inode *inode;
  
- 	if (btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
- 		btrfs_info(fs_info, "cannot satisfy tickets, dumping space info");
-@@ -952,7 +954,7 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 		ticket = list_first_entry(&space_info->tickets,
- 					  struct reserve_ticket, list);
+@@ -1791,6 +1791,7 @@ static noinline int fixup_inode_link_counts(struct btrfs_trans_handle *trans,
+ 			break;
  
--		if (ticket->steal &&
-+		if (!aborted && ticket->steal &&
- 		    steal_from_global_rsv(fs_info, space_info, ticket))
- 			return true;
+ 		if (ret == 1) {
++			ret = 0;
+ 			if (path->slots[0] == 0)
+ 				break;
+ 			path->slots[0]--;
+@@ -1803,17 +1804,19 @@ static noinline int fixup_inode_link_counts(struct btrfs_trans_handle *trans,
  
-@@ -968,15 +970,18 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 		 */
- 		if (first_ticket_bytes == 0)
- 			first_ticket_bytes = ticket->bytes;
--		else if (first_ticket_bytes > ticket->bytes)
-+		else if (!aborted && first_ticket_bytes > ticket->bytes)
- 			return true;
+ 		ret = btrfs_del_item(trans, root, path);
+ 		if (ret)
+-			goto out;
++			break;
  
--		if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
-+		if (!aborted && btrfs_test_opt(fs_info, ENOSPC_DEBUG))
- 			btrfs_info(fs_info, "failing ticket with %llu bytes",
- 				   ticket->bytes);
+ 		btrfs_release_path(path);
+ 		inode = read_one_inode(root, key.offset);
+-		if (!inode)
+-			return -EIO;
++		if (!inode) {
++			ret = -EIO;
++			break;
++		}
  
- 		remove_ticket(space_info, ticket);
--		ticket->error = -ENOSPC;
-+		if (aborted)
-+			ticket->error = -EIO;
-+		else
-+			ticket->error = -ENOSPC;
- 		wake_up(&ticket->wait);
+ 		ret = fixup_inode_link_count(trans, root, inode);
+ 		iput(inode);
+ 		if (ret)
+-			goto out;
++			break;
  
  		/*
-@@ -985,7 +990,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
- 		 * here to see if we can make progress with the next ticket in
- 		 * the list.
+ 		 * fixup on a directory may create new entries,
+@@ -1822,8 +1825,6 @@ static noinline int fixup_inode_link_counts(struct btrfs_trans_handle *trans,
  		 */
--		btrfs_try_granting_tickets(fs_info, space_info);
-+		if (!aborted)
-+			btrfs_try_granting_tickets(fs_info, space_info);
+ 		key.offset = (u64)-1;
  	}
- 	return (tickets_id != space_info->tickets_id);
+-	ret = 0;
+-out:
+ 	btrfs_release_path(path);
+ 	return ret;
  }
-@@ -1253,6 +1259,11 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 			spin_unlock(&space_info->lock);
- 			return;
- 		}
-+
-+		/* Something happened, fail everything and bail. */
-+		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
-+			     &fs_info->fs_state))
-+			goto aborted_fs;
- 		last_tickets_id = space_info->tickets_id;
- 		spin_unlock(&space_info->lock);
- 	}
-@@ -1283,9 +1294,20 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
- 			} else {
- 				flush_state = 0;
- 			}
-+
-+			/* Something happened, fail everything and bail. */
-+			if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
-+				     &fs_info->fs_state))
-+				goto aborted_fs;
-+
- 		}
- 		spin_unlock(&space_info->lock);
- 	}
-+	return;
-+aborted_fs:
-+	maybe_fail_all_tickets(fs_info, space_info);
-+	space_info->flush = 0;
-+	spin_unlock(&space_info->lock);
- }
- 
- void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
 -- 
 2.26.3
 
