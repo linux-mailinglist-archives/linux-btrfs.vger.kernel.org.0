@@ -2,98 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34460389206
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 16:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFA1389284
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 May 2021 17:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354922AbhESOyO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 10:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47016 "EHLO
+        id S1346674AbhESP1s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 May 2021 11:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354919AbhESOyN (ORCPT
+        with ESMTP id S1345547AbhESP1s (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 10:54:13 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C95AC06175F
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 07:52:53 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id x8so12985938qkl.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 07:52:53 -0700 (PDT)
+        Wed, 19 May 2021 11:27:48 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227AFC06175F
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 08:26:28 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id 1so10420468qtb.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 May 2021 08:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=e7h/2S5r6QzNwehWTB6k9viMcjH7oBK7i7DxsvIuWTg=;
-        b=WWsTudwdaWtQpUDuS7+Ludh/2PbFD9AGdVMEGj4xB2DQuezuJi/nVPSHF7nsSNh2El
-         3XzmceaeV49q3S+C5+uH/BwNjoozYzgGMac/G2/Ss/+zdRUp0y8zsW9CuM65ZW7mhhoA
-         pnF30iZ759k6VJrHWzsyBJ5SJK7UqPjWqd5uopZTx8kM00tMxyC63KBLZtJJG7Pw7CsI
-         J8HdKDIssxkQlvDsaHoSxP6jdAL7rlMgEniRDrviaVix+wJqzRFK/qjOfkvo0Wk4ez0Z
-         gh5Mh8y5JCRGM1SyORpGwoqnjorLL5fjdV//6hIz24Lc9ytwwd1F6pfsf7XGAOFto3lI
-         4Gxw==
+        bh=hb/eRjQaPjbdBpaNWq59IkJEfVXKuCgkvd0C+qTcx8w=;
+        b=GvDWfXvwCEdcSHWDEF6xamxTAjFGhyvIIG25s85bGHFUGzsQaSpVb5hIsaKrLKCbOL
+         nPsOj9dE2d8KuWpNgA2+0l3zPLXyKk1MhMeZ/UgYg+4H1foZoqcsrGbFtVahhAtQiOQz
+         EVoz8NIajqQBG1NOa4AibykB3jKNKV10K40o6G4yDzUrqK3rhFSpzQURYG/CsaMdPhST
+         4uu5xK7MUtkUjQQoU5ENKuU9DlNPGvvMzRQ4Fqhs8l48jWfo+W+dNpDlzkOnIclh+ewW
+         chwmBw0iEANWRERXek5qXHjxwaGcLxYN2OSk59h/DRtF4T0MJ6fDKZnhb6aN7g1OgUBS
+         k8wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=e7h/2S5r6QzNwehWTB6k9viMcjH7oBK7i7DxsvIuWTg=;
-        b=FBOI9ICQfByUasitV6df62Ave5gTppdngTn7Zkp3Xu4EM2ZMK38+kRVbwXtedqvirQ
-         ogLXOKTnC5iUpH/ibF72e8EbhzvcsD8STnVqkUX2enG3OmYa3+jUIAczR2R9JnHLq5yi
-         JPJgKJlfwjDQLKSEv5CpFSi/edImRNl8NXcUlh8qX04/b9tRhNmwDSTM5akcbvLh8bG8
-         EIb1Omkoh5HVpBxaoqT+VEPUyyeSjVrMexUzOb91vJni3pRHeaa2+lGPHmAJ3d7nbgt6
-         MXVFU4qATO9HKh4JJe6O5W7y765zmuMwfFe+5TgpiLANxEzm6mSRBp3KZyzGI9jzdq/X
-         jMGQ==
-X-Gm-Message-State: AOAM531b8e4bUSUJq90tj8MT9WhNgpWHmw5D5FiDBga22aAumRWUKGGC
-        KQitgJYH5m5dgRcmK1nW2XpRMJpIK8jKUQ==
-X-Google-Smtp-Source: ABdhPJy4AJxFeg8nO8Ld3cAZ0trblhDbYtTS6Cz8e8AFIXizdOrkplfSESvO8IDd2r1ZbSfD3kV2xw==
-X-Received: by 2002:ae9:eb83:: with SMTP id b125mr3850451qkg.266.1621435972162;
-        Wed, 19 May 2021 07:52:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hb/eRjQaPjbdBpaNWq59IkJEfVXKuCgkvd0C+qTcx8w=;
+        b=gG6L64sZa/UaTaLTCr4ML80MXTOD5axcOT082P7t7ue0zisCU0Js1OHO+4EknHx0op
+         k31uyW+adph+LnlntfQ9xyj0rjjIPWeF6w5k+Xw66m8169xnCzP17Yo/v2vhZrjDMrCp
+         uhV0tmwlxh6VIOPd3k5/KmQColcon0pQ9iIZ8kSMX/NmZr8+jJwrfAQZZX9B09Ir8cQS
+         tLuOjnMiHMJntraIKmMfOZgagENThQtHOH+PMQtecYFa9Uhcn6lEK6ui05KWoTKTdFBV
+         icHiYS2nruWMlzj8AKfVGAOITqxgrjMlzT8ElUDkVh6Jm9BI3+2RXixDLj4Hk2SGuWg+
+         T1iA==
+X-Gm-Message-State: AOAM532YWxAiAnrNeeyoDj4gtOXEK2WzKGYIrZrwzukAXqbDc7DND/XA
+        4p/XEd/tqwF37XItO5L+XhQpIz7Yki5JCw==
+X-Google-Smtp-Source: ABdhPJwbAmlLSXaADudCuBvXbC/OfVMfkL6c4DEUp4Ug8u3uAJDwwZ2kG0Mm34NBebkx0tnzpCPaZQ==
+X-Received: by 2002:ac8:b8c:: with SMTP id h12mr11602810qti.171.1621437986813;
+        Wed, 19 May 2021 08:26:26 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id q13sm15224444qkn.10.2021.05.19.07.52.51
+        by smtp.gmail.com with ESMTPSA id 64sm2203460qtc.95.2021.05.19.08.26.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:52:51 -0700 (PDT)
+        Wed, 19 May 2021 08:26:26 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/2] btrfs: return errors from btrfs_del_csums in cleanup_ref_head
-Date:   Wed, 19 May 2021 10:52:46 -0400
-Message-Id: <73314ceb4a87c4a6fc559834235e63f7aae79570.1621435862.git.josef@toxicpanda.com>
+Subject: [PATCH] btrfs: check error value from btrfs_update_inode in tree log
+Date:   Wed, 19 May 2021 11:26:25 -0400
+Message-Id: <2661a4cc24936c9cc24836999c479e39f0db2402.1621437971.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1621435862.git.josef@toxicpanda.com>
-References: <cover.1621435862.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We are unconditionally returning 0 in cleanup_ref_head, despite the fact
-that btrfs_del_csums could fail.  We need to return the error so the
-transaction gets aborted properly, fix this by returning ret from
-btrfs_del_csums in cleanup_ref_head.
+Error injection testing uncovered a case where we ended up with invalid
+link counts on an inode.  This happened because we failed to notice an
+error when updating the inode while replaying the tree log, and
+committed the transaction with an invalid file system.  Fix this by
+checking the return value of btrfs_update_inode.  This resolved the link
+count errors I was seeing, and we already properly handle passing up the
+error values in these paths.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/tree-log.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index b84bbc24ff57..790de24576ac 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1826,7 +1826,7 @@ static int cleanup_ref_head(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 326be57f2828..4dc74949040d 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -1574,7 +1574,9 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 			if (ret)
+ 				goto out;
  
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_delayed_ref_root *delayed_refs;
--	int ret;
-+	int ret = 0;
+-			btrfs_update_inode(trans, root, BTRFS_I(inode));
++			ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
++			if (ret)
++				goto out;
+ 		}
  
- 	delayed_refs = &trans->transaction->delayed_refs;
+ 		ref_ptr = (unsigned long)(ref_ptr + ref_struct_size) + namelen;
+@@ -1749,7 +1751,9 @@ static noinline int fixup_inode_link_count(struct btrfs_trans_handle *trans,
  
-@@ -1868,7 +1868,7 @@ static int cleanup_ref_head(struct btrfs_trans_handle *trans,
- 	trace_run_delayed_ref_head(fs_info, head, 0);
- 	btrfs_delayed_ref_unlock(head);
- 	btrfs_put_delayed_ref_head(head);
--	return 0;
-+	return ret;
- }
+ 	if (nlink != inode->i_nlink) {
+ 		set_nlink(inode, nlink);
+-		btrfs_update_inode(trans, root, BTRFS_I(inode));
++		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
++		if (ret)
++			goto out;
+ 	}
+ 	BTRFS_I(inode)->index_cnt = (u64)-1;
  
- static struct btrfs_delayed_ref_head *btrfs_obtain_ref_head(
 -- 
 2.26.3
 
