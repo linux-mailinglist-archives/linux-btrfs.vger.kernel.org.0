@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2DD38B2FC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 17:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C95638B2FE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 17:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbhETPXQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 May 2021 11:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
+        id S243863AbhETPXS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 May 2021 11:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243775AbhETPXD (ORCPT
+        with ESMTP id S243776AbhETPXD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Thu, 20 May 2021 11:23:03 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A11C0613CE
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3CDC0613ED
         for <linux-btrfs@vger.kernel.org>; Thu, 20 May 2021 08:21:41 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id f8so13030176qth.6
+Received: by mail-qt1-x82c.google.com with SMTP id f8so13030204qth.6
         for <linux-btrfs@vger.kernel.org>; Thu, 20 May 2021 08:21:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=0dGhXd6l+JAf802cqmKwLC7EJofNrRCDMAW4nGocchY=;
-        b=q5LyIXPlpO6g5g2vdwxM+X9HNXeB9ruwl+Bngz9k0o/PXlwZmJW+mDljbRtDwmhKQb
-         4GNSi+i9DVzz8e61GWi+sysZMqZYxgMylc7skw48UVASxbsomCdbh1wPPhAuhv/b/FSy
-         pS6w6TjFyINtt2xXfw2nPtH1P0+drcClf7AopU3RYg/WgpLJ0dmqEbKIs9PmZ8DsrE8A
-         yP45mhfgtx/YnmdehYQRlEaSbZIB5+/uXgY2pktVJIJsg5jO+dNRCFIYFHVhL0jESfqv
-         UFumVvuzZV5ID5kjpSnTuAtNa3lMIIkZxHhmsuu33KVfvug0qNuM3UQOX5qNMBcrfUh4
-         XuyQ==
+        bh=z5x2PBP8GslGnHYMVuxISwfjtHrDVj4X+uAxS0SdbbU=;
+        b=ZkpiepV/xiS7xvVdFI1wH9yoCmPRYwYKbM60iDh106tvqnTGY+SArA+VWxyfb7xrsS
+         c8VC6Ff9RMNH47ocVBddF4m8GdKfd0eqelfU4KYHtMBCPRWPobJiidUvz0eI5+P0fej+
+         PTsBlcXyTH8SyriNfOIAk09CXimSnQ3wBK81SFibF0LGoLZ8QLtYtkrkJtqU3+i56OP6
+         +598Rl4vc9DgWGiKsddPBQU0q/3KG3VmthHZU6haBBHv7n1fXEscDaxyF2Bew8aLUVj0
+         3JljHzNBQcjUkzvrs/jZ+GAKqNt4pKaSvDEbow52PkdmxpcysUl0l03SZZekaId+rh1b
+         jmyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0dGhXd6l+JAf802cqmKwLC7EJofNrRCDMAW4nGocchY=;
-        b=R3FdOcc86DAWQ985ZOGx8gecR1G0ISnYVGWA0CTwPSAHHuV4W5Brt2sxRP7vO6jlJy
-         OT07AltSp4txRrpwcCH1epGud21yElxRKeQDuWCa1eWTJDoirWdlbesBVcOWB67SXwis
-         Cj3aXa03TtwfQMZhPpuXwpNN8j1/Pj+ybpihf0QzAPzk+oF0JxvkOFEJuO9KoG7D4pcY
-         pP8+z/qcY+m7SuzVHCBO8z2AOKXzHh5dEewOk0k0RPFHpatoXvf32yO+QeP6BZw47Qwk
-         31kAhru/L0EehGF46f9HV4JaGagqoknR8zybR7KRuvzW2UyZdxTd76yzZ0FGJw9YjVjR
-         Z70g==
-X-Gm-Message-State: AOAM532cInWtE183MMDR/FJHpPFqA3n+uzxuutHIr0MOA/Mcl6ggFiul
-        t/IlbPW0MRWEI5KQa96r5ez+KEe9dq02Cw==
-X-Google-Smtp-Source: ABdhPJyzcPP8qAvuPJZah22HMK4s4jRH/NTVIg2NcI0rmlO5+ZIDdifdq/lfgJ/vaKMaDc4FnXzNtw==
-X-Received: by 2002:ac8:5459:: with SMTP id d25mr5808128qtq.385.1621524098764;
-        Thu, 20 May 2021 08:21:38 -0700 (PDT)
+        bh=z5x2PBP8GslGnHYMVuxISwfjtHrDVj4X+uAxS0SdbbU=;
+        b=tng4BpKqlfolsNVWeiaMlYvhIDBvjp4ku9TIfEBHrjPwtjLQ9iiS5cqW1aiBW2/8Vt
+         M6gR8DAH8xNlOYMh2oOzEpKx7CPtE1AZE+u4VSH+k/DorEq5CWlaXiK7jr2BmQu2sq0P
+         214s/hVTcIYH6f7PRWammkGzSKu82CAsL0BAfPvpTvn63ps6FgqzUtJri0QYnBCLJQJW
+         TtKum+wMNJFr/reQcSitJCQMbn6HfXUMYyYt1XKy9YNom0/BJrC90a/CbJvaPtettST3
+         w/48z0KxDUKGq9CyHejVh1BvWrTeYP0QxPFgNRdIfIhc71lMLWQtaz3jVc1dFLVRexY1
+         9cnw==
+X-Gm-Message-State: AOAM531jCw239y0XpCuPm7UFl3VkJs8pv+e3tvp8+OSL4zgbhQZfKFeo
+        N/dwRbdk4Q/qJVQJEhAu2P9k7s8lBefd7Q==
+X-Google-Smtp-Source: ABdhPJwUpXdlBoWeEcUB7+iXx0+NnRQWBfT0fXil0tpNWJdD9msB3aWfYBAPgcMXhy3glBu+IQa0JQ==
+X-Received: by 2002:ac8:5483:: with SMTP id h3mr856614qtq.205.1621524100572;
+        Thu, 20 May 2021 08:21:40 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u11sm1987390qtq.93.2021.05.20.08.21.38
+        by smtp.gmail.com with ESMTPSA id x27sm2211824qkj.133.2021.05.20.08.21.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 08:21:38 -0700 (PDT)
+        Thu, 20 May 2021 08:21:39 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/3] btrfs: add a btrfs_has_fs_error helper
-Date:   Thu, 20 May 2021 11:21:32 -0400
-Message-Id: <a4bc9de04778cf6aa038f5164d01cf467de32ed5.1621523846.git.josef@toxicpanda.com>
+Subject: [PATCH 3/3] btrfs: do not infinite loop in data reclaim if we aborted
+Date:   Thu, 20 May 2021 11:21:33 -0400
+Message-Id: <303817cba3a99d35aa5bb490110cda5b6b50f68f.1621523846.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1621523846.git.josef@toxicpanda.com>
 References: <cover.1621523846.git.josef@toxicpanda.com>
@@ -62,224 +62,131 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have a few flags that are inconsistently used to describe the fs in
-different states of failure.  As of
+Error injection stressing uncovered a busy loop in our data reclaim
+loop.  There are two cases here, one where we loop creating block groups
+until space_info->full is set, or in the main loop we will skip erroring
+out any tickets if space_info->full == 0.  Unfortunately if we aborted
+the transaction then we will never allocate chunks or reclaim any space
+and thus never get ->full, and you'll see stack traces like this
 
-	btrfs: always abort the transaction if we abort a trans handle
+watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [kworker/u4:4:139]
+CPU: 0 PID: 139 Comm: kworker/u4:4 Tainted: G        W         5.13.0-rc1+ #328
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+Workqueue: events_unbound btrfs_async_reclaim_data_space
+RIP: 0010:btrfs_join_transaction+0x12/0x20
+RSP: 0018:ffffb2b780b77de0 EFLAGS: 00000246
+RAX: ffffb2b781863d58 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000801 RSI: ffff987952b57400 RDI: ffff987940aa3000
+RBP: ffff987954d55000 R08: 0000000000000001 R09: ffff98795539e8f0
+R10: 000000000000000f R11: 000000000000000f R12: ffffffffffffffff
+R13: ffff987952b574c8 R14: ffff987952b57400 R15: 0000000000000008
+FS:  0000000000000000(0000) GS:ffff9879bbc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0703da4000 CR3: 0000000113398004 CR4: 0000000000370ef0
+Call Trace:
+ flush_space+0x4a8/0x660
+ btrfs_async_reclaim_data_space+0x55/0x130
+ process_one_work+0x1e9/0x380
+ worker_thread+0x53/0x3e0
+ ? process_one_work+0x380/0x380
+ kthread+0x118/0x140
+ ? __kthread_bind_mask+0x60/0x60
+ ret_from_fork+0x1f/0x30
 
-we will always set BTRFS_FS_STATE_ERROR if we abort, so we don't have to
-check both ABORTED and ERROR to see if things have gone wrong.  Add a
-helper to check BTRFS_FS_STATE_HELPER and then convert all checkers of
-FS_STATE_ERROR to use the helper.
+Fix this by checking to see if we have a btrfs fs error in either of the
+reclaim loops, and if so fail the tickets and bail.  In addition to
+this, fix maybe_fail_all_tickets() to not try to grant tickets if we've
+aborted, simply fail everything.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h       |  5 +++++
- fs/btrfs/disk-io.c     |  8 +++-----
- fs/btrfs/extent_io.c   |  2 +-
- fs/btrfs/file.c        |  2 +-
- fs/btrfs/inode.c       |  6 +++---
- fs/btrfs/scrub.c       |  2 +-
- fs/btrfs/super.c       |  2 +-
- fs/btrfs/transaction.c | 11 +++++------
- fs/btrfs/tree-log.c    |  2 +-
- 9 files changed, 21 insertions(+), 19 deletions(-)
+ fs/btrfs/space-info.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 938d8ebf4cf3..3c22c3308667 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3531,6 +3531,11 @@ do {								\
- 			  (errno), fmt, ##args);		\
- } while (0)
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 42d0fa2092d4..077e54cdc29f 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -941,6 +941,7 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+ 	struct reserve_ticket *ticket;
+ 	u64 tickets_id = space_info->tickets_id;
+ 	u64 first_ticket_bytes = 0;
++	const bool aborted = btrfs_has_fs_error(fs_info);
  
-+static inline bool btrfs_has_fs_error(struct btrfs_fs_info *fs_info)
-+{
-+	return test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state);
-+}
-+
- __printf(5, 6)
- __cold
- void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 8c3db9076988..ab1d0b9f90e7 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1969,8 +1969,7 @@ static int transaction_kthread(void *arg)
- 		wake_up_process(fs_info->cleaner_kthread);
- 		mutex_unlock(&fs_info->transaction_kthread_mutex);
+ 	if (btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+ 		btrfs_info(fs_info, "cannot satisfy tickets, dumping space info");
+@@ -952,7 +953,7 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+ 		ticket = list_first_entry(&space_info->tickets,
+ 					  struct reserve_ticket, list);
  
--		if (unlikely(test_bit(BTRFS_FS_STATE_ERROR,
--				      &fs_info->fs_state)))
-+		if (unlikely(btrfs_has_fs_error(fs_info)))
- 			btrfs_cleanup_transaction(fs_info);
- 		if (!kthread_should_stop() &&
- 				(!btrfs_transaction_blocked(fs_info) ||
-@@ -4221,7 +4220,7 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
- 		drop_ref = true;
- 	spin_unlock(&fs_info->fs_roots_radix_lock);
+-		if (ticket->steal &&
++		if (!aborted && ticket->steal &&
+ 		    steal_from_global_rsv(fs_info, space_info, ticket))
+ 			return true;
  
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-+	if (btrfs_has_fs_error(fs_info)) {
- 		ASSERT(root->log_root == NULL);
- 		if (root->reloc_root) {
- 			btrfs_put_root(root->reloc_root);
-@@ -4372,8 +4371,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 			btrfs_err(fs_info, "commit super ret %d", ret);
- 	}
- 
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state) ||
--	    test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state))
-+	if (btrfs_has_fs_error(fs_info))
- 		btrfs_error_commit_super(fs_info);
- 
- 	kthread_stop(fs_info->transaction_kthread);
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 78d3f2ec90e0..c89871eabef8 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4613,7 +4613,7 @@ int btree_write_cache_pages(struct address_space *mapping,
- 	 *   extent io tree. Thus we don't want to submit such wild eb
- 	 *   if the fs already has error.
- 	 */
--	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-+	if (!btrfs_has_fs_error(fs_info)) {
- 		ret = flush_write_bio(&epd);
- 	} else {
- 		ret = -EROFS;
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 3b10d98b4ebb..3a68d55c1870 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1999,7 +1999,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	 * have opened a file as writable, we have to stop this write operation
- 	 * to ensure consistency.
- 	 */
--	if (test_bit(BTRFS_FS_STATE_ERROR, &inode->root->fs_info->fs_state))
-+	if (btrfs_has_fs_error(inode->root->fs_info))
- 		return -EROFS;
- 
- 	if (!(iocb->ki_flags & IOCB_DIRECT) &&
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index ca835ee61045..351b28366aa1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4221,7 +4221,7 @@ static void btrfs_prune_dentries(struct btrfs_root *root)
- 	struct inode *inode;
- 	u64 objectid = 0;
- 
--	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
-+	if (!btrfs_has_fs_error(fs_info))
- 		WARN_ON(btrfs_root_refs(&root->root_item) != 0);
- 
- 	spin_lock(&root->inode_lock);
-@@ -9703,7 +9703,7 @@ int btrfs_start_delalloc_snapshot(struct btrfs_root *root, bool in_reclaim_conte
- 	};
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
-+	if (btrfs_has_fs_error(fs_info))
- 		return -EROFS;
- 
- 	return start_delalloc_inodes(root, &wbc, true, in_reclaim_context);
-@@ -9722,7 +9722,7 @@ int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, long nr,
- 	struct list_head splice;
- 	int ret;
- 
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
-+	if (btrfs_has_fs_error(fs_info))
- 		return -EROFS;
- 
- 	INIT_LIST_HEAD(&splice);
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 485cda3eb8d7..4db4286069b0 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3893,7 +3893,7 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
- 	int	ret;
- 	struct btrfs_fs_info *fs_info = sctx->fs_info;
- 
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
-+	if (btrfs_has_fs_error(fs_info))
- 		return -EROFS;
- 
- 	/* Seed devices of a new filesystem has their own generation. */
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index bc613218c8c5..eb6a48f0b236 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2018,7 +2018,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 		if (ret)
- 			goto restore;
- 	} else {
--		if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-+		if (btrfs_has_fs_error(fs_info)) {
- 			btrfs_err(fs_info,
- 				"Remounting read-write after error is not allowed");
- 			ret = -EINVAL;
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index e0a82aa7da89..f74ba158c0c3 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -285,7 +285,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
- 	spin_lock(&fs_info->trans_lock);
- loop:
- 	/* The file system has been taken offline. No new transactions. */
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-+	if (btrfs_has_fs_error(fs_info)) {
- 		spin_unlock(&fs_info->trans_lock);
- 		return -EROFS;
- 	}
-@@ -333,7 +333,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+@@ -968,15 +969,18 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
  		 */
- 		kfree(cur_trans);
- 		goto loop;
--	} else if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-+	} else if (btrfs_has_fs_error(fs_info)) {
- 		spin_unlock(&fs_info->trans_lock);
- 		kfree(cur_trans);
- 		return -EROFS;
-@@ -586,7 +586,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 	/* Send isn't supposed to start transactions. */
- 	ASSERT(current->journal_info != BTRFS_SEND_TRANS_STUB);
+ 		if (first_ticket_bytes == 0)
+ 			first_ticket_bytes = ticket->bytes;
+-		else if (first_ticket_bytes > ticket->bytes)
++		else if (!aborted && first_ticket_bytes > ticket->bytes)
+ 			return true;
  
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
-+	if (btrfs_has_fs_error(fs_info))
- 		return ERR_PTR(-EROFS);
+-		if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
++		if (!aborted && btrfs_test_opt(fs_info, ENOSPC_DEBUG))
+ 			btrfs_info(fs_info, "failing ticket with %llu bytes",
+ 				   ticket->bytes);
  
- 	if (current->journal_info) {
-@@ -999,8 +999,7 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
- 	if (throttle)
- 		btrfs_run_delayed_iputs(info);
+ 		remove_ticket(space_info, ticket);
+-		ticket->error = -ENOSPC;
++		if (aborted)
++			ticket->error = -EIO;
++		else
++			ticket->error = -ENOSPC;
+ 		wake_up(&ticket->wait);
  
--	if (TRANS_ABORTED(trans) ||
--	    test_bit(BTRFS_FS_STATE_ERROR, &info->fs_state)) {
-+	if (TRANS_ABORTED(trans) || btrfs_has_fs_error(info)) {
- 		wake_up_process(info->transaction_kthread);
- 		if (TRANS_ABORTED(trans))
- 			err = trans->aborted;
-@@ -2187,7 +2186,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 		 * abort to prevent writing a new superblock that reflects a
- 		 * corrupt state (pointing to trees with unwritten nodes/leafs).
+ 		/*
+@@ -985,7 +989,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+ 		 * here to see if we can make progress with the next ticket in
+ 		 * the list.
  		 */
--		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state)) {
-+		if (btrfs_has_fs_error(fs_info)) {
- 			ret = -EROFS;
- 			goto cleanup_transaction;
+-		btrfs_try_granting_tickets(fs_info, space_info);
++		if (!aborted)
++			btrfs_try_granting_tickets(fs_info, space_info);
+ 	}
+ 	return (tickets_id != space_info->tickets_id);
+ }
+@@ -1253,6 +1258,10 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
+ 			spin_unlock(&space_info->lock);
+ 			return;
  		}
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 16eca7d091fd..83d0b796d5d4 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3310,7 +3310,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
- 	 * here would result in transid mismatches.  If there is an error here
- 	 * just bail.
- 	 */
--	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-+	if (btrfs_has_fs_error(fs_info)) {
- 		ret = -EIO;
- 		btrfs_set_log_full_commit(trans);
- 		btrfs_abort_transaction(trans, ret);
++
++		/* Something happened, fail everything and bail. */
++		if (btrfs_has_fs_error(fs_info))
++			goto aborted_fs;
+ 		last_tickets_id = space_info->tickets_id;
+ 		spin_unlock(&space_info->lock);
+ 	}
+@@ -1283,9 +1292,19 @@ static void btrfs_async_reclaim_data_space(struct work_struct *work)
+ 			} else {
+ 				flush_state = 0;
+ 			}
++
++			/* Something happened, fail everything and bail. */
++			if (btrfs_has_fs_error(fs_info))
++				goto aborted_fs;
++
+ 		}
+ 		spin_unlock(&space_info->lock);
+ 	}
++	return;
++aborted_fs:
++	maybe_fail_all_tickets(fs_info, space_info);
++	space_info->flush = 0;
++	spin_unlock(&space_info->lock);
+ }
+ 
+ void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
 -- 
 2.26.3
 
