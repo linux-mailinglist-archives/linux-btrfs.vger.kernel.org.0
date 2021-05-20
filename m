@@ -2,110 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92735389AB6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 03:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49572389AC0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 03:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbhETBEM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 21:04:12 -0400
-Received: from mout.gmx.net ([212.227.17.21]:52639 "EHLO mout.gmx.net"
+        id S229952AbhETBI4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 May 2021 21:08:56 -0400
+Received: from mout.gmx.net ([212.227.15.19]:38823 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229525AbhETBEL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 21:04:11 -0400
+        id S229498AbhETBIz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 May 2021 21:08:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621472567;
-        bh=/r362rrdWjZzEQzGXVrWhUT2zCpYXuI903pedLuh01Q=;
+        s=badeba3b8450; t=1621472850;
+        bh=5x9/dzjFwTzzqhjcbmC6rviNdZEMkD67F2K/e9wsSqE=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=aAHdVV36FeQ2SaYnYMhEeiPYLAUAorgUah7SfHpCv5+dt832MdN36c8lcpWSDVf3+
-         SJS+ERn5/t80SK1dyUt9RTh2V3S4scy9azHx5pyk1xWodGoO6hK7V0KXZQFmWYGD0D
-         3HbkpdWDmNMaXV/3PixzNsbb0DMaaYhYpayZWn7E=
+        b=Sc3WkzI3oIS9luEPfF3v7XUgT/P7efxh1QzLMr6b10yYqtoGbmC7qCc4eUVYMqC90
+         rmm9hgBHRu7PE6X4gLhswB/9GnAderfgkXa3Eh/P0sznoaOt8zrCQPvdK58IDZfLAU
+         H75nrvOHRyg5iwtlir62bM+gAoHbsNYJVcp9eB7I=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mo6qp-1l8ENp0GMd-00parO; Thu, 20
- May 2021 03:02:46 +0200
-Subject: Re: [PATCH 2/2] btrfs: return errors from btrfs_del_csums in
- cleanup_ref_head
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MgvvT-1lFPbQ1H5h-00hNyH; Thu, 20
+ May 2021 03:07:29 +0200
+Subject: Re: [PATCH] btrfs: check error value from btrfs_update_inode in tree
+ log
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <cover.1621435862.git.josef@toxicpanda.com>
- <73314ceb4a87c4a6fc559834235e63f7aae79570.1621435862.git.josef@toxicpanda.com>
+References: <2661a4cc24936c9cc24836999c479e39f0db2402.1621437971.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <27ee833d-1430-b533-0aab-3f8f2c6f0bce@gmx.com>
-Date:   Thu, 20 May 2021 09:02:42 +0800
+Message-ID: <c82160a4-03bd-783d-009b-5ab5e25424f9@gmx.com>
+Date:   Thu, 20 May 2021 09:07:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <73314ceb4a87c4a6fc559834235e63f7aae79570.1621435862.git.josef@toxicpanda.com>
+In-Reply-To: <2661a4cc24936c9cc24836999c479e39f0db2402.1621437971.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZEopkRi7ap3CCct+W12QLt5ThLdA5QvVTqYEvvPALV4d8R46blV
- ZuERsCDfKxL9M2yBKok+l95gvwQ2bvNeAAoQVpumt7c42jOgaWGoXPnebsDyvoReyMMNVCg
- DzdNcm9NMbuSY63yBwmowqFbLDYpPjVhkNX2euojqU8I4oq/2T1j8oLnLEKZ3u4T31JXYbU
- XfpOF8PTUaLMXxJKUqetw==
+X-Provags-ID: V03:K1:3pgr4xJFj+dXgg70krkoV4pYcOIBYRxagZclGG4qVnbRRg+M6Dy
+ xtvtzQzU+0AgWmYzWVhdkbVhklWOVI7WOqYXtJdpapFYzv/2lrSJ0JIT9CfNYuPuSzw38e7
+ YVEYHA6IWtFVcHHmCKfHSw/K7ipFAlS3LJLoK8uuGas/Kgtpw5yhSvnKQ7hEerzaOcyyaOs
+ AFn/vUy4p32YYWJQx8MHg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wgYbMB4lAfM=:HImuIC6P2DK2w1qOfr90hH
- C43XVbayQHNiXVl8h8ArsYYQrppXmLm5yze4VOKRUTw5P4KlrG9VJ3GlRhO47pInVfRWWdiGH
- a9XvkMI9xwm9FIEg2Q25QjjfvRKaBtk68HJkmmsWQQAEALEKPZdq/d8IQ7W9eT9YfjtXHGvOq
- 2KuM9IuGUhAiyeU9atJQFlM1qiA7HTO5V4ZlvJ+b8Ev32vazMdVBVYXvSXKyI5UURbJLOSstx
- mztmXdyzCIma3UeIJNNtAxDugGJMQGzGmGkGudB0GnOoozIuvoEEL5flSoCGwxwWIX4Nic7/c
- W8u7a3ZAfjEUEgrI3EBYtCNsCMct5H2AeXEKAutGuuwLMSCtCwYGWA3i/xES3HwOegRL580RV
- VAL2NiZ8yi3Tdx3MynJuEl3GwCL+R67xcfxoTMhxf0QORIYz0490lYl2IpkBcoYfwdvuarpER
- LezwbBIWvEueujMucT5u2pD2a9SAjepiH730yZRhY6SAAhhWdn0Bm46pH74PudYcJ3eMdWN+B
- d21Nx1u2mmFZhLcB6Jm1vxY6pkuBJY4qBdUZCeuA5h/aoxmNMDjCXrp6ml2nhxdRLvU5MUWNl
- YMQ4igKkcYcveZ8dxLWQPuiIVK3AH2g+sPJof7cNmX2uo2ahj4ru/uiXlF2JvbkLGlL8PVzzX
- AV7M+YEsmdWVvgrFZ+WXm5NLdl1DF7ICjQr/oY4OGdMUxPJ3vR+V87ibWnDRjpWED9YTBN9WW
- DFzSP8HmzGe6V5AsfT4UNChYAvU55HZtUDzCVbxZV1nIF5hgKiUy1BzV15qBa6DMs2jvEyF6X
- kyseKR4pmK8+GXQ2jA+D/BhDDIFmT65KzpF7Fb8UqfIH3rI3lDYB0WQp+R9q8XcLdR2cTBUHJ
- HKoabgRVa1X658Qdyz3EWx0ceET0mR3kBphK7jCbMQ2OparbPuQ+AK0tulmLa5maSuzMgDJ7+
- jJHtBl17JbnaBq0NK1uUkuHAadHjEYYyEEby4Dci2iJBpmAPQFAVR8UU4PS4HduohjtKwaA+M
- 1A5rkoCGNQzM9UCv7vQwxBT6yvEiHRLtvpHTS2AtKis0TGu9uvZdJJZTSc4p5DIKqDY03riBQ
- Uo+nmEOvwZmnW+wWPYGpS4z6mGKRe/ombtcdXedFr/PrEG35lqUeDIH+Y1l1urPuV8E1UFyo5
- FArlFvir6pSCKNnm+fi4nIyYjTZlOpCDsivI43ZxzY3ipKxlaPjDK9nUDhUxCZdBloVV1LSPn
- Qaow7RA9uucpmMebc
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fND8FsE2AFs=:ClBkniFUMOEUMOjmRh4VYP
+ J0bhdh2zm6/aTSrF9BZJEt1f+VEHc4nwGiz02XSraeUgik5Kl89HibvdN8FonmpqMLS+bYdkB
+ CkLZSvodAz68gyNWKzVfadNSsR2Xt4qOH+DA7qQ46kkJ5GyXEhU1yqJkmupbrEe/D1Mx0TWpw
+ ERQ/y1GaAOZfPCoRohqZAyAm7UTjgsiMlcbrWVMictMf/1RijxIS7rEUVr2FCCAQXMGqjBAHm
+ wHXaGVc+b706GOPhjuP1UTvSAJRRMFe3yKiNvUuR1UDAF3GDalP46YZ89KDCwnSkR42qiFauD
+ NREwmtHX1G5KwKUuUb2E8FxOykk5br6pgs2Pu5rXQpH7F/ivnyvxc1X+NBI7ACNyuudHL1vqq
+ d5tzve0rDK/3tSx/2uhDtDBQrBnD9irBgFwuRddANYiIxcAvmYSU+rTFJ5JnUT5nHoYodYlcA
+ 85kHRbx5klpRbd0ijJb1Obpu9/0RsfOivO7Nv2EsRn1z2TdoMaj6XsFUIGkdf11QGxkFl+Pa0
+ NgWp9dqiZjEHeUF4WSqDOyYVs7C/Oy3fZzX0ls9R+t8LImqtzErhDfBuE3ATDXx4q+9LFYO2X
+ uIGcopr6knBgRQxI9D6subysftZNAPBiNQxWtr/FiUhCxhtjzmJkMBnhGMmaIJfczyq3mZn1b
+ nwjB5a6v+IgEB8UIDboCIt3yV8WQQ7vLw0IlJ0XzKCM/VYQQpcdavMc9q85gDj5OnhTOvDrEw
+ Zm2iGKIxAUQP2nTisLoTxcjArE4SuHrvzxVrHbh61TF3Py50wTgsCX9XtockZ5c/FSDF1UJe+
+ z4c9FrwV5ReuxtWnlsa6tI4i1dx/hhJcmmJE0vJzxtfZV7PJKQOv1xcE76G55pBeWipS1+H1v
+ RLcrAurcdx2ww9qppdLwo0UW0q9fa9HCDft/TiNebUbdU6npULaiz1snC//LkdZ4HqUPKiYEy
+ fJY5HHoc0LlYp68v+Y5eLspRfgxqL3Pbq3GF17hwvMZSC3X+C0mnqwCR80A31ItVb83pE58J3
+ +Ur8HuAkfymShgZOE1YxpX0gqUZtVKJMjz04deo0xmn+AblQ7H00CgkVUZfrSPbn8wmPul5uL
+ b8bUvIUZFAG12LZS8nuYS0brUg67AleShdcVZ2c+3P/QijFVeTH5enEUD+DtUxYTsfPdtImhG
+ 0DUa3I2uv3Ddpvb38BOArTylt2l7NG6fKlz5Inufv7dTL4ykp4OJ5zbdk8bSvuJ2iDtSg8hcB
+ 44hqXzjI+OYqJRuta
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/5/19 =E4=B8=8B=E5=8D=8810:52, Josef Bacik wrote:
-> We are unconditionally returning 0 in cleanup_ref_head, despite the fact
-> that btrfs_del_csums could fail.  We need to return the error so the
-> transaction gets aborted properly, fix this by returning ret from
-> btrfs_del_csums in cleanup_ref_head.
+On 2021/5/19 =E4=B8=8B=E5=8D=8811:26, Josef Bacik wrote:
+> Error injection testing uncovered a case where we ended up with invalid
+> link counts on an inode.  This happened because we failed to notice an
+> error when updating the inode while replaying the tree log, and
+> committed the transaction with an invalid file system.  Fix this by
+> checking the return value of btrfs_update_inode.  This resolved the link
+> count errors I was seeing, and we already properly handle passing up the
+> error values in these paths.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+But one thing unrelated to notice, inlined below.
+
+> ---
+>   fs/btrfs/tree-log.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 326be57f2828..4dc74949040d 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -1574,7 +1574,9 @@ static noinline int add_inode_ref(struct btrfs_tra=
+ns_handle *trans,
+>   			if (ret)
+>   				goto out;
+>
+> -			btrfs_update_inode(trans, root, BTRFS_I(inode));
+
+I did a quick grep and found that we have other locations where we call
+btrfs_uppdate_inode() without catching the return value:
+
+$ grep -IRe "^\s\+btrfs_update_inode(" fs/btrfs/
+fs/btrfs/free-space-cache.c:    btrfs_update_inode(trans, root,
+BTRFS_I(inode));
+fs/btrfs/free-space-cache.c:    btrfs_update_inode(trans, root,
+BTRFS_I(inode));
+fs/btrfs/inode.c:               btrfs_update_inode(trans, root, inode);
+fs/btrfs/inode.c:       btrfs_update_inode(trans, root, BTRFS_I(inode));
+
+Maybe it's better to make btrfs_update_inode() to have __must_check prefix=
+?
+
 Thanks,
 Qu
-> ---
->   fs/btrfs/extent-tree.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+
+
+> +			ret =3D btrfs_update_inode(trans, root, BTRFS_I(inode));
+> +			if (ret)
+> +				goto out;
+>   		}
 >
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index b84bbc24ff57..790de24576ac 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1826,7 +1826,7 @@ static int cleanup_ref_head(struct btrfs_trans_han=
-dle *trans,
+>   		ref_ptr =3D (unsigned long)(ref_ptr + ref_struct_size) + namelen;
+> @@ -1749,7 +1751,9 @@ static noinline int fixup_inode_link_count(struct =
+btrfs_trans_handle *trans,
 >
->   	struct btrfs_fs_info *fs_info =3D trans->fs_info;
->   	struct btrfs_delayed_ref_root *delayed_refs;
-> -	int ret;
-> +	int ret =3D 0;
+>   	if (nlink !=3D inode->i_nlink) {
+>   		set_nlink(inode, nlink);
+> -		btrfs_update_inode(trans, root, BTRFS_I(inode));
+> +		ret =3D btrfs_update_inode(trans, root, BTRFS_I(inode));
+> +		if (ret)
+> +			goto out;
+>   	}
+>   	BTRFS_I(inode)->index_cnt =3D (u64)-1;
 >
->   	delayed_refs =3D &trans->transaction->delayed_refs;
->
-> @@ -1868,7 +1868,7 @@ static int cleanup_ref_head(struct btrfs_trans_han=
-dle *trans,
->   	trace_run_delayed_ref_head(fs_info, head, 0);
->   	btrfs_delayed_ref_unlock(head);
->   	btrfs_put_delayed_ref_head(head);
-> -	return 0;
-> +	return ret;
->   }
->
->   static struct btrfs_delayed_ref_head *btrfs_obtain_ref_head(
 >
