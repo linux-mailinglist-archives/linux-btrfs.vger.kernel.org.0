@@ -2,118 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABBB38B2F6
+	by mail.lfdr.de (Postfix) with ESMTP id EC58838B2F7
 	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 17:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236507AbhETPXK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 May 2021 11:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
+        id S232713AbhETPXM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 May 2021 11:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbhETPW6 (ORCPT
+        with ESMTP id S238589AbhETPW7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 May 2021 11:22:58 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA493C06175F
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 May 2021 08:21:36 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id v8so16562257qkv.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 May 2021 08:21:36 -0700 (PDT)
+        Thu, 20 May 2021 11:22:59 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCBBC061760
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 May 2021 08:21:38 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id c13so7615576qvx.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 May 2021 08:21:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=BwzMKrp8JrQO9lL73rktvmj/QTbBn2HDL0mVGIvBieA=;
-        b=v4i3tXI+o1bqTz/6ZqR6NQQUr/jG1b1tTTlKKsbbZGYDxq0UtGhH09GtTLa2saeyuX
-         pqBpnbMiptiiuXrvfeCo92yu9pZD1jQif81MLHKGRpBScllsDhy7OtMsVIaCWXsx7O9w
-         T7PG/QZbrXdOUUEfOMqxipeyXa7kFm3L9ARGudIxFZzBKPYYcB6/bgGse+12ov3l4FYx
-         V8zCjUedWp1Cb4/pwRnPdeREFxDoWQ7nwEqATeYzV/jp0rvPH64F76x6uHPmcdwDV5wH
-         X0KYZcxI1JtHjgDwsM5atkrfx6N0hE2CAnxCK7W3Moh6yuNF/GWSuwbQ0JGzXTYe7KIu
-         14Gg==
+        bh=7MRqdURhlNmo4Uv4roqnoChci+go5O7uI4HORybQxAg=;
+        b=x2SI9jdNwhMcgpNsRt+w3yoLF+JlagfvzCXgQgqU9RtqbrbnGOY8Vy8p62IEzevjcz
+         8YhFILnhSDKSFwOVoRnP29Cl2CeDYeliiZKc8BkIeLQZXwwHOaRMpHq5WStyqmKJH/fK
+         9Kejcd0G9IjvFVeQWZX1ygYaOuYDa6TbcUVfmjEXJrdeoVOO6HY9In+BLYioFffhhrr6
+         WM1qGfQjss7agp53X3uaQwGVHBFK6qLV6LpCdFgJFvShje5vSCXikNo9iV71vXJEIKbB
+         rmCc0UTYHamof/Fn9i79GcUQ40QFwm51FtnfNvvEIQl3++k7/cFcqrGTvYK7KIGUvuwq
+         sVwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BwzMKrp8JrQO9lL73rktvmj/QTbBn2HDL0mVGIvBieA=;
-        b=YMVnFoos1gm/+b6BzRXW4VOgpZs72lIr8c1sjuhqcLtdZOtB/Qls52aRwuaskOi6K4
-         eLMufvPN7AUJrfMEDROxqezG2gGbbuW9uGSHpmBcZkMi/cnzcAwxaLkaqwel9kzG00Px
-         xpj650d+/xNQOQVJouc0jFCGmlh4ww8nYXcFoZ0AQIfrpzdwkG5Z1uBqU1amPC0j+MyB
-         GuOPcR8VgNzC5egJnt3pSyffYNCkJHv3l7m5gDngHnX7fX3ZNhjQbElLbJNIWPyhBGw0
-         g4RUanSdSs7lwHsO9U1RkcYJjR+/u+Qnu/Jb7hSXXQou4wBXOgg9YpLmZjZ8Jjih7OAG
-         cALQ==
-X-Gm-Message-State: AOAM530U2d71KF3Cd4bLUMWLoqJv4S7Cn0cY/6Ss0TG5+Z8OmTgGM3fO
-        XMqnybqsXCtrbjkUsP+HpYTVmx45JH6H8A==
-X-Google-Smtp-Source: ABdhPJzOU2nWxwCY3JktnJQptX8PH0GmMQ6WUzNCiXIggSJB8ApiEOecnsIja8TzgkWy2cHOoF1prw==
-X-Received: by 2002:a37:ef08:: with SMTP id j8mr5451225qkk.24.1621524095403;
-        Thu, 20 May 2021 08:21:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7MRqdURhlNmo4Uv4roqnoChci+go5O7uI4HORybQxAg=;
+        b=M08GkDUsvQB6y0+RTGcQlHg6aRBYi5oYySz+dr3LkCc/yStBPQfRJHWUq/cbDbmvTE
+         ytcB9rAKyZNPFJVO5s0gOJshaSG4CRrshRRa8OZ4Y7cacl/2RLOndVuvZdeaoRGtE0eD
+         HLQ1tFYAONlXgXxMf7RtR8YEreNklVTfMpdkUTr7pDDYJl3QN1m9sWThoFZW6SJh8N2z
+         XchCe+h/5H4sXhABxprQgCB4F2lxQMywMDoqx+bG0cf+KFq2urikICvh2nwe8OM7gDM6
+         0UP0OTbd9BW02nHk2Ut7E1zzwqVXDZbDBoB6M6liCxN9FyO/Xs8dR5SUz8q6vZRQneeA
+         A6rw==
+X-Gm-Message-State: AOAM533dCVSjPyFwWBuXqrgKRLD2wdlqPxyA1w+6U9kP0nz2K32tSY18
+        W3PyW47pMuCJgKwT1qNfag5RPIRqqhue2Q==
+X-Google-Smtp-Source: ABdhPJw37jK6RxT0H+kijNRaZwXQEFkww8pUSJ9rvgSKUZ2MLHt4OEkZ6IhdBVFY3R3k6zJmoYhlHw==
+X-Received: by 2002:ad4:56a8:: with SMTP id bd8mr6208143qvb.9.1621524097158;
+        Thu, 20 May 2021 08:21:37 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j16sm2038844qtr.27.2021.05.20.08.21.34
+        by smtp.gmail.com with ESMTPSA id h65sm2315848qkd.112.2021.05.20.08.21.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 08:21:34 -0700 (PDT)
+        Thu, 20 May 2021 08:21:36 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/3] Rework fs error handling
-Date:   Thu, 20 May 2021 11:21:30 -0400
-Message-Id: <cover.1621523846.git.josef@toxicpanda.com>
+Subject: [PATCH 1/3] btrfs: always abort the transaction if we abort a trans handle
+Date:   Thu, 20 May 2021 11:21:31 -0400
+Message-Id: <d794156bd3368d635913610dbe03c1fc727e297f.1621523846.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1621523846.git.josef@toxicpanda.com>
+References: <cover.1621523846.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+While stress testing our error handling I noticed that sometimes we
+would still commit the transaction even though we had aborted the
+transaction.
 
-This series brings together 3 patches I had sent separately, because they mostly
-depend on eachother.  The first is
+Currently we track if a trans handle has dirtied any metadata, and if it
+hasn't we mark the FS as having an error (so no new transactions can be
+started), but we will allow the current transaction to complete as we do
+not mark the transaction itself as having been aborted.
 
-	btrfs: always abort the transaction if we abort a trans handle
+This sounds good in theory, but we were not properly tracking IO errors
+in btrfs_finish_ordered_io, and thus committing the transaction with
+bogus free space data.  This isn't necessarily a problem per-se with the
+free space cache, as the other guards in place would have kept us from
+accepting the free space cache as valid, but hi-lights a real world case
+where we had a bug and could have corrupted the filesystem because of
+it.
 
-Which changes our behavior for trans handles that haven't modified any metadata.
-Our dependency chain can be complex, and thus we may rely on a particular async
-action happening and rely on the transaction actually aborting if it fails.
-Previously if nothing occurred we'd just let the transaction conitue, but this
-could put us in a bad state.  We need to simply always abort the transaction for
-safety reasons.
+This "skip abort on empty trans handle" is nice in theory, but assumes
+we have perfect error handling everywhere, which we clearly do not.
+Also we do not allow further transactions to be started, so all this
+does is save the last transaction that was happening, which doesn't
+necessarily gain us anything other than the potential for real
+corruption.
 
-That patch allows us to use the next patch
+Remove this particular bit of code, if we decide we need to abort the
+transaction then abort the current one and keep us from doing real harm
+to the file system, regardless of whether this specific trans handle
+dirtied anything or not.
 
-	btrfs: add a btrfs_has_fs_error helper
-
-Now that we can rely on FS_STATE_ERROR always being set if something is wrong,
-we can wrap that check in a helper and convert all the open coded checks for
-FS_STATE_ERROR and FS_STATE_ABORTED to the new helper.
-
-And finally an actual fix
-
-	btrfs: do not infinite loop in data reclaim if we aborted
-
-The async data path could infinite loop if we aborted because it only broke in
-the case of space_info->full, which would never happen if we weren't full and
-had aborted the transaction.  This is fine stand alone, but I took advantage of
-the helpers here so I want to make sure the fix goes along with its
-dependencies.  Thanks,
-
-Josef
-
-Josef Bacik (3):
-  btrfs: always abort the transaction if we abort a trans handle
-  btrfs: add a btrfs_has_fs_error helper
-  btrfs: do not infinite loop in data reclaim if we aborted
-
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
  fs/btrfs/ctree.c       |  5 +----
- fs/btrfs/ctree.h       |  5 +++++
- fs/btrfs/disk-io.c     |  8 +++-----
  fs/btrfs/extent-tree.c |  1 -
- fs/btrfs/extent_io.c   |  2 +-
- fs/btrfs/file.c        |  2 +-
- fs/btrfs/inode.c       |  6 +++---
- fs/btrfs/scrub.c       |  2 +-
- fs/btrfs/space-info.c  | 29 ++++++++++++++++++++++++-----
- fs/btrfs/super.c       | 13 +------------
- fs/btrfs/transaction.c | 19 +++++--------------
+ fs/btrfs/super.c       | 11 -----------
+ fs/btrfs/transaction.c |  8 --------
  fs/btrfs/transaction.h |  1 -
- fs/btrfs/tree-log.c    |  2 +-
- 13 files changed, 46 insertions(+), 49 deletions(-)
+ 5 files changed, 1 insertion(+), 25 deletions(-)
 
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index a484fb72a01f..4bc3ca2cbd7d 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -596,7 +596,6 @@ noinline int btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 		       trans->transid, fs_info->generation);
+ 
+ 	if (!should_cow_block(trans, root, buf)) {
+-		trans->dirty = true;
+ 		*cow_ret = buf;
+ 		return 0;
+ 	}
+@@ -1788,10 +1787,8 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 			 * then we don't want to set the path blocking,
+ 			 * so we test it here
+ 			 */
+-			if (!should_cow_block(trans, root, b)) {
+-				trans->dirty = true;
++			if (!should_cow_block(trans, root, b))
+ 				goto cow_done;
+-			}
+ 
+ 			/*
+ 			 * must have write locks on this node and the
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 24b5e54935a9..790de24576ac 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -4784,7 +4784,6 @@ btrfs_init_new_buffer(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		set_extent_dirty(&trans->transaction->dirty_pages, buf->start,
+ 			 buf->start + buf->len - 1, GFP_NOFS);
+ 	}
+-	trans->dirty = true;
+ 	/* this returns a buffer locked for blocking */
+ 	return buf;
+ }
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 4a396c1147f1..bc613218c8c5 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -299,17 +299,6 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 
+ 	WRITE_ONCE(trans->aborted, errno);
+-	/* Nothing used. The other threads that have joined this
+-	 * transaction may be able to continue. */
+-	if (!trans->dirty && list_empty(&trans->new_bgs)) {
+-		const char *errstr;
+-
+-		errstr = btrfs_decode_error(errno);
+-		btrfs_warn(fs_info,
+-		           "%s:%d: Aborting unused transaction(%s).",
+-		           function, line, errstr);
+-		return;
+-	}
+ 	WRITE_ONCE(trans->transaction->aborted, errno);
+ 	/* Wake up anybody who may be waiting on this transaction */
+ 	wake_up(&fs_info->transaction_wait);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index f75de9f6c0ad..e0a82aa7da89 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2074,14 +2074,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 
+ 	ASSERT(refcount_read(&trans->use_count) == 1);
+ 
+-	/*
+-	 * Some places just start a transaction to commit it.  We need to make
+-	 * sure that if this commit fails that the abort code actually marks the
+-	 * transaction as failed, so set trans->dirty to make the abort code do
+-	 * the right thing.
+-	 */
+-	trans->dirty = true;
+-
+ 	/* Stop the commit early if ->aborted is set */
+ 	if (TRANS_ABORTED(cur_trans)) {
+ 		ret = cur_trans->aborted;
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 364cfbb4c5c5..c49e2266b28b 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -143,7 +143,6 @@ struct btrfs_trans_handle {
+ 	bool allocating_chunk;
+ 	bool can_flush_pending_bgs;
+ 	bool reloc_reserved;
+-	bool dirty;
+ 	bool in_fsync;
+ 	struct btrfs_root *root;
+ 	struct btrfs_fs_info *fs_info;
 -- 
 2.26.3
 
