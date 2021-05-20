@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F363389DAC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 08:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3C3389DAF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 08:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhETGYW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 May 2021 02:24:22 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:47818 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhETGYW (ORCPT
+        id S230359AbhETGYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 May 2021 02:24:31 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:49715 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhETGYa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 May 2021 02:24:22 -0400
+        Thu, 20 May 2021 02:24:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1621491783; x=1653027783;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=37Z6JDiNyGcynyuJ/vqXi6iw1MykENFbGYfugjBIwFg=;
-  b=E2/B/mW8YSEkD4HgjgiBu4z9jTWFL+GAxyoDIQcwXLPUwPm++bqATQdw
-   GiHhm+6FHniB40jWGBwQjOToSt6SQL7jY8UIr8gdRZZIKFAkmhYSZVpfJ
-   lzjitwzVBTAcYPzalyKawrr1j3yhVwZnj7nNqyC4K44hCzLBLTsLbnAgX
-   zlP2hmGwq3UrIVYXV99HAdGkRngmlNLlTLm8ch5k1DDUex9EyiFPYa/jR
-   xQSWcFmu7fZ1ZNCA4/ay5fpM5TLddJSynf9I7TxW+3C55kOpdysu+Bx/9
-   FE9PUA1SPebGov5SO6bKA0BsSwFnTMoxuKMLBIKyOFGmo0cl7EOSXWAVR
+  t=1621491789; x=1653027789;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=VGRek1gFfC/wRW7zk79gY062QbIZScEOrynJQdteIqg=;
+  b=ledrMQzLZ0P1r6uKH6NPhZW2QzGXw2fVztPpWhMoNYwfi2RSaUfyZVwR
+   1bT2xWKsCOrFBxu7PZHY+LOT4+KYv7P8mNct5nVriHP28iUPg4gdhqzT+
+   w6N17n0uO43Qpgyfct438vzkVflydSrTPf4vZnjYAOLazpu+C+PNe1pO0
+   0NSM22t1ZDe1xiIayIKPnCAvod3Izsjc/EAcYaf6P6wdIrVtjkJd2h/NO
+   7CjEG/+V4ockdNhHE7+71pd4fFdhPMuYLz+pKDveWxox/IUhtWkbdVsHw
+   MSbNs39u7SVlg3ONaMDfkh7aGzxYattKoYjEIP43NNREA+psyp/9UCW0+
    w==;
-IronPort-SDR: Oh59vdB2A1qDye2bQ+d/KaBk2zGaINthe2OHn95Sgo/+wbMPAHOEA0yWKI7MR+DA5EauWmPJM2
- mfTM/NNrQi1jmph1EeyA9GhcaFflVJ9EHG2jDQl/vG34DKFud9J8QqGojtqdAssl5NorRw/Vrq
- Hf3xmhrYxmyvO7wthkk3WybdAdYzM3+UUgdop8DJBFSq0eEt8ayuiYTr4glEgrd3wOzVXogymX
- LA3pdYpdy4BzIhhC4SdeOL6Be8uWnZyYPb/vGtYVYSswOi55LCBMkdvgHxHqAr3nZtequz2gTB
- 674=
+IronPort-SDR: Mj/FmcwrV+946VKIdJ/3MqzDoduWuaL8eC01r/PXWTcZ0nR7pNJ5ofYO/onKInTsxYuyibFc70
+ BK8/PkT6HXloShKCLqHHL62XbaRTAJ3Q3HOcJBenVNIPjbWZmMvR4SXOWi35oVxMA5OmZREdi2
+ +QOVEkR+hKFwY6IE+oLRrr904b3qqv+pEJ0ckBUJouR5zVj7vZSuuxPDXnyw02TWKJ29miuWPR
+ q5IgRBMa0lkgmCwUIuA6zcAzNsT8nNgeGQuzBQ21xauf6cmER+020b9OTlK9r1SMmF0cHakq57
+ IiE=
 X-IronPort-AV: E=Sophos;i="5.82,313,1613404800"; 
-   d="scan'208";a="169351372"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 20 May 2021 14:23:02 +0800
-IronPort-SDR: 3ZYkcssBeIJ1pVfYUZ7vvrWVtntxv/T4MiEe1FN7OCT4gTFJs5gEzlyXrF4YqWD/Vwvd1s7s6r
- mR1OghWONATRp3PyPjiBm3kYC5X7JVdT22LT49u/pDjdgQWWUP/PnBmSKW0kppxYdEDI/IbVbF
- ddk7ZFKQKBMrSrmjOSZZauu64yi0m7pPvi/OKQBDPwwonUfllFLqJwGX8ieJ46Q6IC7gU+oqpt
- P0H5fEzIc3H0rNwJlvT3TbWqiLvakUOHI55C/tbCpNFxmB2eC2kT8zTU8FLWntZq56qmYBxY0e
- XcEMeJmQMQaylXGnmOQdP2WD
+   d="scan'208";a="173439983"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 20 May 2021 14:23:09 +0800
+IronPort-SDR: Kpg0V9LONdhGEwbCg3f7KaFkxf43XbfLBNsH8FapDpTfJxCGmooADTPUZETNzXwAqePbYaNIOf
+ aJ46lLJ00iUuqVQYHvLKAfO9MebHojGi2taV/ACCbVx5ZsUp9ABKs2dH2eILqyQw/69RmRVkhr
+ qAxxlfcBgll/KzYgRVMK6q0sYdS+d7CdcWMHkIbFi4rJfJ/ogGiL9zzu8goEis7wlTAFfUCQro
+ KzZSRMZ7AkfRvlROX965hnfktGXmxlLCObjQboGW/OYCbmR9T6XM7+L4eg987C9oAmxfZJ4Ws/
+ vHim/qUJVYfaWEH41aRCW1af
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 23:01:24 -0700
-IronPort-SDR: co3PAkGo79gyLLjO2Qy2y3B8PZr+IKND5/idvVppOQ2X1wfhsFTSek0i43T/n48qnBvZ+8OqcL
- BXbc9m4ZOcFWYrBbe5rbtWCQUa+P6g+Fg30e2Mb3ocl90yk6iSpWQsq6QuRVU1YvokpAXKsTuz
- e0mYLAcrupTog8+bBixFUT22GYkQszbSnzG2PmiITOOD3K0WDL0ISsQwFw7RHcRy6+KAWGH5D3
- 82W6KxnRu+A5fRNvsuHWRfrWdHCtUeEmcbWOgFXW6dDn/044MR5Wmy5Hwua72RojDxIm2izIvJ
- 9vY=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 23:02:46 -0700
+IronPort-SDR: dRngKsbH+q1CrRL2WQTxUMrY9YgNLOY68BEHkyuWRPYuzw2DRJAQIYajpLBnlUCxztHYgaNT7i
+ 2Ukcly0phu37Y1V2SmPnDJA0swchi5sOM6NhT8eSaG6+R2J2NJRvJwtotrphJgxusPzbpOedZ1
+ sTkiE8rTX0s/UnjWSjoaE7uDawooRhJ2cSpFDsjJXBqTUGtXcWWYH0RBpKYkwOCtY8cbDHvUYt
+ RWbWYR4T6ZFF5sDEHL2OUD5/4GtWQSaORduUWIR1tWQm98EToPFe1utEJ9c0TTYEDIIEjkRHDo
+ KHM=
 WDCIronportException: Internal
 Received: from wdsc_char_051.sc.wdc.com (HELO xfs.sc.wdc.com) ([10.4.170.150])
-  by uls-op-cesaip01.wdc.com with ESMTP; 19 May 2021 23:23:01 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 19 May 2021 23:23:09 -0700
 From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
         target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org
@@ -57,51 +57,62 @@ Cc:     axboe@kernel.dk, mb@lightnvm.io, martin.petersen@oracle.com,
         johannes.thumshirn@wdc.com, ming.lei@redhat.com, osandov@fb.com,
         willy@infradead.org, jefflexu@linux.alibaba.com, hch@lst.de,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: [RFC PATCH 0/8] block: fix bio_add_XXX_page() return type
-Date:   Wed, 19 May 2021 23:22:47 -0700
-Message-Id: <20210520062255.4908-1-chaitanya.kulkarni@wdc.com>
+Subject: [RFC PATCH 1/8] block: fix return type of bio_add_hw_page()
+Date:   Wed, 19 May 2021 23:22:48 -0700
+Message-Id: <20210520062255.4908-2-chaitanya.kulkarni@wdc.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20210520062255.4908-1-chaitanya.kulkarni@wdc.com>
+References: <20210520062255.4908-1-chaitanya.kulkarni@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,                                                                                 
+Fix bio_add_hw_page() return type to unsigned int as it returns the
+length which is of type unsigned int and not int.
 
-The helper functions bio_add_XXX_page() returns the length which is
-unsigned int but the return type of those functions is defined
-as int instead of unsigned int.
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+---
+ block/bio.c | 7 ++++---
+ block/blk.h | 7 ++++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-This is an attempt to fix the return type of those functions
-and few callers. There are many places where this fix is needed
-in the callers, if this series makes it to the upstream I'll convert
-those callers gradually.
-
-Any feedback is welcome.
-
--ck
-
-Chaitanya Kulkarni (8):
-  block: fix return type of bio_add_hw_page()
-  block: fix return type of bio_add_pc_page()
-  block: fix return type of bio_add_zone_append_page
-  block: fix return type of bio_add_page()
-  lightnvm: fix variable type pblk-core
-  pscsi: fix variable type pscsi_map_sg
-  btrfs: fix variable type in btrfs_bio_add_page
-  block: fix variable type for zero pages
-
- block/bio.c                        | 20 +++++++++++---------
- block/blk-lib.c                    |  2 +-
- block/blk.h                        |  7 ++++---
- drivers/lightnvm/pblk-core.c       |  3 ++-
- drivers/target/target_core_pscsi.c |  6 ++++--
- fs/btrfs/extent_io.c               |  2 +-
- include/linux/bio.h                | 11 ++++++-----
- 7 files changed, 29 insertions(+), 22 deletions(-)
-
+diff --git a/block/bio.c b/block/bio.c
+index 44205dfb6b60..531dbf15c0d9 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -743,9 +743,10 @@ static bool bio_try_merge_hw_seg(struct request_queue *q, struct bio *bio,
+  * Add a page to a bio while respecting the hardware max_sectors, max_segment
+  * and gap limitations.
+  */
+-int bio_add_hw_page(struct request_queue *q, struct bio *bio,
+-		struct page *page, unsigned int len, unsigned int offset,
+-		unsigned int max_sectors, bool *same_page)
++unsigned int bio_add_hw_page(struct request_queue *q, struct bio *bio,
++			     struct page *page, unsigned int len,
++			     unsigned int offset, unsigned int max_sectors,
++			     bool *same_page)
+ {
+ 	struct bio_vec *bvec;
+ 
+diff --git a/block/blk.h b/block/blk.h
+index 8b3591aee0a5..a8930ecd4a5e 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -355,8 +355,9 @@ int bdev_del_partition(struct block_device *bdev, int partno);
+ int bdev_resize_partition(struct block_device *bdev, int partno,
+ 		sector_t start, sector_t length);
+ 
+-int bio_add_hw_page(struct request_queue *q, struct bio *bio,
+-		struct page *page, unsigned int len, unsigned int offset,
+-		unsigned int max_sectors, bool *same_page);
++unsigned int bio_add_hw_page(struct request_queue *q, struct bio *bio,
++			     struct page *page, unsigned int len,
++			     unsigned int offset, unsigned int max_sectors,
++			     bool *same_page);
+ 
+ #endif /* BLK_INTERNAL_H */
 -- 
 2.24.0
 
