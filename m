@@ -2,106 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFFB389AC3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 03:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0458389D8B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 08:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhETBJm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 21:09:42 -0400
-Received: from mout.gmx.net ([212.227.15.15]:44189 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhETBJk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 21:09:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621472893;
-        bh=IK4Lx5sZTtvoKkLvNYMpx7tYlbV6YCE/gMPzPr/qR74=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=kPGundGCHNfBUZnnVDueJxBUol//PQPPwdiWbSIMrVvvE/liQ84tEKyejoBxUfF+g
-         QW2sK45eUTt5g8K9fTm3SvHAbfPKZbkre0qXH80QkfishHwLd2vncWJEwyn3SWJ9Wf
-         f/4VAa3CqsTJYBsYGX8PaVPW0xrYnsuNk9BS4TbY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MulqD-1lS8mF0SLz-00rmdI; Thu, 20
- May 2021 03:08:12 +0200
-Subject: Re: [PATCH] btrfs: abort the transaction if we fail to replay log
- trees
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <9513d31a4d2559253088756f99d162abaf090ebd.1621438132.git.josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <bdf7c194-c14b-1b36-02ad-e67743fbbfef@gmx.com>
-Date:   Thu, 20 May 2021 09:08:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230370AbhETGNB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 May 2021 02:13:01 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:48851 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230315AbhETGNB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 May 2021 02:13:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1621491099; x=1653027099;
+  h=date:from:to:subject:message-id:mime-version;
+  bh=kjckl+ZpuGwWW2o9irOq1/L2eY78zm1I/kyxtt6PpGA=;
+  b=AaI1l6GAko0I2jTTuU18ndYoiWmCaaiA4bp6pVXPm95+8+4KpdWEUecc
+   qunQGC+pCx7Qq3hhViG03Que7cTICU3rEyEri0ShcY2i6Xvf7RVKgk4zT
+   qoFnS41yf22obVMSYMFbz9XmcHJQnTrf/uCeMs4N5tT10qR3D5Zx+VaJF
+   jCUfsDFrkTx9pJ6Ew0GI9aCA+I7uFYpHU2XBAZ5koh/rVjErK5CBBqEBi
+   4eZvfdVpeq9vpTNZ1sb7Byv1UdXe3090Wh5OH0gVnvxcdXjIyTJsmzDFM
+   hI/ikHZp15F+RPi8qn6cfVR0LhkKuw23S6hFCNjImm0QHR9SYfcRW5QO8
+   A==;
+IronPort-SDR: HP9eKgO8pK6hhVpNVKe2iloo564pDV5Lls9vlrQ/q3cRqsvwl1F36uWRk1PZ30lbG46KOzjo1K
+ yFd2uBVGOYShgJA10e/SlruHy0jxPyFSyd1cpjglEqixg9lRYr/AIv6pqezS/DsH3SGqDxFqrn
+ Ih6qmYMxktrh1kGUwO2u9qLWnQOWDzOc6qbhvNFisIMNOHu59zKKcdcG3jNI2IcbFSn22BsR4I
+ ym57WRUjWuU3EQckkwKYMEm4WDxZK36JglO3i6Uu3faW+dyF+zcpBFzL5XbVfoQyUZT43vXKG/
+ C/4=
+X-IronPort-AV: E=Sophos;i="5.82,313,1613404800"; 
+   d="scan'208";a="173438661"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 20 May 2021 14:11:39 +0800
+IronPort-SDR: hhuMeQHHWNgqeeiNXdsFaIDT16gCTnK+4K9INlAIxtcrl51L9rJyLVhEN2+ntd8V3Yn5VtTVgu
+ 1V44rHaxACB//oG8hBM1dc5gPJLod/WqgazS+0yxtlZJ1+eSsX0s2ANxTCL3X9fFadclM3yJjl
+ lwMeIEMIA9f8vIYfRxrv9cY5kkTZdB/QsE7PX5iWng3mD367IeS5o+7Szd0kbUK6zLvwdCYPOn
+ vUuj23z0O9jK8pmmgJ6MX6QziPeV9YkAaGcWx3dNdAlSTU//U0/PNcfZLtdTVVhYUFowof3cx4
+ N83TxcBU12dQzDW8ngvfgJOo
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 22:51:17 -0700
+IronPort-SDR: oscezB1JNbp/L8SRnNUmw2ekh2FplU99wl1mJf0knCjtqgBF4vJfdPqtDNeSJ18DhkGsUlmuKh
+ 0vbZC4pnZHYJjBH9mm2R1ZLLU0ze/ohcIwzmVtG/GiX+2oId9o9Sx2wb2EL93t61JtgZXAJGfX
+ cEXf+zmnSJDIDMRYFQ2ZfFferjqbyFTBbF3MBeLt+xsMkAYHdUDnmCD6GuVaTPgKT4V1sbtnVQ
+ 6ejwHwW0Us8huBJEG6z4dMIWC5//HafQd+Reby9QCwIYidR+pKXQLcn12tV4a09WAY3EikmDe5
+ dts=
+WDCIronportException: Internal
+Received: from jpf010043.ad.shared (HELO naota-xeon) ([10.225.52.46])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 23:11:39 -0700
+Date:   Thu, 20 May 2021 15:11:38 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Behavior of btrfs_io_geometry()
+Message-ID: <20210520061138.d775gajnfj7h2xu4@naota-xeon>
 MIME-Version: 1.0
-In-Reply-To: <9513d31a4d2559253088756f99d162abaf090ebd.1621438132.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xGL5qo+yC48Br4d1ZxTxZjxVd1K6lJbVZDKOAopyV3368XBplum
- Hg6PrHKBQaEmjQuY+zyH6Sf+bizpTDwf0vNZTeN9tgGZG3lZmMYdnqbNv9qj6P6wDkVljMD
- SpO/VUouWA03zTesrVTzh6XlyY0BSpJa2eiFOF+RKbkXOCqmoghI7NLjo46aeUn5twH9L1I
- CyhV77aZlbZ7zeoCkjrRg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hBdGU/oFHeQ=:0RP4Q5CFj+crRsQzuKY0ZJ
- 2MG4PGDfeg72mJYkc1fEQfI/M8v+sxq1KziJ4tj4bJKpebt2eNGt98Q/SOdu4kL3YOYIEAfH6
- ca2RJx/8vGK7xUdZo4NdnJSeye6jzJBKAPdNHEvE6EUflkcNeqkfHcphOyjkK4a7uSX+aO0df
- ZJXvdPoljTtJ7bKYgIjDOB6feTqJhiDErCiaPn7lMFnm6btQHHnbyXSMYRBi+QWQTHJ+Zk/+E
- LiXKUBuvdawI7SI3Sl8v8HV9obYWLAZAPOlE7VJphVZORUULuRm3XPcKRaKOgvIOz0zMs3JqC
- 63UorOI2kHe2CxHjza3vowibVo2Yhvj/q4nX+aQ/ybr75/ZT9qAI4dnTkTbThSSDHMXJt9zMZ
- IoAWVmit1oKq4zkmCYLk8/uVdnAgqrivclTpHo7S+/8kO97A8lQRZTWHsdIzvZaVI9e0wrEiN
- c2v7O3azH/HUM/9rgvsjp/1/qXXSLqbWtA4f1bDnIUi0kSoCNGAllMzD/MoBitBZrBGxxGwTd
- dFAQfE23DOq1uDwGexbADZZU52NHus0qOG0iuH/LQTrzGjf2P059CxjVeTaNxCDV5rLz6jsyn
- dDd28oLLvVlNStdi85YjKM4JX8BCqN65i3fApVdRQaM2PaJCZ6rIPUyNJlwVXeJvkq3mF2ylv
- v3ueaUQ4Hyu5yAJ9vxIEj87lVN9/AkqmGJF4MXc4EG5Lve46rKTKrJm9qXdnV42qNHfzI0+n9
- CPpU0XA27CwseVBl0ACPtGTetq5J7kQB59RRMy9p3ZbKSavfi/IKodf/bCVPDkxAs5JPvqy8J
- WI5n9BFp42GFLcXxNDX90tgA6AvFdJnRMZF8xHfrzn4MfDUEU6WzzDOz8ZnDIFvLVOHfswFRr
- wEOS8kxmUHjdyCHVlX7FEqSqgjsAfqD35V5udB+Wu3oYyiz9UdqgH6cE82zVOqiFFXWb+siX8
- 2Ozi0V0F9aUzE/Z4d5umwyrL+inwFeeN20zH9xfNaKKPtPq8d42ZnfRcv2woWNWO8D/YKnEMk
- NJiJkrAu4cURqRSIYHqBvfzS9dqwH2hXZiWho3MRYCEtao4SnpXSndlyh8sjxIN44+vg0BwMJ
- r1si53BPQ+4+pyGkTb6w6kyTK2ih4U6uK60rFTQneObnCC+WK5riygD+jImUYC3MwrJsvclc1
- au5CCIXcDf1YVLcht9C3lcOt/AEiE68SlxGSYSmFiQcxgoYM/NK9oUP+sU+EHMqpVRmLlH2J0
- vV2se1CuU84MhtWDl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I have a few questions about btrfs_io_geometry()'s behavior. 
+
+While I'm testing zoned btrfs on ZNS drive with 2GB zone size, I hit
+the following ASSERT in btrfs_submit_direct() by running fstests
+btrfs/017.
+
+static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+		struct bio *dio_bio, loff_t file_offset)
+{
+...
+	start_sector = dio_bio->bi_iter.bi_sector;
+	submit_len = dio_bio->bi_iter.bi_size;
+
+	do {
+		logical = start_sector << 9;
+		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
+...
+		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
+					    logical, submit_len, &geom);
+...
+		ASSERT(geom.len <= INT_MAX);
+
+		clone_len = min_t(int, submit_len, geom.len);
+...
+		bio = btrfs_bio_clone_partial(dio_bio, clone_offset, clone_len);
 
 
-On 2021/5/19 =E4=B8=8B=E5=8D=8811:29, Josef Bacik wrote:
-> During inspection of the return path for replay I noticed that we don't
-> actually abort the transaction if we get a failure during replay.  This
-> isn't a problem necessarily, as we properly return the error and will
-> fail to mount.  However we still leave this dangling transaction that
-> could conceivably be committed without thinking there was an error.
-> Handle this by making sure we abort the transaction on error to
-> safeguard us from any problems in the future.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+On zoned btrfs, we create a SINGLE block group whose size is equal to
+the device zone size, so we have a 2 GB SINGLE block group on a 2 GB
+zone size drive. Then, on a SINGLE single block group,
+btrfs_io_geometry() returns the remaining length from @logical to the
+end of the block group regardless of the @len argument. Thus, with
+@logical == 0, we get geom->len = 2 GB, which is larger than INT_MAX,
+hitting the ASSERT.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+I'm confusing because I'm not sure what the ASSERT wants to do. It
+might want to guard btrfs_bio_clone_partial() (and bio_trim()) below?
+But, since bio_trim() takes sector-based values, and the passed
+"clone_offset" and "clone_len" is byte-based, we can technically allow
+larger bytes than INT_MAX. (well, we might never build such large bio,
+though). And, it looks meaningless to check geom->len here. Since, it
+can be much larger than bio size on a SINGLE block group.
 
-Thanks,
-Qu
+So, in summary, below are my questions.
 
-> ---
->   fs/btrfs/tree-log.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 4dc74949040d..18009095908b 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -6352,8 +6352,10 @@ int btrfs_recover_log_trees(struct btrfs_root *lo=
-g_root_tree)
->
->   	return 0;
->   error:
-> -	if (wc.trans)
-> +	if (wc.trans) {
-> +		btrfs_abort_transaction(wc.trans, ret);
->   		btrfs_end_transaction(wc.trans);
-> +	}
->   	btrfs_free_path(path);
->   	return ret;
->   }
->
+1. About btrfs_bio_clone_partial()
+  1.1 What is the meaning of geom->len?
+      - Length from @logical to the stripe boundary? or
+      - Length [logical, logical+len] can go without crossing the boundary?
+  1.2 @len is currently unused in btrfs_bio_clone_partial(), is this correct?
+  1.3 What should we fill into geom->len when the block group is SINGLE profile?
+
+2. About the ASSERT
+  2.1 Shouldn't we check submit_len (= bio's length) instead of geom->len ?
+  2.2 Can't it be larger than INT_MAX? e.g., INT_MAX << SECTOR_SHIFT?
+
+3. About btrfs_bio_clone_partial()
+  3.1 We can change "int" to "u64" maybe?
+
