@@ -2,89 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD2D38AEE8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 14:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A8438AF64
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 14:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243129AbhETMrh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 May 2021 08:47:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55016 "EHLO mx2.suse.de"
+        id S241314AbhETNAL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 May 2021 09:00:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35674 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241892AbhETMpu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 May 2021 08:45:50 -0400
+        id S243088AbhETM7H (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 May 2021 08:59:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 68E97ABE8;
-        Thu, 20 May 2021 12:44:28 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 81D43AC5B;
+        Thu, 20 May 2021 12:57:42 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 68FF3DA7F9; Thu, 20 May 2021 14:41:53 +0200 (CEST)
-Date:   Thu, 20 May 2021 14:41:53 +0200
+        id 9767EDA7F9; Thu, 20 May 2021 14:55:08 +0200 (CEST)
+Date:   Thu, 20 May 2021 14:55:08 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
-Message-ID: <20210520124153.GZ7604@twin.jikos.cz>
+Message-ID: <20210520125508.GA7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Graham Cobb <g.btrfs@cobb.uk.net>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Mail-Followup-To: dsterba@suse.cz,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 References: <20210518144935.15835-1-dsterba@suse.com>
- <PH0PR04MB741663051770A577220C0C539B2B9@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20210519142612.GW7604@twin.jikos.cz>
- <PH0PR04MB74165244AB3C1AC48DF8DF379B2B9@PH0PR04MB7416.namprd04.prod.outlook.com>
- <29d4c680-e484-f0d0-3b25-a64b11f93230@cobb.uk.net>
+ <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <29d4c680-e484-f0d0-3b25-a64b11f93230@cobb.uk.net>
+In-Reply-To: <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 19, 2021 at 05:20:50PM +0100, Graham Cobb wrote:
-> On 19/05/2021 16:32, Johannes Thumshirn wrote:
-> > On 19/05/2021 16:28, David Sterba wrote:
-> >> On Wed, May 19, 2021 at 06:53:54AM +0000, Johannes Thumshirn wrote:
-> >>> On 18/05/2021 16:52, David Sterba wrote:
-> >>> I wonder if this interface would make sense for limiting balance
-> >>> bandwidth as well?
-> >>
-> >> Balance is not contained to one device, so this makes the scrub case
-> >> easy. For balance there are data and metadata involved, both read and
-> >> write accross several threads so this is really something that the
-> >> cgroups io controler is supposed to do.
-> >>
-> > 
-> > For a user initiated balance a cgroups io controller would work well, yes.
+On Thu, May 20, 2021 at 09:43:10AM +0200, Geert Uytterhoeven wrote:
+> > - values written to the file accept suffixes like K, M
+> > - file is in the per-device directory /sys/fs/btrfs/FSID/devinfo/DEVID/scrub_speed_max
+> > - 0 means use default priority of IO
+> >
+> > The scheduler is a simple deadline one and the accuracy is up to nearest
+> > 128K.
+> >
+> > Signed-off-by: David Sterba <dsterba@suse.com>
 > 
-> Hmmm. I might give this a try. On my main mail server balance takes a
-> long time and a lot of IO, which is why I created my "balance_slowly"
-> script which shuts down mail (and some other services) then runs balance
-> for 20 mins, then cancels the balance and allows mail to run for 10
-> minutes, then resumes the balance for 20 mins, etc. Using this each
-> month, a balance takes over 24 hours but at least the only problem is
-> short mail delays for 1 day a month, not timeouts, users seeing mail
-> error reports, etc.
+> Thanks for your patch, which is now commit b4a9f4bee31449bc ("btrfs:
+> scrub: per-device bandwidth control") in linux-next.
 > 
-> Before I did this, the impact was horrible: btrfs spent all its time
-> doing backref searches and any process which touched the filesystem (for
-> example to deliver a tiny email) could be stuck for over an hour.
+> noreply@ellerman.id.au reported the following failures for e.g.
+> m68k/defconfig:
 > 
-> I am wondering whether the cgroups io controller would help, or whether
-> it would cause a priority inversion because the backrefs couldn't do the
-> IO they needed so the delays to other processes locked out would get
-> even **longer**. Any thoughts?
+> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+> ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
 
-Do you do a full balance? On a mail server where files get created and
-deleted the space could become quite fragmented so a balance from time
-to time would make the space more compact. You can also start balance in
-smaller batches eg. using the limit=N filter.
+I'll fix it, thanks for the report.
 
-I haven't fully tested the cgroup io limiting, no success setting it up
-with raw cgroups, but the systemd unit files have support for that so
-maybe I'm doing it the wrong way.
+> > +static void scrub_throttle(struct scrub_ctx *sctx)
+> > +{
+> > +	const int time_slice = 1000;
+> > +	struct scrub_bio *sbio;
+> > +	struct btrfs_device *device;
+> > +	s64 delta;
+> > +	ktime_t now;
+> > +	u32 div;
+> > +	u64 bwlimit;
+> > +
+> > +	sbio = sctx->bios[sctx->curr];
+> > +	device = sbio->dev;
+> > +	bwlimit = READ_ONCE(device->scrub_speed_max);
+> > +	if (bwlimit == 0)
+> > +		return;
+> > +
+> > +	/*
+> > +	 * Slice is divided into intervals when the IO is submitted, adjust by
+> > +	 * bwlimit and maximum of 64 intervals.
+> > +	 */
+> > +	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
+> > +	div = min_t(u32, 64, div);
+> > +
+> > +	/* Start new epoch, set deadline */
+> > +	now = ktime_get();
+> > +	if (sctx->throttle_deadline == 0) {
+> > +		sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
+> 
+> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+> 
+> div_u64(bwlimit, div)
+> 
+> > +		sctx->throttle_sent = 0;
+> > +	}
+> > +
+> > +	/* Still in the time to send? */
+> > +	if (ktime_before(now, sctx->throttle_deadline)) {
+> > +		/* If current bio is within the limit, send it */
+> > +		sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
+> > +		if (sctx->throttle_sent <= bwlimit / div)
+> > +			return;
+> > +
+> > +		/* We're over the limit, sleep until the rest of the slice */
+> > +		delta = ktime_ms_delta(sctx->throttle_deadline, now);
+> > +	} else {
+> > +		/* New request after deadline, start new epoch */
+> > +		delta = 0;
+> > +	}
+> > +
+> > +	if (delta)
+> > +		schedule_timeout_interruptible(delta * HZ / 1000);
+> 
+> ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+> 
+> I'm a bit surprised gcc doesn't emit code for the division by the
+> constant 1000, but emits a call to __divdi3().  So this has to become
+> div_u64(), too.
+> 
+> > +	/* Next call will start the deadline period */
+> > +	sctx->throttle_deadline = 0;
+> > +}
+> 
+> BTW, any chance you can start adding lore Link: tags to your commits, to
+> make it easier to find the email thread to reply to when reporting a
+> regression?
 
-The priority inversion could be an issue, relocation needs to commit the
-changes so in general the metadata operations should not be throttled.
+Well, no I'm not going to do that, sorry. It should be easy enough to
+paste the patch subject to the search field on lore.k.org and click the
+link leading to the mail, I do that all the time. Making sure that
+patches have all the tags and information takes time already so I'm not
+too keen to spend time on adding links.
