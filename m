@@ -2,120 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0458389D8B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 08:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F363389DAC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 08:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhETGNB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 May 2021 02:13:01 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:48851 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhETGNB (ORCPT
+        id S230255AbhETGYW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 May 2021 02:24:22 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:47818 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhETGYW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 May 2021 02:13:01 -0400
+        Thu, 20 May 2021 02:24:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1621491099; x=1653027099;
-  h=date:from:to:subject:message-id:mime-version;
-  bh=kjckl+ZpuGwWW2o9irOq1/L2eY78zm1I/kyxtt6PpGA=;
-  b=AaI1l6GAko0I2jTTuU18ndYoiWmCaaiA4bp6pVXPm95+8+4KpdWEUecc
-   qunQGC+pCx7Qq3hhViG03Que7cTICU3rEyEri0ShcY2i6Xvf7RVKgk4zT
-   qoFnS41yf22obVMSYMFbz9XmcHJQnTrf/uCeMs4N5tT10qR3D5Zx+VaJF
-   jCUfsDFrkTx9pJ6Ew0GI9aCA+I7uFYpHU2XBAZ5koh/rVjErK5CBBqEBi
-   4eZvfdVpeq9vpTNZ1sb7Byv1UdXe3090Wh5OH0gVnvxcdXjIyTJsmzDFM
-   hI/ikHZp15F+RPi8qn6cfVR0LhkKuw23S6hFCNjImm0QHR9SYfcRW5QO8
-   A==;
-IronPort-SDR: HP9eKgO8pK6hhVpNVKe2iloo564pDV5Lls9vlrQ/q3cRqsvwl1F36uWRk1PZ30lbG46KOzjo1K
- yFd2uBVGOYShgJA10e/SlruHy0jxPyFSyd1cpjglEqixg9lRYr/AIv6pqezS/DsH3SGqDxFqrn
- Ih6qmYMxktrh1kGUwO2u9qLWnQOWDzOc6qbhvNFisIMNOHu59zKKcdcG3jNI2IcbFSn22BsR4I
- ym57WRUjWuU3EQckkwKYMEm4WDxZK36JglO3i6Uu3faW+dyF+zcpBFzL5XbVfoQyUZT43vXKG/
- C/4=
+  t=1621491783; x=1653027783;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=37Z6JDiNyGcynyuJ/vqXi6iw1MykENFbGYfugjBIwFg=;
+  b=E2/B/mW8YSEkD4HgjgiBu4z9jTWFL+GAxyoDIQcwXLPUwPm++bqATQdw
+   GiHhm+6FHniB40jWGBwQjOToSt6SQL7jY8UIr8gdRZZIKFAkmhYSZVpfJ
+   lzjitwzVBTAcYPzalyKawrr1j3yhVwZnj7nNqyC4K44hCzLBLTsLbnAgX
+   zlP2hmGwq3UrIVYXV99HAdGkRngmlNLlTLm8ch5k1DDUex9EyiFPYa/jR
+   xQSWcFmu7fZ1ZNCA4/ay5fpM5TLddJSynf9I7TxW+3C55kOpdysu+Bx/9
+   FE9PUA1SPebGov5SO6bKA0BsSwFnTMoxuKMLBIKyOFGmo0cl7EOSXWAVR
+   w==;
+IronPort-SDR: Oh59vdB2A1qDye2bQ+d/KaBk2zGaINthe2OHn95Sgo/+wbMPAHOEA0yWKI7MR+DA5EauWmPJM2
+ mfTM/NNrQi1jmph1EeyA9GhcaFflVJ9EHG2jDQl/vG34DKFud9J8QqGojtqdAssl5NorRw/Vrq
+ Hf3xmhrYxmyvO7wthkk3WybdAdYzM3+UUgdop8DJBFSq0eEt8ayuiYTr4glEgrd3wOzVXogymX
+ LA3pdYpdy4BzIhhC4SdeOL6Be8uWnZyYPb/vGtYVYSswOi55LCBMkdvgHxHqAr3nZtequz2gTB
+ 674=
 X-IronPort-AV: E=Sophos;i="5.82,313,1613404800"; 
-   d="scan'208";a="173438661"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 20 May 2021 14:11:39 +0800
-IronPort-SDR: hhuMeQHHWNgqeeiNXdsFaIDT16gCTnK+4K9INlAIxtcrl51L9rJyLVhEN2+ntd8V3Yn5VtTVgu
- 1V44rHaxACB//oG8hBM1dc5gPJLod/WqgazS+0yxtlZJ1+eSsX0s2ANxTCL3X9fFadclM3yJjl
- lwMeIEMIA9f8vIYfRxrv9cY5kkTZdB/QsE7PX5iWng3mD367IeS5o+7Szd0kbUK6zLvwdCYPOn
- vUuj23z0O9jK8pmmgJ6MX6QziPeV9YkAaGcWx3dNdAlSTU//U0/PNcfZLtdTVVhYUFowof3cx4
- N83TxcBU12dQzDW8ngvfgJOo
+   d="scan'208";a="169351372"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 20 May 2021 14:23:02 +0800
+IronPort-SDR: 3ZYkcssBeIJ1pVfYUZ7vvrWVtntxv/T4MiEe1FN7OCT4gTFJs5gEzlyXrF4YqWD/Vwvd1s7s6r
+ mR1OghWONATRp3PyPjiBm3kYC5X7JVdT22LT49u/pDjdgQWWUP/PnBmSKW0kppxYdEDI/IbVbF
+ ddk7ZFKQKBMrSrmjOSZZauu64yi0m7pPvi/OKQBDPwwonUfllFLqJwGX8ieJ46Q6IC7gU+oqpt
+ P0H5fEzIc3H0rNwJlvT3TbWqiLvakUOHI55C/tbCpNFxmB2eC2kT8zTU8FLWntZq56qmYBxY0e
+ XcEMeJmQMQaylXGnmOQdP2WD
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 22:51:17 -0700
-IronPort-SDR: oscezB1JNbp/L8SRnNUmw2ekh2FplU99wl1mJf0knCjtqgBF4vJfdPqtDNeSJ18DhkGsUlmuKh
- 0vbZC4pnZHYJjBH9mm2R1ZLLU0ze/ohcIwzmVtG/GiX+2oId9o9Sx2wb2EL93t61JtgZXAJGfX
- cEXf+zmnSJDIDMRYFQ2ZfFferjqbyFTBbF3MBeLt+xsMkAYHdUDnmCD6GuVaTPgKT4V1sbtnVQ
- 6ejwHwW0Us8huBJEG6z4dMIWC5//HafQd+Reby9QCwIYidR+pKXQLcn12tV4a09WAY3EikmDe5
- dts=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 23:01:24 -0700
+IronPort-SDR: co3PAkGo79gyLLjO2Qy2y3B8PZr+IKND5/idvVppOQ2X1wfhsFTSek0i43T/n48qnBvZ+8OqcL
+ BXbc9m4ZOcFWYrBbe5rbtWCQUa+P6g+Fg30e2Mb3ocl90yk6iSpWQsq6QuRVU1YvokpAXKsTuz
+ e0mYLAcrupTog8+bBixFUT22GYkQszbSnzG2PmiITOOD3K0WDL0ISsQwFw7RHcRy6+KAWGH5D3
+ 82W6KxnRu+A5fRNvsuHWRfrWdHCtUeEmcbWOgFXW6dDn/044MR5Wmy5Hwua72RojDxIm2izIvJ
+ 9vY=
 WDCIronportException: Internal
-Received: from jpf010043.ad.shared (HELO naota-xeon) ([10.225.52.46])
-  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 23:11:39 -0700
-Date:   Thu, 20 May 2021 15:11:38 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Behavior of btrfs_io_geometry()
-Message-ID: <20210520061138.d775gajnfj7h2xu4@naota-xeon>
+Received: from wdsc_char_051.sc.wdc.com (HELO xfs.sc.wdc.com) ([10.4.170.150])
+  by uls-op-cesaip01.wdc.com with ESMTP; 19 May 2021 23:23:01 -0700
+From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Cc:     axboe@kernel.dk, mb@lightnvm.io, martin.petersen@oracle.com,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        johannes.thumshirn@wdc.com, ming.lei@redhat.com, osandov@fb.com,
+        willy@infradead.org, jefflexu@linux.alibaba.com, hch@lst.de,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Subject: [RFC PATCH 0/8] block: fix bio_add_XXX_page() return type
+Date:   Wed, 19 May 2021 23:22:47 -0700
+Message-Id: <20210520062255.4908-1-chaitanya.kulkarni@wdc.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I have a few questions about btrfs_io_geometry()'s behavior. 
+Hi,                                                                                 
 
-While I'm testing zoned btrfs on ZNS drive with 2GB zone size, I hit
-the following ASSERT in btrfs_submit_direct() by running fstests
-btrfs/017.
+The helper functions bio_add_XXX_page() returns the length which is
+unsigned int but the return type of those functions is defined
+as int instead of unsigned int.
 
-static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
-		struct bio *dio_bio, loff_t file_offset)
-{
-...
-	start_sector = dio_bio->bi_iter.bi_sector;
-	submit_len = dio_bio->bi_iter.bi_size;
+This is an attempt to fix the return type of those functions
+and few callers. There are many places where this fix is needed
+in the callers, if this series makes it to the upstream I'll convert
+those callers gradually.
 
-	do {
-		logical = start_sector << 9;
-		em = btrfs_get_chunk_map(fs_info, logical, submit_len);
-...
-		ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(dio_bio),
-					    logical, submit_len, &geom);
-...
-		ASSERT(geom.len <= INT_MAX);
+Any feedback is welcome.
 
-		clone_len = min_t(int, submit_len, geom.len);
-...
-		bio = btrfs_bio_clone_partial(dio_bio, clone_offset, clone_len);
+-ck
 
+Chaitanya Kulkarni (8):
+  block: fix return type of bio_add_hw_page()
+  block: fix return type of bio_add_pc_page()
+  block: fix return type of bio_add_zone_append_page
+  block: fix return type of bio_add_page()
+  lightnvm: fix variable type pblk-core
+  pscsi: fix variable type pscsi_map_sg
+  btrfs: fix variable type in btrfs_bio_add_page
+  block: fix variable type for zero pages
 
-On zoned btrfs, we create a SINGLE block group whose size is equal to
-the device zone size, so we have a 2 GB SINGLE block group on a 2 GB
-zone size drive. Then, on a SINGLE single block group,
-btrfs_io_geometry() returns the remaining length from @logical to the
-end of the block group regardless of the @len argument. Thus, with
-@logical == 0, we get geom->len = 2 GB, which is larger than INT_MAX,
-hitting the ASSERT.
+ block/bio.c                        | 20 +++++++++++---------
+ block/blk-lib.c                    |  2 +-
+ block/blk.h                        |  7 ++++---
+ drivers/lightnvm/pblk-core.c       |  3 ++-
+ drivers/target/target_core_pscsi.c |  6 ++++--
+ fs/btrfs/extent_io.c               |  2 +-
+ include/linux/bio.h                | 11 ++++++-----
+ 7 files changed, 29 insertions(+), 22 deletions(-)
 
-I'm confusing because I'm not sure what the ASSERT wants to do. It
-might want to guard btrfs_bio_clone_partial() (and bio_trim()) below?
-But, since bio_trim() takes sector-based values, and the passed
-"clone_offset" and "clone_len" is byte-based, we can technically allow
-larger bytes than INT_MAX. (well, we might never build such large bio,
-though). And, it looks meaningless to check geom->len here. Since, it
-can be much larger than bio size on a SINGLE block group.
-
-So, in summary, below are my questions.
-
-1. About btrfs_bio_clone_partial()
-  1.1 What is the meaning of geom->len?
-      - Length from @logical to the stripe boundary? or
-      - Length [logical, logical+len] can go without crossing the boundary?
-  1.2 @len is currently unused in btrfs_bio_clone_partial(), is this correct?
-  1.3 What should we fill into geom->len when the block group is SINGLE profile?
-
-2. About the ASSERT
-  2.1 Shouldn't we check submit_len (= bio's length) instead of geom->len ?
-  2.2 Can't it be larger than INT_MAX? e.g., INT_MAX << SECTOR_SHIFT?
-
-3. About btrfs_bio_clone_partial()
-  3.1 We can change "int" to "u64" maybe?
+-- 
+2.24.0
 
