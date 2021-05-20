@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312E1389AB5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 03:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92735389AB6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 May 2021 03:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhETBDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 May 2021 21:03:41 -0400
-Received: from mout.gmx.net ([212.227.15.15]:45687 "EHLO mout.gmx.net"
+        id S230123AbhETBEM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 May 2021 21:04:12 -0400
+Received: from mout.gmx.net ([212.227.17.21]:52639 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229525AbhETBDj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 May 2021 21:03:39 -0400
+        id S229525AbhETBEL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 May 2021 21:04:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621472534;
-        bh=VwgWge8mQqJsnwC5GIk6Oiyi71uCDhOzrvAPuKMuX+g=;
+        s=badeba3b8450; t=1621472567;
+        bh=/r362rrdWjZzEQzGXVrWhUT2zCpYXuI903pedLuh01Q=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=jdY6TLF8UEZL39+Xy39aR2G5qIQWf/GzHFd5NF/YhBlvHwDTQEebKXJxJg2DYF4gr
-         wisLyRdw2Qhv8IE1JVFsjdrANdEDRSzKke0LA43HIdOIbybOJu+3qKk9lt6vfREWyk
-         bfLna/ZbJYkXkeOi3f+I2hFcDZvho9cDOeCkxpDY=
+        b=aAHdVV36FeQ2SaYnYMhEeiPYLAUAorgUah7SfHpCv5+dt832MdN36c8lcpWSDVf3+
+         SJS+ERn5/t80SK1dyUt9RTh2V3S4scy9azHx5pyk1xWodGoO6hK7V0KXZQFmWYGD0D
+         3HbkpdWDmNMaXV/3PixzNsbb0DMaaYhYpayZWn7E=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MF3He-1lhI1l1rxY-00FQ5e; Thu, 20
- May 2021 03:02:14 +0200
-Subject: Re: [PATCH 1/2] btrfs: fix error handling in btrfs_del_csums
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mo6qp-1l8ENp0GMd-00parO; Thu, 20
+ May 2021 03:02:46 +0200
+Subject: Re: [PATCH 2/2] btrfs: return errors from btrfs_del_csums in
+ cleanup_ref_head
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1621435862.git.josef@toxicpanda.com>
- <dbb1747494ad6ea6e66fbe27c37ea3730a7ac615.1621435862.git.josef@toxicpanda.com>
+ <73314ceb4a87c4a6fc559834235e63f7aae79570.1621435862.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <f73effea-f4b8-cc44-a7c3-bd4942fb46c6@gmx.com>
-Date:   Thu, 20 May 2021 09:02:10 +0800
+Message-ID: <27ee833d-1430-b533-0aab-3f8f2c6f0bce@gmx.com>
+Date:   Thu, 20 May 2021 09:02:42 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <dbb1747494ad6ea6e66fbe27c37ea3730a7ac615.1621435862.git.josef@toxicpanda.com>
+In-Reply-To: <73314ceb4a87c4a6fc559834235e63f7aae79570.1621435862.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0rkOly/XCCx3Bgf0XE/Zo/I53v55nPJGCUv7YfAYF3O62RfucXW
- bHYy75EK9VeweiAamHMnh0RuR7Z21Hz0GKsl49iRODdkvJOpo9mEIP5eD694Fyoa8tlW7KT
- TNBLR8wTUSV6atDunvNwAKiCdaplmvrbvGVbCo/vNKoQj1JRBsMqs3JQKnvL46J/1N7Kfn0
- 7lB8UX8vcZ+AkQa4N1ltw==
+X-Provags-ID: V03:K1:ZEopkRi7ap3CCct+W12QLt5ThLdA5QvVTqYEvvPALV4d8R46blV
+ ZuERsCDfKxL9M2yBKok+l95gvwQ2bvNeAAoQVpumt7c42jOgaWGoXPnebsDyvoReyMMNVCg
+ DzdNcm9NMbuSY63yBwmowqFbLDYpPjVhkNX2euojqU8I4oq/2T1j8oLnLEKZ3u4T31JXYbU
+ XfpOF8PTUaLMXxJKUqetw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6bbNmsyJFx4=:aLSIcS8XqA7LNE/6wiWiiY
- GAP2I+8TjGYjfB5JeW+u8qGe71qfhTJALsBCLImO/7lO0sVwBP7BfcWrGmaLQf7dL8GT4ZdQU
- wkBXBrLfA+78vWu6JH5j9PvsOYSQVkDqqgbiV4aX1aHzxH0bZTVaUjp1h23QVgFJBevSRuI/B
- FUpQV8zkZ13PJEzZpHf1B6Pah07gmDaPLyUFiuahwcvli0RoV/lsDmCF8oU6KlAi8AaevSkpp
- 8ozFgAK5YTDJtg4mPsz1pYjCiN4RBVhCH+NsHc5c+fVq579jUONH0FDgLltNBH3kd/rpc0a32
- 8x9wl8ZbzzhQHcw/QlU7PDeHaVxqZCwitImwek+Qv3Y3ekjJiff5iWajOnJpD5ajg7SSOTQBK
- 7TaScObDe8jfAQpxSzTqI0pR2tERLzsqz7k7bkoTBZn7RIIb2GRQ1gus+qW4kMgfXLj5WX1O0
- 5ViS0hJsLns9JDwAZMeJnPH3+ItAhw/e4KABCeIp/qqJLVTpjCaKVhJajHi85jfU2IU7JGJ7m
- o3qCDPLcnEKLUpGdfsPC/+k4eDKJeEUVe3iKQXaqtJSSuQlZQhCwrycDuYpBUZEEIqZaU7Ib+
- ZqpYA6mNgs3RIMaGU+cO0z6e58cKkrc3CsVAIh1LzMACuZn/gv/6P9KuANPxAaWgzMzLSCTqI
- 3XQENj1eLwErrJ6pFEL2pr8lSqZnsB/aykWYQjw8t9DDRMNtz9R5vz0OLOXNsgrADSaTus2pu
- NvLgDfwI4/uX/5dw7wXpx/hTpxu/HjsFpfZhEzi9IjC2WWi4UKInvWji8wGpCdwv5PGrL7Dov
- E3FUVo9yTDbqfaOpU/Y0KD6iPXX0OpcoUkpaF9H+4XsSRCd7uRxjqXm5VT64hp4k7A7VqvfkD
- jGOjFRVRfZ5sdFf6fzcU5w4lnoskVaauC/GkOpBO7Q7BfK+/oa/XF64i9yRs+BeoQTyIMm9yj
- YliVRm2YHC4HSV7hkcgHEuglO59krDgbHr5kRjPABfo1+C4Ts2NXvJL6Ez/3p5PrpaORyCsgc
- bNmbTLtAbM2lHc0spCpZfj5/QlrUnrLzd/9orj/yxFULZ8zA2bLSf/JJ21G376VTslc8t+k76
- RzUbXSaetehz/Gms2DpPx0hQuEPK1CTowOp/YaU1Rx1+6NMxAgHmjCfiG1WJwAJq1uOWgu4S1
- /M8kRno+R2zb7dNhTkpZINX/1sHsjgl4SO5f2z3El2AxZOJiXzWetrzbNeGzaMZZp2SeKaw4h
- SRD6KfR7h9Y2bnwba
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wgYbMB4lAfM=:HImuIC6P2DK2w1qOfr90hH
+ C43XVbayQHNiXVl8h8ArsYYQrppXmLm5yze4VOKRUTw5P4KlrG9VJ3GlRhO47pInVfRWWdiGH
+ a9XvkMI9xwm9FIEg2Q25QjjfvRKaBtk68HJkmmsWQQAEALEKPZdq/d8IQ7W9eT9YfjtXHGvOq
+ 2KuM9IuGUhAiyeU9atJQFlM1qiA7HTO5V4ZlvJ+b8Ev32vazMdVBVYXvSXKyI5UURbJLOSstx
+ mztmXdyzCIma3UeIJNNtAxDugGJMQGzGmGkGudB0GnOoozIuvoEEL5flSoCGwxwWIX4Nic7/c
+ W8u7a3ZAfjEUEgrI3EBYtCNsCMct5H2AeXEKAutGuuwLMSCtCwYGWA3i/xES3HwOegRL580RV
+ VAL2NiZ8yi3Tdx3MynJuEl3GwCL+R67xcfxoTMhxf0QORIYz0490lYl2IpkBcoYfwdvuarpER
+ LezwbBIWvEueujMucT5u2pD2a9SAjepiH730yZRhY6SAAhhWdn0Bm46pH74PudYcJ3eMdWN+B
+ d21Nx1u2mmFZhLcB6Jm1vxY6pkuBJY4qBdUZCeuA5h/aoxmNMDjCXrp6ml2nhxdRLvU5MUWNl
+ YMQ4igKkcYcveZ8dxLWQPuiIVK3AH2g+sPJof7cNmX2uo2ahj4ru/uiXlF2JvbkLGlL8PVzzX
+ AV7M+YEsmdWVvgrFZ+WXm5NLdl1DF7ICjQr/oY4OGdMUxPJ3vR+V87ibWnDRjpWED9YTBN9WW
+ DFzSP8HmzGe6V5AsfT4UNChYAvU55HZtUDzCVbxZV1nIF5hgKiUy1BzV15qBa6DMs2jvEyF6X
+ kyseKR4pmK8+GXQ2jA+D/BhDDIFmT65KzpF7Fb8UqfIH3rI3lDYB0WQp+R9q8XcLdR2cTBUHJ
+ HKoabgRVa1X658Qdyz3EWx0ceET0mR3kBphK7jCbMQ2OparbPuQ+AK0tulmLa5maSuzMgDJ7+
+ jJHtBl17JbnaBq0NK1uUkuHAadHjEYYyEEby4Dci2iJBpmAPQFAVR8UU4PS4HduohjtKwaA+M
+ 1A5rkoCGNQzM9UCv7vQwxBT6yvEiHRLtvpHTS2AtKis0TGu9uvZdJJZTSc4p5DIKqDY03riBQ
+ Uo+nmEOvwZmnW+wWPYGpS4z6mGKRe/ombtcdXedFr/PrEG35lqUeDIH+Y1l1urPuV8E1UFyo5
+ FArlFvir6pSCKNnm+fi4nIyYjTZlOpCDsivI43ZxzY3ipKxlaPjDK9nUDhUxCZdBloVV1LSPn
+ Qaow7RA9uucpmMebc
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -68,34 +69,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/5/19 =E4=B8=8B=E5=8D=8810:52, Josef Bacik wrote:
-> Error injection stress would sometimes fail with checksums on disk that
-> did not have a corresponding extent.  This occurred because the pattern
-> in btrfs_del_csums was
->
-> 	while (1) {
-> 		ret =3D btrfs_search_slot();
-> 		if (ret < 0)
-> 			break;
-> 	}
-> 	ret =3D 0;
-> out:
-
-Such "ret =3D 0;" is definitely causing problem when break is used.
-
-> 	btrfs_free_path(path);
-> 	return ret;
->
-> If we got an error from btrfs_search_slot we'd clear the error because
-> we were breaking instead of goto out.  Instead of using goto out, simply
-> handle the cases where we may leave a random value in ret, and get rid
-> of the
->
-> 	ret =3D 0;
-> out:
->
-> pattern and simply allow break to have the proper error reporting.  With
-> this fix we properly abort the transaction and do not commit thinking we
-> successfully deleted the csum.
+> We are unconditionally returning 0 in cleanup_ref_head, despite the fact
+> that btrfs_del_csums could fail.  We need to return the error so the
+> transaction gets aborted properly, fix this by returning ret from
+> btrfs_del_csums in cleanup_ref_head.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
@@ -103,64 +80,32 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
 > ---
->   fs/btrfs/file-item.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
+>   fs/btrfs/extent-tree.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index 294602f139ef..a5a8dac334e8 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -788,7 +788,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans=
-,
->   	u64 end_byte =3D bytenr + len;
->   	u64 csum_end;
->   	struct extent_buffer *leaf;
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index b84bbc24ff57..790de24576ac 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -1826,7 +1826,7 @@ static int cleanup_ref_head(struct btrfs_trans_han=
+dle *trans,
+>
+>   	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+>   	struct btrfs_delayed_ref_root *delayed_refs;
 > -	int ret;
 > +	int ret =3D 0;
->   	const u32 csum_size =3D fs_info->csum_size;
->   	u32 blocksize_bits =3D fs_info->sectorsize_bits;
 >
-> @@ -806,6 +806,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans=
-,
+>   	delayed_refs =3D &trans->transaction->delayed_refs;
 >
->   		ret =3D btrfs_search_slot(trans, root, &key, path, -1, 1);
->   		if (ret > 0) {
-> +			ret =3D 0;
->   			if (path->slots[0] =3D=3D 0)
->   				break;
->   			path->slots[0]--;
-> @@ -862,7 +863,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans=
-,
->   			ret =3D btrfs_del_items(trans, root, path,
->   					      path->slots[0], del_nr);
->   			if (ret)
-> -				goto out;
-> +				break;
->   			if (key.offset =3D=3D bytenr)
->   				break;
->   		} else if (key.offset < bytenr && csum_end > end_byte) {
-> @@ -906,8 +907,9 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans=
-,
->   			ret =3D btrfs_split_item(trans, root, path, &key, offset);
->   			if (ret && ret !=3D -EAGAIN) {
->   				btrfs_abort_transaction(trans, ret);
-> -				goto out;
-> +				break;
->   			}
-> +			ret =3D 0;
->
->   			key.offset =3D end_byte - 1;
->   		} else {
-> @@ -917,8 +919,6 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans=
-,
->   		}
->   		btrfs_release_path(path);
->   	}
-> -	ret =3D 0;
-> -out:
->   	btrfs_free_path(path);
->   	return ret;
+> @@ -1868,7 +1868,7 @@ static int cleanup_ref_head(struct btrfs_trans_han=
+dle *trans,
+>   	trace_run_delayed_ref_head(fs_info, head, 0);
+>   	btrfs_delayed_ref_unlock(head);
+>   	btrfs_put_delayed_ref_head(head);
+> -	return 0;
+> +	return ret;
 >   }
+>
+>   static struct btrfs_delayed_ref_head *btrfs_obtain_ref_head(
 >
