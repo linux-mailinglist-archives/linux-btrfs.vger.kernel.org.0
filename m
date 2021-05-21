@@ -2,89 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7940338CF39
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 22:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 348B038CFA2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 23:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhEUUpk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 16:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhEUUpk (ORCPT
+        id S229655AbhEUVLx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 17:11:53 -0400
+Received: from mail.dubielvitrum.pl ([91.194.229.150]:34635 "EHLO
+        naboo.endor.pl" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229503AbhEUVLw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 16:45:40 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9720C0613CE
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 13:44:16 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id s12so7085949qta.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 13:44:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=hfl3MkrBHJYD9IZg+Y16zjplsrM7+fgbVgPRHXrcphY=;
-        b=XNmZdpAhqJJD/pbRKnrd2GsHuwXlzpYoJ6pC/YnAKzGV4t5f+UIqVWy3aPYHaW05tb
-         dwlXYPlcwAu0CyaRboEtHnu43Wb2maxTUbN2P06oM/WvsTgirD40mnDVSKFa7wjT3amt
-         c3TdJWX5/ZNKDpNPdVRaW0s8jgJ8cTsqdC/XLmvaSLTKpseCY69azqfxWWE2aPWX8zra
-         gAUne8I3yzdjYRmBOZbuRGO6SR1NOyy98Le2Xv/v9muij7DE6eqKvM7cxbtbcP9wU8UJ
-         QYQVqt9sCVJ+GSPKPLIRoh6cm4Isgb2Oss8sRmDmoXymba5gZz31fCkTFpwL1h3OOm/1
-         RDyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hfl3MkrBHJYD9IZg+Y16zjplsrM7+fgbVgPRHXrcphY=;
-        b=WsQRZS83u0WkIGx47JWwD2V4ckK4T1ymaiZTjtTxDhHqLosGIbrO7sk+mY+68ry1/x
-         w4pQ614JYpalba2bVUvU9U4zzC5+xCrSwZ28QDQL5BH1Pfi+VzmUHeRxMnq1KE4UyaYj
-         OoYase/TSiCbbB2o0dz8uLkdmtcmvDlO8+C+7V1Nu0xLl7Ij+bg/I/aHVglpyPBQdOf7
-         19QT1FJ0QZ2aZkm2Ey5A0AMDoD1OrBTnSKLpg8SwWaLTgruTXnGXy7eOKwsRFHNm554e
-         Z/MAZ7Up8xVcWEI4mauRixtv4cVNYlHLh21Hl5xh2P5K4snYB64+PaLELBbajsLUWs03
-         9fKQ==
-X-Gm-Message-State: AOAM531RNr/b/6JSCyK2Y2XcXLjKEQ8LRyyJwsfkZr0njonELlf3mF5p
-        SbPqdky2zyCAdaQmZXS5vErXRni91QgFRw==
-X-Google-Smtp-Source: ABdhPJw17JwJNMcX3P5oMTYxgu85aI0lvLuA1bBBz3zNfyfmdKI5rNW5adMrFORBMPZaFPOiT4AMEQ==
-X-Received: by 2002:ac8:758f:: with SMTP id s15mr1823727qtq.180.1621629855565;
-        Fri, 21 May 2021 13:44:15 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 123sm4505089qkh.104.2021.05.21.13.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 13:44:15 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/3] btrfs: abort transaction if we fail to update the delayed inode
-Date:   Fri, 21 May 2021 16:44:09 -0400
-Message-Id: <369d25c766284041a89250a8f2e34361be689cef.1621629737.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1621629737.git.josef@toxicpanda.com>
-References: <cover.1621629737.git.josef@toxicpanda.com>
+        Fri, 21 May 2021 17:11:52 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by naboo.endor.pl (Postfix) with ESMTP id D3AD39D5DF0;
+        Fri, 21 May 2021 23:10:26 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at 
+Received: from naboo.endor.pl ([91.194.229.149])
+        by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id pt9FviJOesLU; Fri, 21 May 2021 23:10:24 +0200 (CEST)
+Received: from [192.168.55.108] (93.159.186.235.studiowik.net.pl [93.159.186.235])
+        (Authenticated sender: leszek@dubiel.pl)
+        by naboo.endor.pl (Postfix) with ESMTPSA id DD90D9D5DEE;
+        Fri, 21 May 2021 23:10:24 +0200 (CEST)
+Subject: Re: Btrfs not using all devices in raid1
+To:     Forza <forza@tnonline.net>, linux-btrfs@vger.kernel.org
+References: <63123a58-18a4-24ff-3b30-9a0668c167c4@dubiel.pl>
+ <89853f6.7deb9c63.179908e0b59@tnonline.net>
+From:   Leszek Dubiel <leszek@dubiel.pl>
+Message-ID: <efa44798-ff3e-0dc6-06fb-b5cbf6569d40@dubiel.pl>
+Date:   Fri, 21 May 2021 23:10:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <89853f6.7deb9c63.179908e0b59@tnonline.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: pl-PL
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we fail to update the delayed inode we need to abort the transaction,
-because we could leave an inode with the improper counts or some other
-such corruption behind.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/delayed-inode.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 263f3ab3009c..6ce6d8a839d7 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1052,6 +1052,9 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
- 	btrfs_delayed_inode_release_metadata(fs_info, node, (ret < 0));
- 	btrfs_release_delayed_inode(node);
- 
-+	if (ret && ret != -ENOENT)
-+		btrfs_abort_transaction(trans, ret);
-+
- 	return ret;
- 
- search:
--- 
-2.26.3
+> Raid1 means two copies on different devices. This is fulfilled with the previous 3 drives so the  'soft' keyword is not going to help here. 
+
+That's right.
+
+
+
+> You can do a full data balance (-dusage=100) to move some data across to the new disk. There is no need to do a metadata balance in this case, unless you want to convert to raid1c3 to have three copies of metadata. 
+
+
+This is production server, and I don't want to do full balance, because it will hit performance for users.
+I hoped that when data gets written to filesysystem BTRFS will choose drive that has most free space, that is /dev/sdc2.
+
+Is there any way to tell BTRFS to use /dev/sdc2?
+
+
+
+
+>  If you do nothing, the filesystem will eventually balance itself as you add abs delete data. 
+
+
+If I do nothing then /dev/sd{a,b,d}2 would get almost full, and only 
+after /dev/sdc2 would be used?
+
+
+
+
+Not using /dev/sdc2 is bad because:
+
+-- maybe this drive is already failed, but nothing is written to it so I 
+have no reports of errors
+
+-- other drives get all the data, so if one of them fails, then I will 
+have to take longer time to replace it
+
+I would prefer to have all drives EQUAL in Raid1.
+
+
 
