@@ -2,118 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2167E38CB3F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 18:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B4338CB2D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 18:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237044AbhEUQoT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 12:44:19 -0400
-Received: from mail.dubielvitrum.pl ([91.194.229.150]:34585 "EHLO
-        naboo.endor.pl" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237750AbhEUQoM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 12:44:12 -0400
-X-Greylist: delayed 491 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 May 2021 12:44:12 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by naboo.endor.pl (Postfix) with ESMTP id B906B9D5CB2
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 18:34:30 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at 
-Received: from naboo.endor.pl ([91.194.229.149])
-        by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id oxedGncqGJBa for <linux-btrfs@vger.kernel.org>;
-        Fri, 21 May 2021 18:34:28 +0200 (CEST)
-Received: from [192.168.55.108] (93.159.186.235.studiowik.net.pl [93.159.186.235])
-        (Authenticated sender: leszek@dubiel.pl)
-        by naboo.endor.pl (Postfix) with ESMTPSA id B653E9D5AB5
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 18:34:28 +0200 (CEST)
-To:     linux-btrfs@vger.kernel.org
-From:   Leszek Dubiel <leszek@dubiel.pl>
-Subject: Btrfs not using all devices in raid1
-Message-ID: <63123a58-18a4-24ff-3b30-9a0668c167c4@dubiel.pl>
-Date:   Fri, 21 May 2021 18:34:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S235237AbhEUQlE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 12:41:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40318 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233011AbhEUQlE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 May 2021 12:41:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621615180;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KqVUIt9aMEn5aAyhlri/tMQaKHYNLmmuM+Q611tFHbI=;
+        b=DzogU2Bxzj6JlmJFtSE/rVBjGfOwVbvHJzLW/1EeXBIbe8x3aTNpw6xXMyK8s7Xi/iC9cF
+        EGAulJeR55TnVC38UcuM+aO9Ecs+ieP0zTwF8O9JhdC4abILHZao/cozm1hB+62ZBH9+Ge
+        W+XJDAP1hl2c8XvYk+TfC8GD/XA7K04=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621615180;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KqVUIt9aMEn5aAyhlri/tMQaKHYNLmmuM+Q611tFHbI=;
+        b=alOFS+YHJc44ueuSdK1qQkv5ce7fgxtKI+ADOMYaKRvE0reY1acO5RfVNW+U8XhTmEbJdO
+        2JaeL/h/8bLCayAQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F072CAAA6;
+        Fri, 21 May 2021 16:39:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 561B6DA730; Fri, 21 May 2021 18:37:05 +0200 (CEST)
+Date:   Fri, 21 May 2021 18:37:05 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Subject: Re: [PATCH] btrfs: zoned: limit ordered extent to zoned append size
+Message-ID: <20210521163705.GO7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+References: <65f1b716324a06c5cad99f2737a8669899d4569f.1621588229.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: pl-PL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65f1b716324a06c5cad99f2737a8669899d4569f.1621588229.git.johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, May 21, 2021 at 06:11:04PM +0900, Johannes Thumshirn wrote:
+> Damien reported a test failure with btrfs/209. The test itself ran fine,
+> but the fsck run afterwards reported a corrupted filesystem.
+> 
+> The filesystem corruption happens because we're splitting an extent and
+> then writing the extent twice. We have to split the extent though, because
+> we're creating too large extents for a REQ_OP_ZONE_APPEND operation.
+> 
+> When dumping the extent tree, we can see two EXTENT_ITEMs at the same
+> start address but different lengths.
+> 
+> $ btrfs inspect dump-tree /dev/nullb1 -t extent
+> ...
+>    item 19 key (269484032 EXTENT_ITEM 126976) itemoff 15470 itemsize 53
+>            refs 1 gen 7 flags DATA
+>            extent data backref root FS_TREE objectid 257 offset 786432 count 1
+>    item 20 key (269484032 EXTENT_ITEM 262144) itemoff 15417 itemsize 53
+>            refs 1 gen 7 flags DATA
+>            extent data backref root FS_TREE objectid 257 offset 786432 count 1
+> 
+> On a zoned filesystem, limit the size of an ordered extent to the maximum
+> size that can be issued as a single REQ_OP_ZONE_APPEND operation.
+> 
+> Note: This patch breaks fstests btrfs/079, as it increases the number of
+> on-disk extents from 80 to 83 per 10M write.
+> 
+> Reported-by: Damien Le Moal <damien.lemoal@wdc.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/extent_io.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 78d3f2ec90e0..e823b2c74af5 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -1860,6 +1860,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+>  				    u64 *end)
+>  {
+>  	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+>  	u64 max_bytes = BTRFS_MAX_EXTENT_SIZE;
+>  	u64 delalloc_start;
+>  	u64 delalloc_end;
+> @@ -1868,6 +1869,9 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+>  	int ret;
+>  	int loops = 0;
+>  
+> +	if (fs_info && fs_info->max_zone_append_size)
+> +		max_bytes = ALIGN_DOWN(fs_info->max_zone_append_size,
+> +				       PAGE_SIZE);
 
-Hello!
+Why is the alignment needed? Are the max zone append values expected to
+be so random? Also it's using memory-related value for something that's
+more hw related, or at least extent size (which ends up on disk).
 
-Why Btrfs is not using /dev/sdc2?
-There is no line "Data,RAID1" for this disk.
-Isn't it supposed to use disk that has most of free space?
-
-Thanks for help :) :)
-Using Btrfs in production.
-
-
-Here are some command outputs:
-
-
-
-### btrfs fi show /
-
-Label: none  uuid: ea6ae51d-d9b0-4628-a8f3-3406e1dc59c6
-     Total devices 4 FS bytes used 2.96TiB
-     devid    1 size 7.25TiB used 3.20TiB path /dev/sda2
-     devid    2 size 7.25TiB used 3.20TiB path /dev/sdb2
-     devid    3 size 7.25TiB used 3.21TiB path /dev/sdd2
-     devid    4 size 7.25TiB used 32.00MiB path /dev/sdc2
-
-
-
-### btrfs fi df /
-
-Data, RAID1: total=4.49TiB, used=2.90TiB
-System, RAID1: total=64.00MiB, used=784.00KiB
-Metadata, RAID1: total=321.00GiB, used=56.08GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
-
-
-
-### btrfs dev usa /
-
-/dev/sda2, ID: 1
-    Device size:             7.25TiB
-    Device slack:              0.00B
-    Data,RAID1:              2.99TiB
-    Metadata,RAID1:        210.00GiB
-    System,RAID1:           64.00MiB
-    Unallocated:             4.05TiB
-
-/dev/sdb2, ID: 2
-    Device size:             7.25TiB
-    Device slack:              0.00B
-    Data,RAID1:              3.00TiB
-    Metadata,RAID1:        210.00GiB
-    Unallocated:             4.04TiB
-
-/dev/sdc2, ID: 4
-    Device size:             7.25TiB
-    Device slack:              0.00B   ... no Data/RAID1
-    System,RAID1:           32.00MiB
-    Unallocated:             7.25TiB
-
-/dev/sdd2, ID: 3
-    Device size:             7.25TiB
-    Device slack:              0.00B
-    Data,RAID1:              2.99TiB
-    Metadata,RAID1:        222.00GiB
-    System,RAID1:           32.00MiB
-    Unallocated:             4.04TiB
-
-
-
-### time btrfs balance start -dconvert=raid1,soft -mconvert=raid1,soft /
-
-Done, had to relocate 0 out of 4922 chunks
-
-real    0m0,522s
-user    0m0,000s
-sys    0m0,033s
-
-
+>  again:
+>  	/* step one, find a bunch of delalloc bytes starting at start */
+>  	delalloc_start = *start;
+> -- 
+> 2.31.1
