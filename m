@@ -2,185 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB0038C3BD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 11:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DBE38C3E7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 11:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbhEUJsO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 05:48:14 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:19934 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbhEUJsM (ORCPT
+        id S231952AbhEUJzM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 05:55:12 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:19714 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235435AbhEUJyA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 05:48:12 -0400
+        Fri, 21 May 2021 05:54:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1621590410; x=1653126410;
+  t=1621590756; x=1653126756;
   h=from:to:cc:subject:date:message-id:references:
    content-transfer-encoding:mime-version;
-  bh=yhscSLNMG7mOPk0ZTF6IvnTs1GwVkxV5kAFbk6ofsVs=;
-  b=mXpezt1J7WYr5lnekHL9tdtwGUrBIe9ENSqTJ4JSkkIy0rRM6yddvGIG
-   GHHI7evV4SEVgs812lQJdq4HuLhywdCH+H1wV/thJW6hw85EBm/d+PTwB
-   ZefKr4Dirp9nNUJ2mVqI+Aotwt0t4du1eT91H7NfgqUtotJp50F3VXWPy
-   /VBDsODZuXpS3MNzApo7vVFAY23zRCW7EfRH3KfKr+ei53NApzWlNzFtZ
-   yqGmlnMhcB1YYyZr2bqiWMBRvWV7duE6iQww28wkT1KIbxGFxOB8Bw3dR
-   6SkgV+NodSMfLOrIm3EMpVnVHdxW52VkU8kEY3KNWvY5ytnWzMml7JAdc
-   w==;
-IronPort-SDR: HgF2qv2WpLo7i18SUvc7LEcaZnC13tOPhfYC80QwwRe8PNTVXAn0B4hEtUknoI4qeomZGLjb6t
- qBHKyxuc70FXCsVAmVSDjHxvXkLUdO5/A4FjFi0kGIHuqDXyAIFqLJVf2xDv6P+Ko3r6f2UeeK
- HuEnGosMl9SLp5Zb48+J739r3qdj2gjb6G/Rj54CN7W/McrMXwh+5uuaz9f+vulBoQMPZkMoHY
- k3qosxf01oBmhZ3NmnpbqJIF96OOG+GEiNNWhGalYhBz3F07QH0hSKr8APAn/E+3N2UjTQMfQB
- c0M=
+  bh=MySDjWOlR2UlilkdOTfVCyt0P85zY7xk3cYiEp8hZUs=;
+  b=LPsCBFV6q8uyD76jGzB3Hp/yYxJDyJCQjyVrxYctg2JHqXN0wjCtAEd7
+   i+aJhaKRpywDZzpfGqGYVMQN8JWEW6oBiCXsEuBjffAn+eHANdKizjqcm
+   pi0EZ4MGw5be29pt2CQuobkArYfeyoxJwEA3EDyelrE4l0EfkHrx86eFR
+   SndrLXK+hKD0ambeW7B3P+q0nFzNDWQ2oJ6jEM+i+sktpcxaRGDwjWL9R
+   6xMyaac7v49juTzewf80Nyf30GjwEMTL1Sjh3k9XefX4fyu6J2/xagU97
+   4updrQq+fL0HYpziypNgVnGwr9OpORfD6d9yn9enOIKZ4QvmdIXmc/5oM
+   g==;
+IronPort-SDR: ZtIr2G5g3V/OSrrk6PH8jVYGdptZf0Bp8IhpmKQmQPS1iyLs6PomsMh590ai3cCLiek8odFNyn
+ FTXnNXoRJG9eAilUUrNCFXI8bZC36q1a9zWCZ+KI7fF7b5B9Rg2fLedYwINpdKzxPU6QYDbw51
+ 764sXxuL27lS75v1C19Gj7Pb/xfLrh+XXjri0plt4jWoVQOySS6OSUB0QUc3ArsrOvoRvbsIy9
+ VzYChYY78rBMGjgHbLiuqTpQ69V+KmPhQ/CWt/5xy9cN5WJa8LMZc/6nylg7nZqvCvutQV3LuX
+ xBE=
 X-IronPort-AV: E=Sophos;i="5.82,313,1613404800"; 
-   d="scan'208";a="169522690"
-Received: from mail-dm3nam07lp2047.outbound.protection.outlook.com (HELO NAM02-DM3-obe.outbound.protection.outlook.com) ([104.47.56.47])
-  by ob1.hgst.iphmx.com with ESMTP; 21 May 2021 17:46:48 +0800
+   d="scan'208";a="173632543"
+Received: from mail-mw2nam08lp2172.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.172])
+  by ob1.hgst.iphmx.com with ESMTP; 21 May 2021 17:52:33 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N4933q2ZE2MZiDHjaKodLlCsBwUUG4LlY/PGV7dXCZqdGYQTULvv41Xx6uUTWca8BnIxAC7cclh1UDAwnGXDV4e1CspWExvT9SIob3zy3nXpjWUkikrlbnHhka06/cwPQ5CLeL60ovowBRdWdKzHX3jbYF+zwqx5+e5Nq7MQXMb+QYoz6yURPcjR5VdD5r0XWWFz6m0Cr+C+vabRN+5FqZ2sYY8WODus9ezV4WtPBMKD3Q+fxW9N7U32pNOctMYW6FqXWnAlHwpLLyi6UhQT3vciZWleLC2stum98DIPGAXsGC7mVe62yzqeK0HluvOBLxXAI6DR485c8hauRJwGbQ==
+ b=O/7slwiraTddA/UsW7MRSwbM2YGnQTWpbmHp2/lCamIz6JvYFurMLIpC9tIzc2TcHrLFOSjwHSnqb73ibb0sko+WgLpIF6UmSuAbpLF2b5rrrRBNhofGfwFJ+v+8NzzTo5CuY2QWp8KKIw8ufIN25Pf0e1WFacullFcOklRpKpUwryLnP6oghPqzIRS/InDkEmRPcKxt36NDUqhiypT9kHgTMMjzSm+g7jyz9wCfiXxFlxzWp9aT0ITrOxuhZT7uuyi0RtFhb6SapbaHUF/cCZDFMBhOnh5oDpeL54OjbLIVFQGLr10ouaR3bpB3L1m5gWcXVP6fZuVO6QHeTUc0QA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+hzWbc4dvSvn5lzhEvgjXf92miFAUPMnYOPI4vnA/Y=;
- b=NrjgVX3RH0VQGmF+BtEw/q2DFrvyTIXi06bypgHc5e7reWbn2WFRkzrRuG0MZNBPzhPKTpEObtm8Cb/orwgAOkf7CaMLUTtIobsiZbanIzzMkoidFkFucVOQRKkGx5wIWRCelPdA4fNwQfH/8a3i3LO5oRmwc0JMSg/JEPbaFpPP0TNgt+PvY2hXM1eepBz37/+p40UFraI2YB+RQ7O9dVslKsF7ospo98f209YOFXGMoTMMCrWE1BsPKTAjunUOUlgIOjlFzEmfVZ+vtp6+DACEleU3PMmNYIND9dtNJem/hTyihkNRe7riq/3NLX0u4fRIHzLd4ggqlnEYwb6JbQ==
+ bh=MySDjWOlR2UlilkdOTfVCyt0P85zY7xk3cYiEp8hZUs=;
+ b=HANnDYHBb1GhjEEUOoUQZ09n7uGPmSl4LmNsMJpWkzHOzmE4krvjWXwOXUrmk5Yo9Ec2JUzJK+9xNedrq77uSQt7hvCb1qbJTDgXgXQNu/rKX4id5KQ6saLeJqlYpeiYIiLSiQm+J59OraApbyQgA5vo2WRSMO5RPqRgD7EcooEX+8d6hsX1AuzpHZZIreMVD5O3ZGXz/zYuLHjFgT8IGGzMxfhlPK/8/jx06bBE1DZ7hLXU1cbROPluXD6DgWdjJPoavs2Yb/5yFCBo1qUZOcE1aqXrBiJHbsOE1gz8/YxwgUQXrO8FDbKkuorBgjSMx23cM3E3FcMBOLSoUskPig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+hzWbc4dvSvn5lzhEvgjXf92miFAUPMnYOPI4vnA/Y=;
- b=kTdjbqimc9EKvPmFC6m71t+v6X40CRUiObG9LKCsPPqdOUX6DjUo34JQEIdrVWE5R//qnviiMhsSxQOh4kixQiwSa7PI8086FSX3TQFtbXtvYCWf5N6G7rKd33lumMnsg2LrNhiH+FaqxmkXRb1K1+UNwZNN0yaPKSyqYWFFfX4=
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com (2603:10b6:5:244::21)
- by DM6PR04MB6826.namprd04.prod.outlook.com (2603:10b6:5:242::17) with
+ bh=MySDjWOlR2UlilkdOTfVCyt0P85zY7xk3cYiEp8hZUs=;
+ b=WfFSJvt3olrEvMIIp025u65w3xJArpn1/wv4fjC5UEDWeacRaZ8Ak/4QNtCyhUXFXjb0+lk8noVe59peBpXtwFmJiVg/hNZAqoAkia2fx20GAwDFwVscYQLwaKys1uFOAHrWrpAzX4M6lAl2b+TebWCt6fJRTs9/6EmR4z/+znk=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7509.namprd04.prod.outlook.com (2603:10b6:510:5b::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Fri, 21 May
- 2021 09:46:47 +0000
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::64f9:51d2:1e04:f806]) by DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::64f9:51d2:1e04:f806%9]) with mapi id 15.20.4150.026; Fri, 21 May 2021
- 09:46:47 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+ 2021 09:52:31 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4129.035; Fri, 21 May 2021
+ 09:52:31 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
         David Sterba <dsterba@suse.com>
 CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         Naohiro Aota <Naohiro.Aota@wdc.com>
 Subject: Re: [PATCH] btrfs: zoned: limit ordered extent to zoned append size
 Thread-Topic: [PATCH] btrfs: zoned: limit ordered extent to zoned append size
-Thread-Index: AQHXTiFEZpVXeDolGk269PbjlyQw+g==
-Date:   Fri, 21 May 2021 09:46:46 +0000
-Message-ID: <DM6PR04MB708120047EF5A0B1397C173BE7299@DM6PR04MB7081.namprd04.prod.outlook.com>
+Thread-Index: AQHXTiFEXNaFexnNjU2Pxag8tm94KA==
+Date:   Fri, 21 May 2021 09:52:31 +0000
+Message-ID: <PH0PR04MB74166A812143B574C9A943F09B299@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <65f1b716324a06c5cad99f2737a8669899d4569f.1621588229.git.johannes.thumshirn@wdc.com>
+ <DM6PR04MB708120047EF5A0B1397C173BE7299@DM6PR04MB7081.namprd04.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 authentication-results: wdc.com; dkim=none (message not signed)
  header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:1da4:199d:bd7:5694]
+x-originating-ip: [2001:a62:152f:cc01:f8bd:921e:9aa5:6d21]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 24abd226-8a6b-4cf5-07c5-08d91c3d599a
-x-ms-traffictypediagnostic: DM6PR04MB6826:
+x-ms-office365-filtering-correlation-id: ee56168b-4f17-4a9f-1c95-08d91c3e2703
+x-ms-traffictypediagnostic: PH0PR04MB7509:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR04MB6826647803C241FBC7825F7BE7299@DM6PR04MB6826.namprd04.prod.outlook.com>
+x-microsoft-antispam-prvs: <PH0PR04MB7509540FB34A662E90E0EC2C9B299@PH0PR04MB7509.namprd04.prod.outlook.com>
 wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Lr6XydzdQVnyw5pRZCSws+acO4br6X1yDgfUCKy74fyqdwvzdI0nVcEU7xHN0opjZe4nJWAek7y2Mf32D9f0fjL/Zl8lnKY99rrIqLFM33kYIOhAr0nIKl66GzfWx6J8pLeelR/ca5+3jRTGKrJRX5/uf49hdzCbrEeyFIkfZ5DYFOStsLa0dO9p1PFhRrsesYn0OJJJlrs9vWhFxSlu4hc3c37DtuHPaBLb5EVukoCqQgA5zFrKe+dyyUl36jl/hGUVH6iaR2fRxe4FoGognWuAHCz+NO1aHbXCqSh3hoPwhXP4H7vLkxT7nrKRzz76UGdOZ6jCJdem8n3fAQlK6EiCainowyEkk4YeXMu9VrXjAs2dbLNq+zbPuBnUsjGx8nwdfBS/KbCJPlykDDwLXkMFP4ch1reeRVf+TdWJDGZrO5T3dLBaDT+vbOFmPuaamkJAsz6vyAjt/xMKxSIAv7Txw9aMnpKBlbronH2+NOgp0d+N2JCAJzACDAOHNyb5bWVXNSUbFmu8x9YgBKFXU/6M/Eza2vVIYhc4sjyOWIkqZXqn+K3YAI/1TAzJxSOaPZNnX/tPSNV42aY1MCy7qUh2IVt6CbIJwavne/MRsps=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB7081.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(346002)(396003)(136003)(376002)(55016002)(9686003)(7696005)(6506007)(53546011)(4326008)(83380400001)(122000001)(478600001)(38100700002)(8676002)(110136005)(316002)(8936002)(54906003)(71200400001)(2906002)(5660300002)(91956017)(52536014)(64756008)(66946007)(76116006)(86362001)(186003)(66446008)(66556008)(66476007)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: uNh+6g0FKHSuXI8Rtdnl7snWT+kwP53V7GSAjH5yMtePzkNS3hMuN/d17q1VIrWXSvt6dgdpnbshvHLESRbCZYHQbSpwmsP85jfQwiBqOX83hFXcDLtwgiCu8BKjH8BcTg2IyW/rzgcSI82+qw6IvGEp8s1LGa8TMHnuX7JFe/m1eEKg2ql/eDqHModKxnqjkLTNkoMyqmvq/EH2ZKBqhubWElJv0XOVC/Mv4uqd7k18drDNKqV6JCmV8Ml8iGczeIg+cveDVcMXPB8QdJvRzPPT+9VltqUTtj/1onEX/6EZ8fcGXLlwFhR0fqIR2v6jXF5Evwg7YkaLfWnqdlGUIBivdorOs6EhYOi6qmxk6Y/T89++BFuRZByeVS3ZcxVEsmnu/YQ9lauCAyfmjP1AJl3/ChZKQ3mC+Voj5IiBiC2PdQ3z4QZbVVZVDqdI2phBBc/Dx5xyF8HPfcq6DX8s0fpaaNY2LXu9gEELHqbIaW9gxjE8x9/G9CuSYvV2flkisAphoqsFikUhwNbw5xm9aMEh/1styyLPekxoNdlS6sjP2d2oFYt8Zlwz1CtrFOgC+tgR/tdQlNfelUQselAFdmVQ1QE+lm/u0nBNEpdq4nLp6IGMXOfQcKqfTuPsqIbJTauGjKgmS+XggBQjIm9v/u+mAqlzETJ0xQ2ZxiFlX8UAVh3x0qHLz8mQOCAML5De1jkhsb87OrLizU0ofwmpimVQgSlDbr8FwZD5YLjhb0X0TPSCzz+mGfQjrZxYZfOnV/9E9NH+Y/QcvAFLLaBnuXU4pMBQHJOVUhwgOtDdK9UkXBRRZMqLndttlMM5A9c7
+x-microsoft-antispam-message-info: 2dEOy7EvkDsqoYVlT5SyTaZxW62sAZ+CqohGDhPZNH+uwIJWLwvSoaSWE8sBSJO83x7vow5ljmxlfMVHdm2XyBH1hvDH4v2wDceFMFyM7aviXnNZQUcCtAHBQNQ+nwNbx8u2htbkAszjK6McFSDpwHlQLZdQySX/P7fhmErTPCOcxQLE7h9zZzrEGCaQwXitBzj5YK2YYdjfazK+jYkBkyqQXuU2PhOyNWK9gmDb7pDQjrpFkYrEBw1GpEiEcpfaUApd6tyBNP6VlsnLSQsigtuv9kR3mT1m7iBXDZZgfbYQtTP3s7BcsLW/VFIlmuANMaHNT8YbtPDQzdWZNkpxsPPLhIzuDi/C6eyVh4q6IQKnNwmpk56ONV40g4aRvY4bl6uF8Jb8slmNhfh58ZhV3lsz0YXlWJWsyzO2JITuz0MuKyHbfdHd+MJP2N0r6/hWB6oxiSkK1jmRAHtW+VAE1GZJTpBOYOjHpdjeuv26JY3bpOw5RuXskvk3HpxIe3dUdR+uaLsOpyF22yVU00FlZKKveaGQ8PlMKZSNCLgS3UMg01WYNfJ+KKTQ4uquPPgEvqvgqEV0vpsZmJFBnobaWtokl3zkK08GmkSiY2ekKzU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(396003)(376002)(2906002)(7696005)(6506007)(122000001)(38100700002)(4744005)(5660300002)(8676002)(33656002)(8936002)(478600001)(110136005)(76116006)(66946007)(66476007)(66556008)(66446008)(64756008)(86362001)(316002)(4326008)(186003)(52536014)(9686003)(54906003)(55016002)(71200400001)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?1mllSbIL3o+abh35/ZBQRUTP2gcQTWb6F3EXfgYhXEW6X1mECXFkuAVJCoXy?=
+ =?us-ascii?Q?YKW+m2pzf/San6Fqu6CWmzwA9MsEaYMLrE0FAlfkfeRZD2R/qyeKPEz8NoD0?=
+ =?us-ascii?Q?JybpS093yEFf6ND2OueKckhN7wGGe5J5357J8N8w9uwu0Fpqu03MmAXIpF+Z?=
+ =?us-ascii?Q?+Y/+TOvv0LDY/sy+GggjnV76w5qChLxbC3BIAgSfK8QIXt9S6+Vkky7aORI4?=
+ =?us-ascii?Q?FLlFVOZ3tbD6veABduKhHvXoyETS3UfH8pTQWqO6O3K1DkyDIn0j88PiYbxv?=
+ =?us-ascii?Q?cobsksWDp8Aap7H4UU4TQvqdnJlIKpsObUUuB/G+MhwNkkjpao3KuOf97PgU?=
+ =?us-ascii?Q?CJeiLKCqp/fBuT8F20gffCYZYoRe4lSuZKRpr4r3uld9PuQxvZQVyCPh/NLe?=
+ =?us-ascii?Q?0FposGpiTOMUM5em9g58iqCzLeaAFzgUnQ5rAcSb8fsR/tt2GttLpzsXsBrA?=
+ =?us-ascii?Q?50ETXc+u2+2dPIscJeFpfBRZ3gwBj7+J9dqryXkRdhpA23JToWrrH8gXLx3I?=
+ =?us-ascii?Q?xnTXDthFkdUzmiL3fQl1VS6F5I2JQwy2hF8kjPJeHzNwk/LYhrKgctknP+VD?=
+ =?us-ascii?Q?LbzU0qYNJ+Cmkt7wO6Vmoku7mCLPyUUc2Ph9ueQ1iIETxLaY+Hw74V7GMiPG?=
+ =?us-ascii?Q?Mpc9NA+IxCNdA7jmH/AJZKU4W34DkDVSS+U8EMY5laI0iz6GNQ+9jiJVXroJ?=
+ =?us-ascii?Q?uQlD9g6Eg3zDKvRRYEBnT2gTcjPX4lROE/eAicATkB5UaNMrU4jSOA3YDklO?=
+ =?us-ascii?Q?gWZfVH/SsexPvLe3eft8qktBVTj2CK5Bs3bgsoxzA/ONRvYJSAVe4LCbZkcQ?=
+ =?us-ascii?Q?ckEt0c6+F5ybZ9SNeayoN14NosvDEZnpaPSyaCVgTBz7ALoVh604Vz90NMst?=
+ =?us-ascii?Q?TBb2qLbRKHZWF9Hxxx8a00JTYo7qIiJ/JsXePc5f90uB8oKrCZchA/MmmSrk?=
+ =?us-ascii?Q?2INKIaYizYkv0izK/KGFHGwqY6tu1OBuwooSZdk9KTU+Ll+GbuRPLTFoieHs?=
+ =?us-ascii?Q?4e72di8W+SaEK6PQ+a6GVfpCg31ItIT+0bkkWFqIch3QP//vJ/2JbXFjNO+t?=
+ =?us-ascii?Q?FaK02FT8T0zpo9RYC2Jg8HnyFFtThu7Dr7zv28G3MnD0XZKOHys/NLp/dzWA?=
+ =?us-ascii?Q?RbRWtKt1DmhtrgXyKgvtj+b3isuAY2z49kopuW0Xbfjg9HchKmE6vYTSn68i?=
+ =?us-ascii?Q?BDR7UAAHuiwOnP2ukwGf1pxOoQLXsDHnMXHfQDuyrMhrQpNfp5mAvug9tg3J?=
+ =?us-ascii?Q?DHjuJuhheW1vQ5ARfxViY+4hp8AcoekmEy8aKiJTH918kPO15zcSFkXwwUBQ?=
+ =?us-ascii?Q?Rc25zdEaZA0WmlgwdjSYzLgBenbubENtXHZR8aTAcIZDzYNI5iYUrBm/OX+Q?=
+ =?us-ascii?Q?0Aml1kPgnRlLC6rSq7lU4syA3sM5pKzWdcaDrnoYnhN2BYBugw=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB7081.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24abd226-8a6b-4cf5-07c5-08d91c3d599a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 09:46:46.9514
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee56168b-4f17-4a9f-1c95-08d91c3e2703
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 09:52:31.5202
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H3KAZ7N9R7jDkw4TXR1nlSWkin7IcSLK8MbjL9mH3TqRksICVi6l9u9SbCGH6QXS0CBYMg998B7YzWDIrw3xSQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6826
+X-MS-Exchange-CrossTenant-userprincipalname: Welpqe2UNyrpS2VPwEfEUUTLA3zEgQk0np19w2I8s1IRSHbQMcmwU5suKBlU8ZuE85O5UD221BmifpPC+ByTzqE3bzOI4eazJgxW4Rr+D4k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7509
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2021/05/21 18:11, Johannes Thumshirn wrote:=0A=
-> Damien reported a test failure with btrfs/209. The test itself ran fine,=
+On 21/05/2021 11:46, Damien Le Moal wrote:=0A=
+>> Note: This patch breaks fstests btrfs/079, as it increases the number of=
 =0A=
-> but the fsck run afterwards reported a corrupted filesystem.=0A=
-> =0A=
-> The filesystem corruption happens because we're splitting an extent and=
+>> on-disk extents from 80 to 83 per 10M write.=0A=
+> Can this test case be fixed by calculating the number of extents that wil=
+l be=0A=
+> written using sysfs zone_append_max_bytes ? That would avoid hard-coding =
+a value=0A=
+> for the zoned case... =0A=
 =0A=
-> then writing the extent twice. We have to split the extent though, becaus=
-e=0A=
-> we're creating too large extents for a REQ_OP_ZONE_APPEND operation.=0A=
-> =0A=
-> When dumping the extent tree, we can see two EXTENT_ITEMs at the same=0A=
-> start address but different lengths.=0A=
-> =0A=
-> $ btrfs inspect dump-tree /dev/nullb1 -t extent=0A=
-> ...=0A=
->    item 19 key (269484032 EXTENT_ITEM 126976) itemoff 15470 itemsize 53=
-=0A=
->            refs 1 gen 7 flags DATA=0A=
->            extent data backref root FS_TREE objectid 257 offset 786432 co=
-unt 1=0A=
->    item 20 key (269484032 EXTENT_ITEM 262144) itemoff 15417 itemsize 53=
-=0A=
->            refs 1 gen 7 flags DATA=0A=
->            extent data backref root FS_TREE objectid 257 offset 786432 co=
-unt 1=0A=
-> =0A=
-> On a zoned filesystem, limit the size of an ordered extent to the maximum=
-=0A=
-> size that can be issued as a single REQ_OP_ZONE_APPEND operation.=0A=
-> =0A=
-> Note: This patch breaks fstests btrfs/079, as it increases the number of=
-=0A=
-> on-disk extents from 80 to 83 per 10M write.=0A=
-=0A=
-Can this test case be fixed by calculating the number of extents that will =
-be=0A=
-written using sysfs zone_append_max_bytes ? That would avoid hard-coding a =
-value=0A=
-for the zoned case...=0A=
-=0A=
-> =0A=
-> Reported-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
-> ---=0A=
->  fs/btrfs/extent_io.c | 4 ++++=0A=
->  1 file changed, 4 insertions(+)=0A=
-> =0A=
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c=0A=
-> index 78d3f2ec90e0..e823b2c74af5 100644=0A=
-> --- a/fs/btrfs/extent_io.c=0A=
-> +++ b/fs/btrfs/extent_io.c=0A=
-> @@ -1860,6 +1860,7 @@ noinline_for_stack bool find_lock_delalloc_range(st=
-ruct inode *inode,=0A=
->  				    u64 *end)=0A=
->  {=0A=
->  	struct extent_io_tree *tree =3D &BTRFS_I(inode)->io_tree;=0A=
-> +	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);=0A=
->  	u64 max_bytes =3D BTRFS_MAX_EXTENT_SIZE;=0A=
->  	u64 delalloc_start;=0A=
->  	u64 delalloc_end;=0A=
-> @@ -1868,6 +1869,9 @@ noinline_for_stack bool find_lock_delalloc_range(st=
-ruct inode *inode,=0A=
->  	int ret;=0A=
->  	int loops =3D 0;=0A=
->  =0A=
-> +	if (fs_info && fs_info->max_zone_append_size)=0A=
-> +		max_bytes =3D ALIGN_DOWN(fs_info->max_zone_append_size,=0A=
-> +				       PAGE_SIZE);=0A=
->  again:=0A=
->  	/* step one, find a bunch of delalloc bytes starting at start */=0A=
->  	delalloc_start =3D *start;=0A=
-> =0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+Probably yes, but I'd like to hear from others how important they see the h=
+ard coded=0A=
+value.=0A=
