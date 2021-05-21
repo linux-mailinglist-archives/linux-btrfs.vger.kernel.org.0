@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9CB38C644
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 14:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C28238C645
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 14:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235160AbhEUMKl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 08:10:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58288 "EHLO mx2.suse.de"
+        id S232267AbhEUMKm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 08:10:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58334 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235110AbhEUMKg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 08:10:36 -0400
+        id S235058AbhEUMKj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 May 2021 08:10:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621598953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1621598955; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7KjEWNma9B2DmA8jlRLoXDuS+0WNwrLULxSJzGU27BQ=;
-        b=lhGFheZNtorkCQwyv/wVYSicGisUkPmmtpRNzVPRBBA+MMldcKah+TwD7P2vBdIQXRSYUA
-        WNb1RYsdShJP0hb4OGYAOLvjN4K94+taflPepQSC+n3LSyIPWDHidYzngY1KM95g2fV5ix
-        PqpjOPhv6w/U50MHuFD/ClZ33XUypZ8=
+        bh=LOuql89VYFJt7NMkEfsfHbI4f0OoYS0eumEjAKvGA1M=;
+        b=uEGwy3vZxr0QV4lonF2GhsVDIBDNfogyAHaTIOGxkzuweedMsz4llieUII8jY6kq3RCl63
+        WHrciZ0ncGjIxQlWy7fxOFSYghz9Zv1CYXZqwXylXbemee70SM4HTF8ddoVtHSai7iRhMV
+        LKIRCfOe0VAtESiUsTl21MZcJji5Rbo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0B4CAAAFD;
-        Fri, 21 May 2021 12:09:13 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 559AEAAFD;
+        Fri, 21 May 2021 12:09:15 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BA3FFDA725; Fri, 21 May 2021 14:06:38 +0200 (CEST)
+        id 0F4C4DA725; Fri, 21 May 2021 14:06:41 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 6/6] btrfs: add device delete cancel
-Date:   Fri, 21 May 2021 14:06:38 +0200
-Message-Id: <8759a75926d1a48c6092b2055348e35129cafd51.1621526221.git.dsterba@suse.com>
+Subject: [PATCH 1/2] btrfs-progs: device remove: add support for cancel
+Date:   Fri, 21 May 2021 14:06:41 +0200
+Message-Id: <20210521120641.16933-1-dsterba@suse.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1621526221.git.dsterba@suse.com>
 References: <cover.1621526221.git.dsterba@suse.com>
@@ -41,106 +41,107 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Accept device name "cancel" as a request to cancel running device
-deletion operation. The string is literal, in case there's a real device
-named "cancel", pass it as full absolute path or as "./cancel"
+Recognize special name 'cancel' for device deletion, that will request
+kernel to stop running device deletion. This needs support in kernel,
+otherwise this will fail due to another exclusive operation running
+(though could be the same one).
 
-This works for v1 and v2 ioctls when the device is specified by name.
-Moving chunks from the device uses relocation, use the conditional
-exclusive operation start and cancelation helpers
+The command returns after kernel finishes any work that got interrupted,
+but this should not take long in kernels 5.10+ that allow interruptible
+relocation. The waiting inside kernel is interruptible so this command
+(and the waiting stage) can be interrupted.
+
+The device size is restored when deletion does not finish but it's
+recommended to review the filesystem state.
+
+Note: in kernels 5.10+ sending a fatal signal (TERM, KILL, Ctrl-C) to
+the process running the device deletion will cancel it too.
+
+Example:
+
+    $ btrfs device delete /dev/sdx /mnt
+    ...
+    $ btrfs device delete cancel /mnt
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/ioctl.c | 43 ++++++++++++++++++++++++-------------------
- 1 file changed, 24 insertions(+), 19 deletions(-)
+ cmds/device.c | 42 +++++++++++++++++++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 8be2ca762894..bd56e57c943d 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3206,6 +3206,7 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_ioctl_vol_args_v2 *vol_args;
- 	int ret;
+diff --git a/cmds/device.c b/cmds/device.c
+index 4d1276b949b9..48067101fa7d 100644
+--- a/cmds/device.c
++++ b/cmds/device.c
+@@ -194,6 +194,7 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
+ 	int i, fdmnt, ret = 0;
+ 	DIR	*dirstream = NULL;
+ 	bool enqueue = false;
 +	bool cancel = false;
  
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
-@@ -3224,18 +3225,22 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 		ret = -EOPNOTSUPP;
- 		goto out;
- 	}
-+	vol_args->name[BTRFS_SUBVOL_NAME_MAX] = '\0';
-+	if (!(vol_args->flags & BTRFS_DEVICE_SPEC_BY_ID) &&
-+	    strcmp("cancel", vol_args->name) == 0)
-+		cancel = true;
+ 	optind = 0;
+ 	while (1) {
+@@ -225,12 +226,30 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
+ 	if (fdmnt < 0)
+ 		return 1;
  
--	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_DEV_REMOVE)) {
--		ret = BTRFS_ERROR_DEV_EXCL_RUN_IN_PROGRESS;
-+	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_DEV_REMOVE,
-+					   cancel);
-+	if (ret)
- 		goto out;
--	}
-+	/* Exclusive operation is now claimed */
- 
--	if (vol_args->flags & BTRFS_DEVICE_SPEC_BY_ID) {
-+	if (vol_args->flags & BTRFS_DEVICE_SPEC_BY_ID)
- 		ret = btrfs_rm_device(fs_info, NULL, vol_args->devid);
--	} else {
--		vol_args->name[BTRFS_SUBVOL_NAME_MAX] = '\0';
-+	else
- 		ret = btrfs_rm_device(fs_info, vol_args->name, 0);
--	}
-+
- 	btrfs_exclop_finish(fs_info);
- 
- 	if (!ret) {
-@@ -3259,6 +3264,7 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_ioctl_vol_args *vol_args;
- 	int ret;
-+	bool cancel;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
-@@ -3267,25 +3273,24 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
- 	if (ret)
- 		return ret;
- 
--	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_DEV_REMOVE)) {
--		ret = BTRFS_ERROR_DEV_EXCL_RUN_IN_PROGRESS;
--		goto out_drop_write;
--	}
--
- 	vol_args = memdup_user(arg, sizeof(*vol_args));
- 	if (IS_ERR(vol_args)) {
- 		ret = PTR_ERR(vol_args);
--		goto out;
-+		goto out_drop_write;
- 	}
--
- 	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
--	ret = btrfs_rm_device(fs_info, vol_args->name, 0);
-+	cancel = (strcmp("cancel", vol_args->name) == 0);
-+
-+	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_DEV_REMOVE,
-+					   cancel);
-+	if (ret == 0) {
-+		ret = btrfs_rm_device(fs_info, vol_args->name, 0);
-+		if (!ret)
-+			btrfs_info(fs_info, "disk deleted %s", vol_args->name);
-+		btrfs_exclop_finish(fs_info);
+-	ret = check_running_fs_exclop(fdmnt, BTRFS_EXCLOP_DEV_REMOVE, enqueue);
+-	if (ret != 0) {
+-		if (ret < 0)
+-			error("unable to check status of exclusive operation: %m");
+-		close_file_or_dir(fdmnt, dirstream);
+-		return 1;
++	/* Scan device arguments for 'cancel', that must be the only "device" */
++	for (i = optind; i < argc - 1; i++) {
++		if (cancel) {
++			error("cancel requested but another device specified: %s\n",
++				argv[i]);
++			close_file_or_dir(fdmnt, dirstream);
++			return 1;
++		}
++		if (strcmp("cancel", argv[i]) == 0) {
++			cancel = true;
++			printf("Request to cancel running device deletion\n");
++		}
 +	}
++
++	if (!cancel) {
++		ret = check_running_fs_exclop(fdmnt, BTRFS_EXCLOP_DEV_REMOVE,
++					      enqueue);
++		if (ret != 0) {
++			if (ret < 0)
++				error(
++			"unable to check status of exclusive operation: %m");
++			close_file_or_dir(fdmnt, dirstream);
++			return 1;
++		}
+ 	}
  
--	if (!ret)
--		btrfs_info(fs_info, "disk deleted %s", vol_args->name);
- 	kfree(vol_args);
--out:
--	btrfs_exclop_finish(fs_info);
- out_drop_write:
- 	mnt_drop_write_file(file);
+ 	for(i = optind; i < argc - 1; i++) {
+@@ -243,8 +262,9 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
+ 			argv2.devid = arg_strtou64(argv[i]);
+ 			argv2.flags = BTRFS_DEVICE_SPEC_BY_ID;
+ 			is_devid = 1;
+-		} else if (path_is_block_device(argv[i]) == 1 ||
+-				strcmp(argv[i], "missing") == 0) {
++		} else if (strcmp(argv[i], "missing") == 0 ||
++			   cancel ||
++			   path_is_block_device(argv[i]) == 1) {
+ 			strncpy_null(argv2.name, argv[i]);
+ 		} else {
+ 			error("not a block device: %s", argv[i]);
+@@ -303,7 +323,11 @@ static int _cmd_device_remove(const struct cmd_struct *cmd,
+ 	"the device.",								\
+ 	"If 'missing' is specified for <device>, the first device that is",	\
+ 	"described by the filesystem metadata, but not present at the mount",	\
+-	"time will be removed. (only in degraded mode)"
++	"time will be removed. (only in degraded mode)",			\
++	"If 'cancel' is specified as the only device to delete, request cancelation", \
++	"of a previously started device deletion and wait until kernel finishes", \
++	"any pending work. This will not delete the device and the size will be", \
++	"restored to previous state. When deletion is not running, this will fail."
  
+ static const char * const cmd_device_remove_usage[] = {
+ 	"btrfs device remove <device>|<devid> [<device>|<devid>...] <path>",
 -- 
 2.29.2
 
