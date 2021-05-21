@@ -2,85 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025E138C49C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 12:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E936038C563
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 13:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhEUK1G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 06:27:06 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:64927 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhEUK06 (ORCPT
+        id S232858AbhEULHc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 07:07:32 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:25311 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230232AbhEULHa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 06:26:58 -0400
+        Fri, 21 May 2021 07:07:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1621592735; x=1653128735;
+  t=1621595167; x=1653131167;
   h=from:to:cc:subject:date:message-id:references:
    content-transfer-encoding:mime-version;
-  bh=rTkubRX8hcLvTFdfBhKG/kLxRB2EMlCD95Akmm6UCAk=;
-  b=FcsV80NDoOmKi3bgSCLot14PZFaeD7hvSE52l2qKWuRRKn0h+AyUxFFE
-   p9qva5SqlEH06MRjZh1fmqQlw5qlN1WvT89FD0YChIh1e4S6SWPRcr2qg
-   0HO9aMJuwSFvjvK2PR472+2ImJteFMyd41Zes7ff9vL0me8cd0E/UlPl6
-   K6zxCKBL6VQnJ55VMc5CdRFKU9yaFblLWDOZyQLF1Fl/04oALskqVR9XA
-   2BzXplpujWdftR5hmqM3TmARQcwdwC0WdQjKtL2XgLY7wpy9b492v0kAY
-   G6mjdXEDqamf7hB1dWblFlTuGACtpm3ECKd2kh6Zqp7OluVAApQxh229w
+  bh=WCxbFB99Gr8OlcsAhBAR2SksdhKJnWTS0YNpwzpe7jM=;
+  b=G2HK2nK3oESF01STQzdlGb0MUnc+D9V5AYxz0HxHLWmvj0UeU6NkEKok
+   W1l4chNjVJgAJkkP6cnPUIhDySOUGKswswY3guBf/pOa6LYxWa3t6lyZm
+   xbgGasf6MWFPwQeM1iV3EjFMIkm7PltZsbqwtHMG6SEIUwAI8RlMTZLPS
+   j0Lc9EGeOA8hfh9E+NK/rzPKQIZuOx65uJg5JONXsp8B4NS7y1OlGaGQd
+   sSUXDKfVj4nAH79kc+7IcDl+BdikbMyC76gYED97LRzM7f/2N5X9iZYYY
+   SiA7Eda67DstaQZ3chAqb/BtRNaQpGLhdf8uvHpac1hvAYU7jPd1B6WTH
    A==;
-IronPort-SDR: tR6jvvqtydyvS+6uXICI3QtusnUv6FBLJYMQR21/+oosLCcngCfl/rjoYmYyMZ0rDVG6NCanQH
- URdVIdFfCkTwoTLrgoqyGOKMk1utv+TEz6aooSBK/AIgBXrveyuvSkJUYP+/EDJlfUc95/oPtR
- wNA1PM8eLhcawldeXPCTzBuYQ6zcl1u671ZhECJcM6Ssk5vbn4sxih+4U7ZvVYdriwwgNLsgSx
- YCWvSeHDpCru/A6HAmn1YGVW5DOBZziYdbrPVUaKA7SIMXqNgajom/dX2Ty9D194rSt4d4m/qR
- owQ=
+IronPort-SDR: uD0U9QpIj4R+91ZBAFd5l56hjuVxYxBUsNjd5HLe16DsBXoaBET07Frn/9IsxN16oRbE5OJrjn
+ VEMReR+MFHuGiQZYCKWvfWBq1Ni8LjVx/wqWPvJ5GaMxv1vhwFKs8u9xRShhtYh2oziuSsvyVe
+ v/FihyBqGUHasOPRtAOmg5COtTlLh46+4Tl9bs5MyA5KWzpZOtunfqe5VqqDEcr13IwWr0Qu3r
+ 4V99Oe8O602G4E3eWHRCZ78mynwLfxNqeHt1viDV2ToqrFdN2chBhP64pmnVBITDg4lKBfJVYn
+ G9Q=
 X-IronPort-AV: E=Sophos;i="5.82,313,1613404800"; 
-   d="scan'208";a="168984160"
-Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
-  by ob1.hgst.iphmx.com with ESMTP; 21 May 2021 18:25:30 +0800
+   d="scan'208";a="173637375"
+Received: from mail-co1nam11lp2177.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.177])
+  by ob1.hgst.iphmx.com with ESMTP; 21 May 2021 19:06:06 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g1d/TBfd/KYGXh2evIwnDfloL/uThSzG270sCgyic2pfMFwrIOtxpv+ToKl2Ogh+YfOggoltwjz4OUvpWXY8JXf1R2QaQBgIqWz9okQqspJX/DpwLmsm6ib/5g6CaHRdEN/oLdTHavpLENzzJPtQac9nMmcanqPNzM1QknnvryFk4P0cz5z5hkW84zl8aoh2TEpDjQaoDSGF/xYUNj083Wd1+V/7Fv5jpy1XCH4xYrILV8vOS2VuM7Nd0rYX9O0SlD/Cq6ln5kXOPnDxVXZicX8x+R90Ec1L1cz4DMGRjwzqecWZcGY2Ta2eESe5DyPpwNsmgapzHmGDbCvXBAliNA==
+ b=R+bmn+UlPzDLw890TnO/iO0Jf92LSo5ysaD0RmMFCOrgYaeibUa2q0UX6mmchhuta714iwZuuYhfE54oSTyftVETDtBW8k6rLjppN3BK9hCn+0tLErqXIYX4PSlpnV67imeCninRGTVt8kJsiyif5sGsOV0E2vVuG4bxPuQIe2qJxSpJkGNCEPe1ri0iYwIfgqnKr6vQChRsxCHpZMVL5vEpuDRtmoj0hn5rszg24WOYRCYa0DE2k6S3EaTVYlSo+XaNPN/Wd9VGHx79vRwa+FXg6oZmU41YoDbfFIEuV9/zVl4f5lZ88DPIO8VauMwIQCBkz8TPDMHDWelnYL68iQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FCiC1RvtQHHWKe1h6CCulUXtHOiDfJ/WTSUchcy74Ik=;
- b=c0eA+H4gdJgaCCbEPS0eHiI9T6RnysSo7zCx83aJOIdqRsla+zyAzf1l1v5/ARv11mA/eHMsV6M5tTTJ5EAx0HaLHR7WCdiN2yQXCkq221gz4dc8MaPr0rTb33zjZvAvk9gqbr+VmeVjl9j/4NswiiVVAs598PCaX78LUH6t3FlMi9u6WqZkp29/dGQFyM3Ng7aokgflYO0fhiUboHpSDGIpjEWTba4QBspyxduYenTpW3midhB6/pWJJf2sVNJ+bg0HDR/sonN5EarrsAw9xUoZRIolTD7jiq49ftTkzx38obe28bPsxrUZ7U/sFQQscVi9BojbMChe6C7NwooSKQ==
+ bh=VOCMab1yDbEABl+UmGriVlrwExYx9IJYtIl+4L6dPC0=;
+ b=Fugl1NdGMzDpqXw/MI45dec3joTBT5Jeb/1KXTtQe6gff8qZcXZoGA9R83hdqBHSOsdFOkjUT+yYlU/4G9yfuj1SaQlnVpfP+9KZFuFloPCD54DpjzO8FcVoUG+M4tZb84oKdYDOhgmeRG9J4lq2GF0N1WCneWcWl7fsh2NWaYFoeApywnI+yGAa5Oo4gVLgl8mne1mdsmPBtFhFTRLFVKPNHgVxvORSkjVlfomfhVNqFogECdqJRCus76y9qd6GYQYkv+9WeUJ65Xc6TW5QJCwofKu5hPJE/5NQuCSBSeYHt8UQEbYXZ4oN0Ekevqnp4CCjj49EUdo1HIwuINxLUQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FCiC1RvtQHHWKe1h6CCulUXtHOiDfJ/WTSUchcy74Ik=;
- b=X24ym+cBE17vyTmbZxV/4jo31NuGxw1Qwk3yU+kkxr+1SVOKLpSgvQMEnv0BYdLEY3TnDvdW02ojqUSH6CRDKpKdy6fuKUkPyQrTV1StvLRxeDL5Zi6a8d7o7TgZQGLStQvHF6EGii5gaHkCuoi1pP4d0i++LuLWD9sKfFHfF3Y=
+ bh=VOCMab1yDbEABl+UmGriVlrwExYx9IJYtIl+4L6dPC0=;
+ b=v9NUj2hy6TDxzq7UieuUTitHoJuY4vF98s5WEzUgsMT2jMcpoyCPavZ6KaYq5YWW7rUycSYFeYDXAQeM1VmLevBeDePdFKKMzA6DLGlhlWp+iPSIUpuAHfeCpv2WaydAvtTr7yxP3oY2s5FQEn7DKiWqJ7g/pI0B35BOAedpmH8=
 Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7512.namprd04.prod.outlook.com (2603:10b6:510:53::20) with
+ by PH0PR04MB7639.namprd04.prod.outlook.com (2603:10b6:510:55::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Fri, 21 May
- 2021 10:25:27 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Fri, 21 May
+ 2021 11:06:06 +0000
 Received: from PH0PR04MB7416.namprd04.prod.outlook.com
  ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
  ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4129.035; Fri, 21 May 2021
- 10:25:27 +0000
+ 11:06:06 +0000
 From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "mb@lightnvm.io" <mb@lightnvm.io>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "clm@fb.com" <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jefflexu@linux.alibaba.com" <jefflexu@linux.alibaba.com>,
-        "hch@lst.de" <hch@lst.de>
-Subject: Re: [RFC PATCH 0/8] block: fix bio_add_XXX_page() return type
-Thread-Topic: [RFC PATCH 0/8] block: fix bio_add_XXX_page() return type
-Thread-Index: AQHXTUCb0LxyZPgwi0al9qWUl5DExQ==
-Date:   Fri, 21 May 2021 10:25:27 +0000
-Message-ID: <PH0PR04MB74169D71E3DCB347DFCBFCB59B299@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <20210520062255.4908-1-chaitanya.kulkarni@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 0/5] fstests: add checks for testing zoned btrfs
+Thread-Topic: [PATCH 0/5] fstests: add checks for testing zoned btrfs
+Thread-Index: AQHXTf36vav5X+sU9Eyulyb+u704Vw==
+Date:   Fri, 21 May 2021 11:06:06 +0000
+Message-ID: <PH0PR04MB7416870032582BC2A8FC5AD99B299@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20210521045825.1720305-1-naohiro.aota@wdc.com>
+ <PH0PR04MB7416E64E9F3C70C39EA657BB9B299@PH0PR04MB7416.namprd04.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -89,98 +77,160 @@ authentication-results: wdc.com; dkim=none (message not signed)
  header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
 x-originating-ip: [2001:a62:152f:cc01:f8bd:921e:9aa5:6d21]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4e3ede47-319a-432f-ad81-08d91c42c09f
-x-ms-traffictypediagnostic: PH0PR04MB7512:
+x-ms-office365-filtering-correlation-id: e517b118-a070-4aa1-1d18-08d91c486e4e
+x-ms-traffictypediagnostic: PH0PR04MB7639:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB751214CCF6A54D3FD1A82B369B299@PH0PR04MB7512.namprd04.prod.outlook.com>
+x-microsoft-antispam-prvs: <PH0PR04MB76392A2A84A288DB3B9C260A9B299@PH0PR04MB7639.namprd04.prod.outlook.com>
 wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5iXzgbZKo7WrO5OtBJl1yjORWMC+NbwMhSW2XaqNuKcX89s5JiXa2JwpQoXJK76VIsPEXIPN0lSMTl/RVAHoh+EZU+Cj1r1Mi438vwkQ3ICEWYBdbCD5tKM/kyVasfwk7Yk8pKK/wpAaxITrPMrGuxcVuuoW0Aplrx6ulhYlLtdZ4NL397p+UMCFuSwwM8QsuukPdSzyRw//Yl2tC2NLjjch4NlU1fis6zlH3vZ0LNekY0V0xwEmJ/2gZBDEq41/O2bM0WamOM3DAIZeKQtbc0Y2EbP8x13h/wFLpryX3PIJXwGa+Am5ST3s2SPVr77ZvKWe32S4AyQoLul9KF0dxcTYU2Th67NKNQ9uYnTlj/JK9je0h462ITIJUY0Iq6ZPfJBBeuBBKRzOULccFffldj35AQ7GTLaGaOns74PKthlaPqx58+fcLVeMxb/Lk8eZzWxnvB2CU7PBOpnDTTAhzkpkOj6ASx99NkjcjTHqFj7zmnmp9m5UbkCUX4GB0A+ZZyRVhIxzQVoDHv+ukOkiPh3kTDgWFdYnJKM13T5a80RBe0ksCJH9q7/R1STbhg3Dk1uneZUI7avr/bfTY24UiS9VFQOt9otGhFRevQOIbu1fDaoIpep+fgeWcUPghswIV8XFQkq7a5fF1H1yDP3yHA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(366004)(346002)(478600001)(7696005)(7416002)(316002)(122000001)(2906002)(52536014)(6506007)(54906003)(55016002)(5660300002)(53546011)(110136005)(8936002)(8676002)(9686003)(33656002)(66446008)(64756008)(66556008)(66476007)(66946007)(76116006)(71200400001)(38100700002)(83380400001)(86362001)(186003)(4326008)(21314003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?esIqWVoUyEhk53qPO+RY64ejybSe69SON2u5wBgycDSNGlcJ3bJ4aceqKT?=
- =?iso-8859-1?Q?AUQtBgJeEKKNIzVECIoORTerPtF+LkC3zxtQ9DdCtP/KnQEv7L9jWvUw9+?=
- =?iso-8859-1?Q?IDIptV5Zr5EaccZzDFKLmtKSI/kAQN2itxH4Hwx1GchJMddk4m6QlgYGeu?=
- =?iso-8859-1?Q?9FDuua8+vFNkxv2IIXMvrYKtalY0rorfdaKRnMO2opYc6qBh4vmi2oMV3z?=
- =?iso-8859-1?Q?P7tE4zL1uLdHTO/FOh+IWtNHXtWQMpT9AgyvfFga4Iikt3G3PN3kFIpD16?=
- =?iso-8859-1?Q?awfPbdsC0x1SaZDxADSpvlsacIgnkeQV4Y6b6TO5Fcsb9qx7m9TorEbeqo?=
- =?iso-8859-1?Q?KLNxm/lw6X7psYma7RhfDSy+wQPzYRWVW9BZARWTIh0xEMAsEsR54f4ykG?=
- =?iso-8859-1?Q?6rtDhyWFGelvg2S8vIPUkS5MX+U2a4Pf/8RZeIOW8u8qW57lqcq8390MkP?=
- =?iso-8859-1?Q?54r9w32B9jzU5Mr5XwUrDkdM+DGM+UIQ/+1O40IfBS37iEssAR6iQgcQGu?=
- =?iso-8859-1?Q?Jwn0t4BKWxxWWw9ikY5i0iV2hEp8h7uF7IeyzsGTAtN98HTQ1r8iJBmBTt?=
- =?iso-8859-1?Q?EmhKISOqmzFH5/weSJOgGeDJ60/Xjy+e/L869695RnwIz5kPeQN4m19Djl?=
- =?iso-8859-1?Q?1MCOv342olm1N+NIjtaC4uPpznkM7/5cETe8tvquMSiuQCXs5DugDD/1Sn?=
- =?iso-8859-1?Q?gCWVPDf9yxkHFaqD5EOoIxDgtkqjeInigsMFxEjHxVykgsmiwFQi7LYl5r?=
- =?iso-8859-1?Q?KO+UGfkf3L2h47HqmKsx9wo0c4m9go4ymAJIoBD6ytJZqfetphRNT0WbHx?=
- =?iso-8859-1?Q?zQ+cmUCGE0Oz/rj7zPLClgPGcMYSDwg1dgiQam9u0ISwILJcn9nNA+dbhU?=
- =?iso-8859-1?Q?/8KR+pOMIS5WJ3NGenh7OAh47x2tM1eqG5kTk6jMKKIMM3VNeMOVJX01rl?=
- =?iso-8859-1?Q?hdOZPjoDJmF011vLH9onT6Q2HFz/tzFsXDe4GxfSgSSEQVCmScQODTLnix?=
- =?iso-8859-1?Q?Pr9vNfes6/gs4OW37XDWdm3hceJXthPqyyvzTOs0k60JL4V996dTRKgBgD?=
- =?iso-8859-1?Q?Di2NfcdEt7b6iwleo6MqdKQzphmxbBfWpPe0djJVw41MuQyLSP/4QMFRhz?=
- =?iso-8859-1?Q?YhgIpsQn0RazUdr2AZgnIcmfNYVeBpI7thn6cAkjapKhnFkRaAjVZGv2bA?=
- =?iso-8859-1?Q?sY3f2VcQYcwQOv+sgNcQqjRy8341HlamJR8aVqoNAsJFN6ENT/yM+Gczgs?=
- =?iso-8859-1?Q?TOmfJV9crXDYIQbeQQnRRKhVXp1yzXWoEPwGIA11gQWplSrqsEGb+s1/Fs?=
- =?iso-8859-1?Q?+kK/P8CNEmWDf5Utm8S0UgWG+BiNPKjsYrttA6LuYyUnMj/2ZSVNJE7Ttf?=
- =?iso-8859-1?Q?4h59qmqxd0+E8DXIpIJC3bmcHx8fxOloVkPAM99GAXp1HiB7GBA4ZBht7t?=
- =?iso-8859-1?Q?aptKRrgeN5s2+7SvVhyGJqxyHVBUpifAJnDSag=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
+x-microsoft-antispam-message-info: i6mL2VA3HyA9rqjJyQ7tcTPLrbmxSP2U+ZfhfISWgLOg15c2hkEsUTAkKaBnjkecijaHmIcx1TGtQ/f+Bb0GweQFRS8wJdbNgqUNcjr1ZVyAvswzKdzqu88fizYQh3CYlu2bZXcyqc9oJ5hLaAWLJQLdq8RSC9CENJK1sTPM9lw47OHpLHGrF7qvefuvQgSQC5PSUHXv/tKFOHqffCRpKtWSnGu0HJwW+GDZG5mA25Yp3yejEv0oIzWK6yuku/PcEfoqr4INOoW3gUg3QMgOnibq/DWyCE64LW9ElJ0w6ssKe5eA7CXdxyYUofFW7xYpWfzPLZhPmFy4WiWQkM5LOVQKfY95CH4tNLSAQRNXSRGMamhXkABHj+M9P9VmZCl0ea/caPK671iuPstzVi+LsaCutEIxFx1bSO7tJlhKIaHelOvmfrka9jTqMUOiOhwK/jA4DeMPE6Te57gMfEDPox3huuG4AFeymskOXHc3+fvxi7wv+yzNCchEVAOjKTcCNkLpPRhFsv2hIwBhYXtHsKHZsgipbOvr6peY/02s2q7XEW2w5mCsAQ5ybafECcdQ0ytPgNXWpyuvtkcgdj2uHkwcdV+1oTY0z54vTsSQplniYYy3V3aAvmgoF/05H9Ikbl+tHKEX/NPtiPFMHY9Byg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(346002)(376002)(5660300002)(7696005)(33656002)(2906002)(478600001)(8936002)(4326008)(186003)(66946007)(316002)(66446008)(66556008)(9686003)(76116006)(86362001)(55016002)(52536014)(53546011)(66476007)(64756008)(6506007)(38100700002)(450100002)(8676002)(83380400001)(110136005)(122000001)(71200400001)(17423001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?E3PUO/sKgnpFnkklWhsooqzrLVCtdarGwYbbaNWvt3vsb5xAy1JwI897L1uf?=
+ =?us-ascii?Q?UjjvFjn01UugCK0Ti/bz/uS48n97eNOeLxDGmT9T5z3326r6xSr+h1djWzEI?=
+ =?us-ascii?Q?vUrAVV5TdH+TxtABmmdlYfU/g/Gc2UOlFqpJ0A0tWrm+Uua5Pri4+V7i4USI?=
+ =?us-ascii?Q?wLE1eqgG/kB50Poui0mlKE4b0zG0231SITj8ukoZ63u3TekwKf6PxLUCcszK?=
+ =?us-ascii?Q?cBzHg2YGk6txVfYOKsy+V/xhD1glP9K1S9pwLRAkmB/hwGn+fuODh8CAaQyY?=
+ =?us-ascii?Q?MUiurItcyYewXydYJjNaNMmk/gCqI5Xqb6FuLoeaF/Ut7rb/6xqR/oQ9q8MH?=
+ =?us-ascii?Q?4i1pZqlhv8pWiXDzbPKX5fQJlMjONxDgoWPSvXQ2FS4sljg8tsMq2piRkqNg?=
+ =?us-ascii?Q?oU4Ti/YLrOQuuvgodJkqjLiB8mOpbmz9+pRlB7Af3MsJK5/ec14g4fuQIq6l?=
+ =?us-ascii?Q?W5PxXWnywdSwXgcG2JLChqB5a5pRGne7XqtAVdpIw0iBtJd1xiD9v0BJquAt?=
+ =?us-ascii?Q?39REDO7BesMKKWbRjhKcDwGPH9rudw3cFRLmz8Bm1yKQc7KTmZtAPihEmHgn?=
+ =?us-ascii?Q?hT5kQDRTH56eZKNSftgFaYMSEQNLpQ3G6zzE1JgEW+oIegUcg7Ci/kyMhyms?=
+ =?us-ascii?Q?DlXJk7jcFsnd6gZfog59O0WzsqyHI15yX3ADEX28P102n2nK4bkS/5y2od+4?=
+ =?us-ascii?Q?fk2+9n/a3QtMrp2KnrZnp9PqoQ4IVx4qDu/nCzT+mzjCI0eDFFLSht3TKBgG?=
+ =?us-ascii?Q?Mn4/riVYhPBzkA7jHifU4Ri77LnklnXlPYRi5rNe2GXxRxEBt+OmrHv9gIc5?=
+ =?us-ascii?Q?G3CTJ1qT+DqIhABkIBTLveYrSsYwjbGYLpJ0ESynWi04H2pN1MLTI2AFGoBT?=
+ =?us-ascii?Q?/cyrkKdzjTeDFU/1g4F6j2uO7qtfK71HFdM9s2289IIDy8nXDME72tEvGKNf?=
+ =?us-ascii?Q?UA5bNyCdmeFuBtsQo2F1dd0fGrOQGFSGJNLMg4JTHJ1hMo6zoJEuqdKt5BTe?=
+ =?us-ascii?Q?Bd3mQc4ncpTsfX6NYJImvodZntcIZTjFNYVNgMV04dMF5zFEgps/NUN/cKpq?=
+ =?us-ascii?Q?2OG3qv7foGhkwdrPk6G96haIZJANa8+7y9kSe+vh+57BOinWQPa2ZdNTWbcz?=
+ =?us-ascii?Q?Nnfh6dQ+BEMCuDjPPfnFdDaaSFQYW2GxFc9QDG9hDc0Ayub8zgzMFNaUwuKa?=
+ =?us-ascii?Q?0IYh+CLsGXDKIJo3q2Z4NsU1eQieiLg5U+mThZu1zaYQDmRaf6KuyrzbY/hy?=
+ =?us-ascii?Q?gWvi9o0ZEs2refNwQGqYTv1/0RhSE9CWengfNsHv4C73Y3Hl3PC+deV3nDqE?=
+ =?us-ascii?Q?D7F+m2Sx2JCS3WYUQWoUcycPo+kUY6XGkadxA8BF6Cm/dhj1J+Btm73FI78p?=
+ =?us-ascii?Q?i9broYhEhDDMlPwvV5fB3cKEw85MPX8VKWKc/JmwPt7hUHbRkg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e3ede47-319a-432f-ad81-08d91c42c09f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 10:25:27.2793
+X-MS-Exchange-CrossTenant-Network-Message-Id: e517b118-a070-4aa1-1d18-08d91c486e4e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 11:06:06.1450
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FrOH2kG9fEq6klfpPA1awzYwW6Z+fpsrUIscXlvcTVGForE5+VvhASBplwTPHj75g9OpLsXRtmJeACBjafeKRuEIm9gos1by7E7X0dzu9ec=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7512
+X-MS-Exchange-CrossTenant-userprincipalname: g2zz0eMi0SY1nLYdZ9G14rWSf1rZH/X+bCwuxgZsl6lYlz4UO7fSdtEZCErDUlC0ypE2U/TyfX7y4aE67ikyWgd7oEJXG75qcDQEv8xpkGA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7639
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 20/05/2021 08:23, Chaitanya Kulkarni wrote:=0A=
-> Hi, =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =0A=
+On 21/05/2021 12:17, Johannes Thumshirn wrote:=0A=
+> On 21/05/2021 06:58, Naohiro Aota wrote:=0A=
+>> Several tests are failing on zoned btrfs, but actually they are=0A=
+>> invalid. There are two reasons of the failures. One is creating too=0A=
+>> small filesystem. Since zoned btrfs needs at lease 5 zones (=3D 1.25 GB=
+=0A=
+>> if zone size =3D 256MB) to create a filesystem, tests creating e.g., 1=
+=0A=
+>> GB filesystem will fail.=0A=
+>>=0A=
+>> The other reason is lacking of zone support of some dm targets and=0A=
+>> loop device. So, they need to skip the test if the testing device is=0A=
+>> zoned.=0A=
+>>=0A=
+>> Patches 1 to 3 handle the too small file system failure.=0A=
+>>=0A=
+>> And, patches 4 and 5 add checks for tests requiring non-zoned devices.=
+=0A=
+>>=0A=
+>> Naohiro Aota (5):=0A=
+>>   common/rc: introduce minimal fs size check=0A=
+>>   btrfs/057: use _scratch_mkfs_sized to set filesystem size=0A=
+>>   btrfs: add minimal file system size check=0A=
+>>   common: add zoned block device checks=0A=
+>>   shared/032: add check for zoned block device=0A=
+>>=0A=
+>>  README            |  4 ++++=0A=
+>>  common/dmerror    |  3 +++=0A=
+>>  common/dmhugedisk |  3 +++=0A=
+>>  common/rc         | 15 +++++++++++++++=0A=
+>>  tests/btrfs/057   |  2 +-=0A=
+>>  tests/btrfs/141   |  1 +=0A=
+>>  tests/btrfs/142   |  1 +=0A=
+>>  tests/btrfs/143   |  1 +=0A=
+>>  tests/btrfs/150   |  1 +=0A=
+>>  tests/btrfs/151   |  1 +=0A=
+>>  tests/btrfs/156   |  1 +=0A=
+>>  tests/btrfs/157   |  1 +=0A=
+>>  tests/btrfs/158   |  1 +=0A=
+>>  tests/btrfs/175   |  1 +=0A=
+>>  tests/shared/032  |  2 ++=0A=
+>>  15 files changed, 37 insertions(+), 1 deletion(-)=0A=
+>>=0A=
 > =0A=
-> The helper functions bio_add_XXX_page() returns the length which is=0A=
-> unsigned int but the return type of those functions is defined=0A=
-> as int instead of unsigned int.=0A=
-> =0A=
-> This is an attempt to fix the return type of those functions=0A=
-> and few callers. There are many places where this fix is needed=0A=
-> in the callers, if this series makes it to the upstream I'll convert=0A=
-> those callers gradually.=0A=
-> =0A=
-> Any feedback is welcome.=0A=
-> =0A=
-> -ck=0A=
-> =0A=
-> Chaitanya Kulkarni (8):=0A=
->   block: fix return type of bio_add_hw_page()=0A=
->   block: fix return type of bio_add_pc_page()=0A=
->   block: fix return type of bio_add_zone_append_page=0A=
->   block: fix return type of bio_add_page()=0A=
->   lightnvm: fix variable type pblk-core=0A=
->   pscsi: fix variable type pscsi_map_sg=0A=
->   btrfs: fix variable type in btrfs_bio_add_page=0A=
->   block: fix variable type for zero pages=0A=
-> =0A=
->  block/bio.c                        | 20 +++++++++++---------=0A=
->  block/blk-lib.c                    |  2 +-=0A=
->  block/blk.h                        |  7 ++++---=0A=
->  drivers/lightnvm/pblk-core.c       |  3 ++-=0A=
->  drivers/target/target_core_pscsi.c |  6 ++++--=0A=
->  fs/btrfs/extent_io.c               |  2 +-=0A=
->  include/linux/bio.h                | 11 ++++++-----=0A=
->  7 files changed, 29 insertions(+), 22 deletions(-)=0A=
+> For the whole series:=0A=
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+> Tested-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
 > =0A=
 =0A=
-I couldn't spot any errors, but I'm not sure it's worth the effort.=0A=
+Spoke too early, I've only tested with a zoned device. I get the =0A=
+following splat with non zoned btrfs:=0A=
 =0A=
-If Jens decides to take it:=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+btrfs/146       - output mismatch (see /home/johannes/src/xfstests-dev/resu=
+lts//btrfs/146.out.bad)                                                    =
+                                                                           =
+                                                                           =
+                                                                =0A=
+    --- tests/btrfs/146.out     2020-01-07 15:49:53.000000000 +0000        =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                =0A=
+    +++ /home/johannes/src/xfstests-dev/results//btrfs/146.out.bad      202=
+1-05-21 09:56:43.963914581 +0000                                           =
+                                                                           =
+                                                                           =
+                                                                =0A=
+    @@ -1,3 +1,5 @@                                                        =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                =0A=
+     QA output created by 146                                              =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                =0A=
+     Format and mount                                                      =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                =0A=
+    +./common/dmerror: line 20: _require_non_zoned_device: command not foun=
+d                                                                          =
+                                                                           =
+                                                                           =
+                                                                =0A=
+    +./common/dmerror: line 20: _require_non_zoned_device: command not foun=
+d                                                                          =
+                                                                           =
+                                                                           =
+                                                                =0A=
+     Test passed!                                                          =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                =0A=
+    ...                                                                    =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                =0A=
+    (Run 'diff -u /home/johannes/src/xfstests-dev/tests/btrfs/146.out /home=
+/johannes/src/xfstests-dev/results//btrfs/146.out.bad'  to see the entire d=
+iff)=0A=
