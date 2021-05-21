@@ -2,200 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A4938C951
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 16:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB37138C9EF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 17:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhEUOkG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 10:40:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45680 "EHLO mx2.suse.de"
+        id S237396AbhEUPUS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 11:20:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54226 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhEUOkF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 10:40:05 -0400
+        id S234054AbhEUPUM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 May 2021 11:20:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621607921; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ri04k4+vnOkspJouKn6TBKMB5kxTzjn7GZZTbSH0dJ8=;
-        b=hS+kOK1V+Jxgm55H47Wb3Ac/jCR+Gu6wggsGFlrfaMCfi41YE2At9Z4C8lr3R1C3boe2NF
-        rnU9Mk85CatbGyWf8BduauwziJEOKsw9ZraWbNXnSSDhWJce4Xeq3cUzYDOejRpRR+BBmL
-        domAJl00aBIXjAzUszAuvUxE1nYN12E=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621610327;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3N2PUHGxNFtqL17T5oc1TOpT1nz6cla7cbqvtLWhevg=;
+        b=KFZastnGdCEXZrlOqAnzT4syC45AmB/ZYZl4OqTt5ERMjwaZevP2mpU0QImWSliNHxuvvk
+        pn+RD6237Hf5mdW8SO0qOf4WJ2J4u0BizN3S/iQVk7geGI+L3JT8xgQAN8JoPQtfV8onY2
+        8f6ortDqmbwpka1LqX6484giz9i/Id8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621610327;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3N2PUHGxNFtqL17T5oc1TOpT1nz6cla7cbqvtLWhevg=;
+        b=KvTIHw2DJ6jwIyfQzOTPqNN+P4r2uvc5CJFvSJsw7y/kkfqJx/q2GpLPilHFLJ1fcu9O97
+        lB2vGzQqMJzHrTBA==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C75A0AAA6;
-        Fri, 21 May 2021 14:38:41 +0000 (UTC)
-From:   Marcos Paulo de Souza <mpdesouza@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, wqu@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs: Add new flag to rescan quota after subvolume creation
-Date:   Fri, 21 May 2021 11:38:11 -0300
-Message-Id: <20210521143811.16227-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.26.2
+        by mx2.suse.de (Postfix) with ESMTP id C586EACF5;
+        Fri, 21 May 2021 15:18:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5C013DA72C; Fri, 21 May 2021 17:16:13 +0200 (CEST)
+Date:   Fri, 21 May 2021 17:16:13 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
+Message-ID: <20210521151613.GN7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210518144935.15835-1-dsterba@suse.com>
+ <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
+ <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Adding a new subvolume/snapshot makes the qgroup data inconsistent, so
-add a new flag to inform the subvolume ioctl to do a quota rescan right
-after the subvolume/snapshot creation.
+On Thu, May 20, 2021 at 03:14:03PM +0200, Arnd Bergmann wrote:
+> On Thu, May 20, 2021 at 9:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, 18 May 2021, David Sterba wrote:
+> > > +     /* Start new epoch, set deadline */
+> > > +     now = ktime_get();
+> > > +     if (sctx->throttle_deadline == 0) {
+> > > +             sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
+> >
+> > ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+> >
+> > div_u64(bwlimit, div)
+> 
+> If 'time_slice' is in nanoseconds, the best interface to use
+> is ktime_divns().
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
+It's in miliseconds and the division above is int/int, the problematic
+one is below.
+> 
+> > > +             sctx->throttle_sent = 0;
+> > > +     }
+> > > +
+> > > +     /* Still in the time to send? */
+> > > +     if (ktime_before(now, sctx->throttle_deadline)) {
+> > > +             /* If current bio is within the limit, send it */
+> > > +             sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
+> > > +             if (sctx->throttle_sent <= bwlimit / div)
+> > > +                     return;
+> 
+> Doesn't this also need to be changed?
+> 
+> > > +             /* We're over the limit, sleep until the rest of the slice */
+> > > +             delta = ktime_ms_delta(sctx->throttle_deadline, now);
+> > > +     } else {
+> > > +             /* New request after deadline, start new epoch */
+> > > +             delta = 0;
+> > > +     }
+> > > +
+> > > +     if (delta)
+> > > +             schedule_timeout_interruptible(delta * HZ / 1000);
+> >
+> > ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+> >
+> > I'm a bit surprised gcc doesn't emit code for the division by the
+> > constant 1000, but emits a call to __divdi3().  So this has to become
+> > div_u64(), too.
+> 
+> There is schedule_hrtimeout(), which takes a ktime_t directly
+> but has slightly different behavior. There is also an msecs_to_jiffies
+> helper that should produce a fast division.
 
- This is an attempt to help snapper to create snapshots with 'timeline'
- cleanup-policy to keep the qgroup data consistent after a new snapshot is
- created.
-
- Please let me know if you know a better place to add this functionality.
-
- fs/btrfs/ioctl.c           | 58 +++++++++++++++++++++++++++++---------
- include/uapi/linux/btrfs.h |  8 ++++--
- 2 files changed, 51 insertions(+), 15 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 5dc2fd843ae3..64b4aa744486 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1704,6 +1704,22 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- 	return ret;
- }
- 
-+static long do_quota_rescan(struct file *file)
-+{
-+	struct inode *inode = file_inode(file);
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	int ret;
-+
-+	ret = mnt_want_write_file(file);
-+	if (ret)
-+		return ret;
-+
-+	ret = btrfs_qgroup_rescan(fs_info);
-+
-+	mnt_drop_write_file(file);
-+	return ret;
-+}
-+
- static noinline int __btrfs_ioctl_snap_create(struct file *file,
- 				const char *name, unsigned long fd, int subvol,
- 				bool readonly,
-@@ -1793,6 +1809,7 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 	struct btrfs_ioctl_vol_args_v2 *vol_args;
- 	int ret;
- 	bool readonly = false;
-+	bool quota_rescan = false;
- 	struct btrfs_qgroup_inherit *inherit = NULL;
- 
- 	if (!S_ISDIR(file_inode(file)->i_mode))
-@@ -1808,6 +1825,15 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 		goto free_args;
- 	}
- 
-+	if (vol_args->flags & BTRFS_SUBVOL_QGROUP_RESCAN) {
-+		if (!capable(CAP_SYS_ADMIN)) {
-+			ret = -EPERM;
-+			goto free_args;
-+		}
-+
-+		quota_rescan = true;
-+	}
-+
- 	if (vol_args->flags & BTRFS_SUBVOL_RDONLY)
- 		readonly = true;
- 	if (vol_args->flags & BTRFS_SUBVOL_QGROUP_INHERIT) {
-@@ -1843,6 +1869,22 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 					subvol, readonly, inherit);
- 	if (ret)
- 		goto free_inherit;
-+
-+	if (quota_rescan) {
-+		ret = do_quota_rescan(file);
-+		/*
-+		 * EINVAL is returned if quota is not enabled. There is already
-+		 * a warning issued if quota rescan is started when quota is not
-+		 * enabled, so skip a warning here if it is the case.
-+		 */
-+		if (ret < 0 && ret != -EINVAL)
-+			btrfs_warn(btrfs_sb(file_inode(file)->i_sb),
-+		"Couldn't execute quota rescan after snapshot creation: %d",
-+					ret);
-+		else
-+			ret = 0;
-+	}
-+
- free_inherit:
- 	kfree(inherit);
- free_args:
-@@ -4277,35 +4319,25 @@ static long btrfs_ioctl_qgroup_limit(struct file *file, void __user *arg)
- 
- static long btrfs_ioctl_quota_rescan(struct file *file, void __user *arg)
- {
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_ioctl_quota_rescan_args *qsa;
- 	int ret;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	ret = mnt_want_write_file(file);
--	if (ret)
--		return ret;
--
- 	qsa = memdup_user(arg, sizeof(*qsa));
--	if (IS_ERR(qsa)) {
--		ret = PTR_ERR(qsa);
--		goto drop_write;
--	}
-+	if (IS_ERR(qsa))
-+		return PTR_ERR(qsa);
- 
- 	if (qsa->flags) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
--	ret = btrfs_qgroup_rescan(fs_info);
-+	ret = do_quota_rescan(file);
- 
- out:
- 	kfree(qsa);
--drop_write:
--	mnt_drop_write_file(file);
- 	return ret;
- }
- 
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index 5df73001aad4..8779aa4b3aad 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -47,11 +47,14 @@ struct btrfs_ioctl_vol_args {
- 
- #define BTRFS_SUBVOL_SPEC_BY_ID	(1ULL << 4)
- 
-+#define BTRFS_SUBVOL_QGROUP_RESCAN	(1ULL << 5)
-+
- #define BTRFS_VOL_ARG_V2_FLAGS_SUPPORTED		\
- 			(BTRFS_SUBVOL_RDONLY |		\
- 			BTRFS_SUBVOL_QGROUP_INHERIT |	\
- 			BTRFS_DEVICE_SPEC_BY_ID |	\
--			BTRFS_SUBVOL_SPEC_BY_ID)
-+			BTRFS_SUBVOL_SPEC_BY_ID |	\
-+			BTRFS_SUBVOL_QGROUP_RESCAN)
- 
- #define BTRFS_FSID_SIZE 16
- #define BTRFS_UUID_SIZE 16
-@@ -119,7 +122,8 @@ struct btrfs_ioctl_qgroup_limit_args {
- /* Supported flags for BTRFS_IOC_SNAP_CREATE_V2 and BTRFS_IOC_SUBVOL_CREATE_V2 */
- #define BTRFS_SUBVOL_CREATE_ARGS_MASK					\
- 	 (BTRFS_SUBVOL_RDONLY |						\
--	 BTRFS_SUBVOL_QGROUP_INHERIT)
-+	 BTRFS_SUBVOL_QGROUP_INHERIT |					\
-+	 BTRFS_SUBVOL_QGROUP_RESCAN)
- 
- /* Supported flags for BTRFS_IOC_SNAP_DESTROY_V2 */
- #define BTRFS_SUBVOL_DELETE_ARGS_MASK					\
--- 
-2.26.2
-
+I'll use msecs_to_jiffies, thanks. If 'hr' in schedule_hrtimeout stands
+for high resolution, it's not necessary here.
