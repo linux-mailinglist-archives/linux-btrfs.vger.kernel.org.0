@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C8638C86A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 15:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7027138C86C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 15:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236335AbhEUNkX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 09:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58372 "EHLO
+        id S236220AbhEUNke (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 09:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236336AbhEUNkE (ORCPT
+        with ESMTP id S236059AbhEUNkS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 09:40:04 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F3FC06134A
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:38:37 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id i67so19691071qkc.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:38:37 -0700 (PDT)
+        Fri, 21 May 2021 09:40:18 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D6DC061343
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:38:55 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id k127so19691695qkc.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:38:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=s+N32q+c+jROeC3/N7S+xSJq5DAg2NvttBc4/vH2/hY=;
-        b=UWNzZG9VgfYMt+NpsMAgdsY+P03Tq/SDNlRnnpp71mA+PvcSvWFlkP2V5GU70KCuPA
-         3+UbSp3nkKx3KRW1rLBAk0G8FfcrHtykOjv31NZKyYnM8GGvlteOYubTcS2EnaGuQGNF
-         4i4tJts/peAwUrtxw4Ns1zl2laXmcT1Bq6LmOn+ToNXZvg6J8OL+PLwbK9iTDA+5xAcC
-         aWAGsA6geHBmSC6LB3b3eEhRVLL+yd/NnVh+5drTKS9Kp34IugJZHKNndA9yES7TTuZy
-         5cpI/sZqFfiC6TfYLWJsht2lZC3upRiw4vXibzKbbVnXM6oSDJ5qXYpqRgzw+83nnKNq
-         XxOw==
+        bh=hRlaO3TpA6MgQQxiZ29GYNitf5BSMuMdDsUNQIX9PvY=;
+        b=yGi0n3YJY/c3yYMHGhpZBVzT6ELqo10pnLdKVy6nwT7jYxb24iOGWw0QgyddbWvTkq
+         mFN2KylsPuJW+bJLoURrS/KTwOgjdz05Y6nm3gy3xKpok+8AaKsaQF1ZsDNiCv1XThbO
+         CTrl7FYMyJJG9YCcROV0CtUvFYClroc5bFjQxHMFchC0PCF4s3T9z9HZVqkPBn+xXH1p
+         l58a5T4b7zj89FEchwQKozxS7JHOYZCprrCrV/rg4CIwEV7eGItZ8NaUBbJbZWCKp6Nt
+         RDyyk2cYHlVJaHfcdp1E2NgKkB8qbtbG5XBTIlftgQOt/pUgtN4N5s7xyT5HJdlXjD9R
+         /phQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=s+N32q+c+jROeC3/N7S+xSJq5DAg2NvttBc4/vH2/hY=;
-        b=iKWxfL22jo4VRR2wWBEGNJAKX29xZ61yyhqsYhjlxlwcvci6FDrU1HDZRPnwSU28LK
-         BwTIWyf9Id7xwAvHHFjGxNJY4BenDSuGprWetQOC9LsB4Zku0aBRa2OxLPkY/ZUd5ZPC
-         WmkwnbFvHceFD8bNZ6MUPBOX0oR7QbXGe2iin50heb6mnuYqY7KkJB9gpLRRZRdhu+Cv
-         4wmVcOuJ4SD+59IdcFV+4PSjaAAna66kvlYy8NL0CwAxnenZB1iFHbOb9OfOFGDVFkMa
-         jEg2iU2W4mbKA5fc8YB+A+80DriatYjkEYhAF+jJpX/z770B3jCz5wIf5TFAZJY8oDwH
-         Y4Bg==
-X-Gm-Message-State: AOAM532LQuWDEc0aSUBtOjIB6Gs63ZT8O5EZcE8fVieFu3ZhDYLJRd0Z
-        F/MurpVcO02+c/Cxa1nXt1JTTht5WP2QYw==
-X-Google-Smtp-Source: ABdhPJzZxhNV71YPUUgj4GwU/yD+aOTzT5p1QoDzUanj8FPruFswhRe5AT5RnSz1Uhsb+7qMl8+z+w==
-X-Received: by 2002:a05:620a:22d8:: with SMTP id o24mr13065200qki.361.1621604316814;
-        Fri, 21 May 2021 06:38:36 -0700 (PDT)
+        bh=hRlaO3TpA6MgQQxiZ29GYNitf5BSMuMdDsUNQIX9PvY=;
+        b=WOtrhlY8JWU5DOca0SSoDBkVxl2Brqj8w0AAMd+k91AYyxXYJSPlDMLqj8Ra63PoZK
+         2uyKobeySMohPiIjPOZnhPqVp/hJ5cQ56Wl4dtQwuPppXE/KAtWA+BuMyp5efnGFOE1/
+         c/VMMqUo4iKwQ1F7pMhGt3iQpteo+2VyOBcCWpvVr77o3AIZIbpHkpg9PA86vPadtgFf
+         gWIYdsFFG9SbjOp73b4/lxCA2TKTq55lYBE5jeOCYFHs9lB9Ig9vvSpTp53WKWPQz4hl
+         YOjy+EdwD/lEuffcXb/JYzsg5HLYTqUvmTiRTU4GtlR5uZVoJzdJO/t5Sv2HzJNQ2b2b
+         5Jjw==
+X-Gm-Message-State: AOAM533CKmX6vU62IerPL4eoflTrN5s+BWr9Xj1S3VILeo720E2jCtNh
+        byuqLBx2YEZtXVyopV0NuaSyrDNi5qmJfA==
+X-Google-Smtp-Source: ABdhPJw98b76rSsrEHRmjPQa9+pehn6hv4jRTrWfFD5SdG2F0mmvBLe3Qo8hTQaGCiq8QiA5r2AQiQ==
+X-Received: by 2002:a05:620a:1446:: with SMTP id i6mr11985756qkl.353.1621604333955;
+        Fri, 21 May 2021 06:38:53 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c0a8:11d1::114c? ([2620:10d:c091:480::1:e74])
-        by smtp.gmail.com with ESMTPSA id a21sm4716245qtm.54.2021.05.21.06.38.36
+        by smtp.gmail.com with ESMTPSA id s190sm4915603qkc.40.2021.05.21.06.38.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 06:38:36 -0700 (PDT)
-Subject: Re: [PATCH 5/6] btrfs: add cancelation to resize
+        Fri, 21 May 2021 06:38:53 -0700 (PDT)
+Subject: Re: [PATCH 6/6] btrfs: add device delete cancel
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1621526221.git.dsterba@suse.com>
- <6aabd4e1187d0ce49bad7bf7967148a86b4c56d4.1621526221.git.dsterba@suse.com>
+ <8759a75926d1a48c6092b2055348e35129cafd51.1621526221.git.dsterba@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <6e1d7267-fa5e-ded8-2160-6a5073736f10@toxicpanda.com>
-Date:   Fri, 21 May 2021 09:38:35 -0400
+Message-ID: <06e8fd6e-fb18-7085-6cd0-0c4c8ad3dc32@toxicpanda.com>
+Date:   Fri, 21 May 2021 09:38:52 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <6aabd4e1187d0ce49bad7bf7967148a86b4c56d4.1621526221.git.dsterba@suse.com>
+In-Reply-To: <8759a75926d1a48c6092b2055348e35129cafd51.1621526221.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,12 +68,13 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 5/21/21 8:06 AM, David Sterba wrote:
-> Accept literal string "cancel" as resize operation and interpret that
-> as a request to cancel the running operation. If it's running, wait
-> until it finishes current work and return ECANCELED.
+> Accept device name "cancel" as a request to cancel running device
+> deletion operation. The string is literal, in case there's a real device
+> named "cancel", pass it as full absolute path or as "./cancel"
 > 
-> Shrinking resize uses relocation to move the chunks away, use the
-> conditional exclusive operation start and cancelation helpers.
+> This works for v1 and v2 ioctls when the device is specified by name.
+> Moving chunks from the device uses relocation, use the conditional
+> exclusive operation start and cancelation helpers
 > 
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
