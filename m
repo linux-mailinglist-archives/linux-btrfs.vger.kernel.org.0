@@ -2,34 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3E138BFCA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 08:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE2E38BFCC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 08:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbhEUGoW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S232234AbhEUGoW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Fri, 21 May 2021 02:44:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58780 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:58782 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234460AbhEUGny (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S234749AbhEUGny (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 21 May 2021 02:43:54 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621579269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1621579271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LW9162Hb7N+LQrk3Wn0CRO2u7aDsjriuBFTN+vqhc4A=;
-        b=fUjD3XfKIFoUcgj3Tmn71yD5qxzMq6Dh+syaSnZAliPIpJ3WQkSh90zkgcqH8kBysXpLQR
-        6fAsb7LY9iCZrAgeJ8upyF1hiCYGnL4uCnE62uEF6dIPPXIdFkz7LrgyG5+7yeqlPetYC9
-        9Zec9xOTQNOp0tc0EU9aAzXGMWDtc7k=
+        bh=SDn4VMTjdSk8A06e4ZuQlZmj6wRQRHg6TgqgNAVFEgU=;
+        b=QsyIKZiwIKNnHAngwFy8F83zhER5E9bTezdhjxOG39aq/BxUjeegPYqaXl2TL0iFQ06O6I
+        APMvtQ3kWRWVzjcwCGMmt5RXQQdBzDK7fyq7/cmeNtjwvognggOhnxFFwZrt4COib81gBw
+        a8OyAwp1TIDhMWFT5ZwtQ1Epe/Xj56U=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A36AFAD0B;
-        Fri, 21 May 2021 06:41:09 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 58577ACF2
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:41:11 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v3 08/31] btrfs: make process_one_page() to handle subpage locking
-Date:   Fri, 21 May 2021 14:40:27 +0800
-Message-Id: <20210521064050.191164-9-wqu@suse.com>
+Subject: [PATCH v3 09/31] btrfs: introduce helpers for subpage ordered status
+Date:   Fri, 21 May 2021 14:40:28 +0800
+Message-Id: <20210521064050.191164-10-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210521064050.191164-1-wqu@suse.com>
 References: <20210521064050.191164-1-wqu@suse.com>
@@ -39,208 +38,103 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Introduce a new data inodes specific subpage member, writers, to record
-how many sectors are under page lock for delalloc writing.
+This patch introduces the following functions to handle btrfs subpage
+ordered (private2) status:
+- btrfs_subpage_set_ordered()
+- btrfs_subpage_clear_ordered()
+- btrfs_subpage_test_ordered()
+  Those helpers can only be called when the range is ensured to be
+  inside the page.
 
-This member acts pretty much the same as readers, except it's only for
-delalloc writes.
+- btrfs_page_set_ordered()
+- btrfs_page_clear_ordered()
+- btrfs_page_test_ordered()
+  Those helpers can handle both regular sector size and subpage without
+  problem.
 
-This is important for delalloc code to trace which page can really be
-freed, as we have cases like run_delalloc_nocow() where we may exit
-processing nocow range inside a page, but need to exit to do cow half
-way.
-In that case, we need a way to determine if we can really unlock a full
-page.
-
-With the new btrfs_subpage::writers, there is a new requirement:
-- Page locked by process_one_page() must be unlocked by
-  process_one_page()
-  There are still tons of call sites manually lock and unlock a page,
-  without updating btrfs_subpage::writers.
-  So if we lock a page through process_one_page() then it must be
-  unlocked by process_one_page() to keep btrfs_subpage::writers
-  consistent.
-
-  This will be handled in next patch.
+Those functions are here to coordinate btrfs_invalidatepage() with
+btrfs_writepage_endio_finish_ordered(), to make sure only one of those
+functions can finish the ordered extent.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 10 +++--
- fs/btrfs/subpage.c   | 89 ++++++++++++++++++++++++++++++++++++++------
- fs/btrfs/subpage.h   | 10 +++++
- 3 files changed, 94 insertions(+), 15 deletions(-)
+ fs/btrfs/subpage.c | 29 +++++++++++++++++++++++++++++
+ fs/btrfs/subpage.h |  4 ++++
+ 2 files changed, 33 insertions(+)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d16c84430981..8f32c2e64936 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1841,14 +1841,18 @@ static int process_one_page(struct btrfs_fs_info *fs_info,
- 	if (page_ops & PAGE_END_WRITEBACK)
- 		btrfs_page_clamp_clear_writeback(fs_info, page, start, len);
- 	if (page_ops & PAGE_LOCK) {
--		lock_page(page);
-+		int ret;
-+
-+		ret = btrfs_page_start_writer_lock(fs_info, page, start, len);
-+		if (ret)
-+			return ret;
- 		if (!PageDirty(page) || page->mapping != mapping) {
--			unlock_page(page);
-+			btrfs_page_end_writer_lock(fs_info, page, start, len);
- 			return -EAGAIN;
- 		}
- 	}
- 	if (page_ops & PAGE_UNLOCK)
--		unlock_page(page);
-+		btrfs_page_end_writer_lock(fs_info, page, start, len);
- 	return 0;
- }
- 
 diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index a6cf1776f3f9..f728e5009487 100644
+index f728e5009487..516e0b3f2ed9 100644
 --- a/fs/btrfs/subpage.c
 +++ b/fs/btrfs/subpage.c
-@@ -110,10 +110,12 @@ int btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
- 	if (!*ret)
- 		return -ENOMEM;
- 	spin_lock_init(&(*ret)->lock);
--	if (type == BTRFS_SUBPAGE_METADATA)
-+	if (type == BTRFS_SUBPAGE_METADATA) {
- 		atomic_set(&(*ret)->eb_refs, 0);
--	else
-+	} else {
- 		atomic_set(&(*ret)->readers, 0);
-+		atomic_set(&(*ret)->writers, 0);
-+	}
- 	return 0;
- }
- 
-@@ -203,6 +205,79 @@ void btrfs_subpage_end_reader(const struct btrfs_fs_info *fs_info,
- 		unlock_page(page);
- }
- 
-+static void btrfs_subpage_clamp_range(struct page *page, u64 *start, u32 *len)
-+{
-+	u64 orig_start = *start;
-+	u32 orig_len = *len;
-+
-+	*start = max_t(u64, page_offset(page), orig_start);
-+	*len = min_t(u64, page_offset(page) + PAGE_SIZE,
-+		     orig_start + orig_len) - *start;
-+}
-+
-+void btrfs_subpage_start_writer(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+	int nbits = len >> fs_info->sectorsize_bits;
-+	int ret;
-+
-+	btrfs_subpage_assert(fs_info, page, start, len);
-+
-+	ASSERT(atomic_read(&subpage->readers) == 0);
-+	ret = atomic_add_return(nbits, &subpage->writers);
-+	ASSERT(ret == nbits);
-+}
-+
-+bool btrfs_subpage_end_and_test_writer(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-+	int nbits = len >> fs_info->sectorsize_bits;
-+
-+	btrfs_subpage_assert(fs_info, page, start, len);
-+
-+	ASSERT(atomic_read(&subpage->writers) >= nbits);
-+	return atomic_sub_and_test(nbits, &subpage->writers);
-+}
-+
-+/*
-+ * To lock a page for delalloc page writeback.
-+ *
-+ * Return -EAGAIN if the page is not properly initialized.
-+ * Return 0 with the page locked, and writer counter updated.
-+ *
-+ * Even with 0 returned, the page still need extra check to make sure
-+ * it's really the correct page, as the caller is using
-+ * find_get_pages_contig(), which can race with page invalidating.
-+ */
-+int btrfs_page_start_writer_lock(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {
-+		lock_page(page);
-+		return 0;
-+	}
-+	lock_page(page);
-+	if (!PagePrivate(page) || !page->private) {
-+		unlock_page(page);
-+		return -EAGAIN;
-+	}
-+	btrfs_subpage_clamp_range(page, &start, &len);
-+	btrfs_subpage_start_writer(fs_info, page, start, len);
-+	return 0;
-+}
-+
-+void btrfs_page_end_writer_lock(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len)
-+{
-+	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)
-+		return unlock_page(page);
-+	btrfs_subpage_clamp_range(page, &start, &len);
-+	if (btrfs_subpage_end_and_test_writer(fs_info, page, start, len))
-+		unlock_page(page);
-+}
-+
- /*
-  * Convert the [start, start + len) range into a u16 bitmap
-  *
-@@ -354,16 +429,6 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
+@@ -429,6 +429,32 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
  	spin_unlock_irqrestore(&subpage->lock, flags);
  }
  
--static void btrfs_subpage_clamp_range(struct page *page, u64 *start, u32 *len)
--{
--	u64 orig_start = *start;
--	u32 orig_len = *len;
--
--	*start = max_t(u64, page_offset(page), orig_start);
--	*len = min_t(u64, page_offset(page) + PAGE_SIZE,
--		     orig_start + orig_len) - *start;
--}
--
++void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
++	unsigned long flags;
++
++	spin_lock_irqsave(&subpage->lock, flags);
++	subpage->ordered_bitmap |= tmp;
++	SetPageOrdered(page);
++	spin_unlock_irqrestore(&subpage->lock, flags);
++}
++
++void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
++	unsigned long flags;
++
++	spin_lock_irqsave(&subpage->lock, flags);
++	subpage->ordered_bitmap &= ~tmp;
++	if (subpage->ordered_bitmap == 0)
++		ClearPageOrdered(page);
++	spin_unlock_irqrestore(&subpage->lock, flags);
++}
  /*
   * Unlike set/clear which is dependent on each page status, for test all bits
   * are tested in the same way.
+@@ -451,6 +477,7 @@ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(uptodate);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(error);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(dirty);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(writeback);
++IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(ordered);
+ 
+ /*
+  * Note that, in selftests (extent-io-tests), we can have empty fs_info passed
+@@ -519,3 +546,5 @@ IMPLEMENT_BTRFS_PAGE_OPS(dirty, set_page_dirty, clear_page_dirty_for_io,
+ 			 PageDirty);
+ IMPLEMENT_BTRFS_PAGE_OPS(writeback, set_page_writeback, end_page_writeback,
+ 			 PageWriteback);
++IMPLEMENT_BTRFS_PAGE_OPS(ordered, SetPageOrdered, ClearPageOrdered,
++			 PageOrdered);
 diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index 291cb1932f27..9d087ab3244e 100644
+index 9d087ab3244e..3419b152c00f 100644
 --- a/fs/btrfs/subpage.h
 +++ b/fs/btrfs/subpage.h
-@@ -33,6 +33,7 @@ struct btrfs_subpage {
- 		/* Structures only used by data */
+@@ -34,6 +34,9 @@ struct btrfs_subpage {
  		struct {
  			atomic_t readers;
-+			atomic_t writers;
+ 			atomic_t writers;
++
++			/* If a sector has pending ordered extent */
++			u16 ordered_bitmap;
  		};
  	};
  };
-@@ -63,6 +64,15 @@ void btrfs_subpage_start_reader(const struct btrfs_fs_info *fs_info,
- void btrfs_subpage_end_reader(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len);
+@@ -111,6 +114,7 @@ DECLARE_BTRFS_SUBPAGE_OPS(uptodate);
+ DECLARE_BTRFS_SUBPAGE_OPS(error);
+ DECLARE_BTRFS_SUBPAGE_OPS(dirty);
+ DECLARE_BTRFS_SUBPAGE_OPS(writeback);
++DECLARE_BTRFS_SUBPAGE_OPS(ordered);
  
-+void btrfs_subpage_start_writer(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len);
-+bool btrfs_subpage_end_and_test_writer(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len);
-+int btrfs_page_start_writer_lock(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len);
-+void btrfs_page_end_writer_lock(const struct btrfs_fs_info *fs_info,
-+		struct page *page, u64 start, u32 len);
-+
- /*
-  * Template for subpage related operations.
-  *
+ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
+ 		struct page *page, u64 start, u32 len);
 -- 
 2.31.1
 
