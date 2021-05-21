@@ -2,119 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A74038CA4A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 17:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2167E38CB3F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 18:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236669AbhEUPjn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 11:39:43 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:36353 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhEUPjm (ORCPT
+        id S237044AbhEUQoT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 12:44:19 -0400
+Received: from mail.dubielvitrum.pl ([91.194.229.150]:34585 "EHLO
+        naboo.endor.pl" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S237750AbhEUQoM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 11:39:42 -0400
-Received: by mail-vs1-f50.google.com with SMTP id x2so4508569vss.3;
-        Fri, 21 May 2021 08:38:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=p+cQg0XqSw6N2gR6iurEXLJBxBLY4iIdtLsf7ZxFkHA=;
-        b=Gd33xmQjcPQLtCh31ouFnzrMC/ButHylb/kg7/ghIjXPlaNvoqBC6qDAbHMpfUFQHa
-         e37w0EKt1AvqrYoA11VN4iMlp09niV7CLQQOZ2oKGalJJ1uiLIIlHGn1M//TssvXxEPr
-         4N0hG5nEwxkbQdsdg7ur0zNjEZ7b3+fkJKzs1DkiB4iVVSGmL/3C2yu7iIlexoFtyxKs
-         +X1yMODpBAZwnFT/MGU6uO+FORRXQCreFzPtZW/4w2L5eSbjhKcJnZhVnrzNab8b/OFH
-         KD+1Y05rLn4mlD5lCVwY+X+yK37KZWYZT+jx667aUcv5i1aqVKHN/4T7/U5/gd5VNCK9
-         5lhw==
-X-Gm-Message-State: AOAM533Rq5PuHgCTpFFVjxMfqgtUcn5MK4nhD95DzZhE7RfQwTB2/QS8
-        EgtiDrQBbfCQSiFb2QCugjUcTZNvJckXHYFihqnHhVfqMQI=
-X-Google-Smtp-Source: ABdhPJzvJ6WAm5Hd6nkVmcmFxZ/wnRKHwpbIb8qxtfhirrBSKX76Fi7A4Ucyyvc1V2uDsyLj6XOuWg+ZbNvd5ylWB/0=
-X-Received: by 2002:a67:fb52:: with SMTP id e18mr11604406vsr.18.1621611498180;
- Fri, 21 May 2021 08:38:18 -0700 (PDT)
+        Fri, 21 May 2021 12:44:12 -0400
+X-Greylist: delayed 491 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 May 2021 12:44:12 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by naboo.endor.pl (Postfix) with ESMTP id B906B9D5CB2
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 18:34:30 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at 
+Received: from naboo.endor.pl ([91.194.229.149])
+        by localhost (naboo.endor.pl [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id oxedGncqGJBa for <linux-btrfs@vger.kernel.org>;
+        Fri, 21 May 2021 18:34:28 +0200 (CEST)
+Received: from [192.168.55.108] (93.159.186.235.studiowik.net.pl [93.159.186.235])
+        (Authenticated sender: leszek@dubiel.pl)
+        by naboo.endor.pl (Postfix) with ESMTPSA id B653E9D5AB5
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 18:34:28 +0200 (CEST)
+To:     linux-btrfs@vger.kernel.org
+From:   Leszek Dubiel <leszek@dubiel.pl>
+Subject: Btrfs not using all devices in raid1
+Message-ID: <63123a58-18a4-24ff-3b30-9a0668c167c4@dubiel.pl>
+Date:   Fri, 21 May 2021 18:34:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210518144935.15835-1-dsterba@suse.com> <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
- <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com> <20210521151613.GN7604@twin.jikos.cz>
-In-Reply-To: <20210521151613.GN7604@twin.jikos.cz>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 21 May 2021 17:38:06 +0200
-Message-ID: <CAMuHMdWJC3PhD7ScnkG3kg_yjAh_UpfmyBOHrOq0e8dJ18ANew@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
-To:     David Sterba <dsterba@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: pl-PL
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi David,
 
-On Fri, May 21, 2021 at 5:18 PM David Sterba <dsterba@suse.cz> wrote:
-> On Thu, May 20, 2021 at 03:14:03PM +0200, Arnd Bergmann wrote:
-> > On Thu, May 20, 2021 at 9:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Tue, 18 May 2021, David Sterba wrote:
-> > > > +     /* Start new epoch, set deadline */
-> > > > +     now = ktime_get();
-> > > > +     if (sctx->throttle_deadline == 0) {
-> > > > +             sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
-> > >
-> > > ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-> > >
-> > > div_u64(bwlimit, div)
-> >
-> > If 'time_slice' is in nanoseconds, the best interface to use
-> > is ktime_divns().
->
-> It's in miliseconds and the division above is int/int, the problematic
-> one is below.
+Hello!
 
-Yep, sorry for the wrong pointer.
+Why Btrfs is not using /dev/sdc2?
+There is no line "Data,RAID1" for this disk.
+Isn't it supposed to use disk that has most of free space?
 
-> >
-> > > > +             sctx->throttle_sent = 0;
-> > > > +     }
-> > > > +
-> > > > +     /* Still in the time to send? */
-> > > > +     if (ktime_before(now, sctx->throttle_deadline)) {
-> > > > +             /* If current bio is within the limit, send it */
-> > > > +             sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
-> > > > +             if (sctx->throttle_sent <= bwlimit / div)
-> > > > +                     return;
-> >
-> > Doesn't this also need to be changed?
-> >
-> > > > +             /* We're over the limit, sleep until the rest of the slice */
-> > > > +             delta = ktime_ms_delta(sctx->throttle_deadline, now);
-> > > > +     } else {
-> > > > +             /* New request after deadline, start new epoch */
-> > > > +             delta = 0;
-> > > > +     }
-> > > > +
-> > > > +     if (delta)
-> > > > +             schedule_timeout_interruptible(delta * HZ / 1000);
-> > >
-> > > ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
-> > >
-> > > I'm a bit surprised gcc doesn't emit code for the division by the
-> > > constant 1000, but emits a call to __divdi3().  So this has to become
-> > > div_u64(), too.
-> >
-> > There is schedule_hrtimeout(), which takes a ktime_t directly
-> > but has slightly different behavior. There is also an msecs_to_jiffies
-> > helper that should produce a fast division.
->
-> I'll use msecs_to_jiffies, thanks. If 'hr' in schedule_hrtimeout stands
-> for high resolution, it's not necessary here.
+Thanks for help :) :)
+Using Btrfs in production.
 
-msecs_to_jiffies() takes (32-bit) "unsigned int", while delta is "s64".
 
-Gr{oetje,eeting}s,
+Here are some command outputs:
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+### btrfs fi show /
+
+Label: none  uuid: ea6ae51d-d9b0-4628-a8f3-3406e1dc59c6
+     Total devices 4 FS bytes used 2.96TiB
+     devid    1 size 7.25TiB used 3.20TiB path /dev/sda2
+     devid    2 size 7.25TiB used 3.20TiB path /dev/sdb2
+     devid    3 size 7.25TiB used 3.21TiB path /dev/sdd2
+     devid    4 size 7.25TiB used 32.00MiB path /dev/sdc2
+
+
+
+### btrfs fi df /
+
+Data, RAID1: total=4.49TiB, used=2.90TiB
+System, RAID1: total=64.00MiB, used=784.00KiB
+Metadata, RAID1: total=321.00GiB, used=56.08GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+
+
+### btrfs dev usa /
+
+/dev/sda2, ID: 1
+    Device size:             7.25TiB
+    Device slack:              0.00B
+    Data,RAID1:              2.99TiB
+    Metadata,RAID1:        210.00GiB
+    System,RAID1:           64.00MiB
+    Unallocated:             4.05TiB
+
+/dev/sdb2, ID: 2
+    Device size:             7.25TiB
+    Device slack:              0.00B
+    Data,RAID1:              3.00TiB
+    Metadata,RAID1:        210.00GiB
+    Unallocated:             4.04TiB
+
+/dev/sdc2, ID: 4
+    Device size:             7.25TiB
+    Device slack:              0.00B   ... no Data/RAID1
+    System,RAID1:           32.00MiB
+    Unallocated:             7.25TiB
+
+/dev/sdd2, ID: 3
+    Device size:             7.25TiB
+    Device slack:              0.00B
+    Data,RAID1:              2.99TiB
+    Metadata,RAID1:        222.00GiB
+    System,RAID1:           32.00MiB
+    Unallocated:             4.04TiB
+
+
+
+### time btrfs balance start -dconvert=raid1,soft -mconvert=raid1,soft /
+
+Done, had to relocate 0 out of 4922 chunks
+
+real    0m0,522s
+user    0m0,000s
+sys    0m0,033s
+
+
