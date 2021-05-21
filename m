@@ -2,82 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB4D38CB43
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 18:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33F138CB6B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 18:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237031AbhEUQtu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 12:49:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45382 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236380AbhEUQtt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 12:49:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621615705;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mfj6iEHPRFaCl3Qabo8cNDYUinIXvFRcKw0xWTVhVf4=;
-        b=zFNekmj/zZUsQYFtx6Tvhkf9biKBM7sxyMaIwQldfJaVuNeC02/ELXWI4ghV4C7bk4jSmS
-        SU5PtMCm3UDPthIwXolUfX5PVoV3OC310oB5IT0Ij9Ls+ZGKvKnth7KdtSddQVpDNgG2AF
-        Z4xF40uJW3cUPC6PB8OY/CidISdUq3U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621615705;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mfj6iEHPRFaCl3Qabo8cNDYUinIXvFRcKw0xWTVhVf4=;
-        b=N1INBTIVzIoEmmL4fi9Q5wuKQtBfzXaLC5QatKtDb6QIR/1SHBszUb6FzAbu7E4JNtH728
-        6AqW1iGQB3LxM7Dg==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7297AB64;
-        Fri, 21 May 2021 16:48:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 51A7DDA730; Fri, 21 May 2021 18:45:51 +0200 (CEST)
-Date:   Fri, 21 May 2021 18:45:51 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/6] btrfs: add wrapper for conditional start of
- exclusive operation
-Message-ID: <20210521164551.GP7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1621526221.git.dsterba@suse.com>
- <fe9738eb5db055e06eafb178bf6aea41c48b2890.1621526221.git.dsterba@suse.com>
- <80f75399-9dee-e26c-6433-6e361bc9136b@toxicpanda.com>
+        id S236674AbhEUQ6v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 12:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236655AbhEUQ6u (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 May 2021 12:58:50 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D0CC061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 09:57:27 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 131so24746861ljj.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 09:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=TyMDrKK1RYWgdlZ3jYnZItWAg1UbJzYK4Hmay2jpDlA=;
+        b=IxyqJO0HjwZPzsiO09sl+sMUcg5nmbmb6FI1bb4RiHRuzIH9RhhP/ueki3UhWCekKv
+         UoINSsgj+HaDMXJUbB+IFiCvhs2PJRkAxAN/enS38cXUK+8PncMI4iOsVYh/1ejwQV0j
+         0Lb+wA4ThEKS2ipuG+VqYdlOi0p5LsHvLHx6FDyEhUxyUh4/C06fduE1Qh6moGsRYrA2
+         aQjuLR5LYo8raApwy837Ue6lfwWlo1T0dTG8xlpTI4R0qaUlWIrlbiEe1YbjGsqImz9A
+         ILLZI5uaNlXNhUem75jfb9V+gWNB8nMIrqW2Mj0lzSPK3mZRXhyaHfthayfY4rOcFXme
+         tCOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=TyMDrKK1RYWgdlZ3jYnZItWAg1UbJzYK4Hmay2jpDlA=;
+        b=ScJWk79H/z74OEyXLy0YbGtqXjrEUOhpE5fjzZuinW9l5jKQBEcj1KmrH7UlsU8/or
+         0DlH0FS/NK3jRGZA8H8naqP6Ek2zv8feRG0eYBbwOe/rnh3YenXVTut8fF5u49OFznRG
+         ewz9alJvakGmpYnMRrn81euu9BmOOaXtzyJJkCb93hcxZnBvelWtXD1FdIwrdONYVyk/
+         yu5lsICQDK+m/9nNFq6Yqz3IlIZIYtZMD2ubrEFFLQGM+iWYRpvq4DSYMkrG+w3cSWVf
+         r4n6iWhf9wSCcvlvZq3EBvGYdusqdqsnlv1EntvkbkY7h/4pCx9YnCUwO8SAfxjCHtnY
+         NIKg==
+X-Gm-Message-State: AOAM5338ijWGugTGVCnP3E/IurkcTcQ+ycbnJFpfrVfbVK67SKMic/o3
+        BsNXvyibmqdofUeSgFh29KDuEWP+A+CwG6699zc=
+X-Google-Smtp-Source: ABdhPJy5HGKllEI7KSmrXD0nIl2PmuJd9pAOCDQ6p2t49LSI3BXP+AtmA+S7hGdzicsVQ9FfSmuauDyPI8+RtTantTQ=
+X-Received: by 2002:a2e:8681:: with SMTP id l1mr7614411lji.494.1621616245877;
+ Fri, 21 May 2021 09:57:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80f75399-9dee-e26c-6433-6e361bc9136b@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Received: by 2002:a05:6512:3c85:0:0:0:0 with HTTP; Fri, 21 May 2021 09:57:25
+ -0700 (PDT)
+Reply-To: michellegoodman035@gmail.com
+From:   Shayma <shaymamarwan09@gmail.com>
+Date:   Fri, 21 May 2021 17:57:25 +0100
+Message-ID: <CAMz+VjQscCr=1YtCggnN6Ekp1LBMmNZ4SqP+bd4QUZ6PMCZeHA@mail.gmail.com>
+Subject: Hallo
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 21, 2021 at 09:29:16AM -0400, Josef Bacik wrote:
-> On 5/21/21 8:06 AM, David Sterba wrote:
-> > +		/*
-> > +		 * This blocks any exclop finish from setting it to NONE, so we
-> > +		 * request cancelation. Either it runs and we will wait for it,
-> > +		 * or it has finished and no waiting will happen.
-> > +		 */
-> > +		atomic_inc(&fs_info->reloc_cancel_req);
-> > +		btrfs_exclop_start_unlock(fs_info);
-> > +
-> > +		if (test_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags))
-> > +			wait_on_bit(&fs_info->flags, BTRFS_FS_RELOC_RUNNING,
-> > +				    TASK_INTERRUPTIBLE);
-> 
-> Do we want to capture the return value here, in case the user hit's ctrl+c we 
-> can return -EINTR instead so we don't think it succeeded?  Thanks,
-
-The cancel request will stay, so only the waiting part won't happen. I'm
-not sure if this is worth to distinguish the two states, eg. allow progs
-to print a different message.
-
-Maybe a waiting and non-waiting cancel modes would be also useful. As
-the interface is string-based we can also add 'status' that would say if
-it's running or not. This should cover the usecases, but would be
-a bit more complicated in the state transitions.
+Hallo Liebes, bitte hoffe du hast meine Nachricht bekommen
+Ich brauche dringend eine Antwort
+Vielen Dank
+Michelle
