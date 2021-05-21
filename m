@@ -2,144 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DBE38C3E7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 11:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AC238C448
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 12:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhEUJzM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 05:55:12 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:19714 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235435AbhEUJyA (ORCPT
+        id S231752AbhEUKDV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 06:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232238AbhEUKCb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 05:54:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1621590756; x=1653126756;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=MySDjWOlR2UlilkdOTfVCyt0P85zY7xk3cYiEp8hZUs=;
-  b=LPsCBFV6q8uyD76jGzB3Hp/yYxJDyJCQjyVrxYctg2JHqXN0wjCtAEd7
-   i+aJhaKRpywDZzpfGqGYVMQN8JWEW6oBiCXsEuBjffAn+eHANdKizjqcm
-   pi0EZ4MGw5be29pt2CQuobkArYfeyoxJwEA3EDyelrE4l0EfkHrx86eFR
-   SndrLXK+hKD0ambeW7B3P+q0nFzNDWQ2oJ6jEM+i+sktpcxaRGDwjWL9R
-   6xMyaac7v49juTzewf80Nyf30GjwEMTL1Sjh3k9XefX4fyu6J2/xagU97
-   4updrQq+fL0HYpziypNgVnGwr9OpORfD6d9yn9enOIKZ4QvmdIXmc/5oM
-   g==;
-IronPort-SDR: ZtIr2G5g3V/OSrrk6PH8jVYGdptZf0Bp8IhpmKQmQPS1iyLs6PomsMh590ai3cCLiek8odFNyn
- FTXnNXoRJG9eAilUUrNCFXI8bZC36q1a9zWCZ+KI7fF7b5B9Rg2fLedYwINpdKzxPU6QYDbw51
- 764sXxuL27lS75v1C19Gj7Pb/xfLrh+XXjri0plt4jWoVQOySS6OSUB0QUc3ArsrOvoRvbsIy9
- VzYChYY78rBMGjgHbLiuqTpQ69V+KmPhQ/CWt/5xy9cN5WJa8LMZc/6nylg7nZqvCvutQV3LuX
- xBE=
-X-IronPort-AV: E=Sophos;i="5.82,313,1613404800"; 
-   d="scan'208";a="173632543"
-Received: from mail-mw2nam08lp2172.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.172])
-  by ob1.hgst.iphmx.com with ESMTP; 21 May 2021 17:52:33 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O/7slwiraTddA/UsW7MRSwbM2YGnQTWpbmHp2/lCamIz6JvYFurMLIpC9tIzc2TcHrLFOSjwHSnqb73ibb0sko+WgLpIF6UmSuAbpLF2b5rrrRBNhofGfwFJ+v+8NzzTo5CuY2QWp8KKIw8ufIN25Pf0e1WFacullFcOklRpKpUwryLnP6oghPqzIRS/InDkEmRPcKxt36NDUqhiypT9kHgTMMjzSm+g7jyz9wCfiXxFlxzWp9aT0ITrOxuhZT7uuyi0RtFhb6SapbaHUF/cCZDFMBhOnh5oDpeL54OjbLIVFQGLr10ouaR3bpB3L1m5gWcXVP6fZuVO6QHeTUc0QA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MySDjWOlR2UlilkdOTfVCyt0P85zY7xk3cYiEp8hZUs=;
- b=HANnDYHBb1GhjEEUOoUQZ09n7uGPmSl4LmNsMJpWkzHOzmE4krvjWXwOXUrmk5Yo9Ec2JUzJK+9xNedrq77uSQt7hvCb1qbJTDgXgXQNu/rKX4id5KQ6saLeJqlYpeiYIiLSiQm+J59OraApbyQgA5vo2WRSMO5RPqRgD7EcooEX+8d6hsX1AuzpHZZIreMVD5O3ZGXz/zYuLHjFgT8IGGzMxfhlPK/8/jx06bBE1DZ7hLXU1cbROPluXD6DgWdjJPoavs2Yb/5yFCBo1qUZOcE1aqXrBiJHbsOE1gz8/YxwgUQXrO8FDbKkuorBgjSMx23cM3E3FcMBOLSoUskPig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MySDjWOlR2UlilkdOTfVCyt0P85zY7xk3cYiEp8hZUs=;
- b=WfFSJvt3olrEvMIIp025u65w3xJArpn1/wv4fjC5UEDWeacRaZ8Ak/4QNtCyhUXFXjb0+lk8noVe59peBpXtwFmJiVg/hNZAqoAkia2fx20GAwDFwVscYQLwaKys1uFOAHrWrpAzX4M6lAl2b+TebWCt6fJRTs9/6EmR4z/+znk=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7509.namprd04.prod.outlook.com (2603:10b6:510:5b::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Fri, 21 May
- 2021 09:52:31 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4129.035; Fri, 21 May 2021
- 09:52:31 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        David Sterba <dsterba@suse.com>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH] btrfs: zoned: limit ordered extent to zoned append size
-Thread-Topic: [PATCH] btrfs: zoned: limit ordered extent to zoned append size
-Thread-Index: AQHXTiFEXNaFexnNjU2Pxag8tm94KA==
-Date:   Fri, 21 May 2021 09:52:31 +0000
-Message-ID: <PH0PR04MB74166A812143B574C9A943F09B299@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <65f1b716324a06c5cad99f2737a8669899d4569f.1621588229.git.johannes.thumshirn@wdc.com>
- <DM6PR04MB708120047EF5A0B1397C173BE7299@DM6PR04MB7081.namprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:152f:cc01:f8bd:921e:9aa5:6d21]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ee56168b-4f17-4a9f-1c95-08d91c3e2703
-x-ms-traffictypediagnostic: PH0PR04MB7509:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB7509540FB34A662E90E0EC2C9B299@PH0PR04MB7509.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2dEOy7EvkDsqoYVlT5SyTaZxW62sAZ+CqohGDhPZNH+uwIJWLwvSoaSWE8sBSJO83x7vow5ljmxlfMVHdm2XyBH1hvDH4v2wDceFMFyM7aviXnNZQUcCtAHBQNQ+nwNbx8u2htbkAszjK6McFSDpwHlQLZdQySX/P7fhmErTPCOcxQLE7h9zZzrEGCaQwXitBzj5YK2YYdjfazK+jYkBkyqQXuU2PhOyNWK9gmDb7pDQjrpFkYrEBw1GpEiEcpfaUApd6tyBNP6VlsnLSQsigtuv9kR3mT1m7iBXDZZgfbYQtTP3s7BcsLW/VFIlmuANMaHNT8YbtPDQzdWZNkpxsPPLhIzuDi/C6eyVh4q6IQKnNwmpk56ONV40g4aRvY4bl6uF8Jb8slmNhfh58ZhV3lsz0YXlWJWsyzO2JITuz0MuKyHbfdHd+MJP2N0r6/hWB6oxiSkK1jmRAHtW+VAE1GZJTpBOYOjHpdjeuv26JY3bpOw5RuXskvk3HpxIe3dUdR+uaLsOpyF22yVU00FlZKKveaGQ8PlMKZSNCLgS3UMg01WYNfJ+KKTQ4uquPPgEvqvgqEV0vpsZmJFBnobaWtokl3zkK08GmkSiY2ekKzU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(396003)(376002)(2906002)(7696005)(6506007)(122000001)(38100700002)(4744005)(5660300002)(8676002)(33656002)(8936002)(478600001)(110136005)(76116006)(66946007)(66476007)(66556008)(66446008)(64756008)(86362001)(316002)(4326008)(186003)(52536014)(9686003)(54906003)(55016002)(71200400001)(53546011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?1mllSbIL3o+abh35/ZBQRUTP2gcQTWb6F3EXfgYhXEW6X1mECXFkuAVJCoXy?=
- =?us-ascii?Q?YKW+m2pzf/San6Fqu6CWmzwA9MsEaYMLrE0FAlfkfeRZD2R/qyeKPEz8NoD0?=
- =?us-ascii?Q?JybpS093yEFf6ND2OueKckhN7wGGe5J5357J8N8w9uwu0Fpqu03MmAXIpF+Z?=
- =?us-ascii?Q?+Y/+TOvv0LDY/sy+GggjnV76w5qChLxbC3BIAgSfK8QIXt9S6+Vkky7aORI4?=
- =?us-ascii?Q?FLlFVOZ3tbD6veABduKhHvXoyETS3UfH8pTQWqO6O3K1DkyDIn0j88PiYbxv?=
- =?us-ascii?Q?cobsksWDp8Aap7H4UU4TQvqdnJlIKpsObUUuB/G+MhwNkkjpao3KuOf97PgU?=
- =?us-ascii?Q?CJeiLKCqp/fBuT8F20gffCYZYoRe4lSuZKRpr4r3uld9PuQxvZQVyCPh/NLe?=
- =?us-ascii?Q?0FposGpiTOMUM5em9g58iqCzLeaAFzgUnQ5rAcSb8fsR/tt2GttLpzsXsBrA?=
- =?us-ascii?Q?50ETXc+u2+2dPIscJeFpfBRZ3gwBj7+J9dqryXkRdhpA23JToWrrH8gXLx3I?=
- =?us-ascii?Q?xnTXDthFkdUzmiL3fQl1VS6F5I2JQwy2hF8kjPJeHzNwk/LYhrKgctknP+VD?=
- =?us-ascii?Q?LbzU0qYNJ+Cmkt7wO6Vmoku7mCLPyUUc2Ph9ueQ1iIETxLaY+Hw74V7GMiPG?=
- =?us-ascii?Q?Mpc9NA+IxCNdA7jmH/AJZKU4W34DkDVSS+U8EMY5laI0iz6GNQ+9jiJVXroJ?=
- =?us-ascii?Q?uQlD9g6Eg3zDKvRRYEBnT2gTcjPX4lROE/eAicATkB5UaNMrU4jSOA3YDklO?=
- =?us-ascii?Q?gWZfVH/SsexPvLe3eft8qktBVTj2CK5Bs3bgsoxzA/ONRvYJSAVe4LCbZkcQ?=
- =?us-ascii?Q?ckEt0c6+F5ybZ9SNeayoN14NosvDEZnpaPSyaCVgTBz7ALoVh604Vz90NMst?=
- =?us-ascii?Q?TBb2qLbRKHZWF9Hxxx8a00JTYo7qIiJ/JsXePc5f90uB8oKrCZchA/MmmSrk?=
- =?us-ascii?Q?2INKIaYizYkv0izK/KGFHGwqY6tu1OBuwooSZdk9KTU+Ll+GbuRPLTFoieHs?=
- =?us-ascii?Q?4e72di8W+SaEK6PQ+a6GVfpCg31ItIT+0bkkWFqIch3QP//vJ/2JbXFjNO+t?=
- =?us-ascii?Q?FaK02FT8T0zpo9RYC2Jg8HnyFFtThu7Dr7zv28G3MnD0XZKOHys/NLp/dzWA?=
- =?us-ascii?Q?RbRWtKt1DmhtrgXyKgvtj+b3isuAY2z49kopuW0Xbfjg9HchKmE6vYTSn68i?=
- =?us-ascii?Q?BDR7UAAHuiwOnP2ukwGf1pxOoQLXsDHnMXHfQDuyrMhrQpNfp5mAvug9tg3J?=
- =?us-ascii?Q?DHjuJuhheW1vQ5ARfxViY+4hp8AcoekmEy8aKiJTH918kPO15zcSFkXwwUBQ?=
- =?us-ascii?Q?Rc25zdEaZA0WmlgwdjSYzLgBenbubENtXHZR8aTAcIZDzYNI5iYUrBm/OX+Q?=
- =?us-ascii?Q?0Aml1kPgnRlLC6rSq7lU4syA3sM5pKzWdcaDrnoYnhN2BYBugw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 21 May 2021 06:02:31 -0400
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69194C0611A6
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 02:55:23 -0700 (PDT)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 937F89C3BA; Fri, 21 May 2021 10:55:16 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1621590916;
+        bh=1LqCDrZSi0lEb8kQjtxS6DRdpOqTgVF8NybRvk4eGrQ=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=IMiCkwmR0Cn+kq19cEeXcD5MVt5y7bNHPYGgjdWL/AWMUU1Mj1wC56fYqOYNpVLAy
+         ZZ9UCYEVM9/MJTESzUg6oxaT4Tip8aj3Mbfea/PbpCX7igpHMZ3UdOp+JE3kbQKDPH
+         BDkIiofWECkBt8j0lorfszH9XiJ/eXOCCw/rUBo4q0BRXctk4Z5YtMA52YDJYBNhpO
+         sUTdZDwm2INwKdz5oQC9znN+HjtKhzIkulnvcPD108Y4HdDfZChZOny5mXr1+pZeMl
+         o5gV3BDngqqiipM/cPoog+iGAJbsQv/8aAqPnRQKSRTQY1D5KRZeLl9KczyNDdEO8w
+         chZWHp8kZU9hg==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-3.0 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id DAD489B8C5;
+        Fri, 21 May 2021 10:55:09 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1621590909;
+        bh=1LqCDrZSi0lEb8kQjtxS6DRdpOqTgVF8NybRvk4eGrQ=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=UjBWpWGafTt+Udfp5iqWIDMJhfF6yuIr2jaW3aPfRA8XvNqmVGfMWnfTY54MEF6db
+         PxZXGjoEq8X9GGBw/wIkjwnOF5rKuEbLpSp8pUsULhk5Fnb7SdO+kYmLbwsI0NT6CJ
+         TqCxnLr9AH9fQfj9fVgwz9ISjyM18BXJ80LAkj8mdr0vfLiNa3P1dPY+gqHxiVs62s
+         gBrSj9o1b981f+CpP3Kgq2qlnXTABj9LsYGUAgq7eNX6QsjSj6x6KszlQ/g0B6T4Xu
+         5wAMwEZSmVZ0GRuygfIOOAwI9sidvCX523Y0b/7WkDFw1aww0eSrGMYMeMNop5LdmR
+         BR5Kimu5EvAiw==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+        by black.home.cobb.me.uk (Postfix) with ESMTP id B1CEC240D9E;
+        Fri, 21 May 2021 10:55:09 +0100 (BST)
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20210518144935.15835-1-dsterba@suse.com>
+ <PH0PR04MB741663051770A577220C0C539B2B9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20210519142612.GW7604@twin.jikos.cz>
+ <PH0PR04MB74165244AB3C1AC48DF8DF379B2B9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <29d4c680-e484-f0d0-3b25-a64b11f93230@cobb.uk.net>
+ <20210521071810.GA11733@hungrycats.org>
+Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
+Message-ID: <cb435867-f054-c2b4-686a-be841eb2157f@cobb.uk.net>
+Date:   Fri, 21 May 2021 10:55:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee56168b-4f17-4a9f-1c95-08d91c3e2703
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 09:52:31.5202
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Welpqe2UNyrpS2VPwEfEUUTLA3zEgQk0np19w2I8s1IRSHbQMcmwU5suKBlU8ZuE85O5UD221BmifpPC+ByTzqE3bzOI4eazJgxW4Rr+D4k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7509
+In-Reply-To: <20210521071810.GA11733@hungrycats.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/05/2021 11:46, Damien Le Moal wrote:=0A=
->> Note: This patch breaks fstests btrfs/079, as it increases the number of=
-=0A=
->> on-disk extents from 80 to 83 per 10M write.=0A=
-> Can this test case be fixed by calculating the number of extents that wil=
-l be=0A=
-> written using sysfs zone_append_max_bytes ? That would avoid hard-coding =
-a value=0A=
-> for the zoned case... =0A=
-=0A=
-Probably yes, but I'd like to hear from others how important they see the h=
-ard coded=0A=
-value.=0A=
+On 21/05/2021 08:18, Zygo Blaxell wrote:
+> On Wed, May 19, 2021 at 05:20:50PM +0100, Graham Cobb wrote:
+>> On 19/05/2021 16:32, Johannes Thumshirn wrote:
+>>> On 19/05/2021 16:28, David Sterba wrote:
+>>>> On Wed, May 19, 2021 at 06:53:54AM +0000, Johannes Thumshirn wrote:
+>>>>> On 18/05/2021 16:52, David Sterba wrote:
+>>>>> I wonder if this interface would make sense for limiting balance
+>>>>> bandwidth as well?
+>>>>
+>>>> Balance is not contained to one device, so this makes the scrub case
+>>>> easy. For balance there are data and metadata involved, both read and
+>>>> write accross several threads so this is really something that the
+>>>> cgroups io controler is supposed to do.
+>>>>
+>>>
+>>> For a user initiated balance a cgroups io controller would work well, yes.
+> 
+> Don't throttle balance.  You can only make _everything_ slower with
+> throttling.  You can't be selective, e.g. making balance slower than
+> the mail server.
+> 
+>> Hmmm. I might give this a try. On my main mail server balance takes a
+>> long time and a lot of IO, which is why I created my "balance_slowly"
+>> script which shuts down mail (and some other services) then runs balance
+>> for 20 mins, then cancels the balance and allows mail to run for 10
+>> minutes, then resumes the balance for 20 mins, etc. 
+>> Using this each month, a balance takes over 24 hours
+> 
+> My question here is:  wait?  What?  Are you running full balances
+> every...ever?  Why?
+
+No, not any more - that was how it worked years ago but nowadays my
+scripts are based on btrfs-balance-least-used and end up only balancing
+empty or almost empty block groups, data only. It still sometimes slows
+disk access for other processes down quite a lot, though. Probably
+because I still have some on-disk snapshots causing extra work (although
+most are now moved onto a separate disk after about 24 hours).
+
+And I was wrong - my slow balances don't take 24 hours (that is scrub) -
+they take a couple of hours.
+
+...
+
+> I run btrfs on some mail servers with crappy spinning drives.
+> 
+> One balance block group every day--on days when balance runs at all--only
+> introduces a one-time 90-second latency.  Not enough to kill a SMTP
+> transaction.
+
+Although it happens, the *much* bigger problem than SMTP timeouts is the
+error messages that dovecot mail delivery (with or without lmtp)
+generates when things get very slow. Sometimes these make it into an
+error report confusing the sender significantly! I prefer to just shut
+mail down for a while doing the balance. The script uses a timeout to
+stop sending block groups to be balanced once a time limit has been
+reached, then when the in-progress block group has finished it restarts
+mail for a while.
+
+> Backup snapshot deletes generate more latency (2-4 minutes once a day).
+> That is long enough to kill a SMTP transaction, but pretty much every
+> non-spammer sender will retry sooner than the next backup.
+> 
+>> Before I did this, the impact was horrible: btrfs spent all its time
+>> doing backref searches and any process which touched the filesystem (for
+>> example to deliver a tiny email) could be stuck for over an hour.
+>>
+>> I am wondering whether the cgroups io controller would help, or whether
+>> it would cause a priority inversion because the backrefs couldn't do the
+>> IO they needed so the delays to other processes locked out would get
+>> even **longer**. Any thoughts?
+> 
+> Yes that is pretty much exactly what happens.
+> 
+> Balance spends a tiny fraction of its IO cost moving data blocks around.
+> Each data extent that is relocated triggers a reference update,
+> which goes into a queue for the current btrfs transaction.  On its
+> way through that queue, each ref update cascades into updates on other
+> tree pages for parent nodes, csum tree items, extent tree items, and
+> (if using space_cache=v2) free space tree items.  These are all small
+> random writes that have performance costs even on non-rotating media,
+> much more expensive than the data reads and writes which are mostly
+> sequential and consecutive.  Worst-case write multipliers are 3-digit
+> numbers for each of the trees.  It is not impossible for one block group
+> relocation--balance less than 1GB of data--to run for _days_.
+> 
+> On a filesystem with lots of tiny extents (like a mail server), the
+> data blocks will be less than 1% of the balance IO.  The other 99%+ are
+> metadata updates.  If there is throttling on those, any thread trying
+> to write to the filesystem stops dead in the next transaction commit,
+> and stays blocked until the throttled IO completes.
+> 
+> If other threads are writing to the filesystem, it gets even worse:
+> the running time of delayed ref flushes is bounded only by available
+> disk space, because only running out of disk space can make btrfs stop
+> queueing up more work for itself in transaction commit.
+> 
+> Even threads that aren't writing to the throttled filesystem can get
+> blocked on malloc() because Linux MM shares the same pool of pages for
+> malloc() and disk writes, and will block memory allocations when dirty
+> limits are exceeded anywhere.  This causes most applications (i.e. those
+> which call malloc()) to stop dead until IO bandwidth becomes available
+> to btrfs, even if the processes never touch any btrfs filesystem.
+> Add in VFS locks, and even reading threads block.
+> 
+> The best currently available approach is to minimize balancing.  Don't do
+> it at all if you can avoid it, and do only the bare minimum if you can't.
+> 
+> On the other hand, a lot of these problems can maybe be reduced or
+> eliminated by limiting the number of extents balance processes each time
+> it goes through its extent iteration loop.  Right now, balance tries to
+> relocate an entire block group in one shot, but maybe that's too much.
+> Instead, balance could move a maximum of 100 extents (or some number
+> chosen to generate about a second's worth of IO), then do a transaction
+> commit to flush out the delayed refs queue while it's still relatively
+> small, then repeat.  This would be very crude throttling since we'd have
+> to guess how many backrefs each extent has, but it will work far better
+> for reducing latency than any throttling based on block IO.
+> 
+
+Thanks for the useful analysis Zygo. I think I will stick with my
+current approach, for balance at least. I look forward to playing with
+the new controls for scrub, though (where I currently use a similar script).
+
