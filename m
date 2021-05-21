@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09AF38BFD5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 08:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E9438BFDD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 08:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233346AbhEUGot (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 02:44:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58780 "EHLO mx2.suse.de"
+        id S233952AbhEUGo4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 02:44:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59016 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233613AbhEUGoT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S233658AbhEUGoT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 21 May 2021 02:44:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621579298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1621579300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=t7uiT8k8UkHpE0BxV8PFyBHvTkexqnU/zm9FYZH1XjE=;
-        b=NFGxX0/v7gIYJeHXSQcGECwGZWVOmcEGMgWSAmikB5Ak7Pl4PxwGdTG/E9CwIFfdcH/TiS
-        XKZt4Cki1jiycWtXoXa32ZjPRdrj0Z8LV/vzJjFdkfuLI6wL8s6Y3j2Uevfhi+m5PI2Q+r
-        3Jr7yk9qUCYPNolRNyp1X8PT/Hx9dr8=
+        bh=WLHcUwwjfYxfLurPu42tf5So5XuGiiZl4dK1bK6l8dM=;
+        b=d25hnYUPo6QwwywSbiw9406F9sVNin4jjqX0iINWZLb3cC25TN9Gwf13qfV+K9A9KL2NBZ
+        YYs2yKcxhNRpa1qAXic6MRNeVdb8DK8IoB6UJ9eMKSuRHpSrZuR6Y7KX9xCXHzC5s39Xjx
+        aaRPNURrzBG2heDTnN/Tmp92g6MejwQ=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6C255AE8D
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:41:38 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 08260AE93
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:41:40 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 25/31] btrfs: make defrag to be semi subpage compatible
-Date:   Fri, 21 May 2021 14:40:44 +0800
-Message-Id: <20210521064050.191164-26-wqu@suse.com>
+Subject: [PATCH v3 26/31] btrfs: reject raid5/6 fs for subpage
+Date:   Fri, 21 May 2021 14:40:45 +0800
+Message-Id: <20210521064050.191164-27-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210521064050.191164-1-wqu@suse.com>
 References: <20210521064050.191164-1-wqu@suse.com>
@@ -38,86 +38,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs defrag is mostly just read the page contents and mark them dirty
-so later writeback can try to merge them into a larger extent.
+Raid5/6 is not only unsafe due to its write-hole problem, but also has
+tons of hardcoded PAGE_SIZE.
 
-Currently only two parts are blocking subpage support in defrag:
-
-- The clear_page_dirty_for_io() and set_page_dirty() calls
-  They don't updated the subpage dirty bit, will make subpage writeback
-  to skip the page completely, causing ordered extent never to finish.
-
-- The check for whether a page is released
-  Needs extra check on page Private flag.
-
-With above calls sites modified, now defrag is semi subpage compatible.
-
-The remaining problem is, we set the full page dirty, which means if we
-have a page which only has one sector on-disk, all the other 15 sectors
-are just hole, then after defrag the whole 64K page will be re-written
-as a new extent.
-
-This is just a place holder to make most btrfs defrag tests happy, a
-proper refactor will follow to make btrfs defrag to be completely subpage
-compatible later.
+So disable it for subpage support for now.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ioctl.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/btrfs/disk-io.c | 10 ++++++++++
+ fs/btrfs/volumes.c |  8 ++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index a7739461533d..0cd6abc88c55 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -47,6 +47,7 @@
- #include "space-info.h"
- #include "delalloc-space.h"
- #include "block-group.h"
-+#include "subpage.h"
- 
- #ifdef CONFIG_64BIT
- /* If we have a 32-bit userspace and 64-bit kernel, then the UAPI
-@@ -1160,6 +1161,7 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 				    unsigned long start_index,
- 				    unsigned long num_pages)
- {
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	unsigned long file_end;
- 	u64 isize = i_size_read(inode);
- 	u64 page_start;
-@@ -1225,7 +1227,7 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 			 * we unlocked the page above, so we need check if
- 			 * it was released or not.
- 			 */
--			if (page->mapping != inode->i_mapping) {
-+			if (page->mapping != inode->i_mapping || !PagePrivate(page)) {
- 				unlock_page(page);
- 				put_page(page);
- 				goto again;
-@@ -1243,7 +1245,7 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 			}
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 8c3db9076988..2dd48f4bec8f 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3406,6 +3406,16 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 			goto fail_alloc;
  		}
- 
--		if (page->mapping != inode->i_mapping) {
-+		if (page->mapping != inode->i_mapping || !PagePrivate(page)) {
- 			unlock_page(page);
- 			put_page(page);
- 			goto again;
-@@ -1324,9 +1326,11 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 			     page_start, page_end - 1, &cached_state);
- 
- 	for (i = 0; i < i_done; i++) {
--		clear_page_dirty_for_io(pages[i]);
-+		btrfs_page_clear_dirty(fs_info, pages[i], page_offset(pages[i]),
-+				       PAGE_SIZE);
- 		ClearPageChecked(pages[i]);
--		set_page_dirty(pages[i]);
-+		btrfs_page_set_dirty(fs_info, pages[i], page_offset(pages[i]),
-+				     PAGE_SIZE);
- 		unlock_page(pages[i]);
- 		put_page(pages[i]);
  	}
++	if (sectorsize != PAGE_SIZE) {
++		if (btrfs_super_incompat_flags(fs_info->super_copy) &
++			BTRFS_FEATURE_INCOMPAT_RAID56) {
++			btrfs_err(fs_info,
++	"raid5/6 is not yet supported for sector size %u with page size %lu",
++				sectorsize, PAGE_SIZE);
++			err = -EINVAL;
++			goto fail_alloc;
++		}
++	}
+ 
+ 	ret = btrfs_init_workqueues(fs_info, fs_devices);
+ 	if (ret) {
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 80e962788396..5a0a0f23184e 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3937,11 +3937,19 @@ static inline int validate_convert_profile(struct btrfs_fs_info *fs_info,
+ 	if (!(bargs->flags & BTRFS_BALANCE_ARGS_CONVERT))
+ 		return true;
+ 
++	if (fs_info->sectorsize < PAGE_SIZE &&
++		bargs->target & BTRFS_BLOCK_GROUP_RAID56_MASK) {
++		btrfs_err(fs_info,
++	"RAID5/6 is not supported yet for sectorsize %u with page size %lu",
++			  fs_info->sectorsize, PAGE_SIZE);
++		goto invalid;
++	}
+ 	/* Profile is valid and does not have bits outside of the allowed set */
+ 	if (alloc_profile_is_valid(bargs->target, 1) &&
+ 	    (bargs->target & ~allowed) == 0)
+ 		return true;
+ 
++invalid:
+ 	btrfs_err(fs_info, "balance: invalid convert %s profile %s",
+ 			type, btrfs_bg_type_to_raid_name(bargs->target));
+ 	return false;
 -- 
 2.31.1
 
