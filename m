@@ -2,75 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2CA38C63C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 14:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1467C38C63E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 14:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhEUMK1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 08:10:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58100 "EHLO mx2.suse.de"
+        id S234652AbhEUMK3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 08:10:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58114 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230383AbhEUMKX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 08:10:23 -0400
+        id S230414AbhEUMKZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 May 2021 08:10:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621598939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=w0pX3/HLfD/S6u+m6oKPRQfgTVhp6ERvXEzt96xrfFQ=;
-        b=kAZlcn2Dd0oSBEsjTlNj8RGc3yczL0LIG6heQmTi2vjuvHJgHVur6CJvMFXHodXMi+pDOb
-        5rTfg+oWIVoe9sJzq9OLMLjo64444/KWQCboH6feR1Kd07mbkoy/RCmV4PhDHJy4kJq9Cr
-        IW2/pMYB3DgAo4+/67QB80q326tlHw4=
+        t=1621598941; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j4QrsrvA8hfyD5tRHtDEusF6hN5utT4VJlZTgfH/7NQ=;
+        b=npGVHin77GD6/ie4L7pJvPiX+c0HzHhMIzjb7zYMyNKskkblIanE3SbuWyGc+c3yCnA9+r
+        BSOTqCN00X43uvySiX/DLA4M8qpn6EosefBZlo8t6VP7En0xCqfHxjRQIF4stcdC8bUSfA
+        nOxuKaRxLFA8p6m+KNJcJdiDISKOWDI=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4B3ADAAA6;
-        Fri, 21 May 2021 12:08:59 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7B446AC11;
+        Fri, 21 May 2021 12:09:01 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DD655DA725; Fri, 21 May 2021 14:06:24 +0200 (CEST)
+        id 334E3DA725; Fri, 21 May 2021 14:06:27 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 0/6] Support resize and device delete cancel ops
-Date:   Fri, 21 May 2021 14:06:24 +0200
-Message-Id: <cover.1621526221.git.dsterba@suse.com>
+Subject: [PATCH 1/6] btrfs: protect exclusive_operation by super_lock
+Date:   Fri, 21 May 2021 14:06:27 +0200
+Message-Id: <27c5165b8de26ab98948c0345de3f8ddd955c388.1621526221.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1621526221.git.dsterba@suse.com>
+References: <cover.1621526221.git.dsterba@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We don't have a nice interface to cancel the resize or device deletion
-from a command. Since recently, both commands can be interrupted by a
-signal, which also means Ctrl-C from terminal, but given the long
-history of absence of the commands I think this is not yet well known.
+The exclusive operation is now atomically checked and set using bit
+operations. Switch it to protection by spinlock. The super block lock is
+not frequently used and adding a new lock seems like an overkill so it
+should be safe to reuse it.
 
-Examples:
+The reason to use spinlock is to enhance the locking context so more
+checks can be done, eg. allowing the same exclusive operation enter
+the exclop section and cancel the running one. This will be used for
+resize and device delete.
 
-  $ btrfs fi resize -10G /mnt
-  ...
-  $ btrfs fi resize cancel /mnt
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/ctree.h |  4 ++--
+ fs/btrfs/ioctl.c | 16 +++++++++++++++-
+ 2 files changed, 17 insertions(+), 3 deletions(-)
 
-  $ btrfs device delete /dev/sdx /mnt
-  ...
-  $ btrfs device delete cancel /mnt
-
-The cancel request returns once the resize/delete command finishes
-processing of the currently relocated chunk. The btrfs-progs needs to be
-updated as well to skip checks of the sysfs exclusive_operation file
-added in 5.10 (raw ioctl would work).
-
-David Sterba (6):
-  btrfs: protect exclusive_operation by super_lock
-  btrfs: add cancelable chunk relocation support
-  btrfs: introduce try-lock semantics for exclusive op start
-  btrfs: add wrapper for conditional start of exclusive operation
-  btrfs: add cancelation to resize
-  btrfs: add device delete cancel
-
- fs/btrfs/ctree.h      |  16 +++-
- fs/btrfs/disk-io.c    |   1 +
- fs/btrfs/ioctl.c      | 174 ++++++++++++++++++++++++++++++++----------
- fs/btrfs/relocation.c |  60 ++++++++++++++-
- 4 files changed, 207 insertions(+), 44 deletions(-)
-
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 938d8ebf4cf3..a142e56b6b9a 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -992,8 +992,8 @@ struct btrfs_fs_info {
+ 	 */
+ 	int send_in_progress;
+ 
+-	/* Type of exclusive operation running */
+-	unsigned long exclusive_operation;
++	/* Type of exclusive operation running, protected by super_lock */
++	enum btrfs_exclusive_operation exclusive_operation;
+ 
+ 	/*
+ 	 * Zone size > 0 when in ZONED mode, otherwise it's used for a check
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index a7739461533d..c4e710ea08ba 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -353,15 +353,29 @@ int btrfs_fileattr_set(struct user_namespace *mnt_userns,
+ 	return ret;
+ }
+ 
++/*
++ * Start exclusive operation @type, return true on success
++ */
+ bool btrfs_exclop_start(struct btrfs_fs_info *fs_info,
+ 			enum btrfs_exclusive_operation type)
+ {
+-	return !cmpxchg(&fs_info->exclusive_operation, BTRFS_EXCLOP_NONE, type);
++	bool ret = false;
++
++	spin_lock(&fs_info->super_lock);
++	if (fs_info->exclusive_operation == BTRFS_EXCLOP_NONE) {
++		fs_info->exclusive_operation = type;
++		ret = true;
++	}
++	spin_unlock(&fs_info->super_lock);
++
++	return ret;
+ }
+ 
+ void btrfs_exclop_finish(struct btrfs_fs_info *fs_info)
+ {
++	spin_lock(&fs_info->super_lock);
+ 	WRITE_ONCE(fs_info->exclusive_operation, BTRFS_EXCLOP_NONE);
++	spin_unlock(&fs_info->super_lock);
+ 	sysfs_notify(&fs_info->fs_devices->fsid_kobj, NULL, "exclusive_operation");
+ }
+ 
 -- 
 2.29.2
 
