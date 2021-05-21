@@ -2,168 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C3F38BFE4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 08:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AA838C091
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 May 2021 09:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhEUGpJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 02:45:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58802 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233688AbhEUGoU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 02:44:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621579309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q7F97P4AFH+GI3DD0plLLQzQQ1+RPtCjOjgsprU0GSs=;
-        b=hQHHMZpSDzhDEzacoZNXqN1sWNLX8kTT32oSYMrN/8ajG8WC/y3eL2C3Y0wpiamw2wan6I
-        nk5nTuURliEtYCdalBDjv4b4fNa9TKnkYzGh33i528Gaat5zw9vDaPzE2vAnVmgQ9DtXx2
-        99CgLaOGhImC1/h3Nz/5kaseQIAhnaM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C548AEA6
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 May 2021 06:41:49 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 31/31] btrfs: allow read-write for 4K sectorsize on 64K page size systems
-Date:   Fri, 21 May 2021 14:40:50 +0800
-Message-Id: <20210521064050.191164-32-wqu@suse.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210521064050.191164-1-wqu@suse.com>
-References: <20210521064050.191164-1-wqu@suse.com>
+        id S233801AbhEUHTf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 May 2021 03:19:35 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:40384 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhEUHTe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 May 2021 03:19:34 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 8A7B7A6DA3F; Fri, 21 May 2021 03:18:10 -0400 (EDT)
+Date:   Fri, 21 May 2021 03:18:10 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Graham Cobb <g.btrfs@cobb.uk.net>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
+Message-ID: <20210521071810.GA11733@hungrycats.org>
+References: <20210518144935.15835-1-dsterba@suse.com>
+ <PH0PR04MB741663051770A577220C0C539B2B9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20210519142612.GW7604@twin.jikos.cz>
+ <PH0PR04MB74165244AB3C1AC48DF8DF379B2B9@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <29d4c680-e484-f0d0-3b25-a64b11f93230@cobb.uk.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29d4c680-e484-f0d0-3b25-a64b11f93230@cobb.uk.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since now we support data and metadata read-write for subpage, remove
-the RO requirement for subpage mount.
+On Wed, May 19, 2021 at 05:20:50PM +0100, Graham Cobb wrote:
+> On 19/05/2021 16:32, Johannes Thumshirn wrote:
+> > On 19/05/2021 16:28, David Sterba wrote:
+> >> On Wed, May 19, 2021 at 06:53:54AM +0000, Johannes Thumshirn wrote:
+> >>> On 18/05/2021 16:52, David Sterba wrote:
+> >>> I wonder if this interface would make sense for limiting balance
+> >>> bandwidth as well?
+> >>
+> >> Balance is not contained to one device, so this makes the scrub case
+> >> easy. For balance there are data and metadata involved, both read and
+> >> write accross several threads so this is really something that the
+> >> cgroups io controler is supposed to do.
+> >>
+> > 
+> > For a user initiated balance a cgroups io controller would work well, yes.
 
-There are some extra limits though:
-- For now, subpage RW mount is still considered experimental
-  Thus that mount warning will still be there.
+Don't throttle balance.  You can only make _everything_ slower with
+throttling.  You can't be selective, e.g. making balance slower than
+the mail server.
 
-- No compression support
-  There are still quite some PAGE_SIZE hard coded and quite some call
-  sites use extent_clear_unlock_delalloc() to unlock locked_page.
-  This will screw up subpage helpers
+> Hmmm. I might give this a try. On my main mail server balance takes a
+> long time and a lot of IO, which is why I created my "balance_slowly"
+> script which shuts down mail (and some other services) then runs balance
+> for 20 mins, then cancels the balance and allows mail to run for 10
+> minutes, then resumes the balance for 20 mins, etc. 
+> Using this each month, a balance takes over 24 hours
 
-  Now for subpage RW mount, no matter whatever mount option or inode
-  attr is set, all write will not be compressed.
-  Although reading compressed data has no problem.
+My question here is:  wait?  What?  Are you running full balances
+every...ever?  Why?
 
-- No sectorsize defrag
-  The problem here is, defrag is still done in full page size (64K).
-  This means, if a page only has 4K data while the remaining 60K is all
-  hole, after defrag it will be full 64K.
+If you have unallocated space and are not in danger of running out,
+you don't need to balance anything.  Even if you are running low on
+unallocated space, balance -dlimit=1 will usually suffice to get a single
+GB of unallocated space--the minimum required to avoid metadata ENOSPC
+gotchas.
 
-  This should not cause any kernel warning/hang nor data corruption, but
-  it's still a behavior difference.
+Never balance metadata.  Maintenance metadata balances are extremely slow,
+do nothing useful, and can exacerbate ENOSPC gotchas.
 
-- No inline extent will be created
-  This is mostly due to the fact that filemap_fdatawrite_range() will
-  trigger more write than the range specified.
-  In fallocate calls, this behavior can make us to writeback which can
-  be inlined, before we enlarge the isize.
+Metadata balance must be used to convert a different raid profile, or
+permanently remove a drive from a filesystem--but only because there
+is no better way to do those things in btrfs.
 
-  This is a very special corner case, and even current btrfs check won't
-  report error on such inline extent + regular extent.
-  But considering how much effort has been put to prevent such inline +
-  regular, I'd prefer to cut off inline extent completely until we have
-  a good solution.
+> but at least the only problem is
+> short mail delays for 1 day a month, not timeouts, users seeing mail
+> error reports, etc.
 
-- Read-time data repair is in bvec size
-  This is different from original sector size repair.
-  Bvec size is a floating number between 4K to 64K (page size).
-  If the extent is only 4K sized then we can do the repair in 4K size.
-  But if the extent is larger, our repair unit grows follows the
-  extent size, until it reaches PAGE_SIZE.
+I run btrfs on some mail servers with crappy spinning drives.
 
-  This is mostly due to the design of the repair code, it can be
-  enhanced later.
+One balance block group every day--on days when balance runs at all--only
+introduces a one-time 90-second latency.  Not enough to kill a SMTP
+transaction.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 13 ++++---------
- fs/btrfs/inode.c   |  3 +++
- fs/btrfs/super.c   |  7 -------
- fs/btrfs/sysfs.c   |  5 +++++
- 4 files changed, 12 insertions(+), 16 deletions(-)
+Backup snapshot deletes generate more latency (2-4 minutes once a day).
+That is long enough to kill a SMTP transaction, but pretty much every
+non-spammer sender will retry sooner than the next backup.
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2dd48f4bec8f..7c17cb7cf4fe 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3396,15 +3396,10 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_alloc;
- 	}
- 
--	/* For 4K sector size support, it's only read-only */
--	if (PAGE_SIZE == SZ_64K && sectorsize == SZ_4K) {
--		if (!sb_rdonly(sb) || btrfs_super_log_root(disk_super)) {
--			btrfs_err(fs_info,
--	"subpage sectorsize %u only supported read-only for page size %lu",
--				sectorsize, PAGE_SIZE);
--			err = -EINVAL;
--			goto fail_alloc;
--		}
-+	if (sectorsize != PAGE_SIZE) {
-+		btrfs_warn(fs_info,
-+	"read-write for sector size %u with page size %lu is experimental",
-+			   sectorsize, PAGE_SIZE);
- 	}
- 	if (sectorsize != PAGE_SIZE) {
- 		if (btrfs_super_incompat_flags(fs_info->super_copy) &
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 45baae1ad4db..c6a5db2ebe16 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -490,6 +490,9 @@ static noinline int add_async_extent(struct async_chunk *cow,
-  */
- static inline bool inode_can_compress(struct btrfs_inode *inode)
- {
-+	/* Subpage doesn't support compress yet */
-+	if (inode->root->fs_info->sectorsize < PAGE_SIZE)
-+		return false;
- 	if (inode->flags & BTRFS_INODE_NODATACOW ||
- 	    inode->flags & BTRFS_INODE_NODATASUM)
- 		return false;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 4a396c1147f1..b18d268abfbb 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2053,13 +2053,6 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 			ret = -EINVAL;
- 			goto restore;
- 		}
--		if (fs_info->sectorsize < PAGE_SIZE) {
--			btrfs_warn(fs_info,
--	"read-write mount is not yet allowed for sectorsize %u page size %lu",
--				   fs_info->sectorsize, PAGE_SIZE);
--			ret = -EINVAL;
--			goto restore;
--		}
- 
- 		/*
- 		 * NOTE: when remounting with a change that does writes, don't
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 436ac7b4b334..752461a79364 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -366,6 +366,11 @@ static ssize_t supported_sectorsizes_show(struct kobject *kobj,
- {
- 	ssize_t ret = 0;
- 
-+	/* 4K sector size is also support with 64K page size */
-+	if (PAGE_SIZE == SZ_64K)
-+		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%u ",
-+				 SZ_4K);
-+
- 	/* Only sectorsize == PAGE_SIZE is now supported */
- 	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%lu\n", PAGE_SIZE);
- 
--- 
-2.31.1
+> Before I did this, the impact was horrible: btrfs spent all its time
+> doing backref searches and any process which touched the filesystem (for
+> example to deliver a tiny email) could be stuck for over an hour.
+> 
+> I am wondering whether the cgroups io controller would help, or whether
+> it would cause a priority inversion because the backrefs couldn't do the
+> IO they needed so the delays to other processes locked out would get
+> even **longer**. Any thoughts?
 
+Yes that is pretty much exactly what happens.
+
+Balance spends a tiny fraction of its IO cost moving data blocks around.
+Each data extent that is relocated triggers a reference update,
+which goes into a queue for the current btrfs transaction.  On its
+way through that queue, each ref update cascades into updates on other
+tree pages for parent nodes, csum tree items, extent tree items, and
+(if using space_cache=v2) free space tree items.  These are all small
+random writes that have performance costs even on non-rotating media,
+much more expensive than the data reads and writes which are mostly
+sequential and consecutive.  Worst-case write multipliers are 3-digit
+numbers for each of the trees.  It is not impossible for one block group
+relocation--balance less than 1GB of data--to run for _days_.
+
+On a filesystem with lots of tiny extents (like a mail server), the
+data blocks will be less than 1% of the balance IO.  The other 99%+ are
+metadata updates.  If there is throttling on those, any thread trying
+to write to the filesystem stops dead in the next transaction commit,
+and stays blocked until the throttled IO completes.
+
+If other threads are writing to the filesystem, it gets even worse:
+the running time of delayed ref flushes is bounded only by available
+disk space, because only running out of disk space can make btrfs stop
+queueing up more work for itself in transaction commit.
+
+Even threads that aren't writing to the throttled filesystem can get
+blocked on malloc() because Linux MM shares the same pool of pages for
+malloc() and disk writes, and will block memory allocations when dirty
+limits are exceeded anywhere.  This causes most applications (i.e. those
+which call malloc()) to stop dead until IO bandwidth becomes available
+to btrfs, even if the processes never touch any btrfs filesystem.
+Add in VFS locks, and even reading threads block.
+
+The best currently available approach is to minimize balancing.  Don't do
+it at all if you can avoid it, and do only the bare minimum if you can't.
+
+On the other hand, a lot of these problems can maybe be reduced or
+eliminated by limiting the number of extents balance processes each time
+it goes through its extent iteration loop.  Right now, balance tries to
+relocate an entire block group in one shot, but maybe that's too much.
+Instead, balance could move a maximum of 100 extents (or some number
+chosen to generate about a second's worth of IO), then do a transaction
+commit to flush out the delayed refs queue while it's still relatively
+small, then repeat.  This would be very crude throttling since we'd have
+to guess how many backrefs each extent has, but it will work far better
+for reducing latency than any throttling based on block IO.
