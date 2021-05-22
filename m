@@ -2,112 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC36738D28D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 May 2021 02:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E0938D2E8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 May 2021 04:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhEVA0R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 May 2021 20:26:17 -0400
-Received: from mout.gmx.net ([212.227.17.20]:32833 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230184AbhEVA0O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 May 2021 20:26:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621643088;
-        bh=9q/jmWc+CzJueiTzfEH6R/vGIjOSWLTBaiBR1l8Rq6k=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=C9X0tnHCOOvYxZXDpvT1WHIvmtGN2moXFTDFdMPE60ikbyyehHepuzt3KNdX9nno1
-         e8Kvc/ryyh7Tx6jpMRrInUVioVcRSu/J9VXWmfZTvKKgxLV4o2NeFTJQ7x6nfZvchZ
-         h4F/OLuunoIbAsl864YH6cBDr/bQcvDt5+yelPtw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MoO6C-1l4dF916F6-00omXx; Sat, 22
- May 2021 02:24:47 +0200
-Subject: Re: [Patch v2 07/42] btrfs: pass btrfs_inode into
- btrfs_writepage_endio_finish_ordered()
-To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <20210427230349.369603-1-wqu@suse.com>
- <20210427230349.369603-8-wqu@suse.com>
- <c72f998f-88c4-8554-815a-d2c25c651393@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <11a47593-81a3-12a9-a3c9-a6d3316922d7@gmx.com>
-Date:   Sat, 22 May 2021 08:24:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230460AbhEVCK0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 21 May 2021 22:10:26 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:34512 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhEVCKX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 May 2021 22:10:23 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 1FD1AA6F855; Fri, 21 May 2021 22:08:59 -0400 (EDT)
+Date:   Fri, 21 May 2021 22:08:59 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Leszek Dubiel <leszek@dubiel.pl>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Btrfs not using all devices in raid1
+Message-ID: <20210522020858.GB11733@hungrycats.org>
+References: <63123a58-18a4-24ff-3b30-9a0668c167c4@dubiel.pl>
 MIME-Version: 1.0
-In-Reply-To: <c72f998f-88c4-8554-815a-d2c25c651393@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QwsHritMlPD0myRvkCwFENlnicl0E812Ld2C+Qcp51VD5cQ5yxL
- BJMF+6GAO8GV0AVS8DUDQX5hel9d2NoD6vg7D9hyAvWr2pY3hlocz/M2vKy6SiDx55n+IBm
- l0d4XAYqcjkbrIPD0e/45/aazV7k/XvvAw4yQsiolxn4GkUD69H0PdX2DpppkFuMIynY1Z9
- vij1BBB+/9RP7LbF8dbLw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:he9POH9OOIs=:SeCqlv7dU3pJ54eaK9M5zJ
- RczToBdd8aoFFdAXx+kAA5aFkfD8R5WO7OQIi6E+WTRv8ECRHPo3R6LwcF13KSFIdss2MMikb
- gR4XdhLk0VqkZLkqWp0hv/LyU/SZlufgePb8hXGz4HnBF16k6JdhTiXxsk9eyiCvn/33X72/w
- 8iiZnmJt23+6HyzCbw0vLjQMAH3KJD8VfXdmv5WUBuI8xnhHVboCr7R3aISF29ZTTGj5PuKpI
- mqyIRPModvwMuuWO41reemqPG+mJvdBagkU38NTSYaspFoRZLLTHssw+lW2/woa3g1eug6FYL
- QwGPabRkW7+yt7qqVuKJYndylzYURge0TcK8NmeIdJks5yXSxjf+WAy1FwbpVJfI5EhJwxV+v
- NmjNat0uk4p7bKgPQ9ZruOCI8M1N/6CfBAhsRhZIP8c6PRE9GAyoBSCLShc/MnRvNvfqRTnHw
- 8vFTu4emAIrZ+/2NTz0uBdGV6ZcidOTZXJ2255KXplwBSAZOGaz44u8zX/wbbFLQSeD8yWpB3
- M3wZh02/6dultCqrnAK919PpTUMXYg1cg9DPK1muUXnDA9sRDqUMTRtXGngMqnc7aK8e+Lk3L
- pm9NVW1U/FiFru/3TpXmuuPDBpo3ndSonT40tpuRZ96+ScJQdV77JN59sd5z7iPfuP4QfKBhg
- 3JPGQDqaD2MR190t9b0ksxi8KeLv0wpF2PAi2EX0Z9GKH0Tnkkj/FtLcZxx0sBR7T82E52o67
- 2xkjNec/slefLW2QaTLIGRNYohcv2MoHgA8ORGTsXhTloUd/ocYAfPcUQXS7Hfmep359Qwsxz
- GswNyNfcgy58JEomqKCEx2eNkmkgKAxMs5RHEoL9u7mtz7guZHnzsm/MB3hbP7Y/zu97YKAWT
- FCwzz/mJpoghshLFOJgC3xYBku9IHo/vjRAmSlbZPYRTZK/j5ScIvE/3muHiwPCOeho3n0hOu
- 6HEEmjQ8PbH5A3e/UTyWSf8dAmFyDRU8rEZkQrCdhMXtGM/OZB8oHY6uKI/tPJFEHAoCOOR/y
- e2WhQPnfZ0cW2apiIyQRVPtQ22iO8n/EbR4PsI5zYCEpvnbgS+xUDdbt4mHQX6MFeWtrW/24M
- z8E9gRCCu/l8Pi4UrOzYN6ezZh/1YEr+ZpG3R3LHHlxMTKnfLoo0z+FIQ==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <63123a58-18a4-24ff-3b30-9a0668c167c4@dubiel.pl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, May 21, 2021 at 06:34:27PM +0200, Leszek Dubiel wrote:
+> 
+> Hello!
+> 
+> Why Btrfs is not using /dev/sdc2?
+> There is no line "Data,RAID1" for this disk.
+> Isn't it supposed to use disk that has most of free space?
+> 
+> Thanks for help :) :)
+> Using Btrfs in production.
+> 
+> 
+> Here are some command outputs:
+> 
+> 
+> 
+> ### btrfs fi show /
+> 
+> Label: none  uuid: ea6ae51d-d9b0-4628-a8f3-3406e1dc59c6
+>     Total devices 4 FS bytes used 2.96TiB
+>     devid    1 size 7.25TiB used 3.20TiB path /dev/sda2
+>     devid    2 size 7.25TiB used 3.20TiB path /dev/sdb2
+>     devid    3 size 7.25TiB used 3.21TiB path /dev/sdd2
+>     devid    4 size 7.25TiB used 32.00MiB path /dev/sdc2
+> 
+> 
+> 
+> ### btrfs fi df /
+> 
+> Data, RAID1: total=4.49TiB, used=2.90TiB
 
+There are about 1.5TB of available space in existing block groups, so
+those will be filled in first.  Block group allocations will start on
+sdc2 after the existing block groups are filled.
 
-On 2021/5/21 =E4=B8=8B=E5=8D=8810:27, Josef Bacik wrote:
-> On 4/27/21 7:03 PM, Qu Wenruo wrote:
->> There is a pretty bad abuse of btrfs_writepage_endio_finish_ordered() i=
-n
->> end_compressed_bio_write().
->>
->> It passes compressed pages to btrfs_writepage_endio_finish_ordered(),
->> which is only supposed to accept inode pages.
->>
->> Thankfully the important info here is the inode, so let's pass
->> btrfs_inode directly into btrfs_writepage_endio_finish_ordered(), and
->> make @page parameter optional.
->>
->> By this, end_compressed_bio_write() can happily pass page=3DNULL while
->> still get everything done properly.
->>
->> Also, to cooperate with such modification, replace @page parameter for
->> trace_btrfs_writepage_end_io_hook() with btrfs_inode.
->> Although this removes page_index info, the existing start/len should be
->> enough for most usage.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> This was merged into misc-next yesterday it looks like, and it's caused
-> both of my VM's that do compression variations to panic on different
-> tests, one on btrfs/011 and one on btrfs/027.=C2=A0 I bisected it to thi=
-s
-> patch, I'm not sure what's wrong with it but it needs to be dropped from
-> misc-next until it gets fixed otherwise it'll keep killing the overnight
-> xfstests runs.=C2=A0 Thanks,
+> System, RAID1: total=64.00MiB, used=784.00KiB
+> Metadata, RAID1: total=321.00GiB, used=56.08GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
+> 
+> 
+> 
+> ### btrfs dev usa /
+> 
+> /dev/sda2, ID: 1
+>    Device size:             7.25TiB
+>    Device slack:              0.00B
+>    Data,RAID1:              2.99TiB
+>    Metadata,RAID1:        210.00GiB
+>    System,RAID1:           64.00MiB
+>    Unallocated:             4.05TiB
+> 
+> /dev/sdb2, ID: 2
+>    Device size:             7.25TiB
+>    Device slack:              0.00B
+>    Data,RAID1:              3.00TiB
+>    Metadata,RAID1:        210.00GiB
+>    Unallocated:             4.04TiB
+> 
+> /dev/sdc2, ID: 4
+>    Device size:             7.25TiB
+>    Device slack:              0.00B   ... no Data/RAID1
+>    System,RAID1:           32.00MiB
+>    Unallocated:             7.25TiB
+> 
+> /dev/sdd2, ID: 3
+>    Device size:             7.25TiB
+>    Device slack:              0.00B
+>    Data,RAID1:              2.99TiB
+>    Metadata,RAID1:        222.00GiB
+>    System,RAID1:           32.00MiB
+>    Unallocated:             4.04TiB
 
-Any dying message to share?
+The disks in decreasing size order have 7.25TB, 4.05 TB, 4.04 TB, and 4.04
+TB.  RAID1 requires the sum of all disks after the largest be equal or
+greater in size to the largest, and 12.13 >= 7.25, so you're good to go.
 
-I just tried with "-o compress" mount option for btrfs/011 and
-btrfs/027, none of them crashed on my local branch (full subpage RW branch=
-).
+> ### time btrfs balance start -dconvert=raid1,soft -mconvert=raid1,soft /
+> 
+> Done, had to relocate 0 out of 4922 chunks
+> 
+> real    0m0,522s
+> user    0m0,000s
+> sys    0m0,033s
 
-Maybe it's some dependency missing or later subpage fixes needed?
+You might want something more like;
 
-Thanks,
-Qu
+	time btrfs balance start -dlimit=1000,devid=1 /
+	time btrfs balance start -dlimit=1000,devid=2 /
+	time btrfs balance start -dlimit=1000,devid=3 /
 
->
-> Josef
+but that will take a long time and isn't strictly necessary.
+
+Alternatively, use 'btrfs-balance-least-used' from the 'python-btrfs'
+package, with a usage limit of about 90%.  That will repack all of the
+data into existing block groups first, so future allocations will use
+sdc2.
+
+Unfortunately balance is the only way to redistribute the existing data
+onto new drives, so if you don't want to run balance, then you'll just
+have to wait until sdc2 fills in naturally.
