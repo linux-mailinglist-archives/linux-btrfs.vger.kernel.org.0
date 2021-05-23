@@ -2,193 +2,267 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2B738DDAD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 01:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D956A38DE01
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 01:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbhEWXLL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 May 2021 19:11:11 -0400
-Received: from mout.gmx.net ([212.227.15.18]:58179 "EHLO mout.gmx.net"
+        id S232090AbhEWXWN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 May 2021 19:22:13 -0400
+Received: from mout.gmx.net ([212.227.15.18]:46333 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231980AbhEWXLK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 May 2021 19:11:10 -0400
+        id S232085AbhEWXWM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 23 May 2021 19:22:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621811376;
-        bh=wgm0hx6bOSFylDtE3c+PpbLmjA7hGUlRIIETUjLfbqw=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=XH5IH4/8DySf8TzfK19/ZSPKwSoiNSzhdcAq9nDy4+9UWrmpvWSFSjZKjVdVjpzbu
-         oW5SRreVOUS13jt+SdAvWy/bDsLiK3q+n9GZOMkAZ4/nVPuTR2G61EDZEtNhPJsEET
-         lcdihu4I6ZloomIJ6J1t3jgYWFyZib6lTI+1ACXA=
+        s=badeba3b8450; t=1621812035;
+        bh=75znUGmNjYlBrsCeBh8+QQInnpymmytztBuVyz5T9fk=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=GPLltnHpEi3zl2Unys/N8gqRL4EMtMjY07yRZ3ELeNmzc6vT8wSIg7dMJzxbu40m9
+         Vkwea8lKx3e0ss6zPPdvcMVnKSiUwAQ3M8g7RaVmUILwV+sD31+Y8bALT51NOKoONI
+         mav9NhAw+buGwTf5QNHlE7Y1QbiDj1zJVQX/NKjc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXGrE-1lwQtN2tZu-00Ygxh; Mon, 24
- May 2021 01:09:36 +0200
-Subject: Re: [PATCH v2 2/3] btrfs: zoned: fix compressed writes
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1621351444.git.johannes.thumshirn@wdc.com>
- <1220142568f5b5f0d06fbc3ee28a08060afc0a53.1621351444.git.johannes.thumshirn@wdc.com>
- <563c1ac3-abf3-3f60-dbdf-362ebc69eb28@toxicpanda.com>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MlNtP-1l1yXv0l3t-00lpie; Mon, 24
+ May 2021 01:20:34 +0200
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Andreas Falk <mail@andreasfalk.se>
+Cc:     linux-btrfs@vger.kernel.org
+References: <CADw67XBxEvo_doMWCFChUhEhQxDVg4XuzQvTTMOhE=A+wFbuMg@mail.gmail.com>
+ <20210523201550.GC11733@hungrycats.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <92273193-366c-8121-c2f6-26c885d77ead@gmx.com>
-Date:   Mon, 24 May 2021 07:09:32 +0800
+Subject: Re: btrfs check discovered possibly inconsistent journal and now the
+ errors are gone
+Message-ID: <bcbfd681-7e98-39fa-71d1-231bf676fb8b@gmx.com>
+Date:   Mon, 24 May 2021 07:20:31 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <563c1ac3-abf3-3f60-dbdf-362ebc69eb28@toxicpanda.com>
+In-Reply-To: <20210523201550.GC11733@hungrycats.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LMsGORpB/Q+qa+xGJeJM3lf8nAXf9V2MzOYE6UkzKHAOiy77Wgk
- gTolN/QKuWwFztAZSz4zgw4cceaP+y770p6BC9xqYM04RHSVvuoSRvYtB+ubtgOmqowBnHf
- Swu4mlOxev7UhhkozHmx69YrtcDTJaNontZlFnRAH2Gb9WdOF90v+NV9Hr6JOughSz+xXL7
- JbQBx2wkboci0lEgtH6Hw==
+X-Provags-ID: V03:K1:SFLy8ZnKeHuHAQKSuIisv6MVNglZvsg3H3mgRHx/CC6ZXmRJeXy
+ vtK1vXx+WZuKYTIe9wyJ/MGuXK6BBqjA1pQXVw5Spax8Dw0Xubodo7HdmCdugaSm9bnJAX+
+ yeX4asPkLcGyaEOM6m5XdjZvcwUYPquowLxv16m9ZIevsY4Q0rUPU+fOgG391JDFzi0gF5i
+ Mc7ckgk6jVfpfnZ1jakug==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H1yBGpl2Bg4=:P4cqTVcD0tZIzx6L/O34io
- fzPlZ6DjO8u84KwSEchme0ginm2lRtAeLxdVs9fKVrxZus5XE/fcBq8HJduQQghzufrMK9dO0
- 8r5crJ1tMCE/nptkLGJp2mlQX8Mx247XaEshWBvxCnqVbz1tqR8ffpnzoBAA2VWlbWaz7TQuV
- cGbQsGF6Kn9y8KyPilzkjKcLzwXRlioI5Ibg//1/B4lRwGDmrM2Tcns1rxAPXtwSsa2172ztz
- Ei9HD0S4rxQXVZHg2nLtQJOIbpe1P7eQOqjQGtNnhZYmPLmjGao2xl2u4feOlQepIHspBJkBh
- 16IrdRDV5nFGTiY4WyI1jRHUTT+OMp+d0JQ8DWAx0uhWIlx1F9tq5QcfauYSQphMCTsMbFwy7
- aI3093NSCQM4l8Ilw6rgHHxCFxQvetVb/H6PzEbhTMTIiLZ2kkiSXuu5QqhKXcXbL5C8qw60V
- k5qONuyNBo94g/6V9cQb+6Sj8v6G7SII/zDwYmQJJE8LyViIbBdCm+cSVB3tky9zzGeChPYgI
- hK3xAOI8UaY5CZLDxJHUHn+2VaEzdgAimKLbLMjnIT4zcZisoA08W6OkZeu29ICmzfUIfzgjB
- F+pd8VTe4sAXYJfjXRcyERw+WSS21vOeyqstf9SvSA7gzSD0BodqrkR/gZBSG0mJM02a9qVAI
- esAhVjU00Tu2mqPnfSdyvDzKeIjCQ+D8yOitkdOy55DVic1jGPmOfgnj1x4/AJqIj9/SlnH4v
- pjou/P6RVXbwKIsGOgRJc8GlQjgtKX3Ou+KZLH8K0DK4UaILGDdLe5V9N1GDw2gCrIcxdcGvP
- hejtZtZR7rRdSGgmlKalDyXKm5IfR5lFWolG1JqsuDKddYFHORSJB1O1J0XdjWydm7BKiwAK8
- FOVQar677PuNxywODQuOeBxnOYdNBpP1IyeDmzWIyjW7pTtbM9crkbDLiRrOzAmiRJEOEQlli
- DfvflYFc5w+e1RmjL6r7JKjpjD8sMa06aTCZk1PNuBZLkZG4CX8J+MWbRga1Li3bRyoghBYI0
- 4PzVWEQ+H5jOtmKKlVKEsgUIys80Gl3SJi0/WmW0fg8ruo5U/RF9/jQPd0HRx+CQlDpP4lHs9
- y6OmS9ffZhUuLmS9+Vz8VkjKXtea2VgRSao+CYroMcqZwpb/F0EZqtikQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6fM2fKQVIW8=:0u7kSxXsrf6ZhdMZ1WCfQq
+ 4PE7b3EE2UUCQf157yKo4WAtuah6rk3ZUGdaBavSx3JqerjuI7qK1BGf++MF7K9MegFibMYdL
+ 4aIZjO9qIUp0j3evw9K9Bs/E8QlPR1dAikLdasRBzqyzE3GrH0dwo6bwU2Qeb7cAteZRu2B6k
+ jBcFvFfnlqGuaCUJOoicSEpxv9ZVXm+QQKTu9WhrmwlsjB5jkbaBEvNMu4mMQwktXFxOh8RgL
+ gxu3Ht23ySYmifZ1lO170YHPx7quZ252gl7Nj16SO5Kqv/G25Fmu0C/3SHD/OJLszIMNFjumn
+ HxTk5dFT0aeyw5C7KtuqDCYUSSYoajyNmLOnmblphxCtnMwjFFsiob4dQlzZEFUbaXqE4ifMU
+ 3GqgMxKHQUJeJ2T8pMgz2aj7+23rYWf5fUIBzBuYteCwsWgkvaqm2ycjeQ/1q0dCVJut7Tags
+ g6vkeYIOMvc3WJ8AVr8OYfnDBnQgTHN/rk1NNyCmJSdPaLSk+pnvPq7RC0lKgt11Pbfxj3sqi
+ ae1Udlsn6Gr1dAzfFL6QEDAQ7pvzEuoY2NJEz7R/3iM2oIDXFA2n5RhzsVRINtsUwXlWsUQy/
+ E37gyiiEwXJX64zQKfbtSeeqxn8VySDvoJhoUpRTAxRmkgjcu/q0liNlYefXQA+riGeEO86Zi
+ 8dfeuPdrJCqncNo0vVnmfXpXhMm7jacDU2QPlzSIb1pbr4qj6us0tkE3N+nk17927tb0P7HoE
+ 0kq4o/jFRfIisHPNIZt6Y6xkNt2dQTRvsnHBKDRCHMUkcb0b46jBUyyFa31YtQqvBGBNBKq9B
+ 08oQwuUfGGbMuyMY4s66Aj7o4J5RxI9hc+ReCKD2ESOiPo2FzdZAkCMoDTQxw4700grsqDCw0
+ LPRzIS+vPMWe+EdBPxi4WstixZuiLmFQmo6t1MdKQkx16/W5rYMKXaJbKLNfSR/49Ia9vfX0V
+ x0cY682Nid4U2cU3lXOvPx0zdTSBFCYGPEuRHRp7hTVwKCJT6+Qh20lhwZY7a2m/5UEVVUREf
+ 61nluDiJVTsEIjuq0oxJyLOzhzArNlYIpCdw5081CZLhjqsQpnjl5s1kC6KbFL7UwtIHVp124
+ q99Mxi9JBPdk3Rn8lZiPN6Wib9ScDPLhDl7x8b/3nlsqUYVdsXrpEUW5A==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/5/23 =E4=B8=8B=E5=8D=8810:13, Josef Bacik wrote:
-> On 5/18/21 11:40 AM, Johannes Thumshirn wrote:
->> When multiple processes write data to the same block group on a
->> compressed
->> zoned filesystem, the underlying device could report I/O errors and dat=
-a
->> corruption is possible.
+On 2021/5/24 =E4=B8=8A=E5=8D=884:15, Zygo Blaxell wrote:
+> On Sun, May 23, 2021 at 04:55:16PM +0100, Andreas Falk wrote:
+>> Hey,
 >>
->> This happens because on a zoned file system, compressed data writes whe=
-re
->> sent to the device via a REQ_OP_WRITE instead of a REQ_OP_ZONE_APPEND
->> operation. But with REQ_OP_WRITE and parallel submission it cannot be
->> guaranteed that the data is always submitted aligned to the underlying
->> zone's write pointer.
+>> I want to start with clarifying that I've got backups of my important
+>> data so what I'm asking here is primarily for my own education to
+>> understand how btrfs works and to make restoring things more
+>> convenient.
 >>
->> The change to using REQ_OP_ZONE_APPEND instead of REQ_OP_WRITE on a zon=
-ed
->> filesystem is non intrusive on a regular file system or when
->> submitting to
->> a conventional zone on a zoned filesystem, as it is guarded by
->> btrfs_use_zone_append.
+>> I'm running a small home server with family photos etc with btrfs in
+>> raid1 and we recently experienced a power cut. I wasn't around when it
+>> got turned back on and when I finally got to it everything had run for
+>> ~2h with the filesystem mounted in readwrite mode so I ran (after the
+>> fact I realized that I should have probably unmounted immediately and
+>> made sure /etc/fstab had everything in readonly mode):
 >>
->> Reported-by: David Sterba <dsterba@suse.com>
->> Fixes: 9d294a685fbc ("btrfs: zoned: enable to mount ZONED incompat flag=
-")
->> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+>> $ sudo btrfs check --readonly --force /dev/sdb
 >
-> This one is causing panics with btrfs/027 with -o compress.=C2=A0 I bise=
-cted
-> it to something else earlier, but it was still happening today and I
-> bisected again and this is what popped out.=C2=A0 I also went the extra =
-step
-> to revert the patch as I have already fucked this up once, and the
-> problem didn't re-occur with this patch reverted.=C2=A0 The panic looks =
-like
-> this
+> Did you run that with the filesystem mounted?  If so, it explains all
+> of the following errors, and the way they seem to appear and disappear.
+> They are the result of btrfs check losing races against the filesystem
+> while the filesystem moves metadata around.
 >
-> May 22 00:33:16 xfstests2 kernel: BTRFS critical (device dm-9): mapping
-> failed logical 22429696 bio len 53248 len 49152
+> Don't run btrfs check on a mounted filesystem.  It won't work.
+>
+> Don't run btrfs check at all, unless there are errors the kernel cannot
+> recover from with a scrub.  btrfs check necessarily has fewer data
+> integrity checks than the kernel (otherwise it would not be able to repa=
+ir
+> anything)
 
-This is the interesting part, it means we are just one sector beyond the
-stripe boundary.
-Definitely a sign of changed bio submission timing.
+I can't agree with that part though.
 
-Just like the code:
-
-+		if (pg_index =3D=3D 0 && use_append)
-+			len =3D bio_add_zone_append_page(bio, page, PAGE_SIZE, 0);
-+		else
-+			len =3D bio_add_page(bio, page, PAGE_SIZE, 0);
-+
-  		page->mapping =3D NULL;
--		if (submit || bio_add_page(bio, page, PAGE_SIZE, 0) <
--		    PAGE_SIZE) {
-+		if (submit || len < PAGE_SIZE) {
-
-The code has changed the timing of bio_add_page().
-
-Previously, if we have submit =3D=3D true, we won't even try to call
-bio_add_page().
-
-But now, we will add the page even we're already at the stripe boundary,
-thus it causes the extra sector being added to bio, and crosses stripe
+The truth is, although kernel has tree-checker, it doesn't do
+cross-check for things like extent backref or anything crosses leaf
 boundary.
 
-This part is already super tricky, thus I refactored
-submit_extent_page() to do a better job at stripe boundary calculation.
+Thus btrfs check can still detect problem better than kernel.
 
-We definitely need to make other bio_add_page() callers to use a better
-helper, not only for later subpage, but also to make our lives easier.
+For things can be rejected by kernel tree-checker, it's still a
+rejection, it's still a problem.
+Not to mention sometimes tree-checker can be a little too sensitive,
+like inode transid/generation problems, which won't really affect user
+data at all.
+
+I agree with the don't run btrfs check on mounted fs, unless it's RO
+mounted.
+But if possible, we still want user to run btrfs check and report back
+any problem found.
+
+> but that means check can stumble into problems that the kernel
+> would have easily avoided, and can cause damage with --repair as a resul=
+t.
+>
+> If you suspect damage to the filesystem (e.g. due to buggy firmware in
+> the drives + power loss), then run btrfs scrub first.  If that reports n=
+o
+> errors (or corrects all the errors it does find), then there is usually
+> no need to do anything else.
+
+But corrupted extent tree like missing backref won't be detected by
+scrub at all.
+As scrub just checks the csum of data and metadata, it never checks the
+contents of the metadata.
+
+Such extent tree mismatch can later lead to broken COW.
+
+Thus at least for now, btrfs check is still a very needed tool.
 
 Thanks,
 Qu
-> May 22 00:33:16 xfstests2 kernel: ------------[ cut here ]------------
-> May 22 00:33:16 xfstests2 kernel: kernel BUG at fs/btrfs/volumes.c:6643!
-> May 22 00:33:16 xfstests2 kernel: invalid opcode: 0000 [#1] SMP NOPTI
-> May 22 00:33:16 xfstests2 kernel: CPU: 1 PID: 2236088 Comm: kworker/u4:4
-> Not tainted 5.13.0-rc2+ #240
-> May 22 00:33:16 xfstests2 kernel: Hardware name: QEMU Standard PC (Q35 +
-> ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-> May 22 00:33:16 xfstests2 kernel: Workqueue: btrfs-delalloc
-> btrfs_work_helper
-> May 22 00:33:16 xfstests2 kernel: RIP: 0010:btrfs_map_bio.cold+0x58/0x5a
-> May 22 00:33:16 xfstests2 kernel: Code: 50 e8 6b 83 ff ff e8 5b 0d 88 ff
-> 48 83 c4 18 e9 94 8f 88 ff 48 8b 3c 24 4c 89 f1 4c 89 fa 48 c7 c6 f8 db
-> 62 96 e8 47 83 ff ff <0f> 0b 4c 89 e7 e8 52 1f 83 ff e9 03 98 88 ff 49
-> 8b 7a 50 44 89 f2
-> May 22 00:33:16 xfstests2 kernel: RSP: 0018:ffffb310c1de7c88 EFLAGS:
-> 00010282
-> May 22 00:33:16 xfstests2 kernel: RAX: 0000000000000055 RBX:
-> 0000000000000000 RCX: 0000000000000000
-> May 22 00:33:16 xfstests2 kernel: RDX: ffff9b9a7bd27540 RSI:
-> ffff9b9a7bd18e10 RDI: ffff9b9a7bd18e10
-> May 22 00:33:16 xfstests2 kernel: RBP: ffff9b9a482ad7f8 R08:
-> 0000000000000000 R09: 0000000000000000
-> May 22 00:33:16 xfstests2 kernel: R10: ffffb310c1de7a48 R11:
-> ffffffff96973748 R12: 0000000000000000
-> May 22 00:33:16 xfstests2 kernel: R13: ffff9b9a001e7300 R14:
-> 000000000000d000 R15: 0000000001564000
-> May 22 00:33:16 xfstests2 kernel: FS:=C2=A0 0000000000000000(0000)
-> GS:ffff9b9a7bd00000(0000) knlGS:0000000000000000
-> May 22 00:33:16 xfstests2 kernel: CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0:
-> 0000000080050033
-> May 22 00:33:16 xfstests2 kernel: CR2: 00005621fe4566e0 CR3:
-> 000000013943a005 CR4: 0000000000370ee0
-> May 22 00:33:16 xfstests2 kernel: Call Trace:
-> May 22 00:33:16 xfstests2 kernel:
-> btrfs_submit_compressed_write+0x2d7/0x470
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 submit_compressed_extents+0x364/=
-0x420
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 ? lock_acquire+0x15d/0x380
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 ? lock_release+0x1cd/0x2a0
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 ? submit_compressed_extents+0x42=
-0/0x420
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 btrfs_work_helper+0x133/0x520
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 process_one_work+0x26b/0x570
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 worker_thread+0x55/0x3c0
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 ? process_one_work+0x570/0x570
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 kthread+0x134/0x150
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 ? __kthread_bind_mask+0x60/0x60
-> May 22 00:33:16 xfstests2 kernel:=C2=A0 ret_from_fork+0x1f/0x30
+
 >
-> Thanks,
+>> and it seemed to mostly run fine but after a while it started printing
+>> messages like this along with what looked like some paths that were
+>> problematic (from what I remember, but these are not my exact
+>> messages):
+>>
+>> parent transid verify failed on 31302336512 wanted 62455 found 62456
+>> parent transid verify failed on 31302336512 wanted 62455 found 62456
+>> parent transid verify failed on 31302336512 wanted 62455 found 62456
+>>
+>> along with (these are my exact messages from a log that I saved):
+>>
+>> The following tree block(s) is corrupted in tree 259:
+>> tree block bytenr: 17047541170176, level: 0, node key:
+>> (18446744073709551606, 128, 25115695316992)
+>> The following tree block(s) is corrupted in tree 260:
+>> tree block bytenr: 17047541170176, level: 0, node key:
+>> (18446744073709551606, 128, 25115695316992)
+>> tree block bytenr: 17047547396096, level: 0, node key:
+>> (18446744073709551606, 128, 25187668619264)
+>> tree block bytenr: 17047547871232, level: 0, node key:
+>> (18446744073709551606, 128, 25124709920768)
+>> tree block bytenr: 17047549526016, level: 0, node key:
+>> (18446744073709551606, 128, 25195576877056)
+>> tree block bytenr: 17047551426560, level: 0, node key:
+>> (18446744073709551606, 128, 25162283048960)
+>> tree block bytenr: 17047551803392, level: 0, node key:
+>> (18446744073709551606, 128, 25177327333376)
+>>
+>> I didn't have time to look into it deeper at the time and decided to
+>> just shut it down cleanly until today when I'd have some time to look
+>> further at it. I booted it today (still in readwrite unfortunately)
+>> and immediately modified /etc/fstab to not mount any of the volumes,
+>> disabled services that might touch them and then rebooted it again to
+>> make sure it's not touching the disks anymore. Then I ran a check
+>> again:
+>>
+>> $ sudo btrfs check --readonly --progress /dev/sdb
 >
-> Josef
+> If the filesystem is readonly then btrfs check has a lower chance of
+> failure.  Still not zero, though.  btrfs check should only be run on
+> unmounted filesystems, if it should be run at all.
+>
+>> and now it's no longer finding any problems or printing any paths that
+>> are problematic.
+>>
+>> >From what I've understood from this[a] article, the errors I saw were
+>> likely due to an inconsistent journal.
+>
+> One rule of thumb for finding bad advice about btrfs on the Internet is =
+to
+> ask if the author believes in the existence of a 'btrfs journal'.  If so=
+,
+> it's a safe bet that the author has no idea what they're writing about.
+>
+> btrfs doesn't use a journal.  It uses wandering trees for metadata
+> integrity, and a log tree for fsync().  These store different things
+> than a journal, and have very different failure behavior compared to
+> journals in other filesystems.
+>
+>> Now for my questions:
+>>
+>> 1. I'm guessing that my reboots, in particular the ones where I still
+>> had it mounted in readwrite mode somehow cleared the journal and
+>> that's why I'm no longer seeing any errors. Does this sound
+>> plausible/correct?
+>
+> Well, there's no journal, so that can't be part of any correct theory.
+>
+> It is most likely that there were no errors on disk in the first place.
+> If btrfs check is reading metadata while btrfs was modifying it, then
+> it will always see an inconsistent view of the filesystem.  Each time
+> you run btrfs check, it will see a different inconsistent view of the
+> filesystem, so old errors will disappear, and new ones could appear.
+>
+> That said, self-correction is not impossible.  Normally btrfs raid1 will
+> automatically correct a corrupted mirror using data from a good mirror.
+> This uniformly handles cases ranging from bits flipped in drive DRAM,
+> writes that were dropped on their way to the disk (due to UNC sector,
+> firmware bug, power loss, misdirected write, FTL failure, or hundreds
+> of other possible reasons), and drives that temporarily disconnected
+> from arrays.
+>
+>> The errors being gone without me manually clearing
+>> them feels scary to me.
+>
+> btrfs will usually report such events in the kernel log and increment th=
+e
+> 'btrfs dev stats' counters, though there are a handful of exceptions.
+>
+> The correction is automatic when possible.  It occurs both on normal
+> reads and during scrubs.
+>
+>> 2. Is there any way to identify the paths again that were problematic
+>> based on the values in the log that I posted above so I can figure out
+>> what to restore from backups rather than doing a full restore?
+>
+> The error messages you posted are all metadata tree issues.  Paths are
+> in a higher layer of the filesystem.  Depending on which metadata is
+> affected, anywhere from a few hundred paths to the entire filesystem
+> may be affected.
+>
+> Note that if you ran 'btrfs check' on a mounted filesystem, the errors
+> reported are most likely a result of that mistake, and you should ignore
+> all of check's output under those conditions.
+>
+> If there are really unrecovered metadata errors on the disks then paths
+> do not matter very much.  The filesystem cannot be safely modified in
+> this case, so only a full mkfs + restore (or successful 'btrfs check
+> --repair --init-extent-tree' run) can make the filesystem writable again=
+.
+>
+> Note that we have no evidence that you are in this situation, or indeed
+> any evidence of a problem at all.  Power failures are totally routine
+> events for btrfs, and most drive firmware will handle them with no
+> problems (though there are one or two popular drive models out there
+> that won't).
+>
+>> a. https://ownyourbits.com/2019/03/03/how-to-recover-a-btrfs-partition/
+>
+> This article features a random mashup of btrfs recovery commands and
+> error messages.  Half of it is simply wrong:  zero-log cannot fix a
+> parent transid verify failed error, all but two btrfs errors imply that
+> you don't need to run chunk-recover, there is no journal...
+>
+>> Thank you,
+>> Andreas
