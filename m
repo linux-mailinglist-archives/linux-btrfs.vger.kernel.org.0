@@ -2,141 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A0438E48C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 12:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1606538E4A8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 12:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbhEXKuQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 May 2021 06:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
+        id S232591AbhEXK54 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 May 2021 06:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbhEXKuQ (ORCPT
+        with ESMTP id S232494AbhEXK5z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 May 2021 06:50:16 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC80C061574;
-        Mon, 24 May 2021 03:48:48 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id h21so20280562qtu.5;
-        Mon, 24 May 2021 03:48:48 -0700 (PDT)
+        Mon, 24 May 2021 06:57:55 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4801C061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 May 2021 03:56:26 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id a7so9601072qvf.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 May 2021 03:56:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=l+yuPCcYzjeH7rGjqqAffdPfdpOmTydJVYtjWgZ35uY=;
-        b=XedBne4/YiA/RtYMeTuK6773wAuTlp8NQzHAPHkt6WrGB//7ReEz/Uelp3NubD7Gqu
-         qYjTc3MtyPGZC+Kv8x6ZY0NYNNhVDRVVFzdoxlgyGKc14mc16bYEDLvDjYb/HwyszLdX
-         REkA3ZbE2ME4c7hRwsJNx6RVMWtsw2R3StGWICxu2W6wEqXAP5OpZL5/1cl4nEHSisR8
-         TpePEEuuygaBHY8osm1rX7qYKdbE3K8+Q9+vZmh+xfStsVYnnWAcDVIncRqb9VMSR9o+
-         V+eFEKDJZ1qD7T7pKkOC4Q732jh+T0feiM7EsY70rgMNDYsKF3C5BcxnJfIOqiIZgawV
-         nCJw==
+        bh=ZrWVkuiX03aQM0Dhq8LY1qWGI/W0i1xvB1m1uLsSAUY=;
+        b=Ja1j9zd14R10CZDJqVx/2shuh/4vb0edW1hfcslLbMn5HKK5QabVDOE5o+uIvblaaI
+         HLlpNef0aJRRZVFQIAHbhTsDl37ZKTBVCx0vA5PU2ZDcUl0XBIag5L0mbT/BkSV2pLcO
+         cQPhiGcDGEoqOCmDTB2R159cOLIcUxVS/lUPL0qkvm9t+WZTlXWn0slRu8orSBeyfpIS
+         9f0KG3U46ooUPI++c3NAgtgQqd3HT/G4MkjA2qSBJT60rXCwVZLlO98xXOJu5Tmk90rB
+         He3LiGOh+umN5/5fjyvZgestlr7KDgZGjKcBhceJxJhksGznATglslGVqseR7x8gVNAq
+         eE6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=l+yuPCcYzjeH7rGjqqAffdPfdpOmTydJVYtjWgZ35uY=;
-        b=JO+f808+Uo1sfTSe013//HfDfRCL1VEr4rInyzxrojisUMFCsJlTxrtn5jmevvhnbX
-         dxEKYidhd9k5VGNEeXEoogSJS+EKXFZZOTMR8TxAGrw6GFi1bpN6A0DS6XrDRcr66Jzf
-         Ek0JPkmakESo5g9Ek4sorCsOlmZFr1gyyumgdwkHQEeD28xo3d+ZvKIo/kliF2DhrkYG
-         6YZVwmNSzujH3goUFoXVMLFIn5D0JGajhUQJfhS3sSthFsUTdRm64Kq1uzQ5id3UqFd1
-         WsiZZl4ZSlp9QojJ7pcLEHzk+EVRYiWwyS22XM0Hc81vyGcblefCjDq6KE5uyp8culhT
-         GLNQ==
-X-Gm-Message-State: AOAM531SaFuXCLEW18RQ5lEYk+/jcQaF8RMfC2UX7FOI88P/Ecmsxawd
-        PqcTKnCFqL5slTmUba8ZIKvlv7uLqNW+gIBYWrA3xLLA
-X-Google-Smtp-Source: ABdhPJx+yw5Mq1iULEcB97vUXpNhUymOSOZcgEqRCyBNDiF1DMQ3HBFb5bsScegMNU025TPWj5XXhvsOen/+LDNpIPU=
-X-Received: by 2002:ac8:5402:: with SMTP id b2mr6961416qtq.259.1621853327881;
- Mon, 24 May 2021 03:48:47 -0700 (PDT)
+        bh=ZrWVkuiX03aQM0Dhq8LY1qWGI/W0i1xvB1m1uLsSAUY=;
+        b=rMguV6dkJiVQ0du4ZpF4LbGDkARWnfwgP7yQZJk2Qazd0sS6cutbjzBK62S0Y7LzoO
+         GnpDJEQ5ZGTl71UCTojsv+lyQ6rGDUa+oQg+paugXzbNV+D8jCj1YMnlls4wpAfjlGLE
+         qjg+DKiiI1rOPqRw7hdxhpYEgKYRttOa1pHe/ABxyYpPxsgq0H/FLGggmmZltixyT469
+         GkvjRSDaeZ9mX8JyPWFg2VCR9bHdbZi8xQYPsNYkVglwl+hk5tivXSf+fOHI7Dgp1vOf
+         J4lbWhoxxT4aReg9W2sDuAuZXut57brCYSs0WfUr+kaAplFsDe20An4E1Z4ZXULJkYnH
+         dzzg==
+X-Gm-Message-State: AOAM531QKnJFhngRZHdXqViGaepIHZihPuMS+5CQbiTycwitopLm+oyx
+        yK6tyH4GZYrQ6JVT2kLnNyl/BCDREOCDx8v+3r4=
+X-Google-Smtp-Source: ABdhPJxJjofxqOhiSi6s/4Dm7znw8LiB6szk08XWpTZYgTD00LDHiCDmXzzqU9mpoD30E2EoPsH0QpLHu221TfZaQ3w=
+X-Received: by 2002:a05:6214:17cb:: with SMTP id cu11mr29818986qvb.27.1621853785887;
+ Mon, 24 May 2021 03:56:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <58fd56f2942d80bee34108035bd5708a19ac56ed.1621458943.git.josef@toxicpanda.com>
-In-Reply-To: <58fd56f2942d80bee34108035bd5708a19ac56ed.1621458943.git.josef@toxicpanda.com>
+References: <20210521064050.191164-1-wqu@suse.com> <20210521064050.191164-28-wqu@suse.com>
+In-Reply-To: <20210521064050.191164-28-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 24 May 2021 11:48:37 +0100
-Message-ID: <CAL3q7H5O8_KRfRQfxm4ri0yefM0_iN9-sJeJg7EKoSt3K+=cOw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: do not write supers if we have an fs error
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com,
-        stable@vger.kernel.org
+Date:   Mon, 24 May 2021 11:56:15 +0100
+Message-ID: <CAL3q7H7jC+WL6LnqR+6uQ_fvjBOX2-w82z9ATE8XrkXa34C7gg@mail.gmail.com>
+Subject: Re: [PATCH v3 27/31] btrfs: fix a crash caused by race between
+ prepare_pages() and btrfs_releasepage()
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:20 PM Josef Bacik <josef@toxicpanda.com> wrote:
+On Fri, May 21, 2021 at 9:08 PM Qu Wenruo <wqu@suse.com> wrote:
 >
-> Error injection testing uncovered a pretty severe problem where we could
-> end up committing a super that pointed to the wrong tree roots,
-> resulting in transid mismatch errors.
+> [BUG]
+> When running generic/095, there is a high chance to crash with subpage
+> data RW support:
+>  assertion failed: PagePrivate(page) && page->private, in fs/btrfs/subpag=
+e.c:171
+>  ------------[ cut here ]------------
+>  kernel BUG at fs/btrfs/ctree.h:3403!
+>  Internal error: Oops - BUG: 0 [#1] SMP
+>  CPU: 1 PID: 3567 Comm: fio Tainted: G         C O      5.12.0-rc7-custom=
++ #17
+>  Hardware name: Khadas VIM3 (DT)
+>  Call trace:
+>   assertfail.constprop.0+0x28/0x2c [btrfs]
+>   btrfs_subpage_assert+0x80/0xa0 [btrfs]
+>   btrfs_subpage_set_uptodate+0x34/0xec [btrfs]
+>   btrfs_page_clamp_set_uptodate+0x74/0xa4 [btrfs]
+>   btrfs_dirty_pages+0x160/0x270 [btrfs]
+>   btrfs_buffered_write+0x444/0x630 [btrfs]
+>   btrfs_direct_write+0x1cc/0x2d0 [btrfs]
+>   btrfs_file_write_iter+0xc0/0x160 [btrfs]
+>   new_sync_write+0xe8/0x180
+>   vfs_write+0x1b4/0x210
+>   ksys_pwrite64+0x7c/0xc0
+>   __arm64_sys_pwrite64+0x24/0x30
+>   el0_svc_common.constprop.0+0x70/0x140
+>   do_el0_svc+0x28/0x90
+>   el0_svc+0x2c/0x54
+>   el0_sync_handler+0x1a8/0x1ac
+>   el0_sync+0x170/0x180
+>  Code: f0000160 913be042 913c4000 955444bc (d4210000)
+>  ---[ end trace 3fdd39f4cccedd68 ]---
 >
-> The way we commit the transaction is we update the super copy with the
-> current generations and bytenrs of the important roots, and then copy
-> that into our super_for_commit.  Then we allow transactions to continue
-> again, we write out the dirty pages for the transaction, and then we
-> write the super.  If the write out fails we'll bail and skip writing the
-> supers.
+> [CAUSE]
+> Although prepare_pages() calls find_or_create_page(), which returns the
+> page locked, but in later prepare_uptodate_page() calls, we may call
+> btrfs_readpage() which unlocked the page.
 >
-> However since we've allowed a new transaction to start, we can have a
-> log attempting to sync at this point, which would be blocked on
-> fs_info->tree_log_mutex.  Once the commit fails we're allowed to do the
-> log tree commit, which uses super_for_commit, which now points at fs
-> tree's that were not written out.
+> This leaves a window where btrfs_releasepage() can sneak in and release
+> the page.
 >
-> Fix this by checking BTRFS_FS_STATE_ERROR once we acquire the
-> tree_log_mutex.  This way if the transaction commit fails we're sure to
-> see this bit set and we can skip writing the super out.  This patch
-> fixes this specific transid mismatch error I was seeing with this
-> particular error path.
+> This can be proven by the dying ftrace dump:
+>  fio-3567 : prepare_pages: r/i=3D5/257 page_offset=3D262144 private=3D1 a=
+fter set extent map
+>  fio-3536 : __btrfs_releasepage.part.0: r/i=3D5/257 page_offset=3D262144 =
+private=3D1 clear extent map
+>  fio-3567 : prepare_uptodate_page.part.0: r/i=3D5/257 page_offset=3D26214=
+4 private=3D0 after readpage
+>  fio-3567 : btrfs_dirty_pages: r/i=3D5/257 page_offset=3D262144 private=
+=3D0  NOT PRIVATE
+
+Pasting here the tracing results form some custom tracepoints you
+added for your own debugging does not add that much value IMHO, anyone
+reading this will not know the exact places where the tracepoints were
+added,
+plus the previous explanation is clear enough.
+
 >
-> cc: stable@vger.kernel.org
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> [FIX]
+> In prepare_uptodate_page(), we should not only check page->mapping, but
+> also PagePrivate() to ensure we are still hold a correct page which has
+> proper fs context setup.
+>
+> Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Tested-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/tree-log.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+>  fs/btrfs/file.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 0278f489e7d9..83e8f105869b 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -3302,6 +3302,22 @@ int btrfs_sync_log(struct btrfs_trans_handle *tran=
-s,
->          *    begins and releases it only after writing its superblock.
->          */
->         mutex_lock(&fs_info->tree_log_mutex);
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 6ef44afa939c..a4c092028bb6 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -1341,7 +1341,17 @@ static int prepare_uptodate_page(struct inode *ino=
+de,
+>                         unlock_page(page);
+>                         return -EIO;
+>                 }
+> -               if (page->mapping !=3D inode->i_mapping) {
 > +
-> +       /*
-> +        * The transaction writeout phase could have failed, and thus mar=
-ked the
+> +               /*
+> +                * Since btrfs_readpage() will get the page unlocked, we =
+have
+> +                * a window where fadvice() can try to release the page.
+> +                * Here we check both inode mapping and PagePrivate() to
+> +                * make sure the page is not released.
+> +                *
+> +                * The priavte flag check is essential for subpage as we =
+need
+> +                * to store extra bitmap using page->private.
+> +                */
+> +               if (page->mapping !=3D inode->i_mapping || !PagePrivate(p=
+age)) {
 
-To be more clear, it would be better to say "The previous
-transaction", as otherwise it will be
-confusing when reading the comment.
+My comments from v1 still apply here:
 
-Other than that, it looks good, great catch.
+https://lore.kernel.org/linux-btrfs/CAL3q7H5P79kEqWUnN2QKG92N3u7+G0uWbmeC0y=
+T1LypV63MAYA@mail.gmail.com/
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+The code looks good.
+Thanks.
 
-> +        * fs in an error state.  We must not commit here, as we could ha=
-ve
-> +        * updated our generation in the super_for_commit and writing the=
- super
-> +        * here would result in transid mismatches.  If there is an error=
- here
-> +        * just bail.
-> +        */
-> +       if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
-> +               ret =3D -EIO;
-> +               btrfs_set_log_full_commit(trans);
-> +               btrfs_abort_transaction(trans, ret);
-> +               mutex_unlock(&fs_info->tree_log_mutex);
-> +               goto out_wake_log_root;
-> +       }
-> +
->         btrfs_set_super_log_root(fs_info->super_for_commit, log_root_star=
-t);
->         btrfs_set_super_log_root_level(fs_info->super_for_commit, log_roo=
-t_level);
->         ret =3D write_all_supers(fs_info, 1);
+>                         unlock_page(page);
+>                         return -EAGAIN;
+>                 }
 > --
-> 2.26.3
+> 2.31.1
 >
 
 
