@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB81738E41F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 12:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EF238E430
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 12:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbhEXKhs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 May 2021 06:37:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49566 "EHLO mail.kernel.org"
+        id S232582AbhEXKjG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 May 2021 06:39:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232476AbhEXKho (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 May 2021 06:37:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC22861132
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 May 2021 10:36:01 +0000 (UTC)
+        id S232653AbhEXKi4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 May 2021 06:38:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C636606A5;
+        Mon, 24 May 2021 10:37:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621852562;
-        bh=OtoidJ5+iBBb9ACif4keib0KiMFJjvwq1Hugb2KTFrw=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=sSc8P8sJ3vpc/4T1lnEqmLvjX68k6XHu+fCkkDRmf+UecOuLMtjo6rPT6X88lFj+2
-         SInB7pCV3SizcVSOg7CXEwZ7vHMAPgW+bCj6i8qSZJGmk+boqVsEZNMvGLqsLphCt7
-         oldm6NAO6/9ntCjAv9M/BfrBwWIaxu2rYGEkwq4jMwlpi5lUsMyCL5wp0q9HP4gOXC
-         ZuvF47ukLx4DVQQMBl42hFPHnxFVYBUnTNHPkehGXIRAh1UDsp4K+rAZ07yEBPPHdp
-         BZI094BO/nLij34gT9oOZPCoBjbj2G4++zEVK/K7Hf2m+EIgAR5ZvaIJptEk1L6Cxc
-         Vb0K+HOBdEa7w==
+        s=k20201202; t=1621852648;
+        bh=ZDUflN/w0O2X3GCUnXx303dn+nfQtLVu2pQXJm8MF/4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Dnx0UehvtPPFICyN6LcB+HsLB/JSIpFAdO2BmxMODXoqUDshjWOwn+fuwhvmR2kgp
+         k9efXahrq5++Z2BvOiLlzM7h9TknNSBj1UkKunIuB6PVlhjA7tCSZ6X6RoTVLyu3ZX
+         ymCpYeQBCha2wzP3tI4tU3ju6AAVccOliJQnCLlhARWKKx14833Qh1reBMEzf7qW4z
+         ynGloQbV7Tum23uTP90u7yIImyiISyNYxUs8a7GLqdla9H/5G86kzYx0dSEvZcnnNh
+         Z5ut4ju5xa5YjmjZ9U+UM6AYXDtJwHrJOC85Q6oS8YJemlYi1v3KfHbsnShfIFgqyl
+         /k0qgPJm5jztg==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: don't set the full sync flag when truncation does not touch extents
-Date:   Mon, 24 May 2021 11:35:55 +0100
-Message-Id: <cd884705080efecfbd02a5fd123a2d2396f2f1a3.1621851896.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1621851896.git.fdmanana@suse.com>
-References: <cover.1621851896.git.fdmanana@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: add test for multiple fsync with adjacent preallocated extents
+Date:   Mon, 24 May 2021 11:37:21 +0100
+Message-Id: <4c3dd698cb68ea0c465ea5028d677b3443b8cf3c.1621852397.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -39,186 +38,248 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At btrfs_truncate() where we truncate the inode either to the same size
-or to a smaller size, we always set the full sync flag on the inode.
+Test a scenario where we do several partial writes into multiple
+preallocated extents across two transactions and with several fsyncs
+in between. The goal is to check that the fsyncs succeed.
 
-This is needed in case the truncation drops or trims any file extent items
-that start beyond or cross the new inode size, so that the next fsync
-drops all inode items from the log and scans again the fs/subvolume tree
-to find all items that must be logged.
+Currently the last fsync fails with an -EIO error, and it aborts the
+current transaction. This issue is fixed by a patch with the following
+subject:
 
-However if the truncation does not drop or trims any file extent items, we
-do not need to set the full sync flag and force the next fsync to use the
-slow code path. So do not set the full sync flag in such cases.
+  "btrfs: fix fsync failure and transaction abort after writes to prealloc extents"
 
-One use case where it is frequent to do truncations that do not change
-the inode size and do not drop any extents (no prealloc extents beyond
-i_size) is when running Microsoft's SQL Server inside a Docker container.
-One example workload is the one Philipp Fent reported recently, in the
-thread with a link below. In this workload a large number of fsyncs are
-preceded by such truncate operations.
-
-After this change I constantly get the runtime for that workload from
-Philipp to be reduced by about -12%, for example from 184 seconds down
-to 162 seconds.
-
-Link: https://lore.kernel.org/linux-btrfs/93c4600e-5263-5cba-adf0-6f47526e7561@in.tum.de/
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.h            |  2 +-
- fs/btrfs/free-space-cache.c |  2 +-
- fs/btrfs/inode.c            | 41 +++++++++++++++++++++++++++----------
- fs/btrfs/tree-log.c         |  5 +++--
- 4 files changed, 35 insertions(+), 15 deletions(-)
+ tests/btrfs/240     | 173 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/240.out |  29 ++++++++
+ tests/btrfs/group   |   1 +
+ 3 files changed, 203 insertions(+)
+ create mode 100755 tests/btrfs/240
+ create mode 100644 tests/btrfs/240.out
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 1807e7a8d1d7..9f8a26b7cf41 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3125,7 +3125,7 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
- int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 			       struct btrfs_root *root,
- 			       struct btrfs_inode *inode, u64 new_size,
--			       u32 min_type);
-+			       u32 min_type, u64 *extents_found);
- 
- int btrfs_start_delalloc_snapshot(struct btrfs_root *root,
- 				  bool in_reclaim_context);
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index e54466fc101f..c72032224d46 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -327,7 +327,7 @@ int btrfs_truncate_free_space_cache(struct btrfs_trans_handle *trans,
- 	 * need to check for -EAGAIN.
- 	 */
- 	ret = btrfs_truncate_inode_items(trans, root, BTRFS_I(inode),
--					 0, BTRFS_EXTENT_DATA_KEY);
-+					 0, BTRFS_EXTENT_DATA_KEY, NULL);
- 	if (ret)
- 		goto fail;
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 64ddad66ded0..abb181b83947 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4466,6 +4466,11 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
-  * @min_type:		The minimum key type to remove. All keys with a type
-  *			greater than this value are removed and all keys with
-  *			this type are removed only if their offset is >= @new_size.
-+ * @extents_found:	Output parameter that will contain the number of file
-+ *			extent items that were removed or adjusted to the new
-+ *			inode i_size. The caller is responsible for initializing
-+ *			the counter. Also, it can be NULL if the caller does not
-+ *			need this counter.
-  *
-  * Remove all keys associated with the inode from the given root that have a key
-  * with a type greater than or equals to @min_type. When @min_type has a value of
-@@ -4479,7 +4484,8 @@ static int btrfs_rmdir(struct inode *dir, struct dentry *dentry)
- int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 			       struct btrfs_root *root,
- 			       struct btrfs_inode *inode,
--			       u64 new_size, u32 min_type)
-+			       u64 new_size, u32 min_type,
-+			       u64 *extents_found)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_path *path;
-@@ -4625,6 +4631,9 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 		if (found_type != BTRFS_EXTENT_DATA_KEY)
- 			goto delete;
- 
-+		if (extents_found != NULL)
-+			(*extents_found)++;
+diff --git a/tests/btrfs/240 b/tests/btrfs/240
+new file mode 100755
+index 00000000..c799848f
+--- /dev/null
++++ b/tests/btrfs/240
+@@ -0,0 +1,173 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FSQA Test No. 240
++#
++# Test a scenario where we do several partial writes into multiple preallocated
++# extents across two transactions and with several fsyncs in between. The goal
++# is to check that the fsyncs succeed. This scenario used to trigger an -EIO
++# failure on the last fsync and turn the filesystem to RO mode because of a
++# transaction abort.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
 +
- 		if (extent_type != BTRFS_FILE_EXTENT_INLINE) {
- 			u64 num_dec;
- 
-@@ -5460,7 +5469,7 @@ void btrfs_evict_inode(struct inode *inode)
- 		trans->block_rsv = rsv;
- 
- 		ret = btrfs_truncate_inode_items(trans, root, BTRFS_I(inode),
--						 0, 0);
-+						 0, 0, NULL);
- 		trans->block_rsv = &fs_info->trans_block_rsv;
- 		btrfs_end_transaction(trans);
- 		btrfs_btree_balance_dirty(fs_info);
-@@ -8671,6 +8680,7 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
- 	struct btrfs_trans_handle *trans;
- 	u64 mask = fs_info->sectorsize - 1;
- 	u64 min_size = btrfs_calc_metadata_size(fs_info, 1);
-+	u64 extents_found = 0;
- 
- 	if (!skip_writeback) {
- 		ret = btrfs_wait_ordered_range(inode, inode->i_size & (~mask),
-@@ -8728,20 +8738,13 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
- 				      min_size, false);
- 	BUG_ON(ret);
- 
--	/*
--	 * So if we truncate and then write and fsync we normally would just
--	 * write the extents that changed, which is a problem if we need to
--	 * first truncate that entire inode.  So set this flag so we write out
--	 * all of the extents in the inode to the sync log so we're completely
--	 * safe.
--	 */
--	set_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &BTRFS_I(inode)->runtime_flags);
- 	trans->block_rsv = rsv;
- 
- 	while (1) {
- 		ret = btrfs_truncate_inode_items(trans, root, BTRFS_I(inode),
- 						 inode->i_size,
--						 BTRFS_EXTENT_DATA_KEY);
-+						 BTRFS_EXTENT_DATA_KEY,
-+						 &extents_found);
- 		trans->block_rsv = &fs_info->trans_block_rsv;
- 		if (ret != -ENOSPC && ret != -EAGAIN)
- 			break;
-@@ -8803,6 +8806,22 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
- 	}
- out:
- 	btrfs_free_block_rsv(fs_info, rsv);
-+	/*
-+	 * So if we truncate and then write and fsync we normally would just
-+	 * write the extents that changed, which is a problem if we need to
-+	 * first truncate that entire inode.  So set this flag so we write out
-+	 * all of the extents in the inode to the sync log so we're completely
-+	 * safe.
-+	 *
-+	 * If no extents were dropped or trimmed we don't need to force the next
-+	 * fsync to truncate all the inode's items from the log and re-log them
-+	 * all. This means the truncate operation did not change the file size,
-+	 * or changed it to a smaller size but there was only an implicit hole
-+	 * between the old i_size and the new i_size, and there were no prealloc
-+	 * extents beyond i_size to drop.
-+	 */
-+	if (extents_found > 0)
-+		set_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &BTRFS_I(inode)->runtime_flags);
- 
- 	return ret;
- }
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index fd6b1f13112e..11e7442e6690 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4448,7 +4448,8 @@ static int btrfs_log_prealloc_extents(struct btrfs_trans_handle *trans,
- 				ret = btrfs_truncate_inode_items(trans,
- 							 root->log_root,
- 							 inode, truncate_offset,
--							 BTRFS_EXTENT_DATA_KEY);
-+							 BTRFS_EXTENT_DATA_KEY,
-+							 NULL);
- 			} while (ret == -EAGAIN);
- 			if (ret)
- 				goto out;
-@@ -5396,7 +5397,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 					  &inode->runtime_flags);
- 				while(1) {
- 					ret = btrfs_truncate_inode_items(trans,
--						log, inode, 0, 0);
-+						log, inode, 0, 0, NULL);
- 					if (ret != -EAGAIN)
- 						break;
- 				}
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/dmflakey
++
++# real QA test starts here
++_supported_fs btrfs
++_require_scratch
++_require_dm_target flakey
++_require_xfs_io_command "falloc"
++
++rm -f $seqres.full
++
++_scratch_mkfs >>$seqres.full 2>&1
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++
++# Create our test file with 2 preallocated extents. Leave a 1M hole between them
++# to ensure that we get two file extent items that will never be merged into a
++# single one. The extents are contiguous on disk, which will later result in the
++# checksums for their data to be merged into a single checksum item in the csums
++# btree.
++#
++$XFS_IO_PROG -f \
++	     -c "falloc 0 1M" \
++	     -c "falloc 3M 3M" \
++	     $SCRATCH_MNT/foobar
++
++# Now write to the second extent and leave only 1M of it as unwritten, which
++# corresponds to the file range [4M, 5M[.
++#
++# Then fsync the file to flush delalloc and to clear full sync flag from the
++# inode, so that a future fsync will use the fast code path.
++#
++# After the writeback triggered by the fsync we have 3 file extent items that
++# point to the second extent we previously allocated with fallocate():
++#
++# 1) One file extent item of type BTRFS_FILE_EXTENT_REG that covers the file
++#    range [3M, 4M[
++#
++# 2) One file extent item of type BTRFS_FILE_EXTENT_PREALLOC that covers the
++#    file range [4M, 5M[
++#
++# 3) One file extent item of type BTRFS_FILE_EXTENT_REG that covers the file
++#    range [5M, 6M[
++#
++# All these file extent items have a generation of 6, which is the ID of the
++# transaction where they were created. The split of the original file extent
++# item is done at btrfs_mark_extent_written() when ordered extents complete for
++# the file ranges [3M, 4M[ and [5M, 6M[.
++#
++$XFS_IO_PROG -c "pwrite -S 0xab 3M 1M" \
++	     -c "pwrite -S 0xef 5M 1M" \
++	     -c "fsync" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++# Commit the current transaction. This wipes out the log tree created by the
++# previous fsync.
++sync
++
++# Now write to the unwritten range of the second extent we allocated,
++# corresponding to the file range [4M, 5M[, and fsync the file, which triggers
++# the fast fsync code path.
++#
++# The fast fsync code path sees that there is a new extent map covering the file
++# range [4M, 5M[ and therefore it will log a checksum item covering the range
++# [1M, 2M[ of the second extent we allocated.
++#
++# Also, after the fsync finishes we no longer have the 3 file extent items that
++# pointed to 3 sections of the second extent we allocated. Instead we end up
++# with a single file extent item pointing to the whole extent, with a type of
++# BTRFS_FILE_EXTENT_REG and a generation of 7 (the current transaction ID). This
++# is due to the file extent item merging we do when completing ordered extents
++# into ranges that point to unwritten (preallocated) extents. This merging is
++# done at btrfs_mark_extent_written().
++#
++$XFS_IO_PROG -c "pwrite -S 0xcd 4M 1M" \
++	     -c "fsync" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++# Now do some write to our file outside the range of the second extent that we
++# allocated with fallocate() and truncate the file size from 6M down to 5M.
++#
++# The truncate operation sets the full sync runtime flag on the inode, forcing
++# the next fsync to use the slow code path. It also changes the length of the
++# second file extent item so that it represents the file range [3M, 5M[ and not
++# the range [3M, 6M[ anymore.
++#
++# Finally fsync the file. Since this is a fsync that triggers the slow code path,
++# it will remove all items associated to the inode from the log tree and then it
++# will scan for file extent items in the fs/subvolume tree that have a generation
++# matching the current transaction ID, which is 7. This means it will log 2 file
++# extent items:
++#
++# 1) One for the first extent we allocated, covering the file range [0, 1M[
++#
++# 2) Another for the first 2M of the second extent we allocated, covering the
++#    file range [3M, 5M[
++#
++# When logging the first file extent item we log a single checksum item that has
++# all the checksums for the entire extent.
++#
++# When logging the second file extent item, we also lookup for the checksums that
++# are associated with the range [0, 2M[ of the second extent we allocated (file
++# range [3M, 5M[), and then we log them with btrfs_csum_file_blocks(). However
++# that results in ending up with a log that has two checksum items with ranges
++# that overlap:
++#
++# 1) One for the range [1M, 2M[ of the second extent we allocated, corresponding
++#    to the file range [4M, 5M[, which we logged in the previous fsync that used
++#    the fast code path;
++#
++# 2) One for the ranges [0, 1M[ and [0, 2M[ of the first and second extents,
++#    respectively, corresponding to the files ranges [0, 1M[ and [3M, 5M[.
++#    This one was added during this last fsync that uses the slow code path
++#    and overlaps with the previous one logged by the previous fast fsync.
++#
++# This happens because when logging the checksums for the second extent, we
++# notice they start at an offset that matches the end of the checksums item that
++# we logged for the first extent, and because both extents are contiguous on
++# disk, btrfs_csum_file_blocks() decides to extend that existing checksums item
++# and append the checksums for the second extent to this item. The end result is
++# we end up with two checksum items in the log tree that have overlapping ranges,
++# as listed before, resulting in the fsync to fail with -EIO and aborting the
++# transaction, turning the filesystem into RO mode.
++#
++$XFS_IO_PROG -c "pwrite -S 0xff 0 1M" \
++	     -c "truncate 5M" \
++	     -c "fsync" \
++	     $SCRATCH_MNT/foobar | _filter_xfs_io
++
++echo "File content before power failure:"
++od -A d -t x1 $SCRATCH_MNT/foobar
++
++# Simulate a power failure and mount again the filesystem. The file content
++# must be the same that we had before.
++_flakey_drop_and_remount
++
++echo "File content before after failure:"
++od -A d -t x1 $SCRATCH_MNT/foobar
++
++_unmount_flakey
++
++status=0
++exit
+diff --git a/tests/btrfs/240.out b/tests/btrfs/240.out
+new file mode 100644
+index 00000000..ffd03ee6
+--- /dev/null
++++ b/tests/btrfs/240.out
+@@ -0,0 +1,29 @@
++QA output created by 240
++wrote 1048576/1048576 bytes at offset 3145728
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 1048576/1048576 bytes at offset 5242880
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 1048576/1048576 bytes at offset 4194304
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 1048576/1048576 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File content before power failure:
++0000000 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
++*
++1048576 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
++*
++3145728 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
++*
++4194304 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
++*
++5242880
++File content before after failure:
++0000000 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
++*
++1048576 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
++*
++3145728 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
++*
++4194304 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd
++*
++5242880
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index d7f2f3e5..ad59ed3e 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -242,3 +242,4 @@
+ 237 auto quick zone balance
+ 238 auto quick seed trim
+ 239 auto quick log
++240 auto quick prealloc log
 -- 
 2.28.0
 
