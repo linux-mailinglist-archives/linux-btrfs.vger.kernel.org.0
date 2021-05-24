@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DC238EC6A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 17:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF84D38EC6C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 17:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhEXPPN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 May 2021 11:15:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40004 "EHLO mail.kernel.org"
+        id S233504AbhEXPPP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 May 2021 11:15:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234409AbhEXPHm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 May 2021 11:07:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5276616EA;
-        Mon, 24 May 2021 14:51:26 +0000 (UTC)
+        id S234831AbhEXPJM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 May 2021 11:09:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 673606140F;
+        Mon, 24 May 2021 14:51:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621867887;
-        bh=BeSBxUMoeujGn0kO7erzpPXEwEl53/NqmbSzEjAyfr4=;
+        s=k20201202; t=1621867909;
+        bh=pvd3wcfubR9TjNKBHNAdDv2xZTA0lTHvNjufEn/nPCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BlnkLmGj1BotYGRSxiHwjG1WLXFvRF5NVjU+GMThsUrFB9HbEV6QMhFHnksnf7heR
-         uoKleh03MMG4jgLgZ2KFkNeknZQnni79wdiJtmv/cO0OLdi4TTAXWyfNNgRFUKt4Ow
-         ruczFfxzHbgUYlBt3EPxteuHUslIRIKOmVRyFncGtHPHdlnhKh4Q548fVVIFkPgUYv
-         ykfifmvIuMJgHFXqn+JlElHi6D0o3bVpgFG1LodUFhqZxn3DL4emiaXH5aHVp+NEq+
-         O2BiFQh9/sncDyzNPekWASpmHR7MlsoFVfe4Q3JOu5ePhOkEn+UDvTe/n2qco3VzPv
-         HAgiIlONWbpAA==
+        b=tcvisp+Xaev16QvugbxyDGulh2WHAcYFQ8XIUuHVj/ckUUHHiPu+dLeXdLzIpK0EQ
+         4x86wb/KkJhah9eKiQGKDB42edmEUrxOxVxEafA7x599BDFKQBJDqq3JoLUv5s8blG
+         z6zWQ7q0aLd+Oh1GIpdhvRLA9DX2JyfuefqN+qRUYvSsSuGlIeBU/xIMTO2T3g01gq
+         47yKuSfcSqRCftSboe8d2E2QNPapN6EoMJACcl9LqR4PqGe73Upe1ClYqwD7uBIYW3
+         eTzkxe2oOJdZCvL6CqEWBpKXirIv8q0UU7r/IwaFsaFzhVDuPhuCqyJojBKfIszTEN
+         AUoDtgkeymUdQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 17/19] btrfs: do not BUG_ON in link_to_fixup_dir
-Date:   Mon, 24 May 2021 10:51:04 -0400
-Message-Id: <20210524145106.2499571-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 15/16] btrfs: do not BUG_ON in link_to_fixup_dir
+Date:   Mon, 24 May 2021 10:51:29 -0400
+Message-Id: <20210524145130.2499829-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210524145106.2499571-1-sashal@kernel.org>
-References: <20210524145106.2499571-1-sashal@kernel.org>
+In-Reply-To: <20210524145130.2499829-1-sashal@kernel.org>
+References: <20210524145130.2499829-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -98,10 +98,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 9909b63d2acd..5c86fecaf167 100644
+index ee26ccd12da8..4cab553c347a 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -1600,8 +1600,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
+@@ -1582,8 +1582,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
  		ret = btrfs_update_inode(trans, root, inode);
  	} else if (ret == -EEXIST) {
  		ret = 0;
