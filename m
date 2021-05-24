@@ -2,114 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF84D38EC6C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 17:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C098538F3D2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 21:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhEXPPP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 May 2021 11:15:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40912 "EHLO mail.kernel.org"
+        id S232704AbhEXTsI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 May 2021 15:48:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40420 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234831AbhEXPJM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 May 2021 11:09:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 673606140F;
-        Mon, 24 May 2021 14:51:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621867909;
-        bh=pvd3wcfubR9TjNKBHNAdDv2xZTA0lTHvNjufEn/nPCs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tcvisp+Xaev16QvugbxyDGulh2WHAcYFQ8XIUuHVj/ckUUHHiPu+dLeXdLzIpK0EQ
-         4x86wb/KkJhah9eKiQGKDB42edmEUrxOxVxEafA7x599BDFKQBJDqq3JoLUv5s8blG
-         z6zWQ7q0aLd+Oh1GIpdhvRLA9DX2JyfuefqN+qRUYvSsSuGlIeBU/xIMTO2T3g01gq
-         47yKuSfcSqRCftSboe8d2E2QNPapN6EoMJACcl9LqR4PqGe73Upe1ClYqwD7uBIYW3
-         eTzkxe2oOJdZCvL6CqEWBpKXirIv8q0UU7r/IwaFsaFzhVDuPhuCqyJojBKfIszTEN
-         AUoDtgkeymUdQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 15/16] btrfs: do not BUG_ON in link_to_fixup_dir
-Date:   Mon, 24 May 2021 10:51:29 -0400
-Message-Id: <20210524145130.2499829-15-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210524145130.2499829-1-sashal@kernel.org>
-References: <20210524145130.2499829-1-sashal@kernel.org>
+        id S232107AbhEXTsI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 May 2021 15:48:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621885599;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DTmcr7NiHjQpmW6g1E+NAikZdseeNjz58EIYfWwBu8Y=;
+        b=yUxITn2JaR0M6zPeFzj6pnHmRQPyoyxCyie0pqqbxUi7zzUz5wEucCC29Ne0Qj7Rf3THoM
+        YRUEDrCwIQz859fQOEXhwa+QvztUebwCR4jUvWzJ3SWTX2U2uuYvbKoUq324Ki8wiFVKJ4
+        d0CprbTwfBM72Yz1Ki2gokWTcS4bgtk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621885599;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DTmcr7NiHjQpmW6g1E+NAikZdseeNjz58EIYfWwBu8Y=;
+        b=GmMb002xDnLDo95DUN2/kCROYalFq8x+E2q7H0qly5hO4ItgVmbJQ0UFum94PyGAbOmfcW
+        FeyzDd8IW2jVKmCg==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D186AAFD;
+        Mon, 24 May 2021 19:46:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6BD53DA72C; Mon, 24 May 2021 21:44:02 +0200 (CEST)
+Date:   Mon, 24 May 2021 21:44:00 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 0/3] Delayed inode error handling fixes
+Message-ID: <20210524194400.GT7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1621629737.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1621629737.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+On Fri, May 21, 2021 at 04:44:06PM -0400, Josef Bacik wrote:
+> Hello,
+> 
+> Here are 3 straightforward fixes, but they rely on eachother so I'm sending them
+> as a series.  The first changes how we do cleanup so that it can do the right
+> thing in the case that we don't have an iref, this is to make the code cleaner
+> in the error case.  The second patch is to fix the error handling in
+> __btrfs_update_delayed_inode so it actually does the proper cleanup if there's
+> an error.  And finally the last patch add's the abort() we need in order to not
+> leave behind improper inode items that trip up fsck during error injection
+> testing.  Thanks,
+> 
+> Josef
+> 
+> Josef Bacik (3):
+>   btrfs: make btrfs_release_delayed_iref handle the !iref case
+>   btrfs: fix error handling in __btrfs_update_delayed_inode
+>   btrfs: abort transaction if we fail to update the delayed inode
 
-[ Upstream commit 91df99a6eb50d5a1bc70fff4a09a0b7ae6aab96d ]
-
-While doing error injection testing I got the following panic
-
-  kernel BUG at fs/btrfs/tree-log.c:1862!
-  invalid opcode: 0000 [#1] SMP NOPTI
-  CPU: 1 PID: 7836 Comm: mount Not tainted 5.13.0-rc1+ #305
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  RIP: 0010:link_to_fixup_dir+0xd5/0xe0
-  RSP: 0018:ffffb5800180fa30 EFLAGS: 00010216
-  RAX: fffffffffffffffb RBX: 00000000fffffffb RCX: ffff8f595287faf0
-  RDX: ffffb5800180fa37 RSI: ffff8f5954978800 RDI: 0000000000000000
-  RBP: ffff8f5953af9450 R08: 0000000000000019 R09: 0000000000000001
-  R10: 000151f408682970 R11: 0000000120021001 R12: ffff8f5954978800
-  R13: ffff8f595287faf0 R14: ffff8f5953c77dd0 R15: 0000000000000065
-  FS:  00007fc5284c8c40(0000) GS:ffff8f59bbd00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007fc5287f47c0 CR3: 000000011275e002 CR4: 0000000000370ee0
-  Call Trace:
-   replay_one_buffer+0x409/0x470
-   ? btree_read_extent_buffer_pages+0xd0/0x110
-   walk_up_log_tree+0x157/0x1e0
-   walk_log_tree+0xa6/0x1d0
-   btrfs_recover_log_trees+0x1da/0x360
-   ? replay_one_extent+0x7b0/0x7b0
-   open_ctree+0x1486/0x1720
-   btrfs_mount_root.cold+0x12/0xea
-   ? __kmalloc_track_caller+0x12f/0x240
-   legacy_get_tree+0x24/0x40
-   vfs_get_tree+0x22/0xb0
-   vfs_kern_mount.part.0+0x71/0xb0
-   btrfs_mount+0x10d/0x380
-   ? vfs_parse_fs_string+0x4d/0x90
-   legacy_get_tree+0x24/0x40
-   vfs_get_tree+0x22/0xb0
-   path_mount+0x433/0xa10
-   __x64_sys_mount+0xe3/0x120
-   do_syscall_64+0x3d/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-We can get -EIO or any number of legitimate errors from
-btrfs_search_slot(), panicing here is not the appropriate response.  The
-error path for this code handles errors properly, simply return the
-error.
-
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/tree-log.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index ee26ccd12da8..4cab553c347a 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -1582,8 +1582,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
- 		ret = btrfs_update_inode(trans, root, inode);
- 	} else if (ret == -EEXIST) {
- 		ret = 0;
--	} else {
--		BUG(); /* Logic Error */
- 	}
- 	iput(inode);
- 
--- 
-2.30.2
-
+Added to misc-next, thanks. I've copied the changelog from patch 3 as
+comment before the transaction abort.
