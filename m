@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C49F138EB86
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 17:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A3C38EBE9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 May 2021 17:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhEXPDz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 May 2021 11:03:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37310 "EHLO mail.kernel.org"
+        id S234645AbhEXPIi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 May 2021 11:08:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233466AbhEXPAV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 May 2021 11:00:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2837C61376;
-        Mon, 24 May 2021 14:49:57 +0000 (UTC)
+        id S233677AbhEXPDA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 24 May 2021 11:03:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A5D861402;
+        Mon, 24 May 2021 14:50:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621867797;
-        bh=N0FAeNuDKMSXFENfB91Epg1afoE4j4T6/AIEHFc73fs=;
+        s=k20201202; t=1621867831;
+        bh=p2V8FW946HAQAcQlj3WWOfmp0I6aEIEC/WxxkIaR6kU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fK6I3DMax2G7PgU3ELYGMcX4bmttSNXD4S0lBq0I9Vg/Q57Py0P/qdMKWElhmMgUt
-         WHlT86W0kkU5mlqK/RU3ieuQj9mGa7bN7m1+xwVh3OUFiT6CDDufYGjVVvp+t1IlF8
-         sH1NVs6tH1CZ5GIGCR8czXh7kcM26Td8kkYTF2+r4wASq7VS5/l+Ox7rEpMlAA+a93
-         IsGv3pf+Ippv94roIlOT7KMnfhQxQWTr7VzON9KYwu4FLeZQZ9MtjnRRGfLLT/hPZd
-         An8lIsegwmx2WENtAnsRn2WxGjObcCBPF55GtR+Q0A8IoklGiFgmOYajXTlV7mEiaP
-         LAxnLlacKSaQg==
+        b=uY+heESyCsu8BMAS9ZWql0fBmYDDXjzDkdt8clOG7hZaV8g1/tu/chmr63fn3W08p
+         CMPQmO0CbOQCX7r0vNL81WnROnR+TOXEdFt/9cNHoenDrcxtvbt1LFPCFSb121iHp8
+         Q8GtDul1IMmc5u+U8OfhshsCP5smMEKf1PPRxnNWUML9cjYxtXH8EqoDreFuWHe3Mc
+         S0dm046o0qvZMIYZO0VNhojDO36KFCe5XiKpWzR13tCVWtpEHYWiJBLxHkv3LQoyy0
+         8nReynFLDI2PJRpt/NTcKqblFqrc+ETAqIPntOaYlou+l1y9WGEx+ATOw20MDMMZ7S
+         NGqK7t7eBG0lw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 44/52] btrfs: do not BUG_ON in link_to_fixup_dir
-Date:   Mon, 24 May 2021 10:48:54 -0400
-Message-Id: <20210524144903.2498518-44-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 19/25] btrfs: do not BUG_ON in link_to_fixup_dir
+Date:   Mon, 24 May 2021 10:50:02 -0400
+Message-Id: <20210524145008.2499049-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210524144903.2498518-1-sashal@kernel.org>
-References: <20210524144903.2498518-1-sashal@kernel.org>
+In-Reply-To: <20210524145008.2499049-1-sashal@kernel.org>
+References: <20210524145008.2499049-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -98,10 +98,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index de53e5166997..54647eb9c6ed 100644
+index 7b940264c7b9..1cd610ddbb24 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -1846,8 +1846,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
+@@ -1770,8 +1770,6 @@ static noinline int link_to_fixup_dir(struct btrfs_trans_handle *trans,
  		ret = btrfs_update_inode(trans, root, inode);
  	} else if (ret == -EEXIST) {
  		ret = 0;
