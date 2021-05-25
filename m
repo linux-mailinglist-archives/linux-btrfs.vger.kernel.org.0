@@ -2,78 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE6B39048B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 17:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54F53904D0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 17:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhEYPGb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 11:06:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60628 "EHLO mx2.suse.de"
+        id S231609AbhEYPOz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 11:14:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39398 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229532AbhEYPG1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 11:06:27 -0400
+        id S230085AbhEYPOz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 11:14:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621955097;
+        t=1621955604;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7q1ZvK3ZHjcCu7pRwRdRD+fkQFGr71E4XWiZdEb+Ygk=;
-        b=2I+D2d3vcqvicwTetBdblF1LUGD2mhve67BexECZgFjd0stHM3Fb4DMnKQTK0D3COsyGQz
-        0F7F2v8nl9XVM7oS0W5Z7vUgcEa6ssYgaehFnhfQ/ZJbdDpIjdpXqJ4HedgXkPku593gl0
-        ZjY3KWjEYFry87tVQUoM8jzp+m5OQIQ=
+        bh=LZagGY2ps2cRa1LmrhFbQSz3/7jutPqaZHEYsRvi/4Y=;
+        b=aKdJsRCPD1OWUtvRkgxTcn4akao3g1GREuS4Mh+Q34hHkWZDbvuPRobcKEJ4YAVNC+Jp7g
+        Rz7O1ULVoXBPEYWiDNkd/18HrdzSAIAKDsDE0WsMud7vPtG7YWs4iXL9CyS7yf1yLEZwdv
+        H4mGafHTa2hsIFuTPnwM/PNbJB+3HAU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621955097;
+        s=susede2_ed25519; t=1621955604;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=7q1ZvK3ZHjcCu7pRwRdRD+fkQFGr71E4XWiZdEb+Ygk=;
-        b=5WUBaPCu0GHVx+M89m0Cox06runEJv3eRMovwn3dBjyevMJoHokxO5shElPuexlar/If11
-        VlvVOVr9OTVBhfCA==
+        bh=LZagGY2ps2cRa1LmrhFbQSz3/7jutPqaZHEYsRvi/4Y=;
+        b=KPNojxCG3ORHHZv+9Qy8UjDch4E1mrfpI7bCTwo0iJbpyRiWXDDBwnvUw87lla1ODs1MR1
+        o0YITabG6MQORUDg==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2C0F7AB71;
-        Tue, 25 May 2021 15:04:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5EB58AEB3;
+        Tue, 25 May 2021 15:13:24 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B86E2DA704; Tue, 25 May 2021 17:02:20 +0200 (CEST)
-Date:   Tue, 25 May 2021 17:02:20 +0200
+        id EB64EDA70B; Tue, 25 May 2021 17:10:47 +0200 (CEST)
+Date:   Tue, 25 May 2021 17:10:47 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: fix fsync failure with SQL Server workload
-Message-ID: <20210525150220.GX7604@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: do not write supers if we have an fs error
+Message-ID: <20210525151047.GY7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <cover.1621851896.git.fdmanana@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+References: <58fd56f2942d80bee34108035bd5708a19ac56ed.1621458943.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1621851896.git.fdmanana@suse.com>
+In-Reply-To: <58fd56f2942d80bee34108035bd5708a19ac56ed.1621458943.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 24, 2021 at 11:35:52AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Wed, May 19, 2021 at 05:15:53PM -0400, Josef Bacik wrote:
+> Error injection testing uncovered a pretty severe problem where we could
+> end up committing a super that pointed to the wrong tree roots,
+> resulting in transid mismatch errors.
 > 
-> This patchset fixes a fsync failure (-EIO) and transaction abort during
-> a workload for Microsoft's SQL Server running in a Docker container as
-> reported at:
+> The way we commit the transaction is we update the super copy with the
+> current generations and bytenrs of the important roots, and then copy
+> that into our super_for_commit.  Then we allow transactions to continue
+> again, we write out the dirty pages for the transaction, and then we
+> write the super.  If the write out fails we'll bail and skip writing the
+> supers.
 > 
-> https://lore.kernel.org/linux-btrfs/93c4600e-5263-5cba-adf0-6f47526e7561@in.tum.de/
+> However since we've allowed a new transaction to start, we can have a
+> log attempting to sync at this point, which would be blocked on
+> fs_info->tree_log_mutex.  Once the commit fails we're allowed to do the
+> log tree commit, which uses super_for_commit, which now points at fs
+> tree's that were not written out.
 > 
-> It also adds an optimization for the workload, by removing lots of fsyncs
-> that trigger the slow code path and replacing them with ones that use the
-> fast path, reducing the workload's runtime by about -12% on my test box.
+> Fix this by checking BTRFS_FS_STATE_ERROR once we acquire the
+> tree_log_mutex.  This way if the transaction commit fails we're sure to
+> see this bit set and we can skip writing the super out.  This patch
+> fixes this specific transid mismatch error I was seeing with this
+> particular error path.
 > 
-> Filipe Manana (3):
->   btrfs: fix fsync failure and transaction abort after writes to
->     prealloc extents
->   btrfs: fix misleading and incomplete comment of btrfs_truncate()
->   btrfs: don't set the full sync flag when truncation does not touch
->     extents
+> cc: stable@vger.kernel.org
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Added to misc-next, thanks. I've marked the first patch for 5.4+. It
-applies cleanly up to 4.4 but I'm not sure if this is safe given the
-amount of other fixes that are mentioned in the patch and other fsync
-related fixes that have been applied.
+Added to misc-next, with the suggested comment update. Thanks.
