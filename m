@@ -2,229 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFEE38FE29
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 11:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD8C38FE65
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 12:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbhEYJv0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 05:51:26 -0400
-Received: from mout.gmx.net ([212.227.15.15]:57199 "EHLO mout.gmx.net"
+        id S231670AbhEYKHE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 06:07:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232545AbhEYJvZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 05:51:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621936189;
-        bh=HVUaxz5W5A+LZRpq8epDKgat6kSIlJBddYv9TA+cMMQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=NVXDKbE85wjvK9FkUc7O2wkofUB3Adoki8/rdNIE0UUpJPb8IW+2+M1IxcFqyFCXo
-         5PuB6p6esHl8fCEWkEXmjcc2EkOUbLUyp4clTxPGordhx5aEdhtL1s5eLbUKKpaPUz
-         t67GK0IQt8A7uuXAx7sxb6yZ6BJkucLhbO7Ngx/s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MDysg-1lbcK03eyK-00A1iS; Tue, 25
- May 2021 11:49:49 +0200
-Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
- subpage helper
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210513213656.2poyhssr4wzq65s4@riteshh-domain>
- <5f1d41d2-c7bc-ceb7-be4c-714d6731a296@gmx.com>
- <20210514150831.trfaihcy2ryp35uh@riteshh-domain>
- <20210514175343.v32k2rmsfl5l2qfa@riteshh-domain>
- <80735b91-ad23-1b49-20bb-fd3a09957793@gmx.com>
- <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
- <51186fd5-af02-2be6-3ba3-426082852665@suse.com>
- <20210525044307.xqfukx6qwu6mf53n@riteshh-domain>
- <ba250f72-ce16-92c0-d4b6-938776434ea2@gmx.com>
- <1a2171a5-f356-9a2e-d238-0725d3994f45@gmx.com>
- <20210525092305.3pautkpiv3dhi3oj@riteshh-domain>
- <5a3d0e6c-425b-9b6a-ffec-9243693430c5@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <181af010-af18-9f78-4028-d8bb59237c05@gmx.com>
-Date:   Tue, 25 May 2021 17:49:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231640AbhEYKHD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 06:07:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2936117A
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 May 2021 10:05:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621937131;
+        bh=2fuPau59zrwB1RJvX7YHCTpiwF5PJExpKMjABZnsfT4=;
+        h=From:To:Subject:Date:From;
+        b=sd3WicS73j5qjipSqTCtO6J94J85w6q52JdQINO00JLH4va1bf1/TDWuQCYj8r89Z
+         /otQq6B2r0dhTqnvzXrsULjWIHxTkWlM17UU1t3vzyFJxZCs4czv7pLuxoDczqRf3P
+         o/2aT8k2ZuUravSlLbrcbNsao7mJYRjEV9kWQPirLL41k7HWqtAnbjUuWmcbULNjAZ
+         y72DkrSNKcOYJ88zl8MuZrQUPKLSo/fiIdAxDuuPRN2UXOPjLA/ajo2QolWeVvB3CL
+         npyGYw284yGnyh0rHGosPCJxbHLEJ0YclqGLOAyzrg13OWd6Yr9uhGQX6ZpOLu+YYf
+         SYibUcWpFIvfw==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: fix deadlock when cloning inline extents and low on available space
+Date:   Tue, 25 May 2021 11:05:28 +0100
+Message-Id: <fe861a6c4f23f3980fcf198bdbd7e92cdc6847b9.1621936270.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <5a3d0e6c-425b-9b6a-ffec-9243693430c5@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gAxeWRC4v5G8Din6rJpEQHIrQnpMAI2uiOSn1HTQKx6BOFwYe9x
- I+n+ikUu9/NhngJTODterSBkaqYhLumctryLYuVNCdERHK3FXEtZPn68LZX0xY1yIIOgCDH
- jFB+ofSWTA8HRcbxKmSbwQzNbCnZmWTt/eeOodtJXreW1lVhQHp/yfgyKZX8OE2Hzl7kXLQ
- RB4CDE8RQnazIpTVCXMMg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:S/Ac9XiJejQ=:LgNxyeywl9j1QAhVBHk3gp
- UhFUrRkv9gxQCyzz6uv0izlswL3lZWpOYgIvqwfFUSv3V74OFkqvDh9NNQdZWXrIzJ2nS/hGP
- hquitvNIDtXo1hjUeiRnu9zUrPqDCF8/18hmcFiGOx9dfpqkKtWt8Uj0DOyv8uto90TPkyP+R
- 07dzxvexqikSyJD/cRWKB5CzfgmjubpVX3SbIj1/rVmquHWahGeYycgDIfVhzBLZ79dVILJvw
- edafuyVfu5it90yE7vdflfwOcjAWH+Nw8H5XcC7s98KHqbkQr4pPRKQo66HQSGO9/XMQbfyLP
- ly1gxOH4pMmz8edsCviOUh8gpv+XzFy/VX2mjhzb/E2CCXtzm1hxA47R0Z1GeFk+dQ80YQseu
- +IYj071FSmVYnSQ/YcMD0hHshlb3zncSXeJ6pHuZtIq5/GPwR1UyiWEWp/p7QGfUFQmS4q3tW
- yjC87lGPDccr4AfwoElCSECDurwcvJ9p6yD0olCvHPFUnJXQ0a29zG98tKj2zqnvOiEHSPf7d
- IvuHVepig4KkDCQ/DHt2KWEM06KTfKgkKa2ixk5khCfNu8MkWE6OstEW+dnpem/22wS348ZyO
- 0PX7cGt6i94XP++tyeCQTqha8eUTDVoMdyxT1ge8RZRoKC75FNI8QmsMKprRW03TEX3dSB+7p
- iPo/I98dXLFkvI4cVLfgDhb0tOl3iezqKW4t5AtHrMIGrJJULMtP1ncCQjYTGS7G08bowofCA
- nY+8PWBw/LoNPGzFTah+BpsievbjWj7nUjkXmyeztQbXr4DvAmG+2x0zVe+kY2Dkcnh4jbOfy
- uyALbpWHN0gYJtQGrb1lo0S0jhLhmfCZQDLns4VNeRTq/apTA9FuhcmpbAMwuqfpaQrxlHtsZ
- 6iEtdUlLEfOR1oeCKvbbnxMzWbmRtlABUooR7DyYYRv37V+rGMOoWONwITREpXPSXgjITPMX+
- AErUH+3A/J3GN94iKan+aRpRHwWevODr4QE1disAojEf9A03I7KZW76b05pqMWduaqm+RhjEp
- CpXZRsVhsuQu9Q7OKI5fA7SVoImNgnTNGf4Yc1Ps5aGsdpeg249yi5n1etxukCkicODLs1JlJ
- O0h3F5wyOfT+aDISeNi23VXmqLg8Qp/jZSmTtFXVUxr0CXy50hPUxFoap0d3DSEFzG58KAVNX
- wOU5rBayskyjqJ2C5MEHwTVd1ufbmchuNjzuCLFhPHLKmM2DaFDZh5ZbAoX/b58FkUQhgY408
- HpwPyKNo1nP5YO6p4
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
+There are a few cases where cloning an inline extent requires copying data
+into a page of the destination inode. For these cases we are allocating
+the required data and metadata space while holding a leaf locked. This can
+result in a deadlock when we are low on available space because allocating
+the space may flush delalloc and two deadlock scenarios can happen:
 
-On 2021/5/25 =E4=B8=8B=E5=8D=885:45, Qu Wenruo wrote:
-[...]
->>>
->>> What a relief, it's not a big problem in my patchset, but more likely =
-to
->>> be in the test case, especially in the how the mirror number is chosen=
-.
->>>
->>> When the test failed, you can find in the dmesg that, there is not any
->>> error mssage related to csum mismatch at all.
->>>
->>> This means, we're reading the correct copy, no wonder we won't submit
->>> read repair.
->>> This is mostly caused by the page size difference I guess, which makes
->>> the pid balance read for RAID1 less perdicatable.
->>>
->>> I don't yet have any good idea to fix the test case yet, so I'm afraid
->>> we have to consider it as a false alert.
->>
->> Ohk gr8, Thanks a lot for looking into it.
->> I saw the change log of v3, though I don't think there are any changes
->> from when
->> I last tested the whole patch series, still I will give it a full run
->> with v3
->> for both 4k and 64k config, (since now mostly all issues should be
->> fixed).
->
-> Just to be more clear, there are some known bugs in the base of my
-> subpage branch:
->
-> - 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-
->  =C2=A0 bit memory addresses")
->  =C2=A0 Will screw up at least my ARM board, which is using device tree =
-for
->  =C2=A0 its PCIE node.
->  =C2=A0 Have to revert it.
->
-> - 764c7c9a464b ("btrfs: zoned: fix parallel compressed writes")
->  =C2=A0 Will screw up compressed write with striped RAID profile.
->  =C2=A0 Fix sent to the mail list:
->
-> https://patchwork.kernel.org/project/linux-btrfs/patch/20210525055243.85=
-166-1-wqu@suse.com/
->
->
-> - Known btrfs mkfs bug
->  =C2=A0 Fix sent to the mail list:
->
-> https://patchwork.kernel.org/project/linux-btrfs/patch/20210517095516.12=
-9287-1-wqu@suse.com/
->
->
-> - btrfs/215 false alert
->  =C2=A0 Fix sent to the mail list:
->
-> https://patchwork.kernel.org/project/linux-btrfs/patch/20210517092922.11=
-9788-1-wqu@suse.com/
+1) When starting writeback for an inode with a very small dirty range that
+   fits in an inline extent, we deadlock during the writeback when trying
+   to insert the inline extent, at cow_file_range_inline(), if the extent
+   is going to be located in the leaf for which we are already holding a
+   read lock;
 
-Please wait for while.
+2) After successfully starting writeback, for non-inline extent cases,
+   the async reclaim thread will hang waiting for an ordered extent to
+   complete if the ordered extent completion needs to modify the leaf
+   for which the clone task is holding a read lock (for adding or
+   replacing file extent items). So the cloning task will wait forever
+   on the async reclaim thread to make progress, which in turn is
+   waiting for the ordered extent completion which in turn is waiting
+   to acquire a write lock on the same leaf.
 
-I just checked my latest result, the branch doesn't pass my local test
-for subpage case.
+So fix this by making sure we release the path (and therefore the leaf)
+everytime we need to copy the inline extent's data into a page of the
+destination inode, as by that time we do not need to have the leaf locked.
 
-I'll fix it first, sorry for the problem.
+Fixes: 05a5a7621ce66c ("Btrfs: implement full reflink support for inline extents")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/reflink.c | 38 ++++++++++++++++++++++----------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
-Thanks,
-Qu
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index 06682128d8fa..58ddc7ed9e84 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -207,10 +207,7 @@ static int clone_copy_inline_extent(struct inode *dst,
+ 			 * inline extent's data to the page.
+ 			 */
+ 			ASSERT(key.offset > 0);
+-			ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+-						  inline_data, size, datal,
+-						  comp_type);
+-			goto out;
++			goto copy_to_page;
+ 		}
+ 	} else if (i_size_read(dst) <= datal) {
+ 		struct btrfs_file_extent_item *ei;
+@@ -226,13 +223,10 @@ static int clone_copy_inline_extent(struct inode *dst,
+ 		    BTRFS_FILE_EXTENT_INLINE)
+ 			goto copy_inline_extent;
+ 
+-		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+-					  inline_data, size, datal, comp_type);
+-		goto out;
++		goto copy_to_page;
+ 	}
+ 
+ copy_inline_extent:
+-	ret = 0;
+ 	/*
+ 	 * We have no extent items, or we have an extent at offset 0 which may
+ 	 * or may not be inlined. All these cases are dealt the same way.
+@@ -244,11 +238,13 @@ static int clone_copy_inline_extent(struct inode *dst,
+ 		 * clone. Deal with all these cases by copying the inline extent
+ 		 * data into the respective page at the destination inode.
+ 		 */
+-		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+-					  inline_data, size, datal, comp_type);
+-		goto out;
++		goto copy_to_page;
+ 	}
+ 
++	/*
++	 * Release path before starting a new transaction so we don't hold locks
++	 * that would confuse lockdep.
++	 */
+ 	btrfs_release_path(path);
+ 	/*
+ 	 * If we end up here it means were copy the inline extent into a leaf
+@@ -285,11 +281,6 @@ static int clone_copy_inline_extent(struct inode *dst,
+ 	ret = btrfs_inode_set_file_extent_range(BTRFS_I(dst), 0, aligned_end);
+ out:
+ 	if (!ret && !trans) {
+-		/*
+-		 * Release path before starting a new transaction so we don't
+-		 * hold locks that would confuse lockdep.
+-		 */
+-		btrfs_release_path(path);
+ 		/*
+ 		 * No transaction here means we copied the inline extent into a
+ 		 * page of the destination inode.
+@@ -310,6 +301,21 @@ static int clone_copy_inline_extent(struct inode *dst,
+ 		*trans_out = trans;
+ 
+ 	return ret;
++
++copy_to_page:
++	/*
++	 * Release our path because we don't need it anymore and also because
++	 * copy_inline_to_page() needs to reserve data and metadata, which may
++	 * need to flush delalloc when we are low on available space and
++	 * therefore cause a deadlock if writeback of an inline extent needs to
++	 * write to the same leaf or an ordered extent completion needs to write
++	 * to the same leaf.
++	 */
++	btrfs_release_path(path);
++
++	ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
++				  inline_data, size, datal, comp_type);
++	goto out;
+ }
+ 
+ /**
+-- 
+2.28.0
 
-
->
->
-> Thanks,
-> Qu
->>
->> Thanks
->> -ritesh
->>
->>
->>>
->>> Thanks,
->>> Qu
->>>>
->>>> Thanks again for the awesome report!
->>>> Qu
->>>>>
->>>>>
->>>>> -ritesh
->>>>>
->>>>>>
->>>>>>>
->>>>>>>
->>>>>>> 2. btrfs/124 failure.
->>>>>>>
->>>>>>> I guess below could be due to small size of the device?
->>>>>>>
->>>>>>> xfstests.global-btrfs/4k.btrfs/124
->>>>>>> Error Details
->>>>>>> - output mismatch (see /results/btrfs/results-4k/btrfs/124.out.bad=
-)
->>>>>>
->>>>>> Again passes locally.
->>>>>>
->>>>>> But accroding to your fs, I notice several unbalanced disk usage:
->>>>>>
->>>>>> # /usr/local/bin/btrfs filesystem show
->>>>>> Label: none=C2=A0 uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Total devices 2 FS bytes used 32.00Ki=
-B
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.00Gi=
-B used 622.38MiB path /dev/vdc
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 2 size 2.00Gi=
-B used 622.38MiB path /dev/vdi
->>>>>>
->>>>>> Label: none=C2=A0 uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Total devices 4 FS bytes used 379.12M=
-iB
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.00Gi=
-B used 8.00MiB path /dev/vdb
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 3 size 20.00G=
-iB used 264.00MiB path /dev/vde
->>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 4 size 20.00G=
-iB used 1.26GiB path /dev/vdf
->>>>>>
->>>>>> We had reports about btrfs doing poor work when handling
->>>>>> unbalanced disk
->>>>>> sizes.
->>>>>> I had a purpose to fix it, with a little better calcuation, but sti=
-ll
->>>>>> not
->>>>>> yet perfect.
->>>>>>
->>>>>> Thus would you mind to check if the test pass when all the disks in
->>>>>> SCRATCH_DEV_POOL are in the same size?
->>>>>>
->>>>>> Of course we need to fix the problem of ENOSPC for unbalanced
->>>>>> disks, but
->>>>>> that's a common problem and not exacly related to subpage.
->>>>>> I should take some time to refresh the unbalanced disk usage patche=
-s
->>>>>> soon.
->>>>>>
->>>>>> Thanksm
->>>>>> Qu
->>>>>>
->>>>>> [...]
->>>>>>>
->>>>>>> -ritesh
->>>>>>>
->>>>>
->>>>>
