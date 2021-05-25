@@ -2,38 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A31390B6E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 23:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD63390BFD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 May 2021 00:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbhEYV2b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 17:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbhEYV2b (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 17:28:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCD9C061574;
-        Tue, 25 May 2021 14:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cYNzR6K3PIie0xGXngP89tD+HJUpDWKHnFmlSQ/Txdk=; b=Zdjlab78a1pNCAT69XlYHdae+P
-        1og8tvKEDGIShobkaTEJQ6UnAuc+SWNYft47PGNjMC7oF56+sWx8Zxo2gcqeo8qMZ5OyVPU8Ej6em
-        Hy3iBLURPqblP1D1iu5wAB4i6vQEhbWfXg8PYIJNYTnUU4fQJ024cZT6lKLUoL5eRYsNoYqbs4M6U
-        dhqPkczBY65bXJrReQDOJp6wFwFwsz8fa5NJparemNjKVH9pcxiS16tVrDsVVliID6k7S4I05SEvC
-        EITaphGXQuqgSM+ssPPgmfCyNZXH88xzaEHv+/rcitpgGJBSfHbOHZNhwTqc6OYUtn0kAxd8sg9Z0
-        NciHE5KQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lleZ8-003udz-0Z; Tue, 25 May 2021 21:26:27 +0000
-Date:   Tue, 25 May 2021 22:26:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
+        id S232244AbhEYWPW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 18:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232129AbhEYWPW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 18:15:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F38A761019;
+        Tue, 25 May 2021 22:13:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621980832;
+        bh=gN3m3jr0zpW3uBjIUscZ0OUKn0VJlnlUIIIpzIpW9HU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tc+axs4ghK1XxAO0iEP9qy0VgFfgmcrUquI8G5+rvnWHWniLsNzsZKdZNJ1ldG+VT
+         6nrbHlOXDl5dh7l572t1pa0WroS62LBWyJjJFQyMH+8O73rpELaUqMyOfi5YFX9W+V
+         Uh7S8dftq/Ehs3csuqmGD0aojn2ypxTjId5lMt/A7GzOKLjcF766zxXK0GQLjvz/f2
+         EWiNQiAbBToLu81W+13a2le/460p3vVNPI1B0rRjaBKa8NlmuPgeUSCWApyuFafccp
+         xTFUoWoW1QZRKLzwE9VyvQRMyxzFhSFLbzHeA1U+g2lPdxKu/UC0L1UHbZz7QlNdtj
+         /R0EFElgdoNUQ==
+Date:   Tue, 25 May 2021 15:13:51 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andreas Dilger <adilger@dilger.ca>,
+        Josh Triplett <josh@joshtriplett.org>,
         David Howells <dhowells@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
+        Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         xfs <linux-xfs@vger.kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
@@ -42,42 +38,47 @@ Cc:     Josh Triplett <josh@joshtriplett.org>,
         NeilBrown <neilb@suse.com>
 Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs
  directories?
-Message-ID: <YK1rebI5vZKCeLlp@casper.infradead.org>
+Message-ID: <20210525221351.GB202068@locust>
 References: <206078.1621264018@warthog.procyon.org.uk>
  <6E4DE257-4220-4B5B-B3D0-B67C7BC69BB5@dilger.ca>
  <YKntRtEUoxTEFBOM@localhost>
  <B70B57ED-6F11-45CC-B99F-86BBDE36ACA4@dilger.ca>
+ <YK1rebI5vZKCeLlp@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <B70B57ED-6F11-45CC-B99F-86BBDE36ACA4@dilger.ca>
+In-Reply-To: <YK1rebI5vZKCeLlp@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 25, 2021 at 03:13:52PM -0600, Andreas Dilger wrote:
-> Definitely "-o discard" is known to have a measurable performance impact,
-> simply because it ends up sending a lot more requests to the block device,
-> and those requests can be slow/block the queue, depending on underlying
-> storage behavior.
+On Tue, May 25, 2021 at 10:26:17PM +0100, Matthew Wilcox wrote:
+> On Tue, May 25, 2021 at 03:13:52PM -0600, Andreas Dilger wrote:
+> > Definitely "-o discard" is known to have a measurable performance impact,
+> > simply because it ends up sending a lot more requests to the block device,
+> > and those requests can be slow/block the queue, depending on underlying
+> > storage behavior.
+> > 
+> > There was a patch pushed recently that targets "-o discard" performance:
+> > https://patchwork.ozlabs.org/project/linux-ext4/list/?series=244091
+> > that needs a bit more work, but may be worthwhile to test if it improves
+> > your workload, and help put some weight behind landing it?
 > 
-> There was a patch pushed recently that targets "-o discard" performance:
-> https://patchwork.ozlabs.org/project/linux-ext4/list/?series=244091
-> that needs a bit more work, but may be worthwhile to test if it improves
-> your workload, and help put some weight behind landing it?
+> This all seems very complicated.  I have chosen with my current laptop
+> to "short stroke" the drive.  That is, I discarded the entire bdev,
+> then partitioned it roughly in half.  The second half has never seen
+> any writes.  This effectively achieves the purpose of TRIM/discard;
+> there are a lot of unused LBAs, so the underlying flash translation layer
+> always has plenty of spare space when it needs to empty an erase block.
+> 
+> Since the steady state of hard drives is full, I have to type 'make clean'
+> in my build trees more often than otherwise and remember to delete iso
+> images after i've had them lying around for a year, but I'd rather clean
+> up a little more often than get these weird performance glitches.
+> 
+> And if I really do need half a terabyte of space temporarily, I can
+> always choose to use the fallow range for a while, then discard it again.
 
-This all seems very complicated.  I have chosen with my current laptop
-to "short stroke" the drive.  That is, I discarded the entire bdev,
-then partitioned it roughly in half.  The second half has never seen
-any writes.  This effectively achieves the purpose of TRIM/discard;
-there are a lot of unused LBAs, so the underlying flash translation layer
-always has plenty of spare space when it needs to empty an erase block.
+I just let xfs_scrub run FITRIM on Sundays at 4:30am. ;)
 
-Since the steady state of hard drives is full, I have to type 'make clean'
-in my build trees more often than otherwise and remember to delete iso
-images after i've had them lying around for a year, but I'd rather clean
-up a little more often than get these weird performance glitches.
-
-And if I really do need half a terabyte of space temporarily, I can
-always choose to use the fallow range for a while, then discard it again.
-
+--D
