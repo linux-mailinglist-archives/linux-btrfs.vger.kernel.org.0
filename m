@@ -2,139 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C94390620
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 18:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25D139065D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 18:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhEYQE3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 12:04:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45874 "EHLO mx2.suse.de"
+        id S233265AbhEYQPx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 12:15:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58176 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233008AbhEYQE2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 12:04:28 -0400
+        id S233235AbhEYQPw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 12:15:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1621958577;
+        t=1621959262;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=C+ZKXctjfR0YpfCCiqLZlZ5J1bFkTCe46+FCdtk/eiU=;
-        b=m8bsqI6xniF6otXVo63O4GiDVDPG5DPAONJK6mtNTYjqSmmaHEzsaVufpIOfh5tTgmM8hZ
-        vTcUi7M79clfS6+9exfmBuibgwt+1nhJNduXg4rtKf1S6/QcGyk9PJujFTwHQzORNloDgA
-        KydrosIvzp8392WPbrIjs4D6QJW0CQw=
+        bh=psS28WF+ZcFHjH62yflSirSQ16bOQfcoFKAEUSUXyuw=;
+        b=iazdDzOj6MtLMutvjJeylxOvx+Xyh4H5n3Z1s5Z+V3aTkA+r+sj5UrD/jF9MZjDrvxrQmZ
+        0dkUhHQrLJkQ9hr+Ra0J5qRSzz+kWNKXMstpQdE+cNYDP57LrX8pBLgqy23jad92qbzh9I
+        xKOqhBYPkbld75rXnDHMP6Tmn6l5B3o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1621958577;
+        s=susede2_ed25519; t=1621959262;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=C+ZKXctjfR0YpfCCiqLZlZ5J1bFkTCe46+FCdtk/eiU=;
-        b=rxIa9c41PBzrbl/+nWSoKwe3s4T4CDPYiCWaSCob/xPqwBFsl/fe+SYWQeCRenyOyYHcqm
-        nIMBG9p4WoIndsCw==
+        bh=psS28WF+ZcFHjH62yflSirSQ16bOQfcoFKAEUSUXyuw=;
+        b=1b0W4MarlKWEKONBJCiVQWGIM+rhB5yKe9X1gQdRYtxc/eJefJz4cXepN2B6j/nNvAo/ky
+        /S1PY1APukZfM7Bw==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C45DCAEA8;
-        Tue, 25 May 2021 16:02:57 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 0B09BAE99;
+        Tue, 25 May 2021 16:14:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 52EBEDA70B; Tue, 25 May 2021 18:00:21 +0200 (CEST)
-Date:   Tue, 25 May 2021 18:00:21 +0200
+        id 935C0DA70B; Tue, 25 May 2021 18:11:45 +0200 (CEST)
+Date:   Tue, 25 May 2021 18:11:45 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] btrfs: fix a bug where a compressed write can cross
- stripe boundary
-Message-ID: <20210525160021.GC7604@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix deadlock when cloning inline extents and low
+ on available space
+Message-ID: <20210525161145.GD7604@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-References: <20210525055243.85166-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <fe861a6c4f23f3980fcf198bdbd7e92cdc6847b9.1621936270.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210525055243.85166-1-wqu@suse.com>
+In-Reply-To: <fe861a6c4f23f3980fcf198bdbd7e92cdc6847b9.1621936270.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 25, 2021 at 01:52:43PM +0800, Qu Wenruo wrote:
-> [BUG]
-> When running btrfs/027 with "-o compress" mount option, it always crash
-> with the following call trace:
+On Tue, May 25, 2021 at 11:05:28AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
->   BTRFS critical (device dm-4): mapping failed logical 298901504 bio len 12288 len 8192
->   ------------[ cut here ]------------
->   kernel BUG at fs/btrfs/volumes.c:6651!
->   invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
->   CPU: 5 PID: 31089 Comm: kworker/u24:10 Tainted: G           OE     5.13.0-rc2-custom+ #26
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
->   Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
->   RIP: 0010:btrfs_map_bio.cold+0x58/0x5a [btrfs]
->   Call Trace:
->    btrfs_submit_compressed_write+0x2d7/0x470 [btrfs]
->    submit_compressed_extents+0x3b0/0x470 [btrfs]
->    ? mark_held_locks+0x49/0x70
->    btrfs_work_helper+0x131/0x3e0 [btrfs]
->    process_one_work+0x28f/0x5d0
->    worker_thread+0x55/0x3c0
->    ? process_one_work+0x5d0/0x5d0
->    kthread+0x141/0x160
->    ? __kthread_bind_mask+0x60/0x60
->    ret_from_fork+0x22/0x30
->   ---[ end trace 63113a3a91f34e68 ]---
+> There are a few cases where cloning an inline extent requires copying data
+> into a page of the destination inode. For these cases we are allocating
+> the required data and metadata space while holding a leaf locked. This can
+> result in a deadlock when we are low on available space because allocating
+> the space may flush delalloc and two deadlock scenarios can happen:
 > 
-> [CAUSE]
-> The critical message before the crash means we have a bio at logical
-> bytenr 298901504 length 12288, but only 8192 bytes can fit into one
-> stripe, the remaining 4096 bytes is into another stripe.
+> 1) When starting writeback for an inode with a very small dirty range that
+>    fits in an inline extent, we deadlock during the writeback when trying
+>    to insert the inline extent, at cow_file_range_inline(), if the extent
+>    is going to be located in the leaf for which we are already holding a
+>    read lock;
 > 
-> In btrfs, all bio is properly split to avoid cross stripe boundary, but
-> commit 764c7c9a464b ("btrfs: zoned: fix parallel compressed writes")
-> changed the behavior for compressed write.
+> 2) After successfully starting writeback, for non-inline extent cases,
+>    the async reclaim thread will hang waiting for an ordered extent to
+>    complete if the ordered extent completion needs to modify the leaf
+>    for which the clone task is holding a read lock (for adding or
+>    replacing file extent items). So the cloning task will wait forever
+>    on the async reclaim thread to make progress, which in turn is
+>    waiting for the ordered extent completion which in turn is waiting
+>    to acquire a write lock on the same leaf.
 > 
-> The offending code looks like this:
+> So fix this by making sure we release the path (and therefore the leaf)
+> everytime we need to copy the inline extent's data into a page of the
+> destination inode, as by that time we do not need to have the leaf locked.
 > 
->                         submit = btrfs_bio_fits_in_stripe(page, PAGE_SIZE, bio,
->                                                           0);
+> Fixes: 05a5a7621ce66c ("Btrfs: implement full reflink support for inline extents")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Added to misc-next, thanks.
+
+> ---
+>  fs/btrfs/reflink.c | 38 ++++++++++++++++++++++----------------
+>  1 file changed, 22 insertions(+), 16 deletions(-)
 > 
-> +               if (pg_index == 0 && use_append)
-> +                       len = bio_add_zone_append_page(bio, page, PAGE_SIZE, 0);
-> +               else
-> +                       len = bio_add_page(bio, page, PAGE_SIZE, 0);
+> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+> index 06682128d8fa..58ddc7ed9e84 100644
+> --- a/fs/btrfs/reflink.c
+> +++ b/fs/btrfs/reflink.c
+> @@ -207,10 +207,7 @@ static int clone_copy_inline_extent(struct inode *dst,
+>  			 * inline extent's data to the page.
+>  			 */
+>  			ASSERT(key.offset > 0);
+> -			ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+> -						  inline_data, size, datal,
+> -						  comp_type);
+> -			goto out;
+> +			goto copy_to_page;
+>  		}
+>  	} else if (i_size_read(dst) <= datal) {
+>  		struct btrfs_file_extent_item *ei;
+> @@ -226,13 +223,10 @@ static int clone_copy_inline_extent(struct inode *dst,
+>  		    BTRFS_FILE_EXTENT_INLINE)
+>  			goto copy_inline_extent;
+>  
+> -		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+> -					  inline_data, size, datal, comp_type);
+> -		goto out;
+> +		goto copy_to_page;
+>  	}
+>  
+>  copy_inline_extent:
+> -	ret = 0;
+>  	/*
+>  	 * We have no extent items, or we have an extent at offset 0 which may
+>  	 * or may not be inlined. All these cases are dealt the same way.
+> @@ -244,11 +238,13 @@ static int clone_copy_inline_extent(struct inode *dst,
+>  		 * clone. Deal with all these cases by copying the inline extent
+>  		 * data into the respective page at the destination inode.
+>  		 */
+> -		ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+> -					  inline_data, size, datal, comp_type);
+> -		goto out;
+> +		goto copy_to_page;
+>  	}
+>  
+> +	/*
+> +	 * Release path before starting a new transaction so we don't hold locks
+> +	 * that would confuse lockdep.
+> +	 */
+>  	btrfs_release_path(path);
+>  	/*
+>  	 * If we end up here it means were copy the inline extent into a leaf
+> @@ -285,11 +281,6 @@ static int clone_copy_inline_extent(struct inode *dst,
+>  	ret = btrfs_inode_set_file_extent_range(BTRFS_I(dst), 0, aligned_end);
+>  out:
+>  	if (!ret && !trans) {
+> -		/*
+> -		 * Release path before starting a new transaction so we don't
+> -		 * hold locks that would confuse lockdep.
+> -		 */
+> -		btrfs_release_path(path);
+>  		/*
+>  		 * No transaction here means we copied the inline extent into a
+>  		 * page of the destination inode.
+> @@ -310,6 +301,21 @@ static int clone_copy_inline_extent(struct inode *dst,
+>  		*trans_out = trans;
+>  
+>  	return ret;
 > +
->                 page->mapping = NULL;
-> -               if (submit || bio_add_page(bio, page, PAGE_SIZE, 0) <
-> -                   PAGE_SIZE) {
-> +               if (submit || len < PAGE_SIZE) {
+> +copy_to_page:
+> +	/*
+> +	 * Release our path because we don't need it anymore and also because
+> +	 * copy_inline_to_page() needs to reserve data and metadata, which may
+> +	 * need to flush delalloc when we are low on available space and
+> +	 * therefore cause a deadlock if writeback of an inline extent needs to
+> +	 * write to the same leaf or an ordered extent completion needs to write
+> +	 * to the same leaf.
+> +	 */
+> +	btrfs_release_path(path);
+> +
+> +	ret = copy_inline_to_page(BTRFS_I(dst), new_key->offset,
+> +				  inline_data, size, datal, comp_type);
+> +	goto out;
+>  }
 
-Please don't put diffs into changelogs, it's harder to read than two code
-fragments before and after.
-
-> Previously if we find our new page can't be fitted into current stripe,
-> aka "submitted == 1" case, we submit current bio without adding current
-> page.
-
-So here would go the "-" part.
-
-> But after the modification, we will add the page no matter if it crosses
-> stripe boundary, leading to the above crash.
-
-And here the "+" part.
-
-> [FIX]
-> It's no longer possible to revert to the original code style as we have
-> two different bio_add_*_page() calls now.
-> 
-> The new fix is to skip the bio_add_*_page() call if @submit is true.
-> 
-> Also to avoid @len to be uninitialized, always initialize it to zero.
-> 
-> If @submit is true, @len will not be checked.
-> If @submit is not true, @len will be the return value of
-> bio_add_*_page() call.
-> Either way, the behavior is still the same as the old code.
-> 
-> Reported-by: Josef Bacik <josef@toxicpanda.com>
-> Fixes: 764c7c9a464b ("btrfs: zoned: fix parallel compressed writes")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Thanks for the fix, I'll have to send it to Linus this week but I want
-to be sure there are no more surprises so this will stay in the tested
-branches for a few days.
+I don't like to see the pattern with the chained labels but in this case
+I don't see a better way, so ok.
