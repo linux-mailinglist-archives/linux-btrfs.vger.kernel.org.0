@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228B5390D11
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 May 2021 01:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B31390D12
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 May 2021 01:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhEYXwA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 19:52:00 -0400
-Received: from mout.gmx.net ([212.227.17.22]:49089 "EHLO mout.gmx.net"
+        id S232107AbhEYXwr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 19:52:47 -0400
+Received: from mout.gmx.net ([212.227.15.15]:33907 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231947AbhEYXv7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 19:51:59 -0400
+        id S231947AbhEYXwq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 19:52:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621986626;
-        bh=3knFpNCVp24esQWfOwz5n44+EydK6ilm4m32IkO9HeU=;
+        s=badeba3b8450; t=1621986674;
+        bh=Ps+3vxpVXWqVNKhe53ub2SXFAOlXFLGwBQUWLRXQG4k=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=WgObvDPC82V9qvdh5iNv6IZreNYFMzbUTRczyyLNZ7xZkyJ6rcuf4DiHwhiyewzqm
-         cMiIfiNBs1x6godPHkC8JpJvBCnNhmpNm7urnr3yWiBN4AhmhT813eh4WRgK+6/wRd
-         6AToVY5F0WBhxvMVAGEAul8xECmGaMf2Ivsf2st8=
+        b=Y7nAJD1X9XKC7tkamdm0fnXtc294CBISVz1RCwov9TL/62jsCI4dX3bU5xi80FbwH
+         AaQgks8F/W8599wiQy9lYoaxrwuKdRQVzgFRXDSZxAy3o8W+oPt3W7TRhjLygKJuQe
+         trHDT5lCLiRDhXsIPoIrJB2xew/EzwEb4SehQTlQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlf0U-1l48rz0z6w-00il2g; Wed, 26
- May 2021 01:50:26 +0200
-Subject: Re: [PATCH 3/9] btrfs: clear log tree recovering status if starting
- transaction fails
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXXuH-1lvyL01um7-00Z0q0; Wed, 26
+ May 2021 01:51:14 +0200
+Subject: Re: [PATCH 4/9] btrfs: scrub: factor out common scrub_stripe
+ constraints
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1621961965.git.dsterba@suse.com>
- <2a572b691dd9f79de5649894dd24ea555913e1c7.1621961965.git.dsterba@suse.com>
+ <d175e98023012390c53755ba85f93606376f51a4.1621961965.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <11027586-02b3-c9ba-344e-a820e1086eb5@gmx.com>
-Date:   Wed, 26 May 2021 07:50:22 +0800
+Message-ID: <ee829f79-828c-b174-86f7-f30b0a12b6ac@gmx.com>
+Date:   Wed, 26 May 2021 07:51:11 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <2a572b691dd9f79de5649894dd24ea555913e1c7.1621961965.git.dsterba@suse.com>
+In-Reply-To: <d175e98023012390c53755ba85f93606376f51a4.1621961965.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:B+y3nDP6rcrXrA/rTjOhWnIoPDbZ8WhRm6GiE0gF0IYDEYWnJBf
- 0fjwlZ1AKaW+n42uShWbldE2vrZs61WR4TTD4xQYP/0AaiKDcvtO3IQ+B5qxncVqmcZgKFM
- F9xphKCuSzkecNHuij7HRnSO1VBKzTnJa345d6eVOkVaNg3eCl2i2CXFMDT9aaAtjIEE9hy
- J4Lhd7m96B98a37UW1Vyw==
+X-Provags-ID: V03:K1:tg0bXHg4gouwmny7OTt2Iv39pf1uREU64pheufIpx4Jd72Zi29c
+ mdvRGI0p4dQ37fMvd7ETNILC05hP3/FcprjmhJDZn+3cGAnBolDyUvk8Yo+5NgWj/EE1Cdz
+ Y8DqnKM8qsnsB2hlNkWsRxfg918Jm+hEn7o63ZynFTXiimjVpvrI0RBb3J4nRUhbD6IbvSy
+ n7iLjYj9jOD/Yd5WWO4Dw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6YuwDL7+4+Q=:DLta9XdhA+cH/XwZtayxzF
- waf7BpYSenFyPB20tHWwurbqbVJ4hapVOna6uC+K4p/LbnC20rswzjvY+O7mKcFhZtZcc7wpq
- LORCQavoVI+2ADK9gz3gI8N6wJaxBnMZt+IJwu23qunpHIrHnUzZi3eFAbBxFHFG5VSStE10x
- VH1r3vuWW7ZHiswJnU/kMxDC6eaeQvURR0Hb+n2U47LMlnz7RbsWWSe4uUWKBExG3mc0vtrsZ
- Hsl9WQlovb6QNt2ZmmGr3tyKB9Go2YZyQkpdPRNv8r1l7SPCu5U8fvNN/+r0LhoKq6TNiso6B
- EAoRyW9SOn8SqN7vX+HPJ8heXWBkvLeOhdJJHKPZyv23fQN7WssC/gvtVXiakninnltXH4CaN
- Jcw1VCO6Nzk793bLiMGXJPg/gAzxqhG9QdDUwm1hg+1zHps49aIkemhCrxXSvxIgLXOVCzo7V
- KHRlyv/QpLbmke4NSUYff2Aex5MK6evVlV9O0lVtd9+WOfVyPaRyiBHPBGDkdYZ8MGyIaSKx2
- 86Exzo71ZFz7Rkost8HGXFFUDh9L/LJpdyGYXPVBlgM3N6H+s0Ua3Hg/7TkN7R/1g3meiBjRf
- iHK5RM7X2v/7ebCqyge8c3YF4sansGXEPnUVETiBzSr+F/Dxr4+D0nPZ+fsiNNSfHS0ORZBHj
- x9fc5HpWxgTFGqUI4QEMvo7UrPvMmx/LjMAV+clDaKkLw0scDqSfPWpGGS7pR9jnCJGMvZFHd
- HKERZQyGwj2n5gXeyaPzXLMbNYKvrbJLeWrLdoxQrbbTmrQbeso/kUGBSKetrKPmk/ofkR7YI
- 0nxMnRXvO7Sm1PcSEgLnG7e/eMZd5iaDRvkUKNr6PXmhZUKhBmInx++uMFKMEkAvyzIhnO1g3
- jiwFePAHLmyLGRoRClRuObXdHQb0yRgBgbXyGymiZYjDvifrAOJBlUUtSt3uKVIlpN+A/+QOL
- Tod6vE0SdfGpXxBsbIpW6H+sDGqq8FEjqZfvHZey6zKrqqp0bwWULC7VZlcb/VQsq4Douo3ZY
- NFVsZoNE5e16bktzZnHfOl+5DNLJ5DAPl03YDoHQPbBjxeb805D1aONvpeAnTP/tffb3qR4k1
- iheMp4krGxf5YCQ3CNUWKf7sIU5qSfi56A2n5jM4XJP/Foy48pxMUYE0Cr36ZMbDYv5NLgaRB
- 66QRxq8bOvWLC6ee6ad0Vz0yXP+StaXIzMjA/p3Fv+i1nNTtFBVk7zvShu+Yq4IjZIXj/xlE8
- rGuGbMwb/1paq3Fa4
+X-UI-Out-Filterresults: notjunk:1;V03:K0:aC4T7ZGv+DM=:s7U/LZLNP2t+u+GXzDo9qW
+ QV6k0iJ5T25NYlSiqTEB/0mptzc3JAvoV0108aAK1ZaLr0Oqtqt4xJ7TVpi3A+HxFuT4agvIz
+ LpFqFus0c58VhnqtJ+ADqxJE+PgrGtfaHFRe0L5k1xOwpJpQ5NtifcZDt2HoMAwDKmmzjJQbO
+ O3UeZyG5WSUZXr1Cn1do0pwUthiaFHGMCvOZGSEI6tJRQl8VgGfQom3/DyqqEnDJ/KKDmZm4D
+ PqrrD/ocB9LCOD3Ehxsp375Qh873+R+NNglkaf7Y60TXLroBWuz46yYSljXl9p5nnfB/gMOE/
+ 0sUtOVye1ZB/xVfiSwqbCstmFF9DOs2N9wLe4jzUzGl87xlVo/VVOXdjioEO0rIy/rTtITwoL
+ VeQ4mieOZ2L5UR0uN23qCdJKQUbARY1Y+VmOHZONi9/1LUl6opTUiMi7CE60WjZ3p1sXfru+D
+ zMTxwmuRyqgBR93G8iRkDxmfriD2bIVSVHEVVB2QrJuqRK8TsxCh+lYu4OQ4eqdtvty9AE3CM
+ ED0mFAMKLhkAj5RP31w+3Kzrshz1MgJj3Cl1udW+Wch12qTUGmFgh/7uMqwpc4iof+kYT5LPj
+ EGfxMUYp129y23oSKwXZycyyMmbxtkfC0HXlCTylz11uUDuSxKn3p/0gRROaivJZ/LSC0Bb10
+ P3iHwMpyN1czWBtffXQlxuAxJdmjsug4e2A0a3MHSi43wAc/ZOfMmsw7ljfkcWwVmNt0ltMfV
+ ZtzdFLRI4EoLPM0l6jOG+nscFpv+BeR016RnAm/H1l3VinH0OCnpQIXWisWBa6ovsApC3hfFx
+ Fks6RBdxClxEddF8orTnIWLEuyHtfTqNwOemz5hfO6ger5F6wnNt29/zg/vcYRov/rogxkCDu
+ 8ns0HQZF1rzfQGAVTgl3iGBWHs5t3q9JtHxmmeUvGsABzY6+gpecMVN3Uc/ziMF2Q1pqMxeY6
+ GAqPsKBKQgooq2iRL4WiN4+CvcE1ynOW/rmwUQ1dOmbjL2+07BD8MwSY0qrDrhQ4wQVTvHWJ/
+ Pt/1T8xN6T4VgP7ETGuwZgKdhRDLbobNu6HezhUcnG2OIwRc1gVBya29LQdANXWTagUGlqHIH
+ GINydnA9Z40Z731ZzLnXDbUE0FnmxaFUNEvwuAhf9PoHH4VT2QVdkyyUccY1aKga4b5K8jVGt
+ 43emzmiCBiGTrUZdG2RH5DL8502/dHRPg/9gJXevqcLRm3YIQwOh/WmaYmXTxTspzcw57nFiN
+ C8LqstfXtMTp3pqwo
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -68,19 +68,9 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/5/26 =E4=B8=8A=E5=8D=881:08, David Sterba wrote:
-> When a log recovery is in progress, lots of operations have to take that
-> into account, so we keep this status per tree during the operation. Long
-> time ago error handling revamp patch 79787eaab461 ("btrfs: replace many
-> BUG_ONs with proper error handling") removed clearing of the status in
-> an error branch. Add it back as was intended in e02119d5a7b4 ("Btrfs:
-> Add a write ahead tree log to optimize synchronous operations").
+> There are common values set for the stripe constraints, some of them
+> are already factored out. Do that for increment and mirror_num as well.
 >
-> There are probably no visible effects, log replay is done only during
-> mount and if it fails all structures are cleared so the stale status
-> won't be kept.
->
-> Fixes: 79787eaab461 ("btrfs: replace many BUG_ONs with proper error hand=
-ling")
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
@@ -88,20 +78,43 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/tree-log.c | 1 +
->   1 file changed, 1 insertion(+)
+>   fs/btrfs/scrub.c | 9 ++-------
+>   1 file changed, 2 insertions(+), 7 deletions(-)
 >
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index c6d4aeede159..5c1d58706fa9 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -6372,6 +6372,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log=
-_root_tree)
->   error:
->   	if (wc.trans)
->   		btrfs_end_transaction(wc.trans);
-> +	clear_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags);
->   	btrfs_free_path(path);
->   	return ret;
->   }
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index 518415d0c122..5839ad1e25a2 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -3204,28 +3204,23 @@ static noinline_for_stack int scrub_stripe(struc=
+t scrub_ctx *sctx,
+>   	physical =3D map->stripes[num].physical;
+>   	offset =3D 0;
+>   	nstripes =3D div64_u64(length, map->stripe_len);
+> +	mirror_num =3D 1;
+> +	increment =3D map->stripe_len;
+>   	if (map->type & BTRFS_BLOCK_GROUP_RAID0) {
+>   		offset =3D map->stripe_len * num;
+>   		increment =3D map->stripe_len * map->num_stripes;
+> -		mirror_num =3D 1;
+>   	} else if (map->type & BTRFS_BLOCK_GROUP_RAID10) {
+>   		int factor =3D map->num_stripes / map->sub_stripes;
+>   		offset =3D map->stripe_len * (num / map->sub_stripes);
+>   		increment =3D map->stripe_len * factor;
+>   		mirror_num =3D num % map->sub_stripes + 1;
+>   	} else if (map->type & BTRFS_BLOCK_GROUP_RAID1_MASK) {
+> -		increment =3D map->stripe_len;
+>   		mirror_num =3D num % map->num_stripes + 1;
+>   	} else if (map->type & BTRFS_BLOCK_GROUP_DUP) {
+> -		increment =3D map->stripe_len;
+>   		mirror_num =3D num % map->num_stripes + 1;
+>   	} else if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
+>   		get_raid56_logic_offset(physical, num, map, &offset, NULL);
+>   		increment =3D map->stripe_len * nr_data_stripes(map);
+> -		mirror_num =3D 1;
+> -	} else {
+> -		increment =3D map->stripe_len;
+> -		mirror_num =3D 1;
+>   	}
+>
+>   	path =3D btrfs_alloc_path();
 >
