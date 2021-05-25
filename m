@@ -2,170 +2,291 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9302C38F94F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 06:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192FD38F9AE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 06:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbhEYEXG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 00:23:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhEYEXG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 00:23:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AFA460232;
-        Tue, 25 May 2021 04:21:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621916497;
-        bh=5dy5LfRguGnUEiTb4qb1YSiAWvttCDz7RbjVJgbgRME=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LNRKhKckkc1XGOgberOcMQKCE5cY5P4wp/HGv/SRr7Vz2dk9UnHgofXLAPYH4Rm4+
-         hdW4Hu1THNF4KIlShMYihgxyEvixWeH0ZtdYYcKEYEDVYf51rqXScg+r4w7sd2s/jr
-         rW9bM15XOBQRUpPQ6Cu0no9OM+2ukHFnnNSkmBuP2vsuMdAjzB1Lo8VjaTr6zPp+mk
-         GOcYv3nsQdLObWg+wMk2HaBVBbMz1o93nnIhQLZptkj5KmEmFUMg+pYEml2chygOqM
-         G4JEkDh0lv4QEs1LSnIbbDzzc7cKety4QmcRHhu79e/eNVfw+ZwNcrar86pgEDK/oU
-         1LauzkSt2nxGg==
-Date:   Mon, 24 May 2021 21:21:36 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        David Howells <dhowells@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>, Chris Mason <clm@fb.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-cachefs@redhat.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        NeilBrown <neilb@suse.com>
-Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs
- directories?
-Message-ID: <20210525042136.GA202068@locust>
-References: <206078.1621264018@warthog.procyon.org.uk>
- <6E4DE257-4220-4B5B-B3D0-B67C7BC69BB5@dilger.ca>
- <YKntRtEUoxTEFBOM@localhost>
+        id S230290AbhEYEpU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 00:45:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42600 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229476AbhEYEpN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 00:45:13 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14P4YaRc058292;
+        Tue, 25 May 2021 00:43:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=6VLdwdPPP1nmq5tNo9O1nTeD8X+eenyyKNyioKNcRnM=;
+ b=WA3ewVByi+Vsd2PLuV/bDeuzv7BYgPZbzoB0tVLhrLFVOTzwb8kk18jeg0Mu/+DrbyNT
+ OZrOz4tE+vwAfWOx2KF1iZ6WzOXpC9ucsMsBpczwZMAYdPOLHRBuKpjEPhai6/FAzXwq
+ J6C1zTk3SkQpIn5QAwxnm29kBoc+ksS7M/WuwEsdAQI/HJAGsNA6rzVDNHQrBI+5QdAW
+ WKfTnetFHZWZPoIvRhenfA7+3oVJIsxqR8j/0Y9lOWkfRM1IynihQqgBgSZ+Ek2swBDM
+ up3bOOdkmkSn09gZ4jszWdD2rfwPxtWC84yR/cepv8YGEIJwehij9wsIM14kYOVn8kws 4A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38rryahyac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 00:43:13 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14P4ZU2b063771;
+        Tue, 25 May 2021 00:43:13 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38rryahy9d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 00:43:12 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14P4dS4B031685;
+        Tue, 25 May 2021 04:43:10 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 38psk8932d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 25 May 2021 04:43:10 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14P4h8do18546976
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 25 May 2021 04:43:08 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 300E0A4053;
+        Tue, 25 May 2021 04:43:08 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D0763A4057;
+        Tue, 25 May 2021 04:43:07 +0000 (GMT)
+Received: from localhost (unknown [9.199.34.137])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 25 May 2021 04:43:07 +0000 (GMT)
+Date:   Tue, 25 May 2021 10:13:07 +0530
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
+ subpage helper
+Message-ID: <20210525044307.xqfukx6qwu6mf53n@riteshh-domain>
+References: <fae358ed-8d14-8e14-2dc3-173637ec5e87@gmx.com>
+ <20210512070931.p5hipe3ov45vqzjt@riteshh-domain>
+ <20210513163316.ypvh3ppsrmxg7dit@riteshh-domain>
+ <20210513213656.2poyhssr4wzq65s4@riteshh-domain>
+ <5f1d41d2-c7bc-ceb7-be4c-714d6731a296@gmx.com>
+ <20210514150831.trfaihcy2ryp35uh@riteshh-domain>
+ <20210514175343.v32k2rmsfl5l2qfa@riteshh-domain>
+ <80735b91-ad23-1b49-20bb-fd3a09957793@gmx.com>
+ <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
+ <51186fd5-af02-2be6-3ba3-426082852665@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YKntRtEUoxTEFBOM@localhost>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <51186fd5-af02-2be6-3ba3-426082852665@suse.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zUO_4BnLhB4ye7RsOPj3myvhW2HmHcoG
+X-Proofpoint-ORIG-GUID: SvLBw9GGT6x5AaBbZMKxexAAmSzVcWjh
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-25_02:2021-05-24,2021-05-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 spamscore=0 phishscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105250029
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 23, 2021 at 10:51:02PM -0700, Josh Triplett wrote:
-> On Thu, May 20, 2021 at 11:13:28PM -0600, Andreas Dilger wrote:
-> > On May 17, 2021, at 9:06 AM, David Howells <dhowells@redhat.com> wrote:
-> > > With filesystems like ext4, xfs and btrfs, what are the limits on directory
-> > > capacity, and how well are they indexed?
-> > > 
-> > > The reason I ask is that inside of cachefiles, I insert fanout directories
-> > > inside index directories to divide up the space for ext2 to cope with the
-> > > limits on directory sizes and that it did linear searches (IIRC).
-> > > 
-> > > For some applications, I need to be able to cache over 1M entries (render
-> > > farm) and even a kernel tree has over 100k.
-> > > 
-> > > What I'd like to do is remove the fanout directories, so that for each logical
-> > > "volume"[*] I have a single directory with all the files in it.  But that
-> > > means sticking massive amounts of entries into a single directory and hoping
-> > > it (a) isn't too slow and (b) doesn't hit the capacity limit.
-> > 
-> > Ext4 can comfortably handle ~12M entries in a single directory, if the
-> > filenames are not too long (e.g. 32 bytes or so).  With the "large_dir"
-> > feature (since 4.13, but not enabled by default) a single directory can
-> > hold around 4B entries, basically all the inodes of a filesystem.
-> 
-> ext4 definitely seems to be able to handle it. I've seen bottlenecks in
-> other parts of the storage stack, though.
-> 
-> With a normal NVMe drive, a dm-crypt volume containing ext4, and discard
-> enabled (on both ext4 and dm-crypt), I've seen rm -r of a directory with
-> a few million entries (each pointing to a ~4-8k file) take the better
-> part of an hour, almost all of it system time in iowait. Also makes any
-> other concurrent disk writes hang, even a simple "touch x". Turning off
-> discard speeds it up by several orders of magnitude.
+On 21/05/15 06:15PM, Qu Wenruo wrote:
+>
+>
+> On 2021/5/15 下午5:59, Ritesh Harjani wrote:
+> > On 21/05/15 06:22AM, Qu Wenruo wrote:
+> > >
+> > >
+> > > >
+> > > > Hi Qu,
+> > > >
+> > > > Thanks for pointing this out. I could see that w/o your new fix I could
+> > > > reproduce the BUG_ON() crash. But with your patch the test btrfs/195 still
+> > > > fails.  I guess that is expected right, since
+> > > > "RAID5/6 is not supported yet for sectorsize 4096 with page size 65536"?
+> > > >
+> > > > Is my understanding correct?
+> > >
+> > > Yep, the test is still going to fail, as we reject such convert.
+> > >
+> > > There are tons of other btrfs tests that fails due to the same reason.
+> > >
+> > > Some of them can be avoided using "BTRFS_PROFILE_CONFIGS" environment
+> > > variant to avoid raid5/6, but not all.
+> > >
+> > > Thus I'm going to update those tests to use that variant to make it
+> > > easier to rule out certain profiles.
+> >
+> > Hello Qu,
+> >
+> > Sorry to bother you again. While running your latest full patch series, I found
+> > below two failures, no crashes though :)
+> > Could you please take a look at it.
+> >
+> > 1. btrfs/141 failure.
+> > xfstests.global-btrfs/4k.btrfs/141
+> > Error Details
+> > - output mismatch (see /results/btrfs/results-4k/btrfs/141.out.bad)
+>
+> Strangely, it passes locally.
+>
+> >
+> > Standard Output
+> > step 1......mkfs.btrfs
+> > step 2......corrupt file extent
+> > Filesystem type is: 9123683e
+> > File size of /vdc/foobar is 131072 (32 blocks of 4096 bytes)
+> >   ext:     logical_offset:        physical_offset: length:   expected: flags:
+> >     0:        0..      31:      33632..     33663:     32:             last,eof
+> > /vdc/foobar: 1 extent found
+> >   corrupt stripe #1, devid 2 devpath /dev/vdi physical 116785152
+> > step 3......repair the bad copy
+> >
+> >
+> > Standard Error
+> > --- tests/btrfs/141.out	2021-04-24 07:27:39.000000000 +0000
+> > +++ /results/btrfs/results-4k/btrfs/141.out.bad	2021-05-14 18:46:23.720000000 +0000
+> > @@ -1,37 +1,37 @@
+> >   QA output created by 141
+> >   wrote 131072/131072 bytes
+> >   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> > +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  ................
+> >   read 512/512 bytes
+> >   XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>
+> The output means the bad copy is not repaired, which is pretty strange.
+> Since my latest work is to make the read repair work in 4K size.
+>
+> Mind to test the attached script? (Of coures, you need to change the $dev
+> and $mnt according to your environment)
+>
+> It would do the same work as btrfs/141, but using scrub to make sure every
+> thing is correct.
+>
+> Locally, I haven't yet hit a failure for btrfs/141 yet.
 
-Synchronous discard is slow, even on NVME.
+Hello Qu,
 
-Background discard (aka fstrim in a cron job) isn't quite as bad, at
-least in the sense of amortizing a bunch of clearing over an entire week
-of not issuing discards. :P
+Sorry about the long delay on this one. I coudn't hit the issue with your test
+patch on my machine. Also instead of running btrfs/141 standalone when we run it
+with btrfs/140, the issue is hitting more often.
 
---D
+Can you try running below to see if it hits in your case?
 
-> 
-> (I don't know if this is a known issue or not, so here are the details
-> just in case it isn't. Also, if this is already fixed in a newer kernel,
-> my apologies for the outdated report.)
-> 
-> $ uname -a
-> Linux s 5.10.0-6-amd64 #1 SMP Debian 5.10.28-1 (2021-04-09) x86_64 GNU/Linux
-> 
-> Reproducer (doesn't take *as* long but still long enough to demonstrate
-> the issue):
-> $ mkdir testdir
-> $ time python3 -c 'for i in range(1000000): open(f"testdir/{i}", "wb").write(b"test data")'
-> $ time rm -r testdir
-> 
-> dmesg details:
-> 
-> INFO: task rm:379934 blocked for more than 120 seconds.
->       Not tainted 5.10.0-6-amd64 #1 Debian 5.10.28-1
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:rm              state:D stack:    0 pid:379934 ppid:379461 flags:0x00004000
-> Call Trace:
->  __schedule+0x282/0x870
->  schedule+0x46/0xb0
->  wait_transaction_locked+0x8a/0xd0 [jbd2]
->  ? add_wait_queue_exclusive+0x70/0x70
->  add_transaction_credits+0xd6/0x2a0 [jbd2]
->  start_this_handle+0xfb/0x520 [jbd2]
->  ? jbd2__journal_start+0x8d/0x1e0 [jbd2]
->  ? kmem_cache_alloc+0xed/0x1f0
->  jbd2__journal_start+0xf7/0x1e0 [jbd2]
->  __ext4_journal_start_sb+0xf3/0x110 [ext4]
->  ext4_evict_inode+0x24c/0x630 [ext4]
->  evict+0xd1/0x1a0
->  do_unlinkat+0x1db/0x2f0
->  do_syscall_64+0x33/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7f088f0c3b87
-> RSP: 002b:00007ffc8d3a27a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-> RAX: ffffffffffffffda RBX: 000055ffee46de70 RCX: 00007f088f0c3b87
-> RDX: 0000000000000000 RSI: 000055ffee46df78 RDI: 0000000000000004
-> RBP: 000055ffece9daa0 R08: 0000000000000100 R09: 0000000000000001
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffc8d3a2980 R14: 00007ffc8d3a2980 R15: 0000000000000002
-> INFO: task touch:379982 blocked for more than 120 seconds.
->       Not tainted 5.10.0-6-amd64 #1 Debian 5.10.28-1
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:touch           state:D stack:    0 pid:379982 ppid:379969 flags:0x00000000
-> Call Trace:
->  __schedule+0x282/0x870
->  schedule+0x46/0xb0
->  wait_transaction_locked+0x8a/0xd0 [jbd2]
->  ? add_wait_queue_exclusive+0x70/0x70
->  add_transaction_credits+0xd6/0x2a0 [jbd2]
->  ? xas_load+0x5/0x70
->  ? find_get_entry+0xd1/0x170
->  start_this_handle+0xfb/0x520 [jbd2]
->  ? jbd2__journal_start+0x8d/0x1e0 [jbd2]
->  ? kmem_cache_alloc+0xed/0x1f0
->  jbd2__journal_start+0xf7/0x1e0 [jbd2]
->  __ext4_journal_start_sb+0xf3/0x110 [ext4]
->  __ext4_new_inode+0x721/0x1670 [ext4]
->  ext4_create+0x106/0x1b0 [ext4]
->  path_openat+0xde1/0x1080
->  do_filp_open+0x88/0x130
->  ? getname_flags.part.0+0x29/0x1a0
->  ? __check_object_size+0x136/0x150
->  do_sys_openat2+0x97/0x150
->  __x64_sys_openat+0x54/0x90
->  do_syscall_64+0x33/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7fb2afb8fbe7
-> RSP: 002b:00007ffee3e287b0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-> RAX: ffffffffffffffda RBX: 00007ffee3e28a68 RCX: 00007fb2afb8fbe7
-> RDX: 0000000000000941 RSI: 00007ffee3e2a340 RDI: 00000000ffffff9c
-> RBP: 00007ffee3e2a340 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000000001b6 R11: 0000000000000246 R12: 0000000000000941
-> R13: 00007ffee3e2a340 R14: 0000000000000000 R15: 0000000000000000
-> 
-> 
+./check -I 20 btrfs/140 btrfs/141
+
+
+-ritesh
+
+>
+> >
+> >
+> > 2. btrfs/124 failure.
+> >
+> > I guess below could be due to small size of the device?
+> >
+> > xfstests.global-btrfs/4k.btrfs/124
+> > Error Details
+> > - output mismatch (see /results/btrfs/results-4k/btrfs/124.out.bad)
+>
+> Again passes locally.
+>
+> But accroding to your fs, I notice several unbalanced disk usage:
+>
+> # /usr/local/bin/btrfs filesystem show
+> Label: none  uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
+> 	Total devices 2 FS bytes used 32.00KiB
+> 	devid    1 size 5.00GiB used 622.38MiB path /dev/vdc
+> 	devid    2 size 2.00GiB used 622.38MiB path /dev/vdi
+>
+> Label: none  uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
+> 	Total devices 4 FS bytes used 379.12MiB
+> 	devid    1 size 5.00GiB used 8.00MiB path /dev/vdb
+> 	devid    3 size 20.00GiB used 264.00MiB path /dev/vde
+> 	devid    4 size 20.00GiB used 1.26GiB path /dev/vdf
+>
+> We had reports about btrfs doing poor work when handling unbalanced disk
+> sizes.
+> I had a purpose to fix it, with a little better calcuation, but still not
+> yet perfect.
+>
+> Thus would you mind to check if the test pass when all the disks in
+> SCRATCH_DEV_POOL are in the same size?
+>
+> Of course we need to fix the problem of ENOSPC for unbalanced disks, but
+> that's a common problem and not exacly related to subpage.
+> I should take some time to refresh the unbalanced disk usage patches soon.
+>
+> Thanksm
+> Qu
+>
+> [...]
+> >
+> > -ritesh
+> >
+
+
