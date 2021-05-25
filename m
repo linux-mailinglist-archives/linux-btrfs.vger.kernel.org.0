@@ -2,85 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C5539072F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 19:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226A639089E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 20:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbhEYRMw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 13:12:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34366 "EHLO mx2.suse.de"
+        id S230505AbhEYSN5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 14:13:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232224AbhEYRMv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 13:12:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621962680; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mhXIqSUTbbvpcDB8JsvWBlk0Yj9L8UxmpxRUa4AsVGQ=;
-        b=MLLX9Xx6kuveAhoyjpR2FUjqSR9UAYq6yMyDAAs8gO3qbnzmtZeBt4X29BtP6++XcGowsm
-        1UroTlUT4ymB4iqCzZVLrGOzYn1abwNafBda7pzEI7bk3Qt06iYnYoiGfNES0+V/W7hDC0
-        C2cykAbPc/0P1vZAAYADH1wz7wD7XRI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B71EAEEB;
-        Tue, 25 May 2021 17:11:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EF5E7DA70B; Tue, 25 May 2021 19:08:43 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 9/9] btrfs: clean up header members offsets in write helpers
-Date:   Tue, 25 May 2021 19:08:43 +0200
-Message-Id: <3a6ce6b310ecb2021a1ffea01fb08f48663d1a00.1621961965.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1621961965.git.dsterba@suse.com>
-References: <cover.1621961965.git.dsterba@suse.com>
+        id S229819AbhEYSNx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 14:13:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08106613F6;
+        Tue, 25 May 2021 18:12:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621966343;
+        bh=cFrrdY8Ap+EPQTOzQz9fhlEp0y3eRjgVjURZ+YE6z8I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EFbvcDv+iJGMGCTKAl/zvu64N9sqowA509Drgu70yyERY4LLsWJpxZRwX9hwV7B0n
+         WcAmVZmM/V8buqDgpVS5J01q3j6lef+zUYINpgLabBnAA9ovNfVMtxjemDu0jHIhwi
+         8bNFg0OIdk1dxuyFgZjYglAY0LUdNgAj3j3gdC535LH8bHFsVTdvMqzLCsQRzBo/0n
+         q11aTJYCtj+FI9vaIdQM3GO2wqDbcjYnbY3KYh7+kGhOligM2aqPmwagQmKnbsYgWs
+         VDtMUiZd+lUwkQNnVWvxioMn2jfzKMWt2yWdns47FY1Mtp86xMBdR03C5Go+UOs4zF
+         GGDQQoh0A8AQQ==
+Date:   Tue, 25 May 2021 11:12:21 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v4 1/5] btrfs: add compat_flags to btrfs_inode_item
+Message-ID: <YK0+BU9twmldQ9Q0@sol.localdomain>
+References: <cover.1620241221.git.boris@bur.io>
+ <6ed83a27f88e18f295f7d661e9c87e7ec7d33428.1620241221.git.boris@bur.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ed83a27f88e18f295f7d661e9c87e7ec7d33428.1620241221.git.boris@bur.io>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Move header offsetof() to the expression that calculates the address so
-it's part of get_eb_offset_in_page where the 2nd parameter is the member
-offset.
+On Wed, May 05, 2021 at 12:20:39PM -0700, Boris Burkov wrote:
+> The tree checker currently rejects unrecognized flags when it reads
+> btrfs_inode_item. Practically, this means that adding a new flag makes
+> the change backwards incompatible if the flag is ever set on a file.
+> 
+> Take up one of the 4 reserved u64 fields in the btrfs_inode_item as a
+> new "compat_flags". These flags are zero on inode creation in btrfs and
+> mkfs and are ignored by an older kernel, so it should be safe to use
+> them in this way.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/extent_io.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+This patchset doesn't have a cover letter anymore for some reason.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 2b250c610562..2e924f60ea6f 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -6519,9 +6519,10 @@ void write_extent_buffer_chunk_tree_uuid(const struct extent_buffer *eb,
- 	char *kaddr;
- 
- 	assert_eb_page_uptodate(eb, eb->pages[0]);
--	kaddr = page_address(eb->pages[0]) + get_eb_offset_in_page(eb, 0);
--	memcpy(kaddr + offsetof(struct btrfs_header, chunk_tree_uuid), srcv,
--			BTRFS_FSID_SIZE);
-+	kaddr = page_address(eb->pages[0]) +
-+		get_eb_offset_in_page(eb, offsetof(struct btrfs_header,
-+						   chunk_tree_uuid));
-+	memcpy(kaddr, srcv, BTRFS_FSID_SIZE);
- }
- 
- void write_extent_buffer_fsid(const struct extent_buffer *eb, const void *srcv)
-@@ -6529,9 +6530,9 @@ void write_extent_buffer_fsid(const struct extent_buffer *eb, const void *srcv)
- 	char *kaddr;
- 
- 	assert_eb_page_uptodate(eb, eb->pages[0]);
--	kaddr = page_address(eb->pages[0]) + get_eb_offset_in_page(eb, 0);
--	memcpy(kaddr + offsetof(struct btrfs_header, fsid), srcv,
--			BTRFS_FSID_SIZE);
-+	kaddr = page_address(eb->pages[0]) +
-+		get_eb_offset_in_page(eb, offsetof(struct btrfs_header, fsid));
-+	memcpy(kaddr, srcv, BTRFS_FSID_SIZE);
- }
- 
- void write_extent_buffer(const struct extent_buffer *eb, const void *srcv,
--- 
-2.29.2
+Also, please mention where this patchset applies to.  I tried mainline and
+btrfs/for-next, but neither works.
 
+- Eric
