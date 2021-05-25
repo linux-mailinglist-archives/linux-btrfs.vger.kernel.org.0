@@ -2,363 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACE238FA44
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 07:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1500D38FA45
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 07:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhEYFxw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 01:53:52 -0400
-Received: from mout.gmx.net ([212.227.15.18]:55791 "EHLO mout.gmx.net"
+        id S230462AbhEYFyS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 01:54:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36918 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229621AbhEYFxv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 01:53:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621921937;
-        bh=kGdzDMFinIBcLMBgjn9BceQVduH6qoGGARlMTToVOVo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=SaaGI8AkpCU2FcFuysiNlD8TOgVyI/NsPkUZeUa0Arlk5kB5OVPMwMwHB+6o2oheZ
-         ZcUNTq8GB3kL2Q1U3fClD7Q21/mlLa4TjwgwZz1FEuIbpQiDKXjpcgc6O9QevSALk1
-         r21CV87QiDkeO9qVSwziD0YaoWfNWJf3lxXphTQA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Msq6M-1lRYim1qKe-00tEqy; Tue, 25
- May 2021 07:52:17 +0200
-Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
- subpage helper
-To:     Ritesh Harjani <riteshh@linux.ibm.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <fae358ed-8d14-8e14-2dc3-173637ec5e87@gmx.com>
- <20210512070931.p5hipe3ov45vqzjt@riteshh-domain>
- <20210513163316.ypvh3ppsrmxg7dit@riteshh-domain>
- <20210513213656.2poyhssr4wzq65s4@riteshh-domain>
- <5f1d41d2-c7bc-ceb7-be4c-714d6731a296@gmx.com>
- <20210514150831.trfaihcy2ryp35uh@riteshh-domain>
- <20210514175343.v32k2rmsfl5l2qfa@riteshh-domain>
- <80735b91-ad23-1b49-20bb-fd3a09957793@gmx.com>
- <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
- <51186fd5-af02-2be6-3ba3-426082852665@suse.com>
- <20210525044307.xqfukx6qwu6mf53n@riteshh-domain>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <ba250f72-ce16-92c0-d4b6-938776434ea2@gmx.com>
-Date:   Tue, 25 May 2021 13:52:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230218AbhEYFyS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 01:54:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621921968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=LbRzLbsKLrVQc77FU915FrS7vlVj0Gu8QjIJ5L9EZ4c=;
+        b=etPfM3AeyHK6kAgYJQRyWmrRC8dun35NAabGVciACXsPyIM7iITG0zmQvK5QPBesAp2NFp
+        BC8ZkxKvbeCSTRBWA35h/KFjuK6N+0RwBJoz/96Z7WzmlgLaS8DC14iD9b3Ar9/xpoGT+J
+        OZgIJSgKHqHBCvOeiBcQmBtplDyZ7X0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1042CAE72;
+        Tue, 25 May 2021 05:52:48 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH] btrfs: fix a bug where a compressed write can cross stripe boundary
+Date:   Tue, 25 May 2021 13:52:43 +0800
+Message-Id: <20210525055243.85166-1-wqu@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210525044307.xqfukx6qwu6mf53n@riteshh-domain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vnPQV/lWsQhVjFgskOiEwVdcyK3c8miQGlf9G0rptRaUQvPV8nD
- 9CClZ3zERixW+l1J/rex80l6raYMoFgjQTXxDi8Tk6UmgUySl0wtvxoQUfBVaVeTBdU6tmY
- 50ihthFK78X4zj+6goM2AlZLVIEMsEhNe/yJUf4ra9kEbms/NX2jIT3WkFsMRDaHDf53Ft7
- +A54To1Rbv+g/dfJx81OQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:urQ9BTIQfN4=:6qX67n4lmSwnuT+p+w8v4K
- s1MNdb6TLN8r7zx1FsX8ZT9dqxcqrG/8d9ZMzxF4cXyJxVuRkkMzVZEwPbFC4EA1cLctT1KKm
- tKxJa7CWJ7DBMLogt+SGCtrJtb3pMUa8k+cL/74WC56ya31saEhXSiKmWRCbOUxENWT94P9F0
- lnAaJ/yuhw/QhtNXZRpo1hteORfda2uCLdGlCNDto/zt24Ahqusak9WxlPY1MleIKBMdbL1qL
- FcF5QasuhgwwFOoQGQ43+Ze8gv2XVM7iODxGIYo3Fhh7Js0gru0YXaJgjhOW8bBfKjNvJXpQT
- R7FC//gNe49DCRQzhArnk/LqNPOzexUjG+WvKfJ3zZC9IlCrWUBwx79UqTs86V2MQ0vNqe9gT
- 3ubePZpAeE9e8VwgOWznL2NHB5Le7xA8kfoyPG/eR4QpCTwsTDjfMAAx4EZN8KmWPaiIOy7Pz
- ksXytxUGFXegBaztwGurEWkBpgf35YbbWCFdWTOrtHl+OefEsI+nmYrgoytveG6jHHNYv94wn
- UyE2++Ctp8yp9y/m6XdJek8XIIy1SBQ1PnsVc51vh1y2DHPxfJOZxmUQod0At7+t5j6VPLWLy
- uUTbXiGb4eYvHd01sx03Uq6PpcJVU5PF5qyW5i8i4gtscog22kGZz1QmOCf47IKru5vvqlbDS
- sinB/jd29Opkf0ot+nMR1EsGHWMP8/1o8Z2YTgVbDQCxoY2H/jzjFcXDhR6m9/vGIVCeHUo6e
- dMT1R7z54X+600/PFfAbtoWrMPPMntttIXmdHIuwJW1W6fghlp6j4mc+JOos3YxWdUCYJyl3p
- DhcdW7iLB5phwwbTtb9sAWU6nAURJiI8wW5df3L+ue+cFK9SDPfLHOtymQMYIVqi7+nP7+l9s
- IFtzoLeC1wpwd1YNh22fN3ZWPg9ZAPPMNjQy8XKUdVBLgd/uUCpyjsTSM3L8ak3obPBGM63L/
- 3Gyz7PYd3fPZoxPiHNkknVHteIpbxyVSpC/RLR+k/xvSRMa73ApatBPbj88Gm6JvtaBm814Eq
- 7lxrxyX5k9hgdhaVZwQ4mH8rvppu1pt/vgq9NcSABdImG7vOooOVLHjadlTEU23TOXSRv3pM0
- Mu7S55zuMRP843M5eOa3hHyzPs/NBMop54UJKUX5iFx8EXscjneovvOvg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+When running btrfs/027 with "-o compress" mount option, it always crash
+with the following call trace:
 
+  BTRFS critical (device dm-4): mapping failed logical 298901504 bio len 12288 len 8192
+  ------------[ cut here ]------------
+  kernel BUG at fs/btrfs/volumes.c:6651!
+  invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+  CPU: 5 PID: 31089 Comm: kworker/u24:10 Tainted: G           OE     5.13.0-rc2-custom+ #26
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+  RIP: 0010:btrfs_map_bio.cold+0x58/0x5a [btrfs]
+  Call Trace:
+   btrfs_submit_compressed_write+0x2d7/0x470 [btrfs]
+   submit_compressed_extents+0x3b0/0x470 [btrfs]
+   ? mark_held_locks+0x49/0x70
+   btrfs_work_helper+0x131/0x3e0 [btrfs]
+   process_one_work+0x28f/0x5d0
+   worker_thread+0x55/0x3c0
+   ? process_one_work+0x5d0/0x5d0
+   kthread+0x141/0x160
+   ? __kthread_bind_mask+0x60/0x60
+   ret_from_fork+0x22/0x30
+  ---[ end trace 63113a3a91f34e68 ]---
 
-On 2021/5/25 =E4=B8=8B=E5=8D=8812:43, Ritesh Harjani wrote:
-> On 21/05/15 06:15PM, Qu Wenruo wrote:
->>
->>
->> On 2021/5/15 =E4=B8=8B=E5=8D=885:59, Ritesh Harjani wrote:
->>> On 21/05/15 06:22AM, Qu Wenruo wrote:
->>>>
->>>>
->>>>>
->>>>> Hi Qu,
->>>>>
->>>>> Thanks for pointing this out. I could see that w/o your new fix I co=
-uld
->>>>> reproduce the BUG_ON() crash. But with your patch the test btrfs/195=
- still
->>>>> fails.  I guess that is expected right, since
->>>>> "RAID5/6 is not supported yet for sectorsize 4096 with page size 655=
-36"?
->>>>>
->>>>> Is my understanding correct?
->>>>
->>>> Yep, the test is still going to fail, as we reject such convert.
->>>>
->>>> There are tons of other btrfs tests that fails due to the same reason=
-.
->>>>
->>>> Some of them can be avoided using "BTRFS_PROFILE_CONFIGS" environment
->>>> variant to avoid raid5/6, but not all.
->>>>
->>>> Thus I'm going to update those tests to use that variant to make it
->>>> easier to rule out certain profiles.
->>>
->>> Hello Qu,
->>>
->>> Sorry to bother you again. While running your latest full patch series=
-, I found
->>> below two failures, no crashes though :)
->>> Could you please take a look at it.
->>>
->>> 1. btrfs/141 failure.
->>> xfstests.global-btrfs/4k.btrfs/141
->>> Error Details
->>> - output mismatch (see /results/btrfs/results-4k/btrfs/141.out.bad)
->>
->> Strangely, it passes locally.
->>
->>>
->>> Standard Output
->>> step 1......mkfs.btrfs
->>> step 2......corrupt file extent
->>> Filesystem type is: 9123683e
->>> File size of /vdc/foobar is 131072 (32 blocks of 4096 bytes)
->>>    ext:     logical_offset:        physical_offset: length:   expected=
-: flags:
->>>      0:        0..      31:      33632..     33663:     32:           =
-  last,eof
->>> /vdc/foobar: 1 extent found
->>>    corrupt stripe #1, devid 2 devpath /dev/vdi physical 116785152
->>> step 3......repair the bad copy
->>>
->>>
->>> Standard Error
->>> --- tests/btrfs/141.out	2021-04-24 07:27:39.000000000 +0000
->>> +++ /results/btrfs/results-4k/btrfs/141.out.bad	2021-05-14 18:46:23.72=
-0000000 +0000
->>> @@ -1,37 +1,37 @@
->>>    QA output created by 141
->>>    wrote 131072/131072 bytes
->>>    XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> -XXXXXXXX:  aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>> +XXXXXXXX:  bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb  .........=
-.......
->>>    read 512/512 bytes
->>>    XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->>
->> The output means the bad copy is not repaired, which is pretty strange.
->> Since my latest work is to make the read repair work in 4K size.
->>
->> Mind to test the attached script? (Of coures, you need to change the $d=
-ev
->> and $mnt according to your environment)
->>
->> It would do the same work as btrfs/141, but using scrub to make sure ev=
-ery
->> thing is correct.
->>
->> Locally, I haven't yet hit a failure for btrfs/141 yet.
->
-> Hello Qu,
->
-> Sorry about the long delay on this one. I coudn't hit the issue with you=
-r test
-> patch on my machine. Also instead of running btrfs/141 standalone when w=
-e run it
-> with btrfs/140, the issue is hitting more often.
->
-> Can you try running below to see if it hits in your case?
->
-> ./check -I 20 btrfs/140 btrfs/141
+[CAUSE]
+The critical message before the crash means we have a bio at logical
+bytenr 298901504 length 12288, but only 8192 bytes can fit into one
+stripe, the remaining 4096 bytes is into another stripe.
 
-Awesome! Now I can reproduce it locally too.
+In btrfs, all bio is properly split to avoid cross stripe boundary, but
+commit 764c7c9a464b ("btrfs: zoned: fix parallel compressed writes")
+changed the behavior for compressed write.
 
-I'll investigate to ensure it's properly fixed.
+The offending code looks like this:
 
-Thanks again for the awesome report!
-Qu
->
->
-> -ritesh
->
->>
->>>
->>>
->>> 2. btrfs/124 failure.
->>>
->>> I guess below could be due to small size of the device?
->>>
->>> xfstests.global-btrfs/4k.btrfs/124
->>> Error Details
->>> - output mismatch (see /results/btrfs/results-4k/btrfs/124.out.bad)
->>
->> Again passes locally.
->>
->> But accroding to your fs, I notice several unbalanced disk usage:
->>
->> # /usr/local/bin/btrfs filesystem show
->> Label: none  uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
->> 	Total devices 2 FS bytes used 32.00KiB
->> 	devid    1 size 5.00GiB used 622.38MiB path /dev/vdc
->> 	devid    2 size 2.00GiB used 622.38MiB path /dev/vdi
->>
->> Label: none  uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
->> 	Total devices 4 FS bytes used 379.12MiB
->> 	devid    1 size 5.00GiB used 8.00MiB path /dev/vdb
->> 	devid    3 size 20.00GiB used 264.00MiB path /dev/vde
->> 	devid    4 size 20.00GiB used 1.26GiB path /dev/vdf
->>
->> We had reports about btrfs doing poor work when handling unbalanced dis=
-k
->> sizes.
->> I had a purpose to fix it, with a little better calcuation, but still n=
-ot
->> yet perfect.
->>
->> Thus would you mind to check if the test pass when all the disks in
->> SCRATCH_DEV_POOL are in the same size?
->>
->> Of course we need to fix the problem of ENOSPC for unbalanced disks, bu=
-t
->> that's a common problem and not exacly related to subpage.
->> I should take some time to refresh the unbalanced disk usage patches so=
-on.
->>
->> Thanksm
->> Qu
->>
->> [...]
->>>
->>> -ritesh
->>>
->
->
+                        submit = btrfs_bio_fits_in_stripe(page, PAGE_SIZE, bio,
+                                                          0);
+
++               if (pg_index == 0 && use_append)
++                       len = bio_add_zone_append_page(bio, page, PAGE_SIZE, 0);
++               else
++                       len = bio_add_page(bio, page, PAGE_SIZE, 0);
++
+                page->mapping = NULL;
+-               if (submit || bio_add_page(bio, page, PAGE_SIZE, 0) <
+-                   PAGE_SIZE) {
++               if (submit || len < PAGE_SIZE) {
+
+Previously if we find our new page can't be fitted into current stripe,
+aka "submitted == 1" case, we submit current bio without adding current
+page.
+
+But after the modification, we will add the page no matter if it crosses
+stripe boundary, leading to the above crash.
+
+[FIX]
+It's no longer possible to revert to the original code style as we have
+two different bio_add_*_page() calls now.
+
+The new fix is to skip the bio_add_*_page() call if @submit is true.
+
+Also to avoid @len to be uninitialized, always initialize it to zero.
+
+If @submit is true, @len will not be checked.
+If @submit is not true, @len will be the return value of
+bio_add_*_page() call.
+Either way, the behavior is still the same as the old code.
+
+Reported-by: Josef Bacik <josef@toxicpanda.com>
+Fixes: 764c7c9a464b ("btrfs: zoned: fix parallel compressed writes")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/compression.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index d17ac301032e..1346d698463a 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -457,7 +457,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	bytes_left = compressed_len;
+ 	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
+ 		int submit = 0;
+-		int len;
++		int len = 0;
+ 
+ 		page = compressed_pages[pg_index];
+ 		page->mapping = inode->vfs_inode.i_mapping;
+@@ -465,10 +465,17 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 			submit = btrfs_bio_fits_in_stripe(page, PAGE_SIZE, bio,
+ 							  0);
+ 
+-		if (pg_index == 0 && use_append)
+-			len = bio_add_zone_append_page(bio, page, PAGE_SIZE, 0);
+-		else
+-			len = bio_add_page(bio, page, PAGE_SIZE, 0);
++		/*
++		 * Page can only be added to bio if the current bio fits in
++		 * stripe.
++		 */
++		if (!submit) {
++			if (pg_index == 0 && use_append)
++				len = bio_add_zone_append_page(bio, page,
++							       PAGE_SIZE, 0);
++			else
++				len = bio_add_page(bio, page, PAGE_SIZE, 0);
++		}
+ 
+ 		page->mapping = NULL;
+ 		if (submit || len < PAGE_SIZE) {
+-- 
+2.31.1
+
