@@ -2,402 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C8438FAB5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 08:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D5438FAF2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 08:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhEYGPt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 02:15:49 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48741 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230440AbhEYGPs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 02:15:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621923254;
-        bh=QkhzG7yizF96xxdxHiYzVYCUUFzMdk0es+ZvqhMfIsc=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=BhXgnpUjhC+7ojGBN4+LrkrHXX/au+uKoxPMWMEnuhd3WQfmC5fFXhZfmvnqlatNj
-         Sqafdt0nuzAGl5c7kMkycLxQnEsZsbwn5Pshx73W8A8On5uGsV0El0G7VQJJ+sMMR1
-         dVgHPqASBFSaojsWly8bznc7ldLQNMf2r2gxyyGM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MY6Cb-1lvgfg0wIv-00YOZ2; Tue, 25
- May 2021 08:14:13 +0200
-To:     Ritesh Harjani <riteshh@linux.ibm.com>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <fae358ed-8d14-8e14-2dc3-173637ec5e87@gmx.com>
- <20210512070931.p5hipe3ov45vqzjt@riteshh-domain>
- <20210513163316.ypvh3ppsrmxg7dit@riteshh-domain>
- <20210513213656.2poyhssr4wzq65s4@riteshh-domain>
- <5f1d41d2-c7bc-ceb7-be4c-714d6731a296@gmx.com>
- <20210514150831.trfaihcy2ryp35uh@riteshh-domain>
- <20210514175343.v32k2rmsfl5l2qfa@riteshh-domain>
- <80735b91-ad23-1b49-20bb-fd3a09957793@gmx.com>
- <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
- <51186fd5-af02-2be6-3ba3-426082852665@suse.com>
- <20210525044307.xqfukx6qwu6mf53n@riteshh-domain>
- <ba250f72-ce16-92c0-d4b6-938776434ea2@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
- subpage helper
-Message-ID: <1a2171a5-f356-9a2e-d238-0725d3994f45@gmx.com>
-Date:   Tue, 25 May 2021 14:14:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <ba250f72-ce16-92c0-d4b6-938776434ea2@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S231259AbhEYGcg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 02:32:36 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:4779 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231197AbhEYGcf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 02:32:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1621924264; x=1653460264;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=UJpAgBoUGXHzEqbQUYtd6AAg1RdS/Pi3iW0aC0v3MwY=;
+  b=VBqg/ik0cUUEtb0ur+mZAKU/tCvbZcVctqYTMDHEeLWYD2CULEFJ5pHa
+   wHyVwd6THEccIV7A0E5iNCW7aNaJuMdKkSQ5PtOKqB/+869QPWjq/R8TH
+   MUgk3fX2Z3lGJfye3YJt0XVrDWtbWTQ1upCtGCCuwaLVnuIuUGmh5mGTA
+   AJoLb8VPd4RbdLD+agFS+4ifWR8Oz+MKH/KzRRaeOpZIGOxMTVQxEc9Hf
+   3sfGTFXCedQuppONsHfov0i9rBPxpc6gP/Lq0+ASzjbmK2xcfhXTvnyVH
+   LeIboYu3OLzLiu2ufIKWx3hikO1pV35ufbJe3F4i/QHukTSeDUN1hXQ8E
+   A==;
+IronPort-SDR: stq3tOTOcHHAQEIKYXpD75evbTjcxZHEKW0Eqlwc6J0d0ZXjbr4SM3L065Ka8cY3YBbGZaHMzf
+ 6W4kKiDyxBlD4IU5Yt/bhOVTaIOPQo+jSd7jCBKak57CC9x+Qkt1mVdorgC/B3YkPuXb4qv4o1
+ piGCfckUrF7Ek94lvG9BTwydLsYFJrPAX65MyXaEbyKSLOzkZv0cPlbEf1IK2T37pdtbq0xRZB
+ s0GmuMhj8GrnTbho+iUvusCEDCMpAxTGBRG+UufKgT84febbo3lLKfMwhrzQKcl17VXBldFKRN
+ j80=
+X-IronPort-AV: E=Sophos;i="5.82,327,1613404800"; 
+   d="scan'208";a="169326609"
+Received: from mail-mw2nam10lp2108.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.108])
+  by ob1.hgst.iphmx.com with ESMTP; 25 May 2021 14:31:03 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TP0MOPbBfCxvfj0fW0Fkw2wk8nbXTtR4WPnvoppSvZn/VU5gbigTYcw0JfbzKHiN1DjsHPdsQqgcplNM48bvxtXZlMVH65U8EEBYrRUH0VMT1IquaWdL7Lmtk2NGjgx0Hrm3P/8tsvMCjV7CPCFyi3e1zWhBw87XRkYDAXVIJiqumzvnrc+vK2NLtd6WB/Qk9puPB1Oa7Nxspq1VTLWQ4I9OsAOuXzBRVC106YjHPd5THBAAXbiyXrts81ETeC/uwM0ZHn0PbmoYnYL3ug4fFFkgVzf1gG4IX9zDrJeCr+jjmfJwYfcpwIxfc26kz31xHrhmLKx7uiVvTvyOjx5BTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=khvelEdw2z12CC/1K/zsmqt8dF+lTX9U+2awG291yrM=;
+ b=Tj68DdMqzsn7Mb8jlAWMpYnyunvqB/CIiLGvnbQXf+ntp81PDcVUiIhnUTUiXl895J82fz2jmYeqZ/UhP8KdAMCXrpuwMldbfaWHN3/Hb0I9c5RYLcz/zP5MV3Ca3/rHtVhp6hznnbwb1D9UxTB8/az++t7Nbb7h5Wc344TQBtkDWfFesFDGaZ0q73RvSGVo27iEEsWbCr58i+W+0zwHj8QvnDppLlfGTAudAWtMmBas23wq7ckJMid1XUhnHCUTAbOdT74QZcmbyN73uamk1qQ2NXPcBfnWwA+IPYoDF5m5cDzHYvTlLS6Y2g4R0CZ09fblkfGTYqTWb2aNKf7KtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=khvelEdw2z12CC/1K/zsmqt8dF+lTX9U+2awG291yrM=;
+ b=mJtYrHpklc+eWIAeoWLpNHVHL9w8s8pl+BetzGKwyBHhCfPdfc+myUaK1t2+9eMygwupmQngPsEyR4khzj0ATjX9Z9SwaqINOvpeGhrHJSBIt+whvSqLkPXdkBHMXEKAfTuaDBMBNIPNKMle290bGMo9Ili8lzGpLoiqqAIDG0o=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7160.namprd04.prod.outlook.com (2603:10b6:510:9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.25; Tue, 25 May
+ 2021 06:31:05 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4150.027; Tue, 25 May 2021
+ 06:31:05 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] btrfs: zoned: fix compressed writes
+Thread-Topic: [PATCH v2 2/3] btrfs: zoned: fix compressed writes
+Thread-Index: AQHXS/wyoE+7u2fw/k+3p3TOtvxw4g==
+Date:   Tue, 25 May 2021 06:31:04 +0000
+Message-ID: <PH0PR04MB74162360D247C1E4F0DC6EA69B259@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <cover.1621351444.git.johannes.thumshirn@wdc.com>
+ <1220142568f5b5f0d06fbc3ee28a08060afc0a53.1621351444.git.johannes.thumshirn@wdc.com>
+ <563c1ac3-abf3-3f60-dbdf-362ebc69eb28@toxicpanda.com>
+ <92273193-366c-8121-c2f6-26c885d77ead@gmx.com>
+ <3cba8426-5574-0da7-28bd-aa90eb9f18b8@gmx.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmx.com; dkim=none (message not signed)
+ header.d=none;gmx.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [62.216.205.239]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: db7d3c28-f7d1-4f2b-2119-08d91f46ac68
+x-ms-traffictypediagnostic: PH0PR04MB7160:
+x-microsoft-antispam-prvs: <PH0PR04MB71601BDABEE3B5FB83FDA74A9B259@PH0PR04MB7160.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 52oMwzwa0DSp6FYQEqCY8VyzXDg/5CjCp3XQev/CDDfEw2HV5cX8ZHBJ8zQzdDCSLuYbOLdaLwqXCNWrG6rKfTnnqA4ubxJQ/u+AyTYugbXd8lpcTQsc8BajHhi/bpoIKi4iy3ag2sRctQVBTz4/HU4xlwAX6DkZIZdKaLXtIsgkXNMvSj57W11p/ams2/ha9vsuLAfas5DAHygsPglkmixgGhruVrDKoqLOsz+ChLNc5UF0d9xnZFfsqhYFQ0lsLlCVsZaxYMVNkciSZWlHmbAxSzNyVHKNevWy/ii4olwNLSt56TVGwKMevQGbmDz0ejVoi7wVXlDKwc7Zs95m+3Uthg1n0Z+poQ+oZT0XwuTroHx9ZtmC5xQV1BLDyXYF+zH0hZiC78iVW4S9dHlj8D+vZLrGPEnljEqXWOdNiWngIefxnQDz3ol/W/qjaJivef4d2/Fjiv2BnDlW259h5jQa9ZnxCdGo/O/5Qxp27tPv+SZOOSTR2T9fZzzqb5F+44MZX6oF4eRmhOuPM2mCoGuKGe0tw4qW+jjYcwzodDJrq9xF8YxasH/ZVBD74jwqTajlGCkfjPV8MM8SbSja/Sd0p4jow4fb0A7obG/sA3Y=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(366004)(39860400002)(66446008)(55016002)(66476007)(66946007)(91956017)(8676002)(9686003)(86362001)(64756008)(66556008)(76116006)(7696005)(478600001)(38100700002)(33656002)(52536014)(110136005)(71200400001)(316002)(186003)(2906002)(6506007)(5660300002)(26005)(122000001)(8936002)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Jkk9HmtP5Rkn+PVRK4FvC0SoqA3W/m/Oncyg8osI6/vzUwYQm66nuaBvu66S?=
+ =?us-ascii?Q?P4FEtUPTjZWBEDexXvL431VwhiiZTv6XmcWcKvjNwnaPog2lW18RZ8hPwQiy?=
+ =?us-ascii?Q?t7SlI4BXKmjnRCLf+9PnBjF2To5qJ857GCTlKW8SLBxpCsXgiZ6NrgS1nroW?=
+ =?us-ascii?Q?PQZHQ7sXfyyHOcQIsYT7aJG3NSo/8ht48VvnOscrM44br4eQ6UnYPK8BMnWu?=
+ =?us-ascii?Q?D3kPy0uegzRVNGZOF5uJioz0rtm7m1TgcFXiuF5ABzPTiwRS65X4dMiucwwF?=
+ =?us-ascii?Q?n9+jxB8FB/VVf/j+vQYokaFcCkUGwQK/uxd6onFAL/0ogMG19ewCuSevUvRx?=
+ =?us-ascii?Q?ahDgJjT7XEGjNQ6n7Ml3zZSbimPboeQkOarV5jvNmQWRCd69sM7EmlXOoZ9S?=
+ =?us-ascii?Q?7njCZ2KUzzJvdqJ1LJ39HhKqhZB0/WIaxyjU/PvPY28OgbwPzhaMR/A6WxDF?=
+ =?us-ascii?Q?iyFEHWSsdtzx1MOGStIO6Awr/yrNepKYs9FQwWQiiLCmRD1U815NMvVVy6qE?=
+ =?us-ascii?Q?yAZRnolT+WkFtwIGlHf9V5vg1l3/0hN1gFfHTxnhVBEdFfH8Hm2N9ysGC7yc?=
+ =?us-ascii?Q?HP4UyXyrNZA3z1f1AZ5jJab2UlagdiKB6k2fYzen96o8DGnqDWqNxqVsBiEo?=
+ =?us-ascii?Q?aNTuO1ochTbNGH6E4zTRocqQnTcJJrVpvObAN6AMk0HGAgOPoVpagbpUD3FF?=
+ =?us-ascii?Q?SisOgkf6SMk7PTZogyYkAQbT5CxhFUdt9BFX0TThKJgDPE7/0br9Q9K0QrQd?=
+ =?us-ascii?Q?pGOuXgYhlCQuk8wM0WWPUn8JfyLgTeO1hvN0z5bqprfBVJwsol7NTu0dTz3+?=
+ =?us-ascii?Q?OhJL14gIZg0fM6py2qvfTFbdxxhbZ6EHlu3I1lcrU/tJ/klGfcljo+ccNBOP?=
+ =?us-ascii?Q?axDkzYSgP6GcMQZuG5w5Avgajryzh5ozxeicZ+8bQBWrHsmcUVybOvI1Ujfv?=
+ =?us-ascii?Q?uoU1MgNsuyadOnOQ8sdNdfjvnv9VfGpOslFCYi6s2FWBnrVKX9g8MLn6fuvV?=
+ =?us-ascii?Q?Mbx88uf3hQBVVvQ9W4ODfzNceB8ckv0pFGg0mLAnbkbvJfSfNvXL5/Ghejrs?=
+ =?us-ascii?Q?lRUgtah+JXHkmyaLjUQECdKPLf8vxgLXFvnupDS4d6UgKJBIBQRpzgCno/vS?=
+ =?us-ascii?Q?0PxBlqeTcOn4XputbVnF5gFK6rmos+VCr9/VzroPYmqFkrUwbifp+nGEVO+l?=
+ =?us-ascii?Q?j5vA1pP8g3fu//8L9VgVLlpDUrOkqHhelIJni+mVFygOCIKItm1qlxRPbjL3?=
+ =?us-ascii?Q?kX6mulkLBwDcn3cA+zqOWPvxCoixiHEiFZxSw1sSCbuTu4cTGupx/ZDWHawX?=
+ =?us-ascii?Q?jU1t31iawAuESgE8cMmt03gWx2alcPnmCGNnSVWp3IliQg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:V9e1LHkwHeMDdYDKACvmVHnzNApPLB3RHvwAT3EBDsC4LsIKAsA
- FD6hDRlH9Z+JXLW67g5WXTagWI+kV4XLPx2ozfYjAKtmCj7/9mBZs5YwqnIYceQBgPTUzKx
- tTuKdrxW6DWs4GkLCcA82QPYcy2xyl8KGKAaqoO4nyJRn6DgAleFQffXzvT5aKMDpJAjfu2
- 1gBtdBe0MC7kzhA0Zgjiw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KmnjS2hfAVk=:UuONDRmMu1XmU6NVXVi64o
- bQFry0ANEphP3tlHD6YNSpyTgYFoTTtD5E/gjKiDFV/UyQjSoDRY0TOzaaosV0/LDfm9S4Lv2
- ySkaL3swqmp3lyu4GshTHmSlJzWJRYyNNWPbBPQT84XTZE/rZXXHhbPy6nxOTEZeMJdbT5v1L
- uQZubWMWkv8H9x12aB+v3pGR//QpeIUWjFDtDnH9zeghCL7iOR6fwbGWjMdtsfj5keDSRWO3w
- XKmyfIgr+fzIcJOqTh/RlKp0StcDWpxjQ94Z8J4heLWQnn7RPCIfvkbOvJfjSGSO4FBKuos8v
- Dc9VJ07UwYctkoRrPO8JXCA2F5cIzt0Nr3lUMjgKSvXNG1z8xvfmaAcarsviG/adw+Uxdh+OA
- SSfJpl98zHm9FH6MGtjsIMIPNxb+wW/ajoOzk9BIFeMRVsszgGnbcYZihicYWFbtiC3a5WL0z
- QuuXUkV9b3VVxPDb6Ns/hONYlBou9aqZg2ZiJYA4ejJmotTRt44YnPbjjpjjprTKLnlkc8MrB
- mi4ze6/gdJ34aptmaFG+D7lvorx4ZUFk2XL4NW4yg+FbNsCDMgVVhb5wWJaNtsbkUTnATZDqB
- KWcjJ3K4/d0kVWk/SrWrmouKm5hn01Mv4XdK6oFQBPTASWB31E8InDnyWRTR9DeBotQaIgemF
- jKdSeV0YGwp20yi3B9N9/IGhspiyBmIz4X740tWATzonOM8cs3N2Qs5evzlO+H+9ELD9u613R
- AqtYFq2ixESIVm+gglsE7wswXXNaax/8+nW04z7j77XaO5gIrIIfCdbHpfh9z3NdZB2BngsL2
- vT9s6GBCH9gHbPyPrlLO04JhW7jAo4DaCuFsnYzvx09yk1NF8qbd2vyW2smOIbUcZBXqZVsy3
- zioC/IGRsn0QMmRjMyAag4IqVJXkqpgtM5IlvBN2qcQqRg+7QsQkVRS3QUZ8W/vSMNbJz322f
- 5JAC1b4QTa7GOcOI1gpTPuN2/nXGBuwWGXj9LpKXy9hfMECgsZ0wIz+PJW8t9l5Z0mAgaoppA
- Xx09oJNa3if4X2F1n1gLbk7v71I3Tocn4SFzSkMfW/SNQFm1ITtGFHBIblQB4NHa10GWQ8uWk
- MmpMzOtzp9LjkQU67cAe2zZ3R4/Gf4VHQUYwrF2vw4V6iIhfMgFSS1Ku+H6U5ztkAb7ldrbUc
- o8eJqMHLPNcoI/H1ngrTY4Q9+Z4PeOp7FB8Tvgv5Nq48L0Mf5yjboUX1ucxBmY/HhFbcaXPWD
- 41Pc/OxUzk4APb6cA
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db7d3c28-f7d1-4f2b-2119-08d91f46ac68
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 May 2021 06:31:04.4578
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: N53bOd5pLGR+rgMGMUuB29aHFme65cdOOWVL/seWF5t6hVbeRciHl0ZYuma9NRyYfCeLYhRvqZzE6cpU5VRxLTIHX7iGPINLOcVaTU8LQDs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7160
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/5/25 =E4=B8=8B=E5=8D=881:52, Qu Wenruo wrote:
->
->
-> On 2021/5/25 =E4=B8=8B=E5=8D=8812:43, Ritesh Harjani wrote:
->> On 21/05/15 06:15PM, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/5/15 =E4=B8=8B=E5=8D=885:59, Ritesh Harjani wrote:
->>>> On 21/05/15 06:22AM, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>>>
->>>>>> Hi Qu,
->>>>>>
->>>>>> Thanks for pointing this out. I could see that w/o your new fix I
->>>>>> could
->>>>>> reproduce the BUG_ON() crash. But with your patch the test
->>>>>> btrfs/195 still
->>>>>> fails.=C2=A0 I guess that is expected right, since
->>>>>> "RAID5/6 is not supported yet for sectorsize 4096 with page size
->>>>>> 65536"?
->>>>>>
->>>>>> Is my understanding correct?
->>>>>
->>>>> Yep, the test is still going to fail, as we reject such convert.
->>>>>
->>>>> There are tons of other btrfs tests that fails due to the same reaso=
-n.
->>>>>
->>>>> Some of them can be avoided using "BTRFS_PROFILE_CONFIGS" environmen=
-t
->>>>> variant to avoid raid5/6, but not all.
->>>>>
->>>>> Thus I'm going to update those tests to use that variant to make it
->>>>> easier to rule out certain profiles.
->>>>
->>>> Hello Qu,
->>>>
->>>> Sorry to bother you again. While running your latest full patch
->>>> series, I found
->>>> below two failures, no crashes though :)
->>>> Could you please take a look at it.
->>>>
->>>> 1. btrfs/141 failure.
->>>> xfstests.global-btrfs/4k.btrfs/141
->>>> Error Details
->>>> - output mismatch (see /results/btrfs/results-4k/btrfs/141.out.bad)
->>>
->>> Strangely, it passes locally.
->>>
->>>>
->>>> Standard Output
->>>> step 1......mkfs.btrfs
->>>> step 2......corrupt file extent
->>>> Filesystem type is: 9123683e
->>>> File size of /vdc/foobar is 131072 (32 blocks of 4096 bytes)
->>>> =C2=A0=C2=A0 ext:=C2=A0=C2=A0=C2=A0=C2=A0 logical_offset:=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 physical_offset: length:
->>>> expected: flags:
->>>> =C2=A0=C2=A0=C2=A0=C2=A0 0:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- 0..=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 31:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 33632=
-..=C2=A0=C2=A0=C2=A0=C2=A0 33663:
->>>> 32:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 last,eof
->>>> /vdc/foobar: 1 extent found
->>>> =C2=A0=C2=A0 corrupt stripe #1, devid 2 devpath /dev/vdi physical 116=
-785152
->>>> step 3......repair the bad copy
->>>>
->>>>
->>>> Standard Error
->>>> --- tests/btrfs/141.out=C2=A0=C2=A0=C2=A0 2021-04-24 07:27:39.0000000=
-00 +0000
->>>> +++ /results/btrfs/results-4k/btrfs/141.out.bad=C2=A0=C2=A0=C2=A0 202=
-1-05-14
->>>> 18:46:23.720000000 +0000
->>>> @@ -1,37 +1,37 @@
->>>> =C2=A0=C2=A0 QA output created by 141
->>>> =C2=A0=C2=A0 wrote 131072/131072 bytes
->>>> =C2=A0=C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/se=
-c)
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> -XXXXXXXX:=C2=A0 aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa aa
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> +XXXXXXXX:=C2=A0 bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb bb
->>>> ................
->>>> =C2=A0=C2=A0 read 512/512 bytes
->>>> =C2=A0=C2=A0 XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/se=
-c)
->>>
->>> The output means the bad copy is not repaired, which is pretty strange=
-.
->>> Since my latest work is to make the read repair work in 4K size.
->>>
->>> Mind to test the attached script? (Of coures, you need to change the
->>> $dev
->>> and $mnt according to your environment)
->>>
->>> It would do the same work as btrfs/141, but using scrub to make sure
->>> every
->>> thing is correct.
->>>
->>> Locally, I haven't yet hit a failure for btrfs/141 yet.
->>
->> Hello Qu,
->>
->> Sorry about the long delay on this one. I coudn't hit the issue with
->> your test
->> patch on my machine. Also instead of running btrfs/141 standalone when
->> we run it
->> with btrfs/140, the issue is hitting more often.
->>
->> Can you try running below to see if it hits in your case?
->>
->> ./check -I 20 btrfs/140 btrfs/141
->
-> Awesome! Now I can reproduce it locally too.
->
-> I'll investigate to ensure it's properly fixed.
-
-What a relief, it's not a big problem in my patchset, but more likely to
-be in the test case, especially in the how the mirror number is chosen.
-
-When the test failed, you can find in the dmesg that, there is not any
-error mssage related to csum mismatch at all.
-
-This means, we're reading the correct copy, no wonder we won't submit
-read repair.
-This is mostly caused by the page size difference I guess, which makes
-the pid balance read for RAID1 less perdicatable.
-
-I don't yet have any good idea to fix the test case yet, so I'm afraid
-we have to consider it as a false alert.
-
-Thanks,
-Qu
->
-> Thanks again for the awesome report!
-> Qu
->>
->>
->> -ritesh
->>
->>>
->>>>
->>>>
->>>> 2. btrfs/124 failure.
->>>>
->>>> I guess below could be due to small size of the device?
->>>>
->>>> xfstests.global-btrfs/4k.btrfs/124
->>>> Error Details
->>>> - output mismatch (see /results/btrfs/results-4k/btrfs/124.out.bad)
->>>
->>> Again passes locally.
->>>
->>> But accroding to your fs, I notice several unbalanced disk usage:
->>>
->>> # /usr/local/bin/btrfs filesystem show
->>> Label: none=C2=A0 uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
->>> =C2=A0=C2=A0=C2=A0=C2=A0Total devices 2 FS bytes used 32.00KiB
->>> =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.00GiB used 62=
-2.38MiB path /dev/vdc
->>> =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 2 size 2.00GiB used 62=
-2.38MiB path /dev/vdi
->>>
->>> Label: none=C2=A0 uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
->>> =C2=A0=C2=A0=C2=A0=C2=A0Total devices 4 FS bytes used 379.12MiB
->>> =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.00GiB used 8.=
-00MiB path /dev/vdb
->>> =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 3 size 20.00GiB used 2=
-64.00MiB path /dev/vde
->>> =C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 4 size 20.00GiB used 1=
-.26GiB path /dev/vdf
->>>
->>> We had reports about btrfs doing poor work when handling unbalanced di=
-sk
->>> sizes.
->>> I had a purpose to fix it, with a little better calcuation, but still
->>> not
->>> yet perfect.
->>>
->>> Thus would you mind to check if the test pass when all the disks in
->>> SCRATCH_DEV_POOL are in the same size?
->>>
->>> Of course we need to fix the problem of ENOSPC for unbalanced disks, b=
-ut
->>> that's a common problem and not exacly related to subpage.
->>> I should take some time to refresh the unbalanced disk usage patches
->>> soon.
->>>
->>> Thanksm
->>> Qu
->>>
->>> [...]
->>>>
->>>> -ritesh
->>>>
->>
->>
+On 24/05/2021 15:05, Qu Wenruo wrote:=0A=
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c=0A=
+> index 831e6ae92940..26e2dceda1fc 100644=0A=
+> --- a/fs/btrfs/compression.c=0A=
+> +++ b/fs/btrfs/compression.c=0A=
+> @@ -455,10 +455,13 @@ blk_status_t btrfs_submit_compressed_write(struct=
+=0A=
+> btrfs_inode *inode, u64 start,=0A=
+>                          submit =3D btrfs_bio_fits_in_stripe(page,=0A=
+> PAGE_SIZE, bio,=0A=
+>                                                            0);=0A=
+> =0A=
+> -               if (pg_index =3D=3D 0 && use_append)=0A=
+> -                       len =3D bio_add_zone_append_page(bio, page,=0A=
+> PAGE_SIZE, 0);=0A=
+> -               else=0A=
+> -                       len =3D bio_add_page(bio, page, PAGE_SIZE, 0);=0A=
+> +               if (!submit) {=0A=
+> +                       if (pg_index =3D=3D 0 && use_append)=0A=
+> +                               len =3D bio_add_zone_append_page(bio, pag=
+e,=0A=
+> +=0A=
+> PAGE_SIZE, 0);=0A=
+> +                       else=0A=
+> +                               len =3D bio_add_page(bio, page, PAGE_SIZE=
+, 0);=0A=
+> +               }=0A=
+> =0A=
+>                  page->mapping =3D NULL;=0A=
+>                  if (submit || len < PAGE_SIZE) {=0A=
+=0A=
+This looks good, thanks for fixing it. I indeed messed up the bio_add_page(=
+) =0A=
+call in the new version when untangling that if (submit || bio_add_page())=
+=0A=
+construct. =0A=
+=0A=
+Can you send an official patch?=0A=
+=0A=
+Thanks a lot,=0A=
+	Johannes=0A=
