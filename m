@@ -2,63 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF6A38FEEF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 12:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738C439002A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 13:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhEYKVv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 06:21:51 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47836 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230130AbhEYKVu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 06:21:50 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PA4jAK165315;
-        Tue, 25 May 2021 06:20:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=pp1;
- bh=BbBpbvsXlfW05D4ng1t57Hj02jz12s5C4ifHTWnrT0c=;
- b=SAeeSIpNLDtW9nN8LtDgV0iVUS3SWjYogGob+fpWk9N0rb+XFuRInZqle7C7EXTkPpZE
- 2afkAnE3sHgJIX+Ca68RACxMoQ8kl9MA57lRxCKE0qtQ6TdhhThCEv25eiWJcnIC9tqL
- nH6U/pfHnhf6zpS8os8pnqx3OQLC8Dl2mnJJngnUutD3Co7PIQM1Ow5YPgvWG87MddC5
- T7dEqPns7ht0PFuBIQIMxD/iD7bCEg6TkBrTHwcT8pGcF/fUqi96k2/2bZ8a+OQaE+/t
- mzcgQCR+gamJhkFRcYV2Sk+HN0oAKSBZOMolYHRCqSZYR9zlv+SI3r4goVaTlCoWaRuk 7Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38ry488h6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 06:20:17 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14PA5FMi168572;
-        Tue, 25 May 2021 06:20:17 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38ry488h5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 06:20:17 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14PAJLiJ004673;
-        Tue, 25 May 2021 10:20:14 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 38ps7h98cr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 10:20:14 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14PAKBUQ21758424
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 May 2021 10:20:11 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 599F35205A;
-        Tue, 25 May 2021 10:20:11 +0000 (GMT)
-Received: from localhost (unknown [9.85.91.152])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 105655205F;
-        Tue, 25 May 2021 10:20:10 +0000 (GMT)
-Date:   Tue, 25 May 2021 15:50:10 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S231470AbhEYLnX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 07:43:23 -0400
+Received: from mout.gmx.net ([212.227.17.22]:37789 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230350AbhEYLnX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 07:43:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621942907;
+        bh=RaMmNj7RMDfFi5vg8JKIyswT+iDl/T72hZTxzq+s0BQ=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=G8Mab1w9IpJX7sHUg4Ku+bDzBPyU65ZMuG/AayT7BEnKJlLbcoKh4D/fFBlPwLHFs
+         BbAWZ+J58MzyC5uIqT4RyBcOq4CuGUksihk/C9QoC4xfYoeG1E1lqowBhKrlm7MvN7
+         1v0DaqnffOmyWvhHQNdNdSHIyYTT9jGsN+9bgNWg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkHQX-1l1QF00VPV-00kg3S; Tue, 25
+ May 2021 13:41:47 +0200
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
- subpage helper
-Message-ID: <20210525102010.hckdsumqfil3vnsu@riteshh-domain>
 References: <20210514175343.v32k2rmsfl5l2qfa@riteshh-domain>
  <80735b91-ad23-1b49-20bb-fd3a09957793@gmx.com>
  <20210515095906.ifmqf36t2jup7tzw@riteshh-domain>
@@ -69,167 +34,203 @@ References: <20210514175343.v32k2rmsfl5l2qfa@riteshh-domain>
  <20210525092305.3pautkpiv3dhi3oj@riteshh-domain>
  <5a3d0e6c-425b-9b6a-ffec-9243693430c5@gmx.com>
  <181af010-af18-9f78-4028-d8bb59237c05@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <181af010-af18-9f78-4028-d8bb59237c05@gmx.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: cpg5_C-Fyfs_mtFTTjojiNIq86ukJvvT
-X-Proofpoint-GUID: AltM1Ou9dyWtn5bOKnJKSbQqJp3zpF2h
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ <20210525102010.hckdsumqfil3vnsu@riteshh-domain>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [Patch v2 41/42] btrfs: fix the use-after-free bug in writeback
+ subpage helper
+Message-ID: <82070e33-82f7-3a54-7620-b4a43bdaff50@gmx.com>
+Date:   Tue, 25 May 2021 19:41:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_05:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 priorityscore=1501 malwarescore=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 impostorscore=0 clxscore=1015 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105250066
+In-Reply-To: <20210525102010.hckdsumqfil3vnsu@riteshh-domain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:F61apetr1BKicUPmj1ILE+gCfUo7FMz2Yd2IC5Jpa4TbWiJUoIv
+ qFbouCxwb6AqeWdwZ7DMGpR11h3g0E+nXqgMZtPLu0IF6XWkDRkS04v5/qzxdzMC66xAWfZ
+ IxabkbUg+Ypt8xXQhsMo2M7qRE4303f/xtC9nI7wz/rAyauzYU21KhB6WrvReEZ/J5FgKsb
+ 7UWnm1uEjJQEuCdzssoUw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oc652BBdO8k=:5i68UYXJZasGdr0XAlkiSq
+ WsAd1te+EpblRc206a0ZdVoi1uv39QPCWVQf1UB6I4Ih6dD6nUw+LgjxWst9z+wQ3y2vmoKpg
+ CcOSm/U3oCFbhENU1JS5RQT2Ga2IBETahqLQzUNv40XgqLDunk3DgW7E32rznmaV1keJN/mUK
+ mj1Pwy5s/4m8s5K+Z9qj/fWJPViMgdWeOd7DwQPX0hujT03C62gAI6l2Cwce6B52v70Gwv2Ya
+ DStjsGstlMg980rhmMClgF2swlX2aX7h8r399QrRPg987XzNiuXietSOofLD55P+KRGpVcJd5
+ +nPnnJaxqSNXoFQsFGzU7VWquYqDujusaDdVz03EFGE0It7j6IXRqmyv8BItkgY7vX4mYEJlI
+ r3p7vFs9dhPZl22Wg4LbWXDIyd+xcuA/cKCIcYIIr0NdEzkAraIT26Kqc/Yjp7fcwVzsNz300
+ OV3UJPUaFoCbqPdN8CRCNKgD/wCbYAwL7+yiTsey9ByiHiJ7FFuGz836fVJYDKa5mta5FDnfS
+ iA58wCOhCnQlvymtRWuYgj3sulYo9bf/Ck3N5r7TtFGDQfDGwupSizlPhiFoCMj3pVzXsge4A
+ 5ffDXURhWavO2WQT65C5VULEbjm2mMAkk4+ti3uy7r5BOh4W3VM9+imxK+c7ICvK8E3sdfHrX
+ EcxKdkXjRS65JtM/R9E7eyDz5uZJvcLD/bx+z1pnpWmCUvQJyaVM3uajgNwVs5LTSYL3p3c9U
+ EyqhA1DqUMhnns+CBQbwjLEJMOzRMPWCsFAvPdVuDDICNtKsWkxFk1ibsHWdyygORB9EkiHkt
+ 0daMagq0G0458+glztCwi1fO1g5iR7xuO0ZntdQDxQ75QYn1qU1pR6LFY+jiNdliunPR8frJI
+ StO+eaazd8rNPrXgchxU5OvQ+zsPTSEDP2RXRqQ1WV9+kesy3XXPIuCoqLdHHz7vHGDhvex37
+ 0LDY40VPdh3h3rs2/5puHUOuj7NRF0xlsc4VQSFK+PVQlGRxgZ/IPOwI3g0BCX1DR+Z2q2Q3V
+ 7W9jWOzXzB5Qd02JJ3XZtceCOyq5rkBHS7efyPrCZB7DyUVQ8E5G6qUCDqdztSb6Nf7UnInFU
+ hocRMmenBVGYiXqMqxHqMh6CwvOaKgPUKWIEFrw/JM0veTRwTy2Y9lNQvx2o6HbuT/7Y8Jpze
+ Ecm5yFaMMDYZ7UF+TBw+BNhBanarcJ8npM6jo5A34ouEc9WOsgG9ca2jJ/vLvnQ27BmgsCLre
+ 1NZaD2+RfvY+fQNGd
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/05/25 05:49PM, Qu Wenruo wrote:
->
->
-> On 2021/5/25 下午5:45, Qu Wenruo wrote:
-> [...]
-> > > >
-> > > > What a relief, it's not a big problem in my patchset, but more likely to
-> > > > be in the test case, especially in the how the mirror number is chosen.
-> > > >
-> > > > When the test failed, you can find in the dmesg that, there is not any
-> > > > error mssage related to csum mismatch at all.
-> > > >
-> > > > This means, we're reading the correct copy, no wonder we won't submit
-> > > > read repair.
-> > > > This is mostly caused by the page size difference I guess, which makes
-> > > > the pid balance read for RAID1 less perdicatable.
-> > > >
-> > > > I don't yet have any good idea to fix the test case yet, so I'm afraid
-> > > > we have to consider it as a false alert.
-> > >
-> > > Ohk gr8, Thanks a lot for looking into it.
-> > > I saw the change log of v3, though I don't think there are any changes
-> > > from when
-> > > I last tested the whole patch series, still I will give it a full run
-> > > with v3
-> > > for both 4k and 64k config, (since now mostly all issues should be
-> > > fixed).
-> >
-> > Just to be more clear, there are some known bugs in the base of my
-> > subpage branch:
-> >
-> > - 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-
-> >    bit memory addresses")
-> >    Will screw up at least my ARM board, which is using device tree for
-> >    its PCIE node.
-> >    Have to revert it.
-> >
-> > - 764c7c9a464b ("btrfs: zoned: fix parallel compressed writes")
-> >    Will screw up compressed write with striped RAID profile.
-> >    Fix sent to the mail list:
-> >
-> > https://patchwork.kernel.org/project/linux-btrfs/patch/20210525055243.85166-1-wqu@suse.com/
-> >
-> >
-> > - Known btrfs mkfs bug
-> >    Fix sent to the mail list:
-> >
-> > https://patchwork.kernel.org/project/linux-btrfs/patch/20210517095516.129287-1-wqu@suse.com/
-> >
-> >
-> > - btrfs/215 false alert
-> >    Fix sent to the mail list:
-> >
-> > https://patchwork.kernel.org/project/linux-btrfs/patch/20210517092922.119788-1-wqu@suse.com/
->
-> Please wait for while.
->
-> I just checked my latest result, the branch doesn't pass my local test
-> for subpage case.
->
-> I'll fix it first, sorry for the problem.
-
-Ok, yes (it's failing for me in some test case).
-Sure, will until your confirmation.
-
--ritesh
 
 
+On 2021/5/25 =E4=B8=8B=E5=8D=886:20, Ritesh Harjani wrote:
+[...]
+>>>
+>>> - 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 6=
+4-
+>>>   =C2=A0 bit memory addresses")
+>>>   =C2=A0 Will screw up at least my ARM board, which is using device tr=
+ee for
+>>>   =C2=A0 its PCIE node.
+>>>   =C2=A0 Have to revert it.
+>>>
+>>> - 764c7c9a464b ("btrfs: zoned: fix parallel compressed writes")
+>>>   =C2=A0 Will screw up compressed write with striped RAID profile.
+>>>   =C2=A0 Fix sent to the mail list:
+>>>
+>>> https://patchwork.kernel.org/project/linux-btrfs/patch/20210525055243.=
+85166-1-wqu@suse.com/
+>>>
+>>>
+>>> - Known btrfs mkfs bug
+>>>   =C2=A0 Fix sent to the mail list:
+>>>
+>>> https://patchwork.kernel.org/project/linux-btrfs/patch/20210517095516.=
+129287-1-wqu@suse.com/
+>>>
+>>>
+>>> - btrfs/215 false alert
+>>>   =C2=A0 Fix sent to the mail list:
+>>>
+>>> https://patchwork.kernel.org/project/linux-btrfs/patch/20210517092922.=
+119788-1-wqu@suse.com/
+>>
+>> Please wait for while.
+>>
+>> I just checked my latest result, the branch doesn't pass my local test
+>> for subpage case.
+>>
+>> I'll fix it first, sorry for the problem.
 >
-> Thanks,
-> Qu
+> Ok, yes (it's failing for me in some test case).
+> Sure, will until your confirmation.
+
+Got the reason. The patch "btrfs: allow submit_extent_page() to do bio
+split for subpage" got a conflict when got rebased, due to zone code chang=
+e.
+
+The conflict wasn't big, but to be extra safe, I manually re-craft the
+patch from the scratch, to find out what's wrong.
+
+During that re-crafting, I forgot to delete two lines, prevent
+btrfs_add_bio_page() from splitting bio properly, and submit empty bio,
+thus causing an ASSERT() in submit_extent_page().
+
+The bug can be reliably reproduced by btrfs/060, thus that one can be a
+quick test to make sure the problem is gone.
+
+BTW, for older subpage branch, the latest one without problem is at HEAD
+2af4eb21b234c6ddbc37568529219d33038f7f7c, which I also tested on a
+Power8 VM, it passes "-g auto" with only 18 known failures.
+
+I believe it's now safe to re-test.
+
+Really sorry for the inconvenience.
+
+Thanks,
+Qu
+>
+> -ritesh
 >
 >
-> >
-> >
-> > Thanks,
-> > Qu
-> > >
-> > > Thanks
-> > > -ritesh
-> > >
-> > >
-> > > >
-> > > > Thanks,
-> > > > Qu
-> > > > >
-> > > > > Thanks again for the awesome report!
-> > > > > Qu
-> > > > > >
-> > > > > >
-> > > > > > -ritesh
-> > > > > >
-> > > > > > >
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > 2. btrfs/124 failure.
-> > > > > > > >
-> > > > > > > > I guess below could be due to small size of the device?
-> > > > > > > >
-> > > > > > > > xfstests.global-btrfs/4k.btrfs/124
-> > > > > > > > Error Details
-> > > > > > > > - output mismatch (see /results/btrfs/results-4k/btrfs/124.out.bad)
-> > > > > > >
-> > > > > > > Again passes locally.
-> > > > > > >
-> > > > > > > But accroding to your fs, I notice several unbalanced disk usage:
-> > > > > > >
-> > > > > > > # /usr/local/bin/btrfs filesystem show
-> > > > > > > Label: none  uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
-> > > > > > >      Total devices 2 FS bytes used 32.00KiB
-> > > > > > >      devid    1 size 5.00GiB used 622.38MiB path /dev/vdc
-> > > > > > >      devid    2 size 2.00GiB used 622.38MiB path /dev/vdi
-> > > > > > >
-> > > > > > > Label: none  uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
-> > > > > > >      Total devices 4 FS bytes used 379.12MiB
-> > > > > > >      devid    1 size 5.00GiB used 8.00MiB path /dev/vdb
-> > > > > > >      devid    3 size 20.00GiB used 264.00MiB path /dev/vde
-> > > > > > >      devid    4 size 20.00GiB used 1.26GiB path /dev/vdf
-> > > > > > >
-> > > > > > > We had reports about btrfs doing poor work when handling
-> > > > > > > unbalanced disk
-> > > > > > > sizes.
-> > > > > > > I had a purpose to fix it, with a little better calcuation, but still
-> > > > > > > not
-> > > > > > > yet perfect.
-> > > > > > >
-> > > > > > > Thus would you mind to check if the test pass when all the disks in
-> > > > > > > SCRATCH_DEV_POOL are in the same size?
-> > > > > > >
-> > > > > > > Of course we need to fix the problem of ENOSPC for unbalanced
-> > > > > > > disks, but
-> > > > > > > that's a common problem and not exacly related to subpage.
-> > > > > > > I should take some time to refresh the unbalanced disk usage patches
-> > > > > > > soon.
-> > > > > > >
-> > > > > > > Thanksm
-> > > > > > > Qu
-> > > > > > >
-> > > > > > > [...]
-> > > > > > > >
-> > > > > > > > -ritesh
-> > > > > > > >
-> > > > > >
-> > > > > >
+>>
+>> Thanks,
+>> Qu
+>>
+>>
+>>>
+>>>
+>>> Thanks,
+>>> Qu
+>>>>
+>>>> Thanks
+>>>> -ritesh
+>>>>
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Qu
+>>>>>>
+>>>>>> Thanks again for the awesome report!
+>>>>>> Qu
+>>>>>>>
+>>>>>>>
+>>>>>>> -ritesh
+>>>>>>>
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> 2. btrfs/124 failure.
+>>>>>>>>>
+>>>>>>>>> I guess below could be due to small size of the device?
+>>>>>>>>>
+>>>>>>>>> xfstests.global-btrfs/4k.btrfs/124
+>>>>>>>>> Error Details
+>>>>>>>>> - output mismatch (see /results/btrfs/results-4k/btrfs/124.out.b=
+ad)
+>>>>>>>>
+>>>>>>>> Again passes locally.
+>>>>>>>>
+>>>>>>>> But accroding to your fs, I notice several unbalanced disk usage:
+>>>>>>>>
+>>>>>>>> # /usr/local/bin/btrfs filesystem show
+>>>>>>>> Label: none=C2=A0 uuid: fbb48eb6-25c7-4800-8656-503c1e502d85
+>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Total devices 2 FS bytes used 32.0=
+0KiB
+>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.0=
+0GiB used 622.38MiB path /dev/vdc
+>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 2 size 2.0=
+0GiB used 622.38MiB path /dev/vdi
+>>>>>>>>
+>>>>>>>> Label: none=C2=A0 uuid: d3c4fb09-eea2-4dea-8187-b13e97f4ad5c
+>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Total devices 4 FS bytes used 379.=
+12MiB
+>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.0=
+0GiB used 8.00MiB path /dev/vdb
+>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 3 size 20.=
+00GiB used 264.00MiB path /dev/vde
+>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 4 size 20.=
+00GiB used 1.26GiB path /dev/vdf
+>>>>>>>>
+>>>>>>>> We had reports about btrfs doing poor work when handling
+>>>>>>>> unbalanced disk
+>>>>>>>> sizes.
+>>>>>>>> I had a purpose to fix it, with a little better calcuation, but s=
+till
+>>>>>>>> not
+>>>>>>>> yet perfect.
+>>>>>>>>
+>>>>>>>> Thus would you mind to check if the test pass when all the disks =
+in
+>>>>>>>> SCRATCH_DEV_POOL are in the same size?
+>>>>>>>>
+>>>>>>>> Of course we need to fix the problem of ENOSPC for unbalanced
+>>>>>>>> disks, but
+>>>>>>>> that's a common problem and not exacly related to subpage.
+>>>>>>>> I should take some time to refresh the unbalanced disk usage patc=
+hes
+>>>>>>>> soon.
+>>>>>>>>
+>>>>>>>> Thanksm
+>>>>>>>> Qu
+>>>>>>>>
+>>>>>>>> [...]
+>>>>>>>>>
+>>>>>>>>> -ritesh
+>>>>>>>>>
+>>>>>>>
+>>>>>>>
