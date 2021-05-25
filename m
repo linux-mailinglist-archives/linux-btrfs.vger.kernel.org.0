@@ -2,85 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B432390521
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 17:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E221390576
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 May 2021 17:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhEYPWT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 11:22:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57394 "EHLO mail.kernel.org"
+        id S232376AbhEYPbn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 11:31:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37054 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229790AbhEYPWS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 11:22:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53BAD6141C
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 May 2021 15:20:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621956048;
-        bh=XodFRa/dYm/86KxIgTffmzMJXKdeO3CwvbyVwELCXl8=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=pjxW+O/KbXe/ry3D7ZmW1VJIraksNfa9DgEQQQMYb+BSW7qruSLeyw3K9naxR5vdg
-         tTzpsXzNhlud78lUsD5yobnHZvQeAhUV0utqBPx8C3H6zm5yoHXLKYNmgzDn43DcqX
-         xil+VvSAvVy64xha/TbD4sHn4IR/CzVNFpNGdzvLiOkVChiirAE2nb/mpf1ouXGrVe
-         aOTvdYp4BjH327SAlHuOZ2IvTkjrMqwqJYtTaGEgulPf8RSgjWjx/ymQlFWnzqjtEx
-         J1HXVjVjW8kUx6s3M8SSKZajUxFHnNe5tIyOKaa7c9VQQ8c0H2HrkeRHNOs9siOn8A
-         PJLAGDGIE6New==
-Received: by mail-qk1-f182.google.com with SMTP id i5so23517210qkf.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 May 2021 08:20:48 -0700 (PDT)
-X-Gm-Message-State: AOAM533+UDckslSr4k7VY2oMUR9pMiw4bhgCwjLhuCEqWOe4XBdeDcWS
-        U413Rdq1wcS5AWZvNRRQp4RIFJlCNkLbdLjLa2Y=
-X-Google-Smtp-Source: ABdhPJw1ewNjLBdWv/SHVi3kYFLyx+Y9+OLHz2cetoqLFVXa7kyswcI8wr297V7fBcS1lRJIN1qj+gtRvml6Nsx90NY=
-X-Received: by 2002:ae9:dfc4:: with SMTP id t187mr33901388qkf.0.1621956047510;
- Tue, 25 May 2021 08:20:47 -0700 (PDT)
+        id S230433AbhEYPbn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 11:31:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1621956612;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mOJEmx1GGo/qpBiBuUtnSAcMIAQfPmcTuPwJezWI0gY=;
+        b=TCpaojBMG7fl7z2gBDUpZjDEpe4wXZqgPApTqg3Ri/CBbjFmtX2XqyZMSD8VhbFZx43YQ7
+        9UakUA86NS00cXX8cf2qzMN/UAv35hhtzhcXwzbBzMCgr2lwwGSKH7JjoTgOyYQxeWhDzA
+        rKz+hU2UMXQYNN9FVX5COHMJB6YuYv8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1621956612;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mOJEmx1GGo/qpBiBuUtnSAcMIAQfPmcTuPwJezWI0gY=;
+        b=hx1mN1NVsGbdKx39bxvPo8grWsYbszVZmiD+jk+I2O6EyhL43rP/RttR+kV5FFlYyWuwjm
+        cG1OIpcotJyVvECQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CDACFAE99;
+        Tue, 25 May 2021 15:30:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 65E7BDA72C; Tue, 25 May 2021 17:27:36 +0200 (CEST)
+Date:   Tue, 25 May 2021 17:27:36 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/3] btrfs: always abort the transaction if we abort a
+ trans handle
+Message-ID: <20210525152736.GZ7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1621523846.git.josef@toxicpanda.com>
+ <d794156bd3368d635913610dbe03c1fc727e297f.1621523846.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-References: <cover.1621851896.git.fdmanana@suse.com> <20210525150220.GX7604@twin.jikos.cz>
-In-Reply-To: <20210525150220.GX7604@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 25 May 2021 16:20:36 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H4mro4sBffLB7AnPM2QVVHcpcpJsJdwk74iL_gLe093EA@mail.gmail.com>
-Message-ID: <CAL3q7H4mro4sBffLB7AnPM2QVVHcpcpJsJdwk74iL_gLe093EA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] btrfs: fix fsync failure with SQL Server workload
-To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d794156bd3368d635913610dbe03c1fc727e297f.1621523846.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 25, 2021 at 4:05 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Mon, May 24, 2021 at 11:35:52AM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > This patchset fixes a fsync failure (-EIO) and transaction abort during
-> > a workload for Microsoft's SQL Server running in a Docker container as
-> > reported at:
-> >
-> > https://lore.kernel.org/linux-btrfs/93c4600e-5263-5cba-adf0-6f47526e7561@in.tum.de/
-> >
-> > It also adds an optimization for the workload, by removing lots of fsyncs
-> > that trigger the slow code path and replacing them with ones that use the
-> > fast path, reducing the workload's runtime by about -12% on my test box.
-> >
-> > Filipe Manana (3):
-> >   btrfs: fix fsync failure and transaction abort after writes to
-> >     prealloc extents
-> >   btrfs: fix misleading and incomplete comment of btrfs_truncate()
-> >   btrfs: don't set the full sync flag when truncation does not touch
-> >     extents
->
-> Added to misc-next, thanks. I've marked the first patch for 5.4+. It
-> applies cleanly up to 4.4 but I'm not sure if this is safe given the
-> amount of other fixes that are mentioned in the patch and other fsync
-> related fixes that have been applied.
+On Thu, May 20, 2021 at 11:21:31AM -0400, Josef Bacik wrote:
+> While stress testing our error handling I noticed that sometimes we
+> would still commit the transaction even though we had aborted the
+> transaction.
+> 
+> Currently we track if a trans handle has dirtied any metadata, and if it
+> hasn't we mark the FS as having an error (so no new transactions can be
+> started), but we will allow the current transaction to complete as we do
+> not mark the transaction itself as having been aborted.
+> 
+> This sounds good in theory, but we were not properly tracking IO errors
+> in btrfs_finish_ordered_io, and thus committing the transaction with
+> bogus free space data.  This isn't necessarily a problem per-se with the
+> free space cache, as the other guards in place would have kept us from
+> accepting the free space cache as valid, but hi-lights a real world case
+> where we had a bug and could have corrupted the filesystem because of
+> it.
+> 
+> This "skip abort on empty trans handle" is nice in theory, but assumes
+> we have perfect error handling everywhere, which we clearly do not.
+> Also we do not allow further transactions to be started, so all this
+> does is save the last transaction that was happening, which doesn't
+> necessarily gain us anything other than the potential for real
+> corruption.
+> 
+> Remove this particular bit of code, if we decide we need to abort the
+> transaction then abort the current one and keep us from doing real harm
+> to the file system, regardless of whether this specific trans handle
+> dirtied anything or not.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Should work on any 4.4+ kernel.
-It's independent of the other mentioned fixes, as those were mostly
-related to shared extents, except for one which was for the checksums
-tree and unrelated to fsyncs.
-I didn't add a Fixes tag because it's a really old thing, either
-introduced when the fast fsync path was first added or when fallocate
-was added, or somewhere in between.
-The fsync failure and transaction abort only happen since the tree
-checker was changed to detect overlapping checksum items (5.10, commit
-ad1d8c439978ede77cbf73cbdd11bafe810421a5),
-before that any issue would only happen at log replay time. 5.4+
-sounds very reasonable to me. Thanks.
+I've checked logs what would be the effects of leaving out the message
+printed by the unused transaction. Getting rid of it sounds like an
+improvement as it's not adding any information, the first transaction is
+noisy and that's where the problem happens. Additional messages about
+the abort are confusing, so yeah. Besides, the updates to trans->dirty
+lack any serialization so it's quite unreliable anyway.
