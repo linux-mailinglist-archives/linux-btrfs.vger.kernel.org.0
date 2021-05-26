@@ -2,84 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46444390D26
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 May 2021 02:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D16390D2D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 May 2021 02:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbhEZACb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 May 2021 20:02:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26786 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229939AbhEZACa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 May 2021 20:02:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621987259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vOiyAqWxxuaxXY+3q9km4psaaYiAnLD8wrsG1M/Mujs=;
-        b=Geu49AGp+4qtNzLfoLBjinFfrorVakogVLTVfWrRXlTTHhspFBXRi82IdMdrjqrCDqIC8n
-        tLmokpIs9srQJ38GZprfZRKllq+bz+t8ADhXBfQR0sB+F/tGJI1lKn9DXF8uS2mpPtfm7N
-        Vi2jNBR1WXwMt0l9RTL0VzlJFlKCuZo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-d4YTweP6N0SWjAI4Kiwk0g-1; Tue, 25 May 2021 20:00:55 -0400
-X-MC-Unique: d4YTweP6N0SWjAI4Kiwk0g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C2581883520;
-        Wed, 26 May 2021 00:00:54 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-24.rdu2.redhat.com [10.10.112.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B39F25D6AC;
-        Wed, 26 May 2021 00:00:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <00224B62-4903-4D33-A835-2DC8CC0E3B4D@dilger.ca>
-References: <00224B62-4903-4D33-A835-2DC8CC0E3B4D@dilger.ca> <6E4DE257-4220-4B5B-B3D0-B67C7BC69BB5@dilger.ca> <206078.1621264018@warthog.procyon.org.uk> <4169583.1621981910@warthog.procyon.org.uk>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     dhowells@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        "Darrick J. Wong" <djwong@kernel.org>, Chris Mason <clm@fb.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-cachefs@redhat.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        NeilBrown <neilb@suse.com>
-Subject: Re: How capacious and well-indexed are ext4, xfs and btrfs directories?
+        id S231223AbhEZAH1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 May 2021 20:07:27 -0400
+Received: from mout.gmx.net ([212.227.15.18]:55077 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229595AbhEZAH1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 May 2021 20:07:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621987555;
+        bh=+J/rOGeyTQ1EWy/DS4TiDft8s4rFody306oYKf4ZQCI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=NoqLFd10+nqsYCoqdwQ95HWHdgtJ+XSEbAbBW1fW0xfXGKwy1q3875HuGrkORcgGn
+         ADxK7/TtO+IanedGEACNfjX+HVyGYHcf2iI+r1zlEBm3newaq4ukuxZUBLB/P4HWPz
+         QA+QsQ7hVhSEdkBbzV5ha9j1tJvhDy0T1rLfXw+8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M2wL0-1liPGw0vfw-003L9c; Wed, 26
+ May 2021 02:05:54 +0200
+Subject: Re: [PATCH 8/9] btrfs: simplify eb checksum verification in
+ btrfs_validate_metadata_buffer
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1621961965.git.dsterba@suse.com>
+ <6828072ccda5d55b9d130f48b750455ea728781b.1621961965.git.dsterba@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <0b51e0c9-896a-4ee2-f965-eec7b57cbd39@gmx.com>
+Date:   Wed, 26 May 2021 08:05:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4176732.1621987227.1@warthog.procyon.org.uk>
-Date:   Wed, 26 May 2021 01:00:27 +0100
-Message-ID: <4176733.1621987227@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <6828072ccda5d55b9d130f48b750455ea728781b.1621961965.git.dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:o97XkkBkNAk1kNAWN+LmJQtkhZk4fp3V256R3oMfBJyfaHr/MKi
+ y8V8/Vz7leZ6G9x4cK7lLr+4G7Mw7jB4/QvUYNtEOrw1K+pRvkMfZHpwom2ezWxO8xr5ihu
+ UgFfyBbF1nAmEUol5/Cr4F0/d4ME3IHPVWEhSJB9eClBB0vMvmNNCUwiySSIGO98J9kCRmO
+ tv3yi8BfOE02opRcfDlOw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yePdb35H5wc=:1DCvRpppQdm2+dx43R/9ga
+ 7T59O7TaYmXsFHWMGg0KVIA8YSUJUilCd8mzuM/ox1H68uG8wP3CW6NEWsx8KJGI36Rv/7JC5
+ 6loPxFtiRBHBNjBQlUIzFaCyoOivAyAzMRv49HhTS7MkjT4dypvG1aNKtEewBiUJ5Ws+uzJ4C
+ O/RQkz37Z+ztIUAb/7FzKztCCBnXrdjAzFN17EN0M8dwHigrIIw6joWL9n3KxF+TyE+/m23Fg
+ VhJltyxJtY44as2sOKrfAqYlvYL4rz0tjteZ+Py8DJodu4fRJ7I9DHLM8YR6+BNfn5YHJyv7P
+ cEmZRm33asv6AWOdgLyrZ7MhEQvlsJISYCj5Qp2etPKpqMgEpMlhy1aQlGNAvpmJlu304fG0F
+ B6LQs3/YdlW25MFxn2xtpUiW7hpNXcl+UVQRClwLlnO2v1HfKD9Ryib/4iW37L4OlzRgpMEdu
+ Q1v1LZFbnR6cl1NHwzpKHC/Pgo66jorS4dl2fAOR1d3e3L+YBC04D5kARTBdYJeUs8ppNAB1F
+ Pp/ZjjKEh4MYDVuacW3f+cDnGm16ImdJ1ZeY3hLxHcfVPjBzXOzq86XHCPsLPGjw+LOcVPsk5
+ NkwD/h7jupWRxSPSzrkzAoH5AdTLg43UHgZ9jxwxCf+Macu6qADUsIzvyWuRTKgpqYxejVcmC
+ stJpD3yDGiNH95/ue9Yvlx8T84LvmPYZs2hOcVf+BZkXdBd14vGk3NYiqBV9XSG1VgiDzDKRS
+ Usk51g3EPY+RTd2ZZ5/8OSbM8WYojD5wmlYbxlnVEH8qY2hPCqybfbBULU26UTa8DDGqcTFvf
+ nw5Z+rnNx8OsxfF7LaScfpOBz+i8jH7VFvbQxpE0w4GQJm0YEp7kFSJ0O4VwooBUokHMVhZF5
+ luaPOX2ipEx4Xp4JRi1qh/FC4OHh6oU6DdiXuMv6r94EiT83atJzOVnA1WR1QLUeowijEpor6
+ 6J15dkS380IJn1AitIgg2qZm73qzoLdZjwz9M4URSGnJ41hxdL/cNIa1NhYT7nu3YnpfjEFo5
+ WF92hnwSbmvwonR31P/lLGM4dR2g9piYxWVdMHAFWcEGQh//jfTOIl2YcuoNNRlmBP8I7EcXa
+ Ubu71EXMn1BOXl0WJZGl4hAlOUZoQyWCyTKXrDBpuVYiRtrl40TqZF1fw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Andreas Dilger <adilger@dilger.ca> wrote:
 
-> > Any thoughts on how that might scale?  vfs_tmpfile() doesn't appear to
-> > require the directory inode lock.  I presume the directory is required for
-> > security purposes in addition to being a way to specify the target
-> > filesystem.
-> 
-> I don't see how that would help much?
 
-When it comes to dealing with a file I don't have cached, I can't probe the
-cache file to find out whether it has data that I can read until I've opened
-it (or found out it doesn't exist).  When it comes to writing to a new cache
-file, I can't start writing until the file is created and opened - but this
-will potentially hold up close, data sync and writes that conflict (and have
-to implicitly sync).  If I can use vfs_tmpfile() to defer synchronous
-directory accesses, that could be useful.
+On 2021/5/26 =E4=B8=8A=E5=8D=881:08, David Sterba wrote:
+> The verification copies the calculated checksum bytes to a temporary
+> buffer but this is not necessary. We can map the eb header on the first
+> page and use the checksum bytes directly.
+>
+> This saves at least one function call and boundary checks so it could
+> lead to a minor performance improvement.
+>
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-As mentioned, creating a link to a temporary cache file (ie. modifying the
-directory) could be deferred to a background thread whilst allowing file I/O
-to progress to the tmpfile.
+The idea is good, and should be pretty simple to test.
 
-David
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+But still a nitpick inlined below.
+> ---
+>   fs/btrfs/disk-io.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 6dc137684899..868e358f6923 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -584,6 +584,7 @@ static int validate_extent_buffer(struct extent_buff=
+er *eb)
+>   	const u32 csum_size =3D fs_info->csum_size;
+>   	u8 found_level;
+>   	u8 result[BTRFS_CSUM_SIZE];
+> +	const struct btrfs_header *header;
+>   	int ret =3D 0;
+>
+>   	found_start =3D btrfs_header_bytenr(eb);
+> @@ -608,15 +609,14 @@ static int validate_extent_buffer(struct extent_bu=
+ffer *eb)
+>   	}
+>
+>   	csum_tree_block(eb, result);
+> +	header =3D page_address(eb->pages[0]) +
+> +		 get_eb_offset_in_page(eb, offsetof(struct btrfs_leaf, header));
+
+It takes me near a minute to figure why it's not just
+"get_eb_offset_in_page(eb, 0)".
+
+I'm not sure if we really need that explicit way to just get 0,
+especially most of us (and even some advanced users) know that csum
+comes at the very beginning of a tree block.
+
+And the mention of btrfs_leave can sometimes be confusing, especially
+when we could have tree nodes passed in.
+
+Thanks,
+Qu
+>
+> -	if (memcmp_extent_buffer(eb, result, 0, csum_size)) {
+> -		u8 val[BTRFS_CSUM_SIZE] =3D { 0 };
+> -
+> -		read_extent_buffer(eb, &val, 0, csum_size);
+> +	if (memcmp(result, header->csum, csum_size) !=3D 0) {
+>   		btrfs_warn_rl(fs_info,
+>   	"checksum verify failed on %llu wanted " CSUM_FMT " found " CSUM_FMT =
+" level %d",
+>   			      eb->start,
+> -			      CSUM_FMT_VALUE(csum_size, val),
+> +			      CSUM_FMT_VALUE(csum_size, header->csum),
+>   			      CSUM_FMT_VALUE(csum_size, result),
+>   			      btrfs_header_level(eb));
+>   		ret =3D -EUCLEAN;
+>
