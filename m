@@ -2,229 +2,363 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C583928C9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 May 2021 09:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CF9392CBD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 May 2021 13:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhE0Hp4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 May 2021 03:45:56 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39488 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhE0Hpz (ORCPT
+        id S233044AbhE0LcO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 27 May 2021 07:32:14 -0400
+Received: from mail-ed1-f45.google.com ([209.85.208.45]:40497 "EHLO
+        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229834AbhE0LcO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 May 2021 03:45:55 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14R7TVmZ084504;
-        Thu, 27 May 2021 07:44:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : cc : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=A4pkcnBjHqxZQSqu4uJNyiU4VT82bBdfiJX048OxJXY=;
- b=DEcu930DrfjkZcyk/j8yRBxDd1CA/L0xKUeqSqoNkc2XVUNqWkHLEX6PLQt5vTkUdRc9
- yYj4WGyJj+uktIA17FMuu7pH6QnQwEuh6NE4PG4p1YdLi8MCnXz0U1wbCQj//4cEUGPB
- 1V+E9VBFoElOQKUTdulAOu8wTOTU2KxG4dcRnhF2wLJbeBwHez+lRJalY72Imx5smVcy
- iNecvcJSVyv1q9NJ/pMoQiy0quDe4x/pgxlHlOkodlRJ/LM54+dG9Jjri64dj0er3PHf
- eVZug5iJQzP4X3ZSy1VB53SuHiL5IxkaNwI8SgUdguo6zPZXuvQsLvgej+QhPWly6YXR JA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 38rne46ugu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 07:44:19 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14R7V7YP050367;
-        Thu, 27 May 2021 07:44:19 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2042.outbound.protection.outlook.com [104.47.57.42])
-        by aserp3020.oracle.com with ESMTP id 38rehfdsjd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 May 2021 07:44:19 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k8aqxxFPaIYlZNOpIp7r4SVbYLtBCJDu+sJScSSz73rDNzD36VrSmEsJvaCiIHeZo+d5qfYWgBk3vGLU+8TDPnW+ydOZP9X0q3vNQP43O/EE7r01JZ7f+/+cxNuULUIWR7GRFK9s9aIDQFo5DPgIpfKxXozBYwCzjSFzUpFauBJ8bi6M9+Uq8/e9aCMOviPm0Ec1ivE8miz148GQnXg2J5ep4aAbNIusEAkXRlfr2S4RcG/t7073UMI2PFfTT5JDdC2yb+JQFswRqz5BsteZKjzHO7WcHSbqSMDUBL3BVLGeiiqky9Z/fqn5Dt6e7OB/Xnl553HLp05Cn5Wfnk28pQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A4pkcnBjHqxZQSqu4uJNyiU4VT82bBdfiJX048OxJXY=;
- b=WLwjM0zfCXKL3E+U/J4nDyDqItPkHzuTb/O/PiCH9Ks5ENTS5H8GqAhOAitOL53f14yDx+8cXpS5OTyvpxlCkDq5H8cfoaOgW4HpTUdFSUGUbRpFvcfUY9/c8X1/vTPf8Ko890r05gG+G7Ybkm/1ow4Gjlka4WwGMdohvEXSypy6E5azRX8DhQnM6VVCXSTnNnFFQCw4Wlbl51RxBgihB34hve8AsU9Q3m9BlbM7m6W8NDc52sfUQABOeNYEiej5ktcjS5uu/3Wr6ctLRE4ANrHgu68c1KwYDDdX2AqkGJhXTHxUuXcCszBCzIx6pQoo+7AlJdAdNKtJiFO6RHxEvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A4pkcnBjHqxZQSqu4uJNyiU4VT82bBdfiJX048OxJXY=;
- b=H91cWW8yUiDp7G8t/i+j7GRHsGYSvZjE7Biu6sVlIjhpwtv5Mi8Dd9LDZ+peyjwg6+A7isOjYuDoDNpmWCeSr2w4UlbZtzVhwKljlBy3fGFMy/Ap3rOxtaFiQZ+HZZ39SFtK6o7gK4OvoUttkVBamEEjccLSwUs7KsezORmVOCU=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4096.namprd10.prod.outlook.com (2603:10b6:208:115::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Thu, 27 May
- 2021 07:43:55 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::992c:4b34:d95:def8]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::992c:4b34:d95:def8%8]) with mapi id 15.20.4173.021; Thu, 27 May 2021
- 07:43:55 +0000
-Subject: Re: [PATCH 3/6] btrfs: introduce try-lock semantics for exclusive op
- start
-To:     David Sterba <dsterba@suse.com>
-References: <cover.1621526221.git.dsterba@suse.com>
- <9a99c2204e431bc7a40bd1fb7c26ebb5fa741910.1621526221.git.dsterba@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Message-ID: <dc12e388-70b9-1349-1e20-85a7fc60d350@oracle.com>
-Date:   Thu, 27 May 2021 15:43:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-In-Reply-To: <9a99c2204e431bc7a40bd1fb7c26ebb5fa741910.1621526221.git.dsterba@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2406:3003:2006:2288:902d:5eac:1481:84ee]
-X-ClientProxiedBy: SG2PR04CA0165.apcprd04.prod.outlook.com (2603:1096:4::27)
- To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+        Thu, 27 May 2021 07:32:14 -0400
+Received: by mail-ed1-f45.google.com with SMTP id t3so436320edc.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 May 2021 04:30:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PHpJaZqpKxYOt3RrlO5kjGziz4/aPPZCQYh0ljCNvWs=;
+        b=oh15OefAOXl5jXiU19Y62U3QVz5GQx5CeFVhUpWAeuwBaSJYXnSp0W/JJBAKK+Wv5o
+         hdjobkCBO2zSzbZpwNAC2qMOPI9nYpH7apmTGuotuZaIhTVFM50n1EydjSbgifU88mLc
+         R/XpDuA5Z1Zm8bsv5QYfNsFffWrOgTD5Vy7e0ob1kdLy5eOSd6BrkNxq/iVbUjByU7AP
+         Yfuogn2QNAc7Hx3AKZ9rtd7q79ywyrkhtNSDSLScECUUZISXuBIO3N7Pp65cZkg1vetC
+         viqMrzYN2VcnFfnKGQ0POcTjZ2vgi9QQjMnJ3CUqbET7mHw1Z+j+8R1vQKjPSmM7QJKT
+         A/jQ==
+X-Gm-Message-State: AOAM531oZlM05HCfov6Km0gruquvvFLY7j0KEXNF4W9HHaXytfTA8WJy
+        S9tFfMc8/G9WLsMB978GOMrjo8znBUxAwA8Vf9s=
+X-Google-Smtp-Source: ABdhPJwRePmov3RyQHPuYwxMfdf1K10zx/+MLULkc5FnRh7b43gXCiwpxcUP3g6tiW30Hu4Wj2OKZ6P2m/EjVh1sVyQ=
+X-Received: by 2002:aa7:ca4d:: with SMTP id j13mr3610512edt.158.1622115038989;
+ Thu, 27 May 2021 04:30:38 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2406:3003:2006:2288:902d:5eac:1481:84ee] (2406:3003:2006:2288:902d:5eac:1481:84ee) by SG2PR04CA0165.apcprd04.prod.outlook.com (2603:1096:4::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Thu, 27 May 2021 07:43:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d25589f1-5c78-4f0c-53c7-08d920e32d87
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4096:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4096C4C7F6872E36817B2EF2E5239@MN2PR10MB4096.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YmZAFSHBzex6EMHd0x7ZinUlTdN23T0EERocHGbvsodLbezweVAcVdh5K0WsHQs4s8Besv7XvxE8uwepHDdvHhqmeJiI8Ju5f3PM/BCB4u6SIbEZSyE5z2QW6/5R6STkOeF8B8N4xvkISK5Vw/MVxH9Z/v488ZLMtST0WFblXKUV0NsQqs839SUwF66uXIse31G/XxzSBlcR0Ki8YWNTx90CUE+70qzvhIu7W1VTJYicijE1fJOBx+226W+VWQKeBCSQrHTnHTDm9IBN9U5ngLcyxCYrUPjNBWWfMGinCeNbUFeatrWL+W3P6J9BPRF5u28o8cIe2vD7e7tcqtOvJ6RwjsEs6YJFaItuSGSbHAlkNVrDH8ryV7N37rAsIN2wNPm/CnqPyiA29b8XwmZaUygvanY8Aerg3dGkvyDiv7FWp9XLRxcBizC77htOgjMYlGna/tsa+5LX9yWbGoWbchjp2mTC1E4pDErDpHxeWRCDdI7LhIZ+avSHgT51BcKgapUvq++C3gygdtgd3gm0Ohil7Rp2xPr1sV5feZJ/ujz5j0tDFRnm5GQqhgbKvQKup8C4BWmQbJDwin1lEqlq4tLdT/cUo+ioRTFrFinwfKoQmj+eUFODW39js1f1lgDRC+2RT+KtFxKV0D5Kjc7w0tjK45NuuSbdyEyj/f+FxugC4w4zSvH1qWpn+AGeRWxl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(39860400002)(136003)(346002)(4326008)(38100700002)(6916009)(44832011)(186003)(8676002)(53546011)(16526019)(36756003)(8936002)(6666004)(66946007)(83380400001)(316002)(478600001)(66476007)(2906002)(31686004)(31696002)(5660300002)(2616005)(66556008)(86362001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YVlHZTlFakx1eHNOTXdSTjZCT3dGdmE3U3BDTVVhenVPVmNvMkt4Skdtejkz?=
- =?utf-8?B?MHBKeHdKNkhvZE5XQy9iMGJSSkFTMDFkRlFaOTAyNnJaTDd2Vmpoc3ltV0Ni?=
- =?utf-8?B?MHNxWDYzbnVqWUxSZTRwTVd5SFdodStOTEl2bURyZWVBNk80NnhvNFNxaHdt?=
- =?utf-8?B?NUdqbXFaSzh4SmlDMWdwdFZYMW9IZDNpMUU0blBrN2ZaS2VVanY3ekp1SkJO?=
- =?utf-8?B?UVRwbHcyY3AybWl0a1F5azFBd0FFSmttd2ZHRitQaWtMUVVIenZ4bEFjeXBp?=
- =?utf-8?B?bm9vd1R2M3puRFV3R3ZQUUZIV1JhUmRGM1BtT2xBbkw0Ky90T1JEZHJtTk5Z?=
- =?utf-8?B?c1JRL2toVFRGSGtVOVZRWjBYMGxjM1pabmE1RTArQlVuUDkwV2sya1MzZWQv?=
- =?utf-8?B?bnNDMWJoSkw3Y2FnUnduWWU0UGk1TFlaMzZiOFJ1clhoQThJajIveVhORk95?=
- =?utf-8?B?TnRIL1duUHR3dFQxdlplMll5c2RBcnZIcU1IbGtoM0tYM3JwVWJvMlZBNWcy?=
- =?utf-8?B?bktEM0xrODVOdkFCdHErSUJ2UjhXMWlORHB4bFdrL3NkNU91NHB1VzJmbzVQ?=
- =?utf-8?B?cThxU1BaUmF0VjJIL3dtck9OdWVNN2tZRHg2ZTRxOE1XYVFjcFBKYjgwRUEr?=
- =?utf-8?B?MmRuMEltbWJGRVhtRlRoSG5pdGoySXZUR3JhelJza0F1OFh0YzUzYnRHS1la?=
- =?utf-8?B?eHlQd2c1Nm5lOVZpZVhIWVZ1T09uSDJxY2puNktZczdNbUlpbFJ6a2g0c3NE?=
- =?utf-8?B?LzBjTElHbUN1SnV3cWkvZWJBNWx1U05VYUt0a2l1bDcyaW1qU3lLQkZhTnNY?=
- =?utf-8?B?ZmNIRkpnMHE0UEEvM3ByYlViaXNtRG5hT1pYZklkNGVFL0pvUWRnZ3NJblkr?=
- =?utf-8?B?b21EUlg2Y29nUGd1TSt3UW1KN1BNN3JkWU5ORmtJNkNnSFZ3QlRVL3BEYU1M?=
- =?utf-8?B?S2FOaytHeTkxcEdLOGxGU3pQbFBzVU4zL3ZZcGNNQjFYTC9veUNrSTZITUdL?=
- =?utf-8?B?SWpLOFhXR3ZyWnNLUzZLV1J0cHZjdHlJRUN2MzQwRmRJdUszUUpxTHgzSjBI?=
- =?utf-8?B?OUpRSTBTOVdjZi96cThCY0pXTTZnbVo1QmdvT1FwZXh3bFNFYmFJVUNKQ0tv?=
- =?utf-8?B?bGZVSGgvUTJGS1QxeGxyMFAwcWdZZjBvMEhJWHJuK2NsczRZa2FLOHdMcXJT?=
- =?utf-8?B?N0lDOUdxd0tNQi81L2xnMFBZYXhWbGxRK3gvcEhXa1JYYVFPeEljanFrTWhW?=
- =?utf-8?B?UkUrakQwVnRTc2JGejBJQjdtYk5oVGNQRmtlOU14UkV3SFNpd1J0bnFMUExJ?=
- =?utf-8?B?QzB6QXp4QWo2bkw3OGJlWnVtcEc2MWpYWkJGdm5zQzcyQjA5RjJBN2REclN1?=
- =?utf-8?B?c3B4dEIwYmZtdGVGRXVLSHF5TkFtT1hYMFpHUDlPbmg3SmViWHZCdmpsVm84?=
- =?utf-8?B?dEUwVVR2UDUxclVvQlhRN3QrSEdNZjJUZ1BHb2RlUi9mY3hRS1hwRWxabHBJ?=
- =?utf-8?B?U0FRRS9GKzF2ZFE4Qm1lRmxkTHByZUs1VDZOcjFTVVMxTkhGdGlyeU1acGRY?=
- =?utf-8?B?eGhWZWw5MzFLd3NCMFFWQWQyL2JvV09nNnF6cC82VmJxbnIvdWo0ZXBUcEZi?=
- =?utf-8?B?VGJZUGxkZHhKUHBJbnE3SjFUZEx2NUZFNXY0SjlVRlFyR05OaEwybDdoNGNx?=
- =?utf-8?B?VW9RUDkrTkdWSC9mZkRvUXZnV04vNWNvUlZJcWFSYzBMbEdHdlRTNjQ5cFRT?=
- =?utf-8?B?TkdlRUZyb0Z1bGlyTWlLNVlMWmJuRTlTajdhaHRQZkorRy94VExGVW5tTWZ4?=
- =?utf-8?B?Ukp0LzFTVnMvQWpkbzVUck1EeG1EMi9BaHZJOTVpZWZPWlIrUGJORTNIQzJk?=
- =?utf-8?Q?Xlp33S4Qpspgy?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d25589f1-5c78-4f0c-53c7-08d920e32d87
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 07:43:54.8978
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CtI1tVG7QxECPG2tm/H0IpwlmUDTxMwUjpPEVsP66N+uyTPl16jSXDix/HHGw+f2yrrrb/nPrPHolNMnaTJFxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4096
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9996 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105270051
-X-Proofpoint-ORIG-GUID: 7CAXUMUNhtj49D7An0R0_cwBmGmqafBk
-X-Proofpoint-GUID: 7CAXUMUNhtj49D7An0R0_cwBmGmqafBk
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9996 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 adultscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105270051
+References: <CADw67XBxEvo_doMWCFChUhEhQxDVg4XuzQvTTMOhE=A+wFbuMg@mail.gmail.com>
+ <20210523201550.GC11733@hungrycats.org> <bcbfd681-7e98-39fa-71d1-231bf676fb8b@gmx.com>
+ <20210526211236.GD11733@hungrycats.org>
+In-Reply-To: <20210526211236.GD11733@hungrycats.org>
+From:   Andreas Falk <mail@andreasfalk.se>
+Date:   Thu, 27 May 2021 12:30:28 +0100
+Message-ID: <CADw67XCjpgKLR2kbOtDO4-L01nCUbQPFymOPWz4EXCiYx8PHgQ@mail.gmail.com>
+Subject: Re: btrfs check discovered possibly inconsistent journal and now the
+ errors are gone
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/05/2021 20:06, David Sterba wrote:
-> Add try-lock for exclusive operation start to allow callers to do more
-> checks. The same operation must already be running. The try-lock and
-> unlock must pair and are a substitute for btrfs_exclop_start, thus it
-> must also pair with btrfs_exclop_finish to release the exclop context.
-> 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->   fs/btrfs/ctree.h |  3 +++
->   fs/btrfs/ioctl.c | 26 ++++++++++++++++++++++++++
->   2 files changed, 29 insertions(+)
-> 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 3dfc32a3ebab..0dffc06b5ad4 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3231,6 +3231,9 @@ void btrfs_update_ioctl_balance_args(struct btrfs_fs_info *fs_info,
->   			       struct btrfs_ioctl_balance_args *bargs);
->   bool btrfs_exclop_start(struct btrfs_fs_info *fs_info,
->   			enum btrfs_exclusive_operation type);
-> +bool btrfs_exclop_start_try_lock(struct btrfs_fs_info *fs_info,
-> +				 enum btrfs_exclusive_operation type);
-> +void btrfs_exclop_start_unlock(struct btrfs_fs_info *fs_info);
->   void btrfs_exclop_finish(struct btrfs_fs_info *fs_info);
->   
->   /* file.c */
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index c4e710ea08ba..cacd6ee17d8e 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -371,6 +371,32 @@ bool btrfs_exclop_start(struct btrfs_fs_info *fs_info,
->   	return ret;
->   }
->   
-> +/*
-> + * Conditionally allow to enter the exclusive operation in case it's compatible
-> + * with the running one.  This must be paired with btrfs_exclop_start_unlock and
-> + * btrfs_exclop_finish.
-> + *
-> + * Compatibility:
-> + * - the same type is already running
-> + * - not BTRFS_EXCLOP_NONE - this is intentionally incompatible and the caller
-> + *   must check the condition first that would allow none -> @type
-> + */
-> +bool btrfs_exclop_start_try_lock(struct btrfs_fs_info *fs_info,
-> +				 enum btrfs_exclusive_operation type)
-> +{
-> +	spin_lock(&fs_info->super_lock);
-> +	if (fs_info->exclusive_operation == type)
-> +		return true;
-> +
-> +	spin_unlock(&fs_info->super_lock);
-> +	return false;
-> +}
-> +
+> Did you run that with the filesystem mounted?  If so, it explains all of the following errors, and the way they seem to appear and disappear.
 
-  Sorry for the late comment.
-  Nit:
-  This function implements a conditional lock. But the function name
-  misleads to some operation similar to spin_trylock() or
-  mutex_trylock(). How about btrfs_exclop_start_cond_lock() instead?
-  Otherwise, looks good.
+Yes, I did, the first time with the filesystem mounted in write mode
+which I guess made things worse. I've re-run the check with it
+unmounted and as you say all problems are gone. Thank you! Lesson
+learned.
 
-  Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> Don't run btrfs check at all, unless there are errors the kernel cannot recover from with a scrub.
 
-Thanks.
+The host is running older hardware with no ECC memory and no "server
+grade" parts from my home office power socket. I think the first power
+related issue in your later reply is basically what I'm unknowingly
+trying to mitigate against. Note that I'm not really trying to have
+the check repair anything, I'm just interested in it making me aware
+that there's a problem so I can do something about it sooner (replace
+hardware, restore from backups etc).
 
-> +void btrfs_exclop_start_unlock(struct btrfs_fs_info *fs_info)
-> +{
-> +	spin_unlock(&fs_info->super_lock);
-> +}
-> +
->   void btrfs_exclop_finish(struct btrfs_fs_info *fs_info)
->   {
->   	spin_lock(&fs_info->super_lock);
-> 
+I guess I don't need to worry about it in relation to complete power
+cuts because of the extra details and failure modes you describe in
+the later replies though and rather it should instead be something
+that I run manually once every few months?
 
+> One rule of thumb for finding bad advice about btrfs on the Internet is to ask if the author believes in the existence of a 'btrfs journal'.
+
+Hah, point taken. I think I stopped thinking and just started
+searching for solutions and the errors in that article looked too good
+to just dismiss.
+
+> The error messages you posted are all metadata tree issues. Paths are in a higher layer of the filesystem.
+
+Yes, I'm not entirely sure what I saw anymore. I was redirecting
+stdout into a file but missed stderr so I only have half the contents
+of what was printed. I have no idea where the other output came from
+to be honest but I do distinctly remember there being some path. Since
+everything in the FS seems to be fine though it doesn't really matter.
+
+Thank you both for the guidance and detail in your answers, it helped
+me understand BTRFS just a little bit better!
+
+Andreas
+
+On Wed, May 26, 2021 at 10:12 PM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
+>
+> On Mon, May 24, 2021 at 07:20:31AM +0800, Qu Wenruo wrote:
+> >
+> >
+> > On 2021/5/24 上午4:15, Zygo Blaxell wrote:
+> > > On Sun, May 23, 2021 at 04:55:16PM +0100, Andreas Falk wrote:
+> > > > Hey,
+> > > >
+> > > > I want to start with clarifying that I've got backups of my important
+> > > > data so what I'm asking here is primarily for my own education to
+> > > > understand how btrfs works and to make restoring things more
+> > > > convenient.
+> > > >
+> > > > I'm running a small home server with family photos etc with btrfs in
+> > > > raid1 and we recently experienced a power cut. I wasn't around when it
+> > > > got turned back on and when I finally got to it everything had run for
+> > > > ~2h with the filesystem mounted in readwrite mode so I ran (after the
+> > > > fact I realized that I should have probably unmounted immediately and
+> > > > made sure /etc/fstab had everything in readonly mode):
+> > > >
+> > > > $ sudo btrfs check --readonly --force /dev/sdb
+> > >
+> > > Did you run that with the filesystem mounted?  If so, it explains all
+> > > of the following errors, and the way they seem to appear and disappear.
+> > > They are the result of btrfs check losing races against the filesystem
+> > > while the filesystem moves metadata around.
+> > >
+> > > Don't run btrfs check on a mounted filesystem.  It won't work.
+> > >
+> > > Don't run btrfs check at all, unless there are errors the kernel cannot
+> > > recover from with a scrub.  btrfs check necessarily has fewer data
+> > > integrity checks than the kernel (otherwise it would not be able to repair
+> > > anything)
+> >
+> > I can't agree with that part though.
+> >
+> > The truth is, although kernel has tree-checker, it doesn't do
+> > cross-check for things like extent backref or anything crosses leaf
+> > boundary.
+> >
+> > Thus btrfs check can still detect problem better than kernel.
+> >
+> > For things can be rejected by kernel tree-checker, it's still a
+> > rejection, it's still a problem.
+> > Not to mention sometimes tree-checker can be a little too sensitive,
+> > like inode transid/generation problems, which won't really affect user
+> > data at all.
+> >
+> > I agree with the don't run btrfs check on mounted fs, unless it's RO
+> > mounted.
+> > But if possible, we still want user to run btrfs check and report back
+> > any problem found.
+> >
+> > > but that means check can stumble into problems that the kernel
+> > > would have easily avoided, and can cause damage with --repair as a result.
+> > >
+> > > If you suspect damage to the filesystem (e.g. due to buggy firmware in
+> > > the drives + power loss), then run btrfs scrub first.  If that reports no
+> > > errors (or corrects all the errors it does find), then there is usually
+> > > no need to do anything else.
+> >
+> > But corrupted extent tree like missing backref won't be detected by
+> > scrub at all.
+>
+> That's OK, buggy firmware in the drives and simple power loss can't
+> create that kind of failure[1].  External assaults on the filesystem
+> (bad drives, power failures, crashes) are best recovered with scrub.
+> Internal assults on the filesystem (kernel bugs, host CPU/RAM failures)
+> are where check is needed and useful.  Check is very heavy to run and
+> almost never finds problems in production kernel/machines, so the cost /
+> benefit ratio isn't worth it most of the time.
+>
+> Also, to clarify, when I said "there is usually no need to do anything
+> else", I meant in terms of running more btrfs recovery tools.  Obviously
+> if the drives are having csum failures or dropping writes, or the host is
+> going bad and injecting errors into btrfs, then some corrective action
+> is required (e.g. replace or reconfigure hardware).  The response focus
+> should be on "make the damage stop" not "try to repair the damage each
+> individual time it occurs."
+>
+> > As scrub just checks the csum of data and metadata, it never checks the
+> > contents of the metadata.
+>
+> scrub checks the forward refs of the extent and csum trees, since it
+> has to walk over them to get to the csums and metadata.  It is true that
+> scrub doesn't verify everything semantically.
+>
+> On the other hand, after a simple power failure or crash, only the
+> csums and forward references _need_ to be verified.  Everything else is
+> protected by CoW and transactional updates, or it was already corrupted
+> by a kernel bug or host RAM/CPU failure before the power failure or crash.
+>
+> If there is a kernel bug, it could occur at any time, most likely _not_
+> during the short time window of a power failure.  So even if there
+> is a good reason to run check, it's not _because_ there was a recent
+> power loss.  The opposite is more likely:  problems that require check
+> will mostly appear during long periods of continuous uptime.
+>
+> > Such extent tree mismatch can later lead to broken COW.
+> >
+> > Thus at least for now, btrfs check is still a very needed tool.
+>
+> There are two cases where a check might be required that are related to
+> power issues.
+>
+> One, a host running on residential grid power with no filtering or
+> conditioning might experience CPU/RAM undervoltages from time to time
+> that could cause corrupted metadata to be persisted with good csums
+> on the drives.  Maybe running btrfs check at regular intervals (not
+> necessarily after reboots, though it may be more convenient to run check
+> then)  makes sense in that situation, like a deeper kind of scrub.
+>
+> Even then, this check would not be a first response to a power outage--the
+> errors are more likely to be persisted on disk at every _other_ time, as
+> a simple power outage would normally prevent the disks from completing
+> a transaction with bad metadata (especially on spinning disks where
+> seeking to update superblocks requires more energy).  The check would
+> have to be run e.g. every few months to detect these, as ext3/ext4 does.
+>
+> The problem here is that running check on such a machine is likely to do
+> bad things to the filesystem (or give false error reports that encourage
+> the user to do bad things to the filesystem) for the same reasons that the
+> kernel does.  Bad power breaks all software.  If the machine flips bits
+> in kernel metadata here and there, it will flip bits in btrfs check too.
+>
+> Two, there may be a problem specific to fast SSDs and power outages.
+> The faster NVME devices and even high-end SATA SSDs can stay powered
+> long enough to persist a lot of garbage metadata as the host CPU/RAM
+> lose power.  Maybe even long enough to cross multiple btrfs transaction
+> boundaries with bad metadata and good csums.  Scrub will not detect
+> that kind of failure unless it's obvious enough for the kernel's checks
+> to fail.  Check would be needed to catch some of those cases, though
+> check can't catch them all either.
+>
+> On the other hand, if this failure event is happening, btrfs would need a
+> significant new feature to survive on such hardware at all (e.g. multiple
+> working backup roots); otherwise, damage to the btrfs metadata would be
+> a routine event, and irreparable damage would be inevitable.
+>
+> [1] That said, we have seen a number of users on IRC running multiple
+> kernel versions reporting unexplained and apparently valid tree checker
+> issues after power outages running btrfs on faster SSD models.  So maybe
+> non-simple power failures really are happening in the field, we're just
+> not looking for them?
+>
+> > Thanks,
+> > Qu
+> >
+> > >
+> > > > and it seemed to mostly run fine but after a while it started printing
+> > > > messages like this along with what looked like some paths that were
+> > > > problematic (from what I remember, but these are not my exact
+> > > > messages):
+> > > >
+> > > > parent transid verify failed on 31302336512 wanted 62455 found 62456
+> > > > parent transid verify failed on 31302336512 wanted 62455 found 62456
+> > > > parent transid verify failed on 31302336512 wanted 62455 found 62456
+> > > >
+> > > > along with (these are my exact messages from a log that I saved):
+> > > >
+> > > > The following tree block(s) is corrupted in tree 259:
+> > > > tree block bytenr: 17047541170176, level: 0, node key:
+> > > > (18446744073709551606, 128, 25115695316992)
+> > > > The following tree block(s) is corrupted in tree 260:
+> > > > tree block bytenr: 17047541170176, level: 0, node key:
+> > > > (18446744073709551606, 128, 25115695316992)
+> > > > tree block bytenr: 17047547396096, level: 0, node key:
+> > > > (18446744073709551606, 128, 25187668619264)
+> > > > tree block bytenr: 17047547871232, level: 0, node key:
+> > > > (18446744073709551606, 128, 25124709920768)
+> > > > tree block bytenr: 17047549526016, level: 0, node key:
+> > > > (18446744073709551606, 128, 25195576877056)
+> > > > tree block bytenr: 17047551426560, level: 0, node key:
+> > > > (18446744073709551606, 128, 25162283048960)
+> > > > tree block bytenr: 17047551803392, level: 0, node key:
+> > > > (18446744073709551606, 128, 25177327333376)
+> > > >
+> > > > I didn't have time to look into it deeper at the time and decided to
+> > > > just shut it down cleanly until today when I'd have some time to look
+> > > > further at it. I booted it today (still in readwrite unfortunately)
+> > > > and immediately modified /etc/fstab to not mount any of the volumes,
+> > > > disabled services that might touch them and then rebooted it again to
+> > > > make sure it's not touching the disks anymore. Then I ran a check
+> > > > again:
+> > > >
+> > > > $ sudo btrfs check --readonly --progress /dev/sdb
+> > >
+> > > If the filesystem is readonly then btrfs check has a lower chance of
+> > > failure.  Still not zero, though.  btrfs check should only be run on
+> > > unmounted filesystems, if it should be run at all.
+> > >
+> > > > and now it's no longer finding any problems or printing any paths that
+> > > > are problematic.
+> > > >
+> > > > >From what I've understood from this[a] article, the errors I saw were
+> > > > likely due to an inconsistent journal.
+> > >
+> > > One rule of thumb for finding bad advice about btrfs on the Internet is to
+> > > ask if the author believes in the existence of a 'btrfs journal'.  If so,
+> > > it's a safe bet that the author has no idea what they're writing about.
+> > >
+> > > btrfs doesn't use a journal.  It uses wandering trees for metadata
+> > > integrity, and a log tree for fsync().  These store different things
+> > > than a journal, and have very different failure behavior compared to
+> > > journals in other filesystems.
+> > >
+> > > > Now for my questions:
+> > > >
+> > > > 1. I'm guessing that my reboots, in particular the ones where I still
+> > > > had it mounted in readwrite mode somehow cleared the journal and
+> > > > that's why I'm no longer seeing any errors. Does this sound
+> > > > plausible/correct?
+> > >
+> > > Well, there's no journal, so that can't be part of any correct theory.
+> > >
+> > > It is most likely that there were no errors on disk in the first place.
+> > > If btrfs check is reading metadata while btrfs was modifying it, then
+> > > it will always see an inconsistent view of the filesystem.  Each time
+> > > you run btrfs check, it will see a different inconsistent view of the
+> > > filesystem, so old errors will disappear, and new ones could appear.
+> > >
+> > > That said, self-correction is not impossible.  Normally btrfs raid1 will
+> > > automatically correct a corrupted mirror using data from a good mirror.
+> > > This uniformly handles cases ranging from bits flipped in drive DRAM,
+> > > writes that were dropped on their way to the disk (due to UNC sector,
+> > > firmware bug, power loss, misdirected write, FTL failure, or hundreds
+> > > of other possible reasons), and drives that temporarily disconnected
+> > > from arrays.
+> > >
+> > > > The errors being gone without me manually clearing
+> > > > them feels scary to me.
+> > >
+> > > btrfs will usually report such events in the kernel log and increment the
+> > > 'btrfs dev stats' counters, though there are a handful of exceptions.
+> > >
+> > > The correction is automatic when possible.  It occurs both on normal
+> > > reads and during scrubs.
+> > >
+> > > > 2. Is there any way to identify the paths again that were problematic
+> > > > based on the values in the log that I posted above so I can figure out
+> > > > what to restore from backups rather than doing a full restore?
+> > >
+> > > The error messages you posted are all metadata tree issues.  Paths are
+> > > in a higher layer of the filesystem.  Depending on which metadata is
+> > > affected, anywhere from a few hundred paths to the entire filesystem
+> > > may be affected.
+> > >
+> > > Note that if you ran 'btrfs check' on a mounted filesystem, the errors
+> > > reported are most likely a result of that mistake, and you should ignore
+> > > all of check's output under those conditions.
+> > >
+> > > If there are really unrecovered metadata errors on the disks then paths
+> > > do not matter very much.  The filesystem cannot be safely modified in
+> > > this case, so only a full mkfs + restore (or successful 'btrfs check
+> > > --repair --init-extent-tree' run) can make the filesystem writable again.
+> > >
+> > > Note that we have no evidence that you are in this situation, or indeed
+> > > any evidence of a problem at all.  Power failures are totally routine
+> > > events for btrfs, and most drive firmware will handle them with no
+> > > problems (though there are one or two popular drive models out there
+> > > that won't).
+> > >
+> > > > a. https://ownyourbits.com/2019/03/03/how-to-recover-a-btrfs-partition/
+> > >
+> > > This article features a random mashup of btrfs recovery commands and
+> > > error messages.  Half of it is simply wrong:  zero-log cannot fix a
+> > > parent transid verify failed error, all but two btrfs errors imply that
+> > > you don't need to run chunk-recover, there is no journal...
+> > >
+> > > > Thank you,
+> > > > Andreas
