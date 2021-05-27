@@ -2,98 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0D3393666
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 May 2021 21:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B403393677
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 May 2021 21:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235481AbhE0TjM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 May 2021 15:39:12 -0400
-Received: from mtaextp1.scidom.de ([146.107.3.202]:51604 "EHLO
+        id S235087AbhE0TpM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 May 2021 15:45:12 -0400
+Received: from mtaextp1.scidom.de ([146.107.3.202]:52572 "EHLO
         mtaextp1.scidom.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235348AbhE0TjL (ORCPT
+        with ESMTP id S229843AbhE0TpM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 May 2021 15:39:11 -0400
+        Thu, 27 May 2021 15:45:12 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mtaextp1.scidom.de (Postfix) with ESMTP id 46F6618046720;
-        Thu, 27 May 2021 21:37:21 +0200 (CEST)
+        by mtaextp1.scidom.de (Postfix) with ESMTP id 6C6D218046722;
+        Thu, 27 May 2021 21:43:22 +0200 (CEST)
 Received: from mtaextp1.scidom.de ([127.0.0.1])
         by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id DlYY1kaQkjG0; Thu, 27 May 2021 21:37:21 +0200 (CEST)
+        with ESMTP id YaPBSL9EOeF7; Thu, 27 May 2021 21:43:22 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by mtaextp1.scidom.de (Postfix) with ESMTP id 168CC18046721;
-        Thu, 27 May 2021 21:37:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mtaextp1.scidom.de 168CC18046721
+        by mtaextp1.scidom.de (Postfix) with ESMTP id 3CA3418046721;
+        Thu, 27 May 2021 21:43:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mtaextp1.scidom.de 3CA3418046721
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
-        t=1622144241; bh=k3h+UJmuM1EB23NYHqns8FBnaL3GgkZOSlORrGonHCI=;
+        t=1622144602; bh=qO3DhPDRgR/SsCfC7avp3fKdM8hk6DhnQMYI3zAUyXc=;
         h=Date:From:To:Message-ID:MIME-Version;
-        b=nZawRTn/nDne/Z7MC4tiLDRvnr7w1YxHzsZdAL98592S8Ocj4ptzlt/tTvx/IDNGI
-         CYiA43pFN/jFY0dhm89e93fyo6Z0ygd1+FBPWHTX7LHj3V5iX7rM00PIY1gNmOlqNR
-         tPskF8Cxn/tHulo5VTe3U5kPkq4/sFbe6nObJ50zbEK1AhO/k6d1gu5UM/hxXjSzWj
-         TjnnjMkS3lZPplfjeZrfoz2Le1CamMx5ghoE/tfOL2JH2GJyhM/+qo6kDocDe2nRS7
-         pMYwzC1bHkhaPtSwTyPAu2FmGkGcNPF2VdJweOvVIxYPO3hB6Yu+Yf86vwADK9D1Yi
-         88zNlwqAbo4Yw==
+        b=Mq/2++B77TMZYe4JmjdUhbsn/WGx0dQ2P9m8jnWxZo+JNBZLKyd+tHadRWwvMIgIj
+         c0hTOwJVEvtky+5h7M7CaO3koHKeFD01wv+I2ZQEAecBmCmuWFUnpTt1rfwDfDVEBc
+         TIBCtAH50Hnf/8Ceakdp1dgahFo3gWfkjV9tDPUb+u00+E/qaX/JG/JWSwPsgP8y3h
+         93Inh7yHaYR7VRVueUj/V2hS+UZ56oW+zD8vumGtk34fCUm6LeqSjqI7hR6hgX3iyW
+         Gt0T5wKyTotra1+bc8M0fAeS3jwnl3ujEZO0VTwDIUCdfYMDeB97FGsj/eGF9D6Xa6
+         HJybLr06hnZsA==
 X-Amavis-Modified: Mail body modified (using disclaimer) - mtaextp1.scidom.de
 X-Virus-Scanned: amavisd-new at mtaextp1.scidom.de
 Received: from mtaextp1.scidom.de ([127.0.0.1])
         by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fvL3WGf7nMuP; Thu, 27 May 2021 21:37:20 +0200 (CEST)
+        with ESMTP id cC6hM6bOseCI; Thu, 27 May 2021 21:43:22 +0200 (CEST)
 Received: from mtaintp1.scidom.de (mtaintp1.scidom.de [146.107.8.197])
-        by mtaextp1.scidom.de (Postfix) with ESMTPS id D3DC618046720;
-        Thu, 27 May 2021 21:37:20 +0200 (CEST)
+        by mtaextp1.scidom.de (Postfix) with ESMTPS id 1346A18046722;
+        Thu, 27 May 2021 21:43:22 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id 2DC40823B4A1;
-        Thu, 27 May 2021 21:37:36 +0200 (CEST)
+        by mtaintp1.scidom.de (Postfix) with ESMTP id 61F678238759;
+        Thu, 27 May 2021 21:43:37 +0200 (CEST)
 Received: from mtaintp1.scidom.de ([127.0.0.1])
         by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id khuvHhCDzOmn; Thu, 27 May 2021 21:37:36 +0200 (CEST)
+        with ESMTP id NAGteo6OdLfv; Thu, 27 May 2021 21:43:37 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id 0355D8CCEB95;
-        Thu, 27 May 2021 21:37:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mtaintp1.scidom.de 0355D8CCEB95
+        by mtaintp1.scidom.de (Postfix) with ESMTP id 3B91E823B4AD;
+        Thu, 27 May 2021 21:43:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mtaintp1.scidom.de 3B91E823B4AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
-        t=1622144256; bh=k3h+UJmuM1EB23NYHqns8FBnaL3GgkZOSlORrGonHCI=;
+        t=1622144617; bh=qO3DhPDRgR/SsCfC7avp3fKdM8hk6DhnQMYI3zAUyXc=;
         h=Date:From:To:Message-ID:MIME-Version;
-        b=L7bPsPskIB7DNxi0+93Hu32hoUn6N7b0qiMWuTpuETDMIEe3usohGOQC5AxGISVlm
-         6UnelbwqKgI2F7DthyZxUjKrXqm6Y2aI5UPwQMSobwhifcPwIH/w0g9jl4YsFny15f
-         vGQvUL4+UdtGLrmtNTeJYFrqioc3lBjX81ZpqtWTD++xpsf8mb/m8SW9EJse04lgiI
-         Cnb7nWSUDxSjBDaZGfFGCARYvHF1739++hf0ftpLG9EC2/hsMxxL/tRsJLJXFauPxB
-         fYsXLpU59wo9djJjzpFXckJMP7eWzdpNpjPJBBtBk5PwBVA1N2J0AGDM05UeHLMeST
-         mn6V3/gjIQRlA==
+        b=udESrfIfBrKlm+Kza6O8onZsoowXcVIUfk6JF1Rmcj9B3lR5L6RAY6XMz0k7/ivrE
+         hJv1SGzQxZVT8Uh3W07I0GPwtwE6QMshPim4YKXh4AoFG5Ijgb+ICiTMsQBhLDvrkr
+         LZdUsguFEs8Gc4c0I2sPw8EWqXSSd5MUS3Id+7KGWwpdMvNoK6LyKqhx+UvG/H7qG2
+         wFavfS/ZhccaUx7R1z/3s6gqlADlGZV2SV5uz4jCZkwjD9zxndp0nmaYfMFEybsjMM
+         fNVu5daVbycknj6HQ4smEGg2FozQfQIkCu0K5Yna9T486GS3vc63dxLF4z7sR5Src6
+         k0gKxTMnD7YiQ==
 X-Amavis-Modified: Mail body modified (using disclaimer) - mtaintp1.scidom.de
 X-Virus-Scanned: amavisd-new at mtaintp1.scidom.de
 Received: from mtaintp1.scidom.de ([127.0.0.1])
         by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id g_Rvykn8iJf8; Thu, 27 May 2021 21:37:35 +0200 (CEST)
+        with ESMTP id qvnU2LE1L1Hd; Thu, 27 May 2021 21:43:37 +0200 (CEST)
 Received: from mbxp1.scidom.de (mbxp1.scidom.de [146.107.8.207])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id D3BAB8238759;
-        Thu, 27 May 2021 21:37:35 +0200 (CEST)
-Date:   Thu, 27 May 2021 21:37:35 +0200 (CEST)
+        by mtaintp1.scidom.de (Postfix) with ESMTP id 184F7823B4A1;
+        Thu, 27 May 2021 21:43:37 +0200 (CEST)
+Date:   Thu, 27 May 2021 21:43:36 +0200 (CEST)
 From:   "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
 To:     Remi Gauvin <remi@georgianit.com>,
         Btrfs ML <linux-btrfs@vger.kernel.org>
-Message-ID: <1204827780.82945725.1622144255373.JavaMail.zimbra@helmholtz-muenchen.de>
-In-Reply-To: <ab2bb27e-035f-d215-0e2d-c3c22101a06a@georgianit.com>
-References: <2106576727.79893362.1622034311642.JavaMail.zimbra@helmholtz-muenchen.de> <97e08f6c-1177-49f8-a05b-5f2917a77fb2@georgianit.com> <1608188083.80084937.1622040829715.JavaMail.zimbra@helmholtz-muenchen.de> <ab2bb27e-035f-d215-0e2d-c3c22101a06a@georgianit.com>
+Message-ID: <1947766225.82957242.1622144616972.JavaMail.zimbra@helmholtz-muenchen.de>
+In-Reply-To: <1204827780.82945725.1622144255373.JavaMail.zimbra@helmholtz-muenchen.de>
+References: <2106576727.79893362.1622034311642.JavaMail.zimbra@helmholtz-muenchen.de> <97e08f6c-1177-49f8-a05b-5f2917a77fb2@georgianit.com> <1608188083.80084937.1622040829715.JavaMail.zimbra@helmholtz-muenchen.de> <ab2bb27e-035f-d215-0e2d-c3c22101a06a@georgianit.com> <1204827780.82945725.1622144255373.JavaMail.zimbra@helmholtz-muenchen.de>
 Subject: Re: how to rollback / to a snapshot ?
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; 
-        boundary="----=_Part_82945727_570711520.1622144255774"
+        boundary="----=_Part_82957244_240848364.1622144617042"
 X-Originating-IP: [146.107.159.224]
 X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - GC90 (Win)/8.8.15_GA_4007)
 Thread-Topic: how to rollback / to a snapshot ?
-Thread-Index: h34JB0CMMpEHtuWvcBTRD6E6sdbozQ==
+Thread-Index: h34JB0CMMpEHtuWvcBTRD6E6sdbozWXeKKm/
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-------=_Part_82945727_570711520.1622144255774
-Date: Thu, 27 May 2021 21:37:35 +0200 (CEST)
+------=_Part_82957244_240848364.1622144617042
+Date: Thu, 27 May 2021 21:43:36 +0200 (CEST)
 From: "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
 To: Remi Gauvin <remi@georgianit.com>, Btrfs ML <linux-btrfs@vger.kernel.org>
-Message-ID: <1204827780.82945725.1622144255373.JavaMail.zimbra@helmholtz-muenchen.de>
-In-Reply-To: <ab2bb27e-035f-d215-0e2d-c3c22101a06a@georgianit.com>
-References: <2106576727.79893362.1622034311642.JavaMail.zimbra@helmholtz-muenchen.de> <97e08f6c-1177-49f8-a05b-5f2917a77fb2@georgianit.com> <1608188083.80084937.1622040829715.JavaMail.zimbra@helmholtz-muenchen.de> <ab2bb27e-035f-d215-0e2d-c3c22101a06a@georgianit.com>
+Message-ID: <1947766225.82957242.1622144616972.JavaMail.zimbra@helmholtz-muenchen.de>
+In-Reply-To: <1204827780.82945725.1622144255373.JavaMail.zimbra@helmholtz-muenchen.de>
+References: <2106576727.79893362.1622034311642.JavaMail.zimbra@helmholtz-muenchen.de> <97e08f6c-1177-49f8-a05b-5f2917a77fb2@georgianit.com> <1608188083.80084937.1622040829715.JavaMail.zimbra@helmholtz-muenchen.de> <ab2bb27e-035f-d215-0e2d-c3c22101a06a@georgianit.com> <1204827780.82945725.1622144255373.JavaMail.zimbra@helmholtz-muenchen.de>
 Subject: Re: how to rollback / to a snapshot ?
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -101,56 +101,48 @@ Content-Transfer-Encoding: 7bit
 X-Originating-IP: [146.107.159.224]
 X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - GC90 (Win)/8.8.15_GA_4007)
 Thread-Topic: how to rollback / to a snapshot ?
-Thread-Index: h34JB0CMMpEHtuWvcBTRD6E6sdbozQ==
+Thread-Index: h34JB0CMMpEHtuWvcBTRD6E6sdbozWXeKKm/
 
 
------ On May 26, 2021, at 5:17 PM, Remi Gauvin remi@georgianit.com wrote:
 
-> On 2021-05-26 10:53 a.m., Lentes, Bernd wrote:
-> 
->> 
->> OK. Thanks, i will try that and keep you informed.
->> 
->> Bernd
->> 
-> 
-> Please note that I made a mistake.
-> 
-> 
-> When you snapshot into a new @, it will already have an empty (not
-> subvolume) @/var/lib/docker/btrfs directory.
-> 
-> You have to get that directory out of the way before you move the
-> subvolume, otherwise, you'll end up with a  @/var/lib/docker/btrfs/btrfs
-> and mount will fail.
-> 
-> rmdir /mnt/sub/root-volume/@/var/lib/docker/btrfs
-> 
-> *before* you do:
-> 
-> mv /mnt/sub/root-volume/@bad/var/lib/docker/btrfs
-> /mnt/sub/root-volume/@/var/lib/docker/btrfs
+----- On May 27, 2021, at 9:37 PM, Bernd Lentes bernd.lentes@helmholtz-muenchen.de wrote:
 
-Hi,
+> ----- On May 26, 2021, at 5:17 PM, Remi Gauvin remi@georgianit.com wrote:
+> 
 
-i followed your guide and tried a reboot remotely.
-PC stuck in BIOS, someone in the office pressed F2, and system booted completely.
-But unfortunately in the bad system and without X:
+> Hi,
+> 
+> i followed your guide and tried a reboot remotely.
+> PC stuck in BIOS, someone in the office pressed F2, and system booted
+> completely.
+> But unfortunately in the bad system and without X:
+> 
+> root@pc65472:~# mount|grep btrfs
+> /dev/mapper/vg1-lv_root on / type btrfs
+> (rw,relatime,ssd,space_cache,subvolid=257,subvol=/@_bad)
+> /dev/mapper/vg1-lv_root on /home type btrfs
+> (rw,relatime,ssd,space_cache,subvolid=258,subvol=/@home)
+> /dev/sdb1 on /data type btrfs
+> (rw,relatime,space_cache,subvolid=258,subvol=/@data)
+> /dev/sdc1 on /local type btrfs (rw,relatime,space_cache,subvolid=5,subvol=/)
+> /dev/mapper/vg1-lv_root on /var/lib/docker/btrfs type btrfs
+> (rw,relatime,ssd,space_cache,subvolid=257,subvol=/@_bad/var/lib/docker/btrfs)
+> 
+> Any idea ?
+> 
+> I will try tomorrow again, then i'm in front of the PC.
+> 
+> Bernd
 
-root@pc65472:~# mount|grep btrfs
-/dev/mapper/vg1-lv_root on / type btrfs (rw,relatime,ssd,space_cache,subvolid=257,subvol=/@_bad)
-/dev/mapper/vg1-lv_root on /home type btrfs (rw,relatime,ssd,space_cache,subvolid=258,subvol=/@home)
-/dev/sdb1 on /data type btrfs (rw,relatime,space_cache,subvolid=258,subvol=/@data)
-/dev/sdc1 on /local type btrfs (rw,relatime,space_cache,subvolid=5,subvol=/)
-/dev/mapper/vg1-lv_root on /var/lib/docker/btrfs type btrfs (rw,relatime,ssd,space_cache,subvolid=257,subvol=/@_bad/var/lib/docker/btrfs)
+journalctl -xb:
 
-Any idea ?
-
-I will try tomorrow again, then i'm in front of the PC.
+ ...
+Mai 27 09:51:38 pc65472 kernel: BTRFS error (device dm-0): could not find root 8
+Mai 27 09:51:38 pc65472 kernel: BTRFS error (device dm-0): could not find root 8
+ ...
 
 Bernd
-
-------=_Part_82945727_570711520.1622144255774
+------=_Part_82957244_240848364.1622144617042
 Content-Type: application/pkcs7-signature; name=smime.p7s; smime-type=signed-data
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -187,12 +179,12 @@ ADGCApswggKXAgEBMIGeMIGNMQswCQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2Vy
 ZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdE
 Rk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBAgwiB2ugwC/324RS
 2zMwDQYJYIZIAWUDBAIBBQCggc4wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjEwNTI3MTkzNzM1WjAtBgkqhkiG9w0BCTQxIDAeMA0GCWCGSAFlAwQCAQUAoQ0GCSqG
-SIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCDzUqxn6B1tCjdbZT7g3MHSCVTs1DMxBdibvhYT3FeQ
-TTA0BgkqhkiG9w0BCQ8xJzAlMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAHBgUrDgMCBzAN
-BgkqhkiG9w0BAQsFAASCAQADUYheNFKTCyL4m72p9pOMG8DxyieFAPyGkNLTcqsHDRdR/Fj4B/7/
-O2qab3Lq2iWUphzs462+kHzAJ7WyfHMHDq0kHbooHfcYlGgBmJczKnfZaEOuxgtycM2SkHaNz/lv
-GfuxOVfIasi9u0rDpUolT6/duKRNtK34v8j0CvyZ+RtceG+qtDdgXWLjHyy6EduECtonqmOx79Ee
-fsvl4YhbTgyTXZUA1wTBEMRF5y6WNCZzFVjAp9D+wU3X8b0TpH1unw5GaKDeKuJu7g2lCIIdLGY3
-QWKMuBUacXqYzgiB08OnsFu0snO9umPlyryWzK/yetdmHN29jL0XlWvL9f8hAAAAAAAA
-------=_Part_82945727_570711520.1622144255774--
+CQUxDxcNMjEwNTI3MTk0MzM3WjAtBgkqhkiG9w0BCTQxIDAeMA0GCWCGSAFlAwQCAQUAoQ0GCSqG
+SIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCDym1Lt9ivkdf2Hzp1l6JUVrUL1lFv5ACRdGjxmclqP
+GjA0BgkqhkiG9w0BCQ8xJzAlMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAHBgUrDgMCBzAN
+BgkqhkiG9w0BAQsFAASCAQBEDA8gH1lIwxMJCh+hPqJv7x0b+KixbUhKIbYSDhE0IRAd0bU03suG
+rTac3rm0FgRQn2AE4LaN7M+QexI/n6ZVMOzr0rR4R98O6kkT2jskWjaputOBxUyU9K5KpgUP9iDc
+5fP78RhGQgGEv1UhpUjJ81tI84FLiclqM5gZXtK4H9XqgGiGJsiJUyfQCAkl2PczBaO0pJc99FfG
+0XhhWOtVLjT6s7nuSZSXkULP1VvpsBD8431pX2NZ1poLhkLuzZje8MoXc6WmudmKhS95fBRuSDNp
+X1ueYa491N7VkxmUa+qsAWI492l3gvJs+bjxu4Ov/mRwGramqjxxOP52oZL6AAAAAAAA
+------=_Part_82957244_240848364.1622144617042--
