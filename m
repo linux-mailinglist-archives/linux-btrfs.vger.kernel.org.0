@@ -2,33 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77FF3393B66
+	by mail.lfdr.de (Postfix) with ESMTP id EE7F8393B67
 	for <lists+linux-btrfs@lfdr.de>; Fri, 28 May 2021 04:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236154AbhE1CaK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S236162AbhE1CaK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 27 May 2021 22:30:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60774 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:60850 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236126AbhE1CaI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 May 2021 22:30:08 -0400
+        id S236140AbhE1CaK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 May 2021 22:30:10 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622168913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1622168915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SFHcwxsCoFvolKvW6wDTsvJv1V8HtpaSC5f8JrCKot4=;
-        b=CMjwA+HBon/XsmD76ymQI6XRoIbnWpCMLHY8XCl/8APmu9jt8fh0+Skzf26PUdFJXJHLXm
-        CaAeE6Z283NTGlLE4U8eO5TWnR0e11ycWuOKNCWOs5Smdw2AsXq/HRji7W9KA/48shqwz6
-        h0sqWYINFsu34lFBE04yjlh5DVjc0h4=
+        bh=b4PjXS1j+1kZgwU30+Xk1ebuUJ9e7cjx2seAIJExk7g=;
+        b=XrI28XKgNmfkU593fUqnj8LPL2ohx3TxYpyFb84iS0Lbfk3jXRLVguGAuVjBKBaL/0TCm+
+        BLeKoKJ9mP5FMu/cwbdkBaYRK88DZ9I9O570+nb94aZKTdxpYEFwEGMHc99hlmAe7YhL+O
+        BLlutUuK6T5wB5X+MnIK1pOrEWKDKk4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B54F4ABD9
-        for <linux-btrfs@vger.kernel.org>; Fri, 28 May 2021 02:28:33 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 588CDABD9
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 May 2021 02:28:35 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/7] btrfs: defrag: introduce a new helper to defrag one cluster
-Date:   Fri, 28 May 2021 10:28:19 +0800
-Message-Id: <20210528022821.81386-6-wqu@suse.com>
+Subject: [PATCH 6/7] btrfs: defrag: use defrag_one_cluster() to implement btrfs_defrag_file()
+Date:   Fri, 28 May 2021 10:28:20 +0800
+Message-Id: <20210528022821.81386-7-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210528022821.81386-1-wqu@suse.com>
 References: <20210528022821.81386-1-wqu@suse.com>
@@ -38,72 +38,281 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This new helper, defrag_one_cluster(), will defrag one cluster (at most
-256K) by:
+The function defrag_one_cluster() is able to defrag one range well
+enough, we only need to do prepration for it, including:
 
-- Collect all targets
-- Call defrag_one_target() on each target
-  With some extra range clamping.
-- Update @sectors_defraged parameter
+- Clamp and align the defrag range
+- Exclude invalid cases
+- Proper inode locking
+
+The old infrastructures will not be removed in this patch, as it would
+be too noisy to review.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ioctl.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ fs/btrfs/ioctl.c | 219 ++++++++++++++---------------------------------
+ 1 file changed, 63 insertions(+), 156 deletions(-)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index cd7650bcc70c..911db470aad6 100644
+index 911db470aad6..1a5a461d94a5 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -1562,6 +1562,48 @@ static int defrag_one_target(struct btrfs_inode *inode,
+@@ -1619,25 +1619,15 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 		      u64 newer_than, unsigned long max_to_defrag)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	struct btrfs_root *root = BTRFS_I(inode)->root;
+-	unsigned long last_index;
++	unsigned long sectors_defraged = 0;
+ 	u64 isize = i_size_read(inode);
+-	u64 last_len = 0;
+-	u64 skip = 0;
+-	u64 defrag_end = 0;
+-	u64 newer_off = range->start;
+-	unsigned long i;
+-	unsigned long ra_index = 0;
+-	int ret;
+-	int defrag_count = 0;
+-	int compress_type = BTRFS_COMPRESS_ZLIB;
+-	u32 extent_thresh = range->extent_thresh;
+-	unsigned long max_cluster = SZ_256K >> PAGE_SHIFT;
+-	unsigned long cluster = max_cluster;
+-	u64 new_align = ~((u64)SZ_128K - 1);
+-	struct page **pages = NULL;
++	u64 cur;
++	u64 last_byte;
+ 	bool do_compress = range->flags & BTRFS_DEFRAG_RANGE_COMPRESS;
+ 	bool ra_allocated = false;
++	int compress_type = BTRFS_COMPRESS_ZLIB;
++	int ret;
++	u32 extent_thresh = range->extent_thresh;
+ 
+ 	if (isize == 0)
+ 		return 0;
+@@ -1655,6 +1645,14 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 	if (extent_thresh == 0)
+ 		extent_thresh = SZ_256K;
+ 
++	if (range->start + range->len > range->start) {
++		/* Got a specific range */
++		last_byte = min(isize, range->start + range->len) - 1;
++	} else {
++		/* Defrag until file end */
++		last_byte = isize - 1;
++	}
++
+ 	/*
+ 	 * If we were not given a ra, allocate a readahead context. As
+ 	 * readahead is just an optimization, defrag will work without it so
+@@ -1667,159 +1665,68 @@ int btrfs_defrag_file(struct inode *inode, struct file_ra_state *ra,
+ 			file_ra_state_init(ra, inode->i_mapping);
+ 	}
+ 
+-	pages = kmalloc_array(max_cluster, sizeof(struct page *), GFP_KERNEL);
+-	if (!pages) {
+-		ret = -ENOMEM;
+-		goto out_ra;
+-	}
++	/* Align the range */
++	cur = round_down(range->start, fs_info->sectorsize);
++	last_byte = round_up(last_byte, fs_info->sectorsize) - 1;
+ 
+-	/* find the last page to defrag */
+-	if (range->start + range->len > range->start) {
+-		last_index = min_t(u64, isize - 1,
+-			 range->start + range->len - 1) >> PAGE_SHIFT;
+-	} else {
+-		last_index = (isize - 1) >> PAGE_SHIFT;
+-	}
++	while (cur < last_byte) {
++		u64 cluster_end;
+ 
+-	if (newer_than) {
+-		ret = find_new_extents(root, inode, newer_than,
+-				       &newer_off, SZ_64K);
+-		if (!ret) {
+-			range->start = newer_off;
+-			/*
+-			 * we always align our defrag to help keep
+-			 * the extents in the file evenly spaced
+-			 */
+-			i = (newer_off & new_align) >> PAGE_SHIFT;
+-		} else
+-			goto out_ra;
+-	} else {
+-		i = range->start >> PAGE_SHIFT;
+-	}
+-	if (!max_to_defrag)
+-		max_to_defrag = last_index - i + 1;
+-
+-	/*
+-	 * make writeback starts from i, so the defrag range can be
+-	 * written sequentially.
+-	 */
+-	if (i < inode->i_mapping->writeback_index)
+-		inode->i_mapping->writeback_index = i;
+-
+-	while (i <= last_index && defrag_count < max_to_defrag &&
+-	       (i < DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE))) {
+-		/*
+-		 * make sure we stop running if someone unmounts
+-		 * the FS
+-		 */
+-		if (!(inode->i_sb->s_flags & SB_ACTIVE))
+-			break;
++		/* The cluster size 256K should always be page aligned */
++		BUILD_BUG_ON(!IS_ALIGNED(CLUSTER_SIZE, PAGE_SIZE));
+ 
+-		if (btrfs_defrag_cancelled(fs_info)) {
+-			btrfs_debug(fs_info, "defrag_file cancelled");
+-			ret = -EAGAIN;
+-			goto error;
+-		}
+-
+-		if (!should_defrag_range(inode, (u64)i << PAGE_SHIFT,
+-					 extent_thresh, &last_len, &skip,
+-					 &defrag_end, do_compress)){
+-			unsigned long next;
+-			/*
+-			 * the should_defrag function tells us how much to skip
+-			 * bump our counter by the suggested amount
+-			 */
+-			next = DIV_ROUND_UP(skip, PAGE_SIZE);
+-			i = max(i + 1, next);
+-			continue;
+-		}
+-
+-		if (!newer_than) {
+-			cluster = (PAGE_ALIGN(defrag_end) >>
+-				   PAGE_SHIFT) - i;
+-			cluster = min(cluster, max_cluster);
+-		} else {
+-			cluster = max_cluster;
+-		}
++		/* We want the cluster ends at page boundary when possible */
++		cluster_end = (((cur >> PAGE_SHIFT) +
++			       (SZ_256K >> PAGE_SHIFT)) << PAGE_SHIFT) - 1;
++		cluster_end = min(cluster_end, last_byte);
+ 
+-		if (i + cluster > ra_index) {
+-			ra_index = max(i, ra_index);
+-			if (ra)
+-				page_cache_sync_readahead(inode->i_mapping, ra,
+-						NULL, ra_index, cluster);
+-			ra_index += cluster;
+-		}
+-
+-		btrfs_inode_lock(inode, 0);
+-		if (IS_SWAPFILE(inode)) {
++ 		btrfs_inode_lock(inode, 0);
++ 		if (IS_SWAPFILE(inode)) {
+ 			ret = -ETXTBSY;
+-		} else {
+-			if (do_compress)
+-				BTRFS_I(inode)->defrag_compress = compress_type;
+-			ret = cluster_pages_for_defrag(inode, pages, i, cluster);
++			btrfs_inode_unlock(inode, 0);
++			break;
+ 		}
+-		if (ret < 0) {
++		if (!(inode->i_sb->s_flags & SB_ACTIVE)) {
+ 			btrfs_inode_unlock(inode, 0);
+-			goto out_ra;
++			break;
+ 		}
+-
+-		defrag_count += ret;
+-		balance_dirty_pages_ratelimited(inode->i_mapping);
++		if (do_compress)
++			BTRFS_I(inode)->defrag_compress = compress_type;
++		ret = defrag_one_cluster(BTRFS_I(inode), ra, cur,
++				cluster_end + 1 - cur, extent_thresh,
++				newer_than, do_compress,
++				&sectors_defraged, max_to_defrag);
+ 		btrfs_inode_unlock(inode, 0);
+-
+-		if (newer_than) {
+-			if (newer_off == (u64)-1)
+-				break;
+-
+-			if (ret > 0)
+-				i += ret;
+-
+-			newer_off = max(newer_off + 1,
+-					(u64)i << PAGE_SHIFT);
+-
+-			ret = find_new_extents(root, inode, newer_than,
+-					       &newer_off, SZ_64K);
+-			if (!ret) {
+-				range->start = newer_off;
+-				i = (newer_off & new_align) >> PAGE_SHIFT;
+-			} else {
+-				break;
+-			}
+-		} else {
+-			if (ret > 0) {
+-				i += ret;
+-				last_len += ret << PAGE_SHIFT;
+-			} else {
+-				i++;
+-				last_len = 0;
+-			}
+-		}
+-	}
+-
+-	ret = defrag_count;
+-error:
+-	if ((range->flags & BTRFS_DEFRAG_RANGE_START_IO)) {
+-		filemap_flush(inode->i_mapping);
+-		if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+-			     &BTRFS_I(inode)->runtime_flags))
+-			filemap_flush(inode->i_mapping);
+-	}
+-
+-	if (range->compress_type == BTRFS_COMPRESS_LZO) {
+-		btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
+-	} else if (range->compress_type == BTRFS_COMPRESS_ZSTD) {
+-		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
++		if (ret < 0)
++			break;
++		cur = cluster_end + 1;
+ 	}
+ 
+-out_ra:
+-	if (do_compress) {
+-		btrfs_inode_lock(inode, 0);
+-		BTRFS_I(inode)->defrag_compress = BTRFS_COMPRESS_NONE;
+-		btrfs_inode_unlock(inode, 0);
+-	}
+ 	if (ra_allocated)
+ 		kfree(ra);
+-	kfree(pages);
++	if (sectors_defraged) {
++		/*
++		 * We have defraged some sectors, for compression case
++		 * they need to be written back immediately.
++		 */
++		if (range->flags & BTRFS_DEFRAG_RANGE_START_IO) {
++			filemap_flush(inode->i_mapping);
++			if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
++				     &BTRFS_I(inode)->runtime_flags))
++				filemap_flush(inode->i_mapping);
++		}
++		if (range->compress_type == BTRFS_COMPRESS_LZO) {
++			btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
++		} else if (range->compress_type == BTRFS_COMPRESS_ZSTD) {
++			btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
++		}
++		ret = sectors_defraged;
++ 	}
++ 	if (do_compress) {
++ 		btrfs_inode_lock(inode, 0);
++ 		BTRFS_I(inode)->defrag_compress = BTRFS_COMPRESS_NONE;
++ 		btrfs_inode_unlock(inode, 0);
++ 	}
  	return ret;
  }
  
-+static int defrag_one_cluster(struct btrfs_inode *inode,
-+			      struct file_ra_state *ra,
-+			      u64 start, u32 len, u32 extent_thresh,
-+			      u64 newer_than, bool do_compress,
-+			      unsigned long *sectors_defraged,
-+			      unsigned long max_sectors)
-+{
-+	const u32 sectorsize = inode->root->fs_info->sectorsize;
-+	struct defrag_target_range *entry;
-+	struct defrag_target_range *tmp;
-+	LIST_HEAD(target_list);
-+	int ret;
-+
-+	BUILD_BUG_ON(!IS_ALIGNED(CLUSTER_SIZE, PAGE_SIZE));
-+	ret = defrag_collect_targets(inode, start, len, extent_thresh,
-+				     newer_than, do_compress, &target_list);
-+	if (ret < 0)
-+		goto out;
-+
-+	list_for_each_entry(entry, &target_list, list) {
-+		u32 range_len = entry->len;
-+
-+		/* Reached the limit */
-+		if (max_sectors && max_sectors == *sectors_defraged)
-+			break;
-+
-+		if (max_sectors)
-+			range_len = min_t(u32, range_len,
-+				(max_sectors - *sectors_defraged) * sectorsize);
-+		ret = defrag_one_target(inode, ra, entry->start, range_len);
-+		if (ret < 0)
-+			break;
-+		*sectors_defraged += range_len;
-+	}
-+out:
-+	list_for_each_entry_safe(entry, tmp, &target_list, list) {
-+		list_del_init(&entry->list);
-+		kfree(entry);
-+	}
-+	return ret;
-+}
-+
- /*
-  * Btrfs entrace for defrag.
-  *
 -- 
 2.31.1
 
