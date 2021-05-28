@@ -2,99 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA65D39457A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 May 2021 17:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446873945AB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 May 2021 18:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236839AbhE1P5M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 May 2021 11:57:12 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:35737 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236798AbhE1P5K (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 May 2021 11:57:10 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id CAB6C5C016D;
-        Fri, 28 May 2021 11:55:33 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 28 May 2021 11:55:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=subject:to:references:cc:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=G
-        kqm3AczTKmGs9+2m7eCnkKolKuomyhDY7L8V4W0FcQ=; b=iBZDceQTVZgbrbahG
-        WfhPMTtTPNX0GRfs2+xtIYTRk3RhWYP4LmAp3RiB+L86/fy+zNS2ov7p1OaY7Xno
-        omeKq8bUw+Lw81t8QSGtM8n9WTPhbdkYNN4x6n6HQ+vXxFLRdULiLwyRtFgXzdi3
-        X2MI4eWN+OHNJUgv79imhrJukT72aKuAahqClIkUjITXqy3aZtr+aQEhD1q5ZkA4
-        uVGZynFkxlj93RjqkJDW7UUam9g97u98SWVTNdigmv6muzXhpB2rlMslK80ZbE1y
-        jCQNgIPjkye2MgjMRFq+jVCv/a3cLxWz4Cv+YmMxp3TtHL285us0X1l1kyHjSXWH
-        MmOAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=Gkqm3AczTKmGs9+2m7eCnkKolKuomyhDY7L8V4W0F
-        cQ=; b=vU2UuGQGc/aOpOOW725J4XQlGv1Vv2tlB3swhk9ThWxtTuP/kPWO56HF7
-        NulJHbEKeOMg6fpElH0Tv7ai8yWoaZjqKnE25cRldxEeDjQkD9I6U4/+DRpTCMTI
-        TMT8H7RTPCvqhbtVxMyFtz28oY4z4J9QQlcWyYQWXhcmyaVR/JFI5jDdSayI4d4z
-        m6TwBXjr4KLhqROH10MlfYLw0jgQMnRiXIp6jCv93puMbu4RgSMB/fAwgceRmtXV
-        0njoP5li3XQaJYnLgQa5jVmuFZ11n49AnnKz/rfosVnZnc7mcLpYGyLA6gZIxk90
-        3NAAqav19V88VbX6Rp/lcJJv4D90Q==
-X-ME-Sender: <xms:dBKxYPEDvvT6cI9h8m2hyd8CNoQtVpsKgs3Y3gQaQ9FViEM0INvq0g>
-    <xme:dBKxYMVPlNSZjJuRZEencS1MG5k44MmkcTSy9IKgr1m4ymOj06PCevv3PL3dqLADw
-    ORYKWDHAbQ_hzc7QA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdekjedgleehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomheptfgvmhhi
-    ucfirghuvhhinhcuoehrvghmihesghgvohhrghhirghnihhtrdgtohhmqeenucggtffrrg
-    htthgvrhhnpefhgfefuedttdduhfdujeekjeduveeltdduueffhffhueekjeekkeeitdff
-    hfffieenucfkphepudelvddrtddrvdefledrudeftdenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgt
-    ohhm
-X-ME-Proxy: <xmx:dBKxYBJNzRlCj55irum6U4MRqiFLHAlX2d4dzEzApBMbFbIjJB8Irg>
-    <xmx:dBKxYNFoI133mnb33aDat7BCiCZzbcWirn1F6iYZ5dfSI3mcnXjLYA>
-    <xmx:dBKxYFUrL5MIgTGpzNRBUblmduDE9EIqQTJ7liHxSB-GywyZOAl_gg>
-    <xmx:dRKxYEDW5taNYIKReEEIxEC0MB1kl3ZGyKhORK5s7lSadsHN0rjj5Q>
-Received: from [10.0.0.6] (192-0-239-130.cpe.teksavvy.com [192.0.239.130])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 28 May 2021 11:55:32 -0400 (EDT)
-Subject: Re: how to rollback / to a snapshot ?
-To:     "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
-References: <2106576727.79893362.1622034311642.JavaMail.zimbra@helmholtz-muenchen.de>
- <97e08f6c-1177-49f8-a05b-5f2917a77fb2@georgianit.com>
- <1608188083.80084937.1622040829715.JavaMail.zimbra@helmholtz-muenchen.de>
- <ab2bb27e-035f-d215-0e2d-c3c22101a06a@georgianit.com>
- <1204827780.82945725.1622144255373.JavaMail.zimbra@helmholtz-muenchen.de>
- <331cf8f6-b048-5b55-475f-5b3c460df400@georgianit.com>
- <1108499927.84421836.1622212388508.JavaMail.zimbra@helmholtz-muenchen.de>
- <14cf1027-f83c-76e7-2733-14764a155a14@georgianit.com>
- <1010673982.84485777.1622216164892.JavaMail.zimbra@helmholtz-muenchen.de>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-From:   Remi Gauvin <remi@georgianit.com>
-Message-ID: <ec27dd03-6178-c94c-4dd9-dd98be8b4a46@georgianit.com>
-Date:   Fri, 28 May 2021 11:55:32 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232936AbhE1QMM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 28 May 2021 12:12:12 -0400
+Received: from mail.am-soft.de ([83.218.36.120]:55642 "EHLO mail.am-soft.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230080AbhE1QMM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 May 2021 12:12:12 -0400
+X-Greylist: delayed 501 seconds by postgrey-1.27 at vger.kernel.org; Fri, 28 May 2021 12:12:11 EDT
+Received: from mail.am-soft.de (localhost [127.0.0.1])
+        by mail.am-soft.de (Postfix) with ESMTP id 3AD953B6B07C;
+        Fri, 28 May 2021 18:02:14 +0200 (CEST)
+Envelope-To: linux-btrfs@vger.kernel.org
+Received: from Bit02EX.bitstoregruppe.local (exchange01.bitstore.group [116.202.141.225])
+        by mail.am-soft.de (Postfix) with ESMTPA id 2EFD23B6B07A
+        for <linux-btrfs@vger.kernel.org>; Fri, 28 May 2021 18:02:14 +0200 (CEST)
+Received: from tschoening-nb.fritz.box (77.78.163.99) by Bit02EX.bitstoregruppe.local (192.168.254.21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2;
+         Fri, 28 May 2021 18:02:11 +0200
+Date:   Fri, 28 May 2021 18:02:04 +0200
+From:   =?utf-8?B?VGhvcnN0ZW4gU2Now7ZuaW5n?= <tschoening@am-soft.de>
+Organization: AM-SoFT IT-Service - Bitstore Hameln GmbH i.G.
+Message-ID: <1743059466.20210528180204@am-soft.de>
+To:     <linux-btrfs@vger.kernel.org>
+Subject: How does BTRFS compression influence existing and new snapshots?
 MIME-Version: 1.0
-In-Reply-To: <1010673982.84485777.1622216164892.JavaMail.zimbra@helmholtz-muenchen.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [77.78.163.99]
+X-ClientProxiedBy: Bit02EX.bitstoregruppe.local (192.168.254.21) To Bit02EX.bitstoregruppe.local (192.168.254.21)
+X-C2ProcessedOrg: e1a4acb5-ea26-4a8f-9559-e23e579650e8
+X-AV-Checked: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2021-05-28 11:36 a.m., Lentes, Bernd wrote:
-> 
+Hi everyone...
 
-> I try to follow your guide another time, and just before the reboot i will check
-> grub-mkrelpath to see if it has changed to @. If yes i will start grub-mkconfig, so that @ is set in the rootflags.
-> I will also check /boot/grub/grub.cfg.
-> 
+# Context
 
-The grub-mkrelpath will be @_bad so long as are still booted in that
-subvolume,,, but grub.cfg should not change on reboot.. Ie, it it was
-subvol=@ when we started, it should still be the same when rebooting.
+I have some Synology NAS storing backups created by WBADMIN from
+Windows using SMB, which means VHDX image files in the end with
+compression disabled, as otherwise WBADMIN refuses to work on those
+files. Those files need to still be available on the NAS for some
+time, but it's VERY unlikely that those need to be mounted again by
+anyone, therefore I would like to apply compression afterwards now to
+simply safe some space. If it's ever need to be mounted again, things
+can easily be decompressed, so let's ignore that for now. DSM provides
+all the necessary tools[1] to deal with compression of existing data
+on the shell as well:         
 
-Something changed it when you rebooted while following the steps I
-outlined. (Or there was some kind of kernel related package updates
-running at the time you were doing this.)
+> chattr -R +c [...]
+> btrfs filesystem defragment -r -c [...]
+
+The important thing to note is that the existing VHDX files are
+protected by automatically created snapshots already and the NAS
+continues to create snapshots automatically after I compressed the
+files. So what happens with those snapshots?
+
+# Are blocks hold by existing snapshots compressed as well?
+
+According this[2] explanation I don't think so. Additionally this
+would somewhat defeat the whole purpose of snapshots guaranteeing
+unchanged data for some point in time. Things simply were not
+compressed in the past when the snapshots were created, so in theory
+that data needs to be available somehow.
+
+OTOH, compression is designed to be somewhat transparent anyway
+already and that might be argued all the way through to existing
+blocks even in snapshots. Might safe a lot of space in the end.
+Compression even is that transparent that "du"[3] is not able to
+recognize[4].
+
+# Are newly compressed blocks changes hold by new snapshots?
+
+I have a snapshot BEFORE compressing, compress the VHDX files and
+create a new snapshot AFTERWARDS. Nothing else changes in the VHDX by
+Windows or WBADMIN or whomever, so from a logical point of view the
+file is still unchanged. Though, the individual blocks/extents of the
+file managed by BTRFS have been changed a lot, depending on how good
+compression has been applied.
+
+This results in actual storage newly allocated between the two
+snapshots, doesn't it? So after compression, until earlier snapshots
+holding uncompressed data are deleted, overall storage might simply be
+less than before.
+
+Or am I wrong somewhere? Thanks!
+
+[1]: https://community.synology.com/enu/forum/1/post/138784
+[2]: https://superuser.com/a/892293/308859
+[3]: https://stackoverflow.com/a/20899536/2055163
+[4]: https://btrfs.wiki.kernel.org/index.php/Compression#Why_does_not_du_report_the_compressed_size.3F
+
+Mit freundlichen Grüßen
+
+Thorsten Schöning
+
+-- 
+AM-SoFT IT-Service - Bitstore Hameln GmbH i.G.
+Mitglied der Bitstore Gruppe - Ihr Full-Service-Dienstleister für IT und TK
+
+E-Mail: Thorsten.Schoening@AM-SoFT.de
+Web:    http://www.AM-SoFT.de/
+
+Tel:   05151-  9468- 0
+Tel:   05151-  9468-55
+Fax:   05151-  9468-88
+Mobil:  0178-8 9468-04
+
+AM-SoFT IT-Service - Bitstore Hameln GmbH i.G., Brandenburger Str. 7c, 31789 Hameln
+AG Hannover HRB neu - Geschäftsführer: Janine Galonska
+
+
+Für Rückfragen stehe ich Ihnen sehr gerne zur Verfügung.
+
+Mit freundlichen Grüßen
+
+Thorsten Schöning
+
+
+Tel: 05151 9468 0
+Fax: 05151 9468 88
+Mobil: 
+Webseite: https://www.am-soft.de 
+
+AM-Soft IT-Service - Bitstore Hameln GmbH i.G. ist ein Mitglied der Bitstore Gruppe - Ihr Full-Service-Dienstleister für IT und TK
+
+AM-Soft IT-Service - Bitstore Hameln GmbH i.G.
+Brandenburger Str. 7c
+31789 Hameln
+Tel: 05151 9468 0
+
+Bitstore IT-Consulting GmbH
+Zentrale - Berlin Lichtenberg
+Frankfurter Allee 285
+10317 Berlin
+Tel: 030 453 087 80
+
+CBS IT-Service - Bitstore Kaulsdorf UG
+Tel: 030 453 087 880 1
+
+Büro Dallgow-Döberitz
+Tel: 03322 507 020
+
+Büro Kloster Lehnin
+Tel: 033207 566 530
+
+PCE IT-Service - Bitstore Darmstadt UG
+Darmstadt
+Tel: 06151 392 973 0
+
+Büro Neuruppin
+Tel: 033932 606 090
+
+ACI EDV Systemhaus - Bitstore Dresden GmbH
+Dresden
+Tel: 0351 254 410
+
+Das Systemhaus - Bitstore Magdeburg GmbH
+Magdeburg
+Tel: 0391 636 651 0
+
+Allerdata.IT - Bitstore Wittenberg GmbH
+Wittenberg
+Tel: 03491 876 735 7
+
+Büro Liebenwalde
+Tel: 033054 810 00
+
+HSA - das Büro - Bitstore Altenburg UG
+Altenburg
+Tel: 0344 784 390 97
+
+Bitstore IT – Consulting GmbH
+NL Piesteritz 
+Piesteritz
+Tel: 03491 644 868 6
+
+Solltec IT-Services - Bitstore Braunschweig UG
+Braunschweig
+Tel: 0531 206 068 0
+
+MF Computer Service - Bitstore Gütersloh GmbH
+Gütersloh
+Tel: 05245 920 809 3
+
+Firmensitz: AM-Soft IT-Service - Bitstore Hameln GmbH i.G. , Brandenburger Str. 7c , 31789 Hameln
+Geschäftsführer Janine Galonska
+
+
+
+
+
+
