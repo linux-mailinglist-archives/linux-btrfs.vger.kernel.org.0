@@ -2,244 +2,242 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551BF394E5D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 30 May 2021 00:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DB6394E9B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 30 May 2021 02:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhE2WSe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 29 May 2021 18:18:34 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:39712 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhE2WSe (ORCPT
+        id S229555AbhE3APH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 May 2021 20:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhE3APH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 May 2021 18:18:34 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 2FFB0A80472; Sat, 29 May 2021 18:16:55 -0400 (EDT)
-Date:   Sat, 29 May 2021 18:16:55 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Thorsten =?iso-8859-1?Q?Sch=F6ning?= <tschoening@am-soft.de>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: How does BTRFS compression influence existing and new snapshots?
-Message-ID: <20210529221654.GG11733@hungrycats.org>
-References: <1743059466.20210528180204@am-soft.de>
- <20210528193612.GE11733@hungrycats.org>
- <1806742121.20210529115330@am-soft.de>
+        Sat, 29 May 2021 20:15:07 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9148DC061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 May 2021 17:13:29 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id s107so7263287ybi.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 29 May 2021 17:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kWQ7iTVA+2ajMZeGvKCSPTEhBIZq7nK6KutyE68c104=;
+        b=WOa91HSnIC727GBkbXVlhac2scTQmumw8BuwhKkxQmlvzTfLnOu6StIiFaJobd8PCF
+         nwyPJvnYUOTEYivq3JOo0bwXHcLeOP3yjNeb+/u9Np3ZBrezmvVC9eX0v32BWbQ7OSR6
+         kKnp/rej4MyHdh1L8+Wu5jvfNn/XYFJ7l2Iq2MfrGx8RenjZPKQzmgivgBrciIZbrX6p
+         AkEzKcEjjlL93QY3zMXUY3C1oDoAqN0LrQcvNNHfHcHY5x3EonwZsprROdF0xGJNDaPE
+         Y7IpraPyIra7EshYKaRHwTpBl+B6sZvYaciWAN9Q8h8EMV6XP16kth6jDRCisMuOuCmM
+         y20Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kWQ7iTVA+2ajMZeGvKCSPTEhBIZq7nK6KutyE68c104=;
+        b=gvdzq/rZZFWkZ0c6hqCcuhi+SvFxZtUZEnfeziw4uVlRw8iymzRhkeajcmzmsLKR+G
+         0xwC8J3xVdX+U4ywKT7usxYUKB9GniQTX9f7oydkgzST12apEgW7ula+nQZZjcaIf7Au
+         dtWutc0CqJgb7rcr6f3o8eV6gbtXaESqWPNU9cIyb6GjerMS7CGYDa2cD/XmQwekvCHj
+         UZiu0F02UQn+WJK6rq0rll34+j620NAVALiME0AhFfW/r3wpNJL1WVChn9U2ng2m0tV4
+         JFMWkzf3/Y1CMynhKTD0k2o9IJpnAdQYJRx5dYUijaIUXhL6iNO1oGGqoyCIHuN1s3b7
+         FVqA==
+X-Gm-Message-State: AOAM533Ml2AoWDiQpukxmJvjUT56fbSGg/rbgSlqi8MbMzN+yuG16zPw
+        ZYd9s9rKMOghkzJqr9ZqX9CT8oSrsMa7/7PRtFqWB8ESK4Y=
+X-Google-Smtp-Source: ABdhPJy4rzOcHWrqsqx8m/13jXexvhOCG0U3cgk+lMPmtWF6tQyOP+iFhm6sP3GGoijYLe6IP9cEp2fTl/ub5mdY7uE=
+X-Received: by 2002:a25:ce41:: with SMTP id x62mr22604006ybe.109.1622333608703;
+ Sat, 29 May 2021 17:13:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <1806742121.20210529115330@am-soft.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210521064050.191164-1-wqu@suse.com>
+In-Reply-To: <20210521064050.191164-1-wqu@suse.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Sat, 29 May 2021 20:12:52 -0400
+Message-ID: <CAEg-Je9m_Lpwq3oXOFfhrHU_OFxryrGE8-3vjMztn7tBt_uStw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/31] btrfs: add data write support for subpage
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        Josef Bacik <josef@toxicpanda.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, May 29, 2021 at 11:53:30AM +0200, Thorsten Schöning wrote:
-> Guten Tag Zygo Blaxell,
-> am Freitag, 28. Mai 2021 um 21:36 schrieben Sie:
-> 
-> > Nothing happens to the snapshots.  'fi defrag' will make new, possibly
-> > compressed (but possibly not compressed) duplicate copies of the data
-> > in the listed files.  These copies will use separate storage space from
-> > the snapshots.
-> 
-> Thanks for clearing things up, that what's I expected already.
-> 
-> > Each individual extent written on the filesystem contains its own
-> > independent copy of compression parameters[...]
-> 
-> This brings me to the following in the wiki, not sure if it's worth an
-> additional thread:
-> 
-> > There is a simple decision logic: if the first portion of data being
-> > compressed is not smaller than the original, the compression of the
-> > file is disabled[...]
-> 
-> https://btrfs.wiki.kernel.org/index.php/Compression#What_happens_to_incompressible_files.3F
-> 
-> If (de)compression methods are managed by extents always anway, is the
-> statement in the wiki really true that compression of a whole FILE is
-> disabled if the first portion can't be compressed? Or does the quoted
-> sentence refer to EXTENTS instead of whole FILES instead?
+On Fri, May 21, 2021 at 5:56 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> This huge patchset can be fetched from github:
+> https://github.com/adam900710/linux/tree/subpage
+>
+> =3D=3D=3D Current stage =3D=3D=3D
+> The tests on x86 pass without new failure, and generic test group on
+> arm64 with 64K page size passes except known failure and defrag group.
+>
+> For btrfs test group, all pass except compression/raid56.
+> (As the btrfs defrag group doesn't require that restrict defrag result,
+> btrfs/defrag group also passes here)
+>
+> For anyone who is interested in testing, please apply this patch for
+> btrfs-progs before testing.
+> https://patchwork.kernel.org/project/linux-btrfs/patch/20210420073036.243=
+715-1-wqu@suse.com/
+> Or there will be too many false alerts.
+>
+> =3D=3D=3D Limitation =3D=3D=3D
+> There are several limitations introduced just for subpage:
+> - No compressed write support
+>   Read is no problem, but compression write path has more things left to
+>   be modified.
+>   Thus for current patchset, no matter what inode attribute or mount
+>   option is, no new compressed extent can be created for subpage case.
+>
+> - No inline extent will be created
+>   This is mostly due to the fact that filemap_fdatawrite_range() will
+>   trigger more write than the range specified.
+>   In fallocate calls, this behavior can make us to writeback which can
+>   be inlined, before we enlarge the isize, causing inline extent being
+>   created along with regular extents.
+>
+> - No support for RAID56
+>   There are still too many hardcoded PAGE_SIZE in raid56 code.
+>   Considering it's already considered unsafe due to its write-hole
+>   problem, disabling RAID56 for subpage looks sane to me.
+>
+> - No sector-sized defrag support
+>   Currently defrag is still done in PAGE_SIZE, meaning if there is a
+>   hole in a 64K page, we still write a full 64K back to disk.
+>   This causes more disk space usage.
+>
+> =3D=3D=3D Patchset structure =3D=3D=3D
+>
+> Patch 01~19:    Make data write path to be subpage compatible
+> Patch 20~21:    Make data relocation path to be subpage compatible
+> Patch 22~30:    Various fixes for subpage corner cases
+> Patch 31:       Enable subpage data write
+>
+> =3D=3D=3D Changelog =3D=3D=3D
+> v2:
+> - Rebased to latest misc-next
+>   Now metadata write patches are removed from the series, as they are
+>   already merged into misc-next.
+>
+> - Added new Reviewed-by/Tested-by/Reported-by tags
+>
+> - Use separate endio functions to subpage metadata write path
+>
+> - Re-order the patches, to make refactors at the top of the series
+>   One refactor, the submit_extent_page() one, should benefit 4K page
+>   size more than 64K page size, thus it's worthy to be merged early
+>
+> - New bug fixes exposed by Ritesh Harjani on Power
+>
+> - Reject RAID56 completely
+>   Exposed by btrfs test group, which caused BUG_ON() for various sites.
+>   Considering RAID56 is already not considered safe, it's better to
+>   reject them completely for now.
+>
+> - Fix subpage scrub repair failure
+>   Caused by hardcoded PAGE_SIZE
+>
+> - Fix free space cache inode size
+>   Same cause as scrub repair failure
+>
+> v3:
+> - Rebased to remove write path prepration patches
+>
+> - Properly enable btrfs defrag
+>   Previsouly, btrfs defrag is in fact just disabled.
+>   This makes tons of tests in btrfs/defrag to fail.
+>
+> - More bug fixes for rare race/crashes
+>   * Fix relocation false alert on csum mismatch
+>   * Fix relocation data corruption
+>   * Fix a rare case of false ASSERT()
+>     The fix already get merged into the prepration patches, thus no
+>     longer in this patchset though.
+>
+>   Mostly reported by Ritesh from IBM.
+>
+> Qu Wenruo (31):
+>   btrfs: pass bytenr directly to __process_pages_contig()
+>   btrfs: refactor the page status update into process_one_page()
+>   btrfs: provide btrfs_page_clamp_*() helpers
+>   btrfs: only require sector size alignment for
+>     end_bio_extent_writepage()
+>   btrfs: make btrfs_dirty_pages() to be subpage compatible
+>   btrfs: make __process_pages_contig() to handle subpage
+>     dirty/error/writeback status
+>   btrfs: make end_bio_extent_writepage() to be subpage compatible
+>   btrfs: make process_one_page() to handle subpage locking
+>   btrfs: introduce helpers for subpage ordered status
+>   btrfs: make page Ordered bit to be subpage compatible
+>   btrfs: update locked page dirty/writeback/error bits in
+>     __process_pages_contig
+>   btrfs: prevent extent_clear_unlock_delalloc() to unlock page not
+>     locked by __process_pages_contig()
+>   btrfs: make btrfs_set_range_writeback() subpage compatible
+>   btrfs: make __extent_writepage_io() only submit dirty range for
+>     subpage
+>   btrfs: make btrfs_truncate_block() to be subpage compatible
+>   btrfs: make btrfs_page_mkwrite() to be subpage compatible
+>   btrfs: reflink: make copy_inline_to_page() to be subpage compatible
+>   btrfs: fix the filemap_range_has_page() call in
+>     btrfs_punch_hole_lock_range()
+>   btrfs: don't clear page extent mapped if we're not invalidating the
+>     full page
+>   btrfs: extract relocation page read and dirty part into its own
+>     function
+>   btrfs: make relocate_one_page() to handle subpage case
+>   btrfs: fix wild subpage writeback which does not have ordered extent.
+>   btrfs: disable inline extent creation for subpage
+>   btrfs: allow submit_extent_page() to do bio split for subpage
+>   btrfs: make defrag to be semi subpage compatible
+>   btrfs: reject raid5/6 fs for subpage
+>   btrfs: fix a crash caused by race between prepare_pages() and
+>     btrfs_releasepage()
+>   btrfs: fix a use-after-free bug in writeback subpage helper
+>   btrfs: fix a subpage false alert for relocating partial preallocated
+>     data extents
+>   btrfs: fix a subpage relocation data corruption
+>   btrfs: allow read-write for 4K sectorsize on 64K page size systems
+>
+>  fs/btrfs/ctree.h        |   2 +-
+>  fs/btrfs/disk-io.c      |  13 +-
+>  fs/btrfs/extent_io.c    | 551 +++++++++++++++++++++++++++-------------
+>  fs/btrfs/file.c         |  31 ++-
+>  fs/btrfs/inode.c        | 147 +++++++++--
+>  fs/btrfs/ioctl.c        |  12 +-
+>  fs/btrfs/ordered-data.c |   5 +-
+>  fs/btrfs/reflink.c      |  14 +-
+>  fs/btrfs/relocation.c   | 287 +++++++++++++--------
+>  fs/btrfs/subpage.c      | 156 +++++++++++-
+>  fs/btrfs/subpage.h      |  31 +++
+>  fs/btrfs/super.c        |   7 -
+>  fs/btrfs/sysfs.c        |   5 +
+>  fs/btrfs/volumes.c      |   8 +
+>  14 files changed, 937 insertions(+), 332 deletions(-)
+>
+> --
+> 2.31.1
+>
 
-A bit of both.  Compression is controlled by file attributes, but the
-result of compression is stored in extent attributes.
+So this seems to have no impact on my system on x86_64 with the
+branch, which is good I guess?
 
-Here's the logic for handing a file write in current kernels:
+Unfortunately, I couldn't make a test package based on 5.13rc4 for
+some confidence testing as the patch set from Patchwork doesn't
+apply...
 
-	1.  If the file cannot be compressed, do not compress.
-	This includes files with nodatacow or nodatasum attributes set.
-	Also, compression is permanently disabled after fallocate is
-	used on a file.
+However, somewhat related to this, it seems that we're going to be
+seeing a need for 4K <-> 16K page interoperability because Linux will
+need to be configured to use 16K pages to run effectively on Apple ARM
+Mac systems[1][2].
 
-	2.  If the compress-force mount option is used, go to compress.
+How difficult would it be to extend this to also handle 16K pages too?
+Not necessarily in this patch set, but in a follow-up one?
 
-	3.  If defrag -c is running, go to compress.
+[1]: https://twitter.com/marcan42/status/1398301930879815680
+[2]: https://twitter.com/marcan42/status/1398301933203431426
 
-	4.  If the no-compress attribute is set, do not compress.
 
-	5.  If the compress mount option is used, or the file has
-	the compress fsattr or btrfs.compression xattr set, run a
-	heuristic algorithm to determine whether to compress.  If
-	the heuristic algorithm does not recommend compression,
-	then do not compress; otherwise, go to compress.
 
-	6.  Otherwise, do not compress.
-
-If we reach a "go to compress" case above, then btrfs attempts to compress
-the data.  If the compressed result is smaller than the original (rounded
-up to page size for non-inline extents), the compressed data is written
-and we are done.
-
-If compression made an equal or larger extent, then btrfs will set the
-no-compress attribute for the inode.  Any future write to the file that
-reaches step 4 will not be compressed.
-
-defrag -c and compress-force always attempt to compress data if
-compression is possible for the file, and never set the no-compress
-attribute.
-
-Note that the heuristic at step 5 means that compression is not
-necessarily disabled on the first incompressible data to a file.  In most
-cases, the heuristic algorithm will write those extents uncompressed
-without attempting compression.  To disable compression, the data has
-to get past the heuristic algorithm and then fail on the real compression.
-
-Also note the heuristic at step 5 is not entirely accurate, so it will
-reduce the overall compression ratio because of false positives (i.e.
-it will sometimes reject compressible data).  compress-force will increase
-the compression ratio by brute force, but as a side-effect (and possible
-bug) it also limits the maximum extent size when compression fails, so
-metadata size will increase.
-
-> "btrfs-compsize" prints the following for one of my directories, which
-> means that at least some parts of the file are compressed, others are
-> not.
-> 
-> > Processed 230 files, 754137 regular extents (754137 refs), 3 inline.
-> > Type       Perc     Disk Usage   Uncompressed Referenced
-> > TOTAL       87%      163G         187G         187G
-> > none       100%      130G         130G         130G
-> > lzo         57%       32G          56G          56G
-> 
-> So does this really mean that I was simply lucky because "the first
-> portion" of the file could be compressed? If that wouldn't the case,
-> the whole file would be uncompressed even though other parts of the
-> file might be compressed pretty well?
-
-If you use the compress mount option, if you are doing many small writes
-to a file, or the file contains a mix of compressed and uncompressed data,
-you'll find compression eventually gets disabled, though not necessarily
-on the first incompressible write.
-
-If you are running a backup or similar server, you want the smallest size
-possible, and you don't care about write latency, you probably want to
-mount with compress-force, which overrides the nocompress attribute.
-
-> Referrring to the FILE in the wiki instead of EXTENTS doesn't make too
-> much sense to me currently.
-
-Compression always takes place in the context of a file to set the
-compression parameters.  Even the extents on disk need a file reference to
-determine the compression type for reading.
-
-> Mit freundlichen Grüßen
-> 
-> Thorsten Schöning
-> 
-> -- 
-> AM-SoFT IT-Service - Bitstore Hameln GmbH i.G.
-> Mitglied der Bitstore Gruppe - Ihr Full-Service-Dienstleister für IT und TK
-> 
-> E-Mail: Thorsten.Schoening@AM-SoFT.de
-> Web:    http://www.AM-SoFT.de/
-> 
-> Tel:   05151-  9468- 0
-> Tel:   05151-  9468-55
-> Fax:   05151-  9468-88
-> Mobil:  0178-8 9468-04
-> 
-> AM-SoFT IT-Service - Bitstore Hameln GmbH i.G., Brandenburger Str. 7c, 31789 Hameln
-> AG Hannover HRB neu - Geschäftsführer: Janine Galonska
-> 
-> 
-> Für Rückfragen stehe ich Ihnen sehr gerne zur Verfügung.
-> 
-> Mit freundlichen Grüßen
-> 
-> Thorsten Schöning
-> 
-> 
-> Tel: 05151 9468 0
-> Fax: 05151 9468 88
-> Mobil: 
-> Webseite: https://www.am-soft.de 
-> 
-> AM-Soft IT-Service - Bitstore Hameln GmbH i.G. ist ein Mitglied der Bitstore Gruppe - Ihr Full-Service-Dienstleister für IT und TK
-> 
-> AM-Soft IT-Service - Bitstore Hameln GmbH i.G.
-> Brandenburger Str. 7c
-> 31789 Hameln
-> Tel: 05151 9468 0
-> 
-> Bitstore IT-Consulting GmbH
-> Zentrale - Berlin Lichtenberg
-> Frankfurter Allee 285
-> 10317 Berlin
-> Tel: 030 453 087 80
-> 
-> CBS IT-Service - Bitstore Kaulsdorf UG
-> Tel: 030 453 087 880 1
-> 
-> Büro Dallgow-Döberitz
-> Tel: 03322 507 020
-> 
-> Büro Kloster Lehnin
-> Tel: 033207 566 530
-> 
-> PCE IT-Service - Bitstore Darmstadt UG
-> Darmstadt
-> Tel: 06151 392 973 0
-> 
-> Büro Neuruppin
-> Tel: 033932 606 090
-> 
-> ACI EDV Systemhaus - Bitstore Dresden GmbH
-> Dresden
-> Tel: 0351 254 410
-> 
-> Das Systemhaus - Bitstore Magdeburg GmbH
-> Magdeburg
-> Tel: 0391 636 651 0
-> 
-> Allerdata.IT - Bitstore Wittenberg GmbH
-> Wittenberg
-> Tel: 03491 876 735 7
-> 
-> Büro Liebenwalde
-> Tel: 033054 810 00
-> 
-> HSA - das Büro - Bitstore Altenburg UG
-> Altenburg
-> Tel: 0344 784 390 97
-> 
-> Bitstore IT – Consulting GmbH
-> NL Piesteritz 
-> Piesteritz
-> Tel: 03491 644 868 6
-> 
-> Solltec IT-Services - Bitstore Braunschweig UG
-> Braunschweig
-> Tel: 0531 206 068 0
-> 
-> MF Computer Service - Bitstore Gütersloh GmbH
-> Gütersloh
-> Tel: 05245 920 809 3
-> 
-> Firmensitz: AM-Soft IT-Service - Bitstore Hameln GmbH i.G. , Brandenburger Str. 7c , 31789 Hameln
-> Geschäftsführer Janine Galonska
-> 
-> 
-> 
-> 
-> 
-> 
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
