@@ -2,191 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40ABC395767
+	by mail.lfdr.de (Postfix) with ESMTP id 89153395768
 	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 10:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhEaIwy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S230475AbhEaIwy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 31 May 2021 04:52:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40624 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:40634 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhEaIwv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 May 2021 04:52:51 -0400
+        id S230399AbhEaIww (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 May 2021 04:52:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622451070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=Y+WiVb8lePfnN/Nxv9puXpOPZ7g6A9bb7KZqZz1FZEE=;
-        b=MUwVB7mszcEQG3ewtmhRa3Ttxgw3x/81MFhUwpn8DPGQk19EXbDkMElVGFFLLZCLWuCPQ3
-        ZsYdGuV3Oovn3D7I2EqhUKJ1rKGBa8r1esnIhtdruoDU78045LZ+4CQOVtPLbeYIM/IILi
-        m92a1uAGd0EnfkLCWghTdZ5qqejlgtg=
+        t=1622451072; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=teKEE91dAPdJgQQQK5G7UzIq3aJvkKc+dD0j/wCML4Q=;
+        b=NNw72mXNZOt3rrboPI0pa23aYO2ns7zGdGdqcbwgOjnZ487GaKqhNaXnxN5TOMwJ1kSZ5W
+        Gi//F8SWxH2oH14fiO0+85mb30vLoSVWn641JTgJOdLcZz1nXWtoGoXTYBUb4fFaXY947V
+        r2iFizgYaCM/03wXpWxi8jgwxc/zLQ0=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B2BACB2E9
-        for <linux-btrfs@vger.kernel.org>; Mon, 31 May 2021 08:51:10 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 682CBB31C
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 May 2021 08:51:12 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 00/30] btrfs: add data write support for subpage
-Date:   Mon, 31 May 2021 16:50:36 +0800
-Message-Id: <20210531085106.259490-1-wqu@suse.com>
+Subject: [PATCH v4 01/30] btrfs: pass bytenr directly to __process_pages_contig()
+Date:   Mon, 31 May 2021 16:50:37 +0800
+Message-Id: <20210531085106.259490-2-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210531085106.259490-1-wqu@suse.com>
+References: <20210531085106.259490-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This huge patchset can be fetched from github:
-https://github.com/adam900710/linux/tree/subpage
+As a preparation for incoming subpage support, we need bytenr passed to
+__process_pages_contig() directly, not the current page index.
 
-=== Current stage ===
-The tests on x86 pass without new failure, and generic test group on
-arm64 with 64K page size passes except known failure and defrag group.
+So change the parameter and all callers to pass bytenr in.
 
-For btrfs test group, all pass except compression/raid56/defrag.
+With the modification, here we need to replace the old @index_ret with
+@processed_end for __process_pages_contig(), but this brings a small
+problem.
 
-For anyone who is interested in testing, please apply this patch for
-btrfs-progs before testing.
-https://patchwork.kernel.org/project/linux-btrfs/patch/20210420073036.243715-1-wqu@suse.com/
-Or there will be too many false alerts.
+Normally we follow the inclusive return value, meaning @processed_end
+should be the last byte we processed.
 
-=== Limitation ===
-There are several limitations introduced just for subpage:
-- No compressed write support
-  Read is no problem, but compression write path has more things left to
-  be modified.
-  Thus for current patchset, no matter what inode attribute or mount
-  option is, no new compressed extent can be created for subpage case.
+If parameter @start is 0, and we failed to lock any page, then we would
+return @processed_end as -1, causing more problems for
+__unlock_for_delalloc().
 
-- No inline extent will be created
-  This is mostly due to the fact that filemap_fdatawrite_range() will
-  trigger more write than the range specified.
-  In fallocate calls, this behavior can make us to writeback which can
-  be inlined, before we enlarge the isize, causing inline extent being
-  created along with regular extents.
+So here for @processed_end, we use two different return value patterns.
+If we have locked any page, @processed_end will be the last byte of
+locked page.
+Or it will be @start otherwise.
 
-- No support for RAID56
-  There are still too many hardcoded PAGE_SIZE in raid56 code.
-  Considering it's already considered unsafe due to its write-hole
-  problem, disabling RAID56 for subpage looks sane to me.
+This change will impact lock_delalloc_pages(), so it needs to check
+@processed_end to only unlock the range if we have locked any.
 
-- No defrag support for subpage
-  The support for subpage defrag has already an initial version
-  submitted to the mail list.
-  Thus the correct support won't be included in this patchset.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 57 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 37 insertions(+), 20 deletions(-)
 
-=== Patchset structure ===
-
-Patch 01~19:	Make data write path to be subpage compatible
-Patch 20~21:	Make data relocation path to be subpage compatible
-Patch 22~29:	Various fixes for subpage corner cases
-Patch 30:	Enable subpage data write
-
-=== Changelog ===
-v2:
-- Rebased to latest misc-next
-  Now metadata write patches are removed from the series, as they are
-  already merged into misc-next.
-
-- Added new Reviewed-by/Tested-by/Reported-by tags
-
-- Use separate endio functions to subpage metadata write path
-
-- Re-order the patches, to make refactors at the top of the series
-  One refactor, the submit_extent_page() one, should benefit 4K page
-  size more than 64K page size, thus it's worthy to be merged early
-
-- New bug fixes exposed by Ritesh Harjani on Power
-
-- Reject RAID56 completely
-  Exposed by btrfs test group, which caused BUG_ON() for various sites.
-  Considering RAID56 is already not considered safe, it's better to
-  reject them completely for now.
-
-- Fix subpage scrub repair failure
-  Caused by hardcoded PAGE_SIZE
-
-- Fix free space cache inode size
-  Same cause as scrub repair failure
-
-v3:
-- Rebased to remove write path prepration patches
-
-- Properly enable btrfs defrag
-  Previsouly, btrfs defrag is in fact just disabled.
-  This makes tons of tests in btrfs/defrag to fail.
-
-- More bug fixes for rare race/crashes
-  * Fix relocation false alert on csum mismatch
-  * Fix relocation data corruption
-  * Fix a rare case of false ASSERT()
-    The fix already get merged into the prepration patches, thus no
-    longer in this patchset though.
-  
-  Mostly reported by Ritesh from IBM.
-
-v4:
-- Disable subpage defrag completely
-  As full page defrag can race with fsstress in btrfs/062, causing
-  strange ordered extent bugs.
-  The full subpage defrag will be submitted as an indepdent patchset.
-
-Qu Wenruo (30):
-  btrfs: pass bytenr directly to __process_pages_contig()
-  btrfs: refactor the page status update into process_one_page()
-  btrfs: provide btrfs_page_clamp_*() helpers
-  btrfs: only require sector size alignment for
-    end_bio_extent_writepage()
-  btrfs: make btrfs_dirty_pages() to be subpage compatible
-  btrfs: make __process_pages_contig() to handle subpage
-    dirty/error/writeback status
-  btrfs: make end_bio_extent_writepage() to be subpage compatible
-  btrfs: make process_one_page() to handle subpage locking
-  btrfs: introduce helpers for subpage ordered status
-  btrfs: make page Ordered bit to be subpage compatible
-  btrfs: update locked page dirty/writeback/error bits in
-    __process_pages_contig
-  btrfs: prevent extent_clear_unlock_delalloc() to unlock page not
-    locked by __process_pages_contig()
-  btrfs: make btrfs_set_range_writeback() subpage compatible
-  btrfs: make __extent_writepage_io() only submit dirty range for
-    subpage
-  btrfs: make btrfs_truncate_block() to be subpage compatible
-  btrfs: make btrfs_page_mkwrite() to be subpage compatible
-  btrfs: reflink: make copy_inline_to_page() to be subpage compatible
-  btrfs: fix the filemap_range_has_page() call in
-    btrfs_punch_hole_lock_range()
-  btrfs: don't clear page extent mapped if we're not invalidating the
-    full page
-  btrfs: extract relocation page read and dirty part into its own
-    function
-  btrfs: make relocate_one_page() to handle subpage case
-  btrfs: fix wild subpage writeback which does not have ordered extent.
-  btrfs: disable inline extent creation for subpage
-  btrfs: allow submit_extent_page() to do bio split for subpage
-  btrfs: reject raid5/6 fs for subpage
-  btrfs: fix a crash caused by race between prepare_pages() and
-    btrfs_releasepage()
-  btrfs: fix a use-after-free bug in writeback subpage helper
-  btrfs: fix a subpage false alert for relocating partial preallocated
-    data extents
-  btrfs: fix a subpage relocation data corruption
-  btrfs: allow read-write for 4K sectorsize on 64K page size systems
-
- fs/btrfs/ctree.h        |   2 +-
- fs/btrfs/disk-io.c      |  13 +-
- fs/btrfs/extent_io.c    | 563 ++++++++++++++++++++++++++++------------
- fs/btrfs/file.c         |  32 ++-
- fs/btrfs/inode.c        | 147 +++++++++--
- fs/btrfs/ioctl.c        |   6 +
- fs/btrfs/ordered-data.c |   5 +-
- fs/btrfs/reflink.c      |  14 +-
- fs/btrfs/relocation.c   | 287 ++++++++++++--------
- fs/btrfs/subpage.c      | 156 ++++++++++-
- fs/btrfs/subpage.h      |  31 +++
- fs/btrfs/super.c        |   7 -
- fs/btrfs/sysfs.c        |   5 +
- fs/btrfs/volumes.c      |   8 +
- 14 files changed, 949 insertions(+), 327 deletions(-)
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 6f023f800bd6..95d61e03f33f 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1810,8 +1810,8 @@ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
+ 
+ static int __process_pages_contig(struct address_space *mapping,
+ 				  struct page *locked_page,
+-				  pgoff_t start_index, pgoff_t end_index,
+-				  unsigned long page_ops, pgoff_t *index_ret);
++				  u64 start, u64 end, unsigned long page_ops,
++				  u64 *processed_end);
+ 
+ static noinline void __unlock_for_delalloc(struct inode *inode,
+ 					   struct page *locked_page,
+@@ -1824,7 +1824,7 @@ static noinline void __unlock_for_delalloc(struct inode *inode,
+ 	if (index == locked_page->index && end_index == index)
+ 		return;
+ 
+-	__process_pages_contig(inode->i_mapping, locked_page, index, end_index,
++	__process_pages_contig(inode->i_mapping, locked_page, start, end,
+ 			       PAGE_UNLOCK, NULL);
+ }
+ 
+@@ -1834,19 +1834,19 @@ static noinline int lock_delalloc_pages(struct inode *inode,
+ 					u64 delalloc_end)
+ {
+ 	unsigned long index = delalloc_start >> PAGE_SHIFT;
+-	unsigned long index_ret = index;
+ 	unsigned long end_index = delalloc_end >> PAGE_SHIFT;
++	u64 processed_end = delalloc_start;
+ 	int ret;
+ 
+ 	ASSERT(locked_page);
+ 	if (index == locked_page->index && index == end_index)
+ 		return 0;
+ 
+-	ret = __process_pages_contig(inode->i_mapping, locked_page, index,
+-				     end_index, PAGE_LOCK, &index_ret);
+-	if (ret == -EAGAIN)
++	ret = __process_pages_contig(inode->i_mapping, locked_page, delalloc_start,
++				     delalloc_end, PAGE_LOCK, &processed_end);
++	if (ret == -EAGAIN && processed_end > delalloc_start)
+ 		__unlock_for_delalloc(inode, locked_page, delalloc_start,
+-				      (u64)index_ret << PAGE_SHIFT);
++				      processed_end);
+ 	return ret;
+ }
+ 
+@@ -1941,12 +1941,14 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+ 
+ static int __process_pages_contig(struct address_space *mapping,
+ 				  struct page *locked_page,
+-				  pgoff_t start_index, pgoff_t end_index,
+-				  unsigned long page_ops, pgoff_t *index_ret)
++				  u64 start, u64 end, unsigned long page_ops,
++				  u64 *processed_end)
+ {
++	pgoff_t start_index = start >> PAGE_SHIFT;
++	pgoff_t end_index = end >> PAGE_SHIFT;
++	pgoff_t index = start_index;
+ 	unsigned long nr_pages = end_index - start_index + 1;
+ 	unsigned long pages_processed = 0;
+-	pgoff_t index = start_index;
+ 	struct page *pages[16];
+ 	unsigned ret;
+ 	int err = 0;
+@@ -1954,17 +1956,19 @@ static int __process_pages_contig(struct address_space *mapping,
+ 
+ 	if (page_ops & PAGE_LOCK) {
+ 		ASSERT(page_ops == PAGE_LOCK);
+-		ASSERT(index_ret && *index_ret == start_index);
++		ASSERT(processed_end && *processed_end == start);
+ 	}
+ 
+ 	if ((page_ops & PAGE_SET_ERROR) && nr_pages > 0)
+ 		mapping_set_error(mapping, -EIO);
+ 
+ 	while (nr_pages > 0) {
+-		ret = find_get_pages_contig(mapping, index,
++		int found_pages;
++
++		found_pages = find_get_pages_contig(mapping, index,
+ 				     min_t(unsigned long,
+ 				     nr_pages, ARRAY_SIZE(pages)), pages);
+-		if (ret == 0) {
++		if (found_pages == 0) {
+ 			/*
+ 			 * Only if we're going to lock these pages,
+ 			 * can we find nothing at @index.
+@@ -2007,13 +2011,27 @@ static int __process_pages_contig(struct address_space *mapping,
+ 			put_page(pages[i]);
+ 			pages_processed++;
+ 		}
+-		nr_pages -= ret;
+-		index += ret;
++		nr_pages -= found_pages;
++		index += found_pages;
+ 		cond_resched();
+ 	}
+ out:
+-	if (err && index_ret)
+-		*index_ret = start_index + pages_processed - 1;
++	if (err && processed_end) {
++		/*
++		 * Update @processed_end. I know this is awful since it has
++		 * two different return value patterns (inclusive vs exclusive).
++		 *
++		 * But the exclusive pattern is necessary if @start is 0, or we
++		 * underflow and check against processed_end won't work as
++		 * expected.
++		 */
++		if (pages_processed)
++			*processed_end = min(end,
++			((u64)(start_index + pages_processed) << PAGE_SHIFT) - 1);
++		else
++			*processed_end = start;
++
++	}
+ 	return err;
+ }
+ 
+@@ -2024,8 +2042,7 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+ 	clear_extent_bit(&inode->io_tree, start, end, clear_bits, 1, 0, NULL);
+ 
+ 	__process_pages_contig(inode->vfs_inode.i_mapping, locked_page,
+-			       start >> PAGE_SHIFT, end >> PAGE_SHIFT,
+-			       page_ops, NULL);
++			       start, end, page_ops, NULL);
+ }
+ 
+ /*
 -- 
 2.31.1
 
