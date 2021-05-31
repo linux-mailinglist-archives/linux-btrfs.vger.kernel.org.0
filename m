@@ -2,129 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12AE395812
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 11:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8A4395813
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 11:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhEaJ1q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 May 2021 05:27:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40366 "EHLO
+        id S231124AbhEaJ2u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 May 2021 05:28:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40390 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhEaJ1o (ORCPT
+        with ESMTP id S230501AbhEaJ2t (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 May 2021 05:27:44 -0400
+        Mon, 31 May 2021 05:28:49 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F269B2191B;
-        Mon, 31 May 2021 09:26:03 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AD8D52191F;
+        Mon, 31 May 2021 09:27:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622453163; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=PyZW+99/fXkXmQD1Q4wvqQgN4URrY8lOM9wCmfz7Yho=;
-        b=TqDUoQfRVQ1gb73Rz4SGbaUDQG/o60yyg2VcJgM/4BrpmZqy9o7N023tvJZIgCV3NB3sLb
-        oYadKsdYiz69rmYG67+YgbmD8FGADCWTQOQlBmZx3qU0NWQ8WoQFkhwJikFF14O9QDMJPb
-        kTx32dRMLlFfqvx+JOnZDvTYn26XKwM=
+        t=1622453228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
+        b=m7E9GVMntQg0Rqn2gC9P8zIWgPvjxIeM7kQXaqRmATFQQdBxuHLm0vDmmc+n5rghg0pMXZ
+        ZlTwi+1eC07fSIrbHwn54bhptSOKoRgpfCS337nAA0YEa4s/Ce4pHHtijzM48fdvDoKP6Q
+        StqmgtrGwHyPscgvUzNJ3dcUyBV4rVk=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B307E118DD;
-        Mon, 31 May 2021 09:26:02 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 35873118DD;
+        Mon, 31 May 2021 09:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622453162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=PyZW+99/fXkXmQD1Q4wvqQgN4URrY8lOM9wCmfz7Yho=;
-        b=SwGWEKiIfAIbMG1SVp8ne8t5ioIsYioYzpZSusRecqIKVNdSsr462RE/RfxbjwsdURUx7S
-        e6JNZLIMmJajV4XE98ydkNfe84XEnqE6Z7eqvab5c/u5YpYYK6TmFqyHSR1tQf9NlowCoQ
-        q+EEN4gP6uvVKFN/9bxHGn44thHRd1I=
+        t=1622453226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
+        b=AG9SIgwXHsb2cQNSyV10/toWzH4RzhVfZ4Dpz4azl2VR7gRzjs8Ygyx8Bvi+4cFZyhwqGN
+        fjXrWEKDpA/LnykCPIQx6JPXnYzoY84XJR3meiPLwyiTf5JJtklyDiFaxEHI/1eg3yzjYi
+        raDIpK6km7Uij/76VoksOynNd+S2FYM=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id v8NuKaqrtGBBVwAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 09:26:02 +0000
+        id RsipCuqrtGDpVwAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 09:27:06 +0000
+Subject: Re: [syzbot] kernel BUG in assertfail
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
+        Chris Mason <clm@fb.com>, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <000000000000f9136f05c39b84e4@google.com>
+ <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
+ <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
+ <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
+ <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: Promote debugging asserts to full-flegded checks in validate_super
-Date:   Mon, 31 May 2021 12:26:01 +0300
-Message-Id: <20210531092601.107452-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+Message-ID: <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
+Date:   Mon, 31 May 2021 12:27:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Authentication-Results: imap.suse.de;
         none
-X-Spam-Level: *****
-X-Spam-Score: 5.00
-X-Spamd-Result: default: False [5.00 / 100.00];
+X-Spam-Level: **
+X-Spam-Score: 2.50
+X-Spamd-Result: default: False [2.50 / 100.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
          FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[3];
          TO_DN_SOME(0.00)[];
          TO_MATCH_ENVRCPT_ALL(0.00)[];
+         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
          TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
          MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_MISSING_CHARSET(2.50)[];
+         SURBL_MULTI_FAIL(0.00)[googlegroups.com:server fail];
          DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         MID_CONTAINS_FROM(1.00)[];
+         RCPT_COUNT_SEVEN(0.00)[8];
          RCVD_NO_TLS_LAST(0.10)[];
          FROM_EQ_ENVFROM(0.00)[];
          MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2]
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Syzbot managed to trigger this assert while performing its fuzzing.
-Turns out it's better to have those asserts turned into full-fledged
-checks so that in case buggy btrfs images are mounted the users gets
-an error and mounting is stopped. Alternatively with CONFIG_BTRFS_ASSERT
-disabled such image would have been erroneously allowed to be mounted.
 
-Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/disk-io.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 99757939f8b0..cff694fe87d3 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2648,6 +2648,19 @@ static int validate_super(struct btrfs_fs_info *fs_info,
- 		ret = -EINVAL;
- 	}
- 
-+	if (memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid,
-+		       BTRFS_FSID_SIZE)) {
-+		btrfs_err(fs_info, "superblock fsid doesn't match fsid of fs_devices");
-+		ret = -EINVAL;
-+	}
-+
-+	if (btrfs_fs_incompat(fs_info, METADATA_UUID) &&
-+	    memcmp(fs_info->fs_devices->metadata_uuid,
-+		   fs_info->super_copy->metadata_uuid,	BTRFS_FSID_SIZE)) {
-+		btrfs_err(fs_info, "superblock's metadata uuid doesn't match metadata uuid of fsdevices");
-+		ret = -EINVAL;
-+	}
-+
- 	if (memcmp(fs_info->fs_devices->metadata_uuid, sb->dev_item.fsid,
- 		   BTRFS_FSID_SIZE) != 0) {
- 		btrfs_err(fs_info,
-@@ -3279,14 +3292,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 
- 	disk_super = fs_info->super_copy;
- 
--	ASSERT(!memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid,
--		       BTRFS_FSID_SIZE));
--
--	if (btrfs_fs_incompat(fs_info, METADATA_UUID)) {
--		ASSERT(!memcmp(fs_info->fs_devices->metadata_uuid,
--				fs_info->super_copy->metadata_uuid,
--				BTRFS_FSID_SIZE));
--	}
- 
- 	features = btrfs_super_flags(disk_super);
- 	if (features & BTRFS_SUPER_FLAG_CHANGING_FSID_V2) {
--- 
-2.25.1
+On 31.05.21 г. 12:09, Dmitry Vyukov wrote:
+> On Mon, May 31, 2021 at 10:57 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>> On 31.05.21 г. 11:55, Dmitry Vyukov wrote:
+>>> On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
+>>> <syzkaller-bugs@googlegroups.com> wrote:
+>>>> On 31.05.21 г. 10:53, syzbot wrote:
+>>>>> Hello,
+>>>>>
+>>>>> syzbot found the following issue on:
+>>>>>
+>>>>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
+>>>>> git tree:       upstream
+>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
+>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
+>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
+>>>>>
+>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>
+>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
+>>>>>
+>>>>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
+>>>>
+>>>> This means a device contains a btrfs filesystem which has a different
+>>>> FSID in its superblock than the fsid which all devices part of the same
+>>>> fs_devices should have. This can happen in 2 ways - memory corruption
+>>>> where either of the ->fsid member are corrupted or if there was a crash
+>>>> while a filesystem's fsid was being changed. We need more context about
+>>>> what the test did?
+>>>
+>>> Hi Nikolay,
+>>>
+>>> From a semantic point of view we can consider that it just mounts /dev/random.
+>>> If syzbot comes up with a reproducer it will post it, but you seem to
+>>> already figure out what happened, so I assume you can write a unit
+>>> test for this.
+>>>
+>>
+>> Well no, under normal circumstances this shouldn't trigger. So if syzbot
+>> is doing something stupid as mounting /dev/random then I don't see a
+>> problem here. The assert is there to catch inconsistencies during normal
+>> operation which doesn't seem to be the case here.
+> 
+> 
+> Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing?
+> What is it intended for? Or it can only be enabled when mounting known
+> good images? But then I assume even btrfs unit tests mount some
+> invalid images, so it would mean it can't be used even  during unit
+> testing?
+> 
+> Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
+> of these actually check for something that "must never happen". E.g.
+> some lists/pointers are empty/non-empty in particular states. And
+> "must never happen" checks are for testing scenarios...
+> 
+> Taking this particular FSID mismatch assert, should such corrupted
+> images be mounted for end users? Should users be notified? Currently
+> they are mounted and users are not notified, what is the purpose of
+> this assertion?
+> 
+> Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
+> checks that are enabled during testing and normal if's with pr_err for
+> user notifications?
+> 
 
+After going through the code you've convinced me. I just sent a patch
+turning the 2 debugging asserts into full-fledged checks in
+validate_super. So now the correct behavior is to prevent mounting of
+such images.  How can I force syzbot to retest with the given patch applied?
