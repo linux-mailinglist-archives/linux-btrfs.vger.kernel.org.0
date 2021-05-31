@@ -2,163 +2,224 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8A4395813
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 11:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B02F39586D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 11:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhEaJ2u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 May 2021 05:28:50 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40390 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230501AbhEaJ2t (ORCPT
+        id S231326AbhEaJuM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 May 2021 05:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231245AbhEaJtw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 May 2021 05:28:49 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AD8D52191F;
-        Mon, 31 May 2021 09:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622453228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
-        b=m7E9GVMntQg0Rqn2gC9P8zIWgPvjxIeM7kQXaqRmATFQQdBxuHLm0vDmmc+n5rghg0pMXZ
-        ZlTwi+1eC07fSIrbHwn54bhptSOKoRgpfCS337nAA0YEa4s/Ce4pHHtijzM48fdvDoKP6Q
-        StqmgtrGwHyPscgvUzNJ3dcUyBV4rVk=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 35873118DD;
-        Mon, 31 May 2021 09:27:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622453226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W4z0meOW6IUCU2rQCfaqM2HBPpAFPAp/Ax2mmtHbSu8=;
-        b=AG9SIgwXHsb2cQNSyV10/toWzH4RzhVfZ4Dpz4azl2VR7gRzjs8Ygyx8Bvi+4cFZyhwqGN
-        fjXrWEKDpA/LnykCPIQx6JPXnYzoY84XJR3meiPLwyiTf5JJtklyDiFaxEHI/1eg3yzjYi
-        raDIpK6km7Uij/76VoksOynNd+S2FYM=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id RsipCuqrtGDpVwAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 09:27:06 +0000
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        Chris Mason <clm@fb.com>, dsterba@suse.com,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <000000000000f9136f05c39b84e4@google.com>
- <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
- <CACT4Y+bqevMT3cD5sXjSv9QYM_7CwjYmN_Ne5LSj=3-REZ+oTw@mail.gmail.com>
- <224f1e6a-76fa-6356-fe11-af480cee5cf2@suse.com>
- <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <fcf25b03-e48e-8cda-3c87-25c2c3332719@suse.com>
-Date:   Mon, 31 May 2021 12:27:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 31 May 2021 05:49:52 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F0FC061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 May 2021 02:48:11 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id g38so15788232ybi.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 May 2021 02:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pgHYMoWSeMygYl9syKIbf3JcTa89IufxPtPAD2Xjpzw=;
+        b=c8VgA6zhm+SGK1A+vafXZX+I6S3JQQMYKauJiz3Ekokq1yFme2H/u1k5tRSYLelJjc
+         nZHjVZbuv8iOjD22gFx5PbTfLN/SKrAsjulGjaecM6uMXISrHVbroSWM5kuHr5nkSiGM
+         TafWQeNOPo1G9l6lm5B2Zi6eshn823YUjWLjcuf9TOwDYOF6szSbcJcaU48NCTlOkcZ8
+         a52hOi5OdTRXS/nNFNMJwyjzqvwjbm5108fLfdKPFDIKuWOEA2IC8+t2+DmC/L9C5zxM
+         oHP+J0LmmF8IMbyeG2URfB+mlbfd848qPc/qUB4LIQ+JZc0fEFTGppZ/P0ykF/JW90E8
+         IY4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pgHYMoWSeMygYl9syKIbf3JcTa89IufxPtPAD2Xjpzw=;
+        b=YlRWKlma8YaDRogPr8uEulWC9tkjyfROkyDwTpfYjfY3fldnAZ3nzpy+RTncNhv605
+         ckKjVtn/PiDfYkgfRVWy38D7CI35msU7lx70SoZwwHKdA3RDQla+3f51D5ersxJWkRgH
+         ST0eqssm0kdOnqDkHFluWVEdXPmhfeMU4DWJnmHtsBuMZwv5qDWyuiRvC1RoGA65eqDt
+         5hQyi+yrBJLNf05MGyGNsaWWq6R/6g4F9oT96pxiYHcAWONVpvnzmdejGhoMPOwx7hjd
+         HjyHo5TNAzBR2CAKDZ4sjsOO+wruaDGHLHUZzFf4/xJ2p5e7rlmy+ACa5JBhoYaoptXd
+         t4jg==
+X-Gm-Message-State: AOAM530YZ3DMjShdxhcSerG2ktQmpPygQhsD/v5OABIDqrEfu2FBH/27
+        bAD1NxInu4DMhju/XA/GVqXbsjVB9VUQriv8jyE=
+X-Google-Smtp-Source: ABdhPJyNU+P9oUolrmK4Blae1LTF7nzU8Z0G45nbjiEhHtVQm7wyYonYzzKYd1YHrf2EYSk8TIPVEymiK4ZXRan0Z54=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr30055543ybz.260.1622454490609;
+ Mon, 31 May 2021 02:48:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+ZJ7Oi9ChXJNuF_+e4FRnN1rJBde4tsjiTtkOV+MM-hgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: **
-X-Spam-Score: 2.50
-X-Spamd-Result: default: False [2.50 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
-         TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
-         MIME_GOOD(-0.10)[text/plain];
-         SURBL_MULTI_FAIL(0.00)[googlegroups.com:server fail];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20210531085106.259490-1-wqu@suse.com>
+In-Reply-To: <20210531085106.259490-1-wqu@suse.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Mon, 31 May 2021 05:47:34 -0400
+Message-ID: <CAEg-Je_0FrdEYKsHKb3e-kL2zehawwA9UVVmv+2wVC_+wQTC1Q@mail.gmail.com>
+Subject: Re: [PATCH v4 00/30] btrfs: add data write support for subpage
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, May 31, 2021 at 4:52 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> This huge patchset can be fetched from github:
+> https://github.com/adam900710/linux/tree/subpage
+>
+> =3D=3D=3D Current stage =3D=3D=3D
+> The tests on x86 pass without new failure, and generic test group on
+> arm64 with 64K page size passes except known failure and defrag group.
+>
+> For btrfs test group, all pass except compression/raid56/defrag.
+>
+> For anyone who is interested in testing, please apply this patch for
+> btrfs-progs before testing.
+> https://patchwork.kernel.org/project/linux-btrfs/patch/20210420073036.243=
+715-1-wqu@suse.com/
+> Or there will be too many false alerts.
+>
+> =3D=3D=3D Limitation =3D=3D=3D
+> There are several limitations introduced just for subpage:
+> - No compressed write support
+>   Read is no problem, but compression write path has more things left to
+>   be modified.
+>   Thus for current patchset, no matter what inode attribute or mount
+>   option is, no new compressed extent can be created for subpage case.
+>
+> - No inline extent will be created
+>   This is mostly due to the fact that filemap_fdatawrite_range() will
+>   trigger more write than the range specified.
+>   In fallocate calls, this behavior can make us to writeback which can
+>   be inlined, before we enlarge the isize, causing inline extent being
+>   created along with regular extents.
+>
+> - No support for RAID56
+>   There are still too many hardcoded PAGE_SIZE in raid56 code.
+>   Considering it's already considered unsafe due to its write-hole
+>   problem, disabling RAID56 for subpage looks sane to me.
+>
+> - No defrag support for subpage
+>   The support for subpage defrag has already an initial version
+>   submitted to the mail list.
+>   Thus the correct support won't be included in this patchset.
+>
+> =3D=3D=3D Patchset structure =3D=3D=3D
+>
+> Patch 01~19:    Make data write path to be subpage compatible
+> Patch 20~21:    Make data relocation path to be subpage compatible
+> Patch 22~29:    Various fixes for subpage corner cases
+> Patch 30:       Enable subpage data write
+>
+> =3D=3D=3D Changelog =3D=3D=3D
+> v2:
+> - Rebased to latest misc-next
+>   Now metadata write patches are removed from the series, as they are
+>   already merged into misc-next.
+>
+> - Added new Reviewed-by/Tested-by/Reported-by tags
+>
+> - Use separate endio functions to subpage metadata write path
+>
+> - Re-order the patches, to make refactors at the top of the series
+>   One refactor, the submit_extent_page() one, should benefit 4K page
+>   size more than 64K page size, thus it's worthy to be merged early
+>
+> - New bug fixes exposed by Ritesh Harjani on Power
+>
+> - Reject RAID56 completely
+>   Exposed by btrfs test group, which caused BUG_ON() for various sites.
+>   Considering RAID56 is already not considered safe, it's better to
+>   reject them completely for now.
+>
+> - Fix subpage scrub repair failure
+>   Caused by hardcoded PAGE_SIZE
+>
+> - Fix free space cache inode size
+>   Same cause as scrub repair failure
+>
+> v3:
+> - Rebased to remove write path prepration patches
+>
+> - Properly enable btrfs defrag
+>   Previsouly, btrfs defrag is in fact just disabled.
+>   This makes tons of tests in btrfs/defrag to fail.
+>
+> - More bug fixes for rare race/crashes
+>   * Fix relocation false alert on csum mismatch
+>   * Fix relocation data corruption
+>   * Fix a rare case of false ASSERT()
+>     The fix already get merged into the prepration patches, thus no
+>     longer in this patchset though.
+>
+>   Mostly reported by Ritesh from IBM.
+>
+> v4:
+> - Disable subpage defrag completely
+>   As full page defrag can race with fsstress in btrfs/062, causing
+>   strange ordered extent bugs.
+>   The full subpage defrag will be submitted as an indepdent patchset.
+>
+> Qu Wenruo (30):
+>   btrfs: pass bytenr directly to __process_pages_contig()
+>   btrfs: refactor the page status update into process_one_page()
+>   btrfs: provide btrfs_page_clamp_*() helpers
+>   btrfs: only require sector size alignment for
+>     end_bio_extent_writepage()
+>   btrfs: make btrfs_dirty_pages() to be subpage compatible
+>   btrfs: make __process_pages_contig() to handle subpage
+>     dirty/error/writeback status
+>   btrfs: make end_bio_extent_writepage() to be subpage compatible
+>   btrfs: make process_one_page() to handle subpage locking
+>   btrfs: introduce helpers for subpage ordered status
+>   btrfs: make page Ordered bit to be subpage compatible
+>   btrfs: update locked page dirty/writeback/error bits in
+>     __process_pages_contig
+>   btrfs: prevent extent_clear_unlock_delalloc() to unlock page not
+>     locked by __process_pages_contig()
+>   btrfs: make btrfs_set_range_writeback() subpage compatible
+>   btrfs: make __extent_writepage_io() only submit dirty range for
+>     subpage
+>   btrfs: make btrfs_truncate_block() to be subpage compatible
+>   btrfs: make btrfs_page_mkwrite() to be subpage compatible
+>   btrfs: reflink: make copy_inline_to_page() to be subpage compatible
+>   btrfs: fix the filemap_range_has_page() call in
+>     btrfs_punch_hole_lock_range()
+>   btrfs: don't clear page extent mapped if we're not invalidating the
+>     full page
+>   btrfs: extract relocation page read and dirty part into its own
+>     function
+>   btrfs: make relocate_one_page() to handle subpage case
+>   btrfs: fix wild subpage writeback which does not have ordered extent.
+>   btrfs: disable inline extent creation for subpage
+>   btrfs: allow submit_extent_page() to do bio split for subpage
+>   btrfs: reject raid5/6 fs for subpage
+>   btrfs: fix a crash caused by race between prepare_pages() and
+>     btrfs_releasepage()
+>   btrfs: fix a use-after-free bug in writeback subpage helper
+>   btrfs: fix a subpage false alert for relocating partial preallocated
+>     data extents
+>   btrfs: fix a subpage relocation data corruption
+>   btrfs: allow read-write for 4K sectorsize on 64K page size systems
+>
+>  fs/btrfs/ctree.h        |   2 +-
+>  fs/btrfs/disk-io.c      |  13 +-
+>  fs/btrfs/extent_io.c    | 563 ++++++++++++++++++++++++++++------------
+>  fs/btrfs/file.c         |  32 ++-
+>  fs/btrfs/inode.c        | 147 +++++++++--
+>  fs/btrfs/ioctl.c        |   6 +
+>  fs/btrfs/ordered-data.c |   5 +-
+>  fs/btrfs/reflink.c      |  14 +-
+>  fs/btrfs/relocation.c   | 287 ++++++++++++--------
+>  fs/btrfs/subpage.c      | 156 ++++++++++-
+>  fs/btrfs/subpage.h      |  31 +++
+>  fs/btrfs/super.c        |   7 -
+>  fs/btrfs/sysfs.c        |   5 +
+>  fs/btrfs/volumes.c      |   8 +
+>  14 files changed, 949 insertions(+), 327 deletions(-)
+>
+
+Could you please rebase your branch on 5.13-rc4? I'd rather test it on
+top of that release...
 
 
-On 31.05.21 г. 12:09, Dmitry Vyukov wrote:
-> On Mon, May 31, 2021 at 10:57 AM Nikolay Borisov <nborisov@suse.com> wrote:
->> On 31.05.21 г. 11:55, Dmitry Vyukov wrote:
->>> On Mon, May 31, 2021 at 10:44 AM 'Nikolay Borisov' via syzkaller-bugs
->>> <syzkaller-bugs@googlegroups.com> wrote:
->>>> On 31.05.21 г. 10:53, syzbot wrote:
->>>>> Hello,
->>>>>
->>>>> syzbot found the following issue on:
->>>>>
->>>>> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
->>>>> git tree:       upstream
->>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
->>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
->>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
->>>>>
->>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>
->>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
->>>>>
->>>>> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
->>>>
->>>> This means a device contains a btrfs filesystem which has a different
->>>> FSID in its superblock than the fsid which all devices part of the same
->>>> fs_devices should have. This can happen in 2 ways - memory corruption
->>>> where either of the ->fsid member are corrupted or if there was a crash
->>>> while a filesystem's fsid was being changed. We need more context about
->>>> what the test did?
->>>
->>> Hi Nikolay,
->>>
->>> From a semantic point of view we can consider that it just mounts /dev/random.
->>> If syzbot comes up with a reproducer it will post it, but you seem to
->>> already figure out what happened, so I assume you can write a unit
->>> test for this.
->>>
->>
->> Well no, under normal circumstances this shouldn't trigger. So if syzbot
->> is doing something stupid as mounting /dev/random then I don't see a
->> problem here. The assert is there to catch inconsistencies during normal
->> operation which doesn't seem to be the case here.
-> 
-> 
-> Does this mean that CONFIG_BTRFS_ASSERT needs to be disabled in any testing?
-> What is it intended for? Or it can only be enabled when mounting known
-> good images? But then I assume even btrfs unit tests mount some
-> invalid images, so it would mean it can't be used even  during unit
-> testing?
-> 
-> Looking at the output of "grep ASSERT fs/btrfs/*.c" it looks like most
-> of these actually check for something that "must never happen". E.g.
-> some lists/pointers are empty/non-empty in particular states. And
-> "must never happen" checks are for testing scenarios...
-> 
-> Taking this particular FSID mismatch assert, should such corrupted
-> images be mounted for end users? Should users be notified? Currently
-> they are mounted and users are not notified, what is the purpose of
-> this assertion?
-> 
-> Perhaps CONFIG_BTRFS_ASSERT needs to be split into "must never happen"
-> checks that are enabled during testing and normal if's with pr_err for
-> user notifications?
-> 
-
-After going through the code you've convinced me. I just sent a patch
-turning the 2 debugging asserts into full-fledged checks in
-validate_super. So now the correct behavior is to prevent mounting of
-such images.  How can I force syzbot to retest with the given patch applied?
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
