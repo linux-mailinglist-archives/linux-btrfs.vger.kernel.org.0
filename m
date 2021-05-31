@@ -2,112 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B765395748
-	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 10:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40ABC395767
+	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 10:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhEaIp5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 May 2021 04:45:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40044 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhEaIp4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 May 2021 04:45:56 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AA8CD2191F;
-        Mon, 31 May 2021 08:44:15 +0000 (UTC)
+        id S230434AbhEaIwy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 May 2021 04:52:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40624 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhEaIwv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 May 2021 04:52:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622450655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpqD11VwesnaooS9bUD7mS99zEZv3FlhamNQHMGYvQI=;
-        b=mLYlwA1rehtmtebSlslOtmInELrnvOGW3O5Mq6WCJRk/3t0kGCHV1ErUN2W6b7tpLtfBST
-        A+JgbTrWACnrCFWuKCB3+C52Ldbo49vz/DBKbd/gBUr7xvu8HPIXTXqGAUQwGzsq29QJG/
-        0p+vrV2dopwNAMVEBgRlVOgRmLUpCoU=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id A078D118DD;
-        Mon, 31 May 2021 08:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622450653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lpqD11VwesnaooS9bUD7mS99zEZv3FlhamNQHMGYvQI=;
-        b=a0ECcmvE9ydE/OV9EcLul4CdIAVzDdOSyEAbwHRlXO/SRirG6s9uCnu8nWVikjprNl+ZjZ
-        /dX41I44BCBBFT5/NTsnQt9zPx+hTWDTJ8PjBWHP+6uUqYglpc63LUBUxkaKFqdRlXw1x2
-        FDaquQEtJCAlx9Msq/aWp0e3ZjJL0Eo=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id NFXXJNyhtGCKPgAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 31 May 2021 08:44:12 +0000
-Subject: Re: [syzbot] kernel BUG in assertfail
-To:     syzbot <syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000f9136f05c39b84e4@google.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <21666193-5ad7-2656-c50f-33637fabb082@suse.com>
-Date:   Mon, 31 May 2021 11:44:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        t=1622451070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Y+WiVb8lePfnN/Nxv9puXpOPZ7g6A9bb7KZqZz1FZEE=;
+        b=MUwVB7mszcEQG3ewtmhRa3Ttxgw3x/81MFhUwpn8DPGQk19EXbDkMElVGFFLLZCLWuCPQ3
+        ZsYdGuV3Oovn3D7I2EqhUKJ1rKGBa8r1esnIhtdruoDU78045LZ+4CQOVtPLbeYIM/IILi
+        m92a1uAGd0EnfkLCWghTdZ5qqejlgtg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B2BACB2E9
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 May 2021 08:51:10 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v4 00/30] btrfs: add data write support for subpage
+Date:   Mon, 31 May 2021 16:50:36 +0800
+Message-Id: <20210531085106.259490-1-wqu@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <000000000000f9136f05c39b84e4@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Authentication-Results: imap.suse.de;
-        none
-X-Spam-Level: **
-X-Spam-Score: 2.50
-X-Spamd-Result: default: False [2.50 / 100.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99];
-         TAGGED_RCPT(0.00)[a6bf271c02e4fe66b4e4];
-         MIME_GOOD(-0.10)[text/plain];
-         SURBL_MULTI_FAIL(0.00)[syzkaller.appspot.com:server fail];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This huge patchset can be fetched from github:
+https://github.com/adam900710/linux/tree/subpage
 
+=== Current stage ===
+The tests on x86 pass without new failure, and generic test group on
+arm64 with 64K page size passes except known failure and defrag group.
 
-On 31.05.21 г. 10:53, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    1434a312 Merge branch 'for-5.13-fixes' of git://git.kernel..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=162843f3d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9f3da44a01882e99
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a6bf271c02e4fe66b4e4
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a6bf271c02e4fe66b4e4@syzkaller.appspotmail.com
-> 
-> assertion failed: !memcmp(fs_info->fs_devices->fsid, fs_info->super_copy->fsid, BTRFS_FSID_SIZE), in fs/btrfs/disk-io.c:3282
+For btrfs test group, all pass except compression/raid56/defrag.
 
-This means a device contains a btrfs filesystem which has a different
-FSID in its superblock than the fsid which all devices part of the same
-fs_devices should have. This can happen in 2 ways - memory corruption
-where either of the ->fsid member are corrupted or if there was a crash
-while a filesystem's fsid was being changed. We need more context about
-what the test did?
+For anyone who is interested in testing, please apply this patch for
+btrfs-progs before testing.
+https://patchwork.kernel.org/project/linux-btrfs/patch/20210420073036.243715-1-wqu@suse.com/
+Or there will be too many false alerts.
+
+=== Limitation ===
+There are several limitations introduced just for subpage:
+- No compressed write support
+  Read is no problem, but compression write path has more things left to
+  be modified.
+  Thus for current patchset, no matter what inode attribute or mount
+  option is, no new compressed extent can be created for subpage case.
+
+- No inline extent will be created
+  This is mostly due to the fact that filemap_fdatawrite_range() will
+  trigger more write than the range specified.
+  In fallocate calls, this behavior can make us to writeback which can
+  be inlined, before we enlarge the isize, causing inline extent being
+  created along with regular extents.
+
+- No support for RAID56
+  There are still too many hardcoded PAGE_SIZE in raid56 code.
+  Considering it's already considered unsafe due to its write-hole
+  problem, disabling RAID56 for subpage looks sane to me.
+
+- No defrag support for subpage
+  The support for subpage defrag has already an initial version
+  submitted to the mail list.
+  Thus the correct support won't be included in this patchset.
+
+=== Patchset structure ===
+
+Patch 01~19:	Make data write path to be subpage compatible
+Patch 20~21:	Make data relocation path to be subpage compatible
+Patch 22~29:	Various fixes for subpage corner cases
+Patch 30:	Enable subpage data write
+
+=== Changelog ===
+v2:
+- Rebased to latest misc-next
+  Now metadata write patches are removed from the series, as they are
+  already merged into misc-next.
+
+- Added new Reviewed-by/Tested-by/Reported-by tags
+
+- Use separate endio functions to subpage metadata write path
+
+- Re-order the patches, to make refactors at the top of the series
+  One refactor, the submit_extent_page() one, should benefit 4K page
+  size more than 64K page size, thus it's worthy to be merged early
+
+- New bug fixes exposed by Ritesh Harjani on Power
+
+- Reject RAID56 completely
+  Exposed by btrfs test group, which caused BUG_ON() for various sites.
+  Considering RAID56 is already not considered safe, it's better to
+  reject them completely for now.
+
+- Fix subpage scrub repair failure
+  Caused by hardcoded PAGE_SIZE
+
+- Fix free space cache inode size
+  Same cause as scrub repair failure
+
+v3:
+- Rebased to remove write path prepration patches
+
+- Properly enable btrfs defrag
+  Previsouly, btrfs defrag is in fact just disabled.
+  This makes tons of tests in btrfs/defrag to fail.
+
+- More bug fixes for rare race/crashes
+  * Fix relocation false alert on csum mismatch
+  * Fix relocation data corruption
+  * Fix a rare case of false ASSERT()
+    The fix already get merged into the prepration patches, thus no
+    longer in this patchset though.
+  
+  Mostly reported by Ritesh from IBM.
+
+v4:
+- Disable subpage defrag completely
+  As full page defrag can race with fsstress in btrfs/062, causing
+  strange ordered extent bugs.
+  The full subpage defrag will be submitted as an indepdent patchset.
+
+Qu Wenruo (30):
+  btrfs: pass bytenr directly to __process_pages_contig()
+  btrfs: refactor the page status update into process_one_page()
+  btrfs: provide btrfs_page_clamp_*() helpers
+  btrfs: only require sector size alignment for
+    end_bio_extent_writepage()
+  btrfs: make btrfs_dirty_pages() to be subpage compatible
+  btrfs: make __process_pages_contig() to handle subpage
+    dirty/error/writeback status
+  btrfs: make end_bio_extent_writepage() to be subpage compatible
+  btrfs: make process_one_page() to handle subpage locking
+  btrfs: introduce helpers for subpage ordered status
+  btrfs: make page Ordered bit to be subpage compatible
+  btrfs: update locked page dirty/writeback/error bits in
+    __process_pages_contig
+  btrfs: prevent extent_clear_unlock_delalloc() to unlock page not
+    locked by __process_pages_contig()
+  btrfs: make btrfs_set_range_writeback() subpage compatible
+  btrfs: make __extent_writepage_io() only submit dirty range for
+    subpage
+  btrfs: make btrfs_truncate_block() to be subpage compatible
+  btrfs: make btrfs_page_mkwrite() to be subpage compatible
+  btrfs: reflink: make copy_inline_to_page() to be subpage compatible
+  btrfs: fix the filemap_range_has_page() call in
+    btrfs_punch_hole_lock_range()
+  btrfs: don't clear page extent mapped if we're not invalidating the
+    full page
+  btrfs: extract relocation page read and dirty part into its own
+    function
+  btrfs: make relocate_one_page() to handle subpage case
+  btrfs: fix wild subpage writeback which does not have ordered extent.
+  btrfs: disable inline extent creation for subpage
+  btrfs: allow submit_extent_page() to do bio split for subpage
+  btrfs: reject raid5/6 fs for subpage
+  btrfs: fix a crash caused by race between prepare_pages() and
+    btrfs_releasepage()
+  btrfs: fix a use-after-free bug in writeback subpage helper
+  btrfs: fix a subpage false alert for relocating partial preallocated
+    data extents
+  btrfs: fix a subpage relocation data corruption
+  btrfs: allow read-write for 4K sectorsize on 64K page size systems
+
+ fs/btrfs/ctree.h        |   2 +-
+ fs/btrfs/disk-io.c      |  13 +-
+ fs/btrfs/extent_io.c    | 563 ++++++++++++++++++++++++++++------------
+ fs/btrfs/file.c         |  32 ++-
+ fs/btrfs/inode.c        | 147 +++++++++--
+ fs/btrfs/ioctl.c        |   6 +
+ fs/btrfs/ordered-data.c |   5 +-
+ fs/btrfs/reflink.c      |  14 +-
+ fs/btrfs/relocation.c   | 287 ++++++++++++--------
+ fs/btrfs/subpage.c      | 156 ++++++++++-
+ fs/btrfs/subpage.h      |  31 +++
+ fs/btrfs/super.c        |   7 -
+ fs/btrfs/sysfs.c        |   5 +
+ fs/btrfs/volumes.c      |   8 +
+ 14 files changed, 949 insertions(+), 327 deletions(-)
+
+-- 
+2.31.1
+
