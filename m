@@ -2,34 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B84C39576A
+	by mail.lfdr.de (Postfix) with ESMTP id 75B5339576B
 	for <lists+linux-btrfs@lfdr.de>; Mon, 31 May 2021 10:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhEaIw6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 31 May 2021 04:52:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40666 "EHLO mx2.suse.de"
+        id S230487AbhEaIw7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 31 May 2021 04:52:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40690 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhEaIw4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 31 May 2021 04:52:56 -0400
+        id S230478AbhEaIw6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 31 May 2021 04:52:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1622451076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1622451078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JP9j8HnUfIRsWheW/HlFksCo1hCsZvfEoApzqE6MwyY=;
-        b=Kn6c66r7jw1u1tjuqFKkU2UdtpXsVvWCil6GAdX36SON/k4Dx8Sb5NQfI1a01cfhSUvUHa
-        +QkV7PcA3h7hkn8yRbc8Fmg0NHLOD/QuXSAqXhwOZd/bgt0+bOqv5xvorMgboUOXHPsaWd
-        eY2FzeMS8w2GWz5JkVmGh/Z6EZBp2NY=
+        bh=LEomdVu04kBShrSjhMnNnBFZj1xhRDJa8qxyzsQKZdo=;
+        b=mUgLHzWP+6LMrFvdMjIQUBScOTQKJLX1cpk1qhrlSrZT6JNIAt6Z/SwvhPeP54vuCKMlAO
+        47hEozGrsbn5gcbpEZ3ds/T32KqfODYzYuETzx8BtsSyR4FFxOlUq+v2X8bQlxrOxJ9+YM
+        5And4hu8d/pnS30i4Ueu6G8IZK2ciOE=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5328AB2E9;
-        Mon, 31 May 2021 08:51:16 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 08C00B31C
+        for <linux-btrfs@vger.kernel.org>; Mon, 31 May 2021 08:51:18 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v4 03/30] btrfs: provide btrfs_page_clamp_*() helpers
-Date:   Mon, 31 May 2021 16:50:39 +0800
-Message-Id: <20210531085106.259490-4-wqu@suse.com>
+Subject: [PATCH v4 04/30] btrfs: only require sector size alignment for end_bio_extent_writepage()
+Date:   Mon, 31 May 2021 16:50:40 +0800
+Message-Id: <20210531085106.259490-5-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210531085106.259490-1-wqu@suse.com>
 References: <20210531085106.259490-1-wqu@suse.com>
@@ -39,114 +38,61 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the coming subpage RW supports, there are a lot of page status update
-calls which need to be converted to subpage compatible version, which
-needs @start and @len.
+Just like read page, for subpage support we only require sector size
+alignment.
 
-Some call sites already have such @start/@len and are already in
-page range, like various endio functions.
+So change the error message condition to only require sector alignment.
 
-But there are also call sites which need to clamp the range for subpage
-case, like btrfs_dirty_pagse() and __process_contig_pages().
-
-Here we introduce new helpers, btrfs_page_clamp_*(), to do and only do the
-clamp for subpage version.
-
-Although in theory all existing btrfs_page_*() calls can be converted to
-use btrfs_page_clamp_*() directly, but that would make us to do
-unnecessary clamp operations.
+This should not affect existing code, as for regular sectorsize ==
+PAGE_SIZE case, we are still requiring page alignment.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/subpage.c | 38 ++++++++++++++++++++++++++++++++++++++
- fs/btrfs/subpage.h | 10 ++++++++++
- 2 files changed, 48 insertions(+)
+ fs/btrfs/extent_io.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 2d19089ab625..a6cf1776f3f9 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -354,6 +354,16 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 201e68d858ea..9ad8bc454107 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2824,25 +2824,20 @@ static void end_bio_extent_writepage(struct bio *bio)
+ 		struct page *page = bvec->bv_page;
+ 		struct inode *inode = page->mapping->host;
+ 		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++		const u32 sectorsize = fs_info->sectorsize;
  
-+static void btrfs_subpage_clamp_range(struct page *page, u64 *start, u32 *len)
-+{
-+	u64 orig_start = *start;
-+	u32 orig_len = *len;
-+
-+	*start = max_t(u64, page_offset(page), orig_start);
-+	*len = min_t(u64, page_offset(page) + PAGE_SIZE,
-+		     orig_start + orig_len) - *start;
-+}
-+
- /*
-  * Unlike set/clear which is dependent on each page status, for test all bits
-  * are tested in the same way.
-@@ -408,6 +418,34 @@ bool btrfs_page_test_##name(const struct btrfs_fs_info *fs_info,	\
- 	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)	\
- 		return test_page_func(page);				\
- 	return btrfs_subpage_test_##name(fs_info, page, start, len);	\
-+}									\
-+void btrfs_page_clamp_set_##name(const struct btrfs_fs_info *fs_info,	\
-+		struct page *page, u64 start, u32 len)			\
-+{									\
-+	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
-+		set_page_func(page);					\
-+		return;							\
-+	}								\
-+	btrfs_subpage_clamp_range(page, &start, &len);			\
-+	btrfs_subpage_set_##name(fs_info, page, start, len);		\
-+}									\
-+void btrfs_page_clamp_clear_##name(const struct btrfs_fs_info *fs_info, \
-+		struct page *page, u64 start, u32 len)			\
-+{									\
-+	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE) {	\
-+		clear_page_func(page);					\
-+		return;							\
-+	}								\
-+	btrfs_subpage_clamp_range(page, &start, &len);			\
-+	btrfs_subpage_clear_##name(fs_info, page, start, len);		\
-+}									\
-+bool btrfs_page_clamp_test_##name(const struct btrfs_fs_info *fs_info,	\
-+		struct page *page, u64 start, u32 len)			\
-+{									\
-+	if (unlikely(!fs_info) || fs_info->sectorsize == PAGE_SIZE)	\
-+		return test_page_func(page);				\
-+	btrfs_subpage_clamp_range(page, &start, &len);			\
-+	return btrfs_subpage_test_##name(fs_info, page, start, len);	\
- }
- IMPLEMENT_BTRFS_PAGE_OPS(uptodate, SetPageUptodate, ClearPageUptodate,
- 			 PageUptodate);
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index bfd626e955be..291cb1932f27 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -72,6 +72,10 @@ void btrfs_subpage_end_reader(const struct btrfs_fs_info *fs_info,
-  * btrfs_page_*() are for call sites where the page can either be subpage
-  * specific or regular page. The function will handle both cases.
-  * But the range still needs to be inside the page.
-+ *
-+ * btrfs_page_clamp_*() are similar to btrfs_page_*(), except the range doesn't
-+ * need to be inside the page. Those functions will truncate the range
-+ * automatically.
-  */
- #define DECLARE_BTRFS_SUBPAGE_OPS(name)					\
- void btrfs_subpage_set_##name(const struct btrfs_fs_info *fs_info,	\
-@@ -85,6 +89,12 @@ void btrfs_page_set_##name(const struct btrfs_fs_info *fs_info,		\
- void btrfs_page_clear_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len);			\
- bool btrfs_page_test_##name(const struct btrfs_fs_info *fs_info,	\
-+		struct page *page, u64 start, u32 len);			\
-+void btrfs_page_clamp_set_##name(const struct btrfs_fs_info *fs_info,	\
-+		struct page *page, u64 start, u32 len);			\
-+void btrfs_page_clamp_clear_##name(const struct btrfs_fs_info *fs_info,	\
-+		struct page *page, u64 start, u32 len);			\
-+bool btrfs_page_clamp_test_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len);
+-		/* We always issue full-page reads, but if some block
+-		 * in a page fails to read, blk_update_request() will
+-		 * advance bv_offset and adjust bv_len to compensate.
+-		 * Print a warning for nonzero offsets, and an error
+-		 * if they don't add up to a full page.  */
+-		if (bvec->bv_offset || bvec->bv_len != PAGE_SIZE) {
+-			if (bvec->bv_offset + bvec->bv_len != PAGE_SIZE)
+-				btrfs_err(fs_info,
+-				   "partial page write in btrfs with offset %u and length %u",
+-					bvec->bv_offset, bvec->bv_len);
+-			else
+-				btrfs_info(fs_info,
+-				   "incomplete page write in btrfs with offset %u and length %u",
+-					bvec->bv_offset, bvec->bv_len);
+-		}
++		/* Btrfs read write should always be sector aligned. */
++		if (!IS_ALIGNED(bvec->bv_offset, sectorsize))
++			btrfs_err(fs_info,
++		"partial page write in btrfs with offset %u and length %u",
++				  bvec->bv_offset, bvec->bv_len);
++		else if (!IS_ALIGNED(bvec->bv_len, sectorsize))
++			btrfs_info(fs_info,
++		"incomplete page write with offset %u and length %u",
++				   bvec->bv_offset, bvec->bv_len);
  
- DECLARE_BTRFS_SUBPAGE_OPS(uptodate);
+-		start = page_offset(page);
+-		end = start + bvec->bv_offset + bvec->bv_len - 1;
++		start = page_offset(page) + bvec->bv_offset;
++		end = start + bvec->bv_len - 1;
+ 
+ 		if (first_bvec) {
+ 			btrfs_record_physical_zoned(inode, start, bio);
 -- 
 2.31.1
 
