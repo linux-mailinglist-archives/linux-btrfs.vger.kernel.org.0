@@ -2,102 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1D5396D1B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jun 2021 08:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78BB396D25
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Jun 2021 08:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbhFAGDY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Jun 2021 02:03:24 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10792 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229477AbhFAGDX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 1 Jun 2021 02:03:23 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1515X8aV026408;
-        Tue, 1 Jun 2021 02:01:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=C+Ja4IeSdgYjWMIxPEcBbaXGK3Rx6Su6fqp5kiZ0Ecs=;
- b=dnq3jB6MTqKPP+8lrPJNPM3DesfpYmR3CHcW3P662ZaUqWAHyohCMDOefeYAYZM+AbAT
- WjGtvHo4uSc6wT2uBvdpmUxIl7UJ+3qaNxBsrULzEZG8XoY+p0kH7iz5nwAwLBIATj3R
- hyN0FLzuROGtXseRxoGqBDA2Vc6EOyCRmJCVmiCxwe8qODCeqdkSuH2Cah/Kpi+Mebrt
- z4R0h6uBI6LK8OkdI1DNroDD9Gb6gM8Z+KutJTXaGLk51ivhwkA0JifRj0aH3vaIkQm9
- EhfosUY5cn10ZWVl2YHNkZbL1dGOZ7evuNM3YkGjdD1zLYXd5BqDmeJSbgu4fjPTNbnw zw== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38weub8j62-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 02:01:36 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1515qack024658;
-        Tue, 1 Jun 2021 06:01:33 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 38ud880sfx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Jun 2021 06:01:33 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15161VFU18547056
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Jun 2021 06:01:31 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5DC5AA4059;
-        Tue,  1 Jun 2021 06:01:31 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0251EA4040;
-        Tue,  1 Jun 2021 06:01:31 +0000 (GMT)
-Received: from localhost (unknown [9.85.75.172])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Jun 2021 06:01:30 +0000 (GMT)
-Date:   Tue, 1 Jun 2021 11:31:29 +0530
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>
-Subject: Re: [PATCH] btrfs: Fix return value of btrfs_mark_extent_written()
- in case of error
-Message-ID: <20210601060129.3n7eohzswwpddv63@riteshh-domain>
-References: <76ddeec8b7de89c338b8cb94ee2c4015a0be6e2f.1622386360.git.riteshh@linux.ibm.com>
- <20210531184931.GE31483@twin.jikos.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210531184931.GE31483@twin.jikos.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: K-UT9nCad6z9LRpIaMzcZo5Y70rk5Eib
-X-Proofpoint-ORIG-GUID: K-UT9nCad6z9LRpIaMzcZo5Y70rk5Eib
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S233002AbhFAGKJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Jun 2021 02:10:09 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51762 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232997AbhFAGKE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Jun 2021 02:10:04 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3A8DF1FD2E;
+        Tue,  1 Jun 2021 06:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622527697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZIb0+bnwl42+wgcTu9mk1WluAdBOJ9z/7tQgRJD2GLI=;
+        b=eFOtWyP1+sAG6YbvCr7AsrGSlJuTuHlc2AyNn5pYMhnMzobwquQpEQqztsUmzGgBFxMSt4
+        K3Cw9gDMS4tEowlGqXIQPlh4YMrU3WvdMOKsa8Hd1cIB9z3lE9xyxOlB7pM94outKTfmhr
+        3Pe32ILwbbwAs5DJcuBQxAQPMBlfvOM=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A0247118DD;
+        Tue,  1 Jun 2021 06:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1622527696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZIb0+bnwl42+wgcTu9mk1WluAdBOJ9z/7tQgRJD2GLI=;
+        b=dB4XNA3oMiJeUSGtSLlXoWsFTlt87G6Qez7cdd96rE/TXRkgiBp08glziPdBpH2Y+c+FBz
+        dr0WRjPKHyevnygiYY10uYZQlOaGiakPz2ZURiqlv3vLPYr6AXbIsEwSfHE0INpplke++W
+        ofrtIITSskzpj6YNaiQKFlFrNMmt/jM=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id dzlyJNDOtWAvegAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Tue, 01 Jun 2021 06:08:16 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>, David Sterba <dsterba@suse.cz>
+Subject: [PATCH] btrfs: Eliminate insert label in add_falloc_range
+Date:   Tue,  1 Jun 2021 09:08:15 +0300
+Message-Id: <20210601060815.148705-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-06-01_03:2021-05-31,2021-06-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=858
- clxscore=1015 adultscore=0 malwarescore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106010035
+Content-Transfer-Encoding: 8bit
+Authentication-Results: imap.suse.de;
+        none
+X-Spam-Level: ****
+X-Spam-Score: 4.00
+X-Spamd-Result: default: False [4.00 / 100.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[3];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_MISSING_CHARSET(2.50)[];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2]
+X-Spam-Flag: NO
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/05/31 08:49PM, David Sterba wrote:
-> On Sun, May 30, 2021 at 08:24:05PM +0530, Ritesh Harjani wrote:
-> > We always return 0 even in case of an error in btrfs_mark_extent_written().
-> > Fix it to return proper error value in case of a failure.
->
-> Oh right, this looks like it got forgotten, the whole function does the
-> right thing regarding errors and the callers also handle it.
->
-> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> > ---
-> > Tested fstests with "-g quick" group. No new failure seen.
->
-> That won't be probably enough to trigger the error paths but the patch
+By way of inverting the list_empty conditional the insert label can be
+eliminated, making the function's flow entirely linear.
 
-Yes. However, I found the bug while stress testing btrfs/062 failure
-with bs < ps patch series from Qu.
-On analyzing the kernel panic [1], it looked like it was caused by not
-properly returning an error from btrfs_mark_extent_written().
-So, I thought of just running "-g quick" test to avoid any obvious issue.
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Suggested-by: David Sterba <dsterba@suse.cz>
+---
+ fs/btrfs/file.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-[1]: https://www.spinics.net/lists/linux-btrfs/msg113280.html
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 2b28a3daa5a9..dcd3fd64dde7 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3036,19 +3036,18 @@ static int add_falloc_range(struct list_head *head, u64 start, u64 len)
+ {
+ 	struct falloc_range *range = NULL;
 
-> otherwise looks correct to me. Added to misc-next, thanks.
+-	if (list_empty(head))
+-		goto insert;
+-
+-	/*
+-	 * As fallocate iterate by bytenr order, we only need to check
+-	 * the last range.
+-	 */
+-	range = list_last_entry(head, struct falloc_range, list);
+-	if (range->start + range->len == start) {
+-		range->len += len;
+-		return 0;
++	if (!list_empty(head)) {
++		/*
++		 * As fallocate iterate by bytenr order, we only need to check
++		 * the last range.
++		 */
++		range = list_last_entry(head, struct falloc_range, list);
++		if (range->start + range->len == start) {
++			range->len += len;
++			return 0;
++		}
+ 	}
+-insert:
++
+ 	range = kmalloc(sizeof(*range), GFP_KERNEL);
+ 	if (!range)
+ 		return -ENOMEM;
+--
+2.25.1
 
-Thanks
