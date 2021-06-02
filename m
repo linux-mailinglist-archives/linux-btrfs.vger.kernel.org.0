@@ -2,207 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE4B3991DE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jun 2021 19:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D1C3991ED
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Jun 2021 19:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbhFBRqJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Jun 2021 13:46:09 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46752 "EHLO
+        id S230009AbhFBRvK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Jun 2021 13:51:10 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47650 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhFBRqI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Jun 2021 13:46:08 -0400
+        with ESMTP id S229970AbhFBRvJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Jun 2021 13:51:09 -0400
 Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1CFF821957;
-        Wed,  2 Jun 2021 17:44:24 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id A8E10219CD;
+        Wed,  2 Jun 2021 17:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622655864;
+        t=1622656165;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/n9OER48RI9YR9HlRjV1SeBrQ5LmQ5RKcAZjMG+PhTc=;
-        b=AC/4U7hPBvg1WCbPddZ3sDVPlMRC31tVmD7OY27B4/KLW4nfY8MDdJdbfNHpdDylw7Q+lc
-        4W6VhnsWCu9JHSwvUGAS+0zx5f3A9NaaOwcc4qoz5xTM3SVPsrwRN6eI/3kaJQTFLn6Hv2
-        bM+DO96aZ4ZdnE1o3vxm/NKeqsXFs2k=
+        bh=PdZRwuiC3MXgcKNePosjh3oOK9j7G1SQylokS6ipO1I=;
+        b=GXGjs+c61NwK+kL5x5E8K6uXMV+h5LRtIkoXfYAPPW0cygVxdO12WsoDDUJJMwXLPt9O/r
+        l0kE0WAdFvXzMm6rqWknGtczyp4+AHmg90zL458RbuJK+cjxAPZToYcO6Lgvr6EuXPqUO7
+        8UsdoeMkqQRncZfFW1uHO7CMxmrf0G0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622655864;
+        s=susede2_ed25519; t=1622656165;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/n9OER48RI9YR9HlRjV1SeBrQ5LmQ5RKcAZjMG+PhTc=;
-        b=6BHJ/9/Cwv+nC6TgVT7RKLv1+xzceK/VlemFW0K0ukAu/lS8Pd375lqbSv1P8SyDBPaXGS
-        hFvvsTCnX2M27MDg==
+        bh=PdZRwuiC3MXgcKNePosjh3oOK9j7G1SQylokS6ipO1I=;
+        b=3uSqZ7sxGLb4i1eHkDjLFlHRuUJgOAIeKjDeaflSDHBGnghBDbgF2BzTmmwNPtPGe+8aY9
+        2RuPryngrIhlMqBw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 15BA7A3B81;
-        Wed,  2 Jun 2021 17:44:24 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id A2D25A3B8A;
+        Wed,  2 Jun 2021 17:49:25 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 46EB2DA734; Wed,  2 Jun 2021 18:25:55 +0200 (CEST)
-Date:   Wed, 2 Jun 2021 18:25:55 +0200
+        id 3507ADA880; Wed,  2 Jun 2021 19:10:11 +0200 (CEST)
+Date:   Wed, 2 Jun 2021 19:10:11 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 22/30] btrfs: fix wild subpage writeback which does
- not have ordered extent.
-Message-ID: <20210602162555.GO31483@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v4 29/30] btrfs: fix a subpage relocation data corruption
+Message-ID: <20210602171011.GQ31483@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+        linux-btrfs@vger.kernel.org, Ritesh Harjani <riteshh@linux.ibm.com>
 References: <20210531085106.259490-1-wqu@suse.com>
- <20210531085106.259490-23-wqu@suse.com>
+ <20210531085106.259490-30-wqu@suse.com>
+ <ae84347a-12f5-3513-6a46-5c34dfdc4062@suse.com>
+ <d8f635f9-7d85-5c18-6436-ec3d3773ee9a@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210531085106.259490-23-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d8f635f9-7d85-5c18-6436-ec3d3773ee9a@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 31, 2021 at 04:50:58PM +0800, Qu Wenruo wrote:
-> [BUG]
-> When running fsstress with subpage RW support, there are random
-> BUG_ON()s triggered with the following trace:
+On Tue, Jun 01, 2021 at 09:07:46AM +0800, Qu Wenruo wrote:
 > 
->  kernel BUG at fs/btrfs/file-item.c:667!
->  Internal error: Oops - BUG: 0 [#1] SMP
->  CPU: 1 PID: 3486 Comm: kworker/u13:2 Tainted: G        WC O      5.11.0-rc4-custom+ #43
->  Hardware name: Radxa ROCK Pi 4B (DT)
->  Workqueue: btrfs-worker-high btrfs_work_helper [btrfs]
->  pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
->  pc : btrfs_csum_one_bio+0x420/0x4e0 [btrfs]
->  lr : btrfs_csum_one_bio+0x400/0x4e0 [btrfs]
->  Call trace:
->   btrfs_csum_one_bio+0x420/0x4e0 [btrfs]
->   btrfs_submit_bio_start+0x20/0x30 [btrfs]
->   run_one_async_start+0x28/0x44 [btrfs]
->   btrfs_work_helper+0x128/0x1b4 [btrfs]
->   process_one_work+0x22c/0x430
->   worker_thread+0x70/0x3a0
->   kthread+0x13c/0x140
->   ret_from_fork+0x10/0x30
 > 
-> [CAUSE]
-> Above BUG_ON() means there are some bio range which doesn't have ordered
-> extent, which indeed is worthy a BUG_ON().
+> On 2021/5/31 下午6:26, Qu Wenruo wrote:
+> > 
+> > 
+> > On 2021/5/31 下午4:51, Qu Wenruo wrote:
+> >> [BUG]
+> >> When using the following script, btrfs will report data corruption after
+> >> one data balance with subpage support:
+> >>
+> >>    mkfs.btrfs -f -s 4k $dev
+> >>    mount $dev -o nospace_cache $mnt
+> >>    $fsstress -w -n 8 -s 1620948986 -d $mnt/ -v > /tmp/fsstress
+> >>    sync
+> >>    btrfs balance start -d $mnt
+> >>    btrfs scrub start -B $mnt
+> >>
+> >> Similar problem can be easily observed in btrfs/028 test case, there
+> >> will be tons of balance failure with -EIO.
+> >>
+> >> [CAUSE]
+> >> Above fsstress will result the following data extents layout in extent
+> >> tree:
+> >>          item 10 key (13631488 EXTENT_ITEM 98304) itemoff 15889 
+> >> itemsize 82
+> >>                  refs 2 gen 7 flags DATA
+> >>                  extent data backref root FS_TREE objectid 259 offset 
+> >> 1339392 count 1
+> >>                  extent data backref root FS_TREE objectid 259 offset 
+> >> 647168 count 1
+> >>          item 11 key (13631488 BLOCK_GROUP_ITEM 8388608) itemoff 15865 
+> >> itemsize 24
+> >>                  block group used 102400 chunk_objectid 256 flags DATA
+> >>          item 12 key (13733888 EXTENT_ITEM 4096) itemoff 15812 
+> >> itemsize 53
+> >>                  refs 1 gen 7 flags DATA
+> >>                  extent data backref root FS_TREE objectid 259 offset 
+> >> 729088 count 1
+> >>
+> >> Then when creating the data reloc inode, the data reloc inode will look
+> >> like this:
+> >>
+> >>     0    32K    64K    96K 100K    104K
+> >>     |<------ Extent A ----->|   |<- Ext B ->|
+> >>
+> >> Then when we first try to relocate extent A, we setup the data reloc
+> >> inode with iszie 96K, then read both page [0, 64K) and page [64K, 128K).
+> >>
+> >> For page 64K, since the isize is just 96K, we fill range [96K, 128K)
+> >> with 0 and set it uptodate.
+> >>
+> >> Then when we come to extent B, we update isize to 104K, then try to read
+> >> page [64K, 128K).
+> >> Then we find the page is already uptodate, so we skip the read.
+> >> But range [96K, 128K) is filled with 0, not the real data.
+> >>
+> >> Then we writeback the data reloc inode to disk, with 0 filling range
+> >> [96K, 128K), corrupting the content of extent B.
+> >>
+> >> The behavior is caused by the fact that we still do full page read for
+> >> subpage case.
+> >>
+> >> The bug won't really happen for regular sectorsize, as one page only
+> >> contains one sector.
+> >>
+> >> [FIX]
+> >> This patch will fix the problem by invalidating range [isize, PAGE_END]
+> >> in prealloc_file_extent_cluster().
+> > 
+> > The fix is enough to fix the data corruption, but it leaves a very rare 
+> > deadlock.
+> > 
+> > Above invalidating is in fact not safe, since we're not doing a proper 
+> > btrfs_invalidatepage().
+> > 
+> > The biggest problem here is, we can leave the page half dirty, and half 
+> > out-of-date.
+> > 
+> > Then later btrfs_readpage() can trigger a deadlock like this:
+> > btrfs_readpage()
+> > |  We already have the page locked.
+> > |
+> > |- btrfs_lock_and_flush_ordered_range()
+> >     |- btrfs_start_ordered_extent()
+> >        |- extent_write_cache_pages()
+> >           |- pagevec_lookup_range_tag()
+> >           |- lock_page()
+> >              We try to lock a page which is already locked by ourselves.
+> > 
+> > This can only happen for subpage case, and normally it should never 
+> > happen for regular subpage opeartions.
+> > As we either read the full the page, then update part of the page to 
+> > dirty, dirty the full page without reading it.
+> > 
+> > This shortcut in relocation code breaks the assumption, and could lead 
+> > to above deadlock.
+> > 
+> > Although I still don't like to call btrfs_invalidatepage(), here we can 
+> > workaround the half-dirty-half-out-of-date problem by just writing the 
+> > page back to disk.
+> > 
+> > This will clear the page dirty bits, and allow later clear_uptodate() 
+> > call to be safe.
+> > 
+> > I'll update the patchset in github repo first, and hope to merge it with 
+> > other feedback into next update.
+> > 
+> > Currently the test looks very promising, as the Power8 VM has survived 
+> > over 100 loops without crashing.
 > 
-> Unlike regular sectorsize == PAGE_SIZE case, in subpage we have extra
-> subpage dirty bitmap to record which range is dirty and should be
-> written back.
+> The extra diff will look like this before invalidating extent and page 
+> status.
 > 
-> This means, if we submit bio for a subpage range, we do not only need to
-> clear page dirty, but also need to clear subpage dirty bits.
-> 
-> In __extent_writepage_io(), we will call btrfs_page_clear_dirty() for
-> any range we submit a bio.
-> 
-> But there is loophole, if we hit a range which is beyond isize, we just
-> call btrfs_writepage_endio_finish_ordered() to finish the ordered io,
-> then break out, without clearing the subpage dirty.
-> 
-> This means, if we hit above branch, the subpage dirty bits are still
-> there, if other range of the page get dirtied and we need to writeback
-> that page again, we will submit bio for the old range, leaving a wild
-> bio range which doesn't have ordered extent.
-> 
-> [FIX]
-> Fix it by always calling btrfs_page_clear_dirty() in
-> __extent_writepage_io().
-> 
-> Also to avoid such problem from happening again, add a new assert,
-> btrfs_page_assert_not_dirty(), to make sure both page dirty and subpage
-> dirty bits are cleared before exiting __extent_writepage_io().
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 17 +++++++++++++++++
->  fs/btrfs/subpage.c   | 16 ++++++++++++++++
->  fs/btrfs/subpage.h   |  7 +++++++
->  3 files changed, 40 insertions(+)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 1909979d41de..631c4f3e9cea 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3905,6 +3905,16 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
->  		if (cur >= i_size) {
->  			btrfs_writepage_endio_finish_ordered(inode, page, cur,
->  							     end, 1);
-> +			/*
-> +			 * This range is beyond isize, thus we don't need to
-> +			 * bother writing back.
-> +			 * But we still need to clear the dirty subpage bit, or
-> +			 * the next time the page get dirtied, we will try to
-> +			 * writeback the sectors with subpage diryt bits,
-> +			 * causing writeback without ordered extent.
-> +			 */
-> +			btrfs_page_clear_dirty(fs_info, page, cur,
-> +					       end + 1 - cur);
->  			break;
->  		}
->  
-> @@ -3955,6 +3965,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
->  			else
->  				btrfs_writepage_endio_finish_ordered(inode,
->  						page, cur, cur + iosize - 1, 1);
-> +			btrfs_page_clear_dirty(fs_info, page, cur, iosize);
->  			cur += iosize;
->  			continue;
->  		}
-> @@ -3990,6 +4001,12 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
->  		cur += iosize;
->  		nr++;
->  	}
-> +	/*
-> +	 * If we finishes without problem, we should not only clear page dirty,
-> +	 * but also emptied subpage dirty bits
-> +	 */
-> +	if (!ret)
-> +		btrfs_page_assert_not_dirty(fs_info, page);
->  	*nr_ret = nr;
->  	return ret;
->  }
-> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-> index 516e0b3f2ed9..696485ab68a2 100644
-> --- a/fs/btrfs/subpage.c
-> +++ b/fs/btrfs/subpage.c
-> @@ -548,3 +548,19 @@ IMPLEMENT_BTRFS_PAGE_OPS(writeback, set_page_writeback, end_page_writeback,
->  			 PageWriteback);
->  IMPLEMENT_BTRFS_PAGE_OPS(ordered, SetPageOrdered, ClearPageOrdered,
->  			 PageOrdered);
+> +               /*
+> +                * Btrfs subpage can't handle page with DIRTY but without
+> +                * UPTODATE bit as it can lead to the following deadlock:
+> +                * btrfs_readpage()
+> +                * | Page already *locked*
+> +                * |- btrfs_lock_and_flush_ordered_range()
+> +                *    |- btrfs_start_ordered_extent()
+> +                *       |- extent_write_cache_pages()
+> +                *          |- lock_page()
+> +                *             We try to lock the page we already hold.
+> +                *
+> +                * Here we just writeback the whole data reloc inode, so 
+> that
+> +                * we will be ensured to have no dirty range in the 
+> page, and
+> +                * are safe to clear the uptodate bits.
+> +                *
+> +                * This shouldn't cause too much overhead, as we need to 
+> write
+> +                * the data back anyway.
+> +                */
+> +               ret = filemap_write_and_wait(mapping);
+> +               if (ret < 0)
+> +                       return ret;
 > +
-> +void btrfs_page_assert_not_dirty(const struct btrfs_fs_info *fs_info,
-> +				 struct page *page)
-> +{
-> +	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
-> +
-> +	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
-> +		return;
-> +
-> +	ASSERT(!PageDirty(page));
-> +	if (fs_info->sectorsize == PAGE_SIZE)
-> +		return;
-> +
-> +	ASSERT(PagePrivate(page) && page->private);
-> +	ASSERT(subpage->dirty_bitmap == 0);
-> +}
-> diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-> index 3419b152c00f..7188e9d2fbea 100644
-> --- a/fs/btrfs/subpage.h
-> +++ b/fs/btrfs/subpage.h
-> @@ -119,4 +119,11 @@ DECLARE_BTRFS_SUBPAGE_OPS(ordered);
->  bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
->  		struct page *page, u64 start, u32 len);
->  
-> +/*
-> + * Extra assert to make sure not only the page dirty bit is cleared, but also
-> + * subpage dirty bit is cleared.
-> + */
+> 
+> One special reason for using filemap_write_and_wait() for the whole data 
+> reloc inode is, we can't just write back one page, as for data reloc 
+> inode we have to writeback the whole cluster boundary, to meet the 
+> extent size.
+> 
+> So far it survives the full night tests, and the overhead should be minimal.
+> As we have to writeback the whole data reloc inode anyway.
+> And we are here because either previous cluster is not continuous with 
+> current one, or we have reached the cluster size limit.
+> 
+> Either way, writing back the whole inode would bring no extra overhead.
 
-I've moved the comment to the function definition, as it's next to the
-code.
-
-> +void btrfs_page_assert_not_dirty(const struct btrfs_fs_info *fs_info,
-> +				 struct page *page);
-> +
->  #endif
-> -- 
-> 2.31.1
+I've updated the patch from github. I've also updated isize to i_size so
+it's more like the struct inode->i_size.
