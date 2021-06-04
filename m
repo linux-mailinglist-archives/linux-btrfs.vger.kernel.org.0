@@ -2,183 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3B439C11B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 22:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02DF39C38B
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Jun 2021 00:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhFDUSU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Jun 2021 16:18:20 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:34354 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbhFDUSU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 16:18:20 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id D80C1A8CE2E; Fri,  4 Jun 2021 16:16:31 -0400 (EDT)
-Date:   Fri, 4 Jun 2021 16:16:31 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Tom Yan <tom.ty89@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, bug-coreutils@gnu.org
-Subject: Re: reflink copying does not check/set No_COW attribute and fail
-Message-ID: <20210604201630.GH11733@hungrycats.org>
-References: <CAGnHSEkr0N_hnxvm89prL3vObYgvVoPFHLL4Z7wnQCSem6hB_A@mail.gmail.com>
- <CAGnHSEkeu1hW-7YQO0HrYK__aY-eMdxfgSbcOTvnMu3jUcu4iw@mail.gmail.com>
+        id S229933AbhFDWkW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Jun 2021 18:40:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38336 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229746AbhFDWkW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 18:40:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154MYvOh176152;
+        Fri, 4 Jun 2021 22:38:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : cc : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=ggZDG//OxU02n1Ey3SJ9mw8clmxR3wTaMcbYyutDkjM=;
+ b=MVYjuiAjwGE0TMw4vBf2zGeGfoBLS7FFQJvlqj6Ips+WXu81p+SmPi4mYoBAlxNVKF8b
+ ogsg5EfDu6sC4/pUBOHcca2AVTCbQCy9U9NnQpsXt580ug1gHgyiJ/t+MGUaYUfo3lc6
+ 0luqVe3d6C1ZH4Zav24jdUyFYq4y7yD+1g6eGjE+ZRohem2InF9RegzNG0GZd1fYHSyv
+ Hpv9Tey9Z/sb0zqifx0vuyc+7mCJYYcl9lzDkhwDz3kT3wDwQs2dE/eqPzrDckqpW24Y
+ 2GCBqEL+Wzjd6UUSZIF59GxoOEGGI2S9/iVutTFl+8Raoinl1ClRO0XUmPHw97uDCRWn Qg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 38ue8ppy3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 22:38:29 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154MYdQW140186;
+        Fri, 4 Jun 2021 22:38:28 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+        by aserp3030.oracle.com with ESMTP id 38yuym9t7x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 22:38:28 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ahAmwFQdxyoaGjEUBLpOb+qnJ4mcCcE4WmKcjV43BHKQfTC0PZZJaXih9CkqDtO6Dfmy0eQL7AOjIPud56YpSR+Ozlq/AK1XEH+oMAYcQVI3pe5iJlCk2qcul9DVdENWJ4D5aYvV/0vTyoWAI20kGYkgXJ428gPjjTdPxodkryoHtBZQpgzGzwd3L+s7rIS/h0a+bapr3PHmnY/2Xn+KsT7CJ0QX+g0f5p5pPlDodp1gq/fimQbf0eMewLjahA6mLsNjibADFdFxQU6jpDYQtVT8XcZ5mRR99JrqP86LylGQJU7H5xnVIpttXdfsMau52OOCs2LopqdFYi1xmsrcKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ggZDG//OxU02n1Ey3SJ9mw8clmxR3wTaMcbYyutDkjM=;
+ b=g/p6LzGxb9s809+PSzMRkzKUSr0HhgsuohNK6U6hjSlhpxNQgXgLlZwGtW5SCcoxP4qrF9W9B7baMeCw4fAt6iyYUW9XyWCGM/8I3f/Y4yySYpMMUEyz8AgKv+PnulmxAGm8xCU3TH6/Y+eAf+UrVuKgDr1Csj1AAQnd/6eVaj2LRyvNy9vEJsRm5nXvtqQJ/6ABYL2uZFyhOTFi6nx8er/dyv5W9Fa+clIaRhYBMTJH4K0c1v7SMYiBtuJjgVQVgXnc3T0z1bvVa6jkB/Vccvhu3kKzwvRj15qobCvPZrkB7QMvVJlAVJ9NwuZriY6r7w22G9+dj/7MhEujt//IXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ggZDG//OxU02n1Ey3SJ9mw8clmxR3wTaMcbYyutDkjM=;
+ b=VLrHVKRC6a7OZSxcmnvTPcZh8STe1pywn/wAIyGgYeAOnFVadPD5M0+3gc9xt9O9HgMq79T6Olie+Tjh80D0OoW8gYQFbn0L525SVSqocNzOT2YChf5M5bwddUNQovrUMLFhMeqWPT/uNtRgVcda/FIvBR2F1OMOywfuJLS7Cnc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB4016.namprd10.prod.outlook.com (2603:10b6:208:180::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.23; Fri, 4 Jun
+ 2021 22:38:26 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::992c:4b34:d95:def8]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::992c:4b34:d95:def8%7]) with mapi id 15.20.4195.025; Fri, 4 Jun 2021
+ 22:38:26 +0000
+Subject: Re: [PATCH] btrfs: sysfs: export dev stats in devinfo directory
+To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>
+References: <20210604132058.11334-1-dsterba@suse.com>
+ <5aeca0cd-c6b2-939a-6f83-7ea5722076dc@oracle.com>
+ <20210604142105.GD31483@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Message-ID: <77708664-a7db-50e0-aa44-6cbb3fb90070@oracle.com>
+Date:   Sat, 5 Jun 2021 06:38:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
+In-Reply-To: <20210604142105.GD31483@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2406:3003:2006:2288:a89c:ceb3:46df:b01b]
+X-ClientProxiedBy: SG2PR06CA0248.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::32) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGnHSEkeu1hW-7YQO0HrYK__aY-eMdxfgSbcOTvnMu3jUcu4iw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2406:3003:2006:2288:a89c:ceb3:46df:b01b] (2406:3003:2006:2288:a89c:ceb3:46df:b01b) by SG2PR06CA0248.apcprd06.prod.outlook.com (2603:1096:4:ac::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.22 via Frontend Transport; Fri, 4 Jun 2021 22:38:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3663668a-d6f4-4f17-2a5e-08d927a977a5
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4016:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4016A4F0EB0C71700459FAF1E53B9@MN2PR10MB4016.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZHTCBSVeH6XgsTj7XDAoxq/PWgTVwyi/7RYu37SIKjTirjI+qyToIZpRZmddW/Josz29uSusB2fLvZQtOnZORR4e5cn+F64Wa4TWaR5i5KC56g653Jw2Dc8+VQwbdI9/MCBvrISrgpmyp3rB6Qs7icAkweWwZ6rkZUKA/diF0kJY7Wsvlh/gBDWNgCH682ZL2EiXZhf0x1LJ+mT86sDkUwLPrslRQMspgfOiRaNLN52kOKtxtjZTEJZrKpXsW4X+pcyrxt7YSoloS0O0dazboT8tXaMMGWSNPJs5CUl56NF4bALDGwwqV3992ylc6LftPEK4CMj06Oog1LYheWeA2iYiTbBCuy9i+5LTNbW2eeMfQoqBUyt1Piap74pm7l2wb4JuUP3JDLXSjsOjxqAcKep269mOiwB/KAPpWsEyR4QHMUcrbXGDNGaps/ycaHxqUJQ9qTPA/Cexg4UMlEYvy2kQibLJYgsQWXCRB90RAaGMuVDh+JGmHEXj53qH6RWP826VIEP5CB9H7znNDkJ1482W7TKQob5hNBbG382zj+qzahKd2xoRU3jy9uWsXVLmFbeaW4uJRAXd3kmQ9UnAtFCQdPT0mCLvNQPEP+AIwxXq010wzUhMnC+/3ZTnOCLpqR03HK6xd1xPdgnOd/5zgHT9lEatn8d9NOx3n9q0POm++U8LUMSIChbkzC/SXLWZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(39850400004)(376002)(396003)(6916009)(2906002)(36756003)(2616005)(44832011)(6486002)(5660300002)(86362001)(53546011)(38100700002)(31686004)(316002)(16526019)(31696002)(186003)(66556008)(66476007)(66946007)(6666004)(8936002)(8676002)(478600001)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bk5pVUthUDQ0NGU1TFhyUXdxSDlydGhjMGJzMnNGaFpOcWU0MHQ2QUJ5ZGp1?=
+ =?utf-8?B?bEI5b3UrQktZaGpsRnJpalVVYTBtUzNpNGhrTU9mTHlacE9SQkFPV20rWW9s?=
+ =?utf-8?B?VmpscStTM29mMTk0TzFuNzZmQVRsRG13SFVtR3VsQUtGM3BoQmxVMlc0NjFP?=
+ =?utf-8?B?c3FDMlU2eWc4TnBmVTBNVXNWNVloNU9udnhNa0pMTTVkZnVyQmxYaWNxUmZT?=
+ =?utf-8?B?ejg5N2NNUWFYeGhjUWtsb1dBRlJ4SkZTUElmMktkb1ZHNXZnTzRvL2NJN1Yx?=
+ =?utf-8?B?Q2w1TlFYZUdJR1RRekxYdFFDSkNSZ1BrL2dyZTlkOThlMHU3eTRIUHBWRTk3?=
+ =?utf-8?B?VGNTUDlpdHkrKzV2Nmg0UEtGNVU5OU1NekxkVTRhelNoMitycG1PWlBabjVC?=
+ =?utf-8?B?T3FqQXNrMzluakRUczRUbVJCTk95WkZvRDZMOHU0d3owQmJUR21xOFpVK3NC?=
+ =?utf-8?B?VkZ3OEFRLzFoM0RWaWNWVEpmSUZrR1FjZUovYXlqQ0xVT0JkUTl3V1ZucmI0?=
+ =?utf-8?B?MTVQUXl5K2hjNnM4N1VTbjNmSWZTVXp4dEZrQnoxNXM0LzMvQVhwSmJqaTV4?=
+ =?utf-8?B?Z3VSUG9QWHhvQ1dZekNnZ24zMWRMd0RlUnZlcDdlUkxVNGErUFNGTG9wOTlO?=
+ =?utf-8?B?WHpVNWdlQ2xxWkhrVG5LMlhMU0RObDBBVjBNZUlKTWdob29uekpybTB4Ukhx?=
+ =?utf-8?B?SCtxemZubkVab2ZnQ0psZEp5VHBjWUs4ZGEybmNPTW5PTy9qWFcrOVFLK0Yx?=
+ =?utf-8?B?bTB6ZlcrTDdNQ3pUYVh4Tndpb0Y5K3VFRUZZMllUbmRreUZRQjBjNnI0ODIz?=
+ =?utf-8?B?V1pOZ21DL1ltYjd0RXJYcUsvdEdnTE9FZ3RVRTlxZjRUMmpVRythU0NZZTFF?=
+ =?utf-8?B?ZTJ1M3Z0Nm9yaENFSHZYUkhScXdBa1lXTCswdGtlUlZBSUI3NWV5RHhOdHJ6?=
+ =?utf-8?B?eUpPakUwaUpNV3RXR0tXZ3BZaUo0eWE3d3Q5QWpCb2UwdHd5ZVFRY3NlVS9V?=
+ =?utf-8?B?VG1NK01XOUFjQTdTblFQZXdpcjNGeU5EWk8wOGNoNk1hTzZXWit5RXQ4YmFM?=
+ =?utf-8?B?Qkl6NnNLWlpxNGtwckl2aXNieFZUM1VhYjY5VzJPYUlwaGMrU0lpendaUDJt?=
+ =?utf-8?B?djlqR1E5d3BVRzlweFBSUGJqajJvUW5icTllWjJSQ1JoL3dUakJtak53RnBo?=
+ =?utf-8?B?QUdjdEJQNzJhbGxwaE01RDZYWHFTZ2IwMktDOUwyZnJZSWU2SFoybmxJam5Q?=
+ =?utf-8?B?c2ZKV1dTWlREZjlKVEVlM0VPQitHKzJIVmE2cmpLdTFFTUxrWU5YRTN3ODlP?=
+ =?utf-8?B?M09NTEhWUEZpaEs4d3BYbFVvOGh2Qm1OYVI0bVdSSzlCS0ZYVjBld2ZsaURT?=
+ =?utf-8?B?RWRRNlUrdW92ektXbXFpdk9adXp0UGlYWUZmM25LcXNQaE9lWlBJWElCVTVk?=
+ =?utf-8?B?RW1ZNFdpbm0ycmhpYkJJbmMxSm1DdVhxZ3VsMDNUaHQ4Y0F4NW5pTjVwK01W?=
+ =?utf-8?B?TzkrVmlsNkdrMDVlRzJ0a2dQRWR2NnRHRWprN1RUSEYwdVRCU1hPSmRHaWs3?=
+ =?utf-8?B?bzZkV0pvZy9uUDJwSnY0U3h3U2MrYUxQR3psNkVTSDBieU9qSGdWM1RNcWEz?=
+ =?utf-8?B?Q0dpalNBenh3MXF3bFFnNlFRdElSWHRFUVNBWmNEVEM3dDgxc01VU0tBMlpK?=
+ =?utf-8?B?R0lTeE9xTnRFTm9VZGt1VHU1MkIxUm55NVFydkJkSERJZFBxcjNjeDJ0MzM4?=
+ =?utf-8?B?RW1uNGlmazBhcW9WWUoxeTFFbmRFYjdNblBzYysvZDRkTzA4MWF1Rm9id2hV?=
+ =?utf-8?B?c3lwSmQwNThiNmFtdEtVNVJpcDVTL1VydVRZRWpYS3lncytWcWs4REo2Mk1P?=
+ =?utf-8?Q?wR8RnJhjvtUg5?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3663668a-d6f4-4f17-2a5e-08d927a977a5
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jun 2021 22:38:26.3349
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JzPkoym9UDq6sqYtDgSJMLNJ5HnX9Tyb1KQyomOApYYKbAswXnxJKtyXvWQRSUlHORwToHWToqON3Hrc+GZ9Ow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4016
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10005 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106040155
+X-Proofpoint-GUID: ioWf-sgQXrwCwPYq-hhcVFRxAcOmkipi
+X-Proofpoint-ORIG-GUID: ioWf-sgQXrwCwPYq-hhcVFRxAcOmkipi
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10005 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 phishscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106040155
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 10:37:35PM +0800, Tom Yan wrote:
-> Also cc'ing bug-coreutils@gnu.org.
+On 04/06/2021 22:21, David Sterba wrote:
+> On Fri, Jun 04, 2021 at 09:41:09PM +0800, Anand Jain wrote:
+>> On 4/6/21 9:20 pm, David Sterba wrote:
+>>> The device stats can be read by ioctl, wrapped by command 'btrfs device
+>>> stats'. Provide another source where to read the information in
+>>> /sys/fs/btrfs/FSID/devinfo/DEVID/stats .
+>>
+>>    The planned stat here is errors stat.
+>>    So why not rename this to error_stats?
 > 
-> On Fri, 4 Jun 2021 at 22:33, Tom Yan <tom.ty89@gmail.com> wrote:
-> >
-> > Hi all,
-> >
-> > I've just bumped into a problem that I am not sure what the expected
-> > behavior should be, but there seems to be something flawed.
-> >
-> > Say I have a file that was created with the No_COW attributed
-> > (inherited from the directory / subvolume / mount option). Then if I
-> > try to do a reflink copy, the copying will fail with "Invalid
-> > argument" if the copy has no one to inherit the No_COW attribute from.
+> I think it's commonly called device stats, dev stats, so when it's in
+> 'devinfo' it's like it's the 'stats' for the device.
 
-Correct.  nodatacow implies nodatasum, and you cannot reflink an extent
-from a nodatasum inode into a datasum inode.
 
-The result of allowing this would be a file that has some extents
-that have csums, and some that do not.  Making this work would make
-reading from such a file worse (i.e. make it slower, or fail to detect
-corruption in metadata).  It's possible to solve some of those problems
-(or at least contain them in inodes that are known to have mixed csum
-and non-csum data), but first someone would have to make the case that
-this is worth the effort to support.
+> We don't have other
+> stats, like regarding io but in that case it would make sense to
+> distnguish the names.
 
-> > For example:
-> > [tom@archlinux mnt]$ sudo btrfs subvol list .
-> > ID 256 gen 11 top level 5 path a
-> > ID 257 gen 9 top level 5 path b
-> > [tom@archlinux mnt]$ lsattr
-> > ---------------------- ./a
-> > ---------------C------ ./b
-> > [tom@archlinux mnt]$ lsattr b/
-> > ---------------C------ b/test
-> > [tom@archlinux mnt]$ du -h b/test
-> > 512M    b/test
-> > [tom@archlinux mnt]$ lsattr a/
-> > [tom@archlinux mnt]$ cp --reflink=always b/test a/
-> > cp: failed to clone 'a/test' from 'b/test': Invalid argument
-> > [tom@archlinux mnt]$ lsattr a/
-> > ---------------------- a/test
-> > [tom@archlinux mnt]$ du a/test
-> > 0    a/test
-> > [tom@archlinux mnt]$ du --apparent-size a/test
-> > 0    a/test
-> > [tom@archlinux mnt]$ rm a/test
-> > [tom@archlinux mnt]$ sudo chattr +C a/
-> > [tom@archlinux mnt]$ cp --reflink=always b/test a/
-> > [tom@archlinux mnt]$ lsattr a/
-> > ---------------C------ a/test
-> > [tom@archlinux mnt]$ cmp b/test a/test
-> > [tom@archlinux mnt]$
-> >
-> > I'm not entirely sure if a reflink copy is supposed to work for a
-> > source file that was created with No_COW, but apparently it is. 
+My read_policy work (which I suppose is next on your list for review) 
+made sense that publishing the io-stat information locally from btrfs is 
+a good idea. So that it provides clarity if the IO is skewed to a device 
+or balanced. Which is even more essential in the case of mixed device 
+types. For now IMHO,  /sys/fs/btrfs/FSID/devinfo/DEVID/error_stats
+is harmless.
 
-Snapshots are also allowed for nodatacow files.  The extents that are
-shared become implicitly datacow until they are not shared any more.
-
-Snapshots are deferred reflink copies, so it would be difficult to
-allow one and not the other.  Disallowing both seems overly restrictive
-(e.g. with such a restriction, it would not be possible to use 'btrfs
-send' or make a snapshot on a subvol that contains any nodatacow file).
-
-btrfs did disallow both operations for swap files, so it could be possible
-to disallow both reflinks and snapshots for nodatacow files, but AFAIK
-nobody wants that (some people even want the swapfile restrictions to
-go away someday).
-
-> > The
-> > problem is just that the reflink copy also needs to have the attribute
-> > set, yet it cannot inherit from the source automatically.
-
-reflink can only reflink copy from one nodatasum file to another nodatasum
-file, or from one datasum file to another datasum file.
-
-An empty inode can be changed from datacow to nodatacow (or vice versa)
-using the fsattr ioctl, which simultaneously changes the file from
-datasum to nodatasum if the filesystem was not mounted with the nodatasum
-mount option.
-
-There is a possible kernel enhancement here:  when an empty inode is the
-dst of a reflink, automatically change the reflink dst inode's nodatasum
-flag to match the reflink src inode's nodatasum flag.  If the dst inode
-is not empty and the inode datasum flags do not match, then reject the
-reflink with EINVAL as before.
-
-It's not clear whether this should apply only to nodatasum or also to
-nodatacow.  reflink doesn't need src and dst agreement on nodatacow,
-so the dst inode could be a nodatasum+datacow file.  Unfortunately all
-the userspace tools including coreutils can only see the nodatacow
-inode bit, not the nodatasum bit, so the lack of csums on the dst file
-would be invisible.  The kernel cannot know the user's intent from the
-available information.
-
-It's not clear that we want the kernel to be implicitly changing
-inode attribute bits like this--especially bits that disable integrity
-features like nodatasum.  There is precedent for changing fsattrs with
-the no-compress inode flag, but that flag doesn't disable csums, and
-this one would.
-
-One could also make the opposite case:  it should always be an error to
-do anything that would put data in a datasum file without csums, the
-existing behavior is correct, and should not be changed.  The problem
-with this argument is that users can't see the datasum inode bits,
-so it's not clear that the EINVAL is a data protection mechanism.
-
-> > I wonder if this is a kernel-side problem or something that coreutils
-> > missed? It also seems wrong that when it fails there will be an empty
-> > destination file created.
-
-Normally coreutils will fall back to simple copy if --reflink=auto
-is used.  --reflink=always is the user's explicit request for "reflink
-or nothing, please."  The user correctly got nothing, as requested.
-
-On other filesystems, reflink on a nodatacow file might make a simple
-copy in the kernel--in which case you are no better off than if you had
-used --reflink=auto.
-
-coreutils could propagate the source inode nodatacow fsattribute to
-the destination inode if it intends to use reflink to copy the data.
-That would be the userspace equivalent of the kernel enhancement I
-suggested above.  It would probably match user expectations better--no
-hidden surprises for non-coreutils use cases, and all the affected inode
-attribute bits are necessarily visible in userspace.
-
-fsattr propagation could be quite complicated for coreutils to implement
-correctly in general, as some fsattrs should not be propagated this way,
-and other filesystems may have different restrictions.  Some fsattrs must
-be set before the data is written (e.g. -c for compression), others must
-be set after the data is written (e.g. -i for immutable), and some are
-a matter of user intent (e.g. should a simple copy be compressed if the
-source is not?  Depends on the intended use of the copy).
-
-On other filesystems this userspace behavior might trigger the opposite
-of the intended kernel behavior, causing reflink to always fall back to
-simple copy because the dst inode's nodatacow attribute is set.
-
-Ideally btrfs will not force coreutils to do one thing on btrfs and the
-opposite thing on other filesystems, so it might be worthwhile to hack
-around this in the kernel as proposed above.  There is precedent for
-that--btrfs falls back to simple copy in reflinks of inline extents,
-more or less for the sole purpose of making cp --reflink=always not fail
-so randomly.
-
-> > Kernel version: Linux archlinux 5.12.8-arch1-1 #1 SMP PREEMPT Fri, 28
-> > May 2021 15:10:20 +0000 x86_64 GNU/Linux
-> > Coreutils version: 8.32
-> >
-> > Regards,
-> > Tom
+Thanks, Anand
