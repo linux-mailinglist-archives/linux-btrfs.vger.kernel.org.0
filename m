@@ -2,85 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D169839B8FD
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 14:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F04639B8FF
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 14:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhFDM2M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Jun 2021 08:28:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38258 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbhFDM2L (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 08:28:11 -0400
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 211A221A28;
-        Fri,  4 Jun 2021 12:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1622809584;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=68aSFdxQrCcgu3e4kaM9HdB6LJTQPLk85xJqiAjeVBA=;
-        b=MWGFWkeSccJO1/1UxpgHKkC/7uOz+MnNxZOE+SbnMuWTCNDmNPZqtNrUA4txUZTg2fUSzP
-        hvIUQy9kD60XHGmQKHq+1hbcJIvZrDC0jWkQMmc1bHIh9qdbrDS/ciTjDuS/JENnDIgD+o
-        IaYnJPn8m2DOkUvrVOER77e8hw9VYy8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1622809584;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=68aSFdxQrCcgu3e4kaM9HdB6LJTQPLk85xJqiAjeVBA=;
-        b=mMXZlvJTmrtOPACH4cc3gBjd1fUchWiCNxLHhu67egXaTrOBVVsVOCc/9U5XEvPknbjPvg
-        p3ilbM6K/xzufXAw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id EBE66A3B81;
-        Fri,  4 Jun 2021 12:26:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 85E78DB225; Fri,  4 Jun 2021 14:23:42 +0200 (CEST)
-Date:   Fri, 4 Jun 2021 14:23:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] btrfs: Remove total_data_size variable in
- btrfs_batch_insert_items()
-Message-ID: <20210604122342.GB31483@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nathan Chancellor <nathan@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210603174311.1008645-1-nathan@kernel.org>
+        id S229980AbhFDM2w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Jun 2021 08:28:52 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:60314 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhFDM2w (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 08:28:52 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154CK4a6110029;
+        Fri, 4 Jun 2021 12:26:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=MmQVQhpc2LW+01oKnlrqeKgKWISNYG6WYAbvrOjcVrg=;
+ b=uPKqKkcGYEL9l90z+9gr4seMprx2wHR8gt9md07bajQQo2r8zyxaKOdK/3rRO40VeXM6
+ cfZInJXF+HPDcKvwxNKIeNUiBjYrbsvWnJRqr6HY/mRHW3zR8X5XyT+0ttIB1klEDczQ
+ zzdeg1plQ39KTcFPd+3sHkWRKgs/48rFUzx1+0UjGxCvC5/2n3kec+lFFnUfF5BiEFsm
+ aaIQQ05abcdO1BhyeD6Q4htjIB7RoP/ZK5h1ETDMcg6IQpj1yqB3bpCJqPNftU1dU6JT
+ sVOXPAfxvdPuBmd6hJtpeJjyNi2pnINKHknRXrSppANJmhuB/qbLwIlneKVKlLld46yy +g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 38ub4cwvtd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 12:26:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 154CKl74155272;
+        Fri, 4 Jun 2021 12:26:57 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 38x1bew7qc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 04 Jun 2021 12:26:57 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 154CQuHd022710;
+        Fri, 4 Jun 2021 12:26:56 GMT
+Received: from localhost.localdomain (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 04 Jun 2021 05:26:55 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, g.btrfs@cobb.uk.net,
+        quwenruo.btrfs@gmx.com
+Subject: [PATCH] btrfs: support other sectorsizes in _scratch_mkfs_blocksized
+Date:   Fri,  4 Jun 2021 20:26:44 +0800
+Message-Id: <d27e3a324f986b5b52d11df7c7bdcde6744fad4b.1622807821.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210603174311.1008645-1-nathan@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106040097
+X-Proofpoint-GUID: 3nSnACmU3Cq_We8gSAUol8_VBP7NhkGJ
+X-Proofpoint-ORIG-GUID: 3nSnACmU3Cq_We8gSAUol8_VBP7NhkGJ
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10004 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106040097
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 10:43:11AM -0700, Nathan Chancellor wrote:
-> clang warns:
-> 
-> fs/btrfs/delayed-inode.c:684:6: warning: variable 'total_data_size' set
-> but not used [-Wunused-but-set-variable]
->         int total_data_size = 0, total_size = 0;
->             ^
-> 1 warning generated.
-> 
-> This variable's value has been unused since commit fc0d82e103c7 ("btrfs:
-> sink total_data parameter in setup_items_for_insert"). Eliminate it.
-> 
-> Fixes: fc0d82e103c7 ("btrfs: sink total_data parameter in setup_items_for_insert")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1391
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+When btrfs supports sectorsize != pagesize it can run these test cases
+now,
+generic/205 generic/206 generic/216 generic/217 generic/218 generic/220
+generic/222 generic/227 generic/229 generic/238
 
-Added to misc-next, thanks. I've removed the Fixes: tag, we've been
-using this is for patches that should be backported or otherwise point
-to a patch that causes a real bug.
+This change is backward compatible for kernels without non pagesize
+sectorsize support.
+
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+RFC->v1:
+  Fix path to the supported_sectorsizes path check if the file exists.
+  Grep the word.
+
+ common/rc | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/common/rc b/common/rc
+index 919028eff41c..baa994e33553 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1121,6 +1121,15 @@ _scratch_mkfs_blocksized()
+     fi
+ 
+     case $FSTYP in
++    btrfs)
++	test -f /sys/fs/btrfs/features/supported_sectorsizes || \
++		_notrun "Subpage sectorsize support is not found in $FSTYP"
++
++	grep -q \\b$blocksize\\b /sys/fs/btrfs/features/supported_sectorsizes || \
++		_notrun "$FSTYP does not support sectorsize=$blocksize yet"
++
++	_scratch_mkfs $MKFS_OPTIONS --sectorsize=$blocksize
++	;;
+     xfs)
+ 	_scratch_mkfs_xfs $MKFS_OPTIONS -b size=$blocksize
+ 	;;
+-- 
+2.18.4
+
