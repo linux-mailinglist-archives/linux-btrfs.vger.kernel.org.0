@@ -2,125 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3041D39B640
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 11:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56B639B75B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 12:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhFDJzv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Jun 2021 05:55:51 -0400
-Received: from mout.gmx.net ([212.227.17.22]:55985 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhFDJzv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Jun 2021 05:55:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1622800431;
-        bh=irXtl0CIzyUINKDsI204IL7KdP/RR2cfgn3sUcLfuX8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=en7oX06jgLCn/yWveNEXksyx1JpG/jB6tt4IeB1km/CWVelln5pT0eJHy++5+3JB7
-         dbgAX3lkM0E896eXCUZxKFuYfH5LJ7S3CB2r949zVM4bVrE98sdHOdiqTZL2hbWG3M
-         3U6PdKxwyrMRT1lGapetAG+iSghWlCFtrIySm1M0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MStCY-1lxFT6135q-00UNHB; Fri, 04
- Jun 2021 11:53:50 +0200
-Subject: Re: [PATCH RFC] btrfs: support other sectorsizes in
- _scratch_mkfs_blocksized
+        id S229970AbhFDKxW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Jun 2021 06:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229667AbhFDKxW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 06:53:22 -0400
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E856FC06174A
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Jun 2021 03:51:35 -0700 (PDT)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id B81949BBB3; Fri,  4 Jun 2021 11:51:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1622803889;
+        bh=JlKfN4wiMT7V8X4FYn+E4NcIfEW3y+zkR2NFM535zFY=;
+        h=From:To:References:Subject:Date:In-Reply-To:From;
+        b=ybn/gle+9de6p0AErHfRirSznxMJZHrtEV4Xsyj4Nv6agws181ENt8amEU0d8QFhM
+         g189cd3os9Wnv+aGAXNVdpEpLNfdDQ9cijPXxLiR2mPJDqT9/GFM2Wh5ks20u2RBWd
+         Vwi5cidUSlcs1kW65KHLvmVHVA8OsplybMjugC5Cp0kvof6V4+4BdajYBA2IpgKVwf
+         Sj9vUUuaHMPFqtAVVN23FlU5REiyBRsuJOMnr3hL8g0vix7V8kNPv00RptOUCjsDhc
+         bEMa851zZF+xXqCDQ96rVTeweaj0iNStHGwlSdRMIMBK3Yz/p/TF9RQTup0Q3SFj+O
+         pPSi6WWEZCbqA==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-3.6 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id D5CDB9B730;
+        Fri,  4 Jun 2021 11:51:26 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1622803886;
+        bh=JlKfN4wiMT7V8X4FYn+E4NcIfEW3y+zkR2NFM535zFY=;
+        h=From:To:References:Subject:Date:In-Reply-To:From;
+        b=ZjQEXV1kN9kz6LKMPZNzJJp3lp/aMa+Tpqp4wAIbGhBDMdaIQzcmJ7OALIuq2JUJP
+         8zRF5Lnjsti84bIjl5WwEhHUR6QERToHOVHGXCS0ahy77qBUupgYYaB6Il2xwXz9it
+         z/haJFSOeK+eNQmChRqtR1rqZjALlcUa96Jgdkz91+4xy1WElxvg1/Mqjf+AN4tupM
+         JKJSgdtZHwp6IhZmgoL1POV/hKarn59SsFSwju/1nt+L+wQvPQnC/6WQvkb4yh6bUY
+         13/WtQbOIPmD1gOBRNlnnSIm23UwiwzXEXkxm/+ZS6zhVGDUXLzo2FDUx0bLwz+Jw8
+         e4dTEPIry7Q+Q==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+        by black.home.cobb.me.uk (Postfix) with ESMTP id 6873624DCED;
+        Fri,  4 Jun 2021 11:51:26 +0100 (BST)
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     wqu@suse.com, dsterba@suse.com
 References: <2c3054e5b93f023cabd003ab4006d5f18ef3d484.1622717162.git.anand.jain@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <35c6ff63-ccbc-9efe-37f5-fa0da0ed2924@gmx.com>
-Date:   Fri, 4 Jun 2021 17:53:46 +0800
+Subject: Re: PATCH RFC] btrfs: support other sectorsizes in
+ _scratch_mkfs_blocksized
+Message-ID: <20049d72-e875-3f4a-1f2b-ec3f1ffde354@cobb.uk.net>
+Date:   Fri, 4 Jun 2021 11:51:26 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+ Thunderbird/78.10.0
 MIME-Version: 1.0
 In-Reply-To: <2c3054e5b93f023cabd003ab4006d5f18ef3d484.1622717162.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7EMG9yDs1/TbXm9dIeCjgeR4EMkZkNx6PVVSoGwKfcXb/k90+AF
- m5SR3Nke81Kz2k2N0iNWvoZh0VRW8L9z0AMaPj8cJzgGXuitbfN0nlRyb+WQmGKcMH6AGJO
- 1FI0EivB9iEvwwAYKtahkPCzUjbSWjJib5b1yH/KcJhRLRL/igQySAO5zbpZTNafCZClW14
- kh0UHNUdndV75khzNxLgA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RRbKZrtp3Dg=:UQehbutl3ZrMaSksnVOQIi
- vsAcyiZkKEnkDusodTRfuq02hiBZdQfqTSfQm1zJsh1RO5TNWMeacWmuvufqjy2gWCPsbmDXD
- lrUISpsz+97vKZDHJAOzYlr5dYnFnBJvhvetkEL/DwVJ6804vFCEMONtuvTTUfr1pdOZieWIl
- zycKbIWByQlaaZlMhlu5AYbPP1GfoABhQ9vM5iDUDgixxo70ZEs4JWNjRBD4uS1Q/cuGBdkKr
- lKM8XfRl5GnSukEEDQQz/GgJb7ARFAdMlW4kt4g2Cv4/M5uLCZl1muBixoDmq8RmTSkLUhTbF
- /U69mCG68lXmv/RW0PwYsC6eN8jfgxpNNSeKmZs6z7mjkC7weBv1Up0kbOyvR94mXcw4+nG4N
- DdWomRfc3nghb5IcbV9/XZmIbVix9KZOVI0B/2oLzMplAtgzN8nQkHe1JhaFMTFvR03dHJnhT
- U6lxbKpIcdFLTEL/Wymrc8V6EaPZr69aWtZR1Eo93MDywt6hamA4PpUo5La9Aqh1yZ8Zhxc2p
- hoPZq+WToTYnnBGRdH/DRqlYiOO8Fj38w7rRsPNd8BKnyDHDNo4I1Tb2n0oAH7pfCHVBwfF/z
- QzFDpi0sgcAUjcstM5iExftCGAoVqUOapDiSbSHekTE5GJ8sik8mpRSj3bPh3PztKeJv00KqE
- GKO1o9ZvzOedlTX5TXQmuGsUJNmb1exPHrqte+uCSvLiYFAWPl2lvZ0jIDaIFuArdnSW/MQ+u
- 7QfsUnIRjfYxpTh1Keiv2HwAisE7m3k4dN0oUKFUdnoGP5v5wsahyQ+rVvjUMLRw2o64eiCmd
- eJEbvKO52c4zWsNOsdfhR7923zAZCBcCB+FWR9frWOkfIwMyEpQGuW7+ESSKehuR/KpXcKaru
- kM7fpTwc6csQQ4dajhQ0lwZjXViUCFpMF5/KDbVW9HcPFJjQRTVPwwDd1PKLQwUwIdNorxvys
- ZFfYVbKclBHck/2/ZAPH7VLFGf4bq5Jm7MH7KMqo3JNT1VW1MwpQvl8aV9oIh0vj7Q7brXK2W
- gu8SwTYptYCz7ATM4UkSUu0QanGRpgUoveiXhIz0eex/mBYKgO46RqrPOXG22oKh4H+PyLDag
- 8Xj3tacBVJBMlK3mcdTYLkBes4dfJFRSY0f1eUdSLPyh/Xh6xc3G1APQw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/6/4 =E4=B8=8B=E5=8D=885:36, Anand Jain wrote:
-> When btrfs supports sectorsize !=3D pagesize it can run these test cases
-> now,
-> generic/205 generic/206 generic/216 generic/217 generic/218 generic/220
-> generic/222 generic/227 generic/229 generic/238
->
-> This change is backward compatible for kernels without non pagesize
-> sectorsize support.
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> RFC: Are we ok with this patch?
-
-Awesome! I forgot those tests.
-
-But unfortunately, those tests are still skipped due to the fixed
-supported sectorsize.
-
-Those tests uses PAGE_SIZE / 4, but we only support PAGE_SIZE / 16 yet
-for 64K page size.
-
-But I still believe this fix is appreciated for the future subpage
-support. (Yep, we will support other sector size, along with different
-PAGE_SIZE in not so far future).
-
-
->       fstests completed on first 19 patches of subpage support (results =
-I
->       need to review yet) on arch64, with pagesize=3D64k.
->       Subpage RW support tests are still pending.
->
->   common/rc | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-> diff --git a/common/rc b/common/rc
-> index 919028eff41c..b4c1d5f285f7 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -1121,6 +1121,13 @@ _scratch_mkfs_blocksized()
->       fi
->
->       case $FSTYP in
+On 04/06/2021 10:36, Anand Jain wrote:
+>  
+>      case $FSTYP in
 > +    btrfs)
 > +	grep -q $blocksize /sys/fs/btrfs/supported_sectorsizes
-> +	if [ $? ]; then
-> +		_notrun "$FSTYP does not support sectorsize=3D$blocksize yet"
-> +	fi
 
-Can't we merge the the if with grep by:
-	if grep -q $blocksize /sys/fs/btrfs/supported_sectorsizes; then
+Should this be "grep -qw"? Admittedly there is unlikely to be a false
+match but the sectorsize should be matched as a whole word.
 
-Thanks,
-Qu
-> +	_scratch_mkfs $MKFS_OPTIONS --sectorsize=3D$blocksize
-> +	;;
->       xfs)
->   	_scratch_mkfs_xfs $MKFS_OPTIONS -b size=3D$blocksize
->   	;;
->
+If there are any greps which do not provide -w then the search string
+could be "\\b$blocksize\\b".
