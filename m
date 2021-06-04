@@ -2,78 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56B639B75B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 12:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7FB39B771
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 13:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhFDKxW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Jun 2021 06:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFDKxW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 06:53:22 -0400
-Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E856FC06174A
-        for <linux-btrfs@vger.kernel.org>; Fri,  4 Jun 2021 03:51:35 -0700 (PDT)
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id B81949BBB3; Fri,  4 Jun 2021 11:51:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1622803889;
-        bh=JlKfN4wiMT7V8X4FYn+E4NcIfEW3y+zkR2NFM535zFY=;
-        h=From:To:References:Subject:Date:In-Reply-To:From;
-        b=ybn/gle+9de6p0AErHfRirSznxMJZHrtEV4Xsyj4Nv6agws181ENt8amEU0d8QFhM
-         g189cd3os9Wnv+aGAXNVdpEpLNfdDQ9cijPXxLiR2mPJDqT9/GFM2Wh5ks20u2RBWd
-         Vwi5cidUSlcs1kW65KHLvmVHVA8OsplybMjugC5Cp0kvof6V4+4BdajYBA2IpgKVwf
-         Sj9vUUuaHMPFqtAVVN23FlU5REiyBRsuJOMnr3hL8g0vix7V8kNPv00RptOUCjsDhc
-         bEMa851zZF+xXqCDQ96rVTeweaj0iNStHGwlSdRMIMBK3Yz/p/TF9RQTup0Q3SFj+O
-         pPSi6WWEZCbqA==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-3.6 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id D5CDB9B730;
-        Fri,  4 Jun 2021 11:51:26 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1622803886;
-        bh=JlKfN4wiMT7V8X4FYn+E4NcIfEW3y+zkR2NFM535zFY=;
-        h=From:To:References:Subject:Date:In-Reply-To:From;
-        b=ZjQEXV1kN9kz6LKMPZNzJJp3lp/aMa+Tpqp4wAIbGhBDMdaIQzcmJ7OALIuq2JUJP
-         8zRF5Lnjsti84bIjl5WwEhHUR6QERToHOVHGXCS0ahy77qBUupgYYaB6Il2xwXz9it
-         z/haJFSOeK+eNQmChRqtR1rqZjALlcUa96Jgdkz91+4xy1WElxvg1/Mqjf+AN4tupM
-         JKJSgdtZHwp6IhZmgoL1POV/hKarn59SsFSwju/1nt+L+wQvPQnC/6WQvkb4yh6bUY
-         13/WtQbOIPmD1gOBRNlnnSIm23UwiwzXEXkxm/+ZS6zhVGDUXLzo2FDUx0bLwz+Jw8
-         e4dTEPIry7Q+Q==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id 6873624DCED;
-        Fri,  4 Jun 2021 11:51:26 +0100 (BST)
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <2c3054e5b93f023cabd003ab4006d5f18ef3d484.1622717162.git.anand.jain@oracle.com>
-Subject: Re: PATCH RFC] btrfs: support other sectorsizes in
- _scratch_mkfs_blocksized
-Message-ID: <20049d72-e875-3f4a-1f2b-ec3f1ffde354@cobb.uk.net>
-Date:   Fri, 4 Jun 2021 11:51:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230132AbhFDLD5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Jun 2021 07:03:57 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48518 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230034AbhFDLD5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 07:03:57 -0400
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A86ED1FD4C;
+        Fri,  4 Jun 2021 11:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1622804530;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eJ39B/3QMbCpOKXvacBxheoVdqRJ9bzTYIQXuv1uNTI=;
+        b=0gOxidYaZlPUZItU9vXLD8N6ATt0Olb03aGuWxgmWTmm7+MdcfYeo3HwPbtLjIGkIBcNBq
+        /12L9dSD8XoVW8a5ID+51LVkGBv7oEriSU+3/T6DYO8euoHXgjORVHpEGuCeJuzAe2TBj2
+        MvOX9bU+zRPvPSw7F0kpEhWotu8zdT4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1622804530;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eJ39B/3QMbCpOKXvacBxheoVdqRJ9bzTYIQXuv1uNTI=;
+        b=5o2l6o0WfadfMoE9P53RcBKGopQ0tNjMKek9+y+9n/ck7hq5OQzSi12fzANnxL7miJGgQS
+        v+FBBSEAhD6KbXCg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id A2D9FA3B85;
+        Fri,  4 Jun 2021 11:02:10 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 32FE4DB22A; Fri,  4 Jun 2021 12:59:29 +0200 (CEST)
+Date:   Fri, 4 Jun 2021 12:59:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] Slightly how START_SYNC and WAIT_SYNC work
+Message-ID: <20210604105928.GZ31483@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1622733245.git.dsterba@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <2c3054e5b93f023cabd003ab4006d5f18ef3d484.1622717162.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1622733245.git.dsterba@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 04/06/2021 10:36, Anand Jain wrote:
->  
->      case $FSTYP in
-> +    btrfs)
-> +	grep -q $blocksize /sys/fs/btrfs/supported_sectorsizes
+On Thu, Jun 03, 2021 at 05:20:19PM +0200, David Sterba wrote:
+> The async transaction commit ioctl has a subtle semantics that used to
+> work for ceph. We need more straightforward semantics in progs (eg. when
+> waiting for commit after subvolume deletion) and otherwise the async
+> commit does a few annoying things.
+> 
+> Long explanation is in patch 3. I hope it works, but somebody please
+> double check. It's a minor change in the commit logic, but merely
+> removing some waiting, no other changes in state transitions.
+> 
+> David Sterba (4):
+>   btrfs: sink wait_for_unblock parameter to async commit
+>   btrfs: inline wait_current_trans_commit_start in its caller
+>   btrfs: replace async commit by pending actions
+>   btrfs: remove fs_info::transaction_blocked_wait
 
-Should this be "grep -qw"? Admittedly there is unlikely to be a false
-match but the sectorsize should be matched as a whole word.
-
-If there are any greps which do not provide -w then the search string
-could be "\\b$blocksize\\b".
+btrfs/011 hangs so no dice. I maybe pick the two first patches as
+cleanups, and the rest will go to some future dev cycle.
