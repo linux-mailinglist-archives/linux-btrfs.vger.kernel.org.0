@@ -2,193 +2,468 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE90C39B141
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 06:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE0339B227
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Jun 2021 07:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbhFDEPt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Jun 2021 00:15:49 -0400
-Received: from esa14.fujitsucc.c3s2.iphmx.com ([68.232.156.101]:34472 "EHLO
-        esa14.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229445AbhFDEPs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Jun 2021 00:15:48 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Jun 2021 00:15:47 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1622780043; x=1654316043;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=KbleuPwjtSSYjAJ8cqs8XULfIlUT6Dmwb3DzPJUizDw=;
-  b=D3n4KtrGzufyklf1VVi5c5+r3rk9LJ+KEUKunYZ5yRzGN2af1pvMQSj/
-   lT0f+qlBdj0AvAUx6cgr43FBGDUOhGdT+2ubhrJY/VikTCSZaZvF46JeI
-   sGgaUgkqiQixAqSSCo/XPMFIajRokDJvpVc5lwExaHieTKCdi9pznh//b
-   2815bBl3ag+p+zWJdESfQq624MwvVQCVheEj2iSpu//PkmRtbvlGMMh8W
-   Hew5NoH/oFilaEtYOixecqrATPAI09sjPQQ2P1cnVEsKPgRYaMkX7ZCj7
-   palIyKDMEsNkQ4HXi9ZMqAXjiTMeYWgBShr6T6T/ibYo+9dZEkdxPwzl7
-   w==;
-IronPort-SDR: UfEKCHZ++o05OH8fRmAMDQgYjC6psOszygnCugtALMzxhjzwouhaX+9p1ARcGDTNIPNthGF19D
- 2YfjU1DkTp/e9helS8SgOh2NhRPTfnW59zB6xeaUvTPiqpl6b+lL5M91sMZ5CJDbAhxVKuireS
- 3gCQdsOqey68NfqqNJjjjevslV88qN96sX6f1KgjefgAntKBMMMvpy0UsAlTTgC8w4wvKXY+Hp
- cbFKMPn2AinVjLHnFWpNp0T3CCAmAl1yQOMNzbpvvrTGMeOnfX2QnGGkXgUnSEhdG6Ou5BO8aM
- lVs=
-X-IronPort-AV: E=McAfee;i="6200,9189,10004"; a="32402982"
-X-IronPort-AV: E=Sophos;i="5.83,247,1616425200"; 
-   d="scan'208";a="32402982"
-Received: from mail-os2jpn01lp2055.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.55])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jun 2021 13:06:48 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e5RGwphXjI7gk4MQriLQORZT43mV2xcvBVeIYxlNrDjkfCWeAkChVih3AgvkAALwQMINWq/QWARmS/zzJzJoWRp1cSNlTNKDSAA3KaOv2F4oUtWRt3guGdmYniPanbY+PqMra3D0eOEhAycGR8e8Bb++9qTNVEl1p7nCUSN2X3e53XbCfNdiE0Cz1nj+TjRyt4NvrmC5q4SkNRRjmskQtXY/rVSfZ+rvHKC+WjEblgN9szEa3d6Q1RUKbNMbzQO4RlvPu03K1NQgNgGAUWfX2Gu0i4ZbMOoWnQKDKcpr5LXh+zDJJLwCYbvdTZo+TOfeyJZ22SBi4GPudENp8hKpIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KbleuPwjtSSYjAJ8cqs8XULfIlUT6Dmwb3DzPJUizDw=;
- b=O/5xwCYkZrrsreiPygMUREyvtVxEh4oSFkhbOEdn5KmVdXgGH0TNmkjuV0km+sNks9BNTlATP6dOmCH3CE7s/0RdDcohCnemNZJomCjhqAD4dmwy7v4bwnoNWnWrO4RLu0hZlDaMch1snYnVX0+Sx2npcFn2l7PCQr8A5wSiRswx8O7gLHuu0Xpj1UpBEAJ9uOUF0OfUiiJhOctasvt9h3l3HMvq0YYBWx9FNjSMLsXdB+d9jARMQNEMtEZ2syXdhUZnKhtxVVjTP1u33vXWh9I3RyljpP6/Jpcwt3aFSdR1dGlIXFAJrr+z9C21op5g2yRaEFr7MmYsoM2PfBR+hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
+        id S229818AbhFDFxc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Jun 2021 01:53:32 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:40602 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229794AbhFDFxc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Jun 2021 01:53:32 -0400
+Received: by mail-wm1-f48.google.com with SMTP id b145-20020a1c80970000b029019c8c824054so7140112wmd.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Jun 2021 22:51:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KbleuPwjtSSYjAJ8cqs8XULfIlUT6Dmwb3DzPJUizDw=;
- b=juvQzzN0TV44yLaayUm6EJUdpeV5WE3OguTsm3BSWjtz57yh7hWEZ779ptavm6+1EXBYpST0sCKI1mcUbbs5Xn9/LXojssQjQFOA1Q8GGCM2pUIz8CFuZKuDrOo0a/Ow0bMOvOo8o5Zn+7z0daCyrOGW947evQxBUtUZByXB23o=
-Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com (2603:1096:604:18::16)
- by OS3PR01MB6870.jpnprd01.prod.outlook.com (2603:1096:604:123::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Fri, 4 Jun
- 2021 04:06:45 +0000
-Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com
- ([fe80::b985:8239:6cf0:1228]) by OSBPR01MB2920.jpnprd01.prod.outlook.com
- ([fe80::b985:8239:6cf0:1228%7]) with mapi id 15.20.4195.022; Fri, 4 Jun 2021
- 04:06:45 +0000
-From:   "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-CC:     "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>
-Subject: RE: [PATCH v3 0/3] fsdax: Factor helper functions to simplify the
- code
-Thread-Topic: [PATCH v3 0/3] fsdax: Factor helper functions to simplify the
- code
-Thread-Index: AQHXN325ZvNg0AwKgEyTZt/tgpBu/qrZJMtAgAnCTLCAIDwDgIAAW48Q
-Date:   Fri, 4 Jun 2021 04:06:44 +0000
-Message-ID: <OSBPR01MB2920F2BDC15B22E655192C1CF43B9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
-References: <20210422134501.1596266-1-ruansy.fnst@fujitsu.com>
- <OSBPR01MB29205D645B33F4721E890660F4569@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <OSBPR01MB29201A0E8100416023E77F80F4509@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <20210603223733.GF26380@locust>
-In-Reply-To: <20210603223733.GF26380@locust>
-Accept-Language: en-US, zh-CN
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fujitsu.com;
-x-originating-ip: [223.111.68.150]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b9b8b5d6-5efb-4f9d-d61e-08d9270e2ace
-x-ms-traffictypediagnostic: OS3PR01MB6870:
-x-microsoft-antispam-prvs: <OS3PR01MB687035CA68C194E81512B259F43B9@OS3PR01MB6870.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nWvP2YmyoeL8rk7eE1n2EqzfX8yrme7nJHBGKWBKHS1AENg7qpRmGtDf6vwDlYJ8c/Pc8NQfiYaH3Nr5pOTnBe5FBEZDxhKaX/H13D1rpcMD9bor1JTV2+IqCR8uf80W18g+BMHKKxDPPfkgkD9RMorYM/1pQmW82qDYf8Ti5YKIpS29y/Rz2r9aErHWBj23VOMIj08oLRIp1vuZAzJvDsw05jkFdMMIAIEDxr/CSJqydx38OlCfqQmM27zVQNs4b6zfE4BBcGZ5JNLIfpgyNlQ0oq7Z4Us2828XUDDm1l0qxVSYPk8ROuViTnec5OCOhaPaOjVLhJ4PUBoXsBb0+QpuybAzzTZPR5IppUMg7dmwK5gKkgzrvu5+Be0zIDpmxABBU579WXmqTNlnZ/oON3KYc6IxN+lBAfLxFO+jQBZfIPqlc/G2pAmAr3M1ksYGBBv+2cdpfXX7YNpq4Vrg5cAObw1ieemSvLjkA9w3kmHDtn+Lh2Y0Bs4RpBTXJ9h/iduQ37GiK+m2cyX0IvCyAqwPxRBpZmIR1cF+nZAf4x0gxBi/nBtif7EzdaLKx/M+By5ILLiuJ5e7IJg4TaC5cztQvmM1svG9LKIiizAqNwgi2A3WVm14s80t/xOA4YGnxPw+3IxM2vnP3B6nEqKYCJVaTHFlHVv2x05lUjU9uBV95dFOysQg++2JOSP0A4tLaOBY/GM0hN0i9/VhEHaSfg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB2920.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(396003)(366004)(346002)(66946007)(66476007)(64756008)(66446008)(66556008)(7416002)(86362001)(316002)(83380400001)(6916009)(76116006)(54906003)(966005)(26005)(7696005)(55016002)(8676002)(186003)(8936002)(53546011)(71200400001)(6506007)(9686003)(4326008)(5660300002)(2906002)(85182001)(33656002)(38100700002)(52536014)(122000001)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?R0FvaUFzMmN0anpHSXZYdHVqMVdUR2J1dnJXMnQybnBXbDdCRkNKSGYxTHJ0?=
- =?gb2312?B?L1F2YXdQOCtEcDBHQjJobFR1L2FUK0pCVkI1RDdkaXFkNFdOVlpFYVAzdUsw?=
- =?gb2312?B?a3dYZHNZWnp4RTZOWDJOYVpjS0wxZis3WDNCRG9YaGx6aWN4c1Qzby9CWElW?=
- =?gb2312?B?YU5NR2U4SldGTGMzOHpTVVl1Y1lleE85dlc3blhiNnE2cTBYRTR1WTZmTEhJ?=
- =?gb2312?B?L3R6dTlIbVplT0RLbGpWRWx3SThLYndKNnVudW1OWUIxOWZXMTFhWWhDMEw0?=
- =?gb2312?B?Mm9vb2Jjdk5YQXZJM3hMK2ZEQnFCRk15bFQ2K2FtL2lWSjVQbmRBQ3BsK0pU?=
- =?gb2312?B?T1FKNUJKV0RJVCsxbmJIVm40VmMvNUFqV3pQSkJmYnZlUUlSK05EaTFsUzFN?=
- =?gb2312?B?bTBCbDJ1Ung1KzRaNERzc0xXWVhVVFdSV2pwMDFKMWxrSDBIQm95SmxqNm10?=
- =?gb2312?B?aXEvZzlQV2dqTUE0UDJyNTRsSHBOb0JPeEtvU1M5cFR4ak16Z3NlZzVZY1pm?=
- =?gb2312?B?SWczY0h4d01NWERSSXloM0RiNUtZM3pyUjIwQlFaa0JJbkFiNUlmaG92N094?=
- =?gb2312?B?S1hDVE5rUUFUdFlZeUhHM0psaGozVXpZdXZVR2I5YzliQ2M1N1B4b20wYWI3?=
- =?gb2312?B?ayttaVRPc3hONVVSaEZRVlBDY09mUHhKZWtQenJQdUhDZFhUSi81UzVQdWYr?=
- =?gb2312?B?cWU4Rm8vMkJPSUpkNlRYL2sxYTI3THVNb0VYOWM1RHB1L0NQVkVmUVZyazNu?=
- =?gb2312?B?Smc5dGFhQ0NmSk1IV051bGRacDBJSmdIRlBBWlc3MFc0UFMvcDFoNVR3WTJ4?=
- =?gb2312?B?T0V0OUJyYnphdmM5dGpRaG14RXRBc2JKN2VZWFR3c2gwdTdvRW4yWm1tMm9i?=
- =?gb2312?B?YVpqN1J1VndJTDByVWdCTWVEc3U5cTFhQm5IMGRMbEl3MWlVNEp6R0VCblN3?=
- =?gb2312?B?YXl5VTVmSnBFWVppelNweno1c3h6Z3hYNmRWVy9Bb0QvY1FXU0lnQ29ZbXk0?=
- =?gb2312?B?L3R5dE83SmFvNU1ocGtJM3ZrU0U2R1NLUmhvazd5RlZ5d2p0VW9zUDJTOXRW?=
- =?gb2312?B?V2ovZHQxZjRNRVlYWlBwT0NWb2RDVGk1ZDlzTVAvN0V1SmN6eDdzeENRcjBV?=
- =?gb2312?B?SVJmMmppRUR5R0N1VVRwM3ZUR3oxaFg0Nk82cElWVm9rMFVmU0hPNkNSMlpC?=
- =?gb2312?B?bXJnUU1aSXJIUnA0M1hxbTBtcm1QMEZzTkZ1cWxEU1pzSDVKRWRJWWczamhl?=
- =?gb2312?B?TnF1dHVnRlkvK1J5QThlMWkzRTJHTDVkUk0yN3Y0M3JkNEJRZVhSd200RTJJ?=
- =?gb2312?B?ODUwU3RXRFZkTWdYYlRjbkVTaDVlM05XaStBOC9ldkhkZzA1VDlsZjZ2bDJv?=
- =?gb2312?B?b3l2a2MxS294TFZYNU5GOVpjYTVVVjVrdDRIVDZvcFFqbmpCbTlWSTVhMjRB?=
- =?gb2312?B?OHdHaHozUll3RXFHbksrWHI1cTR2RU9TRlFaV2Z2SUw0UjFnZEhNeW9EZkVE?=
- =?gb2312?B?dlptcHp2SHdmVW9Wc0RRUmV4bFlaZW1tbSt3a3dmNUU1NzAvUEtkcXZ3d05B?=
- =?gb2312?B?RU5YNkQ4U09BY09OK1VQdGRIWS85Y3N3Rko2Nm1pbk9BVnRHdU05RGZPaStw?=
- =?gb2312?B?YzhGUHcybHZUWjZZN2RHbTR3Mm9uUmZiL0VGMlllMjBZSnhqcHpFRTl6OU1q?=
- =?gb2312?B?NWhzZ2xjalBuOTFIV2F5OUl3amtVYnVweTh0ZHVGTUdFZEtJK1YwU1k2VXE5?=
- =?gb2312?Q?dQznKgxWvarYexa/SU=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Vv8w33jdtPojnBG9NxoavmX1SLTbvcByXiYwOt2iNG0=;
+        b=njCVIEJUCMT9hBailaU/pZ+dTsmIlOUVtjauRfQcitxi4uiJKK4jxOkR2n/WN1Ac/8
+         imYZeV+uiaEYW+BxaTioIxVClj97MJP3Mny4eBFZ6V9lv3EP8h115CIha1sBkp8AQ9J3
+         LaoVN8S8LB3HgbXbx4pmWV1QcYAs8PUTQqCbnrO9nq4LgzD+7Qu2+Ga+QqjBGX8DwcJs
+         Q7vAOA7jFxqysGy7ajRXXZEJiPfvTsrSDrEf6oMihN3wn8TbL7yKSeb0nirpUDLd4f7i
+         uSzMDhjUXP01DcGFqLz4eLsJUpbJjhR0HTaXP1kWIj7qeGFsUoD+ka7O3wDv2AjjwJFe
+         rzMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Vv8w33jdtPojnBG9NxoavmX1SLTbvcByXiYwOt2iNG0=;
+        b=RYid0pyHxulLw+/UtD7CqnBcQalBxKcG5E9Q7aJM8AVCIkESMe1v0vLRPNsB0ZqwUz
+         ixkSeoL/eRUwnuglN6FJR4Arz0EHLD2RuXdAX6mzgETZVSIB2BvMD+SYN9uFqZkZIwua
+         PN/Z4qrlB9ByDmf3n+/UDQKtTdcIYF/8HolwmeLnyE/I+YMUQvQIhKAXKvToiVuvnoWG
+         0qViM0ShC7xRP2KU8uZvZ7WYRSIO9PNcrjK+rRbsLlChoH4pZmlHAm51TWljj06PRg7X
+         SCV5hwBMo3z64obbv6XRV6kKBKyBCj4TamNpowPtjiWA5NoNnh4hbv9Vryt4/R5YZO1m
+         q7mw==
+X-Gm-Message-State: AOAM531B0nKUQZt6cIFps5uzuNkBwQ7kO6xu1eQ+/LH03JywusP0z8B7
+        ZCT7vSnSSyM32SEZpHHC1Niy4f3659p4mmxm2Us62w==
+X-Google-Smtp-Source: ABdhPJyQeQwuj7y1knO4nBQ0juJOdmvVOKI+b7l8dNTiX1G4W6H8G7FMLV/845meEzhIh7LJo4FUJCsz9nRnfnPRVL8=
+X-Received: by 2002:a7b:c30f:: with SMTP id k15mr1831131wmj.128.1622785845309;
+ Thu, 03 Jun 2021 22:50:45 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB2920.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9b8b5d6-5efb-4f9d-d61e-08d9270e2ace
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2021 04:06:44.9980
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lvYV/s0ftvgLp0jYQ+95EnqpluNAngBoF3oGKlK96pVDdeXWl2AvFz5uvLjEjGgaYXTz3MWU7E3yYqky0lnvuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6870
+References: <2440004.yYTOSnB24Y@shanti>
+In-Reply-To: <2440004.yYTOSnB24Y@shanti>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 3 Jun 2021 23:50:27 -0600
+Message-ID: <CAJCQCtQLYHb7G4YTmsY_cHsBHDzXM6-qQ39YNGHp2mk0mLkLEw@mail.gmail.com>
+Subject: Re: Scrub: Uncorrectable error due to SSD read error
+To:     Martin Steigerwald <martin@lichtvoll.de>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYXJyaWNrIEouIFdvbmcgPGRq
-d29uZ0BrZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYzIDAvM10gZnNkYXg6IEZh
-Y3RvciBoZWxwZXIgZnVuY3Rpb25zIHRvIHNpbXBsaWZ5IHRoZSBjb2RlDQo+IA0KPiBPbiBGcmks
-IE1heSAxNCwgMjAyMSBhdCAxMDoyMzoyNUFNICswMDAwLCBydWFuc3kuZm5zdEBmdWppdHN1LmNv
-bSB3cm90ZToNCj4gPiA+DQo+ID4gPiBIaSwgRGFuDQo+ID4gPg0KPiA+ID4gRG8geW91IGhhdmUg
-YW55IGNvbW1lbnRzIG9uIHRoaXM/DQo+ID4NCj4gPiBQaW5nDQo+IA0KPiBUaGlzIHBhdGNoc2V0
-IGhhcyBhY3F1aXJlZCBtdWx0aXBsZSBSVkIgdGFncyBidXQgKEFGQUlLKSBEYW4gc3RpbGwgaGFz
-bid0DQo+IHJlc3BvbmRlZC4gIFRvIGdldCB0aGlzIG1vdmluZyBhZ2FpbiwgaXQgbWlnaHQgYmUg
-dGltZSB0byBzZW5kIHRoaXMgZGlyZWN0IHRvIEFsDQo+IHdpdGggYSBub3RlIHRoYXQgdGhlIG1h
-aW50YWluZXIgaGFzbid0IGJlZW4gcmVzcG9uc2l2ZS4NCg0KVGhhbmtzIGEgbG90LCBJJ2xsIHNl
-bmQgdG8gaGltLg0KDQoNCi0tDQpSdWFuLg0KDQo+IA0KPiAtLUQNCj4gDQo+ID4gPg0KPiA+ID4N
-Cj4gPiA+IC0tDQo+ID4gPiBUaGFua3MsDQo+ID4gPiBSdWFuIFNoaXlhbmcuDQo+ID4gPg0KPiA+
-ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gPiBGcm9tOiBTaGl5YW5nIFJ1
-YW4gPHJ1YW5zeS5mbnN0QGZ1aml0c3UuY29tPg0KPiA+ID4gPiBTZW50OiBUaHVyc2RheSwgQXBy
-aWwgMjIsIDIwMjEgOTo0NSBQTQ0KPiA+ID4gPiBTdWJqZWN0OiBbUEFUQ0ggdjMgMC8zXSBmc2Rh
-eDogRmFjdG9yIGhlbHBlciBmdW5jdGlvbnMgdG8gc2ltcGxpZnkNCj4gPiA+ID4gdGhlIGNvZGUN
-Cj4gPiA+ID4NCj4gPiA+ID4gRnJvbTogU2hpeWFuZyBSdWFuIDxydWFuc3kuZm5zdEBjbi5mdWpp
-dHN1LmNvbT4NCj4gPiA+ID4NCj4gPiA+ID4gVGhlIHBhZ2UgZmF1bHQgcGFydCBvZiBmc2RheCBj
-b2RlIGlzIGxpdHRsZSBjb21wbGV4LiBJbiBvcmRlciB0bw0KPiA+ID4gPiBhZGQgQ29XIGZlYXR1
-cmUgYW5kIG1ha2UgaXQgZWFzeSB0byB1bmRlcnN0YW5kLCBJIHdhcyBzdWdnZXN0ZWQgdG8NCj4g
-PiA+ID4gZmFjdG9yIHNvbWUgaGVscGVyIGZ1bmN0aW9ucyB0byBzaW1wbGlmeSB0aGUgY3VycmVu
-dCBkYXggY29kZS4NCj4gPiA+ID4NCj4gPiA+ID4gVGhpcyBpcyBzZXBhcmF0ZWQgZnJvbSB0aGUg
-cHJldmlvdXMgcGF0Y2hzZXQgY2FsbGVkICJWMyBmc2RheCx4ZnM6DQo+ID4gPiA+IEFkZCByZWZs
-aW5rJmRlZHVwZSBzdXBwb3J0IGZvciBmc2RheCIsIGFuZCB0aGUgcHJldmlvdXMgY29tbWVudHMg
-YXJlDQo+IGhlcmVbMV0uDQo+ID4gPiA+DQo+ID4gPiA+IFsxXToNCj4gPiA+ID4gaHR0cHM6Ly9w
-YXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW52ZGltbS9wYXRjaC8yMDIxMDMxOTAx
-DQo+ID4gPiA+IDUyMzcNCj4gPiA+ID4gLjk5DQo+ID4gPiA+IDM4ODAtMy1ydWFuc3kuZm5zdEBm
-dWppdHN1LmNvbS8NCj4gPiA+ID4NCj4gPiA+ID4gQ2hhbmdlcyBmcm9tIFYyOg0KPiA+ID4gPiAg
-LSBmaXggdGhlIHR5cGUgb2YgJ21ham9yJyBpbiBwYXRjaCAyDQo+ID4gPiA+ICAtIFJlYmFzZWQg
-b24gdjUuMTItcmM4DQo+ID4gPiA+DQo+ID4gPiA+IENoYW5nZXMgZnJvbSBWMToNCj4gPiA+ID4g
-IC0gZml4IFJpdGVzaCdzIGVtYWlsIGFkZHJlc3MNCj4gPiA+ID4gIC0gc2ltcGxpZnkgcmV0dXJu
-IGxvZ2ljIGluIGRheF9mYXVsdF9jb3dfcGFnZSgpDQo+ID4gPiA+DQo+ID4gPiA+IChSZWJhc2Vk
-IG9uIHY1LjEyLXJjOCkNCj4gPiA+ID4gPT0NCj4gPiA+ID4NCj4gPiA+ID4gU2hpeWFuZyBSdWFu
-ICgzKToNCj4gPiA+ID4gICBmc2RheDogRmFjdG9yIGhlbHBlcnMgdG8gc2ltcGxpZnkgZGF4IGZh
-dWx0IGNvZGUNCj4gPiA+ID4gICBmc2RheDogRmFjdG9yIGhlbHBlcjogZGF4X2ZhdWx0X2FjdG9y
-KCkNCj4gPiA+ID4gICBmc2RheDogT3V0cHV0IGFkZHJlc3MgaW4gZGF4X2lvbWFwX3BmbigpIGFu
-ZCByZW5hbWUgaXQNCj4gPiA+ID4NCj4gPiA+ID4gIGZzL2RheC5jIHwgNDQzDQo+ID4gPiA+ICsr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4g
-PiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyMzQgaW5zZXJ0aW9ucygrKSwgMjA5IGRlbGV0aW9ucygt
-KQ0KPiA+ID4gPg0KPiA+ID4gPiAtLQ0KPiA+ID4gPiAyLjMxLjENCj4gPiA+DQo+ID4gPg0KPiA+
-DQo=
+On Thu, Jun 3, 2021 at 2:08 PM Martin Steigerwald <martin@lichtvoll.de> wro=
+te:
+>
+> Hi!
+>
+> I got read errors on a Samsung SSD 870 2 TB drive that is just a few mont=
+hs
+> old with BTRFS on Devuan Beowulf with 5.10.7 kernel from Debian Sid. The
+> affected BTRFS filesystem are running on top of LVM with LUKS. This is
+> on a ThinkPad L560.
+>
+> BTRFS reported most of them during a scrub. One was an input/output
+> error during trying to backup a file with rsync =E2=80=93 this one was no=
+t reported
+> by scrub. I fixed it by replacing the file from an older backup.
+>
+> Most other scrub errors where related to a file. I fixed it them replacin=
+g
+> it from an older backup.
+>
+> However two more scrub errors were not related to a file. One example:
+>
+> [15786.830191] BTRFS error (device dm-3): bdev /dev/mapper/sata-home errs=
+: wr 0, rd 3, flush 0, corrupt 0, gen 0
+> [15786.830206] BTRFS error (device dm-3): unable to fixup (regular) error=
+ at logical 176045789184 on dev /dev/mapper/sata-home
+> [15930.966633] BTRFS info (device dm-3): scrub: finished on devid 1 with =
+status: 0
+>
+> (rd is 3 cause I did the scrub before already =E2=80=93 these are on a di=
+fferent
+> BTRFS filesystem than the other errors, but on the same disk and the
+> same LVM)
+>
+> I bet this error is somewhere in metadata.
+>
+> So what is your best suggestion to fix up this one? btrfs check --repair?
+
+btrfs check --readonly
+
+Let's see what the problem is first.
+
+>
+>
+> Here is a somewhat shortened excerpt of what the kernel reported for just
+> one of the read errors that BTRFS reported.
+
+The vast majority of these messages are from libata. Not dm-crypt or
+btrfs. This is the part of the kernel that talks to the drive, and
+many are errors being reported by the drive itself...
+
+
+>
+> [15487.535977] BTRFS info (device dm-3): scrub: started on devid 1
+> [15784.497016] ata1.00: READ LOG DMA EXT failed, trying PIO
+> [15784.497903] ata1: failed to read log page 10h (errno=3D-5)
+> [15784.497928] ata1.00: exception Emask 0x1 SAct 0xff9fffff SErr 0x40000 =
+action 0x0
+> [15784.497936] ata1.00: irq_stat 0x40000008
+> [15784.497944] ata1: SError: { CommWake }
+> [15784.497953] ata1.00: failed command: READ FPDMA QUEUED
+> [15784.497971] ata1.00: cmd 60/00:00:28:e5:b1/01:00:19:00:00/40 tag 0 ncq=
+ dma 131072 in
+>                         res 40/00:c8:28:d8:b1/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15784.497978] ata1.00: status: { DRDY }
+> [15784.497986] ata1.00: failed command: READ FPDMA QUEUED
+> [15784.498001] ata1.00: cmd 60/00:08:28:e6:b1/02:00:19:00:00/40 tag 1 ncq=
+ dma 262144 in
+>                         res 40/00:c8:28:d8:b1/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15784.498007] ata1.00: status: { DRDY }
+> [15784.498014] ata1.00: failed command: READ FPDMA QUEUED
+> [15784.498028] ata1.00: cmd 60/00:10:28:e8:b1/02:00:19:00:00/40 tag 2 ncq=
+ dma 262144 in
+>                         res 40/00:c8:28:d8:b1/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [=E2=80=A6]
+> [15784.498707] ata1.00: failed command: READ FPDMA QUEUED
+> [15784.498721] ata1.00: cmd 60/00:f8:28:f3:b1/01:00:19:00:00/40 tag 31 nc=
+q dma 131072 in
+>                         res 40/00:c8:28:d8:b1/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15784.498726] ata1.00: status: { DRDY }
+> [15784.499040] ata1.00: both IDENTIFYs aborted, assuming NODEV
+> [15784.499049] ata1.00: revalidation failed (errno=3D-2)
+> [15784.499064] ata1: hard resetting link
+> [15784.810213] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+> [15784.812120] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15784.812131] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15784.812328] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15784.812339] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15784.812759] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15784.815649] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15784.815658] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15784.815731] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15784.815738] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15784.816006] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15784.817970] ata1.00: configured for UDMA/133
+> [15784.828580] ata1: EH complete
+> [15784.829623] ata1.00: Enabling discard_zeroes_data
+> [15785.021191] ata1: failed to read log page 10h (errno=3D-5)
+> [15785.021216] ata1.00: exception Emask 0x1 SAct 0xfffffff1 SErr 0x0 acti=
+on 0x0
+> [15785.021222] ata1.00: irq_stat 0x40000008
+> [15785.021232] ata1.00: failed command: WRITE FPDMA QUEUED
+> [15785.021249] ata1.00: cmd 61/00:00:60:16:7c/02:00:00:00:00/40 tag 0 ncq=
+ dma 262144 out
+>                         res 40/00:e0:88:4a:67/00:00:07:00:00/40 Emask 0x1=
+ (device error)
+> [15785.021257] ata1.00: status: { DRDY }
+> [15785.021264] ata1.00: failed command: READ FPDMA QUEUED
+> [15785.021280] ata1.00: cmd 60/00:20:28:d0:b1/06:00:19:00:00/40 tag 4 ncq=
+ dma 786432 in
+>                         res 40/00:e0:88:4a:67/00:00:07:00:00/40 Emask 0x1=
+ (device error)
+> [15785.021286] ata1.00: status: { DRDY }
+> [15785.021293] ata1.00: failed command: READ FPDMA QUEUED
+> [15785.021308] ata1.00: cmd 60/00:28:d8:0d:b2/01:00:19:00:00/40 tag 5 ncq=
+ dma 131072 in
+>                         res 40/00:e0:88:4a:67/00:00:07:00:00/40 Emask 0x1=
+ (device error)
+> [=E2=80=A6]
+> [15785.021957] ata1.00: failed command: READ FPDMA QUEUED
+> [15785.021970] ata1.00: cmd 60/00:f8:28:e8:b1/02:00:19:00:00/40 tag 31 nc=
+q dma 262144 in
+>                         res 40/00:e0:88:4a:67/00:00:07:00:00/40 Emask 0x1=
+ (device error)
+> [15785.021976] ata1.00: status: { DRDY }
+> [15785.022456] ata1.00: both IDENTIFYs aborted, assuming NODEV
+> [15785.022464] ata1.00: revalidation failed (errno=3D-2)
+> [15785.022480] ata1: hard resetting link
+> [15785.333073] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+> [15785.335233] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.335244] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15785.335508] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.335519] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15785.336179] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15785.341214] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.341226] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15785.341398] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.341406] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15785.341731] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15785.344055] ata1.00: configured for UDMA/133
+> [15785.354541] ata1: EH complete
+> [15785.355149] ata1.00: Enabling discard_zeroes_data
+> [15785.553288] ata1: failed to read log page 10h (errno=3D-5)
+> [15785.553314] ata1.00: exception Emask 0x1 SAct 0x83ffffff SErr 0x0 acti=
+on 0x0
+> [15785.553321] ata1.00: irq_stat 0x40000008
+> [15785.553330] ata1.00: failed command: READ FPDMA QUEUED
+> [15785.553348] ata1.00: cmd 60/00:00:28:d0:b1/06:00:19:00:00/40 tag 0 ncq=
+ dma 786432 in
+>                         res 40/00:78:d8:47:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15785.553356] ata1.00: status: { DRDY }
+> [15785.553363] ata1.00: failed command: WRITE FPDMA QUEUED
+> [15785.553379] ata1.00: cmd 61/00:08:60:16:7c/02:00:00:00:00/40 tag 1 ncq=
+ dma 262144 out
+>                         res 40/00:78:d8:47:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15785.553385] ata1.00: status: { DRDY }
+> [15785.553392] ata1.00: failed command: READ FPDMA QUEUED
+> [15785.553407] ata1.00: cmd 60/00:10:d8:20:b2/02:00:19:00:00/40 tag 2 ncq=
+ dma 262144 in
+>                         res 40/00:78:d8:47:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15785.553413] ata1.00: status: { DRDY }
+> [=E2=80=A6]
+> [15785.553984] ata1.00: failed command: SEND FPDMA QUEUED
+> [15785.553998] ata1.00: cmd 64/01:c8:00:00:00/00:00:00:00:00/a0 tag 25 nc=
+q dma 512 out
+>                         res 40/00:78:d8:47:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15785.554004] ata1.00: status: { DRDY }
+> [15785.554011] ata1.00: failed command: READ FPDMA QUEUED
+> [15785.554025] ata1.00: cmd 60/00:f8:d8:1e:b2/02:00:19:00:00/40 tag 31 nc=
+q dma 262144 in
+>                         res 40/00:78:d8:47:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15785.554031] ata1.00: status: { DRDY }
+> [15785.554667] ata1.00: both IDENTIFYs aborted, assuming NODEV
+> [15785.554676] ata1.00: revalidation failed (errno=3D-2)
+> [15785.554692] ata1: hard resetting link
+> [15785.868941] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+> [15785.870412] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.870424] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15785.870554] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.870562] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15785.870946] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15785.874186] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.874194] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15785.874288] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15785.874295] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15785.874583] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15785.876723] ata1.00: configured for UDMA/133
+> [15785.887214] sd 0:0:0:0: [sda] tag#25 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE cmd_age=3D0s
+> [15785.887225] sd 0:0:0:0: [sda] tag#25 Sense Key : Illegal Request [curr=
+ent]
+> [15785.887232] sd 0:0:0:0: [sda] tag#25 Add. Sense: Unaligned write comma=
+nd
+> [15785.887241] sd 0:0:0:0: [sda] tag#25 CDB: Write same(16) 93 08 00 00 0=
+0 00 1c 39 a6 30 00 00 00 40 00 00
+> [15785.887251] blk_update_request: I/O error, dev sda, sector 473540144 o=
+p 0x3:(DISCARD) flags 0x800 phys_seg 1 prio class 0
+
+What mount options are you using? Please list all of them from fstab
+or /proc/mounts. In particular though it looks like the discard mount
+option is being used? Remove it.
+
+Also it might be worth looking at mainline kernel source and see if
+this model is in the deny list for any discard related things. And if
+not, maybe report your findings to the proper list. I'm not sure if
+that would be libata, scsi, or block. But this would work around the
+problem by not sending commands that the drive firmware can't handle.
+Yes, that means the kernel is working around known manufacturing
+device defects. That's where things are.
+
+
+> [15785.887295] ata1: EH complete
+> [15785.887988] ata1.00: Enabling discard_zeroes_data
+> [15786.077348] ata1: failed to read log page 10h (errno=3D-5)
+> [15786.077367] ata1.00: NCQ disabled due to excessive errors
+> [15786.077377] ata1.00: exception Emask 0x1 SAct 0xf8807fff SErr 0x0 acti=
+on 0x0
+> [15786.077383] ata1.00: irq_stat 0x40000008
+> [15786.077392] ata1.00: failed command: READ FPDMA QUEUED
+> [15786.077411] ata1.00: cmd 60/00:00:d8:66:b2/05:00:19:00:00/40 tag 0 ncq=
+ dma 655360 in
+>                         res 40/00:28:d8:7e:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15786.077418] ata1.00: status: { DRDY }
+> [15786.077426] ata1.00: failed command: READ FPDMA QUEUED
+> [15786.077441] ata1.00: cmd 60/00:08:d8:6b:b2/05:00:19:00:00/40 tag 1 ncq=
+ dma 655360 in
+>                         res 40/00:28:d8:7e:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15786.077448] ata1.00: status: { DRDY }
+> [15786.077454] ata1.00: failed command: READ FPDMA QUEUED
+> [15786.077469] ata1.00: cmd 60/00:10:d8:70:b2/05:00:19:00:00/40 tag 2 ncq=
+ dma 655360 in
+>                         res 40/00:28:d8:7e:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15786.077475] ata1.00: status: { DRDY }
+> [15786.077481] ata1.00: failed command: READ FPDMA QUEUED
+> [15786.077497] ata1.00: cmd 60/00:18:d8:75:b2/02:00:19:00:00/40 tag 3 ncq=
+ dma 262144 in
+>                         res 40/00:28:d8:7e:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [=E2=80=A6]
+> [15786.077930] ata1.00: failed command: READ FPDMA QUEUED
+> [15786.077944] ata1.00: cmd 60/00:f8:d8:61:b2/05:00:19:00:00/40 tag 31 nc=
+q dma 655360 in
+>                         res 40/00:28:d8:7e:b2/00:00:19:00:00/40 Emask 0x1=
+ (device error)
+> [15786.077950] ata1.00: status: { DRDY }
+> [15786.078721] ata1.00: both IDENTIFYs aborted, assuming NODEV
+> [15786.078730] ata1.00: revalidation failed (errno=3D-2)
+> [15786.078747] ata1: hard resetting link
+> [15786.390145] ata1: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+> [15786.391640] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15786.391652] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15786.391920] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15786.391932] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15786.392523] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15786.397343] ata1.00: ACPI cmd ef/02:00:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15786.397354] ata1.00: ACPI cmd ef/10:03:00:00:00:a0 (SET FEATURES) filt=
+ered out
+> [15786.397527] ata1.00: ACPI cmd ef/10:09:00:00:00:a0 (SET FEATURES) succ=
+eeded
+> [15786.397536] ata1.00: ACPI cmd f5/00:00:00:00:00:a0 (SECURITY FREEZE LO=
+CK) filtered out
+> [15786.397934] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15786.400238] ata1.00: configured for UDMA/133
+> [15786.410829] ata1: EH complete
+> [15786.521139] ata1.00: exception Emask 0x0 SAct 0x0 SErr 0x0 action 0x0
+> [15786.521158] ata1.00: irq_stat 0x40000001
+> [15786.521169] ata1.00: failed command: READ DMA EXT
+> [15786.521188] ata1.00: cmd 25/00:00:28:d0:b1/00:06:19:00:00/e0 tag 17 dm=
+a 786432 in
+>                         res 51/40:00:c8:d2:b1/00:00:19:00:00/e0 Emask 0x9=
+ (media error)
+> [15786.521195] ata1.00: status: { DRDY ERR }
+> [15786.521202] ata1.00: error: { UNC }
+> [15786.521937] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15786.525850] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15786.528948] ata1.00: configured for UDMA/133
+> [15786.529028] sd 0:0:0:0: [sda] tag#17 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE cmd_age=3D2s
+> [15786.529038] sd 0:0:0:0: [sda] tag#17 Sense Key : Medium Error [current=
+]
+> [15786.529047] sd 0:0:0:0: [sda] tag#17 Add. Sense: Unrecovered read erro=
+r - auto reallocate failed
+> [15786.529055] sd 0:0:0:0: [sda] tag#17 CDB: Read(10) 28 00 19 b1 d0 28 0=
+0 06 00 00
+> [15786.529066] blk_update_request: I/O error, dev sda, sector 431084232 o=
+p 0x0:(READ) flags 0x4000 phys_seg 63 prio class 0
+> [15786.529150] ata1: EH complete
+> [15786.533347] ata1.00: Enabling discard_zeroes_data
+> [15786.552084] ata1.00: Enabling discard_zeroes_data
+
+Yeah here's a pretty good bet that discard is included in the btrfs
+mount option for this file system. I don't think discards happen
+without the file system issuing them, and dm-crypt and device-mapper
+for the LVM layer each have discard pass down enabled. It's frequently
+the default for LVM these days, but not dm-crypt (it is the default on
+Fedora though, for example).
+
+So the drive is not handling queued discard properly is what I
+suspect. It gets confused. Face plants. Libata then does a hard reset
+to try to get the drive to come back to reality. And then another
+discard gets issued and the drive wigs out again.
+
+I'd say it's some kind of defect. Is it unique to this particular
+drive and thus a warranty issue? Maybe. Or is it buggy firmware that
+affects this entire make/model/firmware? Maybe. If removing discard
+mount option fixes the problem, it's probably the latter. But still
+worth searching mainline kernel and 5.10.42 if it's in the deny list
+for queued trim. If not, worth letting the proper upstream list know
+about this problem. If they get more reports, then they'll add the
+make/model to the appropriate deny list.
+
+A better option any is scheduled fstrim once a week. Or for very heavy
+write, delete, write workloads where it's useful to provide hinting
+for unused blocks more often than once per week, use discard=3Dasync.
+But for a few weeks at least, I suggest no discard option at all to
+see if the problem goes away.
+
+
+> [15786.820703] ata1.00: exception Emask 0x0 SAct 0x0 SErr 0x0 action 0x0
+> [15786.820718] ata1.00: irq_stat 0x40000001
+> [15786.820728] ata1.00: failed command: READ DMA EXT
+> [15786.820748] ata1.00: cmd 25/00:08:c8:d2:b1/00:00:19:00:00/e0 tag 18 dm=
+a 4096 in
+>                         res 51/40:00:c8:d2:b1/00:00:19:00:00/e0 Emask 0x9=
+ (media error)
+> [15786.820756] ata1.00: status: { DRDY ERR }
+> [15786.820762] ata1.00: error: { UNC }
+> [15786.821313] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15786.824200] ata1.00: supports DRM functions and may not be fully acces=
+sible
+> [15786.826515] ata1.00: configured for UDMA/133
+> [15786.826557] sd 0:0:0:0: [sda] tag#18 FAILED Result: hostbyte=3DDID_OK =
+driverbyte=3DDRIVER_SENSE cmd_age=3D0s
+> [15786.826567] sd 0:0:0:0: [sda] tag#18 Sense Key : Medium Error [current=
+]
+> [15786.826575] sd 0:0:0:0: [sda] tag#18 Add. Sense: Unrecovered read erro=
+r - auto reallocate failed
+> [15786.826584] sd 0:0:0:0: [sda] tag#18 CDB: Read(10) 28 00 19 b1 d2 c8 0=
+0 00 08 00
+> [15786.826594] blk_update_request: I/O error, dev sda, sector 431084232 o=
+p 0x0:(READ) flags 0x800 phys_seg 1 prio class 0
+> [15786.826643] ata1: EH complete
+> [15786.828426] ata1.00: Enabling discard_zeroes_data
+> [15786.830191] BTRFS error (device dm-3): bdev /dev/mapper/sata-home errs=
+: wr 0, rd 3, flush 0, corrupt 0, gen 0
+> [15786.830206] BTRFS error (device dm-3): unable to fixup (regular) error=
+ at logical 176045789184 on dev /dev/mapper/sata-home
+> [15930.966633] BTRFS info (device dm-3): scrub: finished on devid 1 with =
+status: 0
+
+
+Yeah I'm not sure if this metadata corruption is the result of
+discards. Could be. But the first underlying problem to figure out are
+all these ata errors, which point to the drive itself not liking
+discards (queued trim), and not something btrfs or device-mapper are
+doing wrong.
+
+
+--=20
+Chris Murphy
