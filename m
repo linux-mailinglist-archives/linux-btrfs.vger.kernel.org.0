@@ -2,234 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD03B39C620
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Jun 2021 08:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C421639C70A
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Jun 2021 11:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhFEF7t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 5 Jun 2021 01:59:49 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:40670 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhFEF7t (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Jun 2021 01:59:49 -0400
-Received: by mail-lf1-f54.google.com with SMTP id w33so17288722lfu.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 04 Jun 2021 22:58:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q/TMKt1vz2yxQfR44nraDhRCGhELOpEPek0prmsDDnQ=;
-        b=U0bYlY9CIKmU+RKKaruKPZwuMf6rmcpuVjAFeslsoHqKhSWEYrW6AXWXy5/wLzLH5f
-         wHXKsJSWCEAb4UDvlxbRVsrCt+FsYsYh7sIya06rFVtaq1trE9d5piXwzd3oIelmq131
-         I7B+t9DVhEdcaAdJPCVyENb1ynnlrsExT01E2enCHDMZ1++C/VH5iONqDnpbPltoXsBm
-         wJdQijM+vY6ykOzOlpMGHBHTJ727URBRZGqGn/jdTOMsZ0++QMCWKWl4sAlsoOd5mUtp
-         9tLqUROU+XbFUX38kkqStI7FrSiLQeMvMLs9OHepNfdhaTS2OImEl9NiATgb6lrAL2U+
-         eUWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q/TMKt1vz2yxQfR44nraDhRCGhELOpEPek0prmsDDnQ=;
-        b=iw7f9RtDW2fBSgE8XnSNaN7s+IsxRi4zRiLvze6usvyT2LazPZJk4GKzlsxVAoJFqv
-         t1jw9N6JjJvffOHfUfVGLymjhjey4uJUHj9BTsDozsBGlxGrmPNjHG4ORyHXjmzQWDE3
-         VCKtsQO7UcCZeyUR4hSfqChDoTOBzwlNo0QAz8JJRAlb2jBrN2aClGOxijlEZbAMuntW
-         jQnnVLYICtj93UgtMMO3C1dckpmkr+C03yJTjDGfzCfWSBd0GB4Tn0xw5KUZriypcHp7
-         XJU6uGQKpAuPxAFrG6ZutVvEnp5rGMvaPEjCoPJB8cQclo7SOa1q46J2Ep+eL59N45eo
-         mlPw==
-X-Gm-Message-State: AOAM532JWmhL9/qDBSdESIiXYkHyGE3ElCYEyA6PZ2lTprM5vJPkvRWh
-        sQFAtr6uZ3MFcJ/SkpPJUmsgtKKh6CnA1mP++I+p9g/Crqs=
-X-Google-Smtp-Source: ABdhPJyHU32dhvrw9keJqUTgxXDv4yjMNaeFj3S57E7F7/PVyBl83SPnYAnlMCLe71AGwWkVrYC5j2KFzcB9UQ1gIHo=
-X-Received: by 2002:a05:6512:1327:: with SMTP id x39mr5050278lfu.37.1622872620963;
- Fri, 04 Jun 2021 22:57:00 -0700 (PDT)
+        id S229978AbhFEJZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Jun 2021 05:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbhFEJZJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Jun 2021 05:25:09 -0400
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FABDC061766
+        for <linux-btrfs@vger.kernel.org>; Sat,  5 Jun 2021 02:23:19 -0700 (PDT)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id D0C319C26E; Sat,  5 Jun 2021 10:23:15 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1622884995;
+        bh=fTHLepHKEhH85KaE9QiNLo16d/jRN/Ul2o012DB1qhI=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=VLn0PVr+aOsCPitlDTrUXpwWY15JfG+t9uYc8zOFqn7LkSVcP/lhgiYm28aavOhJk
+         1TZy2zyTCjlhZ2Ru1k+0saqJfVDouYyddEzCa5wjVPMpIqrYyR9vD0v7VOH+dF+dtq
+         gPC16v3F8hh2H9fxCywgRPNRYS8aGpS8b/4ZD6jLvL9MvT6nv9XwFio8dDmtrc5Mj2
+         ZyGn5ksHgcd1X2UNGXgMOyr9Ghbd5EOri9h/w4kt0dSJSrfsVkvzwC9dk0d+Yk02eV
+         GmilvbihD3dlcxvxZgguSgPfdUlYnkZNiFatoPWlbNwBnKKSHwK/D/ye26mMIuRfF3
+         GUhJaYX5KZYBA==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-3.6 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id B0F919B730;
+        Sat,  5 Jun 2021 10:23:13 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1622884993;
+        bh=fTHLepHKEhH85KaE9QiNLo16d/jRN/Ul2o012DB1qhI=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=aQFGynK0KFS05eeKAONq4iIx4nBmhetPiCb2K+yKLeYP9vnoDgefErKUBRFz0JXzV
+         Pd1CXT+WP9gBfpHpfao8NUUVefbmG6xWhrFIwBqy1iVsJmTUPbY/VUQkMat1TWYrAR
+         GJAExcNz9xtwnR5TRtuyypKEpPD1Sl4fmZfVcEqVGvpSoAwjVC9YLepTE9X4t0EJmi
+         viYgsEp+OWatO8iymAd6tZ3DLB1kHkbJOmejHWkCEKyKxK1EnHcurb3GIqL4pB7MgE
+         C2WppQKovgbTCjLUVwuGz///cl0edpgK2GYSXe/6iNp9zJddhMuhyUZkV6xbIAnIGX
+         Ka4ZFNtMJT8Uw==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+        by black.home.cobb.me.uk (Postfix) with ESMTP id 6403C24E518;
+        Sat,  5 Jun 2021 10:23:13 +0100 (BST)
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+To:     Chris Murphy <lists@colorremedies.com>,
+        Gaardiolor <gaardiolor@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <cf633d62-73ab-1ce2-f31c-a4a8407a38b4@gmail.com>
+ <CAJCQCtRkZPqQ_Rfx1Kk6rXZ_GyxDcLymdFjJkS12zZZ0mep3vQ@mail.gmail.com>
+ <5272b826-ec8e-f3a3-6fc1-bb863b698c83@gmail.com>
+ <CAJCQCtTdZ6LiYQPi-tb95auE1K1bxJ04iDPbu03k4W-Pu5xbEA@mail.gmail.com>
+Subject: Re: Re: Corrupted data, failed drive(s)
+Message-ID: <751d9089-15c7-8fb3-4291-407ec5458149@cobb.uk.net>
+Date:   Sat, 5 Jun 2021 10:23:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <CAGnHSEkr0N_hnxvm89prL3vObYgvVoPFHLL4Z7wnQCSem6hB_A@mail.gmail.com>
- <CAGnHSEkeu1hW-7YQO0HrYK__aY-eMdxfgSbcOTvnMu3jUcu4iw@mail.gmail.com> <20210604201630.GH11733@hungrycats.org>
-In-Reply-To: <20210604201630.GH11733@hungrycats.org>
-From:   Tom Yan <tom.ty89@gmail.com>
-Date:   Sat, 5 Jun 2021 13:56:49 +0800
-Message-ID: <CAGnHSEk-+2tA21+sN4dioYbs_u4m_NiLPkG8u6ONJS=JbCACoA@mail.gmail.com>
-Subject: Re: reflink copying does not check/set No_COW attribute and fail
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org, bug-coreutils@gnu.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJCQCtTdZ6LiYQPi-tb95auE1K1bxJ04iDPbu03k4W-Pu5xbEA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As far as I'm concerned, inheriting an attribute from the source inode
-isn't a "surprising" behavior. Rather it seems pretty "natural" to me.
-And I don't think whether the attribute is "dangerous" changes that,
-because if you consider it "dangerous", shouldn't you "watch out"
-anyway when you try to make a clone of a source with such an
-attribute?
+On 05/06/2021 00:22, Chris Murphy wrote:
+> On Fri, Jun 4, 2021 at 3:27 AM Gaardiolor <gaardiolor@gmail.com> wrote:
+.
+.
+.
+>> Turns out my drives aren't very cool though. 2 have >45k hours, 2 have
+>>  >12k which should be kinda ok, but are SMR. Just might be that they are
+>> all failing.. any idea how plausible that scenario could be ?
+> 
+> I can't compute the probability. It does seem unlikely. Even if it's
+> something weird like all four drives are the same make/model/firmware
+> and are hitting some kind of firmware bug that's in common to them?
+> Rare but not impossible, perhaps even plausible. I think though, if
+> you have memory bitflips, this will show up elsewhere like in-memory
+> corruption unrelated to the file system, and cause weird behaviors
+> including random crashing. Same if it's power induced. 
 
-If we see it from the way that, the kernel does not make the
-destination inherit nodatasum just to make reflink succeed as much as
-possible, but rather it just by design inherit nodatacow (for the
-reason of being NOT surprising), then there's no concern in whether
-they should "decoupled" when we implement the inheritance. (Like we
-can't set only nodatasum with `chattr either. It's simply out of the
-scope then.)
+I wouldn't dismiss power problems. I had some problems on a small system
+where I had added several big disks over time and had some (2 or 3)
+sharing a single PSU connection. The problems went away completely when
+I recabled each disk to use a separate port on the PSU.
 
-I don't know if we can do that based on whether the reflink mode is
-always. Though we can fallback to "normal" copy when the source has
-nodatasum (and/or nodatacow), personally I don't find it less
-surprising than inheriting nodatacow all the time.
+In my case the problems looked like SCSI cable problems (command
+communication errors resulting in frequent link resets) rather than data
+corruption (but didn't go away when I replaced the cables and didn't
+move when I swapped the data cables around) but I could easily believe
+other errors could have been seen. And, of course, they were load
+related - if all the disks were working at once.
 
-By the way, what will `chattr -C` do exactly if the file/inode had
-nodatacow? Is the behavior different when it is / there is a reflink?
+I recommend avoiding sharing PSU connections. Particularly between
+heavily used disks.
 
-On Sat, 5 Jun 2021 at 04:16, Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
->
-> On Fri, Jun 04, 2021 at 10:37:35PM +0800, Tom Yan wrote:
-> > Also cc'ing bug-coreutils@gnu.org.
-> >
-> > On Fri, 4 Jun 2021 at 22:33, Tom Yan <tom.ty89@gmail.com> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > I've just bumped into a problem that I am not sure what the expected
-> > > behavior should be, but there seems to be something flawed.
-> > >
-> > > Say I have a file that was created with the No_COW attributed
-> > > (inherited from the directory / subvolume / mount option). Then if I
-> > > try to do a reflink copy, the copying will fail with "Invalid
-> > > argument" if the copy has no one to inherit the No_COW attribute from.
->
-> Correct.  nodatacow implies nodatasum, and you cannot reflink an extent
-> from a nodatasum inode into a datasum inode.
->
-> The result of allowing this would be a file that has some extents
-> that have csums, and some that do not.  Making this work would make
-> reading from such a file worse (i.e. make it slower, or fail to detect
-> corruption in metadata).  It's possible to solve some of those problems
-> (or at least contain them in inodes that are known to have mixed csum
-> and non-csum data), but first someone would have to make the case that
-> this is worth the effort to support.
->
-> > > For example:
-> > > [tom@archlinux mnt]$ sudo btrfs subvol list .
-> > > ID 256 gen 11 top level 5 path a
-> > > ID 257 gen 9 top level 5 path b
-> > > [tom@archlinux mnt]$ lsattr
-> > > ---------------------- ./a
-> > > ---------------C------ ./b
-> > > [tom@archlinux mnt]$ lsattr b/
-> > > ---------------C------ b/test
-> > > [tom@archlinux mnt]$ du -h b/test
-> > > 512M    b/test
-> > > [tom@archlinux mnt]$ lsattr a/
-> > > [tom@archlinux mnt]$ cp --reflink=always b/test a/
-> > > cp: failed to clone 'a/test' from 'b/test': Invalid argument
-> > > [tom@archlinux mnt]$ lsattr a/
-> > > ---------------------- a/test
-> > > [tom@archlinux mnt]$ du a/test
-> > > 0    a/test
-> > > [tom@archlinux mnt]$ du --apparent-size a/test
-> > > 0    a/test
-> > > [tom@archlinux mnt]$ rm a/test
-> > > [tom@archlinux mnt]$ sudo chattr +C a/
-> > > [tom@archlinux mnt]$ cp --reflink=always b/test a/
-> > > [tom@archlinux mnt]$ lsattr a/
-> > > ---------------C------ a/test
-> > > [tom@archlinux mnt]$ cmp b/test a/test
-> > > [tom@archlinux mnt]$
-> > >
-> > > I'm not entirely sure if a reflink copy is supposed to work for a
-> > > source file that was created with No_COW, but apparently it is.
->
-> Snapshots are also allowed for nodatacow files.  The extents that are
-> shared become implicitly datacow until they are not shared any more.
->
-> Snapshots are deferred reflink copies, so it would be difficult to
-> allow one and not the other.  Disallowing both seems overly restrictive
-> (e.g. with such a restriction, it would not be possible to use 'btrfs
-> send' or make a snapshot on a subvol that contains any nodatacow file).
->
-> btrfs did disallow both operations for swap files, so it could be possible
-> to disallow both reflinks and snapshots for nodatacow files, but AFAIK
-> nobody wants that (some people even want the swapfile restrictions to
-> go away someday).
->
-> > > The
-> > > problem is just that the reflink copy also needs to have the attribute
-> > > set, yet it cannot inherit from the source automatically.
->
-> reflink can only reflink copy from one nodatasum file to another nodatasum
-> file, or from one datasum file to another datasum file.
->
-> An empty inode can be changed from datacow to nodatacow (or vice versa)
-> using the fsattr ioctl, which simultaneously changes the file from
-> datasum to nodatasum if the filesystem was not mounted with the nodatasum
-> mount option.
->
-> There is a possible kernel enhancement here:  when an empty inode is the
-> dst of a reflink, automatically change the reflink dst inode's nodatasum
-> flag to match the reflink src inode's nodatasum flag.  If the dst inode
-> is not empty and the inode datasum flags do not match, then reject the
-> reflink with EINVAL as before.
->
-> It's not clear whether this should apply only to nodatasum or also to
-> nodatacow.  reflink doesn't need src and dst agreement on nodatacow,
-> so the dst inode could be a nodatasum+datacow file.  Unfortunately all
-> the userspace tools including coreutils can only see the nodatacow
-> inode bit, not the nodatasum bit, so the lack of csums on the dst file
-> would be invisible.  The kernel cannot know the user's intent from the
-> available information.
->
-> It's not clear that we want the kernel to be implicitly changing
-> inode attribute bits like this--especially bits that disable integrity
-> features like nodatasum.  There is precedent for changing fsattrs with
-> the no-compress inode flag, but that flag doesn't disable csums, and
-> this one would.
->
-> One could also make the opposite case:  it should always be an error to
-> do anything that would put data in a datasum file without csums, the
-> existing behavior is correct, and should not be changed.  The problem
-> with this argument is that users can't see the datasum inode bits,
-> so it's not clear that the EINVAL is a data protection mechanism.
->
-> > > I wonder if this is a kernel-side problem or something that coreutils
-> > > missed? It also seems wrong that when it fails there will be an empty
-> > > destination file created.
->
-> Normally coreutils will fall back to simple copy if --reflink=auto
-> is used.  --reflink=always is the user's explicit request for "reflink
-> or nothing, please."  The user correctly got nothing, as requested.
->
-> On other filesystems, reflink on a nodatacow file might make a simple
-> copy in the kernel--in which case you are no better off than if you had
-> used --reflink=auto.
->
-> coreutils could propagate the source inode nodatacow fsattribute to
-> the destination inode if it intends to use reflink to copy the data.
-> That would be the userspace equivalent of the kernel enhancement I
-> suggested above.  It would probably match user expectations better--no
-> hidden surprises for non-coreutils use cases, and all the affected inode
-> attribute bits are necessarily visible in userspace.
->
-> fsattr propagation could be quite complicated for coreutils to implement
-> correctly in general, as some fsattrs should not be propagated this way,
-> and other filesystems may have different restrictions.  Some fsattrs must
-> be set before the data is written (e.g. -c for compression), others must
-> be set after the data is written (e.g. -i for immutable), and some are
-> a matter of user intent (e.g. should a simple copy be compressed if the
-> source is not?  Depends on the intended use of the copy).
->
-> On other filesystems this userspace behavior might trigger the opposite
-> of the intended kernel behavior, causing reflink to always fall back to
-> simple copy because the dst inode's nodatacow attribute is set.
->
-> Ideally btrfs will not force coreutils to do one thing on btrfs and the
-> opposite thing on other filesystems, so it might be worthwhile to hack
-> around this in the kernel as proposed above.  There is precedent for
-> that--btrfs falls back to simple copy in reflinks of inline extents,
-> more or less for the sole purpose of making cp --reflink=always not fail
-> so randomly.
->
-> > > Kernel version: Linux archlinux 5.12.8-arch1-1 #1 SMP PREEMPT Fri, 28
-> > > May 2021 15:10:20 +0000 x86_64 GNU/Linux
-> > > Coreutils version: 8.32
-> > >
-> > > Regards,
-> > > Tom
