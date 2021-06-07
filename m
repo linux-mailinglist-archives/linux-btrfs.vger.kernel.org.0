@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D99A39E587
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 19:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8097C39E603
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 19:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFGRef (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Jun 2021 13:34:35 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45578 "EHLO
+        id S230313AbhFGSAR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Jun 2021 14:00:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46258 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbhFGRef (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 13:34:35 -0400
+        with ESMTP id S230215AbhFGSAQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 14:00:16 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C426D21A90;
-        Mon,  7 Jun 2021 17:32:42 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id B5D1721AA6;
+        Mon,  7 Jun 2021 17:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623087162;
+        t=1623088704;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=B+U8mAmOtgNWiQbH57K3dY9IjUSoMPK898hJ5NQl8/M=;
-        b=kQ17nSHWSIU4pKCzPQW1ZmltCAQUHyK7t52JvrP4XWUoZuHgMgFf4EN+GXtB37RHQET1hA
-        3f7J8rLzfJ0iTTF2Bf4K7Ce0A3xjE0An6yOQZ9zPEcHr1L4pVP1ss8AYZ587bh1UtxyG4Z
-        J+769Rd24MmKrQ9WzxVSUTc/LrU6Bdk=
+        bh=1KKVTCev007yIfaoEtAkSCWKzdEVaXzhgM6WD4z4v/k=;
+        b=PC4BnnfnIKbPD63+SwTcIiNCLx9imoBHsC84S3pReJbwhCp4+yWuZzFwMlVnl71gJK4VT8
+        bQevT4fOby1YP0G1njiVW2qI0qk7I62c5UiGOqTrlfP7Rc0jAH6UOZ9auDgjUObgObkizu
+        F+VEg0Kk+489F0VxGAzhjUyOaZhpl2s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623087162;
+        s=susede2_ed25519; t=1623088704;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=B+U8mAmOtgNWiQbH57K3dY9IjUSoMPK898hJ5NQl8/M=;
-        b=JTWc4C7sCB4USIxdeBYHE+lkQRHAYFtdBkmCBJTDGatOOWnSa0nwKUaDzfqohZGHnUd5M+
-        FYdD/Plg/fD9CbDg==
+        bh=1KKVTCev007yIfaoEtAkSCWKzdEVaXzhgM6WD4z4v/k=;
+        b=ga+E2pUNBy2S89Oh4u/D0KAK5fbk8dGSxIFUnGXTpsDKbP5ZMseW8gc6NZzeWDSRRTp49A
+        OS5GeFoz17vK0uCg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id BE1A5A3B87;
-        Mon,  7 Jun 2021 17:32:42 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id AF97EA3B8B;
+        Mon,  7 Jun 2021 17:58:24 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id ACCC6DB228; Mon,  7 Jun 2021 19:29:59 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 19:29:59 +0200
+        id 9C699DA8CA; Mon,  7 Jun 2021 19:55:41 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 19:55:41 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
 Subject: Re: [PATCH] btrfs: fix a rare race between metadata endio and eb
  freeing
-Message-ID: <20210607172959.GG31483@twin.jikos.cz>
+Message-ID: <20210607175541.GH31483@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
@@ -119,6 +119,8 @@ On Mon, Jun 07, 2021 at 05:02:58PM +0800, Qu Wenruo wrote:
 > But it should not be a big deal.
 > 
 > Fixes: ***SPACEHOLDER**** ("btrfs: submit read time repair only for each corrupted sector")
+> Signed-off-by: Qu Wegruo <wqu@suse.com>
 
-This won't work, I won't refresh this patch each time I rebase
-misc-next on a new rc. A reference by subject should be sufficient.
+Added to the subpage patch series in misc-next, with a note about the
+commit that introduced it. The reasoning that the race is rare and we
+want the description separate in case the approach is revisited.
