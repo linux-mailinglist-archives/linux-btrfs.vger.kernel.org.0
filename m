@@ -2,125 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8097C39E603
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 19:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A54B39E64A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 20:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhFGSAR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Jun 2021 14:00:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46258 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhFGSAQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 14:00:16 -0400
+        id S231200AbhFGSQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Jun 2021 14:16:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35226 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFGSQJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 14:16:09 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B5D1721AA6;
-        Mon,  7 Jun 2021 17:58:24 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2D9091FD33;
+        Mon,  7 Jun 2021 18:14:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623088704;
+        t=1623089657;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1KKVTCev007yIfaoEtAkSCWKzdEVaXzhgM6WD4z4v/k=;
-        b=PC4BnnfnIKbPD63+SwTcIiNCLx9imoBHsC84S3pReJbwhCp4+yWuZzFwMlVnl71gJK4VT8
-        bQevT4fOby1YP0G1njiVW2qI0qk7I62c5UiGOqTrlfP7Rc0jAH6UOZ9auDgjUObgObkizu
-        F+VEg0Kk+489F0VxGAzhjUyOaZhpl2s=
+        bh=PQ5o6xop42qPLbRXKQBU46D0WF3DUOnpKBC6c9QbmbQ=;
+        b=Yo89HEXnINNpVVgRWbyOX8EC+0FS9cDEf98O7X2QmmtF7gdHHYjxI68CiRugmjjmL+GQIJ
+        nPRak9Rppg7oOjuVEHCO6qLd4jHKS/14AmK8M19QElgozwkoaM769RPxfIBZn765wdceL0
+        eKAOlFnSqEuOCoxFOFfz9mPUrDljFnE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623088704;
+        s=susede2_ed25519; t=1623089657;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1KKVTCev007yIfaoEtAkSCWKzdEVaXzhgM6WD4z4v/k=;
-        b=ga+E2pUNBy2S89Oh4u/D0KAK5fbk8dGSxIFUnGXTpsDKbP5ZMseW8gc6NZzeWDSRRTp49A
-        OS5GeFoz17vK0uCg==
+        bh=PQ5o6xop42qPLbRXKQBU46D0WF3DUOnpKBC6c9QbmbQ=;
+        b=fPAnRaYWp0phLeBdNm8Rx2zvJUWCLBM8ude0bc5QWxl34cxbNJ/ScZrz2Mn6zU/uc5vguc
+        UOSOySMW/X0pG3BQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id AF97EA3B8B;
-        Mon,  7 Jun 2021 17:58:24 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 30B3EA3B94;
+        Mon,  7 Jun 2021 18:14:16 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9C699DA8CA; Mon,  7 Jun 2021 19:55:41 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 19:55:41 +0200
+        id 1D6A0DA8CA; Mon,  7 Jun 2021 20:11:33 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 20:11:33 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
-Subject: Re: [PATCH] btrfs: fix a rare race between metadata endio and eb
- freeing
-Message-ID: <20210607175541.GH31483@twin.jikos.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: remove unused btrfs_{set,clear}_pending_and_info
+ macros
+Message-ID: <20210607181132.GI31483@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210607090258.253660-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <9a2e763258dd00074e682f3783ec2156afff8450.1623051748.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210607090258.253660-1-wqu@suse.com>
+In-Reply-To: <9a2e763258dd00074e682f3783ec2156afff8450.1623051748.git.johannes.thumshirn@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 05:02:58PM +0800, Qu Wenruo wrote:
-> [BUG]
-> There is a very rare ASSERT() triggering during full fstests run for
-> subpage rw support.
-> 
-> No extra reproduce so far.
-> 
-> The ASSERT() get triggered for metadata read in
-> btrfs_page_set_uptodate() inside end_page_read().
-> 
-> [CAUSE]
-> There is still a small race window for metadata only, the race could
-> happen like this:
-> 
->                 T1                  |              T2
-> ------------------------------------+-----------------------------
-> end_bio_extent_readpage()           |
-> |- btrfs_validate_metadata_buffer() |
-> |  |- free_extent_buffer()          |
-> |     Still have 2 refs             |
-> |- end_page_read()                  |
->    |- if (unlikely(PagePrivate())   |
->    |  The page still has Private    |
->    |                                | free_extent_buffer()
->    |                                | |  Only one ref 1, will be
->    |                                | |  released
->    |                                | |- detach_extent_buffer_page()
->    |                                |    |- btrfs_detach_subpage()
->    |- btrfs_set_page_uptodate()     |
->       The page no longer has Private|
->       >>> ASSERT() triggered <<<    |
-> 
-> This race window is super small, thus pretty hard to hit, even with so
-> many runs of fstests.
-> 
-> But the race window is still there, we have to go another way to solve
-> it other than replying on random PagePrivate() check.
-> 
-> Data path is not affected, as data path will lock the page before read,
-> while unlock the page after the last read has finished, thus no race
-> window.
-> 
-> [FIX]
-> This patch will fix the bug by re-purpose btrfs_subpage::readers.
-> 
-> Now btrfs_subpage::readers will be a member shared by both metadata and
-> data.
-> 
-> For metadata path, we don't do the page unlock as metadata only relies on
-> extent locking.
-> 
-> At the same time, teach page_range_has_eb() to take into
-> btrfs_subpage::readers into consideration.
-> 
-> So that even if the last eb of a page get freed, page::private won't be
-> detached as long as there is still pending end_page_read() calls.
-> 
-> By this we eliminate the race window, this will slight increase the
-> metadata memory usage, as the page may not be released as frequently as
-> usual.
-> But it should not be a big deal.
-> 
-> Fixes: ***SPACEHOLDER**** ("btrfs: submit read time repair only for each corrupted sector")
-> Signed-off-by: Qu Wegruo <wqu@suse.com>
+On Mon, Jun 07, 2021 at 04:42:49PM +0900, Johannes Thumshirn wrote:
+> Commit 5297199a8bca ("btrfs: remove inode number cache feature") removed
+> the last user, but forgot to remove the macros as well. Let's do that now.
 
-Added to the subpage patch series in misc-next, with a note about the
-commit that introduced it. The reasoning that the race is rare and we
-want the description separate in case the approach is revisited.
+This is part of the pending actions API, it's a way how to do some whole
+filesystem change from an unsafe context. The bit is set and the rest is
+done inside transaction commit at the same time.
+
+I'm thinking if we're going to have such options, the free space tree
+would qualify but it's done in another way. The no-holes can be also
+technically switched on a mounted filesystem because the code handles
+both cases. So I'm not sure if we want to remove it without evaluation.
