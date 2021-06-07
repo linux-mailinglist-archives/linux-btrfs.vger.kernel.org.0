@@ -2,90 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E30B39DBD0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 13:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A0039DBF4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 14:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhFGL6V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Jun 2021 07:58:21 -0400
-Received: from mail-ed1-f47.google.com ([209.85.208.47]:42683 "EHLO
-        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhFGL6U (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 07:58:20 -0400
-Received: by mail-ed1-f47.google.com with SMTP id i13so20002220edb.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Jun 2021 04:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=92d+qusHSqVoGW0uUdNEmpvQk26VZIhWgGNucAMNnbM=;
-        b=VdkSMIVHzwDICHYqQuGxV0crrN7l0qZrZHpl/ud1LWdpXUnCvIbU6oJHkZdR8/enzP
-         Qx5tMcNoCAbekEhwMutU2bXReYlqZAl3YQTTsGsxm8EzLXf92kO+QT+X3pKHEw/GW0Vb
-         0Evu9B0hUU+Jjzr+/YNIH6iuS5RMkSA5mnvKKlx4ub6Wox1dpYC6++wdbQBi/Jxva+h9
-         4bahk5RPYnV8psn7c8xFYe5GPk04LLIflHSdiHl1AJ51rhKCaUiAVlvs1VXVcOgPxw2d
-         sHVtqHDCV+zunjAVEufSyISOFS4Ek1NYQfmccUtuQhBPwnQd0c3bpjAd68FtL/AkYWlt
-         u+3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=92d+qusHSqVoGW0uUdNEmpvQk26VZIhWgGNucAMNnbM=;
-        b=VyKAMV3eaeUvZ19DYEsTr9rVNtrpt/LDwdmxpa22yxrK5ofAYIfiz88SpcCSMzbEZN
-         ZWtEprzAz3khOlCNDx3lagjW7SOdPh4A9GRDW8MrxWgGV1zLbM2gHaMUwsBVXEjurP5d
-         1QhCHYW3BWwW+w7Ol4n6Ni0CXTrZMsbGrgRewwXD1+hioK9oIYhPYD/i95wJcPYC3XJ1
-         hqjcA5DUnzA9ffCXW9Rj8bwn7I3c+g08CXChx5yEkR5ezA6WHmEAZBf2quky5e+zmQHo
-         /Wt+gM9ZwyQaQ9OSvq+BubR6LSYGBgaQ/561uON/KRiFtg7NS8sWFBAT73o8SKppj10t
-         q3Ng==
-X-Gm-Message-State: AOAM531d+LmEx/NWBUushfKdoL8r+Akgd880rgbuyo9fxJUsP3meIS/j
-        LdpOzuCfKBGP7293c4a8GgFt6PfmNj8=
-X-Google-Smtp-Source: ABdhPJxKc9oPHznsiQlNYoUu6o6Qh0iezZU1rj0rLv/ZBlkDV8ipf6NgYEywxUJN6DCfiOILAQCB+Q==
-X-Received: by 2002:aa7:c547:: with SMTP id s7mr19307198edr.239.1623066912501;
-        Mon, 07 Jun 2021 04:55:12 -0700 (PDT)
-Received: from localhost.localdomain (ppp046176007146.access.hol.gr. [46.176.7.146])
-        by smtp.gmail.com with ESMTPSA id t5sm6444020eje.29.2021.06.07.04.55.10
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Jun 2021 04:55:12 -0700 (PDT)
-From:   auxsvr@gmail.com
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: Write time tree block corruption detected
-Date:   Mon, 07 Jun 2021 14:55:10 +0300
-Message-ID: <3113674.aeNJFYEL58@localhost.localdomain>
-In-Reply-To: <1861574.PYKUYFuaPT@localhost.localdomain>
-References: <1861574.PYKUYFuaPT@localhost.localdomain>
+        id S230331AbhFGMK1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Jun 2021 08:10:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52494 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230286AbhFGMK0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 08:10:26 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 157C06xX107386;
+        Mon, 7 Jun 2021 12:08:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=piXlGSPIq7CMyK8037S2C2hB7fAiJBn+mYIhzd0c0Ww=;
+ b=F0BUlMiuJDZ/XRQ0nvLGQE+h6/9Xxik0JU+1ww5myr7M6tNf95mpmCptvZjS/FLy9XY0
+ pjUfTwAAxJ3UOyohAd1mE+9cWXz45sYGgo8yrfppFdaQEzO6R8F7Bux4KMvnsBP7Do2O
+ WdMWuLvHDcCmv7K3eFdoxk5aPuD8wMliiYq4S+BS2PTqxsTik/ye+XvY5YZBQSPoJpgH
+ ce+vUPRyUKzbd6K7VXhKTuMRpmxDhls+sAMppno4laWoymo9FlGcMvg3MmhfvEQK43Mr
+ Zm4I/dfdeJc2o8ZFPkQV05MMgrXAzCjgGY1rFKTi7a6HRBusmQlA9ouvi/65x5d+aMyn nA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 3914quha30-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 12:08:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 157BxlhV007470;
+        Mon, 7 Jun 2021 12:08:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 3906spjbx6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Jun 2021 12:08:31 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 157C8TT4016777;
+        Mon, 7 Jun 2021 12:08:29 GMT
+Received: from fed2.sg.oracle.com (/39.109.186.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Jun 2021 12:08:29 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, guan@eryu.me
+Subject: [PATCH 0/2 v2] fstests: fix _scratch_mkfs_blocksized
+Date:   Mon,  7 Jun 2021 20:08:18 +0800
+Message-Id: <cover.1623059144.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <d27e3a324f986b5b52d11df7c7bdcde6744fad4b.1622807821.git.anand.jain@oracle.com>
+References: <d27e3a324f986b5b52d11df7c7bdcde6744fad4b.1622807821.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10007 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=882 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106070092
+X-Proofpoint-ORIG-GUID: KtB1E08nZt61Up8cZttSnwfHzVybS16F
+X-Proofpoint-GUID: KtB1E08nZt61Up8cZttSnwfHzVybS16F
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10007 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ spamscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=894 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106070092
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Monday, 31 May 2021 00:30:00 EEST auxsvr@gmail.com wrote:
-> Hello,
-> 
-> On linux 5.3.18-lp152.75-default (openSUSE 15.2), I got the following error message:
-> 
-> [33573.070335] BTRFS critical (device sda2): corrupt leaf: root=3 block=531135201280 slot=0 devid=1 invalid bytes used: have 64503152640 expect [0, 64424509440]
-> [33573.070338] BTRFS error (device sda2): block=531135201280 write time tree block corruption detected 
-> [33573.071909] BTRFS: error (device sda2) in btrfs_commit_transaction:2264: errno=-5 IO failure (Error while writing out transaction) 
-> [33573.071911] BTRFS info (device sda2): forced readonly 
-> [33573.071913] BTRFS warning (device sda2): Skipping commit of aborted transaction. 
-> [33573.071915] BTRFS: error (device sda2) in cleanup_transaction:1823: errno=-5 IO failure 
-> [33573.071917] BTRFS info (device sda2): delayed_refs has NO entry 
-> [33577.283856] BTRFS info (device sda2): delayed_refs has NO entry
+Fixes _scratch_mkfs_blocksized() to support btrfs. And the functions
+indentation to use tab instead of space.
 
-After using btrfs check --repair /dev/sda2:
+v2:
+ Patch 1/2:
+    Use grep -w
+    Drop redundant $MKFS_OPTIONS
 
-ref mismatch on [184344514560 4096] extent item 1024, found 0
-owner ref check failed [184344514560 4096]
-repair deleting extent record: key 184344514560 168 4096 
-Repaired extent references for 184344514560
-Dev extent's total-byte(61236838400) is not equal to byte-used(63451430912) in dev[1, 216, 1]
+Anand Jain (2):
+  btrfs: support other sectorsizes in _scratch_mkfs_blocksized
+  _scratch_mkfs_blocksized: fix indentation
 
-without resolving the issue, as the filesystem would still become read-only, I deleted all snapshots and there hasn't been an issue for a few hours of heavy use. However, btrfs check still returns the error regarding size mismatch and this worries me a bit. Is there an easy way to resolve this or should I recreate the filesystem?
+ common/rc | 59 +++++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 35 insertions(+), 24 deletions(-)
 
-It seems that every time free space is less than 1 GiB and I use zypper, I get a similar corruption message. Thankfully, there hasn't been any data loss so far. There's also a backup of the filesystem right after the first incident, in case it is useful for further investigation.
-
-Regards,
-Petros
-
+-- 
+2.27.0
 
