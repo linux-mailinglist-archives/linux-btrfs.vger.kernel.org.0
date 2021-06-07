@@ -2,105 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEC039E6D2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 20:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B481A39E6EE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 20:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhFGSs4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Jun 2021 14:48:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37410 "EHLO
+        id S230409AbhFGTAf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Jun 2021 15:00:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37906 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230183AbhFGSs4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 14:48:56 -0400
+        with ESMTP id S230516AbhFGTAc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 15:00:32 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E02B91FD33;
-        Mon,  7 Jun 2021 18:47:03 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 662CE1FD2A;
+        Mon,  7 Jun 2021 18:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623091623;
+        t=1623092320;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Rr7S9JSXv6IpLAtI9bLnX6PFhXlv2eOqaxvSo85v7uA=;
-        b=2/UBzS6qUekAt7UEUpNJAHFpjtRAZCgya5dg2rGSkv8azROShqBsdCThiFY3pTmB4Arh31
-        9Qlbz1Eu86lC3HZFXbzsCq2DnK2MRggvObzZIhPYXXdB3/T01BObas1BnmaRccqqUNUzIA
-        fl0rYC+V6NfOh7oqPq/yKOiqmq3jfws=
+        bh=cqTYytf/tOVILZ0wzshm5HnlgJUrkXVERtt5VSEOuAc=;
+        b=B+O7lJIeEjVHHVRzQm8tVcz4crtTX16f2VONytBVCG5nPmBfFhrf8jaxPKFA0LGXRYquXU
+        M4mwvrFsbSdSaWJknFjNwdnM4aABVHbqruBULf1owsHXElI2AZ5MEs/o4DwndsQZxnt60n
+        k+IxPxnrOS/HYK2n/bikurasuTI8HpA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623091623;
+        s=susede2_ed25519; t=1623092320;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Rr7S9JSXv6IpLAtI9bLnX6PFhXlv2eOqaxvSo85v7uA=;
-        b=LA6F3GjeMfMvvf0Lf74O8X8WxBwWbvu6Woir3S7t5I4W0txi/lXTOjGLr1++E4PV73+IUJ
-        irrwAP5VA6K8SoAA==
+        bh=cqTYytf/tOVILZ0wzshm5HnlgJUrkXVERtt5VSEOuAc=;
+        b=9G2SxkIfaqFXbSH8AvVpCDTfIDaimC8xgeyYfVtSS9a2aGu0x/r8PSN0Zhm+AKiyc7BLhK
+        4mkVq5ohznMqfNAQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D97AEA3B8E;
-        Mon,  7 Jun 2021 18:47:03 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 60839A3BA6;
+        Mon,  7 Jun 2021 18:58:40 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C2FAFDB228; Mon,  7 Jun 2021 20:44:20 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 20:44:20 +0200
+        id 3C898DB228; Mon,  7 Jun 2021 20:55:57 +0200 (CEST)
+Date:   Mon, 7 Jun 2021 20:55:57 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: handle shrink_delalloc pages calculation
- differently
-Message-ID: <20210607184420.GK31483@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: sysfs: export dev stats in devinfo directory
+Message-ID: <20210607185556.GL31483@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        stable@vger.kernel.org
-References: <f17b840611935b5f58bfcdbe050a942c33b90a60.1622576697.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210604132058.11334-1-dsterba@suse.com>
+ <5aeca0cd-c6b2-939a-6f83-7ea5722076dc@oracle.com>
+ <20210604142105.GD31483@twin.jikos.cz>
+ <77708664-a7db-50e0-aa44-6cbb3fb90070@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f17b840611935b5f58bfcdbe050a942c33b90a60.1622576697.git.josef@toxicpanda.com>
+In-Reply-To: <77708664-a7db-50e0-aa44-6cbb3fb90070@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 01, 2021 at 03:45:08PM -0400, Josef Bacik wrote:
-> We have been hitting some early ENOSPC issues in production with more
-> recent kernels, and I tracked it down to us simply not flushing delalloc
-> as aggressively as we should be.  With tracing I was seeing us failing
-> all tickets with all of the block rsvs at or around 0, with very little
-> pinned space, but still around 120mib of outstanding bytes_may_used.
-> Upon further investigation I saw that we were flushing around 14 pages
-> per shrink call for delalloc, despite having around 2gib of delalloc
-> outstanding.
+On Sat, Jun 05, 2021 at 06:38:16AM +0800, Anand Jain wrote:
+> On 04/06/2021 22:21, David Sterba wrote:
+> > On Fri, Jun 04, 2021 at 09:41:09PM +0800, Anand Jain wrote:
+> >> On 4/6/21 9:20 pm, David Sterba wrote:
+> >>> The device stats can be read by ioctl, wrapped by command 'btrfs device
+> >>> stats'. Provide another source where to read the information in
+> >>> /sys/fs/btrfs/FSID/devinfo/DEVID/stats .
+> >>
+> >>    The planned stat here is errors stat.
+> >>    So why not rename this to error_stats?
+> > 
+> > I think it's commonly called device stats, dev stats, so when it's in
+> > 'devinfo' it's like it's the 'stats' for the device.
 > 
-> Consider the example of a 8 way machine, all cpu's trying to create a
-> file in parallel, which at the time of this commit requires 5 items to
-> do.  Assuming a 16k leaf size, we have 10mib of total metadata reclaim
-> size waiting on reservations.  Now assume we have 128mib of delalloc
-> outstanding.  With our current math we would set items to 20, and then
-> set to_reclaim to 20 * 256k, or 5mib.
 > 
-> Assuming that we went through this loop all 3 times, for both
-> FLUSH_DELALLOC and FLUSH_DELALLOC_WAIT, and then did the full loop
-> twice, we'd only flush 60mib of the 128mib delalloc space.  This could
-> leave a fair bit of delalloc reservations still hanging around by the
-> time we go to ENOSPC out all the remaining tickets.
+> > We don't have other
+> > stats, like regarding io but in that case it would make sense to
+> > distnguish the names.
 > 
-> Fix this two ways.  First, change the calculations to be a fraction of
-> the total delalloc bytes on the system.  Prior to my change we were
-> calculating based on dirty inodes so our math made more sense, now it's
-> just completely unrelated to what we're actually doing.
-> 
-> Second add a FLUSH_DELALLOC_FULL state, that we hold off until we've
-> gone through the flush states at least once.  This will empty the system
-> of all delalloc so we're sure to be truly out of space when we start
-> failing tickets.
-> 
-> I'm tagging stable 5.10 and forward, because this is where we started
-> using the page stuff heavily again.  This affects earlier kernel
-> versions as well, but would be a pain to backport to them as the
-> flushing mechanisms aren't the same.
+> My read_policy work (which I suppose is next on your list for review) 
 
-For 5.10 it depends on f00c42dd4cc8b856e6 ("btrfs: introduce a
-FORCE_COMMIT_TRANS flush operation") and is followed by the premptive
-flushing series. Prior to the commit introducing COMMIT_TRANS there are
-3 patches that seem lightweight enough for stable backport to 5.10 but
-that should be evaluated first.
+Yeah, it's among the next things to merge once the current features
+stabilize enough.
 
-5.11.x stable is EOL, so 5.12 is ok to pick it but in case there's
-interest to backport it to 5.10, more work is needed than just tagging.
+> made sense that publishing the io-stat information locally from btrfs is 
+> a good idea. So that it provides clarity if the IO is skewed to a device 
+> or balanced. Which is even more essential in the case of mixed device 
+> types. For now IMHO,  /sys/fs/btrfs/FSID/devinfo/DEVID/error_stats
+> is harmless.
+
+Agreed, I thought about the same, gathering some regular io stats, so
+the error_stats makes sense. There's still one open question whether to
+do it all in one file or in a subdirectory error_stats/ . The sysfs way
+is one value per file but for the stats I'm more inclined to follow what
+/proc/ stats do. It's more convenient to monitor stats in one file read
+than having to do 'cat error_stats/*' or with filenames as 'grep ^
+error_stats/*'.
