@@ -2,96 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD3739F97E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 16:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDBC39FAF5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 17:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhFHOsj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Jun 2021 10:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbhFHOsj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Jun 2021 10:48:39 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68E2C061574
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 07:46:31 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id h12-20020a17090aa88cb029016400fd8ad8so2430862pjq.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 08 Jun 2021 07:46:31 -0700 (PDT)
+        id S232208AbhFHPih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Jun 2021 11:38:37 -0400
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:35798 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231902AbhFHPih (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Jun 2021 11:38:37 -0400
+Received: by mail-pj1-f41.google.com with SMTP id fy24-20020a17090b0218b029016c5a59021fso7777318pjb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Jun 2021 08:36:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BxDqlVzp1FvnEVPizWnFiCE3Knefp4VI2tzsVlemQWs=;
-        b=UWVoVW+qKcfiO23S0sNvHwWjagbqluf3k8Ym2un0sBf0X1bJPfXkefvycf2Ssek/zV
-         bZnM1rhI26RxXs5GGZR+2WfD80pC1Kmb+TPdanX7RbjeiM2N6/2jDacseZlYRFmEHl2e
-         XIQ0KWaf7cex1Oxm2Xn693mxT1Tv9bp/FrIEK6M6Vh8az6T+VBkuRFAMcUPa6jlUONbM
-         A4qVClvnklJ6Fv3AGfb2ImHpYyl7lJFoorTG0DCLCj0tEBd6L65MDX++OcSB56tYCnc8
-         DFrVF/Q2cFnN1yAgmv7cKRbEi11elNKN5uYQGcc33azqAKnqlYJKNs5sqmZCFgSaUH5n
-         sjDA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BiD/Sie5ANsJtsF7Xh3x8auSFZYSwxMwh4yZVQHEapI=;
+        b=hvLhBDR92jBTpT/ha7qBTsSRolqSplveEWdeRD13Nb3MiFdJmQFg8L/JJY7lTZ+ZOP
+         s09U037aZCcP3OKX+HIb77R7F+cr5sIKBmamLkLbOby5EPeXW517US9Az3nVyrm0iLt+
+         u+npPfM2ctlZ3XpOea6rMHUG5Bi6zKwpCMMP/e68fxX+PKyjJHshQRw7/pmSbizpGrgi
+         wTEoQuftjr6G/bgMal7Za71q5QMWPFtPnGxN85Wn5r9g5ZMtV8gMEnL4UJ1wirzd/J2N
+         3A73WW9xbBItPW0D+rVoEBerZkPT2I8d66UYlT+PQJL67K4cmKScb7bBLLjH/t1G+SDN
+         Xxcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BxDqlVzp1FvnEVPizWnFiCE3Knefp4VI2tzsVlemQWs=;
-        b=XHFqECXtXW+/Oz63JIvA73ViNMmgPJkPoeoqM19pV6Wfq9IINdMFxh5gknfwLV8xfI
-         lXi73VoUBAhloNvz09H2fLjV4KW1Fn0U2eqnOhCnmwplo1mMKfMkdDOsR+It/M3NhspK
-         4TXvEX6bMhh5IiGxySNP6pSovmC9uMkSxSFX4Filrw5j0+YJmtYQu+GVBjJ1fYFa8Q7P
-         FDB/1assllMJMyd3jBvtyjFN3z8ucKBZpaiiVceTtiC6uCPIpnONnApXdTXyqMGY0HRz
-         mfjHs0wxrL94HPT94o7iZTobTcQO4VuAwApUOzYISEUvgs3Ovq9adxlQEhK56BnvJps+
-         kjUw==
-X-Gm-Message-State: AOAM5339AMP2ZPQcP8JBYCh4HNHokO6O/7dS23qkIbb5oLMaQ4Suh5I9
-        diM9hzKKVMXiXwUDa9ujK4+HUvbiRokUUHln
-X-Google-Smtp-Source: ABdhPJwnJiuOpHhvlQ46+BzaLcdyPXwEBgHPiYR89xlgzpSJ077rL/AW4YWa1Fc0Pz+pCWxr/+HG9A==
-X-Received: by 2002:a17:90b:124a:: with SMTP id gx10mr27299720pjb.214.1623163591528;
-        Tue, 08 Jun 2021 07:46:31 -0700 (PDT)
-Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id s33sm10585255pfw.150.2021.06.08.07.46.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BiD/Sie5ANsJtsF7Xh3x8auSFZYSwxMwh4yZVQHEapI=;
+        b=RSA8aJzGni4XIGFZQul6+Kb8xTlQfBOi8ky99bsA3BhaqY9T4VKdi1umBaww9xK8pR
+         HuboLN+Axm9C0bsJPCbO2NbfmXFQea6suyV9WuxFtdZNiLnHL7iWutmdbX7RymjbedNa
+         LAWJikyYebvYey6+ROMmm7VSgR8FVhoHOSBUQqzQIH5JA74JvvV6+J0UPonmuUgbqwOw
+         QhNco4pEouvFkzVvXsaAzizL7wriNoB0iiCyiykX0dOWXrBVldX44juFsZH4izw6L5gW
+         vzi0a1CODb+HVQEyWzXO5MytAC3Q/qlwodpeuTJZUVK+/zjchWyNPK/jXPyZ+t/J4pmH
+         OFUw==
+X-Gm-Message-State: AOAM531+CziJrJD8dG+jnM5opbyVYq84f1OYrRWPnUIiHIb86SsbQSI9
+        mmM7RMn0L0sLb3QYIcm3APY=
+X-Google-Smtp-Source: ABdhPJwiU4/HYOqpHl/CMtjwdM18goDyuzdVUw/8TzV/dUmhz8jJJWe65LZeRia8o9phTykfI+OYxA==
+X-Received: by 2002:a17:902:d50f:b029:10c:85d:6ae8 with SMTP id b15-20020a170902d50fb029010c085d6ae8mr230184plg.56.1623166531208;
+        Tue, 08 Jun 2021 08:35:31 -0700 (PDT)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id in24sm8120551pjb.54.2021.06.08.08.35.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Jun 2021 07:46:31 -0700 (PDT)
-Date:   Tue, 8 Jun 2021 14:46:24 +0000
+        Tue, 08 Jun 2021 08:35:30 -0700 (PDT)
 From:   Sidong Yang <realwakka@gmail.com>
 To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: device: print num_stripes in usage command
-Message-ID: <20210608144624.GA818085@realwakka>
-References: <20210530125636.791651-1-realwakka@gmail.com>
- <20210607192048.GM31483@twin.jikos.cz>
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH v2] btrfs-progs: device: print num_stripes in usage command
+Date:   Tue,  8 Jun 2021 15:35:20 +0000
+Message-Id: <20210608153520.820445-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607192048.GM31483@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 09:20:49PM +0200, David Sterba wrote:
-> On Sun, May 30, 2021 at 12:56:36PM +0000, Sidong Yang wrote:
-> > This patch appends num_stripes for each chunks in device usage commands.
-> > It helps to see profiles easily. The output is like below.
-> > 
-> > /dev/vdb, ID: 1
-> >    Device size:             1.00GiB
-> >    Device slack:              0.00B
-> >    Data,single[1]:        120.00MiB
-> >    Metadata,DUP[2]:       102.38MiB
-> >    System,DUP[2]:          16.00MiB
-> >    Unallocated:           785.62MiB
-> 
-Hi David. Thanks for review!
+This patch prints num_stripes for striping profiles in device usage commands.
+It helps to see profiles easily. The output is like below.
 
-> This is example of single and dup, but the whole point was to print that
-> for the striped profiles, like is shown in the issue
-> https://github.com/kdave/btrfs-progs/issues/372 , so it needs to be
-> conditional.
+/dev/vdc, ID: 1
+   Device size:             1.00GiB
+   Device slack:              0.00B
+   Data,RAID0/2:          912.62MiB
+   Metadata,RAID1:        102.38MiB
+   System,RAID1:            8.00MiB
+   Unallocated:             1.00MiB
 
-Okay, striped profiles need to be printed. I read some page from
-wikipedia about raid. and I got that RAID 0,5,6,10 supports striping.
-Those need to be printed and no printing for RAID 1, single, dup.
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+v2:
+ - print stripes if striping raid
+ - use separator "/"
+---
+ cmds/filesystem-usage.c | 31 ++++++++++++++++++++++++++-----
+ 1 file changed, 26 insertions(+), 5 deletions(-)
 
-> 
-> As the mirrored profiles have a fixed number of copies, there's no doubt
-> on how many devices are printed, same for single and dup.
-> 
-> I'm more inclined to use the "/" as separator: 'RAID6/3' it's more like
-> "raid6 on three devices", the "[]" looks like indexing. "," is used as
-> separator of the type so it won't be as simple to parse that.
+diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+index 107453d4..b92a4860 100644
+--- a/cmds/filesystem-usage.c
++++ b/cmds/filesystem-usage.c
+@@ -1192,20 +1192,41 @@ void print_device_chunks(struct device_info *devinfo,
+ 		const char *r_mode;
+ 		u64 flags;
+ 		u64 size;
++		u64 num_stripes;
++		u64 profile;
+ 
+ 		if (chunks_info_ptr[i].devid != devinfo->devid)
+ 			continue;
+ 
+ 		flags = chunks_info_ptr[i].type;
++		profile = flags & BTRFS_BLOCK_GROUP_PROFILE_MASK;
+ 
+ 		description = btrfs_group_type_str(flags);
+ 		r_mode = btrfs_group_profile_str(flags);
+ 		size = calc_chunk_size(chunks_info_ptr+i);
+-		printf("   %s,%s:%*s%10s\n",
+-			description,
+-			r_mode,
+-			(int)(20 - strlen(description) - strlen(r_mode)), "",
+-			pretty_size_mode(size, unit_mode));
++		num_stripes = chunks_info_ptr[i].num_stripes;
++
++		switch (profile) {
++		case BTRFS_BLOCK_GROUP_RAID0:
++		case BTRFS_BLOCK_GROUP_RAID5:
++		case BTRFS_BLOCK_GROUP_RAID6:
++		case BTRFS_BLOCK_GROUP_RAID10:			
++			printf("   %s,%s/%llu:%*s%10s\n",
++				   description,
++				   r_mode,
++				   num_stripes,
++				   (int)(20 - strlen(description) - strlen(r_mode)
++						 - count_digits(num_stripes) - 1), "",
++				   pretty_size_mode(size, unit_mode));
++			break;
++		default:
++			printf("   %s,%s:%*s%10s\n",
++				   description,
++				   r_mode,
++				   (int)(20 - strlen(description) - strlen(r_mode)), "",
++				   pretty_size_mode(size, unit_mode));
++			break;
++		}
+ 
+ 		allocated += size;
+ 
+-- 
+2.25.1
 
-I agree. I'll use "/" for next version.
