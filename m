@@ -2,166 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCA639E92F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Jun 2021 23:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FCA39EB91
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 03:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhFGVsL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Jun 2021 17:48:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46606 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhFGVsL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 17:48:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 79B341FD2D;
-        Mon,  7 Jun 2021 21:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623102378;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        id S231289AbhFHBmJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Jun 2021 21:42:09 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:42651 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231209AbhFHBmI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Jun 2021 21:42:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1623116415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T9KR/CaQBLmFkmWLty/5BG+6PviPXTRDua/BArJt1wA=;
-        b=WK2w1uIr4HO3IFPNxIdWBy+d2GwqG8ansZZSkjn1yQkWDZCH5vqVbDYR2yC1ApM2Oi6KZw
-        SePnevi795xWKFjNxGyOI3h30JkydCMPNPgIgarBrNGvfQZUNz/u1lwdHyypBGpJq2/C8Q
-        L2Tty4sp+koKHSibE+fZ8bJIlQa1XOs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623102378;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T9KR/CaQBLmFkmWLty/5BG+6PviPXTRDua/BArJt1wA=;
-        b=KewOfAotuIoXJvRbRe0twkGFrroxZzKiiHrdogk1px+mRlpA5VJOdEiQCj3eVS/rnmK+Ti
-        XgbfbjjZB0ie/dBw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 55584A3BE8;
-        Mon,  7 Jun 2021 21:46:18 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 48D1EDB228; Mon,  7 Jun 2021 23:43:35 +0200 (CEST)
-Date:   Mon, 7 Jun 2021 23:43:35 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Boris Burkov <boris@bur.io>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 1/5] btrfs: add compat_flags to btrfs_inode_item
-Message-ID: <20210607214335.GO31483@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Boris Burkov <boris@bur.io>,
-        linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1620240133.git.boris@bur.io>
- <6ed83a27f88e18f295f7d661e9c87e7ec7d33428.1620241221.git.boris@bur.io>
- <20210511191108.GL7604@twin.jikos.cz>
- <20210517214859.GS7604@twin.jikos.cz>
- <YKWG86j7MpECAo+s@zen>
+        bh=im4ePSwILsV2z3dXmhQ2aGecc1D8ibSKSYVIaBX4T/E=;
+        b=PcfN4mjzD/4IC03VocRnvmEdmxVfdlefUvej3LqZ2baEGM5FpVrfmx1PvvUOxcG6YFe8PB
+        ezzmbpSYmydr/WkYgMl+yFo+sI2iTyuToM9fSR3lZVB8Lswi58XD65DFMDlqBd5NGbeDMe
+        40xCwWMK89MoaxB+k8VV7EQt1rD5xuI=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2058.outbound.protection.outlook.com [104.47.12.58]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-26-0USconT3OHaKqjPYVW2Ynw-1; Tue, 08 Jun 2021 03:40:14 +0200
+X-MC-Unique: 0USconT3OHaKqjPYVW2Ynw-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P2ijIFopZ9P0QhGJ8XzHvW8fXHPV9aMYQYcx2J7SBKYWtBVLII5T6cY/q4Fcsk8H6V7ubhiLcjlOx22ryko8RtCxQwOOc5f2fJ/BCFei0VTdeiW8jqA5eLn+iR6JCUNu221T2SdNNZSENgpO/JVgp0RPKKmjPz7Xjzq987wWPXY+NCQzHyGN0LJTNF5F0zp5fNzp+Jfx+avxSSrBYVp7mSl0xdgKad5slhWKuCq1x/MNJ+jfyPT9OSBaybxLs0EGv5HvcactxMMMXtSBtZro8n98Xy7KOoG9pWMRRBUsk9h/rOprPretNAGmoGy4LF16H47CN+/Y9vihgc6XUDpEhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K+J0+OTlIQfgz+/05lKgsn8cZT7KwlfZOOnOxY90gCg=;
+ b=l00OAC3sOm2+aOf8LSjdZFPhiMFBsTVNnGYpwgNkztBFpSThI1uPxie/1wEVig8Kf3ULwpB95MU/fbAdvC0gmR0YF9gCtfCinrWqD4b5lz0SrGdroK4K7+6H8+pKh2quJRN4EIg5/Tyd3az6onjL99ncZMJHEe74KRa2pm8VyZ/D3KNq5n2PZyePh2W1kVQUCOXY24D62wBGOkix6BlJ6Xdtf0wO+c6q4eZCML4H3+pnIuZGRvkOcc+YnTk7ZewtkbqfYG8KD/QW2tifcCB8/Jkpu/Zob7/d+Hw2ZulzLrLORotYxPKYBcpfrR97KPYSUTrgXrypC44OuGJSNswnuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM6PR04MB4677.eurprd04.prod.outlook.com (2603:10a6:20b:25::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.29; Tue, 8 Jun
+ 2021 01:40:12 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b8b1:d726:a3c7:9cb]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b8b1:d726:a3c7:9cb%7]) with mapi id 15.20.4195.030; Tue, 8 Jun 2021
+ 01:40:12 +0000
+Subject: Re: [PATCH v2 05/10] btrfs: defrag: introduce a helper to defrag a
+ continuous prepared range
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+References: <20210602021528.68617-1-wqu@suse.com>
+ <20210602021528.68617-6-wqu@suse.com>
+Message-ID: <2c837b61-5978-05cd-4731-5d40248c769b@suse.com>
+Date:   Tue, 8 Jun 2021 09:40:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210602021528.68617-6-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: SJ0PR05CA0093.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::8) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKWG86j7MpECAo+s@zen>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR05CA0093.namprd05.prod.outlook.com (2603:10b6:a03:334::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.9 via Frontend Transport; Tue, 8 Jun 2021 01:40:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 88130e4a-a7de-482b-5084-08d92a1e5b98
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4677:
+X-Microsoft-Antispam-PRVS: <AM6PR04MB46773065599281FEED9A01E3D6379@AM6PR04MB4677.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2399;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OXldVZwdIaXO63cNPi9QLKZD/15hCxWKpIMUbo8NB7hw/RXT0w3Uch8JHYO1O7Gdp8p6JJ1FtrtYUtsb8GBTeq2CgyomU/5V72h8mhGuDwud9yqT/Joa0xB7ruwpAZ/dh0PzjOh2YkE2At4KFw3vaUNvphnITqTRQzB++FXkU4Ml+BT9vXWbUaE8GqCBY0kmyDbKOMjXFotgpz94Jcg+SRrrC35ppHSQeZlEnyeaaAALXvX+aoYrYGC4ZjpVNxKDTmesGhlHgig4IpZgLVm6XSFxJiWPluYnzoGnX9lrRvSV5+KCjOakDDOzzvniMbXIOk4gYkoBBkOW6hPMDGfdj5l9iSg4txEqQxgHrKHuIIsBSzFMg7miF7EJk+HITax6uZDgqRqN3fFLi9q2BwE5mjcH4kzGYMgT+kFF2di5yN/Lvccdado88g+BdcUn1ecguXiqg6zhz+dV3xEzH3TAVAJ2QYpUAkmoJ6NupXo/0NIO7AK8vBCwK13hnwEX6eU8xsjkEOlXz9AB3XL013tYXRJXDlrGf9BLF11aPjNKfokIfI8NlDEemvGXtjEvFMRXZJCZNJl2lNl+MsvhoYYWKlAgjcAAoH4hOBrN1ivUL9oC3w26fgHWo8zPhAFbG6SPUW25uLh/FdVleSCXP/vgIoC+y25m4Zl4FqfjTXsdQv1kgkeahCieO4J16pl9lcMIuYnNyvw0J24tiOzxYTUcxg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(366004)(136003)(376002)(346002)(396003)(66946007)(6486002)(478600001)(66476007)(8676002)(66556008)(2906002)(16526019)(6666004)(6706004)(2616005)(956004)(26005)(6916009)(83380400001)(86362001)(31696002)(8936002)(31686004)(16576012)(316002)(186003)(38100700002)(5660300002)(36756003)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RLb9qVgBN4rI4ezGwVkZTOPSYcd+3KWc83IXZEI2/8PWAh/hBimu3ieJp0WE?=
+ =?us-ascii?Q?LcqYXZg26pAH56ESXR20RqgGM/2yOThMxmUPab6wkCk3q/3HsRdXac+G40Vq?=
+ =?us-ascii?Q?tDwFcY3fr8FCgE9qBcIJhOh1Yltav9kG6JezNW+MEGCvYumoRKL2jBjXO48b?=
+ =?us-ascii?Q?qJ+3CeDfRI6gbG2IhAuhAwBTmzHIxDtXj5UwzV8ri/hcXI9tkLK5zCppDsKZ?=
+ =?us-ascii?Q?7PwFhLvu/XjhRyHcCc8YTxMb4FU30nPy9GBPQf5q2WLlgI3hWi/3H+Ec04xv?=
+ =?us-ascii?Q?mAHGhlQ08QdhEYXOxjAlPzRoEvAreXyySLtBKeOS6bwI+KHe0CjiBP8ONWhP?=
+ =?us-ascii?Q?QAj17nEcztVtNP9nwuVhG923/RtEH4X4Y/Y3B+AWUqlsaLHf2N9wsHUtV07a?=
+ =?us-ascii?Q?dLZwTZ5xONjXicSp0qD7aqslIVN4XTEXhjYca8/kjxKQm9B8q2EwLLJvPU1V?=
+ =?us-ascii?Q?DrPbVCyNLPDq8Zls1FaxqSQ41sSs4I7BoYv1d9Urh2de/Sz2JEBjSd3bgaEH?=
+ =?us-ascii?Q?+et55wyo8yI4gYkMCdEZfbUOG2eVSjpdkeUUyLJ9LldExQ+z6jzDCnJdMF3b?=
+ =?us-ascii?Q?l5nE87MmYFN0ahQG/MK1iKiS3/AeV9FABVvA1AmPd9qdA6MWO/1HsiPhol23?=
+ =?us-ascii?Q?z4B7WfYdrVP+Xg8AekAQuLz5tOJmIEeKm1oHSDNySstn1HPot8/0CiNERMrw?=
+ =?us-ascii?Q?1QQzsv3gGsN48BAsP7gBTt23STI9q3A9mR1UM64cCufgUtMPnYLoKir26mm6?=
+ =?us-ascii?Q?vd44yk97yXbcJq3W7g8l9Mh+rYD6RhSuumPLw99WuJe5zCU9IinozJBBcywH?=
+ =?us-ascii?Q?T6jEtpeOx0T1Sh7cgjUZfRvCQoPBCzXacL08eUxRRJRE7kYZB45Mru3JJPu1?=
+ =?us-ascii?Q?EFlESBI/rayHVzK6mVtOJWIBE9ygouZZOwwLd6kLKahq3rN7nIDVf4VgrCtR?=
+ =?us-ascii?Q?6KloIv3NgCcKOHiFPLsORy3WczpMf8trN+lIQKXNRJoojKWTgtrtaynV+kuF?=
+ =?us-ascii?Q?Kb8wsk27hFzpvE+n2TZRcZYKDCK6kb85pzFwR6Zj6X4E3eDdJXZ/pXuEjbBo?=
+ =?us-ascii?Q?W6vAzUD6NAy5wWrcbgsmAePyHm3BCTigasXTEVPfkqx/BxsfX+LCZTG0omNr?=
+ =?us-ascii?Q?VwwiOtQsMn2gawTnmWxSzRYfZQOhqpR7FqiKc/OjxYu9kWN4JFGyV+N4QEt+?=
+ =?us-ascii?Q?9w09cNgRhAA7aTiHLM2TsT7XMl6r5m2Q3D9VRQPcv4aemXA/qeP2Qzlyed8R?=
+ =?us-ascii?Q?mgHhB/AiR6qoI/UfMggs53UOIpOITO1tYV2w6C2NYq9qgAhUP4LrnZQ2EfB+?=
+ =?us-ascii?Q?OsDkIpHJcQgzDPcEEGDSgee4?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88130e4a-a7de-482b-5084-08d92a1e5b98
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jun 2021 01:40:12.6836
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GIUul9JPQyRx6Pbz/oekzyhHnGjQV0kjjdITcsD596+SuuLPS8JPusDAtVpyh3B1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4677
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-sorry I did not notice you replied some time ago.
 
-On Wed, May 19, 2021 at 02:45:23PM -0700, Boris Burkov wrote:
-> On Mon, May 17, 2021 at 11:48:59PM +0200, David Sterba wrote:
-> > On Tue, May 11, 2021 at 09:11:08PM +0200, David Sterba wrote:
-> > > On Wed, May 05, 2021 at 12:20:39PM -0700, Boris Burkov wrote:
-> > > > --- a/fs/btrfs/btrfs_inode.h
-> > > > +++ b/fs/btrfs/btrfs_inode.h
-> > > > @@ -191,6 +191,7 @@ struct btrfs_inode {
-> > > >  
-> > > >  	/* flags field from the on disk inode */
-> > > >  	u32 flags;
-> > > > +	u64 compat_flags;
-> > > 
-> > > This got me curious, u32 flags is for the in-memory inode, but the
-> > > on-disk inode_item::flags is u64
-> > > 
-> > > >  BTRFS_SETGET_FUNCS(inode_flags, struct btrfs_inode_item, flags, 64);
-> > >                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > > 
-> > > > +BTRFS_SETGET_FUNCS(inode_compat_flags, struct btrfs_inode_item, compat_flags, 64);
-> > > 
-> > > >  	btrfs_set_stack_inode_flags(inode_item, BTRFS_I(inode)->flags);
-> > > 
-> > > Which means we currently use only 32 bits and half of the on-disk
-> > > inode_item::flags is always zero. So the idea is to repurpose this for
-> > > the incompat bits (say upper 16 bits). With a minimal patch to tree
-> > > checker we can make old kernels accept a verity-enabled kernel.
-> > > 
-> > > It could be tricky, but for backport only additional bitmask would be
-> > > added to BTRFS_INODE_FLAG_MASK to ignore bits 48-63.
-> > > 
-> > > For proper support the inode_item::flags can be simply used as one space
-> > > where the split would be just logical, and IMO manageable.
-> > 
-> > To demonstrate the idea, here's a compile-tested patch, based on
-> > current misc-next but the verity bits are easy to match to your
-> > patchset:
-> 
-> Thanks for taking the time to prove this idea out. However, I'd still
-> like to discuss the pros/cons of this approach for this application.
-> 
-> As far as I can tell, the two issues at hand are ensuring compatibility
-> and using fewer of the reserved bits. Your proposal uses 0 reserved
-> bits, which is great, but is still quite a headache for compatibility,
-> as an administrator would have to backport the compat patch on any kernel
-> they wanted to roll back to before the one this went out on.
+On 2021/6/2 =E4=B8=8A=E5=8D=8810:15, Qu Wenruo wrote:
+> A new helper, defrag_one_locked_target(), introduced to do the real part
+> of defrag.
+>=20
+> The caller needs to ensure both page and extents bits are locked, and no
+> ordered extent for the range, and all writeback is finished.
+>=20
+> The core defrag part is pretty straight-forward:
+>=20
+> - Reserve space
+> - Set extent bits to defrag
+> - Update involved pages to be dirty
+>=20
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   fs/btrfs/ioctl.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 56 insertions(+)
+>=20
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 6af37a9e0738..26957cd91ea6 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -47,6 +47,7 @@
+>   #include "space-info.h"
+>   #include "delalloc-space.h"
+>   #include "block-group.h"
+> +#include "subpage.h"
+>  =20
+>   #ifdef CONFIG_64BIT
+>   /* If we have a 32-bit userspace and 64-bit kernel, then the UAPI
+> @@ -1492,6 +1493,61 @@ static int defrag_collect_targets(struct btrfs_ino=
+de *inode,
+>   	return ret;
+>   }
+>  =20
+> +#define CLUSTER_SIZE	(SZ_256K)
+> +
+> +/*
+> + * Defrag one continuous target range.
+> + *
+> + * @inode:	Target inode
+> + * @target:	Target range to defrag
+> + * @pages:	Locked pages covering the defrag range
+> + * @nr_pages:	Number of locked pages
+> + *
+> + * Caller should ensure:
+> + *
+> + * - Pages are prepared
+> + *   Pages should be locked, no ordered extent in the pages range,
+> + *   no writeback.
+> + *
+> + * - Extent bits are locked
+> + */
+> +static int defrag_one_locked_target(struct btrfs_inode *inode,
+> +				    struct defrag_target_range *target,
+> +				    struct page **pages, int nr_pages)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+> +	struct extent_changeset *data_reserved =3D NULL;
+> +	struct extent_state *cached_state =3D NULL;
+> +	const u64 start =3D target->start;
+> +	const u64 len =3D target->len;
+> +	unsigned long last_index =3D (start + len - 1) >> PAGE_SHIFT;
+> +	unsigned long start_index =3D start >> PAGE_SHIFT;
+> +	unsigned long first_index =3D page_index(pages[0]);
+> +	int ret =3D 0;
+> +	int i;
+> +
+> +	ASSERT(last_index - first_index + 1 <=3D nr_pages);
+> +
+> +	ret =3D btrfs_delalloc_reserve_space(inode, &data_reserved, start, len)=
+;
+> +	if (ret < 0)
+> +		return ret;
+> +	clear_extent_bit(&inode->io_tree, start, start + len - 1,
+> +			 EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
+> +			 EXTENT_DEFRAG, 0, 0, &cached_state);
+> +	set_extent_defrag(&inode->io_tree, start, start + len - 1,
+> +			  &cached_state);
 
-The compatibility problems are there for any new feature and usually
-it's strict no mount, while here we can do a read-only compat mode at
-least. Deploying a new feature should always take the fallback mount
-into account, so it's advisable to wait a few releases eg. up to the
-next stable release.
+Here we can allocate a new cache_state, and then no call sites to=20
+release it.
 
-Luckily in that case we can backport the compatibility to the older
-stable trees so the fallback would work after a minor release.
+This leaks the extent cache allocated.
 
-> This is especially painful for less well-loved things like
-> dracut/systemd mounting the root filesystem and doing a pivot_root during
-> boot. You would have to make sure that any machine using fsverity btrfs
-> files has an updated initramfs kernel or it won't be able to boot.
+I'll resend the whole branch with @cached_state passed from caller.
 
-So I hope this would get covered by the backports, as discussed, to 5.4
-and 5.10.
+Thanks,
+Qu
 
-> Alternatively, we could have our cake and eat it too if we separate the
-> idea of unlocking the top 32 bits of the inode flags from adding compat
-> flags.
-> 
-> If we:
-> 1. take a u16 or a u32 out of reserved and make it compat flags (my
-> patch, but shrinking from u64)
-> 2. implement something similar to your patch, but don't use those 32
-> bits just yet
-> 
-> Then we are setup to more conveniently use the freed-up 32 bits in the
-> future, as the application which wants reserved bytes then will have a
-> buffer of kernel versions to trivially roll back into, which may cover
-> most practical rollbacks.
-> 
-> For what it's worth, I do like that your proposal stuffs inode flags and
-> inode compat flags together, which is certainly neater than turning the
-> upper 32 of inode flags into general reserved bits. But I'm just not
-> sure that the aesthetic benefit is worth the real pain now.
+> +
+> +	/* Update the page status */
+> +	for (i =3D start_index - first_index; i <=3D last_index - first_index;
+> +	     i++) {
+> +		ClearPageChecked(pages[i]);
+> +		btrfs_page_clamp_set_dirty(fs_info, pages[i], start, len);
+> +	}
+> +	btrfs_delalloc_release_extents(inode, len);
+> +	extent_changeset_free(data_reserved);
+> +	return ret;
+> +}
+> +
+>   /*
+>    * Btrfs entrace for defrag.
+>    *
+>=20
 
-My motivation is not aesthetic, rather I'm very conservative when
-on-disk structures get changed, and inode is the core structure.
-Curiously, you can thank Josef who switched the per-inode compat flags
-to whole-filesystem only in f2b636e80d8206dd40 "Btrfs: add support for
-compat flags to btrfs". But that was in 2008 and was a hard incompatible
-change that lead to the last major format change (the _BHRfS_M
-signature).
-
-If the incompat change can be squeezed into existing structure, it
-leaves the reserved fileds untouched. Right now we have 4x u64. Any
-other change requires increasing the item size which is ultimately
-possible but brings other problems. So if there's a possibily not to go
-to the next level, I'll pursue it. Right now the major objection is the
-problem with deployment and fallback mount, but I think this is solved.
-
-Until now I haven't found any problem with the ro compat flags merged to
-normal flags on itself, so as agreed offline, we're going to do that.
