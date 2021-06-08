@@ -2,104 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1574B39F87A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 16:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A68239F8BD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 16:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhFHOLU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Jun 2021 10:11:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:40420 "EHLO
+        id S233265AbhFHORL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Jun 2021 10:17:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42012 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232341AbhFHOLT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Jun 2021 10:11:19 -0400
+        with ESMTP id S233158AbhFHORL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Jun 2021 10:17:11 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2F5EE219C2;
-        Tue,  8 Jun 2021 14:09:26 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 44F64219C2;
+        Tue,  8 Jun 2021 14:15:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623161366;
+        t=1623161717;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=znTv/BVwq1EJhMLoWnEo9JXghbV09mKp72OZ7c4B3t8=;
-        b=Df9lAwvx+A1LTZCP8jRs3QlwwiTyIcIr9cnJdWj3ftMK5SNH+/m8nIyIh9MFKKVkwsCMuq
-        AxP0Nnx2pmiOUiBGPuueY6lRtDplRf9aspZS+83ZC9FdNwqgnUZZ4BSGEbwknptuvWiIOG
-        VoljwDaCIyMPNEbg+02wReOawl0DbZ0=
+        bh=fNneOMji3fVSsopTxsNXHqXefzeyBsUEJ1N5GuoNAqM=;
+        b=auC3N3CzUBQFpkVRU9Z6XAzFVcDscsX+w6TsY1udv1azVotpS2P0tZOTYTrDBnzrT6SU3g
+        VehIk/xzN0R1PiiTsKJ0rwxKD8gct627vtkYX103ilW6Y3+B56+tHiF1umHvZybeIwtWb+
+        cPDbNWaAbk3FlYqFZ9AT5q61uAzwrNU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623161366;
+        s=susede2_ed25519; t=1623161717;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=znTv/BVwq1EJhMLoWnEo9JXghbV09mKp72OZ7c4B3t8=;
-        b=qJFWu+OLZZSryEFYTFPVoHygQ+HyW8TRz+OYl71BGrnHc9Gbfd7kkhaEkcksKHHFXqo8Gd
-        n9CzsHd4hJgHA4BQ==
+        bh=fNneOMji3fVSsopTxsNXHqXefzeyBsUEJ1N5GuoNAqM=;
+        b=mQqphZRbFphCbunAXvv4OgfmeTzjBk866aBGpJvufqLFVuJhNvM+PTTWV1sN1xCI0ztHtd
+        JcynkMQUzO+LihDQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 26860A3B88;
-        Tue,  8 Jun 2021 14:09:26 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 2082CA3B84;
+        Tue,  8 Jun 2021 14:15:17 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 253EEDAF1B; Tue,  8 Jun 2021 16:06:41 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 16:06:41 +0200
+        id 9744FDAF61; Tue,  8 Jun 2021 16:12:33 +0200 (CEST)
+Date:   Tue, 8 Jun 2021 16:12:33 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix embarrassing bugs in find_next_dirty_byte()
-Message-ID: <20210608140641.GP31483@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Baokun Li <libaokun1@huawei.com>, linux-kernel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] btrfs: send: use list_move_tail instead of
+ list_del/list_add_tail
+Message-ID: <20210608141233.GQ31483@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210605001428.26072-1-wqu@suse.com>
- <20210607170830.GF31483@twin.jikos.cz>
- <347fa13d-6a8e-9e4f-a06e-b7133fc446c7@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Baokun Li <libaokun1@huawei.com>, linux-kernel@vger.kernel.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
+        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+References: <20210608031220.2822257-1-libaokun1@huawei.com>
+ <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <347fa13d-6a8e-9e4f-a06e-b7133fc446c7@gmx.com>
+In-Reply-To: <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:02:34AM +0800, Qu Wenruo wrote:
-> >> -		return;
-> >> -	}
-> >> -	ASSERT(first_bit_zero > 0 &&
-> >> -	       first_bit_zero <= BTRFS_SUBPAGE_BITMAP_SIZE);
-> >> -	*end = page_offset(page) + first_bit_zero * fs_info->sectorsize;
-> >> -	ASSERT(*end > *start);
-> >> +	bitmap_next_set_region(&dirty_bitmap, &range_start_bit, &range_end_bit,
-> >> +			       BTRFS_SUBPAGE_BITMAP_SIZE);
-> >> +	*start = page_offset(page) + range_start_bit * fs_info->sectorsize;
-> >> +	*end = page_offset(page) + range_end_bit * fs_info->sectorsize;
-> >
-> > Makes sense. We want the u16 for the storage but the more complex
-> > calculations could be done using the bitmap helpers, and converted back
-> > eventually.
-> >
-> Talking about bitmap, I think it's also a good time to consider the
-> future expansion.
+On Tue, Jun 08, 2021 at 01:16:21PM +0800, Anand Jain wrote:
+> On 8/6/21 11:12 am, Baokun Li wrote:
+> > Using list_move_tail() instead of list_del() + list_add_tail().
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > ---
+> >   fs/btrfs/send.c | 3 +--
+> >   1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> > index bd69db72acc5..a0e51b2416a1 100644
+> > --- a/fs/btrfs/send.c
+> > +++ b/fs/btrfs/send.c
+> > @@ -2083,8 +2083,7 @@ static struct name_cache_entry *name_cache_search(struct send_ctx *sctx,
+> >    */
+> >   static void name_cache_used(struct send_ctx *sctx, struct name_cache_entry *nce)
+> >   {
+> > -	list_del(&nce->list);
+> > -	list_add_tail(&nce->list, &sctx->name_cache_list);
+> > +	list_move_tail(&nce->list, &sctx->name_cache_list);
+> >   }
 > 
-> - Extra sectorsize/page size support
->    We want to support things like 16K page size, in that case we
->    only needs 4 bits for each bitmap.
 > 
-> - Better support for nodesize >= page size case
->    If we can ensure all of our metadata are nodesize aligned,
->    we can fall back to existing metadata handler.
->    This reduces memory usage, and can support 16K page size better.
-> 
->    But the cost is, if chunk is not properly aligned, we will reject
->    certain extent buffer read.
-> 
-> My current plan is to make btrfs_subpage bitmaps to be fitted into one
-> longer bitmap.
-> And in btrfs_info, introduce some structure to record which bit range
-> are for each subpage bitmap, the range will be calculated at mount time
-> using both sectorsize and page size.
-> 
-> E.g. For 4K sectorsize, 16K page size, uptodate bitmap will be at bits
-> range [0, 4), error bitmap will be at bits [4, 8).
-> 
-> Then we can make all subpage bitmap operations using real bitmap operators.
+>   Looks good.
+>   You can consider open-code name_cache_used() as there is only one user.
 
-Great, I had the same idea to merge all bitmaps into one value. For
-clarity the first implementation has it all separated as we don't want
-to hunt bugs in the bit manipulations.
+Yeah sounds like a good idea, with part of the function comment next to
+the list_move_tail.
