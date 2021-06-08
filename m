@@ -2,111 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F5B39EC45
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 04:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A2739EC78
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 04:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhFHCni (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Jun 2021 22:43:38 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:39370 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhFHCni (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 22:43:38 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 244ABA92DA4; Mon,  7 Jun 2021 22:41:44 -0400 (EDT)
-Date:   Mon, 7 Jun 2021 22:41:44 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Paul Eggert <eggert@cs.ucla.edu>
-Cc:     Tom Yan <tom.ty89@gmail.com>, 48833@debbugs.gnu.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: bug#48833: reflink copying does not check/set No_COW attribute
- and fail
-Message-ID: <20210608024144.GB11713@hungrycats.org>
-References: <CAGnHSEkr0N_hnxvm89prL3vObYgvVoPFHLL4Z7wnQCSem6hB_A@mail.gmail.com>
- <CAGnHSEkeu1hW-7YQO0HrYK__aY-eMdxfgSbcOTvnMu3jUcu4iw@mail.gmail.com>
- <20210604201630.GH11733@hungrycats.org>
- <CAGnHSEk-+2tA21+sN4dioYbs_u4m_NiLPkG8u6ONJS=JbCACoA@mail.gmail.com>
- <20210606054242.GI11733@hungrycats.org>
- <4354c814-9f9f-0c26-fb11-36567da6f530@cs.ucla.edu>
+        id S230267AbhFHDBY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Jun 2021 23:01:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41338 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230254AbhFHDBY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 23:01:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 36541219C1
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 02:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623121171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=f5G4W/SiPvWpMcr/3zluYPxmOrihUn//T1BBKz2R3rM=;
+        b=ux9NrlS7iXiIHbbZaFz1jt1P27MB55JsW9Th3i422qhDG9F/6yNWOX1WhgC7jS5bvuAd+q
+        EGoclIJn6Dee79uAR1VpbqH2x6GLXCDkgC2asu16TwH937py9Irq8qDqIiKFEAz+6CqV9Q
+        4nU9cPkqsFVvfFUBTGqgkcOCGOR96+0=
+Received: from adam-pc.lan (unknown [10.163.16.38])
+        by relay2.suse.de (Postfix) with ESMTP id 24BD3A3B83
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 02:59:29 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 00/10]  btrfs: defrag: rework to support sector perfect defrag
+Date:   Tue,  8 Jun 2021 10:59:17 +0800
+Message-Id: <20210608025927.119169-1-wqu@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4354c814-9f9f-0c26-fb11-36567da6f530@cs.ucla.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 06, 2021 at 10:47:05PM -0700, Paul Eggert wrote:
-> On 6/5/21 10:42 PM, Zygo Blaxell wrote:
-> > If cp -a implements the inode attribute propagation (or inheritance), then
-> > only users of cp -a are impacted.  They are more likely to be aware that
-> > they may be creating new files with reduced-integrity storage attributes.
-> 
-> True, although I think this aspect of attribute-copying will typically come
-> as a surprise even to "cp -a" users.
+This branch is based on subpage RW branch, as the last patch needs to
+enable defrag support for subpage cases.
 
-Existing users might be surprised when "cp -a" starts replicating storage
-attributes when it did not do so before, but I suspect most future cp
-users would expect "cp -a" to preserve storage-policy attributes the same
-way it currently preserves ownership, permissions, timestamps, extended
-attributes, and security context--a list that initially contained only
-the ownership, permissions, and timestamps in the past, the others were
-added over time.  If not by default, then at least have the ability to
-do it when requested with a "--preserve=datacow" switch.
+But despite that one, all other patches can be applied on current
+misc-next.
 
-We could say "cp --reflink=always implies --preserve=datacow because it
-might not work otherwise", which solves the immediate issue as presented,
-but I don't think we _want_ to say that because it has a potentially
-bad surprising case when attribute changes are unexpected (it's the same
-reason that we would not want to implement it that way in the kernel).
-As a cp user, I would prefer to make the choice to copy the storage
-attributes with --preserve or -a, and after that choice is made, then
---reflink=always will work because cp is setting attributes in dst to
-match src as I requested it to do.  If I had made the opposite choice
-(didn't use -a or --preserve, or did use --no-preserve=datacow), then
-cp shall not copy the storage attributes, the dst inodes have attributes
-inherited from dst's parent, --reflink=always fails when there are
-mismatches as it does now, and --reflink=auto or =none copies may have
-different storage attributes from the src (with possibly stronger or
-weaker integrity).
+[BACKGROUND]
+In subpage rw branch, we disable defrag completely due to the fact that
+current code can only work on page basis.
 
-We could say "'cp -a --reflink=always' implies --preserve=datacow, but
-'--reflink=always' and '-a' by themselves do not."  It seems complex
-to describe, but maybe it does surprise the fewest people in the most
-beneficial way:  plain 'cp -a' users keep exactly the old behavior,
-while 'cp -a --reflink=always' users get successful copies in one case
-where they currently get unexpected failures.  'cp -r' doesn't imply
---preserve=all, so 'cp -r --reflink=always' would need to be accompanied
-by '--preserve=datacow' or '--preserve=all' to get the attribute-copying.
+This could lead to problems like btrfs/062 crash.
 
-The cp doc could be clearer that filesystems that support reflink
-don't guarantee every file can be reflinked to every other file.
-reflink is expected to fail in a growing number of cases over time,
-as more filesystem features are created that are incompatible with it
-(e.g. encryption, where reflinks between files with different owners could
-be unimplementable).  I've seen a number of users get burned by making big
---reflink=always copies and not checking the results for errors, assuming
-that only lack of space for metadata could cause a reflink copy to fail.
-There are good reasons why --reflink=auto exists and is the default,
-and users ignore them at their peril.
+Thus this patchset will make defrag to work on both regular and subpage
+sectorsize.
 
-The really awful thing about all this is that it's not datacow, the
-thing visible with chattr +/-C and implemented by other filesystems,
-that is the problem.  The problem is the datasum bit hidden behind the
-datacow bit on btrfs.  datasum can still be disabled even when datacow
-is enabled, and datasum requires privileges to detect (unprivileged
-users can only observe the datasum bit's effect on reflink copies to
-files with the opposite datasum setting).  The proper option name should
-be --preserve=datasum, but cp can only examine or change the datacow bit.
+[SOLUTION]
+To defrag a file range, what we do is pretty much like buffered write,
+except we don't really write any new data to page cache, but just mark
+the range dirty.
 
-> > If the file is empty, you can chattr +C or -C.  If the file is not
-> > empty, chattr fails with an error.
-> 
-> Although coreutils 'cp -a' currently truncates any already-existing output
-> file (by opening it with O_TRUNC), it then calls copy_file_range before
-> calling fsetxattr on the destination. Presumably cp should do the equivalent
-> of chattr +C before doing the copy_file_range stuff. (Perhaps you've already
-> mentioned this point; if so, my apologies for the duplication.)
+Then let later writeback to merge the range into a larger extent.
 
-The important thing is that got across, whether you extracted it from what
-I wrote, or reconstructed it from context.
+But current defrag code is working on per-page basis, not per-sector,
+thus we have to refactor it a little to make it to work properly for
+subpage.
+
+This patch will separate the code into 3 layers:
+Layer 0:	btrfs_defrag_file()
+		The defrag entrace
+		Just do proper inode lock and split the file into
+		page aligned 256K clusters to defrag
+
+Layer 1:	defrag_one_cluster()
+		Will collect the initial targets file extents, and pass
+		each continuous target to defrag_one_range()
+
+Layer 2:	defrag_one_range()
+		Will prepare the needed page and extent locking.
+		Then re-check the range for real target list, as initial
+		target list is not consistent as it doesn't hage
+		page/extent locking to prevent hole punching.
+
+Layer 3:	defrag_one_locked_target()
+		The real work, to make the extent range defrag and
+		update involved page status
+
+[BEHAVIOR CHANGE]
+In the refactor, there is one behavior change:
+
+- Defraged sector counter is based on the initial target list
+  This is mostly to avoid the paremters to be passed too deep into
+  defrag_one_locked_target().
+  Considering the accounting is not that important, we can afford some
+  difference.
+
+[PATCH STRUTURE]
+Patch 01~03:	Small independent refactor to improve readability
+Patch 04~08:	Implement the more readable and subpage friendly defrag
+Patch 09:	Cleanup of old infrastruture
+Patch 10:	Enable defrag for subpage case
+
+Now both regular sectorsize and subpage sectorsize can pass defrag test
+group.
+
+[CHANGELOG]
+v2:
+- Make sure we won't defrag hole
+  This is done by re-collect the target list after have page and extent
+  locked. So that we can have a consistent view of the extent map.
+
+- Add a new layer to avoid variable naming bugs
+  Since we need to handle real target list inside defrag_one_range(),
+  and that function has parameters like "start" and "len", while inside
+  the loop we need things like "entry->start" and "entry->len", it has
+  already caused hard to debug bugs during development.
+
+  Thus introduce a new layer, defrag_one_ragen() to prepare pages/extent
+  lock then pass the entry to defrag_one_locked_target().
+
+v3:
+- Fix extent_state leak
+  Now we pass the @cached_state to defrag_one_locked_target() other
+  than allowing it to allocate a new one.
+
+  This can be reproduced by enabling "TEST_FS_MODULE_RELOAD" environment
+  variable for fstests and run "-g defrag" group.
+
+- Fix a random hang in test cases like btrfs/062
+  Since defrag_one_range() will lock the extent range first, then
+  call defrag_collect_targets(), which will in turn call
+  defrag_lookup_extent() and lock extent range again.
+
+  This will cause a dead lock, and this only happens when the
+  extent range is smaller than the original locked range.
+  Thus sometimes the test can pass, but sometimes it can hang.
+
+  Fix it by teaching defrag_collect_targets() and defrag_lookup_extent()
+  to skip extent lock for certain call sites.
+  Thus this needs some loops for btrfs/062.
+  The hang possibility is around 1/2 ~ 1/3 when run in a loop.
+
+Qu Wenruo (10):
+  btrfs: defrag: pass file_ra_state instead of file for
+    btrfs_defrag_file()
+  btrfs: defrag: extract the page preparation code into one helper
+  btrfs: defrag: replace hard coded PAGE_SIZE to sectorsize for
+    defrag_lookup_extent()
+  btrfs: defrag: introduce a new helper to collect target file extents
+  btrfs: defrag: introduce a helper to defrag a continuous prepared
+    range
+  btrfs: defrag: introduce a helper to defrag a range
+  btrfs: defrag: introduce a new helper to defrag one cluster
+  btrfs: defrag: use defrag_one_cluster() to implement
+    btrfs_defrag_file()
+  btrfs: defrag: remove the old infrastructure
+  btrfs: defrag: enable defrag for subpage case
+
+ fs/btrfs/ctree.h |   4 +-
+ fs/btrfs/ioctl.c | 921 ++++++++++++++++++++++-------------------------
+ 2 files changed, 432 insertions(+), 493 deletions(-)
+
+-- 
+2.31.1
+
