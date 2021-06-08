@@ -2,97 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A68239F8BD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 16:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA6C39F976
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 16:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233265AbhFHORL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Jun 2021 10:17:11 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42012 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233158AbhFHORL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Jun 2021 10:17:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 44F64219C2;
-        Tue,  8 Jun 2021 14:15:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623161717;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fNneOMji3fVSsopTxsNXHqXefzeyBsUEJ1N5GuoNAqM=;
-        b=auC3N3CzUBQFpkVRU9Z6XAzFVcDscsX+w6TsY1udv1azVotpS2P0tZOTYTrDBnzrT6SU3g
-        VehIk/xzN0R1PiiTsKJ0rwxKD8gct627vtkYX103ilW6Y3+B56+tHiF1umHvZybeIwtWb+
-        cPDbNWaAbk3FlYqFZ9AT5q61uAzwrNU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623161717;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fNneOMji3fVSsopTxsNXHqXefzeyBsUEJ1N5GuoNAqM=;
-        b=mQqphZRbFphCbunAXvv4OgfmeTzjBk866aBGpJvufqLFVuJhNvM+PTTWV1sN1xCI0ztHtd
-        JcynkMQUzO+LihDQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2082CA3B84;
-        Tue,  8 Jun 2021 14:15:17 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9744FDAF61; Tue,  8 Jun 2021 16:12:33 +0200 (CEST)
-Date:   Tue, 8 Jun 2021 16:12:33 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Baokun Li <libaokun1@huawei.com>, linux-kernel@vger.kernel.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, weiyongjun1@huawei.com,
-        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
-        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] btrfs: send: use list_move_tail instead of
- list_del/list_add_tail
-Message-ID: <20210608141233.GQ31483@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        Baokun Li <libaokun1@huawei.com>, linux-kernel@vger.kernel.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, weiyongjun1@huawei.com,
-        yuehaibing@huawei.com, yangjihong1@huawei.com, yukuai3@huawei.com,
-        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-References: <20210608031220.2822257-1-libaokun1@huawei.com>
- <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
+        id S233500AbhFHOrX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Jun 2021 10:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233412AbhFHOrU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 8 Jun 2021 10:47:20 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8F2C061574
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 07:45:13 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id ci15so33027603ejc.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 08 Jun 2021 07:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=5PAJp4qSJC4Thpc64cQCx4iq66tSg7NGOrrTI74y9qE=;
+        b=UGl7Bmt//BCI7mlPi3YQ5Y82wxUWezikInMQiurzYG9CF1kM6KJAl0sSel3H1k1E9g
+         AOuNftovMqAWcPg83bEVEQH7nks5m9emhjVsG7HU+9GC+7vAWVQNyvenltl0irbBifA0
+         WtQBjyyChuPrPNd6dLo/P9Ivhgx0KIWIdVqiMMJkinDQ2WHdp+BxrsdNbKJpag0HrPGy
+         hAFu7jLY9x9+0LM7tLgAUa7Nzii4/rUeKGJ0zbSkxyltmEpNUE7OoYW0/rmPxlWG1sAz
+         rZ48yuIOJibJPwwrsy0Ul0WJki9Ml2dDVeO3vJ6kMdgjTJVG/yHn2rKlGjVf/kVtkISj
+         0vzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5PAJp4qSJC4Thpc64cQCx4iq66tSg7NGOrrTI74y9qE=;
+        b=fpfltfeeAwiDeDonp6/Wrm5nAGhuRPqkqpKJ+nlodBgvPswGTQ3AruPJ/K8/67ScDM
+         kZcGqbumaaDq7spR7y+AUA0fmo/RQ+bKIjulz7mOqWcZyWiEgQDhN5zolrFBzL2NK4Nm
+         Vq0M7MIMq8pou30aEtohbRBx5A15pViVZ2QojLvCrOakDJMq5cDxUOGtSB6HkK1D/CMj
+         j13z6vmfN056aAq6dsh4sH4uowq7hkHKA9MzRvwwviV1U1KDixsRkv6CFPkNsdGarkcT
+         5PCr6d96sc04E1Zk9iuPGXK8j9HipHi9opQTcB8KwH6d1DZsEToKqeQZXMSpDc5xOEGh
+         9JkA==
+X-Gm-Message-State: AOAM533LiY4Cx2yB+rPMRfEC1y7yLm5V5Cnq1fUzcf3K+BiL1pdndhqa
+        yiSu7ssy5Zf0CXkaBYpJp9Y6X2xUobI=
+X-Google-Smtp-Source: ABdhPJx23K2tOtrFGzPj6mJAsyz3MsWFRU2hBJ51GsHvnF287AqD3qrgB7/DRVNvRPww2BejKpE1Kg==
+X-Received: by 2002:a17:907:2150:: with SMTP id rk16mr13577247ejb.166.1623163512298;
+        Tue, 08 Jun 2021 07:45:12 -0700 (PDT)
+Received: from localhost.localdomain (ppp046176007146.access.hol.gr. [46.176.7.146])
+        by smtp.gmail.com with ESMTPSA id gz25sm2066680ejb.0.2021.06.08.07.45.11
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Jun 2021 07:45:11 -0700 (PDT)
+From:   auxsvr <auxsvr@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Write time tree block corruption detected
+Date:   Tue, 08 Jun 2021 17:45:10 +0300
+Message-ID: <4655545.31r3eYUQgx@localhost.localdomain>
+In-Reply-To: <3113674.aeNJFYEL58@localhost.localdomain>
+References: <1861574.PYKUYFuaPT@localhost.localdomain> <3113674.aeNJFYEL58@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e860684e-959b-d126-bb1d-3214878ab995@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 01:16:21PM +0800, Anand Jain wrote:
-> On 8/6/21 11:12 am, Baokun Li wrote:
-> > Using list_move_tail() instead of list_del() + list_add_tail().
-> > 
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > ---
-> >   fs/btrfs/send.c | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > index bd69db72acc5..a0e51b2416a1 100644
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -2083,8 +2083,7 @@ static struct name_cache_entry *name_cache_search(struct send_ctx *sctx,
-> >    */
-> >   static void name_cache_used(struct send_ctx *sctx, struct name_cache_entry *nce)
-> >   {
-> > -	list_del(&nce->list);
-> > -	list_add_tail(&nce->list, &sctx->name_cache_list);
-> > +	list_move_tail(&nce->list, &sctx->name_cache_list);
-> >   }
-> 
-> 
->   Looks good.
->   You can consider open-code name_cache_used() as there is only one user.
+On Monday, 7 June 2021 14:55:10 EEST you wrote:
+> It seems that every time free space is less than 1 GiB and I use zypper, I get a similar corruption message.
 
-Yeah sounds like a good idea, with part of the function comment next to
-the list_move_tail.
+Correction: I just got:
+
+[26355.330817] BTRFS critical (device sda2): corrupt leaf: root=3 block=537007243264 slot=0 devid=1 invalid bytes used: have 64503152640 expect [0, 64424509440]
+[26355.330819] BTRFS error (device sda2): block=537007243264 write time tree block corruption detected
+
+and:
+
+# btrfs fi df /
+Data, single: total=55.98GiB, used=43.04GiB
+System, single: total=32.00MiB, used=16.00KiB
+Metadata, single: total=2.00GiB, used=1.17GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+# btrfs fi show /
+Label: none  uuid: 44c67fa4-e2c4-4da5-9d07-98959ff77bc4
+        Total devices 1 FS bytes used 44.22GiB
+        devid    1 size 60.00GiB used 60.07GiB path /dev/sda2
+
+60.07GiB used again!
+ 
+Regards,
+Petros
+
+
+
+
