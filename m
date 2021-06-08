@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD0339EC7F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 05:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1062239EC80
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Jun 2021 05:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhFHDBd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Jun 2021 23:01:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59458 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhFHDBd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 23:01:33 -0400
+        id S231148AbhFHDBg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Jun 2021 23:01:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41362 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230500AbhFHDBe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Jun 2021 23:01:34 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 436D01FD50
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 02:59:40 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 11136219C1
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 02:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623121180; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1623121182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bnn572NeYmcucOpzPr9HMbtx9YeO4YUB1SRIjQ1Mihk=;
-        b=QCKz4QtsTBOWjMDT9ulsSvzsrZnNGIFuuAtjWDa6q6mCbHfywHzwiUZSUNurEFdoJzGiE4
-        7EkVpp3pd6sDCv1Jrt+zHqmX+I35vx2Ka1UzIFECA9tb75GLQw8UrHbYeF8ImIiXiTmma6
-        MF4x30yUZSOKZ/bmrNxCwA9tlENK2D4=
+        bh=4RvslrLObo8o1Q7UxH6C6Xkn+7syqZ1DWElieLUmkq0=;
+        b=WhNXT9taYx64HGYHMGiEZ+B8vWyvvBizZwoMHsvgl3IJBsMy5thn2yuk4v7552/+A4j/ej
+        fwzUFKJjRJE8Vj7o+B9NohgxoTuRYHtMr0FRp3F2mjVdy+TZtXMezir8sioj6pnX79uLBH
+        iypp9QFjuhx8em4P1zg0QTvTrib4VdQ=
 Received: from adam-pc.lan (unknown [10.163.16.38])
-        by relay2.suse.de (Postfix) with ESMTP id 366F1A3B81
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 02:59:38 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 0EC16A3B81
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Jun 2021 02:59:40 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 05/10] btrfs: defrag: introduce a helper to defrag a continuous prepared range
-Date:   Tue,  8 Jun 2021 10:59:22 +0800
-Message-Id: <20210608025927.119169-6-wqu@suse.com>
+Subject: [PATCH v3 06/10] btrfs: defrag: introduce a helper to defrag a range
+Date:   Tue,  8 Jun 2021 10:59:23 +0800
+Message-Id: <20210608025927.119169-7-wqu@suse.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210608025927.119169-1-wqu@suse.com>
 References: <20210608025927.119169-1-wqu@suse.com>
@@ -40,91 +40,174 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A new helper, defrag_one_locked_target(), introduced to do the real part
-of defrag.
+A new helper, defrag_one_range(), is introduced to defrag one range.
 
-The caller needs to ensure both page and extents bits are locked, and no
-ordered extent for the range, and all writeback is finished.
+This function will mostly prepare the needed pages and extent status for
+defrag_one_locked_target().
 
-The core defrag part is pretty straight-forward:
+As we can only have a consistent view of extent map with page and
+extent bits locked, we need to re-check the range passed in to get a
+real target list for defrag_one_locked_target().
 
-- Reserve space
-- Set extent bits to defrag
-- Update involved pages to be dirty
+Since defrag_collect_targets() will call defrag_lookup_extent() and lock
+extent range, we also need to teach those two functions to skip extent
+lock.
+Thus new parameter, @locked, is introruced to skip extent lock if the
+caller has already locked the range.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ioctl.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ fs/btrfs/ioctl.c | 94 ++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 87 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 6af37a9e0738..42e757dfdd7b 100644
+index 42e757dfdd7b..8259ad102469 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -47,6 +47,7 @@
- #include "space-info.h"
- #include "delalloc-space.h"
- #include "block-group.h"
-+#include "subpage.h"
+@@ -1033,7 +1033,8 @@ static int find_new_extents(struct btrfs_root *root,
+ 	return -ENOENT;
+ }
  
- #ifdef CONFIG_64BIT
- /* If we have a 32-bit userspace and 64-bit kernel, then the UAPI
-@@ -1492,6 +1493,61 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+-static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start)
++static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start,
++					       bool locked)
+ {
+ 	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
+ 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+@@ -1053,10 +1054,12 @@ static struct extent_map *defrag_lookup_extent(struct inode *inode, u64 start)
+ 		u64 end = start + sectorsize - 1;
+ 
+ 		/* get the big lock and read metadata off disk */
+-		lock_extent_bits(io_tree, start, end, &cached);
++		if (!locked)
++			lock_extent_bits(io_tree, start, end, &cached);
+ 		em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, start,
+ 				      sectorsize);
+-		unlock_extent_cached(io_tree, start, end, &cached);
++		if (!locked)
++			unlock_extent_cached(io_tree, start, end, &cached);
+ 
+ 		if (IS_ERR(em))
+ 			return NULL;
+@@ -1074,7 +1077,7 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em)
+ 	if (em->start + em->len >= i_size_read(inode))
+ 		return false;
+ 
+-	next = defrag_lookup_extent(inode, em->start + em->len);
++	next = defrag_lookup_extent(inode, em->start + em->len, false);
+ 	if (!next || next->block_start >= EXTENT_MAP_LAST_BYTE)
+ 		ret = false;
+ 	else if ((em->block_start + em->block_len == next->block_start) &&
+@@ -1103,7 +1106,7 @@ static int should_defrag_range(struct inode *inode, u64 start, u32 thresh,
+ 
+ 	*skip = 0;
+ 
+-	em = defrag_lookup_extent(inode, start);
++	em = defrag_lookup_extent(inode, start, false);
+ 	if (!em)
+ 		return 0;
+ 
+@@ -1390,12 +1393,13 @@ struct defrag_target_range {
+  * @do_compress:   Whether the defrag is doing compression
+  * 		   If true, @extent_thresh will be ignored and all regular
+  * 		   file extents meeting @newer_than will be targets.
++ * @locked:	   If the range has already hold extent lock
+  * @target_list:   The list of targets file extents
+  */
+ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 				  u64 start, u64 len, u32 extent_thresh,
+ 				  u64 newer_than, bool do_compress,
+-				  struct list_head *target_list)
++				  bool locked, struct list_head *target_list)
+ {
+ 	u64 cur = start;
+ 	int ret = 0;
+@@ -1406,7 +1410,7 @@ static int defrag_collect_targets(struct btrfs_inode *inode,
+ 		bool next_mergeable = true;
+ 		u64 range_len;
+ 
+-		em = defrag_lookup_extent(&inode->vfs_inode, cur);
++		em = defrag_lookup_extent(&inode->vfs_inode, cur, locked);
+ 		if (!em)
+ 			break;
+ 
+@@ -1548,6 +1552,82 @@ static int defrag_one_locked_target(struct btrfs_inode *inode,
  	return ret;
  }
  
-+#define CLUSTER_SIZE	(SZ_256K)
-+
-+/*
-+ * Defrag one continuous target range.
-+ *
-+ * @inode:	Target inode
-+ * @target:	Target range to defrag
-+ * @pages:	Locked pages covering the defrag range
-+ * @nr_pages:	Number of locked pages
-+ *
-+ * Caller should ensure:
-+ *
-+ * - Pages are prepared
-+ *   Pages should be locked, no ordered extent in the pages range,
-+ *   no writeback.
-+ *
-+ * - Extent bits are locked
-+ */
-+static int defrag_one_locked_target(struct btrfs_inode *inode,
-+				    struct defrag_target_range *target,
-+				    struct page **pages, int nr_pages,
-+				    struct extent_state **cached_state)
++static int defrag_one_range(struct btrfs_inode *inode,
++			    u64 start, u32 len,
++			    u32 extent_thresh, u64 newer_than,
++			    bool do_compress)
 +{
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	struct extent_changeset *data_reserved = NULL;
-+	const u64 start = target->start;
-+	const u64 len = target->len;
++	struct extent_state *cached_state = NULL;
++	struct defrag_target_range *entry;
++	struct defrag_target_range *tmp;
++	LIST_HEAD(target_list);
++	struct page **pages;
++	const u32 sectorsize = inode->root->fs_info->sectorsize;
 +	unsigned long last_index = (start + len - 1) >> PAGE_SHIFT;
 +	unsigned long start_index = start >> PAGE_SHIFT;
-+	unsigned long first_index = page_index(pages[0]);
++	unsigned int nr_pages = last_index - start_index + 1;
 +	int ret = 0;
 +	int i;
 +
-+	ASSERT(last_index - first_index + 1 <= nr_pages);
++	ASSERT(nr_pages <= CLUSTER_SIZE / PAGE_SIZE);
++	ASSERT(IS_ALIGNED(start, sectorsize) && IS_ALIGNED(len, sectorsize));
 +
-+	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, start, len);
-+	if (ret < 0)
-+		return ret;
-+	clear_extent_bit(&inode->io_tree, start, start + len - 1,
-+			 EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
-+			 EXTENT_DEFRAG, 0, 0, cached_state);
-+	set_extent_defrag(&inode->io_tree, start, start + len - 1,
-+			  cached_state);
++	pages = kzalloc(sizeof(struct page *) * nr_pages, GFP_NOFS);
++	if (!pages)
++		return -ENOMEM;
 +
-+	/* Update the page status */
-+	for (i = start_index - first_index; i <= last_index - first_index;
-+	     i++) {
-+		ClearPageChecked(pages[i]);
-+		btrfs_page_clamp_set_dirty(fs_info, pages[i], start, len);
++	/* Prepare all pages */
++	for (i = 0; i < nr_pages; i++) {
++		pages[i] = defrag_prepare_one_page(inode, start_index + i);
++		if (IS_ERR(pages[i])) {
++			ret = PTR_ERR(pages[i]);
++			pages[i] = NULL;
++			goto free_pages;
++		}
 +	}
-+	btrfs_delalloc_release_extents(inode, len);
-+	extent_changeset_free(data_reserved);
++	/* Also lock the pages range */
++	lock_extent_bits(&inode->io_tree, start_index << PAGE_SHIFT,
++			 (last_index << PAGE_SHIFT) + PAGE_SIZE - 1,
++			 &cached_state);
++	/*
++	 * Now we have a consistent view about the extent map, re-check
++	 * which range really need to be defraged.
++	 *
++	 * And this time we have extent locked already, pass @locked = true
++	 * so that we won't re-lock the extent range and cause deadlock.
++	 */
++	ret = defrag_collect_targets(inode, start, len, extent_thresh,
++				     newer_than, do_compress, true,
++				     &target_list);
++	if (ret < 0)
++		goto unlock_extent;
++
++	list_for_each_entry(entry, &target_list, list) {
++		ret = defrag_one_locked_target(inode, entry, pages, nr_pages,
++					       &cached_state);
++		if (ret < 0)
++			break;
++	}
++
++	list_for_each_entry_safe(entry, tmp, &target_list, list) {
++		list_del_init(&entry->list);
++		kfree(entry);
++	}
++unlock_extent:
++	unlock_extent_cached(&inode->io_tree, start_index << PAGE_SHIFT,
++			     (last_index << PAGE_SHIFT) + PAGE_SIZE - 1,
++			     &cached_state);
++free_pages:
++	for (i = 0; i < nr_pages; i++) {
++		if (pages[i]) {
++			unlock_page(pages[i]);
++			put_page(pages[i]);
++		}
++	}
++	kfree(pages);
 +	return ret;
 +}
 +
